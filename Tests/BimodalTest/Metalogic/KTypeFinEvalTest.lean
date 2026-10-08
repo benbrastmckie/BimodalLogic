@@ -100,4 +100,33 @@ def τAlt : KType twoLetter 1 := kTypeOfFin (listSeg (sig := twoLetter) [labAlt 
 #guard !bwdLiveSep labAlt stepAlt true 1 τAlt false
 #guard (hitOf labAlt stepAlt true 1).card = 0
 
+/-! ## `stabCheckSig` on finite labelled presentations
+
+`stabCheckSig lab step now phi` (`RaySummary/StabCheck.lean`) is the liveness decider for the
+run-level `⊡` condition: `true` iff every `now` state that is live in both `now`-free step graphs
+reads `phi`. The four values below are evaluated by the compiler and are **witnesses of
+computability and nothing else**: they are statements about four presentations, not about any
+model, and the bridge from a presentation's runs to a model's `⊡` holds only under the
+realization hypothesis `Presented` (`stabCheck_iff_of_presented`), which the wired probe
+`specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` refutes as a completeness
+carrier on fixture model A for every finite presentation. Nothing here decides anything about a
+model, and nothing here mentions validity.
+
+The pair `labW`/`labX` on the complete graph is the discriminator: both presentations have the
+one live `now` state `true`, which reads `phi` under `labW` and not under `labX`. The two
+`stepAlt` values show the liveness guard is load-bearing: under `labX`/`stepAlt` the `now` state
+`true` steps only to `false`, which is `now`-free but steps only back to `true`, which reads
+`now`, so no infinite `now`-free path leaves `true`, no `now` state is live in both `now`-free
+graphs, and the check is vacuously `true`; under `labAlt`/`stepAlt` no state reads `now` at
+all. -/
+
+/-- The complete-graph presentation with state `true` reading `now` only: the one live `now`
+state lacks `phi`. -/
+def labX : Bool → twoLetter.preds → Bool := fun q p => q && p
+
+#guard stabCheckSig labW stepW true false
+#guard !stabCheckSig labX stepW true false
+#guard stabCheckSig labX stepAlt true false
+#guard stabCheckSig labAlt stepAlt true false
+
 end BimodalTest.KTypeFinEval

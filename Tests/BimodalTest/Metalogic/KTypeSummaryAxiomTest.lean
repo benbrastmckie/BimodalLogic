@@ -323,4 +323,42 @@ every seam row above.
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hitOf_of_presented
 
+/-! ## The run-level bridge and the liveness decider under `Presented` — conditional
+
+`plusStab_iff_forall_run_of_presented` (`RaySummary/Trace.lean`) reads `⊡φ` at the seam, under
+`Presented`, as the run-level condition that every run anchored at the seam time carries `clPhi φ`
+at its `now` state; `onRun_iff_live` (`RaySummary/StabCheck.lean`) characterizes the states on
+some anchored run as the `now` states live in both `now`-free step graphs, so that condition is
+decided by `stabCheckSig`; `stabCheck_iff_of_presented` and `decidableStabOfPresented` compose
+the two. These four rows pin the profiles of a **conditional** result, and `Presented` is refuted
+as a completeness carrier by the wired probe
+`specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` (`Probe735.not_presented`):
+on fixture model A at the seam with `φ := Fp` no finite presentation satisfies it, so these four
+rows are vacuous on that fixture, and the existing four rows above are vacuous on it for the same
+reason. None of the four is a decision procedure for `⊡` on any model in the tree, and nothing
+here mentions validity.
+-/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_run_of_presented' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_run_of_presented
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.onRun_iff_live' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.onRun_iff_live
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stabCheck_iff_of_presented' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabCheck_iff_of_presented
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.decidableStabOfPresented' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.decidableStabOfPresented
+
 end BimodalTest.Metalogic
