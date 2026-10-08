@@ -1,42 +1,44 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "skeleton": false,
-  "summary": "Phase 3 of 4 complete: four axiom pins (plusStab_iff_forall_run_of_presented, onRun_iff_live, stabCheck_iff_of_presented, decidableStabOfPresented) in KTypeSummaryAxiomTest.lean, four #guard computability witnesses for stabCheckSig (+ labX) in KTypeFinEvalTest.lean, three Conditional rows in docs/theorem-index.md, three C14 matched pairs in check-module-invariants.sh, one Paper: anchor line on the decider docstring (C15). Full gate set green; sorry census 0; task 742 text untouched. Phase 4 (verdict + ROADMAP correction) remains.",
-  "phases_completed": 3,
+  "summary": "Phase 4 (final, 4/4) landed the recorded verdict: the ray-product presentation (seamOmegaEquiv + hitOf + Presented) cannot deliver Decidable (PlusValidZTime phi); the obstruction is the wired probe Probe735.not_presented (presented-not-complete.lean). The RaySummary README gained the StabCheck.lean row, a 'does not decide PlusValidZTime' bullet, the '## The verdict' section naming (C) Hit-level completeness with a computable bound, (S) Hit-level soundness (the unfiled B2b record restated) and (W) a closure-wide quasimodel, each with its statement shape under [F.IsRegular], L+, Z time; the Decidability README cell and specs/ROADMAP.md's critical path were corrected (B2b is (S) only; 735's verdict does not depend on it). Additive-only beside task 742's sentences (user ruling, Option A); no dependency changed, no task filed; Decidable (PlusValidZTime phi) stated nowhere. Commit 6d678e43e. All gates green; sorry census 0/0.",
+  "phases_completed": 4,
   "phases_total": 4,
-  "dispatch_seq": 17,
+  "dispatch_seq": 18,
   "sorry_inventory": [],
   "blockers": [],
+  "continuation_path": null,
+  "continuation_context": null,
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
-      "summary": "Implementation plan; Phase 3 marked [COMPLETED] with inline deviation annotations."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/735_decidable_stab_check_ray_product_assembly/handoffs/phase-3-handoff-20261008T173008Z.md",
-      "summary": "Phase 3 handoff: state, commits, gate verdicts, next action for Phase 4."
-    },
     {
       "type": "summary",
       "path": "specs/735_decidable_stab_check_ray_product_assembly/summaries/01_decidable-stab-check-assembly-summary.md",
-      "summary": "Implementation summary through Phase 3 (pins, witnesses, Conditional index rows)."
+      "summary": "Implementation summary: the recorded verdict, the conditional per-seam decider, gates and follow-ups."
+    },
+    {
+      "type": "plan",
+      "path": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
+      "summary": "Implementation plan, all four phases marked [COMPLETED]."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/735_decidable_stab_check_ray_product_assembly/handoffs/phase-4-handoff-20261008T174900Z.md",
+      "summary": "Phase 4 handoff: state, decisions, empty sorry inventory."
+    },
+    {
+      "type": "documentation",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+      "summary": "Prose record: the StabCheck.lean row, the 'It does not decide PlusValidZTime' bullet and the '## The verdict' section (RaySummary README); the RaySummary/ cell (Decidability README)."
+    },
+    {
+      "type": "documentation",
+      "path": "FormalSystem/Metalogic/Decidability/README.md",
+      "summary": "Prose record: the StabCheck.lean row, the 'It does not decide PlusValidZTime' bullet and the '## The verdict' section (RaySummary README); the RaySummary/ cell (Decidability README)."
+    },
+    {
+      "type": "roadmap",
+      "path": "specs/ROADMAP.md",
+      "summary": "Critical path corrected: 735's verdict does not depend on B2b; B2b is (S) only; 735 bullet at its outcome."
     }
-  ],
-  "continuation_path": "specs/735_decidable_stab_check_ray_product_assembly/handoffs/phase-3-handoff-20261008T173008Z.md",
-  "continuation_context": {
-    "is_successor": true,
-    "next_phase": 4,
-    "handoff_path": "specs/735_decidable_stab_check_ray_product_assembly/handoffs/phase-3-handoff-20261008T173008Z.md",
-    "landed_names": [
-      "decidableStabOfPresented",
-      "plusStab_iff_forall_run_of_presented",
-      "onRun_iff_live",
-      "stabCheckSig",
-      "stabCheckSig_iff",
-      "stabCheck_iff_of_presented"
-    ],
-    "user_ruling": "D-P5 Option A: additive-only; task 742's sentences verbatim"
-  }
+  ]
 }

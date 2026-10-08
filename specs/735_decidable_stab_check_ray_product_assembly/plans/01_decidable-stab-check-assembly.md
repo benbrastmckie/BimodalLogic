@@ -339,7 +339,7 @@ pinning, never assumed from the sketch.
 
 ---
 
-### Phase 4: The recorded verdict and the ROADMAP correction [NOT STARTED]
+### Phase 4: The recorded verdict and the ROADMAP correction [COMPLETED]
 
 **Goal**: The verdict is recorded where the programme reads it -- the RaySummary README, the
 Decidability README, and the ROADMAP -- naming what the ray-product presentation cannot deliver,
@@ -347,7 +347,7 @@ why, and the three theorems the lift to validity still needs; the ROADMAP's wron
 corrected; no task dependency is changed and no task is filed.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: (a) module table row for
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: (a) module table row for
       `StabCheck.lean` (line count by `wc -l`, never carried); (b) a new section `## The verdict`
       placed after "What it does not do": the ray-product presentation as landed
       (`seamOmegaEquiv` + `hitOf` + `Presented`) delivers a decidable per-seam `⊡` check
@@ -368,12 +368,12 @@ corrected; no task dependency is changed and no task is filed.
       probe to the "Evidence" section as the fifth wired probe; (e) add the four new names to the
       pinned-profile list in "The consumer relation". Every existing sentence stays verbatim
       (Risk R5); new text cites the probe by filename, never a task number.
-- [ ] `FormalSystem/Metalogic/Decidability/README.md`: the `RaySummary/` cell -- append
+- [x] `FormalSystem/Metalogic/Decidability/README.md`: the `RaySummary/` cell -- append
       "`StabCheck.lean` (the run-level `⊡` bridge and a liveness decider, conditional on
       `Presented`); the wired probe `presented-not-complete.lean` refutes `Presented` as a
       completeness carrier, so no decision procedure for `PlusValidZTime` is reachable from this
       presentation (8 files)" -- adjust the file count, leave the rest verbatim.
-- [ ] `specs/ROADMAP.md`: (a) lines 28-29 and 195-196 (the two `/orchestrate 735` comments):
+- [x] `specs/ROADMAP.md`: (a) lines 28-29 and 195-196 (the two `/orchestrate 735` comments):
       replace "file the B2b successor … and add it to 735's dependencies first" with "735's verdict
       does not depend on B2b (RaySummary README, 'The verdict')"; (b) line 100: replace
       "**Critical path: 742 → successor (B2b) → 735.**" with a paragraph: the critical path to
@@ -387,13 +387,13 @@ corrected; no task dependency is changed and no task is filed.
       wired probe, with the HARD CONSTRAINTS restated in one line) and mark `- [x]` with
       `*(Completed: Task 735, {DATE})*`. Do NOT add new `- [ ]` bullets for (C), (S), (W) and do
       NOT edit the 742 `[x]` bullet's text (Risk R5; filing is the user's call).
-- [ ] `bash scripts/check-module-invariants.sh --no-build` green (C9: no task numbers under
+- [x] `bash scripts/check-module-invariants.sh --no-build` green (C9: no task numbers under
       `FormalSystem/`, `docs/`, `Tests/`, `scripts/`); `bash .claude/scripts/check-task-references.sh`
       (if deployed) green; `bash scripts/check-evidence-probes.sh` green; the Phase 3 full gate is
       not invalidated (prose-only edits -- confirm by `git diff --stat` that no `.lean` file
       changed in this phase).
-- [ ] Commit (`task 735 phase 4: verdict record and ROADMAP correction`), staging exactly the three
-      files.
+- [x] Commit (`task 735 phase 4: verdict record and ROADMAP correction`), staging exactly the three
+      files. *(commit 6d678e43e)*
 
 **Timing**: 1.5 hours
 
