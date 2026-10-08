@@ -1,34 +1,34 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 8 of 10 implemented (dispatch 10): the B2b verdict is machine-checked as the wired probe specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean -- two regular three-state fixtures with equal per-time quasistates (quasiState_A_eq_B) and equal consecutive-type relations (pairRel_A_eq_B) at every time, but different stab(not Fp) values at the seam (stayA, t) and hence different Hit at k = 1 through plusStab_iff_forall_hit (hit_ne; headline quasistate_does_not_determine_hit). Wired into scripts/check-evidence-probes.sh (PASS, all 21 wired probes), all six theorems at [propext, Classical.choice, Quot.sound], sorry census 0/0 MATCH, guarded full build green (2835 jobs), axiom count 14 unchanged. Phases 9-10 remain; single-phase stop.",
-  "phases_completed": 8,
+  "summary": "Phase 9 of 10 implemented (dispatch 11): the per-model bridge under the explicit realization hypothesis Presented (RaySummary/Trace.lean, new section; Trace now imports HitOf) -- Presented M tau t phi lab step (closure traces of the seam's splices = traces of the presentation's anchored runs, an equality of trace sets), presented_localRun, hit_eq_hitOf_of_presented (HitCl = coe (hitOf lab step (clNow phi) k) for 1 <= k), plusStab_iff_forall_hitOf_of_presented -- all at [propext, Classical.choice, Quot.sound]; new permanent witness module Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean (13 #guards: kTypeOfFin on segZ/listSeg, allPathTypes/hitOf cardinalities 1/2 and 0, the Sep-vs-shared liveness discriminator) imported from Tests/BimodalTest.lean; typst status.typ regenerated. Scoped and full guarded builds green (2835 jobs, 0 errors), sorry census 0/0 MATCH, axiom count 14 unchanged, vacuous baseline 1 untouched. Presented is discharged for no non-trivial model (B2b, successor record); the corollary decides nothing. Phase 10 remains; single-phase stop.",
+  "phases_completed": 9,
   "phases_total": 10,
-  "dispatch_seq": 10,
+  "dispatch_seq": 11,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-8-handoff-20261008T130257Z.md",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-9-handoff-20261008T131549Z.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 9,
-    "handoff_path": "specs/742_compute_hit_realizability_device/handoffs/phase-8-handoff-20261008T130257Z.md",
-    "note": "Phase 8 complete; Phase 9 next (per-model bridge under Presented + computability witnesses). Phase 10 should cite the Phase 8 probe by declaration name."
+    "next_phase": 10,
+    "handoff_path": "specs/742_compute_hit_realizability_device/handoffs/phase-9-handoff-20261008T131549Z.md",
+    "note": "Phase 9 complete; Phase 10 next (pins, theorem index, READMEs, ROADMAP, successor-record description). Pin Presented, presented_localRun, hit_eq_hitOf_of_presented, plusStab_iff_forall_hitOf_of_presented by name; cite quasistate_does_not_determine_hit and BimodalTest.Metalogic.KTypeFinEvalTest by name; no Tests/BimodalTest/Metalogic.lean exists."
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Phases 1-8 of 10: B3a, B1, B2a (both halves), B3b (i)-(iii) with hitOf/mem_hitOf_iff, and the Phase 8 B2b verdict probe quasistate-does-not-determine-hit (equal quasistates and pair relations, different Hit), wired and green."
+      "summary": "Phases 1-9 of 10: B3a, B1, B2a (both halves), B3b (i)-(iii) with hitOf/mem_hitOf_iff, the Phase 8 B2b verdict probe, and the Phase 9 per-model bridge under Presented with the permanent computability-witness module."
     },
     {
       "type": "handoff",
-      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-8-handoff-20261008T130257Z.md",
-      "summary": "Phase 8 handoff: next action is Phase 9 (per-model bridge under Presented); records the generic once-for-both-models proof, the state_step slice-time correction, and the parameter-free stayA deviation."
+      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-9-handoff-20261008T131549Z.md",
+      "summary": "Phase 9 handoff: next action is Phase 10 (pins/index/READMEs/ROADMAP); records the Presented statement shape, the explicit-binder decision for the finiteness instances, and the reuse of the Phase 7 witness fixture."
     },
     {
-      "type": "probe",
-      "path": "specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean",
-      "summary": "Wired obstruction probe: HWZ-verbatim quasistate data (per-time types + pair relation) does not determine Hit; headline quasistate_does_not_determine_hit, axioms [propext, Classical.choice, Quot.sound]."
+      "type": "test",
+      "path": "Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean",
+      "summary": "Permanent computability witnesses: 13 #guards that kTypeOfFin (segZ, listSeg) and hitOf/allPathTypes/fwdLiveSep/bwdLiveSep evaluate at depth 1 over twoLetter."
     }
   ]
 }

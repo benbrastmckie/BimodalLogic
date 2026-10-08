@@ -92,12 +92,36 @@ differ (`hit_ne`; headline `quasistate_does_not_determine_hit`). The HWZ-verbati
 data — per-time realized types plus the pair relation, HWZ 2000 Defs 10-12 without the product
 repair — therefore cannot determine `Hit`, and no B2b transcribed in that shape may be fed to
 the bridge; the obstruction is machine-checked, wired into `check-evidence-probes.sh`, and the
-decision gate (both equalities) held in Lean without fixture repair. The per-model bridge
-(Phase 9, under an explicit realization hypothesis carrying joint realization through the seam)
-and the documentation pass (Phase 10) remain `[NOT STARTED]`.
+decision gate (both equalities) held in Lean without fixture repair. Dispatch 11 implemented
+Phase 9, the per-model bridge: `Presented M τ t φ lab step` (`RaySummary/Trace.lean`) states
+that the closure traces of the seam's splices are EXACTLY the traces of the finite presentation's
+anchored runs — an equality of trace sets, carrying joint realization through the seam, which the
+Phase 8 probe shows per-time quasistate data cannot replace. Under it, `HitCl M τ t φ k` IS the
+computable `hitOf lab step (clNow φ) k` (`hit_eq_hitOf_of_presented`, `1 ≤ k`), the run
+conditions are inherited by every run (`presented_localRun`), and the `⊡` bridge restates over
+`hitOf` (`plusStab_iff_forall_hitOf_of_presented`). The permanent witness module
+`Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` pins thirteen `#guard`s that `kTypeOfFin`
+(on `segZ` and `listSeg`) and `hitOf` evaluate. `Presented` is discharged for NO non-trivial
+model in this tree — that construction is B2b, the successor record — and the corollary decides
+nothing: the per-triple `∀ c, InFamily … → stabTargetSig …` is the frame of the record that
+assembles `Decidable (PlusValidZTime φ)`. Only the documentation pass (Phase 10) remains.
 
 ## What Changed
 
+- `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean` (249 → 334 lines, Phase 9) — new
+  import of `RaySummary.HitOf`; module header gains the "per-model bridge" paragraph; new
+  section `Presented`: `Presented` (def, `Prop`, `Q` arbitrary), `presented_localRun`,
+  `hit_eq_hitOf_of_presented` (`HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)` for `1 ≤ k`),
+  `plusStab_iff_forall_hitOf_of_presented`.
+- `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` (new, 103 lines, Phase 9, namespace
+  `BimodalTest.KTypeFinEval`) — permanent computability witnesses at depth 1 over `twoLetter`:
+  `segZ twoLetter c2` filter card `1`, `[0,3) ≡₁ [0,5)`, `[0,3) ≢₁ [0,1)`; `listSeg`
+  `[f,g,f] ≡₁ [f,g,f,g,f]`, `[f,g,f] ≢₁ [f]`; `labW`/`stepW` `allPathTypes` card `1`, `hitOf`
+  card `2`; `labAlt`/`stepAlt` `fwdLive`/`bwdLive` `true`, `fwdLiveSep`/`bwdLiveSep` `false`,
+  `hitOf` card `0`. Every number is a witness of computability and nothing else.
+- `Tests/BimodalTest.lean` — imports `BimodalTest.Metalogic.KTypeFinEvalTest` after
+  `KTypeSummaryAxiomTest` (Phase 9).
+- `typst/generated/status.typ` — regenerated counts (Phase 9; `probes/typst-sync-p9.log`).
 - `specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean` — new wired
   probe (479 lines, Phase 8, namespace `Probe742`): `St`, `a`, `b`, `d`, `pa`, `Fp`, `cl`,
   `tpOf`, `tpOf_congr`; generic section over any step relation on `St` (`Fr`, `instFrRegular`,
@@ -189,6 +213,18 @@ and the documentation pass (Phase 10) remain `[NOT STARTED]`.
 
 ## Decisions
 
+- (Phase 9) `Presented` is stated over an arbitrary `Q` with no finiteness instances, and
+  `presented_localRun` needs none; `[Fintype Q] [DecidableEq Q]` are explicit binders only on
+  the two theorems that mention `hitOf` (a first draft with them on the section `variable`
+  line drew `unusedSectionVars`/`unusedFintypeInType` on `presented_localRun`).
+- (Phase 9) `hit_eq_hitOf_of_presented` is `ext x; rw [Finset.mem_coe, mem_hitOf_iff …]` and
+  then one `obtain` through `hP` per direction with the `InFamily` witness transported along
+  the trace equality (`hc ▸ hx`); `x ∈ HitCl …` opens by `rintro ⟨bf, hx⟩` directly since
+  `HitCl` is `HitSig`'s `setOf`. The corollary closes by `Iff.rfl` after two rewrites
+  (`x ∈ ↑s` and `x ∈ s` are definitionally equal).
+- (Phase 9) The witness fixture is Phase 7's `labW`/`stepW` (already the smallest nonempty
+  `hitOf`), not a new three-letter alphabet; the discriminator's type is a `def τAlt` so the
+  `#guard` lines fit the 100-column limit.
 - (Phase 8) Both quasistate equalities are proved once, generically, for any fixture on `St`
   in which `b` is a sink and the edges `a→a, b→b, d→d, d→b` exist (section `Computed`), then
   instantiated to A and B: the models differ only in `a→b`, and no quasistate or pair-relation
@@ -305,6 +341,13 @@ and the documentation pass (Phase 10) remain `[NOT STARTED]`.
 
 ## Plan Deviations
 
+- **Task 9.1** altered: `Trace.lean` imports `HitOf` (where `hitOf` landed in Phase 7), not
+  `Compose`; the run predicate's argument order is the library's `IsRun lab step (clNow φ) t ρ`.
+- **Task 9.4** altered: no `Tests/BimodalTest/Metalogic.lean` exists; the import went into
+  `Tests/BimodalTest.lean`, the aggregator listing `KTypeSummaryAxiomTest`. The nonempty-`hitOf`
+  presentation is Phase 7's two-state `labW`/`stepW` fixture (card `2`) rather than a
+  three-letter one-`now` variant, with the alternating discriminator (card `0`) pinned beside it.
+  Annotated inline on the plan checklist.
 - **Task 8.3** altered: `stayA` is the parameter-free constant history `z ↦ (z, a)`
   (`stayA_A`/`stayA_B` per model) rather than the plan's `stayA t`; the seam is `(stayA, t)` for
   the theorem's own `t`, and every statement remains universally quantified over `t`. Annotated
@@ -357,7 +400,15 @@ and the documentation pass (Phase 10) remain `[NOT STARTED]`.
 
 ## Verification
 
-- Build: Success — Phase 8 (no library module touched): the probe compiles under its own
+- Build: Success — Phase 9: scoped guarded builds of
+  `FormalSystem.Metalogic.Decidability.RaySummary.Trace` (`probes/trace-build-p9-1.log`:
+  GUARD_EXIT=0, 0 errors, two unused-instance warnings fixed) and of both `Trace` and
+  `BimodalTest.Metalogic.KTypeFinEvalTest` (`probes/trace-test-build-p9-2.log`: 1931 jobs,
+  GUARD_EXIT=0, 0 errors; four long-line warnings fixed; `probes/test-build-p9-3.log`: 0 errors,
+  0 warnings, every `#guard` passing); guarded FULL project build (`probes/p9-full-build.log`:
+  `Build completed successfully (2835 jobs)`, GUARD_EXIT=0, 0 `error:` lines); `.olean` newer
+  than source for `Trace` and `KTypeFinEvalTest`; all builds detached with bounded foreground
+  waits. Phase 8 (no library module touched): the probe compiles under its own
   compile line (`probes/p8-compile-2.log`: EXIT=0, 0 errors, 0 warnings);
   `bash scripts/check-evidence-probes.sh` (`probes/p8-check-evidence-probes.log`): `PASS  all 21
   wired probe(s) compile`, EXIT=0, the new probe listed PASS; guarded FULL project build
@@ -394,12 +445,16 @@ and the documentation pass (Phase 10) remain `[NOT STARTED]`.
   (1926 jobs)`, 0 errors, 0 warnings) and of the library root `FormalSystem` (guard exit 0,
   2831 jobs, 0 errors); `.olean` newer than source for `Closure`, `RaySummary` and
   `FormalSystem`. Logs: `probes/closure-build-3.log`, `probes/closure-build-4-library.log`.
-- Sorry count: 0 (Phase 8: `--cross-check` stripper 0, compiler 0, MATCH, `probes/p8-sorry-census.log`; the probe's only `sorry` substring is the header's "no `sorryAx`" axiom-record phrase, house style; Phase 7: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p7.log`; Phase 6: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p6.log`; Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
+- Sorry count: 0 (Phase 9: `--cross-check` stripper 0, compiler 0, MATCH, `probes/p9-sorry-census.log`; Phase 8: `--cross-check` stripper 0, compiler 0, MATCH, `probes/p8-sorry-census.log`; the probe's only `sorry` substring is the header's "no `sorryAx`" axiom-record phrase, house style; Phase 7: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p7.log`; Phase 6: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p6.log`; Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
   sorry; Phase 2: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-phase2.log`).
 - Sorry inventory: None
 - Vacuous count: 0 introduced (the one repository-wide match,
   `Examples/TemporalStructures.lean:495`, predates this task and was not touched).
-- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 8
+- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 9
+  `#print axioms` (`probes/trace-axioms-p9.log`): `Presented`, `presented_localRun`,
+  `hit_eq_hitOf_of_presented`, `plusStab_iff_forall_hitOf_of_presented` all exactly
+  `[propext, Classical.choice, Quot.sound]`; scope 85 + 103 = 188 lines against the 150-250
+  hypothesis. Phase 8
   `#print axioms` (`probes/p8-compile-2.log`): `quasiState_A_eq_B`, `pairRel_A_eq_B`,
   `stab_notFp_A`, `stab_notFp_B`, `hit_ne`, `quasistate_does_not_determine_hit` all exactly
   `[propext, Classical.choice, Quot.sound]`; scope 479 lines against the 400-500 hypothesis. Phase 7
@@ -442,10 +497,16 @@ and the documentation pass (Phase 10) remain `[NOT STARTED]`.
 - Plan verification items: `Fintype.card (clSig (p U q)).preds` evaluates to `4`
   (`probes/closure-axioms.log`); `hitSig_twoLetter` and `clTrace_proj` are `rfl`.
 - Phase 1 witnesses (dispatch 3): `#eval`s on the two-letter alphabet at depth 1 ran as the
-  research probe predicted; the permanent witness module is Phase 9's.
+  research probe predicted; the permanent witness module is `KTypeFinEvalTest.lean` (Phase 9).
 
 ## Impacts
 
+- `hit_eq_hitOf_of_presented` and `plusStab_iff_forall_hitOf_of_presented` (Phase 9) are the
+  interface the successor records consume: B2b must produce `Presented M τ t φ lab step` for a
+  model constructed from a presentation, and the `Decidable (PlusValidZTime φ)` assembly must
+  make the per-triple condition effective; neither is done here. `KTypeFinEvalTest` turns red
+  if any of `kTypeOfFin`, `listSeg`, `allPathTypes`, `hitOf`, `fwdLiveSep`, `bwdLiveSep` stops
+  evaluating.
 - The Phase 8 probe is the machine-checked reason Phase 9's realization hypothesis must carry
   joint realization through the seam (the run set of a presentation equals the seam's trace set)
   rather than per-time quasistate data: any B2b in the HWZ-verbatim shape would feed
@@ -471,9 +532,10 @@ and the documentation pass (Phase 10) remain `[NOT STARTED]`.
 
 ## Follow-ups
 
-- Phase 9 (per-model bridge under `Presented`, computability witnesses) is the next phase;
-  Phase 8 is complete. Note for Phase 9: `hitOf`
-  and `mem_hitOf_iff` live in `HitOf.lean` with `Q` implicit and the `lab step now k` order.
+- Phase 10 (pins, theorem index, READMEs, ROADMAP, successor-record description) is the only
+  remaining phase. It should pin the four Phase 9 declarations in `KTypeSummaryAxiomTest.lean`
+  by name, cite the witness module as `BimodalTest.Metalogic.KTypeFinEvalTest` (imported from
+  `Tests/BimodalTest.lean`), and state that `Presented` is discharged for no non-trivial model.
 - The plan's Phase 7 liveness graph was wrong (see Decisions); Phase 10's README/theorem-index
   text must describe `fwdLiveSep`/`bwdLiveSep` as what `hitOf` reads, and may note that Phase 6's
   `fwdLive`/`bwdLive` are retained but unused by the read-out.
@@ -500,3 +562,6 @@ and the documentation pass (Phase 10) remain `[NOT STARTED]`.
 - specs/742_compute_hit_realizability_device/handoffs/phase-7-handoff-20261008T112447Z.md
 - specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean
 - specs/742_compute_hit_realizability_device/handoffs/phase-8-handoff-20261008T130257Z.md
+- specs/742_compute_hit_realizability_device/probes/trace-axioms-p9.lean
+- specs/742_compute_hit_realizability_device/handoffs/phase-9-handoff-20261008T131549Z.md
+- Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean
