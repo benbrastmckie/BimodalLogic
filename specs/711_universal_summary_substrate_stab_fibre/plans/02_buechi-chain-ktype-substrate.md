@@ -364,7 +364,13 @@ were the three Mathlib imports.
 
 ---
 
-### Phase 2: Step 2 — the finite-index fact, the cluster scaffold, and the falsified `Nat.nth` note [NOT STARTED]
+### Phase 2: Step 2 — the finite-index fact, the cluster scaffold, and the falsified `Nat.nth` note [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-module-invariants.sh` exits 0 | The single failing check is the pre-existing C9 citation at `scripts/check-phantom-citations.sh:145` (committed in `729dc345f`), a file outside this task's `file_scope` and untouched by this phase — the identical exclusion Phase 1 recorded | Full harness run this dispatch: every other check PASS (C1 build + `BimodalTest`, C2, C3, C4, C5, C14, C15, C16, C20, C23, C24, C28 with 0 warnings, C29, C30, C31, C32, C33); INV PASS after `--emit-inventory`; `--no-build` confirmation pass recorded in the phase commit |
 
 **Goal**: Establish Büchi chain step 2 (a finite alphabet of segment summaries) as a named,
 public theorem, stand up the cluster's aggregator, README and axiom-pin test module so later
@@ -372,7 +378,7 @@ phases only append, and correct the one stale claim 736 falsified in a file this
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Basic.lean`: copyright header;
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Basic.lean`: copyright header;
       imports `FormalSystem.Metalogic.WeakCanonical.NEquivalence` and
       `FormalSystem.Metalogic.WeakCanonical.MixedSum`; `namespace FormalSystem.Metalogic.WeakCanonical`.
       Module docstring: the cluster is Büchi's complementation chain transposed to monadic
@@ -383,18 +389,18 @@ phases only append, and correct the one stale claim 736 falsified in a file this
       (`…PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp` refutes finite width;
       `Probe732Device.not_lasso_sufficient_on_chain` refutes pigeonhole over states) and that no
       complexity bound is claimed. Cite declaration names and sources, never task numbers.
-- [ ] State and prove step 2:
+- [x] State and prove step 2:
       `theorem kType_finite (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) : Finite (KType sig k)`.
       The proof already exists inline at `RamseyFactorization.lean`'s `exists_zFactorization`
       (`haveI : Finite (KType sig k) := by unfold KType; infer_instance`); lift it verbatim and
       add the instance attribute only if instance search does not already find it (check with
-      `lean_hover_info`/`lean_multi_attempt` before adding, to avoid a diamond).
-- [ ] Create the aggregator `FormalSystem/Metalogic/WeakCanonical/KTypeSummary.lean` importing
+      `lean_hover_info`/`lean_multi_attempt` before adding, to avoid a diamond). *(completed — instance search already finds it; no attribute added. Deviation: altered — the pinned `[Fintype] [DecidableEq]` binders trip Mathlib's `unusedFintypeInType`/`unusedDecidableInType` linters, which have no `warning-budget.txt` disposition row; both suppressed declaration-scoped with a C29 reason comment rather than changing the Challenge signature)*
+- [x] Create the aggregator `FormalSystem/Metalogic/WeakCanonical/KTypeSummary.lean` importing
       `KTypeSummary.Basic` (later phases append one import each), and add
       `import FormalSystem.Metalogic.WeakCanonical.KTypeSummary` to
       `FormalSystem/Metalogic/WeakCanonical.lean` with a short entry in its docstring's cluster
       list (the `GroupModel/RamseyFactorization.lean` entry is the model).
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md` on the
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md` on the
       `FormalSystem/ForMathlib/Combinatorics/README.md` / `GroupModel/README.md` pattern: why the
       cluster exists, the six-step chain table with each step's owning module and status (only
       step 2 landed at this phase; the rest listed as planned and updated as they land), the
@@ -402,14 +408,14 @@ phases only append, and correct the one stale claim 736 falsified in a file this
       the two carried limits, and the recorded follow-up that a task-type-neutral home for the
       k-type kernel was considered and deferred. Add the two rows (`KTypeSummary.lean`,
       `KTypeSummary/`) to `FormalSystem/Metalogic/WeakCanonical/README.md`'s module table.
-- [ ] Create `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` on the
+- [x] Create `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` on the
       `PeriodicExtensionAxiomTest.lean` pattern (permanent evidence, not a test), pinning with
       `#guard_msgs` + `#print axioms`: `Nat.exists_strictMono_const_pair_colour`,
       `FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs`, and
       `FormalSystem.Metalogic.WeakCanonical.kType_finite`. Section docstring states what the
       module pins and that `[propext, Classical.choice, Quot.sound]` is the standard profile.
       Register it in `Tests/BimodalTest.lean` next to `PeriodicExtensionAxiomTest`.
-- [ ] Correct the falsified note in
+- [x] Correct the falsified note in
       `FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean` (the "## The proof"
       paragraph, around line 36): the parenthetical "`Mathlib.Data.Nat.Nth` is not in this
       project's built cache, so `Nat.nth` is deliberately not used" is **false** — the olean is
@@ -419,11 +425,11 @@ phases only append, and correct the one stale claim 736 falsified in a file this
       `lake env lean`. Replace the parenthetical with the accurate statement: the proof enumerates
       with `Nat.Subtype.ofNat`, which needs no extra import, and `Nat.nth` is an available
       alternative that was not required. Do **not** rewrite the proof — this is a prose-only fix.
-- [ ] `lake exe mk_all --lib FormalSystem`; build detached and guarded:
+- [x] `lake exe mk_all --lib FormalSystem`; build detached and guarded:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.WeakCanonical.KTypeSummary BimodalTest.Metalogic.KTypeSummaryAxiomTest FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs`;
       `lean_verify FormalSystem.Metalogic.WeakCanonical.kType_finite`.
-- [ ] Run `bash scripts/check-module-invariants.sh` and `bash scripts/check-evidence-probes.sh`;
-      commit (`task 711 phase 2: k-type finite index, cluster scaffold, Nat.nth note fix`).
+- [x] Run `bash scripts/check-module-invariants.sh` and `bash scripts/check-evidence-probes.sh`;
+      commit (`task 711 phase 2: k-type finite index, cluster scaffold, Nat.nth note fix`). *(deviation: altered — harness green on every check except the pre-existing C9 named in the Exclusions below; `--emit-inventory` rewrote the rollup blocks of `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` and `README.md`, staged with the phase as in Phase 1; probes 17/17 PASS)*
 
 **Timing**: 1 hour
 

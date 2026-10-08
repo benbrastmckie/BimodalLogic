@@ -483,6 +483,8 @@ import FormalSystem.Metalogic.WeakCanonical.IntegerModel.NoGapsDiscreteProof
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsBridge
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsNoGaps
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Basic
 import FormalSystem.Metalogic.WeakCanonical.MixedSum
 import FormalSystem.Metalogic.WeakCanonical.NEquivalence
 import FormalSystem.Metalogic.WeakCanonical.OrderedSum

@@ -32,9 +32,9 @@ point `a` and, by pigeonhole over the finite colour type, an infinite subset of 
 points on which `c a ·` is constant. The chosen points form a *pre-homogeneous* sequence (the
 colour of a pair depends only on its first element); a second pigeonhole
 (`Finite.exists_infinite_fiber`) picks the colour that occurs infinitely often, and the
-corresponding positions are enumerated monotonically by `Nat.Subtype.ofNat`
-(`Mathlib.Data.Nat.Nth` is not in this project's built cache, so `Nat.nth` is deliberately not
-used).
+corresponding positions are enumerated monotonically by `Nat.Subtype.ofNat`, which needs no
+import beyond the three above. `Nat.nth` (`Mathlib.Data.Nat.Nth`, available in this project's
+build) is an alternative enumerator that was not required.
 
 ## Naming
 

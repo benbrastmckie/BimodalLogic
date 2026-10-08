@@ -22,6 +22,7 @@ anything from this one, which is what makes the split a partition rather than a 
 | `ChronicleExtraction.lean` | 192 | Extracting chronicles from the weak canonical model |
 | `ColourOrders.lean` | 328 | Coloured orders used by the model constructions |
 | `FrameProperties.lean` | 67 | Frame property verification for the weak canonical model |
+| `KTypeSummary.lean` | 22 | Aggregator for `KTypeSummary/` — Büchi's complementation chain in the monadic `k`-type idiom |
 | `MixedSum.lean` | 558 | Mixed-sum order construction |
 | `NEquivalence.lean` | 1,315 | N-equivalence relation and its properties for bisimulation games |
 | `OrderedSum.lean` | 59 | Ordered sum construction for building new models |
@@ -31,6 +32,7 @@ anything from this one, which is what makes the split a partition rather than a 
 | `DenseModelSurgery/` | 7,914 | Dense model surgery — part of the Dedekind/real route (9 files) |
 | `GroupModel/` | 3,373 | Non-Archimedean `ℚ ×ₗ ℤ` companion chain and `countermodel_discrete` (6 files) |
 | `IntegerModel/` | 5,615 | Integer model construction (6 files) |
+| `KTypeSummary/` | 122 | `k`-type summaries over the `ℤ` time axis: the finite summary alphabet, with the segment carrier, Ramsey cover and saturation steps appended as they land (1 file) |
 | `RealModel/` | 6,789 | Real-line model construction — part of the Dedekind/real route (7 files) |
 
 Measured live contents: **10 loose modules and 4 subdirectories**, 38 modules in total.

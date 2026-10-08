@@ -1,0 +1,22 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Basic
+
+/-!
+# `KTypeSummary` — Büchi's complementation chain in the monadic `k`-type idiom
+
+Aggregator for the `k`-type summary substrate: Büchi's complementation chain (Thomas 1997
+§5.1) transposed to monadic `k`-types of coloured segments of the `ℤ` time axis. See
+`KTypeSummary/Basic.lean` for the six-step table, the owning module of each step, and the scope
+disclaimer — no complexity bound is claimed and no `⊡` condition is reduced to a `k`-type target.
+
+## Modules
+
+* `KTypeSummary.Basic` — the cluster root and step 2, `kType_finite`.
+
+Later steps of the chain are appended here as their modules land.
+-/

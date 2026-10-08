@@ -60,6 +60,11 @@ import FormalSystem.Metalogic.WeakCanonical.GroupModel.GroupableCompanion
 -- `Transfer.lean` because `Transfer ← ReynoldsBridge ← GroupableCompanion` makes in-place
 -- closure an import cycle; the fully-qualified name is preserved, so no call site moved.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.CountermodelBase
+-- CI edge only: `KTypeSummary/` (Büchi's complementation chain transposed to monadic `k`-types
+-- over the `ℤ` time axis: the finite summary alphabet `kType_finite`, and the segment carrier,
+-- Ramsey cover and saturation steps as they land) is a leaf until the decidability-side seam
+-- interface consumes it. Listed here on the `GroupModel/` precedent above.
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness
@@ -85,6 +90,11 @@ is archived — see `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcis
 10. **GroupModel**: the `ℚ ×ₗ ℤ` companion chain — `goodGroupable`, block decomposition, Ramsey
    factorization, `companionGeneral`/`companionChronicle`, and `countermodel_discrete`
    (`GroupModel/CountermodelBase.lean`)
+11. **KTypeSummary**: Büchi's complementation chain in the monadic `k`-type idiom over the `ℤ`
+   time axis — the finite summary alphabet (`kType_finite`), with the segment carrier, the
+   bi-infinite family and its Ramsey cover, and saturation for `k`-type-determined targets
+   appended as they land. A substrate for the decidability side's seam interface; it claims no
+   complexity bound and reduces no `⊡` condition to a `k`-type target
 
 ## Main Export
 
