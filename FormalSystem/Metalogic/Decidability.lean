@@ -41,6 +41,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Decidable
 import FormalSystem.Metalogic.Decidability.BiLasso
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate
+import FormalSystem.Metalogic.Decidability.RaySummary
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -120,6 +121,16 @@ Tableau-based decision procedure returning proof terms or countermodels.
   and periodicity. Entry point `check` and its correctness theorem `check_correct`
   (`BiLasso/Check.lean`). It decides a *presentation*, not the logic: nothing in it quantifies
   over frames
+- `RaySummary`: the seam interface for `⊡` over the time axis — the decidability side's interface
+  to the `k`-type summary substrate (`WeakCanonical/KTypeSummary/`, Büchi's complementation
+  chain transposed to monadic `k`-types of coloured segments of `ℤ`), which exists because the
+  finite-width finite model property for the sliced class is refuted and a `⊡` check on the
+  seam-gluing path space (`PlusLanguage.plusStab_iff_omega`) therefore needs summaries over the
+  time axis rather than over states. It holds one bridge, `plusStab_iff_seamSummary`, stated
+  against the hypothesis bundle `Presents` whose `colours` field *is* the unformalized MSO
+  reduction; the bridge discharges nothing, builds no decision procedure, and claims no
+  complexity bound. Producing a `SeamSummary` and discharging `Presents` for a concrete frame is
+  the consumer's work
 
 ## Status
 

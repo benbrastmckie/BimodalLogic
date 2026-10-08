@@ -821,7 +821,13 @@ close, so the obligation is relocated rather than dropped.
 
 ---
 
-### Phase 7: The seam interface — the `⊡` bridge against an abstract realization hypothesis [NOT STARTED]
+### Phase 7: The seam interface — the `⊡` bridge against an abstract realization hypothesis [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-module-invariants.sh` exits 0 | The single failing check is the pre-existing C9 citation at `scripts/check-phantom-citations.sh:145` (committed in `729dc345f`), outside this task's `file_scope` and untouched by this phase — the identical exclusion Phases 1-6 recorded | Full harness run this dispatch: C1 (build + `BimodalTest`), C5, C8, C28 (0 warnings), INV and every other check PASS; `lean_verify plusStab_iff_seamSummary` `[propext, Classical.choice, Quot.sound]`; `grep sorry` over `RaySummary/` empty; probes 17/17 |
 
 **Goal**: Give the consumer a single named interface connecting the keystone
 `FormalSystem.PlusLanguage.plusStab_iff_omega` to the substrate, stated against a hypothesis
@@ -830,7 +836,7 @@ own docstring.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/Seam.lean` (imports
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/Seam.lean` (imports
       `FormalSystem.Metalogic.WeakCanonical.KTypeSummary` and
       `FormalSystem.PlusLanguage.PlusRayFibre`; `namespace FormalSystem.Metalogic.Decidability.RaySummary`).
       Module docstring, in order: (a) the keystone restates `⊡φ` at a seam as a universal
@@ -847,11 +853,11 @@ own docstring.
       (e) the atomization licence `FormalSystem.Metalogic.Conservativity.plusTruthAt_iff_atomize`
       is what lets a consumer take `φ` `⊡`-free with a finite alphabet; (f) discharging the
       bundle is the consumer's work, and this module builds no decision procedure.
-- [ ] `structure SeamSummary (sig : MonadicSignature) (k : ℕ)` — the consumer-facing datum: the
+- [x] `structure SeamSummary (sig : MonadicSignature) (k : ℕ)` — the consumer-facing datum: the
       family triple `(τneg, τzero, τpos)` reached through the seam, plus a `holds : Bool` verdict
       the summary assigns to it. Keep it a plain structure over `Fintype` components; no
       quotient, no `Set`.
-- [ ] `structure Presents {F : FrameOver intOrder} [F.IsRegular] (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula) (sig) (k) (S : SeamSummary sig k) : Prop`
+- [x] `structure Presents {F : FrameOver intOrder} [F.IsRegular] (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula) (sig) (k) (S : SeamSummary sig k) : Prop`
       with exactly three fields, each named for the obligation it carries:
       - `colours : ∀ bf : SeqPair F (τ.state t), ∃ c : sig.preds → ℤ → Prop, PlusTruthAt M ((seamOmegaEquiv t (τ.state t)).symm bf).1 t φ ↔ T c` for the module's abstract target `T`
         — **this is the unformalized MSO reduction**; its docstring says so in one sentence.
@@ -860,11 +866,12 @@ own docstring.
       - `realized : ∀ c, InFamily sig k S.τneg S.τzero S.τpos c → ∃ bf : SeqPair F (τ.state t), …`
         — the joint-realization obligation; its docstring names the HWZ Lemma 17 splice hazard
         above as the reason it is joint and not one-sided.
-- [ ] `theorem plusStab_iff_seamSummary (h : Presents M τ t φ sig k S) : PlusTruthAt M τ t (.stab φ) ↔ S.holds = true`
+      *(deviation: altered — a FOURTH field `verdict : ∃ c, InFamily … c ∧ (S.holds = true ↔ T c)` was added, as the plan's own clause permits: without it `S.holds` is unconstrained and the bridge cannot be stated; `colours` additionally lands each ray pair's block in the summary's family, which the backward direction needs. Both recorded in the module docstring (point (c)) and the README's "one family per summary" limitation)*
+- [x] `theorem plusStab_iff_seamSummary (h : Presents M τ t φ sig k S) : PlusTruthAt M τ t (.stab φ) ↔ S.holds = true`
       from `plusStab_iff_omega`, `family_cover`, `family_saturation` and the three fields. Keep
       the proof short — if it needs a fourth field, add it and record why: the bundle is this
-      plan's to shape, the discharge is not.
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary.lean` importing `RaySummary.Seam`,
+      plan's to shape, the discharge is not. *(completed — 13 proof lines, from `plusStab_iff_omega`, `family_saturation` and the four fields; `family_cover` is not needed by the bridge and is recorded as the consumer's tool for producing a summary)*
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary.lean` importing `RaySummary.Seam`,
       and add `import FormalSystem.Metalogic.Decidability.RaySummary` to
       `FormalSystem/Metalogic/Decidability.lean` with a one-paragraph entry in its docstring's
       cluster list (the sliced certificate's paragraph is the model). Create
@@ -873,11 +880,11 @@ own docstring.
       holds (the seam interface only; the substrate proper is the `WeakCanonical/KTypeSummary/`
       cluster and the README links to it), the consumer relation, and the two carried limits.
       Add the two rows to `FormalSystem/Metalogic/Decidability/README.md`'s module table.
-- [ ] Pin `plusStab_iff_seamSummary` in the test module, with a section note that its profile
+- [x] Pin `plusStab_iff_seamSummary` in the test module, with a section note that its profile
       inherits `Classical.choice` through `plusStab_iff_omega`'s
       `FrameOver.worldHistoryOfStepPath` (the `PeriodicExtensionAxiomTest.lean` precedent for a
       choice-carrying row). `mk_all`; guarded scoped build; `bash scripts/check-module-invariants.sh`;
-      commit (`task 711 phase 7: seam interface and the stab bridge against an abstract hypothesis`).
+      commit (`task 711 phase 7: seam interface and the stab bridge against an abstract hypothesis`). *(deviation: altered — harness green except the pre-existing C9 named in the Exclusions below; rollups and `typst/generated/status.typ` regenerated and staged; probes 17/17 PASS. 158 lines; `grep -c hypothesis` = 8)*
 
 **Timing**: 2 hours
 

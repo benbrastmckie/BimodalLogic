@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization
+import FormalSystem.Metalogic.Decidability.RaySummary
 
 /-!
 # Axiom-profile evidence for the `k`-type summary substrate
@@ -29,6 +30,7 @@ signal that a profile moved.
 | the Ramsey cover | 4 | `family_cover`, `exists_matching_factorization` |
 | saturation core | 5a | `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple` |
 | saturation proper, finite-family cover | 5b | `family_saturation`, `target_eq_union_of_families` |
+| the `⊡` bridge (seam interface) | — | `plusStab_iff_seamSummary` |
 
 Rows for the later steps are appended as their modules land.
 
@@ -129,5 +131,21 @@ Ramsey cover's.
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.WeakCanonical.target_eq_union_of_families
+
+/-! ## The seam interface: the `⊡` bridge
+
+`plusStab_iff_seamSummary` is stated against the hypothesis bundle `Presents` and discharges
+nothing; its profile inherits `Classical.choice` through `plusStab_iff_omega`'s
+`FrameOver.worldHistoryOfStepPath` (the `PeriodicExtensionAxiomTest.lean` precedent for a
+choice-carrying row), so a profile here that *lost* `Classical.choice` would be a welcome
+measurement to record, not a defect. What it certifies is the axiom profile of the bridge — not
+that any seam is ever presented.
+-/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_seamSummary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_seamSummary
 
 end BimodalTest.Metalogic
