@@ -1,5 +1,5 @@
 ---
-next_project_number: 741
+next_project_number: 743
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 741
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,735,739,740 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,735,739,740,741,742 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -28,6 +28,7 @@ next_project_number: 741
 
 730 [NOT STARTED] — Evaluate whether the formal:logic implement-phase routing...
 731 [NOT STARTED] — Make plan-time filescope harvest include the generated...
+741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
 
 ### Algebraic Representation
 
@@ -81,6 +82,7 @@ next_project_number: 741
 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
 739 [NOT STARTED] — Run E2's real test: the depth-2 stratification falsifier on a...
 740 [NOT STARTED] — Restate three KTypeSummary declarations over Finite...
+742 [NOT STARTED] — Compute Hit: the per-model realizability device (B1-B3)...
 
 ### Formula Refactor
 
@@ -107,6 +109,64 @@ next_project_number: 741
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 
 ## Tasks
+
+### 742. Compute hit realizability device
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 737
+
+**Description**: Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
+
+WHY THIS EXISTS. Task 737 proved that the landed four-field `Presents` bundle was not what its own docstring claimed. `FormalSystem.Metalogic.Decidability.RaySummary.SeamMulti.exists_presents_iff` establishes that the single-family bundle is inhabited for some target and summary IFF the seam is already box-dot-decided (`box-dot phi OR box-dot NOT phi`), for every `sig` and `k` -- so `Presents.colours` was a seam condition, not the MSO-over-Z-less-than reduction, and the old bridge restated `box-dot phi <-> box-dot phi` wherever it applied. The fixture-level refutation is wired as a probe (`no_presents_on_fixture`, specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean). 737 landed the CORRECTED interface beside it: `plusStab_iff_forall_hit`, a hypothesis-free theorem over a finite conjunction, plus `PresentsMulti` inhabited outright by `presentsMulti_seamTrace` and `determinedByKType_eval` discharging the old field (3) for every depth-at-most-k sentence. The entire reduction cost now sits on ONE object: `Hit`, the set of realized family triples, which is finite and which 737 explicitly did NOT compute. This task computes it. 737's report names the residue B1-B4 and rules: "B1-B3 are a per-model device and belong to a successor record that 735 depends on; B4 is the validity quantification and is 735's own frame." specs/ROADMAP.md carries a "Compute Hit" residue bullet before 735. The report recommends filing this record explicitly "so that 735 does not absorb the cost silently -- the exact risk this task was filed to close."
+
+THE THREE COMPONENTS, with 737's own cost estimates and risk ratings carried forward. Re-verify the estimates before committing to phases; they are the predecessor's figures, not measurements of this task.
+
+B1 -- ALPHABET AND LOCAL RUN CONDITIONS. Subformula closure of the atomized `phi` as `sig.preds`; the trace as the full labelling; local run conditions (Hodkinson-Wolter-Zakharyaschev Def 11's U/S clauses) stated on traces. Estimated 300-500 lines, risk LOW-MEDIUM. This is the tractable one and the right calibration target; a quick win here is not evidence the other two are tractable. Note 737's own recorded risk on generalising past the probe's two-letter alphabet: a marker-plus-closure signature introduces Fintype/DecidableEq plumbing for a subtype of PlusFormula. Its stated mitigation is to state the library version over an arbitrary `sig` with a distinguished `now : sig.preds` and an arbitrary phi-predicate, exactly as the probe does with `true`/`false`, and to leave closure alphabets to B1 proper.
+
+B2 -- REALIZABILITY. A colouring is a trace of a history through the seam iff it satisfies the local run conditions and per-time state realizability (the quasistate), with one-sided live flags: HWZ Def 12 / Thm 14 for THIS semantics. This is task 711's dropped D2-D5 in trace form. Estimated 1,500-2,500 lines, risk HIGH. [CARRIED-UNVERIFIED: the figure derives from 711's own "Estimated cost" table, 1,900-2,700 lines over 7-9 dispatches, for the D2-D5 components 711's plan v2 did not build.] TWO HAZARDS LIVE HERE AND BOTH ARE NAMED: the HWZ Lemma 17 splice can create a realised type the model lacked, which is lethal to a box-dot label and is why joint realization through the seam is demanded rather than one-sided liveness; and the backward half carries the asymmetry. Expect this component to dominate the task and consider whether it should be split before planning phases.
+
+B3 -- EFFECTIVE COMPOSITION. A computable `kTypeOf` on finite segments and a `compose : KType -> KType -> KType -> KType` with correctness against `kEquiv_orderedSum_of_kEquiv_colour`. Estimated 800-1,500 lines, risk HIGH, for a stated structural reason: `kTypeOf` is `Classical.dec` by design and the mixing lemma is an equivalence, not a computation. WITHOUT B3 NO `Bool` IS COMPUTABLE, so a `Hit` that is finite but not effectively enumerable does not discharge this record. Note `presentsMulti_seamTrace`'s own `Bool` is classical, which is exactly the gap B3 closes.
+
+B4 IS NOT THIS TASK. Validity -- satisfiability iff existence of a repaired quasimodel iff a finite search over `Hit`-sets, the composition-method analogue of "MSO-definable iff k-type-determined for some k" -- is HWZ Thm 15 / Gabbay-Kurucz-Wolter-Zakharyaschev Thm 1.28's work, is `blocked` under the zero-debt policy as a citation, and is task 735's own frame. Do not attempt it here and do not let a B4-shaped claim land from this record.
+
+SUBSTRATE IN HAND, to be re-verified before use and never re-proved. The KTypeSummary cluster (Basic, Segment, Family, Saturation, Universal, aggregator and README) supplies Buechi's complementation half IN FULL and NONE of the realizability/emptiness half -- that is 737's measured coverage answer, and B1-B3 are precisely the missing half. `FormalSystem/Metalogic/Decidability/RaySummary/SeamMulti.lean` carries the bridge this task feeds. The Ramsey core's durable anchor is `Nat.exists_strictMono_const_pair_colour` at FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean, proved from scratch and absent from Mathlib at pin v4.33.0-rc1; the `WeakCanonical.infinite_ramsey_pairs` name is an ALIAS. ANCHOR WARNING: several records cite that theorem at a stale line; re-resolve every declaration BY NAME, never by a cited line. This hazard was observed twice during the 737/738 batch -- README line anchors drifted mid-batch (RaySummary 35->41, KTypeSummary 96->101) -- so treat every line number in any inherited record as advisory.
+
+CONSTRAINTS THAT TRANSFER UNCHANGED. ZERO DEBT: no external lemma cited as an axiom; carrying out a proof is permitted, citing a theorem in place of one is not. TIME AXIS, NEVER STATES: a finite alphabet of per-time summaries is forced by `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp`, which refutes pigeonhole-tier lasso summaries on the infinite acyclic fibre. Gluing does not bound the fibre; the route concedes infinite fibres and seeks a finite PRESENTATION. Any phase that quietly reintroduces a finite-fibre or finite-width assumption is reproducing a refuted shape. Everything stays under `[F.IsRegular]`, never unconditionally. NO COMPLEXITY BOUND, upper or lower: the ARGUED CTL-star 2EXPTIME ceiling rules proposals out and is never a source of an upper bound. CSLIB IS READ-ONLY: consult `~/Projects/cslib/` for proof strategy, add no `require` edge and copy no declarations; a require would drag this tree 76 Mathlib commits forward. The backward box-dot(Pp) side is fixed only by `Probe719Backward.pastStab_iff_allBwdPathsMeet` on the asymmetric fixture and there is still no backward Bool-fixture bridge, so a forward-only result must say so rather than implying symmetry.
+
+ACCEPTANCE. Either `Hit` computed -- B1, B2 and B3 landed with every qualifier carried (`[F.IsRegular]` at minimum, the frame class, the language fragment and the premise set), axioms pinned in the invariants harness, zero sorries, and a theorem-index row; or, per component, a recorded verdict naming precisely what cannot be built and what it would cost, with the obstruction MACHINE-CHECKED as a theorem or a wired probe rather than argued in prose. A component-by-component outcome is expected given B2's and B3's HIGH risk ratings, and a cited verdict is a COMPLETE result, not a failure -- that is how 737 itself closed. Do NOT present a partial discharge as more than it is, and do not let a true-looking name sit over a proof that does not reach it: that defect is what 737 was filed to find and did find.
+
+SCOPE SPLIT WITH NEIGHBOURS. 737 is complete and terminal; do not rebuild `exists_presents_iff`, `plusStab_iff_forall_hit`, `PresentsMulti` or `determinedByKType_eval`, and do not retire the landed degeneracy result. The assembly of `Decidable (PlusValidZTime phi)` is task 735 and must not be attempted here; 735 should carry a dependency on this record. The mosaic route R2 fallback is task 734, the backward-nondeterministic mirror falsifier is task 733, and the three-state E2 falsifier is task 739. SET file_scope AT PLAN TIME: which files this writes depends on whether B1-B3 land in one module or three, so declaring it now would be a guess. An absent scope makes this record invisible to the batch admission gate's overlap detection -- a known blindness, not an exemption. Expect overlap with FormalSystem/Metalogic/Decidability/RaySummary/ and FormalSystem/Metalogic/WeakCanonical/KTypeSummary/.
+
+---
+
+### 741. Agent system context extensions cslib survey
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 736
+
+**Description**: Land the three agent-system context extensions recorded by the cslib omega-automata survey
+
+WHY THIS EXISTS. The cslib omega-automata survey (task 736, completed) closed with an operator hand-off list of six findings it deliberately did not act on, stating in its own summary: "This task spawns no follow-on tasks of its own; filing any of these is the operator's call." Five of the six are now discharged or owned: (a) the falsified `Nat.nth` note in FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean was corrected by task 711 (the module now reads "available in this project's..."); (b) the two stale statements in specs/ROADMAP.md's E3 section are gone; (d) the Hodkinson-Reynolds Handbook sections are owned by task 734; (e) "port nothing, treat cslib as a read-only reference" is settled and relitigates nothing; (f) the 736 file_scope drift is descriptive and was flagged rather than fixed by design. Item (c) -- three context-extension recommendations -- was NEVER FILED. Verified 2026-10-08 against every non-terminal meta and markdown record (729, 730, 731, 738): none covers any of the three. This task is that filing.
+
+THE EDIT TARGET IS THE SOURCE STORE, NOT `.claude/**`. `.claude/` here is a gitignored, disposable deploy artifact; a hand-authored file landing there is silently wiped by the next regeneration. Resolved 2026-10-08 from .claude-extensions.json: the source store is `/home/benjamin/.config/nvim/agent-system/extensions/<name>/`, and each deployed path mirrors a path under it. Re-resolve before editing rather than trusting this note. Task 736 recorded `.claude/` as STALE for `core filetypes lean typst` at its own dispatch; a 2026-10-08 orchestration re-observed STALE for `core` and `typst`. Remedy is `bash .claude/scripts/deploy-headless.sh`, never a hand-patch of a deployed file, which would mask the divergence instead of fixing it.
+
+WHAT IS OWED, three items, each independently completable. A partial outcome (two landed, one recorded as declined with a reason) is complete and valid.
+
+(1) `proof_wanted` AS A TRUST SURFACE DISTINCT FROM `sorry`, in the lean extension's metadata-trust-surfaces.md. Source file verified present at `lean/context/project/lean4/domain/metadata-trust-surfaces.md`. The substance, from 736's own Decisions section item 1: a `sorry`-grep returned 0 across all 54 surveyed cslib files while 8 main theorems were unproved, because `proof_wanted` emits NO declaration at all -- so `#print axioms` on such a name returns "unknown constant" rather than a `sorryAx` line, and both the grep and the axiom probe read as clean. 736 logged this as a `false-negative-verification` issue at severity `costly`. The document already catalogues what Lean metadata rows are NOT checked by; this adds the `proof_wanted` row to that catalogue. State the detection method that does work (a `proof_wanted` census per file) alongside the two that do not.
+
+(2) A NEW `external-library-port-assessment.md` PATTERN. Verified absent from the entire source store 2026-10-08; the name implies `lean/context/project/lean4/patterns/`, which exists. The content is 736's own assessment method, which produced a defensible "port nothing" verdict and should be reusable rather than re-derived: toolchain and Mathlib-pin distance as the first gate (76 commits apart was the decisive figure); a `proof_wanted`/`sorry` census of the candidate declarations before treating any as a resource; fork-versus-upstream divergence (the local fork was 155 commits behind, and several files the consuming description listed as upstream were absent from it); the cost of a Lake `require` edge stated as a concrete consequence for the consuming tree rather than as a preference; and the read-only-reference verdict as the default. Record the dissent-and-rejection shape too: 736 reported the dependency alternative the dispatch invited, and rejected it on a stated ground, rather than silently omitting it.
+
+(3) A STEM-COLLISION PASS FOR THE LITERATURE AUDIT. Candidate hosts verified 2026-10-08 under `literature/scripts/`: literature-audit.sh, literature-fidelity-audit.sh, literature-combining-audit.sh; choose by reading them, do not assume. The substance: ids must be matched WHOLE against the global index, never by author-year stem. 736 ran this pass by hand over one sub-index and found THREE unrecorded collisions -- `piterman_2007` (two directories for apparently one paper, divergent fidelity, one `verified_conversion` and one unset); `vardi_1996` (`vardi_1996_automata_ltl` `verified_conversion` versus `vardi_1996_automata-theoretic-ltl` `no_source_pdf`, OPPOSITE fidelity verdicts, and the pre-existing entry carried no hazard); and `vardi_wolper_1986` (file-level versus directory-level records in the same directory, both `verified_conversion`, no fidelity divergence but not interchangeable). The pre-existing `thomas_1997` / `thomas_1997_languages_automata` hazard is the precedent the pass generalizes: one stem, two papers, one of them `no_source_pdf`. A hand pass finding three unrecorded instances in one sub-index is the argument for mechanizing it.
+
+CONSTRAINTS. No Lean, no proofs, no edits under FormalSystem/ or Tests/. Make no claim about cslib's mathematical correctness: the deliverable is agent-system context about how to ASSESS such a library, not a verdict on one. Do not relitigate the "port nothing" recommendation -- it is settled and item (2) documents the method that reached it, not the question. Do not weaken the identity-hazard convention to make a mechanized pass easier; if whole-id matching cannot be mechanized without loosening it, record that as the finding and leave the pass unimplemented. Each of the three items is in a DIFFERENT extension (lean, lean, literature), so expect three separate source-store trees and do not collapse them into one file.
+
+ACCEPTANCE. For each of the three: either the content landed in the named source-store file (new or extended), the deployed tree regenerated via deploy-headless.sh so the deployed copy matches, and a one-line record of what was added; or a recorded reason for declining it, naming what made it not worth doing. Mixed outcomes across the three are expected. The acceptance signal is that the source store, not `.claude/**`, carries every edit -- a change visible only in the deployed tree has not landed.
+
+SCOPE. Source-store files under /home/benjamin/.config/nvim/agent-system/extensions/{lean,literature}/ plus the regenerated deployed copies. SET file_scope AT PLAN TIME, after reading the three candidate literature-audit scripts to decide which hosts the pass. Do not edit specs/archive/** and do not edit task 736's records: they are the historical source being acted on.
+
+---
 
 ### 740. Ktype summary finite preds restatement
 - **Status**: [NOT STARTED]
