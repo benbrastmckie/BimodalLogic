@@ -112,7 +112,8 @@ upper-bound source.
       time axis, steps 2, 3, 3′, 4, 5a, 5b, sorry-free on `[propext, Classical.choice,
       Quot.sound]`, with 11 axiom pins and two wired probes (collection 19/19). The seam
       interface `RaySummary/Seam.lean` states `plusStab_iff_seamSummary` against the four-field
-      hypothesis bundle `Presents` and **discharges nothing of it** — that discharge is Task 737.
+      hypothesis bundle `Presents` and **discharges nothing of it** — that bundle was then
+      characterized by Task 737 (below).
       Carried forward unresolved: E2 is a **weak positive** (the two-state fixture answers the
       falsifier trivially; the 3+-state test named in the summary has not been run) (Task 711)
 - [ ] Prove F4, finite width ⇒ eventually periodic, as R1's **summary step**. E3 resolved this
@@ -120,16 +121,35 @@ upper-bound source.
       device and the reasoned-exclusion outcome no longer applies. Any surviving statement must
       name its restricted fragment and say in its docstring why `not_finite_width_fmp` does not
       refute it (Task 709)
-- [ ] Discharge the `Presents` hypothesis bundle — formalize the MSO-over-⟨ℤ,<⟩ reduction that
+- [x] Discharge the `Presents` hypothesis bundle — formalize the MSO-over-⟨ℤ,<⟩ reduction that
       `Presents.colours` leaves as a hypothesis, or record, machine-checked rather than in prose,
-      which field cannot be discharged on this route and what it would cost. The open question is
-      how much of Büchi's segment-congruence argument the landed cluster already supplies, not
-      whether Büchi's theorem is needed (settled above). Sits between the substrate and the
-      assembly; `file_scope` MUST be set at plan time (Task 737)
+      which field cannot be discharged on this route and what it would cost. **DONE as outcome
+      (b)** *(Completed: Task 737, 2026-10-08)* — the single-family bundle is **seam decidedness**: for
+      every `sig`, `k` it is inhabited iff `⊡φ ∨ ⊡¬φ` at the seam (`exists_presents_iff`,
+      `RaySummary/SeamMulti.lean`), and the E2 fixture carries a seam with no inhabitant for any
+      parameters (`no_presents_on_fixture`, wired probe `presents-is-seam-decidedness`), so
+      `colours` in that shape is a seam condition, not the reduction. The corrected shape is a
+      two-letter trace over which `⊡φ` is a hypothesis-free finite conjunction over the realized
+      family triples `Hit` (`plusStab_iff_forall_hit`); field (3) is discharged for every
+      sentence target (`determinedByKType_eval`); the multi-family bundle `PresentsMulti` is
+      inhabited outright; and `Hit` is **not computed** — that is the whole residue. Coverage
+      answer: the cluster supplies Büchi's complementation half in full and nothing of the
+      realizability half. Five axiom pins added (sixteen in the harness), C14 pair and one
+      theorem-index row for `plusStab_iff_forall_hit` (Task 737)
+- [ ] Compute `Hit` — the residue between the discharge record and the assembly, in three
+      parts none of which is attempted above: (B1) widen the two-letter trace alphabet to a
+      subformula-closure signature with local run conditions; (B2) the realizability direction —
+      which family triples are reached by an actual ray pair through the seam (HWZ 2000 Def 12 /
+      Thm 14 with the one-sided-liveness repair; the substrate record's dropped D2-D5 in trace
+      form); (B3) effective `k`-type composition along the seam. B4, the quantification over
+      models, is the assembly record's own frame (below), not this gap's. Zero-debt: no external
+      Büchi/MSO lemma, no cslib `require`; everything under `[F.IsRegular]`, over the time axis,
+      no complexity bound (successor record to be spawned; `file_scope` MUST be set at plan time)
 - [ ] Assemble the decidable stab check on the ray-product presentation — `Decidable
       (PlusValidZTime φ)`, or a recorded verdict that the presentation cannot deliver it. Depends
       on 711 **and 737**: it may not be assembled on an undischarged `Presents` and presented as
-      unconditional. `file_scope` is deliberately absent and MUST be set at plan time (Task 735)
+      unconditional — and after 737 its target is `Hit`/`plusStab_iff_forall_hit`, not
+      `Presents`. `file_scope` is deliberately absent and MUST be set at plan time (Task 735)
 - [ ] Run E2's **real** test: the depth-2 stratification falsifier on a fixture with three or
       more states, two of them *sharing* the depth-1 stratum, plus the `⊡(Fp → ⊡Pp)`-shaped mixed
       formulas the landed probe leaves out. The landed positive is weak — a two-state fixture has
