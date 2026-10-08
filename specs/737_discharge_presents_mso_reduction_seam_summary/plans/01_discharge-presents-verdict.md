@@ -225,26 +225,26 @@ existing proof. The carried figure "9 lines" (report, Findings) is re-derived at
 
 ---
 
-### Phase 2: The corrected interface — `RaySummary/SeamMulti.lean` [NOT STARTED]
+### Phase 2: The corrected interface — `RaySummary/SeamMulti.lean` [COMPLETED]
 
 **Goal**: Land the characterization of the single-family bundle and the two-letter corrected
 interface as a new library module, wired into the aggregator and the generated root, with the
 degeneracy and the residue stated in the docstrings — and `Hit` named as not computed.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/SeamMulti.lean` with the copyright
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/SeamMulti.lean` with the copyright
       header, `import FormalSystem.Metalogic.Decidability.RaySummary.Seam` (plus whatever
       `Seam.lean`'s closure does not already reach — the probe compiled under `import
       FormalSystem`, so confirm `doets_lemma_1_1`, `SeqPair`, `seamOmegaEquiv`,
       `plusStab_iff_omega`, `PlusTruth.neg_iff` all resolve; add the minimal imports otherwise),
       the same `open` lines as `Seam.lean`, and namespace
       `FormalSystem.Metalogic.Decidability.RaySummary`.
-- [ ] Section 1, the characterization: `SeamDecided` (definition body
+- [x] Section 1, the characterization: `SeamDecided` (definition body
       `PlusTruthAt M τ t (.stab φ) ∨ PlusTruthAt M τ t (.stab φ.neg)`),
       `seamDecided_of_presents`, `exists_presents_of_seamDecided`, `exists_presents_iff` —
       statements exactly as pinned under Lean Challenge Statements, proofs the probe's Part 1
       verbatim.
-- [ ] Section 2, the two-letter interface, in this order so the preamble precedes every
+- [x] Section 2, the two-letter interface, in this order so the preamble precedes every
       theorem: `twoLetter` (abbrev `⟨Bool⟩`) with its two `inferInstanceAs` instances,
       `spliced` (abbrev), then `seamTrace` (body `fun (p : Bool) z => bif p then z = t else
       PlusTruthAt M σ z φ`), `nowPhi` (body `.ex (.and (.atom true 0) (.atom false 0))`),
@@ -254,7 +254,7 @@ degeneracy and the residue stated in the docstrings — and `Hit` named as not c
       probe's set-builder over `SeqPair F (τ.state t)` and `InFamily`), `hit_finite`,
       `plusStab_iff_forall_hit` — the last three exactly as pinned; proofs the probe's Part 3
       verbatim under the D-3 renames.
-- [ ] Section 3, the multi-family bundle, statements verbatim from the probe (not pinned under
+- [x] Section 3, the multi-family bundle, statements verbatim from the probe (not pinned under
       Lean Challenge Statements because `PresentsMulti` is a `structure`; see the plan-format
       precedent in the substrate plan's D-14):
 
@@ -288,7 +288,7 @@ degeneracy and the residue stated in the docstrings — and `Hit` named as not c
 
       `open Classical in` precedes the docstring (the probe's parse lesson); the `verdict`
       field is proved by `rw [decide_eq_true_iff, plusStab_iff_forall_hit ...]` as in the probe.
-- [ ] Module docstring, structured as `Seam.lean`'s: (a) what is established — the
+- [x] Module docstring, structured as `Seam.lean`'s: (a) what is established — the
       characterization, the fixture pointer to the evidence probe, the hypothesis-free bridge,
       the inhabited multi-family bundle; (b) **what is NOT established**: `Hit` is semantic and
       not computed, `presentsMulti_seamTrace`'s `Bool` is `decide` under `open Classical`, no
@@ -301,21 +301,26 @@ degeneracy and the residue stated in the docstrings — and `Hit` named as not c
       docstring names what it uses; `plusStab_iff_forall_hit`'s docstring ends with the line
       `Paper: — (the formalization's own seam interface; the paper has no counterpart)` so C15's
       second assertion passes once the theorem-index row lands in Phase 4.
-- [ ] No `#print axioms`, `#check` or `#eval` in the module (C27 allow-list); profiles are
+- [x] No `#print axioms`, `#check` or `#eval` in the module (C27 allow-list); profiles are
       measured in Phase 4's test file.
-- [ ] `RaySummary.lean`: add `import FormalSystem.Metalogic.Decidability.RaySummary.SeamMulti`
+- [x] `RaySummary.lean`: add `import FormalSystem.Metalogic.Decidability.RaySummary.SeamMulti`
       and a `RaySummary.SeamMulti` bullet under `## Modules`; the sentence "stated against the
       hypothesis bundle `Presents` and discharging nothing" is rewritten in Phase 5.
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem` (through the guard:
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem` (through the guard:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- exe mk_all --lib
       FormalSystem`), confirm the diff to `FormalSystem.lean` is exactly one new sorted import.
-- [ ] `lean_verify` on `exists_presents_iff`, `plusStab_iff_forall_hit`,
+      *(deviation: altered — the `INV` gate of `check-module-invariants.sh --no-build` then
+      reported three stale generated inventory blocks (`README.md`, `FormalSystem/README.md`,
+      `FormalSystem/Metalogic/README.md`) because the file/line counts moved; regenerated with
+      `--emit-inventory` and committed with this phase — three generated-block files beyond the
+      Scope Hypothesis's three)*
+- [x] `lean_verify` on `exists_presents_iff`, `plusStab_iff_forall_hit`,
       `plusStab_iff_presentsMulti`, `presentsMulti_seamTrace` (fully qualified): standard
       profile, no `sorryAx`.
-- [ ] Guarded scoped build of `FormalSystem.Metalogic.Decidability.RaySummary` (detached), exit
+- [x] Guarded scoped build of `FormalSystem.Metalogic.Decidability.RaySummary` (detached), exit
       0; then `bash scripts/check-module-invariants.sh --no-build` for the structural checks
       (C33 root, README presence, C27).
-- [ ] Commit per green sub-step: section 1 green, sections 2-3 green, aggregator + root.
+- [x] Commit per green sub-step: section 1 green, sections 2-3 green, aggregator + root.
 
 **Timing**: 2 hours
 

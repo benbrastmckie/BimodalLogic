@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.RaySummary.Seam
+import FormalSystem.Metalogic.Decidability.RaySummary.SeamMulti
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -18,4 +19,7 @@ procedure is built here, no decidability result is proved, and no complexity bou
 ## Modules
 
 * `RaySummary.Seam` — `SeamSummary`, `Presents`, `plusStab_iff_seamSummary`.
+* `RaySummary.SeamMulti` — `SeamDecided`, `exists_presents_iff`, the two-letter interface
+  (`seamTrace`, `stabTarget`, `Hit`), the hypothesis-free bridge `plusStab_iff_forall_hit`, and
+  `PresentsMulti` with its inhabitant `presentsMulti_seamTrace`.
 -/
