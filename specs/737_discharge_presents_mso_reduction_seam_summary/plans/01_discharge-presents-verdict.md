@@ -415,14 +415,14 @@ collection grows from 16 to 17 `WIRED` entries. Confirm the count in the gate's 
 
 ---
 
-### Phase 4: Pins, the C14 baseline pair, and the theorem-index row [NOT STARTED]
+### Phase 4: Pins, the C14 baseline pair, and the theorem-index row [COMPLETED]
 
 **Goal**: Pin the new headline profiles in the invariants harness, extend the C14 baseline for
 the one theorem that enters the ledger, and add that ledger row — so every claim this record
 makes about axioms is machine-asserted on every build.
 
 **Tasks**:
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: after the
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: after the
       `plusStab_iff_seamSummary` block, add five `#guard_msgs in #print axioms` rows for
       `FormalSystem.Metalogic.WeakCanonical.determinedByKType_eval`,
       `FormalSystem.Metalogic.Decidability.RaySummary.exists_presents_iff`,
@@ -431,29 +431,33 @@ makes about axioms is machine-asserted on every build.
       of the existing rows; copy the expected `info:` text verbatim from the first (red) run's
       output, including its line wrapping. Update the header's "What is pinned" table (five rows,
       chain step "—" / "seam interface") and rewrite the "What this does **not** pin" paragraph:
+      *(deviation: altered — the first run was green: the wrapping was derived from Lean's
+      120-column format width (the 120-character `determinedByKType_eval` line unwrapped, the
+      four longer lines wrapped as the existing rows are) and every guard matched on the first
+      build; only the two header-table rows had to be shortened for the 100-column linter)*
       it currently says no reduction from a `⊡` fibre condition to a `k`-type-determined target
       exists in Lean anywhere — now say the bridge over the realized set is hypothesis-free
       (`plusStab_iff_forall_hit`) but `Hit` is not computed and `presentsMulti_seamTrace`'s
       `Bool` is classical, so a green build still certifies profiles, not adequacy and not
       decidability.
-- [ ] `scripts/check-module-invariants.sh`: append the matched pair for
+- [x] `scripts/check-module-invariants.sh`: append the matched pair for
       `FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hit` at the trailing
       position of both `C14BASE` (the `'...' depends on axioms: [propext, Classical.choice,
       Quot.sound]` line) and `C14LEAN` (the `#print axioms ...` line); update the comment block
       above them ("The final four lines ..." becomes five, naming the new declaration and its
       theorem-index row).
-- [ ] `docs/theorem-index.md`, Decidability table, appended as the last row: Paper label `—`;
+- [x] `docs/theorem-index.md`, Decidability table, appended as the last row: Paper label `—`;
       Statement "`⊡φ` at a seam of a regular ℤ-frame is a finite conjunction over the realized
       family triples of the two-letter trace — the hypothesis-free `⊡` bridge; `Hit` is not
       computed"; Lean name fully qualified; File
       `FormalSystem/Metalogic/Decidability/RaySummary/SeamMulti.lean`; Frame class `ZTime`;
       Axioms `pcq pinned:C14`.
-- [ ] Guarded scoped build of `BimodalTest.Metalogic.KTypeSummaryAxiomTest` (detached), exit 0
+- [x] Guarded scoped build of `BimodalTest.Metalogic.KTypeSummaryAxiomTest` (detached), exit 0
       with all guards matching.
-- [ ] `bash scripts/check-module-invariants.sh` (full, with build): C14 passes with the new
+- [x] `bash scripts/check-module-invariants.sh` (full, with build): C14 passes with the new
       line, C15's second assertion passes (the `Paper: —` line landed in Phase 2), C21/C27/C33
       unchanged.
-- [ ] Commit per green sub-step: the test file; the harness pair + the ledger row together
+- [x] Commit per green sub-step: the test file; the harness pair + the ledger row together
       (they are one assertion).
 
 **Timing**: 1.5 hours
