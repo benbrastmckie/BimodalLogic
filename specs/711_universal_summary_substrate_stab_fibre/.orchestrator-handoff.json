@@ -1,32 +1,26 @@
 {
-  "status": "partial",
-  "skeleton": false,
-  "summary": "Phase 1 of 10 complete: infinite Ramsey for pairs relocated to FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean as Nat.exists_strictMono_const_pair_colour, alias FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs kept; both verify on [propext, Classical.choice, Quot.sound]; full build green (2820 jobs), probes 16/16 PASS, sorry census 0. Harness green except pre-existing C9 (task 728's scripts/check-phantom-citations.sh:145, out of territory). Phases 2-10 not started; single-phase dispatch stopped by design.",
-  "phases_completed": 1,
-  "phases_total": 10,
-  "dispatch_seq": 3,
-  "sorry_inventory": [],
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 4,
+  "summary": "Phases 2-9 of plan v2 closed and committed (Phase 1 carried from the prior dispatch): the KTypeSummary/ cluster (Büchi's complementation chain in the monadic k-type idiom; steps 2, 3, 3', 4, 5a, 5b) landed sorry-free on the standard axiom profile, the RaySummary seam interface states plusStab_iff_seamSummary against a four-field hypothesis bundle it does not discharge, 11 axiom pins match, and two evidence probes are wired (19/19 PASS). Final gates: unscoped guarded lake build green (2828 jobs, 0 warnings), lake build BimodalTest green, harness green except the pre-existing out-of-territory C9 (Reasoned Exclusion), sorry census 0, axiom declarations unchanged at 14.",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/711_universal_summary_substrate_stab_fibre/summaries/02_buechi-chain-ktype-substrate-summary.md",
+      "summary": "Implementation summary for the Büchi-chain k-type summary substrate and seam interface."
+    },
+    {
+      "type": "plan",
+      "path": "specs/711_universal_summary_substrate_stab_fibre/plans/02_buechi-chain-ktype-substrate.md",
+      "summary": "Plan v2 with all nine phase headings closed (1-7 and 9 COMPLETED WITH EXCLUSIONS on the single pre-existing C9; 8 COMPLETED) and every checklist item ticked or annotated."
+    }
+  ],
+  "phases_completed": 9,
+  "phases_total": 9,
   "blockers": [],
-  "continuation_path": "specs/711_universal_summary_substrate_stab_fibre/handoffs/phase-1-handoff-20261005T235805Z.md",
-  "continuation_context": {
-    "is_successor": true,
-    "resume_phase": 2,
-    "note": "Phase 2 Colour.lean must import FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs and use Nat.exists_strictMono_const_pair_colour; do not edit FormalSystem/Init.lean (whole-library rebuild)."
-  },
-  "modified_files": [
-    "FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean",
-    "FormalSystem/ForMathlib/Combinatorics/README.md",
-    "FormalSystem/ForMathlib.lean",
-    "FormalSystem/ForMathlib/README.md",
-    "FormalSystem/Init.lean",
-    "scripts/CheckInitImportsMain.lean",
-    "FormalSystem/Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean",
-    "FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md",
-    "FormalSystem/Metalogic/WeakCanonical.lean",
-    "FormalSystem.lean",
-    "FormalSystem/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "typst/generated/status.typ"
-  ]
+  "plan_markers_verified": true,
+  "sorry_inventory": [],
+  "continuation_path": null,
+  "next_action_hint": "Task complete; the consumer (decidable stab check assembly) picks up from FormalSystem/Metalogic/Decidability/RaySummary/Seam.lean.",
+  "git_checkpoint": "faa1be8a9"
 }

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #711
 
 - **Task**: 711 - Universal-summary substrate for the `⊡` fibre check on the seam-gluing route
-- **Status**: [IMPLEMENTING] (revised v2; Phase 1 carried closed, Phases 2-9 re-scoped onto the Büchi-chain route)
+- **Status**: [COMPLETED] (revised v2; Phase 1 carried closed, Phases 2-9 re-scoped onto the Büchi-chain route)
 - **Effort**: 16 hours (1.5 spent in Phase 1; 14.5 remaining)
 - **Dependencies**: 732 (satisfied — E3 reported). 736 (no dependency edge; its report is integrated here as the revision's primary input)
 - **Research Inputs**:
