@@ -36,7 +36,9 @@ admission gate defers the collider each cycle until its sibling goes terminal.
 /orchestrate 709,740 --hard           # F4 summary step + KTypeSummary housekeeping. NOTE: 709 was
                                       # R1's summary step; re-rule on its value before dispatching
 /orchestrate 716,714,712 --hard       # sliced-certificate defect, label evaluation, closure.
-                                      # 712 is [BLOCKED] with NO reason recorded — see Phase 1
+                                      # 712 is [BLOCKED] with no `blockers` entry at all — the
+                                      # only truly unexplained block in the tree (verified
+                                      # 2026-10-08); rule on it before this line runs
 /orchestrate 720                      # citation re-point; shares the evidence collection above
 
 # --- Subordinate fronts, in priority order ---
@@ -46,7 +48,8 @@ admission gate defers the collider each cycle until its sibling goes terminal.
 /orchestrate 298,282,296,231,219      # dataset chain: 298 unblocks the rest
 /orchestrate 178,604                  # docs/pipeline, disjoint scopes
 /orchestrate 464,465,481 --hard       # tableau spine entry; 464/465 share MintBound.lean
-/orchestrate 428,429,410,411 --hard   # spine middle; 428 is [BLOCKED], see Phase 6
+/orchestrate 428,429,410,411 --hard   # spine middle; 428's [BLOCKED] marker is mis-set and it
+                                      # needs a human scope ruling first — see Phase 6
 /orchestrate 430,412,482 --hard --lit # spine terminus; 482 is open mathematics
 /orchestrate 502,497 --research --lit # algebraic: the literature gate
 /orchestrate 498,499,500 --hard       # complex algebra + ultrafilter frame
@@ -328,10 +331,18 @@ third bounds what the front may claim: ℤ-time validity of L is **already decid
 witness-family route (`Compression.decidableValidZTime`), so the deliverable here is the four-class
 `isValid` biconditional, not the first decidability theorem.
 
-**Two admission notes.** Task 428 is `[BLOCKED]` and task 481 is `[BLOCKED]` with no recorded
-reason while its own description classifies it as a runnable repair-or-replace — lift the block or
-force the dispatch. Tasks 410, 411 and 412 declare no `file_scope`; 410 is already `[PLANNED]`, so
-it admits `--implement` directly.
+**Three admission notes.** Both `[BLOCKED]` tasks here DO carry a recorded reason — in
+`state.json`'s `blockers` field, not a singular `blocker`/`hold_reason`, which is where a reader
+checking the wrong key will wrongly conclude the reason is missing (corrected 2026-10-08).
+Task 481's is a precise obstruction: `universeClosedAt_signedUniverse_of_propositional` is not
+stateable, because `UniverseClosedAt`'s clause 1 universally quantifies an unconstrained `ord`
+while every route through the time coordinate carries `OrdTimesKnown b ord`, proved non-removable
+in-source by `applyRule_emitted_time_mem_ordTimesKnown_needed`. Task 428's own record says it is
+**"paused at 4/5 cycles, NOT blocked"** — so its `[BLOCKED]` status is a mis-set marker, and its
+recorded next step is a **human scope decision, not another implement dispatch**: `/revise 428` to
+add phases for its four named residual hypotheses (`MintPaysForTime`, `PostBlockingSettles`,
+`UniverseClosed`, `DifficultyBounded`), or `/spawn 428` to split them out. Tasks 410, 411 and 412
+declare no `file_scope`; 410 is already `[PLANNED]`, so it admits `--implement` directly.
 
 - [ ] Design and land `gapPotential`, the density coordinate of the termination measure — the one
       genuinely open mathematical question on the totality terminus (Task 464)
