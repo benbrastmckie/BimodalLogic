@@ -1,53 +1,54 @@
 {
-  "status": "researched",
-  "task_number": 735,
-  "session_id": "sess_1791448118_c50a56_735",
-  "dispatch_seq": 13,
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "started_at": "2026-10-08T13:50:00Z",
-  "completed_at": "2026-10-08T14:36:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/735_decidable_stab_check_ray_product_assembly/reports/01_decidable-stab-check-assembly.md",
-      "summary": "Verdict research: Presented is refuted as a completeness carrier by a compiled pumping probe (model A, every finite presentation); the per-seam stab check under Presented is run-level and compiled; Decidable (PlusValidZTime phi) is unreachable from the landed substrate and the three missing theorems (C), (S), (W) are named; plan-ready phases and file_scope."
-    },
-    {
-      "type": "probe",
-      "path": "specs/735_decidable_stab_check_ray_product_assembly/probes/presented-not-complete.lean",
-      "summary": "Compiled (lake env lean, 0 sorries, axioms [propext, Classical.choice, Quot.sound]): Probe735.not_presented, for every finite Q/lab/step, not Presented MA stayA t Fp lab step, by pumping a repeated state against LocalRun.untl."
-    },
-    {
-      "type": "probe",
-      "path": "specs/735_decidable_stab_check_ray_product_assembly/probes/stab-run-check.lean",
-      "summary": "Compiled (same axiom set): Probe735b.plusStab_iff_forall_run_of_presented, the stab check under Presented as a run-level condition with no k-type evaluation."
+      "type": "plan",
+      "path": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
+      "summary": "Four-phase plan to the acceptance criterion's verdict branch: wire the compiled obstruction probe presented-not-complete.lean, land the run-level stab bridge and a liveness decider conditional on Presented (with explicit vacuity statements, never Decidable (PlusValidZTime phi)), pin and index them as Conditional, and record the verdict naming (C), (S), (W) with the ROADMAP critical path corrected."
     }
   ],
-  "findings_count": 5,
-  "adversarial_verification_triggered": true,
-  "reference_grounding_tier": "tier1_strict+tier3",
-  "verdict": "acceptance_branch_2",
-  "verdict_summary": "Decidable (PlusValidZTime phi) is not reachable from the ray-product presentation: Presented is unsatisfiable on fixture model A for every finite presentation (compiled theorem), so no Presented-enumeration can be complete; the lift additionally needs Hit-level completeness with a computable bound (C), Hit-level soundness (S, the unfiled B2b successor restated), and a closure-wide quasimodel (W), none in the tree. The per-seam check Decidable (PlusTruthAt M tau t (.stab phi)) under Presented, stated in the theorem, is the positive deliverable.",
+  "next_steps": "Run /implement 735 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1791448118_c50a56_735",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 6,
+    "dependency_waves": [[1, 2], [3], [4]]
+  },
+  "dispatch_seq": 14,
+  "proposed_file_scope": [
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic/Decidability/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/StabCheck.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean",
+    "Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "docs/theorem-index.md",
+    "scripts/check-evidence-probes.sh",
+    "scripts/check-module-invariants.sh",
+    "specs/ROADMAP.md",
+    "specs/evidence/seam-gluing-ray-product/presented-not-complete.lean"
+  ],
+  "user_decision": {
+    "question": "Task 742's Presented-conditional deliverables (hit_eq_hitOf_of_presented, plusStab_iff_forall_hitOf_of_presented, their docstrings, the theorem-index row, and the README/ROADMAP/aggregator/pin-test sentences) were written on the reading that Presented is merely undischarged; presented-not-complete.lean shows Presented is unsatisfiable on a non-trivial regular model, so those results are vacuous there. Should this task amend 742's own text in place (scoped in the plan's Decision D-P5: ~40-60 prose lines, zero Lean statement changes, ~1 hour, LOW), or only add adjacent strengthening text and leave 742's sentences verbatim?",
+    "options": [
+      "Option A — additive only: this task adds adjacent cross-referencing text beside 742's deliverables and leaves 742's own sentences verbatim; the user files or authorizes a separate correction if wanted",
+      "Option B — authorize Phase 4 of this plan to amend the enumerated 742 text in place (Decision D-P5's list), leaving the 742 summary archival and untouched"
+    ],
+    "recommended": "Option A — additive only: this task adds adjacent cross-referencing text beside 742's deliverables and leaves 742's own sentences verbatim; the user files or authorizes a separate correction if wanted",
+    "blocking": false
+  },
   "memory_candidates": [
     {
-      "kind": "pattern",
-      "title": "Per-state-labelled finite presentations present only pumping-closed trace sets; untl letters make seam trace sets non-closed",
-      "content": "A finite presentation (Q, lab, step) with runs IsRun (per-coordinate step + now anchor) has a run set closed under repeating any loop strictly after the anchor (pump via a Nat-recursive loopIdx, no modular arithmetic). The closure-trace map sigma -> clTrace is discontinuous in untl/snce letters, so a seam's trace set on even a finite regular slice need not be closed; exact trace-set equality (Presented) is therefore a soundness device and never a completeness carrier. Probe: specs/735_.../probes/presented-not-complete.lean.",
-      "keywords": ["lean4", "ray-product", "Presented", "pumping", "omega-run", "completeness"]
-    },
-    {
-      "kind": "pattern",
-      "title": "Under a two-directional trace-set hypothesis the stab bridge is run-level; the family/k-type machinery factors out",
-      "content": "Given Presented M tau t phi lab step, PlusTruthAt M tau t (.stab phi) iff every anchored run rho has lab (rho t) (clPhi phi) = true (plusStab_iff_omega + both directions of Presented + definitional clTrace/runTrace). The per-triple InFamily condition is only needed under the weaker HitCl = hitOf hypothesis, where PathEntry.rep supplies the representative.",
-      "keywords": ["lean4", "stab", "Presented", "hitOf", "run-level check"]
-    },
-    {
-      "kind": "gotcha",
-      "title": "Anonymous constructor for a def-wrapped subtype (StabFibre) elaborates against the bare subtype inside Equiv applications",
-      "content": "seamOmegaEquiv t s ⟨σ, h⟩ with ⟨σ, h⟩ elaborated inline produced an application type mismatch ({σ // ...} vs Presheaf.StabFibre ...) and Equiv.symm_apply_apply failed to rewrite. Fix: let x : Presheaf.StabFibre F t s := ⟨σ, h⟩, then have hrt := Equiv.symm_apply_apply e x and rw [hrt] after a show that exposes e.symm (e x).",
-      "keywords": ["lean4", "Equiv.symm_apply_apply", "subtype", "elaboration"]
+      "content": "An exact trace-set-equality realization hypothesis between a model's seam and a finite per-state-labelled step graph (BimodalLogic's `Presented`) can only ever be a SOUNDNESS device, never a completeness carrier: the run-trace set of a finite presentation without an acceptance condition is pumping-closed, while a closure-trace set over `untl`/`snce` letters is not closed (an unboundedly deferrable eventuality has traces whose pumped limit violates the `untl` run condition). Consequence for planning: never route a decidability-of-validity plan through 'every refuting model has a presentation satisfying such a hypothesis'; a decider stated under it is vacuous on non-trivial models and must say so; completeness needs a type-level (Hit-level) small-presentation theorem with a computable bound instead. Machine-checked instance: specs/evidence/seam-gluing-ray-product/presented-not-complete.lean (pumping via a Nat-recursive loop index, no modular arithmetic).",
+      "category": "PATTERN",
+      "source_artifact": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["Presented", "pumping", "trace-set closedness", "soundness-only hypothesis", "quasimodel", "decidability planning"]
     }
-  ],
-  "next_steps": "Run /plan 735 to create implementation plan"
+  ]
 }
