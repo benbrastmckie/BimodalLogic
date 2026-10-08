@@ -319,7 +319,7 @@ and 5). Confirm by `wc -l`.
 
 ---
 
-### Phase 4: B3b (i) — label-list segments and composition on representatives [NOT STARTED]
+### Phase 4: B3b (i) — label-list segments and composition on representatives [COMPLETED]
 
 **Goal**: A computable finite segment built from a list of letters, its computable `k`-type, the
 order-isomorphism identifying a trace segment `segZ` with the segment of its label list, and the
@@ -327,29 +327,38 @@ composition congruence: the `k`-type of a concatenation depends only on the `k`-
 parts (the two-point instance of `kEquiv_orderedSum_of_kEquiv_colour`).
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean` (imports
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean` (imports
       `KTypeSummary.KTypeFin`, `WeakCanonical.MixedSum`, `RaySummary.SeamMulti`), header: what
       "effective composition" means here (representatives, research Finding 4 and Decision D-3)
       and why no `compose : KType → KType → KType` on bare values is defined; no complexity claim.
-- [ ] `listSeg (l : List (sig.preds → Bool)) : OrderedMonadicStructure sig` with carrier
+- [x] `listSeg (l : List (sig.preds → Bool)) : OrderedMonadicStructure sig` with carrier
       `Fin l.length`, `interp p i := l.get i p = true`, `carrierOrder := inferInstance` (on
       `Fin`, computable); the four decidability instances on `(listSeg l).carrier` (all
       `inferInstance` on `Fin` — verify each is computable with a `#eval` in `lean_run_code`
       before committing); `kTypeOfFin_listSeg : kTypeOfFin (listSeg l) k = kTypeOf sig k (listSeg l)`.
-- [ ] `labels (c : sig.preds → ℤ → Prop) [∀ p, DecidablePred (c p)] (a b : ℤ) : List (sig.preds → Bool)`
+- [x] `labels (c : sig.preds → ℤ → Prop) [∀ p, DecidablePred (c p)] (a b : ℤ) : List (sig.preds → Bool)`
       (the letters of `c` on `[a, b)`, via `List.range` / `Int.toNat (b - a)`), and
       `kTypeOf_segZ_eq_listSeg : kTypeOf sig k (segZ sig c a b) = kTypeOf sig k (listSeg (labels c a b))`
       by `k_equiv_of_iso` (`IntegerModel/GoodStructures.lean`) with the order isomorphism
       `{t // a ≤ t ∧ t < b} ≃o Fin (b - a).toNat`.
-- [ ] `listSeg_append_kEquiv : KEquiv sig k (listSeg (l₁ ++ l₂)) (orderedSum sig Bool (fun b => bif b then listSeg l₂ else listSeg l₁))`
+- [x] `listSeg_append_kEquiv : KEquiv sig k (listSeg (l₁ ++ l₂)) (orderedSum sig Bool (fun b => bif b then listSeg l₂ else listSeg l₁))`
       by `k_equiv_of_iso` (the concatenation IS the two-point ordered sum, up to the evident
       order isomorphism `Fin (n₁ + n₂) ≃o Σ-lex`), then
       `kTypeOf_listSeg_append_congr` from `kEquiv_orderedSum_of_kEquiv_colour` with `I = J = Bool`
       — the colouring hypothesis `KEquiv (colourSig (KType sig k)) k (kTypeColouring …) (kTypeColouring …)`
       is discharged by `rfl`-level equality of the two coloured orders once `h₁`, `h₂` are rewritten
       in (they are literally the same `kTypeColouring` after rewriting).
-- [ ] Scoped build (`Compose` is not yet imported by the aggregator — build the module by name);
+- [x] Scoped build (`Compose` is not yet imported by the aggregator — build the module by name);
       axioms; zero sorries. Do NOT touch `RaySummary.lean` in this phase (Phase 3 owns it in this wave).
+      *(deviation: altered — the two order isomorphisms are built as `StrictMono.orderIsoOfSurjective`
+      of explicit maps `segZToListSeg` / `appendPt`, the idiom of `kEquiv_zFiber_segSum`, rather than
+      by `Equiv.toOrderIso` on a hand-built `Fin (n₁ + n₂) ≃ Σ-lex`; same statements, same
+      `k_equiv_of_iso` route. `kTypeOf_segZ_eq_listSeg` and `listSeg_append_kEquiv` carry
+      `[Finite sig.preds]` (what `k_equiv_of_iso` needs) rather than the section's
+      `[Fintype] [DecidableEq]`, which the unused-instance linters reject; the Challenge-pinned
+      `kTypeOf_listSeg_append_congr` keeps its recorded `[Fintype sig.preds] [DecidableEq sig.preds]`
+      binders verbatim under a declaration-scoped linter opt-out, as `exists_matching_factorization`
+      does. `wc -l` = 297, inside the 250-400 hypothesis.)*
 
 **Timing**: 2 hours
 

@@ -1,0 +1,4 @@
+✔ [1924/1924] Built FormalSystem.Metalogic.Decidability.RaySummary.Compose (1.8s)
+Build completed successfully (1924 jobs).
+lake-build-guard: STATUS: exit_status=0
+GUARD_EXIT=0

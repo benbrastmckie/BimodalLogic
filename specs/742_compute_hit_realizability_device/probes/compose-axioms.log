@@ -1,0 +1,9 @@
+# lean_run_code output for compose-axioms.lean (after compose-build-2.log, GUARD_EXIT=0)
+'FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_append_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.kTypeOf_segZ_eq_listSeg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.listSeg_append_kEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.kTypeOfFin_listSeg' depends on axioms: [propext, Classical.choice, Quot.sound]
+#eval decide (kTypeOfFin (listSeg [f, g, f]) 1 = kTypeOfFin (listSeg [f, g, f, g, f]) 1)  -- true
+#eval decide (kTypeOfFin (listSeg [f, g]) 1 = kTypeOfFin (listSeg [g, f]) 1)              -- true (depth 1 does not see order)
+#eval (labels (fun p t => p = true ∧ 0 ≤ t) (-1) 2).length                                 -- 3
+#eval decide (kTypeOfFin (listSeg [f, g, f]) 1 = kTypeOfFin (listSeg [f]) 1)              -- false
