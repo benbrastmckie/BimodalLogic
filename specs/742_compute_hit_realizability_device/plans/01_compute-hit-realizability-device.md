@@ -596,7 +596,7 @@ The splice (⇒) is the long direction. Confirm by `wc -l`.
 
 ---
 
-### Phase 8: B2b verdict — the HWZ-verbatim quasistate shape does not determine `Hit` [NOT STARTED]
+### Phase 8: B2b verdict — the HWZ-verbatim quasistate shape does not determine `Hit` [COMPLETED]
 
 **Goal**: The machine-checked obstruction for the one component this record does not build: two
 regular `ℤ`-frame models with equal per-time quasistates (as bare sets of closure types) and equal
@@ -604,7 +604,7 @@ consecutive-type relations over `cl = {p, Fp}` whose realized sets `Hit` differ 
 transcribes HWZ Defs 10-12 without the product repair is refuted before it is attempted.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean`
+- [x] Create `specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean`
       (`import FormalSystem`, namespace `Probe742`), header in the collection's house style
       (what is established / what is NOT / axiom record / compile line): three states `a`, `b`,
       `d` on `Fin 3`, `p` at `b` only; model A steps `a→a, a→b, b→b, d→d, d→b`; model B steps
@@ -612,7 +612,7 @@ transcribes HWZ Defs 10-12 without the product repair is refuted before it is at
       `ofSlicedStep_isRegular`, `Fp := someFuture (.atom pa)` transcribed from
       `presents-is-seam-decidedness.lean`, never imported from it. `[Finite W]` is the
       counterexample's licence, stated as such in the header.
-- [ ] `quasiState M z : Set (Set PlusFormula)` := `{S | ∃ σ, S = {ψ ∈ cl | PlusTruthAt M σ z ψ}}`
+- [x] `quasiState M z : Set (Set PlusFormula)` := `{S | ∃ σ, S = {ψ ∈ cl | PlusTruthAt M σ z ψ}}`
       with `cl := {.atom pa, Fp}`; `pairRel M z` := the set of consecutive pairs
       `(type_z σ, type_{z+1} σ)`; theorems `quasiState_A_eq_B : ∀ z, quasiState MA z = quasiState MB z`
       and `pairRel_A_eq_B` — each by exhibiting, per type, the realizing history (`stayA`,
@@ -621,16 +621,19 @@ transcribes HWZ Defs 10-12 without the product repair is refuted before it is at
       since `b→b`; prove it). This is the DECISION GATE: if either equality fails in Lean, repair
       the fixture inside this phase and record the repair in the header; do not weaken the
       theorem statement.
-- [ ] `stab_notFp_A : ¬ PlusTruthAt MA (stayA t) t (.stab Fp.neg)` (the jump `a→b` refutes
+- [x] `stab_notFp_A : ¬ PlusTruthAt MA (stayA t) t (.stab Fp.neg)` (the jump `a→b` refutes
       `¬Fp` through the seam state `a`) and `stab_notFp_B : PlusTruthAt MB (stayA t) t (.stab Fp.neg)`
       (every history through `a` in B stays at `a`: prove `∀ σ, σ.state t = a → ∀ z ≥ t, σ.state z = a`
-      by induction on `z - t` through `ofSlicedStep_step`, then no `p` ever).
-- [ ] `hit_ne : Hit MA (stayA t) t Fp.neg 1 ≠ Hit MB (stayA t) t Fp.neg 1` — from
+      by induction on `z - t` through `ofSlicedStep_step`, then no `p` ever). *(deviation:
+      altered — `stayA` is the parameter-free constant history `z ↦ (z, a)` (`stayA_A`/`stayA_B`
+      per model), the seam being `(stayA, t)` for the theorem's own `t`; the plan's `stayA t`
+      argument carried no content. Statements are otherwise as planned, for every `t`.)*
+- [x] `hit_ne : Hit MA (stayA t) t Fp.neg 1 ≠ Hit MB (stayA t) t Fp.neg 1` — from
       `plusStab_iff_forall_hit` at both seams (same `stabTarget`, same `k = 1`, `hk` trivial):
       equal `Hit` would give equal `⊡¬Fp` values, contradicting the two theorems above. No
       `k`-type is evaluated. Then the headline
       `quasistate_does_not_determine_hit : (∀ z, quasiState MA z = quasiState MB z) ∧ (∀ z, pairRel MA z = pairRel MB z) ∧ Hit MA … ≠ Hit MB …`.
-- [ ] `#print axioms` foot on every theorem; wire `"seam-gluing-ray-product/quasistate-does-not-determine-hit"`
+- [x] `#print axioms` foot on every theorem; wire `"seam-gluing-ray-product/quasistate-does-not-determine-hit"`
       into the `WIRED` array of `scripts/check-evidence-probes.sh` with its header-comment row in
       the probe table (house style: `probe | the decision it holds in place`, wrapped at the
       existing column); run `bash scripts/check-evidence-probes.sh` green.

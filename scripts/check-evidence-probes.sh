@@ -307,6 +307,39 @@ EVIDENCE="specs/evidence"
 #                                                           | (cited, not re-proved). Forward
 #                                                           | only (`F p`); nothing about
 #                                                           | `⊡(P p)`; `Hit` not computed
+# seam-gluing-ray-product/quasistate-does-not-determine-hit | OBSTRUCTION (742, B2b verdict):
+#                                                           | the HWZ-verbatim quasistate
+#                                                           | shape -- per-time realized
+#                                                           | closure types as bare sets plus
+#                                                           | the consecutive-type relation
+#                                                           | (HWZ 2000 Defs 10-12 over Z, no
+#                                                           | product repair) -- does NOT
+#                                                           | determine `Hit`: two regular
+#                                                           | three-state fixtures (`a→a,
+#                                                           | a→b, b→b, d→d, d→b` vs the same
+#                                                           | graph without `a→b`; `p` at
+#                                                           | `b`; `cl = {p, Fp}`) have equal
+#                                                           | quasistates
+#                                                           | (`quasiState_A_eq_B`) and equal
+#                                                           | pair relations
+#                                                           | (`pairRel_A_eq_B`) at every
+#                                                           | time, yet different `⊡¬Fp` at
+#                                                           | the seam `(stayA, t)`
+#                                                           | (`stab_notFp_A`/`_B`), hence
+#                                                           | different `Hit` at `k = 1`
+#                                                           | through the library's
+#                                                           | `plusStab_iff_forall_hit`
+#                                                           | (`hit_ne`; headline
+#                                                           | `quasistate_does_not_determine_hit`).
+#                                                           | Holds in place: no B2b may be
+#                                                           | transcribed in the quasistate
+#                                                           | shape and fed to
+#                                                           | `plusStab_iff_forall_hit`; the
+#                                                           | per-model bridge must carry
+#                                                           | joint realization through the
+#                                                           | seam. Forward only; nothing
+#                                                           | about `⊡(P p)`; `Hit` still not
+#                                                           | computed
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -325,6 +358,7 @@ WIRED=(
   "seam-gluing-ray-product/ktype-summary-substrate-probe"
   "seam-gluing-ray-product/stab-depth-two-probe"
   "seam-gluing-ray-product/presents-is-seam-decidedness"
+  "seam-gluing-ray-product/quasistate-does-not-determine-hit"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
