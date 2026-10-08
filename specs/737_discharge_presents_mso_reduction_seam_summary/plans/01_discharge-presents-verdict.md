@@ -1,7 +1,7 @@
 # Implementation Plan: Task #737
 
 - **Task**: 737 - Discharge the Presents hypothesis bundle: formalize the MSO-over-Z-less-than reduction behind the seam summary
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: 711 (satisfied; substrate landed and re-verified by the research dispatch)
 - **Research Inputs**: specs/737_discharge_presents_mso_reduction_seam_summary/reports/01_discharge-presents-verdict.md
@@ -174,35 +174,35 @@ and 3 touch disjoint files but share one working tree and one Lake build, and Ph
 imports Phase 2's module. Dispatch singly (contention with 733/734 on
 `scripts/check-evidence-probes.sh` stands, per the report).
 
-### Phase 1: Field (3) — `determinedByKType_eval` beside its special case [NOT STARTED]
+### Phase 1: Field (3) — `determinedByKType_eval` beside its special case [COMPLETED]
 
 **Goal**: Land the depth-at-most-k generalization of `determinedByKType_nfEval` in
 `KTypeSummary/Universal.lean`, discharging field (3) `determined` for every sentence target, and
 record it in the module docstring and the cluster README.
 
 **Tasks**:
-- [ ] Re-verify by name (never by line) the anchors this phase builds on: `DeterminedByKType`,
+- [x] Re-verify by name (never by line) the anchors this phase builds on: `DeterminedByKType`,
       `determinedByKType_nfEval` (Universal.lean), `doets_lemma_1_1` (Expressiveness/NormalForm.lean),
       `kTypeOf` (WeakCanonical/NEquivalence.lean), `eval`/`quantifierDepth` (Expressiveness/MonadicFO.lean),
       `zFiber` (GroupModel/BlockDecomposition.lean). Confirm `Universal.lean`'s import closure
       already reaches `doets_lemma_1_1`; if not, add the one import.
-- [ ] Add `determinedByKType_eval` immediately after `determinedByKType_nfEval`, statement
+- [x] Add `determinedByKType_eval` immediately after `determinedByKType_nfEval`, statement
       exactly as pinned under Lean Challenge Statements (namespace
       `FormalSystem.Metalogic.WeakCanonical`), proof as the probe's: `intro c c' h`, then
       `doets_lemma_1_1 k 0 ψ hψ (zFiber sig c) (zFiber sig c') Fin.elim0 Fin.elim0` on the
       `nf`-pointwise hypothesis obtained by `unfold kTypeOf at h; congr_fun h nf; simp only
       [decide_eq_decide]`. Docstring: "a depth-`≤ k` sentence target is `k`-type-determined
       (Doets 1989, Lemma 1.1); `determinedByKType_nfEval` is its normal-form instance".
-- [ ] Update `Universal.lean`'s module docstring: the "non-vacuous" paragraph and the "Main
+- [x] Update `Universal.lean`'s module docstring: the "non-vacuous" paragraph and the "Main
       definitions and results" list gain the new lemma; keep the paragraph that says the module
       is not about `⊡` (still true of this module).
-- [ ] Update `KTypeSummary/README.md`: the `Universal.lean` row (re-derived line count, new
+- [x] Update `KTypeSummary/README.md`: the `Universal.lean` row (re-derived line count, new
       lemma named) only — the cluster-level prose corrections wait for Phase 5.
-- [ ] `lean_verify FormalSystem.Metalogic.WeakCanonical.determinedByKType_eval` reports
+- [x] `lean_verify FormalSystem.Metalogic.WeakCanonical.determinedByKType_eval` reports
       `[propext, Classical.choice, Quot.sound]`, no sorry.
-- [ ] Guarded scoped build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 --
+- [x] Guarded scoped build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 --
       build FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Universal` (detached), exit 0.
-- [ ] Commit (`task 737 phase 1: ...`) via `git-commit-scoped.sh` with the two files staged
+- [x] Commit (`task 737 phase 1: ...`) via `git-commit-scoped.sh` with the two files staged
       explicitly.
 
 **Timing**: 1 hour

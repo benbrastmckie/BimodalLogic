@@ -34,11 +34,17 @@ is determined by the block's `k`-type"; `determinedByKType_nfEval` exhibits the 
 instances — the truth of any depth-`k` normal form `nf` on the block — so the saturation theorem
 has something to apply to. It is proved by unfolding `kTypeOf` and reading the `nf`-coordinate
 of the `k`-type equation, exactly as `k_equiv_monotone` (`NEquivalence.lean`) does.
+`determinedByKType_eval` generalises it from normal forms to every depth-`≤ k` sentence `ψ`
+through Doets's Lemma 1.1 (`doets_lemma_1_1`, `Expressiveness/NormalForm.lean`): the `nf`-pointwise
+reading of the `k`-type equation is exactly that lemma's hypothesis. This is the shape the seam
+interface's `determined` field is discharged in — for any sentence target, not only a normal form.
 
 ## Main definitions and results
 
 * `DeterminedByKType` — a target is determined by the block's `k`-type.
 * `determinedByKType_nfEval` — the truth of a depth-`k` normal form on the block is such a target.
+* `determinedByKType_eval` — the truth of any depth-`≤ k` sentence on the block is such a target
+  (Doets 1989, Lemma 1.1); `determinedByKType_nfEval` is its normal-form instance.
 * `family_saturation` — each family is inside or disjoint from a `k`-type-determined target.
 * `finite_family_triples` — there are finitely many family triples.
 * `target_eq_union_of_families` — a `k`-type-determined target is the union of the families it
@@ -70,6 +76,22 @@ the record of which normal forms hold, so this is the `nf`-coordinate of the `k`
 theorem determinedByKType_nfEval (sig : MonadicSignature) (k : ℕ) (nf : NormalForm sig k 0) :
     DeterminedByKType sig k (fun c => NfEvalNf (zFiber sig c) k 0 Fin.elim0 nf) := by
   intro c c' h
+  unfold kTypeOf at h
+  have h_pt := congr_fun h nf
+  simp only [decide_eq_decide] at h_pt
+  exact h_pt
+
+/-- **Every sentence target of depth at most `k` is `k`-type-determined** (Doets 1989, Lemma
+1.1): two blocks with the same `k`-type agree on every normal form, hence — by
+`doets_lemma_1_1` — on every depth-`≤ k` sentence. `determinedByKType_nfEval` is its normal-form
+instance; this is the form in which the seam interface's `determined` field is discharged for an
+arbitrary sentence target. -/
+theorem determinedByKType_eval (sig : MonadicSignature) (k : ℕ) (ψ : MonadicFormula sig 0)
+    (hψ : ψ.quantifierDepth ≤ k) :
+    DeterminedByKType sig k (fun c => eval (zFiber sig c) Fin.elim0 ψ) := by
+  intro c c' h
+  refine doets_lemma_1_1 k 0 ψ hψ (zFiber sig c) (zFiber sig c') Fin.elim0 Fin.elim0 ?_
+  intro nf
   unfold kTypeOf at h
   have h_pt := congr_fun h nf
   simp only [decide_eq_decide] at h_pt
