@@ -142,7 +142,8 @@ ALLOWLIST=(
 
   # --- UPSTREAM: real Mathlib / Lean-core / metaprogramming names this repo cites but does not
   # define. Added during a full manual triage of every finding a clean run then produced
-  # (triage ledger: specs/728_sweep_phantom_declaration_citations/triage-ledger.md).
+  # (recorded in the phantom-citation sweep's `triage-ledger.md`, the only file of that name
+  # under specs/).
   CompactIccSpace isOpen_inter isOpen_sUnion isOpen_univ IsPredArchimedean IsSuccArchimedean
   specializes_iff_mem_closure
   dbg_trace dbgTrace MetaM mkAppM register_simp_attr isBadNameWithUnderscore

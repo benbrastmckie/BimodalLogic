@@ -61,8 +61,16 @@ absent from Mathlib at the pin), reachable as the alias
 target flow exactly and needs no Safra construction. Safra/Piterman and Safraless are **NOT
 selected**: the per-path acceptor is already deterministic, Mathlib carries zero ω-automata
 infrastructure at the pin, and no Safra or Piterman formalization exists in any proof assistant.
+**Read that last ground with its qualifier** (re-audited by task 736): it is true of *Safra and
+Piterman specifically*, and true of *Mathlib*, but it is not true that no ω-automata work exists
+in Lean — `~/Projects/cslib/` runs on this same toolchain and carries
+`Cslib/Computability/Automata/NA/BuchiCompl.lean`, NBA complementation via the Kupferman–Vardi
+2001 rank construction, which *is* candidate (b)'s core. 736's verdict was nonetheless **(i) KEEP
+candidate (d)** — the selection stands — and its standing recommendation is **port nothing**:
+treat cslib as a read-only reference, since a `require` edge would drag this tree 76 Mathlib
+commits forward.
 Record: `specs/evidence/seam-gluing-ray-product/device-selection-probe.lean`, wired into
-`scripts/check-evidence-probes.sh`.
+`scripts/check-evidence-probes.sh`; re-audit recorded at that file's own site.
 
 Three E3 results bind the open work. (1) The `⊡(Fp)`/`⊡(Pp)` shapes are **device-inert** on finite
 fixtures — the universal summary reduces to lasso root paths by pigeonhole alone
@@ -75,11 +83,21 @@ infinite acyclic fibre ⟨ℤ, b = a − 1⟩, the regime forced by
 the time axis with a finite alphabet of per-time summaries, never over states.** (3) Two limits
 stay open: the `⊡(Pp)` side is fixed only at the step-graph level (no backward Bool-fixture
 bridge; the real-formula shape rests on `Probe719Backward.pastStab_iff_allBwdPathsMeet`), and that
-the MSO and Ramsey routes share Büchi's Ramsey core is LOW-confidence **framing, not a finding**,
-checkable against Thomas 1997 (in corpus).
+the MSO and Ramsey routes share Büchi's Ramsey core was LOW-confidence **framing, not a finding**,
+checkable against Thomas 1997 (in corpus). **The second of those two is now CLOSED**: task 711's
+research performed that named check, reading Thomas 1997 p. 30 directly, and raised it to
+Medium–High. The finding is sharper than the original framing — candidate (d) **is** Büchi's own
+1962 proof of the complementation step inside route (c) (Büchi represents recognizable sets as
+finite unions `U_i · V_i^ω` over classes of a finite-index congruence on *segments* and applies a
+form of Ramsey's theorem; the alternative proof of that same step is determinization,
+McNaughton/Safra, which is candidate (a)). **So the four candidates are not four routes**: (c) is
+the frame, and (a), (b), (d) are three proofs of its single hard step. Consequence for the open
+work: discharging the reduction never meant citing Büchi's theorem as an external lemma the
+zero-debt policy forbids — it means carrying out (d) on the landed substrate. Only the `⊡(Pp)`
+limit stays open.
 
-**Owed.** The substrate, then the assembly. Critical path: **711 → 735**. Everything else in this
-phase is evidence or fallback.
+**Owed.** The substrate, then the discharge, then the assembly. Critical path:
+**711 → 737 → 735**. Everything else in this phase is evidence or fallback.
 
 Three cautions. Gluing does **not** bound the fibre — the route concedes infinite fibres and seeks
 a finite *presentation*, the only move `not_finite_width_fmp` leaves open. The binary seam case is
@@ -88,19 +106,30 @@ directed colimit. No upper bound is claimed anywhere, by E3 or by any record; th
 2EXPTIME ceiling in task 713 is a sanity ceiling a proposed procedure must clear, never an
 upper-bound source.
 
-- [ ] Build the universal-summary substrate on the selected device, with the first behavioural
-      discrimination between the MSO frame and the Ramsey substrate on a finitely presented
-      *infinite* fibre with a per-time alphabet. Also carries the depth-2 stratification probe E2.
-      No longer blocked — E3's selection discharged its sole blocker. Its `file_scope` is literal
-      `null` and MUST be set before any implement dispatch (Task 711)
+- [x] Build the universal-summary substrate on the selected device. **DONE** — the
+      `WeakCanonical/KTypeSummary/` cluster (`Basic`, `Segment`, `Family`, `Saturation`,
+      `Universal`) carries Büchi's complementation chain in the monadic k-type idiom over the ℤ
+      time axis, steps 2, 3, 3′, 4, 5a, 5b, sorry-free on `[propext, Classical.choice,
+      Quot.sound]`, with 11 axiom pins and two wired probes (collection 19/19). The seam
+      interface `RaySummary/Seam.lean` states `plusStab_iff_seamSummary` against the four-field
+      hypothesis bundle `Presents` and **discharges nothing of it** — that discharge is Task 737.
+      Carried forward unresolved: E2 is a **weak positive** (the two-state fixture answers the
+      falsifier trivially; the 3+-state test named in the summary has not been run) (Task 711)
 - [ ] Prove F4, finite width ⇒ eventually periodic, as R1's **summary step**. E3 resolved this
       record's two-outcome fork as outcome (i) — a Ramsey colour was selected, so F4 *is* the
       device and the reasoned-exclusion outcome no longer applies. Any surviving statement must
       name its restricted fragment and say in its docstring why `not_finite_width_fmp` does not
       refute it (Task 709)
+- [ ] Discharge the `Presents` hypothesis bundle — formalize the MSO-over-⟨ℤ,<⟩ reduction that
+      `Presents.colours` leaves as a hypothesis, or record, machine-checked rather than in prose,
+      which field cannot be discharged on this route and what it would cost. The open question is
+      how much of Büchi's segment-congruence argument the landed cluster already supplies, not
+      whether Büchi's theorem is needed (settled above). Sits between the substrate and the
+      assembly; `file_scope` MUST be set at plan time (Task 737)
 - [ ] Assemble the decidable stab check on the ray-product presentation — `Decidable
       (PlusValidZTime φ)`, or a recorded verdict that the presentation cannot deliver it. Depends
-      on 711. `file_scope` is deliberately absent and MUST be set at plan time (Task 735)
+      on 711 **and 737**: it may not be assembled on an undischarged `Presents` and presented as
+      unconditional. `file_scope` is deliberately absent and MUST be set at plan time (Task 735)
 - [ ] Probe the backward dual on a backward-**nondeterministic** mirror fixture. E1 came out
       POSITIVE and is wired, so the two-factor presentation stands — but on a backward-*deterministic*
       fixture, whose backward factor is a singleton. The finite-width obstruction lives in the
