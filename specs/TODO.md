@@ -364,6 +364,7 @@ ACCEPTANCE. (1) A research report under specs/736_cslib_omega_automata_survey_an
 - **Dependencies**: Task 711, Task 737, Task 742
 - **Research**: [735_decidable_stab_check_ray_product_assembly/reports/01_decidable-stab-check-assembly.md]
 - **Plan**: [735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md]
+- **Evidence**: [evidence/seam-gluing-ray-product/presented-not-complete.lean]
 
 **Description**: Assemble the decidable stab check on the ray-product presentation: Decidable (PlusValidZTime phi)
 

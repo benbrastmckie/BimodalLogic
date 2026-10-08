@@ -187,6 +187,11 @@
           "path": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
           "type": "plan",
           "summary": "Four-phase verdict-branch plan with Lean Challenge Statements (compiled with sorry bodies), file_scope harvested from Files to modify (13 paths)."
+        },
+        {
+          "path": "specs/evidence/seam-gluing-ray-product/presented-not-complete.lean",
+          "type": "evidence",
+          "summary": "Wired obstruction probe: Presented fails on model A for every finite presentation (Probe735.not_presented)"
         }
       ],
       "next_artifact_number": 2,
