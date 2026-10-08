@@ -1,0 +1,6 @@
+'Probe737Presents.exists_presents_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe737Presents.no_presents_on_fixture' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe737Presents.plusStab_iff_forall_hit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe737Presents.presentsMulti_trace' depends on axioms: [propext, Classical.choice, Quot.sound]
+lake-build-guard: STATUS: exit_status=0
+GUARD_EXIT=0

@@ -78,9 +78,9 @@ next_project_number: 741
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-737 [NOT STARTED] — Discharge the Presents hypothesis bundle: formalize the...
+737 [RESEARCHED] — Discharge the Presents hypothesis bundle: formalize the...
   └─ 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
-738 [NOT STARTED] — Pin the complexity-class divergence behind the CTL-star...
+738 [RESEARCHING] — Pin the complexity-class divergence behind the CTL-star...
 739 [NOT STARTED] — Run E2's real test: the depth-2 stratification falsifier on a...
 740 [NOT STARTED] — Restate three KTypeSummary declarations over Finite...
 
@@ -169,7 +169,7 @@ SCOPE. One new probe file plus the append-only wiring line. Do NOT edit the land
 ---
 
 ### 738. Pin complexity class divergence sanity ceiling
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: markdown
 - **Topic**: decidability
 - **Dependencies**: None
@@ -211,10 +211,11 @@ SCOPE. Prose, sourcing and state.json description fields only -- no Lean. Expect
 ---
 
 ### 737. Discharge presents mso reduction seam summary
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 711
+- **Research**: [737_discharge_presents_mso_reduction_seam_summary/reports/01_discharge-presents-verdict.md]
 
 **Description**: Discharge the Presents hypothesis bundle: formalize the MSO-over-Z-less-than reduction behind the seam summary
 
