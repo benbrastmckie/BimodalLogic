@@ -1,7 +1,7 @@
 # Implementation Plan: Task #740
 
 - **Task**: 740 - Restate three KTypeSummary declarations over [Finite sig.preds] and retire their linter suppressions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/740_ktype_summary_finite_preds_restatement/reports/01_finite-preds-restatement.md

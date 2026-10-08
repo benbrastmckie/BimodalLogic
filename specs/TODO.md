@@ -11,7 +11,7 @@ next_project_number: 748
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,725,729,730,731,733,740,741,743,744,745,746 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,725,729,730,731,733,741,743,744,745,746 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,734,747 | 298,464,502,616,733,745,746 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,720 | 231,465,497,734 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -79,7 +79,6 @@ next_project_number: 748
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
   └─ 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
     └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-740 [PLANNED] — Restate three KTypeSummary declarations over Finite...
 745 [NOT STARTED] — Requirement (C) of the ray-product verdict: Hit-level...
   └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide...
 746 [NOT STARTED] — Requirement (S) of the ray-product verdict: Hit-level...
@@ -331,12 +330,13 @@ SCOPE. Source-store files under /home/benjamin/.config/nvim/agent-system/extensi
 ---
 
 ### 740. Ktype summary finite preds restatement
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [740_ktype_summary_finite_preds_restatement/reports/01_finite-preds-restatement.md]
 - **Plan**: [740_ktype_summary_finite_preds_restatement/plans/01_finite-preds-restatement.md]
+- **Summary**: [740_ktype_summary_finite_preds_restatement/summaries/01_finite-preds-restatement-summary.md]
 
 **Description**: Restate three KTypeSummary declarations over [Finite sig.preds] and retire their linter suppressions
 

@@ -1,19 +1,24 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 4,
-  "summary": "Wrote the implementation plan for restating kType_finite, exists_matching_factorization and finite_family_triples over [Finite sig.preds] and retiring their six linter suppressions. The research probe had already compiled all three restatements with zero linter output and unchanged axiom profiles, so the plan hands the implementer verbatim diffs in one interface-tier phase, a prose-tier phase for the Compose.lean reason comment and the README line counts, and a full-tier gate pass. Scope is five files with zero consumer-code edits; the plan corrects two carried figures (30 axiom pins, not 11 or 33; one wired evidence probe does call finite_family_triples).",
+  "status": "implemented",
+  "dispatch_seq": 6,
+  "phase": "implement",
+  "phases_completed": 3,
+  "phases_total": 3,
+  "summary": "Restated kType_finite, exists_matching_factorization and finite_family_triples over [Finite sig.preds], supplying Fintype/DecidableEq inside the proofs, and removed all six unusedFintypeInType/unusedDecidableInType suppressions with their reason comments; no declaration needed to stay pinned. Full guarded lake build, check-module-invariants (after --emit-inventory refreshed two generated line-count blocks this task aged), check-evidence-probes, check-phantom-citations and verify-deploy are all green. All 30 axiom pins match; each touched headline keeps [propext, Classical.choice, Quot.sound] with zero sorries; scoped suppressions 50 -> 44.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/740_ktype_summary_finite_preds_restatement/summaries/01_finite-preds-restatement-summary.md",
+      "summary": "Implementation summary: three restatements, six suppressions retired, full gate pass."
+    },
     {
       "type": "plan",
       "path": "specs/740_ktype_summary_finite_preds_restatement/plans/01_finite-preds-restatement.md",
-      "summary": "Three-phase plan, 1.5 h, five-file scope: restate the three declarations (interface tier), propagate prose consequences (prose tier), full gate pass (full tier)."
+      "summary": "Plan with all three phases marked [COMPLETED] and deviations annotated inline."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 3,
   "blockers": [],
   "plan_markers_verified": true,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement: Phase 1 lands the three probe-verified restatements in Basic/Family/Universal.lean with per-file commits; validate-artifact.sh --strict passed with 0 warnings; harvested file_scope equals the five files already in state.json."
+  "git_checkpoint": "0fc791e0b",
+  "next_action_hint": "Postflight: commit the summary (task 740: complete implementation) and transition the task to completed."
 }
