@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 3,
+  "summary": "Authored an eight-phase implementation plan executing the research's positive construction for requirement (C): HitPresented and hitPresented_of_presented into RaySummary/Trace.lean, then a new wired evidence probe hit-presented-model-a.lean carrying the model-A fixture, the step-path classification, splice identification, the Set.Finite.bddAbove truncation bound, the L+6-state presentation, the run characterization, and the headline hitPresented_modelA. The computable bound is recorded as blocked per the user's cycle-1 decision, via the axiom foot plus a stated-not-proved Challenge signature for the missing effective block-type saturation lemma. All 17 pinned Lean Challenge signatures were compile-checked against the live build at plan time (16 sorry warnings, zero errors); strict plan validation passes with zero warnings and the harvester yields the intended six-path file_scope.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/745_hit_level_completeness_computable_bound/plans/01_hit-presented-model-a.md",
+      "summary": "Eight-phase plan for landing HitPresented on fixture model A and recording the bound as blocked."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 8,
+  "blockers": [],
+  "next_action_hint": "Dispatch implement for phase 1 (Trace.lean, interface tier) and phase 2 (probe scaffold, local tier) -- they are wave 1 and touch disjoint files. Phase 6 is the one uncompiled link and is the designed stopping point if it blocks."
+}

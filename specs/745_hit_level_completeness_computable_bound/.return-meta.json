@@ -1,50 +1,47 @@
 {
-  "status": "researched",
+  "status": "planned",
   "task_number": 745,
-  "dispatch_seq": 1,
+  "dispatch_seq": 3,
   "session_id": "sess_1791500801_df94d6_745",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "phase": "research",
+  "phase": "plan",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/745_hit_level_completeness_computable_bound/reports/01_hit-level-completeness-probe.md",
-      "summary": "HitPresented is NOT refuted on fixture model A and looks satisfiable: a truncation argument off hitCl_finite plus an L+6-state presentation gives HitCl = hitOf at every depth k >= 1, with no k-type computation; the model-A step-path classification is already compiled, and the bound half is non-constructive by construction (no effective block-type saturation lemma in tree)."
+      "type": "plan",
+      "path": "specs/745_hit_level_completeness_computable_bound/plans/01_hit-presented-model-a.md",
+      "summary": "Eight-phase plan landing HitPresented on fixture model A as a wired sorry-free probe (library statement, fixture classification, splice identification, truncation bound, L+6-state presentation, run characterization, assembly, wiring/pins/docs), with the computable bound recorded as blocked via the axiom foot plus a stated-not-proved effective-saturation obligation."
     }
   ],
-  "findings_count": 6,
-  "adversarial_verification_triggered": true,
-  "verification_passed": true,
-  "reference_grounding_tier": 2,
-  "evidence_tier_note": "lean-lsp MCP tools were not exposed to this dispatch despite the dispatch file reporting the server registered and reachable; positive declaration evidence is compiled #check/#print axioms via lake env lean (stronger than hover), negative existence claims are grep-tier and labelled Medium confidence in the report.",
-  "user_decision": {
-    "question": "Phase 1 did not refute HitPresented -- it points the other way, so the task's cheap exit is gone and the positive construction is a 6-phase, roughly 550-800 line build whose bound half is provably non-constructive; and acceptance branch 3's demand that the bound obstruction be 'machine-checked rather than argued' is not literally satisfiable, since non-existence of a computable bound is not a Lean-statable property. Which scope should the next dispatch take?",
-    "options": [
-      "Build it -- plan and implement all 6 phases, landing HitPresented on model A as a wired probe, and record the bound as blocked via the axiom foot plus a stated Challenge signature for the missing effective-saturation lemma",
-      "Build only the cheap, already-compiled part -- land HitPresented + hitPresented_of_presented in Trace.lean and the model-A classification probe (phases 1-2, ~115 lines), and re-scope the rest as a successor record",
-      "Stop at the analysis -- record this report as the task's verdict (route not closed, construction specified, bound non-constructive) without landing Lean, and close the record"
-    ],
-    "recommended": "Build it -- plan and implement all 6 phases, landing HitPresented on model A as a wired probe, and record the bound as blocked via the axiom foot plus a stated Challenge signature for the missing effective-saturation lemma",
-    "blocking": false
+  "metadata": {
+    "session_id": "sess_1791500801_df94d6_745",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 11,
+    "dependency_waves": [[1, 2], [3], [4], [5], [6], [7], [8]],
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 1,
+    "challenge_statements_compiled_at_plan_time": true,
+    "challenge_identifier_count": 17,
+    "file_scope": [
+      "FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean",
+      "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+      "specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean",
+      "scripts/check-evidence-probes.sh",
+      "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+      "docs/theorem-index.md"
+    ]
   },
   "memory_candidates": [
     {
-      "title": "A set-level realization hypothesis can survive the pumping argument that kills its trace-level form",
-      "body": "When a trace-set equality hypothesis (every seam trace is a run trace and conversely) is refuted by pigeonhole-plus-pumping on Fintype.card Q, the weaker equality of finite INVARIANT sets derived from those traces need not fall with it. Two reasons, both reusable: the local-run inheritance lemma that the refutation routes through is unavailable under the weaker hypothesis, and the realization demand becomes finite (finitely many invariants), so a finite presentation no longer needs an unbounded stretch and the pigeonhole has nothing to pigeonhole. Check both before reusing a refutation at a weaker level.",
-      "keywords": ["pumping", "pigeonhole", "realization-hypothesis", "trace-set", "invariant-set", "lean4"]
-    },
-    {
-      "title": "Truncate an infinite index by finiteness of the target, not by a saturation lemma",
-      "body": "To show a union over an infinite index equals a union over a finite sub-index, do not reach for a saturation/threshold lemma on the index. If the union is already known finite (Set.Finite), pick one witnessing index per member, map the witnesses to a well-ordered parameter, and bound them with Set.Finite.bddAbove. This needs no structural lemma about the index and no evaluation of the invariants -- but it is non-constructive by construction, so it establishes existence while yielding no computable bound. Name that consequence explicitly rather than letting a reader assume a bound fell out.",
-      "keywords": ["Set.Finite.bddAbove", "truncation", "non-constructive", "computable-bound", "lean4", "mathlib"]
-    },
-    {
-      "title": "An IsRun-style 'marker exactly once' condition pins a bi-infinite run with no acceptance condition",
-      "body": "A run condition of the shape 'for all z, lab (rho z) marker = true iff z = t' is far stronger than it looks: it excludes the run that never reaches the marker state, so a presentation needs no acceptance or liveness condition to rule out degenerate runs. Combined with a state graph whose marker state has a single predecessor that is its own single predecessor, it pins the run completely on the backward side and leaves only the forward branching to enumerate. Useful whenever a finite presentation must realize exactly a prescribed finite set of bi-infinite traces.",
-      "keywords": ["IsRun", "bi-infinite", "finite-presentation", "anchor", "lean4"]
+      "content": "When a formal-proof plan has exactly one link the research could not compile, split that link into a data phase (definitions, tables, step relations) and a proof phase (the characterization over those definitions) rather than one phase. The data phase lands green and committed, so a block on the proof phase leaves the construction's vocabulary in the tree instead of nothing, and the blocked escalation has a concrete goal state to report from. This also makes the plan's own rollback story honest: the phases before the risky one are independently true and useful, which is what lets a [BLOCKED] verdict be a partial success rather than a wasted dispatch.",
+      "category": "PATTERN",
+      "source_artifact": "specs/745_hit_level_completeness_computable_bound/plans/01_hit-presented-model-a.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["phase-decomposition", "lean4", "uncompiled-link", "blocked-escalation", "risk-splitting", "plan-authoring"]
     }
   ],
-  "issues_recorded": 2,
-  "next_steps": "Run /plan 745 to create implementation plan"
+  "issues_recorded": 1,
+  "next_steps": "Run /implement 745 to execute the plan"
 }
