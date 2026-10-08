@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "summary": "Created the 8-phase implementation plan for requirement (S) at specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md, 14 hours, scoped to box/stab-free phi at one seam. The carried 300-500 line regular-frame constructor prerequisite is descoped to a successor record on the research dispatch's machine-checked finding that it is a completeness burden, not a soundness one; its hard part plus two refutations are preserved by wiring the research probe as permanent evidence in Phase 1. file_scope is declared at plan time (10 paths), closing the batch-admission overlap blindness the record was filed with. All 22 substrate declarations were re-resolved by name with zero anchor drift; validate-artifact.sh passes with 0 warnings.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md",
+      "summary": "8 phases, 6 waves, 14 hours: Cons (untl half transcribed from a compiled probe, snce mirror proved outright), modelOf via ofSlicedStep on W := Q, presented_modelOf through eq_clTrace_of_localRun_anchored, and the Hit-level corollary, with 8 Challenge-pinned signatures."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 8,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "next_action_hint": "Run /orchestrate 746 to begin implementation; Phases 1, 2 and 4 are wave 1 and territory-disjoint."
+}
