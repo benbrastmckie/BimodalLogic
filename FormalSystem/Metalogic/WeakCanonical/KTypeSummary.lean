@@ -9,6 +9,7 @@ import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Family
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Saturation
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Universal
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.KTypeFin
 
 /-!
 # `KTypeSummary` — Büchi's complementation chain in the monadic `k`-type idiom
@@ -32,6 +33,10 @@ disclaimer — no complexity bound is claimed and no `⊡` condition is reduced 
   (`DeterminedByKType`, `family_saturation`) and the finite-family cover
   (`finite_family_triples`, `target_eq_union_of_families`). Not a decidability result and not a
   statement about `⊡`; see that module's first paragraph.
+* `KTypeSummary.KTypeFin` — the computable `k`-type of a finite decidable structure
+  (`kTypeOfFin`, equal to the classical `kTypeOf` by `kTypeOfFin_eq`) and the explicit, computable
+  instances for a segment of a decidable colouring (`kTypeOfFin_segZ`). A computability witness
+  for the summary alphabet only; it decides nothing about `⊡`.
 
 Step 6 of the chain (conclude decidability) is out of scope for this cluster.
 -/

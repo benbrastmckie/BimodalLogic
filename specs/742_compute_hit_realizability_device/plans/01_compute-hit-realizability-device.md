@@ -1,7 +1,7 @@
 # Implementation Plan: Task #742
 
 - **Task**: 742 - Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 19 hours (10 phases; lean4 `--hard`, one agent run per phase)
 - **Dependencies**: 737 (complete; `SeamMulti.lean` is the bridge this plan feeds), 711 (complete; the `KTypeSummary/` substrate)
 - **Research Inputs**: specs/742_compute_hit_realizability_device/reports/01_compute-hit-realizability-device.md
@@ -154,32 +154,32 @@ every phase ends with the scoped build green, `#print axioms` on each new theore
 
 ---
 
-### Phase 1: B3a — the computable `k`-type of a finite decidable structure [NOT STARTED]
+### Phase 1: B3a — the computable `k`-type of a finite decidable structure [COMPLETED]
 
 **Goal**: Land the research probe as a library module: `NfEvalNf` is decidable on a finite
 decidable structure by induction on depth, the resulting `kTypeOfFin` equals the classical
 `kTypeOf` pointwise, and `segZ` segments of decidable colourings carry computable instances.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/KTypeFin.lean` (namespace
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/KTypeFin.lean` (namespace
       `FormalSystem.Metalogic.WeakCanonical`, importing `KTypeSummary.Segment`), header stating:
       what is computed, that nothing is decided about `⊡` or `Hit`, that no complexity bound is
       claimed, and the `ℤ`-instance hazard verbatim from the research (explicit terms, `Int.decEq`,
       `Int.decLt`, `decidable_of_iff` target-first).
-- [ ] Transcribe `decAtomEval` and `decNfEvalNf` from `probes/b3a-computable-ktype.lean` with the
+- [x] Transcribe `decAtomEval` and `decNfEvalNf` from `probes/b3a-computable-ktype.lean` with the
       probe's `FinDec` class replaced by four explicit instance binders `[Fintype M.carrier]
       [DecidableEq M.carrier] [DecidableRel (α := M.carrier) (· < ·)] [∀ p, DecidablePred (M.interp p)]`
       (the `LinearOrder M.carrier` instance is registered in `Expressiveness/MonadicFO.lean`;
       `atomKindFintype`, `normalFormFintype`, `Fintype.decidableForallFintype`,
       `Fintype.decidableExistsFintype`, `instDecidableIff`, `instDecidableAnd` as in the probe).
-- [ ] `kTypeOfFin` and `kTypeOfFin_eq` (proof `funext nf; unfold kTypeOfFin kTypeOf; exact
+- [x] `kTypeOfFin` and `kTypeOfFin_eq` (proof `funext nf; unfold kTypeOfFin kTypeOf; exact
       decide_eq_decide.mpr Iff.rfl`), then `decEval` — `Decidable (eval M env α)` for every
       `MonadicFormula sig n` on the same binders, by structural induction (needed by Phase 9's
       `stabTargetSig` witness; the `.lt` constructor uses the `DecidableRel` binder).
-- [ ] The four `segZ` instances as explicit terms (`segZFintype`, `segZDecidableEq`,
+- [x] The four `segZ` instances as explicit terms (`segZFintype`, `segZDecidableEq`,
       `segZDecidableLT`, `segZDecidablePred` for `[∀ p, DecidablePred (c p)]`), and
       `kTypeOfFin_segZ`.
-- [ ] Add `import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.KTypeFin` to
+- [x] Add `import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.KTypeFin` to
       `FormalSystem/Metalogic/WeakCanonical/KTypeSummary.lean`; scoped build; `#print axioms
       kTypeOfFin_eq` = standard profile; `grep -c sorry` = 0.
 
