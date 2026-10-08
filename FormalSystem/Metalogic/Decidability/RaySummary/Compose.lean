@@ -267,8 +267,7 @@ end Append
 -- computable `k`-type (`kTypeOfFin`, `kTypeOfFin_listSeg`) already carries. A `[DecidableEq
 -- sig.preds]` binder that neither the statement nor the proof used was removed (the
 -- `unusedArguments` environment linter reported it), so no `unusedDecidableInType` suppression
--- remains. Declaration-scoped, as for `exists_matching_factorization` in
--- `KTypeSummary/Family.lean`.
+-- remains. Declaration-scoped.
 set_option linter.unusedFintypeInType false in
 /-- **Composition on representatives.** The `k`-type of a concatenation depends only on the
 `k`-types of the parts: the two-point instance of `kEquiv_orderedSum_of_kEquiv_colour`. Once
