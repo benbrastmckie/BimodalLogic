@@ -422,8 +422,383 @@ theorem stab_past_iff (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
   · intro hd
     exact stab_past_at_d τ t hd
 
+/-! ## Depth-0 facts the sinks force: no `p` ahead of `c`, none behind `a` or `c` -/
+
+/-- No history through `c` ever sees `p` later: `c` is a forward sink. -/
+theorem not_Fp_at_c (σ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hc : (σ.state t).2 = .c) :
+    ¬ PlusTruthAt Mg σ t Fp := by
+  rintro ⟨s, hts, hp, -⟩
+  have hp' : (σ.state s).2 = .b := hp
+  rw [stays_fwd_c σ t hc s hts.le] at hp'
+  exact S.noConfusion hp'
+
+/-- No history through `a` ever saw `p` earlier: `a` is a backward sink. -/
+theorem not_Pp_at_a (σ : WorldHistory Fg.toTaskFrame) (t : ℤ) (ha : (σ.state t).2 = .a) :
+    ¬ PlusTruthAt Mg σ t Pp := by
+  rintro ⟨s, hst, hp, -⟩
+  have hp' : (σ.state s).2 = .b := hp
+  rw [stays_bwd_a σ t ha s hst.le] at hp'
+  exact S.noConfusion hp'
+
+/-- No history through `c` ever saw `p` earlier: `c` is a backward sink. -/
+theorem not_Pp_at_c (σ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hc : (σ.state t).2 = .c) :
+    ¬ PlusTruthAt Mg σ t Pp := by
+  rintro ⟨s, hst, hp, -⟩
+  have hp' : (σ.state s).2 = .b := hp
+  rw [stays_bwd_c σ t hc s hst.le] at hp'
+  exact S.noConfusion hp'
+
+/-! ## Depth 2, computed directly
+
+Value table (`T`/`F` at `a b c d`): S1 `F T F T`, S2 `F T T T`, M1 `F F T T`, M2 `T T T T`,
+S1' `F F F T`. -/
+
+/-! ### S1: `⊡F(⊡Fp)` — `F T F T` -/
+
+/-- S1 fails at `a`: along `stayA` every future state is `a`, where `⊡Fp` is False. -/
+theorem not_S1_at_a (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (ha : (τ.state t).2 = .a) :
+    ¬ PlusTruthAt Mg τ t (.stab (someFuture (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  have hagree : τ.state t = (stayA (τ.state t).1 t).state t := by
+    rw [stayA_state_t]
+    exact Prod.ext rfl ha
+  obtain ⟨s, -, hs, -⟩ := h _ hagree
+  have hs' := (stab_will_iff _ s).mp hs
+  rw [stayA_state] at hs'
+  rcases hs' with h' | h' <;> exact S.noConfusion h'
+
+/-- S1 fails at `c`: along `stayC` every future state is `c`, where `⊡Fp` is False. -/
+theorem not_S1_at_c (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hc : (τ.state t).2 = .c) :
+    ¬ PlusTruthAt Mg τ t (.stab (someFuture (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  have hagree : τ.state t = (stayC (τ.state t).1 t).state t := by
+    rw [stayC_state_t]
+    exact Prod.ext rfl hc
+  obtain ⟨s, -, hs, -⟩ := h _ hagree
+  have hs' := (stab_will_iff _ s).mp hs
+  rw [stayC_state] at hs'
+  rcases hs' with h' | h' <;> exact S.noConfusion h'
+
+/-- S1 holds at `b`: the next state is `b` or `d`, and `⊡Fp` holds at both. -/
+theorem S1_at_b (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hb : (τ.state t).2 = .b) :
+    PlusTruthAt Mg τ t (.stab (someFuture (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro σ hagree
+  have h1 : (σ.state t).2 = .b := by rw [← hagree]; exact hb
+  rcases next_of_b σ t h1 with h2 | h2
+  · exact ⟨t + 1, lt_add_one t, stab_will_at_b σ (t + 1) h2,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := σ) (t := r)⟩
+  · exact ⟨t + 1, lt_add_one t, stab_will_at_d σ (t + 1) h2,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := σ) (t := r)⟩
+
+/-- S1 holds at `d`: the next state is `b`, where `⊡Fp` holds. -/
+theorem S1_at_d (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hd : (τ.state t).2 = .d) :
+    PlusTruthAt Mg τ t (.stab (someFuture (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro σ hagree
+  have h1 : (σ.state t).2 = .d := by rw [← hagree]; exact hd
+  exact ⟨t + 1, lt_add_one t, stab_will_at_b σ (t + 1) (next_of_d σ t h1),
+    fun r _ _ => PlusTruth.top_true (M := Mg) (τ := σ) (t := r)⟩
+
+/-- **S1 `⊡F(⊡Fp)` holds at a seam iff the state is `b` or `d`** — the same partition as the
+depth-1 stratum, on both shared classes. -/
+theorem depth2_S1_iff (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (someFuture (.stab Fp))) ↔
+      ((τ.state t).2 = S.b ∨ (τ.state t).2 = S.d) := by
+  constructor
+  · intro h
+    rcases hs : (τ.state t).2 with _ | _ | _ | _
+    · exact absurd h (not_S1_at_a τ t hs)
+    · exact Or.inl rfl
+    · exact absurd h (not_S1_at_c τ t hs)
+    · exact Or.inr rfl
+  · rintro (hb | hd)
+    · exact S1_at_b τ t hb
+    · exact S1_at_d τ t hd
+
+/-! ### S2: `⊡(Fp → ⊡Fp)`, the landed shape — `F T T T` -/
+
+/-- S2 fails at `a`: along `jumpB`, `Fp` is True (`b` at `t + 1`) but `⊡Fp` at `a` is False. -/
+theorem not_S2_at_a (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (ha : (τ.state t).2 = .a) :
+    ¬ PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  have hagree : τ.state t = (jumpB (τ.state t).1 t).state t := by
+    rw [jumpB_state_t]
+    exact Prod.ext rfl ha
+  have hFp : PlusTruthAt Mg (jumpB (τ.state t).1 t) t Fp :=
+    ⟨t + 1, lt_add_one t, jumpB_state_succ _ t,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := jumpB (τ.state t).1 t) (t := r)⟩
+  have hstab := (stab_will_iff _ t).mp (h _ hagree hFp)
+  rw [jumpB_state_t] at hstab
+  rcases hstab with h' | h' <;> exact S.noConfusion h'
+
+/-- S2 holds at `b` outright: `⊡Fp` holds there. -/
+theorem S2_at_b (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hb : (τ.state t).2 = .b) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro σ hagree _
+  exact stab_will_at_b σ t (by rw [← hagree]; exact hb)
+
+/-- S2 holds at `c` VACUOUSLY: no history through `c` ever sees `p`, so `Fp` is False. This is
+the cell that separates `c` from `a` inside the shared-False class. -/
+theorem S2_at_c (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hc : (τ.state t).2 = .c) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro σ hagree hF
+  exact absurd hF (not_Fp_at_c σ t (by rw [← hagree]; exact hc))
+
+/-- S2 holds at `d` outright: `⊡Fp` holds there. -/
+theorem S2_at_d (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hd : (τ.state t).2 = .d) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro σ hagree _
+  exact stab_will_at_d σ t (by rw [← hagree]; exact hd)
+
+/-- **S2 `⊡(Fp → ⊡Fp)` holds at a seam iff the state is not `a`.** On the shared-False class
+`{a, c}` it is False at `a` and True at `c`: the landed shape is NOT a function of the depth-1
+stratum here. -/
+theorem depth2_S2_iff (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Fp))) ↔ (τ.state t).2 ≠ S.a := by
+  constructor
+  · intro h ha
+    exact not_S2_at_a τ t ha h
+  · intro hne
+    rcases hs : (τ.state t).2 with _ | _ | _ | _
+    · exact absurd hs hne
+    · exact S2_at_b τ t hs
+    · exact S2_at_c τ t hs
+    · exact S2_at_d τ t hs
+
+/-! ### M1: `⊡(Fp → ⊡Pp)`, mixed — `F F T T` -/
+
+/-- M1 fails at `a`: along `jumpB`, `Fp` is True but `⊡Pp` at `a` is False. -/
+theorem not_M1_at_a (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (ha : (τ.state t).2 = .a) :
+    ¬ PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Pp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  have hagree : τ.state t = (jumpB (τ.state t).1 t).state t := by
+    rw [jumpB_state_t]
+    exact Prod.ext rfl ha
+  have hFp : PlusTruthAt Mg (jumpB (τ.state t).1 t) t Fp :=
+    ⟨t + 1, lt_add_one t, jumpB_state_succ _ t,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := jumpB (τ.state t).1 t) (t := r)⟩
+  have hstab := (stab_past_iff _ t).mp (h _ hagree hFp)
+  rw [jumpB_state_t] at hstab
+  exact S.noConfusion hstab
+
+/-- M1 fails at `b`: instantiate the outer `∀ σ` at `τ` itself — `Fp` holds there (every
+history from `b` reaches `p`) but `⊡Pp` at `b` is False (`fromA` has no `p` behind it). -/
+theorem not_M1_at_b (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hb : (τ.state t).2 = .b) :
+    ¬ PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Pp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  have hFp : PlusTruthAt Mg τ t Fp := (stab_will_at_b τ t hb) τ rfl
+  exact not_stab_past_at_b τ t hb (h τ rfl hFp)
+
+/-- M1 holds at `c` vacuously: `Fp` is False at `c`. -/
+theorem M1_at_c (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hc : (τ.state t).2 = .c) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Pp))) := by
+  rw [PlusTruth.stab_iff]
+  intro σ hagree hF
+  exact absurd hF (not_Fp_at_c σ t (by rw [← hagree]; exact hc))
+
+/-- M1 holds at `d` outright: `⊡Pp` holds there. -/
+theorem M1_at_d (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hd : (τ.state t).2 = .d) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Pp))) := by
+  rw [PlusTruth.stab_iff]
+  intro σ hagree _
+  exact stab_past_at_d σ t (by rw [← hagree]; exact hd)
+
+/-- **M1 `⊡(Fp → ⊡Pp)` holds at a seam iff the state is `c` or `d`.** It splits BOTH shared
+classes: `a` F vs `c` T, and `b` F vs `d` T. -/
+theorem depth2_M1_iff (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Pp))) ↔
+      ((τ.state t).2 = S.c ∨ (τ.state t).2 = S.d) := by
+  constructor
+  · intro h
+    rcases hs : (τ.state t).2 with _ | _ | _ | _
+    · exact absurd h (not_M1_at_a τ t hs)
+    · exact absurd h (not_M1_at_b τ t hs)
+    · exact Or.inl rfl
+    · exact Or.inr rfl
+  · rintro (hc | hd)
+    · exact M1_at_c τ t hc
+    · exact M1_at_d τ t hd
+
+/-! ### M2: `⊡(Pp → ⊡Fp)`, mixed — `T T T T` -/
+
+/-- **M2 `⊡(Pp → ⊡Fp)` holds at every seam**: at `b`, `d` because `⊡Fp` holds; at `a`, `c`
+vacuously because no history through a backward sink has `p` in its past. -/
+theorem depth2_M2_true (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Pp (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro σ _ hP
+  rcases hs : (σ.state t).2 with _ | _ | _ | _
+  · exact absurd hP (not_Pp_at_a σ t hs)
+  · exact stab_will_at_b σ t hs
+  · exact absurd hP (not_Pp_at_c σ t hs)
+  · exact stab_will_at_d σ t hs
+
+/-! ### S1': `⊡P(⊡Fp)`, the past mirror of S1 — `F F F T` -/
+
+/-- S1' fails at `a`: along `stayA` every past state is `a`, where `⊡Fp` is False. -/
+theorem not_S1past_at_a (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (ha : (τ.state t).2 = .a) :
+    ¬ PlusTruthAt Mg τ t (.stab (somePast (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  have hagree : τ.state t = (stayA (τ.state t).1 t).state t := by
+    rw [stayA_state_t]
+    exact Prod.ext rfl ha
+  obtain ⟨s, -, hs, -⟩ := h _ hagree
+  have hs' := (stab_will_iff _ s).mp hs
+  rw [stayA_state] at hs'
+  rcases hs' with h' | h' <;> exact S.noConfusion h'
+
+/-- S1' fails at `b`: along `fromA` every past state is `a`, where `⊡Fp` is False. This is the
+cell that separates `b` from `d` inside the shared-True class. -/
+theorem not_S1past_at_b (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hb : (τ.state t).2 = .b) :
+    ¬ PlusTruthAt Mg τ t (.stab (somePast (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  have hagree : τ.state t = (fromA (τ.state t).1 t).state t := by
+    rw [fromA_state_t]
+    exact Prod.ext rfl hb
+  obtain ⟨s, hst, hs, -⟩ := h _ hagree
+  have hs' := (stab_will_iff _ s).mp hs
+  rw [fromA_state_lt _ t s hst] at hs'
+  rcases hs' with h' | h' <;> exact S.noConfusion h'
+
+/-- S1' fails at `c`: along `stayC` every past state is `c`, where `⊡Fp` is False. -/
+theorem not_S1past_at_c (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hc : (τ.state t).2 = .c) :
+    ¬ PlusTruthAt Mg τ t (.stab (somePast (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  have hagree : τ.state t = (stayC (τ.state t).1 t).state t := by
+    rw [stayC_state_t]
+    exact Prod.ext rfl hc
+  obtain ⟨s, -, hs, -⟩ := h _ hagree
+  have hs' := (stab_will_iff _ s).mp hs
+  rw [stayC_state] at hs'
+  rcases hs' with h' | h' <;> exact S.noConfusion h'
+
+/-- S1' holds at `d`: the previous state is `b`, where `⊡Fp` holds. -/
+theorem S1past_at_d (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) (hd : (τ.state t).2 = .d) :
+    PlusTruthAt Mg τ t (.stab (somePast (.stab Fp))) := by
+  rw [PlusTruth.stab_iff]
+  intro σ hagree
+  have h1 : (σ.state t).2 = .d := by rw [← hagree]; exact hd
+  exact ⟨t - 1, sub_one_lt t, stab_will_at_b σ (t - 1) (prev_of_d σ t h1),
+    fun r _ _ => PlusTruth.top_true (M := Mg) (τ := σ) (t := r)⟩
+
+/-- **S1' `⊡P(⊡Fp)` holds at a seam iff the state is `d`.** On the shared-True class `{b, d}`
+it is False at `b` and True at `d`. -/
+theorem depth2_S1past_iff (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (somePast (.stab Fp))) ↔ (τ.state t).2 = S.d := by
+  constructor
+  · intro h
+    rcases hs : (τ.state t).2 with _ | _ | _ | _
+    · exact absurd h (not_S1past_at_a τ t hs)
+    · exact absurd h (not_S1past_at_b τ t hs)
+    · exact absurd h (not_S1past_at_c τ t hs)
+    · rfl
+  · intro hd
+    exact S1past_at_d τ t hd
+
+/-! ### The two optional past rows (not pinned): `⊡(Pp → ⊡Pp)` — `T F T T`; `⊡P(⊡Pp)` — `F F F F` -/
+
+/-- The history that stays at `b` forever. -/
+noncomputable def stayB (c t : ℤ) : WorldHistory Fg.toTaskFrame := stay .b rfl c t
+
+theorem stayB_state (c t z : ℤ) : (stayB c t).state z = (z + (c - t), .b) := rfl
+
+theorem stayB_state_t (c t : ℤ) : (stayB c t).state t = (c, .b) := stay_state_t .b rfl c t
+
+/-- Before `t`, `viaD` is never at `d`. -/
+theorem viaD_state_lt (c t s : ℤ) (hs : s < t) : ((viaD c t).state s).2 ≠ .d := by
+  rw [viaD_state]
+  change viaDState t s ≠ S.d
+  unfold viaDState
+  split_ifs <;> first | decide | omega
+
+/-- `⊡(Pp → ⊡Pp)` fails at `b`: along `stayB`, `Pp` holds (`b` at `t - 1`) but `⊡Pp` at `b` is
+False. -/
+theorem not_optPastImp_at_b (τ : WorldHistory Fg.toTaskFrame) (t : ℤ)
+    (hb : (τ.state t).2 = .b) : ¬ PlusTruthAt Mg τ t (.stab (.imp Pp (.stab Pp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  have hagree : τ.state t = (stayB (τ.state t).1 t).state t := by
+    rw [stayB_state_t]
+    exact Prod.ext rfl hb
+  have hPp : PlusTruthAt Mg (stayB (τ.state t).1 t) t Pp :=
+    ⟨t - 1, sub_one_lt t, rfl,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := stayB (τ.state t).1 t) (t := r)⟩
+  have hstab := (stab_past_iff _ t).mp (h _ hagree hPp)
+  rw [stayB_state_t] at hstab
+  exact S.noConfusion hstab
+
+/-- (Optional row) **`⊡(Pp → ⊡Pp)` holds at a seam iff the state is not `b`**: on the
+shared-True class it is False at `b` and True at `d`. -/
+theorem depth2_optPastImp_iff (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Pp (.stab Pp))) ↔ (τ.state t).2 ≠ S.b := by
+  constructor
+  · intro h hb
+    exact not_optPastImp_at_b τ t hb h
+  · intro hne
+    rw [PlusTruth.stab_iff]
+    intro σ hagree hP
+    have hσ : (σ.state t).2 ≠ S.b := by rw [← hagree]; exact hne
+    rcases hs : (σ.state t).2 with _ | _ | _ | _
+    · exact absurd hP (not_Pp_at_a σ t hs)
+    · exact absurd hs hσ
+    · exact absurd hP (not_Pp_at_c σ t hs)
+    · exact stab_past_at_d σ t hs
+
+/-- (Optional row) **`⊡P(⊡Pp)` fails at every seam**: at `a`, `b`, `c` the constant histories
+have no `d` in their past; at `d`, `viaD` has none either. -/
+theorem depth2_optPastPast_false (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    ¬ PlusTruthAt Mg τ t (.stab (somePast (.stab Pp))) := by
+  rw [PlusTruth.stab_iff]
+  intro h
+  rcases hs : (τ.state t).2 with _ | _ | _ | _
+  · have hagree : τ.state t = (stayA (τ.state t).1 t).state t := by
+      rw [stayA_state_t]
+      exact Prod.ext rfl hs
+    obtain ⟨s, -, hs', -⟩ := h _ hagree
+    have hd := (stab_past_iff _ s).mp hs'
+    rw [stayA_state] at hd
+    exact S.noConfusion hd
+  · have hagree : τ.state t = (stayB (τ.state t).1 t).state t := by
+      rw [stayB_state_t]
+      exact Prod.ext rfl hs
+    obtain ⟨s, -, hs', -⟩ := h _ hagree
+    have hd := (stab_past_iff _ s).mp hs'
+    rw [stayB_state] at hd
+    exact S.noConfusion hd
+  · have hagree : τ.state t = (stayC (τ.state t).1 t).state t := by
+      rw [stayC_state_t]
+      exact Prod.ext rfl hs
+    obtain ⟨s, -, hs', -⟩ := h _ hagree
+    have hd := (stab_past_iff _ s).mp hs'
+    rw [stayC_state] at hd
+    exact S.noConfusion hd
+  · have hagree : τ.state t = (viaD (τ.state t).1 t).state t := by
+      rw [viaD_state_t]
+      exact Prod.ext rfl hs
+    obtain ⟨s, hst, hs', -⟩ := h _ hagree
+    exact viaD_state_lt _ t s hst ((stab_past_iff _ s).mp hs')
+
 end Probe739SharedStratum
 
--- temporary Phase 1 axiom check; the permanent foot is written in Phase 4
+-- temporary Phase 1/2 axiom check; the permanent foot is written in Phase 4
 #print axioms Probe739SharedStratum.stab_will_iff
 #print axioms Probe739SharedStratum.stab_past_iff
+#print axioms Probe739SharedStratum.depth2_S1_iff
+#print axioms Probe739SharedStratum.depth2_S2_iff
+#print axioms Probe739SharedStratum.depth2_M1_iff
+#print axioms Probe739SharedStratum.depth2_M2_true
+#print axioms Probe739SharedStratum.depth2_S1past_iff
+#print axioms Probe739SharedStratum.depth2_optPastImp_iff
+#print axioms Probe739SharedStratum.depth2_optPastPast_false

@@ -213,7 +213,7 @@ time (CARRIED); its lift is confirmed by this phase's first guard compile.
 
 ---
 
-### Phase 2: The five depth-2 shapes, computed directly [NOT STARTED]
+### Phase 2: The five depth-2 shapes, computed directly [COMPLETED]
 
 **Goal**: Each of the five depth-2 shapes has a per-state characterization that reproduces the
 value table below exactly — including the three rows that refute the one-bit reading.
@@ -229,24 +229,24 @@ value table below exactly — including the three rows that refute the one-bit r
 | S1' `⊡P(⊡Fp)` (past mirror of S1) | F | F | F | T |
 
 **Tasks**:
-- [ ] `depth2_S1_iff` (`↔ state = b ∨ state = d`): False at `a` along `stayA` and at `c` along
+- [x] `depth2_S1_iff` (`↔ state = b ∨ state = d`): False at `a` along `stayA` and at `c` along
       `stayC` (every future state has `⊡Fp` False); True at `b` (next state `b` or `d`, both
       `⊡Fp` True) and at `d` (next state `b`).
-- [ ] `depth2_S2_iff` (`↔ state ≠ a`): False at `a` along `jumpB` (`Fp` True via `b` at
+- [x] `depth2_S2_iff` (`↔ state ≠ a`): False at `a` along `jumpB` (`Fp` True via `b` at
       `t + 1`, `⊡Fp` at `a` False); True at `b`, `d` outright (`⊡Fp` holds) and at `c`
       vacuously (`stays_fwd` at `c`: no history through `c` ever sees `p`).
-- [ ] `depth2_M1_iff` (`↔ state = c ∨ state = d`): False at `a` along `jumpB` (`Fp` True,
+- [x] `depth2_M1_iff` (`↔ state = c ∨ state = d`): False at `a` along `jumpB` (`Fp` True,
       `⊡Pp` at `a` False) and at `b` by instantiating the outer `∀ σ` at `τ` itself (`Fp` by
       `stab_will_at_b`, `⊡Pp` at `b` False — the report's compiled `mixed_at_b`); True at `c`
       vacuously (`stays_fwd`) and at `d` (`⊡Pp` True at `d`).
-- [ ] `depth2_M2_true` (True at every state): at `b`, `d` because `⊡Fp` holds; at `a`, `c`
+- [x] `depth2_M2_true` (True at every state): at `b`, `d` because `⊡Fp` holds; at `a`, `c`
       vacuously because `stays_bwd` shows no history through `a` or `c` has `p` in its past.
-- [ ] `depth2_S1past_iff` (`↔ state = d`): False at `a` along `stayA`, at `c` along `stayC`, and
+- [x] `depth2_S1past_iff` (`↔ state = d`): False at `a` along `stayA`, at `c` along `stayC`, and
       at `b` along `fromA` (every past state is `a`, where `⊡Fp` is False); True at `d` with
       witness `s = t - 1` (`prev_of_d`, `⊡Fp` True at `b`).
-- [ ] If and only if the phase is under budget: the optional `⊡(Pp → ⊡Pp)` (`↔ state ≠ b`) and
+- [x] If and only if the phase is under budget: the optional `⊡(Pp → ⊡Pp)` (`↔ state ≠ b`) and
       `⊡P(⊡Pp)` (False everywhere; `viaD` refutes at `d`) rows — as extra theorems, not pinned.
-- [ ] Guard compile (watch for `REPLAY`), commit the probe file by explicit path.
+- [x] Guard compile (watch for `REPLAY`), commit the probe file by explicit path.
 
 **Timing**: 2 hours
 
