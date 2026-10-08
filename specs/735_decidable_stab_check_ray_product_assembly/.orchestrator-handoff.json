@@ -1,29 +1,23 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 14,
-  "summary": "Planned task 735 to the acceptance criterion's verdict branch in four phases (6 hours): wire the compiled obstruction probe presented-not-complete.lean into check-evidence-probes.sh; land plusStab_iff_forall_run_of_presented plus a liveness decider (stabCheckSig, stabCheck_iff_of_presented, decidableStab_of_presented) conditional on Presented with explicit vacuity statements and no mention of PlusValidZTime; pin, witness and index them as Conditional; record the verdict naming (C), (S), (W) in the RaySummary README and correct the ROADMAP critical path. No dependency changes or new tasks; the 742 vacuity finding is scoped, costed and raised as a non-blocking user_decision.",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
-      "summary": "Four-phase verdict-branch plan with Lean Challenge Statements (compiled with sorry bodies), file_scope harvested from Files to modify (13 paths)."
-    }
-  ],
-  "phases_completed": 0,
-  "phases_total": 4,
-  "blockers": [],
+  "status": "partial",
   "skeleton": false,
+  "summary": "Phase 1 of 4 complete: Probe735.not_presented wired as specs/evidence/seam-gluing-ray-product/presented-not-complete.lean (verbatim body, house-style header; axioms [propext, Classical.choice, Quot.sound], 0 sorries) and added to scripts/check-evidence-probes.sh (WIRED entry + table row naming (C), (S), (W)); gate script exits 0 with all 19 WIRED (22 incl. WIRED_REPO) probes PASS; full guarded lake build green; committed as ebd3f4cb0. Phases 2-4 remain; Phase 2 is next (wave 1). Decidable (PlusValidZTime phi) not stated in any form; task 742 text untouched (user ruling Option A).",
+  "phases_completed": 1,
+  "phases_total": 4,
+  "dispatch_seq": 15,
+  "artifacts": [
+    {"type": "evidence", "path": "specs/evidence/seam-gluing-ray-product/presented-not-complete.lean", "summary": "Wired obstruction probe: Presented fails on model A for every finite presentation (Probe735.not_presented)"},
+    {"type": "script", "path": "scripts/check-evidence-probes.sh", "summary": "WIRED entry and table row for presented-not-complete"},
+    {"type": "handoff", "path": "specs/735_decidable_stab_check_ray_product_assembly/handoffs/phase-1-handoff-20261008T165553Z.md", "summary": "Phase 1 progressive handoff"},
+    {"type": "summary", "path": "specs/735_decidable_stab_check_ray_product_assembly/summaries/01_decidable-stab-check-assembly-summary.md", "summary": "Implementation summary (in progress, phase 1 of 4)"}
+  ],
   "sorry_inventory": [],
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 735; Phases 1 and 2 are wave 1 on disjoint files (evidence collection + gate script vs. library); Phase 1 is the only writer on scripts/check-evidence-probes.sh (shared with 733, 734, 739, all not_started).",
-  "user_decision": {
-    "question": "Task 742's Presented-conditional deliverables (hit_eq_hitOf_of_presented, plusStab_iff_forall_hitOf_of_presented, their docstrings, the theorem-index row, and the README/ROADMAP/aggregator/pin-test sentences) were written on the reading that Presented is merely undischarged; presented-not-complete.lean shows Presented is unsatisfiable on a non-trivial regular model, so those results are vacuous there. Should this task amend 742's own text in place (scoped in the plan's Decision D-P5: ~40-60 prose lines, zero Lean statement changes, ~1 hour, LOW), or only add adjacent strengthening text and leave 742's sentences verbatim?",
-    "options": [
-      "Option A — additive only: this task adds adjacent cross-referencing text beside 742's deliverables and leaves 742's own sentences verbatim; the user files or authorizes a separate correction if wanted",
-      "Option B — authorize Phase 4 of this plan to amend the enumerated 742 text in place (Decision D-P5's list), leaving the 742 summary archival and untouched"
-    ],
-    "recommended": "Option A — additive only: this task adds adjacent cross-referencing text beside 742's deliverables and leaves 742's own sentences verbatim; the user files or authorizes a separate correction if wanted",
-    "blocking": false
+  "blockers": [],
+  "continuation_path": "specs/735_decidable_stab_check_ray_product_assembly/handoffs/phase-1-handoff-20261008T165553Z.md",
+  "continuation_context": {
+    "is_successor": true,
+    "next_phase": 2,
+    "handoff_path": "specs/735_decidable_stab_check_ray_product_assembly/handoffs/phase-1-handoff-20261008T165553Z.md",
+    "note": "Phase 1 closed and committed (ebd3f4cb0). Phase 2 is independent of Phase 1 (wave 1); Phase 3 depends on 2; Phase 4 on 1-3."
   }
 }

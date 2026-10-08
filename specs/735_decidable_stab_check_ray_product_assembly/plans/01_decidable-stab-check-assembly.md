@@ -1,7 +1,7 @@
 # Implementation Plan: Task #735
 
 - **Task**: 735 - Assemble the decidable stab check on the ray-product presentation: Decidable (PlusValidZTime phi)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: 711, 737, 742 (all complete)
 - **Research Inputs**: specs/735_decidable_stab_check_ray_product_assembly/reports/01_decidable-stab-check-assembly.md
@@ -125,14 +125,14 @@ are reserved for the user.
 Phases within the same wave can execute in parallel. Phases 1 and 2 touch disjoint files
 (evidence collection + gate script vs. library + tests root).
 
-### Phase 1: Wire the obstruction -- `Presented` is not a completeness carrier [NOT STARTED]
+### Phase 1: Wire the obstruction -- `Presented` is not a completeness carrier [COMPLETED]
 
 **Goal**: The verdict's machine-checked carrier lives in the evidence collection and is compiled
 by the gate script on every run: `¬ Presented MA stayA t Fp lab step` for every finite `Q`,
 `lab`, `step`.
 
 **Tasks**:
-- [ ] Copy `specs/735_decidable_stab_check_ray_product_assembly/probes/presented-not-complete.lean`
+- [x] Copy `specs/735_decidable_stab_check_ray_product_assembly/probes/presented-not-complete.lean`
       to `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` **verbatim in every
       declaration** (namespace `Probe735`, the fixture re-declared, `loopIdx`/`pump`/`pump_isRun`/
       `pump_exists`, `not_presented`, the `#print axioms` foot). Extend only the header docstring to
@@ -145,15 +145,15 @@ by the gate script on every run: `¬ Presented MA stayA t Fp lab step` for every
       'every refuting regular ℤ-model has a `Presented` presentation'; B2b's consistency conditions
       must exclude pumpable eventuality-deferring run sets (`presented_localRun`)". Cite the fixture
       source `quasistate-does-not-determine-hit.lean` (transcribed, never imported).
-- [ ] `scripts/check-evidence-probes.sh`: append `"seam-gluing-ray-product/presented-not-complete"`
+- [x] `scripts/check-evidence-probes.sh`: append `"seam-gluing-ray-product/presented-not-complete"`
       to the `WIRED` array after `quasistate-does-not-determine-hit`, and add its header-comment
       row in the probe table (`probe | the decision it holds in place`, wrapped at the existing
       column), labelled `OBSTRUCTION (verdict on the ray-product assembly)` and naming the three
       missing theorems (C), (S), (W) in one line each. Do not reorder or touch any other entry.
-- [ ] `lake env lean specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` exits 0;
+- [x] `lake env lean specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` exits 0;
       then `bash scripts/check-evidence-probes.sh` exits 0 with 19 wired probes listed (18 + this
-      one; confirm the count from the script's own `PASS all N` line).
-- [ ] Commit (`task 735 phase 1: ...`) staging exactly the two files.
+      one; confirm the count from the script's own `PASS all N` line). *(deviation: altered — the script's `PASS all N` line counts `WIRED` + `WIRED_REPO`, so it reads `PASS  all 22 wired probe(s) compile`; the 19 `WIRED` entries are confirmed from the listing, all PASS)*
+- [x] Commit (`task 735 phase 1: ...`) staging exactly the two files.
 
 **Timing**: 1 hour
 

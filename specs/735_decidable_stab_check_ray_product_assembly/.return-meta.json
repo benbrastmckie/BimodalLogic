@@ -1,54 +1,38 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 735,
+  "session_id": "sess_1791448118_c50a56",
+  "dispatch_seq": 15,
+  "phase_number": 1,
+  "phases_completed": 1,
+  "phases_total": 4,
+  "started_at": "2026-10-08T16:52:03Z",
+  "completed_at": "2026-10-08T16:56:48Z",
+  "requires_user_review": false,
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
-      "summary": "Four-phase plan to the acceptance criterion's verdict branch: wire the compiled obstruction probe presented-not-complete.lean, land the run-level stab bridge and a liveness decider conditional on Presented (with explicit vacuity statements, never Decidable (PlusValidZTime phi)), pin and index them as Conditional, and record the verdict naming (C), (S), (W) with the ROADMAP critical path corrected."
-    }
+    {"type": "summary", "path": "specs/735_decidable_stab_check_ray_product_assembly/summaries/01_decidable-stab-check-assembly-summary.md", "summary": "Phase 1 of 4: the obstruction probe Probe735.not_presented wired into the evidence collection and the gate script; no library change; build green."},
+    {"type": "evidence", "path": "specs/evidence/seam-gluing-ray-product/presented-not-complete.lean", "summary": "Wired probe: Presented fails on model A for every finite presentation; axioms [propext, Classical.choice, Quot.sound]."},
+    {"type": "handoff", "path": "specs/735_decidable_stab_check_ray_product_assembly/handoffs/phase-1-handoff-20261008T165553Z.md", "summary": "Phase 1 progressive handoff; next action is Phase 2."}
   ],
-  "next_steps": "Run /implement 735 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1791448118_c50a56_735",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 6,
-    "dependency_waves": [[1, 2], [3], [4]]
+  "handoff_path": "specs/735_decidable_stab_check_ray_product_assembly/.orchestrator-handoff.json",
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_note": "pre-existing pattern hit int_domain_universal in FormalSystem/Examples/TemporalStructures.lean; Lean source roots unchanged from the pre-dispatch commit",
+    "axiom_count": 14,
+    "axiom_baseline": 14,
+    "build_passed": true,
+    "evidence_gate_passed": true,
+    "verification_passed": true
   },
-  "dispatch_seq": 14,
-  "proposed_file_scope": [
-    "FormalSystem.lean",
-    "FormalSystem/Metalogic/Decidability/README.md",
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/Decidability/RaySummary/StabCheck.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean",
-    "Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "docs/theorem-index.md",
-    "scripts/check-evidence-probes.sh",
-    "scripts/check-module-invariants.sh",
-    "specs/ROADMAP.md",
-    "specs/evidence/seam-gluing-ray-product/presented-not-complete.lean"
-  ],
-  "user_decision": {
-    "question": "Task 742's Presented-conditional deliverables (hit_eq_hitOf_of_presented, plusStab_iff_forall_hitOf_of_presented, their docstrings, the theorem-index row, and the README/ROADMAP/aggregator/pin-test sentences) were written on the reading that Presented is merely undischarged; presented-not-complete.lean shows Presented is unsatisfiable on a non-trivial regular model, so those results are vacuous there. Should this task amend 742's own text in place (scoped in the plan's Decision D-P5: ~40-60 prose lines, zero Lean statement changes, ~1 hour, LOW), or only add adjacent strengthening text and leave 742's sentences verbatim?",
-    "options": [
-      "Option A — additive only: this task adds adjacent cross-referencing text beside 742's deliverables and leaves 742's own sentences verbatim; the user files or authorizes a separate correction if wanted",
-      "Option B — authorize Phase 4 of this plan to amend the enumerated 742 text in place (Decision D-P5's list), leaving the 742 summary archival and untouched"
-    ],
-    "recommended": "Option A — additive only: this task adds adjacent cross-referencing text beside 742's deliverables and leaves 742's own sentences verbatim; the user files or authorizes a separate correction if wanted",
-    "blocking": false
+  "completion_data": {
+    "completion_summary": "Phase 1 only: Probe735.not_presented wired at specs/evidence/seam-gluing-ray-product/presented-not-complete.lean and into scripts/check-evidence-probes.sh (19 WIRED probes PASS; the script's total counts 22 with WIRED_REPO); full guarded build green; commit ebd3f4cb0. Phases 2-4 pending."
   },
   "memory_candidates": [
-    {
-      "content": "An exact trace-set-equality realization hypothesis between a model's seam and a finite per-state-labelled step graph (BimodalLogic's `Presented`) can only ever be a SOUNDNESS device, never a completeness carrier: the run-trace set of a finite presentation without an acceptance condition is pumping-closed, while a closure-trace set over `untl`/`snce` letters is not closed (an unboundedly deferrable eventuality has traces whose pumped limit violates the `untl` run condition). Consequence for planning: never route a decidability-of-validity plan through 'every refuting model has a presentation satisfying such a hypothesis'; a decider stated under it is vacuous on non-trivial models and must say so; completeness needs a type-level (Hit-level) small-presentation theorem with a computable bound instead. Machine-checked instance: specs/evidence/seam-gluing-ray-product/presented-not-complete.lean (pumping via a Nat-recursive loop index, no modular arithmetic).",
-      "category": "PATTERN",
-      "source_artifact": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["Presented", "pumping", "trace-set closedness", "soundness-only hypothesis", "quasimodel", "decidability planning"]
-    }
+    "check-evidence-probes.sh's PASS-all-N line counts WIRED plus WIRED_REPO entries, so a plan's expected count must add the three WIRED_REPO probes (19 WIRED -> 'all 22').",
+    "In a Bash tool call, 'A && B && (C) & D' runs D in the foreground shell where variables set in A/B are unset; write the PID file inside the backgrounded subshell or use absolute paths."
   ]
 }
