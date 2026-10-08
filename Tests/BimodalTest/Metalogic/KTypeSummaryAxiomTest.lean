@@ -39,7 +39,7 @@ Rows for the later steps are appended as their modules land.
 Nothing here measures a decidability result, because the cluster proves none: saturation is
 proved for `k`-type-determined targets over coloured `ℤ`-blocks, and no reduction from a `⊡`
 fibre condition to such a target exists in Lean anywhere. A green build of this file certifies
-axiom profiles, not adequacy.
+the axiom profiles, not adequacy.
 
 ## When one of these guards fires
 

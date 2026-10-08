@@ -997,7 +997,13 @@ rests on kernel evaluation.
 
 ---
 
-### Phase 9: Evidence probe (ii) — E2, the depth-2 stratification probe, and close-out [NOT STARTED]
+### Phase 9: Evidence probe (ii) — E2, the depth-2 stratification probe, and close-out [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-module-invariants.sh` exits 0 | The single failing check is the pre-existing C9 citation at `scripts/check-phantom-citations.sh:145` (committed in `729dc345f`), outside this task's `file_scope` and untouched by this task — the identical exclusion Phases 1-7 recorded | Final gates this dispatch: unscoped guarded `lake build` exit 0 (2828 jobs, 0 errors, 0 warnings), guarded `lake build BimodalTest` exit 0 (2890 jobs), full harness with every check PASS except C9 (C1, C28 0 warnings, C33, INV among them), probes 19/19, sorry census 0, `grep sorry` over both clusters empty |
 
 **Goal**: Define and run E2 from the ranking's falsifier sentence ("a `⊡`-depth-2 formula whose
 `⊡`-value at a class is not a function of the class's summary state") on a fixture whose depth-1
@@ -1005,38 +1011,38 @@ rests on kernel evaluation.
 
 **Tasks**:
 
-- [ ] Create `specs/evidence/seam-gluing-ray-product/stab-depth-two-probe.lean`
+- [x] Create `specs/evidence/seam-gluing-ray-product/stab-depth-two-probe.lean`
       (`import FormalSystem`; `namespace Probe711DepthTwo`). Fixture: two states `a, b` with
       `Rf _ a a`, `Rf _ a b`, `Rf _ b b` (bi-serial: `a` has predecessor `a`; `b` has predecessors
       `a, b`), built by `FrameOver.ofSlicedStep` with its `IsRegular` instance, `p` true at `b`
       only. Re-grep `FormalSystem.Metalogic.Conservativity.plusTruthAt_iff_atomize` and the probe
       twin `Probe718Stratification.plusTruthAt_iff_stratum_atomize` before citing.
-- [ ] Depth 1: prove `stab_will_at_a : ¬ PlusTruthAt M τ t (.stab (F p))` for `τ.state t = a`
+- [x] Depth 1: prove `stab_will_at_a : ¬ PlusTruthAt M τ t (.stab (F p))` for `τ.state t = a`
       (the history that stays at `a` forever) and `stab_will_at_b : PlusTruthAt … (.stab (F p))`
       for `τ.state t = b` (every successor of `b` is `b`, where `p` holds) — the state-dependent
       depth-1 value the shared Bool fixture cannot supply.
-- [ ] Depth 2, two formulas: `⊡F(⊡Fp)` and `⊡(Fp → ⊡Fp)`. For each, (a) compute the value at `a`
+- [x] Depth 2, two formulas: `⊡F(⊡Fp)` and `⊡(Fp → ⊡Fp)`. For each, (a) compute the value at `a`
       and at `b` directly from the semantics (`a`: both `False`; `b`: both `True` — confirm, do
       not assume), and (b) compute it through the stratification: atomize with a fresh atom `q`
       for `⊡Fp`, read `q` through the depth-1 stratum (`q(a) = false`, `q(b) = true`), and
       evaluate the resulting L-formula at depth 1 (`⊡F q`, `⊡(Fp → q)`) over the atomized model.
       Prove `(a) ↔ (b)` by `plusTruthAt_iff_atomize` applied twice, as theorems
       `depth2_via_strata_1`, `depth2_via_strata_2`.
-- [ ] The falsifier check: state and prove that on this fixture each depth-2 `⊡`-value at a state
+- [x] The falsifier check: state and prove that on this fixture each depth-2 `⊡`-value at a state
       **is** a function of `(state, depth-1 stratum)` — `value_is_function_of_stratum` — and
       record in the header that this is a POSITIVE result on one fixture, not a proof that the
       falsifier cannot exist: what would kill stratification is a fixture where two states with
-      equal depth-1 strata differ at depth 2, and this probe exhibits none.
-- [ ] Header in the collection's style (what is established / what is NOT established / axiom
+      equal depth-1 strata differ at depth 2, and this probe exhibits none. *(completed — and the header additionally records that a two-state fixture with a state-dependent depth-1 value has one state per stratum value, so the question is answered trivially; the real test is a three-state fixture, filed as a follow-up)*
+- [x] Header in the collection's style (what is established / what is NOT established / axiom
       record / compile line); `#print axioms` foot. Wire into `scripts/check-evidence-probes.sh`
       (**re-read immediately before editing; append only**); run the whole collection; commit
       (`task 711 phase 9: depth-2 stratification probe E2`), staging the probe and the script.
-- [ ] Close-out for the task: update both cluster READMEs' evidence paragraphs to cite the two
+- [x] Close-out for the task: update both cluster READMEs' evidence paragraphs to cite the two
       probes by file name and mark every chain step's status final; run the unscoped final build
       (`bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, detached), the
       test-library build (`… -- build BimodalTest`), `bash scripts/check-module-invariants.sh` and
       `bash scripts/check-evidence-probes.sh`; all green before the task is marked complete.
-      Write the implementation summary.
+      Write the implementation summary. *(deviation: altered — harness green except the pre-existing C9 named in the Exclusions below; the `^axiom ` census read 15 vs the baseline 14 because a docstring line of the new test module began with the word "axiom" — rewrapped, count 14, zero axiom declarations added; probes 19/19)*
 
 **Timing**: 2 hours
 
@@ -1195,30 +1201,30 @@ distinctive step; **nothing in that column is imported, ported, or depended on.*
 
 ## Testing & Validation
 
-- [ ] Every new module under `KTypeSummary/` and `RaySummary/`: `lean_verify` on each headline
+- [x] Every new module under `KTypeSummary/` and `RaySummary/`: `lean_verify` on each headline
       name reports no sorry and axioms within `[propext, Classical.choice, Quot.sound]`.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` builds with every `#guard_msgs`
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` builds with every `#guard_msgs`
       block matching (guarded `lake build BimodalTest`).
-- [ ] The two pre-existing downstream consumers of the relocated declarations,
+- [x] The two pre-existing downstream consumers of the relocated declarations,
       `…WeakCanonical.inflate_left` and `…inflate_right`, keep the axiom profiles recorded as
       Phase 3's baseline, after Phases 3, 4 and 5.
-- [ ] `bash scripts/check-module-invariants.sh` green after every module-adding phase (C33 for
+- [x] `bash scripts/check-module-invariants.sh` green after every module-adding phase (C33 for
       the regenerated root, C5/C12/C13 for README paths; no C24 entry is needed because no new
       `ForMathlib` module is added by this plan).
-- [ ] `bash scripts/check-evidence-probes.sh` green for the whole collection after Phases 2, 8
+- [x] `bash scripts/check-evidence-probes.sh` green for the whole collection after Phases 2, 8
       and 9, with the wired count rising by exactly one in each of Phases 8 and 9.
-- [ ] No cslib dependency was introduced: `grep -rn 'Cslib' lakefile.toml lake-manifest.json` is
+- [x] No cslib dependency was introduced: `grep -rn 'Cslib' lakefile.toml lake-manifest.json` is
       empty and `grep -rn '^import Cslib' --include=*.lean .` is empty. Mentions of cslib
       identifiers inside docstrings and probe headers are references and are expected.
-- [ ] No complexity claim: `grep -rni 'EXPTIME\|polynomial time\|exponential time\|upper bound\|lower bound'`
+- [x] No complexity claim: `grep -rni 'EXPTIME\|polynomial time\|exponential time\|upper bound\|lower bound'`
       over the new modules and probes returns only disclaimer prose.
-- [ ] Final: unscoped guarded `lake build` exit 0;
+- [x] Final: unscoped guarded `lake build` exit 0;
       `grep -rn sorry FormalSystem/Metalogic/WeakCanonical/KTypeSummary FormalSystem/Metalogic/Decidability/RaySummary`
       empty.
-- [ ] No file outside `specs/` cites a task number: docstrings cite declaration names, file
+- [x] No file outside `specs/` cites a task number: docstrings cite declaration names, file
       paths and sources (`bash scripts/check-task-references.sh` — the repo-wide lint FAILs on a
       pre-existing baseline, so the gate here is **non-regression**: zero flagged occurrences in
-      any file this task touches).
+      any file this task touches). *(every touched file linted clean with `check-task-references.sh`; the harness's C9 hit is the pre-existing out-of-territory citation)*
 
 ## Artifacts & Outputs
 

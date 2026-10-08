@@ -255,6 +255,30 @@ EVIDENCE="specs/evidence"
 #                                                           | interface's `Presents` bundle is
 #                                                           | cited, not inhabited), and no
 #                                                           | k-type DISTINCTNESS
+# seam-gluing-ray-product/stab-depth-two-probe              | E2 (probe ii): the depth-2
+#                                                           | stratification probe on the
+#                                                           | smallest fixture whose depth-1
+#                                                           | stab value is STATE-DEPENDENT
+#                                                           | (two states a, b; edges a->a,
+#                                                           | a->b, b->b; p at b): `stab (F p)`
+#                                                           | holds iff the seam state is b
+#                                                           | (`stab_will_iff`); both depth-2
+#                                                           | shapes `stab F (stab F p)` and
+#                                                           | `stab (F p -> stab F p)` computed
+#                                                           | DIRECTLY (`depth2_1_iff`,
+#                                                           | `depth2_2_iff`: iff the state is
+#                                                           | b) and THROUGH THE STRATA over the
+#                                                           | atomized model, reading the inner
+#                                                           | stab through its depth-1 stratum
+#                                                           | (`depth2_via_strata_1/_2`, with
+#                                                           | `plusTruthAt_iff_atomize` cited);
+#                                                           | the falsifier check
+#                                                           | `value_is_function_of_stratum`
+#                                                           | is POSITIVE on this fixture. Not a
+#                                                           | proof the falsifier cannot exist:
+#                                                           | the real test is a fixture with
+#                                                           | two states SHARING a depth-1
+#                                                           | stratum, filed as a follow-up
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -271,6 +295,7 @@ WIRED=(
   "seam-gluing-ray-product/device-selection-probe"
   "seam-gluing-ray-product/cslib-ramsey-port-feasibility"
   "seam-gluing-ray-product/ktype-summary-substrate-probe"
+  "seam-gluing-ray-product/stab-depth-two-probe"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

@@ -54,6 +54,27 @@ closes the step they did not cover: saturation.
 | `Segment.lean` | 108 | Step 3′: the segment carrier `segZ` (the half-open coloured segment `[a, b)` of `ℤ`) and `kEquiv_zFiber_segSum` — a coloured `ℤ`-block is `≡ₖ` the `ℤ`-indexed sum of its segments under any monotone covering cutting sequence. |
 | `Universal.lean` | 139 | Step 5b: `DeterminedByKType` (a target determined by the block's `k`-type) with its non-vacuity witness `determinedByKType_nfEval`, saturation proper `family_saturation` (each family inside or disjoint from the target), `finite_family_triples`, and `target_eq_union_of_families` (a `k`-type-determined target is the union of the families it contains). Not a decidability result; not about `⊡`. |
 
+## Evidence
+
+Two probes in the tracked evidence collection exercise this cluster; both are wired into
+`scripts/check-evidence-probes.sh` and compile sorry-free on the standard axiom profile.
+
+- `specs/evidence/seam-gluing-ray-product/ktype-summary-substrate-probe.lean` runs the chain end
+  to end on a concrete infinite fibre: an explicit cutting of the even-parity block with its
+  segment type equations proved by order isomorphism (never by evaluating `kTypeOf`), the cover
+  agreeing with it, the parity triple confirmed degenerate, and the central fact that the
+  distinct odd-parity block cut at the odd times lies in the same family — so the two blocks
+  have equal `k`-type at every depth — with `family_saturation` and
+  `target_eq_union_of_families` instantiated on the normal-form target. It inhabits no
+  `Presents` bundle and claims no `k`-type distinctness.
+- `specs/evidence/seam-gluing-ray-product/stab-depth-two-probe.lean` is E2, the depth-2
+  stratification probe on the smallest fixture whose depth-1 `⊡` value is state-dependent: both
+  depth-2 shapes computed directly and through the strata, and the falsifier check positive on
+  that fixture (not a proof the falsifier cannot exist — see its header).
+
+Every step of the chain this cluster owns (2, 3, 3′, 4, 5, 5′) is landed; step 6 is out of
+scope by design.
+
 ## The consumer relation
 
 The substrate is **built here and consumed downstream, never absorbed into the consuming
@@ -122,4 +143,4 @@ around.
 
 ---
 
-*Last verified: 2026-10-07*
+*Last verified: 2026-10-08*

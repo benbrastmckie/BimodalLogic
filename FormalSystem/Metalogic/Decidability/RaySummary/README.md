@@ -39,6 +39,16 @@ statement about `⊡` is made.
   summarised by finitely many triples (`finite_family_triples`, `target_eq_union_of_families` in
   the substrate); generalising the bundle to that shape is the consumer's option.
 
+## Evidence
+
+The substrate this interface sits on is exercised by two wired evidence probes
+(`specs/evidence/seam-gluing-ray-product/ktype-summary-substrate-probe.lean` and
+`specs/evidence/seam-gluing-ray-product/stab-depth-two-probe.lean`; see the
+[`KTypeSummary/` README](../../WeakCanonical/KTypeSummary/README.md) for what each establishes).
+Neither inhabits `Presents`: the substrate probe cites `plusStab_iff_seamSummary` and says in its
+header that producing a seam summary for a concrete frame is the consumer's assembly work, and the
+E2 probe is about stratification depth, not about this interface.
+
 ## The consumer relation
 
 The substrate is **built in `KTypeSummary/` and consumed downstream, never absorbed into the
