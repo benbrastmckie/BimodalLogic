@@ -130,6 +130,15 @@ upper-bound source.
       (PlusValidZTime φ)`, or a recorded verdict that the presentation cannot deliver it. Depends
       on 711 **and 737**: it may not be assembled on an undischarged `Presents` and presented as
       unconditional. `file_scope` is deliberately absent and MUST be set at plan time (Task 735)
+- [ ] Run E2's **real** test: the depth-2 stratification falsifier on a fixture with three or
+      more states, two of them *sharing* the depth-1 stratum, plus the `⊡(Fp → ⊡Pp)`-shaped mixed
+      formulas the landed probe leaves out. The landed positive is weak — a two-state fixture has
+      one state per stratum value, so the falsifier's question is answered trivially. At stake is
+      what licenses the finite per-time alphabet (Task 739)
+- [ ] Housekeeping: restate `kType_finite`, `exists_matching_factorization` and
+      `finite_family_triples` over `[Finite sig.preds]` (strictly stronger) and retire their six
+      linter suppressions, or record per declaration the statement-fidelity reason the pinned
+      `[Fintype] [DecidableEq]` form stays (Task 740)
 - [ ] Probe the backward dual on a backward-**nondeterministic** mirror fixture. E1 came out
       POSITIVE and is wired, so the two-factor presentation stands — but on a backward-*deterministic*
       fixture, whose backward factor is a singleton. The finite-width obstruction lives in the

@@ -1,5 +1,5 @@
 ---
-next_project_number: 739
+next_project_number: 741
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 739
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,737,738 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,737,738,739,740 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,735 | 298,464,502,616,737 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -81,6 +81,8 @@ next_project_number: 739
 737 [NOT STARTED] — Discharge the Presents hypothesis bundle: formalize the...
   └─ 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
 738 [NOT STARTED] — Pin the complexity-class divergence behind the CTL-star...
+739 [NOT STARTED] — Run E2's real test: the depth-2 stratification falsifier on a...
+740 [NOT STARTED] — Restate three KTypeSummary declarations over Finite...
 
 ### Formula Refactor
 
@@ -107,6 +109,64 @@ next_project_number: 739
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 
 ## Tasks
+
+### 740. Ktype summary finite preds restatement
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Restate three KTypeSummary declarations over [Finite sig.preds] and retire their linter suppressions
+
+WHY THIS EXISTS. Housekeeping follow-up recorded by the universal-summary substrate work. Three headline declarations in the landed k-type cluster are stated with [Fintype sig.preds] [DecidableEq sig.preds] instance arguments that their proofs do not actually use computationally. The pinned Fintype/DecidableEq forms were kept deliberately, for statement fidelity against the Challenge signatures the substrate plan pinned, and the resulting linter complaints were suppressed at each site rather than fixed. Restating over [Finite sig.preds] is STRICTLY STRONGER -- Finite is the weaker hypothesis, so a theorem proved from it applies in more places -- and would let the suppressions go. This is a generality-and-tidiness improvement with no mathematical content at stake; it is filed so it is not silently lost, not because anything is blocked on it.
+
+THE THREE DECLARATIONS, verified 2026-10-07:
+- FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Basic.lean:117 -- kType_finite, with set_option linter.unusedFintypeInType false and linter.unusedDecidableInType false at lines 99-100.
+- FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Family.lean:224 -- exists_matching_factorization, suppressions at lines 218-219.
+- FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Universal.lean:110 -- finite_family_triples, suppressions at lines 105-106.
+Each carries the same pair of suppressions, which is the mechanical signature of the problem: the linter is correctly reporting that the Fintype and DecidableEq instances are unused in the type.
+
+WHAT IS OWED. Each of the three restated over [Finite sig.preds] where that is genuinely sufficient, with the corresponding set_option linter.unusedFintypeInType / linter.unusedDecidableInType suppressions REMOVED rather than left dangling. Removing the suppressions is the actual acceptance signal: a restatement that still needs them has not achieved the generality it was made for. Downstream call sites inside and outside the cluster must be updated to match; expect the aggregator, the seam interface and the axiom-pin test to be touched.
+
+THE CONSTRAINT THAT MAKES THIS NON-TRIVIAL, and the reason it was deferred rather than done inline. The Fintype/DecidableEq forms were pinned FOR STATEMENT FIDELITY against the substrate plan's Challenge signatures. If a restatement would break that fidelity -- that is, if the pinned signature is itself part of what was verified rather than an incidental choice -- then the right outcome is to LEAVE THE DECLARATION AS IT IS and record why, keeping the suppression with a comment naming the fidelity requirement. Check each of the three independently: they may not all go the same way, and a partial result (two restated, one justified as pinned) is a complete and valid outcome. DO NOT weaken a statement to make a linter quiet.
+
+VERIFICATION REQUIRED. The eleven axiom pins in Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean must still all match after the change, and the axiom profile of every touched headline must stay [propext, Classical.choice, Quot.sound] with zero sorries. Run the module-invariants harness and the evidence-probe collection; both were green at the close of the substrate work, so any new red is attributable to this change. Note the harness's C9 check and the phantom-citation sweep are both currently green and must stay so.
+
+NOT IN SCOPE. The task-type-neutral home for the k-type kernel (KType, kTypeOf, KEquiv, the mixing lemma) outside WeakCanonical/ is a SEPARATE recorded decision, considered and deliberately deferred in the cluster README; do not act on it here and do not relocate anything. Do not touch the Presents hypothesis bundle or the seam bridge beyond whatever signature propagation the restatement forces. No new mathematics, no new axioms, no decidability or complexity claim.
+
+ACCEPTANCE. Either the three declarations restated over [Finite sig.preds] with their six linter suppressions removed, the axiom pins matching, and the build and both gates green; or, per declaration, a recorded reason naming the statement-fidelity requirement that keeps the pinned form, with the suppression retained and commented. Mixed outcomes across the three are expected and acceptable.
+
+SCOPE. FormalSystem/Metalogic/WeakCanonical/KTypeSummary/{Basic,Family,Universal}.lean at minimum, plus whatever call sites the signature change propagates to and Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean if a pin's statement shifts. SET file_scope AT PLAN TIME, after checking which call sites are actually affected.
+
+---
+
+### 739. E2 depth two stratification shared stratum falsifier
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Run E2's real test: the depth-2 stratification falsifier on a fixture with two states sharing a depth-1 stratum
+
+WHY THIS EXISTS. The depth-2 stratification probe E2 landed as part of the universal-summary substrate work and is wired into the evidence gate at specs/evidence/seam-gluing-ray-product/stab-depth-two-probe.lean. It came out POSITIVE, but its own header records that the positive is WEAK and names the real test as a follow-up. This task is that follow-up. Nothing else owns it: the backward-nondeterministic mirror probe (733) is a DIFFERENT falsifier on a different factor, and the substrate record that carried E2 is completed and terminal.
+
+WHAT IS AT STAKE. The falsifier sentence the probe is defined from, quoted from its header: "a box-dot-depth-2 formula whose box-dot-value at a class is not a function of the class's summary state." If such a formula exists, the depth stratification fails. That matters beyond the probe, because the stratification is what LICENSES the finite per-time alphabet the whole time-axis summary route depends on -- the constraint that the substrate must work over the time axis with a finite alphabet of per-time summaries, never over states, forced by FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp (Limits/NoFiniteWidth.lean:1280). A negative result here is therefore a significant finding, not a disappointment, and must be recorded as such rather than worked around.
+
+WHY THE EXISTING POSITIVE IS WEAK, in the probe's own words. The landed fixture has two states, a := false and b := true, with a time-independent one-step relation giving edges a->a, a->b, b->b and no b->a; p holds exactly at b. On it the depth-1 value box-dot(Fp) is state-dependent (true at b, false at a), which is what the earlier shared Bool fixture could not host. But "a two-state fixture with a state-dependent depth-1 value has one state per stratum value, so no two distinct states share a stratum here, and the falsifier's question is answered trivially in the affirmative." The check theorem value_is_function_of_stratum is thus vacuously easy: there are no two seams with equal depth-1 values and distinct states to compare.
+
+WHAT IS OWED. A fixture with THREE OR MORE states, at least two of them SHARING the depth-1 stratum (equal box-dot(Fp) value) while differing in state, and the falsifier's question asked on it. Two things the existing probe leaves out must both be covered:
+(1) The shared-stratum fixture itself, so value_is_function_of_stratum has non-vacuous content: two distinct seams with equal depth-1 strata, and a check of whether their depth-2 values agree.
+(2) The MIXED SHAPES. The landed probe covers only the two depth-2 shapes its plan named -- box-dot F(box-dot Fp) and box-dot(Fp -> box-dot Fp). Its header states plainly: "box-dot(Fp -> box-dot Pp)-shaped mixed formulas are not" probed. Those mix future and past inside one depth-2 formula and are the shapes most likely to break a state-function claim, since the past factor is where the asymmetry lives. Cover them.
+
+METHOD THE LANDED PROBE ALREADY ESTABLISHES, to follow rather than reinvent. Compute each depth-2 value TWICE -- directly, and through the stratification by replacing the inner box-dot subformula with a fresh atom and evaluating over the atomized model -- and compare. The landed probe does this with plusTruthAt_iff_atomize cited at each formula (strata_is_atomize_1, _2), stab_fp_iff_fresh and stab_state_only for the fresh-atom valuation being the depth-1 stratum, and FrameOver.ofSlicedStep for the frame. NOTE THE SUBTLETY THE HEADER RECORDS: plusTruthAt_iff_atomize atomizes the OUTER box-dot, reading the whole depth-2 formula through one depth-2 stratum atom, while the via_strata theorems read the INNER box-dot through the depth-1 stratum; the two readings AGREE on the landed two-state fixture. On a three-state fixture they may not, and if they diverge that divergence is itself a finding to record, not an error to tune away.
+
+CONSTRAINTS. Bi-seriality is required for FrameOver.ofSlicedStep to apply and the frame to be regular; the landed fixture achieves it by making one state a successor of everything and another a predecessor of everything, and any new fixture must establish it too rather than assume it. Keep the axiom profile at [propext, Classical.choice, Quot.sound] with no sorryAx; Classical.choice legitimately enters through FrameOver.worldHistoryOfStepPath and the frame constructor. Everything stays under [F.IsRegular]. NO DECIDABILITY RESULT, NO COMPLEXITY BOUND, AND NOTHING ABOUT DEVICES may be claimed here -- the landed probe's header states all three exclusions and they transfer unchanged. Do not weaken or restate the landed probe's positive result to accommodate a new one; if the new fixture refutes stratification, the landed probe remains correct about its own fixture and both results stand together.
+
+ACCEPTANCE. A new probe file under specs/evidence/seam-gluing-ray-product/, wired APPEND-ONLY into scripts/check-evidence-probes.sh with the collection gate green, carrying a header in the same style as the landed probes: what is established machine-checked, what is NOT established, the axiom record, and the compile line. Either the falsifier's question is answered in the affirmative NON-VACUOUSLY on a fixture where two distinct states genuinely share a depth-1 stratum -- which upgrades E2 from a weak positive to a real one -- or a counterexample is exhibited, machine-checked, and the consequence for the finite per-time alphabet stated honestly in the header. A refutation is a complete and valid outcome.
+
+SCOPE. One new probe file plus the append-only wiring line. Do NOT edit the landed stab-depth-two-probe.lean except, if useful, to add a single pointer line to the new probe; its result is correct for its own fixture. Do not touch the KTypeSummary cluster or the seam interface -- this is evidence work, not substrate work. SET file_scope AT PLAN TIME.
+
+---
 
 ### 738. Pin complexity class divergence sanity ceiling
 - **Status**: [NOT STARTED]
