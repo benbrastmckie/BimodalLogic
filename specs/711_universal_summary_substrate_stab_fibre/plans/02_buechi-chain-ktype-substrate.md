@@ -647,7 +647,13 @@ structure had more consumers than grep found.
 
 ---
 
-### Phase 5: Step 5a — the saturation core: a block's k-type is a function of its family [NOT STARTED]
+### Phase 5: Step 5a — the saturation core: a block's k-type is a function of its family [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-module-invariants.sh` exits 0 | The single failing check is the pre-existing C9 citation at `scripts/check-phantom-citations.sh:145` (committed in `729dc345f`), outside this task's `file_scope` and untouched by this phase — the identical exclusion Phases 1-4 recorded | Full harness run this dispatch: C1 (build + `BimodalTest`), C28 (0 warnings), INV and every other check PASS; `lean_verify` on `kTypeColouring_eq_of_matching_segments`, `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple`, `kTypeOf_zFiber_eq_of_inFamily` all `[propext, Classical.choice, Quot.sound]`; `grep sorry` over `KTypeSummary/` empty; probes 17/17 |
 
 **Goal**: Close the chain's only genuinely missing link. Prove that two coloured ℤ-blocks whose
 factorizations carry matching segment types are k-equivalent, and hence that the block k-type is
@@ -655,7 +661,7 @@ constant on a family — the hinge on which saturation turns.
 
 **Tasks**:
 
-- [ ] Settled-design preamble (restate in the dispatch): the strategy is **assembly of three
+- [x] Settled-design preamble (restate in the dispatch): the strategy is **assembly of three
       proved parts, not a new induction**. Part 1: `kEquiv_zFiber_segSum` (Phase 3) rewrites each
       block as the ordered sum of its segments. Part 2: the two colour index orders
       `kTypeColouring sig k (fun z => segZ sig c (W z) (W (z+1)))` and its primed twin are
@@ -665,26 +671,26 @@ constant on a family — the hinge on which saturation turns.
       into a `KEquiv` between the ordered sums. Compose with `KEquiv`'s symmetry and transitivity
       — `KEquiv` unfolds to an equation between `kTypeOf` values, so these are `Eq.symm`/
       `Eq.trans`. Inherited sorries: none.
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Saturation.lean` (imports
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Saturation.lean` (imports
       `KTypeSummary.Family`; same namespace). Module docstring: this is Büchi's step 5 for
       monadic targets; name what it does **not** give — nothing here says the `⊡` fibre condition
       is such a target, and no formalization of the MSO↔ω-regular correspondence exists in any
       proof assistant, so that reduction is never used; cite
       `Cslib.Automata.NA.Buchi.buchiFamily_saturation` as the structural reference it mirrors.
-- [ ] Prove the pointwise-colouring lemma first, as its own named step:
+- [x] Prove the pointwise-colouring lemma first, as its own named step:
       `theorem kTypeColouring_eq_of_matching_segments` — under
       `∀ z, kTypeOf sig k (segZ sig c (W z) (W (z+1))) = kTypeOf sig k (segZ sig c' (W' z) (W' (z+1)))`,
       the two `kTypeColouring` structures over ℤ are equal (by `funext` on the colour function and
       `congrArg` on `colourStructure`), hence `KEquiv (colourSig (KType sig k)) k` between them
-      holds by `rfl` after `rw`. Keep this separate so a failure localizes.
-- [ ] Prove the headline
+      holds by `rfl` after `rw`. Keep this separate so a failure localizes. *(completed — stated as the structure equality; the headline obtains the `KEquiv` as `congrArg (kTypeOf _ _)` of it)*
+- [x] Prove the headline
       `theorem kEquiv_zFiber_of_matching_segments` (signature under
       `## Lean Challenge Statements`) by: `kEquiv_zFiber_segSum` on each side,
       `kEquiv_orderedSum_of_kEquiv_colour` with the previous lemma, and transitivity. Reproduce
       `kEquiv_zFiber_segSum`'s own instance preamble
       (`haveI := Classical.decEq sig.preds; haveI := Fintype.ofFinite sig.preds`) if the
-      elaborator asks for it.
-- [ ] Derive the family-level corollary
+      elaborator asks for it. *(completed — first compile, no instance preamble needed; the anchored-lemma fallback and its `MonoDiscrete` import were not needed, so the measured import closure is unchanged)*
+- [x] Derive the family-level corollary
       `theorem kTypeOf_zFiber_eq_of_sameTriple` (signature under
       `## Lean Challenge Statements`): two blocks whose factorizations carry the same
       `(τneg, τzero, τpos)` have equal block k-types. Proof: the matching hypothesis of the
@@ -692,11 +698,11 @@ constant on a family — the hinge on which saturation turns.
       `z = 0`, `0 < z`) via `rcases lt_trichotomy z 0`. Add the bundled restatement over
       `InFamily` as a second corollary, `kTypeOf_zFiber_eq_of_inFamily`, so consumers can use
       either form.
-- [ ] `#print axioms` on all four new names during development; pin
+- [x] `#print axioms` on all four new names during development; pin
       `kEquiv_zFiber_of_matching_segments` and `kTypeOf_zFiber_eq_of_sameTriple` in the test
       module; append the import to `KTypeSummary.lean`; update the cluster README's step-5a row;
       `mk_all`; guarded scoped build; `bash scripts/check-module-invariants.sh`; commit
-      (`task 711 phase 5: saturation core, the block k-type is a function of the family`).
+      (`task 711 phase 5: saturation core, the block k-type is a function of the family`). *(deviation: altered — harness green except the pre-existing C9 named in the Exclusions below; rollups and `typst/generated/status.typ` regenerated and staged; probes 17/17 PASS. Scope Hypothesis: 148 lines, under the 200-300 hypothesised)*
 
 **Timing**: 2.5 hours
 

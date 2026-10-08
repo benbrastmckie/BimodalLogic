@@ -27,6 +27,7 @@ signal that a profile moved.
 | the summary alphabet is finite | 2 | `kType_finite` |
 | a block is the sum of its segments | 3′ | `kEquiv_zFiber_segSum` |
 | the Ramsey cover | 4 | `family_cover`, `exists_matching_factorization` |
+| saturation core | 5a | `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple` |
 
 Rows for the later steps are appended as their modules land.
 
@@ -92,5 +93,22 @@ Infinite Ramsey for pairs is applied twice, once per orientation of the time axi
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.WeakCanonical.exists_matching_factorization
+
+/-! ## Step 5a: the saturation core
+
+Assembly of the segment-sum lemma and the mixing lemma; the `Classical.choice` is theirs.
+-/
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.kEquiv_zFiber_of_matching_segments' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.kEquiv_zFiber_of_matching_segments
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.kTypeOf_zFiber_eq_of_sameTriple' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.kTypeOf_zFiber_eq_of_sameTriple
 
 end BimodalTest.Metalogic

@@ -486,6 +486,7 @@ import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Basic
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Family
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Saturation
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment
 import FormalSystem.Metalogic.WeakCanonical.MixedSum
 import FormalSystem.Metalogic.WeakCanonical.NEquivalence

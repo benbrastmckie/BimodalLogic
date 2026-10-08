@@ -40,7 +40,7 @@ closes the step they did not cover: saturation.
 | 3 | the family `[u]·[v]^ω`, here bi-infinite `(τneg)^(ω*) · τzero · (τpos)^ω` | `SegmentFactorization`, `InFamily` | `Family.lean` | **landed** (the private `ZFactorization` of `../GroupModel/RamseyFactorization.lean`, renamed, with the middle segment's type `τzero`/`zero_type` added) |
 | 3′ | a word *is* the concatenation of its factors | `kEquiv_zFiber_segSum` | `Segment.lean` | **landed** (moved from `../GroupModel/RamseyFactorization.lean`, made public) |
 | 4 | Ramsey: a monochromatic monotone cutting sequence | `exists_zFactorization`, `family_cover`, `exists_matching_factorization` | `Family.lean` | **landed** (moved, made public; Ramsey applied twice, once per orientation) |
-| 5 | saturation: each family member is inside or disjoint from the target | `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple`, `family_saturation` | `Saturation.lean`, `Universal.lean` | planned (the principal new work) |
+| 5 | saturation: each family member is inside or disjoint from the target | `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple` (`Saturation.lean`, **landed**: the block `k`-type is a function of the family); `family_saturation` (`Universal.lean`, planned) | `Saturation.lean`, `Universal.lean` | 5a landed; 5b planned |
 | 5′ | a finite saturating cover makes the target a finite union of families | `target_eq_union_of_families` | `Universal.lean` | planned |
 | 6 | conclude decidability | — | — | **out of scope** — the consumer's work |
 
@@ -50,6 +50,7 @@ closes the step they did not cover: saturation.
 |------|-------|-------------|
 | `Basic.lean` | 122 | Cluster root: the six-step table, the scope disclaimer, and step 2, `kType_finite` — the alphabet of depth-`k` segment summaries is finite. |
 | `Family.lean` | 238 | Steps 3-4: `SegmentFactorization` (the bi-infinite family datum, with the middle segment's type), `exists_zFactorization` (the Ramsey cover, `Nat.exists_strictMono_const_pair_colour` applied once per orientation), `InFamily`, `family_cover` and the unbundled `exists_matching_factorization`. |
+| `Saturation.lean` | 148 | Step 5a: `kTypeColouring_eq_of_matching_segments` (matched segment types give equal coloured index orders), the headline `kEquiv_zFiber_of_matching_segments` (matched segment types give `≡ₖ` blocks, by the segment-sum lemma on each side and the mixing lemma), and `kTypeOf_zFiber_eq_of_sameTriple`/`kTypeOf_zFiber_eq_of_inFamily` (the block `k`-type is a function of the family triple). |
 | `Segment.lean` | 108 | Step 3′: the segment carrier `segZ` (the half-open coloured segment `[a, b)` of `ℤ`) and `kEquiv_zFiber_segSum` — a coloured `ℤ`-block is `≡ₖ` the `ℤ`-indexed sum of its segments under any monotone covering cutting sequence. |
 
 ## The consumer relation

@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Basic
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Family
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Saturation
 
 /-!
 # `KTypeSummary` — Büchi's complementation chain in the monadic `k`-type idiom
@@ -23,6 +24,9 @@ disclaimer — no complexity bound is claimed and no `⊡` condition is reduced 
   lemma `kEquiv_zFiber_segSum`.
 * `KTypeSummary.Family` — steps 3 and 4: the bi-infinite family `SegmentFactorization`/`InFamily`
   and its Ramsey cover `exists_zFactorization`/`family_cover`/`exists_matching_factorization`.
+* `KTypeSummary.Saturation` — step 5a: matched segment types give `≡ₖ` blocks
+  (`kEquiv_zFiber_of_matching_segments`), so the block `k`-type is a function of the family
+  (`kTypeOf_zFiber_eq_of_sameTriple`, `kTypeOf_zFiber_eq_of_inFamily`).
 
 Later steps of the chain are appended here as their modules land.
 -/
