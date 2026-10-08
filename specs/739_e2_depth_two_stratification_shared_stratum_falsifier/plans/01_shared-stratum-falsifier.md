@@ -324,14 +324,14 @@ where it fails.
 
 ---
 
-### Phase 4: Header, axiom foot, append-only wiring, collection gate [NOT STARTED]
+### Phase 4: Header, axiom foot, append-only wiring, collection gate [COMPLETED]
 
 **Goal**: The probe carries a header in the landed probes' style that states the mixed result
 honestly, its axiom profile is pinned by a `#print axioms` foot, it is wired append-only into
 `scripts/check-evidence-probes.sh`, and the collection gate is green.
 
 **Tasks**:
-- [ ] Replace the provisional header with the final one, same section order as
+- [x] Replace the provisional header with the final one, same section order as
       `stab-depth-two-probe.lean`: title ("Probe 739 (E2, probe iii): the shared-stratum
       falsifier"); the falsifier sentence quoted; the fixture (carrier, edges, bi-seriality by
       `Rg_fwd`/`Rg_bwd`, `p` at `b`); **What is established (machine-checked)**, numbered: (1)
@@ -344,7 +344,7 @@ honestly, its axiom profile is pinned by a `#print axioms` foot, it is wired app
       class, M2 everywhere); (5) the REFUTATIONS as the headline: S2 on `{a, c}`, M1 on both
       classes (exhibited on `{b, d}`), S1' on `{b, d}` — the literal falsifier check of the
       landed probe is refuted on every fixture with a genuinely shared `⊡Fp` class.
-- [ ] **What is NOT established**, transcribed from the report's interpretation paragraph: the
+- [x] **What is NOT established**, transcribed from the report's interpretation paragraph: the
       refutation kills only the reading on which a depth-2 box-dot value is determined by the
       ONE BIT `⊡Fp` at the state; it does not touch `stab_state_only` (the value is a function
       of the state) nor the closure-indexed alphabet Probe 718 licenses (one label per box-dot
@@ -354,10 +354,10 @@ honestly, its axiom profile is pinned by a `#print axioms` foot, it is wired app
       states (the fixture is time-independent), decidability, complexity, or devices; "function
       of the full closure labelling" is not proved either. The landed probe remains correct
       about its own two-state fixture; both results stand together.
-- [ ] **Axiom record** and **Compile line** paragraphs; then the `#print axioms` foot after
+- [x] **Axiom record** and **Compile line** paragraphs; then the `#print axioms` foot after
       `end Probe739SharedStratum` for every pinned theorem (29 lines), and remove any temporary
       `#print axioms` from earlier phases.
-- [ ] Re-read `scripts/check-evidence-probes.sh` immediately before editing. Append
+- [x] Re-read `scripts/check-evidence-probes.sh` immediately before editing. Append
       `"seam-gluing-ray-product/stab-depth-two-shared-stratum"` as the LAST entry of the `WIRED`
       array, and add a table row immediately after the `stab-depth-two-probe` row in the
       `# --- WIRED ---` table in the same two-column comment style: label it `E2 (probe iii)`,
@@ -366,12 +366,12 @@ honestly, its axiom profile is pinned by a `#print axioms` foot, it is wired app
       route; the closure-indexed alphabet is what must be carried). No existing line is modified
       or removed. Do not write "task 739" in this file (it is outside `specs/**`); cite the
       probe by filename and label, as the neighbouring rows do.
-- [ ] Optional, at most one line: after "is a follow-up" in the landed probe's header, add
+- [x] Optional, at most one line: after "is a follow-up" in the landed probe's header, add
       "(the follow-up is `stab-depth-two-shared-stratum.lean`)". Nothing else in that file
       changes.
-- [ ] Run `bash scripts/check-evidence-probes.sh`; require exit 0 and the final line
+- [x] Run `bash scripts/check-evidence-probes.sh`; require exit 0 and the final line
       `PASS  all 20 wired probe(s) compile`.
-- [ ] Commit the probe file, the gate script, and (if edited) the landed probe by explicit
+- [x] Commit the probe file, the gate script, and (if edited) the landed probe by explicit
       paths; then `git diff --numstat HEAD~1 -- scripts/check-evidence-probes.sh` must show 0
       deletions.
 
@@ -405,19 +405,19 @@ gate reports the two summed — confirm from the gate's own `PASS all N wired pr
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 900 -- env lean
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 900 -- env lean
       specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean` exits 0 with no
       `error` and no `sorry`.
-- [ ] Every `#print axioms` line of the foot reports exactly `[propext, Classical.choice,
+- [x] Every `#print axioms` line of the foot reports exactly `[propext, Classical.choice,
       Quot.sound]`.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 and reports all 20 wired probes PASS
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 and reports all 20 wired probes PASS
       (the landed `stab-depth-two-probe` row still PASS: its result is untouched).
-- [ ] The pinned statements drift-check clean: `bash .claude/scripts/lean-challenge-snapshot.sh
+- [x] The pinned statements drift-check clean: `bash .claude/scripts/lean-challenge-snapshot.sh
       --check 739 /home/benjamin/Projects/BimodalLogic` (advisory; exit 0 expected once the
       snapshot has been taken, or run `--dry-run` to confirm the identifier sets agree).
-- [ ] `lake build` is not affected (probes live outside the build graph); no file under
+- [x] `lake build` is not affected (probes live outside the build graph); no file under
       `FormalSystem/` is modified (`git status --short FormalSystem/` empty).
-- [ ] The value table in Phase 2 is reproduced by the proved characterizations (manual read-off
+- [x] The value table in Phase 2 is reproduced by the proved characterizations (manual read-off
       of each `_iff` right-hand side against the table).
 
 ## Artifacts & Outputs

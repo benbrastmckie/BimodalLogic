@@ -279,6 +279,39 @@ EVIDENCE="specs/evidence"
 #                                                           | the real test is a fixture with
 #                                                           | two states SHARING a depth-1
 #                                                           | stratum, filed as a follow-up
+# seam-gluing-ray-product/stab-depth-two-shared-stratum     | E2 (probe iii): the follow-up
+#                                                           | above, run. Four states a, b, c,
+#                                                           | d (edges a->a, a->b, b->b, b->d,
+#                                                           | d->b, c->c; p at b), bi-serial by
+#                                                           | `Rg_fwd`/`Rg_bwd`, with two
+#                                                           | genuinely SHARED depth-1 classes:
+#                                                           | {a, c} (`stab (F p)` False) and
+#                                                           | {b, d} (True), certified by
+#                                                           | `shared_false_stratum` /
+#                                                           | `shared_true_stratum`. Five
+#                                                           | depth-2 shapes computed directly
+#                                                           | and through the strata. The
+#                                                           | one-bit falsifier check is
+#                                                           | REFUTED for the landed shape
+#                                                           | `stab (F p -> stab F p)` on
+#                                                           | {a, c}, the mixed shape
+#                                                           | `stab (F p -> stab P p)` on
+#                                                           | {b, d}, and the past mirror
+#                                                           | `stab P (stab F p)` on {b, d}
+#                                                           | (`not_function_of_stratum_*`);
+#                                                           | it SURVIVES non-vacuously for
+#                                                           | `stab F (stab F p)` on both
+#                                                           | classes, `stab (P p -> stab F p)`
+#                                                           | everywhere, and the landed shape
+#                                                           | on {b, d}. Holds in place: the
+#                                                           | time-axis route may assume NO
+#                                                           | one-bit-per-depth summary; the
+#                                                           | per-state label must carry the
+#                                                           | closure-indexed alphabet (one
+#                                                           | label per stab-subformula,
+#                                                           | backward ones included). The
+#                                                           | landed probe's positive on its
+#                                                           | own fixture is untouched
 # seam-gluing-ray-product/presents-is-seam-decidedness      | OBSTRUCTION (737): the
 #                                                           | single-family hypothesis bundle
 #                                                           | `RaySummary.Presents` is SEAM
@@ -401,6 +434,7 @@ WIRED=(
   "seam-gluing-ray-product/presents-is-seam-decidedness"
   "seam-gluing-ray-product/quasistate-does-not-determine-hit"
   "seam-gluing-ray-product/presented-not-complete"
+  "seam-gluing-ray-product/stab-depth-two-shared-stratum"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

@@ -45,7 +45,7 @@ depth-1 strata that differ at depth 2, and this probe exhibits none — a two-st
 state-dependent depth-1 value has one state per stratum value, so no two distinct states share a
 stratum here, and the falsifier's question is answered trivially in the affirmative. A fixture
 with three or more states, two of them sharing the depth-1 stratum, is the real test and is a
-follow-up. Only the two depth-2 shapes named by the plan are probed; `⊡(Fp → ⊡Pp)`-shaped mixed
+follow-up (the follow-up is `stab-depth-two-shared-stratum.lean`). Only the two depth-2 shapes named by the plan are probed; `⊡(Fp → ⊡Pp)`-shaped mixed
 formulas are not. No decidability, no complexity bound, nothing about devices.
 
 **Axiom record.** Every theorem below: `[propext, Classical.choice, Quot.sound]` (see the

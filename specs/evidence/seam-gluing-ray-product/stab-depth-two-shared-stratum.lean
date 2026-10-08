@@ -1,10 +1,107 @@
 /-
-Probe 739 (E2, probe iii): **the shared-stratum falsifier** — PROVISIONAL HEADER, completed in
-Phase 4.
+Probe 739 (E2, probe iii): **the shared-stratum falsifier** — on a fixture where two DISTINCT
+states genuinely share a depth-1 stratum, is the `⊡`-value of a depth-2 formula a function of
+that stratum? The real test the landed `stab-depth-two-probe.lean` names as its follow-up.
 
-**Fixture.** Four states `a | b | c | d`, time-independent one-step relation with edges
-`a→a, a→b, b→b, b→d, d→b, c→c`; `p` holds exactly at `b`. Two distinct states share the depth-1
-stratum `⊡Fp` in both directions: `{a, c}` share False, `{b, d}` share True.
+**The falsifier sentence this probe is defined from.** The ranking's falsifier for the
+stratification route reads: *a `⊡`-depth-2 formula whose `⊡`-value at a class is not a function
+of the class's summary state*. The landed probe answered it in the affirmative on a two-state
+fixture, but there every stratum value has exactly one state, so no two distinct seams with equal
+depth-1 strata exist to compare and `value_is_function_of_stratum` is vacuously easy. This probe
+builds a fixture with two shared classes, computes FIVE depth-2 shapes — the landed two, the two
+MIXED shapes `⊡(Fp → ⊡Pp)` / `⊡(Pp → ⊡Fp)` the landed header leaves out, and the past mirror
+`⊡P(⊡Fp)` — twice each (directly, and through the strata), and asks the falsifier's question
+non-vacuously on each class. The answer is MIXED, and the refutations are the headline.
+
+**Fixture.** Four states `a | b | c | d`, time-independent one-step relation `Rg _ u v :=
+edge u v = true` with the six edges `a→a, a→b, b→b, b→d, d→b, c→c`. Bi-serial — PROVED, not
+assumed, as the named theorems `Rg_fwd` (successors `a→a, b→b, c→c, d→b`) and `Rg_bwd`
+(predecessors `a←a, b←a, c←c, d←b`) passed to `FrameOver.ofSlicedStep`, so the frame is regular.
+`p` holds exactly at `b`. The sub-fixture `{a, b}` is literally the landed fixture; `c` is an
+isolated sink (both directions); `d` is a post-`b` state whose only predecessor is the `p`-state.
+
+**What is established (machine-checked).**
+
+1. *The two depth-1 strata, each with a genuinely shared class.* `⊡Fp` holds at a seam iff the
+   state is `b` or `d` (`stab_will_iff`), so `{a, c}` share False and `{b, d}` share True;
+   `⊡Pp` holds iff the state is `d` (`stab_past_iff`). The sharing is certified by exhibited
+   seams: `shared_false_stratum` (`stayA` at `a` vs `stayC` at `c`) and `shared_true_stratum`
+   (`fromA` at `b` vs `viaD` at `d`), two distinct states per class with equal `⊡Fp` values.
+2. *The five depth-2 values, computed directly* (`depth2_S1_iff`, `depth2_S2_iff`,
+   `depth2_M1_iff`, `depth2_M2_true`, `depth2_S1past_iff`), reproducing this table, `T`/`F` at
+   `a b c d`:
+
+   | shape                                   | a | b | c | d |
+   |-----------------------------------------|---|---|---|---|
+   | `⊡Fp` (depth-1 stratum)                 | F | T | F | T |
+   | `⊡Pp`                                   | F | F | F | T |
+   | S1  `⊡F(⊡Fp)`                           | F | T | F | T |
+   | S2  `⊡(Fp → ⊡Fp)` (the landed shape)    | F | T | T | T |
+   | M1  `⊡(Fp → ⊡Pp)` (mixed)               | F | F | T | T |
+   | M2  `⊡(Pp → ⊡Fp)` (mixed)               | T | T | T | T |
+   | S1' `⊡P(⊡Fp)` (past mirror of S1)       | F | F | F | T |
+   | `⊡(Pp → ⊡Pp)` (extra, unpinned)         | T | F | T | T |
+   | `⊡P(⊡Pp)` (extra, unpinned)             | F | F | F | F |
+
+   Every refuting cell is witnessed by a constructed history: S2 at `a` by `jumpB` (`Fp` True,
+   `⊡Fp` False) against the vacuous True at `c` (`not_Fp_at_c`, by the forward-closure induction
+   `stays_fwd`); M1 at `b` by instantiating the outer `∀ σ` at the seam itself (`Fp` True,
+   `⊡Pp` False along `fromA`) against True at `d`; S1' at `b` by `fromA` (only `a` behind it)
+   against True at `d` (`prev_of_d`).
+3. *The five values computed through the strata* (`depth2_via_strata_S1/_S2/_M1/_M2/_S1past`):
+   each depth-2 value equals the value of the depth-1 formula obtained by replacing the inner
+   `⊡Fp` / `⊡Pp` by the fresh atoms `qAtom e` / `rAtom e` and `p` by `pAtom e`, over the
+   atomized model `Mg.atomModel e`, whose fresh-atom valuations ARE the depth-1 strata
+   (`stab_fp_iff_fresh`, `stab_pp_iff_fresh`, through `stab_state_only`). The landed transfer
+   lemma `plusTruthAt_iff_atomize` is cited at each shape (`strata_is_atomize_*`); as the landed
+   header notes, it atomizes the OUTER `⊡`, reading the whole depth-2 formula through one
+   depth-2 stratum atom, while the `via_strata` theorems read the INNER `⊡` through its
+   depth-1 stratum. The two readings agree here exactly as on the landed fixture — both are
+   biconditionals against the same direct value, and the `via_strata` proofs cite no fixture
+   fact — so there is no divergence to record.
+4. *The falsifier's question answered in the affirmative, NON-VACUOUSLY, where it holds.*
+   `value_is_function_of_stratum_S1`: S1 is a function of the depth-1 stratum on both shared
+   classes, with the landed hypothesis shape `⊡Fp ↔ ⊡Fp` and real content now (two distinct
+   states per class). `value_is_function_of_stratum_M2`: M2 is constant. `value_is_function_of_
+   stratum_S2_on_true_class`: the landed shape S2 is a function of the stratum on `{b, d}`.
+   This is the non-vacuous upgrade of E2 the landed header asked for — for these shapes.
+5. *The falsifier's question REFUTED, machine-checked, where it fails* — the headline.
+   `not_function_of_stratum_S2`: two seams with equal `⊡Fp` (both False, at `a` and `c`) and
+   DIFFERENT S2 values — the landed shape `⊡(Fp → ⊡Fp)` is NOT a function of the depth-1
+   stratum on the shared-False class. `not_function_of_stratum_M1`: on `{b, d}` (both `⊡Fp`
+   True) the mixed shape `⊡(Fp → ⊡Pp)` is False at `b`, True at `d`. `not_function_of_
+   stratum_S1past`: on `{b, d}`, `⊡P(⊡Fp)` is False at `b`, True at `d`. The literal check of
+   the landed probe (`Probe711DepthTwo.value_is_function_of_stratum`, transplanted) is refuted
+   on a fixture with a genuinely shared `⊡Fp` class.
+
+**What is NOT established.** The refutation kills exactly one reading: that a depth-2 `⊡`-value
+is determined by the ONE BIT `⊡Fp` at the state — the reading the landed theorem's hypothesis
+`⊡Fp ↔ ⊡Fp` encodes, and the one a summary that keeps one label per DEPTH would rely on. It does
+NOT touch `stab_state_only` (every `⊡`-value is a function of the state), nor the
+closure-indexed alphabet Probe 718 licenses (one label per `⊡`-subformula `χ` of the closure,
+`stratum M χ w`): the depth-2 value of `⊡ψ` is the depth-1 value of `⊡(atomize ψ)` over the
+atomized model, which IS a function of the state, and that is item 3 above. What the refutation
+shows is what the per-state label must at least carry: on this fixture the labels `⊡Fp`, `⊡Pp`
+and `⊡¬Fp` are pairwise independent (`a`: F F F; `b`: T F F; `c`: F F T; `d`: T T F) and all
+three are needed to read the five shapes — S2 is `q ∨ ⊡¬Fp`, M1 is `r ∨ ⊡¬Fp`, S1' needs the
+depth-1 label of the NEW formula `⊡P q` over the atomized model — including BACKWARD labels for
+a forward-looking target (M1). Consequence for the finite per-time alphabet: it survives, but it
+must be the closure-indexed alphabet, never one bit per depth; a summary that reads depth 2 off
+the target's own inner `⊡`-subformula alone is dead. "Function of the FULL closure labelling" is
+not proved here either — only these shapes on this one fixture are computed. The fixture is
+time-independent (every time slice is the same four states), so nothing is said about width,
+period, or per-time summaries over many states. No decidability, no complexity bound, nothing
+about devices — the landed probe's three exclusions transfer unchanged. The landed probe remains
+correct about its own two-state fixture; both results stand together.
+
+**Axiom record.** Every pinned theorem (the 29 in the foot) is within `[propext,
+Classical.choice, Quot.sound]`; no `sorryAx`. The two bi-seriality theorems `Rg_fwd`/`Rg_bwd`
+use `[propext]` alone; the other 27 use all three. `Classical.choice` enters through
+`FrameOver.worldHistoryOfStepPath` (the constructed histories) and the frame constructor.
+
+**Compile line.**
+`lake env lean specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean`
+(wired into `scripts/check-evidence-probes.sh`).
 -/
 import FormalSystem
 
@@ -1039,9 +1136,29 @@ theorem not_function_of_stratum_S1past :
 
 end Probe739SharedStratum
 
--- temporary Phase 1-3 axiom check; the permanent foot is written in Phase 4
+/-! ## Axiom record -/
+
+#print axioms Probe739SharedStratum.Rg_fwd
+#print axioms Probe739SharedStratum.Rg_bwd
+#print axioms Probe739SharedStratum.stab_will_iff
+#print axioms Probe739SharedStratum.stab_past_iff
+#print axioms Probe739SharedStratum.depth2_S1_iff
+#print axioms Probe739SharedStratum.depth2_S2_iff
+#print axioms Probe739SharedStratum.depth2_M1_iff
+#print axioms Probe739SharedStratum.depth2_M2_true
+#print axioms Probe739SharedStratum.depth2_S1past_iff
+#print axioms Probe739SharedStratum.stab_fp_iff_fresh
+#print axioms Probe739SharedStratum.stab_pp_iff_fresh
+#print axioms Probe739SharedStratum.depth2_via_strata_S1
+#print axioms Probe739SharedStratum.depth2_via_strata_S2
 #print axioms Probe739SharedStratum.depth2_via_strata_M1
+#print axioms Probe739SharedStratum.depth2_via_strata_M2
+#print axioms Probe739SharedStratum.depth2_via_strata_S1past
+#print axioms Probe739SharedStratum.strata_is_atomize_S1
+#print axioms Probe739SharedStratum.strata_is_atomize_S2
 #print axioms Probe739SharedStratum.strata_is_atomize_M1
+#print axioms Probe739SharedStratum.strata_is_atomize_M2
+#print axioms Probe739SharedStratum.strata_is_atomize_S1past
 #print axioms Probe739SharedStratum.shared_false_stratum
 #print axioms Probe739SharedStratum.shared_true_stratum
 #print axioms Probe739SharedStratum.value_is_function_of_stratum_S1
