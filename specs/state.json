@@ -1552,7 +1552,7 @@
         {
           "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
           "type": "summary",
-          "summary": "Phases 1-6 of 10: computable k-type (B3a), closure alphabet with run conditions, anchors and generic bridge (B1), B2a complete in both halves, label-list segments with composition on representatives (B3b (i)), and finite labelled presentations with the computable path-type closure and liveness (B3b (ii))."
+          "summary": "Phases 1-7 of 10: computable k-type (B3a), closure alphabet with run conditions, anchors and generic bridge (B1), B2a complete in both halves, label-list segments with composition on representatives (B3b (i)), finite labelled presentations with the path-type closure and liveness (B3b (ii)), and the computable realized-triple set hitOf with its membership characterization mem_hitOf_iff (B3b (iii))."
         }
       ],
       "next_artifact_number": 2
