@@ -3,15 +3,15 @@
 - **Task**: 742 - Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T09:10:01Z
-- **Completed**: 2026-10-08T10:13:29Z
-- **Effort**: ~110 minutes across four dispatches (Phases 1-4 of 10; per-phase dispatch, `--hard`)
+- **Completed**: 2026-10-08T10:25:00Z
+- **Effort**: ~125 minutes across five dispatches (Phases 1-5 of 10; per-phase dispatch, `--hard`)
 - **Dependencies**: 737 (complete), 711 (complete)
 - **Artifacts**: plans/01_compute-hit-realizability-device.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Four single-phase dispatches so far. Dispatch 3 implemented Phase 1 (B3a): the compiled research
+Five single-phase dispatches so far. Dispatch 3 implemented Phase 1 (B3a): the compiled research
 probe was transcribed into `KTypeSummary/KTypeFin.lean` — a computable `kTypeOfFin` equal to the
 classical `kTypeOf`, a decidable Tarski `eval`, and explicit computable `segZ` instances.
 Dispatch 4 implemented Phase 2 (B1): `RaySummary/Closure.lean` widens the two-letter trace
@@ -39,10 +39,18 @@ concatenation with the two-point ordered sum of its parts (`listSeg_append_kEqui
 composition congruence `kTypeOf_listSeg_append_congr` — the `k`-type of `l₁ ++ l₂` depends only
 on the `k`-types of `l₁` and `l₂`, the `I = J = Bool` instance of the mixing lemma
 `kEquiv_orderedSum_of_kEquiv_colour`. No `compose : KType → KType → KType` on bare values is
-defined, by design (research Finding 4): composition is a congruence on representatives. Nothing
-about `Hit` is computed yet and no model is constructed from a colouring: the uniqueness half of
-B2a (Phase 5), the presentation half of B3b (Phases 6, 7), the B2b verdict probe (Phase 8), the
-per-model bridge (Phase 9) and the documentation pass (Phase 10) remain `[NOT STARTED]`.
+defined, by design (research Finding 4): composition is a congruence on representatives.
+Dispatch 7 implemented Phase 5 (B2a (ii), the uniqueness half of HWZ 2000 Thm 14 ⇒): `Trace.lean`
+now proves that a colouring over the closure alphabet satisfying the run conditions and the
+anchors for `σ` IS the closure trace (`eq_clTrace_of_localRun_anchored`, Challenge signature
+verbatim), through the inductive core `letter_iff_of_localRun_anchored` (every closure letter of
+an anchored local run reads `PlusTruthAt` along `σ`, by structural induction on the closure
+formula with the membership proof generalised) and packaged as the `∃!` statement
+`clTrace_unique`. With Phases 3 and 5 together, B2a is complete: the trace map is a bijection
+between the seam's histories and the anchored local runs over `clSig φ`. Nothing about `Hit` is
+computed yet and no model is constructed from a colouring: the presentation half of B3b
+(Phases 6, 7), the B2b verdict probe (Phase 8), the per-model bridge (Phase 9) and the
+documentation pass (Phase 10) remain `[NOT STARTED]`.
 
 ## What Changed
 
@@ -54,6 +62,11 @@ per-model bridge (Phase 9) and the documentation pass (Phase 10) remain `[NOT ST
   `appendPt_surjective`, `listSeg_append_kEquiv`, `kTypeOf_listSeg_append_congr`. Header: what
   "effective composition" means here and why there is no `compose` on bare `k`-types; no
   complexity claim; the module is deliberately not yet imported by `RaySummary.lean` (Phase 6).
+- `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean` — extended (165 → 249 lines,
+  Phase 5): new section `Uniqueness` with `letter_iff_of_localRun_anchored`,
+  `eq_clTrace_of_localRun_anchored`, `clTrace_unique`; header retitled to cover both halves of
+  Thm 14 ⇒ (soundness and uniqueness), the "next module" pointer for uniqueness replaced by the
+  in-module account; the B2b-absent paragraph unchanged.
 - `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean` — new (165 lines, Phase 3):
   `clTrace_localRun`, `clTrace_anchored`, `clTrace_clPhi`, `familyTriples`, `mem_familyTriples`,
   `hitSig_eq_iUnion`, `HitCl`, `hitCl_finite`, `plusStab_iff_forall_hitCl`, `hitCl_eq_iUnion`.
@@ -77,6 +90,18 @@ per-model bridge (Phase 9) and the documentation pass (Phase 10) remain `[NOT ST
 
 ## Decisions
 
+- (Phase 5) The uniqueness induction is factored into a named core,
+  `letter_iff_of_localRun_anchored : ∀ ψ hψ z, c (clLetter φ hψ) z ↔ PlusTruthAt M σ z ψ`, with
+  the closure-membership proof generalised so each induction hypothesis applies at whatever
+  membership witness the run clause supplies (`plusClosure_imp_left/right`,
+  `plusClosure_untl_left/right`, `plusClosure_snce_left/right`); `eq_clTrace_of_localRun_anchored`
+  is then `funext p z; propext` with the marker case from `Anchored.now` and the letter case from
+  the core.
+- (Phase 5) The `imp`/`untl`/`snce` cases are `rw [hr.<clause> ψ χ hψ z]`, then `rw`/`simp only`
+  by the two IHs, then `Iff.rfl` against the `PlusTruthAt` clause — no well-founded argument on
+  time, exactly as the plan's Risks row 1 predicted; `box`/`stab` discard their IHs and read the
+  anchor directly (`box`'s anchor is independent of `σ`, a per-time datum, and never passes
+  through a run condition — the subtlety the plan asked to record in the docstring, and it is).
 - (Phase 4) Both order isomorphisms are `StrictMono.orderIsoOfSurjective` of an explicit map
   (`segZToListSeg t := ⟨(t - a).toNat, _⟩`; `appendPt ⟨false, i⟩ := i`, `appendPt ⟨true, j⟩ :=
   j + l₁.length`), the idiom of `kEquiv_zFiber_segSum`, fed to `k_equiv_of_iso` exactly as the
@@ -124,6 +149,11 @@ per-model bridge (Phase 9) and the documentation pass (Phase 10) remain `[NOT ST
 
 ## Plan Deviations
 
+- **Task 5.1** altered: the structural induction is a separate named theorem
+  (`letter_iff_of_localRun_anchored`) rather than inlined under `funext` in
+  `eq_clTrace_of_localRun_anchored`; the pinned statement, the case analysis and the
+  `clTrace_unique` packaging are as specified. Annotated inline on the plan checklist. Scope:
+  84 lines added against a 150-250 hypothesis (the temporal cases are two-line rewrites).
 - **Task 4.5** altered: the two order isomorphisms are built by `StrictMono.orderIsoOfSurjective`
   rather than `Equiv.toOrderIso` on a hand-built `Fin (n₁ + n₂) ≃ Σ-lex` (same statements, same
   `k_equiv_of_iso` route); the two non-pinned isomorphism theorems carry `[Finite sig.preds]`
@@ -141,7 +171,11 @@ per-model bridge (Phase 9) and the documentation pass (Phase 10) remain `[NOT ST
 
 ## Verification
 
-- Build: Success — Phase 4: scoped guarded build of
+- Build: Success — Phase 5: scoped guarded build of
+  `FormalSystem.Metalogic.Decidability.RaySummary.Trace` (guard exit 0, `Build completed
+  successfully (1926 jobs)`, 0 errors, 0 warnings, first attempt; `probes/trace-build-p5-1.log`);
+  `.olean` newer than source for `Trace`. `lean-sorry-census.sh --cross-check` over the resolved
+  source roots: see `probes/sorry-census-p5.log` (result recorded below). Phase 4: scoped guarded build of
   `FormalSystem.Metalogic.Decidability.RaySummary.Compose` (guard exit 0, `Build completed
   successfully (1924 jobs)`, 0 errors, 0 warnings; `probes/compose-build-2.log`; the first
   attempt `probes/compose-build-1.log` had three errors the LSP sweep had not reported, fixed and
@@ -156,12 +190,15 @@ per-model bridge (Phase 9) and the documentation pass (Phase 10) remain `[NOT ST
   (1926 jobs)`, 0 errors, 0 warnings) and of the library root `FormalSystem` (guard exit 0,
   2831 jobs, 0 errors); `.olean` newer than source for `Closure`, `RaySummary` and
   `FormalSystem`. Logs: `probes/closure-build-3.log`, `probes/closure-build-4-library.log`.
-- Sorry count: 0 (Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
+- Sorry count: 0 (Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
   sorry; Phase 2: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-phase2.log`).
 - Sorry inventory: None
 - Vacuous count: 0 introduced (the one repository-wide match,
   `Examples/TemporalStructures.lean:495`, predates this task and was not touched).
-- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 4
+- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 5
+  `#print axioms` (`probes/trace-axioms-p5.log`): `letter_iff_of_localRun_anchored`,
+  `eq_clTrace_of_localRun_anchored`, `clTrace_unique` all exactly
+  `[propext, Classical.choice, Quot.sound]`. Phase 4
   `#print axioms` (`probes/compose-axioms.log`):
   `kTypeOf_listSeg_append_congr`, `kTypeOf_segZ_eq_listSeg`, `listSeg_append_kEquiv`,
   `kTypeOfFin_listSeg` all exactly `[propext, Classical.choice, Quot.sound]`; `#eval` witnesses
@@ -180,8 +217,9 @@ per-model bridge (Phase 9) and the documentation pass (Phase 10) remain `[NOT ST
 
 ## Impacts
 
-- `Closure.lean` is the alphabet and run-condition vocabulary Phase 3 proved the trace against
-  and Phase 5 proves uniqueness against; `HitCl` and `plusStab_iff_forall_hitCl` (Phase 3) are
+- `Closure.lean` is the alphabet and run-condition vocabulary Phases 3 and 5 proved the trace
+  sound and unique against: `clTrace_unique` (Phase 5) is what lets Phase 9's `Presented`
+  hypothesis be stated as an equality of run sets rather than of histories; `HitCl` and `plusStab_iff_forall_hitCl` (Phase 3) are
   now the exact left-hand side and bridge that Phase 9's `hit_eq_hitOf_of_presented` and
   `plusStab_iff_forall_hitOf_of_presented` rewrite.
 - `kTypeOfFin_eq` and `decEval` (Phase 1) are the computability substrate for Phases 4, 6, 7, 9.
@@ -191,9 +229,9 @@ per-model bridge (Phase 9) and the documentation pass (Phase 10) remain `[NOT ST
 
 ## Follow-ups
 
-- Phase 5 (B2a (ii), `eq_clTrace_of_localRun_anchored` in `Trace.lean`) is next; Phase 6
-  (B3b (ii), `Compose.lean` + `RaySummary.lean`) is now unblocked and admissible in the same
-  wave; Phase 8 (verdict probe) remains admissible.
+- Phase 6 (B3b (ii), `Compose.lean` + `RaySummary.lean`: finite labelled presentations and the
+  path-type closure) is next; Phase 8 (verdict probe) remains admissible in any wave; Phase 9 is
+  unblocked on its Phase 5 side and waits on Phase 7.
 - Phase 10 owns the README, theorem-index rows, axiom pins and ROADMAP updates for both modules.
 
 ## References
@@ -203,7 +241,9 @@ per-model bridge (Phase 9) and the documentation pass (Phase 10) remain `[NOT ST
 - specs/742_compute_hit_realizability_device/probes/closure-axioms.lean
 - specs/742_compute_hit_realizability_device/probes/trace-axioms.lean
 - specs/742_compute_hit_realizability_device/probes/compose-axioms.lean
+- specs/742_compute_hit_realizability_device/probes/trace-axioms-p5.lean
 - specs/742_compute_hit_realizability_device/handoffs/phase-1-handoff-20261008T093113Z.md
 - specs/742_compute_hit_realizability_device/handoffs/phase-2-handoff-20261008T094458Z.md
 - specs/742_compute_hit_realizability_device/handoffs/phase-3-handoff-20261008T095427Z.md
 - specs/742_compute_hit_realizability_device/handoffs/phase-4-handoff-20261008T101155Z.md
+- specs/742_compute_hit_realizability_device/handoffs/phase-5-handoff-20261008T102022Z.md
