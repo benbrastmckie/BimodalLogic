@@ -1,29 +1,29 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 6 (B3b (ii)) complete and committed (0286536d3): new module RaySummary/Present.lean (684 lines; split out of Compose.lean per the plan's own ~900-line rule) lands finite labelled presentations (IsRun, runTrace with a DecidablePred instance, pathLabels, the inductive StepPath with its list reading stepPath_iff), the representative-carrying path-type closure (PathEntry, closureStep, the early-stopping closureIter proved equal to the Nat.iterate, the arithmetic closureBound, pathClosure) with pathTypes / pathTypesNow and their membership characterizations mem_pathTypes_iff / mem_pathTypesNow_iff (soundness by induction on the iterate, completeness by induction on StepPath through kTypeOf_listSeg_append_congr, stationarity by the generic iterate_stabilizes), and liveness as a greatest fixpoint (live, live_iff) instantiated to fwdLive / bwdLive with fwdLive_iff / bwdLive_iff in the plan's statement. Aggregator and FormalSystem.lean import Compose and Present (Compose's root import had been missing since Phase 4). Scoped build green (1929 jobs, 0 errors, 0 warnings), sorry census --cross-check 0/0 MATCH, all 13 new theorems on [propext, Classical.choice, Quot.sound], axiom count 14 unchanged, depth-1 two-state #eval witnesses run in ~7 s. Phases 7-10 not started (single-phase dispatch).",
+  "summary": "Phase 7 (B3b (iii)) complete: new module RaySummary/HitOf.lean (808 lines; imports Present) lands the computable realized-triple set hitOf lab step now k (an image over Q x Q of pathTypesNow types paired with path types backward-live at q0 and forward-live at q1) and proves mem_hitOf_iff (Challenge statement, Q implicit, Present.lean argument order): for every anchor t and depth k >= 1, hitOf is exactly the set of InFamily triples of the traces of the presentation's runs. PLAN DEFECT corrected at the consumption site: the planned conjuncts fwdLive/bwdLive chain tau-paths sharing an endpoint while a SegmentFactorization's segments are disjoint and joined by one step, so mem_hitOf_iff over the planned graph is false (two-state counterexample #eval-witnessed; issue log plan-defect); hitOf reads fwdLiveSep/bwdLiveSep, the same greatest fixpoint in the step-then-path graph, and fwdLive/bwdLive are untouched. The splice (=>) is a generic Z-indexed concatenation of nonempty lists (cutAt, exists_concat, isRun_concat, kTypeOf_segZ_concat); the read-out (<=) uses runSeg paths and k >= 1 twice through doets_lemma_1_1 (nonemptiness and the now state are k-type-visible). Aggregator and FormalSystem.lean import HitOf; status.typ regenerated. Scoped builds green (RaySummary 1930 jobs), full project build green (2835 jobs, 0 errors), sorry census --cross-check 0/0 MATCH, all 14 new theorems on [propext, Classical.choice, Quot.sound], axiom count 14 unchanged, depth-1 #eval witnesses run (hitOf card 2 on the Phase 6 fixture; discriminator fixture shows fwdLive true vs fwdLiveSep false). Phases 8-10 not started (single-phase dispatch); Phase 9 now unblocked.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Phases 1-6 of 10: computable k-type (B3a), closure alphabet with run conditions, anchors and generic bridge (B1), B2a complete in both halves, label-list segments with composition on representatives (B3b (i)), and finite labelled presentations with the computable path-type closure and liveness (B3b (ii))."
+      "summary": "Phases 1-7 of 10: computable k-type (B3a), closure alphabet with run conditions, anchors and generic bridge (B1), B2a complete in both halves, label-list segments with composition on representatives (B3b (i)), finite labelled presentations with the path-type closure and liveness (B3b (ii)), and the computable realized-triple set hitOf with its membership characterization mem_hitOf_iff (B3b (iii))."
     },
     {
       "type": "handoff",
-      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-6-handoff-20261008T104811Z.md",
-      "summary": "Phase 6 handoff: next action is Phase 7 (hitOf and mem_hitOf_iff in Present.lean, not Compose.lean); Phase 8 admissible; Phase 9 waits on Phase 7."
+      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-7-handoff-20261008T112447Z.md",
+      "summary": "Phase 7 handoff: next action is Phase 9 (per-model bridge under Presented, now unblocked; hitOf/mem_hitOf_iff live in HitOf.lean); Phase 8 admissible in any wave; records the plan-defect correction (Sep liveness)."
     }
   ],
-  "phases_completed": 6,
+  "phases_completed": 7,
   "phases_total": 10,
-  "dispatch_seq": 8,
+  "dispatch_seq": 9,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-6-handoff-20261008T104811Z.md",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-7-handoff-20261008T112447Z.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 7,
-    "resume_from": "Phase 7 (B3b (iii)): hitOf and mem_hitOf_iff in RaySummary/Present.lean (the plan's Files to modify says Compose.lean; the presentation definitions were split into Present.lean in Phase 6); Phase 8 (verdict probe) remains admissible in any wave; Phase 9 waits on Phase 7",
-    "completed_phases": [1, 2, 3, 4, 5, 6]
+    "next_phase": 8,
+    "resume_from": "Phase 8 (B2b verdict probe) or Phase 9 (per-model bridge under Presented; hitOf and mem_hitOf_iff are in RaySummary/HitOf.lean with Q implicit and the lab step now k argument order, and read liveness through fwdLiveSep/bwdLiveSep, not fwdLive/bwdLive); both admissible, Phase 10 waits on 8 and 9",
+    "completed_phases": [1, 2, 3, 4, 5, 6, 7]
   }
 }

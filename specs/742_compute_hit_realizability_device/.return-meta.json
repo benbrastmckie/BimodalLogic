@@ -4,48 +4,42 @@
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 742,
   "session_id": "sess_1791448118_c50a56",
-  "dispatch_seq": 8,
-  "phase_number": 6,
-  "started": "2026-10-08T10:26:20Z",
-  "completed_at": "2026-10-08T10:52:00Z",
-  "summary": "Phase 6 of 10 implemented and committed (0286536d3): finite labelled presentations and the computable path-type closure with liveness, in the new module RaySummary/Present.lean (pathTypes, pathTypesNow, mem_pathTypes_iff, mem_pathTypesNow_iff, fwdLive, bwdLive, fwdLive_iff, bwdLive_iff); scoped build green, sorries 0, axioms standard, #eval witnesses run. Single-phase dispatch: Phases 7-10 remain [NOT STARTED].",
+  "dispatch_seq": 9,
+  "phase_number": 7,
+  "phases_completed": 7,
+  "phases_total": 10,
+  "requires_user_review": false,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Cumulative summary through Phase 6: B3a, B1, B2a (both halves), B3b (i) and (ii)."
+      "summary": "Phases 1-7 of 10 implemented; Phase 7 lands hitOf and mem_hitOf_iff in RaySummary/HitOf.lean with the plan's liveness graph corrected to disjoint segments."
     },
     {
       "type": "handoff",
-      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-6-handoff-20261008T104811Z.md",
-      "summary": "Phase 6 handoff with next action (Phase 7 in Present.lean), current state, key decisions and empty sorry inventory."
+      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-7-handoff-20261008T112447Z.md",
+      "summary": "Phase 7 handoff: Phase 9 unblocked; Phase 8 admissible; Sep liveness correction recorded."
     }
   ],
-  "phases_completed": 6,
-  "phases_total": 10,
-  "handoff_path": "specs/742_compute_hit_realizability_device/.orchestrator-handoff.json",
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
-    "sorry_cross_check": "MATCH (stripper 0, compiler 0; probes/sorry-census-p6.log)",
-    "vacuous_count": 0,
-    "vacuous_note": "one pre-existing repository-wide match (Examples/TemporalStructures.lean:495, := trivial on a domain := True example), untouched",
+    "vacuous_count": 1,
+    "vacuous_note": "the one match is the pre-existing Examples/TemporalStructures.lean:495 baseline, untouched",
     "axiom_count": 14,
     "axiom_baseline": 14,
     "build_passed": true,
-    "build_evidence": "scoped guarded build of FormalSystem.Metalogic.Decidability.RaySummary: GUARD_EXIT=0, 1929 jobs, 0 errors, 0 warnings (probes/present-build-p6-3.log; -1 had 4 style warnings, fixed), .olean newer than source for Compose, Present, RaySummary; census --cross-check lake build exit 0 with the FormalSystem root .olean rebuilt after the import edit",
-    "new_theorem_axioms": "mem_pathTypes_iff, mem_pathTypesNow_iff, mem_pathTypes_iff_stepPath, mem_pathTypesNow_iff_stepPath, exists_mem_iterate_of_stepPath, realizes_of_mem_iterate, closureStep_pathClosure, closureIter_eq_iterate, iterate_stabilizes, stepPath_iff, live_iff, fwdLive_iff, bwdLive_iff: [propext, Classical.choice, Quot.sound] (probes/present-axioms-p6.log)",
-    "eval_witnesses": "two-state presentation over twoLetter at depth 1 (probes/present-axioms-p6.lean): pathClosure card 5; pathTypes false false card 1; pathTypesNow false false card 1; pathTypes false true card 0; pathTypesNow false true card 1; fwdLive/bwdLive true/true; fwdLive from the now-reading state false; fwdLive at an unrealized type false",
+    "build_evidence": "full guarded build: GUARD_EXIT=0, Build completed successfully (2835 jobs), 0 error: lines over captured stdout+stderr, .olean newer than source for HitOf, RaySummary, FormalSystem (probes/full-build-p7.log)",
     "verification_passed": true
   },
-  "requires_user_review": false,
+  "handoff_path": "specs/742_compute_hit_realizability_device/.orchestrator-handoff.json",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-7-handoff-20261008T112447Z.md",
   "completion_data": {
-    "completion_summary": "Phase 6 only (single-phase dispatch); task not complete."
+    "completion_summary": "Phase 7 of 10 complete (single-phase dispatch): hitOf and mem_hitOf_iff landed sorry-free on the standard axiom profile in the new module RaySummary/HitOf.lean, with the plan's liveness graph corrected (fwdLiveSep/bwdLiveSep over disjoint segments; the planned fwdLive/bwdLive version is refuted by an #eval-witnessed counterexample and recorded as a plan defect). Full build green, sorry census 0/0 MATCH, axiom count unchanged."
   },
   "memory_candidates": [
-    "Computing path k-types of a finite labelled graph: keep ONE representative label list per (src, dst, flag, k-type) key in a Finset closure; the composition congruence on representatives makes the stored representative's recomputed type the type of every path with that key, and stationarity follows from a generic bounded-measure lemma (f^[B] is a fixpoint when a measure ≤ B strictly grows on each non-stationary step) applied to the key-image cardinality.",
-    "Never let an #eval touch Fintype.card (KType sig k) or iterate a closure for that many rounds: at depth 1 it is 2^256; compute the round bound arithmetically from Fintype.card (NormalForm sig k 0) and stop the computable iterate at the first stationary round, proving it equal to the Nat.iterate.",
-    "Liveness on a finite Boolean graph (does q start an infinite chain?) is cheapest as the greatest fixpoint of a pruning step: iterate 'keep states with a successor still in the set' card Q times; the fixpoint is successor-closed (build the chain with choose + Nat.rec) and any chain survives every round — no pigeonhole, no cycle unrolling.",
-    "Instance resolution does not synthesize DecidablePred for a conjunction under a binder (fun x => b = true ∧ x ∉ S) even though fun _ => instDecidableAnd typechecks; name the predicate and give it an instance so Finset.mem_filter resolves."
+    "Lean/Mathlib v4.33.0-rc1: a `List.range n` mapped with an unannotated binder whose body needs ℤ is silently coerced to `List ℤ` through the List monad (`do let a ← range n; pure ↑a`), which defeats `List.getElem_range`/`length_range`; annotate `fun (i : ℕ) => … (i : ℤ)`.",
+    "Rewriting a term inside `decide (P t)` whose `Decidable` instance depends on `t` fails with a motive error; go through `Bool.eq_iff_iff` + `decide_eq_true_iff` first, then rewrite in the Prop.",
+    "For a k-type-summary read-out over a finite presentation, the liveness graph must chain DISJOINT segments joined by one step (step-then-path), not paths sharing an endpoint: a factorization's segment types are types of the disjoint pieces, and the type of a path minus its last state is not the path's type."
   ]
 }
