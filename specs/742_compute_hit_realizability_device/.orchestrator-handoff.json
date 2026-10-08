@@ -1,34 +1,29 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 4 (B3b (i)) complete and committed (2cbd0a23c): Compose.lean lands listSeg (carrier Fin l.length, computable instances, kTypeOfFin_listSeg), labels with kTypeOf_segZ_eq_listSeg (a time-axis segment has the k-type of its label list, by k_equiv_of_iso), listSeg_append_kEquiv (a concatenation is the two-point ordered sum of its parts) and the composition congruence kTypeOf_listSeg_append_congr (the I = J = Bool instance of kEquiv_orderedSum_of_kEquiv_colour); scoped build green (1924 jobs, 0 errors, 0 warnings), sorry census --cross-check 0/0 MATCH, all four headline theorems on [propext, Classical.choice, Quot.sound], #eval computability witnesses run at depth 1. Per the plan the module is not yet imported by the aggregator (Phase 6 owns RaySummary.lean). Phases 5-10 not started (single-phase dispatch).",
+  "summary": "Phase 5 (B2a (ii)) complete and committed (bd9af555e): Trace.lean lands the uniqueness half of HWZ 2000 Thm 14 ⇒ — letter_iff_of_localRun_anchored (every closure letter of an anchored local run reads PlusTruthAt along its history, by structural induction on the closure formula with the membership proof generalised), eq_clTrace_of_localRun_anchored (Challenge signature verbatim: c = clTrace M φ t σ) and the ∃! packaging clTrace_unique; scoped build green on the first attempt (1926 jobs, 0 errors, 0 warnings), sorry census --cross-check 0/0 MATCH, all three new theorems on [propext, Classical.choice, Quot.sound], axiom count 14 unchanged, 84 lines added (module 249). RaySummary.lean untouched per the plan (Phase 6 owns it). Phases 6-10 not started (single-phase dispatch).",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Phases 1-4 of 10: computable k-type (B3a), the closure alphabet with run conditions, anchors and generic bridge (B1), the trace-is-an-anchored-local-run soundness half of B2a, and label-list segments with composition on representatives (B3b (i))."
+      "summary": "Phases 1-5 of 10: computable k-type (B3a), closure alphabet with run conditions, anchors and generic bridge (B1), B2a complete in both halves (the trace is the unique anchored local run), and label-list segments with composition on representatives (B3b (i))."
     },
     {
       "type": "handoff",
-      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-4-handoff-20261008T101155Z.md",
-      "summary": "Phase 4 handoff: next action is Phase 5's eq_clTrace_of_localRun_anchored; Phase 6 now unblocked and Phase 8 admissible in the same wave."
+      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-5-handoff-20261008T102022Z.md",
+      "summary": "Phase 5 handoff: next action is Phase 6 (Compose.lean + RaySummary.lean, finite labelled presentations and the path-type closure); Phase 8 admissible; Phase 9 unblocked on its Phase 5 side."
     }
   ],
-  "phases_completed": 4,
+  "phases_completed": 5,
   "phases_total": 10,
-  "dispatch_seq": 6,
+  "dispatch_seq": 7,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-4-handoff-20261008T101155Z.md",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-5-handoff-20261008T102022Z.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 5,
-    "resume_from": "Phase 5 (B2a (ii), eq_clTrace_of_localRun_anchored in Trace.lean by structural induction on the closure formula) or Phase 6 (B3b (ii), Compose.lean + RaySummary.lean: finite labelled presentations and the path-type closure, now unblocked by Phase 4); Phase 8 (verdict probe) remains admissible",
-    "completed_phases": [
-      1,
-      2,
-      3,
-      4
-    ]
+    "next_phase": 6,
+    "resume_from": "Phase 6 (B3b (ii), Compose.lean + RaySummary.lean: finite labelled presentations and the representative-carrying path-type closure, plus the Compose/Trace aggregator imports); Phase 8 (verdict probe) remains admissible in any wave; Phase 9 waits on Phase 7",
+    "completed_phases": [1, 2, 3, 4, 5]
   }
 }
