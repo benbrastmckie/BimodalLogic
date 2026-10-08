@@ -27,12 +27,21 @@ admission gate defers the collider each cycle until its sibling goes terminal.
 
 ```bash
 # --- Decidability front (Phases 1-2): run these to exhaustion before anything below ---
-# 742 and 735 are COMPLETE (2026-10-08). The ray-product route R1 closed with a NEGATIVE
-# verdict, so nothing below is R1's critical path any more: every remaining line here is
-# evidence, fallback or housekeeping. Reviving a critical path requires FILING (C), (S) or (W)
-# (RaySummary README, "The verdict") — the user's call, which this roadmap does not make.
+# 742 and 735 are COMPLETE (2026-10-08). R1 (ray-product) closed with a NEGATIVE verdict; the
+# three requirements its verdict named are now FILED as 745 (C), 746 (S) and 747 (W, gated on
+# both). THE CRITICAL PATH IS 745 FIRST, and specifically its phase-1 probe: the Hit-level
+# hypothesis `HitPresented` is OPEN, not refuted, and a refutation there closes the route and
+# saves 746's 1,200-2,000 lines and all of 747. Run this line before the evidence/fallback ones.
+/orchestrate 745 --hard --lit         # (C) Hit-level completeness. PROBE FIRST: settle
+                                      # HitPresented on the model-A fixture before the bound
+/orchestrate 746 --hard --lit         # (S) Hit-level soundness, the B2b construction. Independent
+                                      # of 745; standalone value as HWZ Thm 14 (<=). Re-verify the
+                                      # 300-500 line frame-constructor figure before phasing: the
+                                      # [Finite W] requirement funnels through ONE crude lemma
+/orchestrate 747 --hard --lit         # (W) the lift to validity. Gated on 745+746; phase 1 is
+                                      # characterization, since the verdict costs it at nothing
 /orchestrate 739,733,734,725 --lit    # evidence probes + one ruling; serialized on the collection.
-                                      # 734 is the mosaic route R2 and is now the live fallback
+                                      # 734 is the mosaic route R2 and is the fallback if 745 refutes
 /orchestrate 709,740 --hard           # F4 summary step + KTypeSummary housekeeping. NOTE: 709 was
                                       # R1's summary step; re-rule on its value before dispatching
 /orchestrate 716,714,712 --hard       # sliced-certificate defect, label evaluation, closure.
@@ -117,11 +126,20 @@ Hit-level soundness, the realization of a presentation by a constructed regular 
 alone is not sufficient: **(C)** Hit-level completeness with a computable bound (`Presented`
 cannot carry it, by the probe; the Hit-level hypothesis's satisfiability is OPEN) and **(W)** a
 closure-wide quasimodel over all seams and times (`box` per time, `stab` per state, nested under
-`untl`/`snce`) are unfiled requirements, named with their statement shapes under `[F.IsRegular]`,
+`untl`/`snce`) are the three requirements, named with their statement shapes under `[F.IsRegular]`,
 L⁺, ℤ time in the RaySummary README. The ray-product presentation's deliverable on this front is
 the verdict plus the conditional per-seam check (`decidableStabOfPresented`, under `Presented`,
-vacuous on model A). Filing (C), (S) or (W), and any dependency edit, is the user's call; this
-roadmap files nothing. Everything else in this phase is evidence or fallback.
+vacuous on model A).
+
+**All three are now FILED (2026-10-08, by user ruling): (C) is task 745, (S) is task 746, (W) is
+task 747, which depends on both.** (C) and (S) are independent and may run in parallel — (S)
+carries standalone value as the HWZ 2000 Thm 14 (⇐) formalization whatever (C) returns. **(C) is
+the discriminator and should run first**: `Probe735.not_presented` refutes the *trace-level*
+hypothesis, but the *Hit-level* one the probe's header names `HitPresented` is **OPEN, not
+refuted** — the pumped limit's forward type differs from every seam trace's type, so the
+refutation does not transfer. 745's phase 1 is therefore a probe on that question on the existing
+model-A fixture, and a refutation there closes the route and saves (S)'s 1,200–2,000 lines and all
+of (W). Everything else in this phase is evidence or fallback.
 
 **Four constraints that rule work out.** (1) The substrate must work over the **time axis with a
 finite alphabet of per-time summaries, never over states** — forced by
