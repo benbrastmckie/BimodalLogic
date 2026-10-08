@@ -11,7 +11,7 @@ next_project_number: 743
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,735,739,740,741 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,739,740,741 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -79,7 +79,6 @@ next_project_number: 743
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-735 [IMPLEMENTING] — Assemble the decidable stab check on the ray-product...
 739 [NOT STARTED] — Run E2's real test: the depth-2 stratification falsifier on a...
 740 [NOT STARTED] — Restate three KTypeSummary declarations over Finite...
 
@@ -358,7 +357,7 @@ ACCEPTANCE. (1) A research report under specs/736_cslib_omega_automata_survey_an
 ---
 
 ### 735. Decidable stab check ray product assembly
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 711, Task 737, Task 742
@@ -366,6 +365,7 @@ ACCEPTANCE. (1) A research report under specs/736_cslib_omega_automata_survey_an
 - **Evidence**: [evidence/seam-gluing-ray-product/presented-not-complete.lean]
 - **Lean**: [FormalSystem/Metalogic/Decidability/RaySummary/StabCheck.lean]
 - **Plan**: [735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md]
+- **Summary**: [735_decidable_stab_check_ray_product_assembly/summaries/01_decidable-stab-check-assembly-summary.md]
 
 **Description**: Assemble the decidable stab check on the ray-product presentation: Decidable (PlusValidZTime phi)
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #735
 
 - **Task**: 735 - Assemble the decidable stab check on the ray-product presentation: Decidable (PlusValidZTime phi)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: 711, 737, 742 (all complete)
 - **Research Inputs**: specs/735_decidable_stab_check_ray_product_assembly/reports/01_decidable-stab-check-assembly.md
