@@ -1,5 +1,5 @@
 ---
-next_project_number: 743
+next_project_number: 745
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 743
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,739,740,741 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,739,740,741,743,744 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -105,8 +105,62 @@ next_project_number: 743
 ### Repo Hygiene
 
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
+743 [NOT STARTED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
+744 [NOT STARTED] — Wrap the RaySummary and KTypeSummary inventory tables in...
 
 ## Tasks
+
+### 744. Wrap inventory tables generated markers
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Wrap the RaySummary and KTypeSummary inventory tables in BEGIN GENERATED markers so their module line counts cannot drift again
+
+MEASURED 2026-10-08. Four of the six module line counts in FormalSystem/Metalogic/Decidability/RaySummary/README.md's inventory table had drifted from the filesystem: Closure.lean claimed 310 (actual 309), Trace.lean 336 (actual 371), Compose.lean 297 (actual 298), Present.lean 684 (actual 690). HitOf.lean (810) and StabCheck.lean (252) were correct, as was the #guard count (13 + 4 = 17). The four stale counts were corrected BY HAND in that session's commit; this task removes the recurrence, which the hand fix does not.
+
+ROOT CAUSE, verified by grep. That table carries NO `<!-- BEGIN GENERATED: inventory dir=... -->` / `<!-- END GENERATED -->` markers, so it is hand-maintained and `check-module-invariants.sh`'s INV check -- which fails only on a STALE WRAPPED BLOCK -- never covered it. The gate was green throughout the drift. scripts/readme-inventory.sh is a deprecated shim whose own message states the mechanism: "Module inventory tables are no longer pasted in by hand. A README opts into a machine-owned table by wrapping it in BEGIN GENERATED ... after which `check-module-invariants.sh --emit-inventory` rewrites every column except the hand-written trailing description, and the INV check in the same script fails if any block has gone stale."
+
+SO THE FIX IS OPT-IN, NOT NEW MACHINERY: wrap the table, and the existing generator owns the columns while the long hand-written trailing descriptions survive. Confirm that preservation claim against `--emit-inventory`'s actual behaviour before committing to it -- the RaySummary descriptions are several hundred words each and losing them would be a serious regression, so verify on a scratch copy first.
+
+SCOPE. (1) Wrap the RaySummary README inventory table and regenerate it via `check-module-invariants.sh --emit-inventory`, confirming every trailing description is preserved byte-for-byte. (2) Do the same for FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md, which has the same hand-maintained shape. (3) Sweep for OTHER unwrapped inventory tables under FormalSystem/ by reading the generator's marker-option list rather than enumerating from memory, and report what is found -- wrapping them is in scope only where the generator's column set actually fits. (4) Confirm `check-module-invariants.sh` INV now fails on a deliberately corrupted count in each newly wrapped block, so the coverage is demonstrated rather than assumed.
+
+DEPENDENCY NOTE, not a declared edge. Task 731 (make plan-time file_scope harvest include the generated surfaces a .lean edit forces) enumerates the generated surfaces a planner must declare. If this task lands, these two READMEs BECOME such surfaces and 731's enumeration must include them. 731 is NOT declared as a dependency here and this task is not blocked on it; the relationship runs the other way, so 731 should be re-checked after this lands. Do not edit 731's record from this task.
+
+WHY THIS IS NOT FOLDED INTO 731. Task 731's NON-GOALS state explicitly: "no change to the generators themselves or to what they emit". Wrapping a new table changes what the generator emits (it would own two more tables), so this work is excluded by 731's own stated scope. Folding it in would contradict that record rather than extend it.
+
+NON-GOALS. No change to the generator's column set or algorithm. No change to any module's Lean source. Do not hand-correct counts in any table this task does not wrap -- an unwrapped table left unwrapped should be REPORTED, not patched, so the recurrence stays visible rather than being papered over a second time.
+
+BACKLOG RECONCILIATION, verified 2026-10-08 against all 51 open tasks in this repo. No open task covers inventory-table marker adoption. 731 is adjacent and explicitly excludes it (above). 741 concerns agent-system context extensions, not this repo's READMEs. No overlap.
+
+---
+
+### 743. Typst sync check1 namespace resolution
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Teach typst-sync-check.sh Check 1 to resolve namespaced Lean declarations, or rule on the whitelist-vs-docstring convention it currently depends on
+
+MEASURED 2026-10-08. `bash scripts/typst-sync-check.sh` FAILS Check 1 (backtick name resolution) on exactly one finding: VIOLATION `FormalSystem.Semantics.validZTime_iff_validInt` -- "identifier not found in any *.lean file under the Lean source roots", cited from typst/FormalFoundations.typ:790. Three separate implementation dispatches during an /orchestrate run reported it and each correctly declined to repair it as out of scope.
+
+THE CITATION IS CORRECT; THE CHECK CANNOT RESOLVE IT. `theorem validZTime_iff_validInt` is declared at FormalSystem/Semantics/IntTransfer.lean:338, inside `namespace FormalSystem.Semantics` (opened line 70, closed line 353), so the fully-qualified name the manual cites is the right name. Check 1's dotted-identifier branch does a LITERAL grep for the full dotted string and performs no namespace resolution, so a correctly-cited namespaced declaration fails unless its full dotted name happens to appear verbatim somewhere in a .lean file.
+
+WHY THAT IS FRAGILE, measured rather than asserted. Every other fully-qualified FormalSystem.* citation sampled from the typst tree DOES get a literal hit (FormalSystem.Metalogic.BXCanonical, FormalSystem.Metalogic.Conservativity, FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime, FormalSystem.ProofSystem, FormalSystem.ProofSystem.Axioms, FormalSystem.ProofSystem.DerivedAxioms) -- because the name appears in a namespace declaration or a docstring cross-reference, not because the check resolved anything. The manual's citations are therefore validated by coincidence of source text: a correct citation passes or fails depending on whether some docstring mentions it.
+
+THREE ROUTES, none obviously right, to be decided rather than assumed. (1) Teach Check 1 to resolve a dotted name against open namespaces -- correct, but the script is deliberately BUILD-FREE (no lake, no oleans, so it can run in a fast pre-commit gate), so resolution without a build means parsing namespace/end nesting. (2) Whitelist the name in typst/sync-check-whitelist.txt -- the sanctioned escape hatch, BUT it holds 89 entries and ZERO dotted FormalSystem.* entries, and its documented categories are "type-signature / turnstile illustrations" and "typst/template API names (not Lean identifiers)", so a valid-but-unresolvable declaration would set a new precedent and mask a real gap. (3) Change the manual to cite the short name, which does appear literally -- cheapest, but loses the fully-qualified form in a reference manual and does not stop the next namespaced citation from failing.
+
+A FOURTH, if route 1 is rejected: add the fully-qualified cross-reference to IntTransfer.lean's own module docstring, making the citation resolve the same way the other six do. Cost: touching a .lean file changes formalsystem-line-count (347522 at measurement) in typst/generated/status.typ, forcing a status.typ regeneration, and that docstring's existing bullet list uses SHORT names throughout, so a dotted entry would be stylistically inconsistent there.
+
+ACCEPTANCE. Either Check 1 resolves the citation and `bash scripts/typst-sync-check.sh` exits 0, with the chosen mechanism's limits stated where the next citation author will see them; or a recorded verdict naming which route was taken and why the others were rejected, with the finding left visible rather than silently suppressed. If the whitelist route is chosen, say explicitly that it is suppressing a resolution gap and not certifying the name.
+
+NON-GOALS. No change to Check 2 (status.typ counts), Check 2b (module map) or Check 3 (machine appendix). No change to what any generator emits. Do not make the script require a built library -- its build-free property is load-bearing for the pre-commit gate.
+
+BACKLOG RECONCILIATION, verified 2026-10-08 against all 51 open tasks in this repo. No open task covers Check 1 or phantom-citation resolution. Nearest records: 731 (plan-time file_scope harvest must include generated surfaces a .lean edit forces -- adjacent because it also concerns typst-sync-check.sh, but its subject is scope DECLARATION and its NON-GOALS explicitly exclude generator changes) and 741 (agent-system context extensions; mentions typst-sync staleness only as deploy-freshness context). Neither overlaps this.
+
+---
 
 ### 742. Compute hit realizability device
 - **Status**: [COMPLETED]
