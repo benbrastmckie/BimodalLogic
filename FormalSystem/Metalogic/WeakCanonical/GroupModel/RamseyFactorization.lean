@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.MonoDiscrete
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.GoodGroupable
 import FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment
 
 /-!
 # Ramsey factorization and per-block inflation
@@ -44,6 +45,11 @@ by the invariant.
   of one anchor (and agree at it) are `≡ₖ` for every `k`.
 * `inflate_right`, `inflate_left` — per-block inflation: a coloured `ℤ`-block is `≡ₖ` itself
   with a suitably coloured `ℚ ×ₗ ℤ` appended above (resp. below), at the same depth `k`.
+
+The segment carrier `segZ` and the block-as-segment-sum lemma `kEquiv_zFiber_segSum`, both
+first proved here, now live in `KTypeSummary/Segment.lean` under the same namespace (every
+fully-qualified name is unchanged); this module imports them. `qzFiber`, the `ℚ ×ₗ ℤ` tail
+shape, is group-model-specific and stays here.
 
 ## References
 
@@ -314,14 +320,11 @@ theorem kEquiv_colourStructure_anchored {ι : Type} (k : ℕ) {α β γ : ι}
         (colourStructure I cI).carrier × (colourStructure J cJ).carrier).2 m).symm
 
 
-/-! ## Coloured segments, fibers, and two-summand sums -/
+/-! ## The `ℚ ×ₗ ℤ` tail shape
 
-/-- A half-open coloured segment `[a, b)` of `ℤ`. -/
-def segZ (sig : MonadicSignature) (c : sig.preds → ℤ → Prop) (a b : ℤ) :
-    OrderedMonadicStructure sig where
-  carrier := {t : ℤ // a ≤ t ∧ t < b}
-  interp := fun p t => c p t.1
-  carrierOrder := inferInstance
+The coloured segment `segZ` lives in `KTypeSummary/Segment.lean`; `qzFiber` below stays here
+deliberately — it is group-model-specific (`ℚ ×ₗ ℤ` tails) and is consumed by
+`GroupableCompanion.lean`, so it is not part of the segment carrier's move. -/
 
 /-- A monadic structure on the full carrier `ℚ ×ₗ ℤ` from a colouring — the tail shape of
 the inflation, and the summand shape `QZStructure` fixes. -/
@@ -436,42 +439,6 @@ private theorem exists_zFactorization (sig : MonadicSignature) [Fintype sig.pred
     rw [hWnonpos (-2) (by omega), hWnonpos (-1) (by omega)]
     have := hgD (show ((-(-1 : ℤ)).toNat) < ((-(-2 : ℤ)).toNat) by omega)
     omega
-
-/-! ## The block as a `ζ`-indexed sum of its segments -/
-
-private theorem kEquiv_zFiber_segSum (sig : MonadicSignature) [Finite sig.preds]
-    (k : ℕ) (c : sig.preds → ℤ → Prop)
-    (W : ℤ → ℤ) (hmono : Monotone W) (hcover : ∀ t : ℤ, ∃ z, W z ≤ t ∧ t < W (z + 1)) :
-    KEquiv sig k (zFiber sig c)
-      (orderedSum sig ℤ (fun z => segZ sig c (W z) (W (z + 1)))) := by
-  haveI := Classical.decEq sig.preds
-  haveI := Fintype.ofFinite sig.preds
-  set m : ℤ → OrderedMonadicStructure sig := fun z => segZ sig c (W z) (W (z + 1)) with hm
-  set g : (orderedSum sig ℤ m).carrier → (zFiber sig c).carrier := fun s => s.2.1 with hg
-  have hgmono : StrictMono g := by
-    intro s t hst
-    have h : Sigma.Lex (· < ·) (fun _ => (· < ·)) s t := hst
-    cases h with
-    | left a b hij =>
-      rename_i i j
-      change a.1 < b.1
-      calc a.1 < W (i + 1) := a.2.2
-        _ ≤ W j := hmono (by omega)
-        _ ≤ b.1 := b.2.1
-    | right a b hab =>
-      exact hab
-  have hgsurj : Function.Surjective g := by
-    intro t
-    obtain ⟨z, h1, h2⟩ := hcover t
-    exact ⟨⟨z, ⟨t, h1, h2⟩⟩, rfl⟩
-  refine k_equiv_of_iso sig k _ _
-    (StrictMono.orderIsoOfSurjective g hgmono hgsurj).symm ?_
-  intro p x
-  set s := (StrictMono.orderIsoOfSurjective g hgmono hgsurj).symm x with hs
-  have hx : g s = x :=
-    StrictMono.orderIsoOfSurjective_self_symm_apply g hgmono hgsurj x
-  change c p x ↔ c p s.2.1
-  rw [show s.2.1 = x from hx]
 
 /-! ## Per-block inflation -/
 

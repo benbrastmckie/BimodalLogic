@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Basic
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment
 
 /-!
 # `KTypeSummary` — Büchi's complementation chain in the monadic `k`-type idiom
@@ -17,6 +18,8 @@ disclaimer — no complexity bound is claimed and no `⊡` condition is reduced 
 ## Modules
 
 * `KTypeSummary.Basic` — the cluster root and step 2, `kType_finite`.
+* `KTypeSummary.Segment` — step 3′: the segment carrier `segZ` and the block-as-segment-sum
+  lemma `kEquiv_zFiber_segSum`.
 
 Later steps of the chain are appended here as their modules land.
 -/

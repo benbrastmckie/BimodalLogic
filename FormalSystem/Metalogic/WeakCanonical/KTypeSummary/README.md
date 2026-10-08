@@ -38,7 +38,7 @@ closes the step they did not cover: saturation.
 | 1 | finite-index right congruence on finite words | `KType`, `kTypeOf`, `KEquiv` | `../NEquivalence.lean` | landed (pre-existing) |
 | 2 | the congruence has finite index | `kType_finite` | `Basic.lean` | **landed** |
 | 3 | the family `[u]·[v]^ω`, here bi-infinite `(τneg)^(ω*) · τzero · (τpos)^ω` | `SegmentFactorization`, `InFamily` | `Family.lean` | planned |
-| 3′ | a word *is* the concatenation of its factors | `kEquiv_zFiber_segSum` | `Segment.lean` | planned (proved in tree, currently private) |
+| 3′ | a word *is* the concatenation of its factors | `kEquiv_zFiber_segSum` | `Segment.lean` | **landed** (moved from `../GroupModel/RamseyFactorization.lean`, made public) |
 | 4 | Ramsey: a monochromatic monotone cutting sequence | `family_cover`, `exists_matching_factorization` | `Family.lean` | planned (proved in tree, currently private) |
 | 5 | saturation: each family member is inside or disjoint from the target | `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple`, `family_saturation` | `Saturation.lean`, `Universal.lean` | planned (the principal new work) |
 | 5′ | a finite saturating cover makes the target a finite union of families | `target_eq_union_of_families` | `Universal.lean` | planned |
@@ -49,6 +49,7 @@ closes the step they did not cover: saturation.
 | File | Lines | Description |
 |------|-------|-------------|
 | `Basic.lean` | 122 | Cluster root: the six-step table, the scope disclaimer, and step 2, `kType_finite` — the alphabet of depth-`k` segment summaries is finite. |
+| `Segment.lean` | 108 | Step 3′: the segment carrier `segZ` (the half-open coloured segment `[a, b)` of `ℤ`) and `kEquiv_zFiber_segSum` — a coloured `ℤ`-block is `≡ₖ` the `ℤ`-indexed sum of its segments under any monotone covering cutting sequence. |
 
 ## The consumer relation
 
@@ -86,9 +87,24 @@ outside `WeakCanonical/` — e.g. beside `../../Expressiveness/` — was conside
 kernel's current consumers all live under `WeakCanonical/`, so the move would add churn without
 removing a cross-front import today.
 
+## Measured import closure
+
+Measured on the day `Segment.lean` landed, by a transitive walk of `import FormalSystem.*` lines
+from `Segment.lean`: **141** `FormalSystem.*` modules, of which 12 are under `WeakCanonical/` —
+`BackAndForth`, `ChronicleExtraction`, `ColourOrders`, `FrameProperties`,
+`GroupModel/BlockDecomposition`, `IntegerModel/GoodStructures`, `KTypeSummary/Basic`,
+`MixedSum`, `NEquivalence`, `OrderedSum`, `ReflexiveCanonical`, `TruthLemma`. Neither
+`GroupModel/MonoDiscrete.lean` nor `GroupModel/GoodGroupable.lean` is in the closure, and
+neither is `GroupModel/RamseyFactorization.lean` (the import runs the other way: it imports the
+carrier from here). Hygiene is a preference, not a gate; if a later step needs the anchored
+coloured-order lemma and pulls `MonoDiscrete` in, that is recorded here rather than designed
+around.
+
 ## Dependencies
 
-- **Imports from**: `../NEquivalence.lean`, `../MixedSum.lean`
+- **Imports from**: `../NEquivalence.lean`, `../MixedSum.lean`,
+  `../GroupModel/BlockDecomposition.lean` (`zFiber`), `../IntegerModel/GoodStructures.lean`
+  (`k_equiv_of_iso`); see "Measured import closure" below
 - **Imported by**: `../../WeakCanonical.lean` (the sibling aggregator), via `../KTypeSummary.lean`
 
 ## Related Documentation

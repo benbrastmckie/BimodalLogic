@@ -20,7 +20,7 @@ Sources: Doets 1987, chapters 3 and 7; Reynolds 1992, section 8.
 | `GoodGroupable.lean` | 194 | Reynolds section 8's `good` notion transposed to `ℚ ×ₗ ℤ`: the `QZStructure` target vocabulary, `goodGroupable`, its two transfer lemmas, and the two endpoint corollaries. |
 | `GroupableCompanion.lean` | 426 | The companion lemma itself: every countable discrete unbounded-both-ways monadic structure is `goodGroupable` at every depth (`companionGeneral`), instantiated at the Base-MCS chronicle structure (`companionChronicle`). |
 | `MonoDiscrete.lean` | 892 | Monochromatic discrete completeness at depth `k`: two monochromatic discrete linear orders with the same endpoint profile are `KEquiv` at every depth. The classical completeness of `Th(ℤ,<)`, transposed to monadic structures. |
-| `RamseyFactorization.lean` | 836 | The per-block inflation step. Keeps infinite Ramsey for pairs under the alias `infinite_ramsey_pairs` (proved in `ForMathlib/Combinatorics/InfiniteRamseyPairs.lean`, absent from Mathlib at this pin) and uses it to show every coloured `ℤ`-block absorbs a coloured copy of `ℚ ×ₗ ℤ` invisibly at depth `k`. |
+| `RamseyFactorization.lean` | 803 | The per-block inflation step. Keeps infinite Ramsey for pairs under the alias `infinite_ramsey_pairs` (proved in `ForMathlib/Combinatorics/InfiniteRamseyPairs.lean`, absent from Mathlib at this pin) and uses it to show every coloured `ℤ`-block absorbs a coloured copy of `ℚ ×ₗ ℤ` invisibly at depth `k`. The segment carrier `segZ` and the block-as-segment-sum lemma it factors through now live in the summary cluster (`../KTypeSummary/Segment.lean`) and are imported here. |
 
 ## Key Results
 

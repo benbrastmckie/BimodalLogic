@@ -25,6 +25,7 @@ signal that a profile moved.
 | infinite Ramsey for pairs, the Ramsey ingredient | 4 | `Nat.exists_strictMono_const_pair_colour` |
 | its in-tree alias | 4 | `infinite_ramsey_pairs` |
 | the summary alphabet is finite | 2 | `kType_finite` |
+| a block is the sum of its segments | 3′ | `kEquiv_zFiber_segSum` |
 
 Rows for the later steps are appended as their modules land.
 
@@ -64,5 +65,15 @@ infinite sets by `Exists.choose` and picks the infinitely-often colour by a seco
 /-- info: 'FormalSystem.Metalogic.WeakCanonical.kType_finite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.WeakCanonical.kType_finite
+
+/-! ## Step 3′: a block is the ordered sum of its segments
+
+The `Classical.choice` is inherited from `k_equiv_of_iso` and the order-isomorphism machinery
+(`StrictMono.orderIsoOfSurjective`); nothing about the chain adds to it.
+-/
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.kEquiv_zFiber_segSum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.kEquiv_zFiber_segSum
 
 end BimodalTest.Metalogic

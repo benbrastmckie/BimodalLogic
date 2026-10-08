@@ -468,7 +468,13 @@ any `theorem`/`def` body). If `Finite (KType sig k)` turns out to need more than
 
 ---
 
-### Phase 3: Step 3 carrier — publish `segZ` and the block-as-segment-sum lemma [NOT STARTED]
+### Phase 3: Step 3 carrier — publish `segZ` and the block-as-segment-sum lemma [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-module-invariants.sh` exits 0 | The single failing check is the pre-existing C9 citation at `scripts/check-phantom-citations.sh:145` (committed in `729dc345f`), outside this task's `file_scope` and untouched by this phase — the identical exclusion Phases 1 and 2 recorded | Full harness run this dispatch after the move: C1 (build + `BimodalTest`), C2, C3, C28 (0 warnings), C33 and every other check PASS; INV PASS after `--emit-inventory`; `lean_verify` on `kEquiv_zFiber_segSum`, `inflate_right`, `inflate_left` all `[propext, Classical.choice, Quot.sound]`; probes 17/17 |
 
 **Goal**: Make the segment carrier and the "a coloured ℤ-block is the ordered sum of its
 segments" lemma public, in a module the substrate can import without reaching the group-model
@@ -476,50 +482,50 @@ front, with every fully-qualified name unchanged.
 
 **Tasks**:
 
-- [ ] Re-verify the baseline before moving anything: `grep -rn 'segZ' --include=*.lean .` (expect
+- [x] Re-verify the baseline before moving anything: `grep -rn 'segZ' --include=*.lean .` (expect
       hits only in `GroupModel/RamseyFactorization.lean` and in one probe *comment*), and
       `lake env lean` a scratch file importing
       `FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization` that `#check`s
-      `FormalSystem.Metalogic.WeakCanonical.segZ`. Record both results.
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Segment.lean`: header; imports
+      `FormalSystem.Metalogic.WeakCanonical.segZ`. Record both results. *(completed — `segZ`: 13 hits in `RamseyFactorization.lean`, 2 in `Basic.lean`'s docstring, 2 in one probe comment; `#check` through the old import resolves)*
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Segment.lean`: header; imports
       `KTypeSummary.Basic`, `FormalSystem.Metalogic.WeakCanonical.GroupModel.BlockDecomposition`
       (for `zFiber`) and `FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructures` (for
       `k_equiv_of_iso`); `namespace FormalSystem.Metalogic.WeakCanonical` — **the namespace is
       unchanged, so no alias is needed and every fully-qualified name survives the move**.
-- [ ] Move `def segZ` (currently `RamseyFactorization.lean:320`) verbatim, with its docstring
+- [x] Move `def segZ` (currently `RamseyFactorization.lean:320`) verbatim, with its docstring
       extended by one sentence naming its chain role: the half-open coloured segment `[a, b)` is
       the time-axis analogue of a finite word between two positions, and `kTypeOf sig k (segZ …)`
       is the finite summary alphabet step 2 bounds.
-- [ ] Move `kEquiv_zFiber_segSum` (currently `private`, `RamseyFactorization.lean:442`) verbatim
+- [x] Move `kEquiv_zFiber_segSum` (currently `private`, `RamseyFactorization.lean:442`) verbatim
       and **drop `private`**. Extend its docstring: this is the chain's "a block *is* its
       factorization" step, the hinge the mixing lemma is applied through. Keep the proof byte-
       identical; if an import is missing, add the import rather than editing the proof.
-- [ ] In `RamseyFactorization.lean`: delete the two moved declarations, add
+- [x] In `RamseyFactorization.lean`: delete the two moved declarations, add
       `import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment`, and update the module
       docstring's "Main results" list and the `segZ` mention to point at the new module. Leave
       `qzFiber` where it is — it is group-model-specific (`ℚ ×ₗ ℤ` tails) and has a consumer in
       `GroupableCompanion.lean`; say so in a one-line comment so a later reader does not "finish"
       the move.
-- [ ] Append `import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment` to
+- [x] Append `import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment` to
       `KTypeSummary.lean`; update the cluster README's step-3 row; update the
       `RamseyFactorization.lean` row in `FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md`
       to say the segment carrier now lives in the summary cluster.
-- [ ] Record the import closure: run
+- [x] Record the import closure: run
       `lake env lean --print-imports` (or `lake build` with the module graph) on
       `FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment` and confirm by grep that
       neither `MonoDiscrete` nor `GoodGroupable` is in it. Write the measured closure into the
       cluster README. If either *is* present, record the fact and continue — hygiene is a
       preference here, not a gate.
-- [ ] `lake exe mk_all --lib FormalSystem`; guarded build of
+- [x] `lake exe mk_all --lib FormalSystem`; guarded build of
       `FormalSystem.Metalogic.WeakCanonical.KTypeSummary` and
       `FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization`;
       `lean_verify FormalSystem.Metalogic.WeakCanonical.kEquiv_zFiber_segSum`,
       `lean_verify FormalSystem.Metalogic.WeakCanonical.inflate_right` and
       `lean_verify FormalSystem.Metalogic.WeakCanonical.inflate_left` (the two downstream
       consumers must keep their axiom profiles).
-- [ ] Pin `kEquiv_zFiber_segSum` in the test module; run
+- [x] Pin `kEquiv_zFiber_segSum` in the test module; run
       `bash scripts/check-module-invariants.sh`; commit
-      (`task 711 phase 3: publish the segment carrier and the block-as-segment-sum lemma`).
+      (`task 711 phase 3: publish the segment carrier and the block-as-segment-sum lemma`). *(deviation: altered — harness green except the pre-existing C9 named in the Exclusions below; `--emit-inventory` rollups and `typst/generated/status.typ` (pre-commit gate) staged with the phase; probes 17/17 PASS)*
 
 **Timing**: 1.5 hours
 
