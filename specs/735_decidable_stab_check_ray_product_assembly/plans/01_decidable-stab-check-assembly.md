@@ -177,7 +177,7 @@ by `wc -l` on both files and by the script's wired-probe count.
 
 ---
 
-### Phase 2: The run-level `⊡` bridge and the liveness decider under `Presented` [NOT STARTED]
+### Phase 2: The run-level `⊡` bridge and the liveness decider under `Presented` [COMPLETED]
 
 **Goal**: The positive in-frame result, sorry-free and honestly labelled: under `Presented`, `⊡φ`
 at the seam is "every anchored run carries `clPhi φ` at its `now` state", and that is decided by
@@ -185,7 +185,7 @@ at the seam is "every anchored run carries `clPhi φ` at its `now` state", and t
 refutes on model A.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean`, inside `section Presented`
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean`, inside `section Presented`
       directly after `plusStab_iff_forall_hitOf_of_presented`: add
       `plusStab_iff_forall_run_of_presented` **verbatim** from
       `probes/stab-run-check.lean` (statement and proof: `rw [plusStab_iff_omega]`, both directions
@@ -195,14 +195,14 @@ refutes on model A.
       `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` refutes on a three-state
       regular model for every finite presentation, so this is vacuous there". Leave the two
       existing 742 docstrings verbatim (Risk R5).
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/StabCheck.lean`
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/StabCheck.lean`
       (`import FormalSystem.Metalogic.Decidability.RaySummary.Trace`; copyright header as the
       siblings). Header docstring: what it decides (the run-level condition on a presentation, by
       liveness), what it does NOT (no decision procedure for any model in the tree -- `Presented`
       is refuted on model A; nothing about `PlusValidZTime`; no complexity bound; no finite-fibre
       assumption; forward-only fixtures), and the three missing theorems (C), (S), (W) by name with
       a pointer to the RaySummary README.
-- [ ] In `namespace FormalSystem.Metalogic.WeakCanonical` (presentation-level, no model):
+- [x] In `namespace FormalSystem.Metalogic.WeakCanonical` (presentation-level, no model):
       `fwdNowFree lab step now : Q → Q → Bool := fun x y => step x y && !lab y now`,
       `bwdNowFree lab step now : Q → Q → Bool := fun x y => step y x && !lab y now`,
       `OnRun lab step now t q : Prop := ∃ ρ, IsRun lab step now t ρ ∧ ρ t = q`, and
@@ -212,33 +212,33 @@ refutes on model A.
       `f 0 = g 0 = q`, glue `ρ z := if t ≤ z then f (z - t).toNat else g (t - z).toNat`, prove
       `IsRun` by the `pump_isRun` case split (`z + 1 ≤ t` / `z + 1 = t` / `t ≤ z`, `omega` on
       `Int.toNat`), and `ρ t = q` by `rfl`-after-`simp`.
-- [ ] `stabCheckSig lab step now phi : Bool := decide (∀ q, lab q now = true → live (fwdNowFree lab step now) q = true → live (bwdNowFree lab step now) q = true → lab q phi = true)`
+- [x] `stabCheckSig lab step now phi : Bool := decide (∀ q, lab q now = true → live (fwdNowFree lab step now) q = true → live (bwdNowFree lab step now) q = true → lab q phi = true)`
       (`Fintype.decidableForallFintype`), and `stabCheckSig_iff` (Challenge statement below) from
       `onRun_iff_live`: `∀ ρ, IsRun … ρ → lab (ρ t) phi` ↔ `∀ q, OnRun … q → lab q phi`. Note
       `t` does not occur in `stabCheckSig`; the anchor is carried by `now`.
-- [ ] In `namespace FormalSystem.Metalogic.Decidability.RaySummary` (closure instance):
+- [x] In `namespace FormalSystem.Metalogic.Decidability.RaySummary` (closure instance):
       `stabCheck_iff_of_presented` = `stabCheckSig_iff` composed with
       `plusStab_iff_forall_run_of_presented`, and
       `decidableStab_of_presented … (hP : Presented M τ t φ lab step) : Decidable (PlusTruthAt M τ t (.stab φ)) := decidable_of_iff _ (stabCheck_iff_of_presented …)`.
       Docstrings on both: "**Conditional** on `Presented`, refuted on model A by
       `presented-not-complete.lean`; vacuous there; not a decision procedure for `PlusValidZTime`
-      and nothing here mentions it." No `#print axioms` in library files (pins live in Phase 3).
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary.lean`: add the import and a `## Modules`
+      and nothing here mentions it." No `#print axioms` in library files (pins live in Phase 3). *(deviation: altered — the decider is named `decidableStabOfPresented`, not `decidableStab_of_presented`: the enforced C26 lint rejects a snake_case `def`; signature identical; R7 fix-forward)*
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary.lean`: add the import and a `## Modules`
       line for `RaySummary.StabCheck`; add ONE sentence to the header beside "no decision
       procedure is built, no decidability result is proved" reading "a conditional per-seam
       `⊡` decider exists under `Presented` (`StabCheck`), and `Presented` is refuted as a
       completeness carrier by the wired probe `presented-not-complete.lean`" -- leave the existing
       sentences verbatim. Run `lake exe mk_all` so `FormalSystem.lean` picks up the new module
       (never hand-edit the root; Risk R6).
-- [ ] Scoped build, detached and guarded:
+- [x] Scoped build, detached and guarded:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary`
       green; `grep -c sorry` over `StabCheck.lean` and the Trace.lean hunk = 0;
       `grep -n PlusValidZTime FormalSystem/Metalogic/Decidability/RaySummary/StabCheck.lean` returns
       only docstring lines that say it is NOT decided (or nothing).
-- [ ] `bash scripts/check-module-invariants.sh --no-build` green on the linter checks (C16, C26,
+- [x] `bash scripts/check-module-invariants.sh --no-build` green on the linter checks (C16, C26,
       C29, C33, INV); fix forward in-phase (Risk R7).
-- [ ] Commit per green sub-step (`task 735 phase 2.1: run bridge`, `2.2: liveness
-      characterization`, `2.3: decider`), staging exactly the files named below.
+- [x] Commit per green sub-step (`task 735 phase 2.1: run bridge`, `2.2: liveness
+      characterization`, `2.3: decider`), staging exactly the files named below. *(deviation: altered — one phase commit `ec59eae7c` instead of 2.1/2.2/2.3: the pre-commit typst-sync gate requires `typst/generated/status.typ` and the three generated README inventory blocks to reflect the new module, so those regenerated files are staged with the phase)*
 
 **Timing**: 2 hours
 
@@ -283,7 +283,8 @@ carries the results as **Conditional** rows with the refutation cited in the row
       `FormalSystem.Metalogic.WeakCanonical.onRun_iff_live`,
       `FormalSystem.Metalogic.Decidability.RaySummary.stabCheck_iff_of_presented`,
       `FormalSystem.Metalogic.Decidability.RaySummary.decidableStab_of_presented`. Leave the
-      existing prose block verbatim (Risk R5).
+      existing prose block verbatim (Risk R5). *(Phase 2 note: the landed name is
+      `decidableStabOfPresented` — C26 lint; pin that name.)*
 - [ ] `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`: a `## stabCheckSig on finite labelled presentations`
       section. First `#eval`, then pin with `#guard` (Risk R4): (i)
       `stabCheckSig labW stepW true false = true` (the one `now` state reads `phi` too);
