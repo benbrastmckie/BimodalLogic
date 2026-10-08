@@ -1,0 +1,42 @@
+== Check 2: generated/status.typ vs live regeneration ==
+Drift found:
+VIOLATION: formalsystem-file-count: committed=668 live=669
+VIOLATION: formalsystem-line-count: committed=346297 live=347109
+MISMATCH_COUNT=2
+Regenerating typst/generated/status.typ via scripts/typst-status-counts.sh (needs a built library -- this may take a while if the library is not warm)...
+{
+  "axiom_count": 29,
+  "rule_count": 7,
+  "base_count": 23,
+  "dense_only_count": 2,
+  "ztime_only_count": 2,
+  "rtime_only_count": 2,
+  "sorry_total": 4,
+  "sorry_total_excl_boneyard": 0,
+  "sorry_algebraic": 0,
+  "sorry_bxcanonical": 0,
+  "sorry_bundle": 0,
+  "sorry_weakcanonical": 4,
+  "sorry_weakcanonical_excl_boneyard": 0,
+  "sorry_other": 0,
+  "lean_toolchain_pin": "leanprover/lean4:v4.33.0-rc1",
+  "mathlib_tag": "v4.33.0-rc1",
+  "mathlib_rev": "79d0395a1825a6264ad5d269e35e60537518955e",
+  "formalsystem_file_count": 669,
+  "formalsystem_line_count": 347109,
+  "tests_file_count": 76,
+  "tests_line_count": 22653,
+  "tools_file_count": 40,
+  "tools_line_count": 18216,
+  "stamp_commit": "0c91680ca",
+  "stamp_date": "2026-10-08"
+}
+Wrote /home/benjamin/Projects/BimodalLogic/typst/generated/status.typ
+Fixed: generated/status.typ now matches a live regeneration.
+Note: --fix does NOT run 'git add'. Stage typst/generated/status.typ yourself once you are satisfied with the change.
+== Check 2b (read-only -- --fix repairs status.typ only): automation-module-map.typ ==
+generated/automation-module-map.typ matches a live regeneration.
+== Check 3 (read-only -- --fix repairs status.typ only): machine-appendix.* ==
+MA_COUNT_MISMATCHES=0
+machine-appendix.typ matches a re-render from the committed JSONL.
+typst-sync-check.sh --fix: PASS (status.typ, module map, and machine appendix all in sync)

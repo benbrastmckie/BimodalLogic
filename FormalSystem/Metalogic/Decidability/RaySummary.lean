@@ -10,6 +10,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 import FormalSystem.Metalogic.Decidability.RaySummary.Trace
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
+import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -41,4 +42,7 @@ proved, and no complexity bound is claimed.
   `runTrace`), the computable path-type closure (`pathTypes`, `pathTypesNow`,
   `mem_pathTypes_iff`, `mem_pathTypesNow_iff`) and liveness (`fwdLive`, `bwdLive`,
   `fwdLive_iff`, `bwdLive_iff`).
+* `RaySummary.HitOf` — the computable realized-triple set of a presentation (`hitOf`), read
+  through liveness over disjoint segments (`fwdLiveSep`, `bwdLiveSep`), and its membership
+  characterization against the family triples of the presentation's runs (`mem_hitOf_iff`).
 -/

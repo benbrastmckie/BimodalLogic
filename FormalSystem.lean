@@ -202,6 +202,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 import FormalSystem.Metalogic.Decidability.RaySummary.Trace
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
+import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.Saturation
 import FormalSystem.Metalogic.Decidability.SignedFormula
 import FormalSystem.Metalogic.Decidability.Tableau

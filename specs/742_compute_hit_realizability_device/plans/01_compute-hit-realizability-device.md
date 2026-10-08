@@ -513,7 +513,7 @@ by `wc -l`; if the module passes ~900 lines, split the `Presentation` section in
 
 ---
 
-### Phase 7: B3b (iii) — `hitOf` and its membership characterization [NOT STARTED]
+### Phase 7: B3b (iii) — `hitOf` and its membership characterization [COMPLETED]
 
 **Goal**: The computable realized-triple set of a finite presentation and the theorem that it is
 exactly the set of family triples of the presentation's runs — 711's dropped D3 read-out, on
@@ -521,12 +521,30 @@ exactly the set of family triples of the presentation's runs — 711's dropped D
 it splices runs of the presentation, not histories of a model — research Finding 4).
 
 **Tasks**:
-- [ ] `hitOf Q lab step now k : Finset (KType sig k × KType sig k × KType sig k)` :=
+- [x] `hitOf Q lab step now k : Finset (KType sig k × KType sig k × KType sig k)` :=
       the triples `(τneg, τzero, τpos)` such that `∃ q₀ q₁ : Q, τzero ∈ pathTypesNow … q₀ q₁ ∧
       bwdLive step τneg q₀ = true ∧ fwdLive step τpos q₁ = true` (a `Finset.filter` over
       `Finset.univ` of the product type, decidable by `Fintype Q` and `DecidableEq (KType sig k)`
       via `Fintype.decidablePiFintype`). It does not depend on `t`: runs are translation-invariant.
-- [ ] `mem_hitOf_iff … (hk : 1 ≤ k) : x ∈ hitOf Q lab step now k ↔ ∃ ρ : ℤ → Q, IsRun step lab now t ρ ∧ InFamily sig k x.1 x.2.1 x.2.2 (runTrace lab ρ)`.
+      *(deviation: altered — landed in the new module `RaySummary/HitOf.lean` (imports `Present`;
+      `Present.lean` was at 684 lines and this phase adds ~800, past the ~900 split trigger), with
+      `Q` implicit and the `lab step now k` argument order of `Present.lean`. TWO SUBSTANTIVE
+      CHANGES, both forced: (1) the liveness conjuncts are `bwdLiveSep`/`fwdLiveSep`, liveness in
+      the graph of DISJOINT segments joined by one `step` (`fwdSepGraph x y := ∃ x', step x x' ∧
+      τ ∈ pathTypes x' y`, mirror for `bwd`), not Phase 6's `fwdLive`/`bwdLive`, whose graph
+      `G_τ := {(x, y) | τ ∈ pathTypes x y}` chains paths that SHARE an endpoint — a
+      `SegmentFactorization`'s segments are disjoint, and the type of a path minus its last state
+      is not the path's type, so with the planned graph `mem_hitOf_iff` is FALSE (counterexample,
+      `#eval`-witnessed in `probes/hitof-axioms-p7.lean`: two states, `step x y := x ≠ y`, state
+      `false` reading one letter and state `true` none; at the depth-1 type of `[false]`,
+      `fwdLive … false = true` via the one-state self-loop, yet every run alternates and no
+      factorization into disjoint segments of that type exists; `fwdLiveSep … false = false`).
+      `fwdLive`/`bwdLive` are untouched and unused here. (2) `hitOf` is an image over
+      `Finset.univ : Finset (Q × Q)` of products of `pathTypesNow` with `allPathTypes` filtered by
+      liveness, not a `Finset.filter` over `Finset.univ` of the triple product of `KType sig k` —
+      that `univ` has `2 ^ (3 · |NormalForm sig k 0|)` elements and would never enumerate (Phase
+      6's `closureBound` decision); `mem_hitOf_iff_live` recovers the planned filter shape.)*
+- [x] `mem_hitOf_iff … (hk : 1 ≤ k) : x ∈ hitOf Q lab step now k ↔ ∃ ρ : ℤ → Q, IsRun step lab now t ρ ∧ InFamily sig k x.1 x.2.1 x.2.2 (runTrace lab ρ)`.
       ⇒ (realization): splice — the `pathTypesNow` representative for the middle segment placed on
       `[t - i, t - i + n)` so that `now` lands at `t`, the forward chain's representatives
       concatenated rightward and the backward chain's leftward; define `ρ`, prove `IsRun`, build
@@ -538,9 +556,23 @@ it splices runs of the presentation, not histories of a model — research Findi
       `hk` enters: `now` is `k`-type-visible via `∃x now x` at depth 1, so a positive segment
       containing `now` would force every positive segment to, contradicting `IsRun`), hence
       `fwdLive`; dually `bwdLive`; the middle segment contains `t`, hence `pathTypesNow`.
+      *(deviation: altered — proved as planned in both directions (`exists_run_of_live` for ⇒,
+      `live_of_run` for ⇐, `mem_hitOf_iff` assembling them), against the `Sep` liveness. The
+      splice is a generic `ℤ`-indexed concatenation of nonempty lists (`cutAt`, `exists_concat`,
+      `isRun_concat`, `kTypeOf_segZ_concat`) applied to the family "backward paths below, the
+      `pathTypesNow` path at `0`, forward paths above", with the anchor placed by choosing the
+      base cut `t - i₀` for the unique `now` index `i₀` of the middle path (`countP_eq_one_iff`).
+      The ⇐ direction reads the segments as `runSeg` paths; `hk` enters exactly twice, through
+      `doets_lemma_1_1` (`eval_iff_of_kTypeOf_eq`): nonemptiness of every positive/negative
+      segment (`∃x ¬(x < x)`, `nonempty_iff_of_kTypeOf_eq`) and the `now` state's segment being
+      the middle one (`∃x now x`, `exists_interp_iff_of_kTypeOf_eq`) — the plan's argument, with
+      the extra nonemptiness use it did not name.)*
 - [ ] `hitOf_eq_of_translate` (optional, if cheap): `hitOf` is the same for every `t` — already
-      implied by the statement's `t`-independence; otherwise skip.
-- [ ] Scoped build; `#print axioms mem_hitOf_iff` = standard profile; zero sorries.
+      implied by the statement's `t`-independence; otherwise skip. *(deviation: skipped — `hitOf`
+      takes no `t`, and `mem_hitOf_iff` is stated for every `t`; the plan's own "otherwise skip".)*
+- [x] Scoped build; `#print axioms mem_hitOf_iff` = standard profile; zero sorries.
+      *(altered — `RaySummary.lean` and `FormalSystem.lean` import `HitOf`;
+      `typst/generated/status.typ` regenerated.)*
 
 **Timing**: 2 hours
 
@@ -553,6 +585,10 @@ The splice (⇒) is the long direction. Confirm by `wc -l`.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean` - `hitOf` and `mem_hitOf_iff`
+  *(as landed: untouched; the content went to the new module below)*
+- `FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean` - NEW (added to file scope per the
+  Phase 6 split rule): `hitOf`, `mem_hitOf_iff`, the `Sep` liveness, the concatenation
+- `FormalSystem/Metalogic/Decidability/RaySummary.lean`, `FormalSystem.lean` - import `HitOf`
 
 **Verification**:
 - Scoped build green; axioms standard; `hitOf` is a `def`; a two-state `#eval (hitOf …).card` at

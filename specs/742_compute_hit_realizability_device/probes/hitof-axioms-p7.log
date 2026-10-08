@@ -1,0 +1,27 @@
+'FormalSystem.Metalogic.WeakCanonical.mem_hitOf_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.mem_hitOf_iff_live' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.exists_run_of_live' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.live_of_run' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.fwdLiveSep_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.bwdLiveSep_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.exists_concat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.isRun_concat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.kTypeOf_segZ_concat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.kTypeOf_runSeg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.countP_eq_one_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.eval_iff_of_kTypeOf_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.nonempty_iff_of_kTypeOf_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.exists_interp_iff_of_kTypeOf_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+1
+2
+true
+false
+true
+false
+0
+lake-build-guard: STATUS: exit_status=0
+GUARD_EXIT=0

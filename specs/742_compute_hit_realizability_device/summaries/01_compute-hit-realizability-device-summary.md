@@ -3,15 +3,15 @@
 - **Task**: 742 - Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T09:10:01Z
-- **Completed**: 2026-10-08T10:50:00Z
-- **Effort**: ~150 minutes across six dispatches (Phases 1-6 of 10; per-phase dispatch, `--hard`)
+- **Completed**: 2026-10-08T11:30:00Z
+- **Effort**: ~190 minutes across seven dispatches (Phases 1-7 of 10; per-phase dispatch, `--hard`)
 - **Dependencies**: 737 (complete), 711 (complete)
 - **Artifacts**: plans/01_compute-hit-realizability-device.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Six single-phase dispatches so far. Dispatch 3 implemented Phase 1 (B3a): the compiled research
+Seven single-phase dispatches so far. Dispatch 3 implemented Phase 1 (B3a): the compiled research
 probe was transcribed into `KTypeSummary/KTypeFin.lean` — a computable `kTypeOfFin` equal to the
 classical `kTypeOf`, a decidable Tarski `eval`, and explicit computable `segZ` instances.
 Dispatch 4 implemented Phase 2 (B1): `RaySummary/Closure.lean` widens the two-letter trace
@@ -61,13 +61,46 @@ proved sound (induction on the iterate) and complete (induction on `StepPath`, s
 within `closureBound` rounds by the generic `iterate_stabilizes`). Liveness is decided as the
 greatest fixpoint of a pruning step (`live`, `live_iff`), instantiated to `fwdLive`/`bwdLive`
 with `fwdLive_iff`/`bwdLive_iff` in the plan's statement. Everything evaluates: a two-state
-presentation at depth 1 runs in seconds. Still nothing about `Hit` is computed and no model is
-constructed from a colouring: `hitOf` and `mem_hitOf_iff` (Phase 7), the B2b verdict probe
-(Phase 8), the per-model bridge (Phase 9) and the documentation pass (Phase 10) remain
-`[NOT STARTED]`.
+presentation at depth 1 runs in seconds. Dispatch 9 implemented Phase 7 (B3b (iii), the
+read-out half of effective composition), in the new module `RaySummary/HitOf.lean` (imports
+`Present`): `hitOf lab step now k` is a computable `Finset` of family triples — an image over the
+state pairs `(q₀, q₁)` of the `pathTypesNow` types between them, paired with the path types
+backward-live at `q₀` and forward-live at `q₁` — and `mem_hitOf_iff` (Challenge statement, with
+`Q` implicit and `Present.lean`'s argument order) proves, for every anchor `t` and depth
+`k ≥ 1`, that it is EXACTLY the set of family triples (`InFamily`) of the traces of the
+presentation's runs. The liveness it reads is NOT Phase 6's `fwdLive`/`bwdLive`: the plan's graph
+`G_τ := {(x, y) | τ ∈ pathTypes x y}` chains paths that share an endpoint, whereas a
+factorization's segments are disjoint and joined by one `step`, and with the planned graph
+`mem_hitOf_iff` is false (a two-state counterexample is `#eval`-witnessed); `fwdLiveSep`/
+`bwdLiveSep` are the same greatest fixpoint in the step-then-path graph, and `fwdLive`/`bwdLive`
+are left untouched. The ⇒ direction splices runs of the presentation through a generic
+`ℤ`-indexed concatenation of nonempty state lists (`cutAt`, `exists_concat`, `isRun_concat`,
+`kTypeOf_segZ_concat`); the ⇐ direction reads the factorization's segments as `runSeg` paths and
+uses `k ≥ 1` exactly twice, through `doets_lemma_1_1`, for the `k`-type visibility of
+nonemptiness and of a `now` state. The B2b verdict probe (Phase 8), the per-model bridge
+(Phase 9, now unblocked) and the documentation pass (Phase 10) remain `[NOT STARTED]`; no model is
+constructed from a colouring anywhere, and "`Hit` computed" is still not the headline — `hitOf`
+is computable on presentations, and per-presentation realization is the successor's.
 
 ## What Changed
 
+- `FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean` — new (808 lines, Phase 7):
+  `countP_eq_one_iff`; `eval_iff_of_kTypeOf_eq`, `nonempty_iff_of_kTypeOf_eq`,
+  `exists_interp_iff_of_kTypeOf_eq`; `getElem_eq_of_eq`, `fwdOff`, `bwdOff`, `cutAt`,
+  `cutAt_zero`, `cutAt_succ`, `cutAt_lt_succ`, `cutAt_mono`, `le_cutAt_add`, `exists_cut`,
+  `cut_unique`, `cutAt_cover`, `exists_pos_of_cut`, `exists_concat`; `pathLabels_getElem`,
+  `isRun_concat`, `labels_concat`, `kTypeOf_segZ_concat`; `runSeg`, `runSeg_length`,
+  `runSeg_getElem`, `runSeg_ne_nil`, `runSeg_head?`, `runSeg_getLast?`, `runSeg_isChain`,
+  `pathLabels_runSeg`, `kTypeOf_runSeg`, `runSeg_now_free`, `runSeg_countP_one`; `fwdSepGraph`,
+  `bwdSepGraph`, `fwdLiveSep`, `bwdLiveSep`, `fwdLiveSep_iff`, `bwdLiveSep_iff`, `allPathTypes`,
+  `mem_allPathTypes_of_fwdLiveSep`, `mem_allPathTypes_of_bwdLiveSep`, `hitOf`,
+  `mem_hitOf_iff_live`; `exists_run_of_live`, `live_of_run`, `mem_hitOf_iff`. Header: why the
+  liveness graph is the disjoint-segment one (with the counterexample), why `hitOf` is an image
+  and not a filter over the triple product, where `1 ≤ k` enters, B2b absent, no complexity
+  claim.
+- `FormalSystem/Metalogic/Decidability/RaySummary.lean`, `FormalSystem.lean` — import `HitOf`
+  (Phase 7); the aggregator's module list gains a `HitOf` entry.
+- `typst/generated/status.typ` — regenerated by `scripts/typst-sync-check.sh --fix` (Phase 7).
 - `FormalSystem/Metalogic/Decidability/RaySummary/Present.lean` — new (684 lines, Phase 6):
   `iterate_stabilizes`; `IsRun`, `runTrace`, `runTraceDecidablePred`, `pathLabels`,
   `pathLabels_singleton`, `pathLabels_append`, `StepPath`, `stepPath_iff`; `PathEntry`,
@@ -128,6 +161,29 @@ constructed from a colouring: `hitOf` and `mem_hitOf_iff` (Phase 7), the B2b ver
 
 ## Decisions
 
+- (Phase 7) The plan's `hitOf` conjuncts `fwdLive`/`bwdLive` are not consumed: their graph joins
+  `x` to `y` when a `τ`-path from `x` to `y` exists INCLUSIVE of both endpoints, so consecutive
+  chain paths share a state, while a `SegmentFactorization`'s segments are disjoint; the type of
+  a path minus its last state is not the path's type. Counterexample (two states, `step x y :=
+  x ≠ y`, state `false` reading one letter, state `true` none; depth 1, the type `τ` of
+  `[false]`): `fwdLive τ false = true` through the one-state self-loop, but every run alternates
+  and the depth-1 type sees the letterless state, so no factorization into disjoint `τ`-segments
+  exists — `mem_hitOf_iff` with the planned graph is false. `fwdLiveSep`/`bwdLiveSep` are
+  `live` (Phase 6's generic greatest fixpoint, reused unchanged) in the step-then-path graph
+  `fwdSepGraph τ x y := ∃ x', step x x' ∧ τ ∈ pathTypes x' y` and its mirror. Recorded in the
+  issue log (`plan-defect`, costly) and `#eval`-witnessed in `probes/hitof-axioms-p7.lean`.
+- (Phase 7) `hitOf` is an image over `Finset.univ : Finset (Q × Q)` of `filter`ed `allPathTypes`
+  products with `pathTypesNow`, never a `Finset.filter` over `Finset.univ` of the triple product
+  of `KType sig k` (`2 ^ (3 · |NormalForm sig k 0|)` elements, the same reason Phase 6 computed
+  `closureBound` arithmetically); `mem_hitOf_iff_live` recovers the planned filter shape.
+- (Phase 7) The splice is existential: `exists_concat` builds the run by `Classical.choose` on
+  `cutAt_cover` and exposes only the index specification `ρ (cutAt z + i) = (L z)[i]`; the
+  run hypotheses (`hlink`, `hnow`) are stated through `head?`/`getLast?`/`getElem?` so the
+  `if`-defined `ℤ`-family can be rewritten case by case without dependent-proof motive failures.
+  `hk : 1 ≤ k` is unused in this direction.
+- (Phase 7) New module `HitOf.lean` rather than extending `Present.lean` (684 + ~800 lines passes
+  the plan's own ~900-line split trigger); `Q` implicit and `lab step now k` argument order as in
+  `Present.lean`, so the Challenge's `hitOf Q lab step now k` reads `hitOf lab step now k`.
 - (Phase 6) One closure serves both read-outs: `PathEntry` carries `hasNow : Bool` as the `now`
   budget (`canExtend` refuses a second `now`), and `pathTypes`/`pathTypesNow` filter the same
   `pathClosure` on the flag.
@@ -208,6 +264,17 @@ constructed from a colouring: `hitOf` and `mem_hitOf_iff` (Phase 7), the B2b ver
 
 ## Plan Deviations
 
+- **Task 7.1** altered: landed in the new module `HitOf.lean`; liveness conjuncts are
+  `bwdLiveSep`/`fwdLiveSep` (disjoint-segment graph) because the planned `fwdLive`/`bwdLive`
+  make `mem_hitOf_iff` false (counterexample recorded in the plan, the module header, the issue
+  log, and `#eval`-witnessed); `hitOf` is an image over `Q × Q`, not a filter over the triple
+  product's `univ`.
+- **Task 7.2** altered: proved in both directions as planned, against the `Sep` liveness; the
+  splice is the generic concatenation `exists_concat`; `hk` is used twice in ⇐ (nonemptiness of
+  the outer segments, which the plan did not name, and the `now` segment).
+- **Task 7.3** skipped: `hitOf_eq_of_translate` — `hitOf` takes no `t` (the plan's own
+  "otherwise skip").
+- **Task 7.4** altered: aggregator and library root import `HitOf`; `status.typ` regenerated.
 - **Task 6.1** altered: the presentation section landed in a new module `Present.lean`
   (imports `Compose`), per the phase's own Scope Hypothesis rule (merged module measured 932
   lines, past the ~900 trigger); `Present.lean` added to the plan's Files to modify. Finite
@@ -245,7 +312,15 @@ constructed from a colouring: `hitOf` and `mem_hitOf_iff` (Phase 7), the B2b ver
 
 ## Verification
 
-- Build: Success — Phase 6: scoped guarded build of
+- Build: Success — Phase 7: scoped guarded builds of
+  `FormalSystem.Metalogic.Decidability.RaySummary.HitOf` (`probes/hitof-build-p7-1/2/3.log`:
+  attempts 1-2 had 7 and 6 errors, fixed; attempt 3 GUARD_EXIT=0, 0 errors, one `show` style
+  warning fixed afterwards) and `FormalSystem.Metalogic.Decidability.RaySummary`
+  (`probes/raysummary-build-p7-1.log`: `Build completed successfully (1930 jobs)`, GUARD_EXIT=0,
+  0 errors, 0 warnings); FULL project build (`probes/full-build-p7.log`: `Build completed
+  successfully (2835 jobs)`, GUARD_EXIT=0, 0 `error:` lines over the guard's captured stdout and
+  stderr); `.olean` newer than source for `HitOf`, `RaySummary`, `FormalSystem`.
+  `lean-sorry-census.sh --cross-check`: `probes/sorry-census-p7.log`. Phase 6: scoped guarded build of
   `FormalSystem.Metalogic.Decidability.RaySummary` (guard exit 0, `Build completed successfully
   (1929 jobs)`, 0 errors; `probes/present-build-p6-1.log` had 4 style warnings, fixed;
   `probes/present-build-p6-3.log` 0 errors, 0 warnings); `.olean` newer than source for
@@ -269,12 +344,23 @@ constructed from a colouring: `hitOf` and `mem_hitOf_iff` (Phase 7), the B2b ver
   (1926 jobs)`, 0 errors, 0 warnings) and of the library root `FormalSystem` (guard exit 0,
   2831 jobs, 0 errors); `.olean` newer than source for `Closure`, `RaySummary` and
   `FormalSystem`. Logs: `probes/closure-build-3.log`, `probes/closure-build-4-library.log`.
-- Sorry count: 0 (Phase 6: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p6.log`; Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
+- Sorry count: 0 (Phase 7: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p7.log`; Phase 6: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p6.log`; Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
   sorry; Phase 2: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-phase2.log`).
 - Sorry inventory: None
 - Vacuous count: 0 introduced (the one repository-wide match,
   `Examples/TemporalStructures.lean:495`, predates this task and was not touched).
-- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 6
+- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 7
+  `#print axioms` (`probes/hitof-axioms-p7.log`): `mem_hitOf_iff`, `mem_hitOf_iff_live`,
+  `exists_run_of_live`, `live_of_run`, `fwdLiveSep_iff`, `bwdLiveSep_iff`, `exists_concat`,
+  `isRun_concat`, `kTypeOf_segZ_concat`, `kTypeOf_runSeg`, `countP_eq_one_iff`,
+  `eval_iff_of_kTypeOf_eq`, `nonempty_iff_of_kTypeOf_eq`, `exists_interp_iff_of_kTypeOf_eq` all
+  exactly `[propext, Classical.choice, Quot.sound]`; `#eval` witnesses at depth 1: on the Phase 6
+  fixture `allPathTypes` card `1` and `hitOf` card `2` (the two middle-segment types `[true]` and
+  `[false…, true, false…]` with the letterless type on both sides — exactly the runs
+  `…false [true] false…`); on the alternating discriminator fixture at the type of
+  `[labAlt false]`: `fwdLive false` → `true` vs `fwdLiveSep false` → `false`, `bwdLive false` →
+  `true` vs `bwdLiveSep false` → `false`, `hitOf` card `0` (no state reads `now`). `hitOf`,
+  `allPathTypes`, `fwdLiveSep`, `bwdLiveSep` are `def`s, not `noncomputable`. Phase 6
   `#print axioms` (`probes/present-axioms-p6.log`): `mem_pathTypes_iff`, `mem_pathTypesNow_iff`,
   `mem_pathTypes_iff_stepPath`, `mem_pathTypesNow_iff_stepPath`, `exists_mem_iterate_of_stepPath`,
   `realizes_of_mem_iterate`, `closureStep_pathClosure`, `closureIter_eq_iterate`,
@@ -316,16 +402,23 @@ constructed from a colouring: `hitOf` and `mem_hitOf_iff` (Phase 7), the B2b ver
 - `listSeg`, `kTypeOf_segZ_eq_listSeg` and `kTypeOf_listSeg_append_congr` (Phase 4) are what
   Phase 6's closure composes representatives under; `Compose.lean` and `Present.lean` are
   visible to the library through `RaySummary.lean` and `FormalSystem.lean` as of Phase 6.
-- `pathTypesNow`, `fwdLive`, `bwdLive` and their characterizations (Phase 6) are exactly the
-  three conjuncts of Phase 7's `hitOf`; `IsRun`/`runTrace` are the run-side vocabulary of
-  `mem_hitOf_iff` and of Phase 9's `Presented`.
+- `pathTypesNow` and the generic `live`/`live_iff` (Phase 6) are what Phase 7's `hitOf` reads
+  through; `fwdLive`/`bwdLive` are not consumed by `hitOf` (see Decisions) and remain as Phase 6
+  left them; `IsRun`/`runTrace` are the run-side vocabulary of `mem_hitOf_iff` and of Phase 9's
+  `Presented`.
+- `hitOf` and `mem_hitOf_iff` (Phase 7) are the right-hand side of Phase 9's
+  `hit_eq_hitOf_of_presented`; nothing in them depends on the anchor `t`, so Phase 9 instantiates
+  `mem_hitOf_iff` at the seam's `t`. `eval_iff_of_kTypeOf_eq` is the structure-level form of
+  `determinedByKType_eval`, available to any later `k`-type-visibility argument.
 
 ## Follow-ups
 
-- Phase 7 (B3b (iii), `Present.lean`: `hitOf` and `mem_hitOf_iff`) is next; Phase 8 (verdict
-  probe) remains admissible in any wave; Phase 9 is unblocked on its Phase 5 side and waits on
-  Phase 7. Note for Phase 7: the plan's Files to modify names `Compose.lean`; the definitions it
-  builds on now live in `Present.lean`.
+- Phase 9 (per-model bridge under `Presented`, computability witnesses) is now unblocked on
+  both sides; Phase 8 (verdict probe) remains admissible in any wave. Note for Phase 9: `hitOf`
+  and `mem_hitOf_iff` live in `HitOf.lean` with `Q` implicit and the `lab step now k` order.
+- The plan's Phase 7 liveness graph was wrong (see Decisions); Phase 10's README/theorem-index
+  text must describe `fwdLiveSep`/`bwdLiveSep` as what `hitOf` reads, and may note that Phase 6's
+  `fwdLive`/`bwdLive` are retained but unused by the read-out.
 - Phase 10 owns the README, theorem-index rows, axiom pins and ROADMAP updates for both modules.
 
 ## References
@@ -343,3 +436,5 @@ constructed from a colouring: `hitOf` and `mem_hitOf_iff` (Phase 7), the B2b ver
 - specs/742_compute_hit_realizability_device/handoffs/phase-5-handoff-20261008T102022Z.md
 - specs/742_compute_hit_realizability_device/probes/present-axioms-p6.lean
 - specs/742_compute_hit_realizability_device/handoffs/phase-6-handoff-20261008T104811Z.md
+- specs/742_compute_hit_realizability_device/probes/hitof-axioms-p7.lean
+- specs/742_compute_hit_realizability_device/handoffs/phase-7-handoff-20261008T112447Z.md

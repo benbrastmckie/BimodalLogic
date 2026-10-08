@@ -1,0 +1,265 @@
+✖ [1926/1926] Building FormalSystem.Metalogic.Decidability.RaySummary.HitOf (2.8s)
+trace: .> LEAN_PATH=/home/benjamin/Projects/BimodalLogic/.lake/packages/Cli/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/batteries/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/Qq/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/aesop/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/importGraph/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/plausible/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/mathlib/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean /home/benjamin/.elan/toolchains/leanprover--lean4---v4.33.0-rc1/bin/lean /home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean -o /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Metalogic/Decidability/RaySummary/HitOf.olean -i /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Metalogic/Decidability/RaySummary/HitOf.ilean -c /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Metalogic/Decidability/RaySummary/HitOf.c --setup /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Metalogic/Decidability/RaySummary/HitOf.setup.json --json
+error: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:260:4: omega could not prove the goal:
+a possible counterexample may satisfy the constraints
+  d ≥ 0
+  c + d - f ≥ 0
+  a - c - d ≥ 0
+  a - e ≤ -1
+where
+ a := cutAt L b (z + ↑n)
+ c := cutAt L b z
+ d := ↑n
+ e := cutAt L b (z + ↑n + 1)
+ f := cutAt L b (z + (↑n + 1))
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:270:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:325:100: This line exceeds the 100 character limit, please shorten it!
+
+Note: This linter can be disabled with `set_option linter.style.longLine false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:369:10: `List.getLast?_eq_getLast` has been deprecated: Use `List.getLast?_eq_some_getLast` instead
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:370:10: `List.head?_eq_head` has been deprecated: Use `List.head?_eq_some_head` instead
+error: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:383:46: omega could not prove the goal:
+a possible counterexample may satisfy the constraints
+  e - g ≥ 1
+  d ≥ 0
+  d + e - f ≥ 0
+  c ≥ 0
+  c - d ≥ 1
+  a ≥ 0
+  a - d - e + f ≥ 1
+where
+ a := ↑(L 0).length
+ c := ↑(L z).length
+ d := ↑i
+ e := cutAt L b z
+ f := b
+ g := ?m.461
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:346:0: `isRun_concat` does not use the following hypothesis in its type:
+  • [DecidableEq sig.preds] (#3)
+
+Consider removing this hypothesis and using `classical` in the proof instead. For terms, consider using `open scoped Classical in` at the term level (not the command level).
+
+Note: This linter can be disabled with `set_option linter.unusedDecidableInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:346:0: `isRun_concat` does not use the following hypothesis in its type:
+  • [Fintype sig.preds] (#2)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+error: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:404:8: Tactic `rewrite` failed: motive is not type correct:
+  fun _a ↦ decide (lab _a p = true) = (List.map lab (L z))[i] p
+Error: Application type mismatch: The argument
+  runTraceDecidablePred lab ρ p (cutAt L b z + ↑i)
+has type
+  Decidable (runTrace lab ρ p (cutAt L b z + ↑i))
+but is expected to have type
+  Decidable (lab _a p = true)
+in the application
+  @decide (lab _a p = true) (runTraceDecidablePred lab ρ p (cutAt L b z + ↑i))
+
+Explanation: The rewrite tactic rewrites an expression 'e' using an equality 'a = b' by the following process. First, it looks for all 'a' in 'e'. Second, it tries to abstract these occurrences of 'a' to create a function 'm := fun _a => ...', called the *motive*, with the property that 'm a' is definitionally equal to 'e'. Third, we observe that 'congrArg' implies that 'm a = m b', which can be used with lemmas such as 'Eq.mpr' to change the goal. However, if 'e' depends on specific properties of 'a', then the motive 'm' might not typecheck.
+
+Possible solutions: use rewrite's 'occs' configuration option to limit which occurrences are rewritten, or use 'simp' or 'conv' mode, which have strategies for certain kinds of dependencies (these tactics can handle proofs and 'Decidable' instances whose types depend on the rewritten term, and 'simp' can apply user-defined '@[congr]' theorems as well).
+
+case h
+sig : MonadicSignature
+inst✝¹ : Fintype sig.preds
+inst✝ : DecidableEq sig.preds
+Q : Type
+lab : Q → sig.preds → Bool
+L : ℤ → List Q
+b : ℤ
+ρ : ℤ → Q
+hρ : ∀ (z : ℤ) (i : ℕ) (hi : i < (L z).length), ρ (cutAt L b z + ↑i) = (L z)[i]
+z : ℤ
+i : ℕ
+h₁ : i < (labels (runTrace lab ρ) (cutAt L b z) (cutAt L b (z + 1))).length
+h₂ : i < (pathLabels lab (L z)).length
+hi : i < (L z).length
+p : sig.preds
+⊢ decide (lab (ρ (cutAt L b z + ↑i)) p = true) = (List.map lab (L z))[i] p
+
+Note: The target expression is not type-correct under the `implicit` transparency level, which may have triggered the failure. This is usually caused by unfolding of semireducible definitions in prior tactic steps. Use `set_option linter.tacticCheckInstances true` to investigate the source of the issue.
+Full error:
+  Application type mismatch: The argument
+    runTraceDecidablePred lab ρ p (cutAt L b z + ↑i)
+  has type
+    Decidable (runTrace lab ρ p (cutAt L b z + ↑i))
+  but is expected to have type
+    Decidable (lab (ρ (cutAt L b z + ↑i)) p = true)
+  in the application
+    @decide (lab (ρ (cutAt L b z + ↑i)) p = true) (runTraceDecidablePred lab ρ p (cutAt L b z + ↑i))
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:403:27: This simp argument is unused:
+  List.getElem_map
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [pathLabels, runTrace, Bool.decide_eq_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:403:55: This simp argument is unused:
+  Bool.decide_eq_true
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [pathLabels, List.getElem_map, runTrace]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:390:0: `labels_concat` does not use the following hypothesis in its type:
+  • [DecidableEq sig.preds] (#3)
+
+Consider removing this hypothesis and using `classical` in the proof instead. For terms, consider using `open scoped Classical in` at the term level (not the command level).
+
+Note: This linter can be disabled with `set_option linter.unusedDecidableInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:390:0: `labels_concat` does not use the following hypothesis in its type:
+  • [Fintype sig.preds] (#2)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:406:0: `kTypeOf_segZ_concat` does not use the following hypothesis in its type:
+  • [DecidableEq sig.preds] (#3)
+
+Consider removing this hypothesis and using `classical` in the proof instead. For terms, consider using `open scoped Classical in` at the term level (not the command level).
+
+Note: This linter can be disabled with `set_option linter.unusedDecidableInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:406:0: `kTypeOf_segZ_concat` does not use the following hypothesis in its type:
+  • [Fintype sig.preds] (#2)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+error: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:431:37: unsolved goals
+Q : Type
+ρ : ℤ → Q
+a b : ℤ
+i : ℕ
+hi : i < (runSeg ρ a b).length
+⊢ ρ (a + (List.flatMap (fun a ↦ [↑a]) (List.range (b - a).toNat))[i]) = ρ (a + ↑i)
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:439:6: `List.head?_eq_head` has been deprecated: Use `List.head?_eq_some_head` instead
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:444:6: `List.getLast?_eq_getLast` has been deprecated: Use `List.getLast?_eq_some_getLast` instead
+error: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:458:2: unsolved goals
+case h
+sig : MonadicSignature
+inst✝¹ : Fintype sig.preds
+inst✝ : DecidableEq sig.preds
+Q : Type
+lab : Q → sig.preds → Bool
+ρ : ℤ → Q
+a b : ℤ
+i : ℕ
+h₁ : i < (pathLabels lab (runSeg ρ a b)).length
+h₂ : i < (labels (runTrace lab ρ) a b).length
+p : sig.preds
+⊢ (List.map lab (List.map (fun i ↦ ρ (a + i)) (List.flatMap (fun a ↦ [↑a]) (List.range (b - a).toNat))))[i] p =
+    decide (lab (ρ (a + ↑i)) p = true)
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:454:0: `pathLabels_runSeg` does not use the following hypothesis in its type:
+  • [DecidableEq sig.preds] (#3)
+
+Consider removing this hypothesis and using `classical` in the proof instead. For terms, consider using `open scoped Classical in` at the term level (not the command level).
+
+Note: This linter can be disabled with `set_option linter.unusedDecidableInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:454:0: `pathLabels_runSeg` does not use the following hypothesis in its type:
+  • [Fintype sig.preds] (#2)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:463:0: `kTypeOf_runSeg` does not use the following hypothesis in its type:
+  • [DecidableEq sig.preds] (#3)
+
+Consider removing this hypothesis and using `classical` in the proof instead. For terms, consider using `open scoped Classical in` at the term level (not the command level).
+
+Note: This linter can be disabled with `set_option linter.unusedDecidableInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:463:0: `kTypeOf_runSeg` does not use the following hypothesis in its type:
+  • [Fintype sig.preds] (#2)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:469:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.runSeg_now_free`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:469:0: `runSeg_now_free` does not use the following hypothesis in its type:
+  • [DecidableEq sig.preds] (#3)
+
+Consider removing this hypothesis and using `classical` in the proof instead. For terms, consider using `open scoped Classical in` at the term level (not the command level).
+
+Note: This linter can be disabled with `set_option linter.unusedDecidableInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:469:0: `runSeg_now_free` does not use the following hypothesis in its type:
+  • [Fintype sig.preds] (#2)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:477:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.runSeg_countP_one`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:477:0: `runSeg_countP_one` does not use the following hypothesis in its type:
+  • [DecidableEq sig.preds] (#3)
+
+Consider removing this hypothesis and using `classical` in the proof instead. For terms, consider using `open scoped Classical in` at the term level (not the command level).
+
+Note: This linter can be disabled with `set_option linter.unusedDecidableInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:477:0: `runSeg_countP_one` does not use the following hypothesis in its type:
+  • [Fintype sig.preds] (#2)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+error: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:591:39: Application type mismatch: The argument
+  k
+has type
+  ℕ
+but is expected to have type
+  Q
+in the application
+  mem_pathTypesNow_iff lab step now k
+error: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:590:9: Tactic `rcases` failed: `x✝ : ?m.33` is not an inductive datatype
+error: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:781:35: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ↑(Nat.succ ?n)
+in the target expression
+  some (ρ (F.W (↑n + 1 + 1) - 1)) = some ((fun n ↦ ρ (F.W (↑n + 1) - 1)) (n + 1))
+
+case refine_3.refine_2.refine_1
+sig : MonadicSignature
+inst✝³ : Fintype sig.preds
+inst✝² : DecidableEq sig.preds
+Q : Type
+inst✝¹ : Fintype Q
+inst✝ : DecidableEq Q
+lab : Q → sig.preds → Bool
+step : Q → Q → Bool
+now : sig.preds
+k : ℕ
+hk : 1 ≤ k
+t : ℤ
+ρ : ℤ → Q
+F : SegmentFactorization sig k (runTrace lab ρ)
+hstep : ∀ (z : ℤ), step (ρ z) (ρ (z + 1)) = true
+hnow : ∀ (z : ℤ), lab (ρ z) now = true ↔ z = t
+hne : ∀ (a b : ℤ), Nonempty (segZ sig (runTrace lab ρ) a b).carrier ↔ a < b
+hpos_ne : ∀ (z : ℤ), 0 < z → F.W z < F.W (z + 1)
+hneg_ne : ∀ z < 0, F.W z < F.W (z + 1)
+hmid : F.W 0 ≤ t ∧ t < F.W 1
+n : ℕ
+hlt : F.W (↑n + 1) < F.W (↑n + 1 + 1)
+⊢ some (ρ (F.W (↑n + 1 + 1) - 1)) = some ((fun n ↦ ρ (F.W (↑n + 1) - 1)) (n + 1))
+error: Lean exited with code 1
+Some required targets logged failures:
+- FormalSystem.Metalogic.Decidability.RaySummary.HitOf
+error: build failed
+lake-build-guard: STATUS: exit_status=1
+GUARD_EXIT=1
