@@ -192,6 +192,11 @@
           "path": "specs/evidence/seam-gluing-ray-product/presented-not-complete.lean",
           "type": "evidence",
           "summary": "Wired obstruction probe: Presented fails on model A for every finite presentation (Probe735.not_presented)"
+        },
+        {
+          "path": "FormalSystem/Metalogic/Decidability/RaySummary/StabCheck.lean",
+          "type": "lean",
+          "summary": "New module: now-free step graphs, OnRun/onRun_iff_live, stabCheckSig/stabCheckSig_iff, closure instance under Presented (vacuous on model A)"
         }
       ],
       "next_artifact_number": 2,
