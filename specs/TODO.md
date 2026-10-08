@@ -82,7 +82,7 @@ next_project_number: 748
       └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
   └─ 745 [NOT STARTED] — Requirement (C) of the ray-product verdict: Hit-level...
     └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide...
-740 [PLANNING] — Restate three KTypeSummary declarations over Finite...
+740 [PLANNED] — Restate three KTypeSummary declarations over Finite...
 746 [NOT STARTED] — Requirement (S) of the ray-product verdict: Hit-level...
   └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide... (see above)
 
@@ -332,11 +332,12 @@ SCOPE. Source-store files under /home/benjamin/.config/nvim/agent-system/extensi
 ---
 
 ### 740. Ktype summary finite preds restatement
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [740_ktype_summary_finite_preds_restatement/reports/01_finite-preds-restatement.md]
+- **Plan**: [740_ktype_summary_finite_preds_restatement/plans/01_finite-preds-restatement.md]
 
 **Description**: Restate three KTypeSummary declarations over [Finite sig.preds] and retire their linter suppressions
 
