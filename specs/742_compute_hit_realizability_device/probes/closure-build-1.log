@@ -1,0 +1,26 @@
+✖ [1925/1925] Building FormalSystem.Metalogic.Decidability.RaySummary.Closure (1.7s)
+trace: .> LEAN_PATH=/home/benjamin/Projects/BimodalLogic/.lake/packages/Cli/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/batteries/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/Qq/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/aesop/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/importGraph/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/plausible/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/mathlib/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean /home/benjamin/.elan/toolchains/leanprover--lean4---v4.33.0-rc1/bin/lean /home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean -o /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Metalogic/Decidability/RaySummary/Closure.olean -i /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Metalogic/Decidability/RaySummary/Closure.ilean -c /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Metalogic/Decidability/RaySummary/Closure.c --setup /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Metalogic/Decidability/RaySummary/Closure.setup.json --json
+error: FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean:108:30: unsolved goals
+φ ψ : PlusFormula
+h : ψ ∈ plusSubformulaClosure φ
+⊢ Sum.inr () ≠ Sum.inl ⟨ψ, h⟩
+error: FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean:113:82: unsolved goals
+φ ψ χ : PlusFormula
+hψ : ψ ∈ plusSubformulaClosure φ
+hχ : χ ∈ plusSubformulaClosure φ
+⊢ Sum.inl ⟨ψ, hψ⟩ = Sum.inl ⟨χ, hχ⟩ ↔ ψ = χ
+error: FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean:161:16: Unknown identifier `Atom`
+
+Note: It is not possible to treat `Atom` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+warning: FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean:244:5: Variable name `M` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _M
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+error: Lean exited with code 1
+Some required targets logged failures:
+- FormalSystem.Metalogic.Decidability.RaySummary.Closure
+error: build failed
+lake-build-guard: STATUS: exit_status=1
+GUARD_EXIT=1

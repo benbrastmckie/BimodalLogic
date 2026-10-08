@@ -204,7 +204,7 @@ means the binders are being repeated where a `variable` block would do.
 
 ---
 
-### Phase 2: B1 — the closure alphabet, local run conditions, anchors, and the signature-generic bridge [NOT STARTED]
+### Phase 2: B1 — the closure alphabet, local run conditions, anchors, and the signature-generic bridge [COMPLETED]
 
 **Goal**: Widen the two-letter trace alphabet to the subformula closure of `φ` plus a `now`
 marker, state HWZ Def 11's run conditions on colourings over that alphabet, state the anchors
@@ -213,31 +213,31 @@ restate the hypothesis-free bridge over an arbitrary signature with distinguishe
 letters so that `plusStab_iff_forall_hit` becomes its two-letter instance.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean` (namespace
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean` (namespace
       `FormalSystem.Metalogic.Decidability.RaySummary`, importing `RaySummary.SeamMulti` and
       `PlusLanguage.Subformulas`), header: alphabet = HWZ 2000 Def 6 `sub_x φ` plus marker;
       run conditions = Def 11; what is NOT here (no realizability, no B2b, no `Bool`, forward-only
       fixture limit carried).
-- [ ] `clSig φ : MonadicSignature := ⟨{ψ : PlusFormula // ψ ∈ (PlusFormula.subformulas φ).toFinset} ⊕ Unit⟩`
+- [x] `clSig φ : MonadicSignature := ⟨{ψ : PlusFormula // ψ ∈ (PlusFormula.subformulas φ).toFinset} ⊕ Unit⟩`
       with named `instance`s `Fintype (clSig φ).preds`, `DecidableEq (clSig φ).preds` by
       `inferInstanceAs`; `clNow φ := Sum.inr ()`; `clPhi φ := Sum.inl ⟨φ, self-membership⟩`;
       `clLetter` for a subformula with its membership proof.
-- [ ] `LocalRun φ (c : (clSig φ).preds → ℤ → Prop) : Prop` — for every `ψ` in the closure: the
+- [x] `LocalRun φ (c : (clSig φ).preds → ℤ → Prop) : Prop` — for every `ψ` in the closure: the
       `bot` clause (`¬ c ⟨.bot⟩ z`), the `imp` clause (`c ⟨ψ₁.imp ψ₂⟩ z ↔ (c ⟨ψ₁⟩ z → c ⟨ψ₂⟩ z)`),
       the `untl` clause (`c ⟨.untl ψ χ⟩ z ↔ ∃ s, z < s ∧ c ⟨χ⟩ s ∧ ∀ r, z < r → r < s → c ⟨ψ⟩ r`)
       and the `snce` dual with `s < z`, each quantified over the membership proofs of the parts
       (via the `plusClosure_*` projections of `Subformulas.lean`); `atom`, `box`, `stab` impose
       no run condition.
-- [ ] `Anchored M φ t c σ : Prop` — `c (clNow φ) z ↔ z = t`; for every closure atom `.atom p`:
+- [x] `Anchored M φ t c σ : Prop` — `c (clNow φ) z ↔ z = t`; for every closure atom `.atom p`:
       `c ⟨.atom p⟩ z ↔ M.valuation (σ.state z) p`; for every closure `.box ψ`:
       `c ⟨.box ψ⟩ z ↔ ∀ σ', PlusTruthAt M σ' z ψ` (per-time datum); for every closure `.stab ψ`:
       `c ⟨.stab ψ⟩ z ↔ ∀ σ', σ.state z = σ'.state z → PlusTruthAt M σ' z ψ` (per-state datum).
       Docstring: these are the atomization licence of `Seam.lean` point (e) and
       `plusTruthAt_iff_atomize`, stated as anchors rather than run conditions.
-- [ ] `clTrace M φ t σ : (clSig φ).preds → ℤ → Prop := fun p z => match p with | .inl ψ =>
+- [x] `clTrace M φ t σ : (clSig φ).preds → ℤ → Prop := fun p z => match p with | .inl ψ =>
       PlusTruthAt M σ z ψ.1 | .inr () => z = t`, and `clTrace_proj : seamTrace M φ t σ = fun b z =>
       bif b then clTrace M φ t σ (clNow φ) z else clTrace M φ t σ (clPhi φ) z` (definitional).
-- [ ] The generic bridge: `HitSig sig M τ t tr k : Set (KType sig k × KType sig k × KType sig k)`
+- [x] The generic bridge: `HitSig sig M τ t tr k : Set (KType sig k × KType sig k × KType sig k)`
       := `{x | ∃ bf : SeqPair F (τ.state t), InFamily sig k x.1 x.2.1 x.2.2 (tr (spliced τ t bf))}`,
       `nowPhiSig sig now phi : MonadicFormula sig 0 := .ex (.and (.atom now 0) (.atom phi 0))`,
       `stabTargetSig sig now phi c := eval (zFiber sig c) Fin.elim0 (nowPhiSig sig now phi)`,
@@ -249,7 +249,7 @@ letters so that `plusStab_iff_forall_hit` becomes its two-letter instance.
       the two-letter theorem's statement recoverable as the instance `sig := twoLetter`,
       `now := true`, `phi := false`, `tr := seamTrace M φ t` (record this as
       `hitSig_twoLetter : HitSig twoLetter M τ t (seamTrace M φ t) k = Hit M τ t φ k`, `rfl`).
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.Closure` to
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.Closure` to
       `FormalSystem/Metalogic/Decidability/RaySummary.lean`; scoped build; axioms; zero sorries.
 
 **Timing**: 2 hours

@@ -1,0 +1,23 @@
+✖ [1925/1926] Building FormalSystem.Metalogic.Decidability.RaySummary.Closure (1.7s)
+trace: .> LEAN_PATH=/home/benjamin/Projects/BimodalLogic/.lake/packages/Cli/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/batteries/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/Qq/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/aesop/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/importGraph/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/plausible/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/mathlib/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean /home/benjamin/.elan/toolchains/leanprover--lean4---v4.33.0-rc1/bin/lean /home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean -o /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Metalogic/Decidability/RaySummary/Closure.olean -i /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Metalogic/Decidability/RaySummary/Closure.ilean -c /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Metalogic/Decidability/RaySummary/Closure.c --setup /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Metalogic/Decidability/RaySummary/Closure.setup.json --json
+error: FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean:108:39: Type mismatch
+  Sum.noConfusion ?m.14
+has type
+  ?m.9 = ?m.12 → ?m.10 ≍ ?m.13 → Sum.noConfusionType ?m.7 ?m.10 ?m.13
+but is expected to have type
+  False
+error: FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean:108:55: Application type mismatch: The argument
+  h
+has type
+  Eq.{1} (clNow φ) (clLetter φ h✝)
+but is expected to have type
+  Eq.{?u.10 + 2} ?m.8 ?m.11
+in the application
+  Sum.noConfusion h
+error: FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean:242:77: unexpected token 'set_option'; expected 'lemma'
+error: Lean exited with code 1
+Some required targets logged failures:
+- FormalSystem.Metalogic.Decidability.RaySummary.Closure
+error: build failed
+lake-build-guard: STATUS: exit_status=1
+GUARD_EXIT=1
