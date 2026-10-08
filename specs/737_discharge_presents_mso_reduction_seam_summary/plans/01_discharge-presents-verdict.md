@@ -1,7 +1,7 @@
 # Implementation Plan: Task #737
 
 - **Task**: 737 - Discharge the Presents hypothesis bundle: formalize the MSO-over-Z-less-than reduction behind the seam summary
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8 hours
 - **Dependencies**: 711 (satisfied; substrate landed and re-verified by the research dispatch)
 - **Research Inputs**: specs/737_discharge_presents_mso_reduction_seam_summary/reports/01_discharge-presents-verdict.md

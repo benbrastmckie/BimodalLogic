@@ -11,8 +11,8 @@ next_project_number: 741
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,737,738,739,740 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,735 | 298,464,502,616,737 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,735,738,739,740 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -78,8 +78,7 @@ next_project_number: 741
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-737 [PLANNED] — Discharge the Presents hypothesis bundle: formalize the...
-  └─ 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
+735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
 738 [RESEARCHED] — Pin the complexity-class divergence behind the CTL-star...
 739 [NOT STARTED] — Run E2's real test: the depth-2 stratification falsifier on a...
 740 [NOT STARTED] — Restate three KTypeSummary declarations over Finite...
@@ -212,12 +211,13 @@ SCOPE. Prose, sourcing and state.json description fields only -- no Lean. Expect
 ---
 
 ### 737. Discharge presents mso reduction seam summary
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 711
 - **Research**: [737_discharge_presents_mso_reduction_seam_summary/reports/01_discharge-presents-verdict.md]
 - **Plan**: [737_discharge_presents_mso_reduction_seam_summary/plans/01_discharge-presents-verdict.md]
+- **Summary**: [737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md]
 
 **Description**: Discharge the Presents hypothesis bundle: formalize the MSO-over-Z-less-than reduction behind the seam summary
 

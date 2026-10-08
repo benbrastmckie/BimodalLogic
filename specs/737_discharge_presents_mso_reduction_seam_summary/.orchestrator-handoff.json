@@ -1,19 +1,20 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 3,
-  "summary": "Wrote the five-phase implementation plan for task 737 from the research verdict (outcome b). The plan lands determinedByKType_eval in Universal.lean, the characterization exists_presents_iff plus the two-letter hypothesis-free bridge plusStab_iff_forall_hit over Hit in a new RaySummary/SeamMulti.lean, the E2 fixture obstruction as a wired evidence probe, five axiom pins with the C14 pair and one theorem-index row, and the record corrections with the B1-B4 residue named in ROADMAP. Eleven Challenge statements type-checked standalone at plan time; validator strict-clean; snapshot dry-run cross-validates the Goals set.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 4,
+  "summary": "All five plan phases closed under outcome (b). The single-family bundle Presents is characterized as seam decidedness (exists_presents_iff, new RaySummary/SeamMulti.lean) and refuted on the E2 fixture by a wired probe; the hypothesis-free bridge plusStab_iff_forall_hit over the uncomputed realized set Hit, determinedByKType_eval, and the inhabited PresentsMulti landed with five axiom pins, the C14 pair, one theorem-index row and the record corrections. Full lake build, BimodalTest build, module invariants and the probe gate are green; the residue B1-B3 is named in the ROADMAP.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/737_discharge_presents_mso_reduction_seam_summary/plans/01_discharge-presents-verdict.md",
-      "summary": "Five-phase, 8-hour plan: Doets corollary, SeamMulti.lean interface, fixture probe, pins/ledger, record corrections and residue."
+      "type": "summary",
+      "path": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+      "summary": "Field-by-field verdict, what landed where, measured axiom profiles, the B1-B4 residue (CARRIED-UNVERIFIED costs), and the recommendation to re-point the assembly record at Hit."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
-  "plan_markers_verified": null,
+  "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 737 starting at Phase 1 (determinedByKType_eval); dispatch singly because of gate-script contention with 733/734."
+  "next_action_hint": "Re-point task 735 at Hit/plusStab_iff_forall_hit and consider spawning a successor lean4 record for B1-B3 (compute Hit), per the summary's Impacts section.",
+  "git_checkpoint": "10c4c6e09"
 }

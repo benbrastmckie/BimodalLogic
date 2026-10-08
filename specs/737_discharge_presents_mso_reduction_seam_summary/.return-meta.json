@@ -1,50 +1,99 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-08T06:55:55Z",
+  "completed_at": "2026-10-08T07:44:43Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "vacuous_grep_note": "single-line grep over the source roots returns one pre-existing hit, FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal := trivial, a total-domain theorem landed before this task); zero hits in any file this task touched",
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "build_jobs": 2829,
+    "tests_build_passed": true,
+    "tests_build_jobs": 2891,
+    "module_invariants": "ALL CHECKS PASSED (full run green on C14/C15/C27/C33; INV regenerated with --emit-inventory, --no-build green)",
+    "evidence_probes": "PASS all 20 wired probe(s) compile (17 WIRED + 3 WIRED_REPO)",
+    "challenge_check": "advisory: no snapshot manifest existed; --dry-run 11-identifier set matches the landed declarations"
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/737_discharge_presents_mso_reduction_seam_summary/plans/01_discharge-presents-verdict.md",
-      "summary": "Five-phase, 8-hour plan landing the research verdict (outcome b): determinedByKType_eval in Universal.lean; the characterization exists_presents_iff and the two-letter hypothesis-free bridge plusStab_iff_forall_hit over Hit in a new RaySummary/SeamMulti.lean; the E2 fixture obstruction as a 17th wired evidence probe; five axiom pins, the C14 pair and one theorem-index row; and the record corrections plus the B1-B4 residue in ROADMAP."
+      "type": "summary",
+      "path": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+      "summary": "Outcome (b): Presents is seam decidedness (exists_presents_iff, no_presents_on_fixture); hypothesis-free bridge plusStab_iff_forall_hit over the uncomputed realized set Hit; field (3) discharged for every sentence target; residue B1-B4 named."
     }
   ],
-  "next_steps": "Run /implement 737 to execute the plan",
-  "phase_count": 5,
-  "estimated_hours": 8,
-  "dependency_waves": [[1], [2], [3], [4], [5]],
-  "proposed_file_scope": [
+  "completion_data": {
+    "completion_summary": "Closed under outcome (b): the single-family bundle Presents is inhabited iff the seam is stab-decided (exists_presents_iff in the new RaySummary/SeamMulti.lean), refuted on the E2 fixture by the wired probe presents-is-seam-decidedness; the corrected two-letter interface lands the hypothesis-free bridge plusStab_iff_forall_hit over the realized triples Hit (not computed), determinedByKType_eval discharges field (3) for every depth-at-most-k sentence, PresentsMulti is inhabited outright; five axiom pins, the C14 pair, one theorem-index row, and the record corrections (Seam.lean prose, READMEs, aggregators, ROADMAP with the B1-B3 residue bullet) are landed.",
+    "roadmap_items": [
+      "Discharge the `Presents` hypothesis bundle — formalize the MSO-over-⟨ℤ,<⟩ reduction that `Presents.colours` leaves as a hypothesis, or record, machine-checked rather than in prose, which field cannot be discharged on this route and what it would cost."
+    ]
+  },
+  "modified_files": [
     "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Universal.lean",
     "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md",
     "FormalSystem/Metalogic/Decidability/RaySummary/SeamMulti.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem.lean",
-    "specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean",
-    "scripts/check-evidence-probes.sh",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "scripts/check-module-invariants.sh",
-    "docs/theorem-index.md",
     "FormalSystem/Metalogic/Decidability/RaySummary/Seam.lean",
     "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
     "FormalSystem/Metalogic/Decidability/README.md",
     "FormalSystem/Metalogic/Decidability.lean",
-    "specs/ROADMAP.md"
-  ],
-  "modified_files": [
-    "specs/737_discharge_presents_mso_reduction_seam_summary/plans/01_discharge-presents-verdict.md"
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "FormalSystem.lean",
+    "README.md",
+    "specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean",
+    "scripts/check-evidence-probes.sh",
+    "scripts/check-module-invariants.sh",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "docs/theorem-index.md",
+    "typst/generated/status.typ",
+    "specs/ROADMAP.md",
+    "specs/737_discharge_presents_mso_reduction_seam_summary/plans/01_discharge-presents-verdict.md",
+    "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md"
   ],
   "memory_candidates": [
     {
-      "content": "Inhabitation check before discharge: a hypothesis bundle whose 'realization' field quantifies over all witnesses against ONE fixed summary (a single family triple with a k-type-determined target) collapses, via saturation, to 'all witnesses agree' -- i.e. to a semantic decidedness condition on the seam -- so the bundle is inhabited iff the answer is already known, and its bridge restates P <-> P. Before building on any such bundle, state and prove (exists params, Bundle) <-> ? first; the repair is to replace the one triple by the finite SET of realized triples (Hit), which makes the bridge hypothesis-free and isolates the whole residue in computing that set. Second instance in this tree after Correctness.lean's retired-as-vacuous section; landed as exists_presents_iff / plusStab_iff_forall_hit in RaySummary/SeamMulti.lean.",
-      "category": "PATTERN",
-      "source_artifact": "specs/737_discharge_presents_mso_reduction_seam_summary/plans/01_discharge-presents-verdict.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["hypothesis-bundle", "inhabitation", "saturation", "seam", "k-type", "vacuous-interface"]
+      "content": "A hypothesis bundle whose fields quantify over one summary family can collapse to a semantic condition: Presents (seam interface) is inhabited iff the seam is stab-decided, so before discharging a bundle, first characterize when it is inhabited at all; the fix was a multi-family set of realized triples (Hit) that turns the bridge into a theorem and isolates the residue in one named object.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "hypothesis-bundle",
+        "characterization",
+        "seam-interface",
+        "realized-set",
+        "lean4"
+      ]
+    },
+    {
+      "content": "In BimodalLogic the pre-commit typst-sync-check Check 2 blocks any commit that moves a Lean line count until scripts/typst-sync-check.sh --fix has been run against a BUILT library and typst/generated/status.typ is staged; phase commits touching .lean files therefore need a full incremental guarded lake build first. Likewise check-module-invariants.sh's INV check requires --emit-inventory after any change to file/line counts.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/737_discharge_presents_mso_reduction_seam_summary/issues.jsonl",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "typst-sync-check",
+        "pre-commit",
+        "status.typ",
+        "emit-inventory",
+        "bimodallogic"
+      ]
     }
   ],
   "metadata": {
-    "session_id": "sess_1791440411_b47663_737",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1791440411_b47663",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 3
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "phases_completed": 5,
+    "phases_total": 5,
+    "compliance_check": "passed",
+    "dispatch_seq": 4,
+    "final_commit": "10c4c6e09"
+  }
 }
