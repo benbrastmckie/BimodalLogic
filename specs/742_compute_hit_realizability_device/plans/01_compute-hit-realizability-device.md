@@ -420,7 +420,7 @@ before the temporal cases.
 
 ---
 
-### Phase 6: B3b (ii) — finite labelled presentations and the path-type closure [NOT STARTED]
+### Phase 6: B3b (ii) — finite labelled presentations and the path-type closure [COMPLETED]
 
 **Goal**: The finite datum `hitOf` computes over — a finite labelled step graph over the alphabet
 (unbundled: `Q` with `[Fintype Q] [DecidableEq Q]`, `lab : Q → sig.preds → Bool`,
@@ -429,32 +429,62 @@ computable, representative-carrying closure `pathTypes` giving the `k`-types of 
 `now`-free paths between two states, with a proved membership specification.
 
 **Tasks**:
-- [ ] In `Compose.lean`, section `Presentation`: `IsRun step lab now t ρ : Prop :=
+- [x] In `Compose.lean`, section `Presentation`: `IsRun step lab now t ρ : Prop :=
       (∀ z, step (ρ z) (ρ (z + 1)) = true) ∧ ∀ z, (lab (ρ z) now = true ↔ z = t)`;
       `runTrace lab ρ : sig.preds → ℤ → Prop := fun p z => lab (ρ z) p = true` with its
       `DecidablePred` instances (explicit); `pathLabels` of a finite state path. Docstring: this
       is the shape HWZ Def 10's state function takes once the per-time alphabet is a finite set of
       letters; the product/liveness structure a REALIZABLE presentation needs (research Finding 3)
       is B2b's and is not imposed here — `Presented` (Phase 9) is what connects runs to histories.
-- [ ] `pathTypes Q lab step now k (q q' : Q) : Finset (KType sig k)` — the `k`-types of nonempty
+      *(deviation: altered — landed in the new module `RaySummary/Present.lean` (imports
+      `Compose`), per this phase's own split rule: the merged module measured 932 lines, past the
+      ~900 trigger; `Compose.lean` is unchanged but for a one-line pointer. Argument order is
+      `lab step now` throughout. The finite paths are the inductive `StepPath step q q' p`
+      (single state / snoc a `step`-successor) with `stepPath_iff` giving the
+      `head?`/`getLast?`/`List.IsChain` reading.)*
+- [x] `pathTypes Q lab step now k (q q' : Q) : Finset (KType sig k)` — the `k`-types of nonempty
       `now`-free `step`-paths from `q` to `q'`, computed as the fixpoint of the DP
       `T ← T ∪ {kTypeOfFin (listSeg (rep ++ [lab q''])) …}` over a `Finset (Q × Q × KType sig k × List (sig.preds → Bool))`
       of representatives, iterated `Fintype.card (Q × Q × KType sig k)` times (bounded `Nat.iterate`,
       so no well-founded recursion on `Finset`); `pathTypesNow` for paths with exactly one `now`
-      letter (the middle-segment variant).
-- [ ] `mem_pathTypes_iff : τ ∈ pathTypes … q q' ↔ ∃ p : List Q, p ≠ [] ∧ p.head? = some q ∧ … ∧ (∀ x ∈ p, lab x now = false) ∧ kTypeOf sig k (listSeg (pathLabels lab p)) = τ`
+      letter (the middle-segment variant). *(deviation: altered — one closure serves both
+      read-outs: entries are a `structure PathEntry` (`src`, `dst`, `hasNow : Bool`, `ty`, `rep`)
+      and the `now` budget is the flag, so `pathTypes`/`pathTypesNow` filter the same
+      `pathClosure` on `hasNow`. The computable iterate `closureIter` stops at the first
+      stationary round (proved equal to the `Nat.iterate`, `closureIter_eq_iterate`), and the
+      round bound `closureBound` is computed arithmetically from
+      `Fintype.card (NormalForm sig k 0)` (`closureBound_eq`) — enumerating `KType sig k` for
+      `Fintype.card` would never return at depth 1 (`2^256` elements), and without the early stop
+      the `#eval` witness could not run.)*
+- [x] `mem_pathTypes_iff : τ ∈ pathTypes … q q' ↔ ∃ p : List Q, p ≠ [] ∧ p.head? = some q ∧ … ∧ (∀ x ∈ p, lab x now = false) ∧ kTypeOf sig k (listSeg (pathLabels lab p)) = τ`
       — soundness by induction on the iterate; completeness by induction on the path length using
       `kTypeOf_listSeg_append_congr` (the DP keeps one representative per `(q, q', τ)` and the
       congruence says any other path of the same type composes to the same type) and the
       cardinality bound (a new `(q, q', τ)` key appears at each non-stationary round, so the
       fixpoint is reached within `card` rounds). The same for `mem_pathTypesNow_iff`.
-- [ ] `fwdLive step τ q : Bool` — `q` starts an infinite forward chain `q = q₁ → q₂ → …` in the
+      *(deviation: altered — completeness is by induction on `StepPath` rather than on the path
+      length (`exists_mem_iterate_of_stepPath`, the congruence applied exactly as planned); the
+      cardinality bound is the generic `iterate_stabilizes` (a bounded, strictly growing measure
+      forces a fixpoint within the bound), instantiated with the key-image cardinality
+      (`closureStep_pathClosure`). Both membership theorems are stated in the planned list shape
+      via `stepPath_iff`, with `mem_pathTypes_iff_stepPath`/`mem_pathTypesNow_iff_stepPath` as the
+      inductive forms.)*
+- [x] `fwdLive step τ q : Bool` — `q` starts an infinite forward chain `q = q₁ → q₂ → …` in the
       graph `G_τ := {(q, q') | τ ∈ pathTypes … q q'}` — decided as "some state reachable from `q`
       in `G_τ` lies on a `G_τ`-cycle" (finite reachability, `decide` over `Fintype Q`), with
       `fwdLive_iff : fwdLive … = true ↔ ∃ f : ℕ → Q, f 0 = q ∧ ∀ n, τ ∈ pathTypes … (f n) (f (n+1))`
       (⇐ by pigeonhole on `Fintype Q`; ⇒ by unrolling the cycle); `bwdLive` dually.
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.Compose` to `RaySummary.lean`;
-      scoped build; axioms; zero sorries.
+      *(deviation: altered — `fwdLive_iff`/`bwdLive_iff` are stated verbatim, but the decision is
+      the greatest fixpoint of a pruning step (`liveSet := pruneStep^[card Q] univ`, generic
+      `live_iff` on a Boolean graph) rather than reachability-plus-cycle: ⇒ chooses successors
+      inside the fixpoint (`hasChain_of_mem_fixed`), ⇐ shows a chain survives every round
+      (`hasChain_mem_iterate`); stationarity is again `iterate_stabilizes`. This needs neither the
+      pigeonhole nor a cycle-unrolling index arithmetic and reuses the one stabilization lemma;
+      the planned criterion would itself have needed a stabilization argument for reachability.)*
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.Compose` to `RaySummary.lean`;
+      scoped build; axioms; zero sorries. *(altered — both `Compose` and the new `Present` are
+      imported and listed in the aggregator's module list, alongside the previously unlisted
+      `Closure` and `Trace`.)*
 
 **Timing**: 2 hours
 
@@ -471,7 +501,10 @@ by `wc -l`; if the module passes ~900 lines, split the `Presentation` section in
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean` - presentations, `pathTypes`, liveness
-- `FormalSystem/Metalogic/Decidability/RaySummary.lean` - add the `Compose` import
+  *(as landed: one-line pointer only; the content went to the split module below)*
+- `FormalSystem/Metalogic/Decidability/RaySummary/Present.lean` - NEW (added to file scope per the
+  Scope Hypothesis split rule): presentations, `pathTypes`, `pathTypesNow`, liveness
+- `FormalSystem/Metalogic/Decidability/RaySummary.lean` - add the `Compose` and `Present` imports
 
 **Verification**:
 - Scoped build green; `#print axioms mem_pathTypes_iff`, `fwdLive_iff` = standard profile.

@@ -31,8 +31,8 @@ represented by its list of letters, `listSeg l`, whose `k`-type is computable
 `kEquiv_orderedSum_of_kEquiv_colour` (`MixedSum.lean`): a concatenation *is* the ordered sum of
 its two parts over the index order `Bool` (`listSeg_append_kEquiv`), and the mixing lemma
 reduces a comparison of two such sums to a comparison of their `k`-type-coloured index orders,
-which agree outright once the parts' `k`-types do. A later module computes path types by
-closing a finite set of representative-carrying triples under this congruence; nothing here
+which agree outright once the parts' `k`-types do. `Present.lean` computes path types by
+closing a finite set of representative-carrying entries under this congruence; nothing here
 summarizes a history, decides anything about `⊡`, or touches the realized triples `Hit`.
 
 ## The bridge from the time axis

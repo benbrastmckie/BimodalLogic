@@ -1,0 +1,5 @@
+✔ [1928/1929] Built FormalSystem.Metalogic.Decidability.RaySummary.Present (2.7s)
+✔ [1929/1929] Built FormalSystem.Metalogic.Decidability.RaySummary (1.8s)
+Build completed successfully (1929 jobs).
+lake-build-guard: STATUS: exit_status=0
+GUARD_EXIT=0
