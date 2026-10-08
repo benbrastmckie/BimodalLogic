@@ -1552,7 +1552,7 @@
         {
           "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
           "type": "summary",
-          "summary": "Phases 1-2 of 10: computable k-type (B3a) and the closure alphabet, run conditions, anchors and generic bridge (B1)."
+          "summary": "Phases 1-3 of 10: computable k-type (B3a), the closure alphabet with run conditions, anchors and generic bridge (B1), and the trace-is-an-anchored-local-run soundness half of B2a."
         }
       ],
       "next_artifact_number": 2
