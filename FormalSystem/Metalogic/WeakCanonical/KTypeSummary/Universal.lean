@@ -120,18 +120,11 @@ theorem family_saturation (sig : MonadicSignature) [Fintype sig.preds] [Decidabl
 
 /-! ## The finite-family cover -/
 
--- linter.unusedFintypeInType, linter.unusedDecidableInType: the `[Fintype sig.preds]` and
--- `[DecidableEq sig.preds]` binders are the cluster's recorded interface for the finite-index
--- fact (`kType_finite` carries them, and `InFamily`/`SegmentFactorization` require them), and
--- they are consumed by the proof rather than by the conclusion, which mentions only `KType`.
--- Declaration-scoped, as for `kType_finite` and `exists_matching_factorization`.
-set_option linter.unusedFintypeInType false in
-set_option linter.unusedDecidableInType false in
 /-- **There are finitely many family triples.** The count is left visible rather than buried
-inside the cover theorem; from step 2, `kType_finite`. **No cardinality bound is stated** — the
-cluster claims no complexity result. -/
-theorem finite_family_triples (sig : MonadicSignature) [Fintype sig.preds]
-    [DecidableEq sig.preds] (k : ℕ) :
+inside the cover theorem; from step 2, `kType_finite`, and stated over the same
+`[Finite sig.preds]` binder. **No cardinality bound is stated** — the cluster claims no
+complexity result. -/
+theorem finite_family_triples (sig : MonadicSignature) [Finite sig.preds] (k : ℕ) :
     Finite (KType sig k × KType sig k × KType sig k) := by
   haveI := kType_finite sig k
   infer_instance

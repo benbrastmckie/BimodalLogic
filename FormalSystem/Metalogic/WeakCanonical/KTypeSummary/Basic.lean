@@ -91,13 +91,6 @@ open FormalSystem.Metalogic.Expressiveness
 
 /-! ## Step 2: the summary alphabet is finite -/
 
--- linter.unusedFintypeInType, linter.unusedDecidableInType: the `[Fintype sig.preds]` and
--- `[DecidableEq sig.preds]` binders are this theorem's recorded interface (see the docstring):
--- they feed `normalFormFintype` inside the proof and are not mentioned by the conclusion
--- `Finite (KType sig k)`, which is exactly the shape both linters report. The suppression is
--- declaration-scoped; the alternative `[Finite sig.preds]` statement is recorded as a follow-up.
-set_option linter.unusedFintypeInType false in
-set_option linter.unusedDecidableInType false in
 /--
 **Step 2 of the chain: the alphabet of segment summaries is finite.** A `k`-type is a truth
 assignment on the finitely many depth-`k` normal forms (`normalFormFintype`), so there are only
@@ -108,14 +101,18 @@ Büchi's Ramsey step consumes, and it is what licenses replacing his congruence 
 Instance search already finds `Finite (KType sig k)` through `KType`'s `abbrev`, so this is
 stated as a theorem and carries no `instance` attribute: a second instance would only invite a
 diamond. The proof is the one `GroupModel/RamseyFactorization.lean`'s Ramsey cover used inline
-before the finite-index fact was given a name of its own, and the binders are that site's: the
-`Fintype`/`DecidableEq` instances on `sig.preds` are what `normalFormFintype` is built from, so
-they are consumed by the proof rather than by the statement's type. `[Finite sig.preds]` alone
-would suffice (via `Fintype.ofFinite` and `Classical.decEq`); the binders are kept as the
-interface every caller in the Ramsey chain already carries.
+before the finite-index fact was given a name of its own. The statement is over
+`[Finite sig.preds]`: the `Fintype`/`DecidableEq` instances on `sig.preds` that
+`normalFormFintype` is built from are consumed by the proof rather than by the conclusion, so
+they are supplied there (`Fintype.ofFinite`, `Classical.decEq`) instead of being demanded by
+the binders — the `[Fintype X]` → `[Finite X]` recipe of `docs/development/LEAN_STYLE_GUIDE.md`'s
+"Traps" subsection. Every caller in the Ramsey chain carries a `Fintype` instance and finds
+`Finite sig.preds` from it by instance search.
 -/
-theorem kType_finite (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
-    (k : ℕ) : Finite (KType sig k) := by
+theorem kType_finite (sig : MonadicSignature) [Finite sig.preds] (k : ℕ) :
+    Finite (KType sig k) := by
+  haveI := Fintype.ofFinite sig.preds
+  haveI := Classical.decEq sig.preds
   unfold KType
   infer_instance
 

@@ -210,19 +210,14 @@ theorem family_cover (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq s
   obtain ⟨F⟩ := exists_zFactorization sig k c
   exact ⟨F.τneg, F.τzero, F.τpos, F, rfl, rfl, rfl⟩
 
--- linter.unusedFintypeInType, linter.unusedDecidableInType: the `[Fintype sig.preds]` and
--- `[DecidableEq sig.preds]` binders are this theorem's recorded interface — the unbundled form
--- of `family_cover`, whose `SegmentFactorization` carries them — and they are consumed by the
--- proof (through `exists_zFactorization` and `kType_finite`) rather than by the conclusion,
--- which mentions only `KType`, `kTypeOf` and `segZ`. Declaration-scoped, as for `kType_finite`.
-set_option linter.unusedFintypeInType false in
-set_option linter.unusedDecidableInType false in
 /-- **The unbundled Ramsey cover.** The content of `family_cover` with the structure unpacked:
 a monotone covering cutting sequence with nonempty extremal segments, one `k`-type on every
 segment above the middle, one on every segment below, and the middle segment's own type. Exists
-so a consumer can use the cover without importing `SegmentFactorization`. -/
-theorem exists_matching_factorization (sig : MonadicSignature) [Fintype sig.preds]
-    [DecidableEq sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop) :
+so a consumer can use the cover without importing `SegmentFactorization`. Stated over
+`[Finite sig.preds]`: the `Fintype`/`DecidableEq` instances that `family_cover`'s
+`SegmentFactorization` carries are consumed only by the proof, so they are supplied there. -/
+theorem exists_matching_factorization (sig : MonadicSignature) [Finite sig.preds] (k : ℕ)
+    (c : sig.preds → ℤ → Prop) :
     ∃ (W : ℤ → ℤ) (τneg τzero τpos : KType sig k),
       Monotone W ∧
       (∀ t : ℤ, ∃ z, W z ≤ t ∧ t < W (z + 1)) ∧
@@ -230,6 +225,8 @@ theorem exists_matching_factorization (sig : MonadicSignature) [Fintype sig.pred
       (∀ z : ℤ, 0 < z → kTypeOf sig k (segZ sig c (W z) (W (z + 1))) = τpos) ∧
       (∀ z : ℤ, z < 0 → kTypeOf sig k (segZ sig c (W z) (W (z + 1))) = τneg) ∧
       kTypeOf sig k (segZ sig c (W 0) (W 1)) = τzero := by
+  haveI := Fintype.ofFinite sig.preds
+  haveI := Classical.decEq sig.preds
   obtain ⟨τneg, τzero, τpos, F, hneg, hzero, hpos⟩ := family_cover sig k c
   exact ⟨F.W, τneg, τzero, τpos, F.mono, F.cover, F.strict_pos, F.strict_neg,
     fun z hz => (F.pos_type z hz).trans hpos, fun z hz => (F.neg_type z hz).trans hneg,
