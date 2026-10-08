@@ -1,0 +1,25 @@
+'FormalSystem.Metalogic.WeakCanonical.kTypeOfFin_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_append_congr' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hitSig' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.clTrace_localRun' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.eq_clTrace_of_localRun_anchored' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.mem_hitOf_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.Presented' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.presented_localRun' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.hit_eq_hitOf_of_presented' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hitOf_of_presented' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+specs/742_compute_hit_realizability_device/probes/p10-axioms.lean:12:14: error(lean.unknownIdentifier): Unknown constant `Probe742.quasistate_does_not_determine_hit`

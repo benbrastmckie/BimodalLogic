@@ -1,17 +1,17 @@
 # Implementation Summary: Task #742
 
 - **Task**: 742 - Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Started**: 2026-10-08T09:10:01Z
-- **Completed**: 2026-10-08T13:04:23Z
-- **Effort**: ~240 minutes across eight dispatches (Phases 1-8 of 10; per-phase dispatch, `--hard`)
+- **Completed**: 2026-10-08T13:44:17Z
+- **Effort**: ~280 minutes across ten dispatches (Phases 1-10 of 10; per-phase dispatch, `--hard`)
 - **Dependencies**: 737 (complete), 711 (complete)
 - **Artifacts**: plans/01_compute-hit-realizability-device.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Eight single-phase dispatches so far. Dispatch 3 implemented Phase 1 (B3a): the compiled research
+Ten single-phase dispatches, one per phase. Dispatch 3 implemented Phase 1 (B3a): the compiled research
 probe was transcribed into `KTypeSummary/KTypeFin.lean` — a computable `kTypeOfFin` equal to the
 classical `kTypeOf`, a decidable Tarski `eval`, and explicit computable `segZ` instances.
 Dispatch 4 implemented Phase 2 (B1): `RaySummary/Closure.lean` widens the two-letter trace
@@ -104,10 +104,95 @@ conditions are inherited by every run (`presented_localRun`), and the `⊡` brid
 (on `segZ` and `listSeg`) and `hitOf` evaluate. `Presented` is discharged for NO non-trivial
 model in this tree — that construction is B2b, the successor record — and the corollary decides
 nothing: the per-triple `∀ c, InFamily … → stabTargetSig …` is the frame of the record that
-assembles `Decidable (PlusValidZTime φ)`. Only the documentation pass (Phase 10) remains.
+assembles `Decidable (PlusValidZTime φ)`. Dispatch 12 implemented Phase 10, the closure pass,
+and ran the plan's full gate for the first time: ten axiom pins added to
+`KTypeSummaryAxiomTest.lean` with expected blocks measured by `lake env lean`
+(`kTypeOfFin_eq`, `kTypeOf_listSeg_append_congr`, `plusStab_iff_forall_hitSig`,
+`clTrace_localRun`, `eq_clTrace_of_localRun_anchored`, `mem_hitOf_iff`, `Presented`,
+`presented_localRun`, `hit_eq_hitOf_of_presented`, `plusStab_iff_forall_hitOf_of_presented` —
+every one exactly `[propext, Classical.choice, Quot.sound]`); three theorem-index rows
+(`plusStab_iff_forall_hitSig`, `mem_hitOf_iff`, `hit_eq_hitOf_of_presented`) with the C14
+baseline pair extended in the same commit and the `plusStab_iff_forall_hit` row's "`Hit` is not
+computed" replaced by the qualified statement; both READMEs, the `RaySummary`/`Decidability`
+aggregator docstrings and the Decidability README row rewritten so that "`Hit` is not computed"
+becomes "`hitOf` is computable on a finite presentation, a seam's `HitCl` equals it only under
+`Presented`, and `Presented` is discharged for no non-trivial model"; the ROADMAP residue bullet
+rewritten with every landed declaration and the B2b verdict probe, a successor bullet added, and
+the critical path restated as 742 → successor → 735. The gate surfaced four inherited failures
+from earlier phases (seven env-linter findings, a reasonless `set_option`, a hand-edited library
+root, three stale generated inventory blocks), all repaired in this phase without touching any
+statement. The headline is, as the plan required, never "`Hit` computed": `hitOf` is computable
+on finite presentations, `HitCl` is the image of the seam's ray pairs under the trace map, and
+per-presentation realization (B2b) is the successor's.
 
 ## What Changed
 
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` (207 → 324 lines, Phase 10) — ten
+  new `#guard_msgs` + `#print axioms` rows in three new sections; the "What is pinned" table
+  gains nine rows; the "What this does not pin, and why" paragraph rewritten to the honest state
+  (computable `hitOf`, the image theorem `hitCl_eq_iUnion`, `Presented` undischarged for any
+  non-trivial model, B2b the successor, the probe `quasistate_does_not_determine_hit` cited by
+  name); six long table rows shortened after the first build warned.
+- `docs/theorem-index.md` (Phase 10) — the `plusStab_iff_forall_hit` row's statement text
+  corrected ("`Hit` itself is a semantic set, computed by `hitOf` only on a finite presentation
+  and only under the realization hypothesis `Presented`, never for a model outright"); three new
+  rows: `plusStab_iff_forall_hitSig` (ZTime), `mem_hitOf_iff` (class-generic, `—`),
+  `hit_eq_hitOf_of_presented` (ZTime, marked **Conditional** with the hypothesis and its
+  non-discharge in the statement cell); all `pcq pinned:C14`.
+- `scripts/check-module-invariants.sh` (Phase 10) — three matched pairs appended to the
+  `C14BASE`/`C14LEAN` heredocs in the same commit as the index rows, and the block comment
+  updated from "final five" to "final eight" lines naming the three as a conditional device,
+  not a decision procedure.
+- `FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean` and `Trace.lean` (Phase 10) —
+  `Paper: — (the formalization's own realizability device; the paper has no counterpart)` lines
+  on `mem_hitOf_iff` and `hit_eq_hitOf_of_presented`, required by C15 for every theorem-index
+  row (`plusStab_iff_forall_hitSig` already carried one).
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (96 → 152 lines, Phase 10) —
+  module table rows for all seven modules with `wc -l` counts (`Closure` 310, `Trace` 336,
+  `Compose` 297, `Present` 684, `HitOf` 810); "What it does not do" rewritten in four bullets
+  (no `Hit` for a model; no realization of a presentation — the product-fibre consequence of
+  `seamOmegaEquiv`, the committed-state slice and the `Saturation` constructor folded in; no
+  decision procedure or bound; no finite-fibre assumption); evidence section gains the Phase 8
+  probe and the `KTypeFinEvalTest` witness module; consumer relation lists every pinned name;
+  carried limits updated; imports list completed.
+- `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md` (Phase 10) — six-step table
+  gains step 1′ (the congruence is computable: `kTypeOfFin`, `kTypeOfFin_eq`,
+  `kTypeOf_listSeg_append_congr`); `KTypeFin.lean` row (193 lines) in the modules table; the
+  consumer-relation, "does not give you" and carried-limits paragraphs name `hitOf`,
+  `mem_hitOf_iff`, `hit_eq_hitOf_of_presented` and `Presented`; pin count corrected to
+  twenty-seven rows.
+- `FormalSystem/Metalogic/Decidability/RaySummary.lean` (Phase 10) — overview paragraph
+  rewritten (seven modules, the device, `Presented` undischarged, forward-only); `Trace` bullet
+  lists `HitCl`, `plusStab_iff_forall_hitCl`, `hitCl_eq_iUnion`, `Presented`,
+  `presented_localRun`, `hit_eq_hitOf_of_presented`, `plusStab_iff_forall_hitOf_of_presented`;
+  `HitOf` bullet notes `fwdLive`/`bwdLive` are retained but not consumed.
+  `KTypeSummary.lean` already listed `KTypeFin` (Phase 1) and is unchanged.
+- `FormalSystem/Metalogic/Decidability.lean` and `FormalSystem/Metalogic/Decidability/README.md`
+  (Phase 10) — the parent aggregator's `RaySummary` bullet and the README's `RaySummary/` row
+  (file count 2 → 7) carried the same stale "`Hit` is not computed" and were corrected.
+- `specs/ROADMAP.md` (Phase 10) — the "Compute `Hit`" bullet rewritten as landed (`[x]`), naming
+  every declaration per component and the B2b verdict probe; the new successor bullet "Realize
+  a seam presentation — HWZ 2000 Thm 14 ⇐ for the `⊡` fibre" with its three sub-obstructions,
+  CARRIED cost and 735's dependence; the 735 bullet now depends on 742 AND the successor; the
+  "entire residue" paragraph and the critical path (742 → successor (B2b) → 735) restated; both
+  `/orchestrate` lines updated.
+- `FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean`, `Trace.lean`, `Compose.lean`,
+  `Present.lean` (Phase 10, gate repairs) — the env linter's two `unusedArguments` findings
+  resolved by **generalizing** the declarations, never by weakening them: `HitSig` no longer
+  takes the model `M` its body never read (so `hitSig_twoLetter : HitSig twoLetter τ t
+  (seamTrace M φ t) k = Hit M τ t φ k` is still `rfl`; `hitSig_finite`, `hitSig_eq_iUnion`,
+  `HitCl` and `plusStab_iff_forall_hitSig`'s statement updated at their `HitSig` occurrence;
+  Phase 2's reasonless `set_option linter.unusedVariables false in` — C29's finding — is gone
+  with the binder), and `kTypeOf_listSeg_append_congr` no longer carries the `[DecidableEq
+  sig.preds]` binder neither its statement nor its proof used (its `unusedDecidableInType`
+  suppression gone with it; the `unusedFintypeInType` one stays, with its reason block
+  rewritten). Docstrings on the five `PathEntry` fields (`docBlame`). Every `#print axioms`
+  profile unchanged.
+- `FormalSystem.lean` (Phase 10) — regenerated by `lake exe mk_all --lib FormalSystem` (C33):
+  the seven `RaySummary.*` imports re-sorted; no import added or removed.
+- `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` (Phase 10) —
+  generated inventory blocks rewritten by `check-module-invariants.sh --emit-inventory` (INV).
+- `typst/generated/status.typ` — regenerated counts (Phase 10; `probes/p10-typst-status.log`).
 - `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean` (249 → 334 lines, Phase 9) — new
   import of `RaySummary.HitOf`; module header gains the "per-model bridge" paragraph; new
   section `Presented`: `Presented` (def, `Prop`, `Q` arbitrary), `presented_localRun`,
@@ -213,6 +298,33 @@ assembles `Decidable (PlusValidZTime φ)`. Only the documentation pass (Phase 10
 
 ## Decisions
 
+- (Phase 10) Every `#guard_msgs` expectation and every C14 baseline line was measured by one
+  `lake env lean` pass (`probes/p10-axioms.lean`/`.log`) before being written — the wrap at the
+  120-column `#print axioms` boundary is not predictable by eye, and the house rule is that a
+  guard is never typed.
+- (Phase 10) The two inherited `unusedArguments` findings (`HitSig`'s `M`,
+  `kTypeOf_listSeg_append_congr`'s `[DecidableEq sig.preds]`) were first given declaration-scoped
+  `@[nolint unusedArguments]` with site reasons; C26 then required each in-source `nolint` to be
+  on `scripts/nolint-attribute-allowlist.txt`, whose admission bar ("if the exemption is
+  temporary, fix the declaration instead"; "I do not want to rename this" inadmissible) these do
+  not meet. Both binders were therefore DROPPED. This is a strict generalization of each
+  Challenge-pinned signature — fewer arguments, same conclusion, same `rfl` instance at
+  `twoLetter`, same axiom profiles — not a weakening, so it is recorded as a plan deviation (the
+  advisory `lean-challenge-snapshot.sh --check` would report drift on these two names; no
+  snapshot manifest exists for this task) rather than raised as a blocker. The deletion trial
+  C29 asks for was run before the first approach and is superseded: with the binder gone there
+  is no suppression to justify. No allowlist entry, no project-wide suppression, no `--update`.
+- (Phase 10) `mem_hitOf_iff`'s index row carries frame class `—`, not the plan's `ZTime`: the
+  statement mentions no frame, and the ledger's own rule reserves `—` for class-generic results.
+- (Phase 10) The `Seam.lean`/`SeamMulti.lean` module headers' sentences "`Hit` … is not computed
+  anywhere in this tree" were left as they stand: they remain literally true for a model (only
+  `hitOf` on a presentation is computed, and only `Presented` relates the two), the plan did not
+  list those modules, and a header edit there would recompile the entire `RaySummary` chain for
+  a pointer sentence. The pointer lives in the aggregator docstring and both READMEs instead;
+  recorded under Follow-ups.
+- (Phase 10) `verify-deploy.sh` was run as the plan requires and passed (14 checks, 0
+  failures); the dispatch's deploy-freshness note was not acted on by redeploying — that is the
+  orchestrator's inter-cycle checkpoint, not this phase's file scope.
 - (Phase 9) `Presented` is stated over an arbitrary `Q` with no finiteness instances, and
   `presented_localRun` needs none; `[Fintype Q] [DecidableEq Q]` are explicit binders only on
   the two theorems that mention `hitOf` (a first draft with them on the section `variable`
@@ -341,6 +453,24 @@ assembles `Decidable (PlusValidZTime φ)`. Only the documentation pass (Phase 10
 
 ## Plan Deviations
 
+- **Task 10.1** altered: ten pins rather than seven — the Phase 9 handoff's `Presented`,
+  `presented_localRun` and `plusStab_iff_forall_hitOf_of_presented` are pinned beside the seven.
+- **Task 10.2** altered: `mem_hitOf_iff`'s frame-class cell is `—` (class-generic), not `ZTime`;
+  C15 required `Paper: — (reason)` lines on `mem_hitOf_iff` and `hit_eq_hitOf_of_presented`
+  (two docstring edits in `HitOf.lean`/`Trace.lean`); the corrected `plusStab_iff_forall_hit`
+  row text keeps every qualifier rather than the plan's shorter phrasing.
+- **Task 10.3** altered: five module rows, not three (`Present.lean` and `HitOf.lean` exist
+  since the Phase 6/7 splits); the Decidability README's `RaySummary/` row corrected as well.
+- **Task 10.4** altered: `KTypeSummary.lean` needed no change (Phase 1 had listed `KTypeFin`);
+  the parent aggregator `Decidability.lean` was corrected in addition.
+- **Task 10.7** altered: the full gate's first run failed on four inherited items (C16 ×7, C29,
+  C33, INV) that no earlier phase could have seen (none ran the invariants script); repaired
+  in-phase by field docstrings, `mk_all`, `--emit-inventory`, and — after C26 refused the
+  in-source suppressions — by dropping the two unused binders (see Decisions): `HitSig` lost its
+  unread `M` and `kTypeOf_listSeg_append_congr` its unused `[DecidableEq sig.preds]`, both strict
+  generalizations of the Challenge-pinned signatures; no proof and no import set changed. The
+  typst sync check's Check 1 reports one pre-existing violation outside this task's files (see
+  Follow-ups). Annotated inline on the plan checklist.
 - **Task 9.1** altered: `Trace.lean` imports `HitOf` (where `hitOf` landed in Phase 7), not
   `Compose`; the run predicate's argument order is the library's `IsRun lab step (clNow φ) t ρ`.
 - **Task 9.4** altered: no `Tests/BimodalTest/Metalogic.lean` exists; the import went into
@@ -400,7 +530,29 @@ assembles `Decidable (PlusValidZTime φ)`. Only the documentation pass (Phase 10
 
 ## Verification
 
-- Build: Success — Phase 9: scoped guarded builds of
+- Build: Success — Phase 10 (the plan's full gate, run for the first time in this task): guarded
+  FULL project builds after each source change (`probes/p10-full-build.log`, `-2.log`, `-3.log`:
+  each `Build completed successfully (2835 jobs)`, GUARD_EXIT=0, 0 `error:` lines, 0 warnings on
+  the final two), `.olean` newer than source for `Closure`, `Compose`, `Present`, `HitOf`,
+  `Trace`, `RaySummary`, `Decidability` and the root; guarded builds of
+  `BimodalTest.Metalogic.KTypeSummaryAxiomTest` + `KTypeFinEvalTest` (`probes/p10-test-build-4.log`:
+  2178 jobs, GUARD_EXIT=0, 0 errors, 0 warnings — all 27 `#guard_msgs` and 13 `#guard`s pass;
+  the first attempt's six long-line warnings were in new docstring table rows, shortened);
+  `bash scripts/check-module-invariants.sh` full run (`probes/p10-invariants-3.log`): every
+  build-dependent check passes — C1 (`lake build` and `lake build BimodalTest` exit 0), C2
+  (fifty pinned sets), C14 (every pinned declaration incl. the three new rows), C15 (257 index
+  rows anchored), C16 (env linter: no un-nolisted finding), C26, C29, C33 (`FormalSystem.lean`
+  byte-for-byte the generated root) — with INV then re-fixed by a second `--emit-inventory`
+  (line counts had moved) and confirmed by `--emit-inventory --check` (exit 0) and a `--no-build`
+  pass (`probes/p10-invariants-4-nobuild.log`: exit 0, zero FAIL); the first full run
+  (`probes/p10-invariants.log`) had surfaced the four inherited failures listed under Plan
+  Deviations. `bash scripts/check-evidence-probes.sh` (`probes/p10-evidence-probes-3.log`):
+  `PASS  all 21 wired probe(s) compile`, EXIT=0, `quasistate-does-not-determine-hit` listed PASS.
+  `bash .claude/scripts/verify-deploy.sh` (`probes/p10-verify-deploy.log`): `PASS -- 14 check(s),
+  0 failure(s)`. `scripts/typst-sync-check.sh` after regenerating `status.typ`
+  (`probes/p10-typst-sync-3.log`): Checks 2 (`MISMATCH_COUNT=0`), 2b, 3 and 4 pass; Check 1
+  reports one pre-existing violation outside this task's files (see Follow-ups), so the script
+  exits 1 on that alone. Phase 9: scoped guarded builds of
   `FormalSystem.Metalogic.Decidability.RaySummary.Trace` (`probes/trace-build-p9-1.log`:
   GUARD_EXIT=0, 0 errors, two unused-instance warnings fixed) and of both `Trace` and
   `BimodalTest.Metalogic.KTypeFinEvalTest` (`probes/trace-test-build-p9-2.log`: 1931 jobs,
@@ -445,12 +597,25 @@ assembles `Decidable (PlusValidZTime φ)`. Only the documentation pass (Phase 10
   (1926 jobs)`, 0 errors, 0 warnings) and of the library root `FormalSystem` (guard exit 0,
   2831 jobs, 0 errors); `.olean` newer than source for `Closure`, `RaySummary` and
   `FormalSystem`. Logs: `probes/closure-build-3.log`, `probes/closure-build-4-library.log`.
-- Sorry count: 0 (Phase 9: `--cross-check` stripper 0, compiler 0, MATCH, `probes/p9-sorry-census.log`; Phase 8: `--cross-check` stripper 0, compiler 0, MATCH, `probes/p8-sorry-census.log`; the probe's only `sorry` substring is the header's "no `sorryAx`" axiom-record phrase, house style; Phase 7: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p7.log`; Phase 6: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p6.log`; Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
+- Sorry count: 0 (Phase 10: `--cross-check` stripper 0, compiler 0, MATCH, `probes/p10-sorry-census.log`; Phase 9: `--cross-check` stripper 0, compiler 0, MATCH, `probes/p9-sorry-census.log`; Phase 8: `--cross-check` stripper 0, compiler 0, MATCH, `probes/p8-sorry-census.log`; the probe's only `sorry` substring is the header's "no `sorryAx`" axiom-record phrase, house style; Phase 7: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p7.log`; Phase 6: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p6.log`; Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
   sorry; Phase 2: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-phase2.log`).
 - Sorry inventory: None
 - Vacuous count: 0 introduced (the one repository-wide match,
   `Examples/TemporalStructures.lean:495`, predates this task and was not touched).
-- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 9
+- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 10
+  `#print axioms` (`probes/p10-axioms.log`, one `lake env lean` pass): `kTypeOfFin_eq`,
+  `kTypeOf_listSeg_append_congr`, `plusStab_iff_forall_hitSig`, `clTrace_localRun`,
+  `eq_clTrace_of_localRun_anchored`, `mem_hitOf_iff`, `Presented`, `presented_localRun`,
+  `hit_eq_hitOf_of_presented`, `plusStab_iff_forall_hitOf_of_presented` all exactly
+  `[propext, Classical.choice, Quot.sound]` — re-confirmed after the binder generalization by
+  the 27 green `#guard_msgs` and by C14; the probe's `quasistate_does_not_determine_hit` is
+  pinned by its own `#print axioms` foot under `check-evidence-probes.sh`. Plan-compliance
+  spot-check: each of the eight Goal identifiers is declared in exactly one file under the
+  resolved roots. Prose audit: no file under `FormalSystem/`, `docs/`, `Tests/` reads "`Hit`
+  computed" without a negation or the `Presented` qualifier; C9 zero task numbers. Scope: 7 new
+  pin sections (10 rows), 3 new index rows + 1 corrected, 2 README tables, 1 ROADMAP bullet
+  rewritten + 1 added, against the hypothesis "7 pin rows, 3 index rows, 2 README tables, 1 + 1
+  bullets". Phase 9
   `#print axioms` (`probes/trace-axioms-p9.log`): `Presented`, `presented_localRun`,
   `hit_eq_hitOf_of_presented`, `plusStab_iff_forall_hitOf_of_presented` all exactly
   `[propext, Classical.choice, Quot.sound]`; scope 85 + 103 = 188 lines against the 150-250
@@ -501,6 +666,15 @@ assembles `Decidable (PlusValidZTime φ)`. Only the documentation pass (Phase 10
 
 ## Impacts
 
+- The tree now says exactly what landed: every surface a reader reaches first (the two READMEs,
+  the aggregator docstrings, the theorem index, the axiom-pin file, the ROADMAP) states that
+  `hitOf` is computable on a finite presentation, that a seam's `HitCl` equals it only under
+  `Presented`, and that `Presented` is discharged for no non-trivial model — with `[F.IsRegular]`,
+  the `ℤ` time axis, the L⁺ fragment, `k ≥ 1` and the forward-only fixture limit carried on
+  every statement. Three ledger rows are machine-pinned by C14 so the claim cannot rot silently.
+- The successor record (B2b) is described verbatim below for filing, and 735's ROADMAP bullet
+  now depends on it explicitly, so the assembly cannot absorb the realization cost silently —
+  the exact risk 742 was filed to close.
 - `hit_eq_hitOf_of_presented` and `plusStab_iff_forall_hitOf_of_presented` (Phase 9) are the
   interface the successor records consume: B2b must produce `Presented M τ t φ lab step` for a
   model constructed from a presentation, and the `Decidable (PlusValidZTime φ)` assembly must
@@ -532,16 +706,136 @@ assembles `Decidable (PlusValidZTime φ)`. Only the documentation pass (Phase 10
 
 ## Follow-ups
 
-- Phase 10 (pins, theorem index, READMEs, ROADMAP, successor-record description) is the only
-  remaining phase. It should pin the four Phase 9 declarations in `KTypeSummaryAxiomTest.lean`
-  by name, cite the witness module as `BimodalTest.Metalogic.KTypeFinEvalTest` (imported from
-  `Tests/BimodalTest.lean`), and state that `Presented` is discharged for no non-trivial model.
-- The plan's Phase 7 liveness graph was wrong (see Decisions); Phase 10's README/theorem-index
-  text must describe `fwdLiveSep`/`bwdLiveSep` as what `hitOf` reads, and may note that Phase 6's
-  `fwdLive`/`bwdLive` are retained but unused by the read-out.
-- Phase 10 owns the README, theorem-index rows, axiom pins and ROADMAP updates for both modules,
-  and should cite the Phase 8 probe by declaration name (`quasistate_does_not_determine_hit`),
-  never by line.
+### Follow-up records
+
+**Successor record to file with `/task` (lean4, `--hard --lit`): "Realize a seam presentation —
+HWZ 2000 Theorem 14 ⇐ for the `⊡` fibre (B2b)".**
+
+WHY THIS EXISTS. The per-model bridge `hit_eq_hitOf_of_presented`
+(`FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean`) says a seam's realized set
+`HitCl M τ t φ k` IS the computable `hitOf lab step (clNow φ) k` under the explicit realization
+hypothesis `Presented M τ t φ lab step` — the closure traces of the seam's splices are EXACTLY the
+traces of the presentation's anchored runs — and that hypothesis is discharged for NO
+non-trivial model in this tree. `hitOf` is computable and exactly characterized
+(`mem_hitOf_iff`), the closure trace of a history is the unique anchored local run
+(`clTrace_localRun`, `eq_clTrace_of_localRun_anchored`), and `plusStab_iff_forall_hitOf_of_presented`
+restates the `⊡` bridge over `hitOf` under the hypothesis; what is missing is a regular model
+CONSTRUCTED from a presentation that discharges it (`modelOf P`, `hit_modelOf`). This is the
+realizability half of HWZ 2000 Definition 12 / Theorem 14 ⇐ for THIS semantics, the component
+742's research split off (its Finding 3 and Decision D-2) and 742's plan declared a non-goal.
+Task 735's soundness depends on it: without a discharged `Presented`, any `Bool` the assembly
+produces from `hitOf` is conditional, and 735 may not present it as unconditional.
+
+THE THREE SUB-OBSTRUCTIONS, each a named phase, carried from 742's research Finding 3 (a)-(d)
+and to be re-verified before committing to phases:
+
+1. *Product summaries* (Finding 3 (a)-(b)). The `⊡` fibre is a product
+   (`seamOmegaEquiv : StabFibre F.toTaskFrame t s ≃ SeqPair F s`, landed): histories through a
+   seam state are pairs of a backward and a forward ω-step-sequence, so the set of traces realized
+   at a state is closed under splicing the backward half of one history with the forward half of
+   another. HWZ Lemma 17's "realised type the model lacked" is exactly such a mixed type, and in
+   this semantics it is a closure property of the fibre, not an operation that may or may not be
+   sound. A per-state summary must therefore be a product `BwdSummary × FwdSummary` of the two
+   one-sided atom-sequence ray languages (`stab`-letters as state atoms, `box`-letters as time
+   atoms — the atoms `Anchored` already carries), with closure types DERIVED by the trace map and
+   never primitive. The machine-checked verdict that the HWZ-verbatim shape (per-time bare type
+   sets plus the consecutive-type relation) does not determine `Hit` is the wired probe
+   `quasistate_does_not_determine_hit`
+   (`specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean`); any
+   presentation shape this record proposes must be shown to carry joint realization through the
+   seam, not only per-time data.
+2. *Liveness needs an infinite committed-state slice* (Finding 3 (c)). The histories through a
+   state are ALL step paths through it; on a finite slice that set is closed in the product
+   topology, so a presentation whose runs defer an eventuality without bound is realized together
+   with its limit path, whose type is the limit type. HWZ avoid this because their domain
+   elements are persistent runs `⟨r, ξ⟩`; here a path can switch runs at every step. The
+   constructed model therefore needs an infinite slice with committed states (a root per summary
+   whose successors are per-run committed chains; the countdown gadget
+   `s → a_n → … → a_0 → b` is the two-letter instance). The presentation stays finite per time;
+   the slice does not — consistent with `not_finite_width_fmp` and with "concede infinite fibres,
+   seek a finite presentation".
+3. *Regularity on an infinite slice* (Finding 3 (d)). `Saturation` is proved in this tree for
+   `[Finite W]` only (`ofSlicedStep_saturation`). For the committed-state construction the fibres
+   and segments at a fixed time take finitely many SHAPES, so a ⊇-directed family is eventually
+   constant and the intersection is nonempty; `Limit` is trivial; `Serial` and `Compositional`
+   are inherited from the step structure as in `ofSlicedStep`. A new regular-frame constructor
+   (`ofSlicedStepFinShape` or similar) is the prerequisite phase (B2b-pre).
+
+Then: `modelOf P` on that slice, the truth lemma whose `stab` case quantifies over exactly the
+committed chains, and `hit_modelOf : Presented (modelOf P) (seamHistory P) t φ lab step` (hence
+`HitCl (modelOf P) … = ↑(hitOf …)` by the landed bridge) under `[(frameOf P).IsRegular]`.
+
+COST, CARRIED-UNVERIFIED: 1,200-2,000 lines, risk HIGH, for B2b proper, plus 300-500 lines,
+risk MEDIUM, for the `Saturation` prerequisite — 742's research Finding 5 figures, which
+themselves derive from 711's dropped D2-D5 estimates; they are the predecessor's figures, not
+measurements of this record. Expect B2b proper to dominate and consider splitting it per
+sub-obstruction before planning phases.
+
+CONSTRAINTS THAT TRANSFER UNCHANGED. ZERO DEBT: no external lemma cited as an axiom; HWZ Thm 14 ⇐
+is carried out, never cited. TIME AXIS, NEVER STATES: a finite alphabet of per-time summaries is
+forced by `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp`;
+the slice may be infinite, the per-time presentation may not; any phase quietly bounding the
+fibre reproduces a refuted shape. Everything under `[F.IsRegular]`, never unconditionally. NO
+COMPLEXITY BOUND, upper or lower. CSLIB IS READ-ONLY: no `require`, no copied declaration. The
+backward `⊡(Pp)` side is fixed only by `Probe719Backward.pastStab_iff_allBwdPathsMeet` and there
+is still no backward Bool-fixture bridge; the Phase 8 probe is forward-only (`¬Fp`), so a
+forward-only result must say so. DO NOT REBUILD `hitOf`, `mem_hitOf_iff`, `Presented`,
+`hit_eq_hitOf_of_presented`, `plusStab_iff_forall_hit` or `plusStab_iff_forall_hitSig`; do not
+weaken `Presented`'s statement to make it dischargeable — a same-named weaker hypothesis under
+the landed bridge is exactly the defect 737 was filed to find. Re-resolve every cited declaration
+BY NAME; line anchors drifted repeatedly across 742's run.
+
+ACCEPTANCE. Either `Presented (modelOf P) …` discharged for every presentation `P` meeting a
+stated, machine-checked set of consistency conditions — with every qualifier carried
+(`[F.IsRegular]` at minimum, the frame class, the language fragment, the premise set), axioms
+pinned in `KTypeSummaryAxiomTest.lean`, zero sorries, and a theorem-index row with its C14
+baseline line — or, per sub-obstruction, a recorded verdict naming precisely what cannot be
+built and what it would cost, with the obstruction MACHINE-CHECKED as a theorem or a wired probe
+rather than argued in prose. A component-by-component outcome is expected; a cited verdict is a
+COMPLETE result, as 737 and 742 both closed. Do NOT present a partial discharge as more than it
+is.
+
+SCOPE SPLIT. 742 is complete and terminal. 735 (the assembly of `Decidable (PlusValidZTime φ)`)
+must carry a dependency on this record and must not be attempted here. 734 (mosaic fallback),
+733 (backward mirror falsifier) and 739 (three-state E2) are neighbours on the evidence
+collection. `file_scope` to be set at plan time; expect `FormalSystem/Metalogic/Decidability/RaySummary/`
+(a new module beside `Trace.lean`), `FormalSystem/Semantics/` or `FormalSystem/PlusLanguage/` for
+the frame constructor, and `Tests/BimodalTest/Metalogic/`.
+
+**`next_steps`**: (1) file the record above with `/task`; (2) add it to task 735's
+`dependencies`; (3) `/orchestrate 735 --hard --lit` once the successor is terminal (or batch
+`/orchestrate <successor>,735 --hard --lit`, as the ROADMAP's command block now says).
+
+### Context-extension recommendation (agent-system source store, not this repository)
+
+A lean4 context-pattern note on `ℤ`-subtype decidability, from 742's research Recommendation 4
+and `KTypeFin.lean`'s header: `inferInstanceAs` on a `ℤ`-subtype's order or equality resolves
+through `Int.instConditionallyCompleteLinearOrder` (noncomputable) and silently makes a device
+noncomputable; write every such instance as an explicit term — `Int.decEq`/`Int.decLt` via
+`decidable_of_iff` with the TARGET proposition first in the `@` form
+(`@decidable_of_iff (target) (source) iff inst`), and `Fintype` via `Fintype.subtype` on
+`Finset.Ico` with `Int.instLinearOrder`/`Int.instLocallyFiniteOrder` named outright — or avoid
+the subtype with a `Fin n` carrier as `listSeg` does. Belongs under
+`agent-system/extensions/lean/context/patterns/`; recorded here only.
+
+### Other follow-ups
+
+- `Seam.lean` (point (b) of its header) and `SeamMulti.lean` (points (b)-(c), the
+  `plusStab_iff_forall_hit` and `presentsMulti_seamTrace` docstrings) still say "`Hit` … is not
+  computed anywhere in this tree" / "the residue is computing `Hit`". Literally true for a model
+  and left unchanged here (see Decisions); a later touch of either module should add the pointer
+  to `hitOf`/`Presented`.
+- `scripts/typst-sync-check.sh` Check 1 fails on one pre-existing violation outside this task's
+  files: `FormalSystem.Semantics.validZTime_iff_validInt` in `typst/FormalFoundations.typ` resolves
+  against no live declaration (the same name sits in `docs/theorem-index.md`'s carrier-normalization
+  row). Checks 2-4 pass after `status.typ` was regenerated. Owner: whichever record renamed or
+  moved that declaration.
+- `FormalSystem/Metalogic/WeakCanonical/README.md`'s hand-written rows for `KTypeSummary.lean`
+  (22 lines) and `KTypeSummary/` ("1 file", 122 lines) predate the whole cluster and are stale;
+  not in this plan's file list, not gated, left for the WeakCanonical README's owner.
+- The `fwdLive`/`bwdLive` pair in `Present.lean` is retained but consumed by nothing; `hitOf`
+  reads `fwdLiveSep`/`bwdLiveSep`. Retiring the pair, or restating `fwdLive_iff`/`bwdLive_iff`
+  as the shared-endpoint variant they are, is cosmetic and was not done.
 
 ## References
 
@@ -565,3 +859,10 @@ assembles `Decidable (PlusValidZTime φ)`. Only the documentation pass (Phase 10
 - specs/742_compute_hit_realizability_device/probes/trace-axioms-p9.lean
 - specs/742_compute_hit_realizability_device/handoffs/phase-9-handoff-20261008T131549Z.md
 - Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean
+- specs/742_compute_hit_realizability_device/probes/p10-axioms.lean
+- specs/742_compute_hit_realizability_device/probes/p10-axioms.log
+- specs/742_compute_hit_realizability_device/probes/p10-full-build-2.log
+- specs/742_compute_hit_realizability_device/probes/p10-invariants-2.log
+- specs/742_compute_hit_realizability_device/probes/p10-evidence-probes-2.log
+- specs/742_compute_hit_realizability_device/probes/p10-verify-deploy.log
+- specs/742_compute_hit_realizability_device/probes/p10-sorry-census.log

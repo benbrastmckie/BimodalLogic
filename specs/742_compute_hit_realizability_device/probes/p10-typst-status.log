@@ -1,0 +1,28 @@
+{
+  "axiom_count": 29,
+  "rule_count": 7,
+  "base_count": 23,
+  "dense_only_count": 2,
+  "ztime_only_count": 2,
+  "rtime_only_count": 2,
+  "sorry_total": 4,
+  "sorry_total_excl_boneyard": 0,
+  "sorry_algebraic": 0,
+  "sorry_bxcanonical": 0,
+  "sorry_bundle": 0,
+  "sorry_weakcanonical": 4,
+  "sorry_weakcanonical_excl_boneyard": 0,
+  "sorry_other": 0,
+  "lean_toolchain_pin": "leanprover/lean4:v4.33.0-rc1",
+  "mathlib_tag": "v4.33.0-rc1",
+  "mathlib_rev": "79d0395a1825a6264ad5d269e35e60537518955e",
+  "formalsystem_file_count": 669,
+  "formalsystem_line_count": 347218,
+  "tests_file_count": 77,
+  "tests_line_count": 22876,
+  "tools_file_count": 40,
+  "tools_line_count": 18216,
+  "stamp_commit": "25cb817f7",
+  "stamp_date": "2026-10-08"
+}
+Wrote /home/benjamin/Projects/BimodalLogic/typst/generated/status.typ

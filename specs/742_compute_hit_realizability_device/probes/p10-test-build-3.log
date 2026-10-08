@@ -1,0 +1,5 @@
+✔ [2177/2178] Built BimodalTest.Metalogic.KTypeSummaryAxiomTest (2.6s)
+✔ [2178/2178] Built BimodalTest.Metalogic.KTypeFinEvalTest (75s)
+Build completed successfully (2178 jobs).
+lake-build-guard: STATUS: exit_status=0
+GUARD_EXIT=0
