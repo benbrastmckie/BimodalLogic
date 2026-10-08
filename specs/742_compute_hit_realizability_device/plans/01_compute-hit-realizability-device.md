@@ -1,7 +1,7 @@
 # Implementation Plan: Task #742
 
 - **Task**: 742 - Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 19 hours (10 phases; lean4 `--hard`, one agent run per phase)
 - **Dependencies**: 737 (complete; `SeamMulti.lean` is the bridge this plan feeds), 711 (complete; the `KTypeSummary/` substrate)
 - **Research Inputs**: specs/742_compute_hit_realizability_device/reports/01_compute-hit-realizability-device.md
