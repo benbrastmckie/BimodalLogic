@@ -224,6 +224,37 @@ EVIDENCE="specs/evidence"
 #                                                           | Establishes NO portability for
 #                                                           | `BuchiCompl.lean`, whose main
 #                                                           | theorems are `proof_wanted`
+# seam-gluing-ray-product/ktype-summary-substrate-probe     | SUBSTRATE (probe i): the k-type
+#                                                           | summary substrate
+#                                                           | (`WeakCanonical/KTypeSummary/`,
+#                                                           | Buechi's complementation chain in
+#                                                           | the monadic k-type idiom over the
+#                                                           | Z time axis) run END TO END on a
+#                                                           | concrete infinite fibre: explicit
+#                                                           | cutting `W z := 2 * z` of the
+#                                                           | even-parity block with its three
+#                                                           | segment type equations PROVED by
+#                                                           | order isomorphism (never by
+#                                                           | evaluating `kTypeOf`), the cover
+#                                                           | `family_cover` agreeing with it,
+#                                                           | the triple confirmed degenerate,
+#                                                           | and the central fact: the DISTINCT
+#                                                           | odd-parity block cut at the odd
+#                                                           | times lies in the SAME family, so
+#                                                           | the two blocks have equal k-type at
+#                                                           | every depth
+#                                                           | (`zFiber_cPar_eq_cOdd`, via
+#                                                           | `kTypeOf_zFiber_eq_of_inFamily`);
+#                                                           | `family_saturation` and
+#                                                           | `target_eq_union_of_families`
+#                                                           | instantiated on the
+#                                                           | normal-form target. Establishes NO
+#                                                           | decidability, NO complexity bound,
+#                                                           | NO reduction of any stab condition
+#                                                           | to a k-type target (the seam
+#                                                           | interface's `Presents` bundle is
+#                                                           | cited, not inhabited), and no
+#                                                           | k-type DISTINCTNESS
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -239,6 +270,7 @@ WIRED=(
   "seam-gluing-ray-product/backward-dual-asymmetric-fixture"
   "seam-gluing-ray-product/device-selection-probe"
   "seam-gluing-ray-product/cslib-ramsey-port-feasibility"
+  "seam-gluing-ray-product/ktype-summary-substrate-probe"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

@@ -918,7 +918,7 @@ fields, add a fourth rather than weakening the statement, and record the additio
 
 ---
 
-### Phase 8: Evidence probe (i) — the substrate exercised end to end on a concrete coloured block [NOT STARTED]
+### Phase 8: Evidence probe (i) — the substrate exercised end to end on a concrete coloured block [COMPLETED]
 
 **Goal**: Exhibit the whole chain on one finitely presented infinite fibre: a concrete colouring
 of ℤ, its factorization, its family triple, a k-type-determined target, and the saturation
@@ -927,30 +927,30 @@ retired (c)/(d) discrimination probe (Decision D-12).
 
 **Tasks**:
 
-- [ ] Create `specs/evidence/seam-gluing-ray-product/ktype-summary-substrate-probe.lean`
+- [x] Create `specs/evidence/seam-gluing-ray-product/ktype-summary-substrate-probe.lean`
       (`import FormalSystem` only — the collection's standing rule;
       `namespace Probe711Substrate`). Re-grep every name before citing it:
       `FormalSystem.Metalogic.WeakCanonical.family_cover`, `…family_saturation`,
       `…kTypeOf_zFiber_eq_of_sameTriple`, `…Decidability.RaySummary.plusStab_iff_seamSummary`,
       `Probe732Device.not_lasso_sufficient_on_chain`,
       `…PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp`.
-- [ ] Fixture: a one-predicate signature and the colouring `c p t := (t % 2 = 0)` on ℤ (or a
+- [x] Fixture: a one-predicate signature and the colouring `c p t := (t % 2 = 0)` on ℤ (or a
       time-asymmetric colouring if the parity one makes the family degenerate — confirm, do not
       assume). Exhibit a factorization explicitly (`W z := 2 * z` for the parity colouring) rather
       than invoking `family_cover`, so the probe shows the *content* of the cover and not just its
-      existence; then also invoke `family_cover` and check the two agree in their triple.
-- [ ] Exhibit a second colouring in the **same** family with a different cutting sequence (e.g.
+      existence; then also invoke `family_cover` and check the two agree in their triple. *(deviation: altered — the parity fixture's triple is CONFIRMED degenerate (`parFactorization_degenerate`, by `rfl`) and kept, since the central fact uses a second, different colouring; "agreement" with `family_cover` is agreement of the Prop stated (`par_family_cover_agrees`), because the cover's triple is a `Classical.choice` existential that cannot be compared computationally)*
+- [x] Exhibit a second colouring in the **same** family with a different cutting sequence (e.g.
       shifted, `W' z := 2 * z + 2` on the same colouring, or a different colouring with the same
       segment types) and apply `kTypeOf_zFiber_eq_of_sameTriple` to conclude the two blocks have
-      equal k-type — the probe's central fact, and the one that makes saturation non-vacuous.
-- [ ] Exhibit a k-type-determined target and apply `family_saturation` to it, recording the
+      equal k-type — the probe's central fact, and the one that makes saturation non-vacuous. *(deviation: altered — the shifted cutting on the same colouring gives the trivial `c = c`; the probe uses the DIFFERENT colouring `cOdd` (odd parity) cut at the odd times, same segment pattern, so `zFiber_cPar_eq_cOdd` is a non-trivial equality derived from the family)*
+- [x] Exhibit a k-type-determined target and apply `family_saturation` to it, recording the
       verdict branch taken. If Phase 6's Scope Hypothesis relocated the non-vacuity lemma here,
       this is where it lands.
-- [ ] Exhibit a non-trivial inhabitant of the Phase 7 hypothesis bundle on this fixture if it can
+- [x] Exhibit a non-trivial inhabitant of the Phase 7 hypothesis bundle on this fixture if it can
       be done inside budget; if it cannot, say so explicitly in the header under "what this does
       NOT establish" rather than overrunning — an unexhibited bundle is an honest limit, a faked
-      one is not.
-- [ ] Header in the collection's style. **What is established**: the chain runs end to end on a
+      one is not. *(completed as the honest limit: `Presents` is NOT inhabited — it needs a regular ℤ-frame, a model and a seam, which is the consumer's assembly work; the bridge is cited by `#check` and the header says so)*
+- [x] Header in the collection's style. **What is established**: the chain runs end to end on a
       concrete infinite fibre; two distinct blocks in one family are machine-checked k-equal; the
       saturation theorem has an exhibited instance. **What is NOT established**: no decidability
       of anything; no complexity bound; no claim that any `⊡` condition is a k-type-determined
@@ -959,12 +959,12 @@ retired (c)/(d) discrimination probe (Decision D-12).
       claim about adequacy beyond this fixture. Axiom record and the compile line
       `lake env lean specs/evidence/seam-gluing-ray-product/ktype-summary-substrate-probe.lean`.
       `#print axioms` foot for every headline theorem the probe states.
-- [ ] Wire: **re-read `scripts/check-evidence-probes.sh` immediately before editing** (record its
+- [x] Wire: **re-read `scripts/check-evidence-probes.sh` immediately before editing** (record its
       blob hash, as task 736 did) and **append only** — one `WIRED` array entry plus its doc
       block, no existing entry or comment altered. Run the **whole** collection
       (`bash scripts/check-evidence-probes.sh`), expected all wired probes PASS, exit 0. Commit
       (`task 711 phase 8: substrate probe on a concrete coloured block`), staging the probe and
-      the script only.
+      the script only. *(completed — blob hash `ab095f82…` verified immediately before the append; 32 insertions, 0 deletions; 17 → 18 wired, 18/18 PASS, exit 0. 268 lines, inside the 250-400 hypothesis; the segment type equations are proved by order isomorphism (`kTypeOf_segZ_shift`), as the Scope Hypothesis anticipated)*
 
 **Timing**: 2 hours
 
