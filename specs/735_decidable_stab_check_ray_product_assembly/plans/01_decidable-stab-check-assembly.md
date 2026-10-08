@@ -267,14 +267,14 @@ above 300 is a signal to re-read the gluing sketch, not to widen the phase.
 
 ---
 
-### Phase 3: Pins, computability witnesses, and Conditional index rows [NOT STARTED]
+### Phase 3: Pins, computability witnesses, and Conditional index rows [COMPLETED]
 
 **Goal**: Every new headline is machine-pinned in both harnesses, `stabCheckSig` is witnessed to
 evaluate (and to discriminate) on the existing two-state presentations, and the theorem index
 carries the results as **Conditional** rows with the refutation cited in the row text.
 
 **Tasks**:
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: after the existing four
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: after the existing four
       `Presented` pins, a new prose block ("The run-level bridge and the liveness decider under
       `Presented` -- conditional, and `Presented` is refuted as a completeness carrier by the wired
       probe `presented-not-complete.lean`; the existing four rows above are vacuous on that
@@ -285,7 +285,7 @@ carries the results as **Conditional** rows with the refutation cited in the row
       `FormalSystem.Metalogic.Decidability.RaySummary.decidableStab_of_presented`. Leave the
       existing prose block verbatim (Risk R5). *(Phase 2 note: the landed name is
       `decidableStabOfPresented` — C26 lint; pin that name.)*
-- [ ] `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`: a `## stabCheckSig on finite labelled presentations`
+- [x] `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`: a `## stabCheckSig on finite labelled presentations`
       section. First `#eval`, then pin with `#guard` (Risk R4): (i)
       `stabCheckSig labW stepW true false = true` (the one `now` state reads `phi` too);
       (ii) a new `labX : Bool → twoLetter.preds → Bool := fun q p => q && p` (state `true` reads
@@ -294,25 +294,25 @@ carries the results as **Conditional** rows with the refutation cited in the row
       `now`-free graphs, so the check is vacuously true -- the liveness guard is load-bearing);
       (iv) `stabCheckSig labAlt stepAlt true false = true` (no `now` state at all). Each number is a
       witness of computability and nothing else; say so in the section docstring.
-- [ ] `docs/theorem-index.md`, Decidability section, directly after the
+- [x] `docs/theorem-index.md`, Decidability section, directly after the
       `hit_eq_hitOf_of_presented` row: three rows -- `plusStab_iff_forall_run_of_presented`,
       `stabCheck_iff_of_presented`, `decidableStab_of_presented` -- each Statement cell beginning
       "**Conditional**: under the realization hypothesis `Presented` …" and ending "`Presented` is
       refuted as a completeness carrier on a three-state regular ℤ-model for every finite
       presentation by the wired probe `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean`,
       so this is vacuous there; nothing is stated about `PlusValidZTime`". Frame class `ZTime`,
-      Axioms `pcq pinned:C14`. Leave the existing 742 row text verbatim (Risk R5).
-- [ ] `scripts/check-module-invariants.sh`: C14 -- append three matched pairs (one
+      Axioms `pcq pinned:C14`. Leave the existing 742 row text verbatim (Risk R5). *(deviation: altered -- the C15 index-anchor gate requires every indexed declaration's docstring to carry a `Paper:` line; `decidableStabOfPresented` in `RaySummary/StabCheck.lean` (a Phase 2 file, not in this phase's file list) gained the one line `Paper: — (the formalization's own device)`; no statement or proof changed)*
+- [x] `scripts/check-module-invariants.sh`: C14 -- append three matched pairs (one
       `'…' depends on axioms: [propext, Classical.choice, Quot.sound]` line in the `C14BASE`
       heredoc and the corresponding `#print axioms …` line in the `C14LEAN` heredoc, same trailing
       position on both sides) for the three indexed names, and extend the C14 comment block's
       name list by one sentence ("… and the three `StabCheck` rows, conditional on `Presented`,
       which `presented-not-complete.lean` refutes as a completeness carrier").
-- [ ] Full gate: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (whole
+- [x] Full gate: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (whole
       project, detached, bounded waiter), `bash scripts/check-module-invariants.sh` (C14 with the
       updated baseline; C9 no task numbers outside `specs/**`), `bash scripts/check-evidence-probes.sh`,
       `bash .claude/scripts/verify-deploy.sh` -- all green.
-- [ ] Commit per green sub-step (`3.1: pins`, `3.2: witnesses`, `3.3: index rows + C14`).
+- [x] Commit per green sub-step (`3.1: pins`, `3.2: witnesses`, `3.3: index rows + C14`). *(deviation: altered -- 3.1 and 3.2 landed as one commit `daca91f79`, since the pre-commit typst-sync gate refuses a `.lean` commit whose `tests-line-count` `status.typ` does not reflect and both edits move it; 3.3 is `87535f34b`)*
 
 **Timing**: 1.5 hours
 
