@@ -1,7 +1,7 @@
 # Implementation Plan: Task #738
 
 - **Task**: 738 - Pin the complexity-class divergence behind the CTL-star 2EXPTIME sanity ceiling and repair its citation paths
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None (713 stays on HOLD and is not a dependency; this task edits its record)
 - **Research Inputs**: specs/738_pin_complexity_class_divergence_sanity_ceiling/reports/01_pin-complexity-class-divergence.md
@@ -98,7 +98,7 @@ already carries the ARGUED qualifier per the report's Finding 5 and needs no edi
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Rewrite 713's record -- ruling, canonical wording, paths, hold sub-item [NOT STARTED]
+### Phase 1: Rewrite 713's record -- ruling, canonical wording, paths, hold sub-item [COMPLETED]
 
 **Goal**: 713's `description` carries the reconciliation ruling and the single canonical wording,
 all four citation paths point at their archive locations, the status sentence is current, and
@@ -106,8 +106,8 @@ all four citation paths point at their archive locations, the status sentence is
 and `held_at` untouched.
 
 **Tasks**:
-- [ ] Re-read 713's current record: `jq '.active_projects[] | select(.project_number == 713)' specs/state.json`. Confirm `status == "hold"`, `prior_status == "not_started"`, `held_at == "2026-10-03"` before editing.
-- [ ] Draft the new `description` in a scratch file OUTSIDE the repo (the session scratchpad), starting from the current text and applying exactly these edits, leaving every other sentence verbatim:
+- [x] Re-read 713's current record: `jq '.active_projects[] | select(.project_number == 713)' specs/state.json`. Confirm `status == "hold"`, `prior_status == "not_started"`, `held_at == "2026-10-03"` before editing. *(completed)*
+- [x] Draft the new `description` in a scratch file OUTSIDE the repo (the session scratchpad), starting from the current text and applying exactly these edits, leaving every other sentence verbatim: *(completed)*
   - (a) Status sentence. Replace `This task stays unscheduled: status not_started, dependencies [], nothing depends on it.` with `This task stays unscheduled: status HOLD (user ruling 2026-10-03; prior_status not_started), dependencies [], nothing depends on it.`
   - (b1) Replace `All three were verified against the tree at the time of this revision:` with `All three were re-verified against the tree on 2026-10-07 (task 738), at their archive locations:`
   - (b2) Replace `1. specs/718_omega_sequence_decidability_full_lplus/reports/02_ranked-route-analysis.md, the "Complexity sanity check" bullet:` with `1. specs/archive/718_omega_sequence_decidability_full_lplus/reports/02_ranked-route-analysis.md (archived), the "Complexity sanity check" bullet at line 258:`
@@ -117,8 +117,8 @@ and `held_at` untouched.
   - (c) Replace the two CAVEAT sentences -- from `CAVEAT ON THAT CONSEQUENCE:` through `must not restate the consequence as an upper bound on L-plus.` -- with the following, as a new paragraph (verbatim, including the heading):
 
     `CANONICAL WORDING OF THE CONSEQUENCE (quote this, verbatim, in any record that repeats it). L-plus Z-time validity -- equivalently, by negation, L-plus Z-time satisfiability -- is 2EXPTIME-hard by the CTL-star reduction. ARGUED, NOT FORMALIZED: no Lean declaration establishes it. CONSEQUENCE, stated for NON-VALIDITY: if every non-valid formula had a certificate of size singly exponential in the closure size, checkable in time polynomial in the certificate's size, then non-validity (satisfiability of the negation) would be in NEXPTIME and, equivalently, validity would be in co-NEXPTIME; hence 2EXPTIME would be contained in NEXPTIME, equivalently in co-NEXPTIME, since 2EXPTIME is closed under complement. That containment is not refuted but is widely disbelieved. The two class names are the same statement read from opposite sides of the complement: a record may name either, but must say which problem it is placing (NON-VALIDITY with NEXPTIME; VALIDITY with co-NEXPTIME). This is a LOWER bound used as a ceiling: nothing cheaper than 2EXPTIME is credible. It says nothing about any cost sufficing for L-plus and must never be restated as an upper bound. Sources: 706 Q4 (validity / co-NEXPTIME reading) and 703 round-2 section 1.6 (satisfiability / NEXPTIME reading), reconciled 2026-10-07 (task 738): the apparent divergence was one of presentation, not content.`
-- [ ] Draft the new `hold_reason` in a second scratch file: keep everything up to and including `but not schedulable by ordinary dispatch.` verbatim, then replace the final clause (`Open sub-item: sources diverge between co-NEXPTIME and NEXPTIME; pin which bound the citing records should quote, or record the divergence here.`) with `Sub-item closed 2026-10-07 (task 738): the co-NEXPTIME/NEXPTIME wording difference between 706 Q4 and 703 round-2 section 1.6 is reconciled, not a divergence -- the two name opposite sides of one containment; canonical wording now in this record's description.`
-- [ ] Apply with ONE `state-write.sh` call (never `update-task-status.sh preflight 713 hold`, which resets `held_at`):
+- [x] Draft the new `hold_reason` in a second scratch file: keep everything up to and including `but not schedulable by ordinary dispatch.` verbatim, then replace the final clause (`Open sub-item: sources diverge between co-NEXPTIME and NEXPTIME; pin which bound the citing records should quote, or record the divergence here.`) with `Sub-item closed 2026-10-07 (task 738): the co-NEXPTIME/NEXPTIME wording difference between 706 Q4 and 703 round-2 section 1.6 is reconciled, not a divergence -- the two name opposite sides of one containment; canonical wording now in this record's description.` *(completed)*
+- [x] Apply with ONE `state-write.sh` call (never `update-task-status.sh preflight 713 hold`, which resets `held_at`): *(completed)*
   ```
   bash .claude/scripts/state-write.sh \
     '(.active_projects[] | select(.project_number == 713)) |= (.description = $desc | .hold_reason = $hr | .last_updated = $ts)' \
@@ -128,8 +128,8 @@ and `held_at` untouched.
     --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     --regen-todo
   ```
-- [ ] Post-write invariants (all must hold): `jq -e '.active_projects[] | select(.project_number == 713) | .status == "hold" and .prior_status == "not_started" and .held_at == "2026-10-03"' specs/state.json`; `jq -r '... | .description' | grep -c 'CANONICAL WORDING OF THE CONSEQUENCE'` is 1; the description contains no `specs/718_`, `specs/721_` path without the `archive/` prefix; `grep -c 'Open sub-item' <hold_reason>` is 0; `specs/TODO.md`'s `### 713.` entry renders the new description and still shows `- **Held**: 2026-10-03`.
-- [ ] Commit (scoped: `specs/state.json`, `specs/TODO.md`) as `task 738 phase 1: rewrite 713's record -- ruling, canonical wording, archive paths, hold sub-item`.
+- [x] Post-write invariants (all must hold): `jq -e '.active_projects[] | select(.project_number == 713) | .status == "hold" and .prior_status == "not_started" and .held_at == "2026-10-03"' specs/state.json`; `jq -r '... | .description' | grep -c 'CANONICAL WORDING OF THE CONSEQUENCE'` is 1; the description contains no `specs/718_`, `specs/721_` path without the `archive/` prefix; `grep -c 'Open sub-item' <hold_reason>` is 0; `specs/TODO.md`'s `### 713.` entry renders the new description and still shows `- **Held**: 2026-10-03`. *(completed)*
+- [x] Commit (scoped: `specs/state.json`, `specs/TODO.md`) as `task 738 phase 1: rewrite 713's record -- ruling, canonical wording, archive paths, hold sub-item`. *(completed)*
 
 **Timing**: 1 hour
 

@@ -1,0 +1,53 @@
+{
+  "phase": 1,
+  "phase_name": "Rewrite 713's record -- ruling, canonical wording, paths, hold sub-item",
+  "started_at": "2026-10-08T07:53:50Z",
+  "last_updated": "2026-10-08T07:55:05Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Re-read 713's record and confirm hold/not_started/2026-10-03",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Draft new description (edits a, b1-b5, c) in scratchpad",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 3,
+      "description": "Draft new hold_reason in scratchpad",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 4,
+      "description": "Apply with one state-write.sh call (--regen-todo)",
+      "status": "done",
+      "files_touched": [
+        "specs/state.json",
+        "specs/TODO.md"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Post-write invariants",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 6,
+      "description": "Scoped commit of phase 1",
+      "status": "done",
+      "files_touched": [
+        "specs/738_pin_complexity_class_divergence_sanity_ceiling/plans/01_pin-complexity-class-divergence.md"
+      ]
+    }
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

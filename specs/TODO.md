@@ -79,7 +79,7 @@ next_project_number: 741
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
-738 [PLANNED] — Pin the complexity-class divergence behind the CTL-star...
+738 [IMPLEMENTING] — Pin the complexity-class divergence behind the CTL-star...
 739 [NOT STARTED] — Run E2's real test: the depth-2 stratification falsifier on a...
 740 [NOT STARTED] — Restate three KTypeSummary declarations over Finite...
 
@@ -168,7 +168,7 @@ SCOPE. One new probe file plus the append-only wiring line. Do NOT edit the land
 ---
 
 ### 738. Pin complexity class divergence sanity ceiling
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Topic**: decidability
 - **Dependencies**: None
@@ -680,15 +680,15 @@ ADJACENCY. The sliced finite-width question of the sliced-class incompleteness c
 - **Topic**: decidability
 - **Dependencies**: None
 
-**Description**: OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK. This task stays unscheduled: status not_started, dependencies [], nothing depends on it. What has changed since it was filed is the claim that "none of the L-plus programme's recommendations rest on it." That is no longer accurate. Its 2EXPTIME lower bound -- ARGUED, not formalized -- is the sanity ceiling that three live records cite against any proposed decision procedure for L-plus. It is load-bearing as a check even while unproved.
+**Description**: OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK. This task stays unscheduled: status HOLD (user ruling 2026-10-03; prior_status not_started), dependencies [], nothing depends on it. What has changed since it was filed is the claim that "none of the L-plus programme's recommendations rest on it." That is no longer accurate. Its 2EXPTIME lower bound -- ARGUED, not formalized -- is the sanity ceiling that three live records cite against any proposed decision procedure for L-plus. It is load-bearing as a check even while unproved.
 
-ITS ROLE: THE SANITY CEILING. Three records USE this task's argued lower bound as the bound-sanity check -- nothing cheaper than 2EXPTIME is a credible decision procedure. All three were verified against the tree at the time of this revision:
+ITS ROLE: THE SANITY CEILING. Three records USE this task's argued lower bound as the bound-sanity check -- nothing cheaper than 2EXPTIME is a credible decision procedure. All three were re-verified against the tree on 2026-10-07 (task 738), at their archive locations:
 
-1. specs/718_omega_sequence_decidability_full_lplus/reports/02_ranked-route-analysis.md, the "Complexity sanity check" bullet: "the CTL* 2EXPTIME-hardness reduction (filed, argued in both directions) is the lower bound; determinization-based upper bounds are doubly exponential, which is consistent. Any proposal cheaper than 2EXPTIME is prima facie wrong. No bound committed."
+1. specs/archive/718_omega_sequence_decidability_full_lplus/reports/02_ranked-route-analysis.md (archived), the "Complexity sanity check" bullet at line 258: "the CTL* 2EXPTIME-hardness reduction (filed, argued in both directions) is the lower bound; determinization-based upper bounds are doubly exponential, which is consistent. Any proposal cheaper than 2EXPTIME is prima facie wrong. No bound committed."
 
-2. Task 719's description (ray layer, seam gluing and stab fibre), Deliverable 5: "DO NOT LAND A COMPLEXITY CLAIM; the CTL-star 2EXPTIME lower bound is the sanity check on any proposed bound."
+2. Task 719's description (ray layer, seam gluing and stab fibre; completed and archived at specs/archive/719_ray_layer_seam_gluing_and_stab_fibre, record in specs/archive/state.json -- now provenance rather than a live document), Deliverable 5: "DO NOT LAND A COMPLEXITY CLAIM; the CTL-star 2EXPTIME lower bound is the sanity check on any proposed bound."
 
-3. specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md section 3.1 (L-plus routes forward): "the CTL* 2EXPTIME-hardness argument (task 713, ARGUED) is the lower bound on any proposed procedure; nothing cheaper is credible; no bound is committed here."
+3. specs/archive/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md (archived) section 3.1 (L-plus routes forward), line 147 -- its Section C ruling on this task is at line 183: "the CTL* 2EXPTIME-hardness argument (task 713, ARGUED) is the lower bound on any proposed procedure; nothing cheaper is credible; no bound is committed here."
 
 ARGUED, NOT FORMALIZED -- AND EVERY CITING RECORD MUST SAY SO. The bound is an argument in prose, not a machine-checked theorem. No Lean declaration establishes it; there is no CTL-star syntax or semantics in the tree to state it against. Every record that cites it must describe it that way, with the ARGUED qualifier attached, exactly as the three records above do. A citation that presents the bound as established, or that drops the qualifier, is a defect in that record.
 
@@ -698,11 +698,13 @@ GOAL. Raise the 2EXPTIME-hardness of L-plus Z-time validity from ARGUED to MACHI
 
 THE REDUCTION. Translate CTL-star by A |-> stab and X |-> bottom U ., with non-strict U rendered as e or (g and (g U e)). FORWARD: a rooted total Kripke structure becomes bi-serial by adding one fresh state with a self-loop and an edge to the root, which leaves forward paths from the original states unchanged; stab at (sigma, t) with sigma t = w ranges over histories through w, whose futures are exactly the forward paths from w, and the translation is pure-future so its truth depends only on the future (truth_congr_agreeFrom). BACKWARD: from a Z-model of the translation at (sigma, t), the Kripke structure of the state graph forward-reachable from sigma t satisfies the CTL-star formula at sigma t, by the same two facts read backwards. CTL-star satisfiability is over arbitrary, possibly infinite structures, so no finiteness is needed anywhere.
 
-WHAT IT WOULD BUY. Formalization would turn the ceiling from an argued check into a theorem-backed one: the sharpest available limit on how good ANY certificate class can be. As task 706's Q4 and the archived 703 round-2 section 1.6 record the consequence, with the reduction a theorem no complete certificate class with singly exponential, polynomially checkable certificates could exist for full L-plus without a complexity-theoretic surprise. CAVEAT ON THAT CONSEQUENCE: the two source records state the surprise with different containment classes (this task's filing wrote co-NEXPTIME; the archived 703 round-2 section 1.6 writes NEXPTIME), and this revision does not adjudicate between them. Any write-up must check the wording against both sources before repeating it, and must not restate the consequence as an upper bound on L-plus.
+WHAT IT WOULD BUY. Formalization would turn the ceiling from an argued check into a theorem-backed one: the sharpest available limit on how good ANY certificate class can be. As task 706's Q4 and the archived 703 round-2 section 1.6 record the consequence, with the reduction a theorem no complete certificate class with singly exponential, polynomially checkable certificates could exist for full L-plus without a complexity-theoretic surprise.
+
+CANONICAL WORDING OF THE CONSEQUENCE (quote this, verbatim, in any record that repeats it). L-plus Z-time validity -- equivalently, by negation, L-plus Z-time satisfiability -- is 2EXPTIME-hard by the CTL-star reduction. ARGUED, NOT FORMALIZED: no Lean declaration establishes it. CONSEQUENCE, stated for NON-VALIDITY: if every non-valid formula had a certificate of size singly exponential in the closure size, checkable in time polynomial in the certificate's size, then non-validity (satisfiability of the negation) would be in NEXPTIME and, equivalently, validity would be in co-NEXPTIME; hence 2EXPTIME would be contained in NEXPTIME, equivalently in co-NEXPTIME, since 2EXPTIME is closed under complement. That containment is not refuted but is widely disbelieved. The two class names are the same statement read from opposite sides of the complement: a record may name either, but must say which problem it is placing (NON-VALIDITY with NEXPTIME; VALIDITY with co-NEXPTIME). This is a LOWER bound used as a ceiling: nothing cheaper than 2EXPTIME is credible. It says nothing about any cost sufficing for L-plus and must never be restated as an upper bound. Sources: 706 Q4 (validity / co-NEXPTIME reading) and 703 round-2 section 1.6 (satisfiability / NEXPTIME reading), reconciled 2026-10-07 (task 738): the apparent divergence was one of presentation, not content.
 
 WHAT IT COSTS. A CTL-star syntax and semantics must be added to the tree, which is substantial standalone work the programme otherwise has no need for. Task 706 rates the risk that the reduction has a gap as LOW (its R4) and records it as affecting the complexity picture only.
 
-KEEP-OR-ABANDON IS A PHASE 0 USER RULING, NOT MADE HERE. This revision records the task's role; it does not decide the task's fate and does not schedule it. The decidability-programme review's Section C (specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md) restates the choice as the user's: keep this as a write-up note, or abandon it. RECOMMENDATION ONLY, not a decision: keep it as a write-up note, because it is load-bearing as a check even while unproved -- abandoning the record would leave the three citing documents pointing at nothing. If the ruling is to abandon, the three citing records need their sanity-check bullets re-sourced to the argument's actual homes (706's Q4 and the archived 703 round-2 section 1.6) rather than to this task.
+KEEP-OR-ABANDON IS A PHASE 0 USER RULING, NOT MADE HERE. This revision records the task's role; it does not decide the task's fate and does not schedule it. The decidability-programme review's Section C (specs/archive/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md, Section C at line 220) restates the choice as the user's: keep this as a write-up note, or abandon it. RECOMMENDATION ONLY, not a decision: keep it as a write-up note, because it is load-bearing as a check even while unproved -- abandoning the record would leave the three citing documents pointing at nothing. If the ruling is to abandon, the three citing records need their sanity-check bullets re-sourced to the argument's actual homes (706's Q4 and the archived 703 round-2 section 1.6) rather than to this task.
 
 ---
 

@@ -1,25 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/738_pin_complexity_class_divergence_sanity_ceiling/plans/01_pin-complexity-class-divergence.md",
-      "summary": "Three-phase plan: one state-write.sh rewrite of 713's description/hold_reason (reconciliation ruling, canonical wording, four archive paths, closed sub-item; held_at preserved), ARGUED qualifier at three FormalSystem READMEs, and an upper-bound/archive/hold/Lean output audit."
-    }
-  ],
-  "next_steps": "Run /implement 738 to execute the plan",
+  "status": "in_progress",
+  "dispatch_seq": 6,
   "metadata": {
-    "session_id": "sess_1791440411_b47663_738",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 2,
-    "dependency_waves": [[1, 2], [3]]
-  },
-  "memory_candidates": [],
-  "modified_files": [
-    "specs/738_pin_complexity_class_divergence_sanity_ceiling/plans/01_pin-complexity-class-divergence.md"
-  ],
-  "dispatch_seq": 5
+    "session_id": "sess_1791440411_b47663",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
