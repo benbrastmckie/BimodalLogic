@@ -1552,7 +1552,7 @@
         {
           "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
           "type": "summary",
-          "summary": "Phases 1-8 of 10: B3a, B1, B2a (both halves), B3b (i)-(iii) with hitOf/mem_hitOf_iff, and the Phase 8 B2b verdict probe quasistate-does-not-determine-hit (equal quasistates and pair relations, different Hit), wired and green."
+          "summary": "Phases 1-9 of 10: B3a, B1, B2a (both halves), B3b (i)-(iii) with hitOf/mem_hitOf_iff, the Phase 8 B2b verdict probe, and the Phase 9 per-model bridge under Presented with the permanent computability-witness module."
         }
       ],
       "next_artifact_number": 2
