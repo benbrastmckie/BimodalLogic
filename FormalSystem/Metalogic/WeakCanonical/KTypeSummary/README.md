@@ -52,7 +52,7 @@ closes the step they did not cover: saturation.
 | `Family.lean` | 238 | Steps 3-4: `SegmentFactorization` (the bi-infinite family datum, with the middle segment's type), `exists_zFactorization` (the Ramsey cover, `Nat.exists_strictMono_const_pair_colour` applied once per orientation), `InFamily`, `family_cover` and the unbundled `exists_matching_factorization`. |
 | `Saturation.lean` | 148 | Step 5a: `kTypeColouring_eq_of_matching_segments` (matched segment types give equal coloured index orders), the headline `kEquiv_zFiber_of_matching_segments` (matched segment types give `≡ₖ` blocks, by the segment-sum lemma on each side and the mixing lemma), and `kTypeOf_zFiber_eq_of_sameTriple`/`kTypeOf_zFiber_eq_of_inFamily` (the block `k`-type is a function of the family triple). |
 | `Segment.lean` | 108 | Step 3′: the segment carrier `segZ` (the half-open coloured segment `[a, b)` of `ℤ`) and `kEquiv_zFiber_segSum` — a coloured `ℤ`-block is `≡ₖ` the `ℤ`-indexed sum of its segments under any monotone covering cutting sequence. |
-| `Universal.lean` | 161 | Step 5b: `DeterminedByKType` (a target determined by the block's `k`-type) with its non-vacuity witness `determinedByKType_nfEval` and its sentence-level generalisation `determinedByKType_eval` (any depth-`≤ k` sentence target, via `doets_lemma_1_1`), saturation proper `family_saturation` (each family inside or disjoint from the target), `finite_family_triples`, and `target_eq_union_of_families` (a `k`-type-determined target is the union of the families it contains). Not a decidability result; not about `⊡`. |
+| `Universal.lean` | 162 | Step 5b: `DeterminedByKType` (a target determined by the block's `k`-type) with its non-vacuity witness `determinedByKType_nfEval` and its sentence-level generalisation `determinedByKType_eval` (any depth-`≤ k` sentence target, via `doets_lemma_1_1`), saturation proper `family_saturation` (each family inside or disjoint from the target), `finite_family_triples`, and `target_eq_union_of_families` (a `k`-type-determined target is the union of the families it contains). Not a decidability result; not about `⊡`. |
 
 ## Evidence
 
@@ -78,20 +78,25 @@ scope by design.
 ## The consumer relation
 
 The substrate is **built here and consumed downstream, never absorbed into the consuming
-record**. Its consumer is the decidability side's seam interface, which connects
-`plusStab_iff_omega` to the family triple of a coloured block against an abstract realization
-hypothesis; assembling a decidable `⊡` check on the path-space presentation is that consumer's
-work, not this cluster's. Headline axiom profiles are pinned in
-`Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`.
+record**. Its consumer is the decidability side's seam interface
+(`Decidability/RaySummary/`), which connects `plusStab_iff_omega` to the family triples of the
+two-letter trace: the single-family bundle `Presents` is characterized as seam decidedness, and
+the hypothesis-free bridge `plusStab_iff_forall_hit` is a theorem over the realized set `Hit`;
+computing `Hit` and assembling a decidable `⊡` check on the path-space presentation is that
+consumer's work, not this cluster's. Headline axiom profiles are pinned in
+`Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` (sixteen rows).
 
 ## What this cluster does not give you
 
 - **No decidability result and no complexity bound.** Saturation (`family_saturation`) and the
   finite-family cover (`target_eq_union_of_families`) are proved for targets determined by the
   block's `k`-type — `DeterminedByKType`, whose exhibited instances are the depth-`k` normal
-  forms (`determinedByKType_nfEval`). Getting from a `⊡` fibre condition to such a target is the
-  MSO-to-ω-regular correspondence, unformalized in every proof assistant (cslib has zero MSO);
-  the seam interface carries it as a hypothesis field and discharges nothing. "Finite union of
+  forms (`determinedByKType_nfEval`) and, through Doets's Lemma 1.1, every depth-`≤ k` sentence
+  (`determinedByKType_eval`). Getting from a `⊡` fibre condition to such a target is the seam
+  interface's business (`Decidability/RaySummary/`): its single-family bundle `Presents` turns
+  out to be seam decidedness (`exists_presents_iff`), its hypothesis-free bridge
+  `plusStab_iff_forall_hit` reduces `⊡φ` to a finite conjunction over the realized family
+  triples `Hit`, and `Hit` is the residue — not computed anywhere. "Finite union of
   families" is a finiteness statement (`finite_family_triples`), not a cardinality bound, and
   the CTL⋆ 2EXPTIME lower bound is a sanity ceiling only, never a source of an upper bound.
 - **No device discrimination on the probed shapes.** `⊡(Fp)`/`⊡(Pp)` are device-inert on finite
@@ -103,9 +108,11 @@ work, not this cluster's. Headline axiom profiles are pinned in
    (`specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean`), not
    re-proved here; no backward Bool-fixture bridge exists.
 2. The identification of this chain with the Ramsey core of Büchi complementation was raised
-   from a framing to a proof-level reading of cslib's `IsRegular.compl` proof body; the further
-   claim that MSO-over-`⟨ℤ,<⟩` *reduces* to it remains Medium-confidence and is not used by any
-   theorem here.
+   from a framing to a proof-level reading of cslib's `IsRegular.compl` proof body. The further
+   question — whether MSO-over-`⟨ℤ,<⟩` *reduces* to it — is sharpened by the seam interface:
+   this cluster supplies the complementation half in full (the seam bridge
+   `plusStab_iff_forall_hit` needs no hypothesis), and the realizability half — computing the
+   realized triples `Hit` — is the residue. No theorem here depends on that question.
 
 ## Recorded follow-up
 

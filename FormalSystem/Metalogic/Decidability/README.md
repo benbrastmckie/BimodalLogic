@@ -59,7 +59,7 @@ here, in `TraceCertificate.lean`.
 | `PlusSlicedCertificate.lean` | Re-export for the PlusSlicedCertificate subdirectory | Sorry-free |
 | `PlusSlicedCertificate/` | The **time-sliced** L⁺ certificate: a bi-serial labelled graph presenting a frame on the infinite carrier `ℤ × Fin n` with finite fibres, replacing all-threads fulfilment with fulfilment of computed live positions. Soundness, relative completeness and the embedding of the landed `Formula`-side family are proved; the finite-carrier finite model property is refuted and the sliced one is open (25 files). See [PlusSlicedCertificate README](PlusSlicedCertificate/README.md) | Sorry-free |
 | `RaySummary.lean` | Re-export for the RaySummary subdirectory | Sorry-free |
-| `RaySummary/` | The seam interface for `⊡` over the time axis: `SeamSummary`, the four-field hypothesis bundle `Presents` (its `colours` field is the unformalized MSO reduction, stated as a hypothesis), and the bridge `plusStab_iff_seamSummary` connecting `PlusLanguage.plusStab_iff_omega` to the `k`-type summary substrate in `WeakCanonical/KTypeSummary/`. Discharges nothing; no decision procedure, no decidability result, no complexity bound (1 file). See [RaySummary README](RaySummary/README.md) | Sorry-free |
+| `RaySummary/` | The seam interface for `⊡` over the time axis. `Seam.lean`: `SeamSummary`, the four-field hypothesis bundle `Presents`, and the bridge `plusStab_iff_seamSummary` connecting `PlusLanguage.plusStab_iff_omega` to the `k`-type summary substrate in `WeakCanonical/KTypeSummary/`. `SeamMulti.lean`: the characterization `exists_presents_iff` (the single-family bundle is inhabited iff the seam is `⊡`-decided — a seam condition, not the MSO reduction), the two-letter trace interface, the realized set `Hit`, the hypothesis-free bridge `plusStab_iff_forall_hit`, and the inhabited multi-family bundle `PresentsMulti`. `Hit` is not computed; no decision procedure, no decidability result, no complexity bound (2 files). See [RaySummary README](RaySummary/README.md) | Sorry-free |
 | `Verified/` | Correctness theory for the tableau engine — termination bounds and the model-construction bridge; all files imported by the aggregator. See [Verified README](Verified/README.md) (21 files) | Sorry-free |
 | `Propositional/` | Self-contained Kalmár-style propositional decision procedure, independent of the modal/temporal/completeness machinery; all files imported by the aggregator. See [Propositional README](Propositional/README.md) (3 files) | Sorry-free |
 
@@ -181,4 +181,4 @@ same node, not drawn above to avoid a crossing line).
 
 ---
 
-*Last verified: 2026-10-02*
+*Last verified: 2026-10-08*

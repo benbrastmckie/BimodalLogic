@@ -22,22 +22,27 @@ statement about `⊡` is made.
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `Seam.lean` | 158 | `SeamSummary` (a family triple plus a `Bool` verdict), the four-field hypothesis bundle `Presents` (`colours` — the unformalized MSO reduction, stated as a hypothesis; `determined`; `realized` — joint realization through the seam; `verdict`), and the bridge `plusStab_iff_seamSummary`: under `Presents`, `⊡φ` holds at the seam iff the verdict is `true`. |
+| `Seam.lean` | 165 | `SeamSummary` (a family triple plus a `Bool` verdict), the four-field hypothesis bundle `Presents` (`colours`; `determined`; `realized` — joint realization through the seam; `verdict`), and the bridge `plusStab_iff_seamSummary`: under `Presents`, `⊡φ` holds at the seam iff the verdict is `true`. The bundle's declarations are pinned and unchanged; what `colours` says is characterized in `SeamMulti.lean`. |
+| `SeamMulti.lean` | 344 | The characterization `exists_presents_iff` (`SeamDecided`): the single-family bundle is inhabited iff the seam is `⊡`-decided — so `Presents.colours` is a seam condition, not the MSO reduction. The two-letter interface (`twoLetter`, `seamTrace`, `nowPhi`, `stabTarget`, `stabTarget_determined` from `determinedByKType_eval`), the realized set `Hit` (finite: `hit_finite`), the hypothesis-free bridge `plusStab_iff_forall_hit`, and the multi-family bundle `PresentsMulti` with its bridge `plusStab_iff_presentsMulti` and its inhabitant `presentsMulti_seamTrace` (whose `Bool` is classical). |
 
 ## What it does not do
 
-- **It discharges nothing.** `Presents.colours` is the MSO-to-ω-regular reduction, which has no
-  formalization in any proof assistant (cslib has zero MSO); the confidence that the
-  MSO-over-`⟨ℤ,<⟩` route reduces to the substrate is **Medium**. The bridge is a statement *about*
-  any summary that presents a seam, not a construction of one.
-- **No decision procedure, no decidability result, no complexity bound.** Assembling a decidable
-  `⊡` check on the path-space presentation — producing a `SeamSummary` and discharging `Presents`
-  for a concrete frame — is the consumer's work. The CTL⋆ 2EXPTIME lower bound is a sanity
-  ceiling only.
-- **One family per summary.** `Presents.colours` asserts every ray pair through the seam is
-  summarised by a block of one family. A seam whose ray pairs spread over several families is
-  summarised by finitely many triples (`finite_family_triples`, `target_eq_union_of_families` in
-  the substrate); generalising the bundle to that shape is the consumer's option.
+- **It does not compute `Hit`.** The hypothesis-free bridge `plusStab_iff_forall_hit` reduces
+  `⊡φ` at a seam to a finite conjunction over the realized family triples `Hit`, but `Hit` is a
+  semantic set that nothing in this tree computes, and `presentsMulti_seamTrace`'s verdict is
+  `decide (⊡φ)` under `open Classical` — it carries the answer, it does not find it. The
+  single-family bundle `Presents` is not a reduction at all: it is inhabited iff the seam is
+  `⊡`-decided (`exists_presents_iff`), and a regular `ℤ`-frame seam with no inhabitant for any
+  parameters is exhibited in the wired probe
+  `specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean`.
+- **No decision procedure, no decidability result, no complexity bound.** Computing `Hit` — the
+  realizability direction (HWZ 2000, Definition 12 / Theorem 14, with the one-sided-liveness
+  repair) together with effective `k`-type composition — and then assembling a decidable `⊡`
+  check on the path-space presentation is downstream work. The CTL⋆ 2EXPTIME lower bound is a
+  sanity ceiling only.
+- **Two letters, not the closure.** The trace alphabet is `{now, φ}` for a single `φ`; widening
+  it to a subformula-closure signature with local run conditions is a successor record's
+  business, not done here.
 
 ## Evidence
 
@@ -45,16 +50,22 @@ The substrate this interface sits on is exercised by two wired evidence probes
 (`specs/evidence/seam-gluing-ray-product/ktype-summary-substrate-probe.lean` and
 `specs/evidence/seam-gluing-ray-product/stab-depth-two-probe.lean`; see the
 [`KTypeSummary/` README](../../WeakCanonical/KTypeSummary/README.md) for what each establishes).
-Neither inhabits `Presents`: the substrate probe cites `plusStab_iff_seamSummary` and says in its
-header that producing a seam summary for a concrete frame is the consumer's assembly work, and the
-E2 probe is about stratification depth, not about this interface.
+Neither inhabits `Presents`. A third wired probe,
+`specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean`, holds the
+obstruction in place: on the E2 fixture (transcribed) the seam `(stayA c t, t)` is undecided on
+`Fp` (`seam_undecided`), so no `Presents` inhabitant exists there for any `sig`, `k`, `T`, `S`
+(`no_presents_on_fixture`, by the library's `seamDecided_of_presents`). It cites
+`exists_presents_iff`, `plusStab_iff_forall_hit` and `presentsMulti_seamTrace` and re-proves
+none of them.
 
 ## The consumer relation
 
 The substrate is **built in `KTypeSummary/` and consumed downstream, never absorbed into the
 consuming record**; this directory is the first consumer-facing statement, and the assembly of a
-decidable check is the next. Headline axiom profiles, including `plusStab_iff_seamSummary`'s, are
-pinned in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`.
+decidable check is the next. Headline axiom profiles — `plusStab_iff_seamSummary`, `exists_presents_iff`,
+`plusStab_iff_forall_hit`, `plusStab_iff_presentsMulti`, `presentsMulti_seamTrace` — are pinned
+in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, and `plusStab_iff_forall_hit` is
+additionally pinned by C14 for its row in `docs/theorem-index.md`.
 
 ## Two carried limits
 
@@ -62,9 +73,11 @@ pinned in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`.
    (`specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean`), not
    re-proved here; no backward Bool-fixture bridge exists.
 2. The identification of the substrate's chain with the Ramsey core of Büchi complementation is
-   a proof-level reading of cslib's `IsRegular.compl`; the further claim that MSO-over-`⟨ℤ,<⟩`
-   *reduces* to it is Medium-confidence and is exactly what `Presents.colours` leaves as a
-   hypothesis.
+   a proof-level reading of cslib's `IsRegular.compl`. The further question — whether
+   MSO-over-`⟨ℤ,<⟩` *reduces* to it — is now sharpened rather than left at a confidence level:
+   the substrate supplies the complementation half in full (`plusStab_iff_forall_hit` needs no
+   hypothesis), and the realizability half — computing `Hit` — is what remains. The exhibited
+   undecided seam is forward-only (`Fp`); limit 1 is unchanged.
 
 ## Dependencies
 
