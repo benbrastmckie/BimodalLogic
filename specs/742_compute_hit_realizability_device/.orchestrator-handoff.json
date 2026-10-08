@@ -1,29 +1,29 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 5 (B2a (ii)) complete and committed (bd9af555e): Trace.lean lands the uniqueness half of HWZ 2000 Thm 14 ⇒ — letter_iff_of_localRun_anchored (every closure letter of an anchored local run reads PlusTruthAt along its history, by structural induction on the closure formula with the membership proof generalised), eq_clTrace_of_localRun_anchored (Challenge signature verbatim: c = clTrace M φ t σ) and the ∃! packaging clTrace_unique; scoped build green on the first attempt (1926 jobs, 0 errors, 0 warnings), sorry census --cross-check 0/0 MATCH, all three new theorems on [propext, Classical.choice, Quot.sound], axiom count 14 unchanged, 84 lines added (module 249). RaySummary.lean untouched per the plan (Phase 6 owns it). Phases 6-10 not started (single-phase dispatch).",
+  "summary": "Phase 6 (B3b (ii)) complete and committed (0286536d3): new module RaySummary/Present.lean (684 lines; split out of Compose.lean per the plan's own ~900-line rule) lands finite labelled presentations (IsRun, runTrace with a DecidablePred instance, pathLabels, the inductive StepPath with its list reading stepPath_iff), the representative-carrying path-type closure (PathEntry, closureStep, the early-stopping closureIter proved equal to the Nat.iterate, the arithmetic closureBound, pathClosure) with pathTypes / pathTypesNow and their membership characterizations mem_pathTypes_iff / mem_pathTypesNow_iff (soundness by induction on the iterate, completeness by induction on StepPath through kTypeOf_listSeg_append_congr, stationarity by the generic iterate_stabilizes), and liveness as a greatest fixpoint (live, live_iff) instantiated to fwdLive / bwdLive with fwdLive_iff / bwdLive_iff in the plan's statement. Aggregator and FormalSystem.lean import Compose and Present (Compose's root import had been missing since Phase 4). Scoped build green (1929 jobs, 0 errors, 0 warnings), sorry census --cross-check 0/0 MATCH, all 13 new theorems on [propext, Classical.choice, Quot.sound], axiom count 14 unchanged, depth-1 two-state #eval witnesses run in ~7 s. Phases 7-10 not started (single-phase dispatch).",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Phases 1-5 of 10: computable k-type (B3a), closure alphabet with run conditions, anchors and generic bridge (B1), B2a complete in both halves (the trace is the unique anchored local run), and label-list segments with composition on representatives (B3b (i))."
+      "summary": "Phases 1-6 of 10: computable k-type (B3a), closure alphabet with run conditions, anchors and generic bridge (B1), B2a complete in both halves, label-list segments with composition on representatives (B3b (i)), and finite labelled presentations with the computable path-type closure and liveness (B3b (ii))."
     },
     {
       "type": "handoff",
-      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-5-handoff-20261008T102022Z.md",
-      "summary": "Phase 5 handoff: next action is Phase 6 (Compose.lean + RaySummary.lean, finite labelled presentations and the path-type closure); Phase 8 admissible; Phase 9 unblocked on its Phase 5 side."
+      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-6-handoff-20261008T104811Z.md",
+      "summary": "Phase 6 handoff: next action is Phase 7 (hitOf and mem_hitOf_iff in Present.lean, not Compose.lean); Phase 8 admissible; Phase 9 waits on Phase 7."
     }
   ],
-  "phases_completed": 5,
+  "phases_completed": 6,
   "phases_total": 10,
-  "dispatch_seq": 7,
+  "dispatch_seq": 8,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-5-handoff-20261008T102022Z.md",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-6-handoff-20261008T104811Z.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 6,
-    "resume_from": "Phase 6 (B3b (ii), Compose.lean + RaySummary.lean: finite labelled presentations and the representative-carrying path-type closure, plus the Compose/Trace aggregator imports); Phase 8 (verdict probe) remains admissible in any wave; Phase 9 waits on Phase 7",
-    "completed_phases": [1, 2, 3, 4, 5]
+    "next_phase": 7,
+    "resume_from": "Phase 7 (B3b (iii)): hitOf and mem_hitOf_iff in RaySummary/Present.lean (the plan's Files to modify says Compose.lean; the presentation definitions were split into Present.lean in Phase 6); Phase 8 (verdict probe) remains admissible in any wave; Phase 9 waits on Phase 7",
+    "completed_phases": [1, 2, 3, 4, 5, 6]
   }
 }

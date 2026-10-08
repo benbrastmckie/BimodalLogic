@@ -4,44 +4,48 @@
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 742,
   "session_id": "sess_1791448118_c50a56",
-  "dispatch_seq": 7,
-  "phase_number": 5,
-  "completed_at": "2026-10-08T10:23:02Z",
-  "summary": "Phase 5 of 10 implemented and committed (bd9af555e): the uniqueness half of B2a (eq_clTrace_of_localRun_anchored, letter_iff_of_localRun_anchored, clTrace_unique) in Trace.lean; scoped build green, sorries 0, axioms standard. Single-phase dispatch: Phases 6-10 remain [NOT STARTED].",
+  "dispatch_seq": 8,
+  "phase_number": 6,
+  "started": "2026-10-08T10:26:20Z",
+  "completed_at": "2026-10-08T10:52:00Z",
+  "summary": "Phase 6 of 10 implemented and committed (0286536d3): finite labelled presentations and the computable path-type closure with liveness, in the new module RaySummary/Present.lean (pathTypes, pathTypesNow, mem_pathTypes_iff, mem_pathTypesNow_iff, fwdLive, bwdLive, fwdLive_iff, bwdLive_iff); scoped build green, sorries 0, axioms standard, #eval witnesses run. Single-phase dispatch: Phases 7-10 remain [NOT STARTED].",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Cumulative summary through Phase 5: B3a, B1, B2a (both halves), B3b (i)."
+      "summary": "Cumulative summary through Phase 6: B3a, B1, B2a (both halves), B3b (i) and (ii)."
     },
     {
       "type": "handoff",
-      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-5-handoff-20261008T102022Z.md",
-      "summary": "Phase 5 handoff with next action (Phase 6), current state, key decisions and empty sorry inventory."
+      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-6-handoff-20261008T104811Z.md",
+      "summary": "Phase 6 handoff with next action (Phase 7 in Present.lean), current state, key decisions and empty sorry inventory."
     }
   ],
-  "phases_completed": 5,
+  "phases_completed": 6,
   "phases_total": 10,
   "handoff_path": "specs/742_compute_hit_realizability_device/.orchestrator-handoff.json",
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
-    "sorry_cross_check": "MATCH (stripper 0, compiler 0; probes/sorry-census-p5.log)",
+    "sorry_cross_check": "MATCH (stripper 0, compiler 0; probes/sorry-census-p6.log)",
     "vacuous_count": 0,
-    "vacuous_note": "one pre-existing repository-wide match (Examples/TemporalStructures.lean, := trivial on a domain := True example), untouched",
+    "vacuous_note": "one pre-existing repository-wide match (Examples/TemporalStructures.lean:495, := trivial on a domain := True example), untouched",
     "axiom_count": 14,
     "axiom_baseline": 14,
     "build_passed": true,
-    "build_evidence": "scoped guarded build of FormalSystem.Metalogic.Decidability.RaySummary.Trace: GUARD_EXIT=0, 1926 jobs, 0 errors, 0 warnings, .olean newer than source (probes/trace-build-p5-1.log); census --cross-check lake build exit 0",
-    "new_theorem_axioms": "letter_iff_of_localRun_anchored, eq_clTrace_of_localRun_anchored, clTrace_unique: [propext, Classical.choice, Quot.sound]",
+    "build_evidence": "scoped guarded build of FormalSystem.Metalogic.Decidability.RaySummary: GUARD_EXIT=0, 1929 jobs, 0 errors, 0 warnings (probes/present-build-p6-3.log; -1 had 4 style warnings, fixed), .olean newer than source for Compose, Present, RaySummary; census --cross-check lake build exit 0 with the FormalSystem root .olean rebuilt after the import edit",
+    "new_theorem_axioms": "mem_pathTypes_iff, mem_pathTypesNow_iff, mem_pathTypes_iff_stepPath, mem_pathTypesNow_iff_stepPath, exists_mem_iterate_of_stepPath, realizes_of_mem_iterate, closureStep_pathClosure, closureIter_eq_iterate, iterate_stabilizes, stepPath_iff, live_iff, fwdLive_iff, bwdLive_iff: [propext, Classical.choice, Quot.sound] (probes/present-axioms-p6.log)",
+    "eval_witnesses": "two-state presentation over twoLetter at depth 1 (probes/present-axioms-p6.lean): pathClosure card 5; pathTypes false false card 1; pathTypesNow false false card 1; pathTypes false true card 0; pathTypesNow false true card 1; fwdLive/bwdLive true/true; fwdLive from the now-reading state false; fwdLive at an unrealized type false",
     "verification_passed": true
   },
   "requires_user_review": false,
   "completion_data": {
-    "completion_summary": "Phase 5 only (single-phase dispatch); task not complete."
+    "completion_summary": "Phase 6 only (single-phase dispatch); task not complete."
   },
   "memory_candidates": [
-    "Uniqueness of a trace against local run conditions over a subformula-closure alphabet: induct on the closure formula with the membership proof generalised (∀ ψ hψ z), so each IH applies at the membership witness the run clause supplies; temporal cases are rw [run clause] + simp only [IHs] + Iff.rfl against the truth clause, no well-founded argument on time.",
-    "The typst-sync pre-commit gate fails on any FormalSystem line-count change, including a lines-added-only edit to an existing module; the remedy is scripts/typst-sync-check.sh --fix and staging typst/generated/status.typ in the same commit."
+    "Computing path k-types of a finite labelled graph: keep ONE representative label list per (src, dst, flag, k-type) key in a Finset closure; the composition congruence on representatives makes the stored representative's recomputed type the type of every path with that key, and stationarity follows from a generic bounded-measure lemma (f^[B] is a fixpoint when a measure ≤ B strictly grows on each non-stationary step) applied to the key-image cardinality.",
+    "Never let an #eval touch Fintype.card (KType sig k) or iterate a closure for that many rounds: at depth 1 it is 2^256; compute the round bound arithmetically from Fintype.card (NormalForm sig k 0) and stop the computable iterate at the first stationary round, proving it equal to the Nat.iterate.",
+    "Liveness on a finite Boolean graph (does q start an infinite chain?) is cheapest as the greatest fixpoint of a pruning step: iterate 'keep states with a successor still in the set' card Q times; the fixpoint is successor-closed (build the chain with choose + Nat.rec) and any chain survives every round — no pigeonhole, no cycle unrolling.",
+    "Instance resolution does not synthesize DecidablePred for a conjunction under a binder (fun x => b = true ∧ x ∉ S) even though fun _ => instDecidableAnd typechecks; name the predicate and give it an instance so Finset.mem_filter resolves."
   ]
 }

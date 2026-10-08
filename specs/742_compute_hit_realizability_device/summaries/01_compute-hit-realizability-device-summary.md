@@ -3,15 +3,15 @@
 - **Task**: 742 - Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T09:10:01Z
-- **Completed**: 2026-10-08T10:25:00Z
-- **Effort**: ~125 minutes across five dispatches (Phases 1-5 of 10; per-phase dispatch, `--hard`)
+- **Completed**: 2026-10-08T10:50:00Z
+- **Effort**: ~150 minutes across six dispatches (Phases 1-6 of 10; per-phase dispatch, `--hard`)
 - **Dependencies**: 737 (complete), 711 (complete)
 - **Artifacts**: plans/01_compute-hit-realizability-device.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Five single-phase dispatches so far. Dispatch 3 implemented Phase 1 (B3a): the compiled research
+Six single-phase dispatches so far. Dispatch 3 implemented Phase 1 (B3a): the compiled research
 probe was transcribed into `KTypeSummary/KTypeFin.lean` — a computable `kTypeOfFin` equal to the
 classical `kTypeOf`, a decidable Tarski `eval`, and explicit computable `segZ` instances.
 Dispatch 4 implemented Phase 2 (B1): `RaySummary/Closure.lean` widens the two-letter trace
@@ -47,13 +47,51 @@ verbatim), through the inductive core `letter_iff_of_localRun_anchored` (every c
 an anchored local run reads `PlusTruthAt` along `σ`, by structural induction on the closure
 formula with the membership proof generalised) and packaged as the `∃!` statement
 `clTrace_unique`. With Phases 3 and 5 together, B2a is complete: the trace map is a bijection
-between the seam's histories and the anchored local runs over `clSig φ`. Nothing about `Hit` is
-computed yet and no model is constructed from a colouring: the presentation half of B3b
-(Phases 6, 7), the B2b verdict probe (Phase 8), the per-model bridge (Phase 9) and the
-documentation pass (Phase 10) remain `[NOT STARTED]`.
+between the seam's histories and the anchored local runs over `clSig φ`. Dispatch 8
+implemented Phase 6 (B3b (ii), the closure half of effective composition), in the new module
+`RaySummary/Present.lean` (split out of `Compose.lean` per the plan's own ~900-line rule): a
+finite labelled presentation is unbundled (`Q` with `[Fintype Q] [DecidableEq Q]`, `lab`,
+`step`, `now`), its runs (`IsRun`) and their decidable traces (`runTrace`) are defined, its
+finite paths are the inductive `StepPath` with the list reading `stepPath_iff`, and the
+representative-carrying closure `pathClosure` computes — by `kTypeOfFin` on one stored label
+list per key, justified by `kTypeOf_listSeg_append_congr` — the finite sets `pathTypes` (the
+`k`-types of the `now`-free paths between two states) and `pathTypesNow` (paths reading `now`
+once), with the membership characterizations `mem_pathTypes_iff` / `mem_pathTypesNow_iff`
+proved sound (induction on the iterate) and complete (induction on `StepPath`, stationarity
+within `closureBound` rounds by the generic `iterate_stabilizes`). Liveness is decided as the
+greatest fixpoint of a pruning step (`live`, `live_iff`), instantiated to `fwdLive`/`bwdLive`
+with `fwdLive_iff`/`bwdLive_iff` in the plan's statement. Everything evaluates: a two-state
+presentation at depth 1 runs in seconds. Still nothing about `Hit` is computed and no model is
+constructed from a colouring: `hitOf` and `mem_hitOf_iff` (Phase 7), the B2b verdict probe
+(Phase 8), the per-model bridge (Phase 9) and the documentation pass (Phase 10) remain
+`[NOT STARTED]`.
 
 ## What Changed
 
+- `FormalSystem/Metalogic/Decidability/RaySummary/Present.lean` — new (684 lines, Phase 6):
+  `iterate_stabilizes`; `IsRun`, `runTrace`, `runTraceDecidablePred`, `pathLabels`,
+  `pathLabels_singleton`, `pathLabels_append`, `StepPath`, `stepPath_iff`; `PathEntry`,
+  `PathEntry.key`, `PathEntry.key_inj`, `PathEntry.instDecidableEq`, `Realizes`, `extendEntry`,
+  `canExtend`, `Extendable` (with its `DecidablePred` instance), `closureStep`, `singleEntry`,
+  `closureInit`, `closureIter`, `closureBound`, `closureBound_eq`, `pathClosure`, `pathTypes`,
+  `pathTypesNow`, `subset_closureStep`, `iterate_closureStep_subset`, `closureIter_eq_iterate`,
+  `closureStep_pathClosure`, `iterate_subset_pathClosure`, `realizes_singleEntry`,
+  `realizes_extendEntry`, `realizes_of_mem_iterate`, `exists_key_mem_closureStep`,
+  `exists_mem_iterate_of_stepPath`, `mem_pathTypes_iff_stepPath`,
+  `mem_pathTypesNow_iff_stepPath`, `mem_pathTypes_iff`, `mem_pathTypesNow_iff`; `pruneStep`,
+  `liveSet`, `live`, `HasChain`, `pruneStep_subset`, `pruneStep_liveSet`,
+  `hasChain_mem_iterate`, `hasChain_of_mem_fixed`, `live_iff`, `fwdLive`, `bwdLive`,
+  `fwdLive_iff`, `bwdLive_iff`. Header: what a presentation is and the two things deliberately
+  not imposed on it (the run conditions, which traces of histories satisfy as a consequence —
+  the recorded decision dropping the research's `dischargeSet` key — and B2b's product/liveness
+  structure); how the closure keeps one representative per key; liveness as a greatest fixpoint;
+  computability; no complexity bound.
+- `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean` — one-line pointer to
+  `Present.lean` (Phase 6); otherwise unchanged.
+- `FormalSystem/Metalogic/Decidability/RaySummary.lean` — imports `Compose` and `Present`
+  (Phase 6) and now lists all six modules (`Closure` and `Trace` were imported but unlisted).
+- `FormalSystem.lean` — library-root imports for `Compose` (omitted by Phase 4 despite its
+  summary line below) and `Present` (Phase 6).
 - `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean` — new (297 lines, Phase 4):
   `listSeg`, `listSeg_interp`, `listSegFintype`, `listSegDecidableEq`, `listSegDecidableLT`,
   `listSegDecidablePred`, `kTypeOfFin_listSeg`, `labels`, `labels_length`, `labels_getElem`,
@@ -90,6 +128,27 @@ documentation pass (Phase 10) remain `[NOT STARTED]`.
 
 ## Decisions
 
+- (Phase 6) One closure serves both read-outs: `PathEntry` carries `hasNow : Bool` as the `now`
+  budget (`canExtend` refuses a second `now`), and `pathTypes`/`pathTypesNow` filter the same
+  `pathClosure` on the flag.
+- (Phase 6) The computable iterate `closureIter` stops at the first stationary round and is
+  proved equal to the `Nat.iterate` (`closureIter_eq_iterate`), and `closureBound` is computed
+  arithmetically (`closureBound_eq`): `Fintype.card (KType sig k)` would enumerate `2^256`
+  functions at depth 1, and without the early stop the iterate would run that many rounds —
+  with both, the two-state witness runs in seconds.
+- (Phase 6) Stationarity is one generic lemma, `iterate_stabilizes` (a measure bounded by `B`
+  that strictly grows on every non-stationary step forces `f^[B]` to be a fixpoint), used twice:
+  with the key-image cardinality for the closure and with `card Q - S.card` for the pruning step.
+- (Phase 6) Liveness is the greatest fixpoint of `pruneStep` rather than the plan's
+  reachability-plus-cycle criterion: the fixpoint is closed under successors, so a chain is built
+  by `choose` and `Nat.rec` (`hasChain_of_mem_fixed`), and a chain survives every pruning round
+  (`hasChain_mem_iterate`); no pigeonhole and no cycle unrolling. `fwdLive_iff`/`bwdLive_iff`
+  are the plan's statements verbatim.
+- (Phase 6) Instance resolution cannot synthesize `DecidablePred (fun x => b = true ∧ x ∉ S)`
+  although `fun _ => instDecidableAnd` typechecks; the closure's filter predicate is named
+  (`Extendable`) with its own instance so `Finset.mem_filter` resolves.
+- (Phase 6) `List.Chain'` is deprecated at this pin; the list-shaped membership theorems use
+  `List.IsChain` (`List.isChain_append`, `List.isChain_singleton`).
 - (Phase 5) The uniqueness induction is factored into a named core,
   `letter_iff_of_localRun_anchored : ∀ ψ hψ z, c (clLetter φ hψ) z ↔ PlusTruthAt M σ z ψ`, with
   the closure-membership proof generalised so each induction hypothesis applies at whatever
@@ -149,6 +208,21 @@ documentation pass (Phase 10) remain `[NOT STARTED]`.
 
 ## Plan Deviations
 
+- **Task 6.1** altered: the presentation section landed in a new module `Present.lean`
+  (imports `Compose`), per the phase's own Scope Hypothesis rule (merged module measured 932
+  lines, past the ~900 trigger); `Present.lean` added to the plan's Files to modify. Finite
+  paths are the inductive `StepPath` with `stepPath_iff` for the list reading.
+- **Task 6.2** altered: one `PathEntry`-closure with a `hasNow` flag serves `pathTypes` and
+  `pathTypesNow`; `closureIter` stops early (proved equal to the iterate) and `closureBound` is
+  arithmetic (see Decisions).
+- **Task 6.3** altered: completeness by induction on `StepPath` rather than on path length;
+  stationarity via the generic `iterate_stabilizes`; both membership theorems stated in the
+  planned list shape through `stepPath_iff`, with `_stepPath` inductive forms beside them.
+- **Task 6.4** altered: `fwdLive`/`bwdLive` decided as a greatest fixpoint (`live`, `live_iff`)
+  rather than reachability-plus-cycle; the characterizations `fwdLive_iff`/`bwdLive_iff` are the
+  plan's statements verbatim.
+- **Task 6.5** altered: both `Compose` and `Present` imported by the aggregator (and by
+  `FormalSystem.lean`, where Phase 4's `Compose` import was found missing).
 - **Task 5.1** altered: the structural induction is a separate named theorem
   (`letter_iff_of_localRun_anchored`) rather than inlined under `funext` in
   `eq_clTrace_of_localRun_anchored`; the pinned statement, the case analysis and the
@@ -171,7 +245,12 @@ documentation pass (Phase 10) remain `[NOT STARTED]`.
 
 ## Verification
 
-- Build: Success — Phase 5: scoped guarded build of
+- Build: Success — Phase 6: scoped guarded build of
+  `FormalSystem.Metalogic.Decidability.RaySummary` (guard exit 0, `Build completed successfully
+  (1929 jobs)`, 0 errors; `probes/present-build-p6-1.log` had 4 style warnings, fixed;
+  `probes/present-build-p6-3.log` 0 errors, 0 warnings); `.olean` newer than source for
+  `Compose`, `Present`, `RaySummary`. `lean-sorry-census.sh --cross-check` over the resolved
+  source roots: `probes/sorry-census-p6.log`. Phase 5: scoped guarded build of
   `FormalSystem.Metalogic.Decidability.RaySummary.Trace` (guard exit 0, `Build completed
   successfully (1926 jobs)`, 0 errors, 0 warnings, first attempt; `probes/trace-build-p5-1.log`);
   `.olean` newer than source for `Trace`. `lean-sorry-census.sh --cross-check` over the resolved
@@ -190,12 +269,23 @@ documentation pass (Phase 10) remain `[NOT STARTED]`.
   (1926 jobs)`, 0 errors, 0 warnings) and of the library root `FormalSystem` (guard exit 0,
   2831 jobs, 0 errors); `.olean` newer than source for `Closure`, `RaySummary` and
   `FormalSystem`. Logs: `probes/closure-build-3.log`, `probes/closure-build-4-library.log`.
-- Sorry count: 0 (Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
+- Sorry count: 0 (Phase 6: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p6.log`; Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
   sorry; Phase 2: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-phase2.log`).
 - Sorry inventory: None
 - Vacuous count: 0 introduced (the one repository-wide match,
   `Examples/TemporalStructures.lean:495`, predates this task and was not touched).
-- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 5
+- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 6
+  `#print axioms` (`probes/present-axioms-p6.log`): `mem_pathTypes_iff`, `mem_pathTypesNow_iff`,
+  `mem_pathTypes_iff_stepPath`, `mem_pathTypesNow_iff_stepPath`, `exists_mem_iterate_of_stepPath`,
+  `realizes_of_mem_iterate`, `closureStep_pathClosure`, `closureIter_eq_iterate`,
+  `iterate_stabilizes`, `stepPath_iff`, `live_iff`, `fwdLive_iff`, `bwdLive_iff` all exactly
+  `[propext, Classical.choice, Quot.sound]`; `#eval` witnesses (two-state presentation over
+  `twoLetter`, `now := true`, depth 1, whole file ~7 s): `pathClosure` card `5`,
+  `pathTypes false false` card `1`, `pathTypesNow false false` card `1`, `pathTypes false true`
+  card `0`, `pathTypesNow false true` card `1`, `fwdLive`/`bwdLive` of `false` at the type of
+  `[labW false]` → `true`/`true`, `fwdLive` of `true` there → `false`, `fwdLive` of `false` at
+  the type of `[labW true]` → `false`. `pathTypes`, `pathTypesNow`, `fwdLive`, `bwdLive` are
+  `def`s, not `noncomputable`. Phase 5
   `#print axioms` (`probes/trace-axioms-p5.log`): `letter_iff_of_localRun_anchored`,
   `eq_clTrace_of_localRun_anchored`, `clTrace_unique` all exactly
   `[propext, Classical.choice, Quot.sound]`. Phase 4
@@ -224,14 +314,18 @@ documentation pass (Phase 10) remain `[NOT STARTED]`.
   `plusStab_iff_forall_hitOf_of_presented` rewrite.
 - `kTypeOfFin_eq` and `decEval` (Phase 1) are the computability substrate for Phases 4, 6, 7, 9.
 - `listSeg`, `kTypeOf_segZ_eq_listSeg` and `kTypeOf_listSeg_append_congr` (Phase 4) are what
-  Phases 6-7 close a finite set of representative-carrying triples under; `Compose.lean` becomes
-  visible to the library when Phase 6 adds it to `RaySummary.lean`.
+  Phase 6's closure composes representatives under; `Compose.lean` and `Present.lean` are
+  visible to the library through `RaySummary.lean` and `FormalSystem.lean` as of Phase 6.
+- `pathTypesNow`, `fwdLive`, `bwdLive` and their characterizations (Phase 6) are exactly the
+  three conjuncts of Phase 7's `hitOf`; `IsRun`/`runTrace` are the run-side vocabulary of
+  `mem_hitOf_iff` and of Phase 9's `Presented`.
 
 ## Follow-ups
 
-- Phase 6 (B3b (ii), `Compose.lean` + `RaySummary.lean`: finite labelled presentations and the
-  path-type closure) is next; Phase 8 (verdict probe) remains admissible in any wave; Phase 9 is
-  unblocked on its Phase 5 side and waits on Phase 7.
+- Phase 7 (B3b (iii), `Present.lean`: `hitOf` and `mem_hitOf_iff`) is next; Phase 8 (verdict
+  probe) remains admissible in any wave; Phase 9 is unblocked on its Phase 5 side and waits on
+  Phase 7. Note for Phase 7: the plan's Files to modify names `Compose.lean`; the definitions it
+  builds on now live in `Present.lean`.
 - Phase 10 owns the README, theorem-index rows, axiom pins and ROADMAP updates for both modules.
 
 ## References
@@ -247,3 +341,5 @@ documentation pass (Phase 10) remain `[NOT STARTED]`.
 - specs/742_compute_hit_realizability_device/handoffs/phase-3-handoff-20261008T095427Z.md
 - specs/742_compute_hit_realizability_device/handoffs/phase-4-handoff-20261008T101155Z.md
 - specs/742_compute_hit_realizability_device/handoffs/phase-5-handoff-20261008T102022Z.md
+- specs/742_compute_hit_realizability_device/probes/present-axioms-p6.lean
+- specs/742_compute_hit_realizability_device/handoffs/phase-6-handoff-20261008T104811Z.md
