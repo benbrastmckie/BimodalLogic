@@ -1,83 +1,50 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-08T06:21:34Z",
-  "completed_at": "2026-10-08T06:39:15Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/737_discharge_presents_mso_reduction_seam_summary/reports/01_discharge-presents-verdict.md",
-      "summary": "Machine-checked verdict (outcome b): the single-family Presents bundle is inhabited iff the seam is ⊡-decided (for every sig, k), a concrete E2-fixture seam admits no inhabitant, the corrected multi-family trace-encoded shape makes the ⊡ bridge a hypothesis-free theorem over a finite hit set, and the residue (computing Hit: realizability/effective composition, HWZ Thm 14 side) is costed as B1-B4."
+      "type": "plan",
+      "path": "specs/737_discharge_presents_mso_reduction_seam_summary/plans/01_discharge-presents-verdict.md",
+      "summary": "Five-phase, 8-hour plan landing the research verdict (outcome b): determinedByKType_eval in Universal.lean; the characterization exists_presents_iff and the two-letter hypothesis-free bridge plusStab_iff_forall_hit over Hit in a new RaySummary/SeamMulti.lean; the E2 fixture obstruction as a 17th wired evidence probe; five axiom pins, the C14 pair and one theorem-index row; and the record corrections plus the B1-B4 residue in ROADMAP."
     }
   ],
-  "next_steps": "Plan: land the compiled probe into specs/evidence/ wired into check-evidence-probes.sh; correct Seam.lean/README wording; land SeamDecided/exists_presents_iff/PresentsMulti/Hit/plusStab_iff_forall_hit and determinedByKType_eval with axiom pins and a theorem-index row; re-point 735 at Hit; set file_scope from proposed_file_scope.",
-  "metadata": {
-    "session_id": "sess_1791440411_b47663_737",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ],
-    "evidence_tier": "lean_local_search index warming (presence only); all names resolved by direct read and compilation; probe compiled via lake-build-guard env lean, exit 0, axioms pcq x4, sorry 0"
-  },
-  "modified_files": [
-    "specs/737_discharge_presents_mso_reduction_seam_summary/reports/01_discharge-presents-verdict.md",
-    "specs/737_discharge_presents_mso_reduction_seam_summary/probes/presents-is-seam-decidedness.lean",
-    "specs/737_discharge_presents_mso_reduction_seam_summary/probes/presents-is-seam-decidedness.compile.log",
-    "specs/737_discharge_presents_mso_reduction_seam_summary/.return-meta.json"
-  ],
+  "next_steps": "Run /implement 737 to execute the plan",
+  "phase_count": 5,
+  "estimated_hours": 8,
+  "dependency_waves": [[1], [2], [3], [4], [5]],
   "proposed_file_scope": [
-    "specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean",
-    "scripts/check-evidence-probes.sh",
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/Seam.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/SeamMulti.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
     "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Universal.lean",
     "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/SeamMulti.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem.lean",
+    "specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean",
+    "scripts/check-evidence-probes.sh",
     "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "scripts/check-module-invariants.sh",
     "docs/theorem-index.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Seam.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/Decidability/README.md",
+    "FormalSystem/Metalogic/Decidability.lean",
     "specs/ROADMAP.md"
+  ],
+  "modified_files": [
+    "specs/737_discharge_presents_mso_reduction_seam_summary/plans/01_discharge-presents-verdict.md"
   ],
   "memory_candidates": [
     {
-      "content": "Before discharging a hypothesis bundle, prove its inhabitation condition (∃ params, Bundle) ↔ ?; a universally-quantified realization field against one fixed summary collapses to 'all witnesses agree' (Presents ↔ ⊡φ ∨ ⊡¬φ).",
+      "content": "Inhabitation check before discharge: a hypothesis bundle whose 'realization' field quantifies over all witnesses against ONE fixed summary (a single family triple with a k-type-determined target) collapses, via saturation, to 'all witnesses agree' -- i.e. to a semantic decidedness condition on the seam -- so the bundle is inhabited iff the answer is already known, and its bridge restates P <-> P. Before building on any such bundle, state and prove (exists params, Bundle) <-> ? first; the repair is to replace the one triple by the finite SET of realized triples (Hit), which makes the bridge hypothesis-free and isolates the whole residue in computing that set. Second instance in this tree after Correctness.lean's retired-as-vacuous section; landed as exists_presents_iff / plusStab_iff_forall_hit in RaySummary/SeamMulti.lean.",
       "category": "PATTERN",
-      "source_artifact": "specs/737_discharge_presents_mso_reduction_seam_summary/reports/01_discharge-presents-verdict.md",
-      "confidence": 0.9,
-      "suggested_keywords": [
-        "hypothesis bundle",
-        "inhabitation",
-        "vacuous interface",
-        "Presents",
-        "seam"
-      ]
-    },
-    {
-      "content": "lake-build-guard.sh build shares results keyed on argv: recompiling an edited single file with `-- env lean <file>` within the window REPLAYs the stale verdict; pass --no-share.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/737_discharge_presents_mso_reduction_seam_summary/reports/01_discharge-presents-verdict.md",
+      "source_artifact": "specs/737_discharge_presents_mso_reduction_seam_summary/plans/01_discharge-presents-verdict.md",
       "confidence": 0.85,
-      "suggested_keywords": [
-        "lake-build-guard",
-        "--no-share",
-        "REPLAY",
-        "env lean"
-      ]
-    },
-    {
-      "content": "Any depth-≤k monadic sentence target is DeterminedByKType via doets_lemma_1_1 after `unfold kTypeOf; congr_fun; simp only [decide_eq_decide]` (9 lines); generalises determinedByKType_nfEval.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/737_discharge_presents_mso_reduction_seam_summary/probes/presents-is-seam-decidedness.lean",
-      "confidence": 0.9,
-      "suggested_keywords": [
-        "DeterminedByKType",
-        "doets_lemma_1_1",
-        "kTypeOf",
-        "k-type"
-      ]
+      "suggested_keywords": ["hypothesis-bundle", "inhabitation", "saturation", "seam", "k-type", "vacuous-interface"]
     }
-  ]
+  ],
+  "metadata": {
+    "session_id": "sess_1791440411_b47663_737",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 3
 }
