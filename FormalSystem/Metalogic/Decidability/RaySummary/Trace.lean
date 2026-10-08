@@ -331,6 +331,41 @@ theorem plusStab_iff_forall_hitOf_of_presented [Fintype Q] [DecidableEq Q]
   rw [plusStab_iff_forall_hitCl M τ t φ k hk, hit_eq_hitOf_of_presented M τ t φ lab step k hk hP]
   exact Iff.rfl
 
+/-- **The `⊡` bridge at run level, under `Presented`**: `⊡φ` at the seam holds iff every run of
+the presentation anchored at `t` carries `φ`'s own letter `clPhi φ` at its `now` state. The
+family machinery is factored out entirely — no `k`-type is evaluated, no `hitOf` is computed —
+because `clPhi φ` is read off the trace at `t` and `Presented` identifies the seam's closure
+traces with the run traces (`plusStab_iff_omega` on the left, `Presented` in both directions,
+the definitional unfoldings of `clTrace` and `runTrace` at `(clPhi φ, t)`).
+
+**Conditional on `Presented`**, and `Presented` is refuted as a completeness carrier: the wired
+probe `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean`
+(`Probe735.not_presented`) shows that on a three-state regular `ℤ`-model (model A) at the seam
+with `φ := Fp` no finite `Q`, `lab`, `step` satisfies it. On such a model this statement is
+therefore vacuous — it decides nothing there — and nothing here is a decision procedure for
+`⊡` on any model in the tree. The liveness decider over the right-hand side lives in
+`StabCheck.lean`.
+
+Paper: — (the formalization's own device; the run-level reading has no paper counterpart) -/
+theorem plusStab_iff_forall_run_of_presented (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula)
+    (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool)
+    (hP : Presented M τ t φ lab step) :
+    PlusTruthAt M τ t (.stab φ) ↔
+      ∀ ρ : ℤ → Q, IsRun lab step (clNow φ) t ρ → lab (ρ t) (clPhi φ) = true := by
+  rw [plusStab_iff_omega]
+  constructor
+  · intro h ρ hρ
+    obtain ⟨bf, hc⟩ := (hP (runTrace lab ρ)).mpr ⟨ρ, hρ, rfl⟩
+    have h2 : clTrace M φ t (spliced τ t bf) (clPhi φ) t := h bf
+    rw [← hc] at h2
+    exact h2
+  · intro h bf
+    obtain ⟨ρ, hρ, hc⟩ := (hP (clTrace M φ t (spliced τ t bf))).mp ⟨bf, rfl⟩
+    have h2 : runTrace lab ρ (clPhi φ) t := h ρ hρ
+    rw [← hc] at h2
+    exact h2
+
 end Presented
 
 end FormalSystem.Metalogic.Decidability.RaySummary

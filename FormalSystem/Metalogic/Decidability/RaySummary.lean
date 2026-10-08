@@ -11,6 +11,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Trace
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
+import FormalSystem.Metalogic.Decidability.RaySummary.StabCheck
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -32,6 +33,11 @@ a presentation is a successor record. So `hitOf` is computable on presentations 
 never computed for a model outright; no decision procedure is built, no decidability result is
 proved, no complexity bound is claimed, everything is under `[F.IsRegular]` over the `ℤ` time
 axis, and the cited fixtures are forward-only (no backward Bool-fixture bridge exists).
+A conditional per-seam `⊡` decider exists under `Presented` (`StabCheck`: `stabCheckSig`,
+`stabCheck_iff_of_presented`, `decidableStabOfPresented`), and `Presented` is refuted as a
+completeness carrier by the wired probe `presented-not-complete.lean`
+(`specs/evidence/seam-gluing-ray-product/`), so that decider is vacuous on model A and decides
+nothing about `PlusValidZTime` — see the README's verdict.
 
 ## Modules
 
@@ -58,4 +64,9 @@ axis, and the cited fixtures are forward-only (no backward Bool-fixture bridge e
   through liveness over disjoint segments (`fwdLiveSep`, `bwdLiveSep`; `Present`'s
   `fwdLive`/`bwdLive` are retained but not consumed), and its membership characterization
   against the family triples of the presentation's runs (`mem_hitOf_iff`).
+* `RaySummary.StabCheck` — the `now`-free step graphs (`fwdNowFree`, `bwdNowFree`), the
+  states on anchored runs by liveness (`OnRun`, `onRun_iff_live`), the presentation-level
+  decider of the run-level `⊡` condition (`stabCheckSig`, `stabCheckSig_iff`), and its closure
+  instance under `Presented` (`stabCheck_iff_of_presented`, `decidableStabOfPresented`),
+  vacuous on model A where `Presented` is refuted.
 -/
