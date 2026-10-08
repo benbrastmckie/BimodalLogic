@@ -1,0 +1,37 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/740_ktype_summary_finite_preds_restatement/reports/01_finite-preds-restatement.md",
+      "summary": "All three KTypeSummary headlines can and should be restated over [Finite sig.preds]: scratch-compiled with the project linter set on (zero warnings, axiom profiles unchanged, old pinned forms derivable as instances); fidelity does not bind (the pin was a plan-compliance artifact, finite_family_triples was never pinned, no snapshot exists); zero downstream code edits via Finite.of_fintype; scope is the three files plus README line counts and one Compose.lean comment."
+    }
+  ],
+  "next_steps": "Plan a single implementation phase: restate the three declarations with the Fintype.ofFinite/Classical.decEq preamble, delete the six suppressions and their comment blocks, rewrite the Basic.lean docstring, reword Compose.lean:270's precedent clause, update three README line counts, then run the guarded scoped builds, lean_verify, the module-invariants harness, the evidence-probe collection and the phantom-citation sweep.",
+  "proposed_file_scope": [
+    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Basic.lean",
+    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Family.lean",
+    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Universal.lean",
+    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean"
+  ],
+  "modified_files": [
+    "specs/740_ktype_summary_finite_preds_restatement/reports/01_finite-preds-restatement.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "Mathlib's unusedFintypeInType/unusedDecidableInType linters fire only on theorems and only for Fintype/Decidable* binders absent from the type; a [Finite X] binder is never linted. Restating over [Finite X] with haveI := Fintype.ofFinite X; haveI := Classical.decEq X in the proof is strictly stronger, and every [Fintype]-context caller still elaborates via the priority-900 instance Finite.of_fintype, so such restatements propagate zero consumer edits.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/740_ktype_summary_finite_preds_restatement/reports/01_finite-preds-restatement.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["lean4", "mathlib", "linter", "Finite", "Fintype", "unusedFintypeInType", "statement-fidelity"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791489570_c966ef_740",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
