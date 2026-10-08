@@ -274,30 +274,30 @@ has gone wrong somewhere (most likely in the `now` anchor's direction).
 
 ---
 
-### Phase 3: B2a (i) — the trace is an anchored local run [NOT STARTED]
+### Phase 3: B2a (i) — the trace is an anchored local run [COMPLETED]
 
 **Goal**: Soundness of the closure trace: `clTrace M φ t σ` satisfies every run condition and
 every anchor — HWZ 2000 Thm 14 ⇒, the direction that reads types off a model.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean` (imports `Closure`),
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean` (imports `Closure`),
       header: Thm 14 ⇒ here, Thm 14's uniqueness in Phase 5, Thm 14 ⇐ is B2b and absent; the
       product structure of the fibre (`seamOmegaEquiv`) is why a per-state summary must be a
       product and why B2b is a separate record — fold research Finding 3 (a)-(b) into this header
       and into the RaySummary README's point (d) in Phase 10.
-- [ ] `clTrace_localRun M φ t σ : LocalRun φ (clTrace M φ t σ)` — each clause is `PlusTruthAt`'s
+- [x] `clTrace_localRun M φ t σ : LocalRun φ (clTrace M φ t σ)` — each clause is `PlusTruthAt`'s
       clause by `Iff.rfl` after unfolding `clTrace` (the `untl`/`snce` clauses are strict with the
       guard on the open interval, exactly as `PlusTruth.lean` states them).
-- [ ] `clTrace_anchored M φ t σ : Anchored M φ t (clTrace M φ t σ) σ` — the `now` anchor is
+- [x] `clTrace_anchored M φ t σ : Anchored M φ t (clTrace M φ t σ) σ` — the `now` anchor is
       `Iff.rfl`; `atom`, `box`, `stab` anchors are the corresponding `PlusTruthAt` clauses.
-- [ ] `HitCl M τ t φ k := HitSig (clSig φ) M τ t (clTrace M φ t) k`,
+- [x] `HitCl M τ t φ k := HitSig (clSig φ) M τ t (clTrace M φ t) k`,
       `hitCl_finite`, and `plusStab_iff_forall_hitCl` (instance of Phase 2's generic bridge with
       the two anchors discharged by `clTrace_anchored`).
-- [ ] `hitCl_eq_image : HitCl M τ t φ k = (fun bf => familyTriples (clTrace M φ t (spliced τ t bf))) '' Set.univ`
+- [x] `hitCl_eq_image : HitCl M τ t φ k = (fun bf => familyTriples (clTrace M φ t (spliced τ t bf))) '' Set.univ`
       stated with `familyTriples c := {x | InFamily (clSig φ) k x.1 x.2.1 x.2.2 c}` as a `Set`-valued
       image (`⋃ bf, familyTriples …`) — reading (R1) of the research, a theorem and explicitly NOT
-      a computation (docstring says so: `SeqPair` is not finite).
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.Trace` to `RaySummary.lean`;
+      a computation (docstring says so: `SeqPair` is not finite). *(deviation: altered — landed as `hitCl_eq_iUnion` in the `⋃ bf, familyTriples …` form the item itself parenthesises; the literal `'' Set.univ` image is a set of sets and does not typecheck against `Set (triple)`; generic form `hitSig_eq_iUnion` also landed)*
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.Trace` to `RaySummary.lean`;
       scoped build; axioms; zero sorries.
 
 **Timing**: 2 hours

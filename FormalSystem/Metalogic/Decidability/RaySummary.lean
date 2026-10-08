@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Decidability.RaySummary.Seam
 import FormalSystem.Metalogic.Decidability.RaySummary.SeamMulti
 import FormalSystem.Metalogic.Decidability.RaySummary.Closure
+import FormalSystem.Metalogic.Decidability.RaySummary.Trace
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
