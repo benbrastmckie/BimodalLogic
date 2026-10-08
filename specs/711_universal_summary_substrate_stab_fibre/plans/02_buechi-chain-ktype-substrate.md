@@ -739,7 +739,13 @@ around the fallback.
 
 ---
 
-### Phase 6: Step 5b — saturation proper, and the finite-cover consequence for monadic targets [NOT STARTED]
+### Phase 6: Step 5b — saturation proper, and the finite-cover consequence for monadic targets [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-module-invariants.sh` exits 0 | The single failing check is the pre-existing C9 citation at `scripts/check-phantom-citations.sh:145` (committed in `729dc345f`), outside this task's `file_scope` and untouched by this phase — the identical exclusion Phases 1-5 recorded | Full harness run this dispatch: C1 (build + `BimodalTest`), C28 (0 warnings), INV and every other check PASS; `lean_verify` on `family_saturation`, `target_eq_union_of_families`, `determinedByKType_nfEval` all `[propext, Classical.choice, Quot.sound]`; probes 17/17 |
 
 **Goal**: State and prove saturation in Büchi's own shape — each family is wholly inside or
 wholly disjoint from the target — for targets cut out by a monadic sentence of quantifier depth
@@ -748,7 +754,7 @@ precisely there.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Universal.lean` (imports
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Universal.lean` (imports
       `KTypeSummary.Saturation`; same namespace). Module docstring, **first paragraph**: this
       result is about targets definable by a depth-≤k monadic sentence over the coloured ℤ-block;
       it is **not** a decidability result and **not** a statement about `⊡`; getting from a `⊡`
@@ -756,29 +762,29 @@ precisely there.
       assistant, and this module does not attempt it. Second paragraph: the chain correspondence
       (`buchiFamily_saturation` and `IsRegular.fin_cover_saturates_compl` are the cslib shapes;
       reference only).
-- [ ] Define the target predicate without introducing new logic machinery: a target is
+- [x] Define the target predicate without introducing new logic machinery: a target is
       `T : (sig.preds → ℤ → Prop) → Prop` together with a hypothesis
       `hT : ∀ c c', kTypeOf sig k (zFiber sig c) = kTypeOf sig k (zFiber sig c') → (T c ↔ T c')`
       — "T is determined by the block's k-type". Name it
       `def DeterminedByKType (sig) [..] (k) (T) : Prop`, and prove the one fact that justifies the
       name: any `T` of the form `fun c => NfEvalNf (zFiber sig c) k 0 Fin.elim0 nf` for a normal
       form `nf` at depth `k` is `DeterminedByKType` (unfold `kTypeOf`; `decide_eq_decide`). Keep
-      this second lemma short; it is what makes the abstraction non-vacuous.
-- [ ] `theorem family_saturation (hT : DeterminedByKType sig k T) (τneg τzero τpos) : (∀ c, InFamily sig k τneg τzero τpos c → T c) ∨ (∀ c, InFamily sig k τneg τzero τpos c → ¬ T c)`
+      this second lemma short; it is what makes the abstraction non-vacuous. *(completed — `determinedByKType_nfEval`, 5 proof lines; the Scope Hypothesis's relocation clause was not triggered)*
+- [x] `theorem family_saturation (hT : DeterminedByKType sig k T) (τneg τzero τpos) : (∀ c, InFamily sig k τneg τzero τpos c → T c) ∨ (∀ c, InFamily sig k τneg τzero τpos c → ¬ T c)`
       — the literal "inside or disjoint" form. Proof: by `Classical.em` on whether some member
       satisfies `T`, then `kTypeOf_zFiber_eq_of_inFamily` plus `hT` to propagate.
-- [ ] `theorem target_eq_union_of_families (hT) : ∀ c, T c ↔ ∃ τneg τzero τpos, InFamily sig k τneg τzero τpos c ∧ (∀ c', InFamily sig k τneg τzero τpos c' → T c')`
+- [x] `theorem target_eq_union_of_families (hT) : ∀ c, T c ↔ ∃ τneg τzero τpos, InFamily sig k τneg τzero τpos c ∧ (∀ c', InFamily sig k τneg τzero τpos c' → T c')`
       — the finite-union statement, with finiteness supplied by `kType_finite` (Phase 2) on the
       triple type. State the finiteness as its own named lemma
       `finite_family_triples : Finite (KType sig k × KType sig k × KType sig k)` so the count is
       visible rather than buried. **No cardinality bound and no complexity claim** anywhere in
       this module.
-- [ ] `#print axioms` on the three new theorems; pin `family_saturation` and
+- [x] `#print axioms` on the three new theorems; pin `family_saturation` and
       `target_eq_union_of_families` in the test module, with a section docstring repeating the
       scope disclaimer; append the import; update the cluster README's step-5b row and its
       "what this cluster does not give you" paragraph; `mk_all`; guarded scoped build;
       `bash scripts/check-module-invariants.sh`; commit
-      (`task 711 phase 6: saturation for monadic targets and the finite-family cover`).
+      (`task 711 phase 6: saturation for monadic targets and the finite-family cover`). *(deviation: altered — harness green except the pre-existing C9 named in the Exclusions below; `finite_family_triples` carries the same declaration-scoped `unusedFintypeInType`/`unusedDecidableInType` suppression as `kType_finite`; the plan's `Decidable|complexity|EXPTIME` grep matches only disclaimer prose and `[DecidableEq sig.preds]` instance binders; rollups and `typst/generated/status.typ` regenerated and staged; probes 17/17 PASS. 139 lines, under the 180-260 hypothesised)*
 
 **Timing**: 2 hours
 

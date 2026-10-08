@@ -40,8 +40,8 @@ closes the step they did not cover: saturation.
 | 3 | the family `[u]·[v]^ω`, here bi-infinite `(τneg)^(ω*) · τzero · (τpos)^ω` | `SegmentFactorization`, `InFamily` | `Family.lean` | **landed** (the private `ZFactorization` of `../GroupModel/RamseyFactorization.lean`, renamed, with the middle segment's type `τzero`/`zero_type` added) |
 | 3′ | a word *is* the concatenation of its factors | `kEquiv_zFiber_segSum` | `Segment.lean` | **landed** (moved from `../GroupModel/RamseyFactorization.lean`, made public) |
 | 4 | Ramsey: a monochromatic monotone cutting sequence | `exists_zFactorization`, `family_cover`, `exists_matching_factorization` | `Family.lean` | **landed** (moved, made public; Ramsey applied twice, once per orientation) |
-| 5 | saturation: each family member is inside or disjoint from the target | `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple` (`Saturation.lean`, **landed**: the block `k`-type is a function of the family); `family_saturation` (`Universal.lean`, planned) | `Saturation.lean`, `Universal.lean` | 5a landed; 5b planned |
-| 5′ | a finite saturating cover makes the target a finite union of families | `target_eq_union_of_families` | `Universal.lean` | planned |
+| 5 | saturation: each family member is inside or disjoint from the target | `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple` (`Saturation.lean`: the block `k`-type is a function of the family); `family_saturation` (`Universal.lean`: for `k`-type-determined targets) | `Saturation.lean`, `Universal.lean` | **landed** (5a and 5b) |
+| 5′ | a finite saturating cover makes the target a finite union of families | `finite_family_triples`, `target_eq_union_of_families` | `Universal.lean` | **landed** (for `k`-type-determined targets only) |
 | 6 | conclude decidability | — | — | **out of scope** — the consumer's work |
 
 ## Modules
@@ -52,6 +52,7 @@ closes the step they did not cover: saturation.
 | `Family.lean` | 238 | Steps 3-4: `SegmentFactorization` (the bi-infinite family datum, with the middle segment's type), `exists_zFactorization` (the Ramsey cover, `Nat.exists_strictMono_const_pair_colour` applied once per orientation), `InFamily`, `family_cover` and the unbundled `exists_matching_factorization`. |
 | `Saturation.lean` | 148 | Step 5a: `kTypeColouring_eq_of_matching_segments` (matched segment types give equal coloured index orders), the headline `kEquiv_zFiber_of_matching_segments` (matched segment types give `≡ₖ` blocks, by the segment-sum lemma on each side and the mixing lemma), and `kTypeOf_zFiber_eq_of_sameTriple`/`kTypeOf_zFiber_eq_of_inFamily` (the block `k`-type is a function of the family triple). |
 | `Segment.lean` | 108 | Step 3′: the segment carrier `segZ` (the half-open coloured segment `[a, b)` of `ℤ`) and `kEquiv_zFiber_segSum` — a coloured `ℤ`-block is `≡ₖ` the `ℤ`-indexed sum of its segments under any monotone covering cutting sequence. |
+| `Universal.lean` | 139 | Step 5b: `DeterminedByKType` (a target determined by the block's `k`-type) with its non-vacuity witness `determinedByKType_nfEval`, saturation proper `family_saturation` (each family inside or disjoint from the target), `finite_family_triples`, and `target_eq_union_of_families` (a `k`-type-determined target is the union of the families it contains). Not a decidability result; not about `⊡`. |
 
 ## The consumer relation
 
@@ -64,11 +65,14 @@ work, not this cluster's. Headline axiom profiles are pinned in
 
 ## What this cluster does not give you
 
-- **No decidability result and no complexity bound.** Saturation is proved for targets
-  determined by the block's `k`-type. Getting from a `⊡` fibre condition to such a target is the
+- **No decidability result and no complexity bound.** Saturation (`family_saturation`) and the
+  finite-family cover (`target_eq_union_of_families`) are proved for targets determined by the
+  block's `k`-type — `DeterminedByKType`, whose exhibited instances are the depth-`k` normal
+  forms (`determinedByKType_nfEval`). Getting from a `⊡` fibre condition to such a target is the
   MSO-to-ω-regular correspondence, unformalized in every proof assistant (cslib has zero MSO);
-  the seam interface carries it as a hypothesis field and discharges nothing. The CTL⋆ 2EXPTIME
-  lower bound is a sanity ceiling only, never a source of an upper bound.
+  the seam interface carries it as a hypothesis field and discharges nothing. "Finite union of
+  families" is a finiteness statement (`finite_family_triples`), not a cardinality bound, and
+  the CTL⋆ 2EXPTIME lower bound is a sanity ceiling only, never a source of an upper bound.
 - **No device discrimination on the probed shapes.** `⊡(Fp)`/`⊡(Pp)` are device-inert on finite
   fixtures (machine-checked in the device-selection probe); nothing here claims otherwise.
 

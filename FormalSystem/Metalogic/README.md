@@ -161,7 +161,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 27 | 7,628 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,434 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 43 | 28,965 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 44 | 29,109 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -208,7 +208,7 @@ dominates everything else in the repository:
 | `RealModel/` | 7 | 6,790 |
 | `IntegerModel/` | 6 | 5,625 |
 | `GroupModel/` | 6 | 3,150 |
-| `KTypeSummary/` | 4 | 616 |
+| `KTypeSummary/` | 5 | 755 |
 <!-- END GENERATED -->
 
 `GroupModel/` is where `theorem countermodel_discrete` — the Base-frame discrete branch of

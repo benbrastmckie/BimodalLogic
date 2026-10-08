@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Basic
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Family
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Saturation
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Universal
 
 /-!
 # `KTypeSummary` — Büchi's complementation chain in the monadic `k`-type idiom
@@ -27,6 +28,10 @@ disclaimer — no complexity bound is claimed and no `⊡` condition is reduced 
 * `KTypeSummary.Saturation` — step 5a: matched segment types give `≡ₖ` blocks
   (`kEquiv_zFiber_of_matching_segments`), so the block `k`-type is a function of the family
   (`kTypeOf_zFiber_eq_of_sameTriple`, `kTypeOf_zFiber_eq_of_inFamily`).
+* `KTypeSummary.Universal` — step 5b: saturation proper for `k`-type-determined targets
+  (`DeterminedByKType`, `family_saturation`) and the finite-family cover
+  (`finite_family_triples`, `target_eq_union_of_families`). Not a decidability result and not a
+  statement about `⊡`; see that module's first paragraph.
 
-Later steps of the chain are appended here as their modules land.
+Step 6 of the chain (conclude decidability) is out of scope for this cluster.
 -/

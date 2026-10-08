@@ -488,6 +488,7 @@ import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Basic
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Family
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Saturation
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Universal
 import FormalSystem.Metalogic.WeakCanonical.MixedSum
 import FormalSystem.Metalogic.WeakCanonical.NEquivalence
 import FormalSystem.Metalogic.WeakCanonical.OrderedSum

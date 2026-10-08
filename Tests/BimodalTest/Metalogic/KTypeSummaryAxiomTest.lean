@@ -28,6 +28,7 @@ signal that a profile moved.
 | a block is the sum of its segments | 3′ | `kEquiv_zFiber_segSum` |
 | the Ramsey cover | 4 | `family_cover`, `exists_matching_factorization` |
 | saturation core | 5a | `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple` |
+| saturation proper, finite-family cover | 5b | `family_saturation`, `target_eq_union_of_families` |
 
 Rows for the later steps are appended as their modules land.
 
@@ -110,5 +111,23 @@ Assembly of the segment-sum lemma and the mixing lemma; the `Classical.choice` i
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.WeakCanonical.kTypeOf_zFiber_eq_of_sameTriple
+
+/-! ## Step 5b: saturation for `k`-type-determined targets
+
+These two rows pin saturation **for targets determined by the block's `k`-type** and nothing
+more: no decidability result is measured here because the cluster proves none, and no claim that
+any `⊡` condition is such a target is made anywhere in the tree. The `Classical.choice` is the
+Ramsey cover's.
+-/
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.family_saturation' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.family_saturation
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.target_eq_union_of_families' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.target_eq_union_of_families
 
 end BimodalTest.Metalogic
