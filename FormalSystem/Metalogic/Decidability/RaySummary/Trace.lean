@@ -213,9 +213,9 @@ variable {F : FrameOver intOrder} [F.IsRegular]
 /-- `HitSig` is the union, over the seam's ray pairs, of the family-triple sets of their traces —
 a set-theoretic restatement, not a computation: the index type `SeqPair F s` is not finite. -/
 theorem hitSig_eq_iUnion (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
-    (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ)
     (tr : WorldHistory F.toTaskFrame → sig.preds → ℤ → Prop) (k : ℕ) :
-    HitSig sig M τ t tr k =
+    HitSig sig τ t tr k =
       ⋃ bf : SeqPair F (τ.state t), familyTriples sig k (tr (spliced τ t bf)) :=
   Set.ext fun _ => by simp only [HitSig, familyTriples, Set.mem_setOf_eq, Set.mem_iUnion]
 
@@ -224,11 +224,11 @@ theorem hitSig_eq_iUnion (sig : MonadicSignature) [Fintype sig.preds] [Decidable
 def HitCl (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ)
     (φ : PlusFormula) (k : ℕ) :
     Set (KType (clSig φ) k × KType (clSig φ) k × KType (clSig φ) k) :=
-  HitSig (clSig φ) M τ t (clTrace M φ t) k
+  HitSig (clSig φ) τ t (clTrace M φ t) k
 
 theorem hitCl_finite (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ)
     (φ : PlusFormula) (k : ℕ) : (HitCl M τ t φ k).Finite :=
-  hitSig_finite (clSig φ) M τ t (clTrace M φ t) k
+  hitSig_finite (clSig φ) τ t (clTrace M φ t) k
 
 /-- **The `⊡` bridge over the closure alphabet**: `plusStab_iff_forall_hitSig` at
 `sig := clSig φ`, `now := clNow φ`, `phi := clPhi φ`, `tr := clTrace M φ t`, with the two anchor
@@ -254,7 +254,7 @@ theorem hitCl_eq_iUnion (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTas
     (φ : PlusFormula) (k : ℕ) :
     HitCl M τ t φ k =
       ⋃ bf : SeqPair F (τ.state t), familyTriples (clSig φ) k (clTrace M φ t (spliced τ t bf)) :=
-  hitSig_eq_iUnion (clSig φ) M τ t (clTrace M φ t) k
+  hitSig_eq_iUnion (clSig φ) τ t (clTrace M φ t) k
 
 end HitCl
 
@@ -295,7 +295,9 @@ theorem presented_localRun (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.to
 /-- **Under `Presented`, the realized set IS the computable one**: `HitCl M τ t φ k` equals
 `hitOf lab step (clNow φ) k` as sets, at every depth `k ≥ 1`. Both sides are "some run/ray pair
 whose trace realizes the triple": `mem_hitOf_iff` on the right, `Presented` to move between the
-seam's traces and the presentation's runs. -/
+seam's traces and the presentation's runs.
+
+Paper: — (the formalization's own realizability device; the paper has no counterpart) -/
 theorem hit_eq_hitOf_of_presented [Fintype Q] [DecidableEq Q] (M : TaskModel F.toTaskFrame)
     (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula) (lab : Q → (clSig φ).preds → Bool)
     (step : Q → Q → Bool) (k : ℕ) (hk : 1 ≤ k) (hP : Presented M τ t φ lab step) :

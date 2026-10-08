@@ -25,7 +25,8 @@ admission gate defers the collider each cycle until its sibling goes terminal.
 
 ```bash
 # --- Decidability front (Phases 1-2): run these to exhaustion before anything below ---
-/orchestrate 742,735 --hard --lit     # THE critical path: compute Hit, then assemble
+/orchestrate 735 --hard --lit         # THE critical path: 742 is complete; file the B2b successor
+                                      # (see its bullet) and add it to 735's dependencies first
 /orchestrate 709,740 --hard           # F4 summary step + KTypeSummary housekeeping
 /orchestrate 739,733,734,725 --lit    # evidence probes + one ruling; serialized on the collection
 /orchestrate 716,714,712 --hard       # sliced-certificate defect, label evaluation, closure
@@ -87,10 +88,17 @@ Gabbay–Kurucz–Wolter–Zakharyaschev 2003). Record:
 E2-fixture seam admitting no inhabitant — so `colours` in that shape was a seam condition, not the
 reduction. The corrected interface is landed: `⊛φ` is a hypothesis-free finite conjunction over the
 realized family triples `Hit` (`plusStab_iff_forall_hit`), and `PresentsMulti` is inhabited
-outright. The cluster supplies Büchi's complementation half in full and **nothing** of the
-realizability half. `Hit` is **not computed** — that is the entire residue.
+outright. The cluster supplies Büchi's complementation half in full, and the realizability half is
+now landed **as far as a presentation**: `hitOf` is computable on a finite labelled presentation
+and is exactly the family triples of its runs (`mem_hitOf_iff`), a history's closure trace is the
+unique anchored local run (`clTrace_localRun`, `eq_clTrace_of_localRun_anchored`), and a seam's
+`HitCl` **is** `hitOf` under the explicit realization hypothesis `Presented`
+(`hit_eq_hitOf_of_presented`) — which is discharged for **no** non-trivial model. The residue is
+exactly that discharge: constructing a regular model from a presentation (B2b), the successor
+bullet below. `Hit` is still never computed for a model outright.
 
-**Critical path: 742 → 735.** Everything else in this phase is evidence or fallback.
+**Critical path: 742 → successor (B2b) → 735.** Everything else in this phase is evidence or
+fallback.
 
 **Four constraints that rule work out.** (1) The substrate must work over the **time axis with a
 finite alphabet of per-time summaries, never over states** — forced by
@@ -109,18 +117,46 @@ Bool-fixture bridge**, so a forward-only result must say so rather than implying
 `⊡(Fp)`/`⊡(Pp)` shapes are **device-inert** on finite fixtures, so no record may claim they
 discriminate between devices.
 
-- [ ] Compute `Hit` — the residue between the discharge record and the assembly, in three parts:
-      (B1) widen the two-letter trace alphabet to a subformula-closure signature with local run
-      conditions; (B2) the realizability direction, which family triples are reached by an actual
-      ray pair through the seam (HWZ 2000 Def 12 / Thm 14 with the one-sided-liveness repair);
-      (B3) effective `k`-type composition along the seam, without which no `Bool` is computable.
-      B4, the quantification over models, is the assembly record's frame, not this gap's.
-      `file_scope` MUST be set at plan time (Task 742)
+- [x] Compute `Hit` — landed component by component, under `[F.IsRegular]` over the `ℤ` time
+      axis, zero sorries, every headline pinned in `KTypeSummaryAxiomTest.lean`: (B1) the
+      closure alphabet `clSig` with HWZ 2000 Def 11's local run conditions `LocalRun`, the anchors
+      `Anchored`, and the signature-generic bridge `plusStab_iff_forall_hitSig`
+      (`RaySummary/Closure.lean`); (B2a) the closure trace of a history is the unique anchored
+      local run — `clTrace_localRun`, `clTrace_anchored`, `eq_clTrace_of_localRun_anchored`
+      (`RaySummary/Trace.lean`); (B3a) the computable `kTypeOfFin` equal to the classical
+      `kTypeOf`, `kTypeOfFin_eq` (`KTypeSummary/KTypeFin.lean`); (B3b) composition on
+      representatives `kTypeOf_listSeg_append_congr` (`RaySummary/Compose.lean`), the computable
+      path-type closure `pathTypes`/`pathTypesNow` (`RaySummary/Present.lean`), and the computable
+      realized-triple set `hitOf` with `mem_hitOf_iff` (`RaySummary/HitOf.lean`; it reads
+      liveness over disjoint segments, `fwdLiveSep`/`bwdLiveSep`); and the per-model bridge
+      `hit_eq_hitOf_of_presented` under the explicit hypothesis `Presented`, with the `⊡` bridge
+      restated over `hitOf` (`plusStab_iff_forall_hitOf_of_presented`, which decides nothing).
+      `#eval` witnesses run in `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`. (B2b) is NOT
+      landed and carries a MACHINE-CHECKED verdict instead: the wired probe
+      `quasistate_does_not_determine_hit`
+      (`specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean`) shows
+      per-time quasistates in HWZ's verbatim shape (bare type sets plus the consecutive-type
+      relation) do not determine `Hit`, so any realization must carry joint realization through
+      the seam. Forward-only fixtures; no backward Bool-fixture bridge; no complexity bound
+      (Task 742)
+- [ ] Realize a seam presentation — HWZ 2000 Thm 14 ⇐ for the `⊡` fibre, the B2b successor
+      record: product summaries `BwdSummary × FwdSummary` of the two atom-sequence ray languages
+      (the fibre is a product, `seamOmegaEquiv`, so a per-state summary must be splice-closed),
+      an infinite committed-state slice (a finite step graph on a finite slice realizes limit
+      paths, so deferred eventualities need committed chains), a `Saturation` constructor for
+      sliced frames with finitely many fibre shapes per time (`ofSlicedStep_saturation` is
+      `[Finite W]`-only; est. 300-500 lines, CARRIED from 742's research), and `hit_modelOf` —
+      `Presented (modelOf P) … P`, discharging the hypothesis `hit_eq_hitOf_of_presented` is
+      conditional on. Est. 1,200-2,000 lines, HIGH, CARRIED-UNVERIFIED. 735's soundness depends
+      on it: without a discharged `Presented` the assembly's `Bool` is conditional. Either the
+      construction lands, or a per-sub-obstruction machine-checked verdict does. `file_scope`
+      MUST be set at plan time (successor of Task 742; to be filed)
 - [ ] Assemble the decidable stab check on the ray-product presentation — `Decidable
       (PlusValidZTime φ)`, or a recorded verdict that the presentation cannot deliver it. Its
-      target is `Hit`/`plusStab_iff_forall_hit`, **not** `Presents`; it may not be assembled on an
-      uncomputed `Hit` and presented as unconditional. `file_scope` MUST be set at plan time
-      (Task 735)
+      target is `hitOf`/`plusStab_iff_forall_hitOf_of_presented` under `Presented` (and
+      `Hit`/`plusStab_iff_forall_hit` behind it), **not** `Presents`; it may not be assembled on
+      an undischarged `Presented` and presented as unconditional — it depends on 742 AND on the
+      B2b successor above. `file_scope` MUST be set at plan time (Task 735)
 - [ ] Prove F4, finite width ⇒ eventually periodic, as R1's **summary step**. A Ramsey colour was
       selected, so F4 *is* the device. Any surviving statement must name its restricted fragment
       and say in its docstring why `not_finite_width_fmp` does not refute it (Task 709)
@@ -156,7 +192,8 @@ serialize rather than fail. 742 overlaps `RaySummary/` and `KTypeSummary/` with 
 740 batches with 709 instead.
 
 ```bash
-/orchestrate 742,735 --hard --lit     # the critical path; re-invoke until both terminal
+/orchestrate 735 --hard --lit         # the critical path, after the B2b successor is filed and
+                                      # added to 735's dependencies; 742 is complete
 /orchestrate 709,740 --hard
 /orchestrate 739,733,734,725 --lit    # serialized on the evidence collection
 ```

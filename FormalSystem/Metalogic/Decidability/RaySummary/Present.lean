@@ -230,10 +230,16 @@ end Runs
 /-- **An entry of the path-type closure**: a path from `src` to `dst`, reading `now` iff
 `hasNow`, of `k`-type `ty`, represented by its label list `rep`. -/
 structure PathEntry (sig : MonadicSignature) (Q : Type) (k : ℕ) where
+  /-- The first state of the path. -/
   src : Q
+  /-- The last state of the path. -/
   dst : Q
+  /-- Whether the path reads `now` (exactly once) or not at all. -/
   hasNow : Bool
+  /-- The `k`-type of the path's label list. -/
   ty : KType sig k
+  /-- One representative label list with this key; by the congruence
+  `kTypeOf_listSeg_append_congr`, every path with the same key extends to the same `k`-type. -/
   rep : List (sig.preds → Bool)
 
 namespace PathEntry

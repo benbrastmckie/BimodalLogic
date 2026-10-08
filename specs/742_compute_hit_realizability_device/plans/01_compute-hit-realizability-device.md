@@ -248,7 +248,7 @@ letters so that `plusStab_iff_forall_hit` becomes its two-letter instance.
       `plusStab_iff_omega` + saturation via `family_saturation`; backward: `family_cover`), with
       the two-letter theorem's statement recoverable as the instance `sig := twoLetter`,
       `now := true`, `phi := false`, `tr := seamTrace M φ t` (record this as
-      `hitSig_twoLetter : HitSig twoLetter M τ t (seamTrace M φ t) k = Hit M τ t φ k`, `rfl`).
+      `hitSig_twoLetter : HitSig twoLetter M τ t (seamTrace M φ t) k = Hit M τ t φ k`, `rfl`). *(deviation at Phase 10: altered — `HitSig` no longer takes `M`, which its body never read (the env linter's `unusedArguments`); `HitSig twoLetter τ t (seamTrace M φ t) k = Hit M τ t φ k` is still `rfl`. A strict generalization of the Challenge signature, not a weakening.)*
 - [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.Closure` to
       `FormalSystem/Metalogic/Decidability/RaySummary.lean`; scoped build; axioms; zero sorries.
 
@@ -347,7 +347,7 @@ parts (the two-point instance of `kEquiv_orderedSum_of_kEquiv_colour`).
       `kTypeOf_listSeg_append_congr` from `kEquiv_orderedSum_of_kEquiv_colour` with `I = J = Bool`
       — the colouring hypothesis `KEquiv (colourSig (KType sig k)) k (kTypeColouring …) (kTypeColouring …)`
       is discharged by `rfl`-level equality of the two coloured orders once `h₁`, `h₂` are rewritten
-      in (they are literally the same `kTypeColouring` after rewriting).
+      in (they are literally the same `kTypeColouring` after rewriting). *(deviation at Phase 10: altered — the `[DecidableEq sig.preds]` binder, used by neither the statement nor the proof (the env linter's `unusedArguments`), was dropped; `[Fintype sig.preds]` stays. A strict generalization of the Challenge signature, not a weakening.)*
 - [x] Scoped build (`Compose` is not yet imported by the aggregator — build the module by name);
       axioms; zero sorries. Do NOT touch `RaySummary.lean` in this phase (Phase 3 owns it in this wave).
       *(deviation: altered — the two order isomorphisms are built as `StrictMono.orderIsoOfSurjective`
@@ -719,7 +719,7 @@ permanent `#eval` witnesses that the device is computable.
 
 ---
 
-### Phase 10: Pins, theorem index, READMEs, ROADMAP, and the successor-record description [NOT STARTED]
+### Phase 10: Pins, theorem index, READMEs, ROADMAP, and the successor-record description [COMPLETED]
 
 **Goal**: Make the tree say exactly what landed: axiom pins for every headline, theorem-index rows
 with their C14 baseline, both READMEs rewritten so "`Hit` is not computed" becomes "`hitOf` is
@@ -728,46 +728,73 @@ is the successor's", the ROADMAP residue bullet updated, and the B2b successor r
 verbatim in the implementation summary for filing.
 
 **Tasks**:
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: add `#guard_msgs` + `#print axioms`
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: add `#guard_msgs` + `#print axioms`
       rows (fully qualified names) for `kTypeOfFin_eq`, `kTypeOf_listSeg_append_congr`,
       `plusStab_iff_forall_hitSig`, `clTrace_localRun`, `eq_clTrace_of_localRun_anchored`,
       `mem_hitOf_iff`, `hit_eq_hitOf_of_presented`; extend the "What is pinned" table; rewrite the
       "What this does not pin, and why" paragraph (replace "the realized set `Hit` is not computed
       anywhere" with the honest state: computable `hitOf`, image theorem, `Presented` undischarged
-      for constructed models, B2b successor).
-- [ ] `docs/theorem-index.md`: rows for `hit_eq_hitOf_of_presented`, `mem_hitOf_iff`,
+      for constructed models, B2b successor). *(deviation: altered — ten rows, not seven: the
+      Phase 9 handoff's `Presented`, `presented_localRun` and
+      `plusStab_iff_forall_hitOf_of_presented` are pinned beside the seven; expected blocks
+      measured by `lake env lean` (`probes/p10-axioms.log`), never typed.)*
+- [x] `docs/theorem-index.md`: rows for `hit_eq_hitOf_of_presented`, `mem_hitOf_iff`,
       `plusStab_iff_forall_hitSig` (`Paper: —`, frame class `ZTime`, axioms `pcq pinned:C14`);
       update the `plusStab_iff_forall_hit` row's statement text ("`Hit` is not computed" →
       "`Hit` is computed on presentations by `hitOf`; see `hit_eq_hitOf_of_presented`"); run
       `bash scripts/check-module-invariants.sh` and update the C14 baseline it maintains in the
-      same commit, per the test file's "When one of these guards fires" rule.
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: module table rows for
+      same commit, per the test file's "When one of these guards fires" rule. *(deviation:
+      altered — `mem_hitOf_iff`'s frame-class cell is `—` (class-generic: the statement mentions
+      no frame), not `ZTime`; the corrected row text keeps every qualifier ("only on a finite
+      presentation and only under `Presented`, never for a model outright"); C15 requires a
+      `Paper: — (reason)` line in each indexed declaration's docstring, so `mem_hitOf_iff`
+      (`HitOf.lean`) and `hit_eq_hitOf_of_presented` (`Trace.lean`) gained one —
+      `plusStab_iff_forall_hitSig` already carried it.)*
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: module table rows for
       `Closure.lean`, `Trace.lean`, `Compose.lean` with measured line counts; rewrite "What it
       does not do" (B2b and B4 remain not done; the product-fibre consequence from research
       Finding 3 (a)-(b) folded into the realizability paragraph); evidence section gains the new
       probe; "Two carried limits" unchanged in substance (forward-only, no backward Bool-fixture
       bridge). `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md`: `KTypeFin.lean` row
       (step 1′: the congruence is computable), six-step table's step 6 stays "out of scope"; the
-      consumer-relation paragraph updated to name `hitOf`.
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary.lean` and `KTypeSummary.lean` module
-      docstrings: list the new modules (imports were added in Phases 1, 2, 3, 6).
-- [ ] `specs/ROADMAP.md`: rewrite the "Compute `Hit`" bullet to record B1, B2a, B3a, B3b landed
+      consumer-relation paragraph updated to name `hitOf`. *(deviation: altered — five module
+      rows (`Present.lean` and `HitOf.lean` beside the three planned, since Phases 6-7 split them
+      out), counts re-measured by `wc -l`; the evidence section also names the witness module
+      `KTypeFinEvalTest.lean`; `FormalSystem/Metalogic/Decidability/README.md`'s `RaySummary/` row
+      (file count 2 → 7, the stale "`Hit` is not computed") corrected in the same pass.)*
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary.lean` and `KTypeSummary.lean` module
+      docstrings: list the new modules (imports were added in Phases 1, 2, 3, 6). *(deviation:
+      altered — `KTypeSummary.lean` already listed `KTypeFin` since Phase 1 and is unchanged;
+      `RaySummary.lean`'s overview paragraph ("in two modules", "`Hit` named as not computed")
+      and its `Trace`/`HitOf` bullets rewritten; the parent aggregator
+      `FormalSystem/Metalogic/Decidability.lean`'s `RaySummary` bullet carried the same stale
+      claim and was corrected too.)*
+- [x] `specs/ROADMAP.md`: rewrite the "Compute `Hit`" bullet to record B1, B2a, B3a, B3b landed
       with their declaration names, B2b verdict + probe name, and add the successor bullet
       "Realize a seam presentation — HWZ 2000 Thm 14 ⇐ for the `⊡` fibre: product summaries,
       an infinite committed-state slice, a `Saturation` constructor for sliced frames with
       finitely many fibre shapes per time (`ofSlicedStep_saturation` is `[Finite W]`-only), and
       `hit_modelOf`; 735's soundness depends on it (research Finding 2)"; keep the 742 → 735
       critical-path note and add "→ successor" on 735's dependency line.
-- [ ] Write the successor-record description into the implementation summary's "Follow-up
+- [x] Write the successor-record description into the implementation summary's "Follow-up
       records" section verbatim (title, WHY, the three sub-obstructions of research Finding 3
       (c)-(d), cost 1,200-2,000 + 300-500 lines carried from the research as CARRIED, the
       constraints that transfer, acceptance in the same either/or form as this task's), and set
       the return's `next_steps` to: file it with `/task`, add it to 735's `dependencies`, then
       `/orchestrate 735 --hard --lit`. Filing is a `/task` invocation outside this dispatch.
-- [ ] Full gate: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (whole
+- [x] Full gate: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (whole
       project), `bash scripts/check-module-invariants.sh`, `bash scripts/check-evidence-probes.sh`,
       `bash .claude/scripts/verify-deploy.sh` — all green; `#print axioms` on every new headline
-      via `lean_verify`; `grep -rc sorry` over the four new modules = 0.
+      via `lean_verify`; `grep -rc sorry` over the four new modules = 0. *(deviation: altered —
+      the invariants gate's first run failed on four items inherited from Phases 2-9 (C16 ×7
+      env-linter findings, C29 reasonless `set_option`, C33 hand-edited root, INV stale inventory
+      blocks); repaired in-phase: `PathEntry` field docstrings, `HitSig` without its unread `M`
+      and `kTypeOf_listSeg_append_congr` without its unused `[DecidableEq]` (strict
+      generalizations, after C26 refused in-source suppressions), `lake exe mk_all`,
+      `--emit-inventory`; final full run green on every build-dependent check and `--no-build`
+      pass exit 0. `#print axioms` by one `lake env lean` pass rather than `lean_verify`;
+      `typst-sync-check.sh` Check 1 carries one pre-existing violation outside this task's
+      files.)*
 
 **Timing**: 1.5 hours
 

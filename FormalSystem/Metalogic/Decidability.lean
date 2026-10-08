@@ -130,9 +130,16 @@ Tableau-based decision procedure returning proof terms or countermodels.
   against the single-family hypothesis bundle `Presents`; `SeamMulti.lean` shows that bundle is
   inhabited iff the seam is `⊡`-decided (`exists_presents_iff` — so its `colours` field is a seam
   condition, not the MSO reduction) and states the hypothesis-free bridge
-  `plusStab_iff_forall_hit` over the realized family triples `Hit` of a two-letter trace. `Hit`
-  is not computed; the interface builds no decision procedure and claims no complexity bound.
-  Computing `Hit` and assembling a decidable `⊡` check is the consumer's work
+  `plusStab_iff_forall_hit` over the realized family triples `Hit` of a two-letter trace.
+  Beside them, the realizability device: the closure alphabet and the trace of a history as its
+  unique anchored local run (`Closure.lean`, `Trace.lean`), composition on representatives
+  (`Compose.lean`), finite labelled presentations with a computable path-type closure
+  (`Present.lean`), and the computable realized-triple set `hitOf` with its characterization
+  `mem_hitOf_iff` (`HitOf.lean`). A seam's `HitCl` equals `hitOf` only under the explicit
+  realization hypothesis `Presented` (`hit_eq_hitOf_of_presented`, `Trace.lean`), which is
+  discharged for no non-trivial model: `Hit` is never computed for a model outright, the
+  interface builds no decision procedure and claims no complexity bound, and assembling a
+  decidable `⊡` check is the consumer's work
 
 ## Status
 

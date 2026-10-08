@@ -261,19 +261,20 @@ end Append
 
 /-! ## Composition on representatives -/
 
--- linter.unusedFintypeInType, linter.unusedDecidableInType: the `[Fintype sig.preds]` and
--- `[DecidableEq sig.preds]` binders are this theorem's recorded interface — the binders every
--- consumer of the computable `k`-type (`kTypeOfFin`, `kTypeOfFin_listSeg`) already carries —
--- and they are consumed by the proof (`k_equiv_of_iso` needs `Finite sig.preds`, derived from
--- `Fintype`) rather than by the conclusion, which mentions only `kTypeOf` and `listSeg`.
--- Declaration-scoped, as for `exists_matching_factorization` in `KTypeSummary/Family.lean`.
+-- linter.unusedFintypeInType: the `[Fintype sig.preds]` binder is consumed by the proof
+-- (`k_equiv_of_iso` needs `Finite sig.preds`, derived from `Fintype`) rather than by the
+-- conclusion, which mentions only `kTypeOf` and `listSeg`; it is the binder every consumer of the
+-- computable `k`-type (`kTypeOfFin`, `kTypeOfFin_listSeg`) already carries. A `[DecidableEq
+-- sig.preds]` binder that neither the statement nor the proof used was removed (the
+-- `unusedArguments` environment linter reported it), so no `unusedDecidableInType` suppression
+-- remains. Declaration-scoped, as for `exists_matching_factorization` in
+-- `KTypeSummary/Family.lean`.
 set_option linter.unusedFintypeInType false in
-set_option linter.unusedDecidableInType false in
 /-- **Composition on representatives.** The `k`-type of a concatenation depends only on the
 `k`-types of the parts: the two-point instance of `kEquiv_orderedSum_of_kEquiv_colour`. Once
 `h₁` and `h₂` are rewritten in, the two `k`-type-coloured index orders are literally the same
 `kTypeColouring`, so the mixing lemma's hypothesis is `rfl`. -/
-theorem kTypeOf_listSeg_append_congr [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ)
+theorem kTypeOf_listSeg_append_congr [Fintype sig.preds] (k : ℕ)
     {l₁ l₁' l₂ l₂' : List (sig.preds → Bool)}
     (h₁ : kTypeOf sig k (listSeg l₁) = kTypeOf sig k (listSeg l₁'))
     (h₂ : kTypeOf sig k (listSeg l₂) = kTypeOf sig k (listSeg l₂')) :

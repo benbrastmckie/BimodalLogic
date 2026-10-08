@@ -789,7 +789,9 @@ theorem live_of_run (hk : 1 ≤ k) {t : ℤ} {ρ : ℤ → Q} (hρ : IsRun lab s
         exact F.pos_type _ (by omega)
 
 /-- **`hitOf` is exactly the set of family triples of the presentation's runs**, at every anchor
-`t` and every depth `k ≥ 1`. -/
+`t` and every depth `k ≥ 1`.
+
+Paper: — (the formalization's own realizability device; the paper has no counterpart) -/
 theorem mem_hitOf_iff (t : ℤ) (hk : 1 ≤ k) (x : KType sig k × KType sig k × KType sig k) :
     x ∈ hitOf lab step now k ↔
       ∃ ρ : ℤ → Q, IsRun lab step now t ρ ∧

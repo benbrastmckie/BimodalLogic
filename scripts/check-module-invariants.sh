@@ -2036,23 +2036,31 @@ fi
 # cannot be pinned by this mechanism. Its ledger row is omitted for that reason; do not invent a
 # baseline line for it.
 #
-# The final five lines of this pair pin the decidability-side declarations that
+# The final eight lines of this pair pin the decidability-side declarations that
 # `docs/theorem-index.md` carries rows for:
 # `FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime`,
 # `FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate`,
 # `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`,
-# `FormalSystem.Metalogic.decidableDerivableZTime`, and
-# `FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hit`. The fourth of those
+# `FormalSystem.Metalogic.decidableDerivableZTime`,
+# `FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hit`,
+# `FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hitSig`,
+# `FormalSystem.Metalogic.WeakCanonical.mem_hitOf_iff`, and
+# `FormalSystem.Metalogic.Decidability.RaySummary.hit_eq_hitOf_of_presented`. The fourth of those
 # is the Z-time derivability corollary of `Compression.decidableValidZTime` --
 # `Decidable (Derivable FrameClass.ZTime [] φ)` -- and it HAS now landed, in
 # `FormalSystem/Metalogic/ZTimeProvability.lean`. The fifth is the seam interface's
 # hypothesis-free `⊡` bridge over the realized family triples
-# (`FormalSystem/Metalogic/Decidability/RaySummary/SeamMulti.lean`), whose theorem-index row
-# is the one Decidability row that interface carries; it pins a profile, not a decision
-# procedure -- the realized set `Hit` is not computed. Each matched pair of lines sits in this
-# block at the same trailing position on both sides. Any further sibling is pinned by a copy of
-# this block's shape: append one more matched pair of lines to both heredocs, in the same
-# position, following the exact axiom values `#print axioms` reports for it.
+# (`FormalSystem/Metalogic/Decidability/RaySummary/SeamMulti.lean`); it pins a profile, not a
+# decision procedure. The last three are the realizability device beside that bridge: the
+# signature-generic bridge (`RaySummary/Closure.lean`), the characterization of the computable
+# realized-triple set `hitOf` of a finite presentation (`RaySummary/HitOf.lean`), and the
+# per-model bridge `HitCl = hitOf` under the explicit realization hypothesis `Presented`
+# (`RaySummary/Trace.lean`) -- a CONDITIONAL result whose hypothesis is discharged for no
+# non-trivial model in this tree; none of the three is a decision procedure. Each matched pair
+# of lines sits in this block at the same trailing position on both sides. Any further sibling
+# is pinned by a copy of this block's shape: append one more matched pair of lines to both
+# heredocs, in the same position, following the exact axiom values `#print axioms` reports for
+# it.
 #
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
@@ -2263,6 +2271,9 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.decidableDerivableZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hitSig' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.mem_hitOf_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.hit_eq_hitOf_of_presented' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2472,6 +2483,9 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime
 #print axioms FormalSystem.Metalogic.decidableDerivableZTime
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hit
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hitSig
+#print axioms FormalSystem.Metalogic.WeakCanonical.mem_hitOf_iff
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.hit_eq_hitOf_of_presented
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

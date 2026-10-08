@@ -238,13 +238,12 @@ theorem stabTargetSig_twoLetter : stabTargetSig twoLetter true false = stabTarge
 
 variable {F : FrameOver intOrder} [F.IsRegular]
 
-set_option linter.unusedVariables false in
 /-- **The realized family triples of an arbitrary trace map over an arbitrary signature**: those
 reached by `tr` on the splice of some ray pair through the seam. A `Set`, exactly as `Hit` is;
-nothing here computes it. `M` is the recorded interface (the model the trace map `tr` reads),
-not consumed by the body — the bridge's anchor hypotheses tie `tr` to `M`. -/
+nothing here computes it. No model appears: the trace map `tr` is the only interface, and the
+bridge's anchor hypotheses (`plusStab_iff_forall_hitSig`) are what tie `tr` to a model. -/
 def HitSig (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
-    (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ)
     (tr : WorldHistory F.toTaskFrame → sig.preds → ℤ → Prop) (k : ℕ) :
     Set (KType sig k × KType sig k × KType sig k) :=
   {x | ∃ bf : SeqPair F (τ.state t), InFamily sig k x.1 x.2.1 x.2.2 (tr (spliced τ t bf))}
@@ -252,14 +251,14 @@ def HitSig (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
 /-- `Hit` is `HitSig` at the two-letter instance, definitionally. -/
 theorem hitSig_twoLetter (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ)
     (φ : PlusFormula) (k : ℕ) :
-    HitSig twoLetter M τ t (seamTrace M φ t) k = Hit M τ t φ k := rfl
+    HitSig twoLetter τ t (seamTrace M φ t) k = Hit M τ t φ k := rfl
 
 /-- There are finitely many realized triples, because there are finitely many triples at all
 (`finite_family_triples`). -/
 theorem hitSig_finite (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
-    (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ)
     (tr : WorldHistory F.toTaskFrame → sig.preds → ℤ → Prop) (k : ℕ) :
-    (HitSig sig M τ t tr k).Finite := by
+    (HitSig sig τ t tr k).Finite := by
   haveI := finite_family_triples sig k
   exact Set.toFinite _
 
@@ -281,7 +280,7 @@ theorem plusStab_iff_forall_hitSig (sig : MonadicSignature) [Fintype sig.preds]
     (hnow : ∀ σ z, tr σ now z ↔ z = t)
     (hphi : ∀ σ z, tr σ phi z ↔ PlusTruthAt M σ z φ) (k : ℕ) (hk : 1 ≤ k) :
     PlusTruthAt M τ t (.stab φ) ↔
-      ∀ x ∈ HitSig sig M τ t tr k,
+      ∀ x ∈ HitSig sig τ t tr k,
         ∀ c, InFamily sig k x.1 x.2.1 x.2.2 c → stabTargetSig sig now phi c := by
   rw [plusStab_iff_omega]
   constructor

@@ -36,6 +36,7 @@ closes the step they did not cover: saturation.
 | Step | Büchi (Thomas 1997 §5.1) | This tree | Module | Status |
 |---|---|---|---|---|
 | 1 | finite-index right congruence on finite words | `KType`, `kTypeOf`, `KEquiv` | `../NEquivalence.lean` | landed (pre-existing) |
+| 1′ | the congruence is computable on finite words | `kTypeOfFin`, `kTypeOfFin_eq` (`KTypeFin.lean`: the computable `k`-type of a finite decidable structure is the classical one); `kTypeOf_listSeg_append_congr` (`../../Decidability/RaySummary/Compose.lean`: composition on representatives) | `KTypeFin.lean`, consumer side `../../Decidability/RaySummary/Compose.lean` | **landed** (a computability witness for the alphabet; decides nothing about `⊡`) |
 | 2 | the congruence has finite index | `kType_finite` | `Basic.lean` | **landed** |
 | 3 | the family `[u]·[v]^ω`, here bi-infinite `(τneg)^(ω*) · τzero · (τpos)^ω` | `SegmentFactorization`, `InFamily` | `Family.lean` | **landed** (the private `ZFactorization` of `../GroupModel/RamseyFactorization.lean`, renamed, with the middle segment's type `τzero`/`zero_type` added) |
 | 3′ | a word *is* the concatenation of its factors | `kEquiv_zFiber_segSum` | `Segment.lean` | **landed** (moved from `../GroupModel/RamseyFactorization.lean`, made public) |
@@ -53,6 +54,7 @@ closes the step they did not cover: saturation.
 | `Saturation.lean` | 148 | Step 5a: `kTypeColouring_eq_of_matching_segments` (matched segment types give equal coloured index orders), the headline `kEquiv_zFiber_of_matching_segments` (matched segment types give `≡ₖ` blocks, by the segment-sum lemma on each side and the mixing lemma), and `kTypeOf_zFiber_eq_of_sameTriple`/`kTypeOf_zFiber_eq_of_inFamily` (the block `k`-type is a function of the family triple). |
 | `Segment.lean` | 108 | Step 3′: the segment carrier `segZ` (the half-open coloured segment `[a, b)` of `ℤ`) and `kEquiv_zFiber_segSum` — a coloured `ℤ`-block is `≡ₖ` the `ℤ`-indexed sum of its segments under any monotone covering cutting sequence. |
 | `Universal.lean` | 162 | Step 5b: `DeterminedByKType` (a target determined by the block's `k`-type) with its non-vacuity witness `determinedByKType_nfEval` and its sentence-level generalisation `determinedByKType_eval` (any depth-`≤ k` sentence target, via `doets_lemma_1_1`), saturation proper `family_saturation` (each family inside or disjoint from the target), `finite_family_triples`, and `target_eq_union_of_families` (a `k`-type-determined target is the union of the families it contains). Not a decidability result; not about `⊡`. |
+| `KTypeFin.lean` | 193 | Step 1′: `decNfEvalNf` (`NfEvalNf` is decidable on a finite decidable structure, by induction on `k`), the computable `kTypeOfFin` with `kTypeOfFin_eq` (it is the classical `kTypeOf`, pointwise), the decidable Tarski satisfaction `decEval`, and the explicit computable instances for a segment of a decidable colouring (`segZFintype`, `segZDecidableEq`, `segZDecidableLT`, `segZDecidablePred`; every `ℤ`-subtype instance is an explicit term, never `inferInstanceAs`, which resolves through the noncomputable `Int.instConditionallyCompleteLinearOrder`) with `kTypeOfFin_segZ`. A computability witness for the summary alphabet only; it composes nothing and decides nothing about `⊡`. |
 
 ## Evidence
 
@@ -81,10 +83,16 @@ The substrate is **built here and consumed downstream, never absorbed into the c
 record**. Its consumer is the decidability side's seam interface
 (`Decidability/RaySummary/`), which connects `plusStab_iff_omega` to the family triples of the
 two-letter trace: the single-family bundle `Presents` is characterized as seam decidedness, and
-the hypothesis-free bridge `plusStab_iff_forall_hit` is a theorem over the realized set `Hit`;
-computing `Hit` and assembling a decidable `⊡` check on the path-space presentation is that
-consumer's work, not this cluster's. Headline axiom profiles are pinned in
-`Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` (sixteen rows).
+the hypothesis-free bridge `plusStab_iff_forall_hit` is a theorem over the realized set `Hit`.
+The realizability device beside that interface reads realized triples off a finite labelled
+presentation with the computable `hitOf` (`RaySummary/HitOf.lean`, characterized by
+`mem_hitOf_iff`), composing segment summaries on representatives (`kTypeOf_listSeg_append_congr`,
+`RaySummary/Compose.lean`) with the `k`-types this cluster's `KTypeFin.lean` reads off; a seam's
+realized set equals `hitOf` only under the explicit realization hypothesis `Presented`
+(`hit_eq_hitOf_of_presented`, `RaySummary/Trace.lean`), discharged for no non-trivial model.
+Assembling a decidable `⊡` check on the path-space presentation remains that consumer's work,
+not this cluster's. Headline axiom profiles are pinned in
+`Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` (twenty-seven `#print axioms` rows).
 
 ## What this cluster does not give you
 
@@ -96,7 +104,8 @@ consumer's work, not this cluster's. Headline axiom profiles are pinned in
   interface's business (`Decidability/RaySummary/`): its single-family bundle `Presents` turns
   out to be seam decidedness (`exists_presents_iff`), its hypothesis-free bridge
   `plusStab_iff_forall_hit` reduces `⊡φ` to a finite conjunction over the realized family
-  triples `Hit`, and `Hit` is the residue — not computed anywhere. "Finite union of
+  triples `Hit`, and `Hit` is computed by `hitOf` only on a finite presentation and only under
+  the realization hypothesis `Presented` — never for a model outright. "Finite union of
   families" is a finiteness statement (`finite_family_triples`), not a cardinality bound, and
   the CTL⋆ 2EXPTIME lower bound (argued, not formalized) is a sanity ceiling only, never a source of an upper bound.
 - **No device discrimination on the probed shapes.** `⊡(Fp)`/`⊡(Pp)` are device-inert on finite
@@ -111,8 +120,11 @@ consumer's work, not this cluster's. Headline axiom profiles are pinned in
    from a framing to a proof-level reading of cslib's `IsRegular.compl` proof body. The further
    question — whether MSO-over-`⟨ℤ,<⟩` *reduces* to it — is sharpened by the seam interface:
    this cluster supplies the complementation half in full (the seam bridge
-   `plusStab_iff_forall_hit` needs no hypothesis), and the realizability half — computing the
-   realized triples `Hit` — is the residue. No theorem here depends on that question.
+   `plusStab_iff_forall_hit` needs no hypothesis), and the realizability half is landed as far
+   as a presentation (`hitOf`, `mem_hitOf_iff`, and `hit_eq_hitOf_of_presented` under
+   `Presented`); realizing a presentation by a constructed regular model is the residue, held in
+   place by the wired probe `quasistate_does_not_determine_hit`. No theorem here depends on
+   that question.
 
 ## Recorded follow-up
 
