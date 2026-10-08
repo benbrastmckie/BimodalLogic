@@ -25,8 +25,8 @@ admission gate defers the collider each cycle until its sibling goes terminal.
 
 ```bash
 # --- Decidability front (Phases 1-2): run these to exhaustion before anything below ---
-/orchestrate 735 --hard --lit         # THE critical path: 742 is complete; file the B2b successor
-                                      # (see its bullet) and add it to 735's dependencies first
+/orchestrate 735 --hard --lit         # landed 2026-10-08 as a verdict; 742 is complete; 735's verdict
+                                      # does not depend on B2b (RaySummary README, "The verdict")
 /orchestrate 709,740 --hard           # F4 summary step + KTypeSummary housekeeping
 /orchestrate 739,733,734,725 --lit    # evidence probes + one ruling; serialized on the collection
 /orchestrate 716,714,712 --hard       # sliced-certificate defect, label evaluation, closure
@@ -97,8 +97,21 @@ unique anchored local run (`clTrace_localRun`, `eq_clTrace_of_localRun_anchored`
 exactly that discharge: constructing a regular model from a presentation (B2b), the successor
 bullet below. `Hit` is still never computed for a model outright.
 
-**Critical path: 742 → successor (B2b) → 735.** Everything else in this phase is evidence or
-fallback.
+**The critical path to `Decidable (PlusValidZTime φ)` is NOT through B2b.** 735 landed its
+verdict (RaySummary README, "The verdict"; the 735 bullet below): the ray-product presentation as
+landed — `seamOmegaEquiv` + `hitOf` + `Presented` — cannot deliver the decision procedure, by the
+wired probe `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean`
+(`Probe735.not_presented`: `Presented` fails on a three-state regular ℤ-model for every finite
+presentation), and that verdict does not depend on B2b. B2b is requirement **(S)** only —
+Hit-level soundness, the realization of a presentation by a constructed regular model — and (S)
+alone is not sufficient: **(C)** Hit-level completeness with a computable bound (`Presented`
+cannot carry it, by the probe; the Hit-level hypothesis's satisfiability is OPEN) and **(W)** a
+closure-wide quasimodel over all seams and times (`box` per time, `stab` per state, nested under
+`untl`/`snce`) are unfiled requirements, named with their statement shapes under `[F.IsRegular]`,
+L⁺, ℤ time in the RaySummary README. The ray-product presentation's deliverable on this front is
+the verdict plus the conditional per-seam check (`decidableStabOfPresented`, under `Presented`,
+vacuous on model A). Filing (C), (S) or (W), and any dependency edit, is the user's call; this
+roadmap files nothing. Everything else in this phase is evidence or fallback.
 
 **Four constraints that rule work out.** (1) The substrate must work over the **time axis with a
 finite alphabet of per-time summaries, never over states** — forced by
@@ -150,13 +163,31 @@ discriminate between devices.
       conditional on. Est. 1,200-2,000 lines, HIGH, CARRIED-UNVERIFIED. 735's soundness depends
       on it: without a discharged `Presented` the assembly's `Bool` is conditional. Either the
       construction lands, or a per-sub-obstruction machine-checked verdict does. `file_scope`
-      MUST be set at plan time (successor of Task 742; to be filed)
-- [ ] Assemble the decidable stab check on the ray-product presentation — `Decidable
-      (PlusValidZTime φ)`, or a recorded verdict that the presentation cannot deliver it. Its
-      target is `hitOf`/`plusStab_iff_forall_hitOf_of_presented` under `Presented` (and
-      `Hit`/`plusStab_iff_forall_hit` behind it), **not** `Presents`; it may not be assembled on
-      an undischarged `Presented` and presented as unconditional — it depends on 742 AND on the
-      B2b successor above. `file_scope` MUST be set at plan time (Task 735)
+      MUST be set at plan time (successor of Task 742; to be filed). Consistency conditions must
+      exclude pumpable eventuality-deferring run sets (`presented_localRun`); completeness is out
+      of this record's reach (`presented-not-complete.lean`): it is requirement (S) of 735's
+      verdict and only (S), and 735's verdict does not depend on it. Filing it, and any dependency
+      edit, remains the user's call
+- [x] Assemble the decidable stab check on the ray-product presentation — landed as the
+      acceptance criterion's **second branch**, a recorded verdict: the ray-product presentation
+      (`seamOmegaEquiv` + `hitOf` + `Presented`) cannot deliver `Decidable (PlusValidZTime φ)`,
+      and the obstruction is machine-checked, not argued — the wired probe
+      `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` (headline
+      `Probe735.not_presented`, `[propext, Classical.choice, Quot.sound]`) refutes `Presented` on a
+      three-state regular ℤ-model at the seam with `Fp` for **every** finite `Q`, `lab`, `step`, by
+      pumping a repeated run state against the `untl` run condition. `Presented` is a soundness
+      device only, never a completeness carrier; no enumeration of `Presented`-presentations
+      decides validity, whether or not B2b is ever built. Beside the verdict, the one positive
+      in-frame result: under `Presented`, `⊡φ` at the seam is the run-level condition
+      `plusStab_iff_forall_run_of_presented` (`RaySummary/Trace.lean`), decided by state liveness
+      in the `now`-free step graphs — `onRun_iff_live`, `stabCheckSig`, `stabCheckSig_iff`,
+      `stabCheck_iff_of_presented`, `decidableStabOfPresented` (`RaySummary/StabCheck.lean`), zero
+      sorries, pinned in `KTypeSummaryAxiomTest.lean` and C14, indexed as **Conditional**, vacuous
+      on model A. HARD CONSTRAINTS kept: `Decidable (PlusValidZTime φ)` is stated nowhere, in no
+      form; every statement carries `[F.IsRegular]`, L⁺ and ℤ time under `Presented`; no bound is
+      claimed; "L⁺ is decidable" is written nowhere. What the lift to validity still needs — (C),
+      (S), (W) — is named, not filed, in the RaySummary README, "The verdict" (Task 735)
+      *(Completed: Task 735, 2026-10-08)*
 - [ ] Prove F4, finite width ⇒ eventually periodic, as R1's **summary step**. A Ramsey colour was
       selected, so F4 *is* the device. Any surviving statement must name its restricted fragment
       and say in its docstring why `not_finite_width_fmp` does not refute it (Task 709)
@@ -192,8 +223,8 @@ serialize rather than fail. 742 overlaps `RaySummary/` and `KTypeSummary/` with 
 740 batches with 709 instead.
 
 ```bash
-/orchestrate 735 --hard --lit         # the critical path, after the B2b successor is filed and
-                                      # added to 735's dependencies; 742 is complete
+/orchestrate 735 --hard --lit         # landed 2026-10-08 as a verdict: 735's verdict does not depend
+                                      # on B2b (RaySummary README, "The verdict"); 742 is complete
 /orchestrate 709,740 --hard
 /orchestrate 739,733,734,725 --lit    # serialized on the evidence collection
 ```

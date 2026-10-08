@@ -32,6 +32,7 @@ statement about `⊡` is made.
 | `Compose.lean` | 297 | B3b, the composition half: the finite segment of a list of letters `listSeg` (carrier `Fin l.length`, computable instances, `kTypeOfFin_listSeg`), the letters of a decidable colouring on `[a, b)` (`labels`) with `kTypeOf_segZ_eq_listSeg` (a time-axis segment has the `k`-type of its label list, by `k_equiv_of_iso`), `listSeg_append_kEquiv` (a concatenation is the two-point ordered sum of its parts), and the congruence `kTypeOf_listSeg_append_congr` — the `k`-type of `l₁ ++ l₂` depends only on the `k`-types of the parts, the `I = J = Bool` instance of `kEquiv_orderedSum_of_kEquiv_colour`. No `compose` on bare `KType` values, by design: most `k`-types are the type of nothing. |
 | `Present.lean` | 684 | B3b, the closure half: finite labelled presentations, unbundled (`Q` with `[Fintype Q] [DecidableEq Q]`, `lab`, `step`, `now`), their bi-infinite runs `IsRun` and decidable traces `runTrace`, finite paths `StepPath`/`stepPath_iff`, the representative-carrying closure `pathClosure` computing `pathTypes` (the `k`-types of `now`-free paths between two states) and `pathTypesNow` (paths reading `now` once) by `kTypeOfFin` on one stored label list per key, justified by the congruence (`mem_pathTypes_iff`, `mem_pathTypesNow_iff`; stationarity within `closureBound` rounds by `iterate_stabilizes`), and liveness as a greatest fixpoint (`live`, `live_iff`, `fwdLive`, `bwdLive`). `fwdLive`/`bwdLive` chain paths that share an endpoint and are **not** what `hitOf` reads (see `HitOf.lean`). |
 | `HitOf.lean` | 810 | B3b, the read-out half: liveness over **disjoint** segments joined by one `step` (`fwdSepGraph`, `bwdSepGraph`, `fwdLiveSep`, `bwdLiveSep`, `fwdLiveSep_iff`, `bwdLiveSep_iff` — the graph a `SegmentFactorization` actually walks; with `Present.lean`'s shared-endpoint graph the characterization below is false, by a two-state counterexample `#eval`-witnessed in `KTypeFinEvalTest.lean`), the computable realized-triple set `hitOf lab step now k` (an image over state pairs of `pathTypesNow` types paired with live path types, never a filter over the triple product of `KType sig k`), and `mem_hitOf_iff`: for every anchor `t` and depth `k ≥ 1`, `hitOf` is exactly the family triples (`InFamily`) of the traces of the presentation's runs — the ⇒ direction splices runs of the presentation through a generic `ℤ`-indexed concatenation (`cutAt`, `exists_concat`, `isRun_concat`, `kTypeOf_segZ_concat`), the ⇐ direction reads a factorization's segments as `runSeg` paths and uses `k ≥ 1` through `doets_lemma_1_1` for the `k`-type visibility of nonemptiness and of a `now` state. |
+| `StabCheck.lean` | 252 | The per-seam `⊡` check by state liveness, **conditional on `Presented`** — the assembly that "The verdict" (below) bounds. The `now`-free step graphs `fwdNowFree`/`bwdNowFree`; `OnRun` and `onRun_iff_live` (the `now` states of runs anchored at `t` are exactly the live `now` states: a run restricted to `[t, ∞)` and `(-∞, t]` is a pair of chains, and a pair of chains with a common origin glues to a run); the decider `stabCheckSig lab step now phi` (every live `now` state reads `phi`) with `stabCheckSig_iff`, correct at every anchor (`t` does not occur in the decider); and the closure instance `stabCheck_iff_of_presented` / `decidableStabOfPresented`, composing the decider with `Trace.lean`'s run-level bridge `plusStab_iff_forall_run_of_presented` (under `Presented`, `⊡φ` at the seam iff every anchored run of the presentation reads `φ`'s letter at its `now` state). Both closure-instance statements are vacuous on model A, where `Presented` has no inhabitant (`presented-not-complete.lean`, below); no declaration mentions `PlusValidZTime`. |
 
 ## What it does not do
 
@@ -74,6 +75,85 @@ statement about `⊡` is made.
 - **No finite-fibre or finite-width assumption.** Everything is over the time axis with a finite
   alphabet of per-time letters under `[F.IsRegular]`; the only `[Finite W]` anywhere is the
   counterexample fixture's licence.
+- **It does not decide `PlusValidZTime φ`, and the presentation cannot.** No declaration in this
+  directory mentions validity, and none could be reached from it: `Presented` is refuted as a
+  completeness carrier by the wired probe `presented-not-complete.lean` (`Probe735.not_presented`),
+  so an enumeration of `Presented`-presentations decides nothing about `PlusValidZTime φ`, whether
+  or not the B2b record above is ever built. The recorded verdict, with the three theorems the
+  lift to validity still needs, is the next section.
+
+## The verdict
+
+**The ray-product presentation, as landed, cannot deliver `Decidable (PlusValidZTime φ)`.** What
+it delivers on this front is a decidable per-seam `⊡` check **conditional on `Presented`**
+(`decidableStabOfPresented`, `StabCheck.lean`) and nothing further. No decision procedure for
+L⁺-validity over the `ℤ` time axis is stated anywhere in this tree, in any form — unconditional,
+conditional, or as a hypothesis bundle — and none is reachable from the landed substrate. The
+obstruction is machine-checked, not argued, and it does not depend on whether the B2b successor
+record is ever built.
+
+**Why.** The presentation is `seamOmegaEquiv` (a history through the seam is a backward and a
+forward ω-step-sequence out of the seam state) + `hitOf` (the family triples of a finite
+labelled presentation's runs, `mem_hitOf_iff`) + `Presented` (the seam's closure traces are
+exactly the presentation's run traces). A decision procedure for `PlusValidZTime φ` through it
+would have to proceed by "every refuting regular `ℤ`-model has a `Presented` presentation", and
+that is false. The wired probe `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean`
+proves, for fixture model A (three states on `Fin 3`, `p` at `b` only, steps `a→a, a→b, b→b`;
+bi-serial, regular through `ofSlicedStep_isRegular`) at the seam `(t, a)` of the constant history
+`stayA` with `φ := Fp`:
+
+> `theorem Probe735.not_presented (t : ℤ) {Q : Type} [Fintype Q] [DecidableEq Q]`
+> `    (lab : Q → (clSig Fp).preds → Bool) (step : Q → Q → Bool) :`
+> `    ¬ Presented MA stayA t Fp lab step`
+
+— for **every** finite state type, labelling and step relation, with axiom profile
+`[propext, Classical.choice, Quot.sound]`. The proof in two sentences: the run-trace set of a
+finite presentation is closed under pumping (a run repeating a state at `t < i < j` yields a run
+repeating `[i, j)` forever, `pump_isRun`), so a presentation whose run traces include every seam
+trace `(¬p, Fp)^(n+1) · (p, Fp)^ω` — the histories that stay at `a` until `t + n + 1` and then
+jump to `b` — also has a run whose trace reads `Fp` at `t` and `p` nowhere after it. That trace
+violates the `untl` run condition, so by `Presented` (⇐) and `clTrace_localRun` it is no seam
+trace: the seam's **path** set is closed under this limit (the histories converge to `stayA`,
+which is a history of the model), but the trace map is discontinuous in the `untl` letter (`Fp`
+drops from `true` to `false` in the limit), so the seam's **trace** set is not closed, and no
+finite presentation's run traces can equal it.
+
+`Presented` is therefore a **soundness** device — the shape `Presented (modelOf P) … P` that a
+B2b construction would discharge — and never a **completeness** carrier. On model A the
+statements `hit_eq_hitOf_of_presented`, `plusStab_iff_forall_hitOf_of_presented`,
+`plusStab_iff_forall_run_of_presented`, `stabCheck_iff_of_presented` and
+`decidableStabOfPresented` are all vacuous (their hypothesis has no inhabitant), and an
+enumeration of `Presented`-presentations decides nothing about `PlusValidZTime φ`, because a
+refuting model need not have one.
+
+**What the lift to validity still needs — three theorems that exist neither in the tree nor as
+records.** Each is stated under `[F.IsRegular]`, for the fragment L⁺ (`PlusFormula`), over the
+`ℤ` time axis (`PlusValidZTime`, whose integer-indexed normalization is
+`plusValidZTime_iff_plusValidInt`); none is attempted here, and filing any of them, or any
+dependency edit, is the user's call.
+
+| | Requirement | Statement shape | Why the landed substrate does not supply it |
+|---|---|---|---|
+| (C) | **Hit-level completeness with a computable bound** | For every regular `ℤ`-model `M`, seam `(τ, t)`, formula `φ` and depth `1 ≤ k`, a finite labelled presentation `(Q, lab, step)` with `Fintype.card Q` below a computable bound in `φ`, such that `HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)` — the Hit-level hypothesis the probe's header names `HitPresented`, which is not a declaration in this tree, together with a bound | `Presented` cannot carry it (`Probe735.not_presented`); the Hit-level hypothesis's satisfiability on model A is OPEN (the pumped limit's forward type differs from every seam trace's type, so the refutation does not transfer), and no bound is in sight. Without (C), "no presentation refutes `φ`" never certifies validity, since the refuting models need not be among the presented ones. |
+| (S) | **Hit-level soundness** — the unfiled B2b record (above, "It does not realize a presentation") restated at `hitOf` level | For every finite labelled presentation `P` satisfying consistency conditions `Cons P`, a regular `ℤ`-model `modelOf P` with a seam `(τ, t)` at which `HitCl (modelOf P) τ t φ k = ↑(hitOf …)` for `1 ≤ k` (the trace-level `Presented (modelOf P) τ t φ …` is stronger and suffices) | Nothing in the tree constructs a model from a presentation. `Cons P` must exclude pumpable eventuality-deferring run sets: every run of a `Presented` presentation is a `LocalRun` (`presented_localRun`), while a pumping-closed run set realizes a deferred eventuality together with its limit, which no `LocalRun` reads. Without (S), a presentation found by search witnesses no model, and the conditional `Bool` of `decidableStabOfPresented` certifies nothing. |
+| (W) | **A closure-wide quasimodel over all seams and times** | A finite object carrying, for every time, the `box` anchor across the whole slice and, for every state, the `stab` anchor, nested under `untl`/`snce` — so that one presentation-level object witnesses `¬ PlusValidZTime φ` for some regular `ℤ`-model, history and time, rather than one seam's `⊡` | `Anchored` fixes `box` per time and `stab` per state for **one** seam's closure trace (`Closure.lean`), and `stabCheckSig` decides one seam's `⊡` at one anchor. Validity quantifies over every model, history and time, and `⊡` nests under `untl`/`snce`; nothing in the tree composes per-seam checks into a model-wide witness, and (C) and (S) together still speak of one seam. |
+
+**What the verdict does not establish.** Nothing about `⊡(Pp)`: every fixture is forward-only
+and no backward Bool-fixture bridge exists (limit 1, below). Nothing about the Hit-level
+hypothesis `HitPresented`: OPEN, not refuted. Nothing about models whose slices are infinite:
+model A's slice is `Fin 3` (the shape `not_finite_width_fmp` leaves standing) and its carrier
+`ℤ × Fin 3` is infinite; no finite-fibre or finite-width assumption is made or needed. No
+complexity bound of any kind, upper or lower: the CTL⋆ 2EXPTIME lower bound remains an
+**argued** (not formalized) sanity ceiling and is never a source for an upper bound. And no
+negative decidability result: the verdict is that **this presentation** cannot deliver the
+decision procedure, not that none exists.
+
+**Literature position.** HWZ 2000's Theorem 14 (⇐) realizes a quasimodel by persistent runs
+satisfying the run conditions — a soundness statement — and never claims exact equality between
+a model's trace set and a presentation's run-trace set; the trace-level `Presented` is this
+formalization's own strengthening, and the probe shows that the strengthening is exactly what
+fails on a non-trivial model. The corpus entry for HWZ 2000 is of UNVERIFIED-summary provenance
+and is cited here as context only, not as a source for any claim above.
 
 ## Evidence
 
@@ -100,12 +180,24 @@ their `Hit` sets differ (`hit_ne`; headline `quasistate_does_not_determine_hit`)
 must be the trace-set equality `Presented`. Forward-only (`¬Fp`); `[Finite W]` on the slice is the
 counterexample's licence.
 
+A fifth wired probe, `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean`, is the
+verdict's carrier: on the same model A at the seam `(t, a)` with `φ := Fp`, `Presented` fails for
+**every** finite `Q`, `lab`, `step` (headline `Probe735.not_presented`, axiom profile
+`[propext, Classical.choice, Quot.sound]`), by pumping a repeated run state against the `untl`
+run condition (`pump_isRun`, stated over an arbitrary finite presentation, is the only part that
+does not mention the fixture). It cites `Presented`, `clTrace_localRun`, `plusStab_iff_omega` and
+`seamOmegaEquiv` and re-proves none of them. Forward-only; `[Finite W]` on the slice is the
+fixture's licence; nothing about `HitPresented`, whose satisfiability on model A it leaves OPEN.
+
 The permanent computability witnesses are `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`
 (imported from `Tests/BimodalTest.lean`): thirteen `#guard`s at depth 1 over `twoLetter` that
 `kTypeOfFin` (on `segZ` and `listSeg`), `allPathTypes`, `hitOf`, `fwdLiveSep` and `bwdLiveSep`
 evaluate, including the two-state discriminator on which `fwdLive`/`bwdLive` are `true` and
 `fwdLiveSep`/`bwdLiveSep` `false`. Every number there is a witness of computability and nothing
 else.
+Four further `#guard`s in the same file, under "stabCheckSig on finite labelled presentations",
+witness that `stabCheckSig` evaluates on two-state presentations and discriminates (`true`,
+`false`, `true`, `true`); they, too, witness computability and nothing else.
 
 ## The consumer relation
 
@@ -120,6 +212,12 @@ the next consumer's. Headline axiom profiles — `plusStab_iff_seamSummary`, `ex
 `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, and `plusStab_iff_forall_hit`,
 `plusStab_iff_forall_hitSig`, `mem_hitOf_iff` and `hit_eq_hitOf_of_presented` are additionally
 pinned by C14 for their rows in `docs/theorem-index.md`.
+The assembly those sentences leave to the next consumer is now made, and bounded: the per-seam
+check stops at `decidableStabOfPresented`, under `Presented`, and "The verdict" above records why
+no consumer can reach `PlusValidZTime` through this presentation. Its headline profiles —
+`plusStab_iff_forall_run_of_presented`, `onRun_iff_live`, `stabCheck_iff_of_presented`,
+`decidableStabOfPresented` — are pinned in the same harness, and the first, third and fourth are
+additionally pinned by C14 for their **Conditional** rows in `docs/theorem-index.md`.
 
 ## Two carried limits
 
