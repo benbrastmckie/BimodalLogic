@@ -1,0 +1,49 @@
+{
+  "status": "researched",
+  "task_number": 746,
+  "dispatch_seq": 2,
+  "session_id": "sess_1791500801_df94d6_746",
+  "agent_type": "lean-research-hard-agent",
+  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
+  "phase": "research",
+  "findings_count": 11,
+  "adversarial_verification_triggered": true,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/746_hit_level_soundness_realize_presentation_b2b/reports/01_hit-level-soundness-b2b.md",
+      "summary": "Tier 1 research for requirement (S): the carried frame-constructor prerequisite is off the critical path (liveness is a Cons P hypothesis for soundness, not a construction burden), Cons P is derived from Probe735's pumping proof with its hard untl half already compiled, and the Lean-ready five-phase target shape is costed at 600-900 lines MEDIUM against the carried 1,200-2,000 HIGH plus 300-500 prerequisite."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/746_hit_level_soundness_realize_presentation_b2b/evidence/01_fib-finite-generalization.lean",
+      "summary": "Compiled, zero-sorry: ofSlicedStep_fib_finite's [Finite W] generalizes to two-sided finite branching (fib_finite_of_finBranch, saturation_of_finBranch); the dispatch's named reset hazard confirmed (Rbad_fib_infinite) and its symmetric twin found (Rok_fwd_infinite); infinite-slice non-vacuity witness (shift_saturation)."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/746_hit_level_soundness_realize_presentation_b2b/evidence/02_cons-untl-core.lean",
+      "summary": "Compiled, zero-sorry: untl_iff_of_UCoh_ULive -- per-edge unfolding coherence plus acyclicity of the deferral graph force LocalRun's untl clause on every run of a finite presentation, generically over sig and Q, with no model and no [Finite W]. The snce mirror is owed."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/746_hit_level_soundness_realize_presentation_b2b/evidence/03_cons-non-vacuity.lean",
+      "summary": "Compiled, all #guards pass: a three-state presentation satisfying UCoh, ULive, two-sided bi-seriality and the once-only now condition, plus a negative control (one label changed makes live deferBad 0 = true, the Probe735 shape)."
+    }
+  ],
+  "verification": {
+    "sorry_count": 0,
+    "probes_compiled": 3,
+    "probe_axiom_profile": "[propext, Classical.choice, Quot.sound]",
+    "build_passed": null,
+    "build_note": "No lake build run: nothing under FormalSystem/, Tests/ or specs/evidence/ was modified. Each probe was compiled directly with 'lake env lean' and its headline axioms pinned with #print axioms.",
+    "evidence_tier": "compiled probe (lean-lsp MCP index not consulted)"
+  },
+  "memory_candidates": [
+    "A carried prerequisite should be re-checked against the direction of the quantifier in the statement that needs it: an infinite-slice frame constructor is a COMPLETENESS burden (the presentation must be manufactured and liveness engineered) and not a SOUNDNESS one (the presentation is given and liveness is a hypothesis). This reasoning was carried forward unexamined across two records in the BimodalLogic ray-product batch.",
+    "Mathlib pin v4.33.0-rc1 naming drift that cost a compile round: 'le_or_lt' is not an identifier (use 'le_or_gt'), and 'Set.finite_insert' is an Iff rather than a function (use 'Set.Finite.insert a h').",
+    "A '/-- ... -/' doc comment immediately before '#guard' is a parse error ('unexpected token #guard; expected lemma'); use '/-! ... -/' instead.",
+    "When a HasChain witness is supplied as a lambda, 'rw' fails on the unreduced beta-redex in the resulting goal; insert an explicit 'show' to beta-reduce before rewriting."
+  ],
+  "next_steps": "Run /plan 746 to create implementation plan",
+  "requires_user_review": false
+}

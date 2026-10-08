@@ -81,7 +81,7 @@ next_project_number: 748
     └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 745 [RESEARCHED] — Requirement (C) of the ray-product verdict: Hit-level...
   └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide...
-746 [RESEARCHING] — Requirement (S) of the ray-product verdict: Hit-level...
+746 [RESEARCHED] — Requirement (S) of the ray-product verdict: Hit-level...
   └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide... (see above)
 
 ### Formula Refactor
@@ -147,10 +147,11 @@ ACCEPTANCE. Either the closure-wide object lands with the composition theorem li
 ---
 
 ### 746. Hit level soundness realize presentation b2b
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [746_hit_level_soundness_realize_presentation_b2b/reports/01_hit-level-soundness-b2b.md]
 
 **Description**: Requirement (S) of the ray-product verdict: Hit-level soundness -- realize a presentation by a constructed regular Z-model (B2b)
 
