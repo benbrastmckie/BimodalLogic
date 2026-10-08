@@ -1,20 +1,17 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote the 10-phase hard-mode plan for computing Hit: B3a (computable kTypeOfFin, transcribed from the compiled research probe), B1 (closure alphabet, LocalRun, Anchored, signature-generic bridge plusStab_iff_forall_hitSig), B2a (clTrace is the unique anchored local run), B3b (listSeg composition congruence, finite labelled presentations, computable hitOf with mem_hitOf_iff), the conditional bridge hit_eq_hitOf_of_presented, a wired evidence probe as B2b's machine-checked verdict, and pins/index/README/ROADMAP updates with the B2b successor description. Challenge statements pin all eight Goal identifiers; validator passes --strict.",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/742_compute_hit_realizability_device/plans/01_compute-hit-realizability-device.md",
-      "summary": "10 phases, 6 waves, 19 hours; lands B1, B2a, B3a, B3b and the B2b verdict probe; B2b itself deferred to a described successor record"
-    }
-  ],
-  "phases_completed": 0,
-  "phases_total": 10,
-  "blockers": [],
+  "status": "partial",
   "skeleton": false,
+  "summary": "Phase 1 (B3a) complete: KTypeFin.lean lands decNfEvalNf, kTypeOfFin, kTypeOfFin_eq, decEval and the explicit segZ instances; scoped build green, 0 sorries, standard axiom profile, #eval witnesses match the probe. Phases 2-10 not started (single-phase dispatch).",
+  "phases_completed": 1,
+  "phases_total": 10,
+  "dispatch_seq": 3,
   "sorry_inventory": [],
-  "continuation_path": null,
-  "next_action_hint": "Dispatch Phase 1 (KTypeFin), Phase 2 (Closure) and Phase 8 (verdict probe) as Wave 1; they own disjoint files."
+  "blockers": [],
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-1-handoff-20261008T093113Z.md",
+  "continuation_context": {
+    "is_successor": true,
+    "next_phase": 2,
+    "resume_from": "Phase 2 (B1): create FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean; Phase 8 is admissible in the same wave",
+    "completed_phases": [1]
+  }
 }

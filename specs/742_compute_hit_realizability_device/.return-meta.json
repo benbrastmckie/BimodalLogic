@@ -1,30 +1,53 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 742,
+  "session_id": "sess_1791448118_c50a56",
+  "dispatch_seq": 3,
+  "phase_number": 1,
+  "phases_completed": 1,
+  "phases_total": 10,
+  "requires_user_review": false,
+  "summary": "Phase 1 (B3a) complete and committed (b2e39a2c1): KTypeFin.lean lands decNfEvalNf, kTypeOfFin, kTypeOfFin_eq, decEval and the explicit segZ instances; scoped and library builds green, 0 sorries, standard axiom profile, #eval witnesses match the research probe. Phases 2-10 not started (single-phase dispatch).",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/742_compute_hit_realizability_device/plans/01_compute-hit-realizability-device.md",
-      "summary": "10-phase lean4 hard-mode plan landing B1, B2a, B3a, B3b (closure alphabet, trace characterization, computable kTypeOfFin, hitOf with mem_hitOf_iff) plus the conditional per-model bridge hit_eq_hitOf_of_presented, a wired evidence probe as B2b's machine-checked verdict, and the B2b successor-record description; 19 hours, 6 waves."
+      "type": "summary",
+      "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
+      "summary": "Phase 1 of 10: computable k-type of a finite decidable structure (B3a) transcribed from the research probe into KTypeFin.lean."
     }
   ],
-  "next_steps": "Run /implement 742 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1791448118_c50a56_742",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 10,
-    "estimated_hours": 19,
-    "dependency_waves": [[1, 2, 8], [3, 4], [5, 6], [7], [9], [10]]
+  "handoff_path": "specs/742_compute_hit_realizability_device/.orchestrator-handoff.json",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-1-handoff-20261008T093113Z.md",
+  "sorry_inventory": [],
+  "blockers": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "axiom_baseline": 14,
+    "build_passed": true,
+    "build_scope": "FormalSystem.Metalogic.WeakCanonical.KTypeSummary.KTypeFin (scoped), FormalSystem.Metalogic.WeakCanonical.KTypeSummary (aggregator), FormalSystem (library root, 2830 jobs); guard exit 0 for all three",
+    "axiom_profile": "kTypeOfFin_eq, kTypeOfFin_segZ, decEval, kTypeOfFin: [propext, Classical.choice, Quot.sound]",
+    "verification_passed": true
+  },
+  "files_modified": [
+    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/KTypeFin.lean",
+    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary.lean",
+    "FormalSystem.lean",
+    "typst/generated/status.typ"
+  ],
+  "completion_data": {
+    "completion_summary": "Phase 1 (B3a) landed: computable kTypeOfFin equal to the classical kTypeOf, decEval, and explicit computable segZ instances; 9 phases remain."
   },
   "memory_candidates": [
     {
-      "content": "For lean4 plans carrying a `## Lean Challenge Statements` block, avoid `class`/`structure` declarations in the block (the snapshot tool forces every body to `sorry` and a class has no body): state decidability data as explicit instance binders (`[Fintype M.carrier] [DecidableEq M.carrier] [DecidableRel (α := M.carrier) (· < ·)] [∀ p, DecidablePred (M.interp p)]`) and pass finite presentations unbundled (`Q [Fintype Q] [DecidableEq Q]`, `lab`, `step`) rather than as a structure, so the Goals identifier set equals the Challenge declaration set and signatures pin without a class. Also: when a per-model device's run conditions (HWZ Def 11) are consequences of the realization hypothesis (traces of histories satisfy them by soundness), do not impose them on the finite presentation -- the effective closure then needs no discharge-set bookkeeping.",
-      "category": "PATTERN",
-      "source_artifact": "specs/742_compute_hit_realizability_device/plans/01_compute-hit-realizability-device.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["lean-challenge-statements", "explicit-instance-binders", "unbundled-presentation", "hitOf", "local-run-as-consequence", "planner"]
+      "content": "In the @ form, decidable_of_iff takes the TARGET proposition first: `@decidable_of_iff (x = y) (x.1 = y.1) iff inst`. On ℤ-subtypes, write DecidableEq/DecidableRel instances as explicit terms through Int.decEq/Int.decLt; inferInstanceAs resolves through the noncomputable Int.instConditionallyCompleteLinearOrder.",
+      "keywords": ["lean4", "decidable_of_iff", "Int", "subtype", "computable"]
+    },
+    {
+      "content": "Section `variable` instance binders that a def never uses are dropped from its signature by Lean 4; when a plan pins an exact Challenge signature with such a binder, write the binders explicitly on the declaration.",
+      "keywords": ["lean4", "variable", "instance binder", "challenge statement"]
     }
-  ],
-  "dispatch_seq": 2
+  ]
 }
