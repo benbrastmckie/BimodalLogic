@@ -237,7 +237,9 @@ The hypothesis `hP` is explicit and is refuted on model A by
 presentation, so this instance is vacuous there: it is not a decision procedure for `⊡` on any
 model in the tree, and it is not a decision procedure for `PlusValidZTime` — nothing here
 mentions validity, and no enumeration of presentations can reach it (a refuting model need not
-have one). A `def`, not an `instance`: the hypothesis must be supplied by hand. -/
+have one). A `def`, not an `instance`: the hypothesis must be supplied by hand.
+
+Paper: — (the formalization's own device) -/
 def decidableStabOfPresented (M : TaskModel F.toTaskFrame)
     (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula)
     (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool)

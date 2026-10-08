@@ -2060,7 +2060,13 @@ fi
 # of lines sits in this block at the same trailing position on both sides. Any further sibling
 # is pinned by a copy of this block's shape: append one more matched pair of lines to both
 # heredocs, in the same position, following the exact axiom values `#print axioms` reports for
-# it.
+# it. Three such pairs now follow those eight, and the three `StabCheck` rows they pin --
+# `FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_run_of_presented`
+# (`RaySummary/Trace.lean`), `...stabCheck_iff_of_presented` and `...decidableStabOfPresented`
+# (`RaySummary/StabCheck.lean`) -- are conditional on `Presented`, which the wired probe
+# `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` refutes as a completeness
+# carrier on fixture model A for every finite presentation; they pin profiles, not a decision
+# procedure.
 #
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
@@ -2274,6 +2280,9 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hitSig' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.WeakCanonical.mem_hitOf_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.hit_eq_hitOf_of_presented' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_run_of_presented' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.stabCheck_iff_of_presented' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.decidableStabOfPresented' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2486,6 +2495,9 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hitSig
 #print axioms FormalSystem.Metalogic.WeakCanonical.mem_hitOf_iff
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hit_eq_hitOf_of_presented
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_run_of_presented
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabCheck_iff_of_presented
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.decidableStabOfPresented
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
