@@ -1,0 +1,67 @@
+{
+  "status": "researched",
+  "task_number": 742,
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/742_compute_hit_realizability_device/reports/01_compute-hit-realizability-device.md",
+      "summary": "Per-component research verdict for B1-B3: B3a de-risked by a compiled probe (computable kTypeOf on finite decidable segments equals the classical one), B1 alphabet confirmed cheap, B2 split into a per-model trace characterization (B2a, this record) and the model-construction direction (B2b, HIGH, recommended as a successor record 735 depends on), with every hazard located at a landed theorem and the HWZ-verbatim obstruction fixture designed."
+    }
+  ],
+  "next_steps": "Run /plan 742 to create implementation plan",
+  "findings_count": 5,
+  "adversarial_verification_triggered": true,
+  "reference_grounding_tier": 1,
+  "divergence_audit_activated": false,
+  "proposed_file_scope": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean",
+    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/KTypeFin.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "docs/theorem-index.md",
+    "specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean",
+    "scripts/check-evidence-probes.sh",
+    "specs/ROADMAP.md"
+  ],
+  "research_probe": {
+    "path": "specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean",
+    "compile_log": "specs/742_compute_hit_realizability_device/probes/b3a-compile-5.log",
+    "guard_exit": 0,
+    "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "sorries": 0
+  },
+  "metadata": {
+    "session_id": "sess_1791448118_c50a56_742",
+    "agent_type": "lean-research-hard-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
+    "started_at": "2026-10-08T08:29:01Z",
+    "completed_at": "2026-10-08T09:05:19Z",
+    "lean_local_search_index": "unavailable"
+  },
+  "memory_candidates": [
+    {
+      "content": "On Lean 4 / Mathlib (pin v4.33.0-rc1), inferInstanceAs for DecidableEq, DecidableRel (<), or Preorder on Z and Z-subtypes can resolve through Int.instConditionallyCompleteLinearOrder, which is noncomputable, silently making a def uncompilable (error lean.dependsOnNoncomputable). Use explicit terms: Int.decEq, Int.decLt via decidable_of_iff (whose first explicit argument is the TARGET proposition), and @Finset.Ico Z Int.instLinearOrder.toPartialOrder.toPreorder Int.instLocallyFiniteOrder for Fintype.subtype.",
+      "keywords": ["noncomputable", "Int.instConditionallyCompleteLinearOrder", "decidable_of_iff", "Finset.Ico", "inferInstanceAs", "lean4"],
+      "topic": "lean4/computability",
+      "source": "task 742 research probe, compile logs 1-5"
+    },
+    {
+      "content": "A classical kTypeOf (decide under Classical.dec of NfEvalNf) is NOT an obstruction to effective k-types: on a Fintype carrier with decidable order and predicates, Decidable (NfEvalNf M k n env nf) follows by induction on k from Fintype.decidableForallFintype/decidableExistsFintype, and the computable version equals the classical one by decide_eq_decide.mpr Iff.rfl. Predecessor risk ratings that cite 'Classical.dec by design' should be re-tested by compiling the instance before being carried forward.",
+      "keywords": ["kTypeOf", "NfEvalNf", "Decidable", "k-type", "composition method", "BimodalLogic"],
+      "topic": "lean4/BimodalLogic/decidability",
+      "source": "task 742 research probe b3a-computable-ktype.lean"
+    },
+    {
+      "content": "In the BimodalLogic plus-language semantics the ⊡ fibre through a seam state is a PRODUCT of backward and forward ray sets (seamOmegaEquiv : StabFibre ≃ SeqPair). Hence any per-state summary in a quasimodel-style presentation must be a product of a backward and a forward ray summary (one-sided live flags are a theorem's consequence, not a design choice), mixed types past(t1)·future(t2) are always realized, and liveness cannot be enforced by a step graph on a finite slice: a model built from a presentation needs an infinite slice with committed states and a regular-frame constructor whose Saturation proof does not use [Finite W].",
+      "keywords": ["seamOmegaEquiv", "SeqPair", "quasimodel", "HWZ Lemma 17", "one-sided liveness", "Saturation", "ofSlicedStep"],
+      "topic": "lean4/BimodalLogic/ray-product",
+      "source": "task 742 research report Finding 3"
+    }
+  ]
+}

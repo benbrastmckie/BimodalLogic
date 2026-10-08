@@ -1,0 +1,32 @@
+specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:88:42: error: Application type mismatch: The argument
+  (↑x).decEq ↑y
+has type
+  Decidable (↑x = ↑y)
+of sort `Type` but is expected to have type
+  ?m.21 ↔ x = y
+of sort `Prop` in the application
+  @decidable_of_iff (x = y) ?m.21 ((↑x).decEq ↑y)
+specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:88:62: error: Invalid `⟨...⟩` notation: The expected type `Decidable ?m.21` has more than one constructor
+
+Note: This notation can only be used when the expected type is an inductive type with a single constructor
+specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:89:42: error: Application type mismatch: The argument
+  (↑x).decLt ↑y
+has type
+  Decidable (↑x < ↑y)
+of sort `Type` but is expected to have type
+  ?m.30 ↔ x < y
+of sort `Prop` in the application
+  @decidable_of_iff (x < y) ?m.30 ((↑x).decLt ↑y)
+specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:107:0: error: Aborting evaluation since the expression depends on the 'sorry' axiom, which can lead to runtime instability and crashes.
+
+To attempt to evaluate anyway despite the risks, use the '#eval!' command.
+specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:111:0: error: Aborting evaluation since the expression depends on the 'sorry' axiom, which can lead to runtime instability and crashes.
+
+To attempt to evaluate anyway despite the risks, use the '#eval!' command.
+specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:112:0: error: Aborting evaluation since the expression depends on the 'sorry' axiom, which can lead to runtime instability and crashes.
+
+To attempt to evaluate anyway despite the risks, use the '#eval!' command.
+'Probe742.kTypeOfFin_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe742.kTypeOfFin_segZ' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+lake-build-guard: STATUS: exit_status=1
+GUARD_EXIT=1

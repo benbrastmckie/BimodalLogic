@@ -81,7 +81,7 @@ next_project_number: 743
 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 739 [NOT STARTED] — Run E2's real test: the depth-2 stratification falsifier on a...
 740 [NOT STARTED] — Restate three KTypeSummary declarations over Finite...
-742 [NOT STARTED] — Compute Hit: the per-model realizability device (B1-B3)...
+742 [RESEARCHED] — Compute Hit: the per-model realizability device (B1-B3)...
   └─ 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
 
 ### Formula Refactor
@@ -111,10 +111,11 @@ next_project_number: 743
 ## Tasks
 
 ### 742. Compute hit realizability device
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 737
+- **Research**: [742_compute_hit_realizability_device/reports/01_compute-hit-realizability-device.md]
 
 **Description**: Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
 
