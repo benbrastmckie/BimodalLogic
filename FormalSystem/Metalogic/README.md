@@ -156,12 +156,12 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Conservativity/`](Conservativity/README.md) | 28 | 8,535 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,405 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 161 | 92,767 | Tableau decision procedure and countermodel extraction |
+| [`Decidability/`](Decidability/README.md) | 161 | 92,766 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 8 | 1,769 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 27 | 7,628 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,434 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,330 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,317 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -208,7 +208,7 @@ dominates everything else in the repository:
 | `RealModel/` | 7 | 6,790 |
 | `IntegerModel/` | 6 | 5,625 |
 | `GroupModel/` | 6 | 3,150 |
-| `KTypeSummary/` | 6 | 971 |
+| `KTypeSummary/` | 6 | 958 |
 <!-- END GENERATED -->
 
 `GroupModel/` is where `theorem countermodel_discrete` — the Base-frame discrete branch of

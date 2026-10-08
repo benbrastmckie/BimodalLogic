@@ -1,7 +1,7 @@
 # Implementation Plan: Task #740
 
 - **Task**: 740 - Restate three KTypeSummary declarations over [Finite sig.preds] and retire their linter suppressions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/740_ktype_summary_finite_preds_restatement/reports/01_finite-preds-restatement.md
@@ -106,14 +106,14 @@ item of its own.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Restate the Three Declarations and Retire Their Suppressions [NOT STARTED]
+### Phase 1: Restate the Three Declarations and Retire Their Suppressions [COMPLETED]
 
 **Goal**: Each of `kType_finite`, `exists_matching_factorization` and `finite_family_triples` is
 stated over `[Finite sig.preds]`, with `Fintype`/`DecidableEq` supplied inside the proof, and its
 two `set_option linter.* false in` lines and the comment block justifying them are gone.
 
 **Tasks**:
-- [ ] Re-read `Basic.lean` immediately before editing (sibling-task discipline). Delete the
+- [x] Re-read `Basic.lean` immediately before editing (sibling-task discipline). Delete the
       five-line reason comment and the two `set_option … false in` lines directly above
       `kType_finite`'s docstring. Change the binder list to
       `(sig : MonadicSignature) [Finite sig.preds] (k : ℕ)`; replace the proof body with
@@ -121,20 +121,20 @@ two `set_option linter.* false in` lines and the comment block justifying them a
       / `infer_instance`. Rewrite the docstring's final paragraph (the sentences from "the binders
       are that site's" to "already carries") to say the statement is over `[Finite sig.preds]`
       and that `Fintype`/`DecidableEq` are supplied in the proof for `normalFormFintype`, citing
-      the style guide's Traps subsection by name. Build the module; commit.
-- [ ] Re-read `Family.lean` immediately before editing. Delete the five-line reason comment and
+      the style guide's Traps subsection by name. Build the module; commit. *(deviation: altered — module built green (0 errors, 0 warnings) but the per-file commit was refused by the pre-commit typst-sync gate (status.typ line-count drift caused by this task); the three restatements are committed together with the regenerated status.typ at phase end)*
+- [x] Re-read `Family.lean` immediately before editing. Delete the five-line reason comment and
       the two `set_option … false in` lines above `exists_matching_factorization`'s docstring.
       Change the binders to `(sig : MonadicSignature) [Finite sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop)`;
       prepend the same two `haveI` lines to the existing proof body (the `obtain … := family_cover
-      sig k c` / `exact ⟨…⟩` block is otherwise unchanged). Build; commit.
-- [ ] Re-read `Universal.lean` immediately before editing. Delete the five-line reason comment and
+      sig k c` / `exact ⟨…⟩` block is otherwise unchanged). Build; commit. *(deviation: altered — built green; committed with the phase-end commit, see item 1)*
+- [x] Re-read `Universal.lean` immediately before editing. Delete the five-line reason comment and
       the two `set_option … false in` lines above `finite_family_triples`'s docstring. Change the
       binders to `(sig : MonadicSignature) [Finite sig.preds] (k : ℕ)`; the body
-      (`haveI := kType_finite sig k` / `infer_instance`) is unchanged. Build; commit.
-- [ ] Grep the cluster for any remaining mention of the retired suppressions or of the deleted
+      (`haveI := kType_finite sig k` / `infer_instance`) is unchanged. Build; commit. *(deviation: altered — built green in the interface-tier build; committed with the phase-end commit, see item 1)*
+- [x] Grep the cluster for any remaining mention of the retired suppressions or of the deleted
       comment blocks' phrasing ("Declaration-scoped, as for", "recorded as a follow-up") and fix
       any docstring in the three files that still describes the old binders.
-- [ ] Build the enumerated direct dependents (below) through the build guard and confirm zero
+- [x] Build the enumerated direct dependents (below) through the build guard and confirm zero
       linter output for the three declarations.
 
 **Timing**: 0.75 hours
@@ -181,26 +181,26 @@ would widen this phase's file list.
 
 ---
 
-### Phase 2: Propagate the Prose Consequences [NOT STARTED]
+### Phase 2: Propagate the Prose Consequences [COMPLETED]
 
 **Goal**: No comment or documentation in the tree describes the retired suppressions as still
 existing, and the cluster README's hand-maintained module line counts match the tree.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean` immediately before
+- [x] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean` immediately before
       editing. In the C29 reason comment above `kTypeOf_listSeg_append_congr`, remove the trailing
       precedent clause "Declaration-scoped, as for `exists_matching_factorization` in
       `KTypeSummary/Family.lean`" and replace it with "Declaration-scoped." (or equivalent) so the
       reason no longer cites a suppression that no longer exists. Do NOT touch that declaration's
       own `set_option linter.unusedFintypeInType false in` line or its statement — out of scope.
-- [ ] Re-measure `wc -l` on `Basic.lean`, `Family.lean`, `Universal.lean` after Phase 1 and update
+- [x] Re-measure `wc -l` on `Basic.lean`, `Family.lean`, `Universal.lean` after Phase 1 and update
       the three numeric cells in `KTypeSummary/README.md`'s `## Modules` table (hand-maintained:
       the table has no `BEGIN GENERATED: inventory` marker, so `--emit-inventory` does not own
       it). Leave every other row and every description cell unchanged.
-- [ ] Read the README's step table (rows 2, 4, 5′) and the three modules' header docstrings for
+- [x] Read the README's step table (rows 2, 4, 5′) and the three modules' header docstrings for
       any sentence that describes the `[Fintype]`/`[DecidableEq]` binders as the cluster's
       "recorded interface"; reword only where a statement has become false.
-- [ ] Diff read-through: confirm every changed hunk in this phase lies inside a comment, a
+- [x] Diff read-through: confirm every changed hunk in this phase lies inside a comment, a
       docstring, or markdown.
 
 **Timing**: 0.25 hours
@@ -231,35 +231,35 @@ only the `Compose.lean` hit after Phase 1) and `wc -l` on the three files after 
 
 ---
 
-### Phase 3: Full Gate Pass [NOT STARTED]
+### Phase 3: Full Gate Pass [COMPLETED]
 
 **Goal**: The complete repository gate set is green on the changed tree, every axiom pin still
 matches, and the acceptance signal — six suppressions gone, nothing weakened — is confirmed
 mechanically.
 
 **Tasks**:
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (full project
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (full project
       build, exit 0). If a module outside this task's file scope fails, check `git status` and
       `git log` for the concurrent sibling's in-flight edit before attributing it here.
-- [ ] `bash scripts/check-module-invariants.sh` exits 0. Read its C9, C14, C16, C21, C28, C29 and
+- [x] `bash scripts/check-module-invariants.sh` exits 0. Read its C9, C14, C16, C21, C28, C29 and
       C30 lines specifically; confirm the C29/C30 anti-silence guards still see the remaining
       tree-wide suppressions (expect 44 scoped `set_option linter.* false in` lines, down from 50:
-      `grep -rn "set_option linter\.[a-zA-Z.]* false in" FormalSystem/ | wc -l`).
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 (the wired
+      `grep -rn "set_option linter\.[a-zA-Z.]* false in" FormalSystem/ | wc -l`). *(deviation: altered — first run was red on the INV group only: the generated inventory blocks in `FormalSystem/Metalogic/README.md` and `README.md` carried line counts moved by Phases 1-2; regenerated with `--emit-inventory` and committed in this phase although the plan listed no files to modify)*
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 (the wired
       `presents-is-seam-decidedness.lean` probe calls `finite_family_triples sig2 k` and must
       still compile).
-- [ ] `bash scripts/check-phantom-citations.sh` exits 0.
-- [ ] Every `#print axioms` row in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` still
+- [x] `bash scripts/check-phantom-citations.sh` exits 0.
+- [x] Every `#print axioms` row in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` still
       matches (the test module built green in Phase 1 and in the full build; re-confirm the count
       of `#print axioms` directives is unchanged from before the task).
-- [ ] `bash .claude/scripts/verify-deploy.sh`; if red, classify: findings naming only `.claude/**`
+- [x] `bash .claude/scripts/verify-deploy.sh`; if red, classify: findings naming only `.claude/**`
       staleness are pre-existing (flagged in this dispatch's context) — record via
       `issue-record.sh` and do not hand-patch `.claude/**`; any other finding is this task's.
-- [ ] Final acceptance greps: the cluster has zero `unusedFintypeInType`/`unusedDecidableInType`
+- [x] Final acceptance greps: the cluster has zero `unusedFintypeInType`/`unusedDecidableInType`
       mentions; the three declarations each carry `[Finite sig.preds]` and no `[Fintype sig.preds]`
       / `[DecidableEq sig.preds]` binder; `grep -rn "task 740\|task #740" FormalSystem/ Tests/`
       returns nothing.
-- [ ] Write the implementation summary and close out per the standard postflight.
+- [x] Write the implementation summary and close out per the standard postflight.
 
 **Timing**: 0.5 hours
 
@@ -317,15 +317,15 @@ the instance binders change). Each is strictly stronger than the current `[Finty
 
 ## Testing & Validation
 
-- [ ] Phase 1 `interface` build (changed modules + enumerated dependents + axiom-pin module) exits 0
-- [ ] Zero `unusedFintypeInType`/`unusedDecidableInType` mentions remain under `KTypeSummary/`
-- [ ] Axiom profile `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, for all three names
-- [ ] Every `#print axioms` row in `KTypeSummaryAxiomTest.lean` matches (test module builds)
-- [ ] Full `lake build` exits 0
-- [ ] `scripts/check-module-invariants.sh`, `scripts/check-evidence-probes.sh`, `scripts/check-phantom-citations.sh` exit 0
-- [ ] `verify-deploy.sh` run and classified
-- [ ] README `## Modules` cells equal `wc -l`; `Compose.lean` reason comment no longer cites a retired suppression
-- [ ] No task-number citation introduced under `FormalSystem/` or `Tests/`
+- [x] Phase 1 `interface` build (changed modules + enumerated dependents + axiom-pin module) exits 0
+- [x] Zero `unusedFintypeInType`/`unusedDecidableInType` mentions remain under `KTypeSummary/`
+- [x] Axiom profile `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, for all three names
+- [x] Every `#print axioms` row in `KTypeSummaryAxiomTest.lean` matches (test module builds)
+- [x] Full `lake build` exits 0
+- [x] `scripts/check-module-invariants.sh`, `scripts/check-evidence-probes.sh`, `scripts/check-phantom-citations.sh` exit 0
+- [x] `verify-deploy.sh` run and classified
+- [x] README `## Modules` cells equal `wc -l`; `Compose.lean` reason comment no longer cites a retired suppression
+- [x] No task-number citation introduced under `FormalSystem/` or `Tests/`
 
 ## Artifacts & Outputs
 
