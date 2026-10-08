@@ -11,8 +11,8 @@ next_project_number: 739
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,735,737,738 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,737,738 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,735 | 298,464,502,616,737 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -78,8 +78,8 @@ next_project_number: 739
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
 737 [NOT STARTED] — Discharge the Presents hypothesis bundle: formalize the...
+  └─ 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
 738 [NOT STARTED] — Pin the complexity-class divergence behind the CTL-star...
 
 ### Formula Refactor
@@ -172,7 +172,7 @@ WHAT IS OWED: THE FOUR FIELDS, each discharged or explicitly refused with its ob
 
 (4) `verdict` -- T at a representative block of the family. Added under the substrate plan's own clause, not an independent assumption; check whether it follows from (1)-(3) before treating it as separate work.
 
-THE SUBSTRATE ALREADY IN HAND, to be re-verified before use, not re-proved. FormalSystem/Metalogic/WeakCanonical/KTypeSummary/ (`Basic`, `Segment`, `Family`, `Saturation`, `Universal`, plus aggregator and README): Buechi's complementation chain in the monadic k-type idiom over the Z time axis, steps 2, 3, 3', 4, 5a and 5b, zero sorries, headline results verified on the standard axiom profile [propext, Classical.choice, Quot.sound]. Its one non-trivial ingredient is in-tree: FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs (GroupModel/RamseyFactorization.lean:146), proved from scratch, absent from Mathlib at pin v4.33.0-rc1. Eleven axiom pins are recorded in Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean.
+THE SUBSTRATE ALREADY IN HAND, to be re-verified before use, not re-proved. FormalSystem/Metalogic/WeakCanonical/KTypeSummary/ (`Basic`, `Segment`, `Family`, `Saturation`, `Universal`, plus aggregator and README): Buechi's complementation chain in the monadic k-type idiom over the Z time axis, steps 2, 3, 3', 4, 5a and 5b, zero sorries, headline results verified on the standard axiom profile [propext, Classical.choice, Quot.sound]. Its one non-trivial ingredient is in-tree: FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs (GroupModel/RamseyFactorization.lean:82), which since task 711 Phase 1 relocated it is an ALIAS; the canonical declaration is Nat.exists_strictMono_const_pair_colour at FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean:134 -- CITE THE ForMathlib HOME AS THE DURABLE ANCHOR, proved from scratch there, absent from Mathlib at pin v4.33.0-rc1. ANCHOR WARNING, verified 2026-10-07: several existing records (specs/ROADMAP.md, task 711 own description, and the 711 and 732 reports and plans) cite this theorem at RamseyFactorization.lean:146, which is wrong and was already stale before task 711 ran (the declaration sat at line 73 immediately before that dispatch and at 82 after it; line 146 is an unrelated Sum.Lex.predOrder instance). Re-resolve the declaration by name, never by the cited line. Eleven axiom pins are recorded in Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean.
 
 THE LITERATURE ROUTE, as selected and re-confirmed. The device is the time-axis Ramsey-coloured summary, candidate (d), FRAMED BY the MSO-over-Z-less-than quasimodel route, candidate (c). The frame is what this task must now actually formalize: Hodkinson-Wolter-Zakharyaschev, APAL 106 (2000), Theorem 15 (flows including Z-less-than); Gabbay-Kurucz-Wolter-Zakharyaschev 2003, Theorem 1.28 (MSO theory of Z-less-than is decidable), Lemma 11.23 (quasimodel existence as an MSO sentence), Theorem 13.6 (S5 times linear time). Task 736 re-audited the selection against ~/Projects/cslib/ and returned verdict (i) KEEP candidate (d): E3's selection stands, so there is no premise risk under this work.
 
@@ -235,7 +235,7 @@ ACCEPTANCE. (1) A research report under specs/736_cslib_omega_automata_survey_an
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 711
+- **Dependencies**: Task 711, Task 737
 
 **Description**: Assemble the decidable stab check on the ray-product presentation: Decidable (PlusValidZTime phi)
 
@@ -245,18 +245,29 @@ WHAT IS OWED. `Decidable (PlusValidZTime phi)` -- or an explicit, recorded verdi
 
 WHAT IS ALREADY IN HAND, to be re-verified before use. The keystone, under `[F.IsRegular]` and not unconditionally: `plusStab_iff_rays` (general task frame) and `plusStab_iff_omega` (omega-sequence form over Z) in `FormalSystem/PlusLanguage/PlusRayFibre.lean`, with `seamOmegaEquiv` and `pathFibreEquiv`; the seam-gluing machinery in `FormalSystem/Semantics/Presheaf/Ray.lean` (`seamGlue` and its `pastOf`/`futOf` round-trips). Carrier normalization for L+ is landed: `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt`, the prerequisite any integer-indexed enumeration rests on. The alphabet is licensed by the depth stratification; the necessity of a universal, complementation-shaped summary is proved, and a nondeterministic summary is proved UNSOUND. Names read at 2026-10-05; re-check each.
 
-WHAT BLOCKS IT. The universal summary device is not selected -- that is task 732 (experiment E3), on which the substrate task 711 is blocked. This task depends on 711 and must not be planned or implemented before the substrate exists. Filing it now makes the chain visible and gives the aim an owner; it is not a licence to start.
+NEW INPUTS FROM THE COMPLETED SUBSTRATE (711), names verified 2026-10-07; re-check each before use.
+* `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/` -- `Basic`, `Segment`, `Family`, `Saturation`, `Universal`, the `KTypeSummary.lean` aggregator, and a README: Buchi's complementation chain carried in the monadic k-type idiom over the Z time axis, steps 2, 3, 3-prime, 4, 5a and 5b, ZERO SORRIES, with the headline results resting on the standard axiom profile `[propext, Classical.choice, Quot.sound]` and on the in-tree `FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs` (`GroupModel/RamseyFactorization.lean:82`).
+* Eleven axiom pins in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`.
+* `FormalSystem/Metalogic/Decidability/RaySummary/Seam.lean`, carrying `SeamSummary` (line 84), the four-field hypothesis bundle `Presents` (lines 111-128), and the bridge `plusStab_iff_seamSummary` (line 139).
+
+DEPENDENCY POSITION. Dependencies are now [711, 737]. The universal summary device IS selected: task 732 (experiment E3) completed and reported its selection, task 711 completed and built the substrate on it, and task 736 re-audited that selection and returned verdict (i) KEEP candidate (d) -- E3's selection stands. What remains outstanding is not the device but the discharge of the hypothesis bundle the substrate's bridge is stated against, which is task 737's (see THE CONDITIONALITY). This task may be planned; it may not be implemented as an unconditional result ahead of 737.
+
+THE CONDITIONALITY -- THE SHARPEST CONSTRAINT ON WHAT MAY BE CLAIMED. 711 states `plusStab_iff_seamSummary` AGAINST `Presents` and discharges NOTHING of it. The bridge's own docstring is explicit: "Nothing here reduces box-dot to anything -- the reduction is the hypothesis `colours`." The `colours` field IS the unformalized MSO-over-<Z,<> reduction, recorded by 711 at MEDIUM confidence. Discharging that bundle is owned by task 737 (`discharge_presents_mso_reduction_seam_summary`, not_started, dependencies [711], topic decidability), not by this task.
+
+TWO HONEST LIMITS CARRIED FORWARD FROM 711, unchanged.
+(1) The backward `box-dot(Pp)` bridge is fixed ONLY by `Probe719Backward.pastStab_iff_allBwdPathsMeet` on the asymmetric fixture (`specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean:577`); there is still NO backward Bool-fixture bridge.
+(2) E2's falsifier check is a WEAK POSITIVE -- one state per stratum value -- with the three-state fixture a named follow-up.
 
 THREE CAUTIONS THAT BOUND WHAT MAY BE CLAIMED.
 (1) Gluing does NOT bound the fibre. The route concedes INFINITE fibres and seeks a finite PRESENTATION -- the only move `Probe710.not_finite_width_fmp` leaves open. Any phase that quietly reintroduces a finite-fibre assumption is reproducing a refuted shape.
 (2) The binary seam case is choice-free while the DIRECTED case needs Saturation, so an omega-ray built by iterated gluing is a directed colimit, not a finite paste.
-(3) NO UPPER BOUND MAY BE CLAIMED. The external ceiling is the ARGUED (not formalized) CTL-star 2EXPTIME lower bound held in task 713 as a citable sanity anchor; nothing cheaper than it is credible, and it is never a source for an upper bound.
+(3) NO UPPER BOUND MAY BE CLAIMED. The external ceiling is the ARGUED (not formalized) CTL-star 2EXPTIME lower bound held in task 713 as a citable sanity anchor; nothing cheaper than it is credible, and it is never a source for an upper bound. Quote the ceiling ONLY with its ARGUED qualifier. Task 738 (`pin_complexity_class_divergence_sanity_ceiling`) now owns the unresolved co-NEXPTIME/NEXPTIME divergence in the ceiling's own sources, so do not restate the certificate-class consequence until 738 rules.
 
-HARD CONSTRAINTS. Never write "L+ is decidable" unqualified, and never state a decidability result for L+ without carrying its frame class, its language fragment, its premise set and its hypothesis (`[F.IsRegular]` at minimum). A recorded verdict that the presentation cannot deliver the result is a complete and valid outcome, and is preferable to a true-looking name over a proof that does not reach it -- the exact defect the retired-as-vacuous section of `FormalSystem/Metalogic/Decidability/Correctness.lean` exists to document.
+HARD CONSTRAINTS. Never write "L+ is decidable" unqualified, and never state a decidability result for L+ without carrying its frame class, its language fragment, its premise set and its hypothesis (`[F.IsRegular]` at minimum). DO NOT assemble `Decidable (PlusValidZTime phi)` on top of an UNDISCHARGED `Presents` and present the result as unconditional: that would satisfy this task's acceptance criterion with a theorem whose content is carried entirely by a hypothesis -- exactly the "true-looking name over a proof that does not reach it" defect these HARD CONSTRAINTS forbid, and that the retired-as-vacuous section of `FormalSystem/Metalogic/Decidability/Correctness.lean` exists to document. A recorded verdict that the presentation cannot deliver the result is a complete and valid outcome, and is preferable to such a name.
 
 FILE SCOPE IS DELIBERATELY ABSENT. Which files this task writes depends on which device experiment E3 selects, so declaring a scope now would either be a guess or a phantom path. SET `file_scope` AT PLAN TIME, before any implement dispatch -- an absent scope makes this task invisible to the batch admission gate's overlap detection, which is a known blindness and not an exemption.
 
-ACCEPTANCE. Either `Decidable (PlusValidZTime phi)` machine-checked with every qualifier carried and its axiom set pinned in the invariants harness and a row added to the Decidability section of `docs/theorem-index.md`; or a recorded, cited verdict naming what the ray-product presentation cannot deliver and why, with the obstruction stated as a theorem or a wired probe rather than as prose.
+ACCEPTANCE. Either `Decidable (PlusValidZTime phi)` machine-checked with every qualifier carried -- including, if `Presents` or any successor bundle is still undischarged, that hypothesis stated in the result rather than hidden -- and its axiom set pinned in the invariants harness and a row added to the Decidability section of `docs/theorem-index.md`; or a recorded, cited verdict naming what the ray-product presentation cannot deliver and why, with the obstruction stated as a theorem or a wired probe rather than as prose.
 
 ---
 

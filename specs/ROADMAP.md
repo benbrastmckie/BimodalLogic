@@ -52,9 +52,11 @@ future-ray spaces over the seam state: `plusStab_iff_rays` (general task frame) 
 (`plusValidZTime_iff_plusValidInt`).
 
 **Selected — experiment E3 has run.** The summary device is the **time-axis Ramsey-coloured
-summary**, resting on the in-tree `FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs`
-(`WeakCanonical/GroupModel/RamseyFactorization.lean:146`; proved from scratch, standard axioms,
-absent from Mathlib at the pin), **framed by** the MSO-over-⟨ℤ,<⟩ quasimodel route
+summary**, resting on the in-tree `Nat.exists_strictMono_const_pair_colour`
+(`ForMathlib/Combinatorics/InfiniteRamseyPairs.lean:134`; proved from scratch, standard axioms,
+absent from Mathlib at the pin), reachable as the alias
+`FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs`
+(`WeakCanonical/GroupModel/RamseyFactorization.lean:82`), **framed by** the MSO-over-⟨ℤ,<⟩ quasimodel route
 (Hodkinson–Wolter–Zakharyaschev 2000; Gabbay–Kurucz–Wolter–Zakharyaschev 2003), which covers the
 target flow exactly and needs no Safra construction. Safra/Piterman and Safraless are **NOT
 selected**: the per-path acceptor is already deterministic, Mathlib carries zero ω-automata
