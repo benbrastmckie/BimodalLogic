@@ -117,6 +117,7 @@ next_project_number: 743
 - **Dependencies**: Task 737
 - **Research**: [742_compute_hit_realizability_device/reports/01_compute-hit-realizability-device.md]
 - **Plan**: [742_compute_hit_realizability_device/plans/01_compute-hit-realizability-device.md]
+- **Summary**: [742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md]
 
 **Description**: Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
 

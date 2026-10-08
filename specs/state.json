@@ -1548,6 +1548,11 @@
           "path": "specs/742_compute_hit_realizability_device/plans/01_compute-hit-realizability-device.md",
           "type": "plan",
           "summary": "10 phases, 6 waves, 19 hours; lands B1, B2a, B3a, B3b and the B2b verdict probe; B2b itself deferred to a described successor record"
+        },
+        {
+          "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
+          "type": "summary",
+          "summary": "Phases 1-2 of 10: computable k-type (B3a) and the closure alphabet, run conditions, anchors and generic bridge (B1)."
         }
       ],
       "next_artifact_number": 2
