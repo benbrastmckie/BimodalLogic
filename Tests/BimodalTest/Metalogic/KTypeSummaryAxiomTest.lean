@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization
 import FormalSystem.Metalogic.Decidability.RaySummary
+import FormalSystem.Metalogic.Decidability.RaySummary.SeamMulti
 
 /-!
 # Axiom-profile evidence for the `k`-type summary substrate
@@ -31,15 +32,25 @@ signal that a profile moved.
 | saturation core | 5a | `kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple` |
 | saturation proper, finite-family cover | 5b | `family_saturation`, `target_eq_union_of_families` |
 | the `⊡` bridge (seam interface) | — | `plusStab_iff_seamSummary` |
+| every depth-`≤ k` sentence target is `k`-type-determined | 5b | `determinedByKType_eval` |
+| the single-family bundle is seam decidedness | seam interface | `exists_presents_iff` |
+| the hypothesis-free `⊡` bridge over `Hit` | seam interface | `plusStab_iff_forall_hit` |
+| the multi-family bridge | seam interface | `plusStab_iff_presentsMulti` |
+| the multi-family bundle, inhabited | seam interface | `presentsMulti_seamTrace` |
 
 Rows for the later steps are appended as their modules land.
 
 ## What this does **not** pin, and why
 
 Nothing here measures a decidability result, because the cluster proves none: saturation is
-proved for `k`-type-determined targets over coloured `ℤ`-blocks, and no reduction from a `⊡`
-fibre condition to such a target exists in Lean anywhere. A green build of this file certifies
-the axiom profiles, not adequacy.
+proved for `k`-type-determined targets over coloured `ℤ`-blocks. The seam interface now states
+the `⊡` bridge over the realized family triples **without** a hypothesis bundle
+(`plusStab_iff_forall_hit`, `RaySummary/SeamMulti.lean`) — but the realized set `Hit` is not
+computed anywhere, and `presentsMulti_seamTrace`'s `Bool` is `decide` under `open Classical`,
+so the inhabitant carries the answer rather than finding it. The single-family bundle
+`Presents` is, by `exists_presents_iff`, inhabited exactly when the seam is `⊡`-decided — a
+seam condition, not a reduction. A green build of this file therefore certifies the axiom
+profiles, not adequacy and not decidability.
 
 ## When one of these guards fires
 
@@ -147,5 +158,50 @@ that any seam is ever presented.
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_seamSummary
+
+/-! ## Step 5b, sentence level: every depth-`≤ k` sentence target is `k`-type-determined
+
+`determinedByKType_eval` is `determinedByKType_nfEval` lifted through Doets's Lemma 1.1
+(`doets_lemma_1_1`); it is the shape in which the seam interface's `determined` field is
+discharged for an arbitrary sentence target. The `Classical.choice` is `doets_lemma_1_1`'s.
+-/
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.determinedByKType_eval' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.determinedByKType_eval
+
+/-! ## The seam interface, corrected: the characterization and the hypothesis-free bridge
+
+`exists_presents_iff` pins the obstruction — the single-family bundle is inhabited iff the seam
+is `⊡`-decided — and `plusStab_iff_forall_hit` pins the bridge that needs no bundle: `⊡φ` at
+the seam iff the two-letter target holds on every block of every realized family triple. The
+multi-family bundle's bridge `plusStab_iff_presentsMulti` and its inhabitant
+`presentsMulti_seamTrace` are pinned beside them. What a green build certifies is the four
+profiles — not that `Hit` is computed (it is not), not a decision procedure, not decidability.
+-/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_presents_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_presents_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_hit
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_presentsMulti' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_presentsMulti
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.presentsMulti_seamTrace' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.presentsMulti_seamTrace
 
 end BimodalTest.Metalogic
