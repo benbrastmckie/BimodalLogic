@@ -18,18 +18,25 @@ open mathematics.
 Each line is one `/orchestrate` invocation. Batches are dependency-inclusive: the engine
 re-derives eligibility every cycle from the dependency graph, so a batch containing both a
 blocker and its dependent is correct — the blocker runs first and the dependent waves in behind
-it. `MAX_TASKS` is 8 and the work-cycle budget is 5 **per invocation**, resetting each time, so a
-long batch is expected to need re-invocation: **re-run the same line until it reports every member
+it. `MAX_TASKS` is 8 and the work-cycle budget is **per task, per invocation**, resetting each time:
+5 by default and 13 under `--hard` (measured 2026-10-08 — a 10-phase `--hard` task consumed 12 of
+its 13, and a sibling in the same batch drew on its own full 13, so batching did not starve it).
+A long batch may still need re-invocation: **re-run the same line until it reports every member
 terminal.** A batch whose members share a declared file is not broken, only serialized — the
 admission gate defers the collider each cycle until its sibling goes terminal.
 
 ```bash
 # --- Decidability front (Phases 1-2): run these to exhaustion before anything below ---
-/orchestrate 735 --hard --lit         # landed 2026-10-08 as a verdict; 742 is complete; 735's verdict
-                                      # does not depend on B2b (RaySummary README, "The verdict")
-/orchestrate 709,740 --hard           # F4 summary step + KTypeSummary housekeeping
-/orchestrate 739,733,734,725 --lit    # evidence probes + one ruling; serialized on the collection
-/orchestrate 716,714,712 --hard       # sliced-certificate defect, label evaluation, closure
+# 742 and 735 are COMPLETE (2026-10-08). The ray-product route R1 closed with a NEGATIVE
+# verdict, so nothing below is R1's critical path any more: every remaining line here is
+# evidence, fallback or housekeeping. Reviving a critical path requires FILING (C), (S) or (W)
+# (RaySummary README, "The verdict") — the user's call, which this roadmap does not make.
+/orchestrate 739,733,734,725 --lit    # evidence probes + one ruling; serialized on the collection.
+                                      # 734 is the mosaic route R2 and is now the live fallback
+/orchestrate 709,740 --hard           # F4 summary step + KTypeSummary housekeeping. NOTE: 709 was
+                                      # R1's summary step; re-rule on its value before dispatching
+/orchestrate 716,714,712 --hard       # sliced-certificate defect, label evaluation, closure.
+                                      # 712 is [BLOCKED] with NO reason recorded — see Phase 1
 /orchestrate 720                      # citation re-point; shares the evidence collection above
 
 # --- Subordinate fronts, in priority order ---
@@ -98,7 +105,7 @@ exactly that discharge: constructing a regular model from a presentation (B2b), 
 bullet below. `Hit` is still never computed for a model outright.
 
 **The critical path to `Decidable (PlusValidZTime φ)` is NOT through B2b.** 735 landed its
-verdict (RaySummary README, "The verdict"; the 735 bullet below): the ray-product presentation as
+verdict (RaySummary README, "The verdict"): the ray-product presentation as
 landed — `seamOmegaEquiv` + `hitOf` + `Presented` — cannot deliver the decision procedure, by the
 wired probe `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean`
 (`Probe735.not_presented`: `Presented` fails on a three-state regular ℤ-model for every finite
@@ -130,28 +137,6 @@ Bool-fixture bridge**, so a forward-only result must say so rather than implying
 `⊡(Fp)`/`⊡(Pp)` shapes are **device-inert** on finite fixtures, so no record may claim they
 discriminate between devices.
 
-- [x] Compute `Hit` — landed component by component, under `[F.IsRegular]` over the `ℤ` time
-      axis, zero sorries, every headline pinned in `KTypeSummaryAxiomTest.lean`: (B1) the
-      closure alphabet `clSig` with HWZ 2000 Def 11's local run conditions `LocalRun`, the anchors
-      `Anchored`, and the signature-generic bridge `plusStab_iff_forall_hitSig`
-      (`RaySummary/Closure.lean`); (B2a) the closure trace of a history is the unique anchored
-      local run — `clTrace_localRun`, `clTrace_anchored`, `eq_clTrace_of_localRun_anchored`
-      (`RaySummary/Trace.lean`); (B3a) the computable `kTypeOfFin` equal to the classical
-      `kTypeOf`, `kTypeOfFin_eq` (`KTypeSummary/KTypeFin.lean`); (B3b) composition on
-      representatives `kTypeOf_listSeg_append_congr` (`RaySummary/Compose.lean`), the computable
-      path-type closure `pathTypes`/`pathTypesNow` (`RaySummary/Present.lean`), and the computable
-      realized-triple set `hitOf` with `mem_hitOf_iff` (`RaySummary/HitOf.lean`; it reads
-      liveness over disjoint segments, `fwdLiveSep`/`bwdLiveSep`); and the per-model bridge
-      `hit_eq_hitOf_of_presented` under the explicit hypothesis `Presented`, with the `⊡` bridge
-      restated over `hitOf` (`plusStab_iff_forall_hitOf_of_presented`, which decides nothing).
-      `#eval` witnesses run in `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`. (B2b) is NOT
-      landed and carries a MACHINE-CHECKED verdict instead: the wired probe
-      `quasistate_does_not_determine_hit`
-      (`specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean`) shows
-      per-time quasistates in HWZ's verbatim shape (bare type sets plus the consecutive-type
-      relation) do not determine `Hit`, so any realization must carry joint realization through
-      the seam. Forward-only fixtures; no backward Bool-fixture bridge; no complexity bound
-      (Task 742)
 - [ ] Realize a seam presentation — HWZ 2000 Thm 14 ⇐ for the `⊡` fibre, the B2b successor
       record: product summaries `BwdSummary × FwdSummary` of the two atom-sequence ray languages
       (the fibre is a product, `seamOmegaEquiv`, so a per-state summary must be splice-closed),
@@ -168,26 +153,6 @@ discriminate between devices.
       of this record's reach (`presented-not-complete.lean`): it is requirement (S) of 735's
       verdict and only (S), and 735's verdict does not depend on it. Filing it, and any dependency
       edit, remains the user's call
-- [x] Assemble the decidable stab check on the ray-product presentation — landed as the
-      acceptance criterion's **second branch**, a recorded verdict: the ray-product presentation
-      (`seamOmegaEquiv` + `hitOf` + `Presented`) cannot deliver `Decidable (PlusValidZTime φ)`,
-      and the obstruction is machine-checked, not argued — the wired probe
-      `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` (headline
-      `Probe735.not_presented`, `[propext, Classical.choice, Quot.sound]`) refutes `Presented` on a
-      three-state regular ℤ-model at the seam with `Fp` for **every** finite `Q`, `lab`, `step`, by
-      pumping a repeated run state against the `untl` run condition. `Presented` is a soundness
-      device only, never a completeness carrier; no enumeration of `Presented`-presentations
-      decides validity, whether or not B2b is ever built. Beside the verdict, the one positive
-      in-frame result: under `Presented`, `⊡φ` at the seam is the run-level condition
-      `plusStab_iff_forall_run_of_presented` (`RaySummary/Trace.lean`), decided by state liveness
-      in the `now`-free step graphs — `onRun_iff_live`, `stabCheckSig`, `stabCheckSig_iff`,
-      `stabCheck_iff_of_presented`, `decidableStabOfPresented` (`RaySummary/StabCheck.lean`), zero
-      sorries, pinned in `KTypeSummaryAxiomTest.lean` and C14, indexed as **Conditional**, vacuous
-      on model A. HARD CONSTRAINTS kept: `Decidable (PlusValidZTime φ)` is stated nowhere, in no
-      form; every statement carries `[F.IsRegular]`, L⁺ and ℤ time under `Presented`; no bound is
-      claimed; "L⁺ is decidable" is written nowhere. What the lift to validity still needs — (C),
-      (S), (W) — is named, not filed, in the RaySummary README, "The verdict" (Task 735)
-      *(Completed: Task 735, 2026-10-08)*
 - [ ] Prove F4, finite width ⇒ eventually periodic, as R1's **summary step**. A Ramsey colour was
       selected, so F4 *is* the device. Any surviving statement must name its restricted fragment
       and say in its docstring why `not_finite_width_fmp` does not refute it (Task 709)
@@ -219,14 +184,13 @@ the quasimodel method, routing back to R1/R2.
 
 **Contention.** 739, 733 and 734 are three writers on `scripts/check-evidence-probes.sh` and
 `specs/evidence/seam-gluing-ray-product/`, and 720 (Phase 2) is a fourth — batched together they
-serialize rather than fail. 742 overlaps `RaySummary/` and `KTypeSummary/` with 740, which is why
-740 batches with 709 instead.
+serialize rather than fail. 740 overlaps `RaySummary/` and `KTypeSummary/` with the now-complete
+742, so it is clear to batch with 709.
 
 ```bash
-/orchestrate 735 --hard --lit         # landed 2026-10-08 as a verdict: 735's verdict does not depend
-                                      # on B2b (RaySummary README, "The verdict"); 742 is complete
-/orchestrate 709,740 --hard
-/orchestrate 739,733,734,725 --lit    # serialized on the evidence collection
+/orchestrate 739,733,734,725 --lit    # serialized on the evidence collection; 734 is R2, the
+                                      # live fallback now that R1 has returned its verdict
+/orchestrate 709,740 --hard           # re-rule on 709 first: it was R1's summary step
 ```
 
 ---
