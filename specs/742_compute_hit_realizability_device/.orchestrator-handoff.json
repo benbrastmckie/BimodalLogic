@@ -1,29 +1,34 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 3 (B2a (i)) complete and committed (8cf2da430): Trace.lean proves the closure trace satisfies every run condition (clTrace_localRun) and every anchor (clTrace_anchored), each field Iff.rfl; lands HitCl (finite), the closure-instance bridge plusStab_iff_forall_hitCl with anchors discharged by clTrace_anchored, and reading (R1) as the theorem hitCl_eq_iUnion (explicitly not a computation); scoped and library builds green, 0 sorries, standard axiom profile on all seven headlines. Phases 4-10 not started (single-phase dispatch).",
+  "summary": "Phase 4 (B3b (i)) complete and committed (2cbd0a23c): Compose.lean lands listSeg (carrier Fin l.length, computable instances, kTypeOfFin_listSeg), labels with kTypeOf_segZ_eq_listSeg (a time-axis segment has the k-type of its label list, by k_equiv_of_iso), listSeg_append_kEquiv (a concatenation is the two-point ordered sum of its parts) and the composition congruence kTypeOf_listSeg_append_congr (the I = J = Bool instance of kEquiv_orderedSum_of_kEquiv_colour); scoped build green (1924 jobs, 0 errors, 0 warnings), sorry census --cross-check 0/0 MATCH, all four headline theorems on [propext, Classical.choice, Quot.sound], #eval computability witnesses run at depth 1. Per the plan the module is not yet imported by the aggregator (Phase 6 owns RaySummary.lean). Phases 5-10 not started (single-phase dispatch).",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Phases 1-3 of 10: computable k-type (B3a), the closure alphabet with run conditions, anchors and generic bridge (B1), and the trace-is-an-anchored-local-run soundness half of B2a."
+      "summary": "Phases 1-4 of 10: computable k-type (B3a), the closure alphabet with run conditions, anchors and generic bridge (B1), the trace-is-an-anchored-local-run soundness half of B2a, and label-list segments with composition on representatives (B3b (i))."
     },
     {
       "type": "handoff",
-      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-3-handoff-20261008T095427Z.md",
-      "summary": "Phase 3 handoff: next action is Phase 5's eq_clTrace_of_localRun_anchored; Phases 4 and 8 admissible in the same wave."
+      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-4-handoff-20261008T101155Z.md",
+      "summary": "Phase 4 handoff: next action is Phase 5's eq_clTrace_of_localRun_anchored; Phase 6 now unblocked and Phase 8 admissible in the same wave."
     }
   ],
-  "phases_completed": 3,
+  "phases_completed": 4,
   "phases_total": 10,
-  "dispatch_seq": 5,
+  "dispatch_seq": 6,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-3-handoff-20261008T095427Z.md",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-4-handoff-20261008T101155Z.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 4,
-    "resume_from": "Phase 4 (B3b (i), Compose.lean: listSeg, kTypeOf_segZ_eq_listSeg, kTypeOf_listSeg_append_congr) or Phase 5 (B2a (ii), eq_clTrace_of_localRun_anchored in Trace.lean by structural induction on the closure formula); Phase 8 (verdict probe) remains admissible",
-    "completed_phases": [1, 2, 3]
+    "next_phase": 5,
+    "resume_from": "Phase 5 (B2a (ii), eq_clTrace_of_localRun_anchored in Trace.lean by structural induction on the closure formula) or Phase 6 (B3b (ii), Compose.lean + RaySummary.lean: finite labelled presentations and the path-type closure, now unblocked by Phase 4); Phase 8 (verdict probe) remains admissible",
+    "completed_phases": [
+      1,
+      2,
+      3,
+      4
+    ]
   }
 }

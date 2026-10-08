@@ -8,21 +8,21 @@
   ],
   "task_number": 742,
   "session_id": "sess_1791448118_c50a56",
-  "dispatch_seq": 5,
-  "phase_number": 3,
-  "phases_completed": 3,
+  "dispatch_seq": 6,
+  "phase_number": 4,
+  "phases_completed": 4,
   "phases_total": 10,
   "requires_user_review": false,
-  "summary": "Phase 3 (B2a (i)) complete and committed (8cf2da430): Trace.lean lands clTrace_localRun and clTrace_anchored (every LocalRun/Anchored field closed by Iff.rfl, as the plan predicted), clTrace_clPhi, familyTriples, hitSig_eq_iUnion, HitCl with hitCl_finite, the closure-instance bridge plusStab_iff_forall_hitCl, and hitCl_eq_iUnion (reading R1, a theorem and not a computation); aggregator and library-root builds green (2832 jobs, 0 errors, 0 warnings), 0 sorries, all seven headline theorems on [propext, Classical.choice, Quot.sound], axiom count 14 = baseline. Phases 4-10 not started (single-phase dispatch).",
+  "summary": "Phase 4 (B3b (i)) complete and committed (2cbd0a23c): Compose.lean lands listSeg (carrier Fin l.length, computable instances, kTypeOfFin_listSeg), labels with kTypeOf_segZ_eq_listSeg (a time-axis segment has the k-type of its label list, by k_equiv_of_iso), listSeg_append_kEquiv (a concatenation is the two-point ordered sum of its parts) and the composition congruence kTypeOf_listSeg_append_congr (the I = J = Bool instance of kEquiv_orderedSum_of_kEquiv_colour); scoped build green (1924 jobs, 0 errors, 0 warnings), sorry census --cross-check 0/0 MATCH, all four headline theorems on [propext, Classical.choice, Quot.sound], #eval computability witnesses run at depth 1. Per the plan the module is not yet imported by the aggregator (Phase 6 owns RaySummary.lean). Phases 5-10 not started (single-phase dispatch).",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Phases 1-3 of 10: computable k-type (B3a), the closure alphabet with run conditions, anchors and generic bridge (B1), and the trace-is-an-anchored-local-run soundness half of B2a."
+      "summary": "Phases 1-4 of 10: computable k-type (B3a), the closure alphabet with run conditions, anchors and generic bridge (B1), the trace-is-an-anchored-local-run soundness half of B2a, and label-list segments with composition on representatives (B3b (i))."
     }
   ],
   "handoff_path": "specs/742_compute_hit_realizability_device/.orchestrator-handoff.json",
-  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-3-handoff-20261008T095427Z.md",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-4-handoff-20261008T101155Z.md",
   "sorry_inventory": [],
   "blockers": [],
   "verification": {
@@ -31,41 +31,48 @@
     "axiom_count": 14,
     "axiom_baseline": 14,
     "build_passed": true,
-    "build_scope": "FormalSystem.Metalogic.Decidability.RaySummary.Trace (scoped, 1926 jobs, guard exit 0) then FormalSystem.Metalogic.Decidability.RaySummary + FormalSystem (library root, 2832 jobs, guard exit 0, 0 errors, 0 warnings); .olean newer than source for Trace, RaySummary, FormalSystem",
-    "axiom_profile": "clTrace_localRun, clTrace_anchored, clTrace_clPhi, hitSig_eq_iUnion, hitCl_finite, plusStab_iff_forall_hitCl, hitCl_eq_iUnion: [propext, Classical.choice, Quot.sound]",
-    "sorry_census": "lean-sorry-census.sh on FormalSystem/Metalogic/Decidability/RaySummary: sorry_count 0; grep -c sorry Trace.lean = 0; compiler emitted no sorry warning",
-    "vacuous_note": "the one repository-wide match (Examples/TemporalStructures.lean:495) predates this task and is untouched; 0 introduced",
+    "build_scope": "FormalSystem.Metalogic.Decidability.RaySummary.Compose (scoped by name, 1924 jobs, guard exit 0, 0 errors, 0 warnings; probes/compose-build-2.log) plus the lake build run by lean-sorry-census.sh --cross-check over the resolved source roots (MATCH, probes/compose-sorry-census.log); .olean newer than source for Compose. Compose is deliberately not imported by RaySummary.lean yet (plan: Phase 6 owns the aggregator)",
+    "axiom_profile": "kTypeOf_listSeg_append_congr, kTypeOf_segZ_eq_listSeg, listSeg_append_kEquiv, kTypeOfFin_listSeg: [propext, Classical.choice, Quot.sound] (probes/compose-axioms.log)",
+    "sorry_census": "lean-sorry-census.sh over the resolved source roots --cross-check: sorry_count 0, compiler 0, stripper 0, MATCH; grep -c sorry Compose.lean = 0",
+    "vacuous_note": "the one repository-wide match (Examples/TemporalStructures.lean:495, a `domain := True` example) predates this task and is untouched; 0 introduced",
     "verification_passed": true
   },
   "files_modified": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean",
     "typst/generated/status.typ"
   ],
   "completion_data": {
-    "completion_summary": "Phase 3 (B2a (i)) landed: the closure trace is an anchored local run (HWZ 2000 Thm 14 soundness half), HitCl with its finiteness and bridge, and reading (R1) as a non-computational theorem; 7 phases remain."
+    "completion_summary": "Phase 4 (B3b (i)) landed: list-letter segments with a computable k-type, the segment-to-label-list order isomorphism, and the composition congruence on representatives as the two-point instance of the mixing lemma; 6 phases remain."
   },
   "memory_candidates": [
     {
-      "content": "When a plan's checklist writes a Set-valued image as `(fun i => S i) '' Set.univ`, the form that typechecks against `Set α` is `⋃ i, S i` (the image is `Set (Set α)`); prove the generic `Set.ext fun _ => by simp only [Set.mem_setOf_eq, Set.mem_iUnion]` once and specialise.",
+      "content": "In a `List.map (fun i p => decide (c p (a + i))) (List.range n)` with `a : ℤ`, type the binder `(i : ℕ)` explicitly: otherwise `i : ℤ` is inferred and Lean coerces the whole `List ℕ` to `List ℤ` via a monadic lift (`do let a ← List.range n; pure ↑a`), which breaks every `List.getElem_map`/`getElem_range` rewrite.",
       "keywords": [
         "lean4",
-        "Set.iUnion",
-        "Set.image",
-        "plan-compliance"
+        "List.range",
+        "coercion",
+        "getElem_map"
       ]
     },
     {
-      "content": "Prop-valued `structure` fields whose statements are definitional unfoldings of a `match`-defined predicate (e.g. `clTrace`) close with `Iff.rfl` via the `where` syntax without any `unfold`/`simp`; a `¬ c _ z` field closes with `fun _ _ h => h`.",
+      "content": "`l[i]'h p` parses as `l[i]'(h p)`-ish and fails with 'has type α but expected Prop'; write `(l[i]'h) p`. Also `simp`/`rw` will not rewrite under a `getElem` whose bound proof is typed against a folded definition — restate the bound against the unfolded list (`have hi' : i < (unfolded).length := hi; change (unfolded)[i]'hi' …`) first.",
       "keywords": [
         "lean4",
-        "Iff.rfl",
-        "structure instance",
-        "definitional unfolding"
+        "getElem",
+        "parse",
+        "dependent bound proof"
+      ]
+    },
+    {
+      "content": "`lean_multi_attempt`'s whole-file diagnostics can come back empty while the scoped `lake build` still fails; treat the build log, not the LSP sweep, as the phase-closure authority.",
+      "keywords": [
+        "lean4",
+        "lean-lsp",
+        "diagnostics",
+        "lake build"
       ]
     }
   ],
-  "started": "2026-10-08T09:50:42Z",
-  "completed": "2026-10-08T09:56:08Z"
+  "started": "2026-10-08T10:00:00Z",
+  "completed": "2026-10-08T10:13:29Z"
 }
