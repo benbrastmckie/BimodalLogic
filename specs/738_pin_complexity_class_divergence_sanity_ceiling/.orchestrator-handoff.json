@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 5,
+  "summary": "Wrote a three-phase plan for task 738 from the research report's reconciliation ruling. Phase 1 rewrites 713's description and hold_reason in one state-write.sh call (canonical wording, four archive paths, closed sub-item, held_at preserved); Phase 2 inserts the ARGUED qualifier at three FormalSystem READMEs; Phase 3 audits the output for upper-bound claims, archive edits, hold integrity and Lean. No user_decision raised; 713's hold is not lifted.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/738_pin_complexity_class_divergence_sanity_ceiling/plans/01_pin-complexity-class-divergence.md",
+      "summary": "Three-phase plan: 713 record rewrite, README qualifier insertion, output audit; 2 hours; waves [1,2] then [3]."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 3,
+  "blockers": [],
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for task 738; Phases 1 and 2 are independent and may run in either order."
+}
