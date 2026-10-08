@@ -562,7 +562,13 @@ instead of moving).
 
 ---
 
-### Phase 4: Steps 3 and 4 — the family and the Ramsey cover, made public [NOT STARTED]
+### Phase 4: Steps 3 and 4 — the family and the Ramsey cover, made public [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-module-invariants.sh` exits 0 | The single failing check is the pre-existing C9 citation at `scripts/check-phantom-citations.sh:145` (committed in `729dc345f`), outside this task's `file_scope` and untouched by this phase — the identical exclusion Phases 1-3 recorded | Full harness run this dispatch after the move: C1 (build + `BimodalTest`), C2, C3, C33 PASS; C28 0 warnings and INV PASS on the `--no-build` confirmation after the final test-module reflow and `--emit-inventory`; `lean_verify` on `family_cover`, `exists_matching_factorization`, `inflate_right`, `inflate_left` all `[propext, Classical.choice, Quot.sound]`; probes 17/17 |
 
 **Goal**: Publish the `(τneg)^(ω*) · τzero · (τpos)^ω` family over the ℤ time axis and the Ramsey
 cover theorem that every coloured block lies in one — Büchi's steps 3 and 4, already proved in
@@ -570,41 +576,41 @@ this tree, currently private.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Family.lean` (imports
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Family.lean` (imports
       `KTypeSummary.Segment` and `FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs`;
       same namespace). Module docstring: this is Büchi's `[u]·[v]^ω` family, bi-infinite because
       the time axis is ℤ and the seam-gluing presentation glues a backward ray to a forward ray;
       name the cslib shape it mirrors (`Cslib.Automata.NA.Buchi.buchiFamily`) as a reference only;
       state that the cover is proved from `infinite_ramsey_pairs`, applied **twice**, once per
       orientation, exactly as `RamseyFactorization.lean` already does.
-- [ ] Move `structure ZFactorization` (currently `private`,
+- [x] Move `structure ZFactorization` (currently `private`,
       `RamseyFactorization.lean:343`) here, drop `private`, rename to `SegmentFactorization` if a
       clearer name is wanted (record either choice), and **add one field**
       `zero_type : kTypeOf sig k (segZ sig c (W 0) (W 1)) = τzero` with the accompanying
       `τzero : KType sig k`. Rationale: the middle segment's type is what makes the family triple
-      complete and is what Phase 5 needs; today it is implicit.
-- [ ] Move `exists_zFactorization` here, drop `private`, and extend it to produce the new field
+      complete and is what Phase 5 needs; today it is implicit. *(completed — renamed `SegmentFactorization`; the two new fields are appended LAST so the downstream `obtain` patterns grow only trailing `_`s)*
+- [x] Move `exists_zFactorization` here, drop `private`, and extend it to produce the new field
       (the witness is `kTypeOf sig k (segZ sig c (W 0) (W 1))` itself, so the added obligation is
-      `rfl`). Keep the existing proof byte-identical apart from the extra `refine` slot.
-- [ ] Define the family and its membership as plain predicates over the data, so no quotient or
+      `rfl`). Keep the existing proof byte-identical apart from the extra `refine` slot. *(deviation: altered — the theorem keeps its name `exists_zFactorization` so `inflate_right`/`inflate_left`'s call sites are untouched, and its two `infinite_ramsey_pairs` calls become `Nat.exists_strictMono_const_pair_colour`, because the alias lives downstream in `RamseyFactorization.lean` and importing it here would be a cycle; otherwise byte-identical)*
+- [x] Define the family and its membership as plain predicates over the data, so no quotient or
       `Set` machinery is introduced:
       `def InFamily (sig) [..] (k) (τneg τzero τpos : KType sig k) (c : sig.preds → ℤ → Prop) : Prop`
       — "there is a `SegmentFactorization sig k c` whose three types are `τneg`, `τzero`, `τpos`";
       and the cover `theorem family_cover (sig) [..] (k) (c) : ∃ τneg τzero τpos, InFamily sig k τneg τzero τpos c`,
       a one-line corollary of the moved existence theorem.
-- [ ] State the self-contained form the plan pins,
+- [x] State the self-contained form the plan pins,
       `theorem exists_matching_factorization` (signature under `## Lean Challenge Statements`),
       as the unbundled restatement of `family_cover` — it exists so a consumer can use the cover
       without importing the structure. Prove it by `obtain` from `family_cover`.
-- [ ] In `RamseyFactorization.lean`: delete the two moved declarations, add the import, update
+- [x] In `RamseyFactorization.lean`: delete the two moved declarations, add the import, update
       the docstring, and repair `inflate_right`/`inflate_left`'s `obtain ⟨W, hmono, hcover, τpos, τneg, hpos, hneg, hstrict, _⟩`
       destructuring for the added field (the only mechanical edit this phase makes to a proof —
       an extra `_` in each pattern; if the field order differs, follow the structure's order).
-- [ ] Pin `family_cover` and `exists_matching_factorization` in the test module; append the import
+- [x] Pin `family_cover` and `exists_matching_factorization` in the test module; append the import
       to `KTypeSummary.lean`; update the cluster README's steps 3-4 rows; `mk_all`; guarded
       scoped build; `lean_verify` the two new names **and** `inflate_left`/`inflate_right` again;
       `bash scripts/check-module-invariants.sh`; commit
-      (`task 711 phase 4: publish the k-type family and the Ramsey cover`).
+      (`task 711 phase 4: publish the k-type family and the Ramsey cover`). *(deviation: altered — harness green except the pre-existing C9 named in the Exclusions below; `exists_matching_factorization` carries the same declaration-scoped `unusedFintypeInType`/`unusedDecidableInType` suppression as `kType_finite` for its pinned binders; rollups and `typst/generated/status.typ` regenerated and staged; probes 17/17 PASS)*
 
 **Timing**: 1.5 hours
 

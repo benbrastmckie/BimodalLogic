@@ -26,6 +26,7 @@ signal that a profile moved.
 | its in-tree alias | 4 | `infinite_ramsey_pairs` |
 | the summary alphabet is finite | 2 | `kType_finite` |
 | a block is the sum of its segments | 3′ | `kEquiv_zFiber_segSum` |
+| the Ramsey cover | 4 | `family_cover`, `exists_matching_factorization` |
 
 Rows for the later steps are appended as their modules land.
 
@@ -75,5 +76,21 @@ The `Classical.choice` is inherited from `k_equiv_of_iso` and the order-isomorph
 /-- info: 'FormalSystem.Metalogic.WeakCanonical.kEquiv_zFiber_segSum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.WeakCanonical.kEquiv_zFiber_segSum
+
+/-! ## Step 4: the Ramsey cover
+
+Infinite Ramsey for pairs is applied twice, once per orientation of the time axis; the
+`Classical.choice` is the one the Ramsey ingredient already carries.
+-/
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.family_cover' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.family_cover
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.exists_matching_factorization' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.exists_matching_factorization
 
 end BimodalTest.Metalogic

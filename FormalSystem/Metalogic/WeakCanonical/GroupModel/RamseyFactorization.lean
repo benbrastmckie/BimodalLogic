@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.WeakCanonical.GroupModel.MonoDiscrete
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.GoodGroupable
 import FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs
 import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Segment
+import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Family
 
 /-!
 # Ramsey factorization and per-block inflation
@@ -47,9 +48,11 @@ by the invariant.
   with a suitably coloured `ℚ ×ₗ ℤ` appended above (resp. below), at the same depth `k`.
 
 The segment carrier `segZ` and the block-as-segment-sum lemma `kEquiv_zFiber_segSum`, both
-first proved here, now live in `KTypeSummary/Segment.lean` under the same namespace (every
-fully-qualified name is unchanged); this module imports them. `qzFiber`, the `ℚ ×ₗ ℤ` tail
-shape, is group-model-specific and stays here.
+first proved here, now live in `KTypeSummary/Segment.lean`, and the bi-infinite Ramsey
+factorization — the structure (now `SegmentFactorization`, with the middle segment's type added
+as a field) and its existence theorem `exists_zFactorization` — in `KTypeSummary/Family.lean`,
+all under the same namespace (every fully-qualified name is unchanged); this module imports
+them. `qzFiber`, the `ℚ ×ₗ ℤ` tail shape, is group-model-specific and stays here.
 
 ## References
 
@@ -334,112 +337,6 @@ def qzFiber (sig : MonadicSignature) (e : sig.preds → ℚ ×ₗ ℤ → Prop) 
   interp := fun p x => e p x
   carrierOrder := inferInstance
 
-/-! ## The bi-infinite Ramsey factorization of a coloured `ℤ`-block -/
-
-/-- The data of a Ramsey factorization: a monotone bi-infinite cutting sequence `W` covering
-`ℤ`, whose segments `[W z, W (z+1))` have one `k`-type `τneg` below the middle segment
-`[W 0, W 1)` and one `k`-type `τpos` above it, with the extremal segments nonempty. -/
-private structure ZFactorization (sig : MonadicSignature) [Fintype sig.preds]
-    [DecidableEq sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop) where
-  W : ℤ → ℤ
-  mono : Monotone W
-  cover : ∀ t : ℤ, ∃ z, W z ≤ t ∧ t < W (z + 1)
-  τpos : KType sig k
-  τneg : KType sig k
-  pos_type : ∀ z : ℤ, 0 < z → kTypeOf sig k (segZ sig c (W z) (W (z + 1))) = τpos
-  neg_type : ∀ z : ℤ, z < 0 → kTypeOf sig k (segZ sig c (W z) (W (z + 1))) = τneg
-  strict_pos : W 1 < W 2
-  strict_neg : W (-2) < W (-1)
-
-private theorem exists_zFactorization (sig : MonadicSignature) [Fintype sig.preds]
-    [DecidableEq sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop) :
-    Nonempty (ZFactorization sig k c) := by
-  haveI : Finite (KType sig k) := by
-    unfold KType
-    infer_instance
-  obtain ⟨gU, hgU, τpos, hτU⟩ :=
-    infinite_ramsey_pairs (fun a b => kTypeOf sig k (segZ sig c (a : ℤ) (b : ℤ)))
-  obtain ⟨gD, hgD, τneg, hτD⟩ :=
-    infinite_ramsey_pairs (fun a b => kTypeOf sig k (segZ sig c (-(b : ℤ)) (-(a : ℤ))))
-  have hgU_ge : ∀ n : ℕ, n ≤ gU n := fun n => hgU.le_apply
-  have hgD_ge : ∀ n : ℕ, n ≤ gD n := fun n => hgD.le_apply
-  set W : ℤ → ℤ := fun z => if 0 < z then ((gU (z - 1).toNat : ℕ) : ℤ)
-    else -((gD (-z).toNat : ℕ) : ℤ) with hW
-  have hWpos : ∀ z : ℤ, 0 < z → W z = ((gU (z - 1).toNat : ℕ) : ℤ) := by
-    intro z hz; simp only [hW, if_pos hz]
-  have hWnonpos : ∀ z : ℤ, ¬ 0 < z → W z = -((gD (-z).toNat : ℕ) : ℤ) := by
-    intro z hz; simp only [hW, if_neg hz]
-  have hmono : Monotone W := by
-    intro z z' hzz'
-    by_cases hz : 0 < z
-    · have hz' : 0 < z' := lt_of_lt_of_le hz hzz'
-      rw [hWpos z hz, hWpos z' hz']
-      exact_mod_cast (hgU.monotone (by omega))
-    · by_cases hz' : 0 < z'
-      · rw [hWnonpos z hz, hWpos z' hz']
-        have h1 : (0 : ℤ) ≤ ((gD (-z).toNat : ℕ) : ℤ) := Int.natCast_nonneg _
-        have h2 : (0 : ℤ) ≤ ((gU (z' - 1).toNat : ℕ) : ℤ) := Int.natCast_nonneg _
-        omega
-      · rw [hWnonpos z hz, hWnonpos z' hz']
-        have := hgD.monotone (show (-z').toNat ≤ (-z).toNat by omega)
-        omega
-  refine ⟨⟨W, hmono, ?_, τpos, τneg, ?_, ?_, ?_, ?_⟩⟩
-  · -- coverage
-    intro t
-    have hlow : W (-(((t.natAbs + 1 : ℕ) : ℤ))) ≤ t := by
-      rw [hWnonpos _ (by omega),
-        show (-(-(((t.natAbs + 1 : ℕ) : ℤ)))).toNat = t.natAbs + 1 by omega]
-      have h1 := hgD_ge (t.natAbs + 1)
-      omega
-    have hhigh : t < W (((t.natAbs + 2 : ℕ) : ℤ)) := by
-      rw [hWpos _ (by omega),
-        show ((((t.natAbs + 2 : ℕ) : ℤ)) - 1).toNat = t.natAbs + 1 by omega]
-      have h1 := hgU_ge (t.natAbs + 1)
-      omega
-    set zL : ℤ := -(((t.natAbs + 1 : ℕ) : ℤ)) with hzL
-    set zH : ℤ := ((t.natAbs + 2 : ℕ) : ℤ) with hzH
-    have hLH : zL ≤ zH := by omega
-    classical
-    set P : ℕ → Prop := fun n => W (zL + n) ≤ t with hP
-    have hP0 : P 0 := by simpa [hP] using hlow
-    set Nn : ℕ := (zH - zL).toNat with hNn
-    set j : ℕ := Nat.findGreatest P Nn with hj
-    have hPj : P j := Nat.findGreatest_spec (Nat.zero_le Nn) hP0
-    have hjN : j ≠ Nn := by
-      intro hje
-      have : W (zL + Nn) ≤ t := hje ▸ hPj
-      have hzHN : zL + (Nn : ℤ) = zH := by omega
-      rw [hzHN] at this
-      omega
-    have hjle : j ≤ Nn := Nat.findGreatest_le Nn
-    have hjlt : j < Nn := lt_of_le_of_ne hjle hjN
-    have hnot : ¬ P (j + 1) :=
-      Nat.findGreatest_is_greatest (n := Nn) (by omega) (by omega)
-    refine ⟨zL + j, hPj, ?_⟩
-    have : ¬ W (zL + j + 1) ≤ t := by
-      have harith : zL + (j : ℤ) + 1 = zL + ((j + 1 : ℕ) : ℤ) := by push_cast; ring
-      rw [harith]
-      exact hnot
-    omega
-  · -- positive segment types
-    intro z hz
-    rw [hWpos z hz, hWpos (z + 1) (by omega)]
-    have h1 : (z - 1).toNat < (z + 1 - 1).toNat := by omega
-    exact hτU _ _ h1
-  · -- negative segment types
-    intro z hz
-    rw [hWnonpos z (by omega), hWnonpos (z + 1) (by omega)]
-    have h1 : (-(z + 1)).toNat < (-z).toNat := by omega
-    have h2 := hτD _ _ h1
-    exact h2
-  · -- W 1 < W 2
-    rw [hWpos 1 (by omega), hWpos 2 (by omega)]
-    exact_mod_cast hgU (show ((1 : ℤ) - 1).toNat < ((2 : ℤ) - 1).toNat by omega)
-  · -- W (-2) < W (-1)
-    rw [hWnonpos (-2) (by omega), hWnonpos (-1) (by omega)]
-    have := hgD (show ((-(-1 : ℤ)).toNat) < ((-(-2 : ℤ)).toNat) by omega)
-    omega
-
 /-! ## Per-block inflation -/
 
 /--
@@ -457,7 +354,7 @@ theorem inflate_right (sig : MonadicSignature) [Finite sig.preds]
   haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨F⟩ := exists_zFactorization sig k c
-  obtain ⟨W, hmono, hcover, τpos, τneg, hpos, hneg, hstrict, _⟩ := F
+  obtain ⟨W, hmono, hcover, τpos, τneg, hpos, hneg, hstrict, _, _, _⟩ := F
   set p : ℤ := W 2 - W 1 with hp
   have hp0 : 0 < p := by omega
   set e : sig.preds → ℚ ×ₗ ℤ → Prop :=
@@ -635,7 +532,7 @@ theorem inflate_left (sig : MonadicSignature) [Finite sig.preds]
   haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨F⟩ := exists_zFactorization sig k c
-  obtain ⟨W, hmono, hcover, τpos, τneg, hpos, hneg, _, hstrict⟩ := F
+  obtain ⟨W, hmono, hcover, τpos, τneg, hpos, hneg, _, hstrict, _, _⟩ := F
   set p : ℤ := W (-2 + 1) - W (-2) with hp
   have hp0 : 0 < p := by
     have h1 : W (-2) < W (-1) := hstrict
