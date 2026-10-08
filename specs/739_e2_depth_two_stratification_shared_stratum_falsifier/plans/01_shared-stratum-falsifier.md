@@ -268,7 +268,7 @@ and by the five names appearing in the file after the phase compiles.
 
 ---
 
-### Phase 3: Strata readings, non-vacuity certificates, positive and refutation theorems [NOT STARTED]
+### Phase 3: Strata readings, non-vacuity certificates, positive and refutation theorems [COMPLETED]
 
 **Goal**: Each depth-2 value is shown to be readable through the strata (inner box-dot via its
 depth-1 stratum over the atomized model, and the landed outer-atomizing transfer lemma cited at
@@ -277,29 +277,29 @@ falsifier's question is answered non-vacuously where it holds and refuted, machi
 where it fails.
 
 **Tasks**:
-- [ ] `abbrev qAtom (e : Encoding) := e.ι (.inr Fp)`, `abbrev rAtom (e) := e.ι (.inr Pp)`,
+- [x] `abbrev qAtom (e : Encoding) := e.ι (.inr Fp)`, `abbrev rAtom (e) := e.ι (.inr Pp)`,
       `abbrev pAtom (e) := e.ι (.inl pa)`.
-- [ ] `stab_fp_iff_fresh` and `atom_iff_fresh` transcribed from the landed probe (proofs are
+- [x] `stab_fp_iff_fresh` and `atom_iff_fresh` transcribed from the landed probe (proofs are
       fixture-independent: `stab_state_only`, the `atomModel` `inl`/`inr` clauses,
       `Sum.inl_ne_inr`); `stab_pp_iff_fresh` as the twin with `Pp`/`rAtom`.
-- [ ] `depth2_via_strata_S1`, `_S2` transcribed from the landed `_1`, `_2`; `_M1` (`Fp → ⊡Pp`
+- [x] `depth2_via_strata_S1`, `_S2` transcribed from the landed `_1`, `_2`; `_M1` (`Fp → ⊡Pp`
       becomes `F p' → r`), `_M2` (`Pp → ⊡Fp` becomes `P p' → q`), `_S1past` (`P(⊡Fp)` becomes
       `P q`) by the same clause-level pattern, the `snce`/`untl` side condition discharged by
       `PlusTruth.top_true`.
-- [ ] `strata_is_atomize_S1`, `_S2`, `_M1`, `_M2`, `_S1past`: each is
+- [x] `strata_is_atomize_S1`, `_S2`, `_M1`, `_M2`, `_S1past`: each is
       `plusTruthAt_iff_atomize Mg e _ τ t`.
-- [ ] `shared_false_stratum`: witnesses `(stayA c t, t)` and `(stayC c t, t)` for any `c t`
+- [x] `shared_false_stratum`: witnesses `(stayA c t, t)` and `(stayC c t, t)` for any `c t`
       (e.g. `0 0`); both `⊡Fp` False by `stab_will_iff`. `shared_true_stratum`: witnesses
       `(fromA c t, t)` (state `b`) and `(viaD c t, t)` (state `d`); both `⊡Fp` True.
-- [ ] `value_is_function_of_stratum_S1`: rewrite both sides with `depth2_S1_iff` and the
+- [x] `value_is_function_of_stratum_S1`: rewrite both sides with `depth2_S1_iff` and the
       hypothesis with `stab_will_iff`; the right-hand sides coincide. `_M2`: both sides True by
       `depth2_M2_true`. `_S2_on_true_class`: from `hτ`, `hτ'` get `b ∨ d` on each side, then
       `depth2_S2_iff` gives True on both.
-- [ ] `not_function_of_stratum_S2`: the `shared_false_stratum` witnesses; S2 False at `a`, True
+- [x] `not_function_of_stratum_S2`: the `shared_false_stratum` witnesses; S2 False at `a`, True
       at `c` by `depth2_S2_iff`. `not_function_of_stratum_M1`: the `shared_true_stratum`
       witnesses; M1 False at `b`, True at `d` by `depth2_M1_iff`. `not_function_of_stratum_S1past`:
       same witnesses; S1' False at `b`, True at `d` by `depth2_S1past_iff`.
-- [ ] Guard compile (watch for `REPLAY`), commit the probe file by explicit path.
+- [x] Guard compile (watch for `REPLAY`), commit the probe file by explicit path.
 
 **Timing**: 1.5 hours
 

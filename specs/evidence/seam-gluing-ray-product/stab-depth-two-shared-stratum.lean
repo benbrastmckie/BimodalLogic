@@ -790,15 +790,263 @@ theorem depth2_optPastPast_false (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
     obtain ⟨s, hst, hs', -⟩ := h _ hagree
     exact viaD_state_lt _ t s hst ((stab_past_iff _ s).mp hs')
 
+/-! ## Depth 2, computed through the strata -/
+
+/-- The fresh atom naming `⊡Fp`. -/
+abbrev qAtom (e : Encoding) : Atom := e.ι (.inr Fp)
+
+/-- The fresh atom naming `⊡Pp`. -/
+abbrev rAtom (e : Encoding) : Atom := e.ι (.inr Pp)
+
+/-- The encoded copy of `p`. -/
+abbrev pAtom (e : Encoding) : Atom := e.ι (.inl pa)
+
+/-- **The fresh atom `q` reads the depth-1 stratum `⊡Fp`**: the `inr` clause of
+`TaskModel.atomModel`, transported to the present seam by `stab_state_only`. -/
+theorem stab_fp_iff_fresh (e : Encoding) (σ : WorldHistory Fg.toTaskFrame) (s : ℤ) :
+    PlusTruthAt Mg σ s (.stab Fp) ↔ PlusTruthAt (Mg.atomModel e) σ s (.atom (qAtom e)) := by
+  constructor
+  · intro h
+    exact Or.inr ⟨Fp, rfl, σ, s, rfl, h⟩
+  · rintro (⟨p, hp, _⟩ | ⟨χ, hχ, τ', t', hτ', hστ⟩)
+    · exact absurd (e.inj hp) Sum.inl_ne_inr
+    · cases Sum.inr.inj (e.inj hχ)
+      exact (stab_state_only Mg τ' σ t' s hτ' Fp).mp hστ
+
+/-- **The fresh atom `r` reads the depth-1 stratum `⊡Pp`**: the twin of `stab_fp_iff_fresh`. -/
+theorem stab_pp_iff_fresh (e : Encoding) (σ : WorldHistory Fg.toTaskFrame) (s : ℤ) :
+    PlusTruthAt Mg σ s (.stab Pp) ↔ PlusTruthAt (Mg.atomModel e) σ s (.atom (rAtom e)) := by
+  constructor
+  · intro h
+    exact Or.inr ⟨Pp, rfl, σ, s, rfl, h⟩
+  · rintro (⟨p, hp, _⟩ | ⟨χ, hχ, τ', t', hτ', hστ⟩)
+    · exact absurd (e.inj hp) Sum.inl_ne_inr
+    · cases Sum.inr.inj (e.inj hχ)
+      exact (stab_state_only Mg τ' σ t' s hτ' Pp).mp hστ
+
+/-- The encoded `p` reads `p`: the `inl` clause of `TaskModel.atomModel`. -/
+theorem atom_iff_fresh (e : Encoding) (σ : WorldHistory Fg.toTaskFrame) (s : ℤ) :
+    PlusTruthAt Mg σ s (.atom pa) ↔ PlusTruthAt (Mg.atomModel e) σ s (.atom (pAtom e)) := by
+  constructor
+  · intro h
+    exact Or.inl ⟨pa, rfl, h⟩
+  · rintro (⟨p, hp, hv⟩ | ⟨χ, hχ, _⟩)
+    · cases Sum.inl.inj (e.inj hp)
+      exact hv
+    · exact absurd (e.inj hχ) Sum.inr_ne_inl
+
+/-- **S1 through the strata**: `⊡F(⊡Fp)` is the depth-1 formula `⊡F q` over the atomized
+model. -/
+theorem depth2_via_strata_S1 (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (someFuture (.stab Fp))) ↔
+      PlusTruthAt (Mg.atomModel e) τ t (.stab (someFuture (.atom (qAtom e)))) := by
+  rw [PlusTruth.stab_iff, PlusTruth.stab_iff]
+  constructor
+  · intro h σ hσ
+    obtain ⟨s, hts, hs, -⟩ := h σ hσ
+    exact ⟨s, hts, (stab_fp_iff_fresh e σ s).mp hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg.atomModel e) (τ := σ) (t := r)⟩
+  · intro h σ hσ
+    obtain ⟨s, hts, hs, -⟩ := h σ hσ
+    exact ⟨s, hts, (stab_fp_iff_fresh e σ s).mpr hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := σ) (t := r)⟩
+
+/-- **S2 through the strata**: `⊡(Fp → ⊡Fp)` is `⊡(F p' → q)` over the atomized model. -/
+theorem depth2_via_strata_S2 (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Fp))) ↔
+      PlusTruthAt (Mg.atomModel e) τ t
+        (.stab (.imp (someFuture (.atom (pAtom e))) (.atom (qAtom e)))) := by
+  rw [PlusTruth.stab_iff, PlusTruth.stab_iff]
+  constructor
+  · intro h σ hσ hF
+    obtain ⟨s, hts, hs, -⟩ := hF
+    exact (stab_fp_iff_fresh e σ t).mp (h σ hσ ⟨s, hts, (atom_iff_fresh e σ s).mpr hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := σ) (t := r)⟩)
+  · intro h σ hσ hF
+    obtain ⟨s, hts, hs, -⟩ := hF
+    exact (stab_fp_iff_fresh e σ t).mpr (h σ hσ ⟨s, hts, (atom_iff_fresh e σ s).mp hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg.atomModel e) (τ := σ) (t := r)⟩)
+
+/-- **M1 through the strata**: `⊡(Fp → ⊡Pp)` is `⊡(F p' → r)` over the atomized model. -/
+theorem depth2_via_strata_M1 (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Pp))) ↔
+      PlusTruthAt (Mg.atomModel e) τ t
+        (.stab (.imp (someFuture (.atom (pAtom e))) (.atom (rAtom e)))) := by
+  rw [PlusTruth.stab_iff, PlusTruth.stab_iff]
+  constructor
+  · intro h σ hσ hF
+    obtain ⟨s, hts, hs, -⟩ := hF
+    exact (stab_pp_iff_fresh e σ t).mp (h σ hσ ⟨s, hts, (atom_iff_fresh e σ s).mpr hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := σ) (t := r)⟩)
+  · intro h σ hσ hF
+    obtain ⟨s, hts, hs, -⟩ := hF
+    exact (stab_pp_iff_fresh e σ t).mpr (h σ hσ ⟨s, hts, (atom_iff_fresh e σ s).mp hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg.atomModel e) (τ := σ) (t := r)⟩)
+
+/-- **M2 through the strata**: `⊡(Pp → ⊡Fp)` is `⊡(P p' → q)` over the atomized model. -/
+theorem depth2_via_strata_M2 (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Pp (.stab Fp))) ↔
+      PlusTruthAt (Mg.atomModel e) τ t
+        (.stab (.imp (somePast (.atom (pAtom e))) (.atom (qAtom e)))) := by
+  rw [PlusTruth.stab_iff, PlusTruth.stab_iff]
+  constructor
+  · intro h σ hσ hP
+    obtain ⟨s, hst, hs, -⟩ := hP
+    exact (stab_fp_iff_fresh e σ t).mp (h σ hσ ⟨s, hst, (atom_iff_fresh e σ s).mpr hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := σ) (t := r)⟩)
+  · intro h σ hσ hP
+    obtain ⟨s, hst, hs, -⟩ := hP
+    exact (stab_fp_iff_fresh e σ t).mpr (h σ hσ ⟨s, hst, (atom_iff_fresh e σ s).mp hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg.atomModel e) (τ := σ) (t := r)⟩)
+
+/-- **S1' through the strata**: `⊡P(⊡Fp)` is `⊡P q` over the atomized model. -/
+theorem depth2_via_strata_S1past (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (somePast (.stab Fp))) ↔
+      PlusTruthAt (Mg.atomModel e) τ t (.stab (somePast (.atom (qAtom e)))) := by
+  rw [PlusTruth.stab_iff, PlusTruth.stab_iff]
+  constructor
+  · intro h σ hσ
+    obtain ⟨s, hst, hs, -⟩ := h σ hσ
+    exact ⟨s, hst, (stab_fp_iff_fresh e σ s).mp hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg.atomModel e) (τ := σ) (t := r)⟩
+  · intro h σ hσ
+    obtain ⟨s, hst, hs, -⟩ := h σ hσ
+    exact ⟨s, hst, (stab_fp_iff_fresh e σ s).mpr hs,
+      fun r _ _ => PlusTruth.top_true (M := Mg) (τ := σ) (t := r)⟩
+
+/-- The landed transfer lemma at S1: it atomizes the OUTER `⊡`, so the whole depth-2 value is
+read through one depth-2 stratum atom. -/
+theorem strata_is_atomize_S1 (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (someFuture (.stab Fp))) ↔
+      TruthAt (Mg.atomModel e) τ t (atomize e (.stab (someFuture (.stab Fp)))) :=
+  plusTruthAt_iff_atomize Mg e _ τ t
+
+/-- The landed transfer lemma at S2. -/
+theorem strata_is_atomize_S2 (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Fp))) ↔
+      TruthAt (Mg.atomModel e) τ t (atomize e (.stab (.imp Fp (.stab Fp)))) :=
+  plusTruthAt_iff_atomize Mg e _ τ t
+
+/-- The landed transfer lemma at M1. -/
+theorem strata_is_atomize_M1 (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Pp))) ↔
+      TruthAt (Mg.atomModel e) τ t (atomize e (.stab (.imp Fp (.stab Pp)))) :=
+  plusTruthAt_iff_atomize Mg e _ τ t
+
+/-- The landed transfer lemma at M2. -/
+theorem strata_is_atomize_M2 (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (.imp Pp (.stab Fp))) ↔
+      TruthAt (Mg.atomModel e) τ t (atomize e (.stab (.imp Pp (.stab Fp)))) :=
+  plusTruthAt_iff_atomize Mg e _ τ t
+
+/-- The landed transfer lemma at S1'. -/
+theorem strata_is_atomize_S1past (e : Encoding) (τ : WorldHistory Fg.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mg τ t (.stab (somePast (.stab Fp))) ↔
+      TruthAt (Mg.atomModel e) τ t (atomize e (.stab (somePast (.stab Fp)))) :=
+  plusTruthAt_iff_atomize Mg e _ τ t
+
+/-! ## Non-vacuity certificates: two distinct seam states per shared class -/
+
+/-- **The shared-False class is genuinely shared**: a seam at `a` and a seam at `c` with equal
+depth-1 strata (both `⊡Fp` False). -/
+theorem shared_false_stratum :
+    ∃ (τ τ' : WorldHistory Fg.toTaskFrame) (t t' : ℤ),
+      (τ.state t : ℤ × S).2 = S.a ∧ (τ'.state t' : ℤ × S).2 = S.c ∧
+        (PlusTruthAt Mg τ t (.stab Fp) ↔ PlusTruthAt Mg τ' t' (.stab Fp)) :=
+  ⟨stayA 0 0, stayC 0 0, 0, 0, by rw [stayA_state_t], by rw [stayC_state_t],
+    by rw [stab_will_iff, stab_will_iff, stayA_state_t, stayC_state_t]; decide⟩
+
+/-- **The shared-True class is genuinely shared**: a seam at `b` and a seam at `d` with equal
+depth-1 strata (both `⊡Fp` True). -/
+theorem shared_true_stratum :
+    ∃ (τ τ' : WorldHistory Fg.toTaskFrame) (t t' : ℤ),
+      (τ.state t : ℤ × S).2 = S.b ∧ (τ'.state t' : ℤ × S).2 = S.d ∧
+        (PlusTruthAt Mg τ t (.stab Fp) ↔ PlusTruthAt Mg τ' t' (.stab Fp)) :=
+  ⟨fromA 0 0, viaD 0 0, 0, 0, by rw [fromA_state_t], by rw [viaD_state_t],
+    by rw [stab_will_iff, stab_will_iff, fromA_state_t, viaD_state_t]; decide⟩
+
+/-! ## The falsifier check: where it holds, non-vacuously -/
+
+/-- **S1 IS a function of the depth-1 stratum**, on both shared classes — with real content now,
+since each class has two distinct states. -/
+theorem value_is_function_of_stratum_S1 (τ τ' : WorldHistory Fg.toTaskFrame) (t t' : ℤ)
+    (h : PlusTruthAt Mg τ t (.stab Fp) ↔ PlusTruthAt Mg τ' t' (.stab Fp)) :
+    PlusTruthAt Mg τ t (.stab (someFuture (.stab Fp))) ↔
+      PlusTruthAt Mg τ' t' (.stab (someFuture (.stab Fp))) := by
+  rw [stab_will_iff, stab_will_iff] at h
+  rw [depth2_S1_iff, depth2_S1_iff]
+  exact h
+
+-- The hypothesis `h` is kept so the statement has the landed theorem's hypothesis shape; M2 is
+-- constant, so the proof never consults it.
+set_option linter.unusedVariables false in
+/-- **M2 IS a function of the depth-1 stratum**: it is constant. -/
+theorem value_is_function_of_stratum_M2 (τ τ' : WorldHistory Fg.toTaskFrame) (t t' : ℤ)
+    (h : PlusTruthAt Mg τ t (.stab Fp) ↔ PlusTruthAt Mg τ' t' (.stab Fp)) :
+    PlusTruthAt Mg τ t (.stab (.imp Pp (.stab Fp))) ↔
+      PlusTruthAt Mg τ' t' (.stab (.imp Pp (.stab Fp))) :=
+  iff_of_true (depth2_M2_true τ t) (depth2_M2_true τ' t')
+
+theorem ne_a_of_bd {x : S} (h : x = S.b ∨ x = S.d) : x ≠ S.a := by
+  rcases h with rfl | rfl <;> decide
+
+/-- **S2 IS a function of the depth-1 stratum on the shared-True class**: at `b` and at `d` it
+holds outright. -/
+theorem value_is_function_of_stratum_S2_on_true_class (τ τ' : WorldHistory Fg.toTaskFrame)
+    (t t' : ℤ) (hτ : PlusTruthAt Mg τ t (.stab Fp)) (hτ' : PlusTruthAt Mg τ' t' (.stab Fp)) :
+    PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Fp))) ↔
+      PlusTruthAt Mg τ' t' (.stab (.imp Fp (.stab Fp))) :=
+  iff_of_true ((depth2_S2_iff τ t).mpr (ne_a_of_bd ((stab_will_iff τ t).mp hτ)))
+    ((depth2_S2_iff τ' t').mpr (ne_a_of_bd ((stab_will_iff τ' t').mp hτ')))
+
+/-! ## The falsifier check: where it fails, machine-checked -/
+
+/-- **S2 — the landed shape — is NOT a function of the depth-1 stratum**: the seams at `a` and
+`c` share `⊡Fp` False, yet `⊡(Fp → ⊡Fp)` is False at `a` and True at `c`. -/
+theorem not_function_of_stratum_S2 :
+    ∃ (τ τ' : WorldHistory Fg.toTaskFrame) (t t' : ℤ),
+      (PlusTruthAt Mg τ t (.stab Fp) ↔ PlusTruthAt Mg τ' t' (.stab Fp)) ∧
+        ¬ PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Fp))) ∧
+          PlusTruthAt Mg τ' t' (.stab (.imp Fp (.stab Fp))) :=
+  ⟨stayA 0 0, stayC 0 0, 0, 0,
+    by rw [stab_will_iff, stab_will_iff, stayA_state_t, stayC_state_t]; decide,
+    by rw [depth2_S2_iff, stayA_state_t]; decide,
+    by rw [depth2_S2_iff, stayC_state_t]; decide⟩
+
+/-- **M1 — the mixed shape — is NOT a function of the depth-1 stratum**: the seams at `b` and
+`d` share `⊡Fp` True, yet `⊡(Fp → ⊡Pp)` is False at `b` and True at `d`. -/
+theorem not_function_of_stratum_M1 :
+    ∃ (τ τ' : WorldHistory Fg.toTaskFrame) (t t' : ℤ),
+      (PlusTruthAt Mg τ t (.stab Fp) ↔ PlusTruthAt Mg τ' t' (.stab Fp)) ∧
+        ¬ PlusTruthAt Mg τ t (.stab (.imp Fp (.stab Pp))) ∧
+          PlusTruthAt Mg τ' t' (.stab (.imp Fp (.stab Pp))) :=
+  ⟨fromA 0 0, viaD 0 0, 0, 0,
+    by rw [stab_will_iff, stab_will_iff, fromA_state_t, viaD_state_t]; decide,
+    by rw [depth2_M1_iff, fromA_state_t]; decide,
+    by rw [depth2_M1_iff, viaD_state_t]; decide⟩
+
+/-- **S1' — the past mirror of S1 — is NOT a function of the depth-1 stratum**: the seams at `b`
+and `d` share `⊡Fp` True, yet `⊡P(⊡Fp)` is False at `b` and True at `d`. -/
+theorem not_function_of_stratum_S1past :
+    ∃ (τ τ' : WorldHistory Fg.toTaskFrame) (t t' : ℤ),
+      (PlusTruthAt Mg τ t (.stab Fp) ↔ PlusTruthAt Mg τ' t' (.stab Fp)) ∧
+        ¬ PlusTruthAt Mg τ t (.stab (somePast (.stab Fp))) ∧
+          PlusTruthAt Mg τ' t' (.stab (somePast (.stab Fp))) :=
+  ⟨fromA 0 0, viaD 0 0, 0, 0,
+    by rw [stab_will_iff, stab_will_iff, fromA_state_t, viaD_state_t]; decide,
+    by rw [depth2_S1past_iff, fromA_state_t]; decide,
+    by rw [depth2_S1past_iff, viaD_state_t]⟩
+
 end Probe739SharedStratum
 
--- temporary Phase 1/2 axiom check; the permanent foot is written in Phase 4
-#print axioms Probe739SharedStratum.stab_will_iff
-#print axioms Probe739SharedStratum.stab_past_iff
-#print axioms Probe739SharedStratum.depth2_S1_iff
-#print axioms Probe739SharedStratum.depth2_S2_iff
-#print axioms Probe739SharedStratum.depth2_M1_iff
-#print axioms Probe739SharedStratum.depth2_M2_true
-#print axioms Probe739SharedStratum.depth2_S1past_iff
-#print axioms Probe739SharedStratum.depth2_optPastImp_iff
-#print axioms Probe739SharedStratum.depth2_optPastPast_false
+-- temporary Phase 1-3 axiom check; the permanent foot is written in Phase 4
+#print axioms Probe739SharedStratum.depth2_via_strata_M1
+#print axioms Probe739SharedStratum.strata_is_atomize_M1
+#print axioms Probe739SharedStratum.shared_false_stratum
+#print axioms Probe739SharedStratum.shared_true_stratum
+#print axioms Probe739SharedStratum.value_is_function_of_stratum_S1
+#print axioms Probe739SharedStratum.value_is_function_of_stratum_M2
+#print axioms Probe739SharedStratum.value_is_function_of_stratum_S2_on_true_class
+#print axioms Probe739SharedStratum.not_function_of_stratum_S2
+#print axioms Probe739SharedStratum.not_function_of_stratum_M1
+#print axioms Probe739SharedStratum.not_function_of_stratum_S1past
