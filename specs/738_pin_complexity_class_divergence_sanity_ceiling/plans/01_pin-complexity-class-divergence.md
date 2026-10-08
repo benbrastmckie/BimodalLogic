@@ -184,19 +184,19 @@ the "argued, not formalized" qualifier, as 713's record requires of every citing
 
 ---
 
-### Phase 3: Output audit and close [NOT STARTED]
+### Phase 3: Output audit and close [COMPLETED]
 
 **Goal**: Confirm the hard constraints across everything this task wrote -- no upper-bound
 claim, no archive edit, no hold lift, no Lean -- and leave the operator recommendation on
 713's hold reason recorded in the summary.
 
 **Tasks**:
-- [ ] Upper-bound sweep over the task's whole output: `git diff <base>..HEAD -- specs/state.json FormalSystem/ specs/738_pin_complexity_class_divergence_sanity_ceiling/ | grep -n -i "suffices\|upper bound\|upper-bound\|in 2EXPTIME\|2EXPTIME-complete\|decidable in\|EXPSPACE-complete"`. Every hit must be either a prohibition ("must never be restated as an upper bound", "never a source of an upper bound") or a direct quotation of 713's existing hazard text; any other hit is a defect to fix before closing.
-- [ ] Archive integrity: `git status --short specs/archive/` is empty and `git diff --stat <base>..HEAD -- specs/archive/` is empty.
-- [ ] Hold integrity: re-run Phase 1's three-field jq invariant; `grep -c "^### 713\." specs/TODO.md` is 1 and the entry is still `[HOLD]`.
-- [ ] Lean integrity: `git diff --stat <base>..HEAD -- '*.lean'` is empty.
-- [ ] Record in the implementation summary: (i) the ruling ("reconciled, not divergent") in one sentence with the direction named; (ii) the four paths corrected (three from the dispatch + the followup-scope-spec path); (iii) the three README sites qualified; (iv) RECOMMENDATION ONLY for the operator -- 713's `hold_reason` no longer names open work and its stated purpose ("keep the record live so the three citations stay valid") stands alone; if the operator wants the hold re-stated as fully settled, that is their `preflight 713 unhold` / re-hold cycle, not this task's; (v) the research report's context-extension note on archive-stable citation hygiene, as a follow-up candidate, not tasked here.
-- [ ] Final commit per the implementation contract (`task 738: complete implementation`), scoped to this task's artifacts plus `specs/state.json`/`specs/TODO.md`.
+- [x] Upper-bound sweep over the task's whole output: `git diff <base>..HEAD -- specs/state.json FormalSystem/ specs/738_pin_complexity_class_divergence_sanity_ceiling/ | grep -n -i "suffices\|upper bound\|upper-bound\|in 2EXPTIME\|2EXPTIME-complete\|decidable in\|EXPSPACE-complete"`. Every hit must be either a prohibition ("must never be restated as an upper bound", "never a source of an upper bound") or a direct quotation of 713's existing hazard text; any other hit is a defect to fix before closing. *(completed)*
+- [x] Archive integrity: `git status --short specs/archive/` is empty and `git diff --stat <base>..HEAD -- specs/archive/` is empty. *(completed)*
+- [x] Hold integrity: re-run Phase 1's three-field jq invariant; `grep -c "^### 713\." specs/TODO.md` is 1 and the entry is still `[HOLD]`. *(completed)*
+- [x] Lean integrity: `git diff --stat <base>..HEAD -- '*.lean'` is empty. *(completed)*
+- [x] Record in the implementation summary: (i) the ruling ("reconciled, not divergent") in one sentence with the direction named; (ii) the four paths corrected (three from the dispatch + the followup-scope-spec path); (iii) the three README sites qualified; (iv) RECOMMENDATION ONLY for the operator -- 713's `hold_reason` no longer names open work and its stated purpose ("keep the record live so the three citations stay valid") stands alone; if the operator wants the hold re-stated as fully settled, that is their `preflight 713 unhold` / re-hold cycle, not this task's; (v) the research report's context-extension note on archive-stable citation hygiene, as a follow-up candidate, not tasked here. *(completed)*
+- [x] Final commit per the implementation contract (`task 738: complete implementation`), scoped to this task's artifacts plus `specs/state.json`/`specs/TODO.md`. *(deviation: altered — phase-closing commit is `task 738 phase 3: output audit and close`; the `complete implementation` commit is emitted by orchestrator postflight)*
 
 **Timing**: 0.5 hours
 
@@ -213,13 +213,13 @@ claim, no archive edit, no hold lift, no Lean -- and leave the operator recommen
 
 ## Testing & Validation
 
-- [ ] `jq -e` three-field invariant on 713 (`hold` / `not_started` / `2026-10-03`) holds after Phase 1 and again at Phase 3
-- [ ] `grep -c 'CANONICAL WORDING OF THE CONSEQUENCE'` on 713's description is exactly 1; `grep -c 'Open sub-item'` on its `hold_reason` is 0
-- [ ] No `specs/718_` or `specs/721_` path without `archive/` remains in 713's description
-- [ ] `grep -rn "2EXPTIME" FormalSystem --include=README.md | grep -vi argued` is empty
-- [ ] Upper-bound sweep (Phase 3) yields only prohibitions/quotations
-- [ ] `specs/archive/` and `*.lean` untouched by any commit of this task
-- [ ] `validate-no-task-references` hook does not fire on any Phase 2 write
+- [x] `jq -e` three-field invariant on 713 (`hold` / `not_started` / `2026-10-03`) holds after Phase 1 and again at Phase 3 *(completed)*
+- [x] `grep -c 'CANONICAL WORDING OF THE CONSEQUENCE'` on 713's description is exactly 1; `grep -c 'Open sub-item'` on its `hold_reason` is 0 *(completed)*
+- [x] No `specs/718_` or `specs/721_` path without `archive/` remains in 713's description *(completed)*
+- [x] `grep -rn "2EXPTIME" FormalSystem --include=README.md | grep -vi argued` is empty *(completed)*
+- [x] Upper-bound sweep (Phase 3) yields only prohibitions/quotations *(completed)*
+- [x] `specs/archive/` and `*.lean` untouched by any commit of this task *(completed)*
+- [x] `validate-no-task-references` hook does not fire on any Phase 2 write *(completed)*
 
 ## Artifacts & Outputs
 
