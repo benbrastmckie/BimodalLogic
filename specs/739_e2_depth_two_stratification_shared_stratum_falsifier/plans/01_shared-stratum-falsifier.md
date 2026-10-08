@@ -1,7 +1,7 @@
 # Implementation Plan: Task #739
 
 - **Task**: 739 - Run E2's real test: the depth-2 stratification falsifier on a fixture with two states sharing a depth-1 stratum
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/739_e2_depth_two_stratification_shared_stratum_falsifier/reports/01_shared-stratum-falsifier.md
@@ -136,7 +136,7 @@ No `roadmap_path` in the dispatch context; ROADMAP.md not consulted.
 Phases within the same wave can execute in parallel. This plan is fully sequential: every phase
 extends the one probe file.
 
-### Phase 1: Fixture, constructed histories, closure lemmas, depth-1 strata [NOT STARTED]
+### Phase 1: Fixture, constructed histories, closure lemmas, depth-1 strata [COMPLETED]
 
 **Goal**: The four-state fixture compiles as a regular `ofSlicedStep` frame with bi-seriality
 PROVED, every constructed history the later phases need exists, and the two depth-1 strata are
@@ -144,33 +144,33 @@ characterized per state — exhibiting the two shared classes `{a, c}` (`⊡Fp` 
 `{b, d}` (`⊡Fp` True).
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean` with a
+- [x] Create `specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean` with a
       provisional header (title line, fixture paragraph, "header completed in Phase 4" note),
       `import FormalSystem`, the three `open` lines of the landed probe plus
       `open FormalSystem.Metalogic.Conservativity`, and `namespace Probe739SharedStratum`.
-- [ ] Carrier and instances, lifted from the report's skeleton: `inductive S | a | b | c | d
+- [x] Carrier and instances, lifted from the report's skeleton: `inductive S | a | b | c | d
       deriving DecidableEq`; `instance : Fintype S := ⟨{.a, .b, .c, .d}, fun x => by cases x <;>
       simp⟩`; `instance : Finite S := Finite.of_fintype S`; `instance : Nonempty S := ⟨.a⟩`.
       Do NOT use `deriving Fintype` (fails on this toolchain per the report).
-- [ ] `def edge : S → S → Bool` with exactly the six true cases `a→a, a→b, b→b, b→d, d→b, c→c`;
+- [x] `def edge : S → S → Bool` with exactly the six true cases `a→a, a→b, b→b, b→d, d→b, c→c`;
       `def Rg : ℤ → S → S → Prop := fun _ u v => edge u v = true`.
-- [ ] Bi-seriality as named theorems, by `cases w` with explicit witnesses (`Rg_fwd`: a→a, b→b,
+- [x] Bi-seriality as named theorems, by `cases w` with explicit witnesses (`Rg_fwd`: a→a, b→b,
       c→c, d→b; `Rg_bwd`: a←a, b←a, c←c, d←b); `def Fg : FrameOver intOrder :=
       FrameOver.ofSlicedStep Rg Rg_fwd Rg_bwd`; `instance : Fg.IsRegular :=
       FrameOver.ofSlicedStep_isRegular Rg Rg_fwd Rg_bwd`.
-- [ ] `def pa : Atom := ⟨"p", none⟩`; `def Mg : TaskModel Fg.toTaskFrame where valuation q _ :=
+- [x] `def pa : Atom := ⟨"p", none⟩`; `def Mg : TaskModel Fg.toTaskFrame where valuation q _ :=
       q.2 = .b`; `abbrev Fp := someFuture (.atom pa)`; `abbrev Pp := somePast (.atom pa)`.
-- [ ] `step_succ` (transcribed from the landed probe) and the neighbour tables by `decide`:
+- [x] `step_succ` (transcribed from the landed probe) and the neighbour tables by `decide`:
       `succ_of_a` (a or b), `succ_of_b` (b or d), `succ_of_c` (c), `succ_of_d` (b), `pred_of_a`
       (a), `pred_of_c` (c), `pred_of_d` (b); the `next_of_x` / `prev_of_x` lemmas on histories
       (`prev_of_x` via `σ.isStepPath (t - 1)` then `rw [show t - 1 + 1 = t by ring]`, the Probe
       719 idiom).
-- [ ] Generic closure lemmas: `stays_fwd (w) (hw : ∀ v, edge w v = true → v = w)
+- [x] Generic closure lemmas: `stays_fwd (w) (hw : ∀ v, edge w v = true → v = w)
       (σ) (t) (h : (σ.state t).2 = w) : ∀ s, t ≤ s → (σ.state s).2 = w` by `Int.leInduction`,
       and `stays_bwd` (hypothesis on predecessors) by `Int.leInductionDown` (or a ℕ-step
       recursion if preferred); instantiate at `c` (both directions) and `a` (backward), the
       hypotheses by `decide`.
-- [ ] Constructed histories via `FrameOver.worldHistoryOfStepPath`, each with a `_state` (`rfl`)
+- [x] Constructed histories via `FrameOver.worldHistoryOfStepPath`, each with a `_state` (`rfl`)
       and `_state_t` lemma, the state function factored into a `def` whose step obligation is
       closed by `unfold; split_ifs <;> first | rfl | omega`:
       `stay (w) (hw : edge w w = true) (c t)` (constant at `w`; use for `stayA`, `stayC`),
@@ -178,16 +178,16 @@ characterized per state — exhibiting the two shared classes `{a, c}` (`⊡Fp` 
       `t`), `viaD c t` (`a` before `t - 1`, `b` at `t - 1`, `d` at `t`, `b` after). Use
       `lt_add_one`/`sub_one_lt` and named `have`s for the integer side goals, never `by omega`
       inside an anonymous constructor.
-- [ ] Depth-1: `stab_will_iff` (`⊡Fp ↔ state = b ∨ state = d`: `stayA`/`stayC` refute at `a`/`c`;
+- [x] Depth-1: `stab_will_iff` (`⊡Fp ↔ state = b ∨ state = d`: `stayA`/`stayC` refute at `a`/`c`;
       at `b` the successor is `b` or `d` and `d`'s successor is `b`; at `d` the successor is
       `b`) and `stab_past_iff` (`⊡Pp ↔ state = d`: `stayA`, `stayC`, `fromA` refute at `a`, `c`,
       `b`; at `d` the predecessor is `b`). Add the per-state corollaries the later phases
       cite (`stab_will_at_b`, `stab_will_at_d`, `not_stab_will_at_a`, `not_stab_will_at_c`,
       `stab_past_at_d`, `not_stab_past_at_b`, ...).
-- [ ] Compile through the guard: `bash .claude/scripts/lake-build-guard.sh build --timeout 900
+- [x] Compile through the guard: `bash .claude/scripts/lake-build-guard.sh build --timeout 900
       -- env lean specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean`;
       check the log head for a `REPLAY` line before trusting the verdict.
-- [ ] Commit (probe file only, by explicit path, via `git-commit-scoped.sh`).
+- [x] Commit (probe file only, by explicit path, via `git-commit-scoped.sh`).
 
 **Timing**: 1.5 hours
 
