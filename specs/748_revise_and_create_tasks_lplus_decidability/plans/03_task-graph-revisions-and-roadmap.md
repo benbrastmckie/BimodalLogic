@@ -1,7 +1,7 @@
 # Implementation Plan: Task #748
 
 - **Task**: 748 - Revise existing tasks and create new ones to move the L⁺ decidability programme forward
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: 747 (completed)
 - **Research Inputs**: `specs/748_revise_and_create_tasks_lplus_decidability/reports/01_ranked-route-analysis-dispositions.md`, `reports/02_round-two-joint-verification.md`, `reports/03_literature-scope-product-negative-results.md`
@@ -141,16 +141,16 @@ concurrent writers (`state-write.sh` header, "fail-closed mutex acquisition").
 
 ---
 
-### Phase 1: Create the (C)-bound task [NOT STARTED]
+### Phase 1: Create the (C)-bound task [COMPLETED]
 
 **Goal**: File the highest-value item on the front (02 R1): (C)'s bound half on model A, in three
 phases with the cost on phase 2, with `file_scope` declared and the non-negotiables written into
 the record.
 
 **Tasks**:
-- [ ] Read `next_project_number` from `specs/state.json` (`jq -r '.next_project_number'`); call it `$N`.
-- [ ] Create the record with `state-write.sh` using the `task.md:181-196` filter shape: `project_name` `c_bound_half_model_a_presentation_size`, `status` `not_started`, `task_type` `lean4`, `topic` `decidability`, `.next_project_number = $N + 1`, `--regen-todo` omitted on this write.
-- [ ] Use this description text verbatim (it is the record's whole content):
+- [x] Read `next_project_number` from `specs/state.json` (`jq -r '.next_project_number'`); call it `$N`. *(assigned 749)*
+- [x] Create the record with `state-write.sh` using the `task.md:181-196` filter shape: `project_name` `c_bound_half_model_a_presentation_size`, `status` `not_started`, `task_type` `lean4`, `topic` `decidability`, `.next_project_number = $N + 1`, `--regen-todo` omitted on this write.
+- [x] Use this description text verbatim (it is the record's whole content):
 
   > **(C)'s BOUND HALF ON MODEL A.** 745 delivered (C)'s satisfiability half only; the bound half
   > was descoped at closure and is owned by no other record. `RaySummary/README.md:154` states
@@ -232,8 +232,8 @@ the record.
   > ARGUED CTL⋆ 2EXPTIME ceiling is never an upper-bound source. (6) Sorry-free completion
   > required; a route that does not close is `[BLOCKED]` with the obstruction named.
 
-- [ ] In a second `state-write.sh` call, set `.file_scope` on record `$N` to: `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Saturation.lean`, `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean`, `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`, `docs/theorem-index.md`, `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, `scripts/check-module-invariants.sh`. Fold `--regen-todo` into this write.
-- [ ] `bash .claude/scripts/manage-topics.sh set $N decidability` (hard error if it fails; do not roll back the record).
+- [x] In a second `state-write.sh` call, set `.file_scope` on record `$N` to: `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Saturation.lean`, `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean`, `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`, `docs/theorem-index.md`, `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, `scripts/check-module-invariants.sh`. Fold `--regen-todo` into this write.
+- [x] `bash .claude/scripts/manage-topics.sh set $N decidability` (hard error if it fails; do not roll back the record).
 
 **Timing**: 1 hour
 

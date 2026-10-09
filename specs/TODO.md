@@ -1,5 +1,5 @@
 ---
-next_project_number: 749
+next_project_number: 750
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 749
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,734,741,743,744,748 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,734,741,743,744,748,749 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -78,7 +78,8 @@ next_project_number: 749
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-748 [PLANNED] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
+748 [IMPLEMENTING] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
+749 [NOT STARTED] — (C)'s BOUND HALF ON MODEL A. 745 delivered (C)'s...
 
 ### Formula Refactor
 
@@ -108,8 +109,26 @@ next_project_number: 749
 
 ## Tasks
 
+### 749. C bound half model a presentation size
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: **(C)'s BOUND HALF ON MODEL A.** 745 delivered (C)'s satisfiability half only; the bound half was descoped at closure and is owned by no other record. `RaySummary/README.md:154` states what landed is "**one fixture**, so no computable bound and no general regular `ℤ`-model statement follows". This record owns the bound **on the fixture**. The general every-model statement is OUT OF SCOPE here and is the completeness half of the (W) run-layer record.
+
+**PHASE 1 (hours; closed in principle).** Land, in `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Saturation.lean`, namespace `FormalSystem.Metalogic.WeakCanonical` (matching `kTypeOf_listSeg_append_congr`'s at `Compose.lean:296`), the STRENGTHENED shape `∃ m₀ p, 0 < p ∧ m₀ + p ≤ Nat.card (KType sig k) ∧ ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) = kTypeOf sig k (listSeg (List.replicate m ℓ))`, with the shape stated verbatim at `RaySummary/README.md:285-290` as its one-line corollary so the recorded signature stays literally true. ROUTE: **pigeonhole plus `kTypeOf_listSeg_append_congr`** (`Compose.lean:276`), NOT finite-semigroup idempotence — no semigroup is constructed and no idempotent is needed; the congruence is applied once with the first argument varying and the second fixed. Premises: `kType_finite` (`KTypeSummary/Basic.lean:112`), `Finite.exists_ne_map_eq_of_infinite` for the stated shape, `Fintype.exists_ne_map_eq_of_card_lt` on `Fin (Nat.card (KType sig k) + 1)` after `Fintype.ofFinite` and `Nat.card_eq_fintype_card` for the strengthened one, `List.replicate_add`. A feasibility elaboration of both theorems compiled in 2.3 s against the current oleans with axioms `[propext, Classical.choice, Quot.sound]` and no `sorryAx`; the scratch text is reproduced in `specs/748_revise_and_create_tasks_lplus_decidability/reports/02_round-two-joint-verification.md`'s Appendix and is FEASIBILITY ONLY — land it here, under this record's `file_scope`, pins and index row, never copied in as a research commit. Keep the stated `[DecidableEq sig.preds]` binder even though the proof does not use it (the `unusedArguments` linter will say so, as `Compose.lean:270-275` predicts for `append_congr`): the stated signature is the recorded one. Pin both theorems in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` at `[propext, Classical.choice, Quot.sound]` (the profile of every (C) pin at `:405-413`); add one `docs/theorem-index.md` row cross-referencing the `anchorCells_ncard_le` row so both counts carry the same disclaimer in the same words. Replace "finite-semigroup idempotence" with "pigeonhole plus `kTypeOf_listSeg_append_congr`" at `RaySummary/README.md:291`, `hit-presented-model-a.lean:97`, and in `append_congr`'s docstring at `Compose.lean:271-275`.
+
+**PHASE 2 (THE COST; UNMEASURED, AND THIS RECORD SAYS SO).** The factorization-transport lemma: `InFamily` is invariant under lengthening a maximal constant run beyond phase 1's threshold — "if `c'` is `c` with a maximal constant run `ℓ^n` replaced by `ℓ^(n+p)`, and `n` is beyond phase 1's threshold, then `InFamily … c ↔ InFamily … c'`". Nothing in the tree states it and no attempt is recorded anywhere; it has NO cost figure and this record asserts none. It is needed because `hitCl_eq_truncated`'s `L` bounds jump OFFSETS over `familyTriples`, a family triple is `InFamily sig k τneg τzero τpos c := ∃ F : SegmentFactorization sig k c, …` (`Family.lean:201-203`), and a `SegmentFactorization` is a monotone covering cutting sequence `W : ℤ → ℤ` (`Family.lean:70-95`) — so phase 1 is about the `k`-type of one finite replicated block and `L` is about cutting sequences of a bi-infinite colouring. The proof is cut surgery (shrink or extend the segment holding the run, with phase 1 and `append_congr` preserving its type) and has a GENUINE CASE SPLIT a plan must face: when every segment meeting the run is short, no single segment can absorb the `p` positions and the factorization must be re-cut. The converse the tree holds, `kTypeOf_zFiber_eq_of_inFamily` (`KTypeSummary/Saturation.lean:133`), is the WRONG DIRECTION for this. State it generally over `sig` first; if that resists, fall back to model A's concrete traces, which by `clTrace_stayA_apply`/`clTrace_jump_apply` (`hit-presented-model-a.lean:470-500`) are `(Fp,¬p)^(ω*) · now · (Fp,¬p)^n · (Fp,p)^ω`. If it does not close: mark the phase `[BLOCKED]` and name the obstruction. NEVER a `sorry`, never a new axiom.
+
+**PHASE 3 (bookkeeping once phase 2 lands).** Exhibit `L` in `hitCl_eq_truncated` (`hit-presented-model-a.lean:593-596`) — `≤ m₀ + p` from phase 1, hence `≤ Nat.card (KType (clSig Fp) k)` — replacing the non-constructive `Set.Finite.bddAbove` witness at `:603`. Exhibiting `L` CHANGES `hitCl_eq_truncated`'s statement, so revise the `∃ L` prefix of `Probe745.hitPresented_modelA` and its "What `hitPresented_modelA` does NOT say" block (`:1303-1312`) in the SAME change rather than leaving them asserting non-exhibition; then re-run `bash scripts/check-evidence-probes.sh`.
+
+**NON-NEGOTIABLES.** (1) `Nat.card (KType …)` is described as a COUNT and nothing else. Quote, verbatim, `FormalSystem/Metalogic/Decidability/RaySummary/AnchorLayer.lean:317-320` wherever this record's count appears: "The one bound (W) can state honestly: a cardinality bound on the SET OF CELLS of a model, syntactic in `|cl φ|` — a cell is a set of subsets of `cl φ`, so there are at most `2 ^ (2 ^ |cl φ|)` of them. It is not a complexity bound of any kind: it counts cells, it does not time anything, and it must not be described as a bound on any procedure's running time." Derive nothing from the size of `NormalForm (clSig φ) k 0`. (2) The alphabet constraint 739 left standing is already met by the tree and is not re-litigated: `clSig φ := subformulas φ ⊕ Unit` (`Closure.lean:80-81`) and `subformulas` carries both `untl` and `snce` arguments (`Subformulas.lean:66-73`), so backward labels are letters by construction. (3) `k` STAYS FREE: land the bound for every `k` and choose none. `k = 1` suffices for the `⊡` bridge alone (`plusStab_iff_forall_hitSig`, `plusStab_iff_forall_hitCl`, both `(hk : 1 ≤ k)` at `Trace.lean:240`; `hitPresented_modelA` at `hit-presented-model-a.lean:1282`); what depth the `untl`/`snce` run layer needs is the (W) record's phase-1 output, not this record's. (4) `Decidable (PlusValidZTime φ)` appears in no statement. (5) No complexity bound, upper or lower, is asserted or implied anywhere; the ARGUED CTL⋆ 2EXPTIME ceiling is never an upper-bound source. (6) Sorry-free completion required; a route that does not close is `[BLOCKED]` with the obstruction named.
+
+---
+
 ### 748. Revise and create tasks lplus decidability
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 747
