@@ -1,7 +1,110 @@
 /-
 Probe 733: **the backward dual of the finite-graph `⊡` summary on the MIRROR fixture** —
-time-asymmetric AND backward-NONDETERMINISTIC (E1's hard test). Provisional header; the full
-collection-style header is written in the next phase.
+time-asymmetric AND backward-NONDETERMINISTIC. This is the hard test that experiment E1
+(`backward-dual-asymmetric-fixture.lean`, namespace `Probe719Backward`) names in its own header
+and files as a follow-up: decide the backward stability operator `⊡(P p)` at a seam state by
+**backward reachability** alone, on a fixture whose backward factor genuinely branches.
+
+**Why this fixture.** E1 came out POSITIVE, but it ran on Probe710's time-asymmetric step graph,
+which is backward *deterministic* (`Probe719Backward.step_inv_pre`, `step_inv_x`,
+`step_inv_post`): every node there has exactly one predecessor, so E1's backward factor is a
+**singleton** and the universal quantifier "every backward root path" ranges over one chain. The
+finite-width obstruction (`Probe710.not_finite_width_fmp`) lives in the backward factor — it
+pigeonholes backward post-chains of unbounded length against finitely many states — and a
+singleton backward factor cannot exhibit it. Until the dual is tested where the backward factor
+branches, the two-factor ray-product presentation rests on a proved forward factor plus a
+degenerate backward one. This probe is that test.
+
+**The fixture.** Probe710's step graph with every arrow reversed. Carrier `bef k j` (`j + 1`
+steps before `x k`), `x k` (the `p` state of thread `k`), `aft k` (the shared forward spine);
+steps `bef k (j+1) → bef k j`, `bef k 0 → x k`, `x k → aft k`, `aft k → aft (k+1)`. The graph
+is **forward deterministic** — `step_bef_inv`, `step_x_inv`, `step_aft_inv` give every node at
+most one successor — and its **backward branching factor is exactly 2 at every spine state
+`aft (k + 1)`**: `bwdList_aft_succ_length` is `rfl` (the predecessor list of `aft (k + 1)` is
+`[aft k, x (k + 1)]`) and `two_preds_aft` exhibits both predecessors as `Step` facts. The state
+under test therefore has two distinct backward root paths that already differ at their first
+step, `bwdExitNow` (leave the spine at once, through `x`) and `bwdExitLater` (descend the spine
+one step first); `two_bwd_paths` proves both are backward root paths from `aft (m + 1)` and that
+they differ at index 1, and it is **axiom-free**. Saturation is discharged from finite fibres
+rather than a finite carrier, through `TaskFrame.saturation_of_fib_finite` (`fib_finite`), and
+the frame is built by `FrameOver.ofReflectiveRegular`: the carrier is infinite, so
+`FrameOver.ofSlicedStep_isRegular` is unavailable here, exactly as in E1. Transcription rather
+than import is this collection's standing constraint — this file imports only `FormalSystem` and
+never another probe (see `scripts/check-evidence-probes.sh`'s header).
+
+**Outcome: POSITIVE, and state-dependent.** `pastStab_iff_allBwdPathsMeet` establishes that the
+backward stability operator at a seam state is exactly "every backward root path from that state
+meets the `p`-set" — the clause-for-clause dual of `Probe718FiniteGraph.will_iff_allPathsMeet`,
+now on a branching backward factor. `decide_past_stab` and the instance `decidable_past_stab`
+supply the computational content, and the decision is **state-dependent**: `⊡(Pp)` is True at
+exactly the `aft` states and False at the `x` and `bef` states (`past_stab_at_aft`,
+`not_past_stab_at_x`, `not_past_stab_at_bef`), through `stabPast_iff_aft` and
+`allBwdPathsMeet_iff`. Backward reachability alone decides it; no automata and no
+determinization appear anywhere in the argument.
+
+**What is new relative to E1.** The universal quantifier over backward paths does not collapse
+to one chain. `bwd_reaches_x` closes BOTH branches of `step_inv_aft` at every spine state: from
+`aft m`, every backward root path meets an `x` state at a positive index `n ≤ m + 1`, by induction
+on the spine index `m`, where at each `aft (k + 1)` on the way the path chooses between
+`x (k + 1)` (the `bwdExitNow` branch, which hits at once) and `aft k` (the `bwdExitLater`
+branch, which the induction hypothesis handles with the bound shifted by one). The uniform bound
+`n ≤ m + 1` is the König-style depth that makes this a finite backward-reachability check. The
+canonicity argument (`path_eq_canon`, via `aft_back`) likewise has to route its backward search
+through the two-way split rather than E1's unique-predecessor chain. E1's forward-determinism
+inverses are not the ones doing the work here; `step_inv_aft`, the one two-valued inverse, is.
+
+**What it does to the two-factor presentation.** The two-factor ray-product presentation is
+**not falsified** at the backward factor, on the fixture where that factor branches — the very
+factor the finite-width refutation inhabits. This file discharges E1's "the genuinely hard dual
+test is a mirror fixture, backward-branching and forward-deterministic; that is filed as a
+follow-up" note (`backward-dual-asymmetric-fixture.lean`, header paragraph "The honest limit");
+E1's file itself is unchanged, and the discharge is by this file and by the gate table row that
+points here. The negative outcome the task description prepared for — a falsifier for route R1 at
+the backward factor, to be registered C9-style — did not occur, so no register entry is written.
+
+**The honest limit.** What finite backward branching buys is a König-shaped uniform depth bound
+(`n ≤ m + 1` in `bwd_reaches_x`); that is why "every backward root path meets the `p`-set" is a
+finite check on this fixture. The residue — finite computability of the same universal clause
+under *infinite* backward branching, where no such uniform depth exists — is a question about the
+summary device, not about fixtures, and it is held by `device-selection-probe.lean` rather than
+here. This file settles the dual's SHAPE at a branching backward factor; it should not be read
+as spawning an open-ended chain of "harder" fixtures, and nothing in it decides the backward
+factor in general.
+
+**The `reflectTime` trap, and why it was not used.** There is no semantic transport theorem for
+the plus language — no declaration under `FormalSystem/` relates `PlusTruthAt` to
+`PlusFormula.reflectTime` — and a time reflection reverses the **frame** as well as the formula.
+A transport from E1 would in any case have delivered a statement about E1's own fixture
+reflected, not a fresh proof on this one. The argument below is direct backward reachability,
+as in E1.
+
+**Citation hygiene.** `decide_will` is ambiguous in this probe collection, naming a declaration
+in both `Probe718FiniteGraph` (`finite-graph-stab-summary.lean`) and `Probe718PathQuantifier`
+(`path-quantifier-alternation.lean`). Every citation above and below is qualified. Where E1 and
+this file share a declaration name (`stabPast`, `hist_canon`, `decide_past_stab`, ...), the
+namespace (`Probe719Backward` vs `Probe733Mirror`) disambiguates.
+
+What this does NOT do: it bounds no width, no tail-period, commits to no complexity claim, builds
+and selects no determinization or universal-summary device under any name, and decides nothing
+beyond this one fixture and this one formula shape (`⊡(Pp)`, a single temporal operator, no
+nesting). `not_finite_width_fmp` stands untouched.
+
+**Axiom record** (the six `#print axioms` lines at the foot of this file, verbatim):
+  'Probe733Mirror.two_bwd_paths' does not depend on any axioms
+  'Probe733Mirror.bwd_reaches_x' depends on axioms: [propext]
+  'Probe733Mirror.allBwdPathsMeet_iff' depends on axioms: [propext, Quot.sound]
+  'Probe733Mirror.stabPast_iff_aft' depends on axioms: [propext, Classical.choice, Quot.sound]
+  'Probe733Mirror.pastStab_iff_allBwdPathsMeet' depends on axioms: [propext, Classical.choice, Quot.sound]
+  'Probe733Mirror.decide_past_stab' depends on axioms: [propext, Classical.choice, Quot.sound]
+The branching witness `two_bwd_paths` is axiom-free; the branching step `bwd_reaches_x` is at
+`[propext]` (its proof uses explicit `Nat.*` lemmas, not `omega`, precisely to keep it there);
+`allBwdPathsMeet_iff` — the backward-reachability half, which is the whole of the graph argument
+— is choice-free at `[propext, Quot.sound]`. `stabPast_iff_aft`, `pastStab_iff_allBwdPathsMeet`
+and `decide_past_stab` measure `Classical.choice`, and the cause is upstream and named:
+`hist_canon` routes through `FrameOver.mem_HF_iff_adjacent`, hence through
+`FrameOver.worldHistoryOfStepPath`, the same declaration that carries the ω half of the promoted
+keystone. E1 and Probe710 carry it for the same reason. Nothing in the backward argument itself
+appeals to choice.
 
 Compile-check from the repository root with:
   lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean

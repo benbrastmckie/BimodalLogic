@@ -166,7 +166,7 @@ is the complete covering check -- the probe lives outside the Lake build graph, 
 
 ---
 
-### Phase 2: Write the collection-style header [NOT STARTED]
+### Phase 2: Write the collection-style header [COMPLETED]
 
 **Goal**: The header states, with every claim backed by a named declaration, what the acceptance
 criteria require: the fixture's backward branching factor, which way the result came out, and what
@@ -174,16 +174,16 @@ it does to the two-factor presentation -- plus the honest limit, the exclusions,
 axiom record.
 
 **Tasks**:
-- [ ] Replace the provisional header with the full `/- Probe 733 ... -/` block, modelled on E1's
+- [x] Replace the provisional header with the full `/- Probe 733 ... -/` block, modelled on E1's
       header structure (bold-lead paragraphs, compile-check line last). Required paragraphs:
-  - [ ] **Title line**: the backward dual of the finite-graph `⊡` summary on the MIRROR fixture --
+  - [x] **Title line**: the backward dual of the finite-graph `⊡` summary on the MIRROR fixture --
         time-asymmetric AND backward-nondeterministic; E1's hard test.
-  - [ ] **Why this fixture**: E1 (`backward-dual-asymmetric-fixture.lean`, `Probe719Backward`)
+  - [x] **Why this fixture**: E1 (`backward-dual-asymmetric-fixture.lean`, `Probe719Backward`)
         ran on a backward-deterministic fixture whose backward factor is a singleton and names the
         mirror fixture as the follow-up; the finite-width obstruction
         (`Probe710.not_finite_width_fmp`) lives in the backward factor, so this is where the dual
         must be tested.
-  - [ ] **The fixture**: Probe710's step graph with every arrow reversed -- carrier `bef k j` /
+  - [x] **The fixture**: Probe710's step graph with every arrow reversed -- carrier `bef k j` /
         `x k` / `aft k`; steps `bef k (j+1) → bef k j`, `bef k 0 → x k`, `x k → aft k`,
         `aft k → aft (k+1)`; forward deterministic (`step_bef_inv`, `step_x_inv`, `step_aft_inv`);
         **backward branching factor exactly 2 at every `aft (k+1)`** (`bwdList_aft_succ_length`
@@ -191,37 +191,37 @@ axiom record.
         test that already differ at their first step (`two_bwd_paths`, axiom-free). Saturation via
         `TaskFrame.saturation_of_fib_finite` and `FrameOver.ofReflectiveRegular` (infinite
         carrier, finite fibres; `ofSlicedStep_isRegular` unavailable), transcribed not imported.
-  - [ ] **Outcome: POSITIVE, state-dependent**: `pastStab_iff_allBwdPathsMeet`; True at the `aft`
+  - [x] **Outcome: POSITIVE, state-dependent**: `pastStab_iff_allBwdPathsMeet`; True at the `aft`
         states, False at the `x` and `bef` states (`past_stab_at_aft`, `not_past_stab_at_x`,
         `not_past_stab_at_bef`); decision by `decide_past_stab` / `decidable_past_stab`; the
         clause-for-clause dual of `Probe718FiniteGraph.will_iff_allPathsMeet`.
-  - [ ] **What is new relative to E1**: the universal quantifier over backward paths does not
+  - [x] **What is new relative to E1**: the universal quantifier over backward paths does not
         collapse to one chain; `bwd_reaches_x` closes both branches of `step_inv_aft` at every spine
         state by induction on the spine index with the uniform bound `n ≤ m + 1`; the canonicity
         argument's backward search (`aft_back`) routes through the two-way split.
-  - [ ] **What it does to the two-factor presentation**: not falsified at the backward factor where
+  - [x] **What it does to the two-factor presentation**: not falsified at the backward factor where
         the finite-width refutation inhabits; E1's "hard test is a mirror fixture, filed as a
         follow-up" note is discharged by this file (cite E1 by file name and declaration).
-  - [ ] **The honest limit**: finite backward branching gives a König-shaped uniform depth bound;
+  - [x] **The honest limit**: finite backward branching gives a König-shaped uniform depth bound;
         the residue -- finite computability of "all backward paths meet" under infinite backward
         branching -- is a device-selection question (`device-selection-probe.lean`), not a fixture
         question; say plainly that this settles the dual's shape at a branching backward factor and
         should not spawn an open-ended chain of "harder" fixtures.
-  - [ ] **The `reflectTime` trap**: no semantic transport theorem exists; the argument is direct.
-  - [ ] **Citation hygiene**: `decide_will` is ambiguous (`Probe718FiniteGraph` and
+  - [x] **The `reflectTime` trap**: no semantic transport theorem exists; the argument is direct.
+  - [x] **Citation hygiene**: `decide_will` is ambiguous (`Probe718FiniteGraph` and
         `Probe718PathQuantifier`); qualify every citation.
-  - [ ] **What this does NOT do**: no width bound, no tail-period, no complexity claim, no
+  - [x] **What this does NOT do**: no width bound, no tail-period, no complexity claim, no
         automata/determinization device, nothing beyond `⊡(Pp)` on this fixture;
         `not_finite_width_fmp` untouched.
-  - [ ] **Axiom record**: the six lines captured in Phase 1, copied verbatim, with the cause named
+  - [x] **Axiom record**: the six lines captured in Phase 1, copied verbatim, with the cause named
         (`hist_canon` through `FrameOver.mem_HF_iff_adjacent` and
         `FrameOver.worldHistoryOfStepPath`, as in E1 and Probe710).
-  - [ ] **Compile-check line**: `lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean`.
-- [ ] Keep the body byte-identical to Phase 1's lift; adjust only docstrings if a docstring still
+  - [x] **Compile-check line**: `lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean`.
+- [x] Keep the body byte-identical to Phase 1's lift; adjust only docstrings if a docstring still
       says "prototype".
-- [ ] Re-run `lake env lean` on the file; require exit 0, no errors/warnings, six axiom lines
+- [x] Re-run `lake env lean` on the file; require exit 0, no errors/warnings, six axiom lines
       identical to Phase 1's capture.
-- [ ] Record an issue-log entry for this phase.
+- [x] Record an issue-log entry for this phase.
 
 **Timing**: 0.75 hours
 
