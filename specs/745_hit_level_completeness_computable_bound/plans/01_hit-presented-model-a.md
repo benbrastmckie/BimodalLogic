@@ -315,27 +315,50 @@ is the complete covering check for this single-file edit.
 
 ---
 
-### Phase 3: Splice-to-history identification and the closure-letter read-out [NOT STARTED]
+### Phase 3: Splice-to-history identification and the closure-letter read-out [COMPLETED]
 
 **Goal**: Turn the step-path classification into a statement about the seam's SPLICES —
 `spliced stayA t bf` is `stayA` or `jump w` for some `w ≥ t` — and establish the four-case
 `clTrace` read-out that makes trace equality a rewrite.
 
 **Tasks**:
-- [ ] Re-resolve `seamOmegaEquiv`, `SeqPair`, `ZPathFibre`, `pathFibreEquiv`, `spliced` and
-      `WorldHistory.ext_state` BY NAME (never by a cited line) before use.
-- [ ] Prove `splice_classify` at the pinned signature: for every `t` and every
+- [x] Re-resolve `seamOmegaEquiv`, `SeqPair`, `ZPathFibre`, `pathFibreEquiv`, `spliced` and
+      `WorldHistory.ext_state` BY NAME (never by a cited line) before use. *(all six resolved by
+      name via grep over `FormalSystem/`; `spliced` is an `abbrev` in `RaySummary/SeamMulti.lean`,
+      the other five are in `PlusLanguage/PlusRayFibre.lean` and `Semantics/PartialHistory.lean`.
+      `WorldHistory.path` was additionally resolved and found to be `WorldHistory.state` by
+      definition, which is what made the transport a `rfl`.)*
+- [x] Prove `splice_classify` at the pinned signature: for every `t` and every
       `bf : SeqPair FA (stayA.state t)`, `spliced stayA t bf = stayA ∨ ∃ w, t ≤ w ∧ spliced stayA t bf = jump w`.
       Route: `pathFibreEquiv`/`seamOmegaEquiv` to view the splice as a step path through `(t, a)`,
       `path_classify` to classify it, then `WorldHistory.ext_state` to lift the state-wise equality
-      to a history equality.
-- [ ] Land the four-case closure-letter read-out: for each member of `plusSubformulaClosure Fp`
+      to a history equality. *(route followed as written; no explicit `pathFibreEquiv` rewrite was
+      needed because `seamOmegaEquiv`'s `.symm` already carries the seam condition
+      `σ.state t = stayA.state t` as its `.2` field and `WorldHistory.path = WorldHistory.state`
+      definitionally, so `path_classify` applies to `(spliced stayA t bf).path` directly.
+      Signature confirmed byte-identical to the pinned Challenge by mechanical whitespace-normalized
+      diff, not by eye.)*
+- [x] Land the four-case closure-letter read-out: for each member of `plusSubformulaClosure Fp`
       (`untl ⊤ p`, `atom p`, `⊤`, `bot`) plus `clNow`, give `clTrace MA Fp t σ` on `stayA` and on
       `jump w` explicitly, via `clTrace_letter`, `clTrace_now`, `p_iff`, `Fp_iff`, `jump_p_iff`,
       `jump_Fp`. Re-derive `(plusSubformulaClosure Fp).card` by `#eval` before writing the case
-      split (the figure is CARRIED-UNVERIFIED from the report).
-- [ ] Compile the probe; zero errors, zero warnings, zero sorries.
-- [ ] Commit (one green sub-step).
+      split (the figure is CARRIED-UNVERIFIED from the report). *(`#eval` run BEFORE the case split
+      was written: `(plusSubformulaClosure Fp).card` = 4, the report's figure CONFIRMED, and
+      `PlusFormula.subformulas Fp` printed as `[Fp, atom p, ⊤, ⊥, ⊥]` so the four members are
+      exactly those named. Landed: `cl_Fp`/`cl_p`/`cl_top`/`cl_bot` membership, `letter_cases`
+      (the five-letter exhaustion that makes the case analysis demonstrably complete), the ten
+      per-letter read-outs `clTrace_{stayA,jump}_{now,Fp,p,top,bot}`, the two supporting falsity
+      lemmas `stayA_p_false`/`stayA_Fp_false`, the two assembled `↔` forms
+      `clTrace_{stayA,jump}_apply`, and the two function-level forms
+      `clTrace_{stayA,jump}_eq` that make trace equality a rewrite. The ten pairwise-distinctness
+      lemmas (`now_ne_*`, `Fp_ne_*`, `p_ne_*`, `top_ne_bot`) are additionally landed; they are
+      UNUSED in this phase (the assembled forms were restructured to case-split on `letter_cases`
+      in the forward direction and to substitute via `rintro ... rfl` in the backward direction,
+      which needs no distinctness) and exist for phases 5-6's `labOf` flag-table case split. No
+      plan step was skipped, altered or routed through different helpers.)*
+- [x] Compile the probe; zero errors, zero warnings, zero sorries. *(`lake env lean` exit 0;
+      zero lines matching `error` or `warning` over the captured stream; `grep -c sorry` = 0.)*
+- [x] Commit (one green sub-step).
 
 **Timing**: 1.5 hours
 
@@ -348,7 +371,14 @@ is the complete covering check for this single-file edit.
 **Scope Hypothesis**: 80-120 added lines (research estimate, CARRIED). Confirm by
 `git diff --stat` on the probe; if the splice-to-step-path transport through
 `pathFibreEquiv`/`seamOmegaEquiv` costs materially more than that, record it in the issue log
-rather than silently absorbing it.
+rather than silently absorbing it. *(REFUTED-WITH-OVERSHOOT at implementation time:
+`git diff --stat` = 205 insertions / 9 deletions, net +196 against the hypothesized 80-120. The
+hypothesis named the wrong driver: the transport is 29 lines and compiled on the first attempt,
+while the read-out item is 21 mandated declarations before any supporting material (10 per-letter
+lemmas × 2 families is already 10, plus 4 membership facts, `letter_cases`, 2 falsity lemmas, 2
+assembled `↔` forms and 2 function-level forms), and the forward-looking distinctness lemmas add
+~22 more. Recorded in the issue log as `class: scope-estimate`, `severity: minor`, per this item's
+own instruction; the 9 deletions are header-paragraph rewrites, not removed proof.)*
 
 **Tier Justification**: Still a single file outside the Lake build graph with no importers, so
 `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` covers the

@@ -1,10 +1,13 @@
 /-
-Probe 745 (requirement (C) of the ray-product verdict), **part 1 of the record: the fixture and
-the step-path classification.** This file is being built up phase by phase toward the headline
-`∃ L, HitPresented MA stayA t Fp (labOf L) (stepOf L) k`; what is landed here is the fixture
-(model A of the B2b verdict probe, transcribed) together with the **rigidity** result that makes
-the rest possible: every step path of model A through the seam `(t, a)` is either the constant
-`a`-path or an `a`-then-`b` jump path whose jump time is `≥ t`. Nothing in this file yet mentions
+Probe 745 (requirement (C) of the ray-product verdict), **parts 1-2 of the record: the fixture,
+the step-path classification, and the closure-letter read-out.** This file is being built up phase
+by phase toward the headline `∃ L, HitPresented MA stayA t Fp (labOf L) (stepOf L) k`; what is
+landed here is the fixture (model A of the B2b verdict probe, transcribed); the **rigidity** result
+that makes the rest possible — every step path of model A through the seam `(t, a)` is either the
+constant `a`-path or an `a`-then-`b` jump path whose jump time is `≥ t`; its restatement as an
+identification of the seam's SPLICES (`splice_classify`: every spliced history at the seam is
+`stayA` itself or `jump w` for some `w ≥ t`); and the explicit read-out of `clTrace` over the
+five-letter closure alphabet of `Fp` on both of those families. Nothing in this file yet mentions
 `HitCl`, `hitOf` or `HitPresented`.
 
 **The fixture.** Model A of `quasistate-does-not-determine-hit.lean` and of
@@ -19,7 +22,12 @@ step path's time component advance by exactly one (so it is pinned by its value 
 reachable only from `a` (so the slice is pinned at `a` everywhere at or before the seam), and
 makes `b` absorbing (so once the slice is `b` it stays `b`). Taking `Nat.find` of the first
 forward index at which the slice is `b` therefore turns the path into `jump w` for `w ≥ t`, and
-the absence of such an index leaves the constant `a`-path.
+the absence of such an index leaves the constant `a`-path. Transporting that classification across
+`seamOmegaEquiv`/`pathFibreEquiv` and lifting the resulting state-wise equality with
+`WorldHistory.ext_state` restates it as an identification of the seam's splices; and since the
+closure of `Fp` has four members (`#eval (plusSubformulaClosure Fp).card` = 4, so `(clSig Fp).preds`
+has those four letters plus the marker `now`), `clTrace` on either family is a five-case read-out
+with no semantic content left in it.
 
 **What is NOT established.** No bound of any kind — the later phases' headline carries an
 unexhibited `∃ L` extracted from `Set.Finite.bddAbove`, i.e. from `Classical.choice`, and this
@@ -53,8 +61,8 @@ header is SATISFIABLE, not refuted: the forward-type observation that blocked th
 and the route through (C) is not closed by 735. The companion decision, recorded by the later
 phases rather than here, is that satisfiability buys no bound.
 
-**Axiom record.** `path_classify` and the fixture's history definitions: see the `#print axioms`
-foot. `Classical.choice` is inherited from `FrameOver.worldHistoryOfStepPath` and from the
+**Axiom record.** `path_classify`, `splice_classify`, the closure read-out's two function-level
+forms and the fixture's history definitions: see the `#print axioms` foot. `Classical.choice` is inherited from `FrameOver.worldHistoryOfStepPath` and from the
 `Nat.find`/`by_cases` bookkeeping in `path_classify`, as in every probe of this collection.
 Nothing in this file is left unproved: zero sorries.
 
@@ -269,8 +277,196 @@ theorem path_classify {g : ℤ → ℤ × St} (hg : IsStepPath FA g) (t : ℤ)
       · rwa [show t + (((z - t).toNat : ℕ) : ℤ) = z by omega] at hc
       · exact absurd hc (h _)
 
+/-! ## From step paths to splices
+
+`path_classify` classifies bare step paths; what the later phases consume is a classification of
+the seam's SPLICES — the histories `spliced stayA t bf` obtained by gluing a backward and a forward
+ω-sequence out of the seam state. The transport is `seamOmegaEquiv`'s `.symm`, whose `.2` field is
+exactly the seam condition `σ.state t = stayA.state t`, plus `WorldHistory.ext_state` to lift the
+state-wise equality that `path_classify` delivers to an equality of histories. -/
+
+/-- **The seam's splices, identified as histories.** Every ray pair through the seam `(t, a)` of
+`stayA` splices to `stayA` itself or to `jump w` for some `w ≥ t`. This is `path_classify` read
+through `seamOmegaEquiv`: `WorldHistory.path` is `WorldHistory.state` by definition, so the
+splice's path is a step path through `(t, a)`, and `WorldHistory.ext_state` turns the pointwise
+classification into an equality of possible worlds. The seam's splice family is therefore the
+one-parameter family `{jump w | w ≥ t}` together with `stayA`, and nothing else. -/
+theorem splice_classify (t : ℤ) (bf : SeqPair FA (stayA.state t)) :
+    spliced stayA t bf = stayA ∨ ∃ w : ℤ, t ≤ w ∧ spliced stayA t bf = jump w := by
+  have hseam : (spliced stayA t bf).state t = stayA.state t :=
+    ((seamOmegaEquiv t (stayA.state t)).symm bf).2
+  have hpath : IsStepPath FA (spliced stayA t bf).path :=
+    (spliced stayA t bf).isStepPath
+  have hst : ∀ z, (spliced stayA t bf).path z = (spliced stayA t bf).state z := fun _ => rfl
+  have ht1 : ((spliced stayA t bf).path t).1 = t := by
+    rw [hst, hseam, stayA_state]
+  have ht2 : ((spliced stayA t bf).path t).2 = a := by
+    rw [hst, hseam, stayA_state]
+  rcases path_classify hpath t ht1 ht2 with h | ⟨w, hw, h⟩
+  · exact Or.inl (WorldHistory.ext_state fun z => by rw [← hst, h z, stayA_state])
+  · exact Or.inr ⟨w, hw, WorldHistory.ext_state fun z => by rw [← hst, h z, jump_state]⟩
+
+/-! ## The closure alphabet of `Fp`, enumerated
+
+`Fp` is `someFuture (.atom pa)`, i.e. `untl ⊤ (atom p)` with `⊤ := ⊥ → ⊥`, so
+`PlusFormula.subformulas Fp` is `[Fp, atom p, ⊤, ⊥, ⊥]` and its `toFinset` has FOUR members:
+
+    #eval (plusSubformulaClosure Fp).card   -- 4
+
+(re-derived at implementation time, not carried; the live `#eval` is kept at the foot of this
+section so a reader can re-run it). `(clSig Fp).preds` is that four-member subtype plus the marker
+`Unit`, so the alphabet has exactly FIVE letters, and `letter_cases` below is the exhaustion that
+makes the read-out's case analysis demonstrably complete. -/
+
+theorem cl_Fp : Fp ∈ plusSubformulaClosure Fp := by decide
+theorem cl_p : PlusFormula.atom pa ∈ plusSubformulaClosure Fp := by decide
+theorem cl_top : PlusFormula.top ∈ plusSubformulaClosure Fp := by decide
+theorem cl_bot : PlusFormula.bot ∈ plusSubformulaClosure Fp := by decide
+
+/-- **The alphabet, exhausted.** Every letter of `clSig Fp` is the marker `now` or one of the four
+closure letters. The four-case read-out below is complete because of this. -/
+theorem letter_cases (q : (clSig Fp).preds) :
+    q = clNow Fp ∨ q = clLetter Fp cl_Fp ∨ q = clLetter Fp cl_p
+      ∨ q = clLetter Fp cl_top ∨ q = clLetter Fp cl_bot := by
+  rcases q with ⟨psi, hpsi⟩ | ⟨⟩
+  · have : psi = Fp ∨ psi = PlusFormula.atom pa ∨ psi = PlusFormula.top
+        ∨ psi = PlusFormula.bot := by
+      simp only [List.mem_toFinset, Fp, someFuture, PlusFormula.top, PlusFormula.subformulas,
+        List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hpsi ⊢
+      tauto
+    rcases this with rfl | rfl | rfl | rfl
+    · exact Or.inr (Or.inl rfl)
+    · exact Or.inr (Or.inr (Or.inl rfl))
+    · exact Or.inr (Or.inr (Or.inr (Or.inl rfl)))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr rfl)))
+  · exact Or.inl rfl
+
+theorem now_ne_Fp : clNow Fp ≠ clLetter Fp cl_Fp := clNow_ne_clLetter Fp cl_Fp
+theorem now_ne_p : clNow Fp ≠ clLetter Fp cl_p := clNow_ne_clLetter Fp cl_p
+theorem now_ne_top : clNow Fp ≠ clLetter Fp cl_top := clNow_ne_clLetter Fp cl_top
+theorem now_ne_bot : clNow Fp ≠ clLetter Fp cl_bot := clNow_ne_clLetter Fp cl_bot
+
+theorem Fp_ne_p : clLetter Fp cl_Fp ≠ clLetter Fp cl_p := by
+  simp only [ne_eq, clLetter_inj]; decide
+theorem Fp_ne_top : clLetter Fp cl_Fp ≠ clLetter Fp cl_top := by
+  simp only [ne_eq, clLetter_inj]; decide
+theorem Fp_ne_bot : clLetter Fp cl_Fp ≠ clLetter Fp cl_bot := by
+  simp only [ne_eq, clLetter_inj]; decide
+theorem p_ne_top : clLetter Fp cl_p ≠ clLetter Fp cl_top := by
+  simp only [ne_eq, clLetter_inj]; decide
+theorem p_ne_bot : clLetter Fp cl_p ≠ clLetter Fp cl_bot := by
+  simp only [ne_eq, clLetter_inj]; decide
+theorem top_ne_bot : clLetter Fp cl_top ≠ clLetter Fp cl_bot := by
+  simp only [ne_eq, clLetter_inj]; decide
+
+/-! ## The closure-letter read-out on the two splice families
+
+With `splice_classify` the seam has only two kinds of splice, and with `letter_cases` the alphabet
+has only five letters, so `clTrace` on either family is settled letter by letter. Nothing here
+evaluates a `kTypeOf` and nothing runs `decide` over `KType`: these are read-outs of `PlusTruthAt`
+through `clTrace_letter`/`clTrace_now` only. -/
+
+theorem stayA_p_false (z : ℤ) : ¬ PlusTruthAt MA stayA z (.atom pa) := by
+  rw [p_iff, stayA_state]
+  exact ab_ne
+
+theorem stayA_Fp_false (z : ℤ) : ¬ PlusTruthAt MA stayA z Fp := by
+  rw [Fp_iff]
+  rintro ⟨s, _, hs⟩
+  rw [stayA_state] at hs
+  exact ab_ne hs
+
+theorem clTrace_stayA_now (t z : ℤ) : clTrace MA Fp t stayA (clNow Fp) z ↔ z = t :=
+  clTrace_now MA Fp t stayA z
+
+theorem clTrace_stayA_Fp (t z : ℤ) : ¬ clTrace MA Fp t stayA (clLetter Fp cl_Fp) z :=
+  fun h => stayA_Fp_false z ((clTrace_letter MA Fp t stayA cl_Fp z).mp h)
+
+theorem clTrace_stayA_p (t z : ℤ) : ¬ clTrace MA Fp t stayA (clLetter Fp cl_p) z :=
+  fun h => stayA_p_false z ((clTrace_letter MA Fp t stayA cl_p z).mp h)
+
+theorem clTrace_stayA_top (t z : ℤ) : clTrace MA Fp t stayA (clLetter Fp cl_top) z :=
+  (clTrace_letter MA Fp t stayA cl_top z).mpr (PlusTruth.top_true MA stayA z)
+
+theorem clTrace_stayA_bot (t z : ℤ) : ¬ clTrace MA Fp t stayA (clLetter Fp cl_bot) z :=
+  fun h => PlusTruth.bot_false MA stayA z ((clTrace_letter MA Fp t stayA cl_bot z).mp h)
+
+theorem clTrace_jump_now (w t z : ℤ) : clTrace MA Fp t (jump w) (clNow Fp) z ↔ z = t :=
+  clTrace_now MA Fp t (jump w) z
+
+theorem clTrace_jump_Fp (w t z : ℤ) : clTrace MA Fp t (jump w) (clLetter Fp cl_Fp) z :=
+  (clTrace_letter MA Fp t (jump w) cl_Fp z).mpr (jump_Fp w z)
+
+theorem clTrace_jump_p (w t z : ℤ) :
+    clTrace MA Fp t (jump w) (clLetter Fp cl_p) z ↔ w < z :=
+  (clTrace_letter MA Fp t (jump w) cl_p z).trans (jump_p_iff w z)
+
+theorem clTrace_jump_top (w t z : ℤ) : clTrace MA Fp t (jump w) (clLetter Fp cl_top) z :=
+  (clTrace_letter MA Fp t (jump w) cl_top z).mpr (PlusTruth.top_true MA (jump w) z)
+
+theorem clTrace_jump_bot (w t z : ℤ) : ¬ clTrace MA Fp t (jump w) (clLetter Fp cl_bot) z :=
+  fun h => PlusTruth.bot_false MA (jump w) z ((clTrace_letter MA Fp t (jump w) cl_bot z).mp h)
+
+/-- **The read-out on `stayA`, assembled.** `stayA` never reaches `b`, so both `p` and `Fp` are
+false along it everywhere: only the marker (at `t`) and `⊤` (everywhere) hold. -/
+theorem clTrace_stayA_apply (t : ℤ) (q : (clSig Fp).preds) (z : ℤ) :
+    clTrace MA Fp t stayA q z ↔ (q = clNow Fp ∧ z = t) ∨ q = clLetter Fp cl_top := by
+  constructor
+  · intro h
+    rcases letter_cases q with rfl | rfl | rfl | rfl | rfl
+    · exact Or.inl ⟨rfl, (clTrace_stayA_now t z).mp h⟩
+    · exact absurd h (clTrace_stayA_Fp t z)
+    · exact absurd h (clTrace_stayA_p t z)
+    · exact Or.inr rfl
+    · exact absurd h (clTrace_stayA_bot t z)
+  · rintro (⟨rfl, hz⟩ | rfl)
+    · exact (clTrace_stayA_now t z).mpr hz
+    · exact clTrace_stayA_top t z
+
+/-- **The read-out on `jump w`, assembled.** `jump w` is at `b` from `w + 1` on, so `p` holds
+exactly after `w` and `Fp` holds everywhere (`b` is absorbing, so a later `b` always exists). The
+only `w`-dependence in the whole trace is the `p` letter's threshold — which is what makes
+distinct `w` give distinct traces, and what the later phases' presentation has to reproduce. -/
+theorem clTrace_jump_apply (w t : ℤ) (q : (clSig Fp).preds) (z : ℤ) :
+    clTrace MA Fp t (jump w) q z ↔
+      (q = clNow Fp ∧ z = t) ∨ q = clLetter Fp cl_top ∨ q = clLetter Fp cl_Fp
+        ∨ (q = clLetter Fp cl_p ∧ w < z) := by
+  constructor
+  · intro h
+    rcases letter_cases q with rfl | rfl | rfl | rfl | rfl
+    · exact Or.inl ⟨rfl, (clTrace_jump_now w t z).mp h⟩
+    · exact Or.inr (Or.inr (Or.inl rfl))
+    · exact Or.inr (Or.inr (Or.inr ⟨rfl, (clTrace_jump_p w t z).mp h⟩))
+    · exact Or.inr (Or.inl rfl)
+    · exact absurd h (clTrace_jump_bot w t z)
+  · rintro (⟨rfl, hz⟩ | rfl | rfl | ⟨rfl, hz⟩)
+    · exact (clTrace_jump_now w t z).mpr hz
+    · exact clTrace_jump_top w t z
+    · exact clTrace_jump_Fp w t z
+    · exact (clTrace_jump_p w t z).mpr hz
+
+/-- The function-level form: trace equality against `stayA` is now a rewrite. -/
+theorem clTrace_stayA_eq (t : ℤ) :
+    clTrace MA Fp t stayA = fun q z => (q = clNow Fp ∧ z = t) ∨ q = clLetter Fp cl_top := by
+  funext q z
+  exact propext (clTrace_stayA_apply t q z)
+
+/-- The function-level form: trace equality against `jump w` is now a rewrite. -/
+theorem clTrace_jump_eq (w t : ℤ) :
+    clTrace MA Fp t (jump w)
+      = fun q z => (q = clNow Fp ∧ z = t) ∨ q = clLetter Fp cl_top ∨ q = clLetter Fp cl_Fp
+          ∨ (q = clLetter Fp cl_p ∧ w < z) := by
+  funext q z
+  exact propext (clTrace_jump_apply w t q z)
+
+-- The closure-size figure the case split rests on, left live so a reader can re-run it.
+#eval (plusSubformulaClosure Fp).card
+
 #print axioms path_classify
 #print axioms stayA
 #print axioms jump
+#print axioms splice_classify
+#print axioms clTrace_stayA_eq
+#print axioms clTrace_jump_eq
 
 end Probe745
