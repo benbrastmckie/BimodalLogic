@@ -1,14 +1,22 @@
 /-
-Probe 745 (requirement (C) of the ray-product verdict), **parts 1-2 of the record: the fixture,
-the step-path classification, and the closure-letter read-out.** This file is being built up phase
-by phase toward the headline `∃ L, HitPresented MA stayA t Fp (labOf L) (stepOf L) k`; what is
-landed here is the fixture (model A of the B2b verdict probe, transcribed); the **rigidity** result
-that makes the rest possible — every step path of model A through the seam `(t, a)` is either the
-constant `a`-path or an `a`-then-`b` jump path whose jump time is `≥ t`; its restatement as an
-identification of the seam's SPLICES (`splice_classify`: every spliced history at the seam is
-`stayA` itself or `jump w` for some `w ≥ t`); and the explicit read-out of `clTrace` over the
-five-letter closure alphabet of `Fp` on both of those families. Nothing in this file yet mentions
-`HitCl`, `hitOf` or `HitPresented`.
+Probe 745 (requirement (C) of the ray-product verdict), **the record's satisfiability half, in
+full.** What is landed here, in the order the file presents it: the fixture (model A of the B2b
+verdict probe, transcribed); the **rigidity** result that makes the rest possible — every step
+path of model A through the seam `(t, a)` is either the constant `a`-path or an `a`-then-`b` jump
+path whose jump time is `≥ t`; its restatement as an identification of the seam's SPLICES
+(`splice_classify`: every spliced history at the seam is `stayA` itself or `jump w` for some
+`w ≥ t`); the explicit read-out of `clTrace` over the five-letter closure alphabet of `Fp` on
+both of those families; the **truncation bound** `hitCl_eq_truncated`, which replaces the seam's
+infinite ray index by an unexhibited finite window; the finite labelled presentation `QA`/`labOf`/
+`stepOf` with its labelling bridge; the **run characterization** identifying the presentation's
+anchored runs with exactly that window; and the headline.
+
+**The headline.** `hitPresented_modelA`: for every `t : ℤ` and every depth `1 ≤ k` there EXISTS
+an `L : ℕ` with `HitPresented MA stayA t Fp (labOf L) (stepOf L) k`. The `L` is NEVER exhibited.
+So the Hit-level hypothesis named in `Probe735.not_presented`'s header is SATISFIABLE on fixture
+model A, while NO computable bound is delivered — requirement (C)'s two halves separate here, and
+only the first is landed. The section "What `hitPresented_modelA` does NOT say", at the headline
+itself, is the full list of what that theorem withholds; read it before citing this file.
 
 **The fixture.** Model A of `quasistate-does-not-determine-hit.lean` and of
 `presented-not-complete.lean` (three states on `Fin 3`, `p` at `b` only, steps `a→a, a→b, b→b`),
@@ -29,9 +37,9 @@ closure of `Fp` has four members (`#eval (plusSubformulaClosure Fp).card` = 4, s
 has those four letters plus the marker `now`), `clTrace` on either family is a five-case read-out
 with no semantic content left in it.
 
-**What is NOT established.** No bound of any kind — the later phases' headline carries an
-unexhibited `∃ L` extracted from `Set.Finite.bddAbove`, i.e. from `Classical.choice`, and this
-file establishes nothing that would make such an `L` effective. Forward-only: nothing about
+**What is NOT established.** No bound of any kind — the headline carries an unexhibited `∃ L`
+extracted from `Set.Finite.bddAbove`, i.e. from `Classical.choice`, and nothing in this file would
+make such an `L` effective. Forward-only: nothing about
 `⊡(P p)`, because the fixture is forward-only and there is still no backward Bool-fixture bridge
 (`Probe719Backward.pastStab_iff_allBwdPathsMeet` on the asymmetric fixture remains the only
 backward fixture result, and no symmetry is implied here). No decidability of anything:
@@ -61,10 +69,17 @@ header is SATISFIABLE, not refuted: the forward-type observation that blocked th
 and the route through (C) is not closed by 735. The companion decision, recorded by the later
 phases rather than here, is that satisfiability buys no bound.
 
-**Axiom record.** `path_classify`, `splice_classify`, the closure read-out's two function-level
-forms and the fixture's history definitions: see the `#print axioms` foot. `Classical.choice` is inherited from `FrameOver.worldHistoryOfStepPath` and from the
-`Nat.find`/`by_cases` bookkeeping in `path_classify`, as in every probe of this collection.
-Nothing in this file is left unproved: zero sorries.
+**Axiom record**, as OBSERVED from the `#print axioms` foot rather than predicted. Every pinned
+declaration reports `[propext, Classical.choice, Quot.sound]` — `path_classify`, `stayA`, `jump`,
+`splice_classify`, `clTrace_stayA_eq`, `clTrace_jump_eq`, `hitCl_eq_truncated`, `labOf`,
+`labOf_inl_iff_clTrace_stayA`, `labOf_inr_iff_clTrace_jump`, `runTrace_mem_of_isRun`,
+`exists_isRun_runTrace` and the headline `hitPresented_modelA` — with the single exception of
+`stepOf`, which is `[propext]` alone, it being a decidable `Bool`-valued table. No `sorryAx`
+anywhere, and no fourth axiom. `Classical.choice` enters at four places and nowhere else:
+`FrameOver.worldHistoryOfStepPath` and the `Nat.find`/`by_cases` bookkeeping in `path_classify`
+(as in every probe of this collection), the `choose!` offset function in `hitCl_eq_truncated`,
+and `Set.Finite.bddAbove` in the same proof — that last one is why the headline's `L` is an
+existential with no number behind it. Nothing in this file is left unproved: zero sorries.
 
 **Compile line.**
 `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`
