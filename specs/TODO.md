@@ -76,11 +76,11 @@ next_project_number: 749
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
-734 [PLANNED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
+734 [IMPLEMENTING] — Run experiment E4: decide StabSaturated on the Bool fixture's...
   └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-  └─ 748 [NOT STARTED] — GOAL. Survey the Stage 1 verdicts landed since the roadmap...
+  └─ 748 [NOT STARTED] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
 747 [RESEARCHED] — Requirement (W) of the ray-product verdict: a closure-wide...
-  └─ 748 [NOT STARTED] — GOAL. Survey the Stage 1 verdicts landed since the roadmap... (see above)
+  └─ 748 [NOT STARTED] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING... (see above)
 
 ### Formula Refactor
 
@@ -110,94 +110,115 @@ next_project_number: 749
 
 ## Tasks
 
-### 748. Survey stage1 verdicts rerank decidability routes
+### 748. Revise and create tasks lplus decidability
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 734, Task 747
 
-**Description**: GOAL. Survey the Stage 1 verdicts landed since the roadmap was derived, re-rank the routes to
-`Decidable (PlusValidZTime phi)`, and ACT on the result by creating and revising tasks and by
-updating `specs/ROADMAP.md`. This is the review that owns ranking: every probe record in this
-front states that re-ranking is the review's job and forbids the probe from doing it (734's own
-HARD CONSTRAINTS: "Do not promote R2 above R1 on probe evidence alone; ranking is the review's").
-The precedent for this task's shape is the 735 verdict, which set the current agenda, and the
-archived ranked-route analysis at
+**Description**: GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING EXISTING TASKS AND CREATING NEW
+ONES. That is this task's deliverable and the thing it is judged on. A survey of the landed
+Stage 1 verdicts and a re-ranking of the routes are the MEANS by which this task earns the right
+to make those revisions -- they are not the product. A run that ends with a well-argued report and
+an updated roadmap but no task created and no task revised HAS FAILED, however good the analysis.
+
+This is the review that owns ranking: every probe record in this front states that re-ranking is
+the review's job and forbids the probe from doing it (734's own HARD CONSTRAINTS: "Do not promote
+R2 above R1 on probe evidence alone; ranking is the review's"). The precedent for this task's shape
+is the 735 verdict, which set the current agenda, and the archived ranked-route analysis at
 `specs/archive/718_omega_sequence_decidability_full_lplus/reports/02_ranked-route-analysis.md`.
 
-PROVENANCE. `specs/ROADMAP.md` is derived from state.json as of 2026-10-08. Four verdicts have
-landed or been characterized since, and at least one of them voids an instruction the roadmap
-still carries. This task exists because that document is now internally inconsistent, not because
-a periodic review was due.
+PROVENANCE. `specs/ROADMAP.md` is derived from state.json as of 2026-10-08. Verdicts have landed
+since, and at least one of them voids an instruction the roadmap still carries. This task exists
+because the programme's task graph no longer matches the evidence, not because a periodic review
+was due.
 
-=== WHAT CHANGED SINCE THE RANKING (verify each; do not trust this description) ===
+=== THE CANDIDATE REVISIONS AND CREATIONS ALREADY IDENTIFIED ===
 
-1. 733 came back POSITIVE. The two-factor presentation was NOT falsified on a backward-
-   NONDETERMINISTIC mirror fixture -- backward branching factor exactly 2 at every spine state,
-   `two_bwd_paths` axiom-free, `pastStab_iff_allBwdPathsMeet` and `decide_past_stab` holding
-   state-dependently. That fixture probes the one region where the finite-width obstruction can
-   appear (the landed E1 positive was on a backward-deterministic fixture whose backward factor is
-   a singleton), so this was R1's sharpest available falsifier and it survived. Probe wired; the
-   evidence gate went 25/25 -> 26/26.
+This list is the starting material, NOT the final answer. Each item is a hypothesis to verify
+against the tree and the artifacts; some may dissolve on inspection, and others not listed here
+may matter more. Act on what survives verification.
 
-2. 734 found the E4 experiment ILL-POSED AT THE PREDICATE. `Probe718Mosaic.StabSaturated M S` is a
-   TAUTOLOGY -- it holds for every finite mosaic set, mixed germ states included, by a one-line
-   term, because its body already carries the same-state equality that box-dot's clause quantifies
-   over (`PlusTruth.stab_iff` is an `Iff.rfl`); the compile log flags
-   `stabSaturated_of_sameState`'s `[F.IsRegular]` as unused. The review's literal R2 falsifier
-   ("StabSaturated false on a mixed set") is therefore UNSATISFIABLE. The real mosaic content is
-   the witness direction (Caleiro-Vigano-Volpe SH1), and deciding it on SEMANTIC mosaics
-   presupposes deciding box-dot, which is R1's reachability summary. Caleiro section 4.3 states
-   the mosaic decidability argument does not extend once dimensions interact.
+1. (C)'s COMPUTABLE BOUND MAY BE UNOWNED -- on current evidence the highest-value gap.
+   745 (C) is `completed`. 747's research nonetheless lists "(C)'s unproved bound" as one of three
+   run-layer blockers. The roadmap had said (C)'s phase 1 was the `HitPresented` probe, to run
+   "before any work on the computable bound the verdict costs at 'not in sight'", and instructed
+   that the bound half be re-costed after 739. A grep of all open task records in this repo found
+   NONE claiming the computable bound.
+   ACTION: read 745's own summary and artifacts and determine whether the bound was DELIVERED or
+   DESCOPED at closure. If descoped and unowned, FILE A TASK FOR IT. Re-cost it against 739's
+   surviving constraint: the per-time alphabet is closure-indexed, one label per
+   box-dot-subformula of the atomized target with backward labels included, so `Fintype.card Q` is
+   exponential in |phi|, not linear in depth.
 
-3. THEREFORE, AND THIS IS THE REVIEW'S CENTRAL QUESTION: the roadmap's contingency "Promote this
-   line if 745 refutes, or if 733 falsifies the two-factor presentation: R2 is the route to switch
-   to" is VOID AS WRITTEN. R2 is a CONSUMER of R1, not an alternative to it. Stage 1 currently has
-   no fallback route while the roadmap still asserts one. Settle what replaces that contingency --
-   including the honest answer "there is no fallback, and the programme proceeds on R1 alone with
-   these named risks" if that is what the evidence supports. Do not invent a fallback to fill the
-   hole.
+2. 747's THREE RUN-LAYER OBLIGATIONS may each deserve their own task rather than sitting as
+   blockers on one record: a frame-scheme constructor for infinite-width finitely-branching
+   regular frames; a per-cell Hit-level product summary; and (C)'s bound (item 1). Decide, and
+   either file them or record why one record is the better home.
 
-4. 747 (W) is characterized (research landed; implementation may still be in flight when this runs
-   -- check). Reported findings to verify: `box_time_invariant` (box-psi has one truth value per
-   model, from `plusTruthAt_timeShift`) and `stab_state_only` (box-dot-psi depends on the world
-   state alone) collapse the record's "box anchor across the whole slice" quantifier gap; the
-   anchor layer is a FINITE set of cells of closure types with syntactic bound 2^(2^|cl phi|),
-   described as the only bound (W) can state honestly; (S)'s construction is machine-checked NOT to
-   be (W)'s soundness half on two independent axes -- `frameOf` is finite-width so every `modelOf`
-   validates `NoFiniteWidth.Phi.neg`, a Z-time non-validity (`modelOf_incomplete`, a corollary of
-   `no_finite_width_sat`), and at any `Presented` seam with `nowUnique` every closure formula
-   satisfies psi <-> box-dot-psi, making `Fp -> box-dot-Fp` unrefutable there. The structural gap
-   from HWZ Def. 12 / Thm. 14 is that this semantics has NO free choice of runs: histories are all
-   frame paths, path-closed and limit-closed (`blc_plusValid` is a validity). The run layer is to
-   be recorded BLOCKED with three named obligations -- a frame-scheme constructor for
-   infinite-width finitely-branching regular frames, a per-cell Hit-level product summary, and
-   (C)'s unproved bound.
+3. THE ROADMAP'S R2 CONTINGENCY IS VOID AS WRITTEN. It says "Promote this line if 745 refutes, or
+   if 733 falsifies the two-factor presentation: R2 is the route to switch to." 733 came back
+   POSITIVE (the two-factor presentation was NOT falsified on a backward-NONDETERMINISTIC mirror
+   fixture -- backward branching factor exactly 2 at every spine state, `two_bwd_paths` axiom-free,
+   `pastStab_iff_allBwdPathsMeet` and `decide_past_stab` holding state-dependently; that fixture
+   probes the one region where the finite-width obstruction can appear, so it was R1's sharpest
+   available falsifier and it survived). And 734 found the E4 experiment ILL-POSED AT THE
+   PREDICATE: `Probe718Mosaic.StabSaturated M S` is a TAUTOLOGY, holding for every finite mosaic
+   set by a one-line term because its body already carries the same-state equality that box-dot's
+   clause quantifies over (`PlusTruth.stab_iff` is an `Iff.rfl`), with `stabSaturated_of_sameState`'s
+   `[F.IsRegular]` flagged unused -- so the literal R2 falsifier is UNSATISFIABLE. The real mosaic
+   content is the witness direction (Caleiro-Vigano-Volpe SH1), and deciding it on SEMANTIC mosaics
+   presupposes deciding box-dot, which IS R1's reachability summary. Caleiro section 4.3 states the
+   mosaic decidability argument does not extend once dimensions interact.
+   CONSEQUENCE: R2 is a CONSUMER of R1, not an alternative to it. Stage 1 has no fallback route
+   while the roadmap asserts one.
+   ACTION: settle what replaces that contingency and revise whichever records assert it. The
+   honest answer may be "there is no fallback; the programme proceeds on R1 alone with these named
+   risks" -- if so, say that. DO NOT INVENT A FALLBACK TO FILL THE HOLE.
 
-=== VERIFY THIS FIRST: DOES (C)'s COMPUTABLE BOUND HAVE AN OWNER? ===
+4. 747 LACKS A `dependencies[]` EDGE it needs. It was deferred on five consecutive cycles of one
+   `/orchestrate` run because its `file_scope` overlaps every probe task at
+   `scripts/check-evidence-probes.sh`, with no edge to serialize it. The roadmap already notes
+   Stage 1 "carries dependency edges rather than relying on per-cycle deferral"; this is an
+   instance where that was not done. Revise the record rather than relying on the deferral gate.
 
-745 (C) is `completed`. 747's research nonetheless lists "(C)'s unproved bound" as one of three
-run-layer blockers. The roadmap had said (C)'s phase 1 was the `HitPresented` probe, to run
-"before any work on the computable bound the verdict costs at 'not in sight'", and instructed that
-the bound half be re-costed after 739. A grep of all 51 open task records in this repo found NONE
-claiming the computable bound.
+5. RE-RANK 714 AND 716 (the sliced-certificate sub-front) now that R2 is not a fallback. 714 would
+   delete both liveness filters and its open question is whether decidability of the check
+   survives; 716 is a live defect in shipped gated code (the `liveT`/`liveAt` fixpoint not
+   returning in 300s on a 4-position total-edge certificate while instant on self-loop ones).
 
-So: read 745's own summary and artifacts and determine whether the bound was DELIVERED or
-DESCOPED at closure. If it was descoped and is now unowned, that is on current evidence the
-highest-value gap in the whole front -- the run layer cannot close without it -- and a task MUST be
-filed for it. Re-cost it against 739's surviving constraint: the per-time alphabet is
-closure-indexed, one label per box-dot-subformula of the atomized target with backward labels
-included, so `Fintype.card Q` is exponential in |phi|, not linear in depth.
+6. DECIDE WHETHER 725 AND 720 STILL EARN THEIR CYCLES given 733's and 734's outcomes.
+
+7. TWO DECLARATION-HYGIENE DEFECTS found while filing this task, both affecting the admission
+   gate's ability to see collisions in this very front: task 177 declares
+   `FormalSystem/Metalogic/Decidability/` as a whole-directory `file_scope`, overlapping 10
+   non-terminal tasks including 747; and 28 of 52 non-terminal tasks declare no `file_scope` at
+   all. Decide whether fixing these belongs here, in a filed successor, or nowhere.
+
+=== CONTEXT FOR THE RANKING: 747's CHARACTERIZATION ===
+
+Reported findings to verify (research landed; implementation may still be in flight when this
+runs -- check): `box_time_invariant` (box-psi has one truth value per model, from
+`plusTruthAt_timeShift`) and `stab_state_only` (box-dot-psi depends on the world state alone)
+collapse the record's "box anchor across the whole slice" quantifier gap; the anchor layer is a
+FINITE set of cells of closure types with syntactic bound 2^(2^|cl phi|), described as the only
+bound (W) can state honestly; (S)'s construction is machine-checked NOT to be (W)'s soundness half
+on two independent axes -- `frameOf` is finite-width so every `modelOf` validates
+`NoFiniteWidth.Phi.neg`, a Z-time non-validity (`modelOf_incomplete`, a corollary of
+`no_finite_width_sat`), and at any `Presented` seam with `nowUnique` every closure formula
+satisfies psi <-> box-dot-psi, making `Fp -> box-dot-Fp` unrefutable there. The structural gap from
+HWZ Def. 12 / Thm. 14 is that this semantics has NO free choice of runs: histories are all frame
+paths, path-closed and limit-closed (`blc_plusValid` is a validity).
 
 === SETTLED RULINGS THAT DO NOT REOPEN ===
 
 - 739's refutation is load-bearing but is NOT a route-switch signal. It killed the one-bit reading
   of the stratification, not the gluing route; the closure-indexed alphabet that survives keeps R1
   alive. The roadmap says so explicitly: "Do not read '739 refuted' as a route-switch signal."
-- NO COMPLEXITY BOUND, upper or lower, is to be asserted or implied anywhere in this task's output.
-  The ARGUED CTL-star 2EXPTIME ceiling is a sanity FLOOR only -- nothing cheaper than 2EXPTIME is a
-  credible decision procedure -- is quoted only with its ARGUED qualifier, and is never a source
-  for an upper bound. 713 is held by ruling and is not schedulable.
+- NO COMPLEXITY BOUND, upper or lower, is to be asserted or implied anywhere in this task's output,
+  including in any task it files. The ARGUED CTL-star 2EXPTIME ceiling is a sanity FLOOR only --
+  nothing cheaper than 2EXPTIME is a credible decision procedure -- is quoted only with its ARGUED
+  qualifier, and is never a source for an upper bound. 713 is held by ruling and is not schedulable.
 - Do NOT file a fourth certificate class. No class presenting finite per-time fibres is complete
   whatever its clauses; both halves of that obstruction are landed under
   `PlusSlicedCertificate/Limits/`.
@@ -206,38 +227,27 @@ included, so `Fintype.card Q` is exponential in |phi|, not linear in depth.
   guard at any fuel.
 - Do not claim the tableau front delivers a first decidability theorem. Z-time validity of L is
   ALREADY decided by the witness-family route (`Compression.decidableValidZTime`); that front's
-  deliverable is the four-class `isValid` biconditional. Verify this against the tree before
-  relying on it.
-- 712's disposition is to close it as a refutation record (a Stage 0 user ruling), not to pursue
-  it. 709 must be re-ruled before any dispatch and its filed headline must not be attempted.
+  deliverable is the four-class `isValid` biconditional. Verify against the tree before relying on
+  it.
+- 712's disposition is to close it as a refutation record (a Stage 0 user ruling), not to pursue it.
+  709 must be re-ruled before any dispatch and its filed headline must not be attempted.
 - Never write "L+ is decidable" unqualified, and never state a decidability result without carrying
   its frame class, language fragment, premise set and hypothesis (`[F.IsRegular]` at minimum).
 
-=== ALSO SETTLE ===
+=== REQUIRED DELIVERABLES, IN PRIORITY ORDER ===
 
-- Whether 714 and 716 (the sliced-certificate sub-front) should be re-ranked now that R2 is not a
-  fallback. 714 would delete both liveness filters and its open question is whether decidability of
-  the check survives; 716 is a live defect in shipped gated code (the `liveT`/`liveAt` fixpoint not
-  returning in 300s on a 4-position total-edge certificate while instant on self-loop ones).
-- Whether 747's three run-layer obligations should each become their own task, or stay recorded as
-  blockers on a single record.
-- Whether 725 and 720 still earn their cycles given 733's and 734's outcomes.
-- Whether 747 needs a `dependencies[]` edge rather than relying on per-cycle deferral: it was
-  deferred on five consecutive cycles of one `/orchestrate` run because its `file_scope` overlaps
-  every probe task at `scripts/check-evidence-probes.sh`. The roadmap already notes Stage 1 "carries
-  dependency edges rather than relying on per-cycle deferral"; this is an instance where that was
-  not done.
-
-=== THIS TASK FAILS IF ITS ONLY DELIVERABLE IS A PROSE REPORT NO DISPATCH READS ===
-
-Required deliverables, all three:
-(a) `specs/ROADMAP.md` Stage 1 ordering and rationale updated, with the void R2 contingency
-    replaced by whatever the evidence actually supports;
-(b) concrete tasks CREATED and/or REVISED through the normal mechanisms, not merely recommended in
-    prose -- at minimum a disposition for the (C)-bound gap if the verification above finds it
-    unowned;
-(c) a ranked route analysis in which every load-bearing claim cites a file:line, a wired probe, or
-    a named theorem, not an agent summary.
+(a) TASKS CREATED AND/OR REVISED through the normal mechanisms -- `/task` for creations, `/revise`
+    or a `state-write.sh` description update for revisions. This is the primary output. At minimum
+    a disposition for the (C)-bound gap (item 1) and for the void R2 contingency (item 3).
+(b) A ranked route analysis justifying every creation and revision in (a), in which each
+    load-bearing claim cites a file:line, a wired probe, or a named theorem -- never an agent
+    summary. This exists to make (a) auditable, not to stand alone.
+(c) `specs/ROADMAP.md` updated so its Stage 1 ordering and rationale match (a). NOTE THE FILE IS
+    HYBRID: `roadmap-integration.sh --regenerate` rebuilds ONLY the `## Open work` and `## Next`
+    sections; the Stage prose, including the void contingency, is AUTHORED and must be hand-edited.
+    Do not hand-edit the generated sections and do not clobber the authored ones with a regenerate.
+    Task 371 (teach `roadmap-integration.sh` the stage-based layout, fix its silent abort) is
+    relevant and may block a clean regenerate -- check before relying on one.
 
 Every factual claim in this description came from orchestration-time agent summaries whose reports
 the description's author did not read. Re-verify each against the tree and the artifacts; correct
@@ -245,12 +255,12 @@ this description's errors in the report rather than propagating them.
 
 === ACCEPTANCE ===
 
-- The roadmap no longer asserts a fallback route that the evidence does not support, and its Stage 1
-  run order reflects the landed verdicts.
+- At least one task has been created or revised, each with the evidence that drove it named.
 - The (C)-bound ownership question is answered from 745's own closure artifacts, with a filed task
   if it is unowned.
-- Each re-ranking decision names the evidence that drove it and distinguishes verified in-tree facts
-  from carried agent claims.
+- The roadmap no longer asserts a fallback route the evidence does not support, and its Stage 1 run
+  order reflects both the landed verdicts and the task graph as revised by (a).
+- Each ranking decision distinguishes verified in-tree facts from carried agent claims.
 - No complexity bound is asserted, no fourth certificate class is filed, and no settled ruling above
   is reopened without new evidence stated as such.
 
@@ -718,7 +728,7 @@ ACCEPTANCE. Either `Decidable (PlusValidZTime phi)` machine-checked with every q
 ---
 
 ### 734. E4 mosaic stabsaturated mixed germ probe
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 733
