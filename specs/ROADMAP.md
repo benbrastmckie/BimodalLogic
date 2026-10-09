@@ -21,8 +21,7 @@ Phases 6 and 7.
 
 ```bash
 # Stage 1 — decidability of L⁺; run to exhaustion before anything below
-# 739,740 done 2026-10-08 -- 739 refuted the one-bit reading; see Stage 1
-# 745,746 done; 733 done (POSITIVE: the two-factor presentation was NOT falsified); 747 done
+# Landed verdicts (739,740,745,746,733,747) are archived; their rationale is kept in Stage 1
 # 734 is [PARTIAL] by a recorded user decision; it is NOT a fallback route -- see Stage 1
 /orchestrate 749 --hard --lit           # (C)'s bound half on model A; the cost is phase 2
 /orchestrate 720                        # CI repair: untracked WIRED_REPO + the tracked-ness check
@@ -108,7 +107,7 @@ probe on a fixture that already exists, and either answer redirects thousands of
 the two is now answered**: 739 came back a refutation of the one-bit reading, which narrowed the
 surviving alphabet rather than killing the route. The other is (C)'s `HitPresented` probe.
 
-- **`/orchestrate 739,740`** — **DONE 2026-10-08**, both terminal. **739 REFUTED the one-bit
+- **739, 740 — LANDED 2026-10-08, archived.** **739 REFUTED the one-bit
   reading, and that verdict is load-bearing for everything below.** On a four-state fixture where
   `{a,c}` genuinely share the depth-1 stratum `⊡Fp = False` and `{b,d}` share `True`, the depth-2
   value is machine-checked **not** a function of the depth-1 stratum for the landed shape
@@ -124,7 +123,7 @@ surviving alphabet rather than killing the route. The other is (C)'s `HitPresent
   `[Finite sig.preds]` and retired the six linter suppressions, discharging the 745/746
   prerequisite.
 
-- **`/orchestrate 745,746 --hard --lit`** — **(C)** and **(S)**, both unblocked by 739/740 and
+- **745 (C), 746 (S) — LANDED, archived.** Both were unblocked by 739/740 and were
   **batched because both add pins to `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`**.
   Neither declares `file_scope` yet, so the overlap gate is blind to that collision and the
   dependency-inclusive batch is what serializes them; their implement dispatches serialize
@@ -192,7 +191,8 @@ surviving alphabet rather than killing the route. The other is (C)'s `HitPresent
   repair shape in both orientations, so the successor record inherits a measured obstruction
   rather than an open question.
 
-- **`/orchestrate 733,734 --lit`** — evidence and fallback. **Its serialization behind 739 on the
+- **733 — LANDED (POSITIVE), archived. 734 remains OPEN and is NOT scheduled** (see Stage 0).
+  **733's serialization behind 739 on the
   gate script is discharged**: 739 landed that wiring append-only, and 733's own `file_scope` is
   already declared. **739 also raised 733's value**, so run it next rather than last on this
   front: the past mirror `⊡P(⊡Fp)` was one of the three refuting shapes, and the surviving
@@ -224,7 +224,7 @@ surviving alphabet rather than killing the route. The other is (C)'s `HitPresent
   gluing route, and the closure-indexed alphabet that survives it keeps R1 alive. Do not read
   "739 refuted" as a route-switch signal.
 
-- **`/orchestrate 747 --hard --lit`** — **(W)**, gated on 745 and 746, because (C) and (S) together
+- **747 (W) — LANDED, archived.** It was gated on 745 and 746 because (C) and (S) together
   still speak of one seam. **The characterization round is complete** (plan
   `01_closure-wide-quasimodel-anchor-layer.md`): the object is TWO-layered, not one. The **anchor
   layer** is landed and bounded — `RaySummary/AnchorLayer.lean`: closure types and per-state
