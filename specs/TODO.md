@@ -11,8 +11,8 @@ next_project_number: 749
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,725,729,730,731,734,741,743,744 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,720,748 | 298,464,502,616,734 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,734,741,743,744,748 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -75,10 +75,10 @@ next_project_number: 749
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
+720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-  └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-  └─ 748 [NOT STARTED] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
+748 [NOT STARTED] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
 
 ### Formula Refactor
 
@@ -112,7 +112,7 @@ next_project_number: 749
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 734, Task 747
+- **Dependencies**: Task 747
 
 **Description**: GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING EXISTING TASKS AND CREATING NEW
 ONES. That is this task's deliverable and the thing it is judged on. A survey of the landed
@@ -1011,7 +1011,7 @@ ACCEPTANCE. Every listed surface states the two-statement distinction once, in i
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 706, Task 710, Task 734
+- **Dependencies**: Task 706, Task 710
 
 **Description**: RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT AFTER THE LIBRARY LANDING, AND MAY LEGITIMATELY CLOSE AS SUBSUMED. Re-point the finite-carrier and finite-width FMP refutation citations in `FormalSystem/Metalogic/Decidability/FMP/README.md` and `scripts/check-evidence-probes.sh` to the LIBRARY names that tasks 710 and 706 land, converting or deleting the two `WIRED_REPO` entries accordingly. Specification: `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md`, Section F item 3.
 
