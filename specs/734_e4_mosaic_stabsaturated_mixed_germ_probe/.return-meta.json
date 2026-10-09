@@ -1,0 +1,53 @@
+{
+  "status": "researched",
+  "dispatch_seq": 5,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/reports/01_e4-stabsaturated-mixed-germ-probe.md",
+      "summary": "E4 research: the landed StabSaturated predicate is identically true (proved for every finite mosaic set, so the literal R2 falsifier is unsatisfiable); the SH1 witness-direction predicate is the real content and is non-trivial on the mixed-germ E2 Bool fixture (holds on {stayA,jumpB,stayB}, fails on {jumpB,stayB}, all sorry-free in scratch); Handbook ch.11 sections 5.10-5.11 remain unobtainable (publisher preview re-measured at 3 pages, byte-identical; DOI paywalled)."
+    }
+  ],
+  "next_steps": "Plan one probe file specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean lifted from the verified scratch (stabSaturated_univ, E2 transcription, StabWitnessedAt, Smix/Sdrop theorems), wired into scripts/check-evidence-probes.sh with the vacuity finding in its header; schedule its implementation in a cycle task 747 is not implementing in; the Handbook half stays a recorded residual gap unless the user supplies the pages, so the post-implementation resting state is [PARTIAL] by the acceptance clause.",
+  "user_decision": {
+    "question": "Handbook of Modal Logic ch. 11 sections 5.10-5.11 (Hodkinson-Reynolds, pp. 708-712) are paywalled at Elsevier (DOI 10.1016/S1570-2464(07)80014-0); the only free copy is the publisher's 3-page preview already in the corpus. Can you supply the chapter via institutional access or purchase, or should the acquisition half stay recorded as a residual gap?",
+    "options": [
+      "Supply the chapter PDF (institutional access or purchase) and I ingest sections 5.10-5.11 — task can then reach full acceptance",
+      "Leave the acquisition half as a recorded residual gap with its reactivation condition; land the probe half only, task rests at [PARTIAL]"
+    ],
+    "recommended": "Leave the acquisition half as a recorded residual gap with its reactivation condition; land the probe half only, task rests at [PARTIAL]",
+    "blocking": false
+  },
+  "modified_files": [
+    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/reports/01_e4-stabsaturated-mixed-germ-probe.md",
+    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/issues.jsonl"
+  ],
+  "proposed_file_scope": [
+    "specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean",
+    "scripts/check-evidence-probes.sh",
+    "specs/literature-index.json"
+  ],
+  "memory_candidates": [
+    {
+      "content": "A box-propagation saturation predicate over SEMANTIC labels (truth sets) is a tautology: if the predicate's body carries the same-state equality that the box clause already quantifies over, it holds for every set. The non-trivial mosaic-method content is the DIAMOND/witness direction (Caleiro-Vigano-Volpe SH1), which fails when a refuter is absent from the finite set. Check which direction a 'saturation' predicate encodes before filing it as a route hypothesis.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/reports/01_e4-stabsaturated-mixed-germ-probe.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["mosaic", "saturation", "stab", "vacuity", "SH1", "witness-direction"]
+    },
+    {
+      "content": "Finset literals over a structure wrapping WorldHistory need a classical DecidableEq instance declared once (noncomputable instance ... := Classical.decEq _) and shared by defs and theorems; an `open Classical in` scoped to the def alone leaves theorem statements unable to elaborate. Projections `.2` on `Fg.WorldState` resist `rw`/`simp [Prod.mk.injEq]`; use `have h' : (τ.path t).2 = _ := h` or `injection ... with _ h2`.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/reports/01_e4-stabsaturated-mixed-germ-probe.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["Finset", "DecidableEq", "Classical.decEq", "ofSlicedStep", "WorldState", "injection"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791529054_4455fa_734",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 2400,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
