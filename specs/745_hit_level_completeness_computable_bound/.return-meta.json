@@ -1,15 +1,19 @@
 {
   "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 745,
-  "dispatch_seq": 6,
-  "session_id": "sess_1791500801_df94d6",
-  "phase": "implement",
+  "dispatch_seq": 7,
+  "phase_number": 3,
+  "phases_completed": 3,
+  "phases_total": 8,
   "requires_user_review": false,
+  "handoff_path": "specs/745_hit_level_completeness_computable_bound/.orchestrator-handoff.json",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "summary": "Phases 1-2 of 8: HitPresented and hitPresented_of_presented in RaySummary/Trace.lean, plus the new evidence probe hit-presented-model-a.lean carrying the model-A fixture and the step-path classification path_classify; all sorry-free, phases 3-8 not started."
+      "summary": "Phase 3 lands splice_classify and the five-letter closure-alphabet clTrace read-out on both of model A's splice families, sorry-free."
     }
   ],
   "sorry_inventory": [],
@@ -19,48 +23,23 @@
     "axiom_count": 14,
     "build_passed": true,
     "verification_passed": true,
-    "notes": "sorry_count 0 repo-wide via lean-sorry-census.sh --cross-check over all eight resolved source roots (stripper 0, compiler 0, cross_check MATCH); grep -c sorry on the new probe is 0. vacuous_count 1 is pre-existing and unchanged from the HEAD~1 baseline (FormalSystem/Examples/TemporalStructures.lean's int_domain_universal, where intTimeHistory.domain t genuinely reduces to True); zero introduced by this phase and zero in the probe. axiom_count 14 unchanged from baseline. build_passed from two sources: the probe's own compile (lake env lean through lake-build-guard.sh, detached, guard exit 0, output exactly the three #print axioms info lines, zero errors and zero warnings) and a full guarded project build re-run (guard exit 0, 'Build completed successfully (2836 jobs)', zero error: lines over both captured streams, Trace.olean newer than Trace.lean). Phase 2 touched no file in the Lake build graph -- the probe is under specs/, which no Lake target root reaches -- so the full build confirms no regression rather than covering the probe. path_classify's landed signature was extracted and diffed against the plan's ## Lean Challenge Statements pin: byte-identical. lean-challenge-snapshot.sh --check is UNAVAILABLE (no manifest at specs/745_.../challenge/manifest.json; none was taken at plan time), not green -- the plan lists it as ADVISORY and the mechanical diff stands in its place."
-  },
-  "metadata": {
-    "session_id": "sess_1791500801_df94d6",
-    "agent_type": "lean-implementation-hard-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-    "phase_number": 2,
-    "phases_completed": 2,
-    "phases_total": 8,
-    "commit": "00bb3b3b9",
-    "files_touched": [
-      "specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean"
-    ],
-    "handoff_path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-2-handoff-20261009T001229Z.md"
+    "notes": "Probe compile `lake env lean` exit 0 with zero error/warning lines. Full project build through lake-build-guard.sh: guard exit 0, 'Build completed successfully (2836 jobs)', zero `error:` lines, Trace.olean newer than Trace.lean. lean-sorry-census.sh --cross-check over all eight resolved source roots: stripper 0, compiler 0, cross_check MATCH. vacuous_count 1 is the pre-existing FormalSystem/Examples/TemporalStructures.lean int_domain_universal, unchanged from baseline, zero introduced. axiom_count 14 unchanged. splice_classify's landed signature matches the plan's pinned Challenge statement by mechanical whitespace-normalized diff."
   },
   "completion_data": {
-    "completion_summary": "Phase 2 of the eight-phase plan, single-phase mission honoured. The evidence probe specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean now exists at 276 lines: a 65-line header carrying every disclaimer the phase mandated (no bound, forward-only with no backward Bool-fixture bridge implied, no decidability claim in any form, nothing about general regular Z-models, the fixture's non-generality because model A's splices are eventually constant in both directions, and the explicit statement that Probe735.not_presented is neither weakened nor retired since one refutes a TRACE-set equality while this record targets a FAMILY-TRIPLE-set equality); the model-A fixture transcribed from presented-not-complete.lean rather than imported, per the collection's convention; and the step-path classification stepA, time_eq, bwd_a, fwd_dichotomy, fwd_absorb, path_classify. path_classify is the rigidity the whole positive construction rests on: every step path through the seam (t, a) is the constant a-path or an a-then-b jump path with jump time w >= t, so the seam's splices form a one-parameter family indexed by w >= t plus the constant path and nothing else. Nothing in this phase mentions HitCl, hitOf or HitPresented; no bound of any kind is established and none is claimed."
+    "completion_summary": "Phase 3 of 8 complete. splice_classify (pinned signature, mechanically diff-verified) identifies every seam splice of model A as stayA or jump w with w >= t, by transporting path_classify through seamOmegaEquiv and lifting with WorldHistory.ext_state. The closure alphabet of Fp is enumerated and exhausted (letter_cases over five letters; (plusSubformulaClosure Fp).card = 4 re-derived by #eval, no longer carried), and clTrace is read out letter by letter on both splice families, assembled into clTrace_stayA_apply / clTrace_jump_apply and the function-level clTrace_stayA_eq / clTrace_jump_eq. Zero sorries, zero warnings, full build green. Nothing about HitCl, hitOf, HitPresented, PlusValidZTime, decidability, or any bound is stated by this phase."
   },
   "memory_candidates": [
     {
-      "content": "A research dispatch that leaves a COMPILED scratch file behind, plus a report that records which tactic choices were load-bearing, can collapse an implementation phase to a pure transcription that compiles green on the first attempt with zero proof search. The load-bearing details worth recording are exactly the ones a re-derivation would get wrong: induction principle AND case names (Int.induction_on with zero/succ/pred), the ORDER of normalization versus rewriting (push_cast at h ih before a show-by-ring step, not after), deprecation substitutions already made (simp only [not_exists] in place of push_neg), and toolchain quirks (an explicit propositional hypothesis per theorem, because the toolchain does not auto-include a propositional variable). Record these in the report, not just the final proof text.",
-      "category": "PATTERN",
-      "source_artifact": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["scratch-file", "transcription", "research-handoff", "load-bearing-tactics", "lean4", "push_cast"]
+      "topic": "Transporting a step-path classification to a splice classification in BimodalLogic",
+      "insight": "WorldHistory.path is WorldHistory.state by definition and seamOmegaEquiv's .symm carries the seam condition as its .2 field, so a classification of bare step paths through a seam state applies to `spliced tau t bf`.path directly -- no pathFibreEquiv rewrite is needed, and WorldHistory.ext_state lifts the pointwise result to a history equality. A plan predicting this transport as the cost driver of a phase mispredicted: it is ~29 lines."
     },
     {
-      "content": "A pre-commit gate keyed to one directory's line count does not fire for every Lean-adding commit. In BimodalLogic, typst-sync-check.sh Check 2 pins formalsystem-line-count, so a phase adding hundreds of Lean lines under specs/evidence/ sails through while a 44-line FormalSystem/ edit is blocked. Before budgeting the full-build-plus---fix remedy into every phase of a plan, check WHICH directory the gate counts against the phase's actual file scope; a blanket 'every later phase will hit this gate' note in a handoff can be wrong in the cheap direction and cause needless build runs.",
-      "category": "GOTCHA",
-      "source_artifact": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["pre-commit-gate", "typst-sync-check", "line-count", "file-scope", "evidence-probe"]
+      "topic": "Scope estimation for per-letter closure-alphabet read-outs",
+      "insight": "A plan item of the form 'for each member of the closure plus the marker, give the trace on each of N families explicitly' multiplies out: a 4-member closure and 2 families is 10 per-letter lemmas, and the supporting exhaustion lemma, membership facts, falsity lemmas and assembled forms bring it to ~21 declarations. Estimating such an item at 80-120 lines undershoots by roughly a factor of two; count the declarations the item implies before writing the hypothesis."
     },
     {
-      "content": "An evidence probe living under specs/ is reachable by no Lake target root, so lake build never compiles it and a full green project build is NOT evidence the probe compiles. The two are independent checks: run the probe's own lake env lean compile line explicitly, and treat the probe as ungated until it is wired into the repository's probe-checking script. A phase that lands such a probe and reports only the project build has reported nothing about its own output.",
-      "category": "GOTCHA",
-      "source_artifact": "specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean",
-      "confidence": 0.85,
-      "suggested_keywords": ["evidence-probe", "lake-build-graph", "check-evidence-probes", "verification-blind-spot", "lean4"]
+      "topic": "Avoiding pairwise-distinctness lemmas in a letter-indexed iff read-out",
+      "insight": "When proving `trace q z <-> (q = letter1 /\\ P1 z) \\/ (q = letter2 /\\ P2 z) \\/ ...`, prove the forward direction by case-splitting on an alphabet-exhaustion lemma and the backward direction by `rintro (<rfl, h> | rfl | ...)`. The rfl patterns substitute the letter variable, so no letter needs to be distinguished from any other and the pairwise-distinctness lemmas are never consulted -- which also keeps the proof free of simp-argument-list churn and its unusedSimpArgs warnings."
     }
-  ],
-  "issues_recorded": 2,
-  "next_steps": "Dispatch implement for phase 3 (splice-to-history identification via splice_classify, and the four-case closure-letter read-out; re-derive (plusSubformulaClosure Fp).card by #eval first, and re-resolve seamOmegaEquiv/SeqPair/ZPathFibre/pathFibreEquiv/spliced/WorldHistory.ext_state BY NAME)."
+  ]
 }
