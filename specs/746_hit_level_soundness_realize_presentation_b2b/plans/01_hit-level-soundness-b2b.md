@@ -638,20 +638,22 @@ usable as-is for `W := Q` and must not be rebuilt.
 
 ---
 
-### Phase 7: `presented_modelOf` — the realization theorem [NOT STARTED]
+### Phase 7: `presented_modelOf` — the realization theorem [COMPLETED]
 
 **Goal**: Discharge `Presented (modelOf …) τ t φ lab step` for the constructed model at a seam.
 Both directions route through the landed uniqueness lemma `eq_clTrace_of_localRun_anchored`; this
 is the plan's largest phase and its one genuinely unproved reduction.
 
 **Tasks**:
-- [ ] State `anchored_runTrace_of_boxStabFree` (pinned below): for `BoxStabFree φ`, a history `σ`
+- [x] State `anchored_runTrace_of_boxStabFree` (pinned below): for `BoxStabFree φ`, a history `σ`
       of `frameOf` whose path is `fun z => (z, ρ z)`, and a run `ρ` with `IsRun lab step (clNow
       φ) t ρ`, the colouring `runTrace lab ρ` is `Anchored (modelOf …) φ t · σ`. Prove it by
       four fields: `now` from `IsRun`'s second conjunct; `atom` from `modelOf_valuation`; `box`
       and `stab` VACUOUSLY, by `not_box_mem_plusSubformulaClosure` /
       `not_stab_mem_plusSubformulaClosure` on the field's own membership hypothesis.
-- [ ] Prove the (⇐) direction of `Presented`: given `ρ` with `IsRun`, build the history `σ` from
+      *(landed exactly as written, with the pinned signature character for character; all four
+      fields are one line each.)*
+- [x] Prove the (⇐) direction of `Presented`: given `ρ` with `IsRun`, build the history `σ` from
       the step path `z ↦ (z, ρ z)` via `frameOf_mem_HF_iff`'s `←` direction at offset `0` (or
       `FrameOver.worldHistoryOfStepPath` with `IsStepPath` from `frameOf_step`); get `LocalRun φ
       (runTrace lab ρ)` from `cons_localRun` and `Anchored` from the previous task; conclude
@@ -660,17 +662,44 @@ is the plan's largest phase and its one genuinely unproved reduction.
       `Presheaf.StabFibre` element `⟨σ, hσt⟩`, `seamOmegaEquiv t (τ.state t)` applied to it, and
       `Equiv.symm_apply_apply` under an explicit `show` (`spliced` is the `SeamMulti.lean`
       abbrev).
-- [ ] Prove the (⇒) direction: given a splice `σ = spliced τ t bf`, set `ρ z := (σ.path z).2`;
+      *(deviation: altered — TWO changes, both recorded in the issue log and in the module.
+      (a) The history is built by the bullet's own parenthetical alternative,
+      `FrameOver.worldHistoryOfStepPath` with `IsStepPath` from `frameOf_step`, rather than
+      `frameOf_mem_HF_iff`'s `←` direction: that route gives `σ.path = fun z => (z, ρ z)` by
+      `rfl` instead of through an offset the `←` direction would then have to be specialized at.
+      (b) THIS BULLET WAS NOT PROVABLE FROM THE `Cons` BUNDLE PHASE 5 LANDED. The bullet's own
+      `⟨σ, hσt⟩` step needs `hσt : σ.state t = τ.state t`, i.e. `ρ t = q₀`, and `IsRun` supplies
+      only `lab (ρ t) (clNow φ) = true`; none of the ten landed fields forces the
+      `clNow`-labelled state to be unique, and two mutually unreachable `clNow`-labelled
+      components with different atom labels satisfy all ten while refuting `Presented` at either
+      seam. One new field, `Cons.nowUnique`, was therefore added. `Cons`'s own Challenge pin is
+      field-free (`structure Cons … : Prop where` with no fields listed), so no pinned signature
+      drifted and `presented_modelOf` landed at its pin character for character; `cons_localRun`
+      does not read the new field and re-pinned unchanged. The counterexample is argued in prose
+      in the field's docstring and is NOT machine-checked — see the Phase 7 handoff for the
+      recommended follow-up that would wire it as a probe.)*
+- [x] Prove the (⇒) direction: given a splice `σ = spliced τ t bf`, set `ρ z := (σ.path z).2`;
       derive `IsRun lab step (clNow φ) t ρ` — the step conjunct from `frameOf_mem_HF_iff`'s `→`
       direction (which pins the time component to `z + k`, hence `k = 0` at the seam) plus
       `frameOf_step`, and the `now` conjunct from `Cons` clause 5 together with the seam anchor
       `hτ : τ.state t = (t, q₀)`, `hq₀ : lab q₀ (clNow φ) = true`; then apply the SAME two
       obligations (`cons_localRun`, `anchored_runTrace_of_boxStabFree`) and the SAME uniqueness
       lemma to get `clTrace (modelOf …) φ t σ = runTrace lab ρ`.
-- [ ] Assemble `presented_modelOf` with the signature pinned below, and commit the two directions
+      *(landed as written. `Cons` clause 5 (`nowOnce`) is consumed through two new helpers the
+      bullet's instruction implies rather than names: `exists_stepPath_of_chain`, which cuts the
+      finite `StepPath` the field is quantified over out of the bi-infinite chain, and
+      `isRun_of_chain_seam`, which applies it in both time directions. `k = 0` is pinned from
+      the seam anchor exactly as the bullet says, not assumed.)*
+- [x] Assemble `presented_modelOf` with the signature pinned below, and commit the two directions
       separately as they go green (the sub-step commit mandate; a green (⇐) half must not wait on
       (⇒)).
-- [ ] Scoped build; `#print axioms` on both new theorems; `grep -c sorry` = 0.
+      *(deviation: altered — ONE phase commit, not two. Both directions elaborated green in the
+      same scratchpad pass, so there was never an intermediate tree state with one direction
+      green and the other outstanding to commit; splitting the already-final file afterwards
+      would have manufactured a sub-step that did not happen. Recorded rather than faked.)*
+- [x] Scoped build; `#print axioms` on both new theorems; `grep -c sorry` = 0.
+      *(all five new declarations pin to exactly `[propext, Classical.choice, Quot.sound]`, and
+      `cons_localRun` re-pins unchanged after the `Cons` field addition.)*
 
 **Timing**: 2.5 hours
 
@@ -682,6 +711,13 @@ is the plan's largest phase and its one genuinely unproved reduction.
 cites `eq_clTrace_of_localRun_anchored`, `seamOmegaEquiv` and `frameOf_mem_HF_iff` without
 restating them; the scoped build of that module is the complete covering check for the edit, and
 the plan's cross-cutting sweep is Phase 8's job.
+
+**Scope Hypothesis outcome (measured)**: CONFIRMED. `Realize.lean` 684 → 916 lines, +243/−11 for
+a +232 net delta, inside the predicted 180-260 band and far under the ~320-line tripwire. All
+eleven deletions are docstring prose (the header's owed-work paragraph, the `Cons` field count,
+the `nowOnce` clause-group entry, one re-wrapped line); zero declaration bodies were touched. The
+hidden obligation the tripwire watches for DID materialize — the missing `Cons.nowUnique` field —
+but it cost one field plus three short helpers, not a phase.
 
 **Scope Hypothesis**: ~180-260 lines (research's own estimate for this target), the largest phase
 in the plan. Confirm by `wc -l` delta at phase end. If it exceeds ~320 lines, a hidden obligation

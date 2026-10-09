@@ -65,10 +65,12 @@ unfolding coherence `SCoh`, the backward deferral graph `bwdDeferGraph` and its 
 orientation is read off `LocalRun.snce`'s own clause, and the graph handed to `live` reverses
 the underlying `step` relation in the manner of `Present.lean`'s `bwdLive`.
 
-The `Cons` bundle closes the file: the ten-field consistency structure on a finite labelled
+The `Cons` bundle follows: the eleven-field consistency structure on a finite labelled
 presentation, and `cons_localRun`, which reads every field of `LocalRun` off it — `bot` and
 `imp` from the per-state label equations, `untl` and `snce` by citing the two theorems above,
-with no new induction and no formula recursion anywhere.
+with no new induction and no formula recursion anywhere. Ten of the eleven fields mirror a
+`LocalRun` field or a frame law; the eleventh, `nowUnique`, was derived from the realization
+theorem's own obligation and is documented at the field.
 
 The constructed model closes the file: `frameOf`, the presentation's own state set carried
 through `FrameOver.ofSlicedStep` with the time-constant step relation; its regularity instance
@@ -78,8 +80,21 @@ and the explicit record `frameOf_not_finite_worldState` that the carrier `ℤ ×
 theorem reads runs off histories and back. Every frame law is CITED from
 `Semantics/SlicedFrame.lean`, none re-proved.
 
-The realization theorem itself (`presented_modelOf`, and the Hit-level equality it yields
-through `hit_eq_hitOf_of_presented`) is owed to later module sections and is not claimed here.
+The realization theorem closes the file: `anchored_runTrace_of_boxStabFree`, which anchors a
+run's trace to the corresponding history of the constructed model (`now` from `IsRun`, `atom`
+from the valuation, `box` and `stab` VACUOUSLY on the `box`/`stab`-free fragment), and
+`presented_modelOf`, which discharges `Presented` at a seam in both directions through the one
+uniqueness lemma `eq_clTrace_of_localRun_anchored`. Three small helpers serve them:
+`exists_stepPath_of_chain` (a finite `StepPath` cut out of a bi-infinite chain, the object
+`Cons.nowOnce` is quantified over), `run_seam_state` (`Cons.nowUnique` at the seam) and
+`isRun_of_chain_seam` (the converse packaging, `Cons.nowOnce` consumed in both time
+directions).
+
+The Hit-level equality this yields through `hit_eq_hitOf_of_presented` is owed to a later
+module section and is not claimed here. Nothing in this module states, or is a step toward
+stating, `Decidable (PlusValidZTime φ)`: `presented_modelOf` speaks of ONE seam of ONE
+constructed model, and the lift to validity is a separate requirement the
+`RaySummary/README.md` verdict records as still open. No complexity bound is claimed anywhere.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
@@ -474,7 +489,7 @@ Hodkinson–Wolter–Zakharyaschev 2000's Definition 12, read off `Probe735.not_
 proof rather than off HWZ Definition 10's bare set of types (which
 `quasistate_does_not_determine_hit` refutes for this semantics; see the module header).
 
-Ten fields in six groups, each shaped to mirror the `LocalRun` field it discharges, so that
+Eleven fields in six groups, each shaped to mirror the `LocalRun` field it discharges, so that
 `cons_localRun` below is field-by-field with nothing re-derived:
 
 1. `serialFwd` / `serialBwd` — bi-seriality of `step` in both senses. This is what a bi-infinite
@@ -489,11 +504,15 @@ Ten fields in six groups, each shaped to mirror the `LocalRun` field it discharg
    `χ` and the guard is `ψ`).
 4. `scoh` / `slive` — the `snce` mirror, projected by `plusClosure_snce_right` / `_left`. Not a
    symmetry of the previous group: the two cite theorems proved independently.
-5. `nowOnce` — the once-only `now` condition: no `step`-path of positive length (`2 ≤ p.length`,
-   since a `StepPath`'s list carries one entry per state) out of a `clNow`-labelled state ends
-   at a `clNow`-labelled state. `LocalRun` imposes nothing on `now`; this field is what makes a
-   `step`-path anchored, i.e. an `IsRun`, and it is consumed where that is needed rather than
-   here.
+5. `nowOnce` / `nowUnique` — the marker conditions. `nowOnce` is once-only ALONG a path: no
+   `step`-path of positive length (`2 ≤ p.length`, since a `StepPath`'s list carries one entry
+   per state) out of a `clNow`-labelled state ends at a `clNow`-labelled state. `nowUnique` is
+   once-only ACROSS the presentation: at most one state carries the marker at all. `LocalRun`
+   imposes nothing on `now`; these two fields are what make a `step`-path anchored, i.e. an
+   `IsRun`, and pin the anchor to the seam's own state, and both are consumed where that is
+   needed rather than here. `nowUnique` is the one field of this bundle that was derived in the
+   course of proving `presented_modelOf` rather than assembled with the rest — see its own
+   docstring for the obstruction that forced it.
 6. `boxStabFree` — the scope line. With it, `not_box_mem_plusSubformulaClosure` and
    `not_stab_mem_plusSubformulaClosure` make the `box` and `stab` fields of an `Anchored`
    certificate vacuously satisfiable, which is the only sense in which `box` and `stab` are
@@ -501,7 +520,8 @@ Ten fields in six groups, each shaped to mirror the `LocalRun` field it discharg
 
 The bundle is NOT decidable as a whole and is not claimed to be: `impEq`, `ucoh`, `ulive`,
 `scoh` and `slive` quantify universally over `ψ χ : PlusFormula`, an infinite type, and
-`nowOnce` over `List Q`. Each individual clause is decidable at a given letter triple
+`nowOnce` over `List Q`. `nowUnique` alone is decidable over a `Fintype Q` by `decide`. Each
+individual clause is decidable at a given letter triple
 (`decidableUCoh`, `decidableULive`, `decidableSCoh`, `decidableSLive`), which is what makes the
 conditions checkable on a concrete presentation; the finite quantification needed to decide the
 bundle itself would range over `plusSubformulaClosure φ` and is not built here.
@@ -539,6 +559,27 @@ structure Cons (φ : PlusFormula) (lab : Q → (clSig φ).preds → Bool) (step 
   `clNow`-labelled state ends at a `clNow`-labelled state. -/
   nowOnce : ∀ (q q' : Q) (p : List Q), StepPath step q q' p → 2 ≤ p.length →
     lab q (clNow φ) = true → lab q' (clNow φ) = false
+  /-- **The seam-state condition**: the `clNow` marker is carried by AT MOST ONE state.
+
+  Where `nowOnce` says the marker is read at most once ALONG a path, this says it is read by at
+  most one state of the presentation at all — two distinct `clNow`-labelled states are forbidden
+  even when neither is reachable from the other. The two conditions are independent: `nowOnce`
+  alone permits two mutually unreachable `clNow`-labelled components, and `nowUnique` alone
+  permits the single marked state to recur along one path.
+
+  **Why this field exists, recorded rather than left implicit.** It is what makes
+  `presented_modelOf`'s (⇐) direction provable, and it was NOT among the clause groups this
+  plan's `Cons` enumeration carried; it was derived from the construction's own obligation while
+  proving the realization theorem. `Presented` equates the trace set of the splices through ONE
+  seam state with the trace set of ALL runs anchored at `t`. A run supplies only
+  `lab (ρ t) (clNow φ) = true`, so without this field `ρ t` need not be the seam's own `q₀`, and
+  the history `z ↦ (z, ρ z)` built from the run is then not an element of the seam's fibre at
+  all. Concretely, two mutually unreachable `clNow`-labelled components carrying different atom
+  labels satisfy every other field of this structure while giving the two seams disjoint
+  splice-trace sets and one shared run-trace set, which refutes `Presented` at either seam. With
+  this field, `hq₀` and `IsRun` together force `ρ t = q₀` (`run_seam_state` below), which is
+  exactly the missing step. -/
+  nowUnique : ∀ q q' : Q, lab q (clNow φ) = true → lab q' (clNow φ) = true → q = q'
   /-- The scope line: `φ` carries no `□` and no `⊡`. -/
   boxStabFree : φ.BoxStabFree
 
@@ -678,6 +719,197 @@ theorem frameOf_mem_HF_iff {φ : PlusFormula} {lab : Q → (clSig φ).preds → 
       ∃ (k : ℤ) (g : ℤ → Q), (∀ t : ℤ, step (g t) (g (t + 1)) = true) ∧
         f = fun t => (t + k, g t) :=
   FrameOver.ofSlicedStep_mem_HF_iff _ _ _ f
+
+/-! ## The realization theorem -/
+
+/--
+**A finite `step`-path cut out of a bi-infinite chain.** From a bi-infinite `step`-chain `ρ`,
+the stretch from `a` to `a + n` is a `StepPath` whose list has `n + 1` entries.
+
+This exists for one reason: `Cons.nowOnce` is quantified over `StepPath step q q' p` with
+`2 ≤ p.length`, so consuming it on a run requires producing the path, and the length bound is
+what turns "`z ≠ t`" into "`2 ≤ p.length`". The induction is on `n` with `StepPath.snoc`; the
+`ℤ`/`ℕ` cast bookkeeping is `push_cast`.
+-/
+theorem exists_stepPath_of_chain {step : Q → Q → Bool} (ρ : ℤ → Q)
+    (hstep : ∀ z, step (ρ z) (ρ (z + 1)) = true) (a : ℤ) (n : ℕ) :
+    ∃ p : List Q, StepPath step (ρ a) (ρ (a + (n : ℤ))) p ∧ p.length = n + 1 := by
+  induction n with
+  | zero => exact ⟨[ρ a], by simpa using StepPath.single (ρ a), rfl⟩
+  | succ n ih =>
+    obtain ⟨p, hp, hlen⟩ := ih
+    refine ⟨p ++ [ρ (a + ((n : ℤ) + 1))], ?_, by simp [hlen]⟩
+    have h2 : a + ((n + 1 : ℕ) : ℤ) = a + ((n : ℤ) + 1) := by push_cast; ring
+    rw [h2]
+    exact StepPath.snoc _ hp (by simpa [add_assoc] using hstep (a + (n : ℤ)))
+
+/--
+**A run's state at the anchor IS the seam's state.** `Cons.nowUnique` read at the seam.
+
+This is the step `presented_modelOf`'s (⇐) direction cannot do without, and the reason
+`Cons.nowUnique` exists: a run supplies only `lab (ρ t) (clNow φ) = true`, and the history
+`z ↦ (z, ρ z)` built from it lies in the seam's fibre only if `ρ t` is the seam's own `q₀`.
+-/
+theorem run_seam_state {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool}
+    {step : Q → Q → Bool} (hC : Cons φ lab step) {t : ℤ} {q₀ : Q}
+    (hq₀ : lab q₀ (clNow φ) = true) {ρ : ℤ → Q} (hρ : IsRun lab step (clNow φ) t ρ) :
+    ρ t = q₀ :=
+  hC.nowUnique _ _ ((hρ.2 t).mpr rfl) hq₀
+
+/--
+**A bi-infinite chain through the seam state is a run.** The converse packaging of
+`run_seam_state`: the `now` letter is read at `t` because `ρ t = q₀` is marked, and NOWHERE
+else because `Cons.nowOnce` forbids a positive-length `step`-path between two marked states —
+consumed in both time directions, since a marked `ρ z` with `z < t` would mark `ρ t` as the
+path's end and a marked `ρ z` with `z > t` would be marked by the path out of `ρ t`.
+
+`Cons.nowUnique` plays no part here; only `nowOnce` does. The two fields discharge the two
+halves of `IsRun`'s anchor condition and neither substitutes for the other.
+-/
+theorem isRun_of_chain_seam {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool}
+    {step : Q → Q → Bool} (hC : Cons φ lab step) (t : ℤ) {q₀ : Q}
+    (hq₀ : lab q₀ (clNow φ) = true) (ρ : ℤ → Q)
+    (hstep : ∀ z, step (ρ z) (ρ (z + 1)) = true) (hρt : ρ t = q₀) :
+    IsRun lab step (clNow φ) t ρ := by
+  refine ⟨hstep, fun z => ⟨?_, fun hz => by rw [hz, hρt]; exact hq₀⟩⟩
+  intro hnow
+  by_contra hne
+  rcases lt_or_gt_of_ne hne with hlt | hgt
+  · -- `z < t`: the stretch `[z, t]` is a `StepPath` out of a marked state, so `t` is unmarked
+    obtain ⟨p, hp, hlen⟩ := exists_stepPath_of_chain ρ hstep z (t - z).toNat
+    rw [show z + ((t - z).toNat : ℤ) = t by omega] at hp
+    have := hC.nowOnce _ _ p hp (by omega) hnow
+    rw [hρt, hq₀] at this
+    simp at this
+  · -- `z > t`: the stretch `[t, z]` is a `StepPath` out of the marked seam, so `z` is unmarked
+    obtain ⟨p, hp, hlen⟩ := exists_stepPath_of_chain ρ hstep t (z - t).toNat
+    rw [show t + ((z - t).toNat : ℤ) = z by omega] at hp
+    have := hC.nowOnce _ _ p hp (by omega) (by rw [hρt]; exact hq₀)
+    rw [hnow] at this
+    simp at this
+
+/--
+**A run's trace is anchored to the corresponding history of the constructed model**, for
+`box`/`stab`-free `φ`.
+
+Four fields, each a citation:
+
+* `now` is `IsRun`'s second conjunct VERBATIM — `Anchored.now` asks for
+  `c (clNow φ) z ≤ftrightarrow z = t` at `c := runTrace lab ρ`, which unfolds to
+  `lab (ρ z) (clNow φ) = true ≤ftrightarrow z = t`;
+* `atom` is `modelOf_valuation` after rewriting `σ.state z` to `(z, ρ z)` through `hσ`;
+* `box` and `stab` are VACUOUS, by `not_box_mem_plusSubformulaClosure` /
+  `not_stab_mem_plusSubformulaClosure` applied to the field's own closure-membership hypothesis.
+
+The last point is the whole content of this task's scope line: `box` and `stab` letters are
+realized here only in the sense that a `box`/`stab`-free `φ` has none, and the fields hold
+because their hypotheses are uninhabited. A `φ` carrying either operator would need the
+per-time and per-state anchor conditions discharged on the constructed model, which this
+construction does not attempt.
+
+Paper: HWZ 2000, Theorem 14, the anchoring half of the state-function-to-run correspondence.
+-/
+theorem anchored_runTrace_of_boxStabFree {φ : PlusFormula} (hφ : φ.BoxStabFree)
+    {lab : Q → (clSig φ).preds → Bool} {step : Q → Q → Bool} (hC : Cons φ lab step) (t : ℤ)
+    (ρ : ℤ → Q) (hρ : IsRun lab step (clNow φ) t ρ)
+    (σ : WorldHistory (frameOf hC).toTaskFrame) (hσ : σ.path = fun z => (z, ρ z)) :
+    Anchored (modelOf φ lab step hC) φ t (runTrace lab ρ) σ where
+  now z := hρ.2 z
+  atom p h z := by
+    have hst : σ.state z = (z, ρ z) := congrFun hσ z
+    rw [hst, modelOf_valuation hC h z (ρ z)]
+    exact Iff.rfl
+  box ψ h _ := absurd h (not_box_mem_plusSubformulaClosure hφ ψ)
+  stab ψ h _ := absurd h (not_stab_mem_plusSubformulaClosure hφ ψ)
+
+-- linter.style.show: the `show` in the (⇐) branch is `Probe735.not_presented`'s own
+-- splice-exhibition step, kept VERBATIM from that probe — it spells out the
+-- `(seamOmegaEquiv ...).symm ((seamOmegaEquiv ...) x)` round trip so that
+-- `Equiv.symm_apply_apply` has a syntactic target to rewrite. `change` would do the same
+-- job but would diverge from the probe this block is copied from. Declaration-scoped.
+set_option linter.style.show false in
+/--
+**REQUIREMENT (S), HWZ 2000 Theorem 14 (⇐) for the box-dot fibre.** A finite presentation
+satisfying `Cons` is realized by the constructed regular ℤ-model at a seam anchored at a
+`clNow`-labelled state: the closure traces of the seam's splices are EXACTLY the traces of the
+presentation's runs anchored at `t`.
+
+This discharges `Trace.lean`'s realization hypothesis `Presented` for a model CONSTRUCTED from
+the presentation. Both directions route through the single uniqueness lemma
+`eq_clTrace_of_localRun_anchored`, whose two inputs are supplied the same way on each side:
+`cons_localRun` for the run conditions and `anchored_runTrace_of_boxStabFree` for the anchors.
+No new induction on `PlusFormula` appears here, and the uniqueness lemma is cited, never
+re-proved.
+
+* (⇒) A splice is a history of the constructed frame, so `frameOf_mem_HF_iff` presents it as
+  `z ↦ (z + k, g z)` for some offset `k`; the seam anchor `hτ` pins `k = 0` and `g t = q₀`,
+  and `isRun_of_chain_seam` turns `g` into a run.
+* (⇐) A run gives the bi-infinite step path `z ↦ (z, ρ z)` by `frameOf_step`, hence a
+  history by `FrameOver.worldHistoryOfStepPath`; `run_seam_state` puts that history in the
+  seam's fibre, and `seamOmegaEquiv` exhibits it as a splice.
+
+**What this does NOT say.** The scope is `box`/`stab`-free `φ` (`hφ`) and ONE seam. It is
+not a claim that the presentation is complete for `φ` — that is a separate requirement, and
+`Probe735.not_presented` refutes `Presented` as a completeness carrier on a model NOT built
+from a presentation, which is a statement in the other direction and is not touched here.
+Nothing about validity follows: `Decidable (PlusValidZTime φ)` is not stated, is not implied,
+and would need the closure-wide requirement the `RaySummary/README.md` verdict records as
+(W). No complexity bound is claimed.
+
+Paper: HWZ 2000, Theorem 14 (⇐), at the box-dot fibre.
+-/
+theorem presented_modelOf {φ : PlusFormula} (hφ : φ.BoxStabFree)
+    {lab : Q → (clSig φ).preds → Bool} {step : Q → Q → Bool} (hC : Cons φ lab step)
+    (t : ℤ) (q₀ : Q) (hq₀ : lab q₀ (clNow φ) = true)
+    (τ : WorldHistory (frameOf hC).toTaskFrame) (hτ : τ.state t = (t, q₀)) :
+    Presented (modelOf φ lab step hC) τ t φ lab (fun q q' => step q q' = true) := by
+  -- `Presented`'s `step` argument is `Bool`-valued, so the pinned `fun q q' => step q q' = true`
+  -- elaborates with a `decide`; normalize it away once, up front
+  rw [show (fun q q' : Q => decide (step q q' = true)) = step from by funext q q'; simp]
+  intro c
+  constructor
+  · -- (⇒) every splice through the seam is a run of the presentation
+    rintro ⟨bf, rfl⟩
+    have hσt : (spliced τ t bf).state t = τ.state t :=
+      ((seamOmegaEquiv t (τ.state t)).symm bf).2
+    obtain ⟨k, g, hg, hpath⟩ :=
+      (frameOf_mem_HF_iff hC (spliced τ t bf).path).mp ⟨spliced τ t bf, rfl⟩
+    -- the seam anchor pins the offset to `0` and the state at `t` to `q₀`
+    have hseam : ((t + k, g t) : ℤ × Q) = (t, q₀) := by
+      rw [← hτ, ← hσt]; exact (congrFun hpath t).symm
+    have hk : k = 0 := by
+      have := congrArg Prod.fst hseam
+      simp at this
+      omega
+    have hgt : g t = q₀ := congrArg Prod.snd hseam
+    subst hk
+    have hpath0 : (spliced τ t bf).path = fun z => (z, g z) := by
+      rw [hpath]; funext z; simp
+    have hrun : IsRun lab step (clNow φ) t g := isRun_of_chain_seam hC t hq₀ g hg hgt
+    exact ⟨g, hrun, (eq_clTrace_of_localRun_anchored (modelOf φ lab step hC) φ t _
+      (cons_localRun hC g hg)
+      (anchored_runTrace_of_boxStabFree hφ hC t g hrun _ hpath0)).symm⟩
+  · -- (⇐) every run of the presentation is a splice through the seam
+    rintro ⟨ρ, hρ, rfl⟩
+    have hρt : ρ t = q₀ := run_seam_state hC hq₀ hρ
+    have hisp : IsStepPath (frameOf hC) (fun z => (z, ρ z)) := by
+      intro z
+      rw [frameOf_step hC]
+      exact ⟨rfl, hρ.1 z⟩
+    set σ : WorldHistory (frameOf hC).toTaskFrame :=
+      FrameOver.worldHistoryOfStepPath (frameOf hC) (fun z => (z, ρ z)) hisp with hσdef
+    have hσpath : σ.path = fun z => (z, ρ z) := rfl
+    have hσt : σ.state t = τ.state t := by
+      rw [hτ, show σ.state t = (t, ρ t) from congrFun hσpath t, hρt]
+    -- `Probe735.not_presented`'s own splice-exhibition block, at the constructed frame
+    let x : Presheaf.StabFibre (frameOf hC).toTaskFrame t (τ.state t) := ⟨σ, hσt⟩
+    refine ⟨seamOmegaEquiv t (τ.state t) x, ?_⟩
+    have hrt := Equiv.symm_apply_apply (seamOmegaEquiv t (τ.state t)) x
+    show runTrace lab ρ = clTrace (modelOf φ lab step hC) φ t
+      ((seamOmegaEquiv t (τ.state t)).symm ((seamOmegaEquiv t (τ.state t)) x)).1
+    rw [hrt]
+    exact eq_clTrace_of_localRun_anchored (modelOf φ lab step hC) φ t σ
+      (cons_localRun hC ρ hρ.1) (anchored_runTrace_of_boxStabFree hφ hC t ρ hρ σ hσpath)
 
 end Constructed
 
