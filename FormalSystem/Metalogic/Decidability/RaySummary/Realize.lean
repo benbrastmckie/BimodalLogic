@@ -70,8 +70,16 @@ presentation, and `cons_localRun`, which reads every field of `LocalRun` off it 
 `imp` from the per-state label equations, `untl` and `snce` by citing the two theorems above,
 with no new induction and no formula recursion anywhere.
 
-The constructed model itself (`frameOf`, `modelOf`) is owed to a later module section and is not
-claimed here.
+The constructed model closes the file: `frameOf`, the presentation's own state set carried
+through `FrameOver.ofSlicedStep` with the time-constant step relation; its regularity instance
+and the explicit record `frameOf_not_finite_worldState` that the carrier `ℤ × Q` is infinite;
+`modelOf`, whose valuation reads the state component's label; and the three rewrite lemmas
+`modelOf_valuation`, `frameOf_step` and `frameOf_mem_HF_iff` through which the realization
+theorem reads runs off histories and back. Every frame law is CITED from
+`Semantics/SlicedFrame.lean`, none re-proved.
+
+The realization theorem itself (`presented_modelOf`, and the Hit-level equality it yields
+through `hit_eq_hitOf_of_presented`) is owed to later module sections and is not claimed here.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
@@ -567,5 +575,110 @@ theorem cons_localRun {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool}
     exact snce_iff_of_SCoh_SLive lab step _ _ _ (hC.scoh ψ χ h) (hC.slive ψ χ h) ρ hstep z
 
 end Bundle
+
+/-! ## The constructed model -/
+
+section Constructed
+
+open FormalSystem.Syntax FormalSystem.Semantics
+
+variable {Q : Type} [Fintype Q] [DecidableEq Q] [Nonempty Q]
+
+/--
+**The frame of a presentation**: `FrameOver.ofSlicedStep` on the presentation's own state set
+`Q`, with the TIME-CONSTANT relation `fun _ q q' => step q q' = true`. The carrier is `ℤ × Q`.
+
+The relation ignores its time argument, so the `t - 1` index in `ofSlicedStep`'s `bwd` argument
+is immaterial here: the backward seriality obligation `∀ t q, ∃ q', R (t - 1) q' q` is discharged
+by `Cons.serialBwd` at every `t` alike. That is the one place this constructor's signature could
+mislead, since a genuinely time-indexed relation would have to supply a predecessor in the
+PREVIOUS slice.
+
+**No finiteness on the model.** `[Fintype Q]` and `[Nonempty Q]` are finiteness and
+non-emptiness of the PRESENTATION, which is what `ofSlicedStep` consumes to discharge seriality
+and saturation. The constructed frame's world-state type is `ℤ × Q`, which is infinite —
+recorded as `frameOf_not_finite_worldState` below rather than left to the reader. No
+finite-fibre and no finite-width assumption is introduced anywhere; `not_finite_width_fmp`
+refutes that shape, and this construction concedes infinite fibres by design.
+-/
+def frameOf {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool} {step : Q → Q → Bool}
+    (hC : Cons φ lab step) : FrameOver intOrder :=
+  FrameOver.ofSlicedStep (fun _ q q' => step q q' = true)
+    (fun _ q => hC.serialFwd q) (fun _ q => hC.serialBwd q)
+
+/-- **The constructed frame is regular**, by `FrameOver.ofSlicedStep_isRegular` — cited, not
+re-proved. All five `ofReflectiveRegular` field discharges (`ofSlicedStepRel_reflect`,
+`ofSlicedStep_compositional`, `ofSlicedStep_serial`, `ofSlicedStep_limit`,
+`ofSlicedStep_saturation`) live in `Semantics/SlicedFrame.lean` and are usable at `W := Q` as
+they stand. This instance is what supplies the `[F.IsRegular]` that `Presented` requires. -/
+instance frameOf_isRegular {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool}
+    {step : Q → Q → Bool} (hC : Cons φ lab step) : (frameOf hC).IsRegular :=
+  FrameOver.ofSlicedStep_isRegular _ _ _
+
+/-- **The constructed model's world-state type is NOT finite.** The explicit record that no
+finite-width and no finite-fibre assumption has been reintroduced: the carrier is `ℤ × Q` with
+`Q` nonempty, so it is infinite however small the presentation is. Cited from
+`FrameOver.ofSlicedStep_not_finite_worldState`. -/
+theorem frameOf_not_finite_worldState {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool}
+    {step : Q → Q → Bool} (hC : Cons φ lab step) : ¬ Finite (frameOf hC).WorldState :=
+  FrameOver.ofSlicedStep_not_finite_worldState _ _ _
+
+/--
+**The model of a presentation**: the valuation reads the state component's label.
+
+An atom `p` holds at `(z, q)` exactly when `p` is an atom of `φ`'s subformula closure and the
+presentation labels `q` with its letter. Off the closure the atom holds nowhere — the closure
+membership is part of the existential, so an atom `φ` never mentions is false at every world
+state. That is the only freedom `Anchored.atom` leaves: it constrains the valuation precisely at
+the closure's atoms (`Anchored` quantifies over `h : PlusFormula.atom p ∈ plusSubformulaClosure
+φ`), and an off-closure atom is read by no letter of `clSig φ`.
+
+The existential over the membership proof is harmless: `plusSubformulaClosure φ` membership is a
+`Prop`, so any two proofs are definitionally equal and `clLetter φ h'` is `clLetter φ h` —
+which is what makes `modelOf_valuation` below hold by `⟨·.2, ⟨h, ·⟩⟩` with no transport.
+-/
+def modelOf (φ : PlusFormula) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool)
+    (hC : Cons φ lab step) : TaskModel (frameOf hC).toTaskFrame where
+  valuation := fun w p =>
+    ∃ h : PlusFormula.atom p ∈ plusSubformulaClosure φ, lab w.2 (clLetter φ h) = true
+
+/-- **The valuation rewrite lemma**: at the world state `(z, q)` the constructed model's
+valuation of a closure atom is the presentation's label at `q`. The time component plays no
+part, which is what makes the valuation a per-STATE datum of the presentation. This is the
+lemma `Anchored.atom` is discharged by. -/
+theorem modelOf_valuation {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool}
+    {step : Q → Q → Bool} (hC : Cons φ lab step) {p : Atom}
+    (h : PlusFormula.atom p ∈ plusSubformulaClosure φ) (z : ℤ) (q : Q) :
+    (modelOf φ lab step hC).valuation (z, q) p ↔ lab q (clLetter φ h) = true :=
+  ⟨fun hv => hv.2, fun hl => ⟨h, hl⟩⟩
+
+/-- **The step rewrite lemma**: a step of the constructed frame advances the slice by one and
+takes a `step`-edge of the presentation. `FrameOver.ofSlicedStep_step` at this relation. -/
+theorem frameOf_step {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool}
+    {step : Q → Q → Bool} (hC : Cons φ lab step) (p q : ℤ × Q) :
+    (frameOf hC).step p q ↔ q.1 = p.1 + 1 ∧ step p.2 q.2 = true :=
+  FrameOver.ofSlicedStep_step _ _ _ p q
+
+/--
+**The history space of the constructed frame is exactly the set of offset `step`-paths.**
+
+`FrameOver.ofSlicedStep_mem_HF_iff` at this relation, with `IsSlicedStepPath` beta-reduced: the
+relation is time-constant, so the offset `k` survives in the time component of the path but
+plays no part in the step condition on `g`.
+
+Both directions are load bearing downstream. The `←` direction BUILDS a history from a
+bi-infinite `step`-chain of the presentation, which is how a run of the presentation becomes a
+history of the constructed model. The `→` direction says a history has no freedom beyond its
+offset `k` — its time component is forced to be `t + k` and its state component is a
+`step`-chain — which is how a condition on histories is read back as a condition on one slice.
+-/
+theorem frameOf_mem_HF_iff {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool}
+    {step : Q → Q → Bool} (hC : Cons φ lab step) (f : ℤ → ℤ × Q) :
+    (∃ τ : WorldHistory (frameOf hC).toTaskFrame, τ.path = f) ↔
+      ∃ (k : ℤ) (g : ℤ → Q), (∀ t : ℤ, step (g t) (g (t + 1)) = true) ∧
+        f = fun t => (t + k, g t) :=
+  FrameOver.ofSlicedStep_mem_HF_iff _ _ _ f
+
+end Constructed
 
 end FormalSystem.Metalogic.Decidability.RaySummary

@@ -571,32 +571,37 @@ re-derived instead of cited from Phase 2/3 — stop and route it through the pin
 
 ---
 
-### Phase 6: `frameOf`, `modelOf`, and the constructed model's rewrite lemmas [NOT STARTED]
+### Phase 6: `frameOf`, `modelOf`, and the constructed model's rewrite lemmas [COMPLETED]
 
 **Goal**: Build the regular ℤ-model from the presentation — `ofSlicedStep` on `W := Q` with the
 time-constant step relation — and land the rewrite lemmas Phase 7 consumes, with the carrier's
 infiniteness cited rather than asserted.
 
 **Tasks**:
-- [ ] Define `frameOf (step) (hC : Cons φ lab step) : FrameOver intOrder :=
+- [x] Define `frameOf (step) (hC : Cons φ lab step) : FrameOver intOrder :=
       FrameOver.ofSlicedStep (fun _ q q' => step q q' = true) fwd bwd`, taking `[Fintype Q]`
       (hence `[Finite Q]`) and `[Nonempty Q]` from the presentation and `fwd`/`bwd` from `Cons`
       clause 1 (the relation is time-constant, so the `t - 1` index in `ofSlicedStep`'s `bwd`
       argument is immaterial — state that in the docstring, since it is the one place the
-      constructor's signature could mislead).
-- [ ] Register the regularity instance by citing `ofSlicedStep_isRegular` (no new proof), and
+      constructor's signature could mislead). *(deviation: altered — the new section's `variable`
+      block carries `[Nonempty Q]`, which this bullet instructs but which the plan's
+      `## Lean Challenge Statements` `variable` line omits. `FrameOver` carries a
+      `worldNonempty` field and `ofSlicedStep` requires `[Nonempty W]`, so without it the pinned
+      `frameOf` is not inhabitable at all; `frameOf`'s and `modelOf`'s own pinned signatures are
+      otherwise matched character for character.)*
+- [x] Register the regularity instance by citing `ofSlicedStep_isRegular` (no new proof), and
       state `frameOf_not_finite_worldState` by citing `ofSlicedStep_not_finite_worldState` — the
       explicit record that no finite-width or finite-fibre assumption has been reintroduced.
-- [ ] Define `modelOf (φ) (lab) (step) (hC) : TaskModel (frameOf step hC).toTaskFrame` with
+- [x] Define `modelOf (φ) (lab) (step) (hC) : TaskModel (frameOf step hC).toTaskFrame` with
       valuation `fun w p => lab w.2 (clLetter φ h) = true` at closure atoms (and whatever the
       `TaskModel` structure requires off the closure), and prove the two rewrite lemmas:
       `modelOf_valuation` (the valuation at `(z, q)` reads `lab q`) and `frameOf_step` (a
       restatement of `ofSlicedStep_step` at this frame: `(frameOf …).step p q ↔ q.1 = p.1 + 1 ∧
       step p.2 q.2 = true`).
-- [ ] State `frameOf_mem_HF_iff` as the specialization of `ofSlicedStep_mem_HF_iff` at this
+- [x] State `frameOf_mem_HF_iff` as the specialization of `ofSlicedStep_mem_HF_iff` at this
       relation — the history-space characterization Phase 7's (⇒) direction reads `ρ` off, and
       whose `←` direction builds the history for (⇐).
-- [ ] Scoped build; axiom pins on the rewrite lemmas; `grep -c sorry` = 0.
+- [x] Scoped build; axiom pins on the rewrite lemmas; `grep -c sorry` = 0.
 
 **Timing**: 1.5 hours
 
