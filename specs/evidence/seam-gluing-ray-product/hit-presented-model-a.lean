@@ -789,6 +789,417 @@ theorem runTrace_inr_eq (L : ℕ) (t w : ℤ) (ρ : ℤ → Fin (L + 3))
   funext ℓ z
   exact propext (labOf_inr_iff_clTrace_jump L t w z (ρ z) (hnow z) (hp z) ℓ)
 
+
+/-! ## The run characterization
+
+The presentation's anchored runs trace EXACTLY the truncated family — `stayA` together with the
+`jump w` for `t ≤ w ≤ t + L`, and nothing else. This is the step the research left uncompiled and
+the one the whole result turns on: `hitCl_eq_truncated` says the seam's realized triples come from
+that family, `mem_hitOf_iff` says `hitOf (labOf L) (stepOf L) (clNow Fp) k` collects the family
+triples of the presentation's RUN traces, and the two sides meet only if the run traces are the
+same family.
+
+**The three excluded run shapes, each discharged by its own named lemma rather than by prose.**
+A run that never leaves a `pre` state (`no_run_const_pre`: `IsRun`'s second clause forces the
+marker at `z = t`, so no constant non-`now` run exists); a run that crosses the two gadgets
+(`isLeft_const_of_isRun`, which is Phase 5's `stepOf_no_cross` and nothing else); a run that loops
+inside gadget 2's mid chain (`inr_no_back_edge`: from a mid state the index strictly increases,
+and `j_post` is the only self-loop reachable from a mid state).
+
+**What the trace comparison actually consumes, stated honestly.** Phase 5 built `labOf` so that
+gadget 1 reads only `isNowState` and gadget 2 reads only `isNowState` and `isPostState`. So the
+trace equalities need exactly two correspondences — `j_now ↔ z = t` (which is `IsRun`'s own second
+clause, free) and `j_post ↔ w < z` (which is `inr_post_threshold`) — and the gadget-1 rigidity
+lemmas below (`inl_bwd_pre`, `inl_fwd_post`, `inl_run_pinned`) are NOT consumed by it. They are
+landed because they are the plan's route and because they are the record that the presentation
+admits no spurious gadget-1 run: without them "the gadget-1 run traces `stayA`" would be true of
+a presentation that also admitted runs nobody classified. `inr_bwd_pre` IS consumed, by
+`inr_post_threshold`'s `z ≤ t` case. -/
+
+/-- **Counterexample 1 discharged.** A run cannot sit forever at a state that does not read the
+`now` marker — in particular not at `s_pre` and not at `j_pre`. `IsRun`'s second clause forces the
+marker at `z = t`, and that is the whole argument. -/
+theorem no_run_const_pre (L : ℕ) (t : ℤ) (ρ : ℤ → QA L)
+    (hρ : IsRun (labOf L) (stepOf L) (clNow Fp) t ρ) (q : QA L)
+    (hq : isNowState L q = false) (hconst : ∀ z, ρ z = q) : False := by
+  have h := (hρ.2 t).mpr rfl
+  rw [hconst t, labOf_now, hq] at h
+  simp at h
+
+/-- **Counterexample 2 discharged.** No run crosses the two gadgets: `stepOf_no_cross` makes
+`Sum.isLeft` constant along a `step`-chain, so a run lives entirely in gadget 1 or entirely in
+gadget 2. -/
+theorem isLeft_const_of_isRun (L : ℕ) {ρ : ℤ → QA L}
+    (hstep : ∀ z, stepOf L (ρ z) (ρ (z + 1)) = true) (t : ℤ) :
+    ∀ z, (ρ z).isLeft = (ρ t).isLeft := by
+  have one : ∀ z : ℤ, (ρ (z + 1)).isLeft = (ρ z).isLeft := by
+    intro z
+    rcases stepOf_no_cross L (ρ z) (ρ (z + 1)) (hstep z) with ⟨i, j, h1, h2⟩ | ⟨i, j, h1, h2⟩
+    · rw [h1, h2]; rfl
+    · rw [h1, h2]; rfl
+  have key : ∀ n : ℤ, (ρ (t + n)).isLeft = (ρ t).isLeft := by
+    intro n
+    induction n using Int.induction_on with
+    | zero => simp
+    | succ i ih =>
+        rw [show t + ((i : ℤ) + 1) = t + (i : ℤ) + 1 by ring, one, ih]
+    | pred i ih =>
+        have h := one (t + (-(i : ℤ) - 1))
+        rw [show t + (-(i : ℤ) - 1) + 1 = t + -(i : ℤ) by ring] at h
+        exact h.symm.trans ih
+  intro z
+  have := key (z - t)
+  rwa [show t + (z - t) = z by ring] at this
+
+/-- **Counterexample 3 discharged.** Gadget 2 has no back edges: from a mid state (`1 ≤ i`) the
+index strictly increases, unless the state is already `j_post`, which self-loops. So no run loops
+inside the mid chain, and the forward walk from `j_now` is bounded. -/
+theorem inr_no_back_edge (L : ℕ) (i j : Fin (L + 3))
+    (h : stepOf L (Sum.inr i) (Sum.inr j) = true) (hi : 1 ≤ i.val) :
+    i.val < j.val ∨ (i.val = L + 2 ∧ j.val = L + 2) := by
+  have h1 := (stepOf_inr_inr_iff L i j).mp h
+  omega
+
+/-! ### Confining a run to one gadget -/
+
+/-- A run confined to gadget 1 is the `Sum.inl` of an index function. -/
+theorem exists_left_index (L : ℕ) (ρ : ℤ → QA L) (h : ∀ z, (ρ z).isLeft = true) :
+    ∃ σ : ℤ → Fin 3, ∀ z, ρ z = Sum.inl (σ z) := by
+  refine ⟨fun z => Sum.elim id (fun _ => 0) (ρ z), fun z => ?_⟩
+  show ρ z = Sum.inl (Sum.elim id (fun _ => 0) (ρ z))
+  rcases hz : ρ z with i | i
+  · simp
+  · have hi := h z; rw [hz] at hi; simp at hi
+
+/-- A run confined to gadget 2 is the `Sum.inr` of an index function. -/
+theorem exists_right_index (L : ℕ) (ρ : ℤ → QA L) (h : ∀ z, (ρ z).isLeft = false) :
+    ∃ σ : ℤ → Fin (L + 3), ∀ z, ρ z = Sum.inr (σ z) := by
+  refine ⟨fun z => Sum.elim (fun _ => 0) id (ρ z), fun z => ?_⟩
+  show ρ z = Sum.inr (Sum.elim (fun _ => 0) id (ρ z))
+  rcases hz : ρ z with i | i
+  · have hi := h z; rw [hz] at hi; simp at hi
+  · simp
+
+/-! ### Gadget 1: the run is rigid -/
+
+/-- **Gadget 1, backward from the seam.** The only `stepOf` predecessor of `s_now` is `s_pre`, and
+`s_pre`'s only predecessor is itself, so a gadget-1 run is constant at `s_pre` strictly before the
+seam. -/
+theorem inl_bwd_pre (L : ℕ) {σ : ℤ → Fin 3}
+    (hstep : ∀ z, stepOf L (Sum.inl (σ z)) (Sum.inl (σ (z + 1))) = true)
+    {t : ℤ} (ht : (σ t).val = 1) : ∀ z, z < t → (σ z).val = 0 := by
+  have key : ∀ n : ℕ, (σ (t - 1 - (n : ℤ))).val = 0 := by
+    intro n
+    induction n with
+    | zero =>
+        simp only [Nat.cast_zero, sub_zero]
+        have h := (stepOf_inl_inl_iff L (σ (t - 1)) (σ (t - 1 + 1))).mp (hstep (t - 1))
+        rw [show t - 1 + 1 = t by ring] at h
+        omega
+    | succ m ih =>
+        rw [show t - 1 - (((m + 1 : ℕ) : ℤ)) = t - 1 - ((m : ℕ) : ℤ) - 1 by push_cast; ring]
+        have h := (stepOf_inl_inl_iff L (σ (t - 1 - ((m : ℕ) : ℤ) - 1))
+          (σ (t - 1 - ((m : ℕ) : ℤ) - 1 + 1))).mp (hstep (t - 1 - ((m : ℕ) : ℤ) - 1))
+        rw [show t - 1 - ((m : ℕ) : ℤ) - 1 + 1 = t - 1 - ((m : ℕ) : ℤ) by ring] at h
+        omega
+  intro z hz
+  have := key (t - 1 - z).toNat
+  rwa [show t - 1 - (((t - 1 - z).toNat : ℕ) : ℤ) = z by omega] at this
+
+/-- **Gadget 1, forward from the seam.** `s_now`'s only continuation is `s_post`, and `s_post`
+absorbs, so a gadget-1 run is constant at `s_post` strictly after the seam. -/
+theorem inl_fwd_post (L : ℕ) {σ : ℤ → Fin 3}
+    (hstep : ∀ z, stepOf L (Sum.inl (σ z)) (Sum.inl (σ (z + 1))) = true)
+    {t : ℤ} (ht : (σ t).val = 1) : ∀ z, t < z → (σ z).val = 2 := by
+  have key : ∀ n : ℕ, (σ (t + 1 + (n : ℤ))).val = 2 := by
+    intro n
+    induction n with
+    | zero =>
+        simp only [Nat.cast_zero, add_zero]
+        have h := (stepOf_inl_inl_iff L (σ t) (σ (t + 1))).mp (hstep t)
+        omega
+    | succ m ih =>
+        rw [show t + 1 + (((m + 1 : ℕ) : ℤ)) = t + 1 + ((m : ℕ) : ℤ) + 1 by push_cast; ring]
+        have h := (stepOf_inl_inl_iff L (σ (t + 1 + ((m : ℕ) : ℤ)))
+          (σ (t + 1 + ((m : ℕ) : ℤ) + 1))).mp (hstep (t + 1 + ((m : ℕ) : ℤ)))
+        omega
+  intro z hz
+  have := key (z - t - 1).toNat
+  rwa [show t + 1 + (((z - t - 1).toNat : ℕ) : ℤ) = z by omega] at this
+
+/-- **Gadget 1's run is rigid.** `s_pre` strictly before the seam, `s_now` at it, `s_post`
+strictly after — so gadget 1 carries exactly one anchored run, the one `stayRun` exhibits below.
+Not consumed by the trace comparison (see this section's header); landed as the record that there
+is no unclassified gadget-1 run. -/
+theorem inl_run_pinned (L : ℕ) {σ : ℤ → Fin 3}
+    (hstep : ∀ z, stepOf L (Sum.inl (σ z)) (Sum.inl (σ (z + 1))) = true)
+    {t : ℤ} (ht : (σ t).val = 1) :
+    ∀ z, (σ z).val = if z < t then 0 else if z = t then 1 else 2 := by
+  intro z
+  by_cases h1 : z < t
+  · rw [if_pos h1]; exact inl_bwd_pre L hstep ht z h1
+  · rw [if_neg h1]
+    by_cases h2 : z = t
+    · rw [if_pos h2, h2]; exact ht
+    · rw [if_neg h2]; exact inl_fwd_post L hstep ht z (by omega)
+
+/-! ### Gadget 2: the threshold -/
+
+/-- **Gadget 2, backward from the seam.** The only `stepOf` predecessor of `j_now` is `j_pre`, and
+`j_pre`'s only predecessor is itself, so a gadget-2 run is constant at `j_pre` strictly before the
+seam. This is what keeps `j_post` out of `(-∞, t]`. -/
+theorem inr_bwd_pre (L : ℕ) {σ : ℤ → Fin (L + 3)}
+    (hstep : ∀ z, stepOf L (Sum.inr (σ z)) (Sum.inr (σ (z + 1))) = true)
+    {t : ℤ} (ht : (σ t).val = 1) : ∀ z, z < t → (σ z).val = 0 := by
+  have key : ∀ n : ℕ, (σ (t - 1 - (n : ℤ))).val = 0 := by
+    intro n
+    induction n with
+    | zero =>
+        simp only [Nat.cast_zero, sub_zero]
+        have h := (stepOf_inr_inr_iff L (σ (t - 1)) (σ (t - 1 + 1))).mp (hstep (t - 1))
+        rw [show t - 1 + 1 = t by ring] at h
+        omega
+    | succ m ih =>
+        rw [show t - 1 - (((m + 1 : ℕ) : ℤ)) = t - 1 - ((m : ℕ) : ℤ) - 1 by push_cast; ring]
+        have h := (stepOf_inr_inr_iff L (σ (t - 1 - ((m : ℕ) : ℤ) - 1))
+          (σ (t - 1 - ((m : ℕ) : ℤ) - 1 + 1))).mp (hstep (t - 1 - ((m : ℕ) : ℤ) - 1))
+        rw [show t - 1 - ((m : ℕ) : ℤ) - 1 + 1 = t - 1 - ((m : ℕ) : ℤ) by ring] at h
+        omega
+  intro z hz
+  have := key (t - 1 - z).toNat
+  rwa [show t - 1 - (((t - 1 - z).toNat : ℕ) : ℤ) = z by omega] at this
+
+/-- **Gadget 2's forward branching: `L + 1` continuations and no more.** `n` steps after the seam
+the index is either already absorbed at `j_post` or still on the mid chain at `1 + n`. At
+`n = L + 1` the mid-chain alternative IS `j_post` (`1 + (L + 1) = L + 2`), so every gadget-2 run
+has reached `j_post` within `L + 1` steps — the finite forward branching that lands the threshold
+`w` of `inr_post_threshold` inside `[t, t + L]`. -/
+theorem inr_fwd_index (L : ℕ) {σ : ℤ → Fin (L + 3)}
+    (hstep : ∀ z, stepOf L (Sum.inr (σ z)) (Sum.inr (σ (z + 1))) = true)
+    {t : ℤ} (ht : (σ t).val = 1) :
+    ∀ n : ℕ, (σ (t + (n : ℤ))).val = L + 2 ∨ (σ (t + (n : ℤ))).val = 1 + n := by
+  intro n
+  induction n with
+  | zero => simp only [Nat.cast_zero, add_zero]; omega
+  | succ m ih =>
+      rw [show t + (((m + 1 : ℕ) : ℤ)) = t + ((m : ℕ) : ℤ) + 1 by push_cast; ring]
+      have h := (stepOf_inr_inr_iff L (σ (t + ((m : ℕ) : ℤ)))
+        (σ (t + ((m : ℕ) : ℤ) + 1))).mp (hstep (t + ((m : ℕ) : ℤ)))
+      have hb := (σ (t + ((m : ℕ) : ℤ))).isLt
+      omega
+
+/-- **`j_post` absorbs**: its only `stepOf` successor is itself. -/
+theorem inr_absorb (L : ℕ) {σ : ℤ → Fin (L + 3)}
+    (hstep : ∀ z, stepOf L (Sum.inr (σ z)) (Sum.inr (σ (z + 1))) = true)
+    (z : ℤ) (h : (σ z).val = L + 2) : (σ (z + 1)).val = L + 2 := by
+  have h1 := (stepOf_inr_inr_iff L (σ z) (σ (z + 1))).mp (hstep z)
+  omega
+
+/-- `j_post` absorbs for any number of steps. -/
+theorem inr_absorb_add (L : ℕ) {σ : ℤ → Fin (L + 3)}
+    (hstep : ∀ z, stepOf L (Sum.inr (σ z)) (Sum.inr (σ (z + 1))) = true) :
+    ∀ (n : ℕ) (z : ℤ), (σ z).val = L + 2 → (σ (z + (n : ℤ))).val = L + 2 := by
+  intro n
+  induction n with
+  | zero => intro z h; simpa using h
+  | succ m ih =>
+      intro z h
+      rw [show z + (((m + 1 : ℕ) : ℤ)) = z + ((m : ℕ) : ℤ) + 1 by push_cast; ring]
+      exact inr_absorb L hstep _ (ih z h)
+
+/-- **The threshold, extracted.** A gadget-2 run reaches `j_post` within `L + 1` steps of the seam
+(`inr_fwd_index`), never leaves it (`inr_absorb_add`), and never visits it at or before the seam
+(`inr_bwd_pre` strictly before, `IsRun`'s marker at the seam itself). So its `j_post` indicator is
+the indicator of `(w, ∞)` for exactly one `w ∈ [t, t + L]` — the jump time of the history whose
+trace the run reproduces. `Nat.find` supplies `w`; no bound on `L` is produced or implied here,
+and `L` itself remains the unexhibited witness of `hitCl_eq_truncated`. -/
+theorem inr_post_threshold (L : ℕ) {σ : ℤ → Fin (L + 3)}
+    (hstep : ∀ z, stepOf L (Sum.inr (σ z)) (Sum.inr (σ (z + 1))) = true)
+    {t : ℤ} (hnow : ∀ z, (σ z).val = 1 ↔ z = t) :
+    ∃ w : ℤ, t ≤ w ∧ w ≤ t + (L : ℤ) ∧ ∀ z, ((σ z).val = L + 2 ↔ w < z) := by
+  classical
+  have ht : (σ t).val = 1 := (hnow t).mpr rfl
+  have hLp : (σ (t + (((L + 1 : ℕ)) : ℤ))).val = L + 2 := by
+    rcases inr_fwd_index L hstep ht (L + 1) with h | h
+    · exact h
+    · omega
+  have hex : ∃ n : ℕ, (σ (t + (n : ℤ))).val = L + 2 := ⟨L + 1, hLp⟩
+  obtain ⟨n₀, hspec, hmin⟩ :
+      ∃ n₀ : ℕ, (σ (t + (n₀ : ℤ))).val = L + 2
+        ∧ ∀ m : ℕ, m < n₀ → (σ (t + (m : ℤ))).val ≠ L + 2 :=
+    ⟨Nat.find hex, Nat.find_spec hex, fun m hm => Nat.find_min hex hm⟩
+  have hpos : 1 ≤ n₀ := by
+    rcases Nat.eq_zero_or_pos n₀ with h0 | h0
+    · rw [h0] at hspec
+      simp only [Nat.cast_zero, add_zero] at hspec
+      omega
+    · exact h0
+  have hle : n₀ ≤ L + 1 := by
+    by_contra hgt
+    exact hmin (L + 1) (by omega) hLp
+  refine ⟨t + (n₀ : ℤ) - 1, by omega, by omega, ?_⟩
+  intro z
+  constructor
+  · intro hz
+    by_contra hc
+    simp only [not_lt] at hc
+    by_cases hzt : z < t
+    · exact absurd (inr_bwd_pre L hstep ht z hzt) (by omega)
+    · by_cases hzt' : z = t
+      · rw [← hzt'] at ht; omega
+      · refine hmin (z - t).toNat (by omega) ?_
+        rwa [show t + (((z - t).toNat : ℕ) : ℤ) = z by omega]
+  · intro hz
+    have habs := inr_absorb_add L hstep (z - (t + (n₀ : ℤ))).toNat (t + (n₀ : ℤ)) hspec
+    rwa [show t + (n₀ : ℤ) + (((z - (t + (n₀ : ℤ))).toNat : ℕ) : ℤ) = z by omega] at habs
+
+/-! ### The `⊆` direction -/
+
+/-- **Run characterization, `⊆`.** Every anchored run of the presentation traces `stayA` or one
+`jump w` with `t ≤ w ≤ t + L`, and nothing else. Routed exactly as the three excluded shapes and
+the threshold above: `isLeft_const_of_isRun` confines the run to one gadget, `IsRun`'s own second
+clause supplies the seam correspondence in both, `inr_post_threshold` supplies gadget 2's
+threshold, and the trace comparison itself is Phase 5's `runTrace_inl_eq`/`runTrace_inr_eq` — a
+rewrite, not a re-derivation. -/
+theorem runTrace_mem_of_isRun (t : ℤ) (L : ℕ) (ρ : ℤ → QA L)
+    (hρ : IsRun (labOf L) (stepOf L) (clNow Fp) t ρ) :
+    runTrace (labOf L) ρ = clTrace MA Fp t stayA
+      ∨ ∃ w : ℤ, t ≤ w ∧ w ≤ t + (L : ℤ)
+          ∧ runTrace (labOf L) ρ = clTrace MA Fp t (jump w) := by
+  obtain ⟨hstep, hnow⟩ := hρ
+  have hnow' : ∀ z, isNowState L (ρ z) = true ↔ z = t := by
+    intro z; rw [← labOf_now L (ρ z)]; exact hnow z
+  have hconst := isLeft_const_of_isRun L hstep t
+  by_cases hleft : (ρ t).isLeft = true
+  · obtain ⟨σ, hσ⟩ := exists_left_index L ρ (fun z => (hconst z).trans hleft)
+    have hnowσ : ∀ z, (σ z).val = 1 ↔ z = t := by
+      intro z
+      have h := hnow' z
+      rw [hσ z] at h
+      simpa [isNowState] using h
+    left
+    rw [show ρ = fun z => Sum.inl (σ z) from funext hσ]
+    exact runTrace_inl_eq L t σ hnowσ
+  · have hfalse : (ρ t).isLeft = false := by simpa using hleft
+    obtain ⟨σ, hσ⟩ := exists_right_index L ρ (fun z => (hconst z).trans hfalse)
+    have hnowσ : ∀ z, (σ z).val = 1 ↔ z = t := by
+      intro z
+      have h := hnow' z
+      rw [hσ z] at h
+      simpa [isNowState] using h
+    have hstepσ : ∀ z, stepOf L (Sum.inr (σ z)) (Sum.inr (σ (z + 1))) = true := by
+      intro z; rw [← hσ z, ← hσ (z + 1)]; exact hstep z
+    obtain ⟨w, hw1, hw2, hw3⟩ := inr_post_threshold L hstepσ hnowσ
+    right
+    refine ⟨w, hw1, hw2, ?_⟩
+    rw [show ρ = fun z => Sum.inr (σ z) from funext hσ]
+    exact runTrace_inr_eq L t w σ hnowσ hw3
+
+/-! ### The `⊇` direction: the witnessing runs
+
+Gadget 1 carries exactly one anchored run (`inl_run_pinned`), and `stayRun` is it. Gadget 2
+carries `L + 1`: for each `w ∈ [t, t + L]` the run `jumpRun L t w` walks the mid chain for `w - t`
+steps after the seam and then drops into `j_post`. The `min` in `jumpRun` keeps the index inside
+`Fin (L + 3)` with no side condition; `jumpRun_val` shows it is the identity on the intended
+range, so the `min` is bookkeeping and not a truncation of the construction. -/
+
+/-- The gadget-1 run: `s_pre`, `s_now` at the seam, `s_post`. -/
+def stayRun (t : ℤ) (z : ℤ) : Fin 3 :=
+  if z < t then 0 else if z = t then 1 else 2
+
+@[simp] theorem stayRun_val (t z : ℤ) :
+    (stayRun t z).val = if z < t then 0 else if z = t then 1 else 2 := by
+  unfold stayRun
+  split_ifs <;> rfl
+
+theorem stayRun_now (t : ℤ) : ∀ z, (stayRun t z).val = 1 ↔ z = t := by
+  intro z
+  rw [stayRun_val]
+  split_ifs with h1 h2
+  · exact iff_of_false (by decide) (by omega)
+  · exact iff_of_true rfl h2
+  · exact iff_of_false (by decide) h2
+
+theorem stayRun_isRun (L : ℕ) (t : ℤ) :
+    IsRun (labOf L) (stepOf L) (clNow Fp) t (fun z => Sum.inl (stayRun t z)) := by
+  refine ⟨fun z => ?_, fun z => ?_⟩
+  · simp only [stepOf_inl_inl_iff, stayRun_val]
+    split_ifs <;> omega
+  · simp only [labOf_now, isNowState, decide_eq_true_eq]
+    exact stayRun_now t z
+
+/-- The gadget-2 run with threshold `w`. -/
+def jumpRun (L : ℕ) (t w : ℤ) (z : ℤ) : Fin (L + 3) :=
+  ⟨min (if z < t then 0 else if z ≤ w then (z - t + 1).toNat else L + 2) (L + 2), by omega⟩
+
+theorem jumpRun_val (L : ℕ) (t w : ℤ) (_hw : t ≤ w) (hwL : w ≤ t + (L : ℤ)) (z : ℤ) :
+    (jumpRun L t w z).val
+      = if z < t then 0 else if z ≤ w then (z - t + 1).toNat else L + 2 := by
+  have h : (jumpRun L t w z).val
+      = min (if z < t then 0 else if z ≤ w then (z - t + 1).toNat else L + 2) (L + 2) := rfl
+  rw [h]
+  split_ifs <;> omega
+
+theorem jumpRun_now (L : ℕ) (t w : ℤ) (hw : t ≤ w) (hwL : w ≤ t + (L : ℤ)) :
+    ∀ z, (jumpRun L t w z).val = 1 ↔ z = t := by
+  intro z
+  rw [jumpRun_val L t w hw hwL]
+  split_ifs with h1 h2
+  · exact iff_of_false (by decide) (by omega)
+  · constructor <;> intro h <;> omega
+  · exact iff_of_false (by omega) (by omega)
+
+theorem jumpRun_post (L : ℕ) (t w : ℤ) (hw : t ≤ w) (hwL : w ≤ t + (L : ℤ)) :
+    ∀ z, (jumpRun L t w z).val = L + 2 ↔ w < z := by
+  intro z
+  rw [jumpRun_val L t w hw hwL]
+  split_ifs with h1 h2
+  -- `split_ifs` has already reduced `0 = L + 2` to `False` in this branch.
+  · exact iff_of_false not_false (by omega)
+  · exact iff_of_false (by omega) (by omega)
+  · exact iff_of_true rfl (by omega)
+
+theorem jumpRun_isRun (L : ℕ) (t w : ℤ) (hw : t ≤ w) (hwL : w ≤ t + (L : ℤ)) :
+    IsRun (labOf L) (stepOf L) (clNow Fp) t (fun z => Sum.inr (jumpRun L t w z)) := by
+  refine ⟨fun z => ?_, fun z => ?_⟩
+  · simp only [stepOf_inr_inr_iff, jumpRun_val L t w hw hwL]
+    split_ifs <;> omega
+  · simp only [labOf_now, isNowState, decide_eq_true_eq]
+    exact jumpRun_now L t w hw hwL z
+
+/-- **Run characterization, `⊇`.** The presentation realizes `stayA`'s trace and every `jump w`
+trace with `t ≤ w ≤ t + L`. Together with `runTrace_mem_of_isRun` this makes the run traces
+EXACTLY the truncated family of `hitCl_eq_truncated`. -/
+theorem exists_isRun_runTrace (t : ℤ) (L : ℕ) :
+    (∃ ρ : ℤ → QA L, IsRun (labOf L) (stepOf L) (clNow Fp) t ρ
+        ∧ runTrace (labOf L) ρ = clTrace MA Fp t stayA)
+      ∧ ∀ w : ℤ, t ≤ w → w ≤ t + (L : ℤ) →
+          ∃ ρ : ℤ → QA L, IsRun (labOf L) (stepOf L) (clNow Fp) t ρ
+            ∧ runTrace (labOf L) ρ = clTrace MA Fp t (jump w) := by
+  refine ⟨⟨fun z => Sum.inl (stayRun t z), stayRun_isRun L t,
+    runTrace_inl_eq L t (stayRun t) (stayRun_now t)⟩, fun w hw hwL => ?_⟩
+  exact ⟨fun z => Sum.inr (jumpRun L t w z), jumpRun_isRun L t w hw hwL,
+    runTrace_inr_eq L t w (jumpRun L t w) (jumpRun_now L t w hw hwL)
+      (jumpRun_post L t w hw hwL)⟩
+
+/-- **Gadget 2's branching is exactly `L + 1`, counted rather than asserted.**
+`inr_post_threshold` sends every gadget-2 run to a threshold in `[t, t + L]` and
+`exists_isRun_runTrace` realizes every member of that interval, so the realized thresholds are
+exactly `Finset.Icc t (t + L)` — whose cardinality is `L + 1`. This is the branching figure the
+phase's scope hypothesis names, and it is what makes `exists_isRun_runTrace` surject onto the
+truncation window. It is NOT a bound on anything: `L` is still the unexhibited witness of
+`hitCl_eq_truncated`. -/
+theorem jump_window_card (t : ℤ) (L : ℕ) : (Finset.Icc t (t + (L : ℤ))).card = L + 1 := by
+  rw [Int.card_Icc]
+  omega
+
+-- The same branching figure, computed at `L = 2`: `j_post` (index `L + 2 = 4`) is directly
+-- reachable from exactly the `L + 1 = 3` mid-chain states `j_now, j_mid_1, j_mid_2`, besides its
+-- own self-loop. (`Finset.Icc` on `ℤ` is not compilable, so the window itself is witnessed by
+-- `jump_window_card` above rather than by a `#guard`.)
+#guard ((List.finRange 5).filter
+    (fun i => stepOf 2 (Sum.inr i) (Sum.inr (4 : Fin 5)) && !decide (i.val = 4))).length = 3
+
 -- The closure-size figure the case split rests on, left live so a reader can re-run it.
 #eval (plusSubformulaClosure Fp).card
 
@@ -803,5 +1214,7 @@ theorem runTrace_inr_eq (L : ℕ) (t w : ℤ) (ρ : ℤ → Fin (L + 3))
 #print axioms stepOf
 #print axioms labOf_inl_iff_clTrace_stayA
 #print axioms labOf_inr_iff_clTrace_jump
+#print axioms runTrace_mem_of_isRun
+#print axioms exists_isRun_runTrace
 
 end Probe745

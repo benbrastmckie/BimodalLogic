@@ -551,32 +551,61 @@ the `#eval`/`#guard` card and alphabet witnesses run inside that same compile.
 
 ---
 
-### Phase 6: The run characterization [NOT STARTED]
+### Phase 6: The run characterization [COMPLETED]
 
 **Goal**: Show the presentation's anchored run traces are EXACTLY the truncated trace set — the
 one link the research left uncompiled, and the step on which the whole result turns.
 
 **Tasks**:
-- [ ] Prove `runTrace_mem_of_isRun` at the pinned signature (the `⊆` direction). Route:
+- [x] Prove `runTrace_mem_of_isRun` at the pinned signature (the `⊆` direction). Route:
       `IsRun`'s own `↔` forces `labOf L (ρ z) (clNow Fp) = true ↔ z = t`, hence
       `ρ t ∈ {inl 1, inr 1}`; the only predecessor of `inl 1` is `inl 0` and of `inr 1` is
       `inr 0`, and each is its own only predecessor, so `ρ` is constant-`pre` on `(-∞, t)`;
       forward, gadget 1 admits one continuation and gadget 2 admits exactly `L + 1`; `post`
       absorbs. Cite the Phase 5 no-cross-step lemma to exclude a run crossing gadgets.
-- [ ] Prove `exists_isRun_runTrace` at the pinned signature (the `⊇` direction): exhibit the
+      *(deviation: altered — landed as the route describes but decomposed into named steps:
+      `isLeft_const_of_isRun` (cites `stepOf_no_cross`), `exists_left_index`/`exists_right_index`,
+      `inl_bwd_pre`/`inl_fwd_post`/`inl_run_pinned`, `inr_bwd_pre`, `inr_fwd_index`,
+      `inr_absorb`/`inr_absorb_add`, `inr_post_threshold`. Signature verbatim, verified by
+      whitespace-normalized string comparison against the pinned statement. One honest reading
+      recorded in the probe's own section header: because Phase 5 made `labOf` read only
+      `isNowState` in gadget 1, the gadget-1 trace equality consumes ONLY `IsRun`'s own `↔`, so
+      `inl_bwd_pre`/`inl_fwd_post`/`inl_run_pinned` are landed as the route and as the record
+      that no unclassified gadget-1 run exists, not as premises of the trace comparison.
+      `inr_bwd_pre` IS consumed, by `inr_post_threshold`'s `z ≤ t` case. Nothing was dropped,
+      weakened or substituted.)*
+- [x] Prove `exists_isRun_runTrace` at the pinned signature (the `⊇` direction): exhibit the
       anchored run realizing `stayA`'s trace, and for each `w ∈ [t, t + L]` the run leaving the
       mid chain after `w - t` steps.
-- [ ] Explicitly discharge the three counterexamples the research challenged this step with, each
+      *(deviation: altered — the two runs are landed as named `def`s `stayRun` and `jumpRun` with
+      their own evaluation lemmas (`stayRun_val`/`stayRun_now`/`stayRun_isRun`,
+      `jumpRun_val`/`jumpRun_now`/`jumpRun_post`/`jumpRun_isRun`) rather than inline terms, so the
+      `IsRun` clauses and the two position correspondences are separately checkable. `jumpRun`'s
+      index is `min … (L + 2)` so the `Fin (L + 3)` bound needs no side condition; `jumpRun_val`
+      proves the `min` is the identity on the intended range, so it is bookkeeping and not a
+      truncation. Signature verbatim, verified by the same string comparison.)*
+- [x] Explicitly discharge the three counterexamples the research challenged this step with, each
       as its own named step or comment: a run stuck at `pre` forever (excluded by `IsRun`'s `↔` at
       `z = t`); a run crossing gadgets (no cross steps); a run looping in the mid chain
       (`Fin (L + 3)` has no back edges, `post` absorbs).
+      *(landed as three named theorems, in order: `no_run_const_pre` (no run is constant at any
+      non-`now` state, in either gadget), `isLeft_const_of_isRun` (`Sum.isLeft ∘ ρ` is constant
+      along a `step`-chain, by `stepOf_no_cross` and nothing else), `inr_no_back_edge` (from a mid
+      state the index strictly increases, `j_post` being the only reachable self-loop).)*
 - [ ] If the `IsRun` pinning genuinely cannot be carried out as written: mark this phase
       `[BLOCKED]` in the plan with what was tried and the goal state reached, and escalate. Do
       NOT substitute the `mem_hitOf_iff_live` / `pathTypesNow` / `fwdLiveSep` route (explicitly
       rejected at report D-2/D-3), do NOT weaken either pinned statement, and do NOT land a
       vacuous placeholder.
-- [ ] Compile the probe; zero errors, zero warnings, zero sorries.
-- [ ] Commit (one green sub-step).
+      *(not triggered — the pinning was carried out as written; the rejected route was not used,
+      neither pinned statement was weakened, and no placeholder was landed. Left unchecked
+      because its condition never arose.)*
+- [x] Compile the probe; zero errors, zero warnings, zero sorries.
+      *(`lake env lean` through the build guard: guard exit 0, zero `error:`, zero `warning:`,
+      zero sorries. Both `#guard`s pass. `#print axioms` foot extended with
+      `runTrace_mem_of_isRun` and `exists_isRun_runTrace`; both observed as
+      `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.)*
+- [x] Commit (one green sub-step).
 
 **Timing**: 2 hours
 
