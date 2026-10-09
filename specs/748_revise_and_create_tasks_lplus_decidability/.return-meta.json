@@ -1,18 +1,39 @@
 {
   "status": "researched",
-  "started_at": "2026-10-09T19:21:18Z",
-  "dispatch_seq": 2,
+  "started_at": "2026-10-09T19:57:56Z",
+  "dispatch_seq": 3,
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/748_revise_and_create_tasks_lplus_decidability/reports/02_round-two-joint-verification.md",
-      "summary": "Round-2 verification of round 1's dispositions at their five thin joints: obligation (iii) closes by pigeonhole (scratch proof compiled, standard axioms, Nat.card-bounded strengthening also compiles) but is not (C)'s bound -- the SegmentFactorization transport lemma is the unmeasured cost and (C)'s general every-model statement is unowned; obligation (ii) is two proof obligations of the run-layer record (correction to round 1 D4, filing count unchanged); the 739 re-costing finds clSig already closure-indexed with backward labels; the gate-integrity defect reaches CI (gate run at ci.yml:119-125, summary exits 1) with a recurring archival mechanism, so 720 is promoted; 'R1 alone' is stress-tested with four named failure modes, none realized, and the two_fwd_paths gap is nominal. Seven corrections to round 1, each cited."
+      "path": "specs/748_revise_and_create_tasks_lplus_decidability/reports/03_literature-scope-product-negative-results.md",
+      "summary": "Literature-scoped round: TM/L+ over regular Z-frames evades every published negative product result in the corpus by hypothesis mismatch (one linear factor, one S5 factor, no difference operator, stab not a product coordinate); the product frame condition HOLDS, and TM is a proper extension of Log_SU(Z) x S5 via shift/path/limit closure and state-local valuation, so neither positives nor negatives transfer; the literature does not settle L+ either way."
     }
   ],
+  "next_steps": "Implement phase: carry D1-D2 into specs/ROADMAP.md Stage prose (authored section) and RaySummary/README.md's (W) record; record the perfect-recall route as a named risk; no new task is warranted on this round's evidence.",
   "metadata": {
-    "session_id": "sess_1791572177_653ecc_748",
+    "session_id": "sess_1791575710_0bfec8_748",
     "agent_type": "lean-research-agent",
+    "duration_seconds": 3420,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+  },
+  "modified_files": [
+    "specs/748_revise_and_create_tasks_lplus_decidability/reports/03_literature-scope-product-negative-results.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "GKWZ 2003 chunk files under ~/Projects/Literature/sources carry no section navigation (--toc is flat); printed page p sits in chunk p+4..p+20 and can be recovered from bare page-number lines (grep -E '^[0-9]{1,3}$'); the index pages (chunks 748-758) give printed pages for every key notion.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/748_revise_and_create_tasks_lplus_decidability/reports/03_literature-scope-product-negative-results.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["literature", "GKWZ", "page-map", "citation"]
+    },
+    {
+      "content": "TM's box structure on H_F x D is literally a GKWZ product frame (universal x linear); TM strictly extends Log_SU(Z) x S5 via modal_future / box_time_invariant (shift closure of H_F); stab fails Church-Rosser with time so L+ is not a 3D product; published S5-plus-linear negatives (fmp failures GKWZ 5.30/5.32) coexist with decidability (6.60/6.61, HWZ Cor 69).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/748_revise_and_create_tasks_lplus_decidability/reports/03_literature-scope-product-negative-results.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["product-logic", "S5", "decidability", "L+", "stab"]
+    }
+  ]
 }

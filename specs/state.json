@@ -24,12 +24,12 @@
       "session_id": "sess_1791572177_653ecc",
       "artifacts": [
         {
-          "path": "specs/748_revise_and_create_tasks_lplus_decidability/reports/02_round-two-joint-verification.md",
+          "path": "specs/748_revise_and_create_tasks_lplus_decidability/reports/03_literature-scope-product-negative-results.md",
           "type": "report",
-          "summary": "Round-2 verification of round 1's dispositions at their five thin joints: obligation (iii) closes by pigeonhole (scratch proof compiled, standard axioms, Nat.card-bounded strengthening also compiles) but is not (C)'s bound -- the SegmentFactorization transport lemma is the unmeasured cost and (C)'s general every-model statement is unowned; obligation (ii) is two proof obligations of the run-layer record (correction to round 1 D4, filing count unchanged); the 739 re-costing finds clSig already closure-indexed with backward labels; the gate-integrity defect reaches CI (gate run at ci.yml:119-125, summary exits 1) with a recurring archival mechanism, so 720 is promoted; 'R1 alone' is stress-tested with four named failure modes, none realized, and the two_fwd_paths gap is nominal. Seven corrections to round 1, each cited."
+          "summary": "Literature-scoped round: TM/L+ over regular Z-frames evades every published negative product result in the corpus by hypothesis mismatch (one linear factor, one S5 factor, no difference operator, stab not a product coordinate); the product frame condition HOLDS, and TM is a proper extension of Log_SU(Z) x S5 via shift/path/limit closure and state-local valuation, so neither positives nor negatives transfer; the literature does not settle L+ either way."
         }
       ],
-      "next_artifact_number": 3
+      "next_artifact_number": 4
     },
     {
       "project_number": 747,
