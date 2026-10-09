@@ -4,19 +4,25 @@
     {
       "type": "plan",
       "path": "specs/748_revise_and_create_tasks_lplus_decidability/plans/03_task-graph-revisions-and-roadmap.md",
-      "summary": "8-phase plan turning reports 01-03 into state.json mutations and roadmap edits: 5 creations, 3 revisions, 1 close-as-subsumed, Stage 1 roadmap rewrite."
+      "summary": "Revised in place on a single scoped user ruling: the perfect-recall probe-task creation phase is deleted and its content folded into the Stage 1 roadmap risk table. 7 phases, 5 waves, 5.5 hours; 2 task creations plus the 2 meta successors, 3 record revisions, 1 close-as-subsumed, 1 roadmap edit."
     }
   ],
-  "next_steps": "Run /implement 748 to execute the plan",
-  "phase_count": 8,
-  "estimated_hours": 6.5,
-  "dependency_waves": 6,
-  "memory_candidates": [],
+  "next_steps": "Run /implement 748 to execute the revised 7-phase plan",
   "metadata": {
     "session_id": "sess_1791577470_f6dff1_748",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 4
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "dispatch_seq": 5,
+    "phase_count": 7,
+    "estimated_hours": 5.5,
+    "dependency_waves": [[1, 3, 4], [2], [5], [6], [7]],
+    "plan_version": 2,
+    "reports_integrated": [
+      "reports/01_ranked-route-analysis-dispositions.md",
+      "reports/02_round-two-joint-verification.md",
+      "reports/03_literature-scope-product-negative-results.md"
+    ],
+    "revision_scope": "single-change: delete perfect-recall probe-task creation (old Phase 3); fold into Phase 6 roadmap risk row; extend Phase 7 git-diff audit; renumber and re-cost. All other content preserved byte-for-byte.",
+    "plan_revised_sentinel": "specs/748_revise_and_create_tasks_lplus_decidability/.plan-revised.json"
+  }
 }

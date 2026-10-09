@@ -34,10 +34,10 @@
         {
           "path": "specs/748_revise_and_create_tasks_lplus_decidability/plans/03_task-graph-revisions-and-roadmap.md",
           "type": "plan",
-          "summary": "8-phase plan: 5 task creations, 3 record revisions, 1 close-as-subsumed, and the Stage 1 roadmap rewrite; 6.5 hours, 6 dependency waves."
+          "summary": "Revised in place on a single scoped user ruling: the perfect-recall probe-task creation phase is deleted and its content folded into the Stage 1 roadmap risk table. 7 phases, 5 waves, 5.5 hours; 2 task creations plus the 2 meta successors, 3 record revisions, 1 close-as-subsumed, 1 roadmap edit."
         }
       ],
-      "next_artifact_number": 4
+      "next_artifact_number": 5
     },
     {
       "project_number": 747,

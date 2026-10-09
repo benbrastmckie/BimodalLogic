@@ -2,7 +2,7 @@
 
 - **Task**: 748 - Revise existing tasks and create new ones to move the L⁺ decidability programme forward
 - **Status**: [NOT STARTED]
-- **Effort**: 6.5 hours
+- **Effort**: 5.5 hours
 - **Dependencies**: 747 (completed)
 - **Research Inputs**: `specs/748_revise_and_create_tasks_lplus_decidability/reports/01_ranked-route-analysis-dispositions.md`, `reports/02_round-two-joint-verification.md`, `reports/03_literature-scope-product-negative-results.md`
 - **Artifacts**: plans/03_task-graph-revisions-and-roadmap.md (this file)
@@ -13,7 +13,7 @@
 ## Overview
 
 This plan's executable output is **`specs/state.json` mutations and a hand-edited
-`specs/ROADMAP.md`** — nothing else. Five tasks are created, three records are revised, one is
+`specs/ROADMAP.md`** — nothing else. Four tasks are created, three records are revised, one is
 closed as subsumed, and the roadmap's Stage 1 prose and run order are brought into line with the
 landed verdicts. No Lean is written, no library module is touched, and no analysis artifact is
 produced: deliverable (b) of the task description (the ranked route analysis) is already
@@ -75,8 +75,12 @@ covers `scripts/check-evidence-probes.sh`.
 
 ### Prior Plan Reference
 
-No prior plan. This is the task's first plan; its three research rounds are the only prior
-artifacts.
+The three research rounds are this plan's only prior artifacts. One scoped revision has since been
+applied to this plan on a settled user ruling (`.decisions.json`, cycle 1): the perfect-recall
+backward-determinism probe is **recorded as a Stage 1 roadmap risk, not filed as a task**, which is
+what `reports/03`'s Recommendation 3 says in those words ("do not file it as a task on this
+evidence"). Its phase is gone; its content lives in Phase 6's risk table. Every other ranking,
+scope and report-precedence decision below is unchanged.
 
 ### Roadmap Alignment
 
@@ -90,10 +94,10 @@ left exactly as they are.
 ## Goals & Non-Goals
 
 **Goals**:
-- Create five tasks: the (C)-bound task, the (W) run-layer task, the perfect-recall/backward-determinism probe, the declaration-hygiene remediation, and the roadmap-tooling filing — each with `file_scope` declared at creation.
+- Create four tasks: the (C)-bound task, the (W) run-layer task, the declaration-hygiene remediation, and the roadmap-tooling filing — each with `file_scope` declared at creation.
 - Revise 720 (enlarged to a CI repair with the tracked-ness check as a named deliverable) and declare 714's `file_scope`.
 - Close 725 as subsumed, with the subsumption evidence written into its description **before** the abandon so the archived record carries it.
-- Hand-edit `specs/ROADMAP.md` so Stage 1 asserts no fallback, carries the four named risks and the literature position, and orders the front by the revised task graph.
+- Hand-edit `specs/ROADMAP.md` so Stage 1 asserts no fallback, carries the five named risks and the literature position, and orders the front by the revised task graph.
 - Leave an audit trail in which every description and roadmap sentence written here names a file:line, a wired probe, or a named theorem.
 
 **Non-Goals**:
@@ -101,6 +105,7 @@ left exactly as they are.
 - Any complexity bound, upper or lower, in any description or roadmap sentence. `AnchorLayer.lean:317-320` is quoted verbatim wherever a count appears.
 - Any change to task **734** — status, blockers, or description. Its `[PARTIAL]` marker encodes a recorded user decision referred to the user and still unanswered; 02's R6 referral stands unre-raised.
 - A fourth certificate class; a third task for (C)'s general statement (02 D12); a `two_fwd_paths` probe (02 D15); a "prove L⁺ undecidable" or "transfer decidability from the product" task (03 Recommendation 5).
+- **A task for the perfect-recall / backward-determinism probe.** `reports/03`'s Recommendation 3 (line 117) says of exactly this item: "Record it as a risk with the obvious cheap probe (a one-fixture check of whether backward determinism is forceable by a closed formula); do not file it as a task on this evidence." That is a settled user ruling (`.decisions.json`, cycle 1). It is recorded as a Stage 1 risk row in Phase 6 and nowhere else; Phase 7 audits the diff for a record that must not be there.
 - `roadmap-integration.sh --regenerate`. It exits 1 silently (re-verified live this dispatch), so the whole file is hand-edited and there is no clobber hazard to manage (01 D9).
 - Any edit to `FormalSystem/**` or `docs/**`. 03's Recommendation 2 (the literature paragraph for `RaySummary/README.md`) is **assigned to the created (W) task** rather than executed here, because 748's `file_scope` is `["specs/ROADMAP.md"]` and that file is territory of the two tasks this plan creates.
 
@@ -109,13 +114,12 @@ left exactly as they are.
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
 | A created task's `file_scope` is omitted, because the `task.md:181-196` filter does not write the field (`:223`) | H | H | Every creation phase pairs the creating `state-write.sh` call with a second call setting `.file_scope`, and its verification step reads the field back with `jq` before the phase closes |
-| Task numbers drift (another writer creates a task mid-run), so a hardcoded 749/750/751 lands on the wrong record | H | L | Each creation phase reads `next_project_number` immediately before its write and reads the assigned number back after; the roadmap phase reads the five actual numbers from `state.json` rather than assuming them |
-| A description or roadmap sentence is read as asserting a complexity bound | H | M | Every text carrying a count carries `AnchorLayer.lean:317-320` verbatim beside it; Phase 8 runs an explicit grep audit over every file this plan touched |
-| The 725 abandon runs before its subsumption evidence is written, so the archived record loses it | M | M | Phase 5 orders the description write first and verifies it with `jq` before invoking the abandon flow |
+| Task numbers drift (another writer creates a task mid-run), so a hardcoded 749/750/751 lands on the wrong record | H | L | Each creation phase reads `next_project_number` immediately before its write and reads the assigned number back after; the roadmap phase reads the four actual numbers from `state.json` rather than assuming them |
+| A description or roadmap sentence is read as asserting a complexity bound | H | M | Every text carrying a count carries `AnchorLayer.lean:317-320` verbatim beside it; Phase 7 runs an explicit grep audit over every file this plan touched |
+| The 725 abandon runs before its subsumption evidence is written, so the archived record loses it | M | M | Phase 4 orders the description write first and verifies it with `jq` before invoking the abandon flow |
 | The (W) task is dispatched past phase 1 and burns cycles on open mathematics | M | M | "Dispatch phase 1 and STOP" is written into its description as a dispatch instruction (not a status) and repeated in the roadmap's run-order comment |
 | Stage 1 has no fallback, and the roadmap is read as hiding that | M | L | The replacement text says so in those words and names the four modes of 02 §2.6 with their realized status; no fallback is invented |
-| The perfect-recall probe is deferred for many cycles on `check-evidence-probes.sh` overlap with 720, repeating 747's five-cycle deferral | M | M | Phase 3 adds an explicit `--depends-on-add` edge to 720 rather than relying on the per-cycle deferral gate |
-| `generate-todo.sh` renders a malformed TODO.md after six state writes | L | M | Phase 8 regenerates and reads the Stage-1 rows; `--regen-todo` is folded into the final write of each phase |
+| `generate-todo.sh` renders a malformed TODO.md after five state writes | L | M | Phase 7 regenerates and reads the Stage-1 rows; `--regen-todo` is folded into the final write of each phase |
 
 ## Implementation Phases
 
@@ -123,16 +127,15 @@ left exactly as they are.
 
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | 1, 4, 5 | -- |
+| 1 | 1, 3, 4 | -- |
 | 2 | 2 | 1 |
-| 3 | 3 | 2 |
-| 4 | 6 | 3 |
-| 5 | 7 | 1, 2, 3, 4, 5, 6 |
-| 6 | 8 | 7 |
+| 3 | 5 | 2 |
+| 4 | 6 | 1, 2, 3, 4, 5 |
+| 5 | 7 | 6 |
 
-Phases within the same wave can execute in parallel. Phases 1, 2, 3 and 6 form a chain only
-because each reads `next_project_number` and must observe the previous creation's bump; phases 4
-and 5 touch existing records and assign no number, so they are independent of the chain. Every
+Phases within the same wave can execute in parallel. Phases 1, 2 and 5 form a chain only
+because each reads `next_project_number` and must observe the previous creation's bump; phases 3
+and 4 touch existing records and assign no number, so they are independent of the chain. Every
 write in every phase goes through `state-write.sh`, whose `specs/.scope-lock` mutex serializes
 concurrent writers (`state-write.sh` header, "fail-closed mutex acquisition").
 
@@ -370,92 +373,7 @@ every-model statement (02 §2.4, D12-D13).
 
 ---
 
-### Phase 3: Create the perfect-recall probe and wire its dependency edge [NOT STARTED]
-
-**Goal**: File reports/03's one named live risk as a cheap falsifiable probe (03 Recommendation 3,
-Risks), and give it the dependency edge that keeps it from being deferred cycle after cycle on
-`check-evidence-probes.sh` overlap.
-
-**Note on the override**: 03 Recommendation 3 says "do not file it as a task on this evidence".
-The dispatch's User focus block **directs that it be filed** ("CREATE the perfect-recall probe …
-This is reports/03's one named live risk"). The user's instruction governs; the record below
-carries 03's own framing — a falsifiable question, cheap, with no complexity claim — so the filing
-does not overstate what the evidence supports.
-
-**Tasks**:
-- [ ] Read `next_project_number`; call it `$P`.
-- [ ] Create the record: `project_name` `perfect_recall_backward_determinism_forcing_probe`, `task_type` `lean4`, `topic` `decidability`.
-- [ ] Use this description text verbatim:
-
-  > **FALSIFIABLE QUESTION: CAN AN L⁺ FORMULA FORCE BACKWARD DETERMINISM?** One fixture, one
-  > answer, no construction. This is the ONLY literature-grounded route by which a published
-  > negative result could reach L⁺, and it is cheap to probe.
-  >
-  > **WHY IT MATTERS.** TM/L⁺ over regular ℤ-frames meets the hypothesis of NO published negative
-  > result in the corpus, and `stab` is the reason: `| .stab φ => ∀ σ, τ.state t = σ.state t → …`
-  > (`PlusTruth.lean:93`) is the same-state-at-the-same-time equivalence, and it FAILS the
-  > backward closure that defines the historical-necessity tradition — Thomason 1984 §4 Def. 6
-  > condition (2) ("if `w1 ~_t w2` and `t' < t` then `w1 ~_{t'} w2`") and Caleiro-Viganò-Volpe
-  > 2013 Def. 2.5 `Wdc` ("if `x < y ~ y'` then there exists `x' ~ x` with `x' < y'`"). Two
-  > histories may share a state at `t` and differ at `t-1`. In Gabbay-Kurucz-Wolter-Zakharyaschev
-  > 2003 §3.4 terms `stab` is the modality of an agent that KNOWS THE TIME but neither forgets nor
-  > learns — the one class whose published logic is just the fusion (GKWZ Thm 13.3;
-  > Halpern-van der Meyden-Vardi 2004 Thm 3.1), and L⁺ strictly extends even that (`stab p ↔ p` is
-  > valid on every task frame by state-local atoms, `PlusTruth.lean:85,93`, and is
-  > fusion-refutable). **IF backward determinism is forceable on the relevant part of a regular
-  > ℤ-frame by a closed L⁺ formula, `stab` acquires perfect recall there, Thomason Def. 6 (2) /
-  > Caleiro `Wdc` hold on that part, and the know-time-do-not-forget family (GKWZ §13.2,
-  > Thms 13.10 and 13.12) becomes a REDUCTION TARGET.** That hypothesis is currently unmet, which
-  > is the whole reason the corpus's negatives do not apply.
-  >
-  > **THE PROBE.** One fixture under `specs/evidence/seam-gluing-ray-product/`, wired into
-  > `scripts/check-evidence-probes.sh` as a `WIRED` entry under `specs/evidence/` (never
-  > `WIRED_REPO`, never a path that archival can un-track). Decide, machine-checked, whether some
-  > closed L⁺ formula `χ` is satisfiable only on frames whose relevant part is
-  > backward-deterministic — equivalently, whether `χ` can refute a backward-nondeterministic
-  > witness. Start from the two fixtures that already inhabit the backward factor:
-  > `Probe719Backward` (`backward-dual-asymmetric-fixture.lean`, forward-branching with unique
-  > predecessors) and `Probe733Mirror` (`backward-dual-mirror-fixture.lean:18-24`, its reverse,
-  > with backward branching factor exactly 2 at every spine state and `two_bwd_paths` axiom-free).
-  > A POSITIVE (forcing is possible) is a route-relevant finding and must be reported as such
-  > without being turned into a decidability or undecidability claim. A NEGATIVE (no closed
-  > formula forces it) closes the risk and is an equally complete outcome.
-  >
-  > **CONSTRAINTS.** State NO complexity bound, upper or lower. NEVER write that L⁺ is decidable
-  > or undecidable unqualified; every statement carries frame class, fragment, premise set and
-  > hypothesis (`[F.IsRegular]` at minimum). Determinism is a separate, independent notion in this
-  > tree (`Metalogic/Independence/`) and regularity does not exclude a non-deterministic step
-  > (`TaskFrame.lean:1172-1211`): do not conflate the two. Do NOT file a "prove L⁺ undecidable"
-  > task or a "transfer decidability from the product" task on this probe's outcome — the former
-  > has no reduction target with met hypotheses, the latter is (W)'s obligation under another name.
-  > Sorry-free; `[BLOCKED]` with the obstruction named if the fixture cannot decide the question.
-
-- [ ] Second `state-write.sh` call on record `$P`, setting `.file_scope` and `.dependencies` **together in one filter**: `file_scope` = [`specs/evidence/seam-gluing-ray-product/`, `scripts/check-evidence-probes.sh`], `dependencies` = `[720]`. Fold `--regen-todo` in. Use `state-write.sh` rather than `update-task-status.sh --depends-on-add` here: that flag rides on a `preflight`/`postflight` call, which would also move the brand-new record's status away from `not_started`, and no status change is wanted.
-- [ ] `bash .claude/scripts/manage-topics.sh set $P decidability`.
-- [ ] Record in the same description, as its last line, why the edge exists: "DEPENDENCY EDGE to 720: this record appends a `WIRED` entry to `scripts/check-evidence-probes.sh`, which 720's `file_scope` also covers, and 720 lands the tracked-ness check in `check_probe` that makes a new wired entry safe. The edge serializes explicitly rather than leaving the overlap to per-cycle deferral — the mechanism that deferred a record five consecutive cycles on this very script."
-
-**Timing**: 1 hour
-
-**Depends on**: 2
-
-**Verification Tier**: local
-
-**Tier Justification**: Only `specs/state.json` is written; its covering check is `bash .claude/scripts/validate-state.sh specs/state.json`, and no Lean fixture is created in this phase (the fixture is the created task's own work).
-
-**Scope Hypothesis**: `$P` is expected to be Phase 2's `$W` plus one (751 if nothing else creates a task); read and read back rather than hardcoding.
-
-**Files to modify**:
-- `specs/state.json` - one new record with `file_scope` and `dependencies: [720]`
-- `specs/TODO.md` - regenerated
-
-**Verification**:
-- `jq '.active_projects[] | select(.project_number == $P) | {file_scope, dependencies}'` shows the 2-entry `file_scope` and `dependencies: [720]`.
-- The description names Thomason Def. 6 (2) and Caleiro Def. 2.5 `Wdc` and contains no complexity class.
-- `bash .claude/scripts/validate-state.sh specs/state.json` reports no ERROR.
-
----
-
-### Phase 4: Revise 720 (enlarged) and declare 714's file_scope [NOT STARTED]
+### Phase 3: Revise 720 (enlarged) and declare 714's file_scope [NOT STARTED]
 
 **Goal**: Execute 02 R5 and R7: enlarge 720 from a citation tidy-up to a CI repair with the
 tracked-ness check as a named deliverable, and declare 714's `file_scope` so the overlap gate can
@@ -535,7 +453,7 @@ see it.
 
 ---
 
-### Phase 5: Close 725 as subsumed [NOT STARTED]
+### Phase 4: Close 725 as subsumed [NOT STARTED]
 
 **Goal**: Execute 02 R4: write the subsumption evidence into 725's description **first** so the
 archived record carries it, then abandon it.
@@ -579,7 +497,7 @@ archived record carries it, then abandon it.
 
 ---
 
-### Phase 6: File the two low-priority successors [NOT STARTED]
+### Phase 5: File the two low-priority successors [NOT STARTED]
 
 **Goal**: Execute 02 R8 and R9 (both confirmed from 01): the declaration-hygiene remediation and
 the roadmap-tooling filing. Neither is a Stage 1 item.
@@ -620,7 +538,7 @@ the roadmap-tooling filing. Neither is a Stage 1 item.
 
 **Timing**: 0.75 hours
 
-**Depends on**: 3
+**Depends on**: 2
 
 **Verification Tier**: local
 
@@ -634,15 +552,15 @@ the roadmap-tooling filing. Neither is a Stage 1 item.
 
 **Verification**:
 - Both records read back with `status: "not_started"`, `task_type: "meta"`, non-empty `file_scope`, and their topics present in `active_topics`.
-- `jq -r '.next_project_number' specs/state.json` equals the Phase 1 starting value plus 5.
+- `jq -r '.next_project_number' specs/state.json` equals the Phase 1 starting value plus 4.
 - `bash .claude/scripts/validate-state.sh specs/state.json` reports no ERROR.
 
 ---
 
-### Phase 7: Hand-edit specs/ROADMAP.md [NOT STARTED]
+### Phase 6: Hand-edit specs/ROADMAP.md [NOT STARTED]
 
 **Goal**: Deliverable (c). Make the roadmap's Stage 1 ordering and rationale match the revised task
-graph: delete the void R2 contingency, replace it with the four named risks and the literature
+graph: delete the void R2 contingency, replace it with the five named risks and the literature
 position, state that Stage 1 proceeds on R1 alone with no fallback, and re-order the run block.
 
 **DO NOT run `roadmap-integration.sh --regenerate`.** It exits 1 with zero output and writes
@@ -650,9 +568,9 @@ nothing (re-verified live this dispatch), so the whole file is effectively autho
 only. There is no generated section to protect and no clobber hazard to manage.
 
 **Tasks**:
-- [ ] Read the five task numbers assigned by Phases 1, 2, 3 and 6 out of `specs/state.json`; do not assume 749-753.
+- [ ] Read the four task numbers assigned by Phases 1, 2 and 5 out of `specs/state.json`; do not assume 749-752.
 - [ ] **Delete the void contingency at `:186-187`** — "**Promote this line if 745 refutes, or if 733 falsifies the two-factor presentation**: R2 is the route to switch to." — and replace it with: 733 came back POSITIVE on a backward-NONDETERMINISTIC mirror fixture (backward branching factor exactly 2 at every spine state, `Probe733Mirror.two_bwd_paths` axiom-free, `pastStab_iff_allBwdPathsMeet` and `decide_past_stab` holding state-dependently) — R1's sharpest available falsifier, and it survived; and the literal R2 falsifier is UNSATISFIABLE, because `Probe718Mosaic.StabSaturated M S` is a tautology holding for every finite mosaic set by a one-line term (its body already carries the same-state equality box-dot's clause quantifies over; `PlusTruth.stab_iff` is an `Iff.rfl`). **R2 is a CONSUMER of R1, not an alternative to it**: the real mosaic content is the witness direction, and deciding it on semantic mosaics presupposes deciding box-dot, which IS R1's reachability summary — Caleiro-Viganò-Volpe §4.3 states verbatim that the mosaic decidability argument "does not extend" once the vertical and horizontal components interact. **STAGE 1 PROCEEDS ON R1 ALONE. THERE IS NO FALLBACK ROUTE.** Keep the existing sentence "739's refutation does NOT trigger this … Do not read '739 refuted' as a route-switch signal" — 739's ruling still binds.
-- [ ] **Add the four named risks** (02 §2.6) as a table in the Stage 1 prose, each with its realized status, replacing a contingency that could not fire with modes that can:
+- [ ] **Add the five named risks** — 02 §2.6's four failure modes plus `reports/03`'s perfect-recall question (03 Recommendation 3) — as a table in the Stage 1 prose, each with its realized status, replacing a contingency that could not fire with modes that can:
 
   | Failure mode | Where it lives | Realized? |
   |---|---|---|
@@ -660,6 +578,7 @@ only. There is no generated section to protect and no clobber hazard to manage.
   | The factorization-transport lemma does not close on model A | Not in tree; no attempt recorded anywhere | **No.** Never attempted |
   | Hit-level completeness fails for some regular ℤ-model | Trace level is false (`Probe735.not_presented`); Hit level holds on model A (`Probe745.hitPresented_modelA`); no Hit-level negative exists anywhere | **No.** One positive fixture, zero negatives, no general argument |
   | The `⊡` summary is not finitely computable under infinite backward branching | Held by `device-selection-probe.lean`, per `backward-dual-mirror-fixture.lean:65-72` | **Not a Stage 1 question**; the mirror header says so |
+  | A closed L⁺ formula forces backward determinism on the relevant part of a regular ℤ-frame — the one literature-grounded route by which a published negative result could reach L⁺ | `stab`'s clause is the same-state-at-the-same-time equivalence (the `.stab` branch at `PlusTruth.lean:93`: `∀ σ, τ.state t = σ.state t → …`), and it fails the backward closure that defines the historical-necessity tradition: Thomason 1984 §4 Def. 6 condition (2) and Caleiro-Viganò-Volpe 2013 Def. 2.5 `Wdc`. **If forcing is possible**, `stab` satisfies Thomason Def. 6 (2) / Caleiro `Wdc` on that part and the know-time-do-not-forget family (GKWZ §13.2) becomes a REDUCTION TARGET. CHEAP CHECK, NAMED AND NOT SCHEDULED: one fixture deciding whether backward determinism is forceable by a closed formula; `Probe719Backward` (`backward-dual-asymmetric-fixture.lean`) and `Probe733Mirror` (`backward-dual-mirror-fixture.lean:18-24`) already inhabit the backward factor. No task is filed for it, per 03 Recommendation 3 (line 117) | **Open falsifiable question, argued in neither direction.** The hypothesis is currently unmet — which is exactly why the corpus's negatives do not apply — and nothing in the tree decides whether it can be met |
 
 - [ ] **Add a "Literature position" paragraph** to the Stage 1 prose (03 D1-D2, F3), stating: TM/L⁺ over regular ℤ-frames EVADES every published negative result in the corpus, and for a boring reason — not one of them has a hypothesis TM meets. Every undecidability or non-r.e. theorem for products with an S5 factor needs a SECOND linear/transitive/`K` factor commuting with time, or THREE commuting factors, or a DIFFERENCE/counting operator; TM has one linear factor, one S5 factor, and no difference modality, and `stab` is not a product coordinate (Church-Rosser between `stab` and the temporal relation fails on any non-deterministic step; `stab_state_only`, `PlusTruth.lean:332`, is the formal face of the same fact). The S5-plus-linear products themselves sit on the DECIDABLE side (GKWZ Thms 6.60, 6.61; HWZ Cor 69 for `⟨Z,<⟩` with Until and Since). **Neither direction transfers**: the published positives decide SUBLOGICS of TM/L⁺ — TM is a proper extension, witnessed by `modal_future` (`Axioms.lean:297`) and `box_time_invariant` (`PlusTruth.lean:349`) being TM-valid and product-refutable, and by `stab p ↔ p` being L⁺-valid and fusion-refutable — and decidability is not inherited by extensions. **So the literature does not settle L⁺ in either direction, and "evades" is not evidence of decidability.** Record also that the fmp-plus-Until/Since signal is **NEUTRAL, not corroborating**: GKWZ Thm 5.30 and 5.32 kill the fmp of S5-plus-linear products while Thm 6.61 decides them. Reproduce NO complexity class, including from theorems whose statements name one.
 - [ ] **Re-cost the (C) bullet at `:128-133`.** The "Probe before bound … Re-cost the bound half against that before planning it" instruction is SPENT: the probe ran (`Probe745.hitPresented_modelA` holds on model A at every depth `k ≥ 1`) and the bound half is now the created bound record's. Record that the bound's phase 1 is closed in principle by a compiled feasibility proof (pigeonhole plus `kTypeOf_listSeg_append_congr`, NOT finite-semigroup idempotence) and that **the cost sits in the factorization-transport lemma**, which has no figure anywhere in the tree. The 739 re-costing instruction is DISCHARGED and the finding is that the tree already satisfies the constraint: `clSig φ := subformulas φ ⊕ Unit` (`Closure.lean:80-81`) with both `untl` and `snce` arguments carried (`Subformulas.lean:66-73`), so the surviving alphabet is closure-indexed with backward labels by construction. Any count named here is a COUNT: carry `AnchorLayer.lean:317-320` verbatim beside it.
@@ -672,7 +591,6 @@ only. There is no generated section to protect and no clobber hazard to manage.
   # 734 is [PARTIAL] by a recorded user decision; it is NOT a fallback route -- see Stage 1
   /orchestrate {C-BOUND} --hard --lit   # (C)'s bound half on model A; the cost is phase 2
   /orchestrate 720                      # CI repair: untracked WIRED_REPO + the tracked-ness check
-  /orchestrate {PERFECT-RECALL}         # cheap falsifiable probe; edged behind 720 on the gate script
   /orchestrate {W-RUN-LAYER} --hard --lit  # dispatch phase 1 and STOP
   /orchestrate 716,714 --hard
   /orchestrate 712 --hard               # only after Stage 0 corrects its marker
@@ -683,7 +601,7 @@ only. There is no generated section to protect and no clobber hazard to manage.
 
 **Timing**: 1.5 hours
 
-**Depends on**: 1, 2, 3, 4, 5, 6
+**Depends on**: 1, 2, 3, 4, 5
 
 **Verification Tier**: prose
 
@@ -694,25 +612,26 @@ only. There is no generated section to protect and no clobber hazard to manage.
 
 **Verification**:
 - `grep -c 'R2 is the\s*route to switch to' specs/ROADMAP.md` is 0, and `grep -c 'no fallback' specs/ROADMAP.md` is at least 1.
+- The Stage 1 risk table has **five** data rows, the fifth naming Thomason Def. 6 (2), Caleiro `Wdc`, GKWZ §13.2 and the one-fixture cheap probe, and stating the question as open in neither direction — `grep -c 'Wdc' specs/ROADMAP.md` is at least 1 and no `/orchestrate` line mentions it.
 - `grep -n '725' specs/ROADMAP.md` shows only the close-as-subsumed record, never a `/orchestrate` line.
-- The run-order block's Stage 1 lines name the five created/revised numbers actually present in `specs/state.json` — cross-check each with `jq`.
+- The run-order block's Stage 1 lines name the four created/revised numbers actually present in `specs/state.json` — cross-check each with `jq`.
 - `grep -nEi '2EXPTIME|EXPSPACE|PSPACE|NP-|co-NP|running time|time bound' specs/ROADMAP.md` returns only the pre-existing constraint-3 sentence that rules the ARGUED ceiling OUT as a source, and nothing newly added.
 - `grep -c 'AnchorLayer.lean:317-320\|counts cells, it does not time anything' specs/ROADMAP.md` is at least 1 wherever a count was added.
 - Diff read-through: every changed hunk is prose or a fenced `bash` comment block; no generated section was rewritten by a tool.
 
 ---
 
-### Phase 8: Final verification and audit [NOT STARTED]
+### Phase 7: Final verification and audit [NOT STARTED]
 
 **Goal**: Confirm the state is consistent, TODO.md renders, no settled ruling was reopened, no
 complexity bound was asserted anywhere, and task 734 was not touched.
 
 **Tasks**:
 - [ ] `bash .claude/scripts/validate-state.sh specs/state.json` — no ERROR lines; record the `file_scope` WARN lines as the input they are to the hygiene task filed in Phase 6.
-- [ ] `bash .claude/scripts/generate-todo.sh` and read the Stage 1 rows: five new tasks present, 725 absent, 720 and 714 showing their revisions.
+- [ ] `bash .claude/scripts/generate-todo.sh` and read the Stage 1 rows: four new tasks present, 725 absent, 720 and 714 showing their revisions.
 - [ ] `bash scripts/check-evidence-probes.sh` — the evidence gate is expected to report the two known `WIRED_REPO` misses (that is 720's filed defect, not a regression introduced here); confirm nothing ELSE changed.
-- [ ] **734 untouched audit**: `jq '.active_projects[]|select(.project_number==734)|{status,blockers,description}' specs/state.json` is byte-identical to its pre-run value (`status: "partial"`, `blockers: null`). Use `git diff specs/state.json` to confirm no 734 hunk appears.
-- [ ] **No-complexity-bound audit**: `grep -nEi '2EXPTIME|EXPSPACE|PSPACE|NP-complete|co-NP|running time|time complexity|space complexity'` over `specs/ROADMAP.md` and over every description written by Phases 1-6 (`jq -r '.active_projects[]|.description'`). Every hit must be a sentence that rules such a bound OUT, never one that asserts one.
+- [ ] **`git diff` audit — two assertions, both on `git diff specs/state.json`**: (1) **no 734 hunk appears** — `jq '.active_projects[]|select(.project_number==734)|{status,blockers,description}' specs/state.json` is byte-identical to its pre-run value (`status: "partial"`, `blockers: null`); and (2) **no new task record for a perfect-recall or backward-determinism probe appears** — `git diff specs/state.json | grep -niE 'perfect.?recall|backward.?determin'` returns nothing, and `jq -r '.active_projects[]|"\(.project_number) \(.project_name)"' specs/state.json | grep -iE 'perfect.?recall|backward.?determin'` returns nothing. The probe is a roadmap risk row only (03 Recommendation 3, line 117; `.decisions.json` cycle 1); a record for it in this diff is a failure of the phase, not an extra.
+- [ ] **No-complexity-bound audit**: `grep -nEi '2EXPTIME|EXPSPACE|PSPACE|NP-complete|co-NP|running time|time complexity|space complexity'` over `specs/ROADMAP.md` and over every description written by Phases 1-5 (`jq -r '.active_projects[]|.description'`). Every hit must be a sentence that rules such a bound OUT, never one that asserts one.
 - [ ] **Settled-rulings audit**: confirm no text written asserts a fourth certificate class, re-attempts a C9 tombstone, claims the tableau front delivers a first decidability theorem, reopens 712 or 709, schedules 713, or writes "L⁺ is decidable/undecidable" unqualified.
 - [ ] **Deliverable-hygiene audit**: `bash .claude/scripts/check-task-references.sh` (or the repo's equivalent lint) over any non-`specs/**` file this run touched. Expected: this run touches none, so the audit is a confirmation that `git status --short` lists only `specs/` paths.
 - [ ] Run the full gate set: `bash .claude/scripts/verify-deploy.sh`.
@@ -720,7 +639,7 @@ complexity bound was asserted anywhere, and task 734 was not touched.
 
 **Timing**: 0.75 hours
 
-**Depends on**: 7
+**Depends on**: 6
 
 **Verification Tier**: full
 
@@ -730,26 +649,26 @@ complexity bound was asserted anywhere, and task 734 was not touched.
 **Verification**:
 - `bash .claude/scripts/verify-deploy.sh` completes with no FINDING attributable to this run.
 - `git status --short` lists only paths under `specs/`.
-- `git diff specs/state.json` contains no hunk touching task 734.
+- `git diff specs/state.json` contains no hunk touching task 734 and no hunk introducing a perfect-recall or backward-determinism probe record.
 - Every audit grep above returns the expected result, each recorded in the task summary.
 
 ---
 
 ## Testing & Validation
 
-- [ ] Five tasks exist in `specs/state.json` with `status: "not_started"` and a non-empty `file_scope` each.
-- [ ] `next_project_number` advanced by exactly 5 from its pre-run value.
+- [ ] Four tasks exist in `specs/state.json` with `status: "not_started"` and a non-empty `file_scope` each.
+- [ ] `next_project_number` advanced by exactly 4 from its pre-run value.
 - [ ] 725 is absent from `active_projects` and present in `specs/archive/state.json` as `abandoned`, with its subsumption evidence in the archived description.
 - [ ] 720's description names `70321e938`, `e8cfcd868`, `ci.yml:119-125`, `:352-356`, and `check-evidence-probes.sh:717-720`, and the tracked-ness check as a deliverable.
 - [ ] 714 has a `file_scope` whose every entry exists on disk.
-- [ ] 734's record is byte-identical to its pre-run state.
-- [ ] `specs/ROADMAP.md` asserts no fallback route, carries the four named risk rows and the literature-position paragraph, and its Stage 1 run order names the actual task numbers.
+- [ ] 734's record is byte-identical to its pre-run state, and no record for a perfect-recall or backward-determinism probe exists anywhere in `specs/state.json`.
+- [ ] `specs/ROADMAP.md` asserts no fallback route, carries the five named risk rows (02 §2.6's four plus 03's perfect-recall question) and the literature-position paragraph, and its Stage 1 run order names the actual task numbers.
 - [ ] `bash .claude/scripts/validate-state.sh specs/state.json` reports no ERROR; `bash .claude/scripts/verify-deploy.sh` reports no new FINDING.
 - [ ] No file outside `specs/` was modified.
 
 ## Artifacts & Outputs
 
-- `specs/state.json` — five created records, two revised descriptions, two `file_scope` declarations, one dependency edge, one record removed
+- `specs/state.json` — four created records, two revised descriptions, two `file_scope` declarations, one record removed
 - `specs/archive/state.json` — one abandoned record carrying its subsumption evidence
 - `specs/ROADMAP.md` — Stage 1 prose, risks table, literature position, run order
 - `specs/TODO.md` — regenerated
@@ -764,12 +683,12 @@ ever published. If a phase lands a wrong value, the repair is a corrective `stat
 on the same field, never a hand edit of `specs/state.json` and never a destructive git operation on
 the working tree.
 
-Before Phase 5 (the only phase that removes a record), take a non-reverting checkpoint:
+Before Phase 4 (the only phase that removes a record), take a non-reverting checkpoint:
 `bash .claude/scripts/git-snapshot.sh 748 --no-revert`. `--no-revert` is required — the default
 reverting form belongs only to a genuine rollback scenario, not to a defensive checkpoint.
 
-If Phase 7's roadmap edit goes wrong, the file is recoverable from git (`git show HEAD:specs/ROADMAP.md`)
+If Phase 6's roadmap edit goes wrong, the file is recoverable from git (`git show HEAD:specs/ROADMAP.md`)
 since `roadmap-integration.sh --regenerate` cannot reconstruct it. If a phase cannot complete, mark
 it `[PARTIAL]` or `[BLOCKED]` with the obstruction named; the created tasks are independent records,
-so a run that lands Phases 1-5 and stalls at 6 has still delivered the primary output (tasks created
+so a run that lands Phases 1-4 and stalls at 5 has still delivered the primary output (tasks created
 and revised) and only the roadmap edit remains.
