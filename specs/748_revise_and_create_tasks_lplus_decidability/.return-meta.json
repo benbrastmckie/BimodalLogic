@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/748_revise_and_create_tasks_lplus_decidability/reports/01_ranked-route-analysis-dispositions.md",
+      "summary": "Ranked route analysis for the L+ decidability programme with per-item dispositions: (C)'s computable bound is verified descoped and unowned and is the same obligation as (W)'s (iii); the roadmap's R2 contingency is void with no fallback to replace it; 2 creations, 4 revisions, 1 hand-edited roadmap change and 2 low-priority filings, each cited to a file:line, wired probe or named theorem."
+    }
+  ],
+  "user_decision": {
+    "blocking": false,
+    "question": "Task 734 rests [PARTIAL] by a recorded user decision (cycle 4, 2026-10-09) on an external blocker: Hodkinson-Reynolds Handbook ch. 11 sections 5.10-5.11, which specs/literature-index.json records as a 3-page preview with a paywalled DOI, re-measured 2026-10-09. Its own summary header reads [BLOCKED] while state.json carries `partial`, and under the permissive status model a `partial` task is offered to every /orchestrate cycle. Should 734 move to `blocked` so the admission gate stops offering a task whose only remaining work is an unobtainable acquisition?",
+    "recommendation": "Move it to `blocked` with the external reason recorded. The evidence favours it, but the current marker encodes a recorded user decision and overriding that is not research's call. Nothing else in the dispositions depends on the answer.",
+    "options": [
+      "Set 734 to `blocked` with the Handbook acquisition as the named external blocker (recommended)",
+      "Leave 734 `partial` and rely on per-cycle judgement to skip it",
+      "Close 734 as [COMPLETED WITH EXCLUSIONS], recording the acquisition half as a reasoned exclusion"
+    ]
+  },
+  "metadata": {
+    "session_id": "sess_1791572177_653ecc_748",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
