@@ -1,7 +1,7 @@
 # Implementation Plan: Task #733
 
 - **Task**: 733 - Probe the backward-dual stability summary on a backward-NONDETERMINISTIC mirror fixture (E1's hard test)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: 739 (completed)
 - **Research Inputs**: specs/733_backward_dual_mirror_fixture_branching_probe/reports/01_backward-dual-mirror-fixture.md

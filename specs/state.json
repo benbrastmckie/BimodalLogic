@@ -427,7 +427,7 @@
     {
       "project_number": 733,
       "project_name": "backward_dual_mirror_fixture_branching_probe",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Probe the backward-dual stability summary on a backward-NONDETERMINISTIC mirror fixture (E1's hard test)\n\nWHY THIS EXISTS. Experiment E1 -- the backward-dual finite-graph summary on a time-asymmetric fixture -- came out POSITIVE and is wired into the evidence gate as `specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture`. That result is what lets the two-factor ray presentation stand. But the probe's own header records an honest limit: the fixture it ran on is backward DETERMINISTIC, so its backward factor is a SINGLETON, making the result the dual at its easiest possible instance. The header names the hard test -- a mirror fixture whose backward factor genuinely branches -- as a follow-up. That follow-up was never filed. Re-read the probe header before starting; this description's reading of it is from 2026-10-05.\n\nWHY IT MATTERS MORE THAN IT LOOKS. The finite-width obstruction lives in the BACKWARD factor. `Probe710.not_finite_width_fmp` is the refutation the whole gluing route is navigating around, and the route's standing claim is that the stab fibre factors as a product of a past-ray space and a future-ray space over the seam state. A backward factor that is a singleton cannot exhibit the obstruction, so the one proved instance of the backward dual is drawn from precisely the region where the obstruction is invisible. Until the dual is tested where the backward factor branches, the two-factor presentation rests on a forward factor plus a degenerate backward one.\n\nWHAT TO DELIVER. One probe file deciding the backward stability operator on a fixture that is time-asymmetric AND backward-nondeterministic -- at least two distinct backward root paths from the state under test. The expected shape, from the landed forward result (`Probe718FiniteGraph.will_iff_allPathsMeet`, `decide_will`, `decidable_will`) and from the asymmetric-fixture dual, is that the backward stability operator at a seam state is exactly \"every backward root path from that state meets the p-set\", decided by backward reachability alone and state-dependently. Verify that on a branching backward factor, or exhibit where it fails.\n\nA NEGATIVE RESULT IS A FIRST-CLASS OUTCOME. If the summary fails on a branching backward factor, that is a FALSIFIER for the two-factor presentation at the exact factor the finite-width refutation inhabits -- recorded in the review's own falsifier list for route R1. Record it as such, in the probe header and as a C9-style register entry if one applies. Do not weaken, restate, or delete an obstruction to make a probe pass; that is the standing no-weakening rule for every wired probe in this collection.\n\nHARD CONSTRAINTS. No complexity claim. No automata determinization work -- this is a finite-fixture probe, and device selection is a separate record. Do not modify the existing `backward-dual-asymmetric-fixture` probe or any other wired probe; add a new one beside it.\n\nSCHEDULING. Wiring into `scripts/check-evidence-probes.sh` collides with the declared file_scope of tasks 720 and 725, and with the two sibling probe tasks filed alongside this one. Run in a separate cycle from each of them.\n\nACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compiling under `lake env lean`, wired into `scripts/check-evidence-probes.sh`, with a header stating the fixture's backward branching factor explicitly, which way the result came out, and what it does to the two-factor presentation. The existing asymmetric-fixture probe's \"hard test is a mirror fixture, filed as a follow-up\" note is then dischargeable.",
       "topic": "decidability",
@@ -439,7 +439,7 @@
         739
       ],
       "created": "2026-10-05T18:06:36Z",
-      "last_updated": "2026-10-09T07:32:40Z",
+      "last_updated": "2026-10-09T07:56:52Z",
       "session_id": "sess_1791529054_4455fa",
       "artifacts": [
         {
@@ -451,9 +451,15 @@
           "path": "specs/733_backward_dual_mirror_fixture_branching_probe/plans/01_backward-dual-mirror-fixture.md",
           "type": "plan",
           "summary": "3-phase plan: lift prototype probe, write acceptance header, wire into evidence gate with full-gate verification; 15 Challenge-pinned declarations."
+        },
+        {
+          "path": "specs/733_backward_dual_mirror_fixture_branching_probe/summaries/01_backward-dual-mirror-fixture-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: mirror-fixture probe landed and wired; POSITIVE backward-dual result at branching factor 2."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Landed specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean and wired it into scripts/check-evidence-probes.sh (gate 25 -> 26, PASS). On the reversed Probe710 step graph, backward branching factor exactly 2 at every spine state, the backward stability operator at a seam state is exactly 'every backward root path meets the p-set', decided state-dependently by backward reachability alone (pastStab_iff_allBwdPathsMeet, decide_past_stab). POSITIVE: the two-factor presentation is not falsified at the branching backward factor; E1's follow-up note is discharged."
     },
     {
       "project_number": 732,
