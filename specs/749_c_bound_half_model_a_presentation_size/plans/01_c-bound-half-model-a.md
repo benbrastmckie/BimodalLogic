@@ -1,7 +1,7 @@
 # Implementation Plan: Task #749
 
 - **Task**: 749 - (C)'s bound half on model A: presentation size
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/749_c_bound_half_model_a_presentation_size/reports/01_c-bound-half-model-a.md
@@ -114,18 +114,18 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 both edit
 `RaySummary/README.md` (different rows of the file table); if run in parallel, serialize the
 README edits.
 
-### Phase 1: Pigeonhole periodicity in `Compose.lean` [NOT STARTED]
+### Phase 1: Pigeonhole periodicity in `Compose.lean` [IN PROGRESS]
 
 **Goal**: Land the strengthened periodicity theorem and the recorded corollary, binder consumed,
 no linter finding.
 
 **Tasks**:
-- [ ] Open a new section `/-! ## Eventual periodicity of constant blocks -/` after `kTypeOf_listSeg_append_congr` (before `end FormalSystem.Metalogic.WeakCanonical` at the file's foot).
-- [ ] Land a private helper `periodic_of_collision [Fintype sig.preds] (k) (ℓ) {i j : ℕ} (hij : i < j) (h : kTypeOf sig k (listSeg (List.replicate i ℓ)) = kTypeOf sig k (listSeg (List.replicate j ℓ))) : ∀ m, i ≤ m → kTypeOf sig k (listSeg (List.replicate (m + (j - i)) ℓ)) = kTypeOf sig k (listSeg (List.replicate m ℓ))`: write `m = i + (m - i)` and `m + (j - i) = j + (m - i)` (`omega`), rewrite both sides with `List.replicate_add`, apply `kTypeOf_listSeg_append_congr` once with the first argument varying (`h.symm`) and the second `rfl`.
-- [ ] Land `theorem kTypeOf_listSeg_replicate_eventually_periodic_bounded (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) (ℓ : sig.preds → Bool) : ∃ m₀ p, 0 < p ∧ m₀ + p ≤ Nat.card (KType sig k) ∧ ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) = kTypeOf sig k (listSeg (List.replicate m ℓ))`. Proof: `Fintype.exists_ne_map_eq_of_card_lt (fun i : Fin (Fintype.card (KType sig k) + 1) => kTypeOf sig k (listSeg (List.replicate i.1 ℓ)))` with the side condition `by rw [Fintype.card_fin]; omega`; wlog `i < j` (`lt_or_gt_of_ne`, symmetric case swaps); witnesses `⟨i.1, j.1 - i.1, by omega, by rw [Nat.card_eq_fintype_card]; omega, periodic_of_collision …⟩`. The `Fintype (KType sig k)` instance is found from the two binders (`normalFormFintype`); do NOT use `Fintype.ofFinite` or `classical`.
-- [ ] Land `theorem kTypeOf_listSeg_replicate_eventually_periodic` with the statement verbatim from `RaySummary/README.md:285-290` (same binders, same shape), proof `obtain ⟨m₀, p, hp, -, h⟩ := kTypeOf_listSeg_replicate_eventually_periodic_bounded sig k ℓ; exact ⟨m₀, p, hp, h⟩`.
-- [ ] Docstrings on both theorems: route is pigeonhole plus `kTypeOf_listSeg_append_congr` (no semigroup, no idempotent); `Nat.card (KType sig k)` is a COUNT of depth-`k` types and nothing else — quote `AnchorLayer.lean:317-320` verbatim (text in Non-negotiable (1) below) and say in the same words that this count times nothing and bounds no procedure.
-- [ ] Add the two theorems to the module docstring's "Main definitions and results" list (`Compose.lean:59-66`).
+- [x] Open a new section `/-! ## Eventual periodicity of constant blocks -/` after `kTypeOf_listSeg_append_congr` (before `end FormalSystem.Metalogic.WeakCanonical` at the file's foot).
+- [x] Land a private helper `periodic_of_collision [Fintype sig.preds] (k) (ℓ) {i j : ℕ} (hij : i < j) (h : kTypeOf sig k (listSeg (List.replicate i ℓ)) = kTypeOf sig k (listSeg (List.replicate j ℓ))) : ∀ m, i ≤ m → kTypeOf sig k (listSeg (List.replicate (m + (j - i)) ℓ)) = kTypeOf sig k (listSeg (List.replicate m ℓ))`: write `m = i + (m - i)` and `m + (j - i) = j + (m - i)` (`omega`), rewrite both sides with `List.replicate_add`, apply `kTypeOf_listSeg_append_congr` once with the first argument varying (`h.symm`) and the second `rfl`. *(deviation: altered — the private helper's binder is `[Finite sig.preds]` with `haveI := Fintype.ofFinite` in its proof, the style guide's own fix for the `unusedFintypeInType` warning the `[Fintype]` spelling raised at the first module build; the helper is private and has no recorded signature)*
+- [x] Land `theorem kTypeOf_listSeg_replicate_eventually_periodic_bounded (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) (ℓ : sig.preds → Bool) : ∃ m₀ p, 0 < p ∧ m₀ + p ≤ Nat.card (KType sig k) ∧ ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) = kTypeOf sig k (listSeg (List.replicate m ℓ))`. Proof: `Fintype.exists_ne_map_eq_of_card_lt (fun i : Fin (Fintype.card (KType sig k) + 1) => kTypeOf sig k (listSeg (List.replicate i.1 ℓ)))` with the side condition `by rw [Fintype.card_fin]; omega`; wlog `i < j` (`lt_or_gt_of_ne`, symmetric case swaps); witnesses `⟨i.1, j.1 - i.1, by omega, by rw [Nat.card_eq_fintype_card]; omega, periodic_of_collision …⟩`. The `Fintype (KType sig k)` instance is found from the two binders (`normalFormFintype`); do NOT use `Fintype.ofFinite` or `classical`. *(deviation: altered — the binders are consumed by the proof exactly as planned (env_linter `unusedArguments` quiet), but Mathlib's SYNTAX linters `unusedFintypeInType`/`unusedDecidableInType` read only the TYPE, where neither instance appears; with C28's zero-warning budget and the recorded signature pinned by the dispatch, the tree's accepted shape — declaration-scoped `set_option linter.X false in` with a C29 reason comment, the `kTypeOf_listSeg_append_congr` precedent at the same file — was applied to both public theorems)*
+- [x] Land `theorem kTypeOf_listSeg_replicate_eventually_periodic` with the statement verbatim from `RaySummary/README.md:285-290` (same binders, same shape), proof `obtain ⟨m₀, p, hp, -, h⟩ := kTypeOf_listSeg_replicate_eventually_periodic_bounded sig k ℓ; exact ⟨m₀, p, hp, h⟩`. *(deviation: altered — same declaration-scoped `unusedFintypeInType`/`unusedDecidableInType` suppression with reason comment, for the same reason)*
+- [x] Docstrings on both theorems: route is pigeonhole plus `kTypeOf_listSeg_append_congr` (no semigroup, no idempotent); `Nat.card (KType sig k)` is a COUNT of depth-`k` types and nothing else — quote `AnchorLayer.lean:317-320` verbatim (text in Non-negotiable (1) below) and say in the same words that this count times nothing and bounds no procedure.
+- [x] Add the two theorems to the module docstring's "Main definitions and results" list (`Compose.lean:59-66`).
 - [ ] Scratch check (scratchpad file, never landed): `#print axioms` for both theorems reads exactly `[propext, Classical.choice, Quot.sound]`; no `sorryAx`.
 
 **Timing**: 1.5 hours
