@@ -1,17 +1,17 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 5 of 8 complete: the ten-field `Cons` consistency bundle and `cons_localRun` (exactly the plan-pinned signature, 20 lines, citing Phases 2 and 3 with no new induction) landed in RaySummary/Realize.lean; the permanent non-vacuity witness with a one-label negative control that breaks both ULive and SLive landed in KTypeFinEvalTest.lean. Both modules build green under the guard with zero sorries, zero warnings, all 15 new #guards passing, and cons_localRun pinned at [propext, Classical.choice, Quot.sound]. Stopped at the phase boundary as the single-phase dispatch required; phases 6-8 remain.",
-  "phases_completed": 5,
+  "summary": "Phase 6 of 8 complete: the constructed regular Z-model exists in the tree. `frameOf` is FrameOver.ofSlicedStep at W := Q with the time-constant relation (carrier Z x Q), with its IsRegular instance, the explicit `frameOf_not_finite_worldState` record that the carrier is NOT finite, `modelOf` whose valuation reads the state component's label, and the three rewrite lemmas modelOf_valuation / frameOf_step / frameOf_mem_HF_iff that Phase 7 consumes. All seven declarations are one-line citations of SlicedFrame.lean's landed companions -- no frame law re-proved, no [Finite W] generalized, SlicedFrame.lean and TaskFrame.lean untouched. Scoped guarded build green (guard exit 0, 1930/1930, 0 errors, 0 warnings, .olean fresh), zero sorries, all seven pinned at [propext, Classical.choice, Quot.sound], +113 lines against the ~90-130 band. Phase 7's two target types were pre-checked in the scratchpad and both elaborate, with Presented's [F.IsRegular] synthesized for frameOf hC. Stopped at the phase boundary as the single-phase dispatch required; phases 7-8 remain.",
+  "phases_completed": 6,
   "phases_total": 8,
-  "dispatch_seq": 17,
+  "dispatch_seq": 18,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-5-handoff-20261008_205519.md",
+  "continuation_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-6-handoff-20261008_211137.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 6,
-    "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-5-handoff-20261008_205519.md",
+    "next_phase": 7,
+    "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-6-handoff-20261008_211137.md",
     "orchestrator_mode": true
   }
 }
