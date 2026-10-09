@@ -11,7 +11,7 @@ next_project_number: 751
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,734,741,743,744,748,749,750 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,729,730,731,734,741,743,744,748,749,750 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -76,7 +76,6 @@ next_project_number: 751
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 748 [IMPLEMENTING] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
 749 [NOT STARTED] — (C)'s BOUND HALF ON MODEL A. 745 delivered (C)'s...
@@ -988,36 +987,6 @@ ALSO. Name the owner of the periodic re-run in `specs/ROADMAP.md`'s Maintenance 
 HARD CONSTRAINTS. The generator reports what the tree says; it does not adjudicate. It must not assert any status the three sources do not support, and must not land any complexity claim. Where a source is silent, the output says UNKNOWN rather than guessing.
 
 ACCEPTANCE. A runnable mechanism that regenerates the four-status inventory from the three named sources, cross-checks `pinned:` cells against the invariants baselines, diffs against the recorded baseline, and is named as the Maintenance owner in the roadmap.
-
----
-
-### 725. Backward dual stability past finite graph probe
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-
-**Description**: Backward-dual stability-of-past finite-graph summary on a time-asymmetric fixture (experiment E1)
-
-WHY THIS EXISTS. The seam-gluing route's finite-graph stability summary has only its FORWARD factor proved -- `Probe718FiniteGraph.will_iff_allPathsMeet`, `decide_will`, `decidable_will`, on a `Bool` complete-graph fixture, for the stability-of-future operator only. The backward dual is a RECORDED EXCLUSION, justified by that fixture being symmetric under time reversal. But the finite-width obstruction lives in the BACKWARD factor: `Probe710`'s contradiction pigeonholes backward post-chains at unboundedly early times. So the fixture whose symmetry justified skipping the backward case is exactly the fixture that cannot see the obstruction. The exclusion is reasonable and the gap it leaves is real.
-
-THE EXPERIMENT. Build the backward dual on a TIME-ASYMMETRIC fixture. Reuse `Probe710.Node` and `Probe710.Step` from `specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean` -- finitely branching, every node with exactly one predecessor, bi-infinite paths canonical by `Probe710.path_eq_canon`. Decide the backward stability operator at a seam state by backward reachability, mirroring `will_iff_allPathsMeet`.
-
-"REUSE" MEANS TRANSCRIBE, NOT IMPORT. Probes in `specs/evidence/seam-gluing-ray-product/` CANNOT import each other -- every probe imports only `FormalSystem`, as `scripts/check-evidence-probes.sh`'s header states and as the existing probes demonstrate (`path-quantifier-alternation.lean` restates its fixture rather than importing it). Do not plan this around an import that cannot exist; transcribe the fixture into the new probe file.
-
-THE OPERATOR, VERIFIED. The backward operator is `PlusFormula.stab` applied to `PlusFormula.somePast` (`FormalSystem/PlusLanguage/Formula.lean`), the dual of the `someFuture` the forward probe uses. NOTE: `PlusFormula.will` is already `.stab (someFuture .)`, so a `will`-shaped BACKWARD abbreviation DOES NOT EXIST in the tree. Do not cite one. Re-verify both facts before writing.
-
-DISAMBIGUATE `decide_will`. It exists in two namespaces -- `Probe718FiniteGraph.decide_will` (`finite-graph-stab-summary.lean`) and `Probe718PathQuantifier.decide_will` (`path-quantifier-alternation.lean`). Always qualify it; the two probes prove different things.
-
-EITHER OUTCOME IS THE DELIVERABLE. A proof shows the two-factor presentation survives at the very factor the refutation inhabits. A COUNTEREXAMPLE FALSIFIES the gluing route's two-factor presentation and is recorded in the probe's header as such. Neither is a failure; a counterexample is arguably the more valuable result, and the probe header must state plainly which way it came out.
-
-SCOPE. One new file under `specs/evidence/seam-gluing-ray-product/`, plus one new `WIRED` entry in `scripts/check-evidence-probes.sh`. No automata. No complexity claim.
-
-SUBSUMPTION CLAUSE. This experiment is also named as task 719's Deliverable 5 first probe. It is filed separately because 719 was not dispatched in the cycle that specified it. IF 719 LANDS E1 FIRST, THIS TASK CLOSES AS SUBSUMED -- that is a legitimate terminal outcome, not a failure, and no redundant second probe should be manufactured to justify a non-empty diff. Check 719's state before starting.
-
-SCHEDULING. Collides with task 720's declared file_scope on `specs/evidence/seam-gluing-ray-product/` and `scripts/check-evidence-probes.sh`; run in a different cycle from 720.
-
-ACCEPTANCE. One probe file deciding the backward stability operator on a time-asymmetric fixture, compiling under `lake env lean`, wired into `check-evidence-probes.sh`, with its header stating which way the result came out and what that does to the two-factor presentation.
 
 ---
 

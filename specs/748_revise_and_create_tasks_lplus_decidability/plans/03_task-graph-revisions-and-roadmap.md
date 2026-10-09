@@ -453,13 +453,13 @@ see it.
 
 ---
 
-### Phase 4: Close 725 as subsumed [NOT STARTED]
+### Phase 4: Close 725 as subsumed [COMPLETED]
 
 **Goal**: Execute 02 R4: write the subsumption evidence into 725's description **first** so the
 archived record carries it, then abandon it.
 
 **Tasks**:
-- [ ] Revise 725's description with a `state-write.sh` jq filter, appending:
+- [x] Revise 725's description with a `state-write.sh` jq filter, appending:
 
   > **CLOSED AS SUBSUMED.** This record's own subsumption clause forbids manufacturing a redundant
   > second probe, and its deliverable already exists, wired, in two places.
@@ -473,9 +473,9 @@ archived record carries it, then abandon it.
   > axiom-free with backward branching factor exactly 2 at every spine state. Nothing remains for
   > this record to deliver.
 
-- [ ] Verify the write landed: `jq -r '.active_projects[]|select(.project_number==725)|.description' specs/state.json | grep -c 'CLOSED AS SUBSUMED'` is 1.
-- [ ] Only then run the abandon flow per `.claude/context/patterns/task-abandon-mode.md`: read the full record JSON, insert it into `specs/archive/state.json` with `status: "abandoned"` and an `abandoned` timestamp via `state-write.sh --state-file specs/archive/state.json`, then `del()` it from `active_projects` via `state-write.sh` with `--regen-todo`.
-- [ ] No directory move is needed: `specs/725_*` does not exist (verified in 02 §2.8 and re-checkable with `ls -d specs/725_* 2>/dev/null`).
+- [x] Verify the write landed: `jq -r '.active_projects[]|select(.project_number==725)|.description' specs/state.json | grep -c 'CLOSED AS SUBSUMED'` is 1.
+- [x] Only then run the abandon flow per `.claude/context/patterns/task-abandon-mode.md`: read the full record JSON, insert it into `specs/archive/state.json` with `status: "abandoned"` and an `abandoned` timestamp via `state-write.sh --state-file specs/archive/state.json`, then `del()` it from `active_projects` via `state-write.sh` with `--regen-todo`.
+- [x] No directory move is needed: `specs/725_*` does not exist (verified in 02 §2.8 and re-checkable with `ls -d specs/725_* 2>/dev/null`). *(confirmed: `ls -d specs/725_*` finds nothing)*
 
 **Timing**: 0.5 hours
 
