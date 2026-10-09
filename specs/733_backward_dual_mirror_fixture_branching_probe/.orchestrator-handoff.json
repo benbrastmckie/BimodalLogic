@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 3,
+  "summary": "Wrote a 3-phase, ~2-hour plan for task 733: lift the research dispatch's compiled sorry-free prototype to specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean (Phase 1), write the collection-style header stating the backward branching factor 2, the POSITIVE outcome, the effect on the two-factor presentation, the honest limit and the measured axiom record (Phase 2), then wire the probe into scripts/check-evidence-probes.sh, run the full gate and commit exactly the two file_scope files (Phase 3). The plan pins fifteen Lean Challenge Statements verbatim from the prototype; the block type-checks standalone and validate-artifact --strict passes.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/733_backward_dual_mirror_fixture_branching_probe/plans/01_backward-dual-mirror-fixture.md",
+      "summary": "3-phase plan: lift prototype probe, write acceptance header, wire into evidence gate with full-gate verification; 15 Challenge-pinned declarations."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 3,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implementation of plans/01_backward-dual-mirror-fixture.md; Phase 3 touches scripts/check-evidence-probes.sh, so keep it in a cycle separate from tasks 720/725 and the sibling probe tasks."
+}
