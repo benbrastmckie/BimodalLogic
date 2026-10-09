@@ -79,7 +79,7 @@ next_project_number: 749
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
   └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
   └─ 748 [NOT STARTED] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
-747 [RESEARCHED] — Requirement (W) of the ray-product verdict: a closure-wide...
+747 [PLANNED] — Requirement (W) of the ray-product verdict: a closure-wide...
   └─ 748 [NOT STARTED] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING... (see above)
 
 ### Formula Refactor
@@ -267,11 +267,12 @@ this description's errors in the report rather than propagating them.
 ---
 
 ### 747. Closure wide quasimodel lift to validity
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 745, Task 746
 - **Research**: [747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md]
+- **Plan**: [747_closure_wide_quasimodel_lift_to_validity/plans/01_closure-wide-quasimodel-anchor-layer.md]
 
 **Description**: Requirement (W) of the ray-product verdict: a closure-wide quasimodel over all seams and times, lifting per-seam results to validity
 

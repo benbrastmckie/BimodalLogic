@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "summary": "Wrote the five-phase plan for requirement (W) from the characterization report: Phase 1 lands box_time_invariant/box_global in PlusTruth.lean; Phase 2 wires the (S)-shape-refuted verdict probe (finite width + stab collapse) under check-evidence-probes.sh; Phases 3-4 build RaySummary/AnchorLayer.lean (closure types, cells, box/stab/Hintikka equations, AnchorCons with completeness for every model, the 2^(2^|cl|) bound, a decidable Finset checker with #guard witness and negative control); Phase 5 records the run layer as blocked on three named obligations, pins all nineteen Goals, updates index/README/aggregator/ROADMAP and runs the full gate. No run-layer construction is planned and no decidability statement is stated. validate-artifact.sh passes with 0 warnings; the Goals set equals the Lean Challenge Statements set (19 identifiers).",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/747_closure_wide_quasimodel_lift_to_validity/plans/01_closure-wide-quasimodel-anchor-layer.md",
+      "summary": "Five-phase plan (8.5 h): anchor layer of (W) landed and bounded, run layer recorded as blocked on three named obligations, machine-checked verdict probe wired."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "phase": "plan",
+  "dispatch_seq": 3,
+  "next_action_hint": "Dispatch Phase 1 and Phase 2 (wave 1, parallel-safe: disjoint files); Phase 3 depends on 1, Phase 4 on 3, Phase 5 on 2 and 4. Phase 2 shares scripts/check-evidence-probes.sh with task 734 (partial, implementer live) -- append-only, re-read before editing."
+}

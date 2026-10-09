@@ -1,68 +1,33 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md",
-      "summary": "Characterization of requirement (W): the closure-wide object splits into a syntactically bounded anchor layer (box is one bit per model, stab one bit per world-state cell -- box_time_invariant compiled) and an unbounded run layer; (S)'s construction is machine-checked NOT to be the soundness half (modelOf_incomplete via no_finite_width_sat; stab collapses at every Presented seam under nowUnique); costed 5-phase decomposition landing the anchor layer and a wired verdict probe, with the run layer recorded as blocked on three named obligations and no Decidable statement anywhere."
+      "type": "plan",
+      "path": "specs/747_closure_wide_quasimodel_lift_to_validity/plans/01_closure-wide-quasimodel-anchor-layer.md",
+      "summary": "Five-phase plan (8.5 h) landing the anchor layer of requirement (W) -- box quantifier collapse, the (S)-shape-refuted verdict probe, the closure-wide AnchorCons object with completeness for every model, its 2^(2^|cl|) bound and a decidable Finset checker -- and recording the run layer as blocked on three named obligations; no decidability statement."
     }
   ],
-  "next_steps": "Plan: Phase 1 box_time_invariant/box_global into PlusTruth.lean; Phase 2 wired probe w-soundness-shape-refuted.lean (modelOf_incomplete, stab_iff_of_presented_nowUnique); Phase 3 AnchorLayer.lean (cells, box/stab fixpoint equations, anchorCons_of_model, cells_card_le); Phase 4 README/theorem-index/ROADMAP/pins recording the run layer as blocked; no run-layer construction phases this round.",
   "metadata": {
-    "session_id": "sess_1791529054_4455fa_747",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1791556017_14e101_747",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 8.5,
+    "dependency_waves": [[1, 2], [3], [4], [5]],
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 1
   },
-  "modified_files": [
-    "specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md",
-    "specs/747_closure_wide_quasimodel_lift_to_validity/evidence/01_box-time-invariant.lean",
-    "specs/747_closure_wide_quasimodel_lift_to_validity/evidence/02_modelOf-finite-width-incomplete.lean",
-    "specs/747_closure_wide_quasimodel_lift_to_validity/evidence/03_stab-collapse-presented-nowUnique.lean"
-  ],
-  "proposed_file_scope": [
-    "FormalSystem/PlusLanguage/PlusTruth.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/AnchorLayer.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean",
-    "scripts/check-evidence-probes.sh",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "docs/theorem-index.md",
-    "specs/ROADMAP.md"
-  ],
+  "next_steps": "Run /implement 747 to execute the plan",
   "memory_candidates": [
     {
-      "content": "In the L+ task semantics, box psi has ONE truth value per model: histories are time-shift closed (plusTruthAt_timeShift), so forall sigma, psi at (sigma,t) iff forall sigma, psi at (sigma,s). Per-time quantification over the slice for box does not exist; only stab varies, and only with the world state (stab_state_only).",
+      "content": "In the BimodalLogic L+ semantics, `box` is a per-MODEL datum on every TaskFrame, not a per-time one: the history set is shift-closed (`plusTruthAt_timeShift`), so `box_iff` + a time shift gives `PlusTruthAt M τ t (.box ψ) ↔ PlusTruthAt M σ s (.box ψ)` for any histories and times (`box_global`, PlusTruth.lean). Consequences for any closure-wide / quasimodel object: `Anchored.box`'s `∀ z` quantifier is redundant, the `box`-letters of a closure object are |{box ψ ∈ cl φ}| global bits, and `stab` letters are per world state (`stab_state_only`). So the ANCHOR layer of a quasimodel over this semantics is a set of cells (sets of closure types) bounded syntactically by 2^(2^|cl φ|) with box/stab/Hintikka fixpoint equations, and ALL the untl/snce nesting lives in a separate RUN layer that must be a frame's full path set (closed under splicing and limits, `blc_plusValid`) -- unlike HWZ 2000 Def. 12, where the run set is chosen freely. Never cost the run layer from (C)/(S) figures; (S)'s finite-width `ofSlicedStep` models cannot be its soundness half (`no_finite_width_sat`), and trace-level `Presented` with a unique `now` state collapses ψ ↔ ⊡ψ at the seam.",
       "category": "INSIGHT",
-      "source_artifact": "specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md",
-      "confidence": 0.9,
-      "suggested_keywords": [
-        "box",
-        "time-invariant",
-        "timeShift",
-        "PlusTruthAt",
-        "anchor",
-        "stab_state_only"
-      ]
-    },
-    {
-      "content": "Any model built by FrameOver.ofSlicedStep on a finite slice (e.g. RaySummary Realize.lean's frameOf/modelOf for every Cons presentation) validates NoFiniteWidth.Phi.neg, a Z-time non-validity, by no_finite_width_sat applied with R/fwd/bwd/M as explicit positional arguments. Finite-width constructions cannot be the soundness half of a complete lift to L+ validity.",
-      "category": "PATTERN",
-      "source_artifact": "specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md",
-      "confidence": 0.9,
-      "suggested_keywords": [
-        "ofSlicedStep",
-        "finite width",
-        "no_finite_width_sat",
-        "modelOf",
-        "completeness"
-      ]
+      "source_artifact": "specs/747_closure_wide_quasimodel_lift_to_validity/plans/01_closure-wide-quasimodel-anchor-layer.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["box time-invariant", "quasimodel anchor layer", "closure-wide cells", "stab_state_only", "HWZ run set", "ray-product verdict (W)"]
     }
-  ]
+  ],
+  "dispatch_seq": 3
 }
