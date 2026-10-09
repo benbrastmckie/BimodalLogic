@@ -497,13 +497,13 @@ archived record carries it, then abandon it.
 
 ---
 
-### Phase 5: File the two low-priority successors [NOT STARTED]
+### Phase 5: File the two low-priority successors [COMPLETED]
 
 **Goal**: Execute 02 R8 and R9 (both confirmed from 01): the declaration-hygiene remediation and
 the roadmap-tooling filing. Neither is a Stage 1 item.
 
 **Tasks**:
-- [ ] Create the hygiene task (`task_type: meta`, `topic: repo-hygiene`), description:
+- [x] Create the hygiene task (`task_type: meta`, `topic: repo-hygiene`), description: *(assigned 751, `file_scope_declaration_hygiene_remediation`)*
 
   > **DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE.** Two defects make the overlap gate
   > unable to see collisions. (1) Task 177 declares `FormalSystem/Metalogic/Decidability/` as a
@@ -519,8 +519,8 @@ the roadmap-tooling filing. Neither is a Stage 1 item.
   > `scripts/check-evidence-probes.sh:717-720`. Read the live validator output rather than
   > trusting the counts above; they are a snapshot, not a contract.
 
-- [ ] Set its `file_scope`: `specs/state.json`, `.claude/scripts/validate-state.sh`. Register the topic.
-- [ ] Create the roadmap-tooling task (`task_type: meta`, `topic: agent-system`), description:
+- [x] Set its `file_scope`: `specs/state.json`, `.claude/scripts/validate-state.sh`. Register the topic.
+- [x] Create the roadmap-tooling task (`task_type: meta`, `topic: agent-system`), description: *(assigned 752, `roadmap_integration_regenerate_silent_abort`)*
 
   > **`roadmap-integration.sh --regenerate` IS SILENTLY INOPERATIVE ON THIS ROADMAP.** Verified
   > live: `bash .claude/scripts/roadmap-integration.sh --regenerate` exits 1 with ZERO stdout and
@@ -533,8 +533,8 @@ the roadmap-tooling filing. Neither is a Stage 1 item.
   > success. Note that a reference to a roadmap-tooling task circulates in other records without
   > resolving to an existing one; filing this is what makes that reference resolve.
 
-- [ ] Set its `file_scope`: `.claude/scripts/roadmap-integration.sh`, `specs/ROADMAP.md`. Register the topic. Fold `--regen-todo` into the last write.
-- [ ] **Source-store note for the implementer**: `.claude/scripts/roadmap-integration.sh` lives in a deployed tree. The created task's own implementation must resolve `source_dir` from `.claude-extensions.json` and edit the source store, per `.claude/rules/source-store-deploy-boundary.md`. State that in the description.
+- [x] Set its `file_scope`: `.claude/scripts/roadmap-integration.sh`, `specs/ROADMAP.md`. Register the topic. Fold `--regen-todo` into the last write.
+- [x] **Source-store note for the implementer**: `.claude/scripts/roadmap-integration.sh` lives in a deployed tree. The created task's own implementation must resolve `source_dir` from `.claude-extensions.json` and edit the source store, per `.claude/rules/source-store-deploy-boundary.md`. State that in the description. *(written into 752's description as a SOURCE-STORE BOUNDARY paragraph)*
 
 **Timing**: 0.75 hours
 

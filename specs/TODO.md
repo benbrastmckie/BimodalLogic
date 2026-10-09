@@ -1,5 +1,5 @@
 ---
-next_project_number: 751
+next_project_number: 753
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 751
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,729,730,731,734,741,743,744,748,749,750 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,729,730,731,734,741,743,744,748,749,750,751,752 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -29,6 +29,7 @@ next_project_number: 751
 730 [NOT STARTED] — Evaluate whether the formal:logic implement-phase routing...
 731 [NOT STARTED] — Make plan-time file\_scope harvest include the generated...
 741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
+752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 
 ### Algebraic Representation
 
@@ -106,8 +107,31 @@ next_project_number: 751
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 743 [NOT STARTED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
 744 [NOT STARTED] — Wrap the RaySummary and KTypeSummary inventory tables in...
+751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
 ## Tasks
+
+### 752. Roadmap integration regenerate silent abort
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: **`roadmap-integration.sh --regenerate` IS SILENTLY INOPERATIVE ON THIS ROADMAP.** Verified live: `bash .claude/scripts/roadmap-integration.sh --regenerate` exits 1 with ZERO stdout and ZERO stderr and writes nothing, because `specs/ROADMAP.md` carries none of the headings the assembler needs — it is a Stage-based authored document, not the `## Open work` / `## Next` generated layout the script expects. Pick one and land it: either teach the script the Stage-based layout, or decide that `specs/ROADMAP.md` is AUTHORED-ONLY and make `--regenerate` say so LOUDLY (a named error on stderr and a documented exit code) instead of aborting in silence. A silent abort is the worst of the three outcomes because a caller cannot tell it from success. Note that a reference to a roadmap-tooling task circulates in other records without resolving to an existing one; filing this is what makes that reference resolve.
+
+**SOURCE-STORE BOUNDARY.** `.claude/scripts/roadmap-integration.sh` lives in a deployed, regenerated tree: a hand edit there is wiped by the next deploy. This record's implementation must resolve `source_dir` from `<project-root>/.claude-extensions.json` for the extension that owns the script and edit the source store at the mirroring path, per `.claude/rules/source-store-deploy-boundary.md`, then redeploy. The deployed path is declared in `file_scope` only so the overlap gate can see the collision surface; it is not the edit target.
+
+---
+
+### 751. File scope declaration hygiene remediation
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: **DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE.** Two defects make the overlap gate unable to see collisions. (1) Task 177 declares `FormalSystem/Metalogic/Decidability/` as a WHOLE-DIRECTORY `file_scope` entry, overlapping every non-terminal task that touches that subtree — narrow it to the files it actually touches. (2) Of the non-terminal tasks, a large majority (28 of 52 at the time this was detected) declare NO `file_scope` at all — backfill them. `bash .claude/scripts/validate-state.sh specs/state.json` already enumerates both defects as Check 8 (coarse whole-directory-root declarations) and Check 9 (duplicates); the detector exists, the remediation does not. ALSO IN SCOPE if not landed first elsewhere: the recurring mechanism by which `/task --abandon` and `/todo` archival un-track a `WIRED_REPO` gate target (`.claude/context/patterns/task-abandon-mode.md:58-65`), whose detector is a one-line `git ls-files --error-unmatch` beside the `-f` test at `scripts/check-evidence-probes.sh:717-720`. Read the live validator output rather than trusting the counts above; they are a snapshot, not a contract.
+
+---
 
 ### 750. W run layer closure wide lift
 - **Status**: [NOT STARTED]

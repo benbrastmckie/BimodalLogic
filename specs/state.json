@@ -4,8 +4,36 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 751,
+  "next_project_number": 753,
   "active_projects": [
+    {
+      "project_number": 752,
+      "project_name": "roadmap_integration_regenerate_silent_abort",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "**`roadmap-integration.sh --regenerate` IS SILENTLY INOPERATIVE ON THIS ROADMAP.** Verified live: `bash .claude/scripts/roadmap-integration.sh --regenerate` exits 1 with ZERO stdout and ZERO stderr and writes nothing, because `specs/ROADMAP.md` carries none of the headings the assembler needs — it is a Stage-based authored document, not the `## Open work` / `## Next` generated layout the script expects. Pick one and land it: either teach the script the Stage-based layout, or decide that `specs/ROADMAP.md` is AUTHORED-ONLY and make `--regenerate` say so LOUDLY (a named error on stderr and a documented exit code) instead of aborting in silence. A silent abort is the worst of the three outcomes because a caller cannot tell it from success. Note that a reference to a roadmap-tooling task circulates in other records without resolving to an existing one; filing this is what makes that reference resolve.\n\n**SOURCE-STORE BOUNDARY.** `.claude/scripts/roadmap-integration.sh` lives in a deployed, regenerated tree: a hand edit there is wiped by the next deploy. This record's implementation must resolve `source_dir` from `<project-root>/.claude-extensions.json` for the extension that owns the script and edit the source store at the mirroring path, per `.claude/rules/source-store-deploy-boundary.md`, then redeploy. The deployed path is declared in `file_scope` only so the overlap gate can see the collision surface; it is not the edit target.",
+      "topic": "agent-system",
+      "created": "2026-10-09T21:24:29Z",
+      "last_updated": "2026-10-09T21:24:29Z",
+      "file_scope": [
+        ".claude/scripts/roadmap-integration.sh",
+        "specs/ROADMAP.md"
+      ]
+    },
+    {
+      "project_number": 751,
+      "project_name": "file_scope_declaration_hygiene_remediation",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "**DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE.** Two defects make the overlap gate unable to see collisions. (1) Task 177 declares `FormalSystem/Metalogic/Decidability/` as a WHOLE-DIRECTORY `file_scope` entry, overlapping every non-terminal task that touches that subtree — narrow it to the files it actually touches. (2) Of the non-terminal tasks, a large majority (28 of 52 at the time this was detected) declare NO `file_scope` at all — backfill them. `bash .claude/scripts/validate-state.sh specs/state.json` already enumerates both defects as Check 8 (coarse whole-directory-root declarations) and Check 9 (duplicates); the detector exists, the remediation does not. ALSO IN SCOPE if not landed first elsewhere: the recurring mechanism by which `/task --abandon` and `/todo` archival un-track a `WIRED_REPO` gate target (`.claude/context/patterns/task-abandon-mode.md:58-65`), whose detector is a one-line `git ls-files --error-unmatch` beside the `-f` test at `scripts/check-evidence-probes.sh:717-720`. Read the live validator output rather than trusting the counts above; they are a snapshot, not a contract.",
+      "topic": "repo-hygiene",
+      "created": "2026-10-09T21:24:21Z",
+      "last_updated": "2026-10-09T21:24:21Z",
+      "file_scope": [
+        "specs/state.json",
+        ".claude/scripts/validate-state.sh"
+      ]
+    },
     {
       "project_number": 750,
       "project_name": "w_run_layer_closure_wide_lift",
