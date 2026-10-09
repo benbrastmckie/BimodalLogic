@@ -223,6 +223,15 @@ no `stepCons`-path of one, two, or three steps out of the `now` state `1` return
 /-! The marker is read at state `1` and nowhere else. -/
 #guard decide (∀ q : QCons, labCons q 3 = true ↔ q = 1)
 
+/-! **`Cons.nowUnique`**, the eleventh field, in its own vocabulary: the `clNow` marker pins a
+UNIQUE state of the presentation. It follows from the marker guard immediately above, and is
+guarded separately because `nowOnce` does not imply it and neither subsumes the other —
+`nowOnce` is once-only ALONG a path, `nowUnique` once-only ACROSS the presentation. `nowOnce`
+alone permits two mutually unreachable marked components, whose splices through one seam cannot
+cover the whole run set, which is exactly the obligation `presented_modelOf`'s (⇐) direction
+raised and the reason this field exists. -/
+#guard decide (∀ q q' : QCons, labCons q 3 = true → labCons q' 3 = true → q = q')
+
 /-! **The negative control.** One label changed: both coherence conditions survive, and both
 liveness conditions fail — the `Probe735.pump_isRun` shape, in both time directions. If either
 `!decide` below ever goes false, the liveness half of `Cons` has stopped excluding anything. -/

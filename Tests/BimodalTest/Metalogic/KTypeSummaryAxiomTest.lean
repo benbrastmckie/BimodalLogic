@@ -48,6 +48,14 @@ signal that a profile moved.
 | the `⊡` bridge over `hitOf` under it | seam interface | `plusStab_iff_forall_hitOf_of_presented` |
 | the Hit-level weakening of that hypothesis | seam interface | `HitPresented` |
 | the weakening made explicit | seam interface | `hitPresented_of_presented` |
+| (S): the `untl` clause from decidable per-edge data | B2b | `untl_iff_of_UCoh_ULive` |
+| (S): the `snce` clause, proved outright | B2b | `snce_iff_of_SCoh_SLive` |
+| (S): no `box` letter in a `box`/`stab`-free closure | B2b | `not_box_mem_plusSubformulaClosure` |
+| (S): no `stab` letter either | B2b | `not_stab_mem_plusSubformulaClosure` |
+| (S): a consistent presentation's paths are local runs | B2b | `cons_localRun` |
+| (S): a run's trace is anchored to its history | B2b | `anchored_runTrace_of_boxStabFree` |
+| (S): **the hypothesis DISCHARGED** for a constructed model | B2b | `presented_modelOf` |
+| (S): its Hit-level corollary | B2b | `hitCl_modelOf_eq_hitOf` |
 
 Rows for the later steps are appended as their modules land.
 
@@ -67,9 +75,13 @@ anchored local run over the closure alphabet (`clTrace_localRun`,
 `RaySummary/HitOf.lean`), and the per-model bridge `hit_eq_hitOf_of_presented`, under which a
 seam's `HitCl` **is** `hitOf`. That bridge is **conditional** on the realization hypothesis
 `Presented` — the closure traces of the seam's splices are exactly the traces of the
-presentation's runs — which this tree discharges for **no** non-trivial model: constructing a
-regular model from a presentation (HWZ 2000, Theorem 14 ⇐, for the `⊡` fibre) is a successor
-record, and the wired probe `quasistate_does_not_determine_hit`
+presentation's runs — which this tree now discharges for a model
+CONSTRUCTED from the presentation and for no other: constructing a regular model from a
+presentation (HWZ 2000, Theorem 14 ⇐, for the `⊡` fibre) is requirement (S), landed in
+`RaySummary/Realize.lean` for `box`/`stab`-free `φ` at ONE seam under the eleven-field bundle
+`Cons` (`presented_modelOf`, `hitCl_modelOf_eq_hitOf`, pinned in the last section below), while
+`Probe735.not_presented` continues to refute it for every finite presentation on a model not so
+constructed. The wired probe `quasistate_does_not_determine_hit`
 (`specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean`) is the
 machine-checked reason the hypothesis must carry joint realization through the seam rather than
 per-time quasistate data. So "`Hit` computed" is never the claim: `hitOf` is computable on
@@ -399,5 +411,95 @@ stated in this tree in any form, conditional or otherwise.
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented
+
+/-! ## Requirement (S): the realization hypothesis DISCHARGED for a constructed model
+
+The eight rows below pin the eight Goals of the B2b soundness construction
+(`FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean`, plus the two closure-vacuity
+lemmas in `FormalSystem/PlusLanguage/Subformulas.lean`). Unlike every `Presented` row above,
+these are **not** conditional on a hypothesis nobody inhabits: the last two discharge
+`Presented` itself, for a model CONSTRUCTED from the presentation.
+
+**What these eight rows certify.** That each of the eight declarations is proved on the standard
+profile `[propext, Classical.choice, Quot.sound]` with no `sorryAx` — nothing more. An axiom
+profile is not a statement about what a theorem says, so none of the eight rows certifies the
+scope, and the scope is where this construction is restricted.
+
+**What they do NOT certify, stated here rather than left to be inferred.**
+
+* **Not validity.** `Decidable (PlusValidZTime φ)` is not stated in the tree in any form, and
+  `hitCl_modelOf_eq_hitOf` is not a step toward it: it speaks of ONE seam `(τ, t)` of ONE
+  constructed model. Requirements (C) and (S) of the `RaySummary/README.md` verdict together
+  still speak of one seam; the lift to validity is requirement (W), open.
+* **Not the whole language.** `presented_modelOf` and `hitCl_modelOf_eq_hitOf` carry
+  `hφ : φ.BoxStabFree`. On `box`/`stab`-bearing `φ` the construction is degenerate by a named
+  mechanism — `frameOf`'s step relation is time-constant, so `modelOf`'s `box` anchor is
+  time-invariant and its `stab` letters collapse (`plusStateLocal_stab_iff`'s semantic half) —
+  and that fragment is assigned to requirement (W), not claimed here.
+* **Not a refutation of the refutation.** `Probe735.not_presented` refutes `Presented` for every
+  finite presentation on fixture model A, which is NOT constructed from a presentation. (S)
+  quantifies the other way. Both stand; neither retires the other, and both wired probes stay.
+* **No complexity bound**, upper or lower, for the construction, for `hitOf`, or for the
+  decidable `Cons` checks. The `Cons` conditions are decidable on a `[Fintype Q]` and are
+  exercised by `#guard`s in `KTypeFinEvalTest.lean` at the probe fixture size only, as witnesses
+  of computability and nothing else.
+* **No finite-fibre and no finite-width assumption.** The only finiteness in any of the eight
+  statements is `[Fintype Q]` on the PRESENTATION; the constructed model's carrier `ℤ × Q` is
+  infinite (`frameOf_not_finite_worldState`), so `not_finite_width_fmp` is not contradicted.
+* **Nothing backward by symmetry.** `snce_iff_of_SCoh_SLive` is proved outright and is not
+  transported from `untl_iff_of_UCoh_ULive`; no backward Bool-fixture bridge exists in this tree.
+
+**One note on `cons_localRun`'s premise.** `Cons` carries **eleven** fields, not the ten the
+plan enumerated. The eleventh, `nowUnique`, was derived from `presented_modelOf`'s own
+obligation rather than assembled with the rest: without it the other ten admit two mutually
+unreachable `now`-marked components, whose splices through a seam cannot cover the whole run
+set. It is documented at the field, and `cons_localRun` does not read it.
+-/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.untl_iff_of_UCoh_ULive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.untl_iff_of_UCoh_ULive
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.snce_iff_of_SCoh_SLive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.snce_iff_of_SCoh_SLive
+
+/-- info: 'FormalSystem.PlusLanguage.not_box_mem_plusSubformulaClosure' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.PlusLanguage.not_box_mem_plusSubformulaClosure
+
+/-- info: 'FormalSystem.PlusLanguage.not_stab_mem_plusSubformulaClosure' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.PlusLanguage.not_stab_mem_plusSubformulaClosure
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cons_localRun' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cons_localRun
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.anchored_runTrace_of_boxStabFree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchored_runTrace_of_boxStabFree
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.presented_modelOf' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.presented_modelOf
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf
 
 end BimodalTest.Metalogic

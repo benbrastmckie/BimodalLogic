@@ -866,5 +866,13 @@
   [
     "unusedArguments",
     "FormalSystem.Metalogic.Expressiveness.Kamp.VVecEA2.singleton_holds"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.untl_iff_of_UCoh_ULive"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.snce_iff_of_SCoh_SLive"
   ]
 ]

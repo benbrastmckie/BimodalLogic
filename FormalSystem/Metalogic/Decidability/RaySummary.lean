@@ -12,6 +12,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.StabCheck
+import FormalSystem.Metalogic.Decidability.RaySummary.Realize
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -28,9 +29,14 @@ local run (`Closure`, `Trace`), composition on representatives (`Compose`), fini
 presentations with a computable path-type closure (`Present`), and the computable realized-triple
 set `hitOf` with its characterization (`HitOf`). The per-model bridge `hit_eq_hitOf_of_presented`
 (`Trace`) says a seam's `HitCl` IS `hitOf` under the explicit realization hypothesis
-`Presented`, which is discharged for no non-trivial model here: constructing a regular model from
-a presentation is a successor record. So `hitOf` is computable on presentations and `Hit` is
-never computed for a model outright; no decision procedure is built, no decidability result is
+`Presented`. That hypothesis now has a NON-VACUOUS instance, and `Realize.lean` is where it is
+built: `Presented` is discharged for a model constructed FROM a presentation
+(`presented_modelOf`), at ONE seam, for `box`/`stab`-free `φ`, under the eleven-field
+consistency bundle `Cons` — and the Hit-level equality follows in one line
+(`hitCl_modelOf_eq_hitOf`). It is discharged for no model NOT so constructed, and the
+`box`/`stab`-bearing fragment and the lift from one seam to validity both remain open (the
+README's requirement (W)). So `hitOf` is computable on presentations, `Hit` is never computed
+for a model outright, and nothing here is a decision procedure: no decidability result is
 proved, no complexity bound is claimed, everything is under `[F.IsRegular]` over the `ℤ` time
 axis, and the cited fixtures are forward-only (no backward Bool-fixture bridge exists).
 A conditional per-seam `⊡` decider exists under `Presented` (`StabCheck`: `stabCheckSig`,
@@ -69,4 +75,18 @@ nothing about `PlusValidZTime` — see the README's verdict.
   decider of the run-level `⊡` condition (`stabCheckSig`, `stabCheckSig_iff`), and its closure
   instance under `Presented` (`stabCheck_iff_of_presented`, `decidableStabOfPresented`),
   vacuous on model A where `Presented` is refuted.
+* `RaySummary.Realize` — requirement (S), the soundness half: the decidable per-edge
+  consistency conditions on a finite labelled presentation (`UCoh`, `deferGraph`, `ULive`,
+  `SCoh`, `bwdDeferGraph`, `SLive`) and the two theorems forcing `LocalRun`'s eventuality
+  clauses from them (`untl_iff_of_UCoh_ULive`, `snce_iff_of_SCoh_SLive`, the latter proved
+  outright and not transported); the scope predicate `PlusFormula.BoxStabFree` with the
+  closure-vacuity lemmas it buys (`not_box_mem_plusSubformulaClosure`,
+  `not_stab_mem_plusSubformulaClosure`); the ELEVEN-field bundle `Cons` with `cons_localRun`
+  (ten fields mirror a `LocalRun` field or a frame law; the eleventh, `nowUnique`, was derived
+  from the realization theorem's own obligation); the constructed model `frameOf` / `modelOf`
+  with its regularity instance and the explicit record that its carrier is infinite
+  (`frameOf_isRegular`, `frameOf_not_finite_worldState`); and the realization theorem
+  `presented_modelOf` with its Hit-level corollary `hitCl_modelOf_eq_hitOf`. Scope: ONE seam,
+  `box`/`stab`-free `φ`, `[Fintype Q]` on the PRESENTATION only. Nothing there states
+  `Decidable (PlusValidZTime φ)`.
 -/

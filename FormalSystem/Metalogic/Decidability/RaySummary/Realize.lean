@@ -40,8 +40,9 @@ rules out the object `Probe735.pump_isRun` manufactures — a `step`-cycle every
 claims an eventuality and lacks its event, which realizes a deferred eventuality together with
 its limit and which no `LocalRun` reads.
 
-`Cons` is NOT a transcription of HWZ Definition 10's bare set of types. Task 742's wired probe
-`quasistate_does_not_determine_hit` exhibits two models with EQUAL HWZ-verbatim quasistates and
+`Cons` is NOT a transcription of HWZ Definition 10's bare set of types. The wired probe
+`specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean`
+(`quasistate_does_not_determine_hit`) exhibits two models with EQUAL HWZ-verbatim quasistates and
 UNEQUAL `Hit`, so a bare type set is the wrong alphabet for this semantics: `seamOmegaEquiv`
 makes the box-dot fibre a PRODUCT of a backward and a forward ray set, so any history set a
 per-state summary describes is splice-closed, and the summary must therefore be a product over
@@ -90,10 +91,12 @@ uniqueness lemma `eq_clTrace_of_localRun_anchored`. Three small helpers serve th
 `isRun_of_chain_seam` (the converse packaging, `Cons.nowOnce` consumed in both time
 directions).
 
-The Hit-level equality this yields through `hit_eq_hitOf_of_presented` is owed to a later
-module section and is not claimed here. Nothing in this module states, or is a step toward
-stating, `Decidable (PlusValidZTime φ)`: `presented_modelOf` speaks of ONE seam of ONE
-constructed model, and the lift to validity is a separate requirement the
+`hitCl_modelOf_eq_hitOf` closes the file: the Hit-level equality read off
+`hit_eq_hitOf_of_presented` and `presented_modelOf` in one line, saying that the realized set of
+the constructed model's seam IS the computable `hitOf` of the presentation at every depth
+`k ≥ 1`. Nothing in this module states, or is a step toward stating, `Decidable
+(PlusValidZTime φ)`: both `presented_modelOf` and `hitCl_modelOf_eq_hitOf` speak of ONE seam of
+ONE constructed model, and the lift to validity is a separate requirement the
 `RaySummary/README.md` verdict records as still open. No complexity bound is claimed anywhere.
 -/
 
@@ -101,16 +104,6 @@ namespace FormalSystem.Metalogic.Decidability.RaySummary
 
 open FormalSystem.PlusLanguage FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.Expressiveness
-
-set_option linter.unusedSectionVars false
-
--- linter.unusedFintypeInType / linter.unusedDecidableInType: the `[Fintype sig.preds]` and
--- `[DecidableEq sig.preds]` binders are carried by every declaration of this namespace so that
--- the presentation-level binder shape is uniform — they are consumed by the decidability
--- instances and by the `Cons` bundle, and omitting them per-declaration would make the forward
--- conditions and their consumers disagree on the shape of a presentation.
-set_option linter.unusedFintypeInType false
-set_option linter.unusedDecidableInType false
 
 /-! ## The forward consistency conditions -/
 
@@ -150,6 +143,11 @@ instance decidableULive (lab : Q → sig.preds → Bool) (step : Q → Q → Boo
     Decidable (ULive lab step u e) := by
   unfold ULive; infer_instance
 
+-- Neither the type nor the proof of this declaration uses the presentation-level instance
+-- binders, so they are `omit`ted rather than carried under a linter suppression: the
+-- env_linter `unusedArguments` batch reports them otherwise, and an `omit` removes the
+-- binder instead of hiding the finding.
+omit [Fintype sig.preds] [DecidableEq sig.preds] [Fintype Q] [DecidableEq Q] in
 /-- **Persistence along an undischarged stretch**: if the claim holds at `z` and is never
 discharged, then from `z + 1` on the run claims `u`, carries the guard, and never carries `e`.
 The whole content of the `untl` run condition's hard direction is here. -/
@@ -204,11 +202,22 @@ theorem persist (lab : Q → sig.preds → Bool) (step : Q → Q → Bool) (u g 
           · exact absurd h' hc
         exact absurd ⟨z + 1 + (n : ℤ) + 1, by omega, he, hguard⟩ hno
 
--- linter.style.show: the `show` inside `hchain` beta-reduces the `HasChain` lambda witness,
--- which the following `rw [hcast]` needs; the research tactic survey recorded that explicit
--- beta-reduction as required here, so it is kept rather than replaced by `change`.
--- Declaration-scoped.
+-- linter.unusedSectionVars / linter.unusedFintypeInType / linter.unusedDecidableInType /
+-- linter.style.show, all four scoped to this declaration. The first three: a deletion trial
+-- reports `disch_of_UCoh_ULive`'s type not mentioning `[Fintype Q]`/`[DecidableEq Q]` and its
+-- proof not using them by name either; they CANNOT be `omit`ted, because `omit` is refused with
+-- `cannot omit referenced section variable` — the proof reaches them through the `decidableULive`
+-- instance rather than through a named hypothesis — so a suppression is the only route for those
+-- two. The `sig`-side binders ARE unused outright and so are `omit`ted below rather than
+-- suppressed, which is what keeps the env_linter `unusedArguments` batch quiet here. The fourth:
+-- the `show` inside `hchain` beta-reduces the `HasChain` lambda witness, which the following `rw
+-- [hcast]` needs; the research tactic survey recorded that explicit beta-reduction as required,
+-- so it is kept rather than replaced by `change`.
+set_option linter.unusedSectionVars false in
+set_option linter.unusedFintypeInType false in
+set_option linter.unusedDecidableInType false in
 set_option linter.style.show false in
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /--
 **The `untl` run condition's hard (⇒) direction, from the two decidable conditions alone.**
 No model, no frame and no carrier finiteness: coherence per edge plus acyclicity of the
@@ -236,6 +245,11 @@ theorem disch_of_UCoh_ULive (lab : Q → sig.preds → Bool) (step : Q → Q →
   rw [hlive (ρ (z + 1))] at this
   exact Bool.false_ne_true this
 
+-- Neither the type nor the proof of this declaration uses the presentation-level instance
+-- binders, so they are `omit`ted rather than carried under a linter suppression: the
+-- env_linter `unusedArguments` batch reports them otherwise, and an `omit` removes the
+-- binder instead of hiding the finding.
+omit [Fintype sig.preds] [DecidableEq sig.preds] [Fintype Q] [DecidableEq Q] in
 /--
 **The `untl` run condition's easy (⇐) direction**: a discharge witness forces the claim, by
 walking the coherence back from the witness.
@@ -261,6 +275,16 @@ theorem u_of_disch (lab : Q → sig.preds → Bool) (step : Q → Q → Bool) (u
       exact hguard (w + 1) (by omega) (by push_cast at hws ⊢; omega)
   exact key (s - z - 1).toNat z le_rfl (by omega)
 
+-- linter.unusedSectionVars / linter.unusedFintypeInType / linter.unusedDecidableInType, scoped to
+-- this declaration. A deletion trial of the suppressions reports `untl_iff_of_UCoh_ULive`'s type
+-- not mentioning the presentation-level instance binders, and its proof not using them by name
+-- either now that the helpers it cites (disch_of_UCoh_ULive / u_of_disch) `omit` the ones they do
+-- not use. The binders are kept rather than `omit`ted because this is a Challenge-pinned
+-- signature: dropping one would drift the recorded statement, which plan-compliance forbids
+-- outright.
+set_option linter.unusedSectionVars false in
+set_option linter.unusedFintypeInType false in
+set_option linter.unusedDecidableInType false in
 /--
 **`LocalRun`'s `untl` field, discharged from decidable per-edge data**: per-edge unfolding
 coherence plus acyclicity of the deferral graph force the `untl` clause on every `step`-path.
@@ -336,6 +360,7 @@ instance decidableSLive (lab : Q → sig.preds → Bool) (step : Q → Q → Boo
     Decidable (SLive lab step u e) := by
   unfold SLive; infer_instance
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] [Fintype Q] [DecidableEq Q] in
 /-- **Backward persistence along an undischarged stretch**: if the claim holds at `z` and is
 never discharged in the past, then from `z - 1` backward the run claims `u`, carries the guard,
 and never carries `e`. The whole content of the `snce` run condition's hard direction is here.
@@ -398,9 +423,17 @@ theorem persistBwd (lab : Q → sig.preds → Bool) (step : Q → Q → Bool) (u
           · exact absurd h' hc
         exact absurd ⟨z - 1 - (n : ℤ) - 1, by omega, he, hguard⟩ hno
 
--- linter.style.show: as in `disch_of_UCoh_ULive`, the `show` inside `hchain` beta-reduces the
--- `HasChain` lambda witness, which the following `rw [hcast]` needs. Declaration-scoped.
+-- linter.unusedSectionVars / linter.unusedFintypeInType / linter.unusedDecidableInType /
+-- linter.style.show, all four scoped to this declaration, for exactly the reasons recorded at
+-- `disch_of_UCoh_ULive` above with `decidableSLive` in place of `decidableULive`: the `[Fintype
+-- Q]`/`[DecidableEq Q]` binders cannot be `omit`ted because the proof reaches them through that
+-- instance, the `sig`-side binders are unused outright and are `omit`ted below, and the `show`
+-- inside `hchain` beta-reduces the `HasChain` lambda witness that `rw [hcast]` needs.
+set_option linter.unusedSectionVars false in
+set_option linter.unusedFintypeInType false in
+set_option linter.unusedDecidableInType false in
 set_option linter.style.show false in
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /--
 **The `snce` run condition's hard (⇒) direction, from the two decidable conditions alone.**
 No model, no frame and no carrier finiteness: coherence per edge plus acyclicity of the backward
@@ -428,6 +461,7 @@ theorem disch_of_SCoh_SLive (lab : Q → sig.preds → Bool) (step : Q → Q →
   rw [hlive (ρ (z - 1))] at this
   exact Bool.false_ne_true this
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] [Fintype Q] [DecidableEq Q] in
 /--
 **The `snce` run condition's easy (⇐) direction**: a past discharge witness forces the claim, by
 walking the coherence forward from the witness. Needs no liveness.
@@ -457,6 +491,16 @@ theorem u_of_dischBwd (lab : Q → sig.preds → Bool) (step : Q → Q → Bool)
       exact hguard (w - 1) (by push_cast at hsw ⊢; omega) (by omega)
   exact key (z - s - 1).toNat z le_rfl (by omega)
 
+-- linter.unusedSectionVars / linter.unusedFintypeInType / linter.unusedDecidableInType, scoped to
+-- this declaration. A deletion trial of the suppressions reports `snce_iff_of_SCoh_SLive`'s type
+-- not mentioning the presentation-level instance binders, and its proof not using them by name
+-- either now that the helpers it cites (disch_of_SCoh_SLive / u_of_dischBwd) `omit` the ones they
+-- do not use. The binders are kept rather than `omit`ted because this is a Challenge-pinned
+-- signature: dropping one would drift the recorded statement, which plan-compliance forbids
+-- outright.
+set_option linter.unusedSectionVars false in
+set_option linter.unusedFintypeInType false in
+set_option linter.unusedDecidableInType false in
 /--
 **`LocalRun`'s `snce` field, discharged from decidable per-edge data** — owed work proved
 outright, not a symmetry of `untl_iff_of_UCoh_ULive`. Backward per-edge unfolding coherence plus
@@ -722,6 +766,7 @@ theorem frameOf_mem_HF_iff {φ : PlusFormula} {lab : Q → (clSig φ).preds → 
 
 /-! ## The realization theorem -/
 
+omit [Fintype Q] [DecidableEq Q] [Nonempty Q] in
 /--
 **A finite `step`-path cut out of a bi-infinite chain.** From a bi-infinite `step`-chain `ρ`,
 the stretch from `a` to `a + n` is a `StepPath` whose list has `n + 1` entries.
@@ -743,6 +788,7 @@ theorem exists_stepPath_of_chain {step : Q → Q → Bool} (ρ : ℤ → Q)
     rw [h2]
     exact StepPath.snoc _ hp (by simpa [add_assoc] using hstep (a + (n : ℤ)))
 
+omit [Nonempty Q] in
 /--
 **A run's state at the anchor IS the seam's state.** `Cons.nowUnique` read at the seam.
 
@@ -756,6 +802,13 @@ theorem run_seam_state {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool
     ρ t = q₀ :=
   hC.nowUnique _ _ ((hρ.2 t).mpr rfl) hq₀
 
+-- linter.unusedSectionVars, scoped to this declaration. A deletion trial reports a section
+-- variable that `isRun_of_chain_seam`'s proof does not use by name, while its type does use the
+-- presentation-level binders, so they are kept. The `[Nonempty Q]` binder is unused by both type
+-- and proof and is `omit`ted below rather than suppressed, which is what keeps the env_linter
+-- `unusedArguments` batch quiet here.
+set_option linter.unusedSectionVars false in
+omit [Nonempty Q] in
 /--
 **A bi-infinite chain through the seam state is a run.** The converse packaging of
 `run_seam_state`: the `now` letter is read at `t` because `ρ t = q₀` is marked, and NOWHERE
@@ -856,7 +909,9 @@ Nothing about validity follows: `Decidable (PlusValidZTime φ)` is not stated, i
 and would need the closure-wide requirement the `RaySummary/README.md` verdict records as
 (W). No complexity bound is claimed.
 
-Paper: HWZ 2000, Theorem 14 (⇐), at the box-dot fibre.
+Paper: — (the nearest literature statement is HWZ 2000's Theorem 14 (⇐), read at the box-dot
+fibre; this repository's manuscript carries no counterpart, and the HWZ corpus entry is of
+UNVERIFIED-summary provenance, so it orients the construction and sources no claim in it)
 -/
 theorem presented_modelOf {φ : PlusFormula} (hφ : φ.BoxStabFree)
     {lab : Q → (clSig φ).preds → Bool} {step : Q → Q → Bool} (hC : Cons φ lab step)
@@ -910,6 +965,39 @@ theorem presented_modelOf {φ : PlusFormula} (hφ : φ.BoxStabFree)
     rw [hrt]
     exact eq_clTrace_of_localRun_anchored (modelOf φ lab step hC) φ t σ
       (cons_localRun hC ρ hρ.1) (anchored_runTrace_of_boxStabFree hφ hC t ρ hρ σ hσpath)
+
+/-- **The Hit-level acceptance statement**: the realized set of the constructed model's seam IS
+the computable `hitOf` of the presentation, at every depth `k ≥ 1`.
+
+One line from `hit_eq_hitOf_of_presented` and `presented_modelOf`: the former turns the
+realization hypothesis into the set equality, the latter supplies the hypothesis for the
+constructed model. Nothing else is needed, and nothing else is used — the work was
+`presented_modelOf`'s.
+
+**Scope, carried from `presented_modelOf` unchanged**: `box`/`stab`-free `φ` of L⁺, ONE seam
+`(τ, t)` of ONE model constructed from the presentation, under `[F.IsRegular]` (supplied by
+`frameOf_isRegular`), over the ℤ time axis, with `Cons φ lab step` as the premise set and
+`1 ≤ k` as the depth bound. The only finiteness is `[Fintype Q]` on the PRESENTATION: the
+model's carrier `ℤ × Q` is infinite (`frameOf_not_finite_worldState`) and no fibre is assumed
+finite.
+
+**This decides nothing.** `Decidable (PlusValidZTime φ)` does not follow and is not stated here
+in any form: one seam of one model is not validity, and the lift from a seam to validity is
+requirement (W) of the `RaySummary/README.md` verdict, a separate open record. No complexity
+bound, upper or lower, is claimed.
+
+Paper: — (the nearest literature statement is HWZ 2000's Theorem 14 (⇐) read at the Hit level;
+this repository's manuscript carries no counterpart, and the HWZ corpus entry is of
+UNVERIFIED-summary provenance) -/
+theorem hitCl_modelOf_eq_hitOf {φ : PlusFormula} (hφ : φ.BoxStabFree)
+    {lab : Q → (clSig φ).preds → Bool} {step : Q → Q → Bool} (hC : Cons φ lab step)
+    (t : ℤ) (q₀ : Q) (hq₀ : lab q₀ (clNow φ) = true)
+    (τ : WorldHistory (frameOf hC).toTaskFrame) (hτ : τ.state t = (t, q₀))
+    (k : ℕ) (hk : 1 ≤ k) :
+    HitCl (modelOf φ lab step hC) τ t φ k =
+      ↑(hitOf lab (fun q q' => step q q' = true) (clNow φ) k) :=
+  hit_eq_hitOf_of_presented (modelOf φ lab step hC) τ t φ lab
+    (fun q q' => step q q' = true) k hk (presented_modelOf hφ hC t q₀ hq₀ τ hτ)
 
 end Constructed
 

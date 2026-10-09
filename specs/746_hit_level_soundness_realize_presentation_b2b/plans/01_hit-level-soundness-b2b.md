@@ -744,7 +744,7 @@ phase past one agent run.
 
 ---
 
-### Phase 8: The acceptance statement, pins, index, READMEs, and the ROADMAP [NOT STARTED]
+### Phase 8: The acceptance statement, pins, index, READMEs, and the ROADMAP [COMPLETED]
 
 **Goal**: Read off the Hit-level equality as the one-line corollary, wire the module into the
 aggregator, and make every record say exactly what landed and what did not — including the
@@ -752,18 +752,18 @@ aggregator, and make every record say exactly what landed and what did not — i
 validity.
 
 **Tasks**:
-- [ ] Prove `hitCl_modelOf_eq_hitOf` (pinned below): `(hk : 1 ≤ k) → HitCl (modelOf …) τ t φ k =
+- [x] Prove `hitCl_modelOf_eq_hitOf` (pinned below): `(hk : 1 ≤ k) → HitCl (modelOf …) τ t φ k =
       ↑(hitOf lab (fun q q' => step q q' = true) (clNow φ) k)`, as
       `hit_eq_hitOf_of_presented … (presented_modelOf …)`. One line of proof; the work was
       Phase 7's.
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.Realize` to
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.Realize` to
       `FormalSystem/Metalogic/Decidability/RaySummary.lean` and a `* RaySummary.Realize — …`
       bullet to its `## Modules` list. Update that aggregator's header paragraph, which currently
       says `Presented` "is discharged for no non-trivial model here: constructing a regular model
       from a presentation is a successor record" — it now has a non-vacuous instance for
       `box`/`stab`-free `φ` at one seam, and the sentence must be rewritten to say precisely
       that, without overclaiming.
-- [ ] Update `FormalSystem/Metalogic/Decidability/RaySummary/README.md`'s verdict section:
+- [x] Update `FormalSystem/Metalogic/Decidability/RaySummary/README.md`'s verdict section:
       requirement (S) is discharged for `box`/`stab`-free `φ` at one seam; (C) and (W) are
       untouched; the `box`-global / `stab`-collapse limitation is stated with its mechanism
       (`plusStateLocal_stab_iff`'s semantic half) and assigned to (W); the descoped
@@ -773,26 +773,36 @@ validity.
       `[Finite W]` occurrences across 9 declarations, 17 referencing files, two of them probes
       that may not be retired). State explicitly that nothing here says `Decidable
       (PlusValidZTime φ)` and that no complexity bound is claimed.
-- [ ] Add theorem-index rows to `docs/theorem-index.md` beside the existing 194-200 band: one for
-      `presented_modelOf` and one for `hitCl_modelOf_eq_hitOf`, each stating the frame class
+- [x] Add theorem-index rows to `docs/theorem-index.md` beside the existing 194-200 band: one for
+      `presented_modelOf` and one for `hitCl_modelOf_eq_hitOf` *(deviation: altered — the band
+      holds FIVE rows beginning `**Conditional`, not four; rows 197-200 were reworded and 745's
+      `hitPresented_of_presented` row left alone, its discharge story already being accurate.
+      `scripts/check-module-invariants.sh` was also edited, outside the declared file list, so
+      that the new rows' `pinned:C14` cells are asserted by the C14 baseline rather than merely
+      claimed)*, each stating the frame class
       (regular ℤ-frame), the language fragment (`box`/`stab`-free L⁺), the premise set (`Cons`),
       and the one-seam limit. Update the four **Conditional** rows' wording in that band to note
       that the hypothesis now has a constructed non-vacuous instance, without altering their own
       statements.
-- [ ] Append axiom pins for all eight Goals to
+- [x] Append axiom pins for all eight Goals to
       `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, append-only, in the file's
       existing `#guard_msgs in #print axioms` form, with a comment block stating what the new pins
       do and do not certify. Re-read the file immediately before editing (task 745 also appends
       here).
-- [ ] Rewrite `specs/ROADMAP.md`'s **(S)** paragraph under the `/orchestrate 745,746` bullet: the
+- [x] Rewrite `specs/ROADMAP.md`'s **(S)** paragraph under the `/orchestrate 745,746` bullet: the
       construction landed for `box`/`stab`-free `φ`; the 1,200-2,000 + 300-500 carried estimate
       was pessimistic and the measured figure replaces it; the frame-constructor prerequisite was
       descoped with a machine-checked reason and is now a named successor; the "test backward
       finite branching cheapest" instruction was followed and returned a refutation of the repair
       shape, which the wired probe holds.
-- [ ] Full-project guarded build, then `bash scripts/check-evidence-probes.sh`, then
+- [x] Full-project guarded build, then `bash scripts/check-evidence-probes.sh`, then
       `bash .claude/scripts/lean-sorry-census.sh` (or the repository's current census entry
-      point), and confirm each exits 0.
+      point), and confirm each exits 0. *(deviation: altered — the gate set was widened to
+      `bash scripts/check-module-invariants.sh`, which no phase of this plan named and which was
+      red in six groups on entry, all six traceable to this task's own `Realize.lean`; all six
+      were repaired and the script now reports ALL CHECKS PASSED. The test library was also built
+      separately, since `defaultTargets = ["FormalSystem"]` means a plain `lake build` never
+      elaborates its `#guard`s)*
 
 **Timing**: 2 hours
 
@@ -1003,25 +1013,27 @@ end FormalSystem.Metalogic.Decidability.RaySummary
 
 ## Testing & Validation
 
-- [ ] Full-project guarded build green: `bash .claude/scripts/lake-build-guard.sh build --timeout
+- [x] Full-project guarded build green: `bash .claude/scripts/lake-build-guard.sh build --timeout
       1800 -- build` exits 0 (detached, never foreground, never bare `lake`).
-- [ ] Zero sorries across every module this plan touches, confirmed by
+- [x] Zero sorries across every module this plan touches, confirmed by
       `bash .claude/scripts/lean-sorry-census.sh`.
-- [ ] All eight Goals pinned in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` with
+- [x] All eight Goals pinned in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` with
       axiom profile exactly `[propext, Classical.choice, Quot.sound]`; the test library builds
       with every `#guard_msgs` passing.
-- [ ] The `Cons` non-vacuity `#guard`s in `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`
+- [x] The `Cons` non-vacuity `#guard`s in `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`
       pass, INCLUDING the negative control (`live deferBad 0 = true`, the `Probe735` shape) —
       the conditions must be shown to exclude something.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 with 15 probes green, the two pre-existing
+- [x] *(deviation: altered — the gate's own count line reads 25 wired probes, not 15; the
+      plan's figure was already stale when written, as the Phase 1 handoff recorded.)*
+      `bash scripts/check-evidence-probes.sh` exits 0 with 25 probes green, the two pre-existing
       verdict probes among them unmodified.
-- [ ] `bash .claude/scripts/validate-artifact.sh specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md plan` exits 0.
-- [ ] No file touched by this plan states `Decidable (PlusValidZTime φ)` in any form, asserts any
+- [x] `bash .claude/scripts/validate-artifact.sh specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md plan` exits 0.
+- [x] No file touched by this plan states `Decidable (PlusValidZTime φ)` in any form, asserts any
       complexity bound, introduces a `[Finite W]`-style finite-fibre or finite-width assumption on
       the constructed model, adds a cslib `require` edge or copies a cslib declaration, or implies
       a backward Bool-fixture bridge exists. Each checked by reading the hits of a targeted grep,
       not by assuming.
-- [ ] No vacuous definition anywhere (`:= True`, `:= Unit`, `:= trivial` bodies), per
+- [x] No vacuous definition anywhere (`:= True`, `:= Unit`, `:= trivial` bodies), per
       `lean4.md`'s prohibition.
 
 ## Artifacts & Outputs

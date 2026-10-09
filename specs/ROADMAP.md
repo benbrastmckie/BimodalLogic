@@ -134,13 +134,43 @@ surviving alphabet rather than killing the route. The other is (C)'s `HitPresent
   is **OPEN, not refuted** — the pumped limit's forward type differs from every seam trace's type,
   so the refutation does not transfer. A refutation here is a complete outcome and moots (W).
 
-- **(S)**, the other half of that line — ungated (no `dependencies[]` edge at all): the
-  construction is the HWZ 2000 Thm 14 ⇐ formalization and keeps standalone value whatever (C)
-  returns. `Probe735.not_presented` does **not** refute it, because that probe quantifies over
-  arbitrary models while (S) builds the model from the presentation. Est. 1,200–2,000 lines plus a
-  300–500 line regular-frame prerequisite, both CARRIED-UNVERIFIED — re-verify the frame-constructor
-  figure first, and test backward finite branching cheapest, since `[Finite W]` funnels through one
-  crude lemma.
+- **(S)** — **LANDED for `box`/`stab`-free `φ` at one seam.** The construction is in
+  `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean`: the decidable per-edge
+  consistency conditions, the eleven-field bundle `Cons`, the constructed model
+  `frameOf`/`modelOf` with its regularity instance, the realization theorem `presented_modelOf`
+  (`Presented` discharged for a model built FROM the presentation — the HWZ 2000 Thm 14 ⇐
+  formalization for the box-dot fibre), and its one-line Hit-level corollary
+  `hitCl_modelOf_eq_hitOf`. Zero sorries, all eight Goals pinned on
+  `[propext, Classical.choice, Quot.sound]` in `KTypeSummaryAxiomTest.lean`, two theorem-index
+  rows. `Probe735.not_presented` is **not** refuted by this and does not refute it: that probe
+  quantifies over arbitrary models while (S) builds the model from the presentation. Still open
+  and assigned to **(W)**: `box`/`stab`-bearing `φ` (degenerate here — `frameOf`'s step relation
+  is time-constant, so `modelOf`'s `box` anchor is time-invariant and its `stab` letters collapse
+  by `plusStateLocal_stab_iff`'s semantic half) and every seam but the one. Nothing in it states
+  `Decidable (PlusValidZTime φ)` and no complexity bound is claimed.
+
+  **The carried estimate, replaced by measurement.** The 1,200–2,000 figure for the construction
+  was right, at its low end: ~1,200 lines of Lean across six proof phases. The 300–500 line
+  regular-frame prerequisite was **pessimistic and then descoped entirely** — (S) does not need
+  it, because `frameOf` is `ofSlicedStep` on the presentation's own finite `Q` whose carrier
+  `ℤ × Q` is infinite (`frameOf_not_finite_worldState`), so no finite-fibre or finite-width
+  assumption is introduced. What replaces it is a **named successor**: a PARALLEL regular-frame
+  constructor beside `ofSlicedStep`, never an in-place generalization (`[Finite W]` occurs 11
+  times across 9 declarations of `SlicedFrame.lean`; `ofSlicedStep` is referenced in 17 files,
+  two of them probes that may not be retired), measured at ~120–160 lines.
+
+  **The "test backward finite branching cheapest" instruction was followed, and it returned a
+  refutation**, now held permanently by the wired probe
+  `specs/evidence/seam-gluing-ray-product/b2b-frame-constructor-branching.lean`. Positively,
+  `fib_finite_of_finBranch` proves every `TaskFrame.Fib` of `ofSlicedStepRel` finite from
+  TWO-SIDED finite branching with no carrier hypothesis, and `saturation_of_finBranch` reaches
+  `Saturation` from it on a frame whose slice `ℤ` is infinite. Negatively — the load-bearing
+  half — two-sidedness cannot be dropped: `Rbad` (countdown with unrestricted reset) has finite
+  forward branching, an infinite backward preimage at the reset target, and an outright infinite
+  `d = -1` fibre; its mirror `Rok` has finite backward branching and infinite forward branching
+  at the commitment state. A commitment encoding of the kind liveness wants is refuted as a
+  repair shape in both orientations, so the successor record inherits a measured obstruction
+  rather than an open question.
 
 - **`/orchestrate 733,734 --lit`** — evidence and fallback. **Its serialization behind 739 on the
   gate script is discharged**: 739 landed that wiring append-only, and 733's own `file_scope` is

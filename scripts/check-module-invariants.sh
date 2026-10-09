@@ -2068,6 +2068,21 @@ fi
 # carrier on fixture model A for every finite presentation; they pin profiles, not a decision
 # procedure.
 #
+# Three further matched pairs close the same block, for the three remaining
+# `docs/theorem-index.md` rows of that band that were carrying a `pinned:C14` cell this pair did
+# not yet assert. `...hitPresented_of_presented` (`RaySummary/Trace.lean`) is the Hit-level
+# WEAKENING of `Presented` -- equality of the realized family-triple sets rather than of the
+# trace sets -- and is satisfiable on fixture model A where `Presented` is refuted, which the
+# wired probe `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` establishes
+# non-constructively and with NO computable bound. The last two,
+# `...presented_modelOf` and `...hitCl_modelOf_eq_hitOf`
+# (`RaySummary/Realize.lean`), are the realization theorem and its Hit-level corollary: the
+# conditional hypothesis `Presented` DISCHARGED for a model constructed FROM a presentation, for
+# `box`/`stab`-free `φ` at ONE seam under the eleven-field bundle `Cons`. They pin profiles and
+# are not a decision procedure: neither states `Decidable (PlusValidZTime φ)` in any form, and
+# the refutation above still stands for every model NOT so constructed, so the two sit side by
+# side rather than one retiring the other.
+#
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
 # SORRY-FREE is pinned here or by C2, so no such claim is prose-only: the docstring asserts
@@ -2283,6 +2298,9 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_run_of_presented' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.stabCheck_iff_of_presented' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.decidableStabOfPresented' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.presented_modelOf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2498,6 +2516,9 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.plusStab_iff_forall_run_of_presented
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabCheck_iff_of_presented
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.decidableStabOfPresented
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.presented_modelOf
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

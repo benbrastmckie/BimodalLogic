@@ -200,6 +200,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
+import FormalSystem.Metalogic.Decidability.RaySummary.Realize
 import FormalSystem.Metalogic.Decidability.RaySummary.Seam
 import FormalSystem.Metalogic.Decidability.RaySummary.SeamMulti
 import FormalSystem.Metalogic.Decidability.RaySummary.StabCheck
