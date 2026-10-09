@@ -1,17 +1,12 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "skeleton": false,
-  "summary": "Phase 7 of 8 complete: REQUIREMENT (S) ITSELF IS LANDED. `presented_modelOf` discharges Trace.lean's realization hypothesis `Presented` for the model built FROM the presentation -- HWZ 2000 Theorem 14 in the (<=) direction for the box-dot fibre -- at a seam anchored at a clNow-labelled state, in both directions, both routed through the one landed uniqueness lemma eq_clTrace_of_localRun_anchored with anchored_runTrace_of_boxStabFree supplying the anchors (now from IsRun, atom from modelOf_valuation, box/stab VACUOUSLY from Phase 4) and cons_localRun the run conditions. Both pinned signatures match the plan's Challenge statements CHARACTER FOR CHARACTER, checked mechanically. Three short helpers serve them: exists_stepPath_of_chain, run_seam_state, isRun_of_chain_seam. +243/-11 lines (all eleven deletions docstring prose, zero declaration bodies touched), 684 -> 916 lines, inside the 180-260 band. Scoped build green (guard exit 0, 1930/1930, 0 errors, 0 warnings, .olean fresh); FULL-PROJECT build green (guard exit 0, 2836 jobs, 0 errors, 0 warnings); sorry census 0 across all source roots; all five new declarations plus a re-pinned cons_localRun at exactly [propext, Classical.choice, Quot.sound]. ONE DEFECT FOUND AND FIXED, READ THIS: the (<=) direction is NOT provable from the ten Cons fields Phase 5 landed. The plan's own <sigma, h_sigma_t> step needs rho t = q0 and IsRun gives only lab (rho t) (clNow phi) = true; no landed field forces the clNow-labelled state to be unique. An ELEVENTH field, Cons.nowUnique, was added. Cons's own Challenge pin is field-free (structure Cons ... : Prop where, no fields listed), so NO pinned signature drifted, and cons_localRun does not read the new field and re-pinned unchanged. The motivating counterexample (two mutually unreachable clNow components with different atom labels) is argued in prose in the field's docstring and is NOT machine-checked -- that is this task's one unverified claim and the top follow-up. Phase 8 must also add a nowUnique #guard on the existing fixture (which already satisfies it) and say ELEVEN fields in every record. Stopped at the phase boundary as the single-phase dispatch required; phase 8 remains.",
-  "phases_completed": 7,
+  "summary": "Task 746 COMPLETE: all 8 phases. Requirement (S) of the ray-product verdict is landed for box/stab-free phi at one seam -- presented_modelOf (Phase 7) plus this phase's one-line Hit-level corollary hitCl_modelOf_eq_hitOf. Realize.lean wired into the aggregator and the generated root; the verdict README, theorem index (2 new rows, 4 reworded Conditional rows), axiom-pin harness (8 pins, one per Goal), KTypeFinEvalTest (the nowUnique guard) and the ROADMAP (S) paragraph all rewritten to state the scope and the limits. Zero sorries; every gate green, including check-module-invariants.sh ALL CHECKS PASSED after repairing six groups this task's own earlier phases had turned red (C9, C16, C29, C30, C33, INV). Nothing says Decidable (PlusValidZTime phi); no complexity bound; both wired probes and SlicedFrame/TaskFrame untouched.",
+  "phases_completed": 8,
   "phases_total": 8,
-  "dispatch_seq": 19,
+  "dispatch_seq": 20,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-7-handoff-20261008_213550.md",
-  "continuation_context": {
-    "is_successor": true,
-    "next_phase": 8,
-    "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-7-handoff-20261008_213550.md",
-    "orchestrator_mode": true
-  }
+  "continuation_path": null,
+  "continuation_context": null
 }

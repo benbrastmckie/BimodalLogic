@@ -1,17 +1,32 @@
 # Implementation Summary: Task #746
 
 - **Task**: 746 - Requirement (S) of the ray-product verdict: Hit-level soundness — realize a presentation by a constructed regular ℤ-model (B2b)
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Started**: 2026-10-08T19:42:00Z
-- **Completed**: (not complete — 7 of 8 phases)
-- **Effort**: ~2.5 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted; Phase 3 ~0.4 h against 2 h budgeted; Phase 4 ~0.3 h against 1 h budgeted; Phase 5 ~0.3 h against 2 h budgeted; Phase 6 ~0.3 h against 1.5 h budgeted; Phase 7 ~0.6 h against 2.5 h budgeted)
+- **Completed**: 2026-10-08T23:05:00Z
+- **Effort**: ~2.5 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted; Phase 3 ~0.4 h against 2 h budgeted; Phase 4 ~0.3 h against 1 h budgeted; Phase 5 ~0.3 h against 2 h budgeted; Phase 6 ~0.3 h against 1.5 h budgeted; Phase 7 ~0.6 h against 2.5 h budgeted; Phase 8 ~1.6 h against 2 h budgeted)
 - **Dependencies**: None. (C) (task 745) is independent; (W) depends on this and on (C).
-- **Artifacts**: plans/01_hit-level-soundness-b2b.md
+- **Artifacts**: plans/01_hit-level-soundness-b2b.md, summaries/01_hit-level-soundness-b2b-summary.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Phases 1-7 of 8, across seven single-phase dispatches (seq 13, 14, 15, 16, 17, 18 and 19).
+All eight phases, across eight single-phase dispatches (seq 13-20). **Requirement (S) of the
+ray-product verdict is LANDED for `box`/`stab`-free `φ` at one seam**, with zero sorries, all
+eight Goals pinned on `[propext, Classical.choice, Quot.sound]`, and every gate green: the
+full-project guarded build, the test library with every `#guard_msgs` and `#guard` passing,
+`check-evidence-probes.sh` (25 probes), `check-module-invariants.sh` (ALL CHECKS PASSED, 43
+groups), `lean-sorry-census.sh` (0), and `validate-artifact.sh` on the plan.
+
+**Phase 8 is the acceptance statement and the closeout.** `hitCl_modelOf_eq_hitOf` reads the
+Hit-level equality off `hit_eq_hitOf_of_presented` and Phase 7's `presented_modelOf` in one
+term — the realized set of the constructed model's seam IS the computable `hitOf` of the
+presentation at every depth `k ≥ 1`. The module is wired into the aggregator, and the verdict
+README, the theorem index, the axiom-pin harness and the ROADMAP are all rewritten to say
+exactly what landed (one seam, `box`/`stab`-free `φ`, premise `Cons`) and exactly what did not
+(`box`/`stab`-bearing `φ`, every other seam, anything about `Decidable (PlusValidZTime φ)`, any
+complexity bound). The phase also repaired six `check-module-invariants.sh` groups that this
+task's own earlier phases had turned red and no phase-level gate had been positioned to see.
 
 **Phase 7 lands requirement (S) itself.** `presented_modelOf` discharges `Trace.lean`'s
 realization hypothesis `Presented` for the model built FROM the presentation — HWZ 2000's
@@ -71,6 +86,81 @@ Phase 8 (the Hit-level corollary `hitCl_modelOf_eq_hitOf`, the aggregator import
 axiom pins, the theorem-index row, the READMEs and the ROADMAP) remains.
 
 ## What Changed
+
+### Phase 8
+
+- `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean` — the acceptance statement plus
+  the linter-scoping repair this task owed:
+  - `hitCl_modelOf_eq_hitOf` — the Hit-level corollary, at its Challenge pin, proved in one term:
+    `hit_eq_hitOf_of_presented (modelOf φ lab step hC) τ t φ lab (fun q q' => step q q' = true)
+    k hk (presented_modelOf hφ hC t q₀ hq₀ τ hτ)`. Elaborated green on the FIRST scratchpad
+    attempt with no tactic. The Phase 7 handoff's warning about the `decide` coercion on
+    `fun q q' => step q q' = true` turned out not to need any normalization: the step relation is
+    an ARGUMENT of `hit_eq_hitOf_of_presented`, so the same spelling is carried through to
+    `hitOf` on both sides of the equation and the two match syntactically.
+  - The module header's owed-work paragraph now says the file is closed by
+    `hitCl_modelOf_eq_hitOf` rather than that the Hit-level equality is "owed to a later module
+    section", and restates that neither `presented_modelOf` nor the corollary states or is a step
+    toward `Decidable (PlusValidZTime φ)`.
+  - **Three blanket `set_option linter.* false` file-level options removed**, replaced by
+    per-declaration `set_option ... in` stacks on the seven declarations that actually need them,
+    each with a `--` reason block naming its linters and what a deletion trial showed. Six
+    declarations instead carry `omit` clauses, which remove the unused binder rather than hide
+    the finding. A deletion trial measured the blanket options at 16 findings across the file, so
+    the scoping is exhaustive rather than a sample.
+  - The `Paper:` lines of the two newly-indexed theorems were changed to the `— (reason)` form
+    the theorem index's own C15 round-trip check requires of a row whose Paper-label cell is `—`,
+    with HWZ named in the reason and its UNVERIFIED-summary provenance stated.
+  - One task-number citation (`Task 742's wired probe`) replaced by the probe's own path — the
+    `no-task-references-in-deliverables` rule, enforced by C9.
+- `FormalSystem/Metalogic/Decidability/RaySummary.lean` — the `Realize` import edge, a module
+  bullet enumerating the whole construction, and the header-paragraph rewrite: `Presented` now
+  "has a NON-VACUOUS instance", with the scope (one seam, `box`/`stab`-free `φ`, `Cons`) and the
+  limits (no model not so constructed; `box`/`stab`-bearing `φ` and the lift to validity both
+  open, both (W)) stated in the same sentence.
+- `FormalSystem.lean` — the generated root regenerated by `lake exe mk_all --lib FormalSystem`,
+  adding the one missing `Realize` import line. C33 had been red since Phase 2 created the module.
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — the file table gains a
+  `Realize.lean` row; the "What it does not do" bullet that read "It does not realize a
+  presentation (B2b)" is rewritten to "It realizes a presentation only on the `box`/`stab`-free
+  fragment, at one seam"; the (S) row of the verdict's three-requirement table is marked
+  DISCHARGED with its scope; a new `### (S): what landed and what did not` subsection carries the
+  two pinned statements, the non-interference with `Probe735.not_presented`, the eleven-field
+  `Cons` with `nowUnique`'s provenance, the `box`/`stab` limitation with its
+  `plusStateLocal_stab_iff` mechanism and its assignment to (W), the descoped frame-constructor
+  prerequisite with its measured replacement, and the explicit statements that nothing says
+  `Decidable (PlusValidZTime φ)` and no complexity bound is claimed; a seventh-probe paragraph
+  describes `b2b-frame-constructor-branching.lean` positively and negatively; carried limit 2 is
+  updated.
+- `docs/theorem-index.md` — two new rows (`presented_modelOf`, `hitCl_modelOf_eq_hitOf`), each
+  naming the frame class (regular ℤ-frame), the language fragment (`box`/`stab`-free L⁺), the
+  premise set (`Cons`), the one-seam limit and, for the corollary, the `1 ≤ k` depth bound. The
+  four `**Conditional**` rows of the 194-201 band are reworded to say the hypothesis now has a
+  constructed non-vacuous instance; none of their own statements is altered.
+- `scripts/check-module-invariants.sh` — three matched pairs appended to the C14 baseline heredocs
+  so that the `pinned:C14` cells of the two new rows are claims the baseline actually asserts, and
+  so is task 745's `hitPresented_of_presented` row, which was carrying an unasserted `pinned:C14`.
+- `scripts/nolints.json` — two `unusedArguments` entries, for `untl_iff_of_UCoh_ULive` and
+  `snce_iff_of_SCoh_SLive`. Forced: both are Challenge-pinned, so their instance binders cannot be
+  dropped, and `unusedArguments` is an env_linter finding that no `set_option` can scope.
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — eight axiom pins, one per Goal,
+  append-only in the file's existing `#guard_msgs in #print axioms` form, under a header section
+  that states what the pins do and do not certify (not validity, not the whole language, not a
+  refutation of the refutation, no complexity bound, no finite-fibre assumption, nothing backward
+  by symmetry) and records `Cons`'s eleventh field. The "What is pinned" table gains eight rows
+  and the "What this does not pin" paragraph is corrected.
+- `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` — one `#guard` for `Cons.nowUnique` on the
+  existing Phase 5 fixture, in the field's own vocabulary, with a note on why `nowOnce` does not
+  imply it. This discharges the Phase 7 handoff's first owed item.
+- `specs/ROADMAP.md` — the (S) paragraph rewritten: landed for `box`/`stab`-free `φ` at one seam
+  with the artefacts named; the 1,200-2,000 construction estimate was right at its low end
+  (~1,200 lines of Lean across six proof phases) and the 300-500 line prerequisite was pessimistic
+  and then descoped entirely, replaced by a named ~120-160 line parallel-constructor successor;
+  and the "test backward finite branching cheapest" instruction was followed and returned a
+  refutation of the repair shape in both orientations, which the wired probe holds.
+- `FormalSystem/Metalogic/README.md`, `FormalSystem/PlusLanguage/README.md`,
+  `FormalSystem/README.md`, `README.md` — generated inventory blocks regenerated by
+  `check-module-invariants.sh --emit-inventory`.
 
 ### Phase 7
 
@@ -227,6 +317,52 @@ axiom pins, the theorem-index row, the READMEs and the ROADMAP) remains.
 
 ## Decisions
 
+### Phase 8
+
+- **`hitCl_modelOf_eq_hitOf` is a term, not a tactic proof, and needed no `decide` normalization.**
+  The Phase 7 handoff predicted that the pinned `fun q q' => step q q' = true` spelling would need
+  the same `rw [show … from by funext …]` normalization `presented_modelOf` opens with. It does
+  not: that normalization was needed because `Presented`'s `step` field is `Bool`-valued and the
+  proof had to reach the bare `step`, whereas `hit_eq_hitOf_of_presented` takes the step relation
+  as an ARGUMENT, so passing the pinned spelling carries it identically into both the hypothesis
+  and the `hitOf` on the right-hand side. One `exact`-shaped term, green on the first attempt.
+- **The two new theorem-index rows carry `Paper: — (reason)`, not an HWZ anchor.** The index's own
+  C15 round-trip check requires a row whose Paper-label cell is `—` to be matched by a
+  `Paper: — (reason)` line at the declaration, and requires a row with a label to be matched by a
+  BACKTICKED anchor resolving against `docs/reference/paper-definitions-of-record.md`. HWZ 2000 is
+  external literature with no entry there, and inventing one would have been a false anchor, so
+  the `—` form was taken with HWZ named inside the reason clause and its UNVERIFIED-summary
+  provenance stated. The whole 194-201 band already uses `—`.
+- **`pinned:C14` was made true rather than written as a claim.** The index legend says the Axioms
+  column "is generated from those baselines, never typed", so a `pinned:C14` cell is an assertion
+  that the C14 baseline pair checks the profile on every build. Three matched pairs were appended
+  to both heredocs — the two new declarations, and task 745's `hitPresented_of_presented`, whose
+  row was already carrying an unasserted `pinned:C14`. `scripts/check-module-invariants.sh` is not
+  in Phase 8's declared file list; the alternative was a bare `pcq` cell (74 rows use that form),
+  but the README's own consumer-relation paragraph establishes "additionally pinned by C14 for its
+  row" as the convention for this band, so the stronger, checked form was taken.
+- **Six `omit` clauses and seven scoped `set_option` stacks, not two more `nolints.json` rows than
+  necessary.** Removing the three blanket linter options (C30) and documenting what remained (C29)
+  interacted with the env_linter `unusedArguments` batch (C16): `omit`ting an unused binder removes
+  the finding, while a `set_option` only hides the LSP-side linters and leaves the env_linter
+  batch reporting. Working the cascade down took the batch from six findings to two. The last two
+  are on `untl_iff_of_UCoh_ULive` and `snce_iff_of_SCoh_SLive`, both Challenge-pinned, so dropping
+  a binder would drift a recorded statement — which `plan-compliance.md` forbids outright — and
+  `unusedArguments` is an env_linter finding no `set_option` can scope. Those two went to
+  `nolints.json`, the sanctioned and sole permanently-grandfathered category, as a two-row
+  extension rather than the six the un-`omit`ted shape would have required.
+- **`omit … in` must sit INNERMOST in a suppression stack.** With `omit` above the `set_option`
+  lines, a `linter.style.show` suppression stopped reaching its declaration and the warning
+  reappeared; with `omit` directly above the doc comment and the `set_option`s above it, the build
+  is clean. C29's own walk-back also requires it: its stacked-line pattern matches
+  `set_option … in` only, so an `omit` line between a reason comment and its suppression makes the
+  suppression read as bare.
+- **The Phase 7 handoff's three owed items were all discharged in this phase, not deferred.** The
+  `nowUnique` `#guard` landed on the Phase 5 fixture; `Cons`'s eleven fields and `nowUnique`'s
+  derivation-from-the-theorem are stated in the aggregator header, the README's new (S)
+  subsection, the axiom-pin harness header and this summary; and the prose counterexample is
+  carried forward as a named successor in Follow-ups rather than silently dropped.
+
 ### Phase 7
 
 - **The eleventh `Cons` field rather than a hypothesis on `presented_modelOf`.** Adding
@@ -334,6 +470,39 @@ axiom pins, the theorem-index row, the READMEs and the ROADMAP) remains.
 
 ## Plan Deviations
 
+### Phase 8
+
+- **Files beyond the declared list**: `scripts/check-module-invariants.sh` (three C14 baseline
+  pairs, so the new rows' `pinned:C14` cells are checked rather than claimed),
+  `scripts/nolints.json` (two forced `unusedArguments` rows — see Decisions),
+  `FormalSystem.lean` (regenerated by `lake exe mk_all --lib FormalSystem`;
+  `check-module-invariants.sh`'s C33 had been red since Phase 2 created `Realize.lean`),
+  `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` (the `nowUnique` `#guard` the Phase 7
+  handoff owed), and the four generated inventory blocks
+  (`FormalSystem/Metalogic/README.md`, `FormalSystem/PlusLanguage/README.md`,
+  `FormalSystem/README.md`, `README.md`, regenerated by `--emit-inventory`). All six are
+  closeout mechanics for work this task had already landed; none changes a proof or a statement.
+- **"The four `**Conditional**` rows" — there are five.** The 194-201 band has five rows whose
+  statement begins `**Conditional`; the fifth is task 745's `hitPresented_of_presented`, whose own
+  discharge story (`HitPresented` holds on fixture model A where `Presented` is refuted) is
+  already accurate and needed no rewording. The four taken are rows 197-200, the ones asserting
+  the hypothesis is discharged for no non-trivial model.
+- **Scope Hypothesis — three of four counts confirmed, one wrong.** Eight axiom pins: CONFIRMED
+  exactly (`git diff` on the axiom test shows 8 `+#print axioms` lines, one per Goal, so no Goal
+  was silently dropped or added relative to `## Lean Challenge Statements`). Two new
+  theorem-index rows: CONFIRMED (`git diff --numstat` 6 added / 4 removed = 2 new plus 4
+  rewordings). Six files touched as enumerated: WRONG — fourteen were, the eight extra being the
+  six above plus `FormalSystem/README.md` and `README.md`. Fifteen registered evidence probes:
+  WRONG, and the figure was already stale when the plan was written — the gate's own count line
+  reads 25, as the Phase 1 handoff had recorded.
+- **Six `check-module-invariants.sh` groups were red on entry and are green on exit.** The script
+  is not in Phase 8's Verification list, so nothing in Phases 2-7 ran it, and all six failures
+  trace to this task's own `Realize.lean`: C9 (a task-number citation, forbidden outside
+  `specs/**`), C16 (six env_linter `unusedArguments` findings), C29 (two suppressions with no
+  reason), C30 (three blanket linter options), C33 (the generated root missing the `Realize`
+  import), and INV (stale generated inventory blocks). Repairing them is closeout rather than new
+  scope; leaving them would have reported an incomplete task as complete.
+
 - **Task 2** (Phase 7) altered, two changes. (a) The history is built by the bullet's own
   parenthetical alternative, `FrameOver.worldHistoryOfStepPath` with `IsStepPath` from
   `frameOf_step`, rather than `frameOf_mem_HF_iff`'s `←` direction. (b) **The bullet was not
@@ -429,6 +598,58 @@ axiom pins, the theorem-index row, the READMEs and the ROADMAP) remains.
   the phase's own Verification criterion requires.
 
 ## Verification
+
+### Phase 8 — the complete gate set, every one green
+
+- **Full-project guarded build, detached**: `lake-build-guard.sh build --timeout 1800 -- build` —
+  guard's own exit code 0 (un-piped), `Build completed successfully (2837 jobs)`,
+  `lake-build-guard: STATUS: exit_status=0`, **0 `error:` and 0 `warning`** over both captured
+  streams. `.olean` newer than source confirmed for `…RaySummary.Realize`, `…RaySummary` and
+  `FormalSystem`.
+- **Test library**: `-- build BimodalTest` (NOT built by a plain `lake build` —
+  `defaultTargets = ["FormalSystem"]` only, so this is a separate invocation) — guard exit 0,
+  `Build completed successfully (2900 jobs)`, 0 `error:` and 0 `warning`. Every `#guard_msgs` and
+  `#guard` in `KTypeSummaryAxiomTest.lean` and `KTypeFinEvalTest.lean` therefore passes, the eight
+  new pins and the new `nowUnique` guard among them; `.olean`s newer than source for both.
+- **`bash scripts/check-evidence-probes.sh`**: exit 0, `PASS  all 25 wired probe(s) compile`,
+  including `b2b-frame-constructor-branching` and both probes this task may not retire.
+- **`bash scripts/check-module-invariants.sh`**: exit 0, **ALL CHECKS PASSED**, 43 PASS groups,
+  zero FAIL. Specifically: `PASS C14 every pinned declaration matches its axiom baseline` (the
+  three appended pairs hold), `PASS C15 all 263 theorem-index row(s) carry their anchor (or
+  `Paper: —`) at the declaration` (the two new rows round-trip), `PASS C16 env_linter batch …
+  has no un-nolisted finding`, `PASS C29 all 63 set_option linter.* false occurrence(s) in 16
+  file(s)`, `PASS C30 zero blanket linter options`, `PASS C33 FormalSystem.lean is byte-for-byte
+  the generated root`, `PASS INV every generated inventory block is current`, and
+  `PASS C9 zero task-number citations under FormalSystem/, lakefile.toml, README.md, scripts/`.
+- **`bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests/BimodalTest`**: exit 0,
+  `sorry_count: 0`, empty inventory. Zero sorries, zero strategic sorries, nothing deferred.
+- **`bash .claude/scripts/validate-artifact.sh …/plans/01_hit-level-soundness-b2b.md plan`**:
+  exit 0, `[PASS] plan artifact is valid (0 warning(s))`.
+- **Axiom pins, re-measured AFTER the `omit`/suppression rework** — all eight Goals exactly
+  `[propext, Classical.choice, Quot.sound]`: `untl_iff_of_UCoh_ULive`, `snce_iff_of_SCoh_SLive`,
+  `not_box_mem_plusSubformulaClosure`, `not_stab_mem_plusSubformulaClosure`, `cons_localRun`,
+  `anchored_runTrace_of_boxStabFree`, `presented_modelOf`, `hitCl_modelOf_eq_hitOf`. No binder
+  change moved a profile.
+- **Vacuous definitions**: zero in anything this task touched. The repository-wide grep returns
+  one hit, `FormalSystem/Examples/TemporalStructures.lean`'s `int_domain_universal`, which is
+  pre-existing, in a file this task never opened, and not vacuous in substance
+  (`intTimeHistory.domain t` genuinely reduces to `True`).
+- **Axiom count**: 15, byte-identical to `HEAD`. No axiom was introduced.
+- **`grep -n 'PlusValidZTime'` over every file this phase touched, read hit by hit**: 32 hits, all
+  negative statements ("nothing here states…", "does not follow and is not stated here in any
+  form", "no declaration mentions…") except `specs/ROADMAP.md:9`, which is the programme's
+  pre-existing statement of AIM and not a claim of achievement. No `Decidable` claim anywhere.
+- **`grep -niE 'EXPSPACE|PSPACE|exponential time|complexity bound'` over the same files**: 12
+  hits, every one a denial ("no complexity bound is claimed", "No complexity bound, upper or
+  lower, …").
+- **`git diff --stat` on the files this plan forbids touching**: EMPTY for
+  `presented-not-complete.lean`, `quasistate-does-not-determine-hit.lean`,
+  `FormalSystem/Semantics/SlicedFrame.lean` and `FormalSystem/Semantics/TaskFrame.lean`. Nothing
+  landed was retired, and no in-place generalization of `ofSlicedStep` was attempted.
+- **Statement fidelity**: `hitCl_modelOf_eq_hitOf` was compared against its
+  `## Lean Challenge Statements` pin and matches — same hypotheses in the same order
+  (`hφ`, `hC`, `t`, `q₀`, `hq₀`, `τ`, `hτ`, `k`, `hk`), same conclusion including the
+  `fun q q' => step q q' = true` spelling. No hypothesis added, no quantifier specialized.
 
 ### Phase 7
 
@@ -627,6 +848,28 @@ axiom pins, the theorem-index row, the READMEs and the ROADMAP) remains.
 
 ## Impacts
 
+### Phase 8
+
+- **`hitCl_modelOf_eq_hitOf` is the acceptance statement of this record**, and it is available to
+  downstream work as a theorem rather than as a hypothesis: `HitCl (modelOf φ lab step hC) τ t φ k
+  = ↑(hitOf lab (fun q q' => step q q' = true) (clNow φ) k)` for `1 ≤ k`.
+- **`Realize` is in the import closure**, through both `RaySummary.lean` and the regenerated
+  `FormalSystem.lean`, so every declaration of the construction is reachable from `import
+  FormalSystem` — which is what let the axiom-pin harness pin the eight Goals at all.
+- **The verdict's three-requirement table now reads (S) as discharged with a scope**, so a future
+  reader of `RaySummary/README.md` meets the limitation (`box`/`stab`-free, one seam) in the same
+  cell as the result, and the `box`/`stab` and multi-seam gaps are explicitly assigned to
+  requirement (W) rather than left as unattributed holes in (S).
+- **The frame-constructor successor is now a specified record rather than a carried estimate**: a
+  PARALLEL constructor beside `ofSlicedStep`, ~120-160 lines, inheriting a machine-checked
+  two-sided-finite-branching bound and two refutations of the obvious repair shapes, with the
+  in-place generalization prohibited for a counted reason (11 `[Finite W]` occurrences across 9
+  declarations; 17 referencing files, two of them probes that may not be retired).
+- **`check-module-invariants.sh` is green repository-wide**, which it was not on entry to this
+  phase. The three blanket linter options this task had introduced are gone, replaced by scoped,
+  reasoned suppressions and six `omit` clauses, so the file no longer suppresses anything
+  file-wide.
+
 ### Phase 7
 
 - Requirement (S) of the `RaySummary/README.md` ray-product verdict is discharged at `hitOf`
@@ -683,6 +926,34 @@ axiom pins, the theorem-index row, the READMEs and the ROADMAP) remains.
 
 ## Follow-ups
 
+### Opened or confirmed by Phase 8
+
+- **`Cons.nowUnique`'s counterexample is still PROSE, and remains this task's one unverified
+  claim.** Phase 8 did not wire it; the `#guard` it added witnesses that the Phase 5 fixture
+  SATISFIES `nowUnique`, which is non-vacuity of the field, not the independence argument. Wiring
+  the six-state counterexample as an evidence probe would bring it to this task's own acceptance
+  standard; ~120-200 lines. The claim is marked as prose in the field's docstring, in the Phase 7
+  handoff and here, and is not asserted anywhere as machine-checked.
+- **Two `nolints.json` rows were added**, for `untl_iff_of_UCoh_ULive` and
+  `snce_iff_of_SCoh_SLive`. They are forced by the Challenge pin (see Decisions), but they do
+  extend a grandfather set the repository intends to shrink. Retiring them needs the pinned
+  signatures to stop declaring instance binders their statements do not use — a Challenge-level
+  decision, not an implementation one, and so a question for whoever revises the plan's
+  `## Lean Challenge Statements`, never something to change quietly.
+- **Task 745's `hitPresented_of_presented` theorem-index row was carrying an unasserted
+  `pinned:C14`.** Repaired here, in the same heredoc pair Phase 8 was already appending to, with
+  the measured profile (`pcq`). The defect is recorded in `issues.jsonl` as
+  `sibling-defect`/`minor`. Worth a look at whether other `pinned:` cells across the index are
+  similarly unbacked — this one was found by accident, not by a check.
+- **`FormalSystem/Metalogic/Decidability/RaySummary/README.md`'s file table says
+  `Compose.lean | 298` and the file has 297 lines.** Pre-existing, in a row this phase did not
+  touch, and found while cross-checking the table against `wc -l` to place the new `Realize.lean`
+  row. One-character fix, deliberately left to its owner rather than taken silently.
+- **`check-module-invariants.sh` is not in any phase's Verification list in this plan**, which is
+  why six of its groups could go red across Phases 2-7 with every phase-level gate green. A plan
+  touching `FormalSystem/**` should name it in at least the final phase's gate set; this one named
+  the build, the probe gate and the sorry census but not the invariants script.
+
 - **`Cons.nowUnique`'s motivating counterexample is PROSE, not machine-checked — the one
   unverified claim in this task.** The field's docstring argues that two mutually unreachable
   `clNow`-labelled components with different atom labels satisfy the other ten fields while
@@ -726,6 +997,20 @@ axiom pins, the theorem-index row, the READMEs and the ROADMAP) remains.
   refutations bound that design space without closing it. That question belongs to the successor.
 
 ## References
+
+- `specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-8-handoff-20261008_230500.md`
+- `FormalSystem/Metalogic/Decidability/RaySummary.lean` (the aggregator: import edge, module
+  bullet, header rewrite)
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (the verdict, requirement (S)'s row
+  and the `### (S): what landed and what did not` subsection)
+- `docs/theorem-index.md` (the two new rows and the four reworded Conditional rows)
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` (the eight axiom pins)
+- `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` (the `nowUnique` `#guard`)
+- `scripts/check-module-invariants.sh` (the three C14 baseline pairs)
+- `scripts/nolints.json` (the two forced `unusedArguments` rows)
+- `specs/ROADMAP.md` (the (S) paragraph)
+- `FormalSystem/PlusLanguage/PlusStateLocal.lean` (`plusStateLocal_stab_iff` — the `stab`-collapse
+  mechanism, cited in prose and never re-proved or varied)
 
 - `specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md`
 - `specs/746_hit_level_soundness_realize_presentation_b2b/reports/01_hit-level-soundness-b2b.md`

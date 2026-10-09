@@ -1,109 +1,41 @@
 {
-  "status": "partial",
+  "status": "implemented",
+  "skeleton": false,
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": [
-    "orchestrator",
-    "implement",
-    "lean-implementation-hard-agent"
-  ],
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 746,
-  "phase_number": 7,
-  "dispatch_seq": 19,
+  "dispatch_seq": 20,
+  "phase_number": 8,
   "session_id": "sess_1791500801_df94d6",
-  "phases_completed": 7,
-  "phases_total": 8,
   "requires_user_review": false,
-  "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-7-handoff-20261008_213550.md",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/746_hit_level_soundness_realize_presentation_b2b/summaries/01_hit-level-soundness-b2b-summary.md",
-      "summary": "Running task summary, extended with Phase 7: presented_modelOf discharges Presented for the constructed model at a seam, plus the Cons.nowUnique field the (<=) direction forced."
+      "summary": "All eight phases of requirement (S): the B2b soundness construction, landed for box/stab-free phi at one seam, with hitCl_modelOf_eq_hitOf as the acceptance statement."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-8-handoff-20261008_230500.md",
+      "summary": "Phase 8 handoff: the gate evidence, the six repaired invariant groups, and the five named successors."
     }
   ],
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
     "vacuous_count": 0,
-    "vacuous_note": "Repository-wide sweep returns one pre-existing hit (FormalSystem/Examples/TemporalStructures.lean:495, int_domain_universal := trivial, last touched by 85e92e9e4); zero in this phase's additions.",
     "axiom_count": 15,
-    "axiom_note": "Unchanged repository baseline; zero '^axiom' lines in this phase's additions.",
     "build_passed": true,
-    "build_evidence": "Full-project guarded detached build: guard exit 0, 'Build completed successfully (2836 jobs)', 0 error: and 0 warning over both captured streams; Realize.olean newer than Realize.lean.",
     "verification_passed": true,
-    "axiom_pins": {
-      "presented_modelOf": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "anchored_runTrace_of_boxStabFree": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "exists_stepPath_of_chain": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "run_seam_state": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "isRun_of_chain_seam": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "cons_localRun": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ]
-    },
-    "statement_fidelity": "presented_modelOf and anchored_runTrace_of_boxStabFree extracted from the plan's '## Lean Challenge Statements' and from the module and compared character for character: MATCH on both. Presented itself unmodified (Trace.lean untouched)."
+    "notes": "Full-project guarded build: guard exit 0, 2837 jobs, 0 error / 0 warning, oleans newer than source. BimodalTest built separately (defaultTargets is FormalSystem only): guard exit 0, 2900 jobs, 0 error / 0 warning, so every #guard_msgs and #guard passes. check-evidence-probes.sh exit 0, 25 probes. check-module-invariants.sh exit 0, ALL CHECKS PASSED, 43 groups. lean-sorry-census.sh sorry_count 0. validate-artifact.sh exit 0 on plan and summary. All eight Goals pinned at [propext, Classical.choice, Quot.sound]. The one repository-wide vacuous-pattern hit is pre-existing in FormalSystem/Examples/TemporalStructures.lean, a file this task never opened, and is not vacuous in substance."
+  },
+  "completion_data": {
+    "completion_summary": "Requirement (S) of the ray-product verdict is landed: a finite labelled presentation satisfying the eleven-field consistency bundle Cons is realized by a regular Z-model constructed from it (presented_modelOf), and the realized set of that model's seam IS the computable hitOf of the presentation at every depth k >= 1 (hitCl_modelOf_eq_hitOf) -- HWZ 2000 Theorem 14 in the (<=) direction for the box-dot fibre. Scope, carried in the statements rather than in prose: box/stab-free phi of L+, ONE seam, [F.IsRegular] via frameOf_isRegular, [Fintype Q] on the PRESENTATION only (the constructed model's carrier Z x Q is infinite, so no finite-fibre or finite-width assumption is introduced). Probe735.not_presented is neither refuted nor weakened: it quantifies over models not built from a presentation, and both wired probes stay. The box/stab-bearing fragment and the lift from one seam to validity are assigned to requirement (W); Decidable (PlusValidZTime phi) is not stated in any form and no complexity bound is claimed. The carried 300-500 line frame-constructor prerequisite was descoped on a machine-checked finding that (S) does not need it, and remeasured at ~120-160 lines as a parallel constructor, with the branching probe holding both its positive bound and its two refutations of the obvious repair shapes."
   },
   "memory_candidates": [
-    {
-      "insight": "A Lean Challenge pin on a `structure ... : Prop where` with NO fields listed constrains the structure's NAME and PARAMETERS only, not its field set. Adding a field to such a structure mid-plan drifts no pinned signature, which makes it the sanctioned repair when a later phase discovers the bundle is too weak -- strictly preferable to adding a hypothesis to a theorem whose own signature IS pinned (which plan-compliance.md's Statement Fidelity section forbids).",
-      "keywords": [
-        "lean",
-        "plan-compliance",
-        "challenge-statements",
-        "statement-fidelity",
-        "structure-pin"
-      ]
-    },
-    {
-      "insight": "A certificate-shaped Prop bundle that nothing in the tree INHABITS is a bundle whose fields nothing exercises. In task 746 the Cons bundle was validated only by clause-level #guards on a fixture, never by constructing a Cons term, and a necessary eleventh field (uniqueness of the marked state) went missing for two phases as a direct result. Clause-level #guards are not a substitute for one real inhabitant.",
-      "keywords": [
-        "lean",
-        "non-vacuity",
-        "certificate",
-        "interesting-witness",
-        "bundle-design"
-      ]
-    },
-    {
-      "insight": "A `Q -> Q -> Bool` parameter spelled at a call site as `fun q q' => rel q q' = true` elaborates with a `decide` coercion, NOT as the bare `rel`, so the two are not definitionally equal for a variable `rel`. Normalize once up front with `rw [show (fun q q' => decide (rel q q' = true)) = rel from by funext q q'; simp]` rather than fighting it at every use.",
-      "keywords": [
-        "lean",
-        "decide-coercion",
-        "bool-prop",
-        "elaboration"
-      ]
-    },
-    {
-      "insight": "Two conditions that both sound like 'the marker is read once' are independent and both needed: once-only ALONG a path (no positive-length step path between two marked states) makes a chain an anchored run; once-only ACROSS the state set (at most one marked state) pins the anchor to a given seam's own state. The first permits two mutually unreachable marked components; the second permits the single marked state to recur along a path.",
-      "keywords": [
-        "temporal-logic",
-        "quasimodel",
-        "anchoring",
-        "seam",
-        "hwz-theorem-14"
-      ]
-    }
+    "In Lean 4, `omit [Inst] in` must be the INNERMOST modifier in a suppression stack: placed above the `set_option ... in` lines it silently stops those options reaching the declaration, and placed between a `--` reason comment and its suppression it makes the suppression read as unreasoned to a checker whose walk-back pattern matches `set_option ... in` only.",
+    "A blanket file-level `set_option linter.X false` and an env_linter batch finding are different problems with different fixes: the `set_option` hides only LSP-side linters, so an `unusedArguments` finding survives it and needs either an `omit` (which removes the binder) or a nolints entry. Prefer `omit` -- but it cascades: dropping a binder from a helper can push the same finding up to its callers.",
+    "When a theorem-index row's Axioms cell claims `pinned:<check>`, that is an assertion the check actually makes -- verify the declaration is in the check's baseline before writing the cell, or the row documents a pin nobody enforces.",
+    "A Lean project whose `defaultTargets` names only the main library is not fully verified by `lake build`: a test library's `#guard`/`#guard_msgs` are never elaborated until that library is built by name."
   ]
 }
