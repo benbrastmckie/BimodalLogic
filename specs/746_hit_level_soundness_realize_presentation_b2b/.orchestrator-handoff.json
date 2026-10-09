@@ -1,16 +1,16 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 1 complete: the frame-constructor branching verdict is wired as a permanent, rot-guarded evidence probe (specs/evidence/seam-gluing-ray-product/b2b-frame-constructor-branching.lean, 283 lines, 18 declarations, zero proof debt) and registered in scripts/check-evidence-probes.sh, which now reports 'PASS all 25 wired probe(s) compile' and exits 0. Nothing under FormalSystem/ was touched. Single-phase dispatch: phases 2-8 remain, Phase 2 and Phase 4 are both unblocked.",
-  "phases_completed": 1,
+  "summary": "Phase 2 complete: FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean created (249 lines, zero sorries, scoped build green with zero errors and zero warnings), holding the forward untl half of the consistency conditions -- UCoh, deferGraph, ULive, Disch, decidableUCoh, decidableULive, persist, disch_of_UCoh_ULive, u_of_disch, and the plan-pinned untl_iff_of_UCoh_ULive -- transcribed verbatim from the research dispatch's compiled probe evidence/02_cons-untl-core.lean. Axiom profile of all four theorems is exactly [propext, Classical.choice, Quot.sound]. Generic over sig and Q: no model, no frame, no carrier finiteness in any statement. The aggregator import edge is deliberately still absent (Phase 8 owns it). typst/generated/status.typ regenerated per the pre-commit gate's own remedy after the new .lean file moved the live file/line counts. Single-phase dispatch: phases 3-8 remain; Phase 3 (snce mirror, same module) and Phase 4 (PlusLanguage/Subformulas.lean, BoxStabFree) are both unblocked and territory-disjoint.",
+  "phases_completed": 2,
   "phases_total": 8,
-  "dispatch_seq": 13,
+  "dispatch_seq": 14,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-1-handoff-20261008_195036.md",
+  "continuation_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-2-handoff-20261008_200241.md",
   "continuation_context": {
     "is_successor": false,
-    "next_phase": 2,
-    "note": "phase_number was set to 1 for this dispatch; stopping as instructed. Phase 2 (RaySummary/Realize.lean, untl half) and Phase 4 (PlusLanguage/Subformulas.lean, BoxStabFree) are both in Wave 1 and territory-disjoint."
+    "next_phase": 3,
+    "note": "phase_number was set to 2 for this dispatch; stopping as instructed. Phase 3 adds the backward snce mirror (SCoh, bwdDeferGraph, SLive, DischBwd, snce_iff_of_SCoh_SLive) to the SAME module in a new section -- OWED work proved outright, since this tree has no backward Bool-fixture bridge and no symmetry transfers from untl_iff_of_UCoh_ULive. Phase 4 is territory-disjoint and may run in parallel. Note for Phase 3: the module already carries a commented section-level set_option suppressing linter.unusedFintypeInType and linter.unusedDecidableInType, which new declarations under the same variable block inherit. Note for any .lean-touching phase: FormalSystem.lean's import count stays one behind the file count until Phase 8 adds the aggregator edge, so typst-status-counts.sh's 670-vs-671 warning is expected and non-fatal, and each phase commit must stage a regenerated typst/generated/status.typ."
   }
 }

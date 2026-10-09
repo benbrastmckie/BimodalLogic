@@ -273,7 +273,7 @@ and the estimate, not the edit, was wrong. Append-only was verified structurally
 
 ---
 
-### Phase 2: `Realize.lean` and the `untl` half of the consistency conditions [NOT STARTED]
+### Phase 2: `Realize.lean` and the `untl` half of the consistency conditions [COMPLETED]
 
 **Goal**: Create the new module and land, as a transcription of the compiled research probe, the
 decidable forward conditions `UCoh`/`deferGraph`/`ULive` and the theorem that they force
@@ -281,7 +281,7 @@ decidable forward conditions `UCoh`/`deferGraph`/`ULive` and the theorem that th
 `Q`, with no model and no `[Finite W]`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean` (namespace
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean` (namespace
       `FormalSystem.Metalogic.Decidability.RaySummary`, importing
       `FormalSystem.Metalogic.Decidability.RaySummary.Trace`,
       `FormalSystem.Metalogic.Decidability.RaySummary.HitOf` and
@@ -294,20 +294,20 @@ decidable forward conditions `UCoh`/`deferGraph`/`ULive` and the theorem that th
       `Probe735.not_presented`'s pumping proof and not from HWZ Def 10's bare type set, which
       `quasistate_does_not_determine_hit` refutes for this semantics; and that the fixtures are
       forward-only.
-- [ ] Transcribe from `evidence/02_cons-untl-core.lean`: `UCoh lab step u g e : Prop` (the
+- [x] Transcribe from `evidence/02_cons-untl-core.lean`: `UCoh lab step u g e : Prop` (the
       per-edge unfolded `untl` clause), `deferGraph lab step u e : Q → Q → Bool`,
       `ULive lab step u e : Prop` (`∀ q, live (deferGraph lab step u e) q = false`), and the
       decidability instances for `UCoh` and `ULive` over `[Fintype Q] [DecidableEq Q]`.
-- [ ] Transcribe the three supporting lemmas with their probe proofs: `persist` (under `UCoh`, an
+- [x] Transcribe the three supporting lemmas with their probe proofs: `persist` (under `UCoh`, an
       undischarged claim at `z` forces `u`, `g` and `¬e` at every `z+1+m` for `m ≤ n`),
       `disch_of_UCoh_ULive` (the hard (⇒) direction, routed through `live_iff`'s `HasChain`
       characterization), and `u_of_disch` (the (⇐) direction, walking coherence back from the
       witness). Where the probe supplies a `HasChain` witness as a lambda, keep the explicit
       `show` that beta-reduces before `rw` (research tactic survey).
-- [ ] State and prove `untl_iff_of_UCoh_ULive` as the combination, with the signature pinned in
+- [x] State and prove `untl_iff_of_UCoh_ULive` as the combination, with the signature pinned in
       `## Lean Challenge Statements` below. Docstring cites `Probe735.pump_isRun` by name as the
       object `ULive` forbids.
-- [ ] Scoped build of `FormalSystem.Metalogic.Decidability.RaySummary.Realize`; `#print axioms
+- [x] Scoped build of `FormalSystem.Metalogic.Decidability.RaySummary.Realize`; `#print axioms
       untl_iff_of_UCoh_ULive`; `grep -c sorry` = 0. Do NOT add the aggregator import yet — that
       is Phase 8, so a mid-plan full build never pulls an incomplete module.
 
@@ -324,6 +324,10 @@ aggregator edge is deliberately deferred to Phase 8), so the scoped build of
 **Scope Hypothesis**: ~170-210 lines (the probe is 150 lines; the module header and the
 decidability instances add 20-60). Confirm by `wc -l` at phase end; past 300 lines means the
 probe is being re-proved rather than transcribed, which `plan-compliance.md` forbids.
+*(outcome: 249 lines — above the 170-210 estimate, under the 300 red line. Every proof body is
+the probe's verbatim; the excess is the module header the phase's own first task specifies (~60
+lines of scope and negative-claim prose) plus two commented, declaration/section-scoped linter
+suppressions following `Compose.lean`'s precedent. No proof was re-derived.)*
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean` - new module (the `untl` half)
