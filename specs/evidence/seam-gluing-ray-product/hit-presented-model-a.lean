@@ -1200,6 +1200,74 @@ theorem jump_window_card (t : ℤ) (L : ℕ) : (Finset.Icc t (t + (L : ℤ))).ca
 #guard ((List.finRange 5).filter
     (fun i => stepOf 2 (Sum.inr i) (Sum.inr (4 : Fin 5)) && !decide (i.val = 4))).length = 3
 
+/-! ## Assembly: the headline
+
+One composition, and no new mathematical content. `hitCl_eq_truncated` (Phase 4) supplies the
+`L` and rewrites the seam side into a finite family of family-triple sets; `mem_hitOf_iff`
+(library, `RaySummary/HitOf.lean`, re-resolved by name) rewrites the presentation side into
+run-existence, and that rewrite is the only place `1 ≤ k` is consumed; the run characterization
+(Phase 6) then identifies the two sides' trace arguments in both directions —
+`runTrace_mem_of_isRun` for `⊆`, `exists_isRun_runTrace` for `⊇`.
+
+Note the shape of the bridge. `mem_hitOf_iff` is stated membership-wise with
+`InFamily sig k x.1 x.2.1 x.2.2 (runTrace lab ρ)` on the right, and `familyTriples sig k c` is
+`{x | InFamily sig k x.1 x.2.1 x.2.2 c}`, so the two sides meet at `InFamily` with the trace as
+the only differing argument — which is exactly what Phase 6's two directions supply. Nothing here
+compares TRACE SETS, and that is the whole reason the Hit level survives: trace-set equality is
+what `Probe735.not_presented` refutes. -/
+
+/-- **The headline.** `HitPresented` holds on fixture model A at the seam `(t, a)` of `stayA`
+with `φ := Fp`, at every depth `k ≥ 1`, for an UNEXHIBITED `L` — so the Hit-level hypothesis is
+satisfiable where `Presented` is refuted (`Probe735.not_presented`), and no computable bound is
+delivered. Nothing about `PlusValidZTime`, nothing about `⊡(P p)`, nothing about general regular
+ℤ-models. -/
+theorem hitPresented_modelA (t : ℤ) (k : ℕ) (hk : 1 ≤ k) :
+    ∃ L : ℕ, HitPresented MA stayA t Fp (labOf L) (stepOf L) k := by
+  obtain ⟨L, hL⟩ := hitCl_eq_truncated t k hk
+  refine ⟨L, ?_⟩
+  show HitCl MA stayA t Fp k = ↑(hitOf (labOf L) (stepOf L) (clNow Fp) k)
+  rw [hL]
+  ext x
+  rw [Finset.mem_coe, mem_hitOf_iff (labOf L) (stepOf L) (clNow Fp) k t hk x]
+  constructor
+  · rintro (hx | hx)
+    · obtain ⟨⟨ρ, hρ, htr⟩, -⟩ := exists_isRun_runTrace t L
+      exact ⟨ρ, hρ, by rw [htr]; exact hx⟩
+    · obtain ⟨w, hw, hx⟩ := Set.mem_iUnion₂.mp hx
+      obtain ⟨-, hjump⟩ := exists_isRun_runTrace t L
+      obtain ⟨ρ, hρ, htr⟩ := hjump w hw.1 hw.2
+      exact ⟨ρ, hρ, by rw [htr]; exact hx⟩
+  · rintro ⟨ρ, hρ, hx⟩
+    rcases runTrace_mem_of_isRun t L ρ hρ with h | ⟨w, hw1, hw2, h⟩
+    · exact Or.inl (by rw [← h]; exact hx)
+    · exact Or.inr (Set.mem_iUnion₂.mpr ⟨w, ⟨hw1, hw2⟩, by rw [← h]; exact hx⟩)
+
+/-! ### What `hitPresented_modelA` does NOT say
+
+* **No `L` is exhibited, so no bound is delivered.** The `∃ L` is inherited verbatim from
+  `hitCl_eq_truncated`, whose `L` is a `Set.Finite.bddAbove` upper bound on a `choose!`-extracted
+  offset function — two uses of `Classical.choice`, neither of which produces a number. In
+  particular `card_QA` reads `Fintype.card (QA L) = L + 6`, a function of that unexhibited `L`,
+  so it is NOT a bound in `Fp`: requirement (C) asks for `Fintype.card Q` below a COMPUTABLE
+  bound in `φ`, and this record does not deliver that half. `jump_window_card`'s `L + 1` is in
+  the same position and is a count of realized thresholds, not a bound either.
+* **The presentation is deliberately NOT `Presented`.** It realizes only the finitely many seam
+  traces inside the truncation window, so the TRACE-set equality `Probe735.not_presented`
+  refutes is false of it. Both facts hold of this same fixture, at this same seam, for this same
+  `φ`; task 735's verdict and its wired probe stand unchanged, and nothing here retires them.
+* **Forward-only.** Nothing about `⊡(P p)`: the fixture is forward-only and there is still no
+  backward Bool-fixture bridge (`Probe719Backward.pastStab_iff_allBwdPathsMeet` on the asymmetric
+  fixture remains the only backward fixture result). No symmetry is implied or available.
+* **Nothing about deciding validity.** `Decidable (PlusValidZTime φ)` is not stated here in any
+  form, conditional or otherwise, and no claim is made that L⁺ is decidable, qualified or not.
+  (C) alone does not reach validity: (C) and (S) together still speak of ONE seam, and the lift
+  to validity is (W).
+* **One fixture, one seam, one `φ`.** Model A under `[F.IsRegular]`, for the fragment L⁺, over
+  the `ℤ` time axis, at the seam `(t, a)` of `stayA`, with `φ := Fp`. Nothing about general
+  regular `ℤ`-models — see the file header's "This does NOT generalize", whose reason is that
+  model A's splices are eventually constant in both directions.
+-/
+
 -- The closure-size figure the case split rests on, left live so a reader can re-run it.
 #eval (plusSubformulaClosure Fp).card
 
@@ -1216,5 +1284,6 @@ theorem jump_window_card (t : ℤ) (L : ℕ) : (Finset.Icc t (t + (L : ℤ))).ca
 #print axioms labOf_inr_iff_clTrace_jump
 #print axioms runTrace_mem_of_isRun
 #print axioms exists_isRun_runTrace
+#print axioms hitPresented_modelA
 
 end Probe745
