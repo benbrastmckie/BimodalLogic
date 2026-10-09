@@ -3,15 +3,22 @@
 - **Task**: 746 - Requirement (S) of the ray-product verdict: Hit-level soundness — realize a presentation by a constructed regular ℤ-model (B2b)
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T19:42:00Z
-- **Completed**: (not complete — 4 of 8 phases)
-- **Effort**: ~1.9 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted; Phase 3 ~0.4 h against 2 h budgeted; Phase 4 ~0.3 h against 1 h budgeted)
+- **Completed**: (not complete — 5 of 8 phases)
+- **Effort**: ~2.2 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted; Phase 3 ~0.4 h against 2 h budgeted; Phase 4 ~0.3 h against 1 h budgeted; Phase 5 ~0.3 h against 2 h budgeted)
 - **Dependencies**: None. (C) (task 745) is independent; (W) depends on this and on (C).
 - **Artifacts**: plans/01_hit-level-soundness-b2b.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Phases 1-4 of 8, across four single-phase dispatches (seq 13, 14, 15 and 16). Phase 4 lands
+Phases 1-5 of 8, across five single-phase dispatches (seq 13, 14, 15, 16 and 17). Phase 5
+closes the consistency conditions: the ten-field `Cons` bundle on a finite labelled presentation
+and `cons_localRun`, which reads every field of `LocalRun` off it — `bot` and `imp` from the
+per-state label equations, `untl` and `snce` by citing Phases 2 and 3 verbatim, with no new
+induction anywhere. Its non-vacuity is permanent and computed: one three-state presentation on
+which `UCoh`, `ULive`, `SCoh`, `SLive` and both bi-serialities all hold with real deferral edges
+in both time directions, plus a one-label negative control that breaks both liveness conditions
+while leaving both coherence conditions true — the `Probe735.pump_isRun` shape. Phase 4 lands
 this task's scope line as syntax: `PlusFormula.BoxStabFree` in
 `FormalSystem/PlusLanguage/Subformulas.lean`, with its subformula-inheritance lemma and the two
 closure-vacuity lemmas that collapse an `Anchored` certificate to its `now` and `atom` fields for
@@ -32,10 +39,27 @@ machine-checked frame-constructor findings into the tracked, rot-guarded evidenc
 that the plan's descoping of the carried 300-500 line "regular-frame constructor for finitely many
 fibre shapes per time" prerequisite rests on a green compiled artifact rather than on a report
 paragraph. That phase discharged no proof obligation and touched nothing under `FormalSystem/`.
-Phases 5-8 (the `Cons` bundle and its non-vacuity witness, `modelOf`, `presented_modelOf`, the
-Hit-level corollary and the acceptance statement) remain.
+Phases 6-8 (`frameOf`/`modelOf`, `presented_modelOf`, the Hit-level corollary and the
+acceptance statement) remain.
 
 ## What Changed
+
+### Phase 5
+
+- `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean` — appended `section Bundle`,
+  452 → 571 lines (+123 insertions, −2 deletions; the deletions replace the header sentence that
+  said the `Cons` bundle was still owed), zero sorries. Two declarations:
+  `Cons (φ) (lab : Q → (clSig φ).preds → Bool) (step)` — ten named fields in the plan's six
+  clause groups (`serialFwd`, `serialBwd`, `botFalse`, `impEq`, `ucoh`, `ulive`, `scoh`, `slive`,
+  `nowOnce`, `boxStabFree`) — and `cons_localRun`, exactly the plan-pinned signature, 20 lines of
+  proof. No existing declaration in the file was modified.
+- `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` — one added import
+  (`…RaySummary.Realize`, which the `RaySummary` aggregator does not yet re-export) and an
+  appended non-vacuity section, 132 → 236 lines (+104 insertions), zero sorries: the fixtures
+  `sigCons` (`⟨Fin 4⟩`, letters `u = 0`, `g = 1`, `e = 2`, `now = 3`), `QCons` (`Fin 3`),
+  `labCons`, `stepCons` (`0 → 0`, `0 → 1`, `1 → 2`, `2 → 2`) and the one-label control
+  `labConsBad`, with 15 `#guard`s against the landed declarations themselves rather than
+  re-spelled copies.
 
 ### Phase 4
 
@@ -168,6 +192,23 @@ Hit-level corollary and the acceptance statement) remain.
 
 ## Plan Deviations
 
+- **Task 1** (Phase 5) altered: the six clause groups landed as TEN named fields. Groups 1-4 each
+  name two independent conditions (forward/backward seriality; `botFalse`/`impEq`; `UCoh`/`ULive`;
+  `SCoh`/`SLive`), and bundling each pair into a conjunction field would force `cons_localRun` to
+  destructure at every use — the opposite of the field-by-field shape the bullet asked for. The
+  grouping is recorded in `Cons`'s docstring.
+- **Task 3** (Phase 5) altered, three additive changes. (a) The test module gained one
+  `import FormalSystem.Metalogic.Decidability.RaySummary.Realize` line against the bullet's
+  "append-only", because the `RaySummary` aggregator does not re-export `Realize` until Phase 8;
+  without it the fixtures would have had to re-spell `UCoh`/`ULive`/`deferGraph` as evidence probe
+  `03_cons-non-vacuity.lean` does, and would then be checking copies rather than the landed
+  declarations. (b) The backward half (`SCoh`, `SLive`, `bwdDeferGraph` and their control) was
+  added alongside the forward one, per the Phase 3 handoff's instruction to carry its backward
+  fixture into the permanent witness; one changed label serves as the control for both time
+  directions. (c) The once-only `now` condition is checked by the depth-3 enumeration the bullet
+  asks for, which is a computed check on the fixture and NOT a witness of the
+  `StepPath`-quantified `Cons.nowOnce` field — the appended test prose states the completeness
+  argument as prose and marks it as such rather than implying a machine check.
 - **Task 2** (Phase 4) altered: the inheritance lemma does NOT route through the helpers its plan
   bullet named. The bullet said to go "through the existing `subformulas_trans` / per-arm
   membership lemmas rather than re-deriving them"; neither is usable. `subformulas_trans` is a
@@ -223,6 +264,32 @@ Hit-level corollary and the acceptance statement) remain.
   the phase's own Verification criterion requires.
 
 ## Verification
+
+### Phase 5
+
+- Build: Success. Scoped guarded build of
+  `FormalSystem.Metalogic.Decidability.RaySummary.Realize` — guard exit 0,
+  `✔ [1930/1930] Built …Realize (4.7s)`, `Build completed successfully (1930 jobs)`, 0 `error:`,
+  0 `warning:`. Scoped guarded build of `BimodalTest.Metalogic.KTypeFinEvalTest` — guard exit 0,
+  `✔ [1933/1933] Built …KTypeFinEvalTest (80s)`, `Build completed successfully (1933 jobs)`,
+  0 `error:`, 0 `warning:`. A failing `#guard` is a build error, so all 15 new `#guard`s passed.
+  `.olean` newer than source confirmed for both modules.
+- Sorry count: 0 on both files. Sorry inventory: None.
+- `#print axioms cons_localRun` = exactly `[propext, Classical.choice, Quot.sound]`.
+- Vacuous count: 1 repo-wide, pre-existing and unchanged (`int_domain_universal`). This phase's
+  insertions contain no `:= True`, `:= Unit`, `:= trivial` or `:= Trivial` body (0 matches in
+  `git diff`); `Cons` is a ten-field structure.
+- Axiom count: 15, unchanged — no new axiom.
+- Non-vacuity, computed: `deferGraph labCons stepCons 0 2 1 2` and
+  `bwdDeferGraph labCons stepCons 0 2 1 0` both true, so neither `ULive` nor `SLive` holds merely
+  because its graph is empty.
+- Negative control, computed and genuinely negative in both directions:
+  `!decide (ULive labConsBad stepCons 0 2)`, `live (deferGraph labConsBad stepCons 0 2) 0`,
+  `!decide (SLive labConsBad stepCons 0 2)` and `live (bwdDeferGraph labConsBad stepCons 0 2) 0`
+  all pass, while `UCoh` and `SCoh` stay true on the same altered labelling.
+- Scope Hypothesis: `Realize.lean` +123 against ~130-180 (under, because `cons_localRun` cites
+  rather than re-derives); test module +104 against ~70-100 (4 over, prose). `cons_localRun` is
+  20 lines against the plan's ~80-line re-derivation tripwire.
 
 ### Phase 4
 
@@ -317,6 +384,18 @@ Hit-level corollary and the acceptance statement) remain.
 
 ## Impacts
 
+- `LocalRun` is now obtainable in full from a consistency bundle on a presentation alone —
+  `cons_localRun` — with no model, no frame, and no carrier finiteness beyond `[Fintype Q]` on
+  the presentation. That is the single largest obligation Phase 7's `presented_modelOf` carries,
+  and it is discharged ahead of the model being built at all.
+- The `Cons` bundle gives Phases 6-7 named fields where they previously had side conditions:
+  `serialFwd`/`serialBwd` are what `ofSlicedStep`'s serial and limit discharges consume,
+  `nowOnce` is what turns a `step`-path into an `IsRun`, and `boxStabFree` is what feeds the two
+  closure-vacuity lemmas Phase 4 landed.
+- The liveness half of `Cons` is now connected to `Probe735.pump_isRun` by a computed negative
+  control in the permanent test suite, in both time directions, rather than only in prose. A
+  future edit to any of `UCoh`, `ULive`, `deferGraph`, `SCoh`, `SLive` or `bwdDeferGraph` that
+  made the conditions vacuous would turn `KTypeFinEvalTest` red.
 - `LocalRun`'s `untl` field is now obtainable from decidable per-edge data on a presentation
   alone, with no model and no carrier finiteness. That is the hardest single obligation
   requirement (S) carries, and Phases 5-7 consume it directly (`cons_localRun` cites it rather
@@ -333,13 +412,19 @@ Hit-level corollary and the acceptance statement) remain.
 
 ## Follow-ups
 
-- Phases 4-8 of the plan remain. Phase 4 (`PlusLanguage/Subformulas.lean`, `BoxStabFree`) is
-  unblocked and territory-disjoint from the rest; Phase 5 (`Cons`, `cons_localRun`, the
-  machine-checked inhabitant) is now unblocked by Phase 3 and writes the same module, so 5-7
-  stay serialized.
-- Phase 5 should carry the Phase 3 backward fixture (`labS`/`stepS`, plus the `labBadS` negative
-  control) into the permanent non-vacuity witness, so `SLive`'s independence from `SCoh` is
-  recorded in the tree and not only in this summary.
+- Phases 6-8 of the plan remain, all three on `Realize.lean` (6 and 7) or on documentation (8),
+  so they stay serialized. Phase 6 (`frameOf`, `modelOf`, the regularity instance and the
+  rewrite lemmas) is unblocked.
+- The Phase 3 backward fixture is now carried into the permanent witness (Phase 5, `labCons` /
+  `labConsBad` in `KTypeFinEvalTest.lean`), so `SLive`'s independence from `SCoh` is recorded in
+  the tree. This follow-up is discharged.
+- `Cons` has no decision procedure and none is claimed: its formula-indexed clauses quantify over
+  all of `PlusFormula` and `nowOnce` over `List Q`. A decidable version would quantify over
+  `plusSubformulaClosure φ` instead; whether that is wanted is a question for after Phase 8.
+- No inhabitant of `Cons` at a concrete `φ` exists yet — the Phase 5 `#guard`s are clause-level,
+  at a bare four-letter alphabet rather than at some `clSig φ`. Phase 7 is where a concrete `φ`
+  first appears, and the risk the plan's risk table flagged (an awkward-to-inhabit bundle) is
+  therefore only partly retired.
 - `FormalSystem.lean`'s import count will stay one behind the file count until Phase 8 adds the
   aggregator edge and regenerates it; the pre-commit gate warns about this on every `.lean`-
   touching commit in the interim, and that warning is expected rather than a defect.

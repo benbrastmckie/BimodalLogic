@@ -1,56 +1,51 @@
 {
   "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": [
-    "orchestrator",
-    "implement",
-    "lean-implementation-hard-agent"
-  ],
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 746,
-  "phase": "implement",
-  "dispatch_seq": 16,
-  "session_id": "sess_1791500801_df94d6",
-  "requires_user_review": false,
-  "phases_completed": 4,
+  "dispatch_seq": 17,
+  "phase_number": 5,
+  "phases_completed": 5,
   "phases_total": 8,
+  "requires_user_review": false,
+  "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-5-handoff-20261008_205519.md",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/746_hit_level_soundness_realize_presentation_b2b/summaries/01_hit-level-soundness-b2b-summary.md",
-      "summary": "Phases 1-4 of 8: Phase 4 landed PlusFormula.BoxStabFree, its subformula-inheritance lemma, and the two closure-vacuity lemmas that collapse Anchored to now + atom for a box/stab-free formula."
+      "summary": "Progressive summary extended with Phase 5: the Cons consistency bundle, cons_localRun, and the permanent non-vacuity witness with its one-label negative control."
     }
   ],
   "sorry_inventory": [],
+  "blockers": [],
   "verification": {
     "sorry_count": 0,
     "vacuous_count": 1,
-    "vacuous_note": "Pre-existing and unchanged by this phase: FormalSystem/Examples/TemporalStructures.lean's int_domain_universal (t : Int) : intTimeHistory.domain t := trivial -- a real theorem about a total domain, not a placeholder. No vacuous definition was introduced.",
+    "vacuous_count_note": "Pre-existing and unchanged: FormalSystem/Examples/TemporalStructures.lean's int_domain_universal, a real theorem about a total domain, not a placeholder. This phase's insertions add zero matches.",
     "axiom_count": 15,
-    "axiom_note": "Unchanged; this phase introduced no axiom.",
+    "axiom_count_note": "Unchanged from the Phase 4 baseline; no new axiom.",
     "build_passed": true,
-    "build_note": "Phase-end scoped bar, not a full-project build: status is partial (4 of 8 phases) and the Realize.lean aggregator import edge is deliberately absent until Phase 8, so a full build would not pull this task's other module. Scoped guarded build of FormalSystem.PlusLanguage.Subformulas: guard exit 0, 707 jobs, 0 error:. Interface tier (the phase's declared tier): that module plus FormalSystem.PlusLanguage and FormalSystem.Metalogic.Decidability.RaySummary, guard exit 0, 1938 jobs, 0 error:, 0 warning:, .olean newer than source.",
+    "build_scope": "scoped, phase-end tier: FormalSystem.Metalogic.Decidability.RaySummary.Realize (guard exit 0, 1930/1930, 0 error, 0 warning) and BimodalTest.Metalogic.KTypeFinEvalTest (guard exit 0, 1933/1933, 0 error, 0 warning); .olean newer than source for both. The full-project build is the plan's Testing & Validation gate and belongs to Phase 8, not to this single-phase dispatch.",
     "axiom_pins": {
-      "FormalSystem.PlusLanguage.not_box_mem_plusSubformulaClosure": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "FormalSystem.PlusLanguage.not_stab_mem_plusSubformulaClosure": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "FormalSystem.PlusLanguage.PlusFormula.boxStabFree_of_mem_subformulas": [
-        "propext"
-      ]
-    }
+      "cons_localRun": "[propext, Classical.choice, Quot.sound]"
+    },
+    "verification_passed": true
   },
   "completion_data": {
-    "completion_summary": "Phase 4 of 8 complete; task remains [IMPLEMENTING] with phases 5-8 outstanding."
+    "completion_summary": "Phase 5 of 8 only (single-phase dispatch). Task 746 is not complete."
   },
   "memory_candidates": [
-    "A plan bullet's `#eval decide (X)` verification criterion silently settles an offered Prop-vs-Bool definition choice: `decide` only typechecks on the Prop spelling, so the criterion, not the bullet's prose, is the binding constraint.",
-    "A 'route through the existing transitivity / per-arm membership lemmas' plan hint can be directionally unsatisfiable: per-arm subformula lemmas CONSTRUCT a membership, while an inheritance proof must DESTRUCTURE one. Mirroring the transitivity proof's own arm-for-arm shape satisfies what the hint protected (re-deriving no project lemma) without using it.",
-    "In BimodalLogic, FormalSystem/Syntax/Atom.lean's Atom is a structure (base : String, freshIndex : Option Nat) with no OfNat instance, so scratch fixtures must write .atom \u27e8\"p\", none\u27e9 rather than .atom 0."
+    {
+      "insight": "A Prop-valued consistency bundle whose fields are shaped to mirror the target structure's fields field-for-field makes the bridging theorem a citation rather than a proof: cons_localRun is 20 lines for a four-field target because each field is either a stored Bool equation read through the trace definition, or an exact application of a previously proved theorem whose statement was already written in the trace's unfolded form.",
+      "context": "Lean 4, task 746 phase 5, FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean"
+    },
+    {
+      "insight": "A non-vacuity fixture is worth more when it imports and exercises the landed declarations than when it re-spells them inline, even at the cost of an extra import edge the aggregator does not yet provide: the re-spelled form cannot go red when the real definition changes.",
+      "context": "Lean 4, task 746 phase 5, Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean vs evidence/03_cons-non-vacuity.lean"
+    },
+    {
+      "insight": "Elaborating a whole new section in a scratch file via 'lake env lean' against the already-built .olean, before touching the real module, let three consecutive phases each edit their target module exactly once. The cost is one extra elaboration; the saving is the edit-build-fix cycle on a module whose scoped build is 80 seconds.",
+      "context": "Lean 4, task 746 phases 3, 4 and 5"
+    }
   ]
 }

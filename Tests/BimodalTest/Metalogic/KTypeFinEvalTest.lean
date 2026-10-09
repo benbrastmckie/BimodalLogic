@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.RaySummary
+import FormalSystem.Metalogic.Decidability.RaySummary.Realize
 
 /-!
 # Computability witnesses for the `k`-type device
@@ -128,5 +129,108 @@ def labX : Bool → twoLetter.preds → Bool := fun q p => q && p
 #guard !stabCheckSig labX stepW true false
 #guard stabCheckSig labX stepAlt true false
 #guard stabCheckSig labAlt stepAlt true false
+
+/-! ## Non-vacuity of the `Cons` consistency conditions
+
+`Cons` (`RaySummary/Realize.lean`) is the consistency bundle on a finite labelled presentation
+that `cons_localRun` turns into `LocalRun`. A bundle of conditions is worthless if nothing
+satisfies it, and worthless in the opposite way if everything does. The block below settles both
+on ONE three-state presentation, with every value evaluated by the compiler against the landed
+definitions themselves — `UCoh`, `ULive`, `deferGraph`, `SCoh`, `SLive` and `bwdDeferGraph` are
+the real declarations here, not re-spelled copies.
+
+The alphabet is `sigCons := ⟨Fin 4⟩` with `u = 0` (the eventuality claim), `g = 1` (the guard),
+`e = 2` (the event) and `now = 3`. The presentation is `0 → 0`, `0 → 1`, `1 → 2`, `2 → 2`, with
+the event at states `0` and `2` and the `now` marker at state `1` alone, which lies on no cycle.
+
+What the checks establish, clause group by clause group of `Cons`:
+
+* `serialFwd` / `serialBwd` — both bi-serialities hold, so a bi-infinite run exists.
+* `ucoh` / `ulive` and `scoh` / `slive` — all four hold at the letter triple `(u, g, e)`, in both
+  time directions. Both liveness conditions are non-vacuous constraints *that are satisfied*:
+  the forward deferral graph has the edge `1 → 2` and the backward one the edge `1 → 0`, so
+  neither `ULive` nor `SLive` holds merely because its graph is empty.
+* `nowOnce` — checked by enumeration to depth 3. That is the carrier's full depth and so a
+  complete check for this fixture: a `step3`-path of more than three states repeats a state and
+  therefore adds no endpoint the depth-3 enumeration missed. The enumeration is a computed
+  check on the fixture, not a proof of the `StepPath`-quantified `Cons.nowOnce` field.
+* The marker is read at state `1` and nowhere else, which is what a run's `now` condition needs.
+
+`boxStabFree` and the propositional clauses (`botFalse`, `impEq`) are not exercised here: they
+are conditions on a labelling over `clSig φ` for a concrete `φ`, whereas everything above is at
+a bare `sigCons` and so is shared by every `φ` whose closure supplies the three letters. This is
+a non-vacuity witness for the bundle's *clauses*, not an inhabitant of `Cons` at a concrete `φ`.
+
+The negative control is the point of the whole block. `labConsBad` differs from `labCons` in
+exactly one letter — state `0` loses the event — and that single change makes the `0 → 0`
+self-loop an event-free cycle every state of which claims the eventuality: precisely the object
+`Probe735.pump_isRun` manufactures. Both liveness conditions go false on it while both
+coherence conditions stay true, so the liveness half of `Cons` is shown to exclude something,
+and to exclude exactly the shape it was read off. -/
+
+/-- The four-letter alphabet of the `Cons` fixtures: `u = 0`, `g = 1`, `e = 2`, `now = 3`. -/
+abbrev sigCons : FormalSystem.Metalogic.Expressiveness.MonadicSignature := ⟨Fin 4⟩
+
+/-- The three states of the `Cons` fixtures. -/
+abbrev QCons := Fin 3
+
+/-- States `0` and `2` carry the event; `1` is the `now` state and lacks it. Every state claims
+the eventuality `u` and carries the guard `g`. -/
+def labCons : QCons → sigCons.preds → Bool
+  | 0 => fun p => p != 3
+  | 1 => fun p => p == 0 || p == 1 || p == 3
+  | 2 => fun p => p != 3
+
+/-- `0 → 0`, `0 → 1`, `1 → 2`, `2 → 2`: the `now` state `1` lies on no cycle. -/
+def stepCons : QCons → QCons → Bool
+  | 0, 0 => true
+  | 0, 1 => true
+  | 1, 2 => true
+  | 2, 2 => true
+  | _, _ => false
+
+/-- The negative control: `labCons` with state `0`'s event removed, and nothing else changed.
+The `0 → 0` self-loop becomes an event-free cycle claiming the eventuality. -/
+def labConsBad : QCons → sigCons.preds → Bool
+  | 0 => fun p => p == 0 || p == 1
+  | 1 => fun p => p == 0 || p == 1 || p == 3
+  | 2 => fun p => p != 3
+
+/-! Bi-seriality in both senses (`Cons.serialFwd`, `Cons.serialBwd`). -/
+#guard decide (∀ q : QCons, ∃ q' : QCons, stepCons q q' = true)
+#guard decide (∀ q : QCons, ∃ q' : QCons, stepCons q' q = true)
+
+/-! The forward conditions (`Cons.ucoh`, `Cons.ulive`) hold, and the deferral graph has a real
+edge, so `ULive` is a satisfied constraint rather than an empty one. -/
+#guard decide (UCoh labCons stepCons 0 1 2)
+#guard decide (ULive labCons stepCons 0 2)
+#guard deferGraph labCons stepCons 0 2 1 2
+
+/-! The backward conditions (`Cons.scoh`, `Cons.slive`) hold, with a real backward deferral
+edge. Checked on the landed `SCoh`/`SLive`/`bwdDeferGraph`, which were proved outright rather
+than transported from the forward half — so these are four independent values, not two. -/
+#guard decide (SCoh labCons stepCons 0 1 2)
+#guard decide (SLive labCons stepCons 0 2)
+#guard bwdDeferGraph labCons stepCons 0 2 1 0
+
+/-! The once-only `now` condition (`Cons.nowOnce`), by enumeration to the carrier's full depth:
+no `stepCons`-path of one, two, or three steps out of the `now` state `1` returns to it. -/
+#guard decide (∀ a b c : QCons,
+  ¬ (stepCons 1 a = true ∧ a = 1) ∧
+  ¬ (stepCons 1 a = true ∧ stepCons a b = true ∧ b = 1) ∧
+  ¬ (stepCons 1 a = true ∧ stepCons a b = true ∧ stepCons b c = true ∧ c = 1))
+
+/-! The marker is read at state `1` and nowhere else. -/
+#guard decide (∀ q : QCons, labCons q 3 = true ↔ q = 1)
+
+/-! **The negative control.** One label changed: both coherence conditions survive, and both
+liveness conditions fail — the `Probe735.pump_isRun` shape, in both time directions. If either
+`!decide` below ever goes false, the liveness half of `Cons` has stopped excluding anything. -/
+#guard decide (UCoh labConsBad stepCons 0 1 2)
+#guard !decide (ULive labConsBad stepCons 0 2)
+#guard live (deferGraph labConsBad stepCons 0 2) 0
+#guard decide (SCoh labConsBad stepCons 0 1 2)
+#guard !decide (SLive labConsBad stepCons 0 2)
+#guard live (bwdDeferGraph labConsBad stepCons 0 2) 0
 
 end BimodalTest.KTypeFinEval

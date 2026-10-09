@@ -65,8 +65,13 @@ unfolding coherence `SCoh`, the backward deferral graph `bwdDeferGraph` and its 
 orientation is read off `LocalRun.snce`'s own clause, and the graph handed to `live` reverses
 the underlying `step` relation in the manner of `Present.lean`'s `bwdLive`.
 
-The `Cons` bundle and the constructed model itself are owed to this module's later sections and
-are not claimed here.
+The `Cons` bundle closes the file: the ten-field consistency structure on a finite labelled
+presentation, and `cons_localRun`, which reads every field of `LocalRun` off it — `bot` and
+`imp` from the per-state label equations, `untl` and `snce` by citing the two theorems above,
+with no new induction and no formula recursion anywhere.
+
+The constructed model itself (`frameOf`, `modelOf`) is owed to a later module section and is not
+claimed here.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
@@ -448,5 +453,119 @@ theorem snce_iff_of_SCoh_SLive (lab : Q → sig.preds → Bool) (step : Q → Q 
    fun hd => u_of_dischBwd lab step u g e hC hstep hd⟩
 
 end Snce
+
+/-! ## The consistency bundle -/
+
+section Bundle
+
+variable {Q : Type} [Fintype Q] [DecidableEq Q]
+
+/--
+**The consistency conditions on a finite labelled presentation** — the counterpart of
+Hodkinson–Wolter–Zakharyaschev 2000's Definition 12, read off `Probe735.not_presented`'s pumping
+proof rather than off HWZ Definition 10's bare set of types (which
+`quasistate_does_not_determine_hit` refutes for this semantics; see the module header).
+
+Ten fields in six groups, each shaped to mirror the `LocalRun` field it discharges, so that
+`cons_localRun` below is field-by-field with nothing re-derived:
+
+1. `serialFwd` / `serialBwd` — bi-seriality of `step` in both senses. This is what a bi-infinite
+   run needs to exist at all, and in both senses because the time axis is `ℤ`: the forward half
+   alone would leave the past unpopulated.
+2. `botFalse` / `impEq` — propositional coherence per state, as `Bool` equations on the label so
+   that they are checkable on a concrete presentation. `impEq` spells the implication as
+   `!a || b`, which is `LocalRun.imp`'s `a → b` once both sides are read through `runTrace`.
+3. `ucoh` / `ulive` — `UCoh` and `ULive` at every `untl` letter of the closure, with the guard
+   and event letters projected by `plusClosure_untl_right` and `plusClosure_untl_left`
+   respectively (that is the orientation `LocalRun.untl` itself uses: for `ψ U χ` the event is
+   `χ` and the guard is `ψ`).
+4. `scoh` / `slive` — the `snce` mirror, projected by `plusClosure_snce_right` / `_left`. Not a
+   symmetry of the previous group: the two cite theorems proved independently.
+5. `nowOnce` — the once-only `now` condition: no `step`-path of positive length (`2 ≤ p.length`,
+   since a `StepPath`'s list carries one entry per state) out of a `clNow`-labelled state ends
+   at a `clNow`-labelled state. `LocalRun` imposes nothing on `now`; this field is what makes a
+   `step`-path anchored, i.e. an `IsRun`, and it is consumed where that is needed rather than
+   here.
+6. `boxStabFree` — the scope line. With it, `not_box_mem_plusSubformulaClosure` and
+   `not_stab_mem_plusSubformulaClosure` make the `box` and `stab` fields of an `Anchored`
+   certificate vacuously satisfiable, which is the only sense in which `box` and `stab` are
+   realized by this construction.
+
+The bundle is NOT decidable as a whole and is not claimed to be: `impEq`, `ucoh`, `ulive`,
+`scoh` and `slive` quantify universally over `ψ χ : PlusFormula`, an infinite type, and
+`nowOnce` over `List Q`. Each individual clause is decidable at a given letter triple
+(`decidableUCoh`, `decidableULive`, `decidableSCoh`, `decidableSLive`), which is what makes the
+conditions checkable on a concrete presentation; the finite quantification needed to decide the
+bundle itself would range over `plusSubformulaClosure φ` and is not built here.
+-/
+structure Cons (φ : PlusFormula) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool) :
+    Prop where
+  /-- Every state has a `step`-successor. -/
+  serialFwd : ∀ q : Q, ∃ q' : Q, step q q' = true
+  /-- Every state has a `step`-predecessor — needed because the time axis is `ℤ`. -/
+  serialBwd : ∀ q : Q, ∃ q' : Q, step q' q = true
+  /-- The `⊥` letter is carried by no state. -/
+  botFalse : ∀ (h : PlusFormula.bot ∈ plusSubformulaClosure φ) (q : Q),
+    lab q (clLetter φ h) = false
+  /-- The `imp` letter is the Boolean implication of its parts, state by state. -/
+  impEq : ∀ (ψ χ : PlusFormula) (h : PlusFormula.imp ψ χ ∈ plusSubformulaClosure φ) (q : Q),
+    lab q (clLetter φ h) =
+      (!lab q (clLetter φ (plusClosure_imp_left φ ψ χ h)) ||
+        lab q (clLetter φ (plusClosure_imp_right φ ψ χ h)))
+  /-- One-step unfolding coherence at every `untl` letter. -/
+  ucoh : ∀ (ψ χ : PlusFormula) (h : PlusFormula.untl ψ χ ∈ plusSubformulaClosure φ),
+    UCoh lab step (clLetter φ h) (clLetter φ (plusClosure_untl_right φ χ ψ h))
+      (clLetter φ (plusClosure_untl_left φ χ ψ h))
+  /-- No deferred `untl` eventuality at any `untl` letter — the negation of what
+  `Probe735.pump_isRun` manufactures. -/
+  ulive : ∀ (ψ χ : PlusFormula) (h : PlusFormula.untl ψ χ ∈ plusSubformulaClosure φ),
+    ULive lab step (clLetter φ h) (clLetter φ (plusClosure_untl_left φ χ ψ h))
+  /-- Backward one-step unfolding coherence at every `snce` letter. -/
+  scoh : ∀ (ψ χ : PlusFormula) (h : PlusFormula.snce ψ χ ∈ plusSubformulaClosure φ),
+    SCoh lab step (clLetter φ h) (clLetter φ (plusClosure_snce_right φ χ ψ h))
+      (clLetter φ (plusClosure_snce_left φ χ ψ h))
+  /-- No deferred `snce` eventuality at any `snce` letter. -/
+  slive : ∀ (ψ χ : PlusFormula) (h : PlusFormula.snce ψ χ ∈ plusSubformulaClosure φ),
+    SLive lab step (clLetter φ h) (clLetter φ (plusClosure_snce_left φ χ ψ h))
+  /-- **The once-only `now` condition**: no `step`-path of positive length out of a
+  `clNow`-labelled state ends at a `clNow`-labelled state. -/
+  nowOnce : ∀ (q q' : Q) (p : List Q), StepPath step q q' p → 2 ≤ p.length →
+    lab q (clNow φ) = true → lab q' (clNow φ) = false
+  /-- The scope line: `φ` carries no `□` and no `⊡`. -/
+  boxStabFree : φ.BoxStabFree
+
+/--
+**Every `step`-path of a consistent presentation satisfies the local run conditions.**
+
+Field by field, with nothing re-derived: `bot` and `imp` are the `botFalse` / `impEq` label
+equations read through `runTrace`, and `untl` / `snce` are exact applications of
+`untl_iff_of_UCoh_ULive` and `snce_iff_of_SCoh_SLive` at the letter triple `Cons` stores. There
+is no induction on `φ` and no induction on `ℤ` anywhere below — both inductions were paid for
+once, in `persist` and `persistBwd`.
+
+No model, no frame, and no carrier finiteness beyond `[Fintype Q]` on the PRESENTATION: `ρ` is
+an arbitrary bi-infinite `step`-chain, not a history of any model, and the `now` letter plays no
+part (`LocalRun` imposes no condition on it, and `Cons.nowOnce` is consumed elsewhere).
+-/
+theorem cons_localRun {φ : PlusFormula} {lab : Q → (clSig φ).preds → Bool} {step : Q → Q → Bool}
+    (hC : Cons φ lab step) (ρ : ℤ → Q) (hstep : ∀ z, step (ρ z) (ρ (z + 1)) = true) :
+    LocalRun φ (runTrace lab ρ) where
+  bot := by
+    intro h z
+    simp only [runTrace, hC.botFalse h (ρ z)]
+    exact Bool.false_ne_true
+  imp := by
+    intro ψ χ h z
+    simp only [runTrace, hC.impEq ψ χ h (ρ z)]
+    cases hl : lab (ρ z) (clLetter φ (plusClosure_imp_left φ ψ χ h)) <;>
+      cases hr : lab (ρ z) (clLetter φ (plusClosure_imp_right φ ψ χ h)) <;> simp
+  untl := by
+    intro ψ χ h z
+    exact untl_iff_of_UCoh_ULive lab step _ _ _ (hC.ucoh ψ χ h) (hC.ulive ψ χ h) ρ hstep z
+  snce := by
+    intro ψ χ h z
+    exact snce_iff_of_SCoh_SLive lab step _ _ _ (hC.scoh ψ χ h) (hC.slive ψ χ h) ρ hstep z
+
+end Bundle
 
 end FormalSystem.Metalogic.Decidability.RaySummary

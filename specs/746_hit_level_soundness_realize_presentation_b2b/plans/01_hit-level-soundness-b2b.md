@@ -493,16 +493,19 @@ any deletion means an existing declaration was touched, which is out of scope.
 
 ---
 
-### Phase 5: `Cons`, `cons_localRun`, and the machine-checked inhabitant [NOT STARTED]
+### Phase 5: `Cons`, `cons_localRun`, and the machine-checked inhabitant [COMPLETED]
 
 **Goal**: Assemble the six-clause consistency bundle on a finite labelled presentation, prove it
 forces every `LocalRun` field on every `step`-path, and land the non-vacuity witness with its
 negative control — so the bundle is a real constraint that is satisfied, not an empty one.
 
 **Tasks**:
-- [ ] In `Realize.lean`, define `structure Cons (φ : PlusFormula) (lab : Q → (clSig φ).preds →
+- [x] In `Realize.lean`, define `structure Cons (φ : PlusFormula) (lab : Q → (clSig φ).preds →
       Bool) (step : Q → Q → Bool) : Prop` with the six clauses the research assembled, each field
-      shaped to mirror `LocalRun`'s corresponding field so `cons_localRun` is field-by-field:
+      shaped to mirror `LocalRun`'s corresponding field so `cons_localRun` is field-by-field: *(deviation:
+      altered — the six clause groups landed as TEN named fields, since each of groups 1-4 splits
+      into the two independent conditions the bullet itself names; the grouping is documented in
+      `Cons`'s docstring.)*
       (1) `nonempty`/bi-seriality — `∀ q, ∃ q', step q q' = true` and `∀ q, ∃ q', step q' q =
       true`; (2) propositional coherence per state — `lab q (clLetter φ h_bot) = false` and
       `lab q (imp ψ χ) = (!lab q ψ || lab q χ)` quantified over the closure-membership proofs via
@@ -510,18 +513,29 @@ negative control — so the bundle is a real constraint that is satisfied, not a
       plusSubformulaClosure φ`; (4) `SCoh` + `SLive` at every `.snce ψ χ`; (5) once-only `now` —
       no `step`-path of positive length from a `clNow`-labelled state returns to one;
       (6) `BoxStabFree φ`.
-- [ ] Prove `cons_localRun (hC : Cons φ lab step) (ρ : ℤ → Q) (hstep : ∀ z, step (ρ z) (ρ (z+1))
+- [x] Prove `cons_localRun (hC : Cons φ lab step) (ρ : ℤ → Q) (hstep : ∀ z, step (ρ z) (ρ (z+1))
       = true) : LocalRun φ (runTrace lab ρ)`, signature pinned below: `bot` and `imp` from clause
       2 directly, `untl` from `untl_iff_of_UCoh_ULive` at clause 3, `snce` from
       `snce_iff_of_SCoh_SLive` at clause 4. No new induction.
-- [ ] Lift `evidence/03_cons-non-vacuity.lean` into
+- [x] Lift `evidence/03_cons-non-vacuity.lean` into
       `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`, append-only: the three-state
       presentation (`0→0`, `0→1`, `1→2`, `2→2`; event at `0` and `2`, absent at the `now`-state
       `1`), the `#guard`s for `UCoh`, `ULive`, both bi-serialities and the once-only `now`
       condition checked to the carrier's full depth, and the negative control (one label changed
       makes `live deferBad 0 = true`, the `Probe735` shape). Use `/-! … -/` for every comment
       immediately preceding a `#guard` — a `/-- … -/` there is a parse error.
-- [ ] Scoped builds of `RaySummary.Realize` and of the test module; axiom pin on
+      *(deviation: altered — three additive changes. (a) The test module gained one `import
+      FormalSystem.Metalogic.Decidability.RaySummary.Realize` line, because the `RaySummary`
+      aggregator does not re-export `Realize` until Phase 8; without it the fixtures would have
+      had to re-spell `UCoh`/`ULive`/`deferGraph` as probe 03 does, and would then check copies
+      rather than the landed declarations. (b) The backward half was added alongside the forward
+      one — `SCoh`, `SLive`, `bwdDeferGraph` and their negative control — per the Phase 3
+      handoff's instruction to carry its backward fixture into the permanent witness; the one
+      changed label serves as the control for both time directions. (c) The once-only `now`
+      condition is checked by the depth-3 enumeration this bullet asks for, which is a computed
+      check on the fixture and NOT a witness of the `StepPath`-quantified `Cons.nowOnce` field;
+      the appended test prose says so rather than implying otherwise.)*
+- [x] Scoped builds of `RaySummary.Realize` and of the test module; axiom pin on
       `cons_localRun`; `grep -c sorry` = 0 on both.
 
 **Timing**: 2 hours
