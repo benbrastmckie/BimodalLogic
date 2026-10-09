@@ -11,7 +11,7 @@ next_project_number: 753
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,729,730,731,734,741,743,744,748,749,750,751,752 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,729,730,731,734,741,743,744,749,750,751,752 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -78,7 +78,6 @@ next_project_number: 753
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-748 [IMPLEMENTING] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
 749 [NOT STARTED] — (C)'s BOUND HALF ON MODEL A. 745 delivered (C)'s...
 750 [NOT STARTED] — (W)'s RUN LAYER — ITS OWN RECORD, AS RaySummary/README.md AND...
 
@@ -176,12 +175,13 @@ next_project_number: 753
 ---
 
 ### 748. Revise and create tasks lplus decidability
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 747
 - **Research**: [748_revise_and_create_tasks_lplus_decidability/reports/03_literature-scope-product-negative-results.md]
 - **Plan**: [748_revise_and_create_tasks_lplus_decidability/plans/03_task-graph-revisions-and-roadmap.md]
+- **Summary**: [748_revise_and_create_tasks_lplus_decidability/summaries/04_task-graph-revisions-and-roadmap-summary.md]
 
 **Description**: GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING EXISTING TASKS AND CREATING NEW
 ONES. That is this task's deliverable and the thing it is judged on. A survey of the landed

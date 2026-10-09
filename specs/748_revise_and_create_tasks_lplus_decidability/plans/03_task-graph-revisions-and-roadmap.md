@@ -1,7 +1,7 @@
 # Implementation Plan: Task #748
 
 - **Task**: 748 - Revise existing tasks and create new ones to move the L⁺ decidability programme forward
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: 747 (completed)
 - **Research Inputs**: `specs/748_revise_and_create_tasks_lplus_decidability/reports/01_ranked-route-analysis-dispositions.md`, `reports/02_round-two-joint-verification.md`, `reports/03_literature-scope-product-negative-results.md`
