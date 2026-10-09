@@ -459,6 +459,103 @@ theorem clTrace_jump_eq (w t : ℤ) :
   funext q z
   exact propext (clTrace_jump_apply w t q z)
 
+/-! ## The truncation bound
+
+`hitCl_eq_iUnion` presents `HitCl` as a union over the seam's ray pairs — an INFINITE index, since
+`SeqPair FA (stayA.state t)` is not finite. `splice_classify` collapses that index to the
+one-parameter family `{jump w | w ≥ t}` together with `stayA`, which is still infinite. The
+truncation below replaces it by a FINITE index: `stayA` together with the finitely many `jump w`
+for `t ≤ w ≤ t + L`.
+
+**Where the non-constructivity enters, named exactly.** `L` is produced by `Set.Finite.bddAbove`
+applied to the image, under a `choose!`-extracted offset function, of the set
+`HitCl MA stayA t Fp k` — finite by `hitCl_finite`, which is `hitSig_finite`, which rests on
+`finite_family_triples` and `kType_finite`. Two separate uses of choice sit in that sentence:
+`choose!` picks a witnessing ray pair (hence, through `splice_classify`, a jump time) for each
+member, and `Set.Finite.bddAbove` asserts only that SOME upper bound of the resulting offsets
+exists. Neither exhibits anything. So NO computable bound follows from this proof — not a bad
+one, not a non-elementary one, and not even on this fixture, where the model is three states on
+`Fin 3`. That is why the statement carries an `∃ L` prefix rather than a supplied `L`: a version
+with a computed or exhibited `L` would be a strictly STRONGER theorem, and this record does not
+establish it. The in-tree entry point for an effective bound is `kTypeOf_listSeg_append_congr`;
+the eventual-periodicity/threshold consequence that would convert this route from
+non-constructive to effective is not in this tree, and is recorded as the successor obligation
+rather than assumed, cited or `sorry`-ed here.
+
+Nothing in this section evaluates a `kTypeOf`, runs `decide` over `KType`, or attempts to make
+`L` computable. -/
+
+/-- Every `jump w` with `w ≥ t` passes through the seam `(t, a)` of `stayA`: at `t` itself the
+jump has not yet happened, so the state is `a`. -/
+theorem jump_seam {w t : ℤ} (hw : t ≤ w) : (jump w).state t = stayA.state t := by
+  rw [jump_state, stayA_state, if_neg (by omega : ¬ w < t)]
+
+/-- **Converse of `splice_classify`**: every history through the seam IS the splice of some ray
+pair. This is `seamOmegaEquiv`'s `symm_apply_apply` and nothing more; it is what makes the `⊇`
+direction of the truncation immediate, since `stayA` and every `jump w` with `w ≥ t` are then
+genuine splices rather than merely candidates. -/
+theorem exists_splice_eq (t : ℤ) (σ : WorldHistory FA.toTaskFrame)
+    (h : σ.state t = stayA.state t) :
+    ∃ bf : SeqPair FA (stayA.state t), spliced stayA t bf = σ := by
+  refine ⟨seamOmegaEquiv t (stayA.state t) ⟨σ, h⟩, ?_⟩
+  exact congrArg Subtype.val
+    ((seamOmegaEquiv t (stayA.state t)).symm_apply_apply ⟨σ, h⟩)
+
+/-- The seam's realized family triples, covered by offsets: every member of `HitCl` already lies
+in the family triples of `stayA`'s trace or of `jump (t + n)`'s trace for some natural `n`. This
+is `hitCl_eq_iUnion` followed by `splice_classify`, with the jump time re-expressed as a natural
+offset from `t` (possible because `splice_classify` delivers `t ≤ w`). -/
+theorem hitCl_covered (t : ℤ) (k : ℕ) :
+    ∀ x ∈ HitCl MA stayA t Fp k,
+      ∃ n : ℕ, x ∈ familyTriples (clSig Fp) k (clTrace MA Fp t stayA)
+        ∨ x ∈ familyTriples (clSig Fp) k (clTrace MA Fp t (jump (t + (n : ℤ)))) := by
+  intro x hx
+  rw [hitCl_eq_iUnion] at hx
+  obtain ⟨bf, hbf⟩ := Set.mem_iUnion.mp hx
+  rcases splice_classify t bf with h | ⟨w, hw, h⟩
+  · exact ⟨0, Or.inl (by rwa [h] at hbf)⟩
+  · refine ⟨(w - t).toNat, Or.inr ?_⟩
+    rw [show t + (((w - t).toNat : ℕ) : ℤ) = w by omega]
+    rwa [h] at hbf
+
+set_option linter.unusedVariables false in
+/-- **The truncation bound.** `HitCl` at the seam `(t, a)` of `stayA` is exactly the family
+triples of `stayA`'s closure trace together with those of finitely many `jump w`.
+
+The `∃ L` is essential and is the recorded result: `L` comes from `Set.Finite.bddAbove` on the
+image of a `choose!`-extracted offset function over the finite set `HitCl MA stayA t Fp k`, so it
+is never exhibited and NO computable bound follows. See this section's header for the two places
+choice enters.
+
+`hk` is carried because it is part of this record's pinned Challenge signature and because
+`HitPresented` needs it downstream; the truncation argument itself does not use it, since
+`HitCl` is defined at every depth. The linter suppression above is scoped to this one
+declaration and exists only so the pinned signature can be reproduced verbatim rather than
+renamed to `_hk`. -/
+theorem hitCl_eq_truncated (t : ℤ) (k : ℕ) (hk : 1 ≤ k) :
+    ∃ L : ℕ, HitCl MA stayA t Fp k
+      = familyTriples (clSig Fp) k (clTrace MA Fp t stayA)
+        ∪ ⋃ w ∈ Set.Icc t (t + (L : ℤ)),
+            familyTriples (clSig Fp) k (clTrace MA Fp t (jump w)) := by
+  classical
+  -- One witnessing offset per member, by choice; `choose!` makes the function total.
+  choose! off hoff using hitCl_covered t k
+  -- The offsets of the FINITELY many members are bounded above -- `Set.Finite.bddAbove` is where
+  -- the second (and fatal, for any bound) use of choice sits: it exhibits no `L`.
+  obtain ⟨L, hL⟩ := ((hitCl_finite MA stayA t Fp k).image off).bddAbove
+  refine ⟨L, Set.Subset.antisymm ?_ ?_⟩
+  · intro x hx
+    have hxL : off x ≤ L := hL ⟨x, hx, rfl⟩
+    rcases hoff x hx with h | h
+    · exact Or.inl h
+    · refine Or.inr (Set.mem_iUnion₂.mpr ⟨t + (off x : ℤ), ⟨by omega, by omega⟩, h⟩)
+  · rintro x (h | h)
+    · obtain ⟨bf, hbf⟩ := exists_splice_eq t stayA rfl
+      exact (hitCl_eq_iUnion MA stayA t Fp k).symm ▸ Set.mem_iUnion.mpr ⟨bf, by rw [hbf]; exact h⟩
+    · obtain ⟨w, hw, hx⟩ := Set.mem_iUnion₂.mp h
+      obtain ⟨bf, hbf⟩ := exists_splice_eq t (jump w) (jump_seam hw.1)
+      exact (hitCl_eq_iUnion MA stayA t Fp k).symm ▸ Set.mem_iUnion.mpr ⟨bf, by rw [hbf]; exact hx⟩
+
 -- The closure-size figure the case split rests on, left live so a reader can re-run it.
 #eval (plusSubformulaClosure Fp).card
 
@@ -468,5 +565,6 @@ theorem clTrace_jump_eq (w t : ℤ) :
 #print axioms splice_classify
 #print axioms clTrace_stayA_eq
 #print axioms clTrace_jump_eq
+#print axioms hitCl_eq_truncated
 
 end Probe745

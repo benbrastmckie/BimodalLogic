@@ -395,28 +395,40 @@ whole blast radius of this edit.
 
 ---
 
-### Phase 4: The truncation bound [NOT STARTED]
+### Phase 4: The truncation bound [COMPLETED]
 
 **Goal**: Replace the infinite index of `hitCl_eq_iUnion` by a finite one: there EXISTS an `L`
 with `HitCl MA stayA t Fp k` equal to the family triples of `stayA`'s trace together with those
 of `jump w` for `w ∈ [t, t + L]`.
 
 **Tasks**:
-- [ ] Re-resolve `hitCl_finite`, `hitCl_eq_iUnion`, `familyTriples`, `finite_family_triples`,
+- [x] Re-resolve `hitCl_finite`, `hitCl_eq_iUnion`, `familyTriples`, `finite_family_triples`,
       `kType_finite`, `Set.Finite.bddAbove`, `Set.Finite.toFinset`, `Finset.sup` BY NAME.
-- [ ] Prove `hitCl_eq_truncated` at the pinned signature. Route, as the research specified:
+      *(all eight resolved by name, no line citation trusted: `hitCl_finite` /
+      `hitCl_eq_iUnion` / `familyTriples` in `RaySummary/Trace.lean`, `finite_family_triples`
+      in `KTypeSummary/Universal.lean`, `kType_finite` in `KTypeSummary/Basic.lean`,
+      `Set.Finite.bddAbove` in `Mathlib/Data/Set/Finite/Lattice.lean`, `Set.Finite.toFinset`
+      and `Finset.sup` in Mathlib as cited; the last two turned out UNUSED — see the Scope
+      Hypothesis outcome below.)*
+- [x] Prove `hitCl_eq_truncated` at the pinned signature. Route, as the research specified:
       `hitCl_eq_iUnion` to express `HitCl` as a union over ray pairs; `hitCl_finite` to get
       finiteness; classically pick one witnessing `bf` per member; `splice_classify` to give each
       witness a natural offset (`0` for `stayA`, `w - t` otherwise); `Set.Finite.bddAbove` on the
       image of the offsets to get `L`. The `⊇` direction is immediate because every trace in the
       truncated family is a genuine splice's trace.
-- [ ] Do NOT evaluate any `kTypeOf`, do NOT run `decide` over `KType`, and do NOT attempt to make
-      `L` computable. The `∃ L` shape is the recorded result.
-- [ ] Add a comment at the proof site naming exactly where the non-constructivity enters
+- [x] Do NOT evaluate any `kTypeOf`, do NOT run `decide` over `KType`, and do NOT attempt to make
+      `L` computable. The `∃ L` shape is the recorded result. *(grep over the added region: the
+      only occurrences of `kTypeOf`, `decide` and `KType` are in the prose naming them as what
+      is NOT done.)*
+- [x] Add a comment at the proof site naming exactly where the non-constructivity enters
       (`Set.Finite.bddAbove`, hence `Classical.choice`) and that this is why no bound is
-      delivered.
-- [ ] Compile the probe; zero errors, zero warnings, zero sorries.
-- [ ] Commit (one green sub-step).
+      delivered. *(section header plus two inline comments; TWO choice sites named, not one —
+      `choose!` picking a witnessing ray pair per member, and `Set.Finite.bddAbove` asserting
+      only that some upper bound exists.)*
+- [x] Compile the probe; zero errors, zero warnings, zero sorries. *(`lake env lean` exit 0;
+      one declaration-scoped `set_option linter.unusedVariables false` was needed to keep the
+      pinned `hk` binder — see the record below.)*
+- [x] Commit (one green sub-step).
 
 **Timing**: 1.5 hours
 
@@ -429,6 +441,23 @@ of `jump w` for `w ∈ [t, t + L]`.
 **Scope Hypothesis**: 60-100 added lines (research estimate, CARRIED), with the choice/`Finset.sup`
 bookkeeping the dominant cost. Confirm by `git diff --stat` on the probe.
 
+**Scope Hypothesis outcome**: CONFIRMED on the line count — `git diff --stat` reports 98
+insertions, inside the predicted 60-100. The predicted DRIVER was wrong: no `Finset.sup`
+bookkeeping arose at all, because `Set.Finite.image` plus `BddAbove`'s own `upperBounds`
+witness replaced the `toFinset`/`sup` route outright, so neither `Set.Finite.toFinset` nor
+`Finset.sup` appears in the proof. The cost was instead the two helper lemmas the pinned
+statement does not name (`jump_seam`, `exists_splice_eq`) and one further named lemma
+(`hitCl_covered`) factoring the `hitCl_eq_iUnion`-then-`splice_classify` step out of the main
+proof — a decomposition REFINEMENT (more named lemmas), never an inlining, and no plan-named
+declaration was skipped, altered or re-routed.
+
+**Record — the one contract tension**: the pinned signature binds `(hk : 1 ≤ k)` but the
+truncation argument genuinely does not use it (`HitCl` is defined at every depth), so Lean's
+`unusedVariables` linter warned, colliding with this phase's zero-warnings bar. Resolved by a
+declaration-scoped `set_option linter.unusedVariables false in` plus a docstring paragraph
+stating why `hk` is carried — NOT by renaming the binder to `_hk`, which would have altered
+the pinned signature this phase's verification requires verbatim.
+
 **Tier Justification**: Single-file edit outside the Lake build graph with no importers;
 `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` is the complete
 covering check.
@@ -437,11 +466,17 @@ covering check.
 - `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` - `hitCl_eq_truncated` and the non-constructivity comment
 
 **Verification**:
-- `lake env lean` on the probe exits 0, no errors, no warnings.
+- `lake env lean` on the probe exits 0, no errors, no warnings. **MET**: exit 0, zero errors,
+  zero warnings; the `#eval (plusSubformulaClosure Fp).card` foot still prints `4` and all
+  seven `#print axioms` lines (including the new `hitCl_eq_truncated`) report exactly
+  `[propext, Classical.choice, Quot.sound]`.
 - `hitCl_eq_truncated`'s statement matches its pinned signature verbatim, in particular the
   `∃ L : ℕ` prefix — a version with a supplied or computed `L` is a DIFFERENT (stronger) theorem
-  and is not what this phase may land.
-- No `kTypeOf`/`decide`/`KType` evaluation appears anywhere in the added proof.
+  and is not what this phase may land. **MET**: confirmed by mechanical whitespace-normalized
+  string comparison of the pinned block against the landed declaration, not by eye — exact
+  match including the `∃ L : ℕ` prefix and the `hk` binder name.
+- No `kTypeOf`/`decide`/`KType` evaluation appears anywhere in the added proof. **MET** by grep
+  over the added region: only prose occurrences, naming them as what is not done.
 
 ---
 
