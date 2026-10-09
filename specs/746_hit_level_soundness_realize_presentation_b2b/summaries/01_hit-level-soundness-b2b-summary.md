@@ -3,15 +3,17 @@
 - **Task**: 746 - Requirement (S) of the ray-product verdict: Hit-level soundness — realize a presentation by a constructed regular ℤ-model (B2b)
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T19:42:00Z
-- **Completed**: (not complete — 2 of 8 phases)
-- **Effort**: ~1.2 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted)
+- **Completed**: (not complete — 3 of 8 phases)
+- **Effort**: ~1.6 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted; Phase 3 ~0.4 h against 2 h budgeted)
 - **Dependencies**: None. (C) (task 745) is independent; (W) depends on this and on (C).
 - **Artifacts**: plans/01_hit-level-soundness-b2b.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Phases 1-2 of 8, across two single-phase dispatches (seq 13 and seq 14). Phase 2 lands the
+Phases 1-3 of 8, across three single-phase dispatches (seq 13, 14 and 15). Phase 3 completes
+the consistency conditions' two temporal halves: the backward (`snce`) mirror, proved outright
+rather than transported, in the same module. Phase 2 lands the
 first `FormalSystem/` content of this task: the new module
 `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean`, carrying the forward (`untl`) half
 of the consistency conditions on a finite labelled presentation and the theorem that they force
@@ -25,10 +27,25 @@ machine-checked frame-constructor findings into the tracked, rot-guarded evidenc
 that the plan's descoping of the carried 300-500 line "regular-frame constructor for finitely many
 fibre shapes per time" prerequisite rests on a green compiled artifact rather than on a report
 paragraph. That phase discharged no proof obligation and touched nothing under `FormalSystem/`.
-Phases 3-8 (the `snce` mirror, `BoxStabFree`, the `Cons` bundle and its non-vacuity witness,
-`modelOf`, `presented_modelOf`, the Hit-level corollary and the acceptance statement) remain.
+Phases 4-8 (`BoxStabFree`, the `Cons` bundle and its non-vacuity witness, `modelOf`,
+`presented_modelOf`, the Hit-level corollary and the acceptance statement) remain.
 
 ## What Changed
+
+### Phase 3
+
+- `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean` — appended `section Snce`, 249 →
+  452 lines (+203), zero sorries, scoped build green with zero `error:` and zero `warning:`.
+  Eight declarations: `SCoh` (the `snce` clause unfolded across one `step`, oriented backward —
+  the claim at the LATER state read in terms of the EARLIER one), `bwdDeferGraph` (an edge out of
+  every state claiming the past eventuality and lacking its event, to that state's `step`-
+  predecessors), `SLive` (acyclicity of that graph), `DischBwd` (the right-hand side of
+  `LocalRun`'s `snce` field, open interval `(s, z)` with `s < z`, verbatim), the two decidability
+  instances `decidableSCoh`/`decidableSLive`, the backward persistence lemma `persistBwd`, the
+  hard direction `disch_of_SCoh_SLive`, the easy direction `u_of_dischBwd`, and the plan-pinned
+  `snce_iff_of_SCoh_SLive`. Nothing in the section is defined as an application of a Phase 2
+  declaration; `UCoh`/`deferGraph`/`ULive` occur inside it only in docstrings and comments.
+- `typst/generated/status.typ` — regenerated (file/line counts moved with the module's growth).
 
 ### Phase 2
 
@@ -78,6 +95,24 @@ Phases 3-8 (the `snce` mirror, `BoxStabFree`, the `Cons` bundle and its non-vacu
 
 ## Decisions
 
+- **Phase 3: the backward graph reverses `step`, against the plan's parenthetical.** The plan's
+  Phase 3 bullet wrote `bwdDeferGraph … := lab y u && !(lab y e) && step x y`; the body landed as
+  the converse, `fun x y => lab x u && !(lab x e) && step y x`. `live`/`HasChain` in
+  `Present.lean` always ask for an infinite FORWARD chain `G (f n) (f (n + 1))`, so the
+  parenthetical hands `live` the forward graph — whose acyclicity is equivalent over a finite `Q`,
+  but only through a cycle-extraction argument, and which cannot be read off `persistBwd`'s
+  backward stretch directly. The reversal is the house precedent: `Present.lean`'s `bwdLive`
+  passes `pathTypes … y x` to `live` for exactly this reason. The label test stays at the edge's
+  SOURCE as in `deferGraph`. The same plan bullet instructs recording which argument order of
+  `live` is used and why, which is read as delegating the choice; the justification is in
+  `bwdDeferGraph`'s docstring, 14 lines of it, including why the forward spelling was rejected.
+- **Phase 3: proved outright, no symmetry claimed.** `persistBwd`, `disch_of_SCoh_SLive` and
+  `u_of_dischBwd` each have their own content — `persistBwd` recovers the guard over
+  `(z - 1 - n, z)` from its own induction hypothesis, and `u_of_dischBwd` walks coherence FORWARD
+  from the past witness where `u_of_disch` walks it backward from the future one. The two halves
+  share tactic shape, not content, and no declaration in the backward section applies a forward
+  one. `SCoh`'s docstring says in so many words that it is not `UCoh` with arguments swapped.
+
 - **Phase 2 — transcription, not re-derivation.** All four proof bodies are
   `evidence/02_cons-untl-core.lean` verbatim; the only change is binder shape (the probe's
   `variable (lab) (step) (u g e)` section line became explicit per-declaration binders, so every
@@ -103,6 +138,19 @@ Phases 3-8 (the `snce` mirror, `BoxStabFree`, the `Cons` bundle and its non-vacu
 
 ## Plan Deviations
 
+- **Task 2** (Phase 3) altered: the `bwdDeferGraph` body is the converse of the plan bullet's
+  parenthetical spelling — see the first Decisions entry above for the mechanism and the house
+  precedent. The bullet's own "record which argument order of `live` is being used and why"
+  instruction is what makes this a delegated choice rather than a substitution; it is annotated
+  inline in the plan and recorded in `issues.jsonl` as `plan-defect`/`minor`. No other Phase 3
+  task was skipped, altered, or deferred.
+- **Scope Hypothesis** (Phase 3) altered: +203 lines against the predicted 140-180. The
+  hypothesis's actual watch condition — "markedly SHORTER than Phase 2 … a symmetry shortcut" —
+  did not fire; the delta came out longer than Phase 2's whole module. The excess is docstring,
+  not proof: the orientation justification is 14 lines and the "not `UCoh` swapped" paragraph 8,
+  both demanded by this phase's own task bullets. Proof bodies run ~115 lines against Phase 2's
+  ~110.
+
 - **Scope Hypothesis** (Phase 2) altered: 249 lines against the predicted ~170-210, still well
   under the phase's own 300-line red line for "the probe is being re-proved rather than
   transcribed". Every proof body is the probe's verbatim; the excess is the ~60-line module
@@ -125,6 +173,29 @@ Phases 3-8 (the `snce` mirror, `BoxStabFree`, the `Cons` bundle and its non-vacu
   the phase's own Verification criterion requires.
 
 ## Verification
+
+### Phase 3
+
+- `lake-build-guard.sh build --timeout 1800 -- build …RaySummary.Realize` (detached): guard
+  exit 0, `✔ [1930/1930] Built …Realize (4.3s)`, `Build completed successfully`, 0 `error:`,
+  0 `warning:`, `.olean` newer than source.
+- `#print axioms` on `persistBwd`, `disch_of_SCoh_SLive`, `u_of_dischBwd` and
+  `snce_iff_of_SCoh_SLive`: each exactly `[propext, Classical.choice, Quot.sound]`. Phase 2's
+  `untl_iff_of_UCoh_ULive` re-pinned at the same profile — no regression.
+- `grep -c sorry FormalSystem/.../Realize.lean` = 0.
+- `grep -n 'Finite W\|FrameOver\|TaskModel'` over the whole module: no match.
+- `grep -n 'UCoh\|deferGraph\|ULive'` restricted to the `section Snce` block: five hits, all
+  docstring or comment prose (lines 9, 13, 28, 117, 178 of the block), no code use.
+- `snce_iff_of_SCoh_SLive`'s `DischBwd` read side by side with `LocalRun.snce`
+  (`Closure.lean`): both are `∃ s, s < z ∧ event s ∧ ∀ r, s < r → r < z → guard r` — the OPEN
+  interval `(s, z)`, not `[s, z)`.
+- Scratch decidability check (not a permanent witness — Phase 5 owns that), via `lake env lean`
+  on a bespoke backward fixture at `sig := { preds := Fin 4 }`, `Q := Fin 3`:
+  `decide (SCoh labS stepS 0 1 2)` = `true`, `decide (SLive labS stepS 0 2)` = `true`,
+  `bwdDeferGraph labS stepS 0 2 1 0` = `true` (the graph has a real edge, so `SLive` is a
+  satisfied constraint rather than an empty one), and the negative control
+  `decide (SLive labBadS stepS 0 2)` = `false` with `decide (SCoh labBadS stepS 0 1 2)` still
+  `true` — so `SLive` does work `SCoh` does not.
 
 ### Phase 2
 
@@ -187,10 +258,13 @@ Phases 3-8 (the `snce` mirror, `BoxStabFree`, the `Cons` bundle and its non-vacu
 
 ## Follow-ups
 
-- Phases 3-8 of the plan remain. Phase 3 (the backward `snce` mirror, in the same module) and
-  Phase 4 (`PlusLanguage/Subformulas.lean`, `BoxStabFree`) are both unblocked and
-  territory-disjoint. Phase 3 is OWED work proved outright: no symmetry transfers from
-  `untl_iff_of_UCoh_ULive`, since this tree has no backward Bool-fixture bridge.
+- Phases 4-8 of the plan remain. Phase 4 (`PlusLanguage/Subformulas.lean`, `BoxStabFree`) is
+  unblocked and territory-disjoint from the rest; Phase 5 (`Cons`, `cons_localRun`, the
+  machine-checked inhabitant) is now unblocked by Phase 3 and writes the same module, so 5-7
+  stay serialized.
+- Phase 5 should carry the Phase 3 backward fixture (`labS`/`stepS`, plus the `labBadS` negative
+  control) into the permanent non-vacuity witness, so `SLive`'s independence from `SCoh` is
+  recorded in the tree and not only in this summary.
 - `FormalSystem.lean`'s import count will stay one behind the file count until Phase 8 adds the
   aggregator edge and regenerates it; the pre-commit gate warns about this on every `.lean`-
   touching commit in the interim, and that warning is expected rather than a defect.
@@ -209,4 +283,7 @@ Phases 3-8 (the `snce` mirror, `BoxStabFree`, the `Cons` bundle and its non-vacu
 - `specs/evidence/seam-gluing-ray-product/b2b-frame-constructor-branching.lean`
 - `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean`
 - `specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-2-handoff-20261008_200241.md`
+- `specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-3-handoff-20261008_202100.md`
+- `FormalSystem/Metalogic/Decidability/RaySummary/Present.lean` (`live`, `HasChain`, `live_iff`, `bwdLive` — the argument-order precedent)
+- `FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean` (`LocalRun.snce` — the orientation source)
 - `scripts/check-evidence-probes.sh`

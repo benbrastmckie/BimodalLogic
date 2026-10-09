@@ -345,7 +345,7 @@ suppressions following `Compose.lean`'s precedent. No proof was re-derived.)*
 
 ---
 
-### Phase 3: The `snce` mirror — owed work, proved outright [NOT STARTED]
+### Phase 3: The `snce` mirror — owed work, proved outright [COMPLETED]
 
 **Goal**: Land the backward conditions `SCoh`/`bwdDeferGraph`/`SLive` and
 `snce_iff_of_SCoh_SLive`, forcing `LocalRun`'s `snce` clause on every run. This is proved from
@@ -353,23 +353,33 @@ scratch: no symmetry with Phase 2 is available or claimed, because no backward B
 exists in this tree.
 
 **Tasks**:
-- [ ] Define `SCoh lab step u g e : Prop` — the per-edge unfolded `snce` clause, oriented
+- [x] Define `SCoh lab step u g e : Prop` — the per-edge unfolded `snce` clause, oriented
       backward: `∀ q q', step q q' = true → (lab q' u = true ↔ (lab q e = true ∨ (lab q g = true
       ∧ lab q u = true)))`. Docstring states explicitly that this is NOT `UCoh` with the
       arguments swapped and that the orientation was derived from `LocalRun.snce`'s own clause
       (`∃ s, s < z ∧ … ∧ ∀ r, s < r → r < z → …`), not from the forward case.
-- [ ] Define `bwdDeferGraph lab step u e (x y : Q) : Bool := lab y u && !(lab y e) && step x y`
+- [x] Define `bwdDeferGraph lab step u e (x y : Q) : Bool := lab y u && !(lab y e) && step x y`
       (the deferral edge read backward) and `SLive lab step u e : Prop` as
       `∀ q, live (bwdDeferGraph lab step u e) q = false`, with its decidability instance. Record
       in the docstring which argument order of `live` is being used and why.
-- [ ] Prove the backward persistence lemma `persistBwd` by induction on the gap, mirroring
+      *(deviation: altered — the body landed as `fun x y => lab x u && !(lab x e) && step y x`,
+      the CONVERSE of the parenthetical above. `live`/`HasChain` (`Present.lean`) always ask for
+      an infinite FORWARD chain `G (f n) (f (n + 1))`, so the parenthetical's `step x y` hands
+      `live` the forward graph, whose acyclicity is equivalent over a finite `Q` but only via a
+      cycle-extraction argument, and cannot be read off `persistBwd`'s backward stretch
+      directly. The reversal follows the house precedent `Present.lean`'s `bwdLive`, which
+      passes `pathTypes … y x` to `live` for exactly this reason, with the label test kept at
+      the edge's SOURCE as in `deferGraph`. This bullet's own instruction to record which
+      argument order is used and why was treated as delegating the orientation decision, and the
+      justification is in `bwdDeferGraph`'s docstring verbatim.)*
+- [x] Prove the backward persistence lemma `persistBwd` by induction on the gap, mirroring
       `persist`'s SHAPE but with its own content: under `SCoh`, an undischarged claim at `z`
       forces `u`, `g` and `¬e` at every `z-1-m` for `m ≤ n`. Research's cast route applies
       (`push_cast; omega`, and `omega` directly for `(z - r - 1).toNat` bounds).
-- [ ] Prove `disch_of_SCoh_SLive` (the hard direction, via `live_iff` on `bwdDeferGraph`) and
+- [x] Prove `disch_of_SCoh_SLive` (the hard direction, via `live_iff` on `bwdDeferGraph`) and
       `u_of_dischBwd` (the easy direction, needs no liveness), then combine into
       `snce_iff_of_SCoh_SLive` with the signature pinned below.
-- [ ] Scoped build; `#print axioms snce_iff_of_SCoh_SLive`; `grep -c sorry` = 0.
+- [x] Scoped build; `#print axioms snce_iff_of_SCoh_SLive`; `grep -c sorry` = 0.
 
 **Timing**: 2 hours
 
@@ -385,6 +395,15 @@ covers the whole edit.
 rather than derived. Confirm by `wc -l` delta at phase end; markedly SHORTER than Phase 2 is a
 signal that a symmetry shortcut was taken, which the forward-only constraint forbids — in that
 case stop and re-check the proof actually discharges `LocalRun.snce`'s own clause.
+
+**Scope Hypothesis outcome (measured)**: NOT confirmed, in the direction of more lines. The
+module went 249 → 452 lines, a **+203-line** delta against the predicted 140-180. The
+shortness signal the hypothesis watches for did NOT fire: the delta is LONGER than Phase 2's
+own 249-line module and longer than predicted. The excess is docstring, not proof — the
+`bwdDeferGraph` orientation justification runs 14 lines on its own, and `SCoh`'s "this is not
+`UCoh` swapped" docstring another 8, both demanded by this phase's own task bullets. Proof
+bodies total ~115 lines against Phase 2's ~110, i.e. the independent proof is the same length
+as the forward one, which is what the hypothesis actually meant to check.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean` - append the backward half

@@ -1,23 +1,18 @@
 {
   "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": [
-    "orchestrator",
-    "implement",
-    "lean-implementation-hard-agent"
-  ],
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 746,
-  "dispatch_seq": 14,
-  "phase_number": 2,
-  "phases_completed": 2,
-  "phases_total": 8,
+  "phase": "implement",
+  "phase_number": 3,
+  "dispatch_seq": 15,
   "session_id": "sess_1791500801_df94d6",
   "requires_user_review": false,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/746_hit_level_soundness_realize_presentation_b2b/summaries/01_hit-level-soundness-b2b-summary.md",
-      "summary": "Cumulative summary through Phase 2: Realize.lean lands the untl half of the consistency conditions on a finite labelled presentation, sorry-free on the standard axiom profile."
+      "summary": "Phases 1-3 of 8: the backward (snce) half of the consistency conditions on a finite labelled presentation, proved outright in RaySummary/Realize.lean, zero sorries."
     }
   ],
   "sorry_inventory": [],
@@ -25,22 +20,27 @@
     "sorry_count": 0,
     "vacuous_count": 0,
     "axiom_count": 0,
-    "axiom_count_note": "no `axiom` declaration added; axiom profile of every new theorem is exactly [propext, Classical.choice, Quot.sound]",
     "build_passed": true,
-    "build_scope": "scoped: FormalSystem.Metalogic.Decidability.RaySummary.Realize (Verification Tier `local`; the module is imported by nothing, so scoped is the covering check)",
-    "verification_passed": true
+    "build_scope": "scoped",
+    "build_scope_note": "Scoped guarded build of FormalSystem.Metalogic.Decidability.RaySummary.Realize: guard exit 0, success line, 0 error:, 0 warning:, .olean newer than source. This is the phase's own declared Verification Tier (local) and is the complete covering check: the module is still deliberately absent from the aggregator (Phase 8 owns that edge), so no full-project build reaches it and none was run. lean-sorry-census.sh over the resolved source roots reports sorry_count 0 (stripper-only; --cross-check not run, since its own lake build would be the unreachable full build). vacuous_count and axiom_count are this module's contribution: the repo-wide greps return 1 vacuous hit (FormalSystem/Examples/TemporalStructures.lean:495) and 15 axiom lines, all pre-existing at HEAD and none from this phase.",
+    "axiom_profile": "[propext, Classical.choice, Quot.sound]",
+    "axiom_profile_pinned_on": ["persistBwd", "disch_of_SCoh_SLive", "u_of_dischBwd", "snce_iff_of_SCoh_SLive", "untl_iff_of_UCoh_ULive"]
   },
+  "phases_completed": 3,
+  "phases_total": 8,
+  "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/.orchestrator-handoff.json",
+  "continuation_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-3-handoff-20261008_202100.md",
   "completion_data": {
-    "completion_summary": "Phase 2 of 8 complete. Created FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean (249 lines, zero sorries): UCoh, deferGraph, ULive, Disch, their decidability instances, and persist / disch_of_UCoh_ULive / u_of_disch / untl_iff_of_UCoh_ULive, transcribed from the research dispatch's compiled probe. Scoped build green with zero errors and zero warnings; axiom profile exactly [propext, Classical.choice, Quot.sound]. Phases 3-8 remain."
+    "completion_summary": "Phase 3 of 8 complete. FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean grew 249 -> 452 lines with the backward snce half of the consistency conditions (SCoh, bwdDeferGraph, SLive, DischBwd, decidableSCoh, decidableSLive, persistBwd, disch_of_SCoh_SLive, u_of_dischBwd, snce_iff_of_SCoh_SLive), proved outright with no symmetry transfer from the forward half. Zero sorries, scoped guarded build green with zero errors and zero warnings, axiom profile exactly [propext, Classical.choice, Quot.sound] on all four new theorems. One annotated deviation: bwdDeferGraph landed as the converse of the plan bullet's parenthetical step argument order, following Present.lean's bwdLive precedent, because live/HasChain always ask for forward chains."
   },
   "memory_candidates": [
     {
-      "topic": "Pinned Challenge signatures versus Lean's unused-instance linters",
-      "detail": "When a plan's `## Lean Challenge Statements` block pins signatures via a namespace-wide `variable` block, Lean's unusedFintypeInType / unusedDecidableInType linters will fire on declarations that do not consume every instance. `omit`-ing them repairs the linter but diverges from the pinned signature, which plan-compliance.md treats as a statement-fidelity defect. The correct route is a commented, scoped `set_option` suppression; FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean carries the house precedent for exactly these two linters."
+      "insight": "In this tree, a BACKWARD liveness condition must hand `live` the REVERSED relation, because `Present.lean`'s `live`/`HasChain` always ask for an infinite FORWARD chain `G (f n) (f (n+1))`. The house precedent is `bwdLive`, which passes `pathTypes … y x` to `live`. Writing the forward spelling instead yields an equivalent condition over a finite carrier, but reachable only via cycle extraction, so a backward persistence stretch cannot be read off it directly.",
+      "keywords": ["lean4", "liveness", "HasChain", "bwdLive", "argument-order", "backward-chain"]
     },
     {
-      "topic": "Adding a .lean file trips the typst pre-commit counts gate",
-      "detail": "git-commit-scoped.sh runs scripts/typst-sync-check.sh --counts-only; adding or editing any file under FormalSystem/ drifts formalsystem-file-count / formalsystem-line-count in typst/generated/status.typ and blocks the commit. The remedy is `scripts/typst-sync-check.sh --fix` (needs a built library; never runs git add) plus staging the regenerated status.typ with the phase commit -- the established convention in this repo's lean phase commits. Do NOT run `lake exe mk_all --lib FormalSystem` as part of that remedy when a plan deliberately keeps a new module out of the aggregator: FormalSystem.lean imports every module directly, so mk_all would make a full build pull the incomplete module. Its import-count warning is non-fatal and expected in that window."
+      "insight": "Trialling a whole new Lean section in a scratch file via `lake env lean`, importing the already-built target module, verified ~200 lines of proof in one elaboration and let the real module be edited exactly once. Cheaper than editing-then-iterating when the section is self-contained and the dependency module is already built.",
+      "keywords": ["lean4", "workflow", "lake env lean", "scratch-trial", "single-edit"]
     }
   ]
 }
