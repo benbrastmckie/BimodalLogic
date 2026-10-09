@@ -78,7 +78,7 @@ next_project_number: 749
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-748 [RESEARCHED] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
+748 [PLANNED] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
 
 ### Formula Refactor
 
@@ -109,11 +109,12 @@ next_project_number: 749
 ## Tasks
 
 ### 748. Revise and create tasks lplus decidability
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 747
 - **Research**: [748_revise_and_create_tasks_lplus_decidability/reports/03_literature-scope-product-negative-results.md]
+- **Plan**: [748_revise_and_create_tasks_lplus_decidability/plans/03_task-graph-revisions-and-roadmap.md]
 
 **Description**: GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING EXISTING TASKS AND CREATING NEW
 ONES. That is this task's deliverable and the thing it is judged on. A survey of the landed

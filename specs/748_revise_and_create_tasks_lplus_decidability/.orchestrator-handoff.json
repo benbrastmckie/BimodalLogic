@@ -1,0 +1,21 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 8,
+  "summary": "Synthesized all three research rounds into an 8-phase plan whose executable output is specs/state.json mutations and a hand-edited specs/ROADMAP.md. Five creations (the (C)-bound task with the cost on its transport-lemma phase, the (W) run-layer task carrying obligation (ii) as two phases with (C)'s general row as the completeness half, the perfect-recall backward-determinism probe, and the two low-priority meta filings), three revisions (720 enlarged to a CI repair and promoted, 714's file_scope declared, 725 closed as subsumed after its evidence is written in), and the roadmap edit that deletes the void R2 contingency and replaces it with four named risks plus the literature position. Task 734 is explicitly out of scope in the Non-Goals. Plan validates strict with zero warnings.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/748_revise_and_create_tasks_lplus_decidability/plans/03_task-graph-revisions-and-roadmap.md",
+      "summary": "8-phase plan: 5 task creations, 3 record revisions, 1 close-as-subsumed, and the Stage 1 roadmap rewrite; 6.5 hours, 6 dependency waves."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791577470_f6dff1_748",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 4
+}
