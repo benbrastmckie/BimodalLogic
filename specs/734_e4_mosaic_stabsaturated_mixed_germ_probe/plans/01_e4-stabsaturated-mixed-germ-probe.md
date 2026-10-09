@@ -202,7 +202,7 @@ is the complete covering check -- the probe lives outside the Lake build graph, 
 
 ---
 
-### Phase 2: Write the collection-style header [NOT STARTED]
+### Phase 2: Write the collection-style header [COMPLETED]
 
 **Goal**: The header states, with every claim backed by a named declaration, what the acceptance
 criteria require: whether `StabSaturated` is decidable on mixed germ states and what that does
@@ -210,17 +210,17 @@ to R2's standing -- plus the falsifier verdict, the witness-direction result, th
 residual gap, the hard constraints, and the measured axiom record.
 
 **Tasks**:
-- [ ] Replace the provisional header with the full `/- Probe 734 ... -/` block, modelled on the
+- [x] Replace the provisional header with the full `/- Probe 734 ... -/` block, modelled on the
       Probe 718 and Probe 733 headers (bold-lead paragraphs, compile-check line last). Required
       paragraphs:
-  - [ ] **Title line**: E4 -- `⊡`-saturation on a MIXED-germ mosaic set of the E2 Bool fixture;
+  - [x] **Title line**: E4 -- `⊡`-saturation on a MIXED-germ mosaic set of the E2 Bool fixture;
         the question Probe 718 left "open for the next round to attack by name".
-  - [ ] **Which fixture and why**: the E2 fixture `Rg` (`a→a`, `a→b`, `b→b`, `p` at `b`),
+  - [x] **Which fixture and why**: the E2 fixture `Rg` (`a→a`, `a→b`, `b→b`, `p` at `b`),
         transcribed as `Rg`/`Fg`/`Mg` and never imported (cite `stab-depth-two-probe.lean`,
         `Probe711DepthTwo.stab_will_iff`: `⊡(Fp)` True at `b`, False at `a`); not the
         complete-graph fixture `Rf`, on which `⊡(Fp)` is uniformly False
         (`Probe718FiniteGraph.decide_will`) and no state distinguishes anything.
-  - [ ] **Outcome: VACUOUS -- decidable because identically true.** `stabSaturated_univ`: the
+  - [x] **Outcome: VACUOUS -- decidable because identically true.** `stabSaturated_univ`: the
         landed `Probe718Mosaic.StabSaturated` (re-declared verbatim as `StabSaturated`) holds
         for EVERY finite mosaic set, mixed or not, by `fun _ _ _ hχ m' _ heq => hχ m'.hist
         heq.symm` -- the predicate's own body carries `m'.hist.state t = m.hist.state t`, and
@@ -229,46 +229,46 @@ residual gap, the hard constraints, and the measured axiom record.
         load-bearing. `Smix_mixed` + `Smix_stabSaturated`: a genuinely mixed set on which the
         corner hypothesis fails and the predicate still holds. Say explicitly: this decides
         nothing about R2.
-  - [ ] **The falsifier is unsatisfiable as stated**: no finite mosaic set, mixed or not, makes
+  - [x] **The falsifier is unsatisfiable as stated**: no finite mosaic set, mixed or not, makes
         `StabSaturated` false, so the review's R2 falsifier cannot be instantiated; nothing is
         weakened because there is nothing to record as a refutation. A finding about the
         hypothesis statement, not a null probe result.
-  - [ ] **The real SH1 content is the witness direction**: `StabWitnessedAt` (Caleiro-Vigano-Volpe
+  - [x] **The real SH1 content is the witness direction**: `StabWitnessedAt` (Caleiro-Vigano-Volpe
         2013 Def. 3.6 SH1 transcribed to `⊡`: every mosaic refuting `⊡χ` has a same-germ mosaic
         in the SET refuting `χ`). On `Smix = {stayA, jumpB, stayB}` it HOLDS (`Smix_witnessed`);
         on `Sdrop = {jumpB, stayB}` it FAILS (`Sdrop_not_witnessed`: `jumpB` refutes `⊡Fp`,
         `not_stabFp_jumpB`, with `stayA` a same-germ refuter in the MODEL but absent from the
         SET); both sets mixed (`Smix_mixed`, `Sdrop_mixed`). Name the new fixture lemmas
         `succ_of_b` and `stabFp_stayB`.
-  - [ ] **What the witness direction does and does not decide**: finitely checkable over a
+  - [x] **What the witness direction does and does not decide**: finitely checkable over a
         finite set only once `⊡χ`'s value at each mosaic is known, and on this fixture that
         value is `stab_will_iff` -- R1's forward-reachability summary. A semantic-label mosaic
         set is a consumer of R1's device, not an independent decision procedure.
-  - [ ] **What this does to R2's standing** (evidence only; ranking is the review's): the
+  - [x] **What this does to R2's standing** (evidence only; ranking is the review's): the
         load-bearing hypothesis as filed was vacuous and must be restated as a SYNTACTIC
         saturated-set existence theorem for L⁺ (points on a finite closure, H1, SH1, plus a
         bespoke `⊡`-fibre/task-relation interaction condition Caleiro does not list); Caleiro
         section 4.3 states that the mosaic decidability argument does not extend once the
         dimensions interact. R2 is neither promoted nor closed; `amalgamate` is semantic and
         its "free" precondition does not carry to the syntactic calculus.
-  - [ ] **Evidence gap, recorded**: Handbook of Modal Logic ch. 11 sections 5.10 "Mosaics" and
+  - [x] **Evidence gap, recorded**: Handbook of Modal Logic ch. 11 sections 5.10 "Mosaics" and
         5.11 "Monodic fragments" remain absent -- publisher preview re-measured 2026-10-09 at 3
         pages, byte-identical to the corpus copy; DOI `10.1016/S1570-2464(07)80014-0` paywalled;
         recorded as a residual gap in `specs/literature-index.json` (`hodkinson_2006`, `hazard`)
         with reactivation condition "institutional access or purchase, or an open release". In-corpus
         stand-ins: Caleiro 2013 (section 5.10), HWZ 2000 (section 5.11).
-  - [ ] **What this does NOT do**: no complexity claim; no fourth certificate class
+  - [x] **What this does NOT do**: no complexity claim; no fourth certificate class
         (`Probe710.not_finite_width_fmp` untouched); no promotion of R2 above R1; no syntactic
         mosaic calculus; no edit to `mosaic-germ-amalgamation.lean`.
-  - [ ] **Axiom record**: the four lines captured in Phase 1, copied verbatim, with the cause
+  - [x] **Axiom record**: the four lines captured in Phase 1, copied verbatim, with the cause
         named (`PlusTruthAt`'s classical semantics and the classical `DecidableEq` on `Mosaic`
         pull `Classical.choice` even into the one-line `stabSaturated_univ`).
-  - [ ] **Compile-check line**: `lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean`.
-- [ ] Keep the body byte-identical to Phase 1's lift; adjust only a docstring if one still says
+  - [x] **Compile-check line**: `lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean`.
+- [x] Keep the body byte-identical to Phase 1's lift; adjust only a docstring if one still says
       "scratch" or "CLAIM".
-- [ ] Re-run `timeout 300 lake env lean` on the file; require exit 0, no errors/warnings, four
+- [x] Re-run `timeout 300 lake env lean` on the file; require exit 0, no errors/warnings, four
       axiom lines identical to Phase 1's capture.
-- [ ] Record an issue-log entry for this phase.
+- [x] Record an issue-log entry for this phase.
 
 **Timing**: 0.75 hours
 
