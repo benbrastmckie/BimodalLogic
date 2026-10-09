@@ -6,7 +6,7 @@ next_project_number: 748
 
 ## Task Order
 
-*Updated 2026-10-08. Generated from state.json dependency graph.*
+*Updated 2026-10-09. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -79,7 +79,7 @@ next_project_number: 748
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
   └─ 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
     └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-745 [PLANNED] — Requirement (C) of the ray-product verdict: Hit-level...
+745 [IMPLEMENTING] — Requirement (C) of the ray-product verdict: Hit-level...
   └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide...
 746 [PLANNED] — Requirement (S) of the ray-product verdict: Hit-level...
   └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide... (see above)
@@ -185,12 +185,13 @@ ACCEPTANCE. Either the construction lands -- `Cons P`, `modelOf P`, its regulari
 ---
 
 ### 745. Hit level completeness computable bound
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 739
 - **Research**: [745_hit_level_completeness_computable_bound/reports/01_hit-level-completeness-probe.md]
 - **Plan**: [745_hit_level_completeness_computable_bound/plans/01_hit-presented-model-a.md]
+- **Summary**: [745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md]
 
 **Description**: Requirement (C) of the ray-product verdict: Hit-level completeness with a computable bound -- settle HitPresented first
 
