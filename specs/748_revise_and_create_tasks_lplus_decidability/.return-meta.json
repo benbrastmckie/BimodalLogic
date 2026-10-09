@@ -1,28 +1,37 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-09T21:17:00Z",
+  "completed_at": "2026-10-09T21:33:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_note": "No Lean authored or modified (plan Lean Intent: false); no module touched, so no lake build is implicated. verify-deploy.sh PASS (14 checks, 0 failures); validate-state.sh exit 0 with zero ERROR lines."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/748_revise_and_create_tasks_lplus_decidability/plans/03_task-graph-revisions-and-roadmap.md",
-      "summary": "Revised in place on a single scoped user ruling: the perfect-recall probe-task creation phase is deleted and its content folded into the Stage 1 roadmap risk table. 7 phases, 5 waves, 5.5 hours; 2 task creations plus the 2 meta successors, 3 record revisions, 1 close-as-subsumed, 1 roadmap edit."
+      "type": "summary",
+      "path": "specs/748_revise_and_create_tasks_lplus_decidability/summaries/04_task-graph-revisions-and-roadmap-summary.md",
+      "summary": "Four tasks created (749, 750, 751, 752), 720 enlarged to a CI repair, 714 given a file_scope, 725 closed as subsumed, and specs/ROADMAP.md hand-edited to drop the void R2 contingency."
     }
   ],
-  "next_steps": "Run /implement 748 to execute the revised 7-phase plan",
+  "completion_data": {
+    "completion_summary": "Created tasks 749 ((C)'s bound half on model A) and 750 ((W)'s run layer, dispatch-phase-1-and-STOP), plus meta successors 751 (file_scope hygiene) and 752 (roadmap-integration's silent abort); enlarged 720 from a citation tidy-up to a CI repair with the tracked-ness check as a named deliverable; declared 714's file_scope; closed 725 as subsumed with its evidence written into the archived record. Hand-edited specs/ROADMAP.md to delete the void R2 contingency, state that Stage 1 proceeds on R1 alone with no fallback, add a five-row named-risk table and a literature-position paragraph, re-cost the (C) and (W) bullets, and re-order the Stage 1 run block.",
+    "roadmap_items": [
+      "Stage 1 run order: 749, 720, 750, 716/714, 712",
+      "Stage 3: 751, 752 (repo hygiene and roadmap tooling)"
+    ]
+  },
   "metadata": {
-    "session_id": "sess_1791577470_f6dff1_748",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "dispatch_seq": 5,
-    "phase_count": 7,
-    "estimated_hours": 5.5,
-    "dependency_waves": [[1, 3, 4], [2], [5], [6], [7]],
-    "plan_version": 2,
-    "reports_integrated": [
-      "reports/01_ranked-route-analysis-dispositions.md",
-      "reports/02_round-two-joint-verification.md",
-      "reports/03_literature-scope-product-negative-results.md"
-    ],
-    "revision_scope": "single-change: delete perfect-recall probe-task creation (old Phase 3); fold into Phase 6 roadmap risk row; extend Phase 7 git-diff audit; renumber and re-cost. All other content preserved byte-for-byte.",
-    "plan_revised_sentinel": "specs/748_revise_and_create_tasks_lplus_decidability/.plan-revised.json"
+    "session_id": "sess_1791580614_21f6fc",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "compliance_note": "Plan 03 declares Lean Intent: false and names no Lean goal theorems, so the Stage-5 goal-name grep is not applicable; compliance was checked instead against the plan's own Testing & Validation checklist, every item of which verified.",
+    "phases_completed": 7,
+    "phases_total": 7
   }
 }

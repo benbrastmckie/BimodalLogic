@@ -621,21 +621,21 @@ only. There is no generated section to protect and no clobber hazard to manage.
 
 ---
 
-### Phase 7: Final verification and audit [NOT STARTED]
+### Phase 7: Final verification and audit [COMPLETED]
 
 **Goal**: Confirm the state is consistent, TODO.md renders, no settled ruling was reopened, no
 complexity bound was asserted anywhere, and task 734 was not touched.
 
 **Tasks**:
-- [ ] `bash .claude/scripts/validate-state.sh specs/state.json` — no ERROR lines; record the `file_scope` WARN lines as the input they are to the hygiene task filed in Phase 6.
-- [ ] `bash .claude/scripts/generate-todo.sh` and read the Stage 1 rows: four new tasks present, 725 absent, 720 and 714 showing their revisions.
-- [ ] `bash scripts/check-evidence-probes.sh` — the evidence gate is expected to report the two known `WIRED_REPO` misses (that is 720's filed defect, not a regression introduced here); confirm nothing ELSE changed.
-- [ ] **`git diff` audit — two assertions, both on `git diff specs/state.json`**: (1) **no 734 hunk appears** — `jq '.active_projects[]|select(.project_number==734)|{status,blockers,description}' specs/state.json` is byte-identical to its pre-run value (`status: "partial"`, `blockers: null`); and (2) **no new task record for a perfect-recall or backward-determinism probe appears** — `git diff specs/state.json | grep -niE 'perfect.?recall|backward.?determin'` returns nothing, and `jq -r '.active_projects[]|"\(.project_number) \(.project_name)"' specs/state.json | grep -iE 'perfect.?recall|backward.?determin'` returns nothing. The probe is a roadmap risk row only (03 Recommendation 3, line 117; `.decisions.json` cycle 1); a record for it in this diff is a failure of the phase, not an extra.
-- [ ] **No-complexity-bound audit**: `grep -nEi '2EXPTIME|EXPSPACE|PSPACE|NP-complete|co-NP|running time|time complexity|space complexity'` over `specs/ROADMAP.md` and over every description written by Phases 1-5 (`jq -r '.active_projects[]|.description'`). Every hit must be a sentence that rules such a bound OUT, never one that asserts one.
-- [ ] **Settled-rulings audit**: confirm no text written asserts a fourth certificate class, re-attempts a C9 tombstone, claims the tableau front delivers a first decidability theorem, reopens 712 or 709, schedules 713, or writes "L⁺ is decidable/undecidable" unqualified.
-- [ ] **Deliverable-hygiene audit**: `bash .claude/scripts/check-task-references.sh` (or the repo's equivalent lint) over any non-`specs/**` file this run touched. Expected: this run touches none, so the audit is a confirmation that `git status --short` lists only `specs/` paths.
-- [ ] Run the full gate set: `bash .claude/scripts/verify-deploy.sh`.
-- [ ] Record one `issue-record.sh` entry for the run (`--kind win` or `--kind issue` as the run warrants; a run with nothing to record attests that explicitly in the summary prose).
+- [x] `bash .claude/scripts/validate-state.sh specs/state.json` — no ERROR lines; record the `file_scope` WARN lines as the input they are to the hygiene task filed in Phase 6. *(exit 0, zero ERROR lines; 3 coarse-declaration WARNs and a 26-of-54 missing-key WARN recorded as input to 751)*
+- [x] `bash .claude/scripts/generate-todo.sh` and read the Stage 1 rows: four new tasks present, 725 absent, 720 and 714 showing their revisions. *(749, 750, 751, 752 rows present; 725 absent; 720 and 714 render their revisions)*
+- [x] `bash scripts/check-evidence-probes.sh` — the evidence gate is expected to report the two known `WIRED_REPO` misses (that is 720's filed defect, not a regression introduced here); confirm nothing ELSE changed. *(deviation: altered — the gate reports PASS on all 28 wired probes locally rather than the two expected misses, because `check_probe` tests `-f` only and the untracked files are present on this disk. That green IS 720's filed defect; nothing else in the output changed)*
+- [x] **`git diff` audit — two assertions, both on `git diff specs/state.json`**: (1) **no 734 hunk appears** — `jq '.active_projects[]|select(.project_number==734)|{status,blockers,description}' specs/state.json` is byte-identical to its pre-run value (`status: "partial"`, `blockers: null`); and (2) **no new task record for a perfect-recall or backward-determinism probe appears** — `git diff specs/state.json | grep -niE 'perfect.?recall|backward.?determin'` returns nothing, and `jq -r '.active_projects[]|"\(.project_number) \(.project_name)"' specs/state.json | grep -iE 'perfect.?recall|backward.?determin'` returns nothing. The probe is a roadmap risk row only (03 Recommendation 3, line 117; `.decisions.json` cycle 1); a record for it in this diff is a failure of the phase, not an extra. *(734 byte-identical to its pre-run value at 8abebadf2; zero perfect-recall/backward-determinism hits in the state.json diff and zero in project_name)*
+- [x] **No-complexity-bound audit**: `grep -nEi '2EXPTIME|EXPSPACE|PSPACE|NP-complete|co-NP|running time|time complexity|space complexity'` over `specs/ROADMAP.md` and over every description written by Phases 1-5 (`jq -r '.active_projects[]|.description'`). Every hit must be a sentence that rules such a bound OUT, never one that asserts one. *(3 hits total: two `2EXPTIME` in 749/750 inside "never an upper-bound source" sentences, one `running time` inside the AnchorLayer prohibition quote. Every hit rules a bound OUT)*
+- [x] **Settled-rulings audit**: confirm no text written asserts a fourth certificate class, re-attempts a C9 tombstone, claims the tableau front delivers a first decidability theorem, reopens 712 or 709, schedules 713, or writes "L⁺ is decidable/undecidable" unqualified. *(all `fourth certificate class`, `MintBound`/C9, `buildTableau_isSome` and `first decidability` hits are prohibitions, pre-existing or newly written as such; zero `/orchestrate 713`, zero reopenings, zero unqualified decidability claims)*
+- [x] **Deliverable-hygiene audit**: `bash .claude/scripts/check-task-references.sh` (or the repo's equivalent lint) over any non-`specs/**` file this run touched. Expected: this run touches none, so the audit is a confirmation that `git status --short` lists only `specs/` paths. *(deviation: altered — `check-task-references.sh` exits 1 on 198 pre-existing repo-wide occurrences, none in a file this run touched; `git status --short` and `git diff --name-only 8abebadf2 HEAD` both list only `specs/` paths)*
+- [x] Run the full gate set: `bash .claude/scripts/verify-deploy.sh`. *(verify-deploy.sh: PASS, 14 checks, 0 failures; the one WARN is the pre-existing lean `routing_hard` declaration)*
+- [x] Record one `issue-record.sh` entry for the run (`--kind win` or `--kind issue` as the run warrants; a run with nothing to record attests that explicitly in the summary prose). *(three entries recorded: one win on the plan's verbatim-blockquote design, two notes on pre-existing lint debt and the evidence gate's `-f`-only blindness)*
 
 **Timing**: 0.75 hours
 
@@ -656,15 +656,15 @@ complexity bound was asserted anywhere, and task 734 was not touched.
 
 ## Testing & Validation
 
-- [ ] Four tasks exist in `specs/state.json` with `status: "not_started"` and a non-empty `file_scope` each.
-- [ ] `next_project_number` advanced by exactly 4 from its pre-run value.
-- [ ] 725 is absent from `active_projects` and present in `specs/archive/state.json` as `abandoned`, with its subsumption evidence in the archived description.
-- [ ] 720's description names `70321e938`, `e8cfcd868`, `ci.yml:119-125`, `:352-356`, and `check-evidence-probes.sh:717-720`, and the tracked-ness check as a deliverable.
-- [ ] 714 has a `file_scope` whose every entry exists on disk.
-- [ ] 734's record is byte-identical to its pre-run state, and no record for a perfect-recall or backward-determinism probe exists anywhere in `specs/state.json`.
-- [ ] `specs/ROADMAP.md` asserts no fallback route, carries the five named risk rows (02 §2.6's four plus 03's perfect-recall question) and the literature-position paragraph, and its Stage 1 run order names the actual task numbers.
-- [ ] `bash .claude/scripts/validate-state.sh specs/state.json` reports no ERROR; `bash .claude/scripts/verify-deploy.sh` reports no new FINDING.
-- [ ] No file outside `specs/` was modified.
+- [x] Four tasks exist in `specs/state.json` with `status: "not_started"` and a non-empty `file_scope` each.
+- [x] `next_project_number` advanced by exactly 4 from its pre-run value.
+- [x] 725 is absent from `active_projects` and present in `specs/archive/state.json` as `abandoned`, with its subsumption evidence in the archived description.
+- [x] 720's description names `70321e938`, `e8cfcd868`, `ci.yml:119-125`, `:352-356`, and `check-evidence-probes.sh:717-720`, and the tracked-ness check as a deliverable.
+- [x] 714 has a `file_scope` whose every entry exists on disk.
+- [x] 734's record is byte-identical to its pre-run state, and no record for a perfect-recall or backward-determinism probe exists anywhere in `specs/state.json`.
+- [x] `specs/ROADMAP.md` asserts no fallback route, carries the five named risk rows (02 §2.6's four plus 03's perfect-recall question) and the literature-position paragraph, and its Stage 1 run order names the actual task numbers.
+- [x] `bash .claude/scripts/validate-state.sh specs/state.json` reports no ERROR; `bash .claude/scripts/verify-deploy.sh` reports no new FINDING.
+- [x] No file outside `specs/` was modified.
 
 ## Artifacts & Outputs
 

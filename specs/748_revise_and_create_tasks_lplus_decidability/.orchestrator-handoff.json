@@ -1,21 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
-  "phases_total": 8,
-  "summary": "Synthesized all three research rounds into an 8-phase plan whose executable output is specs/state.json mutations and a hand-edited specs/ROADMAP.md. Five creations (the (C)-bound task with the cost on its transport-lemma phase, the (W) run-layer task carrying obligation (ii) as two phases with (C)'s general row as the completeness half, the perfect-recall backward-determinism probe, and the two low-priority meta filings), three revisions (720 enlarged to a CI repair and promoted, 714's file_scope declared, 725 closed as subsumed after its evidence is written in), and the roadmap edit that deletes the void R2 contingency and replaces it with four named risks plus the literature position. Task 734 is explicitly out of scope in the Non-Goals. Plan validates strict with zero warnings.",
+  "status": "implemented",
+  "dispatch_seq": 6,
+  "phases_completed": 7,
+  "phases_total": 7,
+  "summary": "Executed plan 03's seven phases in one dispatch. Created tasks 749 ((C)'s bound half on model A), 750 ((W)'s run layer, dispatch phase 1 and STOP), 751 (file_scope declaration hygiene) and 752 (roadmap-integration's silent abort), each with file_scope set in a second state-write.sh call. Enlarged 720 to a CI repair with the tracked-ness check as a named deliverable, declared 714's file_scope, and closed 725 as subsumed with its evidence written into the archived record first. Hand-edited specs/ROADMAP.md (123 insertions, 29 deletions) to delete the void R2 contingency, assert no fallback route, add a five-row named-risk table and a literature-position paragraph, re-cost the (C) and (W) bullets, and re-order the Stage 1 run block; roadmap-integration.sh --regenerate was never run.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/748_revise_and_create_tasks_lplus_decidability/summaries/04_task-graph-revisions-and-roadmap-summary.md",
+      "summary": "Implementation summary for plan 03: four creations, two revisions, one subsumption close, and the roadmap hand-edit, with every deviation recorded."
+    },
+    {
       "type": "plan",
       "path": "specs/748_revise_and_create_tasks_lplus_decidability/plans/03_task-graph-revisions-and-roadmap.md",
-      "summary": "8-phase plan: 5 task creations, 3 record revisions, 1 close-as-subsumed, and the Stage 1 roadmap rewrite; 6.5 hours, 6 dependency waves."
+      "summary": "All seven phases marked [COMPLETED]; deviations annotated inline on the affected checklist items."
     }
-  ],
-  "metadata": {
-    "session_id": "sess_1791577470_f6dff1_748",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 4
+  ]
 }
