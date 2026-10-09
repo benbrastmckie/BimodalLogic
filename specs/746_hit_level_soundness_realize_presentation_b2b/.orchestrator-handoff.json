@@ -1,17 +1,17 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 6 of 8 complete: the constructed regular Z-model exists in the tree. `frameOf` is FrameOver.ofSlicedStep at W := Q with the time-constant relation (carrier Z x Q), with its IsRegular instance, the explicit `frameOf_not_finite_worldState` record that the carrier is NOT finite, `modelOf` whose valuation reads the state component's label, and the three rewrite lemmas modelOf_valuation / frameOf_step / frameOf_mem_HF_iff that Phase 7 consumes. All seven declarations are one-line citations of SlicedFrame.lean's landed companions -- no frame law re-proved, no [Finite W] generalized, SlicedFrame.lean and TaskFrame.lean untouched. Scoped guarded build green (guard exit 0, 1930/1930, 0 errors, 0 warnings, .olean fresh), zero sorries, all seven pinned at [propext, Classical.choice, Quot.sound], +113 lines against the ~90-130 band. Phase 7's two target types were pre-checked in the scratchpad and both elaborate, with Presented's [F.IsRegular] synthesized for frameOf hC. Stopped at the phase boundary as the single-phase dispatch required; phases 7-8 remain.",
-  "phases_completed": 6,
+  "summary": "Phase 7 of 8 complete: REQUIREMENT (S) ITSELF IS LANDED. `presented_modelOf` discharges Trace.lean's realization hypothesis `Presented` for the model built FROM the presentation -- HWZ 2000 Theorem 14 in the (<=) direction for the box-dot fibre -- at a seam anchored at a clNow-labelled state, in both directions, both routed through the one landed uniqueness lemma eq_clTrace_of_localRun_anchored with anchored_runTrace_of_boxStabFree supplying the anchors (now from IsRun, atom from modelOf_valuation, box/stab VACUOUSLY from Phase 4) and cons_localRun the run conditions. Both pinned signatures match the plan's Challenge statements CHARACTER FOR CHARACTER, checked mechanically. Three short helpers serve them: exists_stepPath_of_chain, run_seam_state, isRun_of_chain_seam. +243/-11 lines (all eleven deletions docstring prose, zero declaration bodies touched), 684 -> 916 lines, inside the 180-260 band. Scoped build green (guard exit 0, 1930/1930, 0 errors, 0 warnings, .olean fresh); FULL-PROJECT build green (guard exit 0, 2836 jobs, 0 errors, 0 warnings); sorry census 0 across all source roots; all five new declarations plus a re-pinned cons_localRun at exactly [propext, Classical.choice, Quot.sound]. ONE DEFECT FOUND AND FIXED, READ THIS: the (<=) direction is NOT provable from the ten Cons fields Phase 5 landed. The plan's own <sigma, h_sigma_t> step needs rho t = q0 and IsRun gives only lab (rho t) (clNow phi) = true; no landed field forces the clNow-labelled state to be unique. An ELEVENTH field, Cons.nowUnique, was added. Cons's own Challenge pin is field-free (structure Cons ... : Prop where, no fields listed), so NO pinned signature drifted, and cons_localRun does not read the new field and re-pinned unchanged. The motivating counterexample (two mutually unreachable clNow components with different atom labels) is argued in prose in the field's docstring and is NOT machine-checked -- that is this task's one unverified claim and the top follow-up. Phase 8 must also add a nowUnique #guard on the existing fixture (which already satisfies it) and say ELEVEN fields in every record. Stopped at the phase boundary as the single-phase dispatch required; phase 8 remains.",
+  "phases_completed": 7,
   "phases_total": 8,
-  "dispatch_seq": 18,
+  "dispatch_seq": 19,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-6-handoff-20261008_211137.md",
+  "continuation_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-7-handoff-20261008_213550.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 7,
-    "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-6-handoff-20261008_211137.md",
+    "next_phase": 8,
+    "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-7-handoff-20261008_213550.md",
     "orchestrator_mode": true
   }
 }

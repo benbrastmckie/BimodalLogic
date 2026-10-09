@@ -3,15 +3,35 @@
 - **Task**: 746 - Requirement (S) of the ray-product verdict: Hit-level soundness — realize a presentation by a constructed regular ℤ-model (B2b)
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T19:42:00Z
-- **Completed**: (not complete — 6 of 8 phases)
-- **Effort**: ~2.5 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted; Phase 3 ~0.4 h against 2 h budgeted; Phase 4 ~0.3 h against 1 h budgeted; Phase 5 ~0.3 h against 2 h budgeted; Phase 6 ~0.3 h against 1.5 h budgeted)
+- **Completed**: (not complete — 7 of 8 phases)
+- **Effort**: ~2.5 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted; Phase 3 ~0.4 h against 2 h budgeted; Phase 4 ~0.3 h against 1 h budgeted; Phase 5 ~0.3 h against 2 h budgeted; Phase 6 ~0.3 h against 1.5 h budgeted; Phase 7 ~0.6 h against 2.5 h budgeted)
 - **Dependencies**: None. (C) (task 745) is independent; (W) depends on this and on (C).
 - **Artifacts**: plans/01_hit-level-soundness-b2b.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Phases 1-6 of 8, across six single-phase dispatches (seq 13, 14, 15, 16, 17 and 18). Phase 6
+Phases 1-7 of 8, across seven single-phase dispatches (seq 13, 14, 15, 16, 17, 18 and 19).
+
+**Phase 7 lands requirement (S) itself.** `presented_modelOf` discharges `Trace.lean`'s
+realization hypothesis `Presented` for the model built FROM the presentation — HWZ 2000's
+Theorem 14 in the (⇐) direction for the box-dot fibre — at a seam anchored at a `clNow`-labelled
+state, in both directions, with `anchored_runTrace_of_boxStabFree` supplying the anchors and
+`cons_localRun` the run conditions, both fed to the ONE landed uniqueness lemma
+`eq_clTrace_of_localRun_anchored`. Scope carried in the statement: `box`/`stab`-free `φ`, one
+seam, `[F.IsRegular]` synthesized for `frameOf hC`. Nothing about validity follows and nothing
+about it is said.
+
+**The phase also found a defect in the consistency conditions and fixed it.** The (⇐) direction
+is NOT provable from the ten `Cons` fields Phase 5 landed: a run supplies only
+`lab (ρ t) (clNow φ) = true`, so the history built from it need not live in the seam's own
+fibre, and no landed field forced the `clNow`-labelled state to be unique. An eleventh field,
+`Cons.nowUnique`, was added; `Cons`'s own Challenge pin is field-free, so no pinned signature
+drifted and `presented_modelOf` landed at its pin character for character. The counterexample
+that motivates the field is argued in prose in the field's docstring and is NOT machine-checked
+— see Follow-ups.
+
+Phase 6
 builds the model: `frameOf`, the presentation's own state set `Q` carried through
 `FrameOver.ofSlicedStep` with the time-constant relation `fun _ q q' => step q q' = true`,
 together with its regularity instance, the explicit record that the carrier `ℤ × Q` is NOT
@@ -47,10 +67,50 @@ machine-checked frame-constructor findings into the tracked, rot-guarded evidenc
 that the plan's descoping of the carried 300-500 line "regular-frame constructor for finitely many
 fibre shapes per time" prerequisite rests on a green compiled artifact rather than on a report
 paragraph. That phase discharged no proof obligation and touched nothing under `FormalSystem/`.
-Phases 6-8 (`frameOf`/`modelOf`, `presented_modelOf`, the Hit-level corollary and the
-acceptance statement) remain.
+Phase 8 (the Hit-level corollary `hitCl_modelOf_eq_hitOf`, the aggregator import edge, the
+axiom pins, the theorem-index row, the READMEs and the ROADMAP) remains.
 
 ## What Changed
+
+### Phase 7
+
+- `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean` — 684 → 916 lines (+243
+  insertions, −11 deletions; ALL eleven deletions are docstring prose — the header's owed-work
+  paragraph, the `Cons` field count, the `nowOnce` clause-group entry and one re-wrapped line —
+  and zero declaration bodies were touched), zero sorries. One new `Cons` field and five new
+  declarations:
+  - `Cons.nowUnique : ∀ q q' : Q, lab q (clNow φ) = true → lab q' (clNow φ) = true → q = q'` —
+    the eleventh field, carrying in its own docstring the obstruction that forced it and the
+    counterexample that shows the other ten do not imply it.
+  - `exists_stepPath_of_chain` — a finite `StepPath` of `n + 1` entries cut out of a bi-infinite
+    `step`-chain, by induction on `n` with `StepPath.snoc`. It exists because `Cons.nowOnce` is
+    quantified over `StepPath step q q' p` with `2 ≤ p.length`, so consuming the field on a run
+    requires producing the path, and the length bound is what turns `z ≠ t` into `2 ≤ p.length`.
+  - `run_seam_state` — `Cons.nowUnique` read at the seam: `ρ t = q₀`.
+  - `isRun_of_chain_seam` — the converse packaging, consuming `Cons.nowOnce` in BOTH time
+    directions (a marked `ρ z` with `z < t` would mark `ρ t` as a path's end; with `z > t` it
+    would itself be marked by the path out of `ρ t`). Uses `nowOnce` only, never `nowUnique`.
+  - `anchored_runTrace_of_boxStabFree` — at its pinned signature, four one-line fields: `now` is
+    `IsRun`'s second conjunct verbatim, `atom` is `modelOf_valuation` after rewriting
+    `σ.state z` to `(z, ρ z)`, and `box`/`stab` are VACUOUS by Phase 4's
+    `not_box_mem_plusSubformulaClosure` / `not_stab_mem_plusSubformulaClosure` applied to the
+    field's own closure-membership hypothesis.
+  - `presented_modelOf` — at its pinned signature. (⇒): `frameOf_mem_HF_iff` presents a splice
+    as `z ↦ (z + k, g z)`, the seam anchor pins `k = 0` and `g t = q₀`, `isRun_of_chain_seam`
+    makes `g` a run. (⇐): `frameOf_step` gives the bi-infinite step path, so
+    `FrameOver.worldHistoryOfStepPath` gives the history, `run_seam_state` puts it in the seam's
+    fibre, and `Probe735.not_presented`'s own splice-exhibition block — a `Presheaf.StabFibre`
+    element, `seamOmegaEquiv` applied to it, `Equiv.symm_apply_apply` under an explicit `show` —
+    exhibits it as a splice. The module's one new `linter.style.show` suppression is
+    declaration-scoped with a comment saying the `show` is kept to stay verbatim with the probe,
+    following the file's two existing precedents.
+  - The header's owed-work paragraph was rewritten: the realization theorem now closes the file,
+    only the Hit-level corollary remains owed, and the paragraph states explicitly that nothing
+    in the module states or is a step toward `Decidable (PlusValidZTime φ)` and that no
+    complexity bound is claimed.
+- `typst/generated/status.typ` — regenerated by `scripts/typst-sync-check.sh --fix` after the
+  pre-commit gate refused the phase commit on the `formalsystem-line-count` drift this phase's
+  +232 net lines caused. Same remedy Phases 2-6 each applied.
 
 ### Phase 6
 
@@ -167,6 +227,38 @@ acceptance statement) remain.
 
 ## Decisions
 
+### Phase 7
+
+- **The eleventh `Cons` field rather than a hypothesis on `presented_modelOf`.** Adding
+  `ρ t = q₀`'s precondition to the theorem would have weakened a pinned statement, which
+  `plan-compliance.md`'s Statement Fidelity section forbids outright. Putting it on `Cons`, whose
+  Challenge pin carries no fields, keeps the pinned theorem exactly as recorded and puts the
+  condition where it belongs: it is a property of the PRESENTATION, decidable over a `Fintype Q`
+  by `decide`, hence checkable on a concrete fixture like every other field. Nothing in the tree
+  constructs a `Cons` term, so the addition broke no build, and `cons_localRun` does not read the
+  new field and re-pinned unchanged.
+- **`nowOnce` and `nowUnique` are both kept and neither subsumes the other.** `nowOnce` is
+  once-only ALONG a path and is what makes a chain an `IsRun`; `nowUnique` is once-only ACROSS
+  the presentation and is what pins the anchor to the seam's own state. `nowOnce` alone permits
+  two mutually unreachable marked components; `nowUnique` alone permits the single marked state
+  to recur along one path. Both docstrings say so, and `isRun_of_chain_seam` uses only the
+  former while `run_seam_state` uses only the latter — the independence is visible in the code.
+- **`FrameOver.worldHistoryOfStepPath`, not `frameOf_mem_HF_iff`'s `←` direction, for (⇐).** The
+  plan's bullet offered either. `worldHistoryOfStepPath` gives `σ.path = fun z => (z, ρ z)` by
+  `rfl`, so `anchored_runTrace_of_boxStabFree`'s `hσ` argument is literally `rfl`; the `←`
+  direction would have produced an existential over the offset that then had to be specialized
+  at `0`. The `→` direction IS used, in the (⇒) branch, exactly where the plan says.
+- **`Presented`'s `step` argument is `Bool`-valued, so the pinned spelling
+  `fun q q' => step q q' = true` elaborates with a `decide` coercion.** It is normalized away
+  once, in `presented_modelOf`'s first tactic line, by
+  `rw [show (fun q q' : Q => decide (step q q' = true)) = step from by funext q q'; simp]`.
+  This was the phase's only elaboration surprise, and `hitCl_modelOf_eq_hitOf` carries the same
+  spelling and will need the same treatment.
+- **One phase commit, not the plan's two.** Both directions of `Presented` went green in the same
+  scratchpad pass, so no intermediate tree state ever existed with one direction green and the
+  other outstanding. Splitting the final file afterwards would have manufactured a sub-step that
+  did not happen; it is recorded rather than faked.
+
 - **Phase 6: the valuation is an existential over the closure-membership proof, not a `dite`.**
   An atom holds at `(z, q)` iff it is an atom of `φ`'s subformula closure AND the presentation
   labels `q` with its letter; off the closure it holds nowhere. Membership in
@@ -241,6 +333,20 @@ acceptance statement) remain.
   said `sorryAx`, which would have made `grep -c sorry` report 1.
 
 ## Plan Deviations
+
+- **Task 2** (Phase 7) altered, two changes. (a) The history is built by the bullet's own
+  parenthetical alternative, `FrameOver.worldHistoryOfStepPath` with `IsStepPath` from
+  `frameOf_step`, rather than `frameOf_mem_HF_iff`'s `←` direction. (b) **The bullet was not
+  provable from the `Cons` bundle Phase 5 landed.** Its own `⟨σ, hσt⟩` step needs
+  `hσt : σ.state t = τ.state t`, i.e. `ρ t = q₀`, and `IsRun` supplies only
+  `lab (ρ t) (clNow φ) = true`; none of the ten landed fields forces the `clNow`-labelled state
+  to be unique. One new field, `Cons.nowUnique`, was added. `Cons`'s own Challenge pin is
+  field-free (`structure Cons … : Prop where` with no fields listed), so no pinned signature
+  drifted; `presented_modelOf` and `anchored_runTrace_of_boxStabFree` were both checked
+  mechanically against `## Lean Challenge Statements` and MATCH character for character.
+- **Task 4** (Phase 7) altered: ONE phase commit, not the two the bullet's sub-step mandate asks
+  for, because both directions went green in the same pass and no intermediate green state
+  existed to attach a commit to.
 
 - **Task 1** (Phase 6) altered: the new section's `variable` block carries `[Nonempty Q]`, which
   the Phase 6 task body instructs ("taking `[Fintype Q]` (hence `[Finite Q]`) and `[Nonempty Q]`
@@ -323,6 +429,51 @@ acceptance statement) remain.
   the phase's own Verification criterion requires.
 
 ## Verification
+
+### Phase 7
+
+- **Scoped guarded build, detached**: `lake-build-guard.sh build --timeout 1800 -- build
+  FormalSystem.Metalogic.Decidability.RaySummary.Realize` — guard's own exit code 0 (un-piped),
+  `✔ [1930/1930] Built …Realize (2.5s)`, `Build completed successfully (1930 jobs)`,
+  `lake-build-guard: STATUS: exit_status=0`, **0 `error:` and 0 `warning` over the captured
+  streams**. `.olean` newer than source confirmed by `find … -newer`.
+- **Full-project guarded build, detached** (this plan's Testing & Validation bar): guard's own
+  exit code 0, `Build completed successfully (2836 jobs)`,
+  `lake-build-guard: STATUS: exit_status=0`, 0 `error:` and 0 `warning` over both captured
+  streams.
+- **Axiom pins** against the built module, all exactly `[propext, Classical.choice, Quot.sound]`:
+  `presented_modelOf`, `anchored_runTrace_of_boxStabFree`, `exists_stepPath_of_chain`,
+  `run_seam_state`, `isRun_of_chain_seam`, and `cons_localRun` RE-PINNED after the `Cons` field
+  addition (no regression).
+- **Statement fidelity, checked mechanically, not by eye**: both pinned signatures were extracted
+  from the plan's `## Lean Challenge Statements` and from the module and compared character for
+  character — MATCH on both. No hypothesis was added to and no quantifier specialized in
+  `Presented` itself: `Trace.lean` is unmodified, and `git status` showed exactly one source file
+  changed by the phase.
+- **The uniqueness lemma is cited, not re-proved**: `grep -c eq_clTrace_of_localRun_anchored` = 4
+  over the phase's additions (≥ 2 required) — the two proof branches plus two docstring
+  citations. No new induction on `PlusFormula` appears; the only `+` line matching an induction
+  pattern is the docstring sentence stating that there is none.
+- **Sorry count**: `bash .claude/scripts/lean-sorry-census.sh` over every resolved source root
+  reports `sorry_count: 0` with an empty inventory. `grep -c sorry Realize.lean` = 0.
+- **Vacuous definitions**: 0 `+` lines in the phase's additions match
+  `:= (True|Unit|trivial|Trivial)$`. The repository-wide sweep returns exactly ONE hit,
+  `FormalSystem/Examples/TemporalStructures.lean:495` (`int_domain_universal … := trivial`,
+  a genuine proof of a `True`-valued domain predicate), which predates this task — last touched
+  by commit `85e92e9e4` — and is not this phase's.
+- **Axiom count**: the repository-wide `grep -c '^axiom '` baseline of 15 is unchanged; the
+  phase's additions contain 0 `^axiom` lines.
+- **No refuted shape reintroduced**: `grep 'Finite|FiniteWidth'` over the phase's additions
+  returns NOTHING — no finite-fibre and no finite-width assumption, which `not_finite_width_fmp`
+  forbids.
+- **No forbidden claim**: `grep -niE 'PlusValidZTime|EXPSPACE|PSPACE|exponential
+  time|complexity bound'` over the additions returns four hits, each read individually; all four
+  are NEGATIONS in docstrings (two in the module header, two in `presented_modelOf`'s) stating
+  that the claim is not made.
+- **No cslib coupling**: no `require` edge added and no cslib declaration copied.
+- **Scope Hypothesis**: CONFIRMED. +232 net (+243/−11) against the predicted 180-260 band, far
+  under the ~320-line tripwire. The hidden obligation the tripwire watches for DID materialize —
+  the missing `Cons.nowUnique` — but it cost one field plus three short helpers, not a phase.
 
 ### Phase 6
 
@@ -476,6 +627,23 @@ acceptance statement) remain.
 
 ## Impacts
 
+### Phase 7
+
+- Requirement (S) of the `RaySummary/README.md` ray-product verdict is discharged at `hitOf`
+  level for the `box`/`stab`-free fragment at one seam: `Presented` is no longer a hypothesis
+  this tree discharges for no non-trivial model. Every consumer of `Presented` in `Trace.lean` —
+  `presented_localRun`, `hit_eq_hitOf_of_presented`, `hitPresented_of_presented` and the two
+  `⨀` bridges — is now instantiable at a constructed model, which is what Phase 8's one-line
+  Hit-level corollary reads off.
+- Requirement (C) (the separate completeness record) and requirement (W) (the closure-wide
+  quasimodel) are untouched and remain open. `Probe735.not_presented` and
+  `quasistate_does_not_determine_hit` are both unmodified: the first refutes `Presented` as a
+  completeness carrier on a model NOT built from a presentation, which is a statement in the
+  other direction and is not contradicted by anything here.
+- Nothing about `Decidable (PlusValidZTime φ)` follows, is implied, or is said — the module
+  header and `presented_modelOf`'s docstring both state this explicitly rather than leaving it
+  to the reader. No complexity bound is claimed anywhere.
+
 - The constructed regular ℤ-model now EXISTS in the tree: `frameOf`/`modelOf` with regularity as
   an instance. Everything requirement (S) still owes is the realization theorem over it, not the
   model. Phase 7's entry point is machine-checked to elaborate.
@@ -515,16 +683,27 @@ acceptance statement) remain.
 
 ## Follow-ups
 
-- Phases 7-8 of the plan remain — Phase 7 on `Realize.lean`, Phase 8 on the aggregator and
-  documentation — so they stay serialized. Phase 7 (`anchored_runTrace_of_boxStabFree` and
-  `presented_modelOf`) is unblocked, and is the plan's largest phase and its one genuinely
-  unproved reduction.
-- Two shape notes Phase 7 must handle, read off the landed signatures rather than guessed.
-  (a) `frameOf_mem_HF_iff` quantifies the offset `k` existentially, so the `(⇒)` direction yields
-  SOME `k` and `k = 0` has to be pinned from the seam anchor `hτ : τ.state t = (t, q₀)` rather
-  than assumed. (b) `Cons.nowOnce` is quantified over `StepPath step q q' p` with
-  `2 ≤ p.length`, so the `(⇒)` direction has to BUILD a `StepPath` from a stretch of the run to
-  consume it.
+- **`Cons.nowUnique`'s motivating counterexample is PROSE, not machine-checked — the one
+  unverified claim in this task.** The field's docstring argues that two mutually unreachable
+  `clNow`-labelled components with different atom labels satisfy the other ten fields while
+  refuting `Presented` at either seam (`φ = .atom p`, `Q = {q₀, q₁, a, b, c, d}`, `step`:
+  `c→c`, `c→q₀`, `q₀→a`, `a→a`, `d→d`, `d→q₁`, `q₁→b`, `b→b`, marker on `q₀` and `q₁`
+  only, `lab c p = true`, `lab d p = false`). Wiring it as an evidence probe would bring it to
+  this task's own acceptance standard; estimated 120-200 lines (six states, the frame, the model,
+  the `Presented` refutation). That is successor-sized, not a Phase 8 line.
+- **Phase 8 must add a `#guard` for `nowUnique` on the existing fixture.** The Phase 5
+  three-state presentation already satisfies it — only state `1` is marked — so the check is
+  cheap, and without it the bundle's newest field is its one undemonstrated one.
+- **Every record Phase 8 writes must say `Cons` has ELEVEN fields**, and that one of them was
+  derived from the realization theorem's own obligation rather than assembled with the rest.
+- Phase 8 of the plan remains: the Hit-level corollary `hitCl_modelOf_eq_hitOf`, the aggregator
+  import edge, the axiom pins in `KTypeSummaryAxiomTest.lean`, the theorem-index row, the READMEs
+  and the ROADMAP.
+- One shape note for `hitCl_modelOf_eq_hitOf`, read off the landed proof: `Presented`'s `step`
+  argument is `Bool`-valued, so the pinned spelling `fun q q' => step q q' = true` elaborates
+  with a `decide` coercion rather than as the bare `step`. `presented_modelOf` normalizes it away
+  in its first tactic line; the corollary carries the same spelling in `hitOf`'s argument and
+  needs the same treatment (or must route `presented_modelOf`'s conclusion through it).
 - The Phase 3 backward fixture is now carried into the permanent witness (Phase 5, `labCons` /
   `labConsBad` in `KTypeFinEvalTest.lean`), so `SLive`'s independence from `SCoh` is recorded in
   the tree. This follow-up is discharged.
@@ -532,14 +711,17 @@ acceptance statement) remain.
   all of `PlusFormula` and `nowOnce` over `List Q`. A decidable version would quantify over
   `plusSubformulaClosure φ` instead; whether that is wanted is a question for after Phase 8.
 - No inhabitant of `Cons` at a concrete `φ` exists yet — the Phase 5 `#guard`s are clause-level,
-  at a bare four-letter alphabet rather than at some `clSig φ`. Phase 7 is where a concrete `φ`
-  first appears, and the risk the plan's risk table flagged (an awkward-to-inhabit bundle) is
-  therefore only partly retired.
+  at a bare four-letter alphabet rather than at some `clSig φ`, and Phase 7 consumed `Cons`
+  abstractly without ever building a term of it. The risk the plan's risk table flagged (an
+  awkward-to-inhabit bundle) is therefore NOT retired, and the `nowUnique` episode is evidence
+  that it matters: a bundle nothing inhabits is a bundle whose fields nothing exercises, which is
+  exactly how a necessary field came to be missing for two phases.
 - `FormalSystem.lean`'s import count will stay one behind the file count until Phase 8 adds the
   aggregator edge and regenerates it; the pre-commit gate warns about this on every `.lean`-
   touching commit in the interim, and that warning is expected rather than a defect.
 - Phase 8 owes the successor-record description for the frame constructor itself, and the ROADMAP
-  (S) paragraph rewrite that records the two refutations found here.
+  (S) paragraph rewrite that records the two refutations found here — now three obstructions,
+  counting the `nowUnique` gap.
 - No encoding is yet exhibited that defers an eventuality AND has two-sided finite branching; the
   refutations bound that design space without closing it. That question belongs to the successor.
 
@@ -556,4 +738,13 @@ acceptance statement) remain.
 - `specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-3-handoff-20261008_202100.md`
 - `FormalSystem/Metalogic/Decidability/RaySummary/Present.lean` (`live`, `HasChain`, `live_iff`, `bwdLive` — the argument-order precedent)
 - `FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean` (`LocalRun.snce` — the orientation source)
+- `specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-6-handoff-20261008_211137.md`
+- `specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-7-handoff-20261008_213550.md`
+- `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` (the splice-exhibition
+  block Phase 7's (⇐) direction copies verbatim)
+- `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean` (`Presented`,
+  `eq_clTrace_of_localRun_anchored` — cited, never re-proved)
+- `FormalSystem/PlusLanguage/PlusRayFibre.lean` (`seamOmegaEquiv`, `SeqPair`)
+- `FormalSystem/Semantics/IntNormalForm.lean` (`IsStepPath`, `FrameOver.worldHistoryOfStepPath`)
+- `FormalSystem/Semantics/Presheaf/Ray.lean` (`StabFibre`)
 - `scripts/check-evidence-probes.sh`

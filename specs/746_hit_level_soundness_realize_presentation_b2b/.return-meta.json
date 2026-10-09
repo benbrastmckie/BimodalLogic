@@ -1,42 +1,109 @@
 {
   "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
   "task_number": 746,
-  "dispatch_seq": 18,
-  "phase_number": 6,
-  "phases_completed": 6,
+  "phase_number": 7,
+  "dispatch_seq": 19,
+  "session_id": "sess_1791500801_df94d6",
+  "phases_completed": 7,
   "phases_total": 8,
   "requires_user_review": false,
+  "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-7-handoff-20261008_213550.md",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/746_hit_level_soundness_realize_presentation_b2b/summaries/01_hit-level-soundness-b2b-summary.md",
-      "summary": "Phases 1-6: the constructed regular Z-model frameOf/modelOf with its regularity instance, the not-finite-carrier record, and the three rewrite lemmas Phase 7 consumes, all cited from SlicedFrame.lean."
+      "summary": "Running task summary, extended with Phase 7: presented_modelOf discharges Presented for the constructed model at a seam, plus the Cons.nowUnique field the (<=) direction forced."
     }
   ],
-  "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-6-handoff-20261008_211137.md",
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
-    "vacuous_count": 1,
+    "vacuous_count": 0,
+    "vacuous_note": "Repository-wide sweep returns one pre-existing hit (FormalSystem/Examples/TemporalStructures.lean:495, int_domain_universal := trivial, last touched by 85e92e9e4); zero in this phase's additions.",
     "axiom_count": 15,
+    "axiom_note": "Unchanged repository baseline; zero '^axiom' lines in this phase's additions.",
     "build_passed": true,
-    "build_scope": "scoped: FormalSystem.Metalogic.Decidability.RaySummary.Realize (guard exit 0, 1930/1930 jobs, 0 error:, 0 warning:, .olean newer than source). No full-project build: the plan assigns that to Phase 8 and this dispatch is partial, not implemented.",
-    "vacuous_count_note": "1 is pre-existing and unchanged (FormalSystem/Examples/TemporalStructures.lean's int_domain_universal); 0 matches in this phase's additions.",
+    "build_evidence": "Full-project guarded detached build: guard exit 0, 'Build completed successfully (2836 jobs)', 0 error: and 0 warning over both captured streams; Realize.olean newer than Realize.lean.",
+    "verification_passed": true,
     "axiom_pins": {
-      "modelOf_valuation": "[propext, Classical.choice, Quot.sound]",
-      "frameOf_step": "[propext, Classical.choice, Quot.sound]",
-      "frameOf_mem_HF_iff": "[propext, Classical.choice, Quot.sound]",
-      "frameOf_not_finite_worldState": "[propext, Classical.choice, Quot.sound]",
-      "frameOf_isRegular": "[propext, Classical.choice, Quot.sound]",
-      "frameOf": "[propext, Classical.choice, Quot.sound]",
-      "modelOf": "[propext, Classical.choice, Quot.sound]"
-    }
+      "presented_modelOf": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "anchored_runTrace_of_boxStabFree": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "exists_stepPath_of_chain": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "run_seam_state": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "isRun_of_chain_seam": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "cons_localRun": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "statement_fidelity": "presented_modelOf and anchored_runTrace_of_boxStabFree extracted from the plan's '## Lean Challenge Statements' and from the module and compared character for character: MATCH on both. Presented itself unmodified (Trace.lean untouched)."
   },
   "memory_candidates": [
-    "A FrameOver-valued def whose body is a known constructor (ofSlicedStep) lets its companion lemmas be cited verbatim with `exact <companion> _ _ _`: the carrier projections (w.2, (z,q), p q : Z x Q) unify definitionally through the def with no show/change, so a whole 'build the model' phase can be seven one-line citations rather than re-proved field discharges.",
-    "A valuation that must agree with a closure-indexed labelling is cleanest as an existential over the membership PROOF (`exists h : atom p in closure, lab w.2 (clLetter phi h) = true`): Finset membership is a Prop, so proofs are definitionally equal and clLetter phi h' IS clLetter phi h -- the rewrite lemma is then the anonymous constructor with no transport, where a dite needs DecidablePred plumbing and a dif_pos at every use.",
-    "In this repo a .lean-touching phase commit is refused by the typst-sync-check.sh Check 2 pre-commit gate on formalsystem-line-count drift; the standing remedy is `bash scripts/typst-sync-check.sh --fix` plus adding typst/generated/status.typ to the phase commit's explicit path list. --fix and --counts-only are not composable."
+    {
+      "insight": "A Lean Challenge pin on a `structure ... : Prop where` with NO fields listed constrains the structure's NAME and PARAMETERS only, not its field set. Adding a field to such a structure mid-plan drifts no pinned signature, which makes it the sanctioned repair when a later phase discovers the bundle is too weak -- strictly preferable to adding a hypothesis to a theorem whose own signature IS pinned (which plan-compliance.md's Statement Fidelity section forbids).",
+      "keywords": [
+        "lean",
+        "plan-compliance",
+        "challenge-statements",
+        "statement-fidelity",
+        "structure-pin"
+      ]
+    },
+    {
+      "insight": "A certificate-shaped Prop bundle that nothing in the tree INHABITS is a bundle whose fields nothing exercises. In task 746 the Cons bundle was validated only by clause-level #guards on a fixture, never by constructing a Cons term, and a necessary eleventh field (uniqueness of the marked state) went missing for two phases as a direct result. Clause-level #guards are not a substitute for one real inhabitant.",
+      "keywords": [
+        "lean",
+        "non-vacuity",
+        "certificate",
+        "interesting-witness",
+        "bundle-design"
+      ]
+    },
+    {
+      "insight": "A `Q -> Q -> Bool` parameter spelled at a call site as `fun q q' => rel q q' = true` elaborates with a `decide` coercion, NOT as the bare `rel`, so the two are not definitionally equal for a variable `rel`. Normalize once up front with `rw [show (fun q q' => decide (rel q q' = true)) = rel from by funext q q'; simp]` rather than fighting it at every use.",
+      "keywords": [
+        "lean",
+        "decide-coercion",
+        "bool-prop",
+        "elaboration"
+      ]
+    },
+    {
+      "insight": "Two conditions that both sound like 'the marker is read once' are independent and both needed: once-only ALONG a path (no positive-length step path between two marked states) makes a chain an anchored run; once-only ACROSS the state set (at most one marked state) pins the anchor to a given seam's own state. The first permits two mutually unreachable marked components; the second permits the single marked state to recur along a path.",
+      "keywords": [
+        "temporal-logic",
+        "quasimodel",
+        "anchoring",
+        "seam",
+        "hwz-theorem-14"
+      ]
+    }
   ]
 }
