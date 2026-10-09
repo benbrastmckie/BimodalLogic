@@ -78,7 +78,7 @@ next_project_number: 753
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-749 [RESEARCHED] — (C)'s BOUND HALF ON MODEL A. 745 delivered (C)'s...
+749 [PLANNED] — (C)'s BOUND HALF ON MODEL A. 745 delivered (C)'s...
 750 [NOT STARTED] — (W)'s RUN LAYER — ITS OWN RECORD, AS RaySummary/README.md AND...
 
 ### Formula Refactor
@@ -157,11 +157,12 @@ next_project_number: 753
 ---
 
 ### 749. C bound half model a presentation size
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [749_c_bound_half_model_a_presentation_size/reports/01_c-bound-half-model-a.md]
+- **Plan**: [749_c_bound_half_model_a_presentation_size/plans/01_c-bound-half-model-a.md]
 
 **Description**: **(C)'s BOUND HALF ON MODEL A.** 745 delivered (C)'s satisfiability half only; the bound half was descoped at closure and is owned by no other record. `RaySummary/README.md:154` states what landed is "**one fixture**, so no computable bound and no general regular `ℤ`-model statement follows". This record owns the bound **on the fixture**. The general every-model statement is OUT OF SCOPE here and is the completeness half of the (W) run-layer record.
 
