@@ -169,7 +169,26 @@ EVIDENCE="specs/evidence"
 #                                                           | factor is a singleton and this is
 #                                                           | the dual at its easiest instance;
 #                                                           | the hard test is a mirror fixture,
-#                                                           | filed as a follow-up. No automata
+#                                                           | filed as a follow-up and discharged
+#                                                           | by the mirror-fixture entry below.
+#                                                           | No automata
+# seam-gluing-ray-product/backward-dual-mirror-fixture      | POSITIVE (backward factor, on the
+#                                                           | MIRROR fixture -- time-asymmetric
+#                                                           | AND backward-branching, factor 2 at
+#                                                           | every spine state): the backward
+#                                                           | stability operator at a seam state
+#                                                           | is exactly "every backward root path
+#                                                           | from that state meets the `p`-set",
+#                                                           | decided by backward reachability
+#                                                           | alone and STATE-DEPENDENTLY -- True
+#                                                           | at the `aft` states, False at the
+#                                                           | `x` and `bef` states; two distinct
+#                                                           | backward root paths from the state
+#                                                           | under test (`two_bwd_paths`,
+#                                                           | axiom-free). Discharges E1's "mirror
+#                                                           | fixture filed as a follow-up" note
+#                                                           | (the entry above). No automata, no
+#                                                           | width bound, no complexity claim
 # seam-gluing-ray-product/device-selection-probe            | DEVICE-SELECTION (E3): `⊡(Fp)` /
 #                                                           | `⊡(Pp)` are device-inert on finite
 #                                                           | fixtures (machine-checked:
@@ -541,6 +560,7 @@ WIRED=(
   "seam-gluing-ray-product/mosaic-germ-amalgamation"
   "seam-gluing-ray-product/path-quantifier-alternation"
   "seam-gluing-ray-product/backward-dual-asymmetric-fixture"
+  "seam-gluing-ray-product/backward-dual-mirror-fixture"
   "seam-gluing-ray-product/device-selection-probe"
   "seam-gluing-ray-product/cslib-ramsey-port-feasibility"
   "seam-gluing-ray-product/ktype-summary-substrate-probe"

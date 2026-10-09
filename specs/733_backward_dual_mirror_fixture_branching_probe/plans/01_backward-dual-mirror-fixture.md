@@ -253,19 +253,19 @@ while the diff read-through confirms every changed hunk lies inside the comment.
 
 ---
 
-### Phase 3: Wire into the evidence gate, run the full gate, and commit the two declared files [NOT STARTED]
+### Phase 3: Wire into the evidence gate, run the full gate, and commit the two declared files [COMPLETED]
 
 **Goal**: The probe is held in place by `scripts/check-evidence-probes.sh`, the full gate set is
 green, E1's `.lean` file is untouched, and exactly the declared `file_scope` files are committed.
 
 **Tasks**:
-- [ ] Re-read `scripts/check-evidence-probes.sh` immediately before editing (concurrent-sibling
+- [x] Re-read `scripts/check-evidence-probes.sh` immediately before editing (concurrent-sibling
       hazard); if the `WIRED` array or the comment table differs from the state recorded in
       `reports/01_backward-dual-mirror-fixture.md` in a way that touches the insertion point,
       stop and report rather than overwrite.
-- [ ] Add `"seam-gluing-ray-product/backward-dual-mirror-fixture"` to the `WIRED=( ... )` array
+- [x] Add `"seam-gluing-ray-product/backward-dual-mirror-fixture"` to the `WIRED=( ... )` array
       directly after `"seam-gluing-ray-product/backward-dual-asymmetric-fixture"`.
-- [ ] Add a comment-table row under `# --- WIRED ---` directly after the E1 row, in the table's
+- [x] Add a comment-table row under `# --- WIRED ---` directly after the E1 row, in the table's
       two-column wrapped style: `POSITIVE (backward factor, on the MIRROR fixture -- time-asymmetric
       AND backward-branching, factor 2 at every spine state): the backward stability operator at a
       seam state is exactly "every backward root path from that state meets the p-set", decided by
@@ -273,21 +273,21 @@ green, E1's `.lean` file is untouched, and exactly the declared `file_scope` fil
       bef; two distinct backward root paths from the state under test (two_bwd_paths); discharges
       E1's "mirror fixture filed as a follow-up" note. No automata, no width bound, no complexity
       claim.`
-- [ ] Optional, pointer-only: amend the final clause of the E1 table row (the comment, not the
+- [x] Optional, pointer-only: amend the final clause of the E1 table row (the comment, not the
       `.lean` file) so "filed as a follow-up" points at the new entry. Skip if the row's wording
       has changed since the research read.
-- [ ] `bash scripts/check-evidence-probes.sh` from the repository root; require exit 0 and the
+- [x] `bash scripts/check-evidence-probes.sh` from the repository root; require exit 0 and the
       PASS summary with the wired count one higher than the pre-edit baseline.
-- [ ] `lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean`
+- [x] `lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean`
       once more; diff the six axiom lines against the header's axiom record (must match verbatim).
-- [ ] `git status --short` and `git diff --stat -- specs/evidence/`: the only `specs/evidence/`
+- [x] `git status --short` and `git diff --stat -- specs/evidence/`: the only `specs/evidence/`
       change is the new probe; `backward-dual-asymmetric-fixture.lean` is byte-identical to HEAD.
-- [ ] `bash .claude/scripts/verify-deploy.sh` (the complete gate set, per the `full` tier).
-- [ ] Commit through `bash .claude/scripts/git-commit-scoped.sh --message "task 733 phase 3: wire
+- [x] `bash .claude/scripts/verify-deploy.sh` (the complete gate set, per the `full` tier).
+- [x] Commit through `bash .claude/scripts/git-commit-scoped.sh --message "task 733 phase 3: wire
       mirror-fixture probe into the evidence gate" --session <session_id> --task 733 -- <explicit
       paths>` with exactly the two `file_scope` paths plus this plan file as the pathspec -- never
       `git add -A`, `git add .`, a directory pathspec, or `git commit -am`.
-- [ ] Record an issue-log entry for this phase.
+- [x] Record an issue-log entry for this phase.
 
 **Timing**: 0.5 hours
 
@@ -413,22 +413,22 @@ end Probe733Mirror
 
 ## Testing & Validation
 
-- [ ] `lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean`
+- [x] `lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean`
       exits 0 with no errors or warnings and exactly six `#print axioms` output lines (after
       Phases 1, 2, and 3).
-- [ ] Axiom record: `two_bwd_paths` axiom-free; `bwd_reaches_x` `[propext]`; `allBwdPathsMeet_iff`
+- [x] Axiom record: `two_bwd_paths` axiom-free; `bwd_reaches_x` `[propext]`; `allBwdPathsMeet_iff`
       `[propext, Quot.sound]`; `stabPast_iff_aft`, `pastStab_iff_allBwdPathsMeet`,
       `decide_past_stab` `[propext, Classical.choice, Quot.sound]` -- and the header's record
       equals the printed lines verbatim.
-- [ ] No `sorry` in the probe outside comments (`grep -n sorry` on the file).
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 with the wired count at baseline + 1 and a
+- [x] No `sorry` in the probe outside comments (`grep -n sorry` on the file).
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 with the wired count at baseline + 1 and a
       PASS line for the new probe.
-- [ ] `backward-dual-asymmetric-fixture.lean` and every other wired probe `.lean` file are
+- [x] `backward-dual-asymmetric-fixture.lean` and every other wired probe `.lean` file are
       byte-identical to HEAD.
-- [ ] Header literally states the backward branching factor (2), the outcome (POSITIVE), the
+- [x] Header literally states the backward branching factor (2), the outcome (POSITIVE), the
       effect on the two-factor presentation, the honest limit, and the "does NOT do" exclusions.
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0 (final-phase `full` gate).
-- [ ] Signatures of the fifteen Challenge-pinned declarations in the landed file match
+- [x] `bash .claude/scripts/verify-deploy.sh` exits 0 (final-phase `full` gate).
+- [x] Signatures of the fifteen Challenge-pinned declarations in the landed file match
       `## Lean Challenge Statements` above (`bash .claude/scripts/lean-challenge-snapshot.sh --check`
       where available; otherwise a manual signature diff).
 
