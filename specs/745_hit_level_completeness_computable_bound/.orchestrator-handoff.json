@@ -1,29 +1,12 @@
 {
   "status": "partial",
   "skeleton": false,
-  "phase": "implement",
-  "dispatch_seq": 5,
-  "summary": "Phase 1 only, per the dispatch's single-phase mission. HitPresented (a def ... : Prop whose body is HitCl M tau t phi k = (hitOf lab step (clNow phi) k : Set _)) and hitPresented_of_presented (Presented -> HitPresented at every k >= 1, as the term hit_eq_hitOf_of_presented M tau t phi lab step k hk hP) landed sorry-free in FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean, +44 lines inside section Presented. Both signatures match their pinned Lean Challenge Statements verbatim, confirmed by #check against the live build; #print axioms hitPresented_of_presented reports exactly [propext, Classical.choice, Quot.sound], the foot the plan requires. Scoped build of Trace plus both plan-enumerated dependents green, full project green (2836 jobs, zero error: lines), repo-wide sorry count 0 with cross_check MATCH, axiom count unchanged at 14. Phase 1 marked [COMPLETED] and committed as c45e4807a. Phases 2-8 remain [NOT STARTED] and were deliberately not started.",
-  "phases_completed": 1,
+  "summary": "Phase 2 of 8 only, per the dispatch's single-phase mission. Created specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean (276 lines): a 65-line header carrying every mandated disclaimer, the model-A fixture transcribed from presented-not-complete.lean (never imported), and the step-path classification culminating in path_classify -- every step path of model A through the seam (t, a) is the constant a-path or an a-then-b jump path with jump time w >= t. Compiles through the build guard with guard exit 0, zero errors, zero warnings, zero sorries; path_classify, stayA and jump each report exactly [propext, Classical.choice, Quot.sound]. path_classify's signature is byte-identical to the plan's pinned Challenge statement (verified by mechanical diff, not by eye). Full project build re-run green (2836 jobs, zero error: lines). Phases 3-8 remain [NOT STARTED] and were deliberately not begun.",
+  "phases_completed": 2,
   "phases_total": 8,
+  "dispatch_seq": 6,
   "sorry_inventory": [],
   "blockers": [],
   "continuation_path": null,
-  "continuation_context": null,
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "summary": "Phase 1: HitPresented and hitPresented_of_presented landed in Trace.lean, sorry-free, with the required axiom foot; phases 2-8 not started."
-    }
-  ],
-  "next_action_hint": "Dispatch implement for phase 2: create specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean with its full header, transcribe the model-A fixture from presented-not-complete.lean, and transcribe the step-path classification (stepA, time_eq, bwd_a, fwd_dichotomy, fwd_absorb, path_classify) from the research scratch file rigid745.lean. Phase 2 touches only the new probe and is independent of phase 1's file. Two carry-forwards: (1) rigid745.lean sits in a session-scoped /tmp scratchpad -- confirm it is present before relying on the transcription route, else reconstruct from the report's recorded tactic survey rather than a different proof route; (2) the pre-commit typst-sync-check.sh Check 2 gate blocks every commit that moves Lean line counts, so each later phase must run the full guarded build plus 'bash scripts/typst-sync-check.sh --fix' and stage typst/generated/status.typ, which the plan's file_scope does not list.",
-  "verification": {
-    "build_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_note": "Pre-existing and unchanged from HEAD~1: FormalSystem/Examples/TemporalStructures.lean's int_domain_universal, where intTimeHistory.domain t genuinely reduces to True. Zero introduced by this phase.",
-    "axiom_count": 14,
-    "axiom_count_baseline": 14
-  }
+  "continuation_context": null
 }

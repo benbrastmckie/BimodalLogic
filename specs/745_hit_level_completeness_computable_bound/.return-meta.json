@@ -1,9 +1,66 @@
 {
-  "status": "in_progress",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "status": "partial",
   "task_number": 745,
   "dispatch_seq": 6,
-  "phase_number": 2,
-  "artifacts": []
+  "session_id": "sess_1791500801_df94d6",
+  "phase": "implement",
+  "requires_user_review": false,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
+      "summary": "Phases 1-2 of 8: HitPresented and hitPresented_of_presented in RaySummary/Trace.lean, plus the new evidence probe hit-presented-model-a.lean carrying the model-A fixture and the step-path classification path_classify; all sorry-free, phases 3-8 not started."
+    }
+  ],
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true,
+    "verification_passed": true,
+    "notes": "sorry_count 0 repo-wide via lean-sorry-census.sh --cross-check over all eight resolved source roots (stripper 0, compiler 0, cross_check MATCH); grep -c sorry on the new probe is 0. vacuous_count 1 is pre-existing and unchanged from the HEAD~1 baseline (FormalSystem/Examples/TemporalStructures.lean's int_domain_universal, where intTimeHistory.domain t genuinely reduces to True); zero introduced by this phase and zero in the probe. axiom_count 14 unchanged from baseline. build_passed from two sources: the probe's own compile (lake env lean through lake-build-guard.sh, detached, guard exit 0, output exactly the three #print axioms info lines, zero errors and zero warnings) and a full guarded project build re-run (guard exit 0, 'Build completed successfully (2836 jobs)', zero error: lines over both captured streams, Trace.olean newer than Trace.lean). Phase 2 touched no file in the Lake build graph -- the probe is under specs/, which no Lake target root reaches -- so the full build confirms no regression rather than covering the probe. path_classify's landed signature was extracted and diffed against the plan's ## Lean Challenge Statements pin: byte-identical. lean-challenge-snapshot.sh --check is UNAVAILABLE (no manifest at specs/745_.../challenge/manifest.json; none was taken at plan time), not green -- the plan lists it as ADVISORY and the mechanical diff stands in its place."
+  },
+  "metadata": {
+    "session_id": "sess_1791500801_df94d6",
+    "agent_type": "lean-implementation-hard-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+    "phase_number": 2,
+    "phases_completed": 2,
+    "phases_total": 8,
+    "commit": "00bb3b3b9",
+    "files_touched": [
+      "specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean"
+    ],
+    "handoff_path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-2-handoff-20261009T001229Z.md"
+  },
+  "completion_data": {
+    "completion_summary": "Phase 2 of the eight-phase plan, single-phase mission honoured. The evidence probe specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean now exists at 276 lines: a 65-line header carrying every disclaimer the phase mandated (no bound, forward-only with no backward Bool-fixture bridge implied, no decidability claim in any form, nothing about general regular Z-models, the fixture's non-generality because model A's splices are eventually constant in both directions, and the explicit statement that Probe735.not_presented is neither weakened nor retired since one refutes a TRACE-set equality while this record targets a FAMILY-TRIPLE-set equality); the model-A fixture transcribed from presented-not-complete.lean rather than imported, per the collection's convention; and the step-path classification stepA, time_eq, bwd_a, fwd_dichotomy, fwd_absorb, path_classify. path_classify is the rigidity the whole positive construction rests on: every step path through the seam (t, a) is the constant a-path or an a-then-b jump path with jump time w >= t, so the seam's splices form a one-parameter family indexed by w >= t plus the constant path and nothing else. Nothing in this phase mentions HitCl, hitOf or HitPresented; no bound of any kind is established and none is claimed."
+  },
+  "memory_candidates": [
+    {
+      "content": "A research dispatch that leaves a COMPILED scratch file behind, plus a report that records which tactic choices were load-bearing, can collapse an implementation phase to a pure transcription that compiles green on the first attempt with zero proof search. The load-bearing details worth recording are exactly the ones a re-derivation would get wrong: induction principle AND case names (Int.induction_on with zero/succ/pred), the ORDER of normalization versus rewriting (push_cast at h ih before a show-by-ring step, not after), deprecation substitutions already made (simp only [not_exists] in place of push_neg), and toolchain quirks (an explicit propositional hypothesis per theorem, because the toolchain does not auto-include a propositional variable). Record these in the report, not just the final proof text.",
+      "category": "PATTERN",
+      "source_artifact": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["scratch-file", "transcription", "research-handoff", "load-bearing-tactics", "lean4", "push_cast"]
+    },
+    {
+      "content": "A pre-commit gate keyed to one directory's line count does not fire for every Lean-adding commit. In BimodalLogic, typst-sync-check.sh Check 2 pins formalsystem-line-count, so a phase adding hundreds of Lean lines under specs/evidence/ sails through while a 44-line FormalSystem/ edit is blocked. Before budgeting the full-build-plus---fix remedy into every phase of a plan, check WHICH directory the gate counts against the phase's actual file scope; a blanket 'every later phase will hit this gate' note in a handoff can be wrong in the cheap direction and cause needless build runs.",
+      "category": "GOTCHA",
+      "source_artifact": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["pre-commit-gate", "typst-sync-check", "line-count", "file-scope", "evidence-probe"]
+    },
+    {
+      "content": "An evidence probe living under specs/ is reachable by no Lake target root, so lake build never compiles it and a full green project build is NOT evidence the probe compiles. The two are independent checks: run the probe's own lake env lean compile line explicitly, and treat the probe as ungated until it is wired into the repository's probe-checking script. A phase that lands such a probe and reports only the project build has reported nothing about its own output.",
+      "category": "GOTCHA",
+      "source_artifact": "specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean",
+      "confidence": 0.85,
+      "suggested_keywords": ["evidence-probe", "lake-build-graph", "check-evidence-probes", "verification-blind-spot", "lean4"]
+    }
+  ],
+  "issues_recorded": 2,
+  "next_steps": "Dispatch implement for phase 3 (splice-to-history identification via splice_classify, and the four-case closure-letter read-out; re-derive (plusSubformulaClosure Fp).card by #eval first, and re-resolve seamOmegaEquiv/SeqPair/ZPathFibre/pathFibreEquiv/spliced/WorldHistory.ext_state BY NAME)."
 }
