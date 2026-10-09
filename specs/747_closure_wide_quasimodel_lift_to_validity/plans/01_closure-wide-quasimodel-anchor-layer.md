@@ -340,7 +340,7 @@ script's own count line and by `git diff --stat` showing zero deletions.
 
 ---
 
-### Phase 3: `AnchorLayer.lean` — closure types, cells, and the fixpoint equations [NOT STARTED]
+### Phase 3: `AnchorLayer.lean` — closure types, cells, and the fixpoint equations [COMPLETED]
 
 **Goal**: Read the anchor layer off a model: the closure type of a point, the cell of a world
 state, their time-independence, and the four equations (`bot`, `imp`, `box`, `stab`) a closure
@@ -348,7 +348,7 @@ type satisfies by the truth clauses alone — the closure-wide counterpart of `A
 `LocalRun.bot/imp`, stated on types rather than on one seam's colouring.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/AnchorLayer.lean` with the house
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/AnchorLayer.lean` with the house
       copyright header, imports `FormalSystem.Metalogic.Decidability.RaySummary.Closure` and
       `FormalSystem.PlusLanguage.PlusTruth`, `namespace FormalSystem.Metalogic.Decidability.RaySummary`,
       the `open` lines of `Closure.lean`, and `variable {F : FrameOver intOrder}`. State in the
@@ -357,19 +357,19 @@ type satisfies by the truth clauses alone — the closure-wide counterpart of `A
       instance, and the record's `[F.IsRegular]` is the minimum hypothesis a CLAIM about validity
       must carry, not a hypothesis these definitions need), and that the module states nothing
       about `PlusValidZTime` and nothing decidable about a model.
-- [ ] Define `tpOf` (pinned below): `open Classical in noncomputable def tpOf (M) (φ) (σ) (z : ℤ)
+- [x] Define `tpOf` (pinned below): `open Classical in noncomputable def tpOf (M) (φ) (σ) (z : ℤ)
       : Finset PlusFormula := (plusSubformulaClosure φ).filter (fun ψ => PlusTruthAt M σ z ψ)`,
       with `mem_tpOf_iff` (`Finset.mem_filter`) and the subset lemma
       `tpOf M φ σ z ⊆ plusSubformulaClosure φ` (`Finset.filter_subset`; a plain `theorem`, not a
       Goal).
-- [ ] Prove `tpOf_timeShift` (pinned): `tpOf M φ (σ.timeShift Δ) z = tpOf M φ σ (z + Δ)`, by
+- [x] Prove `tpOf_timeShift` (pinned): `tpOf M φ (σ.timeShift Δ) z = tpOf M φ σ (z + Δ)`, by
       `Finset.ext` + `mem_tpOf_iff` + `plusTruthAt_timeShift`.
-- [ ] Define `cellAt` (pinned): the set of closure types realized at world state `w` at time `z`,
+- [x] Define `cellAt` (pinned): the set of closure types realized at world state `w` at time `z`,
       `{T | ∃ σ, σ.state z = w ∧ tpOf M φ σ z = T}`, and prove `cellAt_eq_cellAt` (pinned): for
       all `z z'`, `cellAt M φ w z = cellAt M φ w z'` — both inclusions by `σ ↦ σ.timeShift (z - z')`
       with `WorldHistory.timeShift_state` (`rfl`) and `tpOf_timeShift`. This is research F2's
       time-independence and the reason a cell is a per-STATE datum.
-- [ ] Prove the four equations (pinned): `bot_not_mem_tpOf` (`PlusFormula.bot ∉ tpOf M φ σ z`,
+- [x] Prove the four equations (pinned): `bot_not_mem_tpOf` (`PlusFormula.bot ∉ tpOf M φ σ z`,
       from the definitional `bot` clause); `imp_mem_tpOf_iff` (for `h : .imp ψ χ ∈ cl φ`,
       `.imp ψ χ ∈ tpOf ↔ (ψ ∈ tpOf → χ ∈ tpOf)`, from `PlusTruth.imp_iff` with
       `plusClosure_imp_left/right`); `box_mem_tpOf_iff` (for `h : .box ψ ∈ cl φ`,
@@ -378,7 +378,7 @@ type satisfies by the truth clauses alone — the closure-wide counterpart of `A
       per-time quantifier gone); `stab_mem_tpOf_iff` (for `h : .stab ψ ∈ cl φ`,
       `.stab ψ ∈ tpOf M φ σ z ↔ ∀ σ', σ.state z = σ'.state z → ψ ∈ tpOf M φ σ' z`, from
       `PlusTruth.stab_iff` and `plusClosure_stab` — the closure-wide `Anchored.stab`).
-- [ ] Scoped build: `bash .claude/scripts/lake-build-guard.sh build --timeout 900 -- build
+- [x] Scoped build: `bash .claude/scripts/lake-build-guard.sh build --timeout 900 -- build
       FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer` exits 0; `#print axioms` on
       every theorem of the module is the standard profile.
 
