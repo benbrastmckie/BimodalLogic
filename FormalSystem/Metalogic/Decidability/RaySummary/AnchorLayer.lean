@@ -218,4 +218,189 @@ theorem stab_mem_tpOf_iff (M : TaskModel F.toTaskFrame) (φ : PlusFormula)
   · intro H
     exact ⟨h, fun σ' hσ' => ((mem_tpOf_iff M φ σ' z ψ).mp (H σ' hσ')).2⟩
 
+/-! ## The cells of a model -/
+
+/-- The cells of a model: one per world state, read at time `0` (without loss, by
+`cellAt_eq_cellAt`). -/
+def anchorCells (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :
+    Set (Set (Finset PlusFormula)) :=
+  Set.range (fun w : F.WorldState => cellAt M φ w 0)
+
+theorem mem_anchorCells_iff (M : TaskModel F.toTaskFrame) (φ : PlusFormula)
+    (C : Set (Finset PlusFormula)) :
+    C ∈ anchorCells M φ ↔ ∃ w : F.WorldState, cellAt M φ w 0 = C :=
+  Set.mem_range
+
+/-- The type of any point of the model lies in the cell of that point's state, read at
+time `0`: the shift of the history by the point's time passes through `(0, w)` with the same
+type (`cellAt_eq_cellAt` unfolded for one direction). -/
+theorem tpOf_mem_cellAt_zero (M : TaskModel F.toTaskFrame) (φ : PlusFormula)
+    (σ : WorldHistory F.toTaskFrame) (z : ℤ) : tpOf M φ σ z ∈ cellAt M φ (σ.state z) 0 := by
+  refine ⟨σ.timeShift z, ?_, ?_⟩
+  · rw [WorldHistory.timeShift_state, zero_add]
+  · rw [tpOf_timeShift, zero_add]
+
+/-! ## The finite anchor object -/
+
+/-- **The closure-wide anchor object**: a set of cells satisfying the Hintikka clauses and the
+`box`/`stab` fixpoint equations. `Anchored.box`/`Anchored.stab`/`LocalRun.bot`/`LocalRun.imp` on
+types rather than on one seam's colouring: `box` is one GLOBAL bit per `□`-subformula (`∀ C' ∈
+𝒞, ∀ T' ∈ C'`, no time in sight — `box_time_invariant`), `stab` one bit per (`⊡`-subformula,
+cell). The `untl`/`snce` nesting is NOT here — it is the run layer, blocked (README, "(W): what
+landed and what did not"). Every quantifier is bounded by `plusSubformulaClosure φ` so that the
+`Finset` twin `AnchorConsFin` is decidable field for field. -/
+structure AnchorCons (φ : PlusFormula) (𝒞 : Set (Set (Finset PlusFormula))) : Prop where
+  closure : ∀ C ∈ 𝒞, ∀ T ∈ C, T ⊆ plusSubformulaClosure φ
+  bot : ∀ C ∈ 𝒞, ∀ T ∈ C, PlusFormula.bot ∉ T
+  imp : ∀ C ∈ 𝒞, ∀ T ∈ C, ∀ ψ ∈ plusSubformulaClosure φ, ∀ χ ∈ plusSubformulaClosure φ,
+    PlusFormula.imp ψ χ ∈ plusSubformulaClosure φ →
+      (PlusFormula.imp ψ χ ∈ T ↔ (ψ ∈ T → χ ∈ T))
+  box : ∀ C ∈ 𝒞, ∀ T ∈ C, ∀ ψ ∈ plusSubformulaClosure φ,
+    PlusFormula.box ψ ∈ plusSubformulaClosure φ →
+      (PlusFormula.box ψ ∈ T ↔ ∀ C' ∈ 𝒞, ∀ T' ∈ C', ψ ∈ T')
+  stab : ∀ C ∈ 𝒞, ∀ T ∈ C, ∀ ψ ∈ plusSubformulaClosure φ,
+    PlusFormula.stab ψ ∈ plusSubformulaClosure φ →
+      (PlusFormula.stab ψ ∈ T ↔ ∀ T' ∈ C, ψ ∈ T')
+
+/-- **Completeness of the anchor layer, for EVERY model**: the cells of any `TaskModel` on a
+`ℤ`-frame form an anchor object. No presentation, no `Presented`, no finiteness hypothesis on
+the model, no regularity — the absence of hypotheses is the content. Field by field from the
+four equations: the `box` field routes `∀ C' ∈ anchorCells, ∀ T' ∈ C'` through
+`box_mem_tpOf_iff`'s `∀ σ' z'` by `tpOf_mem_cellAt_zero`; the `stab` field is
+`stab_mem_tpOf_iff` with `σ.state 0 = w = σ'.state 0`. No new induction. -/
+theorem anchorCons_anchorCells (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :
+    AnchorCons φ (anchorCells M φ) where
+  closure := by
+    rintro C ⟨w, rfl⟩ T ⟨σ, rfl, rfl⟩
+    exact tpOf_subset M φ σ 0
+  bot := by
+    rintro C ⟨w, rfl⟩ T ⟨σ, rfl, rfl⟩
+    exact bot_not_mem_tpOf M φ σ 0
+  imp := by
+    rintro C ⟨w, rfl⟩ T ⟨σ, rfl, rfl⟩ ψ _ χ _ h
+    exact imp_mem_tpOf_iff M φ σ 0 h
+  box := by
+    rintro C ⟨w, rfl⟩ T ⟨σ, rfl, rfl⟩ ψ _ h
+    rw [box_mem_tpOf_iff M φ σ 0 h]
+    constructor
+    · rintro H C' ⟨w', rfl⟩ T' ⟨σ', _, rfl⟩
+      exact H σ' 0
+    · intro H σ' z'
+      exact H _ ⟨σ'.state z', rfl⟩ _ (tpOf_mem_cellAt_zero M φ σ' z')
+  stab := by
+    rintro C ⟨w, rfl⟩ T ⟨σ, rfl, rfl⟩ ψ _ h
+    rw [stab_mem_tpOf_iff M φ σ 0 h]
+    constructor
+    · rintro H T' ⟨σ', hσ', rfl⟩
+      exact H σ' hσ'.symm
+    · intro H σ' hσ'
+      exact H _ ⟨σ', hσ'.symm, rfl⟩
+
+/-! ## Finiteness and the bound -/
+
+/-- A cell is a set of subsets of the closure. -/
+theorem anchorCells_subset_powerset (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :
+    anchorCells M φ ⊆ 𝒫 (↑(plusSubformulaClosure φ).powerset : Set (Finset PlusFormula)) := by
+  rintro C ⟨w, rfl⟩ T ⟨σ, _, rfl⟩
+  rw [Finset.mem_coe, Finset.mem_powerset]
+  exact tpOf_subset M φ σ 0
+
+theorem anchorCells_finite (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :
+    (anchorCells M φ).Finite :=
+  Set.Finite.subset ((Finset.finite_toSet _).powerset) (anchorCells_subset_powerset M φ)
+
+/-- The one bound (W) can state honestly: a cardinality bound on the SET OF CELLS of a model,
+syntactic in `|cl φ|` — a cell is a set of subsets of `cl φ`, so there are at most
+`2 ^ (2 ^ |cl φ|)` of them. It is not a complexity bound of any kind: it counts cells, it does
+not time anything, and it must not be described as a bound on any procedure's running time. -/
+theorem anchorCells_ncard_le (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :
+    (anchorCells M φ).ncard ≤ 2 ^ (2 ^ (plusSubformulaClosure φ).card) := by
+  calc (anchorCells M φ).ncard
+      ≤ (𝒫 (↑(plusSubformulaClosure φ).powerset : Set (Finset PlusFormula))).ncard :=
+        Set.ncard_le_ncard (anchorCells_subset_powerset M φ)
+          ((Finset.finite_toSet _).powerset)
+    _ = 2 ^ (↑(plusSubformulaClosure φ).powerset : Set (Finset PlusFormula)).ncard :=
+        Set.ncard_powerset _ (Finset.finite_toSet _)
+    _ = 2 ^ (plusSubformulaClosure φ).powerset.card := by rw [Set.ncard_coe_finset]
+    _ = 2 ^ (2 ^ (plusSubformulaClosure φ).card) := by rw [Finset.card_powerset]
+
+/-! ## The decidable checker on a concrete finite object -/
+
+/-- The `Finset` twin of `AnchorCons`: the same five equations on a concrete finite object. -/
+structure AnchorConsFin (φ : PlusFormula) (𝒞 : Finset (Finset (Finset PlusFormula))) :
+    Prop where
+  closure : ∀ C ∈ 𝒞, ∀ T ∈ C, T ⊆ plusSubformulaClosure φ
+  bot : ∀ C ∈ 𝒞, ∀ T ∈ C, PlusFormula.bot ∉ T
+  imp : ∀ C ∈ 𝒞, ∀ T ∈ C, ∀ ψ ∈ plusSubformulaClosure φ, ∀ χ ∈ plusSubformulaClosure φ,
+    PlusFormula.imp ψ χ ∈ plusSubformulaClosure φ →
+      (PlusFormula.imp ψ χ ∈ T ↔ (ψ ∈ T → χ ∈ T))
+  box : ∀ C ∈ 𝒞, ∀ T ∈ C, ∀ ψ ∈ plusSubformulaClosure φ,
+    PlusFormula.box ψ ∈ plusSubformulaClosure φ →
+      (PlusFormula.box ψ ∈ T ↔ ∀ C' ∈ 𝒞, ∀ T' ∈ C', ψ ∈ T')
+  stab : ∀ C ∈ 𝒞, ∀ T ∈ C, ∀ ψ ∈ plusSubformulaClosure φ,
+    PlusFormula.stab ψ ∈ plusSubformulaClosure φ →
+      (PlusFormula.stab ψ ∈ T ↔ ∀ T' ∈ C, ψ ∈ T')
+
+/-- Decidable on a concrete finite object: every quantifier is bounded by a `Finset`
+(`Finset.decidableDforallFinset`) and every atom is a `Finset` membership on `PlusFormula`,
+which has derived `DecidableEq`. A statement about a finite set, not about L⁺ and not about any
+model — `AnchorConsFin φ 𝒞` says nothing about whether `𝒞` is the cell set of a model. -/
+instance decidableAnchorConsFin (φ : PlusFormula) (𝒞 : Finset (Finset (Finset PlusFormula))) :
+    Decidable (AnchorConsFin φ 𝒞) :=
+  decidable_of_iff
+    ((∀ C ∈ 𝒞, ∀ T ∈ C, T ⊆ plusSubformulaClosure φ) ∧
+      (∀ C ∈ 𝒞, ∀ T ∈ C, PlusFormula.bot ∉ T) ∧
+      (∀ C ∈ 𝒞, ∀ T ∈ C, ∀ ψ ∈ plusSubformulaClosure φ, ∀ χ ∈ plusSubformulaClosure φ,
+        PlusFormula.imp ψ χ ∈ plusSubformulaClosure φ →
+          (PlusFormula.imp ψ χ ∈ T ↔ (ψ ∈ T → χ ∈ T))) ∧
+      (∀ C ∈ 𝒞, ∀ T ∈ C, ∀ ψ ∈ plusSubformulaClosure φ,
+        PlusFormula.box ψ ∈ plusSubformulaClosure φ →
+          (PlusFormula.box ψ ∈ T ↔ ∀ C' ∈ 𝒞, ∀ T' ∈ C', ψ ∈ T')) ∧
+      (∀ C ∈ 𝒞, ∀ T ∈ C, ∀ ψ ∈ plusSubformulaClosure φ,
+        PlusFormula.stab ψ ∈ plusSubformulaClosure φ →
+          (PlusFormula.stab ψ ∈ T ↔ ∀ T' ∈ C, ψ ∈ T')))
+    ⟨fun ⟨h₁, h₂, h₃, h₄, h₅⟩ => ⟨h₁, h₂, h₃, h₄, h₅⟩,
+     fun ⟨h₁, h₂, h₃, h₄, h₅⟩ => ⟨h₁, h₂, h₃, h₄, h₅⟩⟩
+
+/-- The `Finset` twin agrees with `AnchorCons` on the image of the object under coercion:
+`Set.mem_image`/`Finset.mem_coe` rewriting on each field, no content. -/
+theorem anchorConsFin_iff (φ : PlusFormula) (𝒞 : Finset (Finset (Finset PlusFormula))) :
+    AnchorConsFin φ 𝒞 ↔
+      AnchorCons φ ((fun C : Finset (Finset PlusFormula) => (↑C : Set (Finset PlusFormula))) '' ↑𝒞) := by
+  constructor
+  · intro h
+    refine ⟨?_, ?_, ?_, ?_, ?_⟩
+    · rintro C ⟨C₀, hC₀, rfl⟩ T hT
+      exact h.closure C₀ hC₀ T hT
+    · rintro C ⟨C₀, hC₀, rfl⟩ T hT
+      exact h.bot C₀ hC₀ T hT
+    · rintro C ⟨C₀, hC₀, rfl⟩ T hT ψ hψ χ hχ hi
+      exact h.imp C₀ hC₀ T hT ψ hψ χ hχ hi
+    · rintro C ⟨C₀, hC₀, rfl⟩ T hT ψ hψ hb
+      rw [h.box C₀ hC₀ T hT ψ hψ hb]
+      constructor
+      · rintro H C' ⟨C₀', hC₀', rfl⟩ T' hT'
+        exact H C₀' hC₀' T' hT'
+      · intro H C₀' hC₀' T' hT'
+        exact H _ ⟨C₀', hC₀', rfl⟩ T' hT'
+    · rintro C ⟨C₀, hC₀, rfl⟩ T hT ψ hψ hs
+      exact h.stab C₀ hC₀ T hT ψ hψ hs
+  · intro h
+    refine ⟨?_, ?_, ?_, ?_, ?_⟩
+    · intro C₀ hC₀ T hT
+      exact h.closure _ ⟨C₀, hC₀, rfl⟩ T hT
+    · intro C₀ hC₀ T hT
+      exact h.bot _ ⟨C₀, hC₀, rfl⟩ T hT
+    · intro C₀ hC₀ T hT ψ hψ χ hχ hi
+      exact h.imp _ ⟨C₀, hC₀, rfl⟩ T hT ψ hψ χ hχ hi
+    · intro C₀ hC₀ T hT ψ hψ hb
+      rw [h.box _ ⟨C₀, hC₀, rfl⟩ T hT ψ hψ hb]
+      constructor
+      · intro H C₀' hC₀' T' hT'
+        exact H _ ⟨C₀', hC₀', rfl⟩ T' hT'
+      · rintro H C' ⟨C₀', hC₀', rfl⟩ T' hT'
+        exact H C₀' hC₀' T' hT'
+    · intro C₀ hC₀ T hT ψ hψ hs
+      exact h.stab _ ⟨C₀, hC₀, rfl⟩ T hT ψ hψ hs
+
 end FormalSystem.Metalogic.Decidability.RaySummary

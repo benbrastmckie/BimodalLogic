@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.RaySummary
 import FormalSystem.Metalogic.Decidability.RaySummary.Realize
+import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 
 /-!
 # Computability witnesses for the `k`-type device
@@ -241,5 +242,50 @@ liveness conditions fail — the `Probe735.pump_isRun` shape, in both time direc
 #guard decide (SCoh labConsBad stepCons 0 1 2)
 #guard !decide (SLive labConsBad stepCons 0 2)
 #guard live (bwdDeferGraph labConsBad stepCons 0 2) 0
+
+/-! ## `AnchorConsFin` on concrete cell sets
+
+`AnchorConsFin φ 𝒞` (`RaySummary/AnchorLayer.lean`) is the `Finset` twin of the closure-wide
+anchor object `AnchorCons`: five equations on a set of cells (sets of closure types), decided
+field for field by `decidableAnchorConsFin`. The two values below are evaluated by the compiler
+and are **witnesses of computability and non-vacuity, nothing else**: they are statements about
+two concrete `Finset (Finset (Finset PlusFormula))` literals, not about any model. The bridge
+from a model to its cells is `anchorCons_anchorCells` (for every model, no hypothesis), and the
+bridge from the `Finset` object to the `Set` one is `anchorConsFin_iff`; neither is exercised
+here, and nothing here mentions validity or decides anything about a model.
+
+The formula is `⊡p`, whose closure is `{⊡p, p}`. The POSITIVE witness has three cells: `{{⊡p, p}}`
+(a state at which `p` holds along every history, so `⊡p` holds), `{∅}` (a state at which `p`
+fails along every history), and `{{p}, ∅}` — a state at which `p` holds along some histories and
+fails along others, so `⊡p` is in NEITHER type. That third cell carries TWO types at one world
+state, which is exactly the shape the trace-level realization hypothesis `Presented` with a
+unique `now` state can never present (`Probe747.stab_iff_of_presented_nowUnique`, the wired
+probe `w-soundness-shape-refuted.lean`: at such a seam `ψ ↔ ⊡ψ` for every closure `ψ`). So the
+witness is non-vacuous in the sense requirement (W) asks for.
+
+The NEGATIVE control is the point of the block: `{{{p}}}` violates the `stab` equation — `⊡p` is
+not in the one type `{p}` although `p` is in every type of the cell — so the checker returns
+`false`. If `!decide` below ever goes false, the `stab` equation has stopped excluding anything. -/
+
+/-- The atom `p`. -/
+def pAtom : FormalSystem.Syntax.Atom := ⟨"p", none⟩
+
+/-- `p` and `⊡p` as L⁺ formulas. -/
+abbrev pF : FormalSystem.PlusLanguage.PlusFormula := .atom pAtom
+abbrev stabP : FormalSystem.PlusLanguage.PlusFormula := .stab pF
+
+/-! The closure of `⊡p` is `{⊡p, p}`. -/
+#guard FormalSystem.PlusLanguage.plusSubformulaClosure stabP = {stabP, pF}
+
+/-- POSITIVE: three cells, the third carrying two types at one state. -/
+def cellsPos : Finset (Finset (Finset FormalSystem.PlusLanguage.PlusFormula)) :=
+  {{{stabP, pF}}, {∅}, {{pF}, ∅}}
+
+/-- NEGATIVE control: one cell, one type, the `stab` equation violated. -/
+def cellsNeg : Finset (Finset (Finset FormalSystem.PlusLanguage.PlusFormula)) :=
+  {{{pF}}}
+
+#guard decide (AnchorConsFin stabP cellsPos)
+#guard !decide (AnchorConsFin stabP cellsNeg)
 
 end BimodalTest.KTypeFinEval

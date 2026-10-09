@@ -412,7 +412,7 @@ issue log before continuing.
 
 ---
 
-### Phase 4: The finite anchor object — `AnchorCons`, completeness for every model, the bound, and the decidable checker [NOT STARTED]
+### Phase 4: The finite anchor object — `AnchorCons`, completeness for every model, the bound, and the decidable checker [COMPLETED]
 
 **Goal**: The bounded, non-vacuous half of (W): a finite object (a set of cells) with the
 box/stab/Hintikka equations as its consistency conditions; the theorem that EVERY model's cells
@@ -421,9 +421,9 @@ can state honestly, `|cells| ≤ 2^(2^|cl φ|)`; and a `Finset`-level checker wi
 instance, a non-vacuous witness and a negative control.
 
 **Tasks**:
-- [ ] Define `anchorCells` (pinned): `Set.range (fun w : F.WorldState => cellAt M φ w 0)`, the
+- [x] Define `anchorCells` (pinned): `Set.range (fun w : F.WorldState => cellAt M φ w 0)`, the
       set of cells of a model (time `0` by `cellAt_eq_cellAt`), with a membership lemma.
-- [ ] Define the `Prop`-structure `AnchorCons φ (𝒞 : Set (Set (Finset PlusFormula)))` (pinned)
+- [x] Define the `Prop`-structure `AnchorCons φ (𝒞 : Set (Set (Finset PlusFormula)))` (pinned)
       with five fields, each quantifying over `cl φ` so that the `Finset` twin below is decidable
       field-for-field: `closure` (every type in every cell is `⊆ cl φ`); `bot` (`bot ∉ T`);
       `imp` (`∀ ψ ∈ cl φ, ∀ χ ∈ cl φ, .imp ψ χ ∈ cl φ → (.imp ψ χ ∈ T ↔ (ψ ∈ T → χ ∈ T))`);
@@ -432,27 +432,27 @@ instance, a non-vacuous witness and a negative control.
       the per-cell bit). Docstring: these are `Anchored.box`/`Anchored.stab`/`LocalRun.bot`/
       `LocalRun.imp` on types instead of one seam's colouring; the `untl`/`snce` nesting is NOT
       here — it is the run layer, blocked (README).
-- [ ] Prove `anchorCons_anchorCells` (pinned): `AnchorCons φ (anchorCells M φ)` for EVERY
+- [x] Prove `anchorCons_anchorCells` (pinned): `AnchorCons φ (anchorCells M φ)` for EVERY
       `M : TaskModel F.toTaskFrame` — field by field from Phase 3's four equations plus
       `tpOf`'s subset lemma; the `box` field routes `∀ C' ∈ anchorCells, ∀ T' ∈ C'` through
       `cellAt`'s membership and `box_mem_tpOf_iff`'s `∀ σ' z'` (a history at time `z'` shifts to
       time `0`); the `stab` field is `stab_mem_tpOf_iff` with `σ.state 0 = w = σ'.state 0`. No
       new induction.
-- [ ] Prove `anchorCells_finite` and `anchorCells_ncard_le` (pinned): `anchorCells M φ ⊆
+- [x] Prove `anchorCells_finite` and `anchorCells_ncard_le` (pinned): `anchorCells M φ ⊆
       𝒫 (↑(plusSubformulaClosure φ).powerset)` (a cell is a set of subsets of `cl φ`), so it is
       finite by `Set.Finite.powerset (Finset.finite_toSet _)`, and
       `(anchorCells M φ).ncard ≤ 2 ^ (2 ^ (plusSubformulaClosure φ).card)` by
       `Set.ncard_le_ncard`, `Set.ncard_powerset`, `Set.ncard_coe_finset`, `Finset.card_powerset`.
       Docstring: this is a cardinality bound on a SET OF CELLS, syntactic in `|cl φ|`; it is not
       a complexity bound of any kind and must not be described as one.
-- [ ] Define the `Finset` twin `AnchorConsFin φ (𝒞 : Finset (Finset (Finset PlusFormula)))`
+- [x] Define the `Finset` twin `AnchorConsFin φ (𝒞 : Finset (Finset (Finset PlusFormula)))`
       (pinned) with the same five fields over `Finset` membership, its instance
       `decidableAnchorConsFin` (pinned; `decidable_of_iff` on the conjunction of the five fields,
       each decided by `Finset.decidableDforallFinset` and `PlusFormula`'s derived `DecidableEq`),
       and the bridge `anchorConsFin_iff` (pinned): `AnchorConsFin φ 𝒞 ↔ AnchorCons φ
       ((fun C : Finset (Finset PlusFormula) => (↑C : Set (Finset PlusFormula))) '' ↑𝒞)` —
       `Set.mem_image`/`Finset.mem_coe` rewriting on each field, no content.
-- [ ] Append to `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` (import `AnchorLayer`
+- [x] Append to `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` (import `AnchorLayer`
       directly, re-read the file before editing) a `#guard` block in the file's existing style:
       POSITIVE witness with `φ := .stab (.atom pa)` (closure `{⊡p, p}`), `𝒞 := {{{⊡p, p}}, {∅},
       {{p}, ∅}}` — the third cell carries TWO types at one world state, which is exactly the shape
@@ -461,7 +461,7 @@ instance, a non-vacuous witness and a negative control.
       violates the `stab` equation (`⊡p ∉ {p}` while every type of the cell contains `p`), so
       `decide` returns `false`. Both as `#guard (decide (AnchorConsFin …)) = true/false`, with a
       comment stating what each witnesses and that neither says anything about a model.
-- [ ] Scoped builds: `AnchorLayer` and `BimodalTest.Metalogic.KTypeFinEvalTest` (the test library
+- [x] Scoped builds: `AnchorLayer` and `BimodalTest.Metalogic.KTypeFinEvalTest` (the test library
       is not a default target — build it by name), both exit 0.
 
 **Timing**: 2 hours
