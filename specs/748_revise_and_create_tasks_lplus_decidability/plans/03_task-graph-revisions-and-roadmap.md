@@ -373,14 +373,14 @@ every-model statement (02 §2.4, D12-D13).
 
 ---
 
-### Phase 3: Revise 720 (enlarged) and declare 714's file_scope [NOT STARTED]
+### Phase 3: Revise 720 (enlarged) and declare 714's file_scope [COMPLETED]
 
 **Goal**: Execute 02 R5 and R7: enlarge 720 from a citation tidy-up to a CI repair with the
 tracked-ness check as a named deliverable, and declare 714's `file_scope` so the overlap gate can
 see it.
 
 **Tasks**:
-- [ ] Revise 720's description with a `state-write.sh` jq filter on `.active_projects[] | select(.project_number == 720) | .description`. **Append** the following to the existing text rather than replacing it, and delete only the two spent passages named below:
+- [x] Revise 720's description with a `state-write.sh` jq filter on `.active_projects[] | select(.project_number == 720) | .description`. **Append** the following to the existing text rather than replacing it, and delete only the two spent passages named below:
 
   > **ENLARGED: THIS IS A CI REPAIR, NOT A CITATION TIDY-UP.** Two of the three `WIRED_REPO`
   > entries in `scripts/check-evidence-probes.sh` point at files git does not track. Both were
@@ -429,8 +429,8 @@ see it.
   > **RUN-ORDER NOTE.** This record is promoted ahead of the sliced-certificate pair: a red CI gate
   > on every push outranks a local defect seen only by whoever runs the 300 s reproducer.
 
-- [ ] Confirm 720's existing `file_scope` already covers `scripts/check-evidence-probes.sh` (it does: three entries, including that path). Add `.github/workflows/ci.yml` and `.claude/context/patterns/task-abandon-mode.md` to it if Deliverable A's header/prose edits are to be in scope — **decide and record which**; do not silently widen.
-- [ ] Declare 714's `file_scope` (it currently has none, verified this dispatch) with a `state-write.sh` filter: `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean`, `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean`, `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Labels.lean` if it exists (verify with `ls` first; omit if absent), `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Examples.lean`. 714 and 716 both touch `PlusSlicedCertificate/`, and declaring 714's scope is the prerequisite to running them as a batch at all. Fold `--regen-todo` into the last write.
+- [x] Confirm 720's existing `file_scope` already covers `scripts/check-evidence-probes.sh` (it does: three entries, including that path). Add `.github/workflows/ci.yml` and `.claude/context/patterns/task-abandon-mode.md` to it if Deliverable A's header/prose edits are to be in scope — **decide and record which**; do not silently widen. *(deviation: altered — decision recorded in 720's description: `.github/workflows/ci.yml` added for Deliverable B's force-track list; `task-abandon-mode.md` NOT added, because its real edit target is the out-of-repo source store resolved from `.claude-extensions.json` and a repo-relative file_scope entry cannot express it)*
+- [x] Declare 714's `file_scope` (it currently has none, verified this dispatch) with a `state-write.sh` filter: `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean`, `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean`, `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Labels.lean` if it exists (verify with `ls` first; omit if absent), `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Examples.lean`. 714 and 716 both touch `PlusSlicedCertificate/`, and declaring 714's scope is the prerequisite to running them as a batch at all. Fold `--regen-todo` into the last write. *(deviation: altered — `Labels.lean` verified ABSENT and omitted per the plan's own instruction; `Stable.lean` declared in its place, being the module 714's own description names alongside `Check.lean`)*
 
 **Timing**: 1 hour
 
