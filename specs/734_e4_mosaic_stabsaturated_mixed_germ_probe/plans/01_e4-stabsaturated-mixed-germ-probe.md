@@ -1,7 +1,7 @@
 # Implementation Plan: Task #734
 
 - **Task**: 734 - Run experiment E4: decide StabSaturated on the Bool fixture's mosaic set, and acquire the Hodkinson-Reynolds Handbook sections
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: 733 (completed)
 - **Research Inputs**: specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/reports/01_e4-stabsaturated-mixed-germ-probe.md
@@ -142,34 +142,34 @@ Phases within the same wave can execute in parallel: Phase 3 (the sub-index fiel
 of the Lean lift and can run alongside Phase 1; Phase 4 is the terminal node and depends on every
 other phase.
 
-### Phase 1: Lift the prototype to its evidence path and compile [NOT STARTED]
+### Phase 1: Lift the prototype to its evidence path and compile [COMPLETED]
 
 **Goal**: The probe exists at its declared `file_scope` path, compiles clean under
 `lake env lean`, and its measured axiom record is captured for the header.
 
 **Tasks**:
-- [ ] Re-read the Probe 718 header (`specs/evidence/seam-gluing-ray-product/mosaic-germ-amalgamation.lean`,
+- [x] Re-read the Probe 718 header (`specs/evidence/seam-gluing-ray-product/mosaic-germ-amalgamation.lean`,
       the `/- Probe 718 ... -/` block) and confirm `StabSaturated` (line ~127) and
       `stabSaturated_of_sameState` (line ~138) still carry the names and statements the research
       verified; the new probe cites both by name and re-declares `Mosaic`/`StabSaturated`
       verbatim (probes never import each other).
-- [ ] Copy `specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/prototype/mosaic-stab-saturated.proto.lean`
+- [x] Copy `specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/prototype/mosaic-stab-saturated.proto.lean`
       to `specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean` (new file). The
       prototype is already lift-ready: `namespace Probe734Mosaic`, `variable {F : TaskFrame}
       {t : F.Duration}`, and `M : TaskModel F` as an explicit binder on `StabSaturated`,
       `stabSaturated_univ`, and `StabWitnessedAt` (the Challenge-compatible shape; the elaborated
       types are identical to the research scratch's).
-- [ ] Prepend a provisional `/- Probe 734 ... -/` block above `import FormalSystem`, ending in
+- [x] Prepend a provisional `/- Probe 734 ... -/` block above `import FormalSystem`, ending in
       the collection's compile-check line
       (`lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean`).
       Change nothing below `import FormalSystem`: keep every proof and the four-line
       `#print axioms` footer exactly as in the prototype.
-- [ ] Run `timeout 300 lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean`
+- [x] Run `timeout 300 lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean`
       from the repository root; require exit 0, no `error`/`warning` lines, and exactly four
       `'Probe734Mosaic.<name>' depends on axioms: [propext, Classical.choice, Quot.sound]` lines
       for `stabSaturated_univ`, `Smix_mixed`, `Smix_witnessed`, `Sdrop_not_witnessed`.
-- [ ] Record the four printed axiom lines verbatim (progress file) for Phase 2.
-- [ ] Record an issue-log entry (`issue-record.sh`, kind `win` or an explicit "nothing to
+- [x] Record the four printed axiom lines verbatim (progress file) for Phase 2.
+- [x] Record an issue-log entry (`issue-record.sh`, kind `win` or an explicit "nothing to
       record") for this phase.
 
 **Timing**: 0.25 hours
