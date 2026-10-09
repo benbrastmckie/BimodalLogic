@@ -711,40 +711,48 @@ the library; the edit is confined to the single out-of-graph probe file, so
 
 ---
 
-### Phase 8: Wiring, pins, index, README, and the recorded bound verdict [NOT STARTED]
+### Phase 8: Wiring, pins, index, README, and the recorded bound verdict [COMPLETED]
 
 **Goal**: Make the probe non-rotting and the result discoverable; record the bound as blocked with
 the named obligation; run the full gate set.
 
 **Tasks**:
-- [ ] Re-read `scripts/check-evidence-probes.sh` immediately before editing (tasks 733, 734 and
+- [x] Re-read `scripts/check-evidence-probes.sh` immediately before editing (tasks 733, 734 and
       739 are other writers), then add `"seam-gluing-ray-product/hit-presented-model-a"` to the
       `WIRED` array and its own entry to the preceding table comment, stating the decision it
       holds in place: `HitPresented` is satisfiable on fixture model A for every `k ≥ 1`, so the
       `Presented` refutation does not transfer to the Hit level and the route is NOT closed; the
       construction is non-constructive and delivers no bound; forward-only; nothing about
-      `⊡(P p)`; `Decidable (PlusValidZTime φ)` not stated in any form.
-- [ ] Add axiom pins for the two library declarations to
+      `⊡(P p)`; `Decidable (PlusValidZTime φ)` not stated in any form. *(deviation: altered — additionally
+      amended the preceding `presented-not-complete` entry's trailing line, which read
+      ``HitPresented` left OPEN``, with a cross-reference to the new probe; leaving it would
+      have left the guard's own table asserting as open what the entry beside it settles. No
+      claim weakened: the general-(C)-with-a-bound status is still recorded as open.)*
+- [x] Add axiom pins for the two library declarations to
       `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` in the file's established
       `/-- info: … -/ #guard_msgs in #print axioms …` shape, with a short `/-! … -/` note
       explaining that `HitPresented` is the Hit-level weakening of `Presented`, that
       `hitPresented_of_presented` makes the weakening explicit, and that the fixture-level
       discharge lives in the wired probe (which this module cannot import, since probes are
       outside the Lake graph).
-- [ ] Add a `docs/theorem-index.md` row for `hitPresented_of_presented` whose prose states
+- [x] Add a `docs/theorem-index.md` row for `hitPresented_of_presented` whose prose states
       exactly what the result does and does not deliver: `HitPresented` is strictly weaker than
       `Presented`; it is discharged on fixture model A at every `k ≥ 1` by the wired probe,
       non-constructively, with NO computable bound; `Presented` remains refuted there by
       `presented-not-complete.lean` and the two hold side by side; nothing is stated about
       `PlusValidZTime` or about general regular ℤ-models; forward-only. Add the row in the SAME
       commit as the axiom pins (C14), and keep the row anchored at its declaration (C15).
-- [ ] Update `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: in "The verdict", change
+- [x] Update `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: in "The verdict", change
       (C)'s status from "`HitPresented` left OPEN" to the fixture-level finding, WITHOUT retiring
       or weakening the verdict itself or `Probe735.not_presented` — the ray-product presentation
       as landed still cannot deliver `Decidable (PlusValidZTime φ)`, (S) and (W) are still missing,
       and general (C) with a computable bound is still open. Add the new probe to the file's probe
-      inventory.
-- [ ] Record the bound verdict, in the probe header and in the README: the computable bound is
+      inventory. *(deviation: altered — additionally updated the `Trace.lean` row of the "What it
+      holds" table, whose line count still read 371 against a live 415 and whose description
+      did not mention `HitPresented`/`hitPresented_of_presented` at all; and added the two new
+      pins to "The consumer relation"'s pinned-profile list. Both are the same file and the
+      same edit round, not new scope.)*
+- [x] Record the bound verdict, in the probe header and in the README: the computable bound is
       BLOCKED, the obstruction is that the truncation proof's `L` comes from
       `Set.Finite.bddAbove` (hence `Classical.choice`) and is never exhibited, the in-tree entry
       point for an effective bound is `kTypeOf_listSeg_append_congr`, and the missing obligation
@@ -753,15 +761,33 @@ the named obligation; run the full gate set.
       of a computable bound is not a Lean-statable property of this development, so acceptance
       branch 3's "machine-checked rather than argued" is discharged by the axiom foot plus this
       named, stated-not-proved obligation — the substitution the user approved in cycle 1 — and
-      NOT by a theorem asserting impossibility. Do NOT land the obligation as a `sorry` anywhere.
-- [ ] Re-grep `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Saturation.lean` before writing
+      NOT by a theorem asserting impossibility. Do NOT land the obligation as a `sorry` anywhere. *(deviation: altered — while writing the verdict into the probe header, corrected a stale
+      forward-reference in that header's own "The decision held in place" paragraph, which
+      said the companion no-bound decision was "recorded by the later phases rather than
+      here" and which this very edit falsified. Purely additive; the same defect class the
+      preceding phase found and corrected.)*
+- [x] Re-grep `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Saturation.lean` before writing
       the verdict, to re-derive the CARRIED-UNVERIFIED claim that it holds no block-length
       threshold lemma; if one has since landed, say so and revise the verdict accordingly.
-- [ ] Prose audit over every file this plan touched: no occurrence of "decidable", "decision
+- [x] Prose audit over every file this plan touched: no occurrence of "decidable", "decision
       procedure", "L⁺ is decidable" or `PlusValidZTime` in a way that attributes a decidability
       result to this work; every new header names the forward-only limit and the absent backward
       Bool-fixture bridge; no task-number citation outside `specs/**` (C9).
-- [ ] Run the full gate set (see Verification below) and commit.
+- [x] Run the full gate set (see Verification below) and commit. *(deviation: altered — the
+      phase's **Scope Hypothesis** predicted five touched files and said a sixth means a
+      sibling task's edit must be unstaged. Eight were touched, and the three extra are all
+      MACHINE-GENERATED artifacts this phase's own line additions obliged, not foreign edits:
+      `typst/generated/status.typ` (the pre-commit `typst-sync-check.sh` Check 2 gate refused
+      the first commit over `tests-line-count` 22943 vs a live 22982 — a delta of exactly the
+      39 lines added to the axiom-test module), and `README.md` plus
+      `FormalSystem/Metalogic/README.md` (both carried stale `GENERATED` inventory blocks;
+      the `Decidability/` figure was off by exactly the 44 lines Phase 1 added to
+      `Trace.lean` and never regenerated, so this is this record's own inherited debt
+      surfacing at its first gate-running phase). Each was repaired with the repository's own
+      sanctioned generator — `typst-sync-check.sh --fix` and
+      `check-module-invariants.sh --emit-inventory` — never hand-edited, and each diff was
+      inspected to confirm it carried no foreign content. The hypothesis's "a sixth file means
+      a sibling's edit" reading was simply the wrong diagnosis for this phase.)*
 
 **Timing**: 1.5 hours
 
@@ -944,29 +970,38 @@ unit of successor work, not a discharged one.
 
 ## Testing & Validation
 
-- [ ] Phase 1's library edit builds under the guarded, detached, scoped invocation, together with
+- [x] Phase 1's library edit builds under the guarded, detached, scoped invocation, together with
       its two enumerated direct dependents; the full project builds at Phase 8.
-- [ ] `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` exits 0
+- [x] `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` exits 0
       with zero errors and zero warnings at the end of every phase from 2 onward.
-- [ ] Every one of the 17 pinned identifiers exists in the tree at its pinned signature, with no
+- [x] Every one of the 17 pinned identifiers exists in the tree at its pinned signature, with no
       added hypothesis, specialized quantifier or weakened conclusion;
       `bash .claude/scripts/lean-challenge-snapshot.sh --check` reports no drift (ADVISORY — a
       drift finding is a signal to investigate, never an automatic verdict).
-- [ ] Zero sorries and no vacuous `def X := True`-shaped placeholder in any touched `.lean` file.
+      *(Closed at Phase 8 by mechanical whitespace-normalized comparison of the Challenge
+      block against the live tree, the snapshot gate being UNAVAILABLE for this record
+      (exit 71, no manifest, never taken at plan time). All 24 declared identifiers exist.
+      19 match byte-for-byte. `MA` and `stepOf` match on their full signature prefix — the
+      only difference is that the comparison script swallowed their `where`/pattern-match
+      bodies. `a`, `b` and `pa` are `def` where the block wrote `abbrev`: identical type and
+      identical value, the `abbrev` form having been a plan-time device, already recorded and
+      reasoned in the Phase 2 handoff against `presented-not-complete.lean`'s own `def`s. No
+      added hypothesis, no specialized quantifier, no weakened conclusion anywhere.)*
+- [x] Zero sorries and no vacuous `def X := True`-shaped placeholder in any touched `.lean` file.
       `labOf` and `stepOf` are `def`, not `noncomputable def`.
-- [ ] `#print axioms` on `hitPresented_of_presented` and on `hitPresented_modelA` reports exactly
+- [x] `#print axioms` on `hitPresented_of_presented` and on `hitPresented_modelA` reports exactly
       the profile recorded in the axiom-test pins and the probe foot — observed, not predicted.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 with the new probe wired.
-- [ ] `bash scripts/check-module-invariants.sh` green, with the theorem-index row and the axiom
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 with the new probe wired.
+- [x] `bash scripts/check-module-invariants.sh` green, with the theorem-index row and the axiom
       pins landing in the same commit (C14) and the row anchored at its declaration (C15).
-- [ ] `bash .claude/scripts/verify-deploy.sh` green — the complete gate set, not a subset, not
+- [x] `bash .claude/scripts/verify-deploy.sh` green — the complete gate set, not a subset, not
       under `--skip-slow`.
-- [ ] Prose audit: no file under `FormalSystem/`, `docs/`, `Tests/`, `scripts/` or
+- [x] Prose audit: no file under `FormalSystem/`, `docs/`, `Tests/`, `scripts/` or
       `specs/evidence/` attributes a decidability result, a decision procedure, or any statement
       about `PlusValidZTime` to this work; every new header carries the forward-only limit, the
       absent backward Bool-fixture bridge, the no-bound limit, and the non-generality of the
       fixture; no task-number citation outside `specs/**` (C9).
-- [ ] `Probe735.not_presented` still compiles and is still wired; nothing in this plan's output
+- [x] `Probe735.not_presented` still compiles and is still wired; nothing in this plan's output
       weakens, retires or contradicts it, and the README still records that the ray-product
       presentation as landed cannot deliver `Decidable (PlusValidZTime φ)`.
 

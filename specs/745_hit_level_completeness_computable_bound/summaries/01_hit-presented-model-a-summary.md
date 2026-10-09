@@ -1,18 +1,18 @@
 # Implementation Summary: Task #745
 
 - **Task**: 745 - Requirement (C) of the ray-product verdict: Hit-level completeness with a computable bound -- settle HitPresented first
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Started**: 2026-10-08T23:51:39Z
-- **Completed**: 2026-10-09T02:20:00Z
-- **Effort**: ~1.95 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3, phase 4 ~0.25, phase 5 ~0.3,
-  phase 6 ~0.4, phase 7 ~0.25)
+- **Completed**: 2026-10-09T03:40:00Z
+- **Effort**: ~3.2 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3, phase 4 ~0.25, phase 5 ~0.3,
+  phase 6 ~0.4, phase 7 ~0.25, phase 8 ~1.25 — in phase 8 the gate set, not the edits, dominates)
 - **Dependencies**: None ((S) is an independent sibling record; (W) is downstream of both)
 - **Artifacts**: plans/01_hit-presented-model-a.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Six single-phase dispatches of the eight-phase plan, each confined to one phase per its
+Eight single-phase dispatches of the eight-phase plan, each confined to one phase per its
 dispatch's phase mission. **Phase 1** (dispatch 5) states the Hit-level hypothesis `HitPresented` in the
 library beside `Presented` and records that it is strictly weaker, via
 `hitPresented_of_presented`; both land sorry-free in
@@ -31,10 +31,9 @@ itself — the `L + 6`-state type `QA L`, the two-gadget step relation `stepOf` 
 no-cross-step lemma, the explicit flag table `labOf`, and the labelling bridge that ties
 `labOf`'s flags to Phase 3's `clTrace` read-out at three levels, the outermost of which turns
 Phase 6's run-trace comparison into a rewrite. Phases 6-8 — the run characterization, the
-assembly, and the wiring/pins/docs/bound-verdict — are NOT attempted and remain
-`[NOT STARTED]`.
+assembly, and the wiring/pins/docs/bound-verdict — are described below.
 
-Nothing is claimed about requirement (C) itself by any of the four phases. `HitPresented` is a
+Nothing is claimed about requirement (C) itself by any of the FIRST FIVE phases. `HitPresented` is a
 *declaration*, not yet a *discharged* hypothesis: no model satisfies it in the tree, and the
 fixture-level discharge is phases 3-7's work. Phase 2 lands no statement mentioning `HitCl`,
 `hitOf` or `HitPresented` at all — what it lands is the rigidity fact the discharge will rest on,
@@ -68,6 +67,41 @@ killed `Presented` (`Probe735.not_presented`) does NOT reach the Hit level, and 
 deliberate non-`Presented`-ness, the forward-only restriction, the absence of any decidability
 claim, and the one-fixture scope. A second sub-step corrected the probe header's opening
 paragraph and axiom record, which this phase's own edit had falsified.
+
+**Phase 8** (dispatch 12) makes the result non-rotting and discoverable, and records the bound as
+BLOCKED with its obstruction named. Five plan-scoped files: the probe is wired into
+`scripts/check-evidence-probes.sh`'s `WIRED` list with its own 53-line table entry (the gate now
+compiles 24 probes, all PASS); `HitPresented` and `hitPresented_of_presented` get `#guard_msgs`
+axiom pins in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` at profiles OBSERVED by a
+throwaway `lake env lean` run before either pin was written, under a note saying why these two
+rows are the first `Presented`-family rows in that harness that are NOT vacuous on fixture model
+A; `docs/theorem-index.md` gains exactly one row; the `RaySummary/README.md` verdict's (C) row
+moves from "satisfiability on model A is OPEN" to "half-settled, and only the easier half"
+WITHOUT retiring the verdict itself or `Probe735.not_presented`; and the probe header plus the
+README both carry the bound verdict.
+
+**The bound verdict, as recorded.** The computable-bound half of (C) is not delivered and the
+obstruction is specific rather than a shrug: `hitCl_eq_truncated`'s `L` comes from
+`Set.Finite.bddAbove` over `HitCl`, so it is never exhibited, and every cardinality figure
+downstream of it (`card_QA`'s `L + 6`, `jump_window_card`'s `L + 1`) is a function of a number
+nothing produces. The in-tree entry point for an EFFECTIVE bound is
+`kTypeOf_listSeg_append_congr`; the threshold consequence is absent, re-derived at this phase by
+the grep the plan mandated (`KTypeSummary/Saturation.lean`'s four theorems are
+`kTypeColouring_eq_of_matching_segments`, `kEquiv_zFiber_of_matching_segments`,
+`kTypeOf_zFiber_eq_of_sameTriple` and `kTypeOf_zFiber_eq_of_inFamily`, and a case-insensitive
+sweep for threshold/block-length/periodicity returns zero matches, so nothing has landed since
+plan time and the verdict needed no revision). The single missing obligation,
+`kTypeOf_listSeg_replicate_eventually_periodic`, is STATED AND NOT PROVED in both the probe header
+and the README, and is deliberately not landed as a `sorry` anywhere.
+
+**And the substitution is stated, not smoothed over.** The record's acceptance branch 3 asks for
+the bound obstruction to be "machine-checked rather than argued". A claim that NO computable bound
+exists is not a Lean-statable property of this development, so that branch is not literally
+satisfiable, and both the probe header and the README say so in their own words. What IS
+machine-checked is narrower and is named as such: the headline's `∃ L` shape, which puts the
+non-exhibition in the STATEMENT rather than in prose, and its axiom foot, which carries
+`Classical.choice`. That is the substitution the user approved in cycle 1, and nothing anywhere
+asserts impossibility.
 
 ## What Changed
 
@@ -238,6 +272,32 @@ paragraph and axiom record, which this phase's own edit had falsified.
     one exception (`stepOf` is `[propext]` alone, being a decidable `Bool`-valued table) and the
     four `Classical.choice` entry points.
 
+### Phase 8 (dispatch 12)
+
+- `scripts/check-evidence-probes.sh` (+60/-1) — `"seam-gluing-ray-product/hit-presented-model-a"`
+  added to `WIRED`, with its own table entry stating the decision it holds in place; the
+  preceding `presented-not-complete` entry's trailing ``HitPresented` left OPEN`` line
+  cross-referenced to the new probe rather than left asserting as open what the entry beside it
+  settles.
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` (+39/-0) — two "What is pinned" table
+  rows, a `/-! … -/` note, and `#guard_msgs in #print axioms` pins for `HitPresented` and
+  `hitPresented_of_presented`.
+- `docs/theorem-index.md` (+1/-0) — one row for `hitPresented_of_presented`, anchored at its
+  declaration by the `Paper: —` line Phase 1 wrote (C15's second assertion passes over all 261
+  rows).
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (+70/-7) — the verdict's (C) row and
+  its "What the verdict does not establish" paragraph updated; a new "The bound: blocked, with the
+  obligation named" subsection; a sixth-wired-probe inventory entry; the `Trace.lean` row's line
+  count corrected 371 → 415 and its description extended to the two new declarations; the two new
+  pins added to "The consumer relation".
+- `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` (+47/-4) — header: the
+  "Bound verdict: BLOCKED, with the obligation named" paragraph, the stated-not-proved obligation,
+  the honest note on "machine-checked", and the compile line rewritten now that the guard runs it.
+- Three further MACHINE-GENERATED files, repaired with the repository's own generators and never
+  hand-edited: `typst/generated/status.typ` (+2/-2, `typst-sync-check.sh --fix`), `README.md` and
+  `FormalSystem/Metalogic/README.md` (+3/-3 together,
+  `check-module-invariants.sh --emit-inventory`). See Plan Deviations.
+
 ## Decisions
 
 - `HitPresented` is a `def … : Prop` whose body IS its pinned statement, so
@@ -402,6 +462,31 @@ paragraph and axiom record, which this phase's own edit had falsified.
   the axiom record was replaced by the fourteen OBSERVED profiles. Recorded as a deviation
   annotation on the plan's second phase-7 item, since the plan asked only for the axiom record.
 
+### Phase 8 (dispatch 12)
+
+- **Axiom profiles observed before being written, not after.** A throwaway two-line file was run
+  through `lake env lean` under the build guard to read both profiles off `#print axioms` BEFORE
+  either `#guard_msgs` pin was authored. The alternative — writing a predicted pin and letting the
+  build correct it — produces the same bytes but makes the pin a prediction that happened to hold
+  rather than a record of an observation. Both came back `[propext, Classical.choice, Quot.sound]`;
+  `hitPresented_of_presented`'s wraps across three lines where `HitPresented`'s does not, purely
+  because the name is longer.
+- **The verdict is amended, never retired.** The (C) row now reads "half-settled, and only the
+  easier half" instead of "OPEN", but the verdict's own opening claim — the ray-product
+  presentation as landed cannot deliver `Decidable (PlusValidZTime φ)` — is left verbatim, (S) and
+  (W) are still recorded as missing, and `Probe735.not_presented` stays wired and passing. The new
+  probe entry says in its own text that the two results hold side by side on the same fixture.
+- **The guard's own table was corrected, not just appended to.** Adding the new entry while
+  leaving the entry above it asserting ``HitPresented` left OPEN`` would have left the guard
+  self-contradictory. The cross-reference is additive and keeps the general-(C)-with-a-bound status
+  open.
+- **Three generated artifacts were regenerated rather than bypassed.** The pre-commit
+  `typst-sync-check.sh` gate offered `--no-verify` for drift "attributable to another writer". The
+  drift was arithmetically this dispatch's own (+39, exactly the lines added to the axiom-test
+  module), so the bypass would have been a misuse of the gate's own stated exemption. Same
+  reasoning for the two stale inventory blocks, whose delta was exactly Phase 1's +44 `Trace.lean`
+  lines.
+
 ## Plan Deviations
 
 - **Task 1.3** (the `HitPresented` docstring) altered: the plan directs the docstring to say the
@@ -543,6 +628,37 @@ paragraph and axiom record, which this phase's own edit had falsified.
   `+101 / -17` across the phase. Predicted axiom profile
   `[propext, Classical.choice, Quot.sound]` and nothing more: CONFIRMED from the `#print axioms`
   output itself, no fourth axiom, no pin edited to match a prediction.
+
+### Phase 8 (dispatch 12)
+
+- **Phase 8 Scope Hypothesis OVERRUN, and its diagnosis rule was wrong for this phase.** It
+  predicted five touched files and said a sixth "means a sibling task's edit has been picked up and
+  must be unstaged". Eight were touched. The three extra are all machine-generated and all caused
+  by this record's own line additions, not by a sibling: `typst/generated/status.typ` (the
+  pre-commit gate refused the first commit over `tests-line-count` 22943 vs a live 22982, a delta
+  of exactly the 39 lines added to the axiom-test module) and `README.md` +
+  `FormalSystem/Metalogic/README.md` (stale `GENERATED` inventory blocks, the `Decidability/`
+  figure off by exactly the 44 lines Phase 1 added to `Trace.lean` and never regenerated — this
+  record's own inherited debt, surfacing at the first phase that runs the gate). Each diff was
+  inspected to confirm it carried no foreign content; the `.lean` file count and every other figure
+  were unchanged. The five plan-scoped files and the "exactly one new theorem-index row" prediction
+  both held exactly.
+- **Task 8.1 altered** — the `presented-not-complete` table entry's trailing line was amended with
+  a cross-reference beyond the plan's "add the new entry" instruction. Additive; no claim weakened.
+- **Task 8.4 altered** — beyond the three named README edits, the `Trace.lean` row's stale line
+  count (371 against a live 415) and its description (which did not mention `HitPresented` at all)
+  were corrected, and the two new pins added to "The consumer relation". Same file, same edit
+  round.
+- **Task 8.5 altered** — while writing the bound verdict into the probe header, a stale
+  forward-reference in that header's own "The decision held in place" paragraph was corrected: it
+  said the companion no-bound decision was "recorded by the later phases rather than here", which
+  this very edit falsified. Purely additive, and the same defect class Phase 7 found and corrected
+  — which suggests forward-referencing prose written early in a multi-phase probe should be
+  audited by whichever phase makes it false.
+- **Not ticked, and not this phase's to tick**: two checklist items remain unchecked in
+  already-`[COMPLETED]` phases — Phase 5's "Commit (one green sub-step)" (which did happen; the
+  box was simply left unticked) and Phase 6's conditional contingency item, which never fired.
+  Left as found rather than silently ticked on another phase's behalf.
 
 ## Verification
 
@@ -793,6 +909,55 @@ paragraph and axiom record, which this phase's own edit had falsified.
   table (not a decidability claim about L⁺), and three are explicit DISCLAIMERS in the pinned
   docstring and the "does NOT say" section.
 
+### Phase 8 verification (dispatch 12) — the full gate set
+
+- **Full project build**, guarded and detached: guard exit 0,
+  `Build completed successfully (2836 jobs)`, **zero** `error:` and **zero** `warning:` over the
+  captured stream, and the one module this phase touched
+  (`BimodalTest.Metalogic.KTypeSummaryAxiomTest`) has an `.olean` newer than its source — all
+  three tiers of the terminal full-project bar green.
+- **Scoped build** of that module beforehand: guard exit 0, built in 1.7s, so both `#guard_msgs`
+  pins match their observed profiles (a `#guard_msgs` mismatch is an error, not a warning).
+- `bash scripts/check-evidence-probes.sh`: **exit 0**, `PASS all 24 wired probe(s) compile`, with
+  `seam-gluing-ray-product/hit-presented-model-a` PASS and
+  `seam-gluing-ray-product/presented-not-complete` still PASS and still wired.
+- `bash scripts/check-module-invariants.sh`: **exit 0**, `ALL CHECKS PASSED`. C14 green on both
+  assertions; C15 green on all 66 paper anchors and all 261 theorem-index rows, so the new row is
+  anchored at its declaration; C9/C9D green (zero task-number citations). The first run failed INV
+  on two stale generated inventory blocks — see Plan Deviations.
+- `bash .claude/scripts/verify-deploy.sh`: **exit 0**, `PASS -- 14 check(s), 0 failure(s)`, the
+  complete set and not under `--skip-slow`. One pre-existing WARN (the lean manifest still declares
+  `routing_hard`), unrelated to this record.
+- **Sorry census**, repo-wide over the resolved source roots with `--cross-check`:
+  `sorry_count: 0`, `compiler_sorry_count: 0`, `stripper_sorry_count: 0`, `cross_check: MATCH`.
+- **Vacuous count 1**, unchanged: the pre-existing `int_domain_universal` in
+  `FormalSystem/Examples/TemporalStructures.lean`. No vacuous placeholder was added.
+- **Axiom count, reported honestly rather than as "unchanged".** The crude `^axiom ` grep went
+  14 → 15. **Not one of the 15 matches is an actual `axiom` declaration** — every one is a prose
+  line that happens to begin with the word "axiom" at a comment wrap. The new 15th match is this
+  phase's own `RaySummary/README.md` line "axiom foot, which carries `Classical.choice`", in a
+  markdown file. A diff of every `*.lean` file since the pre-dispatch commit shows **no** `+axiom `
+  line: zero axioms added.
+- **Challenge-signature fidelity, closed for the whole record** (the advisory
+  `lean-challenge-snapshot.sh --check` gate is UNAVAILABLE here — exit 71, no manifest, never taken
+  at plan time, as in every earlier phase). Mechanical whitespace-normalized comparison of the
+  plan's `## Lean Challenge Statements` block against the live tree: all **24** declared
+  identifiers exist; **19 match byte-for-byte**; `MA` and `stepOf` match on their full signature
+  prefix, the only difference being that the comparison script swallowed their
+  `where`/pattern-match bodies; `a`, `b` and `pa` are `def` where the block wrote `abbrev` —
+  identical type and identical value, already recorded and reasoned in the Phase 2 handoff against
+  `presented-not-complete.lean`'s own `def`s. No added hypothesis, no specialized quantifier, no
+  weakened conclusion anywhere.
+- **Prose audit over the ADDED LINES only** (not whole-file counts, which carry pre-existing
+  matches). Zero added lines match `complexity|EXPTIME|2EXP|b(u|ü)chi|MSO|finite width|finite
+  fibre`. Zero added lines outside `specs/**` carry a task-number citation. Every added line
+  matching `decidab|PlusValid|decision procedure` was inspected individually: two are the
+  `DecidableEq` instance binder inside the stated-not-proved obligation, four are the
+  `Decidability.RaySummary` namespace path inside a `#print axioms` line, and every remaining one
+  is an explicit disclaimer. No added line attributes a decidability result, a decision procedure,
+  or any statement about `PlusValidZTime` to this work. The only `sorry` in any added line is the
+  word inside the prose sentence that forbids landing the obligation as one.
+
 ## Impacts
 
 - `path_classify` is the rigidity fact the whole positive construction rests on: it says the
@@ -842,6 +1007,28 @@ paragraph and axiom record, which this phase's own edit had falsified.
   presentation-side argument on this fixture family; it is a fact about `stepOf`'s gadget 2 and
   nothing in it survives replacement of the step table.
 
+### Phase 8 (dispatch 12)
+
+- **The result is now non-rotting.** The probe sits outside the Lake build graph, so `lake build`
+  never compiles it; `scripts/check-evidence-probes.sh` is what keeps it from drifting, and its
+  `WIRED` list now carries it. Anyone editing `HitCl`, `hitOf`, `mem_hitOf_iff`,
+  `hitCl_eq_iUnion`, `seamOmegaEquiv` or `ofSlicedStep_isRegular` will see this probe fail rather
+  than silently lose the record.
+- **The result is now discoverable from three places** a reader reaches without knowing the probe
+  exists: the `RaySummary/README.md` verdict's (C) row, the `docs/theorem-index.md` row for
+  `hitPresented_of_presented`, and the axiom-test harness's note.
+- **Two library declarations are now axiom-watched.** A profile move on `HitPresented` or
+  `hitPresented_of_presented` turns the build red at `KTypeSummaryAxiomTest.lean`, which is the
+  point of a C14 pin.
+- **The named obligation is a successor record's whole content.** Proving
+  `kTypeOf_listSeg_replicate_eventually_periodic` from `kTypeOf_listSeg_append_congr` plus
+  `kType_finite` by finite-semigroup idempotence is the single step that would convert
+  `hitCl_eq_truncated`'s route from non-constructive to effective, and so convert this record's
+  half-result into (C). It is stated in two places and proved in none.
+- **Requirement (C)'s status in the verdict has moved, and only there.** (S) and (W) are untouched
+  and still missing; the verdict's own claim that the landed presentation cannot deliver
+  `Decidable (PlusValidZTime φ)` is untouched and still stands.
+
 ## Follow-ups
 
 - Phases 6-8 of `plans/01_hit-presented-model-a.md`, all `[NOT STARTED]`. Phase 6 (the run
@@ -889,6 +1076,30 @@ paragraph and axiom record, which this phase's own edit had falsified.
   `lean-challenge-snapshot.sh --check` drift gate is unavailable for all 17 pinned identifiers.
   Each phase has been diffing its own landed signature against the plan's pin by hand instead.
 
+### Phase 8 (dispatch 12)
+
+- **The successor record this task's outcome names**: prove
+  `kTypeOf_listSeg_replicate_eventually_periodic` (signature stated verbatim in both the probe
+  header and the `RaySummary/README.md` bound verdict), then revisit `hitCl_eq_truncated` to
+  replace its `Set.Finite.bddAbove` witness with an exhibited `L`. That, and only that, converts
+  (C)'s blocked half.
+- **General (C) remains open and is NOT a repackaging of this record.** The probe's own header says
+  why: model A's splices are eventually constant in BOTH directions, which is exactly what lets a
+  finite presentation realize finitely many of them exactly. A general regular `ℤ`-model needs one
+  lasso per family triple and the `⊆` direction of that route is open. Nothing in the
+  classification survives replacement of the fixture.
+- **Forward-only, still.** No backward Bool-fixture bridge exists; `⊡(P p)` is untouched by this
+  whole record, and `Probe719Backward.pastStab_iff_allBwdPathsMeet` on the asymmetric fixture
+  remains the only backward fixture result. A successor must not read symmetry into this.
+- **A process follow-up worth one line**: two separate gate collisions in this phase
+  (`typst/generated/status.typ`, the two inventory blocks) were both caused by an EARLIER phase's
+  line additions never regenerating a generated artifact, and both surfaced only at the phase that
+  runs the full gate set. A plan that adds lines to `Tests/**` or `FormalSystem/**` in an early
+  phase should expect the generated-count artifacts to need regenerating, and ideally regenerate
+  them in that phase rather than deferring the debt to the last one.
+- **Phase 5's and Phase 6's unticked checklist items** (see Plan Deviations) are a cosmetic
+  annotation gap in already-closed phases, left as found.
+
 ## References
 
 - `specs/745_hit_level_completeness_computable_bound/plans/01_hit-presented-model-a.md` — the plan,
@@ -909,3 +1120,16 @@ paragraph and axiom record, which this phase's own edit had falsified.
 - `specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` — `Probe735.not_presented`,
   the trace-level refutation these docstrings and the new probe's header are careful not to
   weaken, and the transcription source for the fixture.
+
+- `specs/745_hit_level_completeness_computable_bound/handoffs/phase-8-handoff-20261009T034000Z.md`
+  — the phase-8 handoff.
+- `scripts/check-evidence-probes.sh` — the probe guard; the new `WIRED` entry and its table row.
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — the two C14 axiom pins and the note
+  on why they are the harness's first non-vacuous `Presented`-family rows.
+- `docs/theorem-index.md` — the single new row for `hitPresented_of_presented`.
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — the amended verdict, the sixth
+  probe's inventory entry, and "The bound: blocked, with the obligation named".
+- `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Saturation.lean` — re-grepped at this phase;
+  still holds no block-length threshold lemma, which is why the bound verdict stands as written.
+- `FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean` — `kTypeOf_listSeg_append_congr`,
+  the in-tree entry point an effective bound would have to go through.
