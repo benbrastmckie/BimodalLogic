@@ -1,23 +1,27 @@
 {
   "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
   "task_number": 745,
-  "dispatch_seq": 9,
-  "phase_number": 5,
-  "phases_completed": 5,
+  "dispatch_seq": 10,
+  "phase_number": 6,
+  "phases_completed": 6,
   "phases_total": 8,
   "requires_user_review": false,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "summary": "Cumulative summary for task 745; extended with phase 5, which lands the L+6-state presentation data (QA, stepOf, labOf), the no-cross-step lemma, and the three-level labelling bridge in the evidence probe."
+      "summary": "Cumulative summary for task 745; extended with phase 6, which lands the run characterization (runTrace_mem_of_isRun and exists_isRun_runTrace at their pinned signatures), the three excluded run shapes as named theorems, the witnessing runs stayRun/jumpRun, and the L+1 branching count."
     },
     {
       "type": "handoff",
-      "path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-5-handoff-20261009T010704Z.md",
-      "summary": "Phase 5 progressive handoff: the stocked route for phase 6's run characterization, the five key design decisions, the observed axiom profiles, and the two simp/letter_cases orientation traps."
+      "path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-6-handoff-20261009T013749Z.md",
+      "summary": "Phase 6 progressive handoff: the stocked route for phase 7's hitPresented_modelA composition through mem_hitOf_iff, the four key decisions, the observed axiom profiles, and the omega/Iff tooling trap."
     }
   ],
   "sorry_inventory": [],
@@ -30,33 +34,67 @@
     "axiom_count": 14,
     "axiom_note": "unchanged from baseline; no axiom added",
     "build_passed": true,
-    "build_evidence": "lake-build-guard.sh, un-piped, guard exit 0; 'Build completed successfully (2836 jobs)'; zero error: and zero warning: lines over the captured stream. Non-regression only -- phase 5 touched no file in the Lake build graph.",
+    "build_evidence": "lake-build-guard.sh, un-piped, guard exit 0; 'Build completed successfully (2836 jobs)'; zero error: and zero warning: lines over the captured stream. Non-regression only -- phase 6 touched no file in the Lake build graph, so Tier 3 has no module of this phase's to check.",
     "probe_compile_passed": true,
-    "probe_compile_evidence": "lake env lean on specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean through the guard, un-piped, guard exit 0; captured output is exactly the #eval line (4) and eleven #print axioms info lines; zero error/warning/sorry lines; both #guards pass.",
+    "probe_compile_evidence": "lake env lean on specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean through the guard, un-piped, guard exit 0; captured output is exactly the #eval line (4) and thirteen #print axioms info lines; zero error/warning lines; both #guards pass; the only grep hit for 'sorry' in the file is the phase-4 prose at line 483.",
     "verification_passed": true,
-    "challenge_check": "unavailable (lean-challenge-snapshot.sh --check exits 71: no manifest at specs/745_hit_level_completeness_computable_bound/challenge/manifest.json). Substituted by mechanical whitespace-normalized python string comparison of the pinned QA, labOf and stepOf signatures against the plan's Lean Challenge Statements block -- all three present and identical.",
-    "plan_compliance": "all 23 phase-5 declarations present as named declarations; no pinned signature altered; four checklist items carry additive-refinement deviation annotations; no step skipped, deferred or re-routed",
-    "prose_audit": "added region: only decidab* match is the type-class name DecidableEq; zero matches for 'decision procedure' or 'PlusValidZTime'"
+    "challenge_check": "unavailable (lean-challenge-snapshot.sh --check exits 71: no manifest at specs/745_hit_level_completeness_computable_bound/challenge/manifest.json). Substituted by mechanical whitespace-normalized python string comparison of the pinned runTrace_mem_of_isRun and exists_isRun_runTrace signatures against the plan's Lean Challenge Statements block -- both MATCH.",
+    "plan_compliance": "both pinned names present as named theorem declarations with verbatim signatures; all eighteen phase-6 declarations present; three checklist items carry additive-decomposition deviation annotations; the conditional escalation item is left unchecked with an annotation recording that its condition never arose; no step skipped, deferred or re-routed",
+    "prose_audit": "added region (413 lines): zero matches for decidab, PlusValid, complexity, EXPTIME, 2EXP, Buchi/Buechi, MSO, 'finite width', 'finite fibre' or 'decision procedure'"
   },
   "completion_data": {
-    "completion_summary": "Phase 5 of 8 complete. Added 237 lines (zero deletions) to the evidence probe, now 807 lines: the L+6-state presentation data at its pinned signatures (QA, stepOf, labOf -- both plain def, never noncomputable), the no-cross-step lemma stepOf_no_cross that Phase 6's gadget exclusion cites, the explicit five-branch flag table with its @[simp] letter lemmas, and the labelling bridge at three levels culminating in the function-level runTrace_inl_eq/runTrace_inr_eq that make Phase 6's trace comparison a rewrite. Zero sorries, zero errors, zero warnings; full build green for non-regression; axiom and vacuous counts unchanged. Phases 6-8 remain [NOT STARTED] per the dispatch's single-phase mission."
+    "completion_summary": "Phase 6 of 8 complete. Added 413 lines (zero deletions) to the evidence probe, now 1220 lines: the run characterization, the one link the research left uncompiled. runTrace_mem_of_isRun and exists_isRun_runTrace land at their pinned signatures verbatim, so the presentation's anchored run traces are pinned to exactly the family hitCl_eq_truncated describes. The three excluded run shapes are each a named theorem (no_run_const_pre, isLeft_const_of_isRun, inr_no_back_edge); gadget 2's threshold comes from Nat.find via inr_post_threshold, capped at L+1 by inr_fwd_index; the witnessing runs are the named defs stayRun and jumpRun with their own evaluation lemmas; and the L+1 branching figure is machine-checked by jump_window_card rather than asserted in prose. No bound is produced or implied -- L remains the unexhibited Set.Finite.bddAbove witness. Zero sorries, zero errors, zero warnings; full build green for non-regression; axiom and vacuous counts unchanged. Phases 7-8 remain [NOT STARTED] per the dispatch's single-phase mission."
   },
   "memory_candidates": [
     {
-      "insight": "simp given a hypothesis or simp lemma `h : a != b` rewrites `a = b` to False but NOT `b = a`. When a Bool-valued flag table is written as an if-chain over closed constants, its conditions appear in the opposite orientation from the usual `x_ne_y` naming, and the reverse-direction aliases must be supplied explicitly. Nine one-line `.symm` aliases were cheaper than discharging the orientation inside each proof.",
-      "keywords": ["lean4", "simp", "Ne", "orientation", "if-chain", "flag-table"]
+      "insight": "omega does NOT discharge an Iff goal in Lean v4.33.0-rc1: a goal of the form 'a <-> b' with both sides linear-arithmetic makes omega report a counterexample region equal to the hypothesis set, i.e. it learns nothing from the goal. Decompose first -- 'constructor <;> intro h <;> omega', or iff_of_false/iff_of_true with a per-side 'by omega'. This bites hardest on 'split_ifs <;> omega' over index-equals-constant iff time-condition goals, which look like pure arithmetic.",
+      "keywords": [
+        "lean4",
+        "omega",
+        "Iff",
+        "split_ifs",
+        "tactic-limitation"
+      ]
     },
     {
-      "insight": "A finite presentation covering L+1 distinct thresholds does not need L+1 gadgets: one chain of L mid states plus a pre/now/post triple covers every threshold by letting the run DWELL d steps on the chain. This keeps the state count linear (L+6) rather than quadratic in L.",
-      "keywords": ["lean4", "presentation", "finite-automaton", "state-count", "gadget"]
+      "insight": "split_ifs reduces a branch whose body becomes a closed-literal proposition (e.g. '0 = L + 2' at Nat with L a variable is kept, but '0 = 1' or a branch where both sides are literals) to 'False' outright. A proof step expecting the arithmetic form then fails; that branch wants not_false. Relatedly, omega ignores a hypothesis carrying no atoms, such as 'h : 0 = 1', so it cannot close a goal from that contradiction. Read the goal with lean_goal instead of guessing which branch failed.",
+      "keywords": [
+        "lean4",
+        "split_ifs",
+        "omega",
+        "False",
+        "goal-inspection"
+      ]
     },
     {
-      "insight": "Writing a Bool flag table over a closure alphabet as `if letter = clNow phi then ... else if letter = clLetter phi h_top then ...` rather than as a `match` on the underlying formula's constructors keeps the table independent of how derived connectives (e.g. top := impl bot bot) happen to be defined. A constructor match silently reshuffles if the definitional unfolding changes.",
-      "keywords": ["lean4", "closure-alphabet", "flag-table", "brittleness", "definitional-unfolding"]
+      "insight": "To turn 'rho : Z -> A (+) B confined to one summand' into an index function 'sigma : Z -> A' choice-free, use Sum.elim id (fun _ => default) composed with rho and prove 'rho z = Sum.inl (sigma z)' pointwise by rcases. Beta-reduce the goal with an explicit 'show' BEFORE rcases: otherwise rcases substitutes only the surface occurrence and leaves the un-applied lambda, and the follow-up rw fails to find the pattern.",
+      "keywords": [
+        "lean4",
+        "Sum.elim",
+        "beta-reduction",
+        "rcases",
+        "show"
+      ]
     },
     {
-      "insight": "An advisory signature-drift gate (lean-challenge-snapshot.sh --check) is unusable when no manifest was taken at plan time -- it exits 71 rather than reporting no drift. Mechanical whitespace-normalized string comparison of the landed signature against the plan's pinned block, scripted rather than done by eye, is the available substitute and should be run every phase.",
-      "keywords": ["challenge-snapshot", "signature-fidelity", "plan-compliance", "verification"]
+      "insight": "A Fin-valued index function defined by cases over an integer time can be kept inside its bound with no side condition by wrapping the value in 'min ... (n-1)': the Fin membership proof is then 'by omega' unconditionally, and a separate val lemma proves the min is the identity on the intended range. This keeps the construction a plain def (computable) and isolates the bookkeeping in one lemma instead of spreading a bound hypothesis through every proof about it.",
+      "keywords": [
+        "lean4",
+        "Fin",
+        "min",
+        "bound-free-construction",
+        "computable-def"
+      ]
+    },
+    {
+      "insight": "Finset.Icc on Int is not compilable -- a #guard over its card fails with 'depends on Int.instConditionallyCompleteLinearOrder, which is noncomputable'. Witness an interval cardinality with a theorem via Int.card_Icc (#(Icc a b) = (b + 1 - a).toNat) plus omega, and reserve #guard for a genuinely computable structure such as a List.finRange filter.",
+      "keywords": [
+        "lean4",
+        "Finset.Icc",
+        "Int",
+        "noncomputable",
+        "guard"
+      ]
     }
   ]
 }

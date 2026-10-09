@@ -3,15 +3,16 @@
 - **Task**: 745 - Requirement (C) of the ray-product verdict: Hit-level completeness with a computable bound -- settle HitPresented first
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T23:51:39Z
-- **Completed**: 2026-10-09T01:12:00Z
-- **Effort**: ~1.3 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3, phase 4 ~0.25, phase 5 ~0.3)
+- **Completed**: 2026-10-09T01:45:00Z
+- **Effort**: ~1.7 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3, phase 4 ~0.25, phase 5 ~0.3,
+  phase 6 ~0.4)
 - **Dependencies**: None ((S) is an independent sibling record; (W) is downstream of both)
 - **Artifacts**: plans/01_hit-presented-model-a.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Five single-phase dispatches of the eight-phase plan, each confined to one phase per its
+Six single-phase dispatches of the eight-phase plan, each confined to one phase per its
 dispatch's phase mission. **Phase 1** (dispatch 5) states the Hit-level hypothesis `HitPresented` in the
 library beside `Presented` and records that it is strictly weaker, via
 `hitPresented_of_presented`; both land sorry-free in
@@ -45,6 +46,12 @@ data, `stepOf_no_cross` and the bridge lemmas are facts ABOUT that data, and not
 twenty-three declarations mentions `hitOf`, `IsRun`, `HitCl` or `HitPresented`. The connection
 between the presentation's runs and the truncated trace set is Phase 6's, and the assembly into
 `HitPresented` is Phase 7's.
+
+**Phase 6** (dispatch 10) lands the run characterization — the step the research left uncompiled
+and the one the whole result turns on. The presentation's anchored runs trace EXACTLY the
+truncated family: `runTrace_mem_of_isRun` (`⊆`) and `exists_isRun_runTrace` (`⊇`), both at their
+pinned signatures, plus the three excluded run shapes as named theorems and the `L + 1` branching
+figure counted rather than asserted. 413 added lines, zero deletions, zero sorries.
 
 ## What Changed
 
@@ -149,6 +156,44 @@ between the presentation's runs and the truncated trace set is Phase 6's, and th
     actually make Phase 6's trace equality a rewrite.
   - Four new `#print axioms` foot lines (`labOf`, `stepOf`, and the two position-indexed
     bridges), matching the foot convention the file already carried.
+
+- `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` (phase 6, +413 / -0, now
+  1220 lines) — the run characterization. Eighteen new sorry-free declarations:
+  - `no_run_const_pre (L) (t) (ρ) (hρ) (q) (hq : isNowState L q = false) (hconst : ∀ z, ρ z = q)`
+    — counterexample 1: no run is constant at a non-`now` state, in either gadget. `IsRun`'s
+    second clause at `z = t` and nothing else.
+  - `isLeft_const_of_isRun (L) (hstep) (t) : ∀ z, (ρ z).isLeft = (ρ t).isLeft` — counterexample 2:
+    `Sum.isLeft ∘ ρ` is constant along a `step`-chain, by Phase 5's `stepOf_no_cross` and nothing
+    else, with the two-sided reach by `Int.induction_on`.
+  - `inr_no_back_edge (L) (i j) (h) (hi : 1 ≤ i.val) : i.val < j.val ∨ (i.val = L+2 ∧ j.val = L+2)`
+    — counterexample 3: no mid-chain loop; the index strictly increases and `j_post` is the only
+    reachable self-loop.
+  - `exists_left_index`, `exists_right_index` — a run confined to one gadget is the `Sum.inl` /
+    `Sum.inr` of an index function `ℤ → Fin 3` / `ℤ → Fin (L + 3)`, built choice-free with
+    `Sum.elim`.
+  - `inl_bwd_pre`, `inl_fwd_post`, `inl_run_pinned` — gadget 1's rigidity: `s_pre` strictly before
+    the seam, `s_now` at it, `s_post` strictly after, so gadget 1 carries exactly one anchored run.
+  - `inr_bwd_pre` — gadget 2 is constant at `j_pre` strictly before the seam. This is what keeps
+    `j_post` out of `(-∞, t]`, and it IS consumed, by `inr_post_threshold`.
+  - `inr_fwd_index (L) (hstep) (ht) : ∀ n, (σ (t + n)).val = L + 2 ∨ (σ (t + n)).val = 1 + n` —
+    gadget 2's forward branching. At `n = L + 1` the mid-chain alternative IS `j_post`
+    (`1 + (L + 1) = L + 2`), so every gadget-2 run reaches `j_post` within `L + 1` steps.
+  - `inr_absorb`, `inr_absorb_add` — `j_post`'s only successor is itself, for one step and for any
+    number of steps.
+  - `inr_post_threshold (L) (hstep) (hnow) : ∃ w, t ≤ w ∧ w ≤ t + L ∧ ∀ z, ((σ z).val = L+2 ↔ w < z)`
+    — the threshold, from `Nat.find` of the first forward index at `j_post`.
+  - `runTrace_mem_of_isRun` at the pinned signature — the `⊆` direction.
+  - `stayRun` + `stayRun_val` / `stayRun_now` / `stayRun_isRun` — the gadget-1 witnessing run.
+  - `jumpRun` + `jumpRun_val` / `jumpRun_now` / `jumpRun_post` / `jumpRun_isRun` — the gadget-2
+    witnessing run with threshold `w`; the index is `min … (L + 2)` so the `Fin (L + 3)`
+    membership needs no side condition, and `jumpRun_val` proves the `min` is the identity on the
+    intended range.
+  - `exists_isRun_runTrace` at the pinned signature — the `⊇` direction.
+  - `jump_window_card (t) (L) : (Finset.Icc t (t + L)).card = L + 1` — the branching figure
+    counted as a theorem, plus a computable `#guard` at `L = 2` over `stepOf`'s own edges into
+    `j_post` (`Finset.Icc` on `ℤ` is not compilable, so the window itself is witnessed by the
+    theorem, not by a `#guard`).
+  - Two new `#print axioms` foot lines (`runTrace_mem_of_isRun`, `exists_isRun_runTrace`).
 
 ## Decisions
 
@@ -259,6 +304,39 @@ between the presentation's runs and the truncated trace set is Phase 6's, and th
   lemmas. Stopping at the four-case lemma would have satisfied the item's letter and missed the
   phase's goal.
 
+- **Phase 6: gadget 1's trace equality consumes only `IsRun`'s own `↔`, and the probe says so.**
+  Phase 5 built `labOf` so that a gadget-1 state reads nothing but `isNowState`, so the seam
+  correspondence `i.val = 1 ↔ z = t` — which IS `IsRun`'s second clause, free — is the whole
+  premise of `runTrace_inl_eq`. The plan's route describes the backward/forward pinning as the
+  path to the `⊆` direction, and the pinning IS landed (`inl_bwd_pre`, `inl_fwd_post`,
+  `inl_run_pinned`), but as the plan's named route and as the record that no unclassified
+  gadget-1 run exists, not as a premise of the trace comparison. Stated in the probe's own section
+  header rather than left for a reader to discover. `inr_bwd_pre` is consumed, by
+  `inr_post_threshold`'s `z ≤ t` case.
+- **Phase 6: the threshold comes from `Nat.find`, which produces no bound and implies none.**
+  `inr_post_threshold` takes the least `n` with index `L + 2` at `t + n` and `inr_fwd_index`
+  caps it at `L + 1`. `jump_window_card`'s docstring says explicitly that `L + 1` is not a bound
+  on anything: `L` remains the unexhibited `Set.Finite.bddAbove` witness of `hitCl_eq_truncated`.
+- **Phase 6: the witnessing runs are named `def`s, not inline terms.** `stayRun` and `jumpRun`
+  each carry their own `val` lemma plus the two position correspondences, so the `IsRun` clauses
+  and the trace equalities are separately checkable and the `min` bookkeeping in `jumpRun` is
+  isolated in one lemma rather than spread through four proofs.
+- **Phase 6: `omega` does not discharge an `Iff` goal in this toolchain.** Every
+  `split_ifs <;> omega` over a goal of the form `<index> = c ↔ <time condition>` failed, reporting
+  a counterexample region equal to the hypothesis set — i.e. omega learned nothing from the goal.
+  Five sites, two compile rounds. The fix is to decompose the `Iff` first:
+  `constructor <;> intro h <;> omega`, or `iff_of_false`/`iff_of_true` with a per-side `by omega`.
+  A paired trap: `split_ifs` reduces a closed-literal branch such as `0 = L + 2` to `False`, so
+  that branch wants `not_false` rather than `by omega`, and omega also ignores an atom-free
+  hypothesis such as `h : 0 = 1`. Diagnosed by reading the goal with `lean_goal` rather than by
+  guessing.
+- **Phase 6: six inductions, each needing one explicit cast-reshaping line.** Every
+  `ℕ`-indexed walk off the seam (`inl_bwd_pre`, `inl_fwd_post`, `inr_bwd_pre`, `inr_fwd_index`,
+  `inr_absorb_add`) and the two-sided `Int.induction_on` in `isLeft_const_of_isRun` needs a
+  `rw [show t ± ((m + 1 : ℕ) : ℤ) = … by push_cast; ring]` to line the successor index up with the
+  step hypothesis. This is the single largest contributor to the phase's line count after the
+  decomposition itself.
+
 ## Plan Deviations
 
 - **Task 1.3** (the `HitPresented` docstring) altered: the plan directs the docstring to say the
@@ -359,6 +437,25 @@ between the presentation's runs and the truncated trace set is Phase 6's, and th
   `Fintype.card (QA L) = L + 6`, was CONFIRMED and is now a named theorem plus a `#guard`. Phase
   4 had been the first confirmed hypothesis in this task; this returns to the overshoot pattern
   of phases 1-3.
+
+- **Phase 6: no step skipped, deferred or re-routed; three items altered additively, one not
+  triggered.** The `⊆` item, the `⊇` item and the three-counterexample item each carry an
+  additive-decomposition annotation naming the declarations they landed as. The conditional
+  escalation item ("if the `IsRun` pinning genuinely cannot be carried out") is left unchecked
+  with an annotation recording that its condition never arose: the pinning was carried out as
+  written, the explicitly rejected `mem_hitOf_iff_live` / `pathTypesNow` / `fwdLiveSep` route was
+  not used, neither pinned statement was weakened, and no placeholder was landed.
+- **Phase 6 Scope Hypothesis MISSED**: predicted 100-150 added lines, actual 413 insertions by
+  `git diff --stat`, zero deletions. Three drivers, recorded in the issue log: the plan's
+  prose route became 16 named declarations plus 2 `def`s rather than 2 theorems; the Int/Nat cast
+  reshaping cost one explicit line per induction step across six inductions; and the witnessing
+  runs landed as named `def`s with four evaluation lemmas each. Same direction and roughly the
+  same factor as Phase 5's miss (100-150 predicted, 237 actual), so this plan's remaining
+  per-phase line estimates should be read as low by 2-3x. The phase's second scope claim — that
+  gadget 2's forward branching is exactly `L + 1` — is CONFIRMED and machine-checked, by
+  `inr_fwd_index` (every run reaches `j_post` within `L + 1` steps), `inr_post_threshold` (the
+  threshold lands in `[t, t + L]`), `exists_isRun_runTrace` (every member of that interval is
+  realized) and `jump_window_card` (the interval has `L + 1` members).
 
 ## Verification
 
@@ -525,6 +622,51 @@ between the presentation's runs and the truncated trace set is Phase 6's, and th
   precondition is unmet and no `comparator` block is recorded. Were it ever set for this task, the
   missing manifest would make it return the preflight verdict `challenge_missing`.
 
+### Phase 6 verification (dispatch 10)
+
+- Probe compile: `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`
+  through `lake-build-guard.sh`, un-piped, guard's own exit 0. Captured output is exactly the
+  `#eval` line (`4`) and the thirteen `#print axioms` info lines — zero lines matching `error` or
+  `warning`. Both `#guard`s pass (a failing `#guard` is a compile error), so
+  `(plusSubformulaClosure Fp).card = 4` and the `L = 2` branching count `3` are checked, not
+  asserted.
+- Statement fidelity: the pinned `runTrace_mem_of_isRun` and `exists_isRun_runTrace` signatures
+  were extracted from the plan's `## Lean Challenge Statements` block and from the probe,
+  whitespace-normalized, and compared mechanically in python — both MATCH, character for
+  character after whitespace normalization. Neither has gained a hypothesis nor specialized a
+  quantifier relative to the pin.
+- `lean-challenge-snapshot.sh --check 745 <root>`: UNAVAILABLE, not green — exit 71, `no manifest
+  found at specs/745_hit_level_completeness_computable_bound/challenge/manifest.json`, unchanged
+  from phase 5. The mechanical comparison above stands in its place.
+- Axiom foot, observed not predicted: `Probe745.runTrace_mem_of_isRun` and
+  `Probe745.exists_isRun_runTrace` each report `[propext, Classical.choice, Quot.sound]` — no
+  `sorryAx`. `Classical.choice` enters through `inr_post_threshold`'s `Nat.find` bookkeeping and
+  through the inherited `clTrace`/`jump` terms, as in every earlier phase of this probe. The
+  eleven earlier pins re-run in the same compile are unchanged.
+- Full project build re-run after the phase, detached through `lake-build-guard.sh`: guard exit 0
+  (Tier 1), `Build completed successfully (2836 jobs)` with zero `error:` AND zero `warning:`
+  lines over the captured stream (Tier 2). Tier 3 has no module to check for this phase: the only
+  file modified is under `specs/`, which no Lake target root reaches, so this is non-regression
+  evidence rather than new coverage — stated rather than implied.
+- Sorry count: 0, repo-wide, via `lean-sorry-census.sh --cross-check` over all eight resolved
+  source roots — `stripper_sorry_count: 0`, `compiler_sorry_count: 0`, `cross_check: MATCH`. The
+  probe's single `grep -n sorry` hit is still the Phase-4 prose at line 483.
+- Vacuous count: 1 — unchanged, still the same pre-existing `int_domain_universal`. Zero in the
+  probe.
+- Axiom count: 14 — unchanged. No `axiom` added.
+- Plan-compliance spot-check: both pinned names present as named `theorem` declarations in the
+  probe, and all eighteen declarations the phase's checklist and annotations name are present,
+  confirmed by regex sweep.
+- Prose audit of the added region: zero matches across the 413 added lines for `decidab`,
+  `PlusValid`, `complexity`, `EXPTIME`, `2EXP`, `Buchi`/`Büchi`, `MSO`, `finite width`,
+  `finite fibre` or `decision procedure`. No decidability claim, no complexity bound, no external
+  automata-theoretic citation standing in for a proof.
+- Comparator gate: not run. `compare_flag` is absent from the delegation context, so the gate's
+  precondition is unmet and no `comparator` block is recorded.
+- Territory: working tree clean of foreign modifications at dispatch start and at commit time
+  apart from `specs/events.jsonl`, which is the orchestrator's own writer and was deliberately
+  left unstaged. No foreign commit and no foreign build was observed.
+
 ## Impacts
 
 - `path_classify` is the rigidity fact the whole positive construction rests on: it says the
@@ -563,6 +705,16 @@ between the presentation's runs and the truncated trace set is Phase 6's, and th
 - `FormalSystem/Metalogic/Decidability/RaySummary/README.md` now contains a FALSE claim in three
   places — the `(C)` requirements-table row and two prose occurrences say `HitPresented` "is not
   a declaration in this tree". Phase 8 owns that README update; flagged in the phase handoff.
+
+- Phase 6 closes the one link the research left uncompiled. With `runTrace_mem_of_isRun` and
+  `exists_isRun_runTrace` in hand, the presentation's anchored run traces are pinned to exactly
+  the family `hitCl_eq_truncated` describes, so Phase 7's `hitPresented_modelA` is a composition
+  through `mem_hitOf_iff` with no remaining mathematical gap — the open question that remains is
+  the bound, which this phase neither addresses nor weakens.
+- `inr_fwd_index`'s shape (a mid chain whose index strictly increases until an absorbing state,
+  so the walk is capped by the chain's length) is the reusable part of this phase for any later
+  presentation-side argument on this fixture family; it is a fact about `stepOf`'s gadget 2 and
+  nothing in it survives replacement of the step table.
 
 ## Follow-ups
 
