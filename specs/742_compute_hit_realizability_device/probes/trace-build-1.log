@@ -1,7 +1,0 @@
-⚠ [1926/1926] Built FormalSystem.Metalogic.Decidability.RaySummary.Trace (1.2s)
-warning: FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean:122:100: This line exceeds the 100 character limit, please shorten it!
-
-Note: This linter can be disabled with `set_option linter.style.longLine false`
-Build completed successfully (1926 jobs).
-lake-build-guard: STATUS: exit_status=0
-GUARD_EXIT=0

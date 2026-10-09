@@ -1,8 +1,0 @@
-⚠ [1926/1926] Built FormalSystem.Metalogic.Decidability.RaySummary.HitOf (3.6s)
-warning: FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean:407:4: The `show` tactic should only be used to indicate intermediate goal states for readability.
-However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
-
-Note: This linter can be disabled with `set_option linter.style.show false`
-Build completed successfully (1926 jobs).
-lake-build-guard: STATUS: exit_status=0
-GUARD_EXIT=0

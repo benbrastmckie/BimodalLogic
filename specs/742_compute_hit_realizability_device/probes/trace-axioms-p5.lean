@@ -1,5 +1,0 @@
-import FormalSystem.Metalogic.Decidability.RaySummary.Trace
-open FormalSystem.Metalogic.Decidability.RaySummary
-#print axioms letter_iff_of_localRun_anchored
-#print axioms eq_clTrace_of_localRun_anchored
-#print axioms clTrace_unique

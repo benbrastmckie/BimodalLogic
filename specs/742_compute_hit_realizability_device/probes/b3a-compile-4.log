@@ -1,8 +1,0 @@
-specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:85:9: error(lean.dependsOnNoncomputable): failed to compile definition, consider marking it as 'noncomputable' because it depends on 'Int.instConditionallyCompleteLinearOrder', which is 'noncomputable'
-specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:108:0: error(lean.dependsOnNoncomputable): failed to compile definition, consider marking it as 'noncomputable' because it depends on 'segZFinDec', which is 'noncomputable'
-specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:112:0: error(lean.dependsOnNoncomputable): failed to compile definition, consider marking it as 'noncomputable' because it depends on 'segZFinDec', which is 'noncomputable'
-specs/742_compute_hit_realizability_device/probes/b3a-computable-ktype.lean:113:0: error(lean.dependsOnNoncomputable): failed to compile definition, consider marking it as 'noncomputable' because it depends on 'segZFinDec', which is 'noncomputable'
-'Probe742.kTypeOfFin_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Probe742.kTypeOfFin_segZ' depends on axioms: [propext, Classical.choice, Quot.sound]
-lake-build-guard: STATUS: exit_status=1
-GUARD_EXIT=1

@@ -1,7 +1,0 @@
-1
-true
-false
-'Probe742.kTypeOfFin_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Probe742.kTypeOfFin_segZ' depends on axioms: [propext, Classical.choice, Quot.sound]
-lake-build-guard: STATUS: exit_status=0
-GUARD_EXIT=0

@@ -1,7 +1,0 @@
-sorry_count: 0
-sorry_inventory:
-
---- Cross-check: lake build ---
-compiler_sorry_count: 0
-stripper_sorry_count: 0
-cross_check: MATCH
