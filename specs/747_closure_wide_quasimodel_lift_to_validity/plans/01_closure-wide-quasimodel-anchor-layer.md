@@ -1,7 +1,7 @@
 # Implementation Plan: Task #747
 
 - **Task**: 747 - Requirement (W) of the ray-product verdict: a closure-wide quasimodel over all seams and times, lifting per-seam results to validity
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8.5 hours (5 phases; lean4, each phase sized to one agent run)
 - **Dependencies**: 745 (C) `[COMPLETED]` — `HitPresented` holds on model A non-constructively, no bound; 746 (S) `[COMPLETED]` — `presented_modelOf` for `box`/`stab`-free `φ` at one seam under `Cons`. Both outcomes were checked before this plan was written (see Overview); neither refutes, so the record is planned rather than closed.
 - **Research Inputs**: specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md
@@ -206,29 +206,29 @@ the ROADMAP edit is one task of the records phase, as it was for (S).
 Phases within the same wave can execute in parallel. Phase 5 is the final phase: it is the only
 terminal node and depends, directly or transitively, on every other phase.
 
-### Phase 1: Land the quantifier collapse — `box` is a per-model datum [NOT STARTED]
+### Phase 1: Land the quantifier collapse — `box` is a per-model datum [COMPLETED]
 
 **Goal**: Put research F1 in the library beside `stab_state_only`, so the record's "for every
 time, across the whole slice" quantifier is dropped by a theorem every later module can cite.
 
 **Tasks**:
-- [ ] Append to `FormalSystem/PlusLanguage/PlusTruth.lean`, immediately after `stab_state_only`
+- [x] Append to `FormalSystem/PlusLanguage/PlusTruth.lean`, immediately after `stab_state_only`
       and before `end FormalSystem.PlusLanguage`, the two theorems pinned below:
       `box_time_invariant` (`□ψ` has the same truth value at any two times along one history)
       and `box_global` (along any two histories at any two times). Proofs as compiled in
       `specs/747_closure_wide_quasimodel_lift_to_validity/evidence/01_box-time-invariant.lean`:
       `PlusTruth.box_iff` twice, then `plusTruthAt_timeShift` on `σ.timeShift (s - t)` and
       `add_sub_cancel`; `box_global` is `box_time_invariant` followed by `Iff.rfl`.
-- [ ] Docstrings in the house voice of `stab_state_only`'s: state that this holds on EVERY
+- [x] Docstrings in the house voice of `stab_state_only`'s: state that this holds on EVERY
       `TaskFrame` because the history set is shift-closed by construction (not only on regular
       ℤ-frames), and state the consequence for the ray-product device — `Anchored.box`'s `∀ z`
       (`RaySummary/Closure.lean`) is redundant, the `box`-letters of any closure-wide object are
       `|{box ψ ∈ cl φ}|` global bits, and the "for every time" quantification of requirement (W)
       does not exist in this semantics.
-- [ ] Confirm no existing declaration is named `box_time_invariant` or `box_global` anywhere
+- [x] Confirm no existing declaration is named `box_time_invariant` or `box_global` anywhere
       under `FormalSystem/` or `Tests/` (planning-time grep: none), so no downstream `open`
       becomes ambiguous.
-- [ ] Build the module and its test consumer:
+- [x] Build the module and its test consumer:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 900 -- build FormalSystem.PlusLanguage.PlusTruth`
       exits 0; `#print axioms` on both shows exactly `[propext, Classical.choice, Quot.sound]`.
 

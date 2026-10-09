@@ -337,4 +337,37 @@ theorem stab_state_only (M : TaskModel F) (τ σ : WorldHistory F) (t s : F.Dura
   rw [stab_congr_state M τ (σ.timeShift (s - t)) t hsame φ, plusTruthAt_timeShift,
     add_sub_cancel]
 
+/-- **`□φ` is a per-model datum.** `□φ` has the same truth value at any two times along one
+history. This holds on EVERY `TaskFrame`, not only on regular ℤ-frames: the history set of a
+task frame is shift-closed by construction (`WorldHistory.timeShift`), so the `∀ σ` of the `box`
+clause at time `t` ranges over exactly the shifts of the histories the clause at time `s` ranges
+over, and `plusTruthAt_timeShift` moves the evaluation point along. Consequence for the
+ray-product device (`Metalogic/Decidability/RaySummary/`): the `∀ z` in `Anchored.box`
+(`RaySummary/Closure.lean`) is redundant, the `box`-letters of any closure-wide object are
+`|{□ψ ∈ cl φ}|` global bits, and the "for every time, across the whole slice" quantification
+named by requirement (W) of the `RaySummary/` README does not exist in this semantics. -/
+theorem box_time_invariant (M : TaskModel F) (τ : WorldHistory F) (t s : F.Duration)
+    (ψ : PlusFormula) :
+    PlusTruthAt M τ t (.box ψ) ↔ PlusTruthAt M τ s (.box ψ) := by
+  rw [PlusTruth.box_iff, PlusTruth.box_iff]
+  constructor
+  · intro h σ
+    have h1 := h (σ.timeShift (s - t))
+    rw [plusTruthAt_timeShift] at h1
+    rwa [add_sub_cancel] at h1
+  · intro h σ
+    have h1 := h (σ.timeShift (t - s))
+    rw [plusTruthAt_timeShift] at h1
+    rwa [add_sub_cancel] at h1
+
+/-- **`□φ` depends on the model alone**: along any two histories at any two times. The history
+side is `box_iff` itself (the clause already quantifies over every history) and the time side is
+`box_time_invariant`; together they make `□φ` one bit per model, the `box` counterpart of
+`stab_state_only`'s "one bit per world state" for `⊡φ`. -/
+theorem box_global (M : TaskModel F) (τ σ : WorldHistory F) (t s : F.Duration)
+    (ψ : PlusFormula) :
+    PlusTruthAt M τ t (.box ψ) ↔ PlusTruthAt M σ s (.box ψ) := by
+  rw [box_time_invariant M τ t s]
+  exact Iff.rfl
+
 end FormalSystem.PlusLanguage
