@@ -113,7 +113,7 @@ next_project_number: 749
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 747
-- **Research**: [748_revise_and_create_tasks_lplus_decidability/reports/01_ranked-route-analysis-dispositions.md]
+- **Research**: [748_revise_and_create_tasks_lplus_decidability/reports/02_round-two-joint-verification.md]
 
 **Description**: GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING EXISTING TASKS AND CREATING NEW
 ONES. That is this task's deliverable and the thing it is judged on. A survey of the landed
