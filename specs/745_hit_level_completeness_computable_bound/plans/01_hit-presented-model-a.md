@@ -1,7 +1,7 @@
 # Implementation Plan: Hit-level completeness (C) — land `HitPresented` on fixture model A, record the bound as blocked
 
 - **Task**: 745 - Requirement (C) of the ray-product verdict: Hit-level completeness with a computable bound -- settle HitPresented first
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11 hours
 - **Dependencies**: None ((S) is an independent sibling record; (W) depends on both and is not attempted here)
 - **Research Inputs**: `specs/745_hit_level_completeness_computable_bound/reports/01_hit-level-completeness-probe.md`
