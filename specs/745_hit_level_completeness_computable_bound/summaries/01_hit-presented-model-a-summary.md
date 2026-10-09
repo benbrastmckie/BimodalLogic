@@ -3,15 +3,15 @@
 - **Task**: 745 - Requirement (C) of the ray-product verdict: Hit-level completeness with a computable bound -- settle HitPresented first
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T23:51:39Z
-- **Completed**: 2026-10-09T00:51:00Z
-- **Effort**: ~1.0 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3, phase 4 ~0.25)
+- **Completed**: 2026-10-09T01:12:00Z
+- **Effort**: ~1.3 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3, phase 4 ~0.25, phase 5 ~0.3)
 - **Dependencies**: None ((S) is an independent sibling record; (W) is downstream of both)
 - **Artifacts**: plans/01_hit-presented-model-a.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Four single-phase dispatches of the eight-phase plan, each confined to one phase per its
+Five single-phase dispatches of the eight-phase plan, each confined to one phase per its
 dispatch's phase mission. **Phase 1** (dispatch 5) states the Hit-level hypothesis `HitPresented` in the
 library beside `Presented` and records that it is strictly weaker, via
 `hitPresented_of_presented`; both land sorry-free in
@@ -25,9 +25,13 @@ of `Fp` on both splice families, culminating in the two function-level forms `cl
 `clTrace_jump_eq` that make trace equality a rewrite. **Phase 4** (dispatch 8) lands the
 truncation bound `hitCl_eq_truncated`: `HitCl` at the seam is exactly the family triples of
 `stayA`'s closure trace together with those of the finitely many `jump w` for `t ≤ w ≤ t + L`,
-for an `L` that is never exhibited. Phases 5-8 — the presentation data, the run
-characterization, the assembly, and the wiring/pins/docs/bound-verdict — are NOT attempted and
-remain `[NOT STARTED]`.
+for an `L` that is never exhibited. **Phase 5** (dispatch 9) lands the presentation data
+itself — the `L + 6`-state type `QA L`, the two-gadget step relation `stepOf` with its
+no-cross-step lemma, the explicit flag table `labOf`, and the labelling bridge that ties
+`labOf`'s flags to Phase 3's `clTrace` read-out at three levels, the outermost of which turns
+Phase 6's run-trace comparison into a rewrite. Phases 6-8 — the run characterization, the
+assembly, and the wiring/pins/docs/bound-verdict — are NOT attempted and remain
+`[NOT STARTED]`.
 
 Nothing is claimed about requirement (C) itself by any of the four phases. `HitPresented` is a
 *declaration*, not yet a *discharged* hypothesis: no model satisfies it in the tree, and the
@@ -36,6 +40,11 @@ fixture-level discharge is phases 3-7's work. Phase 2 lands no statement mention
 and phase 3 lands none either: `clTrace` is the closure-alphabet trace of a history, not `HitCl`.
 Phase 4 is the first to mention `HitCl`, and what it lands is still not (C): `hitCl_eq_truncated`
 re-indexes `HitCl` finitely, saying nothing about any presentation and nothing about `hitOf`.
+Phase 5 is the first to land a PRESENTATION, and it too is not (C): `labOf` and `stepOf` are
+data, `stepOf_no_cross` and the bridge lemmas are facts ABOUT that data, and not one of the
+twenty-three declarations mentions `hitOf`, `IsRun`, `HitCl` or `HitPresented`. The connection
+between the presentation's runs and the truncated trace set is Phase 6's, and the assembly into
+`HitPresented` is Phase 7's.
 
 ## What Changed
 
@@ -99,6 +108,47 @@ re-indexes `HitCl` finitely, saying nothing about any presentation and nothing a
     `∃ L : ℕ, HitCl MA stayA t Fp k = familyTriples … stayA ∪ ⋃ w ∈ Set.Icc t (t + L),
     familyTriples … (jump w)`. Added to the probe's `#print axioms` foot, reporting exactly
     `[propext, Classical.choice, Quot.sound]`.
+
+- `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` — +237 lines (phase 5,
+  dispatch 9; zero deletions), file now 807 lines. A new `## The presentation data` section with
+  twenty-three declarations and two compile-checked witnesses:
+  - `#guard (plusSubformulaClosure Fp).card = 4` — the closure-size figure the flag table's
+    branch count rests on, re-derived live before the table was written and now re-checked on
+    every compile (a failing `#guard` is a compile error, unlike the bare `#eval` left at the
+    foot).
+  - `QA (L : ℕ) := Fin 3 ⊕ Fin (L + 3)` at the pinned signature, an `abbrev` so `Fintype` and
+    `DecidableEq` resolve through the `Sum`/`Fin` instances with nothing hand-rolled.
+  - `card_QA (L) : Fintype.card (QA L) = L + 6`, plus `#guard Fintype.card (QA 2) = 8`.
+  - `stepOf (L) : QA L → QA L → Bool` at the pinned signature, a plain `def` with `decide (…)`
+    bodies over `Fin` index values. Gadget 1 (`Fin 3`): `0→0, 0→1, 1→2, 2→2`. Gadget 2
+    (`Fin (L + 3)`): `0→0`, `0→1`, `i→i+1` and `i→L+2` for `1 ≤ i ≤ L+1`, `L+2→L+2`.
+  - `stepOf_inl_inr`, `stepOf_inr_inl` — the two crossing edges are `false` by `rfl`, both
+    `@[simp]`.
+  - `stepOf_no_cross (L) (q r) (h : stepOf L q r = true)` — every edge has both endpoints in one
+    summand. The named declaration Phase 6's cross-gadget exclusion cites.
+  - `stepOf_inl_inl_iff`, `stepOf_inr_inr_iff` — the two index-level step tables, as `↔`s Phase 6
+    reads the edges off without unfolding `stepOf`.
+  - `isNowState`, `isJumpState`, `isPostState` — the three state-side flags, factored out of
+    `labOf` as named `def`s.
+  - `labOf (L) : QA L → (clSig Fp).preds → Bool` at the pinned signature, a plain `def`: an
+    explicit five-branch `if`-chain over the letters, NOT `decide` of `clTrace`.
+  - `top_ne_now`, `Fp_ne_now`, `p_ne_now`, `bot_ne_now`, `top_ne_Fp`, `p_ne_Fp`, `bot_ne_Fp`,
+    `bot_ne_top`, `bot_ne_p` — the nine symmetric forms of Phase 3's letter disequalities, in the
+    direction `labOf`'s `if`-chain resolves them. Each is a one-line `.symm`.
+  - `labOf_now`, `labOf_top`, `labOf_Fp`, `labOf_p`, `labOf_bot` — the five letter-branch
+    evaluation lemmas, all `@[simp]`, each with a state-side right-hand side.
+  - `labOf_inl (L) (i : Fin 3) (ℓ)` and `labOf_inr (L) (i : Fin (L + 3)) (ℓ)` — the per-gadget
+    assembled flag lemmas, as four-case splits over `letter_cases`. Set beside
+    `clTrace_stayA_apply` and `clTrace_jump_apply` they match disjunct for disjunct, with `z = t`
+    replaced by `i.val = 1` and `w < z` by `i.val = L + 2`.
+  - `labOf_inl_iff_clTrace_stayA (L) (t z) (i) (hnow : i.val = 1 ↔ z = t) (ℓ)` and
+    `labOf_inr_iff_clTrace_jump (L) (t w z) (i) (hnow) (hp : i.val = L + 2 ↔ w < z) (ℓ)` — the
+    position-indexed bridges: letterwise agreement with `clTrace`, given only the two
+    correspondences the gadget has.
+  - `runTrace_inl_eq`, `runTrace_inr_eq` — the `funext`-ed function-level forms, which are what
+    actually make Phase 6's trace equality a rewrite.
+  - Four new `#print axioms` foot lines (`labOf`, `stepOf`, and the two position-indexed
+    bridges), matching the foot convention the file already carried.
 
 ## Decisions
 
@@ -175,6 +225,40 @@ re-indexes `HitCl` finitely, saying nothing about any presentation and nothing a
   ⟨σ, h⟩)` compiles. Worth carrying into phase 6, which touches `IsRun` and may meet the same
   `toFibre.toTaskFrame` coercion wall.
 
+- **Phase 5: `labOf` as an `if`-chain over the letters, not a `match` on `PlusFormula` shape.**
+  A `match` on the letter's underlying formula (`.untl _ _`, `.impl .bot .bot` for `⊤`, `.atom _`)
+  would have bound the flag table to `PlusFormula.top`'s current definitional unfolding — exactly
+  the kind of anchor the task's anchor warning cautions against. The `if ℓ = clNow Fp / ℓ =
+  clLetter Fp cl_top / …` chain depends only on `clNow`, `clLetter` and the four closure-membership
+  proofs Phase 3 landed, so a change to how `⊤` is spelled cannot silently reshuffle the table.
+- **Phase 5: the three state-side flags are their own `def`s.** `isNowState`, `isJumpState` and
+  `isPostState` exist so that the five letter-branch lemmas can be `@[simp]` with a state-side
+  right-hand side. Without them each lemma's RHS would be an inline `match`, which `simp` cannot
+  usefully rewrite with, and Phase 6 would have to unfold `labOf` itself at every use.
+- **Phase 5: nine symmetric disequality aliases, and why they are not redundant.** `simp` given
+  `h : a ≠ b` rewrites `a = b` to `False`, but NOT `b = a`. Phase 3 proved the ten distinctness
+  facts in the `clNow Fp ≠ clLetter …` / `clLetter Fp cl_Fp ≠ clLetter Fp cl_p` direction, while
+  `labOf`'s `if`-chain presents every condition the other way round (`clLetter Fp cl_top =
+  clNow Fp`, etc.). Nine one-line `.symm` aliases were cheaper and more legible than rewriting
+  each proof to discharge the orientation inline — and they put Phase 3's ten previously-unused
+  distinctness lemmas to work, closing a follow-up this summary had opened against them.
+- **Phase 5: `stepOf` edges stated on `.val`, not on `Fin` literals.** `(1 : Fin (L + 3))`
+  carries a `1 % (L + 3)` reduction obligation that varies with `L`; the mid-chain conditions
+  (`1 ≤ i.val`, `i.val ≤ L + 1`, `j.val = i.val + 1`) are plain `ℕ` arithmetic that `decide` and
+  `omega` handle directly. The `decide (…)` bodies keep both `stepOf` and `labOf` computable
+  `def`s, never `noncomputable def` — required, since `HitPresented` is a proposition about
+  `hitOf lab step` and `hitOf` is a `Finset`.
+- **Phase 5: the ONE mid-chain covers all `L + 1` thresholds.** Gadget 2 has `L` mid states, not
+  `L + 1` gadgets. A run reaching `j_post` at `t + d` dwells `d` steps on the mid chain
+  (`0 ≤ d ≤ L`), so the single gadget realizes every `jump w` with `t ≤ w ≤ t + L`. This is why
+  `Fintype.card (QA L)` is `L + 6` rather than quadratic in `L`.
+- **Phase 5: the bridge landed at three levels, not one.** The plan's item asks for "a four-case
+  lemma"; the phase's stated GOAL asks that Phase 6's run-trace comparison be "a rewrite rather
+  than a re-derivation". Only the function-level forms (`runTrace_inl_eq`/`runTrace_inr_eq`)
+  deliver the goal, and they need the position-indexed bridges, which need the assembled flag
+  lemmas. Stopping at the four-case lemma would have satisfied the item's letter and missed the
+  phase's goal.
+
 ## Plan Deviations
 
 - **Task 1.3** (the `HitPresented` docstring) altered: the plan directs the docstring to say the
@@ -250,6 +334,31 @@ re-indexes `HitCl` finitely, saying nothing about any presentation and nothing a
   added lines, actual 98 insertions by `git diff --stat`. The predicted DRIVER was wrong, as in
   phase 3: no `Finset.sup` bookkeeping arose at all. The cost was the three extra helper
   declarations and the section's prose header instead.
+
+- **Phase 5: no step skipped, deferred or re-routed; four items altered additively.** All seven
+  checklist items were executed as written, in order, and the phase heading was marked
+  `[IN PROGRESS]` before the first file write. Four items carry inline `*(deviation: altered …)*`
+  annotations, each recording an ADDITIVE decomposition refinement — more named declarations than
+  the item enumerates, never an inlining and never a substitution. Specifically: `card_QA` plus a
+  `#guard` where the item left the card claim parenthetical; two `@[simp]` crossing-edge lemmas
+  and two index-level step tables alongside the asked-for `stepOf_no_cross`; three state-side
+  flag `def`s plus five `@[simp]` letter-branch lemmas behind `labOf`; and six bridge
+  declarations where the item names one four-case lemma. No pinned signature was touched:
+  `QA`, `labOf` and `stepOf` match the plan's `## Lean Challenge Statements` block verbatim under
+  mechanical whitespace-normalized comparison.
+- **Phase 5: the probe's `#print axioms` foot was extended beyond the item's wording** with
+  `labOf`, `stepOf`, `labOf_inl_iff_clTrace_stayA` and `labOf_inr_iff_clTrace_jump`. The plan
+  assigns the foot to Phase 7, for `hitPresented_modelA`; extending it here follows the
+  convention the file already carried for phases 2-4 and produced the observed (not predicted)
+  profiles recorded below. Flagged rather than left implicit.
+- **Phase 5 Scope Hypothesis MISSED**: predicted 100-150 added lines, actual 237 insertions by
+  `git diff --stat` (zero deletions). Three drivers, all inside the phase's own task list rather
+  than scope creep — a 32-line section docstring documenting the two-gadget design and the
+  mid-chain-covers-all-thresholds argument; the nine `simp`-orientation aliases; and the bridge
+  item landing as six declarations. The secondary claim of the hypothesis,
+  `Fintype.card (QA L) = L + 6`, was CONFIRMED and is now a named theorem plus a `#guard`. Phase
+  4 had been the first confirmed hypothesis in this task; this returns to the overshoot pattern
+  of phases 1-3.
 
 ## Verification
 
@@ -369,6 +478,53 @@ re-indexes `HitCl` finitely, saying nothing about any presentation and nothing a
 - Comparator gate: not run. `compare_flag` is absent from the delegation context, so the gate's
   precondition is unmet and no `comparator` block is recorded.
 
+### Phase 5 verification (dispatch 9)
+
+- Probe compile: `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`
+  through `lake-build-guard.sh`, un-piped, guard's own exit 0. Captured output is exactly the
+  `#eval` line (`4`) and the eleven `#print axioms` info lines — zero lines matching `error`,
+  `warning` or `sorry`. Both `#guard`s pass: a failing `#guard` is a compile error, so
+  `(plusSubformulaClosure Fp).card = 4` and `Fintype.card (QA 2) = 8` are checked, not asserted.
+- Ordered prerequisite honoured: `(plusSubformulaClosure Fp).card` was re-derived live as `4` via
+  `lean_run_code` against the built `.olean`s BEFORE the flag table was written, which is the
+  order the plan's item specifies. The same snippet confirmed `Fintype.card (Fin 3 ⊕ Fin (2+3))`
+  is `8` by `#eval` and by `decide`. Table completeness does not in fact rest on that figure:
+  `letter_cases` is the machine-checked five-case exhaustion of `(clSig Fp).preds` and the table
+  carries one branch per case.
+- Full project build re-run after the phase, detached through `lake-build-guard.sh`: guard exit 0
+  (Tier 1), `Build completed successfully (2836 jobs)` with zero `error:` AND zero `warning:`
+  lines over the captured stream (Tier 2). Phase 5 touched no file in the Lake build graph — the
+  probe is under `specs/`, which no Lake target root reaches — so this is non-regression evidence,
+  not new coverage.
+- Sorry count: 0, repo-wide, via `lean-sorry-census.sh --cross-check` over all eight resolved
+  source roots — `stripper_sorry_count: 0`, `compiler_sorry_count: 0`, `cross_check: MATCH`. The
+  probe's single `grep -n sorry` hit is prose (the header's "cited or `sorry`-ed here").
+- Vacuous count: 1 — unchanged, still the same pre-existing `int_domain_universal`. Zero in the
+  probe.
+- Axiom count: 14 — unchanged. No `axiom` added.
+- `labOf` and `stepOf` are plain `def`: a regex sweep for `noncomputable\s+def\s+(labOf|stepOf)`
+  over the probe returns nothing.
+- Axiom foot, observed not predicted: `Probe745.stepOf` reports `[propext]` — choice-free, as the
+  step relation is pure `Fin`/`ℕ` combinatorics touching no semantics. `Probe745.labOf`,
+  `Probe745.labOf_inl_iff_clTrace_stayA` and `Probe745.labOf_inr_iff_clTrace_jump` each report
+  `[propext, Classical.choice, Quot.sound]`, as do the seven earlier pins re-run in the same
+  compile.
+- Statement fidelity: the pinned `QA`, `labOf` and `stepOf` signatures were extracted from the
+  plan's `## Lean Challenge Statements` block and from the probe, whitespace-normalized, and
+  compared mechanically in python — all three present and identical. No added hypothesis, no
+  specialized quantifier, no weakened conclusion.
+- Plan-compliance spot-check: all twenty-three declarations the phase's checklist and annotations
+  name are present in the probe as named declarations, confirmed by regex sweep.
+- Prose audit of the added region: the only `decidab*` match across the diff's added lines is the
+  type-class name `DecidableEq`; zero matches for `decision procedure` or `PlusValidZTime`. No
+  decidability claim was introduced.
+- `lean-challenge-snapshot.sh --check 745 <root>`: UNAVAILABLE, not green — exit 71, `no manifest
+  found at specs/745_hit_level_completeness_computable_bound/challenge/manifest.json`. The
+  mechanical comparison above stands in its place, and the gap is recorded in the issue log.
+- Comparator gate: not run. `compare_flag` is absent from the delegation context, so the gate's
+  precondition is unmet and no `comparator` block is recorded. Were it ever set for this task, the
+  missing manifest would make it return the preflight verdict `challenge_missing`.
+
 ## Impacts
 
 - `path_classify` is the rigidity fact the whole positive construction rests on: it says the
@@ -410,14 +566,18 @@ re-indexes `HitCl` finitely, saying nothing about any presentation and nothing a
 
 ## Follow-ups
 
-- Phases 5-8 of `plans/01_hit-presented-model-a.md`, all `[NOT STARTED]`. Phase 5 (the
-  presentation data) is next and touches only the probe file: `QA L := Fin 3 ⊕ Fin (L + 3)` with
-  `Fintype`/`DecidableEq` from the `Sum`/`Fin` instances, `stepOf` with its no-cross-step lemma
-  (phase 6 cites it), and `labOf` as an explicit flag table rather than `decide` of `clTrace`.
-  Both must be `def`, never `noncomputable def`. The plan's "re-derive
-  `(plusSubformulaClosure Fp).card` before finalizing the table" item is ALREADY discharged — the
-  `#eval` printing `4` is live in the probe from phase 3 — so phase 5 should cite it rather than
-  re-run it.
+- Phases 6-8 of `plans/01_hit-presented-model-a.md`, all `[NOT STARTED]`. Phase 6 (the run
+  characterization) is next and touches only the probe file. Its `⊆` route is now fully stocked:
+  `labOf_now` turns `IsRun`'s marker condition into "the state index is `1` exactly at `z = t`";
+  `stepOf_no_cross` at any one `z` fixes the gadget for all of `ℤ`; `stepOf_inl_inl_iff` /
+  `stepOf_inr_inr_iff` give the index-level edges, and the gadget-2 chain forces `j_post` to be
+  reached at some `t + d` with `0 ≤ d ≤ L` (that `d` is the conclusion's `w`); then
+  `runTrace_inl_eq` / `runTrace_inr_eq` discharge the trace equality as a rewrite.
+- Two orientation traps for phase 6, both met in phase 5: `simp` will not use a `Ne` simp lemma
+  in the reverse direction, so any new `labOf` branch needs its reverse-direction disequality
+  supplied explicitly; and `letter_cases`'s disjunct order is `now, Fp, p, top, bot`, which is
+  NOT `labOf`'s source order (`now, top, Fp, p, bot`), so an `rcases letter_cases` does not line
+  up branch-for-branch with the table.
 - The `∃ L` shape is now load-bearing for phase 7: `hitPresented_modelA` must keep its own `∃ L`
   prefix, because `hitCl_eq_truncated` supplies no `L` to pass down. A phase 7 that appeared to
   exhibit an `L` would be landing a theorem this plan does not authorize.
@@ -428,12 +588,25 @@ re-indexes `HitCl` finitely, saying nothing about any presentation and nothing a
   declarations, axiom pins in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` in the
   same commit as the index rows, and the recorded bound verdict. Both docstrings already end with
   a `Paper: —` anchor line so the index rows are admissible when they land.
+- `stepOf_no_cross` is the single fact that makes Phase 6's run characterization tractable: it
+  lets one observation of a run's gadget at ONE time fix its gadget at EVERY time, so the two
+  branches of the conclusion (`stayA`'s trace, or one `jump w`) are genuinely exclusive rather
+  than requiring a global argument.
+- `runTrace_inl_eq` and `runTrace_inr_eq` are stated with the position correspondences as
+  hypotheses rather than against a concrete run, so Phase 6 can supply whichever run function it
+  constructs without the bridge having to anticipate its shape.
+- `card_QA` makes the state count a NAMED, machine-checked function of `L`. That is deliberately
+  not a bound and must not be read as one: `L` is `hitCl_eq_truncated`'s unexhibited witness, so
+  `L + 6` is a function of something no proof in this tree produces. Phase 7's docstring and
+  Phase 8's index row both owe that qualifier.
 - The `typst-sync-check.sh` Check 2 gate blocks a commit only when `FormalSystem/` line counts
   drift; phases 2 and 3 both confirmed it does not fire for the `specs/`-resident probe, so phases
   4-7 need not budget for it. Phase 8's `Tests/` axiom-pin edit may still trip it.
-- The ten distinctness lemmas phase 3 landed (`now_ne_*`, `Fp_ne_*`, `p_ne_*`, `top_ne_bot`) are
-  currently unused. If phases 5-6 turn out not to need them either, they should be removed rather
-  than left as dead weight in a wired evidence probe.
+- RESOLVED: the ten distinctness lemmas phase 3 landed (`now_ne_*`, `Fp_ne_*`, `p_ne_*`,
+  `top_ne_bot`) are no longer dead. Phase 5 uses all ten — four directly in `labOf_inl`/
+  `labOf_inr`'s `simp` sets, and all ten as the sources of the nine `.symm` aliases the flag
+  table's `if`-chain orientation requires. The removal this follow-up contemplated must NOT
+  happen.
 - No Challenge snapshot manifest exists for this record, so the advisory
   `lean-challenge-snapshot.sh --check` drift gate is unavailable for all 17 pinned identifiers.
   Each phase has been diffing its own landed signature against the plan's pin by hand instead.

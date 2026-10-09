@@ -3,56 +3,60 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 745,
-  "dispatch_seq": 8,
-  "phase_number": 4,
-  "phases_completed": 4,
+  "dispatch_seq": 9,
+  "phase_number": 5,
+  "phases_completed": 5,
   "phases_total": 8,
   "requires_user_review": false,
-  "handoff_path": "specs/745_hit_level_completeness_computable_bound/.orchestrator-handoff.json",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "summary": "Cumulative implementation summary, now covering phases 1-4; phase 4 landed hitCl_eq_truncated, the truncation bound, at its pinned exists-L signature with the two choice sites named."
+      "summary": "Cumulative summary for task 745; extended with phase 5, which lands the L+6-state presentation data (QA, stepOf, labOf), the no-cross-step lemma, and the three-level labelling bridge in the evidence probe."
     },
     {
       "type": "handoff",
-      "path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-4-handoff-20261009T005104Z.md",
-      "summary": "Phase 4 handoff: what landed, the four declarations, the two choice sites, the toFinset/Finset.sup route that proved unnecessary, the hk linter tension, and phase 5's first step."
+      "path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-5-handoff-20261009T010704Z.md",
+      "summary": "Phase 5 progressive handoff: the stocked route for phase 6's run characterization, the five key design decisions, the observed axiom profiles, and the two simp/letter_cases orientation traps."
     }
   ],
   "sorry_inventory": [],
+  "blockers": [],
   "verification": {
     "sorry_count": 0,
     "sorry_cross_check": "MATCH",
     "vacuous_count": 1,
-    "vacuous_note": "pre-existing int_domain_universal, unchanged from the phase-3 baseline; zero in the probe",
+    "vacuous_note": "pre-existing int_domain_universal, unchanged by this phase; zero in the probe",
     "axiom_count": 14,
-    "axiom_note": "unchanged; no axiom added",
+    "axiom_note": "unchanged from baseline; no axiom added",
     "build_passed": true,
-    "build_evidence": "guard exit 0 (Tier 1); 'Build completed successfully (2836 jobs)' with zero error: lines (Tier 2); Trace.olean newer than Trace.lean (Tier 3). Non-regression only -- phase 4 touched no file in the Lake build graph.",
-    "probe_compile": "lake env lean on specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean exit 0, zero errors, zero warnings",
-    "axiom_pins": "Probe745.hitCl_eq_truncated depends on axioms: [propext, Classical.choice, Quot.sound]; the six earlier pins re-run unchanged in the same compile",
-    "signature_fidelity": "hitCl_eq_truncated compared against the plan's Lean Challenge Statements pin by mechanical whitespace-normalized string comparison: exact match, including the exists-L prefix and the hk binder name",
-    "forbidden_evaluation": "no kTypeOf evaluation and no decide over KType in the added region; grep over lines 462+ returns only two prose occurrences naming them as what is not done",
-    "challenge_snapshot_check": "UNAVAILABLE -- no manifest at specs/745_hit_level_completeness_computable_bound/challenge/manifest.json; the mechanical comparison above stands in its place",
-    "verification_passed": true
+    "build_evidence": "lake-build-guard.sh, un-piped, guard exit 0; 'Build completed successfully (2836 jobs)'; zero error: and zero warning: lines over the captured stream. Non-regression only -- phase 5 touched no file in the Lake build graph.",
+    "probe_compile_passed": true,
+    "probe_compile_evidence": "lake env lean on specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean through the guard, un-piped, guard exit 0; captured output is exactly the #eval line (4) and eleven #print axioms info lines; zero error/warning/sorry lines; both #guards pass.",
+    "verification_passed": true,
+    "challenge_check": "unavailable (lean-challenge-snapshot.sh --check exits 71: no manifest at specs/745_hit_level_completeness_computable_bound/challenge/manifest.json). Substituted by mechanical whitespace-normalized python string comparison of the pinned QA, labOf and stepOf signatures against the plan's Lean Challenge Statements block -- all three present and identical.",
+    "plan_compliance": "all 23 phase-5 declarations present as named declarations; no pinned signature altered; four checklist items carry additive-refinement deviation annotations; no step skipped, deferred or re-routed",
+    "prose_audit": "added region: only decidab* match is the type-class name DecidableEq; zero matches for 'decision procedure' or 'PlusValidZTime'"
   },
   "completion_data": {
-    "completion_summary": "Phase 4 of 8 complete: the truncation bound. hitCl_eq_truncated lands at its pinned signature -- HitCl at the seam (t, a) of stayA equals the family triples of stayA's closure trace together with those of the finitely many jump w for t <= w <= t + L -- together with three supporting declarations (jump_seam, exists_splice_eq, hitCl_covered). The exists-L prefix is intact and load-bearing: L comes from choose! on a per-member witnessing ray pair followed by Set.Finite.bddAbove on the resulting offsets, so it is never exhibited and no computable bound follows. Zero sorries, zero warnings, axiom foot exactly [propext, Classical.choice, Quot.sound], full project build green as non-regression. Phases 5-8 remain [NOT STARTED] per the single-phase dispatch mission."
+    "completion_summary": "Phase 5 of 8 complete. Added 237 lines (zero deletions) to the evidence probe, now 807 lines: the L+6-state presentation data at its pinned signatures (QA, stepOf, labOf -- both plain def, never noncomputable), the no-cross-step lemma stepOf_no_cross that Phase 6's gadget exclusion cites, the explicit five-branch flag table with its @[simp] letter lemmas, and the labelling bridge at three levels culminating in the function-level runTrace_inl_eq/runTrace_inr_eq that make Phase 6's trace comparison a rewrite. Zero sorries, zero errors, zero warnings; full build green for non-regression; axiom and vacuous counts unchanged. Phases 6-8 remain [NOT STARTED] per the dispatch's single-phase mission."
   },
   "memory_candidates": [
     {
-      "topic": "Lean 4: 'show' can break a symm_apply_apply rewrite through an Equiv over a coerced frame",
-      "detail": "Writing out an Equiv.symm_apply_apply goal with 'show' forces elaboration at implicit transparency and can mismatch a hand-built subtype against the structure-projection form the Equiv actually expects (here {sigma // sigma.state t = s} against Presheaf.StabFibre FA.toTaskFrame.toFibre.toTaskFrame t s), after which the following rw finds no pattern. The term proof congrArg Subtype.val (e.symm_apply_apply x) sidesteps it entirely. Prefer the term form over show-then-rw whenever the subtype's carrier reaches the Equiv through a coercion chain."
+      "insight": "simp given a hypothesis or simp lemma `h : a != b` rewrites `a = b` to False but NOT `b = a`. When a Bool-valued flag table is written as an if-chain over closed constants, its conditions appear in the opposite orientation from the usual `x_ne_y` naming, and the reverse-direction aliases must be supplied explicitly. Nine one-line `.symm` aliases were cheaper than discharging the orientation inside each proof.",
+      "keywords": ["lean4", "simp", "Ne", "orientation", "if-chain", "flag-table"]
     },
     {
-      "topic": "Pinned-signature binders that the proof does not use collide with the zero-warnings bar",
-      "detail": "A Challenge-pinned signature can bind a hypothesis the proof genuinely does not need (here hk : 1 <= k, carried for downstream composition). Renaming it to _hk would silence unusedVariables but alters the signature a verbatim-pin check compares against. The resolution that satisfies both bars is a declaration-scoped 'set_option linter.unusedVariables false in' plus a docstring paragraph saying why the binder is carried -- never a rename, and never a silent suppression without the stated reason."
+      "insight": "A finite presentation covering L+1 distinct thresholds does not need L+1 gadgets: one chain of L mid states plus a pre/now/post triple covers every threshold by letting the run DWELL d steps on the chain. This keeps the state count linear (L+6) rather than quadratic in L.",
+      "keywords": ["lean4", "presentation", "finite-automaton", "state-count", "gadget"]
     },
     {
-      "topic": "Set.Finite.image + BddAbove's upperBounds witness beats Set.Finite.toFinset + Finset.sup for extracting an unexhibited bound",
-      "detail": "To get 'there exists an L bounding f over a finite set S', ((hS.image f).bddAbove) yields <L, hL : L in upperBounds (f '' S)> in one step, and hL applied to <x, hx, rfl> gives f x <= L. Routing through Set.Finite.toFinset and Finset.sup is strictly more bookkeeping for the same non-constructive conclusion. Two plan Scope Hypotheses in this task predicted Finset.sup as the dominant cost and were wrong about the driver both times."
+      "insight": "Writing a Bool flag table over a closure alphabet as `if letter = clNow phi then ... else if letter = clLetter phi h_top then ...` rather than as a `match` on the underlying formula's constructors keeps the table independent of how derived connectives (e.g. top := impl bot bot) happen to be defined. A constructor match silently reshuffles if the definitional unfolding changes.",
+      "keywords": ["lean4", "closure-alphabet", "flag-table", "brittleness", "definitional-unfolding"]
+    },
+    {
+      "insight": "An advisory signature-drift gate (lean-challenge-snapshot.sh --check) is unusable when no manifest was taken at plan time -- it exits 71 rather than reporting no drift. Mechanical whitespace-normalized string comparison of the landed signature against the plan's pinned block, scripted rather than done by eye, is the available substitute and should be run every phase.",
+      "keywords": ["challenge-snapshot", "signature-fidelity", "plan-compliance", "verification"]
     }
   ]
 }
