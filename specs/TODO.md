@@ -11,8 +11,8 @@ next_project_number: 748
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,725,729,730,731,733,741,743,744,746 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,734,747 | 298,464,502,616,733,746 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,725,729,730,731,733,741,743,744,747 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,734 | 298,464,502,616,733 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,720 | 231,465,497,734 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -79,8 +79,7 @@ next_project_number: 748
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
   └─ 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
     └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-746 [IMPLEMENTING] — Requirement (S) of the ray-product verdict: Hit-level...
-  └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide...
+747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide...
 
 ### Formula Refactor
 
@@ -145,7 +144,7 @@ ACCEPTANCE. Either the closure-wide object lands with the composition theorem li
 ---
 
 ### 746. Hit level soundness realize presentation b2b
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None

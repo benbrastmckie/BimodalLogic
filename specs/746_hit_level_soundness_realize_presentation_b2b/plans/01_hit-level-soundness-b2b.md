@@ -1,7 +1,7 @@
 # Implementation Plan: Task #746
 
 - **Task**: 746 - Requirement (S) of the ray-product verdict: Hit-level soundness — realize a presentation by a constructed regular ℤ-model (B2b)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14 hours (8 phases; lean4 `--hard`, one agent run per phase)
 - **Dependencies**: None. (C) (task 745) is independent and is NOT a dependency; (W) depends on this and on (C). 740 (complete) discharged the `[Finite sig.preds]` prerequisite.
 - **Research Inputs**: specs/746_hit_level_soundness_realize_presentation_b2b/reports/01_hit-level-soundness-b2b.md
