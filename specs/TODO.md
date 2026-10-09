@@ -1,5 +1,5 @@
 ---
-next_project_number: 750
+next_project_number: 751
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 750
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,734,741,743,744,748,749 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,734,741,743,744,748,749,750 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -80,6 +80,7 @@ next_project_number: 750
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 748 [IMPLEMENTING] — GOAL. MOVE THE L+ DECIDABILITY PROGRAMME FORWARD BY REVISING...
 749 [NOT STARTED] — (C)'s BOUND HALF ON MODEL A. 745 delivered (C)'s...
+750 [NOT STARTED] — (W)'s RUN LAYER — ITS OWN RECORD, AS RaySummary/README.md AND...
 
 ### Formula Refactor
 
@@ -108,6 +109,30 @@ next_project_number: 750
 744 [NOT STARTED] — Wrap the RaySummary and KTypeSummary inventory tables in...
 
 ## Tasks
+
+### 750. W run layer closure wide lift
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: **(W)'s RUN LAYER — ITS OWN RECORD, AS `RaySummary/README.md` AND 747's follow-up both instruct.** (W)'s anchor layer is landed and bounded in `AnchorLayer.lean`; the run layer — the `untl`/`snce` nesting and the lift from one seam to `¬ PlusValidZTime φ` — is BLOCKED on three named obligations, each with its source and none with a measured cost (`README.md:378-383`). Obligation (iii) is the presentation-size bound and is a SEPARATE record's phase 1, not this one's.
+
+**PHASE 1 (the design question only; DISPATCH STOPS HERE).** Thread-indexed unfolding versus a bounded-deadline encoding, for a frame-scheme constructor producing infinite-width, finitely branching regular frames. Inputs: the refuted repair shapes `Rbad` (`b2b-frame-constructor-branching.lean:178`) and `Rok`, whose positive halves `fib_finite_of_finBranch` (`:147`) and `saturation_of_finBranch` (`:169`) need TWO-SIDED finite branching; and the `Node` thread-unfolding shape (`PlusSlicedCertificate/Limits/NoFiniteWidth.lean:132`), which is neither refuted nor built. Phase 1's outcome is what makes phases 2-3 costable; this record says so rather than pricing them. **Phase 1 also outputs the depth `k` the run layer needs**, since the bound record lands its result for every `k` and chooses none. **INFINITE WIDTH IS FORCED**, by `not_finite_width_fmp` (`Limits/NoFiniteWidth.lean:1280`) and concretely by `Probe747.modelOf_incomplete` (`w-soundness-shape-refuted.lean:131`); any phase reintroducing a finite-width or finite-fibre assumption reproduces a refuted shape. The ~120-160 line figure is CARRIED, UNVERIFIED from (S) and covers the regularity part only (`README.md:368-370`); the unfolding design is unmeasured and this record states that it has no cost figure.
+
+**PHASE 2 — OBLIGATION (ii), SOUNDNESS HALF (object → model).** A Hit-level realization theorem for phase 1's constructor: the analogue of `presented_modelOf` (`Realize.lean`, the (S) realization theorem that discharged `Presented` for `modelOf`) at `HitPresented` level, PER CELL. The `stab` case of the constructor's truth lemma needs the built model to be `HitPresented` at every cell by the object's per-cell presentation. It must be Hit-level or product-level per cell — `HitPresented`, family-triple SETS — and NEVER trace-level `Presented`, because `stab_iff_of_presented_nowUnique` (`w-soundness-shape-refuted.lean:188`) shows trace level collapses `ψ ↔ ⊡ψ` at any `Presented`+`nowUnique` seam; see `w-soundness-shape-refuted.lean:44-49` for the consequence as the probe states it.
+
+**PHASE 3 — OBLIGATION (ii), COMPLETENESS HALF (model → object) = (C)'s GENERAL ROW.** Every refuting model must yield an object whose per-cell presentations present its cells. Stated verbatim from `RaySummary/README.md:154`: "For every regular `ℤ`-model `M`, seam `(τ, t)`, formula `φ` and depth `1 ≤ k`, a finite labelled presentation `(Q, lab, step)` with `Fintype.card Q` below a computable bound in `φ`, such that `HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)`". This is OPEN MATHEMATICS with ONE positive fixture and no general argument: `Probe735.not_presented` refutes the TRACE-level version (which is why the Hit level is the only one left), `Probe745.hitPresented_modelA` is the only Hit-level positive, and a grep for `¬ HitPresented` / `not_hitPresented` over `specs/evidence/seam-gluing-ray-product/*.lean` and `RaySummary/` returns ZERO — there is no Hit-level negative anywhere. No cost figure, and this record states that none exists.
+
+**SEMI-DECIDABILITY CAVEAT, carried verbatim from `README.md:380-385` and binding on this record's acceptance**: "Without (iii), a landed composition theorem would read `¬ PlusValidZTime φ ↔ ∃ object, …` over an UNBOUNDED run layer — at best semi-decidable — and NOT `Decidable (PlusValidZTime φ)`." `Decidable (PlusValidZTime φ)` must appear in no statement of this record.
+
+**DOCUMENTATION DELIVERABLE (one paragraph, no new task).** Record in `FormalSystem/Metalogic/Decidability/RaySummary/README.md`'s (W) section that the obstruction (W) names has a literature description: the quasimodel-realisation step of Hodkinson-Wolter-Zakharyaschev 2000 Def. 12 and Gabbay-Kurucz-Wolter-Zakharyaschev 2003 Thm 13.6 presupposes a freely chosen state function and run set — HWZ Remark 13 (PDF p.11) makes run choice free in both — whereas TM's quasistate at every time is the type set realised by the history set (the SAME set at every time, by shift closure) and its runs are the task-respecting paths of ONE time-invariant relation whose states carry both the atoms and every `stab` formula (`stab_state_only`, `PlusTruth.lean:332`). That is the condition under which published quasimodel realisation stops applying, and it is exactly what (W)'s soundness half is about. DELIVERABLE-HYGIENE: this file is NOT `specs/**`, so the paragraph must carry no task-number references and no record-versioning language; cite durable anchors (file names, theorem names, author-year citations, section headings) only.
+
+**NO DEPENDENCY EDGE to the bound record.** An edge would assert the run layer cannot proceed without the bound; `README.md:380-385` says it can, yielding a weaker (semi-decidable) statement. Serialization comes from the `file_scope` overlap both records declare on `RaySummary/README.md` and `docs/theorem-index.md`; ordering comes from the roadmap's Run block. The gate serializes, the roadmap orders, and no record claims a blocking relation that does not exist.
+
+**BINDING CONSTRAINTS.** No complexity bound, upper or lower, anywhere; the ARGUED CTL⋆ 2EXPTIME ceiling is never an upper-bound source. Never write that L⁺ is decidable or undecidable unqualified — carry frame class, fragment, premise set and hypothesis, `[F.IsRegular]` at minimum. File no fourth certificate class: no class presenting finite per-time fibres is complete whatever its clauses, and both halves of that obstruction are landed under `PlusSlicedCertificate/Limits/`. Sorry-free completion required; `[BLOCKED]` with the obstruction named is the honest outcome for a route that does not close.
+
+---
 
 ### 749. C bound half model a presentation size
 - **Status**: [NOT STARTED]

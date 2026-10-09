@@ -257,16 +257,16 @@ the record.
 
 ---
 
-### Phase 2: Create the (W) run-layer task [NOT STARTED]
+### Phase 2: Create the (W) run-layer task [COMPLETED]
 
 **Goal**: File the (W) run layer (02 R2) with the frame-scheme design question as phase 1 and
 obligation (ii)'s two halves as phases 2 and 3, the completeness half being (C)'s general
 every-model statement (02 §2.4, D12-D13).
 
 **Tasks**:
-- [ ] Read `next_project_number`; call it `$W`.
-- [ ] Create the record (same filter shape as Phase 1): `project_name` `w_run_layer_closure_wide_lift`, `task_type` `lean4`, `topic` `decidability`, `status` `not_started`, `dependencies` left empty.
-- [ ] Use this description text verbatim:
+- [x] Read `next_project_number`; call it `$W`. *(assigned 750)*
+- [x] Create the record (same filter shape as Phase 1): `project_name` `w_run_layer_closure_wide_lift`, `task_type` `lean4`, `topic` `decidability`, `status` `not_started`, `dependencies` left empty.
+- [x] Use this description text verbatim:
 
   > **(W)'s RUN LAYER — ITS OWN RECORD, AS `RaySummary/README.md` AND 747's follow-up both
   > instruct.** (W)'s anchor layer is landed and bounded in `AnchorLayer.lean`; the run layer —
@@ -349,8 +349,8 @@ every-model statement (02 §2.4, D12-D13).
   > landed under `PlusSlicedCertificate/Limits/`. Sorry-free completion required; `[BLOCKED]` with
   > the obstruction named is the honest outcome for a route that does not close.
 
-- [ ] Second `state-write.sh` call setting `.file_scope` on `$W`: a `FormalSystem/Metalogic/Decidability/RaySummary/`-resident new module path, `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `docs/theorem-index.md`, `specs/evidence/seam-gluing-ray-product/`, `scripts/check-evidence-probes.sh`. Fold `--regen-todo` in.
-- [ ] `bash .claude/scripts/manage-topics.sh set $W decidability`.
+- [x] Second `state-write.sh` call setting `.file_scope` on `$W`: a `FormalSystem/Metalogic/Decidability/RaySummary/`-resident new module path, `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `docs/theorem-index.md`, `specs/evidence/seam-gluing-ray-product/`, `scripts/check-evidence-probes.sh`. Fold `--regen-todo` in. *(deviation: altered — the plan left the new module path unnamed; declared it as `FormalSystem/Metalogic/Decidability/RaySummary/RunLayer.lean`, verified absent from the directory listing)*
+- [x] `bash .claude/scripts/manage-topics.sh set $W decidability`.
 
 **Timing**: 1 hour
 
