@@ -76,10 +76,10 @@ next_project_number: 748
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
-733 [NOT STARTED] — Probe the backward-dual stability summary on a...
+733 [RESEARCHED] — Probe the backward-dual stability summary on a...
   └─ 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
     └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide...
+747 [RESEARCHING] — Requirement (W) of the ray-product verdict: a closure-wide...
 
 ### Formula Refactor
 
@@ -110,7 +110,7 @@ next_project_number: 748
 ## Tasks
 
 ### 747. Closure wide quasimodel lift to validity
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 745, Task 746
@@ -598,10 +598,11 @@ ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compi
 ---
 
 ### 733. Backward dual mirror fixture branching probe
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 739
+- **Research**: [733_backward_dual_mirror_fixture_branching_probe/reports/01_backward-dual-mirror-fixture.md]
 
 **Description**: Probe the backward-dual stability summary on a backward-NONDETERMINISTIC mirror fixture (E1's hard test)
 
