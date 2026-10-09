@@ -1,0 +1,60 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-09T23:09:33Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/749_c_bound_half_model_a_presentation_size/reports/01_c-bound-half-model-a.md",
+      "summary": "Phase 1 re-compiled and relocated to RaySummary/Compose.lean (import cycle forbids Saturation.lean) with the DecidableEq binder consumed; phase 2 decomposed into a compiled general keystone, a general shrink surgery, and a model-A containment lemma that removes the case split at k>=1; phase 3's L exhibited as Nat.card (KType (clSig Fp) k); stale-prose and gate checklist."
+    }
+  ],
+  "next_steps": "Plan phases 1-3 per the report's Recommendations; extend file_scope with Trace.lean, scripts/check-evidence-probes.sh, w-soundness-shape-refuted.lean (and Transport.lean + RaySummary.lean if phase 2's general lemmas get their own file); drop KTypeSummary/Saturation.lean.",
+  "proposed_file_scope": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Transport.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean",
+    "specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean",
+    "docs/theorem-index.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "scripts/check-module-invariants.sh",
+    "scripts/check-evidence-probes.sh"
+  ],
+  "modified_files": [
+    "specs/749_c_bound_half_model_a_presentation_size/reports/01_c-bound-half-model-a.md",
+    "specs/749_c_bound_half_model_a_presentation_size/issues.jsonl"
+  ],
+  "memory_candidates": [
+    {
+      "content": "RaySummary sits above the KTypeSummary root in the import graph (Compose -> SeamMulti -> Seam -> WeakCanonical.KTypeSummary, which imports Saturation.lean); any statement mentioning listSeg must land in Decidability/RaySummary, never in KTypeSummary/*.lean.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/749_c_bound_half_model_a_presentation_size/reports/01_c-bound-half-model-a.md",
+      "confidence": 0.95,
+      "suggested_keywords": ["import-cycle", "listSeg", "KTypeSummary", "RaySummary", "Compose.lean"]
+    },
+    {
+      "content": "To keep a recorded [Fintype sig.preds] [DecidableEq sig.preds] signature without an unusedArguments lint finding, let instance search find Fintype (KType sig k) (normalFormFintype consumes both binders) and use Fintype.card + Nat.card_eq_fintype_card instead of Fintype.ofFinite/classical; lake lint is a CI gate and nolints.json additions are forbidden by LEAN_STYLE_GUIDE.md.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/749_c_bound_half_model_a_presentation_size/reports/01_c-bound-half-model-a.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["unusedArguments", "DecidableEq", "KType", "Fintype.card", "lake lint"]
+    },
+    {
+      "content": "At depth k >= 1, kTypeOf equality against a nonempty constant block listSeg (List.replicate j l) forces a segZ segment to be nonempty and constantly l: k_equiv_monotone to depth 1, then k_equiv_preserves_sentence with .ex (.not (.lt 0 0)) and per-predicate .all (.atom P 0)/.all (.not (.atom P 0)); closes in ~60 lines with axioms [propext, Classical.choice, Quot.sound].",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/749_c_bound_half_model_a_presentation_size/reports/01_c-bound-half-model-a.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["k-type", "k_equiv_preserves_sentence", "constant block", "segZ", "depth-1 sentence"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791587187_4e35b2_749",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 1000,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
