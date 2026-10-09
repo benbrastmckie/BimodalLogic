@@ -312,6 +312,50 @@ theorem hit_eq_hitOf_of_presented [Fintype Q] [DecidableEq Q] (M : TaskModel F.t
     obtain ⟨bf, hc⟩ := (hP _).mpr ⟨ρ, hρ, rfl⟩
     exact ⟨bf, hc ▸ hx⟩
 
+/-- **(C) at the HIT level**: the family triples realized by the seam's closure traces are
+exactly those of the finite presentation's runs, at depth `k`. This is the Hit-level hypothesis
+named in the header of the wired probe
+`specs/evidence/seam-gluing-ray-product/presented-not-complete.lean` (`Probe735.not_presented`),
+stated here as a declaration.
+
+It is **strictly weaker** than `Presented` (`hitPresented_of_presented`), and the weakening is
+not cosmetic: `Presented` demands equality of TRACE sets, `HitPresented` only equality of
+FAMILY-TRIPLE sets. Three consequences follow. First, `presented_localRun` is unavailable under
+it — a run of the presentation need not be a closure trace, so nothing transfers the run
+conditions to it. Second, the realization demand is finite: the two sides are subsets of a finite
+type (`kType_finite`), so a presentation must realize finitely many triples exactly, not the
+seam's whole trace set. Third, this is precisely why `Probe735.not_presented` does not refute it:
+that probe refutes the trace-set equality by pumping a trace whose forward type differs from
+every seam trace's, and a type-level demand has nothing for that argument to bite on. Both can
+hold of the same fixture at once.
+
+In this tree it is discharged for fixture model A only, forward-only, and
+**non-constructively** — by the wired probe
+`specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`, landed by this record's
+later phases, whose presentation size comes from `Set.Finite.bddAbove` over `HitCl` and is
+therefore `∃ L` with no bound on `L`. **No computable bound is delivered**, here or there, and
+nothing about general regular `ℤ`-models is claimed.
+
+Paper: — (the formalization's own realizability device; the paper has no counterpart) -/
+def HitPresented [Fintype Q] [DecidableEq Q] (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula)
+    (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool) (k : ℕ) : Prop :=
+  HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)
+
+/-- **The weakening is real**: `Presented` implies `HitPresented` at every depth `k ≥ 1`. The
+proof is `hit_eq_hitOf_of_presented` verbatim — `HitPresented` unfolds to exactly that theorem's
+conclusion — which is the sense in which the Hit-level hypothesis is the trace-level one with the
+trace bookkeeping forgotten. The converse is NOT proved and is not expected: a presentation may
+realize the right triples while realizing the wrong traces, which is the whole reason the Hit
+level survives where `Presented` does not.
+
+Paper: — (the formalization's own realizability device; the paper has no counterpart) -/
+theorem hitPresented_of_presented [Fintype Q] [DecidableEq Q] (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula)
+    (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool) (k : ℕ) (hk : 1 ≤ k)
+    (hP : Presented M τ t φ lab step) : HitPresented M τ t φ lab step k :=
+  hit_eq_hitOf_of_presented M τ t φ lab step k hk hP
+
 /-- **The `⊡` bridge over the computable `hitOf`, under `Presented`**: the one-line corollary of
 `plusStab_iff_forall_hitCl` and `hit_eq_hitOf_of_presented`.
 

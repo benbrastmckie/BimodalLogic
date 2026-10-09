@@ -1,7 +1,7 @@
 # Implementation Plan: Hit-level completeness (C) — land `HitPresented` on fixture model A, record the bound as blocked
 
 - **Task**: 745 - Requirement (C) of the ray-product verdict: Hit-level completeness with a computable bound -- settle HitPresented first
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours
 - **Dependencies**: None ((S) is an independent sibling record; (W) depends on both and is not attempted here)
 - **Research Inputs**: `specs/745_hit_level_completeness_computable_bound/reports/01_hit-level-completeness-probe.md`
@@ -180,35 +180,38 @@ Phases within the same wave can execute in parallel. Phases 1 and 2 touch disjoi
 (`Trace.lean` vs. the new probe) and are genuinely parallel; phases 3-7 are serialized because
 they all write the same probe file.
 
-### Phase 1: `HitPresented` and `hitPresented_of_presented` in the library [NOT STARTED]
+### Phase 1: `HitPresented` and `hitPresented_of_presented` in the library [COMPLETED]
 
 **Goal**: State the Hit-level hypothesis in `Trace.lean` beside `Presented`, and record that it
 is strictly weaker, so the probe has a library name to discharge rather than a local one.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean` immediately before
+- [x] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean` immediately before
       editing (concurrent writers), and locate the `section Presented` block BY NAME.
-- [ ] Add `HitPresented` after `hit_eq_hitOf_of_presented`, with the signature pinned under
+- [x] Add `HitPresented` after `hit_eq_hitOf_of_presented`, with the signature pinned under
       `## Lean Challenge Statements` below and the body
       `HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)`.
-- [ ] Docstring for `HitPresented`: it is the HIT-level hypothesis named in
+- [x] Docstring for `HitPresented`: it is the HIT-level hypothesis named in
       `Probe735.not_presented`'s header and is strictly weaker than `Presented` — it demands
       equality of family-triple sets, not of trace sets, so `presented_localRun` is unavailable
       under it and the realization demand is finite by `kType_finite`. State that it is
       discharged in this tree for fixture model A only, non-constructively, by the wired probe
       `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`, and that no bound is
       delivered. End the docstring with a `Paper: —` anchor line (C15's second assertion requires
-      every theorem-index row to be anchored at its declaration).
-- [ ] Add `hitPresented_of_presented` as the three-line term proof
+      every theorem-index row to be anchored at its declaration). *(deviation: altered — the
+      probe reference is written as a forward reference, "landed by this record's later phases",
+      because phase 2 creates the probe and phase 8 wires it; every other element of this item
+      is verbatim.)*
+- [x] Add `hitPresented_of_presented` as the three-line term proof
       `hit_eq_hitOf_of_presented M τ t φ lab step k hk hP`, with its own docstring and
       `Paper: —` line.
-- [ ] Scoped guarded detached build:
+- [x] Scoped guarded detached build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.Trace`,
       then the two direct dependents
       `FormalSystem.Metalogic.Decidability.RaySummary` and
       `BimodalTest.Metalogic.KTypeSummaryAxiomTest`.
-- [ ] `grep -c sorry` = 0 on `Trace.lean`; no `def X := True`-shaped placeholder.
-- [ ] Commit (one green sub-step).
+- [x] `grep -c sorry` = 0 on `Trace.lean`; no `def X := True`-shaped placeholder.
+- [x] Commit (one green sub-step).
 
 **Timing**: 0.5 hours
 

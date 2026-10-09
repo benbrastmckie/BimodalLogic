@@ -1,47 +1,14 @@
 {
-  "status": "planned",
+  "status": "in_progress",
   "task_number": 745,
-  "dispatch_seq": 3,
-  "session_id": "sess_1791500801_df94d6_745",
-  "phase": "plan",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/745_hit_level_completeness_computable_bound/plans/01_hit-presented-model-a.md",
-      "summary": "Eight-phase plan landing HitPresented on fixture model A as a wired sorry-free probe (library statement, fixture classification, splice identification, truncation bound, L+6-state presentation, run characterization, assembly, wiring/pins/docs), with the computable bound recorded as blocked via the axiom foot plus a stated-not-proved effective-saturation obligation."
-    }
-  ],
+  "dispatch_seq": 5,
+  "session_id": "sess_1791500801_df94d6",
+  "phase": "implement",
   "metadata": {
-    "session_id": "sess_1791500801_df94d6_745",
-    "agent_type": "planner-agent",
+    "agent_type": "lean-implementation-hard-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 11,
-    "dependency_waves": [[1, 2], [3], [4], [5], [6], [7], [8]],
-    "complexity": "complex",
-    "research_integrated": true,
-    "plan_version": 1,
-    "challenge_statements_compiled_at_plan_time": true,
-    "challenge_identifier_count": 17,
-    "file_scope": [
-      "FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean",
-      "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-      "specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean",
-      "scripts/check-evidence-probes.sh",
-      "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-      "docs/theorem-index.md"
-    ]
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+    "phase_number": 1
   },
-  "memory_candidates": [
-    {
-      "content": "When a formal-proof plan has exactly one link the research could not compile, split that link into a data phase (definitions, tables, step relations) and a proof phase (the characterization over those definitions) rather than one phase. The data phase lands green and committed, so a block on the proof phase leaves the construction's vocabulary in the tree instead of nothing, and the blocked escalation has a concrete goal state to report from. This also makes the plan's own rollback story honest: the phases before the risky one are independently true and useful, which is what lets a [BLOCKED] verdict be a partial success rather than a wasted dispatch.",
-      "category": "PATTERN",
-      "source_artifact": "specs/745_hit_level_completeness_computable_bound/plans/01_hit-presented-model-a.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["phase-decomposition", "lean4", "uncompiled-link", "blocked-escalation", "risk-splitting", "plan-authoring"]
-    }
-  ],
-  "issues_recorded": 1,
-  "next_steps": "Run /implement 745 to execute the plan"
+  "artifacts": []
 }
