@@ -1,6 +1,9 @@
 # Roadmap
 
-*Open work only, derived from `specs/state.json` (2026-10-08). Finished work lives in
+*Open work only. This file is AUTHORED and hand-maintained (last edited 2026-10-09), not
+generated: `roadmap-integration.sh --regenerate` exits 1 against this Stage-based layout with no
+stdout and no stderr and writes nothing, so there is no generated section here to protect.
+Finished work lives in
 `specs/CHANGE_LOG.md` and `specs/archive/`. Per-task detail lives in the task records; the
 mathematics — the BX axiom layers, the irreflexive truth semantics, the canonical-model and
 quasimodel constructions — lives in `README.md`, the module docstrings and
@@ -19,12 +22,13 @@ Phases 6 and 7.
 ```bash
 # Stage 1 — decidability of L⁺; run to exhaustion before anything below
 # 739,740 done 2026-10-08 -- 739 refuted the one-bit reading; see Stage 1
-/orchestrate 745,746 --hard --lit        # batched: shared axiom-pin test
-/orchestrate 733,734 --lit
-/orchestrate 747 --hard --lit
+# 745,746 done; 733 done (POSITIVE: the two-factor presentation was NOT falsified); 747 done
+# 734 is [PARTIAL] by a recorded user decision; it is NOT a fallback route -- see Stage 1
+/orchestrate 749 --hard --lit           # (C)'s bound half on model A; the cost is phase 2
+/orchestrate 720                        # CI repair: untracked WIRED_REPO + the tracked-ness check
+/orchestrate 750 --hard --lit           # (W)'s run layer; dispatch phase 1 and STOP
 /orchestrate 716,714 --hard
 /orchestrate 712 --hard                 # only after Stage 0 corrects its marker
-/orchestrate 725,720
 # Stage 2 — supporting semantics and metalogic
 /orchestrate 616,618
 /orchestrate 617,566
@@ -32,6 +36,7 @@ Phases 6 and 7.
 # Stage 3 — datasets, examples, documentation
 /orchestrate 298,282,296,231,219
 /orchestrate 178,604
+/orchestrate 751,752                    # repo hygiene: file_scope backfill; roadmap-tool abort
 /orchestrate 743,744
 /orchestrate 257                        # only once the Stage 0 token exists
 # Stage 4 — the long fronts
@@ -125,14 +130,29 @@ surviving alphabet rather than killing the route. The other is (C)'s `HitPresent
   dependency-inclusive batch is what serializes them; their implement dispatches serialize
   automatically in any case, one build-heavy dispatch per cycle.
 
-  **(C)** — **Probe before bound**: phase 1 settles whether `HitPresented` holds on the existing
-  model-A fixture, before any work on the computable bound the verdict costs at "not in sight".
-  **739 now constrains that bound**: the per-time alphabet is closure-indexed, so `Fintype.card Q`
-  must carry one label per `⊡`-subformula of the atomized target — exponential in |φ|, not linear
-  in depth. Re-cost the bound half against that before planning it; the phase-1 probe itself is
-  unaffected. `Probe735.not_presented` refutes the *trace-level* hypothesis, but the Hit-level one
-  is **OPEN, not refuted** — the pumped limit's forward type differs from every seam trace's type,
-  so the refutation does not transfer. A refutation here is a complete outcome and moots (W).
+  **(C)** — **DONE, WITH ONE HALF DELIVERED.** The "probe before bound" instruction is SPENT: the
+  probe ran and came back positive, `Probe745.hitPresented_modelA` holding on the model-A fixture
+  at every depth `1 ≤ k`. `Probe735.not_presented` refutes only the *trace-level* hypothesis; the
+  Hit-level one is **OPEN, not refuted** — the pumped limit's forward type differs from every seam
+  trace's type, so the refutation does not transfer. **The bound half was descoped at closure and
+  is now its own record**: `RaySummary/README.md:154` states that what landed is "one fixture, so
+  no computable bound and no general regular `ℤ`-model statement follows". That record's phase 1
+  is **closed in principle** — the route is **pigeonhole plus `kTypeOf_listSeg_append_congr`**
+  (`Compose.lean:276`), NOT finite-semigroup idempotence, and a feasibility elaboration compiles
+  against the current oleans with axioms `[propext, Classical.choice, Quot.sound]` and no
+  `sorryAx`. **The cost sits in the factorization-transport lemma**: that `InFamily` is invariant
+  under lengthening a maximal constant run past phase 1's threshold. Nothing in the tree states
+  it, no attempt is recorded anywhere, and it carries NO figure — `hitCl_eq_truncated`'s `L`
+  bounds jump offsets over `familyTriples` (`Family.lean:201-203`), each an existential over a
+  `SegmentFactorization` (`Family.lean:70-95`), whereas phase 1 is about the `k`-type of one
+  finite replicated block. **The 739 re-costing instruction is DISCHARGED**, and the finding is
+  that the tree already satisfies the surviving constraint: `clSig φ := subformulas φ ⊕ Unit`
+  (`Closure.lean:80-81`) and `subformulas` carries both the `untl` and `snce` arguments
+  (`Subformulas.lean:66-73`), so the alphabet is closure-indexed with backward labels by
+  construction. Every quantity named here is a COUNT, in the words of
+  `AnchorLayer.lean:317-320`: "It is not a complexity bound of any kind: it counts cells, it does
+  not time anything, and it must not be described as a bound on any procedure's running time."
+  A refutation on the Hit-level side would have been a complete outcome and would have mooted (W).
 
 - **(S)** — **LANDED for `box`/`stab`-free `φ` at one seam.** The construction is in
   `FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean`: the decidable per-edge
@@ -183,10 +203,26 @@ surviving alphabet rather than killing the route. The other is (C)'s `HitPresent
   the finite-width obstruction cannot appear — so a failure here falsifies the two-factor
   presentation. **734** is route R2 (mosaics), which cannot be promoted on textual grounds until
   both its E4 experiment and the missing Hodkinson–Reynolds Handbook §§5.10–5.11 bodies land.
-  **Promote this line if 745 refutes, or if 733 falsifies the two-factor presentation**: R2 is the
-  route to switch to. **739's refutation does NOT trigger this** — it killed the one-bit reading
-  of the stratification, not the gluing route, and the closure-indexed alphabet that survives it
-  keeps R1 alive. Do not read "739 refuted" as a route-switch signal.
+  **THE PROMOTION CONTINGENCY THIS LINE USED TO CARRY IS VOID, AND NOTHING REPLACES IT.** Neither
+  trigger fired, and the literal falsifier turns out to be unsatisfiable. **733 came back
+  POSITIVE**: on a backward-NONDETERMINISTIC mirror fixture — backward branching factor exactly 2
+  at every spine state, `Probe733Mirror.two_bwd_paths` axiom-free, with
+  `pastStab_iff_allBwdPathsMeet` and `decide_past_stab` holding state-dependently — the two-factor
+  presentation was NOT falsified. That fixture probes the one region where the finite-width
+  obstruction can appear, so it was R1's sharpest available falsifier and R1 survived it. And
+  **the literal R2 falsifier is UNSATISFIABLE**: `Probe718Mosaic.StabSaturated M S` is a tautology,
+  holding for every finite mosaic set by a one-line term, because its body already carries the
+  same-state equality that `⊡`'s clause quantifies over (`PlusTruth.stab_iff` is an `Iff.rfl`);
+  `stabSaturated_of_sameState`'s `[F.IsRegular]` binder is flagged unused. **R2 is a CONSUMER of
+  R1, not an alternative to it**: the real mosaic content is the witness direction, and deciding
+  it on semantic mosaics presupposes deciding `⊡`, which IS R1's reachability summary —
+  Caleiro–Viganò–Volpe §4.3 states that the mosaic decidability argument "does not extend" once
+  the vertical and horizontal components interact. **STAGE 1 PROCEEDS ON R1 ALONE. THERE IS NO
+  FALLBACK ROUTE.** What replaces a contingency that could not fire is the named-risk table
+  below — modes that can fire, each with its realized status. **739's refutation is not a
+  route-switch signal either** — it killed the one-bit reading of the stratification, not the
+  gluing route, and the closure-indexed alphabet that survives it keeps R1 alive. Do not read
+  "739 refuted" as a route-switch signal.
 
 - **`/orchestrate 747 --hard --lit`** — **(W)**, gated on 745 and 746, because (C) and (S) together
   still speak of one seam. **The characterization round is complete** (plan
@@ -203,14 +239,27 @@ surviving alphabet rather than killing the route. The other is (C)'s `HitPresent
   carried partial figure"; `RaySummary/README.md`, "(W): what landed and what did not"): (i) a
   frame-scheme constructor for infinite-width, finitely branching regular frames (successor of
   `b2b-frame-constructor-branching.lean`; the ~120-160 line figure is CARRIED from (S) and
-  covers the regularity part only); (ii) a Hit-level per-cell realization hypothesis, never
-  trace-level `Presented`; (iii) the bound `kTypeOf_listSeg_replicate_eventually_periodic`,
-  unproved. The wired probe `w-soundness-shape-refuted.lean` holds the verdict in place: (S)'s
+  covers the regularity part only); (ii) **TWO PROOF OBLIGATIONS, not a hypothesis with no
+  deliverable** — a Hit-level per-cell realization theorem for that constructor (the
+  `presented_modelOf` analogue at `HitPresented` level, never trace-level `Presented`, since
+  `stab_iff_of_presented_nowUnique` collapses `ψ ↔ ⊡ψ` at any `Presented`+`nowUnique` seam) and
+  the model-to-object extraction for EVERY regular `ℤ`-model, which is (C)'s general row at
+  `RaySummary/README.md:154` and the completeness half of this lift rather than a third task;
+  (iii) the bound `kTypeOf_listSeg_replicate_eventually_periodic`, unproved — **this is the
+  presentation-size obligation, and it is NOT (C)'s bound on the fixture**; it is the created
+  bound record's phase 1. The wired probe `w-soundness-shape-refuted.lean` holds the verdict in place: (S)'s
   `modelOf` cannot be the lift's soundness half (finite width validates `Φ.neg`, a ℤ-time
   non-validity; `Presented`+`nowUnique` collapses `ψ ↔ ⊡ψ` at the seam) — (S) itself untouched,
-  nothing a negative decidability result. `Decidable (PlusValidZTime φ)` is stated nowhere. If
-  the run layer is to be attempted, file it as ITS OWN record with the design question
-  (thread-indexed unfolding vs. a bounded-deadline encoding, research F7) as its phase 1.
+  nothing a negative decidability result. `Decidable (PlusValidZTime φ)` is stated nowhere.
+  **That instruction is now DISCHARGED: the run layer is filed as its own record, 750**, with the
+  design question (thread-indexed unfolding vs. a bounded-deadline encoding, research F7) as its
+  phase 1 and a standing instruction to dispatch phase 1 and STOP. Phase 1's outcome is what
+  makes its phases 2–3 costable, and it also chooses the depth `k` the run layer needs — which
+  the bound record deliberately leaves free, landing its result for every `k`. **No dependency
+  edge ties 750 to the bound record**, because without the bound a landed composition theorem
+  reads `¬ PlusValidZTime φ ↔ ∃ object, …` over an unbounded run layer, at best semi-decidable:
+  weaker, but not blocked. The two records serialize through the `file_scope` overlap both
+  declare on `RaySummary/README.md` and `docs/theorem-index.md`, and this file orders them.
 
 - **`/orchestrate 716,714 --hard`** — the sliced-certificate sub-front. **716** is a defect in
   shipped, gated code, not an unbuilt feature: the `liveT`/`liveAt` fixpoint does not return in 300s
@@ -223,12 +272,57 @@ surviving alphabet rather than killing the route. The other is (C)'s `HitPresent
 - **`/orchestrate 712 --hard`** — the refutation-record closeout, dispatchable only after Stage 0
   corrects its marker; until then it is admitted and then stalls.
 
-- **`/orchestrate 725,720`** — closeouts, last on this front. **725** is a close-as-subsumed ruling
-  (719 landed E1 first, the subsumption condition 725's own record names). **720** re-points
-  `FMP/README.md` and `scripts/check-evidence-probes.sh` from `WIRED_REPO` probe paths to the landed
-  library names, or closes as subsumed if the landings leave no probe to move; it is gated behind
-  734 on that script, and two archived paths in it were already repaired, so re-check what remains
-  before planning. **709 is deliberately absent**; see Stage 0.
+- **720 — PROMOTED out of the former closeout line**, to ahead of the sliced-certificate pair:
+  a red CI gate on every push outranks a local defect only the 300 s reproducer sees. **It is now
+  a CI REPAIR, not a citation tidy-up.** Two of the three `WIRED_REPO` entries in
+  `scripts/check-evidence-probes.sh` point at files git does not track: both were tracked under
+  their live-task paths, were deleted from the index by the archive commit `70321e938`, and were
+  then re-pointed to the ignored `specs/archive/` paths by `e8cfcd868`, while the gate never
+  checked tracking at all — `check_probe` tests `[ ! -f "$file" ]` only
+  (`check-evidence-probes.sh:717-720`). `.github/workflows/ci.yml:119-125` runs the gate after a
+  plain checkout and `:352-356` fails the job on its outcome, so a checkout lacking untracked
+  files turns both entries into a red build. Its named deliverable is the **tracked-ness check**
+  beside that `-f` test (`git ls-files --error-unmatch`, failing loudly), because the mechanism
+  recurs: an archival `mv` un-tracks any `WIRED_REPO` target living in a live task directory while
+  the gate stays green for everyone who has the file on disk. Its declared dependencies are
+  `[706, 710]`; there is no 734 edge, and the claim that it was gated behind 734 on that script
+  is false and is withdrawn here.
+- **725 — CLOSED AS SUBSUMED**, and it no longer appears in the Run block. Its deliverable
+  already exists, wired, in two places: `backward-dual-asymmetric-fixture.lean` (experiment E1 on
+  the transcribed time-asymmetric graph, wired at `check-evidence-probes.sh:641`, carrying
+  `Probe719Backward.pastStab_iff_allBwdPathsMeet` and `Probe719Backward.decide_past_stab`), and
+  the mirror fixture `backward-dual-mirror-fixture.lean` (wired at `:642`, whose
+  `Probe733Mirror.two_bwd_paths` is axiom-free at backward branching factor exactly 2 at every
+  spine state), which covers the backward-NONDETERMINISTIC case. Its own subsumption clause
+  forbade manufacturing a redundant second probe. **709 is deliberately absent**; see Stage 0.
+
+**The five named risks that replace the void contingency.** Stage 1 has no fallback route, so
+what follows is not a list of alternatives but the modes by which this front can fail, each with
+the evidence that locates it and its realized status today. None is realized.
+
+| Failure mode | Where it lives | Realized? |
+|---|---|---|
+| No constructor for infinite-width, finitely branching regular frames | `Rbad` (`b2b-frame-constructor-branching.lean:178`) and `Rok` are refuted as repair shapes; the positive halves `fib_finite_of_finBranch` (`:147`) and `saturation_of_finBranch` (`:169`) need TWO-SIDED finite branching; the `Node` thread-unfolding shape (`Limits/NoFiniteWidth.lean:132`) is neither refuted nor built | **No.** Two shapes refuted, one unbuilt. Open, not failed |
+| The factorization-transport lemma does not close on model A | Not in the tree; no attempt recorded anywhere | **No.** Never attempted |
+| Hit-level completeness fails for some regular `ℤ`-model | Trace level is false (`Probe735.not_presented`); Hit level holds on model A (`Probe745.hitPresented_modelA`); a grep for `¬ HitPresented`/`not_hitPresented` over `specs/evidence/seam-gluing-ray-product/*.lean` and `RaySummary/` returns zero | **No.** One positive fixture, zero negatives, no general argument |
+| The `⊡` summary is not finitely computable under infinite backward branching | Held by `device-selection-probe.lean`, per `backward-dual-mirror-fixture.lean:65-72` | **Not a Stage 1 question**; the mirror fixture's own header says so |
+| A closed L⁺ formula forces backward determinism on the relevant part of a regular `ℤ`-frame — the one literature-grounded route by which a published negative result could reach L⁺ | `stab`'s clause is the same-state-at-the-same-time equivalence (the `.stab` branch at `PlusTruth.lean:93`: `∀ σ, τ.state t = σ.state t → …`), and it fails the backward closure that defines the historical-necessity tradition: Thomason 1984 §4 Def. 6 condition (2) and Caleiro–Viganò–Volpe 2013 Def. 2.5 `Wdc`. **If forcing is possible**, `stab` satisfies Thomason Def. 6 (2) / Caleiro `Wdc` on that part, and the know-time-do-not-forget family (GKWZ §13.2) becomes a REDUCTION TARGET. CHEAP CHECK, NAMED AND NOT SCHEDULED: one fixture deciding whether backward determinism is forceable by a closed formula; `Probe719Backward` (`backward-dual-asymmetric-fixture.lean`) and `Probe733Mirror` (`backward-dual-mirror-fixture.lean:18-24`) already inhabit the backward factor. No task is filed for it | **Open falsifiable question, argued in neither direction.** The hypothesis is currently unmet — which is exactly why the corpus's negatives do not apply — and nothing in the tree decides whether it can be met |
+
+**Literature position.** TM/L⁺ over regular `ℤ`-frames EVADES every published negative result in
+the corpus, and for a boring reason: not one of them has a hypothesis TM meets. Every
+undecidability or non-r.e. theorem for products with an S5 factor needs a SECOND
+linear/transitive/`K` factor commuting with time, or THREE commuting factors, or a
+difference/counting operator. TM has one linear factor, one S5 factor and no difference modality,
+and `stab` is not a product coordinate — Church–Rosser between `stab` and the temporal relation
+fails on any non-deterministic step, of which `stab_state_only` (`PlusTruth.lean:332`) is the
+formal face. The S5-plus-linear products themselves sit on the DECIDABLE side (GKWZ Thms 6.60,
+6.61; HWZ Cor 69 for `⟨Z,<⟩` with Until and Since). **Neither direction transfers.** The published
+positives decide SUBLOGICS of TM/L⁺ — TM is a proper extension, witnessed by `modal_future`
+(`Axioms.lean:297`) and `box_time_invariant` (`PlusTruth.lean:349`) being TM-valid and
+product-refutable, and by `stab p ↔ p` being L⁺-valid and fusion-refutable — and decidability is
+not inherited by extensions. **So the literature settles L⁺ in neither direction, and "evades" is
+not evidence of decidability.** The fmp-plus-Until/Since signal is **NEUTRAL, not corroborating**:
+GKWZ Thm 5.30 and 5.32 kill the fmp of S5-plus-linear products while Thm 6.61 decides them.
 
 **Four constraints that rule work out.**
 
