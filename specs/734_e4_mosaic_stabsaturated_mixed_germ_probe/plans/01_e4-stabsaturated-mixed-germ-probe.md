@@ -305,17 +305,17 @@ the diff read-through confirms every changed hunk lies inside the comment.
 
 ---
 
-### Phase 3: Record the Handbook residual gap in the literature sub-index [NOT STARTED]
+### Phase 3: Record the Handbook residual gap in the literature sub-index [COMPLETED]
 
 **Goal**: `specs/literature-index.json`'s `hodkinson_2006` entry carries today's re-measurement
 and the user decision, so the acquisition half is a recorded residual gap with its reactivation
 condition rather than an unrecorded shortfall. No acquisition is attempted.
 
 **Tasks**:
-- [ ] Read the current `hodkinson_2006` entry:
+- [x] Read the current `hodkinson_2006` entry:
       `jq '.entries[] | select(.doc_id == "hodkinson_2006")' specs/literature-index.json`.
       Confirm it still carries the `RESIDUAL GAP (task 389 Phase 8, ...)` `hazard` text.
-- [ ] Append one sentence block to the END of the existing `hazard` string (never replace the
+- [x] Append one sentence block to the END of the existing `hazard` string (never replace the
       existing text), of the shape: `Re-measured 2026-10-09 (task 734): publisher URL
       https://www.csc.liv.ac.uk/~frank/MLHandbook/11.pdf still 3 pages / 51,937 bytes,
       byte-identical to the corpus PDF; no preprint on either author's page; DOI
@@ -326,12 +326,12 @@ condition rather than an unrecorded shortfall. No acquisition is attempted.
       condition unchanged.` Apply with a `jq` filter of the form
       `(.entries[] | select(.doc_id == "hodkinson_2006") | .hazard) += " ..."` writing to a
       temp file under the scratchpad, then `jq empty` the temp file, then `mv` it into place.
-- [ ] Confirm the edit touched only that one string: `git diff --stat specs/literature-index.json`
+- [x] Confirm the edit touched only that one string: `git diff --stat specs/literature-index.json`
       shows one file, and `git diff specs/literature-index.json | grep -c '^[-+] '` is 2 (one
       removed line, one added line) -- a larger count means `jq` reformatted the file and the
       edit must be redone preserving the existing formatting (`jq --indent 2`, or a targeted
       `python -I` string replacement).
-- [ ] Record an issue-log entry for this phase (kind `issue`, class `environment` or similar,
+- [x] Record an issue-log entry for this phase (kind `issue`, class `environment` or similar,
       severity `none`, resolution `worked_around`: the external paywall is the blocker; nothing
       to fix locally).
 
