@@ -576,6 +576,56 @@ EVIDENCE="specs/evidence"
 #                                                           | hodkinson_2006). No complexity claim, no
 #                                                           | certificate class, no edit to the Probe
 #                                                           | 718 file.
+# seam-gluing-ray-product/w-soundness-shape-refuted         | OBSTRUCTION (747, requirement (W)'s
+#                                                           | run-layer verdict): requirement (S)'s
+#                                                           | construction `modelOf` cannot be the
+#                                                           | soundness half of (W) for
+#                                                           | `box`/`stab`-bearing L⁺, on two
+#                                                           | independent axes. WIDTH: `frameOf` is
+#                                                           | `ofSlicedStep` on the presentation's
+#                                                           | finite `Q`, so the library's
+#                                                           | `no_finite_width_sat` applies verbatim
+#                                                           | and EVERY `Cons` model validates
+#                                                           | `Φ.neg` (`modelOf_sat_neg_Φ`), a
+#                                                           | ℤ-time non-validity
+#                                                           | (`not_plusValidZTime_neg_Φ`); the gap
+#                                                           | is `modelOf_incomplete`, and no clause
+#                                                           | added to `Cons` closes it. COLLAPSE: at
+#                                                           | any `Presented` seam whose presentation
+#                                                           | marks at most one `now` state (exactly
+#                                                           | `Cons.nowUnique`, which (S) needed),
+#                                                           | every closure formula satisfies
+#                                                           | `ψ ↔ ⊡ψ`
+#                                                           | (`stab_iff_of_presented_nowUnique`, via
+#                                                           | `exists_spliced_eq` off `seamOmegaEquiv`
+#                                                           | and `presented_letter_at_seam`), so no
+#                                                           | `⊡`-refutation such as `Fp → ⊡Fp` is
+#                                                           | ever witnessed there -- independent of
+#                                                           | width. Holds in place: the (W) run
+#                                                           | layer is BLOCKED on three named
+#                                                           | obligations (RaySummary README, "(W):
+#                                                           | what landed and what did not") -- an
+#                                                           | infinite-width finitely-branching frame
+#                                                           | constructor, a Hit-level per-cell
+#                                                           | realization hypothesis (never trace-
+#                                                           | level `Presented`), and the bound
+#                                                           | `kTypeOf_listSeg_replicate_eventually_
+#                                                           | periodic`; the anchor layer
+#                                                           | (`RaySummary/AnchorLayer.lean`) does
+#                                                           | not depend on any of them. What it does
+#                                                           | NOT do: (S) is UNTOUCHED
+#                                                           | (`presented_modelOf` is a correct
+#                                                           | soundness statement for
+#                                                           | `box`/`stab`-free `φ` at one seam);
+#                                                           | nothing is a negative decidability
+#                                                           | result; nothing about `⊡(Pp)` (forward-
+#                                                           | only, no backward Bool-fixture bridge);
+#                                                           | nothing about `HitPresented`, which
+#                                                           | holds on model A
+#                                                           | (`Probe745.hitPresented_modelA`); no
+#                                                           | complexity bound; `Decidable
+#                                                           | (PlusValidZTime φ)` NOT stated in any
+#                                                           | form
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -601,6 +651,7 @@ WIRED=(
   "seam-gluing-ray-product/hit-presented-model-a"
   "seam-gluing-ray-product/b2b-frame-constructor-branching"
   "seam-gluing-ray-product/mosaic-stab-saturated"
+  "seam-gluing-ray-product/w-soundness-shape-refuted"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

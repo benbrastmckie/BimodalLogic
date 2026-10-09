@@ -259,14 +259,14 @@ Confirm by `git diff --stat` on `PlusTruth.lean` at phase end; a diff touching a
 
 ---
 
-### Phase 2: Wire the (W) verdict probe — (S)'s shape cannot be the soundness half [NOT STARTED]
+### Phase 2: Wire the (W) verdict probe — (S)'s shape cannot be the soundness half [COMPLETED]
 
 **Goal**: Preserve research F4 and F5 as a wired, rotting-protected probe, so the record's
 acceptance clause ("the obstruction MACHINE-CHECKED as a theorem or a wired probe rather than
 argued in prose") is met by an artifact the gate compiles on every run.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean` in
+- [x] Create `specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean` in
       `namespace Probe747`, holding verbatim the declarations of
       `specs/747_closure_wide_quasimodel_lift_to_validity/evidence/02_modelOf-finite-width-incomplete.lean`
       (`modelOf_not_sat_Φ`, `modelOf_sat_neg_Φ`, `modelOf_incomplete`) and of
@@ -277,7 +277,7 @@ argued in prose") is met by an artifact the gate compiles on every run.
       and a `#print axioms` foot for every declaration. Keep the compiled tactic shapes recorded
       in the research report's Tactic Survey (the explicit section-variable arguments to
       `no_finite_width_sat`; the `StabFibre` ascription in `exists_spliced_eq`).
-- [ ] Write the house probe header (model: `presented-not-complete.lean` — paragraphs "The
+- [x] Write the house probe header (model: `presented-not-complete.lean` — paragraphs "The
       fixture / The argument / What is established / What is NOT established / The decision held
       in place"), stating: (i) VERDICT — requirement (S)'s construction `modelOf` cannot be the
       soundness half of (W) for `box`/`stab`-bearing L⁺, on two independent axes; (ii) WIDTH —
@@ -296,13 +296,13 @@ argued in prose") is met by an artifact the gate compiles on every run.
       Hit-level or product-level per cell, never trace-level `Presented`, and the (W) frame must
       have infinite-width slices (the `Node` shape of `NoFiniteWidth.lean`, which `ofSlicedStep`
       cannot build).
-- [ ] Register `"seam-gluing-ray-product/w-soundness-shape-refuted"` in
+- [x] Register `"seam-gluing-ray-product/w-soundness-shape-refuted"` in
       `scripts/check-evidence-probes.sh`'s `WIRED` array, append-only at the end, and add the
       matching catalogue comment block beside the `hit-presented-model-a` and
       `b2b-frame-constructor-branching` entries, in the same 38-character-column house format
       (verdict label, what it shows, what it does not). Re-read the script immediately before
       editing (task 734 shares it) and stage only this hunk.
-- [ ] Run `bash scripts/check-evidence-probes.sh`; confirm exit 0 and the new probe green along
+- [x] Run `bash scripts/check-evidence-probes.sh`; confirm exit 0 and the new probe green along
       with every pre-existing one, and confirm append-only editing from the diff (insertions
       only, zero deletions) rather than from a predicted count.
 
