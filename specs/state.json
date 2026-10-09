@@ -427,7 +427,7 @@
     {
       "project_number": 734,
       "project_name": "e4_mosaic_stabsaturated_mixed_germ_probe",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Run experiment E4: decide StabSaturated on the Bool fixture's mosaic set, and acquire the Hodkinson-Reynolds Handbook sections\n\nWHY THIS EXISTS. Route R2 -- mosaics and quasimodels -- is the rank-2 route to decidability of L+ over discrete time, behind the seam-gluing route R1 and ahead of the closed and low-ranked alternatives. Its amalgamation precondition is already FREE: `paste` glues two mosaics agreeing at a shared germ, choice-free and with uniqueness, exported as `amalgamate` and `amalgamate_unique`. What gates R2 is a single decidability question that the landed probe fixes as a `Prop` and proves only in a degenerate corner, plus two Handbook sections absent from the corpus. The review named this experiment E4 and left it \"open for the next round to attack by name\". It was never filed.\n\nTHE GATE, precisely. `Probe718Mosaic.StabSaturated` is proved only by `stabSaturated_of_sameState` -- the SAME-STATE corner. R2's hypothesis is that `StabSaturated` is decidable on finite mosaic sets with MIXED germ states, under `[F.IsRegular]`, and that a saturated-set existence theorem holds for L+. Neither is established. Re-verify both declaration names against the tree before relying on them; this description's reading is from 2026-10-05.\n\nWHAT TO DELIVER, in two parts.\n(1) The probe: decide `StabSaturated` on the two-state Bool fixture's mosaic set at `box-dot(Fp)`, with MIXED germ states rather than the same-state corner. This is the cheapest test of R2's load-bearing hypothesis.\n(2) The sources: the Hodkinson-Reynolds Handbook of Modal Logic sections 5.10 and 5.11 bodies are ABSENT from the corpus, which is why R2 cannot be promoted on textual grounds no matter how the probe comes out. Acquire and ingest them. R2's standing cannot be settled by a probe alone.\n\nTHE FALSIFIER, which is a valid outcome. A finite mosaic set, with mixed germ states, on which `StabSaturated` is FALSE yet every finite coherence condition holds. That would close R2 the way filtration was closed, and closing a route on evidence is a complete result -- not a failed task. Record it rather than working around it; the no-weakening rule for wired probes applies.\n\nHARD CONSTRAINTS. No complexity claim. Do not file a fourth certificate class on the strength of anything found here: any certificate class presenting finite fibres is already refuted by `Probe710.not_finite_width_fmp`, and R2 is a quasimodel route, not a certificate class. Do not promote R2 above R1 on probe evidence alone; ranking is the review's, and the Handbook sections are part of what any re-ranking would rest on.\n\nLITERATURE. Part (2) is source acquisition; run with `--lit`.\n\nSCHEDULING. Wiring into `scripts/check-evidence-probes.sh` collides with the declared file_scope of tasks 720 and 725, and with the two sibling probe tasks filed alongside this one. Run in a separate cycle from each of them.\n\nACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compiling under `lake env lean` and wired into `scripts/check-evidence-probes.sh`, whose header states whether `StabSaturated` is decidable on mixed germ states and what that does to R2's standing; plus the two Handbook sections present in the Literature index with an index entry. Either half landing without the other is a [PARTIAL], not a completion.",
       "topic": "decidability",
@@ -440,13 +440,18 @@
         733
       ],
       "created": "2026-10-05T18:07:05Z",
-      "last_updated": "2026-10-09T08:15:16Z",
-      "session_id": "sess_1791529054_4455fa_734",
+      "last_updated": "2026-10-09T08:28:49Z",
+      "session_id": "sess_1791529054_4455fa",
       "artifacts": [
         {
           "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/reports/01_e4-stabsaturated-mixed-germ-probe.md",
           "type": "report",
           "summary": "E4 research: the landed StabSaturated predicate is identically true (proved for every finite mosaic set, so the literal R2 falsifier is unsatisfiable); the SH1 witness-direction predicate is the real content and is non-trivial on the mixed-germ E2 Bool fixture (holds on {stayA,jumpB,stayB}, fails on {jumpB,stayB}, all sorry-free in scratch); Handbook ch.11 sections 5.10-5.11 remain unobtainable (publisher preview re-measured at 3 pages, byte-identical; DOI paywalled)."
+        },
+        {
+          "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/plans/01_e4-stabsaturated-mixed-germ-probe.md",
+          "type": "plan",
+          "summary": "4-phase lift-header-wire plan: probe lift and compile, header, sub-index residual-gap record, gate wiring + full gate + partial return with the acquisition blocker named."
         }
       ],
       "next_artifact_number": 2
