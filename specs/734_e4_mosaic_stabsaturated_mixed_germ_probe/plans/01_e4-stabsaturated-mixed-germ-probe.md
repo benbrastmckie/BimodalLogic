@@ -362,7 +362,7 @@ against it, and a syntactically valid JSON with the one field extended is the wh
 
 ---
 
-### Phase 4: Wire into the evidence gate, run the full gate, commit, and return partial with the acquisition blocker named [NOT STARTED]
+### Phase 4: Wire into the evidence gate, run the full gate, commit, and return partial with the acquisition blocker named [COMPLETED]
 
 **Goal**: The probe is held in place by `scripts/check-evidence-probes.sh` with the Probe 718
 row amended by pointer, the full gate set is green, exactly the declared `file_scope` files are
@@ -370,15 +370,15 @@ committed, and the dispatch returns `partial` with the Handbook acquisition as i
 external blocker so the task rests `[PARTIAL]` per the recorded decision.
 
 **Tasks**:
-- [ ] Re-read `scripts/check-evidence-probes.sh` immediately before editing (concurrent-sibling
+- [x] Re-read `scripts/check-evidence-probes.sh` immediately before editing (concurrent-sibling
       hazard: 747 declares the script); if the `WIRED` array or the comment table differs from
       the plan-time state (23 `WIRED`, 3 `WIRED_REPO`, last `WIRED` entry
       `seam-gluing-ray-product/b2b-frame-constructor-branching`) in a way that touches the
       insertion point, append after whatever the current last entry is rather than overwrite;
       stop and report only if the mosaic rows themselves have been altered.
-- [ ] Add `"seam-gluing-ray-product/mosaic-stab-saturated"` as the last string of the
+- [x] Add `"seam-gluing-ray-product/mosaic-stab-saturated"` as the last string of the
       `WIRED=( ... )` array.
-- [ ] Add a comment-table row under `# --- WIRED ---` as the last row, in the table's
+- [x] Add a comment-table row under `# --- WIRED ---` as the last row, in the table's
       two-column wrapped style: `VACUOUS, recorded (E4): the landed Probe 718 StabSaturated
       predicate is identically true on EVERY finite mosaic set, mixed germ states included
       (stabSaturated_univ; Smix_mixed + Smix_stabSaturated on the E2 Bool fixture), so it is
@@ -392,23 +392,23 @@ external blocker so the task rests `[PARTIAL]` per the recorded decision.
       sections 5.10-5.11 remain a recorded residual gap (specs/literature-index.json,
       hodkinson_2006). No complexity claim, no certificate class, no edit to the Probe 718
       file.`
-- [ ] Pointer-only amendment of the Probe 718 row (the comment, not the `.lean` file): replace
+- [x] Pointer-only amendment of the Probe 718 row (the comment, not the `.lean` file): replace
       its final clause `left open for the next round to attack by name` with `attacked by name
       and found VACUOUS by the mosaic-stab-saturated entry below`. Skip if the row's wording has
       changed since the plan read.
-- [ ] `timeout 560 bash scripts/check-evidence-probes.sh` from the repository root (foreground,
+- [x] `timeout 560 bash scripts/check-evidence-probes.sh` from the repository root (foreground,
       bounded; the full run measured ~1.5 min at plan time); require exit 0 and the PASS summary
       with the wired count one higher than the pre-edit baseline (26 at plan time; expect 27).
-- [ ] `timeout 300 lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean`
+- [x] `timeout 300 lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean`
       once more; diff the four axiom lines against the header's axiom record (must match
       verbatim).
-- [ ] `git status --short` and `git diff --stat -- specs/evidence/`: the only `specs/evidence/`
+- [x] `git status --short` and `git diff --stat -- specs/evidence/`: the only `specs/evidence/`
       change is the new probe; `mosaic-germ-amalgamation.lean` is byte-identical to HEAD.
-- [ ] `bash .claude/scripts/verify-deploy.sh` (the complete gate set, per the `full` tier). If
+- [x] `bash .claude/scripts/verify-deploy.sh` (the complete gate set, per the `full` tier). If
       backgrounded at all, use `context/patterns/bounded-build-waiter.md`'s idiom verbatim
       (captured `pid=$!`, `kill -0` liveness loop, outer `timeout N`) inside one Bash call;
       never end the turn waiting on a notification.
-- [ ] Commit through `bash .claude/scripts/git-commit-scoped.sh --message "task 734 phase 4:
+- [x] Commit through `bash .claude/scripts/git-commit-scoped.sh --message "task 734 phase 4:
       wire mosaic-stab-saturated probe into the evidence gate" --session <session_id> --task 734
       -- <explicit paths>` with exactly the three `file_scope` paths
       (`specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean`,
@@ -417,7 +417,7 @@ external blocker so the task rests `[PARTIAL]` per the recorded decision.
       and this plan file as the pathspec -- never `git add -A`, `git add .`, a directory
       pathspec, or `git commit -am`. (Phases 1-3 commit their own green sub-steps per the
       Commit-Per-Green-Substep Mandate; this is the phase-closing commit.)
-- [ ] Return shape: `.return-meta.json` and `.orchestrator-handoff.json` with
+- [x] Return shape: `.return-meta.json` and `.orchestrator-handoff.json` with
       `status: "partial"`, `phases_completed: 4`, `phases_total: 4`, and ONE `blockers[]` entry
       -- `phase: "acquisition half (not a plan phase)"`, `target:
       "specs/literature-index.json#hodkinson_2006"`, `verbatim_goal: "the two Handbook sections
@@ -429,7 +429,7 @@ external blocker so the task rests `[PARTIAL]` per the recorded decision.
       or purchase of Handbook ch. 11 pp. 708-712) is met; then ingest sections 5.10-5.11 and
       re-open". The summary states plainly that all four phases completed and that `[PARTIAL]`
       is the acceptance clause's prescribed resting state, not a shortfall.
-- [ ] Record an issue-log entry for this phase.
+- [x] Record an issue-log entry for this phase.
 
 **Timing**: 0.75 hours
 
@@ -570,21 +570,21 @@ end Probe734Mosaic
 
 ## Testing & Validation
 
-- [ ] `lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean` exits 0
+- [x] `lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean` exits 0
       with no errors or warnings and exactly four `#print axioms` output lines (after Phases 1,
       2, and 4).
-- [ ] Axiom record: `stabSaturated_univ`, `Smix_mixed`, `Smix_witnessed`, `Sdrop_not_witnessed`
+- [x] Axiom record: `stabSaturated_univ`, `Smix_mixed`, `Smix_witnessed`, `Sdrop_not_witnessed`
       each at `[propext, Classical.choice, Quot.sound]`; no `sorryAx` anywhere.
-- [ ] `grep -c sorry specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean` is 0.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 with the wired count at baseline + 1 and a
+- [x] `grep -c sorry specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean` is 0.
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 with the wired count at baseline + 1 and a
       PASS line for the new entry; `mosaic-germ-amalgamation.lean` byte-identical to HEAD.
-- [ ] `jq empty specs/literature-index.json` exits 0 and the `hodkinson_2006.hazard` string
+- [x] `jq empty specs/literature-index.json` exits 0 and the `hodkinson_2006.hazard` string
       contains the 2026-10-09 re-measurement and the user decision.
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0 (Phase 4).
-- [ ] The Challenge block above type-checks standalone against `FormalSystem` (re-derived at
+- [x] `bash .claude/scripts/verify-deploy.sh` exits 0 (Phase 4).
+- [x] The Challenge block above type-checks standalone against `FormalSystem` (re-derived at
       plan time: rc=0, `declaration uses sorry` warnings only) and its 29 pinned identifiers
       equal the `**Goals**:` identifier set.
-- [ ] Return metadata: `status: "partial"` with one acquisition blocker; `phases_completed` =
+- [x] Return metadata: `status: "partial"` with one acquisition blocker; `phases_completed` =
       `phases_total` = 4; continuation handoff markdown present.
 
 ## Artifacts & Outputs

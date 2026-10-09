@@ -81,7 +81,7 @@ file and the landed probe stays as the historical record (no-weakening rule for 
 `Classical.choice` enters even the one-line `stabSaturated_univ` through `PlusTruthAt`'s
 classical semantics, and the finite sets are classical through the `noncomputable instance`
 `instDecEqMosaic` (`Classical.decEq`), since mosaics wrap possible worlds with no decidable
-equality. No `sorryAx` anywhere.
+equality. The four axiom sets are exactly the three classical axioms; no placeholder axiom appears.
 
 Compile-check from the repository root with:
   lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean

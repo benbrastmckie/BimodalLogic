@@ -133,9 +133,9 @@ EVIDENCE="specs/evidence"
 #                                                           | The `⊡`-saturation decidability
 #                                                           | question is fixed as a `Prop`
 #                                                           | (`StabSaturated`), proved only in
-#                                                           | the same-state corner -- left open
-#                                                           | for the next round to attack by
-#                                                           | name
+#                                                           | the same-state corner -- attacked by
+#                                                           | name and found VACUOUS by the
+#                                                           | mosaic-stab-saturated entry below
 # seam-gluing-ray-product/path-quantifier-alternation       | NECESSITY DEMONSTRATED: on the
 #                                                           | Phase-3 fixture the existential
 #                                                           | (nondeterministic) summary is True
@@ -547,6 +547,35 @@ EVIDENCE="specs/evidence"
 #                                                           | presentation. No complexity bound;
 #                                                           | `Decidable (PlusValidZTime φ)` NOT
 #                                                           | stated in any form
+# seam-gluing-ray-product/mosaic-stab-saturated             | VACUOUS, recorded (E4): the landed Probe
+#                                                           | 718 StabSaturated predicate is
+#                                                           | identically true on EVERY finite mosaic
+#                                                           | set, mixed germ states included
+#                                                           | (stabSaturated_univ; Smix_mixed +
+#                                                           | Smix_stabSaturated on the E2 Bool
+#                                                           | fixture), so it is decidable because
+#                                                           | constant and the review's literal R2
+#                                                           | falsifier is unsatisfiable. The real SH1
+#                                                           | content is the witness direction
+#                                                           | (StabWitnessedAt): HOLDS on {stayA,
+#                                                           | jumpB, stayB}, FAILS on {jumpB, stayB},
+#                                                           | both mixed -- finitely checkable only
+#                                                           | once the per-mosaic ⊡-value is known,
+#                                                           | which on this fixture is R1's
+#                                                           | stab_will_iff. Holds in place: R2's
+#                                                           | hypothesis is restated as a SYNTACTIC
+#                                                           | saturated-set existence theorem with a
+#                                                           | bespoke ⊡-fibre interaction condition
+#                                                           | (Caleiro 2013 section 4.3: mosaic
+#                                                           | decidability does not transfer once the
+#                                                           | dimensions interact); R2 neither
+#                                                           | promoted nor closed; Handbook ch. 11
+#                                                           | sections 5.10-5.11 remain a recorded
+#                                                           | residual gap
+#                                                           | (specs/literature-index.json,
+#                                                           | hodkinson_2006). No complexity claim, no
+#                                                           | certificate class, no edit to the Probe
+#                                                           | 718 file.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -571,6 +600,7 @@ WIRED=(
   "seam-gluing-ray-product/stab-depth-two-shared-stratum"
   "seam-gluing-ray-product/hit-presented-model-a"
   "seam-gluing-ray-product/b2b-frame-constructor-branching"
+  "seam-gluing-ray-product/mosaic-stab-saturated"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
