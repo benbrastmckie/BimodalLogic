@@ -1,30 +1,94 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "dispatch_seq": 7,
+  "started_at": "2026-10-09T08:35:45Z",
+  "requires_user_review": true,
+  "review_reason": "All 4 plan phases completed and verified; the task rests [PARTIAL] by the recorded user decision (cycle 4, 2026-10-09): the acceptance clause's acquisition half (Handbook of Modal Logic ch. 11 sections 5.10-5.11 in the Literature index) is an external, paywalled blocker recorded as a residual gap with its reactivation condition.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/plans/01_e4-stabsaturated-mixed-germ-probe.md",
-      "summary": "4-phase lift-header-wire plan (2 h) landing the E4 probe mosaic-stab-saturated.lean (StabSaturated identically true, literal R2 falsifier unsatisfiable, witness-direction SH1 predicate non-trivial on mixed sets) from the research prototype, recording the Handbook 5.10-5.11 acquisition as a residual gap in the literature sub-index, wiring the gate, and returning partial per the recorded user decision."
+      "type": "summary",
+      "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/summaries/01_e4-stabsaturated-mixed-germ-probe-summary.md",
+      "summary": "E4 probe landed and wired: Probe718Mosaic.StabSaturated is identically true (VACUOUS) on every finite mosaic set, mixed or not; the witness direction StabWitnessedAt holds on Smix and fails on Sdrop; Handbook 5.10-5.11 recorded as a residual gap."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean",
+      "summary": "The E4 probe (namespace Probe734Mosaic): stabSaturated_univ, StabWitnessedAt, Smix_witnessed, Sdrop_not_witnessed on the E2 Bool fixture; sorry-free, four axiom lines at [propext, Classical.choice, Quot.sound]."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md",
+      "summary": "Continuation handoff: nothing to do until the Handbook ch. 11 reactivation condition is met."
     }
   ],
-  "next_steps": "Run /implement 734 to execute the plan; the task rests [PARTIAL] afterwards by the cycle-4 user decision (Handbook acquisition half stays a recorded residual gap)",
-  "phase_count": 4,
-  "estimated_hours": 2,
-  "dependency_waves": [[1, 3], [2], [4]],
+  "partial_progress": {
+    "stage": "all_phases_completed_external_blocker",
+    "details": "Phases 1-4 all [COMPLETED] and committed (80dd7b32b, 5a168de13, fa567569e, d8e4317ae). Not a plan-phase blocker: the acquisition half of the acceptance clause is external and recorded as a residual gap per the user decision.",
+    "phases_completed": 4,
+    "phases_total": 4,
+    "handoff_path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md"
+  },
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_count_introduced_by_this_task": 0,
+    "vacuous_note": "The single hit is pre-existing and out of scope: FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal ... := trivial), present identically at HEAD before this task; no file under the Lean roots was touched.",
+    "axiom_count": 15,
+    "axiom_count_baseline": 15,
+    "build_passed": true,
+    "evidence_gate": "PASS all 27 wired probe(s) compile (baseline 26 + 1)",
+    "verify_deploy": "PASS 14 checks, 0 failures"
+  },
+  "errors": [
+    {
+      "type": "execution",
+      "message": "Acquisition half not landed: Handbook of Modal Logic ch. 11 sections 5.10 Mosaics and 5.11 Monodic fragments are paywalled (DOI 10.1016/S1570-2464(07)80014-0); publisher preview still 3 pages, byte-identical to the corpus copy; no preprint found.",
+      "recoverable": true,
+      "recommendation": "When institutional access, purchase, or an open release of ch. 11 pp. 708-712 is available, ingest sections 5.10-5.11 via /literature, update hodkinson_2006 in specs/literature-index.json, and re-open task 734 for completion. Do not ingest a summary from memory."
+    }
+  ],
+  "modified_files": [
+    "specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean",
+    "scripts/check-evidence-probes.sh",
+    "specs/literature-index.json",
+    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/plans/01_e4-stabsaturated-mixed-germ-probe.md",
+    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/summaries/01_e4-stabsaturated-mixed-germ-probe-summary.md",
+    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-1-handoff-20261009T083718Z.md",
+    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-3-handoff-20261009T083757Z.md",
+    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-2-handoff-20261009T083948Z.md",
+    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md"
+  ],
   "memory_candidates": [
     {
-      "content": "When a plan pins Lean Challenge Statements (plan-format.md `## Lean Challenge Statements`), every `def`/`theorem` whose body is `sorry` loses any section `variable` it only used in its body: a `variable (M : TaskModel F)` consumed solely by the proof term is NOT a binder of the sorry-bodied Challenge declaration, so the Challenge and landed statements silently disagree in arity. Fix at authoring time: make such parameters explicit binders on the declaration line in BOTH the prototype and the Challenge block, keep genuinely-reducing scaffolding (`abbrev` with a real body, anonymous `instance`) unpinned, and avoid every backtick in the `**Goals**:` block except on pinned identifiers, because lean-challenge-snapshot.sh reads each backticked token there as one.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/plans/01_e4-stabsaturated-mixed-germ-probe.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lean-challenge-snapshot", "challenge-statements", "variable-binder", "sorry-body", "plan-goals-backticks", "lean4-plan"]
+      "content": "A Prop-valued saturation predicate whose body already carries the agreement hypothesis it is meant to test (here m'.hist.state t = m.hist.state t feeding a definitionally universal stab clause) is identically true; always try the one-line discharge fun _ _ _ h m' _ heq => h m'.hist heq.symm before building fixtures. The non-trivial content is the WITNESS (diamond/SH1) direction: every refuter of box-chi has a same-germ refuter of chi IN THE SET.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "mosaic",
+        "saturation",
+        "stab",
+        "vacuous predicate",
+        "SH1",
+        "witness direction"
+      ]
     }
   ],
+  "next_steps": "Task rests [PARTIAL] by user decision. Re-open only when Handbook ch. 11 pp. 708-712 (sections 5.10-5.11) can be acquired; see the continuation handoff.",
   "metadata": {
-    "session_id": "sess_1791529054_4455fa_734",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1791529054_4455fa",
+    "agent_type": "lean-implementation-agent",
+    "duration_seconds": 649,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 6
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "phases_completed": 4,
+    "phases_total": 4,
+    "compliance_check": "passed",
+    "issue_log_contribution": 6
+  }
 }

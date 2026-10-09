@@ -1,18 +1,40 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 6,
-  "summary": "Wrote the 4-phase, 2-hour implementation plan for task 734 from the research report: lift the research prototype (preserved lift-ready at prototype/mosaic-stab-saturated.proto.lean, re-compiled at plan time in 2.3 s, four axiom lines, no sorryAx) to specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean, write the collection-style header recording that StabSaturated is identically true (so decidable on mixed germ states because constant, the literal R2 falsifier unsatisfiable, and the SH1 witness-direction predicate the real non-trivial content), record the Handbook 5.10-5.11 acquisition as a residual gap in specs/literature-index.json per the cycle-4 user decision, wire the gate (baseline 26 probes passing, expect 27), run the full gate set, and return partial with the acquisition blocker named so the task rests [PARTIAL] by design. The Lean Challenge Statements block was type-checked and its 29 identifiers match the Goals set (snapshot dry-run rc=0); validate-artifact --strict passes with 0 warnings.",
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 7,
+  "summary": "All four plan phases completed and verified: the E4 probe mosaic-stab-saturated.lean is landed, headed, and wired (evidence gate PASS all 27 wired probes; verify-deploy PASS; guarded full lake build exit 0), and the Handbook residual gap is recorded in specs/literature-index.json. Verdict: Probe718Mosaic.StabSaturated is identically true (VACUOUS) on every finite mosaic set, so it is decidable on mixed germ states because constant and the review's R2 falsifier is unsatisfiable; the real SH1 content is the witness direction StabWitnessedAt (holds on Smix, fails on Sdrop). Task rests [PARTIAL] by the recorded user decision: the acquisition half (Handbook ch. 11 sections 5.10-5.11) is an external paywalled blocker, not a shortfall.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/plans/01_e4-stabsaturated-mixed-germ-probe.md",
-      "summary": "4-phase lift-header-wire plan: probe lift and compile, header, sub-index residual-gap record, gate wiring + full gate + partial return with the acquisition blocker named."
+      "type": "summary",
+      "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/summaries/01_e4-stabsaturated-mixed-germ-probe-summary.md",
+      "summary": "Implementation summary: all 4 phases done, [PARTIAL] resting state and its cause."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean",
+      "summary": "The E4 probe, sorry-free, wired into scripts/check-evidence-probes.sh."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md",
+      "summary": "Continuation handoff naming the reactivation condition."
     }
   ],
-  "phases_completed": 0,
+  "skeleton": false,
+  "phases_completed": 4,
   "phases_total": 4,
-  "blockers": [],
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 734 in a cycle where task 747 is not implementing (both declare scripts/check-evidence-probes.sh); the implementer should return partial with one acquisition blocker after all four phases complete."
+  "plan_markers_verified": true,
+  "sorry_inventory": [],
+  "blockers": [
+    {
+      "phase": "acquisition half (not a plan phase)",
+      "target": "specs/literature-index.json#hodkinson_2006",
+      "verbatim_goal": "plus the two Handbook sections present in the Literature index with an index entry. Either half landing without the other is a [PARTIAL], not a completion.",
+      "what_was_tried": "Research-phase bounded acquisition (publisher URL https://www.csc.liv.ac.uk/~frank/MLHandbook/11.pdf, both author pages, the UWA repository, DOI 10.1016/S1570-2464(07)80014-0) re-measured 2026-10-09: preview still 3 pages / 51,937 bytes, byte-identical to the corpus copy; DOI resolves to Elsevier (paywalled). User decision (cycle 4, 2026-10-09): the half stays a recorded residual gap.",
+      "why_it_failed": "The sections are paywalled with no free or preprint copy; acquisition needs institutional access or purchase, which the user declined for now. Reactivation condition recorded in hodkinson_2006.hazard."
+    }
+  ],
+  "continuation_path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md",
+  "next_action_hint": "Nothing until Handbook ch. 11 pp. 708-712 (sections 5.10-5.11) can be acquired; then ingest via /literature and re-open task 734.",
+  "git_checkpoint": "d8e4317ae5a36e20ad4e74186c4cd62ac21b5dd9"
 }
