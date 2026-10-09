@@ -1,60 +1,9 @@
 {
-  "status": "partial",
+  "status": "in_progress",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 745,
-  "dispatch_seq": 5,
-  "session_id": "sess_1791500801_df94d6",
-  "phase": "implement",
-  "requires_user_review": false,
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "summary": "Phase 1 of 8: HitPresented and hitPresented_of_presented landed sorry-free in RaySummary/Trace.lean with the required [propext, Classical.choice, Quot.sound] axiom foot; phases 2-8 not started."
-    }
-  ],
-  "sorry_inventory": [],
-  "verification": {
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": true,
-    "verification_passed": true,
-    "notes": "sorry_count 0 repo-wide via lean-sorry-census.sh --cross-check over all eight resolved source roots (stripper 0, compiler 0, cross_check MATCH). vacuous_count 1 is pre-existing and identical at HEAD~1 (FormalSystem/Examples/TemporalStructures.lean's int_domain_universal, where intTimeHistory.domain t genuinely reduces to True); zero introduced by this phase. axiom_count 14 equals the HEAD~1 baseline. build_passed from the full guarded project build: guard exit 0, 'Build completed successfully (2836 jobs)', zero error: lines over both captured streams, and Trace.olean newer than Trace.lean."
-  },
-  "metadata": {
-    "session_id": "sess_1791500801_df94d6",
-    "agent_type": "lean-implementation-hard-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-    "phase_number": 1,
-    "phases_completed": 1,
-    "phases_total": 8,
-    "commit": "c45e4807a",
-    "files_touched": [
-      "FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean",
-      "typst/generated/status.typ"
-    ],
-    "handoff_path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-1-handoff-20261008T235902Z.md"
-  },
-  "completion_data": {
-    "completion_summary": "Phase 1 of the eight-phase plan: HitPresented (the HIT-level realization hypothesis, an equality of family-triple sets rather than of trace sets) and hitPresented_of_presented (Presented implies it at every depth k >= 1) are now declarations in FormalSystem.Metalogic.Decidability.RaySummary, sorry-free, with both pinned signatures matched verbatim and the axiom foot exactly [propext, Classical.choice, Quot.sound]. The hypothesis is stated, not discharged: no model satisfies it in the tree, and the fixture-level discharge plus the recorded bound verdict are phases 2-8, which were deliberately not started under the dispatch's single-phase mission."
-  },
-  "memory_candidates": [
-    {
-      "content": "A repository-wide generated-counts file can turn every Lean-line-adding commit into a two-step commit. In BimodalLogic, typst/generated/status.typ pins formalsystem-line-count, and a pre-commit gate (scripts/typst-sync-check.sh Check 2) BLOCKS any commit staging .lean files whose line delta the committed count no longer reflects. Its --no-verify bypass is explicitly scoped to drift caused by another writer, so it does not cover your own addition: the remedy is a full lake build, then 'bash scripts/typst-sync-check.sh --fix', then staging that file alongside your own. Consequence for plan authoring: a plan whose file_scope lists only the files its phases edit will under-declare by exactly this path, and every phase commit will collide with the gate before anyone notices the omission. Add the generated-counts file to file_scope at plan time whenever a phase adds or removes Lean lines.",
-      "category": "GOTCHA",
-      "source_artifact": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["pre-commit-gate", "generated-counts", "typst-sync-check", "file-scope", "lean4", "commit-blocked"]
-    },
-    {
-      "content": "When a plan's phase-1 docstring is told to describe a file that a later phase of the SAME plan creates, write it as an explicit forward reference rather than either asserting the file exists or dropping the sentence. Asserting it makes the library carry a false claim for as long as the later phases are unlanded (and a blocked plan leaves it false permanently); dropping it loses a plan-mandated disclaimer. A short parenthetical naming where it lands keeps both the disclaimer and the truth value, and the deviation is one annotated checklist line rather than an escalation.",
-      "category": "PATTERN",
-      "source_artifact": "specs/745_hit_level_completeness_computable_bound/plans/01_hit-presented-model-a.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["docstring", "forward-reference", "plan-compliance", "phase-sequencing", "lean4"]
-    }
-  ],
-  "issues_recorded": 2,
-  "next_steps": "Dispatch implement for phase 2 (probe scaffold, fixture transcription, step-path classification)."
+  "dispatch_seq": 6,
+  "phase_number": 2,
+  "artifacts": []
 }

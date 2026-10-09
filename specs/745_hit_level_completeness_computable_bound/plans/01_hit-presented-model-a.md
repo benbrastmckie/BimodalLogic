@@ -244,42 +244,42 @@ would surface.
 
 ---
 
-### Phase 2: Probe scaffold, fixture transcription, and the step-path classification [NOT STARTED]
+### Phase 2: Probe scaffold, fixture transcription, and the step-path classification [COMPLETED]
 
 **Goal**: Create the probe file with its full header and the model-A fixture, and land the
 step-path classification: every step path through the seam `(t, a)` is the constant `a`-path or an
 `a`-then-`b` jump path with jump time `w ≥ t`.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` with a header
+- [x] Create `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` with a header
       in the collection's established shape (model it on `presented-not-complete.lean`'s header,
       which is the sibling record this one sits beside): what the probe establishes; the fixture;
       the argument in two sentences; what is NOT established (no bound, forward-only, nothing
       about `⊡(P p)`, no decidability of anything, `Decidable (PlusValidZTime φ)` not stated in
       any form, nothing about general regular ℤ-models); the decision held in place; the axiom
       record; the compile line.
-- [ ] Header must state, per report D-6, that the result does NOT generalize: model A's splices
+- [x] Header must state, per report D-6, that the result does NOT generalize: model A's splices
       are eventually constant in both directions, which is what lets a finite presentation realize
       finitely many of them exactly; for a general regular ℤ-model the general route needs one
       lasso per triple and its `⊆` direction is open.
-- [ ] Header must state that this probe does NOT weaken or retire `Probe735.not_presented`: that
+- [x] Header must state that this probe does NOT weaken or retire `Probe735.not_presented`: that
       probe refutes an equality of TRACE sets, this one establishes an equality of FAMILY-TRIPLE
       sets, the presentation here is deliberately NOT `Presented` (it realizes only finitely many
       of the seam's traces), and both hold simultaneously.
-- [ ] Transcribe the fixture from `presented-not-complete.lean` (transcribed, never imported, as
+- [x] Transcribe the fixture from `presented-not-complete.lean` (transcribed, never imported, as
       the collection's convention requires): `St`, `a`, `b`, `pa`, `Fp`, `RA`, `RA_fwd`, `RA_bwd`,
       `FA`, `instFARegular`, `MA`, `stayA`, `jump`, `stayA_state`, `jump_state`, `p_iff`, `Fp_iff`,
-      `jump_p_iff`, `jump_Fp`.
-- [ ] Transcribe the classification from the research dispatch's compiled scratch file
+      `jump_p_iff`, `jump_Fp`. *(deviation: altered — also transcribed `RA_aa`, `RA_ab`, `RA_bb` and `ab_ne`, which the item does not list but which `stayA`, `jump` and `bwd_a` require; and `a`/`b`/`pa` are landed as `def` as in `presented-not-complete.lean`, not as the `abbrev` the plan's `## Lean Challenge Statements` block shows, since that block states the `abbrev` form was a plan-time device to keep the pinned identifier set equal to the `**Goals**:` set and none of `St`/`a`/`b`/`pa`/`Fp` is a pinned goal.)*
+- [x] Transcribe the classification from the research dispatch's compiled scratch file
       `/tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/9b704637-8466-49f5-bdeb-3bd3ef0521bb/scratchpad/rigid745.lean`:
       `stepA`, `time_eq`, `bwd_a`, `fwd_dichotomy`, `fwd_absorb`, `path_classify`. Keep the
       tactic choices the research recorded as load-bearing: `Int.induction_on` with case names
       `zero`/`succ`/`pred`; `push_cast at h ih ⊢` BEFORE the `show … by ring` rewrite in `bwd_a`;
       `simp only [not_exists]` in place of deprecated `push_neg`; explicit `IsStepPath` hypotheses
       per theorem (this toolchain does not auto-include a propositional `variable`).
-- [ ] Compile: `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`
+- [x] Compile: `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`
       — zero errors, zero warnings, zero sorries.
-- [ ] Commit (one green sub-step).
+- [x] Commit (one green sub-step).
 
 **Timing**: 1.5 hours
 
@@ -290,7 +290,12 @@ step-path classification: every step path through the seam `(t, a)` is the const
 **Commit Mode**: per-substep
 
 **Scope Hypothesis**: ~200-230 lines in one new file (header ~60, fixture ~50, classification
-~110). Confirm by `wc -l` on the new probe and by the scratch file still being present and
+~110). *(CONFIRMED-WITH-OVERSHOOT at implementation time: 276 lines — header 65 and classification
+~96 as hypothesized, fixture ~100 against the hypothesized ~50. The miss is entirely the fixture:
+the item above enumerates 19 identifiers, and `jump`'s well-definedness proof plus the
+`RA_aa`/`RA_ab`/`RA_bb` step facts it and `stayA` consume do not fit in 50 lines. No scope beyond
+the plan's enumerated items was added. The scratch file was still present and transcribed as
+written, so no reconstruction from the report was needed.)* Confirm by `wc -l` on the new probe and by the scratch file still being present and
 compiling as transcribed; if the scratch file has been cleaned from `/tmp`, reconstruct from the
 report's recorded tactic survey rather than inventing a different route.
 
