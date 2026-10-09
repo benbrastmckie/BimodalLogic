@@ -363,7 +363,12 @@ theorem box_time_invariant (M : TaskModel F) (τ : WorldHistory F) (t s : F.Dura
 /-- **`□φ` depends on the model alone**: along any two histories at any two times. The history
 side is `box_iff` itself (the clause already quantifies over every history) and the time side is
 `box_time_invariant`; together they make `□φ` one bit per model, the `box` counterpart of
-`stab_state_only`'s "one bit per world state" for `⊡φ`. -/
+`stab_state_only`'s "one bit per world state" for `⊡φ`.
+
+Paper: — (the `box` clause of `def:BLstar-semantics` quantifies over every history at the
+evaluation time; that its value is also time-independent is a consequence of the history set's
+shift-closure, which the manuscript states as a frame property and never draws out as a theorem
+about `□`) -/
 theorem box_global (M : TaskModel F) (τ σ : WorldHistory F) (t s : F.Duration)
     (ψ : PlusFormula) :
     PlusTruthAt M τ t (.box ψ) ↔ PlusTruthAt M σ s (.box ψ) := by

@@ -189,8 +189,28 @@ surviving alphabet rather than killing the route. The other is (C)'s `HitPresent
   keeps R1 alive. Do not read "739 refuted" as a route-switch signal.
 
 - **`/orchestrate 747 --hard --lit`** — **(W)**, gated on 745 and 746, because (C) and (S) together
-  still speak of one seam. The verdict costs it at nothing, which is information rather than an
-  oversight, so its phase 1 is characterization.
+  still speak of one seam. **The characterization round is complete** (plan
+  `01_closure-wide-quasimodel-anchor-layer.md`): the object is TWO-layered, not one. The **anchor
+  layer** is landed and bounded — `RaySummary/AnchorLayer.lean`: closure types and per-state
+  cells, the `box`/`stab` fixpoint equations, `AnchorCons` with `anchorCons_anchorCells` for
+  EVERY model (no presentation, no finiteness, no regularity hypothesis), `anchorCells_ncard_le
+  : ≤ 2 ^ (2 ^ |cl φ|)` (a count of cells, not a complexity bound), and the decidable `Finset`
+  twin `AnchorConsFin` with a non-vacuous `#guard` witness; the record's "for every time"
+  quantifier was dropped by the theorem `box_time_invariant` (`PlusTruth.lean`: `□ψ` is a
+  per-model datum on every `TaskFrame`). The **run layer** — the `untl`/`snce` nesting, the lift
+  from one seam to `¬ PlusValidZTime φ` — is **BLOCKED on three named obligations** with no cost
+  figure (the verdict's "costs it at nothing" is now "three obligations, one of them with a
+  carried partial figure"; `RaySummary/README.md`, "(W): what landed and what did not"): (i) a
+  frame-scheme constructor for infinite-width, finitely branching regular frames (successor of
+  `b2b-frame-constructor-branching.lean`; the ~120-160 line figure is CARRIED from (S) and
+  covers the regularity part only); (ii) a Hit-level per-cell realization hypothesis, never
+  trace-level `Presented`; (iii) the bound `kTypeOf_listSeg_replicate_eventually_periodic`,
+  unproved. The wired probe `w-soundness-shape-refuted.lean` holds the verdict in place: (S)'s
+  `modelOf` cannot be the lift's soundness half (finite width validates `Φ.neg`, a ℤ-time
+  non-validity; `Presented`+`nowUnique` collapses `ψ ↔ ⊡ψ` at the seam) — (S) itself untouched,
+  nothing a negative decidability result. `Decidable (PlusValidZTime φ)` is stated nowhere. If
+  the run layer is to be attempted, file it as ITS OWN record with the design question
+  (thread-indexed unfolding vs. a bounded-deadline encoding, research F7) as its phase 1.
 
 - **`/orchestrate 716,714 --hard`** — the sliced-certificate sub-front. **716** is a defect in
   shipped, gated code, not an unbuilt feature: the `liveT`/`liveAt` fixpoint does not return in 300s

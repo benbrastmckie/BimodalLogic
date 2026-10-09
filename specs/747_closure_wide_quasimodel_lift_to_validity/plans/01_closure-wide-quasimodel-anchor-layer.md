@@ -501,7 +501,7 @@ shared helper predicate on an arbitrary `Membership` carrier instead of duplicat
 
 ---
 
-### Phase 5: Records — the (W) verdict, the three named obligations, pins, index, READMEs, ROADMAP, full gate [NOT STARTED]
+### Phase 5: Records — the (W) verdict, the three named obligations, pins, index, READMEs, ROADMAP, full gate [COMPLETED]
 
 **Goal**: Wire the module into the aggregator and make every record say exactly what landed and
 what did not: anchor layer landed and bounded for every model; run layer BLOCKED on three named
@@ -509,14 +509,14 @@ obligations with their sources; (S) untouched; no decidability statement; no com
 forward-only. Then run the complete gate set.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer` to
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer` to
       `FormalSystem/Metalogic/Decidability/RaySummary.lean` and a `* RaySummary.AnchorLayer — …`
       bullet to its `## Modules` list; update the header paragraph's sentence "the `box`/`stab`-
       bearing fragment and the lift from one seam to validity both remain open (the README's
       requirement (W))" to say precisely: the anchor layer of (W) is landed (`AnchorLayer`), the
       run layer is blocked on three named obligations (README), and nothing states
       `PlusValidZTime` in any form.
-- [ ] Rewrite `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: (a) the (W) row of "The
+- [x] Rewrite `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: (a) the (W) row of "The
       verdict" table — from "nothing in the tree composes per-seam checks into a model-wide
       witness" to the two-layer characterization: anchor layer landed (`AnchorCons`,
       `anchorCons_anchorCells` for every model, `anchorCells_ncard_le`, `decidableAnchorConsFin`
@@ -539,7 +539,7 @@ forward-only. Then run the complete gate set.
       the whole line-count table refreshed from `wc -l` at implementation time (documentation
       correction; the table was stale by the (S) Phase 8 edits); (f) the "Evidence" section entry
       for the new probe.
-- [ ] Add theorem-index rows to `docs/theorem-index.md` beside the 197-203 band (re-locate by
+- [x] Add theorem-index rows to `docs/theorem-index.md` beside the 197-203 band (re-locate by
       the `hitCl_modelOf_eq_hitOf` row, not by line): `box_global` (every `TaskFrame`; `□ψ` is a
       per-model datum); `anchorCons_anchorCells` (regular ℤ-frames as the instance the record
       names, though the statement needs no regularity; L⁺; `cl φ`; NO presentation hypothesis;
@@ -550,19 +550,19 @@ forward-only. Then run the complete gate set.
       `scripts/check-module-invariants.sh`'s C14/C21 baseline pair must be extended for the
       `pinned:C14` cells to be asserted rather than claimed (as (S)'s Phase 8 found), edit that
       script's baseline in the same phase and record the out-of-list file in the summary.
-- [ ] Append axiom pins for all nineteen Goals to
+- [x] Append axiom pins for all nineteen Goals to
       `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, append-only, in the file's
       `#guard_msgs in #print axioms` form, with a comment block stating what the pins do and do
       not certify (they certify the standard profile; they do not certify any claim about
       `PlusValidZTime`). Add the `AnchorLayer` import if the aggregator import does not already
       carry it. Re-read the file immediately before editing.
-- [ ] Rewrite `specs/ROADMAP.md`'s **(W)** bullet under `/orchestrate 747 --hard --lit`: the
+- [x] Rewrite `specs/ROADMAP.md`'s **(W)** bullet under `/orchestrate 747 --hard --lit`: the
       characterization round is complete; anchor layer landed and bounded; run layer blocked on
       three named obligations with no cost figure (the record's "costs it at nothing" is now
       "three obligations, one of them with a carried partial figure"); if the run layer is to be
       attempted, it is filed as its own record with F7's design question (thread-indexed
       unfolding vs. a bounded-deadline encoding) as ITS phase 1, after this round lands.
-- [ ] The complete gate set, each exiting 0: the full-project guarded build
+- [x] The complete gate set, each exiting 0: the full-project guarded build
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`; the test library
       by name (`… -- build BimodalTest`) so every `#guard_msgs` and `#guard` elaborates;
       `bash scripts/check-evidence-probes.sh`; `bash scripts/check-module-invariants.sh`;
@@ -787,30 +787,30 @@ end FormalSystem.Metalogic.Decidability.RaySummary
 
 ## Testing & Validation
 
-- [ ] Full-project guarded build green: `bash .claude/scripts/lake-build-guard.sh build --timeout
+- [x] Full-project guarded build green: `bash .claude/scripts/lake-build-guard.sh build --timeout
       1800 -- build` exits 0 (detached, never foreground, never bare `lake`); the `BimodalTest`
       library built by name with every `#guard_msgs` and `#guard` passing.
-- [ ] Zero sorries across every module this plan touches, confirmed by
+- [x] Zero sorries across every module this plan touches, confirmed by
       `bash .claude/scripts/lean-sorry-census.sh`.
-- [ ] All nineteen Goals pinned in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` with
+- [x] All nineteen Goals pinned in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` with
       axiom profile exactly `[propext, Classical.choice, Quot.sound]`.
-- [ ] The `AnchorConsFin` positive witness (a cell with two types at one state) and the negative
+- [x] The `AnchorConsFin` positive witness (a cell with two types at one state) and the negative
       control (the `stab` equation violated) both pass as `#guard`s in
       `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` — the conditions must be shown to
       exclude something.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 with `w-soundness-shape-refuted` green and
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 with `w-soundness-shape-refuted` green and
       every pre-existing probe unmodified.
-- [ ] `bash scripts/check-module-invariants.sh` reports all checks passed (including C14/C21 on
+- [x] `bash scripts/check-module-invariants.sh` reports all checks passed (including C14/C21 on
       the new theorem-index rows).
-- [ ] `bash .claude/scripts/validate-artifact.sh specs/747_closure_wide_quasimodel_lift_to_validity/plans/01_closure-wide-quasimodel-anchor-layer.md plan` exits 0.
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0.
-- [ ] No file touched by this plan states `Decidable (PlusValidZTime φ)` in any form, says "L⁺ is
+- [x] `bash .claude/scripts/validate-artifact.sh specs/747_closure_wide_quasimodel_lift_to_validity/plans/01_closure-wide-quasimodel-anchor-layer.md plan` exits 0.
+- [x] `bash .claude/scripts/verify-deploy.sh` exits 0.
+- [x] No file touched by this plan states `Decidable (PlusValidZTime φ)` in any form, says "L⁺ is
       decidable" unqualified, asserts any complexity bound (the ARGUED CTL⋆ ceiling only with its
       qualifier), introduces a finite-fibre or finite-width assumption on a model, adds a cslib
       `require` edge or copies a cslib declaration, implies a backward Bool-fixture bridge, or
       describes (S) as retired or the run layer as refuted. Each checked by reading the hits of a
       targeted grep, not by assuming.
-- [ ] No vacuous definition anywhere (`:= True`, `:= Unit`, `:= trivial` bodies), per
+- [x] No vacuous definition anywhere (`:= True`, `:= Unit`, `:= trivial` bodies), per
       `lean4.md`'s prohibition; `anchorCons_anchorCells` carries no hypothesis beyond `M` and `φ`.
 
 ## Artifacts & Outputs

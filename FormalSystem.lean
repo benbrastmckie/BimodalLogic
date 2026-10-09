@@ -196,6 +196,7 @@ import FormalSystem.Metalogic.Decidability.Propositional.Kalmar
 import FormalSystem.Metalogic.Decidability.Propositional.PropForm
 import FormalSystem.Metalogic.Decidability.Propositional.Tactic
 import FormalSystem.Metalogic.Decidability.RaySummary
+import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf

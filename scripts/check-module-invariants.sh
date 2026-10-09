@@ -2083,6 +2083,18 @@ fi
 # the refutation above still stands for every model NOT so constructed, so the two sit side by
 # side rather than one retiring the other.
 #
+# Four further matched pairs close the block, for the four `docs/theorem-index.md` rows of the
+# requirement (W) anchor layer that carry a `pinned:C14` cell. `FormalSystem.PlusLanguage.box_global`
+# (`PlusLanguage/PlusTruth.lean`) is the quantifier collapse -- `□ψ` is a per-model datum on
+# every `TaskFrame`, so the requirement's "for every time" quantifier does not exist in this
+# semantics. `...anchorCons_anchorCells`, `...anchorCells_ncard_le` and `...anchorConsFin_iff`
+# (`RaySummary/AnchorLayer.lean`) are the anchor layer's completeness for EVERY model (no
+# presentation, no finiteness, no regularity hypothesis), its cardinality bound on the SET OF
+# CELLS (syntactic in `|cl φ|`; not a complexity bound), and the `Finset`-twin bridge. They pin
+# profiles and are not a decision procedure: the run layer of (W) is BLOCKED on three named
+# obligations (RaySummary README, "(W): what landed and what did not"), and nothing in that
+# module states `PlusValidZTime` in any form.
+#
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
 # SORRY-FREE is pinned here or by C2, so no such claim is prose-only: the docstring asserts
@@ -2301,6 +2313,10 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.presented_modelOf' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.box_global' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.anchorCons_anchorCells' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2519,6 +2535,10 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.presented_modelOf
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf
+#print axioms FormalSystem.PlusLanguage.box_global
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCons_anchorCells
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

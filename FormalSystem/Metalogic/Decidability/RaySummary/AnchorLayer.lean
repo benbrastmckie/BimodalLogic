@@ -267,7 +267,12 @@ structure AnchorCons (φ : PlusFormula) (𝒞 : Set (Set (Finset PlusFormula))) 
 the model, no regularity — the absence of hypotheses is the content. Field by field from the
 four equations: the `box` field routes `∀ C' ∈ anchorCells, ∀ T' ∈ C'` through
 `box_mem_tpOf_iff`'s `∀ σ' z'` by `tpOf_mem_cellAt_zero`; the `stab` field is
-`stab_mem_tpOf_iff` with `σ.state 0 = w = σ'.state 0`. No new induction. -/
+`stab_mem_tpOf_iff` with `σ.state 0 = w = σ'.state 0`. No new induction.
+
+Paper: — (the nearest literature statement is HWZ 2000's Theorem 14 (⇒), reading types off a
+model, at the level of cells rather than types; this repository's manuscript carries no
+counterpart, and the HWZ corpus entry is of UNVERIFIED-summary provenance, so it orients the
+shape and sources no claim) -/
 theorem anchorCons_anchorCells (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :
     AnchorCons φ (anchorCells M φ) where
   closure := by
@@ -312,7 +317,10 @@ theorem anchorCells_finite (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :
 /-- The one bound (W) can state honestly: a cardinality bound on the SET OF CELLS of a model,
 syntactic in `|cl φ|` — a cell is a set of subsets of `cl φ`, so there are at most
 `2 ^ (2 ^ |cl φ|)` of them. It is not a complexity bound of any kind: it counts cells, it does
-not time anything, and it must not be described as a bound on any procedure's running time. -/
+not time anything, and it must not be described as a bound on any procedure's running time.
+
+Paper: — (a syntactic count of cells, `𝒫(𝒫(cl φ))`; the manuscript carries no counterpart and
+no literature bound is cited — in particular the ARGUED CTL⋆ 2EXPTIME ceiling is not one) -/
 theorem anchorCells_ncard_le (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :
     (anchorCells M φ).ncard ≤ 2 ^ (2 ^ (plusSubformulaClosure φ).card) := by
   calc (anchorCells M φ).ncard
@@ -363,10 +371,14 @@ instance decidableAnchorConsFin (φ : PlusFormula) (𝒞 : Finset (Finset (Finse
      fun ⟨h₁, h₂, h₃, h₄, h₅⟩ => ⟨h₁, h₂, h₃, h₄, h₅⟩⟩
 
 /-- The `Finset` twin agrees with `AnchorCons` on the image of the object under coercion:
-`Set.mem_image`/`Finset.mem_coe` rewriting on each field, no content. -/
+`Set.mem_image`/`Finset.mem_coe` rewriting on each field, no content.
+
+Paper: — (a bookkeeping bridge between the `Set`- and `Finset`-valued statements of the same
+five equations; nothing in the manuscript or the HWZ source corresponds to it) -/
 theorem anchorConsFin_iff (φ : PlusFormula) (𝒞 : Finset (Finset (Finset PlusFormula))) :
     AnchorConsFin φ 𝒞 ↔
-      AnchorCons φ ((fun C : Finset (Finset PlusFormula) => (↑C : Set (Finset PlusFormula))) '' ↑𝒞) := by
+      AnchorCons φ
+        ((fun C : Finset (Finset PlusFormula) => (↑C : Set (Finset PlusFormula))) '' ↑𝒞) := by
   constructor
   · intro h
     refine ⟨?_, ?_, ?_, ?_, ?_⟩

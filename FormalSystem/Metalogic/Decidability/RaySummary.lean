@@ -13,6 +13,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Present
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.StabCheck
 import FormalSystem.Metalogic.Decidability.RaySummary.Realize
+import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -34,11 +35,20 @@ built: `Presented` is discharged for a model constructed FROM a presentation
 (`presented_modelOf`), at ONE seam, for `box`/`stab`-free `φ`, under the eleven-field
 consistency bundle `Cons` — and the Hit-level equality follows in one line
 (`hitCl_modelOf_eq_hitOf`). It is discharged for no model NOT so constructed, and the
-`box`/`stab`-bearing fragment and the lift from one seam to validity both remain open (the
-README's requirement (W)). So `hitOf` is computable on presentations, `Hit` is never computed
-for a model outright, and nothing here is a decision procedure: no decidability result is
-proved, no complexity bound is claimed, everything is under `[F.IsRegular]` over the `ℤ` time
-axis, and the cited fixtures are forward-only (no backward Bool-fixture bridge exists).
+`box`/`stab`-bearing fragment is assigned to the README's requirement (W), whose status is now
+precise: the ANCHOR LAYER of (W) is landed (`AnchorLayer.lean` — closure types `tpOf`, cells
+`cellAt`, the `box`/`stab` fixpoint equations, the finite object `AnchorCons` with
+`anchorCons_anchorCells` for EVERY model and the bound `anchorCells_ncard_le`; the requirement's
+"for every time" quantifier is dropped by the theorem `box_time_invariant`), and the RUN LAYER —
+the `untl`/`snce` nesting, the lift from one seam to validity — is BLOCKED on three named
+obligations recorded in the README's "(W): what landed and what did not", with the shape of
+(S)'s construction refuted as its soundness half by the wired probe
+`w-soundness-shape-refuted.lean`. Nothing in this cluster states `PlusValidZTime` in any form.
+So `hitOf` is computable on presentations, `Hit` is never computed for a model outright, and
+nothing here is a decision procedure: no decidability result is proved, no complexity bound is
+claimed, everything is under `[F.IsRegular]` over the `ℤ` time axis where the seam's fibre is
+used (the anchor layer needs no regularity), and the cited fixtures are forward-only (no
+backward Bool-fixture bridge exists).
 A conditional per-seam `⊡` decider exists under `Presented` (`StabCheck`: `stabCheckSig`,
 `stabCheck_iff_of_presented`, `decidableStabOfPresented`), and `Presented` is refuted as a
 completeness carrier by the wired probe `presented-not-complete.lean`
@@ -89,4 +99,15 @@ nothing about `PlusValidZTime` — see the README's verdict.
   `presented_modelOf` with its Hit-level corollary `hitCl_modelOf_eq_hitOf`. Scope: ONE seam,
   `box`/`stab`-free `φ`, `[Fintype Q]` on the PRESENTATION only. Nothing there states
   `Decidable (PlusValidZTime φ)`.
+* `RaySummary.AnchorLayer` — the anchor layer of requirement (W): closure types read off a
+  model (`tpOf`, `mem_tpOf_iff`, `tpOf_timeShift`), the per-state cells (`cellAt`,
+  `cellAt_eq_cellAt`), the four fixpoint equations a closure type satisfies by the truth
+  clauses alone (`bot_not_mem_tpOf`, `imp_mem_tpOf_iff`, `box_mem_tpOf_iff` — one global bit,
+  `stab_mem_tpOf_iff` — one bit per cell), the finite object `AnchorCons` on a set of cells with
+  its completeness theorem for EVERY model (`anchorCons_anchorCells`, no presentation, no
+  finiteness, no regularity hypothesis), `anchorCells_finite` and the cardinality bound
+  `anchorCells_ncard_le` (`≤ 2 ^ (2 ^ |cl φ|)`, a count of cells and not a complexity bound),
+  and the `Finset` twin `AnchorConsFin` with `decidableAnchorConsFin` (decidable on a concrete
+  finite object, never about a model) and the bridge `anchorConsFin_iff`. No `[F.IsRegular]`,
+  no `untl`/`snce` equation (the run layer, blocked), nothing about `PlusValidZTime`.
 -/

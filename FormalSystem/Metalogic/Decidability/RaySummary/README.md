@@ -29,13 +29,14 @@ statement about `⊡` is made.
 |------|-------|-------------|
 | `Seam.lean` | 165 | `SeamSummary` (a family triple plus a `Bool` verdict), the four-field hypothesis bundle `Presents` (`colours`; `determined`; `realized` — joint realization through the seam; `verdict`), and the bridge `plusStab_iff_seamSummary`: under `Presents`, `⊡φ` holds at the seam iff the verdict is `true`. The bundle's declarations are pinned and unchanged; what `colours` says is characterized in `SeamMulti.lean`. |
 | `SeamMulti.lean` | 344 | The characterization `exists_presents_iff` (`SeamDecided`): the single-family bundle is inhabited iff the seam is `⊡`-decided — so `Presents.colours` is a seam condition, not the MSO reduction. The two-letter interface (`twoLetter`, `seamTrace`, `nowPhi`, `stabTarget`, `stabTarget_determined` from `determinedByKType_eval`), the realized set `Hit` (finite: `hit_finite`), the hypothesis-free bridge `plusStab_iff_forall_hit`, and the multi-family bundle `PresentsMulti` with its bridge `plusStab_iff_presentsMulti` and its inhabitant `presentsMulti_seamTrace` (whose `Bool` is classical). |
-| `Closure.lean` | 309 | B1: the closure alphabet `clSig φ` (one letter per subformula of `φ` plus the marker `clNow`; `Fintype`/`DecidableEq` by `inferInstanceAs`), HWZ 2000 Def 11's local run conditions on colourings of `ℤ` (`LocalRun`: `bot`, `imp`, `untl`, `snce` — exactly `PlusTruthAt`'s clauses), the anchors that fix what a run condition cannot (`Anchored`: `now` at `t`, atoms at states, `box` per time, `stab` per state), the closure trace `clTrace` of a history (its two-letter projection is `seamTrace`, `clTrace_proj`), `HitSig` over an arbitrary signature, and the signature-generic bridge `plusStab_iff_forall_hitSig`, of which `plusStab_iff_forall_hit` is the two-letter instance (`hitSig_twoLetter` by `rfl`). |
+| `Closure.lean` | 309 | B1: the closure alphabet `clSig φ` (one letter per subformula of `φ` plus the marker `clNow`; `Fintype`/`DecidableEq` by `inferInstanceAs`), HWZ 2000 Def 11's local run conditions on colourings of `ℤ` (`LocalRun`: `bot`, `imp`, `untl`, `snce` — exactly `PlusTruthAt`'s clauses), the anchors that fix what a run condition cannot (`Anchored`: `now` at `t`, atoms at states, `box` per time — `box_time_invariant` (`PlusLanguage/PlusTruth.lean`) shows that field's `∀ z` is redundant on every `TaskFrame`, `□ψ` being a per-model datum; the structure is pinned and consumed by `Trace.lean`'s uniqueness theorem, so the redundancy is recorded here and not repaired — `stab` per state), the closure trace `clTrace` of a history (its two-letter projection is `seamTrace`, `clTrace_proj`), `HitSig` over an arbitrary signature, and the signature-generic bridge `plusStab_iff_forall_hitSig`, of which `plusStab_iff_forall_hit` is the two-letter instance (`hitSig_twoLetter` by `rfl`). |
 | `Trace.lean` | 415 | B2a, HWZ 2000 Thm 14 in the direction that reads types off a model: the closure trace satisfies every run condition and anchor (`clTrace_localRun`, `clTrace_anchored`, each clause `Iff.rfl`) and an anchored local run **is** the trace of its history (`eq_clTrace_of_localRun_anchored`, `clTrace_unique`, by structural induction on the closure formula). The realized set over the closure alphabet `HitCl` (finite), the bridge `plusStab_iff_forall_hitCl`, and `hitCl_eq_iUnion` (the union over the seam's ray pairs of their traces' family triples — a theorem, not a computation: `SeqPair` is not finite). The realization hypothesis `Presented M τ t φ lab step` (the seam's closure traces are exactly the presentation's run traces), `presented_localRun`, the per-model bridge `hit_eq_hitOf_of_presented` (`HitCl = ↑(hitOf …)` for `1 ≤ k`), and `plusStab_iff_forall_hitOf_of_presented`, which decides nothing. Beside it the **Hit-level weakening** `HitPresented` — equality of the realized FAMILY-TRIPLE sets, `HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)`, instead of equality of the trace sets — with `hitPresented_of_presented` (`Presented` implies it at every `k ≥ 1`, by `hit_eq_hitOf_of_presented` verbatim; no converse). It is **satisfiable** where `Presented` is refuted, non-constructively and with no bound: see "The verdict" below. |
-| `Compose.lean` | 298 | B3b, the composition half: the finite segment of a list of letters `listSeg` (carrier `Fin l.length`, computable instances, `kTypeOfFin_listSeg`), the letters of a decidable colouring on `[a, b)` (`labels`) with `kTypeOf_segZ_eq_listSeg` (a time-axis segment has the `k`-type of its label list, by `k_equiv_of_iso`), `listSeg_append_kEquiv` (a concatenation is the two-point ordered sum of its parts), and the congruence `kTypeOf_listSeg_append_congr` — the `k`-type of `l₁ ++ l₂` depends only on the `k`-types of the parts, the `I = J = Bool` instance of `kEquiv_orderedSum_of_kEquiv_colour`. No `compose` on bare `KType` values, by design: most `k`-types are the type of nothing. |
+| `Compose.lean` | 297 | B3b, the composition half: the finite segment of a list of letters `listSeg` (carrier `Fin l.length`, computable instances, `kTypeOfFin_listSeg`), the letters of a decidable colouring on `[a, b)` (`labels`) with `kTypeOf_segZ_eq_listSeg` (a time-axis segment has the `k`-type of its label list, by `k_equiv_of_iso`), `listSeg_append_kEquiv` (a concatenation is the two-point ordered sum of its parts), and the congruence `kTypeOf_listSeg_append_congr` — the `k`-type of `l₁ ++ l₂` depends only on the `k`-types of the parts, the `I = J = Bool` instance of `kEquiv_orderedSum_of_kEquiv_colour`. No `compose` on bare `KType` values, by design: most `k`-types are the type of nothing. |
 | `Present.lean` | 690 | B3b, the closure half: finite labelled presentations, unbundled (`Q` with `[Fintype Q] [DecidableEq Q]`, `lab`, `step`, `now`), their bi-infinite runs `IsRun` and decidable traces `runTrace`, finite paths `StepPath`/`stepPath_iff`, the representative-carrying closure `pathClosure` computing `pathTypes` (the `k`-types of `now`-free paths between two states) and `pathTypesNow` (paths reading `now` once) by `kTypeOfFin` on one stored label list per key, justified by the congruence (`mem_pathTypes_iff`, `mem_pathTypesNow_iff`; stationarity within `closureBound` rounds by `iterate_stabilizes`), and liveness as a greatest fixpoint (`live`, `live_iff`, `fwdLive`, `bwdLive`). `fwdLive`/`bwdLive` chain paths that share an endpoint and are **not** what `hitOf` reads (see `HitOf.lean`). |
 | `HitOf.lean` | 810 | B3b, the read-out half: liveness over **disjoint** segments joined by one `step` (`fwdSepGraph`, `bwdSepGraph`, `fwdLiveSep`, `bwdLiveSep`, `fwdLiveSep_iff`, `bwdLiveSep_iff` — the graph a `SegmentFactorization` actually walks; with `Present.lean`'s shared-endpoint graph the characterization below is false, by a two-state counterexample `#eval`-witnessed in `KTypeFinEvalTest.lean`), the computable realized-triple set `hitOf lab step now k` (an image over state pairs of `pathTypesNow` types paired with live path types, never a filter over the triple product of `KType sig k`), and `mem_hitOf_iff`: for every anchor `t` and depth `k ≥ 1`, `hitOf` is exactly the family triples (`InFamily`) of the traces of the presentation's runs — the ⇒ direction splices runs of the presentation through a generic `ℤ`-indexed concatenation (`cutAt`, `exists_concat`, `isRun_concat`, `kTypeOf_segZ_concat`), the ⇐ direction reads a factorization's segments as `runSeg` paths and uses `k ≥ 1` through `doets_lemma_1_1` for the `k`-type visibility of nonemptiness and of a `now` state. |
-| `Realize.lean` | 953 | Requirement (S), the soundness half — HWZ 2000 Thm 14 (⇐) for the box-dot fibre. The decidable per-edge consistency conditions on a finite labelled presentation (`UCoh`, `deferGraph`, `ULive`, `Disch` forward; `SCoh`, `bwdDeferGraph`, `SLive`, `DischBwd` backward, proved outright and **not** transported — no backward Bool-fixture bridge exists) with the two theorems forcing `LocalRun`'s eventuality clauses from them (`untl_iff_of_UCoh_ULive`, `snce_iff_of_SCoh_SLive`), each generic over `sig` and `Q` with no model, frame or carrier finiteness in sight. The scope predicate `PlusFormula.BoxStabFree` and the closure-vacuity it buys (`not_box_mem_plusSubformulaClosure`, `not_stab_mem_plusSubformulaClosure`), which is what makes `Anchored`'s `box` and `stab` fields vacuous. The **eleven**-field bundle `Cons` with `cons_localRun` (field by field, no new induction); ten fields mirror a `LocalRun` field or a frame law, the eleventh, `nowUnique`, was derived from the realization theorem's own obligation and is documented at the field. The constructed model `frameOf` / `modelOf` (`ofSlicedStep` on the presentation's own `[Fintype Q]`, valuation reading the state component's label), its regularity instance `frameOf_isRegular`, the explicit record `frameOf_not_finite_worldState` that the carrier `ℤ × Q` is **infinite**, and the rewrite lemmas `modelOf_valuation`, `frameOf_step`, `frameOf_mem_HF_iff`. Then `anchored_runTrace_of_boxStabFree`, the realization theorem `presented_modelOf`, and the Hit-level corollary `hitCl_modelOf_eq_hitOf`. Scope, in the statements rather than in prose: ONE seam, `box`/`stab`-free `φ`, `[Fintype Q]` on the PRESENTATION only. No declaration mentions `PlusValidZTime` and no complexity bound is claimed. |
+| `Realize.lean` | 1004 | Requirement (S), the soundness half — HWZ 2000 Thm 14 (⇐) for the box-dot fibre. The decidable per-edge consistency conditions on a finite labelled presentation (`UCoh`, `deferGraph`, `ULive`, `Disch` forward; `SCoh`, `bwdDeferGraph`, `SLive`, `DischBwd` backward, proved outright and **not** transported — no backward Bool-fixture bridge exists) with the two theorems forcing `LocalRun`'s eventuality clauses from them (`untl_iff_of_UCoh_ULive`, `snce_iff_of_SCoh_SLive`), each generic over `sig` and `Q` with no model, frame or carrier finiteness in sight. The scope predicate `PlusFormula.BoxStabFree` and the closure-vacuity it buys (`not_box_mem_plusSubformulaClosure`, `not_stab_mem_plusSubformulaClosure`), which is what makes `Anchored`'s `box` and `stab` fields vacuous. The **eleven**-field bundle `Cons` with `cons_localRun` (field by field, no new induction); ten fields mirror a `LocalRun` field or a frame law, the eleventh, `nowUnique`, was derived from the realization theorem's own obligation and is documented at the field. The constructed model `frameOf` / `modelOf` (`ofSlicedStep` on the presentation's own `[Fintype Q]`, valuation reading the state component's label), its regularity instance `frameOf_isRegular`, the explicit record `frameOf_not_finite_worldState` that the carrier `ℤ × Q` is **infinite**, and the rewrite lemmas `modelOf_valuation`, `frameOf_step`, `frameOf_mem_HF_iff`. Then `anchored_runTrace_of_boxStabFree`, the realization theorem `presented_modelOf`, and the Hit-level corollary `hitCl_modelOf_eq_hitOf`. Scope, in the statements rather than in prose: ONE seam, `box`/`stab`-free `φ`, `[Fintype Q]` on the PRESENTATION only. No declaration mentions `PlusValidZTime` and no complexity bound is claimed. |
 | `StabCheck.lean` | 252 | The per-seam `⊡` check by state liveness, **conditional on `Presented`** — the assembly that "The verdict" (below) bounds. The `now`-free step graphs `fwdNowFree`/`bwdNowFree`; `OnRun` and `onRun_iff_live` (the `now` states of runs anchored at `t` are exactly the live `now` states: a run restricted to `[t, ∞)` and `(-∞, t]` is a pair of chains, and a pair of chains with a common origin glues to a run); the decider `stabCheckSig lab step now phi` (every live `now` state reads `phi`) with `stabCheckSig_iff`, correct at every anchor (`t` does not occur in the decider); and the closure instance `stabCheck_iff_of_presented` / `decidableStabOfPresented`, composing the decider with `Trace.lean`'s run-level bridge `plusStab_iff_forall_run_of_presented` (under `Presented`, `⊡φ` at the seam iff every anchored run of the presentation reads `φ`'s letter at its `now` state). Both closure-instance statements are vacuous on model A, where `Presented` has no inhabitant (`presented-not-complete.lean`, below); no declaration mentions `PlusValidZTime`. |
+| `AnchorLayer.lean` | 406 | Requirement (W), the **anchor layer** — the half of the closure-wide object the semantics lets one state on EVERY model with no hypothesis. Closure types read off a model (`tpOf`, classical, a `Finset`; `mem_tpOf_iff`, `tpOf_timeShift`), the per-state cells (`cellAt`, time-independent by `cellAt_eq_cellAt`), the four fixpoint equations a closure type satisfies by the truth clauses alone (`bot_not_mem_tpOf`, `imp_mem_tpOf_iff`; `box_mem_tpOf_iff` — ONE GLOBAL bit per `□`-subformula, `Anchored.box` with its per-time quantifier dropped by `box_time_invariant`; `stab_mem_tpOf_iff` — one bit per cell, `Anchored.stab` on types), the finite object `AnchorCons` (a set of cells satisfying the Hintikka and `box`/`stab` equations) with its completeness theorem for EVERY model `anchorCons_anchorCells` — `(M : TaskModel F.toTaskFrame) (φ : PlusFormula)` and nothing else: no presentation, no finiteness, no `[F.IsRegular]` — `anchorCells_finite` and the bound `anchorCells_ncard_le : (anchorCells M φ).ncard ≤ 2 ^ (2 ^ \|cl φ\|)` (a count of cells, not a complexity bound), and the `Finset` twin `AnchorConsFin` with `decidableAnchorConsFin` (an instance on a concrete finite object, never about a model; exercised by a non-vacuous `#guard` witness and a negative control in `KTypeFinEvalTest.lean`) and the bridge `anchorConsFin_iff`. No `untl`/`snce` equation — the run layer, blocked ("(W): what landed and what did not" below) — and no declaration mentions `PlusValidZTime`. |
 
 ## What it does not do
 
@@ -152,7 +153,7 @@ dependency edit, is the user's call.
 |---|---|---|---|
 | (C) | **Hit-level completeness with a computable bound** | For every regular `ℤ`-model `M`, seam `(τ, t)`, formula `φ` and depth `1 ≤ k`, a finite labelled presentation `(Q, lab, step)` with `Fintype.card Q` below a computable bound in `φ`, such that `HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)` — the Hit-level hypothesis `HitPresented` (`Trace.lean`), together with a bound | **Half-settled, and only the easier half.** `Presented` cannot carry it (`Probe735.not_presented`), and the Hit-level hypothesis is no longer open on the fixture: `HitPresented` **holds** on model A at the seam `(t, a)` of `stayA` with `φ := Fp` at every depth `k ≥ 1`, by the wired probe `hit-presented-model-a.lean` (`Probe745.hitPresented_modelA`) — the refutation does not transfer, exactly as the forward-type observation predicted, so the route through (C) is **not** closed by the verdict above. What is still missing is the whole second half: that discharge is **non-constructive** (an `∃ L` from `Set.Finite.bddAbove`, never exhibited) and it is **one fixture**, so no computable bound and no general regular `ℤ`-model statement follows. See "The bound: blocked, with the obligation named" below. Without (C), "no presentation refutes `φ`" never certifies validity, since the refuting models need not be among the presented ones. |
 | (S) | **Hit-level soundness** — the B2b record, restated at `hitOf` level | For every finite labelled presentation `P` satisfying consistency conditions `Cons P`, a regular `ℤ`-model `modelOf P` with a seam `(τ, t)` at which `HitCl (modelOf P) τ t φ k = ↑(hitOf …)` for `1 ≤ k` (the trace-level `Presented (modelOf P) τ t φ …` is stronger and suffices) | **DISCHARGED for `box`/`stab`-free `φ` at one seam**, in `Realize.lean`, at the stronger trace level: `presented_modelOf` plus its one-line Hit-level corollary `hitCl_modelOf_eq_hitOf`. See "(S): what landed and what did not" below for the exact scope. `Cons`'s eleven fields do exclude the pumpable eventuality-deferring run sets this row named as the obstruction — the two liveness fields `ulive`/`slive` are precisely acyclicity of the deferral graph `Probe735.pump_isRun` exploits. What remains open: `box`/`stab`-bearing `φ`, and every seam but the one. |
-| (W) | **A closure-wide quasimodel over all seams and times** | A finite object carrying, for every time, the `box` anchor across the whole slice and, for every state, the `stab` anchor, nested under `untl`/`snce` — so that one presentation-level object witnesses `¬ PlusValidZTime φ` for some regular `ℤ`-model, history and time, rather than one seam's `⊡` | `Anchored` fixes `box` per time and `stab` per state for **one** seam's closure trace (`Closure.lean`), and `stabCheckSig` decides one seam's `⊡` at one anchor. Validity quantifies over every model, history and time, and `⊡` nests under `untl`/`snce`; nothing in the tree composes per-seam checks into a model-wide witness, and (C) and (S) together still speak of one seam. |
+| (W) | **A closure-wide quasimodel over all seams and times** | A finite object carrying, for every time, the `box` anchor across the whole slice and, for every state, the `stab` anchor, nested under `untl`/`snce` — so that one presentation-level object witnesses `¬ PlusValidZTime φ` for some regular `ℤ`-model, history and time, rather than one seam's `⊡` | **Characterized, and half-landed.** The object is TWO-layered. The **anchor layer** is landed in `AnchorLayer.lean` and bounded: cells (sets of closure types, one per world state), the `box`/`stab` fixpoint equations, `AnchorCons`, its completeness `anchorCons_anchorCells` for EVERY model with no presentation, finiteness or regularity hypothesis, the bound `anchorCells_ncard_le` (`≤ 2 ^ (2 ^ \|cl φ\|)`, a count of cells), and the decidable `Finset` twin `decidableAnchorConsFin` on a concrete finite object. The row's "for every time" quantifier was dropped by a theorem, not an argument: `box_time_invariant` (`PlusTruth.lean`) makes `□ψ` a per-model datum on every `TaskFrame`, so the `box` letters are global bits and `stab` letters per-cell bits. The **run layer** — the `untl`/`snce` nesting, which lives in type sequences over `ℤ` and is the lift from one seam to validity — is **BLOCKED** on three named obligations, each with its source and none with a measured cost (see "(W): what landed and what did not" below), and the shape of (S)'s construction is refuted as its soundness half by the wired probe `w-soundness-shape-refuted.lean` (finite width; `⊡`-collapse under `Presented`+`nowUnique`) — (S) itself untouched. Nothing states `PlusValidZTime` in any form; nothing is a negative decidability result. |
 
 ### (S): what landed and what did not
 
@@ -250,8 +251,9 @@ and no backward Bool-fixture bridge exists (limit 1, below). On the Hit-level hy
 verdict said OPEN, not refuted, and that much is now settled in the non-refutation direction
 — on **one fixture**, non-constructively, by `hit-presented-model-a.lean`; the bound half of (C)
 is untouched and general (C) is open. The verdict itself is unchanged by that: the
-ray-product presentation as landed still cannot deliver `Decidable (PlusValidZTime φ)`, and
-(S) and (W) are still missing. Nothing about models whose slices are infinite:
+ray-product presentation as landed still cannot deliver `Decidable (PlusValidZTime φ)`; (S) is
+landed for `box`/`stab`-free `φ` at one seam, and (W)'s anchor layer is landed while its run layer
+is blocked (below). Nothing about models whose slices are infinite:
 model A's slice is `Fin 3` (the shape `not_finite_width_fmp` leaves standing) and its carrier
 `ℤ × Fin 3` is infinite; no finite-fibre or finite-width assumption is made or needed. No
 complexity bound of any kind, upper or lower: the CTL⋆ 2EXPTIME lower bound remains an
@@ -302,6 +304,103 @@ a model's trace set and a presentation's run-trace set; the trace-level `Present
 formalization's own strengthening, and the probe shows that the strengthening is exactly what
 fails on a non-trivial model. The corpus entry for HWZ 2000 is of UNVERIFIED-summary provenance
 and is cited here as context only, not as a source for any claim above.
+
+### (W): what landed and what did not
+
+**The characterization, and the object's shape.** Requirement (W) was filed with no cost figure,
+and its first phase was to characterize the closure-wide object before building anything. The
+characterization (three compiled scratch files, now `box_time_invariant`, the `AnchorLayer`
+module and the eighth wired probe below) found the object is **two-layered**, not the single
+object the requirement imagined:
+
+* An **anchor layer**: by `box_time_invariant` / `box_global` (`PlusLanguage/PlusTruth.lean`)
+  `□ψ` has ONE truth value per model on every `TaskFrame`, and by `stab_state_only` `⊡ψ` is a
+  function of the world state alone. So the "for every time, across the whole slice" quantifier
+  the requirement names **does not exist in this semantics** — it was dropped by a theorem, not
+  an argument. The anchor layer is a set of **cells** (the closure types realized at a world
+  state, `cellAt`, time-independent by `cellAt_eq_cellAt`), a subset of `𝒫(𝒫(cl φ))`,
+  satisfying the Hintikka clauses and the two fixpoint equations (`box_mem_tpOf_iff`, one global
+  bit; `stab_mem_tpOf_iff`, one bit per cell) — every one a direct unfolding of a truth clause.
+* A **run layer**: the `untl`/`snce` nesting, which lives in type sequences over `ℤ`. Here the
+  semantics parts from HWZ 2000 Def. 12: HWZ chooses the run set `R` freely and builds the model
+  ON `R`, whereas this semantics fixes the histories as ALL bi-infinite step paths of a frame
+  (`mem_HF_iff_adjacent`), closed under splicing (`seamOmegaEquiv`) and under limits of chains
+  (`blc_plusValid`). The run layer is therefore the path set of a yet-to-be-constructed frame.
+
+**Landed: the anchor layer, for every model, bounded.** `AnchorLayer.lean` (see the module table
+above) — the headline is
+
+> `theorem anchorCons_anchorCells (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :`
+> `    AnchorCons φ (anchorCells M φ)`
+
+over `F : FrameOver intOrder` and **nothing else**: no `Presented`, no `Cons`, no `[Finite _]`
+or `[Fintype _]` on the model, no `[F.IsRegular]`. The regular `ℤ`-frames the requirement names
+are an instance; the anchor layer needs only shift-closure and the truth clauses, and the
+requirement's `[F.IsRegular]` is the minimum hypothesis a CLAIM ABOUT VALIDITY must carry, not
+one these definitions need. Beside it, `anchorCells_finite` and
+
+> `theorem anchorCells_ncard_le (M : TaskModel F.toTaskFrame) (φ : PlusFormula) :`
+> `    (anchorCells M φ).ncard ≤ 2 ^ (2 ^ (plusSubformulaClosure φ).card)`
+
+— a cardinality bound on a SET OF CELLS, syntactic in `|cl φ|`. **It is not a complexity bound of
+any kind**, upper or lower; it counts cells and times nothing, and the ARGUED CTL⋆ 2EXPTIME
+ceiling is neither cited nor approached. The `Finset` twin `AnchorConsFin` carries the one
+`Decidable` instance this round lands, `decidableAnchorConsFin`, **on a concrete
+`Finset (Finset (Finset PlusFormula))`** — a statement about a finite set, not about L⁺ and not
+about any model; `anchorConsFin_iff` ties it to `AnchorCons`. Its non-vacuity witness in
+`KTypeFinEvalTest.lean` has a cell carrying TWO types at one world state (`{{p}, ∅}` for
+`φ := ⊡p`), exactly the shape trace-level `Presented` with a unique `now` state can never present
+(the collapse theorem below); the negative control `{{{p}}}` violates the `stab` equation and is
+rejected. All nineteen declarations of the round carry `[propext, Classical.choice, Quot.sound]`
+and are pinned in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`.
+
+**Blocked: the run layer, on three named obligations.** No run-layer construction was planned,
+and none is costed here — none has a measured cost anywhere in the tree, and the requirement
+forbids inheriting a figure from (C) or (S). Each obligation has its source:
+
+1. **A frame-scheme constructor** producing infinite-width, finitely branching regular frames
+   from a finite object. Its source is the seventh probe, `b2b-frame-constructor-branching.lean`:
+   `Rbad`/`Rok` are refuted as repair shapes; the `Node` thread-unfolding shape of
+   `Limits/NoFiniteWidth.lean` is neither refuted nor built. The ~120-160 line figure for the
+   REGULARITY part is **carried, unverified**, from "(S): what landed and what did not" above and
+   is scoped to that part only; the unfolding design (thread-indexed unfolding vs. a
+   bounded-deadline encoding) is unmeasured. Infinite width is forced: by
+   `not_finite_width_fmp`, and concretely by the eighth probe's `modelOf_incomplete`, every
+   finite-width `ofSlicedStep` model validates `Φ.neg`, a `ℤ`-time non-validity.
+2. **A Hit-level per-cell realization hypothesis** — (C)'s `HitPresented` (family-triple SETS,
+   `hit-presented-model-a.lean`) at every cell — and **never** trace-level `Presented`: the
+   eighth probe's `stab_iff_of_presented_nowUnique` shows that at a `Presented` seam whose
+   presentation marks at most one `now` state (exactly `Cons.nowUnique`, which (S) found
+   necessary) every closure formula satisfies `ψ ↔ ⊡ψ`, so no `⊡`-refutation such as
+   `Fp → ⊡Fp` is ever witnessed there, independent of width.
+3. **The presentation-size bound** `kTypeOf_listSeg_replicate_eventually_periodic`, stated under
+   "The bound: blocked, with the obligation named" above and not proved.
+
+**What the lift would deliver even with the run layer, and what it would not.** Without (iii),
+a landed composition theorem would read `¬ PlusValidZTime φ ↔ ∃ object, …` over an UNBOUNDED
+run layer — at best semi-decidable — and NOT `Decidable (PlusValidZTime φ)`. So nothing in
+this round, and nothing a successor could assemble from it without (iii), states a decidability
+result; `Decidable (PlusValidZTime φ)` appears nowhere in `AnchorLayer.lean`, the aggregator, the
+probe, the pins or this README except in sentences saying so.
+
+**(S) is untouched.** `presented_modelOf` is a correct soundness statement for `box`/`stab`-free
+`φ` at one seam under `Cons`; the eighth probe says only that its frame SHAPE cannot be the whole
+soundness half of a lift for `box`/`stab`-bearing L⁺, and that its realization hypothesis cannot
+witness a `⊡`-refutation. Nothing is weakened, retired or re-proved; both (S) theorems and
+every earlier probe stay exactly as they are.
+
+**What this round does not establish.** No negative decidability result: the verdict is that
+THIS construction and THIS hypothesis do not deliver the lift, not that none exists. Nothing
+about `⊡(Pp)`: the fixtures of this collection are forward-only and there is still no backward
+Bool-fixture bridge (`Probe719Backward.pastStab_iff_allBwdPathsMeet` on the asymmetric fixture
+remains the only backward result). Nothing about `HitPresented` beyond its being the hypothesis
+the run layer may use. No complexity bound. No finite-fibre or finite-width assumption on any
+model anywhere — `anchorCons_anchorCells` carries none, and `not_finite_width_fmp` is the reason
+the run layer's frame must have infinite-width slices. And nothing composes per-seam checks
+into a model-wide witness: that is the run layer, and it is blocked, not open-ended.
+
+**Successor.** If the run layer is to be attempted, it is its own record, with the frame-scheme
+design question of obligation (i) as ITS phase 1 — never a phase appended to this one.
 
 ## Evidence
 
@@ -378,6 +477,24 @@ therefore refuted as a repair shape in both orientations. It cites `ofSlicedStep
 nothing in `SlicedFrame.lean` or `TaskFrame.lean`, both of which are untouched: the successor it
 scopes is a **parallel** constructor, never an in-place generalization.
 
+An eighth wired probe, `specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean`,
+is requirement (W)'s **run-layer verdict**: requirement (S)'s construction `modelOf` cannot be the
+soundness half of (W) for `box`/`stab`-bearing L⁺, on two independent axes, with no fixture —
+both halves are stated over every finite presentation and every regular `ℤ`-frame. WIDTH:
+`frameOf` is `ofSlicedStep` on the presentation's finite `Q`, so the library's
+`no_finite_width_sat` applies verbatim and every `Cons` model validates `Φ.neg`
+(`Probe747.modelOf_sat_neg_Φ`), a `ℤ`-time non-validity (`not_plusValidZTime_neg_Φ`); the gap
+is `modelOf_incomplete`, and no clause added to `Cons` closes it. COLLAPSE: at any `Presented`
+seam whose presentation marks at most one `now` state (`Cons.nowUnique`), every closure formula
+satisfies `ψ ↔ ⊡ψ` (`stab_iff_of_presented_nowUnique`, through `exists_spliced_eq` off
+`seamOmegaEquiv` and `presented_letter_at_seam`), so no `⊡`-refutation of a closure formula is
+ever witnessed there, independent of width. Every declaration carries
+`[propext, Classical.choice, Quot.sound]`. It cites `no_finite_width_sat`,
+`not_plusValidZTime_neg_Φ`, `Presented`, `clTrace_letter`, `seamOmegaEquiv` and `Cons` and
+re-proves none of them. (S) is untouched (`presented_modelOf` is correct for `box`/`stab`-free
+`φ` at one seam); nothing is a negative decidability result; forward-only; nothing about
+`HitPresented`; `Decidable (PlusValidZTime φ)` not stated in any form.
+
 The permanent computability witnesses are `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`
 (imported from `Tests/BimodalTest.lean`): thirteen `#guard`s at depth 1 over `twoLetter` that
 `kTypeOfFin` (on `segZ` and `listSeg`), `allPathTypes`, `hitOf`, `fwdLiveSep` and `bwdLiveSep`
@@ -387,6 +504,12 @@ else.
 Four further `#guard`s in the same file, under "stabCheckSig on finite labelled presentations",
 witness that `stabCheckSig` evaluates on two-state presentations and discriminates (`true`,
 `false`, `true`, `true`); they, too, witness computability and nothing else.
+Two further `#guard`s in the same file, under "`AnchorConsFin` on concrete cell sets", witness that
+`decidableAnchorConsFin` evaluates on `Finset (Finset (Finset PlusFormula))` literals for
+`φ := ⊡p` and discriminates: the three-cell witness `{{{⊡p, p}}, {∅}, {{p}, ∅}}` (its third cell
+carrying two types at one state) is accepted and the one-cell control `{{{p}}}` is rejected on the
+`stab` equation. They witness computability and non-vacuity of the CONDITIONS and nothing else —
+neither says anything about a model.
 
 ## The consumer relation
 

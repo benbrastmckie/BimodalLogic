@@ -502,4 +502,125 @@ set. It is documented at the field, and `cons_localRun` does not read it.
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf
 
+/-! ## Requirement (W): the anchor layer (`PlusTruth.lean`, `RaySummary/AnchorLayer.lean`)
+
+Nineteen pins, one per Goal of the (W) anchor-layer plan: the quantifier collapse
+`box_time_invariant` / `box_global` (`PlusTruth.lean`; `□ψ` is a per-model datum on every
+`TaskFrame`), the closure types and cells (`tpOf`, `mem_tpOf_iff`, `tpOf_timeShift`, `cellAt`,
+`cellAt_eq_cellAt`), the four fixpoint equations (`bot_not_mem_tpOf`, `imp_mem_tpOf_iff`,
+`box_mem_tpOf_iff`, `stab_mem_tpOf_iff`), the finite object and its completeness for EVERY
+model (`anchorCells`, `AnchorCons`, `anchorCons_anchorCells` — no presentation, no finiteness,
+no regularity hypothesis), the finiteness and the bound (`anchorCells_finite`,
+`anchorCells_ncard_le`), and the decidable checker on a concrete finite object (`AnchorConsFin`,
+`decidableAnchorConsFin`, `anchorConsFin_iff`).
+
+**What these pins certify, and what they do not.** They certify the standard axiom profile
+`[propext, Classical.choice, Quot.sound]` on each declaration and nothing else. They certify no
+claim about `PlusValidZTime`: the anchor layer is the half of requirement (W) the semantics lets
+one state on every model, and the run layer — the `untl`/`snce` nesting, the lift from one seam
+to validity — is BLOCKED on three named obligations (`RaySummary/README.md`, "(W): what landed
+and what did not"). `decidableAnchorConsFin` is an instance on a `Finset (Finset (Finset
+PlusFormula))` literal and decides nothing about any model; `anchorCells_ncard_le` counts cells
+and is not a complexity bound. -/
+
+/-- info: 'FormalSystem.PlusLanguage.box_time_invariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.PlusLanguage.box_time_invariant
+
+/-- info: 'FormalSystem.PlusLanguage.box_global' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.PlusLanguage.box_global
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.tpOf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.mem_tpOf_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.mem_tpOf_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.tpOf_timeShift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf_timeShift
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_eq_cellAt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt_eq_cellAt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.bot_not_mem_tpOf' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.bot_not_mem_tpOf
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.imp_mem_tpOf_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.imp_mem_tpOf_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.box_mem_tpOf_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.box_mem_tpOf_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_mem_tpOf_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stab_mem_tpOf_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.anchorCells' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCells
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.AnchorCons' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.AnchorCons
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.anchorCons_anchorCells' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCons_anchorCells
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_finite
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.AnchorConsFin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.AnchorConsFin
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.decidableAnchorConsFin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.decidableAnchorConsFin
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff
+
 end BimodalTest.Metalogic
