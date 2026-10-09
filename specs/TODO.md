@@ -79,7 +79,7 @@ next_project_number: 748
 733 [RESEARCHED] — Probe the backward-dual stability summary on a...
   └─ 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
     └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-747 [RESEARCHING] — Requirement (W) of the ray-product verdict: a closure-wide...
+747 [RESEARCHED] — Requirement (W) of the ray-product verdict: a closure-wide...
 
 ### Formula Refactor
 
@@ -110,10 +110,11 @@ next_project_number: 748
 ## Tasks
 
 ### 747. Closure wide quasimodel lift to validity
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 745, Task 746
+- **Research**: [747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md]
 
 **Description**: Requirement (W) of the ray-product verdict: a closure-wide quasimodel over all seams and times, lifting per-seam results to validity
 

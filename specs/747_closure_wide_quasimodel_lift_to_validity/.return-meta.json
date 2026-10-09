@@ -1,0 +1,68 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md",
+      "summary": "Characterization of requirement (W): the closure-wide object splits into a syntactically bounded anchor layer (box is one bit per model, stab one bit per world-state cell -- box_time_invariant compiled) and an unbounded run layer; (S)'s construction is machine-checked NOT to be the soundness half (modelOf_incomplete via no_finite_width_sat; stab collapses at every Presented seam under nowUnique); costed 5-phase decomposition landing the anchor layer and a wired verdict probe, with the run layer recorded as blocked on three named obligations and no Decidable statement anywhere."
+    }
+  ],
+  "next_steps": "Plan: Phase 1 box_time_invariant/box_global into PlusTruth.lean; Phase 2 wired probe w-soundness-shape-refuted.lean (modelOf_incomplete, stab_iff_of_presented_nowUnique); Phase 3 AnchorLayer.lean (cells, box/stab fixpoint equations, anchorCons_of_model, cells_card_le); Phase 4 README/theorem-index/ROADMAP/pins recording the run layer as blocked; no run-layer construction phases this round.",
+  "metadata": {
+    "session_id": "sess_1791529054_4455fa_747",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ]
+  },
+  "modified_files": [
+    "specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md",
+    "specs/747_closure_wide_quasimodel_lift_to_validity/evidence/01_box-time-invariant.lean",
+    "specs/747_closure_wide_quasimodel_lift_to_validity/evidence/02_modelOf-finite-width-incomplete.lean",
+    "specs/747_closure_wide_quasimodel_lift_to_validity/evidence/03_stab-collapse-presented-nowUnique.lean"
+  ],
+  "proposed_file_scope": [
+    "FormalSystem/PlusLanguage/PlusTruth.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/AnchorLayer.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean",
+    "scripts/check-evidence-probes.sh",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "docs/theorem-index.md",
+    "specs/ROADMAP.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "In the L+ task semantics, box psi has ONE truth value per model: histories are time-shift closed (plusTruthAt_timeShift), so forall sigma, psi at (sigma,t) iff forall sigma, psi at (sigma,s). Per-time quantification over the slice for box does not exist; only stab varies, and only with the world state (stab_state_only).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "box",
+        "time-invariant",
+        "timeShift",
+        "PlusTruthAt",
+        "anchor",
+        "stab_state_only"
+      ]
+    },
+    {
+      "content": "Any model built by FrameOver.ofSlicedStep on a finite slice (e.g. RaySummary Realize.lean's frameOf/modelOf for every Cons presentation) validates NoFiniteWidth.Phi.neg, a Z-time non-validity, by no_finite_width_sat applied with R/fwd/bwd/M as explicit positional arguments. Finite-width constructions cannot be the soundness half of a complete lift to L+ validity.",
+      "category": "PATTERN",
+      "source_artifact": "specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "ofSlicedStep",
+        "finite width",
+        "no_finite_width_sat",
+        "modelOf",
+        "completeness"
+      ]
+    }
+  ]
+}
