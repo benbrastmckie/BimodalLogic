@@ -1,7 +1,7 @@
 # Implementation Plan: Task #747
 
 - **Task**: 747 - Requirement (W) of the ray-product verdict: a closure-wide quasimodel over all seams and times, lifting per-seam results to validity
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours (5 phases; lean4, each phase sized to one agent run)
 - **Dependencies**: 745 (C) `[COMPLETED]` — `HitPresented` holds on model A non-constructively, no bound; 746 (S) `[COMPLETED]` — `presented_modelOf` for `box`/`stab`-free `φ` at one seam under `Cons`. Both outcomes were checked before this plan was written (see Overview); neither refutes, so the record is planned rather than closed.
 - **Research Inputs**: specs/747_closure_wide_quasimodel_lift_to_validity/reports/01_closure-wide-quasimodel-characterization.md

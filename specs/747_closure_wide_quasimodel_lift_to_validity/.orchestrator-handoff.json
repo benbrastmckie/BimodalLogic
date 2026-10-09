@@ -1,17 +1,30 @@
 {
-  "status": "planned",
-  "summary": "Wrote the five-phase plan for requirement (W) from the characterization report: Phase 1 lands box_time_invariant/box_global in PlusTruth.lean; Phase 2 wires the (S)-shape-refuted verdict probe (finite width + stab collapse) under check-evidence-probes.sh; Phases 3-4 build RaySummary/AnchorLayer.lean (closure types, cells, box/stab/Hintikka equations, AnchorCons with completeness for every model, the 2^(2^|cl|) bound, a decidable Finset checker with #guard witness and negative control); Phase 5 records the run layer as blocked on three named obligations, pins all nineteen Goals, updates index/README/aggregator/ROADMAP and runs the full gate. No run-layer construction is planned and no decidability statement is stated. validate-artifact.sh passes with 0 warnings; the Goals set equals the Lean Challenge Statements set (19 identifiers).",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 4,
+  "summary": "All five phases of the (W) anchor-layer plan closed and committed (afa3f8020, 0ee155fbf, 40bfed105, 67127e73f, 7acf5a495). The anchor layer of requirement (W) is landed sorry-free in RaySummary/AnchorLayer.lean with completeness for every model, the 2^(2^|cl phi|) bound and a decidable Finset twin; the run layer is recorded as BLOCKED on three named obligations with (S)'s shape refuted as the lift's soundness half by the wired probe w-soundness-shape-refuted.lean. Full build, BimodalTest, the probe gate, the module invariants, the sorry census, validate-artifact and verify-deploy are all green at the final state; nothing states Decidable (PlusValidZTime phi).",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/747_closure_wide_quasimodel_lift_to_validity/plans/01_closure-wide-quasimodel-anchor-layer.md",
-      "summary": "Five-phase plan (8.5 h): anchor layer of (W) landed and bounded, run layer recorded as blocked on three named obligations, machine-checked verdict probe wired."
+      "type": "summary",
+      "path": "specs/747_closure_wide_quasimodel_lift_to_validity/summaries/01_closure-wide-quasimodel-anchor-layer-summary.md",
+      "summary": "Implementation summary: anchor layer landed and bounded for every model; run layer blocked on three named obligations; (S) untouched; no decidability statement."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/AnchorLayer.lean",
+      "summary": "New module with the nineteen-Goal anchor layer (tpOf, cellAt, fixpoint equations, AnchorCons, anchorCons_anchorCells, anchorCells_ncard_le, AnchorConsFin, decidableAnchorConsFin, anchorConsFin_iff)."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean",
+      "summary": "Wired probe Probe747 holding the run-layer verdict (modelOf_incomplete, stab_iff_of_presented_nowUnique)."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
-  "phase": "plan",
-  "dispatch_seq": 3,
-  "next_action_hint": "Dispatch Phase 1 and Phase 2 (wave 1, parallel-safe: disjoint files); Phase 3 depends on 1, Phase 4 on 3, Phase 5 on 2 and 4. Phase 2 shares scripts/check-evidence-probes.sh with task 734 (partial, implementer live) -- append-only, re-read before editing."
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Postflight: mark task 747 implemented/completed. If the run layer is to be attempted, file it as its own record with the frame-scheme design question as its phase 1 (see RaySummary/README.md, '(W): what landed and what did not').",
+  "git_checkpoint": "7acf5a495"
 }
