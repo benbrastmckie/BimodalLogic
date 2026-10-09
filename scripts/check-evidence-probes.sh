@@ -472,6 +472,62 @@ EVIDENCE="specs/evidence"
 #                                                           | otherwise, and no claim that L⁺ is
 #                                                           | decidable, qualified or not; one
 #                                                           | fixture, one seam, one `φ`
+# seam-gluing-ray-product/b2b-frame-constructor-branching   | MIXED (746, requirement (S)'s carried
+#                                                           | prerequisite): the 300-500 line
+#                                                           | regular-frame constructor for
+#                                                           | "finitely many fibre shapes per time"
+#                                                           | is DESCOPED from (S), and its load-
+#                                                           | bearing core is proved rather than
+#                                                           | discarded. POSITIVE:
+#                                                           | `ofSlicedStep_fib_finite`'s `[Finite
+#                                                           | W]` is replaceable by two-sided finite
+#                                                           | branching on the one-step relation with
+#                                                           | no carrier hypothesis at all
+#                                                           | (`fib_finite_of_finBranch`,
+#                                                           | `saturation_of_finBranch`), two-sided
+#                                                           | because `TaskFrame.Fib` at NEGATIVE
+#                                                           | durations is the step relation's
+#                                                           | preimage and finiteness is not
+#                                                           | converse-stable; non-vacuous on a
+#                                                           | genuinely infinite slice
+#                                                           | (`shift_saturation` over `ℤ`,
+#                                                           | `shift_slice_infinite`), a shape
+#                                                           | `ofSlicedStep_saturation` cannot state.
+#                                                           | REFUTED, twice: the named reset-from-
+#                                                           | any-level hazard is real (`Rbad_fwd`
+#                                                           | finite, `Rbad_bwd_infinite`, and the
+#                                                           | `d = -1` fibre itself infinite,
+#                                                           | `Rbad_fib_infinite`), AND the obvious
+#                                                           | repair of firing the reset only from
+#                                                           | level `0` merely swaps the failing side
+#                                                           | (`Rok_bwd` finite, `Rok_fwd_infinite`)
+#                                                           | -- an unbounded nondeterministic
+#                                                           | deadline is infinite-branching wherever
+#                                                           | it fires, so no reset PLACEMENT
+#                                                           | rescues it. Holds in place: the
+#                                                           | constructor is NOT a dependency of
+#                                                           | requirement (S) -- in (S) the
+#                                                           | presentation is given and liveness
+#                                                           | sits in the `Cons` hypothesis, so
+#                                                           | `ofSlicedStep` on the presentation's
+#                                                           | own finite `Q` suffices unchanged --
+#                                                           | and a successor record inheriting this
+#                                                           | must finitize the committed deadline
+#                                                           | before two-sided finite branching is
+#                                                           | available. What it does NOT do: build
+#                                                           | the constructor (no
+#                                                           | `ofSlicedStepBranch`, no restatement
+#                                                           | of the nine `[Finite W]`-carrying
+#                                                           | declarations of `SlicedFrame.lean`, no
+#                                                           | `FrameOver`/`IsRegular` instance under
+#                                                           | the weaker hypothesis); exhibit a
+#                                                           | deferring encoding that DOES have two-
+#                                                           | sided finite branching (the design
+#                                                           | space is bounded, not closed); touch
+#                                                           | `RaySummary` or realize any
+#                                                           | presentation. No complexity bound;
+#                                                           | `Decidable (PlusValidZTime φ)` NOT
+#                                                           | stated in any form
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -494,6 +550,7 @@ WIRED=(
   "seam-gluing-ray-product/presented-not-complete"
   "seam-gluing-ray-product/stab-depth-two-shared-stratum"
   "seam-gluing-ray-product/hit-presented-model-a"
+  "seam-gluing-ray-product/b2b-frame-constructor-branching"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

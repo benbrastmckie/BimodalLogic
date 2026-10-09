@@ -1,18 +1,16 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 4,
-  "summary": "Created the 8-phase implementation plan for requirement (S) at specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md, 14 hours, scoped to box/stab-free phi at one seam. The carried 300-500 line regular-frame constructor prerequisite is descoped to a successor record on the research dispatch's machine-checked finding that it is a completeness burden, not a soundness one; its hard part plus two refutations are preserved by wiring the research probe as permanent evidence in Phase 1. file_scope is declared at plan time (10 paths), closing the batch-admission overlap blindness the record was filed with. All 22 substrate declarations were re-resolved by name with zero anchor drift; validate-artifact.sh passes with 0 warnings.",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md",
-      "summary": "8 phases, 6 waves, 14 hours: Cons (untl half transcribed from a compiled probe, snce mirror proved outright), modelOf via ofSlicedStep on W := Q, presented_modelOf through eq_clTrace_of_localRun_anchored, and the Hit-level corollary, with 8 Challenge-pinned signatures."
-    }
-  ],
-  "phases_completed": 0,
+  "status": "partial",
+  "skeleton": false,
+  "summary": "Phase 1 complete: the frame-constructor branching verdict is wired as a permanent, rot-guarded evidence probe (specs/evidence/seam-gluing-ray-product/b2b-frame-constructor-branching.lean, 283 lines, 18 declarations, zero proof debt) and registered in scripts/check-evidence-probes.sh, which now reports 'PASS all 25 wired probe(s) compile' and exits 0. Nothing under FormalSystem/ was touched. Single-phase dispatch: phases 2-8 remain, Phase 2 and Phase 4 are both unblocked.",
+  "phases_completed": 1,
   "phases_total": 8,
+  "dispatch_seq": 13,
+  "sorry_inventory": [],
   "blockers": [],
-  "plan_markers_verified": true,
-  "next_action_hint": "Run /orchestrate 746 to begin implementation; Phases 1, 2 and 4 are wave 1 and territory-disjoint."
+  "continuation_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-1-handoff-20261008_195036.md",
+  "continuation_context": {
+    "is_successor": false,
+    "next_phase": 2,
+    "note": "phase_number was set to 1 for this dispatch; stopping as instructed. Phase 2 (RaySummary/Realize.lean, untl half) and Phase 4 (PlusLanguage/Subformulas.lean, BoxStabFree) are both in Wave 1 and territory-disjoint."
+  }
 }

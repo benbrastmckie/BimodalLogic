@@ -1,46 +1,42 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 746,
-  "dispatch_seq": 4,
-  "session_id": "sess_1791500801_df94d6_746",
-  "phase": "plan",
+  "phase": "implement",
+  "dispatch_seq": 13,
+  "session_id": "sess_1791500801_df94d6",
+  "phases_completed": 1,
+  "phases_total": 8,
+  "requires_user_review": false,
+  "handoff_path": "specs/746_hit_level_soundness_realize_presentation_b2b/handoffs/phase-1-handoff-20261008_195036.md",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md",
-      "summary": "8-phase, 14-hour plan for requirement (S): Cons on a finite labelled presentation, modelOf via ofSlicedStep on W := Q, presented_modelOf through the landed uniqueness lemma, and the Hit-level equality at a seam, scoped to box/stab-free phi; the carried frame-constructor prerequisite is descoped to a successor with its machine-checked core wired as evidence."
+      "type": "summary",
+      "path": "specs/746_hit_level_soundness_realize_presentation_b2b/summaries/01_hit-level-soundness-b2b-summary.md",
+      "summary": "Phase 1 of 8: the frame-constructor branching verdict wired as a green, rot-guarded evidence probe; the carried 300-500 line prerequisite descoped on a checkable artifact."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1791500801_df94d6_746",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 14,
-    "dependency_waves": 6,
-    "file_scope": [
-      "FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean",
-      "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-      "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-      "FormalSystem/PlusLanguage/Subformulas.lean",
-      "Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean",
-      "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-      "docs/theorem-index.md",
-      "specs/evidence/seam-gluing-ray-product/b2b-frame-constructor-branching.lean",
-      "scripts/check-evidence-probes.sh",
-      "specs/ROADMAP.md"
-    ]
+  "sorry_inventory": [],
+  "blockers": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": null,
+    "build_note": "No FormalSystem/ module was touched, so no lake build was run; the probe is outside the Lake target roots and is compiled by scripts/check-evidence-probes.sh via lake env lean, which exited 0 with 'PASS all 25 wired probe(s) compile'.",
+    "evidence_gate_exit": 0,
+    "wired_probes_before": 24,
+    "wired_probes_after": 25,
+    "axiom_profile": "[propext, Classical.choice, Quot.sound] on every theorem in the new probe",
+    "verification_passed": true
+  },
+  "completion_data": {
+    "completion_summary": "Phase 1 only (single-phase dispatch). Created specs/evidence/seam-gluing-ray-product/b2b-frame-constructor-branching.lean (283 lines, 18 declarations, zero proof debt) and registered it append-only in scripts/check-evidence-probes.sh; the evidence gate reports all 25 wired probes compiling and exits 0. Phases 2-8 remain."
   },
   "memory_candidates": [
-    {
-      "content": "A plan that descopes a carried prerequisite should preserve the research dispatch's machine-checked core of that prerequisite as a wired evidence artifact rather than discarding it with the phase. In the BimodalLogic ray-product batch the descoped frame-constructor's hard lemma (fib_finite_of_finBranch) and, more valuably, two refutations found while testing the carried repair shape would otherwise have survived only as report prose. Wiring the probe costs one short phase, is independent of every other phase (wave 1), and converts a report paragraph into a rot-protected green artifact the successor record can build on.",
-      "category": "PATTERN",
-      "source_artifact": "specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["descoped-prerequisite", "evidence-probe", "wired-probe", "plan-phase", "research-preservation", "refutation"]
-    }
-  ],
-  "next_steps": "Run /implement 746 to execute the plan",
-  "requires_user_review": false
+    "A gate script's own plan-time probe count can be stale by the time a phase runs: verify append-only array edits structurally from the diff (insertions/deletions) rather than from a predicted total.",
+    "An unbounded nondeterministic deadline in a time-indexed step relation is infinite-branching on whichever side the reset fires; moving the reset between the discharge and the commitment state only swaps the failing side, so a liveness-commitment encoding must finitize the deadline to get two-sided finite branching.",
+    "Avoid the literal token 'sorry' (including 'sorryAx') in Lean file prose when a phase's verification criterion is 'grep -c sorry = 0'."
+  ]
 }

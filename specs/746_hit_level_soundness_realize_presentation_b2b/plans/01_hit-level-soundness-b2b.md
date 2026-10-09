@@ -1,7 +1,7 @@
 # Implementation Plan: Task #746
 
 - **Task**: 746 - Requirement (S) of the ray-product verdict: Hit-level soundness — realize a presentation by a constructed regular ℤ-model (B2b)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours (8 phases; lean4 `--hard`, one agent run per phase)
 - **Dependencies**: None. (C) (task 745) is independent and is NOT a dependency; (W) depends on this and on (C). 740 (complete) discharged the `[Finite sig.preds]` prerequisite.
 - **Research Inputs**: specs/746_hit_level_soundness_realize_presentation_b2b/reports/01_hit-level-soundness-b2b.md
@@ -200,20 +200,20 @@ every touched module.
 
 ---
 
-### Phase 1: Wire the frame-constructor branching verdict as permanent evidence [NOT STARTED]
+### Phase 1: Wire the frame-constructor branching verdict as permanent evidence [COMPLETED]
 
 **Goal**: Preserve the research dispatch's machine-checked frame-constructor findings as a wired
 probe under `specs/evidence/seam-gluing-ray-product/`, so the descoping of the carried
 prerequisite rests on a green, rotting-protected artifact rather than on a report paragraph.
 
 **Tasks**:
-- [ ] Copy `specs/746_hit_level_soundness_realize_presentation_b2b/evidence/01_fib-finite-generalization.lean`
+- [x] Copy `specs/746_hit_level_soundness_realize_presentation_b2b/evidence/01_fib-finite-generalization.lean`
       to `specs/evidence/seam-gluing-ray-product/b2b-frame-constructor-branching.lean`, keeping
       every declaration (`FwdFinBranch`, `BwdFinBranch`, `iterS_fwd_finite`, `iterS_bwd_finite`,
       `fib_finite_of_finBranch`, `saturation_of_finBranch`, `Rbad_fwd`, `Rbad_bwd_infinite`,
       `Rbad_fib_infinite`, `Rok_bwd`, `Rok_fwd_infinite`, `shift_saturation`,
       `shift_slice_infinite`) and the `#print axioms` lines.
-- [ ] Rewrite the file header to the house probe form, stating: what is established POSITIVELY
+- [x] Rewrite the file header to the house probe form, stating: what is established POSITIVELY
       (`ofSlicedStep_fib_finite`'s `[Finite W]` is replaceable by two-sided finite branching, and
       `Fib` at negative durations is the preimage so both senses are needed); what is REFUTED
       (the reset-to-`0`-from-any-level hazard is real, AND moving the reset to fire only from
@@ -221,12 +221,15 @@ prerequisite rests on a green, rotting-protected artifact rather than on a repor
       deadline); that the generalization is non-vacuous on a genuinely infinite slice
       (`shift_saturation`); and — explicitly — that NONE of this is a dependency of requirement
       (S), which is why the constructor itself is a successor record and not built here.
-- [ ] Register `"seam-gluing-ray-product/b2b-frame-constructor-branching"` in
+- [x] Register `"seam-gluing-ray-product/b2b-frame-constructor-branching"` in
       `scripts/check-evidence-probes.sh`'s probe list, append-only at the end of the array, and
       add the matching header-comment block in that script's catalogue in the same house format
       as the `presented-not-complete` entry (verdict label, what it shows, what it does not).
-- [ ] Run `bash scripts/check-evidence-probes.sh` and confirm the new probe is green along with
-      every pre-existing one (14 before, 15 after).
+- [x] Run `bash scripts/check-evidence-probes.sh` and confirm the new probe is green along with
+      every pre-existing one *(deviation: altered — the registered-probe count was 24 before and
+      25 after, not the plan's 14/15; the plan's figure was stale against the actual arrays of 21
+      `WIRED` plus 3 `WIRED_REPO` entries. Append-only editing was confirmed from the diff
+      instead: 57 insertions, 0 deletions)*.
 
 **Timing**: 1 hour
 
@@ -244,6 +247,17 @@ rewrite adds 10-25) and ~12-18 lines of registry plus catalogue in the gate scri
 pre-existing registered probes becoming 15. Confirm by `wc -l` on the new probe and by the gate
 script's own count line at phase end; a registered-probe count other than 15 means the array was
 edited non-append-only.
+
+**Scope Hypothesis outcome (measured)**: NOT confirmed, on both counts, in the direction of more
+lines rather than fewer. The new probe is **283 lines** (173 carried verbatim, a 91-line house
+header, a 27-line `#print axioms` foot covering all 18 declarations — the source carried no axiom
+foot to keep, contrary to the task text above), against the predicted 175-200. The gate-script
+edit is **57 lines** (56-line catalogue block plus the one `WIRED` entry) against the predicted
+12-18: the catalogue's comment column is 38 characters wide, so an entry stating verdict label,
+what it shows and what it does not necessarily runs long — the two neighbouring entries
+(`presented-not-complete`, `hit-presented-model-a`) are ~55 and ~60 lines, so 57 is in-house-norm
+and the estimate, not the edit, was wrong. Append-only was verified structurally (57 insertions,
+0 deletions) rather than by the predicted count, which was itself stale.
 
 **Files to modify**:
 - `specs/evidence/seam-gluing-ray-product/b2b-frame-constructor-branching.lean` - new probe
