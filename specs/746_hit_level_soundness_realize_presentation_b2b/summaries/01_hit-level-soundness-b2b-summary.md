@@ -3,15 +3,20 @@
 - **Task**: 746 - Requirement (S) of the ray-product verdict: Hit-level soundness — realize a presentation by a constructed regular ℤ-model (B2b)
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T19:42:00Z
-- **Completed**: (not complete — 3 of 8 phases)
-- **Effort**: ~1.6 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted; Phase 3 ~0.4 h against 2 h budgeted)
+- **Completed**: (not complete — 4 of 8 phases)
+- **Effort**: ~1.9 hours total (Phase 1 ~0.5 h against 1 h budgeted; Phase 2 ~0.7 h against 2 h budgeted; Phase 3 ~0.4 h against 2 h budgeted; Phase 4 ~0.3 h against 1 h budgeted)
 - **Dependencies**: None. (C) (task 745) is independent; (W) depends on this and on (C).
 - **Artifacts**: plans/01_hit-level-soundness-b2b.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Phases 1-3 of 8, across three single-phase dispatches (seq 13, 14 and 15). Phase 3 completes
+Phases 1-4 of 8, across four single-phase dispatches (seq 13, 14, 15 and 16). Phase 4 lands
+this task's scope line as syntax: `PlusFormula.BoxStabFree` in
+`FormalSystem/PlusLanguage/Subformulas.lean`, with its subformula-inheritance lemma and the two
+closure-vacuity lemmas that collapse an `Anchored` certificate to its `now` and `atom` fields for
+a `box`/`stab`-free `φ` — which is what Phase 7 consumes. It is territory-disjoint from
+`Realize.lean` and touched nothing Phases 1-3 landed. Phase 3 completes
 the consistency conditions' two temporal halves: the backward (`snce`) mirror, proved outright
 rather than transported, in the same module. Phase 2 lands the
 first `FormalSystem/` content of this task: the new module
@@ -27,10 +32,24 @@ machine-checked frame-constructor findings into the tracked, rot-guarded evidenc
 that the plan's descoping of the carried 300-500 line "regular-frame constructor for finitely many
 fibre shapes per time" prerequisite rests on a green compiled artifact rather than on a report
 paragraph. That phase discharged no proof obligation and touched nothing under `FormalSystem/`.
-Phases 4-8 (`BoxStabFree`, the `Cons` bundle and its non-vacuity witness, `modelOf`,
-`presented_modelOf`, the Hit-level corollary and the acceptance statement) remain.
+Phases 5-8 (the `Cons` bundle and its non-vacuity witness, `modelOf`, `presented_modelOf`, the
+Hit-level corollary and the acceptance statement) remain.
 
 ## What Changed
+
+### Phase 4
+
+- `FormalSystem/PlusLanguage/Subformulas.lean` — appended a `## box/stab-freeness` section,
+  256 → 373 lines (+118 insertions, 0 deletions), zero sorries. Four declarations:
+  `PlusFormula.BoxStabFree` (seven arms matching `subformulas`: `True` on the two atomic ones,
+  conjunction across the three binary ones, `False` on `box` and `stab`),
+  `PlusFormula.decidableBoxStabFree` (hand-rolled `Decidable` instance, one arm per constructor,
+  so every check below computes with no `Classical` on that path),
+  `PlusFormula.boxStabFree_of_mem_subformulas` (inheritance by subformulas, by induction on `φ`),
+  and the two plan-pinned closure-vacuity lemmas `not_box_mem_plusSubformulaClosure` and
+  `not_stab_mem_plusSubformulaClosure`. Two bullets added to the module header's Main Definitions
+  and Main Results lists. No existing declaration in the file was modified.
+- `typst/generated/status.typ` — regenerated (line counts moved with the module's growth).
 
 ### Phase 3
 
@@ -95,6 +114,17 @@ Phases 4-8 (`BoxStabFree`, the `Cons` bundle and its non-vacuity witness, `model
 
 ## Decisions
 
+- **Phase 4: `BoxStabFree` is `Prop`-valued, not `Bool` with a `decide` bridge.** The plan bullet
+  offered either spelling. `Prop` is what the `Anchored` fields and the two vacuity lemmas consume
+  directly, and — decisively — this phase's own verification criterion is written
+  `#eval decide ((…).BoxStabFree)`, which only typechecks when `BoxStabFree` is a `Prop` with a
+  `Decidable` instance. Hence the hand-rolled `decidableBoxStabFree`, one arm per constructor,
+  which keeps every computed check free of `Classical` on that path.
+- **Phase 4: the two modal arms carry the content, so the `stab` lemma is proved outright.** In
+  `boxStabFree_of_mem_subformulas` the `box` and `stab` cases need no membership reasoning at all:
+  `BoxStabFree (.box _)` is `False`, so the hypothesis discharges them via `absurd hφ not_false`.
+  That is also why `not_stab_mem_plusSubformulaClosure` is proved outright rather than by any
+  symmetry with the `box` case — the two route through different arms of the recursion.
 - **Phase 3: the backward graph reverses `step`, against the plan's parenthetical.** The plan's
   Phase 3 bullet wrote `bwdDeferGraph … := lab y u && !(lab y e) && step x y`; the body landed as
   the converse, `fun x y => lab x u && !(lab x e) && step y x`. `live`/`HasChain` in
@@ -138,6 +168,26 @@ Phases 4-8 (`BoxStabFree`, the `Cons` bundle and its non-vacuity witness, `model
 
 ## Plan Deviations
 
+- **Task 2** (Phase 4) altered: the inheritance lemma does NOT route through the helpers its plan
+  bullet named. The bullet said to go "through the existing `subformulas_trans` / per-arm
+  membership lemmas rather than re-deriving them"; neither is usable. `subformulas_trans` is a
+  statement about membership and says nothing about `BoxStabFree`, and the eight per-arm lemmas
+  CONSTRUCT a membership (`ψ ∈ subformulas (.imp ψ χ)`) where this proof must DESTRUCTURE one
+  (`ψ ∈ subformulas (.imp a b)` → a three-way disjunction) — the opposite direction. The landed
+  proof is an induction on `φ` mirroring `subformulas_trans`'s own arm-for-arm shape and
+  destructuring with `simp only [subformulas, List.mem_cons, List.mem_append]` exactly as that
+  proof does, so no project lemma is re-derived — which is what the hint was protecting. Statement
+  and decomposition are exactly as pinned, nothing is unproved, and no alternative approach was
+  substituted, so the phase was not marked `[BLOCKED]`. Annotated inline in the plan and recorded
+  in `issues.jsonl` as `plan-defect`/`minor`. No other Phase 4 task was skipped, altered, or
+  deferred.
+- **Scope Hypothesis** (Phase 4) altered: 118 insertions against the predicted ~60-95. The
+  hypothesis's binding half — insertions only, zero existing declarations touched — holds exactly
+  (`git diff --stat`: 118 insertions, 0 deletions). The overshoot is documentation: a 22-line
+  section-header `/-! … -/` block recording why `SemanticBridge`'s `isBoxFree` is not reusable and
+  why the predicate is `Prop`-valued, plus per-declaration docstrings. Library code proper is ~85
+  lines, inside the band. Same pattern as Phase 3's overshoot, and recorded so the remaining phase
+  estimates are read as code-line estimates that exclude docstring prose.
 - **Task 2** (Phase 3) altered: the `bwdDeferGraph` body is the converse of the plan bullet's
   parenthetical spelling — see the first Decisions entry above for the mechanism and the house
   precedent. The bullet's own "record which argument order of `live` is being used and why"
@@ -173,6 +223,31 @@ Phases 4-8 (`BoxStabFree`, the `Cons` bundle and its non-vacuity witness, `model
   the phase's own Verification criterion requires.
 
 ## Verification
+
+### Phase 4
+
+- Build: Success. Scoped guarded build of `FormalSystem.PlusLanguage.Subformulas` — guard exit 0,
+  `Build completed successfully (707 jobs)`, 0 `error:`. Then the phase's `interface` tier: the
+  module plus its two nearest importing aggregators, `FormalSystem.PlusLanguage` and
+  `FormalSystem.Metalogic.Decidability.RaySummary` — guard exit 0, `Build completed successfully
+  (1938 jobs)`, 0 `error:`, 0 `warning:`. `.olean` newer than source. (Two
+  `linter.style.longLine` warnings on the first scoped run, both on docstring bullets this phase
+  added; shortened, and the interface run is clean.)
+- Sorry count: 0 in the edited module; task-wide sorry inventory still empty.
+- Axiom pins against the built module: `not_box_mem_plusSubformulaClosure` and
+  `not_stab_mem_plusSubformulaClosure` each exactly `[propext, Classical.choice, Quot.sound]`;
+  `boxStabFree_of_mem_subformulas` is `[propext]` alone, a strict subset.
+- `BoxStabFree` is not a vacuous definition — six computed checks, so `lean4.md`'s
+  `def X := True` prohibition is checked rather than assumed: `box p` → `false`, `untl p q` →
+  `true`, `stab p` → `false`, `imp p (box q)` → `false`, `snce p (untl q ⊥)` → `true`,
+  `imp p (untl ⊥ (stab q))` → `false`. The last three show the recursion descends rather than
+  only reading the head constructor.
+- Scope Hypothesis: `git diff --stat` shows 118 insertions and 0 deletions, so the binding half
+  (insertions only, zero existing declarations touched) holds exactly; the ~60-95 line band is
+  overshot by docstring prose only, library code proper being ~85 lines.
+- Repo-wide mechanical checks unchanged by this phase: vacuous-definition pattern count 1
+  (pre-existing, `FormalSystem/Examples/TemporalStructures.lean`'s `int_domain_universal`, a real
+  theorem about a total domain rather than a placeholder); `^axiom ` count 15, no new axiom.
 
 ### Phase 3
 

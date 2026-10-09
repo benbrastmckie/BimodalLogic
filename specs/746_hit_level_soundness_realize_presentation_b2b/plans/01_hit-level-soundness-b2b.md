@@ -419,28 +419,39 @@ as the forward one, which is what the hypothesis actually meant to check.
 
 ---
 
-### Phase 4: `PlusFormula.BoxStabFree` and the `Anchored` vacuity it buys [NOT STARTED]
+### Phase 4: `PlusFormula.BoxStabFree` and the `Anchored` vacuity it buys [COMPLETED]
 
 **Goal**: Land the syntactic predicate that fixes this task's scope, its subformula-closure
 inheritance, and the two lemmas saying a `box`/`stab`-free `φ` has no `box` or `stab` letter in
 its closure — which is what collapses `Anchored` to `now` + `atom` in Phase 7.
 
 **Tasks**:
-- [ ] In `FormalSystem/PlusLanguage/Subformulas.lean`, beside `plusSubformulaClosure` and its
+- [x] In `FormalSystem/PlusLanguage/Subformulas.lean`, beside `plusSubformulaClosure` and its
       `plusClosure_*` projections, define `PlusFormula.BoxStabFree : PlusFormula → Prop` (or
       `Bool` with a `decide` bridge, matching the surrounding file's style) by recursion over the
       seven arms of `PlusFormula`, `False` on `.box` and `.stab`. Docstring notes that
       `isBoxFree` in `Metalogic/Expressiveness/Separation/SemanticBridge.lean` is the `Formula`
       analogue and is NOT reusable here (different type), so this is a parallel definition rather
-      than a generalization.
-- [ ] Prove `boxStabFree_of_mem_subformulas : ψ ∈ PlusFormula.subformulas φ → φ.BoxStabFree →
+      than a generalization. *(delegated choice taken: `Prop`-valued with a hand-rolled
+      `decidableBoxStabFree` instance, not `Bool` with a `decide` bridge — the bullet offered
+      either, and this phase's own `#eval decide (…)` verification criterion only typechecks on
+      the `Prop` spelling.)*
+- [x] Prove `boxStabFree_of_mem_subformulas : ψ ∈ PlusFormula.subformulas φ → φ.BoxStabFree →
       ψ.BoxStabFree` by induction on `φ`, routed through the existing `subformulas_trans` /
-      per-arm membership lemmas rather than re-deriving them.
-- [ ] Prove the two vacuity lemmas, both pinned below:
+      per-arm membership lemmas rather than re-deriving them. *(divergence from this bullet's
+      reuse hint, flagged not hidden: neither named helper is usable here. `subformulas_trans` is
+      a statement about membership and says nothing about `BoxStabFree`; the eight per-arm lemmas
+      CONSTRUCT a membership (`ψ ∈ subformulas (.imp ψ χ)`) whereas this proof must DESTRUCTURE
+      one (`ψ ∈ subformulas (.imp a b)` → a three-way disjunction), the opposite direction. The
+      landed proof is an induction on `φ` mirroring `subformulas_trans`'s own arm-for-arm shape
+      and destructuring membership with `simp only [subformulas, List.mem_cons, List.mem_append]`
+      exactly as that proof does — so no project lemma is re-derived, which is what the hint was
+      protecting. Statement and decomposition are exactly as pinned.)*
+- [x] Prove the two vacuity lemmas, both pinned below:
       `not_box_mem_plusSubformulaClosure : φ.BoxStabFree → ∀ ψ, PlusFormula.box ψ ∉
       plusSubformulaClosure φ` and `not_stab_mem_plusSubformulaClosure` likewise for `.stab`.
       Both unfold `plusSubformulaClosure` to `List.mem_toFinset` and apply the inheritance lemma.
-- [ ] Scoped build of `FormalSystem.PlusLanguage.Subformulas`; axiom pins on both vacuity
+- [x] Scoped build of `FormalSystem.PlusLanguage.Subformulas`; axiom pins on both vacuity
       lemmas; `grep -c sorry` = 0.
 
 **Timing**: 1 hour
@@ -454,7 +465,10 @@ consumers, so a scoped build of it alone would not show whether a new definition
 shadows or clashes with anything downstream; the covering check is a build of the modules that
 import it, which `interface` is exactly the tier for.
 
-**Scope Hypothesis**: ~60-95 lines added to one existing module (research estimated ~35 for the
+**Scope Hypothesis**: *(outcome: 118 insertions, 0 deletions. Band overshot, by docstring prose
+only — library code proper is ~85 lines, inside the band; the 22-line section-header `/-! … -/`
+block and the per-declaration docstrings are the excess. The binding half — insertions only, zero
+existing declarations touched — holds exactly.)* ~60-95 lines added to one existing module (research estimated ~35 for the
 predicate plus inheritance; the two vacuity lemmas add 25-60), and ZERO existing declarations in
 that file modified. Confirm by `git diff --stat` on the file at phase end showing insertions only;
 any deletion means an existing declaration was touched, which is out of scope.

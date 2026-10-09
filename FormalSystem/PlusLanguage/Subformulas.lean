@@ -38,6 +38,7 @@ and this module preserves that: its only project import is `PlusLanguage/Formula
 
 - `PlusFormula.subformulas` — all subformulas of an L⁺ formula, including itself
 - `plusSubformulaClosure` — the same as a `Finset`
+- `PlusFormula.BoxStabFree` — `φ` has no `□` and no `⊡` letter (a scope line)
 
 ## Main Results
 
@@ -45,6 +46,9 @@ and this module preserves that: its only project import is `PlusLanguage/Formula
 - `PlusFormula.subformulas_trans` — the subformula relation is transitive
 - the eight membership lemmas, one per non-atomic component, `stab` included
 - the eight closure projections `plusClosure_imp_left`, …, `plusClosure_stab`
+- `PlusFormula.boxStabFree_of_mem_subformulas` — `box`/`stab`-freeness is inherited by subformulas
+- `not_box_mem_plusSubformulaClosure`, `not_stab_mem_plusSubformulaClosure` — such a
+  formula's closure holds no `box` and no `stab` letter
 -/
 
 namespace FormalSystem.PlusLanguage
@@ -251,5 +255,119 @@ theorem plusClosure_stab (φ ψ : PlusFormula)
   unfold plusSubformulaClosure at h ⊢
   simp only [List.mem_toFinset] at h ⊢
   exact PlusFormula.subformulas_trans (PlusFormula.stab_inner_mem_subformulas ψ) h
+
+/-!
+## `box`/`stab`-freeness
+
+A syntactic scope line. The box-dot-fibre soundness construction in
+`Metalogic/Decidability/RaySummary/` is stated for formulas with no `□` and no `⊡` letter
+anywhere: for such a `φ` the two closure-vacuity lemmas at the end of this section say the
+closure `plusSubformulaClosure φ` contains no `box` and no `stab` formula at all, which is what
+makes the `box` and `stab` fields of an `Anchored` certificate — each of which quantifies over a
+hypothesis `.box ψ ∈ plusSubformulaClosure φ` or `.stab ψ ∈ plusSubformulaClosure φ` — vacuously
+satisfiable, collapsing `Anchored` to its `now` and `atom` fields.
+
+`isBoxFree` in `Metalogic/Expressiveness/Separation/SemanticBridge.lean` is the `Formula`
+analogue and is NOT reusable here: it recurses over the six constructors of `Formula`, which is a
+different inductive type with no stability modal and no supertype shared with `PlusFormula`. So
+this is a parallel definition rather than a generalization, exactly as `PlusFormula.subformulas`
+above is a parallel recursion rather than an instantiation of `Formula.subformulas`.
+
+The predicate is `Prop`-valued with a hand-rolled `Decidable` instance rather than `Bool`-valued
+with a bridge: `Prop` is what the `Anchored` fields and the two vacuity lemmas consume directly,
+and the instance keeps `decide` available for the computed checks below.
+-/
+
+namespace PlusFormula
+
+/--
+`φ` contains no `□` and no `⊡` letter.
+
+Seven arms, matching `subformulas`: `True` on the two atomic ones, conjunction across the three
+binary ones, and `False` on `box` and `stab`. The binary arms list the second component first,
+as `subformulas` does, so that the `untl`/`snce` recursions keep the file's established
+left-is-the-event reading; conjunction is symmetric, so nothing depends on the order.
+-/
+def BoxStabFree : PlusFormula → Prop
+  | .atom _ => True
+  | .bot => True
+  | .imp ψ χ => BoxStabFree ψ ∧ BoxStabFree χ
+  | .box _ => False
+  | .untl χ ψ => BoxStabFree ψ ∧ BoxStabFree χ
+  | .snce χ ψ => BoxStabFree ψ ∧ BoxStabFree χ
+  | .stab _ => False
+
+/-- `BoxStabFree` computes: the recursion has no quantifier, so each arm is decided by `True`,
+`False`, or the conjunction of two decided sub-results. -/
+instance decidableBoxStabFree : ∀ φ : PlusFormula, Decidable (BoxStabFree φ)
+  | .atom _ => .isTrue trivial
+  | .bot => .isTrue trivial
+  | .imp ψ χ => @instDecidableAnd _ _ (decidableBoxStabFree ψ) (decidableBoxStabFree χ)
+  | .box _ => .isFalse (fun h => h)
+  | .untl χ ψ => @instDecidableAnd _ _ (decidableBoxStabFree ψ) (decidableBoxStabFree χ)
+  | .snce χ ψ => @instDecidableAnd _ _ (decidableBoxStabFree ψ) (decidableBoxStabFree χ)
+  | .stab _ => .isFalse (fun h => h)
+
+/--
+**`box`/`stab`-freeness is inherited by subformulas.**
+
+The induction mirrors `subformulas_trans` above arm for arm. The two modal arms are where the
+content is: `BoxStabFree (.box _)` and `BoxStabFree (.stab _)` are `False`, so the hypothesis
+`hφ` discharges those cases outright and no membership reasoning is needed in them.
+-/
+theorem boxStabFree_of_mem_subformulas {ψ φ : PlusFormula}
+    (hmem : ψ ∈ subformulas φ) (hφ : BoxStabFree φ) : BoxStabFree ψ := by
+  induction φ with
+  | atom p =>
+    simp only [subformulas, List.mem_singleton] at hmem
+    subst hmem
+    exact hφ
+  | bot =>
+    simp only [subformulas, List.mem_singleton] at hmem
+    subst hmem
+    exact hφ
+  | imp a b iha ihb =>
+    simp only [subformulas, List.mem_cons, List.mem_append] at hmem
+    rcases hmem with rfl | ha | hb
+    · exact hφ
+    · exact iha ha hφ.1
+    · exact ihb hb hφ.2
+  | box a _ => exact absurd hφ not_false
+  | untl b a ihb iha =>
+    simp only [subformulas, List.mem_cons, List.mem_append] at hmem
+    rcases hmem with rfl | ha | hb
+    · exact hφ
+    · exact iha ha hφ.1
+    · exact ihb hb hφ.2
+  | snce b a ihb iha =>
+    simp only [subformulas, List.mem_cons, List.mem_append] at hmem
+    rcases hmem with rfl | ha | hb
+    · exact hφ
+    · exact iha ha hφ.1
+    · exact ihb hb hφ.2
+  | stab a _ => exact absurd hφ not_false
+
+end PlusFormula
+
+/-- **A `box`/`stab`-free formula's closure holds no `box` letter.** The first of the two
+vacuity lemmas: it is what makes the `box` field of an `Anchored` certificate over such a `φ`
+vacuously satisfiable, since that field's hypothesis is uninhabited. -/
+theorem not_box_mem_plusSubformulaClosure {φ : PlusFormula} (hφ : φ.BoxStabFree)
+    (ψ : PlusFormula) : PlusFormula.box ψ ∉ plusSubformulaClosure φ := by
+  intro h
+  unfold plusSubformulaClosure at h
+  simp only [List.mem_toFinset] at h
+  exact PlusFormula.boxStabFree_of_mem_subformulas h hφ
+
+/-- **A `box`/`stab`-free formula's closure holds no `stab` letter.** The `stab` mirror of
+`not_box_mem_plusSubformulaClosure`, and the reason the `stab` field of an `Anchored` certificate
+over such a `φ` is vacuously satisfiable too. Proved outright rather than by any symmetry with
+the `box` case: the two go through different arms of `BoxStabFree`. -/
+theorem not_stab_mem_plusSubformulaClosure {φ : PlusFormula} (hφ : φ.BoxStabFree)
+    (ψ : PlusFormula) : PlusFormula.stab ψ ∉ plusSubformulaClosure φ := by
+  intro h
+  unfold plusSubformulaClosure at h
+  simp only [List.mem_toFinset] at h
+  exact PlusFormula.boxStabFree_of_mem_subformulas h hφ
 
 end FormalSystem.PlusLanguage
