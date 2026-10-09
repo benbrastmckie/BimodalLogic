@@ -1,7 +1,7 @@
 # Implementation Plan: Task #733
 
 - **Task**: 733 - Probe the backward-dual stability summary on a backward-NONDETERMINISTIC mirror fixture (E1's hard test)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: 739 (completed)
 - **Research Inputs**: specs/733_backward_dual_mirror_fixture_branching_probe/reports/01_backward-dual-mirror-fixture.md
@@ -111,27 +111,27 @@ consulted.
 
 Phases within the same wave can execute in parallel; this plan is a single sequential chain.
 
-### Phase 1: Lift the prototype to its evidence path and compile [NOT STARTED]
+### Phase 1: Lift the prototype to its evidence path and compile [COMPLETED]
 
 **Goal**: The probe exists at its declared `file_scope` path, compiles clean under `lake env lean`,
 and its measured axiom record is captured for the header.
 
 **Tasks**:
-- [ ] Re-read the E1 header (`specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean`,
+- [x] Re-read the E1 header (`specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean`,
       the `/- Probe 719 ... -/` block) per the task description's instruction; confirm its
       "honest limit" paragraph still names the mirror fixture as the follow-up.
-- [ ] Copy `specs/733_backward_dual_mirror_fixture_branching_probe/prototype/backward-dual-mirror-fixture.proto.lean`
+- [x] Copy `specs/733_backward_dual_mirror_fixture_branching_probe/prototype/backward-dual-mirror-fixture.proto.lean`
       to `specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean` (new file).
-- [ ] Replace the 5-line `PROTOTYPE (research dispatch)` banner with a provisional `/- Probe 733 ...
+- [x] Replace the 5-line `PROTOTYPE (research dispatch)` banner with a provisional `/- Probe 733 ...
       -/` block ending in the collection's compile-check line
       (`lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean`).
       Change nothing below `import FormalSystem`: keep `namespace Probe733Mirror`, every proof, and
       the six-line `#print axioms` footer exactly as in the prototype.
-- [ ] Run `lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean`
+- [x] Run `lake env lean specs/evidence/seam-gluing-ray-product/backward-dual-mirror-fixture.lean`
       from the repository root; require exit 0, no errors, no warnings, and exactly six
       `'Probe733Mirror.<name>' depends on axioms: [...]` lines.
-- [ ] Record the six printed axiom lines verbatim (scratchpad or progress file) for Phase 2.
-- [ ] Record an issue-log entry (`issue-record.sh`, kind `win` or an explicit "nothing to
+- [x] Record the six printed axiom lines verbatim (scratchpad or progress file) for Phase 2.
+- [x] Record an issue-log entry (`issue-record.sh`, kind `win` or an explicit "nothing to
       record") for this phase.
 
 **Timing**: 0.5 hours
