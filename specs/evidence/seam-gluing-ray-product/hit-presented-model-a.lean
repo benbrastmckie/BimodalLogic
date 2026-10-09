@@ -556,6 +556,239 @@ theorem hitCl_eq_truncated (t : ℤ) (k : ℕ) (hk : 1 ≤ k) :
       obtain ⟨bf, hbf⟩ := exists_splice_eq t (jump w) (jump_seam hw.1)
       exact (hitCl_eq_iUnion MA stayA t Fp k).symm ▸ Set.mem_iUnion.mpr ⟨bf, by rw [hbf]; exact hx⟩
 
+/-! ## The presentation data
+
+The presentation is TWO DISJOINT GADGETS over one state type, one gadget per trace shape the
+truncation bound left standing:
+
+* **Gadget 1** (`Fin 3`, embedded by `Sum.inl`) carries the `stayA` trace. `0 = s_pre` (before
+  the seam), `1 = s_now` (the seam), `2 = s_post` (after it). Nothing in gadget 1 ever reads `p`
+  or `Fp` -- which is exactly `clTrace_stayA_apply`, where only the marker (at `t`) and `⊤`
+  (everywhere) hold.
+* **Gadget 2** (`Fin (L + 3)`, embedded by `Sum.inr`) carries the `jump w` traces for
+  `t ≤ w ≤ t + L`. `0 = j_pre`, `1 = j_now`, `2 … L+1 = j_mid_1 … j_mid_L` (one mid state per
+  unit of delay between the seam and the jump), `L+2 = j_post`, the only state reading `p`. `Fp`
+  is read EVERYWHERE in gadget 2 -- which is exactly `clTrace_jump_apply`: `b` absorbs, so from
+  any point of a `jump` history a later `b` exists. The `L` mid states are what let the ONE
+  gadget cover all `L + 1` thresholds `w ∈ [t, t + L]`: the run dwells `w - t` steps on the mid
+  chain before falling into `j_post`.
+
+No `stepOf` edge crosses the summands (`stepOf_no_cross`), so a run lives entirely inside one
+gadget -- the exclusion Phase 6's run characterization turns on. Both `stepOf` and `labOf` are
+`def`, never `noncomputable def`: `HitPresented` is a proposition ABOUT `hitOf lab step`, and
+`hitOf` is a `Finset`, so the presentation data has to compute.
+
+`labOf` is an explicit flag table, NOT `decide` of `clTrace`: the table's five branches are read
+directly against `letter_cases`, which keeps the axiom foot free of the semantics and makes the
+bridge below a case split rather than a re-derivation.
+
+**The alphabet figure, re-derived and not carried.** `(plusSubformulaClosure Fp).card = 4` was
+re-run at implementation time and is recorded as the `#guard` below (a `#guard` failure is a
+compile error, so this is checked on every compile, unlike the bare `#eval` left at the foot).
+Table completeness does not actually rest on that figure, though: `letter_cases` is the
+machine-checked exhaustion of `(clSig Fp).preds`, and the table has exactly one branch per its
+five cases. -/
+
+#guard (plusSubformulaClosure Fp).card = 4
+
+/-- The presentation's state type: gadget 1 (`Fin 3`) for `stayA`, gadget 2 (`Fin (L + 3)`) for
+the `jump w` with `t ≤ w ≤ t + L`. `Fintype` and `DecidableEq` come from the `Sum` and `Fin`
+instances; nothing here is hand-rolled. -/
+abbrev QA (L : ℕ) := Fin 3 ⊕ Fin (L + 3)
+
+/-- The state count. `L + 6` is NOT a bound: `L` is the unexhibited witness of
+`hitCl_eq_truncated`, so this is a function of something never produced. -/
+theorem card_QA (L : ℕ) : Fintype.card (QA L) = L + 6 := by
+  rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_fin]
+  omega
+
+#guard Fintype.card (QA 2) = 8
+
+/-! ### The step relation -/
+
+/-- The step relation: two gadgets, no edge between them.
+
+Gadget 1: `s_pre → s_pre`, `s_pre → s_now`, `s_now → s_post`, `s_post → s_post`.
+
+Gadget 2: `j_pre → j_pre`, `j_pre → j_now`, then from any of `j_now … j_mid_L` either one step
+further along the mid chain or straight to `j_post`, and `j_post → j_post`. -/
+def stepOf (L : ℕ) : QA L → QA L → Bool
+  | .inl i, .inl j =>
+      decide ((i.val = 0 ∧ j.val = 0) ∨ (i.val = 0 ∧ j.val = 1) ∨ (i.val = 1 ∧ j.val = 2)
+        ∨ (i.val = 2 ∧ j.val = 2))
+  | .inr i, .inr j =>
+      decide ((i.val = 0 ∧ j.val = 0) ∨ (i.val = 0 ∧ j.val = 1)
+        ∨ (1 ≤ i.val ∧ i.val ≤ L + 1 ∧ j.val = i.val + 1)
+        ∨ (1 ≤ i.val ∧ i.val ≤ L + 1 ∧ j.val = L + 2)
+        ∨ (i.val = L + 2 ∧ j.val = L + 2))
+  | _, _ => false
+
+@[simp] theorem stepOf_inl_inr (L : ℕ) (i : Fin 3) (j : Fin (L + 3)) :
+    stepOf L (Sum.inl i) (Sum.inr j) = false := rfl
+
+@[simp] theorem stepOf_inr_inl (L : ℕ) (i : Fin (L + 3)) (j : Fin 3) :
+    stepOf L (Sum.inr i) (Sum.inl j) = false := rfl
+
+/-- **No step crosses the two gadgets.** A `stepOf` edge has both endpoints in gadget 1 or both
+in gadget 2. Phase 6's cross-gadget exclusion is this lemma, and nothing else. -/
+theorem stepOf_no_cross (L : ℕ) (q r : QA L) (h : stepOf L q r = true) :
+    (∃ i j : Fin 3, q = Sum.inl i ∧ r = Sum.inl j)
+      ∨ (∃ i j : Fin (L + 3), q = Sum.inr i ∧ r = Sum.inr j) := by
+  rcases q with i | i
+  · rcases r with j | j
+    · exact Or.inl ⟨i, j, rfl, rfl⟩
+    · simp at h
+  · rcases r with j | j
+    · simp at h
+    · exact Or.inr ⟨i, j, rfl, rfl⟩
+
+/-- Gadget 1's step table, as an `↔` on the index values. -/
+theorem stepOf_inl_inl_iff (L : ℕ) (i j : Fin 3) :
+    stepOf L (Sum.inl i) (Sum.inl j) = true ↔
+      ((i.val = 0 ∧ j.val = 0) ∨ (i.val = 0 ∧ j.val = 1) ∨ (i.val = 1 ∧ j.val = 2)
+        ∨ (i.val = 2 ∧ j.val = 2)) := by
+  simp only [stepOf, decide_eq_true_eq]
+
+/-- Gadget 2's step table, as an `↔` on the index values. -/
+theorem stepOf_inr_inr_iff (L : ℕ) (i j : Fin (L + 3)) :
+    stepOf L (Sum.inr i) (Sum.inr j) = true ↔
+      ((i.val = 0 ∧ j.val = 0) ∨ (i.val = 0 ∧ j.val = 1)
+        ∨ (1 ≤ i.val ∧ i.val ≤ L + 1 ∧ j.val = i.val + 1)
+        ∨ (1 ≤ i.val ∧ i.val ≤ L + 1 ∧ j.val = L + 2)
+        ∨ (i.val = L + 2 ∧ j.val = L + 2)) := by
+  simp only [stepOf, decide_eq_true_eq]
+
+/-! ### The flag table -/
+
+/-- The `now` marker is read at the seam state of each gadget, and nowhere else. -/
+def isNowState (L : ℕ) : QA L → Bool
+  | .inl i => decide (i.val = 1)
+  | .inr i => decide (i.val = 1)
+
+/-- The `Fp` letter is read throughout gadget 2 and nowhere in gadget 1. -/
+def isJumpState (L : ℕ) : QA L → Bool
+  | .inl _ => false
+  | .inr _ => true
+
+/-- The `p` letter is read at `j_post` only. -/
+def isPostState (L : ℕ) : QA L → Bool
+  | .inl _ => false
+  | .inr i => decide (i.val = L + 2)
+
+/-- **The flag table** over the five letters of `clSig Fp`, written out branch by branch rather
+than as `decide` of `clTrace`: `now` at the two seam states, `⊤` everywhere, `⊥` nowhere, `Fp`
+throughout gadget 2, `p` at `j_post`. -/
+def labOf (L : ℕ) : QA L → (clSig Fp).preds → Bool := fun q ℓ =>
+  if ℓ = clNow Fp then isNowState L q
+  else if ℓ = clLetter Fp cl_top then true
+  else if ℓ = clLetter Fp cl_Fp then isJumpState L q
+  else if ℓ = clLetter Fp cl_p then isPostState L q
+  else false
+
+/-! The Phase 3 letter disequalities, in the direction `labOf`'s `if`-chain resolves them. -/
+
+theorem top_ne_now : clLetter Fp cl_top ≠ clNow Fp := now_ne_top.symm
+theorem Fp_ne_now : clLetter Fp cl_Fp ≠ clNow Fp := now_ne_Fp.symm
+theorem p_ne_now : clLetter Fp cl_p ≠ clNow Fp := now_ne_p.symm
+theorem bot_ne_now : clLetter Fp cl_bot ≠ clNow Fp := now_ne_bot.symm
+theorem top_ne_Fp : clLetter Fp cl_top ≠ clLetter Fp cl_Fp := Fp_ne_top.symm
+theorem p_ne_Fp : clLetter Fp cl_p ≠ clLetter Fp cl_Fp := Fp_ne_p.symm
+theorem bot_ne_Fp : clLetter Fp cl_bot ≠ clLetter Fp cl_Fp := Fp_ne_bot.symm
+theorem bot_ne_top : clLetter Fp cl_bot ≠ clLetter Fp cl_top := top_ne_bot.symm
+theorem bot_ne_p : clLetter Fp cl_bot ≠ clLetter Fp cl_p := p_ne_bot.symm
+
+@[simp] theorem labOf_now (L : ℕ) (q : QA L) : labOf L q (clNow Fp) = isNowState L q := by
+  simp [labOf]
+
+@[simp] theorem labOf_top (L : ℕ) (q : QA L) : labOf L q (clLetter Fp cl_top) = true := by
+  simp [labOf, top_ne_now]
+
+@[simp] theorem labOf_Fp (L : ℕ) (q : QA L) : labOf L q (clLetter Fp cl_Fp) = isJumpState L q := by
+  simp [labOf, Fp_ne_now, Fp_ne_top]
+
+@[simp] theorem labOf_p (L : ℕ) (q : QA L) : labOf L q (clLetter Fp cl_p) = isPostState L q := by
+  simp [labOf, p_ne_now, p_ne_top, p_ne_Fp]
+
+@[simp] theorem labOf_bot (L : ℕ) (q : QA L) : labOf L q (clLetter Fp cl_bot) = false := by
+  simp [labOf, bot_ne_now, bot_ne_top, bot_ne_Fp, bot_ne_p]
+
+/-- **Gadget 1's flags, assembled.** Set this beside `clTrace_stayA_apply`: the same two
+disjuncts, with `z = t` replaced by `i = s_now`. -/
+theorem labOf_inl (L : ℕ) (i : Fin 3) (ℓ : (clSig Fp).preds) :
+    labOf L (Sum.inl i) ℓ = true ↔ (ℓ = clNow Fp ∧ i.val = 1) ∨ ℓ = clLetter Fp cl_top := by
+  rcases letter_cases ℓ with rfl | rfl | rfl | rfl | rfl
+  · simp [isNowState, now_ne_top]
+  · simp [isJumpState, Fp_ne_now, Fp_ne_top]
+  · simp [isPostState, p_ne_now, p_ne_top]
+  · simp
+  · simp [bot_ne_now, bot_ne_top]
+
+/-- **Gadget 2's flags, assembled.** Set this beside `clTrace_jump_apply`: the same four
+disjuncts, with `z = t` replaced by `i = j_now` and `w < z` by `i = j_post`. -/
+theorem labOf_inr (L : ℕ) (i : Fin (L + 3)) (ℓ : (clSig Fp).preds) :
+    labOf L (Sum.inr i) ℓ = true ↔ (ℓ = clNow Fp ∧ i.val = 1) ∨ ℓ = clLetter Fp cl_top
+      ∨ ℓ = clLetter Fp cl_Fp ∨ (ℓ = clLetter Fp cl_p ∧ i.val = L + 2) := by
+  rcases letter_cases ℓ with rfl | rfl | rfl | rfl | rfl
+  · simp [isNowState, now_ne_top, now_ne_Fp, now_ne_p]
+  · simp [isJumpState]
+  · simp [isPostState, p_ne_now, p_ne_top, p_ne_Fp]
+  · simp
+  · simp [bot_ne_now, bot_ne_top, bot_ne_Fp, bot_ne_p]
+
+/-! ### The labelling bridge
+
+The two lemmas below are the phase's point: they turn Phase 6's run-trace comparison into a
+rewrite. Each says that a state of one gadget reads EXACTLY the closure letters that the
+corresponding history reads at the corresponding time, under the only two correspondences the
+gadget has: `j_now` ↔ the seam `z = t`, and `j_post` ↔ past the jump, `w < z`. -/
+
+/-- **The labelling bridge, gadget 1.** A gadget-1 state sitting at `s_now` exactly when
+`z = t` reads the same letters as `stayA` at `z`. -/
+theorem labOf_inl_iff_clTrace_stayA (L : ℕ) (t z : ℤ) (i : Fin 3) (hnow : i.val = 1 ↔ z = t)
+    (ℓ : (clSig Fp).preds) :
+    labOf L (Sum.inl i) ℓ = true ↔ clTrace MA Fp t stayA ℓ z := by
+  rw [labOf_inl, clTrace_stayA_apply]
+  constructor
+  · rintro (⟨hl, hi⟩ | hl)
+    · exact Or.inl ⟨hl, hnow.mp hi⟩
+    · exact Or.inr hl
+  · rintro (⟨hl, hz⟩ | hl)
+    · exact Or.inl ⟨hl, hnow.mpr hz⟩
+    · exact Or.inr hl
+
+/-- **The labelling bridge, gadget 2.** A gadget-2 state sitting at `j_now` exactly when `z = t`
+and at `j_post` exactly when `w < z` reads the same letters as `jump w` at `z`. -/
+theorem labOf_inr_iff_clTrace_jump (L : ℕ) (t w z : ℤ) (i : Fin (L + 3))
+    (hnow : i.val = 1 ↔ z = t) (hp : i.val = L + 2 ↔ w < z) (ℓ : (clSig Fp).preds) :
+    labOf L (Sum.inr i) ℓ = true ↔ clTrace MA Fp t (jump w) ℓ z := by
+  rw [labOf_inr, clTrace_jump_apply]
+  constructor
+  · rintro (⟨hl, hi⟩ | hl | hl | ⟨hl, hi⟩)
+    · exact Or.inl ⟨hl, hnow.mp hi⟩
+    · exact Or.inr (Or.inl hl)
+    · exact Or.inr (Or.inr (Or.inl hl))
+    · exact Or.inr (Or.inr (Or.inr ⟨hl, hp.mp hi⟩))
+  · rintro (⟨hl, hz⟩ | hl | hl | ⟨hl, hz⟩)
+    · exact Or.inl ⟨hl, hnow.mpr hz⟩
+    · exact Or.inr (Or.inl hl)
+    · exact Or.inr (Or.inr (Or.inl hl))
+    · exact Or.inr (Or.inr (Or.inr ⟨hl, hp.mpr hz⟩))
+
+/-- The function-level form of the gadget-1 bridge: trace equality against `stayA` is a rewrite,
+given only the seam correspondence. -/
+theorem runTrace_inl_eq (L : ℕ) (t : ℤ) (ρ : ℤ → Fin 3) (hnow : ∀ z, (ρ z).val = 1 ↔ z = t) :
+    runTrace (labOf L) (fun z => Sum.inl (ρ z)) = clTrace MA Fp t stayA := by
+  funext ℓ z
+  exact propext (labOf_inl_iff_clTrace_stayA L t z (ρ z) (hnow z) ℓ)
+
+/-- The function-level form of the gadget-2 bridge: trace equality against `jump w` is a
+rewrite, given the seam and threshold correspondences. -/
+theorem runTrace_inr_eq (L : ℕ) (t w : ℤ) (ρ : ℤ → Fin (L + 3))
+    (hnow : ∀ z, (ρ z).val = 1 ↔ z = t) (hp : ∀ z, (ρ z).val = L + 2 ↔ w < z) :
+    runTrace (labOf L) (fun z => Sum.inr (ρ z)) = clTrace MA Fp t (jump w) := by
+  funext ℓ z
+  exact propext (labOf_inr_iff_clTrace_jump L t w z (ρ z) (hnow z) (hp z) ℓ)
+
 -- The closure-size figure the case split rests on, left live so a reader can re-run it.
 #eval (plusSubformulaClosure Fp).card
 
@@ -566,5 +799,9 @@ theorem hitCl_eq_truncated (t : ℤ) (k : ℕ) (hk : 1 ≤ k) :
 #print axioms clTrace_stayA_eq
 #print axioms clTrace_jump_eq
 #print axioms hitCl_eq_truncated
+#print axioms labOf
+#print axioms stepOf
+#print axioms labOf_inl_iff_clTrace_stayA
+#print axioms labOf_inr_iff_clTrace_jump
 
 end Probe745

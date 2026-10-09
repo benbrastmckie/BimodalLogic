@@ -480,30 +480,49 @@ covering check.
 
 ---
 
-### Phase 5: The presentation data — `QA`, `labOf`, `stepOf`, and the labelling bridge [NOT STARTED]
+### Phase 5: The presentation data — `QA`, `labOf`, `stepOf`, and the labelling bridge [COMPLETED]
 
 **Goal**: Define the `L + 6`-state presentation and its labelling, and tie `labOf`'s flags to
 `clTrace` so the run-trace comparison in Phase 6 is a rewrite rather than a re-derivation.
 
 **Tasks**:
-- [ ] Define `QA L := Fin 3 ⊕ Fin (L + 3)` (so `Fintype.card (QA L) = L + 6`), with its `Fintype`
+- [x] Define `QA L := Fin 3 ⊕ Fin (L + 3)` (so `Fintype.card (QA L) = L + 6`), with its `Fintype`
       and `DecidableEq` instances coming from the `Sum`/`Fin` instances rather than hand-rolled.
-- [ ] Define `stepOf` at the pinned signature. Gadget 1 (`Fin 3`, `0 = s_pre`, `1 = s_now`,
+      *(deviation: altered — the card claim is landed as the named theorem `card_QA` plus
+      `#guard Fintype.card (QA 2) = 8`, rather than left as a parenthetical.)*
+- [x] Define `stepOf` at the pinned signature. Gadget 1 (`Fin 3`, `0 = s_pre`, `1 = s_now`,
       `2 = s_post`): `0→0, 0→1, 1→2, 2→2`. Gadget 2 (`Fin (L + 3)`, `0 = j_pre`, `1 = j_now`,
       `2 … L+1 = j_mid_1 … j_mid_L`, `L+2 = j_post`): `0→0`, `0→1`, `i→i+1` for `1 ≤ i ≤ L+1`,
       `i→L+2` for `1 ≤ i ≤ L+1`, `L+2→L+2`. NO step crosses the two summands — state this as its
       own lemma, since Phase 6's cross-gadget exclusion depends on it.
-- [ ] Define `labOf` at the pinned signature as an explicit flag table (report D-4), NOT as
+      *(deviation: altered — `stepOf_no_cross` landed as asked, plus two `@[simp]` crossing-edge
+      lemmas `stepOf_inl_inr`/`stepOf_inr_inl` it is proved from and the two index-level step
+      tables `stepOf_inl_inl_iff`/`stepOf_inr_inr_iff` Phase 6 reads the edges off.)*
+- [x] Define `labOf` at the pinned signature as an explicit flag table (report D-4), NOT as
       `decide` of `clTrace`: `now` true only at `inl 1` and `inr 1`; `atom p` false throughout
       gadget 1 and true exactly at `inr (L+2)`; `Fp` false throughout gadget 1 and true
       everywhere in gadget 2; `⊤` true and `bot` false everywhere.
-- [ ] Prove the labelling bridge: `labOf L q ℓ` agrees with the Phase 3 read-out of
+      *(deviation: altered — the three state-side flags are factored into named `def`s
+      `isNowState`/`isJumpState`/`isPostState` so the five letter-branch evaluation lemmas
+      `labOf_now`/`labOf_top`/`labOf_Fp`/`labOf_p`/`labOf_bot` are `@[simp]`-usable in Phase 6.)*
+- [x] Prove the labelling bridge: `labOf L q ℓ` agrees with the Phase 3 read-out of
       `clTrace MA Fp t stayA` / `clTrace MA Fp t (jump w)` at the corresponding position, as a
       four-case lemma over the closure members plus `clNow`.
-- [ ] Re-derive `(plusSubformulaClosure Fp).card` by `#eval` before finalizing the table, and
+      *(deviation: altered — landed as four declarations, not one: the per-gadget assembled
+      flag lemmas `labOf_inl`/`labOf_inr` (the four-case split over `letter_cases`), the
+      position-indexed bridges `labOf_inl_iff_clTrace_stayA`/`labOf_inr_iff_clTrace_jump`, and
+      the function-level forms `runTrace_inl_eq`/`runTrace_inr_eq` that make Phase 6 a rewrite.)*
+- [x] Re-derive `(plusSubformulaClosure Fp).card` by `#eval` before finalizing the table, and
       record it as a `#guard` or a comment so the table's completeness is checkable.
-- [ ] Compile the probe; zero errors, zero warnings, zero sorries. `labOf` and `stepOf` must be
+      *(re-derived live as 4 via `lean_run_code` against the built oleans BEFORE the table was
+      written; recorded as `#guard (plusSubformulaClosure Fp).card = 4`, and the pre-existing
+      `#eval` at the foot is left in place.)*
+- [x] Compile the probe; zero errors, zero warnings, zero sorries. `labOf` and `stepOf` must be
       `def`, never `noncomputable def`.
+      *(deviation: altered — the probe's `#print axioms` foot was also extended with `labOf`,
+      `stepOf` and the two bridges, matching the foot convention the file already carries;
+      observed: `stepOf` is choice-free `[propext]`, `labOf` and both bridges carry
+      `[propext, Classical.choice, Quot.sound]`.)*
 - [ ] Commit (one green sub-step).
 
 **Timing**: 1.5 hours
