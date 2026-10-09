@@ -7,21 +7,21 @@
     "lean-implementation-hard-agent"
   ],
   "task_number": 745,
-  "dispatch_seq": 10,
-  "phase_number": 6,
-  "phases_completed": 6,
+  "dispatch_seq": 11,
+  "phase_number": 7,
+  "phases_completed": 7,
   "phases_total": 8,
   "requires_user_review": false,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "summary": "Cumulative summary for task 745; extended with phase 6, which lands the run characterization (runTrace_mem_of_isRun and exists_isRun_runTrace at their pinned signatures), the three excluded run shapes as named theorems, the witnessing runs stayRun/jumpRun, and the L+1 branching count."
+      "summary": "Cumulative summary for task 745; extended with phase 7, which lands the headline hitPresented_modelA at its pinned signature verbatim, the five-bullet 'what it does NOT say' section, the axiom foot line, and the probe header's observed-profile axiom record."
     },
     {
       "type": "handoff",
-      "path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-6-handoff-20261009T013749Z.md",
-      "summary": "Phase 6 progressive handoff: the stocked route for phase 7's hitPresented_modelA composition through mem_hitOf_iff, the four key decisions, the observed axiom profiles, and the omega/Iff tooling trap."
+      "path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-7-handoff-20261009T020705Z.md",
+      "summary": "Phase 7 progressive handoff: Phase 8's first step (re-read check-evidence-probes.sh before editing, tasks 733/734/739 are other writers), the four key decisions, the observed axiom profiles, and the note that Phase 8's full build DOES have a Tier 3 module check where phase 7's did not."
     }
   ],
   "sorry_inventory": [],
@@ -34,66 +34,48 @@
     "axiom_count": 14,
     "axiom_note": "unchanged from baseline; no axiom added",
     "build_passed": true,
-    "build_evidence": "lake-build-guard.sh, un-piped, guard exit 0; 'Build completed successfully (2836 jobs)'; zero error: and zero warning: lines over the captured stream. Non-regression only -- phase 6 touched no file in the Lake build graph, so Tier 3 has no module of this phase's to check.",
+    "build_evidence": "lake-build-guard.sh, un-piped, guard exit 0; 'Build completed successfully (2836 jobs)'; zero error: and zero warning: lines over the captured stream. Non-regression only -- phase 7 touched no file in the Lake build graph (the probe is under specs/, which no Lake target root reaches), so Tier 3 has no module of this phase's to check.",
     "probe_compile_passed": true,
-    "probe_compile_evidence": "lake env lean on specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean through the guard, un-piped, guard exit 0; captured output is exactly the #eval line (4) and thirteen #print axioms info lines; zero error/warning lines; both #guards pass; the only grep hit for 'sorry' in the file is the phase-4 prose at line 483.",
+    "probe_compile_evidence": "lake env lean on specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean through the guard, un-piped, guard exit 0 on BOTH rounds (headline, then header edits); captured output is exactly the #eval line (4) and fourteen #print axioms info lines; zero error/warning lines; no sorryAx; both #guards pass; the only grep hit for 'sorry' in the file is the phase-4 prose at line 483. Green on the FIRST round with no tactic iteration.",
     "verification_passed": true,
-    "challenge_check": "unavailable (lean-challenge-snapshot.sh --check exits 71: no manifest at specs/745_hit_level_completeness_computable_bound/challenge/manifest.json). Substituted by mechanical whitespace-normalized python string comparison of the pinned runTrace_mem_of_isRun and exists_isRun_runTrace signatures against the plan's Lean Challenge Statements block -- both MATCH.",
-    "plan_compliance": "both pinned names present as named theorem declarations with verbatim signatures; all eighteen phase-6 declarations present; three checklist items carry additive-decomposition deviation annotations; the conditional escalation item is left unchecked with an annotation recording that its condition never arose; no step skipped, deferred or re-routed",
-    "prose_audit": "added region (413 lines): zero matches for decidab, PlusValid, complexity, EXPTIME, 2EXP, Buchi/Buechi, MSO, 'finite width', 'finite fibre' or 'decision procedure'"
+    "axiom_profile_observed": "hitPresented_modelA: [propext, Classical.choice, Quot.sound] -- the Scope Hypothesis's prediction, confirmed from the #print axioms output itself, no fourth axiom, no pin edited to match a prediction. Incidental: stepOf reports [propext] ALONE (decidable Bool-valued table), the one exception among the fourteen pins; the header's axiom record now states it.",
+    "challenge_check": "unavailable (lean-challenge-snapshot.sh --check 745 <root> exits 71: no manifest at specs/745_hit_level_completeness_computable_bound/challenge/manifest.json, never taken at plan time). Substituted by mechanical whitespace-normalized python string comparison of the landed hitPresented_modelA signature against the plan's Lean Challenge Statements block -- MATCH, including the 'exists L : N' prefix and the hk binder name.",
+    "plan_compliance": "hitPresented_modelA present as a named theorem at the verbatim pinned signature. All five phase-7 checklist items checked; three carry deviation annotations (binder form of the item's 'forall' prose, the header's additive stale-statement correction, the 'short note' landing as a five-bullet section). No step skipped, deferred or re-routed. git diff --stat over the phase's two commits touches exactly one file -- the one the plan's 'Files to modify' names -- and no file under any resolved source root.",
+    "prose_audit": "added region (101 lines): zero matches for complexity, EXPTIME, 2EXP, Buchi/Buechi, MSO, 'finite width', 'finite fibre' or 'decision procedure'. Four matches for decidab/PlusValid, each inspected: one describes stepOf as a decidable Bool-valued table (not a decidability claim about L+), three are explicit disclaimers in the pinned docstring and the 'does NOT say' section.",
+    "scope_hypothesis": "CONFIRMED on both counts -- the first phase of this record whose line estimate held. 40-70 predicted; +69/-0 for the headline sub-step, +32/-17 for the header correction, +101/-17 across the phase. Axiom profile confirmed from output, not prediction."
   },
   "completion_data": {
-    "completion_summary": "Phase 6 of 8 complete. Added 413 lines (zero deletions) to the evidence probe, now 1220 lines: the run characterization, the one link the research left uncompiled. runTrace_mem_of_isRun and exists_isRun_runTrace land at their pinned signatures verbatim, so the presentation's anchored run traces are pinned to exactly the family hitCl_eq_truncated describes. The three excluded run shapes are each a named theorem (no_run_const_pre, isLeft_const_of_isRun, inr_no_back_edge); gadget 2's threshold comes from Nat.find via inr_post_threshold, capped at L+1 by inr_fwd_index; the witnessing runs are the named defs stayRun and jumpRun with their own evaluation lemmas; and the L+1 branching figure is machine-checked by jump_window_card rather than asserted in prose. No bound is produced or implied -- L remains the unexhibited Set.Finite.bddAbove witness. Zero sorries, zero errors, zero warnings; full build green for non-regression; axiom and vacuous counts unchanged. Phases 7-8 remain [NOT STARTED] per the dispatch's single-phase mission."
+    "completion_summary": "Phase 7 of 8 complete. The headline landed: hitPresented_modelA is proved sorry-free at its pinned signature verbatim, so the satisfiability half of requirement (C) is machine-checked -- the Hit-level hypothesis HitPresented is satisfiable on fixture model A at every depth k >= 1, and the obstruction that killed Presented (Probe735.not_presented) does not reach the Hit level, so the route through (C) is not closed by task 735's verdict. The bound half is untouched and not implied: the L is hitCl_eq_truncated's unexhibited Set.Finite.bddAbove witness, so card_QA's L + 6 is a function of a number nothing produces. The proof is nineteen lines with no new mathematics -- every obligation discharged by a prior phase's pinned declaration, which is the evidence the plan's decomposition was right -- and the bridge is InFamily rather than a trace-set equality, which is precisely why the Hit level survives. A five-bullet 'what it does NOT say' section records the absent bound, the deliberate non-Presented-ness, forward-only, the absence of any decidability claim, and the one-fixture scope. Green on the first compile round; observed axiom profile [propext, Classical.choice, Quot.sound] as predicted. Zero sorries, zero errors, zero warnings; full build green for non-regression; axiom and vacuous counts unchanged. Phase 8 remains [NOT STARTED] per the dispatch's single-phase mission."
   },
   "memory_candidates": [
     {
-      "insight": "omega does NOT discharge an Iff goal in Lean v4.33.0-rc1: a goal of the form 'a <-> b' with both sides linear-arithmetic makes omega report a counterexample region equal to the hypothesis set, i.e. it learns nothing from the goal. Decompose first -- 'constructor <;> intro h <;> omega', or iff_of_false/iff_of_true with a per-side 'by omega'. This bites hardest on 'split_ifs <;> omega' over index-equals-constant iff time-condition goals, which look like pure arithmetic.",
+      "insight": "When a multi-phase Lean plan pins each phase's exit signatures as Challenge statements, a final assembly phase that needs NO new lemma, no induction, and only the case split the statement itself forces is positive evidence that the decomposition was correct. The converse is the diagnostic worth watching for: if an assembly phase has to introduce new mathematics, some earlier phase's pinned statement was the wrong statement, and the right response is to question that statement rather than to grow the assembly.",
       "keywords": [
         "lean4",
-        "omega",
-        "Iff",
-        "split_ifs",
-        "tactic-limitation"
+        "plan-decomposition",
+        "challenge-statements",
+        "assembly-phase",
+        "hard-mode"
       ]
     },
     {
-      "insight": "split_ifs reduces a branch whose body becomes a closed-literal proposition (e.g. '0 = L + 2' at Nat with L a variable is kept, but '0 = 1' or a branch where both sides are literals) to 'False' outright. A proof step expecting the arithmetic form then fails; that branch wants not_false. Relatedly, omega ignores a hypothesis carrying no atoms, such as 'h : 0 = 1', so it cannot close a goal from that contradiction. Read the goal with lean_goal instead of guessing which branch failed.",
+      "insight": "A probe or evidence file built up across many dispatches accumulates FALSE header prose: a header written at phase 2 saying 'nothing in this file yet mentions X' stays in place while later phases land X. The staleness is invisible to every compile and every sorry census, because it is inside a comment. Worth an explicit header re-read at the phase that lands the file's headline, and worth correcting additively rather than leaving a file whose own header misdescribes it.",
       "keywords": [
         "lean4",
-        "split_ifs",
-        "omega",
-        "False",
-        "goal-inspection"
+        "evidence-probe",
+        "documentation-drift",
+        "multi-dispatch",
+        "header-prose"
       ]
     },
     {
-      "insight": "To turn 'rho : Z -> A (+) B confined to one summand' into an index function 'sigma : Z -> A' choice-free, use Sum.elim id (fun _ => default) composed with rho and prove 'rho z = Sum.inl (sigma z)' pointwise by rcases. Beta-reduce the goal with an explicit 'show' BEFORE rcases: otherwise rcases substitutes only the surface occurrence and leaves the un-applied lambda, and the follow-up rw fails to find the pattern.",
+      "insight": "A bounded waiter on a detached local command must use the sentinel pattern (the command appends a marker such as 'GUARD_EXIT=$?' to its own log; the waiter greps for that marker) or kill -0 on a captured PID -- never 'pgrep -f <name>'. A pgrep-based predicate silently fails to observe completion and burns the waiter's entire timeout while the watched command has already finished green. Observed cost: 600s lost on a census that had already exited 0.",
       "keywords": [
-        "lean4",
-        "Sum.elim",
-        "beta-reduction",
-        "rcases",
-        "show"
-      ]
-    },
-    {
-      "insight": "A Fin-valued index function defined by cases over an integer time can be kept inside its bound with no side condition by wrapping the value in 'min ... (n-1)': the Fin membership proof is then 'by omega' unconditionally, and a separate val lemma proves the min is the identity on the intended range. This keeps the construction a plain def (computable) and isolates the bookkeeping in one lemma instead of spreading a bound hypothesis through every proof about it.",
-      "keywords": [
-        "lean4",
-        "Fin",
-        "min",
-        "bound-free-construction",
-        "computable-def"
-      ]
-    },
-    {
-      "insight": "Finset.Icc on Int is not compilable -- a #guard over its card fails with 'depends on Int.instConditionallyCompleteLinearOrder, which is noncomputable'. Witness an interval cardinality with a theorem via Int.card_Icc (#(Icc a b) = (b + 1 - a).toNat) plus omega, and reserve #guard for a genuinely computable structure such as a List.finRange filter.",
-      "keywords": [
-        "lean4",
-        "Finset.Icc",
-        "Int",
-        "noncomputable",
-        "guard"
+        "bounded-waiter",
+        "pgrep",
+        "detached-build",
+        "tooling-trap",
+        "lake-build-guard"
       ]
     }
   ]

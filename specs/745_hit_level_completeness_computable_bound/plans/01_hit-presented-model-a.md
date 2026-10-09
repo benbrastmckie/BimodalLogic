@@ -635,25 +635,42 @@ covering check.
 
 ---
 
-### Phase 7: Assembly — `hitPresented_modelA` and the probe's axiom foot [NOT STARTED]
+### Phase 7: Assembly — `hitPresented_modelA` and the probe's axiom foot [COMPLETED]
 
 **Goal**: Compose the truncation bound with the run characterization through `mem_hitOf_iff` to
 land the headline, and pin its axiom profile in the probe itself.
 
 **Tasks**:
-- [ ] Prove `hitPresented_modelA` at the pinned signature:
+- [x] Prove `hitPresented_modelA` at the pinned signature:
       `∀ (t : ℤ) (k : ℕ), 1 ≤ k → ∃ L : ℕ, HitPresented MA stayA t Fp (labOf L) (stepOf L) k`.
+      *(landed in the binder form the `## Lean Challenge Statements` block pins —
+      `(t : ℤ) (k : ℕ) (hk : 1 ≤ k)` — which is that block's rendering of this item's `∀`
+      prose; confirmed verbatim by whitespace-normalized string comparison, MATCH.)*
       Route: take `L` from `hitCl_eq_truncated`; unfold `HitPresented` to
       `HitCl MA stayA t Fp k = ↑(hitOf (labOf L) (stepOf L) (clNow Fp) k)`; rewrite the left side
       by `hitCl_eq_truncated` and the right side by `mem_hitOf_iff` (run-existence form, which
       needs `1 ≤ k`); close by `runTrace_mem_of_isRun` and `exists_isRun_runTrace`.
-- [ ] Add the `#print axioms` foot for `hitPresented_modelA` in the probe, in the collection's
+- [x] Add the `#print axioms` foot for `hitPresented_modelA` in the probe, in the collection's
       established shape, and update the header's axiom record to the profile actually observed.
-- [ ] Add a short note at the headline naming what it does NOT say: no `L` is exhibited, so no
+      *(deviation: altered — the header update also corrected two statements that THIS phase's
+      own edit falsified: the opening paragraph's "parts 1-2 of the record … Nothing in this file
+      yet mentions `HitCl`, `hitOf` or `HitPresented`", and the "What is NOT established"
+      paragraph's "the later phases' headline". Both were stale the moment the headline landed.
+      Purely corrective and additive; no claim weakened, no qualifier dropped.)*
+- [x] Add a short note at the headline naming what it does NOT say: no `L` is exhibited, so no
       bound is delivered; `Fintype.card (QA L) = L + 6` is a function of an unexhibited `L`; the
       presentation is deliberately not `Presented`.
-- [ ] Compile the probe; zero errors, zero warnings, zero sorries.
-- [ ] Commit (one green sub-step).
+      *(deviation: altered — landed as a five-bullet `### What `hitPresented_modelA` does NOT
+      say` section rather than a short note. It carries all three items this step names, plus
+      two the dispatch's own constraints require of any statement of this result: FORWARD-ONLY
+      (nothing about `⊡(P p)`, no symmetry implied) and the one-fixture/one-seam/one-`φ`
+      qualifier. An expansion, never a substitution.)*
+- [x] Compile the probe; zero errors, zero warnings, zero sorries. *(`lake env lean` through
+      the build guard, un-piped, guard exit 0; zero `error:`, zero `warning:`, no `sorryAx`; the
+      `#eval` foot still prints `4` and both `#guard`s pass. Green on the FIRST round, with no
+      tactic iteration.)*
+- [x] Commit (one green sub-step). *(two, per `Commit Mode: per-substep`: `phase 7.1` for the
+      headline and its axiom pin, `phase 7.2` for the header's axiom record and framing.)*
 
 **Timing**: 1 hour
 
@@ -667,6 +684,17 @@ land the headline, and pin its axiom profile in the probe itself.
 `[propext, Classical.choice, Quot.sound]` and nothing more. Confirm the profile from the
 `#print axioms` output itself, never from this plan's prediction; if a fourth axiom appears,
 record it and do not edit the pin to match a prediction.
+
+**Scope Hypothesis outcome**: CONFIRMED on both counts, and it is the first phase of this record
+whose line estimate held. The headline sub-step is `+69 / -0` by `git diff --stat`, inside the
+predicted 40-70 window once the mandated five-bullet "does NOT say" section is counted with it;
+the header-correction sub-step adds a further `+32 / -17`, for `+101 / -17` across the phase.
+The axiom profile was read off the `#print axioms` output, not predicted: `hitPresented_modelA`
+reports exactly `[propext, Classical.choice, Quot.sound]`. No fourth axiom appeared, so no pin
+was edited to match anything. (Observed incidentally and recorded rather than smoothed over:
+`stepOf` reports `[propext]` ALONE, not the three-axiom profile — it is a decidable
+`Bool`-valued table — so the header's axiom record now states the exception instead of claiming
+a uniform profile.)
 
 **Tier Justification**: The assembly consumes Phase 1's library declarations but adds nothing to
 the library; the edit is confined to the single out-of-graph probe file, so

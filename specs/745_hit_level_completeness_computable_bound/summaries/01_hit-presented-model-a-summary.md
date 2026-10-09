@@ -3,9 +3,9 @@
 - **Task**: 745 - Requirement (C) of the ray-product verdict: Hit-level completeness with a computable bound -- settle HitPresented first
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T23:51:39Z
-- **Completed**: 2026-10-09T01:45:00Z
-- **Effort**: ~1.7 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3, phase 4 ~0.25, phase 5 ~0.3,
-  phase 6 ~0.4)
+- **Completed**: 2026-10-09T02:20:00Z
+- **Effort**: ~1.95 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3, phase 4 ~0.25, phase 5 ~0.3,
+  phase 6 ~0.4, phase 7 ~0.25)
 - **Dependencies**: None ((S) is an independent sibling record; (W) is downstream of both)
 - **Artifacts**: plans/01_hit-presented-model-a.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -52,6 +52,22 @@ and the one the whole result turns on. The presentation's anchored runs trace EX
 truncated family: `runTrace_mem_of_isRun` (`⊆`) and `exists_isRun_runTrace` (`⊇`), both at their
 pinned signatures, plus the three excluded run shapes as named theorems and the `L + 1` branching
 figure counted rather than asserted. 413 added lines, zero deletions, zero sorries.
+
+**Phase 7** (dispatch 11) lands the headline. `hitPresented_modelA` composes Phase 4's truncation
+bound with Phase 6's run characterization through the library's `mem_hitOf_iff`, at the pinned
+signature verbatim, in `+69 / -0` lines and on the first compile round with no tactic iteration.
+Observed axiom profile `[propext, Classical.choice, Quot.sound]`, exactly as the Scope Hypothesis
+predicted and read off the `#print axioms` output rather than from the prediction. So the
+satisfiability half of requirement (C) is now machine-checked: the Hit-level hypothesis
+`HitPresented` is SATISFIABLE on fixture model A at every depth `k ≥ 1`, so the obstruction that
+killed `Presented` (`Probe735.not_presented`) does NOT reach the Hit level, and the route through
+(C) is not closed by task 735's verdict. The bound half is not touched and is not implied: the
+`L` is `hitCl_eq_truncated`'s unexhibited `Set.Finite.bddAbove` witness, so
+`Fintype.card (QA L) = L + 6` is a function of a number nothing produces. A five-bullet
+"What `hitPresented_modelA` does NOT say" section at the headline itself records that, the
+deliberate non-`Presented`-ness, the forward-only restriction, the absence of any decidability
+claim, and the one-fixture scope. A second sub-step corrected the probe header's opening
+paragraph and axiom record, which this phase's own edit had falsified.
 
 ## What Changed
 
@@ -195,6 +211,33 @@ figure counted rather than asserted. 413 added lines, zero deletions, zero sorri
     theorem, not by a `#guard`).
   - Two new `#print axioms` foot lines (`runTrace_mem_of_isRun`, `exists_isRun_runTrace`).
 
+- `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` — phase 7, `+101 / -17`
+  across two sub-step commits, now 1304 lines:
+  - `hitPresented_modelA` — **the headline**, at the pinned signature verbatim:
+    `(t : ℤ) (k : ℕ) (hk : 1 ≤ k) : ∃ L : ℕ, HitPresented MA stayA t Fp (labOf L) (stepOf L) k`.
+    One composition and no new mathematical content: `hitCl_eq_truncated t k hk` supplies `L` and
+    rewrites the seam side; `mem_hitOf_iff (labOf L) (stepOf L) (clNow Fp) k t hk x` rewrites the
+    presentation side into run-existence (the ONLY place `1 ≤ k` is consumed); then
+    `exists_isRun_runTrace` closes `⊆` on both union branches and `runTrace_mem_of_isRun` closes
+    `⊇` on both run shapes. The two sides meet at `InFamily` with the trace as the sole differing
+    argument — which is why nothing here compares trace sets, and hence why the Hit level
+    survives.
+  - `/-! ### What `hitPresented_modelA` does NOT say -/` — five bullets: no `L` exhibited so no
+    bound delivered (naming both choice sites, and naming `card_QA`'s `L + 6` and
+    `jump_window_card`'s `L + 1` as functions of an unexhibited `L`, not bounds); the
+    presentation is deliberately NOT `Presented` and task 735's verdict stands unchanged;
+    forward-only, nothing about `⊡(P p)`, no symmetry implied; `Decidable (PlusValidZTime φ)` not
+    stated in any form and no claim that L⁺ is decidable, qualified or not; one fixture, one
+    seam, one `φ`.
+  - `#print axioms hitPresented_modelA` added to the foot (fourteen pinned lines now).
+  - Header rewritten in three places that this phase's own edit falsified: the opening paragraph
+    (it claimed "parts 1-2 of the record … Nothing in this file yet mentions `HitCl`, `hitOf` or
+    `HitPresented`") now states the full contents plus a `**The headline.**` paragraph; the
+    "What is NOT established" paragraph's "the later phases' headline" is now "the headline"; and
+    the `**Axiom record.**` paragraph now reports the fourteen OBSERVED profiles, including the
+    one exception (`stepOf` is `[propext]` alone, being a decidable `Bool`-valued table) and the
+    four `Classical.choice` entry points.
+
 ## Decisions
 
 - `HitPresented` is a `def … : Prop` whose body IS its pinned statement, so
@@ -337,6 +380,28 @@ figure counted rather than asserted. 413 added lines, zero deletions, zero sorri
   step hypothesis. This is the single largest contributor to the phase's line count after the
   decomposition itself.
 
+- **Phase 7: the assembly carries no mathematical content, and that is the point.**
+  `hitPresented_modelA`'s proof is nineteen lines with no induction, no case analysis beyond the
+  union's two branches, and no new lemma. Every obligation was discharged by a declaration a
+  prior phase had already pinned. That is the evidence that the decomposition the plan chose was
+  the right one: if the assembly had needed new mathematics, some earlier phase's pinned
+  statement would have been the wrong statement.
+- **Phase 7: the bridge is `InFamily`, not a trace-set equality — and this is why the Hit level
+  survives.** `mem_hitOf_iff` is stated membership-wise with
+  `InFamily sig k x.1 x.2.1 x.2.2 (runTrace lab ρ)`, and `familyTriples sig k c` is
+  `{x | InFamily sig k x.1 x.2.1 x.2.2 c}`, so the two sides of `HitPresented` meet at `InFamily`
+  with the TRACE as the sole differing argument. Phase 6's two directions supply exactly that
+  identification. Nothing in the proof compares trace SETS, which is the equality
+  `Probe735.not_presented` refutes — so the refutation has nothing to bite on here, exactly as
+  task 735's verdict predicted it would not.
+- **Phase 7: the header's stale claims were corrected, not left standing.** The probe's opening
+  paragraph said "parts 1-2 of the record … Nothing in this file yet mentions `HitCl`, `hitOf` or
+  `HitPresented`" — false from the moment Phase 4 landed and flatly false once the headline
+  landed. Rather than leave a probe whose own header misdescribes it, the paragraph was rewritten
+  to state the full contents and the headline, the "later phases' headline" clause was fixed, and
+  the axiom record was replaced by the fourteen OBSERVED profiles. Recorded as a deviation
+  annotation on the plan's second phase-7 item, since the plan asked only for the axiom record.
+
 ## Plan Deviations
 
 - **Task 1.3** (the `HitPresented` docstring) altered: the plan directs the docstring to say the
@@ -456,6 +521,28 @@ figure counted rather than asserted. 413 added lines, zero deletions, zero sorri
   `inr_fwd_index` (every run reaches `j_post` within `L + 1` steps), `inr_post_threshold` (the
   threshold lands in `[t, t + L]`), `exists_isRun_runTrace` (every member of that interval is
   realized) and `jump_window_card` (the interval has `L + 1` members).
+
+- **Phase 7, item 1** *(altered)*: landed in the binder form `(t : ℤ) (k : ℕ) (hk : 1 ≤ k)`
+  that the plan's `## Lean Challenge Statements` block pins, which is that block's rendering of
+  the item's `∀ (t : ℤ) (k : ℕ), 1 ≤ k → …` prose. The Challenge block is the signature contract
+  under `plan-compliance.md`'s Statement Fidelity section, so it wins over the item's prose
+  paraphrase; verbatim MATCH confirmed mechanically.
+- **Phase 7, item 2** *(altered)*: the header update went beyond the axiom record, correcting two
+  further statements that this phase's own edit falsified (the opening paragraph's "parts 1-2 of
+  the record … Nothing in this file yet mentions `HitCl`, `hitOf` or `HitPresented`", and the
+  "What is NOT established" paragraph's "the later phases' headline"). Purely corrective and
+  additive; no claim weakened, no qualifier dropped, no new claim introduced.
+- **Phase 7, item 3** *(altered)*: the "short note" landed as a five-bullet
+  `### What `hitPresented_modelA` does NOT say` section. It carries all three items the plan
+  names, plus two the dispatch's standing constraints require of any statement of this result:
+  FORWARD-ONLY (nothing about `⊡(P p)`, no symmetry implied) and the one-fixture/one-seam/one-`φ`
+  qualifier. An expansion, never a substitution.
+- **Phase 7 Scope Hypothesis CONFIRMED on both counts** — the first phase of this record whose
+  line estimate held. Predicted 40-70 added lines; the headline sub-step is `+69 / -0` by
+  `git diff --stat`, with the header-correction sub-step adding a further `+32 / -17` for
+  `+101 / -17` across the phase. Predicted axiom profile
+  `[propext, Classical.choice, Quot.sound]` and nothing more: CONFIRMED from the `#print axioms`
+  output itself, no fourth axiom, no pin edited to match a prediction.
 
 ## Verification
 
@@ -666,6 +753,45 @@ figure counted rather than asserted. 413 added lines, zero deletions, zero sorri
 - Territory: working tree clean of foreign modifications at dispatch start and at commit time
   apart from `specs/events.jsonl`, which is the orchestrator's own writer and was deliberately
   left unstaged. No foreign commit and no foreign build was observed.
+
+### Phase 7 verification (dispatch 11)
+
+- **Probe compile**: `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`
+  through `lake-build-guard.sh`, un-piped, detached. Guard exit 0 on both rounds (headline, then
+  header edits). Captured output is exactly the `#eval` line (`4`) and fourteen `#print axioms`
+  info lines; zero `error:`, zero `warning:`, no `sorryAx`; both `#guard`s pass. **Green on the
+  first round, with no tactic iteration.**
+- **Pinned signature**: MATCH, by whitespace-normalized python string comparison of the landed
+  `hitPresented_modelA` declaration against the plan's `## Lean Challenge Statements` block —
+  including the `∃ L : ℕ` prefix and the `hk` binder name. The advisory
+  `lean-challenge-snapshot.sh --check 745 <root>` gate remains UNAVAILABLE for this task
+  (exit 71: no manifest at `specs/745_…/challenge/manifest.json`; the snapshot was never taken
+  at plan time), so the string comparison is its substitute, as in every earlier phase.
+- **Axiom profile, OBSERVED not predicted**: `hitPresented_modelA` reports exactly
+  `[propext, Classical.choice, Quot.sound]`. No fourth axiom appeared, so no pin was edited to
+  match a prediction. Incidental finding recorded rather than smoothed over: `stepOf` reports
+  `[propext]` ALONE; the header's axiom record now states that exception instead of claiming a
+  uniform profile across all fourteen pins.
+- **Full project build**: `lake-build-guard.sh build --timeout 1800 -- build`, un-piped,
+  detached. Guard exit 0; `Build completed successfully (2836 jobs).`; zero `error:` and zero
+  `warning:` over the captured stream. **Non-regression only** — phase 7 touched no file in the
+  Lake build graph (the probe lives under `specs/`, which no Lake target root reaches), so Tier 3
+  has no module of this phase's to check.
+- **Repo-wide censuses** over the eight roots `lean-src-roots.sh` resolves: `sorry_count` 0 with
+  `cross_check: MATCH` (compiler 0, stripper 0); `vacuous_count` 1 (the pre-existing
+  `int_domain_universal`, unchanged by this phase; zero in the probe); `axiom_count` 14,
+  unchanged from baseline — no axiom added.
+- **Plan compliance**: `hitPresented_modelA` present as a named `theorem` at the verbatim pinned
+  signature. All five phase-7 checklist items checked; three carry deviation annotations (binder
+  form of the `∀` prose, the header's additive stale-statement correction, and the "short note"
+  landing as a five-bullet section). No step skipped, deferred or re-routed. `git diff --stat`
+  over the phase's two commits touches exactly one file — the one the plan's "Files to modify"
+  names — and no file under any resolved source root.
+- **Prose audit** of the 101 added lines: zero matches for `complexity`, `EXPTIME`, `2EXP`,
+  `Buchi`/`Büchi`, `MSO`, `finite width`, `finite fibre`, `decision procedure`. Four matches for
+  `decidab`/`PlusValid`, each inspected: one describes `stepOf` as a decidable `Bool`-valued
+  table (not a decidability claim about L⁺), and three are explicit DISCLAIMERS in the pinned
+  docstring and the "does NOT say" section.
 
 ## Impacts
 
