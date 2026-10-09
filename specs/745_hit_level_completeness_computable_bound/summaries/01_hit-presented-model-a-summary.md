@@ -3,15 +3,15 @@
 - **Task**: 745 - Requirement (C) of the ray-product verdict: Hit-level completeness with a computable bound -- settle HitPresented first
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T23:51:39Z
-- **Completed**: 2026-10-09T00:36:00Z
-- **Effort**: ~0.75 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3)
+- **Completed**: 2026-10-09T00:51:00Z
+- **Effort**: ~1.0 hours (phase 1 ~0.2, phase 2 ~0.25, phase 3 ~0.3, phase 4 ~0.25)
 - **Dependencies**: None ((S) is an independent sibling record; (W) is downstream of both)
 - **Artifacts**: plans/01_hit-presented-model-a.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Three single-phase dispatches of the eight-phase plan, each confined to one phase per its
+Four single-phase dispatches of the eight-phase plan, each confined to one phase per its
 dispatch's phase mission. **Phase 1** (dispatch 5) states the Hit-level hypothesis `HitPresented` in the
 library beside `Presented` and records that it is strictly weaker, via
 `hitPresented_of_presented`; both land sorry-free in
@@ -22,15 +22,20 @@ model-A fixture transcription, and the step-path classification `path_classify`.
 (dispatch 7) turns that classification into a statement about the seam's SPLICES
 (`splice_classify`) and lands the explicit `clTrace` read-out over the five-letter closure alphabet
 of `Fp` on both splice families, culminating in the two function-level forms `clTrace_stayA_eq` and
-`clTrace_jump_eq` that make trace equality a rewrite. Phases 4-8 — the truncation bound, the
-presentation data, the run characterization, the assembly, and the
-wiring/pins/docs/bound-verdict — are NOT attempted and remain `[NOT STARTED]`.
+`clTrace_jump_eq` that make trace equality a rewrite. **Phase 4** (dispatch 8) lands the
+truncation bound `hitCl_eq_truncated`: `HitCl` at the seam is exactly the family triples of
+`stayA`'s closure trace together with those of the finitely many `jump w` for `t ≤ w ≤ t + L`,
+for an `L` that is never exhibited. Phases 5-8 — the presentation data, the run
+characterization, the assembly, and the wiring/pins/docs/bound-verdict — are NOT attempted and
+remain `[NOT STARTED]`.
 
-Nothing is claimed about requirement (C) itself by any of the three phases. `HitPresented` is a
+Nothing is claimed about requirement (C) itself by any of the four phases. `HitPresented` is a
 *declaration*, not yet a *discharged* hypothesis: no model satisfies it in the tree, and the
 fixture-level discharge is phases 3-7's work. Phase 2 lands no statement mentioning `HitCl`,
 `hitOf` or `HitPresented` at all — what it lands is the rigidity fact the discharge will rest on,
 and phase 3 lands none either: `clTrace` is the closure-alphabet trace of a history, not `HitCl`.
+Phase 4 is the first to mention `HitCl`, and what it lands is still not (C): `hitCl_eq_truncated`
+re-indexes `HitCl` finitely, saying nothing about any presentation and nothing about `hitOf`.
 
 ## What Changed
 
@@ -80,6 +85,21 @@ and phase 3 lands none either: `clTrace` is the closure-alphabet trace of a hist
   - a live `#eval (plusSubformulaClosure Fp).card` at the foot of the alphabet section, and three
     new `#print axioms` pins (`splice_classify`, `clTrace_stayA_eq`, `clTrace_jump_eq`).
 
+- `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` — +98 lines (phase 4,
+  dispatch 8; zero deletions), file now 563 lines. A new `## The truncation bound` section:
+  - `jump_seam {w t : ℤ} (hw : t ≤ w) : (jump w).state t = stayA.state t` — every `jump w` with
+    `w ≥ t` passes through the seam `(t, a)`, since at `t` itself the jump has not happened.
+  - `exists_splice_eq (t) (σ) (h : σ.state t = stayA.state t) : ∃ bf : SeqPair FA (stayA.state t),
+    spliced stayA t bf = σ` — the converse of `splice_classify`: every seam-passing history IS a
+    splice. `seamOmegaEquiv`'s `symm_apply_apply` and nothing more.
+  - `hitCl_covered (t) (k) : ∀ x ∈ HitCl MA stayA t Fp k, ∃ n : ℕ,
+    x ∈ familyTriples … stayA ∨ x ∈ familyTriples … (jump (t + n))` — `hitCl_eq_iUnion` followed
+    by `splice_classify`, with the jump time re-expressed as a natural offset from `t`.
+  - `hitCl_eq_truncated (t) (k) (hk : 1 ≤ k)` — the phase headline, at the pinned signature:
+    `∃ L : ℕ, HitCl MA stayA t Fp k = familyTriples … stayA ∪ ⋃ w ∈ Set.Icc t (t + L),
+    familyTriples … (jump w)`. Added to the probe's `#print axioms` foot, reporting exactly
+    `[propext, Classical.choice, Quot.sound]`.
+
 ## Decisions
 
 - `HitPresented` is a `def … : Prop` whose body IS its pinned statement, so
@@ -127,6 +147,33 @@ and phase 3 lands none either: `clTrace` is the closure-alphabet trace of a hist
 - Nothing in phase 3 evaluates a `kTypeOf` or runs `decide` over `KType`, per the plan's Research
   Integration note (report D-2/D-3): the read-outs go through `clTrace_letter`/`clTrace_now` and
   `PlusTruthAt` only. The file's one `KType` occurrence is a docstring sentence saying so.
+
+- **Phase 4: two choice sites named, not one.** The plan's task item asks for a comment naming
+  where the non-constructivity enters (`Set.Finite.bddAbove`). The landed proof has TWO such
+  sites and the section header names both: `choose!` picks a witnessing ray pair — hence, through
+  `splice_classify`, a jump time — for each member of `HitCl`, and `Set.Finite.bddAbove` then
+  asserts only that SOME upper bound of those offsets exists. Neither exhibits anything, which is
+  why the `∃ L` shape is the recorded result rather than a presentational choice.
+- **Phase 4: `Set.Finite.image` + `BddAbove`'s own `upperBounds` witness in place of
+  `toFinset`/`Finset.sup`.** `((hitCl_finite …).image off).bddAbove` yields
+  `⟨L, hL : L ∈ upperBounds (off '' HitCl)⟩` directly, so the `Set.Finite.toFinset` / `Finset.sup`
+  bookkeeping the plan's Scope Hypothesis predicted as the dominant cost never arose. Both names
+  were still re-resolved by name as the task item requires. This is not a route substitution: the
+  plan's stated route is "`Set.Finite.bddAbove` on the image of the offsets to get `L`", which is
+  exactly what was done.
+- **Phase 4: one declaration-scoped linter suppression, documented in the docstring.** The pinned
+  signature binds `(hk : 1 ≤ k)` and the truncation argument genuinely does not use it (`HitCl` is
+  defined at every depth), so `unusedVariables` warned — colliding with the phase's zero-warnings
+  bar. Renaming the binder to `_hk` would have altered the signature the phase's own verification
+  requires verbatim, so the resolution is `set_option linter.unusedVariables false in` on that one
+  declaration plus a docstring paragraph stating why `hk` is carried.
+- **Phase 4: `exists_splice_eq` had to be a term proof, not `show`-then-`rw`.** Writing the
+  `symm_apply_apply` goal out with `show` forced elaboration at `implicit` transparency and
+  produced an application type mismatch between `{σ // σ.state t = stayA.state t}` and
+  `Presheaf.StabFibre FA.toTaskFrame.toFibre.toTaskFrame t (stayA.state t)`, after which the `rw`
+  found no pattern. `congrArg Subtype.val ((seamOmegaEquiv t (stayA.state t)).symm_apply_apply
+  ⟨σ, h⟩)` compiles. Worth carrying into phase 6, which touches `IsRun` and may meet the same
+  `toFibre.toTaskFrame` coercion wall.
 
 ## Plan Deviations
 
@@ -192,6 +239,17 @@ and phase 3 lands none either: `clTrace` is the closure-alphabet trace of a hist
   not substitutes for any plan step — the plan's own `Goals, stated in prose` entry covers "the
   four-case closure-letter read-out lemma for the closure alphabet of the fixture formula". Flagged
   here rather than left implicit.
+
+- **Phase 4: no step deviation.** All six checklist items were executed as written, in order, and
+  the phase heading was marked `[IN PROGRESS]` before the first file write (correcting phase 3's
+  process slip). Three named declarations beyond the item's literal enumeration were added
+  (`jump_seam`, `exists_splice_eq`, `hitCl_covered`) — a decomposition REFINEMENT in the
+  plan-compliance-safe direction (more named lemmas, never an inlining); no plan-named declaration
+  was skipped, altered or re-routed, and `hitCl_eq_truncated` matches its pin verbatim.
+- **Phase 4 Scope Hypothesis** CONFIRMED — the first confirmed one in this task: predicted 60-100
+  added lines, actual 98 insertions by `git diff --stat`. The predicted DRIVER was wrong, as in
+  phase 3: no `Finset.sup` bookkeeping arose at all. The cost was the three extra helper
+  declarations and the section's prose header instead.
 
 ## Verification
 
@@ -280,6 +338,37 @@ and phase 3 lands none either: `clTrace` is the closure-alphabet trace of a hist
 - Comparator gate: not run. `compare_flag` is absent from the delegation context, so the gate's
   precondition is unmet and no `comparator` block is recorded.
 
+### Phase 4 verification (dispatch 8)
+
+- Probe compile: `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`
+  exit 0. Captured output is exactly the `#eval` line (`4`) and the seven `#print axioms` info
+  lines — zero lines matching `error` or `warning`.
+- Full project build re-run after the phase, detached through `lake-build-guard.sh`: guard exit 0
+  (Tier 1), `Build completed successfully (2836 jobs)` with zero `error:` lines over the captured
+  stream (Tier 2), `Trace.olean` newer than `Trace.lean` (Tier 3). Phase 4 touched no file in the
+  Lake build graph — the probe is under `specs/`, which no Lake target root reaches — so this
+  re-run confirms non-regression rather than new coverage.
+- Sorry count: 0, repo-wide, via `lean-sorry-census.sh --cross-check` over all eight resolved
+  source roots — `stripper_sorry_count: 0`, `compiler_sorry_count: 0`, `cross_check: MATCH`. The
+  probe's two `grep -n sorr` hits are both prose (the header's "zero sorries" and the new
+  section's "cited or `sorry`-ed here").
+- Vacuous count: 1 — unchanged, still the same pre-existing `int_domain_universal`. Zero in the
+  probe.
+- Axiom count: 14 — unchanged. No `axiom` added.
+- Axiom foot, observed not predicted: `Probe745.hitCl_eq_truncated` reports exactly
+  `[propext, Classical.choice, Quot.sound]`, as do the six earlier pins re-run in the same compile.
+- Statement fidelity: `hitCl_eq_truncated`'s landed signature was extracted from the probe and from
+  the plan's `## Lean Challenge Statements` block and compared by whitespace-normalized mechanical
+  string comparison — identical, including the `∃ L : ℕ` prefix and the `hk` binder name. No
+  supplied or computed `L`, no added hypothesis, no weakened conclusion.
+- No `kTypeOf` evaluation and no `decide` over `KType` anywhere in the added region: grep over
+  lines 462+ returns only the two prose occurrences, which name them as what is NOT done.
+- `lean-challenge-snapshot.sh --check`: UNAVAILABLE, not green — still no manifest at
+  `specs/745_hit_level_completeness_computable_bound/challenge/manifest.json`. The mechanical
+  comparison above stands in its place for the one signature this phase lands.
+- Comparator gate: not run. `compare_flag` is absent from the delegation context, so the gate's
+  precondition is unmet and no `comparator` block is recorded.
+
 ## Impacts
 
 - `path_classify` is the rigidity fact the whole positive construction rests on: it says the
@@ -294,6 +383,17 @@ and phase 3 lands none either: `clTrace` is the closure-alphabet trace of a hist
   a closed form rather than semantic arguments. `clTrace_jump_apply` additionally isolates the only
   `w`-dependence in a jump trace — the `p` letter's threshold — which is the single feature phase
   5's presentation has to reproduce.
+- `hitCl_eq_truncated` is what phases 5-7 consume: it fixes the FINITE index (`stayA` plus
+  `jump w` for `t ≤ w ≤ t + L`) that phase 5's `L + 6`-state presentation is built to realize and
+  that phase 6's run characterization must match exactly. It also fixes, once and for all, the
+  shape of this record's headline: because `L` arrives unexhibited, `hitPresented_modelA` can only
+  ever be an `∃ L` statement, and any later phase that appeared to supply an `L` would be proving
+  a different, stronger theorem than this plan authorizes.
+- The bound verdict is now machine-visible rather than argued, in the only sense available: the
+  landed theorem's `∃ L` prefix states the non-exhibition in the statement, and its axiom foot
+  carries `Classical.choice`. Non-existence of a computable bound remains not a Lean-statable
+  property, so this is the substitute the user approved in cycle 1, not a discharge of acceptance
+  branch 3's literal wording.
 - The probe is NOT yet in any gate: it lives under `specs/`, which no Lake target root reaches, so
   `lake build` never compiles it and it can rot silently until phase 8 wires it into
   `scripts/check-evidence-probes.sh`. Until then its only check is the explicit `lake env lean`
@@ -310,13 +410,17 @@ and phase 3 lands none either: `clTrace` is the closure-alphabet trace of a hist
 
 ## Follow-ups
 
-- Phases 4-8 of `plans/01_hit-presented-model-a.md`, all `[NOT STARTED]`. Phase 4 (the truncation
-  bound) is next and touches only the probe file. Its first obligation is to re-resolve
-  `hitCl_finite`, `hitCl_eq_iUnion`, `familyTriples`, `finite_family_triples`, `kType_finite`,
-  `Set.Finite.bddAbove`, `Set.Finite.toFinset` and `Finset.sup` BY NAME, then prove
-  `hitCl_eq_truncated` with its `∃ L : ℕ` prefix intact — a version with a supplied or computed `L`
-  is a different, stronger theorem the phase may not land. The non-constructivity's entry point
-  (`Set.Finite.bddAbove`, hence `Classical.choice`) must be named in a comment at the proof site.
+- Phases 5-8 of `plans/01_hit-presented-model-a.md`, all `[NOT STARTED]`. Phase 5 (the
+  presentation data) is next and touches only the probe file: `QA L := Fin 3 ⊕ Fin (L + 3)` with
+  `Fintype`/`DecidableEq` from the `Sum`/`Fin` instances, `stepOf` with its no-cross-step lemma
+  (phase 6 cites it), and `labOf` as an explicit flag table rather than `decide` of `clTrace`.
+  Both must be `def`, never `noncomputable def`. The plan's "re-derive
+  `(plusSubformulaClosure Fp).card` before finalizing the table" item is ALREADY discharged — the
+  `#eval` printing `4` is live in the probe from phase 3 — so phase 5 should cite it rather than
+  re-run it.
+- The `∃ L` shape is now load-bearing for phase 7: `hitPresented_modelA` must keep its own `∃ L`
+  prefix, because `hitCl_eq_truncated` supplies no `L` to pass down. A phase 7 that appeared to
+  exhibit an `L` would be landing a theorem this plan does not authorize.
 - Phase 6's run characterization remains the plan's single Medium-confidence, uncompiled link. If
   it cannot be carried out as written, the plan requires marking it `[BLOCKED]` rather than
   substituting the rejected `mem_hitOf_iff_live` route or weakening the pinned statement.
@@ -341,8 +445,9 @@ and phase 3 lands none either: `clTrace` is the closure-alphabet trace of a hist
 - `specs/745_hit_level_completeness_computable_bound/reports/01_hit-level-completeness-probe.md` —
   the research the plan executes.
 - `specs/745_hit_level_completeness_computable_bound/handoffs/phase-1-handoff-20261008T235902Z.md`,
-  `handoffs/phase-2-handoff-20261009T001229Z.md` and
-  `handoffs/phase-3-handoff-20261009T003531Z.md` — the three phase-end handoffs, each with its next
+  `handoffs/phase-2-handoff-20261009T001229Z.md`,
+  `handoffs/phase-3-handoff-20261009T003531Z.md` and
+  `handoffs/phase-4-handoff-20261009T005104Z.md` — the four phase-end handoffs, each with its next
   action and carried constraints.
 - `specs/745_hit_level_completeness_computable_bound/issues.jsonl` — the three scope-hypothesis
   overruns, the pre-commit gate collision, phase 3's first-try-compile win, and phase 3's

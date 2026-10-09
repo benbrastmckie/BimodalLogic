@@ -3,9 +3,9 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 745,
-  "dispatch_seq": 7,
-  "phase_number": 3,
-  "phases_completed": 3,
+  "dispatch_seq": 8,
+  "phase_number": 4,
+  "phases_completed": 4,
   "phases_total": 8,
   "requires_user_review": false,
   "handoff_path": "specs/745_hit_level_completeness_computable_bound/.orchestrator-handoff.json",
@@ -13,33 +13,46 @@
     {
       "type": "summary",
       "path": "specs/745_hit_level_completeness_computable_bound/summaries/01_hit-presented-model-a-summary.md",
-      "summary": "Phase 3 lands splice_classify and the five-letter closure-alphabet clTrace read-out on both of model A's splice families, sorry-free."
+      "summary": "Cumulative implementation summary, now covering phases 1-4; phase 4 landed hitCl_eq_truncated, the truncation bound, at its pinned exists-L signature with the two choice sites named."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/745_hit_level_completeness_computable_bound/handoffs/phase-4-handoff-20261009T005104Z.md",
+      "summary": "Phase 4 handoff: what landed, the four declarations, the two choice sites, the toFinset/Finset.sup route that proved unnecessary, the hk linter tension, and phase 5's first step."
     }
   ],
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
+    "sorry_cross_check": "MATCH",
     "vacuous_count": 1,
+    "vacuous_note": "pre-existing int_domain_universal, unchanged from the phase-3 baseline; zero in the probe",
     "axiom_count": 14,
+    "axiom_note": "unchanged; no axiom added",
     "build_passed": true,
-    "verification_passed": true,
-    "notes": "Probe compile `lake env lean` exit 0 with zero error/warning lines. Full project build through lake-build-guard.sh: guard exit 0, 'Build completed successfully (2836 jobs)', zero `error:` lines, Trace.olean newer than Trace.lean. lean-sorry-census.sh --cross-check over all eight resolved source roots: stripper 0, compiler 0, cross_check MATCH. vacuous_count 1 is the pre-existing FormalSystem/Examples/TemporalStructures.lean int_domain_universal, unchanged from baseline, zero introduced. axiom_count 14 unchanged. splice_classify's landed signature matches the plan's pinned Challenge statement by mechanical whitespace-normalized diff."
+    "build_evidence": "guard exit 0 (Tier 1); 'Build completed successfully (2836 jobs)' with zero error: lines (Tier 2); Trace.olean newer than Trace.lean (Tier 3). Non-regression only -- phase 4 touched no file in the Lake build graph.",
+    "probe_compile": "lake env lean on specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean exit 0, zero errors, zero warnings",
+    "axiom_pins": "Probe745.hitCl_eq_truncated depends on axioms: [propext, Classical.choice, Quot.sound]; the six earlier pins re-run unchanged in the same compile",
+    "signature_fidelity": "hitCl_eq_truncated compared against the plan's Lean Challenge Statements pin by mechanical whitespace-normalized string comparison: exact match, including the exists-L prefix and the hk binder name",
+    "forbidden_evaluation": "no kTypeOf evaluation and no decide over KType in the added region; grep over lines 462+ returns only two prose occurrences naming them as what is not done",
+    "challenge_snapshot_check": "UNAVAILABLE -- no manifest at specs/745_hit_level_completeness_computable_bound/challenge/manifest.json; the mechanical comparison above stands in its place",
+    "verification_passed": true
   },
   "completion_data": {
-    "completion_summary": "Phase 3 of 8 complete. splice_classify (pinned signature, mechanically diff-verified) identifies every seam splice of model A as stayA or jump w with w >= t, by transporting path_classify through seamOmegaEquiv and lifting with WorldHistory.ext_state. The closure alphabet of Fp is enumerated and exhausted (letter_cases over five letters; (plusSubformulaClosure Fp).card = 4 re-derived by #eval, no longer carried), and clTrace is read out letter by letter on both splice families, assembled into clTrace_stayA_apply / clTrace_jump_apply and the function-level clTrace_stayA_eq / clTrace_jump_eq. Zero sorries, zero warnings, full build green. Nothing about HitCl, hitOf, HitPresented, PlusValidZTime, decidability, or any bound is stated by this phase."
+    "completion_summary": "Phase 4 of 8 complete: the truncation bound. hitCl_eq_truncated lands at its pinned signature -- HitCl at the seam (t, a) of stayA equals the family triples of stayA's closure trace together with those of the finitely many jump w for t <= w <= t + L -- together with three supporting declarations (jump_seam, exists_splice_eq, hitCl_covered). The exists-L prefix is intact and load-bearing: L comes from choose! on a per-member witnessing ray pair followed by Set.Finite.bddAbove on the resulting offsets, so it is never exhibited and no computable bound follows. Zero sorries, zero warnings, axiom foot exactly [propext, Classical.choice, Quot.sound], full project build green as non-regression. Phases 5-8 remain [NOT STARTED] per the single-phase dispatch mission."
   },
   "memory_candidates": [
     {
-      "topic": "Transporting a step-path classification to a splice classification in BimodalLogic",
-      "insight": "WorldHistory.path is WorldHistory.state by definition and seamOmegaEquiv's .symm carries the seam condition as its .2 field, so a classification of bare step paths through a seam state applies to `spliced tau t bf`.path directly -- no pathFibreEquiv rewrite is needed, and WorldHistory.ext_state lifts the pointwise result to a history equality. A plan predicting this transport as the cost driver of a phase mispredicted: it is ~29 lines."
+      "topic": "Lean 4: 'show' can break a symm_apply_apply rewrite through an Equiv over a coerced frame",
+      "detail": "Writing out an Equiv.symm_apply_apply goal with 'show' forces elaboration at implicit transparency and can mismatch a hand-built subtype against the structure-projection form the Equiv actually expects (here {sigma // sigma.state t = s} against Presheaf.StabFibre FA.toTaskFrame.toFibre.toTaskFrame t s), after which the following rw finds no pattern. The term proof congrArg Subtype.val (e.symm_apply_apply x) sidesteps it entirely. Prefer the term form over show-then-rw whenever the subtype's carrier reaches the Equiv through a coercion chain."
     },
     {
-      "topic": "Scope estimation for per-letter closure-alphabet read-outs",
-      "insight": "A plan item of the form 'for each member of the closure plus the marker, give the trace on each of N families explicitly' multiplies out: a 4-member closure and 2 families is 10 per-letter lemmas, and the supporting exhaustion lemma, membership facts, falsity lemmas and assembled forms bring it to ~21 declarations. Estimating such an item at 80-120 lines undershoots by roughly a factor of two; count the declarations the item implies before writing the hypothesis."
+      "topic": "Pinned-signature binders that the proof does not use collide with the zero-warnings bar",
+      "detail": "A Challenge-pinned signature can bind a hypothesis the proof genuinely does not need (here hk : 1 <= k, carried for downstream composition). Renaming it to _hk would silence unusedVariables but alters the signature a verbatim-pin check compares against. The resolution that satisfies both bars is a declaration-scoped 'set_option linter.unusedVariables false in' plus a docstring paragraph saying why the binder is carried -- never a rename, and never a silent suppression without the stated reason."
     },
     {
-      "topic": "Avoiding pairwise-distinctness lemmas in a letter-indexed iff read-out",
-      "insight": "When proving `trace q z <-> (q = letter1 /\\ P1 z) \\/ (q = letter2 /\\ P2 z) \\/ ...`, prove the forward direction by case-splitting on an alphabet-exhaustion lemma and the backward direction by `rintro (<rfl, h> | rfl | ...)`. The rfl patterns substitute the letter variable, so no letter needs to be distinguished from any other and the pairwise-distinctness lemmas are never consulted -- which also keeps the proof free of simp-argument-list churn and its unusedSimpArgs warnings."
+      "topic": "Set.Finite.image + BddAbove's upperBounds witness beats Set.Finite.toFinset + Finset.sup for extracting an unexhibited bound",
+      "detail": "To get 'there exists an L bounding f over a finite set S', ((hS.image f).bddAbove) yields <L, hL : L in upperBounds (f '' S)> in one step, and hL applied to <x, hx, rfl> gives f x <= L. Routing through Set.Finite.toFinset and Finset.sup is strictly more bookkeeping for the same non-constructive conclusion. Two plan Scope Hypotheses in this task predicted Finset.sup as the dominant cost and were wrong about the driver both times."
     }
   ]
 }
