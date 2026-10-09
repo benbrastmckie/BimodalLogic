@@ -413,7 +413,65 @@ EVIDENCE="specs/evidence"
 #                                                           | closure-wide quasimodel over all
 #                                                           | seams at once. Forward only;
 #                                                           | nothing about `⊡(P p)`;
-#                                                           | `HitPresented` left OPEN
+#                                                           | `HitPresented` left OPEN there
+#                                                           | (SETTLED on this fixture by
+#                                                           | `hit-presented-model-a` below:
+#                                                           | satisfiable, non-constructively;
+#                                                           | general (C) with a computable bound
+#                                                           | still open)
+# seam-gluing-ray-product/hit-presented-model-a             | POSITIVE (requirement (C)'s
+#                                                           | satisfiability half): the HIT-level
+#                                                           | realization hypothesis
+#                                                           | `RaySummary.HitPresented` -- the seam's
+#                                                           | realized FAMILY TRIPLES are exactly a
+#                                                           | finite presentation's, the Hit-level
+#                                                           | hypothesis named in
+#                                                           | `presented-not-complete`'s header and
+#                                                           | left OPEN there -- is SATISFIABLE on
+#                                                           | that probe's model A (transcribed,
+#                                                           | never imported; `a→a, a→b, b→b`, `p`
+#                                                           | at `b`, `cl = {p, Fp}`) at the seam
+#                                                           | `(t, a)` of `stayA` with `φ := Fp`, at
+#                                                           | EVERY depth `k ≥ 1`
+#                                                           | (`hitPresented_modelA`), by the
+#                                                           | rigidity of `RA` (every step path
+#                                                           | through the seam is the constant
+#                                                           | `a`-path or an `a`-then-`b` jump,
+#                                                           | `path_classify`, `splice_classify`),
+#                                                           | the truncation of the seam's infinite
+#                                                           | ray index to a finite window
+#                                                           | (`hitCl_eq_truncated`) and a
+#                                                           | two-gadget presentation whose anchored
+#                                                           | runs realize exactly that window
+#                                                           | (`runTrace_mem_of_isRun`,
+#                                                           | `exists_isRun_runTrace`). Holds in
+#                                                           | place: the `Presented` refutation does
+#                                                           | NOT transfer to the Hit level, because
+#                                                           | what `Probe735.not_presented` refutes
+#                                                           | is an equality of TRACE sets and this
+#                                                           | is an equality of FAMILY-TRIPLE sets --
+#                                                           | the two hold side by side on the SAME
+#                                                           | fixture, seam and `φ` -- so the route
+#                                                           | through requirement (C) is NOT closed
+#                                                           | by that verdict, which stands
+#                                                           | unchanged. The construction is
+#                                                           | NON-CONSTRUCTIVE and delivers NO
+#                                                           | bound: the `L` is a
+#                                                           | `Set.Finite.bddAbove` witness, never
+#                                                           | exhibited, so `card_QA`'s `L + 6` and
+#                                                           | `jump_window_card`'s `L + 1` are
+#                                                           | functions of a number nothing
+#                                                           | produces, and (C)'s computable-bound
+#                                                           | half stays OPEN -- the obstruction and
+#                                                           | the single missing lemma are named in
+#                                                           | the probe header's "Bound verdict" and
+#                                                           | in the RaySummary README. Forward only;
+#                                                           | nothing about `⊡(P p)`;
+#                                                           | `Decidable (PlusValidZTime φ)` NOT
+#                                                           | stated in any form, conditional or
+#                                                           | otherwise, and no claim that L⁺ is
+#                                                           | decidable, qualified or not; one
+#                                                           | fixture, one seam, one `φ`
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -435,6 +493,7 @@ WIRED=(
   "seam-gluing-ray-product/quasistate-does-not-determine-hit"
   "seam-gluing-ray-product/presented-not-complete"
   "seam-gluing-ray-product/stab-depth-two-shared-stratum"
+  "seam-gluing-ray-product/hit-presented-model-a"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

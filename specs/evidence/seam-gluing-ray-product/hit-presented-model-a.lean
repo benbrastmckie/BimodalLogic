@@ -66,8 +66,45 @@ its wired probe stand unchanged.
 **The decision held in place.** The Hit-level hypothesis named in `Probe735.not_presented`'s
 header is SATISFIABLE, not refuted: the forward-type observation that blocked the transfer of
 735's refutation is real, so the obstruction that killed `Presented` does not reach `HitPresented`,
-and the route through (C) is not closed by 735. The companion decision, recorded by the later
-phases rather than here, is that satisfiability buys no bound.
+and the route through (C) is not closed by 735. The companion decision is that satisfiability
+buys NO bound, and it is recorded in this header's "Bound verdict" paragraph below rather than
+left to a later phase.
+
+**Bound verdict: BLOCKED, with the obligation named.** Requirement (C)'s second half asks for
+`Fintype.card Q` below a COMPUTABLE bound in `φ`. This file does not deliver it, and the
+obstruction is specific. `hitCl_eq_truncated` below replaces the seam's infinite ray index by a
+finite window by applying `Set.Finite.bddAbove` to the offsets realized in `HitCl`, whose
+finiteness comes from `finite_family_triples`; that argument exhibits no `L` at all — not a bad
+bound, not a non-elementary one, not even a fixture-specific one. So every cardinality figure
+downstream of it (`card_QA`'s `Fintype.card (QA L) = L + 6`, `jump_window_card`'s `L + 1`) is a
+function of a number nothing produces. The in-tree entry point for an EFFECTIVE bound is
+`kTypeOf_listSeg_append_congr` (`RaySummary/Compose.lean`), which makes
+`m ↦ kTypeOf sig k (listSeg (List.replicate m ℓ))` a morphism into the finite alphabet
+`kType_finite` bounds; the threshold consequence is not in the tree, and
+`KTypeSummary/Saturation.lean` holds no block-length threshold lemma (re-derived by grep at the
+time of writing: its four theorems are `kTypeColouring_eq_of_matching_segments`,
+`kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple` and
+`kTypeOf_zFiber_eq_of_inFamily`, none of them about thresholds, block lengths or periodicity). The
+single missing obligation, STATED AND NOT PROVED, and deliberately not landed as a `sorry`
+anywhere in this tree:
+
+    theorem kTypeOf_listSeg_replicate_eventually_periodic (sig : MonadicSignature)
+        [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) (ℓ : sig.preds → Bool) :
+        ∃ m₀ p, 0 < p ∧ ∀ m, m₀ ≤ m →
+          kTypeOf sig k (listSeg (List.replicate (m + p) ℓ))
+            = kTypeOf sig k (listSeg (List.replicate m ℓ))
+
+provable from `kTypeOf_listSeg_append_congr` plus `kType_finite` by finite-semigroup idempotence.
+It is the named unit of successor work, not a discharged one.
+
+**And the honest note on "machine-checked", stated rather than smoothed over.** A claim that NO
+computable bound exists is not a Lean-statable property of this development, so the bound half
+cannot be machine-checked the way the satisfiability half was. What IS machine-checked is
+narrower, and is exactly these two things: the headline's `∃ L` shape, which puts the
+non-exhibition in the STATEMENT rather than in prose, and its axiom foot, which carries
+`Classical.choice`. That substitution — axiom foot plus a named, stated-not-proved obligation, in
+place of a theorem asserting impossibility — is the recorded one, and nothing here asserts
+impossibility.
 
 **Axiom record**, as OBSERVED from the `#print axioms` foot rather than predicted. Every pinned
 declaration reports `[propext, Classical.choice, Quot.sound]` — `path_classify`, `stayA`, `jump`,
@@ -83,8 +120,14 @@ existential with no number behind it. Nothing in this file is left unproved: zer
 
 **Compile line.**
 `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`
-(wiring into `scripts/check-evidence-probes.sh` lands with the headline in this record's final
-phase).
+— or, as the guard runs it, `bash scripts/check-evidence-probes.sh`, whose `WIRED` list now
+carries `seam-gluing-ray-product/hit-presented-model-a` with its own table entry. This file sits
+outside the Lake build graph, so `lake build` never compiles it; the guard is what keeps it from
+rotting. The two library declarations it discharges on the fixture, `HitPresented` and
+`hitPresented_of_presented`, are axiom-pinned in
+`Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` (which cannot import this file, for the
+same out-of-graph reason), and `hitPresented_of_presented` carries a `docs/theorem-index.md` row
+stating what the result does and does not deliver.
 -/
 import FormalSystem
 
