@@ -46,6 +46,8 @@ signal that a profile moved.
 | the realization hypothesis | seam interface | `Presented`, `presented_localRun` |
 | the per-model bridge under it | seam interface | `hit_eq_hitOf_of_presented` |
 | the `⊡` bridge over `hitOf` under it | seam interface | `plusStab_iff_forall_hitOf_of_presented` |
+| the Hit-level weakening of that hypothesis | seam interface | `HitPresented` |
+| the weakening made explicit | seam interface | `hitPresented_of_presented` |
 
 Rows for the later steps are appended as their modules land.
 
@@ -360,5 +362,42 @@ here mentions validity.
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.decidableStabOfPresented
+
+/-! ## The Hit-level weakening of the hypothesis — satisfiable, and still no bound
+
+`HitPresented` (`RaySummary/Trace.lean`) is the **Hit-level weakening** of `Presented`: it demands
+equality of the realized FAMILY-TRIPLE sets (`HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)`)
+rather than equality of the TRACE sets, and `hitPresented_of_presented` makes that weakening
+explicit — `Presented` implies it at every depth `1 ≤ k`, by `hit_eq_hitOf_of_presented`
+verbatim. The converse is not proved and is not expected.
+
+Unlike the `Presented` rows above, these two are **not** vacuous on fixture model A. The
+trace-level hypothesis has no inhabitant there for any finite presentation
+(`specs/evidence/seam-gluing-ray-product/presented-not-complete.lean`, `Probe735.not_presented`),
+while the Hit-level one does, at every depth `1 ≤ k`: that discharge is
+`Probe745.hitPresented_modelA` in the wired probe
+`specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`, which this module cannot
+import — probes sit outside the Lake build graph and are compiled by
+`scripts/check-evidence-probes.sh` instead. The two facts hold side by side on the same fixture,
+at the same seam, for the same `φ`, because trace-set equality is what the refutation reaches and
+family-triple equality is not.
+
+What is **not** pinned here, because it does not exist in this tree: a **computable bound**. The
+probe's discharge reads `∃ L, HitPresented … (labOf L) (stepOf L) k`, with the `L` extracted from
+`Set.Finite.bddAbove` over a finite set, so no presentation size is ever exhibited and no row
+below is a bound in `φ`. Neither row measures a decidability result and neither mentions
+validity: `HitPresented` is one seam's hypothesis, and `Decidable (PlusValidZTime φ)` is not
+stated in this tree in any form, conditional or otherwise.
+-/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.HitPresented' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.HitPresented
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented
 
 end BimodalTest.Metalogic
