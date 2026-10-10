@@ -221,18 +221,18 @@ of a nonempty constant block is nonempty and constant, at `k ≥ 1`.
 
 ---
 
-### Phase 4: The deletion colouring and its type-preservation lemmas [NOT STARTED]
+### Phase 4: The deletion colouring and its type-preservation lemmas [COMPLETED]
 
 **Goal**: Define `deleteRun` and prove that every segment's `k`-type survives the deletion:
 untouched below `s`, translated above `s`, and — for the segment holding the run — by
 periodicity through `kTypeOf_listSeg_append_congr`.
 
 **Tasks**:
-- [ ] In `Transport.lean`, define `deleteRun (c : sig.preds → ℤ → Prop) (s : ℤ) (p : ℕ) : sig.preds → ℤ → Prop := fun P u => if u < s then c P u else c P (u + p)` with a docstring (deletes the positions `[s, s + p)`). Provide its `DecidablePred` instance from `c`'s, or use `Classical.decPred` uniformly in every statement below — pick one and state it in the docstring.
-- [ ] `labels_deleteRun_below (hb : b ≤ s) : labels (deleteRun c s p) a b = labels c a b` and `labels_deleteRun_above (ha : s ≤ a) : labels (deleteRun c s p) a b = labels c (a + p) (b + p)` by `List.ext_getElem` + `labels_length` + `labels_getElem` (pattern: `labels_concat`, `HitOf.lean:396`).
-- [ ] Hence `kTypeOf_segZ_deleteRun_below`/`_above` via `kTypeOf_segZ_eq_listSeg` on both sides.
-- [ ] The modified segment: `kTypeOf_segZ_deleteRun_of_const_run (ha : a ≤ s) (hb : s + j ≤ b) (hconst : ∀ u, s ≤ u → u < s + j → ∀ P, (c P u ↔ ℓ P = true)) (hpj : p ≤ j) (hper : ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) = kTypeOf sig k (listSeg (List.replicate m ℓ))) (hm : m₀ + p ≤ j) : kTypeOf sig k (segZ sig (deleteRun c s p) a (b - p)) = kTypeOf sig k (segZ sig c a b)`. Route: `kTypeOf_segZ_eq_listSeg` twice; show `labels c a b = labels c a s ++ List.replicate j ℓ ++ labels c (s + j) b` and `labels (deleteRun c s p) a (b - p) = labels c a s ++ List.replicate (j - p) ℓ ++ labels c (s + j) b` (each by `List.ext_getElem`, with `labels_getElem` and `hconst`); then `kTypeOf_listSeg_append_congr` twice with `rfl` on the outer pieces and `hper (j - p) (by omega)` (rewritten as `kTypeOf (ℓ^j) = kTypeOf (ℓ^(j-p))` via `j = (j - p) + p`) in the middle.
-- [ ] Periodicity is an explicit HYPOTHESIS (`hper`) of every lemma in this phase and the next; Phase 1's theorem is plugged in only at the probe. State this in the module docstring: the surgery is independent of how `m₀`, `p` arise.
+- [x] In `Transport.lean`, define `deleteRun (c : sig.preds → ℤ → Prop) (s : ℤ) (p : ℕ) : sig.preds → ℤ → Prop := fun P u => if u < s then c P u else c P (u + p)` with a docstring (deletes the positions `[s, s + p)`). Provide its `DecidablePred` instance from `c`'s, or use `Classical.decPred` uniformly in every statement below — pick one and state it in the docstring. *(completed — the instance is inherited from `c`'s (`deleteRunDecidablePred`); every `kTypeOf`-level lemma is instance-free and uses `classical` in its proof; two general helpers `labels_append`/`labels_const`/`labels_eq_replicate_of_const` and `kTypeOf_segZ_eq_replicate_of_const` were added for the three-piece decomposition and for Phase 6)*
+- [x] `labels_deleteRun_below (hb : b ≤ s) : labels (deleteRun c s p) a b = labels c a b` and `labels_deleteRun_above (ha : s ≤ a) : labels (deleteRun c s p) a b = labels c (a + p) (b + p)` by `List.ext_getElem` + `labels_length` + `labels_getElem` (pattern: `labels_concat`, `HitOf.lean:396`).
+- [x] Hence `kTypeOf_segZ_deleteRun_below`/`_above` via `kTypeOf_segZ_eq_listSeg` on both sides.
+- [x] The modified segment: `kTypeOf_segZ_deleteRun_of_const_run (ha : a ≤ s) (hb : s + j ≤ b) (hconst : ∀ u, s ≤ u → u < s + j → ∀ P, (c P u ↔ ℓ P = true)) (hpj : p ≤ j) (hper : ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) = kTypeOf sig k (listSeg (List.replicate m ℓ))) (hm : m₀ + p ≤ j) : kTypeOf sig k (segZ sig (deleteRun c s p) a (b - p)) = kTypeOf sig k (segZ sig c a b)`. Route: `kTypeOf_segZ_eq_listSeg` twice; show `labels c a b = labels c a s ++ List.replicate j ℓ ++ labels c (s + j) b` and `labels (deleteRun c s p) a (b - p) = labels c a s ++ List.replicate (j - p) ℓ ++ labels c (s + j) b` (each by `List.ext_getElem`, with `labels_getElem` and `hconst`); then `kTypeOf_listSeg_append_congr` twice with `rfl` on the outer pieces and `hper (j - p) (by omega)` (rewritten as `kTypeOf (ℓ^j) = kTypeOf (ℓ^(j-p))` via `j = (j - p) + p`) in the middle. *(deviation: altered — binder is `[Finite sig.preds]` with `Fintype.ofFinite` in the proof, the style guide's fix for the `unusedFintypeInType` warning the first module build raised)*
+- [x] Periodicity is an explicit HYPOTHESIS (`hper`) of every lemma in this phase and the next; Phase 1's theorem is plugged in only at the probe. State this in the module docstring: the surgery is independent of how `m₀`, `p` arise.
 
 **Timing**: 2 hours
 

@@ -70,6 +70,11 @@ for the disclaimer, quoted from `AnchorLayer.lean`.
 
 * `segZ_const_of_kTypeOf_eq_replicate` — the keystone: a segment with the `k`-type of a nonempty
   constant block is a nonempty constant block (`k ≥ 1`).
+* `deleteRun` — the colouring with the positions `[s, s + p)` deleted; `labels_deleteRun_below`,
+  `labels_deleteRun_above`, `kTypeOf_segZ_deleteRun_below`, `kTypeOf_segZ_deleteRun_above` — the
+  untouched and the translated segments keep their letters and their `k`-types.
+* `kTypeOf_segZ_deleteRun_of_const_run` — the segment holding the run keeps its `k`-type, with
+  the threshold/period pair an explicit hypothesis.
 
 ## References
 
@@ -142,5 +147,163 @@ theorem segZ_const_of_kTypeOf_eq_replicate [Finite sig.preds] {k : ℕ} (hk : 1 
       obtain ⟨i, hi⟩ := x
       simp)
     exact hall ⟨s, hs, hsb⟩
+
+/-! ## The deletion colouring -/
+
+/-- **The colouring with the positions `[s, s + p)` deleted**: below `s` it is `c`, at and above
+`s` it is `c` read `p` positions later. Its `DecidablePred` instance is inherited from `c`'s
+(`deleteRunDecidablePred`). -/
+def deleteRun (c : sig.preds → ℤ → Prop) (s : ℤ) (p : ℕ) : sig.preds → ℤ → Prop :=
+  fun P u => if u < s then c P u else c P (u + p)
+
+/-- `deleteRun` is decidable when `c` is. -/
+instance deleteRunDecidablePred (c : sig.preds → ℤ → Prop) [∀ P, DecidablePred (c P)]
+    (s : ℤ) (p : ℕ) : ∀ P, DecidablePred (deleteRun c s p P) :=
+  fun P u => inferInstanceAs (Decidable (if u < s then c P u else c P (u + p)))
+
+/-- Below `s`, `deleteRun` is `c`. -/
+theorem deleteRun_of_lt {c : sig.preds → ℤ → Prop} {s : ℤ} {p : ℕ} {P : sig.preds} {u : ℤ}
+    (h : u < s) : deleteRun c s p P u ↔ c P u := by
+  simp [deleteRun, h]
+
+/-- At and above `s`, `deleteRun` is `c` read `p` positions later. -/
+theorem deleteRun_of_le {c : sig.preds → ℤ → Prop} {s : ℤ} {p : ℕ} {P : sig.preds} {u : ℤ}
+    (h : s ≤ u) : deleteRun c s p P u ↔ c P (u + p) := by
+  simp [deleteRun, not_lt.mpr h]
+
+/-! ## Label lists under splitting, constancy and deletion -/
+
+section Labels
+
+variable (c : sig.preds → ℤ → Prop) [∀ P, DecidablePred (c P)]
+
+/-- The label list of `[a, b)` splits at any interior point `m`. -/
+theorem labels_append (a m b : ℤ) (ham : a ≤ m) (hmb : m ≤ b) :
+    labels c a b = labels c a m ++ labels c m b := by
+  apply List.ext_getElem
+  · simp only [labels_length, List.length_append]; omega
+  · intro i h₁ h₂
+    funext P
+    by_cases hi : i < (labels c a m).length
+    · rw [List.getElem_append_left hi, labels_getElem, labels_getElem]
+    · rw [List.getElem_append_right (not_lt.mp hi), labels_getElem, labels_getElem]
+      rw [labels_length] at hi
+      rw [show a + (i : ℤ) = m + ((i - (labels c a m).length : ℕ) : ℤ) by
+        rw [labels_length]; omega]
+
+/-- The label list of a constant run `[s, s + j)` of letter `ℓ` is `ℓ^j`. -/
+theorem labels_const (s : ℤ) (j : ℕ) (ℓ : sig.preds → Bool)
+    (hconst : ∀ u, s ≤ u → u < s + j → ∀ P, (c P u ↔ ℓ P = true)) :
+    labels c s (s + j) = List.replicate j ℓ := by
+  apply List.ext_getElem
+  · simp only [labels_length, List.length_replicate]; omega
+  · intro i h₁ h₂
+    funext P
+    rw [labels_getElem, List.getElem_replicate, Bool.eq_iff_iff, decide_eq_true_iff]
+    rw [labels_length] at h₁
+    exact hconst _ (by omega) (by omega) P
+
+/-- The label list of any segment `[a, b)` on which `c` reads the constant letter `ℓ` is
+`ℓ^((b - a).toNat)` — the empty-segment case included. -/
+theorem labels_eq_replicate_of_const (a b : ℤ) (ℓ : sig.preds → Bool)
+    (hconst : ∀ u, a ≤ u → u < b → ∀ P, (c P u ↔ ℓ P = true)) :
+    labels c a b = List.replicate (b - a).toNat ℓ := by
+  apply List.ext_getElem
+  · simp only [labels_length, List.length_replicate]
+  · intro i h₁ h₂
+    funext P
+    rw [labels_getElem, List.getElem_replicate, Bool.eq_iff_iff, decide_eq_true_iff]
+    rw [labels_length] at h₁
+    exact hconst _ (by omega) (by omega) P
+
+/-- A segment entirely below `s` keeps its letters under `deleteRun`. -/
+theorem labels_deleteRun_below (s : ℤ) (p : ℕ) (a b : ℤ) (hb : b ≤ s) :
+    labels (deleteRun c s p) a b = labels c a b := by
+  apply List.ext_getElem
+  · simp only [labels_length]
+  · intro i h₁ h₂
+    funext P
+    rw [labels_getElem, labels_getElem, Bool.eq_iff_iff, decide_eq_true_iff, decide_eq_true_iff]
+    rw [labels_length] at h₁
+    exact deleteRun_of_lt (by omega)
+
+/-- A segment at or above `s` reads, under `deleteRun`, the letters of its translate by `p`. -/
+theorem labels_deleteRun_above (s : ℤ) (p : ℕ) (a b : ℤ) (ha : s ≤ a) :
+    labels (deleteRun c s p) a b = labels c (a + p) (b + p) := by
+  apply List.ext_getElem
+  · simp only [labels_length]; congr 1; omega
+  · intro i h₁ h₂
+    funext P
+    rw [labels_getElem, labels_getElem, Bool.eq_iff_iff, decide_eq_true_iff, decide_eq_true_iff,
+      deleteRun_of_le (by omega)]
+    rw [show a + (i : ℤ) + p = a + p + i by omega]
+
+end Labels
+
+/-! ## Segment `k`-types under deletion -/
+
+/-- A segment on which `c` reads the constant letter `ℓ` has the `k`-type of the constant block
+of its length. Instance-free; the empty segment is the empty block. -/
+theorem kTypeOf_segZ_eq_replicate_of_const [Finite sig.preds] (k : ℕ)
+    (c : sig.preds → ℤ → Prop) (a b : ℤ) (ℓ : sig.preds → Bool)
+    (hconst : ∀ u, a ≤ u → u < b → ∀ P, (c P u ↔ ℓ P = true)) :
+    kTypeOf sig k (segZ sig c a b) = kTypeOf sig k (listSeg (List.replicate (b - a).toNat ℓ)) := by
+  classical
+  rw [kTypeOf_segZ_eq_listSeg, labels_eq_replicate_of_const c a b ℓ hconst]
+
+/-- A segment entirely below `s` keeps its `k`-type under `deleteRun`. -/
+theorem kTypeOf_segZ_deleteRun_below [Finite sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop)
+    (s : ℤ) (p : ℕ) (a b : ℤ) (hb : b ≤ s) :
+    kTypeOf sig k (segZ sig (deleteRun c s p) a b) = kTypeOf sig k (segZ sig c a b) := by
+  classical
+  rw [kTypeOf_segZ_eq_listSeg, kTypeOf_segZ_eq_listSeg, labels_deleteRun_below c s p a b hb]
+
+/-- A segment at or above `s + p` has, after translation by `-p`, the `k`-type it had under `c`
+in place: the translated segment of `deleteRun` reads the original letters. -/
+theorem kTypeOf_segZ_deleteRun_above [Finite sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop)
+    (s : ℤ) (p : ℕ) (a b : ℤ) (ha : s + p ≤ a) :
+    kTypeOf sig k (segZ sig (deleteRun c s p) (a - p) (b - p)) =
+      kTypeOf sig k (segZ sig c a b) := by
+  classical
+  rw [kTypeOf_segZ_eq_listSeg, kTypeOf_segZ_eq_listSeg,
+    labels_deleteRun_above c s p (a - p) (b - p) (by omega), sub_add_cancel, sub_add_cancel]
+
+/-- **The segment holding the run keeps its `k`-type.** If `[a, b)` contains a constant run
+`[s, s + j)` of letter `ℓ` with `m₀ + p ≤ j`, where `(m₀, p)` is a threshold/period pair for `ℓ`
+(`hper`), then deleting `p` positions of the run leaves the `k`-type unchanged: the label list
+`u ++ ℓ^j ++ v` becomes `u ++ ℓ^(j - p) ++ v`, and `kTypeOf_listSeg_append_congr` applied twice
+with `hper` at `m := j - p ≥ m₀` in the middle closes it. -/
+theorem kTypeOf_segZ_deleteRun_of_const_run [Finite sig.preds] (k : ℕ)
+    (c : sig.preds → ℤ → Prop) (s : ℤ) (ℓ : sig.preds → Bool) (j p m₀ : ℕ) (a b : ℤ)
+    (ha : a ≤ s) (hb : s + j ≤ b)
+    (hconst : ∀ u, s ≤ u → u < s + j → ∀ P, (c P u ↔ ℓ P = true)) (hpj : p ≤ j)
+    (hper : ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) =
+      kTypeOf sig k (listSeg (List.replicate m ℓ)))
+    (hm : m₀ + p ≤ j) :
+    kTypeOf sig k (segZ sig (deleteRun c s p) a (b - p)) = kTypeOf sig k (segZ sig c a b) := by
+  classical
+  haveI := Fintype.ofFinite sig.preds
+  have hL : labels c a b = labels c a s ++ List.replicate j ℓ ++ labels c (s + j) b := by
+    rw [labels_append c a s b ha (by omega), labels_append c s (s + j) b (by omega) hb,
+      labels_const c s j ℓ hconst, List.append_assoc]
+  have hc' : ∀ u, s ≤ u → u < s + ((j - p : ℕ) : ℤ) → ∀ P,
+      (deleteRun c s p P u ↔ ℓ P = true) := by
+    intro u hu hu' P
+    rw [deleteRun_of_le hu]
+    exact hconst _ (by omega) (by omega) P
+  have hR : labels (deleteRun c s p) a (b - p) =
+      labels c a s ++ List.replicate (j - p) ℓ ++ labels c (s + j) b := by
+    rw [labels_append (deleteRun c s p) a s (b - p) ha (by omega),
+      labels_append (deleteRun c s p) s (s + ((j - p : ℕ) : ℤ)) (b - p) (by omega) (by omega),
+      labels_deleteRun_below c s p a s le_rfl, labels_const (deleteRun c s p) s (j - p) ℓ hc',
+      labels_deleteRun_above c s p (s + ((j - p : ℕ) : ℤ)) (b - p) (by omega), List.append_assoc,
+      show s + ((j - p : ℕ) : ℤ) + p = s + j by omega, sub_add_cancel]
+  rw [kTypeOf_segZ_eq_listSeg, kTypeOf_segZ_eq_listSeg, hL, hR]
+  have hmid : kTypeOf sig k (listSeg (List.replicate (j - p) ℓ)) =
+      kTypeOf sig k (listSeg (List.replicate j ℓ)) := by
+    have := hper (j - p) (by omega)
+    rw [show j - p + p = j by omega] at this
+    exact this.symm
+  exact kTypeOf_listSeg_append_congr k (kTypeOf_listSeg_append_congr k rfl hmid) rfl
 
 end FormalSystem.Metalogic.WeakCanonical
