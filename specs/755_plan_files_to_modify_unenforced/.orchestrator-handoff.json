@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 8,
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Wrote a 5-phase, 5.75-hour plan closing the unenforced Files-to-modify gap. A plan-time sweep of all 16 active plans (116 phase blocks) measured 13 omitting phases across 3 plans with exactly 1 whole-plan miss, which decided the open tier question: per-phase omission warns (--strict escalates), whole-plan omission errors. The harvester's []-is-normal contract stays untouched; validate-artifact.sh's existing per-phase loop becomes the sole surface distinguishing 'no header' from the legitimate 'header present, zero paths' sentinel. Phase ordering puts the #410 plan repair and a pre-change gate baseline in Wave 1 so the new error tier never fires on an unrepaired corpus.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/755_plan_files_to_modify_unenforced/plans/01_files-to-modify-enforcement.md",
+      "summary": "5-phase plan: redeploy+baseline, repair task 410's plan and backfill its file_scope, add the two-tier Files-to-modify presence check with five fixtures, document the enforcement level, then redeploy and sweep the full gate set."
+    }
+  ]
+}

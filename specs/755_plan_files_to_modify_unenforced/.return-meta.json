@@ -1,40 +1,30 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1791637795_4b472e_755",
-  "dispatch_seq": 7,
-  "task_number": 755,
-  "findings_count": 5,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/755_plan_files_to_modify_unenforced/reports/01_files-to-modify-unenforced.md",
-      "summary": "Locates the per-phase Verification-Tier loop in validate-artifact.sh as the site for a new Files-to-modify presence check, measures the active-vs-archived population gap (1/16 active plans missing it), confirms backfill-file-scope.sh cannot fix #410 without first repairing its plan (Territory Contract table, not per-phase blocks), and documents a live legitimate empty-block case in task #750's plan."
+      "type": "plan",
+      "path": "specs/755_plan_files_to_modify_unenforced/plans/01_files-to-modify-enforcement.md",
+      "summary": "5-phase plan closing the unenforced per-phase Files-to-modify field with a measured two-tier validator check, a task-410 plan repair as the regression fixture, and an enforcement-level note in plan-format.md."
     }
   ],
+  "metadata": {
+    "session_id": "sess_1791637795_4b472e_755",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5.75,
+    "dependency_waves": 4
+  },
   "memory_candidates": [
     {
-      "content": "validate-artifact.sh's plan mode already has a reusable per-phase iteration pattern (phase_line_nums/phase_block/phase_num via extract_phase_number) built for the Verification Tier check (lines ~298-328); any new per-phase REQUIRED-field check should extend that same loop rather than adding a second file scan.",
-      "category": "PATTERN",
-      "source_artifact": "specs/755_plan_files_to_modify_unenforced/reports/01_files-to-modify-unenforced.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["validate-artifact.sh", "plan-format", "per-phase-check", "verification-tier", "files-to-modify"]
-    },
-    {
-      "content": "plan-file-scope-harvest.sh deliberately returns [] identically for 'no Files to modify block' and 'block present but empty (e.g. a none-planned sentinel)' -- this is documented as intentional in its own header. A live legitimate instance of the empty-but-present case exists in specs/750_w_run_layer_closure_wide_lift's plan. Any future enforcement distinguishing the two cases belongs in validate-artifact.sh, not in the harvester, to avoid rippling into the harvester's seven callers.",
+      "content": "scripts/tests/test-validate-artifact.sh (and siblings built on the same harness) resolve the script under test as $REPO_ROOT/.claude/scripts/<script> BEFORE the source-store sibling $SCRIPT_DIR/../<script>, with REPO_ROOT from `git rev-parse --show-toplevel`. Run such a suite from inside the agent-system source store and REPO_ROOT becomes the nvim config repo, whose own .claude/ deploy tree exists -- so the suite silently exercises THAT deployed copy, not the edit under test, and passes while proving nothing. Verify a source-store script edit by invoking the edited source-store file directly on fixtures; run the suite only from the target repo's deployed tree after a redeploy.",
       "category": "INSIGHT",
-      "source_artifact": "specs/755_plan_files_to_modify_unenforced/reports/01_files-to-modify-unenforced.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["plan-file-scope-harvest", "file_scope", "harvester", "empty-block", "sentinel"]
-    },
-    {
-      "content": "scripts/backfill-file-scope.sh exists and reuses plan-file-scope-harvest.sh for one-shot file_scope backfill across a repo's state.json, but it skips any task whose plan harvests to [] (treating 'no harvestable content' the same as 'no plan at all'). It cannot repair a task whose plan uses a narrative Territory Contract table instead of per-phase Files-to-modify blocks without the plan itself being repaired first.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/755_plan_files_to_modify_unenforced/reports/01_files-to-modify-unenforced.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["backfill-file-scope", "file_scope", "territory-contract", "state.json"]
+      "source_artifact": "specs/755_plan_files_to_modify_unenforced/plans/01_files-to-modify-enforcement.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["source-store", "test-harness", "REPO_ROOT", "deploy-boundary", "validate-artifact"]
     }
   ],
-  "next_steps": "Run /plan 755 to create implementation plan"
+  "next_steps": "Run /implement 755 to execute the plan",
+  "dispatch_seq": 8
 }
