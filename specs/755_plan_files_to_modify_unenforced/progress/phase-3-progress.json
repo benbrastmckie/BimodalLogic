@@ -1,0 +1,20 @@
+{
+  "phase": 3,
+  "phase_name": "Add the two-tier Files to modify presence check and its fixtures",
+  "started_at": "2026-10-10T15:46:00Z",
+  "last_updated": "2026-10-10T16:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Extend validator's per-phase loop with header-presence test against phase_block", "status": "done", "files_touched": [], "note": "Edited at the source-store edit target /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/validate-artifact.sh (outside this repo's working tree, per source-store-deploy-boundary.md -- not listed in files_touched since it is not a path inside this repo to stage; the deploy-shadow path .claude/scripts/validate-artifact.sh will appear via Phase 5's redeploy). Added _ftm_omitting_phases array collection inside the existing Verification Tier for-loop, testing phase_block against the two accepted punctuation forms with optional leading list marker"},
+    {"id": 2, "description": "Collect omitting phases and emit two-tier warn/error after the loop", "status": "done", "files_touched": [], "note": "Same source-store file as objective 1. Deferred emission after the for-loop: log_error if ALL phases omit, else one log_warn per omitting phase"},
+    {"id": 3, "description": "Add header comment with tier rationale and promotion criterion; extend PLAN_METADATA note", "status": "done", "files_touched": [], "note": "Same source-store file as objective 1. Added comment block above the deferred emission mirroring the Verification Tier comment shape, plus extended the existing PLAN_METADATA NOTE comment near the top of the script"},
+    {"id": 4, "description": "No --fix participation for this check", "status": "done", "files_touched": [], "note": "Confirmed by construction -- no --fix branch added, fix_mode/fixes counters untouched by the new code"},
+    {"id": 5, "description": "Add Files to modify block to make_plan_fixture Phase 1", "status": "done", "files_touched": [], "note": "Edited at the source-store edit target /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/tests/test-validate-artifact.sh (outside this repo's working tree; deploy-shadow path .claude/scripts/tests/test-validate-artifact.sh). Added one backtick-path entry to Phase 1 of make_plan_fixture; manually verified existing [PASS]-asserting case does not flip"},
+    {"id": 6, "description": "Add 5 new fixture cases (a-e)", "status": "done", "files_touched": [], "note": "Same source-store file as objective 5. Added make_two_phase_ftm_fixture and make_whole_plan_ftm_omit_fixture helpers plus 5 case blocks (a: no header draws warning; b: sentinel-only draws no finding + harvester contributes zero paths; c: header+path draws no finding; d: whole-plan omission draws error + FAIL; e: mixed draws warning not error, --strict escalates). Fixed an initial wrong assertion in case (b) that expected harvester output '[]' -- corrected to expect the fixture's Phase-2 anchor path only, since the harvester unions across the whole plan, not per-phase."},
+    {"id": 7, "description": "Verify via direct invocation on hand-built fixtures (default and --strict)", "status": "done", "files_touched": [], "note": "Did NOT run test-validate-artifact.sh from the source store (per the plan's explicit warning about REPO_ROOT resolving to the wrong deployed copy). Instead manually reconstructed each of the 5 fixtures inline and invoked the edited source-store validator directly: all 5 cases produced exactly the expected WARN/ERROR/PASS/FAIL/rc behavior in both default and --strict mode. bash -n on both edited source-store files parses clean."}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "assert harvester returns [] for case (b)'s sentinel-only phase", "result": "failed", "reason": "the fixture's Phase 2 anchor path makes the whole-plan harvest non-empty; the harvester unions across all phases, not per-phase -- corrected to assert the harvest equals exactly the one-element anchor array"}
+  ],
+  "handoff_count": 0
+}

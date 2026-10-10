@@ -249,48 +249,51 @@ running the harvester and reading its output — do not assert a count before th
 
 ---
 
-### Phase 3: Add the two-tier `Files to modify` presence check and its fixtures [NOT STARTED]
+### Phase 3: Add the two-tier `Files to modify` presence check and its fixtures [COMPLETED]
 
 **Goal**: `validate-artifact.sh`'s plan mode reports a per-phase omission as a warning and a
 whole-plan omission as an error, distinguishes both from the legitimate "header present, zero
 paths" sentinel, and is covered by three new fixture cases.
 
 **Tasks**:
-- [ ] In the source-store `scripts/validate-artifact.sh`, extend the **existing** per-phase loop
+- [x] In the source-store `scripts/validate-artifact.sh`, extend the **existing** per-phase loop
       (the `**Verification Tier**` loop) with a header-presence test against the already-computed
       `phase_block`. Accept both punctuation forms and an optional single leading list marker,
       mirroring `plan-file-scope-harvest.sh`'s `strip_marker()` grammar verbatim rather than
       inventing a third grammar:
       `^[[:space:]]*(-[[:space:]]+)?\*\*Files to modify\*\*:` and
-      `^[[:space:]]*(-[[:space:]]+)?\*\*Files to modify:\*\*`.
-- [ ] Collect the omitting phases' numbers into an array inside the loop and **emit after** it, so
+      `^[[:space:]]*(-[[:space:]]+)?\*\*Files to modify:\*\*`. *(completed)*
+- [x] Collect the omitting phases' numbers into an array inside the loop and **emit after** it, so
       the two tiers never double-report: if every phase omits the field, emit a single `log_error`
       naming the consequence (`plan-file-scope-harvest.sh` harvests nothing, `file_scope` stays
       null, the task is invisible to the admission overlap gate); otherwise emit one `log_warn` per
-      omitting phase (`Phase ${phase_num} missing **Files to modify** field`).
-- [ ] Add a header comment above the new block recording the tier rationale and the promotion
+      omitting phase (`Phase ${phase_num} missing **Files to modify** field`). *(completed)*
+- [x] Add a header comment above the new block recording the tier rationale and the promotion
       criterion, in the same shape as the `Verification Tier` check's comment, and extend the
       `PLAN_METADATA` note to say that `Files to modify` is likewise deliberately not a member of
-      that whole-document array and for the same reason.
-- [ ] Take no `--fix` participation (same posture as the plan-level Status-line grammar check): a
-      missing file list cannot be synthesized.
-- [ ] In the source-store `scripts/tests/test-validate-artifact.sh`, first add a
+      that whole-document array and for the same reason. *(completed)*
+- [x] Take no `--fix` participation (same posture as the plan-level Status-line grammar check): a
+      missing file list cannot be synthesized. *(completed: no --fix branch added)*
+- [x] In the source-store `scripts/tests/test-validate-artifact.sh`, first add a
       `**Files to modify**:` block with one backtick-path entry to `make_plan_fixture`'s Phase 1, so
-      the existing `[PASS]`-asserting cases do not flip once the new check is live.
-- [ ] Add the three new cases: (a) a phase block with no header at all, asserting the new finding;
+      the existing `[PASS]`-asserting cases do not flip once the new check is live. *(completed)*
+- [x] Add the three new cases: (a) a phase block with no header at all, asserting the new finding;
       (b) a phase block with the header and only a `- none planned ...` prose sentinel line,
       mirroring task #750's live shape, asserting NO finding; (c) a phase block with the header and
       at least one `` - `path` `` entry, asserting NO finding. Add a fourth case asserting the
       whole-plan `log_error` on a multi-phase fixture where every phase omits the field, and a fifth
       asserting that a mixed plan (one phase omits, another declares) draws the warning and NOT the
-      error.
-- [ ] Verify by invoking the edited source-store script **directly** against hand-built fixtures
+      error. *(completed: 5 cases added, one wrong assertion in case (b) caught and corrected during
+      manual direct-invocation verification -- see progress/phase-3-progress.json)*
+- [x] Verify by invoking the edited source-store script **directly** against hand-built fixtures
       (`bash /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/validate-artifact.sh
       <fixture> plan`), in both default and `--strict` mode. Do NOT run
       `test-validate-artifact.sh` from the source store: it prefers
       `$REPO_ROOT/.claude/scripts/validate-artifact.sh`, and from there `REPO_ROOT` resolves to the
       nvim config repo, so the suite would silently exercise that repo's deployed copy instead of
-      the edit. The suite runs in Phase 5, from this repo's deployed tree.
+      the edit. The suite runs in Phase 5, from this repo's deployed tree. *(completed: all 5 cases
+      manually reconstructed and invoked directly against the edited source-store script; behavior
+      matched expectations in both default and --strict mode)*
 
 **Timing**: 2 hours
 
