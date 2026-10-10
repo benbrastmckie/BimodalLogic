@@ -1,7 +1,7 @@
 # Implementation Plan: Task #731
 
 - **Task**: 731 - Make plan-time file_scope harvest include the generated surfaces that any .lean edit forces
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/731_harvest_generated_surfaces_into_file_scope/reports/01_harvest-generated-surfaces.md
@@ -155,35 +155,35 @@ No `roadmap_path` was provided in this dispatch; no roadmap phases are included.
 Every phase edits the same single script, so the chain is strictly linear by construction — no
 two phases may run in parallel.
 
-### Phase 1: Root resolution, capability gate, and fixture harness [NOT STARTED]
+### Phase 1: Root resolution, capability gate, and fixture harness [COMPLETED]
 
 **Goal**: Give the harvester a fail-soft repo root and a capability probe, plus the test-side
 machinery to drive both, while leaving stdout byte-identical in every existing case.
 
 **Tasks**:
 
-- [ ] Re-read the source-store harvester immediately before editing (concurrency note).
-- [ ] Add a `resolve_repo_root()` helper: honor `PLAN_FILE_SCOPE_HARVEST_ROOT` if set and a
+- [x] Re-read the source-store harvester immediately before editing (concurrency note). *(completed)*
+- [x] Add a `resolve_repo_root()` helper: honor `PLAN_FILE_SCOPE_HARVEST_ROOT` if set and a *(completed)*
       directory; else `git -C "$(dirname "$PLAN_FILE")" rev-parse --show-toplevel`; else
       `git rev-parse --show-toplevel` from CWD; else echo nothing and return non-zero. Never
       `exit`, never write to stderr on the empty case — an unresolvable root is a skip, not an
       error.
-- [ ] Add a `generated_surfaces_available()` helper returning success only when BOTH
+- [x] Add a `generated_surfaces_available()` helper returning success only when BOTH *(completed)*
       `$root/scripts/check-module-invariants.sh` and `$root/scripts/typst-sync-check.sh` are
       regular files.
-- [ ] Add the post-processing stage shell: capture the existing pipeline's JSON into a variable,
+- [x] Add the post-processing stage shell: capture the existing pipeline's JSON into a variable, *(completed)*
       and emit it unchanged unless (a) the array contains at least one entry matching `*.lean`,
       (b) a root resolved, and (c) the capability probe passed. Append nothing yet.
-- [ ] Extend the header comment block with a new "Generated-surface appending" subsection stating
+- [x] Extend the header comment block with a new "Generated-surface appending" subsection stating *(completed)*
       the trigger condition, the two guards, the env override, and the
       `file_scope`-overlap consequence from Decisions.
-- [ ] In `tests/test-plan-file-scope-harvest.sh`, add a `make_fake_repo()` helper that mktemps a
+- [x] In `tests/test-plan-file-scope-harvest.sh`, add a `make_fake_repo()` helper that mktemps a *(completed)*
       directory containing `scripts/check-module-invariants.sh` and `scripts/typst-sync-check.sh`
       stubs plus a `specs/` subdirectory for fixture plans, and a `make_bare_repo()` helper that
       creates the same tree *without* the two scripts.
-- [ ] Add Case 11: a `.lean`-containing fixture plan under `make_bare_repo()` (capability gate
+- [x] Add Case 11: a `.lean`-containing fixture plan under `make_bare_repo()` (capability gate *(completed)*
       closed) returns exactly the same array as it does with no root at all.
-- [ ] Add Case 12: `PLAN_FILE_SCOPE_HARVEST_ROOT` pointing at a nonexistent path falls back
+- [x] Add Case 12: `PLAN_FILE_SCOPE_HARVEST_ROOT` pointing at a nonexistent path falls back *(completed)*
       without error and exits 0.
 
 **Timing**: 1 hour
