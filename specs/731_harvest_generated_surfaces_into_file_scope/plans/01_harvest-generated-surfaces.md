@@ -1,7 +1,7 @@
 # Implementation Plan: Task #731
 
 - **Task**: 731 - Make plan-time file_scope harvest include the generated surfaces that any .lean edit forces
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/731_harvest_generated_surfaces_into_file_scope/reports/01_harvest-generated-surfaces.md

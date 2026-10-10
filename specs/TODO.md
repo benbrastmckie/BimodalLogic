@@ -11,7 +11,7 @@ next_project_number: 757
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,731,734,741,743,744,751,752,753,754,755,756 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,754,755,756 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -27,7 +27,6 @@ next_project_number: 757
 ### Agent System
 
 730 [NOT STARTED] — Evaluate whether the formal:logic implement-phase routing...
-731 [IMPLEMENTING] — Make plan-time file\_scope harvest include the generated...
 741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
@@ -421,12 +420,13 @@ ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compi
 ---
 
 ### 731. Harvest generated surfaces into file scope
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [731_harvest_generated_surfaces_into_file_scope/reports/01_harvest-generated-surfaces.md]
 - **Plan**: [731_harvest_generated_surfaces_into_file_scope/plans/01_harvest-generated-surfaces.md]
+- **Summary**: [731_harvest_generated_surfaces_into_file_scope/summaries/01_harvest-generated-surfaces-summary.md]
 
 **Description**: Make plan-time file_scope harvest include the generated surfaces that any .lean edit forces, so they stop recurring as undeclared scope extensions.
 

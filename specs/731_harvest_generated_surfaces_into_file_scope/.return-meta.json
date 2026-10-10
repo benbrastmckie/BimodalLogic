@@ -22,28 +22,51 @@
       "category": "INSIGHT",
       "source_artifact": "specs/731_harvest_generated_surfaces_into_file_scope/summaries/01_harvest-generated-surfaces-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": ["file_scope", "generated-artifact", "territory-overlap", "batch-admit", "task-lock", "scope-harvest"]
+      "suggested_keywords": [
+        "file_scope",
+        "generated-artifact",
+        "territory-overlap",
+        "batch-admit",
+        "task-lock",
+        "scope-harvest"
+      ]
     },
     {
       "content": "A bash test case that simulates 'no resolvable root' or 'unresolvable override path' by relying on a script's CWD-based git-resolve fallback is silently environment-dependent: it passes or fails depending on which directory the TEST SUITE ITSELF was invoked from, not just the fixture under test. If the ambient CWD happens to be a git repo that genuinely lacks the capability being gated on, the test passes by accident; once the same suite is deployed and re-run from inside a repo that DOES have that capability, it fails. Fix by explicitly cd'ing into a directory with no git ancestor (e.g. the test's own mktemp WORKDIR, which lives under /tmp) before invoking the script under test, making the 'unresolvable root' condition deterministic regardless of the suite's own invocation directory.",
       "category": "TECHNIQUE",
       "source_artifact": "specs/731_harvest_generated_surfaces_into_file_scope/summaries/01_harvest-generated-surfaces-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["test-isolation", "cwd-dependency", "git-resolve-fallback", "fixture-repo", "deploy-consumer-testing"]
+      "suggested_keywords": [
+        "test-isolation",
+        "cwd-dependency",
+        "git-resolve-fallback",
+        "fixture-repo",
+        "deploy-consumer-testing"
+      ]
     },
     {
       "content": "guard-destructive-git.sh's commit -a/-am overstage detector can produce a false BLOCKED on `git commit -m \"$(cat <<'EOF' ... EOF)\"` when the heredoc BODY contains an internal double-quoted phrase: the hook's quote-strip pass runs in sed -z (slurp) mode with a non-greedy \"[^\"]*\" match, so internal double quotes inside the heredoc can pair off unexpectedly with the outer -m quote, leaving a stray token that matches the -a/-am regex even though no such flag is present. Avoid embedded double quotes inside a heredoc-based commit message in this repo, or use `git commit -F <tempfile>` instead.",
       "category": "CONFIG",
       "source_artifact": "specs/731_harvest_generated_surfaces_into_file_scope/summaries/01_harvest-generated-surfaces-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["guard-destructive-git", "git-commit", "heredoc", "quote-stripping", "false-positive"]
+      "suggested_keywords": [
+        "guard-destructive-git",
+        "git-commit",
+        "heredoc",
+        "quote-stripping",
+        "false-positive"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1791637795_4b472e",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 5,
     "phases_total": 5
   }

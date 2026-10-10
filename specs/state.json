@@ -200,12 +200,12 @@
     {
       "project_number": 731,
       "project_name": "harvest_generated_surfaces_into_file_scope",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "description": "Make plan-time file_scope harvest include the generated surfaces that any .lean edit forces, so they stop recurring as undeclared scope extensions.\n\nEVIDENCE: THE SAME OMISSION TWICE, IN CONSECUTIVE TASKS. Two completed tasks independently hit the identical problem. The first recorded the `typst/generated/status.typ` regeneration as an undeclared scope extension after the pre-commit `typst-sync-check.sh --counts-only` gate refused a commit touching a `.lean` file without it. The second, forewarned, named `status.typ` in its own plan's file list — and then hit the *other* generated surface: `check-module-invariants.sh`'s INV check failed because its line additions shifted the generated inventory blocks in `FormalSystem/Metalogic/README.md` and the root `README.md`, neither of which was in its declared file_scope. It root-caused this with disposable `git worktree` bisection, regenerated via `--emit-inventory`, and declared a scope extension. The orchestrator's own postflight independently flagged the same two files: `ADVISORY: task reported modified_files outside its declared file_scope: [\"FormalSystem/Metalogic/README.md\",\"README.md\"]`.\n\nTHE PATTERN. These are not planning oversights to be fixed by reminding planners harder. They are mechanically derivable consequences of editing any `.lean` file: the line-count and byte-count tables in the two READMEs, and `typst/generated/status.typ`, are all generated artifacts whose content is a function of the Lean sources. Any plan that touches a `.lean` file will need them, every time, and a plan that omits them produces either a blocked pre-commit gate or a red INV check mid-implementation.\n\nSCOPE. (1) Identify the complete set of generated/derived surfaces that a `.lean` edit forces — at minimum `typst/generated/status.typ` and the inventory blocks in `FormalSystem/Metalogic/README.md` and root `README.md`; check for others by reading the generators (`check-module-invariants.sh --emit-inventory`, `typst-sync-check.sh`) rather than by enumerating from memory. (2) Decide the mechanism: extend `plan-file-scope-harvest.sh` to append these surfaces automatically whenever the harvested scope contains any `.lean` path, or add a plan-template checklist item, or both. Prefer the mechanical option, since the checklist has now been tried once and did not prevent the second occurrence. (3) Ensure the addition is conditional on the repo actually having these generators, so the change does not break sibling repos that lack them. (4) Verify against the two completed tasks' plans: re-running the harvest on them should now produce the surfaces they had to add by hand.\n\nNON-GOALS: no change to the generators themselves or to what they emit; no change to the pre-commit gate's behavior (it is correctly refusing the commit — the plan's declaration is what is incomplete); no retroactive edit to already-completed tasks' file_scope.",
       "topic": "agent-system",
       "created": "2026-10-04T16:36:03Z",
-      "last_updated": "2026-10-10T13:28:55Z",
+      "last_updated": "2026-10-10T15:01:38Z",
       "file_scope": [
         ".claude/context/formats/plan-format.md",
         ".claude/scripts/plan-file-scope-harvest.sh",
@@ -224,9 +224,15 @@
           "path": "specs/731_harvest_generated_surfaces_into_file_scope/plans/01_harvest-generated-surfaces.md",
           "type": "plan",
           "summary": "5-phase plan for capability-gated generated-surface appending in plan-file-scope-harvest.sh, with 11 new regression cases and precedent-plan replay verification."
+        },
+        {
+          "path": "specs/731_harvest_generated_surfaces_into_file_scope/summaries/01_harvest-generated-surfaces-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary covering all 5 phases, both precedent-plan replays, and the latency figure."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Extended plan-file-scope-harvest.sh (agent-system source store) with a capability-gated post-processing stage appending the generated/derived surfaces a .lean edit mechanically forces -- typst/generated/status.typ, every ancestor-chain generated-inventory README, and the two narrow-glob surfaces (automation-module-map.typ, machine-appendix.{jsonl,typ}). Added 11 regression cases (32/32 passing), documented the file_scope-overlap consequence in state-management-schema.md, deployed, and verified against both precedent plans (task 749, task 750) that each independently hit this gap."
     },
     {
       "project_number": 729,
