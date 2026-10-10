@@ -1,7 +1,7 @@
 # Implementation Plan: Task #720
 
 - **Task**: 720 - Promote FMP width refutations to evidence (re-scoped: CI repair of the untracked `WIRED_REPO` entries + citation re-point to the landed `Limits/` theorems)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: 706, 710 (both archived as completed; their `Limits/` landings are in the tree at HEAD)
 - **Research Inputs**: specs/720_promote_fmp_width_refutations_to_evidence/reports/01_ci-repair-and-citation-repoint.md
@@ -125,17 +125,17 @@ Phases within the same wave can execute in parallel. Phase 4 edits a different r
 has no file overlap with Phase 3; both wait on Phase 2 only so that no README or note claims the
 probes are superseded while the script still guards them.
 
-### Phase 1: Tracked-ness check in `check_probe` (Deliverable A, script half) [NOT STARTED]
+### Phase 1: Tracked-ness check in `check_probe` (Deliverable A, script half) [COMPLETED]
 
 **Goal**: Make `scripts/check-evidence-probes.sh` reject a wired target that is present on disk
 but not tracked by git, with a message distinct from the missing-file case, and document the rule
 in the script's own header and footer.
 
 **Tasks**:
-- [ ] Re-derive the baseline before editing: run
+- [x] Re-derive the baseline before editing: run
       `awk '/^WIRED_REPO=\(/,/^\)/' scripts/check-evidence-probes.sh | grep -o '"[^"]*"' | tr -d '"' | while read -r f; do git ls-files --error-unmatch -- "$f" >/dev/null 2>&1 || echo "UNTRACKED $f"; done`
       and confirm exactly the 706 and 710 paths print.
-- [ ] In `check_probe` (currently lines 714-731), insert after the `[ ! -f "$file" ]` branch and
+- [x] In `check_probe` (currently lines 714-731), insert after the `[ ! -f "$file" ]` branch and
       before the `lake env lean` call:
       ```bash
         if ! git ls-files --error-unmatch -- "$file" >/dev/null 2>&1; then
@@ -146,7 +146,7 @@ in the script's own header and footer.
       ```
       Keep the missing-file branch first so an absent file still reports `missing`, not
       `untracked`.
-- [ ] Add one header paragraph after the "TWO ENTRY FORMS" paragraph (currently lines 28-33),
+- [x] Add one header paragraph after the "TWO ENTRY FORMS" paragraph (currently lines 28-33),
       titled in the header's own style (e.g. `TRACKED, NOT MERELY PRESENT.`): a wired probe must
       be tracked by git, because `[ -f ]` is satisfied by a gitignored file under
       `specs/archive/` -- which is exactly what an archival `mv` of a task directory produces --
@@ -155,13 +155,13 @@ in the script's own header and footer.
       consequence for `WIRED_REPO` entries pointing into a task directory: the entry must be
       re-pointed, or the file promoted to `specs/evidence/`, before that task is archived. Cite
       `.gitignore`'s `specs/archive/` line and no task numbers.
-- [ ] Extend the footer guidance (currently lines 757-761) with one clause covering the untracked
+- [x] Extend the footer guidance (currently lines 757-761) with one clause covering the untracked
       case: a `FAIL (untracked: ...)` means the record has left version control, and the repair
       is to promote the file into `specs/evidence/` (or delete the entry if the library now
       carries the result), never to force-track it under `specs/archive/`.
-- [ ] Run `bash -n scripts/check-evidence-probes.sh` (syntax) and then
+- [x] Run `bash -n scripts/check-evidence-probes.sh` (syntax) and then
       `bash scripts/check-evidence-probes.sh`; capture the output.
-- [ ] Record the outcome via `issue-record.sh` (`--kind win` if the built-in negative test
+- [x] Record the outcome via `issue-record.sh` (`--kind win` if the built-in negative test
       behaves exactly as expected, `--kind issue` otherwise).
 
 **Timing**: 0.5 hours

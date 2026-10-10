@@ -32,6 +32,18 @@
 # probe stranded outside the collection is still guarded rather than left to rot unwatched.
 # Prefer `WIRED`: reach for `WIRED_REPO` only with a named blocker recorded beside the entry.
 #
+# TRACKED, NOT MERELY PRESENT.  A wired probe must be tracked by git, and `check_probe` tests
+# this with `git ls-files --error-unmatch` after the presence test.  Presence alone is not a
+# guard: `[ -f ]` is satisfied by a gitignored file under `specs/archive/` (see the
+# `specs/archive/` line in `.gitignore`), which is exactly what an archival `mv` of a task
+# directory produces -- every file under the moved directory leaves version control in that one
+# commit while staying on disk for whoever already had it.  A gate testing presence alone then
+# stays green on every such machine and fails on every clean checkout (CI included), which is the
+# worst combination: the breakage is invisible to the person who caused it.  Consequence for a
+# `WIRED_REPO` entry pointing into a task directory: the entry must be re-pointed, or the file
+# promoted to `specs/evidence/`, BEFORE that task is archived.  A `FAIL (untracked: ...)` from
+# this script means that did not happen.
+#
 # Usage:
 #   bash scripts/check-evidence-probes.sh
 #
@@ -719,6 +731,14 @@ check_probe() {
     failures=$((failures + 1))
     return
   fi
+  # Presence is not enough: a gitignored file (e.g. under `specs/archive/`) satisfies `-f` on
+  # every machine that has it on disk and is absent from every fresh clone.  See TRACKED, NOT
+  # MERELY PRESENT in the header.
+  if ! git ls-files --error-unmatch -- "$file" >/dev/null 2>&1; then
+    echo "FAIL (untracked: $file -- present on disk but not in version control; a fresh clone has no such file)"
+    failures=$((failures + 1))
+    return
+  fi
   local out
   if out=$(lake env lean "$file" 2>&1); then
     echo "PASS"
@@ -759,4 +779,8 @@ echo "A probe failing means a recorded design obstruction no longer compiles."
 echo "Do NOT delete the probe or weaken its statements to make this pass: repair the"
 echo "citation drift, or -- if the obstruction genuinely no longer holds -- say so"
 echo "explicitly and revisit the decision the probe was holding in place."
+echo "A 'FAIL (untracked: ...)' means the record has left version control (typically an"
+echo "archival mv into the gitignored specs/archive/): promote the file into specs/evidence/,"
+echo "or delete the entry if the library now carries the result under lake build -- never"
+echo "force-track it under specs/archive/."
 exit 1
