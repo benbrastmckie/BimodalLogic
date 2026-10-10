@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "summary": "Wrote a three-phase implementation plan for the file_scope widening notice, implementing the dispatch's preferred option (a): a delta-gated, stderr-only [file-scope] notice emitted from update-task-status.sh's update_state_json() at both merge sites (the state_is_noop branch and the shared closing state-write.sh call). Planning independently confirmed that no caller captures this script's output in a command substitution or with 2>&1, retiring the output-compatibility risk, and that test-update-task-status.sh's existing Case 11 sub-cases plus test-skill-base-lifecycle.sh's Group 4a already produce the delta-2, delta-0 (cry-wolf), and delta-1 scenarios with stderr already captured, so the test phase needs no new fixtures. Options (b) and (c) are explicitly rejected in the plan with reasons; all edits target the core extension's source store, never the deployed tree.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/754_plan_postflight_file_scope_widening_silent/plans/01_file-scope-widening-notice.md",
+      "summary": "Three-phase plan: emit the delta-gated notice from the writer (local tier), assert it in the writer's suite and on the live plan-postflight path (local tier), then document, redeploy, and run the full gate set (full tier)."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 3,
+  "blockers": [],
+  "next_action_hint": "Dispatch implement for task 754; Phase 1 must first confirm deploy freshness (RESULT=landed_verify_clean) and re-verify the two-merge-site hypothesis by grepping FILE_SCOPE_ADD_LEN in the source-store script.",
+  "dispatch_seq": 4
+}

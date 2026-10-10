@@ -1,35 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/754_plan_postflight_file_scope_widening_silent/reports/01_file_scope_widening_notice.md",
-      "summary": "Confirms the plan-postflight file_scope harvest/union-merge already works and pinpoints the real defect to its silence on every real (non-dry-run) write path; recommends option (a) -- a single delta-gated stderr notice inside update-task-status.sh's update_state_json(), covering the one live call site (skill_postflight_update in skill-base.sh) from a single choke point."
+      "type": "plan",
+      "path": "specs/754_plan_postflight_file_scope_widening_silent/plans/01_file-scope-widening-notice.md",
+      "summary": "Three-phase plan implementing the dispatch's option (a): a delta-gated, stderr-only [file-scope] notice emitted from update-task-status.sh at both merge sites, locked in by assertions in the writer's own suite plus one end-to-end assertion on the live plan-postflight path, then documented, redeployed, and gated."
     }
   ],
-  "next_steps": "Run /plan 754 to create implementation plan",
+  "next_steps": "Run /implement 754 to execute the plan",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1791637795_4b472e_754",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 2.25,
+    "dependency_waves": 3
   },
-  "memory_candidates": [
-    {
-      "content": "In this repo's lifecycle scripts, update-task-status.sh is the single choke point for every live postflight status write (skill_postflight_update in skill-base.sh is the sole live forwarder; orchestrator-postflight.sh's parallel Stage 7 branch is dead code with no current caller, per its own header comment). When a behavior needs to be observable across all postflight callers (e.g. an additive union-merge like file_scope), add the notice inside update-task-status.sh itself rather than at the call sites -- it is the lowest-duplication, future-proof altitude.",
-      "category": "PATTERN",
-      "source_artifact": "specs/754_plan_postflight_file_scope_widening_silent/reports/01_file_scope_widening_notice.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["update-task-status.sh", "skill_postflight_update", "file_scope", "postflight", "choke-point"]
-    },
-    {
-      "content": "When adding an observability notice for an additive/unique-merge operation, gate it on the actual post-merge delta (set-difference count against the pre-merge value), not on whether the forwarded input list was merely non-empty. unique-based merges are frequently re-run with mostly-already-present values, so printing on raw input presence trains operators to ignore the notice (cry-wolf failure mode).",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/754_plan_postflight_file_scope_widening_silent/reports/01_file_scope_widening_notice.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["delta-gated notice", "union-merge", "jq array difference", "observability", "cry-wolf"]
-    }
-  ],
-  "findings_count": 7,
-  "dispatch_seq": 2
+  "dispatch_seq": 4
 }

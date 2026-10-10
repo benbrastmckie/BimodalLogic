@@ -31,7 +31,7 @@ next_project_number: 757
 741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
-754 [PLANNING] — plan postflight widens file\_scope silently
+754 [PLANNED] — plan postflight widens file\_scope silently
 755 [NOT STARTED] — A plan artifact can omit the Files to modify field that...
 
 ### Algebraic Representation
@@ -174,11 +174,12 @@ RELATION TO ADJACENT RECORDS: distinct from the record covering generated surfac
 ---
 
 ### 754. plan postflight widens file_scope silently
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [754_plan_postflight_file_scope_widening_silent/reports/01_file_scope_widening_notice.md]
+- **Plan**: [754_plan_postflight_file_scope_widening_silent/plans/01_file-scope-widening-notice.md]
 
 **Description**: Make the plan-postflight file_scope widening observable instead of silent
 
