@@ -435,9 +435,8 @@ EVIDENCE="specs/evidence"
 #                                                           | `HitPresented` left OPEN there
 #                                                           | (SETTLED on this fixture by
 #                                                           | `hit-presented-model-a` below:
-#                                                           | satisfiable, non-constructively;
-#                                                           | general (C) with a computable bound
-#                                                           | still open)
+#                                                           | satisfiable, with the size exhibited
+#                                                           | as a count; general (C) still open)
 # seam-gluing-ray-product/hit-presented-model-a             | POSITIVE (requirement (C)'s
 #                                                           | satisfiability half): the HIT-level
 #                                                           | realization hypothesis
@@ -473,18 +472,19 @@ EVIDENCE="specs/evidence"
 #                                                           | fixture, seam and `φ` -- so the route
 #                                                           | through requirement (C) is NOT closed
 #                                                           | by that verdict, which stands
-#                                                           | unchanged. The construction is
-#                                                           | NON-CONSTRUCTIVE and delivers NO
-#                                                           | bound: the `L` is a
-#                                                           | `Set.Finite.bddAbove` witness, never
-#                                                           | exhibited, so `card_QA`'s `L + 6` and
-#                                                           | `jump_window_card`'s `L + 1` are
-#                                                           | functions of a number nothing
-#                                                           | produces, and (C)'s computable-bound
-#                                                           | half stays OPEN -- the obstruction and
-#                                                           | the single missing lemma are named in
-#                                                           | the probe header's "Bound verdict" and
-#                                                           | in the RaySummary README. Forward only;
+#                                                           | unchanged. The presentation size is
+#                                                           | EXHIBITED in the statement, as a
+#                                                           | COUNT: `presentationSize k =
+#                                                           | Nat.card (KType (clSig Fp) k)`, so
+#                                                           | `card_QA_presentationSize` reads
+#                                                           | `presentationSize k + 6` -- a count of
+#                                                           | depth-`k` types and nothing else, not
+#                                                           | a complexity bound of any kind (by the
+#                                                           | library's pigeonhole periodicity, the
+#                                                           | Transport.lean cut surgery and the
+#                                                           | fixture's `run_subset_middle`). (C)'s
+#                                                           | general every-model half stays OPEN,
+#                                                           | the (W) run-layer record's. Forward only;
 #                                                           | nothing about `⊡(P p)`;
 #                                                           | `Decidable (PlusValidZTime φ)` NOT
 #                                                           | stated in any form, conditional or

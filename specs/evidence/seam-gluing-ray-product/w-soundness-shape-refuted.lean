@@ -64,7 +64,7 @@ form and no sentence here says L⁺ is or is not decidable. Nothing about `⊡(P
 is stated at the seam for every closure formula, but every fixture in this collection is
 forward-only and there is still no backward Bool-fixture bridge — the backward side is fixed
 only by `Probe719Backward.pastStab_iff_allBwdPathsMeet` on the asymmetric fixture. Nothing
-about `HitPresented`, which holds on model A non-constructively
+about `HitPresented`, which holds on model A with its presentation size exhibited as a count
 (`Probe745.hitPresented_modelA`) and remains the realization hypothesis (W) may use. No
 complexity bound of any kind. Nothing about models whose slices are infinite beyond the
 statement that (W)'s frame must have them. `no_finite_width_sat`, `not_plusValidZTime_neg_Φ`,

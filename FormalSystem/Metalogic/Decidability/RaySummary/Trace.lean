@@ -329,12 +329,15 @@ that probe refutes the trace-set equality by pumping a trace whose forward type 
 every seam trace's, and a type-level demand has nothing for that argument to bite on. Both can
 hold of the same fixture at once.
 
-In this tree it is discharged for fixture model A only, forward-only, and
-**non-constructively** — by the wired probe
-`specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`, landed by this record's
-later phases, whose presentation size comes from `Set.Finite.bddAbove` over `HitCl` and is
-therefore `∃ L` with no bound on `L`. **No computable bound is delivered**, here or there, and
-nothing about general regular `ℤ`-models is claimed.
+In this tree it is discharged for fixture model A only, forward-only, by the wired probe
+`specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`, with the presentation size
+EXHIBITED in the statement as `Nat.card (KType (clSig Fp) k)` — a COUNT of depth-`k` types over
+the closure alphabet of `Fp`, and nothing else: in `AnchorLayer.lean`'s words on its own cell
+count, it "is not a complexity bound of any kind: it counts cells, it does not time anything,
+and it must not be described as a bound on any procedure's running time" (here, types for
+cells). The exhibition rests on `kTypeOf_listSeg_replicate_eventually_periodic_bounded`
+(`Compose.lean`) and the cut surgery of `Transport.lean`. Nothing about general regular
+`ℤ`-models is claimed.
 
 Paper: — (the formalization's own realizability device; the paper has no counterpart) -/
 def HitPresented [Fintype Q] [DecidableEq Q] (M : TaskModel F.toTaskFrame)

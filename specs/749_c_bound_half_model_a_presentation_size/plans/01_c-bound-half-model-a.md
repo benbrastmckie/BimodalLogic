@@ -360,23 +360,23 @@ drop the `∃ L` from both theorems, and rewrite the probe's own prose in the sa
 
 ---
 
-### Phase 8: Ledger for the transport theorems, stale-prose sweep, full gate [NOT STARTED]
+### Phase 8: Ledger for the transport theorems, stale-prose sweep, full gate [COMPLETED]
 
 **Goal**: Pin and index the transport headline theorems, retire every remaining "no computable
 bound / never exhibited / non-constructive" sentence outside the probe, and run the complete gate
 set.
 
 **Tasks**:
-- [ ] Pins: add `#guard_msgs in #print axioms` at `[propext, Classical.choice, Quot.sound]` for `FormalSystem.Metalogic.WeakCanonical.segZ_const_of_kTypeOf_eq_replicate` and `…inFamily_of_shrink_run` to `KTypeSummaryAxiomTest.lean`'s (C) section; append both to `C14BASE` and `C14LEAN` in the same order.
-- [ ] `docs/theorem-index.md`: one row for `inFamily_of_shrink_run` (File `FormalSystem/Metalogic/Decidability/RaySummary/Transport.lean`, Frame `—`, `pcq pinned:C14`), stating the single-segment containment hypothesis explicitly and that the unconditioned general statement is not claimed. Revise the `hitPresented_of_presented` row (`:201`): "discharged **non-constructively** … never exhibited … **No computable bound** is delivered" becomes: discharged with the presentation size EXHIBITED as `Nat.card (KType (clSig Fp) k)` — a count of depth-`k` types on one fixture, with the `AnchorLayer.lean:317-320` disclaimer in the same words — so (C) is settled on the fixture in both halves; the general every-model statement remains the (W) run-layer record's; nothing about `PlusValidZTime`, no complexity bound.
-- [ ] `KTypeSummaryAxiomTest.lean:378-395` section header: retitle from "satisfiable, and still no bound" and rewrite the last paragraph ("What is **not** pinned here … no presentation size is ever exhibited") to the exhibited count, naming the probe theorem and the Phase 1 row.
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean:330-338` (`HitPresented` docstring): replace "**non-constructively** … `∃ L` with no bound on `L`. **No computable bound is delivered**" with the exhibited count and the disclaimer; keep "nothing about general regular ℤ-models".
-- [ ] `RaySummary/README.md`: the (C) row (`:154`) — "non-constructive … no computable bound and no general regular ℤ-model statement follows" becomes: bound half settled ON THE FIXTURE as a count (`presentationSize k = Nat.card (KType (clSig Fp) k)`), general statement still the (W) record's; `:252`; the section "The bound: blocked, with the obligation named" (`:270-300`) — retitle to "The bound: exhibited on the fixture, as a count", replace the "stated and not proved" obligation block by the landed theorems (Phase 1's two, keystone, surgery) with the disclaimer, keep the "honest scope note" rewritten to what is now machine-checked; `:455`; the `Transport.lean` and `Compose.lean` rows in the file table (line counts).
-- [ ] `scripts/check-evidence-probes.sh` wired-probe table (`:436-440`, `:475-479`): "satisfiable, non-constructively; general (C) with a computable bound still open" becomes "satisfiable with the size exhibited as a count; general (C) still open"; "NON-CONSTRUCTIVE and delivers NO bound: the `L` is a `Set.Finite.bddAbove` witness" rewritten accordingly.
-- [ ] `scripts/check-module-invariants.sh:2074-2078` C14 comment: "non-constructively and with NO computable bound" rewritten.
-- [ ] `specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean:67`: "holds on model A non-constructively" becomes "holds on model A with its presentation size exhibited as a count".
-- [ ] Sweep: `grep -rn -i "no computable bound\|never exhibited\|unexhibited\|non-constructiv\|still no bound\|finite-semigroup\|bddAbove" FormalSystem docs scripts Tests specs/evidence README.md` — every remaining hit is read and either corrected or confirmed to describe something other than this record's bound (record the confirmation list in the implementation summary). Also `grep -rn -i "2EXPTIME\|running time\|complexity bound" ` over the files touched by this task: every hit must be a denial, never a claim.
-- [ ] Full gate set: `lake build` (whole library and tests, detached and guarded per `.claude/rules/lean4.md`); `bash scripts/check-module-invariants.sh` (full, not `--no-build`; C14, C16, C27, C29, C30 PASS); `bash scripts/check-evidence-probes.sh`; `bash scripts/readme-lint.sh`; `bash .claude/scripts/verify-deploy.sh` — each checked by exit status.
+- [x] Pins: add `#guard_msgs in #print axioms` at `[propext, Classical.choice, Quot.sound]` for `FormalSystem.Metalogic.WeakCanonical.segZ_const_of_kTypeOf_eq_replicate` and `…inFamily_of_shrink_run` to `KTypeSummaryAxiomTest.lean`'s (C) section; append both to `C14BASE` and `C14LEAN` in the same order.
+- [x] `docs/theorem-index.md`: one row for `inFamily_of_shrink_run` (File `FormalSystem/Metalogic/Decidability/RaySummary/Transport.lean`, Frame `—`, `pcq pinned:C14`), stating the single-segment containment hypothesis explicitly and that the unconditioned general statement is not claimed. Revise the `hitPresented_of_presented` row (`:201`): "discharged **non-constructively** … never exhibited … **No computable bound** is delivered" becomes: discharged with the presentation size EXHIBITED as `Nat.card (KType (clSig Fp) k)` — a count of depth-`k` types on one fixture, with the `AnchorLayer.lean:317-320` disclaimer in the same words — so (C) is settled on the fixture in both halves; the general every-model statement remains the (W) run-layer record's; nothing about `PlusValidZTime`, no complexity bound.
+- [x] `KTypeSummaryAxiomTest.lean:378-395` section header: retitle from "satisfiable, and still no bound" and rewrite the last paragraph ("What is **not** pinned here … no presentation size is ever exhibited") to the exhibited count, naming the probe theorem and the Phase 1 row.
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean:330-338` (`HitPresented` docstring): replace "**non-constructively** … `∃ L` with no bound on `L`. **No computable bound is delivered**" with the exhibited count and the disclaimer; keep "nothing about general regular ℤ-models".
+- [x] `RaySummary/README.md`: the (C) row (`:154`) — "non-constructive … no computable bound and no general regular ℤ-model statement follows" becomes: bound half settled ON THE FIXTURE as a count (`presentationSize k = Nat.card (KType (clSig Fp) k)`), general statement still the (W) record's; `:252`; the section "The bound: blocked, with the obligation named" (`:270-300`) — retitle to "The bound: exhibited on the fixture, as a count", replace the "stated and not proved" obligation block by the landed theorems (Phase 1's two, keystone, surgery) with the disclaimer, keep the "honest scope note" rewritten to what is now machine-checked; `:455`; the `Transport.lean` and `Compose.lean` rows in the file table (line counts).
+- [x] `scripts/check-evidence-probes.sh` wired-probe table (`:436-440`, `:475-479`): "satisfiable, non-constructively; general (C) with a computable bound still open" becomes "satisfiable with the size exhibited as a count; general (C) still open"; "NON-CONSTRUCTIVE and delivers NO bound: the `L` is a `Set.Finite.bddAbove` witness" rewritten accordingly.
+- [x] `scripts/check-module-invariants.sh:2074-2078` C14 comment: "non-constructively and with NO computable bound" rewritten.
+- [x] `specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean:67`: "holds on model A non-constructively" becomes "holds on model A with its presentation size exhibited as a count".
+- [x] Sweep: `grep -rn -i "no computable bound\|never exhibited\|unexhibited\|non-constructiv\|still no bound\|finite-semigroup\|bddAbove" FormalSystem docs scripts Tests specs/evidence README.md` — every remaining hit is read and either corrected or confirmed to describe something other than this record's bound (record the confirmation list in the implementation summary). Also `grep -rn -i "2EXPTIME\|running time\|complexity bound" ` over the files touched by this task: every hit must be a denial, never a claim.
+- [x] *(completed — plus `lake exe mk_all --lib FormalSystem`, which C33 requires for the new module, and `--emit-inventory` for the generated README blocks; the sweep's confirmation list is in the implementation summary)* Full gate set: `lake build` (whole library and tests, detached and guarded per `.claude/rules/lean4.md`); `bash scripts/check-module-invariants.sh` (full, not `--no-build`; C14, C16, C27, C29, C30 PASS); `bash scripts/check-evidence-probes.sh`; `bash scripts/readme-lint.sh`; `bash .claude/scripts/verify-deploy.sh` — each checked by exit status.
 
 **Timing**: 2 hours
 
@@ -423,13 +423,13 @@ set.
 
 ## Testing & Validation
 
-- [ ] Every new library theorem compiles with axioms exactly `[propext, Classical.choice, Quot.sound]` and is pinned in `KTypeSummaryAxiomTest.lean` and the C14 baseline pair.
-- [ ] `bash scripts/check-module-invariants.sh` PASS (C14, C16, C27, C29, C30).
-- [ ] `bash scripts/check-evidence-probes.sh` PASS on every wired probe.
-- [ ] `bash scripts/readme-lint.sh` PASS (new file row present).
-- [ ] `bash .claude/scripts/verify-deploy.sh` PASS.
-- [ ] Stale-prose sweep and no-complexity-claim sweep (Phase 8) clean.
-- [ ] No `sorry`, no new `axiom`, no `Decidable (PlusValidZTime φ)`, no chosen `k`.
+- [x] Every new library theorem compiles with axioms exactly `[propext, Classical.choice, Quot.sound]` and is pinned in `KTypeSummaryAxiomTest.lean` and the C14 baseline pair.
+- [x] `bash scripts/check-module-invariants.sh` PASS (C14, C16, C27, C29, C30).
+- [x] `bash scripts/check-evidence-probes.sh` PASS on every wired probe.
+- [x] `bash scripts/readme-lint.sh` PASS (new file row present).
+- [x] `bash .claude/scripts/verify-deploy.sh` PASS.
+- [x] Stale-prose sweep and no-complexity-claim sweep (Phase 8) clean.
+- [x] No `sorry`, no new `axiom`, no `Decidable (PlusValidZTime φ)`, no chosen `k`.
 
 ## Artifacts & Outputs
 

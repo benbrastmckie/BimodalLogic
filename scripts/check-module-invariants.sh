@@ -2074,7 +2074,10 @@ fi
 # WEAKENING of `Presented` -- equality of the realized family-triple sets rather than of the
 # trace sets -- and is satisfiable on fixture model A where `Presented` is refuted, which the
 # wired probe `specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean` establishes
-# non-constructively and with NO computable bound. The last two,
+# with the presentation size EXHIBITED as `Nat.card (KType (clSig Fp) k)` -- a count of depth-`k`
+# types and nothing else, not a complexity bound of any kind (the four
+# `...WeakCanonical...` rows that follow it pin the periodicity, keystone and surgery theorems
+# that exhibition rests on). The last two,
 # `...presented_modelOf` and `...hitCl_modelOf_eq_hitOf`
 # (`RaySummary/Realize.lean`), are the realization theorem and its Hit-level corollary: the
 # conditional hypothesis `Presented` DISCHARGED for a model constructed FROM a presentation, for
@@ -2318,6 +2321,8 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic_bounded' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.segZ_const_of_kTypeOf_eq_replicate' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.inFamily_of_shrink_run' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
@@ -2542,6 +2547,8 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le
 #print axioms FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic_bounded
 #print axioms FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic
+#print axioms FormalSystem.Metalogic.WeakCanonical.segZ_const_of_kTypeOf_eq_replicate
+#print axioms FormalSystem.Metalogic.WeakCanonical.inFamily_of_shrink_run
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \

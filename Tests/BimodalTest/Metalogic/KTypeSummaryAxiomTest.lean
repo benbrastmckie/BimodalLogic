@@ -375,7 +375,7 @@ here mentions validity.
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.decidableStabOfPresented
 
-/-! ## The Hit-level weakening of the hypothesis — satisfiable, and still no bound
+/-! ## The Hit-level weakening of the hypothesis — satisfiable, with the size exhibited as a count
 
 `HitPresented` (`RaySummary/Trace.lean`) is the **Hit-level weakening** of `Presented`: it demands
 equality of the realized FAMILY-TRIPLE sets (`HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)`)
@@ -394,12 +394,23 @@ import — probes sit outside the Lake build graph and are compiled by
 at the same seam, for the same `φ`, because trace-set equality is what the refutation reaches and
 family-triple equality is not.
 
-What is **not** pinned here, because it does not exist in this tree: a **computable bound**. The
-probe's discharge reads `∃ L, HitPresented … (labOf L) (stepOf L) k`, with the `L` extracted from
-`Set.Finite.bddAbove` over a finite set, so no presentation size is ever exhibited and no row
-below is a bound in `φ`. Neither row measures a decidability result and neither mentions
-validity: `HitPresented` is one seam's hypothesis, and `Decidable (PlusValidZTime φ)` is not
-stated in this tree in any form, conditional or otherwise.
+The probe's discharge reads `HitPresented … (labOf (presentationSize k)) (stepOf (presentationSize
+k)) k` with `presentationSize k := Nat.card (KType (clSig Fp) k)` written into the statement — the
+presentation size is EXHIBITED, as a COUNT of depth-`k` types over the closure alphabet of `Fp`,
+and nothing else (the `anchorCells_ncard_le` disclaimer, in the same words: it is not a complexity
+bound of any kind; it counts, it does not time anything, and it must not be described as a bound
+on any procedure's running time). The four library rows after the first two pin what that
+exhibition rests on: the pigeonhole periodicity of the `k`-type of a constant block with the
+threshold and period bounded by that count (`kTypeOf_listSeg_replicate_eventually_periodic_bounded`,
+`RaySummary/Compose.lean`, with its recorded unbounded corollary), the keystone that a segment
+with the `k`-type of a nonempty constant block is a nonempty constant block
+(`segZ_const_of_kTypeOf_eq_replicate`), and the cut surgery that deletes `p` positions of a run
+held inside one segment of a `SegmentFactorization` while keeping the triple
+(`inFamily_of_shrink_run`, both `RaySummary/Transport.lean`; shrink direction only, under an
+explicit single-segment containment hypothesis that the probe discharges on model A). The
+general every-model statement of (C) is not here. Neither of the first two rows measures a
+decidability result and neither mentions validity: `HitPresented` is one seam's hypothesis, and
+`Decidable (PlusValidZTime φ)` is not stated in this tree in any form, conditional or otherwise.
 -/
 
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.HitPresented' depends on axioms: [propext, Classical.choice, Quot.sound] -/
@@ -424,6 +435,16 @@ stated in this tree in any form, conditional or otherwise.
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.segZ_const_of_kTypeOf_eq_replicate' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.segZ_const_of_kTypeOf_eq_replicate
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.inFamily_of_shrink_run' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.inFamily_of_shrink_run
 
 /-! ## Requirement (S): the realization hypothesis DISCHARGED for a constructed model
 
