@@ -397,7 +397,7 @@ the library changes.
 
 ---
 
-### Phase 4: The README's (W) section — decision, depth, figure, phases 2–3, literature [NOT STARTED]
+### Phase 4: The README's (W) section — decision, depth, figure, phases 2–3, literature [COMPLETED]
 
 **Goal**: `RaySummary/README.md` states the current design of (W)'s run layer: the frame scheme
 chosen and why, `k = 1`, the measured figure replacing the carried one, the phase-2 obstacle made
@@ -405,10 +405,10 @@ precise, phase 3 verbatim, the literature paragraph the task requires, the ninth
 new module — with every binding constraint and the semi-decidability caveat unchanged.
 
 **Tasks**:
-- [ ] "What it holds" table: add a `RunLayer.lean` row with Phase 1's measured line count and a
+- [x] "What it holds" table: add a `RunLayer.lean` row with Phase 1's measured line count and a
       description in the style of the `AnchorLayer.lean` row (constructor, ladder, `ladderFrame`;
       what it is not: no realization theorem, nothing about `PlusValidZTime`, no bound).
-- [ ] "(W): what landed and what did not", obligation (i) item: replace "neither refuted nor
+- [x] "(W): what landed and what did not", obligation (i) item: replace "neither refuted nor
       built" and the carried "~120-160 line figure … carried, unverified" with the landed state —
       the deadline ladder (two counters per `⊡`-forced eventuality: deterministic countdown while
       pending, next deadline drifting by at most one per step at every step, so no state chooses
@@ -418,13 +418,13 @@ new module — with every binding constraint and the semi-decidability caveat un
       `Rlad_bwd`, `Rlad_slice_infinite`, the MEASURED line count (regularity part and ladder part
       separately), seriality as an object condition (`fwd`/`bwd`), and the named-not-costed
       admissibility restriction `c ∈ Adm q` and run-layer consistency conditions.
-- [ ] Same section: record **depth `k = 1`** with its grounds — every landed bridge the run layer
+- [x] Same section: record **depth `k = 1`** with its grounds — every landed bridge the run layer
       consumes carries `hk : 1 ≤ k` and nothing asks more; run conditions are enforced by the
       object's step structure as `Cons` does for (S), never read off types; the alternative
       (making `LocalRun.untl`/`.snce` `DeterminedByKType` targets through
       `determinedByKType_eval`) costs `k = 3` by `MonadicFormula.quantifierDepth` and is rejected,
       since `Nat.card (KType sig k)` — a count, never a complexity bound — grows with `k`.
-- [ ] Same section, obligation (ii): state the phase-2 obstacle precisely — ladder states
+- [x] Same section, obligation (ii): state the phase-2 obstacle precisely — ladder states
       `(q, c, n)` with small `c` realize PROPER subsets of the types at large `c` (`Node`'s `pre 0`
       reads `⊡Xp` where `pre (k+1)` reads `¬⊡Xp`), so cells are indexed by `(q, deadline class)`
       and the Hit-level per-cell hypothesis must be stated at ladder states; the stabilization of
@@ -433,10 +433,10 @@ new module — with every binding constraint and the semi-decidability caveat un
       the honest outcome is `[BLOCKED]`, never a finite-fibre retreat. State phase 3 as (C)'s
       general row verbatim (the sentence from "The verdict"), open, one positive fixture
       (`Probe745.hitPresented_modelA`), no Hit-level negative anywhere, no figure.
-- [ ] Keep "What the lift would deliver even with the run layer, and what it would not" verbatim
+- [x] Keep "What the lift would deliver even with the run layer, and what it would not" verbatim
       (the semi-decidability caveat). Update "Successor." to say phases 2–3 of the run layer are
       their own successor records, never phases appended to this one.
-- [ ] Insert, after the "Successor" paragraph, the literature paragraph exactly as drafted in
+- [x] Insert, after the "Successor" paragraph, the literature paragraph exactly as drafted in
       `reports/01_w-run-layer-design.md`, "The README paragraph" (beginning "**The obstruction
       has a literature description.**" and ending "… exactly what (W)'s soundness half is
       about."), re-checking its anchors: HWZ 2000 Definition 12, Remark 13 (PDF p. 11), Theorem
@@ -445,13 +445,16 @@ new module — with every binding constraint and the semi-decidability caveat un
       (`Semantics/IntNormalForm.lean`); `seamOmegaEquiv`; `blc_plusValid`; `stab_state_only`
       (`PlusLanguage/PlusTruth.lean`). Confirm each Lean name resolves (`grep -rn` or
       `lean_local_search` with `index: consulted`) before citing it.
-- [ ] "Evidence": add "A ninth wired probe, `deadline-ladder-branching.lean`, …" after the eighth,
+- [x] "Evidence": add "A ninth wired probe, `deadline-ladder-branching.lean`, …" after the eighth,
       in the same shape: what it establishes, what it cites and re-proves none of, what it does
       not say.
-- [ ] If "The verdict" table's (W) row enumerates the three obligations, update it consistently
+- [x] If "The verdict" table's (W) row enumerates the three obligations, update it consistently
       (obligation (i): regularity part landed, realization part open; (ii): open; (iii):
-      discharged) — read lines 103–158 first.
-- [ ] Update `*Last verified: …*` to the implementation date.
+      discharged) — read lines 103–158 first. *(done: the (W) verdict row's status cell now reads
+      "frame scheme landed … otherwise BLOCKED on obligation (ii)"; the aside under "(S): what
+      landed and what did not" that said "its run layer is blocked" was updated in the same
+      sense; the measured 373/179/123 figures are written in the table row and the (W) section)*
+- [x] Update `*Last verified: …*` to the implementation date.
 
 **Timing**: 1.5 hours
 
