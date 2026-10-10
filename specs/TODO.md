@@ -30,7 +30,7 @@ next_project_number: 757
 741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
-755 [NOT STARTED] — A plan artifact can omit the Files to modify field that...
+755 [RESEARCHED] — A plan artifact can omit the Files to modify field that...
 
 ### Algebraic Representation
 
@@ -144,10 +144,11 @@ NON-GOALS: no new Lean declarations — `nullity_identity` already exists; no ch
 
 ### 755. Plan files to modify unenforced
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [755_plan_files_to_modify_unenforced/reports/01_files-to-modify-unenforced.md]
 
 **Description**: A plan artifact can omit the `Files to modify` field that `plan-format.md` marks REQUIRED, pass validation with zero warnings, and leave the task's `file_scope` null — which makes the task invisible to the admission overlap gate.
 
