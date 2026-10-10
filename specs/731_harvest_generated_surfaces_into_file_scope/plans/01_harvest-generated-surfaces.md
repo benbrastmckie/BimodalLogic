@@ -379,7 +379,7 @@ than trusting this plan's restatement of them.
 
 ---
 
-### Phase 5: Documentation sync, deploy, precedent verification, full gate [NOT STARTED]
+### Phase 5: Documentation sync, deploy, precedent verification, full gate [COMPLETED]
 
 **Goal**: The new contract is written down where its consumers will look, the change is propagated
 into the deploy tree, the dispatch's scope item 4 is satisfied against both precedent plans, and
@@ -387,30 +387,30 @@ the complete gate set is observed green.
 
 **Tasks**:
 
-- [ ] Re-read `context/reference/state-management-schema.md`'s file-scope section immediately
+- [x] Re-read `context/reference/state-management-schema.md`'s file-scope section immediately *(completed)*
       before editing (concurrency note) and add a short subsection stating that a harvested
       `file_scope` for a `.lean`-touching plan also carries the generated surfaces those edits
       force, that these are ordinary entries the overlap machinery reads, and that a
       `file_scope_collision` on `typst/generated/status.typ` between two Lean tasks is therefore
       expected and genuine.
-- [ ] Verify the harvester's header subsection written across Phases 1-4 reads as one coherent
+- [x] Verify the harvester's header subsection written across Phases 1-4 reads as one coherent *(completed)*
       contract statement rather than four appended fragments; condense if not.
-- [ ] Deploy: `bash /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/deploy-headless.sh`
+- [x] Deploy: `bash /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/deploy-headless.sh` *(completed)*
       (default non-destructive resync) and confirm
       `.claude/scripts/plan-file-scope-harvest.sh` now matches the source-store copy.
-- [ ] Precedent verification (dispatch scope item 4): run the deployed harvester against
+- [x] Precedent verification (dispatch scope item 4): run the deployed harvester against *(completed)*
       `specs/749_c_bound_half_model_a_presentation_size/plans/01_c-bound-half-model-a.md` and
       `specs/750_w_run_layer_closure_wide_lift/plans/01_w-run-layer-ladder-scheme.md`; record both
       full outputs in the completion summary and assert each now contains
       `typst/generated/status.typ`, `README.md`, `FormalSystem/README.md`, and
       `FormalSystem/Metalogic/README.md`, with every path from the research report's recorded
       baseline still present.
-- [ ] Measure and record the wall-clock delta of one harvest call on the second precedent plan
+- [x] Measure and record the wall-clock delta of one harvest call on the second precedent plan *(completed)*
       (before vs. after), so the latency claim in the Risks table is a number rather than an
       adjective.
-- [ ] Confirm no retroactive mutation happened: `git diff` shows no change to either precedent
+- [x] Confirm no retroactive mutation happened: `git diff` shows no change to either precedent *(completed)*
       task's `file_scope` in `specs/state.json` (non-goal check).
-- [ ] Run the complete gate set and observe it green.
+- [x] Run the complete gate set and observe it green. *(completed)*
 
 **Timing**: 1 hour
 
