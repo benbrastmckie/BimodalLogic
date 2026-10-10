@@ -114,7 +114,7 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 both edit
 `RaySummary/README.md` (different rows of the file table); if run in parallel, serialize the
 README edits.
 
-### Phase 1: Pigeonhole periodicity in `Compose.lean` [IN PROGRESS]
+### Phase 1: Pigeonhole periodicity in `Compose.lean` [COMPLETED]
 
 **Goal**: Land the strengthened periodicity theorem and the recorded corollary, binder consumed,
 no linter finding.
@@ -126,7 +126,7 @@ no linter finding.
 - [x] Land `theorem kTypeOf_listSeg_replicate_eventually_periodic` with the statement verbatim from `RaySummary/README.md:285-290` (same binders, same shape), proof `obtain ⟨m₀, p, hp, -, h⟩ := kTypeOf_listSeg_replicate_eventually_periodic_bounded sig k ℓ; exact ⟨m₀, p, hp, h⟩`. *(deviation: altered — same declaration-scoped `unusedFintypeInType`/`unusedDecidableInType` suppression with reason comment, for the same reason)*
 - [x] Docstrings on both theorems: route is pigeonhole plus `kTypeOf_listSeg_append_congr` (no semigroup, no idempotent); `Nat.card (KType sig k)` is a COUNT of depth-`k` types and nothing else — quote `AnchorLayer.lean:317-320` verbatim (text in Non-negotiable (1) below) and say in the same words that this count times nothing and bounds no procedure.
 - [x] Add the two theorems to the module docstring's "Main definitions and results" list (`Compose.lean:59-66`).
-- [ ] Scratch check (scratchpad file, never landed): `#print axioms` for both theorems reads exactly `[propext, Classical.choice, Quot.sound]`; no `sorryAx`.
+- [x] Scratch check (scratchpad file, never landed): `#print axioms` for both theorems reads exactly `[propext, Classical.choice, Quot.sound]`; no `sorryAx`. *(completed; the module as left by the previous dispatch did not parse — docstring before `set_option … in` — and was reordered to the `append_congr` precedent before the build went green)*
 
 **Timing**: 1.5 hours
 

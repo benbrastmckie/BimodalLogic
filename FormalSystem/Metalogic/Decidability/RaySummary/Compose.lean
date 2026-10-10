@@ -65,6 +65,10 @@ None is claimed, upper or lower. `decide` on `KType sig k` equality is exponenti
 * `listSeg_append_kEquiv` — a concatenation is the two-point ordered sum of its parts.
 * `kTypeOf_listSeg_append_congr` — composition on representatives: the `k`-type of a
   concatenation depends only on the `k`-types of the parts.
+* `kTypeOf_listSeg_replicate_eventually_periodic_bounded`,
+  `kTypeOf_listSeg_replicate_eventually_periodic` — the `k`-type of a constant block `ℓ^m` is
+  eventually periodic in `m`, with the threshold and the period together bounded by the count
+  `Nat.card (KType sig k)`: pigeonhole plus the congruence, no semigroup, no idempotent.
 
 ## References
 
@@ -293,5 +297,100 @@ theorem kTypeOf_listSeg_append_congr [Fintype sig.preds] (k : ℕ)
     (fun b => bif b then listSeg l₂' else listSeg l₁')
     (by change kTypeOf _ _ _ = kTypeOf _ _ _; rw [hcol])
   exact e₁.trans (hmix.trans e₂.symm)
+
+
+/-! ## Eventual periodicity of constant blocks
+
+The sequence `m ↦ kTypeOf sig k (listSeg (List.replicate m ℓ))` takes values in the finite type
+`KType sig k`, so two of its first `Nat.card (KType sig k) + 1` values coincide (pigeonhole); once
+`ℓ^i` and `ℓ^j` have the same `k`-type for some `i < j`, appending the fixed block `ℓ^d` to both
+and applying `kTypeOf_listSeg_append_congr` once — first argument varying, second fixed — gives
+`ℓ^(i+d) ≡ ℓ^(j+d)`, i.e. the sequence is periodic with period `j - i` from `i` on. No
+finite semigroup is constructed and no idempotent is needed: the congruence is the whole
+argument.
+
+`Nat.card (KType sig k)` is a COUNT of depth-`k` types and nothing else. In the words of
+`AnchorLayer.lean`'s disclaimer on its own cell count: "The one bound (W) can state honestly: a
+cardinality bound on the SET OF CELLS of a model, syntactic in `|cl φ|` — a cell is a set of
+subsets of `cl φ`, so there are at most `2 ^ (2 ^ |cl φ|)` of them. It is not a complexity bound
+of any kind: it counts cells, it does not time anything, and it must not be described as a bound
+on any procedure's running time." The same words apply here with "depth-`k` types" for "cells":
+the count `Nat.card (KType sig k)` times nothing, bounds no procedure, and is not a complexity
+bound of any kind. Nothing is derived from the size of `NormalForm sig k 0`. -/
+
+/-- One collision `ℓ^i ≡ ℓ^j` (`i < j`) makes the sequence periodic with period `j - i` from
+`i` on: write `m = i + d` and `m + (j - i) = j + d`, split both blocks with `List.replicate_add`,
+and apply `kTypeOf_listSeg_append_congr` once with the first argument varying and the second
+`rfl`. -/
+private theorem periodic_of_collision [Finite sig.preds] (k : ℕ) (ℓ : sig.preds → Bool)
+    {i j : ℕ} (hij : i < j)
+    (h : kTypeOf sig k (listSeg (List.replicate i ℓ)) =
+      kTypeOf sig k (listSeg (List.replicate j ℓ))) :
+    ∀ m, i ≤ m → kTypeOf sig k (listSeg (List.replicate (m + (j - i)) ℓ)) =
+      kTypeOf sig k (listSeg (List.replicate m ℓ)) := by
+  haveI := Fintype.ofFinite sig.preds
+  intro m hm
+  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hm
+  rw [show i + d + (j - i) = j + d by omega, List.replicate_add, List.replicate_add]
+  exact kTypeOf_listSeg_append_congr k h.symm rfl
+
+-- `linter.unusedFintypeInType` and `linter.unusedDecidableInType` flag the two binders of
+-- `kTypeOf_listSeg_replicate_eventually_periodic_bounded`: neither instance appears in the
+-- statement (`Nat.card` and `kTypeOf` need none), but both are consumed by the proof, which
+-- finds `Fintype (KType sig k)` from them through `normalFormFintype` for the pigeonhole
+-- (`Fintype.exists_ne_map_eq_of_card_lt`). The deletion trial — `[Finite sig.preds]` alone with
+-- `Fintype.ofFinite`/`Classical.decEq` in the proof — compiles, but this binder list is the
+-- RECORDED signature (`RaySummary/README.md`'s bound section, the probe's header, the
+-- `docs/theorem-index.md` row), kept verbatim so that the recorded statement stays literally
+-- true; the env_linter `unusedArguments` batch is quiet because the proof uses both.
+-- Declaration-scoped.
+set_option linter.unusedFintypeInType false in
+set_option linter.unusedDecidableInType false in
+/-- **Eventual periodicity of the `k`-type of a constant block, with the threshold bounded by the
+count of `k`-types.** There are `m₀` and a period `p > 0` with `m₀ + p ≤ Nat.card (KType sig k)`
+such that `ℓ^(m + p)` and `ℓ^m` have the same `k`-type for every `m ≥ m₀`. Route: pigeonhole
+(`Fintype.exists_ne_map_eq_of_card_lt` on `Fin (Fintype.card (KType sig k) + 1)`, the `Fintype`
+instance on `KType sig k` found from the two binders through `normalFormFintype`) plus
+`kTypeOf_listSeg_append_congr` (`periodic_of_collision`). No semigroup, no idempotent.
+
+`Nat.card (KType sig k)` is a COUNT of depth-`k` types and nothing else — see the section
+header above for the disclaimer, quoted from `AnchorLayer.lean`: it times nothing, bounds no
+procedure, and is not a complexity bound of any kind. -/
+theorem kTypeOf_listSeg_replicate_eventually_periodic_bounded (sig : MonadicSignature)
+    [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) (ℓ : sig.preds → Bool) :
+    ∃ m₀ p, 0 < p ∧ m₀ + p ≤ Nat.card (KType sig k) ∧
+      ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) =
+        kTypeOf sig k (listSeg (List.replicate m ℓ)) := by
+  obtain ⟨i, j, hne, heq⟩ := Fintype.exists_ne_map_eq_of_card_lt
+    (fun i : Fin (Fintype.card (KType sig k) + 1) =>
+      kTypeOf sig k (listSeg (List.replicate i.1 ℓ)))
+    (by rw [Fintype.card_fin]; omega)
+  rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hne) with hij | hij
+  · refine ⟨i.1, j.1 - i.1, by omega, ?_, periodic_of_collision k ℓ hij heq⟩
+    rw [Nat.card_eq_fintype_card]
+    have := j.2
+    omega
+  · refine ⟨j.1, i.1 - j.1, by omega, ?_, periodic_of_collision k ℓ hij heq.symm⟩
+    rw [Nat.card_eq_fintype_card]
+    have := i.2
+    omega
+
+-- `linter.unusedFintypeInType` and `linter.unusedDecidableInType` flag the two binders of
+-- `kTypeOf_listSeg_replicate_eventually_periodic` for the same reason as on the bounded theorem
+-- above: absent from the statement, consumed by the proof (through the bounded theorem). The
+-- deletion trial compiles; the binder list is kept because it is the recorded signature,
+-- reproduced verbatim from `RaySummary/README.md`'s bound section. Declaration-scoped.
+set_option linter.unusedFintypeInType false in
+set_option linter.unusedDecidableInType false in
+/-- **Eventual periodicity of the `k`-type of a constant block** — the recorded shape, a one-line
+corollary of `kTypeOf_listSeg_replicate_eventually_periodic_bounded` that drops the count bound.
+Route: pigeonhole plus `kTypeOf_listSeg_append_congr`; no semigroup, no idempotent. -/
+theorem kTypeOf_listSeg_replicate_eventually_periodic (sig : MonadicSignature)
+    [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) (ℓ : sig.preds → Bool) :
+    ∃ m₀ p, 0 < p ∧
+      ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) =
+        kTypeOf sig k (listSeg (List.replicate m ℓ)) := by
+  obtain ⟨m₀, p, hp, -, h⟩ := kTypeOf_listSeg_replicate_eventually_periodic_bounded sig k ℓ
+  exact ⟨m₀, p, hp, h⟩
 
 end FormalSystem.Metalogic.WeakCanonical
