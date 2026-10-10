@@ -85,10 +85,10 @@ judgement about its content:
 | Layer | Came from | Files |
 |---|---|---|
 | 0 | `Syntax/<Lang>/` | Minus: `Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`. Plus: `Formula`, `Axioms`, `Derivation`, `Substitution`, `Subformulas`. Star: `Formula`, `Axioms`, `Derivation`, `Embedding`. Open: `Formula`. Source: `Sentence` |
-| 1 | `Semantics/<Lang>/` | Minus: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity`. Plus: `PlusTruth`, `PlusValidity`, `PlusPasting`, `PlusNonValidities`, `PlusDeterminism`, `PlusStateLocal`, `PlusLimitClosure`. Star: `StarTruth`, `StarValidity`, `StarDeterminism`, `StarNonValidities`, `StarStateLocal`. Open: `OpenClasses`, `OpenTruth`, `OpenValidity`, `OpenReversal`, `OpenOckhamist` |
+| 1 | `Semantics/<Lang>/` | Minus: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity`. Plus: `PlusTruth`, `PlusValidity`, `PlusPasting`, `PlusNonValidities`, `PlusDeterminism`, `PlusStateLocal`, `PlusLimitClosure`, `PlusRayFibre`. Star: `StarTruth`, `StarValidity`, `StarDeterminism`, `StarNonValidities`, `StarStateLocal`. Open: `OpenClasses`, `OpenTruth`, `OpenValidity`, `OpenReversal`, `OpenOckhamist` |
 | 3 | `Metalogic/Conservativity/` | `MinusLanguage/Soundness.lean`, which imports two `Metalogic/` modules |
 
-18 files at layer 0, 30 at layer 1, 1 at layer 3. The seven sibling aggregators
+18 files at layer 0, 32 at layer 1, 1 at layer 3. The seven sibling aggregators
 (`MinusLanguage.lean` and its six siblings) import layer-0 and layer-1 files and take a declared
 layer of 1.
 

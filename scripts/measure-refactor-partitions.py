@@ -65,8 +65,8 @@ Measured on the tree as it stands after the language directories were layered:
                             language-extension merge (OpenLanguage/,
                             HybridLanguage/, QuantLanguage/ and
                             SourceLanguage/, created after it, on the
-                            directory each file would have occupied): 17 files
-                            at layer 0, 30 at layer 1, 1
+                            directory each file would have occupied): 18 files
+                            at layer 0, 32 at layer 1, 1
                             at layer 3.  One layer L for the first three
                             directories, before OpenLanguage/ existed, was
                             measured and
@@ -196,6 +196,7 @@ LANGUAGE_FILE_LAYERS = {
         "Subformulas": 0,
         "PlusDeterminism": 1, "PlusIntTransfer": 1, "PlusLimitClosure": 1,
         "PlusNonValidities": 1, "PlusPasting": 1,
+        "PlusRayFibre": 1,
         "PlusStateLocal": 1, "PlusTruth": 1, "PlusValidity": 1,
     },
     "StarLanguage": {
