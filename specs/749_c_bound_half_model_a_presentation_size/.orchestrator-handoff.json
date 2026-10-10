@@ -1,19 +1,20 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote an eight-phase, 14.5-hour plan for (C)'s bound half on model A. Phase 1 lands the pigeonhole periodicity theorems in RaySummary/Compose.lean (not Saturation.lean: import cycle) with the DecidableEq binder consumed; Phases 3-5 build a new Transport.lean (keystone, deletion colouring, single-segment shrink surgery, general over sig); Phases 6-7 land model-A containment in the probe and exhibit L = Nat.card (KType (clSig Fp) k), restating hitCl_eq_truncated and hitPresented_modelA without the exists-L; Phases 2 and 8 handle pins, the C14 baseline pair, theorem-index rows, the stale-prose sweep and the full gate. One plan-level narrowing was recorded in the issue log: only the shrink direction of the transport lemma under an explicit containment hypothesis is landed, not the dispatch's unconditioned iff.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 4,
+  "summary": "All eight phases closed and committed: pigeonhole periodicity with the count bound in Compose.lean, pins/C14/index rows, a new RaySummary/Transport.lean (keystone, deleteRun, shrink-direction cut surgery, familyTriples corollary), model-A containment in the probe, and hitCl_eq_truncated/hitPresented_modelA restated with the explicit presentationSize k = Nat.card (KType (clSig Fp) k) in place of the exists-L. Full gate set green (lake build, tests, invariants, probes, readme-lint, verify-deploy); zero sorries; Lean axiom count unchanged at 14; every count described as a count only, k free, no complexity claim. The general every-model statement of (C) remains the (W) run-layer record's and is not claimed.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/749_c_bound_half_model_a_presentation_size/plans/01_c-bound-half-model-a.md",
-      "summary": "Eight-phase plan exhibiting the presentation size of Probe745.hitPresented_modelA as a count of k-types, via pigeonhole periodicity, a general shrink surgery on SegmentFactorization, and model-A containment."
+      "type": "summary",
+      "path": "specs/749_c_bound_half_model_a_presentation_size/summaries/01_c-bound-half-model-a-summary.md",
+      "summary": "Implementation summary: (C)'s bound half on model A exhibited as a count, with the full verification record and the stale-prose sweep confirmation list."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 8,
   "phases_total": 8,
   "blockers": [],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch /implement 749 starting at Phase 1 (Compose.lean); Phases 4-5 (the surgery) are the cost and may need their own dispatch."
+  "next_action_hint": "Postflight only. Follow-ups are recorded in the summary: the general every-model bound (the (W) record's) and the unconditioned transport iff at threshold 3(m0+p) are non-goals, not started.",
+  "git_checkpoint": "3d2b8e26b"
 }

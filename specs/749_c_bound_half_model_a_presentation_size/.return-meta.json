@@ -1,15 +1,58 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-10-09T00:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+  "status": "implemented",
+  "started_at": "2026-10-10T00:18:14Z",
+  "dispatch_seq": 4,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "notes": "Full guarded lake build and lake build BimodalTest exit 0; check-module-invariants.sh full run C1/C14/C15/C16/C27/C29/C30/C33 PASS with INV re-emitted and the --no-build pass ALL CHECKS PASSED; check-evidence-probes.sh 28/28; readme-lint PASS; verify-deploy PASS. The single vacuous-pattern match in the tree (FormalSystem/Examples/TemporalStructures.lean int_domain_universal) and the axiom count of 14 are both unchanged from the base commit 555c34c34."
   },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/749_c_bound_half_model_a_presentation_size/summaries/01_c-bound-half-model-a-summary.md",
+      "summary": "(C)'s bound half landed on fixture model A as a count: hitPresented_modelA now carries presentationSize k = Nat.card (KType (clSig Fp) k) with no exists-L, via pigeonhole periodicity (Compose.lean), the new Transport.lean keystone and single-segment cut surgery, and the probe's containment lemma."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Exhibited the presentation size of Probe745.hitPresented_modelA as the count Nat.card (KType (clSig Fp) k) (no exists-L, no Set.Finite.bddAbove), by landing kTypeOf_listSeg_replicate_eventually_periodic_bounded in Compose.lean, the keystone and shrink-direction cut surgery in a new RaySummary/Transport.lean (general over sig, single-segment containment as hypothesis), and the model-A containment run_subset_middle in the probe; pinned at pcq, indexed, and every stale 'no computable bound' sentence revised. k free, no sorry, no new axiom, no complexity claim; the general every-model statement remains the (W) record's.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Compose.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Transport.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "docs/theorem-index.md",
+    "scripts/check-evidence-probes.sh",
+    "scripts/check-module-invariants.sh",
+    "specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean",
+    "specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean",
+    "typst/generated/status.typ",
+    "specs/749_c_bound_half_model_a_presentation_size/plans/01_c-bound-half-model-a.md",
+    "specs/749_c_bound_half_model_a_presentation_size/summaries/01_c-bound-half-model-a-summary.md",
+    "specs/749_c_bound_half_model_a_presentation_size/issues.jsonl"
+  ],
   "metadata": {
-    "session_id": "sess_1791587187_4e35b2",
+    "session_id": "sess_1791591433_efdf3b",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "phases_completed": 8,
+    "phases_total": 8
   }
 }

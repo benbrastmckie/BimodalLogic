@@ -6,12 +6,12 @@ next_project_number: 753
 
 ## Task Order
 
-*Updated 2026-10-09. Generated from state.json dependency graph.*
+*Updated 2026-10-10. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,729,730,731,734,741,743,744,749,750,751,752 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,729,730,731,734,741,743,744,750,751,752 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -78,7 +78,6 @@ next_project_number: 753
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-749 [IMPLEMENTING] — (C)'s BOUND HALF ON MODEL A. 745 delivered (C)'s...
 750 [NOT STARTED] — (W)'s RUN LAYER — ITS OWN RECORD, AS RaySummary/README.md AND...
 
 ### Formula Refactor
@@ -157,12 +156,13 @@ next_project_number: 753
 ---
 
 ### 749. C bound half model a presentation size
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [749_c_bound_half_model_a_presentation_size/reports/01_c-bound-half-model-a.md]
 - **Plan**: [749_c_bound_half_model_a_presentation_size/plans/01_c-bound-half-model-a.md]
+- **Summary**: [749_c_bound_half_model_a_presentation_size/summaries/01_c-bound-half-model-a-summary.md]
 
 **Description**: **(C)'s BOUND HALF ON MODEL A.** 745 delivered (C)'s satisfiability half only; the bound half was descoped at closure and is owned by no other record. `RaySummary/README.md:154` states what landed is "**one fixture**, so no computable bound and no general regular `ℤ`-model statement follows". This record owns the bound **on the fixture**. The general every-model statement is OUT OF SCOPE here and is the completeness half of the (W) run-layer record.
 
