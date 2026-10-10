@@ -1,0 +1,16 @@
+{
+  "phase": 4,
+  "phase_name": "Document the enforcement level and record the harvester decision",
+  "started_at": "2026-10-10T16:35:00Z",
+  "last_updated": "2026-10-10T16:55:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add Enforcement level subsection for Files to modify to plan-format.md", "status": "done", "files_touched": [], "note": "Edited at source-store edit target /home/benjamin/.config/nvim/agent-system/extensions/core/context/formats/plan-format.md (outside this repo's working tree; deploy-shadow path .claude/context/formats/plan-format.md). Added '### Enforcement level (Files to modify)' subsection immediately after the existing Verification Tier Enforcement level subsection, cross-referencing it as 'the same pattern'"},
+    {"id": 2, "description": "State per-phase tier, whole-plan tier, rationale, promotion criterion", "status": "done", "files_touched": [], "note": "Stated per-phase tier (warn by default, --strict enforces), whole-plan tier (error by default), the rationale for the asymmetry, and the promotion criterion naming the measured residue: 5 omitting phases across 2 plans (exhaustive-enumeration-by-default plan 1/7; one plan round of the branch-budget engine-totality task 4/13)"},
+    {"id": 3, "description": "Extend Consumers of this field subsection", "status": "done", "files_touched": [], "note": "Added validate-artifact.sh as a fourth bullet to the existing Consumers of this field subsection (around line 134), stating it is the only consumer distinguishing no-header from header-present-zero-paths"},
+    {"id": 4, "description": "Add cross-reference to plan-file-scope-harvest.sh header comment", "status": "done", "files_touched": [], "note": "Edited at source-store edit target .../scripts/plan-file-scope-harvest.sh (deploy-shadow .claude/scripts/plan-file-scope-harvest.sh). Added a comment-only cross-reference under the existing []-is-normal note. Confirmed via git diff in the agent-system repo: 7 insertions, all comment lines, zero executable lines touched"},
+    {"id": 5, "description": "Observe no-task-references rule (plan slug/path, never task number)", "status": "done", "files_touched": [], "note": "Verified via grep sweep of both edited files for 'task N' patterns: zero matches. Residue plans named by slug (exhaustive-enumeration-by-default, branch-budget engine-totality) never by task number"}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

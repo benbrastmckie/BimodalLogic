@@ -338,33 +338,35 @@ the suite that owns both edited files, and the change is confined to `validate-a
 
 ---
 
-### Phase 4: Document the enforcement level and record the harvester decision [NOT STARTED]
+### Phase 4: Document the enforcement level and record the harvester decision [COMPLETED]
 
 **Goal**: a future reader finds the tier rationale, the measured residue, and the promotion
 criterion in `plan-format.md` without re-deriving them, and finds the SCOPE-3 decision recorded
 where the harvester's own contract is defined.
 
 **Tasks**:
-- [ ] Add an `Enforcement level` subsection for `Files to modify` to the source-store
+- [x] Add an `Enforcement level` subsection for `Files to modify` to the source-store
       `context/formats/plan-format.md`, placed alongside the existing `### Enforcement level`
       subsection for `Verification Tier` and cross-referencing it explicitly as "the same pattern"
       rather than restating the rationale from scratch (the research report's Context Extension
-      Recommendation).
-- [ ] State in that subsection: the per-phase tier (warn by default, error under `--strict`), the
+      Recommendation). *(completed: added "### Enforcement level (Files to modify)" immediately
+      after the Verification Tier one)*
+- [x] State in that subsection: the per-phase tier (warn by default, error under `--strict`), the
       whole-plan tier (error by default), the reason the two differ, and the promotion criterion —
       promote the per-phase warning to an error once no non-terminal plan under `specs/` has any
       phase lacking the field, naming the residue measured at implementation time and the plans it
-      sits in.
-- [ ] Extend the existing `**Consumers of this field**` subsection with a sentence stating that
+      sits in. *(completed: residue = 5 omitting phases across 2 plans)*
+- [x] Extend the existing `**Consumers of this field**` subsection with a sentence stating that
       `validate-artifact.sh` is now a fourth consumer and the only surface that distinguishes "no
-      header in this phase" from the legitimate "header present, zero paths" case.
-- [ ] Add a short cross-reference to the source-store `scripts/plan-file-scope-harvest.sh` header
+      header in this phase" from the legitimate "header present, zero paths" case. *(completed)*
+- [x] Add a short cross-reference to the source-store `scripts/plan-file-scope-harvest.sh` header
       comment, under its existing `[]`-is-normal contract note, recording that the distinction is
       deliberately NOT made here and naming `validate-artifact.sh` as where it lives. Change no
-      executable line in that script.
-- [ ] Observe `.claude/rules/no-task-references-in-deliverables.md`: the source-store files are
+      executable line in that script. *(completed: comment-only, confirmed via git diff -- 7
+      insertions, all comment lines)*
+- [x] Observe `.claude/rules/no-task-references-in-deliverables.md`: the source-store files are
       outside `specs/**`, so the residue must be described by plan slug or path, never by task
-      number.
+      number. *(completed: verified via grep sweep, zero task-number matches)*
 
 **Timing**: 0.75 hours
 
