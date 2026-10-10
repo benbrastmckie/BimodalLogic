@@ -1,32 +1,85 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-10T08:44:58Z",
+  "completed_at": "2026-10-10T09:14:40Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "vacuous_note": "The single-line vacuous grep over the resolved source roots returns one PRE-EXISTING hit, FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal … := trivial, a True-valued domain predicate), present unchanged at the plan commit 66090a45f and outside this task's files; manual review excludes it. Zero vacuous definitions in files this task touched.",
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "build_evidence": "lake-build-guard build -- build: exit 0, 'Build completed successfully (2840 jobs)', 0 error lines; BimodalTest build exit 0; .olean newer than source for RunLayer, RaySummary, FormalSystem, KTypeSummaryAxiomTest",
+    "pre_existing_gate_failure": "scripts/check-metalogic-cycles.sh exit 1: unlayered module FormalSystem.PlusLanguage.PlusRayFibre (no row in LANGUAGE_FILE_LAYERS[PlusLanguage], scripts/measure-refactor-partitions.py); PlusRayFibre.lean landed in 6cd41837f, nothing relevant changed since the plan commit; outside this plan's scope; recorded as a Reasoned Exclusion on Phase 5 and a repository follow-up"
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/750_w_run_layer_closure_wide_lift/plans/01_w-run-layer-ladder-scheme.md",
-      "summary": "Five-phase plan landing the deadline-ladder frame scheme for (W)'s obligation (i): RunLayer.lean (generic finitely-branching sliced constructor + ladderFrame, 20 pinned declarations), a ninth wired probe, C14 pair and theorem-index row, and the README (W) section with k = 1, the phase-2 obstacle, phase 3 verbatim and the HWZ/GKWZ literature paragraph; phases 2-3 of the task are characterized, not planned."
+      "type": "summary",
+      "path": "specs/750_w_run_layer_closure_wide_lift/summaries/01_w-run-layer-ladder-scheme-summary.md",
+      "summary": "RunLayer.lean (deadline ladder + finitely branching sliced constructor) landed sorry-free; ninth probe, pins, C14 pair, index row, README (W) section."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Landed the run layer's frame scheme for requirement (W) as RaySummary/RunLayer.lean: ofSlicedStepFinBranch (ofSlicedStep with [Finite W] replaced by two-sided finite branching) and the deadline ladder Rlad with its regular frame ladderFrame, twenty sorry-free declarations within [propext, Classical.choice, Quot.sound]; gate-compiled by the ninth wired probe, pinned (twenty pins + one C14 pair), indexed (one theorem-index row), and recorded in the README's (W) section with measured figures (373/179/123 lines), depth k = 1, the phase-2 obstacle, phase 3 verbatim and the HWZ/GKWZ literature paragraph. Phases 2-3 of the run layer are characterized, not attempted, by instruction.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/RunLayer.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem.lean",
+    "specs/evidence/seam-gluing-ray-product/deadline-ladder-branching.lean",
+    "scripts/check-evidence-probes.sh",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "scripts/check-module-invariants.sh",
+    "docs/theorem-index.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "typst/generated/status.typ",
+    "specs/750_w_run_layer_closure_wide_lift/plans/01_w-run-layer-ladder-scheme.md",
+    "specs/750_w_run_layer_closure_wide_lift/summaries/01_w-run-layer-ladder-scheme-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, a phase commit that adds or grows a .lean file is blocked by the typst-sync pre-commit gate until scripts/typst-sync-check.sh --fix regenerates typst/generated/status.typ and that file is staged alongside; a new library module also stales the generated inventory blocks of README.md, FormalSystem/README.md and FormalSystem/Metalogic/README.md (check-module-invariants.sh INV), regenerated with --emit-inventory. Plans should list these generated files.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/750_w_run_layer_closure_wide_lift/summaries/01_w-run-layer-ladder-scheme-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "typst-sync",
+        "status.typ",
+        "emit-inventory",
+        "pre-commit",
+        "lean phase commit"
+      ]
+    },
+    {
+      "content": "A #guard_msgs axiom pin whose #print axioms line exceeds 100 characters captures Mathlib's longLine linter warning and fails; wrap that one pin in set_option linter.style.longLine false in with a C29 reason comment. Uppercase_x theorem names about a relation-valued def (e.g. Rlad_fwd) trip C23 and must be recorded in UPPER_ALLOW with a documented class when the plan fixes the names.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/750_w_run_layer_closure_wide_lift/summaries/01_w-run-layer-ladder-scheme-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "guard_msgs",
+        "longLine",
+        "C23",
+        "C29",
+        "check-module-invariants"
+      ]
     }
   ],
   "metadata": {
-    "session_id": "sess_1791617492_752180_750",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1791617492_752180",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 6.5,
-    "dependency_waves": [[1], [2], [3, 4], [5]],
-    "research_integrated": true,
-    "challenge_block_typechecked": true
-  },
-  "memory_candidates": [
-    {
-      "content": "A Lean frame constructor gated on a carrier-finiteness instance (`[Finite W]` on `ofSlicedStep`'s one `Saturation` slot) is generalized by a PARALLEL constructor whose body is the original with that one slot replaced (`saturation_of_finBranch` from two-sided finite branching), never by in-place edit when the original is referenced by wired probes. Lemmas proved in a `specs/evidence/` probe cannot be imported by the library (probes sit outside the Lake build graph and are compiled by `lake env lean`), so the library carries its own transcription and the probe then imports the library and cites it. A new library module must be added both to its directory aggregator and to the generated root `FormalSystem.lean` (`lake exe mk_all --lib FormalSystem --check`), and any `docs/theorem-index.md` row claiming `pinned:C14` needs a matched baseline + `#print axioms` pair in `scripts/check-module-invariants.sh`. Pinning a plan's Lean Challenge block by `lake env lean` at plan time retires instance-demand risks before implementation.",
-      "category": "PATTERN",
-      "source_artifact": "specs/750_w_run_layer_closure_wide_lift/plans/01_w-run-layer-ladder-scheme.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["parallel constructor", "evidence probe", "lake build graph", "mk_all", "pinned:C14", "challenge block"]
-    }
-  ],
-  "next_steps": "Run /implement 750 to execute the plan",
-  "dispatch_seq": 5
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "phases_completed": 5,
+    "phases_total": 5
+  }
 }

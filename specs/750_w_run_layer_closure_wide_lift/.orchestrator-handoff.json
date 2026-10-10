@@ -1,19 +1,28 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 5,
-  "summary": "Wrote a five-phase plan (6.5 h) landing the research round's phase-1 decision: the deadline-ladder frame scheme and depth k = 1. Phase 1 lands RunLayer.lean (a parallel finitely-branching sliced constructor and ladderFrame, 20 declarations whose signatures are pinned in a Lean Challenge block that type-checks today); Phases 2-3 wire a ninth evidence probe, axiom pins, a C14 pair and one theorem-index row; Phase 4 rewrites the README's (W) section with the decision, measured figure, phase-2 obstacle, phase 3 verbatim and the HWZ/GKWZ literature paragraph; Phase 5 is the full gate. The task's phases 2-3 are characterized as Non-Goals, not planned, per the dispatch's stop instruction.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 6,
+  "summary": "Landed requirement (W)'s run-layer frame scheme as RaySummary/RunLayer.lean (373 lines): the finitely branching sliced constructor ofSlicedStepFinBranch and the deadline ladder Rlad with its regular frame ladderFrame, all twenty Goals declarations sorry-free within [propext, Classical.choice, Quot.sound]. Added the ninth wired probe deadline-ladder-branching.lean, twenty axiom pins, a C14 pair, one theorem-index row, and the README's (W) section with measured figures, k = 1, the phase-2 obstacle, phase 3 verbatim and the literature paragraph. Full lake build, BimodalTest, 27/27 probes, check-module-invariants, mk_all, lint-style and verify-deploy all green; the only red gate, check-metalogic-cycles.sh, fails on a pre-existing unlayered PlusRayFibre row outside this plan's scope and is recorded as a Reasoned Exclusion.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/750_w_run_layer_closure_wide_lift/plans/01_w-run-layer-ladder-scheme.md",
-      "summary": "Five-phase plan: RunLayer.lean constructor + ladder, ninth wired probe, pins/C14/theorem-index row, README (W) section, full gate; phases 2-3 of the task characterized only."
+      "type": "summary",
+      "path": "specs/750_w_run_layer_closure_wide_lift/summaries/01_w-run-layer-ladder-scheme-summary.md",
+      "summary": "Implementation summary: RunLayer.lean landed, ninth probe wired, pins/C14/index row added, README (W) section rewritten; pre-existing cycles-gate failure excluded with evidence."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/RunLayer.lean",
+      "summary": "The finitely branching sliced constructor and the deadline ladder frame scheme (twenty declarations, sorry-free)."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/deadline-ladder-branching.lean",
+      "summary": "Ninth wired probe: the ladder's branching verdict and the capped-variant refutation, gate-compiled."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
+  "plan_markers_verified": true,
   "blockers": [],
-  "plan_markers_verified": null,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implementation at Phase 1 (RunLayer.lean); the Lean Challenge block in the plan is the signature contract."
+  "continuation_path": null
 }

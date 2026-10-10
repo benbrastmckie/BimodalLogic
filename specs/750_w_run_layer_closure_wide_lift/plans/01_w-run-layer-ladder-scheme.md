@@ -1,7 +1,7 @@
 # Implementation Plan: Task #750
 
 - **Task**: 750 - (W)'s run layer, phase 1: the deadline-ladder frame scheme, landed and gate-compiled
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.5 hours
 - **Dependencies**: None (no edge to the bound record, by the task's own instruction; serialization with it comes from the `file_scope` overlap on `RaySummary/README.md` and `docs/theorem-index.md`)
 - **Research Inputs**: specs/750_w_run_layer_closure_wide_lift/reports/01_w-run-layer-design.md
