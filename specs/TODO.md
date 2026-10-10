@@ -77,7 +77,7 @@ next_project_number: 758
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-757 [RESEARCHED] — Research, design, and file the successor task set that...
+757 [PLANNED] — Research, design, and file the successor task set that...
 
 ### Formula Refactor
 
@@ -113,11 +113,12 @@ next_project_number: 758
 ## Tasks
 
 ### 757. Lplus decidability successor task set
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [757_lplus_decidability_successor_task_set/reports/01_lplus-successor-task-set.md]
+- **Plan**: [757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md]
 
 **Description**: Research, design, and file the successor task set that carries L+ decidability — the unfiled frontier after the (C)/(S)/(W) partial landings
 

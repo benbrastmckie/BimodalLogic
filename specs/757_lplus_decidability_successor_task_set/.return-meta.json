@@ -1,45 +1,33 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-10T22:52:29Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/757_lplus_decidability_successor_task_set/reports/01_lplus-successor-task-set.md",
-      "summary": "Re-verifies every (C)/(S)/(W) anchor by compile record and probe gate, re-derives the three open obligations (sharpening the stabilization lemma to both ladder counters, folding (S)'s box/stab half into the ladder realization and its multi-seam half into the lift), and designs six statement-shaped successor records (two costable Node-fixture probes, four library records) with typed dependency edges, file_scope, depth, and costability status, plus the filing mechanics for the implementation phase."
+      "type": "plan",
+      "path": "specs/757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md",
+      "summary": "Five sequential phases (7 h): re-verify every anchor and write the spec's Section 0; author Sections A-D (three obligations and the lift); draft Section H's six statement-shaped records T1-T6 with typed edges and file_scope; file them via state-write.sh in Kahn order and record the numbers; hand-edit ROADMAP Stage 1 and run the full gate. No file outside specs/** is touched."
     }
   ],
-  "next_steps": "Plan phase: write the followup-scope-spec in the 721 format and the filing/ROADMAP phases per the report's Finding 6; implementation files T1-T6 via the /task Create Task Mode state-write pattern.",
-  "proposed_file_scope": [
-    "specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md",
-    "specs/ROADMAP.md",
-    "specs/state.json",
-    "specs/TODO.md"
-  ],
-  "modified_files": [
-    "specs/757_lplus_decidability_successor_task_set/reports/01_lplus-successor-task-set.md"
-  ],
-  "memory_candidates": [
-    {
-      "content": "On the deadline-ladder run layer (RaySummary/RunLayer.lean), realized cells at a ladder state (q, c, n) depend on BOTH counters: Count hands a region starting at the next step the length n, so any stabilization lemma must quantify over the pair (c, n), not c alone.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/757_lplus_decidability_successor_task_set/reports/01_lplus-successor-task-set.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["ladder", "run layer", "stabilization", "RaySummary", "deadline counter"]
-    },
-    {
-      "content": "A fresh .olean tree (no FormalSystem source newer than FormalSystem.olean, no guard holder) lets a Section-0 compile record be produced by one foreground `lake env lean` on a scratch file importing FormalSystem with #check/#print axioms lines, instead of a detached lake build.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/757_lplus_decidability_successor_task_set/reports/01_lplus-successor-task-set.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["compile record", "lake env lean", "verification", "olean"]
-    }
-  ],
+  "next_steps": "Run /implement 757 to execute the plan",
   "metadata": {
     "session_id": "sess_1791672686_eb0b07_757",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 900,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 7,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
+  },
+  "memory_candidates": [
+    {
+      "content": "A lean4-typed task whose deliverable is a specification plus filed task records (it proves nothing and names no Lean identifier under Goals) must OMIT the plan's Lean Challenge Statements section entirely rather than include it empty: lean-challenge-snapshot.sh exits 71 on a present-but-empty section and also exits 71 under its git-baseline fallback when Goals carries no identifiers, so --compare is inapplicable to such a task and should be stated so in the plan's Decisions. plan-format.md's 'present only when task_type is lean4' conditional does not state this zero-goals case.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["lean-challenge-statements", "lean4-plan", "no-theorem-deliverable", "lean-challenge-snapshot", "compare-flag", "plan-format"]
+    }
+  ],
+  "modified_files": [
+    "specs/757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md"
+  ],
+  "dispatch_seq": 2
 }
