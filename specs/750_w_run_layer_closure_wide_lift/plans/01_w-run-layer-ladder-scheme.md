@@ -487,7 +487,7 @@ path (`__FULL_SWEEP__`), so no suite is claimed.
 
 ---
 
-### Phase 5: Full gate and sorry-free close [NOT STARTED]
+### Phase 5: Full gate and sorry-free close [IN PROGRESS]
 
 **Goal**: The complete gate set runs green on the whole tree and every new declaration is
 sorry-free, before the task closes.
