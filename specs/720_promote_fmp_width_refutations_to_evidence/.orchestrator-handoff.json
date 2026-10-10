@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a five-phase, 2-hour implementation plan for the CI repair and citation re-point. Phase 1 adds a git ls-files tracked-ness check to check_probe (the two live untracked entries serve as the negative test), Phase 2 deletes the two 706/710 WIRED_REPO entries since the lake-build-guarded Limits/ modules fully subsume them, Phase 3 re-points FMP/README.md and Limits/README.md to the FiniteCarrier.*/NoFiniteWidth.* names, Phase 4 adds the archival-mv un-tracking note in the source store, and Phase 5 runs the full gate (check-evidence-probes.sh at 26 probes, guarded lake build, invariants, readme-lint, verify-deploy). Every carried figure from the research report was re-derived at plan-authoring time and held.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/720_promote_fmp_width_refutations_to_evidence/plans/01_ci-repair-and-citation-repoint.md",
+      "summary": "Five-phase plan: tracked-ness check, delete two untracked WIRED_REPO entries, README re-point to landed library names, source-store mv note, full gate."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Run /implement 720; Phase 1 is expected to close with check-evidence-probes.sh exiting 1 on exactly two FAIL (untracked: ...) lines, which is its negative test; Phase 2 turns it green at 26 probes."
+}
