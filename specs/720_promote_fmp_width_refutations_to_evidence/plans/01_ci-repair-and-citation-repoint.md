@@ -196,24 +196,24 @@ arguments.
 
 ---
 
-### Phase 2: Delete the two untracked `WIRED_REPO` entries (Deliverable B) [NOT STARTED]
+### Phase 2: Delete the two untracked `WIRED_REPO` entries (Deliverable B) [COMPLETED]
 
 **Goal**: Remove the 706/710 `WIRED_REPO` entries and their comment paragraph so the gate guards
 only tracked files, leaving the 476 entry and its paragraphs untouched.
 
 **Tasks**:
-- [ ] Delete the comment paragraph beginning `# specs/706_.../probes/NoFiniteCarrierModel.lean and
+- [x] Delete the comment paragraph beginning `# specs/706_.../probes/NoFiniteCarrierModel.lean and
       specs/710_.../probes/NoFiniteWidthModel.lean` through `# collection together with that
       promotion, not before.` (currently lines 685-692).
-- [ ] Delete the two array lines
+- [x] Delete the two array lines
       `"specs/archive/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean"`
       and `"specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean"`
       from `WIRED_REPO=( ... )` (currently lines 695-696), leaving the 476 line as the sole entry.
-- [ ] Leave the 476 paragraphs (currently lines 657-684) byte-for-byte unchanged; do not touch
+- [x] Leave the 476 paragraphs (currently lines 657-684) byte-for-byte unchanged; do not touch
       the `NOTE ON VERSION CONTROL` text, which remains accurate for that one file.
-- [ ] Do NOT delete, move, or force-track the two archived probe files themselves: they are
+- [x] Do NOT delete, move, or force-track the two archived probe files themselves: they are
       outside version control already, and `specs/archive/` is out of scope.
-- [ ] Run `bash scripts/check-evidence-probes.sh` and the tracked-ness loop over every remaining
+- [x] Run `bash scripts/check-evidence-probes.sh` and the tracked-ness loop over every remaining
       wired target:
       ```bash
       { awk '/^WIRED=\(/,/^\)/' scripts/check-evidence-probes.sh | grep -o '"[^"]*"' | tr -d '"' | sed 's|^|specs/evidence/|; s|$|.lean|';
