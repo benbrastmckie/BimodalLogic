@@ -1,5 +1,5 @@
 ---
-next_project_number: 753
+next_project_number: 754
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 753
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,729,730,731,734,741,743,744,750,751,752 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,729,730,731,734,741,743,744,750,751,752,753 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -30,6 +30,7 @@ next_project_number: 753
 731 [NOT STARTED] — Make plan-time file\_scope harvest include the generated...
 741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
+753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
 
 ### Algebraic Representation
 
@@ -109,6 +110,30 @@ next_project_number: 753
 
 ## Tasks
 
+### 753. conclusion stage drops null-resolution issue-log entries
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Close the contract gap that makes null-resolution issue-log entries invisible to the conclusion stage
+
+THE CONCLUSION STAGE SILENTLY DROPS NULL-RESOLUTION ISSUE-LOG ENTRIES. `context/formats/issue-log.md` declares the `resolution` field optional and nullable (its field table row reads "no (nullable)", closed vocabulary `fixed_inline | worked_around | open`). `context/contracts/conclusion-stage.md`'s "The Filter Predicate" admits an entry into channel classification ONLY when `resolution` is `open` or `worked_around`. An entry written with `resolution: null` is therefore neither closed (`fixed_inline`, which legitimately generates no channel item) nor classified -- it reaches NO channel and is invisible to the user. Both documents are internally consistent; the gap is between them.
+
+VERIFIED LIVE, NOT HYPOTHESIZED. `specs/749_c_bound_half_model_a_presentation_size/issues.jsonl` holds 11 entries, every one with `resolution: null` and `suggested_channel: null`. `bash .claude/scripts/orchestrate-conclusion-aggregate.sh --aggregate --session <sid> --tasks 749` returned `proposals: 0`, `wins: 4`, `unknown_classes: 6`. Of the 11 entries, 7 are `kind: "issue"` and were all dropped: six at `severity: minor` (classes `stale-citation`, `plan-deviation`, `plan-gap`, `plan-gap`, `plan-gap`, `build-failure`) and one at `severity: costly` (class `plan-deviation`). The 4 `kind: "win"` entries surfaced correctly, which confirms the aggregator is behaving exactly as written -- this is a contract mismatch, not an aggregator bug. Re-derive these counts from the live log rather than trusting them; they are a snapshot.
+
+DECIDE AND LAND ONE OF THREE. (a) Make `resolution` REQUIRED at write time in `scripts/issue-record.sh`, so an entry cannot be recorded without one -- closes the hole at the writer, but every existing null-resolution entry across the repo stays invisible. (b) Widen the Filter Predicate to treat null-or-absent `resolution` as `open` -- the conservative reading, since an issue recorded without a resolution is an unresolved one; note this alone would have pushed 7 entries from ONE task into channel classification, so weigh proposal volume before choosing it. (c) Keep both contracts as they are and have the conclusion stage report a separate "unclassifiable (no resolution)" tally beside its unknown-class tally, so the entries are at least visible rather than dropped. Options (a) and (c) are composable; (b) subsumes neither. Whichever is chosen, the two documents MUST end up agreeing in writing -- the acceptance condition for this record is that a reader of either file can predict the other's behavior.
+
+ALSO IN SCOPE. `suggested_channel` was null on all 7 dropped entries too. `conclusion-stage.md`'s "The Hint-Versus-Decision Rule" treats that field as a hint the orchestrator may override visibly, which presumes a hint exists; decide whether a null hint is acceptable or whether the writer should require one, and say so in the same place the `resolution` decision is recorded.
+
+SOURCE-STORE BOUNDARY. All four file_scope paths live in a deployed, regenerated tree -- a hand edit under `.claude/**` is wiped by the next deploy and the edit will appear to succeed while having no lasting effect. Implementation MUST resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension (`core`, whose source store is `/home/benjamin/.config/nvim/agent-system/extensions/core`) and edit at the mirroring paths there, per `.claude/rules/source-store-deploy-boundary.md`, then redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`. The deployed paths are declared in file_scope only so the overlap gate can see the collision surface; they are not the edit target.
+
+DELIVERABLE HYGIENE. The edited files are not under `specs/**`, so the prose must carry no task-number references and no record-versioning language; cite durable anchors (file names, section headings, field names) only.
+
+RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The roadmap-generator record covering `roadmap-integration.sh`'s partial-write behavior is the sibling core-extension defect with the same source-store boundary, and the file_scope-declaration-hygiene record covers a different blindness in the same admission machinery. No dependency edge to either -- nothing here blocks on them.
+
+---
+
 ### 752. Roadmap integration regenerate silent abort
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
@@ -118,6 +143,8 @@ next_project_number: 753
 **Description**: **`roadmap-integration.sh --regenerate` IS SILENTLY INOPERATIVE ON THIS ROADMAP.** Verified live: `bash .claude/scripts/roadmap-integration.sh --regenerate` exits 1 with ZERO stdout and ZERO stderr and writes nothing, because `specs/ROADMAP.md` carries none of the headings the assembler needs — it is a Stage-based authored document, not the `## Open work` / `## Next` generated layout the script expects. Pick one and land it: either teach the script the Stage-based layout, or decide that `specs/ROADMAP.md` is AUTHORED-ONLY and make `--regenerate` say so LOUDLY (a named error on stderr and a documented exit code) instead of aborting in silence. A silent abort is the worst of the three outcomes because a caller cannot tell it from success. Note that a reference to a roadmap-tooling task circulates in other records without resolving to an existing one; filing this is what makes that reference resolve.
 
 **SOURCE-STORE BOUNDARY.** `.claude/scripts/roadmap-integration.sh` lives in a deployed, regenerated tree: a hand edit there is wiped by the next deploy. This record's implementation must resolve `source_dir` from `<project-root>/.claude-extensions.json` for the extension that owns the script and edit the source store at the mirroring path, per `.claude/rules/source-store-deploy-boundary.md`, then redeploy. The deployed path is declared in `file_scope` only so the overlap gate can see the collision surface; it is not the edit target.
+
+**BEHAVIOR UPDATE (observed after a `core` redeploy brought `.claude/scripts/roadmap-integration.sh` up to the source store).** The silent-abort premise above no longer reproduces as stated. Live observation on the redeployed script: `bash .claude/scripts/roadmap-integration.sh --regenerate` exits **0**, writes the marker `<!-- roadmap-generation mode=regenerate tasks=52 topics=10 runs=20 pruned=0 retained=9 -->` to **stderr** (91 bytes; still nothing on stdout), and DOES write to `specs/ROADMAP.md` — appending only a `**Coverage appendix (uncovered tasks)**` fenced block with an `/orchestrate` line of tasks absent from the authored Stage sections. It does NOT assemble the `## Open work` / `## Next` layout, and it does not touch the authored Stage prose. So the defect to land is narrower than "silently inoperative": the script now half-applies to an authored layout, emitting its only diagnostic on stderr as an HTML comment rather than a named message, and appending generated content into a file whose own header declares it authored-and-not-generated. The authored-only-versus-teach-the-layout decision this record asks for is unchanged and still the thing to settle; what changed is that a caller now gets exit 0 and a partial write instead of a silent exit 1, which is a different failure to describe and a different one to fix. Re-verify against the live script before implementing; the exit-1/zero-output description predates the redeploy.
 
 ---
 
