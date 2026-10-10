@@ -362,16 +362,16 @@ that none ends in `/`.
 
 ---
 
-### Phase 4: File T1-T6 and record the numbers received [NOT STARTED]
+### Phase 4: File T1-T6 and record the numbers received [COMPLETED]
 
 **Goal**: Create the six task rows in `specs/state.json` through the sanctioned writer, in Kahn
 order, with `dependencies` and `file_scope` in the creation object; register the topic; validate;
 then write the received numbers into Section H.
 
 **Tasks**:
-- [ ] `source .claude/scripts/lib/common.sh`; use this dispatch's `session_id` for every
+- [x] `source .claude/scripts/lib/common.sh`; use this dispatch's `session_id` for every
       `state-write.sh` call.
-- [ ] For each of T1..T6 in order: re-read `next=$(jq '.next_project_number' specs/state.json)`;
+- [x] For each of T1..T6 in order: re-read `next=$(jq '.next_project_number' specs/state.json)`;
       map the T-labels of its dependencies to the numbers already received; call
       `bash .claude/scripts/state-write.sh '<creation filter>' --session-id "$session_id" --arg ts
       "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg desc "$desc" --arg slug "$slug" --argjson deps
@@ -384,16 +384,16 @@ then write the received numbers into Section H.
       `node_hit_presented_probe`, `ladder_model_cell_stabilization_lemma`,
       `ladder_realization_theorem`, `hit_presented_general_row`,
       `ladder_lift_decidability_corollary`.
-- [ ] On a mutex refusal: retry up to 3 times at 30 s; on persistent refusal mark this phase
+- [x] On a mutex refusal: retry up to 3 times at 30 s; on persistent refusal mark this phase
       `[PARTIAL]` with the filed subset enumerated; never hand-edit `state.json`.
-- [ ] After the sixth write: `bash .claude/scripts/validate-state.sh specs/state.json` (exit 0;
+- [x] After the sixth write: `bash .claude/scripts/validate-state.sh specs/state.json` (exit 0;
       capture any Check 8/9 `file_scope` WARN lines for the disclosure); confirm `TODO.md` shows
       the six entries with `[NOT STARTED]`; confirm `jq '.active_projects[] | select(.topic ==
       "decidability")'` lists them.
-- [ ] Write the numbers received into Section H: a "T-label → task number" map table at the top
+- [x] Write the numbers received into Section H: a "T-label → task number" map table at the top
       of Section H, each `### H{n}` heading gaining its number, and every `dependencies` entry
       restated with numbers.
-- [ ] Commit the phase (scoped pathspec: `specs/state.json`, `specs/TODO.md`, the spec file) via
+- [x] Commit the phase (scoped pathspec: `specs/state.json`, `specs/TODO.md`, the spec file) via
       `bash .claude/scripts/git-commit-scoped.sh --message "task 757 phase 4: file the six L+
       successor records" --session "$session_id" -- specs/state.json specs/TODO.md
       specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md`.

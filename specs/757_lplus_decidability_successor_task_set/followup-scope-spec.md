@@ -529,8 +529,8 @@ and `task_type: "lean4"` set in the creation object, then `manage-topics.sh set`
 `validate-state.sh` — the deliberate departure from the 721/718 precedents, whose Section H said
 "file with `/task`, by the orchestrator or the user". The record text below is the EXACT string
 each description receives (held in `successor-records.json` beside this file and passed to the
-writer unchanged); the numbers received are written into the map table and the headings after
-filing. Kahn order: T1 → T2 → T3 → T4 → T5 → T6.
+writer unchanged); the numbers received (758-763, filed 2026-10-10) are in the map table, the headings and the
+typed edges below. Kahn order: T1 → T2 → T3 → T4 → T5 → T6.
 
 **Why six and not fewer** (multi-task-creation Component 0: consolidate unless (a) disjoint scope,
 (b) different type or domain, (c) real dependency ordering, (d) size): T1/T2 vs T3-T6 divide by (a)
@@ -557,14 +557,14 @@ shape and a `file_scope`).
 
 | Label | Task number | Slug |
 |---|---|---|
-| T1 | *(filed in Phase 4)* | `node_cell_stabilization_probe` |
-| T2 | *(filed in Phase 4)* | `node_hit_presented_probe` |
-| T3 | *(filed in Phase 4)* | `ladder_model_cell_stabilization_lemma` |
-| T4 | *(filed in Phase 4)* | `ladder_realization_theorem` |
-| T5 | *(filed in Phase 4)* | `hit_presented_general_row` |
-| T6 | *(filed in Phase 4)* | `ladder_lift_decidability_corollary` |
+| T1 | **758** | `node_cell_stabilization_probe` |
+| T2 | **759** | `node_hit_presented_probe` |
+| T3 | **760** | `ladder_model_cell_stabilization_lemma` |
+| T4 | **761** | `ladder_realization_theorem` |
+| T5 | **762** | `hit_presented_general_row` |
+| T6 | **763** | `ladder_lift_decidability_corollary` |
 
-### H1 (T1) -- Node fixture probe: cell stabilization in the deadline index (preCell_stable, preCell_zero_ne, postCell_stable)
+### H1 (T1 = task 758) -- Node fixture probe: cell stabilization in the deadline index (preCell_stable, preCell_zero_ne, postCell_stable)
 
 **Proposed title**: Node fixture probe: cell stabilization in the deadline index (preCell_stable, preCell_zero_ne, postCell_stable)
 
@@ -602,13 +602,13 @@ shape and a `file_scope`).
 **Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
 in Kahn position 1 of 6.
 
-### H2 (T2) -- Node fixture probe: HitPresented for a ⊡-bearing formula at an infinite-width seam (hitPresented_node or its negation)
+### H2 (T2 = task 759) -- Node fixture probe: HitPresented for a ⊡-bearing formula at an infinite-width seam (hitPresented_node or its negation)
 
 **Proposed title**: Node fixture probe: HitPresented for a ⊡-bearing formula at an infinite-width seam (hitPresented_node or its negation)
 
 **Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `node_hit_presented_probe`
 
-**Proposed dependencies** (typed): **T1** (serialization: shared file_scope on scripts/check-evidence-probes.sh and RaySummary/README.md; T1's history characterization of pre k is reused as an efficiency, not a logical need)
+**Proposed dependencies** (typed): **T1 = 758** (serialization: shared file_scope on scripts/check-evidence-probes.sh and RaySummary/README.md; T1's history characterization of pre k is reused as an efficiency, not a logical need)
 
 **Proposed `file_scope`** (files only, never a directory root):
   - `specs/evidence/seam-gluing-ray-product/hit-presented-node.lean` *(new)*
@@ -637,13 +637,13 @@ in Kahn position 1 of 6.
 **Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
 in Kahn position 2 of 6.
 
-### H3 (T3) -- Ladder model, admissibility set Adm, and the cell-stabilization lemma ladderCell_stabilizes over both counters (c, n)
+### H3 (T3 = task 760) -- Ladder model, admissibility set Adm, and the cell-stabilization lemma ladderCell_stabilizes over both counters (c, n)
 
 **Proposed title**: Ladder model, admissibility set Adm, and the cell-stabilization lemma ladderCell_stabilizes over both counters (c, n)
 
 **Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `ladder_model_cell_stabilization_lemma`
 
-**Proposed dependencies** (typed): **T1** (logical: the probe's verdict fixes the bound shape (exhibited B vs ∃ B) and whether the lemma is stateable at all); **T2** (serialization: shared file_scope on RaySummary/README.md)
+**Proposed dependencies** (typed): **T1 = 758** (logical: the probe's verdict fixes the bound shape (exhibited B vs ∃ B) and whether the lemma is stateable at all); **T2 = 759** (serialization: shared file_scope on RaySummary/README.md)
 
 **Proposed `file_scope`** (files only, never a directory root):
   - `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` *(new)*
@@ -682,13 +682,13 @@ in Kahn position 2 of 6.
 **Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
 in Kahn position 3 of 6.
 
-### H4 (T4) -- Ladder realization theorem: LadderCons and ladderRealized per ladder cell for all φ including box/stab letters
+### H4 (T4 = task 761) -- Ladder realization theorem: LadderCons and ladderRealized per ladder cell for all φ including box/stab letters
 
 **Proposed title**: Ladder realization theorem: LadderCons and ladderRealized per ladder cell for all φ including box/stab letters
 
 **Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `ladder_realization_theorem`
 
-**Proposed dependencies** (typed): **T3** (logical: ladderModel, Adm and the stabilization bound B are this theorem's inputs; the finite cell index Q × Fin (B+1) × Fin (B+1) is what the presentation is built on)
+**Proposed dependencies** (typed): **T3 = 760** (logical: ladderModel, Adm and the stabilization bound B are this theorem's inputs; the finite cell index Q × Fin (B+1) × Fin (B+1) is what the presentation is built on)
 
 **Proposed `file_scope`** (files only, never a directory root):
   - `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` *(new)*
@@ -727,13 +727,13 @@ in Kahn position 3 of 6.
 **Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
 in Kahn position 4 of 6.
 
-### H5 (T5) -- (C)'s general row: exists_hitPresented with sizeBound φ k a count, for every regular ℤ-model (run-layer phase 3)
+### H5 (T5 = task 762) -- (C)'s general row: exists_hitPresented with sizeBound φ k a count, for every regular ℤ-model (run-layer phase 3)
 
 **Proposed title**: (C)'s general row: exists_hitPresented with sizeBound φ k a count, for every regular ℤ-model (run-layer phase 3)
 
 **Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `hit_presented_general_row`
 
-**Proposed dependencies** (typed): **T2** (logical: a Hit-level negative at T2 makes this statement false (route R1 blocked at (C), a Stage 0 ruling); a positive supplies its second fixture, the first on both untested axes); **T4** (serialization: shared library set (RaySummary.lean, FormalSystem.lean, pins, index, README, status.typ))
+**Proposed dependencies** (typed): **T2 = 759** (logical: a Hit-level negative at T2 makes this statement false (route R1 blocked at (C), a Stage 0 ruling); a positive supplies its second fixture, the first on both untested axes); **T4 = 761** (serialization: shared library set (RaySummary.lean, FormalSystem.lean, pins, index, README, status.typ))
 
 **Proposed `file_scope`** (files only, never a directory root):
   - `FormalSystem/Metalogic/Decidability/RaySummary/HitComplete.lean` *(new)*
@@ -768,13 +768,13 @@ in Kahn position 4 of 6.
 **Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
 in Kahn position 5 of 6.
 
-### H6 (T6) -- The lift: not_plusValidZTime_iff_ladderRefutes and the Decidable (PlusValidZTime φ) corollary by bounded enumeration
+### H6 (T6 = task 763) -- The lift: not_plusValidZTime_iff_ladderRefutes and the Decidable (PlusValidZTime φ) corollary by bounded enumeration
 
 **Proposed title**: The lift: not_plusValidZTime_iff_ladderRefutes and the Decidable (PlusValidZTime φ) corollary by bounded enumeration
 
 **Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `ladder_lift_decidability_corollary`
 
-**Proposed dependencies** (typed): **T4** (logical: the (←) soundness half is the realization theorem at the refuting cell); **T5** (logical: the (→) completeness half assembles the anchor layer, (C)'s general row and the stabilization bound)
+**Proposed dependencies** (typed): **T4 = 761** (logical: the (←) soundness half is the realization theorem at the refuting cell); **T5 = 762** (logical: the (→) completeness half assembles the anchor layer, (C)'s general row and the stabilization bound)
 
 **Proposed `file_scope`** (files only, never a directory root):
   - `FormalSystem/Metalogic/Decidability/RaySummary/Lift.lean` *(new)*
