@@ -1,5 +1,5 @@
 ---
-next_project_number: 754
+next_project_number: 755
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 754
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,731,734,741,743,744,751,752,753 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,731,734,741,743,744,751,752,753,754 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -31,6 +31,7 @@ next_project_number: 754
 741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
+754 [NOT STARTED] — plan postflight widens file\_scope silently
 
 ### Algebraic Representation
 
@@ -107,6 +108,34 @@ next_project_number: 754
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
 ## Tasks
+
+### 754. plan postflight widens file_scope silently
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Make the plan-postflight file_scope widening observable instead of silent
+
+READ THIS FIRST -- THE ORIGINATING CHANGE REQUEST'S PREMISE WAS WRONG, AND THE RESIDUE IS NARROW. The request that produced this record asked for "a reconciliation step so that a plan's enumerated 'Files to modify' set is compared against the task's declared file_scope at plan postflight, and the divergence is either harvested into file_scope or surfaced". The harvest-and-widen half ALREADY EXISTS AND ALREADY WORKS; do not rebuild it. `scripts/plan-file-scope-harvest.sh` unions every phase's `Files to modify` list from the latest plan artifact and both live plan-postflight paths forward it as `--file-scope-add=<json>` to `scripts/update-task-status.sh`, whose jq clause `(.file_scope) |= ((. // []) + $add | unique)` is an ADDITIVE union-merge onto whatever the task already declared. Verified against the originating evidence: the task that triggered the request declared a 5-path file_scope at research postflight and a 10-path one at plan postflight (`git log -- specs/state.json`, commit subject `create implementation plan`), and the harvester re-run on that task's own plan reproduces 9 of those 10 paths exactly -- including every one of the four files the issue-log entry said were missing. The reconciliation fired and resolved the gap, which is precisely what that entry's own closing sentence predicted. Re-derive this before acting; it is a measurement, not a contract.
+
+THE ACTUAL DEFECT: THE WIDENING IS UNANNOUNCED. `update-task-status.sh` echoes the merge ONLY under `--dry-run` ("state.json: file_scope union-merge -> add ..."). On the real write path -- both the `state_is_noop` arm and the main PHASE 3 clause -- the union-merge runs with no output at all: no count, no path list, no record that the task's declared scope changed. A plan postflight can silently double a task's file_scope and nothing in the run log says so. Consequences, in descending order of concreteness. (1) An operator cannot tell a correctly-widened scope from a scope widened by a mis-parsed or over-broad plan list, because neither prints. (2) The planner on the originating task had to hand-write an issue-log entry to document a divergence the machinery was absorbing anyway -- manual bookkeeping standing in for a notice the tooling could emit for free. (3) `file_scope` is the admission gate's overlap-collision surface (`orchestrate-batch-admit.sh`), so a silent widening silently enlarges the territory a task collides on, changing later batch-admission outcomes with no trace of when or why it grew.
+
+DECIDE AND LAND ONE OF THREE, OR A COMPOSITION. (a) Emit a non-blocking notice from `update-task-status.sh` whenever `FILE_SCOPE_ADD_LEN > 0` on the real write path, naming the count actually added (the post-merge delta, NOT the raw forwarded list -- `unique` means most forwarded paths are usually already present, so a notice that prints the input would cry wolf on every postflight). This is the smallest honest fix and it covers every caller at once, which is why it is preferred. (b) Have the two live call sites announce it instead -- `scripts/skill-base.sh`'s plan arm and `scripts/orchestrator-postflight.sh`'s Stage 7 branch. Weaker: it duplicates the message in two places and the second has no live callers, so it is the wrong altitude for a behavior that belongs to the writer. (c) Record the widening durably rather than only printing it -- e.g. a per-task note of what plan postflight added. Heaviest; justify it against (a) before choosing it, and only if a consumer for the record actually exists. Whichever is chosen, the delta-not-input rule in (a) is binding: a notice that fires on every postflight regardless of whether anything changed is worse than silence, because it trains operators to ignore it.
+
+NON-GOALS, EXPLICITLY. No change to the harvest grammar or to `plan-file-scope-harvest.sh` -- that file is the adjacent generated-surfaces record's territory, not this one's. No change to the union-merge SEMANTICS (additive, `unique`, never overwrite) -- only to its observability. No new gate, no blocking behavior, no exit-code effect: this is a notice, and a notice that can fail a postflight is a regression. No change to the implement-postflight excursion predicate in `orchestrate-cycle-postflight.sh`, whose documented ruling is drop-and-warn, never refuse.
+
+WHAT THIS RECORD IS NOT. The four paths actually reported as EXCURSION DROPPED on the originating run (root `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`, `typst/generated/status.typ`) are a DISJOINT set from the four the issue-log entry named, and they are generated surfaces -- the subject of the existing `harvest_generated_surfaces_into_file_scope` record, which already names three of those four by name and already instructs its implementer to find the rest by reading the generators. `FormalSystem/README.md` is the one not named there and falls inside that record's stated method. Do not re-scope generated-surface harvesting here, and do not treat those drops as evidence for this record's defect; they are evidence for that one.
+
+SOURCE-STORE BOUNDARY. Every file_scope path below lives in a deployed, regenerated tree; a hand edit under `.claude/**` is wiped by the next deploy and will appear to succeed while having no lasting effect. Implementation MUST resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension (`core`, whose source store is `/home/benjamin/.config/nvim/agent-system/extensions/core`) and edit at the mirroring paths there, per `.claude/rules/source-store-deploy-boundary.md`. The deployed paths are declared in file_scope only so the overlap gate can see the collision surface; they are not the edit target.
+
+DEPLOYED TREE WAS STALE. This repository's deployed `.claude/` tree was reported STALE relative to the source store for the `core` extension throughout the originating run. Redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean` BEFORE reasoning about current behavior from the deployed copy, and again after editing the source store.
+
+DELIVERABLE HYGIENE. The edited files are not under `specs/**`, so their prose must carry no task-number references and no record-versioning language; cite durable anchors (file names, function names, section headings, field names) only.
+
+RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The generated-surfaces harvest record covers `plan-file-scope-harvest.sh` and the `.lean`-forced derived surfaces. The file_scope-declaration-hygiene record covers coarse and absent declarations feeding the same admission gate. No file-territory overlap with either (this record touches the status writer and its call sites, not the harvester or the validator), so no dependency edge; if the generated-surfaces record lands first, the notice built here simply reports its additions too.
+
+---
 
 ### 753. conclusion stage drops null-resolution issue-log entries
 - **Status**: [NOT STARTED]
