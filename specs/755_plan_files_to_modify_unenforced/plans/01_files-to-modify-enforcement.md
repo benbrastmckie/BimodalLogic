@@ -1,7 +1,7 @@
 # Implementation Plan: Task #755
 
 - **Task**: 755 - Plan files to modify unenforced
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/755_plan_files_to_modify_unenforced/reports/01_files-to-modify-unenforced.md
@@ -469,19 +469,23 @@ warning means the new grep's grammar diverges from the harvester's.
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/tests/run-all.sh --only test-validate-artifact` passes, including the
-      five new cases.
-- [ ] `bash .claude/scripts/tests/run-all.sh` (complete set) shows no NEW failure against the
-      Phase 1 baseline.
-- [ ] `bash .claude/scripts/verify-deploy.sh` (complete gate set) shows no NEW finding against the
-      Phase 1 baseline.
-- [ ] A plan with no `Files to modify` in any phase exits non-zero; a plan where one of several
-      phases omits it exits 0 in default mode and non-zero under `--strict`.
-- [ ] A phase carrying the header with only a prose sentinel draws no finding.
-- [ ] `jq '.active_projects[] | select(.project_number==410) | .file_scope' specs/state.json` is
-      non-empty and `bash .claude/scripts/validate-state.sh` is clean.
-- [ ] `bash .claude/scripts/plan-file-scope-harvest.sh` output for task #750's plan is unchanged.
-- [ ] `bash .claude/scripts/check-task-references.sh` reports no new finding.
+- [x] `bash .claude/scripts/tests/run-all.sh --only test-validate-artifact` passes, including the
+      five new cases. *(completed: 1 passed, 0 failed, 0 skipped)*
+- [x] `bash .claude/scripts/tests/run-all.sh` (complete set) shows no NEW failure against the
+      Phase 1 baseline. *(completed: 117 passed, 14 failed -- all 14 pre-existing/unrelated, 0 NEW)*
+- [x] `bash .claude/scripts/verify-deploy.sh` (complete gate set) shows no NEW finding against the
+      Phase 1 baseline. *(completed: PASS, 14 checks, 0 failures, matches baseline)*
+- [x] A plan with no `Files to modify` in any phase exits non-zero; a plan where one of several
+      phases omits it exits 0 in default mode and non-zero under `--strict`. *(completed: verified
+      via hand-built fixtures)*
+- [x] A phase carrying the header with only a prose sentinel draws no finding. *(completed)*
+- [x] `jq '.active_projects[] | select(.project_number==410) | .file_scope' specs/state.json` is
+      non-empty and `bash .claude/scripts/validate-state.sh` is clean. *(completed: 11-path array;
+      validate-state.sh passed with warnings, 0 failures)*
+- [x] `bash .claude/scripts/plan-file-scope-harvest.sh` output for task #750's plan is unchanged.
+      *(completed: byte-identical pre/post)*
+- [x] `bash .claude/scripts/check-task-references.sh` reports no new finding. *(completed: zero of
+      the 6 edited files appear in the 198 pre-existing, unrelated findings)*
 
 ## Artifacts & Outputs
 
