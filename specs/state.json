@@ -4,7 +4,7 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 755,
+  "next_project_number": 756,
   "active_projects": [
     {
       "project_number": 752,
@@ -195,7 +195,11 @@
       "description": "Make plan-time file_scope harvest include the generated surfaces that any .lean edit forces, so they stop recurring as undeclared scope extensions.\n\nEVIDENCE: THE SAME OMISSION TWICE, IN CONSECUTIVE TASKS. Two completed tasks independently hit the identical problem. The first recorded the `typst/generated/status.typ` regeneration as an undeclared scope extension after the pre-commit `typst-sync-check.sh --counts-only` gate refused a commit touching a `.lean` file without it. The second, forewarned, named `status.typ` in its own plan's file list — and then hit the *other* generated surface: `check-module-invariants.sh`'s INV check failed because its line additions shifted the generated inventory blocks in `FormalSystem/Metalogic/README.md` and the root `README.md`, neither of which was in its declared file_scope. It root-caused this with disposable `git worktree` bisection, regenerated via `--emit-inventory`, and declared a scope extension. The orchestrator's own postflight independently flagged the same two files: `ADVISORY: task reported modified_files outside its declared file_scope: [\"FormalSystem/Metalogic/README.md\",\"README.md\"]`.\n\nTHE PATTERN. These are not planning oversights to be fixed by reminding planners harder. They are mechanically derivable consequences of editing any `.lean` file: the line-count and byte-count tables in the two READMEs, and `typst/generated/status.typ`, are all generated artifacts whose content is a function of the Lean sources. Any plan that touches a `.lean` file will need them, every time, and a plan that omits them produces either a blocked pre-commit gate or a red INV check mid-implementation.\n\nSCOPE. (1) Identify the complete set of generated/derived surfaces that a `.lean` edit forces — at minimum `typst/generated/status.typ` and the inventory blocks in `FormalSystem/Metalogic/README.md` and root `README.md`; check for others by reading the generators (`check-module-invariants.sh --emit-inventory`, `typst-sync-check.sh`) rather than by enumerating from memory. (2) Decide the mechanism: extend `plan-file-scope-harvest.sh` to append these surfaces automatically whenever the harvested scope contains any `.lean` path, or add a plan-template checklist item, or both. Prefer the mechanical option, since the checklist has now been tried once and did not prevent the second occurrence. (3) Ensure the addition is conditional on the repo actually having these generators, so the change does not break sibling repos that lack them. (4) Verify against the two completed tasks' plans: re-running the harvest on them should now produce the surfaces they had to add by hand.\n\nNON-GOALS: no change to the generators themselves or to what they emit; no change to the pre-commit gate's behavior (it is correctly refusing the commit — the plan's declaration is what is incomplete); no retroactive edit to already-completed tasks' file_scope.",
       "topic": "agent-system",
       "created": "2026-10-04T16:36:03Z",
-      "last_updated": "2026-10-04T16:36:03Z"
+      "last_updated": "2026-10-04T16:36:03Z",
+      "file_scope": [
+        ".claude/context/formats/plan-format.md",
+        ".claude/scripts/plan-file-scope-harvest.sh"
+      ]
     },
     {
       "project_number": 729,
@@ -1303,6 +1307,23 @@
       "artifacts": [],
       "created": "2026-10-10T12:41:07Z",
       "last_updated": "2026-10-10T12:41:07Z"
+    },
+    {
+      "project_number": 755,
+      "project_name": "plan_files_to_modify_unenforced",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "A plan artifact can omit the `Files to modify` field that `plan-format.md` marks REQUIRED, pass validation with zero warnings, and leave the task's `file_scope` null — which makes the task invisible to the admission overlap gate.\n\nEVIDENCE (all three verified mechanically, not inferred):\n\n1. `context/formats/plan-format.md:108` declares `- **Files to modify:** (required)` as a per-phase field, and line 149 freezes the heading text because three independent consumers embed it.\n2. `scripts/validate-artifact.sh` contains NO check for the field — a grep for `files to modify` / `files_to_modify` over the whole script returns zero hits. A plan missing every occurrence of a REQUIRED field therefore validates clean.\n3. `scripts/plan-file-scope-harvest.sh` returns `[]` when no `Files to modify` block is present, and its own header comment (line 15) classifies that as a normal outcome rather than an error. The union-merge in `update-task-status.sh` then adds nothing, leaving `file_scope` as it was — `null` for a task that never had one.\n\nLIVE INSTANCE: task #410 (`internalize_tableau_branches_and_prove_routine_rule_admissibility`) is at status `planned` with `file_scope: null`. Its plan `plans/01_internalize-routine-admissibility.md` contains zero `Files to modify` headings. The harvest ran at plan postflight and correctly returned `[]`; nothing anywhere reported that a required field was missing.\n\nPOPULATION: 25 of 55 active tasks carry a null or empty `file_scope`. Most are `not_started` and have no plan yet, so they are not evidence of this defect; #410 (`planned`) is the clean instance, and #219 (`researched`) has no plan artifact at all. The 25-task figure is context for how large the gate's blind spot currently is, not a claim that all 25 share this cause.\n\nWHY THIS MATTERS: `file_scope` is what the orchestrator's admission gate uses to detect territory collisions between tasks. A null scope is not \"no collisions\" — it is \"collisions undetectable\". The in-batch defer that correctly serialized two recent tasks only fired because both declared the overlapping path.\n\nSCOPE: (1) Decide where the missing-required-field check belongs — `validate-artifact.sh`'s plan mode is the obvious site, since it already runs at plan postflight and already has a warning channel. (2) Decide the tier: a plan with no `Files to modify` in any phase is a different severity from one where a single phase omits it; the field is per-phase. (3) Decide whether `plan-file-scope-harvest.sh` should distinguish \"no block found anywhere\" (suspicious) from \"block found, lists no paths\" (legitimate, e.g. a pure-verification phase) — today both return `[]`. (4) Backfill #410's `file_scope` from its plan's actual content as the regression fixture, and confirm a re-run of the harvest on a repaired plan produces a non-empty scope.\n\nNON-GOALS: no change to the frozen `Files to modify` heading text or its grammar; no change to the union-merge semantics in `update-task-status.sh` (that is a separate record's territory); no retroactive scope backfill across all 25 null-scope tasks, most of which simply have no plan yet.\n\nRELATION TO ADJACENT RECORDS: distinct from the record covering generated surfaces absent from the harvested set (that one assumes the block exists and is incomplete; this one is the block being absent entirely), and distinct from the record covering the union-merge's silence on the write path (that one is observability of a merge that happened; this one is a merge that never had input). The edit target is the SOURCE STORE mirroring these deployed paths, resolved via `.claude-extensions.json`'s `source_dir`, per `.claude/rules/source-store-deploy-boundary.md`. The deployed `.claude/` tree was reported STALE for the `core` extension when this was found — redeploy via `deploy-headless.sh` before reasoning from the deployed copy.",
+      "effort": "small",
+      "topic": "agent-system",
+      "dependencies": [],
+      "file_scope": [
+        ".claude/scripts/validate-artifact.sh",
+        ".claude/scripts/plan-file-scope-harvest.sh"
+      ],
+      "created": "2026-10-10T12:54:05Z",
+      "last_updated": "2026-10-10T12:54:05Z",
+      "artifacts": []
     }
   ],
   "artifacts": [

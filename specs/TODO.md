@@ -1,5 +1,5 @@
 ---
-next_project_number: 755
+next_project_number: 756
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 755
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,731,734,741,743,744,751,752,753,754 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,731,734,741,743,744,751,752,753,754,755 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -32,6 +32,7 @@ next_project_number: 755
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
 754 [NOT STARTED] — plan postflight widens file\_scope silently
+755 [NOT STARTED] — A plan artifact can omit the Files to modify field that...
 
 ### Algebraic Representation
 
@@ -108,6 +109,35 @@ next_project_number: 755
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
 ## Tasks
+
+### 755. Plan files to modify unenforced
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: A plan artifact can omit the `Files to modify` field that `plan-format.md` marks REQUIRED, pass validation with zero warnings, and leave the task's `file_scope` null — which makes the task invisible to the admission overlap gate.
+
+EVIDENCE (all three verified mechanically, not inferred):
+
+1. `context/formats/plan-format.md:108` declares `- **Files to modify:** (required)` as a per-phase field, and line 149 freezes the heading text because three independent consumers embed it.
+2. `scripts/validate-artifact.sh` contains NO check for the field — a grep for `files to modify` / `files_to_modify` over the whole script returns zero hits. A plan missing every occurrence of a REQUIRED field therefore validates clean.
+3. `scripts/plan-file-scope-harvest.sh` returns `[]` when no `Files to modify` block is present, and its own header comment (line 15) classifies that as a normal outcome rather than an error. The union-merge in `update-task-status.sh` then adds nothing, leaving `file_scope` as it was — `null` for a task that never had one.
+
+LIVE INSTANCE: task #410 (`internalize_tableau_branches_and_prove_routine_rule_admissibility`) is at status `planned` with `file_scope: null`. Its plan `plans/01_internalize-routine-admissibility.md` contains zero `Files to modify` headings. The harvest ran at plan postflight and correctly returned `[]`; nothing anywhere reported that a required field was missing.
+
+POPULATION: 25 of 55 active tasks carry a null or empty `file_scope`. Most are `not_started` and have no plan yet, so they are not evidence of this defect; #410 (`planned`) is the clean instance, and #219 (`researched`) has no plan artifact at all. The 25-task figure is context for how large the gate's blind spot currently is, not a claim that all 25 share this cause.
+
+WHY THIS MATTERS: `file_scope` is what the orchestrator's admission gate uses to detect territory collisions between tasks. A null scope is not "no collisions" — it is "collisions undetectable". The in-batch defer that correctly serialized two recent tasks only fired because both declared the overlapping path.
+
+SCOPE: (1) Decide where the missing-required-field check belongs — `validate-artifact.sh`'s plan mode is the obvious site, since it already runs at plan postflight and already has a warning channel. (2) Decide the tier: a plan with no `Files to modify` in any phase is a different severity from one where a single phase omits it; the field is per-phase. (3) Decide whether `plan-file-scope-harvest.sh` should distinguish "no block found anywhere" (suspicious) from "block found, lists no paths" (legitimate, e.g. a pure-verification phase) — today both return `[]`. (4) Backfill #410's `file_scope` from its plan's actual content as the regression fixture, and confirm a re-run of the harvest on a repaired plan produces a non-empty scope.
+
+NON-GOALS: no change to the frozen `Files to modify` heading text or its grammar; no change to the union-merge semantics in `update-task-status.sh` (that is a separate record's territory); no retroactive scope backfill across all 25 null-scope tasks, most of which simply have no plan yet.
+
+RELATION TO ADJACENT RECORDS: distinct from the record covering generated surfaces absent from the harvested set (that one assumes the block exists and is incomplete; this one is the block being absent entirely), and distinct from the record covering the union-merge's silence on the write path (that one is observability of a merge that happened; this one is a merge that never had input). The edit target is the SOURCE STORE mirroring these deployed paths, resolved via `.claude-extensions.json`'s `source_dir`, per `.claude/rules/source-store-deploy-boundary.md`. The deployed `.claude/` tree was reported STALE for the `core` extension when this was found — redeploy via `deploy-headless.sh` before reasoning from the deployed copy.
+
+---
 
 ### 754. plan postflight widens file_scope silently
 - **Status**: [NOT STARTED]
