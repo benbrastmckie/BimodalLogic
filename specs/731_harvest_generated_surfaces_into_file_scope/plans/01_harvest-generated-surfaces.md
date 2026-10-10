@@ -259,32 +259,36 @@ contract.
 
 ---
 
-### Phase 3: Ancestor-chain generated-README scan [NOT STARTED]
+### Phase 3: Ancestor-chain generated-README scan [COMPLETED]
 
 **Goal**: Every README whose generated-inventory block can go stale from an edited `.lean` path is
 appended, derived by mirroring the generator's own marker parsing.
 
 **Tasks**:
 
-- [ ] Add a `generated_inventory_readmes()` helper that walks `$root` for `*.md` files, pruning
+- [x] Add a `generated_inventory_readmes()` helper that walks `$root` for `*.md` files, pruning *(completed)*
       `.git`, `specs`, `.claude`, `.lake`, and `node_modules` exactly as the generator's
       `markdown_targets()` does.
-- [ ] For each candidate, scan lines with a fence toggle (`^[ \t]*```` toggles `in_fence`) and
+- [x] For each candidate, scan lines with a fence toggle (`^[ \t]*```` toggles `in_fence`) and *(completed)*
       match only non-fenced lines against the anchored marker pattern equivalent to the
       generator's `BEGIN_RE`; extract the `dir=` token with the same whitespace-split
       `key=value` option parsing the generator's `parse_opts()` uses.
-- [ ] Emit `<repo-relative markdown path>\t<dir value>` pairs; build the edited paths' self-and-
+- [x] Emit `<repo-relative markdown path>\t<dir value>` pairs; build the edited paths' self-and- *(completed)*
       ancestor directory chain (each harvested `.lean` path's `dirname`, then each parent up to
       and including `.`/the repo root), and append every markdown path whose `dir=` value equals
       a chain member by exact string comparison after normalizing a trailing `/`.
-- [ ] Add Case 16: a fake repo with generated-inventory READMEs registered at three nesting levels
+      *(deviation: altered — the implementation builds the ancestor-chain set once and tests each
+      README's `dir=` value against it directly, rather than materializing an intermediate
+      tab-separated pairs list; behavior and output are identical, confirmed by Cases 16-19 and
+      the real-repo replay)*
+- [x] Add Case 16: a fake repo with generated-inventory READMEs registered at three nesting levels *(completed)*
       plus two deeper levels with no registration; a fixture plan naming one deep `.lean` file
       yields exactly the three registered READMEs and neither unregistered level.
-- [ ] Add Case 17: the same fake repo gains a doc file whose line-start marker sits inside a
+- [x] Add Case 17: the same fake repo gains a doc file whose line-start marker sits inside a *(completed)*
       ` ```markdown ` fence; assert it is NOT appended (fence awareness).
-- [ ] Add Case 18: a fake repo with a README registered for a *sibling* directory not on the
+- [x] Add Case 18: a fake repo with a README registered for a *sibling* directory not on the *(completed)*
       chain; assert it is NOT appended (string equality, not prefix matching).
-- [ ] Add Case 19: a hand-maintained `<!-- INVENTORY: hand-maintained (dir=...) -->` opt-out
+- [x] Add Case 19: a hand-maintained `<!-- INVENTORY: hand-maintained (dir=...) -->` opt-out *(completed)*
       marker is NOT treated as a generated block.
 
 **Timing**: 1.5 hours
