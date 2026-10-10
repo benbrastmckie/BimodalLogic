@@ -347,6 +347,16 @@ NON-GOALS. No change to Check 2 (status.typ counts), Check 2b (module map) or Ch
 
 BACKLOG RECONCILIATION, verified 2026-10-08 against all 51 open tasks in this repo. No open task covers Check 1 or phantom-citation resolution. Nearest records: 731 (plan-time file_scope harvest must include generated surfaces a .lean edit forces -- adjacent because it also concerns typst-sync-check.sh, but its subject is scope DECLARATION and its NON-GOALS explicitly exclude generator changes) and 741 (agent-system context extensions; mentions typst-sync staleness only as deploy-freshness context). Neither overlaps this.
 
+UPDATE 2026-10-10: THE REPRO ABOVE NO LONGER FIRES; THE MECHANISM GAP IS UNCHANGED.
+
+`scripts/typst-sync-check.sh` now exits 0 (all four checks green). That is NOT because Check 1 learned namespace resolution — it is because the single citation was rewritten at `typst/FormalFoundations.typ:790` from the fully-qualified `FormalSystem.Semantics.validZTime_iff_validInt` to the module-path-plus-leaf form `` `validZTime_iff_validInt` in `Semantics/IntTransfer.lean` ``, which resolves on both halves under the existing rules (the path through the path-exists branch, the bare leaf through the literal grep). Commit: `ci: clear the two standing red gates (PlusRayFibre layer row, stale typst citation)`.
+
+WHAT THIS CHANGES FOR THIS TASK. The measured finding above is no longer reproducible by running the gate; anyone starting here will see a green gate. The underlying defect is untouched: Check 1's dotted-identifier branch still does a literal grep with no namespace resolution, so any future correctly-cited namespaced declaration will fail the same way unless its full dotted name happens to appear verbatim in a docstring. The sibling citation `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`, in the same paragraph, resolves ONLY by that accident — the string appears at `FormalSystem/Metalogic/Decidability.lean:181`. That accidental dependency is the clearest remaining evidence and should be the new starting point.
+
+TO REPRODUCE ON DEMAND: reintroduce any fully-qualified declaration name whose dotted form appears in no `.lean` file, or delete the docstring line at `Decidability.lean:181` and re-run the gate.
+
+THE QUESTION THIS TASK STILL OWNS, now sharpened by having three resolution styles live in one paragraph: decide which citation style the manual is entitled to use, and make the checker honour it. Option (a) teach Check 1 real namespace resolution (match a dotted name against `namespace` prefix plus declared leaf); option (b) rule that the manual cites module-path-plus-leaf and document that, making the two surviving fully-qualified declaration citations non-conforming; option (c) keep the literal grep and accept that fully-qualified citations depend on a docstring mentioning them, which is the status quo and is what made this a recurring finding. Option (c) is the one the evidence argues against.
+
 ---
 
 ### 741. Agent system context extensions cslib survey
