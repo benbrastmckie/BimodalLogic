@@ -1350,12 +1350,18 @@
           "path": "specs/754_plan_postflight_file_scope_widening_silent/plans/01_file-scope-widening-notice.md",
           "type": "plan",
           "summary": "Three-phase plan: emit the delta-gated notice from the writer (local tier), assert it in the writer's suite and on the live plan-postflight path (local tier), then document, redeploy, and run the full gate set (full tier)."
+        },
+        {
+          "path": "specs/754_plan_postflight_file_scope_widening_silent/summaries/01_file-scope-widening-notice-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary covering all three phases, verification evidence, and plan deviations (invocation-path notes and two unrelated pre-existing gate findings triaged as exclusions)."
         }
       ],
       "created": "2026-10-10T12:41:07Z",
       "last_updated": "2026-10-10T13:29:03Z",
       "session_id": "sess_1791637795_4b472e",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Added emit_file_scope_notice() to update-task-status.sh's update_state_json(), covering both file_scope merge sites with a delta-gated, stderr-only [file-scope] notice; added three Case 11 assertions and one Group 4a end-to-end assertion in the writer's and skill-base's test suites; documented the notice under state-management-schema.md's File Scope Field section. All edits landed in the core extension's source store and redeployed clean to both the source-store's own tree and this repo's deployed tree."
     },
     {
       "project_number": 755,

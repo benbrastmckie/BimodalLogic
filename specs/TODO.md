@@ -179,6 +179,7 @@ RELATION TO ADJACENT RECORDS: distinct from the record covering generated surfac
 - **Dependencies**: None
 - **Research**: [754_plan_postflight_file_scope_widening_silent/reports/01_file_scope_widening_notice.md]
 - **Plan**: [754_plan_postflight_file_scope_widening_silent/plans/01_file-scope-widening-notice.md]
+- **Summary**: [754_plan_postflight_file_scope_widening_silent/summaries/01_file-scope-widening-notice-summary.md]
 
 **Description**: Make the plan-postflight file_scope widening observable instead of silent
 
