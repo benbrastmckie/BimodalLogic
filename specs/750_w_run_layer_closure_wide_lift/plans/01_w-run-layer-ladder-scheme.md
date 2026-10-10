@@ -252,7 +252,7 @@ no dependent beyond the aggregator can break at type level.
 
 ---
 
-### Phase 2: Promote the ladder verdict to a ninth wired probe [NOT STARTED]
+### Phase 2: Promote the ladder verdict to a ninth wired probe [COMPLETED]
 
 **Goal**: The design decision is gate-compiled: a probe beside Probe746 cites the library's
 `Rlad_fwd`, `Rlad_bwd`, `Rlad_slice_infinite` and `ladderFrame_isRegular`, re-proves none of
@@ -260,7 +260,7 @@ them, and records the one refutation the library does not carry — a capped lad
 carrier, which is the bounded-deadline encoding and the shape `not_finite_width_fmp` refutes.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/deadline-ladder-branching.lean` importing
+- [x] Create `specs/evidence/seam-gluing-ray-product/deadline-ladder-branching.lean` importing
       `FormalSystem.Metalogic.Decidability.RaySummary.RunLayer` (and
       `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Limits.NoFiniteWidth` only if
       `not_finite_width_fmp` is cited by name in a statement; otherwise cite it in the header
@@ -269,20 +269,22 @@ carrier, which is the bounded-deadline encoding and the shape `not_finite_width_
       positive half applies to it unchanged), what it refutes (the capped variant), what it does
       NOT say (nothing about realization, `HitPresented`, `⊡(Pp)`, `PlusValidZTime`, or any
       bound), and the compile command.
-- [ ] Headline declarations, each citing the library: `ladder_fwd` / `ladder_bwd` /
+- [x] Headline declarations, each citing the library: `ladder_fwd` / `ladder_bwd` /
       `ladder_slice_infinite` as one-line corollaries of the library theorems (the probe's own
       names, so a future API change is tracked here rather than silently inherited), and
       `capped_carrier_finite : Finite (Q × Fin (N + 1) × Fin (N + 1))` with a docstring saying
       this is the bounded-deadline encoding's carrier and why a frame on it is the shape
       `not_finite_width_fmp` refutes. `#print axioms` lines at the end for every headline.
-- [ ] Add the comment-table entry and the `WIRED` array entry
+- [x] Add the comment-table entry and the `WIRED` array entry
       `"seam-gluing-ray-product/deadline-ladder-branching"` to `scripts/check-evidence-probes.sh`
       directly after the `w-soundness-shape-refuted` entries; the table text carries no task
       number (name the record by the README section "(W): what landed and what did not").
-- [ ] Run `bash scripts/check-evidence-probes.sh`; the new line reads `PASS` and every existing
+- [x] Run `bash scripts/check-evidence-probes.sh`; the new line reads `PASS` and every existing
       line still reads `PASS`.
-- [ ] Record via `issue-record.sh` (`kind: win` or `issue`) whether the probe compiled first time
-      against the library names.
+- [x] Record via `issue-record.sh` (`kind: win` or `issue`) whether the probe compiled first time
+      against the library names. *(recorded: `kind: win`, compiled first time; the gate's only
+      pre-commit non-PASS was the expected `FAIL (untracked)` on the new file, cleared by the
+      phase commit — confirmed by a second gate run after it)*
 
 **Timing**: 1 hour
 

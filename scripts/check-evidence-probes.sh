@@ -638,6 +638,46 @@ EVIDENCE="specs/evidence"
 #                                                           | complexity bound; `Decidable
 #                                                           | (PlusValidZTime φ)` NOT stated in any
 #                                                           | form
+# seam-gluing-ray-product/deadline-ladder-branching         | DESIGN VERDICT (requirement (W)'s
+#                                                           | run layer, "(W): what landed and what
+#                                                           | did not", obligation (i)): the
+#                                                           | frame scheme is the DEADLINE LADDER
+#                                                           | (thread-indexed unfolding in its
+#                                                           | general form: states `(q, c, n)`, the
+#                                                           | current deadline counting down
+#                                                           | deterministically, the next deadline
+#                                                           | drifting by at most one per step, so
+#                                                           | no state chooses a deadline), landed
+#                                                           | in `RaySummary/RunLayer.lean`. The
+#                                                           | probe cites the library and re-proves
+#                                                           | nothing: `ladder_fwd`/`ladder_bwd`
+#                                                           | (two-sided finite branching for EVERY
+#                                                           | finite object, `Rlad_fwd`/`Rlad_bwd`),
+#                                                           | `ladder_slice_infinite`
+#                                                           | (`Rlad_slice_infinite`), and
+#                                                           | `ladder_isRegular`
+#                                                           | (`ladderFrame_isRegular`, `Saturation`
+#                                                           | from `saturation_of_finBranch`, no
+#                                                           | `[Finite W]` on the carrier), so
+#                                                           | Probe746's positive half applies to
+#                                                           | the ladder unchanged. REFUTES the
+#                                                           | capped variant: `capped_carrier_finite`
+#                                                           | -- a fixed cap gives the finite slice
+#                                                           | `Q × Fin (N+1) × Fin (N+1)`, the
+#                                                           | finite-width shape
+#                                                           | `not_finite_width_fmp` refutes; a
+#                                                           | state-chosen deadline is Probe746's
+#                                                           | `Rok`/`Rbad`. Depth `k = 1`. What it
+#                                                           | does NOT say: nothing about
+#                                                           | realization (phase 2, open; first
+#                                                           | lemma the stabilization of realized
+#                                                           | type sets in the deadline counter),
+#                                                           | nothing about `HitPresented`, nothing
+#                                                           | about `⊡(Pp)` (forward-only);
+#                                                           | seriality is the object's `fwd`/`bwd`
+#                                                           | hypotheses; no complexity bound;
+#                                                           | `Decidable (PlusValidZTime φ)` NOT
+#                                                           | stated in any form
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -664,6 +704,7 @@ WIRED=(
   "seam-gluing-ray-product/b2b-frame-constructor-branching"
   "seam-gluing-ray-product/mosaic-stab-saturated"
   "seam-gluing-ray-product/w-soundness-shape-refuted"
+  "seam-gluing-ray-product/deadline-ladder-branching"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
