@@ -276,7 +276,7 @@ Section 0 text).
 
 ---
 
-### Phase 3: Write Section H, the Stage 0 section, and the disclosure skeleton [NOT STARTED]
+### Phase 3: Write Section H, the Stage 0 section, and the disclosure skeleton [COMPLETED]
 
 **Goal**: Draft the six records (T1-T6) as the exact text Phase 4 will file — title, `task_type`,
 `topic`, `dependencies` (typed: logical vs. serialization), `file_scope` (files, never directory
@@ -285,24 +285,24 @@ zero-debt posture, `[BLOCKED]` contingency — plus the "Stage 0 described, not 
 the State-write disclosure skeleton.
 
 **Tasks**:
-- [ ] Section H preamble: six records; filed BY THIS TASK's implementation phase (the deliberate
+- [x] Section H preamble: six records; filed BY THIS TASK's implementation phase (the deliberate
       departure from the 721/718 precedents); Kahn order T1 → T2 → T3 → T4 → T5 → T6; the
       Component 0 divide reasons that justify six and not fewer (report Finding 5, "Why six").
-- [ ] H1 (T1) — `preCell_stable` / `preCell_zero_ne` / `postCell_stable` on `NoFiniteWidth.M` for
+- [x] H1 (T1) — `preCell_stable` / `preCell_zero_ne` / `postCell_stable` on `NoFiniteWidth.M` for
       `Φ` (fallback `D`): wired probe; `file_scope`
       `specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean`,
       `scripts/check-evidence-probes.sh`,
       `FormalSystem/Metalogic/Decidability/RaySummary/README.md`; deps none; costable (basis:
       `backward-dual-asymmetric-fixture.lean` and `deadline-ladder-branching.lean` line counts
       re-measured in Phase 1).
-- [ ] H2 (T2) — `hitPresented_node` or `not_hitPresented_node` on `NoFiniteWidth.M`, seam
+- [x] H2 (T2) — `hitPresented_node` or `not_hitPresented_node` on `NoFiniteWidth.M`, seam
       `(t, pre k)`, every `k ≥ 1`: wired probe; `file_scope`
       `specs/evidence/seam-gluing-ray-product/hit-presented-node.lean`,
       `scripts/check-evidence-probes.sh`, `RaySummary/README.md`; deps T1 (serialization);
       costable with a wide band (basis `hit-presented-model-a.lean`, marked CARRIED-UNVERIFIED
       from 749's summary unless re-measured); the highest-information probe; a negative is a
       Stage 0 ruling.
-- [ ] H3 (T3) — `ladderModel`, `Adm`, `ladderCell_stabilizes` (both counters, exhibited `B`,
+- [x] H3 (T3) — `ladderModel`, `Adm`, `ladderCell_stabilizes` (both counters, exhibited `B`,
       fallback `∃ B`): library; `file_scope`
       `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean`,
       `FormalSystem/Metalogic/Decidability/RaySummary.lean`, `FormalSystem.lean`,
@@ -310,26 +310,26 @@ the State-write disclosure skeleton.
       `scripts/check-module-invariants.sh`, `docs/theorem-index.md`, `RaySummary/README.md`,
       `typst/generated/status.typ`; deps T1 (logical), T2 (serialization); NOT costable — reason
       stated.
-- [ ] H4 (T4) — `LadderCons`, `ladderCons_localRun`, `ladderRealized` per ladder cell for ALL `φ`
+- [x] H4 (T4) — `LadderCons`, `ladderCons_localRun`, `ladderRealized` per ladder cell for ALL `φ`
       including `box`/`stab` letters: library; `file_scope` `RaySummary/LadderRealize.lean` plus
       T3's shared set; deps T3; NOT costable — reason stated.
-- [ ] H5 (T5) — `exists_hitPresented` with `sizeBound φ k` a count: library, research-first;
+- [x] H5 (T5) — `exists_hitPresented` with `sizeBound φ k` a count: library, research-first;
       `file_scope` `RaySummary/HitComplete.lean` plus shared set; deps T2 (logical), T4
       (serialization); NOT costable — open mathematics; `[BLOCKED]` honest.
-- [ ] H6 (T6) — `not_plusValidZTime_iff_ladderRefutes` and the `Decidable (PlusValidZTime φ)`
+- [x] H6 (T6) — `not_plusValidZTime_iff_ladderRefutes` and the `Decidable (PlusValidZTime φ)`
       corollary: library, research-first; `file_scope` `RaySummary/Lift.lean` plus shared set;
       deps T4, T5; NOT costable — reason stated.
-- [ ] Each H entry names its cross-set collisions (744 on `RaySummary/README.md` and
+- [x] Each H entry names its cross-set collisions (744 on `RaySummary/README.md` and
       `check-module-invariants.sh`; 734 on `check-evidence-probes.sh`; 410 on
       `typst/generated/status.typ`) as admission-gate matters, with no cross-set edge.
-- [ ] Each H entry's description text is written in full as the string Phase 4 passes to
+- [x] Each H entry's description text is written in full as the string Phase 4 passes to
       `state-write.sh` (statement shape, not prose goal; depth; guardrails (a)-(e); zero debt;
       the forward-only caveat; the `[BLOCKED]` contingency).
-- [ ] "Stage 0 described, not moved": 712 (`[BLOCKED]` marker correction), 713 (CTL-like fragment
+- [x] "Stage 0 described, not moved": 712 (`[BLOCKED]` marker correction), 713 (CTL-like fragment
       re-ruling), the held 2EXPTIME ceiling, 734 (`[PARTIAL]` mosaics route) — each described with
       its current `state.json` status from Section 0.4 and the sentence that this task may
       describe but never move them; 716/714 named as untouched.
-- [ ] State-write disclosure skeleton (what this task will write: the spec, `state.json` rows
+- [x] State-write disclosure skeleton (what this task will write: the spec, `state.json` rows
       T1-T6, `TODO.md` via regen, `ROADMAP.md`; what it will not: any `FormalSystem/`, `docs/`,
       `scripts/`, `Tests/`, typst file) — finalized in Phase 5.
 

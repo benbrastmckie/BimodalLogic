@@ -520,3 +520,341 @@ semi-decidable `∃ object` form without the bound; introduce a finite-fibre ass
 enumeration finite (the bound comes from counts, not from the fibre); cite complexity.
 
 **Action required.** File H6 — Section H.
+
+## Section H -- The six records, filed by this task
+
+Six records, T1-T6, **filed by this task's own implementation phase** (Phase 4 of plan 01) through
+the sanctioned writer `state-write.sh` with `dependencies`, `file_scope`, `topic: "decidability"`
+and `task_type: "lean4"` set in the creation object, then `manage-topics.sh set`, then
+`validate-state.sh` — the deliberate departure from the 721/718 precedents, whose Section H said
+"file with `/task`, by the orchestrator or the user". The record text below is the EXACT string
+each description receives (held in `successor-records.json` beside this file and passed to the
+writer unchanged); the numbers received are written into the map table and the headings after
+filing. Kahn order: T1 → T2 → T3 → T4 → T5 → T6.
+
+**Why six and not fewer** (multi-task-creation Component 0: consolidate unless (a) disjoint scope,
+(b) different type or domain, (c) real dependency ordering, (d) size): T1/T2 vs T3-T6 divide by (a)
+— evidence territory vs library territory — and by (c); T1 vs T2 by (d) and by being different
+statements with different verdict semantics; T3 vs T4 by (c) and by the costability boundary the
+README itself draws ("no cost figure until that lemma is stated") — Decision D3; T5 by (c) against
+T2 and by being the one open-mathematics item; T6 by (c) against both chains. **Why not more**: no
+(S)-extension record (Section C, Decision D1); no record for `Adm` alone (it is T3's definition); no
+second-fixture record beyond `Node` until T2 reports.
+
+**Edges are typed.** A *logical* edge means the dependent's statement is fixed by, or false
+without, the predecessor; a *serialization* edge records a shared `file_scope` inside the set that
+CLAUDE.md's batching rule turns into an edge rather than an exclusion (Decision D5). Every edge
+points inside T1-T6; overlaps with 744 (`RaySummary/README.md`, `check-module-invariants.sh`), 734
+(`check-evidence-probes.sh`) and 410 (`typst/generated/status.typ`) OUTSIDE the set are named in
+each description and left to the admission gate — no cross-set edge is added.
+
+**Costability.** Only T1 and T2 carry a figure, each with its basis measured this round (Section
+0.3); T3-T6 are recorded as NOT costable with the reason, and no figure is invented (Decision D6:
+they are filed anyway, because filing is in scope by user instruction and each has a statement
+shape and a `file_scope`).
+
+### T-label → task number
+
+| Label | Task number | Slug |
+|---|---|---|
+| T1 | *(filed in Phase 4)* | `node_cell_stabilization_probe` |
+| T2 | *(filed in Phase 4)* | `node_hit_presented_probe` |
+| T3 | *(filed in Phase 4)* | `ladder_model_cell_stabilization_lemma` |
+| T4 | *(filed in Phase 4)* | `ladder_realization_theorem` |
+| T5 | *(filed in Phase 4)* | `hit_presented_general_row` |
+| T6 | *(filed in Phase 4)* | `ladder_lift_decidability_corollary` |
+
+### H1 (T1) -- Node fixture probe: cell stabilization in the deadline index (preCell_stable, preCell_zero_ne, postCell_stable)
+
+**Proposed title**: Node fixture probe: cell stabilization in the deadline index (preCell_stable, preCell_zero_ne, postCell_stable)
+
+**Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `node_cell_stabilization_probe`
+
+**Proposed dependencies** (typed): none
+
+**Proposed `file_scope`** (files only, never a directory root):
+  - `specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean` *(new)*
+  - `scripts/check-evidence-probes.sh`
+  - `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
+
+**Depth**: none (cells are sets of closure types, not k-types)
+
+**Costability**: YES: 400-800 lines, 1-2 implement dispatches. Basis: backward-dual-asymmetric-fixture.lean (619 lines, same fixture, one operator) and deadline-ladder-branching.lean (103 lines), both measured by wc -l this round.
+
+**Description** (the exact string filed):
+
+> STATEMENT. A wired probe on the LIBRARY fixture `NoFiniteWidth.M` (`PlusSlicedCertificate/Limits/NoFiniteWidth.lean`; regular by `F_isRegular`, histories canonical by `path_eq_canon`), the one-region special case of the deadline ladder, for its own ⊡-bearing witness `Φ` (fallback `D`, recorded in the probe header in that order; the chosen formula is written into the statements):
+>   `theorem preCell_stable (k k' : ℕ) (hk : 1 ≤ k) (hk' : 1 ≤ k') (z : ℤ) : cellAt M Φ (.pre k) z = cellAt M Φ (.pre k') z`
+>   `theorem preCell_zero_ne (z : ℤ) : cellAt M Φ (.pre 0) z ≠ cellAt M Φ (.pre 1) z`  -- the deadline index is real
+>   `theorem postCell_stable (k k' j j' : ℕ) (hj : 1 ≤ j) (hj' : 1 ≤ j') (z : ℤ) : cellAt M Φ (.post k j) z = cellAt M Φ (.post k' j') z`  -- the thread index is invisible
+> with `cellAt` from `RaySummary/AnchorLayer.lean` (time-independent by `cellAt_eq_cellAt`). Depth: none — cells are sets of closure types, no k occurs.
+> 
+> WHY. Run-layer phase 2's FIRST statement is the stabilization of realized cells on the ladder (`RaySummary/README.md`, "(W): what landed and what did not", obligation (ii) item 1); the record that states it for a general object (its successor) has no cost figure until this probe reports. 750's mitigation R-A: prove or refute stabilization on `Node` first, where the expected cells are `pre 0`, `pre (≥ 1)`, `x`, `post`. The probe imports the library model and re-proves nothing.
+> 
+> EITHER VERDICT IS THE DELIVERABLE. Stabilization at bound 1 confirms the mechanism (branch-time saturation). A failure IS the obstruction the README names: record it in the probe header as such and mark the task [BLOCKED] — never a sorry, an axiom, a vacuous definition, or a finite-fibre retreat (the capped ladder is refuted by `Probe750.capped_carrier_finite` + `not_finite_width_fmp`).
+> 
+> GUARDRAILS (ROADMAP Stage 1): (a) cells are closure-indexed sets over the time axis, never one bit per depth; (b) `Node` has infinite width and the probe adds no finiteness; (c) no bound of any kind is claimed — the probe counts cells; (d) zero debt: no external Büchi/MSO lemma, no cslib require; (e) the fixture's witness is forward-looking and the header must say the result is forward-only — nothing here bears on ⊡(Pp), and no claim that ⊡-letters discriminate between devices.
+> 
+> FILE SCOPE. The new probe file; one WIRED entry in `scripts/check-evidence-probes.sh`; one sentence in the RaySummary README's evidence paragraph (durable anchors only — no task numbers, no record-versioning language). Cross-set collisions, left to the admission gate (no edge): 734 ([PARTIAL], Stage 0) and 744 (not_started) also declare the script and the README respectively.
+> 
+> COSTABLE: yes — 400-800 lines, 1-2 implement dispatches (basis: `backward-dual-asymmetric-fixture.lean`, 619 lines, same fixture; `deadline-ladder-branching.lean`, 103 lines). Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section A and H1.
+
+**Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
+in Kahn position 1 of 6.
+
+### H2 (T2) -- Node fixture probe: HitPresented for a ⊡-bearing formula at an infinite-width seam (hitPresented_node or its negation)
+
+**Proposed title**: Node fixture probe: HitPresented for a ⊡-bearing formula at an infinite-width seam (hitPresented_node or its negation)
+
+**Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `node_hit_presented_probe`
+
+**Proposed dependencies** (typed): **T1** (serialization: shared file_scope on scripts/check-evidence-probes.sh and RaySummary/README.md; T1's history characterization of pre k is reused as an efficiency, not a logical need)
+
+**Proposed `file_scope`** (files only, never a directory root):
+  - `specs/evidence/seam-gluing-ray-product/hit-presented-node.lean` *(new)*
+  - `scripts/check-evidence-probes.sh`
+  - `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
+
+**Depth**: 1 ≤ k, every k
+
+**Costability**: YES, with a wide band: basis hit-presented-model-a.lean (1595 lines, measured this round; two implement dispatches under --hard per 749's summary [CARRIED-UNVERIFIED]); a negative is cheaper than a positive.
+
+**Description** (the exact string filed):
+
+> STATEMENT. A wired probe on the LIBRARY fixture `NoFiniteWidth.M` at a seam `(t, Node.pre k)` with `τ` the canonical history through it (`canon`, `path_eq_canon`), for a ⊡-bearing formula `Φ'` := the fixture witness `Φ`, fallback `D`, then `⊡Xp` (recorded in that order in the header; the chosen formula is written into the statement), at every depth `1 ≤ k`. EITHER headline is the deliverable, and the probe records which:
+>   `theorem hitPresented_node (t : ℤ) (k : ℕ) (hk : 1 ≤ k) : HitPresented NoFiniteWidth.M τ t Φ' (labN L) (stepN L) k`  -- positive: a presentation of size L, exhibited as a COUNT in the statement (as `presentationSize k = Nat.card (KType (clSig Fp) k)` is in `Probe745.hitPresented_modelA`), never ∃ L
+>   `theorem not_hitPresented_node (t : ℤ) (k : ℕ) (hk : 1 ≤ k) {Q} [Fintype Q] [DecidableEq Q] (lab) (step) : ¬ HitPresented NoFiniteWidth.M τ t Φ' lab step k`  -- negative: (C)'s general row is FALSE
+> `HitPresented` is `RaySummary/Trace.lean`'s Hit-level hypothesis (family-triple SETS); the trace-level `Presented` is refuted as a completeness carrier by `Probe735.not_presented` and must not be used.
+> 
+> WHY THIS IS THE HIGHEST-INFORMATION PROBE ON THE FRONTIER. The only Hit-level positive, `Probe745.hitPresented_modelA`, is box/stab-free (`Fp`) on a finite-width slice (`Fin 3`); the general row ranges over ⊡-bearing φ and infinite-width models — the two axes along which the refutations live — and nothing in the tree tests `HitPresented` on either. `Node` is both at once. A Hit-level negative would be the first in the tree and would block route R1 at (C); Stage 1 proceeds on R1 alone with no fallback. THAT OUTCOME IS A STAGE 0 USER RULING, NEVER AN AGENT TRANSITION: record it in the probe header, leave the general-row and lift successors to the user, and do not abandon or re-scope them yourself. A positive extends the model-A truncation argument (`kTypeOf_listSeg_replicate_eventually_periodic_bounded`, `inFamily_of_shrink_run`; on `Node` the single-segment containment is a fixture fact as `run_subset_middle` was) to infinite width and ⊡-letters.
+> 
+> GUARDRAILS: (a) the alphabet is `clSig Φ'`, closure-indexed; (b) infinite width, no finiteness added; (c) `L` is a count of states, never a running time or an ∃ L; (d) zero debt — no automata library, no Büchi/MSO citation, no cslib require; (e) forward-only: the header must say nothing here bears on ⊡(Pp), and ⊡-letters are not claimed to discriminate between devices. No sorry, axiom or vacuous definition: if neither headline closes, mark [BLOCKED] with the goal state recorded.
+> 
+> FILE SCOPE. The new probe file; one WIRED entry in `scripts/check-evidence-probes.sh`; one sentence in the RaySummary README (durable anchors only, no task numbers). Cross-set collisions left to the admission gate: 734 (script), 744 (README). Serialization edge on T1 (shared script and README), not a logical dependency.
+> 
+> COSTABLE: yes, with a wide band — basis `hit-presented-model-a.lean` (1595 lines; two implement dispatches under --hard per 749's summary, carried-unverified); a negative is cheaper than a positive. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section B and H2.
+
+**Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
+in Kahn position 2 of 6.
+
+### H3 (T3) -- Ladder model, admissibility set Adm, and the cell-stabilization lemma ladderCell_stabilizes over both counters (c, n)
+
+**Proposed title**: Ladder model, admissibility set Adm, and the cell-stabilization lemma ladderCell_stabilizes over both counters (c, n)
+
+**Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `ladder_model_cell_stabilization_lemma`
+
+**Proposed dependencies** (typed): **T1** (logical: the probe's verdict fixes the bound shape (exhibited B vs ∃ B) and whether the lemma is stateable at all); **T2** (serialization: shared file_scope on RaySummary/README.md)
+
+**Proposed `file_scope`** (files only, never a directory root):
+  - `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` *(new)*
+  - `FormalSystem/Metalogic/Decidability/RaySummary.lean`
+  - `FormalSystem.lean`
+  - `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`
+  - `scripts/check-module-invariants.sh`
+  - `docs/theorem-index.md`
+  - `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
+  - `typst/generated/status.typ`
+
+**Depth**: none (cells), consumer depth k = 1
+
+**Costability**: NO — the statement's bound shape (exhibited B vs ∃ B) and the admissibility set are fixed by T1's verdict; no comparable in the tree (the anchor layer, 418 lines, is a different kind of statement). No figure is invented.
+
+**Description** (the exact string filed):
+
+> STATEMENT (library, over a general finite object; new module `RaySummary/LadderModel.lean`). First a MODEL on the landed frame, since `ladderFrame` (`RaySummary/RunLayer.lean`) is a `FrameOver intOrder` and `cellAt` needs a `TaskModel`:
+>   `def ladderModel (step : Q → Q → Bool) (pend : Q → Bool) (fwd) (bwd) (lab : Q → Atom → Bool) : TaskModel (ladderFrame step pend fwd bwd).toTaskFrame`  -- valuation reads the object component q
+> then the admissibility set `Adm` (named in the RaySummary README as "c ∈ Adm q … named here and not costed", defined nowhere — this record defines it: which objects supply `ladderFrame`'s `fwd`/`bwd`; a pending state at `c = 0` needs a discharging successor), and the lemma, over BOTH ladder counters:
+>   `theorem ladderCell_stabilizes (φ : PlusFormula) … : ∀ (q : Q) (c c' n n' : ℕ) (z : ℤ), (plusSubformulaClosure φ).card ≤ c → (plusSubformulaClosure φ).card ≤ c' → (plusSubformulaClosure φ).card ≤ n → (plusSubformulaClosure φ).card ≤ n' → cellAt (ladderModel …) φ (q, c, n) z = cellAt (ladderModel …) φ (q, c', n') z`
+> with the bound `B := (plusSubformulaClosure φ).card` EXHIBITED in the statement; fallback `∃ B : ℕ, ∀ q c c' n n' z, B ≤ c → … → cellAt … = cellAt …` if the exhibited bound fails. Either form yields finitely many deadline classes per counter and a finite cell index `Q × Fin (B+1) × Fin (B+1)`, which the realization record builds on.
+> 
+> WHY BOTH COUNTERS. `Count` (`RunLayer.lean`): while pending `c' + 1 = c` (the region ends in exactly c steps — a letter needing d more steps is absent at c < d); at an idle state `c' = n` (the next region's length is n — a letter looking d steps into it depends on n for n < d). The README's "in the deadline counter c" is a shorthand; its "cells indexed by (q, deadline class)" is correct read as the class of the pair. Agent decision (D2/D3 of the design record), re-openable by /revise: this lemma is its own record, split from the realization theorem at the costability boundary the README draws ("no cost figure until that lemma is stated"); fold back with one /revise if preferred.
+> 
+> B IS A COUNT. The sentence the tree attaches to `anchorCells_ncard_le` applies verbatim: a cardinality bound on cells, syntactic in |cl φ|, not a complexity bound of any kind. Depth: none (cells are closure-type sets); the run layer's consumer depth is k = 1.
+> 
+> CONTINGENCY. If T1 refuted stabilization at the fixture, the ∃ B form is false too: mark [BLOCKED] with the obstruction in the plan file. Never sorry, axiom, vacuous definition, trace-level (`Presented`) hypothesis, or a capped ladder (`Probe750.capped_carrier_finite` shows that carrier finite — the shape `not_finite_width_fmp` refutes).
+> 
+> GUARDRAILS: (a) time-axis object over the closure alphabet; (b) the slice `Q × ℕ × ℕ` is infinite (`Rlad_slice_infinite`) — the lemma bounds the INDEX of cells, never the fibre; (c) no upper bound; (d) zero debt, no cslib require; (e) direction-neutral statement, but every probe it is compared with is forward-only — say so.
+> 
+> FILE SCOPE (shared library set). New `LadderModel.lean`; aggregator `RaySummary.lean` and `FormalSystem.lean`; C14 pins in `KTypeSummaryAxiomTest.lean` and `scripts/check-module-invariants.sh`; `docs/theorem-index.md` rows (count-not-complexity sentence); the RaySummary README; `typst/generated/status.typ` (regenerated by the pre-commit hook). Durable anchors only outside specs/** — no task numbers. Cross-set collisions left to the admission gate: 744 (README, invariants script), 410 (status.typ). Logical edge on T1; serialization edge on T2 (README).
+> 
+> NOT COSTABLE, and why: the bound shape and `Adm` are fixed by T1's verdict; no comparable statement exists in the tree (the anchor layer, 418 lines, is a different kind of statement). Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section A and H3.
+
+**Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
+in Kahn position 3 of 6.
+
+### H4 (T4) -- Ladder realization theorem: LadderCons and ladderRealized per ladder cell for all φ including box/stab letters
+
+**Proposed title**: Ladder realization theorem: LadderCons and ladderRealized per ladder cell for all φ including box/stab letters
+
+**Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `ladder_realization_theorem`
+
+**Proposed dependencies** (typed): **T3** (logical: ladderModel, Adm and the stabilization bound B are this theorem's inputs; the finite cell index Q × Fin (B+1) × Fin (B+1) is what the presentation is built on)
+
+**Proposed `file_scope`** (files only, never a directory root):
+  - `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` *(new)*
+  - `FormalSystem/Metalogic/Decidability/RaySummary.lean`
+  - `FormalSystem.lean`
+  - `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`
+  - `scripts/check-module-invariants.sh`
+  - `docs/theorem-index.md`
+  - `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
+  - `typst/generated/status.typ`
+
+**Depth**: 1 ≤ k stated, consumer depth k = 1
+
+**Costability**: NO — sized by T3's bound and by how much of Realize.lean's 1004 lines transfers; the RaySummary README records that it has no figure. No figure is invented.
+
+**Description** (the exact string filed):
+
+> STATEMENT (library; new module `RaySummary/LadderRealize.lean`). Run-layer phase 2's soundness half (object → model), the ladder analogue of `Realize.lean`'s `Cons`/`cons_localRun`/`presented_modelOf`, stated at the HIT level per ladder cell:
+>   `structure LadderCons (φ : PlusFormula) (lab) (step) (pend) : Prop`  -- `Cons`'s fields with the liveness fields `ulive`/`slive` replaced by the ladder's structural liveness (c strictly decreases while pending, by `Count`), and with the box/stab letters PINNED per cell by the anchor layer's equations: `lab q (box ψ)` is one global bit (`box_mem_tpOf_iff`), the stab letter at `(q, c, n)` is that cell's bit (`stab_mem_tpOf_iff`); `anchorCons_anchorCells` is the completeness side of exactly those equations
+>   `theorem ladderCons_localRun …`  -- every ladder run satisfies the run conditions
+>   `theorem ladderRealized … (k : ℕ) (hk : 1 ≤ k) : HitCl (ladderModel …) τ t φ k = ↑(hitOf (truncate B …) … (clNow φ) k)`  -- per ladder cell, for ALL φ, box/stab letters INCLUDED, over the finite cell index T3 provides
+> The box/stab clause is the acceptance criterion: it is where obligation (3)'s first half ("(S) beyond its landed corner": box/stab-bearing φ) lands, by the README's own assignment of that limitation to (W). No standalone (S) record exists for it (agent decision D1, re-openable by /revise).
+> 
+> WHY HIT-LEVEL, WHY THIS FRAME. Two machine-checked facts (wired probe `w-soundness-shape-refuted.lean`): WIDTH — `Probe747.modelOf_incomplete`: `modelOf` on any `Cons` presentation validates `Φ.neg` while `¬ PlusValidZTime Φ.neg`, whatever clauses are added, because `ofSlicedStep` on a Fintype has finite width; COLLAPSE — `Probe747.stab_iff_of_presented_nowUnique`: at a trace-level `Presented` seam with `nowUnique`, ψ ↔ ⊡ψ for every closure formula, so trace-level realization cannot witness any ⊡-refutation. Hence the hypothesis is `HitPresented`-shaped per cell and the frame is `ladderFrame` (infinite slice, `Rlad_slice_infinite`; regular by `ladderFrame_isRegular`). `presented_modelOf` is untouched and not re-proved.
+> 
+> DEPTH. `1 ≤ k` stated; the consumer depth is k = 1 (every landed bridge carries `1 ≤ k`; the closure alphabet makes nesting visible through letters).
+> 
+> CONTINGENCY. If the theorem does not close, mark [BLOCKED] with the goal state recorded; never sorry, axiom, vacuous definition, a trace-level hypothesis, or any finite-fibre/finite-width assumption. T3/T4 keep standalone value whatever T2 reports (the HWZ 2000 Theorem 14 ⇐ direction for this semantics — a literature description that sources no claim).
+> 
+> GUARDRAILS: (a) closure-indexed letters over the time axis, box/stab bits included; (b) infinite width, no fibre bound; (c) no upper bound — B and the presentation size are counts; (d) zero debt: no Büchi/MSO lemma cited in place of a proof, no cslib require; (e) if the landed form is forward-only, say so; no device-discrimination claim.
+> 
+> FILE SCOPE: new `LadderRealize.lean` plus the shared library set (`RaySummary.lean`, `FormalSystem.lean`, `KTypeSummaryAxiomTest.lean`, `check-module-invariants.sh`, `docs/theorem-index.md`, RaySummary README, `typst/generated/status.typ`). Durable anchors only outside specs/**. Cross-set collisions left to the admission gate: 744 (README, invariants), 410 (status.typ). Logical edge on T3.
+> 
+> NOT COSTABLE, and why: sized by T3's bound and by how much of `Realize.lean` (1004 lines) transfers; the README records it has no figure. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Sections A, C and H4.
+
+**Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
+in Kahn position 4 of 6.
+
+### H5 (T5) -- (C)'s general row: exists_hitPresented with sizeBound φ k a count, for every regular ℤ-model (run-layer phase 3)
+
+**Proposed title**: (C)'s general row: exists_hitPresented with sizeBound φ k a count, for every regular ℤ-model (run-layer phase 3)
+
+**Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `hit_presented_general_row`
+
+**Proposed dependencies** (typed): **T2** (logical: a Hit-level negative at T2 makes this statement false (route R1 blocked at (C), a Stage 0 ruling); a positive supplies its second fixture, the first on both untested axes); **T4** (serialization: shared library set (RaySummary.lean, FormalSystem.lean, pins, index, README, status.typ))
+
+**Proposed `file_scope`** (files only, never a directory root):
+  - `FormalSystem/Metalogic/Decidability/RaySummary/HitComplete.lean` *(new)*
+  - `FormalSystem/Metalogic/Decidability/RaySummary.lean`
+  - `FormalSystem.lean`
+  - `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`
+  - `scripts/check-module-invariants.sh`
+  - `docs/theorem-index.md`
+  - `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
+  - `typst/generated/status.typ`
+
+**Depth**: 1 ≤ k
+
+**Costability**: NO — open mathematics; one positive fixture, no negative, no general argument in the tree. Research-first; [BLOCKED] is an honest outcome. No figure is invented.
+
+**Description** (the exact string filed):
+
+> STATEMENT (library, research-first; new module `RaySummary/HitComplete.lean`). Requirement (C)'s general row, verbatim from the RaySummary README's verdict table and "(W) … obligation (ii)" item 2 — run-layer phase 3, the completeness half (model → object): for every regular ℤ-model M, seam (τ, t), formula φ and depth 1 ≤ k, a finite labelled presentation with a computable bound in φ:
+>   `theorem exists_hitPresented (M : TaskModel F.toTaskFrame) [F.IsRegular] (τ) (t) (φ) (k) (hk : 1 ≤ k) : ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool), Fintype.card Q ≤ sizeBound φ k ∧ HitPresented M τ t φ lab step k`
+> with `sizeBound φ k` a COUNT exhibited in the statement (the fixture's was `Nat.card (KType (clSig Fp) k) + 6`, `card_QA_presentationSize`), never an ∃ L and never a complexity bound. `HitPresented` is `RaySummary/Trace.lean`'s Hit-level hypothesis; the trace-level `Presented` is refuted as a completeness carrier (`Probe735.not_presented`) and is not the statement.
+> 
+> STATUS: OPEN MATHEMATICS. One positive fixture (`Probe745.hitPresented_modelA`, box/stab-free, finite-width slice), no Hit-level negative anywhere, no general argument. The research phase of this record comes FIRST and must re-derive the statement against the tree, including T2's verdict: if T2 returned a Hit-level negative this statement is false and the record is a Stage 0 user matter — do not re-scope or abandon it as an agent. Ingredients that exist: `kTypeOf_listSeg_replicate_eventually_periodic_bounded` (Compose.lean), `inFamily_of_shrink_run` (Transport.lean; shrink direction, single segment); the unconditioned transport ↔ (threshold 3·(m₀+p)) is a recorded non-goal of the bound-half record and may be needed here. HWZ 2000 Def. 12/Thm 14 and GKWZ 2003 Thm 13.6 are indexed (`specs/literature-index.json`) as the literature description of the quasimodel-realisation step; they orient the shape and source no claim — dispatch with --lit.
+> 
+> CONTINGENCY. If the general argument does not close, the honest outcome is [BLOCKED] with the obstruction recorded; never sorry, axiom, vacuous definition, an external Büchi/MSO decidability theorem cited in place of a proof, or a finite-width/finite-fibre hypothesis smuggled into M.
+> 
+> GUARDRAILS: (a) `HitPresented` is over the closure alphabet `clSig φ`; (b) M ranges over ALL regular ℤ-models — no width or fibre assumption; (c) `sizeBound` is a count, no running-time claim, the held 2EXPTIME ceiling rules proposals out only; (d) zero debt, no cslib require; (e) if the landed form is forward-only (as every (C)/(S) fixture is), say so; nothing bears on ⊡(Pp).
+> 
+> FILE SCOPE: new `HitComplete.lean` plus the shared library set. Durable anchors only outside specs/**. Cross-set collisions left to the admission gate: 744, 410. Logical edge on T2; serialization edge on T4 (shared set).
+> 
+> NOT COSTABLE, and why: no argument exists in the tree to size it against. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section B and H5.
+
+**Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
+in Kahn position 5 of 6.
+
+### H6 (T6) -- The lift: not_plusValidZTime_iff_ladderRefutes and the Decidable (PlusValidZTime φ) corollary by bounded enumeration
+
+**Proposed title**: The lift: not_plusValidZTime_iff_ladderRefutes and the Decidable (PlusValidZTime φ) corollary by bounded enumeration
+
+**Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `ladder_lift_decidability_corollary`
+
+**Proposed dependencies** (typed): **T4** (logical: the (←) soundness half is the realization theorem at the refuting cell); **T5** (logical: the (→) completeness half assembles the anchor layer, (C)'s general row and the stabilization bound)
+
+**Proposed `file_scope`** (files only, never a directory root):
+  - `FormalSystem/Metalogic/Decidability/RaySummary/Lift.lean` *(new)*
+  - `FormalSystem/Metalogic/Decidability/RaySummary.lean`
+  - `FormalSystem.lean`
+  - `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`
+  - `scripts/check-module-invariants.sh`
+  - `docs/theorem-index.md`
+  - `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
+  - `typst/generated/status.typ`
+
+**Depth**: k = 1 throughout
+
+**Costability**: NO — the statement is fixed by T4 and T5; its research phase re-derives it from them. No figure is invented.
+
+**Description** (the exact string filed):
+
+> STATEMENT (library, research-first; new module `RaySummary/Lift.lean`). The (W) row's lift from one seam to validity — "one presentation-level object witnesses ¬ PlusValidZTime φ for some regular ℤ-model, history and time" — and obligation (3)'s second half ("every seam but the one"):
+>   `theorem not_plusValidZTime_iff_ladderRefutes (φ : PlusFormula) : ¬ PlusValidZTime φ ↔ ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q) (lab) (step) (pend) (hA : Adm …), Fintype.card Q ≤ objBound φ ∧ LadderCons φ lab step pend ∧ LadderRefutes φ lab step pend`
+> (→), completeness: a refuting regular ℤ-model has cells bounded by `anchorCells_ncard_le`, per-cell presentations by (C)'s general row (`exists_hitPresented`), finitely many deadline classes by `ladderCell_stabilizes` — assembled into one ladder object of size `objBound φ`. (←), soundness: `ladderRealized` at the refuting cell gives a regular ℤ-model (`ladderFrame_isRegular`), a history and a time where φ fails. Depth k = 1 throughout.
+> 
+> THE COROLLARY — THE AIM — IS STATED HERE AND NOWHERE EARLIER: `Decidable (PlusValidZTime φ)` by bounded enumeration over objects of size ≤ objBound φ (finitely many on `Fin n`; `LadderCons`/`LadderRefutes` decidable on a Fintype, as `decidableAnchorConsFin` already is on a concrete finite object). `Decidable (PlusValidZTime` has zero statement-level occurrences in the tree today (14 hits, all prose denials); no predecessor record may state it.
+> 
+> STATUS. Not costable until both predecessors have landed shapes; the research phase re-derives the statement from `LadderRealize.lean` and `HitComplete.lean` as landed. Honest outcomes: landed; or [BLOCKED] on whichever predecessor did not close — never sorry, axiom, vacuous definition, or a decidability claim from the semi-decidable ∃-object form without the bound (the README: without the bound the composition theorem is "at best semi-decidable — and NOT Decidable (PlusValidZTime φ)").
+> 
+> GUARDRAILS: (a) the ladder object is a time-axis object over the closure alphabet; (b) its slice is infinite — the object bounds cells and deadline classes, never the fibre, and no finite-fibre assumption may be introduced to make the enumeration finite (the bound comes from counts); (c) `objBound φ` is a count (cells × deadline classes) and the corollary is a `Decidable` instance, not a complexity statement — the held 2EXPTIME ceiling is neither cited nor approached; (d) zero debt: the enumeration is the tree's own, no external decidability theorem, no cslib require; (e) if T4/T5 land forward-only the lift is forward-only and says so — nothing beyond `Probe719Backward.pastStab_iff_allBwdPathsMeet` is claimed about ⊡(Pp). Dispatch with --lit (HWZ 2000 / GKWZ 2003 indexed, orientation only).
+> 
+> FILE SCOPE: new `Lift.lean` plus the shared library set. Durable anchors only outside specs/**. Cross-set collisions left to the admission gate: 744, 410. Logical edges on T4 and T5.
+> 
+> NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Sections C, D and H6.
+
+**Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
+in Kahn position 6 of 6.
+
+## Stage 0 -- described, not moved
+
+The following are the user's to rule on (`specs/ROADMAP.md` Stage 0: "no agent may transition
+these"). This file DESCRIBES each with its `state.json` status as read this round (Section 0.4) and
+transitions, edits, or re-scopes none of them; no filed record carries an edge to any of them.
+
+- **712** (`blocked`, deps `[703, 710]`, no `file_scope`) — the `[BLOCKED]` marker correction: the
+  only `[BLOCKED]` task with no `blockers` entry; the ROADMAP's ruling is to close it as a
+  refutation record after verifying the library theorem is 712's statement. Not moved here.
+- **713** (`hold`, deps `[]`) — the CTL-like fragment record, held by ruling (2026-10-03): its
+  ARGUED 2EXPTIME lower bound is a citable sanity ceiling with no consumer. The re-ruling on its
+  value is the user's. Not moved here, and — guardrail (c) — no record above uses the ceiling as an
+  upper-bound source; it rules proposals out only.
+- **The held 2EXPTIME ceiling** itself — a ruling, not a task; every count in Sections A-D and H
+  (`B`, `L`, `sizeBound`, `objBound`) is a count of cells or states, never a running time, so no
+  record approaches it.
+- **734** (`partial`, deps `[733]`, `file_scope` `scripts/check-evidence-probes.sh`,
+  `mosaic-stab-saturated.lean`, `specs/literature-index.json`) — route R2 (mosaics), `[PARTIAL]` by
+  ruling and NOT a fallback route (R2 is a consumer of R1). Its collision with T1/T2 on the probe
+  gate script is an admission-gate matter; it is not moved, and no edge is added.
+- **709** (`not_started`, deps `[703, 710, 719]`) — the F4 periodicity re-ruling: any surviving
+  statement must name its restricted fragment and say why `not_finite_width_fmp` does not refute
+  it. Not moved here.
+- **716 / 714** (`not_started`, the sliced-certificate sub-front) — untouched: their `file_scope`
+  (`PlusSlicedCertificate/{Live,Check,Stable,Examples}.lean`) is disjoint from every record above,
+  and no fourth certificate class is proposed (both halves of that obstruction are landed under
+  `PlusSlicedCertificate/Limits/`).
+
+Should T2 return a Hit-level negative, the consequent decision on T5 and T6 joins this list as a
+Stage 0 ruling (Section B); T2's own record says so in its description.
+
+## State-write disclosure
+
+*(Skeleton written in Phase 3; finalized in Phase 5 with the numbers received and the
+`validate-state.sh` output.)*
+
+This task's implementation round writes: this specification; six new `active_projects` rows in
+`specs/state.json` (T1-T6, through `state-write.sh` with `--regen-todo`, then `manage-topics.sh
+set`); `specs/TODO.md` by regeneration only (never hand-edited); the Stage 1 section of
+`specs/ROADMAP.md` (hand-authored, since `roadmap-integration.sh --regenerate` is inoperative on the
+Stage layout); and, under `specs/757_lplus_decidability_successor_task_set/`, the plan's phase
+markers and checkboxes, the phase handoffs, `successor-records.json`, `issues.jsonl`, the summary,
+`.return-meta.json` and `.orchestrator-handoff.json`.
+
+It does NOT write: any `FormalSystem/` file, any `docs/` file, any `scripts/` file, any `Tests/`
+file, any typst file, any probe file — every such edit is a Section H record's own; and it neither
+transitions nor edits tasks 712, 713, 734, 709, 716, 714 or any other existing task.
+
+`validate-state.sh` outcome and any `file_scope` WARN lines: *(Phase 4/5)*.
