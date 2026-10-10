@@ -1,0 +1,18 @@
+{
+  "phase": 2,
+  "phase_name": "Repair task #410's plan and backfill its file_scope",
+  "started_at": "2026-10-10T15:41:00Z",
+  "last_updated": "2026-10-10T16:05:00Z",
+  "objectives": [
+    {"id": 1, "description": "Read 410's Territory Contract table and 8 Phase blocks", "status": "done", "files_touched": [], "note": "Read full plan (885 lines); identified file assignment per phase from Territory Contract + each phase's Goal/Scope Hypothesis text"},
+    {"id": 2, "description": "Add Files to modify block to each of the 8 phases", "status": "done", "files_touched": ["specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md"], "note": "8 blocks added, one per top-level ### Phase N heading, placed after each phase's own Scope Hypothesis line; none added to #### sub-headings"},
+    {"id": 3, "description": "Decide the conditional Verified/Internalize/*.lean overflow path", "status": "done", "files_touched": ["specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md"], "note": "Included FormalSystem/Metalogic/Decidability/Verified/Internalize/Mono.lean on Phase 3 (the monotonicity phase) with its conditionality (overflow trigger) stated in the entry's free text, per the plan's recommendation"},
+    {"id": 4, "description": "Run plan-file-scope-harvest.sh and confirm non-empty output", "status": "done", "files_touched": [], "note": "11-path array returned, including the .lean-triggered generated-surface appendix (README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md, typst/generated/status.typ) as expected"},
+    {"id": 5, "description": "Cross-check with backfill-file-scope.sh --dry-run", "status": "done", "files_touched": [], "note": "Dry-run proposed array for task 410 is byte-identical to the direct harvester run"},
+    {"id": 6, "description": "Write harvested array into state.json for project 410 via union-append", "status": "done", "files_touched": ["specs/state.json"], "note": "Used state-write.sh directly with jq filter '(.active_projects[] | select(.project_number==410) | .file_scope) |= ((. // []) + $add | unique)' -- never backfill-file-scope.sh without --dry-run, never update-task-status.sh --file-scope-add"},
+    {"id": 7, "description": "Run validate-state.sh and generate-todo.sh", "status": "done", "files_touched": ["specs/TODO.md"], "note": "validate-state.sh: STATE VALIDATION PASSED WITH WARNINGS (0 failures; pre-existing unrelated warnings e.g. coarse file_scope on project 177, project 755's own .claude/ entry, and other tasks' missing file_scope). generate-todo.sh ran clean with no output."}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

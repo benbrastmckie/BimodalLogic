@@ -326,6 +326,12 @@ risk — before 17 downstream lemmas depend on it.
   `Branch.timeTree`'s fuel recursion is asserted to be structurally accepted by the equation
   compiler; if Lean demands a `termination_by`, that is an expected local adjustment, not a scope
   change.
+- **Files to modify:**
+  - `FormalSystem/Metalogic/Decidability/Verified/Internalize.lean` - created; defines
+    `SignedFormula.content`, `conjOf`, `Branch.cell`/`slice`/`timeTree`/`internalizeWith`/
+    `internalize`, and the root anchor `internalize_initial`.
+  - `FormalSystem/Metalogic/Decidability.lean` - append-only; one `import` line added for the new
+    module, appended at the end of the `Verified.` group.
 
 ### Phase 2: Rules/TemporalAssets.lean -- the two missing object-language assets [NOT STARTED]
 
@@ -343,6 +349,12 @@ risk — before 17 downstream lemmas depend on it.
   created, 1 append-only). Confirm by `wc -l` and `git diff --stat`. The 4-step and 5-step assembly
   chains in research §5.2 and §5.4 are *designs, not executed proofs* (research §9 explicitly says
   no composition was run in Lean) — step counts may grow.
+- **Files to modify:**
+  - `FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/TemporalAssets.lean` - created
+    in 2.1 (`fConjG`, `pConjH`), extended in 2.2 (`diamondToFutureDiamond`) and 2.3
+    (`barcanDiamondG`).
+  - `FormalSystem/Metalogic/Decidability.lean` - append-only; one `import` line added for the new
+    module (Phase 2.1's task), appended at the end of the `Verified.` group.
 
 #### Phase 2.1: fConjG and pConjH [NOT STARTED]
 
@@ -444,6 +456,14 @@ risk — before 17 downstream lemmas depend on it.
 - **Scope Hypothesis:** ~280 lines across two sub-phases; 5-6 declarations; 1 file touched
   (`Internalize.lean`, or `Internalize/Mono.lean` if the ~900-line overflow trigger fires — see the
   Territory Contract). Confirm by `wc -l` and `git diff --stat`.
+- **Files to modify:**
+  - `FormalSystem/Metalogic/Decidability/Verified/Internalize.lean` - extended with the
+    monotonicity engine (`conjOf_mono`, the `cell`-replacement lemma, `slice_mono`, `timeTree_mono`,
+    `internalize_mono`/`internalizeWith_mono`).
+  - `FormalSystem/Metalogic/Decidability/Verified/Internalize/Mono.lean` - conditional,
+    pre-authorized overflow split (Territory Contract): created only if `Internalize.lean` exceeds
+    ~900 lines, to hold the monotonicity engine instead of extending the first file in place. Note
+    the split in this phase's commit message if taken.
 
 #### Phase 3.1: conjOf / cell / slice monotonicity [NOT STARTED]
 
@@ -496,6 +516,11 @@ risk — before 17 downstream lemmas depend on it.
 - **Commit Mode:** per-substep
 - **Build gate:** `lake build FormalSystem.Metalogic.Decidability`.
 - **Scope Hypothesis:** ~230 lines across two sub-phases; 6-8 declarations; 1 file touched.
+- **Files to modify:**
+  - `FormalSystem/Metalogic/Decidability/Verified/Internalize.lean` - extended with
+    `TimeOrdering.IsForestAt` and its preservation lemmas (4.1), plus the `rule_admissible`
+    statement shape, the contraposition bridge, the `h_fc` discharge helper, and the
+    branching-case helper (4.2).
 
 #### Phase 4.1: TimeOrdering.IsForestAt and its preservation lemmas [NOT STARTED]
 
@@ -584,6 +609,12 @@ risk — before 17 downstream lemmas depend on it.
   (`Tableau.lean:1569-1588`), never admissibility. Do not attempt to deduplicate them.
 - **Scope Hypothesis:** ~330 lines across two sub-phases; 8 theorems; 2 files touched (1 created, 1
   append-only). Confirm by `wc -l`, a `grep -c "^theorem"` count of 8, and `git diff --stat`.
+- **Files to modify:**
+  - `FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Propositional.lean` - created
+    in 5.1 (`negPos`, `negNeg`, `impNeg`, `orNeg`, `andPos`), extended in 5.2 (`andNeg`, `orPos`,
+    `impPos`).
+  - `FormalSystem/Metalogic/Decidability.lean` - append-only; one `import` line added for the new
+    module (Phase 5.1's task), appended at the end of the `Verified.` group.
 
 #### Phase 5.1: the five .linear propositional rules [NOT STARTED]
 
@@ -637,6 +668,11 @@ risk — before 17 downstream lemmas depend on it.
   append-only). Confirm by `wc -l`, `grep -c "^theorem"` = 5, `git diff --stat`. These 5 lemmas never
   touch a tree edge, so they are guard-agnostic outright (risk R3) — record that in the module
   docstring so 411 knows they transfer unchanged.
+- **Files to modify:**
+  - `FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Modal.lean` - created in 6.1
+    (`boxTemporal`, `boxPos`, `diamondNeg`), extended in 6.2 (`boxNeg`, `diamondPos`).
+  - `FormalSystem/Metalogic/Decidability.lean` - append-only; one `import` line added for the new
+    module (Phase 6.1's task), appended at the end of the `Verified.` group.
 
 #### Phase 6.1: boxTemporal and the two .persistent S5 rules [NOT STARTED]
 
@@ -701,6 +737,12 @@ risk — before 17 downstream lemmas depend on it.
   append-only). Confirm by `wc -l`, `grep -c "^theorem"` = 4, `git diff --stat`. These four *do*
   touch tree edges, so state them generically in `guard` wherever the proof permits and record which
   (if any) end up `⊤`-specific — that is risk R3's hand-off information for 411.
+- **Files to modify:**
+  - `FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Temporal.lean` - created in 7.1
+    (`allFuturePos`, `someFutureNeg`), extended in 7.2 (`allPastPos`, `somePastNeg`); further
+    extended by Phase 8 (the four existential rules).
+  - `FormalSystem/Metalogic/Decidability.lean` - append-only; one `import` line added for the new
+    module (Phase 7.1's task), appended at the end of the `Verified.` group.
 
 #### Phase 7.1: allFuturePos and someFutureNeg [NOT STARTED]
 
@@ -767,6 +809,11 @@ risk — before 17 downstream lemmas depend on it.
   `grep -c "^theorem"` reaching 8 in that file, and `git diff --stat`. This is the plan's largest
   sub-phase pair; if 8.1 overruns, split the witness emission from the `gProps`/`fNegProps`
   propagation rather than widening the sub-phase.
+- **Files to modify:**
+  - `FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Temporal.lean` - extended
+    (no new file; already imported by Phase 7's task) with the four existential rules
+    (`allFutureNeg`, `someFuturePos` in 8.1; `allPastNeg`, `somePastPos` in 8.2) plus their forest
+    preservation instance discharges.
 
 #### Phase 8.1: allFutureNeg and someFuturePos [NOT STARTED]
 

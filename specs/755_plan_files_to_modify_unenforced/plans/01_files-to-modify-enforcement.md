@@ -166,7 +166,7 @@ that changes (the regenerated `.claude/` tree), so no broader sweep adds informa
 
 ---
 
-### Phase 2: Repair task #410's plan and backfill its `file_scope` [NOT STARTED]
+### Phase 2: Repair task #410's plan and backfill its `file_scope` [COMPLETED]
 
 **Goal**: #410's plan carries per-phase `Files to modify` blocks sourced from its own
 `## Territory Contract` table, the real harvester returns a non-empty array for it, and that array
@@ -174,9 +174,10 @@ is written into `state.json#active_projects[].file_scope` — the regression fix
 error in Phase 3 depends on not firing against.
 
 **Tasks**:
-- [ ] Read `specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md`'s
+- [x] Read `specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md`'s
       `## Territory Contract` table (lines ~189-209) and its eight `### Phase N:` blocks.
-- [ ] Add one `**Files to modify**:` block to each of the eight phases, placed directly after that
+      *(completed)*
+- [x] Add one `**Files to modify**:` block to each of the eight phases, placed directly after that
       phase's `- **Scope Hypothesis:**` line to match the field order in `plan-format.md`, using the
       plan's existing list-item field rendering (`- **Files to modify:**` with entries indented one
       level). Derive each phase's entries from the Territory Contract's "Exclusive to this task
@@ -184,30 +185,36 @@ error in Phase 3 depends on not firing against.
       import line. The full path prefix is
       `FormalSystem/Metalogic/Decidability/` (the table's `Verified/...` entries are relative to it);
       `Verified/Refutation/` does not exist on disk yet, which is correct — `file_scope` is
-      prospective and the harvester never filesystem-validates a path.
-- [ ] Decide the conditional `Verified/Internalize/*.lean` overflow path explicitly. Recommended:
+      prospective and the harvester never filesystem-validates a path. *(completed: 8 blocks added,
+      one per top-level phase)*
+- [x] Decide the conditional `Verified/Internalize/*.lean` overflow path explicitly. Recommended:
       include `FormalSystem/Metalogic/Decidability/Verified/Internalize/Mono.lean` on the
       monotonicity phase with its conditionality stated in the entry's free text, since a declared
       prospective path that goes unused costs nothing while an undeclared one that *is* used is
-      exactly the overlap-gate blindness this task exists to remove.
-- [ ] Do NOT add a block to the `#### Phase N.M` sub-headings: the validator's loop and the
+      exactly the overlap-gate blindness this task exists to remove. *(completed: added to Phase 3
+      of 410's plan with conditionality stated in the entry's free text)*
+- [x] Do NOT add a block to the `#### Phase N.M` sub-headings: the validator's loop and the
       harvester both treat a `####` sub-heading as part of its enclosing `### Phase N` block, so one
-      block per top-level phase is the correct and sufficient shape.
-- [ ] Run `bash .claude/scripts/plan-file-scope-harvest.sh specs/410_.../plans/01_internalize-routine-admissibility.md`
+      block per top-level phase is the correct and sufficient shape. *(completed: honored — no
+      block added to any sub-heading)*
+- [x] Run `bash .claude/scripts/plan-file-scope-harvest.sh specs/410_.../plans/01_internalize-routine-admissibility.md`
       and confirm non-empty output. Expect the harvester's generated-surface appendix to fire
       (every harvested path is `.lean`), so the array is larger than the hand-written entry set —
-      that is its documented behavior, not a defect.
-- [ ] Cross-check with `bash .claude/scripts/backfill-file-scope.sh --dry-run` and confirm its
-      proposed array for 410 agrees with the direct harvester run.
-- [ ] Write the harvested array into `state.json` for project 410 **only**, as a union-append
+      that is its documented behavior, not a defect. *(completed: 11-path array, including the
+      4-file generated-surface appendix)*
+- [x] Cross-check with `bash .claude/scripts/backfill-file-scope.sh --dry-run` and confirm its
+      proposed array for 410 agrees with the direct harvester run. *(completed: byte-identical)*
+- [x] Write the harvested array into `state.json` for project 410 **only**, as a union-append
       (`.file_scope = ((.file_scope // []) + $add | unique)` scoped to the matching
       `active_projects[]` entry), never a wholesale array assignment. Do not run
       `backfill-file-scope.sh` without `--dry-run`: it is repo-wide and would backfill tasks the
       dispatch's NON-GOALS exclude. Do not route the write through
       `update-task-status.sh --file-scope-add` either: that flag is restricted to
       `operation=postflight` with `target_status` in `{research, plan}`, which would re-transition
-      #410 as a side effect.
-- [ ] Run `bash .claude/scripts/validate-state.sh` and `bash .claude/scripts/generate-todo.sh`.
+      #410 as a side effect. *(completed: via `state-write.sh` directly with the scoped jq filter)*
+- [x] Run `bash .claude/scripts/validate-state.sh` and `bash .claude/scripts/generate-todo.sh`.
+      *(completed: validate-state.sh passed with pre-existing, unrelated warnings only;
+      generate-todo.sh ran clean)*
 
 **Timing**: 1.5 hours
 

@@ -837,7 +837,20 @@
       ],
       "session_id": "sess_1785362916_22a871_410",
       "topic": "decidability",
-      "priority": "low"
+      "priority": "low",
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Internalize.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Internalize/Mono.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Modal.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Propositional.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Temporal.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/TemporalAssets.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "typst/generated/status.typ"
+      ]
     },
     {
       "project_number": 411,
