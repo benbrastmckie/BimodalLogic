@@ -216,23 +216,23 @@ subprocess, or prose.
 
 ---
 
-### Phase 2: Append `typst/generated/status.typ` [NOT STARTED]
+### Phase 2: Append `typst/generated/status.typ` [COMPLETED]
 
 **Goal**: The one surface the dispatch's evidence shows recurring in both precedents is appended
 whenever a `.lean` path is harvested in a capable repo.
 
 **Tasks**:
 
-- [ ] Inside the gated stage, append the literal `typst/generated/status.typ` when
+- [x] Inside the gated stage, append the literal `typst/generated/status.typ` when *(completed)*
       `$root/typst/generated/status.typ` exists as a regular file.
-- [ ] Re-sort and re-deduplicate through the same `jq ... unique` so output ordering stays a
+- [x] Re-sort and re-deduplicate through the same `jq ... unique` so output ordering stays a *(completed)*
       single sorted set rather than "harvested set, then appendix".
-- [ ] Add Case 13: a fixture plan whose only entry is `FormalSystem/Foo.lean`, driven against a
+- [x] Add Case 13: a fixture plan whose only entry is `FormalSystem/Foo.lean`, driven against a *(completed)*
       `make_fake_repo()` that contains `typst/generated/status.typ`, yields exactly
       `["FormalSystem/Foo.lean","typst/generated/status.typ"]`.
-- [ ] Add Case 14: the same fixture against a fake repo *without* `typst/generated/status.typ`
+- [x] Add Case 14: the same fixture against a fake repo *without* `typst/generated/status.typ` *(completed)*
       yields only the harvested path (existence-conditional, per the research recommendation).
-- [ ] Add Case 15: a fixture plan with only `.md` and `.sh` entries, in a fully capable fake repo,
+- [x] Add Case 15: a fixture plan with only `.md` and `.sh` entries, in a fully capable fake repo, *(completed)*
       appends nothing — the no-`.lean` regression guard.
 
 **Timing**: 45 minutes
