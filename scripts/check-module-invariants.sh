@@ -2316,6 +2316,8 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.PlusLanguage.box_global' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.anchorCons_anchorCells' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic_bounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
@@ -2538,6 +2540,8 @@ import FormalSystem
 #print axioms FormalSystem.PlusLanguage.box_global
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCons_anchorCells
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le
+#print axioms FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic_bounded
+#print axioms FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \

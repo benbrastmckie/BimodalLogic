@@ -94,7 +94,7 @@ anywhere in this tree:
           kTypeOf sig k (listSeg (List.replicate (m + p) ℓ))
             = kTypeOf sig k (listSeg (List.replicate m ℓ))
 
-provable from `kTypeOf_listSeg_append_congr` plus `kType_finite` by finite-semigroup idempotence.
+provable from `kType_finite` by pigeonhole plus `kTypeOf_listSeg_append_congr`.
 It is the named unit of successor work, not a discharged one.
 
 **And the honest note on "machine-checked", stated rather than smoothed over.** A claim that NO

@@ -355,7 +355,11 @@ instance on `KType sig k` found from the two binders through `normalFormFintype`
 
 `Nat.card (KType sig k)` is a COUNT of depth-`k` types and nothing else — see the section
 header above for the disclaimer, quoted from `AnchorLayer.lean`: it times nothing, bounds no
-procedure, and is not a complexity bound of any kind. -/
+procedure, and is not a complexity bound of any kind.
+
+Paper: — (pigeonhole on the finite summary alphabet, the formalization's own block-length
+threshold; the manuscript carries no counterpart and no literature bound is cited — in
+particular the ARGUED CTL⋆ 2EXPTIME ceiling is not one) -/
 theorem kTypeOf_listSeg_replicate_eventually_periodic_bounded (sig : MonadicSignature)
     [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) (ℓ : sig.preds → Bool) :
     ∃ m₀ p, 0 < p ∧ m₀ + p ≤ Nat.card (KType sig k) ∧

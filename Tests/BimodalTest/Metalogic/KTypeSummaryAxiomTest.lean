@@ -412,6 +412,19 @@ stated in this tree in any form, conditional or otherwise.
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented
 
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic_bounded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms
+  FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic_bounded
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.kTypeOf_listSeg_replicate_eventually_periodic
+
 /-! ## Requirement (S): the realization hypothesis DISCHARGED for a constructed model
 
 The eight rows below pin the eight Goals of the B2b soundness construction
