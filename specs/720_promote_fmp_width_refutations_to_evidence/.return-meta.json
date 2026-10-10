@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-10T07:34:19Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/720_promote_fmp_width_refutations_to_evidence/reports/01_ci-repair-and-citation-repoint.md",
+      "summary": "Confirms from CI logs and git that both 706/710 WIRED_REPO probe targets are untracked (gitignored under specs/archive/), verifies the landed Limits/ theorems fully subsume both probes, recommends the ls-files tracked-ness check plus deletion of the two entries and the FMP/README re-point to FiniteCarrier.*/NoFiniteWidth.* names, and proposes Limits/README.md as a file_scope addition."
+    }
+  ],
+  "proposed_file_scope": [
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/README.md"
+  ],
+  "metadata": {
+    "session_id": "sess_1791617492_752180_720",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
