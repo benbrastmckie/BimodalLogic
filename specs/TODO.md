@@ -27,11 +27,11 @@ next_project_number: 757
 ### Agent System
 
 730 [NOT STARTED] — Evaluate whether the formal:logic implement-phase routing...
-731 [NOT STARTED] — Make plan-time file\_scope harvest include the generated...
+731 [RESEARCHED] — Make plan-time file\_scope harvest include the generated...
 741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
-754 [NOT STARTED] — plan postflight widens file\_scope silently
+754 [RESEARCHING] — plan postflight widens file\_scope silently
 755 [NOT STARTED] — A plan artifact can omit the Files to modify field that...
 
 ### Algebraic Representation
@@ -174,7 +174,7 @@ RELATION TO ADJACENT RECORDS: distinct from the record covering generated surfac
 ---
 
 ### 754. plan postflight widens file_scope silently
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -419,10 +419,11 @@ ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compi
 ---
 
 ### 731. Harvest generated surfaces into file scope
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [731_harvest_generated_surfaces_into_file_scope/reports/01_harvest-generated-surfaces.md]
 
 **Description**: Make plan-time file_scope harvest include the generated surfaces that any .lean edit forces, so they stop recurring as undeclared scope extensions.
 
