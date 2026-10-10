@@ -657,4 +657,132 @@ and is not a complexity bound. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff
 
+/-! ## Requirement (W): the run layer's frame scheme (`RaySummary/RunLayer.lean`)
+
+Twenty pins, one per Goal of the (W) run-layer frame-scheme plan: the branching core
+transcribed from the wired probe `b2b-frame-constructor-branching.lean` (`FwdFinBranch`,
+`BwdFinBranch`, `iterS_fwd_finite`, `iterS_bwd_finite`, `fib_finite_of_finBranch`,
+`saturation_of_finBranch`), the parallel constructor with `[Finite W]` replaced by two-sided
+finite branching in its one `Saturation` slot (`ofSlicedStepFinBranch`,
+`ofSlicedStepFinBranch_isRegular`, `ofSlicedStepFinBranch_step`,
+`ofSlicedStepFinBranch_not_finite_worldState`, `ofSlicedStepFinBranch_mem_HF_iff`), the deadline
+ladder (`Drift`, `Count`, `Rlad`, `Rlad_fwd`, `Rlad_bwd`, `Rlad_slice_infinite`) and the frame it
+yields (`ladderFrame`, `ladderFrame_isRegular`, `ladderFrame_step`).
+
+**What these pins certify, and what they do not.** They certify the standard axiom profile
+`[propext, Classical.choice, Quot.sound]` (or no axioms at all, for the five definitions
+`FwdFinBranch`, `BwdFinBranch`, `Drift`, `Count`, `Rlad`) on each declaration and nothing else.
+They certify no claim about `PlusValidZTime`: the frame scheme is the regularity part of the run
+layer's first obligation, with `[Finite Q]` on the OBJECT only and an infinite slice
+(`Rlad_slice_infinite`); no realization theorem is pinned because none exists (the run layer's
+phase 2, open), nothing is pinned about `HitPresented`, and no pin is a complexity bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.FwdFinBranch' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.FwdFinBranch
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.BwdFinBranch' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.BwdFinBranch
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.iterS_fwd_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.iterS_fwd_finite
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.iterS_bwd_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.iterS_bwd_finite
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.fib_finite_of_finBranch' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.fib_finite_of_finBranch
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.saturation_of_finBranch' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.saturation_of_finBranch
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch_isRegular' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch_isRegular
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch_step' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch_step
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch_not_finite_worldState' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+-- linter.style.longLine: the fully qualified name makes this `#print axioms` line 104 characters,
+-- and the line cannot be broken (the command takes one identifier). Deleting the suppression makes
+-- the linter's warning part of the captured message, so `#guard_msgs` fails on a correct profile.
+set_option linter.style.longLine false in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch_not_finite_worldState
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch_mem_HF_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ofSlicedStepFinBranch_mem_HF_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Drift' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.Drift
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Count' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.Count
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Rlad' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.Rlad
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Rlad_fwd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.Rlad_fwd
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Rlad_bwd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.Rlad_bwd
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Rlad_slice_infinite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.Rlad_slice_infinite
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_isRegular' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_isRegular
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_step' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_step
+
 end BimodalTest.Metalogic

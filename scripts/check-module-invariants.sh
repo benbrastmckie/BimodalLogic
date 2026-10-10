@@ -2096,7 +2096,11 @@ fi
 # CELLS (syntactic in `|cl φ|`; not a complexity bound), and the `Finset`-twin bridge. They pin
 # profiles and are not a decision procedure: the run layer of (W) is BLOCKED on three named
 # obligations (RaySummary README, "(W): what landed and what did not"), and nothing in that
-# module states `PlusValidZTime` in any form.
+# module states `PlusValidZTime` in any form. One more matched pair, for the run layer's
+# frame-scheme row: `...ladderFrame_isRegular` (`RaySummary/RunLayer.lean`) is the regularity
+# instance of the frame-scheme constructor -- the regularity part of (W)'s first obligation --
+# with an infinite slice and `[Finite Q]` on the object only; it pins a profile and is not a
+# decision procedure, and no realization theorem is claimed for the frame it builds.
 #
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
@@ -2324,6 +2328,7 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.WeakCanonical.segZ_const_of_kTypeOf_eq_replicate' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.WeakCanonical.inFamily_of_shrink_run' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2550,6 +2555,7 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.WeakCanonical.segZ_const_of_kTypeOf_eq_replicate
 #print axioms FormalSystem.Metalogic.WeakCanonical.inFamily_of_shrink_run
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_isRegular
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
@@ -3453,8 +3459,18 @@ TENSE_PREFIX = re.compile(r"^(F|P|G|H|A|FF|HF)_")
 #     (`n.split("_", 1)[1] not in LIVE_BASES` below) does not fire.
 # Introducing a live `nonneg` declaration to make that auto-exemption fire would be a non-fix,
 # not a resolution: it manufactures a name rather than resolving the actual collision.
+#
+# Class (c) -- live-prefix, relation-verdict naming: the prefix is a live `def` of a RELATION
+# (`Rlad`, the deadline ladder of `RaySummary/RunLayer.lean`), and the three names are branching
+# verdicts about that relation in the naming shape the wired probe collection uses for the same
+# kind of fact (`Rbad_fwd`, `Rbad_bwd_infinite`, `Rok_bwd`, `Rok_fwd_infinite` in
+# `b2b-frame-constructor-branching.lean`, outside this scan). `Rlad.fwd` is writable but would
+# read as a projection of a relation and would break parity with the ninth wired probe
+# `deadline-ladder-branching.lean`, which cites `Rlad_fwd`/`Rlad_bwd`/`Rlad_slice_infinite` by
+# these names; recorded rather than renamed, like `NM_nonneg` above.
+#   "Rlad_fwd", "Rlad_bwd", "Rlad_slice_infinite"
 UPPER_ALLOW = {"CAggOdSwap_clause_iff", "CAggOdSwap_clause_iff_faithful", "O_zero_correct",
-               "NM_nonneg"}
+               "NM_nonneg", "Rlad_fwd", "Rlad_bwd", "Rlad_slice_infinite"}
 
 decls2 = []      # (ns, base, private, path, line)
 lemmas = []

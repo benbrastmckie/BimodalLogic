@@ -313,18 +313,22 @@ library is unchanged.
 
 ---
 
-### Phase 3: Pins, the C14 pair, and the `theorem-index` row [NOT STARTED]
+### Phase 3: Pins, the C14 pair, and the `theorem-index` row [COMPLETED]
 
 **Goal**: Every new library declaration is pinned by the test library; the regularity part of
 obligation (i) has one ledger row whose `pinned:C14` cell is backed by a C14 baseline pair.
 
 **Tasks**:
-- [ ] In `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, add a section
+- [x] In `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, add a section
       `/-! ## Requirement (W): the run layer's frame scheme (`RaySummary/RunLayer.lean`) -/`
       after the anchor-layer section, with a `#guard_msgs in #print axioms` pin for each of the
       twenty Goals declarations, in the exact shape of the `anchorCons_anchorCells` pin (the
-      file already imports the aggregator, which now imports `RunLayer`).
-- [ ] In `scripts/check-module-invariants.sh`, extend the C14 block: a comment sentence in the
+      file already imports the aggregator, which now imports `RunLayer`). *(deviation: altered — the
+      `ofSlicedStepFinBranch_not_finite_worldState` pin needs `set_option linter.style.longLine
+      false in` with a C29 reason comment, since its `#print axioms` line is 104 characters and
+      the linter warning would otherwise be captured by `#guard_msgs`; the five axiom-free
+      definitions pin as "does not depend on any axioms")*
+- [x] In `scripts/check-module-invariants.sh`, extend the C14 block: a comment sentence in the
       "(W)" paragraph (near the "Four further matched pairs" text) naming
       `...ladderFrame_isRegular` (`RaySummary/RunLayer.lean`) as the frame-scheme constructor's
       regularity instance — infinite slice, `[Finite Q]` on the object only, not a decision
@@ -333,8 +337,14 @@ obligation (i) has one ledger row whose `pinned:C14` cell is backed by a C14 bas
       directly after the `anchorConsFin_iff` baseline line; and the matching
       `#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_isRegular` line
       directly after the `anchorConsFin_iff` print line. Confirm the profile by reading Phase 1's
-      `#print axioms` output first; if it is a strict subset, write that subset.
-- [ ] Add one row to `docs/theorem-index.md`'s Decidability table, directly after the
+      `#print axioms` output first; if it is a strict subset, write that subset. *(deviation: altered —
+      the same script also gained a C23 leave-alone entry for `Rlad_fwd`/`Rlad_bwd`/
+      `Rlad_slice_infinite` (class (c), documented in place), because the gate flags them as
+      `Uppercase_x` names and the names are fixed by this plan's Lean Challenge Statements; and
+      `--emit-inventory` regenerated the generated inventory blocks of `README.md`,
+      `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`, which the INV check found
+      stale after the new module)*
+- [x] Add one row to `docs/theorem-index.md`'s Decidability table, directly after the
       `anchorConsFin_iff` row: label `—`; statement: the frame-scheme constructor of requirement
       (W)'s obligation (i), regularity part — a finite object `(Q, step, pend)` yields the regular
       `ℤ`-frame `ladderFrame` on the carrier `ℤ × (Q × ℕ × ℕ)` whose one-step relation is the
@@ -350,10 +360,13 @@ obligation (i) has one ledger row whose `pinned:C14` cell is backed by a C14 bas
       `FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_isRegular`, file
       `FormalSystem/Metalogic/Decidability/RaySummary/RunLayer.lean`, frame class `ZTime`, axioms
       `pcq pinned:C14`.
-- [ ] Run `bash scripts/check-module-invariants.sh` (C14 half (ii) compiles the pin scratch; C15
+- [x] Run `bash scripts/check-module-invariants.sh` (C14 half (ii) compiles the pin scratch; C15
       second assertion checks the row's `Paper:` line) and
       `bash scripts/generate-decidability-inventory.sh --diff` (advisory; the only acceptable
-      diff is the one new PROVED row).
+      diff is the one new PROVED row). *(observed: the script does not diff PROVED rows at
+      all, by its own design note, and its probe diff was already 14 entries off the committed
+      baseline before this task; the only delta attributable here is `+ REFUTED
+      probe:…/deadline-ladder-branching`; exit 0, advisory)*
 
 **Timing**: 1 hour
 
