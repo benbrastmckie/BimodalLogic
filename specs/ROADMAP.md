@@ -48,7 +48,7 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 751 remediates. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 **Coverage appendix (uncovered tasks)**:
 ```
-/orchestrate 127,128,709,729,730,731,741,753
+/orchestrate 127,128,709,729,730,741,753,756
 ```
 
 ## Stage 0 — User rulings (no agent may transition these)
