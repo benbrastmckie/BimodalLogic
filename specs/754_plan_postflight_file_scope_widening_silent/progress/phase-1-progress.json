@@ -1,0 +1,20 @@
+{
+  "phase": 1,
+  "phase_name": "Emit the delta-gated [file-scope] notice from the writer",
+  "started_at": "2026-10-10T13:35:00Z",
+  "last_updated": "2026-10-10T13:55:00Z",
+  "objectives": [
+    {"id": 1, "description": "Redeploy and confirm RESULT=landed_verify_clean before reading deployed copy", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Re-read source-store update-task-status.sh before editing", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Confirm merge-site hypothesis via grep FILE_SCOPE_ADD_LEN", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Compute delta once guarded by FILE_SCOPE_ADD_LEN -gt 0 inside update_state_json()", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/update-task-status.sh"]},
+    {"id": 5, "description": "Add notice helper function (stderr, returns 0 unconditionally)", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/update-task-status.sh"]},
+    {"id": 6, "description": "Call helper from state_is_noop branch on success only", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/update-task-status.sh"]},
+    {"id": 7, "description": "Call helper after shared closing state-write.sh success", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/update-task-status.sh"]},
+    {"id": 8, "description": "Extend --file-scope-add header comment with notice documentation", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/update-task-status.sh"]}
+  ],
+  "current_objective": 8,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

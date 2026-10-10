@@ -1,22 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/754_plan_postflight_file_scope_widening_silent/plans/01_file-scope-widening-notice.md",
-      "summary": "Three-phase plan implementing the dispatch's option (a): a delta-gated, stderr-only [file-scope] notice emitted from update-task-status.sh at both merge sites, locked in by assertions in the writer's own suite plus one end-to-end assertion on the live plan-postflight path, then documented, redeployed, and gated."
-    }
-  ],
-  "next_steps": "Run /implement 754 to execute the plan",
-  "memory_candidates": [],
+  "status": "in_progress",
+  "dispatch_seq": 6,
   "metadata": {
-    "session_id": "sess_1791637795_4b472e_754",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 2.25,
-    "dependency_waves": 3
-  },
-  "dispatch_seq": 4
+    "session_id": "sess_1791637795_4b472e",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

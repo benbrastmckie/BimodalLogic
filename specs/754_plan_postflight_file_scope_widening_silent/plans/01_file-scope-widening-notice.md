@@ -1,7 +1,7 @@
 # Implementation Plan: Task #754
 
 - **Task**: 754 - Make the plan-postflight file_scope widening observable instead of silent
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/754_plan_postflight_file_scope_widening_silent/reports/01_file_scope_widening_notice.md
@@ -114,41 +114,43 @@ roadmap alignment is claimed.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Emit the delta-gated `[file-scope]` notice from the writer [NOT STARTED]
+### Phase 1: Emit the delta-gated `[file-scope]` notice from the writer [COMPLETED]
 
 **Goal**: `update-task-status.sh` announces an actual `file_scope` widening on both real write
 paths, and stays silent when nothing changed.
 
 **Tasks**:
-- [ ] Run `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`
-      before reading or reasoning about the deployed copy.
-- [ ] Re-read `/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/update-task-status.sh`
-      immediately before editing (a sibling task is dispatched this same cycle).
-- [ ] Confirm the merge-site hypothesis mechanically: `grep -n 'FILE_SCOPE_ADD_LEN' ` on the
+- [x] Run `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`
+      before reading or reasoning about the deployed copy. *(completed)*
+- [x] Re-read `/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/update-task-status.sh`
+      immediately before editing (a sibling task is dispatched this same cycle). *(completed)*
+- [x] Confirm the merge-site hypothesis mechanically: `grep -n 'FILE_SCOPE_ADD_LEN' ` on the
       source-store file, and verify the write-path hits are exactly the `state_is_noop` branch's
       dedicated `state-write.sh` call and the `jq_filter` extension feeding the shared
-      `state-write.sh` call that closes `update_state_json()`.
-- [ ] Inside `update_state_json()`, after the `DRY_RUN` early-return and before the
+      `state-write.sh` call that closes `update_state_json()`. *(completed: confirmed exactly two
+      write-path hits, matching the hypothesis)*
+- [x] Inside `update_state_json()`, after the `DRY_RUN` early-return and before the
       `state_is_noop` branch, compute the delta once, guarded by `FILE_SCOPE_ADD_LEN -gt 0`:
       read the task's current `file_scope` from `$STATE_FILE` with the same keyed `jq` lookup
       shape the `--depends-on-add` dry-run preview uses, then derive the genuinely-new array
-      (`$add - $old | unique`) and its length into locals.
-- [ ] Add a small local helper that emits the single notice to stderr and returns 0
+      (`$add - $old | unique`) and its length into locals. *(completed)*
+- [x] Add a small local helper that emits the single notice to stderr and returns 0
       unconditionally, so neither call site can affect control flow. Message shape (stable
       substrings `[file-scope]` and the count, so tests need not match the whole line):
       `[file-scope] Task <N>: file_scope widened by <count> new path(s) via --file-scope-add: <json-array> -- proceeding.`
-- [ ] Call the helper from the `state_is_noop` branch's file_scope arm, only on a successful
+      *(completed: emit_file_scope_notice())*
+- [x] Call the helper from the `state_is_noop` branch's file_scope arm, only on a successful
       `state-write.sh` return (the existing `|| { echo "Warning: ..." }` arm must stay the
-      failure path and must not emit the notice).
-- [ ] Call the helper after the shared `state-write.sh` invocation that closes
+      failure path and must not emit the notice). *(completed)*
+- [x] Call the helper after the shared `state-write.sh` invocation that closes
       `update_state_json()` returns success, gated on `FILE_SCOPE_ADD_LEN -gt 0` and a non-zero
       delta — placed after the `if ! "$SCRIPT_DIR/state-write.sh" ... then return 1; fi` block so
-      a failed write never prints it.
-- [ ] Extend the `# Optional flag: --file-scope-add=<json-array>` header comment block to record
+      a failed write never prints it. *(completed)*
+- [x] Extend the `# Optional flag: --file-scope-add=<json-array>` header comment block to record
       the notice: that a widening is announced on stderr, that the notice reports the post-merge
       delta rather than the forwarded list, and that it is non-blocking with no exit-code or
       stdout effect. Cite durable anchors (file names, function names, field names) only — no
-      task numbers, no version language.
+      task numbers, no version language. *(completed)*
 
 **Timing**: 1 hour
 
