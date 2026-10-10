@@ -1,18 +1,32 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-10T08:10:56Z",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/750_w_run_layer_closure_wide_lift/reports/01_w-run-layer-design.md",
-      "summary": "Phase 1 design decision for (W)'s run layer: deadline-ladder (thread-indexed) unfolding over a bounded-deadline encoding, machine-checked two-sided finite branching in a compiled scratch, depth k = 1, regularity part re-measured at 117-139 lines, phases 2-3 characterized not priced, README literature paragraph drafted with verified HWZ/GKWZ anchors."
+      "type": "plan",
+      "path": "specs/750_w_run_layer_closure_wide_lift/plans/01_w-run-layer-ladder-scheme.md",
+      "summary": "Five-phase plan landing the deadline-ladder frame scheme for (W)'s obligation (i): RunLayer.lean (generic finitely-branching sliced constructor + ladderFrame, 20 pinned declarations), a ninth wired probe, C14 pair and theorem-index row, and the README (W) section with k = 1, the phase-2 obstacle, phase 3 verbatim and the HWZ/GKWZ literature paragraph; phases 2-3 of the task are characterized, not planned."
     }
   ],
   "metadata": {
     "session_id": "sess_1791617492_752180_750",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 6.5,
+    "dependency_waves": [[1], [2], [3, 4], [5]],
+    "research_integrated": true,
+    "challenge_block_typechecked": true
+  },
+  "memory_candidates": [
+    {
+      "content": "A Lean frame constructor gated on a carrier-finiteness instance (`[Finite W]` on `ofSlicedStep`'s one `Saturation` slot) is generalized by a PARALLEL constructor whose body is the original with that one slot replaced (`saturation_of_finBranch` from two-sided finite branching), never by in-place edit when the original is referenced by wired probes. Lemmas proved in a `specs/evidence/` probe cannot be imported by the library (probes sit outside the Lake build graph and are compiled by `lake env lean`), so the library carries its own transcription and the probe then imports the library and cites it. A new library module must be added both to its directory aggregator and to the generated root `FormalSystem.lean` (`lake exe mk_all --lib FormalSystem --check`), and any `docs/theorem-index.md` row claiming `pinned:C14` needs a matched baseline + `#print axioms` pair in `scripts/check-module-invariants.sh`. Pinning a plan's Lean Challenge block by `lake env lean` at plan time retires instance-demand risks before implementation.",
+      "category": "PATTERN",
+      "source_artifact": "specs/750_w_run_layer_closure_wide_lift/plans/01_w-run-layer-ladder-scheme.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["parallel constructor", "evidence probe", "lake build graph", "mk_all", "pinned:C14", "challenge block"]
+    }
+  ],
+  "next_steps": "Run /implement 750 to execute the plan",
+  "dispatch_seq": 5
 }

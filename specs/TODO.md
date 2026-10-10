@@ -78,7 +78,7 @@ next_project_number: 754
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-750 [RESEARCHED] — (W)'s RUN LAYER — ITS OWN RECORD, AS RaySummary/README.md AND...
+750 [PLANNED] — (W)'s RUN LAYER — ITS OWN RECORD, AS RaySummary/README.md AND...
 
 ### Formula Refactor
 
@@ -158,11 +158,12 @@ RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The roadmap-genera
 ---
 
 ### 750. W run layer closure wide lift
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [750_w_run_layer_closure_wide_lift/reports/01_w-run-layer-design.md]
+- **Plan**: [750_w_run_layer_closure_wide_lift/plans/01_w-run-layer-ladder-scheme.md]
 
 **Description**: **(W)'s RUN LAYER — ITS OWN RECORD, AS `RaySummary/README.md` AND 747's follow-up both instruct.** (W)'s anchor layer is landed and bounded in `AnchorLayer.lean`; the run layer — the `untl`/`snce` nesting and the lift from one seam to `¬ PlusValidZTime φ` — is BLOCKED on three named obligations, each with its source and none with a measured cost (`README.md:378-383`). Obligation (iii) is the presentation-size bound and is a SEPARATE record's phase 1, not this one's.
 
