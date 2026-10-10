@@ -183,28 +183,29 @@ before editing, and widen the edit if a third write-path hit exists.
 
 ---
 
-### Phase 2: Assert the notice in the writer's suite and on the live plan-postflight path [NOT STARTED]
+### Phase 2: Assert the notice in the writer's suite and on the live plan-postflight path [COMPLETED]
 
 **Goal**: all three notice behaviors, plus the end-to-end surfacing through the one live caller,
 are locked in by assertions.
 
 **Tasks**:
-- [ ] Re-read both test files immediately before editing.
-- [ ] In `scripts/tests/test-update-task-status.sh` `Case 11`, add an assertion to `11a` that
+- [x] Re-read both test files immediately before editing. *(completed)*
+- [x] In `scripts/tests/test-update-task-status.sh` `Case 11`, add an assertion to `11a` that
       `$WORKDIR/c11a.err` contains a `[file-scope]` notice naming a count of 2 (the real-write
-      branch, null `file_scope` gaining both paths).
-- [ ] Add an assertion to `11b` that `$WORKDIR/c11b.err` contains **no** `[file-scope]` line (the
-      zero-delta cry-wolf case, on the status no-op branch).
-- [ ] Add an assertion to `11c` that `$WORKDIR/c11c.err` contains a `[file-scope]` notice naming
+      branch, null `file_scope` gaining both paths). *(completed)*
+- [x] Add an assertion to `11b` that `$WORKDIR/c11b.err` contains **no** `[file-scope]` line (the
+      zero-delta cry-wolf case, on the status no-op branch). *(completed)*
+- [x] Add an assertion to `11c` that `$WORKDIR/c11c.err` contains a `[file-scope]` notice naming
       a count of 1 (the no-op branch with one already-present and one genuinely new path).
-- [ ] Extend `Case 11`'s header comment to name the notice assertions alongside the merge
-      assertions it already describes.
-- [ ] In `scripts/tests/test-skill-base-lifecycle.sh` `Group 4a`, add one assertion that
+      *(completed)*
+- [x] Extend `Case 11`'s header comment to name the notice assertions alongside the merge
+      assertions it already describes. *(completed)*
+- [x] In `scripts/tests/test-skill-base-lifecycle.sh` `Group 4a`, add one assertion that
       `$WORKDIR/harvest-postflight-stderr.log` contains a `[file-scope]` notice naming a count of
       2, proving the notice reaches an operator through the actually-live plan-postflight path
-      (`skill_postflight_update`), not only through a direct writer invocation.
-- [ ] Match on the stable substrings (`[file-scope]` and the count) rather than the full line, so
-      a later wording change does not break the suites.
+      (`skill_postflight_update`), not only through a direct writer invocation. *(completed)*
+- [x] Match on the stable substrings (`[file-scope]` and the count) rather than the full line, so
+      a later wording change does not break the suites. *(completed)*
 
 **Timing**: 45 minutes
 
