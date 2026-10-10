@@ -401,29 +401,43 @@ the actual `log_warn`/`log_error` call site it describes in the validator landed
 
 ---
 
-### Phase 5: Redeploy, run the full gate set, and sweep every active plan [NOT STARTED]
+### Phase 5: Redeploy, run the full gate set, and sweep every active plan [COMPLETED]
 
 **Goal**: the edits are live in this repo's deployed tree, the complete gate set is green against
 Phase 1's baseline, and the new check's behavior over the real active-plan corpus matches what
 Phase 3's Scope Hypothesis predicted.
 
 **Tasks**:
-- [ ] Run `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
-- [ ] Run `bash .claude/scripts/tests/run-all.sh` (the complete suite set, no `--only`) and diff the
+- [x] Run `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+      *(completed)*
+- [x] Run `bash .claude/scripts/tests/run-all.sh` (the complete suite set, no `--only`) and diff the
       roster against Phase 1's baseline. Every failure must be EXPECTED; a NEW failure blocks.
-- [ ] Run `bash .claude/scripts/verify-deploy.sh` (the complete gate set, no `--only-gate`) and diff
-      its findings against Phase 1's baseline.
-- [ ] Run the deployed validator over every active plan
+      *(completed, with a deviation: the first run surfaced 2 NEW failing suites not anticipated
+      by this plan's Risk table -- test-gate-out-repair-reporting.sh and
+      test-orchestrate-cycle-postflight.sh each build a single-phase plan fixture with no Files
+      to modify field and assert zero errors/warnings from validate-artifact.sh. The plan's own
+      Risk-table mitigation only updated test-validate-artifact.sh's OWN fixture; these two
+      sibling suites' independently-defined fixtures needed the same one-entry Files-to-modify
+      block added. Fixed both (in the source store), redeployed, re-ran: zero NEW failures
+      against the Phase 1 baseline. See progress/phase-5-progress.json and the issue log.)*
+- [x] Run `bash .claude/scripts/verify-deploy.sh` (the complete gate set, no `--only-gate`) and diff
+      its findings against Phase 1's baseline. *(completed: PASS -- 14 check(s), 0 failure(s),
+      matching baseline exactly)*
+- [x] Run the deployed validator over every active plan
       (`for f in specs/[0-9]*/plans/*.md; do bash .claude/scripts/validate-artifact.sh "$f" plan; done`)
       and confirm: zero whole-plan `Files to modify` errors, and the per-phase warning count and
-      plan distribution match the post-repair residue Phase 3 re-measured.
-- [ ] Re-run `bash .claude/scripts/plan-file-scope-harvest.sh` against task #750's plan and confirm
+      plan distribution match the post-repair residue Phase 3 re-measured. *(completed: 0
+      whole-plan errors, 5 per-phase warnings across 2 plans, exactly matching the predicted
+      residue)*
+- [x] Re-run `bash .claude/scripts/plan-file-scope-harvest.sh` against task #750's plan and confirm
       its output is byte-identical to the pre-change run — the legitimate sentinel case is
-      untouched end to end.
-- [ ] Validate this task's own plan and report with the deployed validator
-      (`validate-artifact.sh ... plan` and `... report`) and confirm `[PASS]`.
-- [ ] Run `bash .claude/scripts/check-task-references.sh` and confirm no new finding from the
-      source-store edits now present under `.claude/**`.
+      untouched end to end. *(completed: byte-identical)*
+- [x] Validate this task's own plan and report with the deployed validator
+      (`validate-artifact.sh ... plan` and `... report`) and confirm `[PASS]`. *(completed: both
+      [PASS], 0 warnings)*
+- [x] Run `bash .claude/scripts/check-task-references.sh` and confirm no new finding from the
+      source-store edits now present under `.claude/**`. *(completed: 198 pre-existing,
+      unrelated occurrences repo-wide; zero of the 6 edited files appear in the findings)*
 
 **Timing**: 1 hour
 
