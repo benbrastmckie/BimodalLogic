@@ -9,6 +9,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.SeamMulti
 import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 import FormalSystem.Metalogic.Decidability.RaySummary.Trace
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
+import FormalSystem.Metalogic.Decidability.RaySummary.Transport
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.StabCheck
@@ -72,6 +73,13 @@ nothing about `PlusValidZTime` — see the README's verdict.
 * `RaySummary.Compose` — label-list segments (`listSeg`, `labels`,
   `kTypeOf_segZ_eq_listSeg`) and composition on representatives
   (`kTypeOf_listSeg_append_congr`).
+* `RaySummary.Transport` — transport of a family triple along the deletion of a constant run:
+  the keystone `segZ_const_of_kTypeOf_eq_replicate` (a segment with the `k`-type of a nonempty
+  constant block is a nonempty constant block, `k ≥ 1`), the deletion colouring `deleteRun`, and
+  the cut surgery `inFamily_of_shrink_run` with its `familyTriples` form
+  `familyTriples_subset_deleteRun` — shrink direction only, under an explicit single-segment
+  containment hypothesis; no `↔`, no re-cutting, and `m₀ + p ≤ Nat.card (KType sig k)` is a
+  count of depth-`k` types and nothing else.
 * `RaySummary.Present` — finite labelled presentations with their runs (`IsRun`,
   `runTrace`), the computable path-type closure (`pathTypes`, `pathTypesNow`,
   `mem_pathTypes_iff`, `mem_pathTypesNow_iff`) and liveness (`fwdLive`, `bwdLive`,

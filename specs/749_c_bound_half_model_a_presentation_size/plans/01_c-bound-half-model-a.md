@@ -186,18 +186,18 @@ the "finite-semigroup idempotence" attribution at its two sites.
 
 ---
 
-### Phase 3: `Transport.lean` and the keystone [NOT STARTED]
+### Phase 3: `Transport.lean` and the keystone [COMPLETED]
 
 **Goal**: Create the transport module and land the keystone: a segment whose `k`-type equals that
 of a nonempty constant block is nonempty and constant, at `k ≥ 1`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/Transport.lean` with the repository header (copyright block, module docstring with "Main definitions and results" and "References" per `docs/development/LEAN_STYLE_GUIDE.md`), imports `FormalSystem.Metalogic.Decidability.RaySummary.Compose` and `FormalSystem.Metalogic.WeakCanonical.Transfer` (cycle-free: `Transfer.lean:7-14` imports nothing under `Decidability/`), `namespace FormalSystem.Metalogic.WeakCanonical` (matching `Compose.lean:77`).
-- [ ] Land the two depth-1 sentence helpers and their `eval` lemmas (private where not reused): `exTop : MonadicSentence sig := .ex (.not (.lt 0 0))` with `eval M Fin.elim0 exTop ↔ Nonempty M.carrier`; `allAtom (P : sig.preds) (b : Bool) := .all (bif b then .atom P 0 else .not (.atom P 0))` with `eval M Fin.elim0 (allAtom P b) ↔ ∀ x, (M.pred P x ↔ b = true)` (closed by `cases b <;> simp [allAtom, eval]`); `quantifierDepth` of each `≤ 1` by `simp [quantifierDepth]`.
-- [ ] Land `theorem segZ_const_of_kTypeOf_eq_replicate [Finite sig.preds] {k : ℕ} (hk : 1 ≤ k) (c : sig.preds → ℤ → Prop) [∀ p, DecidablePred (c p)] (a b : ℤ) (ℓ : sig.preds → Bool) {j : ℕ} (hj : 0 < j) (h : kTypeOf sig k (segZ sig c a b) = kTypeOf sig k (listSeg (List.replicate j ℓ))) : a < b ∧ ∀ s, a ≤ s → s < b → ∀ P, (c P s ↔ ℓ P = true)`. Proof per report F5: `k_equiv_monotone sig hk h` to depth 1, `k_equiv_preserves_sentence` with `exTop` (nonemptiness) and `allAtom P (ℓ P)` for each `P` (constancy); the `(List.replicate j ℓ).get x P` goal closes by `obtain ⟨i, hi⟩ := x; simp` (`List.get_replicate` does not exist at this Mathlib pin). Match the binder convention of `kTypeOf_segZ_eq_listSeg` (`Compose.lean:168`) for the `DecidablePred` instance.
-- [ ] Register the module: add `import FormalSystem.Metalogic.Decidability.RaySummary.Transport` to `FormalSystem/Metalogic/Decidability/RaySummary.lean` (after `Compose`).
-- [ ] Add a `Transport.lean` row to the file table in `RaySummary/README.md` (the table at `:34` lists every file; `scripts/readme-lint.sh` counts files).
-- [ ] Scratch `#print axioms` for the keystone: `[propext, Classical.choice, Quot.sound]`.
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/Transport.lean` with the repository header (copyright block, module docstring with "Main definitions and results" and "References" per `docs/development/LEAN_STYLE_GUIDE.md`), imports `FormalSystem.Metalogic.Decidability.RaySummary.Compose` and `FormalSystem.Metalogic.WeakCanonical.Transfer` (cycle-free: `Transfer.lean:7-14` imports nothing under `Decidability/`), `namespace FormalSystem.Metalogic.WeakCanonical` (matching `Compose.lean:77`).
+- [x] Land the two depth-1 sentence helpers and their `eval` lemmas (private where not reused): `exTop : MonadicSentence sig := .ex (.not (.lt 0 0))` with `eval M Fin.elim0 exTop ↔ Nonempty M.carrier`; `allAtom (P : sig.preds) (b : Bool) := .all (bif b then .atom P 0 else .not (.atom P 0))` with `eval M Fin.elim0 (allAtom P b) ↔ ∀ x, (M.pred P x ↔ b = true)` (closed by `cases b <;> simp [allAtom, eval]`); `quantifierDepth` of each `≤ 1` by `simp [quantifierDepth]`.
+- [x] Land `theorem segZ_const_of_kTypeOf_eq_replicate [Finite sig.preds] {k : ℕ} (hk : 1 ≤ k) (c : sig.preds → ℤ → Prop) [∀ p, DecidablePred (c p)] (a b : ℤ) (ℓ : sig.preds → Bool) {j : ℕ} (hj : 0 < j) (h : kTypeOf sig k (segZ sig c a b) = kTypeOf sig k (listSeg (List.replicate j ℓ))) : a < b ∧ ∀ s, a ≤ s → s < b → ∀ P, (c P s ↔ ℓ P = true)`. Proof per report F5: `k_equiv_monotone sig hk h` to depth 1, `k_equiv_preserves_sentence` with `exTop` (nonemptiness) and `allAtom P (ℓ P)` for each `P` (constancy); the `(List.replicate j ℓ).get x P` goal closes by `obtain ⟨i, hi⟩ := x; simp` (`List.get_replicate` does not exist at this Mathlib pin). Match the binder convention of `kTypeOf_segZ_eq_listSeg` (`Compose.lean:168`) for the `DecidablePred` instance. *(deviation: altered — the `[∀ p, DecidablePred (c p)]` binder is omitted: the keystone's statement and proof mention only `kTypeOf`/`segZ`, so the binder would be an `unusedArguments` finding; `Transport.lean` imports `Trace` as well, for the `familyTriples` corollary of Phase 5)*
+- [x] Register the module: add `import FormalSystem.Metalogic.Decidability.RaySummary.Transport` to `FormalSystem/Metalogic/Decidability/RaySummary.lean` (after `Compose`).
+- [x] Add a `Transport.lean` row to the file table in `RaySummary/README.md` (the table at `:34` lists every file; `scripts/readme-lint.sh` counts files).
+- [x] Scratch `#print axioms` for the keystone: `[propext, Classical.choice, Quot.sound]`.
 
 **Timing**: 1.5 hours
 
