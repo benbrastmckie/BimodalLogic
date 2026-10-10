@@ -1,7 +1,7 @@
 # Implementation Plan: Task #757
 
 - **Task**: 757 - Research, design, and file the successor task set that carries L+ decidability — the unfiled frontier after the (C)/(S)/(W) partial landings
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/757_lplus_decidability_successor_task_set/reports/01_lplus-successor-task-set.md
@@ -139,18 +139,18 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 content is an input to the next (Section 0 → design sections → Section H text → filing → numbers
 and ROADMAP).
 
-### Phase 1: Re-verify every anchor and write Section 0 [NOT STARTED]
+### Phase 1: Re-verify every anchor and write Section 0 [COMPLETED]
 
 **Goal**: Produce the spec's Section 0 verification record from this round's own runs — compile
 record, declaration anchors, gate anchors, task-record anchors, differences from the research
 report — so that nothing the later sections cite rests on a carried figure.
 
 **Tasks**:
-- [ ] `bash .claude/scripts/lake-build-guard.sh status`; confirm no holder and that no
+- [x] `bash .claude/scripts/lake-build-guard.sh status`; confirm no holder and that no
       `FormalSystem/**/*.lean` is newer than `.lake/build/lib/lean/FormalSystem.olean`
       (`find FormalSystem -name '*.lean' -newer .lake/build/lib/lean/FormalSystem.olean`). If
       stale, rebuild detached under the guard with a bounded waiter before continuing.
-- [ ] Write a scratch file in the scratchpad (import `FormalSystem`) with one `#check` and one
+- [x] Write a scratch file in the scratchpad (import `FormalSystem`) with one `#check` and one
       `#print axioms` line per anchor in the report's Section 0.1 (the perimeter:
       `Compression.decidableValidZTime`, `PlusValidZTime`, both `StabFaithful`; (S):
       `presented_modelOf`, `hitCl_modelOf_eq_hitOf`; (C): `HitPresented`,
@@ -162,23 +162,23 @@ report — so that nothing the later sections cite rests on a carried figure.
       `NoFiniteWidth.M`, `NoFiniteWidth.F_isRegular`, `NoFiniteWidth.Φ`). Run
       `timeout 300 lake env lean <scratch>`; require exit 0 and no `Unknown identifier`; record
       types and axiom profiles in Section 0.1.
-- [ ] Re-grep the declaration anchors of the report's 0.2 table (rows 1-19) by declaration name
+- [x] Re-grep the declaration anchors of the report's 0.2 table (rows 1-19) by declaration name
       and record path + declaration kind in Section 0.2; cite names and paths, never line numbers,
       in Sections A-H. Confirm `grep -i stabiliz FormalSystem/Metalogic/Decidability/RaySummary/*.lean`
       still hits only `iterate_stabilizes`, and `grep -rn 'Decidable (PlusValidZTime' FormalSystem/
       Tests/ specs/evidence/ --include=*.lean` still has 0 statement-level hits.
-- [ ] Run `bash scripts/check-evidence-probes.sh` detached (log in scratchpad, bounded waiter);
+- [x] Run `bash scripts/check-evidence-probes.sh` detached (log in scratchpad, bounded waiter);
       record PASS/SKIP counts and exit code in Section 0.3; list the
       `specs/evidence/seam-gluing-ray-product/` file set.
-- [ ] Read `specs/state.json` (jq, read-only) for the 0.4 table: 757, 749, 750, 720, 744, 734,
+- [x] Read `specs/state.json` (jq, read-only) for the 0.4 table: 757, 749, 750, 720, 744, 734,
       751, 752, 410, 712, 713, 709, 716, 714 — status, `dependencies`, `file_scope`; record
       `next_project_number` and the `active_topics` entry `decidability`.
-- [ ] Write Section 0.5 "Differences from the research report": any anchor that moved, any count
+- [x] Write Section 0.5 "Differences from the research report": any anchor that moved, any count
       that differs, and the two-counter `(c, n)` sharpening restated as the spec's reading.
-- [ ] Create `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` with the
+- [x] Create `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` with the
       preamble (format of record: the 721 spec; what this file does and does not do — it FILES,
       unlike its precedents) and Section 0 only.
-- [ ] Record issues/wins as they arise via `issue-record.sh` (`--phase implement`).
+- [x] Record issues/wins as they arise via `issue-record.sh` (`--phase implement`).
 
 **Timing**: 1.5 hours
 
