@@ -253,7 +253,7 @@ periodicity through `kTypeOf_listSeg_append_congr`.
 
 ---
 
-### Phase 5: The cut surgery `inFamily_of_shrink_run` [NOT STARTED]
+### Phase 5: The cut surgery `inFamily_of_shrink_run` [IN PROGRESS]
 
 **Goal**: From a `SegmentFactorization` of `c` whose segment `z₀` contains a constant run
 `[s, s + j)` of letter `ℓ` with `m₀ + p ≤ j`, build one for `deleteRun c s p` with the same

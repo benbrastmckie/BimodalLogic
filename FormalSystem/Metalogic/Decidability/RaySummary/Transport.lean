@@ -75,6 +75,9 @@ for the disclaimer, quoted from `AnchorLayer.lean`.
   untouched and the translated segments keep their letters and their `k`-types.
 * `kTypeOf_segZ_deleteRun_of_const_run` — the segment holding the run keeps its `k`-type, with
   the threshold/period pair an explicit hypothesis.
+* `inFamily_of_shrink_run` — the surgery; `inFamily_deleteRun_of_inFamily`,
+  `familyTriples_subset_deleteRun` — its `InFamily` and `familyTriples` forms under a
+  containment hypothesis quantified over every factorization.
 
 ## References
 
@@ -305,5 +308,134 @@ theorem kTypeOf_segZ_deleteRun_of_const_run [Finite sig.preds] (k : ℕ)
     rw [show j - p + p = j by omega] at this
     exact this.symm
   exact kTypeOf_listSeg_append_congr k (kTypeOf_listSeg_append_congr k rfl hmid) rfl
+
+/-! ## The surgery -/
+
+/-- **The cut surgery, shrink direction.** A factorization `F` of `c` whose segment
+`[W z₀, W (z₀ + 1))` contains a constant run `[s, s + j)` of letter `ℓ`, with `p < j` and
+`m₀ + p ≤ j` for a threshold/period pair `(m₀, p)` of `ℓ` (`hper`), yields a factorization of
+`deleteRun c s p` with the SAME triple `(τneg, τzero, τpos)`: the cutting sequence is `W z` for
+`z ≤ z₀` and `W z - p` beyond. Segments below `z₀` keep their letters
+(`kTypeOf_segZ_deleteRun_below`), segments above are translated
+(`kTypeOf_segZ_deleteRun_above`), and the segment at `z₀` loses `p` positions of its run
+(`kTypeOf_segZ_deleteRun_of_const_run`). Monotonicity, coverage and the two nonemptiness fields
+are integer arithmetic on `W`; `p < j` is what keeps the extremal segments nonempty when
+`z₀ ∈ {1, -2}`.
+
+The containment `hsub` is a HYPOTHESIS: a run met by several short segments is not re-cut here
+(module docstring), and no `↔` is claimed.
+
+Paper: — (the formalization's own cut surgery on a Ramsey factorization of the time axis; the
+manuscript carries no counterpart) -/
+theorem inFamily_of_shrink_run [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ)
+    (c : sig.preds → ℤ → Prop) (F : SegmentFactorization sig k c) (z₀ s : ℤ)
+    (ℓ : sig.preds → Bool) (j p m₀ : ℕ) (hpj : p < j) (hm : m₀ + p ≤ j)
+    (hsub : F.W z₀ ≤ s ∧ s + j ≤ F.W (z₀ + 1))
+    (hconst : ∀ u, s ≤ u → u < s + j → ∀ P, (c P u ↔ ℓ P = true))
+    (hper : ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) =
+      kTypeOf sig k (listSeg (List.replicate m ℓ))) :
+    InFamily sig k F.τneg F.τzero F.τpos (deleteRun c s p) := by
+  obtain ⟨hs₀, hs₁⟩ := hsub
+  let W' : ℤ → ℤ := fun z => if z ≤ z₀ then F.W z else F.W z - p
+  have hW'_le : ∀ z, z ≤ z₀ → W' z = F.W z := fun z hz => if_pos hz
+  have hW'_gt : ∀ z, z₀ < z → W' z = F.W z - p := fun z hz => if_neg (not_le.mpr hz)
+  -- every segment of `W'` has the `k`-type of the corresponding segment of `W`
+  have hseg : ∀ z, kTypeOf sig k (segZ sig (deleteRun c s p) (W' z) (W' (z + 1))) =
+      kTypeOf sig k (segZ sig c (F.W z) (F.W (z + 1))) := by
+    intro z
+    rcases lt_trichotomy z z₀ with hz | rfl | hz
+    · rw [hW'_le z hz.le, hW'_le (z + 1) (by omega)]
+      exact kTypeOf_segZ_deleteRun_below k c s p _ _
+        (le_trans (F.mono (show z + 1 ≤ z₀ by omega)) hs₀)
+    · rw [hW'_le z le_rfl, hW'_gt (z + 1) (by omega)]
+      exact kTypeOf_segZ_deleteRun_of_const_run k c s ℓ j p m₀ _ _ hs₀ hs₁ hconst hpj.le hper hm
+    · rw [hW'_gt z hz, hW'_gt (z + 1) (by omega)]
+      exact kTypeOf_segZ_deleteRun_above k c s p _ _
+        (by have := F.mono (show z₀ + 1 ≤ z by omega); omega)
+  refine ⟨⟨W', ?_, ?_, F.τpos, F.τneg, fun z hz => (hseg z).trans (F.pos_type z hz),
+    fun z hz => (hseg z).trans (F.neg_type z hz), ?_, ?_, F.τzero,
+    (hseg 0).trans F.zero_type⟩, rfl, rfl, rfl⟩
+  · -- `mono`: the one cross case `z ≤ z₀ < z'` needs `W (z₀ + 1) ≥ s + j ≥ W z₀ + p`
+    intro z z' hzz'
+    by_cases hz : z ≤ z₀ <;> by_cases hz' : z' ≤ z₀
+    · rw [hW'_le z hz, hW'_le z' hz']; exact F.mono hzz'
+    · rw [hW'_le z hz, hW'_gt z' (not_le.mp hz')]
+      have h1 := F.mono hz
+      have h2 := F.mono (show z₀ + 1 ≤ z' by omega)
+      omega
+    · omega
+    · rw [hW'_gt z (not_le.mp hz), hW'_gt z' (not_le.mp hz')]
+      have := F.mono hzz'
+      omega
+  · -- `cover`: below `s` use `F.cover t`, at or above `s` use `F.cover (t + p)`
+    intro t
+    by_cases ht : t < s
+    · obtain ⟨z, h1, h2⟩ := F.cover t
+      have hz : z ≤ z₀ := by
+        by_contra hcon
+        have := F.mono (show z₀ + 1 ≤ z by omega)
+        omega
+      refine ⟨z, ?_, ?_⟩
+      · rw [hW'_le z hz]; exact h1
+      · by_cases hz1 : z + 1 ≤ z₀
+        · rw [hW'_le (z + 1) hz1]; exact h2
+        · rw [hW'_gt (z + 1) (by omega)]
+          have : z = z₀ := by omega
+          subst this
+          omega
+    · obtain ⟨z, h1, h2⟩ := F.cover (t + p)
+      have hz : z₀ ≤ z := by
+        by_contra hcon
+        have := F.mono (show z + 1 ≤ z₀ by omega)
+        omega
+      refine ⟨z, ?_, ?_⟩
+      · rcases eq_or_lt_of_le hz with rfl | hz'
+        · rw [hW'_le _ le_rfl]; omega
+        · rw [hW'_gt z hz']; omega
+      · rw [hW'_gt (z + 1) (by omega)]; omega
+  · -- `strict_pos`
+    rcases lt_trichotomy z₀ 1 with h | rfl | h
+    · rw [hW'_gt 1 h, hW'_gt 2 (by omega)]; have := F.strict_pos; omega
+    · rw [hW'_le 1 le_rfl, hW'_gt 2 (by omega)]
+      have hs₁' : s + (j : ℤ) ≤ F.W 2 := by simpa using hs₁
+      omega
+    · rw [hW'_le 1 (by omega), hW'_le 2 (by omega)]; exact F.strict_pos
+  · -- `strict_neg`
+    rcases lt_trichotomy z₀ (-2) with h | rfl | h
+    · rw [hW'_gt (-2) h, hW'_gt (-1) (by omega)]; have := F.strict_neg; omega
+    · rw [hW'_le (-2) le_rfl, hW'_gt (-1) (by omega)]
+      have hs₁' : s + (j : ℤ) ≤ F.W (-1) := by simpa using hs₁
+      omega
+    · rw [hW'_le (-2) (by omega), hW'_le (-1) (by omega)]; exact F.strict_neg
+
+/-- **`InFamily` transports along the deletion** when EVERY factorization of `c` holds the run
+inside one of its segments (`hcont`): unfold `InFamily`, take the factorization, apply the
+surgery. -/
+theorem inFamily_deleteRun_of_inFamily [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ)
+    (c : sig.preds → ℤ → Prop) {τneg τzero τpos : KType sig k} (s : ℤ) (ℓ : sig.preds → Bool)
+    (j p m₀ : ℕ) (hpj : p < j) (hm : m₀ + p ≤ j)
+    (hcont : ∀ F : SegmentFactorization sig k c, ∃ z₀, F.W z₀ ≤ s ∧ s + j ≤ F.W (z₀ + 1))
+    (hconst : ∀ u, s ≤ u → u < s + j → ∀ P, (c P u ↔ ℓ P = true))
+    (hper : ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) =
+      kTypeOf sig k (listSeg (List.replicate m ℓ)))
+    (h : InFamily sig k τneg τzero τpos c) :
+    InFamily sig k τneg τzero τpos (deleteRun c s p) := by
+  obtain ⟨F, h1, h2, h3⟩ := h
+  obtain ⟨z₀, hsub⟩ := hcont F
+  subst h1 h2 h3
+  exact inFamily_of_shrink_run k c F z₀ s ℓ j p m₀ hpj hm hsub hconst hper
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- **The family triples of `c` are among those of `deleteRun c s p`** under the same
+containment hypothesis — the form the wired probe consumes. -/
+theorem familyTriples_subset_deleteRun [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ)
+    (c : sig.preds → ℤ → Prop) (s : ℤ) (ℓ : sig.preds → Bool)
+    (j p m₀ : ℕ) (hpj : p < j) (hm : m₀ + p ≤ j)
+    (hcont : ∀ F : SegmentFactorization sig k c, ∃ z₀, F.W z₀ ≤ s ∧ s + j ≤ F.W (z₀ + 1))
+    (hconst : ∀ u, s ≤ u → u < s + j → ∀ P, (c P u ↔ ℓ P = true))
+    (hper : ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) =
+      kTypeOf sig k (listSeg (List.replicate m ℓ))) :
+    familyTriples sig k c ⊆ familyTriples sig k (deleteRun c s p) :=
+  fun _ hx => inFamily_deleteRun_of_inFamily k c s ℓ j p m₀ hpj hm hcont hconst hper hx
 
 end FormalSystem.Metalogic.WeakCanonical
