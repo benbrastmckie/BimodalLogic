@@ -1,7 +1,7 @@
 # Implementation Plan: Task #720
 
 - **Task**: 720 - Promote FMP width refutations to evidence (re-scoped: CI repair of the untracked `WIRED_REPO` entries + citation re-point to the landed `Limits/` theorems)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: 706, 710 (both archived as completed; their `Limits/` landings are in the tree at HEAD)
 - **Research Inputs**: specs/720_promote_fmp_width_refutations_to_evidence/reports/01_ci-repair-and-citation-repoint.md
