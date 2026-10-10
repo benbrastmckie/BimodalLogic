@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/755_plan_files_to_modify_unenforced/plans/01_files-to-modify-enforcement.md",
-      "summary": "5-phase plan closing the unenforced per-phase Files-to-modify field with a measured two-tier validator check, a task-410 plan repair as the regression fixture, and an enforcement-level note in plan-format.md."
-    }
-  ],
+  "status": "in_progress",
   "metadata": {
-    "session_id": "sess_1791637795_4b472e_755",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 5.75,
-    "dependency_waves": 4
+    "session_id": "sess_1791637795_4b472e",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "memory_candidates": [
-    {
-      "content": "scripts/tests/test-validate-artifact.sh (and siblings built on the same harness) resolve the script under test as $REPO_ROOT/.claude/scripts/<script> BEFORE the source-store sibling $SCRIPT_DIR/../<script>, with REPO_ROOT from `git rev-parse --show-toplevel`. Run such a suite from inside the agent-system source store and REPO_ROOT becomes the nvim config repo, whose own .claude/ deploy tree exists -- so the suite silently exercises THAT deployed copy, not the edit under test, and passes while proving nothing. Verify a source-store script edit by invoking the edited source-store file directly on fixtures; run the suite only from the target repo's deployed tree after a redeploy.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/755_plan_files_to_modify_unenforced/plans/01_files-to-modify-enforcement.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["source-store", "test-harness", "REPO_ROOT", "deploy-boundary", "validate-artifact"]
-    }
-  ],
-  "next_steps": "Run /implement 755 to execute the plan",
-  "dispatch_seq": 8
+  "dispatch_seq": 9
 }

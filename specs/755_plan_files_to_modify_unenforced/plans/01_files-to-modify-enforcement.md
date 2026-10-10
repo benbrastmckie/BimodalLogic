@@ -1,7 +1,7 @@
 # Implementation Plan: Task #755
 
 - **Task**: 755 - Plan files to modify unenforced
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/755_plan_files_to_modify_unenforced/reports/01_files-to-modify-unenforced.md
@@ -110,23 +110,27 @@ ROADMAP.md is not modified by this plan.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Redeploy the stale core tree and record the gate baseline [NOT STARTED]
+### Phase 1: Redeploy the stale core tree and record the gate baseline [COMPLETED]
 
 **Goal**: the deployed `.claude/` tree in this repo matches the source store before any of this
 task's edits land, and the pre-change state of the gate set is recorded so a later failure is
 classifiable as NEW rather than attributed to this task.
 
 **Tasks**:
-- [ ] Re-read `.claude-extensions.json`'s `extensions.core.source_git_head` and compare against
+- [x] Re-read `.claude-extensions.json`'s `extensions.core.source_git_head` and compare against
       `git -C /home/benjamin/.config/nvim/agent-system rev-parse HEAD`. Record both values.
-- [ ] Run `bash .claude/scripts/deploy-headless.sh` and record its `RESULT=` line.
-- [ ] Run `bash .claude/scripts/tests/run-all.sh` and record the pass/fail roster verbatim as the
+      *(completed: f86b736c... vs db6aeae... — confirmed stale)*
+- [x] Run `bash .claude/scripts/deploy-headless.sh` and record its `RESULT=` line.
+      *(completed: RESULT=landed_verify_clean)*
+- [x] Run `bash .claude/scripts/tests/run-all.sh` and record the pass/fail roster verbatim as the
       baseline. Any failure here is EXPECTED for the remainder of this task.
-- [ ] Run `bash .claude/scripts/verify-deploy.sh` and record its findings as part of the same
-      baseline.
-- [ ] Confirm `grep -c 'files to modify' .claude/scripts/validate-artifact.sh` is still `0` in the
+      *(completed: 116 passed, 15 failed (0 expected, 15 NEW), 0 skipped, 131 total — recorded in
+      progress/phase-1-progress.json)*
+- [x] Run `bash .claude/scripts/verify-deploy.sh` and record its findings as part of the same
+      baseline. *(completed: PASS -- 14 check(s), 0 failure(s))*
+- [x] Confirm `grep -c 'files to modify' .claude/scripts/validate-artifact.sh` is still `0` in the
       freshly deployed copy — i.e. the defect is live in the tree the rest of this task edits
-      against, not an artifact of staleness.
+      against, not an artifact of staleness. *(completed: returned 0)*
 
 **Timing**: 0.5 hours
 
