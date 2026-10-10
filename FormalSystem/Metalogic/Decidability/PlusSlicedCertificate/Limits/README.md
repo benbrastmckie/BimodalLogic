@@ -88,12 +88,16 @@ model — is a Ramsey-for-pairs-style periodicity argument not formalized anywhe
 
 ## Provenance
 
-Each module here is a transcription of a compiled probe
-(`specs/.../probes/NoFiniteWidthModel.lean` and `specs/.../probes/NoFiniteCarrierModel.lean`
-respectively), with the arguments unchanged. What changed in the transcription is the import set (narrowed from
-the whole library), the namespace (nested under `PlusSlicedCertificate.NoFiniteWidth` rather than
-a probe-local namespace), and the linter discipline (per-declaration `omit [...] in` rather than a
-file-level suppression). The probe is retained as the provenance record and is not superseded.
+Each module here is a transcription of a compiled research probe, recorded in git history at
+commit `1b7b8431f` (`NoFiniteCarrierModel.lean`, the source of `FiniteCarrier.lean`) and commit
+`b1180dbf8` (`NoFiniteWidthModel.lean`, the source of `NoFiniteWidth.lean`), with the arguments
+unchanged. What changed in the transcription is the import set (narrowed from the whole
+library), the namespace (nested under `PlusSlicedCertificate.FiniteCarrier` and
+`PlusSlicedCertificate.NoFiniteWidth` respectively rather than a probe-local namespace), and the
+linter discipline (per-declaration `omit [...] in` rather than a file-level suppression). The
+library modules are the record and the sole guarded copy, checked by `lake build` on every
+commit; the probe files left version control when their task directories were archived under
+the gitignored `specs/archive/`, and only the commits above still hold them.
 
 ## Dependencies
 
@@ -121,4 +125,4 @@ depends on no axioms at all.
 
 ---
 
-*Last verified: 2026-10-03*
+*Last verified: 2026-10-10*

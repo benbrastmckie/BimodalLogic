@@ -250,16 +250,16 @@ comment in one standalone script and touches no file any other module reads.
 
 ---
 
-### Phase 3: Re-point `FMP/README.md` and `Limits/README.md` (Deliverable 1) [NOT STARTED]
+### Phase 3: Re-point `FMP/README.md` and `Limits/README.md` (Deliverable 1) [COMPLETED]
 
 **Goal**: Replace the archived `Probe706.`/`Probe710.` citations with the landed library names,
 delete the now-false "compiled outside the build graph" parenthetical and "probe is retained"
 sentence, and keep both scope-limit paragraphs intact in substance.
 
 **Tasks**:
-- [ ] In `FormalSystem/Metalogic/Decidability/FMP/README.md`, subsection
+- [x] In `FormalSystem/Metalogic/Decidability/FMP/README.md`, subsection
       `### The finite-carrier route is refuted, not merely open` (heading at line 79):
-  - [ ] First paragraph (lines 81-92): replace `Probe706.no_finite_carrier_sat` with
+  - [x] First paragraph (lines 81-92): replace `Probe706.no_finite_carrier_sat` with
         `` `FiniteCarrier.no_finite_carrier_sat` `` and `Probe710.not_finite_width_fmp` with
         `` `NoFiniteWidth.not_finite_width_fmp` ``, giving the full prefix
         `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.` once on first mention, and
@@ -271,15 +271,15 @@ sentence, and keep both scope-limit paragraphs intact in substance.
         `PlusSlicedCertificate.lean`)". Optionally name the corollaries
         `FiniteCarrier.not_finite_carrier_fmp` and `NoFiniteWidth.not_sliced_complete` in the
         same sentence, matching the `docs/theorem-index.md` rows.
-  - [ ] Second paragraph "Two limits" (lines 94-100): change only "both probes rely on" ->
+  - [x] Second paragraph "Two limits" (lines 94-100): change only "both probes rely on" ->
         "both proofs rely on", "Neither probe says" -> "Neither theorem says", and the two
         declaration names to their `FiniteCarrier.` / `NoFiniteWidth.` forms. Every other word
         stays; the ℤ-only limit and the `⊡`-free-versus-`⊡`-bearing distinction are statements
         about the witnesses and must not be weakened.
-  - [ ] Under `## Related Documentation`, add
+  - [x] Under `## Related Documentation`, add
         `- [Limits README](../PlusSlicedCertificate/Limits/README.md)`.
-  - [ ] Bump `*Last verified: 2026-10-02*` to the implementation date.
-- [ ] In `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/README.md`,
+  - [x] Bump `*Last verified: 2026-10-02*` to the implementation date.
+- [x] In `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/README.md`,
       `## Provenance` (lines 90-97): rewrite the paragraph so it states that each module is a
       transcription of a research probe recorded at commits `1b7b8431f`
       (`NoFiniteCarrierModel.lean`) and `b1180dbf8` (`NoFiniteWidthModel.lean`), with the
@@ -290,10 +290,10 @@ sentence, and keep both scope-limit paragraphs intact in substance.
       commit), the probe files having left version control on archival. Correct the existing
       "nested under `PlusSlicedCertificate.NoFiniteWidth`" clause to name both namespaces
       (`...FiniteCarrier` and `...NoFiniteWidth`). Bump `*Last verified: 2026-10-03*`.
-- [ ] Run `grep -rnE 'Probe706|Probe710' FormalSystem/ docs/` and confirm no hit remains outside
+- [x] Run `grep -rnE 'Probe706|Probe710' FormalSystem/ docs/` and confirm no hit remains outside
       docstrings that are deliberately out of scope (expected: none under `FormalSystem/` or
       `docs/`).
-- [ ] Run `bash scripts/readme-lint.sh` and
+- [x] Run `bash scripts/readme-lint.sh` and
       `timeout 400 bash scripts/check-module-invariants.sh --no-build` (C13 checks that relative
       README links resolve; C5/C12 cover README structure).
 
