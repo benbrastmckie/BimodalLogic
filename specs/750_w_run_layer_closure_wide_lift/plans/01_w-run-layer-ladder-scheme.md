@@ -1,7 +1,7 @@
 # Implementation Plan: Task #750
 
 - **Task**: 750 - (W)'s run layer, phase 1: the deadline-ladder frame scheme, landed and gate-compiled
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: None (no edge to the bound record, by the task's own instruction; serialization with it comes from the `file_scope` overlap on `RaySummary/README.md` and `docs/theorem-index.md`)
 - **Research Inputs**: specs/750_w_run_layer_closure_wide_lift/reports/01_w-run-layer-design.md
@@ -159,7 +159,7 @@ outcome landed; it adds no dependency edge to the bound record and reads the roa
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Land `RunLayer.lean` — the finitely branching sliced constructor and the deadline ladder [NOT STARTED]
+### Phase 1: Land `RunLayer.lean` — the finitely branching sliced constructor and the deadline ladder [COMPLETED]
 
 **Goal**: A new library module `FormalSystem/Metalogic/Decidability/RaySummary/RunLayer.lean`
 holding (a) the generic constructor `ofSlicedStepFinBranch` — `ofSlicedStep`'s body with the
@@ -170,7 +170,7 @@ the frame `ladderFrame` it yields. Everything is a transcription of a landed pro
 changed; the module is wired into the aggregator and the generated library root.
 
 **Tasks**:
-- [ ] Create `RunLayer.lean` with the copyright header (copy the shape of `RaySummary.lean:1-5`)
+- [x] Create `RunLayer.lean` with the copyright header (copy the shape of `RaySummary.lean:1-5`)
       and a module docstring stating: the design decision (deadline ladder, not a bounded-deadline
       encoding, with the two refutations named by theorem: `not_finite_width_fmp`;
       `Rok_fwd_infinite`/`Rbad_bwd_infinite` in `b2b-frame-constructor-branching.lean`); depth
@@ -179,41 +179,45 @@ changed; the module is wired into the aggregator and the generated library root.
       `PlusValidZTime`, no complexity bound. Namespace
       `FormalSystem.Metalogic.Decidability.RaySummary`; `open FormalSystem.Semantics
       FormalSystem.Semantics.TaskFrame`; import `FormalSystem.Semantics.SlicedFrame`.
-- [ ] Transcribe the branching core from `b2b-frame-constructor-branching.lean:100-173`
+- [x] Transcribe the branching core from `b2b-frame-constructor-branching.lean:100-173`
       (`FwdFinBranch`, `BwdFinBranch`, `iterS_fwd_finite`, `iterS_bwd_finite`,
       `fib_finite_of_finBranch`, `saturation_of_finBranch`), docstrings naming the probe as the
       source and stating that the probe is untouched. The probe cannot be imported — probes sit
       outside the Lake build graph — which is why the library carries its own copy.
-- [ ] Define `ofSlicedStepFinBranch` from `SlicedFrame.lean:283-290` with
+- [x] Define `ofSlicedStepFinBranch` from `SlicedFrame.lean:283-290` with
       `(saturation_of_finBranch R hf hb)` in the last slot and `[Finite W]` dropped; add the
       `@[simp]` helper `ofSlicedStepFinBranch_taskRel` (from `ofSlicedStep_taskRel`), then
       `ofSlicedStepFinBranch_isRegular`, `ofSlicedStepFinBranch_step`,
       `ofSlicedStepFinBranch_not_finite_worldState` (`ℤ × W` is infinite through `ℤ`), each a
       one-slot transcription of `SlicedFrame.lean:293-328`.
-- [ ] Transcribe `ofSlicedStep_mem_HF_iff` (`SlicedFrame.lean:356-388`) as
+- [x] Transcribe `ofSlicedStep_mem_HF_iff` (`SlicedFrame.lean:356-388`) as
       `ofSlicedStepFinBranch_mem_HF_iff`, routing through `FrameOver.mem_HF_iff_adjacent` and
       `ofSlicedStepFinBranch_step`; confirm no finiteness instance is demanded (Risk 1).
-- [ ] Transcribe the ladder from the compiled scratch
+- [x] Transcribe the ladder from the compiled scratch
       `specs/750_w_run_layer_closure_wide_lift/evidence/01_deadline-ladder-branching.lean`:
       `Drift`, `Count`, `Rlad`, the helper `tri`/`tri_finite`, `Rlad_fwd`, `Rlad_bwd`,
       `Rlad_slice_infinite`, with their docstrings (the "no early discharge with leftover" clause
       is what keeps the backward side finite; say so at `Count`).
-- [ ] Define `ladderFrame step pend fwd bwd := ofSlicedStepFinBranch (Rlad step pend)
+- [x] Define `ladderFrame step pend fwd bwd := ofSlicedStepFinBranch (Rlad step pend)
       (Rlad_fwd step pend) (Rlad_bwd step pend) fwd bwd`; add `ladderFrame_isRegular` (its
       docstring carries the `Paper: — (…)` line C15's second assertion requires, naming HWZ 2000
       Def 12 as the nearest literature object and stating that no counterpart constructor exists
       there because the run set is not chosen) and `ladderFrame_step`.
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer` to
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer` to
       `FormalSystem/Metalogic/Decidability/RaySummary.lean` (after `AnchorLayer`) and a
       `* RaySummary.RunLayer — …` bullet to its module docstring in the style of the
       `RaySummary.AnchorLayer` bullet, ending with "No `[F.IsRegular]`-free claim about validity,
       nothing about `PlusValidZTime`, no realization theorem (the run layer's phase 2, open)".
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer` to `FormalSystem.lean`
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer` to `FormalSystem.lean`
       between the `Realize` and `Seam` lines; run `lake exe mk_all --lib FormalSystem --check`.
-- [ ] Read every `#print axioms` for the twenty Goals declarations (scratch file or
+- [x] Read every `#print axioms` for the twenty Goals declarations (scratch file or
       `lean_verify`): each `[propext, Classical.choice, Quot.sound]` or a subset, no `sorryAx`.
-- [ ] Record the measured line counts: `wc -l RunLayer.lean`, and the line span of the
-      constructor part versus the ladder part, for Phase 4's README figure.
+- [x] Record the measured line counts: `wc -l RunLayer.lean`, and the line span of the
+      constructor part versus the ladder part, for Phase 4's README figure. *(measured: 373
+      lines total; module header 1–71; branching core + constructor 72–250 = 179 lines; ladder +
+      `ladderFrame` 251–373 = 123 lines; 20 Goals declarations + 3 helpers, all profiles within
+      `[propext, Classical.choice, Quot.sound]`, `FwdFinBranch`/`BwdFinBranch`/`Drift`/`Count`/`Rlad`
+      axiom-free)*
 
 **Timing**: 2 hours
 

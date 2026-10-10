@@ -15,6 +15,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.StabCheck
 import FormalSystem.Metalogic.Decidability.RaySummary.Realize
 import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
+import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -118,4 +119,17 @@ nothing about `PlusValidZTime` — see the README's verdict.
   and the `Finset` twin `AnchorConsFin` with `decidableAnchorConsFin` (decidable on a concrete
   finite object, never about a model) and the bridge `anchorConsFin_iff`. No `[F.IsRegular]`,
   no `untl`/`snce` equation (the run layer, blocked), nothing about `PlusValidZTime`.
+* `RaySummary.RunLayer` — the run layer's frame scheme, the regularity part of its first
+  obligation: the branching core transcribed from the wired probe
+  `b2b-frame-constructor-branching.lean` (`FwdFinBranch`, `BwdFinBranch`, `iterS_fwd_finite`,
+  `iterS_bwd_finite`, `fib_finite_of_finBranch`, `saturation_of_finBranch`), the parallel
+  constructor `ofSlicedStepFinBranch` (`ofSlicedStep`'s body with `[Finite W]` replaced by
+  two-sided finite branching in its one `Saturation` slot; `SlicedFrame.lean` untouched) with
+  its regularity instance, step lemma, infinite-carrier record and history characterization
+  (`ofSlicedStepFinBranch_mem_HF_iff`), and the deadline ladder `Rlad` (`Drift`, `Count`) with
+  two-sided finite branching for EVERY finite object (`Rlad_fwd`, `Rlad_bwd`), an infinite
+  slice (`Rlad_slice_infinite`), and the frame `ladderFrame` it yields (`ladderFrame_isRegular`,
+  `ladderFrame_step`); seriality is the object's own `fwd`/`bwd` hypotheses; depth `k = 1`.
+  No `[F.IsRegular]`-free claim about validity, nothing about `PlusValidZTime`, no realization
+  theorem (the run layer's phase 2, open).
 -/
