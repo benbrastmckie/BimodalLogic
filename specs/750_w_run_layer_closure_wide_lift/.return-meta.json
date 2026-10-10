@@ -1,0 +1,18 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-10T08:10:56Z",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/750_w_run_layer_closure_wide_lift/reports/01_w-run-layer-design.md",
+      "summary": "Phase 1 design decision for (W)'s run layer: deadline-ladder (thread-indexed) unfolding over a bounded-deadline encoding, machine-checked two-sided finite branching in a compiled scratch, depth k = 1, regularity part re-measured at 117-139 lines, phases 2-3 characterized not priced, README literature paragraph drafted with verified HWZ/GKWZ anchors."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791617492_752180_750",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
