@@ -253,21 +253,21 @@ periodicity through `kTypeOf_listSeg_append_congr`.
 
 ---
 
-### Phase 5: The cut surgery `inFamily_of_shrink_run` [IN PROGRESS]
+### Phase 5: The cut surgery `inFamily_of_shrink_run` [COMPLETED]
 
 **Goal**: From a `SegmentFactorization` of `c` whose segment `z₀` contains a constant run
 `[s, s + j)` of letter `ℓ` with `m₀ + p ≤ j`, build one for `deleteRun c s p` with the same
 triple; conclude `InFamily` and `familyTriples` transport in the shrink direction.
 
 **Tasks**:
-- [ ] State `theorem inFamily_of_shrink_run [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) (c) (F : SegmentFactorization sig k c) (z₀ s : ℤ) (ℓ) (j p m₀ : ℕ) (hp : 0 < p) (hpj : p < j) (hm : m₀ + p ≤ j) (hsub : F.W z₀ ≤ s ∧ s + j ≤ F.W (z₀ + 1)) (hconst : ∀ u, s ≤ u → u < s + j → ∀ P, (c P u ↔ ℓ P = true)) (hper : …as in Phase 4…) : InFamily sig k F.τneg F.τzero F.τpos (deleteRun c s p)`.
-- [ ] Construct `F' : SegmentFactorization sig k (deleteRun c s p)` with `W' z := if z ≤ z₀ then F.W z else F.W z - p`, `τneg/τzero/τpos` copied.
+- [x] State `theorem inFamily_of_shrink_run [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) (c) (F : SegmentFactorization sig k c) (z₀ s : ℤ) (ℓ) (j p m₀ : ℕ) (hp : 0 < p) (hpj : p < j) *(deviation: altered — `hp : 0 < p` dropped as unused, `p < j` is the hypothesis every case needs; `c` carries no `DecidablePred` binder, the proof is `classical`)* (hm : m₀ + p ≤ j) (hsub : F.W z₀ ≤ s ∧ s + j ≤ F.W (z₀ + 1)) (hconst : ∀ u, s ≤ u → u < s + j → ∀ P, (c P u ↔ ℓ P = true)) (hper : …as in Phase 4…) : InFamily sig k F.τneg F.τzero F.τpos (deleteRun c s p)`.
+- [x] Construct `F' : SegmentFactorization sig k (deleteRun c s p)` with `W' z := if z ≤ z₀ then F.W z else F.W z - p`, `τneg/τzero/τpos` copied.
   - `mono`: the only cross case `z ≤ z₀ < z'` needs `F.W z ≤ F.W z₀ ≤ s ≤ s + j - p ≤ F.W (z₀ + 1) - p ≤ F.W z' - p` (uses `p ≤ j`).
   - `cover`: for `t < s` use `F.cover t` (its index is `≤ z₀`, else `F.W z ≥ F.W (z₀ + 1) ≥ s + j > t`); for `t ≥ s` use `F.cover (t + p)` (its index is `≥ z₀`; the index `z₀` itself gives `W' z₀ = F.W z₀ ≤ s ≤ t < F.W (z₀ + 1) - p`).
   - `strict_pos` (`W' 1 < W' 2`): cases `z₀ ≥ 2` (unchanged), `z₀ ≤ 0` (both translated), `z₀ = 1` (`F.W 2 ≥ s + j > s + p ≥ F.W 1 + p`, using `hpj`). `strict_neg` symmetrically with `z₀ = -2`.
   - `pos_type`/`neg_type`/`zero_type`: case `z + 1 ≤ z₀` → `kTypeOf_segZ_deleteRun_below` and `F`'s field; `z ≥ z₀ + 1` → `_above` (the segment starts at `F.W z - p ≥ s`); `z = z₀` → `kTypeOf_segZ_deleteRun_of_const_run`.
-- [ ] Corollary `familyTriples_subset_deleteRun` (`Trace.lean:203`'s `familyTriples`): under `(hcont : ∀ F : SegmentFactorization sig k c, ∃ z₀, F.W z₀ ≤ s ∧ s + j ≤ F.W (z₀ + 1))` and the other hypotheses, `familyTriples sig k c ⊆ familyTriples sig k (deleteRun c s p)` — unfold `InFamily`, obtain `F`, apply the surgery. If `familyTriples` is not importable from `Transport.lean` without a cycle (`Trace.lean` is below `Compose` in the import order — confirm with `grep -n "^import" Trace.lean`), state the corollary at the `InFamily` level only and move the `familyTriples` wrapper to Phase 6 in the probe.
-- [ ] Docstrings: the "re-cut" case (run met by several short segments) is NOT handled here; the single-segment containment is a hypothesis, discharged on model A in the probe; the honest general threshold for an unconditioned statement is `3·(m₀ + p)` and is not claimed.
+- [x] Corollary `familyTriples_subset_deleteRun` (`Trace.lean:203`'s `familyTriples`): under `(hcont : ∀ F : SegmentFactorization sig k c, ∃ z₀, F.W z₀ ≤ s ∧ s + j ≤ F.W (z₀ + 1))` and the other hypotheses, `familyTriples sig k c ⊆ familyTriples sig k (deleteRun c s p)` — unfold `InFamily`, obtain `F`, apply the surgery. If `familyTriples` is not importable from `Transport.lean` without a cycle (`Trace.lean` is below `Compose` in the import order — confirm with `grep -n "^import" Trace.lean`), state the corollary at the `InFamily` level only and move the `familyTriples` wrapper to Phase 6 in the probe. *(completed — `Trace.lean` imports only `Closure` and `HitOf`, so `Transport.lean` imports `Trace` cycle-free and the `familyTriples` corollary lives in `Transport.lean`)*
+- [x] Docstrings: the "re-cut" case (run met by several short segments) is NOT handled here; the single-segment containment is a hypothesis, discharged on model A in the probe; the honest general threshold for an unconditioned statement is `3·(m₀ + p)` and is not claimed.
 
 **Timing**: 2 hours
 
