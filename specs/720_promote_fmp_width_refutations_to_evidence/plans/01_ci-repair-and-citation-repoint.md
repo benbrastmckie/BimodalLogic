@@ -335,7 +335,7 @@ cross-reference.
 
 ---
 
-### Phase 4: Archival-`mv` note in the source store (Deliverable A, pattern half) [NOT STARTED]
+### Phase 4: Archival-`mv` note in the source store (Deliverable A, pattern half) [COMPLETED]
 
 **Goal**: Record, beside the `mv` into `specs/archive/` in the source store's
 `context/patterns/task-abandon-mode.md` (and at the matching `/todo` site), that the move
@@ -343,31 +343,31 @@ un-tracks everything under the directory, so a guard citing a file by its task-d
 must be re-pointed first.
 
 **Tasks**:
-- [ ] Resolve the source store: `jq -r '.extensions.core.source_dir' .claude-extensions.json`
+- [x] Resolve the source store: `jq -r '.extensions.core.source_dir' .claude-extensions.json`
       (resolved at plan-authoring time to
       `/home/benjamin/.config/nvim/agent-system/extensions/core`, a git worktree rooted at
       `/home/benjamin/.config/nvim`). Do NOT edit `.claude/context/patterns/task-abandon-mode.md`
       in this repository -- it is a regenerated deploy artifact.
-- [ ] In `<source_dir>/context/patterns/task-abandon-mode.md`, directly after the `mv` code
+- [x] In `<source_dir>/context/patterns/task-abandon-mode.md`, directly after the `mv` code
       block under "Move task directory to archive" (currently lines 58-67), add one sentence:
       because `specs/archive/` is gitignored, this `mv` removes every file under the directory
       from version control, so any guard that cites a file by its task-directory path (the
       evidence-probe gate's `WIRED_REPO` form in `scripts/check-evidence-probes.sh`) must be
       re-pointed, or the file promoted into `specs/evidence/`, before the task is archived.
       Cite no task numbers.
-- [ ] Add the same sentence as a comment or note at the `/todo` archival site,
+- [x] Add the same sentence as a comment or note at the `/todo` archival site,
       `<source_dir>/skills/skill-todo/SKILL.md` step 4c (`mv "$source_dir" "$target_dir"`,
       currently line 546) -- this is the site that actually fired for the archive commit that
       un-tracked the two probes.
-- [ ] Diff read-through of both hunks; confirm no task-number reference and no
+- [x] Diff read-through of both hunks; confirm no task-number reference and no
       record-versioning language ("no longer", "previously") was introduced.
-- [ ] Commit in the source-store repository with an explicit file list only
+- [x] Commit in the source-store repository with an explicit file list only
       (`git -C /home/benjamin/.config/nvim add -- agent-system/extensions/core/context/patterns/task-abandon-mode.md agent-system/extensions/core/skills/skill-todo/SKILL.md`),
       under this task's session id in the body. That worktree has unrelated dirty files; never
       use `-A`, `.`, or `-am`. If committing there is blocked for this dispatch, leave the edits
       in that working tree and say so in the summary; do not hand-patch `.claude/**` as a
-      substitute.
-- [ ] Record via `issue-record.sh` whether the source-store commit succeeded or was left
+      substitute. *(deviation: altered — committed as `7ffb39166` with the explicit two-file `git add`, but three files another writer had pre-staged in that worktree (`specs/296_.../.return-meta.json`, `issues.jsonl`, `metrics.jsonl`) were already in the index and rode along; not amended)*
+- [x] Record via `issue-record.sh` whether the source-store commit succeeded or was left
       uncommitted.
 
 **Timing**: 0.25 hours
