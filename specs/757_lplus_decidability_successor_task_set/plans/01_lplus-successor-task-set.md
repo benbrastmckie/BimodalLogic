@@ -212,7 +212,7 @@ and gate run are the phase's CONTENT, each required to exit 0.
 
 ---
 
-### Phase 2: Write Sections A-D — the three obligations and the lift [NOT STARTED]
+### Phase 2: Write Sections A-D — the three obligations and the lift [COMPLETED]
 
 **Goal**: Author the design half of the spec: one section per obligation plus one for the lift,
 each in the 721 per-section shape (Current record / What the tree says / Scope decision / What
@@ -220,35 +220,35 @@ the successor must NOT do / Action required), carrying the first statement shape
 report's Findings 1-4 and the guardrails that constrain them.
 
 **Tasks**:
-- [ ] Section A — Obligation (1), run-layer phase 2 soundness half: `cellAt` on the ladder model;
+- [x] Section A — Obligation (1), run-layer phase 2 soundness half: `cellAt` on the ladder model;
       the two sources of counter-dependence (`c` via `Count`'s `c' + 1 = c`; `n` via `c' = n` at
       an idle state); the proposed `ladderModel` definition and `ladderCell_stabilizes` statement
       over `(q, c, n)` with exhibited `B := (plusSubformulaClosure φ).card` and the `∃ B`
       fallback; the `AnchorLayer.lean` count-not-complexity disclaimer quoted; why a `Node`
       fixture probe (T1) precedes the lemma (750's mitigation R-A); `LadderCons` and `Adm` as
       T3/T4 definitions.
-- [ ] Section B — Obligation (2), run-layer phase 3 = (C)'s general row: the README's statement
+- [x] Section B — Obligation (2), run-layer phase 3 = (C)'s general row: the README's statement
       shape as `exists_hitPresented` with `sizeBound φ k` a count; where the evidence is thin
       (model A is `box`/`stab`-free, finite-width slice; nothing tests `HitPresented` on a
       `⊡`-bearing formula or infinite width); the `Node` probe T2 with its two possible headlines
       `hitPresented_node` / `not_hitPresented_node`, the formula fallback order (`Φ`, then `D`,
       then `⊡Xp`), the seam `(t, pre k)` with `canon`; why a Hit-level negative blocks R1 with no
       fallback and is a Stage 0 ruling.
-- [ ] Section C — Obligation (3), (S) beyond its landed corner: the README's own assignment to
+- [x] Section C — Obligation (3), (S) beyond its landed corner: the README's own assignment to
       (W); WIDTH (`Probe747.modelOf_incomplete`) and COLLAPSE (`stab_iff_of_presented_nowUnique`);
       why no standalone (S) record is filed (guardrail (b)); the `box`/`stab` half as an
       acceptance clause of T4 (`box_mem_tpOf_iff` one global bit, `stab_mem_tpOf_iff` one bit per
       cell, `anchorCons_anchorCells` the completeness side); the "every seam but the one" half as
       T6's statement; `presented_modelOf` untouched.
-- [ ] Section D — The lift: `not_plusValidZTime_iff_ladderRefutes` with `objBound φ` a count; (→)
+- [x] Section D — The lift: `not_plusValidZTime_iff_ladderRefutes` with `objBound φ` a count; (→)
       from anchor layer + (C)'s general row + the stabilization bound, (←) from the realization
       theorem at the refuting cell; the `Decidable (PlusValidZTime φ)` corollary by bounded
       enumeration stated ONLY here; depth `k = 1` throughout; not costable until T4/T5 have shapes.
-- [ ] In every section: guardrails (a)-(e) applied by name; the forward-only caveat of guardrail
+- [x] In every section: guardrails (a)-(e) applied by name; the forward-only caveat of guardrail
       (e) stated wherever a result is forward-only; `[BLOCKED]` named as the honest outcome where
       the mathematics may not close; no upper bound, no external Büchi/MSO citation, no cslib
       `require`.
-- [ ] Record the report's Decisions D1-D4 in the sections they belong to, each marked as an agent
+- [x] Record the report's Decisions D1-D4 in the sections they belong to, each marked as an agent
       decision re-openable by `/revise`.
 
 **Timing**: 1.5 hours
