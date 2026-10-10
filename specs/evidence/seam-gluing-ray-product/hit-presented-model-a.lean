@@ -6,17 +6,27 @@ path of model A through the seam `(t, a)` is either the constant `a`-path or an 
 path whose jump time is `≥ t`; its restatement as an identification of the seam's SPLICES
 (`splice_classify`: every spliced history at the seam is `stayA` itself or `jump w` for some
 `w ≥ t`); the explicit read-out of `clTrace` over the five-letter closure alphabet of `Fp` on
-both of those families; the **truncation bound** `hitCl_eq_truncated`, which replaces the seam's
-infinite ray index by an unexhibited finite window; the finite labelled presentation `QA`/`labOf`/
-`stepOf` with its labelling bridge; the **run characterization** identifying the presentation's
-anchored runs with exactly that window; and the headline.
+both of those families; the **containment** `run_subset_middle` (every factorization of a `jump`
+trace holds the whole `a`-run inside its middle segment) and the **shrink** corollary
+`familyTriples_jump_shrink`, which feed the transport layer `RaySummary/Transport.lean`; the
+**truncation bound** `hitCl_eq_truncated`, which replaces the seam's infinite ray index by the
+finite window `[t, t + presentationSize k]`, with
+`presentationSize k = Nat.card (KType (clSig Fp) k)` EXHIBITED in the statement — a COUNT of
+depth-`k` types and nothing else; the finite labelled presentation `QA`/`labOf`/`stepOf` with its
+labelling bridge; the **run characterization** identifying the presentation's anchored runs with
+exactly that window; and the headline.
 
-**The headline.** `hitPresented_modelA`: for every `t : ℤ` and every depth `1 ≤ k` there EXISTS
-an `L : ℕ` with `HitPresented MA stayA t Fp (labOf L) (stepOf L) k`. The `L` is NEVER exhibited.
-So the Hit-level hypothesis named in `Probe735.not_presented`'s header is SATISFIABLE on fixture
-model A, while NO computable bound is delivered — requirement (C)'s two halves separate here, and
-only the first is landed. The section "What `hitPresented_modelA` does NOT say", at the headline
-itself, is the full list of what that theorem withholds; read it before citing this file.
+**The headline.** `hitPresented_modelA`: for every `t : ℤ` and every depth `1 ≤ k`,
+`HitPresented MA stayA t Fp (labOf (presentationSize k)) (stepOf (presentationSize k)) k`, with
+`presentationSize k := Nat.card (KType (clSig Fp) k)` — no `∃ L`: the presentation size is
+EXHIBITED, as a count. So the Hit-level hypothesis named in `Probe735.not_presented`'s header is
+SATISFIABLE on fixture model A, and on this fixture both halves of requirement (C) are settled:
+the hypothesis holds, and the size of the presentation that witnesses it is a stated count of
+depth-`k` types over the closure alphabet of `Fp`. That count is NOT a complexity bound of any
+kind — it counts types, it times nothing, and it bounds no procedure (the disclaimer at
+`presentationSize` below, in `AnchorLayer.lean`'s words). The section "What
+`hitPresented_modelA` does NOT say", at the headline itself, is the full list of what that
+theorem withholds; read it before citing this file.
 
 **The fixture.** Model A of `quasistate-does-not-determine-hit.lean` and of
 `presented-not-complete.lean` (three states on `Fin 3`, `p` at `b` only, steps `a→a, a→b, b→b`),
@@ -37,9 +47,11 @@ closure of `Fp` has four members (`#eval (plusSubformulaClosure Fp).card` = 4, s
 has those four letters plus the marker `now`), `clTrace` on either family is a five-case read-out
 with no semantic content left in it.
 
-**What is NOT established.** No bound of any kind — the headline carries an unexhibited `∃ L`
-extracted from `Set.Finite.bddAbove`, i.e. from `Classical.choice`, and nothing in this file would
-make such an `L` effective. Forward-only: nothing about
+**What is NOT established.** No complexity bound of any kind, upper or lower: the exhibited
+`presentationSize k` is a cardinality, and the ARGUED CTL⋆ 2EXPTIME ceiling is neither cited nor
+approached; nothing here times anything. No general every-model statement: the bound is on THIS
+fixture (see "This does NOT generalize" below), and the general regular-`ℤ`-model form of (C) is
+the completeness half of the (W) run-layer record, not this file's. Forward-only: nothing about
 `⊡(P p)`, because the fixture is forward-only and there is still no backward Bool-fixture bridge
 (`Probe719Backward.pastStab_iff_allBwdPathsMeet` on the asymmetric fixture remains the only
 backward fixture result, and no symmetry is implied here). No decidability of anything:
@@ -67,56 +79,59 @@ its wired probe stand unchanged.
 header is SATISFIABLE, not refuted: the forward-type observation that blocked the transfer of
 735's refutation is real, so the obstruction that killed `Presented` does not reach `HitPresented`,
 and the route through (C) is not closed by 735. The companion decision is that satisfiability
-buys NO bound, and it is recorded in this header's "Bound verdict" paragraph below rather than
-left to a later phase.
+alone buys no bound — the bound half is a separate argument, recorded in this header's "Bound
+verdict" paragraph below and landed in this file as a count.
 
-**Bound verdict: BLOCKED, with the obligation named.** Requirement (C)'s second half asks for
-`Fintype.card Q` below a COMPUTABLE bound in `φ`. This file does not deliver it, and the
-obstruction is specific. `hitCl_eq_truncated` below replaces the seam's infinite ray index by a
-finite window by applying `Set.Finite.bddAbove` to the offsets realized in `HitCl`, whose
-finiteness comes from `finite_family_triples`; that argument exhibits no `L` at all — not a bad
-bound, not a non-elementary one, not even a fixture-specific one. So every cardinality figure
-downstream of it (`card_QA`'s `Fintype.card (QA L) = L + 6`, `jump_window_card`'s `L + 1`) is a
-function of a number nothing produces. The in-tree entry point for an EFFECTIVE bound is
-`kTypeOf_listSeg_append_congr` (`RaySummary/Compose.lean`), which makes
-`m ↦ kTypeOf sig k (listSeg (List.replicate m ℓ))` a morphism into the finite alphabet
-`kType_finite` bounds; the threshold consequence is not in the tree, and
-`KTypeSummary/Saturation.lean` holds no block-length threshold lemma (re-derived by grep at the
-time of writing: its four theorems are `kTypeColouring_eq_of_matching_segments`,
-`kEquiv_zFiber_of_matching_segments`, `kTypeOf_zFiber_eq_of_sameTriple` and
-`kTypeOf_zFiber_eq_of_inFamily`, none of them about thresholds, block lengths or periodicity). The
-single missing obligation, STATED AND NOT PROVED, and deliberately not landed as a `sorry`
-anywhere in this tree:
+**Bound verdict: EXHIBITED on this fixture, as a count.** Requirement (C)'s second half asks for
+`Fintype.card Q` below a bound in `φ`. On this fixture the presentation's size is
+`presentationSize k = Nat.card (KType (clSig Fp) k)` and `card_QA_presentationSize` reads
+`Fintype.card (QA (presentationSize k)) = presentationSize k + 6`: a COUNT of depth-`k` types
+over the closure alphabet of `Fp`, plus six. The route is the one the earlier record named as its
+obligation, now discharged in the library rather than stated: `kTypeOf_listSeg_append_congr`
+(`RaySummary/Compose.lean`) plus pigeonhole on the finite `KType sig k` give
+`kTypeOf_listSeg_replicate_eventually_periodic_bounded` — the `k`-type of a constant block
+`ℓ^m` is eventually periodic in `m` with threshold `m₀` and period `p` satisfying
+`m₀ + p ≤ Nat.card (KType sig k)` (no finite semigroup is constructed and no idempotent is
+needed); `RaySummary/Transport.lean` turns that into the cut surgery `inFamily_of_shrink_run`
+(delete `p` positions of a constant run held inside ONE segment of a `SegmentFactorization`
+beyond the threshold, keep the triple); and this file supplies the fixture fact that every
+factorization of a `jump` trace holds its whole `a`-run inside the middle segment
+(`run_subset_middle`), so every realized offset `n > presentationSize k` reduces by `p` until
+it lies in `[0, presentationSize k]` (`familyTriples_jump_shrink`, strong induction inside
+`hitCl_eq_truncated`). No `Set.Finite.bddAbove`, no `choose!`: the window is written down.
 
-    theorem kTypeOf_listSeg_replicate_eventually_periodic (sig : MonadicSignature)
-        [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ) (ℓ : sig.preds → Bool) :
-        ∃ m₀ p, 0 < p ∧ ∀ m, m₀ ≤ m →
-          kTypeOf sig k (listSeg (List.replicate (m + p) ℓ))
-            = kTypeOf sig k (listSeg (List.replicate m ℓ))
+The disclaimer, in `AnchorLayer.lean`'s words on its own cell count and binding here with
+"depth-`k` types" for "cells": "The one bound (W) can state honestly: a cardinality bound on the
+SET OF CELLS of a model, syntactic in `|cl φ|` — a cell is a set of subsets of `cl φ`, so there
+are at most `2 ^ (2 ^ |cl φ|)` of them. It is not a complexity bound of any kind: it counts cells,
+it does not time anything, and it must not be described as a bound on any procedure's running
+time." `presentationSize k` counts depth-`k` types, times nothing, bounds no procedure, and is
+not a complexity bound of any kind; nothing is derived from the size of `NormalForm (clSig Fp) k 0`,
+and `k` is not chosen — every statement below holds at every `k ≥ 1`.
 
-provable from `kType_finite` by pigeonhole plus `kTypeOf_listSeg_append_congr`.
-It is the named unit of successor work, not a discharged one.
-
-**And the honest note on "machine-checked", stated rather than smoothed over.** A claim that NO
-computable bound exists is not a Lean-statable property of this development, so the bound half
-cannot be machine-checked the way the satisfiability half was. What IS machine-checked is
-narrower, and is exactly these two things: the headline's `∃ L` shape, which puts the
-non-exhibition in the STATEMENT rather than in prose, and its axiom foot, which carries
-`Classical.choice`. That substitution — axiom foot plus a named, stated-not-proved obligation, in
-place of a theorem asserting impossibility — is the recorded one, and nothing here asserts
-impossibility.
+**And the honest note on "machine-checked", stated rather than smoothed over.** What IS
+machine-checked is exactly this: the headline's statement carries the explicit
+`presentationSize k` where the earlier shape carried `∃ L`, so the exhibition is in the STATEMENT
+rather than in prose, and `hitCl_eq_truncated` is proved from the library's periodicity theorem
+and transport layer with no `Set.Finite.bddAbove`. What is NOT machine-checked, because it is not
+a Lean-statable property of this development: that `presentationSize k` is the LEAST such window
+(nothing here claims minimality), and anything about the running time of anything.
 
 **Axiom record**, as OBSERVED from the `#print axioms` foot rather than predicted. Every pinned
 declaration reports `[propext, Classical.choice, Quot.sound]` — `path_classify`, `stayA`, `jump`,
-`splice_classify`, `clTrace_stayA_eq`, `clTrace_jump_eq`, `hitCl_eq_truncated`, `labOf`,
+`splice_classify`, `clTrace_stayA_eq`, `clTrace_jump_eq`, `run_subset_middle`,
+`deleteRun_clTrace_jump`, `familyTriples_jump_shrink`, `hitCl_eq_truncated`, `labOf`,
 `labOf_inl_iff_clTrace_stayA`, `labOf_inr_iff_clTrace_jump`, `runTrace_mem_of_isRun`,
 `exists_isRun_runTrace` and the headline `hitPresented_modelA` — with the single exception of
 `stepOf`, which is `[propext]` alone, it being a decidable `Bool`-valued table. No `sorryAx`
-anywhere, and no fourth axiom. `Classical.choice` enters at four places and nowhere else:
-`FrameOver.worldHistoryOfStepPath` and the `Nat.find`/`by_cases` bookkeeping in `path_classify`
-(as in every probe of this collection), the `choose!` offset function in `hitCl_eq_truncated`,
-and `Set.Finite.bddAbove` in the same proof — that last one is why the headline's `L` is an
-existential with no number behind it. Nothing in this file is left unproved: zero sorries.
+anywhere, and no fourth axiom. `Classical.choice` enters through `FrameOver.worldHistoryOfStepPath`
+and the `Nat.find`/`by_cases` bookkeeping in `path_classify` (as in every probe of this
+collection), through the library's `k`-type machinery (`kTypeOf` is classical, as every pinned
+`RaySummary` declaration already records), and through the classical `DecidablePred` instances the
+transport layer discharges by `classical` for the `Prop`-valued closure trace. It no longer enters
+through a `Set.Finite.bddAbove` witness or a `choose!`-extracted offset function: neither appears
+in `hitCl_eq_truncated`, whose window is the stated `presentationSize k`. Nothing in this file is
+left unproved: zero sorries.
 
 **Compile line.**
 `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-model-a.lean`
@@ -725,23 +740,24 @@ one-parameter family `{jump w | w ≥ t}` together with `stayA`, which is still 
 truncation below replaces it by a FINITE index: `stayA` together with the finitely many `jump w`
 for `t ≤ w ≤ t + L`.
 
-**Where the non-constructivity enters, named exactly.** `L` is produced by `Set.Finite.bddAbove`
-applied to the image, under a `choose!`-extracted offset function, of the set
-`HitCl MA stayA t Fp k` — finite by `hitCl_finite`, which is `hitSig_finite`, which rests on
-`finite_family_triples` and `kType_finite`. Two separate uses of choice sit in that sentence:
-`choose!` picks a witnessing ray pair (hence, through `splice_classify`, a jump time) for each
-member, and `Set.Finite.bddAbove` asserts only that SOME upper bound of the resulting offsets
-exists. Neither exhibits anything. So NO computable bound follows from this proof — not a bad
-one, not a non-elementary one, and not even on this fixture, where the model is three states on
-`Fin 3`. That is why the statement carries an `∃ L` prefix rather than a supplied `L`: a version
-with a computed or exhibited `L` would be a strictly STRONGER theorem, and this record does not
-establish it. The in-tree entry point for an effective bound is `kTypeOf_listSeg_append_congr`;
-the eventual-periodicity/threshold consequence that would convert this route from
-non-constructive to effective is not in this tree, and is recorded as the successor obligation
-rather than assumed, cited or `sorry`-ed here.
+**Where the bound comes from, named exactly.** The window's width is `presentationSize k`, the
+count `Nat.card (KType (clSig Fp) k)`. `hitCl_covered` gives every member of `HitCl` an offset
+`n` (through `splice_classify`, a jump time); the library's
+`kTypeOf_listSeg_replicate_eventually_periodic_bounded` at the letter `ℓ₀` gives a threshold
+`m₀` and a period `p > 0` with `m₀ + p ≤ presentationSize k`; and `familyTriples_jump_shrink`
+(this file, from `run_subset_middle` and the transport layer's `familyTriples_subset_deleteRun`)
+moves a family triple from offset `n + p` to offset `n` whenever `m₀ ≤ n` and `1 ≤ n`. So an
+offset above the window reduces by `p` at a time, by strong induction, until it lies in
+`[0, presentationSize k]`. No `choose!`, no `Set.Finite.bddAbove`: `hitCl_finite` is not used
+here at all. The `∃ L` the earlier shape carried is gone from the statement, which now names the
+window.
 
-Nothing in this section evaluates a `kTypeOf`, runs `decide` over `KType`, or attempts to make
-`L` computable. -/
+Any `L ≥ m₀ + p - 1` would do; the clean term `Nat.card (KType (clSig Fp) k)` is used because the
+periodicity theorem bounds `m₀ + p` by exactly it. This is a COUNT of depth-`k` types and
+nothing else (the disclaimer at `presentationSize`).
+
+Nothing in this section evaluates a `kTypeOf`, runs `decide` over `KType`, or `#eval`s
+`presentationSize`. -/
 
 /-- Every `jump w` with `w ≥ t` passes through the seam `(t, a)` of `stayA`: at `t` itself the
 jump has not yet happened, so the state is `a`. -/
@@ -776,37 +792,56 @@ theorem hitCl_covered (t : ℤ) (k : ℕ) :
     rw [show t + (((w - t).toNat : ℕ) : ℤ) = w by omega]
     rwa [h] at hbf
 
-set_option linter.unusedVariables false in
-/-- **The truncation bound.** `HitCl` at the seam `(t, a)` of `stayA` is exactly the family
-triples of `stayA`'s closure trace together with those of finitely many `jump w`.
+/-- **The presentation size, exhibited**: the count of depth-`k` types over the closure alphabet
+of `Fp`. In `AnchorLayer.lean`'s words on its own cell count, binding here with "depth-`k` types"
+for "cells": "The one bound (W) can state honestly: a cardinality bound on the SET OF CELLS of a
+model, syntactic in `|cl φ|` — a cell is a set of subsets of `cl φ`, so there are at most
+`2 ^ (2 ^ |cl φ|)` of them. It is not a complexity bound of any kind: it counts cells, it does not
+time anything, and it must not be described as a bound on any procedure's running time." This
+count counts depth-`k` types, times nothing, bounds no procedure, and is not a complexity bound
+of any kind. It is never `#eval`-ed here; `Nat.card` is a well-formed `ℕ` term in a `Prop`. -/
+noncomputable abbrev presentationSize (k : ℕ) : ℕ := Nat.card (KType (clSig Fp) k)
 
-The `∃ L` is essential and is the recorded result: `L` comes from `Set.Finite.bddAbove` on the
-image of a `choose!`-extracted offset function over the finite set `HitCl MA stayA t Fp k`, so it
-is never exhibited and NO computable bound follows. See this section's header for the two places
-choice enters.
+/-- **The truncation bound, with the window exhibited.** `HitCl` at the seam `(t, a)` of `stayA`
+is exactly the family triples of `stayA`'s closure trace together with those of the `jump w` for
+`t ≤ w ≤ t + presentationSize k`.
 
-`hk` is carried because it is part of this record's pinned Challenge signature and because
-`HitPresented` needs it downstream; the truncation argument itself does not use it, since
-`HitCl` is defined at every depth. The linter suppression above is scoped to this one
-declaration and exists only so the pinned signature can be reproduced verbatim rather than
-renamed to `_hk`. -/
+`⊆`: `hitCl_covered` supplies an offset; the periodicity theorem at `ℓ₀` supplies `(m₀, p)` with
+`m₀ + p ≤ presentationSize k`; strong induction on the offset reduces it by `p`
+(`familyTriples_jump_shrink`, which needs `m₀ ≤ n` and `1 ≤ n`, both true once
+`n > presentationSize k ≥ m₀ + p`) until it lies in the window. `⊇`: `stayA` and every `jump w`
+with `w ≥ t` are splices (`exists_splice_eq`, `jump_seam`). `hk` is consumed by the containment
+`run_subset_middle` inside `familyTriples_jump_shrink`. -/
 theorem hitCl_eq_truncated (t : ℤ) (k : ℕ) (hk : 1 ≤ k) :
-    ∃ L : ℕ, HitCl MA stayA t Fp k
+    HitCl MA stayA t Fp k
       = familyTriples (clSig Fp) k (clTrace MA Fp t stayA)
-        ∪ ⋃ w ∈ Set.Icc t (t + (L : ℤ)),
+        ∪ ⋃ w ∈ Set.Icc t (t + (presentationSize k : ℤ)),
             familyTriples (clSig Fp) k (clTrace MA Fp t (jump w)) := by
-  classical
-  -- One witnessing offset per member, by choice; `choose!` makes the function total.
-  choose! off hoff using hitCl_covered t k
-  -- The offsets of the FINITELY many members are bounded above -- `Set.Finite.bddAbove` is where
-  -- the second (and fatal, for any bound) use of choice sits: it exhibits no `L`.
-  obtain ⟨L, hL⟩ := ((hitCl_finite MA stayA t Fp k).image off).bddAbove
-  refine ⟨L, Set.Subset.antisymm ?_ ?_⟩
+  obtain ⟨m₀, p, hp, hle, hper⟩ :=
+    kTypeOf_listSeg_replicate_eventually_periodic_bounded (clSig Fp) k ℓ₀
+  have hle' : m₀ + p ≤ presentationSize k := hle
+  -- every realized offset reduces, `p` at a time, into the window
+  have reduce : ∀ n : ℕ, ∀ x,
+      x ∈ familyTriples (clSig Fp) k (clTrace MA Fp t (jump (t + (n : ℤ)))) →
+      ∃ n' : ℕ, n' ≤ presentationSize k
+        ∧ x ∈ familyTriples (clSig Fp) k (clTrace MA Fp t (jump (t + (n' : ℤ)))) := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | _ n ih =>
+      intro x hx
+      by_cases hn : n ≤ presentationSize k
+      · exact ⟨n, hn, hx⟩
+      · push Not at hn
+        obtain ⟨n', rfl⟩ : ∃ n', n = n' + p := ⟨n - p, by omega⟩
+        exact ih n' (by omega) x
+          (familyTriples_jump_shrink k hk t m₀ p hper n' (by omega) (by omega) hx)
+  refine Set.Subset.antisymm ?_ ?_
   · intro x hx
-    have hxL : off x ≤ L := hL ⟨x, hx, rfl⟩
-    rcases hoff x hx with h | h
+    obtain ⟨n, h⟩ := hitCl_covered t k x hx
+    rcases h with h | h
     · exact Or.inl h
-    · refine Or.inr (Set.mem_iUnion₂.mpr ⟨t + (off x : ℤ), ⟨by omega, by omega⟩, h⟩)
+    · obtain ⟨n', hn', h'⟩ := reduce n x h
+      exact Or.inr (Set.mem_iUnion₂.mpr ⟨t + (n' : ℤ), ⟨by omega, by omega⟩, h'⟩)
   · rintro x (h | h)
     · obtain ⟨bf, hbf⟩ := exists_splice_eq t stayA rfl
       exact (hitCl_eq_iUnion MA stayA t Fp k).symm ▸ Set.mem_iUnion.mpr ⟨bf, by rw [hbf]; exact h⟩
@@ -854,11 +889,17 @@ the `jump w` with `t ≤ w ≤ t + L`. `Fintype` and `DecidableEq` come from the
 instances; nothing here is hand-rolled. -/
 abbrev QA (L : ℕ) := Fin 3 ⊕ Fin (L + 3)
 
-/-- The state count. `L + 6` is NOT a bound: `L` is the unexhibited witness of
-`hitCl_eq_truncated`, so this is a function of something never produced. -/
+/-- The state count of the presentation with window `L`. -/
 theorem card_QA (L : ℕ) : Fintype.card (QA L) = L + 6 := by
   rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_fin]
   omega
+
+/-- **The state count at the exhibited window**: `presentationSize k + 6` — a count of states of
+ONE presentation on ONE fixture, `Nat.card (KType (clSig Fp) k)` plus six. A count, not a
+complexity bound of any kind (the disclaimer at `presentationSize`). -/
+theorem card_QA_presentationSize (k : ℕ) :
+    Fintype.card (QA (presentationSize k)) = presentationSize k + 6 :=
+  card_QA _
 
 #guard Fintype.card (QA 2) = 8
 
@@ -1269,8 +1310,8 @@ theorem inr_absorb_add (L : ℕ) {σ : ℤ → Fin (L + 3)}
 (`inr_fwd_index`), never leaves it (`inr_absorb_add`), and never visits it at or before the seam
 (`inr_bwd_pre` strictly before, `IsRun`'s marker at the seam itself). So its `j_post` indicator is
 the indicator of `(w, ∞)` for exactly one `w ∈ [t, t + L]` — the jump time of the history whose
-trace the run reproduces. `Nat.find` supplies `w`; no bound on `L` is produced or implied here,
-and `L` itself remains the unexhibited witness of `hitCl_eq_truncated`. -/
+trace the run reproduces. `Nat.find` supplies `w`; this lemma is stated for every `L` and says
+nothing about which `L` the headline uses. -/
 theorem inr_post_threshold (L : ℕ) {σ : ℤ → Fin (L + 3)}
     (hstep : ∀ z, stepOf L (Sum.inr (σ z)) (Sum.inr (σ (z + 1))) = true)
     {t : ℤ} (hnow : ∀ z, (σ z).val = 1 ↔ z = t) :
@@ -1445,8 +1486,9 @@ theorem exists_isRun_runTrace (t : ℤ) (L : ℕ) :
 `exists_isRun_runTrace` realizes every member of that interval, so the realized thresholds are
 exactly `Finset.Icc t (t + L)` — whose cardinality is `L + 1`. This is the branching figure the
 phase's scope hypothesis names, and it is what makes `exists_isRun_runTrace` surject onto the
-truncation window. It is NOT a bound on anything: `L` is still the unexhibited witness of
-`hitCl_eq_truncated`. -/
+truncation window. It is a count of realized thresholds, stated for every `L`; at the headline's
+`L = presentationSize k` it reads `presentationSize k + 1`, a count and not a complexity bound of
+any kind. -/
 theorem jump_window_card (t : ℤ) (L : ℕ) : (Finset.Icc t (t + (L : ℤ))).card = L + 1 := by
   rw [Int.card_Icc]
   omega
@@ -1475,14 +1517,16 @@ compares TRACE SETS, and that is the whole reason the Hit level survives: trace-
 what `Probe735.not_presented` refutes. -/
 
 /-- **The headline.** `HitPresented` holds on fixture model A at the seam `(t, a)` of `stayA`
-with `φ := Fp`, at every depth `k ≥ 1`, for an UNEXHIBITED `L` — so the Hit-level hypothesis is
-satisfiable where `Presented` is refuted (`Probe735.not_presented`), and no computable bound is
-delivered. Nothing about `PlusValidZTime`, nothing about `⊡(P p)`, nothing about general regular
-ℤ-models. -/
+with `φ := Fp`, at every depth `k ≥ 1`, for the presentation of size
+`presentationSize k = Nat.card (KType (clSig Fp) k)` — EXHIBITED, a count of depth-`k` types and
+nothing else — so the Hit-level hypothesis is satisfiable where `Presented` is refuted
+(`Probe735.not_presented`), with its witness's size written down. Nothing about
+`PlusValidZTime`, nothing about `⊡(P p)`, nothing about general regular ℤ-models, no complexity
+bound of any kind. -/
 theorem hitPresented_modelA (t : ℤ) (k : ℕ) (hk : 1 ≤ k) :
-    ∃ L : ℕ, HitPresented MA stayA t Fp (labOf L) (stepOf L) k := by
-  obtain ⟨L, hL⟩ := hitCl_eq_truncated t k hk
-  refine ⟨L, ?_⟩
+    HitPresented MA stayA t Fp (labOf (presentationSize k)) (stepOf (presentationSize k)) k := by
+  have hL := hitCl_eq_truncated t k hk
+  set L := presentationSize k with hLdef
   show HitCl MA stayA t Fp k = ↑(hitOf (labOf L) (stepOf L) (clNow Fp) k)
   rw [hL]
   ext x
@@ -1502,13 +1546,14 @@ theorem hitPresented_modelA (t : ℤ) (k : ℕ) (hk : 1 ≤ k) :
 
 /-! ### What `hitPresented_modelA` does NOT say
 
-* **No `L` is exhibited, so no bound is delivered.** The `∃ L` is inherited verbatim from
-  `hitCl_eq_truncated`, whose `L` is a `Set.Finite.bddAbove` upper bound on a `choose!`-extracted
-  offset function — two uses of `Classical.choice`, neither of which produces a number. In
-  particular `card_QA` reads `Fintype.card (QA L) = L + 6`, a function of that unexhibited `L`,
-  so it is NOT a bound in `Fp`: requirement (C) asks for `Fintype.card Q` below a COMPUTABLE
-  bound in `φ`, and this record does not deliver that half. `jump_window_card`'s `L + 1` is in
-  the same position and is a count of realized thresholds, not a bound either.
+* **The exhibited size is a count, and nothing else.** `L = presentationSize k`
+  `= Nat.card (KType (clSig Fp) k)` is written into the statement, so `card_QA_presentationSize`
+  reads `Fintype.card (QA (presentationSize k)) = presentationSize k + 6` and
+  `jump_window_card` reads `presentationSize k + 1`: counts of states and of realized thresholds
+  of ONE presentation on ONE fixture. Neither is a complexity bound of any kind — nothing here
+  times anything or bounds any procedure's running time, and the ARGUED CTL⋆ 2EXPTIME ceiling is
+  neither cited nor approached. Nothing is claimed about minimality of the window. `k` is free:
+  every statement holds at every `k ≥ 1`, and none chooses one.
 * **The presentation is deliberately NOT `Presented`.** It realizes only the finitely many seam
   traces inside the truncation window, so the TRACE-set equality `Probe735.not_presented`
   refutes is false of it. Both facts hold of this same fixture, at this same seam, for this same
