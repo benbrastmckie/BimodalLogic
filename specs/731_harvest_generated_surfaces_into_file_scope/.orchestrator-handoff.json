@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Wrote a 5-phase, 4.5-hour plan extending plan-file-scope-harvest.sh (source store) with one capability-gated post-processing stage: it fires only when the harvested array already holds a .lean path and the repo carries check-module-invariants.sh and typst-sync-check.sh, then appends typst/generated/status.typ, every generated-inventory README on the edited paths' directory-ancestor chains (fence-aware, mirroring the generator's own BEGIN_RE and markdown_targets exclusions), and two narrow-glob surfaces. No caller changes: all seven consumers subprocess this one script. Phases 1-4 are local-tier (covered by run-all.sh --only on the three suites suite_selection_select resolves for this path); Phase 5 is full-tier and carries the deploy, the documentation sync, and the dispatch's scope-item-4 replay against both precedent plans. Declared scope is three source-store files and intersects nothing in the concurrent sibling's declared territory.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/731_harvest_generated_surfaces_into_file_scope/plans/01_harvest-generated-surfaces.md",
+      "summary": "5-phase plan for capability-gated generated-surface appending in plan-file-scope-harvest.sh, with 11 new regression cases and precedent-plan replay verification."
+    }
+  ],
+  "dispatch_seq": 3
+}

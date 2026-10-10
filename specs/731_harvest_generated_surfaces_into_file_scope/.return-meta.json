@@ -1,33 +1,30 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "task_number": 731,
-  "session_id": "sess_1791637795_4b472e_731",
-  "dispatch_seq": 1,
-  "findings_count": 7,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/731_harvest_generated_surfaces_into_file_scope/reports/01_harvest-generated-surfaces.md",
-      "summary": "Identifies the complete generated-surface set a .lean edit forces (typst/generated/status.typ unconditionally; a directory-ancestor-chain of ~36 registered README.md inventory blocks; two narrower conditional surfaces), verifies the gap against tasks 749/750's actual plans, and recommends extending plan-file-scope-harvest.sh's output with a generator-presence-gated post-processing step."
+      "type": "plan",
+      "path": "specs/731_harvest_generated_surfaces_into_file_scope/plans/01_harvest-generated-surfaces.md",
+      "summary": "5-phase, 4.5-hour plan extending plan-file-scope-harvest.sh with a capability-gated post-processing stage that appends the generated surfaces any .lean edit forces (status.typ, ancestor-chain inventory READMEs, two narrow-glob typst surfaces), with 11 new regression cases and precedent-plan replay verification."
     }
   ],
+  "next_steps": "Run /implement 731 to execute the plan",
+  "phase_count": 5,
+  "estimated_hours": 4.5,
+  "dependency_waves": 5,
   "memory_candidates": [
     {
-      "content": "In BimodalLogic, README.md files register generated inventory tables via `<!-- BEGIN GENERATED: inventory dir=X rows=... --> ... <!-- END GENERATED -->`, rewritten by `scripts/check-module-invariants.sh --emit-inventory`. `rows=subdirs`/`rows=totals` aggregate line counts RECURSIVELY over the whole dir=X subtree (scripts/lib/live_walk.py's live_files() is os.walk-based), so a .lean edit anywhere under X can make every ancestor directory's registered block stale, not just X's own README. At least one block also carries a hand-pinned row naming a file OUTSIDE its scanned directory (FormalSystem/README.md's `../FormalSystem.lean` row), which survives regeneration by row-key and refreshes its own count independent of the dir= scan. A simple ancestor-chain `dir=` membership test (collect every README registering dir=A for A ranging over a file's own directory up through every ancestor to repo root) reproduces the correct affected-README set without needing to model rows= semantics at all.",
-      "category": "PATTERN",
-      "source_artifact": "specs/731_harvest_generated_surfaces_into_file_scope/reports/01_harvest-generated-surfaces.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["check-module-invariants", "emit-inventory", "README generated blocks", "file_scope harvest", "BEGIN GENERATED inventory"]
-    },
-    {
-      "content": "In BimodalLogic, typst/generated/status.typ (scripts/typst-status-counts.sh) is forced stale by far more than Metalogic/ sorry-count changes: it also carries FORMALSYSTEM_FILE_COUNT/LINE_COUNT, TESTS_FILE_COUNT/LINE_COUNT, and TOOLS_FILE_COUNT/LINE_COUNT fields covering the ENTIRETY of FormalSystem/, Tests/, and BimodalTools/ respectively. Any .lean edit under those three trees that changes a file's line count or the file count is a status.typ-staleness candidate, checked by scripts/typst-sync-check.sh --counts-only (the pre-commit gate). By contrast, typst/generated/automation-module-map.typ (Check 2b) is narrowly scoped to FormalSystem/Automation/{Tactics,ProofSearch}/*.lean + SuccessPatterns.lean only, and typst/generated/machine-appendix.{jsonl,typ} (Check 3) is tied to the Axiom/DerivationTree constructor blocks and needs a Lean-interpreter run, not a line-count scan -- neither of the latter two is forced by an arbitrary .lean edit.",
+      "content": "When a repo-wide derived artifact (a generated status table, a generated inventory block in a README) is appended to a task's file_scope because an edit mechanically forces its regeneration, that append is also read by the territory/overlap machinery (orchestrate-batch-admit.sh's file_scope_collision check and task-lock.sh, both splicing scripts/lib/file-scope-overlap.sh). Any two concurrent tasks whose edits force the same shared generated surface therefore collide and serialize. This is usually the correct outcome -- they genuinely fight the same pre-commit gate over the same file -- but it is an invisible second-order consequence of a scope-completeness fix, and file_scope is a flat array of strings with no per-entry provenance or exclusivity annotation, so a 'shared, non-exclusive' marking is not expressible without a schema change. Decide the parallelism trade-off explicitly at plan time rather than discovering it as an unexplained DEFER.",
       "category": "INSIGHT",
-      "source_artifact": "specs/731_harvest_generated_surfaces_into_file_scope/reports/01_harvest-generated-surfaces.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["typst-status-counts", "typst-sync-check", "status.typ", "generated surfaces", "pre-commit gate"]
+      "source_artifact": "specs/731_harvest_generated_surfaces_into_file_scope/plans/01_harvest-generated-surfaces.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["file_scope", "generated-artifact", "territory-overlap", "batch-admit", "task-lock", "scope-harvest"]
     }
   ],
-  "next_steps": "Run /plan 731 to create implementation plan"
+  "metadata": {
+    "session_id": "sess_1791637795_4b472e_731",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 3
 }
