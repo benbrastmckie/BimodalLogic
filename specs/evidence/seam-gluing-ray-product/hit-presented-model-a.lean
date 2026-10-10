@@ -517,6 +517,206 @@ theorem clTrace_jump_eq (w t : ℤ) :
   funext q z
   exact propext (clTrace_jump_apply w t q z)
 
+/-! ## The three letters of a `jump` trace, and the run inside the middle segment
+
+`clTrace_jump_apply` says a `jump (t + n)` trace reads exactly three letters: `ℓ₀ = {⊤, Fp}`
+before the seam and on the `a`-run `(t, t + n]` after it, `ℓnow = {now, ⊤, Fp}` at the seam,
+and `ℓ₁ = {⊤, Fp, p}` after the jump — `ℓ₀^(ω*) · ℓnow · ℓ₀^n · ℓ₁^ω`. The transport layer
+(`RaySummary/Transport.lean`) deletes `p` positions of a constant run inside ONE segment of a
+`SegmentFactorization`; what this section supplies is the fixture fact that EVERY factorization
+of such a trace, at every depth `k ≥ 1`, holds the whole run `[t + 1, t + 1 + n)` inside its
+middle segment `[W 0, W 1)` (`run_subset_middle`), so the surgery applies with no re-cutting.
+
+The argument is the keystone `segZ_const_of_kTypeOf_eq_replicate` twice. If `W 0 > t`, the
+seam `t` lies in a negative segment; some nonempty negative segment lies entirely below `t`
+(cover the position `W z_t - 1`), reads `ℓ₀` throughout, and so fixes `τneg` as the type of a
+nonempty `ℓ₀`-block; the keystone then makes the segment holding `t` constantly `ℓ₀`, but `t`
+reads `now ∉ ℓ₀`. Symmetrically, if `W 1 ≤ t + n`, the position `t + n` lies in a positive
+segment, some nonempty positive segment lies entirely above `t + n` (cover `W (z_p + 1)`), reads
+`ℓ₁` throughout, fixes `τpos`, and the keystone makes the segment holding `t + n` constantly
+`ℓ₁`, but `t + n` does not read `p ∈ ℓ₁`. Depth `k ≥ 1` is consumed exactly at the keystone. -/
+
+/-- The letter `{⊤, Fp}`, read before the seam and on the `a`-run after it. -/
+def ℓ₀ : (clSig Fp).preds → Bool := fun q =>
+  decide (q = clLetter Fp cl_top ∨ q = clLetter Fp cl_Fp)
+
+/-- The letter `{now, ⊤, Fp}`, read at the seam. -/
+def ℓnow : (clSig Fp).preds → Bool := fun q =>
+  decide (q = clNow Fp ∨ q = clLetter Fp cl_top ∨ q = clLetter Fp cl_Fp)
+
+/-- The letter `{⊤, Fp, p}`, read after the jump. -/
+def ℓ₁ : (clSig Fp).preds → Bool := fun q =>
+  decide (q = clLetter Fp cl_top ∨ q = clLetter Fp cl_Fp ∨ q = clLetter Fp cl_p)
+
+theorem ℓ₀_now : ℓ₀ (clNow Fp) = false := by simp [ℓ₀, now_ne_top, now_ne_Fp]
+theorem ℓ₁_p : ℓ₁ (clLetter Fp cl_p) = true := by simp [ℓ₁]
+
+/-- Before the seam, a `jump (t + n)` trace reads `ℓ₀`. -/
+theorem clTrace_jump_letter_below (n : ℕ) (t z : ℤ) (hz : z < t) (q : (clSig Fp).preds) :
+    clTrace MA Fp t (jump (t + (n : ℤ))) q z ↔ ℓ₀ q = true := by
+  rw [clTrace_jump_apply]
+  simp only [ℓ₀, decide_eq_true_iff]
+  constructor
+  · rintro (⟨-, h⟩ | h | h | ⟨-, h⟩)
+    · omega
+    · exact Or.inl h
+    · exact Or.inr h
+    · omega
+  · rintro (h | h)
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr (Or.inl h))
+
+/-- On the `a`-run `(t, t + n]`, a `jump (t + n)` trace reads `ℓ₀`. -/
+theorem clTrace_jump_letter_mid (n : ℕ) (t z : ℤ) (hz : t < z) (hz' : z ≤ t + n)
+    (q : (clSig Fp).preds) :
+    clTrace MA Fp t (jump (t + (n : ℤ))) q z ↔ ℓ₀ q = true := by
+  rw [clTrace_jump_apply]
+  simp only [ℓ₀, decide_eq_true_iff]
+  constructor
+  · rintro (⟨-, h⟩ | h | h | ⟨-, h⟩)
+    · omega
+    · exact Or.inl h
+    · exact Or.inr h
+    · omega
+  · rintro (h | h)
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr (Or.inl h))
+
+/-- After the jump, a `jump (t + n)` trace reads `ℓ₁`. -/
+theorem clTrace_jump_letter_above (n : ℕ) (t z : ℤ) (hz : t + n < z) (q : (clSig Fp).preds) :
+    clTrace MA Fp t (jump (t + (n : ℤ))) q z ↔ ℓ₁ q = true := by
+  rw [clTrace_jump_apply]
+  simp only [ℓ₁, decide_eq_true_iff]
+  constructor
+  · rintro (⟨-, h⟩ | h | h | ⟨h, -⟩)
+    · omega
+    · exact Or.inl h
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr h)
+  · rintro (h | h | h)
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr (Or.inl h))
+    · exact Or.inr (Or.inr (Or.inr ⟨h, hz⟩))
+
+/-- **The middle segment starts at or before the seam.** Otherwise `t` lies in a negative
+segment, which the keystone makes constantly `ℓ₀` — but `t` reads `now`. -/
+theorem W0_le_seam (k : ℕ) (hk : 1 ≤ k) (t : ℤ) (n : ℕ)
+    (F : SegmentFactorization (clSig Fp) k (clTrace MA Fp t (jump (t + (n : ℤ))))) :
+    F.W 0 ≤ t := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨zt, h1, h2⟩ := F.cover t
+  have hzt : zt < 0 := by
+    by_contra h
+    push Not at h
+    have := F.mono h
+    omega
+  -- a nonempty negative segment entirely below `t`: the one covering `W zt - 1`
+  obtain ⟨z', h3, h4⟩ := F.cover (F.W zt - 1)
+  have hz' : z' + 1 ≤ zt := by
+    by_contra h
+    push Not at h
+    have := F.mono (show zt ≤ z' by omega)
+    omega
+  have h5 : F.W (z' + 1) ≤ F.W zt := F.mono hz'
+  have hτ : kTypeOf (clSig Fp) k
+        (segZ (clSig Fp) (clTrace MA Fp t (jump (t + (n : ℤ)))) (F.W z') (F.W (z' + 1)))
+      = kTypeOf (clSig Fp) k (listSeg (List.replicate (F.W (z' + 1) - F.W z').toNat ℓ₀)) :=
+    kTypeOf_segZ_eq_replicate_of_const k _ _ _ ℓ₀
+      (fun u _ hu' q => clTrace_jump_letter_below n t u (by omega) q)
+  have hlen : 0 < (F.W (z' + 1) - F.W z').toNat := by omega
+  have hzt_type := (F.neg_type zt hzt).trans ((F.neg_type z' (by omega)).symm.trans hτ)
+  obtain ⟨-, hconst⟩ :=
+    segZ_const_of_kTypeOf_eq_replicate hk _ (F.W zt) (F.W (zt + 1)) ℓ₀ hlen hzt_type
+  have := (hconst t h1 h2 (clNow Fp)).mp ((clTrace_jump_now _ t t).mpr rfl)
+  rw [ℓ₀_now] at this
+  exact Bool.false_ne_true this
+
+/-- **The middle segment ends after the run.** Otherwise `t + n` lies in a positive segment,
+which the keystone makes constantly `ℓ₁` — but `t + n` does not read `p`. -/
+theorem seam_lt_W1 (k : ℕ) (hk : 1 ≤ k) (t : ℤ) (n : ℕ)
+    (F : SegmentFactorization (clSig Fp) k (clTrace MA Fp t (jump (t + (n : ℤ))))) :
+    t + n < F.W 1 := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨zp, h1, h2⟩ := F.cover (t + n)
+  have hzp : 0 < zp := by
+    by_contra h
+    push Not at h
+    have := F.mono (show zp + 1 ≤ 1 by omega)
+    omega
+  -- a nonempty positive segment entirely above `t + n`: the one covering `W (zp + 1)`
+  obtain ⟨z', h3, h4⟩ := F.cover (F.W (zp + 1))
+  have hz' : zp + 1 ≤ z' := by
+    by_contra h
+    push Not at h
+    have := F.mono (show z' + 1 ≤ zp + 1 by omega)
+    omega
+  have h5 : F.W (zp + 1) ≤ F.W z' := F.mono hz'
+  have hτ : kTypeOf (clSig Fp) k
+        (segZ (clSig Fp) (clTrace MA Fp t (jump (t + (n : ℤ)))) (F.W z') (F.W (z' + 1)))
+      = kTypeOf (clSig Fp) k (listSeg (List.replicate (F.W (z' + 1) - F.W z').toNat ℓ₁)) :=
+    kTypeOf_segZ_eq_replicate_of_const k _ _ _ ℓ₁
+      (fun u hu _ q => clTrace_jump_letter_above n t u (by omega) q)
+  have hlen : 0 < (F.W (z' + 1) - F.W z').toNat := by omega
+  have hzp_type := (F.pos_type zp hzp).trans ((F.pos_type z' (by omega)).symm.trans hτ)
+  obtain ⟨-, hconst⟩ :=
+    segZ_const_of_kTypeOf_eq_replicate hk _ (F.W zp) (F.W (zp + 1)) ℓ₁ hlen hzp_type
+  have := (hconst (t + n) h1 h2 (clLetter Fp cl_p)).mpr ℓ₁_p
+  exact absurd ((clTrace_jump_p _ t _).mp this) (lt_irrefl _)
+
+/-- **Every factorization of a `jump (t + n)` trace holds the whole run `[t + 1, t + 1 + n)`
+inside its middle segment** (`k ≥ 1`). The containment hypothesis of
+`familyTriples_subset_deleteRun`, discharged on the fixture. -/
+theorem run_subset_middle (k : ℕ) (hk : 1 ≤ k) (t : ℤ) (n : ℕ)
+    (F : SegmentFactorization (clSig Fp) k (clTrace MA Fp t (jump (t + (n : ℤ))))) :
+    F.W 0 ≤ t + 1 ∧ t + 1 + n ≤ F.W 1 :=
+  ⟨by have := W0_le_seam k hk t n F; omega, by have := seam_lt_W1 k hk t n F; omega⟩
+
+/-- **Deleting `p` positions of the `a`-run of `jump (t + (n + p))` gives `jump (t + n)`.**
+Pointwise from `clTrace_jump_apply`: below `t + 1` the two traces agree outright, and from
+`t + 1` on the deleted trace reads `jump (t + (n + p))` at `u + p`, where `p` holds iff
+`t + n < u`, and `now` never. -/
+theorem deleteRun_clTrace_jump (t : ℤ) (n p : ℕ) :
+    deleteRun (clTrace MA Fp t (jump (t + ((n + p : ℕ) : ℤ)))) (t + 1) p
+      = clTrace MA Fp t (jump (t + (n : ℤ))) := by
+  funext q u
+  apply propext
+  by_cases h : u < t + 1
+  · rw [deleteRun_of_lt h, clTrace_jump_apply, clTrace_jump_apply]
+    have h1 : ¬ (t + ((n + p : ℕ) : ℤ) < u) := by omega
+    have h2 : ¬ (t + (n : ℤ) < u) := by omega
+    simp only [h1, h2, and_false, or_false]
+  · rw [deleteRun_of_le (not_lt.mp h), clTrace_jump_apply, clTrace_jump_apply]
+    have h1 : ¬ (u + (p : ℤ) = t) := by omega
+    have h2 : ¬ (u = t) := by omega
+    have h3 : (t + ((n + p : ℕ) : ℤ) < u + p) ↔ (t + (n : ℤ) < u) := by
+      constructor <;> intro <;> omega
+    simp only [h1, h2, h3, and_false, false_or]
+
+/-- **Family triples shrink along offsets**: beyond the threshold `m₀`, every family triple of
+`jump (t + (n + p))`'s trace is one of `jump (t + n)`'s. `deleteRun_clTrace_jump` rewrites
+the target, `run_subset_middle` supplies the containment with `z₀ = 0`, `s = t + 1` and
+`j = n + p`, and the surgery `familyTriples_subset_deleteRun` does the rest; `1 ≤ n` is what
+makes `p < j`. -/
+theorem familyTriples_jump_shrink (k : ℕ) (hk : 1 ≤ k) (t : ℤ) (m₀ p : ℕ)
+    (hper : ∀ m, m₀ ≤ m → kTypeOf (clSig Fp) k (listSeg (List.replicate (m + p) ℓ₀))
+      = kTypeOf (clSig Fp) k (listSeg (List.replicate m ℓ₀)))
+    (n : ℕ) (hn : m₀ ≤ n) (h1 : 1 ≤ n) :
+    familyTriples (clSig Fp) k (clTrace MA Fp t (jump (t + ((n + p : ℕ) : ℤ))))
+      ⊆ familyTriples (clSig Fp) k (clTrace MA Fp t (jump (t + (n : ℤ)))) := by
+  rw [← deleteRun_clTrace_jump t n p]
+  refine familyTriples_subset_deleteRun k _ (t + 1) ℓ₀ (n + p) p m₀ (by omega) (by omega)
+    ?_ ?_ hper
+  · intro F
+    refine ⟨0, ?_⟩
+    have := run_subset_middle k hk t (n + p) F
+    simp only [zero_add]
+    push_cast at this ⊢
+    constructor <;> omega
+  · intro u hu hu' q
+    exact clTrace_jump_letter_mid (n + p) t u (by omega) (by push_cast at hu' ⊢; omega) q
+
 /-! ## The truncation bound
 
 `hitCl_eq_iUnion` presents `HitCl` as a union over the seam's ray pairs — an INFINITE index, since
@@ -1335,6 +1535,9 @@ theorem hitPresented_modelA (t : ℤ) (k : ℕ) (hk : 1 ≤ k) :
 #print axioms splice_classify
 #print axioms clTrace_stayA_eq
 #print axioms clTrace_jump_eq
+#print axioms run_subset_middle
+#print axioms deleteRun_clTrace_jump
+#print axioms familyTriples_jump_shrink
 #print axioms hitCl_eq_truncated
 #print axioms labOf
 #print axioms stepOf
