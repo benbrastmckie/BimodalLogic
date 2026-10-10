@@ -241,23 +241,25 @@ add a fixture only if a count differs from the hypothesis.
 
 ---
 
-### Phase 3: Document the observability surface, redeploy, and run the full gate set [NOT STARTED]
+### Phase 3: Document the observability surface, redeploy, and run the full gate set [COMPLETED]
 
 **Goal**: the notice is documented where `file_scope` is specified, the deployed tree matches the
 source store, and the complete gate set is green.
 
 **Tasks**:
-- [ ] Re-read `context/reference/state-management-schema.md` immediately before editing.
-- [ ] Under the `### File Scope Field` section, add a short observability note: the field is
+- [x] Re-read `context/reference/state-management-schema.md` immediately before editing.
+      *(completed)*
+- [x] Under the `### File Scope Field` section, add a short observability note: the field is
       widened additively at research and plan postflight by `update-task-status.sh`'s
       `--file-scope-add` flag, and a widening that actually adds paths is announced on stderr as
       a non-blocking `[file-scope]` notice naming the count of new paths; a forward whose paths
       are all already present writes nothing and prints nothing. State the current design only —
-      no task numbers, no version language, no narration of earlier behavior.
-- [ ] Run `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`
-      after the source-store edits.
-- [ ] Run the complete gate set and triage every finding to green or to an explicitly reasoned,
-      evidenced exclusion.
+      no task numbers, no version language, no narration of earlier behavior. *(completed)*
+- [x] Run `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`
+      after the source-store edits. *(completed)*
+- [x] Run the complete gate set and triage every finding to green or to an explicitly reasoned,
+      evidenced exclusion. *(completed: two unrelated pre-existing findings in the source
+      store's own full gate set triaged and excluded -- see issue log)*
 
 **Timing**: 30 minutes
 
@@ -287,14 +289,23 @@ by removing the notice.
 
 ## Testing & Validation
 
-- [ ] A `--file-scope-add` forward that adds genuinely new paths prints exactly one
+- [x] A `--file-scope-add` forward that adds genuinely new paths prints exactly one
       `[file-scope]` notice on stderr, on both the real-write and the status-no-op branch.
-- [ ] A `--file-scope-add` forward whose paths are all already present prints nothing.
-- [ ] The notice names the count of genuinely new paths, not the length of the forwarded array.
-- [ ] Nothing is written to stdout, and `update-task-status.sh`'s exit status is unchanged in
-      every case (including the failure arms, where no notice is printed).
-- [ ] The notice surfaces through `skill_postflight_update`, the one live plan-postflight caller.
-- [ ] `bash .claude/scripts/verify-deploy.sh` is green and the deployed tree verifies clean.
+      *(completed: scratch probe + Case 11 11a/11c)*
+- [x] A `--file-scope-add` forward whose paths are all already present prints nothing.
+      *(completed: scratch probe + Case 11 11b)*
+- [x] The notice names the count of genuinely new paths, not the length of the forwarded array.
+      *(completed)*
+- [x] Nothing is written to stdout, and `update-task-status.sh`'s exit status is unchanged in
+      every case (including the failure arms, where no notice is printed). *(completed)*
+- [x] The notice surfaces through `skill_postflight_update`, the one live plan-postflight caller.
+      *(completed: test-skill-base-lifecycle.sh Group 4a)*
+- [x] `bash .claude/scripts/verify-deploy.sh` is green and the deployed tree verifies clean.
+      *(completed: BimodalLogic's own gate -- PASS, 14 checks, 0 failures. The source store's
+      own full gate set carries two pre-existing, unrelated findings (doc-lint's
+      check-evidence-probes.sh registration gap; the test-verify-deploy-context-budget.sh
+      suite), triaged as reasoned exclusions -- see issue log -- neither referencing
+      file_scope, update-task-status.sh, or either edited test suite)*
 
 ## Artifacts & Outputs
 
