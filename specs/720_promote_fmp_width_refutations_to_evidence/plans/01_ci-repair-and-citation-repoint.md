@@ -398,34 +398,34 @@ check is the diff read-through plus `bash .claude/scripts/verify-deploy.sh --onl
 
 ---
 
-### Phase 5: Full gate: evidence probes, invariants, `lake build` [NOT STARTED]
+### Phase 5: Full gate: evidence probes, invariants, `lake build` [COMPLETED]
 
 **Goal**: Run the complete verification set over the finished work and confirm the task
 description's finish line -- `bash scripts/check-evidence-probes.sh` at exit 0 and `lake build`
 green -- plus the repository gate set and the deploy gate.
 
 **Tasks**:
-- [ ] `bash scripts/check-evidence-probes.sh` -- exit 0, `PASS  all 26 wired probe(s) compile`.
-- [ ] Tracked-ness loop from Phase 2 over every remaining wired target -- prints nothing.
-- [ ] Guarded, detached `lake build` per `context/project/lean4/operations/long-builds.md`:
+- [x] `bash scripts/check-evidence-probes.sh` -- exit 0, `PASS  all 26 wired probe(s) compile`.
+- [x] Tracked-ness loop from Phase 2 over every remaining wired target -- prints nothing.
+- [x] Guarded, detached `lake build` per `context/project/lean4/operations/long-builds.md`:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, waited on per
       `context/patterns/bounded-build-waiter.md` (hard timeout, `kill -0` on the captured PID,
       one waiter per log). No `.lean` file changed, so this is expected to be a cache hit; the
       task description names it as the finish line regardless.
-- [ ] `timeout 400 bash scripts/check-module-invariants.sh --no-build` -- exit 0.
-- [ ] `bash scripts/readme-lint.sh` -- exit 0.
-- [ ] `bash .claude/scripts/verify-deploy.sh` -- the complete deploy gate set. A deploy-staleness
+- [x] `timeout 400 bash scripts/check-module-invariants.sh --no-build` -- exit 0.
+- [x] `bash scripts/readme-lint.sh` -- exit 0.
+- [x] `bash .claude/scripts/verify-deploy.sh` -- the complete deploy gate set. A deploy-staleness
       finding for `core` is pre-existing (named in the dispatch's deploy-freshness context) and
       is made certain by Phase 4's source-store edit; report it as expected, not as a regression.
       Redeploying via `bash .claude/scripts/deploy-headless.sh` is the operator's call and is not
       required for acceptance.
-- [ ] `grep -rnE 'Probe706|Probe710|NoFiniteCarrierModel|NoFiniteWidthModel' --exclude-dir=.lake --exclude-dir=.git --exclude-dir=archive FormalSystem/ docs/ scripts/check-evidence-probes.sh`
-      -- no hit (the `specs/evidence/` docstring mentions and `scripts/decidability-inventory-baseline.txt` are out of scope by Non-Goals).
-- [ ] Re-run `bash scripts/check-metalogic-cycles.sh` and `bash scripts/typst-sync-check.sh`
+- [x] `grep -rnE 'Probe706|Probe710|NoFiniteCarrierModel|NoFiniteWidthModel' --exclude-dir=.lake --exclude-dir=.git --exclude-dir=archive FormalSystem/ docs/ scripts/check-evidence-probes.sh`
+      -- no hit (the `specs/evidence/` docstring mentions and `scripts/decidability-inventory-baseline.txt` are out of scope by Non-Goals). *(deviation: altered — two hits remain, both at `Limits/README.md` Provenance naming the probe FILENAMES `NoFiniteCarrierModel.lean` / `NoFiniteWidthModel.lean` beside their git commits, exactly as Phase 3's own task text prescribes; no `Probe706`/`Probe710` namespace and no path citation remains)*
+- [x] Re-run `bash scripts/check-metalogic-cycles.sh` and `bash scripts/typst-sync-check.sh`
       once, only to confirm their exit status is unchanged from HEAD (both exit 1 before this
       task); record the result in the summary as pre-existing so the next CI run is read
       correctly.
-- [ ] Record a final `issue-record.sh` entry (win or issue) for the gate run.
+- [x] Record a final `issue-record.sh` entry (win or issue) for the gate run.
 
 **Timing**: 0.5 hours (dominated by waiting on the guarded `lake build`)
 
@@ -449,18 +449,18 @@ green -- plus the repository gate set and the deploy gate.
 
 ## Testing & Validation
 
-- [ ] Phase 1 negative test: with the two untracked entries still present, the gate prints
+- [x] Phase 1 negative test: with the two untracked entries still present, the gate prints
       exactly two `FAIL (untracked: ...)` lines and no `FAIL (missing: ...)` line.
-- [ ] Phase 2 positive test: the gate prints `PASS  all 26 wired probe(s) compile`, exit 0, and
+- [x] Phase 2 positive test: the gate prints `PASS  all 26 wired probe(s) compile`, exit 0, and
       the tracked-ness loop over all 26 targets prints nothing.
-- [ ] README cross-references: `readme-lint.sh` and `check-module-invariants.sh --no-build` exit
+- [x] README cross-references: `readme-lint.sh` and `check-module-invariants.sh --no-build` exit
       0; both new relative links from `FMP/README.md` resolve.
-- [ ] No `Probe706`/`Probe710` citation remains under `FormalSystem/`, `docs/`, or in
+- [x] No `Probe706`/`Probe710` citation remains under `FormalSystem/`, `docs/`, or in
       `scripts/check-evidence-probes.sh`.
-- [ ] No task-number reference or record-versioning phrase introduced in any deliverable file
+- [x] No task-number reference or record-versioning phrase introduced in any deliverable file
       (script, READMEs, source-store notes).
-- [ ] `lake build` green via the build guard.
-- [ ] CI expectation stated in the summary: the `check-evidence-probes.sh` step turns green on
+- [x] `lake build` green via the build guard.
+- [x] CI expectation stated in the summary: the `check-evidence-probes.sh` step turns green on
       the next push; `check-metalogic-cycles.sh` and `typst-sync-check.sh` remain red for
       unrelated, already-known reasons.
 
