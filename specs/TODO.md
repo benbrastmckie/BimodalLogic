@@ -1,5 +1,5 @@
 ---
-next_project_number: 756
+next_project_number: 757
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 756
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,731,734,741,743,744,751,752,753,754,755 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,731,734,741,743,744,751,752,753,754,755,756 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -108,7 +108,41 @@ next_project_number: 756
 744 [NOT STARTED] — Wrap the RaySummary and KTypeSummary inventory tables in...
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
+### Paper Alignment
+
+756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
+
 ## Tasks
+
+### 756. Repin lem nullity after paper strengthening
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Re-pin `lem:nullity` in the paper definitions of record after the JPL paper strengthened it from an implication to a biconditional, and correct the in-tree docstrings that quote the retired wording verbatim.
+
+THE DRIFT. `scripts/check-paper-definitions.sh` reports exactly one drifted anchor against `docs/reference/paper-definitions-of-record.md`:
+
+  OLD (pinned, sha256 94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973):
+    $w \Rightarrow_0 w$ for every world state $w \in W$ in every task frame $\F = \tuple{W, \D, \Rightarrow}$.
+  NEW (live paper, sha256 8442e2bf6b5f6515f2f906132bbe15fe919973d82ae573dba29a919ad14636f5):
+    $w \Rightarrow_0 u$ if and only if $w = u$, for all world states $w, u \in W$ in any task frame $\F$.
+
+The new statement is strictly STRONGER: an implication became a biconditional characterising `⇒₀` as the identity relation.
+
+THE FORMALIZATION IS NOT BEHIND THE PAPER. This is the load-bearing fact for scoping, and it is verified, not assumed: the tree already carries BOTH forms. `FormalSystem/Semantics.lean:257` names them together — the field `FrameOver.nullity` (the weak loop) and the biconditional `FrameOver.nullity_identity`. `FormalSystem/Semantics/IntNormalForm.lean:24` already describes `⇒₀` as the identity and cites `FrameOver.nullity_identity` as the derived theorem for it, and `IntNormalForm.lean:200` discharges a base case with `F.nullity_identity w u`. So no new Lean proof is required by this drift; the record is simply stale relative to a paper the library already over-satisfies.
+
+NOT A CI FAILURE. `check-paper-definitions.sh`'s own usage block documents that an absent paper file is a neutral skip with exit 0, and names that as the CI path, since CI cannot see the paper's repository — confirmed by running it with a nonexistent `--paper`. The gate is red only on a machine where the paper is checked out alongside this repo. It is therefore a local-correctness obligation, not a release blocker.
+
+SCOPE. (1) Re-pin the `lem:nullity` block and its sha256 in `docs/reference/paper-definitions-of-record.md`, following that file's own dated drift-correction convention for an amendment to a decision the record owns; `check-paper-definitions.sh --resolve` is the sanctioned way to obtain the new text and hash rather than transcribing by hand (there is no `--fix` mode, by design). (2) Correct the in-tree sites that quote the RETIRED wording. Four of them label the quotation "verbatim" and so become false on re-pin: `FormalSystem/Semantics/TaskFrame.lean:113` and `:919`, `FormalSystem/Semantics/FrameAxioms.lean:65`, `FormalSystem/Semantics/Extension/Admissible.lean:34`. (3) Review the sites that paraphrase the weak form without claiming verbatim quotation and decide case by case whether each should now cite the biconditional: `FormalSystem/Semantics.lean:255`, `FormalSystem/Semantics/Presheaf/Behavior.lean:91`, `FormalSystem/Semantics/FrameAxioms.lean:113`, `FormalSystem/Semantics/Extension/Admissible.lean:117`, `FormalSystem/Semantics/Extension/Extension.lean:171`, `docs/reference/state-topology-appendix-support.md:103`. Several are legitimate as they stand — a proof that needs only the weak loop should keep citing the weak loop — so this step is a judgment pass, not a search-and-replace. (4) Preserve the record's standing claim that Nullity is DERIVED and not an axiom (`paper-definitions-of-record.md:976`, `TaskFrame.lean:113`): the strengthening does not promote it to an axiom.
+
+ACCEPTANCE. `scripts/check-paper-definitions.sh` exits 0 against the live paper; `lake build` green; `scripts/readme-lint.sh` and `scripts/check-module-invariants.sh --no-build` still exit 0; no docstring claims a verbatim quotation it does not reproduce.
+
+NON-GOALS: no new Lean declarations — `nullity_identity` already exists; no change to the four frame axioms or to Nullity's derived status; no edit to the paper itself.
+
+---
 
 ### 755. Plan files to modify unenforced
 - **Effort**: small
