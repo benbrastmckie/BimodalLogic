@@ -1,15 +1,17 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phases_completed": 5,
   "phases_total": 5,
-  "summary": "Wrote a 5-phase, 4.5-hour plan extending plan-file-scope-harvest.sh (source store) with one capability-gated post-processing stage: it fires only when the harvested array already holds a .lean path and the repo carries check-module-invariants.sh and typst-sync-check.sh, then appends typst/generated/status.typ, every generated-inventory README on the edited paths' directory-ancestor chains (fence-aware, mirroring the generator's own BEGIN_RE and markdown_targets exclusions), and two narrow-glob surfaces. No caller changes: all seven consumers subprocess this one script. Phases 1-4 are local-tier (covered by run-all.sh --only on the three suites suite_selection_select resolves for this path); Phase 5 is full-tier and carries the deploy, the documentation sync, and the dispatch's scope-item-4 replay against both precedent plans. Declared scope is three source-store files and intersects nothing in the concurrent sibling's declared territory.",
+  "summary": "Extended plan-file-scope-harvest.sh with a capability-gated post-processing stage that appends the generated surfaces any .lean edit forces (status.typ, ancestor-chain READMEs, two narrow-glob typst surfaces). Added 11 regression cases (32/32 passing), documented the file_scope-overlap consequence, deployed, and verified against both precedent plans (task 749, task 750) -- all five phases closed, the full verify-deploy.sh gate and the three-suite run-all.sh selection both exit 0 in the source-store checkout and the deployed tree.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/731_harvest_generated_surfaces_into_file_scope/plans/01_harvest-generated-surfaces.md",
-      "summary": "5-phase plan for capability-gated generated-surface appending in plan-file-scope-harvest.sh, with 11 new regression cases and precedent-plan replay verification."
+      "type": "summary",
+      "path": "specs/731_harvest_generated_surfaces_into_file_scope/summaries/01_harvest-generated-surfaces-summary.md",
+      "summary": "Full implementation summary covering all 5 phases, both precedent-plan replays, and the latency figure."
     }
   ],
-  "dispatch_seq": 3
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "dispatch_seq": 5
 }
