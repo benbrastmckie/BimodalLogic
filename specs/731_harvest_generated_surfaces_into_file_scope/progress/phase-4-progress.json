@@ -1,0 +1,29 @@
+{
+  "phase": 4,
+  "phase_name": "Narrow-glob conditional surfaces",
+  "started_at": "2026-10-10T20:25:00Z",
+  "last_updated": "2026-10-10T20:40:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Append typst/generated/automation-module-map.typ on the three-glob trigger, and typst/generated/machine-appendix.{jsonl,typ} on the Axioms/Derivation trigger, both existence-conditional; document the universal-vs-narrow gating distinction in the header subsection",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Add Cases 20-21 to test-plan-file-scope-harvest.sh (positive/negative for each narrow surface)",
+      "status": "done",
+      "files_touched": []
+    }
+  ],
+  "current_objective": 2,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [],
+  "notes": [
+    "Verified: 32/32 cases pass in test-plan-file-scope-harvest.sh (all 11 new cases plus the 21 pre-existing); three-suite run-all.sh --only selection exits 0 (3 passed, 0 failed).",
+    "Verified real-repo replay on both precedent plans (749, 750): neither narrow surface over-fires -- neither precedent touches the Automation globs or the ProofSystem Axioms/Derivation pair.",
+    "All four generated-surface categories from the dispatch's SCOPE item 1 are now implemented: status.typ (universal), ancestor-chain READMEs (universal), automation-module-map.typ (narrow), machine-appendix.{jsonl,typ} (narrow)."
+  ]
+}

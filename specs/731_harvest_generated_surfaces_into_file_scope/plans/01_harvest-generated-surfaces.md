@@ -323,29 +323,29 @@ hypothesis is merely imprecise.
 
 ---
 
-### Phase 4: Narrow-glob conditional surfaces [NOT STARTED]
+### Phase 4: Narrow-glob conditional surfaces [COMPLETED]
 
 **Goal**: The two genuinely conditional surfaces are appended only on a glob match, so a plan that
 cannot make them stale does not carry them.
 
 **Tasks**:
 
-- [ ] Append `typst/generated/automation-module-map.typ` only when a harvested path matches
+- [x] Append `typst/generated/automation-module-map.typ` only when a harvested path matches *(completed)*
       `FormalSystem/Automation/Tactics/*.lean`, `FormalSystem/Automation/ProofSearch/*.lean`, or
       equals `FormalSystem/Automation/SuccessPatterns.lean` — the generator's own declared glob
       scope, which excludes `Boneyard/`.
-- [ ] Append `typst/generated/machine-appendix.jsonl` and `typst/generated/machine-appendix.typ`
+- [x] Append `typst/generated/machine-appendix.jsonl` and `typst/generated/machine-appendix.typ` *(completed)*
       only when a harvested path equals `FormalSystem/ProofSystem/Axioms.lean` or
       `FormalSystem/ProofSystem/Derivation.lean`.
-- [ ] Keep both appends existence-conditional on the file being present under `$root`, matching
+- [x] Keep both appends existence-conditional on the file being present under `$root`, matching *(completed)*
       Phase 2's treatment of `status.typ`.
-- [ ] Document in the header subsection why these two are glob-gated and `status.typ` is not, and
+- [x] Document in the header subsection why these two are glob-gated and `status.typ` is not, and *(completed)*
       that `machine-appendix` regeneration needs a Lean build (`lake env lean --run`), not a
       line-count scan — a cost the implementer of a future Axioms-touching task should expect.
-- [ ] Add Case 20: a fixture naming `FormalSystem/Automation/Tactics/Foo.lean` appends
+- [x] Add Case 20: a fixture naming `FormalSystem/Automation/Tactics/Foo.lean` appends *(completed)*
       `automation-module-map.typ`; a fixture naming `FormalSystem/Automation/Other/Foo.lean` does
       not.
-- [ ] Add Case 21: a fixture naming `FormalSystem/ProofSystem/Axioms.lean` appends both
+- [x] Add Case 21: a fixture naming `FormalSystem/ProofSystem/Axioms.lean` appends both *(completed)*
       `machine-appendix` paths; a fixture naming `FormalSystem/ProofSystem/Other.lean` appends
       neither.
 
