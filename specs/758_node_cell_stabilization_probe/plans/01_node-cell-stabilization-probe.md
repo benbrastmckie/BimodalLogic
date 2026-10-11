@@ -253,13 +253,13 @@ and `scripts/check-evidence-probes.sh` is self-excluded from `check-module-invar
 
 ---
 
-### Phase 3: Record the Probe in the RaySummary README and Run the Full Gate [NOT STARTED]
+### Phase 3: Record the Probe in the RaySummary README and Run the Full Gate [COMPLETED]
 
 **Goal**: Add the one mandated sentence to the README's Evidence section, refresh its
 "Last verified" stamp, and run the complete repository gate set over the finished task.
 
 **Tasks**:
-- [ ] In `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `## Evidence` section,
+- [x] In `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `## Evidence` section,
       insert ONE sentence as its own paragraph directly after the "A ninth wired probe, …"
       paragraph and before "The permanent computability witnesses are …", of the shape:
       "A tenth wired probe, `specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean`,
@@ -272,10 +272,10 @@ and `scripts/check-evidence-probes.sh` is self-excluded from `check-module-invar
       finiteness added, and with the separator between `pre 0` and `pre 1` being the non-`⊡`
       letter `Xp` as set membership of a second type, not a `⊡`-letter." Durable anchors only:
       no task number, no `specs/758_…` path, no record-versioning language.
-- [ ] Update the README's trailing `*Last verified: YYYY-MM-DD*` line to the implementation date.
-- [ ] Run the final gate set (below), detached where the pattern requires, and record each
+- [x] Update the README's trailing `*Last verified: YYYY-MM-DD*` line to the implementation date.
+- [x] Run the final gate set (below), detached where the pattern requires, and record each
       exit status in the summary.
-- [ ] Commit the README edit; write the implementation summary per `summary-format.md`.
+- [x] Commit the README edit; write the implementation summary per `summary-format.md`.
 
 **Timing**: 1 hour
 
@@ -334,15 +334,15 @@ end Probe758
 
 ## Testing & Validation
 
-- [ ] The probe compiles under the gate's own command (`lake env lean`) with 0 errors and the
+- [x] The probe compiles under the gate's own command (`lake env lean`) with 0 errors and the
       axiom foot `[propext, Classical.choice, Quot.sound]` on all four `#print axioms` lines.
-- [ ] No `sorry`, `axiom`, or vacuous-definition pattern in the probe (grep count 0).
-- [ ] The three dispatch statements match the Lean Challenge Statements block exactly
+- [x] No `sorry`, `axiom`, or vacuous-definition pattern in the probe (grep count 0).
+- [x] The three dispatch statements match the Lean Challenge Statements block exactly
       (`lean-challenge-snapshot.sh --check 758 .` is available as an advisory drift check).
-- [ ] `check-evidence-probes.sh` reports 28 wired probes, all PASS.
-- [ ] `check-module-invariants.sh`, `check-task-references.sh`, `readme-lint.sh`,
+- [x] `check-evidence-probes.sh` reports 28 wired probes, all PASS.
+- [x] `check-module-invariants.sh`, `check-task-references.sh`, `readme-lint.sh`,
       `verify-deploy.sh` and the guarded full `lake build` all exit 0.
-- [ ] Header read-through: witness/fallback order, forward-only sentence, no-bound sentence,
+- [x] Header read-through: witness/fallback order, forward-only sentence, no-bound sentence,
       no-finiteness sentence, zero-debt sentence, the `Xp`-not-`⊡` sharpening, and the
       `post k 0` remark are all present.
 

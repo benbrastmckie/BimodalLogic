@@ -589,6 +589,16 @@ say: nothing about realization (the run layer's phase 2, open), nothing about `H
 nothing about `⊡(Pp)` (forward-only); seriality is the object's `fwd`/`bwd` hypotheses; no
 complexity bound; `Decidable (PlusValidZTime φ)` not stated in any form.
 
+A tenth wired probe, `specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean`,
+is the run layer's phase-2 first statement on the one-region fixture, gate-compiled: on
+`NoFiniteWidth.M` with its own witness `Φ`, the realized cells `cellAt` of `AnchorLayer.lean`
+stabilize past pre-index 1 (`Probe758.preCell_stable`), differ between `pre 0` and `pre 1`
+(`preCell_zero_ne`, the deadline index is real), and ignore the thread index
+(`postCell_stable`), every theorem at `[propext, Classical.choice, Quot.sound]`, citing the
+fixture and re-proving nothing — forward-only, with no bound of any kind claimed and no
+finiteness added, and with the separator between `pre 0` and `pre 1` being the non-`⊡`
+letter `Xp` as set membership of a second type, not a `⊡`-letter.
+
 The permanent computability witnesses are `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`
 (imported from `Tests/BimodalTest.lean`): thirteen `#guard`s at depth 1 over `twoLetter` that
 `kTypeOfFin` (on `segZ` and `listSeg`), `allPathTypes`, `hitOf`, `fwdLiveSep` and `bwdLiveSep`
@@ -659,4 +669,4 @@ additionally pinned by C14 for their **Conditional** rows in `docs/theorem-index
 
 ---
 
-*Last verified: 2026-10-10*
+*Last verified: 2026-10-11*
