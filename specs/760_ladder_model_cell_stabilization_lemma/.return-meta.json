@@ -1,0 +1,68 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-11T08:20:43Z",
+  "completed_at": "2026-10-11T08:47:03Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/760_ladder_model_cell_stabilization_lemma/reports/01_ladder-cell-stabilization-refuted.md",
+      "summary": "Two machine-checked findings against the filed statement: ladderFrame's fwd/bwd hypotheses are unsatisfiable on the full carrier (Adm must restrict the carrier), and the cell-stabilization lemma over (c,n) >= |cl phi| is false in both forms on the two-state object; recommends the record's own contingency ([BLOCKED], obstruction landed as a wired probe) with a user decision on the successor design."
+    }
+  ],
+  "modified_files": [
+    "specs/760_ladder_model_cell_stabilization_lemma/reports/01_ladder-cell-stabilization-refuted.md",
+    "specs/760_ladder_model_cell_stabilization_lemma/prototype/ladder-cell-refutation-proto.lean",
+    "specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl"
+  ],
+  "next_steps": "Plan option R1 of the report: port prototype/ladder-cell-refutation-proto.lean to specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean as the twelfth wired probe, record the obstruction in the RaySummary README and the ladderFrame_isRegular theorem-index row, and mark the stabilization lemma [BLOCKED]; the successor design (carrier repair of ladderFrame, replacement statement for T4-T6) is the user's call.",
+  "user_decision": {
+    "question": "The filed lemma ladderCell_stabilizes is refuted (machine-checked) and ladderFrame's seriality hypotheses are unsatisfiable on the full carrier; how should this record proceed?",
+    "options": [
+      "R1 - mark the lemma [BLOCKED] per the design record's contingency; land only the obstruction (wired refutation probe + README/theorem-index records); no library module; successor design decided by the user via /revise or /spawn",
+      "R2 - /revise this record to land the sound parts in LadderModel.lean now (Adm as a carrier restriction, ladderFrameAdm, ladderModel, the uninstantiability record, and ladderCell_not_stabilizes as a library refutation), then /revise 761-763 off the lost finite index",
+      "R3 - /revise this record to a repaired positive lemma (cells determined by (q, min c B', min n B', clipped n - c)); research-first, not costable, no comparable in the tree"
+    ],
+    "recommended": "R1 - mark the lemma [BLOCKED] per the design record's contingency; land only the obstruction (wired refutation probe + README/theorem-index records); no library module; successor design decided by the user via /revise or /spawn",
+    "blocking": false
+  },
+  "memory_candidates": [
+    {
+      "content": "In sliced-frame probes, the untl/snce witness has type F.Duration, which omega does not treat as Z: destructure it as (s' : Z) and restate the order hypothesis with an explicit (s : Z) ascription before omega (the NoFiniteWidth fixture's truth_Xp idiom). Full simp on a hypothesis mentioning Count also rewrites Nat casts (up (i+1) to up i + 1), desynchronizing omega atoms; evaluate Boolean ifs by rw with concrete-Boolean lemmas instead.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/760_ladder_model_cell_stabilization_lemma/prototype/ladder-cell-refutation-proto.lean",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "lean4",
+        "omega",
+        "F.Duration",
+        "sliced frame",
+        "Count",
+        "simp casts"
+      ]
+    },
+    {
+      "content": "A frame constructor that takes seriality as hypotheses quantified over the FULL carrier can be unsatisfiable when the one-step relation carries a source-side admissibility clause (RunLayer's ladderFrame: pend x = false -> c = 0 makes (q,1,0) successorless). Test instantiability with a concrete object before stating anything over such a frame; restrict the carrier to the admissible subtype and pull finite branching back along Subtype.val with Set.Finite.preimage.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/760_ladder_model_cell_stabilization_lemma/reports/01_ladder-cell-stabilization-refuted.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "lean4",
+        "frame constructor",
+        "unsatisfiable hypotheses",
+        "admissible carrier",
+        "ladderFrame"
+      ]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791706685_9a0a9b_760",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ]
+  }
+}
