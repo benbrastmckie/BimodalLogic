@@ -2022,11 +2022,12 @@ fi
 # directives covered that neither baseline did: real_lub_of_bddAbove, dedekind_box_dense_mem and
 # the five Deterministic completeness termini.
 #
-# Eight entries carry a STRICT SUBSET of [propext, Classical.choice, Quot.sound], recorded
+# Nine entries carry a STRICT SUBSET of [propext, Classical.choice, Quot.sound], recorded
 # literally rather than rounded up: setConsequence_of_not_satisfiable, satisfiableSet_iff_
 # finitelySatisfiable, modelExistence_iff_finitelySatisfiable, Conservativity.TMFrag,
-# Semantics.plusValidIn_ofFormula_iff, Semantics.galoisClosed_mod and
-# StarLanguage.StarDerivationTree are [propext], and qDepth_qAlpha is [propext, Quot.sound].
+# Semantics.plusValidIn_ofFormula_iff, Semantics.galoisClosed_mod,
+# StarLanguage.StarDerivationTree and RaySummary.no_bwd_of_idle are [propext], and
+# qDepth_qAlpha is [propext, Quot.sound].
 # A smaller dependency is not a regression.
 #
 # The trailing block pins the TM⋆ headline results that `docs/theorem-index.md` carries rows
@@ -2100,7 +2101,15 @@ fi
 # frame-scheme row: `...ladderFrame_isRegular` (`RaySummary/RunLayer.lean`) is the regularity
 # instance of the frame-scheme constructor -- the regularity part of (W)'s first obligation --
 # with an infinite slice and `[Finite Q]` on the object only; it pins a profile and is not a
-# decision procedure, and no realization theorem is claimed for the frame it builds.
+# decision procedure, and no realization theorem is claimed for the frame it builds. Four more
+# matched pairs, for the `docs/theorem-index.md` rows of `RaySummary/LadderModel.lean`:
+# `...no_fwd` and `...no_bwd_of_idle` record that `ladderFrame`'s own seriality hypotheses are
+# unsatisfiable (the frame has no instances, so `Adm` restricts the CARRIER), and
+# `...ladderFrameAdm_isRegular` and `...ladderModel` are the regular frame and the model on the
+# admissible carrier, beside `ladderFrame` -- a profile and not a decision procedure: no
+# realization theorem is claimed (the stabilization of `ladderModel`'s cells in the counter pair
+# is refuted by the wired probe `ladder-cell-refutation.lean`), no index of a ladder cell, no
+# complexity bound.
 #
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
@@ -2329,6 +2338,10 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.WeakCanonical.inFamily_of_shrink_run' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.no_fwd' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.no_bwd_of_idle' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.RaySummary.ladderFrameAdm_isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.ladderModel' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2556,6 +2569,10 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.WeakCanonical.inFamily_of_shrink_run
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorConsFin_iff
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_isRegular
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.no_fwd
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.no_bwd_of_idle
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrameAdm_isRegular
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderModel
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

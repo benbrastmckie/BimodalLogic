@@ -667,7 +667,12 @@ finite branching in its one `Saturation` slot (`ofSlicedStepFinBranch`,
 `ofSlicedStepFinBranch_isRegular`, `ofSlicedStepFinBranch_step`,
 `ofSlicedStepFinBranch_not_finite_worldState`, `ofSlicedStepFinBranch_mem_HF_iff`), the deadline
 ladder (`Drift`, `Count`, `Rlad`, `Rlad_fwd`, `Rlad_bwd`, `Rlad_slice_infinite`) and the frame it
-yields (`ladderFrame`, `ladderFrame_isRegular`, `ladderFrame_step`).
+yields (`ladderFrame`, `ladderFrame_isRegular`, `ladderFrame_step`). Eleven further pins, in the
+section after this one, cover `RaySummary/LadderModel.lean` beside the ladder's: the record that
+`ladderFrame`'s own seriality hypotheses are unsatisfiable (`no_fwd`, `no_bwd_of_idle`), the
+admissibility set and carrier (`Adm`, `LadderState`, `ladderState_nonempty`), the restricted
+relation with its branching (`RladAdm`, `RladAdm_fwd`, `RladAdm_bwd`), and the frame and model on
+the admissible carrier (`ladderFrameAdm`, `ladderFrameAdm_isRegular`, `ladderModel`).
 
 **What these pins certify, and what they do not.** They certify the standard axiom profile
 `[propext, Classical.choice, Quot.sound]` (or no axioms at all, for the five definitions
@@ -784,5 +789,73 @@ set_option linter.style.longLine false in
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrame_step
+
+/-! ## Requirement (W): the admissible ladder carrier (`RaySummary/LadderModel.lean`)
+
+Eleven pins, one per declaration of the module. `no_fwd` and `no_bwd_of_idle` record that
+`ladderFrame`'s own seriality hypotheses are unsatisfiable — for every object, and for every
+object with an idle state — so `Adm` (`{c | pend q = false → c = 0}`) is a restriction of the
+CARRIER; `LadderState` is that carrier with `ladderState_nonempty` its inhabitant; `RladAdm` is
+`Rlad` on the underlying triples with `RladAdm_fwd`/`RladAdm_bwd` pulled back along
+`Subtype.val`; `ladderFrameAdm` is the frame through `ofSlicedStepFinBranch` with
+`ladderFrameAdm_isRegular`, and `ladderModel` the model whose valuation reads the object
+component only.
+
+**What these pins certify, and what they do not.** The standard profile
+`[propext, Classical.choice, Quot.sound]` or a strict subset of it (`no_bwd_of_idle` is
+`[propext]`, `ladderState_nonempty` is `[Classical.choice]`, and the three definitions `Adm`,
+`LadderState`, `RladAdm` carry no axiom at all) on each declaration, and nothing else. No
+realization theorem is pinned because none exists: the stabilization of `ladderModel`'s cells in
+the counter pair is refuted by the wired probe `ladder-cell-refutation.lean`, no index of a
+ladder cell is claimed, nothing is pinned about `HitPresented` or `PlusValidZTime`, and no pin is
+a complexity bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.no_fwd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.no_fwd
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.no_bwd_of_idle' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.no_bwd_of_idle
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Adm' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.Adm
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LadderState' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.LadderState
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ladderState_nonempty' depends on axioms: [Classical.choice] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderState_nonempty
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.RladAdm' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.RladAdm
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.RladAdm_fwd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.RladAdm_fwd
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.RladAdm_bwd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.RladAdm_bwd
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ladderFrameAdm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrameAdm
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ladderFrameAdm_isRegular' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrameAdm_isRegular
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ladderModel' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderModel
 
 end BimodalTest.Metalogic

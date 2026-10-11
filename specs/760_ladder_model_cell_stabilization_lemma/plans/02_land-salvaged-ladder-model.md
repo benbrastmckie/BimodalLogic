@@ -597,16 +597,16 @@ against the pre-edit file.
 
 ---
 
-### Phase 8: C14 Pins at the Two Synchronized Sites [NOT STARTED]
+### Phase 8: C14 Pins at the Two Synchronized Sites [COMPLETED]
 
 **Goal**: Every landed declaration's axiom foot is machine-asserted, at both sites, from observed
 output.
 
 **Tasks**:
-- [ ] Run `#print axioms` for each of the eleven fully qualified names against the built library
+- [x] Run `#print axioms` for each of the eleven fully qualified names against the built library
       and record the exact output text. **Every expected value below is an expectation, not a
       fact**: take the strings from this run.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: append one
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: append one
       `/-- info: … -/` + `#guard_msgs in` + `#print axioms …` block per declaration, following the
       existing `ladderFrame`/`ladderFrame_isRegular`/`ladderFrame_step` blocks at the file's tail
       exactly, including the wrapped-continuation form (`[propext,\n Classical.choice,\n Quot.sound]`)
@@ -614,22 +614,26 @@ output.
       `does not depend on any axioms` use that form, as the existing `Drift`/`Count`/`Rlad` blocks
       do. Amend the file's own module-docstring inventory sentence to name the new module's
       declarations beside the ladder's.
-- [ ] `scripts/check-module-invariants.sh`: append matched pairs to `C14_BASELINE` and `C14LEAN`
+- [x] `scripts/check-module-invariants.sh`: append matched pairs to `C14_BASELINE` and `C14LEAN`
       **in the same trailing position in both heredocs, edited in one substep** — they are compared
       by exact string equality. Planned pairs: the four declarations Phase 9 gives theorem-index
       rows (`no_fwd`, `no_bwd_of_idle`, `ladderFrameAdm_isRegular`, `ladderModel`). A declaration
       the run reports as `does not depend on any axioms` contributes a line to NEITHER heredoc and
       must be left out of both — the script's own `StarLanguage.StarAxiom` note records why
       inventing a baseline line for it can never match.
-- [ ] Extend the comment block above `C14_BASELINE` with one sentence naming the new pairs and what
+- [x] Extend the comment block above `C14_BASELINE` with one sentence naming the new pairs and what
       they pin, in that block's established register: the admissible-carrier construction beside
       `ladderFrame`, a profile and not a decision procedure, no realization theorem claimed, no
       complexity bound.
-- [ ] Build the test module through the guard (the `#guard_msgs` blocks are checked at elaboration)
+- [x] Build the test module through the guard (the `#guard_msgs` blocks are checked at elaboration)
       and then run `bash scripts/check-module-invariants.sh`, checking its exit status and reading
       C14's verdict, C17's dead-declaration count and C34's census.
 
-**Timing**: 1.5 hours
+- **Completed**: 2026-10-11
+
+**Outcome**: observed `#print axioms` (guarded `lake env lean` against the built library): `no_fwd`, `RladAdm_fwd`, `RladAdm_bwd`, `ladderFrameAdm`, `ladderFrameAdm_isRegular`, `ladderModel` at `[propext, Classical.choice, Quot.sound]`; `no_bwd_of_idle` at `[propext]`; `ladderState_nonempty` at `[Classical.choice]` (a strict subset the plan did not anticipate — recorded literally); `Adm`, `LadderState`, `RladAdm` report no axioms. Eleven `#guard_msgs` blocks appended to the test module with a new section docstring and the (W) inventory sentence extended; four matched `C14_BASELINE`/`C14LEAN` pairs appended at the same trailing position (name lists diffed: aligned, 225 each), the comment block extended by one sentence and its strict-subset sentence updated (eight → nine, `no_bwd_of_idle`). Guarded build of `BimodalTest.Metalogic.KTypeSummaryAxiomTest` exit 0, 0 errors, 0 warnings; `check-module-invariants.sh` (full, with build half) exit 0, 55 PASS, 0 FAIL: C14 PASS both halves, C9 PASS, C17 869 of 14592 (unchanged from the pre-pin run), C34 census 240 declarations in 52 files.
+
+**Timing**: 1.5 hours (0.5 spent)
 
 **Depends on**: 6
 
