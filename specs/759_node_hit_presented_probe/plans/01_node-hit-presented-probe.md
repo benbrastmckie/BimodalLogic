@@ -1,7 +1,7 @@
 # Implementation Plan: Task #759
 
 - **Task**: 759 - Node fixture probe: HitPresented for a ⊡-bearing formula at an infinite-width seam (hitPresented_node or its negation)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14.5 hours
 - **Dependencies**: 758 (serialization edge only: shared `scripts/check-evidence-probes.sh` and RaySummary README; 758 is `[COMPLETED]`, so the edge is discharged)
 - **Research Inputs**: specs/759_node_hit_presented_probe/reports/01_node-hit-presented-probe.md
@@ -154,7 +154,7 @@ Phases 3–5 but share the file, so they are serialized rather than declared par
 length `n := i - 1` on `[t + 1, t + i)`; `cN t i := clTrace M Φ t (histOf 0 (t + 1 + i))` the
 canonical representative of the `i`-th trace (thread-index-free by `clTrace_canon_apply`).
 
-### Phase 1: Header Skeleton, Seam Classification, and `HitCl` as a Finite Union [NOT STARTED]
+### Phase 1: Header Skeleton, Seam Classification, and `HitCl` as a Finite Union [COMPLETED]
 
 **Goal**: Create `specs/evidence/seam-gluing-ray-product/hit-presented-node.lean` with the
 header's skeleton and the ported prototype: every history through `(t, pre m)` is one of
@@ -162,7 +162,7 @@ header's skeleton and the ported prototype: every history through `(t, pre m)` i
 with `τ.state t = .pre m`.
 
 **Tasks**:
-- [ ] Write the header docstring (`/- … -/` before the imports, modeled on
+- [x] Write the header docstring (`/- … -/` before the imports, modeled on
       `hit-presented-model-a.lean`'s and `node-cell-stabilization.lean`'s) with these sections,
       in this order, leaving the "What `hitPresented_node` does NOT say" and "Axiom record"
       sections as placeholders to be finalized in Phase 8:
@@ -209,25 +209,25 @@ with `τ.state t = .pre m`.
         claimed to discriminate between devices. One fixture, every pre-seam; nothing about
         general regular `ℤ`-models or `PlusValidZTime`.
       - Compile line: `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-node.lean`.
-- [ ] Imports and opens exactly as the prototype: `import FormalSystem`; the five `open` lines
+- [x] Imports and opens exactly as the prototype: `import FormalSystem`; the five `open` lines
       (`FormalSystem.Syntax FormalSystem.Semantics FormalSystem.PlusLanguage`;
       `FormalSystem.Metalogic.Decidability`;
       `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth`;
       `FormalSystem.Metalogic.Decidability.RaySummary`;
       `FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness`);
       `namespace Probe759`; `#guard (plusSubformulaClosure Φ).card = 28`.
-- [ ] Section `/-! ## Which histories pass through the pre-seam -/`: port from the prototype
+- [x] Section `/-! ## Which histories pass through the pre-seam -/`: port from the prototype
       `seam_state (m) (t) : (histOf m (t + 1)).state t = .pre m`,
       `through_pre (h : σ.state z = .pre m) : ∃ i, i ≤ m ∧ ∀ s, σ.state s = canon (m - i) (z + 1 + i) s`,
       `canon_through (m i) (hi : i ≤ m) (t) : (histOf (m - i) (t + 1 + i)).state t = .pre m`.
-- [ ] Section `/-! ## HitCl depends on the seam only through its state -/`: port
+- [x] Section `/-! ## HitCl depends on the seam only through its state -/`: port
       `spliced_state`, `exists_splice_eq`; add
       `hitCl_eq_through (τ) : HitCl M τ t Φ k = ⋃ σ ∈ {σ : WorldHistory F | σ.state t = τ.state t}, familyTriples (clSig Φ) k (clTrace M Φ t σ)`
       (from `hitCl_eq_iUnion`, `spliced_state`, `exists_splice_eq`), and the general-`τ`
       `hitCl_pre (τ) (hτ : τ.state t = .pre m) : HitCl M τ t Φ k = ⋃ i ∈ Finset.range (m + 1), familyTriples (clSig Φ) k (clTrace M Φ t (histOf (m - i) (t + 1 + i)))`
       (rewrite with `hitCl_eq_through`, `hτ`, then `through_pre`/`canon_through` and
       `WorldHistory.ext_state` as the prototype's `hitCl_pre` does).
-- [ ] `end Probe759`; temporary `#print axioms Probe759.hitCl_pre`; compile; `git add` the file
+- [x] `end Probe759`; temporary `#print axioms Probe759.hitCl_pre`; compile; `git add` the file
       and commit with `.claude/scripts/git-commit-scoped.sh` (explicit path).
 
 **Timing**: 1.5 hours
