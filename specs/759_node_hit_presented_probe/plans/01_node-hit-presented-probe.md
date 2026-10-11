@@ -602,39 +602,39 @@ exiting 0 is the complete covering check — single out-of-graph file, no librar
 
 ---
 
-### Phase 8: Assembly — Headline, Corollary, `presented_node`, Header Finalization [NOT STARTED]
+### Phase 8: Assembly — Headline, Corollary, `presented_node`, Header Finalization [COMPLETED]
 
 **Goal**: Compose the headline from `hitCl_eq_truncated_node`, `mem_hitOf_iff` and the run
 characterization; state the corollary and the by-product; write the "does NOT say" section and
 the OBSERVED axiom record; close the `#print axioms` foot.
 
 **Tasks**:
-- [ ] `theorem hitPresented_node (t : ℤ) (m k : ℕ) (hk : 1 ≤ k) (τ : WorldHistory F) (hτ : τ.state t = .pre m) : HitPresented M τ t Φ (labN (windowN m k)) (stepN (windowN m k)) k`
+- [x] `theorem hitPresented_node (t : ℤ) (m k : ℕ) (hk : 1 ≤ k) (τ : WorldHistory F) (hτ : τ.state t = .pre m) : HitPresented M τ t Φ (labN (windowN m k)) (stepN (windowN m k)) k`
       — `have hL := hitCl_eq_truncated_node t m k hk τ hτ; set L := windowN m k; show HitCl M τ t Φ k = ↑(hitOf (labN L) (stepN L) (clNow Φ) k); rw [hL]; ext x; rw [Finset.mem_coe, mem_hitOf_iff (labN L) (stepN L) (clNow Φ) k t hk x]`;
       `⊆` via `exists_isRun_runTrace`, `⊇` via `runTrace_mem_of_isRun` (model A's assembly
       verbatim in shape; `hk` consumed at `mem_hitOf_iff` and inside the truncation).
-- [ ] `theorem hitPresented_node_canon (t : ℤ) (k : ℕ) (hk : 1 ≤ k) : HitPresented M (histOf k (t + 1)) t Φ (labN (windowN k k)) (stepN (windowN k k)) k := hitPresented_node t k k hk _ (seam_state k t)`
+- [x] `theorem hitPresented_node_canon (t : ℤ) (k : ℕ) (hk : 1 ≤ k) : HitPresented M (histOf k (t + 1)) t Φ (labN (windowN k k)) (stepN (windowN k k)) k := hitPresented_node t k k hk _ (seam_state k t)`
       — the dispatch's single-`k` shape, with its docstring saying so.
-- [ ] `theorem presented_node (t : ℤ) (m : ℕ) (τ : WorldHistory F) (hτ : τ.state t = .pre m) : Presented M τ t Φ (labN m) (stepN m)`
+- [x] `theorem presented_node (t : ℤ) (m : ℕ) (τ : WorldHistory F) (hτ : τ.state t = .pre m) : Presented M τ t Φ (labN m) (stepN m)`
       — `intro c`; LHS `↔ ∃ i ≤ m, c = cN t i` (`spliced_state`/`exists_splice_eq`, `hτ`,
       `through_pre`/`canon_through`, `clTrace_canon_thread_free`); RHS `↔ ∃ i ≤ m, c = cN t i`
       (`runTrace_mem_of_isRun`, `exists_isRun_runTrace` at `L := m`). Docstring: the by-product
       and the reason the negative headline is unavailable; NOT the headline's route; `Node` does
       not separate `Presented` from `HitPresented`, model A remains the only separation; nothing
       here bears on `Probe735.not_presented`.
-- [ ] Section `/-! ### What hitPresented_node does NOT say -/` (model A's bullets adapted):
+- [x] Section `/-! ### What hitPresented_node does NOT say -/` (model A's bullets adapted):
       the size is a count and nothing else (`card_QN_le`; no complexity bound; no minimality;
       `k` free); one fixture, every pre-seam, one `φ`, nothing about general regular `ℤ`-models
       (H5 is a different task); the seam fibre is finite so the truncation's NECESSITY is not
       tested — a Hit-level falsifier needs an infinite seam fibre; forward-only — nothing about
       `⊡(Pp)`, no backward bridge; `⊡`-letters are not claimed to discriminate between devices;
       `Decidable (PlusValidZTime φ)` not stated in any form; `Probe735.not_presented` untouched.
-- [ ] Finalize the header's "Axiom record" paragraph from the OBSERVED foot, and the `#print
+- [x] Finalize the header's "Axiom record" paragraph from the OBSERVED foot, and the `#print
       axioms` foot: `through_pre`, `hitCl_pre`, `clTrace_canon_apply`, `run_subset_middle`,
       `deleteRun_cN`, `familyTriples_cN_shrink`, `hitCl_eq_truncated_node`, `labN`, `stepN`,
       `runTrace_mem_of_isRun`, `exists_isRun_runTrace`, `card_QN_le`, `presented_node`,
       `hitPresented_node_canon`, `hitPresented_node`. Remove Phase 1's temporary foot line.
-- [ ] Header read-through against Phase 1's checklist; `end Probe759`; compile; commit.
+- [x] Header read-through against Phase 1's checklist; `end Probe759`; compile; commit.
 
 **Timing**: 1.5 hours
 

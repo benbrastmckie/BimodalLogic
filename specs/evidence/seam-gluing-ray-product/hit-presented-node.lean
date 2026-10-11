@@ -66,16 +66,34 @@ closure-indexed. (b) `Node` has infinite width and the probe adds no finiteness:
 no finite-fibre hypothesis — the finiteness USED (`through_pre`) is a property of this fixture's
 states, proved, not assumed. (c) `windowN`, `card_QN`, `card_QN_le` count states and depth-`k`
 types, never a running time, and the statement carries no `∃ L`. (d) Zero debt: no automata
-library, no Büchi/MSO citation, no cslib require, no sorry, axiom or vacuous definition. (e)
+library, no Büchi/MSO citation, no cslib require, nothing left unproved, no added axiom, no vacuous definition. (e)
 Forward-only: the `Pp`/`⊡Pp`/`⊡¬Pp` letters of `cl Φ` are read off canonical histories as closure
 DATA; nothing here is a backward Bool-fixture bridge or bears on deciding `⊡(Pp)`, and `⊡`-letters
 are not claimed to discriminate between devices. One fixture, every pre-seam; nothing about
 general regular `ℤ`-models or `PlusValidZTime`.
 
 **What `hitPresented_node` does NOT say** — the full list is the section of that name at the
-headline itself; read it before citing this file. (Finalized with the headline.)
+headline itself; read it before citing this file. In one line: a count and nothing else (no
+complexity bound, no minimality, `k` free); one fixture, every pre-seam, one `φ` (nothing about
+general regular `ℤ`-models or the general row); the seam fibre is finite, so the truncation's
+necessity is untested; forward-only, nothing about `⊡(Pp)`, no claim that `⊡`-letters
+discriminate between devices; nothing about `Decidable (PlusValidZTime φ)`;
+`Probe735.not_presented` untouched.
 
-**Axiom record** — as OBSERVED from the `#print axioms` foot, recorded with the headline.
+**Axiom record**, as OBSERVED from the `#print axioms` foot rather than predicted. Every pinned
+declaration reports `[propext, Classical.choice, Quot.sound]` — `through_pre`, `hitCl_pre`,
+`clTrace_canon_apply`, `run_subset_middle`, `deleteRun_cN`, `familyTriples_cN_shrink`,
+`hitCl_eq_truncated_node`, `labN`, `runTrace_mem_of_isRun`, `exists_isRun_runTrace`, `card_QN_le`,
+`presented_node`, `hitPresented_node_canon` and the headline `hitPresented_node` — with the single
+exception of `stepN`, which depends on no axiom at all, it being a decidable `Bool`-valued table
+over `Fin` indices. No placeholder axiom anywhere, and no fourth axiom. `Classical.choice` enters through
+`hist_canon` (via `FrameOver.mem_HF_iff_adjacent` and `FrameOver.worldHistoryOfStepPath`, as the
+eighth and ninth probes already note for this fixture), through the library's `k`-type machinery
+(`kTypeOf` is classical, as every pinned `RaySummary` declaration already records), and — for the
+labelling `labN` and the letter vectors `ℓ₂ … ℓₙ` it is built from — through the `Decidable`
+instances for list and `Finset` membership over `PlusFormula`'s derived `DecidableEq`, in proof
+components only: the data computes, as the `#guard`s on `labN`/`stepN` at `L = 2` show (`isNowN`,
+`stepN`, `T₂ … Tₙ` and `QN` report no axiom). Nothing in this file is left unproved.
 
 **Compile line.**
 `lake env lean specs/evidence/seam-gluing-ray-product/hit-presented-node.lean`
@@ -1275,14 +1293,142 @@ theorem exists_isRun_runTrace (t : ℤ) (L : ℕ) :
   · exact ⟨runZero L t, runZero_isRun L t, runTrace_runZero L t⟩
   · exact ⟨runPos L t i, runPos_isRun L t i hpos hi, runTrace_runPos L t i hpos hi⟩
 
+
+/-! ## Assembly: the headline
+
+One composition, and no new mathematical content. `hitCl_eq_truncated_node` rewrites the seam
+side into the finite window of family-triple sets; `mem_hitOf_iff` (library,
+`RaySummary/HitOf.lean`) rewrites the presentation side into run-existence, and that rewrite is
+the one place `1 ≤ k` is consumed outside the truncation; the run characterization then identifies
+the two sides' trace arguments in both directions — `exists_isRun_runTrace` for `⊆`,
+`runTrace_mem_of_isRun` for `⊇`.
+
+The two sides meet at `InFamily` with the trace as the only differing argument
+(`familyTriples sig k c` is `{x | InFamily sig k x.1 x.2.1 x.2.2 c}`). Nothing here compares TRACE
+SETS; that comparison is `presented_node` below, which on `Node` happens to hold too — the
+by-product, not the route. -/
+
+/-- **The headline.** `HitPresented` holds on `NoFiniteWidth.M` at every pre-seam `(t, pre m)` —
+for any `τ` with `τ.state t = .pre m` — with `φ := Φ`, at every depth `k ≥ 1`, for the
+presentation `labN (windowN m k)`/`stepN (windowN m k)` on `Fin (windowN m k + 5)` states, with
+`windowN m k = min m (Nat.card (KType (clSig Φ) k) + 1)` EXHIBITED: a count of depth-`k` types
+and seam indices, uniform over every seam (`card_QN_le`), and nothing else. The first Hit-level
+positive on a ⊡-bearing alphabet and on an infinite-width model. Nothing about `PlusValidZTime`,
+nothing about `⊡(Pp)`, nothing about general regular `ℤ`-models, no complexity bound of any kind
+— see "What `hitPresented_node` does NOT say" below. -/
+theorem hitPresented_node (t : ℤ) (m k : ℕ) (hk : 1 ≤ k) (τ : WorldHistory F)
+    (hτ : τ.state t = .pre m) :
+    HitPresented M τ t Φ (labN (windowN m k)) (stepN (windowN m k)) k := by
+  have hL := hitCl_eq_truncated_node t m k hk τ hτ
+  set L := windowN m k
+  show HitCl M τ t Φ k = ↑(hitOf (labN L) (stepN L) (clNow Φ) k)
+  rw [hL]
+  ext x
+  rw [Finset.mem_coe, mem_hitOf_iff (labN L) (stepN L) (clNow Φ) k t hk x]
+  simp only [Set.mem_iUnion, Finset.mem_range]
+  constructor
+  · rintro ⟨i, hi, hx⟩
+    obtain ⟨ρ, hρ, htr⟩ := exists_isRun_runTrace t L i (by omega)
+    exact ⟨ρ, hρ, by rw [htr]; exact hx⟩
+  · rintro ⟨ρ, hρ, hx⟩
+    obtain ⟨i, hi, htr⟩ := runTrace_mem_of_isRun t L ρ hρ
+    exact ⟨i, by omega, by rw [← htr]; exact hx⟩
+
+/-- **The dispatch's single-index shape.** At the seam `(t, pre k)` on the canonical history
+`histOf k (t + 1)` through it, at depth `k`: `hitPresented_node` at `m := k`,
+`τ := histOf k (t + 1)` (`seam_state`). Seam index and depth are independent in the headline;
+this corollary identifies them only because the dispatch's statement was written with one index.
+-/
+theorem hitPresented_node_canon (t : ℤ) (k : ℕ) (hk : 1 ≤ k) :
+    HitPresented M (histOf k (t + 1)) t Φ (labN (windowN k k)) (stepN (windowN k k)) k :=
+  hitPresented_node t k k hk _ (seam_state k t)
+
+/-- **The by-product: trace-level `Presented` holds on `Node` at window `m`.** The seam fibre at
+`(t, pre m)` is finite — exactly the `m + 1` traces `cN t i`, `i ≤ m` (`through_pre`,
+`clTrace_canon_thread_free`) — and the presentation `labN m`/`stepN m` realizes exactly those
+traces (`runTrace_mem_of_isRun`, `exists_isRun_runTrace` at `L := m`). This is why the negative
+headline `not_hitPresented_node` is FALSE on this fixture: `hitPresented_of_presented` would
+already give `HitPresented` at window `m`. It is NOT the headline's route — the headline's window
+`windowN m k ≤ m` is uniform over every seam, which `Presented` at window `m` is not — and it
+separates nothing: `Node` does not separate `Presented` from `HitPresented`, model A remains the
+only separation in the tree, and nothing here bears on `Probe735.not_presented`, whose fixture has
+an infinite seam fibre. -/
+theorem presented_node (t : ℤ) (m : ℕ) (τ : WorldHistory F) (hτ : τ.state t = .pre m) :
+    Presented M τ t Φ (labN m) (stepN m) := by
+  intro c
+  have hL : (∃ bf : SeqPair F (τ.state t), c = clTrace M Φ t (spliced τ t bf))
+      ↔ ∃ i, i ≤ m ∧ c = cN t i := by
+    constructor
+    · rintro ⟨bf, rfl⟩
+      have hs : (spliced τ t bf).state t = .pre m := by rw [spliced_state, hτ]
+      obtain ⟨i, hi, hσ⟩ := through_pre hs
+      refine ⟨i, hi, ?_⟩
+      have heq : spliced τ t bf = histOf (m - i) (t + 1 + i) :=
+        WorldHistory.ext_state fun s => by rw [hσ s, histOf_state]
+      rw [heq, cN, clTrace_canon_thread_free]
+    · rintro ⟨i, hi, rfl⟩
+      obtain ⟨bf, hbf⟩ := exists_splice_eq τ t (histOf (m - i) (t + 1 + i))
+        (by rw [canon_through m i hi, hτ])
+      exact ⟨bf, by rw [hbf, cN, clTrace_canon_thread_free]⟩
+  have hR : (∃ ρ : ℤ → QN m, IsRun (labN m) (stepN m) (clNow Φ) t ρ ∧ c = runTrace (labN m) ρ)
+      ↔ ∃ i, i ≤ m ∧ c = cN t i := by
+    constructor
+    · rintro ⟨ρ, hρ, rfl⟩
+      obtain ⟨i, hi, htr⟩ := runTrace_mem_of_isRun t m ρ hρ
+      exact ⟨i, hi, htr⟩
+    · rintro ⟨i, hi, rfl⟩
+      obtain ⟨ρ, hρ, htr⟩ := exists_isRun_runTrace t m i hi
+      exact ⟨ρ, hρ, htr.symm⟩
+  exact hL.trans hR.symm
+
+/-! ### What `hitPresented_node` does NOT say
+
+* **The exhibited size is a count, and nothing else.** `windowN m k = min m (W + 1)`,
+  `W = Nat.card (KType (clSig Φ) k)`, is written into the statement, so `card_QN` reads
+  `Fintype.card (QN L) = L + 5` and `card_QN_le` reads
+  `Fintype.card (QN (windowN m k)) ≤ W + 6` at every pre-seam: counts of states and of depth-`k`
+  types of ONE presentation on ONE fixture. Neither is a complexity bound of any kind — nothing
+  here times anything or bounds any procedure's running time. Nothing is claimed about minimality
+  of the window. `k` is free: every statement holds at every `k ≥ 1`, and none chooses one.
+* **One fixture, every pre-seam, one `φ`.** `NoFiniteWidth.M` under `F_isRegular`, for the
+  fragment L⁺, over the `ℤ` time axis, at the seams `(t, pre m)`, with `φ := Φ`. Nothing about
+  general regular `ℤ`-models: requirement (C)'s general row (H5) is a different task, and this
+  probe is evidence for it on a second fixture, not an argument.
+* **The seam fibre is finite, so the truncation argument's NECESSITY is not tested.** The route
+  reproduces model A's truncation to obtain the uniform window, but `presented_node` shows the
+  window `m` would already do on `Node`. Model A, whose seam `(t, a)` has infinitely many splices,
+  is where the truncation is load-bearing; a Hit-level falsifier for (C) needs a seam with
+  infinitely many histories through it, and no such seam exists on `Node`.
+* **Forward-only.** The `Pp`/`⊡Pp`/`⊡¬Pp` letters of `cl Φ` are read off canonical histories as
+  closure DATA (`truth_Pp`, `truth_stabPp`, `truth_stabNegPp`); nothing here is a backward
+  Bool-fixture bridge or bears on deciding `⊡(Pp)` (`Probe719Backward.pastStab_iff_allBwdPathsMeet`
+  on the asymmetric fixture remains the only backward fixture result), and `⊡`-letters are not
+  claimed to discriminate between devices — on this fixture all four take identical values at
+  `pre 0` and `pre 1`, as `node-cell-stabilization.lean` records.
+* **Nothing about deciding validity.** `Decidable (PlusValidZTime φ)` is not stated here in any
+  form, conditional or otherwise, and no claim is made that L⁺ is decidable, qualified or not.
+* **`Probe735.not_presented` is untouched.** That probe refutes `Presented` on model A, whose
+  seam fibre is infinite; `presented_node` holds on `Node`, whose seam fibres are finite. Both
+  stand, on different fixtures, and neither bears on the other.
+-/
+
 end Probe759
 
--- temporary foot (Phase 1); replaced by the full axiom foot with the headline
+-- The closure-size figure the four letter classes rest on, left live so a reader can re-run it.
+#eval (plusSubformulaClosure Φ).card
+
+#print axioms Probe759.through_pre
 #print axioms Probe759.hitCl_pre
 #print axioms Probe759.clTrace_canon_apply
+#print axioms Probe759.run_subset_middle
+#print axioms Probe759.deleteRun_cN
 #print axioms Probe759.familyTriples_cN_shrink
 #print axioms Probe759.hitCl_eq_truncated_node
 #print axioms Probe759.labN
 #print axioms Probe759.stepN
 #print axioms Probe759.runTrace_mem_of_isRun
 #print axioms Probe759.exists_isRun_runTrace
+#print axioms Probe759.card_QN_le
+#print axioms Probe759.presented_node
+#print axioms Probe759.hitPresented_node_canon
+#print axioms Probe759.hitPresented_node
