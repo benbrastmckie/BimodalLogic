@@ -1,5 +1,5 @@
 ---
-next_project_number: 767
+next_project_number: 770
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 767
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,760,764,765,766 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,760,764,765,766,767,768,769 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,761 | 298,464,502,616,760 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,762 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543,763 | 428,498,499,500,762 | algebraic-representation, decidability, metalogic |
@@ -30,6 +30,9 @@ next_project_number: 767
 741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
+767 [NOT STARTED] — lake-build-guard replays stale result for env lean FILE
+768 [NOT STARTED] — lean-challenge-snapshot swallows declarations and mishandles...
+769 [NOT STARTED] — plan-format: blocked decision gates and plan-level Status...
 
 ### Algebraic Representation
 
@@ -117,6 +120,90 @@ next_project_number: 767
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 769. plan-format: blocked decision gates and plan-level Status ownership
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Add two missing provisions to `plan-format.md`: one admitting a pre-decided `[BLOCKED]` decision-gate phase, and one forbidding a plan from instructing the implementer to write the plan-level `Status` field.
+
+BOTH CONCERNS ARE BATCHED INTO ONE RECORD DELIBERATELY. Each is a short prose provision in the same file, `context/formats/plan-format.md`. Splitting them would create an unordered overlap on one file's prose, which the batching guardrail in `.claude/CLAUDE.md` names as a reason to batch rather than separate. They are otherwise independent and can be landed in either order.
+
+PROVISION 1 -- A `[BLOCKED]` DECISION GATE HAS NO LEGAL PLACE IN THE WAVE GRAPH. `plan-format.md`'s final-phase rule states that a plan's final phase MUST depend, directly or transitively, on every other phase in the plan. A phase that is already `[BLOCKED]` at PLAN time has no consistent position under that rule: making executable phases depend on it DEADLOCKS the implementer, while not depending on it violates the rule's letter. The file's "Decision gates and contingency branches" subsection introduces decision gates but says nothing about one that is blocked before execution begins. Resolved ad hoc in the originating run by placing the blocked gate in wave 1 beside the first executable phase with `Depends on: none`, and noting in the wave table that the final phase re-observes the gate's measurement through the wired probe. PRECEDENT EXISTS AND SHOULD BE READ BEFORE DRAFTING: `specs/archive/006` plan 05 and `specs/archive/008` plan 03 (locate the exact paths by globbing the archive -- the directory names carry slugs). A one-paragraph provision in the "Decision gates and contingency branches" subsection settles it. The provision must say explicitly how such a gate relates to the final-phase transitive-dependency rule, so that a plan validator and a human reader reach the same verdict on a plan containing one; a provision that merely permits the shape without reconciling it against the final-phase rule leaves the ambiguity in place.
+
+PROVISION 2 -- PLANNER-SIDE GUIDANCE PERMITS AUTHORING AN INSTRUCTION THE IMPLEMENTER IS FORBIDDEN TO EXECUTE. In the originating run a plan's final phase instructed the implementer to set the plan-level `- **Status**:` field to `[BLOCKED]`. The `lean-implementation-agent` contract (its MUST-NOT item citing `context/contracts/plan-status-ownership.md`) reserves that field for `update-plan-status.sh` via `update-task-status.sh` postflight. The agent CORRECTLY followed the contract and annotated the checklist item as a skipped deviation -- so nothing malfunctioned at run time; the defect is that the instruction was writable at all. THE FIX BELONGS ON THE PLANNER/PLAN-FORMAT SIDE so such an instruction is never authored. Concretely: `plan-format.md` already documents the plan-level `- **Status**:` field, its required-field list, and its trailing-annotation rule under "Plan-level vs. phase-level markers" -- add, at that same place, an explicit statement that the field is owned by `update-plan-status.sh` and that NO phase checklist item may instruct a writer to set it, together with what a planner should write instead when it wants a plan to end up `[BLOCKED]`. That last clause is load-bearing: a prohibition with no sanctioned alternative will be worked around. Evaluate whether `agents/planner-agent.md` needs a matching line, since that file carries the plan template and the required-field checks the planner actually executes; if `plan-format.md` alone is judged sufficient, say so in the plan and drop the planner-agent path from the edit set rather than leaving it ambiguous.
+
+ACCEPTANCE. (1) A reader of `plan-format.md` alone can determine whether a plan containing a pre-decided `[BLOCKED]` gate conforms, and can predict where that gate sits in the wave table. (2) A reader of `plan-format.md` alone can determine that the plan-level `Status` field is not writable from a phase checklist item, and can find the sanctioned alternative. (3) The new prose does not contradict `context/contracts/plan-status-ownership.md` or `context/standards/status-markers.md` -- in particular, status-markers.md's distinction between a target argument passed to `update-task-status.sh` and the RESTING state that actually persists must be left intact. (4) No change to the closed six-value phase-marker enum or to the `### Phase N: {name} [STATUS]` heading contract, both of which have mechanical consumers (`update-phase-status.sh`, `update-plan-status.sh`, `update-task-status.sh --phase-check`) that this record must not disturb.
+
+SOURCE-STORE BOUNDARY. `.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect. Resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension (`core`, whose source store is `/home/benjamin/.config/nvim/agent-system/extensions/core`) and edit at the mirroring path there, per `.claude/rules/source-store-deploy-boundary.md`. Then redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`. The `.claude/**` paths in file_scope are declared only so the admission overlap gate can see the collision surface; they are NOT the edit target.
+
+DELIVERABLE HYGIENE. Every edited file is outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Cite durable anchors -- file names, function names, section headings, flag names -- only.
+
+PROVENANCE. Raised during orchestration of the ladder-model cell-stabilization work and approved at the lead level as an agent-system change request. The originating issue-log entry is in `specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl`: entry_id `iss_1791710205747_08BVlu` (severity minor, class "standard or contract ambiguity") for Provision 1, and entry_id `iss_1791711120761_z8uj5G` (severity minor, class `plan-contract-conflict`) for Provision 2. Both resolution worked_around, both hinted channel `agent_system` (neither hint overridden).
+
+RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. Two sibling records from the same orchestration cover Lean-extension script defects (`lake-build-guard.sh` stale replay, `lean-challenge-snapshot.sh` chunk and Unicode handling); both touch files disjoint from this one. Note separately that earlier completed records already edited `plan-format.md` for `file_scope` declaration hygiene -- re-read the file as it stands now rather than working from any remembered version of it.
+
+---
+
+### 768. lean-challenge-snapshot swallows declarations and mishandles Unicode names
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Fix two independent defects in `lean-challenge-snapshot.sh` that both cause declarations to be silently lost or mangled during snapshot assembly.
+
+DEFECT (a) -- DECLARATION-CHUNK BOUNDARY OVER-REACH SWALLOWS `abbrev` AND ANONYMOUS `instance`. The script forces each theorem's chunk body to `:= sorry` running up to the NEXT MATCHED declaration, where the match is the alternation `(theorem|lemma|def|instance)` followed by a REQUIRED identifier. An `abbrev`, or an anonymous `instance`, sitting between two theorems therefore matches nothing and is silently absorbed into the preceding declaration's sorry body. The script's own comment concedes the mechanism in as many words: it forces the "body to `sorry` regardless of what the block actually contains." The alternation appears at more than one site (near the goal-name extractor, the body-forcing assembler, and the git-pinned signature reader) -- enumerate every occurrence rather than patching the first one found, since a fix applied to only one site leaves the others disagreeing about what counts as a declaration.
+
+DEFECT (b) -- ASCII-ONLY IDENTIFIER REGEX. The identifier pattern `[A-Za-z_][A-Za-zA-Z0-9_']*` appears at the same three sites. Lean identifiers routinely contain non-ASCII characters, and such a name either escapes the Goals cross-check entirely or is TRUNCATED at its first non-ASCII character -- which is worse than escaping, because a truncated name can collide with a different real declaration. Note in passing that the character class as written contains a redundant range (`A-Za-zA-Z0-9`); that is harmless today but is a sign the pattern has not been audited, and all three copies should be replaced by one shared definition rather than three independently edited literals.
+
+OBSERVED WORKAROUNDS, WHICH ARE THE EVIDENCE THAT THE DEFECTS BITE IN PRACTICE. In the originating run: every supporting definition was hoisted ahead of the first theorem and rewritten as an `abbrev`; four supporting facts were made sorry-bodied `abbrev`s rather than Goals; and the refutation probe renamed its Unicode identifiers to ASCII. None of these were desired for their own sake -- each exists solely to route around one of the two defects above, which means the script is currently shaping the Lean source that callers are allowed to write.
+
+SUGGESTED REMEDIES TO EVALUATE (from the originating request; evaluate, do not assume). (1) A `--dry-run` mode that also COMPILES the assembled module. Note `--dry-run` ALREADY EXISTS -- its documented behavior is to print the assembled module and the resolved `theorem_names` to stdout -- so the ask is to EXTEND it with a compile step, not to add the flag. This is the higher-leverage of the two remedies because it converts silent swallowing into a loud compile error, catching defect (a) and any future variant of it without the assembler having to enumerate every declaration keyword Lean will ever have. Decide whether the compile runs by default under `--dry-run` or behind a further opt-in, and whether a compile failure is fatal or advisory. (2) A Unicode-aware identifier regex, for defect (b). Consider whether the Python sites can use a character class keyed on Lean's actual identifier grammar rather than a hand-rolled approximation.
+
+ACCEPTANCE -- EXTEND `tests/test-lean-challenge-snapshot.sh`, WHICH ALREADY EXISTS, PLUS ITS `fixtures/` DIRECTORY. Add failing-first cases for: an `abbrev` between two theorems; an anonymous `instance` between two theorems; and a declaration with a non-ASCII name appearing in both the Goals cross-check and the assembled module. Demonstrate each fails against the unmodified script. If the compile step is added to `--dry-run`, cover the case where the assembled module does not compile and assert the chosen fatal-or-advisory behavior.
+
+SOURCE-STORE BOUNDARY. `.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect. Resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension (`lean`, whose source store is `/home/benjamin/.config/nvim/agent-system/extensions/lean`) and edit at the mirroring path there, per `.claude/rules/source-store-deploy-boundary.md`. Then redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`. The `.claude/**` paths in file_scope are declared only so the admission overlap gate can see the collision surface; they are NOT the edit target.
+
+DELIVERABLE HYGIENE. Every edited file is outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Cite durable anchors -- file names, function names, section headings, flag names -- only.
+
+PROVENANCE. Raised during orchestration of the ladder-model cell-stabilization work and approved at the lead level as an agent-system change request. The originating issue-log entry is in `specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl`, entry_id `iss_1791710205702_yQf0sD`, severity minor, class "tooling bug or gap", resolution worked_around, hinted channel `agent_system` (hint not overridden). The two defects are batched into one record because they live in one script and share all three regex sites -- splitting them would create an unordered overlap on the same file.
+
+RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lake-build-guard.sh` stale-replay record is the sibling script defect from the same orchestration and is the higher-priority of the two; the plan-format decision-gate record covers the contract-prose surface from the same batch. The three touch disjoint files.
+
+---
+
+### 767. lake-build-guard replays stale result for env lean FILE
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Stop `lake-build-guard.sh` from replaying a stale shared result when the verified unit is a single file passed through to `env lean`.
+
+OBSERVED LIVE, NOT HYPOTHESIZED. `bash .claude/scripts/lake-build-guard.sh build -- env lean FILE` REPLAYED the previous invocation's captured output -- errors citing line numbers of the OLD contents of FILE -- after FILE had been rewritten at the same path. The run was worked around with `--no-share`. The staleness fingerprint evidently does not cover an arbitrary file argument forwarded to `env lean`.
+
+WHY THIS IS THE HIGHEST-VALUE ITEM IN ITS BATCH. A guard that silently replays a stale result undermines EVERY single-file verification in the system, including verifications later cited as evidence in reports, summaries and gate decisions. A stale green replay is indistinguishable from a fresh green run to the caller unless the caller inspects stderr for the `lake-build-guard: REPLAY:` marker -- the script's own usage text says exactly this under `--no-share`. The failure mode is silent acceptance of an obsolete result, not a crash, so nothing downstream flags it.
+
+WHERE TO LOOK -- RE-DERIVE RATHER THAN TRUST; the following is a snapshot of a ~1242-line script. `collect_fingerprint_files()` documents itself as listing every `*.lean` source under the project tree. `compute_fingerprint()` defaults to `stat` mode (file METADATA), with content hashing available only opt-in via `LAKE_BUILD_GUARD_FINGERPRINT=hash`; the header notes hash mode exists specifically to close a gap stat mode leaves open. `compute_scope_key()` keys sharing on scope, and `decide_sharing()` gates the replay. The header's own list of known limitations ALREADY concedes that a caller "cannot distinguish a replay from a fresh run without passing --no-share". `LAKE_SUBCOMMANDS` includes `env` and `lean`, so an `env lean FILE` invocation passes the subcommand allowlist unremarked.
+
+DISCRIMINATE BETWEEN TWO CANDIDATE MECHANISMS BEFORE FIXING ANYTHING -- they have different remedies and only measurement settles which occurred. (i) The rewritten FILE is not a member of the fingerprinted set at all -- it lies outside the collected root, or outside the `*.lean` glob -- so rewriting it CANNOT move the fingerprint, and no amount of strengthening the hash helps. (ii) FILE is in the set, but stat-mode metadata did not change discernibly between the two runs, in which case content hashing for named file arguments is sufficient. Reproduce the replay mechanically first; do not infer the mechanism from the header's prose.
+
+DECIDE AND LAND ONE OF TWO. The originating request names both and they are NOT equivalent. (a) Extend the fingerprint and/or the scope key to cover the explicit file arguments of the forwarded command, so an `env lean FILE` invocation's shareability tracks FILE's own content. (b) Refuse to share a result for an `env lean ...` invocation at all -- treat it as implicitly `--no-share`. Option (b) is strictly safer and much cheaper to reason about, at the cost of giving up sharing for a real use case. Option (a) preserves sharing but must be shown correct for a file lying OUTSIDE the fingerprinted tree, which is the harder case and the one mechanism (i) above describes. If (a) is chosen, prefer content hashing over stat metadata for explicitly named file arguments regardless of the ambient `LAKE_BUILD_GUARD_FINGERPRINT` mode: stat-mode equality is the weaker predicate and this is precisely where it failed.
+
+ACCEPTANCE -- A FAILING-FIRST REGRESSION TEST IN `tests/test-lake-build-guard.sh`, WHICH ALREADY EXISTS AND MUST BE EXTENDED RATHER THAN REPLACED. The test must: (1) run `build -- env lean FILE`; (2) rewrite FILE at the SAME path so its compile outcome changes; (3) re-run the identical command WITHOUT `--no-share`; (4) assert the second run reports the NEW outcome. Demonstrate the test fails against the unmodified script before landing the fix. Additionally, the script's documented STALENESS POLICY -- the numbered conditions in its header, which include "the record's POST-build fingerprint equals the WAITER's CURRENT fingerprint" and "a missing or empty recorded scope_key is treated as NOT shareable (fail closed)" -- MUST end up agreeing in writing with whatever behavior is landed. The acceptance condition for the documentation half is that a reader of the header alone can predict the file-argument case.
+
+SOURCE-STORE BOUNDARY. `.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect. Resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension (`core`, whose source store is `/home/benjamin/.config/nvim/agent-system/extensions/core`) and edit at the mirroring path there, per `.claude/rules/source-store-deploy-boundary.md`. Then redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`. The `.claude/**` paths in file_scope are declared only so the admission overlap gate can see the collision surface; they are NOT the edit target.
+
+DELIVERABLE HYGIENE. Every edited file is outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Cite durable anchors -- file names, function names, section headings, flag names -- only.
+
+PROVENANCE. Raised during orchestration of the ladder-model cell-stabilization work and approved at the lead level as an agent-system change request. The originating issue-log entry is in `specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl`, entry_id `iss_1791710205724_8rTs68` (the change request also referenced it as `iss_1791711671927_8rTs68`), severity minor, class "tooling bug or gap", resolution worked_around, hinted channel `agent_system` (hint not overridden).
+
+RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lean-challenge-snapshot.sh` declaration-chunk and Unicode-identifier record came out of the same orchestration and is the sibling Lean-extension script defect; the plan-format decision-gate record covers the contract-prose surface from the same batch. Nothing here blocks on either, and the three touch disjoint files.
+
+---
 
 ### 766. Clear task reference citation debt
 - **Status**: [RESEARCHED]
