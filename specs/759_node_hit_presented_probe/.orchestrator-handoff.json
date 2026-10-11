@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 5,
+  "summary": "Wrote a nine-phase implementation plan for the Node HitPresented probe. The headline is POSITIVE (hitPresented_node, two indices m/k, general seam history, with the dispatch's single-k shape as the corollary hitPresented_node_canon) for Phi' := Phi, with the presentation size windowN m k + 5 exhibited as a count uniform over every pre-seam; the negative is recorded as false on Node because its seam fibres are finite (by-product presented_node). The plan transplants the model-A truncation route, fixes a gadget encoding that handles the L = 0 window the report's sketch could not, and ends with the WIRED entry, README record and full gate. The Lean Challenge Statements block elaborates against the current oleans and validate-artifact.sh --strict passes with 0 warnings.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/759_node_hit_presented_probe/plans/01_node-hit-presented-probe.md",
+      "summary": "Nine sequential phases, 14.5 hours, Phases 1-8 local tier on the single out-of-graph probe file, Phase 9 full tier (wire, README, complete gate set)."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 9,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for task 759; the research prototype at specs/759_node_hit_presented_probe/prototype/node-hit-presented-proto.lean is the compiled oracle for Phase 1."
+}

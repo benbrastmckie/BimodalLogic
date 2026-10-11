@@ -1,41 +1,39 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-11T01:13:39Z",
-  "completed_at": "2026-10-11T01:29:22Z",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/759_node_hit_presented_probe/reports/01_node-hit-presented-probe.md",
-      "summary": "Research for the Node HitPresented probe: the positive headline is the deliverable (the negative is provably unavailable on Node, whose seam fibres are finite), Phi' := Phi (28-letter closure), two-index statement with a seam-uniform count min m (Nat.card (KType (clSig Phi) k) + 1) + 5 via the model-A truncation route, fixture obligations de-risked by a compiled prototype."
+      "type": "plan",
+      "path": "specs/759_node_hit_presented_probe/plans/01_node-hit-presented-probe.md",
+      "summary": "Nine-phase plan for the positive HitPresented probe on NoFiniteWidth.M at every pre-seam (t, pre m) with Phi' := Phi: seam classification, four letter classes, model-A truncation with an exhibited uniform count windowN m k = min m (card KType + 1), one-gadget presentation, run characterization, by-product presented_node, then WIRED entry and README record."
     }
   ],
-  "next_steps": "Plan the probe from the report's Recommendations 1-5 (Lean Challenge Statements: hitPresented_node, hitPresented_node_canon, card_QN, card_QN_le, presented_node by-product); two implement dispatches expected.",
-  "modified_files": [
-    "specs/759_node_hit_presented_probe/reports/01_node-hit-presented-probe.md",
-    "specs/759_node_hit_presented_probe/prototype/node-hit-presented-proto.lean"
-  ],
-  "memory_candidates": [
-    {
-      "content": "A seam whose fibre (the set of histories through (t, s)) is finite and eventually-constant trivially satisfies the trace-level Presented hypothesis, hence HitPresented at every depth; Hit-level falsifiers for requirement (C) must be sought at seams with infinitely many histories through them. Infinite width of the model is orthogonal to this.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/759_node_hit_presented_probe/reports/01_node-hit-presented-probe.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["HitPresented", "Presented", "seam fibre", "Node fixture", "requirement (C)"]
-    },
-    {
-      "content": "When transcribing model A's run_subset_middle containment to a fixture whose trace has a non-constant tail between the run and the eventually-constant letter, take the nonempty positive segment above the whole tail (cover t+i+2, then cover W(z1+1)), not above the run's end.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/759_node_hit_presented_probe/reports/01_node-hit-presented-probe.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["SegmentFactorization", "segZ_const_of_kTypeOf_eq_replicate", "containment", "truncation"]
-    }
-  ],
+  "next_steps": "Run /implement 759 to execute the plan",
   "metadata": {
     "session_id": "sess_1791678570_498fb4_759",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 943,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 14.5,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8], [9]],
+    "research_integrated": true,
+    "challenge_block_elaborates": true,
+    "validator": "validate-artifact.sh plan --strict PASS (0 warnings)"
+  },
+  "memory_candidates": [
+    {
+      "content": "Seam-fibre finiteness is the discriminator between Presented and HitPresented fixtures in the RaySummary tree. At a seam (t, w) with finitely many histories through it (e.g. NoFiniteWidth's Node.pre m has exactly m + 1, each canonical and eventually constant both ways), a finite presentation realizes the closure traces EXACTLY, so trace-level Presented holds and HitPresented follows for free (hitPresented_of_presented); a Hit-level negative is therefore impossible there, regardless of infinite width or stab-letters in the alphabet. Hit-level falsifiers for requirement (C) must be sought at seams with infinitely many histories through them (model A's (t, a) is the only such fixture in the tree). Corollary for probe design: on a finite-fibre seam the model-A truncation argument buys a count uniform over the seam index, not satisfiability, and such a probe does not test the truncation's necessity.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/759_node_hit_presented_probe/plans/01_node-hit-presented-probe.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["HitPresented", "Presented", "seam fibre", "NoFiniteWidth", "truncation", "requirement (C)"]
+    }
+  ],
+  "modified_files": [
+    "specs/759_node_hit_presented_probe/plans/01_node-hit-presented-probe.md",
+    "specs/759_node_hit_presented_probe/.return-meta.json",
+    "specs/759_node_hit_presented_probe/.orchestrator-handoff.json",
+    "specs/759_node_hit_presented_probe/issues.jsonl"
+  ],
+  "dispatch_seq": 5
 }
