@@ -1,6 +1,6 @@
 # Roadmap
 
-*Open work only; hand-maintained (last edited 2026-10-09), not generated — `roadmap-integration.sh
+*Open work only; hand-maintained (last edited 2026-10-10), not generated — `roadmap-integration.sh
 --regenerate` aborts silently against this layout and writes nothing. Finished work lives in
 `specs/CHANGE_LOG.md` and `specs/archive/`. Per-task detail lives in the task records
 (`specs/TODO.md`); the mathematics and the (C)/(S)/(W) verdict table live in `README.md`, the
@@ -15,9 +15,10 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 749 --hard --lit    # (C)'s bound half on model A; the cost is its phase 2
+/orchestrate 758,759 --hard      # the two Node-fixture probes: cell stabilization, then HitPresented for a ⊡-bearing formula
 /orchestrate 720                 # CI repair: untracked WIRED_REPO + the missing tracked-ness check
-/orchestrate 750 --hard --lit    # (W)'s run layer; dispatch phase 1 and STOP
+/orchestrate 760,761 --hard --lit # ladder model + stabilization lemma over (c, n), then the ladder realization theorem
+/orchestrate 762,763 --hard --lit # (C)'s general row, then the lift and the Decidable (PlusValidZTime φ) corollary
 /orchestrate 716,714 --hard      # the sliced-certificate sub-front
 /orchestrate 712 --hard          # only after Stage 0 corrects its marker
 # Stage 2 — supporting semantics and metalogic
@@ -82,23 +83,49 @@ summary, and its literal falsifier is unsatisfiable (`Probe718Mosaic.StabSaturat
 The three requirements named by 735's verdict are **(C)** Hit-level completeness with a computable
 bound, **(S)** Hit-level soundness, **(W)** a closure-wide quasimodel. Their statement shapes, what
 landed, and what did not are authored in the `RaySummary` README's "The verdict" table, which is
-their authority. (S) landed for `box`/`stab`-free `φ` at one seam; (C) landed its probe half
-(`Probe745.hitPresented_modelA`); (W) landed its anchor layer. What remains open is below.
+their authority. (S) landed for `box`/`stab`-free `φ` at one seam; (C) landed its probe half and, on model A, its
+bound half as a count (`Probe745.hitPresented_modelA`, window `presentationSize k`); (W) landed its
+anchor layer and its run-layer frame scheme (`ladderFrame`, `ladderFrame_isRegular`). What remains
+open is below: the three obligations of the verdict table, filed as six records in dependency
+order (design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md`).
 
-- **749 — (C)'s bound half on model A.** Phase 1 is closed in principle: **pigeonhole plus
-  `kTypeOf_listSeg_append_congr`** (`Compose.lean:276`), not finite-semigroup idempotence. **The
-  cost sits in phase 2's factorization-transport lemma** — `InFamily` invariant under lengthening a
-  maximal constant run past phase 1's threshold; nothing in the tree states it and it carries no
-  figure. Every quantity here is a COUNT of cells, never a bound on any procedure's running time
-  (`AnchorLayer.lean:317-320`).
+- **758 — `Node` fixture probe, cell stabilization** (`preCell_stable`, `preCell_zero_ne`,
+  `postCell_stable` on `NoFiniteWidth.M` for `Φ`, fallback `D`): run-layer phase 2's FIRST statement
+  tested where 750's mitigation R-A said to test it. Depth: none (cells). Costable: 400-800 lines,
+  1-2 dispatches. No edges. Either verdict is the deliverable; a failure is recorded as the
+  obstruction, never a finite-fibre retreat.
 
-- **750 — (W)'s run layer**: the `untl`/`snce` nesting and the lift from one seam to
-  `¬ PlusValidZTime φ`. **Phase 1 is a design question** (thread-indexed unfolding vs. a
-  bounded-deadline encoding) — **dispatch it and STOP**; its outcome makes phases 2–3 costable and
-  chooses the depth `k`. Its three obligations are enumerated in the record and in the `RaySummary`
-  README's "(W): what landed and what did not". No dependency edge ties 750 to 749 — without the
-  bound the composition theorem is weaker (semi-decidable) but not blocked; the two serialize
-  through their `file_scope` overlap on `RaySummary/README.md` and `docs/theorem-index.md`.
+- **759 — `Node` fixture probe, `HitPresented` for a `⊡`-bearing formula at an infinite-width seam**
+  (`hitPresented_node` or `not_hitPresented_node`, seam `(t, pre k)`, every `k ≥ 1`). **This is the
+  highest-information probe on the frontier**: the only Hit-level positive is `box`/`stab`-free on a
+  finite-width slice, and nothing tests either untested axis. **A Hit-level negative there is a
+  Stage 0 ruling, not an agent transition** — it blocks R1 at (C) with no fallback, and 762/763
+  then wait on the user. Depth `1 ≤ k`. Costable with a wide band. Serialization edge on 758.
+
+- **760 — ladder model, `Adm`, and `ladderCell_stabilizes` over BOTH counters `(c, n)`** with the
+  bound `B := |cl φ|` exhibited (fallback `∃ B`) — a count of closure formulas, never a complexity
+  bound. Logical edge on 758 (the verdict fixes the bound shape); serialization edge on 759. NOT
+  costable until 758 reports; `[BLOCKED]` is the honest outcome if stabilization fails.
+
+- **761 — ladder realization theorem** (`LadderCons`, `ladderRealized` per ladder cell, for ALL `φ`
+  including `box`/`stab` letters — where (S)'s `box`/`stab` limitation lands, by the README's own
+  assignment; no standalone (S) record). Hit-level, on the infinite-width `ladderFrame` (WIDTH and
+  COLLAPSE, `w-soundness-shape-refuted.lean`, forbid the trace level and `modelOf`'s frame). Logical
+  edge on 760. NOT costable (sized by 760's bound and by how much of `Realize.lean` transfers).
+
+- **762 — (C)'s general row** (`exists_hitPresented` with `sizeBound φ k` a count, every regular
+  `ℤ`-model). Open mathematics, research-first. Logical edge on 759 (a negative there makes it
+  false); serialization edge on 761. NOT costable; `[BLOCKED]` honest.
+
+- **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
+  `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM, stated here and nowhere
+  earlier. Depth `k = 1`. Logical edges on 761 and 762. NOT costable until both have shapes.
+
+  The four library records (760-763) share `RaySummary.lean`, `FormalSystem.lean`, the C14 pins,
+  `docs/theorem-index.md`, the `RaySummary` README and `typst/generated/status.typ`; they
+  serialize through edges inside the set. Collisions OUTSIDE the set — 744 (README, invariants
+  script), 734 (`check-evidence-probes.sh`, Stage 0), 410 (`status.typ`) — are the admission
+  gate's to serialize, with no cross-set edge.
 
 - **720 — CI repair**, ahead of the sliced pair because a red gate on every push outranks a local
   defect. Two of three `WIRED_REPO` entries in `scripts/check-evidence-probes.sh` point at files git
@@ -148,7 +175,7 @@ is low value: the monodic decidability proof *is* the quasimodel method, which r
 |---|---|
 | No constructor for infinite-width, finitely branching regular frames | `Rbad`/`Rok` refuted as repair shapes (`b2b-frame-constructor-branching.lean`); the positive halves need TWO-SIDED finite branching; the `Node` thread-unfolding shape (`Limits/NoFiniteWidth.lean:132`) is neither refuted nor built |
 | The factorization-transport lemma does not close on model A | Not in the tree; never attempted |
-| Hit-level completeness fails for some regular `ℤ`-model | One positive fixture, zero negatives, no general argument; trace level is false (`Probe735.not_presented`) and does not transfer |
+| Hit-level completeness fails for some regular `ℤ`-model | One positive fixture, zero negatives, no general argument; trace level is false (`Probe735.not_presented`) and does not transfer. **759** tests it on both untested axes (`⊡`-bearing formula, infinite width); a negative there is a Stage 0 ruling |
 | A closed L⁺ formula forces backward determinism on a regular `ℤ`-frame — the one route by which a published negative result could reach L⁺ | `stab`'s clause (`PlusTruth.lean:93`) fails the backward closure of the historical-necessity tradition (Thomason 1984 §4 Def. 6(2); Caleiro–Viganò–Volpe Def. 2.5 `Wdc`), which is why the corpus's negatives do not apply. If forcing is possible, the know-time-do-not-forget family becomes a reduction target. **Cheap check, named and not filed**: one fixture; `Probe719Backward` and `Probe733Mirror` already inhabit the backward factor |
 
 **Literature position.** TM/L⁺ over regular `ℤ`-frames evades every published negative result in the

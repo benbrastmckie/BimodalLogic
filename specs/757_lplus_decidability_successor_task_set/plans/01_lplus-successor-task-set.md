@@ -429,37 +429,37 @@ covering `TODO.md`; no code path outside the state writer reads these rows befor
 
 ---
 
-### Phase 5: ROADMAP Stage 1 edit, disclosure, trace, full gate [NOT STARTED]
+### Phase 5: ROADMAP Stage 1 edit, disclosure, trace, full gate [COMPLETED]
 
 **Goal**: Sequence the six filed tasks in `specs/ROADMAP.md` Stage 1 by hand, finalize the spec's
 State-write disclosure and Trace table, and run the complete gate set with the attestation that no
 file outside `specs/**` changed.
 
 **Tasks**:
-- [ ] `specs/ROADMAP.md` `## Next batches` block, Stage 1: replace the completed `749` and `750`
+- [x] `specs/ROADMAP.md` `## Next batches` block, Stage 1: replace the completed `749` and `750`
       lines with three dispatch lines in dependency-inclusive batches — `T1,T2 --hard`, then
       `T3,T4 --hard --lit`, then `T5,T6 --hard --lit` (numbers from Phase 4), each with a short
       trailing comment in the file's existing style; leave the `720`, `716,714`, `712` lines and
       every other Stage untouched.
-- [ ] `## Stage 1 — Decidability of L⁺`: replace the 749 and 750 bullets with one bullet per
+- [x] `## Stage 1 — Decidability of L⁺`: replace the 749 and 750 bullets with one bullet per
       record (statement shape, depth, costability status, the typed edges, the collision note on
       744/734/410), plus the sentence that T2 is the highest-information probe on the frontier and
       that a Hit-level negative there is a Stage 0 ruling, not an agent transition; keep the
       Guardrails and Named risks subsections unchanged except to update the "Hit-level
       completeness fails" row's evidence pointer to name T2 by number.
-- [ ] Update the header italic's "last edited" date.
-- [ ] Finalize the spec's State-write disclosure (what was written: the spec, six `state.json`
+- [x] Update the header italic's "last edited" date.
+- [x] Finalize the spec's State-write disclosure (what was written: the spec, six `state.json`
       rows, `TODO.md` regen, `ROADMAP.md`; the `validate-state.sh` WARN lines if any; what was
       not: any file outside `specs/**`, any Stage 0 or sliced-certificate task) and the Trace
       table (ROADMAP change → specification section).
-- [ ] Attest: `git diff --name-only <phase-1-base-commit>..HEAD -- . ':!specs/**'` is empty and
+- [x] Attest: `git diff --name-only <phase-1-base-commit>..HEAD -- . ':!specs/**'` is empty and
       the working tree has no non-`specs/**` change; `bash .claude/scripts/check-task-references.sh`
-      exits 0.
-- [ ] Full gate: `bash .claude/scripts/verify-deploy.sh` exits 0; `bash
+      exits 0. *(deviation: altered — the non-`specs/**` diff since `84be907f1` is empty and the tree is clean, but `check-task-references.sh` exits 1 on 198 pre-existing occurrences in files this task never touched (`Boneyard/**` READMEs and similar); the attestation holds in substance, the lint's exit is pre-existing debt)*
+- [x] Full gate: `bash .claude/scripts/verify-deploy.sh` exits 0; `bash
       .claude/scripts/validate-state.sh specs/state.json` exits 0; `bash
       .claude/scripts/validate-artifact.sh specs/757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md plan`
       exits 0.
-- [ ] Commit the phase (scoped pathspec: `specs/ROADMAP.md`, the spec file) via
+- [x] Commit the phase (scoped pathspec: `specs/ROADMAP.md`, the spec file) via
       `git-commit-scoped.sh`; write the summary per `summary-format.md` and the terminal
       `.return-meta.json` / `.orchestrator-handoff.json`.
 
@@ -485,18 +485,18 @@ file outside `specs/**` changed.
 
 ## Testing & Validation
 
-- [ ] Phase 1 compile record exits 0 with no `Unknown identifier`; probe gate exits 0.
-- [ ] Every Lean name cited in Sections A-H appears in Section 0.1/0.2 (scripted grep, zero
+- [x] Phase 1 compile record exits 0 with no `Unknown identifier`; probe gate exits 0.
+- [x] Every Lean name cited in Sections A-H appears in Section 0.1/0.2 (scripted grep, zero
       unmatched).
-- [ ] Section H `file_scope` check: existing paths exist, new paths absent and marked, no
+- [x] Section H `file_scope` check: existing paths exist, new paths absent and marked, no
       directory roots.
-- [ ] `validate-state.sh` exits 0 after filing; six rows with correct `dependencies`/`file_scope`/
+- [x] `validate-state.sh` exits 0 after filing; six rows with correct `dependencies`/`file_scope`/
       `topic`/`task_type`.
-- [ ] `TODO.md` regenerated (not hand-edited) and lists the six tasks.
-- [ ] No file outside `specs/**` modified (empty non-`specs/**` diff); `check-task-references.sh`
-      exits 0.
-- [ ] `verify-deploy.sh` full run exits 0 before the task closes.
-- [ ] Stage 0 tasks 712/713/734/709 and sliced-certificate tasks 716/714 unchanged in
+- [x] `TODO.md` regenerated (not hand-edited) and lists the six tasks.
+- [x] No file outside `specs/**` modified (empty non-`specs/**` diff); `check-task-references.sh`
+      exits 0. *(deviation: altered — empty non-`specs/**` diff confirmed; the lint exits 1 on pre-existing occurrences in untouched files, see Phase 5)*
+- [x] `verify-deploy.sh` full run exits 0 before the task closes.
+- [x] Stage 0 tasks 712/713/734/709 and sliced-certificate tasks 716/714 unchanged in
       `state.json` (jq diff of those rows before/after).
 
 ## Artifacts & Outputs

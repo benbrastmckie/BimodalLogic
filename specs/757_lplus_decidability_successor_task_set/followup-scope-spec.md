@@ -842,12 +842,9 @@ Stage 0 ruling (Section B); T2's own record says so in its description.
 
 ## State-write disclosure
 
-*(Skeleton written in Phase 3; finalized in Phase 5 with the numbers received and the
-`validate-state.sh` output.)*
-
-This task's implementation round writes: this specification; six new `active_projects` rows in
-`specs/state.json` (T1-T6, through `state-write.sh` with `--regen-todo`, then `manage-topics.sh
-set`); `specs/TODO.md` by regeneration only (never hand-edited); the Stage 1 section of
+Finalized in Phase 5. This task's implementation round wrote: this specification; six new `active_projects` rows in
+`specs/state.json` (tasks 758-763 = T1-T6, through `state-write.sh` with `--regen-todo`, then
+`manage-topics.sh set`, `next_project_number` 758 → 764); `specs/TODO.md` by regeneration only (never hand-edited); the Stage 1 section of
 `specs/ROADMAP.md` (hand-authored, since `roadmap-integration.sh --regenerate` is inoperative on the
 Stage layout); and, under `specs/757_lplus_decidability_successor_task_set/`, the plan's phase
 markers and checkboxes, the phase handoffs, `successor-records.json`, `issues.jsonl`, the summary,
@@ -857,4 +854,38 @@ It does NOT write: any `FormalSystem/` file, any `docs/` file, any `scripts/` fi
 file, any typst file, any probe file — every such edit is a Section H record's own; and it neither
 transitions nor edits tasks 712, 713, 734, 709, 716, 714 or any other existing task.
 
-`validate-state.sh` outcome and any `file_scope` WARN lines: *(Phase 4/5)*.
+`validate-state.sh specs/state.json` after the sixth write: **exit 0, `STATE VALIDATION PASSED WITH
+WARNINGS`, 0 failed**. `file_scope` WARN lines, all pre-existing in kind: Check 8 — "Coarse
+file_scope declaration: project_number 177, entry `FormalSystem/Metalogic/Decidability/` overlaps 17
+distinct non-terminal task(s)", the list now including 758-763 (177's whole-directory root is the
+coarse declaration 751 remediates, not anything these rows declare); Check 9 — PASS, no duplicate
+entries; the standing "file_scope visibility: 22 missing-key" list, none of them a row written here.
+No mutex refusal occurred; no retry was needed. The protected rows 712, 713, 734, 709, 716, 714 were
+diffed before and after filing and are byte-identical.
+
+The defensive `git-snapshot.sh --no-revert 757` before Phase 4 exited 1 after printing only its mode
+line (the working tree carried other sessions' dirty `specs/**` files outside this task's
+`file_scope`); the tree was not modified and the filing proceeded without it — recorded in
+`issues.jsonl`.
+
+## Trace: ROADMAP changes to specification sections
+
+| ROADMAP change (Stage 1, 2026-10-10) | Specification anchor |
+|---|---|
+| Header "last edited" date | this file (Phase 5) |
+| `## Next batches`: `749` line → `758,759 --hard` | Sections A, B; H1, H2; Section 0.3 (cost bases) |
+| `## Next batches`: `750` line → `760,761 --hard --lit` and `762,763 --hard --lit` | Sections A, C, B, D; H3-H6; `--lit` per Section B (HWZ 2000 / GKWZ 2003 indexed, orientation only) |
+| Stage 1 lead paragraph: (C)'s bound half on model A, (W)'s frame scheme, pointer to this file | Section 0.1 reading, 0.2 rows 5 and 11 |
+| Bullet **758** | Section A (probe statements, verdict semantics); H1 |
+| Bullet **759**, "highest-information probe", "Stage 0 ruling, not an agent transition" | Section B; H2; "Stage 0 -- described, not moved" (last paragraph) |
+| Bullet **760** (both counters, exhibited `B`, count sentence) | Section A; H3; Section 0.5 (`(c, n)` sharpening) |
+| Bullet **761** (`box`/`stab` acceptance clause, no standalone (S) record) | Section C; H4; Decision D1 |
+| Bullet **762** | Section B; H5; Decision D6 |
+| Bullet **763** (the AIM stated here and nowhere earlier) | Section D; H6 |
+| Shared-set / cross-set collision paragraph | Section H preamble ("Edges are typed"); Section 0.4 (744, 734, 410); Decision D5 |
+| Named risks: "Hit-level completeness fails" row names **759** | Section B; H2 |
+| Untouched: `720`, `716,714`, `712` lines; Stage 0 section; Guardrails; Stages 2-4 | "Stage 0 -- described, not moved"; State-write disclosure |
+
+Every ROADMAP hunk above is confined to the header line and the `## Next batches` / `## Stage 1`
+sections; the Stage 0 bullets, the `712`/`713`/`734`/`709` sentences and the `716, 714` bullet are
+byte-identical to the pre-edit file.
