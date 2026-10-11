@@ -1,7 +1,7 @@
 # Implementation Plan: Task #758
 
 - **Task**: 758 - Node fixture probe: cell stabilization in the deadline index (preCell_stable, preCell_zero_ne, postCell_stable)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/758_node_cell_stabilization_probe/reports/01_node-cell-stabilization-probe.md
@@ -109,7 +109,7 @@ header checklist verbatim.
 
 Phases within the same wave can execute in parallel. This plan is fully sequential.
 
-### Phase 1: Author the Wired Probe File [NOT STARTED]
+### Phase 1: Author the Wired Probe File [COMPLETED]
 
 **Goal**: Create `specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean` — the
 mandated header followed by the prototype's proofs under `namespace Probe758` — compiling under
@@ -117,7 +117,7 @@ mandated header followed by the prototype's proofs under `namespace Probe758` �
 statements verbatim.
 
 **Tasks**:
-- [ ] Write the header docstring (`/- … -/`, before the imports, modeled on
+- [x] Write the header docstring (`/- … -/`, before the imports, modeled on
       `deadline-ladder-branching.lean`'s), containing in this order:
       - Title line: "Probe 758 (requirement (W)'s run layer, phase 2, first statement, on the
         one-region fixture): POSITIVE — realized cells on `Node` stabilize past pre-index 1, the
@@ -152,15 +152,15 @@ statements verbatim.
       - Axiom foot sentence ("Every headline theorem carries `[propext, Classical.choice,
         Quot.sound]`; `Classical.choice` enters through `hist_canon`") and the compile line
         `lake env lean specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean`.
-- [ ] Imports and opens exactly as the prototype: `Limits.NoFiniteWidth` and
+- [x] Imports and opens exactly as the prototype: `Limits.NoFiniteWidth` and
       `RaySummary.AnchorLayer`; the four `open` lines; `namespace Probe758`.
-- [ ] Port the prototype's declarations in the report's order (Research Integration), keeping
+- [x] Port the prototype's declarations in the report's order (Research Integration), keeping
       names and statements; keep `set_option linter.unusedVariables false in` and the docstring on
       `postCell_stable`; keep `truth_stabNegXp`'s docstring. Optionally drop the two unused simp
       arguments (`true_and`, `and_true`) flagged by the linter. Do NOT port `histOf_timeShift`.
-- [ ] Close with `end Probe758` and `#print axioms` for `Probe758.preCell_stable`,
+- [x] Close with `end Probe758` and `#print axioms` for `Probe758.preCell_stable`,
       `Probe758.preCell_zero_ne`, `Probe758.postCell_stable`, `Probe758.xCell_stable`.
-- [ ] `git add` the new file (the gate's "tracked, not merely present" rule — Phase 2 fails
+- [x] `git add` the new file (the gate's "tracked, not merely present" rule — Phase 2 fails
       otherwise) and commit per the green-substep mandate.
 
 **Timing**: 1.5 hours

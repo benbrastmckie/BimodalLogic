@@ -1,34 +1,15 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/758_node_cell_stabilization_probe/plans/01_node-cell-stabilization-probe.md",
-      "summary": "Three sequential phases (3 h): port the compiled research prototype into the wired probe specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean with the mandated header (witness Φ, fallback D not needed, forward-only, no bound, no finiteness, Xp-not-⊡ sharpening); wire one WIRED entry into scripts/check-evidence-probes.sh (27 -> 28 probes); add one Evidence sentence to the RaySummary README and run the full gate set. Lean Challenge Statements pin preCell_stable, preCell_zero_ne, postCell_stable verbatim (block type-checks standalone)."
-    }
-  ],
-  "next_steps": "Run /implement 758 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1791678570_498fb4_758",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 3,
-    "dependency_waves": [[1], [2], [3]]
+  "status": "in_progress",
+  "started_at": "2026-10-11T01:01:07Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
   },
-  "memory_candidates": [
-    {
-      "content": "On a FrameOver.ofReflectiveRegular-built fixture whose carrier is a concrete inductive (e.g. NoFiniteWidth's Node), a goal mentioning `cellAt M φ (.pre k) z` or `canon k t s = .x m` has its literal at type F.WorldState, which is defeq to the carrier only at default transparency. `rw` with an iff lemma whose pattern fixes that type (`rw [mem_cellAt_iff]`, `rw [canon_eq_x_iff]`) fails with 'target expression is not type-correct under the implicit transparency level'. Apply such lemmas in term mode instead — `(mem_cellAt_iff M φ _ z T).mp hT` / `.mpr ⟨σ, hσz, rfl⟩`, `canon_eq_x_iff.mp h'` after `have h' : canon k t z = Node.x m := ...` — or ascribe the equation at the carrier type first. Rewriting INSIDE a state equation (`rw [hσ s, histOf_state, canon_of_lt h]`) is unaffected. Also at this Mathlib pin `push_neg` is deprecated; use `push Not`.",
-      "category": "PATTERN",
-      "source_artifact": "specs/758_node_cell_stabilization_probe/plans/01_node-cell-stabilization-probe.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["lean4", "transparency", "rw", "FrameOver", "WorldState", "cellAt", "term-mode"]
-    }
-  ],
-  "modified_files": [
-    "specs/758_node_cell_stabilization_probe/plans/01_node-cell-stabilization-probe.md",
-    "specs/758_node_cell_stabilization_probe/issues.jsonl"
-  ],
-  "dispatch_seq": 2
+  "metadata": {
+    "session_id": "sess_1791678570_498fb4",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+  }
 }
