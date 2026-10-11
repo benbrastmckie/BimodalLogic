@@ -6,7 +6,12 @@
 - **Dependencies**: 758 (logical, positive verdict re-read), 759 (serialization only, README)
 - **Research Inputs**:
   - specs/760_ladder_model_cell_stabilization_lemma/reports/01_ladder-cell-stabilization-refuted.md (integrated in plan 01, carried forward)
-  - specs/760_ladder_model_cell_stabilization_lemma/.blocker-research.json (the measured solution path A-E; the one new input since plan 01)
+  - specs/760_ladder_model_cell_stabilization_lemma/.dispatch/4-aux-blocker-research.md
+    and specs/760_ladder_model_cell_stabilization_lemma/.dispatch/5-aux-plan-revision.md
+    (the blocker-research dispatch and the revision dispatch that carries its findings; the
+    measured solution path A-E and the salvage inventory -- the one new input since plan 01).
+    The aux agent's transient `.blocker-research.json` was never committed and is not on disk;
+    these two dispatch files are the durable anchors for every finding attributed to it below.
   - specs/760_ladder_model_cell_stabilization_lemma/.decisions.json (ruling R1, cycle 1; ruling R2, cycle 3)
 - **Artifacts**: plans/02_land-salvaged-ladder-model.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -40,7 +45,9 @@ no new debt of any kind.
 
 ### Research Integration
 
-Newly integrated input: `.blocker-research.json` (cycle 3). There are no new research reports;
+Newly integrated input: the blocker-research findings of cycle 3, carried verbatim in
+`.dispatch/5-aux-plan-revision.md` (the aux agent's own `.blocker-research.json` was
+transient and is not on disk). There are no new research reports;
 `reports/01_ladder-cell-stabilization-refuted.md` predates plan 01 and is already integrated
 there. The findings this revision acts on:
 
@@ -106,10 +113,38 @@ there. The findings this revision acts on:
 
 The solution path's **phase E** — amending the dependent successor records to delete the refuted
 index `Q × Fin (B+1) × Fin (B+1)` and record it as an open sub-problem — is **not planned here**.
-It is owned by a separate child record, so that two records do not implement the same work and
+It is owned by task 765 (`[RESEARCHED]`), so that two records do not implement the same work and
 the dependent records are amended once, by the record that owns them. This plan therefore touches
 no successor record's description, and asserts no replacement for the deleted index (guardrail
 (a)).
+
+Which records 765 amends, measured against their descriptions as they stand rather than assumed.
+The literal string `Q × Fin (B+1) × Fin (B+1)` occurs in NONE of the three descriptions; the
+dependency is carried by name, and it is carried unevenly:
+
+- **763 carries the refuted claim and must have it deleted.** Its description derives "finitely
+  many deadline classes by `ladderCell_stabilizes`" and quantifies its object over `hA : Adm …`.
+  `ladderCell_stabilizes` is refuted, so that step of its assembly has no support: it must be
+  DELETED and recorded as an open sub-problem, never re-stated over a concrete substitute -- the
+  candidate `(q, min c B', min n B', clip (n − c))` is research-level and proved nowhere, so
+  re-stating the index over it would file an unproved claim (guardrail (a)).
+- **761 does not reference the index or the stabilization lemma at all.** It names neither
+  `ladderCell_stabilizes` nor any deadline-class index; what it does carry is `ladderFrame`
+  ("the frame is `ladderFrame` (infinite slice, `Rlad_slice_infinite`; regular by
+  `ladderFrame_isRegular`)"), whose `fwd`/`bwd` seriality hypotheses are unsatisfiable on the
+  full carrier by finding F1. Its amendment is therefore the CARRIER repair -- re-point at the
+  `ladderFrameAdm` this record lands -- and not an index deletion. Whoever plans 765 should treat
+  the two amendments as distinct edits with distinct justifications.
+- **762 is unaffected.** Its description references neither the ladder index nor `ladderFrame`;
+  it needs no amendment.
+
+**Overlap hazard with 765, flagged and not resolved here.** 765's description carries BOTH halves
+of ruling R2 -- the library transplant of the eleven general declarations AND the successor-record
+amendment -- while Phases 5-9 below execute the transplant half. The two records therefore overlap
+on the library half, and 765 must read the tree as it stands (the landed
+`RaySummary/LadderModel.lean`, its aggregator wiring, its C14 pins) before planning any transplant
+work, rather than re-landing declarations this record already landed. Nothing in this plan narrows
+765's scope; the note exists so the duplication is visible to whoever plans it.
 
 ### Prior Plan Reference
 
@@ -354,18 +389,18 @@ pre-dispatch commit, and 0 were introduced.
 
 ---
 
-### Phase 5: Author RaySummary/LadderModel.lean — Transplant the Eleven General Declarations [NOT STARTED]
+### Phase 5: Author RaySummary/LadderModel.lean — Transplant the Eleven General Declarations [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` exists and builds,
 carrying the eleven declarations copied from the probe with no proof re-derived and no fixture
 admitted.
 
 **Tasks**:
-- [ ] Create the file with the repository's standard copyright header (four lines, as
+- [x] Create the file with the repository's standard copyright header (four lines, as
       `RunLayer.lean` carries it) and `import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer`.
       **`AnchorLayer` is NOT imported**: no transplanted declaration mentions `cellAt`, so the
-      import would be unused.
-- [ ] Write the module docstring. It states: what the module lands (the admissible ladder carrier
+      import would be unused. *(deviation: altered — `import FormalSystem.Semantics.TaskModel` added beside `RunLayer`: `RunLayer`'s closure does not reach `TaskModel`/`Atom` (the probe got them through `AnchorLayer`), and `ladderModel`'s planned signature needs both; `AnchorLayer` still not imported)*
+- [x] Write the module docstring. It states: what the module lands (the admissible ladder carrier
       and the frame and model over it, beside `RunLayer.lean`'s `ladderFrame`, which stays
       instance-free); that `ladderFrame`'s own seriality hypotheses are unsatisfiable, with
       `no_fwd`/`no_bwd_of_idle` cited as the reason `Adm` restricts the CARRIER; that the carrier
@@ -383,13 +418,13 @@ admitted.
       every probe in this collection is (guardrail (e)); nothing about `HitPresented`, nothing
       about `PlusValidZTime` in any form. **No task-number reference and no record-versioning
       phrasing** anywhere in the file.
-- [ ] Open `namespace FormalSystem.Metalogic.Decidability.RaySummary` and copy the eleven
+- [x] Open `namespace FormalSystem.Metalogic.Decidability.RaySummary` and copy the eleven
       declarations from the probe **verbatim**, in the probe's own order, which compiles:
       `no_fwd`, `no_bwd_of_idle` → `Adm`, `LadderState`, the `Nonempty (LadderState Q pend)`
       instance, `RladAdm`, `RladAdm_fwd`, `RladAdm_bwd`, `ladderFrameAdm`,
       `ladderFrameAdm_isRegular`, `ladderModel`. Keep each keyword as the probe has it
       (`theorem` / `def` / `abbrev` / `instance`) and each body character-for-character.
-- [ ] Apply exactly **three adaptations**, and no others. (1) Name the anonymous `Nonempty`
+- [x] Apply exactly **three adaptations**, and no others. (1) Name the anonymous `Nonempty`
       instance `ladderState_nonempty`, so it has a durable anchor for the C14 pin and the
       dead-declaration scan rather than an auto-generated name. (2) Give every declaration a
       docstring (the probe's where it has one; a new one-line docstring in the probe's register
@@ -399,14 +434,18 @@ admitted.
       the declaration. (3) Add a one-clause note in `Adm`'s docstring distinguishing it from the
       admissible-proposition family also written `Adm` in `FormalSystem/QuantLanguage/`, which is
       an unrelated parameter in another namespace.
-- [ ] Confirm by reading the file: no `sorry`, no `axiom`, no `def X := True`-shaped definition,
+- [x] Confirm by reading the file: no `sorry`, no `axiom`, no `def X := True`-shaped definition,
       no `#print axioms`/`#eval`/`#check`/`dbg_trace` line (C27 gates those under
       `FormalSystem/`), no `set_option` of any kind, no fixture declaration (`stepB`, `pendB`,
       `fwdB`, `bwdB`, `F`, `M`, `labB`, `phi`, `w1`, `w2`, `cell_ne` and the rest stay in the
       probe).
-- [ ] Build the module through the guard and read its verdict from the guard, not from a pipe.
+- [x] Build the module through the guard and read its verdict from the guard, not from a pipe.
 
-**Timing**: 1.5 hours
+- **Completed**: 2026-10-11
+
+**Outcome**: landed, 195 lines; guarded scoped build exit 0, 0 errors, 0 warnings; the ten named declarations plus `ladderState_nonempty` match the probe's signatures and bodies character-for-character (diffed mechanically); zero `sorry`/`axiom`/vacuous/debug/fixture hits; `check-task-references.sh` PASS on the file.
+
+**Timing**: 1.5 hours (0.4 spent)
 
 **Depends on**: 2
 
@@ -421,7 +460,8 @@ else can observe it.
 **Commit Mode**: per-substep
 
 **Scope Hypothesis**: Eleven transplanted declarations, zero new proof obligations, one new file
-and no other file touched. Carried from `.blocker-research.json`, which names the eleven; confirm
+and no other file touched. Carried from the blocker-research findings in
+`.dispatch/5-aux-plan-revision.md`, which name the eleven; confirm
 at implementation time by diffing the new module's declaration signatures (text up to `:=`)
 against the probe's same-named declarations and against the Lean Challenge Statements block below,
 and by `git status --short` showing exactly one new path.
@@ -599,7 +639,8 @@ half needs the build and runs there).
 pairs in the invariant script. Both counts are hypotheses: the heredoc count drops by one for each
 of the four that reports no axioms, and the planned axiom values
 (`[propext, Classical.choice, Quot.sound]` for the `ofSlicedStepFinBranch`-derived declarations,
-`[propext]` for `no_bwd_of_idle`) are carried from `.blocker-research.json` and from plan 01's
+`[propext]` for `no_bwd_of_idle`) are carried from the blocker-research findings in
+`.dispatch/5-aux-plan-revision.md` and from plan 01's
 re-derived axiom foot — confirm by running `#print axioms` before writing either site, and never
 by copying a value from this plan.
 
@@ -833,5 +874,7 @@ end FormalSystem.Metalogic.Decidability.RaySummary
   machine-checked theorems, or it stays `[BLOCKED]` as the standing record of the obstruction. The
   implementation surfaces this as a `user_decision` and changes nothing on its own authority.
 - The open sub-problem — what index, if any, a ladder cell has — is recorded and owned elsewhere.
-  It is not asserted, costed, or re-derived here (guardrail (a)); the separate child record that
-  owns phase E amends the dependent records.
+  It is not asserted, costed, or re-derived here (guardrail (a)); task 765 owns phase E. Of the
+  three dependent records, 763 carries the refuted `ladderCell_stabilizes` step and must have it
+  deleted, 761 carries the unsatisfiable-carrier `ladderFrame` instead and needs the carrier
+  repair, and 762 needs no amendment -- see the out-of-scope section above for the measurement.
