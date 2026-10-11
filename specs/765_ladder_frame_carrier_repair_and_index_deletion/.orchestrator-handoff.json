@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 1,
+  "summary": "Planned task 765 in five phases (4.5 h). The library half (F1) the description calls a transplant is already landed by the predecessor's second round, so the plan lands no Lean code: Phase 1 confirms the eleven declarations, both C14 pin sites, the index rows and the probe's library import mechanically and stops if any is missing. Phases 2-4 amend the dependent records: 761 (carrier repair, re-pointed at ladderFrameAdm/ladderModel), 763 (the refuted ladderCell_stabilizes step deleted and the cell index recorded as an open sub-problem, no substitute stated), 762 provably untouched, plus the design of record, two authored ROADMAP bullets, the RaySummary README's open-obligation item and the probe-gate comment. Phase 5 runs the full gate set.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md",
+      "summary": "Five-phase plan: confirm the landed library half, amend 761/763 and their design and roadmap records, re-point the README, full gate."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implementation; Phase 1 is read-only confirmation and must stop the task rather than re-land any declaration if a check fails."
+}
