@@ -1,7 +1,7 @@
 # Implementation Plan: Task #759
 
 - **Task**: 759 - Node fixture probe: HitPresented for a ⊡-bearing formula at an infinite-width seam (hitPresented_node or its negation)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14.5 hours
 - **Dependencies**: 758 (serialization edge only: shared `scripts/check-evidence-probes.sh` and RaySummary README; 758 is `[COMPLETED]`, so the edge is discharged)
 - **Research Inputs**: specs/759_node_hit_presented_probe/reports/01_node-hit-presented-probe.md

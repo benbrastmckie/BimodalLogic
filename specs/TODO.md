@@ -11,11 +11,11 @@ next_project_number: 765
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,759,764 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,760 | 298,464,502,616,759 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,761 | 231,465,497,760 | algebraic-representation, dataset-enhancement, decidability |
-| 4 | 125,429,543,762 | 428,498,499,500,761 | algebraic-representation, decidability, metalogic |
-| 5 | 410,501,763 | 125,429,762 | algebraic-representation, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,760,764 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,761 | 298,464,502,616,760 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,762 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
+| 4 | 125,429,543,763 | 428,498,499,500,762 | algebraic-representation, decidability, metalogic |
+| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
@@ -77,11 +77,10 @@ next_project_number: 765
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-759 [PLANNED] — STATEMENT. A wired probe on the LIBRARY fixture...
-  └─ 760 [NOT STARTED] — STATEMENT (library, over a general finite object; new module...
-    └─ 761 [NOT STARTED] — STATEMENT (library; new module...
-      └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
-        └─ 763 [NOT STARTED] — STATEMENT (library, research-first; new module...
+760 [NOT STARTED] — STATEMENT (library, over a general finite object; new module...
+  └─ 761 [NOT STARTED] — STATEMENT (library; new module...
+    └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
+      └─ 763 [NOT STARTED] — STATEMENT (library, research-first; new module...
 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
 
 ### Formula Refactor
@@ -236,12 +235,13 @@ NOT COSTABLE, and why: the bound shape and `Adm` are fixed by T1's verdict; no c
 ---
 
 ### 759. Node hit presented probe
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 758
 - **Research**: [759_node_hit_presented_probe/reports/01_node-hit-presented-probe.md]
 - **Plan**: [759_node_hit_presented_probe/plans/01_node-hit-presented-probe.md]
+- **Summary**: [759_node_hit_presented_probe/summaries/01_node-hit-presented-probe-summary.md]
 
 **Description**: STATEMENT. A wired probe on the LIBRARY fixture `NoFiniteWidth.M` at a seam `(t, Node.pre k)` with `τ` the canonical history through it (`canon`, `path_eq_canon`), for a ⊡-bearing formula `Φ'` := the fixture witness `Φ`, fallback `D`, then `⊡Xp` (recorded in that order in the header; the chosen formula is written into the statement), at every depth `1 ≤ k`. EITHER headline is the deliverable, and the probe records which:
   `theorem hitPresented_node (t : ℤ) (k : ℕ) (hk : 1 ≤ k) : HitPresented NoFiniteWidth.M τ t Φ' (labN L) (stepN L) k`  -- positive: a presentation of size L, exhibited as a COUNT in the statement (as `presentationSize k = Nat.card (KType (clSig Fp) k)` is in `Probe745.hitPresented_modelA`), never ∃ L

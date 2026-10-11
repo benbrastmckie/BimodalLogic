@@ -104,7 +104,7 @@
     {
       "project_number": 759,
       "project_name": "node_hit_presented_probe",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "STATEMENT. A wired probe on the LIBRARY fixture `NoFiniteWidth.M` at a seam `(t, Node.pre k)` with `τ` the canonical history through it (`canon`, `path_eq_canon`), for a ⊡-bearing formula `Φ'` := the fixture witness `Φ`, fallback `D`, then `⊡Xp` (recorded in that order in the header; the chosen formula is written into the statement), at every depth `1 ≤ k`. EITHER headline is the deliverable, and the probe records which:\n  `theorem hitPresented_node (t : ℤ) (k : ℕ) (hk : 1 ≤ k) : HitPresented NoFiniteWidth.M τ t Φ' (labN L) (stepN L) k`  -- positive: a presentation of size L, exhibited as a COUNT in the statement (as `presentationSize k = Nat.card (KType (clSig Fp) k)` is in `Probe745.hitPresented_modelA`), never ∃ L\n  `theorem not_hitPresented_node (t : ℤ) (k : ℕ) (hk : 1 ≤ k) {Q} [Fintype Q] [DecidableEq Q] (lab) (step) : ¬ HitPresented NoFiniteWidth.M τ t Φ' lab step k`  -- negative: (C)'s general row is FALSE\n`HitPresented` is `RaySummary/Trace.lean`'s Hit-level hypothesis (family-triple SETS); the trace-level `Presented` is refuted as a completeness carrier by `Probe735.not_presented` and must not be used.\n\nWHY THIS IS THE HIGHEST-INFORMATION PROBE ON THE FRONTIER. The only Hit-level positive, `Probe745.hitPresented_modelA`, is box/stab-free (`Fp`) on a finite-width slice (`Fin 3`); the general row ranges over ⊡-bearing φ and infinite-width models — the two axes along which the refutations live — and nothing in the tree tests `HitPresented` on either. `Node` is both at once. A Hit-level negative would be the first in the tree and would block route R1 at (C); Stage 1 proceeds on R1 alone with no fallback. THAT OUTCOME IS A STAGE 0 USER RULING, NEVER AN AGENT TRANSITION: record it in the probe header, leave the general-row and lift successors to the user, and do not abandon or re-scope them yourself. A positive extends the model-A truncation argument (`kTypeOf_listSeg_replicate_eventually_periodic_bounded`, `inFamily_of_shrink_run`; on `Node` the single-segment containment is a fixture fact as `run_subset_middle` was) to infinite width and ⊡-letters.\n\nGUARDRAILS: (a) the alphabet is `clSig Φ'`, closure-indexed; (b) infinite width, no finiteness added; (c) `L` is a count of states, never a running time or an ∃ L; (d) zero debt — no automata library, no Büchi/MSO citation, no cslib require; (e) forward-only: the header must say nothing here bears on ⊡(Pp), and ⊡-letters are not claimed to discriminate between devices. No sorry, axiom or vacuous definition: if neither headline closes, mark [BLOCKED] with the goal state recorded.\n\nFILE SCOPE. The new probe file; one WIRED entry in `scripts/check-evidence-probes.sh`; one sentence in the RaySummary README (durable anchors only, no task numbers). Cross-set collisions left to the admission gate: 734 (script), 744 (README). Serialization edge on T1 (shared script and README), not a logical dependency.\n\nCOSTABLE: yes, with a wide band — basis `hit-presented-model-a.lean` (1595 lines; two implement dispatches under --hard per 749's summary, carried-unverified); a negative is cheaper than a positive. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section B and H2.",
       "topic": "decidability",
@@ -118,7 +118,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-10T23:53:18Z",
-      "last_updated": "2026-10-11T01:44:32Z",
+      "last_updated": "2026-10-11T02:31:35Z",
       "session_id": "sess_1791678570_498fb4",
       "artifacts": [
         {
@@ -130,9 +130,15 @@
           "path": "specs/759_node_hit_presented_probe/plans/01_node-hit-presented-probe.md",
           "type": "plan",
           "summary": "Nine sequential phases, 14.5 hours, Phases 1-8 local tier on the single out-of-graph probe file, Phase 9 full tier (wire, README, complete gate set)."
+        },
+        {
+          "path": "specs/759_node_hit_presented_probe/summaries/01_node-hit-presented-probe-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results and plan deviations."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Landed and wired specs/evidence/seam-gluing-ray-product/hit-presented-node.lean (Probe759, 1434 lines): HitPresented holds on the library fixture NoFiniteWidth.M at every pre-seam (t, pre m) for its ⊡-bearing witness Φ at every depth k ≥ 1, with the presentation size windowN m k + 5 = min m (Nat.card (KType (clSig Φ) k) + 1) + 5 exhibited in the statement and bounded uniformly over every seam (card_QN_le); the by-product presented_node records why the negative headline is false on Node (finite seam fibre). Gate script and RaySummary README updated; full gate set green; no sorry, no new axiom, no library change."
     },
     {
       "project_number": 758,
