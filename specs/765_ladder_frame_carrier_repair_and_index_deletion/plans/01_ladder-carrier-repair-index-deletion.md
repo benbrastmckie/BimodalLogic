@@ -1,7 +1,7 @@
 # Implementation Plan: Task #765
 
 - **Task**: 765 - Ladder frame carrier repair and index deletion
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: 760 (completed — its second round landed the library half this task describes; see Overview)
 - **Research Inputs**: None (no research report; this plan was written on the `--fast`/forced-plan path after the planner's opening assessment found the description to be a specification and the one open question — whether the library half still needs landing — answerable by reading the tree)
@@ -148,7 +148,7 @@ No `roadmap_flag` was passed, so no wrapping roadmap-review/roadmap-update phase
 Phases within the same wave can execute in parallel. Phase 5 is the final phase: it is a terminal
 node and depends, directly or transitively, on every other phase.
 
-### Phase 1: Confirm the landed library half and measure the dependent records [NOT STARTED]
+### Phase 1: Confirm the landed library half and measure the dependent records [COMPLETED]
 
 **Goal**: Establish, by reading the tree as it stands, that F1's library half is landed and that
 nothing Lean is to be transplanted; measure the exact passages the record amendments of Phases 2-4
