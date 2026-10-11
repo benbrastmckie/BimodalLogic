@@ -678,6 +678,54 @@ EVIDENCE="specs/evidence"
 #                                                           | hypotheses; no complexity bound;
 #                                                           | `Decidable (PlusValidZTime φ)` NOT
 #                                                           | stated in any form
+# seam-gluing-ray-product/node-cell-stabilization           | POSITIVE VERDICT (requirement (W)'s run
+#                                                           | layer, "(W): what landed and what did
+#                                                           | not", obligation (ii) item 1, on the
+#                                                           | one-region fixture): realized cells on
+#                                                           | `Limits/NoFiniteWidth.lean`'s `Node`,
+#                                                           | for its own witness `Φ` (fallback `D`
+#                                                           | not needed), STABILIZE past pre-index 1
+#                                                           | (`preCell_stable`); `pre 0` and `pre 1`
+#                                                           | DIFFER (`preCell_zero_ne`: the deadline
+#                                                           | index is real); the thread index is
+#                                                           | INVISIBLE (`postCell_stable`, its `1 ≤
+#                                                           | j` hypotheses vacuous on `Node` --
+#                                                           | `postCell_subset` has none; bonus
+#                                                           | `xCell_stable`). `cellAt` is
+#                                                           | `RaySummary/AnchorLayer.lean`'s. The
+#                                                           | probe cites the fixture (`hist_canon`,
+#                                                           | `canon_*`, `truth_p/Fp/Pp/Xp`, `Φ_true`,
+#                                                           | `box_global`, `mem_cellAt_iff`,
+#                                                           | `mem_tpOf_iff`) and re-proves nothing.
+#                                                           | MECHANISM (branch-time saturation): on a
+#                                                           | canonical history every member of `cl Φ`
+#                                                           | is a Boolean combination of `s<t`,
+#                                                           | `s=t`, `t<s`, `s+1=t`, never of the
+#                                                           | thread index, so types depend on the
+#                                                           | relative-position class
+#                                                           | `{<0},{0},{1},{≥2}` only
+#                                                           | (`truth_transfer`, `tpOf_eq_of`); cells
+#                                                           | as SETS: `pre 0 ↦ {tp 1}`, `pre (≥1) ↦
+#                                                           | {tp 1, tp ≥2}`, `x ↦ {tp 0}`, `post ↦
+#                                                           | {tp <0}`. The separator between `pre 0`
+#                                                           | and `pre 1` is the non-`⊡` letter `Xp`
+#                                                           | as set membership of a second type, NOT
+#                                                           | a `⊡`-letter: `⊡Xp ∉ cl Φ` and `⊡¬Xp` is
+#                                                           | false at every pre state
+#                                                           | (`truth_stabNegXp`), so all four
+#                                                           | `⊡`-letters of `cl Φ` agree at `pre 0`
+#                                                           | and `pre 1`. Axioms `[propext,
+#                                                           | Classical.choice, Quot.sound]` (choice
+#                                                           | via `hist_canon`). What it does NOT say:
+#                                                           | forward-only, nothing about `⊡(Pp)`; no
+#                                                           | bound of any kind (the "1" is where THIS
+#                                                           | fixture's cells coincide, not a bound
+#                                                           | syntactic in `φ`); no finiteness (`Node`
+#                                                           | is infinite-width); no claim that
+#                                                           | `⊡`-letters discriminate between
+#                                                           | devices; nothing about `HitPresented` or
+#                                                           | `PlusValidZTime`; nothing about the
+#                                                           | general ladder lemma
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -705,6 +753,7 @@ WIRED=(
   "seam-gluing-ray-product/mosaic-stab-saturated"
   "seam-gluing-ray-product/w-soundness-shape-refuted"
   "seam-gluing-ray-product/deadline-ladder-branching"
+  "seam-gluing-ray-product/node-cell-stabilization"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

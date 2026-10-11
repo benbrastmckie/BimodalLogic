@@ -197,13 +197,13 @@ imports it, and it modifies no library module, so no other compilation unit can 
 
 ---
 
-### Phase 2: Wire the Probe into the Evidence Gate [NOT STARTED]
+### Phase 2: Wire the Probe into the Evidence Gate [COMPLETED]
 
 **Goal**: Register the probe in `scripts/check-evidence-probes.sh` so the gate compiles it on
 every run, with a table row recording what it holds in place.
 
 **Tasks**:
-- [ ] Add a table row in the `# --- WIRED ---` comment table, directly after the
+- [x] Add a table row in the `# --- WIRED ---` comment table, directly after the
       `seam-gluing-ray-product/deadline-ladder-branching` row (the row block ends at the line
       before `WIRED=(`), in the same two-column `# probe | decision` wrapped format, headed
       `POSITIVE VERDICT (requirement (W)'s run layer, "(W): what landed and what did not",
@@ -216,11 +216,11 @@ every run, with a table row recording what it holds in place.
       any kind; no finiteness; no claim that `⊡`-letters discriminate between devices; nothing
       about `HitPresented` or `PlusValidZTime`). No task number anywhere in the row — durable
       anchors only.
-- [ ] Append `"seam-gluing-ray-product/node-cell-stabilization"` to the `WIRED=(` array
+- [x] Append `"seam-gluing-ray-product/node-cell-stabilization"` to the `WIRED=(` array
       immediately after `"seam-gluing-ray-product/deadline-ladder-branching"`.
-- [ ] `bash -n scripts/check-evidence-probes.sh` (syntax) and then run the gate detached with a
+- [x] `bash -n scripts/check-evidence-probes.sh` (syntax) and then run the gate detached with a
       bounded waiter (`context/patterns/bounded-build-waiter.md`).
-- [ ] Commit the script edit.
+- [x] Commit the script edit.
 
 **Timing**: 0.5 hours
 
