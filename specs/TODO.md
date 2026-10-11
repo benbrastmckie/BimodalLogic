@@ -1,5 +1,5 @@
 ---
-next_project_number: 771
+next_project_number: 772
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 771
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,765,766,767,768,769,770 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,765,766,767,768,769,770,771 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -87,6 +87,7 @@ next_project_number: 771
 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
 765 [RESEARCHED] — Repair the ladderFrame carrier defect and the refuted...
 766 [RESEARCHED] — Clear the repo-wide task-number citation debt that fails...
+771 [NOT STARTED] — check-task-references.sh --quiet exits non-zero on 198...
 
 ### Formula Refactor
 
@@ -120,6 +121,18 @@ next_project_number: 771
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 771. Task reference lint debt boneyard tests
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 760
+
+**Description**: check-task-references.sh --quiet exits non-zero on 198 pre-existing unexempted task-number citations -- all under Boneyard/ (archived READMEs) and Tests/BimodalTest (109 of them), none in any deliverable a recent dispatch touched. The lint is therefore unusable as a phase gate repo-wide, which a plan gate line did not anticipate. Exempt them under the task-reference-exemptions taxonomy (preferred where the citations are archival) or clean them, so that check-task-references.sh --quiet exits 0 and can serve as a gate again. Evidence: specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl entry iss_1791711120739_kf46Yo.
+
+---
 
 ### 770. postflight writes detail-free blocking issue entry on partial returns
 - **Status**: [NOT STARTED]
