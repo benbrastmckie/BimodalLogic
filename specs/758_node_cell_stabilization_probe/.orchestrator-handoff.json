@@ -1,19 +1,19 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote a three-phase, 3-hour plan porting the research phase's compiled prototype (re-derived at plan time: lake env lean exit 0, 2.7 s, axioms propext/Classical.choice/Quot.sound) into the wired probe node-cell-stabilization.lean with the mandated header, then wiring it into check-evidence-probes.sh (27 -> 28 probes) and adding one Evidence sentence to the RaySummary README under a full final gate. The Lean Challenge Statements block pins the three dispatch theorems verbatim and type-checks standalone; validate-artifact.sh --strict passes with 0 warnings.",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phase": "implement",
+  "summary": "All three plan phases closed. The research prototype was ported into the wired probe specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean (346 lines): preCell_stable, preCell_zero_ne and postCell_stable proved on NoFiniteWidth.M with witness Φ at [propext, Classical.choice, Quot.sound] — verdict POSITIVE, stabilization at pre-index 1, deadline index real, thread index invisible. Wired as the 28th evidence-gate probe (28/28 PASS) and recorded in one sentence in the RaySummary README; guarded full lake build exit 0, module invariants exit 0, 0 sorries, axiom count unchanged at 14.",
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/758_node_cell_stabilization_probe/plans/01_node-cell-stabilization-probe.md",
-      "summary": "3 sequential phases: author probe (local), wire gate entry (local), README sentence + full gate (full)."
-    }
+    {"type": "summary", "path": "specs/758_node_cell_stabilization_probe/summaries/01_node-cell-stabilization-probe-summary.md", "summary": "Implementation summary with full gate-set results."},
+    {"type": "implementation", "path": "specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean", "summary": "Wired evidence probe carrying the three dispatch theorems and xCell_stable."},
+    {"type": "implementation", "path": "scripts/check-evidence-probes.sh", "summary": "One WIRED table row and one WIRED array entry for the new probe."},
+    {"type": "implementation", "path": "FormalSystem/Metalogic/Decidability/RaySummary/README.md", "summary": "One Evidence-section sentence recording the tenth wired probe; Last verified 2026-10-11."}
   ],
-  "phases_completed": 0,
+  "phases_completed": 3,
   "phases_total": 3,
   "blockers": [],
-  "plan_markers_verified": null,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement: Phase 1 ports prototype/node-cell-stabilization-proto.lean into specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean; apply the iff lemmas in term mode, never rw, on cellAt/canon_eq_x_iff goals."
+  "plan_markers_verified": true,
+  "git_checkpoint": "7ffe47937",
+  "sorry_inventory": [],
+  "next_action_hint": "Postflight: link summary, mark task completed. No follow-up dispatch needed."
 }

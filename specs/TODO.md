@@ -11,12 +11,12 @@ next_project_number: 765
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,758,764 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,759 | 298,464,502,616,758 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,760 | 231,465,497,759 | algebraic-representation, dataset-enhancement, decidability |
-| 4 | 125,429,543,761 | 428,498,499,500,760 | algebraic-representation, decidability, metalogic |
-| 5 | 410,501,762 | 125,429,761 | algebraic-representation, decidability |
-| 6 | 411,763 | 410,762 | decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,759,764 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,760 | 298,464,502,616,759 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,761 | 231,465,497,760 | algebraic-representation, dataset-enhancement, decidability |
+| 4 | 125,429,543,762 | 428,498,499,500,761 | algebraic-representation, decidability, metalogic |
+| 5 | 410,501,763 | 125,429,762 | algebraic-representation, decidability |
+| 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
 | 9 | 482 | 412 | decidability |
@@ -77,12 +77,11 @@ next_project_number: 765
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-758 [IMPLEMENTING] — STATEMENT. A wired probe on the LIBRARY fixture...
-  └─ 759 [NOT STARTED] — STATEMENT. A wired probe on the LIBRARY fixture...
-    └─ 760 [NOT STARTED] — STATEMENT (library, over a general finite object; new module...
-      └─ 761 [NOT STARTED] — STATEMENT (library; new module...
-        └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
-          └─ 763 [NOT STARTED] — STATEMENT (library, research-first; new module...
+759 [NOT STARTED] — STATEMENT. A wired probe on the LIBRARY fixture...
+  └─ 760 [NOT STARTED] — STATEMENT (library, over a general finite object; new module...
+    └─ 761 [NOT STARTED] — STATEMENT (library; new module...
+      └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
+        └─ 763 [NOT STARTED] — STATEMENT (library, research-first; new module...
 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
 
 ### Formula Refactor
@@ -258,12 +257,13 @@ COSTABLE: yes, with a wide band — basis `hit-presented-model-a.lean` (1595 lin
 ---
 
 ### 758. Node cell stabilization probe
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [758_node_cell_stabilization_probe/reports/01_node-cell-stabilization-probe.md]
 - **Plan**: [758_node_cell_stabilization_probe/plans/01_node-cell-stabilization-probe.md]
+- **Summary**: [758_node_cell_stabilization_probe/summaries/01_node-cell-stabilization-probe-summary.md]
 
 **Description**: STATEMENT. A wired probe on the LIBRARY fixture `NoFiniteWidth.M` (`PlusSlicedCertificate/Limits/NoFiniteWidth.lean`; regular by `F_isRegular`, histories canonical by `path_eq_canon`), the one-region special case of the deadline ladder, for its own ⊡-bearing witness `Φ` (fallback `D`, recorded in the probe header in that order; the chosen formula is written into the statements):
   `theorem preCell_stable (k k' : ℕ) (hk : 1 ≤ k) (hk' : 1 ≤ k') (z : ℤ) : cellAt M Φ (.pre k) z = cellAt M Φ (.pre k') z`

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #758
 
 - **Task**: 758 - Node fixture probe: cell stabilization in the deadline index (preCell_stable, preCell_zero_ne, postCell_stable)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/758_node_cell_stabilization_probe/reports/01_node-cell-stabilization-probe.md
