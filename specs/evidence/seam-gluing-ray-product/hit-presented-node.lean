@@ -394,7 +394,263 @@ theorem now_ne_Xp : clNow Φ ≠ clLetter Φ cl_Xp := clNow_ne_clLetter Φ cl_Xp
 theorem now_ne_p : clNow Φ ≠ clLetter Φ cl_p := clNow_ne_clLetter Φ cl_p
 theorem now_ne_Pp : clNow Φ ≠ clLetter Φ cl_Pp := clNow_ne_clLetter Φ cl_Pp
 
+
+/-! ## The letter bridge: the closure trace of a canonical history is `letterAt` plus `now`
+
+The four class lemmas below settle every closure letter on a canonical history by its class, each
+by ONE `simp only` over the enumerated 28-member closure — `truth_transfer`'s skeleton from
+`node-cell-stabilization.lean`, with the relative-position facts of the class in place of the
+`SameClass` transfer and `decide` evaluating membership in the class's list. A wrong entry in
+`T₂`/`T₁`/`T₀`/`Tₙ` fails here, against the real semantics. `clTrace_canon_apply` then reads the
+whole trace off `letterAt`: the `now` bit at `z = t`, and otherwise the class of `t' - z`. Nothing
+here evaluates a `kTypeOf`. -/
+
+section Classes
+variable {σ : WorldHistory F} {k' : ℕ} {t' : ℤ} (hσ : ∀ s, σ.state s = canon k' t' s)
+include hσ
+
+theorem truth_class₂ (s : ℤ) (hd : 2 ≤ t' - s) :
+    ∀ ψ ∈ plusSubformulaClosure Φ, (PlusTruthAt M σ s ψ ↔ ψ ∈ T₂) := by
+  have hlt : s < t' := by omega
+  have hne : ¬ s = t' := by omega
+  have hgt : ¬ t' < s := by omega
+  have hle : s ≤ t' := by omega
+  have hge : ¬ t' ≤ s := by omega
+  have hX : ¬ s + 1 = t' := by omega
+  have hp := truth_p hσ s; have hF := truth_Fp hσ s; have hP := truth_Pp hσ s
+  have hX1 := truth_Xp hσ s
+  have hsF := truth_stabFp hσ s; have hsP := truth_stabPp hσ s
+  have hsNP := truth_stabNegPp hσ s; have hsNX := truth_stabNegXp hσ s
+  have hA := truth_A' σ s; have hC := truth_C' σ s; have hD := truth_D σ s
+  simp only [p, Fp, Pp, Xp, PlusFormula.top] at hp hF hP hX1
+  simp only [p, Fp, Pp, PlusFormula.top, PlusFormula.neg] at hsF hsP hsNP
+  simp only [p, Xp, PlusFormula.neg] at hsNX
+  simp only [A', p, Fp, Pp, PlusFormula.top, PlusFormula.neg, PlusFormula.or] at hA
+  simp only [C', p, Pp, PlusFormula.top, PlusFormula.neg] at hC
+  simp only [D, Fp, Xp, p, PlusFormula.top, PlusFormula.neg] at hD
+  simp +decide only [plusSubformulaClosure, List.mem_toFinset, Φ, A', C', D, Fp, Pp, Xp, p,
+    PlusFormula.and, PlusFormula.or, PlusFormula.neg, PlusFormula.top, PlusFormula.subformulas,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false, or_imp, forall_and, forall_eq,
+    PlusTruth.imp_iff, PlusTruth.bot_false, hp, hF, hP, hX1, hsF, hsP, hsNP, hsNX, hA, hC, hD,
+    hlt, hne, hgt, hle, hge, hX, iff_self, and_self, imp_self, true_implies, implies_true]
+
+theorem truth_class₁ (s : ℤ) (hd : t' - s = 1) :
+    ∀ ψ ∈ plusSubformulaClosure Φ, (PlusTruthAt M σ s ψ ↔ ψ ∈ T₁) := by
+  have hlt : s < t' := by omega
+  have hne : ¬ s = t' := by omega
+  have hgt : ¬ t' < s := by omega
+  have hle : s ≤ t' := by omega
+  have hge : ¬ t' ≤ s := by omega
+  have hX : s + 1 = t' := by omega
+  have hp := truth_p hσ s; have hF := truth_Fp hσ s; have hP := truth_Pp hσ s
+  have hX1 := truth_Xp hσ s
+  have hsF := truth_stabFp hσ s; have hsP := truth_stabPp hσ s
+  have hsNP := truth_stabNegPp hσ s; have hsNX := truth_stabNegXp hσ s
+  have hA := truth_A' σ s; have hC := truth_C' σ s; have hD := truth_D σ s
+  simp only [p, Fp, Pp, Xp, PlusFormula.top] at hp hF hP hX1
+  simp only [p, Fp, Pp, PlusFormula.top, PlusFormula.neg] at hsF hsP hsNP
+  simp only [p, Xp, PlusFormula.neg] at hsNX
+  simp only [A', p, Fp, Pp, PlusFormula.top, PlusFormula.neg, PlusFormula.or] at hA
+  simp only [C', p, Pp, PlusFormula.top, PlusFormula.neg] at hC
+  simp only [D, Fp, Xp, p, PlusFormula.top, PlusFormula.neg] at hD
+  simp +decide only [plusSubformulaClosure, List.mem_toFinset, Φ, A', C', D, Fp, Pp, Xp, p,
+    PlusFormula.and, PlusFormula.or, PlusFormula.neg, PlusFormula.top, PlusFormula.subformulas,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false, or_imp, forall_and, forall_eq,
+    PlusTruth.imp_iff, PlusTruth.bot_false, hp, hF, hP, hX1, hsF, hsP, hsNP, hsNX, hA, hC, hD,
+    hlt, hne, hgt, hle, hge, hX, iff_self, and_self, imp_self, true_implies, implies_true]
+
+theorem truth_class₀ (s : ℤ) (hd : t' - s = 0) :
+    ∀ ψ ∈ plusSubformulaClosure Φ, (PlusTruthAt M σ s ψ ↔ ψ ∈ T₀) := by
+  obtain rfl : s = t' := by omega
+  have hlt : ¬ s < s := lt_irrefl s
+  have hle : s ≤ s := le_refl s
+  have hX : ¬ s + 1 = s := by omega
+  have hp := truth_p hσ s; have hF := truth_Fp hσ s; have hP := truth_Pp hσ s
+  have hX1 := truth_Xp hσ s
+  have hsF := truth_stabFp hσ s; have hsP := truth_stabPp hσ s
+  have hsNP := truth_stabNegPp hσ s; have hsNX := truth_stabNegXp hσ s
+  have hA := truth_A' σ s; have hC := truth_C' σ s; have hD := truth_D σ s
+  simp only [p, Fp, Pp, Xp, PlusFormula.top] at hp hF hP hX1
+  simp only [p, Fp, Pp, PlusFormula.top, PlusFormula.neg] at hsF hsP hsNP
+  simp only [p, Xp, PlusFormula.neg] at hsNX
+  simp only [A', p, Fp, Pp, PlusFormula.top, PlusFormula.neg, PlusFormula.or] at hA
+  simp only [C', p, Pp, PlusFormula.top, PlusFormula.neg] at hC
+  simp only [D, Fp, Xp, p, PlusFormula.top, PlusFormula.neg] at hD
+  simp +decide only [plusSubformulaClosure, List.mem_toFinset, Φ, A', C', D, Fp, Pp, Xp, p,
+    PlusFormula.and, PlusFormula.or, PlusFormula.neg, PlusFormula.top, PlusFormula.subformulas,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false, or_imp, forall_and, forall_eq,
+    PlusTruth.imp_iff, PlusTruth.bot_false, hp, hF, hP, hX1, hsF, hsP, hsNP, hsNX, hA, hC, hD,
+    hlt, hle, hX, iff_self, and_self, imp_self, true_implies]
+
+theorem truth_classₙ (s : ℤ) (hd : t' - s < 0) :
+    ∀ ψ ∈ plusSubformulaClosure Φ, (PlusTruthAt M σ s ψ ↔ ψ ∈ Tₙ) := by
+  have hlt : ¬ s < t' := by omega
+  have hne : ¬ s = t' := by omega
+  have hgt : t' < s := by omega
+  have hle : ¬ s ≤ t' := by omega
+  have hge : t' ≤ s := by omega
+  have hX : ¬ s + 1 = t' := by omega
+  have hp := truth_p hσ s; have hF := truth_Fp hσ s; have hP := truth_Pp hσ s
+  have hX1 := truth_Xp hσ s
+  have hsF := truth_stabFp hσ s; have hsP := truth_stabPp hσ s
+  have hsNP := truth_stabNegPp hσ s; have hsNX := truth_stabNegXp hσ s
+  have hA := truth_A' σ s; have hC := truth_C' σ s; have hD := truth_D σ s
+  simp only [p, Fp, Pp, Xp, PlusFormula.top] at hp hF hP hX1
+  simp only [p, Fp, Pp, PlusFormula.top, PlusFormula.neg] at hsF hsP hsNP
+  simp only [p, Xp, PlusFormula.neg] at hsNX
+  simp only [A', p, Fp, Pp, PlusFormula.top, PlusFormula.neg, PlusFormula.or] at hA
+  simp only [C', p, Pp, PlusFormula.top, PlusFormula.neg] at hC
+  simp only [D, Fp, Xp, p, PlusFormula.top, PlusFormula.neg] at hD
+  simp +decide only [plusSubformulaClosure, List.mem_toFinset, Φ, A', C', D, Fp, Pp, Xp, p,
+    PlusFormula.and, PlusFormula.or, PlusFormula.neg, PlusFormula.top, PlusFormula.subformulas,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false, or_imp, forall_and, forall_eq,
+    PlusTruth.imp_iff, PlusTruth.bot_false, hp, hF, hP, hX1, hsF, hsP, hsNP, hsNX, hA, hC, hD,
+    hlt, hne, hgt, hle, hge, hX, iff_self, and_self, imp_self, true_implies]
+
+end Classes
+
+/-! The class selectors of `letterAt`, so that every positional read-out is an `omega` side
+condition followed by a rewrite. -/
+
+theorem letterAt_of_two_le {d : ℤ} (h : 2 ≤ d) : letterAt d = ℓ₂ := by
+  unfold letterAt; rw [if_pos h]
+theorem letterAt_of_eq_one {d : ℤ} (h : d = 1) : letterAt d = ℓ₁ := by
+  unfold letterAt; rw [if_neg (by omega), if_pos h]
+theorem letterAt_of_eq_zero {d : ℤ} (h : d = 0) : letterAt d = ℓ₀ := by
+  unfold letterAt; rw [if_neg (by omega), if_neg (by omega), if_pos h]
+theorem letterAt_of_neg {d : ℤ} (h : d < 0) : letterAt d = ℓₙ := by
+  unfold letterAt; rw [if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+
+/-- **The alphabet, exhausted**: every letter of `clSig Φ` is the marker or a closure letter, with
+the membership proof delivered at the type `clLetter` expects. -/
+theorem letter_cases (ℓ : (clSig Φ).preds) :
+    ℓ = clNow Φ ∨ ∃ (ψ : PlusFormula) (hψ : ψ ∈ plusSubformulaClosure Φ), ℓ = clLetter Φ hψ := by
+  rcases ℓ with ⟨ψ, hψ⟩ | ⟨⟩
+  · exact Or.inr ⟨ψ, hψ, rfl⟩
+  · exact Or.inl rfl
+
+/-! The vectors on a closure letter are list membership, decided. -/
+
+theorem ℓ₂_letter {ψ : PlusFormula} (hψ : ψ ∈ plusSubformulaClosure Φ) :
+    ℓ₂ (clLetter Φ hψ) = true ↔ ψ ∈ T₂ := decide_eq_true_iff
+theorem ℓ₁_letter {ψ : PlusFormula} (hψ : ψ ∈ plusSubformulaClosure Φ) :
+    ℓ₁ (clLetter Φ hψ) = true ↔ ψ ∈ T₁ := decide_eq_true_iff
+theorem ℓ₀_letter {ψ : PlusFormula} (hψ : ψ ∈ plusSubformulaClosure Φ) :
+    ℓ₀ (clLetter Φ hψ) = true ↔ ψ ∈ T₀ := decide_eq_true_iff
+theorem ℓₙ_letter {ψ : PlusFormula} (hψ : ψ ∈ plusSubformulaClosure Φ) :
+    ℓₙ (clLetter Φ hψ) = true ↔ ψ ∈ Tₙ := decide_eq_true_iff
+
+/-- **The letter bridge.** The closure trace of the canonical history `histOf k' t'`, anchored at
+`t`, reads the marker exactly at `z = t` and otherwise the class letter of `t' - z`. The thread
+index `k'` does not appear on the right-hand side. -/
+theorem clTrace_canon_apply (k' : ℕ) (t t' : ℤ) (ℓ : (clSig Φ).preds) (z : ℤ) :
+    clTrace M Φ t (histOf k' t') ℓ z ↔ (ℓ = clNow Φ ∧ z = t) ∨ letterAt (t' - z) ℓ = true := by
+  have hσ : ∀ s, (histOf k' t').state s = canon k' t' s := fun s => histOf_state k' t' s
+  rcases letter_cases ℓ with rfl | ⟨ψ, hψ, rfl⟩
+  · rw [clTrace_now, letterAt_now]
+    simp
+  · have hnow : clLetter Φ hψ ≠ clNow Φ := (clNow_ne_clLetter Φ hψ).symm
+    rw [clTrace_letter]
+    simp only [hnow, false_and, false_or]
+    rcases lt_trichotomy (t' - z) 1 with h1 | h1 | h1
+    · rcases lt_or_eq_of_le (show t' - z ≤ 0 by omega) with h0 | h0
+      · rw [letterAt_of_neg h0, truth_classₙ hσ z h0 ψ hψ]
+        exact (ℓₙ_letter hψ).symm
+      · rw [letterAt_of_eq_zero h0, truth_class₀ hσ z h0 ψ hψ]
+        exact (ℓ₀_letter hψ).symm
+    · rw [letterAt_of_eq_one h1, truth_class₁ hσ z h1 ψ hψ]
+      exact (ℓ₁_letter hψ).symm
+    · rw [letterAt_of_two_le (by omega), truth_class₂ hσ z (by omega) ψ hψ]
+      exact (ℓ₂_letter hψ).symm
+
+/-- The function-level form of the bridge. -/
+theorem clTrace_canon_eq (k' : ℕ) (t t' : ℤ) :
+    clTrace M Φ t (histOf k' t')
+      = fun ℓ z => (ℓ = clNow Φ ∧ z = t) ∨ letterAt (t' - z) ℓ = true := by
+  funext ℓ z
+  exact propext (clTrace_canon_apply k' t t' ℓ z)
+
+/-- **The thread index is invisible to the closure trace**: two canonical histories with the same
+`x`-time have the same closure trace. -/
+theorem clTrace_canon_thread_free (k₁ k₂ : ℕ) (t t' : ℤ) :
+    clTrace M Φ t (histOf k₁ t') = clTrace M Φ t (histOf k₂ t') := by
+  rw [clTrace_canon_eq, clTrace_canon_eq]
+
+/-- The canonical representative of the `i`-th trace through `(t, pre m)`: the closure trace,
+anchored at `t`, of the thread-`0` history with `x`-time `t + 1 + i`. Thread-index-free by
+`clTrace_canon_thread_free`, so it does not depend on `m`. -/
+def cN (t : ℤ) (i : ℕ) : (clSig Φ).preds → ℤ → Prop := clTrace M Φ t (histOf 0 (t + 1 + i))
+
+/-- `hitCl_pre` with the traces named by `cN`. -/
+theorem hitCl_pre' (τ : WorldHistory F) (t : ℤ) (m k : ℕ) (hτ : τ.state t = .pre m) :
+    HitCl M τ t Φ k = ⋃ i ∈ Finset.range (m + 1), familyTriples (clSig Φ) k (cN t i) := by
+  rw [hitCl_pre τ t m k hτ]
+  exact Set.iUnion_congr fun i => Set.iUnion_congr fun _ => by
+    rw [cN, clTrace_canon_thread_free]
+
+/-! ### Positional read-outs of `cN t i`
+
+With `t' = t + 1 + i`, the relative position of `z` is `t + 1 + i - z`: `≥ 2` strictly below `t`
+and on the run `[t + 1, t + i)`; `1` at `t + i` (and at the seam when `i = 0`); `0` at `t + i + 1`;
+`< 0` above. Each read-out is `clTrace_canon_apply` with one `omega` side condition. -/
+
+theorem cN_below (t : ℤ) (i : ℕ) (z : ℤ) (hz : z < t) (ℓ : (clSig Φ).preds) :
+    cN t i ℓ z ↔ ℓ₂ ℓ = true := by
+  rw [cN, clTrace_canon_apply, letterAt_of_two_le (by omega)]
+  constructor
+  · rintro (⟨-, h⟩ | h)
+    · omega
+    · exact h
+  · exact Or.inr
+
+theorem cN_seam_zero (t : ℤ) (ℓ : (clSig Φ).preds) :
+    cN t 0 ℓ t ↔ ℓ = clNow Φ ∨ ℓ₁ ℓ = true := by
+  rw [cN, clTrace_canon_apply, letterAt_of_eq_one (by simp)]
+  simp only [and_true]
+
+theorem cN_seam_pos (t : ℤ) (i : ℕ) (hi : 1 ≤ i) (ℓ : (clSig Φ).preds) :
+    cN t i ℓ t ↔ ℓ = clNow Φ ∨ ℓ₂ ℓ = true := by
+  rw [cN, clTrace_canon_apply, letterAt_of_two_le (by omega)]
+  simp only [and_true]
+
+theorem cN_run (t : ℤ) (i : ℕ) (z : ℤ) (hz : t + 1 ≤ z) (hz' : z < t + i) (ℓ : (clSig Φ).preds) :
+    cN t i ℓ z ↔ ℓ₂ ℓ = true := by
+  rw [cN, clTrace_canon_apply, letterAt_of_two_le (by omega)]
+  constructor
+  · rintro (⟨-, h⟩ | h)
+    · omega
+    · exact h
+  · exact Or.inr
+
+theorem cN_one (t : ℤ) (i : ℕ) (hi : 1 ≤ i) (ℓ : (clSig Φ).preds) :
+    cN t i ℓ (t + i) ↔ ℓ₁ ℓ = true := by
+  rw [cN, clTrace_canon_apply, letterAt_of_eq_one (by omega)]
+  constructor
+  · rintro (⟨-, h⟩ | h)
+    · omega
+    · exact h
+  · exact Or.inr
+
+theorem cN_zero (t : ℤ) (i : ℕ) (ℓ : (clSig Φ).preds) :
+    cN t i ℓ (t + i + 1) ↔ ℓ₀ ℓ = true := by
+  rw [cN, clTrace_canon_apply, letterAt_of_eq_zero (by omega)]
+  constructor
+  · rintro (⟨-, h⟩ | h)
+    · omega
+    · exact h
+  · exact Or.inr
+
+theorem cN_above (t : ℤ) (i : ℕ) (z : ℤ) (hz : t + i + 1 < z) (ℓ : (clSig Φ).preds) :
+    cN t i ℓ z ↔ ℓₙ ℓ = true := by
+  rw [cN, clTrace_canon_apply, letterAt_of_neg (by omega)]
+  constructor
+  · rintro (⟨-, h⟩ | h)
+    · omega
+    · exact h
+  · exact Or.inr
+
 end Probe759
 
 -- temporary foot (Phase 1); replaced by the full axiom foot with the headline
 #print axioms Probe759.hitCl_pre
+#print axioms Probe759.clTrace_canon_apply

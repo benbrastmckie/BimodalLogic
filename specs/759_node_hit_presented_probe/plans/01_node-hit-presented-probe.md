@@ -316,29 +316,29 @@ exiting 0 is the complete covering check — single out-of-graph file, no librar
 
 ---
 
-### Phase 3: The Letter Bridge `clTrace_canon_apply` [NOT STARTED]
+### Phase 3: The Letter Bridge `clTrace_canon_apply` [COMPLETED]
 
 **Goal**: Prove that the closure trace of any canonical history is exactly the `letterAt`
 read-out plus the `now` bit — the per-class bridge that makes every later trace equation a
 pointwise `omega` check. This is the cost driver; the compile check is the verification.
 
 **Tasks**:
-- [ ] Four class lemmas, one shared skeleton each (`truth_transfer`'s `simp only` call with the
+- [x] Four class lemmas, one shared skeleton each (`truth_transfer`'s `simp only` call with the
       truth lemmas unfolded first; `forall_eq`; `List.mem_cons`; `decide`-evaluated membership):
       `truth_class₂ (hσ : ∀ s, σ.state s = canon k' t' s) (s) (hd : 2 ≤ t' - s) : ∀ ψ ∈ plusSubformulaClosure Φ, (PlusTruthAt M σ s ψ ↔ ψ ∈ T₂)`,
-      `truth_class₁ (hd : t' - s = 1)`, `truth_class₀ (hd : t' - s = 0)`, `truth_class₋ (hd : t' - s < 0)`.
-- [ ] `clTrace_canon_apply (k' : ℕ) (t t' : ℤ) (ℓ : (clSig Φ).preds) (z : ℤ) : clTrace M Φ t (histOf k' t') ℓ z ↔ (ℓ = clNow Φ ∧ z = t) ∨ letterAt (t' - z) ℓ = true`
+      `truth_class₁ (hd : t' - s = 1)`, `truth_class₀ (hd : t' - s = 0)`, `truth_class₋ (hd : t' - s < 0)`. *(deviation: altered — the negative class lemma is `truth_classₙ` (identifier constraint, as `Tₙ`/`ℓₙ`); a `letter_cases` exhaustion helper and the four `letterAt_of_*` selectors were added so the bridge and read-outs are `rw` + `omega`; `truth_class₀` substitutes `s = t'` rather than feeding it to `simp`)*
+- [x] `clTrace_canon_apply (k' : ℕ) (t t' : ℤ) (ℓ : (clSig Φ).preds) (z : ℤ) : clTrace M Φ t (histOf k' t') ℓ z ↔ (ℓ = clNow Φ ∧ z = t) ∨ letterAt (t' - z) ℓ = true`
       — `rcases ℓ with ⟨ψ, hψ⟩ | ⟨⟩`; the `now` case is `clTrace`'s `.inr` branch and
       `letterAt_now`; the letter case splits on the class of `t' - z` and applies the class lemma
       with `histOf_state`.
-- [ ] `clTrace_canon_eq (k' t t') : clTrace M Φ t (histOf k' t') = fun ℓ z => (ℓ = clNow Φ ∧ z = t) ∨ letterAt (t' - z) ℓ = true`
+- [x] `clTrace_canon_eq (k' t t') : clTrace M Φ t (histOf k' t') = fun ℓ z => (ℓ = clNow Φ ∧ z = t) ∨ letterAt (t' - z) ℓ = true`
       (`funext`, `propext`, `clTrace_canon_apply`), and its corollary
       `clTrace_canon_thread_free (k₁ k₂ t t') : clTrace M Φ t (histOf k₁ t') = clTrace M Φ t (histOf k₂ t')`.
-- [ ] Define `cN (t : ℤ) (i : ℕ) : (clSig Φ).preds → ℤ → Prop := clTrace M Φ t (histOf 0 (t + 1 + i))`
+- [x] Define `cN (t : ℤ) (i : ℕ) : (clSig Φ).preds → ℤ → Prop := clTrace M Φ t (histOf 0 (t + 1 + i))`
       and restate `hitCl_pre` as
       `hitCl_pre' (τ) (hτ) : HitCl M τ t Φ k = ⋃ i ∈ Finset.range (m + 1), familyTriples (clSig Φ) k (cN t i)`
       via `clTrace_canon_thread_free`.
-- [ ] Positional read-outs used by Phases 4 and 7, all from `clTrace_canon_apply` + `omega`:
+- [x] Positional read-outs used by Phases 4 and 7, all from `clTrace_canon_apply` + `omega`:
       `cN_below (i) (z) (hz : z < t) (ℓ) : cN t i ℓ z ↔ ℓ₂ ℓ = true`;
       `cN_seam_zero (ℓ) : cN t 0 ℓ t ↔ ℓ = clNow Φ ∨ ℓ₁ ℓ = true`;
       `cN_seam_pos (i) (hi : 1 ≤ i) (ℓ) : cN t i ℓ t ↔ ℓ = clNow Φ ∨ ℓ₂ ℓ = true`;
@@ -346,7 +346,7 @@ pointwise `omega` check. This is the cost driver; the compile check is the verif
       `cN_one (i) (ℓ) : cN t i ℓ (t + i) ↔ ℓ₁ ℓ = true` (for `1 ≤ i`; and `cN t 0 ℓ t` handled above);
       `cN_zero (i) (ℓ) : cN t i ℓ (t + i + 1) ↔ ℓ₀ ℓ = true`;
       `cN_above (i) (z) (hz : t + i + 1 < z) (ℓ) : cN t i ℓ z ↔ ℓ₋ ℓ = true`.
-- [ ] Compile; commit.
+- [x] Compile; commit.
 
 **Timing**: 2 hours
 
