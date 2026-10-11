@@ -726,6 +726,49 @@ EVIDENCE="specs/evidence"
 #                                                           | devices; nothing about `HitPresented` or
 #                                                           | `PlusValidZTime`; nothing about the
 #                                                           | general ladder lemma
+# seam-gluing-ray-product/hit-presented-node                | POSITIVE (requirement (C)'s Hit-level
+#                                                           | hypothesis on a ⊡-bearing alphabet at an
+#                                                           | infinite-width seam, on the one-region
+#                                                           | fixture): `HitPresented` holds on
+#                                                           | `Limits/NoFiniteWidth.lean`'s `M` at
+#                                                           | every pre-seam `(t, pre m)` for its own
+#                                                           | witness `Φ` (fallbacks `D`, `⊡Xp` not
+#                                                           | needed; 28 closure letters plus `now`)
+#                                                           | at every depth `k ≥ 1`
+#                                                           | (`hitPresented_node`; the dispatch's
+#                                                           | single-index shape
+#                                                           | `hitPresented_node_canon`), with the
+#                                                           | size `windowN m k + 5`, `windowN m k =
+#                                                           | min m (Nat.card (KType (clSig Φ) k) +
+#                                                           | 1)`, EXHIBITED in the statement and
+#                                                           | bounded uniformly over every seam by
+#                                                           | `card_QN_le` -- a count of states and
+#                                                           | depth-`k` types, not a complexity bound.
+#                                                           | ROUTE: seam classification
+#                                                           | (`through_pre`: exactly `m + 1`
+#                                                           | canonical histories through `(t, pre
+#                                                           | m)`); four relative-position letter
+#                                                           | classes (`clTrace_canon_apply`);
+#                                                           | containment `run_subset_middle` as a
+#                                                           | fixture fact; the library's periodicity
+#                                                           | (`kTypeOf_listSeg_replicate_eventually_periodic_bounded`)
+#                                                           | and `familyTriples_subset_deleteRun`; a
+#                                                           | one-gadget presentation `labN`/`stepN`
+#                                                           | whose anchored runs are exactly the
+#                                                           | window. BY-PRODUCT `presented_node`:
+#                                                           | trace-level `Presented` holds at window
+#                                                           | `m`, which is why the negative headline
+#                                                           | is FALSE here (finite seam fibre). What
+#                                                           | it does NOT say: one fixture, every
+#                                                           | pre-seam; does not test the truncation's
+#                                                           | necessity -- a Hit-level falsifier needs
+#                                                           | an infinite seam fibre; forward-only,
+#                                                           | nothing about `⊡(Pp)`; no finiteness
+#                                                           | added; no claim that `⊡`-letters
+#                                                           | discriminate between devices; nothing
+#                                                           | about `PlusValidZTime` or the general
+#                                                           | row. Axioms `[propext, Classical.choice,
+#                                                           | Quot.sound]` (`stepN` none).
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -754,6 +797,7 @@ WIRED=(
   "seam-gluing-ray-product/w-soundness-shape-refuted"
   "seam-gluing-ray-product/deadline-ladder-branching"
   "seam-gluing-ray-product/node-cell-stabilization"
+  "seam-gluing-ray-product/hit-presented-node"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
