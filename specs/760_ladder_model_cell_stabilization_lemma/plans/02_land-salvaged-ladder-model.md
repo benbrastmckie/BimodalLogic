@@ -1,8 +1,8 @@
 # Implementation Plan: Task #760
 
 - **Task**: 760 - Ladder model, admissibility set Adm, and the cell-stabilization lemma ladderCell_stabilizes over both counters (c, n)
-- **Status**: [IMPLEMENTING] (revised; Phases 1-4 closed as landed, Phases 5-9 added for the R2 salvage)
-- **Effort**: 10 hours (4 spent in Phases 1-4; ~6 remaining in Phases 5-9)
+- **Status**: [IMPLEMENTING] (all nine phase headings terminal: 9/9 done)
+- **Effort**: 10 hours (all spent; Phases 2-9 executed, Phase 1 cost no work by construction)
 - **Dependencies**: 758 (logical, positive verdict re-read), 759 (serialization only, README)
 - **Research Inputs**:
   - specs/760_ladder_model_cell_stabilization_lemma/reports/01_ladder-cell-stabilization-refuted.md (integrated in plan 01, carried forward)
@@ -12,7 +12,12 @@
     measured solution path A-E and the salvage inventory -- the one new input since plan 01).
     The aux agent's transient `.blocker-research.json` was never committed and is not on disk;
     these two dispatch files are the durable anchors for every finding attributed to it below.
-  - specs/760_ladder_model_cell_stabilization_lemma/.decisions.json (ruling R1, cycle 1; ruling R2, cycle 3)
+  - specs/760_ladder_model_cell_stabilization_lemma/.decisions.json (ruling R1, cycle 1; ruling R2,
+    cycle 3; the close-the-record ruling, cycle 1, 2026-10-11T14:57:40Z)
+  - specs/760_ladder_model_cell_stabilization_lemma/.dispatch/8-aux-plan-revision.md
+    (the revision dispatch that carries the close-the-record ruling into this file; no new
+    research report exists and none was needed -- both halves of the question were already
+    settled by landed, machine-checked theorems)
 - **Artifacts**: plans/02_land-salvaged-ladder-model.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -45,7 +50,20 @@ no new debt of any kind.
 
 ### Research Integration
 
-Newly integrated input: the blocker-research findings of cycle 3, carried verbatim in
+Newly integrated input of the closing revision: no research report. The blocker the dispatch names
+is not a proof gap and has no researchable half left -- both halves are settled by landed,
+machine-checked theorems. The frame-had-no-instances half is fixed and landed
+(`no_fwd`, `no_bwd_of_idle`, `Adm`, `LadderState`, `RladAdm`, `ladderFrameAdm`, `ladderModel` in
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean`, Phases 5-9), and the
+stabilization half is refuted, not open (`cell_ne`, `exhibited_form_refuted`,
+`exists_form_refuted` in `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`,
+with a witness uniform in `B`). The only live question was the record's disposition, and the user
+has answered it: close, re-marking Phase 1 `[COMPLETED WITH EXCLUSIONS]` with a
+`#### Reasoned Exclusions` record. That re-mark, and the consequential text below it, is the whole
+content of this revision -- no phase is added, removed, or re-scoped, and no landed phase body,
+timestamp, commit, or verification record is touched.
+
+Earlier integrated input: the blocker-research findings of cycle 3, carried verbatim in
 `.dispatch/5-aux-plan-revision.md` (the aux agent's own `.blocker-research.json` was
 transient and is not on disk). There are no new research reports;
 `reports/01_ladder-cell-stabilization-refuted.md` predates plan 01 and is already integrated
@@ -150,7 +168,9 @@ work, rather than re-landing declarations this record already landed. Nothing in
 
 `plans/01_ladder-cell-refutation-probe.md` — Phase 1 `[BLOCKED]` (the refuted filed statement),
 Phases 2-4 `[COMPLETED]` and committed (74db0b789, e68775371, c691f3dba). Those four phase bodies
-are carried into this plan with their status markers, timestamps, and verification records intact.
+are carried into this plan with their timestamps and verification records intact. Phase 1's marker
+is the one exception: it reads `[COMPLETED WITH EXCLUSIONS]` here, re-marked on the user's
+close-the-record ruling; plan 01's own copy is untouched and still reads `[BLOCKED]`.
 
 ### Roadmap Alignment
 
@@ -219,32 +239,47 @@ Phase 5 all the same and the module is incomplete without them.)
 | 6 | 7, 8 | 6 |
 | 7 | 9 | 4, 7, 8 |
 
-Phases within the same wave can execute in parallel. Phases 1-4 are closed (Phase 1 `[BLOCKED]`,
-Phases 2-4 `[COMPLETED]` and committed) and are re-run by nothing. Phase 1 is a pre-decided
-decision gate whose goals are refuted theorems; it requires no work, it is `[BLOCKED]` by the
-user's R1 ruling, and **it is never a prerequisite of any executable phase**, so the final
+Phases within the same wave can execute in parallel. Phases 1-4 are closed (Phase 1
+`[COMPLETED WITH EXCLUSIONS]`, Phases 2-4 `[COMPLETED]` and committed) and are re-run by nothing.
+Phase 1 is a pre-decided decision gate whose goals are refuted theorems; it requires no work, it
+carried `[BLOCKED]` from the user's R1 ruling until the close-the-record ruling closed it with its
+four goals enumerated as reasoned exclusions, and **it is never a prerequisite of any executable
+phase**, so the final
 phase's transitivity obligation is discharged through Phase 4 (which depends on 2 and 3) and
 through 7 and 8 (which depend on 6, which depends on 5). Phase 9 is the final phase: it is a
 terminal node, it depends transitively on every phase except the blocked gate, and its full-gate
 verification re-observes every earlier phase's measurement.
 
-### Phase 1: The Filed Statement — ladderModel over ladderFrame, Adm, ladderCell_stabilizes [BLOCKED]
+### Phase 1: The Filed Statement — ladderModel over ladderFrame, Adm, ladderCell_stabilizes [COMPLETED WITH EXCLUSIONS]
 
-- **Blocked**: 2026-10-11
-- **Blocking Reason**: Refuted by machine-checked proof, landed as the twelfth wired probe:
-  (F1) `ladderFrame`'s `fwd` hypothesis is unsatisfiable for every object and `bwd` for every
-  object with an idle state (`no_fwd`, `no_bwd_of_idle`), so no `TaskModel` over `ladderFrame`
-  can ever be applied and `Adm` must restrict the carrier; (F2) on the repaired carrier,
+- **Closed with exclusions**: 2026-10-11 (no commit of its own — this phase edits no file; the
+  closing act is this plan revision)
+- **Closure basis**: the user's close-the-record ruling (decisions file, cycle 1,
+  2026-10-11T14:57:40Z): re-mark this phase `[COMPLETED WITH EXCLUSIONS]` with a
+  `#### Reasoned Exclusions` record whose Evidence column cites the wired probe's machine-checked
+  theorems, then complete the task. All four of the phase's filed goals are excluded and every one
+  is enumerated below, so the five-condition admission test
+  (`context/standards/status-markers.md`) is met item by item: each exclusion is a decision rather
+  than a stuck attempt (the goals are refuted theorems, not open proofs), it is scoped to a named
+  goal rather than "the rest of the phase", it carries a stated reason, it carries machine-checked
+  evidence, and it leaves no residual work — which is why no follow-up is recorded here.
+- **Why the goals are unreachable, unchanged by the closure**: (F1) `ladderFrame`'s `fwd`
+  hypothesis is unsatisfiable for every object and `bwd` for every object with an idle state
+  (`no_fwd`, `no_bwd_of_idle`), so no `TaskModel` over `ladderFrame` can ever be applied and `Adm`
+  must restrict the carrier; (F2) on the repaired carrier,
   `cellAt (a, B, B+1) ≠ cellAt (a, B, B+2)` for every `B` on the two-state object (`cell_ne`),
   refuting the exhibited-`B` form (`exhibited_form_refuted`) and the `∃ B` fallback
-  (`exists_form_refuted`) alike. The contingency the design record (Section A) names for this
-  case is `[BLOCKED]`, never a sorry, axiom, vacuous definition, trace-level hypothesis, or
-  capped ladder. The user ruled R1 on 2026-10-11 (decisions file, cycle 1).
-- **Blocked by**: the successor design, which is a user decision and not an agent-researchable
-  question. The user has since ruled **R2** (cycle 3) on the salvage half of that decision — land
-  the sound general by-products in the library — which is what Phases 5-9 execute. The refuted
-  statement itself is not thereby unblocked: no positive stabilization lemma and no replacement
-  index exist, and this phase's four goals remain unprovable as filed.
+  (`exists_form_refuted`) alike. The contingency the design record (Section A) names for this case
+  is `[BLOCKED]`, never a sorry, axiom, vacuous definition, trace-level hypothesis, or capped
+  ladder; this phase carried `[BLOCKED]` from the user's R1 ruling (cycle 1) until the ruling
+  above closed it. The exclusion records the obstruction as decided and closed; it asserts of no
+  goal that it became provable.
+- **Not thereby unblocked**: no positive stabilization lemma and no replacement index exist. The
+  user's **R2** ruling (cycle 3) landed only the sound general by-products (Phases 5-9) —
+  `ladderModel` over `ladderFrameAdm` is a different frame, and `Adm` as a carrier restriction is
+  the README's phrase honoured, not a filed goal met. A repaired positive lemma over a
+  three-coordinate index carrying the clipped gap is research-level, is asserted nowhere
+  (guardrail (a)), and is owned outside this record (task 765 owns phase E).
 
 **Goal**: The filed deliverables, verbatim from the dispatch — recorded here as the goals that
 could not be met, for the `blockers[]` entry the implementation returns:
@@ -252,7 +287,9 @@ could not be met, for the `blockers[]` entry the implementation returns:
 - the admissibility set `Adm` — "which objects supply `ladderFrame`'s `fwd`/`bwd`; a pending state at `c = 0` needs a discharging successor"
 - `theorem ladderCell_stabilizes (φ : PlusFormula) … : ∀ (q : Q) (c c' n n' : ℕ) (z : ℤ), (plusSubformulaClosure φ).card ≤ c → … → cellAt (ladderModel …) φ (q, c, n) z = cellAt (ladderModel …) φ (q, c', n') z`, with fallback `∃ B : ℕ, ∀ q c c' n n' z, B ≤ c → … → cellAt … = cellAt …`
 
-**Tasks** (none executable; each item is refuted or forbidden — left unchecked deliberately):
+**Tasks** (none executable; each item is refuted or forbidden, and each is an enumerated reasoned
+exclusion in the record below — left unchecked deliberately, because an unchecked box is the
+honest rendering of a goal that was never met):
 - [ ] `ladderModel` over `ladderFrame` — constructible, never applicable (F1). Phase 5 lands
       `ladderModel` over `ladderFrameAdm`, on the admissible carrier, which is a DIFFERENT frame
       and is not this goal met.
@@ -261,11 +298,21 @@ could not be met, for the `blockers[]` entry the implementation returns:
 - [ ] `ladderCell_stabilizes`, exhibited-bound form — false (`exhibited_form_refuted`).
 - [ ] `ladderCell_stabilizes`, `∃ B` fallback — false (`exists_form_refuted`).
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `def ladderModel … : TaskModel (ladderFrame step pend fwd bwd).toTaskFrame` — the filed model over `ladderFrame` | Constructible but never applicable: `ladderFrame`'s seriality hypotheses have no instances, so there is no world history at which a cell could be evaluated. Decided, not deferred — `Adm` must restrict the carrier, and Phase 5 landed `ladderModel` over the resulting (different) frame `ladderFrameAdm`. | `no_fwd` (unsatisfiable `fwd` for every nonempty object) and `no_bwd_of_idle`, machine-checked library theorems in `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean`; both C14-pinned at the two synchronized sites, `check-module-invariants.sh` exit 0 with 55 PASS (Phase 9 gate run, commit `0e8bd5a77`) |
+| the admissibility set `Adm` as an **object-side** condition ("which objects supply `ladderFrame`'s `fwd`/`bwd`") | Forced by F1 to be a carrier restriction instead: `no_fwd` quantifies over every `step` and `pend`, so no condition on the object can repair a frame whose hypothesis fails for every object. | `no_fwd`'s statement (universally quantified over `step`/`pend`) and the landed `Adm pend q = {c | pend q = false → c = 0}` — a set of counter values, i.e. a carrier restriction — both in `…/RaySummary/LadderModel.lean`, with theorem-index rows added by Phase 9 |
+| `theorem ladderCell_stabilizes`, exhibited-bound form (`B := (plusSubformulaClosure φ).card`) | False. The gap `n − c` between the two ladder counters is observable through `p U (r ∧ X(p ∧ X r))` because `Count`'s idle clause reads `c' = n`, so bounding each counter separately bounds nothing the cells depend on. | `cell_ne` (`cellAt M phi (w1 B) 0 ≠ cellAt M phi (w2 B) 0` for every `B`) and `exhibited_form_refuted`, machine-checked in `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`; `check-evidence-probes.sh` PASS 30/30 at commit `0e8bd5a77`, and that probe file plus the library module are byte-identical to that commit (`git diff --stat 0e8bd5a77..HEAD` empty for both) |
+| `theorem ladderCell_stabilizes`, `∃ B` fallback | False for the same witness, and uniformly in `B`: the counterexample pair `(w1 B, w2 B)` is parameterized by `B`, so no choice of bound escapes it. | `exists_form_refuted`, proved from `cell_ne` at arbitrary `B`, in the same wired probe; same gate run and same byte-identity check |
+
 **What was tried**: the statement's truth was tested before any bound shape was costed; both
 findings were proved as theorems in three guard-routed compile rounds. **Goal state reached**:
-none of the four items is provable as filed. **What unblocks**: nothing inside this record. A
-repaired positive lemma over a three-coordinate index carrying the clipped gap is research-level
-and is not costable here; it is asserted nowhere (guardrail (a)).
+none of the four items is provable as filed, and each is excluded above rather than deferred.
+**What would unblock**: nothing inside this record. A repaired positive lemma over a
+three-coordinate index carrying the clipped gap is research-level and is not costable here; it is
+asserted nowhere (guardrail (a)) and is owned outside this record.
 
 **Timing**: 0 hours (no work; pre-decided)
 
@@ -282,10 +329,16 @@ cheaper or dearer tier applies.
   salvage by Phases 5-9.
 
 **Verification**:
-- The wired probe compiles through the guard with exit 0 (re-observed by Phases 7 and 9).
-- This phase heading still reads `[BLOCKED]` when the implementation returns; it is never
-  re-marked `[COMPLETED]`, `[COMPLETED WITH EXCLUSIONS]`, or `[PARTIAL]` by the implementer.
-  Closing the record is the user's decision — see Rollback/Contingency.
+- The wired probe compiles through the guard with exit 0 (re-observed by Phases 7 and 9; last
+  measured as `check-evidence-probes.sh` PASS 30/30 at commit `0e8bd5a77`, with both cited files
+  byte-identical to that commit).
+- This phase heading read `[BLOCKED]` when the implementation returned: it is never re-marked by
+  the implementer, on its own authority, under any outcome. The re-mark to
+  `[COMPLETED WITH EXCLUSIONS]` is made here, by the revision that carries the user's
+  close-the-record ruling — see Rollback/Contingency.
+- The `#### Reasoned Exclusions` record above enumerates all four filed goals, one row each, and
+  every Evidence cell names a landed, machine-checked theorem rather than a prose claim. No file
+  is edited by this phase and no goal is recorded as met.
 
 ---
 
@@ -841,8 +894,14 @@ end FormalSystem.Metalogic.Decidability.RaySummary
       `anchorCells_ncard_le` described as untouched; no upper bound or complexity claim;
       direction-neutrality stated where it applies; `RunLayer.lean` untouched; no task number and
       no record-versioning phrasing outside `specs/**`.
-- [ ] Phase 1 still `[BLOCKED]`; return status `partial` with `requires_user_review: true` and the
-      close-the-record decision surfaced.
+- [x] Phase 1 `[BLOCKED]` at the implementation's return, with status `partial`,
+      `requires_user_review: true`, and the close-the-record decision surfaced as a
+      `user_decision` (met: the `.return-meta.json` of the Phases 5-9 dispatch carries all four).
+- [x] The user's close-the-record ruling applied: Phase 1 re-marked
+      `[COMPLETED WITH EXCLUSIONS]` with a four-row `#### Reasoned Exclusions` record whose
+      Evidence column cites `no_fwd`, `no_bwd_of_idle`, `cell_ne`, `exhibited_form_refuted` and
+      `exists_form_refuted` — all nine phase headings now terminal, so the phase accounting
+      reads 9/9 done.
 
 ## Artifacts & Outputs
 
@@ -855,7 +914,8 @@ end FormalSystem.Metalogic.Decidability.RaySummary
 - `docs/theorem-index.md` (four new rows)
 - `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (module row, amended sentences, `Last verified`)
 - `specs/760_ladder_model_cell_stabilization_lemma/summaries/02_land-salvaged-ladder-model-summary.md`
-- This plan, with Phases 5-9 marked at the return and Phase 1 still `[BLOCKED]`
+- This plan, with Phases 5-9 marked at the return, and Phase 1 re-marked
+  `[COMPLETED WITH EXCLUSIONS]` with its `#### Reasoned Exclusions` record by the closing revision
 
 ## Rollback/Contingency
 
@@ -882,13 +942,15 @@ end FormalSystem.Metalogic.Decidability.RaySummary
   written, mark the phase `[BLOCKED]`, record what was tried and the goal state reached in this
   plan file, and return `partial`. Never a `sorry`, an `axiom`, a vacuous definition, a cslib
   `require`, or an external citation in place of a proof.
-- **Phase 1 and closing the record.** Phase 1 is `[BLOCKED]` by the user's R1 ruling and its goals
-  are refuted theorems; it is never "unblocked" inside this record and the implementer never
-  re-marks it. Once Phases 5-9 are green the only question left is whether to close the record,
-  and that is the user's: either Phase 1 is re-marked `[COMPLETED WITH EXCLUSIONS]` with a
-  `#### Reasoned Exclusions` record whose Evidence column cites the wired probe's own
-  machine-checked theorems, or it stays `[BLOCKED]` as the standing record of the obstruction. The
-  implementation surfaces this as a `user_decision` and changes nothing on its own authority.
+- **Phase 1 and closing the record — decided.** Phase 1's goals are refuted theorems; it was
+  never "unblocked" inside this record, and the implementer never re-marked it, surfacing the
+  choice as a `user_decision` instead. The user chose to close (decisions file, cycle 1,
+  2026-10-11T14:57:40Z): Phase 1 now reads `[COMPLETED WITH EXCLUSIONS]` with the four-row
+  `#### Reasoned Exclusions` record above. Nothing is left for a future dispatch here. The
+  contingency not taken — leaving the phase `[BLOCKED]` as a standing record until a successor
+  landed — would have held this record open against work owned elsewhere; the obstruction itself
+  stays recorded either way, in the wired probe, the theorem index, and the RaySummary README,
+  none of which this closure touches.
 - The open sub-problem — what index, if any, a ladder cell has — is recorded and owned elsewhere.
   It is not asserted, costed, or re-derived here (guardrail (a)); task 765 owns phase E. Of the
   three dependent records, 763 carries the refuted `ladderCell_stabilizes` step and must have it
