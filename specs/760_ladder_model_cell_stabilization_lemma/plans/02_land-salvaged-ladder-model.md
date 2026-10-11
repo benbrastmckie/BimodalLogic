@@ -534,19 +534,19 @@ bullet — three edits across two files, plus the generated root. Confirm with
 
 ---
 
-### Phase 7: Re-point the Evidence Probe at the Library Declarations [NOT STARTED]
+### Phase 7: Re-point the Evidence Probe at the Library Declarations [COMPLETED]
 
 **Goal**: The probe's refutation is about the LANDED declarations, not about a private copy of
 them: the eleven are deleted from the probe and its fixture consumes the library's.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel` to the probe,
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel` to the probe,
       beside its existing `RunLayer`/`AnchorLayer` imports.
-- [ ] Delete the probe's own copies of the eleven declarations. The probe already carries
+- [x] Delete the probe's own copies of the eleven declarations. The probe already carries
       `open FormalSystem.Metalogic.Decidability.RaySummary`, so `Adm`, `LadderState`, `RladAdm`,
       `ladderFrameAdm`, `ladderModel` and the `Nonempty` instance resolve to the library's without
       any other edit to the fixture.
-- [ ] Amend the probe header: the general block it used to declare now lives in
+- [x] Amend the probe header: the general block it used to declare now lives in
       `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` and is cited rather than
       redefined; the probe states and proves the fixture-bound refutation (`cell_ne`,
       `exhibited_form_refuted`, `exists_form_refuted`) over the library's `ladderModel`. Keep every
@@ -554,16 +554,20 @@ them: the eleven are deleted from the probe and its fixture consumes the library
       the forward-only sentence, the paper-level status of the past-looking twin, the no-bound and
       no-finiteness sentences, `anchorCells_ncard_le` untouched, `RunLayer.lean` not edited, and
       no successor design chosen. **No task-number reference** anywhere in the file.
-- [ ] Reduce the trailing `#print axioms` block to the three fixture-bound theorems
+- [x] Reduce the trailing `#print axioms` block to the three fixture-bound theorems
       (`Probe760.cell_ne`, `Probe760.exhibited_form_refuted`, `Probe760.exists_form_refuted`) and
       amend the header's axiom-foot sentence to match. `no_fwd` and `no_bwd_of_idle` are now pinned
       at the two C14 sites (Phase 8), which is where a library declaration's axiom foot belongs.
-- [ ] Compile the probe through the guard and confirm the three remaining theorem statements are
+- [x] Compile the probe through the guard and confirm the three remaining theorem statements are
       character-for-character what they were (they mention `Adm pendB true`, which now resolves to
       the library's `Adm` with the identical body, so no statement changes).
-- [ ] Re-run `bash scripts/check-evidence-probes.sh` and check its exit status.
+- [x] Re-run `bash scripts/check-evidence-probes.sh` and check its exit status.
 
-**Timing**: 1 hour
+- **Completed**: 2026-10-11
+
+**Outcome**: the probe imports `RaySummary.LadderModel`, defines none of the eleven (71 lines deleted; 564 → 498 lines), keeps the three fixture-bound theorem signatures byte-identical to the pre-edit file (diffed mechanically), carries three `#print axioms` lines (all `[propext, Classical.choice, Quot.sound]`); guarded `lake env lean` exit 0, 0 errors, 0 warnings; `check-evidence-probes.sh` PASS, all 30 wired probes compile; zero `sorry`/`axiom`/vacuous hits.
+
+**Timing**: 1 hour (0.3 spent)
 
 **Depends on**: 6
 

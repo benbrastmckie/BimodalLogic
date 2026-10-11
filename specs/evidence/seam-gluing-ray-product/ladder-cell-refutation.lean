@@ -23,25 +23,29 @@ an admissible source) and no `Rlad`-predecessor (`Count _ false c n c'` forces `
 every state is pending `(q, 0, 0)` has no successor (`Count true true` demands `c' + 1 = 0`).
 Hence `¬ ∀ t x, ∃ y, Rlad step pend t x y` for EVERY object (`no_fwd`, `[Nonempty Q]` only) and
 `¬ ∀ t x, ∃ y, Rlad step pend (t - 1) y x` for every object with an idle state
-(`no_bwd_of_idle`). Consequence: `ladderFrame`, `ladderFrame_isRegular`, `ladderFrame_step` and
+(`no_bwd_of_idle`) — both library theorems of `RaySummary/LadderModel.lean`, cited here and not
+redefined. Consequence: `ladderFrame`, `ladderFrame_isRegular`, `ladderFrame_step` and
 the ninth probe's `ladder_isRegular` are theorems about a frame with no instances — the
 unsatisfiable-hypothesis form, not a `def := True` vacuity: every definition is meaningful, and
 nothing can ever be applied to it. The filed `ladderModel` over `ladderFrame` is constructible
 and never applicable. The README's own phrase is the fix: `Adm` restricts the CARRIER.
 
-**The carrier restriction used here — one of several equally valid.** `Adm pend q :=
-{c | pend q = false → c = 0}` (the README's `c ∈ Adm q`, now defined); the carrier
+**The carrier restriction consumed here — one of several equally valid — is the library's.**
+The general block is declared in `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean`
+and cited by this probe rather than redefined: `Adm pend q := {c | pend q = false → c = 0}` (the
+README's `c ∈ Adm q`, defined there); the carrier
 `LadderState Q pend := {x : Q × ℕ × ℕ // x.2.1 ∈ Adm pend x.1}`; `RladAdm` as `Rlad` on the
 underlying triples; two-sided finite branching by pulling the library's `Rlad_fwd`/`Rlad_bwd`
-back along `Subtype.val` (`Set.Finite.preimage` with `Subtype.val_injective.injOn`, one line
-each); `ladderFrameAdm` via `ofSlicedStepFinBranch`; regularity from
-`ofSlicedStepFinBranch_isRegular` unchanged; `ladderModel` reading the object component. The
-slice `LadderState Q pend` is still infinite. On this carrier `fwd`/`bwd` become genuine object
-conditions, discharged for `Q = Bool` (`fwdB`, `bwdB`). What this probe exhibits is a carrier
-restriction of this shape — never THE carrier: a carrier restriction of this shape is one of
-several; repairing `ladderFrame` in place (a C14-pinned declaration, outside this record's
-scope) or a sigma over `Adm` are equally valid alternatives not chosen here; `RunLayer.lean` is
-not edited.
+back along `Subtype.val` (`RladAdm_fwd`, `RladAdm_bwd`); `ladderFrameAdm` via
+`ofSlicedStepFinBranch`; regularity from `ofSlicedStepFinBranch_isRegular` unchanged
+(`ladderFrameAdm_isRegular`); `ladderModel` reading the object component. The slice
+`LadderState Q pend` is still infinite. On this carrier `fwd`/`bwd` become genuine object
+conditions, discharged for `Q = Bool` (`fwdB`, `bwdB`) — the fixture is this probe's, and so is
+the fixture-bound refutation below, stated over the LANDED `ladderModel`. What the library
+exhibits is a carrier restriction of this shape — never THE carrier: a carrier restriction of
+this shape is one of several; repairing `ladderFrame` in place (a C14-pinned declaration,
+outside this record's scope) or a sigma over `Adm` are equally valid alternatives not chosen;
+`RunLayer.lean` is not edited.
 
 **What it establishes (F2).** The object `Q = Bool`, `pendB = id`, `stepB ≡ true`, `labB`
 reading `p` at `true` and `r` at `false`; the formula `phi := p U (r ∧ X(p ∧ X r))` with
@@ -84,8 +88,8 @@ one bit per depth. (b) The slice `Q × ℕ × ℕ` is infinite (`Rlad_slice_infi
 `LadderState Q pend`; the refutation bounds nothing — it bounds neither the index nor the fibre,
 it refutes a claimed index. (c) No bound of any kind is claimed — no upper bound, no complexity bound:
 `|cl phi| = 12` is a count, and no closure cardinality is computed inside any proof. (d) Zero
-debt: no external lemma, no cslib require; every theorem cites `RunLayer.lean` and
-`AnchorLayer.lean` and re-proves nothing. (e) The refuted statement is direction-neutral and the
+debt: no external lemma, no cslib require; every theorem cites `RunLayer.lean`,
+`LadderModel.lean` and `AnchorLayer.lean` and re-proves nothing. (e) The refuted statement is direction-neutral and the
 witness is forward-only, as every probe in this collection is; a past-looking twin (`snce ⊤ r`
 separating `(a, B+2, B)` from `(a, B, B)`, since `n < c - 1` forces a pending-forever past) is
 paper-level and NOT machine-checked here. Also: nothing about `HitPresented`, nothing about
@@ -93,91 +97,23 @@ paper-level and NOT machine-checked here. Also: nothing about `HitPresented`, no
 `anchorCells_ncard_le` are untouched (the SET of cells is still finite and bounded; what is lost
 is the computable index of WHICH cell a ladder state has); `RunLayer.lean` is not edited.
 
-`no_fwd`, `cell_ne`, `exhibited_form_refuted`, `exists_form_refuted` carry
-`[propext, Classical.choice, Quot.sound]`; `no_bwd_of_idle` carries `[propext]`;
-`Classical.choice` enters through `ofSlicedStepFinBranch_mem_HF_iff`, as the eighth to tenth
-probes already note.
+`cell_ne`, `exhibited_form_refuted`, `exists_form_refuted` carry
+`[propext, Classical.choice, Quot.sound]`; `Classical.choice` enters through
+`ofSlicedStepFinBranch_mem_HF_iff`, as the eighth to tenth probes already note. The library's
+`no_fwd` (`[propext, Classical.choice, Quot.sound]`) and `no_bwd_of_idle` (`[propext]`) are
+pinned at the two C14 sites, `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` and
+`scripts/check-module-invariants.sh`, where a library declaration's axiom foot belongs.
 
 Compile: `lake env lean specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`
 -/
 import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 
 open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.PlusLanguage
 open FormalSystem.Metalogic.Decidability.RaySummary
 
 namespace Probe760
-
-/-! ## F1: the landed frame's seriality hypotheses are unsatisfiable -/
-
-theorem no_fwd {Q : Type} [Nonempty Q] (step : Q → Q → Bool) (pend : Q → Bool) :
-    ¬ ∀ t x, ∃ y, Rlad step pend t x y := by
-  intro h
-  by_cases hidle : ∃ q, pend q = false
-  · obtain ⟨q, hq⟩ := hidle
-    obtain ⟨y, hy⟩ := h 0 (q, 1, 0)
-    have h1 : (1 : ℕ) = 0 := hy.2.1 hq
-    exact absurd h1 one_ne_zero
-  · have hall : ∀ q, pend q = true := fun q => by
-      by_contra hq
-      exact hidle ⟨q, by simpa using hq⟩
-    obtain ⟨y, hy⟩ := h 0 (Classical.arbitrary Q, 0, 0)
-    have hc := hy.2.2.2
-    simp [Count, hall] at hc
-
-theorem no_bwd_of_idle {Q : Type} (step : Q → Q → Bool) (pend : Q → Bool)
-    (q : Q) (hq : pend q = false) :
-    ¬ ∀ t x, ∃ y, Rlad step pend (t - 1) y x := by
-  intro h
-  obtain ⟨y, hy⟩ := h 0 (q, 1, 0)
-  have hc := hy.2.2.2
-  simp [Count, hq] at hc
-
-/-! ## The admissible carrier and the repaired ladder frame (generic in the object) -/
-
-/-- Admissible current-deadline values at an object state: every `c` while pending, only `0`
-while idle — exactly the clause `Rlad` imposes on its source. -/
-def Adm {Q : Type} (pend : Q → Bool) (q : Q) : Set ℕ := {c | pend q = false → c = 0}
-
-/-- The admissible ladder carrier. -/
-abbrev LadderState (Q : Type) (pend : Q → Bool) : Type :=
-  {x : Q × ℕ × ℕ // x.2.1 ∈ Adm pend x.1}
-
-instance {Q : Type} [Nonempty Q] (pend : Q → Bool) : Nonempty (LadderState Q pend) :=
-  ⟨⟨(Classical.arbitrary Q, 0, 0), fun _ => rfl⟩⟩
-
-/-- The ladder relation restricted to the admissible carrier. -/
-def RladAdm {Q : Type} (step : Q → Q → Bool) (pend : Q → Bool) :
-    ℤ → LadderState Q pend → LadderState Q pend → Prop :=
-  fun t x y => Rlad step pend t x.1 y.1
-
-theorem RladAdm_fwd {Q : Type} [Finite Q] (step : Q → Q → Bool) (pend : Q → Bool) :
-    FwdFinBranch (RladAdm step pend) :=
-  fun t x => (Rlad_fwd step pend t x.1).preimage Subtype.val_injective.injOn
-
-theorem RladAdm_bwd {Q : Type} [Finite Q] (step : Q → Q → Bool) (pend : Q → Bool) :
-    BwdFinBranch (RladAdm step pend) :=
-  fun t y => (Rlad_bwd step pend t y.1).preimage Subtype.val_injective.injOn
-
-/-- The repaired ladder frame, on the admissible carrier. -/
-def ladderFrameAdm {Q : Type} [Finite Q] [Nonempty Q] (step : Q → Q → Bool) (pend : Q → Bool)
-    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
-    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) : FrameOver intOrder :=
-  ofSlicedStepFinBranch (RladAdm step pend) (RladAdm_fwd step pend) (RladAdm_bwd step pend) fwd bwd
-
-instance ladderFrameAdm_isRegular {Q : Type} [Finite Q] [Nonempty Q]
-    (step : Q → Q → Bool) (pend : Q → Bool)
-    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
-    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) :
-    (ladderFrameAdm step pend fwd bwd).IsRegular :=
-  ofSlicedStepFinBranch_isRegular _ _ _ _ _
-
-/-- The ladder model: the valuation reads the object component only. -/
-def ladderModel {Q : Type} [Finite Q] [Nonempty Q] (step : Q → Q → Bool) (pend : Q → Bool)
-    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
-    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) (lab : Q → Atom → Bool) :
-    TaskModel (ladderFrameAdm step pend fwd bwd).toTaskFrame where
-  valuation := fun (w : ℤ × LadderState Q pend) p => lab w.2.1.1 p = true
 
 /-! ## The two-state object -/
 
@@ -557,8 +493,6 @@ theorem exists_form_refuted :
 
 end Probe760
 
-#print axioms Probe760.no_fwd
-#print axioms Probe760.no_bwd_of_idle
 #print axioms Probe760.cell_ne
 #print axioms Probe760.exhibited_form_refuted
 #print axioms Probe760.exists_form_refuted
