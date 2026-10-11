@@ -418,14 +418,14 @@ and `scripts/check-evidence-probes.sh` is self-excluded from `check-module-invar
 
 ---
 
-### Phase 4: Record the Obstruction in the README and Theorem Index, Run the Full Gate, Return Blocked [NOT STARTED]
+### Phase 4: Record the Obstruction in the README and Theorem Index, Run the Full Gate, Return Blocked [COMPLETED]
 
 **Goal**: Amend the five sentences that now misdescribe the state (four in the RaySummary README,
 one in `docs/theorem-index.md`), add the twelfth-probe paragraph to the README's Evidence
 section, run the complete repository gate set, and return with Phase 1 still `[BLOCKED]`.
 
 **Tasks**:
-- [ ] In `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `## Evidence`, insert ONE
+- [x] In `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `## Evidence`, insert ONE
       paragraph directly after the "An eleventh wired probe, …" paragraph and before "The
       permanent computability witnesses are …", of the shape: "A twelfth wired probe,
       `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`, is the run layer's
@@ -449,7 +449,7 @@ section, run the complete repository gate set, and return with Phase 1 still `[B
       `Q × Fin (B+1) × Fin (B+1)` of which cell a ladder state has, and the successor design is
       not chosen here." Durable anchors only: no task number, no `specs/760_…` path, no
       record-versioning language.
-- [ ] Same README, "(W): what landed and what did not", item 1 of "Open: obligation (ii)":
+- [x] Same README, "(W): what landed and what did not", item 1 of "Open: obligation (ii)":
       replace the sentence "The stabilization of realized type sets in `c` past a bound syntactic
       in `φ` is plausible, unproved, and is phase 2's FIRST statement; until it is proved phase 2
       has no cost figure, and if it fails the honest outcome is `[BLOCKED]`, never a finite-fibre
@@ -459,17 +459,17 @@ section, run the complete repository gate set, and return with Phase 1 still `[B
       `[BLOCKED]` as this record's own contingency prescribes, that the plausible true index
       carries a third clipped coordinate `n - c` and is not claimed, and that the design decision
       is open. Keep the rest of the item (the `Presented` prohibition) unchanged.
-- [ ] Same README, the sentence ending "…is an admissibility restriction `c ∈ Adm q` on the
+- [x] Same README, the sentence ending "…is an admissibility restriction `c ∈ Adm q` on the
       ladder's carrier, named here and not costed; …": amend minimally to record that
       `ladderFrame`'s `fwd`/`bwd` are unsatisfiable on the full carrier for every object
       (twelfth wired probe, `no_fwd`), that `Adm` is therefore a restriction of the CARRIER
       (`{c | pend q = false → c = 0}`), defined in that probe and not in the library, and still
       not costed.
-- [ ] Same README, `## The verdict` table, row (W), the parenthesis "(soundness: a stabilization
+- [x] Same README, `## The verdict` table, row (W), the parenthesis "(soundness: a stabilization
       lemma in the deadline counter, unproved; completeness: (C)'s general row, open)": amend
       "unproved" to state that the stabilization lemma in the pair of counters is refuted by the
       twelfth wired probe and phase 2 is `[BLOCKED]` on the successor design.
-- [ ] `docs/theorem-index.md`, the `ladderFrame_isRegular` row: amend the clause "(the run
+- [x] `docs/theorem-index.md`, the `ladderFrame_isRegular` row: amend the clause "(the run
       layer's phase 2, whose first lemma — the stabilization of realized type sets in the deadline
       counter — is unproved)" to state that the first lemma is refuted in the filed form by the
       wired probe `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean` (the gap
@@ -477,20 +477,20 @@ section, run the complete repository gate set, and return with Phase 1 still `[B
       unsatisfiable on the full carrier, so the frame has no instances and `Adm` is a carrier
       restriction; keep the count-not-complexity sentence of the row untouched. Do not touch the
       row's Declaration, File, Frame class, or `pinned:C14` cells.
-- [ ] Update the README's trailing `*Last verified: YYYY-MM-DD*` line to the implementation date.
-- [ ] Run the final gate set (below), detached where the pattern requires, and record each exit
+- [x] Update the README's trailing `*Last verified: YYYY-MM-DD*` line to the implementation date. *(deviation: altered — no edit needed, the line already read 2026-10-11)*
+- [x] Run the final gate set (below), detached where the pattern requires, and record each exit
       status in the summary. If the pre-commit hook regenerates `typst/generated/status.typ`,
       commit it with this phase and say so in the summary.
-- [ ] Commit the README and theorem-index edits; write the implementation summary per
+- [x] Commit the README and theorem-index edits; write the implementation summary per
       `summary-format.md`, naming Phase 1's obstruction and the user's R1 ruling.
-- [ ] Return per the Lean agent's Escalation Protocol, because Phase 1 is `[BLOCKED]`: set the
+- [x] Return per the Lean agent's Escalation Protocol, because Phase 1 is `[BLOCKED]`: set the
       plan-level `- **Status**:` to `[BLOCKED]` with a `- **Blocked**:` date line; write
       `.return-meta.json` with `status: "partial"`, `requires_user_review: true`,
       `blocked_phase: 1`, and a `review_reason` naming the successor-design decision; write the
       handoff with `status: "partial"`, `phases_completed: 3`, `phases_total: 4`, and one
       `blockers[]` entry for Phase 1 carrying the three verbatim goal lines above, with
       `why_it_failed` stating that the goals are refuted theorems and the remaining choice is the
-      user's (not researchable). NEVER return `implemented`.
+      user's (not researchable). NEVER return `implemented`. *(deviation: altered — the plan-level `- **Status**:` field was NOT hand-edited: the lean-implementation-agent contract reserves it for update-plan-status.sh via update-task-status.sh postflight; the blocked outcome is carried by .return-meta.json and the handoff instead)*
 
 **Timing**: 2 hours
 

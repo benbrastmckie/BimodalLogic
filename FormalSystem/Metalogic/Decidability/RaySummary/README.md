@@ -155,7 +155,7 @@ dependency edit, is the user's call.
 |---|---|---|---|
 | (C) | **Hit-level completeness with a computable bound** | For every regular `ℤ`-model `M`, seam `(τ, t)`, formula `φ` and depth `1 ≤ k`, a finite labelled presentation `(Q, lab, step)` with `Fintype.card Q` below a computable bound in `φ`, such that `HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)` — the Hit-level hypothesis `HitPresented` (`Trace.lean`), together with a bound | **Half-settled, and only the easier half.** `Presented` cannot carry it (`Probe735.not_presented`), and the Hit-level hypothesis is no longer open on the fixture: `HitPresented` **holds** on model A at the seam `(t, a)` of `stayA` with `φ := Fp` at every depth `k ≥ 1`, by the wired probe `hit-presented-model-a.lean` (`Probe745.hitPresented_modelA`) — the refutation does not transfer, exactly as the forward-type observation predicted, so the route through (C) is **not** closed by the verdict above. The bound half is settled ON THE FIXTURE, as a count: the probe's headline carries `presentationSize k = Nat.card (KType (clSig Fp) k)` in its statement (no `∃ L`), by `kTypeOf_listSeg_replicate_eventually_periodic_bounded` (`Compose.lean`), the cut surgery of `Transport.lean` and the fixture's containment `run_subset_middle`. That count counts depth-`k` types and nothing else — not a complexity bound of any kind. It is **two fixtures** (model A and `Node`, the latter ⊡-bearing and infinite-width — see Evidence), so the general regular `ℤ`-model statement is still the (W) run-layer record's completeness half. See "The bound: exhibited on the fixture, as a count" below. Without (C), "no presentation refutes `φ`" never certifies validity, since the refuting models need not be among the presented ones. |
 | (S) | **Hit-level soundness** — the B2b record, restated at `hitOf` level | For every finite labelled presentation `P` satisfying consistency conditions `Cons P`, a regular `ℤ`-model `modelOf P` with a seam `(τ, t)` at which `HitCl (modelOf P) τ t φ k = ↑(hitOf …)` for `1 ≤ k` (the trace-level `Presented (modelOf P) τ t φ …` is stronger and suffices) | **DISCHARGED for `box`/`stab`-free `φ` at one seam**, in `Realize.lean`, at the stronger trace level: `presented_modelOf` plus its one-line Hit-level corollary `hitCl_modelOf_eq_hitOf`. See "(S): what landed and what did not" below for the exact scope. `Cons`'s eleven fields do exclude the pumpable eventuality-deferring run sets this row named as the obstruction — the two liveness fields `ulive`/`slive` are precisely acyclicity of the deferral graph `Probe735.pump_isRun` exploits. What remains open: `box`/`stab`-bearing `φ`, and every seam but the one. |
-| (W) | **A closure-wide quasimodel over all seams and times** | A finite object carrying, for every time, the `box` anchor across the whole slice and, for every state, the `stab` anchor, nested under `untl`/`snce` — so that one presentation-level object witnesses `¬ PlusValidZTime φ` for some regular `ℤ`-model, history and time, rather than one seam's `⊡` | **Characterized, and half-landed.** The object is TWO-layered. The **anchor layer** is landed in `AnchorLayer.lean` and bounded: cells (sets of closure types, one per world state), the `box`/`stab` fixpoint equations, `AnchorCons`, its completeness `anchorCons_anchorCells` for EVERY model with no presentation, finiteness or regularity hypothesis, the bound `anchorCells_ncard_le` (`≤ 2 ^ (2 ^ \|cl φ\|)`, a count of cells), and the decidable `Finset` twin `decidableAnchorConsFin` on a concrete finite object. The row's "for every time" quantifier was dropped by a theorem, not an argument: `box_time_invariant` (`PlusTruth.lean`) makes `□ψ` a per-model datum on every `TaskFrame`, so the `box` letters are global bits and `stab` letters per-cell bits. The **run layer** — the `untl`/`snce` nesting, which lives in type sequences over `ℤ` and is the lift from one seam to validity — has its **frame scheme landed** (`RunLayer.lean`: the deadline ladder `Rlad`, two-sided finite branching for EVERY finite object, an infinite slice, the regular frame `ladderFrame` with `[Finite Q]` on the object only; depth `k = 1`; the bounded-deadline variants refuted by `not_finite_width_fmp` and the seventh probe's `Rok`/`Rbad`; gate-compiled by the ninth wired probe `deadline-ladder-branching.lean`) — the regularity part of its first obligation, measured at 373 lines — and is otherwise **BLOCKED** on obligation (ii), the Hit-level realization in both halves (soundness: a stabilization lemma in the deadline counter, unproved; completeness: (C)'s general row, open), neither with a cost figure (see "(W): what landed and what did not" below); the shape of (S)'s construction is refuted as its soundness half by the wired probe `w-soundness-shape-refuted.lean` (finite width; `⊡`-collapse under `Presented`+`nowUnique`) — (S) itself untouched. Nothing states `PlusValidZTime` in any form; nothing is a negative decidability result. |
+| (W) | **A closure-wide quasimodel over all seams and times** | A finite object carrying, for every time, the `box` anchor across the whole slice and, for every state, the `stab` anchor, nested under `untl`/`snce` — so that one presentation-level object witnesses `¬ PlusValidZTime φ` for some regular `ℤ`-model, history and time, rather than one seam's `⊡` | **Characterized, and half-landed.** The object is TWO-layered. The **anchor layer** is landed in `AnchorLayer.lean` and bounded: cells (sets of closure types, one per world state), the `box`/`stab` fixpoint equations, `AnchorCons`, its completeness `anchorCons_anchorCells` for EVERY model with no presentation, finiteness or regularity hypothesis, the bound `anchorCells_ncard_le` (`≤ 2 ^ (2 ^ \|cl φ\|)`, a count of cells), and the decidable `Finset` twin `decidableAnchorConsFin` on a concrete finite object. The row's "for every time" quantifier was dropped by a theorem, not an argument: `box_time_invariant` (`PlusTruth.lean`) makes `□ψ` a per-model datum on every `TaskFrame`, so the `box` letters are global bits and `stab` letters per-cell bits. The **run layer** — the `untl`/`snce` nesting, which lives in type sequences over `ℤ` and is the lift from one seam to validity — has its **frame scheme landed** (`RunLayer.lean`: the deadline ladder `Rlad`, two-sided finite branching for EVERY finite object, an infinite slice, the regular frame `ladderFrame` with `[Finite Q]` on the object only; depth `k = 1`; the bounded-deadline variants refuted by `not_finite_width_fmp` and the seventh probe's `Rok`/`Rbad`; gate-compiled by the ninth wired probe `deadline-ladder-branching.lean`) — the regularity part of its first obligation, measured at 373 lines — and is otherwise **BLOCKED** on obligation (ii), the Hit-level realization in both halves (soundness: the stabilization lemma in the pair of ladder counters is refuted by the twelfth wired probe `ladder-cell-refutation.lean`, and phase 2 is `[BLOCKED]` on the successor design; completeness: (C)'s general row, open), neither with a cost figure (see "(W): what landed and what did not" below); the shape of (S)'s construction is refuted as its soundness half by the wired probe `w-soundness-shape-refuted.lean` (finite width; `⊡`-collapse under `Presented`+`nowUnique`) — (S) itself untouched. Nothing states `PlusValidZTime` in any form; nothing is a negative decidability result. |
 
 ### (S): what landed and what did not
 
@@ -389,7 +389,10 @@ all with the module header. Every one of the twenty declarations carries
 regularity part does NOT include: **seriality is an object condition** — `ladderFrame` takes
 `fwd`/`bwd` as explicit hypotheses exactly as `ofSlicedStep` does, and which objects supply
 them (a pending state at `c = 0` needs a discharging successor) is an admissibility restriction
-`c ∈ Adm q` on the ladder's carrier, named here and not costed; the run-layer consistency
+`c ∈ Adm q` on the ladder's carrier — and on the FULL carrier `Q × ℕ × ℕ` no object supplies
+them: `fwd`/`bwd` are unsatisfiable there for every object (twelfth wired probe, `no_fwd`,
+`no_bwd_of_idle`), so `Adm` is a restriction of the CARRIER (`{c | pend q = false → c = 0}`),
+defined in that probe and not in the library, and still not costed; the run-layer consistency
 conditions that would play `Cons`'s role for the ladder are likewise named and not built.
 
 **Depth: `k = 1`.** Every landed bridge the run layer consumes carries `hk : 1 ≤ k` and nothing
@@ -413,9 +416,14 @@ neither has a cost figure, and this record states that none exists.
    subsets of the types realized at large `c` — in `Node`, `pre 0` reads `⊡Xp` where
    `pre (k+1)` reads `¬⊡Xp` — so cells are indexed by `(q, deadline class)`, not by `q`, and the
    Hit-level per-cell hypothesis must be stated at ladder states. The stabilization of realized
-   type sets in `c` past a bound syntactic in `φ` is plausible, unproved, and is phase 2's FIRST
-   statement; until it is proved phase 2 has no cost figure, and if it fails the honest outcome
-   is `[BLOCKED]`, never a finite-fibre retreat. The hypothesis must be Hit-level or
+   type sets in the counter pair `(c, n)` past a bound syntactic in `φ` — phase 2's FIRST
+   statement — is REFUTED by the twelfth wired probe (`ladder-cell-refutation.lean`) in both the
+   exhibited-bound and `∃ B` forms: the gap `n - c` between the two counters is observable, so
+   bounding each counter bounds nothing that the cells depend on. Phase 2 is therefore
+   `[BLOCKED]`, as this record's own contingency prescribes — never a finite-fibre retreat — and
+   has no cost figure; the plausible true index carries a third clipped coordinate `n - c` and is
+   not claimed; the design decision (the successor statement, and whether `ladderFrame` is
+   repaired in place or beside) is open. The hypothesis must be Hit-level or
    product-level per cell (`HitPresented`, family-triple SETS, `hit-presented-model-a.lean`) and
    **never** trace-level `Presented`: the eighth probe's `stab_iff_of_presented_nowUnique` shows
    that at a `Presented` seam whose presentation marks at most one `now` state (exactly
@@ -614,6 +622,26 @@ there too (`presented_node`), and the probe therefore does not test the truncati
 necessity — a Hit-level falsifier for (C) needs a seam with infinitely many histories through
 it. Forward-only; no finiteness added; nothing about `⊡(Pp)`, the general row, or
 `PlusValidZTime`.
+
+A twelfth wired probe, `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`, is
+the run layer's phase-2 first statement over a general finite object, gate-compiled, and its
+verdict is NEGATIVE in both halves. First, `ladderFrame`'s seriality hypotheses are unsatisfiable
+on the full carrier `Q × ℕ × ℕ` for every object (`Probe760.no_fwd`, `no_bwd_of_idle` — the idle
+state `(q, 1, 0)` has neither successor nor predecessor under `Rlad`'s source clause), so the
+admissibility set `Adm` is a restriction of the carrier (`{c | pend q = false → c = 0}`, realized
+there on the subtype `{x // x.2.1 ∈ Adm pend x.1}` with two-sided finite branching pulled back
+along `Subtype.val` — one of several equally valid shapes, in-place repair of `ladderFrame` among
+them) and `ladderFrame` has no instances. Second, on that carrier the realized cells `cellAt` do
+NOT stabilize in the pair of counters `(c, n)` past any bound: on the two-state object with
+`p U (r ∧ X(p ∧ X r))`, `X χ := ⊥ U χ`, the cells at `(a, B, B+1)` and `(a, B, B+2)` differ for
+every `B` (`cell_ne`; `exhibited_form_refuted`, `exists_form_refuted`), because the current
+deadline fixes the region's end and `Count`'s idle clause `c' = n` exposes the gap `n - c`. Every
+theorem at `[propext, Classical.choice, Quot.sound]` or less, citing `RunLayer.lean` and
+`AnchorLayer.lean` and re-proving nothing — forward-only witness for a direction-neutral
+statement, no bound of any kind claimed, no finiteness added, `anchorCells_finite` and
+`anchorCells_ncard_le` untouched; what is refuted is the claimed computable index
+`Q × Fin (B+1) × Fin (B+1)` of which cell a ladder state has, and the successor design is not
+chosen here.
 
 The permanent computability witnesses are `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`
 (imported from `Tests/BimodalTest.lean`): thirteen `#guard`s at depth 1 over `twoLetter` that
