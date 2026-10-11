@@ -110,9 +110,11 @@ order (design of record: `specs/757_lplus_decidability_successor_task_set/follow
 
 - **761 — ladder realization theorem** (`LadderCons`, `ladderRealized` per ladder cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s `box`/`stab` limitation lands, by the README's own
-  assignment; no standalone (S) record). Hit-level, on the infinite-width `ladderFrame` (WIDTH and
-  COLLAPSE, `w-soundness-shape-refuted.lean`, forbid the trace level and `modelOf`'s frame). Logical
-  edge on 760. NOT costable (sized by 760's bound and by how much of `Realize.lean` transfers).
+  assignment; no standalone (S) record). Hit-level, on the infinite-width admissible-carrier frame
+  `ladderFrameAdm` (`ladderFrame` has no instances) (WIDTH and COLLAPSE,
+  `w-soundness-shape-refuted.lean`, forbid the trace level and `modelOf`'s frame). Logical edge on
+  760. NOT costable (760 landed no bound — the stabilization lemma is refuted and the cell index is
+  an open sub-problem; sized by how much of `Realize.lean` transfers).
 
 - **762 — (C)'s general row** (`exists_hitPresented` with `sizeBound φ k` a count, every regular
   `ℤ`-model). Open mathematics, research-first. Logical edge on 759 (a negative there makes it
@@ -120,7 +122,8 @@ order (design of record: `specs/757_lplus_decidability_successor_task_set/follow
 
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM, stated here and nowhere
-  earlier. Depth `k = 1`. Logical edges on 761 and 762. NOT costable until both have shapes.
+  earlier. Depth `k = 1`. Logical edges on 761 and 762. NOT costable until both have shapes and the
+  open cell-index sub-problem is resolved.
 
   The four library records (760-763) share `RaySummary.lean`, `FormalSystem.lean`, the C14 pins,
   `docs/theorem-index.md`, the `RaySummary` README and `typst/generated/status.typ`; they

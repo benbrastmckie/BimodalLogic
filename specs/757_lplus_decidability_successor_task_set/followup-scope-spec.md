@@ -297,6 +297,22 @@ what H4's finite presentation is built on. `B` is a COUNT of closure formulas, u
 sentence the tree already attaches to `anchorCells_ncard_le` ("a cardinality bound on a SET OF
 CELLS, syntactic in `|cl φ|`. It is not a complexity bound of any kind") — guardrail (c).
 
+**Amendment (2026-10-11).** The lemma above is REFUTED for every bound by the twelfth wired probe
+(`specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`: `cell_ne`,
+`exhibited_form_refuted`, `exists_form_refuted` — the gap `n − c` between the two counters is
+observable through a closure of size 12 while each counter is arbitrarily large), so no finite cell
+index `Q × Fin (B+1) × Fin (B+1)` follows from it and the dependent statements H4 and H6 are amended
+below. The computable index of WHICH cell a ladder state has is an open sub-problem: recorded, not
+solved, and not re-stated over any substitute (the candidate carrying a clipped gap coordinate is
+research-level and unproved). The SET of cells stays finite and bounded (`anchorCells_finite`,
+`anchorCells_ncard_le`). Separately, `Adm` landed as a CARRIER restriction in
+`RaySummary/LadderModel.lean` (`LadderState Q pend := {x : Q × ℕ × ℕ // x.2.1 ∈ Adm pend x.1}`,
+`RladAdm`, `ladderFrameAdm`, `ladderModel`) beside the instance-free `ladderFrame` (`no_fwd`,
+`no_bwd_of_idle`: its own seriality hypotheses are unsatisfiable on the full carrier `Q × ℕ × ℕ`),
+not as an object condition on `ladderFrame`'s carrier — this amends the "Consistency conditions and
+`Adm`" paragraph's "stated over the carrier `ladderFrame` already has". See
+`specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md`.
+
 *Why a fixture probe first (H1).* `Node` is the ladder's one-region special case (the `RunLayer.lean`
 header) and a LIBRARY model (`NoFiniteWidth.M`, regular by `F_isRegular`, histories canonical by
 `path_eq_canon`), so the probe imports it and re-proves nothing. The probe's statements, for the
@@ -498,6 +514,17 @@ soundness half: H4's realization theorem at the refuting cell gives a regular `�
 (`ladderFrame_isRegular`), a history and a time at which `φ` fails. `objBound φ` is a COUNT (cells
 times deadline classes), never a running time. Depth `k = 1` throughout (0.1 reading (iii)).
 
+**Amendment (2026-10-11).** The step "finitely many deadline classes by the stabilization bound
+(H3)" is DELETED: the stabilization lemma is refuted for every bound
+(`ladder-cell-refutation.lean`), so no finite index of ladder states per cell is available. How the
+finitely many cells (`anchorCells_ncard_le`) and the per-cell presentations (H5) are assembled into
+ONE finite ladder object is the open sub-problem recorded in Section A — not solved here and not
+re-stated over a substitute. In the (←) half, `ladderFrame_isRegular` reads
+`ladderFrameAdm_isRegular`: the realization theorem is stated on the admissible carrier
+(`ladderFrameAdm`, `ladderModel`, `RaySummary/LadderModel.lean`), since `ladderFrame` has no
+instances. `objBound φ` remains a COUNT whose shape is open; no bound, cost figure or complexity
+claim is added.
+
 **The corollary — the AIM — is stated here and nowhere earlier.** `Decidable (PlusValidZTime φ)`
 follows by bounded enumeration over objects of size `≤ objBound φ` (finitely many on `Fin n`, with
 `LadderCons` and `LadderRefutes` decidable on a `Fintype`, as `AnchorConsFin`'s
@@ -688,7 +715,7 @@ in Kahn position 3 of 6.
 
 **Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `ladder_realization_theorem`
 
-**Proposed dependencies** (typed): **T3 = 760** (logical: ladderModel, Adm and the stabilization bound B are this theorem's inputs; the finite cell index Q × Fin (B+1) × Fin (B+1) is what the presentation is built on)
+**Proposed dependencies** (typed): **T3 = 760** (logical: ladderModel, Adm (a carrier restriction) and LadderState are this theorem's inputs; no finite cell index is provided (refuted, open sub-problem))
 
 **Proposed `file_scope`** (files only, never a directory root):
   - `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` *(new)*
@@ -702,17 +729,19 @@ in Kahn position 3 of 6.
 
 **Depth**: 1 ≤ k stated, consumer depth k = 1
 
-**Costability**: NO — sized by T3's bound and by how much of Realize.lean's 1004 lines transfers; the RaySummary README records that it has no figure. No figure is invented.
+**Costability**: NO — T3 landed no bound (its stabilization lemma is refuted); sized by the open index sub-problem and by how much of Realize.lean's 1004 lines transfers; the RaySummary README records that it has no figure. No figure is invented.
 
-**Description** (the exact string filed):
+**Description** (as amended 2026-10-11; the string filed 2026-10-10 is in this file's git history):
 
+> AMENDED 2026-10-11 (carrier repair): the frame this record is stated on is the admissible-carrier frame of RaySummary/LadderModel.lean; see specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md.
+> 
 > STATEMENT (library; new module `RaySummary/LadderRealize.lean`). Run-layer phase 2's soundness half (object → model), the ladder analogue of `Realize.lean`'s `Cons`/`cons_localRun`/`presented_modelOf`, stated at the HIT level per ladder cell:
 >   `structure LadderCons (φ : PlusFormula) (lab) (step) (pend) : Prop`  -- `Cons`'s fields with the liveness fields `ulive`/`slive` replaced by the ladder's structural liveness (c strictly decreases while pending, by `Count`), and with the box/stab letters PINNED per cell by the anchor layer's equations: `lab q (box ψ)` is one global bit (`box_mem_tpOf_iff`), the stab letter at `(q, c, n)` is that cell's bit (`stab_mem_tpOf_iff`); `anchorCons_anchorCells` is the completeness side of exactly those equations
 >   `theorem ladderCons_localRun …`  -- every ladder run satisfies the run conditions
->   `theorem ladderRealized … (k : ℕ) (hk : 1 ≤ k) : HitCl (ladderModel …) τ t φ k = ↑(hitOf (truncate B …) … (clNow φ) k)`  -- per ladder cell, for ALL φ, box/stab letters INCLUDED, over the finite cell index T3 provides
+>   `theorem ladderRealized … (k : ℕ) (hk : 1 ≤ k) : HitCl (ladderModel …) τ t φ k = ↑(hitOf (truncate B …) … (clNow φ) k)`  -- per ladder cell, for ALL φ, box/stab letters INCLUDED, the cell being `cellAt (ladderModel …) φ (t, ⟨(q, c, n), h⟩)` on the world state `ℤ × LadderState Q pend` (the `ℤ` component is invisible to `cellAt`, `cellAt_eq_cellAt`, but must be written). NO finite index of which cell a ladder state has is provided by any predecessor: the index `Q × Fin (B+1) × Fin (B+1)` is refuted (`ladder-cell-refutation.lean`: `cell_ne`, `exhibited_form_refuted`, `exists_form_refuted`) and is DELETED here; which cell a ladder state has is an OPEN SUB-PROBLEM, recorded and not re-stated over any substitute. The SET of cells stays finite and bounded (`anchorCells_finite`, `anchorCells_ncard_le`)
 > The box/stab clause is the acceptance criterion: it is where obligation (3)'s first half ("(S) beyond its landed corner": box/stab-bearing φ) lands, by the README's own assignment of that limitation to (W). No standalone (S) record exists for it (agent decision D1, re-openable by /revise).
 > 
-> WHY HIT-LEVEL, WHY THIS FRAME. Two machine-checked facts (wired probe `w-soundness-shape-refuted.lean`): WIDTH — `Probe747.modelOf_incomplete`: `modelOf` on any `Cons` presentation validates `Φ.neg` while `¬ PlusValidZTime Φ.neg`, whatever clauses are added, because `ofSlicedStep` on a Fintype has finite width; COLLAPSE — `Probe747.stab_iff_of_presented_nowUnique`: at a trace-level `Presented` seam with `nowUnique`, ψ ↔ ⊡ψ for every closure formula, so trace-level realization cannot witness any ⊡-refutation. Hence the hypothesis is `HitPresented`-shaped per cell and the frame is `ladderFrame` (infinite slice, `Rlad_slice_infinite`; regular by `ladderFrame_isRegular`). `presented_modelOf` is untouched and not re-proved.
+> WHY HIT-LEVEL, WHY THIS FRAME. Two machine-checked facts (wired probe `w-soundness-shape-refuted.lean`): WIDTH — `Probe747.modelOf_incomplete`: `modelOf` on any `Cons` presentation validates `Φ.neg` while `¬ PlusValidZTime Φ.neg`, whatever clauses are added, because `ofSlicedStep` on a Fintype has finite width; COLLAPSE — `Probe747.stab_iff_of_presented_nowUnique`: at a trace-level `Presented` seam with `nowUnique`, ψ ↔ ⊡ψ for every closure formula, so trace-level realization cannot witness any ⊡-refutation. Hence the hypothesis is `HitPresented`-shaped per cell and the frame is `ladderFrameAdm` on the admissible carrier `LadderState Q pend := {x : Q × ℕ × ℕ // x.2.1 ∈ Adm pend x.1}` (`RaySummary/LadderModel.lean`; slice infinite — `(q, 0, n)` is admissible for every `n`, `Rlad_slice_infinite` one level down; regular by `ladderFrameAdm_isRegular`), with the model `ladderModel` reading the object component; `ladderFrame` itself has no instances (`no_fwd`, `no_bwd_of_idle`) and stays beside it, untouched. `presented_modelOf` is untouched and not re-proved.
 > 
 > DEPTH. `1 ≤ k` stated; the consumer depth is k = 1 (every landed bridge carries `1 ≤ k`; the closure alphabet makes nesting visible through letters).
 > 
@@ -722,7 +751,7 @@ in Kahn position 3 of 6.
 > 
 > FILE SCOPE: new `LadderRealize.lean` plus the shared library set (`RaySummary.lean`, `FormalSystem.lean`, `KTypeSummaryAxiomTest.lean`, `check-module-invariants.sh`, `docs/theorem-index.md`, RaySummary README, `typst/generated/status.typ`). Durable anchors only outside specs/**. Cross-set collisions left to the admission gate: 744 (README, invariants), 410 (status.typ). Logical edge on T3.
 > 
-> NOT COSTABLE, and why: sized by T3's bound and by how much of `Realize.lean` (1004 lines) transfers; the README records it has no figure. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Sections A, C and H4.
+> NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); sized by the open index sub-problem and by how much of `Realize.lean` (1004 lines) transfers; the README records it has no figure. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Sections A, C and H4.
 
 **Action required**: filed by this task's Phase 4 (`state-write.sh`, then `manage-topics.sh set`),
 in Kahn position 4 of 6.
@@ -774,7 +803,7 @@ in Kahn position 5 of 6.
 
 **Proposed `task_type`**: `lean4` — **`topic`**: `decidability` — **slug**: `ladder_lift_decidability_corollary`
 
-**Proposed dependencies** (typed): **T4 = 761** (logical: the (←) soundness half is the realization theorem at the refuting cell); **T5 = 762** (logical: the (→) completeness half assembles the anchor layer, (C)'s general row and the stabilization bound)
+**Proposed dependencies** (typed): **T4 = 761** (logical: the (←) soundness half is the realization theorem at the refuting cell); **T5 = 762** (logical: the (→) completeness half assembles the anchor layer and (C)'s general row)
 
 **Proposed `file_scope`** (files only, never a directory root):
   - `FormalSystem/Metalogic/Decidability/RaySummary/Lift.lean` *(new)*
@@ -790,17 +819,19 @@ in Kahn position 5 of 6.
 
 **Costability**: NO — the statement is fixed by T4 and T5; its research phase re-derives it from them. No figure is invented.
 
-**Description** (the exact string filed):
+**Description** (as amended 2026-10-11; the string filed 2026-10-10 is in this file's git history):
 
+> AMENDED 2026-10-11 (index deletion): the finite cell index this record assembled its object from is refuted and deleted below; see specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md.
+> 
 > STATEMENT (library, research-first; new module `RaySummary/Lift.lean`). The (W) row's lift from one seam to validity — "one presentation-level object witnesses ¬ PlusValidZTime φ for some regular ℤ-model, history and time" — and obligation (3)'s second half ("every seam but the one"):
->   `theorem not_plusValidZTime_iff_ladderRefutes (φ : PlusFormula) : ¬ PlusValidZTime φ ↔ ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q) (lab) (step) (pend) (hA : Adm …), Fintype.card Q ≤ objBound φ ∧ LadderCons φ lab step pend ∧ LadderRefutes φ lab step pend`
-> (→), completeness: a refuting regular ℤ-model has cells bounded by `anchorCells_ncard_le`, per-cell presentations by (C)'s general row (`exists_hitPresented`), finitely many deadline classes by `ladderCell_stabilizes` — assembled into one ladder object of size `objBound φ`. (←), soundness: `ladderRealized` at the refuting cell gives a regular ℤ-model (`ladderFrame_isRegular`), a history and a time where φ fails. Depth k = 1 throughout.
+>   `theorem not_plusValidZTime_iff_ladderRefutes (φ : PlusFormula) : ¬ PlusValidZTime φ ↔ ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q) (lab) (step) (pend) (fwd : ∀ t x, ∃ y, RladAdm step pend t x y) (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x), Fintype.card Q ≤ objBound φ ∧ LadderCons φ lab step pend ∧ LadderRefutes φ lab step pend` (`Adm` is a CARRIER restriction defined in `RaySummary/LadderModel.lean` — `LadderState Q pend := {x : Q × ℕ × ℕ // x.2.1 ∈ Adm pend x.1}` — not an object-side hypothesis; the object ranges over the admissible carrier, with its seriality `fwd`/`bwd` stated over `RladAdm` on that carrier)
+> (→), completeness: a refuting regular ℤ-model has cells bounded by `anchorCells_ncard_le`, per-cell presentations by (C)'s general row (`exists_hitPresented`) — and the step from finitely many CELLS to finitely many ladder STATES per cell has NO support: `ladderCell_stabilizes` is REFUTED for every bound (`specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`: `cell_ne`, `exhibited_form_refuted`, `exists_form_refuted`; the gap n − c is observable) and is DELETED from this assembly. How a refuting model's finitely many cells (`anchorCells_finite`, `anchorCells_ncard_le`, untouched) are assembled into ONE finite ladder object — a computable index of WHICH cell a ladder state has — is an OPEN SUB-PROBLEM of this record: recorded here, not solved, and never re-stated over a concrete substitute (the candidate carrying a clipped gap coordinate is research-level and unproved). (←), soundness: `ladderRealized` at the refuting cell gives a regular ℤ-model (`ladderFrameAdm_isRegular`, the frame on the admissible carrier; `ladderFrame` has no instances, `no_fwd`/`no_bwd_of_idle`), a history and a time where φ fails. Depth k = 1 throughout.
 > 
 > THE COROLLARY — THE AIM — IS STATED HERE AND NOWHERE EARLIER: `Decidable (PlusValidZTime φ)` by bounded enumeration over objects of size ≤ objBound φ (finitely many on `Fin n`; `LadderCons`/`LadderRefutes` decidable on a Fintype, as `decidableAnchorConsFin` already is on a concrete finite object). `Decidable (PlusValidZTime` has zero statement-level occurrences in the tree today (14 hits, all prose denials); no predecessor record may state it.
 > 
-> STATUS. Not costable until both predecessors have landed shapes; the research phase re-derives the statement from `LadderRealize.lean` and `HitComplete.lean` as landed. Honest outcomes: landed; or [BLOCKED] on whichever predecessor did not close — never sorry, axiom, vacuous definition, or a decidability claim from the semi-decidable ∃-object form without the bound (the README: without the bound the composition theorem is "at best semi-decidable — and NOT Decidable (PlusValidZTime φ)").
+> STATUS. Not costable until both predecessors have landed shapes and until the open index sub-problem above is resolved; the research phase re-derives the statement from `LadderRealize.lean` and `HitComplete.lean` as landed. Honest outcomes: landed; or [BLOCKED] on whichever predecessor did not close or on the open sub-problem — never sorry, axiom, vacuous definition, or a decidability claim from the semi-decidable ∃-object form without the bound (the README: without the bound the composition theorem is "at best semi-decidable — and NOT Decidable (PlusValidZTime φ)").
 > 
-> GUARDRAILS: (a) the ladder object is a time-axis object over the closure alphabet; (b) its slice is infinite — the object bounds cells and deadline classes, never the fibre, and no finite-fibre assumption may be introduced to make the enumeration finite (the bound comes from counts); (c) `objBound φ` is a count (cells × deadline classes) and the corollary is a `Decidable` instance, not a complexity statement — the held 2EXPTIME ceiling is neither cited nor approached; (d) zero debt: the enumeration is the tree's own, no external decidability theorem, no cslib require; (e) if T4/T5 land forward-only the lift is forward-only and says so — nothing beyond `Probe719Backward.pastStab_iff_allBwdPathsMeet` is claimed about ⊡(Pp). Dispatch with --lit (HWZ 2000 / GKWZ 2003 indexed, orientation only).
+> GUARDRAILS: (a) the ladder object is a time-axis object over the closure alphabet; (b) its slice is infinite — the object bounds cells and deadline classes, never the fibre, and no finite-fibre assumption may be introduced to make the enumeration finite (the bound comes from counts); (c) `objBound φ` is a count (its shape is part of the open sub-problem; no figure exists) and the corollary is a `Decidable` instance, not a complexity statement — the held 2EXPTIME ceiling is neither cited nor approached; (d) zero debt: the enumeration is the tree's own, no external decidability theorem, no cslib require; (e) if T4/T5 land forward-only the lift is forward-only and says so — nothing beyond `Probe719Backward.pastStab_iff_allBwdPathsMeet` is claimed about ⊡(Pp). Dispatch with --lit (HWZ 2000 / GKWZ 2003 indexed, orientation only).
 > 
 > FILE SCOPE: new `Lift.lean` plus the shared library set. Durable anchors only outside specs/**. Cross-set collisions left to the admission gate: 744, 410. Logical edges on T4 and T5.
 > 
