@@ -669,13 +669,13 @@ by copying a value from this plan.
 
 ---
 
-### Phase 9: Theorem Index and README Records, Full Gate, Return [NOT STARTED]
+### Phase 9: Theorem Index and README Records, Full Gate, Return [COMPLETED]
 
 **Goal**: The landed declarations are indexed and described, the README reads `Adm` as DEFINED,
 and the full gate set is green.
 
 **Tasks**:
-- [ ] `docs/theorem-index.md`: add four rows in the Decidability section, after the
+- [x] `docs/theorem-index.md`: add four rows in the Decidability section, after the
       `ladderFrame_isRegular` row. Columns per that table's contract: `Paper label` `—`;
       one-line Statement; fully qualified `Lean name`; `File`
       `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` (path only, no line
@@ -689,7 +689,7 @@ and the full gate set is green.
       `HitPresented`, nothing about `PlusValidZTime` in any form, no complexity bound, and no index
       of a ladder cell claimed — the stabilization statement in the counter pair is refuted by the
       wired probe (guardrails (a), (c)).
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`:
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`:
       - add the `LadderModel.lean` module-table row with its line count measured by `wc -l` and a
         description in the table's register;
       - amend the sentences that currently read `Adm` as named-and-undefined so it reads as
@@ -701,24 +701,28 @@ and the full gate set is green.
         construction beside `ladderFrame`, leaving obligation (ii) BLOCKED and uncosted;
       - keep every no-bound, no-finiteness, count-not-complexity and forward-only sentence intact;
       - update `Last verified`.
-- [ ] Confirm `RunLayer.lean` is untouched by this dispatch (`git diff --stat` names it nowhere):
+- [x] Confirm `RunLayer.lean` is untouched by this dispatch (`git diff --stat` names it nowhere):
       `ladderFrame` stays instance-free and C14-pinned by decision (ii).
-- [ ] Header and doc read-through against the guardrails: no replacement index asserted anywhere
+- [x] Header and doc read-through against the guardrails: no replacement index asserted anywhere
       (a); `anchorCells_finite`/`anchorCells_ncard_le` described as untouched and the loss confined
       to the computable index (b); no upper bound and no complexity claim (c); zero debt (d);
       direction-neutrality stated where it applies (e); no task number and no record-versioning
       phrasing outside `specs/**`.
-- [ ] Run the complete gate set and check each exit status: the guarded full `lake build`;
+- [x] Run the complete gate set and check each exit status: the guarded full `lake build`;
       `bash scripts/check-evidence-probes.sh`; `bash scripts/check-module-invariants.sh`;
       `bash scripts/readme-lint.sh`; `bash scripts/check-module-invariants.sh --emit-inventory --check`;
       `bash scripts/typst-sync-check.sh`; `bash scripts/check-task-references.sh` scoped to every
       touched file; `bash .claude/scripts/verify-deploy.sh`.
-- [ ] Return: Phases 5-9 `[COMPLETED]`, Phase 1 still `[BLOCKED]`, so the implementation returns
+- [x] Return: Phases 5-9 `[COMPLETED]`, Phase 1 still `[BLOCKED]`, so the implementation returns
       `partial` with `requires_user_review: true` per the Lean agent's Escalation Protocol — never
       `implemented` — with a `user_decision` asking whether to close the record (see
       Rollback/Contingency).
 
-**Timing**: 1.5 hours
+- **Completed**: 2026-10-11
+
+**Outcome**: four theorem-index rows added after the `ladderFrame_isRegular` row (whose "defined in that probe" clause now reads "defined in `RaySummary/LadderModel.lean`"); README: `LadderModel.lean` module row (195 lines), `Adm` read as DEFINED in `LadderModel.lean`, twelfth-probe paragraph amended (general block landed and cited; fixture-bound refutation the probe's), `(W)` row names the admissible carrier beside `ladderFrame`, successor-design sentence amended, `Last verified` already 2026-10-11; `RunLayer.lean` untouched (no commit in this dispatch names it). Full gate green: guarded full `lake build` exit 0 (2841 jobs, 0 errors); `check-evidence-probes.sh` PASS (30/30); `check-module-invariants.sh` exit 0 (55 PASS; C9, C14 both halves, C15 274 rows, C33 PASS; C17 869 of 14592 unchanged; C34 census 240/52); `readme-lint.sh` PASS; `--emit-inventory --check` PASS; `typst-sync-check.sh` PASS (4/4); `check-task-references.sh` PASS on every touched file except the pre-existing illustrative `"task 42"` comment in `scripts/check-module-invariants.sh` (present at the pre-dispatch commit; C9 passes); `verify-deploy.sh` exit 0. Sorry 0; vacuous 1 (the pre-existing `Examples/TemporalStructures.lean` baseline, 0 introduced); `^axiom ` lines identical to the pre-dispatch commit (14 = 14). Guardrail read-through: no index asserted, no versioning phrasing, direction-neutrality stated.
+
+**Timing**: 1.5 hours (0.6 spent)
 
 **Depends on**: 4, 7, 8
 
