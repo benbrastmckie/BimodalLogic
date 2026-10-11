@@ -669,9 +669,11 @@ EVIDENCE="specs/evidence"
 #                                                           | state-chosen deadline is Probe746's
 #                                                           | `Rok`/`Rbad`. Depth `k = 1`. What it
 #                                                           | does NOT say: nothing about
-#                                                           | realization (phase 2, open; first
-#                                                           | lemma the stabilization of realized
-#                                                           | type sets in the deadline counter),
+#                                                           | realization (phase 2; its first lemma,
+#                                                           | the stabilization of realized cells in
+#                                                           | the counter pair, is REFUTED by the
+#                                                           | twelfth probe
+#                                                           | `ladder-cell-refutation.lean`),
 #                                                           | nothing about `HitPresented`, nothing
 #                                                           | about `⊡(Pp)` (forward-only);
 #                                                           | seriality is the object's `fwd`/`bwd`

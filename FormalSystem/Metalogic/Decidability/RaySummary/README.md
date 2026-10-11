@@ -416,8 +416,10 @@ complexity bound, and it grows with `k` for no gain.
 neither has a cost figure, and this record states that none exists.
 
 1. **The soundness half (object → model) — the run layer's phase 2.** A Hit-level realization
-   theorem for `ladderFrame`, per ladder cell, under run-layer consistency conditions analogous
-   to `Cons`. The obstacle is precise: ladder states `(q, c, n)` with small `c` realize PROPER
+   theorem for the ladder model on the admissible carrier (`ladderModel` over `ladderFrameAdm`,
+   `LadderModel.lean`; `ladderFrame` itself has no instances, `no_fwd`/`no_bwd_of_idle`), per
+   ladder cell, under run-layer consistency conditions analogous to `Cons`. The obstacle is
+   precise: ladder states `(q, c, n)` with small `c` realize PROPER
    subsets of the types realized at large `c` — in `Node`, `pre 0` reads `⊡Xp` where
    `pre (k+1)` reads `¬⊡Xp` — so cells are indexed by `(q, deadline class)`, not by `q`, and the
    Hit-level per-cell hypothesis must be stated at ladder states. The stabilization of realized
@@ -429,8 +431,11 @@ neither has a cost figure, and this record states that none exists.
    has no cost figure; the plausible true index carries a third clipped coordinate `n - c` and is
    not claimed; the admissible carrier is landed BESIDE `ladderFrame` (`LadderModel.lean`:
    `Adm`, `LadderState`, `RladAdm`, `ladderFrameAdm`, `ladderModel`), and the successor
-   statement is open. The hypothesis must be Hit-level or
-   product-level per cell (`HitPresented`, family-triple SETS, `hit-presented-model-a.lean`) and
+   statement is open. Which cell a ladder state has — a computable index in place of the
+   refuted `Q × Fin (B+1) × Fin (B+1)` — is an open sub-problem: no index is claimed in any
+   shape, while the SET of cells stays finite and bounded (`anchorCells_finite`,
+   `anchorCells_ncard_le`). The hypothesis must be Hit-level or product-level per cell
+   (`HitPresented`, family-triple SETS, `hit-presented-model-a.lean`) and
    **never** trace-level `Presented`: the eighth probe's `stab_iff_of_presented_nowUnique` shows
    that at a `Presented` seam whose presentation marks at most one `now` state (exactly
    `Cons.nowUnique`, which (S) found necessary) every closure formula satisfies `ψ ↔ ⊡ψ`, so no
