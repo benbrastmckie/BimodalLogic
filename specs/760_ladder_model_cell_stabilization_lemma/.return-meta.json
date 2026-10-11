@@ -1,0 +1,103 @@
+{
+  "status": "partial",
+  "started_at": "2026-10-11T10:33:44Z",
+  "completed_at": "2026-10-11T11:05:00Z",
+  "requires_user_review": true,
+  "blocked_phase": 1,
+  "review_reason": "Phase 1 blocked: the filed stabilization lemma is a refuted theorem (R1); Phases 5-9 (the R2 salvage) are [COMPLETED] with the full gate green. The remaining choice — close the record with a Reasoned Exclusions record on Phase 1, or keep it [BLOCKED] — is the user's.",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_note": "pre-existing FormalSystem/Examples/TemporalStructures.lean:495 baseline, identical at the pre-dispatch commit; 0 introduced",
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "gates": {
+      "check-evidence-probes": "PASS 30/30",
+      "check-module-invariants": "exit 0, 55 PASS (C14 both halves, C15 274 rows, C33)",
+      "readme-lint": "PASS",
+      "emit-inventory-check": "PASS",
+      "typst-sync-check": "PASS 4/4",
+      "verify-deploy": "exit 0"
+    }
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/760_ladder_model_cell_stabilization_lemma/summaries/02_land-salvaged-ladder-model-summary.md",
+      "summary": "Implementation summary: Phases 5-9 completed (R2 salvage landed, full gate green), Phase 1 [BLOCKED] (refuted lemma), close-the-record decision surfaced."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean",
+      "summary": "New library module: no_fwd, no_bwd_of_idle, Adm, LadderState, ladderState_nonempty, RladAdm, RladAdm_fwd, RladAdm_bwd, ladderFrameAdm, ladderFrameAdm_isRegular, ladderModel — transplanted verbatim from the twelfth wired probe."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean",
+      "summary": "Probe re-pointed at the library declarations; three fixture-bound refutation theorems unchanged."
+    }
+  ],
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "scripts/check-module-invariants.sh",
+    "docs/theorem-index.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "typst/generated/status.typ",
+    "specs/760_ladder_model_cell_stabilization_lemma/plans/02_land-salvaged-ladder-model.md",
+    "specs/760_ladder_model_cell_stabilization_lemma/summaries/02_land-salvaged-ladder-model-summary.md"
+  ],
+  "partial_progress": {
+    "stage": "phase_1_blocked",
+    "details": "Phase 1 is [BLOCKED] by ruling R1 (refuted goals); Phases 2-9 are closed. See the plan's Rollback/Contingency for the close-the-record decision.",
+    "phases_completed": 8,
+    "phases_total": 9
+  },
+  "blockers": [
+    {
+      "phase": 1,
+      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean: the filed ladderModel over ladderFrame, the object-side Adm, and ladderCell_stabilizes (both forms)",
+      "verbatim_goal": "def ladderModel (step : Q → Q → Bool) (pend : Q → Bool) (fwd) (bwd) (lab : Q → Atom → Bool) : TaskModel (ladderFrame step pend fwd bwd).toTaskFrame; the admissibility set Adm as an object condition; theorem ladderCell_stabilizes (φ : PlusFormula) … : ∀ (q : Q) (c c' n n' : ℕ) (z : ℤ), (plusSubformulaClosure φ).card ≤ c → (plusSubformulaClosure φ).card ≤ c' → (plusSubformulaClosure φ).card ≤ n → (plusSubformulaClosure φ).card ≤ n' → cellAt (ladderModel …) φ (q, c, n) z = cellAt (ladderModel …) φ (q, c', n') z, with fallback ∃ B : ℕ, ∀ q c c' n n' z, B ≤ c → … → cellAt … = cellAt …",
+      "what_was_tried": "The statement's truth was tested before any bound shape was costed: no_fwd and no_bwd_of_idle (now library theorems) show ladderFrame's fwd/bwd are unsatisfiable on the full carrier for every object, so Adm must restrict the carrier; on the admissible carrier the wired probe's cell_ne / exhibited_form_refuted / exists_form_refuted refute both forms uniformly in B. The user ruled R1 (cycle 1) and then R2 (cycle 3); this dispatch executed R2 in full (Phases 5-9).",
+      "why_it_failed": "The goals are refuted theorems, not open proofs: the gap n - c between the two ladder counters is observable through p U (r ∧ X(p ∧ X r)) because Count's idle clause reads c' = n, so bounding each counter bounds nothing the cells depend on; and the filed frame has no instances at all. Phase 1 is never re-marked by the implementer; closing the record is the user's decision (Rollback/Contingency)."
+    }
+  ],
+  "user_decision": {
+    "question": "Phases 5-9 are green and the salvage is landed; Phase 1's goals are refuted theorems. Close the record now, or keep Phase 1 as the standing [BLOCKED] record of the obstruction?",
+    "options": [
+      "Close — re-mark Phase 1 [COMPLETED WITH EXCLUSIONS] with a #### Reasoned Exclusions record whose Evidence column cites the wired probe's machine-checked theorems (no_fwd, no_bwd_of_idle, cell_ne, exhibited_form_refuted, exists_form_refuted), then complete the task",
+      "Keep — leave Phase 1 [BLOCKED] as the standing record of the obstruction; the task stays non-terminal until the successor design (task 765 / a repaired lemma) lands"
+    ],
+    "recommended": "Close — re-mark Phase 1 [COMPLETED WITH EXCLUSIONS] with a #### Reasoned Exclusions record whose Evidence column cites the wired probe's machine-checked theorems (no_fwd, no_bwd_of_idle, cell_ne, exhibited_form_refuted, exists_form_refuted), then complete the task",
+    "blocking": true
+  },
+  "next_steps": "Relay the user_decision; do not re-dispatch implement. Phase E (amending 761-763) is owned by task 765.",
+  "metadata": {
+    "session_id": "sess_1791714754_821567",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "compliance_note": "every goal declaration present with its Challenge-block signature; the literal spot-check's four misses are the keywords abbrev/sorry/theorem quoted in the Goals prose and LadderState (an abbrev the spot-check's keyword list omits)",
+    "git_checkpoint": "0e8bd5a77",
+    "phase_commits": [
+      "0bd0132be",
+      "d4ed106b0",
+      "f2e3d603e",
+      "b20ac9190",
+      "0e8bd5a77"
+    ]
+  }
+}

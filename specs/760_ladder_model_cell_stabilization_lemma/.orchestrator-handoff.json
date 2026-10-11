@@ -1,48 +1,54 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 3,
-  "summary": "Executed the plan's contingency branch in full: the twelfth wired probe specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean (no_fwd, no_bwd_of_idle, cell_ne, exhibited_form_refuted, exists_form_refuted; five #print axioms as planned) was written, wired into check-evidence-probes.sh (PASS all 30), and recorded in the RaySummary README and the theorem index; the full guarded lake build, check-module-invariants.sh, readme-lint, typst-sync-check and verify-deploy all pass. Phase 1 (the filed statement) stays [BLOCKED] by the user's R1 ruling because its goals are refuted theorems; no library module was created. The remaining choice is the successor design (R2 /revise or R3 /spawn), the user's.",
+  "dispatch_seq": 6,
+  "summary": "Ruling R2 executed in full: the eleven general declarations were transplanted verbatim from the twelfth wired probe into FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean, wired into RaySummary.lean and the regenerated FormalSystem.lean, C14-pinned at KTypeSummaryAxiomTest.lean and check-module-invariants.sh from observed #print axioms output, indexed (four theorem-index rows) and described in the RaySummary README, with the probe re-pointed at the landed declarations. Full gate green (guarded lake build 2841 jobs, probes 30/30, invariants 55 PASS, verify-deploy 0); zero debt. Phases 5-9 [COMPLETED] and committed per phase; Phase 1 stays [BLOCKED] by ruling R1, so the return is partial with the close-the-record decision surfaced.",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/760_ladder_model_cell_stabilization_lemma/summaries/01_ladder-cell-refutation-probe-summary.md",
-      "summary": "Implementation summary: Phase 1 [BLOCKED] (filed lemma refuted, R1), Phases 2-4 completed, full gate set green, no library module."
+      "path": "specs/760_ladder_model_cell_stabilization_lemma/summaries/02_land-salvaged-ladder-model-summary.md",
+      "summary": "Implementation summary: Phases 5-9 completed (R2 salvage landed, full gate green), Phase 1 [BLOCKED] (refuted lemma), close-the-record decision surfaced."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean",
+      "summary": "New library module: no_fwd, no_bwd_of_idle, Adm, LadderState, ladderState_nonempty, RladAdm, RladAdm_fwd, RladAdm_bwd, ladderFrameAdm, ladderFrameAdm_isRegular, ladderModel — transplanted verbatim from the twelfth wired probe."
     },
     {
       "type": "implementation",
       "path": "specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean",
-      "summary": "Twelfth wired probe (Probe760): ladderFrame has no instances; cells do not stabilize in (c, n) past any bound."
+      "summary": "Probe re-pointed at the library declarations; three fixture-bound refutation theorems unchanged."
     }
   ],
-  "phases_completed": 3,
-  "phases_total": 4,
+  "phases_completed": 8,
+  "phases_total": 9,
   "plan_markers_verified": true,
   "blockers": [
     {
       "phase": 1,
-      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean (not created): ladderModel over ladderFrame, Adm, ladderCell_stabilizes",
-      "verbatim_goal": "def ladderModel (step : Q → Q → Bool) (pend : Q → Bool) (fwd) (bwd) (lab : Q → Atom → Bool) : TaskModel (ladderFrame step pend fwd bwd).toTaskFrame; the admissibility set Adm — \"which objects supply ladderFrame's fwd/bwd; a pending state at c = 0 needs a discharging successor\"; theorem ladderCell_stabilizes (φ : PlusFormula) … : ∀ (q : Q) (c c' n n' : ℕ) (z : ℤ), (plusSubformulaClosure φ).card ≤ c → (plusSubformulaClosure φ).card ≤ c' → (plusSubformulaClosure φ).card ≤ n → (plusSubformulaClosure φ).card ≤ n' → cellAt (ladderModel …) φ (q, c, n) z = cellAt (ladderModel …) φ (q, c', n') z, with fallback ∃ B : ℕ, ∀ q c c' n n' z, B ≤ c → … → cellAt … = cellAt …",
-      "what_was_tried": "The statement's truth was tested before any bound shape was costed (research decision D1): a compiled prototype proved no_fwd and no_bwd_of_idle (ladderFrame's fwd/bwd unsatisfiable on the full carrier Q × ℕ × ℕ for every object), then, on the repaired carrier {x // x.2.1 ∈ Adm pend x.1}, cell_ne (cellAt (a, B, B+1) ≠ cellAt (a, B, B+2) for every B on the two-state object), refuting the exhibited-bound form and the ∃ B fallback alike. The user ruled R1 (cycle 1); this dispatch landed the obstruction as the twelfth wired probe and the README/theorem-index records.",
-      "why_it_failed": "The goals are refuted theorems, not open proofs: the gap n - c between the two ladder counters is observable through p U (r ∧ X(p ∧ X r)) because Count's idle clause reads c' = n, so bounding each counter bounds nothing the cells depend on; and the filed frame has no instances at all. What remains is a user decision on the successor design (R2 /revise: land the sound parts and the negative theorem in LadderModel.lean; R3 /spawn: a repaired positive lemma over (q, min c B', min n B', clip (n - c))) — not researchable by an agent, and already reserved to the user by R1."
+      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean: the filed ladderModel over ladderFrame, the object-side Adm, and ladderCell_stabilizes (both forms)",
+      "verbatim_goal": "def ladderModel (step : Q → Q → Bool) (pend : Q → Bool) (fwd) (bwd) (lab : Q → Atom → Bool) : TaskModel (ladderFrame step pend fwd bwd).toTaskFrame; the admissibility set Adm as an object condition; theorem ladderCell_stabilizes (φ : PlusFormula) … : ∀ (q : Q) (c c' n n' : ℕ) (z : ℤ), (plusSubformulaClosure φ).card ≤ c → (plusSubformulaClosure φ).card ≤ c' → (plusSubformulaClosure φ).card ≤ n → (plusSubformulaClosure φ).card ≤ n' → cellAt (ladderModel …) φ (q, c, n) z = cellAt (ladderModel …) φ (q, c', n') z, with fallback ∃ B : ℕ, ∀ q c c' n n' z, B ≤ c → … → cellAt … = cellAt …",
+      "what_was_tried": "The statement's truth was tested before any bound shape was costed: no_fwd and no_bwd_of_idle (now library theorems) show ladderFrame's fwd/bwd are unsatisfiable on the full carrier for every object, so Adm must restrict the carrier; on the admissible carrier the wired probe's cell_ne / exhibited_form_refuted / exists_form_refuted refute both forms uniformly in B. The user ruled R1 (cycle 1) and then R2 (cycle 3); this dispatch executed R2 in full (Phases 5-9).",
+      "why_it_failed": "The goals are refuted theorems, not open proofs: the gap n - c between the two ladder counters is observable through p U (r ∧ X(p ∧ X r)) because Count's idle clause reads c' = n, so bounding each counter bounds nothing the cells depend on; and the filed frame has no instances at all. Phase 1 is never re-marked by the implementer; closing the record is the user's decision (Rollback/Contingency)."
     }
   ],
   "decisions_made": [
-    "Phase 1 left [BLOCKED]; Phases 2-4 executed exactly as planned; no library module, no edit to RunLayer.lean, RaySummary.lean, FormalSystem.lean, KTypeSummaryAxiomTest.lean or the C14 heredocs.",
-    "Plan-level '- **Status**:' field not hand-edited (owned by update-plan-status.sh via postflight); the blocked outcome is carried here and in .return-meta.json.",
-    "check-task-references.sh repo-wide exit 1 (198 pre-existing Boneyard/ and Tests/BimodalTest citations) recorded as pre-existing debt, not a regression; every touched file passes the lint individually."
+    "import FormalSystem.Semantics.TaskModel added beside RunLayer in the new module (RunLayer's closure does not reach TaskModel/Atom); AnchorLayer still not imported.",
+    "RladAdm_fwd/RladAdm_bwd recorded in C23's class (c) leave-alone set rather than renamed; three generated README inventory blocks and status.typ regenerated.",
+    "ladderState_nonempty pinned at its observed [Classical.choice]; Adm/LadderState/RladAdm (no axioms) get no C14 heredoc line.",
+    "Phase 1 left [BLOCKED]; plan-level Status field not hand-edited.",
+    "Plan-revision sentinel (dispatch 5 aux, revised_at 1791715037) observed mid-Phase 5: citation re-anchoring only, no phase change; later phases re-read from the revised text."
   ],
   "user_decision": {
-    "question": "Phase 1 is blocked on the successor design, as ruled (R1). Which successor should be filed for the refuted stabilization lemma and the index 761-763 depend on?",
+    "question": "Phases 5-9 are green and the salvage is landed; Phase 1's goals are refuted theorems. Close the record now, or keep Phase 1 as the standing [BLOCKED] record of the obstruction?",
     "options": [
-      "R2 — /revise 760: land Adm, LadderState, RladAdm, ladderFrameAdm, ladderModel and the negative theorem in RaySummary/LadderModel.lean with C14 pins and theorem-index rows; re-state 761-763's index over whatever replaces Q × Fin (B+1) × Fin (B+1)",
-      "R3 — /spawn 760: a research-first record for a repaired positive lemma over (q, min c B', min n B', clip (n - c)), leaving the library untouched until it is stated",
-      "Hold — leave the record [BLOCKED] with the obstruction landed and decide later"
+      "Close — re-mark Phase 1 [COMPLETED WITH EXCLUSIONS] with a #### Reasoned Exclusions record whose Evidence column cites the wired probe's machine-checked theorems (no_fwd, no_bwd_of_idle, cell_ne, exhibited_form_refuted, exists_form_refuted), then complete the task",
+      "Keep — leave Phase 1 [BLOCKED] as the standing record of the obstruction; the task stays non-terminal until the successor design (task 765 / a repaired lemma) lands"
     ],
-    "recommended": "R2 — /revise 760: land Adm, LadderState, RladAdm, ladderFrameAdm, ladderModel and the negative theorem in RaySummary/LadderModel.lean with C14 pins and theorem-index rows; re-state 761-763's index over whatever replaces Q × Fin (B+1) × Fin (B+1)",
+    "recommended": "Close — re-mark Phase 1 [COMPLETED WITH EXCLUSIONS] with a #### Reasoned Exclusions record whose Evidence column cites the wired probe's machine-checked theorems (no_fwd, no_bwd_of_idle, cell_ne, exhibited_form_refuted, exists_form_refuted), then complete the task",
     "blocking": true
   },
   "continuation_path": null,
-  "next_action_hint": "Do not re-dispatch implement: Phase 1 is [BLOCKED] by design and the three executable phases are closed. Relay the user_decision (R2 /revise 760 or R3 /spawn 760); 761-763 stay held until the successor index is re-stated.",
-  "git_checkpoint": "c691f3dba"
+  "next_action_hint": "Do not re-dispatch implement: Phases 5-9 are closed and Phase 1 is [BLOCKED] by design. Relay the user_decision (close with Reasoned Exclusions, or keep [BLOCKED]). Phase E (761-763 amendments) is task 765's.",
+  "git_checkpoint": "0e8bd5a77"
 }
