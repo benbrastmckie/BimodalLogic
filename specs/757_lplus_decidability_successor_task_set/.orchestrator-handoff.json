@@ -1,19 +1,18 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote the implementation plan for task 757: five sequential phases totalling 7 hours that re-verify every (C)/(S)/(W) anchor by compile record and probe gate, author the followup-scope-spec in the 721 precedent format (Sections 0, A-D, H), file the six statement-shaped successor records T1-T6 through state-write.sh with dependencies and file_scope set at creation, and hand-edit ROADMAP Stage 1 before the full gate. The plan touches only the four paths already in 757's declared file_scope; the Lean Challenge Statements section is deliberately absent because the task proves nothing.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "All five plan phases complete. The followup-scope-spec (Section 0 re-verified this round; Sections A-D; Section H) is written, six successor tasks 758-763 are filed via state-write.sh with typed dependencies and file-level file_scope, and ROADMAP Stage 1 sequences them in three batches. No Lean file edited; full lake build, verify-deploy, validate-state and validate-artifact all exit 0; one plan item altered (task-reference lint exits 1 on pre-existing debt in untouched files).",
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md",
-      "summary": "Five-phase plan: Section 0 re-verification, Sections A-D, Section H six records, filing T1-T6 in Kahn order, ROADMAP Stage 1 edit and full gate."
-    }
+    {"type": "summary", "path": "specs/757_lplus_decidability_successor_task_set/summaries/01_lplus-successor-task-set-summary.md", "summary": "Implementation summary: spec written, 758-763 filed, ROADMAP Stage 1 sequenced."},
+    {"type": "implementation", "path": "specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md", "summary": "The followup-scope-spec with Section 0, A-D, H, Stage 0, disclosure, trace."},
+    {"type": "implementation", "path": "specs/757_lplus_decidability_successor_task_set/successor-records.json", "summary": "The six filed records as data."}
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Run /implement 757; Phase 1 begins with lake-build-guard.sh status and the scratch compile record importing FormalSystem."
+  "next_action_hint": "Dispatch /orchestrate 758,759 --hard per ROADMAP Stage 1.",
+  "git_checkpoint": "124056379"
 }

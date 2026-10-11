@@ -1,7 +1,7 @@
 # Implementation Plan: Task #757
 
 - **Task**: 757 - Research, design, and file the successor task set that carries L+ decidability — the unfiled frontier after the (C)/(S)/(W) partial landings
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/757_lplus_decidability_successor_task_set/reports/01_lplus-successor-task-set.md

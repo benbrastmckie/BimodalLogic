@@ -1,33 +1,67 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-10T23:18:53Z",
+  "completed_at": "2026-10-11T00:01:16Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_count_introduced": 0,
+    "vacuous_note": "Single pre-existing heuristic hit: FormalSystem/Examples/TemporalStructures.lean int_domain_universal := trivial, present at base commit 84be907f1 (2026-09-22), a genuine proof of a literally-true domain predicate; this task changed 0 Lean files.",
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "build_jobs": 2840,
+    "probe_gate": "27 PASS, 1 SKIP, exit 0",
+    "verify_deploy_full_exit": 0,
+    "validate_state_exit": 0,
+    "validate_artifact_plan_exit": 0
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md",
-      "summary": "Five sequential phases (7 h): re-verify every anchor and write the spec's Section 0; author Sections A-D (three obligations and the lift); draft Section H's six statement-shaped records T1-T6 with typed edges and file_scope; file them via state-write.sh in Kahn order and record the numbers; hand-edit ROADMAP Stage 1 and run the full gate. No file outside specs/** is touched."
-    }
-  ],
-  "next_steps": "Run /implement 757 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1791672686_eb0b07_757",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 7,
-    "dependency_waves": [[1], [2], [3], [4], [5]]
-  },
-  "memory_candidates": [
+      "type": "summary",
+      "path": "specs/757_lplus_decidability_successor_task_set/summaries/01_lplus-successor-task-set-summary.md",
+      "summary": "Six L+ decidability successor tasks (758-763) designed, specified in the 721-format followup-scope-spec with a re-verified Section 0, filed via state-write.sh with typed edges and file_scope, and sequenced in ROADMAP Stage 1."
+    },
     {
-      "content": "A lean4-typed task whose deliverable is a specification plus filed task records (it proves nothing and names no Lean identifier under Goals) must OMIT the plan's Lean Challenge Statements section entirely rather than include it empty: lean-challenge-snapshot.sh exits 71 on a present-but-empty section and also exits 71 under its git-baseline fallback when Goals carries no identifiers, so --compare is inapplicable to such a task and should be stated so in the plan's Decisions. plan-format.md's 'present only when task_type is lean4' conditional does not state this zero-goals case.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["lean-challenge-statements", "lean4-plan", "no-theorem-deliverable", "lean-challenge-snapshot", "compare-flag", "plan-format"]
+      "type": "implementation",
+      "path": "specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md",
+      "summary": "The followup-scope-spec: Section 0 verification record, Sections A-D, Section H (758-763), Stage 0 described-not-moved, State-write disclosure, Trace table."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/757_lplus_decidability_successor_task_set/successor-records.json",
+      "summary": "The six records as data; the filed descriptions are byte-identical to it."
     }
   ],
   "modified_files": [
-    "specs/757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md"
+    "specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md",
+    "specs/757_lplus_decidability_successor_task_set/successor-records.json",
+    "specs/757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md",
+    "specs/757_lplus_decidability_successor_task_set/summaries/01_lplus-successor-task-set-summary.md",
+    "specs/state.json",
+    "specs/TODO.md",
+    "specs/ROADMAP.md"
   ],
-  "dispatch_seq": 2
+  "completion_data": {
+    "completion_summary": "Re-verified every anchor of the three OPEN L+ decidability obligations against the tree (74-line compile record at exit 0, probe gate 27 PASS + 1 SKIP), wrote the followup-scope-spec in the 721 format, and filed six successor tasks 758-763 in Kahn order with typed dependencies, file-level file_scope and statement-shaped descriptions; ROADMAP Stage 1 now sequences them as 758,759 then 760,761 then 762,763. No Lean file edited; no Stage 0 or sliced-certificate task moved.",
+    "roadmap_items": []
+  },
+  "next_steps": "Dispatch /orchestrate 758,759 --hard (ROADMAP Stage 1); 759 is the highest-information probe and a Hit-level negative there is a Stage 0 user ruling.",
+  "metadata": {
+    "session_id": "sess_1791672686_eb0b07",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "skipped",
+    "compliance_note": "Plan Goals name no Lean identifier (Lean Intent: false; D-plan-1); goal_names extracted empty.",
+    "phases_completed": 5,
+    "phases_total": 5,
+    "final_commit": "124056379",
+    "plan_revision_sentinel_seen": false
+  }
 }

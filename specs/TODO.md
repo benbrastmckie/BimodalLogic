@@ -6,12 +6,12 @@ next_project_number: 764
 
 ## Task Order
 
-*Updated 2026-10-10. Generated from state.json dependency graph.*
+*Updated 2026-10-11. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,757,758 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,758 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,759 | 298,464,502,616,758 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,760 | 231,465,497,759 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543,761 | 428,498,499,500,760 | algebraic-representation, decidability, metalogic |
@@ -77,7 +77,6 @@ next_project_number: 764
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-757 [IMPLEMENTING] — Research, design, and file the successor task set that...
 758 [NOT STARTED] — STATEMENT. A wired probe on the LIBRARY fixture...
   └─ 759 [NOT STARTED] — STATEMENT. A wired probe on the LIBRARY fixture...
     └─ 760 [NOT STARTED] — STATEMENT (library, over a general finite object; new module...
@@ -260,12 +259,13 @@ COSTABLE: yes — 400-800 lines, 1-2 implement dispatches (basis: `backward-dual
 ---
 
 ### 757. Lplus decidability successor task set
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [757_lplus_decidability_successor_task_set/reports/01_lplus-successor-task-set.md]
 - **Plan**: [757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md]
+- **Summary**: [757_lplus_decidability_successor_task_set/summaries/01_lplus-successor-task-set-summary.md]
 
 **Description**: Research, design, and file the successor task set that carries L+ decidability — the unfiled frontier after the (C)/(S)/(W) partial landings
 
