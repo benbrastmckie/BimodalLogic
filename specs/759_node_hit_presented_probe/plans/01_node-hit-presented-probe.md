@@ -546,36 +546,36 @@ exiting 0 is the complete covering check — single out-of-graph file, no librar
 
 ---
 
-### Phase 7: The Run Characterization [NOT STARTED]
+### Phase 7: The Run Characterization [COMPLETED]
 
 **Goal**: Identify the presentation's anchored runs with exactly `{cN t i : i ≤ L}` — the `⊆`
 direction (every anchored run traces some `cN t i`, `i ≤ L`) and the `⊇` direction (every
 `cN t i`, `i ≤ L`, is the trace of an anchored run).
 
 **Tasks**:
-- [ ] Section docstring: the excluded run shapes and the lemma discharging each (a run never
+- [x] Section docstring: the excluded run shapes and the lemma discharging each (a run never
       leaving `A` — `IsRun`'s `now` clause; a run passing `N₊` when `L = 0` — `stepN_N₊` gives
       `5 ≤ r.val < 5`; a loop inside the chain — `stepN_chain` strictly increases the index).
-- [ ] Backward rigidity: `run_bwd_A (L) {ρ} (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ) : ∀ z, z < t → (ρ z).val = 0`
+- [x] Backward rigidity: `run_bwd_A (L) {ρ} (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ) : ∀ z, z < t → (ρ z).val = 0`
       (from `labN_now` at `t`, `stepN_pred_now`, then downward induction with `stepN_pred_A`;
       model A's `inl_bwd_pre`).
-- [ ] Forward determinism after `N₀`: `run_after_N₀ (hρ) (h : (ρ t).val = 1) : (ρ (t + 1)).val = 3 ∧ ∀ z, t + 2 ≤ z → (ρ z).val = 4`.
-- [ ] Forward chain after `N₊`: `run_after_N₊ (hρ) (h : (ρ t).val = 2) : ∃ j, 5 ≤ j ∧ j ≤ L + 4 ∧ (∀ a : ℕ, j + a ≤ L + 4 → (ρ (t + 1 + a)).val = j + a) ∧ (ρ (t + 1 + ((L + 4 - j : ℕ) : ℤ) + 1)).val = 3 ∧ ∀ z, t + 1 + ((L + 4 - j : ℕ) : ℤ) + 2 ≤ z → (ρ z).val = 4`
+- [x] Forward determinism after `N₀`: `run_after_N₀ (hρ) (h : (ρ t).val = 1) : (ρ (t + 1)).val = 3 ∧ ∀ z, t + 2 ≤ z → (ρ z).val = 4`.
+- [x] Forward chain after `N₊`: `run_after_N₊ (hρ)` *(deviation: altered — named `run_after_Npos` (identifier constraint); the two forward lemmas and the witness-run trace equalities all go through one shared pointwise bridge `runTrace_eq_cN` (positions → `cN t i`), added so the `⊆` and `⊇` directions do not duplicate the seven-case comparison)* `(hρ) (h : (ρ t).val = 2) : ∃ j, 5 ≤ j ∧ j ≤ L + 4 ∧ (∀ a : ℕ, j + a ≤ L + 4 → (ρ (t + 1 + a)).val = j + a) ∧ (ρ (t + 1 + ((L + 4 - j : ℕ) : ℤ) + 1)).val = 3 ∧ ∀ z, t + 1 + ((L + 4 - j : ℕ) : ℤ) + 2 ≤ z → (ρ z).val = 4`
       (model A's `inr_fwd_index`/`inr_post_threshold`; `j := (ρ (t + 1)).val` via `stepN_N₊`,
       which also yields `1 ≤ L`).
-- [ ] `runTrace_mem_of_isRun (t) (L) (ρ) (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ) : ∃ i, i ≤ L ∧ runTrace (labN L) ρ = cN t i`
+- [x] `runTrace_mem_of_isRun (t) (L) (ρ) (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ) : ∃ i, i ≤ L ∧ runTrace (labN L) ρ = cN t i`
       — case on `(ρ t).val ∈ {1, 2}` (`labN_now`, `hρ.2 t`); `i := 0` or `i := L - j + 5`
       (so that `i - 1 = L + 4 - j`); `funext ℓ z; propext`; compare `labN L (ρ z) ℓ` against the
       positional read-outs `cN_below`, `cN_seam_zero`/`cN_seam_pos`, `cN_run`, `cN_one`,
       `cN_zero`, `cN_above` by cases on `z`'s position (`omega`).
-- [ ] Witness runs: `def runZero (t) (z : ℤ) : QN L` (`A` below `t`, `N₀` at `t`, `Z` at `t + 1`,
+- [x] Witness runs: `def runZero (t) (z : ℤ) : QN L` (`A` below `t`, `N₀` at `t`, `Z` at `t + 1`,
       `P` after), `runZero_isRun`, `runTrace_runZero : runTrace (labN L) (runZero t) = cN t 0`;
       `def runPos (L) (t) (i : ℕ) (z : ℤ) : QN L` for `1 ≤ i ≤ L` (`A` below `t`, `N₊` at `t`,
       `C_(L - i + 1 + a)` at `t + 1 + a` for `a < i`, i.e. index `L + 5 - i + a`, `Z` at
       `t + i + 1`, `P` after), `runPos_isRun (hi : 1 ≤ i) (hiL : i ≤ L)`,
       `runTrace_runPos : runTrace (labN L) (runPos L t i) = cN t i`.
-- [ ] `exists_isRun_runTrace (t) (L) : ∀ i, i ≤ L → ∃ ρ : ℤ → QN L, IsRun (labN L) (stepN L) (clNow Φ) t ρ ∧ runTrace (labN L) ρ = cN t i`.
-- [ ] Compile; commit.
+- [x] `exists_isRun_runTrace (t) (L) : ∀ i, i ≤ L → ∃ ρ : ℤ → QN L, IsRun (labN L) (stepN L) (clNow Φ) t ρ ∧ runTrace (labN L) ρ = cN t i`.
+- [x] Compile; commit.
 
 **Timing**: 2 hours
 

@@ -994,6 +994,287 @@ theorem stepN_iff (L : ℕ) (q r : QN L) :
         ∨ (q.val = 3 ∧ r.val = 4) ∨ (q.val = 4 ∧ r.val = 4)) := by
   simp only [stepN, decide_eq_true_eq]
 
+
+/-! ## The run characterization
+
+The presentation's anchored runs trace EXACTLY the window — `cN t i` for `i ≤ L`, and nothing
+else. `hitCl_eq_truncated_node` says the seam's realized triples come from that window,
+`mem_hitOf_iff` says `hitOf (labN L) (stepN L) (clNow Φ) k` collects the family triples of the
+presentation's RUN traces, and the two sides meet only if the run traces are the same family.
+
+**The excluded run shapes, each discharged by a named lemma rather than by prose.** A run that
+never leaves `A` (`IsRun`'s `now` clause forces `N₀` or `N₊` at `z = t`: `isRun_now`); a run passing
+`N₊` when `L = 0` (`stepN_Npos` gives `5 ≤ r.val < 5`, so `run_after_Npos` already yields `1 ≤ L`
+through `j ≤ L + 4`); a loop inside the chain (`stepN_chain` strictly increases the index until
+`C_L`, which steps to `Z`). Backward from the seam the run is pinned at `A` (`run_bwd_A`: the only
+predecessor of `N₀`, `N₊` and `A` is `A`); forward it is deterministic after `N₀`
+(`run_after_N₀`) and, after `N₊`, determined by its chain entry `j` (`run_after_Npos`).
+
+**The trace comparison is one lemma, `runTrace_eq_cN`**, consumed in both directions: a run whose
+states sit at the table's positions for index `i` traces `cN t i`, pointwise by the positional
+read-outs `cN_below`/`cN_seam_zero`/`cN_seam_pos`/`cN_run`/`cN_one`/`cN_zero`/`cN_above` against
+the labelling bridge `vecN_*`. Nothing here evaluates a `kTypeOf`. -/
+
+/-- The `now` clause of `IsRun`, read through `labN_now`. -/
+theorem isRun_now (L : ℕ) (t : ℤ) {ρ : ℤ → QN L} (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ)
+    (z : ℤ) : ((ρ z).val = 1 ∨ (ρ z).val = 2) ↔ z = t := by
+  rw [← labN_now L (ρ z)]
+  exact hρ.2 z
+
+/-- **Backward rigidity.** The only predecessor of `N₀` and `N₊` is `A`, and `A`'s only
+predecessor is `A`, so an anchored run is constantly `A` strictly before the seam. -/
+theorem run_bwd_A (L : ℕ) (t : ℤ) {ρ : ℤ → QN L} (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ) :
+    ∀ z, z < t → (ρ z).val = 0 := by
+  have ht : (ρ t).val = 1 ∨ (ρ t).val = 2 := (isRun_now L t hρ t).mpr rfl
+  have key : ∀ n : ℕ, (ρ (t - 1 - (n : ℤ))).val = 0 := by
+    intro n
+    induction n with
+    | zero =>
+        simp only [Nat.cast_zero, sub_zero]
+        have h := hρ.1 (t - 1)
+        rw [show t - 1 + 1 = t by ring] at h
+        exact stepN_pred_now L h ht
+    | succ m ih =>
+        rw [show t - 1 - (((m + 1 : ℕ) : ℤ)) = t - 1 - ((m : ℕ) : ℤ) - 1 by push_cast; ring]
+        have h := hρ.1 (t - 1 - ((m : ℕ) : ℤ) - 1)
+        rw [show t - 1 - ((m : ℕ) : ℤ) - 1 + 1 = t - 1 - ((m : ℕ) : ℤ) by ring] at h
+        exact stepN_pred_A L h ih
+  intro z hz
+  have := key (t - 1 - z).toNat
+  rwa [show t - 1 - (((t - 1 - z).toNat : ℕ) : ℤ) = z by omega] at this
+
+/-- `P` absorbs, for any number of steps. -/
+theorem run_P_absorb (L : ℕ) (t : ℤ) {ρ : ℤ → QN L}
+    (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ) :
+    ∀ (n : ℕ) (z : ℤ), (ρ z).val = 4 → (ρ (z + (n : ℤ))).val = 4 := by
+  intro n
+  induction n with
+  | zero => intro z h; simpa using h
+  | succ m ih =>
+      intro z h
+      rw [show z + (((m + 1 : ℕ) : ℤ)) = z + ((m : ℕ) : ℤ) + 1 by push_cast; ring]
+      exact stepN_P L (hρ.1 _) (ih z h)
+
+/-- **Forward from `N₀`**: `Z` at `t + 1`, then `P` forever. -/
+theorem run_after_N₀ (L : ℕ) (t : ℤ) {ρ : ℤ → QN L}
+    (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ) (h : (ρ t).val = 1) :
+    (ρ (t + 1)).val = 3 ∧ ∀ z, t + 2 ≤ z → (ρ z).val = 4 := by
+  have h3 : (ρ (t + 1)).val = 3 := stepN_N₀ L (hρ.1 t) h
+  have h4 : (ρ (t + 1 + 1)).val = 4 := stepN_Z L (hρ.1 (t + 1)) h3
+  refine ⟨h3, fun z hz => ?_⟩
+  have := run_P_absorb L t hρ (z - (t + 1 + 1)).toNat (t + 1 + 1) h4
+  rwa [show t + 1 + 1 + (((z - (t + 1 + 1)).toNat : ℕ) : ℤ) = z by omega] at this
+
+/-- **Forward from `N₊`**: the run enters the chain at some `C_j` (`5 ≤ j ≤ L + 4`, which already
+forces `1 ≤ L`), climbs it one index per step to `C_L = L + 4`, then `Z`, then `P` forever. -/
+theorem run_after_Npos (L : ℕ) (t : ℤ) {ρ : ℤ → QN L}
+    (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ) (h : (ρ t).val = 2) :
+    ∃ j : ℕ, 5 ≤ j ∧ j ≤ L + 4
+      ∧ (∀ a : ℕ, j + a ≤ L + 4 → (ρ (t + 1 + (a : ℤ))).val = j + a)
+      ∧ (ρ (t + 1 + ((L + 4 - j : ℕ) : ℤ) + 1)).val = 3
+      ∧ ∀ z, t + 1 + ((L + 4 - j : ℕ) : ℤ) + 2 ≤ z → (ρ z).val = 4 := by
+  have hj5 : 5 ≤ (ρ (t + 1)).val := stepN_Npos L (hρ.1 t) h
+  have hjL : (ρ (t + 1)).val ≤ L + 4 := by have := (ρ (t + 1)).isLt; omega
+  have key : ∀ a : ℕ, (ρ (t + 1)).val + a ≤ L + 4 →
+      (ρ (t + 1 + (a : ℤ))).val = (ρ (t + 1)).val + a := by
+    intro a
+    induction a with
+    | zero => intro _; simp
+    | succ m ih =>
+        intro hm
+        have hprev := ih (by omega)
+        rcases stepN_chain L (hρ.1 (t + 1 + (m : ℤ))) (by omega) with ⟨-, hr⟩ | ⟨hq, -⟩
+        · rw [show t + 1 + (((m + 1 : ℕ) : ℤ)) = t + 1 + ((m : ℕ) : ℤ) + 1 by push_cast; ring, hr,
+            hprev]
+          omega
+        · omega
+  have hlast : (ρ (t + 1 + ((L + 4 - (ρ (t + 1)).val : ℕ) : ℤ))).val = L + 4 := by
+    rw [key (L + 4 - (ρ (t + 1)).val) (by omega)]
+    omega
+  have hZ : (ρ (t + 1 + ((L + 4 - (ρ (t + 1)).val : ℕ) : ℤ) + 1)).val = 3 := by
+    rcases stepN_chain L (hρ.1 _) (by omega : 5 ≤ (ρ (t + 1 + ((L + 4 - (ρ (t + 1)).val : ℕ) : ℤ))).val)
+      with ⟨hq, -⟩ | ⟨-, hr⟩
+    · omega
+    · exact hr
+  have h4 : (ρ (t + 1 + ((L + 4 - (ρ (t + 1)).val : ℕ) : ℤ) + 1 + 1)).val = 4 :=
+    stepN_Z L (hρ.1 _) hZ
+  refine ⟨(ρ (t + 1)).val, hj5, hjL, key, hZ, fun z hz => ?_⟩
+  have := run_P_absorb L t hρ (z - (t + 1 + ((L + 4 - (ρ (t + 1)).val : ℕ) : ℤ) + 1 + 1)).toNat _ h4
+  rwa [show t + 1 + ((L + 4 - (ρ (t + 1)).val : ℕ) : ℤ) + 1 + 1
+      + (((z - (t + 1 + ((L + 4 - (ρ (t + 1)).val : ℕ) : ℤ) + 1 + 1)).toNat : ℕ) : ℤ) = z by omega]
+    at this
+
+/-! ### The trace comparison -/
+
+/-- **A run at the table's positions for index `i` traces `cN t i`.** `A` strictly below the
+seam; `N₀` (if `i = 0`) or `N₊` (if `1 ≤ i`) at the seam; `ℓ₂`-states on `[t + 1, t + i)`; an
+`ℓ₁`-state at `t + i` (when `1 ≤ i`); `Z` at `t + i + 1`; `P` above. The marker correspondence is
+`IsRun`'s own `now` clause. Pointwise: `labN_letter` to the state's vector, the `vecN_*` bridge on
+the left, the `cN_*` read-outs on the right. -/
+theorem runTrace_eq_cN (L : ℕ) (t : ℤ) (i : ℕ) (ρ : ℤ → QN L)
+    (hnow : ∀ z, labN L (ρ z) (clNow Φ) = true ↔ z = t)
+    (hA : ∀ z, z < t → (ρ z).val = 0)
+    (hseam : (ρ t).val = if i = 0 then 1 else 2)
+    (hrun : ∀ z, t + 1 ≤ z → z < t + i → vecN L (ρ z) = ℓ₂)
+    (hone : 1 ≤ i → vecN L (ρ (t + i)) = ℓ₁)
+    (hZ : (ρ (t + i + 1)).val = 3)
+    (hP : ∀ z, t + i + 1 < z → (ρ z).val = 4) :
+    runTrace (labN L) ρ = cN t i := by
+  funext ℓ z
+  apply propext
+  by_cases hℓ : ℓ = clNow Φ
+  · subst hℓ
+    show labN L (ρ z) (clNow Φ) = true ↔ cN t i (clNow Φ) z
+    rw [hnow z, cN_now]
+  · show labN L (ρ z) ℓ = true ↔ cN t i ℓ z
+    rw [labN_letter L (ρ z) ℓ hℓ]
+    rcases lt_trichotomy z t with hz | hz | hz
+    · rw [vecN_A L _ (hA z hz), cN_below t i z hz]
+    · subst hz
+      by_cases hi : i = 0
+      · subst hi
+        rw [if_pos rfl] at hseam
+        rw [vecN_N₀ L _ hseam, cN_seam_zero]
+        simp only [hℓ, false_or]
+      · rw [if_neg hi] at hseam
+        rw [vecN_Npos L _ hseam, cN_seam_pos z i (by omega)]
+        simp only [hℓ, false_or]
+    · rcases lt_trichotomy z (t + i) with hz' | hz' | hz'
+      · rw [hrun z (by omega) hz', cN_run t i z (by omega) hz']
+      · subst hz'
+        rw [hone (by omega), cN_one t i (by omega)]
+      · rcases lt_or_eq_of_le (show t + i + 1 ≤ z by omega) with hz'' | hz''
+        · rw [vecN_P L _ (hP z hz''), cN_above t i z hz'']
+        · subst hz''
+          rw [vecN_Z L _ hZ, cN_zero]
+
+/-- **Run characterization, `⊆`.** Every anchored run of the presentation traces `cN t i` for
+some `i ≤ L`: `i = 0` through `N₀`, `i = L - j + 5` through `N₊` with chain entry `j`. -/
+theorem runTrace_mem_of_isRun (t : ℤ) (L : ℕ) (ρ : ℤ → QN L)
+    (hρ : IsRun (labN L) (stepN L) (clNow Φ) t ρ) :
+    ∃ i : ℕ, i ≤ L ∧ runTrace (labN L) ρ = cN t i := by
+  have hA := run_bwd_A L t hρ
+  rcases (isRun_now L t hρ t).mpr rfl with h1 | h2
+  · obtain ⟨hZ, hP⟩ := run_after_N₀ L t hρ h1
+    refine ⟨0, Nat.zero_le L, runTrace_eq_cN L t 0 ρ hρ.2 hA ?_ ?_ ?_ ?_ ?_⟩
+    · simpa using h1
+    · intro z hz hz'
+      push_cast at hz'
+      omega
+    · intro h
+      omega
+    · simpa using hZ
+    · intro z hz
+      exact hP z (by push_cast at hz; omega)
+  · obtain ⟨j, hj5, hjL, hchain, hZ, hP⟩ := run_after_Npos L t hρ h2
+    refine ⟨L + 5 - j, by omega, runTrace_eq_cN L t (L + 5 - j) ρ hρ.2 hA ?_ ?_ ?_ ?_ ?_⟩
+    · rw [if_neg (by omega)]
+      exact h2
+    · intro z hz hz'
+      have ha := hchain (z - t - 1).toNat (by omega)
+      rw [show t + 1 + (((z - t - 1).toNat : ℕ) : ℤ) = z by omega] at ha
+      exact vecN_chain L _ (by omega) (by omega)
+    · intro _
+      have ha := hchain (L + 4 - j) (by omega)
+      rw [show t + 1 + ((L + 4 - j : ℕ) : ℤ) = t + ((L + 5 - j : ℕ) : ℤ) by omega] at ha
+      exact vecN_last L _ (by omega) (by omega)
+    · rw [show t + ((L + 5 - j : ℕ) : ℤ) + 1 = t + 1 + ((L + 4 - j : ℕ) : ℤ) + 1 by omega]
+      exact hZ
+    · intro z hz
+      exact hP z (by omega)
+
+/-! ### The witnessing runs -/
+
+/-- The run tracing `cN t 0`: `A` below `t`, `N₀` at `t`, `Z` at `t + 1`, `P` after. -/
+def runZero (L : ℕ) (t : ℤ) (z : ℤ) : QN L :=
+  ⟨if z < t then 0 else if z = t then 1 else if z = t + 1 then 3 else 4, by split_ifs <;> omega⟩
+
+theorem runZero_val (L : ℕ) (t z : ℤ) :
+    (runZero L t z).val = if z < t then 0 else if z = t then 1 else if z = t + 1 then 3 else 4 :=
+  rfl
+
+theorem runZero_isRun (L : ℕ) (t : ℤ) : IsRun (labN L) (stepN L) (clNow Φ) t (runZero L t) := by
+  refine ⟨fun z => ?_, fun z => ?_⟩
+  · rw [stepN_iff, runZero_val, runZero_val]
+    split_ifs <;> omega
+  · rw [labN_now, runZero_val]
+    split_ifs <;> first
+      | exact iff_of_true (Or.inl rfl) ‹_›
+      | exact iff_of_false (fun h => by rcases h with h | h <;> omega) (by omega)
+
+theorem runTrace_runZero (L : ℕ) (t : ℤ) : runTrace (labN L) (runZero L t) = cN t 0 := by
+  refine runTrace_eq_cN L t 0 _ (runZero_isRun L t).2 ?_ ?_ ?_ ?_ ?_ ?_
+  · intro z hz
+    rw [runZero_val, if_pos hz]
+  · rw [runZero_val, if_neg (lt_irrefl t), if_pos rfl, if_pos rfl]
+  · intro z hz hz'
+    push_cast at hz'
+    omega
+  · intro h
+    omega
+  · rw [runZero_val]
+    split_ifs <;> omega
+  · intro z hz
+    rw [runZero_val]
+    split_ifs <;> omega
+
+/-- The run tracing `cN t i` for `1 ≤ i ≤ L`: `A` below `t`, `N₊` at `t`, the chain from
+`C_(L - i + 1)` (index `L + 5 - i`) at `t + 1` up to `C_L` (index `L + 4`) at `t + i`, `Z` at
+`t + i + 1`, `P` after. The `min` keeps the index inside `Fin (L + 5)` with no side condition;
+`runPos_val` shows it is the identity on the intended range. -/
+def runPos (L : ℕ) (t : ℤ) (i : ℕ) (z : ℤ) : QN L :=
+  ⟨min (if z < t then 0 else if z = t then 2
+      else if z ≤ t + i then ((L : ℤ) + 4 - i + (z - t)).toNat
+      else if z = t + i + 1 then 3 else 4) (L + 4), by omega⟩
+
+theorem runPos_val (L : ℕ) (t : ℤ) (i : ℕ) (hiL : i ≤ L) (z : ℤ) :
+    (runPos L t i z).val
+      = if z < t then 0 else if z = t then 2
+        else if z ≤ t + i then ((L : ℤ) + 4 - i + (z - t)).toNat
+        else if z = t + i + 1 then 3 else 4 := by
+  show min _ _ = _
+  split_ifs <;> omega
+
+theorem runPos_isRun (L : ℕ) (t : ℤ) (i : ℕ) (hi : 1 ≤ i) (hiL : i ≤ L) :
+    IsRun (labN L) (stepN L) (clNow Φ) t (runPos L t i) := by
+  refine ⟨fun z => ?_, fun z => ?_⟩
+  · rw [stepN_iff, runPos_val L t i hiL, runPos_val L t i hiL]
+    split_ifs <;> omega
+  · rw [labN_now, runPos_val L t i hiL]
+    split_ifs <;> first
+      | exact iff_of_true (Or.inr rfl) ‹_›
+      | exact iff_of_false (fun h => by rcases h with h | h <;> omega) (by omega)
+
+theorem runTrace_runPos (L : ℕ) (t : ℤ) (i : ℕ) (hi : 1 ≤ i) (hiL : i ≤ L) :
+    runTrace (labN L) (runPos L t i) = cN t i := by
+  refine runTrace_eq_cN L t i _ (runPos_isRun L t i hi hiL).2 ?_ ?_ ?_ ?_ ?_ ?_
+  · intro z hz
+    rw [runPos_val L t i hiL, if_pos hz]
+  · rw [runPos_val L t i hiL, if_neg (lt_irrefl t), if_pos rfl, if_neg (by omega)]
+  · intro z hz hz'
+    apply vecN_chain
+    all_goals (rw [runPos_val L t i hiL]; split_ifs <;> omega)
+  · intro _
+    apply vecN_last L _ (by omega)
+    rw [runPos_val L t i hiL]
+    split_ifs <;> omega
+  · rw [runPos_val L t i hiL]
+    split_ifs <;> omega
+  · intro z hz
+    rw [runPos_val L t i hiL]
+    split_ifs <;> omega
+
+/-- **Run characterization, `⊇`.** Every `cN t i` with `i ≤ L` is the trace of an anchored run:
+`runZero` at `i = 0`, `runPos` for `1 ≤ i ≤ L`. Together with `runTrace_mem_of_isRun` the run
+traces are EXACTLY the window of `hitCl_eq_truncated_node`. -/
+theorem exists_isRun_runTrace (t : ℤ) (L : ℕ) :
+    ∀ i, i ≤ L → ∃ ρ : ℤ → QN L,
+      IsRun (labN L) (stepN L) (clNow Φ) t ρ ∧ runTrace (labN L) ρ = cN t i := by
+  intro i hi
+  rcases Nat.eq_zero_or_pos i with rfl | hpos
+  · exact ⟨runZero L t, runZero_isRun L t, runTrace_runZero L t⟩
+  · exact ⟨runPos L t i, runPos_isRun L t i hpos hi, runTrace_runPos L t i hpos hi⟩
+
 end Probe759
 
 -- temporary foot (Phase 1); replaced by the full axiom foot with the headline
@@ -1003,3 +1284,5 @@ end Probe759
 #print axioms Probe759.hitCl_eq_truncated_node
 #print axioms Probe759.labN
 #print axioms Probe759.stepN
+#print axioms Probe759.runTrace_mem_of_isRun
+#print axioms Probe759.exists_isRun_runTrace
