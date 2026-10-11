@@ -769,6 +769,50 @@ EVIDENCE="specs/evidence"
 #                                                           | about `PlusValidZTime` or the general
 #                                                           | row. Axioms `[propext, Classical.choice,
 #                                                           | Quot.sound]` (`stepN` none).
+# seam-gluing-ray-product/ladder-cell-refutation            | NEGATIVE VERDICT (requirement (W)'s
+#                                                           | run layer, "(W): what landed and what
+#                                                           | did not", obligation (ii) item 1,
+#                                                           | over a general finite object):
+#                                                           | `ladderFrame`'s `fwd`/`bwd`
+#                                                           | hypotheses are unsatisfiable on the
+#                                                           | full carrier `Q × ℕ × ℕ` for every
+#                                                           | object (`no_fwd`, `no_bwd_of_idle` --
+#                                                           | the idle state `(q, 1, 0)` has
+#                                                           | neither `Rlad`-successor nor
+#                                                           | predecessor), so `Adm` is a CARRIER
+#                                                           | restriction (here `{x // x.2.1 ∈ Adm
+#                                                           | pend x.1}` with `Adm pend q = {c |
+#                                                           | pend q = false → c = 0}`, one of
+#                                                           | several equally valid shapes) and
+#                                                           | `ladderFrame` has no instances; on
+#                                                           | the repaired carrier the
+#                                                           | stabilization of realized cells in
+#                                                           | the counter pair `(c, n)` is FALSE
+#                                                           | for every bound on the two-state
+#                                                           | object (`cell_ne`: the cells at `(a,
+#                                                           | B, B+1)` and `(a, B, B+2)` differ for
+#                                                           | every `B`; `exhibited_form_refuted`,
+#                                                           | `exists_form_refuted`). MECHANISM:
+#                                                           | the current deadline fixes the
+#                                                           | region's end at `z + c`, and
+#                                                           | `Count`'s idle clause reads `c' = n`,
+#                                                           | so the gap `n - c` is observable
+#                                                           | through `p U (r ∧ X(p ∧ X r))`, `X χ
+#                                                           | := ⊥ U χ`. What it does NOT say:
+#                                                           | forward-only witness for a
+#                                                           | direction-neutral statement (the
+#                                                           | past-looking twin is paper-level, not
+#                                                           | machine-checked); no bound of any
+#                                                           | kind; no finiteness; nothing about
+#                                                           | `HitPresented` or `PlusValidZTime`;
+#                                                           | the successor design not chosen
+#                                                           | (in-place repair of `ladderFrame` or
+#                                                           | a sigma over `Adm` equally valid);
+#                                                           | `anchorCells_finite` and
+#                                                           | `anchorCells_ncard_le` untouched.
+#                                                           | Axioms `[propext, Classical.choice,
+#                                                           | Quot.sound]` (`no_bwd_of_idle`
+#                                                           | `[propext]`).
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -798,6 +842,7 @@ WIRED=(
   "seam-gluing-ray-product/deadline-ladder-branching"
   "seam-gluing-ray-product/node-cell-stabilization"
   "seam-gluing-ray-product/hit-presented-node"
+  "seam-gluing-ray-product/ladder-cell-refutation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
