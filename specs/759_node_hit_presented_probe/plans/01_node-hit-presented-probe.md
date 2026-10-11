@@ -258,37 +258,37 @@ imports it, and no library module is modified.
 
 ---
 
-### Phase 2: Fixture Truth Lemmas and the Four Letter Vectors [NOT STARTED]
+### Phase 2: Fixture Truth Lemmas and the Four Letter Vectors [COMPLETED]
 
 **Goal**: Transcribe from `node-cell-stabilization.lean` the closure-truth lemmas on canonical
 histories, and define the four computable letter vectors over `(clSig Φ).preds` with their
 distinguishing entries.
 
 **Tasks**:
-- [ ] Section `/-! ## The closure letters on a canonical history (transcribed) -/`: transcribe
+- [x] Section `/-! ## The closure letters on a canonical history (transcribed) -/`: transcribe
       verbatim from `Probe758` (names kept): `truth_A'`, `truth_C'`, `truth_D` (box letters
       global via `box_global` + `Φ_true`); within `section Canon` with
       `variable {σ} {k} {t} (hσ : ∀ s, σ.state s = canon k t s)` / `include hσ`:
       `truth_stabFp (s) : … ↔ s < t`, `truth_stabPp : … ↔ t < s`, `truth_stabNegPp : … ↔ s ≤ t`,
       `truth_stabNegXp : … ↔ t ≤ s`. Do NOT transcribe `SameClass`, `truth_transfer`,
       `tpOf_eq_of`, `through_post`, `through_x`, or any cell lemma.
-- [ ] Section `/-! ## The four letter classes -/`: define the four member lists
-      `T₂ T₁ T₀ T₋ : List PlusFormula` — the closure members true in class `d ≥ 2`, `d = 1`,
+- [x] Section `/-! ## The four letter classes -/`: define the four member lists
+      `T₂ T₁ T₀ T₋ : List PlusFormula` *(deviation: altered — `₋` (U+208B) is not a Lean identifier character; the negative-class list and vector are named `Tₙ`/`ℓₙ`)* — the closure members true in class `d ≥ 2`, `d = 1`,
       `d = 0`, `d < 0` respectively (`d := t' - s`), determined by the truth table of the
       primitives (`p`: F F T F; `Fp`: T T F F; `Pp`: F F F T; `Xp`: F T F F; `⊡Fp`: T T F F;
       `⊡Pp`: F F F T; `⊡¬Pp`: T T T F; `⊡¬Xp`: F F T T; `A'`, `C'`, `D`, `⊤`: T T T T; `⊥`:
       F F F F; composites by their connectives) — and the vectors
       `ℓ₂ ℓ₁ ℓ₀ ℓ₋ : (clSig Φ).preds → Bool` each `| .inl ψ => decide (ψ.1 ∈ T_) | .inr () => false`
       (the prototype's `ℓtest` pattern, computable).
-- [ ] `letterAt (d : ℤ) : (clSig Φ).preds → Bool := if 2 ≤ d then ℓ₂ else if d = 1 then ℓ₁ else if d = 0 then ℓ₀ else ℓ₋`,
+- [x] `letterAt (d : ℤ) : (clSig Φ).preds → Bool := if 2 ≤ d then ℓ₂ else if d = 1 then ℓ₁ else if d = 0 then ℓ₀ else ℓ₋`,
       with `letterAt_now (d) : letterAt d (clNow Φ) = false`.
-- [ ] Closure-membership facts for the discriminating letters, by `decide`:
+- [x] Closure-membership facts for the discriminating letters, by `decide`:
       `cl_Fp : Fp ∈ plusSubformulaClosure Φ`, `cl_Xp`, `cl_p`, `cl_Pp`; and the distinguishing
       entries `ℓ₂_Fp : ℓ₂ (clLetter Φ cl_Fp) = true`, `ℓ₋_Fp : ℓ₋ (clLetter Φ cl_Fp) = false`,
       `ℓ₂_Xp = false`, `ℓ₁_Xp = true`, `ℓ₀_p = true`, `ℓ₁_p = false`, `ℓ₋_p = false`
       (by `simp [ℓ₂, …]`/`decide`), plus `now_ne_Fp : clNow Φ ≠ clLetter Φ cl_Fp :=
       clNow_ne_clLetter Φ cl_Fp` and the three others.
-- [ ] Compile; commit.
+- [x] Compile; commit.
 
 **Timing**: 1.5 hours
 

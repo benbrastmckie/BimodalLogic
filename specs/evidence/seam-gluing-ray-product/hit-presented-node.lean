@@ -33,7 +33,7 @@ one of the `m + 1` canonical histories `histOf (m - i) (t + 1 + i)`, `i ≤ m`, 
 seam is their finite union (`hitCl_pre`), for a GENERAL `τ` with `τ.state t = .pre m`. Four letter
 classes: on a canonical history every closure letter at time `s` depends only on the class of the
 relative position `t' - s` in `{≥ 2, 1, 0, < 0}` (`clTrace_canon_apply`), so the `i`-th trace is
-`ℓ₂^(ω*)·[ℓ₂ + now]·ℓ₂^(i-1)·ℓ₁·ℓ₀·ℓ₋^ω` (and `ℓ₂^(ω*)·[ℓ₁ + now]·ℓ₀·ℓ₋^ω` at `i = 0`) — the
+`ℓ₂^(ω*)·[ℓ₂ + now]·ℓ₂^(i-1)·ℓ₁·ℓ₀·ℓₙ^ω` (and `ℓ₂^(ω*)·[ℓ₁ + now]·ℓ₀·ℓₙ^ω` at `i = 0`) — the
 constant `ℓ₂`-run on `[t + 1, t + i)` is model A's `a`-run, and its containment in the middle
 segment of every factorization (`run_subset_middle`) is a fixture fact, as on model A; the
 library's periodicity theorem and `familyTriples_subset_deleteRun` then shrink the run by `p` at a
@@ -193,6 +193,206 @@ theorem hitCl_pre (τ : WorldHistory F) (t : ℤ) (m k : ℕ) (hτ : τ.state t 
     exact hx
   · rintro ⟨i, hi, hx⟩
     exact ⟨histOf (m - i) (t + 1 + i), by rw [canon_through m i (by omega), hτ], hx⟩
+
+
+/-! ## The closure letters on a canonical history (transcribed)
+
+Transcribed from `node-cell-stabilization.lean` (`Probe758`), names kept, as this collection's
+convention requires (a probe imports library modules only, never another probe). The three `box`
+letters `A'`, `C'`, `D` are global by `box_global` from `Φ_true`; the four `⊡`-letters of `cl Φ`
+are read off the canonical-history toolkit: on `σ` with `σ.state s = canon k t s` for all `s`,
+`⊡Fp ↔ s < t`, `⊡Pp ↔ t < s`, `⊡¬Pp ↔ s ≤ t`, `⊡¬Xp ↔ t ≤ s`. The last is the sharpening
+`Probe758` recorded: `⊡¬Xp` FAILS at every pre state, because the history reaching the same pre
+state one step later reads `Xp`. -/
+
+theorem truth_A' (σ : WorldHistory F) (s : ℤ) : PlusTruthAt M σ s A' := by
+  have h := Φ_true
+  simp only [Φ, PlusTruth.and_iff] at h
+  have hA : PlusTruthAt M (histOf 0 0) 0 A' := h.1.1
+  unfold A' at hA ⊢
+  exact (box_global M _ σ 0 s _).mp hA
+
+theorem truth_C' (σ : WorldHistory F) (s : ℤ) : PlusTruthAt M σ s C' := by
+  have h := Φ_true
+  simp only [Φ, PlusTruth.and_iff] at h
+  have hC : PlusTruthAt M (histOf 0 0) 0 C' := h.1.2
+  unfold C' at hC ⊢
+  exact (box_global M _ σ 0 s _).mp hC
+
+theorem truth_D (σ : WorldHistory F) (s : ℤ) : PlusTruthAt M σ s D := by
+  have h := Φ_true
+  simp only [Φ, PlusTruth.and_iff] at h
+  have hD : PlusTruthAt M (histOf 0 0) 0 D := h.2
+  unfold D at hD ⊢
+  exact (box_global M _ σ 0 s _).mp hD
+
+section Canon
+variable {σ : WorldHistory F} {k : ℕ} {t : ℤ} (hσ : ∀ s, σ.state s = canon k t s)
+include hσ
+
+theorem truth_stabFp (s : ℤ) : PlusTruthAt M σ s (.stab Fp) ↔ s < t := by
+  rw [PlusTruth.stab_iff]
+  constructor
+  · intro h
+    exact (truth_Fp hσ s).mp (h σ rfl)
+  · intro hlt σ' hσ'
+    obtain ⟨k', t', hσ''⟩ := hist_canon σ'
+    rw [truth_Fp hσ'']
+    have := hσ s ▸ hσ'' s ▸ hσ'
+    exact lt_of_canon_eq_of_lt this hlt
+
+theorem truth_stabPp (s : ℤ) : PlusTruthAt M σ s (.stab Pp) ↔ t < s := by
+  rw [PlusTruth.stab_iff]
+  constructor
+  · intro h
+    exact (truth_Pp hσ s).mp (h σ rfl)
+  · intro hgt σ' hσ'
+    obtain ⟨k', t', hσ''⟩ := hist_canon σ'
+    rw [truth_Pp hσ'']
+    have := hσ s ▸ hσ'' s ▸ hσ'
+    exact gt_of_canon_eq_of_gt this hgt
+
+theorem truth_stabNegPp (s : ℤ) : PlusTruthAt M σ s (.stab Pp.neg) ↔ s ≤ t := by
+  rw [PlusTruth.stab_iff]
+  constructor
+  · intro h
+    have := h σ rfl
+    rw [PlusTruth.neg_iff, truth_Pp hσ] at this
+    omega
+  · intro hle σ' hσ'
+    obtain ⟨k', t', hσ''⟩ := hist_canon σ'
+    rw [PlusTruth.neg_iff, truth_Pp hσ'']
+    have hc := hσ s ▸ hσ'' s ▸ hσ'
+    rcases hle.lt_or_eq with hlt | heq
+    · have := lt_of_canon_eq_of_lt hc hlt; omega
+    · have := eq_of_canon_eq_of_eq hc heq; omega
+
+/-- `⊡¬Xp` fails at EVERY pre state: the history `histOf (k + (t-1-s).toNat) (s+1)` shares the
+state and reads `Xp`. -/
+theorem truth_stabNegXp (s : ℤ) : PlusTruthAt M σ s (.stab Xp.neg) ↔ t ≤ s := by
+  rw [PlusTruth.stab_iff]
+  constructor
+  · intro h
+    by_contra hlt
+    push Not at hlt
+    have hst : σ.state s = (histOf (k + (t - 1 - s).toNat) (s + 1)).state s := by
+      rw [hσ s, histOf_state, canon_of_lt hlt, canon_of_lt (by omega : s < s + 1)]
+      congr 1
+      omega
+    have := h _ hst
+    rw [PlusTruth.neg_iff, truth_Xp (fun s => histOf_state _ _ s)] at this
+    exact this (by omega)
+  · intro hle σ' hσ'
+    obtain ⟨k', t', hσ''⟩ := hist_canon σ'
+    rw [PlusTruth.neg_iff, truth_Xp hσ'']
+    have hc := hσ s ▸ hσ'' s ▸ hσ'
+    rcases hle.lt_or_eq with hlt | heq
+    · have := gt_of_canon_eq_of_gt hc hlt; omega
+    · have := eq_of_canon_eq_of_eq hc heq.symm; omega
+
+end Canon
+
+/-! ## The four letter classes
+
+On a canonical history `histOf k' t'` at time `s`, every member of `cl Φ` has a truth value that is
+a Boolean combination of `s < t'`, `s = t'`, `t' < s`, `s + 1 = t'` — never of the thread index
+`k'` — so it depends only on the class of `d := t' - s` in `{≥ 2, 1, 0, < 0}`. The primitives'
+truth table, in that column order (from `truth_p`/`truth_Fp`/`truth_Pp`/`truth_Xp` and the four
+`truth_stab*` above): `p`: F F T F; `Fp`: T T F F; `Pp`: F F F T; `Xp`: F T F F; `⊡Fp`: T T F F;
+`⊡Pp`: F F F T; `⊡¬Pp`: T T T F; `⊡¬Xp`: F F T T; `A'`, `C'`, `D`, `⊤`: T T T T; `⊥`: F F F F;
+the 15 composite members by their connectives (`¬a := a → ⊥`, `a ∨ b := ¬a → b`,
+`a ∧ b := ¬(a → ¬b)`). The four lists below are the members TRUE in each class; a hand error in
+them is a compile failure of the class lemmas in the next section (which are proved against the
+real semantics), never a silent defect. The vectors `ℓ₂ ℓ₁ ℓ₀ ℓₙ` are computable
+(`decide` of list membership, as the prototype's `ℓtest`), which is what lets `labN` below be a
+`def`. -/
+
+/-- Closure members true at relative position `d ≥ 2` (deep inside the pre-run). -/
+def T₂ : List PlusFormula :=
+  [Φ, A'.and C', A', p.or ((PlusFormula.stab Fp).or (PlusFormula.stab Pp)), p.neg,
+   (PlusFormula.stab Fp).or (PlusFormula.stab Pp), PlusFormula.stab Fp, Fp, PlusFormula.top,
+   C', p.imp (PlusFormula.stab Pp.neg), PlusFormula.stab Pp.neg, Pp.neg, D,
+   (PlusFormula.stab Fp).imp (PlusFormula.stab Xp.neg).neg, (PlusFormula.stab Xp.neg).neg,
+   Xp.neg]
+
+/-- Closure members true at relative position `d = 1` (the last pre state, reading `Xp`). -/
+def T₁ : List PlusFormula :=
+  [Φ, A'.and C', A', p.or ((PlusFormula.stab Fp).or (PlusFormula.stab Pp)), p.neg,
+   (PlusFormula.stab Fp).or (PlusFormula.stab Pp), PlusFormula.stab Fp, Fp, PlusFormula.top,
+   C', p.imp (PlusFormula.stab Pp.neg), PlusFormula.stab Pp.neg, Pp.neg, D,
+   (PlusFormula.stab Fp).imp (PlusFormula.stab Xp.neg).neg, (PlusFormula.stab Xp.neg).neg,
+   Xp]
+
+/-- Closure members true at relative position `d = 0` (the `x` state, reading `p`). -/
+def T₀ : List PlusFormula :=
+  [Φ, A'.and C', A', p.or ((PlusFormula.stab Fp).or (PlusFormula.stab Pp)), p,
+   (PlusFormula.stab Fp).neg, PlusFormula.top,
+   C', p.imp (PlusFormula.stab Pp.neg), PlusFormula.stab Pp.neg, Pp.neg, D,
+   (PlusFormula.stab Fp).imp (PlusFormula.stab Xp.neg).neg, PlusFormula.stab Xp.neg,
+   Xp.neg]
+
+/-- Closure members true at relative position `d < 0` (the post states). -/
+def Tₙ : List PlusFormula :=
+  [Φ, A'.and C', A', p.or ((PlusFormula.stab Fp).or (PlusFormula.stab Pp)), p.neg,
+   (PlusFormula.stab Fp).or (PlusFormula.stab Pp), (PlusFormula.stab Fp).neg, PlusFormula.top,
+   PlusFormula.stab Pp, Pp,
+   C', p.imp (PlusFormula.stab Pp.neg), D,
+   (PlusFormula.stab Fp).imp (PlusFormula.stab Xp.neg).neg, PlusFormula.stab Xp.neg,
+   Xp.neg]
+
+/-- The letter vector of class `d ≥ 2`; `now` is never part of a letter vector. -/
+def ℓ₂ : (clSig Φ).preds → Bool
+  | .inl ψ => decide (ψ.1 ∈ T₂)
+  | .inr () => false
+
+/-- The letter vector of class `d = 1`. -/
+def ℓ₁ : (clSig Φ).preds → Bool
+  | .inl ψ => decide (ψ.1 ∈ T₁)
+  | .inr () => false
+
+/-- The letter vector of class `d = 0`. -/
+def ℓ₀ : (clSig Φ).preds → Bool
+  | .inl ψ => decide (ψ.1 ∈ T₀)
+  | .inr () => false
+
+/-- The letter vector of class `d < 0`. -/
+def ℓₙ : (clSig Φ).preds → Bool
+  | .inl ψ => decide (ψ.1 ∈ Tₙ)
+  | .inr () => false
+
+/-- The letter read at relative position `d`, by class. -/
+def letterAt (d : ℤ) : (clSig Φ).preds → Bool :=
+  if 2 ≤ d then ℓ₂ else if d = 1 then ℓ₁ else if d = 0 then ℓ₀ else ℓₙ
+
+theorem letterAt_now (d : ℤ) : letterAt d (clNow Φ) = false := by
+  unfold letterAt
+  split_ifs <;> rfl
+
+theorem ℓ₂_now : ℓ₂ (clNow Φ) = false := rfl
+theorem ℓ₁_now : ℓ₁ (clNow Φ) = false := rfl
+theorem ℓ₀_now : ℓ₀ (clNow Φ) = false := rfl
+theorem ℓₙ_now : ℓₙ (clNow Φ) = false := rfl
+
+/-! The discriminating letters and their entries: `Fp` separates `ℓ₂` from `ℓₙ` (the containment
+argument), `Xp` separates `ℓ₂` from `ℓ₁`, and `p` separates `ℓ₀` from `ℓ₁` and `ℓₙ`. -/
+
+theorem cl_Fp : Fp ∈ plusSubformulaClosure Φ := by decide
+theorem cl_Xp : Xp ∈ plusSubformulaClosure Φ := by decide
+theorem cl_p : p ∈ plusSubformulaClosure Φ := by decide
+theorem cl_Pp : Pp ∈ plusSubformulaClosure Φ := by decide
+
+theorem ℓ₂_Fp : ℓ₂ (clLetter Φ cl_Fp) = true := by decide
+theorem ℓₙ_Fp : ℓₙ (clLetter Φ cl_Fp) = false := by decide
+theorem ℓ₂_Xp : ℓ₂ (clLetter Φ cl_Xp) = false := by decide
+theorem ℓ₁_Xp : ℓ₁ (clLetter Φ cl_Xp) = true := by decide
+theorem ℓ₀_p : ℓ₀ (clLetter Φ cl_p) = true := by decide
+theorem ℓ₁_p : ℓ₁ (clLetter Φ cl_p) = false := by decide
+theorem ℓₙ_p : ℓₙ (clLetter Φ cl_p) = false := by decide
+
+theorem now_ne_Fp : clNow Φ ≠ clLetter Φ cl_Fp := clNow_ne_clLetter Φ cl_Fp
+theorem now_ne_Xp : clNow Φ ≠ clLetter Φ cl_Xp := clNow_ne_clLetter Φ cl_Xp
+theorem now_ne_p : clNow Φ ≠ clLetter Φ cl_p := clNow_ne_clLetter Φ cl_p
+theorem now_ne_Pp : clNow Φ ≠ clLetter Φ cl_Pp := clNow_ne_clLetter Φ cl_Pp
 
 end Probe759
 
