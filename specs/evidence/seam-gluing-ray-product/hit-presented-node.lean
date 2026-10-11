@@ -649,8 +649,158 @@ theorem cN_above (t : ℤ) (i : ℕ) (z : ℤ) (hz : t + i + 1 < z) (ℓ : (clSi
     · exact h
   · exact Or.inr
 
+
+/-! ## The `ℓ₂`-run inside the middle segment
+
+`cN t i` reads `ℓ₂` strictly below the seam and on the run `[t + 1, t + i)`, the marker at `t`
+(over `ℓ₂` when `1 ≤ i`, over `ℓ₁` when `i = 0`), `ℓ₁` at `t + i`, `ℓ₀` at `t + i + 1`, and `ℓₙ`
+above. The transport layer (`RaySummary/Transport.lean`) deletes `p` positions of a constant run
+held inside ONE segment of a `SegmentFactorization`; what this section supplies is the fixture fact
+that EVERY factorization of `cN t i`, at every depth `k ≥ 1` and for `2 ≤ i`, holds the whole run
+`[t + 1, t + i)` inside its middle segment `[W 0, W 1)` (`run_subset_middle`), so the surgery
+applies with no re-cutting — exactly model A's `run_subset_middle`, with seam classification in
+place of rigidity.
+
+The argument is the keystone `segZ_const_of_kTypeOf_eq_replicate`, twice. If `W 0 > t`, the seam
+`t` lies in a negative segment; some nonempty negative segment lies entirely below `t` (cover the
+position `W z_t - 1`), reads `ℓ₂` throughout, and so fixes `τneg` as the type of a nonempty
+`ℓ₂`-block; the keystone then makes the segment holding `t` constantly `ℓ₂`, but `t` reads
+`now ∉ ℓ₂`. If `W 1 ≤ t + i - 1`, the run position `t + i - 1` lies in a positive segment; a
+nonempty positive segment entirely above `t + i + 1` is found in TWO hops — cover `t + i + 2` to
+get `z₁`, then cover `W (z₁ + 1)` to get `z₂ ≥ z₁ + 1` with `W z₂ = W (z₁ + 1) > t + i + 2` — because
+`t + i` (`ℓ₁`) and `t + i + 1` (`ℓ₀`) sit between the run and the `ℓₙ` tail, so model A's one-hop
+cover of `W (z_p + 1)` would not clear them; that segment reads `ℓₙ` throughout, fixes `τpos`, and
+the keystone makes the segment holding `t + i - 1` constantly `ℓₙ`, but `t + i - 1` reads
+`Fp ∈ ℓ₂ ∖ ℓₙ`. Depth `k ≥ 1` is consumed exactly at the keystone. -/
+
+theorem cN_now (t : ℤ) (i : ℕ) (z : ℤ) : cN t i (clNow Φ) z ↔ z = t := Iff.rfl
+
+/-- **The middle segment starts at or before the seam.** Otherwise `t` lies in a negative
+segment, which the keystone makes constantly `ℓ₂` — but `t` reads `now`. -/
+theorem W0_le_seam (k : ℕ) (hk : 1 ≤ k) (t : ℤ) (i : ℕ)
+    (F : SegmentFactorization (clSig Φ) k (cN t i)) : F.W 0 ≤ t := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨zt, h1, h2⟩ := F.cover t
+  have hzt : zt < 0 := by
+    by_contra h
+    push Not at h
+    have := F.mono h
+    omega
+  -- a nonempty negative segment entirely below `t`: the one covering `W zt - 1`
+  obtain ⟨z', h3, h4⟩ := F.cover (F.W zt - 1)
+  have hz' : z' + 1 ≤ zt := by
+    by_contra h
+    push Not at h
+    have := F.mono (show zt ≤ z' by omega)
+    omega
+  have h5 : F.W (z' + 1) ≤ F.W zt := F.mono hz'
+  have hτ : kTypeOf (clSig Φ) k (segZ (clSig Φ) (cN t i) (F.W z') (F.W (z' + 1)))
+      = kTypeOf (clSig Φ) k (listSeg (List.replicate (F.W (z' + 1) - F.W z').toNat ℓ₂)) :=
+    kTypeOf_segZ_eq_replicate_of_const k _ _ _ ℓ₂
+      (fun u _ hu' q => cN_below t i u (by omega) q)
+  have hlen : 0 < (F.W (z' + 1) - F.W z').toNat := by omega
+  have hzt_type := (F.neg_type zt hzt).trans ((F.neg_type z' (by omega)).symm.trans hτ)
+  obtain ⟨-, hconst⟩ :=
+    segZ_const_of_kTypeOf_eq_replicate hk _ (F.W zt) (F.W (zt + 1)) ℓ₂ hlen hzt_type
+  have := (hconst t h1 h2 (clNow Φ)).mp ((cN_now t i t).mpr rfl)
+  rw [ℓ₂_now] at this
+  exact Bool.false_ne_true this
+
+/-- **The middle segment ends after the run** (`2 ≤ i`). Otherwise the run position `t + i - 1`
+lies in a positive segment, which the keystone makes constantly `ℓₙ` — but `t + i - 1` reads `Fp`.
+The nonempty positive segment above `t + i + 1` is found in two hops (see the section header). -/
+theorem run_lt_W1 (k : ℕ) (hk : 1 ≤ k) (t : ℤ) (i : ℕ) (hi : 2 ≤ i)
+    (F : SegmentFactorization (clSig Φ) k (cN t i)) : t + i - 1 < F.W 1 := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨zp, h1, h2⟩ := F.cover (t + i - 1)
+  have hzp : 0 < zp := by
+    by_contra h
+    push Not at h
+    have := F.mono (show zp + 1 ≤ 1 by omega)
+    omega
+  -- hop 1: the segment covering `t + i + 2`
+  obtain ⟨z₁, h3, h4⟩ := F.cover (t + i + 2)
+  -- hop 2: the segment covering `W (z₁ + 1)`, which starts exactly there
+  obtain ⟨z₂, h5, h6⟩ := F.cover (F.W (z₁ + 1))
+  have hz₂ : z₁ + 1 ≤ z₂ := by
+    by_contra h
+    push Not at h
+    have := F.mono (show z₂ + 1 ≤ z₁ + 1 by omega)
+    omega
+  have h7 : F.W (z₁ + 1) ≤ F.W z₂ := F.mono hz₂
+  have hz₁ : 1 ≤ z₁ := by
+    by_contra h
+    push Not at h
+    have := F.mono (show z₁ + 1 ≤ 1 by omega)
+    omega
+  have hτ : kTypeOf (clSig Φ) k (segZ (clSig Φ) (cN t i) (F.W z₂) (F.W (z₂ + 1)))
+      = kTypeOf (clSig Φ) k (listSeg (List.replicate (F.W (z₂ + 1) - F.W z₂).toNat ℓₙ)) :=
+    kTypeOf_segZ_eq_replicate_of_const k _ _ _ ℓₙ
+      (fun u hu _ q => cN_above t i u (by omega) q)
+  have hlen : 0 < (F.W (z₂ + 1) - F.W z₂).toNat := by omega
+  have hzp_type := (F.pos_type zp hzp).trans ((F.pos_type z₂ (by omega)).symm.trans hτ)
+  obtain ⟨-, hconst⟩ :=
+    segZ_const_of_kTypeOf_eq_replicate hk _ (F.W zp) (F.W (zp + 1)) ℓₙ hlen hzp_type
+  have hFp := (hconst (t + i - 1) h1 h2 (clLetter Φ cl_Fp)).mp
+    ((cN_run t i (t + i - 1) (by omega) (by omega) _).mpr ℓ₂_Fp)
+  rw [ℓₙ_Fp] at hFp
+  exact Bool.false_ne_true hFp
+
+/-- **Every factorization of `cN t i` (`2 ≤ i`) holds the whole run `[t + 1, t + 1 + (i - 1))`
+inside its middle segment** (`k ≥ 1`). The containment hypothesis of
+`familyTriples_subset_deleteRun`, discharged on the fixture. -/
+theorem run_subset_middle (k : ℕ) (hk : 1 ≤ k) (t : ℤ) (i : ℕ) (hi : 2 ≤ i)
+    (F : SegmentFactorization (clSig Φ) k (cN t i)) :
+    F.W 0 ≤ t + 1 ∧ t + 1 + ((i - 1 : ℕ) : ℤ) ≤ F.W 1 :=
+  ⟨by have := W0_le_seam k hk t i F; omega, by have := run_lt_W1 k hk t i hi F; omega⟩
+
+/-- **Deleting `p` positions of the `ℓ₂`-run of `cN t (i + p)` gives `cN t i`** (`1 ≤ i`).
+Pointwise from `clTrace_canon_apply`: below `t + 1` both traces read `ℓ₂` (the marker at `t`
+included, since `1 ≤ i` puts the seam over `ℓ₂` on both), and from `t + 1` on the deleted trace
+reads `cN t (i + p)` at `u + p`, whose relative position `t + 1 + (i + p) - (u + p)` is
+`t + 1 + i - u`, with `now` on neither side. -/
+theorem deleteRun_cN (t : ℤ) (i p : ℕ) (hi : 1 ≤ i) :
+    deleteRun (cN t (i + p)) (t + 1) p = cN t i := by
+  funext ℓ u
+  apply propext
+  by_cases h : u < t + 1
+  · rw [deleteRun_of_lt h, cN, cN, clTrace_canon_apply, clTrace_canon_apply,
+      letterAt_of_two_le (by omega), letterAt_of_two_le (by omega)]
+  · rw [deleteRun_of_le (not_lt.mp h), cN, cN, clTrace_canon_apply, clTrace_canon_apply]
+    have e : t + 1 + ((i + p : ℕ) : ℤ) - (u + (p : ℤ)) = t + 1 + (i : ℤ) - u := by
+      push_cast; ring
+    have h1 : ¬ (u + (p : ℤ) = t) := by omega
+    have h2 : ¬ (u = t) := by omega
+    rw [e]
+    simp only [h1, h2, and_false, false_or]
+
+/-- **Family triples shrink along the history index**: beyond the threshold, every family triple
+of `cN t (i + p)` is one of `cN t i`. `deleteRun_cN` rewrites the target, `run_subset_middle`
+supplies the containment with `z₀ = 0`, `s = t + 1` and `j = i - 1 + p`, `cN_run` the constancy,
+and the surgery `familyTriples_subset_deleteRun` does the rest; `2 ≤ i` is what makes `p < j`, and
+`m₀ + 1 ≤ i` what makes `m₀ + p ≤ j`. -/
+theorem familyTriples_cN_shrink (k : ℕ) (hk : 1 ≤ k) (t : ℤ) (m₀ p : ℕ)
+    (hper : ∀ n, m₀ ≤ n → kTypeOf (clSig Φ) k (listSeg (List.replicate (n + p) ℓ₂))
+      = kTypeOf (clSig Φ) k (listSeg (List.replicate n ℓ₂)))
+    (i : ℕ) (hi : m₀ + 1 ≤ i) (h2 : 2 ≤ i) :
+    familyTriples (clSig Φ) k (cN t (i + p)) ⊆ familyTriples (clSig Φ) k (cN t i) := by
+  rw [← deleteRun_cN t i p (by omega)]
+  refine familyTriples_subset_deleteRun k _ (t + 1) ℓ₂ (i - 1 + p) p m₀ (by omega) (by omega)
+    ?_ ?_ hper
+  · intro F
+    refine ⟨0, ?_⟩
+    have := run_subset_middle k hk t (i + p) (by omega) F
+    simp only [zero_add]
+    push_cast [Nat.cast_sub (by omega : 1 ≤ i + p), Nat.cast_sub (by omega : 1 ≤ i)] at this ⊢
+    constructor <;> omega
+  · intro u hu hu' q
+    exact cN_run t (i + p) u hu (by push_cast at hu' ⊢; omega) q
+
 end Probe759
 
 -- temporary foot (Phase 1); replaced by the full axiom foot with the headline
 #print axioms Probe759.hitCl_pre
 #print axioms Probe759.clTrace_canon_apply
+#print axioms Probe759.familyTriples_cN_shrink

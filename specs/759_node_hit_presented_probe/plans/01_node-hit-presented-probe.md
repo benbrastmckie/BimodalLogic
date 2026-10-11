@@ -376,19 +376,19 @@ exiting 0 is the complete covering check — single out-of-graph file, no librar
 
 ---
 
-### Phase 4: Containment, `deleteRun`, and the Shrink [NOT STARTED]
+### Phase 4: Containment, `deleteRun`, and the Shrink [COMPLETED]
 
 **Goal**: Discharge on `Node` the three hypotheses of `familyTriples_subset_deleteRun` for the
 `ℓ₂`-run of `cN t i`: containment in the middle segment of EVERY factorization (`k ≥ 1`),
 constancy, and the pointwise `deleteRun` identity; conclude the shrink `cN t (i + p) → cN t i`.
 
 **Tasks**:
-- [ ] Section `/-! ## The ℓ₂-run inside the middle segment -/` with the model-A docstring adapted
+- [x] Section `/-! ## The ℓ₂-run inside the middle segment -/` with the model-A docstring adapted
       (keystone twice; depth `k ≥ 1` consumed at the keystone).
-- [ ] `W0_le_seam (k) (hk : 1 ≤ k) (t) (i) (F : SegmentFactorization (clSig Φ) k (cN t i)) : F.W 0 ≤ t`
+- [x] `W0_le_seam (k) (hk : 1 ≤ k) (t) (i) (F : SegmentFactorization (clSig Φ) k (cN t i)) : F.W 0 ≤ t`
       — transcribe model A's `W0_le_seam` with `ℓ₂` for `ℓ₀`, `cN_below` for
       `clTrace_jump_letter_below`, and `now ∉ ℓ₂` via `letterAt_now`/`ℓ₂ (clNow Φ) = false`.
-- [ ] `run_lt_W1 (k) (hk) (t) (i) (hi : 2 ≤ i) (F : SegmentFactorization (clSig Φ) k (cN t i)) : t + i - 1 < F.W 1`
+- [x] `run_lt_W1 (k) (hk) (t) (i) (hi : 2 ≤ i) (F : SegmentFactorization (clSig Φ) k (cN t i)) : t + i - 1 < F.W 1`
       — the ADJUSTED `seam_lt_W1`: by contradiction `F.W 1 ≤ t + i - 1`, so `t + i - 1` lies in a
       positive segment `zp` (`F.cover`, `F.mono`); obtain `z₁` covering `t + i + 2`, then `z₂`
       covering `F.W (z₁ + 1)` with `z₁ + 1 ≤ z₂`; the segment `[F.W z₂, F.W (z₂ + 1))` lies
@@ -397,16 +397,16 @@ constancy, and the pointwise `deleteRun` identity; conclude the shrink `cN t (i 
       `segZ_const_of_kTypeOf_eq_replicate hk` then makes segment `zp` constantly `ℓ₋`, but
       `t + i - 1` reads `ℓ₂` (`cN_run`, since `t + 1 ≤ t + i - 1 < t + i` needs `2 ≤ i`) and
       `ℓ₂ Fp = true ≠ ℓ₋ Fp = false` (`ℓ₂_Fp`, `ℓ₋_Fp`).
-- [ ] `run_subset_middle (k) (hk) (t) (i) (hi : 2 ≤ i) (F) : F.W 0 ≤ t + 1 ∧ t + 1 + (i - 1 : ℕ) ≤ F.W 1`
+- [x] `run_subset_middle (k) (hk) (t) (i) (hi : 2 ≤ i) (F) : F.W 0 ≤ t + 1 ∧ t + 1 + (i - 1 : ℕ) ≤ F.W 1`
       (from the two above; `omega` with the cast).
-- [ ] `deleteRun_cN (t) (i p : ℕ) (hi : 1 ≤ i) : deleteRun (cN t (i + p)) (t + 1) p = cN t i`
+- [x] `deleteRun_cN (t) (i p : ℕ) (hi : 1 ≤ i) : deleteRun (cN t (i + p)) (t + 1) p = cN t i`
       — `funext ℓ u; propext`; `deleteRun_of_lt`/`deleteRun_of_le`; `clTrace_canon_apply` on
       both sides; the relative positions `(t + 1 + (i + p)) - (u + p) = (t + 1 + i) - u` and the
       `now` conditions close by `omega` (model A's `deleteRun_clTrace_jump`, with `cN`).
-- [ ] `familyTriples_cN_shrink (k) (hk) (t) (m₀ p : ℕ) (hper : ∀ n, m₀ ≤ n → kTypeOf (clSig Φ) k (listSeg (List.replicate (n + p) ℓ₂)) = kTypeOf (clSig Φ) k (listSeg (List.replicate n ℓ₂))) (i : ℕ) (hi : m₀ + 1 ≤ i) (h2 : 2 ≤ i) : familyTriples (clSig Φ) k (cN t (i + p)) ⊆ familyTriples (clSig Φ) k (cN t i)`
+- [x] `familyTriples_cN_shrink (k) (hk) (t) (m₀ p : ℕ) (hper : ∀ n, m₀ ≤ n → kTypeOf (clSig Φ) k (listSeg (List.replicate (n + p) ℓ₂)) = kTypeOf (clSig Φ) k (listSeg (List.replicate n ℓ₂))) (i : ℕ) (hi : m₀ + 1 ≤ i) (h2 : 2 ≤ i) : familyTriples (clSig Φ) k (cN t (i + p)) ⊆ familyTriples (clSig Φ) k (cN t i)`
       — `rw [← deleteRun_cN t i p]`; `familyTriples_subset_deleteRun k _ (t + 1) ℓ₂ (i - 1 + p) p m₀ …`
       with containment from `run_subset_middle` at `z₀ = 0` and constancy from `cN_run`.
-- [ ] Compile; commit.
+- [x] Compile; commit.
 
 **Timing**: 2 hours
 
