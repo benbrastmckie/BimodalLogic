@@ -1,7 +1,7 @@
 # Implementation Plan: Task #760
 
 - **Task**: 760 - Ladder model, admissibility set Adm, and the cell-stabilization lemma ladderCell_stabilizes over both counters (c, n)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: 758 (logical, positive verdict re-read), 759 (serialization only, README)
 - **Research Inputs**: specs/760_ladder_model_cell_stabilization_lemma/reports/01_ladder-cell-stabilization-refuted.md
@@ -250,7 +250,7 @@ Phase 2's port, so nothing cheaper or dearer applies.
 
 ---
 
-### Phase 2: Author the Wired Refutation Probe [NOT STARTED]
+### Phase 2: Author the Wired Refutation Probe [COMPLETED]
 
 **Goal**: Create `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean` — the
 mandated header followed by the prototype's declarations under `namespace Probe760` — compiling
@@ -258,7 +258,7 @@ under `lake env lean` with no `sorry`, no axiom, no vacuous definition, and the 
 statements verbatim.
 
 **Tasks**:
-- [ ] Write the header docstring (`/- … -/`, before the imports, modeled on
+- [x] Write the header docstring (`/- … -/`, before the imports, modeled on
       `node-cell-stabilization.lean`'s), containing in this order:
       - Title line: "Probe 760 (requirement (W)'s run layer, phase 2, first statement, over a
         general finite object): NEGATIVE — the landed frame's seriality hypotheses are
@@ -307,18 +307,18 @@ statements verbatim.
         carries `[propext]`; `Classical.choice` enters through
         `ofSlicedStepFinBranch_mem_HF_iff`") and the compile line
         `lake env lean specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`.
-- [ ] Imports and opens exactly as the prototype: `RaySummary.RunLayer` and
+- [x] Imports and opens exactly as the prototype: `RaySummary.RunLayer` and
       `RaySummary.AnchorLayer`; the two `open` lines; `namespace Probe760`.
-- [ ] Port the prototype's declarations in the order listed under Research Integration, keeping
+- [x] Port the prototype's declarations in the order listed under Research Integration, keeping
       names and statements, with exactly three identifier renames: `φ` → `phi`, `w₁` → `w1`,
       `w₂` → `w2` (and `w₁_eq` → `w1_eq`). Keep every docstring and the section structure
       (`Along`, `Neg`). Nothing else changes.
-- [ ] Close with `end Probe760` and `#print axioms` for `Probe760.no_fwd`,
+- [x] Close with `end Probe760` and `#print axioms` for `Probe760.no_fwd`,
       `Probe760.no_bwd_of_idle`, `Probe760.cell_ne`, `Probe760.exhibited_form_refuted`,
       `Probe760.exists_form_refuted`.
-- [ ] Compile through the guard:
+- [x] Compile through the guard:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`.
-- [ ] `git add` the new file (the gate's "tracked, not merely present" rule — Phase 3 fails
+- [x] `git add` the new file (the gate's "tracked, not merely present" rule — Phase 3 fails
       otherwise) and commit per the green-substep mandate.
 
 **Timing**: 1.5 hours
