@@ -3467,10 +3467,16 @@ TENSE_PREFIX = re.compile(r"^(F|P|G|H|A|FF|HF)_")
 # `b2b-frame-constructor-branching.lean`, outside this scan). `Rlad.fwd` is writable but would
 # read as a projection of a relation and would break parity with the ninth wired probe
 # `deadline-ladder-branching.lean`, which cites `Rlad_fwd`/`Rlad_bwd`/`Rlad_slice_infinite` by
-# these names; recorded rather than renamed, like `NM_nonneg` above.
-#   "Rlad_fwd", "Rlad_bwd", "Rlad_slice_infinite"
+# these names; recorded rather than renamed, like `NM_nonneg` above. The same class holds
+# `RladAdm_fwd`/`RladAdm_bwd` (`RaySummary/LadderModel.lean`): `RladAdm` is the live `def` of
+# the same relation restricted to the admissible carrier, the two names are its branching
+# verdicts in exactly `Rlad_fwd`/`Rlad_bwd`'s shape (each is that lemma pulled back along
+# `Subtype.val`), and the twelfth wired probe `ladder-cell-refutation.lean` cites them by these
+# names.
+#   "Rlad_fwd", "Rlad_bwd", "Rlad_slice_infinite", "RladAdm_fwd", "RladAdm_bwd"
 UPPER_ALLOW = {"CAggOdSwap_clause_iff", "CAggOdSwap_clause_iff_faithful", "O_zero_correct",
-               "NM_nonneg", "Rlad_fwd", "Rlad_bwd", "Rlad_slice_infinite"}
+               "NM_nonneg", "Rlad_fwd", "Rlad_bwd", "Rlad_slice_infinite",
+               "RladAdm_fwd", "RladAdm_bwd"}
 
 decls2 = []      # (ns, base, private, path, line)
 lemmas = []

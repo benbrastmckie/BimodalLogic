@@ -16,6 +16,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.StabCheck
 import FormalSystem.Metalogic.Decidability.RaySummary.Realize
 import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -132,4 +133,17 @@ nothing about `PlusValidZTime` — see the README's verdict.
   `ladderFrame_step`); seriality is the object's own `fwd`/`bwd` hypotheses; depth `k = 1`.
   No `[F.IsRegular]`-free claim about validity, nothing about `PlusValidZTime`, no realization
   theorem (the run layer's phase 2, open).
+* `RaySummary.LadderModel` — the admissible ladder carrier beside `ladderFrame`: the record
+  that `ladderFrame`'s own seriality hypotheses are unsatisfiable (`no_fwd` for every object,
+  `no_bwd_of_idle` for every object with an idle state — the frame has no instances), the
+  admissibility set `Adm` (`{c | pend q = false → c = 0}`, a restriction of the CARRIER), the
+  carrier `LadderState` with `ladderState_nonempty`, the restricted relation `RladAdm` with
+  two-sided finite branching for EVERY finite object (`RladAdm_fwd`, `RladAdm_bwd`, pulled
+  back along `Subtype.val`), the frame `ladderFrameAdm` with `ladderFrameAdm_isRegular`, and
+  the model `ladderModel` whose valuation reads the object component only. `[Finite Q]` on
+  the OBJECT only; the slice `LadderState Q pend` is infinite; `RunLayer.lean` untouched. No
+  realization theorem (the run layer's phase 2, open — its stabilization statement in the
+  counter pair is refuted by the wired probe `ladder-cell-refutation.lean`), no index of a
+  ladder cell claimed, nothing about `HitPresented`, nothing about `PlusValidZTime`, no
+  complexity bound.
 -/
