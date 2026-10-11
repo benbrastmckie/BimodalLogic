@@ -798,9 +798,89 @@ theorem familyTriples_cN_shrink (k : ℕ) (hk : 1 ≤ k) (t : ℤ) (m₀ p : ℕ
   · intro u hu hu' q
     exact cN_run t (i + p) u hu (by push_cast at hu' ⊢; omega) q
 
+
+/-! ## The truncation bound and the exhibited counts
+
+`hitCl_pre'` presents `HitCl` at `(t, pre m)` as a union over the `m + 1` history indices — already
+finite, but growing with the seam index `m`. The truncation below replaces it by the window
+`[0, windowN m k]` with `windowN m k = min m (W + 1)`, `W := Nat.card (KType (clSig Φ) k)`: a
+window uniform over every seam. **Where the bound comes from, named exactly.** The library's
+`kTypeOf_listSeg_replicate_eventually_periodic_bounded` at the letter `ℓ₂` gives a threshold `m₀`
+and a period `p > 0` with `m₀ + p ≤ W`; `familyTriples_cN_shrink` moves a family triple from index
+`i` to index `i - p` whenever `m₀ + 1 ≤ i - p` and `2 ≤ i - p`, both true once `i > W + 1`; so an
+index above the window reduces by `p` at a time, by strong induction, until it lies in
+`[0, windowN m k]`. No `Set.Finite.bddAbove`, no `choose!`: the window is written down. Nothing in
+this section evaluates a `kTypeOf`, runs `decide` over `KType`, or `#eval`s `windowN`. -/
+
+/-- **The window, exhibited**: `min m (Nat.card (KType (clSig Φ) k) + 1)`. In `AnchorLayer.lean`'s
+words on its own cell count, binding here with "depth-`k` types" for "cells": "The one bound (W)
+can state honestly: a cardinality bound on the SET OF CELLS of a model, syntactic in `|cl φ|` — a
+cell is a set of subsets of `cl φ`, so there are at most `2 ^ (2 ^ |cl φ|)` of them. It is not a
+complexity bound of any kind: it counts cells, it does not time anything, and it must not be
+described as a bound on any procedure's running time." `windowN m k` counts depth-`k` types (and
+seam indices), times nothing, bounds no procedure, and is not a complexity bound of any kind. It
+is never `#eval`-ed here; `Nat.card` is a well-formed `ℕ` term in a `Prop`. -/
+noncomputable abbrev windowN (m k : ℕ) : ℕ := min m (Nat.card (KType (clSig Φ) k) + 1)
+
+/-- The presentation's state type at window `L`: `Fin (L + 5)` — one gadget, five fixed states
+`A, N₀, N₊, Z, P` and the chain `C_1 … C_L` (Phase 6's index table). -/
+abbrev QN (L : ℕ) := Fin (L + 5)
+
+/-- The state count at window `L`. -/
+theorem card_QN (L : ℕ) : Fintype.card (QN L) = L + 5 := Fintype.card_fin _
+
+/-- **The state count at the exhibited window, uniform over every pre-seam**: at most
+`Nat.card (KType (clSig Φ) k) + 6`, whatever the seam index `m`. A count of states and of depth-`k`
+types, not a complexity bound of any kind (the disclaimer at `windowN`). -/
+theorem card_QN_le (m k : ℕ) :
+    Fintype.card (QN (windowN m k)) ≤ Nat.card (KType (clSig Φ) k) + 6 := by
+  rw [card_QN]
+  have hw : windowN m k = min m (Nat.card (KType (clSig Φ) k) + 1) := rfl
+  omega
+
+#guard Fintype.card (QN 2) = 7
+
+/-- **The truncation bound, with the window exhibited.** For any `τ` with `τ.state t = .pre m` and
+any depth `k ≥ 1`, `HitCl M τ t Φ k` is the union of the family triples of `cN t i` for
+`i ≤ windowN m k`. `⊆`: every realized index is `≤ m` (`hitCl_pre'`); if it exceeds
+`windowN m k = min m (W + 1)` it exceeds `W + 1 ≥ m₀ + p + 1`, so `familyTriples_cN_shrink` lowers
+it by `p`, and strong induction lands it in the window. `⊇`: `windowN m k ≤ m`. `hk` is consumed
+by the containment `run_subset_middle` inside `familyTriples_cN_shrink`. -/
+theorem hitCl_eq_truncated_node (t : ℤ) (m k : ℕ) (hk : 1 ≤ k) (τ : WorldHistory F)
+    (hτ : τ.state t = .pre m) :
+    HitCl M τ t Φ k
+      = ⋃ i ∈ Finset.range (windowN m k + 1), familyTriples (clSig Φ) k (cN t i) := by
+  obtain ⟨m₀, p, hp, hle, hper⟩ :=
+    kTypeOf_listSeg_replicate_eventually_periodic_bounded (clSig Φ) k ℓ₂
+  have hw : windowN m k = min m (Nat.card (KType (clSig Φ) k) + 1) := rfl
+  -- every realized index `≤ m` reduces, `p` at a time, into the window
+  have reduce : ∀ i : ℕ, i ≤ m → ∀ x, x ∈ familyTriples (clSig Φ) k (cN t i) →
+      ∃ i' : ℕ, i' ≤ windowN m k ∧ i' ≤ i ∧ x ∈ familyTriples (clSig Φ) k (cN t i') := by
+    intro i
+    induction i using Nat.strong_induction_on with
+    | _ i ih =>
+      intro him x hx
+      by_cases hi : i ≤ windowN m k
+      · exact ⟨i, hi, le_refl i, hx⟩
+      · push Not at hi
+        obtain ⟨i', rfl⟩ : ∃ i', i = i' + p := ⟨i - p, by omega⟩
+        obtain ⟨i'', h1, h2, h3⟩ := ih i' (by omega) (by omega) x
+          (familyTriples_cN_shrink k hk t m₀ p hper i' (by omega) (by omega) hx)
+        exact ⟨i'', h1, by omega, h3⟩
+  rw [hitCl_pre' τ t m k hτ]
+  ext x
+  simp only [Set.mem_iUnion, Finset.mem_range]
+  constructor
+  · rintro ⟨i, hi, hx⟩
+    obtain ⟨i', hi', -, hx'⟩ := reduce i (by omega) x hx
+    exact ⟨i', by omega, hx'⟩
+  · rintro ⟨i, hi, hx⟩
+    exact ⟨i, by omega, hx⟩
+
 end Probe759
 
 -- temporary foot (Phase 1); replaced by the full axiom foot with the headline
 #print axioms Probe759.hitCl_pre
 #print axioms Probe759.clTrace_canon_apply
 #print axioms Probe759.familyTriples_cN_shrink
+#print axioms Probe759.hitCl_eq_truncated_node

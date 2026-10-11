@@ -433,19 +433,19 @@ exiting 0 is the complete covering check — single out-of-graph file, no librar
 
 ---
 
-### Phase 5: The Truncation Bound and the Exhibited Counts [NOT STARTED]
+### Phase 5: The Truncation Bound and the Exhibited Counts [COMPLETED]
 
 **Goal**: Replace the `m + 1`-fold union by the window `windowN m k = min m (W + 1)`, and state
 the counts `card_QN`, `card_QN_le`.
 
 **Tasks**:
-- [ ] `noncomputable abbrev windowN (m k : ℕ) : ℕ := min m (Nat.card (KType (clSig Φ) k) + 1)`
+- [x] `noncomputable abbrev windowN (m k : ℕ) : ℕ := min m (Nat.card (KType (clSig Φ) k) + 1)`
       with the count disclaimer docstring in `AnchorLayer.lean`'s words as model A's
       `presentationSize` quotes them, binding "depth-`k` types" for "cells"; never `#eval`-ed.
-- [ ] `abbrev QN (L : ℕ) := Fin (L + 5)`; `theorem card_QN (L) : Fintype.card (QN L) = L + 5`
+- [x] `abbrev QN (L : ℕ) := Fin (L + 5)`; `theorem card_QN (L) : Fintype.card (QN L) = L + 5`
       (`Fintype.card_fin`); `theorem card_QN_le (m k) : Fintype.card (QN (windowN m k)) ≤ Nat.card (KType (clSig Φ) k) + 6`
       (`card_QN`, `min_le_right`, `omega`); `#guard Fintype.card (QN 2) = 7`.
-- [ ] `hitCl_eq_truncated_node (t) (m k) (hk : 1 ≤ k) (τ) (hτ : τ.state t = .pre m) : HitCl M τ t Φ k = ⋃ i ∈ Finset.range (windowN m k + 1), familyTriples (clSig Φ) k (cN t i)`
+- [x] `hitCl_eq_truncated_node (t) (m k) (hk : 1 ≤ k) (τ) (hτ : τ.state t = .pre m) : HitCl M τ t Φ k = ⋃ i ∈ Finset.range (windowN m k + 1), familyTriples (clSig Φ) k (cN t i)`
       — obtain `⟨m₀, p, hp, hle, hper⟩ := kTypeOf_listSeg_replicate_eventually_periodic_bounded (clSig Φ) k ℓ₂`;
       `reduce : ∀ i x, x ∈ familyTriples … (cN t i) → ∃ i' ≤ windowN m k, i' ≤ i ∧ x ∈ familyTriples … (cN t i')`
       by `Nat.strong_induction_on`: if `i ≤ windowN m k` done; else `i > min m (W + 1)` — and
@@ -453,7 +453,7 @@ the counts `card_QN`, `card_QN_le`.
       `i - p ≥ m₀ + 1`, `i - p ≥ 2`, and `familyTriples_cN_shrink` applies with `i := i - p`;
       `⊆` from `hitCl_pre'` + `reduce`; `⊇` from `hitCl_pre'` since `windowN m k ≤ m`
       (`min_le_left`). Keep `i' ≤ i` in `reduce` so the `i ≤ m` bound is carried.
-- [ ] Compile; commit.
+- [x] Compile; commit.
 
 **Timing**: 1 hour
 
