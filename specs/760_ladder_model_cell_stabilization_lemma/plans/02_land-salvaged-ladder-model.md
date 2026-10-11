@@ -1,7 +1,7 @@
 # Implementation Plan: Task #760
 
 - **Task**: 760 - Ladder model, admissibility set Adm, and the cell-stabilization lemma ladderCell_stabilizes over both counters (c, n)
-- **Status**: [IMPLEMENTING] (all nine phase headings terminal: 9/9 done)
+- **Status**: [COMPLETED] (all nine phase headings terminal: 9/9 done)
 - **Effort**: 10 hours (all spent; Phases 2-9 executed, Phase 1 cost no work by construction)
 - **Dependencies**: 758 (logical, positive verdict re-read), 759 (serialization only, README)
 - **Research Inputs**:
