@@ -11,7 +11,7 @@ next_project_number: 772
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,765,766,767,768,769,770,771 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,766,767,768,769,770,771 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -85,7 +85,6 @@ next_project_number: 772
   └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
-765 [IMPLEMENTING] — Repair the ladderFrame carrier defect and the refuted...
 766 [RESEARCHED] — Clear the repo-wide task-number citation debt that fails...
 771 [NOT STARTED] — check-task-references.sh --quiet exits non-zero on 198...
 
@@ -260,12 +259,13 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lean-challeng
 ---
 
 ### 765. Ladder frame carrier repair and index deletion
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 760
 - **Parent**: Task 760
 - **Plan**: [765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md]
+- **Summary**: [765_ladder_frame_carrier_repair_and_index_deletion/summaries/01_ladder-carrier-repair-index-deletion-summary.md]
 
 **Description**: Repair the ladderFrame carrier defect and the refuted deadline index in the successor records. Two findings landed as the twelfth wired evidence probe (specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean): (F1) ladderFrame's fwd/bwd seriality hypotheses quantify over the full carrier Q x N x N while Rlad requires an idle state to carry c = 0, so the hypotheses are unsatisfiable for every object and the frame has no instances -- Adm must be a carrier restriction, not a side condition; (F2) cell stabilization over the counter pair (c, n) is refuted for every bound, because the gap n - c stays observable through a closure of size 12 while each counter is arbitrarily large. Scope: the general salvage block already exists machine-checked and fully general over {Q} [Finite Q] [Nonempty Q] inside that probe (no_fwd, no_bwd_of_idle, Adm, LadderState and its Nonempty instance, RladAdm, RladAdm_fwd, RladAdm_bwd, ladderFrameAdm, ladderFrameAdm_isRegular, ladderModel), depends only on RunLayer.lean and ofSlicedStepFinBranch*, and carries zero new proof obligations -- the transplant is a copy plus wiring. Fix the filed statement's type shape en route: a sliced frame's world state is Z x W, so cellAt ... (q,c,n) z does not typecheck. GUARDRAILS: keep the fixture-bound statements (cell_ne, exhibited_form_refuted, exists_form_refuted and their Q = Bool support) in the evidence probe, landing only the general F1 negatives in the library, so no witness fixture enters a library module; leave ladderFrame in RunLayer.lean instance-free and C14-pinned, adding ladderFrameAdm alongside rather than repairing in place. The refuted index Q x Fin (B+1) x Fin (B+1) has NO proved replacement anywhere -- the candidate (q, min c B2, min n B2, clip (n - c)) is research-level and unproved -- so the dependent records must have the refuted index claim DELETED and recorded as an open sub-problem, never re-stated over a concrete substitute, which would file an unproved claim. The cell set itself is untouched: anchorCells_finite and anchorCells_ncard_le still stand, so what was lost is the computable index of which cell a ladder state has, not the finiteness of the set of cells. No upper bound, no complexity claim; every quantity is a count. Durable anchors only outside specs/**.
 

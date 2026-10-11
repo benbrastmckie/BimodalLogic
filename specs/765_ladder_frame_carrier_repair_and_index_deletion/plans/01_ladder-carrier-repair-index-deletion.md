@@ -1,7 +1,7 @@
 # Implementation Plan: Task #765
 
 - **Task**: 765 - Ladder frame carrier repair and index deletion
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: 760 (completed — its second round landed the library half this task describes; see Overview)
 - **Research Inputs**: None (no research report; this plan was written on the `--fast`/forced-plan path after the planner's opening assessment found the description to be a specification and the one open question — whether the library half still needs landing — answerable by reading the tree)
