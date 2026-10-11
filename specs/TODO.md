@@ -1,5 +1,5 @@
 ---
-next_project_number: 764
+next_project_number: 765
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 764
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,758 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,758,764 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,759 | 298,464,502,616,758 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,760 | 231,465,497,759 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543,761 | 428,498,499,500,760 | algebraic-representation, decidability, metalogic |
@@ -83,6 +83,7 @@ next_project_number: 764
       └─ 761 [NOT STARTED] — STATEMENT (library; new module...
         └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
           └─ 763 [NOT STARTED] — STATEMENT (library, research-first; new module...
+764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
 
 ### Formula Refactor
 
@@ -116,6 +117,28 @@ next_project_number: 764
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 764. Specs only gate and task reference lint debt
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 757
+
+**Description**: Close the specs/**-only phase verification gap and the repo-wide task-reference lint debt
+
+WHY THIS EXISTS. Two verification findings recorded during the L+ successor-task-set round, both worked around rather than fixed, and both about what a gate actually attests to rather than about any mathematics.
+
+(1) THE SPECS-ONLY COVERING CHECK ATTESTS TO NOTHING. `verify-deploy.sh --only-gate 3,4` was used as the covering check for a newly written `specs/**` document. In a deploy-consumer tree both gates SKIP — doc-lint and the task-reference lint apply only to the source store — so the invocation exits 0 having run 0 checks. An exit-0 that verified nothing is worse than no check at all, because a plan item can cite it as satisfied. Decide what a phase whose entire `Files to modify` set lies under `specs/**` should actually attest to, and make the chosen gate either run real checks in a consumer tree or report explicitly that it is inapplicable here (a distinguishable exit or a loud SKIP summary), rather than silently exiting 0 with a zero check count. Re-derive the current SKIP behaviour from `verify-deploy.sh` before acting; this description reflects a reading from 2026-10-10.
+
+(2) THE REPO-WIDE TASK-REFERENCE LINT CANNOT REACH 0. `check-task-references.sh` exits 1 on roughly 198 pre-existing occurrences outside `specs/`, concentrated in `Boneyard/**` READMEs and similar, none of them in a file the originating round touched. The count is a standing-debt signal, not a regression signal, so any plan attestation naming "`check-task-references.sh` exits 0" as a criterion is unsatisfiable today and gets annotated as altered every time. Re-count first, then choose one disposition and carry it through: clean the occurrences, extend the exemption taxonomy in `context/standards/task-reference-exemptions.md` to cover the classes that are legitimately exempt (`Boneyard/**` is a plausible candidate — argue it, do not assume it), or give the script a baseline mode so a new occurrence is distinguishable from the standing set. The `task-ref-ok` marker convention and `scripts/lib/task-reference-patterns.sh` are the mechanical source of truth; any exemption decision lands there and in the standards file, never as a one-off suppression at a call site.
+
+SCOPE. Both halves are changes to the agent system in the source store resolved via `.claude-extensions.json`, never hand-authored under `.claude/**`. Each half may be done independently; sequence them in whatever order the plan prefers.
+
+NON-GOALS. No change to any gate's pass criteria beyond what (1) and (2) name. No mass rewrite of `Boneyard/**` content itself — if cleaning is the chosen disposition for (2), it is a mechanical task-number-reference edit, not a content revision. No new lint.
+
+---
 
 ### 763. Ladder lift decidability corollary
 - **Status**: [NOT STARTED]
