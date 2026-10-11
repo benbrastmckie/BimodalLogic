@@ -877,6 +877,123 @@ theorem hitCl_eq_truncated_node (t : ℤ) (m k : ℕ) (hk : 1 ≤ k) (τ : World
   · rintro ⟨i, hi, hx⟩
     exact ⟨i, by omega, hx⟩
 
+
+/-! ## The presentation data
+
+ONE gadget on `QN L = Fin (L + 5)`, one anchored run per trace the truncation left standing. The
+index table (binding for the run characterization below):
+
+| index                  | name  | letter | `now` | successors                              |
+|------------------------|-------|--------|-------|-----------------------------------------|
+| `0`                    | `A`   | `ℓ₂`   | no    | `0, 1, 2`                               |
+| `1`                    | `N₀`  | `ℓ₁`   | YES   | `3`                                     |
+| `2`                    | `N₊`  | `ℓ₂`   | YES   | every `j` with `5 ≤ j` (none at `L = 0`) |
+| `3`                    | `Z`   | `ℓ₀`   | no    | `4`                                     |
+| `4`                    | `P`   | `ℓₙ`   | no    | `4`                                     |
+| `4 + j`, `1 ≤ j < L`   | `C_j` | `ℓ₂`   | no    | `5 + j`                                 |
+| `L + 4` (only `1 ≤ L`) | `C_L` | `ℓ₁`   | no    | `3`                                     |
+
+Anchored runs (`IsRun`: `now` exactly at `t`): `A^(ω*)·N₀·Z·P^ω` traces `cN t 0`;
+`A^(ω*)·N₊·C_j·C_(j+1)·…·C_L·Z·P^ω`, entering the chain at `C_j` (`1 ≤ j ≤ L`), reads `ℓ₂` on
+`[t + 1, t + (L - j)]`, `ℓ₁` at `t + (L - j) + 1`, `ℓ₀` next and `ℓₙ` after — i.e. `cN t i` with
+`i = L - j + 1 ∈ [1, L]`. `N₊` may enter the chain at ANY `C_j`, and `C_L` plays the role of the
+last run state (reading `ℓ₁`); this is what leaves room at `L = 0`, where `N₊` has no successor
+at all and so no anchored run passes it. No chain state has a self-loop, so a run entering the
+chain reaches `Z` within `L` steps; the only predecessor of `N₀`, `N₊` and `A` is `A`.
+
+`stepN`, `isNowN`, `vecN` and `labN` are `def`, never `noncomputable def`: `HitPresented` is a
+proposition ABOUT `hitOf lab step`, and `hitOf` is a `Finset`, so the presentation data has to
+compute. `labN` reads the marker off `isNowN` and every closure letter off the state's letter
+vector, so the labelling bridge below is a case split on the index, never a re-derivation of the
+semantics. -/
+
+/-- The step table (see the index table above). -/
+def stepN (L : ℕ) : QN L → QN L → Bool := fun q r =>
+  decide ((q.val = 0 ∧ r.val ≤ 2) ∨ (q.val = 1 ∧ r.val = 3) ∨ (q.val = 2 ∧ 5 ≤ r.val)
+    ∨ (5 ≤ q.val ∧ q.val < L + 4 ∧ r.val = q.val + 1) ∨ (5 ≤ q.val ∧ q.val = L + 4 ∧ r.val = 3)
+    ∨ (q.val = 3 ∧ r.val = 4) ∨ (q.val = 4 ∧ r.val = 4))
+
+/-- The marker is read at `N₀` and `N₊`, and nowhere else. -/
+def isNowN (L : ℕ) (q : QN L) : Bool := decide (q.val = 1 ∨ q.val = 2)
+
+/-- The letter vector of a state. Order matters: index `4` is `P` and is tested before the
+`L + 4` test, so at `L = 0` the two cannot collide. -/
+def vecN (L : ℕ) (q : QN L) : (clSig Φ).preds → Bool :=
+  if q.val = 1 then ℓ₁ else if q.val = 3 then ℓ₀ else if q.val = 4 then ℓₙ
+  else if 5 ≤ q.val ∧ q.val = L + 4 then ℓ₁ else ℓ₂
+
+/-- **The labelling**: the marker from `isNowN`, every closure letter from the state's vector. -/
+def labN (L : ℕ) : QN L → (clSig Φ).preds → Bool := fun q ℓ =>
+  if ℓ = clNow Φ then isNowN L q else vecN L q ℓ
+
+-- live checks on the table at `L = 2` (a `#guard` failure is a compile error)
+#guard labN 2 ⟨1, by omega⟩ (clNow Φ) = true
+#guard labN 2 ⟨0, by omega⟩ (clNow Φ) = false
+#guard labN 2 ⟨6, by omega⟩ (clLetter Φ cl_Xp) = true
+#guard stepN 2 ⟨2, by omega⟩ ⟨6, by omega⟩ = true
+#guard stepN 2 ⟨6, by omega⟩ ⟨3, by omega⟩ = true
+
+/-! ### The labelling bridge -/
+
+theorem labN_now (L : ℕ) (q : QN L) : labN L q (clNow Φ) = true ↔ q.val = 1 ∨ q.val = 2 := by
+  unfold labN isNowN
+  rw [if_pos rfl, decide_eq_true_iff]
+
+theorem labN_letter (L : ℕ) (q : QN L) (ℓ : (clSig Φ).preds) (hℓ : ℓ ≠ clNow Φ) :
+    labN L q ℓ = vecN L q ℓ := by
+  unfold labN
+  rw [if_neg hℓ]
+
+theorem vecN_A (L : ℕ) (q : QN L) (h : q.val = 0) : vecN L q = ℓ₂ := by
+  unfold vecN
+  rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+theorem vecN_N₀ (L : ℕ) (q : QN L) (h : q.val = 1) : vecN L q = ℓ₁ := by
+  unfold vecN
+  rw [if_pos h]
+theorem vecN_Npos (L : ℕ) (q : QN L) (h : q.val = 2) : vecN L q = ℓ₂ := by
+  unfold vecN
+  rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+theorem vecN_Z (L : ℕ) (q : QN L) (h : q.val = 3) : vecN L q = ℓ₀ := by
+  unfold vecN
+  rw [if_neg (by omega), if_pos h]
+theorem vecN_P (L : ℕ) (q : QN L) (h : q.val = 4) : vecN L q = ℓₙ := by
+  unfold vecN
+  rw [if_neg (by omega), if_neg (by omega), if_pos h]
+theorem vecN_chain (L : ℕ) (q : QN L) (hj : 5 ≤ q.val) (hj' : q.val < L + 4) :
+    vecN L q = ℓ₂ := by
+  unfold vecN
+  rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+theorem vecN_last (L : ℕ) (q : QN L) (hL : 1 ≤ L) (h : q.val = L + 4) : vecN L q = ℓ₁ := by
+  unfold vecN
+  rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_pos ⟨by omega, h⟩]
+
+/-! ### The step table, read out -/
+
+theorem stepN_pred_now (L : ℕ) {q r : QN L} (h : stepN L q r = true) (hr : r.val = 1 ∨ r.val = 2) :
+    q.val = 0 := by
+  simp only [stepN, decide_eq_true_eq] at h; omega
+theorem stepN_pred_A (L : ℕ) {q r : QN L} (h : stepN L q r = true) (hr : r.val = 0) : q.val = 0 := by
+  simp only [stepN, decide_eq_true_eq] at h; omega
+theorem stepN_N₀ (L : ℕ) {q r : QN L} (h : stepN L q r = true) (hq : q.val = 1) : r.val = 3 := by
+  simp only [stepN, decide_eq_true_eq] at h; omega
+theorem stepN_Npos (L : ℕ) {q r : QN L} (h : stepN L q r = true) (hq : q.val = 2) : 5 ≤ r.val := by
+  simp only [stepN, decide_eq_true_eq] at h; omega
+theorem stepN_chain (L : ℕ) {q r : QN L} (h : stepN L q r = true) (hq : 5 ≤ q.val) :
+    (q.val < L + 4 ∧ r.val = q.val + 1) ∨ (q.val = L + 4 ∧ r.val = 3) := by
+  simp only [stepN, decide_eq_true_eq] at h; omega
+theorem stepN_Z (L : ℕ) {q r : QN L} (h : stepN L q r = true) (hq : q.val = 3) : r.val = 4 := by
+  simp only [stepN, decide_eq_true_eq] at h; omega
+theorem stepN_P (L : ℕ) {q r : QN L} (h : stepN L q r = true) (hq : q.val = 4) : r.val = 4 := by
+  simp only [stepN, decide_eq_true_eq] at h; omega
+
+/-- The step table as an `↔` on the index values (for building the witness runs). -/
+theorem stepN_iff (L : ℕ) (q r : QN L) :
+    stepN L q r = true ↔
+      ((q.val = 0 ∧ r.val ≤ 2) ∨ (q.val = 1 ∧ r.val = 3) ∨ (q.val = 2 ∧ 5 ≤ r.val)
+        ∨ (5 ≤ q.val ∧ q.val < L + 4 ∧ r.val = q.val + 1) ∨ (5 ≤ q.val ∧ q.val = L + 4 ∧ r.val = 3)
+        ∨ (q.val = 3 ∧ r.val = 4) ∨ (q.val = 4 ∧ r.val = 4)) := by
+  simp only [stepN, decide_eq_true_eq]
+
 end Probe759
 
 -- temporary foot (Phase 1); replaced by the full axiom foot with the headline
@@ -884,3 +1001,5 @@ end Probe759
 #print axioms Probe759.clTrace_canon_apply
 #print axioms Probe759.familyTriples_cN_shrink
 #print axioms Probe759.hitCl_eq_truncated_node
+#print axioms Probe759.labN
+#print axioms Probe759.stepN

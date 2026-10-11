@@ -479,7 +479,7 @@ exiting 0 is the complete covering check — single out-of-graph file, no librar
 
 ---
 
-### Phase 6: Presentation Data `labN`/`stepN` and the Labelling Bridge [NOT STARTED]
+### Phase 6: Presentation Data `labN`/`stepN` and the Labelling Bridge [COMPLETED]
 
 **Goal**: Define the one-gadget presentation on `QN L` whose anchored runs will trace exactly
 `{cN t i : i ≤ L}`, and prove the labelling bridge from `labN` to the four letter vectors.
@@ -503,23 +503,23 @@ Anchored runs (`IsRun`: `now` exactly at `t`): `A^(ω*)·N₀·Z·P^ω` traces `
 within `L` steps; the only predecessor of `N₀`, `N₊` and `A` is `A`.
 
 **Tasks**:
-- [ ] `def stepN (L : ℕ) : QN L → QN L → Bool := fun q r => decide ((q.val = 0 ∧ r.val ≤ 2) ∨ (q.val = 1 ∧ r.val = 3) ∨ (q.val = 2 ∧ 5 ≤ r.val) ∨ (5 ≤ q.val ∧ q.val < L + 4 ∧ r.val = q.val + 1) ∨ (5 ≤ q.val ∧ q.val = L + 4 ∧ r.val = 3) ∨ (q.val = 3 ∧ r.val = 4) ∨ (q.val = 4 ∧ r.val = 4))`.
-- [ ] `def isNowN (L) (q : QN L) : Bool := decide (q.val = 1 ∨ q.val = 2)`;
+- [x] `def stepN (L : ℕ) : QN L → QN L → Bool := fun q r => decide ((q.val = 0 ∧ r.val ≤ 2) ∨ (q.val = 1 ∧ r.val = 3) ∨ (q.val = 2 ∧ 5 ≤ r.val) ∨ (5 ≤ q.val ∧ q.val < L + 4 ∧ r.val = q.val + 1) ∨ (5 ≤ q.val ∧ q.val = L + 4 ∧ r.val = 3) ∨ (q.val = 3 ∧ r.val = 4) ∨ (q.val = 4 ∧ r.val = 4))`.
+- [x] `def isNowN (L) (q : QN L) : Bool := decide (q.val = 1 ∨ q.val = 2)`;
       `def vecN (L) (q : QN L) : (clSig Φ).preds → Bool := if q.val = 1 then ℓ₁ else if q.val = 3 then ℓ₀ else if q.val = 4 then ℓ₋ else if 5 ≤ q.val ∧ q.val = L + 4 then ℓ₁ else ℓ₂`
       (order matters: index 4 is `P` before the `L + 4` test, so `L = 0` cannot collide);
       `def labN (L) : QN L → (clSig Φ).preds → Bool := fun q ℓ => if ℓ = clNow Φ then isNowN L q else vecN L q ℓ`.
       All three are `def`, never `noncomputable`; `#eval labN 2 ⟨1, by omega⟩ (clNow Φ)` as a
       live check (`true`).
-- [ ] Bridge lemmas: `labN_now (L q) : labN L q (clNow Φ) = true ↔ q.val = 1 ∨ q.val = 2`;
+- [x] Bridge lemmas: `labN_now (L q) : labN L q (clNow Φ) = true ↔ q.val = 1 ∨ q.val = 2`;
       `labN_letter (L q) (ℓ) (hℓ : ℓ ≠ clNow Φ) : labN L q ℓ = vecN L q ℓ`;
-      `vecN_A`, `vecN_N₀`, `vecN_N₊`, `vecN_Z`, `vecN_P`, `vecN_chain (hj : 5 ≤ q.val) (hj' : q.val < L + 4) : vecN L q = ℓ₂`,
+      `vecN_A`, `vecN_N₀`, `vecN_N₊`, `vecN_Z`, `vecN_P`, *(deviation: altered — `₊` is not an identifier character; the `N₊` lemmas are `vecN_Npos`/`stepN_Npos`; the state keeps the name `N₊` in prose)* `vecN_chain (hj : 5 ≤ q.val) (hj' : q.val < L + 4) : vecN L q = ℓ₂`,
       `vecN_last (hL : 1 ≤ L) (h : q.val = L + 4) : vecN L q = ℓ₁`.
-- [ ] Step-table read-outs: `stepN_pred_now (h : stepN L q r = true) (hr : r.val = 1 ∨ r.val = 2) : q.val = 0`;
+- [x] Step-table read-outs: `stepN_pred_now (h : stepN L q r = true) (hr : r.val = 1 ∨ r.val = 2) : q.val = 0`;
       `stepN_pred_A (h) (hr : r.val = 0) : q.val = 0`; `stepN_N₀ (h) (hq : q.val = 1) : r.val = 3`;
       `stepN_N₊ (h) (hq : q.val = 2) : 5 ≤ r.val`; `stepN_chain (h) (hq : 5 ≤ q.val) : (q.val < L + 4 ∧ r.val = q.val + 1) ∨ (q.val = L + 4 ∧ r.val = 3)`;
       `stepN_Z (h) (hq : q.val = 3) : r.val = 4`; `stepN_P (h) (hq : q.val = 4) : r.val = 4`
       — each by `simp only [stepN, decide_eq_true_eq] at h; omega`.
-- [ ] Compile; commit.
+- [x] Compile; commit.
 
 **Timing**: 1.5 hours
 
