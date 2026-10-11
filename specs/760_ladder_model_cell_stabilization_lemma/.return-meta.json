@@ -1,83 +1,32 @@
 {
-  "status": "partial",
-  "started_at": "2026-10-11T09:20:56Z",
-  "completed_at": "2026-10-11T09:38:04Z",
-  "dispatch_seq": 3,
-  "requires_user_review": true,
-  "blocked_phase": 1,
-  "review_reason": "Phase 1 (the filed statement: ladderModel over ladderFrame, Adm, ladderCell_stabilizes) is [BLOCKED] by the user's R1 ruling: the goals are machine-refuted theorems (ladderFrame's fwd/bwd unsatisfiable on the full carrier; cell stabilization in the counter pair (c, n) false for every bound), landed as the twelfth wired probe. Phases 2-4 are [COMPLETED] and every gate passed; the remaining choice -- the successor design (R2 /revise or R3 /spawn) -- is the user's and not researchable. verification_passed is false because a [BLOCKED] phase can never return implemented, not because any gate this dispatch ran failed (the single vacuous-grep hit is a pre-existing baseline theorem in Examples/TemporalStructures.lean, identical at commit 344dcb524).",
-  "partial_progress": {
-    "stage": "phase_1_blocked",
-    "details": "Phases 2, 3, 4 completed and committed (74db0b789, e68775371, c691f3dba); Phase 1 stays [BLOCKED] per the design record's contingency and the user's R1 ruling. See the plan file's Phase 1 blocker entry and the summary's Blocked Phase section.",
-    "phases_completed": 3,
-    "phases_total": 4
-  },
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_count_note": "pre-existing: FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal ... := trivial), identical at the pre-dispatch commit 344dcb524; 0 introduced by this dispatch; probe file 0",
-    "axiom_count": 14,
-    "axiom_count_baseline": 14,
-    "build_passed": true,
-    "build_evidence": "lake-build-guard.sh build --timeout 1800 -- build: guard exit 0; 'Build completed successfully (2840 jobs)'; 0 error: lines; no build-graph module touched (Tier 3 vacuous)",
-    "probe_compile": "lake env lean specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean through the guard: exit 0, 0 errors, 0 warnings, five #print axioms lines as planned",
-    "evidence_gate": "check-evidence-probes.sh: PASS all 30 wired probe(s) compile (Phase 3 run and Phase 4 re-run)",
-    "module_invariants": "check-module-invariants.sh exit 0 (55 PASS, 0 FAIL; C9, C14, C15 green)",
-    "other_gates": "readme-lint.sh PASS; typst-sync-check.sh PASS (no status.typ regeneration); verify-deploy.sh exit 0; check-task-references.sh exit 0 scoped to every touched file, exit 1 repo-wide on 198 pre-existing Boneyard/ and Tests/BimodalTest citations (issue log)"
-  },
+  "status": "planned",
+  "started_at": "2026-10-11T10:09:46Z",
+  "completed_at": "2026-10-11T10:20:03Z",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/760_ladder_model_cell_stabilization_lemma/summaries/01_ladder-cell-refutation-probe-summary.md",
-      "summary": "Phase 1 [BLOCKED] (filed lemma refuted, user ruling R1); the obstruction landed as the twelfth wired probe, wired into the evidence gate, recorded in the RaySummary README and the theorem index; full gate set green; no library module created."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean",
-      "summary": "Twelfth wired probe (Probe760): no_fwd, no_bwd_of_idle (ladderFrame has no instances); cell_ne, exhibited_form_refuted, exists_form_refuted (cells do not stabilize in (c, n) past any bound)."
+      "type": "plan",
+      "path": "specs/760_ladder_model_cell_stabilization_lemma/plans/02_land-salvaged-ladder-model.md",
+      "summary": "Revised plan executing ruling R2: Phases 1-4 carried forward unchanged (Phase 1 [BLOCKED] by the refuted filed statement, Phases 2-4 [COMPLETED] and committed) plus new Phases 5-9 that transplant the eleven machine-checked general declarations from the wired probe into FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean, wire the two aggregators, re-point the probe at the library, add C14 pins at the two synchronized sites, and record the result in docs/theorem-index.md and the RaySummary README. Zero new proof obligations; phase E of the solution path is explicitly out of scope."
     }
   ],
-  "user_decision": {
-    "question": "Phase 1 is blocked on the successor design, as ruled (R1). Which successor should be filed for the refuted stabilization lemma and the index 761-763 depend on?",
-    "options": [
-      "R2 — /revise 760: land Adm, LadderState, RladAdm, ladderFrameAdm, ladderModel and the negative theorem in RaySummary/LadderModel.lean with C14 pins and theorem-index rows; re-state 761-763's index over whatever replaces Q × Fin (B+1) × Fin (B+1)",
-      "R3 — /spawn 760: a research-first record for a repaired positive lemma over (q, min c B', min n B', clip (n - c)), leaving the library untouched until it is stated",
-      "Hold — leave the record [BLOCKED] with the obstruction landed and decide later"
-    ],
-    "recommended": "R2 — /revise 760: land Adm, LadderState, RladAdm, ladderFrameAdm, ladderModel and the negative theorem in RaySummary/LadderModel.lean with C14 pins and theorem-index rows; re-state 761-763's index over whatever replaces Q × Fin (B+1) × Fin (B+1)",
-    "blocking": true
-  },
-  "modified_files": [
-    "specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean",
-    "scripts/check-evidence-probes.sh",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "docs/theorem-index.md",
-    "specs/760_ladder_model_cell_stabilization_lemma/plans/01_ladder-cell-refutation-probe.md",
-    "specs/760_ladder_model_cell_stabilization_lemma/summaries/01_ladder-cell-refutation-probe-summary.md",
-    "specs/760_ladder_model_cell_stabilization_lemma/handoffs/phase-2-handoff-20261011T092549Z.md",
-    "specs/760_ladder_model_cell_stabilization_lemma/handoffs/phase-3-handoff-20261011T092906Z.md",
-    "specs/760_ladder_model_cell_stabilization_lemma/handoffs/phase-4-handoff-20261011T093519Z.md",
-    "specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl"
-  ],
-  "memory_candidates": [
-    {
-      "content": "When porting a compiled research prototype into a wired evidence probe, assemble the probe as header + sed-renamed prototype body and verify statement fidelity by diffing the Goal theorem signatures (text up to ':=') against the plan's Lean Challenge Statements block -- this works even when lean-challenge-snapshot.sh --check cannot run because the plan-time snapshot was only a --dry-run (no manifest). Take the real snapshot at plan time if --check is wanted later.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/760_ladder_model_cell_stabilization_lemma/summaries/01_ladder-cell-refutation-probe-summary.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["evidence probe", "lean-challenge-snapshot", "statement fidelity", "prototype port", "check-evidence-probes"]
-    }
-  ],
+  "next_steps": "Run /implement 760 to execute the revised plan (Phases 5-9; Phases 1-4 are closed and are not revisited).",
   "metadata": {
-    "session_id": "sess_1791706685_9a0a9b",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "passed",
-    "compliance_note": "the five Goal names live in the wired probe specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean by R1 (no library module); none in the Lean source roots, as the plan prescribes",
-    "phases_completed": 3,
-    "phases_total": 4,
-    "commits": ["74db0b789", "e68775371", "c691f3dba"]
+    "session_id": "sess_1791713264_8b1ac7",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "revision_mode": "plan_revision",
+    "phase_count": 9,
+    "phases_preserved": 4,
+    "phases_added": 5,
+    "phases_revised": 0,
+    "phases_removed": 0,
+    "estimated_hours": 10,
+    "estimated_hours_remaining": 6,
+    "reports_integrated": [
+      "reports/01_ladder-cell-stabilization-refuted.md",
+      ".blocker-research.json"
+    ],
+    "plan_validation": "validate-artifact.sh plan --strict: PASS, 0 warnings",
+    "sentinel_written": "specs/760_ladder_model_cell_stabilization_lemma/.plan-revised.json"
   }
 }
