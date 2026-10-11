@@ -122,24 +122,30 @@
     {
       "project_number": 758,
       "project_name": "node_cell_stabilization_probe",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "STATEMENT. A wired probe on the LIBRARY fixture `NoFiniteWidth.M` (`PlusSlicedCertificate/Limits/NoFiniteWidth.lean`; regular by `F_isRegular`, histories canonical by `path_eq_canon`), the one-region special case of the deadline ladder, for its own ⊡-bearing witness `Φ` (fallback `D`, recorded in the probe header in that order; the chosen formula is written into the statements):\n  `theorem preCell_stable (k k' : ℕ) (hk : 1 ≤ k) (hk' : 1 ≤ k') (z : ℤ) : cellAt M Φ (.pre k) z = cellAt M Φ (.pre k') z`\n  `theorem preCell_zero_ne (z : ℤ) : cellAt M Φ (.pre 0) z ≠ cellAt M Φ (.pre 1) z`  -- the deadline index is real\n  `theorem postCell_stable (k k' j j' : ℕ) (hj : 1 ≤ j) (hj' : 1 ≤ j') (z : ℤ) : cellAt M Φ (.post k j) z = cellAt M Φ (.post k' j') z`  -- the thread index is invisible\nwith `cellAt` from `RaySummary/AnchorLayer.lean` (time-independent by `cellAt_eq_cellAt`). Depth: none — cells are sets of closure types, no k occurs.\n\nWHY. Run-layer phase 2's FIRST statement is the stabilization of realized cells on the ladder (`RaySummary/README.md`, \"(W): what landed and what did not\", obligation (ii) item 1); the record that states it for a general object (its successor) has no cost figure until this probe reports. 750's mitigation R-A: prove or refute stabilization on `Node` first, where the expected cells are `pre 0`, `pre (≥ 1)`, `x`, `post`. The probe imports the library model and re-proves nothing.\n\nEITHER VERDICT IS THE DELIVERABLE. Stabilization at bound 1 confirms the mechanism (branch-time saturation). A failure IS the obstruction the README names: record it in the probe header as such and mark the task [BLOCKED] — never a sorry, an axiom, a vacuous definition, or a finite-fibre retreat (the capped ladder is refuted by `Probe750.capped_carrier_finite` + `not_finite_width_fmp`).\n\nGUARDRAILS (ROADMAP Stage 1): (a) cells are closure-indexed sets over the time axis, never one bit per depth; (b) `Node` has infinite width and the probe adds no finiteness; (c) no bound of any kind is claimed — the probe counts cells; (d) zero debt: no external Büchi/MSO lemma, no cslib require; (e) the fixture's witness is forward-looking and the header must say the result is forward-only — nothing here bears on ⊡(Pp), and no claim that ⊡-letters discriminate between devices.\n\nFILE SCOPE. The new probe file; one WIRED entry in `scripts/check-evidence-probes.sh`; one sentence in the RaySummary README's evidence paragraph (durable anchors only — no task numbers, no record-versioning language). Cross-set collisions, left to the admission gate (no edge): 734 ([PARTIAL], Stage 0) and 744 (not_started) also declare the script and the README respectively.\n\nCOSTABLE: yes — 400-800 lines, 1-2 implement dispatches (basis: `backward-dual-asymmetric-fixture.lean`, 619 lines, same fixture; `deadline-ladder-branching.lean`, 103 lines). Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section A and H1.",
       "topic": "decidability",
       "dependencies": [],
       "file_scope": [
-        "specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
         "scripts/check-evidence-probes.sh",
-        "FormalSystem/Metalogic/Decidability/RaySummary/README.md"
+        "specs/evidence/seam-gluing-ray-product/node-cell-stabilization.lean",
+        "typst/generated/status.typ"
       ],
       "created": "2026-10-10T23:53:09Z",
-      "last_updated": "2026-10-11T00:49:54Z",
+      "last_updated": "2026-10-11T01:00:07Z",
       "session_id": "sess_1791678570_498fb4",
       "artifacts": [
         {
           "path": "specs/758_node_cell_stabilization_probe/reports/01_node-cell-stabilization-probe.md",
           "type": "report",
           "summary": "POSITIVE verdict: preCell_stable, preCell_zero_ne, postCell_stable all proved on NoFiniteWidth.M for Φ in a compiled prototype (lake env lean, 0 errors, axioms propext/choice/Quot.sound); cells depend only on the relative position class {<0,0,1,>=2}, never on the thread index; Xp (not a stab letter) separates pre 0 from pre 1; cost ~360-380 lines, one implement dispatch."
+        },
+        {
+          "path": "specs/758_node_cell_stabilization_probe/plans/01_node-cell-stabilization-probe.md",
+          "type": "plan",
+          "summary": "3 sequential phases: author probe (local), wire gate entry (local), README sentence + full gate (full)."
         }
       ],
       "next_artifact_number": 2
