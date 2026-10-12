@@ -224,23 +224,23 @@ the cheapest check that covers the full blast radius.
 
 ---
 
-### Phase 2: Clear Boneyard retired-module comments [IN PROGRESS]
+### Phase 2: Clear Boneyard retired-module comments [COMPLETED]
 
 **Goal**: Zero unexempted citations anywhere under `Boneyard/`, closing the subtree.
 
 **Tasks**:
-- [ ] Re-derive the scope: `bash .claude/scripts/check-task-references.sh Boneyard`; the
-      remaining findings should all be `.lean` paths. Record and reconcile the count.
-- [ ] Apply the Rewrite Vocabulary to each `.lean` comment, docstring, and `/-! -/` section
+- [x] Re-derive the scope: `bash .claude/scripts/check-task-references.sh Boneyard`; the
+      remaining findings should all be `.lean` paths. Record and reconcile the count. *(completed: confirmed 21 occurrences across 9 files, matching hypothesis exactly)*
+- [x] Apply the Rewrite Vocabulary to each `.lean` comment, docstring, and `/-! -/` section
       heading. The dominant shapes here are `Task #N` section headings
       (`## Known Limitations (Task #55)`, `## Gap Analysis (Task #58)`) and inline
-      issue-attribution prose (`the issue identified in Task #69`).
-- [ ] Where an attribution carries real content (`the Task #69 F-persistence counterexample`),
+      issue-attribution prose (`the issue identified in Task #69`). *(completed: all 9 files)*
+- [x] Where an attribution carries real content (`the Task #69 F-persistence counterexample`),
       keep the content and name the durable anchor already present in the same passage
-      (`f_preserving_seed_consistent` in `UltrafilterChain.lean`); where it carries none, drop it.
-- [ ] Read `git diff` for every changed file; confirm each hunk stays inside a `--`, `/- -/`,
-      `/-- -/`, or `/-! -/` region and that no comment delimiter was altered.
-- [ ] Commit per green sub-step.
+      (`f_preserving_seed_consistent` in `UltrafilterChain.lean`); where it carries none, drop it. *(completed)*
+- [x] Read `git diff` for every changed file; confirm each hunk stays inside a `--`, `/- -/`,
+      `/-- -/`, or `/-! -/` region and that no comment delimiter was altered. *(completed)*
+- [x] Commit per green sub-step. *(completed)*
 
 **Timing**: 0.75 hours
 
