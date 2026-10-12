@@ -1,7 +1,7 @@
 # Implementation Plan: Task #761
 
 - **Task**: 761 - Ladder realization theorem: LadderCons and ladderRealized per ladder cell for all φ including box/stab letters
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: 760 (logical: `ladderModel`, `Adm`, `LadderState`, `ladderFrameAdm` are the theorem's inputs; no finite cell index is provided)
 - **Research Inputs**: specs/761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md
@@ -257,7 +257,7 @@ Phase 2's port, so nothing cheaper or dearer applies.
 
 ---
 
-### Phase 2: Author the Wired Forward-Only Liveness Probe [NOT STARTED]
+### Phase 2: Author the Wired Forward-Only Liveness Probe [COMPLETED]
 
 **Goal**: Create `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean` — the
 mandated header followed by the prototype's declarations under `namespace Probe761` — compiling
@@ -265,7 +265,7 @@ under `lake env lean` with no `sorry`, no axiom, no vacuous definition, and the 
 statements verbatim.
 
 **Tasks**:
-- [ ] Write the header docstring (`/- … -/`, before the imports, modeled on
+- [x] Write the header docstring (`/- … -/`, before the imports, modeled on
       `ladder-cell-refutation.lean`'s), containing in this order:
       - Title line: "Probe 761 (requirement (W)'s run layer, phase 2, the soundness half, over the
         two-state object): the ladder's structural liveness is FORWARD-ONLY — an admissible ladder
@@ -325,18 +325,18 @@ statements verbatim.
       - Axiom foot sentence ("`gPast_isPath` carries `[propext, Classical.choice, Quot.sound]`;
         `gPast_pending_past` and `gPast_count` carry `[propext, Quot.sound]`") and the compile
         line `lake env lean specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`.
-- [ ] Import and opens exactly as the prototype: `RaySummary.LadderModel`; `open
+- [x] Import and opens exactly as the prototype: `RaySummary.LadderModel`; `open
       FormalSystem.Syntax FormalSystem.Semantics` and `open
       FormalSystem.Metalogic.Decidability.RaySummary`; `namespace Probe761`.
-- [ ] Port the prototype's declarations in order, keeping names, statements and docstrings:
+- [x] Port the prototype's declarations in order, keeping names, statements and docstrings:
       `stepB`, `pendB`, `gPast`, `gPast_adm`, `gPastA`, `gPast_isPath`, `gPast_pending_past`,
       `gPast_count`. Identifiers are already ASCII (the snapshot tool's regex is ASCII-only); no
       renames. Nothing else changes.
-- [ ] Close with `end Probe761` and `#print axioms` for `Probe761.gPast_isPath`,
+- [x] Close with `end Probe761` and `#print axioms` for `Probe761.gPast_isPath`,
       `Probe761.gPast_pending_past`, `Probe761.gPast_count`.
-- [ ] Compile through the guard:
+- [x] Compile through the guard:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`.
-- [ ] `git add` the new file (the gate's "tracked, not merely present" rule — Phase 3 fails
+- [x] `git add` the new file (the gate's "tracked, not merely present" rule — Phase 3 fails
       otherwise) and commit per the green-substep mandate.
 
 **Timing**: 1 hour
