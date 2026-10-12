@@ -1719,7 +1719,7 @@ echo
 # examples the moment one is added, the same reason C10 self-excludes below).
 #
 # The regex also matches an ephemeral `specs/NNN_slug/` PATH citation. The rule
-# forbids these for the same reason it forbids "task 42" -- a task directory is
+# forbids these for the same reason it forbids "task {N}" -- a task directory is
 # renumbered by vault operations and is meaningless to a future reader -- but the
 # `tasks?\s+#?[0-9]+` shape structurally cannot see one, so seventeen of them sat
 # in live `.lean` files while this check reported zero.

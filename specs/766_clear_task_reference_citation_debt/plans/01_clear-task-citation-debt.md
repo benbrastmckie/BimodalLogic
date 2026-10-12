@@ -421,33 +421,33 @@ tier with the same `BimodalTest` build and must not contend for the lake lock.
 
 ---
 
-### Phase 5: Close the last occurrence and verify the full gate set [NOT STARTED]
+### Phase 5: Close the last occurrence and verify the full gate set [COMPLETED]
 
 **Goal**: `bash .claude/scripts/check-task-references.sh` exits 0 repo-wide, the complete gate
 set is green, and the marker delta introduced by this task is audited.
 
 **Tasks**:
-- [ ] Fix the single `scripts/check-module-invariants.sh` occurrence (line ~1722): the comment
+- [x] Fix the single `scripts/check-module-invariants.sh` occurrence (line ~1722): the comment
       quotes `"task 42"` as an illustrative forbidden form. Replace it with the placeholder
       `"task {N}"` -- taxonomy category 5, which `TASK_PATTERN` structurally cannot match, so no
       marker is required and none should be added. Note that this script deliberately excludes
       its own path from its *own* C-check self-match, which is unrelated to and does not exempt
-      it from `check-task-references.sh`.
-- [ ] Run the full unscoped lint: `bash .claude/scripts/check-task-references.sh`. Require exit 0
-      and `PASS: 0 unexempted task-reference occurrences`.
-- [ ] Audit the marker delta: `git diff main -- . | grep -n 'task-ref-ok'`. For every marker this
+      it from `check-task-references.sh`. *(completed)*
+- [x] Run the full unscoped lint: `bash .claude/scripts/check-task-references.sh`. Require exit 0
+      and `PASS: 0 unexempted task-reference occurrences`. *(completed: exit 0, "PASS: 0 unexempted task-reference occurrences")*
+- [x] Audit the marker delta: `git diff main -- . | grep -n 'task-ref-ok'`. For every marker this
       task added, confirm it names a numbered category from
       `.claude/context/standards/task-reference-exemptions.md` and that the category genuinely
       applies. Replace any marker that fails this audit with a durable-anchor rewrite and re-run
-      the lint. Expected delta: zero markers.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Record which gates
+      the lint. Expected delta: zero markers. *(completed: zero markers added, as predicted)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Record which gates
       `[SKIP]` and why -- gate 4 (the task-reference lint gate) is expected to `[SKIP]` because
       this repo is a deploy consumer with no `agent-system/extensions` directory, which is why
-      the direct lint invocation above is the authoritative acceptance check rather than gate 4.
-- [ ] Run the Lean build set: `lake build`, `lake build BimodalTest`,
-      `lake build BimodalToolsTest`. Require all three green.
-- [ ] Confirm no file under `specs/**`, `.claude/**`, or ROADMAP.md was modified by this task.
-- [ ] Commit.
+      the direct lint invocation above is the authoritative acceptance check rather than gate 4. *(completed: PASS -- 14 check(s), 0 failure(s); gate 4 SKIPped exactly as predicted)*
+- [x] Run the Lean build set: `lake build`, `lake build BimodalTest`,
+      `lake build BimodalToolsTest`. Require all three green. *(completed: 2841, 2904, 1965 jobs respectively, all "Build completed successfully")*
+- [x] Confirm no file under `specs/**`, `.claude/**`, or ROADMAP.md was modified by this task. *(completed: confirmed via git diff against the pre-task baseline commit; this task's own task directory and the shared specs/TODO.md, specs/state.json, specs/events.jsonl machine-state files are the only specs/** touches, all via the sanctioned update-task-status/git-commit-phase machinery; two pre-existing uncommitted specs/754_.../ modifications observed in the working tree were not touched by this task, recorded in the issue log)*
+- [x] Commit. *(completed)*
 
 **Timing**: 0.5 hours
 
