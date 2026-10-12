@@ -1952,6 +1952,27 @@
   ],
   "completed_projects": [
     {
+      "project_number": 776,
+      "project_name": "task_reference_lint_baseline",
+      "status": "abandoned",
+      "task_type": "meta",
+      "description": "Resolve or formally accept the standing check-task-references.sh baseline: the repo-wide lint exits 1 at 198 unexempted occurrences. Decide per occurrence whether it is edited to cite a durable anchor (filename, section heading, decision-record name, or verified fact) or exempted via the task-ref-ok marker convention with a recorded reason per the 7-category taxonomy in .claude/context/standards/task-reference-exemptions.md; the answer is probably not uniform across all 198. Any exemption-logic change lands in the source store resolved from .claude-extensions.json, never hand-authored under .claude/**. Secondary angle recorded in the derivation note rather than split into its own record: whether plan verification criteria should ask for a per-file criterion (no occurrence INTRODUCED by this phase) instead of a repo-wide exit 0 for any lint carrying a standing baseline. Evidence: specs/776_task_reference_lint_baseline/reports/01_derivation-from-conclusion-stage.md.",
+      "effort": "medium",
+      "parent_task": 773,
+      "topic": "decidability",
+      "dependencies": [],
+      "created": "2026-10-12T05:24:41Z",
+      "last_updated": "2026-10-12T05:24:41Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/776_task_reference_lint_baseline/reports/01_derivation-from-conclusion-stage.md",
+          "summary": "Derivation note from the /orchestrate conclusion stage, channel (c)"
+        }
+      ],
+      "abandoned": "2026-10-12T05:42:42Z"
+    },
+    {
       "project_number": 748,
       "project_name": "revise_and_create_tasks_lplus_decidability",
       "status": "completed",
