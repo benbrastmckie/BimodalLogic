@@ -52,7 +52,7 @@ structure BenchmarkResult where
   deriving Repr
 
 /-!
-## Timing Utilities (Task 319 Phase 4)
+## Timing Utilities (Phase 4)
 
 Wall-clock timing for performance benchmarks.
 -/
@@ -255,7 +255,7 @@ def summarizeBenchmarks (results : List BenchmarkResult) : IO Unit := do
   IO.println s!"\nSummary: {found}/{total} found, {visits} total visits"
 
 /-!
-## Timed Benchmark Suite (Task 319 Phase 4)
+## Timed Benchmark Suite (Phase 4)
 
 Run benchmarks with wall-clock timing for performance baseline.
 -/
@@ -333,7 +333,7 @@ def compareStrategiesTimed (benchmarks : List (String × Context × Formula)) : 
     IO.println s!"Total time: {formatNanos totalTimeNs}"
 
 /-!
-## Learning-Enabled Benchmarks (Task 176)
+## Learning-Enabled Benchmarks
 
 Benchmarks that test pattern learning across multiple proof attempts.
 -/
@@ -435,7 +435,7 @@ end BimodalTest.Automation.Benchmark
   BimodalTest.Automation.Benchmark.compareWeights allBenchmarks
     BimodalTest.Automation.Benchmark.weightConfigs
 
--- Run timed benchmarks (Task 319 Phase 4)
+-- Run timed benchmarks (Phase 4)
 #eval BimodalTest.Automation.Benchmark.runAllBenchmarksTimed
 
 -- Compare strategies with timing (includes BestFirst)
@@ -446,7 +446,7 @@ end BimodalTest.Automation.Benchmark
     BimodalTest.Automation.Benchmark.propBenchmarks
   BimodalTest.Automation.Benchmark.compareStrategiesTimed allBenchmarks
 
--- Run learning benchmarks (Task 176)
+-- Run learning benchmarks
 #eval do
   let allBenchmarks :=
     BimodalTest.Automation.Benchmark.modalBenchmarks ++
@@ -454,5 +454,5 @@ end BimodalTest.Automation.Benchmark
     BimodalTest.Automation.Benchmark.propBenchmarks
   BimodalTest.Automation.Benchmark.runLearningBenchmarks allBenchmarks
 
--- Compare IDDFS vs BestFirst (Task 176)
+-- Compare IDDFS vs BestFirst
 #eval BimodalTest.Automation.Benchmark.compareIDDFSvsBestFirst

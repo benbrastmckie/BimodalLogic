@@ -7,7 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Automation.Tactics.Commands
 
 /-!
-# LemmaDB Tests (Task 187)
+# LemmaDB Tests
 
 Tests for the `@[tmLemma]` attribute database and the `tryLemmaMatch`
 backward-chaining strategy in `modal_search`.

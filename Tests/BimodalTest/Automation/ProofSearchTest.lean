@@ -41,7 +41,7 @@ example : matchesAxiom (Formula.imp (Formula.box p) q) = false := rfl
 example : matchesAxiom (Formula.imp p q) = false := rfl
 
 /-!
-## Negative Tests (Task 319 Phase 3)
+## Negative Tests (Phase 3)
 
 Verify that non-derivable formulas are correctly rejected by the search.
 -/
@@ -129,7 +129,7 @@ example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- �
   -- Formula not in context and not an axiom
   let (found1, _, _, _, _) := search [p, q] r (.IDDFS 5) 100
   IO.println s!"[p, q] ⊢ r: found={found1} (expected: false)"
-  -- Formula that would need modus ponens (blocked by task 315)
+  -- Formula that would need modus ponens (blocked on proof-term construction)
   let (found2, _, _, _, _) := search [p.imp q] q (.IDDFS 5) 100
   IO.println s!"[p→q] ⊢ q: found={found2} (expected: false without p in context)"
   -- Check results
@@ -288,7 +288,7 @@ example : (SearchStrategy.BestFirst 50 : SearchStrategy) = .BestFirst 50 := rfl
 -- With p → q and p in context, should derive q.
 -- NOTE: This test currently fails because the modus ponens implementation
 -- requires the consequent to be in context, not derived. Full MP support
--- is blocked on proof term construction (see task 315).
+-- is blocked on proof term construction.
 #eval do
   let ctx := [p.imp q, p]
   let (found, _, _, stats, _) := iddfsSearch ctx q 10 1000
@@ -446,7 +446,7 @@ example : temporalHeuristicBonus (Formula.box p) = 0 := rfl
     IO.println s!"✗ Modal goal not prioritized: □p={modalScore} >= x={atomScore}"
 
 /-!
-## Axiom Completeness Tests (Task 319 Phase 1)
+## Axiom Completeness Tests (Phase 1)
 
 Systematic verification that all 14 TM axiom schemata are correctly identified
 by `matchesAxiom` and provable via the search tactics.

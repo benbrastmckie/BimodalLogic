@@ -10,7 +10,7 @@ import FormalSystem.Automation.Tactics.Commands
 import FormalSystem.ProofSystem
 
 /-!
-# Edge Case Tests for Proof Search Automation (Task 319 Phase 2)
+# Edge Case Tests for Proof Search Automation (Phase 2)
 
 Systematic edge case testing for the proof search system covering:
 - Empty context cases
@@ -324,7 +324,7 @@ Test with various atom names including longer names.
   IO.println "Total: 44 edge case tests"
 
 /-!
-## Section 9: Extended Axiom & Derived Theorem Integration Tests (Task 185)
+## Section 9: Extended Axiom & Derived Theorem Integration Tests
 
 Tests verifying the full 42-axiom + 26-derived-theorem coverage in modal_search,
 including non-base frame classes, deeper search contexts, and combined strategies.

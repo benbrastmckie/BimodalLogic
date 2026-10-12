@@ -8,7 +8,7 @@ import FormalSystem.Automation.Normalization
 import FormalSystem.Metalogic.Decidability.DecisionProcedure
 
 /-!
-# Normalization Tests (Task 287)
+# Normalization Tests
 
 Unit tests verifying that `normalizeFormula` is the identity function on
 all formula types (primitive and derived operators), and that `decide`

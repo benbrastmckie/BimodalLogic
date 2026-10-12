@@ -33,7 +33,7 @@ open FormalSystem.Theorems.Propositional
 open FormalSystem.Theorems.ModalS5
 
 /-!
-## T-Box-to-Diamond Tests (Task 30)
+## T-Box-to-Diamond Tests
 -/
 
 /-- Test tBoxToDiamond type signature: □A → ◇A -/
@@ -53,7 +53,7 @@ example : ⊢ ((Formula.atomS "p").box).box.imp ((Formula.atomS "p").box).diamon
   tBoxToDiamond ((Formula.atomS "p").box)
 
 /-!
-## Box-Contraposition Tests (Task 35)
+## Box-Contraposition Tests
 -/
 
 /-- Test boxContrapose type signature: □(A → B) → □(¬B → ¬A) -/
@@ -71,7 +71,7 @@ example : ⊢ (((Formula.atomS "p").box).imp ((Formula.atomS "q").diamond)).box.
   boxContrapose ((Formula.atomS "p").box) ((Formula.atomS "q").diamond)
 
 /-!
-## T-Box-Consistency Tests (Task 36)
+## T-Box-Consistency Tests
 -/
 
 /-- Test tBoxConsistency type signature: ¬□(A ∧ ¬A) -/

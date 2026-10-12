@@ -45,8 +45,8 @@ private abbrev r : Formula := .atomS "r"
 /-!
 ## Section 1: Previously-Problematic Formulas
 
-These formulas involve box(bot) patterns that were previously problematic
-before the task 261 fixes. All box(bot) -> X patterns should resolve as valid
+These formulas involve box(bot) patterns that were previously problematic.
+All box(bot) -> X patterns should resolve as valid
 because box(bot) is equivalent to asserting the impossible (the universal
 modality of falsum), making any implication vacuously true.
 -/

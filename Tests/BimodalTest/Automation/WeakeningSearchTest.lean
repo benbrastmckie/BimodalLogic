@@ -8,16 +8,16 @@ import FormalSystem.Automation.ProofSearch.Core
 import FormalSystem.Automation.Tactics.Commands
 
 /-!
-# Weakening-Aware Search Tests (Task 188)
+# Weakening-Aware Search Tests
 
 Tests for weakening-aware proof search across both layers:
 
-1. **Tactic layer** (task 187's `tryLemmaMatchCore` weakening fallback):
+1. **Tactic layer** (`tryLemmaMatchCore` weakening fallback):
    `modal_search` closes non-empty-context goals whose formula matches a
    registered `@[tmLemma]` derived theorem by reducing to the empty context
    via `DerivationTree.weakening` + `List.nil_subset`.
 
-2. **Computable layer** (task 188): `boundedSearchWithProof` recognizes
+2. **Computable layer**: `boundedSearchWithProof` recognizes
    additional derived-theorem shapes via the extended `matchDerived`
    (identity, notNotIntro, boxToFuture, boxToPast), lifted into non-empty
    contexts through the `weakening [] Γ` wrapper, and a `matchAxiom`
@@ -34,7 +34,7 @@ abbrev q : Formula := Formula.atomS "q"
 
 /-! ## Tactic layer (`modal_search`) -/
 
--- Headline (task 188 acceptance criterion): weakened identity in a non-empty
+-- Headline (acceptance criterion): weakened identity in a non-empty
 -- context. Previously required manual
 -- `DerivationTree.weakening [] [p, q] _ ... (List.nil_subset _)`.
 example (p q : Formula) : [p, q] ⊢ (p.imp p) := by modal_search
@@ -72,7 +72,7 @@ example (p q : Formula) : [q] ⊢ ((Formula.box p).imp (Formula.allFuture p)) :=
 /-! ## `matchAxiom` fall-through (completeness fix) -/
 
 -- A density-shaped formula (`GGp → Gp`) matches `Axiom.density`, whose
--- `minFrameClass` is `Dense` (not `≤ Base`). Before the task 188 fix, the
+-- `minFrameClass` is `Dense` (not `≤ Base`). Before this fix, the
 -- frame-class mismatch made `boundedSearchWithProof` return `none`
 -- outright; now the search falls through to the assumption strategy and
 -- closes the goal from the context.
