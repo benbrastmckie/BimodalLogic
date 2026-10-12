@@ -1,29 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 3,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/771_task_reference_lint_debt_boneyard_tests/reports/01_lint-debt-already-cleared.md",
-      "summary": "Finds that task 771's acceptance criterion (check-task-references.sh --quiet exits 0) is already satisfied by completed dependency task 766, confirmed by independent re-run repo-wide and scoped to Boneyard/ and Tests/BimodalTest; recommends a verification-only plan/implement pass with no further file edits."
+      "type": "plan",
+      "path": "specs/771_task_reference_lint_debt_boneyard_tests/plans/01_verify-lint-gate-green.md",
+      "summary": "Single-phase verification-only plan: confirm task-reference lint exits 0 repo-wide and scoped, run the full gate set, and attribute the citation-debt fix to task 766."
     }
   ],
-  "next_steps": "Run /plan 771 to create a verification-only implementation plan (no file edits expected beyond re-confirming check-task-references.sh --quiet exits 0)",
-  "findings_count": 4,
+  "next_steps": "Run /implement 771 to execute the plan",
+  "phase_count": 1,
+  "estimated_hours": 0.5,
+  "dependency_waves": [[1]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1791800175_a20f00_771",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 0,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   },
-  "memory_candidates": [
-    {
-      "content": "When a task's file_scope and acceptance criterion overlap with a sibling task in a serialized dependency chain (e.g. 766 -> 771 -> 764), re-check the sibling's completion status and re-run the actual acceptance command before assuming the dependent task's described debt (a specific citation count, a named file list) still exists -- a completed predecessor task can fully discharge a successor's stated goal before the successor's own research dispatch even starts.",
-      "category": "PATTERN",
-      "source_artifact": "specs/771_task_reference_lint_debt_boneyard_tests/reports/01_lint-debt-already-cleared.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["task-reference-lint", "dependency-chain", "serializing-dependency", "stale-task-description", "verification-only"]
-    }
-  ]
+  "dispatch_seq": 4
 }

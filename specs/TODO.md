@@ -86,7 +86,7 @@ next_project_number: 777
 761 [PARTIAL] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-771 [RESEARCHED] — check-task-references.sh --quiet exits non-zero on 198...
+771 [PLANNED] — check-task-references.sh --quiet exits non-zero on 198...
   └─ 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
 775 [RESEARCHED] — Attempt the cell-index factorization lemma over the re-scoped...
 
@@ -231,12 +231,13 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES AS FILED. `agent-sy
 
 ### 771. Task reference lint debt boneyard tests
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: Task 766
 - **Parent**: Task 760
 - **Research**: [771_task_reference_lint_debt_boneyard_tests/reports/01_lint-debt-already-cleared.md]
+- **Plan**: [771_task_reference_lint_debt_boneyard_tests/plans/01_verify-lint-gate-green.md]
 
 **Description**: check-task-references.sh --quiet exits non-zero on 198 pre-existing unexempted task-number citations -- all under Boneyard/ (archived READMEs) and Tests/BimodalTest (109 of them), none in any deliverable a recent dispatch touched. The lint is therefore unusable as a phase gate repo-wide, which a plan gate line did not anticipate. Exempt them under the task-reference-exemptions taxonomy (preferred where the citations are archival) or clean them, so that check-task-references.sh --quiet exits 0 and can serve as a gate again. Evidence: specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl entry iss_1791711120739_kf46Yo.
 
