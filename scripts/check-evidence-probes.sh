@@ -857,6 +857,126 @@ EVIDENCE="specs/evidence"
 #                                                           | Classical.choice, Quot.sound]`
 #                                                           | (`gPast_pending_past`, `gPast_count`
 #                                                           | `[propext, Quot.sound]`).
+# seam-gluing-ray-product/ladder-cell-index-obstructions    | LADDER CELL INDEX OBSTRUCTIONS
+#                                                           | (requirement (W)'s run layer,
+#                                                           | "(W): what landed and what did
+#                                                           | not", obligation (ii) item 1, the
+#                                                           | soundness half, and its cell-index
+#                                                           | sub-problem): the
+#                                                           | clipped-coordinate index family is
+#                                                           | REFUTED at a SECOND coordinate --
+#                                                           | the countdown's PARITY, observable
+#                                                           | at the region end at distance
+#                                                           | exactly `c + 1` because `Count
+#                                                           | true true` admits no early
+#                                                           | discharge, while `step` is
+#                                                           | independent of the counters and
+#                                                           | may alternate a tag per pending
+#                                                           | step and copy it onto the ending
+#                                                           | idle state -- uniformly in the
+#                                                           | clip bound (`cell_succ_ne` at
+#                                                           | every `c` with `n` FIXED,
+#                                                           | `index_collide`,
+#                                                           | `ladderIndex_not_factoring`,
+#                                                           | `exhibited_form_refuted`,
+#                                                           | `exists_form_refuted`; the
+#                                                           | mechanism is `truth_phiP`). The
+#                                                           | witnessing pair carries EQUAL
+#                                                           | next-deadlines and both gaps
+#                                                           | saturate the clip, so the gap
+#                                                           | coordinate is not what fails --
+#                                                           | and the gap-coordinate
+#                                                           | refutation's own mechanism
+#                                                           | (`cell_ne`) is real and NOT
+#                                                           | displaced: it killed a SMALL gap
+#                                                           | at LARGE counters, which is why
+#                                                           | the gap coordinate is RETAINED. A
+#                                                           | gate probing one coordinate
+#                                                           | certifies one coordinate: the
+#                                                           | earlier one-part gate was sound
+#                                                           | and non-vacuous (`gate_separates`
+#                                                           | for a clip bound of at least two,
+#                                                           | `gate_collides_below_two` below
+#                                                           | it, so the clip bound comes from
+#                                                           | the FORMULA and never from the
+#                                                           | counters) and the candidate it
+#                                                           | certified is refuted at a
+#                                                           | coordinate it never touched. The
+#                                                           | bounded-carrier alternative is
+#                                                           | CLOSED (`bounded_ladder_finite`,
+#                                                           | `finBranch_eq_ofSlicedStep` by
+#                                                           | `rfl`,
+#                                                           | `bounded_width_validates_Phi_neg`,
+#                                                           | `Phi_neg_not_valid`): its premise
+#                                                           | fails at the non-validity the
+#                                                           | finite-width limitation exhibits.
+#                                                           | Narrow carve-out, stated rather
+#                                                           | than suppressed: a bounded carrier
+#                                                           | remains available for a target
+#                                                           | that DOES have a finite-width
+#                                                           | countermodel, per that
+#                                                           | limitation's own disclaimer --
+#                                                           | what is refuted is the route as
+#                                                           | the GENERAL route. What IS landed:
+#                                                           | a GATED six-coordinate candidate
+#                                                           | (`ladderIndexRes`, with
+#                                                           | `gate_gap_separates` and
+#                                                           | `gate_parity_separates` at a
+#                                                           | SYMBOLIC modulus via
+#                                                           | `consec_mod_ne`) and an EXHIBITED
+#                                                           | threshold and period
+#                                                           | (`iterate_eventually_periodic`,
+#                                                           | `reachN_eventually_periodic`),
+#                                                           | plus a third gate run one region
+#                                                           | out and in the past direction
+#                                                           | (`second_region_any_length`,
+#                                                           | `second_region_end_tag_achievable`,
+#                                                           | `second_region_sets_agree`,
+#                                                           | `gap_step_le`,
+#                                                           | `gap_region_start_le_one`,
+#                                                           | `gap_le_region_age`,
+#                                                           | `region_start_beyond_depth`,
+#                                                           | `clipped_gap_collides`,
+#                                                           | `third_region_any_length`) which
+#                                                           | found NO refutation on three
+#                                                           | enumerated attempts -- three
+#                                                           | attempts on one fixture family,
+#                                                           | which is not a proof that the
+#                                                           | general factorization holds. What
+#                                                           | it does NOT say: NO index is
+#                                                           | claimed to factor the cells in any
+#                                                           | shape, and the positive
+#                                                           | factorization lemma is OPEN and
+#                                                           | stated nowhere; no seventh
+#                                                           | coordinate; no bound of any kind
+#                                                           | and no complexity bound (every
+#                                                           | quantity named is a COUNT); no
+#                                                           | finiteness added, and
+#                                                           | `anchorCells_finite` and
+#                                                           | `anchorCells_ncard_le` untouched
+#                                                           | -- the SET of cells is still
+#                                                           | finite and bounded, only the
+#                                                           | computable INDEX is absent;
+#                                                           | nothing about `HitPresented`, and
+#                                                           | `PlusValidZTime` only in the
+#                                                           | non-validity cited; no library
+#                                                           | module created and no declaration
+#                                                           | added under the main library; the
+#                                                           | acceptance clause never dropped
+#                                                           | (`stab_mem_tpOf_iff` is that
+#                                                           | cell's bit); the successor design
+#                                                           | not chosen -- if the gated
+#                                                           | candidate falls in turn the
+#                                                           | direction on record is a different
+#                                                           | presentation of a cell, not a
+#                                                           | wider tuple. Axioms `[propext,
+#                                                           | Classical.choice, Quot.sound]`
+#                                                           | (`gate_gap_separates`,
+#                                                           | `gap_le_region_age`,
+#                                                           | `region_start_beyond_depth`,
+#                                                           | `gate_separates`,
+#                                                           | `gate_collides_below_two`
+#                                                           | `[propext, Quot.sound]`).
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -888,6 +1008,7 @@ WIRED=(
   "seam-gluing-ray-product/hit-presented-node"
   "seam-gluing-ray-product/ladder-cell-refutation"
   "seam-gluing-ray-product/ladder-liveness-forward-only"
+  "seam-gluing-ray-product/ladder-cell-index-obstructions"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
