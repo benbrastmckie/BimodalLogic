@@ -1,5 +1,5 @@
 ---
-next_project_number: 773
+next_project_number: 774
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 773
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,766,767,768,769,770,771,772 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,766,767,768,769,770,771,772,773 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -88,6 +88,7 @@ next_project_number: 773
 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
 766 [RESEARCHED] — Clear the repo-wide task-number citation debt that fails...
 771 [NOT STARTED] — check-task-references.sh --quiet exits non-zero on 198...
+773 [NOT STARTED] — STATEMENT (library, research-first; the open cell-index...
 
 ### Formula Refactor
 
@@ -121,6 +122,33 @@ next_project_number: 773
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 773. Ladder cell index factorization
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 761
+
+**Description**: STATEMENT (library, research-first; the open cell-index sub-problem recorded by the ladder realization record and its blocker analysis at specs/761_ladder_realization_theorem/.blocker-research.json). The ladder realization half cannot be STATED without a computable index: hitOf requires [Fintype Q], the admissible ladder carrier LadderState Q pend := {x : Q × ℕ × ℕ // x.2.1 ∈ Adm pend x.1} is infinite, and the two-coordinate index Q × Fin (B+1) × Fin (B+1) is REFUTED uniformly in B (specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean: cell_ne, exhibited_form_refuted, exists_form_refuted). Separate three things the predecessor record conflates: (1) the SET of cells is finite and bounded — anchorCells_finite, anchorCells_ncard_le ≤ 2^(2^|cl φ|) are untouched and hold; (2) what is missing is a computable INDEXING FUNCTION, a Fintype I with a map LadderState Q pend → I through which cellAt factors; (3) the box/stab acceptance clause rides on that same index (stab_mem_tpOf_iff pins the stab letter per cell), so dropping the clause to make the structure writable would publish a same-named weaker statement.
+
+TARGET. Define `ladderIndex B` carrying the gap coordinate the refuted candidate discards:
+  `(q, min c B, min n B, clip (n - c) [-B, B])`, a Fintype as `Q × Fin (B+1) × Fin (B+1) × Fin (2·B+1)`
+and prove the factorization lemma
+  `ladderIndex B x = ladderIndex B y → cellAt M φ (t,x) z = cellAt M φ (t,y) z`.
+The refutation kills independent two-coordinate clipping ONLY — it loses the gap n - c, which is semantically observable — and does not touch a gap-carrying index; the refutation probe names this candidate itself.
+
+METHOD, FALSIFY FIRST. Before attempting the general proof, gate the candidate against the refutation probe fixture: check that (true, B, B+1) and (true, B, B+2) receive DIFFERENT indices via the gap coordinate. This is a cheap falsification test and must run first; if it fails the candidate is dead and the record says so rather than proceeding.
+
+RECORDED RISK, attack this first. Drifts interval [n-c-1, n+c+1] widens with c, so the gap may itself drift unboundedly across successive regions. If it does, the clipped-gap index fails too and the sub-problem is deeper than three coordinates. This question is OPEN and unresolved by the blocker analysis.
+
+CONTINGENCY. Honest outcomes: the factorization lemma lands; or [BLOCKED] with the obstruction recorded as a wired probe. Never sorry, axiom, vacuous definition, or a finite-width/finite-fibre assumption on M to make the index exist.
+
+GUARDRAILS: (a) closure-indexed letters over the time axis; (b) the carrier slice stays infinite — no fibre bound; (c) B is a count, no complexity claim; (d) zero debt, no cslib require, no external decidability theorem cited in place of a proof.
+
+NOT COSTABLE: sized by whether the gap drifts. Dispatch research-first.
+
+---
 
 ### 772. planned jq rewrites re-serialize formatting-sensitive JSON record files
 - **Status**: [NOT STARTED]
