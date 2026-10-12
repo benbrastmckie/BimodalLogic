@@ -1,7 +1,7 @@
 # Implementation Plan: Task #766
 
 - **Task**: 766 - Clear the repo-wide task-number citation debt that fails check-task-references.sh
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.25 hours
 - **Dependencies**: None
 - **Research Inputs**: None (planned directly from the task description; the full lint inventory
@@ -150,7 +150,7 @@ rewrite, not a bare marker.
 
 ---
 
-### Phase 1: Clear Boneyard archival READMEs [NOT STARTED]
+### Phase 1: Clear Boneyard archival READMEs [IN PROGRESS]
 
 **Goal**: Zero unexempted citations in `Boneyard/**/README.md`, with each tombstone's archival
 provenance restated against durable anchors (dates, filenames, named refactors).

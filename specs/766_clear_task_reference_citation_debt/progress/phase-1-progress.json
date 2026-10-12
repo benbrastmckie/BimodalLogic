@@ -1,0 +1,27 @@
+{
+  "phase": 1,
+  "phase_name": "Clear Boneyard archival READMEs",
+  "started_at": "2026-10-12T10:30:00Z",
+  "last_updated": "2026-10-12T10:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Defensive checkpoint git-snapshot.sh 766 --no-revert", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Re-derive scope: check-task-references.sh Boneyard filtered to README.md", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Rewrite 24 Boneyard README.md files per Rewrite Vocabulary", "status": "in_progress", "files_touched": [
+      "Boneyard/BX1DependentCode/README.md",
+      "Boneyard/BXPipelineDeadCode/README.md",
+      "Boneyard/BXPipelineGapAnalysis/README.md",
+      "Boneyard/ChainCompleteness/README.md",
+      "Boneyard/ClosedGuardLegacy/README.md",
+      "Boneyard/DeadCanonicalModel/README.md",
+      "Boneyard/DefectDirectedChain/README.md",
+      "Boneyard/DenseChronicle/README.md",
+      "Boneyard/DiscreteXY/README.md"
+    ]},
+    {"id": 4, "description": "git diff read-through confirming citation excision only", "status": "not_started", "files_touched": []},
+    {"id": 5, "description": "Commit per green sub-step", "status": "not_started", "files_touched": []}
+  ],
+  "current_objective": 3,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}
