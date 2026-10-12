@@ -57,8 +57,7 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 127,128,709,729,730,741,753,756
-/orchestrate 767,768,769,770,772,774,777,778
-/orchestrate 779,780
+/orchestrate 767,768,769,770,772,774
 ```
 
 ## Stage 0 — User rulings (no agent may transition these)
