@@ -347,18 +347,18 @@ check that would catch the one real hazard here, a `sed` crossing a Lean doc-com
 
 ---
 
-### Phase 4: Clear Tests automation, integration, and tools-test comments [IN PROGRESS]
+### Phase 4: Clear Tests automation, integration, and tools-test comments [COMPLETED]
 
 **Goal**: Zero unexempted citations anywhere under `Tests/`, with `lake build BimodalTest` and
 `lake build BimodalToolsTest` both green.
 
 **Tasks**:
-- [ ] Re-derive the scope: `bash .claude/scripts/check-task-references.sh Tests` -- the
+- [x] Re-derive the scope: `bash .claude/scripts/check-task-references.sh Tests` -- the
       remaining findings should all be under `Automation/`, `Theorems/`, `Integration/`, or
-      `Tests/BimodalToolsTest/`. Record and reconcile.
-- [ ] Apply the same two anchored `sed` templates for the residual `Task 365` quarantine notes
-      (concentrated in `Integration/AutomationProofSystemTest.lean`).
-- [ ] Hand-fix the varied prose, which is denser here than in Phase 3: module-docstring test
+      `Tests/BimodalToolsTest/`. Record and reconcile. *(completed: confirmed 45 occurrences across 13 files, matching hypothesis exactly)*
+- [x] Apply the same two anchored `sed` templates for the residual `Task 365` quarantine notes
+      (concentrated in `Integration/AutomationProofSystemTest.lean`). *(completed: 15 occurrences cleared across 5 files)*
+- [x] Hand-fix the varied prose, which is denser here than in Phase 3: module-docstring test
       inventories in `Automation/TacticsTest.lean` (`- Task 315 modal_search tests`,
       `**Phase 10 Tests (111-134)**: Task 315 tactic tests`), `(Task 319 Phase N)` section
       headings in `Automation/{EdgeCaseTest,ProofSearchBenchmark,ProofSearchTest,TacticsTest}.lean`,
@@ -366,13 +366,13 @@ check that would catch the one real hazard here, a `sed` crossing a Lean doc-com
       named blocker -- proof-term construction -- rather than the tracker row), the
       `Task N` acceptance-criterion comments in `Automation/WeakeningSearchTest.lean`, the
       `(Task NN)` section headings in `Theorems/ModalS5Test.lean`, and the single
-      `before the task 261 fixes` note in `Tests/BimodalToolsTest/C5SmokeTest.lean`.
-- [ ] Preserve the `**Phase 10 Tests (111-134)**` style test-index ranges: those are test
+      `before the task 261 fixes` note in `Tests/BimodalToolsTest/C5SmokeTest.lean`. *(completed: 30 residual occurrences hand-fixed across 9 files)*
+- [x] Preserve the `**Phase 10 Tests (111-134)**` style test-index ranges: those are test
       numbers, not task numbers, and are not what `TASK_PATTERN` matches -- only the adjacent
-      `Task NNN` token is excised.
-- [ ] Read `git diff` for every changed file; confirm comment-region containment.
-- [ ] Run `lake build BimodalTest` and `lake build BimodalToolsTest`; confirm both green.
-- [ ] Commit per green sub-step.
+      `Task NNN` token is excised. *(completed: preserved verbatim)*
+- [x] Read `git diff` for every changed file; confirm comment-region containment. *(completed)*
+- [x] Run `lake build BimodalTest` and `lake build BimodalToolsTest`; confirm both green. *(completed: 2904 jobs and 1965 jobs respectively, both "Build completed successfully")*
+- [x] Commit per green sub-step. *(completed: two commits)*
 
 **Timing**: 1.25 hours
 
