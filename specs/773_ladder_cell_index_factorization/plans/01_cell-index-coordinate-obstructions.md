@@ -514,7 +514,7 @@ imports and that modifies no library module.
 
 ---
 
-### Phase 4: Author the Fourteenth Wired Probe [NOT STARTED]
+### Phase 4: Author the Fourteenth Wired Probe [COMPLETED]
 
 **Goal**: Create `specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean` —
 the collection's record of what a ladder cell index cannot be — carrying the mandated header
@@ -522,7 +522,7 @@ followed by the ported declarations under `namespace Probe773`, compiling under 
 with no `sorry`, no axiom, no vacuous definition, and the twelve Challenge statements verbatim.
 
 **Tasks**:
-- [ ] Write the header docstring (`/- … -/`, before the imports, modeled on
+- [x] Write the header docstring (`/- … -/`, before the imports, modeled on
       `ladder-cell-refutation.lean`'s and `ladder-liveness-forward-only.lean`'s), containing in
       this order:
       - Title line: the clipped-coordinate cell index of the admissible ladder carrier is
@@ -568,27 +568,52 @@ with no `sorry`, no axiom, no vacuous definition, and the twelve Challenge state
         `lake env lean specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean`.
       - **No task number anywhere in the header** — durable anchors only (filenames, declaration
         names, section headings).
-- [ ] Imports and opens: the run layer, the anchor layer, the admissible-carrier module, and the
+- [x] Imports and opens: the run layer, the anchor layer, the admissible-carrier module, and the
       finite-width limitation module, exactly as the prototypes take them; `open` the same four
       namespaces; `namespace Probe773`.
-- [ ] Port the parity refutation from `prototype/parity-index-refutation.lean` in order, keeping
+- [x] Port the parity refutation from `prototype/parity-index-refutation.lean` in order, keeping
       names, statements and docstrings: the object and its two seriality facts, the frame and
       model, the three letters and the formula, the history lemmas, the tag function, the forced
       run and the idle position, the truth lemma, the reference history, the cells, and
       `cell_succ_ne`; then the candidate index with `index_collide`,
       `ladderIndex_not_factoring`, `exhibited_form_refuted`, `exists_form_refuted`. Rename
       nothing; identifiers are already ASCII for the snapshot tool's regex.
-- [ ] Port the bounded-carrier closure from `prototype/route-c-finite-width.lean`:
+- [x] Port the bounded-carrier closure from `prototype/route-c-finite-width.lean`:
       `bounded_ladder_finite`, `finBranch_eq_ofSlicedStep`, `bounded_width_validates_Phi_neg`,
       `Phi_neg_not_valid`.
-- [ ] Port Phase 1's index and gates (`ladderIndexRes`, `gate_gap_separates`,
+- [x] Port Phase 1's index and gates (`ladderIndexRes`, `gate_gap_separates`,
       `gate_parity_separates`), Phase 3's two theorems (`iterate_eventually_periodic`,
       `reachN_eventually_periodic`), and whatever named theorem Phase 2's branch produced.
-- [ ] Close with `end Probe773` and `#print axioms` for all twelve Goal declarations.
-- [ ] Compile through the guard:
+- [x] Close with `end Probe773` and `#print axioms` for all twelve Goal declarations.
+- [x] Compile through the guard:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1200 -- env lean specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean`.
-- [ ] `git add` the new file — the gate's rule is "tracked, not merely present", and Phase 5
+- [x] `git add` the new file — the gate's rule is "tracked, not merely present", and Phase 5
       fails otherwise — and commit per the green-substep mandate.
+
+#### Outcome
+
+`specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean`, 1025 lines (inside
+the 600-1050 band), compiles through the guard at exit 0 with zero `error` and zero `warning`
+lines. Zero-debt grep count 0; `grep -nE "specs/[0-9]{3}_|task [0-9]"` prints nothing; the file is
+`git add`-ed and tracked, so Phase 5's "tracked, not merely present" rule is satisfied.
+
+Axiom readings as printed, matching the header's axiom sentence exactly: `[propext,
+Classical.choice, Quot.sound]` on the refutation, bounded-carrier, periodicity and third-gate
+theorems; `[propext, Quot.sound]` on `gate_gap_separates`, `gap_le_region_age`,
+`region_start_beyond_depth`, `gate_separates` and `gate_collides_below_two`.
+
+**Signature fidelity, measured rather than assumed.** `lean-challenge-snapshot.sh --check 773 .`
+could NOT run: no manifest exists at
+`specs/773_ladder_cell_index_factorization/challenge/manifest.json` — no snapshot was taken before
+implementation, so the advisory drift check has no baseline. Stated rather than silently skipped.
+In its place, all twelve Goal signatures and the three pinned definitional bodies (`ladderIndex`,
+`ladderIndexRes`, `reachStep`) were diffed against the `## Lean Challenge Statements` block with
+whitespace normalised: **zero drift on all fifteen**.
+
+Two incidental extras arrived with the ported refutation section and were kept rather than
+stripped: `gate_separates` and `gate_collides_below_two`, the earlier one-part gate's two halves.
+They make the header's "what the earlier one-part gate did and did not certify" bullet
+machine-checked rather than prose, and they weaken nothing.
 
 **Timing**: 1.5 hours
 
