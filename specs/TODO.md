@@ -1,17 +1,17 @@
 ---
-next_project_number: 772
+next_project_number: 773
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-10-11. Generated from state.json dependency graph.*
+*Updated 2026-10-12. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,766,767,768,769,770,771 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,766,767,768,769,770,771,772 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -34,6 +34,7 @@ next_project_number: 772
 768 [NOT STARTED] — lean-challenge-snapshot swallows declarations and mishandles...
 769 [NOT STARTED] — plan-format: blocked decision gates and plan-level Status...
 770 [NOT STARTED] — postflight writes detail-free blocking issue entry on partial...
+772 [NOT STARTED] — planned jq rewrites re-serialize formatting-sensitive JSON...
 
 ### Algebraic Representation
 
@@ -120,6 +121,42 @@ next_project_number: 772
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 772. planned jq rewrites re-serialize formatting-sensitive JSON record files
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Add agent-system guidance for in-place edits of formatting-sensitive JSON record files, so a whole-file `jq` rewrite is never authored as the edit mechanism for one.
+
+MEASURED, NOT HYPOTHESIZED. A plan step phrased "with jq, set T4/T6 description ..." was executed against `specs/757_lplus_decidability_successor_task_set/successor-records.json`. Piping that file through `jq` re-serialized it: every compact one-line dependency object -- T1/T2/T3/T5, records the step never intended to touch -- was re-flowed into multi-line form, yielding 44 changed lines for 5 intended field changes. `jq` has no formatting-preserving mode; it parses to a value and prints that value in its own style, so a whole-file pipe through it rewrites the ENTIRE file's layout whether or not the filter touches a given record.
+
+NOTHING IN THE REPOSITORY IS BROKEN. The affected file was repaired in the originating run and is correct as it stands; do not re-edit it, and do not treat this record as a data-repair record. This record's entire deliverable is prose in the source store.
+
+THE ALTERNATIVE MECHANISM IS ALREADY PROVEN AND MUST BE WRITTEN DOWN CONCRETELY, NOT GESTURED AT. The originating run's workaround was: take the HEAD version of the file as the starting bytes; apply the intended field changes as a TEXT-level edit (in that run: two description literals, two `why` values, one appended `_amended` key); separately compute the intended result with `jq`; assert the two agree as JSON under canonicalization -- e.g. `diff <(jq -S . text-edited) <(jq -S . jq-output)` must be empty -- and only then move the text-level edit into place. THE ASSERTION IS THE LOAD-BEARING HALF: it buys back the one thing a text-level edit gives up, namely jq's guarantee that the result is well-formed JSON carrying the intended values. Guidance that says "edit it by hand instead" WITHOUT the equality assertion is worse than no guidance, because a hand edit of JSON silently admits a trailing comma or a broken escape. Write the recipe out as runnable lines a reader can copy, including where the HEAD bytes come from (`git show HEAD:<path>`) and the move-into-place step.
+
+BOTH AUDIENCES MUST BE REACHED, AND THEY READ DIFFERENT FILES. (i) A PLAN AUTHOR must not author "with jq, set X" as a step against such a file in the first place -- the defect originated in a plan step, not in an implementer's improvisation. (ii) An IMPLEMENTER handed such a step must find the alternative without first having to discover the term "re-serialization". A siting that reaches only one of the two leaves half the defect in place; state in the plan which path reaches which audience.
+
+SITING -- DECIDE EXPLICITLY, DO NOT LEAVE IT AMBIGUOUS. Two candidates; the deciding criterion is UNPROMPTED discoverability, i.e. an agent that has just been handed a jq edit step and does not yet know this failure class exists must still land on the guidance. (a) A new section in `context/patterns/jq-escaping-workarounds.md`. That file's title names a DIFFERENT failure class (Claude Code Issue #1132's `!=` escaping), but it is the de facto jq-pitfalls hub: roughly eighteen files across core already point at it, and the deployed `CLAUDE.md`'s "jq Command Safety" section -- sourced from `merge-sources/claudemd.md` -- names it as the full documentation. Discovery is therefore free, at the cost of a file whose title under-describes its contents; if (a) is chosen, widen that file's own framing so a reader is not surprised to meet a second, unrelated failure class inside it. (b) A new sibling pattern file, conceptually cleaner but starting with zero referrers; if (b) is chosen, the referrer wiring and the `index-entries.json` entry are part of THIS change rather than a follow-up, because an unreferenced pattern file is not guidance, it is a file. Either way, add one line to `merge-sources/claudemd.md`'s existing "jq Command Safety" section: that merged section is the surface every session already reads and is the cheapest path to the plan-author audience.
+
+IF SITING (b) IS CHOSEN, WIDEN file_scope BEFORE CREATING THE FILE. The new path must be added through `update-task-status.sh` rather than written into a file_scope-unlisted location silently.
+
+SCOPE DECISION, ALREADY MADE AT FILING TIME: GUIDANCE ONLY, NO HELPER SCRIPT. The originating request asked whether a small formatting-preserving helper script belongs alongside the prose. It does not, and the reasons are recorded here so the question is not re-litigated during research. (1) The proven mechanism is three lines of shell, and the part that is actual WORK -- authoring the text-level edit for this particular file and these particular fields -- cannot be factored into a script; a wrapper would automate only the assertion. (2) A genuinely general formatting-preserving JSON editor (surgical field replacement that preserves per-record compaction and key order) is a substantial program needing its own test suite, deploy registration and ongoing maintenance, out of all proportion to one minor, already-worked-around entry. (3) The nearest existing wrapper, `scripts/state-write.sh`, exists for a reason that does NOT transfer: it serializes many automated, concurrent call sites against one hot file (`specs/state.json`) behind a fail-closed mutex. Record files are edited by a single implementer inside a planned step; a wrapper buys no concurrency safety there and adds an interface to learn. THE REOPEN CONDITION, which the guidance itself should name: if some record file turns out to be edited often enough that the assertion recipe is being retyped repeatedly, revisit the script question then.
+
+WHAT THE GUIDANCE MUST NOT SAY. Do not generalize this into "jq is unsafe for JSON edits". jq remains the correct tool for `specs/state.json` (through `state-write.sh`), for computing the intended value in the recipe above, and for every file whose byte-level layout nobody depends on. State the trigger condition in terms a reader can CHECK before acting: the file is committed with a layout a round-trip through `jq` would not reproduce (hand-maintained compaction, a deliberate key order, mixed compact-and-expanded records), AND the edit is meant to touch a few fields rather than rewrite the file. Name `specs/state.json`'s wrapper as the adjacent-but-different case and say plainly that record files have no such wrapper -- which is exactly why this discipline has to live in prose rather than in a script.
+
+ACCEPTANCE. (1) A reader arriving from the deployed `CLAUDE.md` jq section, or from any existing referrer of the jq pattern file, reaches the new guidance without knowing the term "re-serialization" in advance. (2) The guidance carries a copyable recipe INCLUDING the canonicalized JSON-equality assertion, not merely a prohibition. (3) The guidance states a checkable trigger condition and names at least one concrete file shape that meets it. (4) The guidance states the `state-write.sh` relation and does not imply a wrapper exists for record files. (5) If a new file is created it carries an `index-entries.json` entry and at least one referrer; if an existing file is extended, that file's `index-entries.json` entry (`line_count`, `keywords`) is brought back into agreement with the file. (6) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean` afterwards.
+
+SOURCE-STORE BOUNDARY. `.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect. Resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension (`core`, whose source store is `/home/benjamin/.config/nvim/agent-system/extensions/core`) and edit at the mirroring path there, per `.claude/rules/source-store-deploy-boundary.md`. Then redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`. The `.claude/**` path in file_scope is declared only so the admission overlap gate can see the collision surface; it is NOT the edit target.
+
+DELIVERABLE HYGIENE. Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). The originating file path, the tool name and the field names are durable anchors and may be cited; the originating task number and the issue entry_id may NOT appear in the guidance prose -- they live in this record only.
+
+PROVENANCE. Raised during orchestration of the ladder-frame carrier repair work and approved at the lead level as an agent-system change request. The originating issue-log entry is in `specs/765_ladder_frame_carrier_repair_and_index_deletion/issues.jsonl`, entry_id `iss_1791760497369_ipMdVR` -- class `tool_side_effect`, severity `minor`, phase `implement`, dispatch_seq 2, resolution `worked_around`. The entry carried NO `suggested_channel` hint, so there is no hint-versus-decision override to state: the orchestrate lead classified it to the agent-system channel on its own judgment, on the ground that the remedy is agent-system guidance rather than repository work product.
+
+RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES AS FILED. `agent-system/extensions/core/agents/planner-agent.md` is DELIBERATELY EXCLUDED from this record's file_scope even though the plan-author audience makes it a tempting edit target: the plan-format blocked-decision-gate record already claims that path. If research concludes a matching line in `planner-agent.md` is genuinely necessary, add a serializing dependency edge at that point (`update-task-status.sh --depends-on-add`) rather than editing a file another record claims. No other active agent-system record touches the jq pattern file, `index-entries.json`, or `merge-sources/claudemd.md`; re-check that at admission time, since any concurrently filed record that adds a new context file will also touch `index-entries.json`.
+
+---
 
 ### 771. Task reference lint debt boneyard tests
 - **Effort**: small
