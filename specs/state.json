@@ -1709,7 +1709,9 @@
       "effort": "medium",
       "parent_task": 757,
       "topic": "decidability",
-      "dependencies": [],
+      "dependencies": [
+        771
+      ],
       "created": "2026-10-11T00:05:11Z",
       "last_updated": "2026-10-11T00:05:11Z",
       "artifacts": []
@@ -1906,7 +1908,9 @@
       "effort": "small",
       "parent_task": 760,
       "topic": "decidability",
-      "dependencies": [],
+      "dependencies": [
+        766
+      ],
       "file_scope": [
         "Boneyard/",
         "Tests/BimodalTest/",
