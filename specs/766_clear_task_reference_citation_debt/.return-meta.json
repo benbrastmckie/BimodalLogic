@@ -72,21 +72,36 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/766_clear_task_reference_citation_debt/summaries/01_clear-task-citation-debt-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["sed", "multi-expression", "delimiter", "silent-failure", "bulk-rewrite"]
+      "suggested_keywords": [
+        "sed",
+        "multi-expression",
+        "delimiter",
+        "silent-failure",
+        "bulk-rewrite"
+      ]
     },
     {
       "content": "When clearing a repo-wide text-pattern lint (e.g. task-number citations) across a large file set, re-deriving the scoped occurrence count per subtree BEFORE editing and comparing it against the plan's pre-computed scope hypothesis is a cheap, high-value correctness check: an exact match confirms no drift happened between plan-authoring and implementation time, while a mismatch surfaces scope-hypothesis staleness immediately rather than silently under- or over-fixing.",
       "category": "PATTERN",
       "source_artifact": "specs/766_clear_task_reference_citation_debt/summaries/01_clear-task-citation-debt-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["lint-cleanup", "scope-reconciliation", "citation-debt", "verification"]
+      "suggested_keywords": [
+        "lint-cleanup",
+        "scope-reconciliation",
+        "citation-debt",
+        "verification"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1791800175_a20f00",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 5,
     "phases_total": 5
   }

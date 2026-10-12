@@ -1760,7 +1760,7 @@
     {
       "project_number": 766,
       "project_name": "clear_task_reference_citation_debt",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "markdown",
       "description": "Clear the repo-wide task-number citation debt that fails check-task-references.sh. The gate exits non-zero on 198 pre-existing unexempted task-number citations: the bulk under Boneyard/ (archived READMEs) and 109 under Tests/BimodalTest. None sits in a file any recent dispatch touched -- the lint scoped to individual touched files exits 0 -- so this is standing debt, not a regression, and it makes the unscoped gate useless as a signal until cleared. For each occurrence decide between the sanctioned routes in .claude/context/standards/task-reference-exemptions.md: replace the citation with a durable anchor (a filename, section heading, decision-record name, or verified fact), or add the task-ref-ok marker where the occurrence is genuinely one of the exemption categories. Prefer durable anchors; use the marker only where the taxonomy actually licenses it. Verify with a full bash .claude/scripts/check-task-references.sh run exiting 0.",
       "parent_task": 760,
@@ -1769,12 +1769,17 @@
         760
       ],
       "created": "2026-10-11T09:58:30Z",
-      "last_updated": "2026-10-12T10:26:42Z",
+      "last_updated": "2026-10-12T10:52:12Z",
       "artifacts": [
         {
           "path": "specs/766_clear_task_reference_citation_debt/plans/01_clear-task-citation-debt.md",
           "type": "plan",
           "summary": "Five-phase plan clearing all 198 unexempted task-number citations via durable-anchor rewrites, ending in a full-gate sweep."
+        },
+        {
+          "path": "specs/766_clear_task_reference_citation_debt/summaries/01_clear-task-citation-debt-summary.md",
+          "type": "summary",
+          "summary": "All 198 task-number citations cleared across 53 files; check-task-references.sh now exits 0 repo-wide with zero task-ref-ok markers added."
         }
       ],
       "file_scope": [
@@ -1837,7 +1842,8 @@
         "scripts/check-module-invariants.sh",
         "typst/generated/status.typ"
       ],
-      "session_id": "sess_1791800175_a20f00"
+      "session_id": "sess_1791800175_a20f00",
+      "completion_summary": "Cleared all 198 unexempted task-number citations across 53 files via durable-anchor rewrites (zero task-ref-ok markers used). bash .claude/scripts/check-task-references.sh now exits 0 with 'PASS: 0 unexempted task-reference occurrences'; the complete gate set (verify-deploy.sh) and the full Lean build set (lake build, lake build BimodalTest, lake build BimodalToolsTest) all passed green."
     },
     {
       "project_number": 767,

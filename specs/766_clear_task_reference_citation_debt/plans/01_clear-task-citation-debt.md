@@ -1,7 +1,7 @@
 # Implementation Plan: Task #766
 
 - **Task**: 766 - Clear the repo-wide task-number citation debt that fails check-task-references.sh
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.25 hours
 - **Dependencies**: None
 - **Research Inputs**: None (planned directly from the task description; the full lint inventory
