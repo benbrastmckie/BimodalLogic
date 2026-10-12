@@ -1,0 +1,22 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/775_residue_index_factorization_lemma/plans/01_residue-index-parameter-refutation.md",
+      "summary": "Seven-phase falsify-first plan, 9 hours: two new refutation mechanisms (threshold below formula depth; reach-set period versus a letter-restricted sub-object) predicted to refute the residue-carrying index at both object-exhibited parameters, landed as a fifteenth wired probe with eight pinned Challenge statements; a bounded, non-pinned fixture-level sufficiency attempt; record and source-store context-note amendments; full gate. No general factorization lemma is stated."
+    }
+  ],
+  "next_steps": "Run /implement 775 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1791836132_5eadba_775",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 9,
+    "dependency_waves": [[1], [2], [3], [4], [5, 6], [7]]
+  },
+  "memory_candidates": [],
+  "dispatch_seq": 1
+}

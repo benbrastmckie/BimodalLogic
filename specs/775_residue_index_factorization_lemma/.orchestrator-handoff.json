@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 1,
+  "summary": "Planned the residue-carrying cell-index task as a falsify-first record: two new mechanisms derived at plan time from the strict untl clause and from reachStep iterating the full step graph predict that ladderIndexRes is refuted at BOTH object-exhibited parameters, uniformly in the clip bound, with eight statements pinned in a Lean Challenge block for a fifteenth wired probe. A bounded non-pinned attempt probes sufficiency on the deterministic fixture; the parameter-origin rule in the source-store context note is amended only after measurement. The general factorization lemma is stated nowhere.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/775_residue_index_factorization_lemma/plans/01_residue-index-parameter-refutation.md",
+      "summary": "Seven phases, 9 hours, six dependency waves; eight pinned Challenge statements; falsify-first with pre-specified branches."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 7,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implementation; Phases 1-2 are decision gates whose predicted branch is a refutation of the candidate as scoped."
+}
