@@ -1,49 +1,35 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-12T00:48:11Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md",
-      "summary": "ladderRealized is unstatable as filed: truncate B is undefined and its only reading is the deleted index; any per-cell soundness statement for the ladder (and the box/stab acceptance clause itself) presupposes a finite index of ladder states (cell_ne, counter-constrained fibres, generalized COLLAPSE); structural liveness is forward-only (machine-checked gPast_isPath), so slive stays; recommended outcome [BLOCKED] with the obstruction landed as a wired probe and the records corrected (R1); index-free run-layer half (R2) surfaced as a non-blocking user decision."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
+      "summary": "Six-phase [BLOCKED]-by-design plan per the user's R1 ruling: Phase 1 (the filed LadderCons/ladderCons_localRun/ladderRealized) is pre-marked [BLOCKED] on the open cell-index sub-problem; Phases 2-6 land the machine-checked forward-only liveness witness as the thirteenth wired probe, wire it into the evidence gate, amend the RaySummary README, one theorem-index row, the design of record and the task description (removing the hitOf (truncate B ...) and 'ulive/slive replaced' residues), run the full gate, and return partial with requires_user_review."
     }
   ],
-  "next_steps": "Plan R1: wired probe ladder-liveness-forward-only.lean (gPast_isPath, gPast_pending_past; optional hitCl_ne), README (W) item 1 + design-of-record A/C/D/H4 corrections (delete the truncate residue; ulive replaced, slive retained), 761/763 descriptions via state-write.sh, mark ladderRealized [BLOCKED]; no LadderRealize.lean unless the user selects R2.",
-  "user_decision": {
-    "question": "The realization theorem and its box/stab acceptance clause cannot be stated without the open cell-index sub-problem. Should the record be BLOCKED whole with the obstruction landed (R1), or should the index-free, box/stab-free run-layer half (LadderRunCons + ladderRunCons_localRun, forward-only liveness, no consumer in the tree) be landed in LadderRealize.lean alongside the block (R2)?",
-    "options": [
-      "R1 — [BLOCKED] whole: wired probe for forward-only liveness, README/design-of-record corrections, no library module",
-      "R2 — R1 plus land LadderRunCons/ladderRunCons_localRun under an honest name in LadderRealize.lean (~250-350 lines, pins and index rows), acceptance clause explicitly absent"
-    ],
-    "recommended": "R1 — [BLOCKED] whole: wired probe for forward-only liveness, README/design-of-record corrections, no library module",
-    "blocking": false
-  },
+  "next_steps": "Run /implement 761 to execute the plan",
   "metadata": {
     "session_id": "sess_1791765918_514971_761",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 4.5,
+    "dependency_waves": [[1, 2], [3, 4, 5], [6]]
   },
   "memory_candidates": [
     {
-      "content": "On the deadline ladder (RaySummary/RunLayer.lean), Count's countdown bounds pending regions only FORWARD: backward, Count true true increases c, so a history can be pending at every past time (gPast_isPath on the Bool fixture). Any run-layer consistency bundle may replace Cons.ulive by a pend-field but must retain Cons.slive.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["deadline ladder", "structural liveness", "forward-only", "slive", "RladAdm"]
-    },
-    {
-      "content": "COLLAPSE generalizes beyond Presented+nowUnique: any truth lemma that reads closure-formula truth off the world state alone forces psi -> stab psi at every point by the stab clause, so a per-cell object for this semantics must carry a SET of types per state (HWZ state candidate), and a finite object can do that for an infinite carrier only through a finite index of states.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["stab collapse", "per-state labelling", "quasimodel saturation", "cell index", "HitPresented"]
+      "content": "Plan shape for a Lean record whose filed statement is refuted or unstatable and the user has ruled [BLOCKED]: one pre-decided [BLOCKED] Phase 1 quoting the filed goals verbatim (never a prerequisite of any executable phase, so no implementer waits on it), then contingency phases that (a) port a plan-time-compiled prototype into a wired probe under specs/evidence with the collection's header conventions, (b) add one WIRED row/entry to scripts/check-evidence-probes.sh, (c) amend the README/theorem-index with durable anchors only, (d) amend the design-of-record spec and the task description via state-write.sh so no residue of the refuted device survives, and (e) a final full-gate phase that returns partial + requires_user_review: true + blocked_phase: 1, never implemented. The plan-level Status field is left to the postflight. Used by the twelfth and thirteenth seam-gluing-ray-product probes.",
+      "category": "PATTERN",
+      "source_artifact": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["blocked-by-design", "wired-probe", "check-evidence-probes", "escalation-protocol", "lean4-plan", "refuted-statement"]
     }
   ],
   "modified_files": [
-    "specs/761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md",
-    "specs/761_ladder_realization_theorem/.return-meta.json",
+    "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
+    "specs/761_ladder_realization_theorem/prototype/ladder-liveness-forward-only-proto.lean",
     "specs/761_ladder_realization_theorem/issues.jsonl"
-  ]
+  ],
+  "dispatch_seq": 2
 }
