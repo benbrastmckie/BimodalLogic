@@ -163,7 +163,7 @@ example : Axiom ((((Formula.atomS "p").imp Formula.bot).imp (Formula.atomS "p"))
 
 -- ============================================================
 -- Temporal 4 Derived Theorem Tests: Gφ → GGφ
--- Note: temp_4 is now a derived theorem (Task 116), not an axiom constructor.
+-- Note: temp_4 is now a derived theorem, not an axiom constructor.
 -- ============================================================
 
 -- Test: Temporal 4 derived theorem on atom
@@ -189,7 +189,7 @@ example : Axiom ((Formula.atomS "p").imp ((Formula.atomS "p").somePast.allFuture
 example : Axiom ((Formula.atomS "p").neg.imp ((Formula.atomS "p").neg.somePast.allFuture)) :=
   Axiom.connect_future (Formula.atomS "p").neg
 
--- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
 -- summary.
 -- -- ============================================================

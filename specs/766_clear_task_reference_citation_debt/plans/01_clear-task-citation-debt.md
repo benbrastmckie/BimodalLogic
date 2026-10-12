@@ -286,7 +286,7 @@ plus `bash .claude/scripts/check-task-references.sh Boneyard` covers the whole e
 
 ---
 
-### Phase 3: Clear Tests/BimodalTest property-suite comments [NOT STARTED]
+### Phase 3: Clear Tests/BimodalTest property-suite comments [IN PROGRESS]
 
 **Goal**: Zero unexempted citations under `Tests/BimodalTest/{Syntax,Semantics,ProofSystem,Property}`,
 with `lake build BimodalTest` still green.

@@ -91,7 +91,7 @@ Property: Derivation height is always finite.
 
 Every derivation tree has a finite height (by construction).
 -/
--- NOTE (Task 365): quarantined — this "sanity check" asserts a concrete numeric bound
+-- NOTE: quarantined — this "sanity check" asserts a concrete numeric bound
 -- (`d.height < 1000000`) on an unbounded quantity; it is not provable by `omega` (or at all,
 -- since derivation height has no universal literal bound). Not an API-drift repair and not a
 -- sorry; kept as documentation of the intended (informal) finiteness property.
@@ -177,7 +177,7 @@ theorem temporal_necessitation_height_property (φ : Formula) (d : ⊢ φ) :
 /-!
 Property: Empty context is subset of all contexts.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
+-- Quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ Γ : Context, [] ⊆ Γ) := by
 --   infer_instance
@@ -193,7 +193,7 @@ Test: Empty context subset property (100 test cases).
 /-!
 Property: Context is subset of itself.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
+-- Quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ Γ : Context, Γ ⊆ Γ) := by
 --   infer_instance
@@ -209,7 +209,7 @@ Test: Reflexivity of subset (100 test cases).
 /-!
 Property: Subset is transitive.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
+-- Quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ Γ Δ Θ : Context, Γ ⊆ Δ → Δ ⊆ Θ → Γ ⊆ Θ) := by
 --   infer_instance
@@ -236,7 +236,7 @@ Test: Temporal A axiom is derivable.
 example (φ : Formula) : ⊢ (φ.imp (Formula.allFuture φ.somePast)) :=
   DerivationTree.axiom [] (φ.imp (Formula.allFuture φ.somePast)) (Axiom.connect_future φ) trivial
 
--- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
 -- summary.
 -- /--
@@ -273,7 +273,7 @@ example : ∀ (Γ : Context) (φ ψ : Formula),
 /-!
 Property: Context concatenation preserves membership.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
+-- Quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ (Γ Δ : Context) (φ : Formula), φ ∈ Γ → φ ∈ (Γ ++ Δ)) := by
 --   infer_instance
@@ -289,7 +289,7 @@ Test: Context concatenation membership (100 test cases).
 /-!
 Property: Cons preserves subset.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
+-- Quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ (Γ Δ : Context) (φ : Formula), Γ ⊆ Δ → (φ :: Γ) ⊆ (φ :: Δ)) := by
 --   infer_instance

@@ -32,7 +32,7 @@ This module provides generators for property-based testing of the formalization'
   axioms by construction: `comp`, `serial`, `limit`, `saturation`, over the primitive `PosRel`)
 - All generators follow Plausible framework conventions
 
-## API Drift Notes (Task 365)
+## API Drift Notes
 
 The Plausible API changed since this file was written:
 - `Gen.oneOf` now takes an `Array` (with a `0 < size` proof) rather than a `List`.
@@ -150,9 +150,9 @@ instance : SampleableExt (FrameOver intOrder) where
   proxy := Unit
   interp _ := FrameOver.natFrame (D := Int)
 
-/-! ## TaskModel Generators (QUARANTINED — Task 365)
+/-! ## TaskModel Generators (QUARANTINED)
 
-NOTE (Task 365): The `SampleableExt (TaskModel …)` instance and the
+NOTE: The `SampleableExt (TaskModel …)` instance and the
 `TaskModel`-valued generators below were quarantined. They relied on a
 `TaskModelProxy` proxy type that lacks the `Repr`/`Shrinkable` instances the
 current `SampleableExt` class requires, and on the removed `T`-parameter form of

@@ -67,7 +67,7 @@ Property: Frame compositionality holds for all frames.
 If TaskRel w x u and TaskRel u y v, then TaskRel w (x+y) v.
 This is enforced by the `FrameOver` structure.
 -/
--- NOTE (Task 365): `compositionality` was replaced by `forward_comp`, which is restricted to
+-- NOTE: `compositionality` was replaced by `forward_comp`, which is restricted to
 -- non-negative durations (`0 ≤ x`, `0 ≤ y`) — the unrestricted mixed-sign law is no longer a
 -- frame property. Added the non-negativity hypotheses to match the current structure.
 theorem frame_compositionality_property (F : FrameOver intOrder) [F.IsRegular]
@@ -119,7 +119,7 @@ example : (FrameOver.natFrame (D := Int)).WorldState = Nat := by
 /-!
 Property: Nat frame task relation is permissive.
 -/
--- NOTE (Task 365): quarantined — under the current `natFrame`, `TaskRel w x u` is
+-- NOTE: quarantined — under the current `natFrame`, `TaskRel w x u` is
 -- `x ≠ 0 ∨ w = u`, so it is NOT universally permissive (fails when `x = 0 ∧ w ≠ u`). The old
 -- unconditional-permissiveness claim is no longer true.
 -- example (w u : Nat) (x : Int) :
@@ -133,7 +133,7 @@ Property: Zero is identity for time addition.
 
 For any time x, x + 0 = x.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
+-- Quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
 -- example : Testable (∀ x : Int, x + 0 = x) := by
@@ -149,7 +149,7 @@ Test: Zero is right identity (100 test cases).
 /-!
 Property: Time addition is associative.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
+-- Quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
 -- example : Testable (∀ x y z : Int, (x + y) + z = x + (y + z)) := by
@@ -165,7 +165,7 @@ Test: Time addition associativity (100 test cases).
 /-!
 Property: Time addition is commutative.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
+-- Quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
 -- example : Testable (∀ x y : Int, x + y = y + x) := by
@@ -183,7 +183,7 @@ Test: Time addition commutativity (100 test cases).
 /-!
 Property: Time ordering is transitive.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
+-- Quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
 -- example : Testable (∀ x y z : Int, x < y → y < z → x < z) := by
@@ -199,7 +199,7 @@ Test: Time ordering transitivity (100 test cases).
 /-!
 Property: Time ordering is irreflexive.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
+-- Quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
 -- example : Testable (∀ x : Int, ¬(x < x)) := by
@@ -215,7 +215,7 @@ Test: Time ordering irreflexivity (100 test cases).
 /-!
 Property: Time ordering is total.
 -/
--- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
+-- Quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
 -- example : Testable (∀ x y : Int, x < y ∨ x = y ∨ y < x) := by
@@ -267,7 +267,7 @@ Property: Generated TaskModels have the correct frame.
 
 The frame of a generated model is natFrame.
 -/
--- NOTE (Task 365): quarantined — `TaskModel` has no `.frame` projection (the frame is a
+-- NOTE: quarantined — `TaskModel` has no `.frame` projection (the frame is a
 -- structure parameter `F`, not a field), and the `where frame (M) := F` helper referenced an
 -- out-of-scope `F`. The property as stated is not expressible against the current `TaskModel`.
 -- example : ∀ (M : TaskModel (FrameOver.natFrame (D := Int))),
@@ -303,7 +303,7 @@ This is a fundamental semantic property.
 
 /-! ## Frame Constraint Tests with Larger Test Counts -/
 
--- NOTE (Task 365): quarantined — these `#eval Testable.check` properties quantify over
+-- NOTE: quarantined — these `#eval Testable.check` properties quantify over
 -- `w : F.WorldState` for an abstract generated `F`, so Plausible cannot synthesize a
 -- `SampleableExt` for the dependent, abstract world-state type. (The second also asserted the
 -- now-restricted mixed-sign compositionality law.) The corresponding closed proofs above cover

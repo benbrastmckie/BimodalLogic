@@ -97,12 +97,12 @@ example (p : Formula) : p.always = p.allPast.and (p.and p.allFuture) := rfl
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
 -- Test: Derived 'some_past' operator (at some past time)
--- Definition: somePast φ = S(φ, ⊤) (Task 116: direct def, not ¬H¬φ)
+-- Definition: somePast φ = S(φ, ⊤) (direct def, not ¬H¬φ)
 -- The duality somePast φ ↔ ¬H¬φ is now a semantic equivalence via @[simp] theorems.
 example (p : Formula) : p.somePast = Formula.snce Formula.top p := rfl
 
 -- Test: Derived 'some_future' operator (at some future time)
--- Definition: someFuture φ = U(φ, ⊤) (Task 116: direct def, not ¬G¬φ)
+-- Definition: someFuture φ = U(φ, ⊤) (direct def, not ¬G¬φ)
 -- The duality someFuture φ ↔ ¬G¬φ is now a semantic equivalence via @[simp] theorems.
 -- Note: someFuture ≠ sometimes (sometimes covers past, present, AND future)
 example (p : Formula) : p.someFuture = Formula.untl Formula.top p := rfl
@@ -154,7 +154,7 @@ example (p q : Formula) :
 example (p : Formula) : (p.box).reflectTime = p.reflectTime.box := rfl
 
 -- Test: reflectTime on allPast (becomes allFuture)
--- Note: allPast/allFuture are def abbreviations (Task 116), so equality
+-- Note: allPast/allFuture are def abbreviations, so equality
 -- requires unfolding through imp/untl/snce.
 example (p : Formula) : (p.allPast).reflectTime = p.reflectTime.allFuture := by
   simp only [Formula.allPast, Formula.allFuture, Formula.somePast, Formula.someFuture,
@@ -229,7 +229,7 @@ example : ((p.imp q).imp (r.imp s)).countImplications = 3 := rfl
 
 -- countImplications tests: operators preserve implication count
 example : (p.imp q).box.countImplications = 1 := rfl
--- Note: allFuture is now a def abbreviation (Task 116) involving neg/imp,
+-- Note: allFuture is now a def abbreviation involving neg/imp,
 -- so countImplications counts the structural implication constructors.
 example : (p.imp q).allFuture.countImplications = 4 := rfl
 
@@ -239,7 +239,7 @@ example : (p.allFuture.box.imp q).temporalDepth = 1 := rfl
 -- countImplications counts structural imp constructors in the expanded def
 example : (p.allFuture.box.imp q).countImplications = 4 := rfl
 
-/-! ## Strong Release and Strong Trigger Tests (Task 276) -/
+/-! ## Strong Release and Strong Trigger Tests -/
 
 -- Test: strongRelease construction
 example (φ ψ : Formula) : Formula.strongRelease φ ψ = Formula.untl ψ (Formula.and ψ φ) := rfl
