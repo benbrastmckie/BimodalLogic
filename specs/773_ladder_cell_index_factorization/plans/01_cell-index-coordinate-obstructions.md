@@ -926,13 +926,13 @@ task-reference lint) together with a diff read-through confirming every hunk is 
 
 ---
 
-### Phase 8: Full Gate and Final Verification [NOT STARTED]
+### Phase 8: Full Gate and Final Verification [COMPLETED]
 
 **Goal**: Re-observe every phase's measurement through the repository's complete gate set, with
 nothing trusted on sight.
 
 **Tasks**:
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh` (all gates, no
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh` (all gates, no
       `--only-gate` narrowing and no `--skip-slow`), `bash scripts/check-evidence-probes.sh`,
       `bash scripts/check-module-invariants.sh`, `bash scripts/readme-lint.sh`,
       `bash .claude/scripts/check-task-references.sh`, `bash scripts/typst-sync-check.sh` (if
@@ -940,14 +940,61 @@ nothing trusted on sight.
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`. Every run goes
       detached with a bounded waiter per `context/patterns/bounded-build-waiter.md`, and the
       verdict is read from the guard's own result rather than a pipe exit code.
-- [ ] Re-grep the whole repository for a zero-debt violation introduced by this task: no `sorry`,
+- [x] Re-grep the whole repository for a zero-debt violation introduced by this task: no `sorry`,
       no `axiom`, no vacuous-definition pattern in the probe or the three prototypes.
-- [ ] Confirm the task's resting posture: the positive factorization lemma is stated nowhere; no
+- [x] Confirm the task's resting posture: the positive factorization lemma is stated nowhere; no
       declaration was added under `FormalSystem/`; the acceptance clause was not dropped; no file
       outside `specs/` carries a task number introduced here.
-- [ ] If the pre-commit hook regenerates `typst/generated/status.typ`, commit the regenerated file
+- [x] If the pre-commit hook regenerates `typst/generated/status.typ`, commit the regenerated file
       with this phase and record the fact in the summary.
-- [ ] Final commit for the phase.
+- [x] Final commit for the phase.
+
+#### Outcome
+
+Every measurement in this phase was re-observed in this dispatch, not trusted on sight. All builds
+and gates ran detached through `Bash(run_in_background: true)`, builds through
+`lake-build-guard.sh`, and each verdict was read from the guard's own result or the script's own
+exit code rather than a pipe exit code.
+
+| Gate | Verdict |
+|------|---------|
+| full guarded `lake build` (unscoped, `--timeout 1800`) | exit 0, `Build completed successfully (2841 jobs)`, zero `error:` lines over both captured streams |
+| `scripts/check-evidence-probes.sh` | exit 0, `PASS  all 32 wired probe(s) compile`, the new probe named and PASS, zero FAIL, one pre-existing SKIP unchanged |
+| `.claude/scripts/verify-deploy.sh` (full, no `--only-gate`, no `--skip-slow`) | exit 0, `PASS -- 14 check(s), 0 failure(s)` |
+| `scripts/typst-sync-check.sh` | exit 0, `PASS (all 4 checks green)` |
+| `scripts/readme-lint.sh` | exit 0, `RESULT: PASS`, 0 broken file references |
+| `scripts/check-module-invariants.sh` | exit 0 (one non-exit-affecting group FAILED: `INV  2 file(s) carry a stale generated inventory block`, both files pre-existing and untouched by this task; C9 and C9D PASS) |
+| `.claude/scripts/check-task-references.sh` | exit 1 at 198 unexempted occurrences repo-wide — a pre-existing baseline; none in any file this task touched |
+
+Zero-debt re-grep: count **0** in the wired probe and in all three prototypes. Repo-wide the
+sorry census reads `sorry_count: 0`; the single vacuous-pattern hit is
+`FormalSystem/Examples/TemporalStructures.lean:495` (`int_domain_universal := trivial`, last
+touched by `85e92e9e4`, where `trivial` genuinely discharges the goal), pre-existing and untouched.
+The axiom count is **14** at the dispatch-start commit `130c432b4` and **14** at HEAD — unchanged.
+
+Resting posture, checked mechanically rather than asserted: no positive factorization statement
+exists as a declaration in any file this task wrote (the sole non-negated occurrence of the shape
+is the quoted TARGET inside the probe's header docstring); **zero** declarations added under
+`FormalSystem/` (`LadderModel.lean` carries 12 top-level declarations before and after, and the one
+`+lemma` line in the diff is wrapped prose in the cluster README); the `box`/`stab` acceptance
+clause untouched (`AnchorLayer.lean` and `Trace.lean` unchanged); and no file outside `specs/`
+carries a task number introduced here.
+
+`typst/generated/status.typ` WAS regenerated: the pre-commit `typst-sync-check.sh` Check 2 blocked
+the Phase 6 commit on an 11-line drift (`committed=350322 live=350333`) exactly matching this
+task's only `.lean` library delta (`LadderModel.lean`, +13/−2). `typst-sync-check.sh --fix`
+repaired it and it was committed with Phase 6, as this plan's contingency prescribes — the gate was
+never bypassed with `--no-verify`.
+
+Advisory statement-fidelity note: `lean-challenge-snapshot.sh --check 773 .` could not run (no
+manifest at `specs/773_ladder_cell_index_factorization/challenge/manifest.json`), so a
+whitespace-normalised diff of all twelve Goal signatures and the three pinned definitional bodies
+against the `## Lean Challenge Statements` block was run in its place: **zero drift on all
+fifteen**. Per `plan-compliance.md` that verdict is advisory either way and was never used to fail
+anything.
+
+The plan-level `- **Status**:` field was left untouched for the postflight, as this plan's own
+Prior Plan Reference lesson requires.
 
 **Timing**: 1 hour
 
