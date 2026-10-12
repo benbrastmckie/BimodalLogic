@@ -88,7 +88,7 @@ next_project_number: 774
 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
 766 [RESEARCHED] — Clear the repo-wide task-number citation debt that fails...
 771 [NOT STARTED] — check-task-references.sh --quiet exits non-zero on 198...
-773 [RESEARCHED] — STATEMENT (library, research-first; the open cell-index...
+773 [PLANNED] — STATEMENT (library, research-first; the open cell-index...
 
 ### Formula Refactor
 
@@ -124,12 +124,13 @@ next_project_number: 774
 ## Tasks
 
 ### 773. Ladder cell index factorization
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 761
 - **Research**: [773_ladder_cell_index_factorization/reports/01_cell-index-factorization.md]
+- **Plan**: [773_ladder_cell_index_factorization/plans/01_cell-index-coordinate-obstructions.md]
 
 **Description**: STATEMENT (library, research-first; the open cell-index sub-problem recorded by the ladder realization record and its blocker analysis at specs/761_ladder_realization_theorem/.blocker-research.json). The ladder realization half cannot be STATED without a computable index: hitOf requires [Fintype Q], the admissible ladder carrier LadderState Q pend := {x : Q × ℕ × ℕ // x.2.1 ∈ Adm pend x.1} is infinite, and the two-coordinate index Q × Fin (B+1) × Fin (B+1) is REFUTED uniformly in B (specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean: cell_ne, exhibited_form_refuted, exists_form_refuted). Separate three things the predecessor record conflates: (1) the SET of cells is finite and bounded — anchorCells_finite, anchorCells_ncard_le ≤ 2^(2^|cl φ|) are untouched and hold; (2) what is missing is a computable INDEXING FUNCTION, a Fintype I with a map LadderState Q pend → I through which cellAt factors; (3) the box/stab acceptance clause rides on that same index (stab_mem_tpOf_iff pins the stab letter per cell), so dropping the clause to make the structure writable would publish a same-named weaker statement.
 
