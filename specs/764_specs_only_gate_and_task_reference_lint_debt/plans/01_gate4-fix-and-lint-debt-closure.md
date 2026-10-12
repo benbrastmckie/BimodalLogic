@@ -349,13 +349,13 @@ it actually discriminates.
 
 ---
 
-### Phase 5: Correct plan-format.md's __FULL_SWEEP__ guidance [NOT STARTED]
+### Phase 5: Correct plan-format.md's __FULL_SWEEP__ guidance [COMPLETED]
 
 **Goal**: Replace the single "ordinarily `--only-gate 3,4`" recommendation with a three-way
 distinction, so a planner following the guidance names a check that actually runs.
 
 **Tasks**:
-- [ ] In `context/formats/plan-format.md`'s `## Verification Tiers` section, rewrite the
+- [x] In `context/formats/plan-format.md`'s `## Verification Tiers` section, rewrite the
       `__FULL_SWEEP__` bullet to distinguish three sub-cases: (a) a phase whose touched paths lie
       entirely under `specs/**` — the honest check is `bash .claude/scripts/validate-artifact.sh
       <path> <type>` for a report/plan/summary, or the `prose` row's diff read-through for any
@@ -366,15 +366,17 @@ distinction, so a planner following the guidance names a check that actually run
       `verify-deploy.sh`'s `TARGET` defaults to `$(pwd)`, which for any ordinary dispatch is the
       consumer repo root, not the source store; (c) a deploy-consumer-tree path with no mapped
       suite — `--only-gate 4` is now a real check there, gate 3 still correctly skips, so the
-      subset is `4`, not `3,4`.
-- [ ] Give sub-case (b) a concrete, copy-pasteable invocation shape with the explicit TARGET
-      argument in the position `verify-deploy.sh` expects it.
-- [ ] Keep the surrounding honesty constraints verbatim: the sentinel means no suite covers the
+      subset is `4`, not `3,4`. *(completed)*
+- [x] Give sub-case (b) a concrete, copy-pasteable invocation shape with the explicit TARGET
+      argument in the position `verify-deploy.sh` expects it. *(completed)*
+- [x] Keep the surrounding honesty constraints verbatim: the sentinel means no suite covers the
       file and the justification must not claim one; a narrowed pass is never equivalent to the
       full run for the phase's own purpose; neither narrowing mechanism is a fifth tier.
-- [ ] Check whether any sibling file duplicates the "ordinarily `--only-gate 3,4`" recommendation
+      *(completed: confirmed byte-unchanged outside the one bullet)*
+- [x] Check whether any sibling file duplicates the "ordinarily `--only-gate 3,4`" recommendation
       rather than pointing at this section (`agents/planner-agent.md` points by reference and
       needs no edit; grep to confirm no other copy exists). Edit only genuine duplicates.
+      *(completed: grep confirms no duplicate; planner-agent.md points by reference only)*
 
 **Timing**: 1 hour
 
@@ -394,12 +396,17 @@ prescribes — the guidance is checked by using it.
 **Verification**:
 - Source-store copy, `--skip-slow --only-gate 3,4 /home/benjamin/.config/nvim`:
   `PASS -- 3 check(s), 0 failure(s)`, exit 0 — doc-lint and the task-reference lint both clean on
-  the edited file.
+  the edited file. *(confirmed, after re-running `generate-context-line-counts.sh --write` and
+  `deploy-headless.sh` against the nvim repo's own self-hosted deploy tree to pick up this
+  phase's and Phase 2-4's source-store edits — the Phase 2/3 "concurrent-edit-collision" drift
+  logged earlier has resolved; the full redeploy verification reported
+  `PASS -- 35 check(s), 0 failure(s)`)*
 - Diff read-through: every changed hunk is prose inside the one bullet; the surrounding
-  non-negotiable-invariant and tie-break paragraphs are byte-unchanged.
+  non-negotiable-invariant and tie-break paragraphs are byte-unchanged. *(confirmed)*
 - `grep -rn -- "--only-gate 3,4" /home/benjamin/.config/nvim/agent-system/extensions/` returns
   only the corrected text (plus any intentionally quoted historical reference), confirming no
-  stale duplicate of the old recommendation survives.
+  stale duplicate of the old recommendation survives. *(confirmed: only this file's three
+  corrected occurrences)*
 
 ---
 
