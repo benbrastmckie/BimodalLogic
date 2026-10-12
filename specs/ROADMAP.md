@@ -1,6 +1,6 @@
 # Roadmap
 
-*Open work only; hand-maintained (last edited 2026-10-10), not generated — `roadmap-integration.sh
+*Open work only; hand-maintained (last edited 2026-10-12), not generated — `roadmap-integration.sh
 --regenerate` aborts silently against this layout and writes nothing. Finished work lives in
 `specs/CHANGE_LOG.md` and `specs/archive/`. Per-task detail lives in the task records
 (`specs/TODO.md`); the mathematics and the (C)/(S)/(W) verdict table live in `README.md`, the
@@ -15,12 +15,18 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 758,759 --hard      # the two Node-fixture probes: cell stabilization, then HitPresented for a ⊡-bearing formula
-/orchestrate 720                 # CI repair: untracked WIRED_REPO + the missing tracked-ness check
-/orchestrate 760,761 --hard --lit # ladder model + stabilization lemma over (c, n), then the ladder realization theorem
-/orchestrate 762,763 --hard --lit # (C)'s general row, then the lift and the Decidable (PlusValidZTime φ) corollary
+# Landed: 758, 759 (HitPresented POSITIVE on Node), 720, 712; 760, 773, 775 landed as refutations.
+# The ladder cell index is the open sub-problem: a finite index needs a formula-derived clip AND
+# threshold, and a modulus dominating every letter-definable sub-object period; the positive
+# factorization lemma is stated nowhere. 761 is [BLOCKED] on it pending a USER ruling —
+# parameter-coupled index with jointly derived (T, P, B), set-valued per-state datum over a
+# quotient, or the index-free run-layer half (R2) — and a successor task gated against all five
+# refutation mechanisms before any proof attempt.
+/orchestrate 762 --hard --lit --research  # (C)'s general row, research first: its 759 edge is satisfied; its 761 edge is serialization-only (drop it if the gate defers)
+/orchestrate 778                 # record the P / P+1 modulus convention (child of 775)
+/orchestrate 761 --hard --lit    # the ladder realization theorem — only after the index ruling and its successor land
+/orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — after 761 and 762
 /orchestrate 716,714 --hard      # the sliced-certificate sub-front
-/orchestrate 712 --hard          # only after Stage 0 corrects its marker
 # Stage 2 — supporting semantics and metalogic
 /orchestrate 616,618
 /orchestrate 617,566
@@ -30,6 +36,7 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 /orchestrate 178,604
 /orchestrate 743,744
 /orchestrate 751,752
+/orchestrate 777,779,780         # agent-system records from the 775 run: phase-commit plan-artifact drop, source-store commit path, plan-compliance spot-check scope
 /orchestrate 257                 # only once the Stage 0 token exists
 # Stage 4 — the long fronts
 /orchestrate 464,465,481 --hard
