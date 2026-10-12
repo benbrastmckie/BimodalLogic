@@ -71,7 +71,20 @@ the OBJECT only.
   this carrier by its deadline-bounded sub-carrier, is closed as a GENERAL route by the same probe
   (`bounded_width_validates_Phi_neg` against `Phi_neg_not_valid`); the narrow carve-out is that a
   bounded carrier remains available for a target that does have a finite-width countermodel, per
-  `not_finite_width_fmp`'s own disclaimer.
+  `not_finite_width_fmp`'s own disclaimer. The residue-carrying six-coordinate candidate that
+  probe exhibits, at its object-exhibited threshold and period, is refuted at BOTH parameters by
+  the wired probe `specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean`,
+  uniformly in the clip bound (`object_only_parameters_refuted`: the forced first idle state's
+  exact distance is observable to the formula's `untl`-nesting depth, so no threshold fixed
+  before the formula survives; `reach_period_refuted`: the reach-set period of the full step
+  graph is not the period of the sub-object a formula that forbids a letter carves out). The
+  threshold must therefore be formula-derived and the modulus must dominate every
+  letter-definable sub-object period — a NECESSARY condition on any index's parameters — and the
+  positive lemma for parameters depending on the object and the formula jointly is OPEN and
+  asserted nowhere. What that probe proves positively is fixture-level only
+  (`qp_cell_eq_of_depth_parity`): on the two-state object, where every history through a pending
+  state shares one object path, the cell is determined by the object state, the countdown's
+  parity and a formula-derived threshold; the general object has no such forced path.
 * **`anchorCells_finite` and `anchorCells_ncard_le` are untouched**: the SET of cells of any
   model is still finite and bounded. What is absent is only the computable index of WHICH cell a
   ladder state has.

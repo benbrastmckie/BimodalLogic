@@ -103,7 +103,7 @@ links here rather than restating them.**
 | Quantity | Value |
 |----------|------:|
 | Archived `.lean` files | 169 |
-| Archived lines | 91,983 |
+| Archived lines | 91,985 |
 | Top-level subdirectories | 40 |
 | Archive directories in the repository | 1 |
 <!-- END GENERATED -->
@@ -203,7 +203,7 @@ Tombstones at the end of this file.
 | Directory | Files | Lines | Why Archived |
 |-----------|------:|------:|--------------|
 | [`Kamp/`](Kamp/README.md) | 85 | 43,551 | **Region index for the whole Kamp separation / expressive-completeness pipeline**, in five subdirectories: `KampWeakCanonical/` (the former nested second archive, 63 files), `KampBypassArchive/`, `KampNegationClosure/`, `RabinovichPath/`, `VecEADecomposition/`. Superseded, in stages, by the landed zeta route. See its own README for which subtree is authoritative for what |
-| [`StrictSemanticsLegacy/`](StrictSemanticsLegacy/README.md) | 9 | 14,392 | From `Metalogic/`. Complete completeness infrastructure written under **strict** temporal semantics — algebraic chains, bundle constructions, frame-condition completeness, top-level wiring. Architecturally incompatible with the current open-guard semantics |
+| [`StrictSemanticsLegacy/`](StrictSemanticsLegacy/README.md) | 9 | 14,394 | From `Metalogic/`. Complete completeness infrastructure written under **strict** temporal semantics — algebraic chains, bundle constructions, frame-condition completeness, top-level wiring. Architecturally incompatible with the current open-guard semantics |
 | [`StaviDiscretePath/`](StaviDiscretePath/README.md) | 4 | 4,981 | From `WeakCanonical/EFGames/`. The discrete Stavi completeness route (EF game pipeline) with no live consumers, plus `StaviExpressiveCompletenessTail.lean`, the dead 24-declaration expressive-completeness tail excised from the live `StaviCompleteness.lean` |
 | [`ChainCompleteness/`](ChainCompleteness/README.md) | 12 | 4,265 | From `BXCanonical/`. An earlier chain-based completeness iteration — deterministic, resolving, targeted and witness chains — superseded by the SuccChain approach, itself later superseded by the chronicle construction |
 | [`SorriedDeclExcisions/`](SorriedDeclExcisions/README.md) | 6 | 3,351 | From `Metalogic/` (various) and `Bundle/`. Verified-dead declaration closures carrying statement-position sorries, moved out of live code as units. Every archived declaration was confirmed dead by word-boundary grep before excision |
