@@ -1,7 +1,7 @@
 # Implementation Plan: Task #764
 
 - **Task**: 764 - Close the specs/**-only phase verification gap and the repo-wide task-reference lint debt
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.25 hours
 - **Dependencies**: Task 771 (completed)
 - **Research Inputs**: specs/764_specs_only_gate_and_task_reference_lint_debt/reports/01_specs-only-gate-and-lint-debt.md
@@ -107,7 +107,7 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 both edit
 `scripts/verify-deploy.sh` and are deliberately serialized rather than run in one wave, so the
 two changes land as separately reviewable, separately revertible commits in shared file territory.
 
-### Phase 1: Settle and record finding (2)'s taxonomy question [NOT STARTED]
+### Phase 1: Settle and record finding (2)'s taxonomy question [COMPLETED]
 
 **Goal**: Close the one sub-question tasks 766/771 left open — whether the exemption taxonomy
 should gain a path-level category for archival trees — with an argued decision recorded in a
@@ -115,11 +115,11 @@ durable location, and independently re-confirm the lint is at zero so the decisi
 measured state rather than a cited one.
 
 **Tasks**:
-- [ ] Re-run `bash .claude/scripts/check-task-references.sh` against this repo and record the
+- [x] Re-run `bash .claude/scripts/check-task-references.sh` against this repo and record the
       exact output and exit code in the phase's commit message. Expected: `0 occurrence(s)`,
       `PASS`, exit 0. If it is non-zero, STOP and re-scope — the rest of this phase assumes a
-      clean tree.
-- [ ] Add a decision section to `/home/benjamin/.config/nvim/specs/decisions/no-task-references-enforcement-history.md`
+      clean tree. *(completed: 0 occurrence(s), PASS, exit 0)*
+- [x] Add a decision section to `/home/benjamin/.config/nvim/specs/decisions/no-task-references-enforcement-history.md`
       recording that a path-level exemption category for archival/tombstone trees was considered
       and **declined**, with the three reasons: (a) durable-anchor rewriting was demonstrated
       achievable for every occurrence in that path class across 53 files, so no residual case
@@ -128,13 +128,15 @@ measured state rather than a cited one.
       and would only re-permit the pattern going forward; (c) category 1's exemption rests on
       task numbers being the intrinsic subject matter of `specs/**`, a property archival READMEs
       do not share. Write it as a decision on its own merits — no draft-history framing, no
-      "formerly/no longer" phrasing (`no-record-versioning-in-deliverables.md`).
-- [ ] Add one pointer line to the `## Exemption Taxonomy` section of
+      "formerly/no longer" phrasing (`no-record-versioning-in-deliverables.md`). *(completed)*
+- [x] Add one pointer line to the `## Exemption Taxonomy` section of
       `agent-system/extensions/core/context/standards/task-reference-exemptions.md` noting that a
       path-level archival-tree category was considered and declined, citing the decision record by
       filename. The taxonomy table itself stays at 7 categories — no row added, no row changed.
-- [ ] Confirm `scripts/lib/task-reference-patterns.sh` is untouched by this phase (the decision is
-      to change nothing mechanical).
+      *(completed)*
+- [x] Confirm `scripts/lib/task-reference-patterns.sh` is untouched by this phase (the decision is
+      to change nothing mechanical). *(completed: confirmed clean via git status in the
+      source-store repo)*
 
 **Timing**: 0.75 hours
 
