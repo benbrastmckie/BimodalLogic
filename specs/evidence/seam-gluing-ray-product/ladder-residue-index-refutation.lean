@@ -420,4 +420,490 @@ theorem object_only_parameters_refuted :
   rintro ⟨T, P, B, h⟩
   exact cell_depth_ne T P B (h _ _ _ (depth_collision T P B))
 
+/-! ## Fixture B: two pending cycles of coprime lengths sharing a state -/
+
+/-- Object states `(pending?, index)`; pending indices `0 = a`, `1 = b`, `2 = c`, `3 = d`. -/
+abbrev Q5 : Type := Bool × Fin 4
+
+def pend5 : Q5 → Bool := fun q => q.1
+
+/-- Pending edges `a → b → c → a` and `a → d → a` (a 3-cycle and a 2-cycle sharing `a`); every
+pending `(true, i)` steps to its idle copy `(false, i)`; idle states self-loop. -/
+def step5 : Q5 → Q5 → Bool := fun x y =>
+  if x.1 then
+    (if y.1 then
+      ((x.2 == 0 && (y.2 == 1 || y.2 == 3)) || (x.2 == 1 && y.2 == 2) ||
+        (x.2 == 2 && y.2 == 0) || (x.2 == 3 && y.2 == 0))
+     else (y.2 == x.2))
+  else (!y.1 && (y.2 == x.2))
+
+theorem rlad5_iff (t : ℤ) (x y : Q5 × ℕ × ℕ) :
+    Rlad step5 pend5 t x y ↔
+      step5 x.1 y.1 = true ∧ (x.1.1 = false → x.2.1 = 0) ∧ Drift x.2.2 y.2.2 ∧
+        Count x.1.1 y.1.1 x.2.1 x.2.2 y.2.1 := Iff.rfl
+
+/-- A pending successor index: `a → b`, `b → c`, `c → a`, `d → a`. -/
+def nxt : Fin 4 → Fin 4 := fun i => if i = 0 then 1 else if i = 1 then 2 else 0
+
+/-- A pending predecessor index: `a` from `c`, `b` from `a`, `c` from `b`, `d` from `a`. -/
+def prv : Fin 4 → Fin 4 := fun i =>
+  if i = 0 then 2 else if i = 1 then 0 else if i = 2 then 1 else 0
+
+theorem step5_nxt : ∀ i : Fin 4, step5 (true, i) (true, nxt i) = true := by decide
+
+theorem step5_prv : ∀ i : Fin 4, step5 (true, prv i) (true, i) = true := by decide
+
+theorem fwd5 : ∀ t x, ∃ y, RladAdm step5 pend5 t x y := by
+  rintro t ⟨⟨⟨b, i⟩, c, n⟩, hx⟩
+  cases b with
+  | false =>
+    have hc : c = 0 := hx rfl
+    subst hc
+    exact ⟨⟨((false, i), 0, n), fun _ => rfl⟩, by
+      simp [RladAdm, rlad5_iff, step5, Drift, Count]⟩
+  | true =>
+    cases c with
+    | zero =>
+      exact ⟨⟨((false, i), 0, n), fun _ => rfl⟩, by
+        simp [RladAdm, rlad5_iff, step5, Drift, Count]⟩
+    | succ c =>
+      exact ⟨⟨((true, nxt i), c, n), fun h => by cases h⟩, by
+        simp [RladAdm, rlad5_iff, Drift, Count, step5_nxt]⟩
+
+theorem bwd5 : ∀ t x, ∃ y, RladAdm step5 pend5 (t - 1) y x := by
+  rintro t ⟨⟨⟨b, i⟩, c, n⟩, hx⟩
+  cases b with
+  | false =>
+    have hc : c = 0 := hx rfl
+    subst hc
+    exact ⟨⟨((false, i), 0, n), fun _ => rfl⟩, by
+      simp [RladAdm, rlad5_iff, step5, Drift, Count]⟩
+  | true =>
+    exact ⟨⟨((true, prv i), c + 1, n), fun h => by cases h⟩, by
+      simp [RladAdm, rlad5_iff, Drift, Count, step5_prv]⟩
+
+def F5 : FrameOver intOrder := ladderFrameAdm step5 pend5 fwd5 bwd5
+
+instance : F5.IsRegular := ladderFrameAdm_isRegular step5 pend5 fwd5 bwd5
+
+/-- `p` pending, `r` idle, `a` index `0`, `d` PENDING index `3` (so `d` is false at every idle
+state). -/
+def lab5 : Q5 → Atom → Bool := fun q at_ =>
+  if at_ = pA then q.1 else if at_ = rA then !q.1
+  else if at_ = aA then (q.2 == 0) else if at_ = dA then (q.1 && q.2 == 3) else false
+
+def M5 : TaskModel F5.toTaskFrame := ladderModel step5 pend5 fwd5 bwd5 lab5
+
+def la : PlusFormula := .atom aA
+def ld : PlusFormula := .atom dA
+
+/-- `p U (r AND l_a)`: the region ends on the idle copy of `a`. -/
+def endA : PlusFormula := .untl p (r.and la)
+
+/-- `top U l_d`, with `top := bot -> bot`: some strictly later state is pending `d`. -/
+def evD : PlusFormula := .untl (.imp .bot .bot) ld
+
+/-- The probe formula; both observables are in its closure. -/
+def phi5 : PlusFormula := .imp endA evD
+
+def a5 : Q5 := (true, 0)
+
+/-- A pending admissible ladder state of fixture B. -/
+def st5 (i : Fin 4) (c n : ℕ) : LadderState Q5 pend5 :=
+  ⟨((true, i), c, n), fun h => by cases h⟩
+
+/-- A countdown divisible by `3` and by `P + 1`, at or above every threshold `T`. -/
+def c5 (T P : ℕ) : ℕ := 3 * (P + 1) * (T + 1)
+
+def x5 (T P B : ℕ) : LadderState Q5 pend5 :=
+  st5 0 (c5 T P) (c5 T P + (P + 1) + B)
+
+def y5 (T P B : ℕ) : LadderState Q5 pend5 :=
+  st5 0 (c5 T P + (P + 1)) (c5 T P + (P + 1) + B)
+
+/-! ## The exhibited threshold and period of fixture B's full-graph reach sets -/
+
+/-- From `a`, four steps reach every state. -/
+theorem reach5_four : (reachStep step5)^[4] {a5} = Finset.univ := by decide
+
+/-- Every state has a predecessor, so the full set is a fixed point of `reachStep`. -/
+theorem reachStep5_univ : reachStep step5 Finset.univ = Finset.univ := by decide
+
+/-- **Period `1` is an exhibited period of this object, from threshold `4`** — exactly the
+shape `reachN_eventually_periodic` returns, with the minimal period.  Under either reading of the
+instantiation convention (`P := period` or `P := period - 1`) the index's modulus `P + 1` is `2`
+or `1`, both coprime to `3`. -/
+theorem reach5_eventually_constant :
+    ∀ k : ℕ, 4 ≤ k → (reachStep step5)^[k + 1] {a5} = (reachStep step5)^[k] {a5} := by
+  intro k hk
+  obtain ⟨m, rfl⟩ : ∃ m, k = 4 + m := ⟨k - 4, by omega⟩
+  have huniv : ∀ m, (reachStep step5)^[4 + m] {a5} = Finset.univ := by
+    intro m
+    induction m with
+    | zero => exact reach5_four
+    | succ m ih =>
+      rw [show 4 + (m + 1) = (4 + m) + 1 by omega, Function.iterate_succ_apply', ih,
+        reachStep5_univ]
+  rw [show 4 + m + 1 = 4 + (m + 1) by omega, huniv, huniv]
+
+/-! ## The 3-cycle as a function of distance -/
+
+/-- The index `i` pending steps after `a` along the 3-cycle. -/
+def cyc (i : ℤ) : Fin 4 := ⟨(i % 3).toNat, by omega⟩
+
+theorem cyc_cases (i : ℤ) :
+    (cyc i = 0 ∧ cyc (i + 1) = 1) ∨ (cyc i = 1 ∧ cyc (i + 1) = 2) ∨
+      (cyc i = 2 ∧ cyc (i + 1) = 0) := by
+  have h3 : i % 3 = 0 ∨ i % 3 = 1 ∨ i % 3 = 2 := by omega
+  rcases h3 with h | h | h
+  · exact Or.inl ⟨Fin.ext (by change (i % 3).toNat = 0; omega),
+      Fin.ext (by change ((i + 1) % 3).toNat = 1; omega)⟩
+  · exact Or.inr (Or.inl ⟨Fin.ext (by change (i % 3).toNat = 1; omega),
+      Fin.ext (by change ((i + 1) % 3).toNat = 2; omega)⟩)
+  · exact Or.inr (Or.inr ⟨Fin.ext (by change (i % 3).toNat = 2; omega),
+      Fin.ext (by change ((i + 1) % 3).toNat = 0; omega)⟩)
+
+/-- The 3-cycle never visits `d`. -/
+theorem cyc_ne_three (i : ℤ) : cyc i ≠ 3 := fun h => by
+  have h' : (i % 3).toNat = 3 := congrArg Fin.val h
+  omega
+
+theorem step5_cyc_succ (i : ℤ) : step5 (true, cyc i) (true, cyc (i + 1)) = true := by
+  rcases cyc_cases i with ⟨h0, h1⟩ | ⟨h0, h1⟩ | ⟨h0, h1⟩ <;> rw [h0, h1] <;> decide
+
+/-- **The `d`-free pending successor of a 3-cycle state is the next 3-cycle state.** -/
+theorem step5_cyc (i : ℤ) (j : Fin 4) (hs : step5 (true, cyc i) (true, j) = true)
+    (hj : j ≠ 3) : j = cyc (i + 1) := by
+  rcases cyc_cases i with ⟨h0, h1⟩ | ⟨h0, h1⟩ | ⟨h0, h1⟩ <;>
+    (rw [h0] at hs; rw [h1]; revert j; decide)
+
+theorem cyc_zero (c : ℕ) (h : 3 ∣ c) : cyc c = 0 :=
+  Fin.ext (by change ((c : ℤ) % 3).toNat = 0; omega)
+
+theorem dvd_of_cyc_zero (c : ℕ) (h : cyc c = 0) : 3 ∣ c := by
+  have h' : ((c : ℤ) % 3).toNat = 0 := congrArg Fin.val h
+  omega
+
+/-! ## Histories of `F5`, and the letters along them -/
+
+theorem hist_path5 (σ : WorldHistory F5) :
+    ∃ (k : ℤ) (g : ℤ → LadderState Q5 pend5),
+      IsSlicedStepPath (RladAdm step5 pend5) k g ∧ σ.path = fun t => (t + k, g t) :=
+  (ofSlicedStepFinBranch_mem_HF_iff (RladAdm step5 pend5) (RladAdm_fwd _ _) (RladAdm_bwd _ _)
+    fwd5 bwd5 σ.path).mp ⟨σ, rfl⟩
+
+theorem hist_of_path5 (k : ℤ) (g : ℤ → LadderState Q5 pend5)
+    (hg : IsSlicedStepPath (RladAdm step5 pend5) k g) :
+    ∃ σ : WorldHistory F5, σ.path = fun t => (t + k, g t) :=
+  (ofSlicedStepFinBranch_mem_HF_iff (RladAdm step5 pend5) (RladAdm_fwd _ _) (RladAdm_bwd _ _)
+    fwd5 bwd5 _).mpr ⟨k, g, hg, rfl⟩
+
+section Along5
+variable {σ : WorldHistory F5} {k : ℤ} {g : ℤ → LadderState Q5 pend5}
+  (hσ : σ.path = fun t => (t + k, g t))
+include hσ
+
+theorem state_eq5 (s : ℤ) : σ.state s = (s + k, g s) := congrFun hσ s
+
+theorem truth_p5 (s : ℤ) : PlusTruthAt M5 σ s p ↔ (g s).1.1.1 = true := by
+  change M5.valuation (σ.state s) pA ↔ _
+  rw [state_eq5 hσ s]
+  simp [M5, ladderModel, lab5]
+
+theorem truth_r5 (s : ℤ) : PlusTruthAt M5 σ s r ↔ (g s).1.1.1 = false := by
+  change M5.valuation (σ.state s) rA ↔ _
+  rw [state_eq5 hσ s]
+  simp [M5, ladderModel, lab5, pA_ne_rA.symm]
+
+theorem truth_la5 (s : ℤ) : PlusTruthAt M5 σ s la ↔ (g s).1.1.2 = 0 := by
+  change M5.valuation (σ.state s) aA ↔ _
+  rw [state_eq5 hσ s]
+  simp [M5, ladderModel, lab5, aA_ne_pA, aA_ne_rA]
+
+theorem truth_ld5 (s : ℤ) :
+    PlusTruthAt M5 σ s ld ↔ (g s).1.1.1 = true ∧ (g s).1.1.2 = 3 := by
+  change M5.valuation (σ.state s) dA ↔ _
+  rw [state_eq5 hσ s]
+  simp [M5, ladderModel, lab5, dA_ne_pA, dA_ne_rA, dA_ne_aA]
+
+/-- A pending-`d` position strictly after `0` makes `top U l_d` true at `0`. -/
+theorem evD_of_ld (j : ℕ) (hj : 1 ≤ j) (hld : (g (j : ℤ)).1.1 = (true, 3)) :
+    PlusTruthAt M5 σ 0 evD := by
+  refine ⟨(j : ℤ), show (0 : ℤ) < (j : ℤ) by omega, ?_, ?_⟩
+  · rw [truth_ld5 hσ]
+    exact ⟨congrArg Prod.fst hld, congrArg Prod.snd hld⟩
+  · intro _ _ _ h
+    exact h
+
+end Along5
+
+/-! ## The forced run in fixture B: the index follows the 3-cycle while `d` is avoided -/
+
+section Run5
+variable {g : ℤ → LadderState Q5 pend5}
+  (hg : ∀ t, Rlad step5 pend5 t (g t).1 (g (t + 1)).1)
+include hg
+
+/-- **Along a `d`-free pending run from `a`, position `i` is `(true, cyc i)`**, so the run is
+back at `a` only at `i ≡ 0 (mod 3)`.  Pending-ness is `pending_run_gen`; the step is one of
+`step5`'s four `d`-free pending edges (`step5_cyc`). -/
+theorem walk_mod3 (c n : ℕ) (h0 : (g 0).1 = ((true, 0), c, n)) :
+    ∀ i : ℕ, i ≤ c → (∀ j : ℕ, 1 ≤ j → j ≤ i → (g (j : ℤ)).1.1 ≠ (true, 3)) →
+      (g (i : ℤ)).1.1 = (true, cyc (i : ℤ)) := by
+  intro i
+  induction i with
+  | zero =>
+    intro _ _
+    have h00 : cyc 0 = 0 := by decide
+    rw [Nat.cast_zero, h0, h00]
+  | succ i ih =>
+    intro hi hd
+    have hprev := ih (by omega) (fun j h1 h2 => hd j h1 (by omega))
+    have hpend : (g ((i + 1 : ℕ) : ℤ)).1.1.1 = true :=
+      (pending_run_gen hg (true, 0) c n rfl h0 (i + 1) hi).1
+    have hne : (g ((i + 1 : ℕ) : ℤ)).1.1 ≠ (true, 3) := hd (i + 1) (by omega) le_rfl
+    obtain ⟨hs, -, -, -⟩ := hg (i : ℤ)
+    rw [show ((i + 1 : ℕ) : ℤ) = (i : ℤ) + 1 by push_cast; ring] at hpend hne ⊢
+    have hsplit : (g ((i : ℤ) + 1)).1.1 = (true, (g ((i : ℤ) + 1)).1.1.2) :=
+      Prod.ext hpend rfl
+    rw [hsplit, hprev] at hs
+    have hj : (g ((i : ℤ) + 1)).1.1.2 ≠ 3 := fun h => hne (by rw [hsplit, h])
+    rw [hsplit, step5_cyc (i : ℤ) _ hs hj]
+
+/-- **The idle state ending a region copies the index of the last pending state**: `step5`'s
+pending-to-idle clause is `y.2 == x.2`. -/
+theorem idle_copy5 (i0 : Fin 4) (c n : ℕ) (h0 : (g 0).1 = ((true, i0), c, n)) :
+    (g ((c : ℤ) + 1)).1.1.2 = (g (c : ℤ)).1.1.2 := by
+  have hq1 : (g (c : ℤ)).1.1.1 = true :=
+    (pending_run_gen hg (true, i0) c n rfl h0 c le_rfl).1
+  have hy : (g ((c : ℤ) + 1)).1.1.1 = false := idle_at_gen hg (true, i0) c n rfl h0
+  obtain ⟨hs, -, -, -⟩ := hg (c : ℤ)
+  simpa [step5, hq1, hy] using hs
+
+end Run5
+
+section Truth5
+variable {σ : WorldHistory F5} {k : ℤ} {g : ℤ → LadderState Q5 pend5}
+  (hσ : σ.path = fun t => (t + k, g t))
+  (hg : ∀ t, Rlad step5 pend5 t (g t).1 (g (t + 1)).1)
+include hσ hg
+
+/-- **`p U (r AND l_a)` at a pending state reads the index of the region's idle end**: the until
+is forced to fire at `c + 1`, the first idle position, and nowhere else. -/
+theorem endA_at_zero_iff (i0 : Fin 4) (c n : ℕ) (h0 : (g 0).1 = ((true, i0), c, n)) :
+    PlusTruthAt M5 σ 0 endA ↔ (g ((c : ℤ) + 1)).1.1.2 = 0 := by
+  constructor
+  · rintro ⟨(s : ℤ), hs, hχ, hguard⟩
+    have hs' : (0 : ℤ) < s := hs
+    rw [PlusTruth.and_iff, truth_r5 hσ, truth_la5 hσ] at hχ
+    obtain ⟨hr, ha⟩ := hχ
+    rcases lt_trichotomy s ((c : ℤ) + 1) with hlt | heq | hgt
+    · have hsn : ((s.toNat : ℕ) : ℤ) = s := Int.toNat_of_nonneg (by omega)
+      have hle : s.toNat ≤ c := by omega
+      have hq1 : (g ((s.toNat : ℕ) : ℤ)).1.1.1 = true :=
+        (pending_run_gen hg (true, i0) c n rfl h0 s.toNat hle).1
+      rw [hsn, hr] at hq1
+      exact absurd hq1 Bool.false_ne_true
+    · subst heq
+      exact ha
+    · have hp := hguard ((c : ℤ) + 1) (show (0 : ℤ) < (c : ℤ) + 1 by omega) hgt
+      rw [truth_p5 hσ] at hp
+      have hidle : (g ((c : ℤ) + 1)).1.1.1 = false := idle_at_gen hg (true, i0) c n rfl h0
+      rw [hidle] at hp
+      exact absurd hp Bool.false_ne_true
+  · intro ha
+    refine ⟨(c : ℤ) + 1, show (0 : ℤ) < (c : ℤ) + 1 by omega, ?_, ?_⟩
+    · rw [PlusTruth.and_iff, truth_r5 hσ, truth_la5 hσ]
+      exact ⟨idle_at_gen hg (true, i0) c n rfl h0, ha⟩
+    · intro (s' : ℤ) h1 h2
+      have h1' : (0 : ℤ) < s' := h1
+      have h2' : s' < (c : ℤ) + 1 := h2
+      rw [truth_p5 hσ]
+      have hsn : ((s'.toNat : ℕ) : ℤ) = s' := Int.toNat_of_nonneg (by omega)
+      have hle : s'.toNat ≤ c := by omega
+      have hq1 : (g ((s'.toNat : ℕ) : ℤ)).1.1.1 = true :=
+        (pending_run_gen hg (true, i0) c n rfl h0 s'.toNat hle).1
+      rw [hsn] at hq1
+      exact hq1
+
+end Truth5
+
+/-! ## A reference history through every pending `a`-state, along the 3-cycle -/
+
+/-- Counts the region down along the 3-cycle with `n` fixed, idle at the copy of the last
+pending index ever after; extended backwards along the 3-cycle. -/
+def g5RefRaw (c n : ℕ) (t : ℤ) : Q5 × ℕ × ℕ :=
+  if t ≤ (c : ℤ) then ((true, cyc t), ((c : ℤ) - t).toNat, n)
+  else ((false, cyc (c : ℤ)), 0, n)
+
+theorem g5RefRaw_adm (c n : ℕ) (t : ℤ) :
+    (g5RefRaw c n t).2.1 ∈ Adm pend5 (g5RefRaw c n t).1 := by
+  change (g5RefRaw c n t).1.1 = false → (g5RefRaw c n t).2.1 = 0
+  unfold g5RefRaw
+  split_ifs <;> simp
+
+def g5Ref (c n : ℕ) (t : ℤ) : LadderState Q5 pend5 :=
+  ⟨g5RefRaw c n t, g5RefRaw_adm c n t⟩
+
+theorem g5RefRaw_step (c n : ℕ) (t : ℤ) :
+    Rlad step5 pend5 0 (g5RefRaw c n t) (g5RefRaw c n (t + 1)) := by
+  rw [rlad5_iff]
+  unfold g5RefRaw
+  rcases lt_trichotomy t (c : ℤ) with hlt | heq | hgt
+  · have h1 : t ≤ (c : ℤ) := le_of_lt hlt
+    have h2 : t + 1 ≤ (c : ℤ) := by omega
+    rw [if_pos h1, if_pos h2]
+    refine ⟨step5_cyc_succ t, by simp, Or.inl rfl, ?_⟩
+    change Count true true (((c : ℤ) - t).toNat) n (((c : ℤ) - (t + 1)).toNat)
+    rw [count_tt]
+    omega
+  · have h1 : t ≤ (c : ℤ) := le_of_eq heq
+    have h2 : ¬ (t + 1 ≤ (c : ℤ)) := by omega
+    rw [if_pos h1, if_neg h2, heq]
+    refine ⟨by simp [step5], by simp, Or.inl rfl, ?_⟩
+    change Count true false (((c : ℤ) - (c : ℤ)).toNat) n 0
+    rw [count_tf]
+    omega
+  · have h1 : ¬ (t ≤ (c : ℤ)) := by omega
+    have h2 : ¬ (t + 1 ≤ (c : ℤ)) := by omega
+    rw [if_neg h1, if_neg h2]
+    refine ⟨by simp [step5], by simp, Or.inl rfl, ?_⟩
+    change Count false false 0 n 0
+    rw [count_ff]
+
+theorem g5Ref_isPath (c n : ℕ) :
+    IsSlicedStepPath (RladAdm step5 pend5) 0 (g5Ref c n) := by
+  intro t
+  change Rlad step5 pend5 (t + 0) (g5RefRaw c n t) (g5RefRaw c n (t + 1))
+  have h : Rlad step5 pend5 (t + 0) (g5RefRaw c n t) (g5RefRaw c n (t + 1)) ↔
+      Rlad step5 pend5 0 (g5RefRaw c n t) (g5RefRaw c n (t + 1)) := Iff.rfl
+  rw [h]
+  exact g5RefRaw_step c n t
+
+theorem g5Ref_zero (c n : ℕ) : (g5Ref c n 0).1 = ((true, 0), c, n) := by
+  change g5RefRaw c n 0 = ((true, 0), c, n)
+  unfold g5RefRaw
+  rw [if_pos (by positivity : (0 : ℤ) ≤ (c : ℤ))]
+  have h00 : cyc 0 = 0 := by decide
+  simp [h00]
+
+/-- Along the reference history no position carries `l_d`: the 3-cycle never visits `d` and
+`l_d` is false at every idle state. -/
+theorem not_evD_ref (c n : ℕ) {σ : WorldHistory F5}
+    (hσ : σ.path = fun t => (t + 0, g5Ref c n t)) : ¬ PlusTruthAt M5 σ 0 evD := by
+  rintro ⟨(s : ℤ), -, hld, -⟩
+  rw [truth_ld5 hσ] at hld
+  obtain ⟨hp, hd⟩ := hld
+  change (g5RefRaw c n s).1.1 = true at hp
+  change (g5RefRaw c n s).1.2 = 3 at hd
+  unfold g5RefRaw at hp hd
+  by_cases h : s ≤ (c : ℤ)
+  · rw [if_pos h] at hd
+    exact cyc_ne_three s hd
+  · rw [if_neg h] at hp
+    exact Bool.false_ne_true hp
+
+/-- Along the reference history with `3 ∣ c`, the region ends on the idle copy of `a`. -/
+theorem endA_ref (c n : ℕ) (hc : 3 ∣ c) {σ : WorldHistory F5}
+    (hσ : σ.path = fun t => (t + 0, g5Ref c n t)) : PlusTruthAt M5 σ 0 endA := by
+  rw [endA_at_zero_iff hσ (fun t => g5Ref_isPath c n t) 0 c n (g5Ref_zero c n)]
+  change (g5RefRaw c n ((c : ℤ) + 1)).1.2 = 0
+  unfold g5RefRaw
+  rw [if_neg (by omega)]
+  exact cyc_zero c hc
+
+/-! ## Mechanism (5): the reach-set period against the letter-restricted sub-object -/
+
+/-- **The cell at `(a, c, n)` with `3 ∣ c` contains a type WITHOUT `phi5`**: the reference
+history satisfies `endA` and refutes `evD`. -/
+theorem exists_cell_not_phi5 (c n : ℕ) (hc : 3 ∣ c) :
+    ∃ T', T' ∈ cellAt M5 phi5 ((0 : ℤ), st5 0 c n) 0 ∧ phi5 ∉ T' := by
+  obtain ⟨σ, hσ⟩ := hist_of_path5 0 (g5Ref c n) (g5Ref_isPath c n)
+  refine ⟨tpOf M5 phi5 σ 0, ⟨σ, ?_, rfl⟩, ?_⟩
+  · have hw : ((0 : ℤ), g5Ref c n 0) = ((0 : ℤ), st5 0 c n) :=
+      Prod.ext rfl (Subtype.ext (g5Ref_zero c n))
+    rw [← hw]
+    exact congrFun hσ 0
+  · rw [mem_tpOf_iff]
+    rintro ⟨-, hφ⟩
+    have hφ' : PlusTruthAt M5 σ 0 endA → PlusTruthAt M5 σ 0 evD := hφ
+    exact not_evD_ref c n hσ (hφ' (endA_ref c n hc hσ))
+
+/-- **Every type in the cell at `(a, C + (P+1), n)` with `3 ∣ C` and `3 ∤ P + 1` contains
+`phi5`**: if the region ends on the idle copy of `a`, the run returned to `a` after `C + (P+1)`
+pending steps, which is not a multiple of `3`, so the run left the 3-cycle through `d`. -/
+theorem phi5_mem_of_mem_cell (C P n : ℕ) (hC : 3 ∣ C) (h3 : ¬ 3 ∣ (P + 1))
+    (T' : Finset PlusFormula)
+    (hT : T' ∈ cellAt M5 phi5 ((0 : ℤ), st5 0 (C + (P + 1)) n) 0) : phi5 ∈ T' := by
+  obtain ⟨σ, hσz, rfl⟩ := hT
+  obtain ⟨k, g, hg, hpath⟩ := hist_path5 σ
+  have hst : ((0 : ℤ) + k, g 0) = ((0 : ℤ), st5 0 (C + (P + 1)) n) := by
+    rw [← hσz]
+    exact (congrFun hpath 0).symm
+  have hg0 : (g 0).1 = ((true, 0), C + (P + 1), n) :=
+    congrArg (fun w : ℤ × LadderState Q5 pend5 => w.2.1) hst
+  have hg' : ∀ t, Rlad step5 pend5 t (g t).1 (g (t + 1)).1 := fun t => hg t
+  rw [mem_tpOf_iff]
+  refine ⟨self_mem_plusSubformulaClosure _, ?_⟩
+  change PlusTruthAt M5 σ 0 endA → PlusTruthAt M5 σ 0 evD
+  intro hendA
+  have hidx : (g ((C + (P + 1) : ℕ) : ℤ)).1.1.2 = 0 := by
+    have h1 := (endA_at_zero_iff hpath hg' 0 (C + (P + 1)) n hg0).mp hendA
+    rw [idle_copy5 hg' 0 (C + (P + 1)) n hg0] at h1
+    exact h1
+  by_cases hd : ∃ j : ℕ, 1 ≤ j ∧ j ≤ C + (P + 1) ∧ (g (j : ℤ)).1.1 = (true, 3)
+  · obtain ⟨j, hj1, -, hjd⟩ := hd
+    exact evD_of_ld hpath j hj1 hjd
+  · exfalso
+    have hfree : ∀ j : ℕ, 1 ≤ j → j ≤ C + (P + 1) → (g (j : ℤ)).1.1 ≠ (true, 3) :=
+      fun j h1 h2 heq => hd ⟨j, h1, h2, heq⟩
+    have hw := walk_mod3 hg' (C + (P + 1)) n hg0 (C + (P + 1)) le_rfl hfree
+    have hcyc : cyc ((C + (P + 1) : ℕ) : ℤ) = 0 := by
+      have h2 := congrArg Prod.snd hw
+      rw [hidx] at h2
+      exact h2.symm
+    have hdvd := dvd_of_cyc_zero (C + (P + 1)) hcyc
+    omega
+
+theorem c5_dvd (T P : ℕ) : 3 ∣ c5 T P := ⟨(P + 1) * (T + 1), by unfold c5; ring⟩
+
+theorem le_c5 (T P : ℕ) : T ≤ c5 T P := by
+  have h := Nat.le_mul_of_pos_left (T + 1) (show 0 < 3 * (P + 1) by positivity)
+  unfold c5
+  generalize 3 * (P + 1) * (T + 1) = C at h ⊢
+  omega
+
+/-- The Phase 1 recipe at an arbitrary countdown `C ≥ T`: both countdowns saturate the
+threshold, the residues agree modulo `P + 1`, the next deadline is shared, both gaps clip. -/
+theorem collide5 (T P B C : ℕ) (hTC : T ≤ C) :
+    ladderIndexRes T P B (st5 0 C (C + (P + 1) + B))
+      = ladderIndexRes T P B (st5 0 (C + (P + 1)) (C + (P + 1) + B)) := by
+  simp only [ladderIndexRes, st5, Prod.mk.injEq, Fin.mk.injEq, true_and]
+  and_intros <;> first | omega | exact (Nat.add_mod_right C (P + 1)).symm
+
+/-- **The pair collides in the index for EVERY `(T, P, B)`.** -/
+theorem period_collision (T P B : ℕ) :
+    ladderIndexRes T P B (x5 T P B) = ladderIndexRes T P B (y5 T P B) :=
+  collide5 T P B (c5 T P) (le_c5 T P)
+
+/-- **The cells differ whenever `3 ∤ P + 1`**: the reference type through `x5` lacks `phi5`;
+every type through `y5` contains it. -/
+theorem cell5_ne (T P B : ℕ) (h3 : ¬ 3 ∣ (P + 1)) :
+    cellAt M5 phi5 ((0 : ℤ), x5 T P B) 0 ≠ cellAt M5 phi5 ((0 : ℤ), y5 T P B) 0 := by
+  intro heq
+  unfold x5 y5 at heq
+  obtain ⟨T', hT', hnot⟩ :=
+    exists_cell_not_phi5 (c5 T P) (c5 T P + (P + 1) + B) (c5_dvd T P)
+  rw [heq] at hT'
+  exact hnot (phi5_mem_of_mem_cell (c5 T P) P (c5 T P + (P + 1) + B) (c5_dvd T P) h3 T' hT')
+
+/-- **THE REFUTATION OF THE REACH-SET PERIOD.**  For every threshold, every clip bound and every
+modulus coprime to `3` — in particular both readings of the exhibited period `1` — the index does
+not factor the coprime-cycle fixture's cells. -/
+theorem reach_period_refuted (T P B : ℕ) (h3 : ¬ 3 ∣ (P + 1)) :
+    ¬ ∀ x y : LadderState Q5 pend5, ladderIndexRes T P B x = ladderIndexRes T P B y →
+        cellAt M5 phi5 ((0 : ℤ), x) 0 = cellAt M5 phi5 ((0 : ℤ), y) 0 := by
+  intro h
+  exact cell5_ne T P B h3 (h _ _ (period_collision T P B))
+
 end Probe775

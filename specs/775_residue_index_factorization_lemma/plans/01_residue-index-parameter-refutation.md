@@ -272,14 +272,14 @@ imports and that modifies no library module.
 
 ---
 
-### Phase 2: Mechanism (5) — the Exhibited Period Is the Period of the Wrong Object [NOT STARTED]
+### Phase 2: Mechanism (5) — the Exhibited Period Is the Period of the Wrong Object [COMPLETED]
 
 **Goal**: Land fixture B — two pending cycles of coprime lengths sharing a state — and prove that
 period 1 is an exhibited period of its full-graph reach sets while every modulus coprime to 3
 collides on a pair whose cells a depth-2 formula separates.
 
 **Tasks**:
-- [ ] Append fixture B: `Q5 := Bool × Fin 4`, `pend5 := fun q => q.1`, `step5` with pending
+- [x] Append fixture B: `Q5 := Bool × Fin 4`, `pend5 := fun q => q.1`, `step5` with pending
       edges `0 → 1`, `0 → 3`, `1 → 2`, `2 → 0`, `3 → 0`, every pending `(true, i) → (false, i)`,
       and idle self-loops `(false, i) → (false, i)` (as in the Challenge block); `rlad5_iff`;
       `fwd5` and `bwd5` by the fourteenth probe's `fwdP`/`bwdP` recipe (pending: successor
@@ -289,28 +289,28 @@ collides on a pair whose cells a depth-2 formula separates.
       `dA` pending index 3), `M5`, `la`, `ld`, `endA := .untl p (r.and la)`,
       `evD := .untl (.imp .bot .bot) ld`, `phi5 := .imp endA evD`, `hist_path5`, `hist_of_path5`,
       `truth_p5`/`truth_r5`/`truth_la5`/`truth_ld5`.
-- [ ] Prove `reach5_eventually_constant`: `reach5_four : (reachStep step5)^[4] {a5} = Finset.univ`
+- [x] Prove `reach5_eventually_constant`: `reach5_four : (reachStep step5)^[4] {a5} = Finset.univ`
       by `decide` (fallback: four explicit `reachStep` evaluations by `rfl`), and
       `reachStep5_univ : reachStep step5 Finset.univ = Finset.univ` (every state has a successor:
       `Finset.eq_univ_iff_forall` plus the pending successor `(true, next i)` or the idle
       self-loop); then induction on `k ≥ 4`. Record beside it that this EXHIBITS `T = 4`, `P = 1`
       in the shape `reachN_eventually_periodic` returns — and that `P = 1` is the minimal period,
       so the index's modulus under either instantiation reading is `1` or `2`, both coprime to 3.
-- [ ] Define `cyc : ℤ → Fin 4` (`⟨(i % 3).toNat, _⟩`, `Int.emod_nonneg`, `Int.emod_lt_of_pos`)
+- [x] Define `cyc : ℤ → Fin 4` (`⟨(i % 3).toNat, _⟩`, `Int.emod_nonneg`, `Int.emod_lt_of_pos`)
       with `cyc_succ` (`cyc (i+1)` follows the 3-cycle `0 → 1 → 2 → 0`, by `omega` on `Int.emod`
       at the literal modulus 3) and `cyc_zero_of_dvd`; the reference history `g5Ref (c n : ℕ)`:
       pending `(true, cyc t)` with countdown `(c - t).toNat` for `t ≤ c`, idle `(false, 0)` after
       (needs `3 ∣ c` so `cyc c = 0`), `n` fixed; `g5Ref_isPath` and `g5Ref_zero` by the
-      fourteenth probe's `gRefRaw_step` trichotomy recipe.
-- [ ] Prove `walk_mod3`: along any sliced-step path with `(g 0).1 = ((true, 0), c, n)`, for every
+      fourteenth probe's `gRefRaw_step` trichotomy recipe. *(deviation: altered — `g5Ref` idles at `(false, cyc c)` rather than `(false, 0)`, so `g5Ref_isPath` needs no `3 ∣ c`; the divisibility is consumed only by `endA_ref`, where `l_a` is read)*
+- [x] Prove `walk_mod3`: along any sliced-step path with `(g 0).1 = ((true, 0), c, n)`, for every
       `i ≤ c` such that no position `1 ≤ j ≤ i` is pending index 3, `(g i).1.1 = (true, cyc i)` —
       induction on `i` using `pending_run_gen` (pending-ness) and `step5`'s `d`-free pending edges
       (`decide` on the four cases after `cases` on the Fin indices).
-- [ ] Prove `endA_at_zero_iff`: along a history through `((true, 0), c, n)`, `endA` at `0` holds
+- [x] Prove `endA_at_zero_iff`: along a history through `((true, 0), c, n)`, `endA` at `0` holds
       iff `(g (c + 1)).1.1 = (false, 0)`: the first idle position is `c + 1` (`pending_run_gen`,
       `idle_at_gen`), `r ∧ la` there forces index 0, and `step5`'s pending-to-idle clause copies
       the index so `(g c).1.1 = (true, 0)`.
-- [ ] Prove `cell5_ne` under `h3 : ¬ 3 ∣ (P + 1)`: with `C := c5 T P = 3 * (P+1) * (T+1)`,
+- [x] Prove `cell5_ne` under `h3 : ¬ 3 ∣ (P + 1)`: with `C := c5 T P = 3 * (P+1) * (T+1)`,
       `3 ∣ C` and `¬ 3 ∣ C + (P + 1)` (`Nat.dvd_add_right`). The reference history through
       `x5` realizes a type with `endA` and without `evD` (no position carries `ld`: `g5Ref` never
       visits index 3 and `lab5` makes `ld` false at every idle state). For every type in the cell
@@ -318,18 +318,27 @@ collides on a pair whose cells a depth-2 formula separates.
       in `[1, C + (P+1)]` were pending index 3, `walk_mod3` would give `cyc (C + (P+1)) = 0`, i.e.
       `3 ∣ C + (P+1)`, contradiction; so some position carries `ld`, hence `evD ∈ T'`
       (`truth_ld5`, the trivial guard `⊥ → ⊥`). Conclude as `cell_succ_ne` does.
-- [ ] Prove `period_collision` (no `h3` needed) by the Phase 1 recipe with the product generalized
+- [x] Prove `period_collision` (no `h3` needed) by the Phase 1 recipe with the product generalized
       to an atom `C` carrying `T ≤ C` (`Nat.le_mul_of_pos_left` twice) and `(P + 1) ∣ C`; residues
       by `Nat.add_mod_right`; thresholds and gap by `omega`.
-- [ ] Prove `reach_period_refuted` from `period_collision` and `cell5_ne` (three lines).
-- [ ] **Decision gate, both branches pre-specified**:
+- [x] Prove `reach_period_refuted` from `period_collision` and `cell5_ne` (three lines).
+- [x] **Decision gate, both branches pre-specified**:
       - **Branch R (predicted)**: Phase 4's header carries "the exhibited period is the period of
         the reach-SET iteration on the full graph, and a formula that forbids a letter restricts the
         object to a sub-object with a different period; period 1 is exhibited for the coprime-cycle
         object and every modulus coprime to 3 fails".
       - **Branch N**: `[BLOCKED]` per `plan-compliance.md`, goal state recorded, no `sorry` left,
         Phase 4's header carries the measured reason.
-- [ ] Compile through the guard and commit per the green-substep mandate.
+      **Recorded: Branch R.** All four pinned statements closed (second guarded compile; the first
+      pass had two `absurd`-shaped one-line fixes in `endA_at_zero_iff`, zero other defects; zero
+      warnings). `decide` closed `reach5_four`, `reachStep5_univ` and the `d`-free step facts outright.
+      The sentence Phase 4 carries: "the exhibited period is the period of the reach-SET iteration on
+      the full graph, and a formula that forbids a letter restricts the object to a sub-object with a
+      different period; period 1 is exhibited for the coprime-cycle object and every modulus coprime
+      to 3 fails". Measured: 486 lines added (909 total; scope hypothesis 250–350, signal at 450) —
+      `fwd5`/`bwd5` ARE the ported recipe (~45 lines); the excess is the reference history, the two
+      `Along5`/`Truth5` sections and the cell lemmas, each with its docstring.
+- [x] Compile through the guard and commit per the green-substep mandate.
 
 **Timing**: 2 hours
 
