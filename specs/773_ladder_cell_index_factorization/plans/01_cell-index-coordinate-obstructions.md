@@ -1,7 +1,7 @@
 # Implementation Plan: Task #773
 
 - **Task**: 773 - Ladder cell index factorization: a computable index through which `cellAt` factors
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9.5 hours
 - **Dependencies**: None (research-first; parent record 761, whose Phase 1 is `[BLOCKED]` on this sub-problem)
 - **Research Inputs**: specs/773_ladder_cell_index_factorization/reports/01_cell-index-factorization.md
@@ -225,7 +225,7 @@ record is the deliverable that does not depend on the research outcome. Phase 8 
 phase: it depends transitively on every other phase and re-observes their measurements through
 the full gate set.
 
-### Phase 1: The Re-Scoped Residue-Carrying Index and the Two Cheap Gates [NOT STARTED]
+### Phase 1: The Re-Scoped Residue-Carrying Index and the Two Cheap Gates [COMPLETED]
 
 **Goal**: Define the six-coordinate index
 `(q, min c T, c % (P+1), min n T, n % (P+1), clip (n - c) [-B, B])` as a `Fintype`-valued
@@ -234,29 +234,29 @@ mechanisms already known to kill clipped-coordinate candidates: the gap pair tha
 two-coordinate index, and the parity pair that killed the three-coordinate one.
 
 **Tasks**:
-- [ ] Re-compile both research prototypes through the guard, as the oracles every later phase
+- [x] Re-compile both research prototypes through the guard, as the oracles every later phase
       relies on:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 900 -- env lean specs/773_ladder_cell_index_factorization/prototype/parity-index-refutation.lean`
       and the same for `prototype/route-c-finite-width.lean`. Both must exit 0 with no warnings.
       If either does not, STOP and report — every later phase ports from them.
-- [ ] Create `specs/773_ladder_cell_index_factorization/prototype/residue-index-gate.lean` with a
+- [x] Create `specs/773_ladder_cell_index_factorization/prototype/residue-index-gate.lean` with a
       PROTOTYPE header (not a wired probe) naming: what the three-coordinate candidate was, why
       it is refuted (the region-end observable at distance `c + 1`), and what this file tests —
       two cheap separations, never a sufficiency claim.
-- [ ] Reuse the parity fixture's object verbatim from `prototype/parity-index-refutation.lean`
+- [x] Reuse the parity fixture's object verbatim from `prototype/parity-index-refutation.lean`
       (`Qp`, `pendP`, `stepP`, and the admissible-state constructor), importing the same three
       modules. Do not author a second object; the index is generic in the object and the gates
       only read the counters and the object component.
-- [ ] Define `ladderIndexRes (T P B : ℕ) {Q} {pend} (x : LadderState Q pend)` at the exact
+- [x] Define `ladderIndexRes (T P B : ℕ) {Q} {pend} (x : LadderState Q pend)` at the exact
       signature in the Lean Challenge Statements block, with the three parameters kept SEPARATE:
       `T` and `P` are object-derived (Phase 3 exhibits them), `B` is `φ`-derived (pre-landed
       finding (B)). The two residue coordinates use modulus `P + 1` so that `Fin (P + 1)` is
       inhabited with no side hypothesis; the `Fin` bounds discharge by `Nat.mod_lt _
       (Nat.succ_pos P)` and `omega`.
-- [ ] Prove `gate_gap_separates (T P B : ℕ) (hB : 2 ≤ B)` on the pair with counters `(B, B+1)`
+- [x] Prove `gate_gap_separates (T P B : ℕ) (hB : 2 ≤ B)` on the pair with counters `(B, B+1)`
       and `(B, B+2)`: the gap coordinate gives `min (B+1) (2*B)` against `min (B+2) (2*B)`, which
       differ for `2 ≤ B`. Expect `simp only [..., Prod.mk.injEq, Fin.mk.injEq]` then `omega`.
-- [ ] Prove `gate_parity_separates (T P B : ℕ) (hP : 1 ≤ P)` on the pair with counters `(2B,
+- [x] Prove `gate_parity_separates (T P B : ℕ) (hP : 1 ≤ P)` on the pair with counters `(2B,
       4B+2)` and `(2B+1, 4B+2)` — the pair that refutes the three-coordinate index, with EQUAL
       next-deadlines and both gaps saturating the clip. The separating coordinate is `c % (P+1)`,
       and the obligation `2*B % (P+1) ≠ (2*B+1) % (P+1)` is NOT in omega's fragment (symbolic
@@ -265,14 +265,35 @@ two-coordinate index, and the parity pair that killed the three-coordinate one.
       Mathlib consecutive-residue lemma first (`lean_local_search`, then `lean_leansearch`);
       fixing the modulus at a literal to dodge this obligation would weaken a Challenge statement
       and is forbidden.
-- [ ] Close with `#print axioms` for both gate theorems, and compile through the guard.
-- [ ] **Decision gate**: record which branch holds. If BOTH gates separate, Phases 2 and 3 run as
+- [x] Close with `#print axioms` for both gate theorems, and compile through the guard.
+- [x] **Decision gate**: record which branch holds. If BOTH gates separate, Phases 2 and 3 run as
       written. If EITHER collides, write the collision as a named theorem in this file, record it
       in the phase body, and mark Phases 2 and 3 `[COMPLETED WITH EXCLUSIONS]` with a
       `#### Reasoned Exclusions` record whose Evidence column cites this phase's compiled
       collision theorem; Phases 4-8 then land the record of a candidate dead on the known
       mechanisms.
-- [ ] `git add` the new file and commit per the green-substep mandate.
+- [x] `git add` the new file and commit per the green-substep mandate.
+
+#### Decision Gate Outcome: BOTH GATES SEPARATE
+
+Measured in this dispatch, not predicted. `residue-index-gate.lean` compiles through the guard at
+exit 0 with zero `error` and zero `warning` lines, and both gate theorems close at the pinned
+signatures over `LadderState` values:
+
+| Gate | Theorem | Separating coordinate | Axioms |
+|------|---------|----------------------|--------|
+| Gap pair `(B, B+1)` vs `(B, B+2)`, `2 ≤ B` | `gate_gap_separates` | the clipped gap `min ((n + B) - c) (2B)` | `[propext, Quot.sound]` |
+| Parity pair `(2B, 4B+2)` vs `(2B+1, 4B+2)`, `1 ≤ P` | `gate_parity_separates` | the countdown residue `c % (P + 1)` | `[propext, Classical.choice, Quot.sound]` |
+
+Neither gate collides, so **Phases 2 and 3 run as written** and no `#### Reasoned Exclusions`
+record is opened. The parity gate is stated at a SYMBOLIC modulus: the supporting arithmetic
+`consec_mod_ne` derives `(P+1 : ℤ) ∣ 1` from the congruence through `Nat.ModEq.dvd` and
+`Int.le_of_dvd`, so no retreat to a literal modulus was taken.
+
+The honest limit, carried forward: a gate probing one coordinate certifies one coordinate. Both
+cheap gates passing says the two mechanisms already KNOWN to kill clipped-coordinate candidates do
+not lift to the re-scoped shape — it does not say the six coordinates suffice, which is Phase 2's
+target and is asserted nowhere.
 
 **Timing**: 1 hour
 
