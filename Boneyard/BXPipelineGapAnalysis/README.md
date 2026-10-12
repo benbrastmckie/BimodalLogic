@@ -1,6 +1,6 @@
 # BXPipelineGapAnalysis -- Archived Dead Code
 
-BX pipeline gap analysis files, archived by task 225 (2026-05-30).
+BX pipeline gap analysis files, archived 2026-05-30.
 
 ## Why Archived
 
@@ -18,7 +18,7 @@ The entire downstream chain is permanently dead:
       -> bx_completeness
 
 The correct path to sorry-free `completeness_discrete` is the **Reynolds
-pipeline** via `no_gaps_discrete` (task 202).
+pipeline** via `no_gaps_discrete`.
 
 ## File Inventory
 

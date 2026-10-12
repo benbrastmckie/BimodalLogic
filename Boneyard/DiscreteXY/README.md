@@ -1,6 +1,6 @@
 # DiscreteXY (ARCHIVED)
 
-**Archived**: 2026-04-05 (task 85)
+**Archived**: 2026-04-05
 **Reason**: Discrete x_content/y_content approach replaced by open guard semantics
 
 ## Overview
@@ -28,6 +28,6 @@ Imports `Bimodal.ProofSystem.Derivation`. The discreteness axioms are not part
 of the current TM axiom system. The approach was replaced by direct open guard
 semantics.
 
-## References
+## Change History
 
-- Task 85: x_content/y_content removal
+- x_content/y_content removal

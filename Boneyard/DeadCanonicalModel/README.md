@@ -1,6 +1,6 @@
 # DeadCanonicalModel (ARCHIVED)
 
-**Archived**: 2026-05-02 (task 113)
+**Archived**: 2026-05-02
 **Reason**: Enriched seed approach is structurally unfixable
 
 ## Overview
@@ -32,7 +32,7 @@ through non-resolving chain steps. The definitions are mathematically sound but:
 The active path uses `fwd_succ` with seed `g_content(M)` alone (consistent via
 seriality). See `BXCanonical/CanonicalModel.lean`.
 
-## References
+## Change History
 
-- Task 109: Removed during open guard refactoring
-- Task 113: Archived to Boneyard
+- Removed during open guard refactoring
+- Archived to Boneyard

@@ -2,7 +2,7 @@ TOMBSTONE — code deleted; README retained as historical record.
 
 # ClosedGuardLegacy (ARCHIVED)
 
-**Archived**: 2026-04-30 (task 109)
+**Archived**: 2026-04-30
 **Reason**: Closed guard semantics `[t,s]` replaced by open guard `(t,s)`
 
 ## Overview
@@ -32,9 +32,10 @@ Reynolds 1992, and the paper.
 ## Relationship to Active Code
 
 The active axiom system uses open guard `(t,s)` semantics defined in
-`ProofSystem/Axioms.lean`. See task 113 for the refactoring history.
+`ProofSystem/Axioms.lean`. See the "What Was Removed" section above for the
+refactoring history.
 
-## References
+## Change History
 
-- Task 109: Closed guard archival
-- Task 113: Open guard refactoring (BX8/BX9 removal)
+- Closed guard archival
+- Open guard refactoring (BX8/BX9 removal)

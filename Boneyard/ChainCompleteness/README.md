@@ -1,6 +1,6 @@
 # ChainCompleteness (ARCHIVED)
 
-**Archived**: 2026-04-10 (task 93)
+**Archived**: 2026-04-10
 **Reason**: Superseded by the SuccChain approach in StrictSemanticsLegacy
 
 ## Overview

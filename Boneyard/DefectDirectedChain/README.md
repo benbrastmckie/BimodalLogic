@@ -1,6 +1,6 @@
 # DefectDirectedChain (ARCHIVED)
 
-**Archived**: 2026-04-28 (task 107)
+**Archived**: 2026-04-28
 **Reason**: Defect metric does not decrease monotonically through chain extension steps
 
 ## Overview
@@ -36,6 +36,6 @@ to a non-terminating cycle.
 Imports active modules (`OrderedSeedConsistency`, `CanonicalModel`,
 `UntilSinceCoherence`, `ParametricCompleteness`, `RestrictedParametricTruthLemma`).
 
-## References
+## Change History
 
-- Task 107: Archived with QuasimodelOracle and RoundRobinChain
+- Archived with QuasimodelOracle and RoundRobinChain

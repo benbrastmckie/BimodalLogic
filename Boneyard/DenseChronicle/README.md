@@ -1,6 +1,6 @@
 # DenseChronicle (ARCHIVED)
 
-**Archived**: 2026-04-22 (task 105)
+**Archived**: 2026-04-22
 **Reason**: Density gap -- G(phi) and untl(phi.neg, gamma) are contradictory on dense orders but BX lacks a density axiom
 
 ## Overview
@@ -32,7 +32,7 @@ entire pathway was replaced by the natural inclusion approach (X subset Q).
 The active completeness path uses chronicle construction without density assumptions.
 See `Metalogic/BXCanonical/ChronicleConstruction.lean`.
 
-## References
+## Change History
 
-- Task 105: Dense chronicle attempts
-- Task 117: Natural inclusion approach (replacement)
+- Dense chronicle attempts
+- Natural inclusion approach (replacement)
