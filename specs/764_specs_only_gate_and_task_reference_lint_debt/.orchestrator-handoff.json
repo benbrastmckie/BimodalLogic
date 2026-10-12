@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "task_number": 764,
+  "phase": "plan",
+  "session_id": "sess_1791800175_a20f00_764",
+  "dispatch_seq": 7,
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Wrote a six-phase implementation plan for task 764. Finding (1) is fixed at two levels in the source-store verify-deploy.sh: gate 4's SKIP guard is removed (its premise, copied from gate 3, is false for check-task-references.sh) and the end-of-run summary gains a loud exit-2 branch when an --only-gate selection runs zero checks; plan-format.md's __FULL_SWEEP__ guidance is corrected into three sub-cases with an explicit TARGET requirement, and both script changes get regression cases. Finding (2) needs no code change (lint re-verified at 0 occurrences); the open archival-tree exemption question is settled by declining it, recorded durably in the source-store decisions file. Three verify-deploy baselines were re-measured during planning so the final phase has a falsifiable 14-to-15 check-count criterion.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/764_specs_only_gate_and_task_reference_lint_debt/plans/01_gate4-fix-and-lint-debt-closure.md",
+      "summary": "Six-phase plan: gate 4 de-guard, zero-check detection, regression tests, plan-format.md guidance correction, declined-exemption decision record, redeploy and full-gate verification."
+    }
+  ]
+}

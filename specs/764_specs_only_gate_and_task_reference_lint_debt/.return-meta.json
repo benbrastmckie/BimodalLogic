@@ -1,39 +1,22 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1791800175_a20f00_764",
-  "dispatch_seq": 6,
-  "findings_count": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/764_specs_only_gate_and_task_reference_lint_debt/reports/01_specs-only-gate-and-lint-debt.md",
-      "summary": "Re-derives both findings from first principles: finding (2) (task-reference lint debt) is already fully closed by dependency tasks 766/771 (verified 0 occurrences, no code change needed); finding (1) (specs-only covering-check gap) is confirmed and root-caused to verify-deploy.sh gate 4's SKIP guard being factually wrong for check-task-references.sh (mirrors gate 3's correct-but-inapplicable premise), plus plan-format.md's __FULL_SWEEP__ guidance recommending --only-gate 3,4 with no explicit TARGET, which is silently vacuous from any ordinary dispatch cwd -- confirmed by a second real-world occurrence in task 720's artifacts, not only the specs/**-only case named in the dispatch description."
+      "type": "plan",
+      "path": "specs/764_specs_only_gate_and_task_reference_lint_debt/plans/01_gate4-fix-and-lint-debt-closure.md",
+      "summary": "Six-phase plan closing the vacuous --only-gate attestation (gate 4 de-guard plus zero-check detection in verify-deploy.sh), correcting plan-format.md's __FULL_SWEEP__ guidance, and recording the declined archival-tree exemption decision."
     }
   ],
-  "next_steps": "Run /plan 764 to create implementation plan",
-  "memory_candidates": [
-    {
-      "content": "In verify-deploy.sh (agent-system/extensions/core/scripts), each gate's deploy-consumer SKIP guard (checking `! -d \"$TARGET/agent-system/extensions\"`) must be individually verified against its own underlying script's real precondition -- it is not safe to copy a neighboring gate's guard. Gate 3's guard is correct (check-extension-docs.sh genuinely requires agent-system/extensions). Gate 4's guard was copied from gate 3 but is wrong: check-task-references.sh is explicitly designed to be repo-appropriate and runs a real check in any deploy-consumer repo with no dependency on agent-system/extensions. 17 other gates (5-13,15,17-22) carry the same guard shape and are unaudited.",
-      "category": "PATTERN",
-      "source_artifact": "specs/764_specs_only_gate_and_task_reference_lint_debt/reports/01_specs-only-gate-and-lint-debt.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["verify-deploy.sh", "gate-selection", "SKIP-guard", "deploy-consumer", "check-task-references.sh"]
-    },
-    {
-      "content": "plan-format.md's __FULL_SWEEP__ covering-check guidance (\"ordinarily --only-gate 3,4\") omits an explicit TARGET argument, so verify-deploy.sh's TARGET defaults to $(pwd) -- the dispatch's cwd, which is the deploy-consumer repo root in every ordinary dispatch, never the source-store checkout. This makes the guidance silently vacuous (0 checks, exit 0) both for specs/**-only phases (specs/** is also the task-reference lint's own exempt tree by design, so even a fixed gate can't inspect it) and for genuine source-store markdown edits verified from a consumer repo's cwd -- confirmed as having already occurred in a real task (720) outside the specs/**-only case.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/764_specs_only_gate_and_task_reference_lint_debt/reports/01_specs-only-gate-and-lint-debt.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["plan-format.md", "__FULL_SWEEP__", "verification-tier", "verify-deploy.sh", "TARGET-default"]
-    },
-    {
-      "content": "For a plan phase whose entire Files to modify set lies under specs/**, the correct covering check is validate-artifact.sh <path> <type> (report/plan/summary types) or the prose-tier diff read-through -- never verify-deploy.sh gates 3/4, since specs/** is the task-reference lint's own path-level exemption (category 1 in task-reference-exemptions.md) and doc-lint has no relation to specs/** content either.",
-      "category": "PATTERN",
-      "source_artifact": "specs/764_specs_only_gate_and_task_reference_lint_debt/reports/01_specs-only-gate-and-lint-debt.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["validate-artifact.sh", "specs-only-phase", "verification-tier", "covering-check"]
-    }
-  ]
+  "metadata": {
+    "session_id": "sess_1791800175_a20f00_764",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 6.25,
+    "dependency_waves": [[1, 2], [3], [4, 5], [6]]
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /implement 764 to execute the plan",
+  "dispatch_seq": 7
 }

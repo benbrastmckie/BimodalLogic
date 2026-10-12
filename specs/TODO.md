@@ -86,7 +86,7 @@ next_project_number: 777
 761 [PARTIAL] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-764 [RESEARCHED] — Close the specs/-only phase verification gap and the...
+764 [PLANNED] — Close the specs/-only phase verification gap and the...
 775 [RESEARCHED] — Attempt the cell-index factorization lemma over the re-scoped...
 
 ### Formula Refactor
@@ -384,12 +384,13 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lean-challeng
 
 ### 764. Specs only gate and task reference lint debt
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: Task 771
 - **Parent**: Task 757
 - **Research**: [764_specs_only_gate_and_task_reference_lint_debt/reports/01_specs-only-gate-and-lint-debt.md]
+- **Plan**: [764_specs_only_gate_and_task_reference_lint_debt/plans/01_gate4-fix-and-lint-debt-closure.md]
 
 **Description**: Close the specs/**-only phase verification gap and the repo-wide task-reference lint debt
 
