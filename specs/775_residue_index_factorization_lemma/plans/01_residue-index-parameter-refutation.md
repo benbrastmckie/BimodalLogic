@@ -368,7 +368,7 @@ imports and that modifies no library module.
 
 ---
 
-### Phase 3: Bounded Attempt — Sufficiency on the Deterministic Fixture [NOT STARTED]
+### Phase 3: Bounded Attempt — Sufficiency on the Deterministic Fixture [COMPLETED]
 
 **Goal**: Measure, within a hard 2-hour cap, whether the only positive statement the analysis
 supports can be landed: on fixture A, where every history through a pending state shares one
@@ -398,20 +398,20 @@ defined by structural recursion on `PlusFormula` and recorded):
   and ANY `n`, `n'`: `cellAt M φ (wP tg c n) 0 = cellAt M φ (wP tg c' n') 0`.
 
 **Tasks**:
-- [ ] Sub-step (a), 30 minutes: `qp_truth_of_objPath` and `qp_forced_path`. Record whether each
+- [x] Sub-step (a), 30 minutes: `qp_truth_of_objPath` and `qp_forced_path`. Record whether each
       closes; if (a) does not close within its budget, stop and record Branch O.
-- [ ] Sub-step (b), 60 minutes: define `thr` and attempt `qp_type_shift` for the `atom`/`bot`/`imp`
+- [x] Sub-step (b), 60 minutes: define `thr` and attempt `qp_type_shift` for the `atom`/`bot`/`imp`
       cases and the `untl` case; then the `snce` case. Record the furthest constructor closed and
       the goal state at the first one that does not.
-- [ ] Sub-step (c), 30 minutes: if (b) closed, `qp_cell_eq_of_depth_parity` from (a), (b) and the
+- [x] Sub-step (c), 30 minutes: if (b) closed, `qp_cell_eq_of_depth_parity` from (a), (b) and the
       singleton shape of the cell; record the landed signature verbatim in this phase body and in
       the probe header.
-- [ ] **Stop condition, binding**: the phase closes on this enumeration, never on a verdict. Do not
+- [x] **Stop condition, binding**: the phase closes on this enumeration, never on a verdict. Do not
       open a fourth sub-step, do not weaken the target by adding a hypothesis to make it close, do
       not touch fixture B, do not state anything about the general object, and leave NO declaration
       with a `sorry` body — a sub-step that does not close is deleted from the file and recorded in
       this phase body with its goal state.
-- [ ] **Decision gate, both branches pre-specified**:
+- [x] **Decision gate, both branches pre-specified**:
       - **Branch P (the fixture theorem lands)**: it is recorded in the probe header as a
         FIXTURE-LEVEL sufficiency theorem — necessity of a formula-derived threshold by mechanism
         (4), sufficiency on the two-state object — and explicitly NOT the factorization lemma: the
@@ -419,7 +419,32 @@ defined by structural recursion on `PlusFormula` and recorded):
         what the general object lacks. Phase 5's records say the same in words.
       - **Branch O (it does not land within the cap)**: the header records the furthest sub-step
         closed and the obligation that blocked it, and the positive statement stays OPEN and unstated.
-- [ ] Compile through the guard and commit per the green-substep mandate.
+      **Recorded: Branch P.** Sub-step (a) closed (`qp_truth_of_objPath`, `qp_forced_path`; the
+      object projection is abstracted as `TruthO : (ℤ → Qp) → ℤ → PlusFormula → Prop` and the forced
+      path as `objP tg c`). Sub-step (b) closed: `thr` is `0` on atoms and `bot`, `max` on `imp`,
+      `max + 2` on `untl`, `max` on `snce` (two per `untl` nesting: the two positions a shift by
+      two exposes; nothing per `snce`: the past of a pending position is the same infinite
+      alternating run on both paths); `qp_type_shift` closes every constructor, via the time-shift
+      lemma `truthO_shift`, the rebase identity `objP tg c (t + d) = objP (tagAt tg d) (c - d) t`
+      and the period-2 identity `objP tg (c + 2) t = objP tg c (t - 2)`. Sub-step (c) closed:
+      `cellAt_eq_singleton` (the cell at a pending state is `{tpO φ tg c}`), `tpO_add_two`,
+      `tpO_add_even`, and the landed signature, verbatim:
+      `theorem qp_cell_eq_of_depth_parity {φ : PlusFormula} (hφ : PlusFormula.BoxStabFree φ)
+      (tg : Bool) (c c' n n' : ℕ) (hc : thr φ ≤ c) (hc' : thr φ ≤ c') (hpar : c % 2 = c' % 2) :
+      cellAt M φ ((0 : ℤ), st tg c n) 0 = cellAt M φ ((0 : ℤ), st tg c' n') 0` (the plan's `wP tg c n`
+      is written out as `((0 : ℤ), st tg c n)`; no `wP` abbreviation was introduced). Wall clock,
+      measured from the phase's start stamp: about 10 minutes for all three sub-steps across five
+      guarded compiles (defects: two name fixes, one dead tactic, two `open Classical in`
+      placements); the 2-hour cap and the three sub-step budgets were not approached. 519 lines
+      added (1428 total; scope hypothesis 0–250 with a signal at 350 for a dishonoured stop
+      condition — the stop condition was honoured on the enumeration, every sub-step closed, and
+      the excess is the tagged `pending_run`/`idle_at` port plus `idle_run`/`pending_back`, the
+      shift and rebase lemmas, and `thr_le_of_mem_subformulas`, each with its docstring).
+      Sentence Phase 4's header carries: "on the two-state fixture the cell at a pending state is
+      a singleton determined by the object state, the countdown's parity, and whether the
+      countdown is at least the formula-derived threshold `thr φ`; this is FIXTURE-LEVEL
+      sufficiency, resting on `qp_forced_path`, and is not the factorization lemma".
+- [x] Compile through the guard and commit per the green-substep mandate.
 
 **Timing**: 2 hours
 

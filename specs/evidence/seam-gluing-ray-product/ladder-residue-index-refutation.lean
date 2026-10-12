@@ -906,4 +906,523 @@ theorem reach_period_refuted (T P B : ℕ) (h3 : ¬ 3 ∣ (P + 1)) :
   intro h
   exact cell5_ne T P B h3 (h _ _ (period_collision T P B))
 
+/-! ## A bounded attempt at FIXTURE-LEVEL sufficiency on fixture A
+
+Nothing in this section is a factorization lemma.  On fixture A every history through a pending
+state is forced onto ONE object path (`qp_forced_path`), which is exactly what the general object
+lacks; the question measured here is whether, on that one path, the realized cell is a function
+of the object state, the countdown's parity, and a FORMULA-derived threshold. -/
+
+/-- Truth of a box/stab-free formula read off an object projection `f : ℤ → Qp` alone, with the
+letters of `labP`.  The `box` and `stab` arms are never reached under `BoxStabFree` and carry
+no claim. -/
+def TruthO (f : ℤ → Qp) (t : ℤ) : PlusFormula → Prop
+  | .atom a => labP (f t) a = true
+  | .bot => False
+  | .imp φ ψ => TruthO f t φ → TruthO f t ψ
+  | .box _ => False
+  | .untl ψ φ => ∃ s : ℤ, t < s ∧ TruthO f s φ ∧ ∀ r : ℤ, t < r → r < s → TruthO f r ψ
+  | .snce ψ φ => ∃ s : ℤ, s < t ∧ TruthO f s φ ∧ ∀ r : ℤ, s < r → r < t → TruthO f r ψ
+  | .stab _ => False
+
+/-- **(a1) The truth of a box/stab-free formula along a history depends only on the object
+projection of its path.** -/
+theorem qp_truth_of_objPath {σ : WorldHistory F} {k : ℤ} {g : ℤ → LadderState Qp pendP}
+    (hσ : σ.path = fun t => (t + k, g t)) :
+    ∀ (ψ : PlusFormula), PlusFormula.BoxStabFree ψ → ∀ s : ℤ,
+      (PlusTruthAt M σ s ψ ↔ TruthO (fun t => (g t).1.1) s ψ) := by
+  intro ψ
+  induction ψ with
+  | atom a =>
+    intro _ s
+    change M.valuation (σ.state s) a ↔ labP (g s).1.1 a = true
+    rw [state_eq hσ s]
+    exact Iff.rfl
+  | bot => intro _ s; exact Iff.rfl
+  | imp φ ψ ihφ ihψ =>
+    rintro ⟨hφ, hψ⟩ s
+    change (PlusTruthAt M σ s φ → PlusTruthAt M σ s ψ) ↔
+      (TruthO (fun t => (g t).1.1) s φ → TruthO (fun t => (g t).1.1) s ψ)
+    exact imp_congr (ihφ hφ s) (ihψ hψ s)
+  | box _ _ => intro h; exact absurd h id
+  | untl ψ φ ihψ ihφ =>
+    rintro ⟨hφ, hψ⟩ s
+    constructor
+    · rintro ⟨(s' : ℤ), h1, h2, h3⟩
+      exact ⟨s', h1, (ihφ hφ s').mp h2, fun r hr1 hr2 => (ihψ hψ r).mp (h3 r hr1 hr2)⟩
+    · rintro ⟨s', h1, h2, h3⟩
+      exact ⟨s', h1, (ihφ hφ s').mpr h2, fun r hr1 hr2 => (ihψ hψ r).mpr (h3 r hr1 hr2)⟩
+  | snce ψ φ ihψ ihφ =>
+    rintro ⟨hφ, hψ⟩ s
+    constructor
+    · rintro ⟨(s' : ℤ), h1, h2, h3⟩
+      exact ⟨s', h1, (ihφ hφ s').mp h2, fun r hr1 hr2 => (ihψ hψ r).mp (h3 r hr1 hr2)⟩
+    · rintro ⟨s', h1, h2, h3⟩
+      exact ⟨s', h1, (ihφ hφ s').mpr h2, fun r hr1 hr2 => (ihψ hψ r).mpr (h3 r hr1 hr2)⟩
+  | stab _ _ => intro h; exact absurd h id
+
+/-- The object path every history through `((true, tg), c, n)` is forced to: pending with the
+alternating tag up to `c`, idle with the tag of the last pending state after. -/
+def objP (tg : Bool) (c : ℤ) (t : ℤ) : Qp :=
+  if t ≤ c then (true, tagAt tg t) else (false, tagAt tg c)
+
+section RunA
+variable {g : ℤ → LadderState Qp pendP} (hg : ∀ t, Rlad stepP pendP t (g t).1 (g (t + 1)).1)
+include hg
+
+/-- Forward determinism while pending, with the tag (the fourteenth probe's `pending_run`). -/
+theorem pending_run (tg : Bool) (c n : ℕ) (h0 : (g 0).1 = ((true, tg), c, n)) :
+    ∀ i : ℕ, i ≤ c →
+      (g (i : ℤ)).1.1.1 = true ∧ (g (i : ℤ)).1.1.2 = tagAt tg (i : ℤ) ∧
+        (g (i : ℤ)).1.2.1 = c - i := by
+  intro i
+  induction i with
+  | zero =>
+    intro _
+    rw [Nat.cast_zero, h0]
+    exact ⟨rfl, by simp [tagAt], by simp⟩
+  | succ i ih =>
+    intro hi
+    obtain ⟨hq1, hq2, hc⟩ := ih (by omega)
+    rw [show ((i + 1 : ℕ) : ℤ) = (i : ℤ) + 1 by push_cast; ring]
+    obtain ⟨hs, -, -, hcount⟩ := (rlad_iff ((i : ℤ)) (g (i : ℤ)).1 (g ((i : ℤ) + 1)).1).mp
+      (hg (i : ℤ))
+    rw [hq1] at hcount
+    cases hy : (g ((i : ℤ) + 1)).1.1.1 with
+    | false =>
+      rw [hy, count_tf] at hcount
+      omega
+    | true =>
+      refine ⟨rfl, ?_, by rw [hy, count_tt] at hcount; omega⟩
+      have hbne : (g ((i : ℤ) + 1)).1.1.2 ≠ (g (i : ℤ)).1.1.2 := by
+        simpa [stepP, hq1, hy] using hs
+      rw [hq2] at hbne
+      rw [tagAt_succ]
+      revert hbne
+      cases (g ((i : ℤ) + 1)).1.1.2 <;> cases tagAt tg (i : ℤ) <;> simp
+
+/-- The region ends on an idle state carrying the tag of the last pending state (the fourteenth
+probe's `idle_at`). -/
+theorem idle_at (tg : Bool) (c n : ℕ) (h0 : (g 0).1 = ((true, tg), c, n)) :
+    (g ((c : ℤ) + 1)).1.1.1 = false ∧ (g ((c : ℤ) + 1)).1.1.2 = tagAt tg (c : ℤ) := by
+  obtain ⟨hq1, hq2, hc⟩ := pending_run hg tg c n h0 c le_rfl
+  obtain ⟨hs, -, -, hcount⟩ := (rlad_iff ((c : ℤ)) (g (c : ℤ)).1 (g ((c : ℤ) + 1)).1).mp
+    (hg (c : ℤ))
+  rw [hq1, hc, Nat.sub_self] at hcount
+  cases hy : (g ((c : ℤ) + 1)).1.1.1 with
+  | true =>
+    rw [hy, count_tt] at hcount
+    omega
+  | false =>
+    refine ⟨rfl, ?_⟩
+    have hbeq : (g ((c : ℤ) + 1)).1.1.2 = (g (c : ℤ)).1.1.2 := by
+      simpa [stepP, hq1, hy] using hs
+    rw [hbeq, hq2]
+
+/-- An idle state only steps to the idle state with the same tag, forever. -/
+theorem idle_run (tg' : Bool) (t0 : ℤ) (h : (g t0).1.1 = (false, tg')) :
+    ∀ m : ℕ, (g (t0 + (m : ℤ))).1.1 = (false, tg') := by
+  intro m
+  induction m with
+  | zero => simpa using h
+  | succ m ih =>
+    obtain ⟨hs, -, -, -⟩ := hg (t0 + (m : ℤ))
+    rw [ih] at hs
+    rw [show t0 + ((m + 1 : ℕ) : ℤ) = t0 + (m : ℤ) + 1 by push_cast; ring]
+    revert hs
+    rcases hy : (g (t0 + (m : ℤ) + 1)).1.1 with ⟨b, tg''⟩
+    cases b <;> cases tg' <;> cases tg'' <;> simp [stepP]
+
+/-- Every predecessor of a pending state is pending with the flipped tag: `stepP`'s idle clause
+forbids idle-to-pending. -/
+theorem pending_back (tg : Bool) (c n : ℕ) (h0 : (g 0).1 = ((true, tg), c, n)) :
+    ∀ m : ℕ, (g (-(m : ℤ))).1.1 = (true, tagAt tg (-(m : ℤ))) := by
+  intro m
+  induction m with
+  | zero =>
+    rw [show -((0 : ℕ) : ℤ) = 0 by simp, h0]
+    simp [tagAt]
+  | succ m ih =>
+    obtain ⟨hs, -, -, -⟩ := hg (-((m + 1 : ℕ) : ℤ))
+    rw [show -((m + 1 : ℕ) : ℤ) + 1 = -(m : ℤ) by push_cast; ring, ih] at hs
+    have hts : tagAt tg (-(m : ℤ)) = !(tagAt tg (-((m + 1 : ℕ) : ℤ))) := by
+      rw [show -(m : ℤ) = -((m + 1 : ℕ) : ℤ) + 1 by push_cast; ring]
+      exact tagAt_succ tg _
+    rw [hts] at hs
+    revert hs
+    rcases hy : (g (-((m + 1 : ℕ) : ℤ))).1.1 with ⟨b, tg''⟩
+    cases hx : tagAt tg (-((m + 1 : ℕ) : ℤ)) <;> cases b <;> cases tg'' <;> simp [stepP]
+
+/-- **(a2) Every history through `((true, tg), c, n)` has object projection `objP tg c`.** -/
+theorem qp_forced_path (tg : Bool) (c n : ℕ) (h0 : (g 0).1 = ((true, tg), c, n)) :
+    ∀ t : ℤ, (g t).1.1 = objP tg (c : ℤ) t := by
+  intro t
+  unfold objP
+  rcases le_or_gt t (c : ℤ) with hle | hgt
+  · rw [if_pos hle]
+    rcases le_or_gt 0 t with h0t | hneg
+    · obtain ⟨h1, h2, -⟩ := pending_run hg tg c n h0 t.toNat (by omega)
+      have hsn : ((t.toNat : ℕ) : ℤ) = t := Int.toNat_of_nonneg h0t
+      rw [hsn] at h1 h2
+      exact Prod.ext h1 h2
+    · have hm : t = -(((-t).toNat : ℕ) : ℤ) := by omega
+      rw [hm]
+      exact pending_back hg tg c n h0 _
+  · rw [if_neg (not_le.mpr hgt)]
+    obtain ⟨h1, h2⟩ := idle_at hg tg c n h0
+    have hidle : (g ((c : ℤ) + 1)).1.1 = (false, tagAt tg (c : ℤ)) := Prod.ext h1 h2
+    have hm : t = (c : ℤ) + 1 + (((t - (c : ℤ) - 1).toNat : ℕ) : ℤ) := by omega
+    rw [hm]
+    exact idle_run hg _ _ hidle _
+
+end RunA
+
+/-! ### (b) Truth along the forced path is eventually periodic in the countdown, period 2 -/
+
+/-- Time shift of an object projection shifts the evaluation point. -/
+theorem truthO_shift (f : ℤ → Qp) (d : ℤ) : ∀ (ψ : PlusFormula) (s : ℤ),
+    TruthO (fun t => f (t + d)) s ψ ↔ TruthO f (s + d) ψ := by
+  intro ψ
+  induction ψ with
+  | atom a => intro s; exact Iff.rfl
+  | bot => intro s; exact Iff.rfl
+  | imp φ ψ ihφ ihψ =>
+    intro s
+    change (TruthO (fun t => f (t + d)) s φ → TruthO (fun t => f (t + d)) s ψ) ↔
+      (TruthO f (s + d) φ → TruthO f (s + d) ψ)
+    exact imp_congr (ihφ s) (ihψ s)
+  | box _ _ => intro s; exact Iff.rfl
+  | untl ψ φ ihψ ihφ =>
+    intro s
+    constructor
+    · rintro ⟨s', h1, h2, h3⟩
+      refine ⟨s' + d, by omega, (ihφ s').mp h2, fun r hr1 hr2 => ?_⟩
+      have h := (ihψ (r - d)).mp (h3 (r - d) (by omega) (by omega))
+      rwa [sub_add_cancel] at h
+    · rintro ⟨s', h1, h2, h3⟩
+      refine ⟨s' - d, by omega, (ihφ (s' - d)).mpr (by rwa [sub_add_cancel]),
+        fun r hr1 hr2 => (ihψ r).mpr (h3 (r + d) (by omega) (by omega))⟩
+  | snce ψ φ ihψ ihφ =>
+    intro s
+    constructor
+    · rintro ⟨s', h1, h2, h3⟩
+      refine ⟨s' + d, by omega, (ihφ s').mp h2, fun r hr1 hr2 => ?_⟩
+      have h := (ihψ (r - d)).mp (h3 (r - d) (by omega) (by omega))
+      rwa [sub_add_cancel] at h
+    · rintro ⟨s', h1, h2, h3⟩
+      refine ⟨s' - d, by omega, (ihφ (s' - d)).mpr (by rwa [sub_add_cancel]),
+        fun r hr1 hr2 => (ihψ r).mpr (h3 (r + d) (by omega) (by omega))⟩
+  | stab _ _ => intro s; exact Iff.rfl
+
+theorem tagAt_add (tg : Bool) (i j : ℤ) : tagAt tg (i + j) = tagAt (tagAt tg i) j := by
+  unfold tagAt
+  rcases Int.emod_two_eq_zero_or_one i with hi | hi <;>
+    rcases Int.emod_two_eq_zero_or_one j with hj | hj <;>
+    first
+    | (have hij : (i + j) % 2 = 0 := by omega
+       simp [hi, hj, hij])
+    | (have hij : (i + j) % 2 = 1 := by omega
+       simp [hi, hj, hij])
+
+/-- Re-basing the forced path at a pending position: shift by `d` flips the base tag `d` times
+and reduces the remaining countdown by `d`. -/
+theorem objP_shift (tg : Bool) (c d t : ℤ) :
+    objP tg c (t + d) = objP (tagAt tg d) (c - d) t := by
+  unfold objP
+  by_cases h : t + d ≤ c
+  · have h' : t ≤ c - d := by omega
+    rw [if_pos h, if_pos h', add_comm, tagAt_add]
+  · have h' : ¬ t ≤ c - d := by omega
+    rw [if_neg h, if_neg h']
+    have hc : tagAt tg c = tagAt (tagAt tg d) (c - d) := by
+      rw [← tagAt_add]
+      congr 1
+      ring
+    rw [hc]
+
+/-- The forced path from `(tg, c + 2)` is the forced path from `(tg, c)` shifted by two. -/
+theorem objP_add_two (tg : Bool) (c t : ℤ) : objP tg (c + 2) t = objP tg c (t - 2) := by
+  have h := objP_shift tg c (-2) t
+  have h2 : tagAt tg (-2) = tg := by
+    unfold tagAt
+    rw [if_pos (by decide)]
+  rw [h2, show c - -2 = c + 2 by ring, show t + -2 = t - 2 by ring] at h
+  exact h.symm
+
+theorem truthO_objP_add_two (tg : Bool) (c : ℤ) (ψ : PlusFormula) (s : ℤ) :
+    TruthO (objP tg (c + 2)) s ψ ↔ TruthO (objP tg c) (s - 2) ψ := by
+  have hf : objP tg (c + 2) = fun t => objP tg c (t + -2) := by
+    funext t
+    rw [objP_add_two]
+    congr 1
+  rw [hf, truthO_shift, show s + -2 = s - 2 by ring]
+
+theorem truthO_objP_rebase (tg : Bool) (c s : ℤ) (ψ : PlusFormula) :
+    TruthO (objP tg c) s ψ ↔ TruthO (objP (tagAt tg s) (c - s)) 0 ψ := by
+  have hf : objP (tagAt tg s) (c - s) = fun t => objP tg c (t + s) := by
+    funext t
+    rw [objP_shift]
+  rw [hf, truthO_shift, zero_add]
+
+/-- The FORMULA-derived threshold: two per `untl` nesting (the two positions a shift by two
+exposes), nothing per `snce` (the past of a pending position is the same infinite alternating
+run on both paths). -/
+def thr : PlusFormula → ℕ
+  | .atom _ => 0
+  | .bot => 0
+  | .imp φ ψ => max (thr φ) (thr ψ)
+  | .box ψ => thr ψ
+  | .untl ψ φ => max (thr ψ) (thr φ) + 2
+  | .snce ψ φ => max (thr ψ) (thr φ)
+  | .stab ψ => thr ψ
+
+/-- **(b) Period-2 eventual periodicity of truth at `0` along the forced path, in the countdown,
+above the formula-derived threshold.** -/
+theorem qp_type_shift : ∀ (ψ : PlusFormula), PlusFormula.BoxStabFree ψ → ∀ (tg : Bool) (c : ℤ),
+    (thr ψ : ℤ) ≤ c → (TruthO (objP tg c) 0 ψ ↔ TruthO (objP tg (c + 2)) 0 ψ) := by
+  intro ψ
+  induction ψ with
+  | atom a =>
+    intro _ tg c hc
+    change labP (objP tg c 0) a = true ↔ labP (objP tg (c + 2) 0) a = true
+    have h0c : (0 : ℤ) ≤ c := by omega
+    have h0c' : (0 : ℤ) ≤ c + 2 := by omega
+    have h1 : objP tg c 0 = (true, tg) := by
+      unfold objP
+      rw [if_pos h0c]
+      simp [tagAt]
+    have h2 : objP tg (c + 2) 0 = (true, tg) := by
+      unfold objP
+      rw [if_pos h0c']
+      simp [tagAt]
+    rw [h1, h2]
+  | bot => intro _ _ _ _; exact Iff.rfl
+  | imp φ ψ ihφ ihψ =>
+    rintro ⟨hφ, hψ⟩ tg c hc
+    simp only [thr] at hc
+    push_cast at hc
+    change (TruthO (objP tg c) 0 φ → TruthO (objP tg c) 0 ψ) ↔
+      (TruthO (objP tg (c + 2)) 0 φ → TruthO (objP tg (c + 2)) 0 ψ)
+    exact imp_congr (ihφ hφ tg c (by omega)) (ihψ hψ tg c (by omega))
+  | box _ _ => intro h; exact absurd h id
+  | untl ψ φ ihψ ihφ =>
+    rintro ⟨hφ, hψ⟩ tg c hc
+    simp only [thr] at hc
+    push_cast at hc
+    constructor
+    · rintro ⟨s', h1, h2, h3⟩
+      rcases le_or_gt s' 2 with hs2 | hs2
+      · refine ⟨s', h1, ?_, ?_⟩
+        · rw [truthO_objP_rebase] at h2 ⊢
+          rw [show c + 2 - s' = (c - s') + 2 by ring]
+          exact (ihφ hφ _ _ (by omega)).mp h2
+        · intro r hr1 hr2
+          have h := h3 r hr1 hr2
+          rw [truthO_objP_rebase] at h ⊢
+          rw [show c + 2 - r = (c - r) + 2 by ring]
+          exact (ihψ hψ _ _ (by omega)).mp h
+      · refine ⟨s' + 2, by omega, ?_, ?_⟩
+        · rw [truthO_objP_add_two, show s' + 2 - 2 = s' by ring]
+          exact h2
+        · intro r hr1 hr2
+          rcases le_or_gt r 2 with hr2' | hr2'
+          · have h := h3 r hr1 (by omega)
+            rw [truthO_objP_rebase] at h ⊢
+            rw [show c + 2 - r = (c - r) + 2 by ring]
+            exact (ihψ hψ _ _ (by omega)).mp h
+          · rw [truthO_objP_add_two]
+            exact h3 (r - 2) (by omega) (by omega)
+    · rintro ⟨s', h1, h2, h3⟩
+      rcases le_or_gt s' 2 with hs2 | hs2
+      · refine ⟨s', h1, ?_, ?_⟩
+        · rw [truthO_objP_rebase] at h2 ⊢
+          rw [show c + 2 - s' = (c - s') + 2 by ring] at h2
+          exact (ihφ hφ _ _ (by omega)).mpr h2
+        · intro r hr1 hr2
+          have h := h3 r hr1 hr2
+          rw [truthO_objP_rebase] at h ⊢
+          rw [show c + 2 - r = (c - r) + 2 by ring] at h
+          exact (ihψ hψ _ _ (by omega)).mpr h
+      · refine ⟨s' - 2, by omega, ?_, ?_⟩
+        · rw [truthO_objP_add_two] at h2
+          exact h2
+        · intro r hr1 hr2
+          have h := h3 (r + 2) (by omega) (by omega)
+          rw [truthO_objP_add_two, show r + 2 - 2 = r by ring] at h
+          exact h
+  | snce ψ φ ihψ ihφ =>
+    rintro ⟨hφ, hψ⟩ tg c hc
+    simp only [thr] at hc
+    push_cast at hc
+    constructor
+    · rintro ⟨s', h1, h2, h3⟩
+      refine ⟨s', h1, ?_, ?_⟩
+      · rw [truthO_objP_rebase] at h2 ⊢
+        rw [show c + 2 - s' = (c - s') + 2 by ring]
+        exact (ihφ hφ _ _ (by omega)).mp h2
+      · intro r hr1 hr2
+        have h := h3 r hr1 hr2
+        rw [truthO_objP_rebase] at h ⊢
+        rw [show c + 2 - r = (c - r) + 2 by ring]
+        exact (ihψ hψ _ _ (by omega)).mp h
+    · rintro ⟨s', h1, h2, h3⟩
+      refine ⟨s', h1, ?_, ?_⟩
+      · rw [truthO_objP_rebase] at h2 ⊢
+        rw [show c + 2 - s' = (c - s') + 2 by ring] at h2
+        exact (ihφ hφ _ _ (by omega)).mpr h2
+      · intro r hr1 hr2
+        have h := h3 r hr1 hr2
+        rw [truthO_objP_rebase] at h ⊢
+        rw [show c + 2 - r = (c - r) + 2 by ring] at h
+        exact (ihψ hψ _ _ (by omega)).mpr h
+  | stab _ _ => intro h; exact absurd h id
+
+/-! ### (c) The cell at a pending state is a singleton determined by `(tg, c)`, and is
+periodic in `c` above the threshold -/
+
+/-- The threshold is monotone along subformulas. -/
+theorem thr_le_of_mem_subformulas {ψ φ : PlusFormula} (hmem : ψ ∈ PlusFormula.subformulas φ) :
+    thr ψ ≤ thr φ := by
+  induction φ with
+  | atom p =>
+    simp only [PlusFormula.subformulas, List.mem_singleton] at hmem
+    subst hmem
+    exact le_rfl
+  | bot =>
+    simp only [PlusFormula.subformulas, List.mem_singleton] at hmem
+    subst hmem
+    exact le_rfl
+  | imp a b iha ihb =>
+    simp only [PlusFormula.subformulas, List.mem_cons, List.mem_append] at hmem
+    rcases hmem with rfl | h | h
+    · exact le_rfl
+    · exact le_trans (iha h) (by simp only [thr]; omega)
+    · exact le_trans (ihb h) (by simp only [thr]; omega)
+  | box a iha =>
+    simp only [PlusFormula.subformulas, List.mem_cons] at hmem
+    rcases hmem with rfl | h
+    · exact le_rfl
+    · exact iha h
+  | untl a b iha ihb =>
+    simp only [PlusFormula.subformulas, List.mem_cons, List.mem_append] at hmem
+    rcases hmem with rfl | h | h
+    · exact le_rfl
+    · exact le_trans (ihb h) (by simp only [thr]; omega)
+    · exact le_trans (iha h) (by simp only [thr]; omega)
+  | snce a b iha ihb =>
+    simp only [PlusFormula.subformulas, List.mem_cons, List.mem_append] at hmem
+    rcases hmem with rfl | h | h
+    · exact le_rfl
+    · exact le_trans (ihb h) (by simp only [thr]; omega)
+    · exact le_trans (iha h) (by simp only [thr]; omega)
+  | stab a iha =>
+    simp only [PlusFormula.subformulas, List.mem_cons] at hmem
+    rcases hmem with rfl | h
+    · exact le_rfl
+    · exact iha h
+
+theorem mem_closure_boxStabFree {φ ψ : PlusFormula} (hφ : PlusFormula.BoxStabFree φ)
+    (h : ψ ∈ plusSubformulaClosure φ) : PlusFormula.BoxStabFree ψ :=
+  PlusFormula.boxStabFree_of_mem_subformulas (List.mem_toFinset.mp h) hφ
+
+open Classical in
+/-- The type at `0` along the forced path, as a function of `(tg, c)` alone. -/
+noncomputable def tpO (φ : PlusFormula) (tg : Bool) (c : ℤ) : Finset PlusFormula :=
+  (plusSubformulaClosure φ).filter (fun ψ => TruthO (objP tg c) 0 ψ)
+
+open Classical in
+/-- Every history through a pending state realizes the type `tpO φ tg c`. -/
+theorem tpOf_eq_tpO {φ : PlusFormula} (hφ : PlusFormula.BoxStabFree φ) (tg : Bool) (c n : ℕ)
+    (σ : WorldHistory F) (hσ0 : σ.state 0 = ((0 : ℤ), st tg c n)) :
+    tpOf M φ σ 0 = tpO φ tg (c : ℤ) := by
+  obtain ⟨k, g, hg, hpath⟩ := hist_path σ
+  have hst : ((0 : ℤ) + k, g 0) = ((0 : ℤ), st tg c n) := by
+    rw [← hσ0]
+    exact (congrFun hpath 0).symm
+  have hg0 : (g 0).1 = ((true, tg), c, n) :=
+    congrArg (fun w : ℤ × LadderState Qp pendP => w.2.1) hst
+  have hobj : (fun t => (g t).1.1) = objP tg (c : ℤ) :=
+    funext (qp_forced_path (fun t => hg t) tg c n hg0)
+  ext ψ
+  rw [mem_tpOf_iff]
+  unfold tpO
+  rw [Finset.mem_filter]
+  constructor
+  · rintro ⟨hmem, htrue⟩
+    refine ⟨hmem, ?_⟩
+    rw [← hobj]
+    exact (qp_truth_of_objPath hpath ψ (mem_closure_boxStabFree hφ hmem) 0).mp htrue
+  · rintro ⟨hmem, htrue⟩
+    refine ⟨hmem, ?_⟩
+    rw [← hobj] at htrue
+    exact (qp_truth_of_objPath hpath ψ (mem_closure_boxStabFree hφ hmem) 0).mpr htrue
+
+/-- **The cell at a pending state of fixture A is a singleton**: one forced object path, one
+realized type. -/
+theorem cellAt_eq_singleton {φ : PlusFormula} (hφ : PlusFormula.BoxStabFree φ) (tg : Bool)
+    (c n : ℕ) : cellAt M φ ((0 : ℤ), st tg c n) 0 = {tpO φ tg (c : ℤ)} := by
+  ext T
+  rw [Set.mem_singleton_iff]
+  constructor
+  · rintro ⟨σ, hσ0, rfl⟩
+    exact tpOf_eq_tpO hφ tg c n σ hσ0
+  · rintro rfl
+    obtain ⟨σ, hσ⟩ := hist_of_path 0 (gRef tg c n) (gRef_isPath tg c n)
+    have hw : ((0 : ℤ), gRef tg c n 0) = ((0 : ℤ), st tg c n) :=
+      Prod.ext rfl (Subtype.ext (gRef_zero tg c n))
+    have hσ0 : σ.state 0 = ((0 : ℤ), st tg c n) := by
+      rw [← hw]
+      exact congrFun hσ 0
+    exact ⟨σ, hσ0, tpOf_eq_tpO hφ tg c n σ hσ0⟩
+
+open Classical in
+theorem tpO_add_two {φ : PlusFormula} (hφ : PlusFormula.BoxStabFree φ) (tg : Bool) (c : ℤ)
+    (hc : (thr φ : ℤ) ≤ c) : tpO φ tg c = tpO φ tg (c + 2) := by
+  unfold tpO
+  ext ψ
+  rw [Finset.mem_filter, Finset.mem_filter]
+  constructor
+  · rintro ⟨hmem, h⟩
+    have hle := thr_le_of_mem_subformulas (List.mem_toFinset.mp hmem)
+    exact ⟨hmem, (qp_type_shift ψ (mem_closure_boxStabFree hφ hmem) tg c (by omega)).mp h⟩
+  · rintro ⟨hmem, h⟩
+    have hle := thr_le_of_mem_subformulas (List.mem_toFinset.mp hmem)
+    exact ⟨hmem, (qp_type_shift ψ (mem_closure_boxStabFree hφ hmem) tg c (by omega)).mpr h⟩
+
+theorem tpO_add_even {φ : PlusFormula} (hφ : PlusFormula.BoxStabFree φ) (tg : Bool) (c : ℤ)
+    (hc : (thr φ : ℤ) ≤ c) : ∀ m : ℕ, tpO φ tg c = tpO φ tg (c + 2 * m) := by
+  intro m
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    rw [ih, tpO_add_two hφ tg (c + 2 * m) (by omega)]
+    congr 1
+    push_cast
+    ring
+
+/-- **(c) FIXTURE-LEVEL sufficiency on the two-state object**: for box/stab-free `φ`, at
+countdowns at or above the FORMULA-derived threshold `thr φ` and of equal parity, the cells
+coincide for ALL next deadlines `n`, `n'`.  Together with `cell_depth_ne` (necessity of a
+formula-derived threshold) this characterizes the cells of THIS fixture.  It is NOT the
+factorization lemma: it rests on `qp_forced_path` — one object path through every pending state
+— which the general object, with its region restarts, does not have. -/
+theorem qp_cell_eq_of_depth_parity {φ : PlusFormula} (hφ : PlusFormula.BoxStabFree φ)
+    (tg : Bool) (c c' n n' : ℕ) (hc : thr φ ≤ c) (hc' : thr φ ≤ c') (hpar : c % 2 = c' % 2) :
+    cellAt M φ ((0 : ℤ), st tg c n) 0 = cellAt M φ ((0 : ℤ), st tg c' n') 0 := by
+  rw [cellAt_eq_singleton hφ, cellAt_eq_singleton hφ]
+  congr 1
+  rcases le_total c c' with h | h
+  · obtain ⟨m, hm⟩ : ∃ m : ℕ, c' = c + 2 * m := ⟨(c' - c) / 2, by omega⟩
+    rw [tpO_add_even hφ tg (c : ℤ) (by exact_mod_cast hc) m]
+    congr 1
+    subst hm
+    push_cast
+    ring
+  · obtain ⟨m, hm⟩ : ∃ m : ℕ, c = c' + 2 * m := ⟨(c - c') / 2, by omega⟩
+    rw [tpO_add_even hφ tg (c' : ℤ) (by exact_mod_cast hc') m]
+    congr 1
+    subst hm
+    push_cast
+    ring
+
 end Probe775
