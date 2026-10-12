@@ -11,8 +11,8 @@ next_project_number: 777
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,771,772,774,775 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,762,764 | 298,464,502,616,761,771 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,767,768,769,770,772,774,775 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -86,8 +86,7 @@ next_project_number: 777
 761 [PARTIAL] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-771 [IMPLEMENTING] — check-task-references.sh --quiet exits non-zero on 198...
-  └─ 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
+764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
 775 [RESEARCHED] — Attempt the cell-index factorization lemma over the re-scoped...
 
 ### Formula Refactor
@@ -231,7 +230,7 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES AS FILED. `agent-sy
 
 ### 771. Task reference lint debt boneyard tests
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: Task 766

@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
-  "phases_total": 1,
-  "summary": "Wrote a single-phase, verification-only implementation plan for task 771 at specs/771_task_reference_lint_debt_boneyard_tests/plans/01_verify-lint-gate-green.md. Re-derived the lint state at plan-authoring time: check-task-references.sh --quiet exits 0 repo-wide and under both Boneyard/ and Tests/BimodalTest/, confirming the research finding that dependency task 766 already cleared the 198-citation debt via durable-anchor rewrites. The plan makes no file edits: Phase 1 re-runs the three lint invocations plus verify-deploy.sh and records attribution of the fix to 766. Plan validates clean against validate-artifact.sh.",
+  "status": "implemented",
+  "dispatch_seq": 5,
+  "summary": "Verified that check-task-references.sh --quiet exits 0 repo-wide and under both file_scope directories (Boneyard, Tests/BimodalTest), confirmed verify-deploy.sh is fully green, and wrote the task summary attributing the citation-debt fix to task 766's durable-anchor rewrites rather than performing a second cleanup pass. Zero file edits were required under this task's scope; the plan's single phase closed [COMPLETED].",
   "blockers": [],
+  "phases_completed": 1,
+  "phases_total": 1,
   "artifacts": [
     {
       "type": "plan",
       "path": "specs/771_task_reference_lint_debt_boneyard_tests/plans/01_verify-lint-gate-green.md",
-      "summary": "Single-phase verification-only plan: confirm task-reference lint exits 0 repo-wide and scoped, run the full gate set, and attribute the citation-debt fix to task 766."
+      "summary": "Single-phase verification-only plan; checklist items checked off with captured exit codes, phase heading marked [COMPLETED]."
+    },
+    {
+      "type": "summary",
+      "path": "specs/771_task_reference_lint_debt_boneyard_tests/summaries/01_verify-lint-gate-green-summary.md",
+      "summary": "Implementation summary attributing the citation-debt fix to task 766 and recording all verification evidence."
     }
-  ],
-  "dispatch_seq": 4
+  ]
 }

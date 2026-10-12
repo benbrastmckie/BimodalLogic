@@ -1,7 +1,7 @@
 # Implementation Plan: Task #771
 
 - **Task**: 771 - Task reference lint debt boneyard tests
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: 766 (completed)
 - **Research Inputs**: specs/771_task_reference_lint_debt_boneyard_tests/reports/01_lint-debt-already-cleared.md
