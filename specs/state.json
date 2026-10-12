@@ -1920,7 +1920,7 @@
     {
       "project_number": 771,
       "project_name": "task_reference_lint_debt_boneyard_tests",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "meta",
       "description": "check-task-references.sh --quiet exits non-zero on 198 pre-existing unexempted task-number citations -- all under Boneyard/ (archived READMEs) and Tests/BimodalTest (109 of them), none in any deliverable a recent dispatch touched. The lint is therefore unusable as a phase gate repo-wide, which a plan gate line did not anticipate. Exempt them under the task-reference-exemptions taxonomy (preferred where the citations are archival) or clean them, so that check-task-references.sh --quiet exits 0 and can serve as a gate again. Evidence: specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl entry iss_1791711120739_kf46Yo.",
       "effort": "small",
@@ -1935,8 +1935,16 @@
         "scripts/check-task-references.sh"
       ],
       "created": "2026-10-11T17:13:37Z",
-      "last_updated": "2026-10-11T17:13:37Z",
-      "artifacts": []
+      "last_updated": "2026-10-12T10:57:08Z",
+      "artifacts": [
+        {
+          "path": "specs/771_task_reference_lint_debt_boneyard_tests/reports/01_lint-debt-already-cleared.md",
+          "type": "report",
+          "summary": "Finds that task 771's acceptance criterion (check-task-references.sh --quiet exits 0) is already satisfied by completed dependency task 766, confirmed by independent re-run repo-wide and scoped to Boneyard/ and Tests/BimodalTest; recommends a verification-only plan/implement pass with no further file edits."
+        }
+      ],
+      "session_id": "sess_1791800175_a20f00",
+      "next_artifact_number": 2
     },
     {
       "project_name": "jq_rewrite_reserializes_json_record_files",
