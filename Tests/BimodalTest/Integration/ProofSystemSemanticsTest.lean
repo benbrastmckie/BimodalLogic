@@ -170,7 +170,7 @@ example (φ : Formula) : [] ⊨ (φ.imp (Formula.allFuture φ.somePast)) := by
 -- /--
 -- Test 13: Temporal L axiom is valid.
 
--- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
 -- summary.
 -- Verifies that `△φ → F(Pφ)` is valid via soundness.

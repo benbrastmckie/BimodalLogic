@@ -205,7 +205,7 @@ section TemporalLIntegration
 -- /--
 -- Test 6: Temporal L axiom derivation and soundness.
 
--- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
 -- summary.
 -- Verifies △p → F(Pp) is derivable and sound.
@@ -228,7 +228,7 @@ section TemporalLIntegration
 -- /--
 -- Test 7: Temporal L with modus ponens.
 
--- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
 -- summary.
 -- From [△p], derive F(Pp).
@@ -443,7 +443,7 @@ section MixedPastFutureDerivations
 -- /--
 -- Test 14: Combining past and future operators.
 
--- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
 -- summary.
 -- Derive properties involving both past and future.

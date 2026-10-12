@@ -347,7 +347,7 @@ check that would catch the one real hazard here, a `sed` crossing a Lean doc-com
 
 ---
 
-### Phase 4: Clear Tests automation, integration, and tools-test comments [NOT STARTED]
+### Phase 4: Clear Tests automation, integration, and tools-test comments [IN PROGRESS]
 
 **Goal**: Zero unexempted citations anywhere under `Tests/`, with `lake build BimodalTest` and
 `lake build BimodalToolsTest` both green.

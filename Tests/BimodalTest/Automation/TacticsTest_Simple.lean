@@ -17,7 +17,7 @@ namespace BimodalTest.Automation.Simple
 
 open FormalSystem.Syntax FormalSystem.ProofSystem
 
--- NOTE (Task 365): quarantined — the `apply_axiom`, `modal_t`, and `assumption_search`
+-- NOTE: quarantined — the `apply_axiom`, `modal_t`, and `assumption_search`
 -- tactic macros were removed in a prior automation refactor. The current search tactics are
 -- `modal_search` (see
 -- Bimodal/Automation/Tactics/Commands.lean). The helper-function checks below remain valid.

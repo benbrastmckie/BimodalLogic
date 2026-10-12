@@ -403,7 +403,7 @@ section CombinedAutomationTests
 -- /--
 -- Test 36: modal_search with Modal T and modus ponens.
 
--- NOTE (Task 365): quarantined — `modal_search` cannot discharge this context-requiring
+-- NOTE: quarantined — `modal_search` cannot discharge this context-requiring
 -- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
 -- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- Automation should handle combined reasoning.
@@ -458,7 +458,7 @@ section AxiomIntegrationTests
 -- /--
 -- Test 41: Aesop forward rule for Modal T.
 
--- NOTE (Task 365): quarantined — `modal_search` cannot discharge this context-requiring
+-- NOTE: quarantined — `modal_search` cannot discharge this context-requiring
 -- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
 -- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The modalTForward rule should work with modal_search.
@@ -469,7 +469,7 @@ section AxiomIntegrationTests
 -- /--
 -- Test 42: Aesop forward rule for Modal 4.
 
--- NOTE (Task 365): quarantined — `modal_search` cannot discharge this context-requiring
+-- NOTE: quarantined — `modal_search` cannot discharge this context-requiring
 -- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
 -- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The modal4Forward rule should work with modal_search.
@@ -480,7 +480,7 @@ section AxiomIntegrationTests
 -- /--
 -- Test 43: Aesop forward rule for Modal B.
 
--- NOTE (Task 365): quarantined — `modal_search` cannot discharge this context-requiring
+-- NOTE: quarantined — `modal_search` cannot discharge this context-requiring
 -- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
 -- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The modalBForward rule should work with modal_search.
@@ -491,7 +491,7 @@ section AxiomIntegrationTests
 -- /--
 -- Test 44: Aesop forward rule for Temporal 4.
 
--- NOTE (Task 365): quarantined — `modal_search` cannot discharge this context-requiring
+-- NOTE: quarantined — `modal_search` cannot discharge this context-requiring
 -- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
 -- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The temporal4Forward rule should work with modal_search.
@@ -502,7 +502,7 @@ section AxiomIntegrationTests
 -- /--
 -- Test 45: Aesop forward rule for Temporal A.
 
--- NOTE (Task 365): quarantined — `modal_search` cannot discharge this context-requiring
+-- NOTE: quarantined — `modal_search` cannot discharge this context-requiring
 -- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
 -- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The temporalAForward rule should work with modal_search.
@@ -545,7 +545,7 @@ example (φ ψ : Formula) : ⊢ (φ.imp (ψ.imp φ)) := by
 -- /--
 -- Test 50: Aesop with complex goal.
 
--- NOTE (Task 365): quarantined — `modal_search` cannot discharge this context-requiring
+-- NOTE: quarantined — `modal_search` cannot discharge this context-requiring
 -- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
 -- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- Aesop should handle moderately complex goals.
@@ -632,7 +632,7 @@ example : True := by
 -- /--
 -- Test 57: Automation with context.
 
--- NOTE (Task 365): quarantined — `modal_search` cannot discharge this context-requiring
+-- NOTE: quarantined — `modal_search` cannot discharge this context-requiring
 -- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
 -- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- Automation should work with non-empty contexts.

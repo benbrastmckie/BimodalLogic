@@ -29,7 +29,7 @@ Comprehensive test suite covering:
 - ProofSearch function tests (boundedSearch, heuristics, helpers)
 - Propositional depth tests (prop_k, prop_s chaining)
 - Aesop integration tests (complex TM proofs)
-- Task 315 modal_search tests
+- modal_search tests
 
 ## Test Organization
 
@@ -47,8 +47,8 @@ Comprehensive test suite covering:
 - **Phase 5 Group 4 Tests (73-77)**: Aesop integration tests
 - **Phase 8 Tests (96-105)**: modal_search depth tests
 - **Phase 9 Tests (106-110)**: Integration and bimodal tests
-- **Phase 10 Tests (111-134)**: Task 315 tactic tests (modal_search)
-- **Integration Tests (135-150)**: Task 319 tactic combination and state tests
+- **Phase 10 Tests (111-134)**: modal_search tactic tests
+- **Integration Tests (135-150)**: tactic combination and state tests
 
 ## References
 
@@ -104,7 +104,7 @@ example : DerivationTree FrameClass.Base []
     (Formula.imp (Formula.atomS "p") (Formula.allFuture (Formula.somePast (Formula.atomS "p")))) :=
   DerivationTree.axiom [] _ (Axiom.connect_future _) trivial
 
--- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
 -- summary.
 -- /-- Test 8: temp_l axiom (△p → F(Hp)) -/
@@ -198,7 +198,7 @@ example : DerivationTree FrameClass.Base []
     (Formula.imp (Formula.atomS "p") (Formula.box (Formula.diamond (Formula.atomS "p")))) :=
   (DerivedAxioms.modalBAt _ _)
 
--- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
 -- summary.
 -- /-- Test 35: modal_search finds temp_l axiom -/
@@ -354,7 +354,7 @@ example (a _b _c _d _ : Nat) : Nat := by
 
 Tests for generalizedModalK, generalizedTemporalK, time_reflection inference rules.
 
-NOTE: DerivationTree.modal_k and DerivationTree.temporal_k were removed in Task 44.
+NOTE: DerivationTree.modal_k and DerivationTree.temporal_k were removed.
 The generalized rules are now in FormalSystem.Theorems.GeneralizedNecessitation.
 -/
 
@@ -732,10 +732,10 @@ example (p q : Formula) : DerivationTree FrameClass.Base [] (p.imp (q.imp p)) :=
   DerivationTree.axiom _ _ (Axiom.prop_s _ _) trivial
 
 /-!
-## Phase 10: Task 315 Tactic Tests
+## Phase 10: Tactic Tests
 
 Tests for the modal_search tactic
-implemented as part of Task 315 (Axiom Prop vs Type blocker resolution).
+implemented to resolve the Axiom Prop vs Type blocker.
 
 These tests verify that the tactics work correctly on various derivability goals.
 -/
@@ -857,7 +857,7 @@ example (p q : Formula) : [p, p.imp q] ⊢ q := by
   modal_search
 
 /-!
-## Integration Tests (Task 319 Phase 5)
+## Integration Tests (Phase 5)
 
 Tests combining automated tactics with manual proof steps and
 verifying tactic interaction patterns.
