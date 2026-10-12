@@ -18,28 +18,50 @@
       "category": "PATTERN",
       "source_artifact": "specs/764_specs_only_gate_and_task_reference_lint_debt/summaries/01_gate4-fix-and-lint-debt-closure-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["source-store", "self-hosting", "deploy-headless", "verify-deploy", "dogfooding"]
+      "suggested_keywords": [
+        "source-store",
+        "self-hosting",
+        "deploy-headless",
+        "verify-deploy",
+        "dogfooding"
+      ]
     },
     {
       "content": "A verify-deploy.sh test fixture that is git-init'd but never git-add's/commits its rsync-copied content will silently fail any gate whose enumeration mechanism depends on `git ls-files` (e.g. lint-shellcheck.sh's default *.sh discovery), because git ls-files on a fresh, nothing-staged repo returns empty, causing a 'no files found to scan' environment error that verify-deploy.sh reports as a generic FAIL. This masquerades as an unrelated or flaky test failure. Diagnose by re-invoking the specific failing gate's underlying script directly against a copy of the fixture with REPO_ROOT explicitly set to the fixture path, and check whether its enumeration mechanism is git-based.",
       "category": "INSIGHT",
       "source_artifact": "specs/764_specs_only_gate_and_task_reference_lint_debt/summaries/01_gate4-fix-and-lint-debt-closure-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["verify-deploy", "fixture", "git-ls-files", "shellcheck", "test-flake-diagnosis"]
+      "suggested_keywords": [
+        "verify-deploy",
+        "fixture",
+        "git-ls-files",
+        "shellcheck",
+        "test-flake-diagnosis"
+      ]
     },
     {
       "content": "When a shared source-store repo has heavy concurrent multi-session activity (many other tasks' uncommitted work live at once), and a verification command shows an unexpected FAIL unrelated to the file(s) you edited, isolate causation via git stash: stash only your own edited file(s), re-run the exact same check, and compare. An identical failure before and after your edit proves the failure is pre-existing/foreign, not a regression you introduced -- avoids wasted effort chasing a cause that isn't yours, and provides concrete evidence for the deviation record instead of a hand-wave.",
       "category": "TECHNIQUE",
       "source_artifact": "specs/764_specs_only_gate_and_task_reference_lint_debt/summaries/01_gate4-fix-and-lint-debt-closure-summary.md",
       "confidence": 0.9,
-      "suggested_keywords": ["git-stash", "isolation", "concurrent-edit-collision", "root-cause", "shared-repo"]
+      "suggested_keywords": [
+        "git-stash",
+        "isolation",
+        "concurrent-edit-collision",
+        "root-cause",
+        "shared-repo"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1791800175_a20f00",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 6,
     "phases_total": 6
   }

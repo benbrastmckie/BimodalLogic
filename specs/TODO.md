@@ -11,7 +11,7 @@ next_project_number: 777
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,767,768,769,770,772,774,775 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,775 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -86,7 +86,6 @@ next_project_number: 777
 761 [PARTIAL] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-764 [IMPLEMENTING] — Close the specs/-only phase verification gap and the...
 775 [RESEARCHED] — Attempt the cell-index factorization lemma over the re-scoped...
 
 ### Formula Refactor
@@ -384,13 +383,14 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lean-challeng
 
 ### 764. Specs only gate and task reference lint debt
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: Task 771
 - **Parent**: Task 757
 - **Research**: [764_specs_only_gate_and_task_reference_lint_debt/reports/01_specs-only-gate-and-lint-debt.md]
 - **Plan**: [764_specs_only_gate_and_task_reference_lint_debt/plans/01_gate4-fix-and-lint-debt-closure.md]
+- **Summary**: [764_specs_only_gate_and_task_reference_lint_debt/summaries/01_gate4-fix-and-lint-debt-closure-summary.md]
 
 **Description**: Close the specs/**-only phase verification gap and the repo-wide task-reference lint debt
 

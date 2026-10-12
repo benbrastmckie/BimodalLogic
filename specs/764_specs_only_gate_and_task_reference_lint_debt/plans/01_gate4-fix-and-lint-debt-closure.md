@@ -1,7 +1,7 @@
 # Implementation Plan: Task #764
 
 - **Task**: 764 - Close the specs/**-only phase verification gap and the repo-wide task-reference lint debt
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.25 hours
 - **Dependencies**: Task 771 (completed)
 - **Research Inputs**: specs/764_specs_only_gate_and_task_reference_lint_debt/reports/01_specs-only-gate-and-lint-debt.md
