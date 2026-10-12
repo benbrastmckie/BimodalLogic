@@ -1,16 +1,40 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Planned the re-scoped cell-index record as an eight-phase, five-wave falsify-first plan after research refuted the dispatch's TARGET (the gap-carrying three-coordinate index) uniformly in B and closed its route (C) alternative. No factorization lemma is committed to in any shape; the plan commits to a six-coordinate residue-carrying candidate behind a three-part falsification gate, an exhibited threshold/period theorem, the fourteenth wired evidence probe, and the record amendments that stop the refuted candidate being described as plausible. Twelve theorem signatures are pinned in a Lean Challenge Statements block, eleven of them transcribed from the two compiled research prototypes.",
+  "dispatch_seq": 3,
+  "status": "implemented",
+  "phases_completed": 8,
+  "phases_total": 8,
+  "summary": "All eight plan phases closed [COMPLETED], executing the user's cycle-1 re-scope ruling. The filed gap-carrying three-coordinate cell index and its factorization lemma are refuted uniformly in B at a second, independent coordinate (the countdown's parity, observable at the region end at distance exactly c+1), and the bounded-carrier alternative is closed as a general route; the re-scoped six-coordinate residue-carrying candidate survives all three gates and its threshold and period are exhibited rather than assumed. Landed as the fourteenth wired evidence probe (1027 lines, tracked and wired, check-evidence-probes.sh PASS all 32), three research prototypes, four amended in-tree records and a registered source-store context note. The positive factorization lemma is recorded as OPEN and is stated nowhere in any shape: full guarded lake build exit 0 (2841 jobs, 0 errors), sorry 0, axioms 14 before and after, zero drift on all twelve Challenge signatures.",
+  "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/773_ladder_cell_index_factorization/plans/01_cell-index-coordinate-obstructions.md",
-      "summary": "Eight phases, five waves, 9.5 hours: two cheap gates on the re-scoped index, the second-region-end hunt as a decision gate with both branches pre-specified, the eventual-periodicity theorem that exhibits the index parameters, the wired probe, its gate wiring, the in-tree record amendments, the counter-observables context note, and the full gate."
+      "type": "summary",
+      "path": "specs/773_ladder_cell_index_factorization/summaries/01_cell-index-coordinate-obstructions-summary.md",
+      "summary": "Implementation summary: the refutation, the bounded-carrier closure, the gated candidate, the exhibited pair, and the open positive lemma."
+    },
+    {
+      "type": "probe",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean",
+      "summary": "The fourteenth wired evidence probe, 1027 lines, exit 0, no sorry/axiom/vacuous; wired into check-evidence-probes.sh."
+    },
+    {
+      "type": "prototype",
+      "path": "specs/773_ladder_cell_index_factorization/prototype/residue-index-gate.lean",
+      "summary": "The re-scoped six-coordinate index and the two cheap gates (gap pair, parity pair at a symbolic modulus)."
+    },
+    {
+      "type": "prototype",
+      "path": "specs/773_ladder_cell_index_factorization/prototype/second-region-hunt.lean",
+      "summary": "The third gate: three enumerated bounded attempts with predictions written first; Branch P, no refutation found."
+    },
+    {
+      "type": "prototype",
+      "path": "specs/773_ladder_cell_index_factorization/prototype/reach-eventual-periodicity.lean",
+      "summary": "The exhibited threshold and period: iterate_eventually_periodic and reachN_eventually_periodic."
+    },
+    {
+      "type": "context",
+      "path": "/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md",
+      "summary": "Source-store context note: the three mechanisms, the three-part falsification gate, the parameter-origin rule; registered in index-entries.json and the lean4 context README."
     }
-  ],
-  "phases_completed": 0,
-  "phases_total": 8,
-  "blockers": []
+  ]
 }

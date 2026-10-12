@@ -1,7 +1,7 @@
 # Implementation Plan: Task #773
 
 - **Task**: 773 - Ladder cell index factorization: a computable index through which `cellAt` factors
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9.5 hours
 - **Dependencies**: None (research-first; parent record 761, whose Phase 1 is `[BLOCKED]` on this sub-problem)
 - **Research Inputs**: specs/773_ladder_cell_index_factorization/reports/01_cell-index-factorization.md
