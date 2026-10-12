@@ -1,0 +1,23 @@
+{
+  "phase": 2,
+  "phase_name": "Correct gate 4's SKIP guard in verify-deploy.sh",
+  "started_at": "2026-10-12T04:45:00Z",
+  "last_updated": "2026-10-12T05:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Remove gate 4 SKIP branch in verify-deploy.sh", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Rewrite gate 4 block comment", "status": "done", "files_touched": []},
+    {"id": 3, "description": "bash -n verify-deploy.sh", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 3,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.verification",
+      "description": "Source-store copy, --skip-slow --only-gate 3,4 /home/benjamin/.config/nvim: still PASS -- 3 check(s), 0 failure(s), exit 0",
+      "type": "altered",
+      "reason": "Gate 3 (doc-lint) in the nvim source-store repo currently fails due to unrelated, concurrent content drift in context/patterns/bounded-build-waiter.md, context/patterns/external-process-wait.md, and docs/architecture/orchestrate-state-machine.md -- apparently being edited by other active sessions in the shared repo, not by this phase. Isolated re-run of gate 4 alone against the nvim repo confirms this phase's own edit: PASS -- 1 check(s), 0 failure(s), exit 0. Gate 3 alone, isolated: FAIL, pre-existing/concurrent and unrelated to the gate 4 de-guard. Logged as issue (concurrent-edit-collision, minor).",
+      "annotation": "*(deviation: altered -- see Phase 2 verification notes; gate 4 isolated PASS confirmed, gate 3,4 combined blocked by unrelated concurrent drift)*"
+    }
+  ]
+}

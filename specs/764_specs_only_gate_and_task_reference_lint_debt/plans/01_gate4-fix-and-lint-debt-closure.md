@@ -165,22 +165,22 @@ scope by design), so no broader check can reach either file.
 
 ---
 
-### Phase 2: Correct gate 4's SKIP guard in verify-deploy.sh [NOT STARTED]
+### Phase 2: Correct gate 4's SKIP guard in verify-deploy.sh [COMPLETED]
 
 **Goal**: Make gate 4 invoke `check-task-references.sh` against `TARGET` unconditionally, so
 `--only-gate 4` runs a real check in every deploy-consumer repo rather than attesting to nothing.
 
 **Tasks**:
-- [ ] In `scripts/verify-deploy.sh`, remove gate 4's `[ ! -d "$TARGET/agent-system/extensions" ]`
+- [x] In `scripts/verify-deploy.sh`, remove gate 4's `[ ! -d "$TARGET/agent-system/extensions" ]`
       SKIP branch, promoting the `check-task-references.sh not deployed` branch to the first
-      condition — i.e. gate 4 takes the no-guard shape gates 1/2/14/16 already use.
-- [ ] Rewrite gate 4's block comment so it no longer says "mirroring the Doc-lint gate above".
+      condition — i.e. gate 4 takes the no-guard shape gates 1/2/14/16 already use. *(completed)*
+- [x] Rewrite gate 4's block comment so it no longer says "mirroring the Doc-lint gate above".
       State the disproved premise directly: `check-extension-docs.sh` errors without
       `agent-system/extensions` (gate 3's guard is correct and stays), while
       `check-task-references.sh` is repo-appropriate by construction and scans a consumer repo in
       full. Add one sentence recording that the remaining source-store-conditioned guards on the
-      other gates are **unaudited**, not presumed removable by the same argument.
-- [ ] `bash -n scripts/verify-deploy.sh`.
+      other gates are **unaudited**, not presumed removable by the same argument. *(completed)*
+- [x] `bash -n scripts/verify-deploy.sh`. *(completed: clean)*
 
 **Timing**: 0.75 hours
 
@@ -198,14 +198,28 @@ direct observation of the change; no other gate's code path is touched.
   block: SKIP branch removed, block comment rewritten
 
 **Verification**:
-- `bash -n` on the edited script: clean.
+- `bash -n` on the edited script: clean. *(confirmed)*
 - Source-store copy, `--skip-slow --only-gate 4 /home/benjamin/Projects/BimodalLogic`: prints
   `[PASS] task-reference lint reports no findings` and `PASS -- 1 check(s), 0 failure(s)`, exit 0
-  — no `[SKIP]` line.
+  — no `[SKIP]` line. *(confirmed)*
 - Source-store copy, `--skip-slow --only-gate 3 /home/benjamin/Projects/BimodalLogic`: still
-  `[SKIP]` for gate 3 (its guard is deliberately unchanged).
+  `[SKIP]` for gate 3 (its guard is deliberately unchanged). *(confirmed)*
 - Source-store copy, `--skip-slow --only-gate 3,4 /home/benjamin/.config/nvim`: still
   `PASS -- 3 check(s), 0 failure(s)`, exit 0 — the source-store path is unaffected.
+  *(deviation: altered — gate 3 alone in the nvim repo currently FAILs due to unrelated,
+  concurrent content drift in `context/patterns/bounded-build-waiter.md`,
+  `context/patterns/external-process-wait.md`, and
+  `docs/architecture/orchestrate-state-machine.md` — files other active sessions appear to be
+  editing in this shared source-store repo, not files this phase touches. Isolated re-run
+  confirms this phase's own edit is correct: `--only-gate 4` alone against the nvim repo:
+  `PASS -- 1 check(s), 0 failure(s)`, exit 0; `--only-gate 3` alone, isolated from gate 4: FAIL,
+  pre-existing and unrelated to the gate 4 de-guard. Logged as issue `concurrent-edit-collision`,
+  severity minor. One related, in-scope fix was applied: ran
+  `generate-context-line-counts.sh --write` against the nvim repo's own deployed copy to correct
+  a Rule R `index-entries.json` line-count mismatch for `task-reference-exemptions.md`, caused by
+  this task's own Phase 1 edit — the two OTHER line-count mismatches surfaced by that run
+  (`bounded-build-waiter.md`, `external-process-wait.md`) belong to the foreign concurrent edits
+  and were left untouched.)*
 
 ---
 
