@@ -1,7 +1,7 @@
 # Implementation Plan: Task #771
 
 - **Task**: 771 - Task reference lint debt boneyard tests
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Dependencies**: 766 (completed)
 - **Research Inputs**: specs/771_task_reference_lint_debt_boneyard_tests/reports/01_lint-debt-already-cleared.md
@@ -99,27 +99,30 @@ No roadmap context was supplied to this dispatch.
 Phases within the same wave can execute in parallel. This plan has one phase, which is
 therefore also its final phase.
 
-### Phase 1: Verify Lint Gate Green and Attribute the Fix [NOT STARTED]
+### Phase 1: Verify Lint Gate Green and Attribute the Fix [COMPLETED]
 
 **Goal**: Confirm, on the tree as it stands at implementation time, that the task-reference lint
 exits 0 repo-wide and under both `file_scope` directories; confirm the repository's full gate set
 is green; and record correct attribution of the citation-debt fix to task 766.
 
 **Tasks**:
-- [ ] Re-run `bash .claude/scripts/check-task-references.sh --quiet` and capture its exit code.
-- [ ] Re-run `bash .claude/scripts/check-task-references.sh --quiet Boneyard` and capture its
-      exit code.
-- [ ] Re-run `bash .claude/scripts/check-task-references.sh --quiet Tests/BimodalTest` and
-      capture its exit code.
-- [ ] If any of the three is non-zero, enumerate the offending occurrences and stop: report them
+- [x] Re-run `bash .claude/scripts/check-task-references.sh --quiet` and capture its exit code.
+      *(completed: rc=0, 0 occurrence(s))*
+- [x] Re-run `bash .claude/scripts/check-task-references.sh --quiet Boneyard` and capture its
+      exit code. *(completed: rc=0, 0 occurrence(s))*
+- [x] Re-run `bash .claude/scripts/check-task-references.sh --quiet Tests/BimodalTest` and
+      capture its exit code. *(completed: rc=0, 0 occurrence(s))*
+- [x] If any of the three is non-zero, enumerate the offending occurrences and stop: report them
       as a finding rather than editing `Boneyard/**` or `Tests/BimodalTest/**` under this task.
       Record the regression via `issue-record.sh` and surface it in the summary; a regression
       from an unrelated tree is not this task's cleanup to absorb silently.
-- [ ] Run `bash .claude/scripts/verify-deploy.sh` and confirm the complete gate set is green.
-- [ ] Write the task summary, stating explicitly that the 198-occurrence citation debt was
+      *(completed: not applicable -- all three invocations exited 0)*
+- [x] Run `bash .claude/scripts/verify-deploy.sh` and confirm the complete gate set is green.
+      *(completed: PASS -- 14 check(s), 0 failure(s))*
+- [x] Write the task summary, stating explicitly that the 198-occurrence citation debt was
       cleared by task 766 via durable-anchor rewrites (zero `task-ref-ok` markers added), that
       this task performed verification only and made no file edits, and that the
-      `Boneyard/**`-exemption-taxonomy question remains with task 764.
+      `Boneyard/**`-exemption-taxonomy question remains with task 764. *(completed)*
 
 **Timing**: 0.5 hours (dominated by the `verify-deploy.sh` run, not by the lint invocations).
 
