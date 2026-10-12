@@ -11,10 +11,10 @@ next_project_number: 778
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,775,777 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
-| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,767,768,769,770,772,774,775,777 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,761 | 298,464,502,616,775 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,762 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
+| 4 | 125,429,543,763 | 428,498,499,500,762 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -83,10 +83,10 @@ next_project_number: 778
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
-  └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
-    └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 775 [RESEARCHED] — Attempt the cell-index factorization lemma over the re-scoped...
+  └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
+    └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
+      └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 
 ### Formula Refactor
 
@@ -510,10 +510,10 @@ NOT COSTABLE, and why: no argument exists in the tree to size it against. Design
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 760
-- **Research**: [761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md]
+- **Dependencies**: Task 760, Task 775
 - **Plan**: [761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md]
 - **Summary**: [761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md]
+- **Research**: [761_ladder_realization_theorem/reports/02_spawn-analysis.md]
 
 **Description**: AMENDED 2026-10-12 (realization blocked): the realization theorem is [BLOCKED] on the open index sub-problem — `hitOf (truncate B …)` is a residue of the deleted index (`truncate` is defined nowhere; its only reading is `Q × Fin (B+1) × Fin (B+1)`) and is withdrawn from the statement line; every per-cell soundness statement presupposes a finite index of ladder states (`cell_ne`; the `Count` clause; the `stab` clause's collapse of any per-state labelling), and the `box`/`stab` acceptance clause presupposes it too; the ladder's structural liveness is FORWARD-ONLY (wired probe `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`: `gPast_isPath`), so a ladder bundle replaces `ulive` only and keeps `slive` — "`ulive`/`slive` replaced" reads `ulive` replaced, `slive` retained. No library module; the index-free run-layer half is a user option (R2) not taken. See specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md.
 
