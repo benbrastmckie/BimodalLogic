@@ -11,7 +11,7 @@ next_project_number: 777
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,766,767,768,769,770,771,772,774,775,776 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,766,767,768,769,770,771,772,774,775 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -90,7 +90,6 @@ next_project_number: 777
 766 [RESEARCHED] — Clear the repo-wide task-number citation debt that fails...
 771 [NOT STARTED] — check-task-references.sh --quiet exits non-zero on 198...
 775 [RESEARCHED] — Attempt the cell-index factorization lemma over the re-scoped...
-776 [RESEARCHED] — Resolve or formally accept the standing...
 
 ### Formula Refactor
 
@@ -124,19 +123,6 @@ next_project_number: 777
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
-
-### 776. Task reference lint baseline
-- **Effort**: medium
-- **Status**: [RESEARCHED]
-- **Task Type**: meta
-- **Topic**: decidability
-- **Dependencies**: None
-- **Parent**: Task 773
-- **Research**: [776_task_reference_lint_baseline/reports/01_derivation-from-conclusion-stage.md]
-
-**Description**: Resolve or formally accept the standing check-task-references.sh baseline: the repo-wide lint exits 1 at 198 unexempted occurrences. Decide per occurrence whether it is edited to cite a durable anchor (filename, section heading, decision-record name, or verified fact) or exempted via the task-ref-ok marker convention with a recorded reason per the 7-category taxonomy in .claude/context/standards/task-reference-exemptions.md; the answer is probably not uniform across all 198. Any exemption-logic change lands in the source store resolved from .claude-extensions.json, never hand-authored under .claude/**. Secondary angle recorded in the derivation note rather than split into its own record: whether plan verification criteria should ask for a per-file criterion (no occurrence INTRODUCED by this phase) instead of a repo-wide exit 0 for any lint carrying a standing baseline. Evidence: specs/776_task_reference_lint_baseline/reports/01_derivation-from-conclusion-stage.md.
-
----
 
 ### 775. Residue index factorization lemma
 - **Effort**: high
