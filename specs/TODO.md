@@ -1,5 +1,5 @@
 ---
-next_project_number: 779
+next_project_number: 781
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 779
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -37,6 +37,8 @@ next_project_number: 779
 772 [NOT STARTED] — planned jq rewrites re-serialize formatting-sensitive JSON...
 774 [NOT STARTED] — EVALUATE (AND BE WILLING TO DECLINE): should plan guidance...
 777 [NOT STARTED] — Carve a task's own specs/ artifacts out of...
+779 [NOT STARTED] — Source-store-aware commit path and plan-time...
+780 [NOT STARTED] — Plan-compliance spot-check misses evidence-probe-scoped Goals
 
 ### Algebraic Representation
 
@@ -120,6 +122,30 @@ next_project_number: 779
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 780. Plan-compliance spot-check misses evidence-probe-scoped Goals
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Parent**: Task 775
+
+**Description**: lean-implementation-agent's Final Verification Stage step 5 ('Plan compliance spot-check'; source: agent-system/extensions/lean/agents/lean-implementation-agent.md) greps the plan's Goal names ONLY under the roots returned by lean-src-roots.sh (FormalSystem, Tests, BimodalTools; source: agent-system/extensions/lean/scripts/lean-src-roots.sh). Plans following this repository's evidence-probe convention pin their Goals in specs/evidence/**/*.lean, outside those roots. On one such plan the literal check reported 8 of 8 Goals MISSING while a probe-scoped grep found 8 of 8 present at their pinned signatures; the agent recorded both readings in .return-meta.json and set compliance_check from the plan-named location rather than the heuristic's scope. So the heuristic produced a FALSE FAILURE that had to be overridden by hand -- and an uncorrected one would have forced status 'partial' via the stage's own rule ('If failed, set status: partial'), and would have been surfaced at GATE OUT by the skill's Stage 6b read of metadata.compliance_check. Note the replacement-target integrity sub-check in the same code block greps the same "${lean_roots[@]}" scope and inherits the identical blind spot. Deliverable: have the spot-check derive its grep scope from the PLAN itself -- the plan's Files-to-modify list, or the Challenge snapshot manifest -- unioned with (not substituted for) the resolved source roots, so both in-tree and probe-scoped Goals are found; apply the same widened scope to the replacement-target sub-check; leave step 0's resolve-or-abort posture and the roots-only consumers elsewhere in the stage (sorry census, axiom and vacuity checks, build) unchanged. Originating observation: specs/775_residue_index_factorization_lemma/issues.jsonl entry iss_1791842368633_NJQxnS (class: tooling bug or gap, severity minor, resolution worked_around). SCOPE NOTE: the edit target is the source store under ~/.config/nvim/agent-system/extensions/lean/, never the deployed .claude/ tree (see .claude/rules/source-store-deploy-boundary.md).
+
+---
+
+### 779. Source-store-aware commit path and plan-time registration-description review
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Parent**: Task 775
+
+**Description**: Two gaps surfaced when a lean implementation task edited the agent-system source store (~/.config/nvim) from this repository. (1) COMMIT SCOPING: git-commit-scoped.sh (source: agent-system/extensions/core/scripts/git-commit-scoped.sh) resolves PROJECT_ROOT from its own BASH_SOURCE location (SCRIPT_DIR/common_repo_root, near line 233) and cd's there before staging, so it can only commit in the repository whose deploy tree it lives in; it also stages whole files. A task editing agent-system/extensions/lean/index-entries.json and context/project/lean4/domain/ladder-counter-observables.md in the source store hit a pre-existing uncommitted FOREIGN hunk in the same JSON file (an unrelated line_count bump), and had to hand-stage a HEAD-derived blob carrying only its own edits (git hash-object + git update-index --cacheinfo) and then run plain `git commit` with the session trailer by hand -- bypassing the whole scoped-commit contract (commit-lock mutex serialization, ephemeral-exclusion injection, the V3 degenerate-pathspec gate, the session-trailer convention). Deliverable: EITHER a source-store-aware commit path (e.g. an opt-in --repo-root parameter whose default remains today's BASH_SOURCE-derived resolution so every existing caller is byte-identical, which also forces a decision on where the commit-lock mutex and claim leases live when the committed repo is not the calling repo), OR -- if a second repository root is judged out of scope for that script -- a hunk-scoped staging procedure documented verbatim in the source-store/deploy boundary narrative (.claude/context/standards/source-store-deploy-boundary-narrative.md, source under agent-system/extensions/core/context/standards/) so an agent follows a sanctioned recipe instead of improvising git plumbing. (2) REGISTRATION-DESCRIPTION REVIEW: when the CONTENT of a registered context note is rewritten, two registration DESCRIPTIONS of that note -- the extension's source-store README.md row and the index-entries.json summary -- can still assert claims the rewrite overturns. In the observed case both carried a sentence the task's result refuted, and the plan's explicit 'no registration change required' item did not anticipate it. Deliverable: a plan-time check (planner-agent and/or the plan-format standard) that whenever a plan rewrites the content of a registered context note, that note's registration descriptions are enumerated as review targets rather than assumed stable. Originating observation: specs/775_residue_index_factorization_lemma/issues.jsonl entry iss_1791841137268_YNCuUv (class: cross-task ownership/territory, severity minor, resolution worked_around). SCOPE NOTE: all edits land in the source store under ~/.config/nvim/agent-system/, never in a deployed .claude/ tree (see .claude/rules/source-store-deploy-boundary.md).
+
+---
 
 ### 778. Residue index modulus convention record
 - **Effort**: low
