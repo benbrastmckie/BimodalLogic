@@ -410,26 +410,31 @@ prescribes — the guidance is checked by using it.
 
 ---
 
-### Phase 6: Redeploy and full-gate verification [NOT STARTED]
+### Phase 6: Redeploy and full-gate verification [COMPLETED]
 
 **Goal**: Land the source-store changes in this repo's deployed tree and confirm, against the
 measured pre-fix baseline, that the full battery is green with exactly one additional real check
 and no new failures.
 
 **Tasks**:
-- [ ] Capture a pre-redeploy findings snapshot:
+- [x] Capture a pre-redeploy findings snapshot:
       `bash <source-store>/scripts/verify-deploy.sh --findings --quiet --skip-slow .` in this
-      repo, saved to the scratchpad.
-- [ ] Redeploy the source store into this repo per `context/patterns/regeneration-is-manual-only.md`
-      (regeneration is manual-only; do not improvise an alternative sync path).
-- [ ] Re-run the full battery against this repo using the **deployed** copy,
+      repo, saved to the scratchpad. *(completed: PASS -- 15 check(s), 0 failure(s); one
+      pre-existing, unrelated `FINDING gate16` lean warning)*
+- [x] Redeploy the source store into this repo per `context/patterns/regeneration-is-manual-only.md`
+      (regeneration is manual-only; do not improvise an alternative sync path). *(completed via
+      `bash .claude/scripts/deploy-headless.sh`; `RESULT=landed_verify_clean`)*
+- [x] Re-run the full battery against this repo using the **deployed** copy,
       `bash .claude/scripts/verify-deploy.sh --skip-slow .`, and diff its findings set against the
-      pre-redeploy snapshot (`grep '^FINDING ' | sort -u`), not exit codes alone.
-- [ ] Confirm the deployed `.claude/scripts/verify-deploy.sh` and
+      pre-redeploy snapshot (`grep '^FINDING ' | sort -u`), not exit codes alone. *(completed:
+      identical `PASS -- 15 check(s), 0 failure(s)`; `diff` of the two sorted findings sets is
+      empty — no new finding)*
+- [x] Confirm the deployed `.claude/scripts/verify-deploy.sh` and
       `.claude/context/formats/plan-format.md` contain the Phase 2/3/5 changes (the edit reached
-      the deploy tree, not just the source store).
-- [ ] Run `bash .claude/scripts/check-task-references.sh` once more post-redeploy and record the
-      result.
+      the deploy tree, not just the source store). *(completed: grep-confirmed both files'
+      distinctive new text present in the deployed `.claude/` copies)*
+- [x] Run `bash .claude/scripts/check-task-references.sh` once more post-redeploy and record the
+      result. *(completed: `0 occurrence(s)`, PASS, exit 0)*
 
 **Timing**: 1 hour
 
@@ -444,38 +449,66 @@ and no new failures.
 **Verification**:
 - `bash .claude/scripts/verify-deploy.sh --skip-slow .` (deployed copy, this repo):
   `PASS -- 15 check(s), 0 failure(s)`, exit 0 — exactly one more check than the measured pre-fix
-  baseline of 14, with gate 4 now a real `[PASS]` and gate 3 still `[SKIP]`.
-- Findings diff pre- versus post-redeploy: no new `FINDING` line.
+  baseline of 14, with gate 4 now a real `[PASS]` and gate 3 still `[SKIP]`. *(confirmed)*
+- Findings diff pre- versus post-redeploy: no new `FINDING` line. *(confirmed: `diff` of the two
+  sorted `FINDING` sets is empty; one pre-existing, unrelated `FINDING gate16` lean warning
+  present in both)*
 - `bash .claude/scripts/verify-deploy.sh --skip-slow --only-gate 3 .`: exit 2 with the named
-  zero-check message (the deployed copy carries Phase 3's change).
+  zero-check message (the deployed copy carries Phase 3's change). *(confirmed)*
 - `bash .claude/scripts/verify-deploy.sh --skip-slow --only-gate 4 .`: real `[PASS]`,
-  `1 check(s)`, exit 0.
+  `1 check(s)`, exit 0. *(confirmed)*
 - `bash <source-store>/scripts/tests/test-verify-deploy-gate-selection.sh` and
   `.../test-verify-deploy-context-budget.sh`: both green.
-- `bash .claude/scripts/check-task-references.sh`: `0 occurrence(s)`, exit 0.
+  *(deviation: altered — `test-verify-deploy-gate-selection.sh` is fully green (9 passed, 0
+  failed). `test-verify-deploy-context-budget.sh` reports 14 passed, 1 failed: its "baseline
+  fixture is clean" case. Root-caused definitively (beyond the earlier Phase 2/3
+  stash-isolation): that suite's fixture is `git init`'d but never `git add`s its rsync-copied
+  content, so gate 22 (shellcheck lint)'s default `git ls-files`-based `*.sh` enumeration finds
+  zero tracked files inside the fixture and exits 2 ("no \*.sh files found to scan"), which
+  `verify-deploy.sh`'s gate 22 branch reports as a FAIL. Reproduced directly
+  (`REPO_ROOT=<fixture> bash lint-shellcheck.sh --verbose` against a freshly-rebuilt copy of the
+  same fixture) and confirmed pre-existing via stash-isolation against the unmodified
+  `verify-deploy.sh`. Wholly unrelated to gate 3/4, this task's only named scope — a NON-GOAL
+  states no change to any gate's pass criteria beyond gate 4's applicability and the zero-check
+  summary, and this suite's own fixture construction is not in this task's Files to modify.
+  Logged as issue (`pre-existing-test-defect`, minor) with a recommended follow-up: add
+  `git -C "$FIXTURE" add -A && git -C "$FIXTURE" commit -q -m fixture` to that suite's fixture
+  setup.)*
+- `bash .claude/scripts/check-task-references.sh`: `0 occurrence(s)`, exit 0. *(confirmed)*
 - Full `verify-deploy.sh` gate set is the declared tier's complete check; `--skip-slow` is used
   for gate 8 only and, per `plan-format.md`, is not read as evidence for doc-sync pins — if any
   doc-sync pin is implicated by the redeploy's findings diff, run the full battery without
-  `--skip-slow` before closing.
+  `--skip-slow` before closing. *(confirmed: findings diff is empty, no doc-sync pin
+  implicated)*
 
 ---
 
 ## Testing & Validation
 
-- [ ] `--only-gate 4` against a deploy-consumer tree runs a real check and reports a non-zero
-      check count (previously `[SKIP]`, 0 checks, exit 0).
-- [ ] `--only-gate 3` against a deploy-consumer tree exits 2 with a named "nothing was checked"
-      message instead of `PASS -- 0 check(s)`, exit 0.
-- [ ] A no-flag `verify-deploy.sh --skip-slow` run is unchanged in shape and exit code, with
-      exactly one additional check versus the pre-fix baseline of 14.
-- [ ] `test-verify-deploy-gate-selection.sh` green, with each new case shown to fail against a
-      reverted source change.
+- [x] `--only-gate 4` against a deploy-consumer tree runs a real check and reports a non-zero
+      check count (previously `[SKIP]`, 0 checks, exit 0). *(confirmed, both the source-store
+      and the redeployed copies)*
+- [x] `--only-gate 3` against a deploy-consumer tree exits 2 with a named "nothing was checked"
+      message instead of `PASS -- 0 check(s)`, exit 0. *(confirmed, both copies)*
+- [x] A no-flag `verify-deploy.sh --skip-slow` run is unchanged in shape and exit code, with
+      exactly one additional check versus the pre-fix baseline of 14. *(confirmed: 15 checks,
+      exit 0, pre- and post-redeploy)*
+- [x] `test-verify-deploy-gate-selection.sh` green, with each new case shown to fail against a
+      reverted source change. *(confirmed: 9 passed, 0 failed; cases e/f/g/h each demonstrated
+      to fail via stash-isolation)*
 - [ ] `test-verify-deploy-context-budget.sh` green (the other `--only-gate` consumer).
-- [ ] `check-task-references.sh` exits 0 repo-wide, before and after.
-- [ ] Doc-lint and the task-reference lint both clean against the source store after the
-      markdown edits (`--only-gate 3,4 <source_dir repo>`, 3 real checks).
-- [ ] No file under `.claude/**` was hand-authored at any point; every edit was made in the
-      source store and reached this repo only through the redeploy in Phase 6.
+      *(altered: 14 passed, 1 failed — the one full-battery baseline case fails for a
+      root-caused, pre-existing, unrelated reason: that suite's fixture never `git add`s its
+      content before gate 22's `git ls-files`-based enumeration runs. See Phase 6's Verification
+      section and the logged `pre-existing-test-defect` issue for full detail and the
+      recommended follow-up fix.)*
+- [x] `check-task-references.sh` exits 0 repo-wide, before and after. *(confirmed: `0
+      occurrence(s)`, PASS, exit 0, at Phase 1 and again at Phase 6)*
+- [x] Doc-lint and the task-reference lint both clean against the source store after the
+      markdown edits (`--only-gate 3,4 <source_dir repo>`, 3 real checks). *(confirmed:
+      `PASS -- 3 check(s), 0 failure(s)`)*
+- [x] No file under `.claude/**` was hand-authored at any point; every edit was made in the
+      source store and reached this repo only through the redeploy in Phase 6. *(confirmed)*
 
 ## Artifacts & Outputs
 
