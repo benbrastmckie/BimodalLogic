@@ -286,31 +286,34 @@ this repo asserting the default path is unchanged.
 
 ---
 
-### Phase 4: Regression cases for both script changes [NOT STARTED]
+### Phase 4: Regression cases for both script changes [COMPLETED]
 
 **Goal**: Pin Phase 2's and Phase 3's behavior in `test-verify-deploy-gate-selection.sh` so
 neither can silently regress, and so the "all selected gates skipped" decision is encoded as a
 test rather than only as a comment.
 
 **Tasks**:
-- [ ] Add a third fixture to `scripts/tests/test-verify-deploy-gate-selection.sh`: a
+- [x] Add a third fixture to `scripts/tests/test-verify-deploy-gate-selection.sh`: a
       deploy-consumer shape (no `agent-system/extensions`) whose `.claude` is a symlink to a real
       deploy tree, so `check-task-references.sh` is actually reachable there. Document in the
       fixture comment why `FIXTURE_CHEAP` cannot serve: its hand-built empty `.claude/scripts/`
       makes a de-guarded gate 4 reach the "not deployed" failure branch instead of a real check.
-- [ ] Add a case asserting `--only-gate 4` against that fixture produces a real, non-`[SKIP]`,
-      passing gate-4 check and a non-zero check count.
-- [ ] Add a case asserting an all-SKIP selection (`--only-gate 3` against the same fixture) exits
-      2 with the new named message and emits no `PASS -- 0 check(s)` line.
-- [ ] Add a case asserting `--findings --only-gate 3` against that fixture emits the
-      `FINDING gate0` line for the zero-check condition.
-- [ ] Add a case asserting the deferred-gate selection (`--skip-slow --only-gate 8`) reaches the
-      same loud result, encoding Phase 3's explicit decision.
-- [ ] Re-check case (d)'s assumption: a no-flag run against `FIXTURE_CHEAP` now fails gate 4
+      *(completed: FIXTURE_CONSUMER, `.claude` symlinked to `$REPO_ROOT/.claude`)*
+- [x] Add a case asserting `--only-gate 4` against that fixture produces a real, non-`[SKIP]`,
+      passing gate-4 check and a non-zero check count. *(completed: case(e))*
+- [x] Add a case asserting an all-SKIP selection (`--only-gate 3` against the same fixture) exits
+      2 with the new named message and emits no `PASS -- 0 check(s)` line. *(completed: case(f))*
+- [x] Add a case asserting `--findings --only-gate 3` against that fixture emits the
+      `FINDING gate0` line for the zero-check condition. *(completed: case(g))*
+- [x] Add a case asserting the deferred-gate selection (`--skip-slow --only-gate 8`) reaches the
+      same loud result, encoding Phase 3's explicit decision. *(completed: case(h))*
+- [x] Re-check case (d)'s assumption: a no-flag run against `FIXTURE_CHEAP` now fails gate 4
       ("not deployed"). Case (d) asserts only that all 22 gate headers print, so it still holds —
       confirm that by running it, and adjust the fixture comment that currently claims gates 3-13
-      etc. "all `[SKIP]` unconditionally" so it stays accurate for gate 4.
-- [ ] Run the suite.
+      etc. "all `[SKIP]` unconditionally" so it stays accurate for gate 4. *(completed: confirmed
+      case(d) still passes; fixture comment corrected to note gate 4 now FAILs rather than SKIPs
+      against FIXTURE_CHEAP)*
+- [x] Run the suite. *(completed: 9 passed, 0 failed)*
 
 **Timing**: 1.5 hours
 
@@ -335,10 +338,14 @@ it actually discriminates.
 
 **Verification**:
 - `bash .../scripts/tests/test-verify-deploy-gate-selection.sh`: all cases pass, exit 0.
+  *(confirmed: 9 passed, 0 failed)*
 - Each new case demonstrated to fail against a temporarily reverted `verify-deploy.sh` (stash the
   source change, run, observe the specific case fail, restore) — the case discriminates rather
-  than merely passing.
+  than merely passing. *(confirmed: with verify-deploy.sh stashed back to its pre-Phase-2 state,
+  cases (e), (f), (g), (h) all FAIL as expected — 5 passed, 4 failed — while (a)-(d) remain
+  unaffected; changes restored afterward and the suite re-confirmed green)*
 - The suite still invokes the source-store copy of `verify-deploy.sh`, never the deployed one.
+  *(confirmed: `VERIFY_DEPLOY="$CORE_DIR/verify-deploy.sh"`, unchanged)*
 
 ---
 
