@@ -1,0 +1,25 @@
+{
+  "phase": 3,
+  "phase_name": "Detect a zero-check run under an active --only-gate filter",
+  "started_at": "2026-10-12T05:15:00Z",
+  "last_updated": "2026-10-12T05:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add zero-check-under-filter summary branch", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Emit FINDING gate0 under --findings", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Decide/record deferred-gate treatment in comment", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Extend header Exit codes/Gate selection docs", "status": "done", "files_touched": []},
+    {"id": 5, "description": "bash -n verify-deploy.sh", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.verification",
+      "description": "test-verify-deploy-context-budget.sh must be green",
+      "type": "altered",
+      "reason": "Suite reports 14 passed, 1 failed -- the one full-battery 'baseline fixture is clean' check fails (rc=1, 0 gate20 lines). Confirmed pre-existing and unrelated by git-stashing this phase's verify-deploy.sh edit and re-running: identical failure reproduces against the unmodified script. Caused by the same shared-repo concurrent-edit-collision already logged for Phase 2. All --only-gate 20 cases (the ones this phase's change could plausibly affect) pass. test-verify-deploy-gate-selection.sh (the other named dependent) is fully green: 5 passed, 0 failed.",
+      "annotation": "*(deviation: altered -- context-budget suite's one full-battery baseline case fails for pre-existing, unrelated reasons confirmed via stash-isolation; see Phase 3 verification notes)*"
+    }
+  ]
+}

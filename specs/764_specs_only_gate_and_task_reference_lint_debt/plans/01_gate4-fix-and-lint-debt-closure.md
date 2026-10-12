@@ -223,29 +223,29 @@ direct observation of the change; no other gate's code path is touched.
 
 ---
 
-### Phase 3: Detect a zero-check run under an active --only-gate filter [NOT STARTED]
+### Phase 3: Detect a zero-check run under an active --only-gate filter [COMPLETED]
 
 **Goal**: Make `verify-deploy.sh` report loudly and non-zero when an `--only-gate` selection
 completes with zero checks executed, instead of printing `PASS -- 0 check(s), 0 failure(s)` and
 exiting 0.
 
 **Tasks**:
-- [ ] At the end-of-run summary in `scripts/verify-deploy.sh`, before the existing
+- [x] At the end-of-run summary in `scripts/verify-deploy.sh`, before the existing
       `FAILURES -eq 0` PASS branch, add a branch for `GATES_FILTER` non-empty **and** `CHECKS`
       equal to 0. Emit a distinguishable message to stderr naming the selected gate id(s) and
       stating that every one of them skipped or was deferred, so the run attested to nothing, and
       exit 2 — the script's already-documented "cannot run; an automated gate MUST treat this the
-      same as failure" code. No new exit code is introduced.
-- [ ] Under `--findings`, emit a `FINDING gate0` line for this condition, matching the existing
-      gate0 "could not run" sentinel convention.
-- [ ] Decide and record in the code comment how a `--skip-slow --only-gate 8` selection is
+      same as failure" code. No new exit code is introduced. *(completed)*
+- [x] Under `--findings`, emit a `FINDING gate0` line for this condition, matching the existing
+      gate0 "could not run" sentinel convention. *(completed)*
+- [x] Decide and record in the code comment how a `--skip-slow --only-gate 8` selection is
       treated: the deferred gate contributes no check, so the run attests to nothing and the new
       branch fires. Say so in the message wording ("skipped or deferred"), so the result is not
-      mistaken for the invalid-gate-id error.
-- [ ] Extend `verify-deploy.sh`'s header `Exit codes:` / `Gate selection` documentation with the
+      mistaken for the invalid-gate-id error. *(completed)*
+- [x] Extend `verify-deploy.sh`'s header `Exit codes:` / `Gate selection` documentation with the
       new condition, keeping the additive-only framing: with `--only-gate` absent, `GATES_FILTER`
-      is empty and the branch is unreachable.
-- [ ] `bash -n scripts/verify-deploy.sh`.
+      is empty and the branch is unreachable. *(completed)*
+- [x] `bash -n scripts/verify-deploy.sh`. *(completed: clean)*
 
 **Timing**: 1.25 hours
 
@@ -264,16 +264,25 @@ this repo asserting the default path is unchanged.
   end-of-run summary branch, `--findings` sentinel, header documentation
 
 **Verification**:
-- `bash -n` on the edited script: clean.
+- `bash -n` on the edited script: clean. *(confirmed)*
 - Source-store copy, `--skip-slow --only-gate 3 /home/benjamin/Projects/BimodalLogic`: exit 2,
-  stderr names gate 3 and states nothing was checked; no `PASS -- 0 check(s)` line.
+  stderr names gate 3 and states nothing was checked; no `PASS -- 0 check(s)` line. *(confirmed)*
 - Source-store copy, `--findings --quiet --skip-slow --only-gate 3 /home/benjamin/Projects/BimodalLogic`:
-  emits a `FINDING gate0 ` line for the condition, exit 2.
+  emits a `FINDING gate0 ` line for the condition, exit 2. *(confirmed)*
 - Source-store copy, `--skip-slow .` (no filter) against this repo: `PASS -- 15 check(s),
   0 failure(s)`, exit 0 — the no-flag path is unchanged in exit code and reaches the ordinary
-  PASS branch. (15, not 14: Phase 2 added one real gate-4 check.)
+  PASS branch. (15, not 14: Phase 2 added one real gate-4 check.) *(confirmed)*
 - `bash /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/tests/test-verify-deploy-context-budget.sh`:
   green (its `--only-gate 20` invocations must still produce real checks).
+  *(deviation: altered — suite reports 14 passed, 1 failed: the one full-battery "baseline
+  fixture is clean" check fails (rc=1, 0 gate20 finding lines). Isolated by git-stashing this
+  phase's `verify-deploy.sh` edit and re-running the identical suite against the unmodified
+  script: the same failure reproduces byte-for-byte, confirming it predates and is unrelated to
+  this phase's change — the same shared-repo concurrent-edit-collision class already logged for
+  Phase 2 (many other tasks' uncommitted work is concurrently live in
+  `/home/benjamin/.config/nvim`). Every `--only-gate 20`-restricted case (1, 2, 3, 4, 5 — the
+  only cases this phase's change could plausibly affect) passes. The other named dependent,
+  `test-verify-deploy-gate-selection.sh`, is fully green: 5 passed, 0 failed.)*
 
 ---
 
