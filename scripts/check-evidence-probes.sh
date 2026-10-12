@@ -815,6 +815,48 @@ EVIDENCE="specs/evidence"
 #                                                           | Axioms `[propext, Classical.choice,
 #                                                           | Quot.sound]` (`no_bwd_of_idle`
 #                                                           | `[propext]`).
+# seam-gluing-ray-product/ladder-liveness-forward-only     | FORWARD-ONLY LIVENESS (requirement
+#                                                           | (W)'s run layer, "(W): what landed
+#                                                           | and what did not", obligation (ii)
+#                                                           | item 1, the soundness half, over the
+#                                                           | two-state object): the realization
+#                                                           | theorem (`LadderCons` with its
+#                                                           | `box`/`stab` clause,
+#                                                           | `ladderCons_localRun`,
+#                                                           | `ladderRealized`) is `[BLOCKED]` on
+#                                                           | the open index of which cell a
+#                                                           | ladder state has -- every per-cell
+#                                                           | soundness statement presupposes it
+#                                                           | (`cell_ne`; the `Count` clause makes
+#                                                           | the `Q`-projection of a seam fibre a
+#                                                           | proper subset of the `Q`-runs; a
+#                                                           | per-state labelling collapses `ψ ↔
+#                                                           | ⊡ψ`) and so does the acceptance
+#                                                           | clause (`stab_mem_tpOf_iff` is per
+#                                                           | cell). What IS settled,
+#                                                           | machine-checked: an admissible
+#                                                           | ladder history can be pending at
+#                                                           | every past time (`gPast_isPath`,
+#                                                           | `gPast_pending_past`, `gPast_count`
+#                                                           | -- backward, `Count true true` grows
+#                                                           | the countdown without bound), so
+#                                                           | `Cons`'s `ulive` is replaceable by
+#                                                           | structural liveness and `slive` is
+#                                                           | NOT. What it does NOT say:
+#                                                           | forward-only in the sense that the
+#                                                           | forward liveness is structural and
+#                                                           | the backward one is not -- not a
+#                                                           | claim about `⊡(Pp)`; no bound of any
+#                                                           | kind; no finiteness; nothing about
+#                                                           | `HitPresented` or `PlusValidZTime`;
+#                                                           | no library module created; the
+#                                                           | successor design -- an index, or the
+#                                                           | index-free run-layer half -- not
+#                                                           | chosen; `anchorCells_ncard_le`
+#                                                           | untouched. Axioms `[propext,
+#                                                           | Classical.choice, Quot.sound]`
+#                                                           | (`gPast_pending_past`, `gPast_count`
+#                                                           | `[propext, Quot.sound]`).
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -845,6 +887,7 @@ WIRED=(
   "seam-gluing-ray-product/node-cell-stabilization"
   "seam-gluing-ray-product/hit-presented-node"
   "seam-gluing-ray-product/ladder-cell-refutation"
+  "seam-gluing-ray-product/ladder-liveness-forward-only"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

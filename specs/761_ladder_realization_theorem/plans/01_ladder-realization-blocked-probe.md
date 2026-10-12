@@ -379,13 +379,13 @@ unit can be affected.
 
 ---
 
-### Phase 3: Wire the Probe into the Evidence Gate [NOT STARTED]
+### Phase 3: Wire the Probe into the Evidence Gate [COMPLETED]
 
 **Goal**: Register the probe in `scripts/check-evidence-probes.sh` so the gate compiles it on
 every run, with a table row recording what it holds in place.
 
 **Tasks**:
-- [ ] Add a table row in the `# --- WIRED ---` comment table, directly after the
+- [x] Add a table row in the `# --- WIRED ---` comment table, directly after the
       `seam-gluing-ray-product/ladder-cell-refutation` row (the row block ends at the line before
       `WIRED=(`), in the same two-column `# probe | decision` wrapped format, headed
       `FORWARD-ONLY LIVENESS (requirement (W)'s run layer, "(W): what landed and what did not",
@@ -405,11 +405,11 @@ every run, with a table row recording what it holds in place.
       — not chosen; `anchorCells_ncard_le` untouched). Axioms `[propext, Classical.choice,
       Quot.sound]` (`gPast_pending_past`, `gPast_count` `[propext, Quot.sound]`). No task number
       anywhere in the row — durable anchors only.
-- [ ] Append `"seam-gluing-ray-product/ladder-liveness-forward-only"` to the `WIRED=(` array
+- [x] Append `"seam-gluing-ray-product/ladder-liveness-forward-only"` to the `WIRED=(` array
       immediately after `"seam-gluing-ray-product/ladder-cell-refutation"`.
-- [ ] `bash -n scripts/check-evidence-probes.sh` (syntax) and then run the gate detached with a
+- [x] `bash -n scripts/check-evidence-probes.sh` (syntax) and then run the gate detached with a
       bounded waiter (`context/patterns/bounded-build-waiter.md`).
-- [ ] Commit the script edit.
+- [x] Commit the script edit.
 
 **Timing**: 0.5 hours
 
