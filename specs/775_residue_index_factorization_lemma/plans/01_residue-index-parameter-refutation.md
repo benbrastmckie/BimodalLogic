@@ -1,7 +1,7 @@
 # Implementation Plan: Task #775
 
 - **Task**: 775 - Residue-carrying cell index: attempt the factorization lemma over `ladderIndexRes T P B`, or settle it negatively
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None (parent record 773 is `[COMPLETED]`; record 761 depends on this task and is `[BLOCKED]` on it)
 - **Research Inputs**: specs/775_residue_index_factorization_lemma/reports/01_derivation-from-conclusion-stage.md
@@ -185,47 +185,47 @@ that does not depend on the research outcome. **Phase 3 is a bounded attempt**, 
 deliverable is its measurement record. Phase 7 is the final phase: it depends transitively on
 every other phase and re-observes their measurements through the full gate set.
 
-### Phase 1: Mechanism (4) — the Threshold Cannot Be Object-Derived [NOT STARTED]
+### Phase 1: Mechanism (4) — the Threshold Cannot Be Object-Derived [COMPLETED]
 
 **Goal**: Land, in a new fifteenth evidence probe, the generic forced-run lemmas, the next-chain
 truth lemma, and the uniform refutation of every formula-independent `(T, P, B)` on the
 fourteenth probe's own two-state fixture.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean` with a
+- [x] Create `specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean` with a
       PROVISIONAL header (Phase 4 writes the final one) stating the two predictions below BEFORE
       the proofs are written, the same imports and `open`s as the fourteenth probe, and
       `namespace Probe775`. Port `ladderIndexRes` BYTE-FOR-BYTE from the fourteenth probe (lines
       608–615) and `reachStep` likewise (lines 743–747); these are the pinned definitional bodies.
-- [ ] Port fixture A verbatim from the fourteenth probe under its own names: `Qp`, `pendP`,
+- [x] Port fixture A verbatim from the fourteenth probe under its own names: `Qp`, `pendP`,
       `stepP`, `rlad_iff`, `count_tt`/`count_tf`/`count_ff`, `fwdP`, `bwdP`, `F`, the atoms `pA`,
       `rA`, `aA` (and new `dA` with its inequality lemmas), `labP`, `M`, `p`, `r`, `hist_path`,
       `hist_of_path`, the `Along` section with `state_eq`, `truth_p`, `truth_r`, and the `gRef`
       reference-history family with `gRef_isPath` and `gRef_zero` (lines 165–262, 414–478). Keep
       `tagAt` only as far as `gRef` needs it.
-- [ ] State the two forced-run lemmas GENERICALLY in the object — `pending_run_gen` (for any
+- [x] State the two forced-run lemmas GENERICALLY in the object — `pending_run_gen` (for any
       `step`, `pend`, any sliced-step path `g` with `(g 0).1 = (q, c, n)` and `pend q = true`:
       every `i ≤ c` has `pend (g i).1.1 = true` and countdown `c - i`) and `idle_at_gen`
       (`pend (g (c + 1)).1.1 = false`) — by the countdown half of the fourteenth probe's
       `pending_run`/`idle_at` (only `Count` is used). Both fixtures consume these.
-- [ ] Define `nextPow : ℕ → PlusFormula → PlusFormula` (`nextPow 0 χ = χ`,
+- [x] Define `nextPow : ℕ → PlusFormula → PlusFormula` (`nextPow 0 χ = χ`,
       `nextPow (k+1) χ = .untl .bot (nextPow k χ)`) and prove `truth_nextPow` by induction on `k`:
       the strict clause gives `s < s'` with no `r` strictly between, so `s' = s + 1` (`omega` on
       `ℤ`, after `push_cast`); the `∀ r` obligation in the reverse direction is vacuous.
-- [ ] Define `phiDepth T := nextPow (T + 1) r`, `st`, `xT T P B := st false T (T + (P+1) + B)`,
+- [x] Define `phiDepth T := nextPow (T + 1) r`, `st`, `xT T P B := st false T (T + (P+1) + B)`,
       `yT T P B := st false (T + (P+1)) (T + (P+1) + B)`. Prove `depth_collision` coordinate by
       coordinate: `simp only [ladderIndexRes, st, Prod.mk.injEq, Fin.mk.injEq, true_and]`, then
       `min_eq_right`/`omega` for the thresholds and the gap, and `Nat.add_mod_right` for the
       countdown residue (`(T + (P + 1)) % (P + 1) = T % (P + 1)`).
-- [ ] Prove `phiDepth_mem_iff_of_mem_cell` (the analogue of the fourteenth probe's
+- [x] Prove `phiDepth_mem_iff_of_mem_cell` (the analogue of the fourteenth probe's
       `phiP_mem_iff_of_mem_cell`, lines 495–511): for `T' ∈ cellAt M (phiDepth T) (0, st false c n) 0`,
       `phiDepth T ∈ T' ↔ pend (g (T + 1)) = false` along the history's path, via `mem_tpOf_iff`,
       `self_mem_plusSubformulaClosure`, `truth_nextPow`, `truth_r`. Then `cell_depth_ne`: the
       reference history through `xT` realizes a type containing `phiDepth T` (`idle_at_gen` at
       `c = T`); every type in the cell of `yT` lacks it (`pending_run_gen` at `i = T + 1 ≤ T + (P+1)`).
-- [ ] Prove `object_only_parameters_refuted` from `depth_collision` and `cell_depth_ne` (three
+- [x] Prove `object_only_parameters_refuted` from `depth_collision` and `cell_depth_ne` (three
       lines: `rintro ⟨T, P, B, h⟩; exact cell_depth_ne T P B (h _ _ _ (depth_collision T P B))`).
-- [ ] **Decision gate, both branches pre-specified**:
+- [x] **Decision gate, both branches pre-specified**:
       - **Branch R (predicted; the four theorems close)**: the header sentence Phase 4 carries is
         "the threshold is not object-derivable: for every (T, P, B) the index collides on a pair the
         depth-(T+1) next-chain separates".
@@ -234,7 +234,12 @@ fourteenth probe's own two-state fixture.
         blocks it, leave NO declaration with a `sorry` body, and let Phase 4's header carry "mechanism
         (4) was predicted and did not close; the measured reason is …". Never add a hypothesis to a
         pinned statement to make it close.
-- [ ] Compile through the guard and commit per the green-substep mandate.
+      **Recorded: Branch R.** All four pinned statements closed on the first guarded compile (zero
+      errors, zero warnings). The sentence Phase 4 carries: "the threshold is not object-derivable:
+      for every (T, P, B) the index collides on a pair the depth-(T+1) next-chain separates".
+      Measured file length after this phase: 423 lines (scope hypothesis 330–420; the 3-line excess is
+      the fixture-B letter `dA` with its three inequality lemmas, not the tag machinery).
+- [x] Compile through the guard and commit per the green-substep mandate.
 
 **Timing**: 1.5 hours
 
