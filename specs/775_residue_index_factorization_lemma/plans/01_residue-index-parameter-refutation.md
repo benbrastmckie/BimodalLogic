@@ -619,45 +619,55 @@ dependent can break) and two markdown records whose only mechanical consumers ar
 
 ---
 
-### Phase 6: Amend the Counter-Observables Context Note in the Source Store [NOT STARTED]
+### Phase 6: Amend the Counter-Observables Context Note in the Source Store [COMPLETED]
 
 **Goal**: Make the lean extension's guidance stop stating the opposite of what is now
 machine-checked: add mechanisms (4) and (5) to the gate table and rewrite the parameter-origin
 rule as the refutations leave it.
 
 **Tasks**:
-- [ ] Re-confirm the source store: `.claude-extensions.json` carries no `source_dir`; the path
+- [x] Re-confirm the source store: `.claude-extensions.json` carries no `source_dir`; the path
       carried from the predecessor's summary is
       `/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md`
       (confirmed present at plan time by `ls`). If absent, follow
       `context/standards/source-store-deploy-boundary-narrative.md`'s unreachable-source-store
       fallback; NEVER write under `.claude/`.
-- [ ] "The three mechanisms" → "The five mechanisms": add **(4) the threshold against the
+- [x] "The three mechanisms" → "The five mechanisms": add **(4) the threshold against the
       formula's depth** and **(5) the reach-set period against a letter-restricted sub-object**,
       each with its settling declarations in the fifteenth probe and its one-sentence mechanism.
-- [ ] The gate table: add rows 4 (pair `(q, T, n)` against `(q, T + (P+1), n)`, `n = T + (P+1) + B`,
+- [x] The gate table: add rows 4 (pair `(q, T, n)` against `(q, T + (P+1), n)`, `n = T + (P+1) + B`,
       formula the depth-`(T+1)` next-chain) and 5 (the coprime-cycle object, pair
       `(a, 3(P+1)(T+1), n)` against `(a, 3(P+1)(T+1) + (P+1), n)`, formula `p U (r ∧ ℓ_a)` with
       `⊤ U ℓ_d` in the closure), and state that gates 4–5 are REFUTATIONS of the exhibited
       parameters, not separations the candidate passes.
-- [ ] "The parameter-origin rule": rewrite so that `B` AND the threshold come from the FORMULA
+- [x] "The parameter-origin rule": rewrite so that `B` AND the threshold come from the FORMULA
       (`B` from the gap the formula can see; the threshold at least the formula's `untl`-nesting
       depth), the modulus must dominate the period of every letter-definable sub-object of the
       object (the reach-set period of the full graph does not), and the sentence "deriving … the
       threshold and period from the formula is the error this rule exists to prevent" is replaced
       by the corrected rule. State the corrected rule as NECESSARY, proved by the two refutations,
       and its sufficiency as OPEN.
-- [ ] "What is still open": the positive lemma for parameters depending on the object and the
+- [x] "What is still open": the positive lemma for parameters depending on the object and the
       formula jointly is OPEN; the proof obligations a successor would meet are named (eventual
       periodicity of realizable types in the countdown over the product of the object with the
       closure; a region-length pumping lemma for `untl`/`snce`-depth-bounded formulas; the next
       deadline's coupling through `Drift`; the box/stab letters through the anchor-layer equations);
       on Phase 3 Branch P, the fixture-level theorem is named as the one-path special case.
-- [ ] No registration change: the file is already registered in that tree's `index-entries.json`
+- [x] No registration change: the file is already registered in that tree's `index-entries.json`
       and `context/project/lean4/README.md`. The deployed mirror under `.claude/` is never
-      hand-authored and arrives with the next regeneration — state this as the expected outcome.
-- [ ] Commit per the green-substep mandate (the source store is its own git tree; commit there
+      hand-authored and arrives with the next regeneration — state this as the expected outcome. *(deviation: altered — the registration is unchanged, but both registration DESCRIPTIONS carried the overturned sentence "object-derived threshold and period": the `README.md` line-22 description and the `index-entries.json` `summary` are corrected and that entry's `line_count` updated 115 → 180)*
+- [x] Commit per the green-substep mandate (the source store is its own git tree; commit there
       with the task's session ID, scoped to this one file).
+      **Recorded.** Committed in `/home/benjamin/.config/nvim` as `d68e7f771` ("task 775 phase 6: amend
+      the ladder counter-observables context note (mechanisms 4-5, parameter-origin rule)"), scoped to
+      three files: the note (101 lines changed; 180 lines after), the README description line, and the
+      `index-entries.json` entry. That tree carried a PRE-EXISTING uncommitted hunk in
+      `index-entries.json` (`project/lean4/README.md` `line_count` 30 → 31, not this task's), so the
+      JSON was staged as a HEAD-derived blob carrying only this task's two edits (`git hash-object` +
+      `git update-index --cacheinfo`) and the commit went through plain `git commit` with the session
+      trailer — `git-commit-scoped.sh` is bound to this repository's manifests and would have staged
+      the whole file. The foreign hunk is left unstaged in that tree, untouched. Nothing was written
+      under `.claude/`; the deployed mirror arrives with the next regeneration.
 
 **Timing**: 0.5 hours
 
