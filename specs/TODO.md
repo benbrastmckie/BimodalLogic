@@ -82,7 +82,7 @@ next_project_number: 773
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [PLANNED] — AMENDED 2026-10-11 (carrier repair): the frame this record is...
+761 [IMPLEMENTING] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
@@ -377,14 +377,16 @@ NOT COSTABLE, and why: no argument exists in the tree to size it against. Design
 ---
 
 ### 761. Ladder realization theorem
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 760
 - **Research**: [761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md]
 - **Plan**: [761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md]
 
-**Description**: AMENDED 2026-10-11 (carrier repair): the frame this record is stated on is the admissible-carrier frame of RaySummary/LadderModel.lean; see specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md.
+**Description**: AMENDED 2026-10-12 (realization blocked): the realization theorem is [BLOCKED] on the open index sub-problem — `hitOf (truncate B …)` is a residue of the deleted index (`truncate` is defined nowhere; its only reading is `Q × Fin (B+1) × Fin (B+1)`) and is withdrawn from the statement line; every per-cell soundness statement presupposes a finite index of ladder states (`cell_ne`; the `Count` clause; the `stab` clause's collapse of any per-state labelling), and the `box`/`stab` acceptance clause presupposes it too; the ladder's structural liveness is FORWARD-ONLY (wired probe `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`: `gPast_isPath`), so a ladder bundle replaces `ulive` only and keeps `slive` — "`ulive`/`slive` replaced" reads `ulive` replaced, `slive` retained. No library module; the index-free run-layer half is a user option (R2) not taken. See specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md.
+
+AMENDED 2026-10-11 (carrier repair): the frame this record is stated on is the admissible-carrier frame of RaySummary/LadderModel.lean; see specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md.
 
 STATEMENT (library; new module `RaySummary/LadderRealize.lean`). Run-layer phase 2's soundness half (object → model), the ladder analogue of `Realize.lean`'s `Cons`/`cons_localRun`/`presented_modelOf`, stated at the HIT level per ladder cell:
   `structure LadderCons (φ : PlusFormula) (lab) (step) (pend) : Prop`  -- `Cons`'s fields with the liveness fields `ulive`/`slive` replaced by the ladder's structural liveness (c strictly decreases while pending, by `Count`), and with the box/stab letters PINNED per cell by the anchor layer's equations: `lab q (box ψ)` is one global bit (`box_mem_tpOf_iff`), the stab letter at `(q, c, n)` is that cell's bit (`stab_mem_tpOf_iff`); `anchorCons_anchorCells` is the completeness side of exactly those equations

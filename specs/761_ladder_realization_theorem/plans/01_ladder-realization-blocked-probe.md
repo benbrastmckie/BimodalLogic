@@ -551,7 +551,7 @@ shell suite is claimed as coverage).
 
 ---
 
-### Phase 5: Amend the Design of Record and the Task's Own Description [NOT STARTED]
+### Phase 5: Amend the Design of Record and the Task's Own Description [COMPLETED]
 
 **Goal**: Remove the two residues of the deleted index from the records this task is stated on —
 `hitOf (truncate B …)` and "`ulive`/`slive` replaced" — by dated amendment paragraphs in
@@ -560,7 +560,7 @@ this task's `state.json` description, so that a future `/revise` or `/spawn` rea
 its reasons rather than an inconsistent statement.
 
 **Tasks**:
-- [ ] Draft the amendment paragraph once, in
+- [x] Draft the amendment paragraph once, in
       `specs/761_ladder_realization_theorem/records/761-amendment.txt`, of the shape: "AMENDED
       2026-10-12 (realization blocked): the realization theorem is [BLOCKED] on the open index
       sub-problem — `hitOf (truncate B …)` is a residue of the deleted index (`truncate` is
@@ -575,7 +575,7 @@ its reasons rather than an inconsistent statement.
       is a user option (R2) not taken. See
       specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md." (Task
       numbers and `specs/**` paths are permitted here: every target is under `specs/**`.)
-- [ ] `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md`:
+- [x] `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md`:
       - Section A: after the existing "**Amendment (2026-10-11).**" paragraph, add
         "**Amendment (2026-10-12).**" carrying the paragraph above, and note that the
         "*Consistency conditions and `Adm`.*" paragraph's "`ulive`/`slive` replaced" reads
@@ -593,17 +593,17 @@ its reasons rather than an inconsistent statement.
       - Section H6: prepend "> AMENDED 2026-10-12 (realization blocked): T4 is [BLOCKED] on the
         open index sub-problem; this record's (←) half inherits that block — see
         specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md."
-- [ ] `specs/757_lplus_decidability_successor_task_set/successor-records.json`: prepend the same
+- [x] `specs/757_lplus_decidability_successor_task_set/successor-records.json`: prepend the same
       amendment paragraph (plus a blank line) to T4's `description`, as a text-level edit of the
       current file touching only that one field (the twelfth probe's plan recorded that `jq`
       re-serialization re-flows untouched records; follow its precedent); `jq empty` the result.
-- [ ] `specs/state.json`, this task's description, via the sanctioned writer only (never `!=`,
+- [x] `specs/state.json`, this task's description, via the sanctioned writer only (never `!=`,
       per the jq escaping hazard):
       `bash .claude/scripts/state-write.sh '(.active_projects[] | select(.project_number == 761)) |= (.description = ($d + "\n\n" + .description) | .last_updated = $ts)' --session-id "$SESSION_ID" --arg d "$(cat specs/761_ladder_realization_theorem/records/761-amendment.txt)" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --regen-todo`;
       on exit 2 (mutex) retry up to 3 times, 30 s apart.
-- [ ] Verify nothing else moved: `diff <(git show HEAD:specs/state.json | jq -S 'del(.active_projects[] | select(.project_number == 761))') <(jq -S 'del(.active_projects[] | select(.project_number == 761))' specs/state.json)` is empty.
-- [ ] Verify the content: `jq -r '.active_projects[] | select(.project_number == 761) | .description' specs/state.json | grep -c 'AMENDED 2026-10-12 (realization blocked)'` is 1 and `| grep -c 'slive. retained'` is 1; `diff <(jq -r '.records[] | select(.label == "T4") | .description' specs/757_lplus_decidability_successor_task_set/successor-records.json) <(jq -r '.active_projects[] | select(.project_number == 761) | .description' specs/state.json)` is empty; `jq empty` on both JSON files exits 0.
-- [ ] Commit the spec, the records file, `state.json` and the regenerated `TODO.md` as one
+- [x] Verify nothing else moved: `diff <(git show HEAD:specs/state.json | jq -S 'del(.active_projects[] | select(.project_number == 761))') <(jq -S 'del(.active_projects[] | select(.project_number == 761))' specs/state.json)` is empty.
+- [x] Verify the content: `jq -r '.active_projects[] | select(.project_number == 761) | .description' specs/state.json | grep -c 'AMENDED 2026-10-12 (realization blocked)'` is 1 and `| grep -c 'slive. retained'` is 1; `diff <(jq -r '.records[] | select(.label == "T4") | .description' specs/757_lplus_decidability_successor_task_set/successor-records.json) <(jq -r '.active_projects[] | select(.project_number == 761) | .description' specs/state.json)` is empty; `jq empty` on both JSON files exits 0.
+- [x] Commit the spec, the records file, `state.json` and the regenerated `TODO.md` as one
       batch.
 
 **Timing**: 0.75 hours

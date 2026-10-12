@@ -312,6 +312,7 @@ research-level and unproved). The SET of cells stays finite and bounded (`anchor
 not as an object condition on `ladderFrame`'s carrier — this amends the "Consistency conditions and
 `Adm`" paragraph's "stated over the carrier `ladderFrame` already has". See
 `specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md`.
+**Amendment (2026-10-12).** AMENDED 2026-10-12 (realization blocked): the realization theorem is [BLOCKED] on the open index sub-problem — `hitOf (truncate B …)` is a residue of the deleted index (`truncate` is defined nowhere; its only reading is `Q × Fin (B+1) × Fin (B+1)`) and is withdrawn from the statement line; every per-cell soundness statement presupposes a finite index of ladder states (`cell_ne`; the `Count` clause; the `stab` clause's collapse of any per-state labelling), and the `box`/`stab` acceptance clause presupposes it too; the ladder's structural liveness is FORWARD-ONLY (wired probe `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`: `gPast_isPath`), so a ladder bundle replaces `ulive` only and keeps `slive` — "`ulive`/`slive` replaced" reads `ulive` replaced, `slive` retained. No library module; the index-free run-layer half is a user option (R2) not taken. See specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md. Accordingly the "*Consistency conditions and `Adm`.*" paragraph's "`ulive`/`slive` replaced" reads "`ulive` replaced, `slive` retained".
 
 *Why a fixture probe first (H1).* `Node` is the ladder's one-region special case (the `RunLayer.lean`
 header) and a LIBRARY model (`NoFiniteWidth.M`, regular by `F_isRegular`, histories canonical by
@@ -473,6 +474,7 @@ The obligation's two halves land where the README puts them:
 - the "every seam but the one" half **is** the composition theorem of Section D (H6): one
   presentation-level object witnessing `¬ PlusValidZTime φ`, over all seams and times, is exactly
   what (W) names.
+**Amendment (2026-10-12).** The `box`/`stab` acceptance clause cannot be formulated without the open index of which cell a ladder state has (`stab_mem_tpOf_iff` is per cell, and no finite index of ladder states exists on the tree — see the Section A amendment of the same date), so obligation (3)'s first half stays assigned to (W) and is `[BLOCKED]` with it; Decision D1 (no standalone (S) record) stands.
 
 `presented_modelOf` is untouched; nothing is retired; a record titled "(S) for `box`-bearing `φ`"
 would be filed against the README's own assignment and is not proposed.
@@ -524,6 +526,7 @@ re-stated over a substitute. In the (←) half, `ladderFrame_isRegular` reads
 (`ladderFrameAdm`, `ladderModel`, `RaySummary/LadderModel.lean`), since `ladderFrame` has no
 instances. `objBound φ` remains a COUNT whose shape is open; no bound, cost figure or complexity
 claim is added.
+**Amendment (2026-10-12).** The (←) soundness half inherits the block on H4: `ladderRealized` is `[BLOCKED]` on the open index sub-problem (Section A amendment of the same date; wired probe `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean` records that the ladder's structural liveness is forward-only, so `slive` is retained in any ladder bundle). H6 is `[BLOCKED]` on H4 by its own honest-outcome clause above; `objBound φ` remains a count whose shape is open.
 
 **The corollary — the AIM — is stated here and nowhere earlier.** `Decidable (PlusValidZTime φ)`
 follows by bounded enumeration over objects of size `≤ objBound φ` (finitely many on `Fin n`, with
@@ -733,6 +736,8 @@ in Kahn position 3 of 6.
 
 **Description** (as amended 2026-10-11; the string filed 2026-10-10 is in this file's git history):
 
+> AMENDED 2026-10-12 (realization blocked): the realization theorem is [BLOCKED] on the open index sub-problem — `hitOf (truncate B …)` is a residue of the deleted index (`truncate` is defined nowhere; its only reading is `Q × Fin (B+1) × Fin (B+1)`) and is withdrawn from the statement line; every per-cell soundness statement presupposes a finite index of ladder states (`cell_ne`; the `Count` clause; the `stab` clause's collapse of any per-state labelling), and the `box`/`stab` acceptance clause presupposes it too; the ladder's structural liveness is FORWARD-ONLY (wired probe `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`: `gPast_isPath`), so a ladder bundle replaces `ulive` only and keeps `slive` — "`ulive`/`slive` replaced" reads `ulive` replaced, `slive` retained. No library module; the index-free run-layer half is a user option (R2) not taken. See specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md.
+> 
 > AMENDED 2026-10-11 (carrier repair): the frame this record is stated on is the admissible-carrier frame of RaySummary/LadderModel.lean; see specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md.
 > 
 > STATEMENT (library; new module `RaySummary/LadderRealize.lean`). Run-layer phase 2's soundness half (object → model), the ladder analogue of `Realize.lean`'s `Cons`/`cons_localRun`/`presented_modelOf`, stated at the HIT level per ladder cell:
@@ -821,6 +826,8 @@ in Kahn position 5 of 6.
 
 **Description** (as amended 2026-10-11; the string filed 2026-10-10 is in this file's git history):
 
+> AMENDED 2026-10-12 (realization blocked): T4 is [BLOCKED] on the open index sub-problem; this record's (←) half inherits that block — see specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md.
+> 
 > AMENDED 2026-10-11 (index deletion): the finite cell index this record assembled its object from is refuted and deleted below; see specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md.
 > 
 > STATEMENT (library, research-first; new module `RaySummary/Lift.lean`). The (W) row's lift from one seam to validity — "one presentation-level object witnesses ¬ PlusValidZTime φ for some regular ℤ-model, history and time" — and obligation (3)'s second half ("every seam but the one"):
