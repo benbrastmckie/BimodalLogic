@@ -2074,7 +2074,7 @@
     {
       "project_number": 775,
       "project_name": "residue_index_factorization_lemma",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Attempt the cell-index factorization lemma over the re-scoped six-coordinate residue-carrying index ladderIndexRes T P B = (q, min c T, c % (P+1), min n T, n % (P+1), clip (n - c) [-B, B]), or settle it negatively as its predecessor settled the three-coordinate candidate. The candidate survives all three falsification gates and its threshold T and period P are exhibited from the object (eventual periodicity of step-reachability) rather than assumed; the positive factorization lemma is OPEN and is stated nowhere in any shape. Surviving the gates is not evidence of truth: Count false false holds the countdown at 0 through an idle interval of any length while Drift moves the next deadline freely, so every second-region length is reachable from every pending state and there is no achievable window positioned by the residue coordinates to argue from. Gate any new candidate against all known refutation mechanisms before any proof attempt. A negative result is a successful outcome. Evidence: specs/775_residue_index_factorization_lemma/reports/01_derivation-from-conclusion-stage.md and the fourteenth wired probe specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean.",
       "effort": "high",
@@ -2082,7 +2082,7 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-10-12T05:24:30Z",
-      "last_updated": "2026-10-12T20:51:13Z",
+      "last_updated": "2026-10-12T22:04:28Z",
       "artifacts": [
         {
           "type": "research",
@@ -2093,6 +2093,11 @@
           "path": "specs/775_residue_index_factorization_lemma/plans/01_residue-index-parameter-refutation.md",
           "type": "plan",
           "summary": "Seven phases, 9 hours, six dependency waves; eight pinned Challenge statements; falsify-first with pre-specified branches."
+        },
+        {
+          "path": "specs/775_residue_index_factorization_lemma/summaries/01_residue-index-parameter-refutation-summary.md",
+          "type": "summary",
+          "summary": "Negative result at both object-exhibited parameters; fixture-level sufficiency theorem landed and scoped; positive lemma OPEN."
         }
       ],
       "session_id": "sess_1791836132_5eadba",
@@ -2107,7 +2112,8 @@
         "scripts/check-evidence-probes.sh",
         "specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Settled the residue-carrying cell-index candidate negatively at BOTH of its object-exhibited parameters, uniformly in the clip bound: object_only_parameters_refuted (the forced first idle state's exact distance is observable to the formula's untl-depth, so the threshold must be formula-derived) and reach_period_refuted (the full-graph reach-set period is not the period of a letter-restricted sub-object, so the modulus must dominate sub-object periods), eight pinned Goals closed in a fifteenth wired probe that passes the evidence gate. The bounded attempt landed the fixture-level theorem qp_cell_eq_of_depth_parity on the two-state object, explicitly not the factorization lemma; the positive lemma for jointly object-and-formula-derived parameters is OPEN and stated nowhere. In-tree records amended (LadderModel docstring, RaySummary README, theorem index) and, as a cross-repository edit, the lean extension's ladder-counter-observables.md note in the source store at /home/benjamin/.config/nvim (commit d68e7f771) rewritten: five mechanisms, five-part gate, the parameter-origin rule as a necessary condition."
     },
     {
       "project_name": "phase_commit_drops_own_plan_artifact",

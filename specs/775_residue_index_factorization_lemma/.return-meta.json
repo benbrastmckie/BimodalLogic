@@ -1,22 +1,123 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-12T20:57:14Z",
+  "completed_at": "2026-10-12T22:03:54Z",
+  "dispatch_seq": 2,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "build_result": "Build completed successfully (2841 jobs); 0 errors, 0 warnings; guard exit 0; touched modules .olean newer than source",
+    "gates": {
+      "verify_deploy": "exit 0: 14 PASS, 0 FAIL, 17 SKIP (source-store-only gates)",
+      "check_evidence_probes": "PASS all 33 wired probe(s) compile; fifteenth probe PASS",
+      "check_module_invariants": "ALL CHECKS PASSED (55 groups)",
+      "readme_lint": "PASS, 0 broken references",
+      "check_task_references": "PASS, 0 occurrences outside specs/",
+      "typst_sync_check": "PASS (all 4 checks)"
+    }
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/775_residue_index_factorization_lemma/plans/01_residue-index-parameter-refutation.md",
-      "summary": "Seven-phase falsify-first plan, 9 hours: two new refutation mechanisms (threshold below formula depth; reach-set period versus a letter-restricted sub-object) predicted to refute the residue-carrying index at both object-exhibited parameters, landed as a fifteenth wired probe with eight pinned Challenge statements; a bounded, non-pinned fixture-level sufficiency attempt; record and source-store context-note amendments; full gate. No general factorization lemma is stated."
+      "type": "summary",
+      "path": "specs/775_residue_index_factorization_lemma/summaries/01_residue-index-parameter-refutation-summary.md",
+      "summary": "Negative result: the residue-carrying six-coordinate index is refuted at both object-exhibited parameters (threshold and period) in a fifteenth wired probe with eight pinned Goals closed; a fixture-level sufficiency theorem lands and is explicitly not the factorization lemma; the positive lemma for jointly derived parameters stays OPEN."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean",
+      "summary": "The fifteenth wired evidence probe: mechanisms (4) and (5), the fixture-level sufficiency theorem, 16 axiom readings without sorryAx."
     }
   ],
-  "next_steps": "Run /implement 775 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1791836132_5eadba_775",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 7,
-    "estimated_hours": 9,
-    "dependency_waves": [[1], [2], [3], [4], [5, 6], [7]]
+  "completion_data": {
+    "completion_summary": "Settled the residue-carrying cell-index candidate negatively at BOTH of its object-exhibited parameters, uniformly in the clip bound: object_only_parameters_refuted (the forced first idle state's exact distance is observable to the formula's untl-depth, so the threshold must be formula-derived) and reach_period_refuted (the full-graph reach-set period is not the period of a letter-restricted sub-object, so the modulus must dominate sub-object periods), eight pinned Goals closed in a fifteenth wired probe that passes the evidence gate. The bounded attempt landed the fixture-level theorem qp_cell_eq_of_depth_parity on the two-state object, explicitly not the factorization lemma; the positive lemma for jointly object-and-formula-derived parameters is OPEN and stated nowhere. In-tree records amended (LadderModel docstring, RaySummary README, theorem index) and, as a cross-repository edit, the lean extension's ladder-counter-observables.md note in the source store at /home/benjamin/.config/nvim (commit d68e7f771) rewritten: five mechanisms, five-part gate, the parameter-origin rule as a necessary condition.",
+    "roadmap_items": []
   },
-  "memory_candidates": [],
-  "dispatch_seq": 1
+  "modified_files": [
+    "specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean",
+    "scripts/check-evidence-probes.sh",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "docs/theorem-index.md",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "Boneyard/README.md",
+    "typst/generated/status.typ",
+    "specs/775_residue_index_factorization_lemma/plans/01_residue-index-parameter-refutation.md",
+    "specs/775_residue_index_factorization_lemma/summaries/01_residue-index-parameter-refutation-summary.md",
+    "specs/775_residue_index_factorization_lemma/issues.jsonl",
+    "specs/775_residue_index_factorization_lemma/handoffs/phase-1-handoff-20261012T210455Z.md",
+    "specs/775_residue_index_factorization_lemma/handoffs/phase-2-handoff-20261012T211650Z.md",
+    "specs/775_residue_index_factorization_lemma/handoffs/phase-3-handoff-20261012T212858Z.md",
+    "specs/775_residue_index_factorization_lemma/handoffs/phase-4-handoff-20261012T213448Z.md",
+    "specs/775_residue_index_factorization_lemma/handoffs/phase-5-handoff-20261012T214953Z.md",
+    "specs/775_residue_index_factorization_lemma/handoffs/phase-6-handoff-20261012T213857Z.md",
+    "specs/775_residue_index_factorization_lemma/handoffs/phase-7-handoff-20261012T220225Z.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "A Lean probe statement that must hold under an unrecorded instantiation convention (here P vs P+1 for a residue modulus) can be made convention-independent by quantifying over all P, or over all P with a coprimality side condition covering every reading, instead of choosing a reading.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/775_residue_index_factorization_lemma/summaries/01_residue-index-parameter-refutation-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "lean4",
+        "refutation",
+        "convention-independent",
+        "modulus"
+      ]
+    },
+    {
+      "content": "Over integer time the strict untl clause makes bot U chi exactly next-chi, so k nested nexts read exactly k instants later (truth_nextPow); any threshold fixed before the formula is defeated by a depth-(T+1) next-chain reading the forced first idle state.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "deadline-ladder",
+        "cell-index",
+        "untl",
+        "threshold"
+      ]
+    },
+    {
+      "content": "To commit only this task's edits to a file that carries a foreign uncommitted hunk in another git tree: derive the staged content from HEAD plus this task's string replacements, write it with git hash-object -w, point the index at it with git update-index --cacheinfo, and commit; the foreign hunk stays in the working tree.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/775_residue_index_factorization_lemma/plans/01_residue-index-parameter-refutation.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "git",
+        "partial-staging",
+        "source-store",
+        "cross-repo"
+      ]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791836132_5eadba",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "compliance_detail": "All eight plan Goals found at their pinned signatures in the plan-named probe specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean (8/8); the roots-scoped grep over lean-src-roots.sh's roots reports 8/8 MISSING only because specs/evidence/ lies outside those roots (issue log, class tooling bug or gap). No replacement targets declared.",
+    "phases_completed": 7,
+    "phases_total": 7,
+    "phase_commits": [
+      "0f58b9cc2",
+      "02f8e4c95",
+      "68a5034c6",
+      "d68f6c3d2",
+      "375b8f963",
+      "2de593afc",
+      "8a3be89c3"
+    ],
+    "source_store_commit": "/home/benjamin/.config/nvim d68e7f771",
+    "plan_revision_sentinel": "absent at every phase start (no plan-revision aux row landed)"
+  }
 }

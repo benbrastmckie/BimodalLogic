@@ -11,10 +11,10 @@ next_project_number: 778
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,767,768,769,770,772,774,775,777 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,761 | 298,464,502,616,775 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,762 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
-| 4 | 125,429,543,763 | 428,498,499,500,762 | algebraic-representation, decidability, metalogic |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
+| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -83,10 +83,9 @@ next_project_number: 778
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-775 [PLANNED] — Attempt the cell-index factorization lemma over the re-scoped...
-  └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
-    └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
-      └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
+761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
+  └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
+    └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 
 ### Formula Refactor
 
@@ -177,13 +176,14 @@ PROVENANCE OF THIS OBSERVATION. Surfaced conversationally while auditing recent 
 
 ### 775. Residue index factorization lemma
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 773
 - **Research**: [775_residue_index_factorization_lemma/reports/01_derivation-from-conclusion-stage.md]
 - **Plan**: [775_residue_index_factorization_lemma/plans/01_residue-index-parameter-refutation.md]
+- **Summary**: [775_residue_index_factorization_lemma/summaries/01_residue-index-parameter-refutation-summary.md]
 
 **Description**: Attempt the cell-index factorization lemma over the re-scoped six-coordinate residue-carrying index ladderIndexRes T P B = (q, min c T, c % (P+1), min n T, n % (P+1), clip (n - c) [-B, B]), or settle it negatively as its predecessor settled the three-coordinate candidate. The candidate survives all three falsification gates and its threshold T and period P are exhibited from the object (eventual periodicity of step-reachability) rather than assumed; the positive factorization lemma is OPEN and is stated nowhere in any shape. Surviving the gates is not evidence of truth: Count false false holds the countdown at 0 through an idle interval of any length while Drift moves the next deadline freely, so every second-region length is reachable from every pending state and there is no achievable window positioned by the residue coordinates to argue from. Gate any new candidate against all known refutation mechanisms before any proof attempt. A negative result is a successful outcome. Evidence: specs/775_residue_index_factorization_lemma/reports/01_derivation-from-conclusion-stage.md and the fourteenth wired probe specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean.
 

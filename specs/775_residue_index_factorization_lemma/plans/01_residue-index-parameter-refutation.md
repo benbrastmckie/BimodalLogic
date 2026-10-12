@@ -1,7 +1,7 @@
 # Implementation Plan: Task #775
 
 - **Task**: 775 - Residue-carrying cell index: attempt the factorization lemma over `ladderIndexRes T P B`, or settle it negatively
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: None (parent record 773 is `[COMPLETED]`; record 761 depends on this task and is `[BLOCKED]` on it)
 - **Research Inputs**: specs/775_residue_index_factorization_lemma/reports/01_derivation-from-conclusion-stage.md
