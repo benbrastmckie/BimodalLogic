@@ -1,28 +1,130 @@
 /-
-PROVISIONAL HEADER -- written before any proof below, to be replaced by the final record once the
-three decision gates have run.
+THE RESIDUE-CARRYING SIX-COORDINATE CELL INDEX OF THE ADMISSIBLE LADDER CARRIER IS REFUTED AT BOTH
+OF ITS OBJECT-EXHIBITED PARAMETERS -- the threshold, which the formula's `untl`-nesting depth
+exceeds, and the period, which is the period of the reach-SET iteration on the full graph and not
+of the letter-restricted sub-object a formula can see -- uniformly in the clip bound; what survives
+is a refined parameter-origin rule that is NECESSARY and asserted as nothing more, a FIXTURE-LEVEL
+sufficiency theorem on the two-state object that is explicitly not the factorization lemma, and
+the positive lemma for jointly object-and-formula-derived parameters, which is OPEN and stated
+nowhere.
 
-## The two predictions
+## What was asked
 
-**(4) The threshold cannot be object-derived.**  `PlusTruthAt`'s `untl` clause is strict in both
-bounds, so over integer time `bot U chi` is exactly "`chi` at the next instant" and `k` nested
-nexts read `chi` exactly `k` instants later (`truth_nextPow`).  On the two-state fixture of the
-fourteenth probe `Count true true` forces the first idle state of a region to distance exactly
-`c + 1`, so the depth-`(T+1)` next-chain ending in the idle letter is true at `(q, T, n)` and false
-at `(q, T + (P+1), n)`.  With `n := T + (P+1) + B` the six-coordinate index `ladderIndexRes T P B`
-identifies that pair for EVERY `(T, P, B)`: both countdowns saturate the threshold, both residues
-agree, `n` is shared, both gaps clip to `2B` (`depth_collision`, `cell_depth_ne`,
-`object_only_parameters_refuted`).  Prediction: all four close; the threshold must be at least the
-formula's `untl`-nesting depth, hence formula-derived.
+Attempt the cell-index factorization lemma over the re-scoped six-coordinate index
+  `ladderIndexRes T P B = (q, min c T, c % (P+1), min n T, n % (P+1), clip (n - c) [-B, B])`
+with its threshold `T` and period `P` EXHIBITED from the object by `reachN_eventually_periodic`
+(the eventual periodicity of step-reachability) and only the clip bound `B` from the formula, or
+settle it negatively as the three-coordinate candidate was settled.  The candidate had survived
+all three falsification gates of `ladder-cell-index-obstructions.lean`; surviving the gates was
+not evidence of truth, and the "no achievable window" finding of that record (`Count false false`
+holds the countdown at `0` through an idle interval of any length while `Drift` moves the next
+deadline freely) was the standing obstruction to any argument through the second region.
 
-**(5) The exhibited period is the period of the wrong object.**  `reachStep` iterates the FULL
-`step` relation, so the exhibited `P` is the period of the reach-SET iteration on the whole graph;
-a formula that forbids a letter restricts the object to a sub-object whose pending cycle structure
-has a different period.  On the object whose pending part is a 3-cycle and a 2-cycle sharing one
-state the reach sets are constant from threshold `4` (period `1`), while every `d`-free pending
-walk from `a` back to `a` has length `0 mod 3`; every modulus coprime to `3` collides on a pair a
-depth-2 formula separates (`reach5_eventually_constant`, `period_collision`, `cell5_ne`,
-`reach_period_refuted`).  Prediction: all four close.
+Both mechanisms below sit entirely inside the FIRST region, where the countdown is deterministic;
+neither uses `Drift`, and `n` is held equal across every witnessing pair.  The two pinned
+definitional bodies, `ladderIndexRes` and `reachStep`, are ported byte-for-byte from the
+fourteenth probe, so what is refuted is the index as landed there.
+
+## Mechanism (4): the threshold cannot be object-derived
+
+`PlusTruthAt`'s `untl` clause is strict in both bounds, so over integer time `bot U chi` is
+exactly "`chi` at the next instant", and `k` nested nexts read `chi` exactly `k` instants later
+(`truth_nextPow`).  `Count true true` forces the first idle state of a region to distance exactly
+`c + 1` for every history (`pending_run_gen`, `idle_at_gen` -- generic in the object; only `Count`
+is used).  So the depth-`(T+1)` next-chain ending in the idle letter, `phiDepth T`, is true at
+`(q, T, n)` and false at `(q, T + (P+1), n)`, while with `n := T + (P+1) + B` the index identifies
+the pair for EVERY `(T, P, B)`: both countdowns saturate the threshold, both residues agree modulo
+`P + 1`, `n` is shared, both gaps clip to `2B`.
+
+Machine-checked: `depth_collision`, `cell_depth_ne` (every type in the cell of `yT` lacks
+`phiDepth T`; the reference type through `xT` contains it), `object_only_parameters_refuted`.
+The decision gate recorded: **the threshold is not object-derivable: for every (T, P, B) the index
+collides on a pair the depth-(T+1) next-chain separates.**  The threshold must be at least the
+formula's `untl`-nesting depth -- formula-derived, like `B`.
+
+## Mechanism (5): the exhibited period is the period of the wrong object
+
+`reachStep` iterates the FULL `step` relation, so the exhibited `P` is the period of the
+reach-SET iteration on the whole graph.  But a formula can forbid a letter, and a forbidden letter
+restricts the object to a sub-object whose pending cycle structure has a different period.
+Fixture B is the object whose pending part is a 3-cycle `a → b → c → a` and a 2-cycle `a → d → a`
+sharing `a`: its reach sets from `a` are CONSTANT from threshold `4` on
+(`reach5_four`, `reachStep5_univ`, `reach5_eventually_constant` -- period `1`, exhibited in
+exactly the shape `reachN_eventually_periodic` returns, and minimal), yet every `d`-free pending
+walk from `a` back to `a` has length `0 mod 3` (`walk_mod3`, through `cyc` and `step5_cyc`).
+Under the formula `endA → evD` with `endA := p U (r ∧ ℓ_a)` and `evD := ⊤ U ℓ_d`, the type
+containing `endA` and lacking `evD` is realized at `(a, C, n)` for `3 ∣ C` and at no history
+through `(a, C + (P+1), n)` when `3 ∤ P + 1` (`endA_at_zero_iff`, `idle_copy5`, `evD_of_ld`,
+`exists_cell_not_phi5`, `phi5_mem_of_mem_cell`).
+
+Machine-checked: `period_collision` (every `(T, P, B)`), `cell5_ne` (every modulus coprime to
+`3`), `reach_period_refuted`.  The decision gate recorded: **the exhibited period is the period of
+the reach-SET iteration on the full graph, and a formula that forbids a letter restricts the
+object to a sub-object with a different period; period 1 is exhibited for the coprime-cycle object
+and every modulus coprime to 3 fails.**
+
+## The `P` versus `P + 1` convention
+
+The index takes residues modulo `P + 1`; the exhibited period satisfies `1 ≤ P`; no record fixes
+whether the index is instantiated at `P := period` (modulus `period + 1`) or `P := period - 1`
+(modulus `period`).  Nothing here chooses: mechanism (4) is stated for ALL `P`, mechanism (5) for
+every `P` with `¬ 3 ∣ (P + 1)`, which covers both readings of the exhibited period `1` (moduli `2`
+and `1`).
+
+## The bounded attempt: FIXTURE-LEVEL sufficiency on the two-state object
+
+On fixture A every history through a pending state is forced onto ONE object path
+(`qp_forced_path`: pending with the alternating tag up to `c`, idle with the last tag after, and
+pending with the flipped tag at every earlier instant), and the truth of a box/stab-free formula
+depends only on that projection (`qp_truth_of_objPath`, through `TruthO`).  Along the forced path
+truth at `0` is eventually periodic in the countdown with period `2` above a FORMULA-derived
+threshold `thr` -- two per `untl` nesting (the two positions a shift by two exposes), nothing per
+`snce` (the past of a pending position is the same infinite alternating run on both paths) --
+(`qp_type_shift`, through the time-shift lemma `truthO_shift` and the identities
+`objP tg c (t + d) = objP (tagAt tg d) (c - d) t` and `objP tg (c + 2) t = objP tg c (t - 2)`).
+Hence the cell at a pending state is a SINGLETON (`cellAt_eq_singleton`) and, for box/stab-free
+`φ`, countdowns at or above `thr φ` of equal parity, and ANY next deadlines:
+  `qp_cell_eq_of_depth_parity : cellAt M φ (0, st tg c n) 0 = cellAt M φ (0, st tg c' n') 0`.
+
+**This is not the factorization lemma.**  It is sufficiency on the two-state object, where the
+absence of a region restart makes every history share one object path -- exactly what the general
+object lacks, and exactly what the second-region finding of the fourteenth probe says cannot be
+recovered there.  Together with `cell_depth_ne` (necessity of a formula-derived threshold) it
+characterizes the cells of THIS fixture and nothing wider.
+
+## What this probe does NOT say
+
+- **No general factorization lemma, in any shape.**  Not over object-exhibited parameters
+  (refuted above); not over parameters depending on the object and the formula jointly, which is
+  OPEN and asserted nowhere.  The obligations a successor would meet: eventual periodicity of
+  realizable types in the countdown over the product of the object with the closure; a
+  region-length pumping lemma for `untl`/`snce`-depth-bounded formulas; the next deadline's
+  coupling through `Drift`; the box/stab letters through the anchor-layer equations.
+- No seventh coordinate, no wider tuple, no new index candidate.  The refined parameter-origin
+  rule -- the threshold at least the formula's `untl`-nesting depth; the modulus dominating the
+  period of every letter-definable sub-object of the object -- is the NECESSARY condition the two
+  refutations establish, never claimed sufficient.
+- The three earlier negatives (gap coordinate; countdown parity; bounded carrier) are untouched
+  and the three existing gates are not re-run.
+- No upper bound and no complexity bound; every quantity named is a COUNT.  No finiteness is
+  added; `anchorCells_finite` and `anchorCells_ncard_le` are untouched.
+- Nothing about `HitPresented`; no declaration mentions `PlusValidZTime`.
+- No library module is created and no declaration is added under the main library; the only
+  library-side edits this record carries are a module docstring and record rows.
+- The acceptance clause is never dropped (`stab_mem_tpOf_iff` is the stab letter of a cell);
+  `TruthO`'s `box`/`stab` arms are placeholders never reached under `BoxStabFree`, and every
+  theorem using `TruthO` carries that hypothesis.
+- The successor design is not chosen here: the direction on record remains a different
+  presentation of a cell -- a set-valued per-state datum over a quotient -- not a wider tuple.
+
+## Axioms
+
+`cell_depth_ne`, `object_only_parameters_refuted`, `reach5_eventually_constant`,
+`period_collision`, `cell5_ne`, `reach_period_refuted`, `qp_truth_of_objPath`, `qp_forced_path`,
+`qp_type_shift`, `cellAt_eq_singleton` and `qp_cell_eq_of_depth_parity` depend on
+`[propext, Classical.choice, Quot.sound]`; `truth_nextPow`, `depth_collision`, `pending_run_gen`,
+`idle_at_gen` and `walk_mod3` on `[propext, Quot.sound]`.  No new axiom, no placeholder body, no
+`native_decide` and no vacuous definition appears anywhere in this file.
 
 Compile: `lake env lean specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean`
 -/
@@ -1426,3 +1528,22 @@ theorem qp_cell_eq_of_depth_parity {φ : PlusFormula} (hφ : PlusFormula.BoxStab
     ring
 
 end Probe775
+
+/-! ## Axiom check -/
+
+#print axioms Probe775.truth_nextPow
+#print axioms Probe775.depth_collision
+#print axioms Probe775.cell_depth_ne
+#print axioms Probe775.object_only_parameters_refuted
+#print axioms Probe775.reach5_eventually_constant
+#print axioms Probe775.period_collision
+#print axioms Probe775.cell5_ne
+#print axioms Probe775.reach_period_refuted
+#print axioms Probe775.pending_run_gen
+#print axioms Probe775.idle_at_gen
+#print axioms Probe775.walk_mod3
+#print axioms Probe775.qp_truth_of_objPath
+#print axioms Probe775.qp_forced_path
+#print axioms Probe775.qp_type_shift
+#print axioms Probe775.cellAt_eq_singleton
+#print axioms Probe775.qp_cell_eq_of_depth_parity

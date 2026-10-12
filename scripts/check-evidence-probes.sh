@@ -977,6 +977,55 @@ EVIDENCE="specs/evidence"
 #                                                           | `gate_separates`,
 #                                                           | `gate_collides_below_two`
 #                                                           | `[propext, Quot.sound]`).
+# seam-gluing-ray-product/ladder-residue-index-refutation  | LADDER RESIDUE INDEX REFUTATION (requirement (W)'s run
+#                                                           | layer, "(W): what landed and what did not", obligation
+#                                                           | (ii) item 1's cell-index sub-problem): the six-coordinate
+#                                                           | residue-carrying candidate `ladderIndexRes T P B` --
+#                                                           | thresholds and residues on both counters beside the
+#                                                           | clipped gap, with its threshold and period EXHIBITED from
+#                                                           | the object by `reachN_eventually_periodic` and only the
+#                                                           | clip bound from the formula -- is REFUTED at BOTH
+#                                                           | object-exhibited parameters, uniformly in the clip bound,
+#                                                           | by two mechanisms inside the FIRST region where the
+#                                                           | countdown is deterministic. (4) The threshold cannot be
+#                                                           | object-derived: over integer time `bot U chi` is `chi` at
+#                                                           | the next instant (`truth_nextPow`), so the depth-`(T+1)`
+#                                                           | next-chain ending in the idle letter reads whether the
+#                                                           | forced first idle state sits at distance exactly `T+1`;
+#                                                           | `(q, T, n)` against `(q, T+(P+1), n)` at `n = T+(P+1)+B`
+#                                                           | collides for EVERY `(T, P, B)` while their cells differ
+#                                                           | (`depth_collision`, `cell_depth_ne`,
+#                                                           | `object_only_parameters_refuted`). (5) The exhibited
+#                                                           | period is the period of the wrong object: `reachStep`
+#                                                           | iterates the FULL step relation, and a formula that
+#                                                           | forbids a letter restricts the object to a sub-object with
+#                                                           | a different period; on the coprime-cycle object (a 3-cycle
+#                                                           | and a 2-cycle sharing `a`) the reach sets are constant
+#                                                           | from threshold 4 (`reach5_eventually_constant`, period 1)
+#                                                           | while every `d`-free pending walk from `a` to `a` has
+#                                                           | length `0 mod 3` (`walk_mod3`), so every modulus coprime
+#                                                           | to 3 -- both readings of period 1 -- collides on a pair
+#                                                           | that `p U (r AND l_a)` with `top U l_d` in the closure
+#                                                           | separates (`period_collision`, `cell5_ne`,
+#                                                           | `reach_period_refuted`). The refined parameter-origin rule
+#                                                           | is NECESSARY and asserted as nothing more: the threshold
+#                                                           | at least the formula's `untl`-nesting depth, the modulus
+#                                                           | dominating the period of every letter-definable
+#                                                           | sub-object. FIXTURE-LEVEL sufficiency on the two-state
+#                                                           | object (`qp_cell_eq_of_depth_parity`: box/stab-free
+#                                                           | formulas, countdowns at or above the formula-derived `thr`
+#                                                           | and of equal parity, any next deadlines) rests on
+#                                                           | `qp_forced_path` -- one object path through every pending
+#                                                           | state -- which the general object lacks, and is NOT the
+#                                                           | factorization lemma. What it withholds: no factorization
+#                                                           | lemma in any shape; no seventh coordinate; the three
+#                                                           | earlier negatives untouched; no finiteness added; nothing
+#                                                           | about `HitPresented`; no library declaration; the
+#                                                           | acceptance clause never dropped; the successor design not
+#                                                           | chosen. Axioms `[propext, Classical.choice, Quot.sound]`
+#                                                           | on the cell theorems, `[propext, Quot.sound]` on
+#                                                           | `truth_nextPow`, `depth_collision`, `walk_mod3`,
+#                                                           | `pending_run_gen`, `idle_at_gen`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1009,6 +1058,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-cell-refutation"
   "seam-gluing-ray-product/ladder-liveness-forward-only"
   "seam-gluing-ray-product/ladder-cell-index-obstructions"
+  "seam-gluing-ray-product/ladder-residue-index-refutation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

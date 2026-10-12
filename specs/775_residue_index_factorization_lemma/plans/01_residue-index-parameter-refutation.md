@@ -475,13 +475,13 @@ imports and that modifies no library module.
 
 ---
 
-### Phase 4: Probe Header, Axiom Block, and Evidence-Gate Wiring [NOT STARTED]
+### Phase 4: Probe Header, Axiom Block, and Evidence-Gate Wiring [COMPLETED]
 
 **Goal**: Replace the provisional header with the record the three decision gates produced, add
 the `#print axioms` block, and wire the probe into the evidence gate as the fifteenth wired probe.
 
 **Tasks**:
-- [ ] Write the final header in the fourteenth probe's shape: title sentence; "What was asked";
+- [x] Write the final header in the fourteenth probe's shape: title sentence; "What was asked";
       the two mechanisms with their settling declarations and the sentence each decision gate
       produced; the `P` versus `P + 1` convention ambiguity and why every statement is
       convention-independent; the Phase 3 outcome and, on Branch P, the explicit "fixture-level,
@@ -492,19 +492,29 @@ the `#print axioms` block, and wire the probe into the evidence gate as the fift
       the threshold must be at least the formula's `untl`-nesting depth, the modulus must dominate
       the period of every letter-definable sub-object — never claimed sufficient; the "Axioms"
       paragraph; the compile line.
-- [ ] Add `#print axioms` for every Goal and for `walk_mod3`, `pending_run_gen`, `idle_at_gen`,
+- [x] Add `#print axioms` for every Goal and for `walk_mod3`, `pending_run_gen`, `idle_at_gen`,
       and any Phase 3 Branch P declaration, after `end Probe775`; record the printed readings in
       the header's Axioms paragraph (expected `[propext, Classical.choice, Quot.sound]` on the cell
       theorems, `[propext, Quot.sound]` on the index collisions).
-- [ ] `git add` the probe (the gate's rule is "tracked, not merely present").
-- [ ] In `scripts/check-evidence-probes.sh`: add one 120-column-wrapped row to the `# --- WIRED ---`
+- [x] `git add` the probe (the gate's rule is "tracked, not merely present").
+- [x] In `scripts/check-evidence-probes.sh`: add one 120-column-wrapped row to the `# --- WIRED ---`
       comment table, after the `ladder-cell-index-obstructions` row, in the same shape (what it holds
       in place; axioms), and one `WIRED=(` array entry
       `"seam-gluing-ray-product/ladder-residue-index-refutation"` after the fourteenth's. Cite
       declaration names and section headings only — no task number.
-- [ ] `bash -n scripts/check-evidence-probes.sh`, then run the gate detached with a bounded waiter;
+- [x] `bash -n scripts/check-evidence-probes.sh`, then run the gate detached with a bounded waiter;
       require `PASS` with the new probe named and zero FAIL.
-- [ ] Commit per the green-substep mandate.
+- [x] Commit per the green-substep mandate.
+      **Measured.** Final header 150 lines (hypothesis 120–180). `#print axioms`: `[propext,
+      Classical.choice, Quot.sound]` on `cell_depth_ne`, `object_only_parameters_refuted`,
+      `reach5_eventually_constant`, `period_collision` (via `positivity` in `le_c5`), `cell5_ne`,
+      `reach_period_refuted` and the five Phase 3 declarations; `[propext, Quot.sound]` on
+      `truth_nextPow`, `depth_collision`, `pending_run_gen`, `idle_at_gen`, `walk_mod3`; no `sorryAx`.
+      Gate: `PASS all 33 wired probe(s) compile`, the fifteenth named PASS, zero FAIL. Script diff: one
+      contiguous 49-line table row plus one array line (hypothesis 6–10 + 1; the fourteenth's own row
+      is ~120 lines in the same 60-column register, so the hypothesis under-measured the precedent;
+      nothing elsewhere in the file changed). The only `task N`/`specs/NNN_` grep hit in the script is
+      the pre-existing line 18.
 
 **Timing**: 1 hour
 
