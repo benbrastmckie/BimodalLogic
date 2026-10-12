@@ -2,7 +2,7 @@ TOMBSTONE — code deleted; README retained as historical record.
 
 # UltrafilterChain Dead Code Archive
 
-This directory contains documentation for dead code removed from `FormalSystem/Metalogic/Algebraic/UltrafilterChain.lean` during Task 80 cleanup.
+This directory contains documentation for dead code removed from `FormalSystem/Metalogic/Algebraic/UltrafilterChain.lean` during the cleanup documented below.
 
 ## Archived Date
 
@@ -12,7 +12,7 @@ This directory contains documentation for dead code removed from `FormalSystem/M
 
 These constructions represent abandoned approaches to modal completeness that hit fundamental mathematical barriers:
 
-1. **F-Preserving Seed** - Task #69 proved this approach FALSE (box_F_seed_chain produces non-F-preserving chains)
+1. **F-Preserving Seed** - proved FALSE (box_F_seed_chain produces non-F-preserving chains)
 2. **Bidirectional Seed** - H(a) -> G(H(a)) is NOT derivable in TM, making bidirectional temporal propagation unfixable
 3. **Z_chain Construction** - Structural gap: cannot prove cross-direction G/H coherence without circular dependencies
 4. **CoherentZChain** - Same structural gaps as Z_chain, marked ARCHIVED
@@ -43,7 +43,7 @@ The full code exists in git history. To retrieve:
 # View the file before cleanup
 git show HEAD~1:FormalSystem/Metalogic/Algebraic/UltrafilterChain.lean
 
-# Or checkout specific commit before Task 80
+# Or checkout specific commit before this cleanup
 git log --oneline FormalSystem/Metalogic/Algebraic/UltrafilterChain.lean
 ```
 

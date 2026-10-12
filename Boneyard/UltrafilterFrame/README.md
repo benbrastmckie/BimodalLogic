@@ -1,7 +1,7 @@
 # UltrafilterFrame (ARCHIVED)
 
-**Archived**: 2026-05-20 (task 21)
-**Reason**: Elaboration conflicts with BXCanonical completeness; prerequisite for Jonsson-Tarski (task 125)
+**Archived**: 2026-05-20
+**Reason**: Elaboration conflicts with BXCanonical completeness; prerequisite for Jonsson-Tarski
 
 ## Overview
 
@@ -46,10 +46,10 @@ upstream-import build with those two files included before assuming the same cle
 
 ## Recovery
 
-Both files are prerequisites for the Jonsson-Tarski representation theorem
-(task 125). Recoverable via git history when that task is undertaken.
+Both files are prerequisites for the Jonsson-Tarski representation theorem.
+Recoverable via git history when that representation theorem is undertaken.
 
 ## References
 
 - `Metalogic/Algebraic/` -- Active algebraic infrastructure
-- Task 125: Jonsson-Tarski representation (future)
+- Jonsson-Tarski representation (future)

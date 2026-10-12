@@ -2,13 +2,13 @@ TOMBSTONE — code deleted; README retained as historical record.
 
 # Archived T-Axiom Dependent Code
 
-**Archived**: 2026-04-03 (Task 83, Phase 1)
+**Archived**: 2026-04-03 (Phase 1)
 
 ## Reason
 
 These functions depend on the T-axiom (`G(phi) -> phi` / `H(phi) -> phi`), which is
 NOT valid under strict temporal semantics. The project migrated from reflexive to
-strict semantics in Task 81 (March 2026), making these proofs unsound.
+strict semantics in March 2026, making these proofs unsound.
 
 All archived functions contain `sorry` placeholders where `temp_t_future` or
 `temp_t_past` axioms were previously invoked.
@@ -41,8 +41,8 @@ Functions from `Metalogic/Decidability/FMP/TruthPreservation.lean`:
 This code is preserved for historical reference only. It does NOT compile and
 should NOT be imported by active Lean files.
 
-## Related
+## Change History
 
-- Task 81: Strict semantics migration
-- Task 83: Completeness via representation theorem (uses restricted coherence instead)
-- Task 82: FMP truth preservation redesign (will replace filtration lemmas)
+- Strict semantics migration
+- Completeness via representation theorem (uses restricted coherence instead)
+- FMP truth preservation redesign (will replace filtration lemmas)

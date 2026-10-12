@@ -2,7 +2,7 @@ TOMBSTONE — code deleted; README retained as historical record.
 
 # NonBurgessSeed (ARCHIVED)
 
-**Archived**: 2026-04-28 (task 107, Phase 3)
+**Archived**: 2026-04-28 (Phase 3)
 **Reason**: Inconsistent case hits density gap
 
 ## Overview
@@ -35,7 +35,7 @@ All code is commented out and non-compilable.
 The new approach in `splitting_seed_consistent` (active code) consolidates both
 sorry sites into a single density gap sorry with clear documentation.
 
-## References
+## Change History
 
-- Task 107: Phase 3 restructured with Burgess D0 seed
-- `Boneyard/DenseChronicle/` -- Same density gap from a different angle
+- Phase 3 restructured with Burgess D0 seed
+- See also `Boneyard/DenseChronicle/` -- same density gap from a different angle

@@ -6,21 +6,27 @@
   "objectives": [
     {"id": 1, "description": "Defensive checkpoint git-snapshot.sh 766 --no-revert", "status": "done", "files_touched": []},
     {"id": 2, "description": "Re-derive scope: check-task-references.sh Boneyard filtered to README.md", "status": "done", "files_touched": []},
-    {"id": 3, "description": "Rewrite 24 Boneyard README.md files per Rewrite Vocabulary", "status": "in_progress", "files_touched": [
-      "Boneyard/BX1DependentCode/README.md",
-      "Boneyard/BXPipelineDeadCode/README.md",
-      "Boneyard/BXPipelineGapAnalysis/README.md",
-      "Boneyard/ChainCompleteness/README.md",
-      "Boneyard/ClosedGuardLegacy/README.md",
-      "Boneyard/DeadCanonicalModel/README.md",
-      "Boneyard/DefectDirectedChain/README.md",
-      "Boneyard/DenseChronicle/README.md",
-      "Boneyard/DiscreteXY/README.md"
+    {"id": "3b", "description": "Rewrite remaining 15 Boneyard README.md files per Rewrite Vocabulary", "status": "done", "files_touched": [
+      "Boneyard/FiltrationOrdering/README.md",
+      "Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md",
+      "Boneyard/Kamp/KampWeakCanonical/Separation/DedekindZ/README.md",
+      "Boneyard/Kamp/KampWeakCanonical/Separation/Hierarchy/README.md",
+      "Boneyard/Kamp/VecEADecomposition/README.md",
+      "Boneyard/MergedBracketQuarantine/README.md",
+      "Boneyard/NonBurgessSeed/README.md",
+      "Boneyard/OpenGuardInvalid/README.md",
+      "Boneyard/RoundRobinChain/README.md",
+      "Boneyard/ScheduleBasedBFMCS/README.md",
+      "Boneyard/StageInductionGapAnalysis/README.md",
+      "Boneyard/TAxiomDependentCode/README.md",
+      "Boneyard/UltrafilterDeadCode/README.md",
+      "Boneyard/UltrafilterFrame/README.md",
+      "Boneyard/XuLemma321Legacy/README.md"
     ]},
-    {"id": 4, "description": "git diff read-through confirming citation excision only", "status": "not_started", "files_touched": []},
-    {"id": 5, "description": "Commit per green sub-step", "status": "not_started", "files_touched": []}
+    {"id": 4, "description": "git diff read-through confirming citation excision only", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Commit per green sub-step", "status": "done", "files_touched": []}
   ],
-  "current_objective": 3,
+  "current_objective": 5,
   "approaches_tried": [],
   "handoff_count": 0,
   "deviations": []

@@ -2,7 +2,7 @@ TOMBSTONE — code deleted; README retained as historical record.
 
 # StageInductionGapAnalysis (Archived)
 
-Archived from `ChronicleToCountermodel.lean` (task 123, 2026-05-13).
+Archived from `ChronicleToCountermodel.lean`, 2026-05-13.
 
 ## What This Contains
 
@@ -25,4 +25,4 @@ The sorry at `succ_cofinal` represents a genuine limitation of the Burgess chron
 
 ## Replacement
 
-Task 129 (weak/reflexive completeness + conservative extension) provides `IsSuccArchimedean` via a Henkin canonical model where every point is a distinct MCS, bypassing the gap scenario entirely.
+The weak/reflexive completeness and conservative extension approach provides `IsSuccArchimedean` via a Henkin canonical model where every point is a distinct MCS, bypassing the gap scenario entirely.

@@ -2,7 +2,7 @@ TOMBSTONE — code deleted; README retained as historical record.
 
 # OpenGuardInvalid (ARCHIVED)
 
-**Archived**: 2026-05-20 (task 173)
+**Archived**: 2026-05-20
 **Reason**: 27 sorry-tainted definitions invalid under open guard (t,s) semantics
 
 ## Overview
@@ -38,7 +38,7 @@ The 14 sorry-free definitions remain in `Theorems/TemporalDerived.lean`. The
 closed-guard original proofs (where they existed) are separately archived in
 `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDerived.lean`.
 
-## References
+## Change History
 
-- Task 113: Open guard refactoring (BX8/BX9 removal)
-- Task 173: Archival of 27 sorry-tainted definitions
+- Open guard refactoring (BX8/BX9 removal)
+- Archival of 27 sorry-tainted definitions

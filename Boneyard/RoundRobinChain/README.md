@@ -1,6 +1,6 @@
 # RoundRobinChain (ARCHIVED)
 
-**Archived**: 2026-04-28 (task 107)
+**Archived**: 2026-04-28
 **Reason**: BX11 perpetual deferral makes depth-0 base case of `forward_F` unprovable
 
 ## Overview
@@ -35,7 +35,7 @@ DRMChain.lean imports active modules (`RestrictedMCS`, `SuccExistence`,
 infrastructure is correct and reusable -- the obstruction is specifically in the
 `forward_F` depth-0 base case.
 
-## References
+## Change History
 
-- Task 93: Confirmed dead after 40 rounds of research
-- Task 107: Archived with QuasimodelOracle and DefectDirectedChain
+- Confirmed dead after 40 rounds of research
+- Archived with QuasimodelOracle and DefectDirectedChain

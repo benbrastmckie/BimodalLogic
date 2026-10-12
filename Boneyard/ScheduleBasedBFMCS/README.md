@@ -1,6 +1,6 @@
 # ScheduleBasedBFMCS -- Archived Dead Code
 
-Archived: Task 130 (2026-05-20)
+Archived: 2026-05-20
 Source: BXCanonical/RootScopedChain.lean
 
 ## Why Archived
@@ -28,8 +28,8 @@ the FMCS directly via point insertion, avoiding the F-obligation loss problem.
 - bwd_chain_P_not_return: P-obligation monotonicity (proved)
 - dd_countermodel: Countermodel wiring (carries sorry from upstream)
 
-## Task Cross-References
+## Change History
 
-- Task 107: Defect-directed chain archived to Boneyard/DefectDirectedChain/
-- Task 130: This archival (schedule-based pipeline)
+- Defect-directed chain archived to Boneyard/DefectDirectedChain/
+- Schedule-based pipeline archived
 - Completeness.lean: Routes through Chronicle/ instead

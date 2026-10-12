@@ -32,5 +32,5 @@ This is the bimodal analogue of Kamp's theorem for temporal logic.
 
 *Last verified: 2026-05-29*
 
-> **Note**: This README was last verified before task 131 (module reorg) -- verify
+> **Note**: This README was last verified before the module reorganization -- verify
 > file list is still current after that task completes.

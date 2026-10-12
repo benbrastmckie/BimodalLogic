@@ -2,7 +2,7 @@ TOMBSTONE — code deleted; README retained as historical record.
 
 # XuLemma321Legacy (Archived)
 
-**Archived**: 2026-04-28 (moved from root `Boneyard/` in task 132)
+**Archived**: 2026-04-28 (moved from root `Boneyard/`)
 **Origin**: `RRelation.lean` (commit `51bdc854d`, moved to root Boneyard in commit `f62f19a99`)
 **Task**: Xu 3.2.1(i)/(ii) proof-by-contradiction attempt
 
@@ -22,7 +22,7 @@ The proof-by-contradiction approach splits into two sub-cases:
 
 ## Replacement
 
-Task 115 proved Xu 3.2.1 via a fundamentally different method: `dcs_neg_union_consistent` provides the result directly without requiring proof-by-contradiction or the inconsistency case. This archived approach is therefore doubly obsolete -- both blocked on BX9 unsoundness AND superseded by a working proof.
+A fundamentally different method proved Xu 3.2.1: `dcs_neg_union_consistent` provides the result directly without requiring proof-by-contradiction or the inconsistency case. This archived approach is therefore doubly obsolete -- both blocked on BX9 unsoundness AND superseded by a working proof.
 
 ## Downstream Usage
 
@@ -36,6 +36,6 @@ git log --follow Boneyard/XuLemma321Legacy/XuLemma321.lean
 
 ## References
 
-- Task 115: Proved Xu 3.2.1 via dcs_neg_union_consistent
-- Task 107: Chronicle construction context
+- Proved Xu 3.2.1 via dcs_neg_union_consistent
+- Chronicle construction context
 - `PointInsertion.lean`: Current implementation using Xu 3.2.1+3.2.2

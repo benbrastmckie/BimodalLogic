@@ -1,6 +1,6 @@
 # FiltrationOrdering -- Archived Dead Code
 
-Archived: Task 130 (2026-05-20)
+Archived: 2026-05-20
 Source: BXCanonical/Filtration/SigmaOrdering.lean
 
 ## Why Archived
@@ -20,8 +20,7 @@ Superseded by Chronicle construction which avoids filtration entirely.
 | sigma_strict_irrefl | BX1 removed |
 | not_sigma_equiv_of_sigma_strict | BX1 removed |
 
-## Task Cross-References
+## Change History
 
-- Task 101: Original design of sigma ordering
-- Task 113: BX1 removal (open guard refactor)
-- Task 130: This archival
+- Original design of sigma ordering
+- BX1 removal (open guard refactor)
