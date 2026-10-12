@@ -528,7 +528,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 759, Task 761
+- **Dependencies**: Task 759
 
 **Description**: STATEMENT (library, research-first; new module `RaySummary/HitComplete.lean`). Requirement (C)'s general row, verbatim from the RaySummary README's verdict table and "(W) … obligation (ii)" item 2 — run-layer phase 3, the completeness half (model → object): for every regular ℤ-model M, seam (τ, t), formula φ and depth 1 ≤ k, a finite labelled presentation with a computable bound in φ:
   `theorem exists_hitPresented (M : TaskModel F.toTaskFrame) [F.IsRegular] (τ) (t) (φ) (k) (hk : 1 ≤ k) : ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool), Fintype.card Q ≤ sizeBound φ k ∧ HitPresented M τ t φ lab step k`
