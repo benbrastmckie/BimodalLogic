@@ -712,13 +712,13 @@ returning nothing.
 
 ---
 
-### Phase 7: Full Gate and Final Verification [NOT STARTED]
+### Phase 7: Full Gate and Final Verification [COMPLETED]
 
 **Goal**: Re-observe every phase's measurement through the repository's complete gate set, with
 nothing trusted on sight.
 
 **Tasks**:
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh` (all gates, no
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh` (all gates, no
       `--only-gate` narrowing and no `--skip-slow`), `bash scripts/check-evidence-probes.sh`,
       `bash scripts/check-module-invariants.sh`, `bash scripts/readme-lint.sh`,
       `bash .claude/scripts/check-task-references.sh`, `bash scripts/typst-sync-check.sh` (if
@@ -726,23 +726,44 @@ nothing trusted on sight.
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`. Every run goes
       detached with a bounded waiter per `context/patterns/bounded-build-waiter.md`, and each
       verdict is read from the guard's own result rather than a pipe exit code.
-- [ ] Re-grep the repository for a zero-debt violation introduced by this task: no `sorry`, no
+- [x] Re-grep the repository for a zero-debt violation introduced by this task: no `sorry`, no
       `axiom`, no `native_decide`, no vacuous-definition pattern in the probe;
       `bash .claude/scripts/lean-sorry-census.sh` unchanged.
-- [ ] Confirm the resting posture mechanically: no positive factorization statement over the
+- [x] Confirm the resting posture mechanically: no positive factorization statement over the
       general object exists as a declaration in any file this task wrote (the only non-negated
       occurrences of the shape are inside negations and the quoted target in the header; on Phase 3
       Branch P, the fixture theorem's name begins `qp_` and carries its BoxStabFree hypothesis);
       zero declarations added under `FormalSystem/`; `AnchorLayer.lean` and `Trace.lean`
       unchanged; no file outside `specs/` carries a task number introduced here; the axiom count is
       unchanged from the dispatch-start commit.
-- [ ] Run `bash .claude/scripts/lean-challenge-snapshot.sh --check 775 .` as an ADVISORY drift
+- [x] Run `bash .claude/scripts/lean-challenge-snapshot.sh --check 775 .` as an ADVISORY drift
       check if a manifest exists; otherwise diff the eight Goal signatures and the two pinned
       definitional bodies against the Challenge block with whitespace normalised. Report the verdict;
       never use it alone to fail anything.
-- [ ] If the pre-commit hook regenerates `typst/generated/status.typ`, commit the regenerated file
+- [x] If the pre-commit hook regenerates `typst/generated/status.typ`, commit the regenerated file
       with this phase and record the fact in the summary.
-- [ ] Final commit for the phase. Leave the plan-level `- **Status**:` field for the postflight.
+- [x] Final commit for the phase. Leave the plan-level `- **Status**:` field for the postflight.
+      **Measured, every run in this dispatch.** `verify-deploy.sh` (no narrowing, no `--skip-slow`):
+      exit 0, 14 PASS, 0 FAIL, 17 SKIP (every SKIP is a source-store-only gate reporting "deploy
+      consumer, not the source store"). `check-evidence-probes.sh`: `PASS all 33 wired probe(s)
+      compile`, the fifteenth named PASS, zero FAIL. `check-module-invariants.sh`: `ALL CHECKS
+      PASSED` (55 PASS groups; INV, C9, C9D, C14 among them). `readme-lint.sh`: PASS, 0 broken
+      references. `check-task-references.sh`: PASS, 0 occurrences outside `specs/` — the repo-wide
+      baseline is 0, so there is nothing pre-existing to report. `typst-sync-check.sh`: PASS (all 4
+      checks). Full guarded `lake build`: `Build completed successfully (2841 jobs)`, 0 errors, 0
+      warnings, guard exit 0, 14 s wall clock, and `LadderModel.olean`/`Realize.olean`/
+      `AnchorLayer.olean` newer than their sources. Zero-debt: the probe has 0 `sorry`, 0 `^axiom `,
+      0 vacuous definitions, and `native_decide` only in the header sentence disclaiming it;
+      `lean-sorry-census.sh` over the resolved roots: `sorry_count: 0`. Resting posture: 0
+      declarations added under `FormalSystem/`; `AnchorLayer.lean` and `Trace.lean` byte-unchanged
+      against the dispatch-start commit; axiom count 14 at both ends; the only
+      `ladderIndexRes … → cellAt …` shapes in the probe are the two under `¬`; the fixture theorem
+      is `qp_cell_eq_of_depth_parity` with `PlusFormula.BoxStabFree φ`. Advisory drift: no Challenge
+      manifest exists (the snapshot was never taken at plan time), so the eight Goal signatures
+      were diffed whitespace-normalised against the Challenge block — all eight MATCH — and both
+      pinned bodies are byte-identical to the fourteenth probe and (modulo `abbrev`/`def`) to the
+      block. The pre-commit hook did not regenerate `typst/generated/status.typ` for this phase
+      (no `.lean` file changed since Phase 5's regeneration).
 
 **Timing**: 1 hour
 
@@ -942,20 +963,20 @@ end Probe775
 
 ## Testing & Validation
 
-- [ ] The probe compiles through the guard at exit 0 with zero `error` and zero `warning` lines
+- [x] The probe compiles through the guard at exit 0 with zero `error` and zero `warning` lines
       after each of Phases 1–4; `#print axioms` prints no `sorryAx` and no axiom beyond `propext`,
       `Classical.choice`, `Quot.sound`.
-- [ ] `ladderIndexRes` and `reachStep` in the probe are byte-identical (whitespace-normalised) to
+- [x] `ladderIndexRes` and `reachStep` in the probe are byte-identical (whitespace-normalised) to
       the fourteenth probe's bodies, so the refutation is of the index as landed.
-- [ ] The eight Goal signatures match the Challenge block with whitespace normalised; the advisory
+- [x] The eight Goal signatures match the Challenge block with whitespace normalised; the advisory
       `lean-challenge-snapshot.sh --check` verdict is reported if a manifest exists.
-- [ ] `check-evidence-probes.sh` PASS with 33 wired probes, the fifteenth named.
-- [ ] `verify-deploy.sh` (full), `check-module-invariants.sh`, `readme-lint.sh`, the full guarded
+- [x] `check-evidence-probes.sh` PASS with 33 wired probes, the fifteenth named.
+- [x] `verify-deploy.sh` (full), `check-module-invariants.sh`, `readme-lint.sh`, the full guarded
       `lake build`, and `lean-sorry-census.sh` all green; `check-task-references.sh`'s pre-existing
       baseline reported as measured with no occurrence in a file this task touched.
-- [ ] No positive factorization statement over the general object exists as a declaration anywhere
+- [x] No positive factorization statement over the general object exists as a declaration anywhere
       this task wrote; zero declarations added under `FormalSystem/`; no task number outside `specs/`.
-- [ ] Each decision gate (Phases 1, 2, 3) has exactly one branch recorded with the sentence the
+- [x] Each decision gate (Phases 1, 2, 3) has exactly one branch recorded with the sentence the
       probe header carries, verbatim.
 
 ## Artifacts & Outputs
