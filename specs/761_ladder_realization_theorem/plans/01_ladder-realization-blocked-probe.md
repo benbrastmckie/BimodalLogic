@@ -644,21 +644,21 @@ deploy-consumer tree, so neither is claimed as coverage.
 
 ---
 
-### Phase 6: Run the Full Gate, Write the Summary, Return Blocked [NOT STARTED]
+### Phase 6: Run the Full Gate, Write the Summary, Return Blocked [COMPLETED]
 
 **Goal**: Run the complete repository gate set over the landed probe and the amended records,
 write the implementation summary, and return with Phase 1 still `[BLOCKED]`.
 
 **Tasks**:
-- [ ] Re-run the guarded `lake env lean` on the probe after all commits.
-- [ ] Run the final gate set (below), detached where the pattern requires, and record each exit
+- [x] Re-run the guarded `lake env lean` on the probe after all commits.
+- [x] Run the final gate set (below), detached where the pattern requires, and record each exit
       status in the summary. If the pre-commit hook regenerates `typst/generated/status.typ`,
       commit it with this phase and say so in the summary.
-- [ ] Write the implementation summary per `summary-format.md`
+- [x] Write the implementation summary per `summary-format.md`
       (`specs/761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md`),
       naming Phase 1's obstruction, the forward-only verdict, the user's R1 ruling, and the two
       successor options (R2 via `/revise`; a research-first index record via `/spawn`).
-- [ ] Return per the Lean agent's Escalation Protocol, because Phase 1 is `[BLOCKED]`: leave the
+- [x] Return per the Lean agent's Escalation Protocol, because Phase 1 is `[BLOCKED]`: leave the
       plan-level `- **Status**:` field to the postflight (`update-plan-status.sh` via
       `update-task-status.sh`; do NOT hand-edit it — the twelfth probe's implementation recorded
       this deviation); write `.return-meta.json` with `status: "partial"`,
@@ -749,26 +749,26 @@ end Probe761
 
 ## Testing & Validation
 
-- [ ] The probe compiles under the gate's own command (`lake env lean`, through the build guard)
+- [x] The probe compiles under the gate's own command (`lake env lean`, through the build guard)
       with 0 errors, 0 warnings, and the axiom foot `[propext, Classical.choice, Quot.sound]` on
       `gPast_isPath` and `[propext, Quot.sound]` on `gPast_pending_past` and `gPast_count`.
-- [ ] No `sorry`, `axiom`, or vacuous-definition pattern in the probe (grep count 0).
-- [ ] The three Goal declarations match the Lean Challenge Statements block exactly
+- [x] No `sorry`, `axiom`, or vacuous-definition pattern in the probe (grep count 0).
+- [x] The three Goal declarations match the Lean Challenge Statements block exactly
       (`lean-challenge-snapshot.sh --check 761 .` as an advisory drift check).
-- [ ] `check-evidence-probes.sh` reports 31 wired probes, all PASS.
-- [ ] `check-module-invariants.sh`, `check-task-references.sh`, `readme-lint.sh`,
+- [x] `check-evidence-probes.sh` reports 31 wired probes, all PASS.
+- [x] `check-module-invariants.sh`, `check-task-references.sh`, `readme-lint.sh`,
       `typst-sync-check.sh`, `verify-deploy.sh` and the guarded full `lake build` all exit 0.
-- [ ] Header read-through: the three "why no statement exists" paragraphs; "`ulive` replaceable,
+- [x] Header read-through: the three "why no statement exists" paragraphs; "`ulive` replaceable,
       `slive` retained"; guardrail (e)'s precise forward-only sense; the no-bound, no-finiteness,
       zero-debt sentences; `anchorCells_ncard_le` untouched; no `LadderRealize.lean`; successor
       design not chosen.
-- [ ] The README's `thirteenth wired probe` count is 3 and the theorem-index diff is one hunk in
+- [x] The README's `thirteenth wired probe` count is 3 and the theorem-index diff is one hunk in
       the `ladderModel` row.
-- [ ] No new `truncate` / `Fin (B+1)` / clipped-gap occurrence in any touched file outside a
+- [x] No new `truncate` / `Fin (B+1)` / clipped-gap occurrence in any touched file outside a
       sentence naming it as deleted, refuted or research-level.
-- [ ] `state.json`: only 761's `description`/`last_updated` changed; T4's description in
+- [x] `state.json`: only 761's `description`/`last_updated` changed; T4's description in
       `successor-records.json` equals it; `TODO.md` regenerated, never hand-edited.
-- [ ] Phase 1 still `[BLOCKED]`; return status `partial` with `requires_user_review: true`.
+- [x] Phase 1 still `[BLOCKED]`; return status `partial` with `requires_user_review: true`.
 
 ## Artifacts & Outputs
 
