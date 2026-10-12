@@ -59,8 +59,19 @@ the OBJECT only.
   `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`, which consumes the
   declarations of this module on the two-state object: the gap `n - c` between the counters is
   observable through `p U (r ∧ X(p ∧ X r))`, because `Count`'s idle clause reads `c' = n`.
-* **No index of a ladder cell is claimed**, in any shape; a candidate carrying a third clipped
-  coordinate for the gap is research-level and is asserted nowhere.
+* **No index of a ladder cell is claimed**, in any shape, and the clipped-coordinate index
+  family is refuted at the countdown coordinate as well as bounded at the gap one, by the wired
+  probe `specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean`: `Count true
+  true` admits no early discharge, so a pending region's first idle state sits at distance exactly
+  `c + 1`, and `step` is independent of the counters, so the countdown's PARITY is observable
+  there (`cell_succ_ne` at every `c` with `n` held fixed, `ladderIndex_not_factoring` at every
+  clip bound, in both the exhibited-bound and `∃ B` forms). A computable index of which cell a
+  ladder state has is absent, and the positive factorization lemma — for a candidate of this
+  family or any other — is open and asserted nowhere. The bounded-carrier alternative, replacing
+  this carrier by its deadline-bounded sub-carrier, is closed as a GENERAL route by the same probe
+  (`bounded_width_validates_Phi_neg` against `Phi_neg_not_valid`); the narrow carve-out is that a
+  bounded carrier remains available for a target that does have a finite-width countermodel, per
+  `not_finite_width_fmp`'s own disclaimer.
 * **`anchorCells_finite` and `anchorCells_ncard_le` are untouched**: the SET of cells of any
   model is still finite and bounded. What is absent is only the computable index of WHICH cell a
   ladder state has.

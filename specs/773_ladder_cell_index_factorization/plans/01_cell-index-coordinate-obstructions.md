@@ -592,7 +592,7 @@ with no `sorry`, no axiom, no vacuous definition, and the twelve Challenge state
 
 #### Outcome
 
-`specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean`, 1025 lines (inside
+`specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean`, 1027 lines (inside
 the 600-1050 band), compiles through the guard at exit 0 with zero `error` and zero `warning`
 lines. Zero-debt grep count 0; `grep -nE "specs/[0-9]{3}_|task [0-9]"` prints nothing; the file is
 `git add`-ed and tracked, so Phase 5's "tracked, not merely present" rule is satisfied.
@@ -656,13 +656,13 @@ imports it, and it modifies no library module, so no other compilation unit can 
 
 ---
 
-### Phase 5: Wire the Probe into the Evidence Gate [NOT STARTED]
+### Phase 5: Wire the Probe into the Evidence Gate [COMPLETED]
 
 **Goal**: Register the probe in `scripts/check-evidence-probes.sh` so the gate compiles it on
 every run, with a table row recording the decision it holds in place.
 
 **Tasks**:
-- [ ] Add a table row in the `# --- WIRED ---` comment table, directly after the
+- [x] Add a table row in the `# --- WIRED ---` comment table, directly after the
       `seam-gluing-ray-product/ladder-liveness-forward-only` row (the row block ends at the line
       before `WIRED=(`), in the same two-column wrapped `# probe | decision` format, headed for
       the run layer's phase-2 soundness half and its cell-index sub-problem, and stating: the
@@ -677,12 +677,22 @@ every run, with a table row recording the decision it holds in place.
       finiteness and cardinality results untouched; nothing about HitPresented or PlusValidZTime;
       no library module; the successor design not chosen. Axiom summary as printed by the probe.
       **No task number anywhere in the row.**
-- [ ] Append `"seam-gluing-ray-product/ladder-cell-index-obstructions"` to the `WIRED=(` array
+- [x] Append `"seam-gluing-ray-product/ladder-cell-index-obstructions"` to the `WIRED=(` array
       immediately after `"seam-gluing-ray-product/ladder-liveness-forward-only"`.
-- [ ] `bash -n scripts/check-evidence-probes.sh` (syntax), then run the gate detached with a
+- [x] `bash -n scripts/check-evidence-probes.sh` (syntax), then run the gate detached with a
       bounded waiter per `context/patterns/bounded-build-waiter.md` — it is a sequence of
       `lake env lean` calls, not a `lake build`.
-- [ ] Commit the script edit.
+- [x] Commit the script edit.
+
+#### Outcome
+
+`bash -n scripts/check-evidence-probes.sh` exits 0. The gate was run detached and completed at
+exit 0: **`PASS  all 32 wired probe(s) compile`**, with
+`seam-gluing-ray-product/ladder-cell-index-obstructions` named in the output and PASS, zero FAIL
+lines, and the one pre-existing SKIP (`spike-untl-unfolding-and-fwd-obstruction`, deferred on
+frame-class uniformity work) unchanged. The new row's text asserts no index, no bound and no
+complexity figure, and carries no task number; the only `specs/[0-9]{3}_` occurrence in the
+script is the pre-existing archive path at its head, untouched by this phase.
 
 **Timing**: 0.5 hours
 
@@ -710,14 +720,14 @@ execution exercises every line this phase edits, and nothing else in the reposit
 
 ---
 
-### Phase 6: Amend the In-Tree Records [NOT STARTED]
+### Phase 6: Amend the In-Tree Records [COMPLETED]
 
 **Goal**: Stop every in-tree record describing the gap-carrying candidate as the plausible true
 index, and record the refutation, the bounded-carrier closure and the open status of the positive
 lemma, without introducing a count, a bound or a task reference.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` — module DOCSTRING only,
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` — module DOCSTRING only,
       no declaration touched: amend the "What this module does not hold" bullet that currently
       reads that a candidate carrying a third clipped coordinate for the gap is research-level and
       asserted nowhere, so that it states the current fact — the clipped-coordinate family is
@@ -725,7 +735,7 @@ lemma, without introducing a count, a bound or a task reference.
       wired probe; the computable index remains absent; the cell-set finiteness and cardinality
       results stay untouched; and the bounded-carrier alternative is closed as a general route.
       State the fact, with no record-versioning language ("no longer", "previously", "formerly").
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — three amendments:
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — three amendments:
       (a) the `LadderModel.lean` row of "What it holds", whose "no index of a ladder cell claimed"
       clause gains the refutation citation; (b) the requirement (W) row and the
       "(W): what landed and what did not" passage whose sentence currently reads that the
@@ -736,12 +746,12 @@ lemma, without introducing a count, a bound or a task reference.
       shape, for the fourteenth probe: what it establishes, by which declarations, with the axiom
       summary, and the full "what it does not say" tail including the untouched cell-set results
       and the absent cost figure. Update the record's `Last verified` line if the file carries one.
-- [ ] `docs/theorem-index.md` — amend the clauses in the admissible-carrier rows (the frame rows
+- [x] `docs/theorem-index.md` — amend the clauses in the admissible-carrier rows (the frame rows
       and the model row) that read "no index of a ladder cell claimed in any shape" so they also
       name the refutation of the clipped-coordinate family and cite the new probe path. Touch no
       declaration cell and no axiom cell, and introduce no count, so the C14 baseline pair and its
       stale-count tripwire stay satisfied.
-- [ ] `specs/state.json` — amend this task's `description` through
+- [x] `specs/state.json` — amend this task's `description` through
       `bash .claude/scripts/state-write.sh` (never a hand edit) so the record does not continue to
       assert the refuted TARGET: keep the sub-problem statement and the three things the
       predecessor record conflates, replace the TARGET and METHOD paragraphs with the re-scoped
@@ -750,8 +760,45 @@ lemma, without introducing a count, a bound or a task reference.
       close this phase `[PARTIAL]` with the record edits committed and this step named as the
       remainder. Regenerate `specs/TODO.md` with `bash .claude/scripts/generate-todo.sh`; never
       hand-edit it.
-- [ ] Verify the library module still elaborates after the docstring edit (scoped guarded build),
+- [x] Verify the library module still elaborates after the docstring edit (scoped guarded build),
       then commit per the green-substep mandate.
+
+#### Outcome
+
+Four files amended, all five verification criteria measured.
+
+- **`LadderModel.lean`** — module docstring only, no declaration touched: the "no index of a
+  ladder cell is claimed" bullet now states the refutation at the countdown coordinate with the
+  probe path, the absence of a computable index, the open status of the positive lemma, and the
+  bounded-carrier closure with its narrow carve-out. Scoped guarded build
+  `lake build FormalSystem.Metalogic.Decidability.RaySummary.LadderModel` exits 0 (1182 jobs, no
+  new warning).
+- **`RaySummary/README.md`** — three amendments as specified: (a) the `LadderModel.lean` row of
+  "What it holds"; (b) the requirement (W) row AND the "(W): what landed and what did not"
+  narrative passage, whose "plausible true index carries a third clipped coordinate" sentence is
+  replaced by the refutation and the open status; (c) a new Evidence paragraph for the fourteenth
+  probe in the same shape as the thirteenth's. `Last verified` already reads the current UTC date
+  and needed no change.
+- **`docs/theorem-index.md`** — four amended row clauses (inside the stated two-to-eight band):
+  rows `no_fwd`, `no_bwd_of_idle`, `ladderFrameAdm_isRegular` and `ladderModel`. No declaration
+  cell and no axiom cell touched, and no count introduced, so the C14 baseline pair and its
+  stale-count tripwire stay satisfied.
+- **`specs/state.json`** — description amended through `state-write.sh` (mutex acquired on the
+  first attempt, no retry needed; `--regen-todo` regenerated `specs/TODO.md`). `jq -S` equality
+  against HEAD with this task's `description` and `last_updated` deleted shows ONE other
+  difference, `status: planned -> implementing`, which the orchestrate preflight wrote before this
+  dispatch and which is not this phase's edit.
+
+Gate readings, reported as measured rather than as hoped:
+
+| Check | Verdict |
+|-------|---------|
+| scoped guarded `lake build` of the amended module | exit 0 |
+| `scripts/readme-lint.sh` | exit 0, `RESULT: PASS`, 0 broken file references |
+| `scripts/check-module-invariants.sh` | **exit 0**, with one non-exit-affecting group reported FAILED: `INV  2 file(s) carry a stale generated inventory block` naming `FormalSystem/Metalogic/README.md` and `README.md`. Both are PRE-EXISTING — neither appears in this task's `git status`, and no library declaration changed. C9 (zero task-number citations under `FormalSystem/`, `README.md`, `scripts/`) and C9D (under `docs/`) both PASS |
+| `.claude/scripts/check-task-references.sh` | **exit 1**, 198 unexempted occurrences repo-wide — a PRE-EXISTING baseline. None of this phase's three non-specs files appears in the findings, and a direct grep over all three for `specs/[0-9]{3}_` and `task [0-9]` returns nothing, so the per-file criterion (no occurrence INTRODUCED by this phase) is met. Recorded in the issue log rather than papered over |
+| clipped-coordinate read-through | every surviving `clip` / `n - c` / `min c B` occurrence in the amended files sits in a sentence naming it refuted or bounded; none describes it as the plausible true index |
+| record-versioning and task-reference language in the `+` hunks | none introduced (`no longer`, `previously`, `formerly`, `used to`, `withdrawn` all absent from the added lines; the pre-existing occurrences elsewhere in those files are untouched) |
 
 **Timing**: 1 hour
 
@@ -796,7 +843,7 @@ surface touched.
 
 ---
 
-### Phase 7: Land the Counter-Observables Context Note in the Source Store [NOT STARTED]
+### Phase 7: Land the Counter-Observables Context Note in the Source Store [COMPLETED]
 
 **Goal**: Execute the research report's Context Extension Recommendation — record the three
 mechanisms now known to defeat a clipped-coordinate ladder index, and the gate each one implies,
@@ -804,14 +851,14 @@ so the next index candidate is checked against all three before a proof is attem
 rediscovering them.
 
 **Tasks**:
-- [ ] Resolve the edit target from `.claude-extensions.json`'s `source_dir` for the lean
+- [x] Resolve the edit target from `.claude-extensions.json`'s `source_dir` for the lean
       extension (plan-time value:
       `/home/benjamin/.config/nvim/agent-system/extensions/lean`) and write
       `context/project/lean4/domain/ladder-counter-observables.md` beneath it. **Never hand-author
       the deployed mirror under `.claude/`** (`rules/source-store-deploy-boundary.md`): the
       deployed copy is a disposable artifact and arrives with the next regeneration, which is the
       expected outcome of this phase rather than a gap.
-- [ ] Content, in the shape the sibling domain notes use: (1) the structural fact that makes every
+- [x] Content, in the shape the sibling domain notes use: (1) the structural fact that makes every
       "clip the counters" proposal fail — the no-early-discharge clause puts an unbounded-distance
       observable at exactly `c + 1`, the region end, and the step relation is independent of the
       counters; (2) the three mechanisms — the gap at the first idle state, the object state at
@@ -822,12 +869,34 @@ rediscovering them.
       the parameter-origin rule: the gap clip comes from the formula, the threshold and period
       from the object, never the reverse; (5) what is still open — the positive factorization
       lemma for any index, stated as open and unclaimed.
-- [ ] Cite durable anchors only: declaration names, probe filenames under `specs/evidence/`,
+- [x] Cite durable anchors only: declaration names, probe filenames under `specs/evidence/`,
       module paths, and section headings. No task number, no `specs/{NNN}_` path, no axiom or
       sorry count, no bound, no record-versioning language.
-- [ ] Note in one line whether the lean extension's context index requires a registration entry
+- [x] Note in one line whether the lean extension's context index requires a registration entry
       for a new domain file; if it does, add it in the same source-store tree, and if it does not,
       say so rather than leaving the question silent.
+
+#### Outcome
+
+The lean extension's `source_dir` resolved from `.claude-extensions.json` to
+`/home/benjamin/.config/nvim/agent-system/extensions/lean`, matching the plan-time value, and the
+note was written to
+`context/project/lean4/domain/ladder-counter-observables.md` beneath it (115 lines). All five
+content items are present, each mechanism naming its settling declarations and the probe file
+under `specs/evidence/` that carries them.
+
+**Registration WAS required, and was added in the same source-store tree** — the question is
+answered rather than left silent. Two places register a domain note: `index-entries.json` (a new
+`entries[]` object with `path`, `line_count`, `load_when.agents` for all four lean agents,
+`load_when.task_types: ["lean4"]`, `domain`, `subdomain`, `summary` and `keywords`, modelled
+field-for-field on the `metadata-trust-surfaces.md` entry; the file re-parses as valid JSON) and
+the `## Key Files` list of `context/project/lean4/README.md`.
+
+`grep -nE "specs/[0-9]{3}_|task [0-9]|no longer|previously|formerly"` over the new note prints
+nothing. It claims no factorization lemma, no bound and no count, and states the positive lemma as
+open in its own closing section. **Nothing was written under `.claude/`**: `git status --short
+.claude/` is empty, and the deployed mirror arrives with the next regeneration, which is the
+expected outcome of this phase rather than a gap.
 
 **Timing**: 0.5 hours
 
