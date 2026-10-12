@@ -1,0 +1,28 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/773_ladder_cell_index_factorization/reports/01_cell-index-factorization.md",
+      "summary": "Refutes the gap-carrying three-coordinate ladder cell index uniformly in B (countdown parity is observable at the region end), closes route (C) via not_finite_width_fmp, and recommends a residue-carrying index with a three-part falsification gate."
+    }
+  ],
+  "next_steps": "Plan phase should re-scope the index to (q, min c T, c % P, min n T, n % P, clip (n - c) [-B, B]) and gate it against all three known mechanisms before any proof attempt; do not plan route (C).",
+  "user_decision": {
+    "question": "Research refuted this task's stated TARGET (the gap-carrying three-coordinate index) with a machine-checked counterexample. How should the task proceed?",
+    "options": [
+      "Re-scope within this task - define the residue-carrying index, gate it against all three known mechanisms, then attempt the factorization lemma",
+      "Close this task as a recorded refutation and spawn a fresh index record for the re-scoped candidate",
+      "Abandon fixed-arity indexing and re-present a cell as a set-valued per-state datum over a quotient"
+    ],
+    "recommended": "Re-scope within this task - define the residue-carrying index, gate it against all three known mechanisms, then attempt the factorization lemma",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1791777508_53d710_773",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
