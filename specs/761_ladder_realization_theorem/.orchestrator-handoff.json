@@ -1,19 +1,32 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote a six-phase [BLOCKED]-by-design plan per the user's R1 ruling: Phase 1 (the filed LadderCons, ladderCons_localRun, ladderRealized) is pre-marked [BLOCKED] on the open cell-index sub-problem, and Phases 2-6 land the plan-time-compiled forward-only liveness witness (gPast_isPath, gPast_pending_past, gPast_count) as the thirteenth wired probe, wire it into the evidence gate, amend the README, one theorem-index row, the design of record and the task description, run the full gate, and return partial with requires_user_review. The prototype was re-compiled through the build guard (exit 0) and the Lean Challenge block cross-checked with lean-challenge-snapshot.sh --dry-run; the strict plan validator passes with 0 warnings.",
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "Phase 1 (the filed LadderCons / ladderCons_localRun / ladderRealized) stays [BLOCKED] on the open index of which cell a ladder state has, per the user's R1 ruling; the statements are unformulable, not unproved. Phases 2-6 landed the thirteenth wired probe ladder-liveness-forward-only.lean (gPast_isPath, gPast_pending_past, gPast_count: the ladder's structural liveness is forward-only, so ulive is replaceable and slive is not), wired it into the evidence gate (31 PASS), and corrected the README, theorem index, design of record and task description. Full guarded lake build and every gate exit 0.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
-      "summary": "Six phases, 4.5 hours; Phase 1 [BLOCKED] by design, Phases 2-6 land the obstruction as a wired probe and correct the records; no library module."
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md",
+      "summary": "Blocked-record summary: Phase 1 obstruction, forward-only verdict, R1 ruling, R2/spawn successor options, full gate results."
+    },
+    {
+      "type": "probe",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean",
+      "summary": "Thirteenth wired probe: gPast_isPath, gPast_pending_past, gPast_count (forward-only structural liveness)."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 6,
-  "blockers": [],
+  "blockers": [
+    {
+      "phase": 1,
+      "target": "RaySummary/LadderRealize.lean (not created)",
+      "verbatim_goal": "`structure LadderCons (φ : PlusFormula) (lab) (step) (pend) : Prop` — `Cons`'s fields with the liveness fields `ulive`/`slive` replaced by the ladder's structural liveness, and with the box/stab letters PINNED per cell by the anchor layer's equations (`box_mem_tpOf_iff`, `stab_mem_tpOf_iff`); `theorem ladderCons_localRun …` — every ladder run satisfies the run conditions; `theorem ladderRealized … (k : ℕ) (hk : 1 ≤ k) : HitCl (ladderModel …) τ t φ k = ↑(hitOf (truncate B …) … (clNow φ) k)` — per ladder cell, for ALL φ, box/stab letters INCLUDED, the cell being `cellAt (ladderModel …) φ (t, ⟨(q, c, n), h⟩)`",
+      "what_was_tried": "The statements' formulability was tested before any proof (research F1-F4, plan-time compiled prototype): `truncate` is defined nowhere and its only reading is the refuted index Q × Fin (B+1) × Fin (B+1); every per-cell soundness shape (HitCl = hitOf, HitPresented, a truth lemma on (state, type)-runs) was checked against cell_ne, the Count clause and the stab clause; the box/stab clause was checked against stab_mem_tpOf_iff. The user was asked (R1/R2) and ruled R1.",
+      "why_it_failed": "The statements are unformulable without a finite index of which cell a ladder state has — an open sub-problem no predecessor answers and this record was told not to restate over a substitute — not a failed proof. A LadderCons without the box/stab clause would be a same-named weaker statement (forbidden). The remaining choice is the user's: R2 via /revise (land the index-free, box/stab-free run-layer half under an honest name, slive retained) or a research-first index record via /spawn."
+    }
+  ],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch /implement 761; expect a partial return with requires_user_review: true and blocked_phase: 1 (the plan's intended terminal shape), never implemented."
+  "next_action_hint": "User decision: /revise 761 for R2, or /spawn 761 for a research-first cell-index record. Do not re-dispatch implement as-is."
 }

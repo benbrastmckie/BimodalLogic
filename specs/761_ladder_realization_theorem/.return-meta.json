@@ -1,35 +1,52 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": true,
+  "blocked_phase": 1,
+  "review_reason": "Phase 1 blocked: the filed LadderCons/ladderCons_localRun/ladderRealized are unformulable without a finite index of which cell a ladder state has (open sub-problem; truncate undefined, its only reading the refuted Q x Fin (B+1) x Fin (B+1)); user ruled R1 (blocked whole). Remaining choice is the user's: R2 via /revise (index-free, box/stab-free run-layer half under an honest name) or a research-first index record via /spawn. Phases 2-6 landed the thirteenth wired probe (forward-only liveness) and corrected every record.",
+  "started_at": "2026-10-12T01:19:35Z",
+  "completed_at": "2026-10-12T02:02:58Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "notes": "vacuous grep has one pre-existing hit (FormalSystem/Examples/TemporalStructures.lean:495, goal literally True, present at the pre-task commit, untouched); axiom baseline 14 unchanged; evidence gate PASS all 31; check-module-invariants ALL CHECKS PASSED; lean-challenge-snapshot --check exit 71 (no manifest; advisory) -- Goal signatures diffed directly against the Challenge block, all three match"
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
-      "summary": "Six-phase [BLOCKED]-by-design plan per the user's R1 ruling: Phase 1 (the filed LadderCons/ladderCons_localRun/ladderRealized) is pre-marked [BLOCKED] on the open cell-index sub-problem; Phases 2-6 land the machine-checked forward-only liveness witness as the thirteenth wired probe, wire it into the evidence gate, amend the RaySummary README, one theorem-index row, the design of record and the task description (removing the hitOf (truncate B ...) and 'ulive/slive replaced' residues), run the full gate, and return partial with requires_user_review."
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md",
+      "summary": "Phase 1 blocked on the open cell-index sub-problem (R1); thirteenth wired probe ladder-liveness-forward-only.lean landed (gPast_isPath, gPast_pending_past, gPast_count), README/theorem-index/design-of-record/task description corrected."
     }
   ],
-  "next_steps": "Run /implement 761 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1791765918_514971_761",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 4.5,
-    "dependency_waves": [[1, 2], [3, 4, 5], [6]]
+  "partial_progress": {
+    "stage": "phase_1_blocked",
+    "details": "Phase 1 is [BLOCKED] by design and by the user's R1 ruling; Phases 2-6 completed and committed (phase commits 2f5cd1c97, 86ec6abce, b38f6f489, 4872ea55b plus the phase-6 commit).",
+    "phases_completed": 5,
+    "phases_total": 6
   },
-  "memory_candidates": [
-    {
-      "content": "Plan shape for a Lean record whose filed statement is refuted or unstatable and the user has ruled [BLOCKED]: one pre-decided [BLOCKED] Phase 1 quoting the filed goals verbatim (never a prerequisite of any executable phase, so no implementer waits on it), then contingency phases that (a) port a plan-time-compiled prototype into a wired probe under specs/evidence with the collection's header conventions, (b) add one WIRED row/entry to scripts/check-evidence-probes.sh, (c) amend the README/theorem-index with durable anchors only, (d) amend the design-of-record spec and the task description via state-write.sh so no residue of the refuted device survives, and (e) a final full-gate phase that returns partial + requires_user_review: true + blocked_phase: 1, never implemented. The plan-level Status field is left to the postflight. Used by the twelfth and thirteenth seam-gluing-ray-product probes.",
-      "category": "PATTERN",
-      "source_artifact": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["blocked-by-design", "wired-probe", "check-evidence-probes", "escalation-protocol", "lean4-plan", "refuted-statement"]
-    }
-  ],
   "modified_files": [
+    "specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean",
+    "scripts/check-evidence-probes.sh",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "docs/theorem-index.md",
+    "specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md",
+    "specs/757_lplus_decidability_successor_task_set/successor-records.json",
+    "specs/state.json",
+    "specs/TODO.md",
+    "specs/761_ladder_realization_theorem/records/761-amendment.txt",
     "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
-    "specs/761_ladder_realization_theorem/prototype/ladder-liveness-forward-only-proto.lean",
-    "specs/761_ladder_realization_theorem/issues.jsonl"
+    "specs/761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md"
   ],
-  "dispatch_seq": 2
+  "metadata": {
+    "session_id": "sess_1791765918_514971",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "compliance_note": "The plan's three Goals are the wired probe's declarations under specs/evidence/ by design (R1: no library module), so the source-root grep reports them MISSING there; each is present in the probe and its signature matches the Challenge block byte-for-byte.",
+    "phases_completed": 5,
+    "phases_total": 6
+  }
 }
