@@ -150,24 +150,24 @@ rewrite, not a bare marker.
 
 ---
 
-### Phase 1: Clear Boneyard archival READMEs [IN PROGRESS]
+### Phase 1: Clear Boneyard archival READMEs [COMPLETED]
 
 **Goal**: Zero unexempted citations in `Boneyard/**/README.md`, with each tombstone's archival
 provenance restated against durable anchors (dates, filenames, named refactors).
 
 **Tasks**:
-- [ ] Take a defensive checkpoint: `bash .claude/scripts/git-snapshot.sh 766 --no-revert`.
-- [ ] Re-derive the scope: `bash .claude/scripts/check-task-references.sh Boneyard` and filter
+- [x] Take a defensive checkpoint: `bash .claude/scripts/git-snapshot.sh 766 --no-revert`. *(completed)*
+- [x] Re-derive the scope: `bash .claude/scripts/check-task-references.sh Boneyard` and filter
       its finding lines to `README.md` paths. Record the observed count and file list; reconcile
-      against the hypothesis below before editing.
-- [ ] For each README, apply the Rewrite Vocabulary above. The recurring shapes are the
+      against the hypothesis below before editing. *(completed: confirmed 66 occurrences across 24 files, matching hypothesis exactly)*
+- [x] For each README, apply the Rewrite Vocabulary above. The recurring shapes are the
       `Archived:` header line, the `## Task Cross-References` / `## References` trailing section,
-      and inline `under task N` / `by task N` attributions in the "Why Archived" prose.
-- [ ] For the three `Boneyard/Kamp/KampWeakCanonical/**/README.md` files carrying the identical
-      `last verified before task 131 (module reorg)` note, apply one consistent rewrite.
-- [ ] Read `git diff` for every changed file; confirm each hunk is a citation excision and
-      introduces no record-versioning language.
-- [ ] Commit per green sub-step.
+      and inline `under task N` / `by task N` attributions in the "Why Archived" prose. *(completed: all 24 files)*
+- [x] For the three `Boneyard/Kamp/KampWeakCanonical/**/README.md` files carrying the identical
+      `last verified before task 131 (module reorg)` note, apply one consistent rewrite. *(completed: rewritten to "last verified before the module reorganization")*
+- [x] Read `git diff` for every changed file; confirm each hunk is a citation excision and
+      introduces no record-versioning language. *(completed)*
+- [x] Commit per green sub-step. *(completed: two commits, 9 files then 15 files)*
 
 **Timing**: 1.5 hours
 
