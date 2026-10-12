@@ -140,13 +140,15 @@ The refutation kills independent two-coordinate clipping ONLY — it loses the g
 
 METHOD, FALSIFY FIRST. Before attempting the general proof, gate the candidate against the refutation probe fixture: check that (true, B, B+1) and (true, B, B+2) receive DIFFERENT indices via the gap coordinate. This is a cheap falsification test and must run first; if it fails the candidate is dead and the record says so rather than proceeding.
 
-RECORDED RISK, attack this first. Drifts interval [n-c-1, n+c+1] widens with c, so the gap may itself drift unboundedly across successive regions. If it does, the clipped-gap index fails too and the sub-problem is deeper than three coordinates. This question is OPEN and unresolved by the blocker analysis.
+PRE-LANDED EVIDENCE, read first: specs/773_ladder_cell_index_factorization/prototype/README.md and prototype/gap-index-test.lean (520 lines, lake env lean exit 0, no sorry, standard axioms; fixture copied verbatim from the refutation probe). Three verdicts already machine-checked, which REPLACE the drift risk as originally framed:
 
-CONTINGENCY. Honest outcomes: the factorization lemma lands; or [BLOCKED] with the obstruction recorded as a wired probe. Never sorry, axiom, vacuous definition, or a finite-width/finite-fibre assumption on M to make the index exist.
+(A) gap_step_pending: across a pending step Count forces c' + 1 = c while Drift moves n by at most one, so the gap n - c is non-decreasing and rises by up to 2 per step; over a region of length c0 it reaches g0 + 2*c0, so the gap IS unbounded. General in the object.
 
-GUARDRAILS: (a) closure-indexed letters over the time axis; (b) the carrier slice stays infinite — no fibre bound; (c) B is a count, no complexity claim; (d) zero debt, no cslib require, no external decidability theorem cited in place of a proof.
+(B) phi_blind_above_two / not_phi_of_gap_ge_two / cell_ne_gap_ge_two: the refuting formula generalises verbatim to EVERY gap >= 2, so it cannot separate gap j from gap j' for any j, j' >= 2. The separation in cell_ne is confined to gap 1 against gap >= 2. THEREFORE (A) IS NOT AN OBSTRUCTION TO THIS RECORD: the two-coordinate index failed by destroying a SMALL gap at LARGE counters, not because large gaps are unbounded. Do not re-attack unboundedness as though it refuted the candidate. The operative consequence: the gap coordinate's clip bound B' MUST be derived from phi (its X-nesting depth, or |cl phi|), NEVER from the counters. Honest limit: one formula on one fixture — it shows the KNOWN refutation does not lift, not that the general factorization holds; a formula with deeper X-nesting sees correspondingly larger gaps, which is exactly why the bound is phi-dependent.
 
-NOT COSTABLE: sized by whether the gap drifts. Dispatch research-first.
+(C) count_le_max / rlad_counters_bdd / drift_refl: in every Count branch c' <= max c n, so the only thing that can grow either counter is Drift's n+1, and the sub-carrier {x // Adm and c <= N and n <= N} is Rlad-closed; drift can always stand still. This makes a SECOND ROUTE live: bound the carrier instead of indexing it, giving a Fintype Q x Fin (N+1) x Fin (N+1) outright with no index at all. Its cost: backward seriality at a pending state with c' = N needs a region-start predecessor, and the real question becomes the standard finite-model-property one — does every refutable phi have a refuting ladder object with deadlines <= N(phi)? Test this premise in parallel with the factorization lemma; if it holds it dissolves the problem and is strictly cheaper.
+
+ORDER OF WORK: (1) ladderIndex with the gap clipped at a phi-derived bound, attempt the factorization lemma; (2) in parallel, test route (C)'s premise; (3) only if both resist is the sub-problem deeper than three coordinates, with (A) the reason to suspect no fixed-arity index exists.
 
 ---
 
