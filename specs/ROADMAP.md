@@ -58,10 +58,18 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 - [ ] Rule on **127** and **128** (time addition, interior operator): long-standing abandonment
       candidates, antagonistic to the termination work Stage 4 depends on
 - [ ] Supply the Hugging Face account and token **257** is blocked on
-- [ ] Correct **712**'s `[BLOCKED]` marker — the only `[BLOCKED]` task with no `blockers` entry.
+- [x] Correct **712**'s `[BLOCKED]` marker — the only `[BLOCKED]` task with no `blockers` entry.
       Close it as a refutation record, first verifying the library theorem *is* 712's statement;
       `[ABANDONED]` was rejected by ruling, since the question was answered and a reader deserves
-      the answer
+      the answer.
+      DONE 2026-10-12: closed `[COMPLETED]` as a refutation record. Verification gate discharged
+      before the status change — `NoFiniteWidth.not_sliced_complete` is the direct negation of the
+      held-open statement, and `Certifies` carries `TailStable` as a conjunct
+      (`PlusSlicedCertificate/Check.lean`), so tail-stability is inside the refuted scope rather
+      than an untested side condition; premises match at `Γ = []`. Both that theorem and
+      `not_finite_width_fmp` verify with axioms `[propext, Classical.choice, Quot.sound]`, no
+      `sorryAx`. Answer recorded at
+      `specs/712_lplus_sliced_finite_model_property/summaries/01_sliced-fmp-refutation-record-summary.md`
 - [ ] Rule on **428**'s scope. Its `blockers` says "paused at 4/5 cycles, NOT blocked", so the
       marker is mis-set and the next step is a scope decision: `/revise 428` to add phases for its
       four residual hypotheses, or `/spawn 428` to split them out

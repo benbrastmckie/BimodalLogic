@@ -11,7 +11,7 @@ next_project_number: 778
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,775,777 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,775,777 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -79,7 +79,6 @@ next_project_number: 778
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
-712 [BLOCKED] — REVISED 2026-10-03 FROM THE DECIDABILITY-PROGRAMME REVIEW....
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
@@ -1124,10 +1123,11 @@ KEEP-OR-ABANDON IS A PHASE 0 USER RULING, NOT MADE HERE. This revision records t
 ---
 
 ### 712. Lplus sliced finite model property
-- **Status**: [BLOCKED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 703, Task 710
+- **Summary**: [712_lplus_sliced_finite_model_property/summaries/01_sliced-fmp-refutation-record-summary.md]
 
 **Description**: REVISED 2026-10-03 FROM THE DECIDABILITY-PROGRAMME REVIEW. Authoritative scope input: Section A of `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md`, whose anchors are recorded in that file's Section 0 rows 6 and 22-24 and were re-checked against the tree again at this revision. THIS REVISION CHANGES THE DEPENDENCY LIST AND THIS NOTE ONLY. It does NOT change the status and does NOT decide the terminal outcome. The refutation record below (STATUS NOTE 2026-10-02) is accurate and stands: this task had already converted itself from an open-statement record into a REFUTATION RECORD before this revision, and that conversion is confirmed here, not reversed.
 
