@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 1,
+  "summary": "Wrote a five-phase plan clearing all 198 unexempted task-number citations that fail check-task-references.sh. No research round was needed: the inventory, per-file distribution, rewrite templates, and build surface were all re-derived in this dispatch. Work is partitioned by file territory: Boneyard READMEs (66/24 files), Boneyard .lean comments (21/9), two Tests subtrees (65/6 then 45/13), and one script line, ending in a full-gate sweep phase. Boneyard is absent from lakefile.toml so those phases are prose tier with no build surface; the Tests phases are local tier discharged by lake build BimodalTest/BimodalToolsTest.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/766_clear_task_reference_citation_debt/plans/01_clear-task-citation-debt.md",
+      "summary": "Five-phase plan clearing all 198 unexempted task-number citations via durable-anchor rewrites, ending in a full-gate sweep."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "next_action_hint": "Run /implement 766. Phases 1 and 3 are Wave 1 and touch strictly disjoint file territory; Phase 2 follows 1, Phase 4 follows 3 (shared lake lock), Phase 5 follows both."
+}

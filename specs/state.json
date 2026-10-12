@@ -1760,7 +1760,7 @@
     {
       "project_number": 766,
       "project_name": "clear_task_reference_citation_debt",
-      "status": "researched",
+      "status": "planned",
       "task_type": "markdown",
       "description": "Clear the repo-wide task-number citation debt that fails check-task-references.sh. The gate exits non-zero on 198 pre-existing unexempted task-number citations: the bulk under Boneyard/ (archived READMEs) and 109 under Tests/BimodalTest. None sits in a file any recent dispatch touched -- the lint scoped to individual touched files exits 0 -- so this is standing debt, not a regression, and it makes the unscoped gate useless as a signal until cleared. For each occurrence decide between the sanctioned routes in .claude/context/standards/task-reference-exemptions.md: replace the citation with a durable anchor (a filename, section heading, decision-record name, or verified fact), or add the task-ref-ok marker where the occurrence is genuinely one of the exemption categories. Prefer durable anchors; use the marker only where the taxonomy actually licenses it. Verify with a full bash .claude/scripts/check-task-references.sh run exiting 0.",
       "parent_task": 760,
@@ -1769,8 +1769,14 @@
         760
       ],
       "created": "2026-10-11T09:58:30Z",
-      "last_updated": "2026-10-11T10:29:59Z",
-      "artifacts": [],
+      "last_updated": "2026-10-12T10:25:52Z",
+      "artifacts": [
+        {
+          "path": "specs/766_clear_task_reference_citation_debt/plans/01_clear-task-citation-debt.md",
+          "type": "plan",
+          "summary": "Five-phase plan clearing all 198 unexempted task-number citations via durable-anchor rewrites, ending in a full-gate sweep."
+        }
+      ],
       "file_scope": [
         "Boneyard/BX1DependentCode/README.md",
         "Boneyard/BXPipelineDeadCode/README.md",
@@ -1779,6 +1785,7 @@
         "Boneyard/ClosedGuardLegacy/README.md",
         "Boneyard/DeadCanonicalModel/README.md",
         "Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean",
+        "Boneyard/DeadConvergenceProof/README.md",
         "Boneyard/DeadConvergenceProof/succ_cofinal_convergence.lean",
         "Boneyard/DefectDirectedChain/README.md",
         "Boneyard/DenseChronicle/README.md",
@@ -1789,10 +1796,12 @@
         "Boneyard/Kamp/KampWeakCanonical/NfMultiAnchorBridgeRetired/Lemma32Reduction.lean",
         "Boneyard/Kamp/KampWeakCanonical/Separation/DedekindZ/README.md",
         "Boneyard/Kamp/KampWeakCanonical/Separation/Hierarchy/README.md",
+        "Boneyard/Kamp/README.md",
         "Boneyard/Kamp/VecEADecomposition/README.md",
         "Boneyard/MergedBracketQuarantine/README.md",
         "Boneyard/NonBurgessSeed/README.md",
         "Boneyard/OpenGuardInvalid/README.md",
+        "Boneyard/README.md",
         "Boneyard/RoundRobinChain/README.md",
         "Boneyard/ScheduleBasedBFMCS/README.md",
         "Boneyard/StageInductionGapAnalysis/README.md",
@@ -1805,7 +1814,6 @@
         "Boneyard/UltrafilterDeadCode/README.md",
         "Boneyard/UltrafilterFrame/README.md",
         "Boneyard/XuLemma321Legacy/README.md",
-        "scripts/check-module-invariants.sh",
         "Tests/BimodalTest/Automation/EdgeCaseTest.lean",
         "Tests/BimodalTest/Automation/LemmaDBTest.lean",
         "Tests/BimodalTest/Automation/NormalizationTest.lean",
@@ -1824,8 +1832,12 @@
         "Tests/BimodalTest/Syntax/FormulaPropertyTest.lean",
         "Tests/BimodalTest/Syntax/FormulaTest.lean",
         "Tests/BimodalTest/Theorems/ModalS5Test.lean",
-        "Tests/BimodalToolsTest/C5SmokeTest.lean"
-      ]
+        "Tests/BimodalToolsTest/C5SmokeTest.lean",
+        "Tests/BimodalToolsTest/README.md",
+        "scripts/check-module-invariants.sh",
+        "typst/generated/status.typ"
+      ],
+      "session_id": "sess_1791800175_a20f00"
     },
     {
       "project_number": 767,

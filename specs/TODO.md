@@ -11,9 +11,9 @@ next_project_number: 777
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,764,766,767,768,769,770,771,772,774,775 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,729,730,734,741,743,744,751,752,753,756,761,766,767,768,769,770,772,774,775 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,762,771 | 298,464,502,616,761,766 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,763,764 | 231,465,497,762,771 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -86,9 +86,9 @@ next_project_number: 777
 761 [PARTIAL] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
-766 [RESEARCHED] — Clear the repo-wide task-number citation debt that fails...
-771 [NOT STARTED] — check-task-references.sh --quiet exits non-zero on 198...
+766 [PLANNED] — Clear the repo-wide task-number citation debt that fails...
+  └─ 771 [NOT STARTED] — check-task-references.sh --quiet exits non-zero on 198...
+    └─ 764 [NOT STARTED] — Close the specs/-only phase verification gap and the...
 775 [RESEARCHED] — Attempt the cell-index factorization lemma over the re-scoped...
 
 ### Formula Refactor
@@ -235,7 +235,7 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES AS FILED. `agent-sy
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 766
 - **Parent**: Task 760
 
 **Description**: check-task-references.sh --quiet exits non-zero on 198 pre-existing unexempted task-number citations -- all under Boneyard/ (archived READMEs) and Tests/BimodalTest (109 of them), none in any deliverable a recent dispatch touched. The lint is therefore unusable as a phase gate repo-wide, which a plan gate line did not anticipate. Exempt them under the task-reference-exemptions taxonomy (preferred where the citations are archival) or clean them, so that check-task-references.sh --quiet exits 0 and can serve as a gate again. Evidence: specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl entry iss_1791711120739_kf46Yo.
@@ -357,11 +357,12 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lean-challeng
 ---
 
 ### 766. Clear task reference citation debt
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: markdown
 - **Topic**: decidability
 - **Dependencies**: Task 760
 - **Parent**: Task 760
+- **Plan**: [766_clear_task_reference_citation_debt/plans/01_clear-task-citation-debt.md]
 
 **Description**: Clear the repo-wide task-number citation debt that fails check-task-references.sh. The gate exits non-zero on 198 pre-existing unexempted task-number citations: the bulk under Boneyard/ (archived READMEs) and 109 under Tests/BimodalTest. None sits in a file any recent dispatch touched -- the lint scoped to individual touched files exits 0 -- so this is standing debt, not a regression, and it makes the unscoped gate useless as a signal until cleared. For each occurrence decide between the sanctioned routes in .claude/context/standards/task-reference-exemptions.md: replace the citation with a durable anchor (a filename, section heading, decision-record name, or verified fact), or add the task-ref-ok marker where the occurrence is genuinely one of the exemption categories. Prefer durable anchors; use the marker only where the taxonomy actually licenses it. Verify with a full bash .claude/scripts/check-task-references.sh run exiting 0.
 
@@ -385,7 +386,7 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lean-challeng
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 771
 - **Parent**: Task 757
 
 **Description**: Close the specs/**-only phase verification gap and the repo-wide task-reference lint debt
