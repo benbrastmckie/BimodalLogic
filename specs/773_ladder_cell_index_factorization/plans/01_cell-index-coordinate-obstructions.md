@@ -328,40 +328,40 @@ affected.
 
 ---
 
-### Phase 2: The Third Gate — the Second-Region-End Hunt [IN PROGRESS]
+### Phase 2: The Third Gate — the Second-Region-End Hunt [COMPLETED]
 
 **Goal**: Attack the six-coordinate candidate where the research says its own sufficiency
 argument is weakest — one region further out, and in the past direction — through three
 enumerated, bounded attempts, and record which of the two pre-specified outcomes holds.
 
 **Tasks**:
-- [ ] Create `specs/773_ladder_cell_index_factorization/prototype/second-region-hunt.lean` with a
+- [x] Create `specs/773_ladder_cell_index_factorization/prototype/second-region-hunt.lean` with a
       PROTOTYPE header stating the target (the six-coordinate index of the sibling prototype), the
       argument under attack (from `(q, c, n)` the achievable next-region lengths form
       `[max(0, gap - 1), n + c + 1]`, of width `2c + 3`, so once `c ≥ P` every residue class is
       covered and nothing further is observable), and the three attempts below with their
       expected outcomes — written BEFORE the attempts are run, so a null result is a recorded
       prediction rather than a retrofit.
-- [ ] **(iii-a) The second region's end.** Extend the parity object so that `step` tags the end of
+- [x] **(iii-a) The second region's end.** Extend the parity object so that `step` tags the end of
       the SECOND region with the parity of that region's length, and ask whether a pair agreeing
       on all six coordinates can have different achievable second-region-end tag SETS. Expected
       outcome: NO refutation once `T ≥ P`, because the window's position is
       `(n - c - 1) mod (P+1)`, which the two residue coordinates already determine, and its width
       `2c + 3` exceeds the modulus exactly when `min c T` saturates. Record either the refutation
       or the precise reason the window is determined.
-- [ ] **(iii-b) The past direction.** Report finding F7 is an ARGUMENT: a state with gap `g` has
+- [x] **(iii-b) The past direction.** Report finding F7 is an ARGUMENT: a state with gap `g` has
       its region start at least `⌈(g-1)/2⌉ ` steps back, so the clipped gap is claimed to serve
       the past as well as the future. Probe it: take a pair with EQUAL clipped gap and different
       true gaps, both above the clip, with small `c`, and ask whether a `snce`-letter separates
       them. Expected outcome: no separation for a formula whose past-depth is below the clip, and
       a refutation if one is found at or above it — in which case the clip bound's `φ`-derivation
       must cover past depth too, which is the finding to record.
-- [ ] **(iii-c) One region further.** Iterate (iii-a) to the third region end, where the
+- [x] **(iii-c) One region further.** Iterate (iii-a) to the third region end, where the
       achievable-interval widths compound. Expected outcome: subsumed by (iii-a)'s determinacy
       argument; run it only if (iii-a) closes without a refutation, and stop after it either way.
-- [ ] **Stop condition, binding**: the phase closes on this enumeration, never on a verdict. Do
+- [x] **Stop condition, binding**: the phase closes on this enumeration, never on a verdict. Do
       not open a fourth attempt, do not widen the index, and do not begin a sufficiency proof.
-- [ ] **Decision gate, both branches pre-specified**:
+- [x] **Decision gate, both branches pre-specified**:
       - **Branch R (a refutation is found)**: land it as a named theorem in this file with
         `#print axioms`, and record in the phase body that the conclusion for the record is the
         research's recommendation 3 — no fixed-arity index of this family works, and the
@@ -372,7 +372,34 @@ enumerated, bounded attempts, and record which of the two pre-specified outcomes
         the known and the nearest unknown mechanisms do not lift, not that the general
         factorization holds. Phase 4's header carries that sentence instead, and the positive
         lemma stays OPEN and unstated.
-- [ ] Compile through the guard and commit per the green-substep mandate.
+- [x] Compile through the guard and commit per the green-substep mandate.
+
+#### Decision Gate Outcome: BRANCH P — no refutation on these three attempts
+
+`second-region-hunt.lean` (351 lines, inside the "a figure above 400 is a signal" bound) compiles
+through the guard at exit 0 with zero `error` and zero `warning` lines; zero-debt grep count 0.
+The three predictions are written in the file header ABOVE every declaration, each with its
+result recorded beside it.
+
+**The sentence Phase 4's header carries verbatim**:
+
+> No refutation was found on these three attempts. Three attempts on one fixture family show that
+> the known mechanisms and the nearest unknown one do not lift to the six-coordinate shape; they
+> do not show that the general factorization holds, which remains OPEN and is stated nowhere.
+
+Per-attempt measurement:
+
+| Attempt | Predicted | Measured | Settling declarations |
+|---------|-----------|----------|----------------------|
+| (iii-a) second region's end | no refutation, because the achievable window is positioned by the residue coordinates | no refutation, but the predicted REASON is refuted: there is no window. `Count false false` holds the countdown at `0` through an idle interval of any length while `Drift` moves the next deadline one per step either way, so EVERY second-region length is reachable from EVERY pending state — independently of `T`, `P` and `B` | `second_region_any_length`, `second_region_end_tag_achievable`, `second_region_sets_agree` |
+| (iii-b) the past direction | no separation below the clip; a refutation at or above it would force past depth into the clip's `φ`-derivation | no refutation. Report finding F7's ARGUMENT is now an arithmetic bound: gap rises ≤ 2 per pending step, ≤ 1 at a region start, so a state `j` steps past its region start has gap ≤ `2j - 1`; contrapositively a gap above `2k - 1` puts every region start beyond `k` backward steps. The attempt's pair (countdown `1`, deadlines `2B+1`/`2B+2`) saturates the clip identically with region starts ≥ `B + 1` steps back. **Recorded refinement**: the clip bound's `φ`-derivation must cover `snce`-nesting depth as well as `X`-nesting depth | `gap_step_le`, `gap_region_start_le_one`, `gap_le_region_age`, `region_start_beyond_depth`, `clipped_gap_collides` |
+| (iii-c) one region further | subsumed by (iii-a) | subsumed, and more cleanly: (iii-a)'s theorem is stated from an ARBITRARY pending state, so iteration is one application of transitivity and no widths compound | `third_region_any_length` |
+
+The stop condition was honoured: no fourth attempt, no seventh coordinate, no sufficiency proof
+begun. Two limits are stated in the file itself rather than left to a reader — the (iii-a)
+theorems are REACHABILITY statements about the admissible carrier, not truth statements about
+`cellAt`; and the (iii-b) bound locates a region START, which is not the same as showing no
+`snce`-formula separates the pair.
 
 **Timing**: 2 hours
 
