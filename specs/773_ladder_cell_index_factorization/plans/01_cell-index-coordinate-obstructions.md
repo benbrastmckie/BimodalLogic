@@ -328,7 +328,7 @@ affected.
 
 ---
 
-### Phase 2: The Third Gate — the Second-Region-End Hunt [NOT STARTED]
+### Phase 2: The Third Gate — the Second-Region-End Hunt [IN PROGRESS]
 
 **Goal**: Attack the six-coordinate candidate where the research says its own sufficiency
 argument is weakest — one region further out, and in the past direction — through three
@@ -407,7 +407,7 @@ imports and that modifies no library module.
 
 ---
 
-### Phase 3: Eventual Periodicity — Exhibiting the Index's Threshold and Period [NOT STARTED]
+### Phase 3: Eventual Periodicity — Exhibiting the Index's Threshold and Period [COMPLETED]
 
 **Goal**: Land the generic theorem that makes the two residue coordinates well-founded rather
 than ad hoc: iteration of an endofunction of a finite type is eventually periodic, hence the
@@ -415,30 +415,47 @@ than ad hoc: iteration of an endofunction of a finite type is eventually periodi
 index's `T` and `P` are EXHIBITED from the object instead of assumed.
 
 **Tasks**:
-- [ ] Search for an existing Mathlib eventual-periodicity lemma before writing one:
+- [x] Search for an existing Mathlib eventual-periodicity lemma before writing one:
       `lean_local_search` for a local declaration, then `lean_leansearch` /`lean_loogle` for
       `f^[n] a` periodicity on a finite type. Observe the dispatch's index-state rule: only
       `index: consulted` makes an empty result proof of absence; announce the evidence tier if the
       index is `warming` or `unavailable` rather than reporting absence.
-- [ ] Create `specs/773_ladder_cell_index_factorization/prototype/reach-eventual-periodicity.lean`
+- [x] Create `specs/773_ladder_cell_index_factorization/prototype/reach-eventual-periodicity.lean`
       and prove `iterate_eventually_periodic {A} [Finite A] (f : A → A) (a : A) : ∃ T P, 1 ≤ P ∧
       ∀ k, T ≤ k → f^[k + P] a = f^[k] a` at exactly the Challenge signature. Route: pigeonhole on
       `n ↦ f^[n] a` (infinite domain, finite codomain) for two indices `i < j` with equal
       iterates, take `T := i`, `P := j - i`, then induct on `k - T` using
       `Function.iterate_add_apply`. If Mathlib already has the statement, cite it and prove this
       one from it rather than re-deriving — the goal is the exhibited pair, not a novel proof.
-- [ ] Define the one-step reachability map `reachStep step S := S.biUnion (fun q =>
+- [x] Define the one-step reachability map `reachStep step S := S.biUnion (fun q =>
       Finset.univ.filter (fun q' => step q q' = true))` on `Finset Q` for `[Fintype Q]
       [DecidableEq Q]`, and prove `reachN_eventually_periodic` at exactly the Challenge
       signature by applying `iterate_eventually_periodic` at `A := Finset Q` (a `Fintype`, hence
       `Finite`).
-- [ ] Record in the file header, as prose and not as a claim: this exhibits the `T` and `P` the
+- [x] Record in the file header, as prose and not as a claim: this exhibits the `T` and `P` the
       six-coordinate index's residue coordinates are taken at, for the datum the region-end
       observable is (`step`-reachability in `c + 1` steps); it is NOT the factorization lemma and
       says nothing about whether the six coordinates suffice. State that `B` remains
       `φ`-derived and is untouched by this phase.
-- [ ] Close with `#print axioms` for both theorems, compile through the guard, and commit per the
+- [x] Close with `#print axioms` for both theorems, compile through the guard, and commit per the
       green-substep mandate.
+
+#### Outcome
+
+`reach-eventual-periodicity.lean` (114 lines) compiles through the guard at exit 0, zero `error`
+and zero `warning` lines. Both theorems close at the pinned signatures with
+`[propext, Classical.choice, Quot.sound]`, and the period is `1 ≤ P` in both, so neither
+conclusion is vacuous.
+
+**Search evidence tier, announced rather than overstated**: `lean_local_search` for a local
+eventual-periodicity declaration returned nothing but reported its symbol index as `warming`, NOT
+`consulted` — by the dispatch readiness block's own interpretation rule that is not proof of
+absence. `lean_leansearch` was unreachable (HTTP 500 on two attempts). `lean_loogle` on
+`?f^[?n + ?p] ?a = ?f^[?n] ?a` surfaced only `Function.iterate_add_minimalPeriod_eq`, which
+requires `x ∈ Function.periodicPts f` and so does not cover an arbitrary starting point. The
+plan's named route (pigeonhole via `Finite.exists_ne_map_eq_of_infinite`, then
+`Function.iterate_add_apply`) was therefore taken, at 14 lines; the deliverable is the exhibited
+pair, not a novel proof.
 
 **Timing**: 2 hours
 
