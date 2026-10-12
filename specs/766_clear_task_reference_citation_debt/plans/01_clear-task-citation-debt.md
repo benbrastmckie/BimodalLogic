@@ -286,29 +286,29 @@ plus `bash .claude/scripts/check-task-references.sh Boneyard` covers the whole e
 
 ---
 
-### Phase 3: Clear Tests/BimodalTest property-suite comments [IN PROGRESS]
+### Phase 3: Clear Tests/BimodalTest property-suite comments [COMPLETED]
 
 **Goal**: Zero unexempted citations under `Tests/BimodalTest/{Syntax,Semantics,ProofSystem,Property}`,
 with `lake build BimodalTest` still green.
 
 **Tasks**:
-- [ ] Re-derive the scope with one scoped lint run per subtree:
+- [x] Re-derive the scope with one scoped lint run per subtree:
       `for d in Syntax Semantics ProofSystem Property; do bash .claude/scripts/check-task-references.sh Tests/BimodalTest/$d; done`.
-      Record and reconcile the counts.
-- [ ] Bulk-rewrite the two dominant comment templates with anchored `sed` patterns that include
+      Record and reconcile the counts. *(completed: 43+10+9+3=65, matching hypothesis exactly)*
+- [x] Bulk-rewrite the two dominant comment templates with anchored `sed` patterns that include
       the leading `-- ` comment marker:
       `-- (Task 365) quarantined:` -> `-- Quarantined:` and
       `-- NOTE (Task 365): quarantined` -> `-- NOTE: quarantined`.
       Use `Bash`/`sed` rather than a whole-file `Write` (the write-time hook scans `content` and
-      would block a full-file rewrite of a still-partially-cited file).
-- [ ] Hand-fix the residual non-template occurrences: `## API Grift/Drift Notes (Task 365)` and
+      would block a full-file rewrite of a still-partially-cited file). *(completed)*
+- [x] Hand-fix the residual non-template occurrences: `## API Grift/Drift Notes (Task 365)` and
       `## TaskModel Generators (QUARANTINED - Task 365)` headings in `Property/Generators.lean`,
       the `Task 116` / `Task 276` definition-provenance comments in `Syntax/FormulaTest.lean`,
-      and the `compositionality` replacement note in `Semantics/SemanticPropertyTest.lean`.
-- [ ] Read `git diff` for every changed file; confirm every hunk is inside a comment or
-      docstring region and that no `/-! -/` or `/-- -/` delimiter moved.
-- [ ] Run `lake build BimodalTest` and confirm green.
-- [ ] Commit per green sub-step.
+      and the `compositionality` replacement note in `Semantics/SemanticPropertyTest.lean`. *(completed)*
+- [x] Read `git diff` for every changed file; confirm every hunk is inside a comment or
+      docstring region and that no `/-! -/` or `/-- -/` delimiter moved. *(completed)*
+- [x] Run `lake build BimodalTest` and confirm green. *(completed: 2904 jobs, Build completed successfully)*
+- [x] Commit per green sub-step. *(completed)*
 
 **Timing**: 1.25 hours
 
