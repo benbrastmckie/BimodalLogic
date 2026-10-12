@@ -12,7 +12,7 @@ equivalence (Prop ↔ Prop) whose anchor arity never climbs past 3.
 
 ## Why this reduction exists (the machine-checked impossibility it routes around)
 
-Task 349's multi-anchor recursion was blocked by two green, sorry-free refutations in
+The multi-anchor recursion was blocked by two green, sorry-free refutations in
 `Base.lean` (axioms exactly `[propext, Classical.choice, Quot.sound]`):
 
 * `endCharN0_correct_world_local_obstruction` (Base.lean:1745): if a single-world

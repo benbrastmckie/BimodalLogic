@@ -1026,7 +1026,7 @@ end FormalSystem.Metalogic.Bundle.Canonical
 This section provides the infrastructure to build a TaskModel from a
 RestrictedTemporallyCoherentFamily, which is used for completeness proofs.
 
-## Key Insight (Task #58)
+## Key Insight
 
 The standard bundle construction (BFMCS_Bundle from UltrafilterChain) provides
 **bundle-level** temporal coherence: F/P witnesses can be in ANY family of the bundle.
@@ -1112,7 +1112,7 @@ theorem not_in_mcs_implies_not_true (M : Set Formula) (phi : Formula)
   fun h_true => h_not_in (h_equiv.mpr h_true)
 
 /-!
-## Gap Analysis (Task #58)
+## Gap Analysis
 
 ### What We Have
 

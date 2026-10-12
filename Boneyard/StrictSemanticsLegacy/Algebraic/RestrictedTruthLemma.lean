@@ -36,9 +36,9 @@ Rather than building entirely new frame/model infrastructure, this module:
 - `restricted_fmcs_backward_P`: Backward P coherence for restricted FMCS
 - `restricted_truth_lemma`: Main truth lemma for restricted construction
 
-## Phase 2 Task #58
+## Phase 2
 
-This module implements Phase 2 of task #58: proving the bidirectional truth lemma
+This module implements Phase 2: proving the bidirectional truth lemma
 for the restricted completeness construction.
 
 ## References

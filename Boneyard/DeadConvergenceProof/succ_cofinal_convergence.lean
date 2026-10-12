@@ -368,7 +368,7 @@ argument.
     -- (b) The Henkin-model approach: weak/reflexive completeness + conservative
     --     extension, which provides IsSuccArchimedean via a Henkin model
     --     that avoids the gap entirely, OR
-    -- (c) The Reynolds pipeline (tasks 154-155) which bypasses this sorry.
+    -- (c) The Reynolds pipeline which bypasses this sorry.
     -- DEAD APPROACH: convergence/stage-induction gap analysis for succ_cofinal.
     -- Resolution: the Henkin-model route or the Reynolds pipeline.
     -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.

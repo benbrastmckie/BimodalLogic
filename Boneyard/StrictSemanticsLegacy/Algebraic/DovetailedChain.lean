@@ -357,7 +357,8 @@ Key insight: F(phi) ∈ chain(t) propagates to chain(n) for n ≥ t (because G(F
 need not be in chain(t)). Instead, we use a different argument:
 - F(phi) ∈ chain(t) and the chain preserves G_theory
 - We need F(phi) ∈ chain(n) at the resolution step
-- F(phi) may NOT persist through the chain steps (known issue, Task #69)
+- F(phi) may NOT persist through the chain steps (known issue; see
+  `f_preserving_seed_consistent` in UltrafilterChain.lean)
 
 The correct approach: choose n = t itself. At step t, the scheduling targets
 some formula. If it happens to target phi, great. If not, we need to find
@@ -444,7 +445,8 @@ G(neg(phi)) ∈ chain(t+1) iff G(neg(phi)) is consistent with the seed. If
 G(neg(phi)) ∉ temporal_box_seed(chain(t)) and G(neg(phi)) ≠ psi, then
 Lindenbaum can freely choose to include or exclude G(neg(phi)).
 
-So F(phi) does NOT necessarily persist. This was the issue identified in Task #69.
+So F(phi) does NOT necessarily persist. This is the issue identified by
+`f_preserving_seed_consistent` in UltrafilterChain.lean.
 
 THE DEFINITIVE APPROACH: Use a construction where F-persistence is guaranteed
 by INCLUDING F-formulas in the seed. This requires showing the extended seed
@@ -537,8 +539,8 @@ For f_content(M): an element is F(psi) where F(psi) ∈ M. We need G(F(psi)) ∈
 G(F(psi)) = G(neg(G(neg(psi)))). There's no axiom ensuring G(neg(G(neg(psi)))) ∈ M
 when F(psi) ∈ M. So f_content elements are NOT G-liftable.
 
-THIS IS THE FUNDAMENTAL BLOCKER. F-formulas are not G-liftable. The Task #69
-counterexample confirms this.
+THIS IS THE FUNDAMENTAL BLOCKER. F-formulas are not G-liftable. The
+`f_preserving_seed_consistent` counterexample in UltrafilterChain.lean confirms this.
 
 So we need a completely different approach for same-family forward_F.
 

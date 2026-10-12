@@ -26,7 +26,7 @@ architecture, providing a unified API for completeness theorems.
 
 ## Completeness Status
 
-### Completeness over Int: Structurally Complete (Task #67)
+### Completeness over Int: Structurally Complete
 
 The proof of `bundle_validity_implies_provability` is structurally complete,
 with a single isolated sorry in `bfmcs_from_mcs_temporally_coherent`:
@@ -171,7 +171,7 @@ def DiscreteCompletenessStatement (φ : Formula) : Prop :=
 /--
 Completeness over Int statement: formulas valid on integer time are provable.
 
-**Status**: PROVEN via bundle construction (Task #58).
+**Status**: PROVEN via bundle construction.
 -/
 def CompletenessOverIntStatement (φ : Formula) : Prop :=
   valid_over Int φ → Nonempty ([] ⊢ φ)
@@ -555,7 +555,7 @@ theorem discrete_completeness_fc {φ : Formula} :
   -- Delegate to completeness_over_Int
   exact completeness_over_Int h_valid_int
 
-/-! ## Documentation: Completeness Status (Task #58 / #67)
+/-! ## Documentation: Completeness Status
 
 ### Completeness over Int: Structurally Complete
 
@@ -589,7 +589,7 @@ This reduction is SORRY-FREE. The only sorry is in `bfmcs_from_mcs_temporally_co
 - Therefore we cannot specialize "φ valid over ALL dense D" to Int
 - A separate proof using a dense canonical model (e.g., over Rat) would be needed
 
-### Summary of Sorries in This File (Task #84 update)
+### Summary of Sorries in This File
 
 Until/Since coherence is split into backward and forward halves.
 Each completeness theorem carries two sorry categories:

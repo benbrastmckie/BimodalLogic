@@ -39,7 +39,7 @@ deep temporal logic reasoning:
 These are semantically justified and follow from the frame conditions
 (NoMaxOrder, NoMinOrder) and the F-step/P-step properties of Succ.
 
-## Known Limitations (Task #55)
+## Known Limitations
 
 The `succ_chain_forward_F` and `succ_chain_backward_P` theorems depend on
 `f_nesting_is_bounded` and `p_nesting_is_bounded`, which are **mathematically
@@ -1015,7 +1015,7 @@ noncomputable def SuccChainFMCS (M0 : SerialMCS) : FMCS Int where
 
 
 /-!
-## Connection to Truth Lemma (Task #70 Phase 6)
+## Connection to Truth Lemma (Phase 6)
 
 The SuccChainFMCS provides the temporal coherence needed for the G/H cases
 of the truth lemma (see SuccChainTruth.lean):
@@ -1028,17 +1028,17 @@ These properties directly enable the FORWARD direction of the truth lemma for G/
 - G case: Uses `forward_G` to propagate phi to all future times
 - H case: Uses `backward_H` to propagate phi to all past times
 
-**Known Gaps (documented in Task #70):**
+**Known Gaps:**
 - The BACKWARD direction of the truth lemma for G/H uses `temporal_backward_G`
   and `temporal_backward_H` from TemporalCoherence.lean, which require
   `forward_F` and `backward_P` properties (existential witnesses)
 - `forward_F` and `backward_P` have sorries due to unbounded F/P nesting
 - For sorry-free completeness, use `semantic_weak_completeness` (FMP path)
 
-**F-Persistence Counterexample (Task #69):**
+**F-Persistence Counterexample:**
 An earlier approach attempted to preserve unresolved F-formulas through the witness
-construction via `f_preserving_seed_consistent` in UltrafilterChain.lean. Task #69
-report 17 proved this approach FALSE: the F-preserving seed cannot be shown consistent
+construction via `f_preserving_seed_consistent` in UltrafilterChain.lean. That proof showed
+this approach FALSE: the F-preserving seed cannot be shown consistent
 because G-lifting F-formulas is not derivable. The separate-direction approach here
 avoids this issue by not attempting F-preservation - instead using chain-level
 Succ relation properties for G/H coherence only.
@@ -3369,7 +3369,7 @@ Removed ~2055 lines of deprecated/FALSE theorems:
 -/
 
 /-!
-## Restricted Predecessor Construction (Task #58)
+## Restricted Predecessor Construction
 
 Symmetric construction to `constrained_successor_restricted` for the backward direction.
 This enables building a complete restricted succ chain with both forward_F and backward_P.

@@ -224,7 +224,7 @@ the cheapest check that covers the full blast radius.
 
 ---
 
-### Phase 2: Clear Boneyard retired-module comments [NOT STARTED]
+### Phase 2: Clear Boneyard retired-module comments [IN PROGRESS]
 
 **Goal**: Zero unexempted citations anywhere under `Boneyard/`, closing the subtree.
 

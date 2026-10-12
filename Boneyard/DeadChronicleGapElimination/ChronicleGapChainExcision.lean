@@ -841,7 +841,7 @@ theorem dd_countermodel_chronicle_discrete (fc : FrameClass) (A : Set Formula) (
    ============================================================================ -/
 
 /-!
-`countermodel_discrete_reynolds` is now sorry-free (task 155, plan v52).
+`countermodel_discrete_reynolds` is now sorry-free.
 The Z-interval-to-TaskFrame packaging sorry was resolved by using the parametric
 canonical model construction directly. The Reynolds pipeline steps (chronicle →
 good → Z-interval → truth_transfer) are bypassed; the countermodel uses the same

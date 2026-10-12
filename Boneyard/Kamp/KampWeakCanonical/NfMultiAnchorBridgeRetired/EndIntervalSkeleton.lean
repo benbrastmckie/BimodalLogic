@@ -99,7 +99,7 @@ def EndIntervalCorrect {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
     (endInterval atomMap h_surj k qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
-/-- **`k = 0` base of `EndIntervalCorrect`** (task 349 Phase 2, v6; sorry-free). The `k = 0` slice of
+/-- **`k = 0` base of `EndIntervalCorrect`** (Phase 2, v6; sorry-free). The `k = 0` slice of
 the frozen statement, proved by unfolding `endInterval … 0 qnf` to the singleton embedding of
 `bracketEndChar_k0 atomMap h_surj qnf`, rewriting with `VVecEA2.singleton_holds`, and discharging the
 resulting `VecEA2.holds ↔ ∃ w, nf_eval_nf M 0 3 [w,x,t] qnf` biconditional directly by the preserved
