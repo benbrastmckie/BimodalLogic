@@ -442,14 +442,14 @@ and `scripts/check-evidence-probes.sh` is self-excluded from `check-module-invar
 
 ---
 
-### Phase 4: Record the Obstruction in the README and the Theorem Index [NOT STARTED]
+### Phase 4: Record the Obstruction in the README and the Theorem Index [COMPLETED]
 
 **Goal**: Add the thirteenth-probe paragraph to the README's Evidence section, amend the three
 README sentences that now misdescribe the soundness half, amend one `docs/theorem-index.md` row,
 and state the per-state-labelling collapse as a principle so no successor re-derives it.
 
 **Tasks**:
-- [ ] In `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `## Evidence`, insert ONE
+- [x] In `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `## Evidence`, insert ONE
       paragraph directly after the "A twelfth wired probe, …" paragraph (which ends "…and the
       successor design is not chosen here.") and before "The permanent computability witnesses
       are …", of the shape: "A thirteenth wired probe,
@@ -473,7 +473,7 @@ and state the per-state-labelling collapse as a principle so no successor re-der
       about `HitPresented` or `PlusValidZTime`, no library module, `anchorCells_finite` and
       `anchorCells_ncard_le` untouched, the successor design not chosen here." Durable anchors
       only: no task number, no `specs/761_…` path, no record-versioning language.
-- [ ] Same README, "(W): what landed and what did not", item 1 of "Open: obligation (ii)":
+- [x] Same README, "(W): what landed and what did not", item 1 of "Open: obligation (ii)":
       after the sentence ending "…while the SET of cells stays finite and bounded
       (`anchorCells_finite`, `anchorCells_ncard_le`).", insert: "That sub-problem is the
       hypothesis of the realization theorem itself, not a side question: any per-cell object
@@ -485,12 +485,12 @@ and state the per-state-labelling collapse as a principle so no successor re-der
       settled: the ladder's structural liveness is forward-only (thirteenth wired probe,
       `gPast_isPath`), so such a bundle replaces `ulive` and keeps `slive`." Keep the rest of the
       item (the `Presented` prohibition) unchanged.
-- [ ] Same README, the sentence ending "…the run-layer consistency conditions that would play
+- [x] Same README, the sentence ending "…the run-layer consistency conditions that would play
       `Cons`'s role for the ladder are likewise named and not built." — amend minimally to add:
       "; whatever form they take replaces `ulive` only (a pending region at `(q, c, n)` ends at
       `z + c + 1`, by `Count`) and keeps `slive`, because an admissible ladder history can be
       pending at every past time (thirteenth wired probe, `gPast_isPath`)."
-- [ ] Same README, `## The verdict` table, row (W), the parenthesis "(soundness: the stabilization
+- [x] Same README, `## The verdict` table, row (W), the parenthesis "(soundness: the stabilization
       lemma in the pair of ladder counters is refuted by the twelfth wired probe
       `ladder-cell-refutation.lean`, and phase 2 is `[BLOCKED]` on the successor design;
       completeness: (C)'s general row, open)": amend to "(soundness: the stabilization lemma in
@@ -499,16 +499,16 @@ and state the per-state-labelling collapse as a principle so no successor re-der
       which cell a ladder state has, and the ladder's structural liveness is forward-only —
       thirteenth wired probe `ladder-liveness-forward-only.lean`; completeness: (C)'s general row,
       open)".
-- [ ] `docs/theorem-index.md`, the `ladderModel` row only: inside its "**What it is not**"
+- [x] `docs/theorem-index.md`, the `ladderModel` row only: inside its "**What it is not**"
       clause, after "…which consumes these declarations)", add "; the realization theorem itself
       is `[BLOCKED]` on the open index of which cell a ladder state has, and the ladder's
       structural liveness is forward-only — an admissible history pending at every past time,
       wired probe `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`".
       Do not touch the row's Declaration, File, Frame class, or `pinned:C14` cells, nor the other
       four ladder rows.
-- [ ] Update the README's trailing `*Last verified: YYYY-MM-DD*` line to the implementation
+- [x] Update the README's trailing `*Last verified: YYYY-MM-DD*` line to the implementation
       date.
-- [ ] Commit the README and theorem-index edits per the green-substep mandate.
+- [x] Commit the README and theorem-index edits per the green-substep mandate.
 
 **Timing**: 1 hour
 
