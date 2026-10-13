@@ -59,3 +59,26 @@ genuinely sub-millisecond computations that COMPLETED and printed their correct 
 the opposite of the broken-harness symptom (that symptom is every stage reading 0 ms while the
 run never finishes). The criterion is met in substance: the run completed, and every
 non-trivial stage reports a non-zero figure.
+
+## Phase 2 -- the landed total-edge witness
+
+| Figure | Value | How measured |
+|---|---|---|
+| `TotalEdge.certA_certifies` elaboration, in the default build | **36 s** | the guarded scoped build's own per-module timing line for `PlusSlicedCertificate.Examples` |
+| `certA.Certifies` `decide`, standalone scratch file | 43.4 s (Phase 1) | `lake env lean`, `time` |
+| heartbeat cap landed | `maxHeartbeats 2000000` (finite, explicit) | source |
+| `maxRecDepth` landed | `4000000` | source |
+
+The 36 s module figure is the **"before" `decide` cost** the three performance phases are read
+against. It is smaller than the 43.4 s standalone figure because the module build pays no
+separate `import FormalSystem` elaboration.
+
+Gates at Phase 2 close: **C2 PASS** (all fifty pinned axiom sets match baseline, the new
+`TotalEdge.certA_certifies` pair included), **C36a PASS** (6 closed-term witness rows, all
+pinned), **C36b PASS** with the new row reading `C36 certA_certifies card=6 interesting=true`.
+
+`check-module-invariants.sh` reports one unrelated failing group at this point: `INV` -- two
+generated-inventory blocks (`FormalSystem/Metalogic/README.md`, `README.md`) are stale because a
+`.lean` file under `FormalSystem/` changed. Phase 9 owns regenerating those surfaces
+(`--emit-inventory`); it is a derived-surface staleness, not a defect in anything this phase
+landed.

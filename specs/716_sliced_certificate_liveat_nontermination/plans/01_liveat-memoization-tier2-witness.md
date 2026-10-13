@@ -249,41 +249,41 @@ module under `FormalSystem/` is edited, so no library build surface is touched.
 
 ---
 
-### Phase 2: Land the total-edge Tier-2 witness, its C36 row and its C2 pin [NOT STARTED]
+### Phase 2: Land the total-edge Tier-2 witness, its C36 row and its C2 pin [COMPLETED]
 
 **Goal**: The sliced class carries a second interesting witness — a width-2 total-edge
 certificate at the `snce`/`⊡` target `Pp → ⊡Pp` — as a named closed-term theorem in the library,
 with the C36 inventory row and the C2 axiom pin that the inventory's own admission bar requires.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Examples.lean`
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Examples.lean`
       immediately before editing (concurrent-sibling discipline), then add
       `import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples` and confirm the
       module still builds — this re-confirms D2's cycle-freedom with the build rather than with
       the plan's grep.
-- [ ] Add, in a new `PlusSlicedCertificate.TotalEdge` namespace inside that module and in the
+- [x] Add, in a new `PlusSlicedCertificate.TotalEdge` namespace inside that module and in the
       signatures fixed by `## Lean Challenge Statements` below: `sliceA` (width 2, total edge,
       labelling `{atom p, snceP p}` at `w = 1` and `∅` at `w = 0`), `pathA`, `certA`, and
       `certA_certifies : certA.Certifies := by decide` under
       `set_option maxHeartbeats 2000000 in`. A module docstring paragraph states what this witness
       adds over `liveFamily_sliced_certifies`: a `snce`-kind closure, a width above 1, and a
       total edge relation rather than a self-loop.
-- [ ] Extend the module's `## Main Results` list with the new theorem, in the existing style.
-- [ ] Add the `witness` row to `scripts/certificate-witness-inventory.txt` directly after the
+- [x] Extend the module's `## Main Results` list with the new theorem, in the existing style.
+- [x] Add the `witness` row to `scripts/certificate-witness-inventory.txt` directly after the
       existing `PlusSlicedCertificate.Certifies` row, declaration names relative to
       `FormalSystem.Metalogic.Decidability`, kinds field `snce`, closure term
       `plusClosureOf (([] : PlusContext) ++ [targetA c36P])`, interest expression
       `c36Sliced [c36Snce] PlusSlicedCertificate.TotalEdge.certA`.
-- [ ] Add the matched C2 pair in `scripts/check-module-invariants.sh`: one `#print axioms` line in
+- [x] Add the matched C2 pair in `scripts/check-module-invariants.sh`: one `#print axioms` line in
       the `AX_SRC` heredoc and one baseline line in `AXIOM_BASELINE`, at **matched positions**
       (the comparison is a strict string equality over ordered output), directly after the
       `liveFamily_sliced_certifies` pair, expecting `[propext, Classical.choice, Quot.sound]`.
-- [ ] Run `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
+- [x] Run `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
       FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` detached, then
       `bash scripts/check-module-invariants.sh` and read the C2, C36a and C36b lines.
-- [ ] Record the measured `decide` wall clock for the landed declaration in `progress-file.md`,
+- [x] Record the measured `decide` wall clock for the landed declaration in `progress-file.md`,
       as the "before" figure the performance phases are read against.
-- [ ] **Contingency, declared here rather than discovered**: if `c36Sliced` evaluates `false` or
+- [ ] **Contingency, declared here rather than discovered** *(deviation: not triggered — `c36Sliced` evaluated true and `Certifies` proved, so the contingency branch was not taken)*: if `c36Sliced` evaluates `false` or
       `Certifies` fails at the landed construction despite Phase 1's confirmation, land the
       theorem and the C2 pin anyway and close the inventory-row sub-step as a
       `#### Reasoned Exclusions` record citing the failing C36b output verbatim; do **not** widen
