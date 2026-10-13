@@ -1,7 +1,7 @@
 # Implementation Plan: Task #716
 
 - **Task**: 716 - Profile and fix the PlusSlicedCertificate liveT/liveAt non-termination that blocks Tier-2 sliced certificate witnesses
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/716_sliced_certificate_liveat_nontermination/reports/01_liveat-nontermination-profile.md
@@ -188,32 +188,32 @@ Non-Lean outputs:
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Rerunnable harness and the pre-change baseline [NOT STARTED]
+### Phase 1: Rerunnable harness and the pre-change baseline [COMPLETED]
 
 **Goal**: Every figure the later phases compare against is measured in this round, by a harness
 that cannot report 0 ms for an unfinished computation, and the two plan-time verdicts the
 deliverable rests on are re-confirmed before any library file is touched.
 
 **Tasks**:
-- [ ] Write `specs/716_sliced_certificate_liveat_nontermination/probes/16_baseline.lean` carrying
+- [x] Write `specs/716_sliced_certificate_liveat_nontermination/probes/16_baseline.lean` carrying
       the corrected harness shape only (emit the value through an `IO` write, read the clock
       after; never bind the measured value to a pure `let` between two `IO.monoMsNow` reads).
       Header: which figures it measures, and that probes 01-09 of this task carry the broken
       harness and are not citable.
-- [ ] Measure, at the pinned self-loop embedded witness `WitnessFamily.Embedded.liveFamily.sliced
+- [x] Measure, at the pinned self-loop embedded witness `WitnessFamily.Embedded.liveFamily.sliced
       (-1)`: `verts.card`, `fwdLiveT.card`, `bwdLiveT.card`, `(liveAt (-1)).card`. These are the
       numbers the regression guard and every "after" figure are read against.
-- [ ] Measure, at the slab-carrying width-2 total-edge certificate (the Phase 2 construction,
+- [x] Measure, at the slab-carrying width-2 total-edge certificate (the Phase 2 construction,
       written here as a scratch copy): the structural sizes (`Fintype.card Pos`, `verts.card`,
       `winTimes.card`, `(posAt 0).card`) and the `verts` / `predT` stage times.
-- [ ] Re-confirm the two plan-time verdicts in a scratch file compiled by
+- [x] Re-confirm the two plan-time verdicts in a scratch file compiled by
       `lake env lean`: `c36Sliced [c36Snce]` evaluates `true` at the slab-carrying certificate,
       and `Certifies` proves by `decide` under `set_option maxHeartbeats 2000000`. Record the wall
       clock.
-- [ ] Write `specs/716_sliced_certificate_liveat_nontermination/progress-file.md` with one row per
+- [x] Write `specs/716_sliced_certificate_liveat_nontermination/progress-file.md` with one row per
       measured figure: name, value, how measured, and whether it confirms or contradicts the
       report's carried figure. Contradictions are recorded, not reconciled.
-- [ ] Record via `issue-record.sh` (`kind: win` or `issue`) whether any carried figure failed to
+- [x] Record via `issue-record.sh` (`kind: win` or `issue`) whether any carried figure failed to
       reproduce, and attest explicitly if nothing arose.
 
 **Timing**: 1 hour
