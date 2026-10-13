@@ -373,20 +373,20 @@ aggregator, its only direct dependent.
 
 ---
 
-### Phase 5: Forward Ramsey Blocks [NOT STARTED]
+### Phase 5: Forward Ramsey Blocks [COMPLETED]
 
 **Goal**: From `(α, σ) ∈ FwdTypes c t`, extract the prefix `u` and consecutive blocks
 `B 0, B 1, …` of the forward tail, each a `StarPlus σ` word, all with the SAME `profile` and the
 SAME `cutProfile`.
 
 **Tasks**:
-- [ ] `theorem exists_blocks_fwd (hk : 1 ≤ k) (hx : (α, σ) ∈ FwdTypes c t) : ∃ (u : List _)
+- [x] `theorem exists_blocks_fwd (hk : 1 ≤ k) (hx : (α, σ) ∈ FwdTypes c t) : ∃ (u : List _)
       (B : ℕ → List _) (E : Profile sig k) (CP : Set (Profile × Profile)), kTypeOf (listSeg u) =
       α ∧ (∀ a, StarPlus σ (B a)) ∧ (∀ a, profile (B a) = E) ∧ (∀ a, cutProfile (B a) = CP) ∧
       labels c (t + 1) (t + 1 + u.length) = u ∧ ∀ a, labels c (start a) (start (a + 1)) = B a`
       with `start a := t + 1 + u.length + (B 0 ++ … ++ B (a-1)).length` — or, equivalently and
       simpler to consume, `∀ n, labels c (t + 1) (start n) = u ++ (List.ofFn … ).flatten`.
-- [ ] Proof: with `W` from the membership, colour pairs `i < j` by `(profile, cutProfile)` of
+- [x] Proof: with `W` from the membership, colour pairs `i < j` by `(profile, cutProfile)` of
       `labels c (W i) (W j)` — `cutProfile` is a `Set` over a finite type, so colour by its
       `Finset` twin or by `fun pr => decide (pr ∈ cutProfile …)` as a `Profile × Profile → Bool`
       (a `Type` with `[Finite]`, as `Nat.exists_strictMono_const_pair_colour` requires);
@@ -395,8 +395,8 @@ SAME `cutProfile`.
       nonempty by `nonempty_iff_of_kTypeOf_eq` at `k ≥ 1`), with `u := labels c (t + 1) (W (g 0))`
       (prefix `[t+1, W 0)` of type `α` followed by `g 0` further `σ`-segments — so `PrefixStar α
       σ u`, which is what Phase 6's membership half uses; record `u`'s shape as a conjunct).
-- [ ] Carry `cutAt`-style position bookkeeping as a small helper (`blockStart`), with
-      `blockStart_succ` and coverage, modelled on `HitOf.lean`'s `cutAt`/`cutAt_succ`.
+- [x] Carry `cutAt`-style position bookkeeping as a small helper (`blockStart`), with
+      `blockStart_succ` and coverage, modelled on `HitOf.lean`'s `cutAt`/`cutAt_succ`. *(deviation: altered — the blocks are returned as a cut sequence `V` with `labels c (V a) (V (a + 1))` as the block, so no `blockStart` helper is needed; `starZero_labels` is the coverage lemma)*
 
 **Timing**: 1.5 hours
 

@@ -338,4 +338,93 @@ theorem bwdTypes_congr [Finite sig.preds] {c c' : sig.preds → ℤ → Prop} {t
 
 end TailTypes
 
+/-! ## Forward Ramsey blocks
+
+Colour a pair `i < j` of cuts of a forward factorization by the profile and the cut profile of
+the stretch `[W i, W j)` between them — a finite colour type, `Profile sig k` times the Bool
+tables on `Profile sig k × Profile sig k`. Infinite Ramsey for pairs
+(`Nat.exists_strictMono_const_pair_colour`) gives a strictly monotone subsequence of cuts on
+which the colour is constant: consecutive blocks `[V a, V (a + 1))`, each a union of
+consecutive `σ`-segments (so in `L_σ^+`), all with the same profile and the same cut profile.
+The equal cut profiles are what `Profile.lean`'s cut-pair obstruction needs: a cut of the
+periodic repetition of one block at an interior offset is matched, in EVERY block, by a cut
+with the same pair of profiles. -/
+
+section Blocks
+
+variable {sig k}
+
+/-- Consecutive segments of type `σ` along a strictly increasing cut sequence concatenate to a
+word of `L_σ^*`. -/
+theorem starZero_labels {c : sig.preds → ℤ → Prop} [∀ p, DecidablePred (c p)] {W : ℕ → ℤ}
+    (hW : StrictMono W) {σ : KType sig k}
+    (hσ : ∀ i, kTypeOf sig k (listSeg (labels c (W i) (W (i + 1)))) = σ) (n d : ℕ) :
+    StarZero sig k σ (labels c (W n) (W (n + d))) := by
+  induction d with
+  | zero =>
+    rw [Nat.add_zero]
+    have : labels c (W n) (W n) = [] := by
+      apply List.eq_nil_of_length_eq_zero
+      rw [labels_length]
+      omega
+    rw [this]
+    exact starZero_nil σ
+  | succ d ih =>
+    rw [← Nat.add_assoc,
+      labels_append c (W n) (W (n + d)) (W (n + d + 1)) (hW.monotone (Nat.le_add_right n d))
+      (hW.monotone (Nat.le_succ (n + d)))]
+    refine starZero_append ih (starZero_single ?_ (hσ (n + d)))
+    apply List.ne_nil_of_length_pos
+    rw [labels_length]
+    have := hW (show n + d < n + d + 1 by omega)
+    omega
+
+/-- **Forward Ramsey blocks.** From `(α, σ) ∈ FwdTypes c t`, a cut sequence `V` whose prefix
+`[t + 1, V 0)` is in `L_α L_σ^*` and whose stretches `[V a, V (a + 1))` are in `L_σ^+`, all with
+the same profile `E` and the same cut profile `CP`. Infinite Ramsey for pairs on the colouring
+`(i, j) ↦ (profile, cutProfile)` of the stretch `[W i, W j)` of the given factorization, the cut
+profile taken as its Bool table so that the colour type is finite. -/
+theorem exists_blocks_fwd [Finite sig.preds] {c : sig.preds → ℤ → Prop}
+    [∀ p, DecidablePred (c p)] {t : ℤ} {α σ : KType sig k}
+    (hx : (α, σ) ∈ FwdTypes sig k c t) :
+    ∃ (V : ℕ → ℤ) (E : Profile sig k) (CP : Set (Profile sig k × Profile sig k)),
+      StrictMono V ∧ t + 1 ≤ V 0 ∧
+      PrefixStar sig k α σ (labels c (t + 1) (V 0)) ∧
+      (∀ a, StarPlus sig k σ (labels c (V a) (V (a + 1)))) ∧
+      (∀ a, profile sig k (labels c (V a) (V (a + 1))) = E) ∧
+      (∀ a, cutProfile sig k (labels c (V a) (V (a + 1))) = CP) := by
+  classical
+  haveI := Fintype.ofFinite sig.preds
+  haveI := Classical.decEq sig.preds
+  haveI : Finite (Profile sig k) := Finite.of_fintype _
+  haveI : Finite (Profile sig k × Profile sig k → Bool) := Pi.finite
+  obtain ⟨W, hW, h0, hα, hσ⟩ := hx
+  simp only at hα hσ
+  rw [kTypeOf_segZ_eq_listSeg] at hα
+  simp only [kTypeOf_segZ_eq_listSeg] at hσ
+  obtain ⟨g, hg, ⟨E, CB⟩, hcol⟩ := Nat.exists_strictMono_const_pair_colour
+    (fun i j => (profile sig k (labels c (W i) (W j)),
+      fun pr => decide (pr ∈ cutProfile sig k (labels c (W i) (W j)))))
+  have hV : StrictMono (fun a => W (g a)) := hW.comp hg
+  refine ⟨fun a => W (g a), E, {pr | CB pr = true}, hV, h0.trans (hW.monotone (Nat.zero_le _)),
+    ?_, fun a => ?_, fun a => ?_, fun a => ?_⟩
+  · rw [labels_append c (t + 1) (W 0) (W (g 0)) h0 (hW.monotone (Nat.zero_le _))]
+    exact ⟨_, _, rfl, hα, by simpa using starZero_labels hW hσ 0 (g 0)⟩
+  · rw [starPlus_iff]
+    refine ⟨?_, ?_⟩
+    · apply List.ne_nil_of_length_pos
+      change 0 < (labels c (W (g a)) (W (g (a + 1)))).length
+      rw [labels_length]
+      have := hW (hg (show a < a + 1 by omega))
+      omega
+    · have := starZero_labels hW hσ (g a) (g (a + 1) - g a)
+      rwa [Nat.add_sub_of_le (hg.monotone (Nat.le_succ a))] at this
+  · exact congrArg Prod.fst (hcol a (a + 1) (by omega))
+  · ext pr
+    have h := congrFun (congrArg Prod.snd (hcol a (a + 1) (by omega))) pr
+    simp only at h
+    rw [Set.mem_setOf_eq, ← h, decide_eq_true_iff]
+
+end Blocks
+
 end FormalSystem.Metalogic.WeakCanonical
