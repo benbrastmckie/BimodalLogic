@@ -82,3 +82,37 @@ generated-inventory blocks (`FormalSystem/Metalogic/README.md`, `README.md`) are
 `.lean` file under `FormalSystem/` changed. Phase 9 owns regenerating those surfaces
 (`--emit-inventory`); it is a derived-surface staleness, not a defect in anything this phase
 landed.
+
+## Phase 3 -- the early-exit iteration, measured against the fixed-count form
+
+Probe `probes/17_early_exit.lean`, at the pinned self-loop embedded witness. The new code is
+measured against the old code side by side; no landed definition is switched at this point.
+
+| Fixpoint | OLD (`Nu.gfp`) | NEW (`Nu.gfp'`) | factor | cardinality |
+|---|---|---|---|---|
+| `bwdLiveStep` over `verts` | 1563 ms | **122 ms** | **12.8x** | 12 both |
+| `fwdLiveStep` over `verts` | 7606 ms | **2177 ms** | **3.5x** | 6 both |
+
+Both pairs agree on the cardinality, which is `gfp'_eq_gfp` confirmed behaviourally beside
+being proved.
+
+**Discrepancy with the report, recorded not reconciled.** The report's carried figure is a
+16.7x early-exit factor. Measured here: 12.8x on the backward fixpoint and 3.5x on the forward
+one. The report's single figure is therefore optimistic for the forward direction, which is the
+expensive one (7606 ms of the baseline's 8521 ms `fwdLiveT`). This round's figures are what
+later phases cite.
+
+Scope Hypothesis CONFIRMED: `git diff --numstat` reports `139 0` on `Fixpoint.lean` -- 139
+insertions, **zero deletions** -- and exactly 12 new `def`/`theorem` declarations
+(`Nu.{iter_succ_comm, iterTo, iterTo_eq_iter, gfp', gfp'_eq_gfp}`,
+`EUFix.{iterFrom, iterFrom_empty, iterFrom_succ, iterTo, iterTo_eq_iterFrom, lfp', lfp'_eq_lfp}`).
+
+Axiom profiles: `Nu.gfp'_eq_gfp`, `EUFix.lfp'_eq_lfp`, `Nu.iterTo_eq_iter`,
+`EUFix.iterTo_eq_iterFrom`, `EUFix.iterFrom_empty`, `EUFix.iterFrom_succ` all
+`[propext, Classical.choice, Quot.sound]`; `Nu.iter_succ_comm` is `[propext, Quot.sound]`.
+No `sorryAx` anywhere. `lake exe lint-style` on the file: no finding. Full guarded
+`lake build`: green, 2844 jobs.
+
+No new `termination_by` or `decreasing_by` clause was needed: `iterTo` recurses structurally on
+its `ℕ` argument, so the existing `exists_stab` / `iter_stab` termination argument is cited and
+not re-proved, exactly as the plan anticipated.

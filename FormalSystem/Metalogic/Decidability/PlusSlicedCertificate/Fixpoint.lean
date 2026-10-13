@@ -205,6 +205,65 @@ theorem gfp_greatest (V : Finset α) {F : Finset α → Finset α}
     | succ k ih => exact subset_trans hX (hm _ _ ih)
   exact key _
 
+/-! ## The early-exit iteration
+
+`gfp` above runs `iter` a fixed `V.card + 1` times whatever happens, so a chain that is already
+fixed after two contractions still pays `V.card - 1` further applications of `F`. `iterTo` stops
+when the operator is fixed, and `gfp'_eq_gfp` says nothing is observable from outside.
+
+The loop is deliberately **top-down**: `iterTo` recurses on `F X` when that differs from `X`, so
+the step it has already computed is the one it continues from. The bottom-up alternative — run
+`iter` to level `n` and test stability there — applies `F` once per level regardless and saves
+nothing. That is a correctness condition on this fix, not a matter of style.
+
+Only the declarations below take `[DecidableEq α]`: the `if` needs to decide `F X = X`. `iter`
+and `gfp` are untouched, so this module's header claim that no `DecidableEq` is needed for the
+iteration itself stays true of them.
+-/
+
+/-- **The shift lemma**: one application of the operator can be moved into the start. -/
+theorem iter_succ_comm (V : Finset α) (F : Finset α → Finset α) (n : ℕ) :
+    iter V F (n + 1) = iter (F V) F n := by
+  induction n with
+  | zero => rfl
+  | succ k ih =>
+      change F (iter V F (k + 1)) = F (iter (F V) F k)
+      rw [ih]
+
+/-- **The early-exit iteration.** Top-down, so that a fixed step stops the recursion instead of
+merely reporting stability at a level the bottom-up form would still pay for. -/
+def iterTo [DecidableEq α] (F : Finset α → Finset α) (X : Finset α) : ℕ → Finset α
+  | 0 => X
+  | n + 1 => let Y := F X; if Y = X then X else iterTo F Y n
+
+theorem iterTo_eq_iter [DecidableEq α] (F : Finset α → Finset α) (X : Finset α) (n : ℕ) :
+    iterTo F X n = iter X F n := by
+  induction n generalizing X with
+  | zero => rfl
+  | succ k ih =>
+      change (if F X = X then X else iterTo F (F X) k) = F (iter X F k)
+      by_cases h : F X = X
+      · rw [if_pos h]
+        have key : ∀ m, iter X F m = X := by
+          intro m
+          induction m with
+          | zero => rfl
+          | succ j ihj =>
+              change F (iter X F j) = X
+              rw [ihj, h]
+        rw [key k, h]
+      · rw [if_neg h, ih (F X)]
+        exact (iter_succ_comm X F k).symm
+
+/-- **The greatest fixpoint, computed with early exit.** -/
+def gfp' [DecidableEq α] (V : Finset α) (F : Finset α → Finset α) : Finset α :=
+  iterTo F V (V.card + 1)
+
+/-- **Nothing is observable from outside**: the early-exit form is the fixed-count form, with no
+side condition at all, so every theorem about `gfp` transfers by rewriting. -/
+theorem gfp'_eq_gfp [DecidableEq α] (V : Finset α) (F : Finset α → Finset α) :
+    gfp' V F = gfp V F := iterTo_eq_iter F V (V.card + 1)
+
 end Nu
 
 /-!
@@ -615,6 +674,86 @@ event and guard. -/
 theorem lfp_mono_V {V V' : Finset α} (hV : V ⊆ V') (succ : α → Finset α) (isE isG : α → Bool) :
     lfp V succ isE isG ⊆ lfp V' succ isE isG :=
   lfp_mono_all hV succ (fun _ h => h) (fun _ h => h)
+
+/-! ## The early-exit iteration
+
+The `EUFix` mirror of `Nu.iterTo`, and for the same reason: `lfp` runs `iter` a fixed
+`V.card + 1` times, so an iteration already fixed after two steps still pays `V.card - 1`
+further applications of `step`.
+
+`Nu.iterTo` could recurse on `F X` directly because `Nu.iter` takes its start as an argument.
+`iter` here is hardwired to start at `∅`, so the early-exit form needs `iterFrom` — the same
+iteration from an arbitrary start — before it can shift. `iterFrom_empty` says the two agree at
+the start `iter` uses, and `lfp'_eq_lfp` chains the two equalities.
+
+`DecidableEq α` is already a namespace-level instance argument here, so nothing new is assumed.
+-/
+
+/-- The iteration from an arbitrary start, which the early-exit form needs in order to shift. -/
+def iterFrom (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) (X : Finset α) :
+    ℕ → Finset α
+  | 0 => X
+  | n + 1 => step V succ isE isG (iterFrom V succ isE isG X n)
+
+/-- At the start `iter` uses, the two iterations agree. -/
+theorem iterFrom_empty (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) (n : ℕ) :
+    iterFrom V succ isE isG ∅ n = iter V succ isE isG n := by
+  induction n with
+  | zero => rfl
+  | succ k ih =>
+      change step V succ isE isG (iterFrom V succ isE isG ∅ k)
+        = step V succ isE isG (iter V succ isE isG k)
+      rw [ih]
+
+/-- **The shift lemma**: one application of the operator can be moved into the start. -/
+theorem iterFrom_succ (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool)
+    (X : Finset α) (n : ℕ) :
+    iterFrom V succ isE isG X (n + 1)
+      = iterFrom V succ isE isG (step V succ isE isG X) n := by
+  induction n with
+  | zero => rfl
+  | succ k ih =>
+      change step V succ isE isG (iterFrom V succ isE isG X (k + 1))
+        = step V succ isE isG (iterFrom V succ isE isG (step V succ isE isG X) k)
+      rw [ih]
+
+/-- **The early-exit iteration**, the `EUFix` mirror of `Nu.iterTo`. -/
+def iterTo (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) (X : Finset α) :
+    ℕ → Finset α
+  | 0 => X
+  | n + 1 => let Y := step V succ isE isG X; if Y = X then X else iterTo V succ isE isG Y n
+
+theorem iterTo_eq_iterFrom (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool)
+    (X : Finset α) (n : ℕ) :
+    iterTo V succ isE isG X n = iterFrom V succ isE isG X n := by
+  induction n generalizing X with
+  | zero => rfl
+  | succ k ih =>
+      change (if step V succ isE isG X = X then X
+              else iterTo V succ isE isG (step V succ isE isG X) k)
+        = step V succ isE isG (iterFrom V succ isE isG X k)
+      by_cases h : step V succ isE isG X = X
+      · rw [if_pos h]
+        have key : ∀ m, iterFrom V succ isE isG X m = X := by
+          intro m
+          induction m with
+          | zero => rfl
+          | succ j ihj =>
+              change step V succ isE isG (iterFrom V succ isE isG X j) = X
+              rw [ihj, h]
+        rw [key k, h]
+      · rw [if_neg h, ih (step V succ isE isG X)]
+        exact (iterFrom_succ V succ isE isG X k).symm
+
+/-- **The `E[g U e]` fixpoint, computed with early exit.** -/
+def lfp' (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) : Finset α :=
+  iterTo V succ isE isG ∅ (V.card + 1)
+
+/-- **Nothing is observable from outside**: the early-exit form is the fixed-count form, with no
+side condition at all, so every theorem about `lfp` transfers by rewriting. -/
+theorem lfp'_eq_lfp (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
+    lfp' V succ isE isG = lfp V succ isE isG := by
+  rw [lfp', lfp, iterTo_eq_iterFrom, iterFrom_empty]
 
 end EUFix
 

@@ -323,35 +323,35 @@ is built in the same scoped guarded build.
 
 ---
 
-### Phase 3: Early-exit iteration, additive in Fixpoint.lean [NOT STARTED]
+### Phase 3: Early-exit iteration, additive in Fixpoint.lean [COMPLETED]
 
 **Goal**: `Fixpoint.lean` carries an early-exit form of both iterations — one that stops applying
 the operator once it is fixed — proved unconditionally equal to the existing fixed-count form, with
 `iter` / `gfp` / `lfp` themselves untouched.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixpoint.lean`
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixpoint.lean`
       immediately before editing.
-- [ ] In `namespace Nu`, add in the signatures fixed below: `iter_succ_comm` (the shift lemma
+- [x] In `namespace Nu`, add in the signatures fixed below: `iter_succ_comm` (the shift lemma
       `iter V F (n + 1) = iter (F V) F n`), `iterTo` (the top-down loop of D5, with
       `[DecidableEq α]` as an instance argument on the new definition only), `iterTo_eq_iter`,
       `gfp'`, `gfp'_eq_gfp`. A section docstring states why the loop is top-down and not a
       bottom-up stability test (D5), and that `iter` / `gfp` deliberately keep no `DecidableEq`
       requirement (D6).
-- [ ] In `namespace EUFix`, add: `iterFrom` (the start-parameterized iteration), `iterFrom_empty`
+- [x] In `namespace EUFix`, add: `iterFrom` (the start-parameterized iteration), `iterFrom_empty`
       (it agrees with `iter` at the empty start), `iterFrom_succ` (the shift lemma), `iterTo`,
       `iterTo_eq_iterFrom`, `lfp'`, `lfp'_eq_lfp`. `EUFix` already carries `[DecidableEq α]` at
       namespace level, so no instance argument is added.
-- [ ] `exists_stab` / `iter_stab` are **cited, not re-proved**: the report records that they
+- [x] `exists_stab` / `iter_stab` are **cited, not re-proved**: the report records that they
       already supply the termination argument an early-exit form needs, so the equality proofs are
       congruence inductions and introduce no new termination obligation. Confirm no new
       `termination_by` or `decreasing_by` clause is needed.
-- [ ] Measure the early-exit saving in
+- [x] Measure the early-exit saving in
       `specs/716_sliced_certificate_liveat_nontermination/probes/17_early_exit.lean`: at the
       embedded witness, hand-wire `Nu.gfp' G.verts G.bwdLiveStep` and `Nu.gfp G.verts
       G.bwdLiveStep` side by side under the Phase 1 harness and record both wall clocks. No landed
       definition is switched yet, so this is a measurement of the new code, not of the library.
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
       FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint` detached; record the
       measured factor in `progress-file.md`.
 
