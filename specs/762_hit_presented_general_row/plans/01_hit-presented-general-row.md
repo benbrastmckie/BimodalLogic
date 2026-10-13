@@ -681,13 +681,13 @@ aggregator, its only direct dependent.
 
 ---
 
-### Phase 11: `hitOf_gadget_eq` [NOT STARTED]
+### Phase 11: `hitOf_gadget_eq` [COMPLETED]
 
 **Goal**: A gadget's computable realized-triple set is exactly the family-triple set of its
 periodic trace.
 
 **Tasks**:
-- [ ] `theorem hitOf_gadget_eq (hk : 1 ≤ k) (hw : w ≠ []) (hv : v ≠ []) (hnow : ∀ z,
+- [x] `theorem hitOf_gadget_eq (hk : 1 ≤ k) (hw : w ≠ []) (hv : v ≠ []) (hnow : ∀ z,
       periodicColouring w m v b now z ↔ z = t) : (↑(hitOf (gadgetLab w m v) (gadgetStep w m v)
       now k) : Set _) = familyTriples sig k (periodicColouring w m v b)` — by `Set.ext`,
       `mem_hitOf_iff t hk`, `isRun_gadget_iff`, `runTrace_gadgetRun`, `mem_familyTriples`.

@@ -411,4 +411,32 @@ theorem isRun_gadget_iff (hw : w ≠ []) (hv : v ≠ []) (b : ℤ) {now : sig.pr
 
 end Gadget
 
+/-! ## The gadget's realized triples -/
+
+section GadgetHitOf
+
+open FormalSystem.Metalogic.Decidability.RaySummary (familyTriples mem_familyTriples)
+
+variable {sig} [Fintype sig.preds] [DecidableEq sig.preds] {k : ℕ}
+
+/-- **A gadget's computable realized-triple set is the family-triple set of its periodic
+trace**: `mem_hitOf_iff` at the anchor `t`, the unique anchored run `isRun_gadget_iff`, and
+`runTrace_gadgetRun`. -/
+theorem hitOf_gadget_eq (hk : 1 ≤ k) (now : sig.preds) (w m v : List (sig.preds → Bool))
+    (b t : ℤ) (hw : w ≠ []) (hv : v ≠ [])
+    (hnow : ∀ z, periodicColouring sig w m v b now z ↔ z = t) :
+    (↑(hitOf (gadgetLab sig w m v) (gadgetStep sig w m v) now k) :
+        Set (KType sig k × KType sig k × KType sig k)) =
+      familyTriples sig k (periodicColouring sig w m v b) := by
+  ext x
+  rw [Finset.mem_coe, mem_hitOf_iff _ _ _ _ t hk, mem_familyTriples]
+  constructor
+  · rintro ⟨ρ, hρ, hx⟩
+    rw [(isRun_gadget_iff hw hv b hnow ρ).mp hρ, runTrace_gadgetRun] at hx
+    exact hx
+  · intro hx
+    exact ⟨gadgetRun hw hv b, isRun_gadgetRun hw hv b hnow, by rw [runTrace_gadgetRun]; exact hx⟩
+
+end GadgetHitOf
+
 end FormalSystem.Metalogic.WeakCanonical
