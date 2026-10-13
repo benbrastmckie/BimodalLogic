@@ -98,6 +98,13 @@ nothing about `PlusValidZTime` — see the README's verdict.
   `exists_periodic_fwd`/`exists_periodic_bwd` (Ramsey over the profile, bounded representatives)
   assembled through the seam into `exists_periodic_subfamily`; every length bound is a count of
   pairs of profiles.
+* `RaySummary.HitComplete` — requirement (C)'s general row: the three-piece gadget presenting a
+  bi-ultimately-periodic word (`GadgetState`, `gadgetLab`, `gadgetStep`, `gadgetRun`) with its
+  unique anchored run (`isRun_gadget_iff`) and realized triples (`hitOf_gadget_eq`), disjoint
+  unions of presentations (`hitOf_sigma_eq`), the exhibited count `sizeBound` and the headline
+  `exists_hitPresented`: for EVERY regular `ℤ`-model, seam, `φ` and `k ≥ 1`, a presentation with
+  `Fintype.card Q ≤ sizeBound φ k` satisfies `HitPresented` — one seam, no complexity bound,
+  nothing about `PlusValidZTime`.
 * `RaySummary.Present` — finite labelled presentations with their runs (`IsRun`,
   `runTrace`), the computable path-type closure (`pathTypes`, `pathTypesNow`,
   `mem_pathTypes_iff`, `mem_pathTypesNow_iff`) and liveness (`fwdLive`, `bwdLive`,

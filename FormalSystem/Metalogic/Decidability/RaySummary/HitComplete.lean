@@ -30,12 +30,30 @@ computable realized-triple set is the family-triple set of its periodic trace
 `HitCl`; one gadget per triple of `HitCl`, a disjoint union over the finite set `HitCl`, is the
 presentation (`exists_hitPresented`).
 
+**What `exists_hitPresented` does NOT say.** No complexity bound, upper or lower: `sizeBound φ k`
+is a count of depth-`k` types and of their profiles over the closure alphabet, it times nothing,
+and it bounds no procedure (the disclaimer at `sizeBound`, in `AnchorLayer.lean`'s words); no
+minimality is claimed. Nothing about `Decidable (PlusValidZTime φ)`, in any form: the statement
+is about ONE seam `(τ, t)` of ONE model, and the lift from a seam to validity is requirement
+(W)'s. `[F.IsRegular]` is the only hypothesis on the model, and it enters only as `HitCl`'s own
+hypothesis — no width, fibre or finiteness assumption on `M`; `Fintype` is on the PRESENTATION
+only. The presentation is noncomputable: a periodic colouring is chosen classically per triple of
+`HitCl`, which the `∃` statement permits (the fixtures' `def` presentations were needed only for
+their `#guard`s). Nothing about `⊡(Pp)`: the combinatorics is direction-neutral (the backward
+transport is the forward one on the reflected colouring), but no backward Bool-fixture bridge is
+built. The trace-level hypothesis `Presented` stays refuted as a completeness carrier
+(`Probe735.not_presented`); the Hit-level hypothesis `HitPresented` is the statement here.
+
 ## Main definitions and results
 
 * `GadgetState`, `gadgetLab`, `gadgetStep`, `gadgetRun` — the three-piece presentation of a
   periodic word and its canonical run.
 * `runTrace_gadgetRun`, `isRun_gadgetRun`, `isRun_gadget_iff` — the run reads the periodic
   colouring and is the unique anchored run.
+* `hitOf_gadget_eq` — a gadget's realized triples are the family triples of its periodic trace.
+* `sigmaLab`, `sigmaStep`, `isRun_sigma_iff`, `hitOf_sigma_eq`, `card_sigma_le` — disjoint
+  unions of presentations.
+* `sizeBound`, `exists_hitPresented` — the exhibited count and the headline.
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
@@ -533,3 +551,119 @@ theorem card_sigma_le [Fintype ι] [∀ i, Fintype (Q i)] {B : ℕ}
 end Sigma
 
 end FormalSystem.Metalogic.WeakCanonical
+
+/-! ## The headline -/
+
+namespace FormalSystem.Metalogic.Decidability.RaySummary
+
+open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.Expressiveness FormalSystem.Semantics
+
+variable {F : FrameOver intOrder}
+
+/-- **The exhibited count**: `N ^ 3 · (4 P ^ 2 + 1)` with `N` the number of depth-`k` types over
+the closure alphabet of `φ` and `P` the number of their profiles — at most `N ^ 3` triples in
+`HitCl`, one gadget per triple, each with fewer than `4 P ^ 2 + 1` states.
+
+This is a COUNT of types and profiles and nothing else. In the words of `AnchorLayer.lean`'s
+disclaimer on its own cell count, with "types and profiles" for "cells": it "is not a complexity
+bound of any kind: it counts [types and profiles], it does not time anything, and it must not be
+described as a bound on any procedure's running time." No minimality is claimed. -/
+noncomputable def sizeBound (φ : PlusFormula) (k : ℕ) : ℕ :=
+  Nat.card (KType (clSig φ) k) ^ 3 * (4 * Nat.card (Profile (clSig φ) k) ^ 2 + 1)
+
+/-- **Requirement (C), the general row.** For every regular `ℤ`-model `M`, seam `(τ, t)`,
+formula `φ` and depth `1 ≤ k`, a finite labelled presentation `(Q, lab, step)` with
+`Fintype.card Q ≤ sizeBound φ k` satisfies `HitPresented M τ t φ lab step k`: its computable
+realized-triple set `hitOf` IS the seam's `HitCl`.
+
+Route: every triple of `HitCl` lies in the family-triple set of one closure trace
+(`hitCl_eq_iUnion`), whose `now` letter holds exactly at `t` (`clTrace_now`); the seam assembly
+`exists_periodic_subfamily` realizes it by a bounded periodic colouring whose triples all lie in
+that trace's, hence in `HitCl`; one gadget per triple (`hitOf_gadget_eq`) in a disjoint union
+(`hitOf_sigma_eq`) is the presentation. `[F.IsRegular]` enters only through `HitCl`'s own
+hypothesis; `Fintype` is on the presentation. The presentation is chosen classically per triple,
+which the `∃` statement permits.
+
+Paper: — (the formalization's own realizability device; HWZ 2000 Def. 12 and Thm 14 orient the
+quasimodel shape and source no claim). -/
+theorem exists_hitPresented (M : TaskModel F.toTaskFrame) [F.IsRegular]
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula) (k : ℕ) (hk : 1 ≤ k) :
+    ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q)
+      (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool),
+      Fintype.card Q ≤ sizeBound φ k ∧ HitPresented M τ t φ lab step k := by
+  classical
+  have key : ∀ x : ↥(HitCl M τ t φ k), ∃ (w m v : List ((clSig φ).preds → Bool)) (b : ℤ),
+      w ≠ [] ∧ v ≠ [] ∧ w.length < Nat.card (Profile (clSig φ) k) ^ 2 ∧
+      m.length ≤ 2 * Nat.card (Profile (clSig φ) k) ^ 2 ∧
+      v.length < Nat.card (Profile (clSig φ) k) ^ 2 ∧
+      (∀ z, periodicColouring (clSig φ) w m v b (clNow φ) z ↔ z = t) ∧
+      x.1 ∈ familyTriples (clSig φ) k (periodicColouring (clSig φ) w m v b) ∧
+      familyTriples (clSig φ) k (periodicColouring (clSig φ) w m v b) ⊆ HitCl M τ t φ k := by
+    rintro ⟨x, hx⟩
+    rw [hitCl_eq_iUnion] at hx
+    obtain ⟨bf, hbf⟩ := Set.mem_iUnion.mp hx
+    obtain ⟨w, m, v, b, hw, hv, hwl, hml, hvl, hnow, hmem, hsub⟩ :=
+      exists_periodic_subfamily hk (clTrace M φ t (spliced τ t bf)) (clNow φ) t
+        (fun z => clTrace_now M φ t (spliced τ t bf) z) hbf
+    refine ⟨w, m, v, b, hw, hv, hwl, hml, hvl, hnow, hmem, hsub.trans ?_⟩
+    rw [hitCl_eq_iUnion]
+    exact Set.subset_iUnion
+      (fun bf => familyTriples (clSig φ) k (clTrace M φ t (spliced τ t bf))) bf
+  choose w m v b hw hv hwl hml hvl hnow hmem hsub using key
+  haveI : Fintype ↥(HitCl M τ t φ k) := (hitCl_finite M τ t φ k).fintype
+  refine ⟨Σ x : ↥(HitCl M τ t φ k), GadgetState (clSig φ) (w x) (m x) (v x),
+    inferInstance, inferInstance,
+    fun q => gadgetLab (clSig φ) (w q.1) (m q.1) (v q.1) q.2,
+    fun q q' => if h : q.1 = q'.1 then
+      gadgetStep (clSig φ) (w q'.1) (m q'.1) (v q'.1) (h ▸ q.2) q'.2 else false, ?_, ?_⟩
+  · -- the count
+    have hN : Fintype.card (KType (clSig φ) k × KType (clSig φ) k × KType (clSig φ) k) =
+        Nat.card (KType (clSig φ) k) ^ 3 := by
+      rw [Fintype.card_prod, Fintype.card_prod, Nat.card_eq_fintype_card]
+      ring
+    have hcard : Fintype.card ↥(HitCl M τ t φ k) ≤ Nat.card (KType (clSig φ) k) ^ 3 :=
+      hN ▸ Fintype.card_le_of_injective Subtype.val Subtype.val_injective
+    have hgadget : ∀ x : ↥(HitCl M τ t φ k),
+        Fintype.card (GadgetState (clSig φ) (w x) (m x) (v x)) ≤
+          4 * Nat.card (Profile (clSig φ) k) ^ 2 + 1 := by
+      intro x
+      have h1 := hwl x
+      have h2 := hml x
+      have h3 := hvl x
+      simp only [GadgetState, Fintype.card_sum, Fintype.card_fin]
+      generalize Nat.card (Profile (clSig φ) k) ^ 2 = P2 at *
+      omega
+    unfold sizeBound
+    exact (card_sigma_le hgadget).trans (Nat.mul_le_mul_right _ hcard)
+  · -- the realized set: membership in the union's `hitOf` is a run of one gadget, which is the
+    -- gadget's periodic trace (`isRun_sigma_iff`, `hitOf_gadget_eq`)
+    unfold HitPresented
+    ext y
+    rw [Finset.mem_coe, mem_hitOf_iff _ _ (clNow φ) k t hk]
+    constructor
+    · intro hy
+      have hy' : y ∈ (↑(hitOf (gadgetLab (clSig φ) (w ⟨y, hy⟩) (m ⟨y, hy⟩) (v ⟨y, hy⟩))
+          (gadgetStep (clSig φ) (w ⟨y, hy⟩) (m ⟨y, hy⟩) (v ⟨y, hy⟩)) (clNow φ) k) :
+            Set (KType (clSig φ) k × KType (clSig φ) k × KType (clSig φ) k)) := by
+        rw [hitOf_gadget_eq hk (clNow φ) _ _ _ (b ⟨y, hy⟩) t (hw _) (hv _) (hnow _)]
+        exact hmem ⟨y, hy⟩
+      rw [Finset.mem_coe, mem_hitOf_iff _ _ (clNow φ) k t hk] at hy'
+      obtain ⟨ρ', hρ', hfam⟩ := hy'
+      exact ⟨fun z => ⟨⟨y, hy⟩, ρ' z⟩,
+        (isRun_sigma_iff (lab := fun x => gadgetLab (clSig φ) (w x) (m x) (v x))
+          (step := fun x => gadgetStep (clSig φ) (w x) (m x) (v x)) (clNow φ) t _).mpr
+          ⟨⟨y, hy⟩, ρ', hρ', rfl⟩, hfam⟩
+    · rintro ⟨ρ, hρ, hfam⟩
+      obtain ⟨x, ρ', hρ', rfl⟩ :=
+        (isRun_sigma_iff (lab := fun x => gadgetLab (clSig φ) (w x) (m x) (v x))
+          (step := fun x => gadgetStep (clSig φ) (w x) (m x) (v x)) (clNow φ) t ρ).mp hρ
+      have hy' : y ∈ (↑(hitOf (gadgetLab (clSig φ) (w x) (m x) (v x))
+          (gadgetStep (clSig φ) (w x) (m x) (v x)) (clNow φ) k) :
+            Set (KType (clSig φ) k × KType (clSig φ) k × KType (clSig φ) k)) := by
+        rw [Finset.mem_coe, mem_hitOf_iff _ _ (clNow φ) k t hk]
+        exact ⟨ρ', hρ', hfam⟩
+      rw [hitOf_gadget_eq hk (clNow φ) _ _ _ (b x) t (hw x) (hv x) (hnow x)] at hy'
+      exact hsub x hy'
+
+end FormalSystem.Metalogic.Decidability.RaySummary

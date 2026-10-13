@@ -757,18 +757,18 @@ is the complete covering check; this phase adds generic lemmas to one module onl
 
 ---
 
-### Phase 13: `sizeBound` and the Headline `exists_hitPresented` [NOT STARTED]
+### Phase 13: `sizeBound` and the Headline `exists_hitPresented` [COMPLETED]
 
 **Goal**: Assemble the filed statement verbatim, with the count exhibited, and write the module's
 "what it does NOT say" docstring.
 
 **Tasks**:
-- [ ] Section `namespace FormalSystem.Metalogic.Decidability.RaySummary`, `variable {F : FrameOver
+- [x] Section `namespace FormalSystem.Metalogic.Decidability.RaySummary`, `variable {F : FrameOver
       intOrder}`, opens as `Trace.lean` (line 74-75 at plan time).
-- [ ] `noncomputable def sizeBound (φ : PlusFormula) (k : ℕ) : ℕ := Nat.card (KType (clSig φ) k)
+- [x] `noncomputable def sizeBound (φ : PlusFormula) (k : ℕ) : ℕ := Nat.card (KType (clSig φ) k)
       ^ 3 * (4 * Nat.card (Profile (clSig φ) k) ^ 2 + 1)` with the disclaimer docstring
       (`AnchorLayer.lean`'s words, "types and profiles" for "cells").
-- [ ] `theorem exists_hitPresented (M : TaskModel F.toTaskFrame) [F.IsRegular] (τ : WorldHistory
+- [x] `theorem exists_hitPresented (M : TaskModel F.toTaskFrame) [F.IsRegular] (τ : WorldHistory
       F.toTaskFrame) (t : ℤ) (φ : PlusFormula) (k : ℕ) (hk : 1 ≤ k) : ∃ (Q : Type) (_ : Fintype
       Q) (_ : DecidableEq Q) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool),
       Fintype.card Q ≤ sizeBound φ k ∧ HitPresented M τ t φ lab step k`:
@@ -781,18 +781,18 @@ is the complete covering check; this phase adds generic lemmas to one module onl
         sigmaStep`;
       - `HitPresented` unfolds to `HitCl = ↑(hitOf …)`: by `hitOf_sigma_eq`, `hitOf_gadget_eq`,
         `Finset.coe_biUnion`; `⊆` from each `familyTriples (periodic x) ⊆ familyTriples (c x) ⊆
-        HitCl` (`hitCl_eq_iUnion` again); `⊇` from `x ∈ familyTriples (periodic x)`;
+        HitCl` (`hitCl_eq_iUnion` again); `⊇` from `x ∈ familyTriples (periodic x)`; *(deviation: altered — rewriting with `hitOf_sigma_eq` timed out in `isDefEq` (the union's `hitOf` instance paths), so the set equality is proved pointwise through `mem_hitOf_iff` on the union, `isRun_sigma_iff` and `hitOf_gadget_eq`; `hitOf_sigma_eq` itself is landed and pinned)*
       - the count: `Fintype.card Q = ∑ x, (w x).length + (m x).length + (v x).length ≤ card
         ↥HitCl * (4 P ^ 2 + 1) ≤ N ^ 3 * (4 P ^ 2 + 1)` with `card ↥HitCl ≤ Fintype.card (KType ×
         KType × KType) = N ^ 3` (`Fintype.card_subtype_le`, `Fintype.card_prod`, `Nat.card_eq_fintype_card`).
-- [ ] Module docstring (`HitComplete.lean`): the headline, the route in four sentences, and the
+- [x] Module docstring (`HitComplete.lean`): the headline, the route in four sentences, and the
       section "What `exists_hitPresented` does NOT say": no complexity bound; `sizeBound` counts
       types and profiles; no `Decidable (PlusValidZTime φ)`; one seam; `[F.IsRegular]` is the
       only hypothesis and `Fintype` is on the presentation; the presentation is noncomputable
       (classical choice per triple); nothing about `⊡(Pp)` (direction-neutral combinatorics, no
       backward Bool-fixture bridge); `Presented` stays refuted as a completeness carrier
       (`Probe735.not_presented`, cited by name not path). No task number anywhere.
-- [ ] `#print axioms` lines for `exists_hitPresented`, `exists_periodic_subfamily`,
+- [x] `#print axioms` lines for `exists_hitPresented`, `exists_periodic_subfamily`,
       `profile_append_congr` observed and recorded in `progress-file.md`.
 
 **Timing**: 1.5 hours
