@@ -216,13 +216,13 @@ the module fails, which the first command already checks.
 
 ---
 
-### Phase 2: The Composition Law `profile_append_congr` [NOT STARTED]
+### Phase 2: The Composition Law `profile_append_congr` [COMPLETED]
 
 **Goal**: Prove that the profile of `l₁ ++ l₂` is a function of `profile l₁` and `profile l₂`,
 through the explicit law of the research report (Finding 4), and derive the congruence.
 
 **Tasks**:
-- [ ] `theorem starProfile_append (hk : 1 ≤ k) (σ) (l₁ l₂) (x y) : starProfile σ (l₁ ++ l₂) x y
+- [x] `theorem starProfile_append (hk : 1 ≤ k) (σ) (l₁ l₂) (x y) : starProfile σ (l₁ ++ l₂) x y
       ↔ (∃ y', starProfile σ l₁ x y' ∧ y = kTypeOf (listSeg (rep y' ++ l₂)))` — state instead
       WITHOUT representatives, as the four-case disjunction over where the middle `m` sits:
       (i) inside `l₁` (`y` is `y' · type l₂` by `kTypeOf_listSeg_append_congr`), (ii) inside
@@ -230,18 +230,18 @@ through the explicit law of the research report (Finding 4), and derive the cong
       piece `l = l' ++ l''` with `type l' · type l'' = σ`; the "type product" is expressed as
       `kTypeOf (listSeg (a ++ b))` for any representatives, well defined by
       `kTypeOf_listSeg_append_congr`.
-- [ ] The middle-split lemma: `StarZero σ m → m = m₁ ++ m₂ → ∃ cases` (the four-way split of a
+- [x] The middle-split lemma: `StarZero σ m → m = m₁ ++ m₂ → ∃ cases` (the four-way split of a
       concatenation of pieces at a cut), and its converse assembling `StarZero` from the cases.
-- [ ] `theorem profile_append_congr (hk : 1 ≤ k) {l₁ l₁' l₂ l₂'} (h₁ : profile l₁ = profile l₁')
+- [x] `theorem profile_append_congr (hk : 1 ≤ k) {l₁ l₁' l₂ l₂'} (h₁ : profile l₁ = profile l₁')
       (h₂ : profile l₂ = profile l₂') : profile (l₁ ++ l₂) = profile (l₁' ++ l₂')` by
       `Prod.ext` (first component: `kTypeOf_listSeg_append_congr`; second: `funext` and
       `starProfile_append` on both sides, with each case's data transported through `h₁`/`h₂`).
-- [ ] `theorem profile_flatten_congr`: the list-of-pieces form (pieces pairwise profile-equal
+- [x] `theorem profile_flatten_congr`: the list-of-pieces form (pieces pairwise profile-equal
       ⇒ flattenings profile-equal), by induction from `profile_append_congr` — the shape Phase 6
       uses block by block.
-- [ ] If the four-case law does not close as stated: strengthen `starProfile` to carry the
+- [x] If the four-case law does not close as stated: strengthen `starProfile` to carry the
       straddling halves' types (a fifth component), re-run Phase 1's read-outs, record the
-      change in the summary; do NOT weaken any statement downstream.
+      change in the summary; do NOT weaken any statement downstream. *(not needed: the four-case law closed as stated, with the type product on representatives `TypeMul`/`typeMul_iff`; landed over `[Finite sig.preds]`)*
 
 **Timing**: 2 hours
 

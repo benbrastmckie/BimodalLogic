@@ -307,4 +307,169 @@ theorem prefixStar_of_profile_eq (hk : 1 ≤ k) {α σ : KType sig k}
 
 end ReadOut
 
+/-! ## The composition law
+
+A middle `m ∈ L_σ^*` of a concatenation `l₁ ++ l₂` lies inside `l₁`, lies inside `l₂`, straddles
+the boundary at a piece boundary of `m`, or straddles it strictly inside one piece `l' ++ l''` of
+type `σ`. Read on the σ-star profile, these are the four disjuncts of `starProfile_append`; each
+mentions `l₁` and `l₂` only through their profiles, which is why the profile of `l₁ ++ l₂` is a
+function of the profiles of the parts (`profile_append_congr`). The type product that the law
+needs is stated on representatives (`TypeMul`) and is well defined by
+`kTypeOf_listSeg_append_congr` (`typeMul_iff`); no product on bare `k`-types is introduced. -/
+
+section Append
+
+variable {sig k}
+
+/-- **The type product on representatives**: `TypeMul x y z` says that some `p` of type `x` and
+some `q` of type `y` concatenate to a word of type `z`. By `kTypeOf_listSeg_append_congr` this
+depends on nothing but `x`, `y` and `z` (`typeMul_iff`). -/
+def TypeMul (x y z : KType sig k) : Prop :=
+  ∃ p q : List (sig.preds → Bool),
+    kTypeOf sig k (listSeg p) = x ∧ kTypeOf sig k (listSeg q) = y ∧
+      kTypeOf sig k (listSeg (p ++ q)) = z
+
+theorem typeMul_iff [Finite sig.preds] (p q : List (sig.preds → Bool)) (z : KType sig k) :
+    TypeMul (kTypeOf sig k (listSeg p)) (kTypeOf sig k (listSeg q)) z ↔
+      kTypeOf sig k (listSeg (p ++ q)) = z := by
+  haveI := Fintype.ofFinite sig.preds
+  constructor
+  · rintro ⟨p', q', hp, hq, rfl⟩
+    exact kTypeOf_listSeg_append_congr k hp.symm hq.symm
+  · intro h
+    exact ⟨p, q, rfl, rfl, h⟩
+
+/-- **The middle-split lemma**: a cut of a word of `L_σ^*` falls either at a piece boundary
+(both halves in `L_σ^*`) or strictly inside one piece `l' ++ l''` of type `σ`, with the pieces
+before and after it in `L_σ^*`. By induction on the list of pieces, with
+`List.append_eq_append_iff` locating the cut. -/
+theorem starZero_split {σ : KType sig k} {m m₁ m₂ : List (sig.preds → Bool)}
+    (hm : StarZero sig k σ m) (h : m = m₁ ++ m₂) :
+    (StarZero sig k σ m₁ ∧ StarZero sig k σ m₂) ∨
+      ∃ a l' l'' b : List (sig.preds → Bool),
+        m₁ = a ++ l' ∧ m₂ = l'' ++ b ∧ StarZero sig k σ a ∧ StarZero sig k σ b ∧
+          l' ≠ [] ∧ l'' ≠ [] ∧ kTypeOf sig k (listSeg (l' ++ l'')) = σ := by
+  obtain ⟨ps, hps, rfl⟩ := hm
+  induction ps generalizing m₁ with
+  | nil =>
+    left
+    simp only [List.flatten_nil] at h
+    obtain ⟨rfl, rfl⟩ := List.append_eq_nil_iff.mp h.symm
+    exact ⟨starZero_nil σ, starZero_nil σ⟩
+  | cons p ps ih =>
+    have hp := hps p (List.mem_cons_self ..)
+    have hps' : ∀ q ∈ ps, q ≠ [] ∧ kTypeOf sig k (listSeg q) = σ :=
+      fun q hq => hps q (List.mem_cons_of_mem _ hq)
+    simp only [List.flatten_cons] at h
+    rcases List.append_eq_append_iff.mp h with ⟨a', h₁, h₂⟩ | ⟨c', h₁, h₂⟩
+    · rcases ih hps' h₂ with ⟨ha, hm₂⟩ | ⟨a, l', l'', b, rfl, rfl, ha, hb, hl', hl'', hσ⟩
+      · left
+        exact ⟨h₁ ▸ starZero_append (starZero_single hp.1 hp.2) ha, hm₂⟩
+      · right
+        exact ⟨p ++ a, l', l'', b, by rw [h₁, List.append_assoc], rfl,
+          starZero_append (starZero_single hp.1 hp.2) ha, hb, hl', hl'', hσ⟩
+    · by_cases hm₁ : m₁ = []
+      · left
+        subst hm₁
+        rw [List.nil_append] at h₁
+        subst h₁
+        exact ⟨starZero_nil σ, p :: ps, hps, by rw [h₂, List.flatten_cons]⟩
+      · by_cases hc' : c' = []
+        · left
+          subst hc'
+          rw [List.append_nil] at h₁
+          subst h₁
+          rw [List.nil_append] at h₂
+          exact ⟨starZero_single hm₁ hp.2, ps, hps', h₂.symm⟩
+        · right
+          exact ⟨[], m₁, c', ps.flatten, by simp, h₂, starZero_nil σ, ⟨ps, hps', rfl⟩, hm₁, hc',
+            h₁ ▸ hp.2⟩
+
+/-- **The composition law.** The σ-star profile of `l₁ ++ l₂` at `(x, y)` holds iff one of:
+(i) the middle lies inside `l₁` — `(x, y₁) ∈ g_σ l₁` and `y = y₁ · type l₂`;
+(ii) the middle lies inside `l₂` — `(x₂, y) ∈ g_σ l₂` and `x = type l₁ · x₂`;
+(iii) the middle straddles the boundary at a piece boundary — `(x, 1) ∈ g_σ l₁` and
+`(1, y) ∈ g_σ l₂`, with `1 := typeNil`;
+(iv) the middle straddles the boundary inside one piece — `(x, u) ∈ g_σ l₁`, `(v, y) ∈ g_σ l₂`
+and `u · v = σ`.
+The products are `TypeMul`. Case (iii) is not an instance of (iv): at a piece boundary both
+halves have type `typeNil`, whose product is `typeNil ≠ σ` whenever `σ` is the type of a
+nonempty word. Both directions are by `List.append_eq_append_iff` and `starZero_split`. -/
+theorem starProfile_append [Finite sig.preds] (hk : 1 ≤ k) (σ : KType sig k)
+    (l₁ l₂ : List (sig.preds → Bool)) (x y : KType sig k) :
+    starProfile sig k σ (l₁ ++ l₂) x y ↔
+      (∃ y₁, starProfile sig k σ l₁ x y₁ ∧ TypeMul y₁ (kTypeOf sig k (listSeg l₂)) y) ∨
+      (∃ x₂, starProfile sig k σ l₂ x₂ y ∧ TypeMul (kTypeOf sig k (listSeg l₁)) x₂ x) ∨
+      (starProfile sig k σ l₁ x (typeNil sig k) ∧ starProfile sig k σ l₂ (typeNil sig k) y) ∨
+      (∃ u v, starProfile sig k σ l₁ x u ∧ starProfile sig k σ l₂ v y ∧ TypeMul u v σ) := by
+  constructor
+  · rintro ⟨p, m, q, h, hm, rfl, rfl⟩
+    rcases List.append_eq_append_iff.mp h with ⟨a', h₁, h₂⟩ | ⟨c', h₁, h₂⟩
+    · rcases List.append_eq_append_iff.mp h₁.symm with ⟨c, hc₁, hc₂⟩ | ⟨c, hc₁, hc₂⟩
+      · right; left
+        refine ⟨kTypeOf sig k (listSeg c), ⟨c, m, q, by rw [h₂, hc₂], hm, rfl, rfl⟩, ?_⟩
+        rw [typeMul_iff, hc₁]
+      · rcases starZero_split hm hc₂ with ⟨hc, ha⟩ |
+          ⟨a, l', l'', b, rfl, rfl, ha, hb, hl', hl'', hσ⟩
+        · right; right; left
+          exact ⟨⟨p, c, [], by rw [hc₁, List.append_nil], hc, rfl, rfl⟩,
+            ⟨[], a', q, by rw [h₂, List.nil_append], ha, rfl, rfl⟩⟩
+        · right; right; right
+          refine ⟨kTypeOf sig k (listSeg l'), kTypeOf sig k (listSeg l''),
+            ⟨p, a, l', by rw [hc₁, List.append_assoc], ha, rfl, rfl⟩,
+            ⟨l'', b, q, by rw [h₂], hb, rfl, rfl⟩, ?_⟩
+          exact (typeMul_iff l' l'' σ).mpr hσ
+    · left
+      refine ⟨kTypeOf sig k (listSeg c'), ⟨p, m, c', h₁, hm, rfl, rfl⟩, ?_⟩
+      rw [typeMul_iff, h₂]
+  · rintro (⟨y₁, ⟨p, m, q₁, rfl, hm, rfl, rfl⟩, hmul⟩ | ⟨x₂, ⟨p₂, m, q, rfl, hm, rfl, rfl⟩, hmul⟩ |
+      ⟨⟨p, m₁, q₁, rfl, hm₁, rfl, hq₁⟩, ⟨p₂, m₂, q, rfl, hm₂, hp₂, rfl⟩⟩ |
+      ⟨u, v, ⟨p, m₁, l', rfl, hm₁, rfl, rfl⟩, ⟨l'', m₂, q, rfl, hm₂, rfl, rfl⟩, hmul⟩)
+    · rw [typeMul_iff] at hmul
+      exact ⟨p, m, q₁ ++ l₂, by simp only [List.append_assoc], hm, rfl, hmul⟩
+    · rw [typeMul_iff] at hmul
+      exact ⟨l₁ ++ p₂, m, q, by simp only [List.append_assoc], hm, hmul, rfl⟩
+    · rw [kTypeOf_listSeg_eq_typeNil_iff hk] at hq₁ hp₂
+      subst hq₁
+      subst hp₂
+      exact ⟨p, m₁ ++ m₂, q, by simp only [List.append_assoc, List.append_nil, List.nil_append],
+        starZero_append hm₁ hm₂, rfl, rfl⟩
+    · rw [typeMul_iff] at hmul
+      refine ⟨p, m₁ ++ (l' ++ l'') ++ m₂, q, by simp only [List.append_assoc], ?_, rfl, rfl⟩
+      refine starZero_append (starZero_append hm₁ ?_) hm₂
+      by_cases hnil : l' ++ l'' = []
+      · rw [hnil]
+        exact starZero_nil σ
+      · exact starZero_single hnil hmul
+
+/-- **Composition on profiles**: the profile of a concatenation depends only on the profiles of
+the parts. First component by `kTypeOf_listSeg_append_congr`; second component by
+`starProfile_append` on both sides, after which every disjunct is a statement about
+`profile l₁` and `profile l₂` alone. -/
+theorem profile_append_congr [Finite sig.preds] (hk : 1 ≤ k)
+    {l₁ l₁' l₂ l₂' : List (sig.preds → Bool)}
+    (h₁ : profile sig k l₁ = profile sig k l₁') (h₂ : profile sig k l₂ = profile sig k l₂') :
+    profile sig k (l₁ ++ l₂) = profile sig k (l₁' ++ l₂') := by
+  haveI := Fintype.ofFinite sig.preds
+  refine Prod.ext
+    (kTypeOf_listSeg_append_congr k (congrArg Prod.fst h₁) (congrArg Prod.fst h₂)) ?_
+  funext σ x y
+  rw [Bool.eq_iff_iff, ← starProfile_iff_profile, ← starProfile_iff_profile,
+    starProfile_append hk, starProfile_append hk]
+  simp only [starProfile_iff_profile, ← profile_fst, h₁, h₂]
+
+/-- **Composition on profiles, for a list of pieces**: pairwise profile-equal pieces have
+profile-equal flattenings. The shape the block-by-block transport of `Periodic.lean` uses. -/
+theorem profile_flatten_congr [Finite sig.preds] (hk : 1 ≤ k)
+    {L L' : List (List (sig.preds → Bool))}
+    (h : List.Forall₂ (fun a b => profile sig k a = profile sig k b) L L') :
+    profile sig k L.flatten = profile sig k L'.flatten := by
+  induction h with
+  | nil => rfl
+  | cons hab _ ih =>
+    simp only [List.flatten_cons]
+    exact profile_append_congr hk hab ih
+
+end Append
+
 end FormalSystem.Metalogic.WeakCanonical
