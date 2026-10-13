@@ -11,6 +11,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Trace
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.Transport
 import FormalSystem.Metalogic.Decidability.RaySummary.Profile
+import FormalSystem.Metalogic.Decidability.RaySummary.Periodic
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.StabCheck
@@ -89,6 +90,13 @@ nothing about `PlusValidZTime` — see the README's verdict.
   `StarZero`/`StarPlus`/`PrefixStar` read off it (`starPlus_iff_profile`,
   `prefixStar_iff_profile`) at `k ≥ 1`; `Nat.card (Profile sig k)` is a count of profiles and
   nothing else.
+* `RaySummary.Periodic` — periodic transport: the bi-ultimately-periodic colouring
+  `periodicColouring` (`w^(ω*) · m · v^ω`, letter read-outs `labels_periodicColouring_*`), its
+  one-sided forms `fwdPeriodic`/`bwdPeriodic`, the tail type sets `FwdTypes`/`BwdTypes` of a
+  colouring read from a seam time with their tail congruences, and the one-sided transports
+  `exists_periodic_fwd`/`exists_periodic_bwd` (Ramsey over the profile, bounded representatives)
+  assembled through the seam into `exists_periodic_subfamily`; every length bound is a count of
+  pairs of profiles.
 * `RaySummary.Present` — finite labelled presentations with their runs (`IsRun`,
   `runTrace`), the computable path-type closure (`pathTypes`, `pathTypesNow`,
   `mem_pathTypes_iff`, `mem_pathTypesNow_iff`) and liveness (`fwdLive`, `bwdLive`,

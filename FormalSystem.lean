@@ -201,6 +201,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
+import FormalSystem.Metalogic.Decidability.RaySummary.Periodic
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
 import FormalSystem.Metalogic.Decidability.RaySummary.Profile
 import FormalSystem.Metalogic.Decidability.RaySummary.Realize

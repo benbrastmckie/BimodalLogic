@@ -313,7 +313,7 @@ the complete covering check; no other module consumes these names yet.
 
 ---
 
-### Phase 4: `Periodic.lean` — Periodic Colourings and the Tail Type Sets [NOT STARTED]
+### Phase 4: `Periodic.lean` — Periodic Colourings and the Tail Type Sets [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/Decidability/RaySummary/Periodic.lean` (namespace
 `FormalSystem.Metalogic.WeakCanonical`, importing `Profile`) with the bi-ultimately-periodic
@@ -321,31 +321,31 @@ colouring, its one-sided forms, the forward/backward tail type sets, and the lem
 segment types of a periodic colouring off its piece words.
 
 **Tasks**:
-- [ ] `def periodicColouring (w m v : List (sig.preds → Bool)) (b : ℤ) : sig.preds → ℤ → Prop`
+- [x] `def periodicColouring (w m v : List (sig.preds → Bool)) (b : ℤ) : sig.preds → ℤ → Prop`
       — position `z < b` reads `w.getD (((z - b) % w.length).toNat) default`, `b ≤ z < b +
       m.length` reads `m[z - b]`, `z ≥ b + m.length` reads `v.getD (((z - b - m.length) %
       v.length).toNat) default`; `instance : ∀ p, DecidablePred (periodicColouring w m v b p)`.
-- [ ] `abbrev fwdPeriodic (u v) (t : ℤ) := periodicColouring v u v (t + 1)` (reads `u` from
+- [x] `abbrev fwdPeriodic (u v) (t : ℤ) := periodicColouring v u v (t + 1)` (reads `u` from
       `t + 1`, then `v^ω`; the part before `t + 1` is irrelevant to `FwdTypes`) and
       `abbrev bwdPeriodic (w u) (t : ℤ) := periodicColouring w u w (t - u.length)` (reads `u`
       ending at `t - 1`, `w^(ω*)` before it).
-- [ ] `def FwdTypes (c) (t : ℤ) : Set (KType sig k × KType sig k) := {x | ∃ W : ℕ → ℤ,
+- [x] `def FwdTypes (c) (t : ℤ) : Set (KType sig k × KType sig k) := {x | ∃ W : ℕ → ℤ,
       StrictMono W ∧ t + 1 ≤ W 0 ∧ kTypeOf sig k (segZ sig c (t + 1) (W 0)) = x.1 ∧ ∀ i,
       kTypeOf sig k (segZ sig c (W i) (W (i + 1))) = x.2}`; `def BwdTypes (c) (t) := {x | ∃ W :
       ℕ → ℤ, StrictAnti W ∧ W 0 ≤ t ∧ kTypeOf sig k (segZ sig c (W 0) t) = x.2 ∧ ∀ i, kTypeOf
       sig k (segZ sig c (W (i + 1)) (W i)) = x.1}`.
-- [ ] Tail congruences: `fwdTypes_congr : (∀ p z, t < z → (c p z ↔ c' p z)) → FwdTypes c t =
+- [x] Tail congruences: `fwdTypes_congr : (∀ p z, t < z → (c p z ↔ c' p z)) → FwdTypes c t =
       FwdTypes c' t`; `bwdTypes_congr` for `z < t`; `fwdTypes_shift`/`bwdTypes_shift` only if
       Phase 6 needs them.
-- [ ] Reading segments: `labels_periodicColouring_of_ge`: for `b + m.length ≤ a ≤ a'`, `labels
+- [x] Reading segments: `labels_periodicColouring_of_ge`: for `b + m.length ≤ a ≤ a'`, `labels
       (periodicColouring w m v b) a a'` is the corresponding slice of `v^ω` (stated via
       `List.take`/`List.drop` of `List.replicate n v |>.flatten`), and the `w` mirror;
       `labels_append_of_le : a ≤ c ≤ b → labels c a b = labels c a c ++ labels c c b`
-      (check `Compose.lean` for an existing form first; add only if absent).
-- [ ] `theorem kTypeOf_segZ_periodic_block`: a whole period `[b + m.length + i·|v|, b +
+      (check `Compose.lean` for an existing form first; add only if absent). *(deviation: altered — `labels_append` already exists in `Transport.lean` and is imported; the read-outs landed as `labels_periodicColouring_mid`/`_slice`/`_period`/`_replicate`/`_bwd`)*
+- [x] `theorem kTypeOf_segZ_periodic_block`: a whole period `[b + m.length + i·|v|, b +
       m.length + (i+1)·|v|)` has `kTypeOf (listSeg v)`; `profile` of a stretch of `n` full
-      periods equals `profile (flatten (replicate n v))` (by `profile_flatten_congr`).
-- [ ] Wiring: aggregator and `FormalSystem.lean` imports as in Phase 1.
+      periods equals `profile (flatten (replicate n v))` (by `profile_flatten_congr`). *(deviation: altered — landed as the label-list equality `labels_periodicColouring_replicate`, from which the profile equality is `rfl`; the shift lemmas were not needed)*
+- [x] Wiring: aggregator and `FormalSystem.lean` imports as in Phase 1.
 
 **Timing**: 2 hours
 
