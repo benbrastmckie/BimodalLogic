@@ -87,7 +87,7 @@ next_project_number: 781
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-762 [RESEARCHED] — STATEMENT (library, research-first; new module...
+762 [PLANNED] — STATEMENT (library, research-first; new module...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index... (see above)
 778 [RESEARCHED] — Record the modulus convention for the residue-carrying ladder...
 
@@ -526,11 +526,12 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 ---
 
 ### 762. Hit presented general row
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 759
 - **Research**: [762_hit_presented_general_row/reports/01_hit-presented-general-row.md]
+- **Plan**: [762_hit_presented_general_row/plans/01_hit-presented-general-row.md]
 
 **Description**: STATEMENT (library, research-first; new module `RaySummary/HitComplete.lean`). Requirement (C)'s general row, verbatim from the RaySummary README's verdict table and "(W) … obligation (ii)" item 2 — run-layer phase 3, the completeness half (model → object): for every regular ℤ-model M, seam (τ, t), formula φ and depth 1 ≤ k, a finite labelled presentation with a computable bound in φ:
   `theorem exists_hitPresented (M : TaskModel F.toTaskFrame) [F.IsRegular] (τ) (t) (φ) (k) (hk : 1 ≤ k) : ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool), Fintype.card Q ≤ sizeBound φ k ∧ HitPresented M τ t φ lab step k`

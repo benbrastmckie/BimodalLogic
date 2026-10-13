@@ -1,44 +1,35 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-12T23:55:35Z",
-  "completed_at": "2026-10-13T00:25:44Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/762_hit_presented_general_row/reports/01_hit-presented-general-row.md",
-      "summary": "Re-derives (C)'s general row against the tree, confirms T2 positive, reduces HitPresented to a combinatorial statement about bi-infinite words, and finds an elementary sorry-free route (Ramsey over a finite composing sigma-star profile) with an exhibited count bound, plus a four-layer plan decomposition."
+      "type": "plan",
+      "path": "specs/762_hit_presented_general_row/plans/01_hit-presented-general-row.md",
+      "summary": "Fourteen-phase plan landing exists_hitPresented sorry-free via the research's Ramsey-over-profile route across three sibling modules (Profile, Periodic, HitComplete), with sizeBound phi k = N^3 * (4 P^2 + 1) exhibited as a count, C14 pins at both sites, theorem-index rows, and README amendments."
     }
   ],
-  "next_steps": "Plan the positive theorem in four layers (profile monoid; bounded representatives; one-sided periodic transport in both orientations; gadget assembly and headline), landing the profile composition law first; decide file scope (one large HitComplete.lean vs sibling modules under RaySummary/).",
   "metadata": {
-    "session_id": "sess_1791849059_6ac17c_762",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 1810,
+    "session_id": "sess_1791854079_27b1ea_762",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 14,
+    "estimated_hours": 25.5,
+    "dependency_waves": [[1], [2, 4], [3, 5, 8, 10], [6, 11, 12], [7], [9], [13], [14]],
+    "research_integrated": true,
+    "complexity": "complex"
   },
-  "modified_files": [
-    "specs/762_hit_presented_general_row/reports/01_hit-presented-general-row.md"
-  ],
-  "proposed_file_scope": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/Profile.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/Periodic.lean"
-  ],
+  "phase_count": 14,
+  "estimated_hours": 25.5,
+  "dependency_waves": [[1], [2, 4], [3, 5, 8, 10], [6, 11, 12], [7], [9], [13], [14]],
+  "next_steps": "Run /implement 762 to execute the plan",
   "memory_candidates": [
     {
-      "content": "First-order k-types of words (KType = NormalForm -> Bool) do not determine membership in L_sigma^+ or L_alpha L_sigma^*; to transport a factorization along a Ramsey block repetition, colour Ramsey pairs with a finite composing 'sigma-star profile' g_sigma(w) = {(type p, type q) : w = p m q, m in L_sigma^*} plus the cut-profile, and compare blocks block-by-block through the composition law. No idempotent or Buchi/automata theorem is needed.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/762_hit_presented_general_row/reports/01_hit-presented-general-row.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["Ramsey", "k-type", "profile", "ultimately periodic", "HitPresented", "family triple"]
-    },
-    {
-      "content": "Repeating one literal segment of a seam trace as a lasso period can realize family triples the trace lacks (cut-pair obstruction: k-type cut pairs are a depth-(k+1) datum); the fixture route of hit-presented-model-a/node does not generalize, and HitPresented satisfiability is exactly: every seam triple has a bi-ultimately-periodic realization whose triples are all seam triples.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/762_hit_presented_general_row/reports/01_hit-presented-general-row.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["HitPresented", "lasso", "cut pair", "RaySummary", "completeness"]
+      "content": "First-order k-types over a finite monadic signature (KType sig k = NormalForm sig k 0 -> Bool) do NOT compose under Kleene star: 'has a factorization into pieces of type sigma' is not a depth-k' property for any fixed k', and cut-type pairs are a depth-(k+1) datum, so a periodic repetition of one literal segment can realize family triples the source colouring lacks (the cut-pair obstruction). The substitute that works for ultimately-periodic-witness arguments in this tree: a finite 'sigma-star profile' of a finite word -- its k-type plus, for every sigma, the relation {(type p, type q) : w = p ++ m ++ q, m in L_sigma^*} -- which composes under concatenation by an explicit four-case law (middle inside left, inside right, straddling at a piece boundary, straddling inside one piece), paired with a 'cut profile' (set of (profile prefix, profile suffix) pairs). Infinite Ramsey for pairs (Nat.exists_strictMono_const_pair_colour) on the colouring (profile, cutProfile) of stretches gives consecutive blocks whose periodic repetition has tail-type set contained in the original's; pigeonhole on cut pairs bounds piece lengths by Nat.card(Profile)^2. No automata, no idempotent, no order-reversal lemma (mirror once per orientation, as exists_zFactorization does).",
+      "category": "PATTERN",
+      "source_artifact": "specs/762_hit_presented_general_row/plans/01_hit-presented-general-row.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["k-type", "star profile", "Ramsey", "ultimately periodic", "HitPresented", "RaySummary"]
     }
-  ]
+  ],
+  "dispatch_seq": 2
 }
