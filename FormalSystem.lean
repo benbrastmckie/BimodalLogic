@@ -202,6 +202,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
+import FormalSystem.Metalogic.Decidability.RaySummary.Profile
 import FormalSystem.Metalogic.Decidability.RaySummary.Realize
 import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.Seam

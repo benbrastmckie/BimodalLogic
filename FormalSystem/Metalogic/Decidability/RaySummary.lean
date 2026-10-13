@@ -10,6 +10,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 import FormalSystem.Metalogic.Decidability.RaySummary.Trace
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
 import FormalSystem.Metalogic.Decidability.RaySummary.Transport
+import FormalSystem.Metalogic.Decidability.RaySummary.Profile
 import FormalSystem.Metalogic.Decidability.RaySummary.Present
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.StabCheck
@@ -82,6 +83,12 @@ nothing about `PlusValidZTime` — see the README's verdict.
   `familyTriples_subset_deleteRun` — shrink direction only, under an explicit single-segment
   containment hypothesis; no `↔`, no re-cutting, and `m₀ + p ≤ Nat.card (KType sig k)` is a
   count of depth-`k` types and nothing else.
+* `RaySummary.Profile` — the σ-star profile of a finite word (`starProfile`, `profile`,
+  `cutProfile`, the finite type `Profile`): the summary that composes under concatenation where
+  bare `k`-types do not under star (the cut-pair obstruction), with the star languages
+  `StarZero`/`StarPlus`/`PrefixStar` read off it (`starPlus_iff_profile`,
+  `prefixStar_iff_profile`) at `k ≥ 1`; `Nat.card (Profile sig k)` is a count of profiles and
+  nothing else.
 * `RaySummary.Present` — finite labelled presentations with their runs (`IsRun`,
   `runTrace`), the computable path-type closure (`pathTypes`, `pathTypesNow`,
   `mem_pathTypes_iff`, `mem_pathTypesNow_iff`) and liveness (`fwdLive`, `bwdLive`,

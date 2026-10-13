@@ -1,7 +1,7 @@
 # Implementation Plan: Task #762
 
 - **Task**: 762 - (C)'s general row: exists_hitPresented with sizeBound φ k a count, for every regular ℤ-model (run-layer phase 3)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 25.5 hours
 - **Dependencies**: 759 (logical edge, discharged: `Probe759.hitPresented_node` is a Hit-level POSITIVE, so the Stage 0 "statement is false" branch does not fire); no open dependency (the serialization-only edge on 761 was dropped at research time)
 - **Research Inputs**: specs/762_hit_presented_general_row/reports/01_hit-presented-general-row.md
@@ -143,7 +143,7 @@ modified.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: `Profile.lean` — Star Languages, the σ-Star Profile, and Finiteness [NOT STARTED]
+### Phase 1: `Profile.lean` — Star Languages, the σ-Star Profile, and Finiteness [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/Decidability/RaySummary/Profile.lean` (namespace
 `FormalSystem.Metalogic.WeakCanonical`, beside `Compose.lean`/`HitOf.lean`/`Transport.lean`)
@@ -151,39 +151,39 @@ with the definitions of Layer 1, their finiteness, and the two membership read-o
 the aggregator and the library root.
 
 **Tasks**:
-- [ ] Module docstring: what a profile is, why FO `k`-types do not compose under star (the
+- [x] Module docstring: what a profile is, why FO `k`-types do not compose under star (the
       cut-pair obstruction, stated with no task number), and the count disclaimer in
       `AnchorLayer.lean`'s words with "profiles" for "cells".
-- [ ] `variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : ℕ}`;
+- [x] `variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : ℕ}`;
       abbreviation `Letter sig := sig.preds → Bool` only if it shortens signatures (optional).
-- [ ] `def StarPlus (σ : KType sig k) (l : List (sig.preds → Bool)) : Prop` — `l` is a nonempty
+- [x] `def StarPlus (σ : KType sig k) (l : List (sig.preds → Bool)) : Prop` — `l` is a nonempty
       concatenation of nonempty pieces each of `k`-type `σ` (as `∃ ps, ps ≠ [] ∧ (∀ p ∈ ps, p ≠ []
       ∧ kTypeOf sig k (listSeg p) = σ) ∧ ps.flatten = l`); `def StarZero σ l` (pieces possibly
       none, `l = []` allowed); `def PrefixStar (α σ) l := ∃ p q, l = p ++ q ∧ kTypeOf sig k
       (listSeg p) = α ∧ StarZero σ q`.
-- [ ] `def starProfile (σ : KType sig k) (l) : KType sig k → KType sig k → Prop :=
+- [x] `def starProfile (σ : KType sig k) (l) : KType sig k → KType sig k → Prop :=
       fun x y => ∃ p m q, l = p ++ m ++ q ∧ StarZero σ m ∧ kTypeOf sig k (listSeg p) = x ∧
       kTypeOf sig k (listSeg q) = y`.
-- [ ] `abbrev Profile (sig) (k) : Type := KType sig k × (KType sig k → KType sig k → KType sig k
+- [x] `abbrev Profile (sig) (k) : Type := KType sig k × (KType sig k → KType sig k → KType sig k
       → Bool)`; `noncomputable def profile (l) : Profile sig k := (kTypeOf sig k (listSeg l),
       fun σ x y => decide (starProfile σ l x y))` under `open Classical`; `noncomputable def
       cutProfile (l) : Set (Profile sig k × Profile sig k) := {pr | ∃ z y, l = z ++ y ∧ pr =
       (profile z, profile y)}`.
-- [ ] `instance : Fintype (Profile sig k)` and `DecidableEq (Profile sig k)` (from
+- [x] `instance : Fintype (Profile sig k)` and `DecidableEq (Profile sig k)` (from
       `normalFormFintype` through `KType`'s `Fintype`/`DecidableEq`, via `inferInstanceAs` as
       `Closure.lean` does for `clSig`); `theorem card_profile : Nat.card (Profile sig k) =
-      Nat.card (KType sig k) * 2 ^ (Nat.card (KType sig k) ^ 3)` (optional, documentary only).
-- [ ] `def typeNil : KType sig k := kTypeOf sig k (listSeg [])` with `theorem kTypeOf_listSeg_eq_typeNil_iff
+      Nat.card (KType sig k) * 2 ^ (Nat.card (KType sig k) ^ 3)` (optional, documentary only). *(deviation: altered — instance search does not reach three nested function levels, so the two inner `Fintype`/`DecidableEq` instances are supplied by `haveI` before `inferInstanceAs`; `card_profile` landed over `[Finite sig.preds]`)*
+- [x] `def typeNil : KType sig k := kTypeOf sig k (listSeg [])` with `theorem kTypeOf_listSeg_eq_typeNil_iff
       (hk : 1 ≤ k) : kTypeOf sig k (listSeg l) = typeNil ↔ l = []` from `nonempty_iff_of_kTypeOf_eq`.
-- [ ] Read-outs: `theorem starPlus_iff_profile (hk : 1 ≤ k) : StarPlus σ l ↔ l ≠ [] ∧
+- [x] Read-outs: `theorem starPlus_iff_profile (hk : 1 ≤ k) : StarPlus σ l ↔ l ≠ [] ∧
       (profile l).2 σ typeNil typeNil = true`; `theorem prefixStar_iff_profile : PrefixStar α σ l
       ↔ (profile l).2 σ α typeNil = true`; `theorem kTypeOf_eq_of_profile_eq : profile l = profile
       l' → kTypeOf sig k (listSeg l) = kTypeOf sig k (listSeg l')`.
-- [ ] Wiring: `import FormalSystem.Metalogic.Decidability.RaySummary.Profile` in
+- [x] Wiring: `import FormalSystem.Metalogic.Decidability.RaySummary.Profile` in
       `FormalSystem/Metalogic/Decidability/RaySummary.lean` (after the `Transport` import) and
       in `FormalSystem.lean` (alphabetical position among the `RaySummary.*` imports); one
       sentence in the aggregator docstring naming the profile.
-- [ ] Commit per green sub-step (`task 762 phase 1.N: …`).
+- [x] Commit per green sub-step (`task 762 phase 1.N: …`).
 
 **Timing**: 2 hours
 
