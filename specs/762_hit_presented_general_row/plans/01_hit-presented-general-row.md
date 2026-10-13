@@ -526,27 +526,27 @@ the complete covering check; no other module consumes `exists_periodic_bwd` yet.
 
 ---
 
-### Phase 8: Family Triples Through the Seam [IN PROGRESS]
+### Phase 8: Family Triples Through the Seam [COMPLETED]
 
 **Goal**: Decompose `familyTriples sig k c` at a colouring whose `now` letter holds exactly at
 `t` into a backward tail pair, the letter at `t`, and a forward tail pair — both directions.
 
 **Tasks**:
-- [ ] `theorem now_mem_middle (hk : 1 ≤ k) (F : SegmentFactorization sig k c) (hnow : ∀ z, c now
+- [x] `theorem now_mem_middle (hk : 1 ≤ k) (F : SegmentFactorization sig k c) (hnow : ∀ z, c now
       z ↔ z = t) : F.W 0 ≤ t ∧ t < F.W 1` — if `t` sat in a positive segment, every positive
       segment (same type, `exists_interp_iff_of_kTypeOf_eq`) would contain a `now` position,
       contradicting uniqueness; mirror for negative segments.
-- [ ] `def letterAt (c) (t) : sig.preds → Bool := fun p => decide (c p t)` (classical).
-- [ ] `theorem mem_familyTriples_iff_tails (hk) (hnow) : x ∈ familyTriples sig k c ↔ ∃ β α,
+- [x] `def letterAt (c) (t) : sig.preds → Bool := fun p => decide (c p t)` (classical).
+- [x] `theorem mem_familyTriples_iff_tails (hk) (hnow) : x ∈ familyTriples sig k c ↔ ∃ β α,
       (x.1, β) ∈ BwdTypes c t ∧ (α, x.2.2) ∈ FwdTypes c t ∧ ∀ lβ lα, kTypeOf (listSeg lβ) = β →
       kTypeOf (listSeg lα) = α → x.2.1 = kTypeOf (listSeg (lβ ++ [letterAt c t] ++ lα))` —
       (→) from `F` via `now_mem_middle`, `kTypeOf_segZ_eq_listSeg`, the `labels` split at `t`
       and `t + 1`, and `kTypeOf_listSeg_append_congr`; (←) build the `SegmentFactorization`
       from the two cut sequences (`W 0 := Wb 0`, `W (i+1) := Wf i`, `W (-(i+1)) := Wb (i+1)`;
       `mono` and `cover` from `StrictMono`/`StrictAnti`), its middle type by the same lemmas.
-- [ ] Shape freedom: the implementer may replace the `∀ lβ lα` clause by any equivalent
+- [x] Shape freedom: the implementer may replace the `∀ lβ lα` clause by any equivalent
       well-defined "middle type" formulation; only `exists_periodic_subfamily` (Phase 9) is in
-      the Goals set.
+      the Goals set. *(deviation: altered — the middle clause landed in the ∃-form `∃ lβ lα, type lβ = β ∧ type lα = α ∧ x.2.1 = type (lβ ++ letterAt c t :: lα)`, equivalent by the congruence and easier to consume in both directions; `segmentFactorization_lt` and `not_now_of_eq_segments` are the helpers)*
 
 **Timing**: 2 hours
 

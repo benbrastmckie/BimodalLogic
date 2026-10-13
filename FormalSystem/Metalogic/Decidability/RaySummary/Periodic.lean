@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.MonoDiscrete
 import FormalSystem.Metalogic.Decidability.RaySummary.Profile
 import FormalSystem.Metalogic.Decidability.RaySummary.Transport
+import FormalSystem.Metalogic.Decidability.RaySummary.Trace
 
 /-!
 # Periodic transport: ultimately periodic witnesses for the tail types of a colouring
@@ -1238,5 +1239,206 @@ theorem exists_periodic_bwd [Finite sig.preds] (hk : 1 ≤ k) (c : sig.preds →
     exact hsub hy
 
 end Reversal
+
+/-! ## Family triples through the seam
+
+A colouring whose `now` letter holds exactly at `t` has every factorization's middle segment
+`[W 0, W 1)` containing `t` (`now_mem_middle`: a non-middle segment containing `t` would force,
+by `exists_interp_iff_of_kTypeOf_eq`, a second `now` position in its neighbour of the same
+type), so its family triples are exactly the triples `(σ₋, τ, σ₊)` with `(σ₋, β)` a backward
+tail pair, `(α, σ₊)` a forward tail pair, and `τ` the type of `β · ℓ · α` for the letter `ℓ`
+at `t` (`mem_familyTriples_iff_tails`). The middle type is stated through representatives, as
+every composition in this cluster is (`kTypeOf_listSeg_append_congr`). -/
+
+section Seam
+
+open FormalSystem.Metalogic.Decidability.RaySummary (familyTriples mem_familyTriples)
+
+variable {sig k}
+
+/-- The letter of a colouring at a time, classically. -/
+noncomputable def letterAt (c : sig.preds → ℤ → Prop) (t : ℤ) : sig.preds → Bool :=
+  fun p => @decide (c p t) (Classical.propDecidable _)
+
+theorem labels_single (c : sig.preds → ℤ → Prop) [∀ p, DecidablePred (c p)] (t : ℤ) :
+    labels c t (t + 1) = [letterAt c t] := by
+  apply List.ext_getElem
+  · rw [labels_length]
+    simp
+  · intro i h₁ h₂
+    rw [labels_length] at h₁
+    have hi : i = 0 := by omega
+    subst hi
+    funext p
+    rw [labels_getElem, Nat.cast_zero, add_zero]
+    simp only [List.getElem_cons_zero, letterAt]
+    exact decide_eq_decide.mpr Iff.rfl
+
+/-- Two distinct segments of a monotone cut sequence with the same `k`-type cannot both avoid
+and contain `now`: if `t` lies in one, `now` is realized in the other too (type-visible at
+`k ≥ 1`), at a second position. -/
+theorem not_now_of_eq_segments [Finite sig.preds] (hk : 1 ≤ k) {c : sig.preds → ℤ → Prop}
+    {now : sig.preds} {t : ℤ} (hnow : ∀ z, c now z ↔ z = t) {W : ℤ → ℤ} (hW : Monotone W)
+    {za zb : ℤ} (hne : za ≠ zb)
+    (hab : kTypeOf sig k (segZ sig c (W za) (W (za + 1))) =
+      kTypeOf sig k (segZ sig c (W zb) (W (zb + 1)))) :
+    ¬ (W za ≤ t ∧ t < W (za + 1)) := by
+  rintro ⟨hl, hr⟩
+  have hex : ∃ x : (segZ sig c (W za) (W (za + 1))).carrier,
+      (segZ sig c (W za) (W (za + 1))).interp now x := ⟨⟨t, hl, hr⟩, (hnow t).mpr rfl⟩
+  obtain ⟨⟨z, hz1, hz2⟩, hz⟩ := (exists_interp_iff_of_kTypeOf_eq hk now hab).mp hex
+  have hzt : z = t := (hnow z).mp hz
+  subst hzt
+  rcases lt_or_gt_of_ne hne with h | h
+  · have := hW (show za + 1 ≤ zb by omega)
+    omega
+  · have := hW (show zb + 1 ≤ za by omega)
+    omega
+
+/-- **`now` sits in the middle segment of every factorization** of a colouring with `now`
+exactly at `t`, at `k ≥ 1`. -/
+theorem now_mem_middle [Fintype sig.preds] [DecidableEq sig.preds]
+    (hk : 1 ≤ k) {c : sig.preds → ℤ → Prop}
+    (F : SegmentFactorization sig k c) {now : sig.preds} {t : ℤ}
+    (hnow : ∀ z, c now z ↔ z = t) : F.W 0 ≤ t ∧ t < F.W 1 := by
+  obtain ⟨z, hz1, hz2⟩ := F.cover t
+  rcases lt_trichotomy z 0 with hz | rfl | hz
+  · exact absurd ⟨hz1, hz2⟩ (not_now_of_eq_segments hk hnow F.mono (show z ≠ z - 1 by omega)
+      ((F.neg_type z hz).trans (F.neg_type (z - 1) (by omega)).symm))
+  · exact ⟨hz1, by simpa using hz2⟩
+  · exact absurd ⟨hz1, hz2⟩ (not_now_of_eq_segments hk hnow F.mono (show z ≠ z + 1 by omega)
+      ((F.pos_type z hz).trans (F.pos_type (z + 1) (by omega)).symm))
+
+/-- The segments of a factorization are nonempty, at `k ≥ 1`: the extremal ones are by
+`strict_pos`/`strict_neg`, and nonemptiness is type-visible. -/
+theorem segmentFactorization_lt [Fintype sig.preds] [DecidableEq sig.preds]
+    (hk : 1 ≤ k) {c : sig.preds → ℤ → Prop}
+    (F : SegmentFactorization sig k c) (z : ℤ) (hz : z ≠ 0) : F.W z < F.W (z + 1) := by
+  rcases lt_or_gt_of_ne hz with h | h
+  · have hne : Nonempty (segZ sig c (F.W (-2)) (F.W (-1))).carrier :=
+      ⟨⟨F.W (-2), le_rfl, F.strict_neg⟩⟩
+    have heq : kTypeOf sig k (segZ sig c (F.W z) (F.W (z + 1))) =
+        kTypeOf sig k (segZ sig c (F.W (-2)) (F.W (-1))) := by
+      rw [F.neg_type z h]
+      have := F.neg_type (-2) (by norm_num)
+      rw [show (-2 : ℤ) + 1 = -1 by norm_num] at this
+      exact this.symm
+    obtain ⟨⟨s, hs1, hs2⟩⟩ := (nonempty_iff_of_kTypeOf_eq hk heq).mpr hne
+    omega
+  · have hne : Nonempty (segZ sig c (F.W 1) (F.W 2)).carrier :=
+      ⟨⟨F.W 1, le_rfl, F.strict_pos⟩⟩
+    have heq : kTypeOf sig k (segZ sig c (F.W z) (F.W (z + 1))) =
+        kTypeOf sig k (segZ sig c (F.W 1) (F.W 2)) := by
+      rw [F.pos_type z h]
+      have := F.pos_type 1 (by norm_num)
+      rw [show (1 : ℤ) + 1 = 2 by norm_num] at this
+      exact this.symm
+    obtain ⟨⟨s, hs1, hs2⟩⟩ := (nonempty_iff_of_kTypeOf_eq hk heq).mpr hne
+    omega
+
+/-- **Family triples through the seam.** -/
+theorem mem_familyTriples_iff_tails [Fintype sig.preds] [DecidableEq sig.preds]
+    (hk : 1 ≤ k) {c : sig.preds → ℤ → Prop}
+    {now : sig.preds} {t : ℤ} (hnow : ∀ z, c now z ↔ z = t)
+    (x : KType sig k × KType sig k × KType sig k) :
+    x ∈ familyTriples sig k c ↔
+      ∃ β α : KType sig k, (x.1, β) ∈ BwdTypes sig k c t ∧ (α, x.2.2) ∈ FwdTypes sig k c t ∧
+        ∃ lβ lα : List (sig.preds → Bool), kTypeOf sig k (listSeg lβ) = β ∧
+          kTypeOf sig k (listSeg lα) = α ∧
+          x.2.1 = kTypeOf sig k (listSeg (lβ ++ letterAt c t :: lα)) := by
+  classical
+  constructor
+  · rintro ⟨F, hneg, hzero, hpos⟩
+    obtain ⟨h0, h1⟩ := now_mem_middle hk F hnow
+    refine ⟨kTypeOf sig k (segZ sig c (F.W 0) t), kTypeOf sig k (segZ sig c (t + 1) (F.W 1)),
+      ⟨fun i => F.W (-(i : ℤ)), ?_, by simpa using h0, rfl, fun i => ?_⟩,
+      ⟨fun i => F.W ((i : ℤ) + 1), ?_, by simpa using h1, rfl, fun i => ?_⟩,
+      labels c (F.W 0) t, labels c (t + 1) (F.W 1), (kTypeOf_segZ_eq_listSeg _ _ _ k).symm,
+      (kTypeOf_segZ_eq_listSeg _ _ _ k).symm, ?_⟩
+    · apply strictAnti_nat_of_succ_lt
+      intro i
+      have := segmentFactorization_lt hk F (-((i : ℤ) + 1)) (by omega)
+      simp only [Nat.cast_succ]
+      rwa [show -((i : ℤ) + 1) + 1 = -(i : ℤ) by ring] at this
+    · simp only [Nat.cast_succ]
+      rw [← hneg, ← F.neg_type (-((i : ℤ) + 1)) (by omega),
+        show -((i : ℤ) + 1) + 1 = -(i : ℤ) by ring]
+    · apply strictMono_nat_of_lt_succ
+      intro i
+      have := segmentFactorization_lt hk F ((i : ℤ) + 1) (by omega)
+      simp only [Nat.cast_succ]
+      exact this
+    · simp only [Nat.cast_succ]
+      rw [← hpos, ← F.pos_type ((i : ℤ) + 1) (by omega)]
+    · rw [← hzero, ← F.zero_type, kTypeOf_segZ_eq_listSeg,
+        labels_append c (F.W 0) t (F.W 1) h0 (by omega),
+        labels_append c t (t + 1) (F.W 1) (by omega) (by omega), labels_single,
+        List.singleton_append]
+  · rintro ⟨β, α, ⟨Wb, hWb, hb0, hb1, hb2⟩, ⟨Wf, hWf, hf0, hf1, hf2⟩, lβ, lα, hlβ, hlα, hmid⟩
+    simp only at hb1 hb2 hf1 hf2
+    let W : ℤ → ℤ := fun z => if 0 < z then Wf (z - 1).toNat else Wb (-z).toNat
+    have hWpos : ∀ z : ℤ, 0 < z → W z = Wf (z - 1).toNat := fun z hz => if_pos hz
+    have hWnonpos : ∀ z : ℤ, ¬ 0 < z → W z = Wb (-z).toNat := fun z hz => if_neg hz
+    have hW0 : W 0 = Wb 0 := hWnonpos 0 (by omega)
+    have hW1 : W 1 = Wf 0 := hWpos 1 (by omega)
+    have hbf : Wb 0 < Wf 0 := by omega
+    have hmono : Monotone W := by
+      intro z z' hzz'
+      by_cases hz : 0 < z
+      · rw [hWpos z hz, hWpos z' (by omega)]
+        exact hWf.monotone (by omega)
+      · by_cases hz' : 0 < z'
+        · rw [hWnonpos z hz, hWpos z' hz']
+          have h1 := hWb.antitone (Nat.zero_le (-z).toNat)
+          have h2 := hWf.monotone (Nat.zero_le (z' - 1).toNat)
+          omega
+        · rw [hWnonpos z hz, hWnonpos z' hz']
+          exact hWb.antitone (by omega)
+    refine ⟨⟨W, hmono, ?_, x.2.2, x.1, ?_, ?_, ?_, ?_, x.2.1, ?_⟩, rfl, rfl, rfl⟩
+    · intro s
+      by_cases hs1 : Wf 0 ≤ s
+      · obtain ⟨i, hi1, hi2⟩ := exists_seg_of_strictMono hWf hs1
+        refine ⟨(i : ℤ) + 1, ?_, ?_⟩
+        · rw [hWpos _ (by omega), show ((i : ℤ) + 1 - 1).toNat = i by omega]
+          exact hi1
+        · rw [hWpos _ (by omega), show ((i : ℤ) + 1 + 1 - 1).toNat = i + 1 by omega]
+          exact hi2
+      · by_cases hs2 : s < Wb 0
+        · obtain ⟨i, hi1, hi2⟩ := exists_seg_of_strictAnti hWb hs2
+          refine ⟨-((i : ℤ) + 1), ?_, ?_⟩
+          · rw [hWnonpos _ (by omega), show (-(-((i : ℤ) + 1))).toNat = i + 1 by omega]
+            exact hi1
+          · rw [hWnonpos _ (by omega), show (-(-((i : ℤ) + 1) + 1)).toNat = i by omega]
+            exact hi2
+        · exact ⟨0, by rw [hW0]; omega, by rw [zero_add, hW1]; omega⟩
+    · intro z hz
+      rw [hWpos z hz, hWpos (z + 1) (by omega), show (z + 1 - 1).toNat = (z - 1).toNat + 1 by omega]
+      exact hf2 _
+    · intro z hz
+      rw [hWnonpos z (by omega)]
+      obtain ⟨n, hn⟩ : ∃ n : ℕ, (-z).toNat = n + 1 := ⟨(-z).toNat - 1, by omega⟩
+      rw [hn]
+      have : W (z + 1) = Wb n := by
+        by_cases hz1 : 0 < z + 1
+        · omega
+        · rw [hWnonpos _ hz1]
+          congr 1
+          omega
+      rw [this]
+      exact hb2 n
+    · rw [hW1, hWpos 2 (by norm_num), show ((2 : ℤ) - 1).toNat = 1 by norm_num]
+      exact hWf (show 0 < 1 by norm_num)
+    · rw [hWnonpos (-2) (by norm_num), hWnonpos (-1) (by norm_num),
+        show (-(-2 : ℤ)).toNat = 2 by decide, show (-(-1 : ℤ)).toNat = 1 by decide]
+      exact hWb (show 1 < 2 by norm_num)
+    · rw [hW0, hW1, kTypeOf_segZ_eq_listSeg, labels_append c (Wb 0) t (Wf 0) hb0 (by omega),
+        labels_append c t (t + 1) (Wf 0) (by omega) (by omega), labels_single, hmid]
+      rw [kTypeOf_segZ_eq_listSeg] at hb1 hf1
+      change kTypeOf sig k (listSeg (labels c (Wb 0) t ++ ([letterAt c t] ++
+        labels c (t + 1) (Wf 0)))) = kTypeOf sig k (listSeg (lβ ++ ([letterAt c t] ++ lα)))
+      exact kTypeOf_listSeg_append_congr k (hb1.trans hlβ.symm)
+        (kTypeOf_listSeg_append_congr k rfl (hf1.trans hlα.symm))
+
+end Seam
 
 end FormalSystem.Metalogic.WeakCanonical
