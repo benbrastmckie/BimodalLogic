@@ -417,7 +417,7 @@ theorem mem_fwdLiveT_of_fwdLive_fold (G : PlusSlicedCertificate Γ Del) {s s' : 
             (G.atPosT e))
           (G.atPosT g) (fun i => G.fwdVertFold R s s' (k + i)) j hj0
           (fun i _ => hmemX (k + i)) (fun i _ => hpath i) ?_ ?_
-        · unfold untlLive
+        · rw [G.untlLive_eq_lfp]
           simpa using hkey
         · rw [Fair.inSet_iff]
           refine ⟨?_, hmemX (k + j)⟩
@@ -486,7 +486,7 @@ theorem mem_bwdLiveT_of_bwdLive_fold (G : PlusSlicedCertificate Γ Del) {s s' : 
             (G.atPosT e))
           (G.atPosT g) (fun i => G.bwdVertFold R s s' (k + i)) j hj0
           (fun i _ => hmemX (k + i)) (fun i _ => hpath i) ?_ ?_
-        · unfold snceLive
+        · rw [G.snceLive_eq_lfp]
           simpa using hkey
         · rw [Fair.inSet_iff]
           refine ⟨?_, hmemX (k + j)⟩

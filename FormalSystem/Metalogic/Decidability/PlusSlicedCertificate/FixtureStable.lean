@@ -197,7 +197,7 @@ theorem not_mem_R₀fwd_pR (a b c : ℕ) : pR a b c ∉ (certRep a b c).R₀fwd 
     omega
   have key : ∀ v ∈ (certRep a b c).untlLive (certRep a b c).fwdLiveT gd ev,
       ¬ ((certRep a b c).NM + (certRep a b c).NF ≤ v.2) := by
-    rw [untlLive]
+    rw [untlLive_eq_lfp]
     refine EUFix.lfp_induction (certRep a b c).fwdLiveT (certRep a b c).succT
       (Fair.inSet (certRep a b c).fwdLiveT ((certRep a b c).atPosT ev))
       ((certRep a b c).atPosT gd) ?_

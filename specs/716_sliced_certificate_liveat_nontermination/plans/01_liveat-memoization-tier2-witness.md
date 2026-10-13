@@ -387,32 +387,32 @@ and therefore no dependent module's elaboration, is affected.
 
 ---
 
-### Phase 4: Switch the four liveness fixpoints onto the early-exit forms [NOT STARTED]
+### Phase 4: Switch the four liveness fixpoints onto the early-exit forms [COMPLETED]
 
 **Goal**: `untlLive`, `snceLive`, `fwdLiveT` and `bwdLiveT` compute through the early-exit forms,
 with every landed theorem about them unchanged in statement and repaired through a bridging `_eq`
 lemma rather than re-proved.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean`
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean`
       immediately before editing.
-- [ ] Switch the four bodies: `untlLive` / `snceLive` to `EUFix.lfp'`, `fwdLiveT` / `bwdLiveT` to
+- [x] Switch the four bodies: `untlLive` / `snceLive` to `EUFix.lfp'`, `fwdLiveT` / `bwdLiveT` to
       `Nu.gfp'`.
-- [ ] Add the four bridging lemmas in the signatures fixed below — `untlLive_eq_lfp`,
+- [x] Add the four bridging lemmas in the signatures fixed below — `untlLive_eq_lfp`,
       `snceLive_eq_lfp`, `fwdLiveT_eq_gfp`, `bwdLiveT_eq_gfp` — each stating equality with the
       unprimed form and each proved by `Nu.gfp'_eq_gfp` / `EUFix.lfp'_eq_lfp`.
-- [ ] Repair the immediate consequences in the same module by rewriting through those four
+- [x] Repair the immediate consequences in the same module by rewriting through those four
       lemmas, never by weakening a statement: `untlLive_mono`, `snceLive_mono`, `fwdLiveT_subset`,
       `bwdLiveT_subset`, `liveT_subset`, `fwdLiveT_fixed`, `bwdLiveT_fixed`, `fwdLiveT_greatest`,
       `bwdLiveT_greatest`, and anything below them in the file that the build names.
-- [ ] Build the changed module plus its one direct dependent, `Bridge.lean`, then the whole
+- [x] Build the changed module plus its one direct dependent, `Bridge.lean`, then the whole *(deviation: altered — the build named TWO files needing repair, not one: `Bridge.lean` (two `unfold untlLive`/`unfold snceLive` sites) and `FixtureStable.lean` (one `rw [untlLive]` that hit a whnf heartbeat timeout). `FixtureStable.lean` is not a direct dependent of `LiveFix.lean` and so was invisible to the plan-time grep; both were fixed forward through the bridging lemmas, no statement weakened)*
       `PlusSlicedCertificate` aggregate, detached through the guard. A failure in
       `Stable.lean` / `Sound.lean` / `Complete.lean` / `EmbedComplete.lean` / `Tail.lean` /
       `Check.lean` is fixed forward in the file the build names.
-- [ ] Re-measure under the Phase 1 harness: `(liveAt (-1)).card` at the embedded witness, and the
+- [x] Re-measure under the Phase 1 harness: `(liveAt (-1)).card` at the embedded witness, and the
       `decide` wall clock of `TotalEdge.certA_certifies`. Record both against Phase 1's and Phase
       2's figures in `progress-file.md`.
-- [ ] Record via `issue-record.sh` whether any downstream proof broke, and in which file.
+- [x] Record via `issue-record.sh` whether any downstream proof broke, and in which file.
 
 **Timing**: 1.5 hours
 
@@ -434,6 +434,10 @@ plus its enumerated one-hop dependent `Bridge.lean`, followed by the guarded
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean` - the four switched
   bodies, the four bridging lemmas, and the in-module proof repairs
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Bridge.lean` - *(widened during
+  execution)* two `unfold` sites rewritten through the bridging lemmas
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FixtureStable.lean` - *(widened
+  during execution)* one `rw [untlLive]` rewritten through `untlLive_eq_lfp`
 - `specs/716_sliced_certificate_liveat_nontermination/progress-file.md` - the before/after pair
 
 **Verification**:

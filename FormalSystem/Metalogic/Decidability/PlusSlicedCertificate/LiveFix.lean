@@ -86,23 +86,44 @@ module's header.
 strictly intermediate vertex. -/
 def untlLive (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) (g e : PlusFormula) :
     Finset G.TPos :=
-  EUFix.lfp X G.succT (Fair.inSet X (G.atPosT e)) (G.atPosT g)
+  EUFix.lfp' X G.succT (Fair.inSet X (G.atPosT e)) (G.atPosT g)
 
 /-- **The `snce` dual**, on the backward graph. -/
 def snceLive (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) (g e : PlusFormula) :
     Finset G.TPos :=
-  EUFix.lfp X G.predT (Fair.inSet X (G.atPosT e)) (G.atPosT g)
+  EUFix.lfp' X G.predT (Fair.inSet X (G.atPosT e)) (G.atPosT g)
+
+/-! ### The bridging equalities
+
+The four definitions of this module that compute a fixpoint do so through `Fixpoint.lean`'s
+early-exit forms, which stop applying the operator once it is fixed instead of running a fixed
+`V.card + 1` iterations. The four lemmas below state the equality with the fixed-count form, and
+they are unconditional, so nothing outside this module can observe which form is computed: every
+theorem already proved about `EUFix.lfp` / `Nu.gfp` transfers by rewriting through them.
+-/
+
+theorem untlLive_eq_lfp (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos)
+    (g e : PlusFormula) :
+    G.untlLive X g e = EUFix.lfp X G.succT (Fair.inSet X (G.atPosT e)) (G.atPosT g) :=
+  EUFix.lfp'_eq_lfp X G.succT (Fair.inSet X (G.atPosT e)) (G.atPosT g)
+
+theorem snceLive_eq_lfp (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos)
+    (g e : PlusFormula) :
+    G.snceLive X g e = EUFix.lfp X G.predT (Fair.inSet X (G.atPosT e)) (G.atPosT g) :=
+  EUFix.lfp'_eq_lfp X G.predT (Fair.inSet X (G.atPosT e)) (G.atPosT g)
 
 /-- **The inner test is monotone in the set it is relativized to.** This is the step that needs
 monotonicity in the *event* predicate and not only in the vertex set, because the event carries the
 `w ∈ X` conjunct. -/
 theorem untlLive_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.TPos} (h : X ⊆ Y)
-    (g e : PlusFormula) : G.untlLive X g e ⊆ G.untlLive Y g e :=
-  EUFix.lfp_mono_all h G.succT (Fair.inSet_mono h (G.atPosT e)) (fun _ hb => hb)
+    (g e : PlusFormula) : G.untlLive X g e ⊆ G.untlLive Y g e := by
+  rw [G.untlLive_eq_lfp, G.untlLive_eq_lfp]
+  exact EUFix.lfp_mono_all h G.succT (Fair.inSet_mono h (G.atPosT e)) (fun _ hb => hb)
 
 theorem snceLive_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.TPos} (h : X ⊆ Y)
-    (g e : PlusFormula) : G.snceLive X g e ⊆ G.snceLive Y g e :=
-  EUFix.lfp_mono_all h G.predT (Fair.inSet_mono h (G.atPosT e)) (fun _ hb => hb)
+    (g e : PlusFormula) : G.snceLive X g e ⊆ G.snceLive Y g e := by
+  rw [G.snceLive_eq_lfp, G.snceLive_eq_lfp]
+  exact EUFix.lfp_mono_all h G.predT (Fair.inSet_mono h (G.atPosT e)) (fun _ hb => hb)
 
 /-! ## The per-formula clause
 
@@ -184,20 +205,28 @@ theorem bwdLiveStep_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.TPos
   exact ⟨h hvX, ⟨w, hw1, h hw2⟩, fun ψ hψ => G.snceLiveAt_mono h v ψ (hall ψ hψ)⟩
 
 /-- **The forward-live timed positions.** -/
-def fwdLiveT (G : PlusSlicedCertificate Γ Del) : Finset G.TPos := Nu.gfp G.verts G.fwdLiveStep
+def fwdLiveT (G : PlusSlicedCertificate Γ Del) : Finset G.TPos := Nu.gfp' G.verts G.fwdLiveStep
 
 /-- **The backward-live timed positions.** -/
-def bwdLiveT (G : PlusSlicedCertificate Γ Del) : Finset G.TPos := Nu.gfp G.verts G.bwdLiveStep
+def bwdLiveT (G : PlusSlicedCertificate Γ Del) : Finset G.TPos := Nu.gfp' G.verts G.bwdLiveStep
+
+theorem fwdLiveT_eq_gfp (G : PlusSlicedCertificate Γ Del) :
+    G.fwdLiveT = Nu.gfp G.verts G.fwdLiveStep := Nu.gfp'_eq_gfp G.verts G.fwdLiveStep
+
+theorem bwdLiveT_eq_gfp (G : PlusSlicedCertificate Γ Del) :
+    G.bwdLiveT = Nu.gfp G.verts G.bwdLiveStep := Nu.gfp'_eq_gfp G.verts G.bwdLiveStep
 
 /-- **The live timed positions**: both directions at once. The conjunction is not itself justified
 here; that is what the bridge's counterpart of `Live.lean`'s `live_iff` will do. -/
 def liveT (G : PlusSlicedCertificate Γ Del) : Finset G.TPos := G.fwdLiveT ∩ G.bwdLiveT
 
-theorem fwdLiveT_subset (G : PlusSlicedCertificate Γ Del) : G.fwdLiveT ⊆ G.verts :=
-  Nu.gfp_subset _ (fun X => G.fwdLiveStep_subset X)
+theorem fwdLiveT_subset (G : PlusSlicedCertificate Γ Del) : G.fwdLiveT ⊆ G.verts := by
+  rw [G.fwdLiveT_eq_gfp]
+  exact Nu.gfp_subset _ (fun X => G.fwdLiveStep_subset X)
 
-theorem bwdLiveT_subset (G : PlusSlicedCertificate Γ Del) : G.bwdLiveT ⊆ G.verts :=
-  Nu.gfp_subset _ (fun X => G.bwdLiveStep_subset X)
+theorem bwdLiveT_subset (G : PlusSlicedCertificate Γ Del) : G.bwdLiveT ⊆ G.verts := by
+  rw [G.bwdLiveT_eq_gfp]
+  exact Nu.gfp_subset _ (fun X => G.bwdLiveStep_subset X)
 
 theorem liveT_subset (G : PlusSlicedCertificate Γ Del) : G.liveT ⊆ G.verts :=
   subset_trans (Finset.inter_subset_left) G.fwdLiveT_subset
@@ -207,27 +236,31 @@ theorem mem_liveT (G : PlusSlicedCertificate Γ Del) (v : G.TPos) :
 
 /-- **It is a fixpoint.** -/
 theorem fwdLiveT_fixed (G : PlusSlicedCertificate Γ Del) :
-    G.fwdLiveStep G.fwdLiveT = G.fwdLiveT :=
-  Nu.gfp_fixed _ (fun X => G.fwdLiveStep_subset X) (fun _ _ h => G.fwdLiveStep_mono h)
+    G.fwdLiveStep G.fwdLiveT = G.fwdLiveT := by
+  rw [G.fwdLiveT_eq_gfp]
+  exact Nu.gfp_fixed _ (fun X => G.fwdLiveStep_subset X) (fun _ _ h => G.fwdLiveStep_mono h)
 
 theorem bwdLiveT_fixed (G : PlusSlicedCertificate Γ Del) :
-    G.bwdLiveStep G.bwdLiveT = G.bwdLiveT :=
-  Nu.gfp_fixed _ (fun X => G.bwdLiveStep_subset X) (fun _ _ h => G.bwdLiveStep_mono h)
+    G.bwdLiveStep G.bwdLiveT = G.bwdLiveT := by
+  rw [G.bwdLiveT_eq_gfp]
+  exact Nu.gfp_fixed _ (fun X => G.bwdLiveStep_subset X) (fun _ _ h => G.bwdLiveStep_mono h)
 
 /-- **It is the greatest post-fixpoint** — the coinduction principle, and what makes membership a
 *complete* test rather than a merely sufficient one. -/
 theorem fwdLiveT_greatest (G : PlusSlicedCertificate Γ Del) {X : Finset G.TPos}
     (hXV : X ⊆ G.verts)
     (hX : ∀ v ∈ X, (∃ w ∈ G.succT v, w ∈ X) ∧
-      ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.untlLiveAt X v ψ = true) : X ⊆ G.fwdLiveT :=
-  Nu.gfp_greatest _ (fun _ _ h => G.fwdLiveStep_mono h) hXV
+      ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.untlLiveAt X v ψ = true) : X ⊆ G.fwdLiveT := by
+  rw [G.fwdLiveT_eq_gfp]
+  exact Nu.gfp_greatest _ (fun _ _ h => G.fwdLiveStep_mono h) hXV
     (fun v hv => (G.mem_fwdLiveStep X v).mpr ⟨hv, hX v hv⟩)
 
 theorem bwdLiveT_greatest (G : PlusSlicedCertificate Γ Del) {X : Finset G.TPos}
     (hXV : X ⊆ G.verts)
     (hX : ∀ v ∈ X, (∃ w ∈ G.predT v, w ∈ X) ∧
-      ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.snceLiveAt X v ψ = true) : X ⊆ G.bwdLiveT :=
-  Nu.gfp_greatest _ (fun _ _ h => G.bwdLiveStep_mono h) hXV
+      ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.snceLiveAt X v ψ = true) : X ⊆ G.bwdLiveT := by
+  rw [G.bwdLiveT_eq_gfp]
+  exact Nu.gfp_greatest _ (fun _ _ h => G.bwdLiveStep_mono h) hXV
     (fun v hv => (G.mem_bwdLiveStep X v).mpr ⟨hv, hX v hv⟩)
 
 /-! ### Reading the fixpoint's two clauses off a member -/
@@ -399,6 +432,7 @@ theorem exists_fwdLive_walk (G : PlusSlicedCertificate Γ Del) {v : G.TPos}
       u ∈ EUFix.lfp G.fwdLiveT G.succT (Fair.inSet G.fwdLiveT (G.atPosT ge.2))
         (G.atPosT ge.1) := by
     intro u hu ge hp
+    rw [← G.untlLive_eq_lfp]
     exact G.untlLive_of_mem_fwdLiveT hu ((G.atPosT_iff _ u).mp hp)
   have hprop : ∀ u ∈ G.fwdLiveT, ∀ w ∈ G.succT u, w ∈ G.fwdLiveT →
       ∀ ge : PlusFormula × PlusFormula, G.atPosT (PlusFormula.untl ge.1 ge.2) u = true →
@@ -439,6 +473,7 @@ theorem exists_bwdLive_walk (G : PlusSlicedCertificate Γ Del) {v : G.TPos}
       u ∈ EUFix.lfp G.bwdLiveT G.predT (Fair.inSet G.bwdLiveT (G.atPosT ge.2))
         (G.atPosT ge.1) := by
     intro u hu ge hp
+    rw [← G.snceLive_eq_lfp]
     exact G.snceLive_of_mem_bwdLiveT hu ((G.atPosT_iff _ u).mp hp)
   have hprop : ∀ u ∈ G.bwdLiveT, ∀ w ∈ G.predT u, w ∈ G.bwdLiveT →
       ∀ ge : PlusFormula × PlusFormula, G.atPosT (PlusFormula.snce ge.1 ge.2) u = true →
