@@ -1,15 +1,27 @@
 {
-  "status": "planned",
-  "dispatch_seq": 7,
-  "phases_completed": 0,
+  "status": "partial",
+  "dispatch_seq": 8,
+  "phases_completed": 6,
   "phases_total": 9,
-  "summary": "Wrote a nine-phase plan separating the two deliverables the research report showed are independent: landing the Tier-2 sliced witness (which no longer waits on anything) and removing the three recomputation faults in the shipped liveness decision procedure. A plan-time compiled check found the report's recommendation 1 is not executable as written -- C36b's c36Sliced reads the slice labelling, and certA labels only 'atom p', so the row would have failed the gate -- and established the minimal repair: carrying snceP on the labelled slice makes c36Sliced [c36Snce] true while certA.Certifies still proves by kernel decide in 87 s under a finite maxHeartbeats. The three performance fixes are ordered by increasing blast radius, each behind an unconditional equality lemma, with the leaf cache gated on a measurement because the report's gains are #eval figures and the gated proofs run decide.",
-  "blockers": [],
+  "summary": "Phases 1-6 of nine are complete, committed one-per-phase and fully verified: the sliced certificate class now carries a second interesting witness (PlusSlicedCertificate.TotalEdge.certA_certifies -- width 2, total edge, snce/box-dot closure at Pp -> box-dot Pp, kernel decide under a finite heartbeat cap) with its C36 inventory row and matched C2 axiom pin, and the early-exit iteration plus the hoisted inner fixpoint are landed behind eight unconditional equality lemmas. Measured this round: the embedded witness's liveAt (-1) fell from 20225 ms to 2188 ms, and the research report's diagnosis reproduced within 1.12x. Phase 7 is BLOCKED, not excluded: its gate PASSED (5.5x on decide, 63x on eval), the cache landed and built scoped-green, and the full build then broke five rfl-proved withBx_* transfer lemmas in Complete.lean -- a file the phase's own Scope Hypothesis asserted untouched. A scratch test at ten times the heartbeat cap shows rfl fails outright rather than slowly, so no cap bump can fix it; the plan's literal Shape A is equally untransferable and separately 6.2x slower than no cache. Phases 8-9 are NOT STARTED behind Phase 7. The tree is green: full guarded lake build 2844 jobs, check-module-invariants.sh ALL CHECKS PASSED, zero sorries, axiom count unchanged at 12.",
+  "blockers": [
+    "Phase 7 needs a planning decision, recorded via /revise, before any further edit to Timed.lean. Route (i): re-express verts as G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t))) -- proved rfl-transferable in a scratch test, obtains the same 512-to-4 reduction in posAt calls, leaves Complete.lean untouched, but drops posTable / posAtC / posAtC_eq from the plan's Goals and Lean Challenge Statements, which is a decomposition change. Route (ii): keep the measured 5.5x cache and add roughly fourteen propositional withBx_* transfer lemmas to Complete.lean, which is a scope change the phase never declared. plan-compliance.md requires both to be raised rather than substituted. The attempt is preserved at specs/716_sliced_certificate_liveat_nontermination/probes/20_phase7_shapeB_attempt.diff and in git stash@{0}."
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/716_sliced_certificate_liveat_nontermination/plans/01_liveat-memoization-tier2-witness.md",
-      "summary": "Nine phases, 14 h, waves [[1],[2,3],[4],[5],[6],[7],[8],[9]]; 31 pinned Lean Challenge identifiers; two declared contingency branches (leaf-cache gate, certB bounded decide)."
+      "type": "summary",
+      "path": "specs/716_sliced_certificate_liveat_nontermination/summaries/01_liveat-memoization-tier2-witness-summary.md",
+      "summary": "Implementation summary, Status [BLOCKED]: what landed through Phase 5, every measured before/after figure, the full verification gate results, and the Phase 7 blocker with both candidate routes."
+    },
+    {
+      "type": "other",
+      "path": "specs/716_sliced_certificate_liveat_nontermination/progress-file.md",
+      "summary": "The measured-figure table: one row per figure with name, value, how measured, and whether it confirms or contradicts the research report's carried figure."
+    },
+    {
+      "type": "other",
+      "path": "specs/716_sliced_certificate_liveat_nontermination/probes/18_cache_gate.lean",
+      "summary": "The Phase 6 decision gate: two cache shapes measured side by side, which is what caught that the plan's literal shape is 6.2x slower than no cache."
     }
   ]
 }
