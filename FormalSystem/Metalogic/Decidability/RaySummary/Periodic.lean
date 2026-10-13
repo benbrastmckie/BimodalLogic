@@ -1281,7 +1281,7 @@ theorem labels_single (c : sig.preds → ℤ → Prop) [∀ p, DecidablePred (c 
 /-- Two distinct segments of a monotone cut sequence with the same `k`-type cannot both avoid
 and contain `now`: if `t` lies in one, `now` is realized in the other too (type-visible at
 `k ≥ 1`), at a second position. -/
-theorem not_now_of_eq_segments [Finite sig.preds] (hk : 1 ≤ k) {c : sig.preds → ℤ → Prop}
+theorem not_now_of_eq_segments (hk : 1 ≤ k) {c : sig.preds → ℤ → Prop}
     {now : sig.preds} {t : ℤ} (hnow : ∀ z, c now z ↔ z = t) {W : ℤ → ℤ} (hW : Monotone W)
     {za zb : ℤ} (hne : za ≠ zb)
     (hab : kTypeOf sig k (segZ sig c (W za) (W (za + 1))) =
@@ -1466,7 +1466,7 @@ variable {sig k}
 
 /-- A forward tail type shared with a `now`-free forward tail is realized `now`-free: every time
 after `t` lies in a segment of the factorization, whose type is that of a `now`-free segment. -/
-theorem fwd_now_free_transfer [Finite sig.preds] (hk : 1 ≤ k) {c c' : sig.preds → ℤ → Prop}
+theorem fwd_now_free_transfer (hk : 1 ≤ k) {c c' : sig.preds → ℤ → Prop}
     {now : sig.preds} {t : ℤ} (hc : ∀ z, t < z → ¬ c now z) {α σ : KType sig k}
     (hx : (α, σ) ∈ FwdTypes sig k c t) (hx' : (α, σ) ∈ FwdTypes sig k c' t) :
     ∀ z, t < z → ¬ c' now z := by
@@ -1555,7 +1555,10 @@ theorem periodicLetter_glue_t (w ub uf v : List (sig.preds → Bool)) (ℓ : sig
 
 /-- **(★) The seam assembly.** Every family triple of a colouring with `now` exactly at `t` is a
 family triple of a bounded bi-ultimately-periodic colouring with `now` exactly at `t`, whose
-family triples all belong to the original's. The bounds count pairs of profiles. -/
+family triples all belong to the original's. The bounds count pairs of profiles.
+
+Paper: — (the formalization's own realizability device; HWZ 2000 Def. 12 and Thm 14 orient the
+quasimodel shape and source no claim) -/
 theorem exists_periodic_subfamily [Fintype sig.preds] [DecidableEq sig.preds] (hk : 1 ≤ k)
     (c : sig.preds → ℤ → Prop)
     (now : sig.preds) (t : ℤ) (hnow : ∀ z, c now z ↔ z = t)

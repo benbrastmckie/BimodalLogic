@@ -2087,6 +2087,21 @@ fi
 # the refutation above still stands for every model NOT so constructed, so the two sit side by
 # side rather than one retiring the other.
 #
+# Three further matched pairs close the same block, for the three `docs/theorem-index.md` rows
+# of requirement (C)'s general row. `...RaySummary.exists_hitPresented`
+# (`RaySummary/HitComplete.lean`) is the completeness half of the run layer for EVERY regular
+# `ℤ`-model, seam, `φ` and `k ≥ 1`: a finite presentation with `Fintype.card Q ≤ sizeBound φ k`
+# satisfies the Hit-level hypothesis `HitPresented`, with `sizeBound φ k = N ^ 3 * (4 * P ^ 2 + 1)`
+# a COUNT of depth-`k` types (`N`) and of their profiles (`P`) and nothing else -- not a
+# complexity bound of any kind. The route is Ramsey over a composing profile of finite words:
+# `...WeakCanonical.profile_append_congr` (`RaySummary/Profile.lean`) is the composition law the
+# whole argument rests on, and `...WeakCanonical.exists_periodic_subfamily`
+# (`RaySummary/Periodic.lean`) is the seam assembly -- every family triple of a colouring with
+# `now` exactly at `t` is realized by a bounded bi-ultimately-periodic colouring whose own
+# triples all belong to the original's. They pin profiles and are not a decision procedure:
+# `Decidable (PlusValidZTime φ)` is stated nowhere, the statement is about ONE seam, and the
+# trace-level `Presented` stays refuted as a completeness carrier beside the Hit-level theorem.
+#
 # Four further matched pairs close the block, for the four `docs/theorem-index.md` rows of the
 # requirement (W) anchor layer that carry a `pinned:C14` cell. `FormalSystem.PlusLanguage.box_global`
 # (`PlusLanguage/PlusTruth.lean`) is the quantifier collapse -- `□ψ` is a per-model datum on
@@ -2329,6 +2344,9 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.presented_modelOf' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.exists_hitPresented' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.exists_periodic_subfamily' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.WeakCanonical.profile_append_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.PlusLanguage.box_global' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.anchorCons_anchorCells' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2560,6 +2578,9 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitPresented_of_presented
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.presented_modelOf
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_hitPresented
+#print axioms FormalSystem.Metalogic.WeakCanonical.exists_periodic_subfamily
+#print axioms FormalSystem.Metalogic.WeakCanonical.profile_append_congr
 #print axioms FormalSystem.PlusLanguage.box_global
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCons_anchorCells
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.anchorCells_ncard_le

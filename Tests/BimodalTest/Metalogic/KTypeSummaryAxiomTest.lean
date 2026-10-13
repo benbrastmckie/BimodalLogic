@@ -56,6 +56,9 @@ signal that a profile moved.
 | (S): a run's trace is anchored to its history | B2b | `anchored_runTrace_of_boxStabFree` |
 | (S): **the hypothesis DISCHARGED** for a constructed model | B2b | `presented_modelOf` |
 | (S): its Hit-level corollary | B2b | `hitCl_modelOf_eq_hitOf` |
+| (C), the general row: the headline | seam interface | `exists_hitPresented` |
+| (C): the seam assembly, model-free | seam interface | `exists_periodic_subfamily` |
+| (C): the composition law of the profile | seam interface | `profile_append_congr` |
 
 Rows for the later steps are appended as their modules land.
 
@@ -408,7 +411,8 @@ with the `k`-type of a nonempty constant block is a nonempty constant block
 held inside one segment of a `SegmentFactorization` while keeping the triple
 (`inFamily_of_shrink_run`, both `RaySummary/Transport.lean`; shrink direction only, under an
 explicit single-segment containment hypothesis that the probe discharges on model A). The
-general every-model statement of (C) is not here. Neither of the first two rows measures a
+general every-model statement of (C) is the last section of this file (`exists_hitPresented`,
+with its two load-bearing lemmas). Neither of the first two rows measures a
 decidability result and neither mentions validity: `HitPresented` is one seam's hypothesis, and
 `Decidable (PlusValidZTime φ)` is not stated in this tree in any form, conditional or otherwise.
 -/
@@ -535,6 +539,40 @@ set. It is documented at the field, and `cons_localRun` does not read it.
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hitCl_modelOf_eq_hitOf
+
+/-! ## Requirement (C), the general row (`RaySummary/Profile.lean`, `Periodic.lean`,
+`HitComplete.lean`)
+
+Three pins. `exists_hitPresented` is the completeness half of the run layer for EVERY regular
+`ℤ`-model: at every seam `(τ, t)`, formula `φ` and depth `1 ≤ k`, a finite labelled
+presentation with `Fintype.card Q ≤ sizeBound φ k` satisfies `HitPresented M τ t φ lab step k`,
+and `sizeBound φ k = N ^ 3 * (4 * P ^ 2 + 1)` — `N` depth-`k` types over the closure alphabet,
+`P` their profiles — is EXHIBITED in the statement: a count of types and profiles, not a
+complexity bound of any kind. The two load-bearing lemmas are pinned beside it:
+`profile_append_congr`, the composition law of the σ-star profile of a finite word (the summary
+that composes under the Kleene star of a type where bare `k`-types do not), and
+`exists_periodic_subfamily`, the model-free seam assembly (every family triple of a colouring
+with `now` exactly at `t` is realized by a bounded bi-ultimately-periodic colouring whose own
+triples all belong to the original's). What they do not say: `Decidable (PlusValidZTime φ)` in
+any form — one seam of one model; the lift is requirement (W) — nothing about `⊡(Pp)`, and no
+retirement of `Probe735.not_presented`, which refutes the trace-level `Presented` that this
+Hit-level theorem does not use. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_hitPresented' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_hitPresented
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.exists_periodic_subfamily' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.exists_periodic_subfamily
+
+/-- info: 'FormalSystem.Metalogic.WeakCanonical.profile_append_congr' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.WeakCanonical.profile_append_congr
 
 /-! ## Requirement (W): the anchor layer (`PlusTruth.lean`, `RaySummary/AnchorLayer.lean`)
 

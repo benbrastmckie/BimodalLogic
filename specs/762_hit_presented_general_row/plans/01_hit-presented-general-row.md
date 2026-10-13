@@ -823,7 +823,7 @@ new names are Phase 14's `full` sweep.
 
 ---
 
-### Phase 14: Records, C14 Pins at the Two Synchronized Sites, Theorem Index, README, status.typ, Full Gate [NOT STARTED]
+### Phase 14: Records, C14 Pins at the Two Synchronized Sites, Theorem Index, README, status.typ, Full Gate [IN PROGRESS]
 
 **Goal**: Pin the three headline declarations, record the settlement in every in-tree surface
 the task's `file_scope` names, and run the complete repository gate set.

@@ -445,7 +445,10 @@ theorem starProfile_append [Finite sig.preds] (hk : 1 ≤ k) (σ : KType sig k)
 /-- **Composition on profiles**: the profile of a concatenation depends only on the profiles of
 the parts. First component by `kTypeOf_listSeg_append_congr`; second component by
 `starProfile_append` on both sides, after which every disjunct is a statement about
-`profile l₁` and `profile l₂` alone. -/
+`profile l₁` and `profile l₂` alone.
+
+Paper: — (the formalization's own composing summary of finite words; the paper's Ramsey
+argument has no counterpart, and no literature source is cited for it) -/
 theorem profile_append_congr [Finite sig.preds] (hk : 1 ≤ k)
     {l₁ l₁' l₂ l₂' : List (sig.preds → Bool)}
     (h₁ : profile sig k l₁ = profile sig k l₁') (h₂ : profile sig k l₂ = profile sig k l₂') :
