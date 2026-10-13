@@ -574,7 +574,7 @@
     {
       "project_number": 716,
       "project_name": "sliced_certificate_liveat_nontermination",
-      "status": "planned",
+      "status": "partial",
       "task_type": "lean4",
       "description": "Profile and fix the PlusSlicedCertificate liveT/liveAt non-termination that blocks Tier-2 sliced certificate witnesses.\n\nEVIDENCE IN HAND. A preserved reproducer lives at specs/704_certificate_non_vacuity_and_shape_gates/probes/03_tier2_sliced_certificates.lean. Two width-2 Tier-2 constructions (certA, certB) carrying the box-dot modality elaborate in about 2 seconds and their cheap conjuncts evaluate, but `liveAt 0` -- the landed checker's computed liveness fixpoint under FormalSystem/Metalogic/Decidability/PlusSlicedCertificate -- does not return within 300 seconds compiled, on only 4 positions and 4 window times. The same fixpoint is instantaneous at the self-loop embedded certificates already pinned in scripts/certificate-witness-inventory.txt, so this is not a size effect.\n\nTHE QUESTION. Determine why liveT/liveAt diverges or blows up at a 4-position TOTAL-EDGE certificate when it is instant at self-loop certificates. Decide which of three it is: a genuine algorithmic defect in the landed decision procedure, a missing termination or memoization argument, or an unavoidable cost intrinsic to the total-edge case.\n\nDELIVERABLE. The diagnosis; the fix if the cause is addressable; and certA/certB landed as the Tier-2 witness rows in the C36 inventory if the fix makes a kernel `decide` proof reachable.\n\nWHY IT MATTERS INDEPENDENTLY OF TIER 2. liveAt is part of a decision procedure that is already landed and gated, so a configuration on which it fails to return is a defect in shipped code, not merely an unbuilt feature.\n\nNOT COVERED ELSEWHERE. Checked against the TailStable junk-position/full-labels evaluation, the refuted sliced finite-model-property statement, and the finite-carrier refutation work -- none of them own this question.\n\nADJACENCY. The sliced finite-width question of the sliced-class incompleteness characterization.",
       "topic": "decidability",
@@ -599,7 +599,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-02T22:54:01Z",
-      "last_updated": "2026-10-13T17:13:50Z",
+      "last_updated": "2026-10-13T22:33:11Z",
       "dependencies": [],
       "session_id": "sess_1791910277_6e35c3",
       "artifacts": [
@@ -612,6 +612,11 @@
           "path": "specs/716_sliced_certificate_liveat_nontermination/plans/01_liveat-memoization-tier2-witness.md",
           "type": "plan",
           "summary": "Nine phases, 14 h, waves [[1],[2,3],[4],[5],[6],[7],[8],[9]]; 31 pinned Lean Challenge identifiers; two declared contingency branches (leaf-cache gate, certB bounded decide)."
+        },
+        {
+          "path": "specs/716_sliced_certificate_liveat_nontermination/summaries/01_liveat-memoization-tier2-witness-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary, Status [BLOCKED]: what landed through Phase 5, every measured before/after figure, the full verification gate results, and the Phase 7 blocker with both candidate routes."
         }
       ]
     },
