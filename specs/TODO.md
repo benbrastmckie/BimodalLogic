@@ -6,14 +6,14 @@ next_project_number: 781
 
 ## Task Order
 
-*Updated 2026-10-12. Generated from state.json dependency graph.*
+*Updated 2026-10-13. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,762 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,763 | 231,465,497,762 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,761,762,767,768,769,770,772,774,777,778,779,780 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763 | 298,464,502,616,761,762 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -86,8 +86,9 @@ next_project_number: 781
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
-  └─ 762 [NOT STARTED] — STATEMENT (library, research-first; new module...
-    └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
+  └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
+762 [RESEARCHED] — STATEMENT (library, research-first; new module...
+  └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index... (see above)
 778 [RESEARCHED] — Record the modulus convention for the residue-carrying ladder...
 
 ### Formula Refactor
@@ -525,10 +526,11 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 ---
 
 ### 762. Hit presented general row
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 759
+- **Research**: [762_hit_presented_general_row/reports/01_hit-presented-general-row.md]
 
 **Description**: STATEMENT (library, research-first; new module `RaySummary/HitComplete.lean`). Requirement (C)'s general row, verbatim from the RaySummary README's verdict table and "(W) … obligation (ii)" item 2 — run-layer phase 3, the completeness half (model → object): for every regular ℤ-model M, seam (τ, t), formula φ and depth 1 ≤ k, a finite labelled presentation with a computable bound in φ:
   `theorem exists_hitPresented (M : TaskModel F.toTaskFrame) [F.IsRegular] (τ) (t) (φ) (k) (hk : 1 ≤ k) : ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool), Fintype.card Q ≤ sizeBound φ k ∧ HitPresented M τ t φ lab step k`
