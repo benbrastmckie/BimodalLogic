@@ -424,37 +424,37 @@ elsewhere.
 
 ---
 
-### Phase 6: Forward Transport `exists_periodic_fwd` [NOT STARTED]
+### Phase 6: Forward Transport `exists_periodic_fwd` [COMPLETED]
 
 **Goal**: (★₊) — a bounded prefix `u'` and period `v'` with `(α, σ) ∈ FwdTypes (fwdPeriodic u' v'
 t) t` and `FwdTypes (fwdPeriodic u' v' t) t ⊆ FwdTypes c t`.
 
 **Tasks**:
-- [ ] Pick `u'`, `v'` by Phase 3 from `u` and `B 0` (`profile u' = profile u`, `cutProfile u' ⊆
+- [x] Pick `u'`, `v'` by Phase 3 from `u` and `B 0` (`profile u' = profile u`, `cutProfile u' ⊆
       cutProfile u`, `profile v' = E`, `cutProfile v' ⊆ CP`, lengths `< P ^ 2`, `v' ≠ []`).
-- [ ] Membership: `PrefixStar α σ u'` (read off `profile u' = profile u`,
+- [x] Membership: `PrefixStar α σ u'` (read off `profile u' = profile u`,
       `prefixStar_iff_profile`) and `StarPlus σ v'` (`starPlus_iff_profile`) give a `W` for
       `fwdPeriodic u' v' t` directly (cut at the end of `u'`'s `α`-prefix, then at each
       `σ`-piece boundary, then period by period).
-- [ ] Containment, the core: given `(α', σ') ∈ FwdTypes (fwdPeriodic u' v' t) t` with cuts `W'`,
+- [x] Containment, the core: given `(α', σ') ∈ FwdTypes (fwdPeriodic u' v' t) t` with cuts `W'`,
       infinitely many cuts fall in the periodic part; by pigeonhole on `W' i mod v'.length`
       (`Finite.exists_infinite_fiber` or `Fintype.exists_ne_map_eq_of_card_lt` on a window of
       `v'.length + 1` cuts) two cuts share an offset `o`, in copies `a₀ < a₀ + s`.
-- [ ] With `z := v'.take o`, `y := v'.drop o`: `PrefixStar α' σ' (u' ++ flatten (replicate (a₀-1)
+- [x] With `z := v'.take o`, `y := v'.drop o`: `PrefixStar α' σ' (u' ++ flatten (replicate (a₀-1)
       v') ++ z)` and `StarPlus σ' (y ++ flatten (replicate (s-1) v') ++ z)` (each is a union of
       consecutive `σ'`-pieces of `W'`, read as `labels` of the periodic colouring by Phase 4).
-- [ ] Transport: `(profile z, profile y) ∈ cutProfile v' ⊆ CP = cutProfile (B a)` for every `a`,
+- [x] Transport: `(profile z, profile y) ∈ cutProfile v' ⊆ CP = cutProfile (B a)` for every `a`,
       so choose in every block a cut `(z_a, y_a)` with `profile z_a = profile z`, `profile y_a =
       profile y`; by `profile_flatten_congr`, `profile (u ++ B 0 ++ … ++ B (a₀-2) ++ z_{a₀-1}) =
       profile (u' ++ flatten (replicate (a₀-1) v') ++ z)` and `profile (y_a ++ B (a+1) ++ … ++
       z_{a+s})` equals `profile (y ++ flatten (replicate (s-1) v') ++ z)`; read `PrefixStar α' σ'`
       and `StarPlus σ'` off the equal profiles.
-- [ ] Assemble `W''` for `c`: the chosen cut positions in blocks `a₀-1, a₀-1+s, a₀-1+2s, …`
+- [x] Assemble `W''` for `c`: the chosen cut positions in blocks `a₀-1, a₀-1+s, a₀-1+2s, …`
       (strictly monotone, first `≥ t + 1`), whose successive stretches are the `StarPlus σ'`
       words above — hence a factorization `L_{α'} L_{σ'}^ω` of `c`'s tail, i.e. `(α', σ') ∈
       FwdTypes c t` (each `StarPlus` stretch refines to `σ'`-typed segments: re-cut at the piece
-      boundaries inside it to produce `W''` with EVERY segment of type `σ'`).
-- [ ] `theorem exists_periodic_fwd (hk : 1 ≤ k) (c) (t) {x} (hx : x ∈ FwdTypes c t) : ∃ u v, v ≠
+      boundaries inside it to produce `W''` with EVERY segment of type `σ'`). *(deviation: altered — the re-cutting is a generic lemma, `mem_fwdTypes_of_pieces`/`mem_fwdTypes_of_stretches` on `refineIdx`/`refineCut`, used by both the membership and the containment half)*
+- [x] `theorem exists_periodic_fwd (hk : 1 ≤ k) (c) (t) {x} (hx : x ∈ FwdTypes c t) : ∃ u v, v ≠
       [] ∧ u.length < Nat.card (Profile sig k) ^ 2 ∧ v.length < Nat.card (Profile sig k) ^ 2 ∧ x
       ∈ FwdTypes (fwdPeriodic u v t) t ∧ FwdTypes (fwdPeriodic u v t) t ⊆ FwdTypes c t`.
 
