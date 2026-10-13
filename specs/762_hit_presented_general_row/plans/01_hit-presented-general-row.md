@@ -625,7 +625,7 @@ which Phase 13 builds against it.
 
 ---
 
-### Phase 10: `HitComplete.lean` — The Gadget and Its Unique Anchored Run [IN PROGRESS]
+### Phase 10: `HitComplete.lean` — The Gadget and Its Unique Anchored Run [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/Decidability/RaySummary/HitComplete.lean` (importing
 `Periodic` and `HitOf`; gadget section in namespace `FormalSystem.Metalogic.WeakCanonical`,
@@ -633,26 +633,26 @@ headline section in `FormalSystem.Metalogic.Decidability.RaySummary`) with the t
 presentation of a periodic word and the characterization of its anchored runs.
 
 **Tasks**:
-- [ ] `abbrev GadgetState {sig} (w m v : List (sig.preds → Bool)) : Type := Fin w.length ⊕ Fin
+- [x] `abbrev GadgetState {sig} (w m v : List (sig.preds → Bool)) : Type := Fin w.length ⊕ Fin
       m.length ⊕ Fin v.length` (so `Fintype`/`DecidableEq` are inferred); `def gadgetLab w m v :
       GadgetState w m v → sig.preds → Bool` reading the letter at the index; `def gadgetStep w m v
       : GadgetState w m v → GadgetState w m v → Bool` — `w`-cycle (`i → i+1`, last `w` → first
       `m`, or → first `v` if `m = []`), `m`-path, last `m` → first `v`, `v`-cycle; a `#guard` on
       a two-letter toy (`Fin 1 ⊕ Fin 1 ⊕ Fin 1`) documenting the step table.
-- [ ] `def gadgetRun w m v (b : ℤ) : ℤ → GadgetState w m v` — the canonical run reading
+- [x] `def gadgetRun w m v (b : ℤ) : ℤ → GadgetState w m v` — the canonical run reading
       `periodicColouring w m v b` (same three-case clock as Phase 4), with `isRun_gadgetRun`
       (anchored at `t` whenever `periodicColouring … now` holds exactly at `t`), and
       `runTrace_gadgetRun : runTrace (gadgetLab w m v) (gadgetRun w m v b) = periodicColouring w
       m v b` (as `Prop`-valued functions, by `funext` and the `Bool`/`Prop` bridge).
-- [ ] `theorem isRun_gadget_iff (hw : w ≠ []) (hv : v ≠ []) (hnow : ∀ z, periodicColouring w m v
+- [x] `theorem isRun_gadget_iff (hw : w ≠ []) (hv : v ≠ []) (hnow : ∀ z, periodicColouring w m v
       b now z ↔ z = t) (ρ) : IsRun (gadgetLab w m v) (gadgetStep w m v) now t ρ ↔ ρ = gadgetRun
       w m v b` — (←) above; (→): `ρ t` is the unique `now` state (the `m`-index carrying `now`),
       then successor-determinism after `t` (`m`-path then `v`-cycle are functional) and
       predecessor-determinism before `t` (the only predecessor of an `m` index `> 0` is its
       predecessor; of `m` index `0` is the last `w` index; of a `w` index is its predecessor in
       the cycle) by the two-sided induction `Probe745`'s gadget confinement uses
-      (`inl_bwd_pre`-style `key` on `t - 1 - n`).
-- [ ] Wiring: aggregator and `FormalSystem.lean` imports (after `Periodic`).
+      (`inl_bwd_pre`-style `key` on `t - 1 - n`). *(deviation: altered — `gadgetRun` takes `hw : w ≠ []` and `hv : v ≠ []` (needed to form `Fin` indices); the two-sided induction is `gadgetStep_inr_unique` (successor-determinism on `inr` states) and `gadgetStep_pred_unique` (predecessor-determinism on non-`v` states), with `mid_of_now_unique` forcing `b ≤ t < b + |m|` from `hnow` alone)*
+- [x] Wiring: aggregator and `FormalSystem.lean` imports (after `Periodic`).
 
 **Timing**: 2 hours
 

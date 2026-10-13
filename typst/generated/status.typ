@@ -5,10 +5,10 @@
 //   scripts/typst-status-counts.sh
 //
 // Reproduces the SYNC-MAP.md Phase 1 ground-truth-counts methodology.
-// Stamped from live source at commit efefcdf54 (2026-10-13).
+// Stamped from live source at commit 043dd5df7 (2026-10-13).
 // ============================================================================
 
-#let stamp-commit = "efefcdf54"
+#let stamp-commit = "043dd5df7"
 #let stamp-date = "2026-10-13"
 
 #let axiom-count = 29
@@ -18,8 +18,8 @@
 #let ztime-only-count = 2
 #let rtime-only-count = 2
 
-#let sorry-total = 5
-#let sorry-total-excl-boneyard = 1
+#let sorry-total = 4
+#let sorry-total-excl-boneyard = 0
 
 // Version pins. lean-toolchain-pin is the whole toolchain string; mathlib-tag
 // is what lakefile.toml requests and mathlib-rev is what lake resolved it to.
@@ -30,7 +30,7 @@
 // Repository scale, LIVE trees only. Boneyard/ is deliberately absent so that
 // no archived figure can be folded into a live one.
 #let formalsystem-file-count = 678
-#let formalsystem-line-count = 352769
+#let formalsystem-line-count = 352978
 #let tests-file-count = 77
 #let tests-line-count = 23599
 #let tools-file-count = 40
@@ -42,7 +42,7 @@
   ("Bundle/", 0),
   ("WeakCanonical/ (live)", 0),
   ("WeakCanonical/ (archived, Boneyard/Kamp/)", 4),
-  ("Core/, Decidability/, SoundnessLemmas/, top-level", 1),
+  ("Core/, Decidability/, SoundnessLemmas/, top-level", 0),
 )
 
 // The WeakCanonical row is SPLIT because the un-split row printed an ARCHIVED

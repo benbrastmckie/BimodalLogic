@@ -199,6 +199,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary
 import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
+import FormalSystem.Metalogic.Decidability.RaySummary.HitComplete
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 import FormalSystem.Metalogic.Decidability.RaySummary.Periodic
