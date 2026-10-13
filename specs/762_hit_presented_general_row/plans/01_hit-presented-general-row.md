@@ -484,23 +484,23 @@ the complete covering check; no other module consumes `exists_periodic_fwd` yet.
 
 ---
 
-### Phase 7: Backward Mirror `exists_periodic_bwd` [NOT STARTED]
+### Phase 7: Backward Mirror `exists_periodic_bwd` [COMPLETED]
 
 **Goal**: (★₋) — the same statement for the backward tail: `w'` and `u'` bounded, `(σ, β) ∈
 BwdTypes (bwdPeriodic w' u' t) t`, `BwdTypes (bwdPeriodic w' u' t) t ⊆ BwdTypes c t`.
 
 **Tasks**:
-- [ ] Decide the route at phase start and record it in `progress-file.md`: (a) duplication —
+- [x] Decide the route at phase start and record it in `progress-file.md`: (a) duplication —
       mirror Phases 5-6 with `StrictAnti W`, blocks read right-to-left, prefix at the END of the
       stretch (`StarZero σ q ++ β`-suffix form `SuffixStar`), the Ramsey colouring on `labels c
       (W j) (W i)` for `i < j`; or (b) a reversal transfer `kTypeOf (listSeg l.reverse)` as a
       function of `kTypeOf (listSeg l)` (through the order-dual of `OrderedMonadicStructure` and
       a formula transformation swapping the arguments of `lt`), from which (★₋) is (★₊) on the
-      reversed colouring. (a) is the plan's default (precedent `exists_zFactorization`).
-- [ ] `exists_blocks_bwd`, the mirrored cut transport, and `theorem exists_periodic_bwd (hk : 1 ≤
+      reversed colouring. (a) is the plan's default (precedent `exists_zFactorization`). *(decision: route (b) taken — the back-and-forth game `kEquiv_iff_backForth` is atom-symmetric under order reversal (`atoms_dual_iff`, `backForth_dual`, `kEquiv_dual`), giving `kTypeOf_listSeg_reverse_congr` in ~60 lines; recorded here since this agent keeps no progress-file)*
+- [x] `exists_blocks_bwd`, the mirrored cut transport, and `theorem exists_periodic_bwd (hk : 1 ≤
       k) (c) (t) {x} (hx : x ∈ BwdTypes c t) : ∃ w u, w ≠ [] ∧ w.length < Nat.card (Profile sig k)
       ^ 2 ∧ u.length < Nat.card (Profile sig k) ^ 2 ∧ x ∈ BwdTypes (bwdPeriodic w u t) t ∧ BwdTypes
-      (bwdPeriodic w u t) t ⊆ BwdTypes c t`.
+      (bwdPeriodic w u t) t ⊆ BwdTypes c t`. *(deviation: altered — under route (b) there is no `exists_blocks_bwd`; instead `reflect`, `revType`, `kTypeOf_segZ_reflect`, `revType_segZ`, `mem_bwdTypes_iff_reflect`, `reflect_bwdPeriodic`, and `exists_periodic_bwd` as `exists_periodic_fwd` on the reflection)*
 
 **Timing**: 2 hours
 
@@ -526,7 +526,7 @@ the complete covering check; no other module consumes `exists_periodic_bwd` yet.
 
 ---
 
-### Phase 8: Family Triples Through the Seam [NOT STARTED]
+### Phase 8: Family Triples Through the Seam [IN PROGRESS]
 
 **Goal**: Decompose `familyTriples sig k c` at a colouring whose `now` letter holds exactly at
 `t` into a backward tail pair, the letter at `t`, and a forward tail pair — both directions.

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.Metalogic.WeakCanonical.GroupModel.MonoDiscrete
 import FormalSystem.Metalogic.Decidability.RaySummary.Profile
 import FormalSystem.Metalogic.Decidability.RaySummary.Transport
 
@@ -994,5 +995,248 @@ theorem exists_periodic_fwd [Finite sig.preds] (hk : 1 ≤ k) (c : sig.preds →
       (hvp.trans (hprof 0)) (hvcp.trans (by rw [hcut 0]))
 
 end ForwardTransport
+
+/-! ## Reversal: the order dual and the reflected colouring
+
+The backward statement is the forward one on the reflected colouring
+`reflectColouring c p z := c p (-z)`.
+What makes this a transfer rather than a duplication is that the `k`-type of a reversed word is
+a function of the `k`-type of the word (`kTypeOf_listSeg_reverse_congr`): `k`-equivalence is the
+Ehrenfeucht–Fraïssé game `kEquiv_iff_backForth`, whose atoms are predicates at points and the
+order between two points, and reversing the order sends the atom `order i j` to `order j i` —
+so a Duplicator strategy for `M`, `N` is one for their order duals
+(`backForth_of_dualStructure` in `GroupModel/MonoDiscrete.lean`, whose `dualStructure` is
+reused here; `kEquiv_dual` is its converse through the double dual). The
+reversal is packaged as a classical involution `revType` on `k`-types, the backward tail types
+are the forward tail types of the reflection up to `revType` (`mem_bwdTypes_iff_reflect`), and
+the reflection of `bwdPeriodic w u t` is `fwdPeriodic u.reverse w.reverse (-t)`
+(`reflectColouring_bwdPeriodic`). This is the precedent-free alternative to applying Ramsey once per
+orientation; the forward transport is applied once, to the reflection. -/
+
+section Reversal
+
+variable {sig k}
+
+/-- `k`-equivalent structures have `k`-equivalent order duals: the converse of
+`kEquiv_of_dualStructure` (`GroupModel/MonoDiscrete.lean`), through the double dual, which is
+order-isomorphic to the original by `OrderIso.dualDual`. -/
+theorem kEquiv_dual [Finite sig.preds] {M N : OrderedMonadicStructure sig}
+    (h : KEquiv sig k M N) : KEquiv sig k (dualStructure M) (dualStructure N) := by
+  apply kEquiv_of_dualStructure
+  have hM : KEquiv sig k (dualStructure (dualStructure M)) M :=
+    k_equiv_of_iso sig k _ _ (OrderIso.dualDual M.carrier).symm (fun _ _ => Iff.rfl)
+  have hN : KEquiv sig k (dualStructure (dualStructure N)) N :=
+    k_equiv_of_iso sig k _ _ (OrderIso.dualDual N.carrier).symm (fun _ _ => Iff.rfl)
+  exact hM.trans (h.trans hN.symm)
+
+/-- The reversed list segment is the order dual of the list segment. -/
+theorem listSeg_reverse_kEquiv_dual [Finite sig.preds] (l : List (sig.preds → Bool)) :
+    KEquiv sig k (listSeg l.reverse) (dualStructure (listSeg l)) := by
+  have hlen : l.reverse.length = l.length := List.length_reverse
+  let f : (listSeg l.reverse).carrier → (dualStructure (listSeg l)).carrier :=
+    fun i => OrderDual.toDual (⟨l.length - 1 - i.1, by have := i.2; omega⟩ : Fin l.length)
+  have hf : StrictMono f := by
+    rintro ⟨i, hi⟩ ⟨j, hj⟩ hij
+    change (⟨l.length - 1 - j, _⟩ : Fin l.length) < ⟨l.length - 1 - i, _⟩
+    rw [Fin.mk_lt_mk]
+    have : i < j := hij
+    omega
+  have hs : Function.Surjective f := by
+    intro m
+    have hm := (OrderDual.ofDual m).2
+    refine ⟨⟨l.length - 1 - (OrderDual.ofDual m).1, by omega⟩, ?_⟩
+    apply OrderDual.ofDual.injective
+    apply Fin.ext
+    change l.length - 1 - (l.length - 1 - (OrderDual.ofDual m).1) = (OrderDual.ofDual m).1
+    omega
+  refine k_equiv_of_iso sig k _ _ (StrictMono.orderIsoOfSurjective f hf hs) ?_
+  rintro p ⟨i, hi⟩
+  change (l.reverse[i]'hi) p = true ↔ (l[l.length - 1 - i]'(by omega)) p = true
+  rw [List.getElem_reverse]
+
+/-- **Reversal transfer**: the `k`-type of the reversal of a word is a function of the `k`-type
+of the word. -/
+theorem kTypeOf_listSeg_reverse_congr [Finite sig.preds] {l l' : List (sig.preds → Bool)}
+    (h : kTypeOf sig k (listSeg l) = kTypeOf sig k (listSeg l')) :
+    kTypeOf sig k (listSeg l.reverse) = kTypeOf sig k (listSeg l'.reverse) :=
+  (listSeg_reverse_kEquiv_dual l).trans
+    ((kEquiv_dual h).trans (listSeg_reverse_kEquiv_dual l').symm)
+
+open Classical in
+/-- **The reversal of a `k`-type**, as a classical involution: the type of the reversal of any
+representative, and the type itself when it has no finite representative. -/
+noncomputable def revType (τ : KType sig k) : KType sig k :=
+  if h : ∃ l : List (sig.preds → Bool), kTypeOf sig k (listSeg l) = τ then
+    kTypeOf sig k (listSeg h.choose.reverse)
+  else τ
+
+theorem revType_listSeg [Finite sig.preds] (l : List (sig.preds → Bool)) :
+    revType (kTypeOf sig k (listSeg l)) = kTypeOf sig k (listSeg l.reverse) := by
+  unfold revType
+  rw [dif_pos (⟨l, rfl⟩ :
+    ∃ l' : List (sig.preds → Bool), kTypeOf sig k (listSeg l') = kTypeOf sig k (listSeg l))]
+  exact kTypeOf_listSeg_reverse_congr (Classical.choose_spec (⟨l, rfl⟩ :
+    ∃ l' : List (sig.preds → Bool), kTypeOf sig k (listSeg l') = kTypeOf sig k (listSeg l)))
+
+theorem revType_revType [Finite sig.preds] (τ : KType sig k) : revType (revType τ) = τ := by
+  by_cases h : ∃ l : List (sig.preds → Bool), kTypeOf sig k (listSeg l) = τ
+  · obtain ⟨l, rfl⟩ := h
+    rw [revType_listSeg, revType_listSeg, List.reverse_reverse]
+  · unfold revType
+    rw [dif_neg h, dif_neg h]
+
+theorem revType_injective [Finite sig.preds] :
+    Function.Injective (revType (sig := sig) (k := k)) :=
+  Function.LeftInverse.injective revType_revType
+
+/-- **The reflected colouring**: time reversed about `0`. -/
+def reflectColouring (c : sig.preds → ℤ → Prop) : sig.preds → ℤ → Prop := fun p z => c p (-z)
+
+theorem reflectColouring_reflectColouring (c : sig.preds → ℤ → Prop) :
+    reflectColouring (reflectColouring c) = c := by
+  funext p z
+  simp [reflectColouring]
+
+/-- The reflection of a segment is the order dual of the segment. -/
+theorem kTypeOf_segZ_reflect [Finite sig.preds] (c : sig.preds → ℤ → Prop) (a b : ℤ) :
+    kTypeOf sig k (segZ sig (reflectColouring c) (1 - b) (1 - a)) =
+      kTypeOf sig k (dualStructure (segZ sig c a b)) := by
+  let f : (segZ sig (reflectColouring c) (1 - b) (1 - a)).carrier →
+      (dualStructure (segZ sig c a b)).carrier :=
+    fun z => OrderDual.toDual (⟨-z.1, by have := z.2; omega⟩ : (segZ sig c a b).carrier)
+  have hf : StrictMono f := by
+    rintro ⟨i, hi⟩ ⟨j, hj⟩ hij
+    change (⟨-j, _⟩ : (segZ sig c a b).carrier) < ⟨-i, _⟩
+    rw [Subtype.mk_lt_mk]
+    have : i < j := hij
+    omega
+  have hs : Function.Surjective f := by
+    intro m
+    have hm := (OrderDual.ofDual m).2
+    refine ⟨⟨-(OrderDual.ofDual m).1, by omega⟩, ?_⟩
+    apply OrderDual.ofDual.injective
+    apply Subtype.ext
+    change -(-(OrderDual.ofDual m).1) = (OrderDual.ofDual m).1
+    omega
+  refine k_equiv_of_iso sig k _ _ (StrictMono.orderIsoOfSurjective f hf hs) ?_
+  rintro p ⟨z, hz⟩
+  exact Iff.rfl
+
+/-- The reversal of the `k`-type of a segment is the `k`-type of the reflected segment. -/
+theorem revType_segZ [Finite sig.preds] (c : sig.preds → ℤ → Prop) (a b : ℤ) :
+    revType (kTypeOf sig k (segZ sig c a b)) =
+      kTypeOf sig k (segZ sig (reflectColouring c) (1 - b) (1 - a)) := by
+  classical
+  rw [kTypeOf_segZ_eq_listSeg c a b k, revType_listSeg, kTypeOf_segZ_reflect]
+  exact (listSeg_reverse_kEquiv_dual _).trans (kEquiv_dual (kTypeOf_segZ_eq_listSeg c a b k).symm)
+
+/-- **The backward tail types are the forward tail types of the reflection**, up to reversal of
+the two types. -/
+theorem mem_bwdTypes_iff_reflect [Finite sig.preds] (c : sig.preds → ℤ → Prop) (t : ℤ)
+    (x : KType sig k × KType sig k) :
+    x ∈ BwdTypes sig k c t ↔
+      (revType x.2, revType x.1) ∈ FwdTypes sig k (reflectColouring c) (-t) := by
+  constructor
+  · rintro ⟨W, hW, h0, h1, h2⟩
+    refine ⟨fun i => 1 - W i, fun i j hij => by have := hW hij; simp only; omega,
+      by simp only; omega, ?_, fun i => ?_⟩
+    · simp only
+      rw [show -t + 1 = 1 - t by ring, ← revType_segZ, h1]
+    · simp only
+      rw [← revType_segZ, h2]
+  · rintro ⟨W, hW, h0, h1, h2⟩
+    simp only at h1 h2
+    refine ⟨fun i => 1 - W i, fun i j hij => by have := hW hij; simp only; omega,
+      by simp only; omega, ?_, fun i => ?_⟩
+    · simp only
+      apply revType_injective
+      rw [revType_segZ, show 1 - (1 - W 0) = W 0 by ring, ← h1, show -t + 1 = 1 - t by ring]
+    · simp only
+      apply revType_injective
+      rw [revType_segZ, show 1 - (1 - W i) = W i by ring,
+        show 1 - (1 - W (i + 1)) = W (i + 1) by ring]
+      exact h2 i
+
+/-- Reading a reversed list at `i` is reading the list at `|l| - 1 - i`. -/
+theorem getD_reverse {L : Type} [Inhabited L] (l : List L) {i : ℕ} (hi : i < l.length) :
+    l.reverse.getD i default = l.getD (l.length - 1 - i) default := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
+    List.getElem?_eq_getElem (by rw [List.length_reverse]; exact hi),
+    List.getElem?_eq_getElem (by omega), List.getElem_reverse]
+
+/-- The residue of `-(n + 1)` modulo `L > 0` is `L - 1 - n % L`. -/
+theorem toNat_neg_succ_emod (n L : ℕ) (hL : 0 < L) :
+    ((-((n : ℤ) + 1)) % L).toNat = L - 1 - n % L := by
+  have hdm := Nat.div_add_mod n L
+  have hlt := Nat.mod_lt n hL
+  have h : -((n : ℤ) + 1) = ((L - 1 - n % L : ℕ) : ℤ) + (L : ℤ) * (-((n / L : ℕ) : ℤ) - 1) := by
+    push_cast [show n % L ≤ L - 1 by omega, show 1 ≤ L by omega]
+    have : ((L : ℕ) : ℤ) * ((n / L : ℕ) : ℤ) + ((n % L : ℕ) : ℤ) = n := by exact_mod_cast hdm
+    linarith
+  rw [h, Int.add_mul_emod_self_left, Int.emod_eq_of_lt (by omega) (by omega), Int.toNat_natCast]
+
+/-- **The reflection of the backward periodic colouring is the forward periodic colouring of the
+reversed words.** -/
+theorem reflectColouring_bwdPeriodic (w u : List (sig.preds → Bool)) (t : ℤ) (hw : w ≠ []) :
+    reflectColouring (bwdPeriodic sig w u t) = fwdPeriodic sig u.reverse w.reverse (-t) := by
+  have hL : 0 < w.length := List.length_pos_iff.mpr hw
+  funext p z
+  simp only [reflectColouring, fwdPeriodic, bwdPeriodic, periodicColouring]
+  rw [eq_iff_iff]
+  apply Eq.to_iff
+  congr 1
+  by_cases hA : z < -t + 1
+  · -- `-z ≥ t`: in the `w^ω` part of the backward colouring, the `w^(ω*)` part of the forward one
+    rw [periodicLetter_of_ge w u w (t - u.length) (by omega),
+      periodicLetter_of_lt w.reverse u.reverse w.reverse (-t + 1) hA]
+    set n := (-z - t).toNat with hn
+    have hn' : (n : ℤ) = -z - t := Int.toNat_of_nonneg (by omega)
+    rw [show -z - (t - (u.length : ℤ)) - u.length = n by omega,
+      show z - (-t + 1) = -((n : ℤ) + 1) by omega, List.length_reverse, toNat_neg_succ_emod n _ hL,
+      ← Int.natCast_emod, Int.toNat_natCast,
+      getD_reverse w (i := w.length - 1 - n % w.length) (by omega)]
+    have := Nat.mod_lt n hL
+    rw [show w.length - 1 - (w.length - 1 - n % w.length) = n % w.length by omega]
+  · by_cases hB : z < -t + 1 + u.length
+    · -- in `u`, read backwards
+      rw [periodicLetter_of_mid w u w (t - u.length) (by omega) (by omega),
+        periodicLetter_of_mid w.reverse u.reverse w.reverse (-t + 1) (by omega)
+          (by rw [List.length_reverse]; omega),
+        getD_reverse u (i := (z - (-t + 1)).toNat) (by omega)]
+      rw [show u.length - 1 - (z - (-t + 1)).toNat = (-z - (t - (u.length : ℤ))).toNat by omega]
+    · -- `-z < t - |u|`: in the `w^(ω*)` part of the backward colouring, the `w^ω` part of the
+      -- forward one
+      rw [periodicLetter_of_lt w u w (t - u.length) (by omega),
+        periodicLetter_of_ge w.reverse u.reverse w.reverse (-t + 1)
+          (by rw [List.length_reverse]; omega)]
+      set n := (z + t - 1 - u.length).toNat with hn
+      have hn' : (n : ℤ) = z + t - 1 - u.length := Int.toNat_of_nonneg (by omega)
+      have hmod := Nat.mod_lt n hL
+      rw [show -z - (t - (u.length : ℤ)) = -((n : ℤ) + 1) by omega,
+        show z - (-t + 1) - (u.reverse.length : ℤ) = n by rw [List.length_reverse]; omega,
+        List.length_reverse, toNat_neg_succ_emod n _ hL, ← Int.natCast_emod, Int.toNat_natCast,
+        getD_reverse w (i := (n % w.length)) hmod]
+
+/-- **(★₋) Backward transport**: the forward transport applied to the reflected colouring. -/
+theorem exists_periodic_bwd [Finite sig.preds] (hk : 1 ≤ k) (c : sig.preds → ℤ → Prop) (t : ℤ)
+    {x : KType sig k × KType sig k} (hx : x ∈ BwdTypes sig k c t) :
+    ∃ w u : List (sig.preds → Bool), w ≠ [] ∧
+      w.length < Nat.card (Profile sig k) ^ 2 ∧ u.length < Nat.card (Profile sig k) ^ 2 ∧
+      x ∈ BwdTypes sig k (bwdPeriodic sig w u t) t ∧
+      BwdTypes sig k (bwdPeriodic sig w u t) t ⊆ BwdTypes sig k c t := by
+  rw [mem_bwdTypes_iff_reflect] at hx
+  obtain ⟨u', v', hv', hu'l, hv'l, hmem, hsub⟩ :=
+    exists_periodic_fwd hk (reflectColouring c) (-t) hx
+  have hw : v'.reverse ≠ [] := by simpa using hv'
+  refine ⟨v'.reverse, u'.reverse, hw, by simpa using hv'l, by simpa using hu'l, ?_, ?_⟩
+  · rw [mem_bwdTypes_iff_reflect, reflectColouring_bwdPeriodic _ _ _ hw, List.reverse_reverse,
+      List.reverse_reverse]
+    exact hmem
+  · intro y hy
+    rw [mem_bwdTypes_iff_reflect] at hy ⊢
+    rw [reflectColouring_bwdPeriodic _ _ _ hw, List.reverse_reverse, List.reverse_reverse] at hy
+    exact hsub hy
+
+end Reversal
 
 end FormalSystem.Metalogic.WeakCanonical
