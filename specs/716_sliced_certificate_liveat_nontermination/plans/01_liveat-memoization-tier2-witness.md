@@ -518,28 +518,28 @@ plus its enumerated one-hop dependent `Bridge.lean`, followed by the guarded
 
 ---
 
-### Phase 6: DECISION GATE -- measure a hand-wired leaf cache before landing it [NOT STARTED]
+### Phase 6: DECISION GATE -- measure a hand-wired leaf cache before landing it [COMPLETED]
 
 **Goal**: Decide, on a measurement rather than on the report's `#eval` figures, whether the leaf
 cache is worth its blast radius — and under which evaluator it pays.
 
 **Tasks**:
-- [ ] Write `specs/716_sliced_certificate_liveat_nontermination/probes/18_cache_gate.lean`: a
+- [x] Write `specs/716_sliced_certificate_liveat_nontermination/probes/18_cache_gate.lean`: a
       hand-wired mirror of `posTable` / `posAtC` / `vertsC` / `predTC` / `succTC` at the Phase 2
       certificate, in the shape Phase 7 would land (the `G`-parameterized table with the
       `posAt` off-range fallback), **not** the hardcoded-time-list shape probe 11 used.
-- [ ] Measure under `#eval`, with the Phase 1 harness: `vertsC`, the sum of `predTC` cardinalities
+- [x] Measure under `#eval`, with the Phase 1 harness: `vertsC`, the sum of `predTC` cardinalities
       over `vertsC`, one `bwdLiveStep` through the mirror, and the full `bwdLiveT`.
-- [ ] Measure under `decide`, in a separate scratch file: the `Certifies`-shaped goal through the
+- [x] Measure under `decide`, in a separate scratch file: the `Certifies`-shaped goal through the
       mirror, against the Phase 5 figure for the same goal through the library.
-- [ ] **Gate criterion, fixed here**: Phase 7 lands the cache iff the mirror beats the post-Phase-5
+- [x] **Gate criterion, fixed here**: Phase 7 lands the cache iff the mirror beats the post-Phase-5
       library figure by at least 2x on the `decide` measurement, or by at least 2x on the `#eval`
       `bwdLiveT` measurement with no `decide` regression. Record the verdict, the two numbers it
       rests on, and the arithmetic, in `progress-file.md`.
-- [ ] Record explicitly whether the `G`-parameterized form loses the interpreter-level sharing D4
+- [x] Record explicitly whether the `G`-parameterized form loses the interpreter-level sharing D4
       anticipates (`G.posTable` re-run per `posAtC` call). If it does, state whether a
       `let`-bound entry point recovers it, since that determines Phase 7's shape.
-- [ ] Record via `issue-record.sh` the gate's verdict, `kind: win` on a pass and `kind: issue` on
+- [x] Record via `issue-record.sh` the gate's verdict, `kind: win` on a pass and `kind: issue` on
       a fail.
 
 **Timing**: 1.5 hours

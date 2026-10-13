@@ -243,3 +243,76 @@ Axiom profiles: `untlLiveAtTab_eq`, `snceLiveAtTab_eq`, `mem_fwdLiveStep`, `mem_
 `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. `lake exe lint-style` on `LiveFix.lean`:
 no finding. Guarded builds of `…PlusSlicedCertificate.LiveFix` (1221 jobs) and
 `…PlusSlicedCertificate` (1523 jobs): both green.
+
+## Phase 6 -- the leaf-cache DECISION GATE
+
+Probe `probes/18_cache_gate.lean` carries a hand-wired mirror of the Phase-7 shape at `certA`,
+in **two** variants rather than one, because D4 anticipated that the `G`-parameterized form
+loses interpreter-level sharing:
+
+- **Shape A** -- `vertsCP`, which calls `posAtCP t` once per `(position, time)` pair. `posAtCP`
+  reads `G.posTable`, which is a function application, so the interpreter rebuilds the whole
+  table on every call.
+- **Shape B** -- `vertsLP`, which binds the table ONCE in a `let` outside the filter lambda, and
+  `predTCP`, which likewise binds `verts`, the `predP` value and `prevTime v.2` once outside its
+  own filter.
+
+### The `#eval` arm
+
+| Figure | LANDED (post-Phase-5) | SHAPE A | SHAPE B | B vs landed |
+|---|---|---|---|---|
+| `verts.card` | 1105 ms | 6834 ms | **15 ms** | **74x better** |
+| sum of `predT` cards over `verts` | 18446 ms | -- | **288 ms** | **64x better** |
+| one `bwdLiveStep` at `verts` | 57591 ms | -- | **972 ms** | **59x better** |
+| `bwdLiveT.card` | 57183 ms | -- | **906 ms** | **63x better** |
+
+Every cardinality agrees (16, 32, 16, 16).
+
+**D4's hazard is confirmed exactly, and quantified.** Shape A is **6.2x WORSE than no cache at
+all** (6834 ms against 1105 ms), because the interpreter re-runs `G.posTable` per `posAtCP` call
+and so rebuilds a 6-entry table of 128-element `Finset`s 512 times. The `let`-bound entry point
+recovers the sharing and more: 15 ms against 1105 ms. **Phase 7 must land Shape B.** A naive
+"filter against `posAtC`" would have shipped a 6x regression, and this gate is what caught it.
+
+### The `decide` arm
+
+Two scratch files, each a kernel `decide` on `… .bwdLiveT.card = 16` / `… .bwdLiveTCP.card = 16`,
+run serially against the same built library:
+
+| path | kernel `decide` wall clock |
+|---|---|
+| LANDED library `bwdLiveT` | 23.7 s |
+| MIRROR (Shape B) `bwdLiveTCP` | **4.3 s** |
+
+**5.5x better under the kernel.** Unlike Phase 5's hoist, this win does transfer: the kernel's
+whnf cache shares `G.posAt t` across repeated identical `t`, but it does not collapse the 512
+`v.1 ∈ G.posAt v.2` membership tests into 6, and that is where the cost was.
+
+### GATE VERDICT: **PASS**
+
+The criterion fixed at plan time is "at least 2x on the `decide` measurement, **or** at least 2x
+on the `#eval` `bwdLiveT` measurement with no `decide` regression". Both arms are satisfied, not
+one:
+
+- `decide`: 23.7 s / 4.3 s = **5.51x** >= 2x. PASS.
+- `#eval` `bwdLiveT`: 57183 ms / 906 ms = **63.1x** >= 2x, and the `decide` arm improves rather
+  than regresses. PASS.
+
+Phase 7 therefore lands, in Shape B.
+
+### Scope Hypothesis, confirmed
+
+`Position.lean` imports only `…PlusSlicedCertificate.Frame` and
+`…PlusWitnessFamily.Compression.Types`; `winTimes` is defined in `Window.lean`, which
+`Position.lean` does not import. So `succP` / `predP` cannot see the window and the cache's reach
+is the three definitions in `Timed.lean` (`verts`, `succT`, `predT`), exactly as hypothesized.
+The mirror and Phase 7 do not widen to `succP` / `predP`.
+
+### One mechanical correction to the recorded Challenge statement
+
+`posAtC`'s recorded body reads `G.posTable.find? (fun p => decide (p.1 = t))`. That is not
+executable as written inside `FormalSystem.Metalogic.Decidability`: `DecisionProcedure.lean`
+defines `decide (φ : Formula)` in that namespace, which shadows the core `Decidable.decide`, and
+`_root_.decide` is not an identifier either. The probe uses `p.1 == t` (`BEq` on `ℤ`) instead --
+the same Boolean test, no statement changed, and cheaper than going through a `Decidable`
+instance. Phase 7 lands the same spelling.
