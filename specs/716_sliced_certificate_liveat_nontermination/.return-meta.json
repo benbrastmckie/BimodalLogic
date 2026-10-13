@@ -1,0 +1,29 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/716_sliced_certificate_liveat_nontermination/plans/01_liveat-memoization-tier2-witness.md",
+      "summary": "Nine-phase plan: land the width-2 total-edge Tier-2 sliced witness (C36 row + C2 pin), then remove the three recomputation faults in the landed liveness decision procedure (early-exit iteration, hoisted inner fixpoint, position-space leaf cache), each behind an equality lemma and a measurement gate."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791910277_6e35c3_716",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 14,
+    "dependency_waves": [[1], [2, 3], [4], [5], [6], [7], [8], [9]]
+  },
+  "memory_candidates": [
+    {
+      "content": "In this repository, a certificate-class non-vacuity row in scripts/certificate-witness-inventory.txt is gated by C36b's interest expression, and for a time-sliced certificate that expression (c36Sliced) requires a formula of the claimed clause kind to occur in G.slab t w -- the SLICE LABELLING -- not merely in the closure and not in the certificate's target-path labels. A certificate whose slices label only atoms therefore cannot carry any kind on its row, however rich its closure or its path labels are. Plan-time consequence: before committing to a multi-minute kernel `decide` on a new witness, evaluate the interest expression first (a ~20 s compile) -- it is the cheaper of the two gates and the one more likely to fail.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/716_sliced_certificate_liveat_nontermination/plans/01_liveat-memoization-tier2-witness.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["c36-non-vacuity", "certificate-witness-inventory", "slab-occupancy", "interest-expression", "plus-sliced-certificate", "decide-witness"]
+    }
+  ],
+  "dispatch_seq": 7
+}

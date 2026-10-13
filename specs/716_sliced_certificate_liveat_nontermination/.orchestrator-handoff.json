@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 7,
+  "phases_completed": 0,
+  "phases_total": 9,
+  "summary": "Wrote a nine-phase plan separating the two deliverables the research report showed are independent: landing the Tier-2 sliced witness (which no longer waits on anything) and removing the three recomputation faults in the shipped liveness decision procedure. A plan-time compiled check found the report's recommendation 1 is not executable as written -- C36b's c36Sliced reads the slice labelling, and certA labels only 'atom p', so the row would have failed the gate -- and established the minimal repair: carrying snceP on the labelled slice makes c36Sliced [c36Snce] true while certA.Certifies still proves by kernel decide in 87 s under a finite maxHeartbeats. The three performance fixes are ordered by increasing blast radius, each behind an unconditional equality lemma, with the leaf cache gated on a measurement because the report's gains are #eval figures and the gated proofs run decide.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/716_sliced_certificate_liveat_nontermination/plans/01_liveat-memoization-tier2-witness.md",
+      "summary": "Nine phases, 14 h, waves [[1],[2,3],[4],[5],[6],[7],[8],[9]]; 31 pinned Lean Challenge identifiers; two declared contingency branches (leaf-cache gate, certB bounded decide)."
+    }
+  ]
+}
