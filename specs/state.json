@@ -574,7 +574,7 @@
     {
       "project_number": 716,
       "project_name": "sliced_certificate_liveat_nontermination",
-      "status": "not_started",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Profile and fix the PlusSlicedCertificate liveT/liveAt non-termination that blocks Tier-2 sliced certificate witnesses.\n\nEVIDENCE IN HAND. A preserved reproducer lives at specs/704_certificate_non_vacuity_and_shape_gates/probes/03_tier2_sliced_certificates.lean. Two width-2 Tier-2 constructions (certA, certB) carrying the box-dot modality elaborate in about 2 seconds and their cheap conjuncts evaluate, but `liveAt 0` -- the landed checker's computed liveness fixpoint under FormalSystem/Metalogic/Decidability/PlusSlicedCertificate -- does not return within 300 seconds compiled, on only 4 positions and 4 window times. The same fixpoint is instantaneous at the self-loop embedded certificates already pinned in scripts/certificate-witness-inventory.txt, so this is not a size effect.\n\nTHE QUESTION. Determine why liveT/liveAt diverges or blows up at a 4-position TOTAL-EDGE certificate when it is instant at self-loop certificates. Decide which of three it is: a genuine algorithmic defect in the landed decision procedure, a missing termination or memoization argument, or an unavoidable cost intrinsic to the total-edge case.\n\nDELIVERABLE. The diagnosis; the fix if the cause is addressable; and certA/certB landed as the Tier-2 witness rows in the C36 inventory if the fix makes a kernel `decide` proof reachable.\n\nWHY IT MATTERS INDEPENDENTLY OF TIER 2. liveAt is part of a decision procedure that is already landed and gated, so a configuration on which it fails to return is a defect in shipped code, not merely an unbuilt feature.\n\nNOT COVERED ELSEWHERE. Checked against the TailStable junk-position/full-labels evaluation, the refuted sliced finite-model-property statement, and the finite-carrier refutation work -- none of them own this question.\n\nADJACENCY. The sliced finite-width question of the sliced-class incompleteness characterization.",
       "topic": "decidability",
@@ -585,8 +585,16 @@
         "scripts/certificate-witness-inventory.txt"
       ],
       "created": "2026-10-02T22:54:01Z",
-      "last_updated": "2026-10-02T22:54:01Z",
-      "dependencies": []
+      "last_updated": "2026-10-13T16:53:05Z",
+      "dependencies": [],
+      "session_id": "sess_1791910277_6e35c3_716",
+      "artifacts": [
+        {
+          "path": "specs/716_sliced_certificate_liveat_nontermination/reports/01_liveat-nontermination-profile.md",
+          "type": "report",
+          "summary": "Research report: 01_liveat-nontermination-profile.md"
+        }
+      ]
     },
     {
       "project_number": 714,
@@ -691,7 +699,7 @@
     {
       "project_number": 617,
       "project_name": "reflection_clause_converse_frame_naturality",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Prove `app:presheaf-dictionary`'s Reflection clause: reflection is a natural isomorphism `Beh(F) iso Beh(F-) . ref` between the behavior presheaf of a task frame and that of its converse frame, precomposed with the reflection automorphism of the interval category.\n\nDELIVER, following `def:behavior-presheaf` and the Reflection paragraph of `app:presheaf-dictionary`'s proof:\n- The reflection of a section: `tau^r (z) = tau(l - z)` on `[0, l]`.\n- The converse frame `F- = (W, D, =>-)` with `w =>-_x u` iff `w =>_{-x} u`.\n- The reflection automorphism `ref` of `Int(D)`: involutive, fixing objects, sending `Tr p : l' -> l` to `Tr (l - p - l') : l' -> l`, thereby interchanging left and right restrictions. Prove it preserves composition, fixes identities, and is its own inverse.\n- That `tau^r` lies in `Beh(F-)(l)` whenever `tau` lies in `Beh(F)(l)`, naturality in the translations, and that each component is a bijection, using `(F-)- = F` and `(tau^r)^r = tau`.\n\nTHE POINT OF THE CLAUSE, which belongs in the module docstring rather than being left implicit in the proof terms: this natural isomorphism is what underlies the soundness of the time reflection metarule `TR` (`thm:TR-valid` in the paper). The reflection convention on the task relation supplies the involution by definition rather than by assumption, which is why the clause costs so little. Along with the Determinism clause of task 567, this is one of the few places where the categorical packaging says something about the logic rather than merely restating the semantics.\n\nREUSE, NOT REBUILD. This repository already carries time-reflection and converse machinery -- `FormalSystem/Semantics/TruthTransport.lean` and the `reflectTime` vocabulary adopted in the TD->TR rename, with the `swapUS`/`swapMinus` families still under review in task 608. Survey what exists before defining a second converse-frame construction. If the existing API already yields the converse frame, this task consumes it; if not, say in the docstring why a separate one was needed. A duplicate converse frame is a failure of this task, not a side effect of it.\n\nPAPER ANCHOR. The Reflection clauses of `def:behavior-presheaf` and `app:presheaf-dictionary` in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, both COMMENTED OUT inside the \"SECTION CUT\" block holding `app:Structure` -- read them there.\n\nDEPENDENCY. Task 563, for `Beh(F)` and `Int(D)`.\n\nCONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of every phase.\n\nReconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.\n\nCONVENTION NOTE (2026-09-21). Task 636 has landed: write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, each key resolving in the root references.bib (typst/bibliography.bib no longer exists). The language-extension files are now under FormalSystem/{Plus,Minus,Star}Language/ with flat FormalSystem.{X}Language namespaces (task 634).\n\nSCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.",
       "topic": "categorical-structure",
@@ -699,16 +707,17 @@
         563
       ],
       "created": "2026-09-17T23:52:40Z",
-      "last_updated": "2026-10-03T05:58:00Z",
+      "last_updated": "2026-10-13T09:45:41Z",
       "priority": "high",
       "file_scope": [
         "FormalSystem/Semantics/Presheaf/Reflection.lean"
-      ]
+      ],
+      "session_id": "sess_1791884692_4da550_617"
     },
     {
       "project_number": 616,
       "project_name": "duration_monoid_twisted_arrow_interval_site",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Formalize the duration monoid `BD+`, its twisted-arrow category, and `lem:interval-twisted-arrow`: `BD+` is factorization-linear and `Tw(BD+)` is isomorphic to the interval category `Int(D)` by an isomorphism carrying the Johnstone coverage of the one to that of the other.\n\nWHY THIS IS NOW ITS OWN TASK. Task 563 carries this as \"OPTIONAL, only if cheap\". It is being promoted because the paper has changed around it: the presheaf appendix `app:Structure` was cut from /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and the main-body conclusion is being rewritten to assert the Johnstone route in prose -- interval site, sheaf condition, discrete Conduche fibrations, path category -- with the supporting results promised elsewhere. This repository is where \"elsewhere\" is meant to be. The lemma is no longer an optional extra on the interval-site task; it is the load-bearing step behind a claim the paper now makes in its body with no appendix under it.\n\nDELIVER:\n- The duration monoid `BD+`: the one-object category whose morphisms are the durations in the positive cone, composing by addition with identity 0.\n- The factorization category `Fact(l)` of a duration: objects the factorizations `l = x + y` with `x, y` positive, morphisms `(x, y) -> (x', y')` the durations `z` with `z + x = x'` and `y = z + y'`.\n- Factorization-linearity: each factorization category is a linear preorder -- any two objects related by at most one morphism, and by at least one in one direction or the other.\n- The twisted-arrow category `Tw(BD+)`: objects the durations, morphisms `l' -> l` the pairs `(p, q)` of positive durations with `p + l' + q = l`, composing `(p, q) . (p', q') = (p + p', q' + q)` with identities `(0, 0)`.\n- The Johnstone coverage on both `Tw(BD+)` and `Int(D)`, and the coverage-preserving isomorphism `Int(D) iso Tw(BD+)`.\n\nSHAPE OF THE WORK. This is pure order algebra over the positive cone of a linearly ordered abelian group. It needs no task frame, no world states, and no history theory -- only `TemporalOrder.lean`'s carrier and its order and group structure. That makes it the most self-contained item on the categorical front and a reasonable one to land early.\n\nDESIGN DECISION TO RECORD EXPLICITLY, not to settle by accident in the first proof: whether these categories are stated as concrete Lean structures with hand-rolled composition lemmas, or as `Mathlib.CategoryTheory.Category` instances. `grep -rl CategoryTheory FormalSystem/` currently returns exactly one file, `FormalSystem/Boneyard/RetiredTactics/AesopRuleSet.lean`, so the live tree imports no category theory at all. Introducing it is a real dependency decision for the whole categorical cluster (tasks 563-567 included) and should be made once, here, and written into the module docstring with its reasoning -- not made implicitly by whichever task gets there first. The concrete route is cheaper and keeps the import surface flat; the Mathlib route is what makes `fact:conduche-equivalence` and the free-category statement expressible without re-inventing vocabulary. State the trade-off, pick one, say why.\n\nPAPER ANCHORS. `def:interval-site`, `def:twisted-arrow`, and `lem:interval-twisted-arrow` in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex. NOTE that all three are COMMENTED OUT in the current source, inside the \"SECTION CUT\" block that holds `app:Structure` in full -- read them there rather than concluding the paper never had them. Docstrings must cite the labels. Read also /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/111_verify_interval_twisted_arrow_lemma/reports/01_verify-twisted-arrow-lemma.md, where the lemma was verified and its proof rebuilt on that repository's side; that report is the statement of record, ahead of any older phrasing.\n\nDEPENDENCY. Task 563, which introduces `Int(D)`. If 563 lands the optional twisted-arrow material after all, this task narrows to the factorization-linearity proof and the coverage transport rather than disappearing -- reconcile at plan time rather than assuming disjointness.\n\nCONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of every phase.\n\nReconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.\n\nPOST-RELOCATION NOTE (2026-09-21). Task 630 moved the archive to the repository root, so the one CategoryTheory file is Boneyard/RetiredTactics/AesopRuleSet.lean and 'grep -rl CategoryTheory FormalSystem/' now returns NOTHING (grep Boneyard/ to find it). The premise stands: no live module imports Mathlib's CategoryTheory. New files write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, keys resolving in the root references.bib (task 636 has landed).\n\nSCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.",
       "topic": "categorical-structure",
@@ -716,11 +725,12 @@
         563
       ],
       "created": "2026-09-17T23:52:40Z",
-      "last_updated": "2026-10-03T05:58:00Z",
+      "last_updated": "2026-10-13T09:45:22Z",
       "priority": "high",
       "file_scope": [
         "FormalSystem/Semantics/Presheaf/Duration.lean"
-      ]
+      ],
+      "session_id": "sess_1791884692_4da550_616"
     },
     {
       "project_number": 604,
@@ -1567,7 +1577,7 @@
     {
       "project_number": 566,
       "project_name": "possible_worlds_clause_hf_as_limit",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Prove `app:presheaf-dictionary`'s Possible Worlds clause: `H_F iso lim Beh(F)(2x)` along the central restrictions.\n\nEXISTING HOOK, to be used rather than rebuilt: over `D = Z` this connects to `FrameOver.mem_HF_iff_adjacent`, already proved in `FormalSystem/Semantics/IntTransfer.lean`. Do not re-derive the adjacency argument.\n\nDEPENDS on the interval-site/presheaf cluster and on the Totality clause, since the limit construction consumes Totality.\n\nCONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase. Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 5.1.\n\nReconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.\n\nCONVENTION NOTE (2026-09-21). Task 636 has landed: write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, each key resolving in the root references.bib (typst/bibliography.bib no longer exists). The language-extension files are now under FormalSystem/{Plus,Minus,Star}Language/ with flat FormalSystem.{X}Language namespaces (task 634).\n\nSCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.\n\nSEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of scope). A source-verified seed report for the gluing route to decidability of full L-plus lives at specs/718_omega_sequence_decidability_full_lplus/reports/01_gluing-route-seed.md. Its sections 1 and 3 bear on this task: this clause's limit presentation H_F iso lim Beh(F)(2x) IS the gluing conception -- a compatible family of sections is a gluing -- so the two are one statement in two presentations, and the decidability round depends on knowing which is the better working form. The seed claims no route verdict and does not alter this task's deliverable; consult it for context and do not re-derive what it already verifies.",
       "topic": "categorical-structure",
@@ -1576,11 +1586,12 @@
         565
       ],
       "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-10-03T06:05:00Z",
+      "last_updated": "2026-10-13T09:45:55Z",
       "priority": "high",
       "file_scope": [
         "FormalSystem/Semantics/Presheaf/Worlds.lean"
-      ]
+      ],
+      "session_id": "sess_1791884692_4da550_566"
     },
     {
       "project_number": 570,
@@ -2163,7 +2174,7 @@
     {
       "project_number": 778,
       "project_name": "residue_index_modulus_convention_record",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Record the modulus convention for the residue-carrying ladder index. ladderIndexRes T P B takes residues modulo P+1 while reachN_eventually_periodic exhibits a period P >= 1; no record fixes whether the index is instantiated at P := period (modulus period+1) or P := period-1 (modulus period). The Qp fixture's own reach-set period is 2, so the modulus-3 reading is already refuted by the existing parity observable. Every refutation in specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean is stated convention-independently (quantified over all P, or over all P with a coprimality side condition), so this is a record gap, not a proof gap. Deliverable: choose and state the convention (or state explicitly that both readings are refuted and no instantiation is privileged) in the LadderModel.lean docstring and the ladder-counter-observables note in the lean extension's source store, keeping the probe's convention-independent statements unchanged. Originating observation: specs/775_residue_index_factorization_lemma/issues.jsonl entry iss_1791837548348_hYqZM0.",
       "effort": "low",
@@ -2171,12 +2182,34 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-10-12T22:10:50Z",
-      "last_updated": "2026-10-13T04:44:16Z",
-      "artifacts": [],
+      "last_updated": "2026-10-13T17:13:25Z",
+      "artifacts": [
+        {
+          "path": "specs/778_residue_index_modulus_convention_record/reports/01_residue-index-modulus-convention.md",
+          "type": "report",
+          "summary": "Research report: 01_residue-index-modulus-convention.md"
+        },
+        {
+          "path": "specs/778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md",
+          "type": "plan",
+          "summary": "Six-phase plan: LadderModel.lean docstring record (local tier), RaySummary/README.md reconciliation (prose), source-store note plus index-entries.json (prose), probe docstring and evidence-gate record (local), docs/theorem-index.md alignment (prose), full gate sweep with inventory regeneration (full). Waves: {1,3} then {2,4,5} then {6}."
+        }
+      ],
       "file_scope": [
+        "/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md",
+        "<lean source_dir>/context/project/lean4/domain/ladder-counter-observables.md",
+        "<lean source_dir>/index-entries.json",
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean",
-        "/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md"
-      ]
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "docs/theorem-index.md",
+        "scripts/check-evidence-probes.sh",
+        "specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean",
+        "typst/generated/status.typ"
+      ],
+      "session_id": "sess_1791910277_6e35c3"
     },
     {
       "project_name": "source_store_commit_and_registration_review",

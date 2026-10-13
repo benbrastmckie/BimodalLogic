@@ -1,0 +1,30 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md",
+      "summary": "Six-phase record-only plan fixing the residue-index modulus convention (P + 1 is the modulus; an instantiation names m with P := m - 1) in LadderModel.lean and the lean extension's source-store note, repairing three 'unrecorded' assertions, and aligning the understated 'dominate' clause across every deliverable surface."
+    }
+  ],
+  "next_steps": "Run /implement 778 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 3.5,
+  "dependency_waves": 3,
+  "memory_candidates": [
+    {
+      "content": "When a task's deliverable is a RECORD (fixing a convention, sharpening a claim), the named deliverable files are a floor, not the blast radius. Grep the claim's wording across the repository before scoping: this project transcribes the same prose claim into a module docstring, a directory README row, a narrative section, docs/theorem-index.md, and a gate script's comment block. docs/theorem-index.md declares itself authoritative ('If two of them disagree, this page is right'), so fixing a claim anywhere else without fixing that ledger leaves the declared-authoritative surface carrying the superseded wording. A one-site fix to a multi-site transcription is worse than none, because it converts a uniform understatement into an unlabelled contradiction.",
+      "category": "PATTERN",
+      "source_artifact": "specs/778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["record-gap", "transcription-sites", "theorem-index", "authoritative-ledger", "scope-discovery", "prose-consistency"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791910277_6e35c3_778",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 6
+}

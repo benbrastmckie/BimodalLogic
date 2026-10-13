@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Wrote a six-phase, record-only plan for the residue-index modulus convention. The convention is recorded by naming the modulus (P + 1 is the modulus; an instantiation names m with 1 <= m and sets P := m - 1, so an exhibited period p enters as m := p) rather than by picking between the two off-by-one readings, with convention-independence grounded on object_only_parameters_refuted and reach_period_refuted. Every probe theorem statement stays byte-for-byte unchanged. Plan-time grep widened the scope beyond the research report: the understated 'dominate' clause occurs at 12 sites across 7 files, including the self-declared-authoritative docs/theorem-index.md, so the sharpening is folded into each file-owning phase with a residual-occurrence grep as the final mechanical check.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md",
+      "summary": "Six-phase plan: LadderModel.lean docstring record (local tier), RaySummary/README.md reconciliation (prose), source-store note plus index-entries.json (prose), probe docstring and evidence-gate record (local), docs/theorem-index.md alignment (prose), full gate sweep with inventory regeneration (full). Waves: {1,3} then {2,4,5} then {6}."
+    }
+  ],
+  "dispatch_seq": 6
+}

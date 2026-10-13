@@ -53,10 +53,10 @@ next_project_number: 781
 
 ### Categorical Structure
 
-566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: H\_F...
-616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
+566 [RESEARCHING] — Prove app:presheaf-dictionary's Possible Worlds clause: H\_F...
+616 [RESEARCHING] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
-617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
+617 [RESEARCHING] — Prove app:presheaf-dictionary's Reflection clause: reflection...
 
 ### Dataset Enhancement
 
@@ -82,12 +82,12 @@ next_project_number: 781
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
-716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
+716 [PLANNING] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
   └─ 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-778 [NOT STARTED] — Record the modulus convention for the residue-carrying ladder...
+778 [PLANNED] — Record the modulus convention for the residue-carrying ladder...
 
 ### Formula Refactor
 
@@ -148,11 +148,13 @@ next_project_number: 781
 
 ### 778. Residue index modulus convention record
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 775
+- **Research**: [778_residue_index_modulus_convention_record/reports/01_residue-index-modulus-convention.md]
+- **Plan**: [778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md]
 
 **Description**: Record the modulus convention for the residue-carrying ladder index. ladderIndexRes T P B takes residues modulo P+1 while reachN_eventually_periodic exhibits a period P >= 1; no record fixes whether the index is instantiated at P := period (modulus period+1) or P := period-1 (modulus period). The Qp fixture's own reach-set period is 2, so the modulus-3 reading is already refuted by the existing parity observable. Every refutation in specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean is stated convention-independently (quantified over all P, or over all P with a coprimality side condition), so this is a record gap, not a proof gap. Deliverable: choose and state the convention (or state explicitly that both readings are refuted and no instantiation is privileged) in the LadderModel.lean docstring and the ladder-counter-observables note in the lean extension's source store, keeping the probe's convention-independent statements unchanged. Originating observation: specs/775_residue_index_factorization_lemma/issues.jsonl entry iss_1791837548348_hYqZM0.
 
@@ -1111,10 +1113,11 @@ WHY THIS MATTERS AT ALL (the surviving half of the original rationale). `FMP/REA
 ---
 
 ### 716. Sliced certificate liveat nontermination
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [716_sliced_certificate_liveat_nontermination/reports/01_liveat-nontermination-profile.md]
 
 **Description**: Profile and fix the PlusSlicedCertificate liveT/liveAt non-termination that blocks Tier-2 sliced certificate witnesses.
 
@@ -1299,7 +1302,7 @@ SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of sc
 ---
 
 ### 617. Reflection clause converse frame naturality
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
@@ -1331,7 +1334,7 @@ SCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency r
 ---
 
 ### 616. Duration monoid twisted arrow interval site
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
@@ -1398,7 +1401,7 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 566. Possible worlds clause hf as limit
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563, Task 565
