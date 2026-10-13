@@ -572,28 +572,28 @@ the complete covering check; this phase adds theorems to one module only.
 
 ---
 
-### Phase 9: The Seam Assembly `exists_periodic_subfamily` [NOT STARTED]
+### Phase 9: The Seam Assembly `exists_periodic_subfamily` [COMPLETED]
 
 **Goal**: (★) — every family triple of a colouring with `now` exactly at `t` is a triple of a
 bounded bi-ultimately-periodic colouring, with `now` exactly at `t`, whose family triples all
 belong to the original's.
 
 **Tasks**:
-- [ ] From `hx` and Phase 8 obtain `β, α`; apply `exists_periodic_bwd` to `(x.1, β)` and
+- [x] From `hx` and Phase 8 obtain `β, α`; apply `exists_periodic_bwd` to `(x.1, β)` and
       `exists_periodic_fwd` to `(α, x.2.2)`, getting `w, u_b` and `u_f, v`.
-- [ ] Set `m := u_b ++ [letterAt c t] ++ u_f`, `b := t - u_b.length`; show `periodicColouring w
+- [x] Set `m := u_b ++ [letterAt c t] ++ u_f`, `b := t - u_b.length`; show `periodicColouring w
       m v b` agrees with `bwdPeriodic w u_b t` on `z < t`, with `fwdPeriodic u_f v t` on `z > t`,
       and reads `letterAt c t` at `t`; `now` holds exactly at `t` (the `w`/`v` letters are
       `now`-free because they occur at positions `≠ t` of `c`'s tails, through the tail
       agreements of Phase 4 and the equal-profile transport — state and prove
-      `now_free_of_periodic` explicitly).
-- [ ] Membership: `x ∈ familyTriples (periodicColouring w m v b)` by Phase 8 (←) with the tail
+      `now_free_of_periodic` explicitly). *(deviation: altered — `now`-freeness is transferred along the shared tail type instead of letter by letter: `fwd_now_free_transfer`/`bwd_now_free_transfer` (type-visibility of `now` at `k ≥ 1`), with the glue agreements `periodicLetter_glue_lt`/`_gt`/`_t`)*
+- [x] Membership: `x ∈ familyTriples (periodicColouring w m v b)` by Phase 8 (←) with the tail
       memberships and the middle clause.
-- [ ] Containment: for `x' ∈ familyTriples (periodicColouring …)`, Phase 8 (→) gives tails in
+- [x] Containment: for `x' ∈ familyTriples (periodicColouring …)`, Phase 8 (→) gives tails in
       `BwdTypes (bwdPeriodic …) ⊆ BwdTypes c t` and `FwdTypes (fwdPeriodic …) ⊆ FwdTypes c t`
       (via `bwdTypes_congr`/`fwdTypes_congr`), same letter at `t`, hence `x' ∈ familyTriples c`
       by Phase 8 (←).
-- [ ] `theorem exists_periodic_subfamily (hk : 1 ≤ k) (c) (now) (t) (hnow : ∀ z, c now z ↔ z =
+- [x] `theorem exists_periodic_subfamily (hk : 1 ≤ k) (c) (now) (t) (hnow : ∀ z, c now z ↔ z =
       t) {x} (hx : x ∈ familyTriples sig k c) : ∃ w m v b, w ≠ [] ∧ v ≠ [] ∧ w.length < Nat.card
       (Profile sig k) ^ 2 ∧ m.length ≤ 2 * Nat.card (Profile sig k) ^ 2 ∧ v.length < Nat.card
       (Profile sig k) ^ 2 ∧ (∀ z, periodicColouring w m v b now z ↔ z = t) ∧ x ∈ familyTriples sig
@@ -625,7 +625,7 @@ which Phase 13 builds against it.
 
 ---
 
-### Phase 10: `HitComplete.lean` — The Gadget and Its Unique Anchored Run [NOT STARTED]
+### Phase 10: `HitComplete.lean` — The Gadget and Its Unique Anchored Run [IN PROGRESS]
 
 **Goal**: Create `FormalSystem/Metalogic/Decidability/RaySummary/HitComplete.lean` (importing
 `Periodic` and `HitOf`; gadget section in namespace `FormalSystem.Metalogic.WeakCanonical`,

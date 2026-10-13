@@ -65,6 +65,10 @@ docstring; nothing is timed and no procedure is bounded.
   profile, with no automaton.
 -/
 
+-- The module crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): the forward
+-- transport, its reversal, and the seam assembly are one argument and stay in one module.
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Metalogic.Expressiveness
@@ -1440,5 +1444,181 @@ theorem mem_familyTriples_iff_tails [Fintype sig.preds] [DecidableEq sig.preds]
         (kTypeOf_listSeg_append_congr k rfl (hf1.trans hlα.symm))
 
 end Seam
+
+/-! ## The seam assembly
+
+(★): every family triple of a colouring with `now` exactly at `t` is a family triple of a
+bounded bi-ultimately-periodic colouring, with `now` exactly at `t`, whose family triples all
+belong to the original's. The backward and forward transports supply `w, u_b` and `u_f, v`; the
+glued colouring `w^(ω*) · (u_b · ℓ · u_f) · v^ω` with `ℓ` the letter at `t` agrees with
+`bwdPeriodic w u_b t` before `t` and with `fwdPeriodic u_f v t` after `t`
+(`periodicLetter_glue_lt`, `periodicLetter_glue_gt`), so its tail types are theirs
+(`bwdTypes_congr`, `fwdTypes_congr`); `now` holds exactly at `t` because a tail type shared
+with a `now`-free tail is realized `now`-free (`fwd_now_free_transfer`, type-visibility at
+`k ≥ 1`). The length of the middle word is `|u_b| + 1 + |u_f| ≤ 2 · Nat.card (Profile sig k) ^ 2`,
+a count of pairs of profiles. -/
+
+section Assembly
+
+open FormalSystem.Metalogic.Decidability.RaySummary (familyTriples mem_familyTriples)
+
+variable {sig k}
+
+/-- A forward tail type shared with a `now`-free forward tail is realized `now`-free: every time
+after `t` lies in a segment of the factorization, whose type is that of a `now`-free segment. -/
+theorem fwd_now_free_transfer [Finite sig.preds] (hk : 1 ≤ k) {c c' : sig.preds → ℤ → Prop}
+    {now : sig.preds} {t : ℤ} (hc : ∀ z, t < z → ¬ c now z) {α σ : KType sig k}
+    (hx : (α, σ) ∈ FwdTypes sig k c t) (hx' : (α, σ) ∈ FwdTypes sig k c' t) :
+    ∀ z, t < z → ¬ c' now z := by
+  obtain ⟨W, hW, h0, hα, hσ⟩ := hx
+  obtain ⟨W', hW', h0', hα', hσ'⟩ := hx'
+  simp only at hα hσ hα' hσ'
+  intro z hz hnz
+  by_cases hzW : z < W' 0
+  · have hex : ∃ x : (segZ sig c' (t + 1) (W' 0)).carrier,
+        (segZ sig c' (t + 1) (W' 0)).interp now x := ⟨⟨z, by omega, hzW⟩, hnz⟩
+    obtain ⟨⟨y, hy1, hy2⟩, hy⟩ :=
+      (exists_interp_iff_of_kTypeOf_eq hk now (hα'.trans hα.symm)).mp hex
+    exact hc y (by omega) hy
+  · obtain ⟨i, hi1, hi2⟩ := exists_seg_of_strictMono hW' (not_lt.mp hzW)
+    have hex : ∃ x : (segZ sig c' (W' i) (W' (i + 1))).carrier,
+        (segZ sig c' (W' i) (W' (i + 1))).interp now x := ⟨⟨z, hi1, hi2⟩, hnz⟩
+    obtain ⟨⟨y, hy1, hy2⟩, hy⟩ :=
+      (exists_interp_iff_of_kTypeOf_eq hk now ((hσ' i).trans (hσ i).symm)).mp hex
+    have := h0.trans (hW.monotone (Nat.zero_le i))
+    exact hc y (by omega) hy
+
+/-- The backward mirror, through the reflection. -/
+theorem bwd_now_free_transfer [Finite sig.preds] (hk : 1 ≤ k) {c c' : sig.preds → ℤ → Prop}
+    {now : sig.preds} {t : ℤ} (hc : ∀ z, z < t → ¬ c now z) {x : KType sig k × KType sig k}
+    (hx : x ∈ BwdTypes sig k c t) (hx' : x ∈ BwdTypes sig k c' t) :
+    ∀ z, z < t → ¬ c' now z := by
+  rw [mem_bwdTypes_iff_reflect] at hx hx'
+  have h := fwd_now_free_transfer hk (c := reflectColouring c) (c' := reflectColouring c')
+    (now := now) (t := -t) (fun z hz => hc (-z) (by omega)) hx hx'
+  intro z hz hnz
+  exact h (-z) (by omega) (by simpa [reflectColouring] using hnz)
+
+/-- Reading a list at an index below the length of its first part. -/
+theorem getD_append_of_lt {L : Type} [Inhabited L] (l₁ l₂ : List L) {i : ℕ} (hi : i < l₁.length) :
+    (l₁ ++ l₂).getD i default = l₁.getD i default := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD, List.getElem?_append_left hi]
+
+/-- Reading a list past its first part. -/
+theorem getD_append_of_le {L : Type} [Inhabited L] (l₁ l₂ : List L) {i : ℕ} (hi : l₁.length ≤ i) :
+    (l₁ ++ l₂).getD i default = l₂.getD (i - l₁.length) default := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD, List.getElem?_append_right hi]
+
+/-- Before `t`, the glued colouring reads the backward periodic one. -/
+theorem periodicLetter_glue_lt (w ub uf v : List (sig.preds → Bool)) (ℓ : sig.preds → Bool)
+    (t z : ℤ) (hz : z < t) :
+    periodicLetter sig w (ub ++ ℓ :: uf) v (t - ub.length) z =
+      periodicLetter sig w ub w (t - ub.length) z := by
+  have hm : ((ub ++ ℓ :: uf).length : ℤ) = ub.length + 1 + uf.length := by
+    rw [List.length_append, List.length_cons]
+    push_cast
+    ring
+  by_cases hzb : z < t - ub.length
+  · rw [periodicLetter_of_lt _ _ _ _ hzb, periodicLetter_of_lt _ _ _ _ hzb]
+  · rw [periodicLetter_of_mid _ _ _ _ (by omega) (by rw [hm]; omega),
+      periodicLetter_of_mid _ _ _ _ (by omega) (by omega), getD_append_of_lt _ _ (by omega)]
+
+/-- After `t`, the glued colouring reads the forward periodic one. -/
+theorem periodicLetter_glue_gt (w ub uf v : List (sig.preds → Bool)) (ℓ : sig.preds → Bool)
+    (t z : ℤ) (hz : t < z) :
+    periodicLetter sig w (ub ++ ℓ :: uf) v (t - ub.length) z =
+      periodicLetter sig v uf v (t + 1) z := by
+  have hm : ((ub ++ ℓ :: uf).length : ℤ) = ub.length + 1 + uf.length := by
+    rw [List.length_append, List.length_cons]
+    push_cast
+    ring
+  by_cases hzf : z < t + 1 + uf.length
+  · rw [periodicLetter_of_mid _ _ _ _ (by omega) (by rw [hm]; omega),
+      periodicLetter_of_mid _ _ _ _ (by omega) hzf, getD_append_of_le _ _ (by omega),
+      show (z - (t - (ub.length : ℤ))).toNat - ub.length = (z - (t + 1)).toNat + 1 by omega,
+      List.getD_cons_succ]
+  · rw [periodicLetter_of_ge _ _ _ _ (by rw [hm]; omega),
+      periodicLetter_of_ge _ _ _ _ (by omega), hm]
+    ring_nf
+
+/-- At `t`, the glued colouring reads `ℓ`. -/
+theorem periodicLetter_glue_t (w ub uf v : List (sig.preds → Bool)) (ℓ : sig.preds → Bool)
+    (t : ℤ) : periodicLetter sig w (ub ++ ℓ :: uf) v (t - ub.length) t = ℓ := by
+  have hm : ((ub ++ ℓ :: uf).length : ℤ) = ub.length + 1 + uf.length := by
+    rw [List.length_append, List.length_cons]
+    push_cast
+    ring
+  rw [periodicLetter_of_mid _ _ _ _ (by omega) (by rw [hm]; omega),
+    getD_append_of_le _ _ (by omega),
+    show (t - (t - (ub.length : ℤ))).toNat - ub.length = 0 by omega]
+  rfl
+
+/-- **(★) The seam assembly.** Every family triple of a colouring with `now` exactly at `t` is a
+family triple of a bounded bi-ultimately-periodic colouring with `now` exactly at `t`, whose
+family triples all belong to the original's. The bounds count pairs of profiles. -/
+theorem exists_periodic_subfamily [Fintype sig.preds] [DecidableEq sig.preds] (hk : 1 ≤ k)
+    (c : sig.preds → ℤ → Prop)
+    (now : sig.preds) (t : ℤ) (hnow : ∀ z, c now z ↔ z = t)
+    {x : KType sig k × KType sig k × KType sig k} (hx : x ∈ familyTriples sig k c) :
+    ∃ (w m v : List (sig.preds → Bool)) (b : ℤ), w ≠ [] ∧ v ≠ [] ∧
+      w.length < Nat.card (Profile sig k) ^ 2 ∧ m.length ≤ 2 * Nat.card (Profile sig k) ^ 2 ∧
+      v.length < Nat.card (Profile sig k) ^ 2 ∧
+      (∀ z, periodicColouring sig w m v b now z ↔ z = t) ∧
+      x ∈ familyTriples sig k (periodicColouring sig w m v b) ∧
+      familyTriples sig k (periodicColouring sig w m v b) ⊆ familyTriples sig k c := by
+  classical
+  obtain ⟨β, α, hb, hf, lβ, lα, hlβ, hlα, hmid⟩ := (mem_familyTriples_iff_tails hk hnow x).mp hx
+  obtain ⟨w, ub, hw, hwl, hubl, hbmem, hbsub⟩ := exists_periodic_bwd hk c t hb
+  obtain ⟨uf, v, hv, hufl, hvl, hfmem, hfsub⟩ := exists_periodic_fwd hk c t hf
+  have hagree_b : ∀ p z, z < t →
+      (periodicColouring sig w (ub ++ letterAt c t :: uf) v (t - ub.length) p z ↔
+        bwdPeriodic sig w ub t p z) := fun p z hz => by
+    simp only [periodicColouring, bwdPeriodic, periodicLetter_glue_lt w ub uf v _ t z hz]
+  have hagree_f : ∀ p z, t < z →
+      (periodicColouring sig w (ub ++ letterAt c t :: uf) v (t - ub.length) p z ↔
+        fwdPeriodic sig uf v t p z) := fun p z hz => by
+    simp only [periodicColouring, fwdPeriodic, periodicLetter_glue_gt w ub uf v _ t z hz]
+  have ht : ∀ p, periodicColouring sig w (ub ++ letterAt c t :: uf) v (t - ub.length) p t ↔
+      c p t := fun p => by
+    simp only [periodicColouring, periodicLetter_glue_t, letterAt, decide_eq_true_iff]
+  have hB := bwdTypes_congr (k := k) hagree_b
+  have hF := fwdTypes_congr (k := k) hagree_f
+  have hnow' : ∀ z, periodicColouring sig w (ub ++ letterAt c t :: uf) v (t - ub.length) now z ↔
+      z = t := by
+    intro z
+    rcases lt_trichotomy z t with h | rfl | h
+    · rw [hagree_b now z h]
+      constructor
+      · intro hc
+        exact absurd hc (bwd_now_free_transfer hk
+          (fun z' hz' hc' => by rw [hnow] at hc'; omega) hb (hB ▸ hbmem) z h)
+      · intro h'
+        omega
+    · simp only [ht, hnow]
+    · rw [hagree_f now z h]
+      constructor
+      · intro hc
+        exact absurd hc (fwd_now_free_transfer hk
+          (fun z' hz' hc' => by rw [hnow] at hc'; omega) hf (hF ▸ hfmem) z h)
+      · intro h'
+        omega
+  have hletter :
+      letterAt (periodicColouring sig w (ub ++ letterAt c t :: uf) v (t - ub.length)) t =
+        letterAt c t := by
+    funext p
+    simp only [letterAt]
+    exact decide_eq_decide.mpr (ht p)
+  refine ⟨w, ub ++ letterAt c t :: uf, v, t - ub.length, hw, hv, hwl, ?_, hvl, hnow', ?_, ?_⟩
+  · rw [List.length_append, List.length_cons]
+    omega
+  · rw [mem_familyTriples_iff_tails hk hnow', hletter]
+    exact ⟨β, α, hB ▸ hbmem, hF ▸ hfmem, lβ, lα, hlβ, hlα, hmid⟩
+  · intro y hy
+    rw [mem_familyTriples_iff_tails hk hnow', hletter] at hy
+    rw [mem_familyTriples_iff_tails hk hnow]
+    obtain ⟨β', α', hb', hf', lβ', lα', h1, h2, h3⟩ := hy
+    exact ⟨β', α', hbsub (hB ▸ hb'), hfsub (hF ▸ hf'), lβ', lα', h1, h2, h3⟩
+
+end Assembly
 
 end FormalSystem.Metalogic.WeakCanonical
