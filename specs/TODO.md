@@ -11,8 +11,8 @@ next_project_number: 781
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,714,763 | 298,464,502,616,716,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -82,12 +82,12 @@ next_project_number: 781
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
-714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
+  └─ 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-778 [RESEARCHED] — Record the modulus convention for the residue-carrying ladder...
+778 [NOT STARTED] — Record the modulus convention for the residue-carrying ladder...
 
 ### Formula Refactor
 
@@ -148,7 +148,7 @@ next_project_number: 781
 
 ### 778. Residue index modulus convention record
 - **Effort**: low
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -1136,7 +1136,7 @@ ADJACENCY. The sliced finite-width question of the sliced-class incompleteness c
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 716
 
 **Description**: Evaluate removing the TailStable junk-position obstruction at its root by carrying full labels in the sliced certificate. Research report 06_tailstable-backward-conjunct-repair.md established that undischargeable snce positions are determined by the certificate position space posAt, not by the witness family: at target bot-S-bot the closure is {bot S bot, bot} with no state shape, so posAt is the same two-label set for every certificate and LocalCoherentLab forces every label of every certifying family to be empty. Because posAt admits every coherent closure-subset agreeing with slab on state shapes only (atom/box/stab) while temporal obligations are pinned by nothing, carrying FULL labels in the certificate rather than only the state part would make posAt a singleton, so no junk position could exist for either obligation direction and arguably neither liveness filter would be needed. This was option 3 in the repair decision; the chosen repair was option 1 (mirror the filter, landing as TailStableMirror/bwdLiveAt). Option 3 was NOT rejected on the merits, only deferred, because it costs the decidable search that FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean is built around, i.e. most of Stage 2 again. Determine whether the obstruction can be removed at the root this way, with refactoring permitted as needed to obtain the best result. The central question is whether decidability of the certificate check survives full labels, and if not, whether a weaker label refinement makes posAt small enough to drop both filters while keeping the search decidable. Compare against the landed option-1 design: with full labels, both TailStableMirror and the forward filter would become deletable and the symmetric two-filter shape in Stable.lean would collapse. Also settle whether the superset failure mode (the Fixture.cert pre-period, repaired by absorption rather than by any filter) likewise disappears under full labels or survives independently.
 

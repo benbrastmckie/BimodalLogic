@@ -596,8 +596,10 @@
       "description": "Evaluate removing the TailStable junk-position obstruction at its root by carrying full labels in the sliced certificate. Research report 06_tailstable-backward-conjunct-repair.md established that undischargeable snce positions are determined by the certificate position space posAt, not by the witness family: at target bot-S-bot the closure is {bot S bot, bot} with no state shape, so posAt is the same two-label set for every certificate and LocalCoherentLab forces every label of every certifying family to be empty. Because posAt admits every coherent closure-subset agreeing with slab on state shapes only (atom/box/stab) while temporal obligations are pinned by nothing, carrying FULL labels in the certificate rather than only the state part would make posAt a singleton, so no junk position could exist for either obligation direction and arguably neither liveness filter would be needed. This was option 3 in the repair decision; the chosen repair was option 1 (mirror the filter, landing as TailStableMirror/bwdLiveAt). Option 3 was NOT rejected on the merits, only deferred, because it costs the decidable search that FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean is built around, i.e. most of Stage 2 again. Determine whether the obstruction can be removed at the root this way, with refactoring permitted as needed to obtain the best result. The central question is whether decidability of the certificate check survives full labels, and if not, whether a weaker label refinement makes posAt small enough to drop both filters while keeping the search decidable. Compare against the landed option-1 design: with full labels, both TailStableMirror and the forward filter would become deletable and the symmetric two-filter shape in Stable.lean would collapse. Also settle whether the superset failure mode (the Fixture.cert pre-period, repaired by absorption rather than by any filter) likewise disappears under full labels or survives independently.",
       "topic": "decidability",
       "created": "2026-10-01T18:01:22Z",
-      "last_updated": "2026-10-09T21:22:19Z",
-      "dependencies": [],
+      "last_updated": "2026-10-13T04:44:16Z",
+      "dependencies": [
+        716
+      ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean",
         "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean",
@@ -2161,7 +2163,7 @@
     {
       "project_number": 778,
       "project_name": "residue_index_modulus_convention_record",
-      "status": "researched",
+      "status": "not_started",
       "task_type": "lean4",
       "description": "Record the modulus convention for the residue-carrying ladder index. ladderIndexRes T P B takes residues modulo P+1 while reachN_eventually_periodic exhibits a period P >= 1; no record fixes whether the index is instantiated at P := period (modulus period+1) or P := period-1 (modulus period). The Qp fixture's own reach-set period is 2, so the modulus-3 reading is already refuted by the existing parity observable. Every refutation in specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean is stated convention-independently (quantified over all P, or over all P with a coprimality side condition), so this is a record gap, not a proof gap. Deliverable: choose and state the convention (or state explicitly that both readings are refuted and no instantiation is privileged) in the LadderModel.lean docstring and the ladder-counter-observables note in the lean extension's source store, keeping the probe's convention-independent statements unchanged. Originating observation: specs/775_residue_index_factorization_lemma/issues.jsonl entry iss_1791837548348_hYqZM0.",
       "effort": "low",
@@ -2169,8 +2171,12 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-10-12T22:10:50Z",
-      "last_updated": "2026-10-12T22:10:50Z",
-      "artifacts": []
+      "last_updated": "2026-10-13T04:44:16Z",
+      "artifacts": [],
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean",
+        "/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md"
+      ]
     },
     {
       "project_name": "source_store_commit_and_registration_review",
