@@ -268,26 +268,26 @@ other module consumes yet.
 
 ---
 
-### Phase 3: Bounded Representatives `exists_rep_of_length_lt` [NOT STARTED]
+### Phase 3: Bounded Representatives `exists_rep_of_length_lt` [COMPLETED]
 
 **Goal**: Every word has a representative of the same profile, no larger cut profile, and length
 below `Nat.card (Profile sig k) ^ 2`, by pigeonhole on cut pairs and deletion.
 
 **Tasks**:
-- [ ] `theorem cutProfile_delete`: for `l = a ++ b ++ c` with `profile a = profile (a ++ b)`
+- [x] `theorem cutProfile_delete`: for `l = a ++ b ++ c` with `profile a = profile (a ++ b)`
       (equivalently `(profile a, profile (b ++ c)) = (profile (a ++ b), profile c)` — the two
       cut pairs coincide), `profile (a ++ c) = profile l` (by `profile_append_congr`) and
       `cutProfile (a ++ c) ⊆ cutProfile l` (every cut of `a ++ c` is a cut of `l` with the same
       pair, using the congruence on whichever side the cut falls).
-- [ ] `theorem exists_eq_cutPair_of_length_ge`: a word of length `≥ Nat.card (Profile sig k) ^ 2`
+- [x] `theorem exists_eq_cutPair_of_length_ge`: a word of length `≥ Nat.card (Profile sig k) ^ 2`
       has cut positions `i < j` with equal `(profile (take i), profile (drop i))` pairs
       (`Fintype.exists_ne_map_eq_of_card_lt` on `Fin (l.length + 1) → Profile × Profile`, as
       `kTypeOf_listSeg_replicate_eventually_periodic_bounded` uses it).
-- [ ] `theorem exists_rep_of_length_lt (hk : 1 ≤ k) (l) : ∃ l', l'.length < Nat.card (Profile sig
+- [x] `theorem exists_rep_of_length_lt (hk : 1 ≤ k) (l) : ∃ l', l'.length < Nat.card (Profile sig
       k) ^ 2 ∧ profile l' = profile l ∧ cutProfile l' ⊆ cutProfile l` by strong induction on
       `l.length`.
-- [ ] Corollary `exists_rep_of_length_lt'`: the same with `l' ≠ []` whenever `l ≠ []` (type
-      nonemptiness is profile-visible at `k ≥ 1`).
+- [x] Corollary `exists_rep_of_length_lt'`: the same with `l' ≠ []` whenever `l ≠ []` (type
+      nonemptiness is profile-visible at `k ≥ 1`). *(deviation: altered — named `exists_rep_of_length_lt_ne_nil`, no prime)*
 
 **Timing**: 1.5 hours
 

@@ -472,4 +472,107 @@ theorem profile_flatten_congr [Finite sig.preds] (hk : 1 ≤ k)
 
 end Append
 
+/-! ## Bounded representatives by profile pumping
+
+A word of length `≥ Nat.card (Profile sig k) ^ 2` has two cut positions with the same pair
+`(profile prefix, profile suffix)` (pigeonhole, `Fintype.exists_ne_map_eq_of_card_lt`); deleting
+the stretch between them preserves the profile (`profile_append_congr`) and shrinks the cut
+profile (every cut of the shortened word carries the profile pair of a cut of the original,
+`cutProfile_delete`). Iterating gives a representative below that length
+(`exists_rep_of_length_lt`). `Nat.card (Profile sig k) ^ 2` is a count of pairs of profiles and
+nothing else — see the module docstring. -/
+
+section Pump
+
+variable {sig k}
+
+/-- **Deletion shrinks the cut profile.** For `l = a ++ b ++ c` with the two cut pairs at the
+ends of `b` equal — `profile a = profile (a ++ b)` and `profile (b ++ c) = profile c` — every
+cut of `a ++ c` carries the profile pair of a cut of `l`: a cut inside `a` is matched by the same
+cut of `l` (congruence on the suffix side), a cut inside `c` by the cut of `l` shifted past `b`
+(congruence on the prefix side). -/
+theorem cutProfile_delete [Finite sig.preds] (hk : 1 ≤ k) {a b c : List (sig.preds → Bool)}
+    (hab : profile sig k a = profile sig k (a ++ b))
+    (hbc : profile sig k (b ++ c) = profile sig k c) :
+    cutProfile sig k (a ++ c) ⊆ cutProfile sig k (a ++ b ++ c) := by
+  rintro pr ⟨z, y, hzy, rfl⟩
+  rcases List.append_eq_append_iff.mp hzy with ⟨a', h₁, h₂⟩ | ⟨c', h₁, h₂⟩
+  · refine ⟨a ++ b ++ a', y, by rw [h₂]; simp only [List.append_assoc], ?_⟩
+    rw [h₁, profile_append_congr (l₂ := a') (l₂' := a') hk hab rfl]
+  · refine ⟨z, c' ++ b ++ c, by rw [h₁]; simp only [List.append_assoc], ?_⟩
+    rw [h₂, profile_append_congr (l₁ := c') (l₁' := c') hk rfl hbc.symm, ← List.append_assoc]
+
+/-- **Pigeonhole on cut pairs**: a word of length at least `Nat.card (Profile sig k) ^ 2` has two
+cut positions `i < j` with the same `(profile prefix, profile suffix)` pair. -/
+theorem exists_eq_cutPair_of_length_ge [Finite sig.preds] (l : List (sig.preds → Bool))
+    (hl : Nat.card (Profile sig k) ^ 2 ≤ l.length) :
+    ∃ i j, i < j ∧ j ≤ l.length ∧
+      (profile sig k (l.take i), profile sig k (l.drop i)) =
+        (profile sig k (l.take j), profile sig k (l.drop j)) := by
+  haveI := Fintype.ofFinite sig.preds
+  haveI := Classical.decEq sig.preds
+  rw [Nat.card_eq_fintype_card, sq] at hl
+  obtain ⟨i, j, hne, heq⟩ := Fintype.exists_ne_map_eq_of_card_lt
+    (fun i : Fin (l.length + 1) => (profile sig k (l.take i.1), profile sig k (l.drop i.1)))
+    (by rw [Fintype.card_fin, Fintype.card_prod]; exact Nat.lt_succ_of_le hl)
+  rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hne) with hij | hij
+  · exact ⟨i.1, j.1, hij, by have := j.2; omega, heq⟩
+  · exact ⟨j.1, i.1, hij, by have := i.2; omega, heq.symm⟩
+
+/-- **Bounded representatives.** Every word has a representative of the same profile, no larger
+cut profile, and length below `Nat.card (Profile sig k) ^ 2`: pigeonhole on cut pairs and
+deletion, iterated by induction on a length bound. The count is a count of pairs of profiles and
+times nothing. -/
+theorem exists_rep_of_length_lt [Finite sig.preds] (hk : 1 ≤ k) (l : List (sig.preds → Bool)) :
+    ∃ l' : List (sig.preds → Bool), l'.length < Nat.card (Profile sig k) ^ 2 ∧
+      profile sig k l' = profile sig k l ∧ cutProfile sig k l' ⊆ cutProfile sig k l := by
+  haveI := Fintype.ofFinite sig.preds
+  haveI := Classical.decEq sig.preds
+  have hP : 0 < Nat.card (Profile sig k) ^ 2 := pow_pos Nat.card_pos 2
+  suffices h : ∀ n (l : List (sig.preds → Bool)), l.length ≤ n →
+      ∃ l' : List (sig.preds → Bool), l'.length < Nat.card (Profile sig k) ^ 2 ∧
+        profile sig k l' = profile sig k l ∧ cutProfile sig k l' ⊆ cutProfile sig k l from
+    h l.length l le_rfl
+  intro n
+  induction n with
+  | zero =>
+    intro l hl
+    exact ⟨l, by omega, rfl, subset_rfl⟩
+  | succ n ih =>
+    intro l hl
+    by_cases hlt : l.length < Nat.card (Profile sig k) ^ 2
+    · exact ⟨l, hlt, rfl, subset_rfl⟩
+    · obtain ⟨i, j, hij, hjl, heq⟩ := exists_eq_cutPair_of_length_ge l (not_lt.mp hlt)
+      have hdj : l.drop j = (l.drop i).drop (j - i) := by
+        rw [List.drop_drop, show i + (j - i) = j by omega]
+      have hsplit : l = l.take i ++ (l.drop i).take (j - i) ++ l.drop j := by
+        rw [List.append_assoc, hdj, List.take_append_drop, List.take_append_drop]
+      have hab : profile sig k (l.take i) =
+          profile sig k (l.take i ++ (l.drop i).take (j - i)) := by
+        rw [← List.take_add, show i + (j - i) = j by omega]
+        exact congrArg Prod.fst heq
+      have hbc : profile sig k ((l.drop i).take (j - i) ++ l.drop j) =
+          profile sig k (l.drop j) := by
+        rw [show (l.drop i).take (j - i) ++ l.drop j = l.drop i by
+          rw [hdj, List.take_append_drop]]
+        exact congrArg Prod.snd heq
+      obtain ⟨l', hl', hp, hc⟩ := ih (l.take i ++ l.drop j) (by
+        rw [List.length_append, List.length_take, List.length_drop]; omega)
+      refine ⟨l', hl', hp.trans ?_, hc.trans ?_⟩
+      · conv_rhs => rw [hsplit]
+        exact profile_append_congr (l₂ := l.drop j) (l₂' := l.drop j) hk hab rfl
+      · conv_rhs => rw [hsplit]
+        exact cutProfile_delete hk hab hbc
+
+/-- **Bounded representatives of nonempty words are nonempty**: nonemptiness is profile-visible
+at `k ≥ 1` (`ne_nil_of_kTypeOf_eq`). -/
+theorem exists_rep_of_length_lt_ne_nil [Finite sig.preds] (hk : 1 ≤ k)
+    {l : List (sig.preds → Bool)} (hl : l ≠ []) :
+    ∃ l' : List (sig.preds → Bool), l' ≠ [] ∧ l'.length < Nat.card (Profile sig k) ^ 2 ∧
+      profile sig k l' = profile sig k l ∧ cutProfile sig k l' ⊆ cutProfile sig k l := by
+  obtain ⟨l', h1, h2, h3⟩ := exists_rep_of_length_lt hk l
+  exact ⟨l', ne_nil_of_kTypeOf_eq hk (kTypeOf_eq_of_profile_eq h2.symm) hl, h1, h2, h3⟩
+
+end Pump
+
 end FormalSystem.Metalogic.WeakCanonical
