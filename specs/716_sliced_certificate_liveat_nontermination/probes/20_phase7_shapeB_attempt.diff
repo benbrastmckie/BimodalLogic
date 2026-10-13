@@ -1,0 +1,100 @@
+diff --git a/FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean b/FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean
+index de8286526..ec29972ab 100644
+--- a/FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean
++++ b/FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean
+@@ -135,6 +135,54 @@ theorem posAt_congr (G : PlusSlicedCertificate Γ Del) {t s : ℤ} (h : G.slice
+ see this module's header. -/
+ abbrev TPos (G : PlusSlicedCertificate Γ Del) : Type := G.Pos × ℤ
+ 
++/-! ## The position-space leaf cache
++
++`verts` filters `Finset.univ ×ˢ winTimes` by `v.1 ∈ posAt v.2`, which calls `posAt` once per
++PAIR although only `|winTimes|` distinct times occur — 512 calls where 6 would do, at a
++width-2 certificate over four window times. `posTable` tabulates `posAt` over the window
++extended one step each way, which is what `nextTime` / `prevTime` can reach.
++
++`posAtC` falls back to `posAt` itself off the table's range. That is what makes `posAtC_eq`
++**unconditional**: there is no side condition, so no use site can observe a difference and
++nothing below this module is ever accepted on the cache's authority.
++
++The table is bound in a `let` **outside** each filter lambda, and this is a correctness
++condition on the optimisation rather than a stylistic choice. A plain `posAtC v.2` call per pair
++re-runs `G.posTable` on every call — it is a function application, not a value — and rebuilds
++the whole table 512 times; measured at a width-2 certificate that form is **6.2x slower than no
++cache at all**, while the `let`-bound form is 74x faster. The `let` is the optimisation.
++
++The lookup compares with `==` rather than through a `Decidable` instance on `=`: this namespace
++already has a `decide` (`DecisionProcedure.lean`'s, on `Formula`), which shadows the core one.
++-/
++
++/-- `posAt` tabulated over the window times extended one step each way. -/
++def posTable (G : PlusSlicedCertificate Γ Del) : List (ℤ × Finset G.Pos) :=
++  (List.range (G.winHi - G.winLo + 2).toNat).map fun i =>
++    (G.winLo - 1 + (i : ℤ), G.posAt (G.winLo - 1 + (i : ℤ)))
++
++/-- The cached position space, with `posAt` itself as the off-range fallback. -/
++def posAtC (G : PlusSlicedCertificate Γ Del) (t : ℤ) : Finset G.Pos :=
++  match G.posTable.find? (fun p => p.1 == t) with
++  | some p => p.2
++  | none => G.posAt t
++
++/-- **The cache is the function**, with no side condition — every table entry is literally
++`(s, G.posAt s)`, and off the table the lookup *is* `posAt`. -/
++theorem posAtC_eq (G : PlusSlicedCertificate Γ Del) (t : ℤ) : G.posAtC t = G.posAt t := by
++  unfold posAtC
++  split
++  · rename_i p h
++    have hmem : p ∈ G.posTable := List.mem_of_find?_eq_some h
++    have hbeq := List.find?_some h
++    have heq : p.1 = t := by simpa using hbeq
++    rw [posTable, List.mem_map] at hmem
++    obtain ⟨i, _, hi⟩ := hmem
++    subst hi
++    simp only at heq ⊢
++    rw [heq]
++  · rfl
++
+ /--
+ **The vertices of the timed graph**: the genuine positions of their own slice, at window times.
+ 
+@@ -146,11 +194,18 @@ containing label-state pairs that are not positions of their slice would make th
+ statement harder rather than easier.
+ -/
+ def verts (G : PlusSlicedCertificate Γ Del) : Finset G.TPos :=
+-  (Finset.univ ×ˢ G.winTimes).filter (fun v => v.1 ∈ G.posAt v.2)
++  let tbl := G.posTable
++  (Finset.univ ×ˢ G.winTimes).filter (fun v =>
++    v.1 ∈ match tbl.find? (fun p => p.1 == v.2) with
++          | some p => p.2
++          | none => G.posAt v.2)
+ 
+ theorem mem_verts (G : PlusSlicedCertificate Γ Del) (v : G.TPos) :
+     v ∈ G.verts ↔ v.2 ∈ G.winTimes ∧ v.1 ∈ G.posAt v.2 := by
+-  simp [verts, Finset.mem_product]
++  have h : ∀ u : ℤ, (match G.posTable.find? (fun p => p.1 == u) with
++      | some p => p.2
++      | none => G.posAt u) = G.posAt u := fun u => G.posAtC_eq u
++  simp [verts, Finset.mem_product, h]
+ 
+ theorem snd_mem_winTimes_of_mem_verts (G : PlusSlicedCertificate Γ Del) {v : G.TPos}
+     (h : v ∈ G.verts) : v.2 ∈ G.winTimes := ((G.mem_verts v).mp h).1
+@@ -399,11 +454,17 @@ not available.
+ /-- **The successors of a timed position**: the `succP`-successors at the unwrapped next time,
+ placed at the wrapped one. -/
+ def succT (G : PlusSlicedCertificate Γ Del) (v : G.TPos) : Finset G.TPos :=
+-  G.verts.filter (fun w => w.2 = G.nextTime v.2 ∧ w.1 ∈ G.succP v.2 v.1)
++  let V := G.verts
++  let u := G.nextTime v.2
++  let S := G.succP v.2 v.1
++  V.filter (fun w => w.2 = u ∧ w.1 ∈ S)
+ 
+ /-- **The predecessors of a timed position**, the leftward mirror. -/
+ def predT (G : PlusSlicedCertificate Γ Del) (v : G.TPos) : Finset G.TPos :=
+-  G.verts.filter (fun w => w.2 = G.prevTime v.2 ∧ w.1 ∈ G.predP v.2 v.1)
++  let V := G.verts
++  let u := G.prevTime v.2
++  let P := G.predP v.2 v.1
++  V.filter (fun w => w.2 = u ∧ w.1 ∈ P)
+ 
+ theorem mem_succT (G : PlusSlicedCertificate Γ Del) (v w : G.TPos) :
+     w ∈ G.succT v ↔ w ∈ G.verts ∧ (w.2 = G.nextTime v.2 ∧ w.1 ∈ G.succP v.2 v.1) :=

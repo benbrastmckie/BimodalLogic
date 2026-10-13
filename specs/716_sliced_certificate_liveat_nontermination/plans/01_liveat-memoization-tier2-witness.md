@@ -574,11 +574,69 @@ and the gate is re-measured.
 
 ---
 
-### Phase 7: CONDITIONAL -- land the leaf cache in Timed.lean [NOT STARTED]
+### Phase 7: CONDITIONAL -- land the leaf cache in Timed.lean [BLOCKED]
 
 **Goal**: If and only if Phase 6's gate passed, the position-space leaf is tabulated once over the
 window and its one-step neighbours, and `verts` / `succT` / `predT` read the table instead of
 recomputing `posAt` at the innermost level of the nest.
+
+**BLOCKER** (Phase 7):
+
+- **What failed**: Phase 6's gate PASSED, so this phase was executed as written. `posTable`,
+  `posAtC`, `posAtC_eq` and the three re-expressed bodies all landed and
+  `lake build …PlusSlicedCertificate.Timed` went green (1218 jobs). The full guarded build then
+  failed in `Complete.lean`, which is a file this phase's own Scope Hypothesis asserted would
+  not be touched. Five `withBx_*` transfer declarations there are proved by `rfl` and stop
+  holding: `withBx_liveAt` (line 201), `withBx_fwdLiveAt` (204), `withBx_iterBack` (233),
+  `withBx_iterFwd` (238, 241), with `withBx_tailStable` failing as a cascade (558, reported by
+  the kernel as `unknown constant`). `withBx` is a one-field structure update and every one of
+  these held by `rfl` before this phase.
+- **What was tried**:
+  1. **The landed Shape B** (the table bound in a `let` outside the filter lambda, which Phase 6
+     measured at 5.5x on `decide` and 63x on `#eval`). Scoped build green; full build fails as
+     above.
+  2. **A raised heartbeat cap.** A scratch `example (G) (bx) : (G.wB bx).verts = G.verts := rfl`
+     under `set_option maxHeartbeats 2000000` -- ten times `Complete.lean`'s cap -- does **not**
+     time out. It fails outright: `rfl has type ?m.9 = ?m.9 but is expected to have type
+     (G.wB bx).verts = G.verts`. `isDefEq` returns *false*, not *slow*. **No cap rescues this**,
+     so the `(deterministic) timeout` the build reports is a symptom and not the cause.
+  3. **Shape A**, the plan's literal instruction ("re-express the `verts` body to filter against
+     `posAtC`"). Same scratch test: `rfl` times out there too, so Shape A does not transfer
+     either -- and Phase 6 measured Shape A at **6.2x slower than no cache at all**. The plan's
+     own prescribed shape is therefore both slower and equally unavailable.
+  4. **Shape D**, `verts := G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t)))`.
+     This calls `posAt` once per window time (4 calls, not 512) with **no cache, no table and no
+     `let`**, and `(G.wB bx).vertsD = G.vertsD` **does hold by `rfl`** in the same scratch test.
+- **Why it's stuck**: any formulation that routes `verts`'s membership test through a *lookup*
+  makes `verts`'s body a term whose two instantiations at `G.withBx bx` and at `G` are not
+  definitionally equal, and `Complete.lean`'s five `rfl` transfers are exactly the proofs that
+  need them to be. Fixing that forward means re-proving the whole chain propositionally --
+  `withBx_verts`, `withBx_succT`, `withBx_predT`, `withBx_untlLive`, `withBx_snceLive`,
+  `withBx_untlLiveOf`, `withBx_snceLiveOf`, `withBx_untlTable`, `withBx_snceTable`,
+  `withBx_fwdLiveStep`, `withBx_bwdLiveStep`, `withBx_fwdLiveT`, `withBx_bwdLiveT`,
+  `withBx_liveT`, roughly fourteen new dependent-typed lemmas in `Complete.lean`. That is a file
+  this phase's Scope Hypothesis names as untouched, and an expansion on that scale is a planning
+  decision, not an implementation one.
+- **What is needed**: a decision between two routes, which `/revise` should record before any
+  further edit to `Timed.lean`:
+  - **(i) Shape D.** Drop `posTable` / `posAtC` / `posAtC_eq` from the Goals and re-express
+    `verts` as the `biUnion` above. It is `rfl`-transferable, so `Complete.lean` is untouched and
+    the Scope Hypothesis holds; it obtains the same 512-to-4 reduction in `posAt` calls that the
+    cache was for; and it needs no equality lemma at all, because there is no cache to be equal
+    to. The cost is that the three recorded Challenge declarations disappear.
+  - **(ii) Shape B plus the fourteen transfer lemmas.** Keeps every recorded Challenge statement
+    and lands the measured 5.5x, at the price of widening the phase to `Complete.lean` and
+    adding fourteen declarations the plan never scoped.
+  This agent does not choose between them: `.claude/rules/plan-compliance.md` requires a
+  decomposition change on a `.lean` file to be raised rather than substituted, and route (i) is
+  a decomposition change while route (ii) is a scope change.
+- **Prohibited workarounds**: no `sorry`, no `def X := True`, no vacuous placeholder, and **not**
+  a `maxHeartbeats` bump in `Complete.lean` -- evidence item 2 above proves a bump cannot work,
+  so it would be a mask rather than a fix.
+- **State of the tree**: `Timed.lean` is reverted to its Phase-5 committed state, so the full
+  build is green and Phases 8 and 9 could proceed. The Shape B attempt is preserved verbatim at
+  `specs/716_sliced_certificate_liveat_nontermination/probes/20_phase7_shapeB_attempt.diff` and
+  in `git stash@{0}`; nothing is lost.
 
 **Tasks**:
 - [ ] Read Phase 6's verdict in `progress-file.md` first. **If the gate FAILED**, do not edit

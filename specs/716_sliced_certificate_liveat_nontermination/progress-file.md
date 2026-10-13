@@ -316,3 +316,35 @@ defines `decide (φ : Formula)` in that namespace, which shadows the core `Decid
 `_root_.decide` is not an identifier either. The probe uses `p.1 == t` (`BEq` on `ℤ`) instead --
 the same Boolean test, no statement changed, and cheaper than going through a `Decidable`
 instance. Phase 7 lands the same spelling.
+
+## Phase 7 -- BLOCKED, and the measurement that settles why
+
+Phase 6's gate passed, so this phase was executed as the plan directs. The cache landed,
+`lake build …PlusSlicedCertificate.Timed` went green (1218 jobs), and the **full** build then
+broke five `rfl`-proved `withBx_*` transfer lemmas in `Complete.lean` -- a file this phase's
+Scope Hypothesis asserted would not be touched.
+
+The decisive measurement is not a timing but a defeq test:
+
+| scratch goal, `(G.wB bx).X = G.X := rfl`, `wB` a one-field structure update | cap | result |
+|---|---|---|
+| `X = posTable` | 200000 | **holds** |
+| `X = verts`, Shape B (table `let`-bound) | 2000000 (10x) | **FAILS**: `rfl has type ?m.9 = ?m.9` |
+| `X = verts`, Shape A (plain `posAtC` per pair) | 100000 | times out |
+| `X = verts`, Shape D (`winTimes.biUnion` over `posAt`, no table) | 100000 | **holds** |
+
+Shape B's `rfl` does not time out at ten times the cap -- `isDefEq` returns **false**. **No
+heartbeat bump can fix this**, which is why the `(deterministic) timeout` the build reports is a
+symptom rather than the cause, and why a cap bump in `Complete.lean` is recorded as a prohibited
+workaround rather than a candidate fix.
+
+Shape D obtains the same 512-to-4 reduction in `posAt` calls with no table, no `let` and no
+equality lemma, and it IS `rfl`-transferable. It is also a decomposition change: it drops
+`posTable` / `posAtC` / `posAtC_eq`, three declarations the plan records under `- **Goals**:` and
+pins in `## Lean Challenge Statements`. `.claude/rules/plan-compliance.md` requires that to be
+raised rather than substituted, so it is raised. The full blocker record, with both candidate
+routes and their costs, is on the Phase 7 heading in the plan.
+
+`Timed.lean` is reverted to its Phase-5 committed state; the full guarded `lake build` is green
+at 2844 jobs. The attempt is preserved verbatim at
+`probes/20_phase7_shapeB_attempt.diff` and in `git stash@{0}`.
