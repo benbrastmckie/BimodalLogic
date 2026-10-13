@@ -439,4 +439,97 @@ theorem hitOf_gadget_eq (hk : 1 ≤ k) (now : sig.preds) (w m v : List (sig.pred
 
 end GadgetHitOf
 
+/-! ## Disjoint unions of presentations
+
+A disjoint union of presentations — no cross edges — has as anchored runs exactly the anchored
+runs of its summands (`isRun_sigma_iff`: a run cannot change summand, because a cross pair is
+never a step), so its realized-triple set is the union of theirs (`hitOf_sigma_eq`). -/
+
+section Sigma
+
+variable {sig} {ι : Type} {Q : ι → Type}
+
+/-- The labelling of the disjoint union. -/
+abbrev sigmaLab (lab : ∀ i, Q i → sig.preds → Bool) : (Σ i, Q i) → sig.preds → Bool :=
+  fun x => lab x.1 x.2
+
+/-- The step relation of the disjoint union: a step inside one summand; a cross pair is never a
+step. -/
+abbrev sigmaStep [DecidableEq ι] (step : ∀ i, Q i → Q i → Bool) :
+    (Σ i, Q i) → (Σ i, Q i) → Bool :=
+  fun x y => if h : x.1 = y.1 then step y.1 (h ▸ x.2) y.2 else false
+
+variable {lab : ∀ i, Q i → sig.preds → Bool} {step : ∀ i, Q i → Q i → Bool}
+
+theorem sigmaStep_same [DecidableEq ι] (i : ι) (a b : Q i) :
+    sigmaStep step ⟨i, a⟩ ⟨i, b⟩ = step i a b := by
+  unfold sigmaStep
+  rw [dif_pos rfl]
+
+/-- A step of the union stays in its summand. -/
+theorem fst_eq_of_sigmaStep [DecidableEq ι] {x y : Σ i, Q i} (h : sigmaStep step x y = true) :
+    x.1 = y.1 := by
+  by_contra hne
+  simp only [sigmaStep, dif_neg hne, Bool.false_eq_true] at h
+
+/-- **The anchored runs of a disjoint union are the anchored runs of its summands.** -/
+theorem isRun_sigma_iff [DecidableEq ι] (now : sig.preds) (t : ℤ) (ρ : ℤ → Σ i, Q i) :
+    IsRun (sigmaLab lab) (sigmaStep step) now t ρ ↔
+      ∃ (i : ι) (ρ' : ℤ → Q i), IsRun (lab i) (step i) now t ρ' ∧ ρ = fun z => ⟨i, ρ' z⟩ := by
+  constructor
+  · rintro ⟨hs, hn⟩
+    have hfst : ∀ z, (ρ z).1 = (ρ 0).1 := by
+      intro z
+      induction z using Int.induction_on with
+      | zero => rfl
+      | succ i ih =>
+        rw [← fst_eq_of_sigmaStep (hs i)]
+        exact ih
+      | pred i ih =>
+        have h := hs (-(i : ℤ) - 1)
+        rw [show -(i : ℤ) - 1 + 1 = -i by ring] at h
+        rw [fst_eq_of_sigmaStep h]
+        exact ih
+    obtain ⟨i₀, hi₀⟩ : ∃ i₀, (ρ 0).1 = i₀ := ⟨_, rfl⟩
+    obtain ⟨ρ', hρ'⟩ : ∃ ρ' : ℤ → Q i₀, ρ = fun z => ⟨i₀, ρ' z⟩ :=
+      ⟨fun z => cast (congrArg Q ((hfst z).trans hi₀)) (ρ z).2, funext fun z =>
+        Sigma.ext ((hfst z).trans hi₀) (cast_heq _ _).symm⟩
+    refine ⟨i₀, ρ', ⟨fun z => ?_, fun z => ?_⟩, hρ'⟩
+    · have h := hs z
+      simp only [hρ', sigmaStep_same] at h
+      exact h
+    · have h := hn z
+      simp only [hρ'] at h
+      exact h
+  · rintro ⟨i, ρ', ⟨hs, hn⟩, rfl⟩
+    exact ⟨fun z => by rw [sigmaStep_same]; exact hs z, fun z => hn z⟩
+
+/-- **The realized triples of a disjoint union are the union of the summands'.** -/
+theorem hitOf_sigma_eq [Fintype sig.preds] [DecidableEq sig.preds] {k : ℕ} (hk : 1 ≤ k)
+    (now : sig.preds) [Fintype ι] [DecidableEq ι] (Q : ι → Type) [∀ i, Fintype (Q i)]
+    [∀ i, DecidableEq (Q i)] (lab : ∀ i, Q i → sig.preds → Bool) (step : ∀ i, Q i → Q i → Bool) :
+    hitOf (fun (x : Σ i, Q i) => lab x.1 x.2)
+        (fun (x y : Σ i, Q i) => if h : x.1 = y.1 then step y.1 (h ▸ x.2) y.2 else false) now k =
+      Finset.univ.biUnion (fun i => hitOf (lab i) (step i) now k) := by
+  ext x
+  rw [mem_hitOf_iff _ _ now k 0 hk, Finset.mem_biUnion]
+  constructor
+  · rintro ⟨ρ, hρ, hx⟩
+    obtain ⟨i, ρ', hρ', rfl⟩ :=
+      (isRun_sigma_iff (lab := lab) (step := step) now 0 ρ).mp hρ
+    exact ⟨i, Finset.mem_univ i, (mem_hitOf_iff (lab i) (step i) now k 0 hk x).mpr ⟨ρ', hρ', hx⟩⟩
+  · rintro ⟨i, -, hi⟩
+    obtain ⟨ρ', hρ', hx⟩ := (mem_hitOf_iff (lab i) (step i) now k 0 hk x).mp hi
+    exact ⟨fun z => ⟨i, ρ' z⟩,
+      (isRun_sigma_iff (lab := lab) (step := step) now 0 _).mpr ⟨i, ρ', hρ', rfl⟩, hx⟩
+
+/-- The size of a disjoint union is bounded by the number of summands times a common bound. -/
+theorem card_sigma_le [Fintype ι] [∀ i, Fintype (Q i)] {B : ℕ}
+    (hB : ∀ i, Fintype.card (Q i) ≤ B) : Fintype.card (Σ i, Q i) ≤ Fintype.card ι * B := by
+  rw [Fintype.card_sigma]
+  calc ∑ i, Fintype.card (Q i) ≤ ∑ _i : ι, B := Finset.sum_le_sum fun i _ => hB i
+    _ = Fintype.card ι * B := by rw [Finset.sum_const, Finset.card_univ, smul_eq_mul]
+
+end Sigma
+
 end FormalSystem.Metalogic.WeakCanonical

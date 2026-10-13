@@ -715,24 +715,24 @@ is the complete covering check; no other module consumes this theorem.
 
 ---
 
-### Phase 12: Disjoint Unions of Presentations `hitOf_sigma_eq` [NOT STARTED]
+### Phase 12: Disjoint Unions of Presentations `hitOf_sigma_eq` [COMPLETED]
 
 **Goal**: `hitOf` of the disjoint union of a finite family of presentations (no cross edges) is
 the union of their `hitOf`s, with the cardinality of the union's state type as a sum.
 
 **Tasks**:
-- [ ] `def sigmaLab {ι} (Q : ι → Type) (lab : ∀ i, Q i → sig.preds → Bool) : (Σ i, Q i) →
+- [x] `def sigmaLab {ι} (Q : ι → Type) (lab : ∀ i, Q i → sig.preds → Bool) : (Σ i, Q i) →
       sig.preds → Bool`; `def sigmaStep (step : ∀ i, Q i → Q i → Bool) : (Σ i, Q i) → (Σ i, Q i)
       → Bool := fun ⟨i, q⟩ ⟨j, q'⟩ => if h : i = j then step j (h ▸ q) q' else false` (with
       `[DecidableEq ι]`).
-- [ ] `theorem isRun_sigma_iff`: a run of the union stays in one summand (`step` across
+- [x] `theorem isRun_sigma_iff`: a run of the union stays in one summand (`step` across
       summands is `false`), i.e. `IsRun (sigmaLab …) (sigmaStep …) now t ρ ↔ ∃ i ρ', IsRun (lab i)
       (step i) now t ρ' ∧ ρ = fun z => ⟨i, ρ' z⟩`, and `runTrace_sigma`.
-- [ ] `theorem hitOf_sigma_eq (hk : 1 ≤ k) [Fintype ι] [DecidableEq ι] [∀ i, Fintype (Q i)] [∀
+- [x] `theorem hitOf_sigma_eq (hk : 1 ≤ k) [Fintype ι] [DecidableEq ι] [∀ i, Fintype (Q i)] [∀
       i, DecidableEq (Q i)] : hitOf (sigmaLab Q lab) (sigmaStep Q step) now k = Finset.univ.biUnion
       (fun i => hitOf (lab i) (step i) now k)` via `mem_hitOf_iff` and `isRun_sigma_iff`.
-- [ ] `Fintype.card_sigma` is Mathlib's; note the bound form `Fintype.card (Σ i, Q i) ≤
-      Fintype.card ι * B` when every `Fintype.card (Q i) ≤ B` (`Finset.sum_le_card_nsmul`).
+- [x] `Fintype.card_sigma` is Mathlib's; note the bound form `Fintype.card (Σ i, Q i) ≤
+      Fintype.card ι * B` when every `Fintype.card (Q i) ≤ B` (`Finset.sum_le_card_nsmul`). *(deviation: altered — landed as `card_sigma_le` via `Fintype.card_sigma`, `Finset.sum_le_sum` and `Finset.sum_const`)*
 
 **Timing**: 1.5 hours
 
