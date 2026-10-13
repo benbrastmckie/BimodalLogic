@@ -1,19 +1,20 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote the fourteen-phase implementation plan for (C)'s general row: exists_hitPresented with sizeBound phi k = N^3 * (4 P^2 + 1) exhibited as a count, landed sorry-free across three sibling modules already in file_scope (RaySummary/Profile.lean, Periodic.lean, HitComplete.lean) by the research report's Ramsey-over-profile route. Phases are ordered so the one risky lemma (the profile composition law) lands first and gates the transport; the final phase pins three declarations at both C14 sites, adds theorem-index rows, amends the README's (C)/(W) rows and Evidence prose, regenerates status.typ, and runs the full gate. The Lean Challenge Statements block carries twenty identifiers matching the Goals set exactly; validate-artifact.sh passes with 0 warnings.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "Requirement (C)'s general row is landed: exists_hitPresented (FormalSystem/Metalogic/Decidability/RaySummary/HitComplete.lean) proves, for every regular Z-model, seam, formula and depth k >= 1, a finite presentation with Fintype.card Q <= sizeBound phi k satisfying HitPresented, with the count exhibited. All fourteen plan phases completed with one commit each, zero sorry, the three headline theorems at standard axioms, C14 pins at both sites, theorem-index rows and README amendments landed, and the full gate set (lake build, test module, check-module-invariants, readme-lint, task-reference lint, typst sync, verify-deploy) green.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/762_hit_presented_general_row/plans/01_hit-presented-general-row.md",
-      "summary": "Fourteen-phase plan (25.5 h, 8 waves) for exists_hitPresented via Profile/Periodic/HitComplete modules with the count exhibited; C14 pins, theorem-index rows, README amendments, full gate in the final phase."
+      "type": "summary",
+      "path": "specs/762_hit_presented_general_row/summaries/02_hit-presented-general-row-summary.md",
+      "summary": "Implementation summary: three new modules, the route, decisions (reversal transfer instead of duplication; pointwise headline proof), plan deviations per phase, and the full verification record."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 14,
   "phases_total": 14,
   "blockers": [],
-  "plan_markers_verified": null,
+  "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 762 starting at Phase 1 (Profile.lean definitions and read-outs); Phase 2's composition law is the decision gate for the rest."
+  "next_action_hint": "Postflight may mark the task implemented; nothing is deferred. The one route change worth a reader's attention: the headline's set equality is proved pointwise (mem_hitOf_iff + isRun_sigma_iff + hitOf_gadget_eq) rather than by rewriting with hitOf_sigma_eq, which is landed and pinned but not consumed.",
+  "git_checkpoint": "f0ef67f81"
 }

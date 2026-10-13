@@ -1,7 +1,7 @@
 # Implementation Plan: Task #762
 
 - **Task**: 762 - (C)'s general row: exists_hitPresented with sizeBound φ k a count, for every regular ℤ-model (run-layer phase 3)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 25.5 hours
 - **Dependencies**: 759 (logical edge, discharged: `Probe759.hitPresented_node` is a Hit-level POSITIVE, so the Stage 0 "statement is false" branch does not fire); no open dependency (the serialization-only edge on 761 was dropped at research time)
 - **Research Inputs**: specs/762_hit_presented_general_row/reports/01_hit-presented-general-row.md

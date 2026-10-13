@@ -33,7 +33,7 @@
     {
       "project_number": 762,
       "project_name": "hit_presented_general_row",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "STATEMENT (library, research-first; new module `RaySummary/HitComplete.lean`). Requirement (C)'s general row, verbatim from the RaySummary README's verdict table and \"(W) … obligation (ii)\" item 2 — run-layer phase 3, the completeness half (model → object): for every regular ℤ-model M, seam (τ, t), formula φ and depth 1 ≤ k, a finite labelled presentation with a computable bound in φ:\n  `theorem exists_hitPresented (M : TaskModel F.toTaskFrame) [F.IsRegular] (τ) (t) (φ) (k) (hk : 1 ≤ k) : ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool), Fintype.card Q ≤ sizeBound φ k ∧ HitPresented M τ t φ lab step k`\nwith `sizeBound φ k` a COUNT exhibited in the statement (the fixture's was `Nat.card (KType (clSig Fp) k) + 6`, `card_QA_presentationSize`), never an ∃ L and never a complexity bound. `HitPresented` is `RaySummary/Trace.lean`'s Hit-level hypothesis; the trace-level `Presented` is refuted as a completeness carrier (`Probe735.not_presented`) and is not the statement.\n\nSTATUS: OPEN MATHEMATICS. One positive fixture (`Probe745.hitPresented_modelA`, box/stab-free, finite-width slice), no Hit-level negative anywhere, no general argument. The research phase of this record comes FIRST and must re-derive the statement against the tree, including T2's verdict: if T2 returned a Hit-level negative this statement is false and the record is a Stage 0 user matter — do not re-scope or abandon it as an agent. Ingredients that exist: `kTypeOf_listSeg_replicate_eventually_periodic_bounded` (Compose.lean), `inFamily_of_shrink_run` (Transport.lean; shrink direction, single segment); the unconditioned transport ↔ (threshold 3·(m₀+p)) is a recorded non-goal of the bound-half record and may be needed here. HWZ 2000 Def. 12/Thm 14 and GKWZ 2003 Thm 13.6 are indexed (`specs/literature-index.json`) as the literature description of the quasimodel-realisation step; they orient the shape and source no claim — dispatch with --lit.\n\nCONTINGENCY. If the general argument does not close, the honest outcome is [BLOCKED] with the obstruction recorded; never sorry, axiom, vacuous definition, an external Büchi/MSO decidability theorem cited in place of a proof, or a finite-width/finite-fibre hypothesis smuggled into M.\n\nGUARDRAILS: (a) `HitPresented` is over the closure alphabet `clSig φ`; (b) M ranges over ALL regular ℤ-models — no width or fibre assumption; (c) `sizeBound` is a count, no running-time claim, the held 2EXPTIME ceiling rules proposals out only; (d) zero debt, no cslib require; (e) if the landed form is forward-only (as every (C)/(S) fixture is), say so; nothing bears on ⊡(Pp).\n\nFILE SCOPE: new `HitComplete.lean` plus the shared library set. Durable anchors only outside specs/**. Cross-set collisions left to the admission gate: 744, 410. Logical edge on T2; serialization edge on T4 (shared set).\n\nNOT COSTABLE, and why: no argument exists in the tree to size it against. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section B and H5.",
       "topic": "decidability",
@@ -56,8 +56,8 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-10T23:53:48Z",
-      "last_updated": "2026-10-13T01:33:43Z",
-      "session_id": "sess_1791854079_27b1ea",
+      "last_updated": "2026-10-13T03:40:31Z",
+      "session_id": "sess_1791855595_b5cb44",
       "artifacts": [
         {
           "path": "specs/762_hit_presented_general_row/reports/01_hit-presented-general-row.md",
@@ -68,9 +68,15 @@
           "path": "specs/762_hit_presented_general_row/plans/01_hit-presented-general-row.md",
           "type": "plan",
           "summary": "Fourteen-phase plan (25.5 h, 8 waves) for exists_hitPresented via Profile/Periodic/HitComplete modules with the count exhibited; C14 pins, theorem-index rows, README amendments, full gate in the final phase."
+        },
+        {
+          "path": "specs/762_hit_presented_general_row/summaries/02_hit-presented-general-row-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: three new modules, the route, decisions (reversal transfer instead of duplication; pointwise headline proof), plan deviations per phase, and the full verification record."
         }
       ],
-      "next_artifact_number": 3
+      "next_artifact_number": 4,
+      "completion_summary": "Requirement (C)'s general row is a theorem: exists_hitPresented (HitComplete.lean) gives, for every regular Z-model, seam, formula and depth k >= 1, a finite presentation with Fintype.card Q <= sizeBound phi k satisfying HitPresented, the count N^3 * (4 P^2 + 1) exhibited in the statement. Route: the composing sigma-star profile of finite words (Profile.lean), Ramsey-over-profile forward transport and its reflection through the order dual, the seam assembly (Periodic.lean), and one three-piece gadget per triple of HitCl in a disjoint union. Fourteen phases, fourteen phase commits, zero sorry, all three headline theorems at [propext, Classical.choice, Quot.sound]."
     },
     {
       "project_number": 761,
