@@ -452,15 +452,15 @@ plus its enumerated one-hop dependent `Bridge.lean`, followed by the guarded
 
 ---
 
-### Phase 5: Hoist the vertex-independent inner fixpoint out of the per-vertex filter [NOT STARTED]
+### Phase 5: Hoist the vertex-independent inner fixpoint out of the per-vertex filter [COMPLETED]
 
 **Goal**: `untlLive X g e` / `snceLive X g e` are computed once per contracted set and per
 eventuality-shaped closure member rather than once per vertex, with `mem_fwdLiveStep` /
 `mem_bwdLiveStep` preserved exactly, so nothing below the module can observe the change.
 
 **Tasks**:
-- [ ] Re-read `LiveFix.lean` immediately before editing.
-- [ ] Add, in the signatures fixed below: `untlLiveOf` / `snceLiveOf` (the inner fixpoint as a
+- [x] Re-read `LiveFix.lean` immediately before editing.
+- [x] Add, in the signatures fixed below: `untlLiveOf` / `snceLiveOf` (the inner fixpoint as a
       total function of the formula, `∅` off shape), `untlTable` / `snceTable` (the closure paired
       with that function's value, as a `Finset.image` — **not** via `Finset.toList`, which is
       noncomputable and would make the whole `decide`-facing stack noncomputable),
@@ -468,20 +468,20 @@ eventuality-shaped closure member rather than once per vertex, with `mem_fwdLive
       existential bounded by the table so the clause stays decidable by a bounded quantifier), and
       `untlLiveAtTab_eq` / `snceLiveAtTab_eq` (pointwise equality with `untlLiveAt` /
       `snceLiveAt`, proved from `Finset.mem_image`).
-- [ ] Re-express the `fwdLiveStep` / `bwdLiveStep` bodies as a filter against the precomputed
+- [x] Re-express the `fwdLiveStep` / `bwdLiveStep` bodies as a filter against the precomputed
       table, with the table bound once outside the filter lambda. The equality with the old body
       is a `Finset.filter_congr` on a pointwise-equal predicate, discharged by the two `_eq`
       lemmas.
-- [ ] Re-prove `mem_fwdLiveStep` / `mem_bwdLiveStep` from the new bodies, with their statements
+- [x] Re-prove `mem_fwdLiveStep` / `mem_bwdLiveStep` from the new bodies, with their statements
       byte-identical to the current ones. These two theorems are the module's interface; if either
       cannot be restated unchanged, mark the phase `[BLOCKED]` and raise it rather than adjusting
       the statement.
-- [ ] Confirm the short-circuit the report measured is preserved: the clause's `decide (… ∈
+- [x] Confirm the short-circuit the report measured is preserved: the clause's `decide (… ∈
       v.1.2.1 → v ∈ …)` form must still avoid evaluating the inner fixpoint at a vertex whose
       label carries no eventuality. State in the docstring whether the table form evaluates the
       fixpoint eagerly for every table member (it does) and why that is still a net win (the
       count drops from per-vertex to per-closure-member).
-- [ ] Guarded build of `LiveFix.lean`, `Bridge.lean` and the `PlusSlicedCertificate` aggregate;
+- [x] Guarded build of `LiveFix.lean`, `Bridge.lean` and the `PlusSlicedCertificate` aggregate;
       then re-measure `(liveAt (-1)).card` and the `certA` `decide` clock and record both.
 
 **Timing**: 2 hours

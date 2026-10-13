@@ -181,3 +181,65 @@ exactly these three, so the repair set is complete rather than merely sufficient
 Axiom profiles: `fwdLiveT_eq_gfp`, `bwdLiveT_eq_gfp`, `untlLive_eq_lfp`, `snceLive_eq_lfp` and
 `TotalEdge.certA_certifies` all `[propext, Classical.choice, Quot.sound]`, unchanged from
 Phase 2. Guarded build of `…PlusSlicedCertificate`: green, 1523 jobs.
+
+## Phase 5 -- the inner fixpoint hoisted out of the per-vertex filter
+
+`fwdLiveStep` / `bwdLiveStep` now bind a closure-indexed table once outside the filter lambda
+and read the liveness clause against it. `mem_fwdLiveStep` / `mem_bwdLiveStep` are stated in
+`untlLiveAt` / `snceLiveAt` exactly as before -- byte-identical propositions, re-proved through
+`untlLiveAtTab_eq` / `snceLiveAtTab_eq`.
+
+### The decisive measurement: an A/B at one library state, under the kernel
+
+`untlLiveAt` / `snceLiveAt` are left in the library untouched, so both clause shapes can be
+run side by side against the SAME built library, with no rebuild and no machine-variance
+confound. Two scratch files, each a `decide` on
+`(Nu.gfp' certA.verts (bwdStep? certA)).card = 16`, run serially:
+
+| clause shape | kernel `decide` wall clock |
+|---|---|
+| OLD, per-vertex (`snceLiveAt X v ψ`) | 25.9 s |
+| NEW, table (`snceLiveAtTab tbl v ψ`) | **24.4 s** |
+
+**The hoist is neutral under the kernel** -- 1.06x, which is inside run-to-run variance. The
+kernel's own whnf cache was already removing most of the per-vertex duplication the hoist
+targets, so there was less there to win than the `#eval` figures suggested. This is the same
+hazard D4 anticipated for the leaf cache, observed one phase early.
+
+### Under `#eval`, the hoist is a large win at the hard certificate and a small loss at the easy one
+
+| Figure | Phase 4 | Phase 5 | factor |
+|---|---|---|---|
+| `certA` `bwdLiveT.card` | 319248 ms | **58656 ms** | **5.4x better** |
+| `certA` `verts.card` | 1256 ms | 1241 ms | 1.0x |
+| embedded `(liveAt (-1)).card` | 1648 ms | 2188 ms | 0.75x -- **worse** |
+| embedded `fwdLiveT.card` | 727 ms | 860 ms | 0.85x -- worse |
+| embedded `bwdLiveT.card` | 183 ms | 228 ms | 0.80x -- worse |
+
+The split is coherent and is the counting argument in the module docstring made visible: the
+table pays a fixed cost of `|closure|` eager inner-fixpoint evaluations plus one bounded
+existential lookup per (vertex x closure member), and recovers `|X|`-fold duplication. At the
+embedded witness the inner fixpoint is cheap and the closure has 3 members, so the fixed cost
+dominates and the hoist costs ~25%. At `certA` the inner fixpoint is expensive and there are 16
+vertices, so the saving dominates and the hoist wins 5.4x. `certA` is the hard case this task
+exists for.
+
+### The module-build figure, stated honestly
+
+`PlusSlicedCertificate.Examples` built in 36 s (Phase 2), 34 s (Phase 4) and 41 s (Phase 5).
+That figure is **not** attributable to the hoist: the A/B above shows the hoist is neutral at
+`certA` under the kernel, and the module conflates two `decide` goals, which measured
+separately after this phase are `certA_certifies` 24.6 s and `liveFamily_sliced_certifies`
+5.6 s. Module-build wall clocks on a shared machine carry variance of this size. The A/B is the
+figure to cite; the module figure is recorded because it was observed, not because it isolates
+anything.
+
+Scope Hypothesis CONFIRMED on both halves: `untlLiveAt` / `snceLiveAt`'s own `match` arms give
+a non-`true` result at `.untl` and `.snce` only, so the two tables cover the whole clause set;
+and `grep -rn 'fwdLiveStep\|bwdLiveStep' FormalSystem/ Tests/` finds exactly one hit outside
+`LiveFix.lean` (`FixtureStable.lean:184`, 187), which routes through `mem_fwdLiveStep`.
+
+Axiom profiles: `untlLiveAtTab_eq`, `snceLiveAtTab_eq`, `mem_fwdLiveStep`, `mem_bwdLiveStep` all
+`[propext, Classical.choice, Quot.sound]`, no `sorryAx`. `lake exe lint-style` on `LiveFix.lean`:
+no finding. Guarded builds of `…PlusSlicedCertificate.LiveFix` (1221 jobs) and
+`…PlusSlicedCertificate` (1523 jobs): both green.

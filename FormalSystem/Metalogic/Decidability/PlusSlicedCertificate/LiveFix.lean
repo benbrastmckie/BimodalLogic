@@ -163,32 +163,147 @@ theorem snceLiveAt_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.TPos}
       exact fun hmem => G.snceLive_mono h g e (hψ hmem)
   all_goals simp [snceLiveAt]
 
+
+/-! ## The hoisted inner fixpoint
+
+`untlLive X g e` and `snceLive X g e` depend only on `(X, g, e)` — not on the vertex. The
+contractions below nevertheless evaluated them inside a filter over every `v ∈ X`, so the same
+inner fixpoint was recomputed once per vertex. The table below computes it once per
+*closure member* instead, and the two `_eq` lemmas make the change unobservable: the
+characterizations `mem_fwdLiveStep` / `mem_bwdLiveStep` are stated in terms of `untlLiveAt` /
+`snceLiveAt` exactly as before.
+
+The table is a `Finset.image`, not a `Finset.toList` traversal: `Finset.toList` is
+noncomputable, and the whole of this stack faces a kernel `decide`.
+
+The table form does evaluate the inner fixpoint eagerly at **every** table member, where the
+per-vertex form short-circuits at a vertex whose label carries no eventuality at all. That is
+still a net win, and the reason is a counting one rather than a hope: the eager count is
+`|closure|`, the short-circuiting count is at worst `|X| · |closure|`, and `|X|` — the vertex
+set — is the larger of the two by the factor this whole fix is about. The per-formula
+short-circuit itself is preserved: `untlLiveAtTab`'s `_ => true` arm still costs nothing at a
+closure member of the wrong shape.
+-/
+
+/-- The inner forward fixpoint as a total function of the formula, `∅` off the `untl` shape. The
+total form is what lets the table be a `Finset.image`. -/
+def untlLiveOf (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) :
+    PlusFormula → Finset G.TPos
+  | .untl g e => G.untlLive X g e
+  | _ => ∅
+
+/-- The backward mirror. -/
+def snceLiveOf (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) :
+    PlusFormula → Finset G.TPos
+  | .snce g e => G.snceLive X g e
+  | _ => ∅
+
+/-- The closure members paired with their inner forward fixpoint at the contracted set, built
+once per `X` instead of once per vertex of `X`. -/
+def untlTable (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) :
+    Finset (PlusFormula × Finset G.TPos) :=
+  (plusClosureOf (Γ ++ Del)).image fun ψ => (ψ, G.untlLiveOf X ψ)
+
+/-- The backward mirror. -/
+def snceTable (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) :
+    Finset (PlusFormula × Finset G.TPos) :=
+  (plusClosureOf (Γ ++ Del)).image fun ψ => (ψ, G.snceLiveOf X ψ)
+
+/-- The forward liveness clause read against a precomputed table. The existential is bounded by
+`tbl`, so the clause stays decidable by a bounded quantifier exactly as `untlLiveAt` is. -/
+def untlLiveAtTab (G : PlusSlicedCertificate Γ Del)
+    (tbl : Finset (PlusFormula × Finset G.TPos)) (v : G.TPos) : PlusFormula → Bool
+  | .untl g e =>
+      decide (PlusFormula.untl g e ∈ v.1.2.1 →
+        ∃ q ∈ tbl, q.1 = PlusFormula.untl g e ∧ v ∈ q.2)
+  | _ => true
+
+/-- The backward mirror. -/
+def snceLiveAtTab (G : PlusSlicedCertificate Γ Del)
+    (tbl : Finset (PlusFormula × Finset G.TPos)) (v : G.TPos) : PlusFormula → Bool
+  | .snce g e =>
+      decide (PlusFormula.snce g e ∈ v.1.2.1 →
+        ∃ q ∈ tbl, q.1 = PlusFormula.snce g e ∧ v ∈ q.2)
+  | _ => true
+
+/-- **Reading the table is reading the fixpoint**, at every closure member. -/
+theorem untlLiveAtTab_eq (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) (v : G.TPos)
+    {ψ : PlusFormula} (hψ : ψ ∈ plusClosureOf (Γ ++ Del)) :
+    G.untlLiveAtTab (G.untlTable X) v ψ = G.untlLiveAt X v ψ := by
+  cases ψ
+  case untl g e =>
+      simp only [untlLiveAtTab, untlLiveAt, decide_eq_decide]
+      constructor
+      · intro h hmem
+        obtain ⟨q, hq, hq1, hq2⟩ := h hmem
+        rw [untlTable, Finset.mem_image] at hq
+        obtain ⟨χ, _, hχ⟩ := hq
+        subst hχ
+        simp only at hq1
+        subst hq1
+        exact hq2
+      · intro h hmem
+        refine ⟨(PlusFormula.untl g e, G.untlLive X g e), ?_, rfl, h hmem⟩
+        rw [untlTable, Finset.mem_image]
+        exact ⟨PlusFormula.untl g e, hψ, rfl⟩
+  all_goals simp [untlLiveAtTab, untlLiveAt]
+
+/-- The backward mirror. -/
+theorem snceLiveAtTab_eq (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) (v : G.TPos)
+    {ψ : PlusFormula} (hψ : ψ ∈ plusClosureOf (Γ ++ Del)) :
+    G.snceLiveAtTab (G.snceTable X) v ψ = G.snceLiveAt X v ψ := by
+  cases ψ
+  case snce g e =>
+      simp only [snceLiveAtTab, snceLiveAt, decide_eq_decide]
+      constructor
+      · intro h hmem
+        obtain ⟨q, hq, hq1, hq2⟩ := h hmem
+        rw [snceTable, Finset.mem_image] at hq
+        obtain ⟨χ, _, hχ⟩ := hq
+        subst hχ
+        simp only at hq1
+        subst hq1
+        exact hq2
+      · intro h hmem
+        refine ⟨(PlusFormula.snce g e, G.snceLive X g e), ?_, rfl, h hmem⟩
+        rw [snceTable, Finset.mem_image]
+        exact ⟨PlusFormula.snce g e, hψ, rfl⟩
+  all_goals simp [snceLiveAtTab, snceLiveAt]
+
 /-! ## The two contractions and their fixpoints -/
 
 /-- **One forward contraction**: keep the vertices of `X` that continue inside `X` and can discharge
 every eventuality their own label carries without leaving `X`. -/
 def fwdLiveStep (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) : Finset G.TPos :=
+  let tbl := G.untlTable X
   X.filter (fun v => (∃ w ∈ G.succT v, w ∈ X) ∧
-    ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.untlLiveAt X v ψ = true)
+    ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.untlLiveAtTab tbl v ψ = true)
 
 /-- **One backward contraction**, the mirror. -/
 def bwdLiveStep (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) : Finset G.TPos :=
+  let tbl := G.snceTable X
   X.filter (fun v => (∃ w ∈ G.predT v, w ∈ X) ∧
-    ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.snceLiveAt X v ψ = true)
+    ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.snceLiveAtTab tbl v ψ = true)
 
 theorem mem_fwdLiveStep (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) (v : G.TPos) :
     v ∈ G.fwdLiveStep X ↔ v ∈ X ∧ (∃ w ∈ G.succT v, w ∈ X) ∧
-      ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.untlLiveAt X v ψ = true := Finset.mem_filter
+      ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.untlLiveAt X v ψ = true := by
+  simp only [fwdLiveStep, Finset.mem_filter]
+  refine and_congr_right fun _ => and_congr_right fun _ => ?_
+  exact forall_congr' fun ψ => forall_congr' fun hψ => by rw [G.untlLiveAtTab_eq X v hψ]
 
 theorem mem_bwdLiveStep (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) (v : G.TPos) :
     v ∈ G.bwdLiveStep X ↔ v ∈ X ∧ (∃ w ∈ G.predT v, w ∈ X) ∧
-      ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.snceLiveAt X v ψ = true := Finset.mem_filter
+      ∀ ψ ∈ plusClosureOf (Γ ++ Del), G.snceLiveAt X v ψ = true := by
+  simp only [bwdLiveStep, Finset.mem_filter]
+  refine and_congr_right fun _ => and_congr_right fun _ => ?_
+  exact forall_congr' fun ψ => forall_congr' fun hψ => by rw [G.snceLiveAtTab_eq X v hψ]
 
 theorem fwdLiveStep_subset (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) :
-    G.fwdLiveStep X ⊆ X := Finset.filter_subset _ _
+    G.fwdLiveStep X ⊆ X := fun _ hv => ((G.mem_fwdLiveStep X _).mp hv).1
 
 theorem bwdLiveStep_subset (G : PlusSlicedCertificate Γ Del) (X : Finset G.TPos) :
-    G.bwdLiveStep X ⊆ X := Finset.filter_subset _ _
+    G.bwdLiveStep X ⊆ X := fun _ hv => ((G.mem_bwdLiveStep X _).mp hv).1
 
 theorem fwdLiveStep_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.TPos} (h : X ⊆ Y) :
     G.fwdLiveStep X ⊆ G.fwdLiveStep Y := by
