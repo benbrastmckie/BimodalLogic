@@ -288,21 +288,6 @@ PROVENANCE OF THIS OBSERVATION. Surfaced conversationally while auditing recent 
 
 ---
 
-### 775. Residue index factorization lemma
-- **Effort**: high
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Parent**: Task 773
-- **Research**: [775_residue_index_factorization_lemma/reports/01_derivation-from-conclusion-stage.md]
-- **Plan**: [775_residue_index_factorization_lemma/plans/01_residue-index-parameter-refutation.md]
-- **Summary**: [775_residue_index_factorization_lemma/summaries/01_residue-index-parameter-refutation-summary.md]
-
-**Description**: Attempt the cell-index factorization lemma over the re-scoped six-coordinate residue-carrying index ladderIndexRes T P B = (q, min c T, c % (P+1), min n T, n % (P+1), clip (n - c) [-B, B]), or settle it negatively as its predecessor settled the three-coordinate candidate. The candidate survives all three falsification gates and its threshold T and period P are exhibited from the object (eventual periodicity of step-reachability) rather than assumed; the positive factorization lemma is OPEN and is stated nowhere in any shape. Surviving the gates is not evidence of truth: Count false false holds the countdown at 0 through an idle interval of any length while Drift moves the next deadline freely, so every second-region length is reachable from every pending state and there is no achievable window positioned by the residue coordinates to argue from. Gate any new candidate against all known refutation mechanisms before any proof attempt. A negative result is a successful outcome. Evidence: specs/775_residue_index_factorization_lemma/reports/01_derivation-from-conclusion-stage.md and the fourteenth wired probe specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean.
-
----
-
 ### 774. Refuted predicted reason recording
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
@@ -333,30 +318,6 @@ PROVENANCE OF THIS OBSERVATION. Surfaced conversationally while auditing recent 
 **NON-GOALS.** No change to task 773's landed work, which is complete and correct — the probe records the right reason. No re-opening of the ladder/cell-index factorization result itself. No new issue-log class invented without applying the recurrence criterion the taxonomy already specifies. No new plan-level required field added merely to close this record.
 
 **SOURCE-STORE BOUNDARY.** Every candidate edit target here lives in a deployed, regenerated tree: a hand edit under `.claude/**` is silently wiped by the next deploy. Resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension — for all documents named above this is core, at `/home/benjamin/.config/nvim/agent-system/extensions/core` — and edit at the mirroring path (`context/formats/plan-format.md`, `context/contracts/phase-closure.md`, `context/formats/issue-log.md`), then redeploy. Per `.claude/rules/source-store-deploy-boundary.md`. The deployed paths in `file_scope` are declared only so the overlap gate can see the collision surface; they are NOT the edit target.
-
----
-
-### 773. Ladder cell index factorization
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Parent**: Task 761
-- **Research**: [773_ladder_cell_index_factorization/reports/01_cell-index-factorization.md]
-- **Plan**: [773_ladder_cell_index_factorization/plans/01_cell-index-coordinate-obstructions.md]
-- **Summary**: [773_ladder_cell_index_factorization/summaries/01_cell-index-coordinate-obstructions-summary.md]
-
-**Description**: STATEMENT (library, research-first; the open cell-index sub-problem recorded by the ladder realization record and its blocker analysis at specs/761_ladder_realization_theorem/.blocker-research.json). The ladder realization half cannot be STATED without a computable index: hitOf requires [Fintype Q], the admissible ladder carrier LadderState Q pend := {x : Q × ℕ × ℕ // x.2.1 ∈ Adm pend x.1} is infinite, and the two-coordinate index Q × Fin (B+1) × Fin (B+1) is REFUTED uniformly in B (specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean: cell_ne, exhibited_form_refuted, exists_form_refuted). Separate three things the predecessor record conflates: (1) the SET of cells is finite and bounded — anchorCells_finite, anchorCells_ncard_le ≤ 2^(2^|cl φ|) are untouched and hold; (2) what is missing is a computable INDEXING FUNCTION, a Fintype I with a map LadderState Q pend → I through which cellAt factors; (3) the box/stab acceptance clause rides on that same index (stab_mem_tpOf_iff pins the stab letter per cell), so dropping the clause to make the structure writable would publish a same-named weaker statement.
-
-OUTCOME, RECORDED. The filed TARGET -- the gap-carrying three-coordinate index `(q, min c B, min n B, clip (n - c) [-B, B])` and its factorization lemma, in both the exhibited-bound and existential forms -- is REFUTED uniformly in B, machine-checked by the fourteenth wired probe specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean (cell_succ_ne, index_collide, ladderIndex_not_factoring, exhibited_form_refuted, exists_form_refuted). MECHANISM: `Count true true` admits no early discharge, so a pending region's first idle state sits at distance exactly c + 1, and `step` is independent of the counters, so it may alternate a tag per pending step and copy it onto the ending idle state, where an atom under `p U (r AND a)` reads c mod 2 at a distance no bound on c reaches (truth_phiP). The witnessing pair carries EQUAL next-deadlines and both gaps saturate the clip, so the countdown coordinate is what fails -- the gap coordinate is NOT what fails, and the earlier gap-coordinate refutation (cell_ne) is real and retained rather than displaced. The dispatch's one-part falsification gate was sound and non-vacuous (gate_separates for a clip bound of at least two, gate_collides_below_two below it, so the clip bound comes from the FORMULA and never from the counters) and the candidate it certified failed at a coordinate it never touched: a gate probing one coordinate certifies one coordinate.
-
-RE-SCOPED CANDIDATE, GATED THREE WAYS (the user's cycle-1 ruling, executed). The residue-carrying six-coordinate index `ladderIndexRes T P B = (q, min c T, c % (P+1), min n T, n % (P+1), clip (n - c) [-B, B])`, with T and P OBJECT-derived and B FORMULA-derived and the three never coupled. Gate 1, the gap pair that killed the two-coordinate index: gate_gap_separates, every clip bound of at least two. Gate 2, the parity pair that kills the three-coordinate index: gate_parity_separates, at a SYMBOLIC modulus (consec_mod_ne). Gate 3, run one region out and in the past direction through three enumerated bounded attempts: second_region_any_length, second_region_end_tag_achievable, second_region_sets_agree, gap_step_le, gap_region_start_le_one, gap_le_region_age, region_start_beyond_depth, clipped_gap_collides, third_region_any_length -- NO refutation found, on three attempts on one fixture family, which is not a proof that the general factorization holds. Gate 3's recorded refinement: the gap clip's formula-derivation must cover `snce`-nesting depth as well as X-nesting depth.
-
-EXHIBITED, NOT ASSUMED. The datum the region end exposes is step-reachability in c + 1 steps, and iteration of any endofunction of a finite type is eventually periodic (iterate_eventually_periodic), hence so is the reachability set of a finite object (reachN_eventually_periodic) -- which EXHIBITS the threshold T and the genuinely positive period P at which the two residue coordinates are taken.
-
-THE BOUNDED-CARRIER ALTERNATIVE IS CLOSED as a general route -- bounding the carrier instead of indexing it (bounded_ladder_finite, finBranch_eq_ofSlicedStep by `rfl`, bounded_width_validates_Phi_neg, Phi_neg_not_valid): its premise fails at the non-validity the finite-width limitation exhibits. Narrow carve-out: a bounded carrier remains available for a target that DOES have a finite-width countermodel, per not_finite_width_fmp's own disclaimer.
-
-OPEN. The positive factorization lemma -- for the re-scoped candidate or for any other index, in any shape -- is OPEN. It is stated nowhere, and no weakened, hypothesis-added or placeholder-bodied restatement of it exists. No index is claimed to factor the cells; no seventh coordinate was added; no bound of any kind and no complexity figure is claimed; no finiteness was added and anchorCells_finite / anchorCells_ncard_le stay untouched, so the SET of cells is still finite and bounded and only the computable INDEX is absent; the box/stab acceptance clause was never dropped. If the gated candidate falls in turn, the direction on record is a different presentation of a cell -- a set-valued per-state datum over a quotient -- and not a wider tuple; that successor choice is the user's.
 
 ---
 
@@ -393,20 +354,6 @@ DELIVERABLE HYGIENE. Every edited file lies outside `specs/**`, so its prose mus
 PROVENANCE. Raised during orchestration of the ladder-frame carrier repair work and approved at the lead level as an agent-system change request. The originating issue-log entry is in `specs/765_ladder_frame_carrier_repair_and_index_deletion/issues.jsonl`, entry_id `iss_1791760497369_ipMdVR` -- class `tool_side_effect`, severity `minor`, phase `implement`, dispatch_seq 2, resolution `worked_around`. The entry carried NO `suggested_channel` hint, so there is no hint-versus-decision override to state: the orchestrate lead classified it to the agent-system channel on its own judgment, on the ground that the remedy is agent-system guidance rather than repository work product.
 
 RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES AS FILED. `agent-system/extensions/core/agents/planner-agent.md` is DELIBERATELY EXCLUDED from this record's file_scope even though the plan-author audience makes it a tempting edit target: the plan-format blocked-decision-gate record already claims that path. If research concludes a matching line in `planner-agent.md` is genuinely necessary, add a serializing dependency edge at that point (`update-task-status.sh --depends-on-add`) rather than editing a file another record claims. No other active agent-system record touches the jq pattern file, `index-entries.json`, or `merge-sources/claudemd.md`; re-check that at admission time, since any concurrently filed record that adds a new context file will also touch `index-entries.json`.
-
----
-
-### 771. Task reference lint debt boneyard tests
-- **Effort**: small
-- **Status**: [COMPLETED]
-- **Task Type**: meta
-- **Topic**: decidability
-- **Dependencies**: Task 766
-- **Parent**: Task 760
-- **Research**: [771_task_reference_lint_debt_boneyard_tests/reports/01_lint-debt-already-cleared.md]
-- **Plan**: [771_task_reference_lint_debt_boneyard_tests/plans/01_verify-lint-gate-green.md]
-
-**Description**: check-task-references.sh --quiet exits non-zero on 198 pre-existing unexempted task-number citations -- all under Boneyard/ (archived READMEs) and Tests/BimodalTest (109 of them), none in any deliverable a recent dispatch touched. The lint is therefore unusable as a phase gate repo-wide, which a plan gate line did not anticipate. Exempt them under the task-reference-exemptions taxonomy (preferred where the citations are archival) or clean them, so that check-task-references.sh --quiet exits 0 and can serve as a gate again. Evidence: specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl entry iss_1791711120739_kf46Yo.
 
 ---
 
@@ -536,57 +483,6 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lean-challeng
 
 ---
 
-### 766. Clear task reference citation debt
-- **Status**: [COMPLETED]
-- **Task Type**: markdown
-- **Topic**: decidability
-- **Dependencies**: Task 760
-- **Parent**: Task 760
-- **Plan**: [766_clear_task_reference_citation_debt/plans/01_clear-task-citation-debt.md]
-- **Summary**: [766_clear_task_reference_citation_debt/summaries/01_clear-task-citation-debt-summary.md]
-
-**Description**: Clear the repo-wide task-number citation debt that fails check-task-references.sh. The gate exits non-zero on 198 pre-existing unexempted task-number citations: the bulk under Boneyard/ (archived READMEs) and 109 under Tests/BimodalTest. None sits in a file any recent dispatch touched -- the lint scoped to individual touched files exits 0 -- so this is standing debt, not a regression, and it makes the unscoped gate useless as a signal until cleared. For each occurrence decide between the sanctioned routes in .claude/context/standards/task-reference-exemptions.md: replace the citation with a durable anchor (a filename, section heading, decision-record name, or verified fact), or add the task-ref-ok marker where the occurrence is genuinely one of the exemption categories. Prefer durable anchors; use the marker only where the taxonomy actually licenses it. Verify with a full bash .claude/scripts/check-task-references.sh run exiting 0.
-
----
-
-### 765. Ladder frame carrier repair and index deletion
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 760
-- **Parent**: Task 760
-- **Plan**: [765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md]
-- **Summary**: [765_ladder_frame_carrier_repair_and_index_deletion/summaries/01_ladder-carrier-repair-index-deletion-summary.md]
-
-**Description**: Repair the ladderFrame carrier defect and the refuted deadline index in the successor records. Two findings landed as the twelfth wired evidence probe (specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean): (F1) ladderFrame's fwd/bwd seriality hypotheses quantify over the full carrier Q x N x N while Rlad requires an idle state to carry c = 0, so the hypotheses are unsatisfiable for every object and the frame has no instances -- Adm must be a carrier restriction, not a side condition; (F2) cell stabilization over the counter pair (c, n) is refuted for every bound, because the gap n - c stays observable through a closure of size 12 while each counter is arbitrarily large. Scope: the general salvage block already exists machine-checked and fully general over {Q} [Finite Q] [Nonempty Q] inside that probe (no_fwd, no_bwd_of_idle, Adm, LadderState and its Nonempty instance, RladAdm, RladAdm_fwd, RladAdm_bwd, ladderFrameAdm, ladderFrameAdm_isRegular, ladderModel), depends only on RunLayer.lean and ofSlicedStepFinBranch*, and carries zero new proof obligations -- the transplant is a copy plus wiring. Fix the filed statement's type shape en route: a sliced frame's world state is Z x W, so cellAt ... (q,c,n) z does not typecheck. GUARDRAILS: keep the fixture-bound statements (cell_ne, exhibited_form_refuted, exists_form_refuted and their Q = Bool support) in the evidence probe, landing only the general F1 negatives in the library, so no witness fixture enters a library module; leave ladderFrame in RunLayer.lean instance-free and C14-pinned, adding ladderFrameAdm alongside rather than repairing in place. The refuted index Q x Fin (B+1) x Fin (B+1) has NO proved replacement anywhere -- the candidate (q, min c B2, min n B2, clip (n - c)) is research-level and unproved -- so the dependent records must have the refuted index claim DELETED and recorded as an open sub-problem, never re-stated over a concrete substitute, which would file an unproved claim. The cell set itself is untouched: anchorCells_finite and anchorCells_ncard_le still stand, so what was lost is the computable index of which cell a ladder state has, not the finiteness of the set of cells. No upper bound, no complexity claim; every quantity is a count. Durable anchors only outside specs/**.
-
----
-
-### 764. Specs only gate and task reference lint debt
-- **Effort**: medium
-- **Status**: [COMPLETED]
-- **Task Type**: meta
-- **Topic**: decidability
-- **Dependencies**: Task 771
-- **Parent**: Task 757
-- **Research**: [764_specs_only_gate_and_task_reference_lint_debt/reports/01_specs-only-gate-and-lint-debt.md]
-- **Plan**: [764_specs_only_gate_and_task_reference_lint_debt/plans/01_gate4-fix-and-lint-debt-closure.md]
-- **Summary**: [764_specs_only_gate_and_task_reference_lint_debt/summaries/01_gate4-fix-and-lint-debt-closure-summary.md]
-
-**Description**: Close the specs/**-only phase verification gap and the repo-wide task-reference lint debt
-
-WHY THIS EXISTS. Two verification findings recorded during the L+ successor-task-set round, both worked around rather than fixed, and both about what a gate actually attests to rather than about any mathematics.
-
-(1) THE SPECS-ONLY COVERING CHECK ATTESTS TO NOTHING. `verify-deploy.sh --only-gate 3,4` was used as the covering check for a newly written `specs/**` document. In a deploy-consumer tree both gates SKIP — doc-lint and the task-reference lint apply only to the source store — so the invocation exits 0 having run 0 checks. An exit-0 that verified nothing is worse than no check at all, because a plan item can cite it as satisfied. Decide what a phase whose entire `Files to modify` set lies under `specs/**` should actually attest to, and make the chosen gate either run real checks in a consumer tree or report explicitly that it is inapplicable here (a distinguishable exit or a loud SKIP summary), rather than silently exiting 0 with a zero check count. Re-derive the current SKIP behaviour from `verify-deploy.sh` before acting; this description reflects a reading from 2026-10-10.
-
-(2) THE REPO-WIDE TASK-REFERENCE LINT CANNOT REACH 0. `check-task-references.sh` exits 1 on roughly 198 pre-existing occurrences outside `specs/`, concentrated in `Boneyard/**` READMEs and similar, none of them in a file the originating round touched. The count is a standing-debt signal, not a regression signal, so any plan attestation naming "`check-task-references.sh` exits 0" as a criterion is unsatisfiable today and gets annotated as altered every time. Re-count first, then choose one disposition and carry it through: clean the occurrences, extend the exemption taxonomy in `context/standards/task-reference-exemptions.md` to cover the classes that are legitimately exempt (`Boneyard/**` is a plausible candidate — argue it, do not assume it), or give the script a baseline mode so a new occurrence is distinguishable from the standing set. The `task-ref-ok` marker convention and `scripts/lib/task-reference-patterns.sh` are the mechanical source of truth; any exemption decision lands there and in the standards file, never as a one-off suppression at a call site.
-
-SCOPE. Both halves are changes to the agent system in the source store resolved via `.claude-extensions.json`, never hand-authored under `.claude/**`. Each half may be done independently; sequence them in whatever order the plan prefers.
-
-NON-GOALS. No change to any gate's pass criteria beyond what (1) and (2) name. No mass rewrite of `Boneyard/**` content itself — if cleaning is the chosen disposition for (2), it is a mechanical task-number-reference edit, not a content revision. No new lint.
-
----
-
 ### 763. Ladder lift decidability corollary
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -608,31 +504,6 @@ GUARDRAILS: (a) the ladder object is a time-axis object over the closure alphabe
 FILE SCOPE: new `Lift.lean` plus the shared library set. Durable anchors only outside specs/**. Cross-set collisions left to the admission gate: 744, 410. Logical edges on T4 and T5.
 
 NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Sections C, D and H6.
-
----
-
-### 762. Hit presented general row
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 759
-- **Research**: [762_hit_presented_general_row/reports/01_hit-presented-general-row.md]
-- **Plan**: [762_hit_presented_general_row/plans/01_hit-presented-general-row.md]
-- **Summary**: [762_hit_presented_general_row/summaries/02_hit-presented-general-row-summary.md]
-
-**Description**: STATEMENT (library, research-first; new module `RaySummary/HitComplete.lean`). Requirement (C)'s general row, verbatim from the RaySummary README's verdict table and "(W) … obligation (ii)" item 2 — run-layer phase 3, the completeness half (model → object): for every regular ℤ-model M, seam (τ, t), formula φ and depth 1 ≤ k, a finite labelled presentation with a computable bound in φ:
-  `theorem exists_hitPresented (M : TaskModel F.toTaskFrame) [F.IsRegular] (τ) (t) (φ) (k) (hk : 1 ≤ k) : ∃ (Q : Type) (_ : Fintype Q) (_ : DecidableEq Q) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool), Fintype.card Q ≤ sizeBound φ k ∧ HitPresented M τ t φ lab step k`
-with `sizeBound φ k` a COUNT exhibited in the statement (the fixture's was `Nat.card (KType (clSig Fp) k) + 6`, `card_QA_presentationSize`), never an ∃ L and never a complexity bound. `HitPresented` is `RaySummary/Trace.lean`'s Hit-level hypothesis; the trace-level `Presented` is refuted as a completeness carrier (`Probe735.not_presented`) and is not the statement.
-
-STATUS: OPEN MATHEMATICS. One positive fixture (`Probe745.hitPresented_modelA`, box/stab-free, finite-width slice), no Hit-level negative anywhere, no general argument. The research phase of this record comes FIRST and must re-derive the statement against the tree, including T2's verdict: if T2 returned a Hit-level negative this statement is false and the record is a Stage 0 user matter — do not re-scope or abandon it as an agent. Ingredients that exist: `kTypeOf_listSeg_replicate_eventually_periodic_bounded` (Compose.lean), `inFamily_of_shrink_run` (Transport.lean; shrink direction, single segment); the unconditioned transport ↔ (threshold 3·(m₀+p)) is a recorded non-goal of the bound-half record and may be needed here. HWZ 2000 Def. 12/Thm 14 and GKWZ 2003 Thm 13.6 are indexed (`specs/literature-index.json`) as the literature description of the quasimodel-realisation step; they orient the shape and source no claim — dispatch with --lit.
-
-CONTINGENCY. If the general argument does not close, the honest outcome is [BLOCKED] with the obstruction recorded; never sorry, axiom, vacuous definition, an external Büchi/MSO decidability theorem cited in place of a proof, or a finite-width/finite-fibre hypothesis smuggled into M.
-
-GUARDRAILS: (a) `HitPresented` is over the closure alphabet `clSig φ`; (b) M ranges over ALL regular ℤ-models — no width or fibre assumption; (c) `sizeBound` is a count, no running-time claim, the held 2EXPTIME ceiling rules proposals out only; (d) zero debt, no cslib require; (e) if the landed form is forward-only (as every (C)/(S) fixture is), say so; nothing bears on ⊡(Pp).
-
-FILE SCOPE: new `HitComplete.lean` plus the shared library set. Durable anchors only outside specs/**. Cross-set collisions left to the admission gate: 744, 410. Logical edge on T2; serialization edge on T4 (shared set).
-
-NOT COSTABLE, and why: no argument exists in the tree to size it against. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section B and H5.
 
 ---
 
@@ -669,121 +540,6 @@ NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); 
 
 ---
 
-### 760. Ladder model cell stabilization lemma
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 758, Task 759
-- **Research**: [760_ladder_model_cell_stabilization_lemma/reports/01_ladder-cell-stabilization-refuted.md]
-- **Plan**: [760_ladder_model_cell_stabilization_lemma/plans/02_land-salvaged-ladder-model.md]
-- **Summary**: [760_ladder_model_cell_stabilization_lemma/summaries/02_land-salvaged-ladder-model-summary.md]
-
-**Description**: STATEMENT (library, over a general finite object; new module `RaySummary/LadderModel.lean`). First a MODEL on the landed frame, since `ladderFrame` (`RaySummary/RunLayer.lean`) is a `FrameOver intOrder` and `cellAt` needs a `TaskModel`:
-  `def ladderModel (step : Q → Q → Bool) (pend : Q → Bool) (fwd) (bwd) (lab : Q → Atom → Bool) : TaskModel (ladderFrame step pend fwd bwd).toTaskFrame`  -- valuation reads the object component q
-then the admissibility set `Adm` (named in the RaySummary README as "c ∈ Adm q … named here and not costed", defined nowhere — this record defines it: which objects supply `ladderFrame`'s `fwd`/`bwd`; a pending state at `c = 0` needs a discharging successor), and the lemma, over BOTH ladder counters:
-  `theorem ladderCell_stabilizes (φ : PlusFormula) … : ∀ (q : Q) (c c' n n' : ℕ) (z : ℤ), (plusSubformulaClosure φ).card ≤ c → (plusSubformulaClosure φ).card ≤ c' → (plusSubformulaClosure φ).card ≤ n → (plusSubformulaClosure φ).card ≤ n' → cellAt (ladderModel …) φ (q, c, n) z = cellAt (ladderModel …) φ (q, c', n') z`
-with the bound `B := (plusSubformulaClosure φ).card` EXHIBITED in the statement; fallback `∃ B : ℕ, ∀ q c c' n n' z, B ≤ c → … → cellAt … = cellAt …` if the exhibited bound fails. Either form yields finitely many deadline classes per counter and a finite cell index `Q × Fin (B+1) × Fin (B+1)`, which the realization record builds on.
-
-WHY BOTH COUNTERS. `Count` (`RunLayer.lean`): while pending `c' + 1 = c` (the region ends in exactly c steps — a letter needing d more steps is absent at c < d); at an idle state `c' = n` (the next region's length is n — a letter looking d steps into it depends on n for n < d). The README's "in the deadline counter c" is a shorthand; its "cells indexed by (q, deadline class)" is correct read as the class of the pair. Agent decision (D2/D3 of the design record), re-openable by /revise: this lemma is its own record, split from the realization theorem at the costability boundary the README draws ("no cost figure until that lemma is stated"); fold back with one /revise if preferred.
-
-B IS A COUNT. The sentence the tree attaches to `anchorCells_ncard_le` applies verbatim: a cardinality bound on cells, syntactic in |cl φ|, not a complexity bound of any kind. Depth: none (cells are closure-type sets); the run layer's consumer depth is k = 1.
-
-CONTINGENCY. If T1 refuted stabilization at the fixture, the ∃ B form is false too: mark [BLOCKED] with the obstruction in the plan file. Never sorry, axiom, vacuous definition, trace-level (`Presented`) hypothesis, or a capped ladder (`Probe750.capped_carrier_finite` shows that carrier finite — the shape `not_finite_width_fmp` refutes).
-
-GUARDRAILS: (a) time-axis object over the closure alphabet; (b) the slice `Q × ℕ × ℕ` is infinite (`Rlad_slice_infinite`) — the lemma bounds the INDEX of cells, never the fibre; (c) no upper bound; (d) zero debt, no cslib require; (e) direction-neutral statement, but every probe it is compared with is forward-only — say so.
-
-FILE SCOPE (shared library set). New `LadderModel.lean`; aggregator `RaySummary.lean` and `FormalSystem.lean`; C14 pins in `KTypeSummaryAxiomTest.lean` and `scripts/check-module-invariants.sh`; `docs/theorem-index.md` rows (count-not-complexity sentence); the RaySummary README; `typst/generated/status.typ` (regenerated by the pre-commit hook). Durable anchors only outside specs/** — no task numbers. Cross-set collisions left to the admission gate: 744 (README, invariants script), 410 (status.typ). Logical edge on T1; serialization edge on T2 (README).
-
-NOT COSTABLE, and why: the bound shape and `Adm` are fixed by T1's verdict; no comparable statement exists in the tree (the anchor layer, 418 lines, is a different kind of statement). Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section A and H3.
-
----
-
-### 759. Node hit presented probe
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 758
-- **Research**: [759_node_hit_presented_probe/reports/01_node-hit-presented-probe.md]
-- **Plan**: [759_node_hit_presented_probe/plans/01_node-hit-presented-probe.md]
-- **Summary**: [759_node_hit_presented_probe/summaries/01_node-hit-presented-probe-summary.md]
-
-**Description**: STATEMENT. A wired probe on the LIBRARY fixture `NoFiniteWidth.M` at a seam `(t, Node.pre k)` with `τ` the canonical history through it (`canon`, `path_eq_canon`), for a ⊡-bearing formula `Φ'` := the fixture witness `Φ`, fallback `D`, then `⊡Xp` (recorded in that order in the header; the chosen formula is written into the statement), at every depth `1 ≤ k`. EITHER headline is the deliverable, and the probe records which:
-  `theorem hitPresented_node (t : ℤ) (k : ℕ) (hk : 1 ≤ k) : HitPresented NoFiniteWidth.M τ t Φ' (labN L) (stepN L) k`  -- positive: a presentation of size L, exhibited as a COUNT in the statement (as `presentationSize k = Nat.card (KType (clSig Fp) k)` is in `Probe745.hitPresented_modelA`), never ∃ L
-  `theorem not_hitPresented_node (t : ℤ) (k : ℕ) (hk : 1 ≤ k) {Q} [Fintype Q] [DecidableEq Q] (lab) (step) : ¬ HitPresented NoFiniteWidth.M τ t Φ' lab step k`  -- negative: (C)'s general row is FALSE
-`HitPresented` is `RaySummary/Trace.lean`'s Hit-level hypothesis (family-triple SETS); the trace-level `Presented` is refuted as a completeness carrier by `Probe735.not_presented` and must not be used.
-
-WHY THIS IS THE HIGHEST-INFORMATION PROBE ON THE FRONTIER. The only Hit-level positive, `Probe745.hitPresented_modelA`, is box/stab-free (`Fp`) on a finite-width slice (`Fin 3`); the general row ranges over ⊡-bearing φ and infinite-width models — the two axes along which the refutations live — and nothing in the tree tests `HitPresented` on either. `Node` is both at once. A Hit-level negative would be the first in the tree and would block route R1 at (C); Stage 1 proceeds on R1 alone with no fallback. THAT OUTCOME IS A STAGE 0 USER RULING, NEVER AN AGENT TRANSITION: record it in the probe header, leave the general-row and lift successors to the user, and do not abandon or re-scope them yourself. A positive extends the model-A truncation argument (`kTypeOf_listSeg_replicate_eventually_periodic_bounded`, `inFamily_of_shrink_run`; on `Node` the single-segment containment is a fixture fact as `run_subset_middle` was) to infinite width and ⊡-letters.
-
-GUARDRAILS: (a) the alphabet is `clSig Φ'`, closure-indexed; (b) infinite width, no finiteness added; (c) `L` is a count of states, never a running time or an ∃ L; (d) zero debt — no automata library, no Büchi/MSO citation, no cslib require; (e) forward-only: the header must say nothing here bears on ⊡(Pp), and ⊡-letters are not claimed to discriminate between devices. No sorry, axiom or vacuous definition: if neither headline closes, mark [BLOCKED] with the goal state recorded.
-
-FILE SCOPE. The new probe file; one WIRED entry in `scripts/check-evidence-probes.sh`; one sentence in the RaySummary README (durable anchors only, no task numbers). Cross-set collisions left to the admission gate: 734 (script), 744 (README). Serialization edge on T1 (shared script and README), not a logical dependency.
-
-COSTABLE: yes, with a wide band — basis `hit-presented-model-a.lean` (1595 lines; two implement dispatches under --hard per 749's summary, carried-unverified); a negative is cheaper than a positive. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section B and H2.
-
----
-
-### 758. Node cell stabilization probe
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [758_node_cell_stabilization_probe/reports/01_node-cell-stabilization-probe.md]
-- **Plan**: [758_node_cell_stabilization_probe/plans/01_node-cell-stabilization-probe.md]
-- **Summary**: [758_node_cell_stabilization_probe/summaries/01_node-cell-stabilization-probe-summary.md]
-
-**Description**: STATEMENT. A wired probe on the LIBRARY fixture `NoFiniteWidth.M` (`PlusSlicedCertificate/Limits/NoFiniteWidth.lean`; regular by `F_isRegular`, histories canonical by `path_eq_canon`), the one-region special case of the deadline ladder, for its own ⊡-bearing witness `Φ` (fallback `D`, recorded in the probe header in that order; the chosen formula is written into the statements):
-  `theorem preCell_stable (k k' : ℕ) (hk : 1 ≤ k) (hk' : 1 ≤ k') (z : ℤ) : cellAt M Φ (.pre k) z = cellAt M Φ (.pre k') z`
-  `theorem preCell_zero_ne (z : ℤ) : cellAt M Φ (.pre 0) z ≠ cellAt M Φ (.pre 1) z`  -- the deadline index is real
-  `theorem postCell_stable (k k' j j' : ℕ) (hj : 1 ≤ j) (hj' : 1 ≤ j') (z : ℤ) : cellAt M Φ (.post k j) z = cellAt M Φ (.post k' j') z`  -- the thread index is invisible
-with `cellAt` from `RaySummary/AnchorLayer.lean` (time-independent by `cellAt_eq_cellAt`). Depth: none — cells are sets of closure types, no k occurs.
-
-WHY. Run-layer phase 2's FIRST statement is the stabilization of realized cells on the ladder (`RaySummary/README.md`, "(W): what landed and what did not", obligation (ii) item 1); the record that states it for a general object (its successor) has no cost figure until this probe reports. 750's mitigation R-A: prove or refute stabilization on `Node` first, where the expected cells are `pre 0`, `pre (≥ 1)`, `x`, `post`. The probe imports the library model and re-proves nothing.
-
-EITHER VERDICT IS THE DELIVERABLE. Stabilization at bound 1 confirms the mechanism (branch-time saturation). A failure IS the obstruction the README names: record it in the probe header as such and mark the task [BLOCKED] — never a sorry, an axiom, a vacuous definition, or a finite-fibre retreat (the capped ladder is refuted by `Probe750.capped_carrier_finite` + `not_finite_width_fmp`).
-
-GUARDRAILS (ROADMAP Stage 1): (a) cells are closure-indexed sets over the time axis, never one bit per depth; (b) `Node` has infinite width and the probe adds no finiteness; (c) no bound of any kind is claimed — the probe counts cells; (d) zero debt: no external Büchi/MSO lemma, no cslib require; (e) the fixture's witness is forward-looking and the header must say the result is forward-only — nothing here bears on ⊡(Pp), and no claim that ⊡-letters discriminate between devices.
-
-FILE SCOPE. The new probe file; one WIRED entry in `scripts/check-evidence-probes.sh`; one sentence in the RaySummary README's evidence paragraph (durable anchors only — no task numbers, no record-versioning language). Cross-set collisions, left to the admission gate (no edge): 734 ([PARTIAL], Stage 0) and 744 (not_started) also declare the script and the README respectively.
-
-COSTABLE: yes — 400-800 lines, 1-2 implement dispatches (basis: `backward-dual-asymmetric-fixture.lean`, 619 lines, same fixture; `deadline-ladder-branching.lean`, 103 lines). Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Section A and H1.
-
----
-
-### 757. Lplus decidability successor task set
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [757_lplus_decidability_successor_task_set/reports/01_lplus-successor-task-set.md]
-- **Plan**: [757_lplus_decidability_successor_task_set/plans/01_lplus-successor-task-set.md]
-- **Summary**: [757_lplus_decidability_successor_task_set/summaries/01_lplus-successor-task-set-summary.md]
-
-**Description**: Research, design, and file the successor task set that carries L+ decidability — the unfiled frontier after the (C)/(S)/(W) partial landings
-
-AIM. `Decidable (PlusValidZTime φ)` — decidability of L⁺ over discrete time. This record is the programme-level round that converts the three OPEN frontier obligations into filed, costable task records. It is the successor to the archived programme-review line (`specs/archive/721_decidability_programme_review_l_and_lplus`, `specs/archive/718_omega_sequence_decidability_full_lplus`, `specs/archive/700_lplus_completeness_programme_survey`) and inherits their deliverable format while going one step further: those records explicitly "file nothing", and filing is in scope here by user instruction.
-
-WHY THIS EXISTS. Three successor obligations are named in the tree and filed nowhere. `specs/750_w_run_layer_closure_wide_lift/summaries/01_w-run-layer-ladder-scheme-summary.md`'s Follow-ups section names the first two in its own words — "its own record" for each — and the third falls out of the RaySummary verdict's (S) row:
-  (1) RUN-LAYER PHASE 2, soundness half: state and prove stabilization of realized type sets in the deadline counter `c` for `ladderFrame`. No cost figure exists until that lemma is stated.
-  (2) RUN-LAYER PHASE 3, completeness half: this IS (C)'s general regular-ℤ row. Open.
-  (3) (S) BEYOND ITS LANDED CORNER: `box`/`stab`-bearing `φ`, and every seam but the one.
-Re-derive all three against the tree before acting; this description's reading is from 2026-10-10 and the RaySummary README's "The verdict" table is their authority, not this text.
-
-THE LANDED PERIMETER, to be re-verified not trusted. `Compression.decidableValidZTime` decides `ValidZTime` for `Syntax.Formula` only — L, not L⁺ — at `FrameClass.ZTime`, empty premises, axiom profile `[propext, Classical.choice, Quot.sound]`. L⁺ needs its own route because (C5) `StabFaithful` is not stateable over `Formula`. (C) landed its probe half (`Probe745.hitPresented_modelA`) and its bound half ON ONE FIXTURE as a cell count (`presentationSize k = Nat.card (KType (clSig Fp) k)`). (S) landed `presented_modelOf` with corollary `hitCl_modelOf_eq_hitOf`, for `hφ : φ.BoxStabFree` at one seam, trace level. (W) landed its anchor layer with the bound `anchorCells_ncard_le` (`≤ 2 ^ (2 ^ |cl φ|)`, a count of cells) and its run-layer frame scheme `ladderFrame`/`ofSlicedStepFinBranch` (obligation (i) regularity part, obligation (iii) discharged, depth `k = 1`); obligation (ii) is open in both halves.
-
-MACHINE-CHECKED NEGATIVES THAT CONSTRAIN EVERY PROPOSAL. The finite-carrier finite model property is REFUTED, unconditionally and not rescued by the CTL-like fragment. `Presented` is REFUTED as a completeness carrier by `Probe735.not_presented`, for every finite state type, labelling and step relation — it is a soundness device only. `exists_tailStable_repr` is refuted by `FixtureStable.lean`. The SLICED finite model property is genuinely open and nothing in the tree bears on it.
-
-ROUTE POSTURE, from `specs/ROADMAP.md` Stage 1. R1 (gluing) ALONE; there is no fallback. R2 (mosaics) is a CONSUMER of R1, not an alternative — deciding mosaics presupposes deciding `⊡`. R4 (filtration) is CLOSED by `no_finite_carrier_sat` and `not_finite_width_fmp`; cite those library names. R5 (FO translation) is low value and routes back to R1. None of these verdicts is to be re-litigated by this record.
-
-GUARDRAILS every filed successor must satisfy, carried from the ROADMAP's own list. (a) The substrate works over the TIME AXIS with a finite alphabet of per-time summaries, never over states, and that alphabet is CLOSURE-INDEXED — the depth-2 value is machine-checked not a function of the depth-1 stratum, so any phase assuming one bit per depth reproduces a refuted shape. (b) Gluing does not bound the fibre; any phase reintroducing a finite-fibre or finite-width assumption reproduces a refuted shape. (c) NO UPPER BOUND is claimed anywhere — every quantity in the tree is a count of cells, never a running time, and the held 2EXPTIME ceiling rules proposals out rather than supplying an upper bound. (d) ZERO DEBT: no external Büchi/MSO lemma cited in place of a proof, and no `require` on `~/Projects/cslib/` (read-only reference; a require edge drags the tree 76 Mathlib commits forward). (e) Two limits on claims: the `⊡(Pp)` backward side is fixed only by `Probe719Backward.pastStab_iff_allBwdPathsMeet` with no backward Bool-fixture bridge, so a forward-only result must say so rather than implying symmetry; and `⊡(Fp)`/`⊡(Pp)` are device-inert on finite fixtures, so no filed record may claim they discriminate between devices.
-
-SCOPE. (1) Re-verify the three obligations' current status against the tree by declaration name, recording the compile record the way the precedent format does (import `FormalSystem`, print types and axiom profiles). (2) Design the decomposition: for each obligation decide whether it is one record or several, what its first statement is, which depth `k` it fixes, and what its dependency edges and `file_scope` are — the latter matters because the precedent notes the run-layer and bound-half records serialize through their shared `RaySummary/README.md` and `docs/theorem-index.md` territory rather than through a dependency edge. (3) Write a followup-scope-spec in the precedent format (`specs/archive/721_.../followup-scope-spec.md`), including a Section 0 verification record re-checking every anchor cited. (4) FILE the successor tasks — this is the step the precedent records deliberately omit and the reason this record exists. Each filed task must carry a declared `file_scope`, a per-phase `Files to modify` plan when it reaches planning, and a statement shape rather than a prose goal. (5) Record which obligations are NOT costable yet and why, rather than inventing a figure.
-
-NON-GOALS, stated so they are not swept in. No attempt on the mathematics itself — this record researches, designs and files; it proves no obligation. No re-attempt of R4 or R5. No fourth certificate class: no class presenting finite per-time fibres is complete whatever its clauses, both halves of that obstruction being landed under `PlusSlicedCertificate/Limits/`. No upper-bound claim. No transition of the Stage 0 tasks reserved for user rulings — the `[BLOCKED]` marker correction, the re-ruling on the CTL-like fragment record's value, the held 2EXPTIME ceiling, and the `[PARTIAL]` mosaics route are the user's to rule on and this record may describe but never move them. No edit to the sliced-certificate sub-front already filed as its own live tasks.
-
-DELIVERABLE HYGIENE. The followup-scope-spec lives under `specs/**` so task-number citation is permitted there; any edit this record makes to a deliverable file outside `specs/**` (e.g. a README or `docs/theorem-index.md`) must carry no task-number references and no record-versioning language, citing durable anchors — declaration names, file names, section headings — only.
-
----
-
 ### 756. Repin lem nullity after paper strengthening
 - **Effort**: small
 - **Status**: [NOT STARTED]
@@ -811,69 +567,6 @@ SCOPE. (1) Re-pin the `lem:nullity` block and its sha256 in `docs/reference/pape
 ACCEPTANCE. `scripts/check-paper-definitions.sh` exits 0 against the live paper; `lake build` green; `scripts/readme-lint.sh` and `scripts/check-module-invariants.sh --no-build` still exit 0; no docstring claims a verbatim quotation it does not reproduce.
 
 NON-GOALS: no new Lean declarations — `nullity_identity` already exists; no change to the four frame axioms or to Nullity's derived status; no edit to the paper itself.
-
----
-
-### 755. Plan files to modify unenforced
-- **Effort**: small
-- **Status**: [COMPLETED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-- **Research**: [755_plan_files_to_modify_unenforced/reports/01_files-to-modify-unenforced.md]
-- **Plan**: [755_plan_files_to_modify_unenforced/plans/01_files-to-modify-enforcement.md]
-- **Summary**: [755_plan_files_to_modify_unenforced/summaries/01_files-to-modify-enforcement-summary.md]
-
-**Description**: A plan artifact can omit the `Files to modify` field that `plan-format.md` marks REQUIRED, pass validation with zero warnings, and leave the task's `file_scope` null — which makes the task invisible to the admission overlap gate.
-
-EVIDENCE (all three verified mechanically, not inferred):
-
-1. `context/formats/plan-format.md:108` declares `- **Files to modify:** (required)` as a per-phase field, and line 149 freezes the heading text because three independent consumers embed it.
-2. `scripts/validate-artifact.sh` contains NO check for the field — a grep for `files to modify` / `files_to_modify` over the whole script returns zero hits. A plan missing every occurrence of a REQUIRED field therefore validates clean.
-3. `scripts/plan-file-scope-harvest.sh` returns `[]` when no `Files to modify` block is present, and its own header comment (line 15) classifies that as a normal outcome rather than an error. The union-merge in `update-task-status.sh` then adds nothing, leaving `file_scope` as it was — `null` for a task that never had one.
-
-LIVE INSTANCE: task #410 (`internalize_tableau_branches_and_prove_routine_rule_admissibility`) is at status `planned` with `file_scope: null`. Its plan `plans/01_internalize-routine-admissibility.md` contains zero `Files to modify` headings. The harvest ran at plan postflight and correctly returned `[]`; nothing anywhere reported that a required field was missing.
-
-POPULATION: 25 of 55 active tasks carry a null or empty `file_scope`. Most are `not_started` and have no plan yet, so they are not evidence of this defect; #410 (`planned`) is the clean instance, and #219 (`researched`) has no plan artifact at all. The 25-task figure is context for how large the gate's blind spot currently is, not a claim that all 25 share this cause.
-
-WHY THIS MATTERS: `file_scope` is what the orchestrator's admission gate uses to detect territory collisions between tasks. A null scope is not "no collisions" — it is "collisions undetectable". The in-batch defer that correctly serialized two recent tasks only fired because both declared the overlapping path.
-
-SCOPE: (1) Decide where the missing-required-field check belongs — `validate-artifact.sh`'s plan mode is the obvious site, since it already runs at plan postflight and already has a warning channel. (2) Decide the tier: a plan with no `Files to modify` in any phase is a different severity from one where a single phase omits it; the field is per-phase. (3) Decide whether `plan-file-scope-harvest.sh` should distinguish "no block found anywhere" (suspicious) from "block found, lists no paths" (legitimate, e.g. a pure-verification phase) — today both return `[]`. (4) Backfill #410's `file_scope` from its plan's actual content as the regression fixture, and confirm a re-run of the harvest on a repaired plan produces a non-empty scope.
-
-NON-GOALS: no change to the frozen `Files to modify` heading text or its grammar; no change to the union-merge semantics in `update-task-status.sh` (that is a separate record's territory); no retroactive scope backfill across all 25 null-scope tasks, most of which simply have no plan yet.
-
-RELATION TO ADJACENT RECORDS: distinct from the record covering generated surfaces absent from the harvested set (that one assumes the block exists and is incomplete; this one is the block being absent entirely), and distinct from the record covering the union-merge's silence on the write path (that one is observability of a merge that happened; this one is a merge that never had input). The edit target is the SOURCE STORE mirroring these deployed paths, resolved via `.claude-extensions.json`'s `source_dir`, per `.claude/rules/source-store-deploy-boundary.md`. The deployed `.claude/` tree was reported STALE for the `core` extension when this was found — redeploy via `deploy-headless.sh` before reasoning from the deployed copy.
-
----
-
-### 754. plan postflight widens file_scope silently
-- **Status**: [COMPLETED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-- **Research**: [754_plan_postflight_file_scope_widening_silent/reports/01_file_scope_widening_notice.md]
-- **Plan**: [754_plan_postflight_file_scope_widening_silent/plans/01_file-scope-widening-notice.md]
-- **Summary**: [754_plan_postflight_file_scope_widening_silent/summaries/01_file-scope-widening-notice-summary.md]
-
-**Description**: Make the plan-postflight file_scope widening observable instead of silent
-
-READ THIS FIRST -- THE ORIGINATING CHANGE REQUEST'S PREMISE WAS WRONG, AND THE RESIDUE IS NARROW. The request that produced this record asked for "a reconciliation step so that a plan's enumerated 'Files to modify' set is compared against the task's declared file_scope at plan postflight, and the divergence is either harvested into file_scope or surfaced". The harvest-and-widen half ALREADY EXISTS AND ALREADY WORKS; do not rebuild it. `scripts/plan-file-scope-harvest.sh` unions every phase's `Files to modify` list from the latest plan artifact and both live plan-postflight paths forward it as `--file-scope-add=<json>` to `scripts/update-task-status.sh`, whose jq clause `(.file_scope) |= ((. // []) + $add | unique)` is an ADDITIVE union-merge onto whatever the task already declared. Verified against the originating evidence: the task that triggered the request declared a 5-path file_scope at research postflight and a 10-path one at plan postflight (`git log -- specs/state.json`, commit subject `create implementation plan`), and the harvester re-run on that task's own plan reproduces 9 of those 10 paths exactly -- including every one of the four files the issue-log entry said were missing. The reconciliation fired and resolved the gap, which is precisely what that entry's own closing sentence predicted. Re-derive this before acting; it is a measurement, not a contract.
-
-THE ACTUAL DEFECT: THE WIDENING IS UNANNOUNCED. `update-task-status.sh` echoes the merge ONLY under `--dry-run` ("state.json: file_scope union-merge -> add ..."). On the real write path -- both the `state_is_noop` arm and the main PHASE 3 clause -- the union-merge runs with no output at all: no count, no path list, no record that the task's declared scope changed. A plan postflight can silently double a task's file_scope and nothing in the run log says so. Consequences, in descending order of concreteness. (1) An operator cannot tell a correctly-widened scope from a scope widened by a mis-parsed or over-broad plan list, because neither prints. (2) The planner on the originating task had to hand-write an issue-log entry to document a divergence the machinery was absorbing anyway -- manual bookkeeping standing in for a notice the tooling could emit for free. (3) `file_scope` is the admission gate's overlap-collision surface (`orchestrate-batch-admit.sh`), so a silent widening silently enlarges the territory a task collides on, changing later batch-admission outcomes with no trace of when or why it grew.
-
-DECIDE AND LAND ONE OF THREE, OR A COMPOSITION. (a) Emit a non-blocking notice from `update-task-status.sh` whenever `FILE_SCOPE_ADD_LEN > 0` on the real write path, naming the count actually added (the post-merge delta, NOT the raw forwarded list -- `unique` means most forwarded paths are usually already present, so a notice that prints the input would cry wolf on every postflight). This is the smallest honest fix and it covers every caller at once, which is why it is preferred. (b) Have the two live call sites announce it instead -- `scripts/skill-base.sh`'s plan arm and `scripts/orchestrator-postflight.sh`'s Stage 7 branch. Weaker: it duplicates the message in two places and the second has no live callers, so it is the wrong altitude for a behavior that belongs to the writer. (c) Record the widening durably rather than only printing it -- e.g. a per-task note of what plan postflight added. Heaviest; justify it against (a) before choosing it, and only if a consumer for the record actually exists. Whichever is chosen, the delta-not-input rule in (a) is binding: a notice that fires on every postflight regardless of whether anything changed is worse than silence, because it trains operators to ignore it.
-
-NON-GOALS, EXPLICITLY. No change to the harvest grammar or to `plan-file-scope-harvest.sh` -- that file is the adjacent generated-surfaces record's territory, not this one's. No change to the union-merge SEMANTICS (additive, `unique`, never overwrite) -- only to its observability. No new gate, no blocking behavior, no exit-code effect: this is a notice, and a notice that can fail a postflight is a regression. No change to the implement-postflight excursion predicate in `orchestrate-cycle-postflight.sh`, whose documented ruling is drop-and-warn, never refuse.
-
-WHAT THIS RECORD IS NOT. The four paths actually reported as EXCURSION DROPPED on the originating run (root `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`, `typst/generated/status.typ`) are a DISJOINT set from the four the issue-log entry named, and they are generated surfaces -- the subject of the existing `harvest_generated_surfaces_into_file_scope` record, which already names three of those four by name and already instructs its implementer to find the rest by reading the generators. `FormalSystem/README.md` is the one not named there and falls inside that record's stated method. Do not re-scope generated-surface harvesting here, and do not treat those drops as evidence for this record's defect; they are evidence for that one.
-
-SOURCE-STORE BOUNDARY. Every file_scope path below lives in a deployed, regenerated tree; a hand edit under `.claude/**` is wiped by the next deploy and will appear to succeed while having no lasting effect. Implementation MUST resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension (`core`, whose source store is `/home/benjamin/.config/nvim/agent-system/extensions/core`) and edit at the mirroring paths there, per `.claude/rules/source-store-deploy-boundary.md`. The deployed paths are declared in file_scope only so the overlap gate can see the collision surface; they are not the edit target.
-
-DEPLOYED TREE WAS STALE. This repository's deployed `.claude/` tree was reported STALE relative to the source store for the `core` extension throughout the originating run. Redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean` BEFORE reasoning about current behavior from the deployed copy, and again after editing the source store.
-
-DELIVERABLE HYGIENE. The edited files are not under `specs/**`, so their prose must carry no task-number references and no record-versioning language; cite durable anchors (file names, function names, section headings, field names) only.
-
-RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The generated-surfaces harvest record covers `plan-file-scope-harvest.sh` and the `.lean`-forced derived surfaces. The file_scope-declaration-hygiene record covers coarse and absent declarations feeding the same admission gate. No file-territory overlap with either (this record touches the status writer and its call sites, not the harvester or the validator), so no dependency edge; if the generated-surfaces record lands first, the notice built here simply reports its additions too.
 
 ---
 
@@ -922,54 +615,6 @@ RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The roadmap-genera
 - **Dependencies**: None
 
 **Description**: **DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE.** Two defects make the overlap gate unable to see collisions. (1) Task 177 declares `FormalSystem/Metalogic/Decidability/` as a WHOLE-DIRECTORY `file_scope` entry, overlapping every non-terminal task that touches that subtree — narrow it to the files it actually touches. (2) Of the non-terminal tasks, a large majority (28 of 52 at the time this was detected) declare NO `file_scope` at all — backfill them. `bash .claude/scripts/validate-state.sh specs/state.json` already enumerates both defects as Check 8 (coarse whole-directory-root declarations) and Check 9 (duplicates); the detector exists, the remediation does not. ALSO IN SCOPE if not landed first elsewhere: the recurring mechanism by which `/task --abandon` and `/todo` archival un-track a `WIRED_REPO` gate target (`.claude/context/patterns/task-abandon-mode.md:58-65`), whose detector is a one-line `git ls-files --error-unmatch` beside the `-f` test at `scripts/check-evidence-probes.sh:717-720`. Read the live validator output rather than trusting the counts above; they are a snapshot, not a contract.
-
----
-
-### 750. W run layer closure wide lift
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [750_w_run_layer_closure_wide_lift/reports/01_w-run-layer-design.md]
-- **Plan**: [750_w_run_layer_closure_wide_lift/plans/01_w-run-layer-ladder-scheme.md]
-- **Summary**: [750_w_run_layer_closure_wide_lift/summaries/01_w-run-layer-ladder-scheme-summary.md]
-
-**Description**: **(W)'s RUN LAYER — ITS OWN RECORD, AS `RaySummary/README.md` AND 747's follow-up both instruct.** (W)'s anchor layer is landed and bounded in `AnchorLayer.lean`; the run layer — the `untl`/`snce` nesting and the lift from one seam to `¬ PlusValidZTime φ` — is BLOCKED on three named obligations, each with its source and none with a measured cost (`README.md:378-383`). Obligation (iii) is the presentation-size bound and is a SEPARATE record's phase 1, not this one's.
-
-**PHASE 1 (the design question only; DISPATCH STOPS HERE).** Thread-indexed unfolding versus a bounded-deadline encoding, for a frame-scheme constructor producing infinite-width, finitely branching regular frames. Inputs: the refuted repair shapes `Rbad` (`b2b-frame-constructor-branching.lean:178`) and `Rok`, whose positive halves `fib_finite_of_finBranch` (`:147`) and `saturation_of_finBranch` (`:169`) need TWO-SIDED finite branching; and the `Node` thread-unfolding shape (`PlusSlicedCertificate/Limits/NoFiniteWidth.lean:132`), which is neither refuted nor built. Phase 1's outcome is what makes phases 2-3 costable; this record says so rather than pricing them. **Phase 1 also outputs the depth `k` the run layer needs**, since the bound record lands its result for every `k` and chooses none. **INFINITE WIDTH IS FORCED**, by `not_finite_width_fmp` (`Limits/NoFiniteWidth.lean:1280`) and concretely by `Probe747.modelOf_incomplete` (`w-soundness-shape-refuted.lean:131`); any phase reintroducing a finite-width or finite-fibre assumption reproduces a refuted shape. The ~120-160 line figure is CARRIED, UNVERIFIED from (S) and covers the regularity part only (`README.md:368-370`); the unfolding design is unmeasured and this record states that it has no cost figure.
-
-**PHASE 2 — OBLIGATION (ii), SOUNDNESS HALF (object → model).** A Hit-level realization theorem for phase 1's constructor: the analogue of `presented_modelOf` (`Realize.lean`, the (S) realization theorem that discharged `Presented` for `modelOf`) at `HitPresented` level, PER CELL. The `stab` case of the constructor's truth lemma needs the built model to be `HitPresented` at every cell by the object's per-cell presentation. It must be Hit-level or product-level per cell — `HitPresented`, family-triple SETS — and NEVER trace-level `Presented`, because `stab_iff_of_presented_nowUnique` (`w-soundness-shape-refuted.lean:188`) shows trace level collapses `ψ ↔ ⊡ψ` at any `Presented`+`nowUnique` seam; see `w-soundness-shape-refuted.lean:44-49` for the consequence as the probe states it.
-
-**PHASE 3 — OBLIGATION (ii), COMPLETENESS HALF (model → object) = (C)'s GENERAL ROW.** Every refuting model must yield an object whose per-cell presentations present its cells. Stated verbatim from `RaySummary/README.md:154`: "For every regular `ℤ`-model `M`, seam `(τ, t)`, formula `φ` and depth `1 ≤ k`, a finite labelled presentation `(Q, lab, step)` with `Fintype.card Q` below a computable bound in `φ`, such that `HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k)`". This is OPEN MATHEMATICS with ONE positive fixture and no general argument: `Probe735.not_presented` refutes the TRACE-level version (which is why the Hit level is the only one left), `Probe745.hitPresented_modelA` is the only Hit-level positive, and a grep for `¬ HitPresented` / `not_hitPresented` over `specs/evidence/seam-gluing-ray-product/*.lean` and `RaySummary/` returns ZERO — there is no Hit-level negative anywhere. No cost figure, and this record states that none exists.
-
-**SEMI-DECIDABILITY CAVEAT, carried verbatim from `README.md:380-385` and binding on this record's acceptance**: "Without (iii), a landed composition theorem would read `¬ PlusValidZTime φ ↔ ∃ object, …` over an UNBOUNDED run layer — at best semi-decidable — and NOT `Decidable (PlusValidZTime φ)`." `Decidable (PlusValidZTime φ)` must appear in no statement of this record.
-
-**DOCUMENTATION DELIVERABLE (one paragraph, no new task).** Record in `FormalSystem/Metalogic/Decidability/RaySummary/README.md`'s (W) section that the obstruction (W) names has a literature description: the quasimodel-realisation step of Hodkinson-Wolter-Zakharyaschev 2000 Def. 12 and Gabbay-Kurucz-Wolter-Zakharyaschev 2003 Thm 13.6 presupposes a freely chosen state function and run set — HWZ Remark 13 (PDF p.11) makes run choice free in both — whereas TM's quasistate at every time is the type set realised by the history set (the SAME set at every time, by shift closure) and its runs are the task-respecting paths of ONE time-invariant relation whose states carry both the atoms and every `stab` formula (`stab_state_only`, `PlusTruth.lean:332`). That is the condition under which published quasimodel realisation stops applying, and it is exactly what (W)'s soundness half is about. DELIVERABLE-HYGIENE: this file is NOT `specs/**`, so the paragraph must carry no task-number references and no record-versioning language; cite durable anchors (file names, theorem names, author-year citations, section headings) only.
-
-**NO DEPENDENCY EDGE to the bound record.** An edge would assert the run layer cannot proceed without the bound; `README.md:380-385` says it can, yielding a weaker (semi-decidable) statement. Serialization comes from the `file_scope` overlap both records declare on `RaySummary/README.md` and `docs/theorem-index.md`; ordering comes from the roadmap's Run block. The gate serializes, the roadmap orders, and no record claims a blocking relation that does not exist.
-
-**BINDING CONSTRAINTS.** No complexity bound, upper or lower, anywhere; the ARGUED CTL⋆ 2EXPTIME ceiling is never an upper-bound source. Never write that L⁺ is decidable or undecidable unqualified — carry frame class, fragment, premise set and hypothesis, `[F.IsRegular]` at minimum. File no fourth certificate class: no class presenting finite per-time fibres is complete whatever its clauses, and both halves of that obstruction are landed under `PlusSlicedCertificate/Limits/`. Sorry-free completion required; `[BLOCKED]` with the obstruction named is the honest outcome for a route that does not close.
-
----
-
-### 749. C bound half model a presentation size
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [749_c_bound_half_model_a_presentation_size/reports/01_c-bound-half-model-a.md]
-- **Plan**: [749_c_bound_half_model_a_presentation_size/plans/01_c-bound-half-model-a.md]
-- **Summary**: [749_c_bound_half_model_a_presentation_size/summaries/01_c-bound-half-model-a-summary.md]
-
-**Description**: **(C)'s BOUND HALF ON MODEL A.** 745 delivered (C)'s satisfiability half only; the bound half was descoped at closure and is owned by no other record. `RaySummary/README.md:154` states what landed is "**one fixture**, so no computable bound and no general regular `ℤ`-model statement follows". This record owns the bound **on the fixture**. The general every-model statement is OUT OF SCOPE here and is the completeness half of the (W) run-layer record.
-
-**PHASE 1 (hours; closed in principle).** Land, in `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/Saturation.lean`, namespace `FormalSystem.Metalogic.WeakCanonical` (matching `kTypeOf_listSeg_append_congr`'s at `Compose.lean:296`), the STRENGTHENED shape `∃ m₀ p, 0 < p ∧ m₀ + p ≤ Nat.card (KType sig k) ∧ ∀ m, m₀ ≤ m → kTypeOf sig k (listSeg (List.replicate (m + p) ℓ)) = kTypeOf sig k (listSeg (List.replicate m ℓ))`, with the shape stated verbatim at `RaySummary/README.md:285-290` as its one-line corollary so the recorded signature stays literally true. ROUTE: **pigeonhole plus `kTypeOf_listSeg_append_congr`** (`Compose.lean:276`), NOT finite-semigroup idempotence — no semigroup is constructed and no idempotent is needed; the congruence is applied once with the first argument varying and the second fixed. Premises: `kType_finite` (`KTypeSummary/Basic.lean:112`), `Finite.exists_ne_map_eq_of_infinite` for the stated shape, `Fintype.exists_ne_map_eq_of_card_lt` on `Fin (Nat.card (KType sig k) + 1)` after `Fintype.ofFinite` and `Nat.card_eq_fintype_card` for the strengthened one, `List.replicate_add`. A feasibility elaboration of both theorems compiled in 2.3 s against the current oleans with axioms `[propext, Classical.choice, Quot.sound]` and no `sorryAx`; the scratch text is reproduced in `specs/748_revise_and_create_tasks_lplus_decidability/reports/02_round-two-joint-verification.md`'s Appendix and is FEASIBILITY ONLY — land it here, under this record's `file_scope`, pins and index row, never copied in as a research commit. Keep the stated `[DecidableEq sig.preds]` binder even though the proof does not use it (the `unusedArguments` linter will say so, as `Compose.lean:270-275` predicts for `append_congr`): the stated signature is the recorded one. Pin both theorems in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` at `[propext, Classical.choice, Quot.sound]` (the profile of every (C) pin at `:405-413`); add one `docs/theorem-index.md` row cross-referencing the `anchorCells_ncard_le` row so both counts carry the same disclaimer in the same words. Replace "finite-semigroup idempotence" with "pigeonhole plus `kTypeOf_listSeg_append_congr`" at `RaySummary/README.md:291`, `hit-presented-model-a.lean:97`, and in `append_congr`'s docstring at `Compose.lean:271-275`.
-
-**PHASE 2 (THE COST; UNMEASURED, AND THIS RECORD SAYS SO).** The factorization-transport lemma: `InFamily` is invariant under lengthening a maximal constant run beyond phase 1's threshold — "if `c'` is `c` with a maximal constant run `ℓ^n` replaced by `ℓ^(n+p)`, and `n` is beyond phase 1's threshold, then `InFamily … c ↔ InFamily … c'`". Nothing in the tree states it and no attempt is recorded anywhere; it has NO cost figure and this record asserts none. It is needed because `hitCl_eq_truncated`'s `L` bounds jump OFFSETS over `familyTriples`, a family triple is `InFamily sig k τneg τzero τpos c := ∃ F : SegmentFactorization sig k c, …` (`Family.lean:201-203`), and a `SegmentFactorization` is a monotone covering cutting sequence `W : ℤ → ℤ` (`Family.lean:70-95`) — so phase 1 is about the `k`-type of one finite replicated block and `L` is about cutting sequences of a bi-infinite colouring. The proof is cut surgery (shrink or extend the segment holding the run, with phase 1 and `append_congr` preserving its type) and has a GENUINE CASE SPLIT a plan must face: when every segment meeting the run is short, no single segment can absorb the `p` positions and the factorization must be re-cut. The converse the tree holds, `kTypeOf_zFiber_eq_of_inFamily` (`KTypeSummary/Saturation.lean:133`), is the WRONG DIRECTION for this. State it generally over `sig` first; if that resists, fall back to model A's concrete traces, which by `clTrace_stayA_apply`/`clTrace_jump_apply` (`hit-presented-model-a.lean:470-500`) are `(Fp,¬p)^(ω*) · now · (Fp,¬p)^n · (Fp,p)^ω`. If it does not close: mark the phase `[BLOCKED]` and name the obstruction. NEVER a `sorry`, never a new axiom.
-
-**PHASE 3 (bookkeeping once phase 2 lands).** Exhibit `L` in `hitCl_eq_truncated` (`hit-presented-model-a.lean:593-596`) — `≤ m₀ + p` from phase 1, hence `≤ Nat.card (KType (clSig Fp) k)` — replacing the non-constructive `Set.Finite.bddAbove` witness at `:603`. Exhibiting `L` CHANGES `hitCl_eq_truncated`'s statement, so revise the `∃ L` prefix of `Probe745.hitPresented_modelA` and its "What `hitPresented_modelA` does NOT say" block (`:1303-1312`) in the SAME change rather than leaving them asserting non-exhibition; then re-run `bash scripts/check-evidence-probes.sh`.
-
-**NON-NEGOTIABLES.** (1) `Nat.card (KType …)` is described as a COUNT and nothing else. Quote, verbatim, `FormalSystem/Metalogic/Decidability/RaySummary/AnchorLayer.lean:317-320` wherever this record's count appears: "The one bound (W) can state honestly: a cardinality bound on the SET OF CELLS of a model, syntactic in `|cl φ|` — a cell is a set of subsets of `cl φ`, so there are at most `2 ^ (2 ^ |cl φ|)` of them. It is not a complexity bound of any kind: it counts cells, it does not time anything, and it must not be described as a bound on any procedure's running time." Derive nothing from the size of `NormalForm (clSig φ) k 0`. (2) The alphabet constraint 739 left standing is already met by the tree and is not re-litigated: `clSig φ := subformulas φ ⊕ Unit` (`Closure.lean:80-81`) and `subformulas` carries both `untl` and `snce` arguments (`Subformulas.lean:66-73`), so backward labels are letters by construction. (3) `k` STAYS FREE: land the bound for every `k` and choose none. `k = 1` suffices for the `⊡` bridge alone (`plusStab_iff_forall_hitSig`, `plusStab_iff_forall_hitCl`, both `(hk : 1 ≤ k)` at `Trace.lean:240`; `hitPresented_modelA` at `hit-presented-model-a.lean:1282`); what depth the `untl`/`snce` run layer needs is the (W) record's phase-1 output, not this record's. (4) `Decidable (PlusValidZTime φ)` appears in no statement. (5) No complexity bound, upper or lower, is asserted or implied anywhere; the ARGUED CTL⋆ 2EXPTIME ceiling is never an upper-bound source. (6) Sorry-free completion required; a route that does not close is `[BLOCKED]` with the obstruction named.
 
 ---
 
@@ -1094,27 +739,6 @@ ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compi
 
 ---
 
-### 731. Harvest generated surfaces into file scope
-- **Status**: [COMPLETED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-- **Research**: [731_harvest_generated_surfaces_into_file_scope/reports/01_harvest-generated-surfaces.md]
-- **Plan**: [731_harvest_generated_surfaces_into_file_scope/plans/01_harvest-generated-surfaces.md]
-- **Summary**: [731_harvest_generated_surfaces_into_file_scope/summaries/01_harvest-generated-surfaces-summary.md]
-
-**Description**: Make plan-time file_scope harvest include the generated surfaces that any .lean edit forces, so they stop recurring as undeclared scope extensions.
-
-EVIDENCE: THE SAME OMISSION TWICE, IN CONSECUTIVE TASKS. Two completed tasks independently hit the identical problem. The first recorded the `typst/generated/status.typ` regeneration as an undeclared scope extension after the pre-commit `typst-sync-check.sh --counts-only` gate refused a commit touching a `.lean` file without it. The second, forewarned, named `status.typ` in its own plan's file list — and then hit the *other* generated surface: `check-module-invariants.sh`'s INV check failed because its line additions shifted the generated inventory blocks in `FormalSystem/Metalogic/README.md` and the root `README.md`, neither of which was in its declared file_scope. It root-caused this with disposable `git worktree` bisection, regenerated via `--emit-inventory`, and declared a scope extension. The orchestrator's own postflight independently flagged the same two files: `ADVISORY: task reported modified_files outside its declared file_scope: ["FormalSystem/Metalogic/README.md","README.md"]`.
-
-THE PATTERN. These are not planning oversights to be fixed by reminding planners harder. They are mechanically derivable consequences of editing any `.lean` file: the line-count and byte-count tables in the two READMEs, and `typst/generated/status.typ`, are all generated artifacts whose content is a function of the Lean sources. Any plan that touches a `.lean` file will need them, every time, and a plan that omits them produces either a blocked pre-commit gate or a red INV check mid-implementation.
-
-SCOPE. (1) Identify the complete set of generated/derived surfaces that a `.lean` edit forces — at minimum `typst/generated/status.typ` and the inventory blocks in `FormalSystem/Metalogic/README.md` and root `README.md`; check for others by reading the generators (`check-module-invariants.sh --emit-inventory`, `typst-sync-check.sh`) rather than by enumerating from memory. (2) Decide the mechanism: extend `plan-file-scope-harvest.sh` to append these surfaces automatically whenever the harvested scope contains any `.lean` path, or add a plan-template checklist item, or both. Prefer the mechanical option, since the checklist has now been tried once and did not prevent the second occurrence. (3) Ensure the addition is conditional on the repo actually having these generators, so the change does not break sibling repos that lack them. (4) Verify against the two completed tasks' plans: re-running the harvest on them should now produce the surfaces they had to add by hand.
-
-NON-GOALS: no change to the generators themselves or to what they emit; no change to the pre-commit gate's behavior (it is correctly refusing the commit — the plan's declaration is what is incomplete); no retroactive edit to already-completed tasks' file_scope.
-
----
-
 ### 730. Formal logic implement routing lean capable agent
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
@@ -1150,76 +774,6 @@ SCOPE: (1) write a concise noun-phrase `.title` for each entry in specs/state.js
 NON-GOALS: no schema change (the field is already supported by both generators); no edit to `description`, `project_name`, `topic`, or any other existing field; no change to the generators themselves; no renaming of task directories, whose names derive from `project_name` and must stay stable.
 
 Effort: small-to-medium, mostly editorial judgment rather than code.
-
----
-
-### 720. Promote fmp width refutations to evidence
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 706, Task 710
-- **Research**: [720_promote_fmp_width_refutations_to_evidence/reports/01_ci-repair-and-citation-repoint.md]
-- **Plan**: [720_promote_fmp_width_refutations_to_evidence/plans/01_ci-repair-and-citation-repoint.md]
-- **Summary**: [720_promote_fmp_width_refutations_to_evidence/summaries/01_ci-repair-and-citation-repoint-summary.md]
-
-**Description**: RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT AFTER THE LIBRARY LANDING, AND MAY LEGITIMATELY CLOSE AS SUBSUMED. Re-point the finite-carrier and finite-width FMP refutation citations in `FormalSystem/Metalogic/Decidability/FMP/README.md` and `scripts/check-evidence-probes.sh` to the LIBRARY names that tasks 710 and 706 land, converting or deleting the two `WIRED_REPO` entries accordingly. Specification: `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md`, Section F item 3.
-
-AUTHORITY, AND WHY THE FILED SCOPE IS NOW THE SUBORDINATE HALF. The user RULED Option A -- library landing -- on 2026-10-03, and `specs/ROADMAP.md` Phase 0 carries that ruling as a CHECKED item: "RULED 2026-10-03 by the user: Option A -- library landing. The Success Metric 'every refutation lives in `FormalSystem/`' stands as written: tasks 706 and 710 land `Probe706.no_finite_carrier_sat` and `Probe710.not_finite_width_fmp` as `FormalSystem/` theorems, and 720 re-points citations to library names. Option B ... is rejected." That ruling supersedes the autonomous cycle-1 adoption recorded in task 721, which was explicitly flagged as not a user ruling. Tasks 710 and 706 are already revised under it (710 to land `not_finite_width_fmp`, `not_sliced_complete`, `no_finite_width_sat` with the `not_plusValidZTime_neg_Φ` and `not_certifies` support; 706 to land the `no_finite_carrier_sat` family with `no_ofStep_sat`, `not_finite_carrier_fmp`, `θ_eq_ofFormula` and the `⊡`-bearing fragment twins). Consequently THE SCOPE NOTE IN THIS TASK'S PREVIOUS DESCRIPTION IS SUPERSEDED: it said "genuine promotion into the `FormalSystem/` library proper would be a different and larger task", and that larger task is exactly what 710 and 706 now carry. What is left for 720 is the citation half, not the whole of the work.
-
-DELIVERABLE 1: RE-POINT `FMP/README.md`. The subsection `### The finite-carrier route is refuted, not merely open` (`FormalSystem/Metalogic/Decidability/FMP/README.md`, line 79 as of 2026-10-03) cites both refutations by DECLARATION NAME ONLY -- `Probe706.no_finite_carrier_sat` and `Probe710.not_finite_width_fmp` -- with the parenthetical "(compiled outside the build graph; see `scripts/check-evidence-probes.sh`)" (lines 84-85) and both scope limits restated at lines 96-98 (ℤ-only; `⊡`-free versus `⊡`-bearing witness). VERIFIED: the subsection cites no probe FILE PATH, so the re-point is not a path substitution. It is (a) replacing the `Probe706.`/`Probe710.` namespace-qualified names with the landed `FormalSystem.*` names 710 and 706 choose, (b) DELETING the "compiled outside the build graph; see `scripts/check-evidence-probes.sh`" parenthetical, which becomes FALSE the moment the theorems are in the build graph, and (c) preserving both scope-limit paragraphs verbatim in substance -- they are statements about the witnesses, not about where the files live, and they must not be weakened by the move.
-
-DELIVERABLE 2: CONVERT OR DELETE THE TWO `WIRED_REPO` ENTRIES. `scripts/check-evidence-probes.sh` has exactly three `WIRED_REPO` entries as of 2026-10-03 (verified by `awk '/^WIRED_REPO=\(/,/^\)/'`), of which two are in scope: `specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean` and `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`. Line 193 is a comment naming both paths and must be updated or removed with them. The named blocker the script's own header demands ("Prefer `WIRED`: reach for `WIRED_REPO` only with a named blocker recorded beside the entry", header line 33) was live-task ownership of the two files; once 710 and 706 have landed, that blocker is gone and the entry is to be resolved one of two ways, chosen per probe:
-  (a) DELETE the entry, if the landed library theorems fully subsume the probe's content and the probe file is removed or is no longer worth guarding. A theorem in `FormalSystem/` is guarded by `lake build`, which is strictly stronger than this script; a duplicate `WIRED_REPO` entry then only costs CI time.
-  (b) CONVERT to `WIRED` after `git mv` into `specs/evidence/seam-gluing-ray-product/`, if material in the probe file survives the landing unlanded -- e.g. a `by decide` fixture, a scaffolding lemma, or a header narrative that 710/706 chose not to carry into the library. Follow the Phase 1 promotion procedure in `specs/718_omega_sequence_decidability_full_lplus/plans/02_route-probes-and-handoff.md` exactly: `git mv`, correct the file's own `lake env lean` header path (`NoFiniteCarrierModel.lean` line 24, `NoFiniteWidthModel.lean` line 37), convert the array entry, and confirm no outside citation breaks. `specs/evidence/seam-gluing-ray-product/` exists and holds five probes today; neither FMP probe is among them.
-Finish with `bash scripts/check-evidence-probes.sh` at exit 0 (it was exit 0, "PASS all 14 wired probe(s) compile", on 2026-10-03) and `lake build` green.
-
-OUT OF SCOPE, STATED SO IT IS NOT SWEPT IN: the third `WIRED_REPO` entry, `specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean` (holding `Probe476.fmp_false`, line 177, namespace `Probe476`). It belongs to ARCHIVED task 476, not to 706 or 710, and it is OUT of 720's scope under EITHER outcome above -- neither converted, nor deleted, nor re-pointed by this task. It is the probe that refutes the candidate-list FMP hypothesis of the CONDITIONAL `BiLasso.decidableValidZTime` (`FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean` line 100), a separate result from the two in scope. Note that `specs/archive/` is gitignored (`.gitignore` line 94), so its `WIRED_REPO` entry has a standing blocker of a different kind -- out-of-version-control residence -- which 720 neither resolves nor records.
-ALSO OUT OF SCOPE: `.claude/context/project/logic/domain/ztime-no-finite-carrier-fmp.md`, which cites both probe paths and both `Probe*` namespaces. It is outside 720's declared `file_scope`, and `.claude/**` is a regenerated deploy artifact governed by `.claude/rules/source-store-deploy-boundary.md` -- hand edits there are wiped by the next regeneration. If that note needs re-pointing, file it separately against the source store.
-
-ORDERING, MANDATED NOT ADVISORY. 720 RUNS AFTER 710 AND 706, in the order 710 -> 706 -> 720 (scope spec Section F item 4; the ROADMAP's Phase 2 Run block already sequences the first two). This is not a soft preference: 720's ENTIRE content is re-pointing citations at declaration names that 710 and 706 create, so dispatching 720 first produces either a no-op or a citation to a name that does not exist. The declared dependencies `[706, 710]` already encode this and are UNCHANGED by this revision.
-
-FILE-SCOPE COLLISIONS, DO NOT BATCH. (i) 710 and 720 both declare `scripts/check-evidence-probes.sh` -- they cannot be batched in one `/orchestrate` cycle; the admission gate defers a batch whose members share a file (`.claude/context/patterns/batch-orchestration-guardrails.md`). (ii) 706 and 710 both declare `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` and `docs/theorem-index.md`, so those two cannot be batched with each other either -- hence the strict serial order. (iii) The separately specified backward-dual finite-graph probe task (scope spec Section H4, "Backward-dual `⊡(Pp)` finite-graph summary on the `Probe710` fixture", filed only if task 719 is not dispatched in the same cycle) declares BOTH `specs/evidence/seam-gluing-ray-product/` and `scripts/check-evidence-probes.sh` -- the same two entries 720 declares. Run that probe task in a different cycle from 720.
-
-WHY THIS MATTERS AT ALL (the surviving half of the original rationale). `FMP/README.md` is a library-facing document that currently tells a reader the two refutations are "compiled outside the build graph", i.e. that the library's own claim about what is refuted rests on files the build does not check. Under Option A that becomes false and misleading rather than merely conservative. The probes also currently live in live-task directories, which is the fragility the evidence collection was built to fix -- a task-directory probe rots and leaves version control on archive, since `specs/archive/` is gitignored -- and the library landing fixes that more strongly than promotion to `specs/evidence/` would have: a theorem in `FormalSystem/` is checked by `lake build` on every commit.
-
-**ENLARGED: THIS IS A CI REPAIR, NOT A CITATION TIDY-UP.** Two of the three `WIRED_REPO` entries in `scripts/check-evidence-probes.sh` point at files git does not track. Both were tracked under their live task paths (`1b7b8431f`, `b1180dbf8`), were DELETED FROM THE INDEX by the archive commit `70321e938` (349 and 1180 lines), and were then re-pointed to the ignored `specs/archive/` paths by `e8cfcd868`. The gate never checked tracking: `check_probe` tests `[ ! -f "$file" ]` only (`scripts/check-evidence-probes.sh:717-720`), and a grep for `ls-files|check-ignore` over the script finds nothing executable.
-
-**CI CONSEQUENCE.** `.github/workflows/ci.yml:119-125` runs `bash scripts/check-evidence-probes.sh` after a plain `actions/checkout@v5` (`:22-23`; no workspace cache, only `lean-action`'s `.lake` cache). The step is `continue-on-error: true` (`:121`) but the summary step counts a failed outcome and EXITS 1 (`:352-356`). A checkout that lacks untracked files hits the missing-file branch for both entries, so the gate reports `FAIL (missing: …)` twice and the summary step fails the job. (That last step is an inference from `git ls-files` + `.gitignore:94` + `:717-720` + `:352-356`, each verified; CI logs were not fetched.)
-
-**DELIVERABLE A — CLOSE THE MECHANISM (not optional).** Add a tracked-ness check to `check_probe` beside the `-f` test — `git ls-files --error-unmatch "$file"`, failing loudly — so a `WIRED_REPO` target that git does not track is reported as such. WHY IT RECURS WITHOUT THIS: `/task --abandon` moves a task directory into `specs/archive/` with `mv` (`.claude/context/patterns/task-abandon-mode.md:58-65`) and `/todo` archival does the same (the `70321e938` commit), so ANY `WIRED_REPO` entry pointing into a live task directory is silently un-tracked the day that task is archived, with the gate still green locally for everyone who has the file on disk. Add one paragraph to `check-evidence-probes.sh`'s header stating the rule — TRACKED, NOT MERELY PRESENT — and one sentence beside the `mv` in `task-abandon-mode.md`.
-
-**DELIVERABLE B — RESOLVE THE TWO ENTRIES.** Either force-track them (the precedent is the third `WIRED_REPO` entry, `specs/archive/476_…/evidence/fmp-hypothesis-is-false.lean`, which IS tracked as one of the five force-tracked archive files `ci.yml:239-240` names), or convert them to `WIRED` entries under `specs/evidence/`, or delete them if the landed `Limits/` theorems subsume them. Library prose also cites the force-tracked 476 path (`Limits/FiniteCarrier.lean:55,146`, `BiLasso/Assembly.lean:26`); those citations are NOT broken and are named only so a future force-track audit knows they exist.
-
-**SPENT PASSAGES, to delete rather than carry.** The "PATHS NOT YET BUILT" paragraph is spent: `PlusSlicedCertificate/Limits/` now exists, and the landed library names to cite are `no_finite_carrier_sat`/`not_finite_carrier_fmp` (`Limits/FiniteCarrier.lean:248,:349`) and `no_finite_width_sat`/`not_sliced_complete`/`not_finite_width_fmp` (`Limits/NoFiniteWidth.lean:1200,:1257,:1280`), in namespace `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth` (`NoFiniteWidth.lean:95-103`) — never the archived `Probe706.`/`Probe710.` spellings. And Deliverable 3 (close as subsumed) NO LONGER APPLIES, per `FMP/README.md:84-98`.
-
-**RUN-ORDER NOTE.** This record is promoted ahead of the sliced-certificate pair: a red CI gate on every push outranks a local defect seen only by whoever runs the 300 s reproducer.
-
-**SCOPE DECISION RECORDED, NOT SILENTLY WIDENED.** `file_scope` gains `.github/workflows/ci.yml`, because Deliverable B's force-track option edits the force-tracked-archive-file list that `ci.yml:239-240` carries. It does NOT gain `.claude/context/patterns/task-abandon-mode.md`: that path is a regenerated deploy artifact, so the real edit target is the source store resolved from `.claude-extensions.json` (`extensions.core.source_dir`, currently outside this repository), which a repository-relative `file_scope` entry cannot express and the overlap gate cannot check. The one-sentence `mv` note of Deliverable A therefore lands in the source store under `context/patterns/task-abandon-mode.md`, per `.claude/rules/source-store-deploy-boundary.md`, and is deliberately outside this record's declared `file_scope`.
-
----
-
-### 716. Sliced certificate liveat nontermination
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [716_sliced_certificate_liveat_nontermination/reports/01_liveat-nontermination-profile.md]
-- **Plan**: [716_sliced_certificate_liveat_nontermination/plans/02_shape-d-verts-biunion.md]
-- **Summary**: [716_sliced_certificate_liveat_nontermination/summaries/01_liveat-memoization-tier2-witness-summary.md]
-
-**Description**: Profile and fix the PlusSlicedCertificate liveT/liveAt non-termination that blocks Tier-2 sliced certificate witnesses.
-
-EVIDENCE IN HAND. A preserved reproducer lives at specs/704_certificate_non_vacuity_and_shape_gates/probes/03_tier2_sliced_certificates.lean. Two width-2 Tier-2 constructions (certA, certB) carrying the box-dot modality elaborate in about 2 seconds and their cheap conjuncts evaluate, but `liveAt 0` -- the landed checker's computed liveness fixpoint under FormalSystem/Metalogic/Decidability/PlusSlicedCertificate -- does not return within 300 seconds compiled, on only 4 positions and 4 window times. The same fixpoint is instantaneous at the self-loop embedded certificates already pinned in scripts/certificate-witness-inventory.txt, so this is not a size effect.
-
-THE QUESTION. Determine why liveT/liveAt diverges or blows up at a 4-position TOTAL-EDGE certificate when it is instant at self-loop certificates. Decide which of three it is: a genuine algorithmic defect in the landed decision procedure, a missing termination or memoization argument, or an unavoidable cost intrinsic to the total-edge case.
-
-DELIVERABLE. The diagnosis; the fix if the cause is addressable; and certA/certB landed as the Tier-2 witness rows in the C36 inventory if the fix makes a kernel `decide` proof reachable.
-
-WHY IT MATTERS INDEPENDENTLY OF TIER 2. liveAt is part of a decision procedure that is already landed and gated, so a configuration on which it fails to return is a defect in shipped code, not merely an unbuilt feature.
-
-NOT COVERED ELSEWHERE. Checked against the TailStable junk-position/full-labels evaluation, the refuted sliced finite-model-property statement, and the finite-carrier refutation work -- none of them own this question.
-
-ADJACENCY. The sliced finite-width question of the sliced-class incompleteness characterization.
 
 ---
 
@@ -1265,44 +819,6 @@ CANONICAL WORDING OF THE CONSEQUENCE (quote this, verbatim, in any record that r
 WHAT IT COSTS. A CTL-star syntax and semantics must be added to the tree, which is substantial standalone work the programme otherwise has no need for. Task 706 rates the risk that the reduction has a gap as LOW (its R4) and records it as affecting the complexity picture only.
 
 KEEP-OR-ABANDON IS A PHASE 0 USER RULING, NOT MADE HERE. This revision records the task's role; it does not decide the task's fate and does not schedule it. The decidability-programme review's Section C (specs/archive/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md, Section C at line 220) restates the choice as the user's: keep this as a write-up note, or abandon it. RECOMMENDATION ONLY, not a decision: keep it as a write-up note, because it is load-bearing as a check even while unproved -- abandoning the record would leave the three citing documents pointing at nothing. If the ruling is to abandon, the three citing records need their sanity-check bullets re-sourced to the argument's actual homes (706's Q4 and the archived 703 round-2 section 1.6) rather than to this task.
-
----
-
-### 712. Lplus sliced finite model property
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 703, Task 710
-- **Summary**: [712_lplus_sliced_finite_model_property/summaries/01_sliced-fmp-refutation-record-summary.md]
-
-**Description**: REVISED 2026-10-03 FROM THE DECIDABILITY-PROGRAMME REVIEW. Authoritative scope input: Section A of `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md`, whose anchors are recorded in that file's Section 0 rows 6 and 22-24 and were re-checked against the tree again at this revision. THIS REVISION CHANGES THE DEPENDENCY LIST AND THIS NOTE ONLY. It does NOT change the status and does NOT decide the terminal outcome. The refutation record below (STATUS NOTE 2026-10-02) is accurate and stands: this task had already converted itself from an open-statement record into a REFUTATION RECORD before this revision, and that conversion is confirmed here, not reversed.
-
-WHAT THE TREE SAYS, RE-VERIFIED AT THIS REVISION. The statement this task was filed to hold open and prove is machine-checked FALSE. `Probe710.not_sliced_complete` and `Probe710.not_finite_width_fmp` in `specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean` (namespace `Probe710`) carry the refutation; its core is `Probe710.no_finite_width_sat`, stated over `FrameOver.ofSlicedStep R fwd bwd` under `[Finite W] [Nonempty W]` with a time-indexed bi-serial `R : ℤ → W → W → Prop` (`fwd : ∀ t w, ∃ u, R t w u`, `bwd : ∀ t w, ∃ v, R (t - 1) v w`) and NO hypothesis on the shape of the succession relation. That file is one of the three `WIRED_REPO` entries of `scripts/check-evidence-probes.sh` and PASSES. THE STATUS OF RECORD IS THEREFORE REFUTED AS A THEOREM (PROBE LEVEL), NOT "OPEN".
-
-DEPENDENCY EDGE ON TASK 711 IS REMOVED BY THIS REVISION; THE EDGE ON 703 STAYS. Reason: the edge on 711 gated PROVING the statement -- 711 was filed as the named ω-automata determinization blocker on the only known proof route -- and the statement is refuted, so the edge now points at nothing. Its only remaining effect was to make 711 look load-bearing for a result that no longer exists. Task 711 has itself since been re-scoped by USER RULING (2026-10-03, commit `94b9b0808`; `specs/ROADMAP.md` Phase 0 carries the checked item "RULED 2026-10-03 by the user: REVISE") to the universal-summary substrate for the `⊡` fibre check on the seam-gluing route, with its consumer re-pointed from this task to task 719 Deliverable 5. That re-scoped 711 is UNRELATED to this task, so removing the edge is the correct record either way.
-
-THE TERMINAL STATUS IS A PHASE 0 USER RULING, AND THIS REVISION DOES NOT MAKE IT. The status stays `[BLOCKED]`. There are exactly two honest terminal options:
-(a) `[ABANDONED]` -- the statement this record was filed to hold open is false, so there is nothing left to prove and nothing to complete.
-(b) `[COMPLETED]` AS A REFUTATION RECORD -- available once the refutation is landed as a `FormalSystem/` LIBRARY THEOREM under the user's confirmed Option A (library landing). Option A is now the user's own ruling, not an autonomous adoption: `specs/ROADMAP.md` Phase 0 carries it as a CHECKED item ("RULED 2026-10-03 by the user: Option A -- library landing"), and it is the revised implementation scope of tasks 710 and 706 as of 2026-10-03 (commits `21fafc4e2`, `556c391e7`; scope spec Section F items 1-2). Option B -- accepting the CI-guarded `specs/evidence/` collection as the home of refutations -- is REJECTED.
-`specs/ROADMAP.md` Phase 0 carries the UNCHECKED item for the ruling on this task. Nothing in this revision checks it, and no agent may.
-
-RESEARCH RECOMMENDATION -- STATED AS A RECOMMENDATION AND EXPLICITLY NOT A DECISION. Hold this task open only until the library landing exists, then close it as a refutation record: that is, prefer (b) to (a), but only AFTER the landing. Do NOT close it on the probe alone. The programme's own rule is that obstructions live as THEOREMS, not only as probes, and that rule is stated in the records of task 709 ("record the obstruction as a theorem where possible ... never leave a deferred obligation behind a placeholder"), task 719 ("Any construction found unworkable must have its obstruction recorded as a THEOREM, per this programme's established discipline -- negative results are deliverables here, not failures") and this task. VERIFIED AT THIS REVISION: the landing does not exist yet. `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/` is not a directory in the tree, so the `NoFiniteWidth.lean` target that task 710's declared `file_scope` names is unwritten, and the refutation still lives only under `specs/archive/710_sliced_class_incompleteness_characterization/probes/`. The user may rule otherwise on any ground; this paragraph records the recommendation, never the outcome.
-
-TWO SCOPE LIMITS OF THE REFUTATION, which `FormalSystem/Metalogic/Decidability/FMP/README.md` already states under its heading "The finite-carrier route is refuted, not merely open". FIRST, the scope is ℤ (DISCRETE) FRAMES ONLY: the pumping argument both probes rely on needs discreteness and says nothing about a dense duration. SECOND, this task's witness `Φ := θ' ∧ □(⊡Fp → ¬⊡¬Xp)` USES THE STABILITY OPERATOR `⊡`, so `not_finite_width_fmp` is specifically an L⁺ result -- unlike `Probe706.no_finite_carrier_sat`, whose witness is `⊡`-free (`Probe706.θ_eq_ofFormula`) and whose half of the refutation is therefore already a result about the base language TM itself. Neither probe says anything about an INFINITE carrier, and neither touches soundness. Do not over-read the refutation past these two limits.
-
-STATUS NOTE (2026-10-02, THE STATEMENT BELOW IS NOW REFUTED -- this task's own conversion clause is triggered): the statement held open below -- every Z-time non-validity of a PlusFormula admits a tail-stable SLICED certificate meeting Certifies -- is FALSE. The adversarial round produced the counterexample this task's closing line anticipated ('convert it to a refutation task if task 710 produces a counterexample'), so this task converts from an open-statement record to a REFUTATION RECORD. Machine-checked, sorry-free, axioms [propext, Classical.choice, Quot.sound], in specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean: not_sliced_complete refutes the statement directly, and not_finite_width_fmp generalises it -- NO certificate class presenting finite per-time fibres is complete, whatever its clauses. Witness Phi := theta' and Box(stab Fp -> not stab not Xp); the obstruction is finite WIDTH (limit closure plus finite fibres contradicts Koenig), a different and strictly stronger failure than the finite-CARRIER failure recorded below. CONSEQUENCES: (i) the 'STATUS OF THE STATEMENT ... OPEN, NOT REFUTED' paragraph below is superseded and must not be read as current; (ii) decidability of L-plus Z-time validity does NOT follow by this route and the route is closed, not merely blocked; (iii) the omega-automata determinization blocker was the blocker for PROVING the statement, so it no longer gates this record -- whether that blocker task is still wanted for other purposes is a separate question and is NOT settled here; (iv) a successor class must present INFINITE fibres (root paths of a finite class graph), with no checker precedent, and is to be filed as research-first only if decidability of full L-plus remains a programme goal. The stab-free flagship is unaffected. THE STATUS FIELD IS DELIBERATELY LEFT UNCHANGED: moving this record to a terminal status is a programme-level call for a human, not a consequence of the refutation. Original description follows, superseded as noted.
-
-BLOCKED. This task is the durable record of the L-plus completeness programme's OPEN headline statement, so that it lives in the task list rather than only in a module docstring.
-
-THE STATEMENT, to be held open and unamended until proved: every Z-time non-validity of a PlusFormula admits a TAIL-STABLE SLICED certificate -- the class task 703's amended Stage 2 lands -- meeting its Certifies predicate. Together with the soundness theorem and the decidable checker that Stage 2 also lands, this would yield decidability of L-plus Z-time validity, which is the result the L-plus completeness programme exists to reach.
-
-STATUS OF THE STATEMENT, per specs/archive/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md decision D3: it is OPEN, NOT REFUTED. What task 706 refuted is the FINITE-CARRIER statement only (Probe706.not_finite_carrier_fmp, sorry-free, machine-checked), which killed the finite-graph certificate type. The sliced statement has no counterexample and none is expected; task 710 exists to attack it adversarially before task 709 spends 60-100 hours downstream of it.
-
-WHY BLOCKED. The only known proof route needs omega-automata determinization, which neither this tree nor Mathlib has (task 711, filed as the named blocker). The alternative -- a direct construction over the product of the state graph with the Hintikka types -- is refuted by the classical new-path example Reynolds 2001 records: in the limit, a step-by-step or filtration construction produces many more paths than were ever chosen explicitly, and a new path can postpone an eventuality forever.
-
-NO BOUND IS COMMITTED and none should be. Doubly exponential slice width is the honest expectation for full L-plus: L-plus Z-time validity is 2EXPTIME-hard by the CTL-star reduction argued in both directions in that report's section Q4, so a singly exponential certificate checkable in time polynomial in its size would place a 2EXPTIME-hard problem in co-NEXPTIME. No order is claimed for the tail periods either -- the natural tail-stability argument gives a third exponential, but that is an artefact of that argument, and a type-recurrence cut on slices may do better as the L side does for a single history.
-
-DO NOT UNBLOCK THIS TASK ON AN ARGUMENT. Unblock it only on a proof, or convert it to a refutation task if task 710 produces a counterexample.
 
 ---
 
