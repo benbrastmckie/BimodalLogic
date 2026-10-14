@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 6,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/793_after_operator_negation_equivalence/reports/01_after-operator-negation-equivalence.md",
+      "summary": "Research for def:event-operators plus lem:after-negation: compiled-probe-verified design for Formula.after/before, a language-generic next-time uniqueness and negation-equivalence tier in Semantics/TruthClauses.lean, after_negation_valid at L, and both readings of cor:after-negation-stable natively in L-plus; plus the Formula.release argument-order swap and the do-not-register finding for the enumerator/census tooling."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792013208_936eb4_793",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
