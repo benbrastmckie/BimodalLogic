@@ -1,6 +1,6 @@
 # Roadmap
 
-*Open work only; hand-maintained (last edited 2026-10-12), not generated — `roadmap-integration.sh
+*Open work only; hand-maintained (last edited 2026-10-13), not generated — `roadmap-integration.sh
 --regenerate` aborts silently against this layout and writes nothing. Finished work lives in
 `specs/CHANGE_LOG.md` and `specs/archive/`. Per-task detail lives in the task records
 (`specs/TODO.md`); the mathematics and the (C)/(S)/(W) verdict table live in `README.md`, the
@@ -15,18 +15,18 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-# Landed: 758, 759 (HitPresented POSITIVE on Node), 720, 712; 760, 773, 775 landed as refutations.
-# The ladder cell index is the open sub-problem: a finite index needs a formula-derived clip AND
-# threshold, and a modulus dominating every letter-definable sub-object period; the positive
-# factorization lemma is stated nowhere. 761 is [BLOCKED] on it pending a USER ruling —
-# parameter-coupled index with jointly derived (T, P, B), set-valued per-state datum over a
-# quotient, or the index-free run-layer half (R2) — and a successor task gated against all five
-# refutation mechanisms before any proof attempt.
-/orchestrate 762 --hard --lit --research  # (C)'s general row, research first: its 759 edge is satisfied; its 761 edge is serialization-only (drop it if the gate defers)
+# Landed: 758, 759 (HitPresented POSITIVE on Node), 762 (HitPresented general row — requirement
+# (C) now a SETTLED theorem for every regular ℤ-model), 716 (liveAt non-termination fixed), 720,
+# 712; 760, 773, 775 landed as refutations. The ladder cell index remains the open sub-problem: a
+# finite index needs a formula-derived clip AND threshold, and a modulus dominating every
+# letter-definable sub-object period; the positive factorization lemma is stated nowhere. 761 is
+# [BLOCKED] on it pending a USER ruling — parameter-coupled index with jointly derived (T, P, B),
+# set-valued per-state datum over a quotient, or the index-free run-layer half (R2) — and a
+# successor task gated against all five refutation mechanisms before any proof attempt.
 /orchestrate 778                 # record the P / P+1 modulus convention (child of 775)
-/orchestrate 761 --hard --lit    # the ladder realization theorem — only after the index ruling and its successor land
-/orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — after 761 and 762
-/orchestrate 716,714 --hard      # the sliced-certificate sub-front
+/orchestrate 761 --hard --lit    # the ladder realization theorem — blocked on the Stage 0 index ruling
+/orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — 762's edge discharged; waits on 761 alone
+/orchestrate 714 --hard          # sliced-certificate full-label evaluation; 716's edge discharged (liveAt fixed)
 # Stage 2 — supporting semantics and metalogic
 /orchestrate 616,618
 /orchestrate 617,566
@@ -99,69 +99,48 @@ summary, and its literal falsifier is unsatisfiable (`Probe718Mosaic.StabSaturat
 The three requirements named by 735's verdict are **(C)** Hit-level completeness with a computable
 bound, **(S)** Hit-level soundness, **(W)** a closure-wide quasimodel. Their statement shapes, what
 landed, and what did not are authored in the `RaySummary` README's "The verdict" table, which is
-their authority. (S) landed for `box`/`stab`-free `φ` at one seam; (C) landed its probe half and, on model A, its
-bound half as a count (`Probe745.hitPresented_modelA`, window `presentationSize k`); (W) landed its
-anchor layer and its run-layer frame scheme (`ladderFrame`, `ladderFrame_isRegular`). What remains
-open is below: the three obligations of the verdict table, filed as six records in dependency
-order (design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md`).
+their authority. (S) landed for `box`/`stab`-free `φ` at one seam; **(C) is now SETTLED in
+general** (`exists_hitPresented`, every regular `ℤ`-model, `sizeBound φ k` a count); (W) landed
+its anchor layer and its run-layer frame scheme (`ladderFrame`/`ladderFrameAdm`, `ladderModel`),
+but its realization theorem (761) is `[BLOCKED]` on the open cell-index sub-problem. What remains
+open is below: 761's realization theorem, 763's lift (which 761 gates), and the independent
+sliced-certificate question (714) (design of record:
+`specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md`).
 
-- **758 — `Node` fixture probe, cell stabilization** (`preCell_stable`, `preCell_zero_ne`,
-  `postCell_stable` on `NoFiniteWidth.M` for `Φ`, fallback `D`): run-layer phase 2's FIRST statement
-  tested where 750's mitigation R-A said to test it. Depth: none (cells). Costable: 400-800 lines,
-  1-2 dispatches. No edges. Either verdict is the deliverable; a failure is recorded as the
-  obstruction, never a finite-fibre retreat.
-
-- **759 — `Node` fixture probe, `HitPresented` for a `⊡`-bearing formula at an infinite-width seam**
-  (`hitPresented_node` or `not_hitPresented_node`, seam `(t, pre k)`, every `k ≥ 1`). **This is the
-  highest-information probe on the frontier**: the only Hit-level positive is `box`/`stab`-free on a
-  finite-width slice, and nothing tests either untested axis. **A Hit-level negative there is a
-  Stage 0 ruling, not an agent transition** — it blocks R1 at (C) with no fallback, and 762/763
-  then wait on the user. Depth `1 ≤ k`. Costable with a wide band. Serialization edge on 758.
-
-- **760 — ladder model, `Adm`, and `ladderCell_stabilizes` over BOTH counters `(c, n)`** with the
-  bound `B := |cl φ|` exhibited (fallback `∃ B`) — a count of closure formulas, never a complexity
-  bound. Logical edge on 758 (the verdict fixes the bound shape); serialization edge on 759. NOT
-  costable until 758 reports; `[BLOCKED]` is the honest outcome if stabilization fails.
+- **Landed this round** (no further action; cited by `RaySummary/README.md`'s verdict table):
+  **758** (cell stabilization, `Node` fixture, POSITIVE); **759** (`HitPresented`, `Node`,
+  `⊡`-bearing formula at infinite width, POSITIVE); **762** (`exists_hitPresented`, every regular
+  `ℤ`-model — **requirement (C) is now a settled theorem**, not open mathematics); **760**
+  (`ladderFrame` has no instances and `ladderCell_stabilizes` is refuted in both filed forms; the
+  sound general by-products `Adm`/`ladderFrameAdm`/`ladderModel` landed in `LadderModel.lean`,
+  `[COMPLETED WITH EXCLUSIONS]`); **773**, **775** (two further cell-index candidates refuted —
+  gap-carrying two-coordinate, then residue-carrying six-coordinate; see the index comment above);
+  **720** (CI tracked-ness repair); **712** (refutation-record closeout, Stage 0 above).
 
 - **761 — ladder realization theorem** (`LadderCons`, `ladderRealized` per ladder cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s `box`/`stab` limitation lands, by the README's own
   assignment; no standalone (S) record). Hit-level, on the infinite-width admissible-carrier frame
-  `ladderFrameAdm` (`ladderFrame` has no instances) (WIDTH and COLLAPSE,
-  `w-soundness-shape-refuted.lean`, forbid the trace level and `modelOf`'s frame). Logical edge on
-  760. NOT costable (760 landed no bound — the stabilization lemma is refuted and the cell index is
-  an open sub-problem; sized by how much of `Realize.lean` transfers).
-
-- **762 — (C)'s general row** (`exists_hitPresented` with `sizeBound φ k` a count, every regular
-  `ℤ`-model). Open mathematics, research-first. Logical edge on 759 (a negative there makes it
-  false); serialization edge on 761. NOT costable; `[BLOCKED]` honest.
+  `ladderFrameAdm` (`ladderFrame` has no instances). `[BLOCKED]` on the open cell-index sub-problem
+  (Stage 0 above), not on any remaining dependency — both 760 and 775 are landed. NOT costable
+  until the index ruling lands; sized by how much of `Realize.lean` transfers.
 
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
-  `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM, stated here and nowhere
-  earlier. Depth `k = 1`. Logical edges on 761 and 762. NOT costable until both have shapes and the
-  open cell-index sub-problem is resolved.
+  `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM, stated here and
+  nowhere earlier. Depth `k = 1`. Its edge on 762 is discharged (`exists_hitPresented` is a landed
+  theorem); it waits only on 761. NOT costable until 761 has a shape.
 
-  The four library records (760-763) share `RaySummary.lean`, `FormalSystem.lean`, the C14 pins,
-  `docs/theorem-index.md`, the `RaySummary` README and `typst/generated/status.typ`; they
-  serialize through edges inside the set. Collisions OUTSIDE the set — 744 (README, invariants
-  script), 734 (`check-evidence-probes.sh`, Stage 0), 410 (`status.typ`) — are the admission
-  gate's to serialize, with no cross-set edge.
+  761 and 763 share `RaySummary.lean`, `FormalSystem.lean`, the C14 pins, `docs/theorem-index.md`,
+  the `RaySummary` README and `typst/generated/status.typ`, and serialize through the edge between
+  them. Collisions OUTSIDE the pair — 744 (README, invariants script), 734
+  (`check-evidence-probes.sh`, Stage 0), 410 (`status.typ`) — are the admission gate's to
+  serialize, with no cross-set edge.
 
-- **720 — CI repair**, ahead of the sliced pair because a red gate on every push outranks a local
-  defect. Two of three `WIRED_REPO` entries in `scripts/check-evidence-probes.sh` point at files git
-  does not track (an archival `mv` un-tracked them; the gate tests `[ ! -f ]` only, at `:717-720`),
-  and `ci.yml:352-356` fails the job on a clean checkout. The deliverable is the **tracked-ness
-  check** (`git ls-files --error-unmatch`, failing loudly), because the mechanism recurs on the next
-  archival move.
-
-- **716, 714 — the sliced-certificate sub-front.** **716** is a defect in shipped, gated code: the
-  `liveT`/`liveAt` fixpoint does not return in 300 s on a 4-position total-edge certificate while
-  being instant on self-loop ones. **714** evaluates carrying full labels, which would delete both
-  liveness filters; the open question is whether decidability of the check survives. **Do not file a
-  fourth certificate class** — no class presenting finite per-time fibres is complete whatever its
-  clauses, both halves of that obstruction being landed under `PlusSlicedCertificate/Limits/`.
-
-- **712 —** the refutation-record closeout; dispatchable only after Stage 0 corrects its marker,
-  until then it is admitted and stalls.
+- **714 — sliced-certificate full-label evaluation.** 716's `liveT`/`liveAt` non-termination is
+  fixed (memoization, `Timed.lean`: the defect configuration now decides in ~8s under a heartbeat
+  cap). The open question stands alone: does carrying full labels to remove the `TailStable`
+  junk-position obstruction preserve decidability of the check? **Do not file a fourth certificate
+  class** — no class presenting finite per-time fibres is complete whatever its clauses, both
+  halves of that obstruction being landed under `PlusSlicedCertificate/Limits/`.
 
 ### Guardrails — what is ruled out
 
@@ -194,7 +173,6 @@ is low value: the monodic decidability proof *is* the quasimodel method, which r
 |---|---|
 | No constructor for infinite-width, finitely branching regular frames | `Rbad`/`Rok` refuted as repair shapes (`b2b-frame-constructor-branching.lean`); the positive halves need TWO-SIDED finite branching; the `Node` thread-unfolding shape (`Limits/NoFiniteWidth.lean:132`) is neither refuted nor built |
 | The factorization-transport lemma does not close on model A | Not in the tree; never attempted |
-| Hit-level completeness fails for some regular `ℤ`-model | One positive fixture, zero negatives, no general argument; trace level is false (`Probe735.not_presented`) and does not transfer. **759** tests it on both untested axes (`⊡`-bearing formula, infinite width); a negative there is a Stage 0 ruling |
 | A closed L⁺ formula forces backward determinism on a regular `ℤ`-frame — the one route by which a published negative result could reach L⁺ | `stab`'s clause (`PlusTruth.lean:93`) fails the backward closure of the historical-necessity tradition (Thomason 1984 §4 Def. 6(2); Caleiro–Viganò–Volpe Def. 2.5 `Wdc`), which is why the corpus's negatives do not apply. If forcing is possible, the know-time-do-not-forget family becomes a reduction target. **Cheap check, named and not filed**: one fixture; `Probe719Backward` and `Probe733Mirror` already inhabit the backward factor |
 
 **Literature position.** TM/L⁺ over regular `ℤ`-frames evades every published negative result in the
