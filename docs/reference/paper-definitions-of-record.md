@@ -53,15 +53,137 @@ re-derives every hash below directly from the live paper file on every run.
 | Line count at that re-pin | 4529 |
 | Time-reflection wave re-pin (UTC) | 2026-09-17T09:19Z (14 entries re-hashed, `thm:M5-valid` retired, TD → TR absorbed with carve-outs; see "Drift correction and rename absorption (2026-09-17)" below) |
 | Base commit at the `def:id` footnote re-pin (paper repo `git HEAD`; file dirty against it) | `96ffaf43c6cccd10322366615b24513604f57a04` |
-| **File checksum, re-pinned at the `def:id` footnote re-pin (sha256, current authoritative pin)** | `88d9a9a64de7b7192899d284885c0ee807de4b9fcabe12d4c6b5c4570ac1f499` |
+| **File checksum, re-pinned at the `def:id` footnote re-pin (sha256, superseded 2026-10-14)** | `88d9a9a64de7b7192899d284885c0ee807de4b9fcabe12d4c6b5c4570ac1f499` |
 | Line count at that re-pin | 4573 |
 | `def:id` footnote re-pin (UTC) | 2026-09-28 (one anchor re-hashed: the `Brast-McKie2021` footnote in `def:id` gained a trailing clause on transparency being maintained for the entirety of the language. Expository only -- no axiom, no substitution convention and no operator-scope proviso changed, and `def:id` has no Lean counterpart, so no citation or soundness-chain consequence. Absorbed rather than left red because the gate had been failing on this single clause since the paper edit. Re-run after the re-pin reported case (b), all 43 recorded definitions unchanged.) |
 
+| Base commit at the 27-anchor drift correction (paper repo `git HEAD`; file dirty against it, and the last commit to touch the file is `9359505a10d41edcf903958f6255201baff4127a`) | `0a51a798de3e48b64b661c91243a81fd366572e6` |
+| **File checksum, re-pinned at the 27-anchor drift correction (sha256, current authoritative pin)** | `4035f3acb2c1f407f0fd3f54d082be1bdebca8128691f66edc5b32b84989a020` |
+| Line count at that re-pin | 3961 |
+| 27-anchor drift correction re-pin (UTC) | 2026-10-14 (27 entries re-hashed in one correction, headlined by the `lem:nullity` strengthening from an implication to a biconditional; no anchor retired, none renamed, none newly pinned. See "Drift correction (2026-10-14): the 27-anchor wave" below. The three whole-file sentinels and this table's "current authoritative pin" row had diverged across the 2026-09-17 and 2026-09-28 re-pins; setting all of them to the values above resolves that.) |
 <!-- PAPER_PATH: ~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: ~/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: a166fcbf2951482ecdccc643c7458ac92d67126c -->
-<!-- FILE_CHECKSUM: b4e45e2c5f771ee0d86be6c6e3a302cceb454771cd53475ed3628258083ddfa0 -->
-<!-- LINE_COUNT: 4529 -->
+<!-- PINNED_COMMIT: 0a51a798de3e48b64b661c91243a81fd366572e6 -->
+<!-- FILE_CHECKSUM: 4035f3acb2c1f407f0fd3f54d082be1bdebca8128691f66edc5b32b84989a020 -->
+<!-- LINE_COUNT: 3961 -->
+
+### Drift correction (2026-10-14): the 27-anchor wave
+
+The checker was red (exit 1, case (c)) before this correction: **27 pinned entries drifted**, no
+anchor went dangling, and the four `def:frame#*` sub-anchors were byte-stable throughout. It gives
+the quiet case-(a) pass after it. The paper moved twice more while this correction was in flight
+(three distinct `git HEAD`s and three distinct checksums across the research, planning and
+execution runs), which is why every hash below was re-derived at execution time rather than carried
+from the earlier runs.
+
+**Re-hashed (re-quoted from live text via `--resolve`, none hand-written):** `def:temporal-order`,
+`def:task-relation`, `def:frame`, `lem:nullity`, `def:world-history`, `thm:extension`,
+`cor:occurrence`, `def:constraints`, `lem:nesting`, `def:BLplus-language`,
+`def:time-shift-histories`, `def:frame-validity`, `def:BX`, `def:BX-z`, `def:BX-d`,
+`thm:TM-soundness`, `app:discrete`, `app:dense`, `app:complete`, `def:frame-properties`,
+`def:deterministic`, `cor:saturation-finite`, `cor:tm-completeness`, `def:id`, `def:strongest`,
+`thm:exist`, `lem:uniq`.
+
+**Purely presentational in this wave (no content), recorded so a future reader does not go looking
+for a change that is not there:** set-builder `:` became `\mid` in `def:temporal-order`,
+`def:task-relation` and `def:BLplus-language`; `\textit{iff}` and `iff` became "if and only if" in
+`def:time-shift-histories`, `app:discrete`, `app:dense` and `app:complete`; `cor:occurrence`,
+`thm:extension`, `thm:exist` and `lem:uniq` gained environment titles (`[Occurrence]`,
+`[Extension]`, `[Existence]`, `[Uniqueness]`); `def:frame`'s quantifier preamble lost the
+mislabel "positive" ("for all positive durations $x, y \geq 0$" → "for all durations
+$x, y \geq 0$", the range unchanged and still inclusive of zero); `lem:nesting` is now stated via
+`def:constraints`'s own named families `F_t` and `S_{t,s}` instead of respelling the fibers and
+segments, and lost the in-source `% FIX:` authorial note it used to carry; `def:constraints` was
+restructured around named `A`, `C`, `F_t` and `S_{t,s}` with the segment-case guard restated as
+"when $A$ and $C$ are both nonempty", defining the same family; `def:deterministic` had its
+"holding in both temporal directions" clause commented out without changing the predicate; and
+`def:world-history` now defines the top tier off *partial* history under both names
+("A \textit{world history}, or \textit{possible world}") rather than off convex history, denoting
+the same set since a total domain is trivially convex.
+
+**Content-bearing changes, each called out individually:**
+
+1. **`lem:nullity` was strengthened from an implication to a biconditional.** The paper said
+   "$w \Rightarrow_0 w$ for every world state $w \in W$ in every task frame
+   $\F = \tuple{W, \D, \Rightarrow}$"; it now says "$w \Rightarrow_0 u$ if and only if $w = u$,
+   for all world states $w, u \in W$ in any task frame $\F$". This characterises `⇒₀` as the
+   identity relation on `W`, which is strictly stronger than the zero loop. **The DERIVED status is
+   untouched**: Nullity is still a lemma and still not a fifth frame axiom, `def:frame` still
+   carries exactly four, and the strengthened form is still derived from *Seriality* at `x = 0` plus
+   *Limit*. The formalization is **ahead of** this change rather than behind it: the biconditional
+   is `FrameOver.nullity_identity` in `FormalSystem/Semantics/TaskFrame.lean`, with
+   `nullity_identity_of_serial_limit` deriving it choice-free from *Seriality* and *Limit* over a
+   bare task relation, and `FrameOver.nullity` carrying the reflexivity half. No new Lean
+   declaration was needed for this wave, and none was added.
+2. **`thm:TM-soundness` was generalized.** It said "If $\vdash \varphi$, then $\vDash \varphi$";
+   it now says "Each system $\Lambda$ of \textbf{\ref{def:TMplus}} is sound: if
+   $\Gamma \vdash_\Lambda \varphi$, then $\Gamma \vDash_{\mathsf{C}_\Lambda} \varphi$" — per-system,
+   with a context $\Gamma$, and class-relative validity. This is the shape the tree's soundness
+   results already have.
+3. **`def:frame-properties` gained the ℤ-time and ℝ-time task-frame definitions**, so a task frame
+   is now an "$\Z$-time task frame" or an "$\R$-time task frame" just in case its temporal order is
+   isomorphic to `ℤ` or to `ℝ`.
+4. **`cor:tm-completeness` was restated in terms of those new classes** ("Weakly complete over the
+   $\Z$-time task frames" in place of "over $\Z$-time"), and the strong/weak completeness
+   definitions it used to carry inline are gone from the block.
+5. **`def:id` was generalized from formulas to terms.** `Ref` and `LL` now range over `α`, `β`
+   that are "both formulas or, once operator terms are available in `def:lang`, both operator
+   terms", and the operator-scope proviso reads "within the argument of an operator term" rather
+   than "in the scope of an operator". `def:id` has no Lean counterpart, so there is no citation or
+   soundness-chain consequence.
+6. **`def:strongest` gained a second notion**, `Str'^{\OO}_{L}(\Q)` ("the meet of the objective
+   modalities in $L$"), together with the argument that it implies `Str^{\OO}_{L}(\Q)` while the
+   converse would require the identity. **`thm:exist`** now asserts `Str'` for `\Bm` and derives
+   `Str` from it, and **`lem:uniq`** gained the matching uniqueness half for `Str'` plus a footnote
+   on the independence of `I8` and of the identity of two strongest objective modalities. None of
+   these three has a Lean counterpart.
+
+**Two paper-ward alignments — the paper moved toward the tree, not away from it:**
+
+- `def:task-relation`'s reflection convention now reads "for $x > 0$" where it read "for
+  $x \geq 0$". The convention is therefore no longer stated at zero, which is exactly how the tree
+  already treats it: the zero case is not a convention there but a consequence, `reflection_of_limit`.
+- `cor:saturation-finite` now reads "Task relations on finite set of world states $W$ satisfy
+  \textit{Saturation}, choice-free" in place of "Every task frame $\F = \tuple{W, \D, \Rightarrow}$
+  with finite $W$ satisfies \textit{Saturation}, choice-free". The statement is now about bare task
+  relations rather than full task frames, which is the generality the tree already has in
+  `TaskFrame.saturation_of_fib_subsingleton` and `TaskFrame.saturation_of_finite`.
+
+**Footnote removals — three citations the tree can no longer point at:**
+
+- **`thm:extension` lost the choice-freeness footnote.** The footnote that said the Extension
+  proof appeals to Zorn's lemma, so `cor:occurrence` is a theorem of ZFC "in contrast with the
+  derivation of the zero loops in `lem:nullity` and the derivation of *Saturation* for finite $W$
+  in `cor:saturation-finite`, both of which are choice-free", is gone from the paper. The tree's
+  choice-freeness claims remain **true of the Lean proofs** — which is what this repository is
+  entitled to assert, and what `nullity_identity_of_serial_limit` and `saturation_of_finite`
+  actually establish — but they no longer have a live paper footnote behind them. Recorded here so
+  a future reader does not hunt for a citation that no longer exists.
+- **`def:BX` lost its Burgess/Xu attribution footnote**, which mapped `TN`, `TS`, `UC`, `UG`, `US`,
+  `UF`, `UI`, `CN`, `UE`, `TL` onto Burgess's and Xu's numbered axioms and named the present
+  system's own additions. `def:BX-d` likewise lost its "neither `DN` nor `NN` is due to Burgess or
+  Xu" sentence, and `def:BX-z` lost the corresponding sentence about `UZ` and `Z1`.
+- **`def:frame-validity` and `cor:tm-completeness` had their footnotes commented out** (frame
+  validity's non-vacuity via `cor:occurrence`; completeness's pointer to the Lean repository and
+  its `Determined`/`Stability` extension note). Both are commented out in the paper source rather
+  than deleted, so they sit inside the hashed region as `%`-prefixed lines and are quoted here
+  verbatim like any other in-block comment.
+
+**In-tree prose this wave forced.** The in-tree correction scope is exactly the re-pinned set,
+because "verbatim" in this tree's docstrings means verbatim *against this record file*, not against
+the paper (stated at `FormalSystem/Semantics/FrameAxioms.lean`). Four docstrings quoted the retired
+`lem:nullity` sentence under an explicit "verbatim" label and were re-quoted:
+`FormalSystem/Semantics/TaskFrame.lean` (module docstring and the docstring above
+`nullity_of_serial_limit`), `FormalSystem/Semantics/FrameAxioms.lean` (the
+"Paper specification, transcribed" list), and `FormalSystem/Semantics/Extension/Admissible.lean`.
+Non-Lean restatements of the lemma were corrected in `README.md`,
+`docs/reference/API_REFERENCE.md`, `docs/reference/transcription-audit-surface.md`,
+`typst/FormalFoundations.typ` and `typst/chapters/02-semantics.typ`. Paraphrases that state only
+the weak loop *as what a proof consumes* were deliberately kept: a proof that needs only
+`w ⇒₀ w` keeps citing `w ⇒₀ w`, and `FormalSystem/Semantics/Presheaf/Behavior.lean`,
+`docs/reference/state-topology-appendix-support.md` and the References lines of
+`FormalSystem/Semantics/Extension/Admissible.lean` and
+`FormalSystem/Semantics/Extension/Extension.lean` are correct as they stand.
 
 ### Label rename absorption (2026-09-18): `lem:temporal-duality` → `lem:time-reflection`, prose only, no re-pin
 

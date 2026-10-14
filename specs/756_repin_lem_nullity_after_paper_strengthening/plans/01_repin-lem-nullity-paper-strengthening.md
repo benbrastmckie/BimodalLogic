@@ -222,44 +222,44 @@ equal the inventory's anchor count.
 
 ---
 
-### Phase 3: Re-pin the sentinels and write the dated drift-correction section [NOT STARTED]
+### Phase 3: Re-pin the sentinels and write the dated drift-correction section [COMPLETED]
 
 **Goal**: Close the record's whole-file provenance and leave a future reader the narrative the
 record file's own convention requires for a drift correction.
 
 **Tasks**:
-- [ ] Re-read the record file immediately before editing.
-- [ ] Set `<!-- PINNED_COMMIT: … -->`, `<!-- FILE_CHECKSUM: … -->` and `<!-- LINE_COUNT: … -->`
+- [x] Re-read the record file immediately before editing.
+- [x] Set `<!-- PINNED_COMMIT: … -->`, `<!-- FILE_CHECKSUM: … -->` and `<!-- LINE_COUNT: … -->`
       to the live values Phase 1 captured. This is a drift correction, so all three are re-pinned
       (unlike a case-(b) coverage extension, which re-pins none).
-- [ ] Add the provenance-table rows for this wave at the top of the file, and **reconcile the
+- [x] Add the provenance-table rows for this wave at the top of the file, and **reconcile the
       existing divergence**: the table's last row names `88d9a9a6…` / 4573 lines as "current
       authoritative pin" while the `FILE_CHECKSUM` sentinel still carried `b4e45e2c…` / 4529.
       Setting both to the new live values resolves it.
-- [ ] Record whether the paper file was clean or dirty against `PINNED_COMMIT` (Phase 1 captured
+- [x] Record whether the paper file was clean or dirty against `PINNED_COMMIT` (Phase 1 captured
       this), following the dirty-pin convention the 2026-08-25 and 2026-09-07 sections use.
-- [ ] Insert one `### Drift correction (2026-10-14): the <N>-anchor wave` section immediately
+- [x] Insert one `### Drift correction (2026-10-14): the <N>-anchor wave` section immediately
       after the sentinel block and before the `### Label rename absorption (2026-09-18)` section
       (sections run newest-first). Follow the 2026-09-17 section's shape:
-  - [ ] the before/after gate state (red, exit 1, N drifted; quiet pass after);
-  - [ ] the **Re-hashed** list, with the note that every block was re-quoted via `--resolve` and
+  - [x] the before/after gate state (red, exit 1, N drifted; quiet pass after);
+  - [x] the **Re-hashed** list, with the note that every block was re-quoted via `--resolve` and
         none was hand-written;
-  - [ ] each content-bearing change called out individually, from Phase 1's classification;
-  - [ ] the `lem:nullity` strengthening stated explicitly as implication → biconditional, with
+  - [x] each content-bearing change called out individually, from Phase 1's classification;
+  - [x] the `lem:nullity` strengthening stated explicitly as implication → biconditional, with
         the DERIVED claim preserved and `FrameOver.nullity_identity` named as the Lean counterpart
         that already over-satisfies it;
-  - [ ] the two paper-ward-alignment notes: `def:task-relation`'s `x ≥ 0` → `x > 0` moves the
+  - [x] the two paper-ward-alignment notes: `def:task-relation`'s `x ≥ 0` → `x > 0` moves the
         paper *toward* the tree's existing treatment of zero (`reflection_of_limit`), and
         `cor:saturation-finite`'s generalization to bare task relations matches
         `TaskFrame.saturation_of_fib_subsingleton`/`saturation_of_finite`;
-  - [ ] the `thm:extension` footnote-removal note: the footnote asserting the choice-free status
+  - [x] the `thm:extension` footnote-removal note: the footnote asserting the choice-free status
         of `lem:nullity` and `cor:saturation-finite` against `thm:extension`'s Zorn appeal is gone
         from the paper. The tree's choice-freeness claims remain true *of the Lean proofs*, which
         is what the tree is entitled to assert, but they no longer have a live paper footnote
         behind them — record this so a future reader does not hunt for a citation that is gone;
-  - [ ] what in-tree prose the wave forced (fill in from Phases 4-6 once known, or state the
+  - [x] what in-tree prose the wave forced (fill in from Phases 4-6 once known, or state the
         enumerated site list and leave Phase 8 to confirm).
-- [ ] Commit, staging only `docs/reference/paper-definitions-of-record.md`.
+- [x] Commit, staging only `docs/reference/paper-definitions-of-record.md`.
 
 **Timing**: 1.25 hours
 
