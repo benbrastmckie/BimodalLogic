@@ -1,33 +1,35 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "blocked_phase": 7,
-  "review_reason": "Phase 7 blocked: the leaf cache makes `verts` definitionally non-transferable across `withBx`, breaking five rfl-proved transfer lemmas in Complete.lean (a file the phase's Scope Hypothesis asserted untouched). A scratch test at 10x the heartbeat cap shows rfl fails outright rather than timing out, so no cap bump can fix it. Two candidate routes are recorded on the Phase 7 heading; one is a decomposition change and the other a scope change, so neither is an implementation agent's call. Phases 1-6 are complete, committed and fully verified.",
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 12,
-    "build_passed": true
-  },
-  "partial_progress": {
-    "stage": "phase_7_blocked",
-    "details": "Phases 1-6 [COMPLETED] and committed, each with its own phase commit. Phase 7 [BLOCKED] -- see the structured BLOCKER record on the Phase 7 heading in the plan. Phases 8-9 [NOT STARTED] behind it. The full guarded lake build is green (2844 jobs) and check-module-invariants.sh reports ALL CHECKS PASSED.",
-    "phases_completed": 6,
-    "phases_total": 9
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/716_sliced_certificate_liveat_nontermination/summaries/01_liveat-memoization-tier2-witness-summary.md",
-      "summary": "Landed the width-2 total-edge Tier-2 sliced witness with its C36 row and C2 pin, and removed two of the three recomputation faults in the shipped liveness procedure (embedded witness liveAt(-1): 20225 ms -> 2188 ms); Phase 7's leaf cache blocked on a defeq transfer failure."
+      "type": "plan",
+      "path": "specs/716_sliced_certificate_liveat_nontermination/plans/02_shape-d-verts-biunion.md",
+      "summary": "Revised plan adopting Shape D for the position-space leaf: Phases 1-6 preserved as landed, Phase 7 re-planned (biUnion-shaped verts, the succT/predT let-hoists, one prose line in Complete.lean), Phases 8-9 carried. 28 pinned Lean Challenge identifiers (was 31); posTable/posAtC/posAtC_eq dropped as a raised decomposition change."
     }
   ],
+  "next_steps": "Run /implement 716 to execute Phase 7 (Shape D) and then Phases 8-9 of the revised plan",
   "metadata": {
-    "session_id": "sess_1791910277_6e35c3",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1791937255_73943e",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phase_count": 9,
+    "phases_completed": 6,
+    "estimated_hours": 14,
+    "remaining_hours": 4.5,
+    "plan_version": 2,
+    "dependency_waves": [[1], [2, 3], [4], [5], [6], [7], [8], [9]],
+    "reports_integrated": [
+      ".blocker-research.json",
+      "probes/21_shapeD_transfer.lean",
+      "probes/22_lethoist_transfer.lean",
+      "probes/23_table_defeq_failure.lean",
+      "probes/24_shapeD_measure.lean"
+    ],
+    "decomposition_change": "posTable, posAtC and posAtC_eq dropped from the Goals and Lean Challenge Statements (31 -> 28 pinned identifiers); raised explicitly per plan-compliance.md, nothing substituted in their place.",
+    "file_scope_widening": "Phase 7 adds FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean to the plan's file list, prose-only (one docstring line); it is not in task 716's declared file_scope in state.json.",
+    "open_question_carried": "Phase 5's inner-fixpoint hoist is kernel-neutral (25.9 s vs 24.4 s, 1.06x) and justified by certA alone; task 781 owns the stay-or-revert decision. No phase here reverts or re-measures it.",
+    "validation": "validate-artifact.sh PASS (0 warnings); Challenge/Goals identifier sets verified equal at 28 unique identifiers; plan-file-scope-harvest.sh parses all per-phase Files to modify lists.",
     "compliance_check": "passed"
   },
   "dispatch_seq": 8
