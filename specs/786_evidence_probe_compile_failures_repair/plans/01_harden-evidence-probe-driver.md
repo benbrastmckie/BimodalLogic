@@ -253,23 +253,23 @@ as the mechanical backstop against an edit that escapes the comment region.
 
 ---
 
-### Phase 4: Adversarial verification and the full gate set [NOT STARTED]
+### Phase 4: Adversarial verification and the full gate set [COMPLETED]
 
 **Goal**: Both new code paths are demonstrated by deliberate negative controls rather than
 inferred from an already-green gate, the hard constraint is proven, and the complete gate set is
 observed green.
 
 **Tasks**:
-- [ ] **NC1 — environment class fires.** Copy a mid-closure olean (e.g. `.lake/build/lib/lean/FormalSystem/Examples.olean`) into the scratchpad, remove the original, run `bash scripts/check-evidence-probes.sh`, and record that affected probes report `FAIL (environment: ...)` (not `FAIL (does not compile)`), that the foot text shows the third paragraph, and that the script exits 1. Restore the olean immediately in the same command chain.
-- [ ] **NC1 recovery.** Re-run the gate and record exit 0 with 33 PASS before proceeding. If the olean cannot be restored from the copy, run `lake build` to regenerate it and re-measure.
-- [ ] **NC2 — lock wait is taken and announced.** Hold the lock from a bounded background holder (`flock .lake/build-guard.lock sleep 25 &`, capturing the PID), run the gate, and record that the `waiting on the shared build lock` notice appears on stderr and that the run then completes green once the holder exits. Follow `context/patterns/bounded-build-waiter.md` (hard timeout, `kill -0` on the captured PID) for any waiting.
-- [ ] **NC3 — timeout branch fires.** With the lock held by a bounded background holder, run `PROBE_LOCK_WAIT_S=1 bash scripts/check-evidence-probes.sh` and record the environment-class timeout failure naming the lock path, exit 1, and that no probe was attempted.
-- [ ] **NC4 — `flock`-absent degradation.** Run the gate with a `PATH` from which `flock` is absent and record the audible stderr notice plus an otherwise-green run. If this cannot be arranged cleanly on this host, record it as verified by read-through instead, explicitly, rather than claiming a measurement not taken.
-- [ ] **Hard constraint proof.** `git status --short` and `git diff --stat` show `scripts/check-evidence-probes.sh` as the only modified path; `git diff -- specs/evidence/` is empty; `git diff` shows no hunk inside the `WIRED=(`, `WIRED_REPO=(`, or `DEFERRED=` blocks.
-- [ ] **Green measurement of record.** `bash scripts/check-evidence-probes.sh` exits 0 with `PASS  all 33 wired probe(s) compile`; capture the exit status and elapsed time explicitly rather than reading the text alone.
-- [ ] **Dependent gate.** `bash scripts/generate-decidability-inventory.sh --diff` reports no `FAIL SRC2` anti-silence line and no diff against the committed baseline.
-- [ ] **Full gate set.** `bash .claude/scripts/verify-deploy.sh` (the complete repository gate aggregator), plus the repository gates CI runs over this file's domain: `bash scripts/check-evidence-probes.sh`, `bash scripts/check-module-invariants.sh --no-build`, and `shellcheck scripts/check-evidence-probes.sh`. Record each one's exit status. Note that `check-module-invariants.sh` with a build would contend for the same lock by design; `--no-build` is what CI runs.
-- [ ] Record each negative control's verbatim observed output in the phase handoff, so a reader can re-attribute the verdicts without re-running them.
+- [x] **NC1 — environment class fires.** Copy a mid-closure olean (e.g. `.lake/build/lib/lean/FormalSystem/Examples.olean`) into the scratchpad, remove the original, run `bash scripts/check-evidence-probes.sh`, and record that affected probes report `FAIL (environment: ...)` (not `FAIL (does not compile)`), that the foot text shows the third paragraph, and that the script exits 1. Restore the olean immediately in the same command chain.
+- [x] **NC1 recovery.** Re-run the gate and record exit 0 with 33 PASS before proceeding. If the olean cannot be restored from the copy, run `lake build` to regenerate it and re-measure.
+- [x] **NC2 — lock wait is taken and announced.** Hold the lock from a bounded background holder (`flock .lake/build-guard.lock sleep 25 &`, capturing the PID), run the gate, and record that the `waiting on the shared build lock` notice appears on stderr and that the run then completes green once the holder exits. Follow `context/patterns/bounded-build-waiter.md` (hard timeout, `kill -0` on the captured PID) for any waiting.
+- [x] **NC3 — timeout branch fires.** With the lock held by a bounded background holder, run `PROBE_LOCK_WAIT_S=1 bash scripts/check-evidence-probes.sh` and record the environment-class timeout failure naming the lock path, exit 1, and that no probe was attempted.
+- [x] **NC4 — `flock`-absent degradation.** *(measured, not read-through: a scratchpad shim PATH of 2271 symlinks with `flock` removed)* Run the gate with a `PATH` from which `flock` is absent and record the audible stderr notice plus an otherwise-green run. If this cannot be arranged cleanly on this host, record it as verified by read-through instead, explicitly, rather than claiming a measurement not taken.
+- [x] **Hard constraint proof.** `git status --short` and `git diff --stat` show `scripts/check-evidence-probes.sh` as the only modified path; `git diff -- specs/evidence/` is empty; `git diff` shows no hunk inside the `WIRED=(`, `WIRED_REPO=(`, or `DEFERRED=` blocks.
+- [x] **Green measurement of record.** `bash scripts/check-evidence-probes.sh` exits 0 with `PASS  all 33 wired probe(s) compile`; capture the exit status and elapsed time explicitly rather than reading the text alone.
+- [x] **Dependent gate.** `bash scripts/generate-decidability-inventory.sh --diff` reports no `FAIL SRC2` anti-silence line and no diff against the committed baseline.
+- [x] **Full gate set.** `bash .claude/scripts/verify-deploy.sh` (the complete repository gate aggregator), plus the repository gates CI runs over this file's domain: `bash scripts/check-evidence-probes.sh`, `bash scripts/check-module-invariants.sh --no-build`, and `shellcheck scripts/check-evidence-probes.sh`. Record each one's exit status. Note that `check-module-invariants.sh` with a build would contend for the same lock by design; `--no-build` is what CI runs.
+- [x] Record each negative control's verbatim observed output in the phase handoff, so a reader can re-attribute the verdicts without re-running them.
 
 **Timing**: 1.25 hours
 
@@ -296,15 +296,15 @@ is uncovered, add a control or record it as read-through-verified with that stat
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 and prints `PASS  all 33 wired probe(s) compile`.
-- [ ] `grep -c flock scripts/check-evidence-probes.sh` is non-zero and the lock path is the published `$REPO_ROOT/.lake/build-guard.lock`, with no second lock introduced.
-- [ ] The environment-failure class is demonstrated firing on a deliberately displaced olean, and the output names it as not probe rot.
-- [ ] The lock wait notice, the bounded timeout failure, and the `flock`-absent degradation are each demonstrated or explicitly recorded as read-through-verified.
-- [ ] `grep -c 'not wired into CI' scripts/check-evidence-probes.sh` is 0 and the header names the `evidence-probes` CI step and its aggregator.
-- [ ] `bash -n` and `shellcheck` clean on the edited script.
-- [ ] `bash scripts/generate-decidability-inventory.sh --diff` parses the array anchors and reports no diff.
-- [ ] `bash .claude/scripts/verify-deploy.sh` and `bash scripts/check-module-invariants.sh --no-build` both exit 0.
-- [ ] `git diff --stat` across the task lists exactly one path; `git diff -- specs/evidence/` is empty.
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 and prints `PASS  all 33 wired probe(s) compile`.
+- [x] `grep -c flock scripts/check-evidence-probes.sh` is non-zero and the lock path is the published `$REPO_ROOT/.lake/build-guard.lock`, with no second lock introduced.
+- [x] The environment-failure class is demonstrated firing on a deliberately displaced olean, and the output names it as not probe rot.
+- [x] The lock wait notice, the bounded timeout failure, and the `flock`-absent degradation are each demonstrated or explicitly recorded as read-through-verified.
+- [x] `grep -c 'not wired into CI' scripts/check-evidence-probes.sh` is 0 and the header names the `evidence-probes` CI step and its aggregator.
+- [x] `bash -n` and `shellcheck` clean on the edited script.
+- [x] `bash scripts/generate-decidability-inventory.sh --diff` parses the array anchors and reports no diff.
+- [x] `bash .claude/scripts/verify-deploy.sh` and `bash scripts/check-module-invariants.sh --no-build` both exit 0.
+- [x] `git diff --stat` across the task lists exactly one path; `git diff -- specs/evidence/` is empty.
 
 ## Artifacts & Outputs
 
