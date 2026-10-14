@@ -1,7 +1,7 @@
 # Implementation Plan: Task #788
 
 - **Task**: 788 - Reduce TM and its extensions TM_z, TM_d, and TM_r to minimal axiom sets
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 17 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/reports/01_reduce-tm-minimal-axiom-sets.md
@@ -115,7 +115,7 @@ Build discipline for every phase: route each `lake` invocation through
 
 ---
 
-### Phase 1: Raw-constructor derived stock in `DerivedAxioms.lean` (UE, UT, NF, TR(NF)) [NOT STARTED]
+### Phase 1: Raw-constructor derived stock in `DerivedAxioms.lean` (UE, UT, NF, TR(NF)) [COMPLETED]
 
 **Goal**: Add the four schemata that need only raw constructors to
 `FormalSystem/ProofSystem/DerivedAxioms.lean`, and make the existing TR mirrors `sinceP` and
@@ -123,22 +123,22 @@ Build discipline for every phase: route each `lake` invocation through
 change to `Axiom`.
 
 **Tasks**:
-- [ ] Add private helpers built from `prop_k`/`prop_s` only (the module imports just
+- [x] Add private helpers built from `prop_k`/`prop_s` only (the module imports just
       `Syntax.Formula` and `ProofSystem.Derivation`): an identity term (`⊤` as `bot.imp bot`), an
       `impTrans`, an `impTop φ : φ → ⊤`, and theorem-level guard/event monotonicity
       (`guardMonoThm` via UG + TN, `eventMonoThm` via UC + TN) as in the scratch
-- [ ] `untilF (φ ψ) : ⊢[fc] (untl φ ψ).imp ψ.someFuture := guardMonoThm φ ⊤ ψ (impTop φ)` — tag
+- [x] `untilF (φ ψ) : ⊢[fc] (untl φ ψ).imp ψ.someFuture := guardMonoThm φ ⊤ ψ (impTop φ)` — tag
       `@[tmLemma]`
-- [ ] `fUntilEquiv (φ) : ⊢[fc] φ.someFuture.imp (untl (bot.imp bot) φ) := identity` — `@[tmLemma]`
-- [ ] `discretePropagateFwd : ⊢[fc] X⊤ → G X⊤ := NB ; MF ; MT` with `X⊤` spelled
+- [x] `fUntilEquiv (φ) : ⊢[fc] φ.someFuture.imp (untl (bot.imp bot) φ) := identity` — `@[tmLemma]`
+- [x] `discretePropagateFwd : ⊢[fc] X⊤ → G X⊤ := NB ; MF ; MT` with `X⊤` spelled
       `untl bot (bot.imp bot)` exactly as the constructor does — `@[tmLemma]`
-- [ ] `discretePropagateFwdMirror : ⊢[fc] Y⊤ → H Y⊤ := ofReflect discretePropagateFwd rfl` —
+- [x] `discretePropagateFwdMirror : ⊢[fc] Y⊤ → H Y⊤ := ofReflect discretePropagateFwd rfl` —
       `@[tmLemma]`
-- [ ] Repoint `sinceP` (line 135) to `ofReflect (untilF ..) rfl` and `pSinceEquiv` (line 142) to
+- [x] Repoint `sinceP` (line 135) to `ofReflect (untilF ..) rfl` and `pSinceEquiv` (line 142) to
       `ofReflect (fUntilEquiv ..) rfl`; leave `connectPast` and `discreteSymmBwd` untouched here
       (they move in Phase 5)
-- [ ] Update the module docstring's derived-stock list (lines 34-40) for the new entries
-- [ ] Scoped guarded build of `FormalSystem.ProofSystem.DerivedAxioms`; `lean_verify` each new
+- [x] Update the module docstring's derived-stock list (lines 34-40) for the new entries
+- [x] Scoped guarded build of `FormalSystem.ProofSystem.DerivedAxioms`; `lean_verify` each new
       declaration (expect `propext` only, no `sorryAx`)
 
 **Timing**: 1.5 hours

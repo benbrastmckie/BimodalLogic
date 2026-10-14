@@ -35,11 +35,25 @@ Each entry reads *Derived* — *Primary (TR)*:
 * `enrichmentSince` — `enrichment_until` (US)
 * `selfAccumSince` — `self_accum_until` (UF)
 * `absorbSince` — `absorb_until` (UI)
-* `sinceP` — `until_F` (UE)
-* `pSinceEquiv` — `F_until_equiv` (UT)
+* `sinceP` — `untilF` (UE, itself derived below)
+* `pSinceEquiv` — `fUntilEquiv` (UT, itself derived below)
 * `discreteSymmBwd` — `discrete_symm_fwd` (NP)
 * `priorSZ` — `prior_UZ` (UZ)
 * `priorSGap` — `prior_U_gap` (PU)
+
+## Derived schemata from the raw constructors
+
+Four schemata the paper lists under `def:BX` need nothing beyond the primitive constructors
+(`prop_k`, `prop_s`, UG, UC, NB, MF, MT) and the rules TN and TR, so they are derived here
+rather than kept as `Axiom` constructors:
+
+* `untilF` — UE `U(ψ, φ) → Fψ`, from UG (`left_mono_until_G`) with the new guard `⊤`, plus TN
+* `fUntilEquiv` — UT `Fφ → U(φ, ⊤)`, an identity: `Fφ` *is* `untl ⊤ φ` by definition
+* `discretePropagateFwd` — NF `X⊤ → G X⊤`, as NB ; MF ; MT
+* `discretePropagateFwdMirror` — TR of NF, `Y⊤ → H Y⊤`
+
+The theorem-level monotonicity forms `guardMonoThm` (UG + TN) and `eventMonoThm` (UC + TN) and
+the lemma `impTop` (`φ → ⊤`) are exported for the derived stock in `Theorems/`.
 
 For every `X` there is also a context-lifted form `XAt Γ … : Γ ⊢[fc] …`, obtained by
 weakening from the empty context.
@@ -68,6 +82,81 @@ def lift {fc : FrameClass} (Γ : Context) {φ : Formula} (d : ⊢[fc] φ) : Γ �
 private def baseAx {fc : FrameClass} {φ : Formula} (a : Axiom φ)
     (h : a.minFrameClass = FrameClass.Base) : ⊢[fc] φ :=
   DerivationTree.axiom [] φ a (h ▸ FrameClass.base_le fc)
+
+/-! ## Propositional helpers from `prop_k`/`prop_s`
+
+This module imports only `Syntax.Formula` and `ProofSystem.Derivation`, so the handful of
+combinators the derived schemata need are rebuilt here from the two propositional axioms
+instead of imported from `Theorems/Combinators.lean` (which imports this module). -/
+
+/-- Modus ponens at the empty context, premise first. -/
+private def mpThm {fc : FrameClass} {A B : Formula} (h1 : ⊢[fc] A) (h2 : ⊢[fc] A.imp B) :
+    ⊢[fc] B :=
+  DerivationTree.modus_ponens [] A B h2 h1
+
+/-- Transitivity of implication from `prop_s` and `prop_k`. -/
+private def impTransThm {fc : FrameClass} {A B C : Formula}
+    (h1 : ⊢[fc] A.imp B) (h2 : ⊢[fc] B.imp C) : ⊢[fc] A.imp C :=
+  mpThm h1 (mpThm (mpThm h2 (baseAx (Axiom.prop_s (B.imp C) A) rfl))
+    (baseAx (Axiom.prop_k A B C) rfl))
+
+/-- `A → A` (SKK). -/
+private def identityThm {fc : FrameClass} (A : Formula) : ⊢[fc] A.imp A :=
+  mpThm (baseAx (Axiom.prop_s A A) rfl)
+    (mpThm (baseAx (Axiom.prop_s A (A.imp A)) rfl) (baseAx (Axiom.prop_k A (A.imp A) A) rfl))
+
+/-- `⊢ ⊤`, i.e. `⊥ → ⊥`. -/
+private def topThm {fc : FrameClass} : ⊢[fc] Formula.top := identityThm Formula.bot
+
+/-- `φ → ⊤`. -/
+def impTop {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.imp Formula.top :=
+  mpThm topThm (baseAx (Axiom.prop_s Formula.top φ) rfl)
+
+/-- Theorem-level guard monotonicity, UG (`left_mono_until_G`) + TN: from `⊢ g → g'` derive
+`⊢ (g U e) → (g' U e)` (terms guard-first: `untl g e`). -/
+def guardMonoThm {fc : FrameClass} (g g' e : Formula) (hg : ⊢[fc] g.imp g') :
+    ⊢[fc] (Formula.untl g e).imp (Formula.untl g' e) :=
+  mpThm (DerivationTree.temporal_necessitation _ hg) (baseAx (Axiom.left_mono_until_G g g' e) rfl)
+
+/-- Theorem-level event monotonicity, UC (`right_mono_until`) + TN: from `⊢ e → e'` derive
+`⊢ (g U e) → (g U e')`. -/
+def eventMonoThm {fc : FrameClass} (e e' g : Formula) (he : ⊢[fc] e.imp e') :
+    ⊢[fc] (Formula.untl g e).imp (Formula.untl g e') :=
+  mpThm (DerivationTree.temporal_necessitation _ he) (baseAx (Axiom.right_mono_until e e' g) rfl)
+
+/-! ## Derived schemata from the raw constructors -/
+
+/-- UE: `U(ψ, φ) → F(ψ)` (guard-first: `untl φ ψ`). Widen the guard `φ` to `⊤` by UG + TN;
+`F ψ` is `untl ⊤ ψ` by definition. Not a Burgess axiom. -/
+@[tmLemma] def untilF {fc : FrameClass} (φ ψ : Formula) :
+    ⊢[fc] (Formula.untl φ ψ).imp (Formula.someFuture ψ) :=
+  guardMonoThm φ Formula.top ψ (impTop φ)
+
+/-- UT: `F(φ) → U(φ, ⊤)` (guard-first: `untl ⊤ φ`). `F φ` unfolds to exactly `untl (⊥ → ⊥) φ`,
+so this is the identity. -/
+@[tmLemma] def fUntilEquiv {fc : FrameClass} (φ : Formula) :
+    ⊢[fc] (Formula.someFuture φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ) :=
+  identityThm _
+
+/-- NF: `X⊤ → G X⊤` with `X⊤ = U(⊤, ⊥)` spelled `untl ⊥ (⊥ → ⊥)`. The gap witness propagates
+forward as NB (`discrete_box_necessity`) ; MF (`modal_future`) ; MT (`modal_t`): `X⊤ → □X⊤ →
+□G X⊤ → G X⊤`. -/
+@[tmLemma] def discretePropagateFwd {fc : FrameClass} :
+    ⊢[fc] (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.allFuture (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))) :=
+  impTransThm (baseAx Axiom.discrete_box_necessity rfl)
+    (impTransThm
+      (baseAx (Axiom.modal_future (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))) rfl)
+      (baseAx (Axiom.modal_t
+        (Formula.allFuture (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) rfl))
+
+/-- TR of NF: `Y⊤ → H Y⊤` with `Y⊤ = S(⊤, ⊥)`. The reflected formula is the statement on
+the nose. (This is *not* the paper's NA, `X⊤ → H X⊤`, which is
+`Theorems.ConnectDerived.discretePropagateBwd`.) -/
+@[tmLemma] def discretePropagateFwdMirror {fc : FrameClass} :
+    ⊢[fc] (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.allPast (Formula.snce Formula.bot (Formula.bot.imp Formula.bot))) :=
+  ofReflect discretePropagateFwd rfl
 
 /-! ## Base mirrors -/
 
@@ -129,17 +218,17 @@ private def baseAx {fc : FrameClass} {φ : Formula} (a : Axiom φ)
   ofReflect (baseAx (Axiom.absorb_until φ.reflectTime ψ.reflectTime) rfl)
     (by simp [Formula.reflectTime, Formula.and, Formula.neg, Formula.reflect_time_involution])
 
-/-- `(φ S ψ) → Pψ`: TR of UE (`until_F`). -/
+/-- `(φ S ψ) → Pψ`: TR of UE (`untilF`). -/
 @[tmLemma] def sinceP {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (Formula.snce φ ψ).imp (Formula.somePast ψ) :=
-  ofReflect (baseAx (Axiom.until_F φ.reflectTime ψ.reflectTime) rfl)
+  ofReflect (untilF φ.reflectTime ψ.reflectTime)
     (by simp [Formula.reflectTime, Formula.someFuture, Formula.somePast, Formula.top,
       Formula.reflect_time_involution])
 
-/-- `Pφ → S(⊤, φ)`: TR of UT (`F_until_equiv`). -/
+/-- `Pφ → S(⊤, φ)`: TR of UT (`fUntilEquiv`). -/
 @[tmLemma] def pSinceEquiv {fc : FrameClass} (φ : Formula) :
     ⊢[fc] (Formula.somePast φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ) :=
-  ofReflect (baseAx (Axiom.F_until_equiv φ.reflectTime) rfl)
+  ofReflect (fUntilEquiv φ.reflectTime)
     (by simp [Formula.reflectTime, Formula.someFuture, Formula.somePast, Formula.top,
       Formula.reflect_time_involution])
 
