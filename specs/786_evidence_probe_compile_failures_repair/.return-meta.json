@@ -1,30 +1,55 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-14T14:57:14Z",
+  "completed_at": "2026-10-14T15:25:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_count_delta": 0,
+    "vacuous_note": "Single pre-existing single-line grep hit at FormalSystem/Examples/TemporalStructures.lean:495 (theorem int_domain_universal ... := trivial), a real theorem whose correct proof is trivial, not a placeholder. This task modified zero Lean files (git diff --stat HEAD~3 -- '*.lean' is empty), so the count did not increase.",
+    "axiom_count": 14,
+    "axiom_count_delta": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/786_evidence_probe_compile_failures_repair/plans/01_harden-evidence-probe-driver.md",
-      "summary": "4-phase, ~3.25h plan to add the shared .lake build-guard flock and an environment-failure diagnostic class to scripts/check-evidence-probes.sh, correct its stale CI-wiring header claim, and prove both new paths with negative controls."
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1791956988_9e3cf8_786",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 3.25,
-    "dependency_waves": 4
-  },
-  "memory_candidates": [
+      "type": "summary",
+      "path": "specs/786_evidence_probe_compile_failures_repair/summaries/01_harden-evidence-probe-driver-summary.md",
+      "summary": "Shared .lake build-guard lock, the third ENVIRONMENT diagnostic class, the corrected CI-wiring header, and five measured negative controls in scripts/check-evidence-probes.sh."
+    },
     {
-      "content": "An unguarded .lake READER is as exposed as a writer. A repo gate that loops `lake env lean` over files outside the build graph (scripts/check-evidence-probes.sh, 33 probes) can read half-rewritten oleans while a concurrent `lake build` rebuilds the import-closure tail, producing `error: object file '.../FormalSystem/<Module>.olean' of module ... does not exist`. Diagnostic rule: a missing-object-file error is ALWAYS an environment/I/O failure, never source or probe rot -- the measurement never reached the file's own content. Shape signature of the race: consecutive entries failing in one run, each naming a DIFFERENT tail module, with those oleans' mtimes inside the run window. Remedy pattern: take the same exclusive flock on <root>/.lake/build-guard.lock that lake-build-guard.sh publishes and check-module-invariants.sh's C1 block already takes -- once per run, fd held to process exit so later .lake reads inherit it, `flock -n` then a bounded announced `flock -w`, degrading audibly when flock is absent. Corollary for gate authors: a failure vocabulary with only source-level classes forces a conservative reader to mis-attribute a transient environment fault as rot, which is how one race became two Reasoned Exclusions and a repair task.",
-      "category": "PATTERN",
-      "source_artifact": "specs/786_evidence_probe_compile_failures_repair/plans/01_harden-evidence-probe-driver.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lake", "flock", "build-guard-lock", "olean", "gate-race", "environment-failure"]
+      "type": "handoff",
+      "path": "specs/786_evidence_probe_compile_failures_repair/handoffs/phase-4-handoff-20261014T152215Z.md",
+      "summary": "Verbatim negative-control output and full gate-set exit statuses."
     }
   ],
-  "next_steps": "Run /implement 786 to execute the plan",
-  "dispatch_seq": 2
+  "completion_data": {
+    "completion_summary": "scripts/check-evidence-probes.sh now holds the published $REPO_ROOT/.lake/build-guard.lock flock for its whole run and reports an absent or half-written .lake artifact as a third ENVIRONMENT diagnostic class, distinct from probe rot and from a probe having left version control; its header states the present CI wiring in place of the stale 'not wired into CI' claim. Five negative controls demonstrate both new code paths against the real failure mode: a displaced olean produced 17 environment-class failures with zero 'does not compile' lines, including all four probes this record originally named as rotted. No probe file was modified and the wired manifest is unchanged.",
+    "roadmap_items": []
+  },
+  "metadata": {
+    "session_id": "sess_1791956988_9e3cf8",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "skipped",
+    "dispatch_seq": 3,
+    "phases_completed": 4,
+    "phases_total": 4,
+    "files_modified": [
+      "scripts/check-evidence-probes.sh"
+    ],
+    "commits": [
+      "task 786 phase 1: acquire the shared .lake build lock",
+      "task 786 phase 2: add the environment-failure diagnostic class",
+      "task 786 phase 3: truth up the header",
+      "task 786 phase 4: adversarial verification and the full gate set"
+    ],
+    "compliance_note": "The Lean-declaration spot-check is inapplicable to this plan: its Goals section's backticked identifiers extract as `flock` and `PATH` (shell names, not Lean declarations), and the plan declares **Lean Intent**: false with zero Lean files modified. Grepping the Lean source roots for `theorem flock` would report a false negative. Plan compliance was instead verified bullet-by-bullet against measured output: (1) the flock is acquired once, held to exit, waits boundedly with an announced notice, and degrades audibly without flock -- NC2/NC3/NC4; (2) the environment class is named in both the per-probe line and the foot guidance -- NC1; (3) the header states the present CI wiring plus the lock and three-class vocabulary -- grep -c 'not wired into CI' is 0; (4) the gate exits 0 with 'PASS  all 33 wired probe(s) compile'; (5) both new code paths are demonstrated by five negative controls rather than inferred from an already-green gate."
+  }
 }

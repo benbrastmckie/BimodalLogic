@@ -1542,7 +1542,7 @@
     {
       "project_number": 786,
       "project_name": "evidence_probe_compile_failures_repair",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Harden scripts/check-evidence-probes.sh against the .lake read/write race that makes it emit a false red, and give it a diagnostic class that names an environment failure as one.\n\nMEASURED CONDITION (re-measured 2026-10-14, nothing else running). `bash scripts/check-evidence-probes.sh` exits 0 and prints `PASS  all 33 wired probe(s) compile`. All four probes this record originally named as broken -- finite-graph-stab-summary, mosaic-germ-amalgamation, path-quantifier-alternation, backward-dual-asymmetric-fixture -- PASS, compile sorry-free standalone, and none has been modified since the 2026-10-03 commit that created it.\n\nWHY THIS RECORD EXISTS, AND WHAT IT IS NOW. This record was filed on the premise that four wired probes had bit-rotted and needed repair, restatement, or retirement. Research established that premise is false. The four reported failures were ONE transient environmental fault, not four independent rots: every error in the originating run's captured gate output is `object file '.../FormalSystem/<Module>.olean' ... does not exist` -- a missing-olean I/O error -- naming four DIFFERENT import-closure tail modules (Metalogic, MainResults, Examples.Walkthrough, Examples) on four CONSECUTIVE wired entries (9-12 of 33), with those oleans' mtimes falling inside the gate's own run window. Not one Lean elaboration error among them. No probe is touched by this record.\n\nTHE DEFECT, precisely. Two parts, both in the driver.\n\n(1) NO LOCK. scripts/check-evidence-probes.sh invokes bare `lake env lean` 33 times and takes no lock at all (`grep -c flock` returns 0), so its `.lake` reads race any concurrent `lake build` rewriting a tail module an earlier scoped build left stale. The fix pattern already exists in this repository and is already documented in place, including its rejected alternatives: scripts/check-module-invariants.sh takes an flock on `$REPO_ROOT/.lake/build-guard.lock` -- the path lake-build-guard.sh publishes -- at lines 1003-1028. Reuse that lock and that path; do not invent a second lock.\n\n(2) NO ENVIRONMENT-FAILURE DIAGNOSTIC CLASS. The driver's failure text offers only two classes, rot and untracked. An I/O failure that is neither gets reported as though a probe's proof had rotted. That misattribution is what converted a transient race into two Reasoned Exclusions and then into this record -- the cost of the omission is measured, not hypothetical.\n\nWHY THIS IS WORTH FIXING RATHER THAN ACCEPTING. The driver is wired into CI as step `evidence-probes` (.github/workflows/ci.yml:120, counted by the aggregator at :337 which exits 1). A race in a CI-gating script fails CI for reasons unrelated to any probe. Relatedly, the script's own header still asserts the opposite -- \"this script is not wired into CI\" at check-evidence-probes.sh:21-22 -- a stale claim that should be corrected in the same pass, since a reader who believes it will mis-rank exactly this failure mode.\n\nDELIVERABLE.\n1. scripts/check-evidence-probes.sh acquires the shared `$REPO_ROOT/.lake/build-guard.lock` flock, following check-module-invariants.sh's precedent and honoring lake-build-guard.sh's published path.\n2. A third diagnostic class distinguishing an environment/I/O failure (missing olean, build artifact absent) from probe rot and from untracked, with failure text that tells a reader which one they are looking at.\n3. The stale \"not wired into CI\" header claim corrected.\n4. No probe file modified, and the wired manifest list unchanged -- no retirement, no restatement. `bash scripts/check-evidence-probes.sh` still exits 0 after the change.\n\nHARD CONSTRAINT. Touch no file under specs/evidence/. All four originally-named probes are live, still-wanted records; the no-weakening rule for wired probes applies and nothing here weakens or retires one.\n\nSCOPE NOTE. scripts/check-evidence-probes.sh is the shared manifest/driver. Task 761 [BLOCKED] also declares it in its own file_scope; that task is idle with no execution evidence, so the overlap was admitted rather than serialized. Task 734 [PARTIAL] likewise declares it, but completed its driver edit (mosaic-stab-saturated, wired at check-evidence-probes.sh:1053); the dependencies[] edge on 734 that this record originally carried was dropped by recorded user decision (2026-10-14) because the serialization it encoded had already occurred and 734 cannot reach terminal -- it rests PARTIAL behind a paywalled Handbook acquisition.",
       "effort": "medium",
@@ -1550,7 +1550,7 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-10-14T05:30:19Z",
-      "last_updated": "2026-10-14T14:56:04Z",
+      "last_updated": "2026-10-14T15:25:17Z",
       "artifacts": [
         {
           "path": "specs/786_evidence_probe_compile_failures_repair/reports/01_evidence-probe-compile-failures.md",
@@ -1561,13 +1561,19 @@
           "path": "specs/786_evidence_probe_compile_failures_repair/plans/01_harden-evidence-probe-driver.md",
           "type": "plan",
           "summary": "4-phase, ~3.25h plan to add the shared .lake build-guard flock and an environment-failure diagnostic class to scripts/check-evidence-probes.sh, correct its stale CI-wiring header claim, and prove both new paths with negative controls."
+        },
+        {
+          "path": "specs/786_evidence_probe_compile_failures_repair/summaries/01_harden-evidence-probe-driver-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the shared .lake lock, the environment-failure diagnostic class, the corrected header, and five measured negative controls."
         }
       ],
       "file_scope": [
         "scripts/check-evidence-probes.sh"
       ],
       "session_id": "sess_1791956988_9e3cf8",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "scripts/check-evidence-probes.sh now holds the published $REPO_ROOT/.lake/build-guard.lock flock for its whole run and reports an absent or half-written .lake artifact as a third ENVIRONMENT diagnostic class, distinct from probe rot and from a probe having left version control; its header states the present CI wiring in place of the stale 'not wired into CI' claim. Five negative controls demonstrate both new code paths against the real failure mode: a displaced olean produced 17 environment-class failures with zero 'does not compile' lines, including all four probes this record originally named as rotted. No probe file was modified and the wired manifest is unchanged."
     }
   ],
   "artifacts": [

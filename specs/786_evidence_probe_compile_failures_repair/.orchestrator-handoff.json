@@ -1,17 +1,21 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote a 4-phase plan hardening scripts/check-evidence-probes.sh: acquire the shared $REPO_ROOT/.lake/build-guard.lock flock once per run (mirroring check-module-invariants.sh's C1 block), add a third environment-failure diagnostic class keyed on the missing-object-file error shape, correct the stale 'not wired into CI' header claim, then verify both new code paths with deliberate negative controls rather than an already-green gate. All work lands in one file; nothing under specs/evidence/ is touched and the wired manifest is unchanged. Planning surfaced one input the research report did not name: scripts/generate-decidability-inventory.sh regex-parses this script's WIRED/WIRED_REPO array anchors behind an anti-silence guard and consumes its exit status, which constrains where the lock block may be inserted and sets Phase 2's interface tier.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "Hardened scripts/check-evidence-probes.sh in all four plan phases: it now holds the published $REPO_ROOT/.lake/build-guard.lock flock for its whole run (joining check-module-invariants.sh's precedent rather than inventing a second lock), names an absent or half-written .lake artifact as a third ENVIRONMENT diagnostic class distinct from probe rot and from untracked, and its header states the present CI wiring in place of the stale 'not wired into CI' claim. Five negative controls were measured, not inferred: a displaced olean produced 17 environment-class failures with zero 'does not compile' lines, reproducing the originating misdiagnosis under the correct label. The hard constraint holds -- git diff over specs/evidence/ is empty, no WIRED/WIRED_REPO/DEFERRED line changed, and scripts/check-evidence-probes.sh is the only non-specs path modified.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/786_evidence_probe_compile_failures_repair/plans/01_harden-evidence-probe-driver.md",
-      "summary": "4-phase, ~3.25h plan to add the shared .lake build-guard flock and an environment-failure diagnostic class to scripts/check-evidence-probes.sh, correct its stale CI-wiring header claim, and prove both new paths with negative controls."
+      "type": "summary",
+      "path": "specs/786_evidence_probe_compile_failures_repair/summaries/01_harden-evidence-probe-driver-summary.md",
+      "summary": "Implementation summary: the shared .lake lock, the environment-failure diagnostic class, the corrected header, and five measured negative controls."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/786_evidence_probe_compile_failures_repair/handoffs/phase-4-handoff-20261014T152215Z.md",
+      "summary": "Phase 4 handoff carrying the verbatim negative-control output and the full gate-set exit statuses."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 4,
   "phases_total": 4,
-  "blockers": [],
-  "next_action_hint": "Run /implement 786 to execute the plan; phases are strictly serialized (waves 1-4, one phase each) because all four edit or measure the same single file."
+  "blockers": []
 }

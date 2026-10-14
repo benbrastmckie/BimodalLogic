@@ -1,7 +1,7 @@
 # Implementation Plan: Task #786
 
 - **Task**: 786 - Harden `scripts/check-evidence-probes.sh` against the `.lake` read/write race and give it an environment-failure diagnostic class
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.25 hours
 - **Dependencies**: None (the `dependencies[]` edge on 734 was dropped by recorded user decision, 2026-10-14)
 - **Research Inputs**: `specs/786_evidence_probe_compile_failures_repair/reports/01_evidence-probe-compile-failures.md`
