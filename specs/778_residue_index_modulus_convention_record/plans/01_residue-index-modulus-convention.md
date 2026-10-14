@@ -249,7 +249,7 @@ for the task-reference lint plus a literal comparison of the row's written count
 
 ---
 
-### Phase 3: Record the convention in the lean extension's source store [IN PROGRESS]
+### Phase 3: Record the convention in the lean extension's source store [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The named deliverable's note half. `ladder-counter-observables.md` carries the
 convention inside its existing parameter-origin rule, drops its own "unrecorded" clause, records
@@ -257,32 +257,32 @@ that `reachN_eventually_periodic` exhibits no canonical period, and its `index-e
 `line_count` matches.
 
 **Tasks**:
-- [ ] Re-resolve the lean extension's `source_dir` from `/home/benjamin/Projects/BimodalLogic/.claude-extensions.json`
+- [x] Re-resolve the lean extension's `source_dir` from `/home/benjamin/Projects/BimodalLogic/.claude-extensions.json`
       rather than trusting the path below (it is per-extension, not one global value). Expected:
       `/home/benjamin/.config/nvim/agent-system/extensions/lean`.
-- [ ] Re-read the note's lines 86-100 and 136-150 immediately before editing.
-- [ ] Replace the clause at lines 93-95 — `which covers BOTH readings of the exhibited period 1
+- [x] Re-read the note's lines 86-100 and 136-150 immediately before editing.
+- [x] Replace the clause at lines 93-95 — `which covers BOTH readings of the exhibited period 1
       under the unrecorded P versus P + 1 instantiation convention (moduli 2 and 1)` — with the
       reading-neutral form that points at the parameter-origin rule and claims nothing about what
       is on record.
-- [ ] Extend the modulus bullet (lines 142-146) with the convention: `P + 1` is the modulus, an
+- [x] Extend the modulus bullet (lines 142-146) with the convention: `P + 1` is the modulus, an
       instantiation is specified by `m` with `P := m - 1` and an exhibited period `p` enters as
       `m := p`, and `2 <= m` is forced because `m = 1` trivialises both residue coordinates and
       collapses the index to the already-refuted three-coordinate candidate.
-- [ ] Sharpen the same bullet's `must dominate the period of every letter-definable sub-object` to
+- [x] Sharpen the same bullet's `must dominate the period of every letter-definable sub-object` to
       the multiple-of form, with the one-clause reason that `reach_period_refuted` refutes every
       modulus `m` with `3 ∤ m`, including moduli larger than `3`.
-- [ ] Sharpen the trailing `The modulus must therefore dominate the period of every
+- [x] Sharpen the trailing `The modulus must therefore dominate the period of every
       letter-definable sub-object` at the end of mechanism (5) (line ~96) to match.
-- [ ] Add one sentence to mechanism (5) or the gate-5 row: `reachN_eventually_periodic` exhibits
+- [x] Add one sentence to mechanism (5) or the gate-5 row: `reachN_eventually_periodic` exhibits
       no canonical period — its `(T, P)` depends on the start set (period `2` from the pending
       singleton on `Qp`, period `1` from `univ`) and is satisfied by any multiple of a period —
       which is a second, independent reason the modulus cannot be read off the object.
-- [ ] Re-read `index-entries.json` immediately before editing (a pre-existing uncommitted hunk was
+- [x] Re-read `index-entries.json` immediately before editing (a pre-existing uncommitted hunk was
       recorded there on the predecessor task) and update only the `line_count` for
       `project/lean4/domain/ladder-counter-observables.md` (currently `180`) to the note's new
       `wc -l`.
-- [ ] Verify the staged blob for `index-entries.json` contains only that one field change via
+- [x] Verify the staged blob for `index-entries.json` contains only that one field change via
       `git diff --staged` in the source-store repository.
 
 **Timing**: 0.5 hours
@@ -318,6 +318,13 @@ gates' SKIP branch against this consumer repo and check nothing.
   changed line.
 - `bash /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/verify-deploy.sh --skip-slow --only-gate 3,4 /home/benjamin/.config/nvim/agent-system/extensions/lean`
   exits `0`.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `verify-deploy.sh --only-gate 3` (doc-lint) exiting `0` | The gate was already red at the source store before this edit, for ten foreign findings, and no dispatch from this repository can turn it green. The plan also named the wrong TARGET: the script requires a deploy-tree root, so the real target is `/home/benjamin/.config/nvim`, not the extension directory. | `check-extension-docs.sh` enumerates 10 findings: deployed-script content drift (`core`: `generate-todo.sh`, `tests/test-validate-state.sh`; `lean`: `lean-challenge-snapshot.sh`, `tests/test-lean-challenge-snapshot.sh`), two test fixtures absent from `provides.scripts`, and four `index-entries.json` `line_count` mismatches (`project/lean4/lean4-syntax.md`, `patterns/tactic-patterns.md`, `patterns/dependency-tracing.md`, `project/lean4/README.md`). None names `ladder-counter-observables.md` — positive evidence the `194` written here is correct. Gate 4 PASSES. |
+| Committing the two source-store edits | `index-entries.json` carries a foreign uncommitted hunk (`project/lean4/README.md` `line_count` 30 -> 31) from another writer. Staging the file stages that hunk too, and `git commit -- <pathspec>` re-reads the working tree, so no scoped commit can exclude it. The territory contract says stop and report rather than commit a foreign hunk, and `specs/ROADMAP.md` already rules that source-store-bound work "commit[s] nothing it manages to write" from this repository. | `git -C /home/benjamin/.config/nvim diff -- agent-system/extensions/lean/index-entries.json` shows exactly two hunks: the foreign `30 -> 31` and this task's `180 -> 194`. The edits are complete and verified in place; only the commit is deferred to the operator. |
 
 ---
 
