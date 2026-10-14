@@ -137,9 +137,10 @@ and not an `ite` because each branch needs its own half-line witness, which is a
 * JPL paper `def:world-history` — partial, convex and world histories; a ray is the convex-history
   case at a half-line domain
 * `FormalSystem/Semantics/PartialHistory.lean` — `PartialHistory`, whose `domain` field is an
-  arbitrary predicate and so already expresses a half-line, and `WorldHistory`
+  arbitrary predicate and so already expresses a half-line, `WorldHistory`, and
+  `partialHistory_ext`
 * `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, the bounded sections `FutRay.toBeh`
-  lands in, and `partialHistory_ext`
+  lands in
 * `FormalSystem/Semantics/Presheaf/Sheaf.lean` — the *Sheaf* clause for two **bounded** sections,
   the binary gluing this module's seam operator is the half-line counterpart of
 * `FormalSystem/Semantics/Extension/Extension.lean` — the Extension Theorem, where the directed

@@ -44,8 +44,6 @@ sections, the restriction map and both functoriality laws hold at **no** constra
 
 ## Main Results
 
-- `partialHistory_ext`: two partial histories agreeing on their domain and pointwise on their
-  states are equal. Lean generates no `PartialHistory.ext` — see the Implementation Notes.
 - `Beh.mem_dom`, `Beh.isConvex`, `Beh.domain_eq_interval`: a section's domain contains every point
   of `[0, l]`, is convex, and is literally `Interval 0 l`.
 - `Beh.restrict_domain`, `Beh.restrict_states`: the two defining equations of the action, both
@@ -70,14 +68,13 @@ deliberately carries convexity as a *predicate* on `PartialHistory` and there is
 `ConvexHistory` structure to subtype, so a section's convexity falls out of its interval domain
 rather than being assumed alongside it.
 
-**`partialHistory_ext` lives here, and that is a deliberate deferral.** `PartialHistory`'s
-`states` field is dependent on its `domain` field, so Lean's `@[ext]` machinery generates no
-`PartialHistory.ext`, and an extensionality lemma has to be written by hand. The natural home for
-it is `Semantics/PartialHistory.lean` beside the structure, and consolidating it there is recorded
-here as a follow-up rather than done: the history module is outside this cluster's remit, and the
-earlier shift-set extensionality lemma this one replaces already named the consolidation a clean
-follow-up before it was removed. Anything else needing partial-history extensionality should move
-this lemma down rather than write a second copy.
+**`partialHistory_ext` lives in `Semantics/PartialHistory.lean`, beside the structure.**
+`PartialHistory`'s `states` field is dependent on its `domain` field, so Lean's `@[ext]` machinery
+generates no `PartialHistory.ext`, and an extensionality lemma has to be written by hand. It is
+declared in `namespace FormalSystem.Semantics` directly, so every use in this cluster resolves it
+by outer-namespace lookup with no `open`. Its home is beside the structure rather than inside this
+cluster because consumers outside the presheaf cluster need it too — the general gluing module
+`Semantics/Gluing.lean` is one.
 
 **`restrict_id` and `restrict_comp` are new content at the partial-history level.** The shift-set
 layer's `ts_zero` and `ts_add` are the corresponding facts for **total** histories; neither
@@ -121,20 +118,6 @@ a commented-out label, so none is pinned.
 namespace FormalSystem.Semantics.Presheaf
 
 variable {F : TaskFrame}
-
-/-- Extensionality for partial histories: agreement on the domain and pointwise agreement on the
-states suffices. Written by hand because `PartialHistory`'s `states` field is dependent on its
-`domain` field, so no `@[ext]` lemma is generated. -/
-theorem partialHistory_ext {σ τ : PartialHistory F} (hd : σ.domain = τ.domain)
-    (hs : ∀ (r : F.Duration) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
-    σ = τ := by
-  obtain ⟨d₁, n₁, s₁, t₁⟩ := σ
-  obtain ⟨d₂, n₂, s₂, t₂⟩ := τ
-  simp only at hd hs
-  subst hd
-  have : s₁ = s₂ := by funext r h; exact hs r h h
-  subst this
-  rfl
 
 /-- The sections of the behavior presheaf over a duration `l`: the partial histories whose domain
 is exactly the interval `[0, l]`. The condition is a pointwise `Iff` on purpose — see the module's

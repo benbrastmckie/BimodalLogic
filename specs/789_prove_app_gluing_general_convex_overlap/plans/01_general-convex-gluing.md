@@ -1,7 +1,7 @@
 # Implementation Plan: Task #789
 
 - **Task**: 789 - Prove `app:gluing` in full generality (two convex histories, nonempty overlap)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/789_prove_app_gluing_general_convex_overlap/reports/01_general-convex-gluing.md
@@ -186,32 +186,37 @@ defensive checkpoint this plan calls for (before Phase 4's shared-file touch) us
 
 ---
 
-### Phase 1: Relocate the partial-history extensionality lemma [NOT STARTED]
+### Phase 1: Relocate the partial-history extensionality lemma [COMPLETED]
 
 **Goal**: Honour the deferral `Presheaf/Behavior.lean`'s own docstring records, so a module under
 `Semantics/` can use partial-history extensionality without inverting the cluster order. This is
 a prerequisite for Phase 2's uniqueness proof, not an optional tidy-up.
 
 **Tasks**:
-- [ ] Move `partialHistory_ext` out of `FormalSystem/Semantics/Presheaf/Behavior.lean` (currently
+- [x] Move `partialHistory_ext` out of `FormalSystem/Semantics/Presheaf/Behavior.lean` (currently
       at `namespace FormalSystem.Semantics.Presheaf`, declared before `namespace Beh`) into
       `FormalSystem/Semantics/PartialHistory.lean`, under `namespace FormalSystem.Semantics`
       directly — **not** inside `namespace PartialHistory`, since the name is `partialHistory_ext`
       — placed after the `PartialHistory` structure declaration and before the first
       `namespace PartialHistory` block
-- [ ] Keep the statement, the docstring's "written by hand because the `states` field is dependent
+- [x] Keep the statement, the docstring's "written by hand because the `states` field is dependent
       on `domain`, so no `@[ext]` lemma is generated" sentence, and the proof body **verbatim**;
       this is a relocation, not a restatement
-- [ ] Replace `Behavior.lean`'s "**`partialHistory_ext` lives here, and that is a deliberate
+- [x] Replace `Behavior.lean`'s "**`partialHistory_ext` lives here, and that is a deliberate
       deferral**" Implementation-Note paragraph with a pointer to the new home, and drop its
       `partialHistory_ext` bullet from the module docstring's contents list (or repoint it)
-- [ ] Update `FormalSystem/Semantics/Presheaf/README.md`'s `partialHistory_ext` bullet and
+- [x] Update `FormalSystem/Semantics/Presheaf/README.md`'s `partialHistory_ext` bullet and
       `FormalSystem/Semantics/README.md`'s `Presheaf/` row sentence that records the deferral;
       add the lemma to the `PartialHistory.lean` row. Refresh each touched README's
-      "Last verified" date
-- [ ] Edit **no call site**. If any of the 13 call sites needs an added `open`, stop and re-read
+      "Last verified" date *(deviation: altered — four further files carried stale
+      `Behavior.lean`-attributing pointers to the lemma that the relocation itself invalidated:
+      `Presheaf/Sheaf.lean`, `Presheaf/Directed.lean` (a References line plus the sentence citing
+      the deferral as precedent), `Presheaf/Determinism.lean` and `Presheaf/Ray.lean`. Each
+      References line was repointed at `PartialHistory.lean`; no statement, proof or signature
+      was touched. Leaving them would have left four wrong location claims in the tree.)*
+- [x] Edit **no call site**. If any of the 13 call sites needs an added `open`, stop and re-read
       rather than adding one — that is the signal the lemma landed in the wrong namespace
-- [ ] Regenerate the generated inventory block that this phase's line-count changes make stale:
+- [x] Regenerate the generated inventory block that this phase's line-count changes make stale:
       `bash scripts/check-module-invariants.sh --emit-inventory`, then confirm with
       `--emit-inventory --check`. `Behavior.lean` shrinks and `PartialHistory.lean` grows, so
       `FormalSystem/Semantics/Presheaf/README.md`'s block is affected; `PartialHistory.lean` sits

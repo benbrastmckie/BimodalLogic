@@ -133,9 +133,9 @@ against a live `\label{}`.
   this coverage's sheaf condition a two-section statement
 * `FormalSystem/Semantics/Extension.lean` — the Extension Theorem, where the **directed** gluing
   case takes on its dependence on *Saturation*
-* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `partialHistory_ext`
+* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`
 * `FormalSystem/Semantics/PartialHistory.lean` — `PartialHistory.rel_across_seam`, the seam
-  argument this module instantiates, and `states_eq_of_time_eq`
+  argument this module instantiates, `states_eq_of_time_eq`, and `partialHistory_ext`
 * `FormalSystem/PlusLanguage/PlusPasting.lean` — `paste`, the other instantiation of that same
   argument
 -/

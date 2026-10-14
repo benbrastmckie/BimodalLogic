@@ -55,10 +55,10 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/Presheaf -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
-| `Determinism.lean` | 253 | The *Determinism* clause below the layering lock: `Separated` as injectivity of every restriction map, the choice-free (⇒) half, the world-to-section bridge `secOf`, and the converse's frame-side conclusion with `SingletonClasses` unfolded |
-| `Directed.lean` | 515 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
-| `Ray.lean` | 438 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
+| `Behavior.lean` | 279 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
+| `Determinism.lean` | 254 | The *Determinism* clause below the layering lock: `Separated` as injectivity of every restriction map, the choice-free (⇒) half, the world-to-section bridge `secOf`, and the converse's frame-side conclusion with `SingletonClasses` unfolded |
+| `Directed.lean` | 516 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
+| `Ray.lean` | 439 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
 | `Sheaf.lean` | 434 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 <!-- END GENERATED -->
@@ -117,8 +117,6 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 - `Beh.germ_ofGerm`, `Beh.ofGerm_germ` — the two round trips of `Beh.germEquiv`, the *Germs*
   clause. The only results here that reach a frame constraint, through `[F.IsRegular]`
 - `Beh.isConvex`, `Beh.domain_eq_interval` — a section is convex, and its domain is `Interval 0 l`
-- `partialHistory_ext` — extensionality for partial histories, written by hand because the
-  `states` field is dependent on `domain` and no `@[ext]` lemma is generated
 - `sheaf_clause` — the *Sheaf* clause: two sections agreeing at the seam glue to a **unique**
   section over the joined interval, stated in cut form as an `∃!`
 - `restrict_glue_left`, `restrict_glue_right` — the two restriction identities of `glue`. The
@@ -353,4 +351,4 @@ bound is committed anywhere in this cluster, and soundness is untouched.
 
 ---
 
-*Last verified: 2026-10-03*
+*Last verified: 2026-10-14*

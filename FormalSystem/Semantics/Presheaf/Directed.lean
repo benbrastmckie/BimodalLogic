@@ -133,9 +133,11 @@ the arithmetic helpers too.
 natural home is `Semantics/PartialHistoryOrder.lean`, next to `PartialHistory.chainSup`, from which
 `chainSup` could then be derived as the `IsChain` special case — a chain is directed, and
 `chain_states_agree` is `directed_states_agree` at `IsChain.total`. Consolidating it there is
-deliberately **not** done: the history-order module is outside this cluster's remit, exactly as
-`Behavior.lean`'s `partialHistory_ext` records for `PartialHistory.lean`. Anything else needing a
-directed union should move this definition down rather than write a second copy.
+deliberately **not** done: the history-order module is outside this cluster's remit, and no
+consumer outside the cluster asks for it. The comparison case is `partialHistory_ext`, whose home
+*is* beside the structure, in `Semantics/PartialHistory.lean`, precisely because a consumer outside
+this cluster — `Semantics/Gluing.lean` — does need it. Anything else needing a directed union
+should move this definition down rather than write a second copy.
 
 **`states_eq_of_eq` is imported, not restated.** `Semantics/Presheaf/Sheaf.lean` declares it at top
 level in this same namespace, so a local copy under the same name is a hard duplicate-declaration
@@ -176,8 +178,7 @@ and pinned, and are cited plainly.
   `PartialHistory.isRestriction_of_isRegular`
 * `FormalSystem/Semantics/Extension/Completion.lean` — `extension_of_completion`,
   `extension_of_isZTime`, the two minimal-hypothesis sources of the engine's hypothesis
-* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `Beh.restrictTr`,
-  `partialHistory_ext`
+* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `Beh.restrictTr`
 * `FormalSystem/Semantics/Presheaf/Sheaf.lean` — `states_eq_of_eq`, and `sheaf_clause`, the binary
   companion clause whose choice-freeness this module's directed one does not share
 * `FormalSystem/Semantics/Presheaf/Site.lean` — `Interval`, `Obj`, `Tr`

@@ -103,6 +103,9 @@ they are not re-litigated here or in the four-axiom frame alignment work.
 
 ## Main Results
 
+- `partialHistory_ext` — extensionality: agreement on the domain and pointwise agreement on the
+  states suffices. Written by hand, because `states` is dependent on `domain` and Lean generates
+  no `PartialHistory.ext`
 - `PartialHistory.respects_task_le` — the guarded form, derived from the unconditional field
 - `PartialHistory.rel_across_seam` — the seam argument: two histories agreeing at a pair of seam
   coordinates relate across the seam, by composition through the shared state. The single home of
@@ -165,6 +168,20 @@ structure PartialHistory (F : TaskFrame) where
   -/
   respects_task : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
     F.TaskRel (states s hs) (t - s) (states t ht)
+
+/-- Extensionality for partial histories: agreement on the domain and pointwise agreement on the
+states suffices. Written by hand because `PartialHistory`'s `states` field is dependent on its
+`domain` field, so no `@[ext]` lemma is generated. -/
+theorem partialHistory_ext {F : TaskFrame} {σ τ : PartialHistory F} (hd : σ.domain = τ.domain)
+    (hs : ∀ (r : F.Duration) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
+    σ = τ := by
+  obtain ⟨d₁, n₁, s₁, t₁⟩ := σ
+  obtain ⟨d₂, n₂, s₂, t₂⟩ := τ
+  simp only at hd hs
+  subst hd
+  have : s₁ = s₂ := by funext r h; exact hs r h h
+  subst this
+  rfl
 
 namespace PartialHistory
 

@@ -96,8 +96,9 @@ where the choice enters, and it is not here: `deterministic_iff_separated` measu
 * JPL paper `app:Structure` — the cut appendix containing it. **`DANGLING`**, as above
 * JPL paper `lem:deterministic-singleton`, `def:deterministic` — the frame-side biconditional this
   clause is the presheaf-side reading of, and the determinism predicate itself
-* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `Beh.mem_dom`,
-  `partialHistory_ext`
+* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `Beh.mem_dom`
+* `FormalSystem/Semantics/PartialHistory.lean` — `partialHistory_ext`, the hand-written
+  extensionality lemma every section equality here goes through
 * `FormalSystem/Semantics/Presheaf/Sheaf.lean` — `states_eq_of_eq`, reading a state out of an
   equality of sections
 * `FormalSystem/Semantics/Presheaf/Ray.lean` — `futOf` and `FutRay.toBeh`, the two steps `secOf`
