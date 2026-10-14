@@ -1,7 +1,7 @@
 # Implementation Plan: Task #786
 
 - **Task**: 786 - Harden `scripts/check-evidence-probes.sh` against the `.lake` read/write race and give it an environment-failure diagnostic class
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.25 hours
 - **Dependencies**: None (the `dependencies[]` edge on 734 was dropped by recorded user decision, 2026-10-14)
 - **Research Inputs**: `specs/786_evidence_probe_compile_failures_repair/reports/01_evidence-probe-compile-failures.md`
@@ -119,24 +119,24 @@ performed and no roadmap phases are included.
 Phases within the same wave can execute in parallel. Every wave here holds one phase: all four
 phases edit or measure the same single file, so they are strictly serialized by construction.
 
-### Phase 1: Acquire the shared `.lake` build lock [NOT STARTED]
+### Phase 1: Acquire the shared `.lake` build lock [COMPLETED]
 
 **Goal**: The script serializes its 33 `lake env lean` reads against any other guarded build on
 this tree, by taking the already-published shared lock once per run.
 
 **Tasks**:
-- [ ] Confirm the working tree is clean for this file (`git status --short scripts/check-evidence-probes.sh`) and confirm the current no-lock state (`grep -c flock scripts/check-evidence-probes.sh` returns 0).
-- [ ] Re-read `scripts/check-module-invariants.sh`'s `C1: build` block (the `LOCK_FILE` / `C1_LOCK_FD` / `flock -n` then `flock -w 600` sequence) and mirror its shape, not a re-invention.
-- [ ] Insert the acquisition block immediately before `failures=0`, i.e. after the `WIRED`, `WIRED_REPO`, and `DEFERRED` arrays — never between the comment table and `WIRED=(`.
-- [ ] Define `REPO_ROOT="$(pwd)"` (valid: the script already `cd`s to the repository root) and `LOCK_FILE="$REPO_ROOT/.lake/build-guard.lock"`; `mkdir -p "$REPO_ROOT/.lake"` so a never-built clone can still take the lock.
-- [ ] Acquire with `exec {PROBE_LOCK_FD}<>"$LOCK_FILE"`, then `flock -n`; on contention print one `check-evidence-probes: waiting on the shared build lock ($LOCK_FILE, up to ${PROBE_LOCK_WAIT_S}s)` notice to stderr and retry with `flock -w "$PROBE_LOCK_WAIT_S"`.
-- [ ] Never release the fd (no `flock -u`): holding it to process exit is what covers every `check_probe` call for free.
-- [ ] Add `PROBE_LOCK_WAIT_S="${PROBE_LOCK_WAIT_S:-600}"` as a documented env override whose sole purpose is making the timeout branch testable in Phase 4; default behavior is unchanged at 600 s.
-- [ ] On `flock` absent from `PATH`, print `check-evidence-probes: flock not found on PATH; compile-checking probes unserialized` to stderr and continue (degrade audibly, never silently).
-- [ ] On wait timeout, print a failure line naming the lock path and `exit 1` before any probe is attempted (Phase 2 re-words this under the shared environment-class vocabulary).
-- [ ] Add the in-place rationale comment above the block: why a reader needs the writer's exclusive lock, that the lock is advisory and keyed on the path so this script and the deployed guard exclude each other with no reference from the repository into the disposable `.claude/` tree, and that the two rejected alternatives are recorded at `check-module-invariants.sh`'s `C1` block and are not re-litigated here.
-- [ ] `bash -n scripts/check-evidence-probes.sh` and `shellcheck scripts/check-evidence-probes.sh` both clean (no new findings relative to the pre-edit baseline).
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 with `PASS  all 33 wired probe(s) compile`.
+- [x] Confirm the working tree is clean for this file (`git status --short scripts/check-evidence-probes.sh`) and confirm the current no-lock state (`grep -c flock scripts/check-evidence-probes.sh` returns 0).
+- [x] Re-read `scripts/check-module-invariants.sh`'s `C1: build` block (the `LOCK_FILE` / `C1_LOCK_FD` / `flock -n` then `flock -w 600` sequence) and mirror its shape, not a re-invention.
+- [x] Insert the acquisition block immediately before `failures=0`, i.e. after the `WIRED`, `WIRED_REPO`, and `DEFERRED` arrays — never between the comment table and `WIRED=(`.
+- [x] Define `REPO_ROOT="$(pwd)"` (valid: the script already `cd`s to the repository root) and `LOCK_FILE="$REPO_ROOT/.lake/build-guard.lock"`; `mkdir -p "$REPO_ROOT/.lake"` so a never-built clone can still take the lock.
+- [x] Acquire with `exec {PROBE_LOCK_FD}<>"$LOCK_FILE"`, then `flock -n`; on contention print one `check-evidence-probes: waiting on the shared build lock ($LOCK_FILE, up to ${PROBE_LOCK_WAIT_S}s)` notice to stderr and retry with `flock -w "$PROBE_LOCK_WAIT_S"`.
+- [x] Never release the fd (no `flock -u`): holding it to process exit is what covers every `check_probe` call for free.
+- [x] Add `PROBE_LOCK_WAIT_S="${PROBE_LOCK_WAIT_S:-600}"` as a documented env override whose sole purpose is making the timeout branch testable in Phase 4; default behavior is unchanged at 600 s.
+- [x] On `flock` absent from `PATH`, print `check-evidence-probes: flock not found on PATH; compile-checking probes unserialized` to stderr and continue (degrade audibly, never silently).
+- [x] On wait timeout, print a failure line naming the lock path and `exit 1` before any probe is attempted (Phase 2 re-words this under the shared environment-class vocabulary).
+- [x] Add the in-place rationale comment above the block: why a reader needs the writer's exclusive lock, that the lock is advisory and keyed on the path so this script and the deployed guard exclude each other with no reference from the repository into the disposable `.claude/` tree, and that the two rejected alternatives are recorded at `check-module-invariants.sh`'s `C1` block and are not re-litigated here.
+- [x] `bash -n scripts/check-evidence-probes.sh` and `shellcheck scripts/check-evidence-probes.sh` both clean (no new findings relative to the pre-edit baseline).
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 with `PASS  all 33 wired probe(s) compile`.
 
 **Timing**: 0.75 hours
 

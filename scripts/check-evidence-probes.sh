@@ -1103,6 +1103,64 @@ WIRED_REPO=(
 # (track the API; never delete or restate an obstruction to make it pass), then wire it in.
 DEFERRED=("bi-lasso-decision-layer/spike-untl-unfolding-and-fwd-obstruction")
 
+# --- SHARED `.lake` LOCK --------------------------------------------------------------------
+# LOCKED AGAINST CONCURRENT `.lake` WRITERS.
+#
+# `check_probe` below invokes `lake env lean` once per wired entry, and every one of those
+# invocations READS `.lake`: the oleans of the whole import closure the probe pulls in.  An
+# unserialized read races any guarded `lake build` rewriting those same artifacts on this tree.
+# The reader can observe the window in which a tail module's olean has been removed and not yet
+# rewritten, and Lean then reports `object file '...' of module ... does not exist`.  That is an
+# I/O failure of the environment, not a fact about the probe, yet it arrives on the same stderr a
+# rotted probe would use.  A reader takes the WRITER'S exclusive lock here rather than a shared
+# one: `lake env` is not audited as provably write-free, and both existing users of this lock
+# path take it exclusively.
+#
+# The lock is `$REPO_ROOT/.lake/build-guard.lock` -- the path `.claude/scripts/lake-build-guard.sh`
+# publishes in its own header as a stable convention, and the same path
+# `scripts/check-module-invariants.sh` takes at its `C1: build` block.  An advisory lock is keyed
+# on the path, not on the binary that opened it, so this script and that deployed guard exclude
+# each other with no reference from this repository into the disposable, regenerated `.claude/`
+# tree: no probe for the guard's presence, no call into it, and unchanged behaviour in a clone
+# with no agent system deployed at all, where the lock is simply uncontended.
+#
+# Acquired ONCE for the whole run and never released with `flock -u`: the fd is held until this
+# process exits, which is what makes the verdicts below describe one consistent library snapshot
+# rather than one independently-raced snapshot per probe, and what lets every `check_probe` call
+# inherit the protection for free.  The cost is that a concurrent guarded build waits for this
+# run; that is the intended trade -- a slower green in place of a spurious red -- and the same
+# accepted cost `check-module-invariants.sh` already pays.
+#
+# The two alternatives to a bounded wait -- probe for the guard and call it when present, and
+# refuse to run when concurrency is detected -- are recorded as rejected at
+# `check-module-invariants.sh`'s `C1` block and are not re-litigated here.
+#
+# `PROBE_LOCK_WAIT_S` overrides the bounded wait.  It exists so the timeout branch can be
+# exercised deliberately; it is a test affordance, not a tuning knob.  Default: 600 s.
+# --------------------------------------------------------------------------------------------
+PROBE_LOCK_WAIT_S="${PROBE_LOCK_WAIT_S:-600}"
+REPO_ROOT="$(pwd)"
+LOCK_FILE="$REPO_ROOT/.lake/build-guard.lock"
+mkdir -p "$REPO_ROOT/.lake"
+PROBE_LOCK_OK=1
+if command -v flock >/dev/null 2>&1; then
+  exec {PROBE_LOCK_FD}<>"$LOCK_FILE"
+  if ! flock -n "$PROBE_LOCK_FD"; then
+    echo "check-evidence-probes: waiting on the shared build lock ($LOCK_FILE, up to ${PROBE_LOCK_WAIT_S}s)" >&2
+    if ! flock -w "$PROBE_LOCK_WAIT_S" "$PROBE_LOCK_FD"; then
+      PROBE_LOCK_OK=0
+    fi
+  fi
+else
+  echo "check-evidence-probes: flock not found on PATH; compile-checking probes unserialized" >&2
+fi
+if [ "$PROBE_LOCK_OK" -ne 1 ]; then
+  echo "FAIL (environment: timed out after ${PROBE_LOCK_WAIT_S}s waiting for the shared build lock $LOCK_FILE)"
+  echo "No probe was compile-checked.  This is an environment failure, not probe rot: re-run once"
+  echo "the concurrent build holding the lock has finished."
+  exit 1
+fi
+
 failures=0
 echo "Evidence probes (compile-checked outside the build graph)"
 echo "========================================================="
