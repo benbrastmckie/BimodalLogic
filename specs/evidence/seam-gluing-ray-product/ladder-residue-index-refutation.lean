@@ -65,10 +65,11 @@ and every modulus coprime to 3 fails.**
 
 ## The `P` versus `P + 1` convention
 
-The index takes residues modulo `P + 1`; the exhibited period satisfies `1 ≤ P`; no record fixes
-whether the index is instantiated at `P := period` (modulus `period + 1`) or `P := period - 1`
-(modulus `period`).  Nothing here chooses: mechanism (4) is stated for ALL `P`, mechanism (5) for
-every `P` with `¬ 3 ∣ (P + 1)`, which covers both readings of the exhibited period `1` (moduli `2`
+The index takes residues modulo `P + 1`, so `P` is a modulus minus one and not a period: an
+instantiation is specified by naming the modulus `m` with `1 ≤ m` and setting `P := m - 1`, and a
+period `p` from `reachN_eventually_periodic` (which gives `1 ≤ p`) enters as `m := p`.
+Nothing here chooses an `m`: mechanism (4) is stated for ALL `P`, and mechanism (5) for every
+`P` with `¬ 3 ∣ (P + 1)`, which covers both readings of the exhibited period `1` (moduli `2`
 and `1`).
 
 ## The bounded attempt: FIXTURE-LEVEL sufficiency on the two-state object
@@ -101,7 +102,7 @@ characterizes the cells of THIS fixture and nothing wider.
   region-length pumping lemma for `untl`/`snce`-depth-bounded formulas; the next deadline's
   coupling through `Drift`; the box/stab letters through the anchor-layer equations.
 - No seventh coordinate, no wider tuple, no new index candidate.  The refined parameter-origin
-  rule -- the threshold at least the formula's `untl`-nesting depth; the modulus dominating the
+  rule -- the threshold at least the formula's `untl`-nesting depth; the modulus a multiple of the
   period of every letter-definable sub-object of the object -- is the NECESSARY condition the two
   refutations establish, never claimed sufficient.
 - The three earlier negatives (gap coordinate; countdown parity; bounded carrier) are untouched

@@ -328,28 +328,28 @@ gates' SKIP branch against this consumer repo and check nothing.
 
 ---
 
-### Phase 4: Restate the probe docstring and the evidence-gate record [NOT STARTED]
+### Phase 4: Restate the probe docstring and the evidence-gate record [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The probe's own `The P versus P + 1 convention` section names the convention instead of
 declaring it unrecorded, keeps its convention-independence claim, and leaves every theorem
 statement untouched. The transcribed record in `check-evidence-probes.sh` matches.
 
 **Tasks**:
-- [ ] Re-read `specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean`
+- [x] Re-read `specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean`
       lines 60-110 immediately before editing.
-- [ ] Rewrite the section at lines 66-72. The sentence `no record fixes whether the index is
+- [x] Rewrite the section at lines 66-72. The sentence `no record fixes whether the index is
       instantiated at P := period (modulus period + 1) or P := period - 1 (modulus period)` is
       false once Phase 1 lands; replace it with the convention (`P + 1` is the modulus; an
       instantiation names `m` and sets `P := m - 1`; an exhibited period `p` enters as `m := p`)
       and keep the existing `Nothing here chooses` sentence, which stays true: mechanism (4) is
       stated for all `P` and mechanism (5) for every `P` with `¬ 3 ∣ (P + 1)`.
-- [ ] Sharpen the `the modulus dominating the period of every letter-definable sub-object of the
+- [x] Sharpen the `the modulus dominating the period of every letter-definable sub-object of the
       object` clause at line ~104 to the multiple-of form.
-- [ ] Sharpen the matching clause in the `scripts/check-evidence-probes.sh` comment block at
+- [x] Sharpen the matching clause in the `scripts/check-evidence-probes.sh` comment block at
       line ~1013 (`dominating the period of every letter-definable sub-object`), preserving the
       block's column alignment. Line 1007's `both readings of period 1` needs no edit — it stays
       accurate under either reading.
-- [ ] Confirm, by diffing with `git diff -- specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean`,
+- [x] Confirm, by diffing with `git diff -- specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean`,
       that no `theorem`, `lemma`, `def`, `abbrev`, `example` or `#guard` line is touched.
 
 **Timing**: 0.75 hours
@@ -383,9 +383,15 @@ probe's wiring and the comment block being edited.
 - `grep -nE 'dominat' specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean scripts/check-evidence-probes.sh`
   is empty.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-evidence-probes.sh` exiting `0` | The gate exits `1` on four pre-existing probe compile failures that this task neither caused nor can repair within its scope. | `FAIL  4 of 33 wired probe(s) failed`, naming `seam-gluing-ray-product/{finite-graph-stab-summary, mosaic-germ-amalgamation, path-quantifier-alternation, backward-dual-asymmetric-fixture}`. `git status --short -- specs/evidence/` lists exactly one modified file, this task's own probe, and both `ladder-residue-index-refutation` and `ladder-cell-index-obstructions` report PASS in the same run. |
+
 ---
 
-### Phase 5: Align the authoritative theorem ledger [NOT STARTED]
+### Phase 5: Align the authoritative theorem ledger [IN PROGRESS]
 
 **Goal**: `docs/theorem-index.md`, which declares itself authoritative over every other surface,
 carries the same sharpened modulus clause as the module docstring it summarises.

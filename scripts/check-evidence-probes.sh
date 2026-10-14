@@ -1010,7 +1010,7 @@ EVIDENCE="specs/evidence"
 #                                                           | `reach_period_refuted`). The refined parameter-origin rule
 #                                                           | is NECESSARY and asserted as nothing more: the threshold
 #                                                           | at least the formula's `untl`-nesting depth, the modulus
-#                                                           | dominating the period of every letter-definable
+#                                                           | a multiple of the period of every letter-definable
 #                                                           | sub-object. FIXTURE-LEVEL sufficiency on the two-state
 #                                                           | object (`qp_cell_eq_of_depth_parity`: box/stab-free
 #                                                           | formulas, countdowns at or above the formula-derived `thr`
