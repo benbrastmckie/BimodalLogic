@@ -123,16 +123,17 @@ next_project_number: 789
 ### Paper Alignment
 
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
-788 [RESEARCHED] — Reduce TM and its extensions TM\_z, TM\_d, and TM\_r to...
+788 [PLANNED] — Reduce TM and its extensions TM\_z, TM\_d, and TM\_r to...
 
 ## Tasks
 
 ### 788. Reduce tm and extensions to minimal axiom sets
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
 - **Research**: [788_reduce_tm_and_extensions_to_minimal_axiom_sets/reports/01_reduce-tm-minimal-axiom-sets.md]
+- **Plan**: [788_reduce_tm_and_extensions_to_minimal_axiom_sets/plans/01_reduce-tm-minimal-axiom-sets.md]
 
 **Description**: Reduce TM and its extensions TM_z, TM_d, and TM_r to minimal axiom sets, moving every derivable schema out of the Axiom inductive in FormalSystem/ProofSystem/Axioms.lean and into the derived-theorem stock in FormalSystem/ProofSystem/DerivedAxioms.lean: derive UE (until_F) from UG and TN, UT (F_until_equiv) as an identity, TC (connect_future) from US and UC, NF (discrete_propagate_fwd) from NB with MF and MT, NP (discrete_symm_fwd) from US and the TR mirror of NF, and NA (discrete_propagate_bwd) from NP and NF; recover DN (density) from TM plus NN and Z1 (z1) from TM plus UZ, either by direct derivation or through derivable_of_validQTime and derivable_of_validZTime with the existing soundness lemmas, after confirming the BLOCKED lemma z1_in_frame has no dependents; decide TL (temp_linearity) against Xu 1988 §3 (keep with a derivability note, restore Burgess A4a, or derive from CN) and retract the stale underivability claim in LinearityDerivedFacts.lean, whose branching countermodel refutes CN; repoint all call sites, the automation axiom tables, the Plus, Star, and Minus language mirrors, and the minFrameClass rows and independence results 10 and 11; refresh the Axioms.lean table, docs/reference/paper-definitions-of-record.md, and docs/theorem-index.md
 

@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a 10-phase, 17-hour implementation plan for reducing the Axiom inductive from 29 to 20 constructors. Phases 1-4 add the nine derived schemata in DAG-placed modules (DerivedAxioms, new ConnectDerived and LinearityDerived under Theorems, new CompletenessDerived under Metalogic for the Z1 engine route); Phases 5-6 repoint every call site, automation hook, tableau row, Minus/Plus/Star bridge, Independence shape pin, test, and tooling entry while the constructors still exist; Phase 7 deletes the nine constructors in one atomic batch verified by the single whole-tree rebuild and C14; Phases 8-10 regenerate Typst/tooling outputs, refresh Lean-side prose including the LinearityDerivedFacts retraction, and refresh the docs under the full gate set. One deviation from the research placement (module split around TemporalDerived.connectFutureThm to avoid an import cycle) is recorded in the task issue log.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/plans/01_reduce-tm-minimal-axiom-sets.md",
+      "summary": "10-phase plan (17h, 7 waves) landing the nine derived schemata, repointing every site green, deleting the nine Axiom constructors atomically, regenerating outputs, and refreshing prose and docs."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 10,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement; Phases 1 and 4 (wave 1) are independent and may run in parallel; every lake invocation goes through lake-build-guard.sh detached with --timeout 1800."
+}
