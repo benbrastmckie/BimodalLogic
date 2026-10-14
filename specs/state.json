@@ -94,7 +94,8 @@
       "file_scope": [
         ".claude/scripts/roadmap-integration.sh",
         "specs/ROADMAP.md"
-      ]
+      ],
+      "dependencies": []
     },
     {
       "project_number": 751,
@@ -108,7 +109,8 @@
       "file_scope": [
         "specs/state.json",
         ".claude/scripts/validate-state.sh"
-      ]
+      ],
+      "dependencies": []
     },
     {
       "project_number": 744,
@@ -123,7 +125,8 @@
         "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
         "scripts/check-module-invariants.sh",
         "scripts/readme-inventory.sh"
-      ]
+      ],
+      "dependencies": []
     },
     {
       "project_number": 743,
@@ -138,7 +141,8 @@
         "scripts/typst-sync-check.sh",
         "typst/FormalFoundations.typ",
         "typst/sync-check-whitelist.txt"
-      ]
+      ],
+      "dependencies": []
     },
     {
       "project_number": 734,
@@ -185,7 +189,8 @@
       "description": "Evaluate whether the formal:logic implement-phase routing should resolve to a Lean-capable agent when the plan touches .lean files.\n\nEVIDENCE. The formal extension's manifest declares, explicitly and not as a fallback, `routing_agents.implement[\"formal:logic\"] = \"general-implementation-agent\"` (confirmed by `command-route-agent.sh implement formal:logic`, which resolves `via=noncore-exact`). The task_type `formal:logic` therefore never reaches `lean-implementation-agent`, which the lean extension reserves for `lean4`, `lean4:lake` and `lean4:version`. A formal:logic task whose work is substantially Lean runs without the lean-lsp MCP path, the Lean-specific implementation contracts, and the lake build guidance that a lean4-typed task receives.\n\nOBSERVED CASE. A completed formal:logic task ran its implement phase under general-implementation-agent across seven files, four of them requiring new Lean theorems in `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean`, a `#print axioms` baseline probe in `scripts/check-module-invariants.sh`, scoped and full `lake build` runs, and `lake build BimodalTest`. It completed successfully, so this is a potential improvement rather than a defect report — but it did the Lean work without Lean tooling.\n\nFRAME THIS AS AN EVALUATION, NOT A PREDETERMINED CHANGE. `formal:logic` legitimately covers modal-logic research, proof theory and Kripke-semantics work that touches no Lean at all; the research phase already routes it to `logic-research-agent` rather than `lean-research-agent` for exactly that reason. A blanket reroute of the implement phase to `lean-implementation-agent` would therefore be wrong for part of the population. The question to answer is whether routing should become conditional on the plan's harvested `file_scope` containing `.lean` paths, and if so, where that conditional belongs: in the manifest schema (which today maps task_type to agent name with no predicate), in `command-route-agent.sh`, or in the orchestrator's dispatch composition.\n\nSCOPE. (1) Determine how many non-terminal and recently-completed formal / formal:logic / formal:math / formal:physics tasks declare or harvest `.lean` paths in file_scope, to size the affected population rather than generalizing from one case. (2) Decide among: leave as is and document the rationale; reroute formal:logic wholesale; or introduce a file_scope-conditional routing predicate. (3) If a conditional is chosen, specify where it lives and what it does when file_scope is absent (29 non-terminal tasks currently have no file_scope key at all, so the predicate must have a defined behavior for the unknown case, and must not silently pick the heavier agent on no evidence). (4) Apply the resulting decision in the SOURCE STORE (`~/.config/nvim/agent-system/extensions/formal/manifest.json` or the routing library), never by hand-patching the deployed `.claude/` tree, then redeploy via `deploy-headless.sh`.\n\nNON-GOALS: no change to research-phase or plan-phase routing, both of which are working as intended; no change to the lean extension's own `lean4*` routing; no new agent definitions.",
       "topic": "agent-system",
       "created": "2026-10-04T16:36:03Z",
-      "last_updated": "2026-10-04T16:36:03Z"
+      "last_updated": "2026-10-04T16:36:03Z",
+      "dependencies": []
     },
     {
       "project_number": 729,
@@ -195,7 +200,8 @@
       "description": "Add purpose-written `.title` fields to specs/state.json's active_projects entries so TODO.md stops rendering truncated description prose as task names.\n\nCONTEXT: the entry schema (project_number, project_name, status, task_type, description, topic, dependencies, created, last_updated, file_scope) has no title field populated — all 61 entries lack `.title`. This is NOT a defect. `.title` is an optional field with a documented fallback chain: `generate-todo.sh:188` (\"Title fallback: derive from project_name if title is empty\", `title=\"${project_name//_/ }\"`) and `generate-task-order.sh:192` (\"(.title // .description // .project_name) -- a purpose-written .title is preferred over the top of a long prose .description; .description remains the fallback for title-less tasks, and .project_name is the last resort when both are absent\"). The cost of relying on the fallback is readability: TODO.md currently renders the first ~60 characters of `description`, so entries read like \"720 — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...\" and \"709 — STANDING (second re-scope; SUPERSEDES BOTH...\" — truncated status notes rather than names.\n\nSCOPE: (1) write a concise noun-phrase `.title` for each entry in specs/state.json's active_projects, deriving it from `description` and `project_name`; target under 70 characters, no dates, no status prefixes such as RE-SCOPED/STANDING/HARD/CAPSTONE, no task-number references; prioritize the dependency-ready wave-1 set (127, 128, 178, 257, 298, 464, 481, 502, 559, 566, 570, 604, 616, 617, 664, 709, 711, 712, 713, 714, 716, 720, 722, 723, 725, 726, 728) since those are the entries selected from next. (2) Regenerate TODO.md through the existing generator and confirm the titles render in both the grouped-by-topic listing and the dependency-wave table. (3) Verify the fallback path still works for any entry deliberately left title-less, so the optional-field contract is preserved rather than silently becoming mandatory.\n\nNON-GOALS: no schema change (the field is already supported by both generators); no edit to `description`, `project_name`, `topic`, or any other existing field; no change to the generators themselves; no renaming of task directories, whose names derive from `project_name` and must stay stable.\n\nEffort: small-to-medium, mostly editorial judgment rather than code.",
       "topic": "repo-hygiene",
       "created": "2026-10-04T16:30:22Z",
-      "last_updated": "2026-10-04T16:30:22Z"
+      "last_updated": "2026-10-04T16:30:22Z",
+      "dependencies": []
     },
     {
       "project_number": 714,

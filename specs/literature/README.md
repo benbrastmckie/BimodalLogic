@@ -185,3 +185,22 @@ The FO → temporal direction ("separation property"): every monadic first-order
 Prior research reports contained two errors:
 - "Burgess 1984" for the Since/Until paper should be **Burgess 1982** (NDJFL). The 1984 reference is the separate handbook chapter "Basic Tense Logic."
 - "Reynolds 2003" should be **Reynolds 2001** (JSL 66(3)).
+
+---
+
+## The L⁺ position in the corpus
+
+TM/L⁺ over regular `ℤ`-frames evades every published negative result in this corpus for a boring
+reason: none has a hypothesis TM meets. Each needs a second linear/transitive/`K` factor commuting
+with time, three commuting factors, or a difference operator — and `stab` is not a product
+coordinate. The published positives decide *sublogics* of TM/L⁺, and decidability is not inherited
+by extensions.
+
+**So the corpus settles L⁺ in neither direction, and "evades" is not evidence of decidability.**
+
+The one route by which a published negative result could still reach L⁺ is a closed L⁺ formula
+forcing backward determinism on a regular `ℤ`-frame. `stab`'s clause (`PlusTruth.lean:93`) fails the
+backward closure of the historical-necessity tradition (Thomason 1984 §4 Def. 6(2);
+Caleiro–Viganò–Volpe Def. 2.5 `Wdc`), which is why the corpus's negatives do not apply. If forcing
+is possible, the know-time-do-not-forget family becomes a reduction target. This is tracked as an
+unrealized risk in `specs/ROADMAP.md`'s Stage 1.
