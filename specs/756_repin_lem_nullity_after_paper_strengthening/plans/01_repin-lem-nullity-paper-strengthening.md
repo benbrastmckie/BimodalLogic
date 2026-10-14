@@ -504,21 +504,26 @@ for the typst files.
 
 ---
 
-### Phase 7: Regenerate the Lean citation manifest (C35) [NOT STARTED]
+### Phase 7: Regenerate the Lean citation manifest (C35) [COMPLETED]
 
 **Goal**: Restore C35 — `scripts/lean-citation-manifest.json` byte-current — after the docstring
 edits of Phases 4 and 5 shifted declaration spans.
 
 **Tasks**:
-- [ ] Confirm C35 is actually red first: `bash scripts/check-module-invariants.sh --no-build` and
+- [x] Confirm C35 is actually red first: `bash scripts/check-module-invariants.sh --no-build` and
       read the C35 line. If it still passes, record that and skip the regeneration rather than
       producing a no-op diff.
-- [ ] Run `python3 scripts/export-lean-citations.py` (no flags; it writes the manifest). Never
+- [x] Run `python3 scripts/export-lean-citations.py` (no flags; it writes the manifest). Never
       hand-edit the manifest.
-- [ ] Verify with `python3 scripts/export-lean-citations.py --check`.
-- [ ] Re-run `bash scripts/check-module-invariants.sh --no-build` and confirm C35 PASS with zero
+- [x] Verify with `python3 scripts/export-lean-citations.py --check`.
+- [x] Re-run `bash scripts/check-module-invariants.sh --no-build` and confirm C35 PASS with zero
       `FAIL` lines overall.
-- [ ] Commit, staging `scripts/lean-citation-manifest.json` explicitly by name.
+- [x] Commit, staging `scripts/lean-citation-manifest.json` explicitly by name.
+      *(deviation: altered — this phase also had to regenerate the INV inventory blocks in
+      `README.md` and `FormalSystem/README.md` via `bash scripts/check-module-invariants.sh
+      --emit-inventory`, a second generated-artifact gate the plan did not anticipate alongside
+      C35: the docstring edits moved the live comment-line count and `Semantics.lean`'s line
+      count. Both diffs are count fields only.)*
 
 **Timing**: 0.5 hours
 
