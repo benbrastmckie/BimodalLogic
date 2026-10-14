@@ -140,7 +140,10 @@ biconditional, so the whole task is record and prose work.
   `intTimeHistory.domain t` reduces to `True` for a total ℤ history, so `trivial` is the honest
   proof of a real goal. No Lean declaration was touched by this task.
 - Axiom count: 14, unchanged from the pre-work baseline. No axiom added.
-- `scripts/check-paper-definitions.sh`: exit 0, silent case-(a) pass against the live paper.
+- `scripts/check-paper-definitions.sh`: exit 0, silent case-(a) pass against the live paper **at
+  the moment of verification**. The paper then moved a **fifth** time, minutes later, and the gate
+  is red again on four anchors — `def:BX`, `def:BX-z`, `def:BX-d`, `def:TMplus`. That wave was
+  deliberately **not** absorbed here; see Follow-ups for why.
 - `scripts/check-paper-definitions.sh --paper /nonexistent/x.tex`: exit 0, `SKIP (neutral)` — the
   CI path is intact, so this remains a local-correctness obligation and not a release blocker.
 - `scripts/readme-lint.sh`: exit 0.
@@ -185,6 +188,22 @@ biconditional, so the whole task is record and prose work.
 
 ## Follow-ups
 
+- **The fifth paper wave is left to its owning task, not absorbed here.** Minutes after this
+  task's gate verification, the paper moved again and `check-paper-definitions.sh` went red on
+  `def:BX`, `def:BX-z`, `def:BX-d` and `def:TMplus` (checksum `0e39993c…` → `fe69fa15…`,
+  3962 → 3990 lines, HEAD `9ad4aa5d…` → `e1e6bf20…`). This is a **different wave in a different
+  subsystem**: it demotes axioms to derived theorems in the proof systems — `UE`/`UT`/`TC`/`TL` out
+  of `BX`'s axiom list, `Z1` out of `BX`$_z$ (now derived in `TM`$_z$), `DN` out of `BX`$_d$, and
+  `NB` moved into `TM` with `NP`/`NF`/`NA` demoted to `TM`-derived theorems. That is precisely the
+  subject matter of the open task **788, "Reduce tm and extensions to minimal axiom sets"**, which
+  is already re-deriving `Z1` from `UZ`; its own task notes even record that the paper-side revision
+  was expected. Re-pinning these four hashes from here would turn the gate green while leaving the
+  in-tree axiom-membership prose and `DerivationTree` constructor lists untouched — the exact
+  "record green, tree stale" failure this record exists to prevent, and it would strip 788 of its
+  tripwire. No in-tree site claims a `verbatim` quotation on any of the four, so nothing in the tree
+  is made false by leaving them unpinned. The acceptance criterion "exits 0 against the live paper"
+  was met and then invalidated by a read-only external input moving a fifth time; it is restated
+  here precisely rather than claimed unconditionally.
 - **Left alone deliberately** (the plan's explicit non-goal): pre-existing false-`verbatim` claims
   on anchors *outside* the re-pinned set. The one found while sweeping is
   `FormalSystem/Semantics/Extension/Step.lean`'s `def:frame#Saturation` quote, which says "for any
