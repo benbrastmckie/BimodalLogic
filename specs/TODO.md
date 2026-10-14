@@ -1,5 +1,5 @@
 ---
-next_project_number: 787
+next_project_number: 788
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 787
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,787 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -125,6 +125,16 @@ next_project_number: 787
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 787. Reduce tm and extensions to minimal axiom sets
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Reduce TM and its extensions TM_z, TM_d, and TM_r to minimal axiom sets, moving every derivable schema out of the Axiom inductive in FormalSystem/ProofSystem/Axioms.lean and into the derived-theorem stock in FormalSystem/ProofSystem/DerivedAxioms.lean: derive UE (until_F) from UG and TN, UT (F_until_equiv) as an identity, TC (connect_future) from US and UC, NF (discrete_propagate_fwd) from NB with MF and MT, NP (discrete_symm_fwd) from US and the TR mirror of NF, and NA (discrete_propagate_bwd) from NP and NF; recover DN (density) from TM plus NN and Z1 (z1) from TM plus UZ, either by direct derivation or through derivable_of_validQTime and derivable_of_validZTime with the existing soundness lemmas, after confirming the BLOCKED lemma z1_in_frame has no dependents; decide TL (temp_linearity) against Xu 1988 §3 (keep with a derivability note, restore Burgess A4a, or derive from CN) and retract the stale underivability claim in LinearityDerivedFacts.lean, whose branching countermodel refutes CN; repoint all call sites, the automation axiom tables, the Plus, Star, and Minus language mirrors, and the minFrameClass rows and independence results 10 and 11; refresh the Axioms.lean table, docs/reference/paper-definitions-of-record.md, and docs/theorem-index.md
+
+---
 
 ### 787. Lake unguarded reader lock audit
 - **Effort**: medium
