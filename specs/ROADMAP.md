@@ -26,12 +26,12 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 /orchestrate 298,282,296,231,219 # the dataset chain behind the c7 labeling bug
 /orchestrate 178,604             # worked Examples/ pipeline and zstd-compressed .jsonl support
 /orchestrate 743,744             # doc gates: typst-sync Check 1 namespace resolution, GENERATED markers on inventory tables
-/orchestrate 751,752             # file_scope backfill for the overlap gate, and the silent roadmap --regenerate abort
+/orchestrate 751                 # file_scope backfill so the overlap gate can see contended paths
 /orchestrate 756                 # re-pin lem:nullity after the JPL paper strengthened it
 /orchestrate 777,779,780         # commit-path and plan-compliance records from the 775 run
-/orchestrate 767,768,772,783     # tooling defects: stale build replay, snapshot parser, jq re-serialization, bounded block edits
-/orchestrate 769,770,753,774     # plan/postflight contract records: blocked gates, detail-free entries, null-resolution drops
-/orchestrate 729,730,741         # state .title fields, Lean-capable implement routing, cslib context extensions
+/orchestrate 772,783             # jq re-serialization of formatting-sensitive records, bounded in-file block edits
+/orchestrate 753,774             # conclusion-stage null-resolution drops, refuted-REASON recording
+/orchestrate 729                 # purpose-written .title fields so TODO.md stops rendering descriptions
 /orchestrate 257                 # only once the Stage 0 token exists
 # Stage 4 — the long fronts
 /orchestrate 464,465,481 --hard  # the termination measure: gapPotential, the terminus family, the refuted predicate
@@ -50,8 +50,17 @@ line until every member reports terminal**. Shared file scope serializes a batch
 breaking it; a task with no declared `file_scope` is invisible to the overlap gate — the blindness
 751 remediates. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 
-**Not batched**: 127, 128, 709 await Stage 0 rulings; 713 is `HOLD` by ruling and 734 is `PARTIAL`
-by ruling. None is schedulable, so none appears above.
+**Not batched, and why.** 127, 128 and 709 await Stage 0 rulings; 713 is `HOLD` by ruling and 734
+is `PARTIAL` by ruling.
+
+**730, 741, 752, 767, 768, 769, 770 are undispatchable from this repository** and are deliberately
+absent from every line above. Each names an edit target that resolves only under the agent-system
+source store (`source_dir` in `.claude-extensions.json` → `~/.config/nvim/agent-system/**`); this
+repo carries only the deployed `.claude/` tree, so a dispatch here can read nothing it is meant to
+edit and commit nothing it manages to write. Their migration into the source store's own task space
+is tracked there, not here — do not re-add them to a batch, and do not attempt the underlying work
+from this repo. Note also that part of 768's third defect is already landed and committed in the
+lean source store, so that record must be re-read before any implementation.
 
 ## Stage 0 — User rulings (no agent may transition these)
 
@@ -174,10 +183,19 @@ cite.
 Hand-curated: **completed items are removed by hand when a stage is revised**, and the durable
 record is `specs/CHANGE_LOG.md` and `specs/archive/`. Update the batches when `/task --expand`,
 `/spawn` or a dependency change alters the graph, and treat any claim here that no check can
-reproduce as a defect in this file rather than a fact about the tree. `roadmap-integration.sh
---regenerate` is silently inoperative on this layout (752 remediates); its `--prune` mode
-additionally mis-parses a Run line whose flags follow the task list with no trailing comment,
-dropping still-active tasks — do not trust either mode here until 752 lands. The decidability
+reproduce as a defect in this file rather than a fact about the tree.
+
+**Do not run `roadmap-integration.sh` against this file in either write mode.** `--regenerate` is
+no longer the silent no-op an earlier note here claimed: it exits 0 and *does* write, but
+half-applies to this authored layout — appending a `**Coverage appendix (uncovered tasks)**` fenced
+block without assembling the `## Open work` / `## Next` sections or touching the authored Stage
+prose — and emits its only diagnostic as an HTML-comment stderr marker rather than a named message,
+so a caller cannot tell the outcomes apart. `--prune` separately mis-parses any Run line whose
+flags follow the task list: the whitespace-stripping pass merges the flag into the last task id, so
+a flagged multi-task line silently loses that task and a flagged single-task line vanishes whole.
+Both defects are filed in the agent-system source store (the `--prune` parse bug as its own record;
+the `--regenerate` half-application inside the mis-sited 752, which must migrate before it can be
+worked). The decidability
 inventory (PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED) is regenerated and diffed from the tree
 by `scripts/generate-decidability-inventory.sh --diff`.
 
