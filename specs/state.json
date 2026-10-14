@@ -140,23 +140,48 @@
     {
       "project_number": 793,
       "project_name": "after_operator_negation_equivalence",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Prove lem:after-negation, and the cut cor:after-negation-stable, for the event operators of def:event-operators. The paper defines in BL: After(φ,ψ) := ¬φ U (φ ∧ ψ); Release(φ,ψ) := ¬(¬φ U ¬ψ); Before(φ,ψ) := Release(ψ,¬φ) ∧ future φ; so After(φ,⊤) = ¬φ U φ says there is a next φ-time. lem:after-negation: After(φ,⊤) → (¬After(φ,ψ) ↔ After(φ,¬ψ)) is valid over every task frame. The proof is that any two next φ-times coincide (the earlier would lie strictly between x and the later), so under the guard After(φ,χ) holds at (tau, x) iff χ holds at the unique next φ-time.\n\nWHAT EXISTS. FormalSystem/Syntax/Formula.lean already defines `next` (⊥ U φ) and `release`; there is no `after` or `before`, and no next-time uniqueness lemma at the semantic layer.\n\nDELIVER: (1) `Formula.after` and `Formula.before` beside `release`, with the paper's equations as simp lemmas and `reflectTime` / `reflect_time_norm` entries if the derived-operator table requires them -- check how `release` is threaded through the `Formula.reflect_time_*` lemmas and the BimodalTools enumerators before adding anything, and do NOT register the new operators with the dataset tooling unless that tooling is updated in the same phase; (2) the semantic uniqueness lemma: if z and z' are both next φ-times after x along tau then z = z'; (3) `after_negation_valid`, the lemma itself, over every task frame; (4) the Stability corollary cor:after-negation-stable -- the same equivalence under the guard with the stability operator prefixed, in both its universal and its existential reading -- which lives in the Plus language (`PlusFormula`, `stab`): decide whether to state it there through the embedding or to leave it as a recorded follow-up, and say which.\n\nPAPER ANCHORS. def:event-operators and lem:after-negation in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under lem:after-negation is the marker to clear. cor:after-negation-stable is CUT from the paper and kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'removed by task 169 ... cor:after-negation-stable' -- a specification to implement, not a theorem to cite.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T21:55:55Z",
+      "last_updated": "2026-10-14T22:09:12Z",
       "artifacts": [
         {
           "path": "specs/793_after_operator_negation_equivalence/reports/01_after-operator-negation-equivalence.md",
           "type": "report",
           "summary": "Research for def:event-operators plus lem:after-negation: compiled-probe-verified design for Formula.after/before, a language-generic next-time uniqueness and negation-equivalence tier in Semantics/TruthClauses.lean, after_negation_valid at L, and both readings of cor:after-negation-stable natively in L-plus; plus the Formula.release argument-order swap and the do-not-register finding for the enumerator/census tooling."
+        },
+        {
+          "path": "specs/793_after_operator_negation_equivalence/plans/01_after-operator-negation-equivalence.md",
+          "type": "plan",
+          "summary": "7-phase plan (waves 1,2 / 3,4,6 / 5 / 7) with a Lean Challenge Statements block pinning five theorems; no reflect_time, complexity, or enumerator changes."
         }
       ],
-      "session_id": "sess_1792013208_936eb4_793",
-      "next_artifact_number": 2
+      "session_id": "sess_1792013208_936eb4",
+      "next_artifact_number": 2,
+      "file_scope": [
+        "/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex",
+        "/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/Metalogic/SoundnessLemmas.lean",
+        "FormalSystem/Metalogic/SoundnessLemmas/EventOperators.lean",
+        "FormalSystem/Metalogic/SoundnessLemmas/README.md",
+        "FormalSystem/PlusLanguage/Formula.lean",
+        "FormalSystem/PlusLanguage/PlusValidity.lean",
+        "FormalSystem/PlusLanguage/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics/TruthClauses.lean",
+        "FormalSystem/Syntax/Formula.lean",
+        "FormalSystem/Syntax/README.md",
+        "README.md",
+        "Tests/BimodalTest/Automation/NormalizationTest.lean",
+        "Tests/BimodalTest/Syntax/FormulaTest.lean",
+        "docs/architecture/untl-snce-argument-order.md",
+        "typst/generated/status.typ"
+      ]
     },
     {
       "project_number": 794,

@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "summary": "Wrote a 7-phase, 6.5-hour implementation plan for lem:after-negation and the cut cor:after-negation-stable. The plan adds Formula.after/Formula.before beside release with rfl pins against the paper's literal expansions, proves next-time uniqueness and the pointwise negation equivalence once in the language-generic TruthClauses tier, then instantiates it as after_negation_valid at L and as both readings of cor:after-negation-stable at L-plus. The dispatch's open question is answered: the corollary is stated natively in L-plus in this task, not through the embedding (⊡/⟐ lie outside ofFormula's range) and not deferred.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/793_after_operator_negation_equivalence/plans/01_after-operator-negation-equivalence.md",
+      "summary": "7-phase plan (waves 1,2 / 3,4,6 / 5 / 7) with a Lean Challenge Statements block pinning five theorems; no reflect_time, complexity, or enumerator changes."
+    }
+  ],
+  "dispatch_seq": 10
+}

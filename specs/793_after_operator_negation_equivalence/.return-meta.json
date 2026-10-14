@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 6,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/793_after_operator_negation_equivalence/reports/01_after-operator-negation-equivalence.md",
-      "summary": "Research for def:event-operators plus lem:after-negation: compiled-probe-verified design for Formula.after/before, a language-generic next-time uniqueness and negation-equivalence tier in Semantics/TruthClauses.lean, after_negation_valid at L, and both readings of cor:after-negation-stable natively in L-plus; plus the Formula.release argument-order swap and the do-not-register finding for the enumerator/census tooling."
+      "type": "plan",
+      "path": "specs/793_after_operator_negation_equivalence/plans/01_after-operator-negation-equivalence.md",
+      "summary": "7-phase plan for Formula.after/before, the generic next-time uniqueness tier, after_negation_valid at L, and both readings of cor:after-negation-stable at L-plus."
     }
   ],
+  "next_steps": "Run /implement 793 to execute the plan",
+  "phase_count": 7,
+  "estimated_hours": 6.5,
+  "dependency_waves": [[1, 2], [3, 4, 6], [5], [7]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1792013208_936eb4_793",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 10
 }
