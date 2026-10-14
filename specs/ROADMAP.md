@@ -62,6 +62,10 @@ is tracked there, not here — do not re-add them to a batch, and do not attempt
 from this repo. Note also that part of 768's third defect is already landed and committed in the
 lean source store, so that record must be re-read before any implementation.
 
+**784** is the tracker for that freeze and is itself `[BLOCKED]` on the migration. It owns the only
+part this repository can do: once the seven have landed in the source store, verify them there,
+delete them from `specs/state.json`, regenerate `specs/TODO.md`, and drop the paragraph above.
+
 ## Stage 0 — User rulings (no agent may transition these)
 
 - [ ] Rule on **127** and **128** (time addition, interior operator): long-standing abandonment

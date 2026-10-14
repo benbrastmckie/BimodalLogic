@@ -1,5 +1,5 @@
 ---
-next_project_number: 784
+next_project_number: 785
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 784
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780,781,782 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780,781,782,784 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -40,6 +40,7 @@ next_project_number: 784
 777 [NOT STARTED] — Carve a task's own specs/ artifacts out of...
 779 [NOT STARTED] — Source-store-aware commit path and plan-time...
 780 [NOT STARTED] — Plan-compliance spot-check misses evidence-probe-scoped Goals
+784 [BLOCKED] — FROZEN-RECORD TRACKER. Seven task records in this repository...
 
 ### Algebraic Representation
 
@@ -123,6 +124,34 @@ next_project_number: 784
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 784. Retire migrated source store bound records
+- **Status**: [BLOCKED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: FROZEN-RECORD TRACKER. Seven task records in this repository cannot be worked here and must not be dispatched: 730, 741, 752, 767, 768, 769, 770.
+
+WHY THEY ARE FROZEN. Each names an edit target that resolves only under the agent-system source store. Resolve it the usual way: source_dir in <project-root>/.claude-extensions.json points at /home/benjamin/.config/nvim/agent-system/** (a core entry plus a sibling lean entry). This repository carries only the deployed .claude/ tree, which is a disposable artifact regenerated from that store (rules/source-store-deploy-boundary.md). A dispatch picking up any of the seven from here can read nothing it is meant to edit and can commit nothing it manages to write; an edit that did land under .claude/** would be wiped by the next deploy.
+
+WHERE THE REAL WORK IS TRACKED. The agent-system source store carries its own migration record covering exactly these seven (it was numbered 390 there on 2026-10-13, topic orchestrator; re-resolve by description rather than trusting that number, since the other repo renumbers on vault operations). That record owns the transplant: moving the seven into the source store's task space and renumbering them from its counter. It also settles that 752 is to be MIGRATED, not abandoned -- an earlier reading treated it as already fixed by a completed source-store record, and that reading was wrong.
+
+THIS RECORD'S OWN DELIVERABLE (the part this repository owns). Once the migration has landed:
+1. VERIFY FIRST, then delete. Confirm each of the seven exists in the source store's task space before removing anything here. Never delete an unverified record -- a half-finished migration plus a deletion here loses the task outright.
+2. Remove the seven from specs/state.json's active_projects via state-write.sh (never a hand edit), then regenerate specs/TODO.md with generate-todo.sh.
+3. Drop the second paragraph of specs/ROADMAP.md's "Not batched, and why" section (the one naming 730, 741, 752, 767, 768, 769, 770). Leave the first paragraph, which covers the Stage 0 ruling holds, intact.
+4. Close this record.
+
+GUARDRAILS.
+(a) Do NOT attempt any of the seven tasks' underlying work from this repository, however small it looks -- that is the entire reason they are frozen.
+(b) Do NOT re-add them to an /orchestrate batch line in specs/ROADMAP.md. They were removed from four Stage 3 lines on 2026-10-13 precisely because batching them dispatches work that cannot complete.
+(c) 768 in particular must be re-read live before any implementation: part of its third defect (the list-item Goals range anchor and the reserved-keyword denylist) is ALREADY LANDED AND COMMITTED in the lean source store at 42c23f442, suite 16/16 green. Its own record carries a section warning an implementer off duplicating or clobbering that work. Its title and length have already drifted once.
+(d) 752's premise is stale as written: roadmap-integration.sh --regenerate is no longer a silent no-op. It exits 0 and does write, but half-applies to this repo's authored stage layout -- appending a Coverage appendix fenced block without assembling the Open work / Next sections or touching the authored Stage prose -- and emits its only diagnostic as an HTML-comment stderr marker rather than a named message. The narrower live defect is that half-application, not a silent abort.
+
+RELATED, NOT OWNED HERE. The roadmap-integration.sh --prune flag-merge defect is a separate source-store record (numbered 388 there, filed 2026-10-11): when a Run line's flags follow the task list, the whitespace-stripping pass merges the flag into the last task id, so a flagged multi-task line silently loses that task and a flagged single-task line vanishes whole. Observed live here on 2026-10-13: it would have deleted the still-active 761 and 763 lines from specs/ROADMAP.md. Do not run either write mode of that script against specs/ROADMAP.md until both records land.
+
+---
 
 ### 783. Bounded in-file block edits: index and assert, never string-splice
 - **Status**: [NOT STARTED]
