@@ -1,7 +1,7 @@
 # Implementation Plan: Task #756
 
 - **Task**: 756 - Re-pin `lem:nullity` in the paper definitions of record after the JPL paper strengthened it from an implication to a biconditional, and correct the in-tree docstrings that quote the retired wording
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/756_repin_lem_nullity_after_paper_strengthening/reports/01_repin-lem-nullity-paper-strengthening.md`

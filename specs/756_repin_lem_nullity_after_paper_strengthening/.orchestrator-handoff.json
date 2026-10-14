@@ -1,15 +1,29 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 11,
+  "phases_completed": 8,
   "phases_total": 8,
-  "summary": "Wrote an 8-phase, 9.75-hour implementation plan absorbing the whole paper-definition drift wave as one dated 2026-10-14 re-pin, per the settled Option A decision. Re-derived the drift set at plan time and found the paper has moved AGAIN since research: 27 drifted anchors now, not 26 (def:strongest newly drifted; thm:exist and lem:uniq re-drifted to new hashes), so every count and hash in the plan is carried as a re-derive-at-implementation hypothesis and Phase 1 exists solely to re-establish ground truth. Phases 2-3 re-pin anchors, manifest rows and whole-file sentinels and write the dated correction section; Phases 4-6 run the verbatim judgment pass over 17 in-tree files (grounded in a fresh grep sweep, not the report's per-anchor counts); Phase 7 discharges the C35 citation-manifest gate the dispatch does not name; Phase 8 runs the full gate set. No new Lean declarations: nullity_identity already over-satisfies the strengthened lemma.",
+  "summary": "Absorbed the entire 27-anchor JPL paper-drift wave as one dated 2026-10-14 drift-correction re-pin of docs/reference/paper-definitions-of-record.md, headlined by lem:nullity's strengthening from an implication to a biconditional, with the DERIVED not-an-axiom claim preserved everywhere. Corrected every in-tree verbatim claim, restatement and attribution the re-pin falsified across 10 Lean modules, README.md, two doc pages and two typst sources, and removed two thm:extension footnote citations that no longer have a footnote to quote. No Lean declaration was created, renamed or re-proved: FrameOver.nullity_identity already over-satisfies the strengthened lemma. check-paper-definitions.sh exits 0 against the live paper, the full lake build is green on all three evidence tiers, and readme-lint, check-module-invariants --no-build, export-lean-citations --check and verify-deploy all exit 0. NOTE: the paper moved a fifth time minutes after verification and the gate is red again on def:BX, def:BX-z, def:BX-d and def:TMplus -- a different, axiom-membership-bearing wave owned by task 788, deliberately not absorbed here (see user_decision and the summary's Follow-ups).",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/756_repin_lem_nullity_after_paper_strengthening/plans/01_repin-lem-nullity-paper-strengthening.md",
-      "summary": "8-phase plan to absorb the paper-definition drift wave as one dated re-pin and correct every falsified in-tree verbatim claim; zero Lean proof work."
+      "type": "summary",
+      "path": "specs/756_repin_lem_nullity_after_paper_strengthening/summaries/01_repin-lem-nullity-paper-strengthening-summary.md",
+      "summary": "Implementation summary: the 27-anchor re-pin, the in-tree verbatim corrections, what was deliberately left alone, and the full gate evidence."
+    },
+    {
+      "type": "other",
+      "path": "docs/reference/paper-definitions-of-record.md",
+      "summary": "All 27 drifted anchors re-pinned (def:id twice), whole-file sentinels re-taken against a now-clean paper, provenance table extended and its divergence resolved, and one new dated 'Drift correction (2026-10-14): the 27-anchor wave' section."
     }
   ],
-  "dispatch_seq": 8
+  "user_decision": {
+    "question": "The paper moved a fifth time minutes after this task's gates were verified, and check-paper-definitions.sh is red again on def:BX, def:BX-z, def:BX-d and def:TMplus -- a different wave in a different subsystem (axioms demoted to derived theorems in the BX/TM proof systems), which is the subject matter of the open task 788 'Reduce tm and extensions to minimal axiom sets'. I did not absorb it: re-pinning those four hashes from here would turn the gate green while leaving the in-tree axiom-membership prose untouched and would strip 788 of its tripwire. Should the local gate be left red pending 788, or re-pinned now anyway?",
+    "options": [
+      "Leave the four anchors unpinned and the local gate red pending task 788, which owns that subsystem -- no in-tree verbatim claim rests on any of the four, so nothing in the tree is false meanwhile",
+      "Re-pin the four anchors now from --resolve to restore a green local gate, accepting that the in-tree BX/TM axiom-membership prose stays stale until 788 runs"
+    ],
+    "recommended": "Leave the four anchors unpinned and the local gate red pending task 788, which owns that subsystem -- no in-tree verbatim claim rests on any of the four, so nothing in the tree is false meanwhile",
+    "blocking": false
+  }
 }

@@ -1,29 +1,44 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-14T22:10:00Z",
+  "completed_at": "2026-10-14T23:29:41Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/756_repin_lem_nullity_after_paper_strengthening/plans/01_repin-lem-nullity-paper-strengthening.md",
-      "summary": "8-phase plan absorbing the full paper-definition drift wave as one dated 2026-10-14 re-pin, with the in-tree verbatim judgment pass scoped to the re-pinned anchors; zero new Lean declarations."
+      "type": "summary",
+      "path": "specs/756_repin_lem_nullity_after_paper_strengthening/summaries/01_repin-lem-nullity-paper-strengthening-summary.md",
+      "summary": "Re-pinned all 27 drifted paper anchors (plus def:id twice) in the definitions of record and corrected every in-tree verbatim claim the re-pin falsified; no Lean declaration touched."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1792013208_936eb4_756",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 9.75,
-    "dependency_waves": [[1], [2], [3, 4, 5, 6], [7], [8]]
+  "completion_data": {
+    "completion_summary": "Absorbed the whole 27-anchor paper-drift wave as one dated 2026-10-14 drift-correction re-pin of docs/reference/paper-definitions-of-record.md, headlined by lem:nullity's strengthening from an implication to a biconditional, and corrected every in-tree docstring, README, doc page and typst block whose verbatim claim or restatement the re-pin falsified. check-paper-definitions.sh now exits 0 against the live paper, the full lake build is green, and no Lean declaration was created, renamed or re-proved -- FrameOver.nullity_identity already over-satisfied the strengthened lemma.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "Absorbing a multi-anchor paper-definition drift wave in BimodalLogic has a fixed, reverse-engineerable procedure that is recorded only as narrative inside docs/reference/paper-definitions-of-record.md's own dated sections: bare `check-paper-definitions.sh` to get the drift list -> per-anchor `--resolve` to obtain text and sha256 (never transcribe; there is no --fix mode by design) -> replace the fenced latex block, the `sha256:` line, and the MANIFEST:BEGIN/END row for each anchor -> one dated `### Drift correction (DATE)` section inserted newest-first after the sentinel block -> re-pin PINNED_COMMIT/FILE_CHECKSUM/LINE_COUNT (a drift correction re-pins all three; a case-(b) coverage extension re-pins none) -> in-tree verbatim judgment pass -> `python3 scripts/export-lean-citations.py` -> gates. Two non-obvious facts determine the blast radius. First, 'verbatim' in this tree's docstrings means verbatim against the RECORD FILE, not against the paper (stated once, in passing, at FormalSystem/Semantics/FrameAxioms.lean:45-46), so the in-tree correction scope equals the re-pin scope exactly. Second, C35 in check-module-invariants.sh asserts scripts/lean-citation-manifest.json is byte-current by recorded span_start/span_end/keyword_line, so ANY docstring edit that shifts a declaration span turns it red; the record file's own narrative never mentions this step. Also: the paper is a live, separately-versioned external input that can move mid-task (observed moving between a research dispatch and the plan dispatch ~1h later), so every anchor count and hash must be re-derived at implementation time rather than carried from a report.",
-      "category": "PATTERN",
-      "source_artifact": "specs/756_repin_lem_nullity_after_paper_strengthening/plans/01_repin-lem-nullity-paper-strengthening.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["paper-definitions-of-record", "drift-correction", "check-paper-definitions", "lean-citation-manifest", "C35", "verbatim-quotation"]
-    }
-  ],
-  "dispatch_seq": 8
+  "metadata": {
+    "session_id": "sess_1792013208_936eb4",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "skipped",
+    "compliance_check_note": "Skipped, not passed or failed. The Goals-section identifier extraction yields only PINNED_COMMIT, FILE_CHECKSUM and LINE_COUNT -- the record file's HTML-comment sentinel names, not Lean declarations. The plan's '## Lean Challenge Statements' section declares the Lean identifier set explicitly EMPTY (zero new declarations), so there is no declaration set to spot-check; running the grep against the source roots would report three false MISSING lines for names that were never meant to be Lean declarations."
+  },
+  "user_decision": {
+    "question": "The paper moved a fifth time minutes after this task's gates were verified, and check-paper-definitions.sh is red again on def:BX, def:BX-z, def:BX-d and def:TMplus -- a different wave in a different subsystem (axioms demoted to derived theorems in the BX/TM proof systems), which is the subject matter of the open task 788 'Reduce tm and extensions to minimal axiom sets'. I did not absorb it: re-pinning those four hashes from here would turn the gate green while leaving the in-tree axiom-membership prose untouched and would strip 788 of its tripwire. Should the local gate be left red pending 788, or re-pinned now anyway?",
+    "options": [
+      "Leave the four anchors unpinned and the local gate red pending task 788, which owns that subsystem -- no in-tree verbatim claim rests on any of the four, so nothing in the tree is false meanwhile",
+      "Re-pin the four anchors now from --resolve to restore a green local gate, accepting that the in-tree BX/TM axiom-membership prose stays stale until 788 runs"
+    ],
+    "recommended": "Leave the four anchors unpinned and the local gate red pending task 788, which owns that subsystem -- no in-tree verbatim claim rests on any of the four, so nothing in the tree is false meanwhile",
+    "blocking": false
+  }
 }
