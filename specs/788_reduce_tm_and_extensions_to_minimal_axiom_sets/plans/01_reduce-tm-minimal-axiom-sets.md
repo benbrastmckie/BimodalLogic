@@ -164,7 +164,7 @@ import list — any missing helper surfaces as an unknown identifier.
 
 ---
 
-### Phase 2: `Theorems/ConnectDerived.lean` — TC, NP, NA below `TemporalDerived` [NOT STARTED]
+### Phase 2: `Theorems/ConnectDerived.lean` — TC, NP, NA below `TemporalDerived` [COMPLETED]
 
 **Goal**: Create `FormalSystem/Theorems/ConnectDerived.lean` holding `connectFuture`, `fHImp`,
 `discreteSymmFwd`, `discretePropagateBwd`, importing `Theorems.GeneralizedNecessitation` and
@@ -172,25 +172,25 @@ import list — any missing helper surfaces as an unknown identifier.
 `FormalSystem/Theorems.lean`.
 
 **Tasks**:
-- [ ] Create the module with imports `FormalSystem.Theorems.GeneralizedNecessitation`,
+- [x] Create the module with imports `FormalSystem.Theorems.GeneralizedNecessitation`,
       `FormalSystem.Theorems.Propositional.Core`, `FormalSystem.Theorems.DeductionTheorem`
       (transitively: `Combinators`, `DerivedAxioms`, `Connectives`); namespace
       `FormalSystem.Theorems.ConnectDerived`
-- [ ] `connectFuture (φ) : ⊢[fc] φ.imp φ.somePast.allFuture` — transcribe the scratch proof
+- [x] `connectFuture (φ) : ⊢[fc] φ.imp φ.somePast.allFuture` — transcribe the scratch proof
       (`deductionTheorem` twice, `enrichment_until ⊤ ¬Pφ φ`, `andIntro`/`andFst`/`andSnd`,
       `eventMono`, `untlBotFalse`) — `@[tmLemma]`
-- [ ] `fHImp (ψ) : ⊢[fc] ψ.allPast.someFuture.imp ψ` from `connectFuture ψ.neg` via
+- [x] `fHImp (ψ) : ⊢[fc] ψ.allPast.someFuture.imp ψ` from `connectFuture ψ.neg` via
       contraposition and `notNotIntro`/`doubleNegation`; `contrapositive` is defined only in
       `TemporalDerived.lean:372`, so re-derive a local propositional contrapositive from
-      `Propositional.Core` stock (or use a Core equivalent if `grep` finds one)
-- [ ] `discreteSymmFwd : ⊢[fc] X⊤ → Y⊤` via `enrichment_until ⊥ ⊤ ⊤`, `pairing`, `rceImp`,
+      `Propositional.Core` stock (or use a Core equivalent if `grep` finds one) *(completed: used the existing `Propositional.contraposeImp` from `Connectives.lean`, the plan's own "Core equivalent" branch)*
+- [x] `discreteSymmFwd : ⊢[fc] X⊤ → Y⊤` via `enrichment_until ⊥ ⊤ ⊤`, `pairing`, `rceImp`,
       `eventMonoThm`, `DerivedAxioms.discretePropagateFwdMirror`, `DerivedAxioms.untilF`, `fHImp` —
       `@[tmLemma]`
-- [ ] `discretePropagateBwd : ⊢[fc] X⊤ → H X⊤` from `discreteSymmFwd`,
+- [x] `discretePropagateBwd : ⊢[fc] X⊤ → H X⊤` from `discreteSymmFwd`,
       `discretePropagateFwdMirror`, `ofReflect (temporal_necessitation discreteSymmFwd) rfl`, and
       `pastKDist` — `@[tmLemma]`
-- [ ] Register `import FormalSystem.Theorems.ConnectDerived` in `FormalSystem/Theorems.lean`
-- [ ] Scoped guarded build of `FormalSystem.Theorems.ConnectDerived`; `lean_verify` each declaration
+- [x] Register `import FormalSystem.Theorems.ConnectDerived` in `FormalSystem/Theorems.lean`
+- [x] Scoped guarded build of `FormalSystem.Theorems.ConnectDerived`; `lean_verify` each declaration
 
 **Timing**: 2 hours
 
