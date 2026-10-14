@@ -9,33 +9,35 @@
     {
       "project_number": 789,
       "project_name": "prove_app_gluing_general_convex_overlap",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Prove the paper's Gluing lemma `app:gluing` in full generality: for any task frame F and convex histories tau1, tau2 over F with domains X1, X2 such that X1 ∩ X2 is nonempty and tau1, tau2 agree on it, the union tau1 ∪ tau2 is the unique convex history over F with domain X1 ∪ X2 restricting to both.\n\nWHAT EXISTS, to reuse rather than rebuild. The repository has two special cases: the closed-interval seam case `Presheaf.sheaf_clause` (FormalSystem/Semantics/Presheaf/Sheaf.lean: sections over [0,l1] and [0,l2] glued at a shared endpoint) and the directed-family case `Presheaf.directed_gluing_clause` (FormalSystem/Semantics/Presheaf/Directed.lean), together with the ray-layer seam gluing landed by task 719 (FormalSystem/Semantics/Presheaf/Ray.lean). None covers two arbitrary convex domains with nonempty overlap. The general lemma is what the paper's convex-history layer actually uses -- the pasting operation rho ⌢_z sigma in the cut proof of cor:deterministic-completeness is an instance -- so it should be stated once at the convex-history layer (PartialHistory / convex domains under FormalSystem/Semantics/Extension/) and the two Presheaf cases either shown to be instances or left independent, by an explicit decision recorded in the docstring.\n\nDELIVER: (1) the gluing theorem: well-definedness on the overlap; convexity of X1 ∪ X2 (the paper's argument: for a ≤ b ≤ c with a ∈ X1 and c ∈ X2, compare b with a fixed z in the overlap); the constraint tau(x) ⇒_{y-x} tau(y) for x ≤ y in the union, inherited from tau_i when both times lie in one domain and otherwise composed through z by Compositionality; and uniqueness. (2) Choice-freeness: rmk:choice lists app:gluing among the choice-free results, so pin it with #print axioms. (3) Docstrings citing app:gluing.\n\nPAPER ANCHORS. app:gluing and its proof, LIVE in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (search \\label{app:gluing}), and rmk:choice immediately above it. A superseded, longer draft of the same proof is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from appendix, originally inside the proof of app:gluing'. The `% PORT:` comment under app:gluing in the paper is the marker to clear: once this lands, the paper closes app:gluing with \\leanproof naming the declaration.\n\nRELATION TO OPEN WORK. Task 566 (the Possible Worlds clause H_F ≅ lim Beh(F)) is a different statement; do not fold this into it, but note in the docstring how the limit presentation relates (a compatible family of sections is a gluing). specs/ROADMAP.md's Stage 1 note on app:gluing describes the seam case; this task is the general case.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase. If a module is added under FormalSystem/Semantics/Presheaf/, the aggregator-contention note recorded on tasks 563-567 applies (one-line import in Presheaf.lean is a shared touch; batch narrowly).",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T19:17:12Z",
-      "artifacts": []
+      "last_updated": "2026-10-14T21:28:31Z",
+      "artifacts": [],
+      "session_id": "sess_1792013208_936eb4_789"
     },
     {
       "project_number": 790,
       "project_name": "lem_canonical_frames_translation_two_state",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Prove lem:canonical-frames, the four claims the paper makes about its two canonical countermodel frames (def:canonical-frames): (a) the translation frame F^tr_D = (D, D, ⇒), with w ⇒_d u iff u = w + d, is a Deterministic task frame; (b) its possible worlds are exactly the translations sigma_c(z) = z + c for c ∈ D; (c) the two-state frame F^ts_D (W = {w0, w1}, ⇒_0 the identity, every positive duration permitting every transition) is a task frame just in case D is Discrete -- Limit fails whenever D has no least positive duration; (d) when it is, it is not Deterministic and every function D → {w0, w1} is one of its possible worlds.\n\nWHAT EXISTS. FormalSystem/Semantics/Frames/Standard.lean has `translationFrame D : FrameOver D` with `translationFrame_isRegular` for every temporal order and `translationRel_fib_subsingleton` (the singleton-fibre fact behind determinism), and `permissiveFrame D so nm`, built only under `SuccOrder` and `NoMaxOrder` instances, i.e. only for discrete D. FormalSystem/Semantics/Correspondence/DurationFrames.lean has the canonical histories `translationHist` and `permissiveHist D so nm f` for an arbitrary assignment f (already half of (d)), plus the `*_realizes` lemmas. FormalSystem/Metalogic/Independence/RealTranslationFrame.lean has the ℝ instance: `f1_deterministic`, `f1_total_eq_orbit`, `f1_eq_of_states_eq`. None of these states (b), the 'only if' half of (c), or the non-determinism in (d) for a general D.\n\nDELIVER: (b) the set equation H_F = {sigma_c | c ∈ D} for `translationFrame D`, or equivalently an `Equiv` between its world histories and D, over every temporal order; (a) `(translationFrame D).Deterministic`, generalising `f1_deterministic` (or transferred from the ℝ instance if cheaper -- say which); (c) both halves: Limit holds for the permissive relation on Bool when D has a least positive duration and fails otherwise, so the relation is regular iff D is discrete; (d) `¬ (permissiveFrame D so nm).Deterministic`, and that `permissiveHist` is a bijection between assignments D → Bool and world histories. Docstrings cite def:canonical-frames and lem:canonical-frames.\n\nPAPER ANCHORS. def:canonical-frames and lem:canonical-frames in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under lem:canonical-frames is the marker to clear.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two frames' definitions, which `validOn_df_iff_isDiscrete`, `validOn_dn_iff_denselyOrdered` and the Independence modules consume.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T19:17:12Z",
-      "artifacts": []
+      "last_updated": "2026-10-14T21:28:47Z",
+      "artifacts": [],
+      "session_id": "sess_1792013208_936eb4_790"
     },
     {
       "project_number": 791,
       "project_name": "prop_archimedean_uz_z1_fail_non_archimedean",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -44,47 +46,51 @@
       ],
       "description": "Prove prop:archimedean in the generality the paper states it: for every Discrete temporal order D that is not Archimedean, neither Z1 (Future(Future φ → φ) → (future Future φ → Future φ)) nor UZ (future φ → ¬φ U φ) is valid over D. Both countermodels live on the translation frame F^tr_D along sigma_0 and turn on one division of D: the times within finitely many unit steps of 0 and those beyond every multiple of the unit. For Z1, |p| is the complement of the near times; for UZ, |p| is a copy of ℤ sitting above every multiple of 1.\n\nWHAT EXISTS. FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean machine-checks the Z1 failure at the single carrier ℚ ×ₗ ℤ (`not_minus_derivable_z1`, over `multiFamTaskFrameGen`), and FormalSystem/Metalogic/Independence/LexIntWitness.lean has `LexInt.not_archimedean`. FormalSystem/Metalogic/Conservativity.lean's docstring RESTATES the paper's every-non-Archimedean-order claim as prose, but the tree proves no such theorem, and nothing refutes UZ semantically at any non-Archimedean carrier. FormalSystem/Semantics/DurationClassification.lean has `archimedean_of_succ` and the successor-Archimedean normalisation (`ValidDiscrete ↔ ValidInt`, task 475), which is the positive side of the same picture.\n\nDELIVER, over an arbitrary D with a least positive duration (`SuccOrder`) and `¬ Archimedean D`: the two countermodels on `translationFrame D` along `translationHist`, giving `¬ ValidOn (translationFrame D) (Z1 p)` and `¬ ValidOn (translationFrame D) (UZ p)`, hence failure over the Discrete class at every non-Archimedean carrier. Then decide, and record, whether the ℚ ×ₗ ℤ module becomes an instance of the general theorem or stays as the concrete witness; its downstream consumers (`tmMinusCompleteZTime_refuted`, the CEF deliverables) must keep compiling either way.\n\nDEPENDENCY AND TIMING. Depends on task 788, which is re-deriving Z1 from UZ (TM_z = TM + UZ, Z1 derived) and touches Conservativity/Backward.lean and Independence/ZTimeSharpness.lean: wait for it, then state the result against the post-788 names. The paper-side revision (PossibleWorlds task 172) will reword prop:archimedean to match; the semantic countermodels do not care which of UZ and Z1 is primitive.\n\nPAPER ANCHORS. prop:archimedean and its proof, and def:canonical-frames, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under prop:archimedean is the marker to clear.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every phase.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T19:17:12Z",
-      "artifacts": []
+      "last_updated": "2026-10-14T21:29:02Z",
+      "artifacts": [],
+      "session_id": "sess_1792013208_936eb4_791"
     },
     {
       "project_number": 792,
       "project_name": "pin_lem_state_set_flow_frames",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "effort": "small",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Pin lem:state-set to the tree by discharging its remaining hypothesis. The paper's lemma: over a task frame satisfying Flow (def:flow: W linearly ordered and every possible world an order-isomorphism of (D,<) onto (W,<)), truth of every sentence of BL with Stability at (tau, x) is membership of tau(x) in the state set |φ| of def:state-set; hence ⊨_F φ → Stability φ (so Determined is valid over every Flow frame), and ⊨_F φ iff |φ| = W under every assignment.\n\nWHAT EXISTS -- this is a pin, not a port. FormalSystem/Metalogic/Independence/StateSetTruth.lean already has `satSet` (def:state-set's recursion over PlusFormula), `plusTruthAt_iff_mem_satSet`, `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`, all under two hypotheses: `OrderFlow F` (FormalSystem/Metalogic/Independence/OrderTransfer.lean; it is def:flow's order-isomorphism condition) and `StateOccurs F` (every state at every time). The paper discharges the second by cor:occurrence; the tree has that as `PartialHistory.occurrence` for `[F.IsRegular]` (FormalSystem/Semantics/Extension/Extension.lean) but never composes the two. The paper's `% PORT:` comment under lem:state-set has been corrected to say exactly this.\n\nDELIVER: (1) `StateOccurs.of_isRegular : [F.IsRegular] → StateOccurs F` from `PartialHistory.occurrence`; (2) the three corollaries at `[F.IsRegular] (h : OrderFlow F)` alone, named so the paper can cite them, with docstrings citing def:flow and lem:state-set; (3) a docstring note in StateSetTruth.lean that the (H2) hypothesis is now derived for regular frames, keeping the original two-hypothesis forms for their consumers in Independence/DeterminismUndefinable.lean; (4) a docstring pointer that prop:nomic-tense-free performs the same state-set induction for the tense-free fragment with a Nomic clause, for the nomic port (task 795) to reuse.\n\nAXIOM NOTE. `occurrence` goes through thm:extension and so through Zorn; the new corollaries will carry Classical.choice. Say so in the docstring and leave the axiom pin in Independence/DeterminismUndefinable.lean and the choice-free originals untouched.\n\nPAPER ANCHORS. def:state-set, def:flow, lem:state-set in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T19:17:12Z",
-      "artifacts": []
+      "last_updated": "2026-10-14T21:29:18Z",
+      "artifacts": [],
+      "session_id": "sess_1792013208_936eb4_792"
     },
     {
       "project_number": 793,
       "project_name": "after_operator_negation_equivalence",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Prove lem:after-negation, and the cut cor:after-negation-stable, for the event operators of def:event-operators. The paper defines in BL: After(φ,ψ) := ¬φ U (φ ∧ ψ); Release(φ,ψ) := ¬(¬φ U ¬ψ); Before(φ,ψ) := Release(ψ,¬φ) ∧ future φ; so After(φ,⊤) = ¬φ U φ says there is a next φ-time. lem:after-negation: After(φ,⊤) → (¬After(φ,ψ) ↔ After(φ,¬ψ)) is valid over every task frame. The proof is that any two next φ-times coincide (the earlier would lie strictly between x and the later), so under the guard After(φ,χ) holds at (tau, x) iff χ holds at the unique next φ-time.\n\nWHAT EXISTS. FormalSystem/Syntax/Formula.lean already defines `next` (⊥ U φ) and `release`; there is no `after` or `before`, and no next-time uniqueness lemma at the semantic layer.\n\nDELIVER: (1) `Formula.after` and `Formula.before` beside `release`, with the paper's equations as simp lemmas and `reflectTime` / `reflect_time_norm` entries if the derived-operator table requires them -- check how `release` is threaded through the `Formula.reflect_time_*` lemmas and the BimodalTools enumerators before adding anything, and do NOT register the new operators with the dataset tooling unless that tooling is updated in the same phase; (2) the semantic uniqueness lemma: if z and z' are both next φ-times after x along tau then z = z'; (3) `after_negation_valid`, the lemma itself, over every task frame; (4) the Stability corollary cor:after-negation-stable -- the same equivalence under the guard with the stability operator prefixed, in both its universal and its existential reading -- which lives in the Plus language (`PlusFormula`, `stab`): decide whether to state it there through the embedding or to leave it as a recorded follow-up, and say which.\n\nPAPER ANCHORS. def:event-operators and lem:after-negation in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under lem:after-negation is the marker to clear. cor:after-negation-stable is CUT from the paper and kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'removed by task 169 ... cor:after-negation-stable' -- a specification to implement, not a theorem to cite.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T19:17:12Z",
-      "artifacts": []
+      "last_updated": "2026-10-14T21:29:33Z",
+      "artifacts": [],
+      "session_id": "sess_1792013208_936eb4_793"
     },
     {
       "project_number": 794,
       "project_name": "nomic_frames_law_histories_hierarchy",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "effort": "large",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Formalize the paper's nomic frames, the frame-level half of the nomic appendix. def:nomic-frame replaces the task relation by a relativized family ⇒^w, one task relation per world state w, each satisfying def:frame, so that F^w := (W, D, ⇒^w) is a task frame; the law-histories H_F^w are the possible worlds of F^w and H_F is their union over w. def:nomic-properties: Lawful (tau ∈ H_F^{tau(x)} for all tau ∈ H_F and x), Static (H_F^{tau(x)} = H_F^{tau(y)} for all tau, x, y), Uniform (H_F^w = H_F for all w). def:nomic-witnesses fixes the ℤ-time presentation by one-step relations R_w with ⇒^w_n = R_w^n and the reflection convention for n < 0.\n\nNOTHING EXISTS. The tree has no nomic frame, no relativized relation and no law-history; FormalSystem/OpenLanguage.lean's docstring lists 'the nomic operator, over a four-place task relation ⇒ʷ indexed by world states' under 'manuscript operators without a formalization'. The operator and its logic are task 795, which depends on this one.\n\nDELIVER: (1) `NomicFrame D`: one carrier W with a family of general frames `at : W → FrameOver D` on it and a regularity hypothesis for each, the law-history sets `lawHist F w` (the world histories of `F.at w`, reindexed to one history type over W) and `H_F` as their union; (2) the three properties as Props, with the trivial implications Uniform → Static and Uniform → Lawful; (3) lem:nomic-occurrence (every state at every time along some law-history at every w) as a wrapper on `PartialHistory.occurrence` at `F.at w`; (4) lem:nomic-recovery: H_F^w = H_F^u iff ⇒^w = ⇒^u, the forward direction through the two-point partial history and `PartialHistory.extension` at F^w exactly as the paper's proof, with `nullity_identity` for d = 0 and the reflection convention for d < 0; (5) prop:nomic-hierarchy's three finite ℤ-time witnesses -- static-not-lawful on {a,b,c}, lawful-not-static on {a,b,e}, static-and-lawful-not-uniform on {a,b,c} -- each assembled from its one-step relations R_w by the ℤ-time scheme (reuse `FrameOver.mem_HF_iff_adjacent` in FormalSystem/Semantics/IntNormalForm.lean for history membership and `TaskFrame.saturation_of_finite` for Saturation), with the independence statements as theorems. OPTIONAL, only if cheap once (4) is in: the cut thm:nomic-primitive, which gives primitive-level forms of Static (a two-point equation on the relativized relation) and Lawful (a three-point condition, with partial-history and ℤ-time finite-path equivalents), kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from appendix ... thm:nomic-primitive'.\n\nPAPER ANCHORS. def:nomic-frame, def:nomic-properties, def:nomic-witnesses, prop:nomic-hierarchy, lem:nomic-occurrence, lem:nomic-recovery in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, each with a `% PORT:` comment to clear; rmk:choice records that the two lemmas go through Zorn.\n\nSITING. A new cluster under FormalSystem/Semantics/ (e.g. Semantics/Nomic/) -- decide at plan time, recording the trade-off against siting it under OpenLanguage/, where the operator of task 795 would otherwise live.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T19:17:12Z",
-      "artifacts": []
+      "last_updated": "2026-10-14T21:29:48Z",
+      "artifacts": [],
+      "session_id": "sess_1792013208_936eb4_794"
     },
     {
       "project_number": 795,
@@ -1470,7 +1476,7 @@
     {
       "project_number": 756,
       "project_name": "repin_lem_nullity_after_paper_strengthening",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Re-pin `lem:nullity` in the paper definitions of record after the JPL paper strengthened it from an implication to a biconditional, and correct the in-tree docstrings that quote the retired wording verbatim.\n\nTHE DRIFT. `scripts/check-paper-definitions.sh` reports exactly one drifted anchor against `docs/reference/paper-definitions-of-record.md`:\n\n  OLD (pinned, sha256 94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973):\n    $w \\Rightarrow_0 w$ for every world state $w \\in W$ in every task frame $\\F = \\tuple{W, \\D, \\Rightarrow}$.\n  NEW (live paper, sha256 8442e2bf6b5f6515f2f906132bbe15fe919973d82ae573dba29a919ad14636f5):\n    $w \\Rightarrow_0 u$ if and only if $w = u$, for all world states $w, u \\in W$ in any task frame $\\F$.\n\nThe new statement is strictly STRONGER: an implication became a biconditional characterising `⇒₀` as the identity relation.\n\nTHE FORMALIZATION IS NOT BEHIND THE PAPER. This is the load-bearing fact for scoping, and it is verified, not assumed: the tree already carries BOTH forms. `FormalSystem/Semantics.lean:257` names them together — the field `FrameOver.nullity` (the weak loop) and the biconditional `FrameOver.nullity_identity`. `FormalSystem/Semantics/IntNormalForm.lean:24` already describes `⇒₀` as the identity and cites `FrameOver.nullity_identity` as the derived theorem for it, and `IntNormalForm.lean:200` discharges a base case with `F.nullity_identity w u`. So no new Lean proof is required by this drift; the record is simply stale relative to a paper the library already over-satisfies.\n\nNOT A CI FAILURE. `check-paper-definitions.sh`'s own usage block documents that an absent paper file is a neutral skip with exit 0, and names that as the CI path, since CI cannot see the paper's repository — confirmed by running it with a nonexistent `--paper`. The gate is red only on a machine where the paper is checked out alongside this repo. It is therefore a local-correctness obligation, not a release blocker.\n\nSCOPE. (1) Re-pin the `lem:nullity` block and its sha256 in `docs/reference/paper-definitions-of-record.md`, following that file's own dated drift-correction convention for an amendment to a decision the record owns; `check-paper-definitions.sh --resolve` is the sanctioned way to obtain the new text and hash rather than transcribing by hand (there is no `--fix` mode, by design). (2) Correct the in-tree sites that quote the RETIRED wording. Four of them label the quotation \"verbatim\" and so become false on re-pin: `FormalSystem/Semantics/TaskFrame.lean:113` and `:919`, `FormalSystem/Semantics/FrameAxioms.lean:65`, `FormalSystem/Semantics/Extension/Admissible.lean:34`. (3) Review the sites that paraphrase the weak form without claiming verbatim quotation and decide case by case whether each should now cite the biconditional: `FormalSystem/Semantics.lean:255`, `FormalSystem/Semantics/Presheaf/Behavior.lean:91`, `FormalSystem/Semantics/FrameAxioms.lean:113`, `FormalSystem/Semantics/Extension/Admissible.lean:117`, `FormalSystem/Semantics/Extension/Extension.lean:171`, `docs/reference/state-topology-appendix-support.md:103`. Several are legitimate as they stand — a proof that needs only the weak loop should keep citing the weak loop — so this step is a judgment pass, not a search-and-replace. (4) Preserve the record's standing claim that Nullity is DERIVED and not an axiom (`paper-definitions-of-record.md:976`, `TaskFrame.lean:113`): the strengthening does not promote it to an axiom.\n\nACCEPTANCE. `scripts/check-paper-definitions.sh` exits 0 against the live paper; `lake build` green; `scripts/readme-lint.sh` and `scripts/check-module-invariants.sh --no-build` still exit 0; no docstring claims a verbatim quotation it does not reproduce.\n\nNON-GOALS: no new Lean declarations — `nullity_identity` already exists; no change to the four frame axioms or to Nullity's derived status; no edit to the paper itself.",
       "effort": "small",
@@ -1487,8 +1493,16 @@
         "docs/reference/state-topology-appendix-support.md"
       ],
       "created": "2026-10-10T12:59:08Z",
-      "last_updated": "2026-10-10T12:59:08Z",
-      "artifacts": []
+      "last_updated": "2026-10-14T21:49:45Z",
+      "artifacts": [
+        {
+          "path": "specs/756_repin_lem_nullity_after_paper_strengthening/reports/01_repin-lem-nullity-paper-strengthening.md",
+          "type": "report",
+          "summary": "Verifies the lem:nullity strengthening and finds the live paper has drifted on 26 of 43 pinned anchors, not one, making the stated acceptance criterion unreachable under the stated scope; inventories every in-tree site, confirms no Lean work is needed, and names C35 citation-manifest regeneration as an unlisted gate obligation."
+        }
+      ],
+      "session_id": "sess_1792013208_936eb4",
+      "next_artifact_number": 2
     },
     {
       "project_number": 767,

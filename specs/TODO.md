@@ -122,13 +122,13 @@ next_project_number: 798
 
 ### Paper Alignment
 
-756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
-789 [NOT STARTED] — Prove the paper's Gluing lemma app:gluing in full generality:...
-790 [NOT STARTED] — Prove lem:canonical-frames, the four claims the paper makes...
-791 [NOT STARTED] — Prove prop:archimedean in the generality the paper states it:...
-792 [NOT STARTED] — Pin lem:state-set to the tree by discharging its remaining...
-793 [NOT STARTED] — Prove lem:after-negation, and the cut...
-794 [NOT STARTED] — Formalize the paper's nomic frames, the frame-level half of...
+756 [RESEARCHED] — Re-pin lem:nullity in the paper definitions of record after...
+789 [RESEARCHING] — Prove the paper's Gluing lemma app:gluing in full generality:...
+790 [RESEARCHING] — Prove lem:canonical-frames, the four claims the paper makes...
+791 [RESEARCHING] — Prove prop:archimedean in the generality the paper states it:...
+792 [RESEARCHING] — Pin lem:state-set to the tree by discharging its remaining...
+793 [RESEARCHING] — Prove lem:after-negation, and the cut...
+794 [RESEARCHING] — Formalize the paper's nomic frames, the frame-level half of...
   └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
@@ -194,7 +194,7 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 794. Nomic frames law histories hierarchy
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
@@ -215,7 +215,7 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 793. After operator negation equivalence
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
@@ -234,7 +234,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 
 ### 792. Pin lem state set flow frames
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
@@ -255,7 +255,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 
 ### 791. Prop archimedean uz z1 fail non archimedean
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 788
@@ -276,7 +276,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every pha
 
 ### 790. Lem canonical frames translation two state
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
@@ -295,7 +295,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two f
 
 ### 789. Prove app gluing general convex overlap
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
@@ -931,10 +931,11 @@ NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); 
 
 ### 756. Repin lem nullity after paper strengthening
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
+- **Research**: [756_repin_lem_nullity_after_paper_strengthening/reports/01_repin-lem-nullity-paper-strengthening.md]
 
 **Description**: Re-pin `lem:nullity` in the paper definitions of record after the JPL paper strengthened it from an implication to a biconditional, and correct the in-tree docstrings that quote the retired wording verbatim.
 

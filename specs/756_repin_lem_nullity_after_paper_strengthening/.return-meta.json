@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/756_repin_lem_nullity_after_paper_strengthening/reports/01_repin-lem-nullity-paper-strengthening.md",
+      "summary": "Verifies the lem:nullity strengthening and finds the live paper has drifted on 26 of 43 pinned anchors, not one, making the stated acceptance criterion unreachable under the stated scope; inventories every in-tree site, confirms no Lean work is needed, and names C35 citation-manifest regeneration as an unlisted gate obligation."
+    }
+  ],
+  "user_decision": {
+    "question": "check-paper-definitions.sh now reports 26 drifted anchors against the live paper, not the one (lem:nullity) the task description assumes, so the acceptance criterion 'exits 0 against the live paper' cannot be met by re-pinning lem:nullity alone. Absorb all 26 as one dated drift-correction re-pin (recommended: 20 of the extra 25 are presentational, 5 content-bearing, none contradicting the formalization), or re-pin lem:nullity only and amend the acceptance criterion plus spawn a follow-on for the other 25?",
+    "blocking": false,
+    "recommendation": "Absorb all 26 in one dated re-pin, following the record file's own 10-anchor and 14-anchor precedents. Option B leaves the local gate red, which is the condition the task exists to clear, and means reading the same paper twice.",
+    "options": [
+      "Option A (recommended): absorb all 26 drifted anchors as one dated 2026-10-14 drift-correction re-pin, with the in-tree verbatim judgment pass scoped to those anchors",
+      "Option B: re-pin lem:nullity only, amend the acceptance criterion to 'no longer reports lem:nullity as drifted', and spawn a follow-on task for the remaining 25"
+    ]
+  },
+  "metadata": {
+    "session_id": "sess_1792013208_936eb4_756",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
