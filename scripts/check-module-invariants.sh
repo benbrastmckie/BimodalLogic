@@ -1145,6 +1145,7 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_sliced_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.TotalEdge.certA_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.TotalEdge.certB_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_toSharing_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.Presheaf.seamFibreEquiv' depends on axioms: [propext, Quot.sound]
@@ -1202,6 +1203,7 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_certifies
 #print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_sliced_certifies
 #print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.TotalEdge.certA_certifies
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.TotalEdge.certB_certifies
 #print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_toSharing_certifies
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget
 #print axioms FormalSystem.Semantics.Presheaf.seamFibreEquiv

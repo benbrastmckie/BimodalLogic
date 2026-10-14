@@ -792,33 +792,33 @@ aggregate build, is the covering check.
 
 ---
 
-### Phase 8: Settle certB, and pin a heartbeat-capped cost regression guard [NOT STARTED]
+### Phase 8: Settle certB, and pin a heartbeat-capped cost regression guard [COMPLETED]
 
 **Goal**: The second Tier-2 inventory row is resolved one way or the other on a measurement, and
 the blowup cannot return unnoticed.
 
 **Tasks**:
-- [ ] Reconstruct `certB` from
+- [x] Reconstruct `certB` from
       `specs/716_sliced_certificate_liveat_nontermination/probes/15_kernel_certB.lean`, apply the
       same slab repair Phase 2 established (so `c36Sliced` can be satisfied at all), and evaluate
       the interest expression **before** attempting `Certifies` — a row that cannot be interesting
       is not worth a multi-hour `decide`.
-- [ ] Run `certB.Certifies` by `decide` under an explicit finite `maxHeartbeats`, detached, with a
+- [x] Run `certB.Certifies` by `decide` under an explicit finite `maxHeartbeats`, detached, with a
       hard timeout and writer liveness via `kill -0` on the captured PID per
       `context/patterns/bounded-build-waiter.md`. One waiter per log; never `ps | grep`.
-- [ ] **If it returns**: land `TotalEdge.certB` and `certB_certifies` beside `certA` in
+- [x] **If it returns**: land `TotalEdge.certB` and `certB_certifies` beside `certA` in
       `Examples.lean`, add its inventory row and its matched C2 pair, and re-run
       `check-module-invariants.sh`.
-- [ ] **If it does not return within the bound**: close the second-row sub-step as a
+- [ ] **If it does not return within the bound** *(deviation: not triggered — the `decide` returned in 12 s, so the returning branch above applies and no Reasoned Exclusions record is written)*: close the second-row sub-step as a
       `#### Reasoned Exclusions` record whose Evidence column carries the bound, the elapsed time
       and the heartbeat cap used. Do not raise the cap and retry indefinitely, and do not state
       certB as unreachable in general — state only what was measured.
-- [ ] Add the cost regression guard in `Examples.lean`: a heartbeat-capped `decide` goal on the
+- [x] Add the cost regression guard in `Examples.lean`: a heartbeat-capped `decide` goal on the
       pinned self-loop embedded witness's `liveAt`, with the cap set from Phase 1's and the
       post-fix measurements (tight enough that the pre-fix cost would exceed it, loose enough not
       to be flaky), and a docstring stating exactly that — the cap is the guard, and a regression
       fails the build rather than slowing it.
-- [ ] Record the final measured figures for every landed fix in `progress-file.md`.
+- [x] Record the final measured figures for every landed fix in `progress-file.md`.
 
 **Timing**: 1.5 hours
 

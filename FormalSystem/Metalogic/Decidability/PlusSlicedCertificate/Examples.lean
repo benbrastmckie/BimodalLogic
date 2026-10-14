@@ -74,6 +74,9 @@ certifying predicate under `Decidability/` carries an exhibited interesting witn
 - `PlusSlicedCertificate.TotalEdge.certA_certifies` — **the sliced class's total-edge witness**:
   a width-`2` certificate whose edge relation is total, at the `snce`-kind closure of
   `Pp → ⊡Pp`, proved by `decide`
+- `PlusSlicedCertificate.TotalEdge.certB_certifies` — **the second total-edge witness**: the
+  same shape at the `untl`-kind closure of `(U⊤p) → ((p → ⊥) → ⊡(U⊤p))`, over a five-time window
+  and a 512-element position space, proved by `decide`
 
 ## Tags
 
@@ -96,6 +99,30 @@ theorem liveFamily_sliced_certifies : (liveFamily.sliced (-1)).Certifies := by d
 branching bundle at the diagonal is inhabited at the same closure and the same time. -/
 theorem liveFamily_toSharing_certifies : liveFamily.toSharing.Certifies (-1) :=
   certifies_toSharing _ liveFamily_certifies
+
+/-! ### The liveness cost regression guard
+
+The goal below is not a mathematical claim worth stating -- `liveAt (-1)` at this witness has one
+element, and `liveFamily_sliced_certifies` above already depends on that. **The cap is the
+guard.** Computing this one liveness fixpoint used to be the defect this module's witnesses
+exist to exercise: at the shape that preceded the early-exit iteration and the `biUnion`-shaped
+`verts`, the same computation cost roughly 20.2 s under `#eval` against today's 0.2 s, and the
+kernel `decide` below correspondingly costs about 6500 heartbeats today. The explicit finite
+`20000` is a little over three times that, which is tight enough that a regression of more than
+3x fails the build outright with `(deterministic) timeout at whnf` rather than merely slowing it,
+and loose enough to absorb ordinary growth. Heartbeat consumption is deterministic, so this
+threshold does not vary with machine load.
+
+If a legitimate change pushes past the cap, raise it **and** record the new measured figure in
+the same edit -- a silent bump turns the guard back into decoration. `maxHeartbeats 0` is never
+the answer here; an unbounded cap is exactly the thing that let the original blowup present as
+build time rather than as a failure. -/
+set_option maxRecDepth 4000000 in
+set_option maxHeartbeats 20000 in
+-- The cap IS this declaration's content: a little over 3x the ~6500 heartbeats the fixpoint
+-- costs today, so a cost regression past 3x fails the build rather than slowing it. Raise it
+-- only together with a re-measured figure; never to `0`. See the section docstring above.
+example : ((liveFamily.sliced (-1)).liveAt (-1)).card = 1 := by decide
 
 end Embedded
 
@@ -175,6 +202,98 @@ set_option maxHeartbeats 2000000 in
 /-- **The sliced class's total-edge witness**: a certificate of width above `1`, whose edge
 relation is total rather than a self-loop, at a `snce`-kind closure carrying the `⊡` modality. -/
 theorem certA_certifies : certA.Certifies := by decide
+
+/-! ### The second total-edge witness, at an `untl`-kind closure under `⊡`
+
+`certB` is the same shape one axis further out. Its target is
+`PlusSharingWitnessFamily.targetB`, the `(U⊤p) → ((p → ⊥) → ⊡(U⊤p))` whose closure carries an
+`untl` obligation under the `⊡` modality rather than a `snce` one, so the two total-edge rows
+between them cover both temporal kinds at width above `1`. Everything else is `certA`'s shape:
+width `2`, a total edge relation, one backward and one forward labelled step.
+
+Its position space is four times `certA`'s (`Fintype.card Pos` 512 against 128) over a
+five-time window rather than a four-time one, so it is the larger of the two and the one that
+exercises the liveness fixpoint hardest. -/
+
+/-- The slab labelling: the claimed `untl` kind occupies the slab, which is what makes the
+inventory's interest expression satisfiable at this certificate rather than merely its
+`Certifies` provable. -/
+def labSliceB : Finset PlusFormula := {PlusFormula.atom atomP, untlP atomP}
+
+theorem labSliceB_sub : labSliceB ⊆ closB atomP := by
+  intro ψ h
+  rw [mem_closB]
+  simp only [labSliceB, Finset.mem_insert, Finset.mem_singleton] at h
+  tauto
+
+/-- **The one slice of `certB`**, used at both ends: width `2`, total edge, carrying `U⊤p`
+beside the atom at index `1`. -/
+def sliceB : PlusSlice 2 (closB atomP) where
+  edge := fun _ _ => true
+  lab := fun w => if w = 1 then labSliceB else ∅
+  lab_sub := by
+    intro w
+    split_ifs
+    · exact labSliceB_sub
+    · exact Finset.empty_subset _
+
+/-- The backward label of `certB`'s target path. -/
+def labBb : Finset PlusFormula := {PlusFormula.top, untlP atomP, notP atomP}
+
+/-- The forward label of `certB`'s target path, which is where the target itself sits. -/
+def labBf : Finset PlusFormula :=
+  {PlusFormula.atom atomP, PlusFormula.top, untlP atomP, innerB atomP, targetB atomP}
+
+theorem labBb_sub : labBb ⊆ closB atomP := by
+  intro ψ h
+  rw [mem_closB]
+  simp only [labBb, Finset.mem_insert, Finset.mem_singleton] at h
+  tauto
+
+theorem labBf_sub : labBf ⊆ closB atomP := by
+  intro ψ h
+  rw [mem_closB]
+  simp only [labBf, Finset.mem_insert, Finset.mem_singleton] at h
+  tauto
+
+/-- The target path of `certB`: one backward step, one mid step and one forward step. -/
+def pathB : PlusGraphPath 2 (closB atomP) where
+  back := [(labBb, 0)]
+  mid := [(labBb, 0)]
+  fwd := [(labBf, 1)]
+  back_ne := List.cons_ne_nil _ _
+  fwd_ne := List.cons_ne_nil _ _
+  label_sub := by
+    intro X hX
+    simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+      or_false] at hX
+    rcases hX with rfl | rfl | rfl
+    · exact labBb_sub
+    · exact labBb_sub
+    · exact labBf_sub
+
+/-- **The second width-2 total-edge certificate**, at the target
+`(U⊤p) → ((p → ⊥) → ⊡(U⊤p))`. -/
+def certB : PlusSlicedCertificate ([] : PlusContext) [targetB atomP] where
+  n := 2
+  n_pos := by norm_num
+  back := [sliceB]
+  mid := []
+  fwd := [sliceB]
+  back_ne := List.cons_ne_nil _ _
+  fwd_ne := List.cons_ne_nil _ _
+  bx := fun _ => false
+  target := pathB
+  targetTime := 0
+
+set_option maxRecDepth 4000000 in
+set_option maxHeartbeats 2000000 in
+-- The kernel evaluates `decidableCertifies` at 20 timed positions over five window times, in a
+-- 512-element position space. The cap is deliberately an explicit finite number rather than `0`:
+-- a regression past it must fail the build, not slow it.
+/-- **The sliced class's second total-edge witness**: width above `1`, a total edge relation, at
+an `untl`-kind closure carrying the `⊡` modality. -/
+theorem certB_certifies : certB.Certifies := by decide
 
 end TotalEdge
 

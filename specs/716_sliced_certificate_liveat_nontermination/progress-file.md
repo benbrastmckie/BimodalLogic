@@ -427,3 +427,107 @@ runs gave 5026 / 8670 / 6080 / 8557 / 8439 ms gross, against an import-only cont
 2046 / 2364 / 1822 ms, so roughly 6.2 s net at the median. Phase 5's 24.6 s is a gross figure
 from a differently-loaded machine, which is why the 2.9x on that row is cited as the floor of the
 propagated range and the like-for-like `bwdLiveT` `decide` A/B above as its measurement.
+
+## Phase 8 -- certB settled on the returning branch, and the cost guard pinned
+
+### The Scope Hypothesis, measured before the `decide` rather than carried
+
+The phase asserts that `certB` differs from `certA` only in carrying a larger closure, growing
+`2^|closure|` "by roughly an order of magnitude" — a figure carried from
+`reports/01_liveat-nontermination-profile.md`. Measured at `probes/19_certb.lean`:
+
+| figure | `certA` | `certB` | ratio |
+|---|---|---|---|
+| closure card | 6 | **8** | 1.33x (`2^|closure|`: 64 → 256, **4x**) |
+| `Fintype.card Pos` | 128 | **512** | **4x** |
+| `winTimes.card` | 4 | **5** | 1.25x |
+| `(posAt 0).card` | 4 | **4** | 1.0x |
+| `verts.card` | 16 | **20** | 1.25x |
+
+**The carried "order of magnitude" is CORRECTED to 4x** on both `2^|closure|` and the position
+space. `certB` is the larger certificate and the one that exercises the liveness fixpoint
+hardest, but not by the margin the report projected.
+
+### The interest expression, evaluated before `Certifies`
+
+`c36Sliced [c36Untl] certB` = **true** (8 ms), after the slab repair Phase 2 established: probe
+15's `sliceB` labels `w = 1` with `{atom p}` alone, so no slab carried a formula of the claimed
+`untl` kind and the row could not have been interesting however well `Certifies` went. The
+landed `labSliceB` is `{atom p, U⊤p}`, with the subset obligation discharged through
+`mem_closB`.
+
+### `certB.Certifies` RETURNS -- the returning branch applies
+
+| figure | value |
+|---|---|
+| `certB.Certifies` by kernel `decide`, bounded run | **12 s**, exit 0 |
+| cap used | `maxHeartbeats 2000000`, `maxRecDepth 4000000` (explicit, finite) |
+| waiter bound | `timeout 2400` on the writer, liveness by `kill -0` on the captured PID |
+| axiom profile | `[propext, Classical.choice, Quot.sound]`, no `sorryAx` |
+
+The plan's risk table rated "certB's larger closure keeps its `decide` out of reach even after
+all three fixes" at M/M, with a `#### Reasoned Exclusions` record as the contingency. **That
+contingency is not taken**: the second row lands. `TotalEdge.certB` / `certB_certifies` are in
+`Examples.lean` beside `certA`, with the inventory row (`untl` kind, `targetB`) and the matched
+C2 pair.
+
+Gates after the landing: **C2 PASS**, **C36a PASS** (7 closed-term witness rows), **C36b PASS**
+with `C36 certB_certifies card=8 interesting=true`. The sliced class now carries **three**
+witness rows — the self-loop embedded one at `untl`, `certA` at `snce` under `⊡`, and `certB` at
+`untl` under `⊡` — so both temporal kinds are covered at width above `1`. One check group fails,
+`INV`: two generated-inventory blocks are stale because `.lean` files changed. Phase 9 owns
+regenerating them.
+
+### The cost regression guard, and what its cap is worth
+
+Landed in `Examples.lean` as a `maxHeartbeats 20000`-capped `decide` on
+`((liveFamily.sliced (-1)).liveAt (-1)).card = 1`. The cap was set by bisection against the
+built library, not guessed:
+
+| cap | result |
+|---|---|
+| 1000 / 4000 / 5000 / 6000 | **FAIL** — `(deterministic) timeout at whnf` |
+| 7000 / 8000 / 9000 / 10000 / 40000 | PASS |
+
+So the fixpoint costs between 6000 and 7000 heartbeats today, and the landed `20000` is a little
+over 3x that: a cost regression past 3x fails the build with a deterministic timeout rather than
+slowing it. Heartbeat consumption is deterministic, so the threshold carries no machine-load
+flakiness. The guard is an `example`, not a named theorem: it adds no identifier to pin and no
+inventory row, and the cap is its entire content.
+
+**One measurement worth recording, because it would mislead the next person to set such a cap.**
+`#count_heartbeats in` reports only **11** heartbeats for `certA.bwdLiveT.card = 16` and **23**
+for the guard goal — yet a cap of 20 on the first fails outright with
+`(deterministic) timeout at whnf, maximum number of heartbeats (20)`, and the guard goal needs
+between 6000 and 7000. `#count_heartbeats` does not see the consumption inside `decide`'s nested
+whnf. **Set such a cap by bisecting the cap itself, never from `#count_heartbeats`.**
+
+### Final measured figures for every landed fix
+
+| figure | before (this round's own baseline) | after all three fixes | factor |
+|---|---|---|---|
+| embedded `(liveAt (-1)).card`, `#eval` | 20225 ms (Phase 1) | **200 ms** | **101x** |
+| embedded `fwdLiveT.card`, `#eval` | 8521 ms (Phase 1) | **69 ms** | **124x** |
+| embedded `bwdLiveT.card`, `#eval` | 1704 ms (Phase 1) | **17 ms** | **100x** |
+| `certA verts.card`, `#eval` | 1114 ms (Phase 1) | **24 ms** | **46x** |
+| `certA` sum `predT` cards, `#eval` | 18936 ms (Phase 1) | **237 ms** | **80x** |
+| `certA bwdLiveT.card`, `#eval` | 319248 ms (Phase 4) | **564 ms** | **566x** |
+| `certA.bwdLiveT.card = 16`, kernel `decide` | 23.7 s (Phase 6) | **3.1 / 4.1 s** | **~6.4x** |
+| `certA_certifies`, scratch `decide` wall clock | 43.4 s (Phase 1) | **8.4 s** median of 5 | **~5.2x** |
+| `PlusSlicedCertificate.Examples` module build | 36 s (Phase 2), one `decide` | **14 s**, now **three** `decide`s plus the guard | — |
+| `certA.liveAt 0`, `#eval` | **did not return in 500 s** (Phase 4) | **2951 ms**, card 4 | **>169x** |
+| `certB.liveAt 0`, `#eval` | **did not return in 300 s** (task description) | **22585 ms**, card 4 | **>13x** |
+
+No figure in this table is carried; each "before" names the phase of this round that measured
+it. The module-build row is the blunt end-to-end figure: the same module now elaborates `certA`,
+`certB`, the embedded witness and the capped guard in 14 s, against 36 s for `certA` alone before
+the three fixes.
+
+**The originating symptom, re-run.** The task exists because `#eval (certA.liveAt 0).card` did
+not return within 300 s compiled (task description) or 500 s (Phase 4's own measurement), on
+only four positions and four window times. It now returns **4 in 2951 ms**, and `certB`'s —
+strictly larger, over five window times and a 512-element position space — returns **4 in
+22585 ms**. The lower bounds on the factors (169x and 13x) are bounds rather than ratios
+because the "before" side never terminated; the true factors are larger by however long those
+runs would have taken. Under the kernel, which is the surface the decision procedure is actually
+used through, the same configurations are decided in ~8 s and 12 s.
