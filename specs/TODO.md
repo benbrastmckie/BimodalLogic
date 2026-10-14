@@ -11,9 +11,9 @@ next_project_number: 798
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,789,790,791,792,793,794,796,797 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,795 | 298,464,502,616,761,772,794 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,789,793,796,797 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,790,792,794 | 298,464,502,616,756,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500,791,795 | 231,465,497,790,794 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -123,13 +123,13 @@ next_project_number: 798
 ### Paper Alignment
 
 756 [RESEARCHED] — Re-pin lem:nullity in the paper definitions of record after...
+  └─ 790 [RESEARCHED] — Prove lem:canonical-frames, the four claims the paper makes...
+    └─ 791 [RESEARCHED] — Prove prop:archimedean in the generality the paper states it:...
+  └─ 792 [RESEARCHED] — Pin lem:state-set to the tree by discharging its remaining...
+  └─ 794 [RESEARCHED] — Formalize the paper's nomic frames, the frame-level half of...
+    └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
 789 [RESEARCHED] — Prove the paper's Gluing lemma app:gluing in full generality:...
-790 [RESEARCHED] — Prove lem:canonical-frames, the four claims the paper makes...
-791 [RESEARCHED] — Prove prop:archimedean in the generality the paper states it:...
-792 [RESEARCHED] — Pin lem:state-set to the tree by discharging its remaining...
 793 [RESEARCHED] — Prove lem:after-negation, and the cut...
-794 [RESEARCHED] — Formalize the paper's nomic frames, the frame-level half of...
-  └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
 
@@ -197,7 +197,7 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: None
+- **Dependencies**: Task 756
 - **Research**: [794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md]
 
 **Description**: Formalize the paper's nomic frames, the frame-level half of the nomic appendix. def:nomic-frame replaces the task relation by a relativized family ⇒^w, one task relation per world state w, each satisfying def:frame, so that F^w := (W, D, ⇒^w) is a task frame; the law-histories H_F^w are the possible worlds of F^w and H_F is their union over w. def:nomic-properties: Lawful (tau ∈ H_F^{tau(x)} for all tau ∈ H_F and x), Static (H_F^{tau(x)} = H_F^{tau(y)} for all tau, x, y), Uniform (H_F^w = H_F for all w). def:nomic-witnesses fixes the ℤ-time presentation by one-step relations R_w with ⇒^w_n = R_w^n and the reflection convention for n < 0.
@@ -239,7 +239,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: None
+- **Dependencies**: Task 756
 - **Research**: [792_pin_lem_state_set_flow_frames/reports/01_pin-lem-state-set-flow-frames.md]
 
 **Description**: Pin lem:state-set to the tree by discharging its remaining hypothesis. The paper's lemma: over a task frame satisfying Flow (def:flow: W linearly ordered and every possible world an order-isomorphism of (D,<) onto (W,<)), truth of every sentence of BL with Stability at (tau, x) is membership of tau(x) in the state set |φ| of def:state-set; hence ⊨_F φ → Stability φ (so Determined is valid over every Flow frame), and ⊨_F φ iff |φ| = W under every assignment.
@@ -261,7 +261,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: Task 788
+- **Dependencies**: Task 788, Task 790
 - **Research**: [791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md]
 
 **Description**: Prove prop:archimedean in the generality the paper states it: for every Discrete temporal order D that is not Archimedean, neither Z1 (Future(Future φ → φ) → (future Future φ → Future φ)) nor UZ (future φ → ¬φ U φ) is valid over D. Both countermodels live on the translation frame F^tr_D along sigma_0 and turn on one division of D: the times within finitely many unit steps of 0 and those beyond every multiple of the unit. For Z1, |p| is the complement of the near times; for UZ, |p| is a copy of ℤ sitting above every multiple of 1.
@@ -283,7 +283,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every pha
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: None
+- **Dependencies**: Task 756
 - **Research**: [790_lem_canonical_frames_translation_two_state/reports/01_lem-canonical-frames-characterizations.md]
 
 **Description**: Prove lem:canonical-frames, the four claims the paper makes about its two canonical countermodel frames (def:canonical-frames): (a) the translation frame F^tr_D = (D, D, ⇒), with w ⇒_d u iff u = w + d, is a Deterministic task frame; (b) its possible worlds are exactly the translations sigma_c(z) = z + c for c ∈ D; (c) the two-state frame F^ts_D (W = {w0, w1}, ⇒_0 the identity, every positive duration permitting every transition) is a task frame just in case D is Discrete -- Limit fails whenever D has no least positive duration; (d) when it is, it is not Deterministic and every function D → {w0, w1} is one of its possible worlds.
