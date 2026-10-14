@@ -1,5 +1,5 @@
 ---
-next_project_number: 786
+next_project_number: 787
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 786
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,786 | 298,464,502,616,734,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -41,6 +41,7 @@ next_project_number: 786
 779 [NOT STARTED] — Source-store-aware commit path and plan-time...
 780 [NOT STARTED] — Plan-compliance spot-check misses evidence-probe-scoped Goals
 784 [BLOCKED] — FROZEN-RECORD TRACKER. Seven task records in this repository...
+785 [NOT STARTED] — Record the two Lean plan-authoring gate-collision facts in...
 
 ### Algebraic Representation
 
@@ -86,11 +87,11 @@ next_project_number: 786
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
+  └─ 786 [NOT STARTED] — Repair the four wired evidence probes that fail to compile,...
 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
-785 [NOT STARTED] — Record the two Lean plan-authoring gate-collision facts in...
 
 ### Formula Refactor
 
@@ -125,11 +126,40 @@ next_project_number: 786
 
 ## Tasks
 
+### 786. Evidence probe compile failures repair
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 734
+- **Parent**: Task 778
+
+**Description**: Repair the four wired evidence probes that fail to compile, so check-evidence-probes.sh can be an exit-0 verification criterion again.
+
+MEASURED CONDITION. `bash scripts/check-evidence-probes.sh` exits 1 with 4 of 33 wired probes failing to compile, all four under `specs/evidence/seam-gluing-ray-product/`:
+
+1. `finite-graph-stab-summary.lean`
+2. `mosaic-germ-amalgamation.lean`
+3. `path-quantifier-alternation.lean`
+4. `backward-dual-asymmetric-fixture.lean`
+
+WHY THIS BLOCKS OTHER WORK. Implementation plans routinely name "`check-evidence-probes.sh` exits 0" as a phase verification criterion. That criterion is currently unmeetable for reasons unrelated to any such plan's own work, so phases must close [COMPLETED WITH EXCLUSIONS] with a Reasoned Exclusions record attributing the failure as pre-existing. That is the correct handling, but it masks real failures: a genuine new breakage among the other 29 probes would be indistinguishable from these four in an exit-1 result. The originating run closed two phases this way for exactly this reason.
+
+EVIDENCE THAT THE FOUR ARE FOREIGN AND PRE-EXISTING, not caused by the originating work: `git status --short -- specs/evidence/` listed only `ladder-residue-index-refutation.lean` as modified during that run, and that probe PASSES, as does `ladder-cell-index-obstructions`. So the four failures predate the run and were not introduced by it.
+
+WHAT IS NOT YET KNOWN, and must be established by research before planning. Nobody has investigated WHY each of the four fails. The four causes are likely independent and may differ in kind. Treat each probe as its own diagnosis, and expect that the right remedy may differ per probe: a genuine repair (the probe's statement is still wanted and its proof has bit-rotted against a changed definition), a restatement (the underlying object changed shape and the probe's claim needs re-expressing), or deliberate retirement (the probe recorded a question since answered or abandoned, and the honest action is to unwire it from the manifest and delete it rather than repair it). Do not assume all four want repairing; do not retire one without stating what it recorded and why that record is no longer wanted.
+
+SCOPE AND SEQUENCING. `scripts/check-evidence-probes.sh` is the shared manifest/driver: any retirement edits its wired list, and task 734 `e4_mosaic_stabsaturated_mixed_germ_probe` [PARTIAL] also declares that script in its own `file_scope` (for a different probe, `mosaic-stab-saturated.lean`). A `dependencies[]` edge on 734 is declared for that reason, so the two serialize rather than collide on the driver. Note that 734's probe is NOT one of the four here, despite the adjacent naming: `mosaic-stab-saturated` is 734's, `mosaic-germ-amalgamation` is this record's.
+
+DELIVERABLE. All 33 wired probes compile and `bash scripts/check-evidence-probes.sh` exits 0, with each of the four resolved by a named and justified route (repair, restatement, or retirement-with-rationale). Any retirement is recorded where a future reader will find it, not only in the commit message.
+
+---
+
 ### 785. Record the two Lean plan-authoring gate-collision facts in the lean extension source store
 - **Effort**: low
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
-- **Topic**: decidability
+- **Topic**: agent-system
 - **Dependencies**: None
 - **Parent**: Task 778
 
