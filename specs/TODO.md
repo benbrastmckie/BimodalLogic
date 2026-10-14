@@ -1,5 +1,5 @@
 ---
-next_project_number: 789
+next_project_number: 798
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 789
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,788 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,788,789,790,792,793,794,796,797 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,791,795 | 298,464,502,616,761,772,788,794 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -123,12 +123,200 @@ next_project_number: 789
 ### Paper Alignment
 
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
-788 [PLANNED] — Reduce TM and its extensions TM\_z, TM\_d, and TM\_r to...
+788 [IMPLEMENTING] — Reduce TM and its extensions TM\_z, TM\_d, and TM\_r to...
+  └─ 791 [NOT STARTED] — Prove prop:archimedean in the generality the paper states it:...
+789 [NOT STARTED] — Prove the paper's Gluing lemma app:gluing in full generality:...
+790 [NOT STARTED] — Prove lem:canonical-frames, the four claims the paper makes...
+792 [NOT STARTED] — Pin lem:state-set to the tree by discharging its remaining...
+793 [NOT STARTED] — Prove lem:after-negation, and the cut...
+794 [NOT STARTED] — Formalize the paper's nomic frames, the frame-level half of...
+  └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
+796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
+797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
 
 ## Tasks
 
+### 797. Shift finite type eventually periodic worlds
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Formalize the cut shift-of-finite-type remark. The paper's conclusion once carried a remark, now moved to the companion cut file, that when W is finite and D = ℤ the set of possible worlds H_F is a shift of finite type -- world states as alphabet symbols, the unit-step task relation ⇒_1 as the edges of a labelled graph, possible worlds as the bi-infinite paths through it -- and that thm:extension then becomes effective without Zorn: the forward and backward orbits extending a bounded convex history must each revisit a state, so every bounded convex history extends to a possible world that is eventually periodic in both directions (finite prefix plus finite cycle each way) and so finitely representable, licensing a finite certificate that a bounded history is a fragment of a possible world (Lind and Marcus is the citation).
+
+WHAT EXISTS. FormalSystem/Semantics/IntNormalForm.lean's `FrameOver.mem_HF_iff_adjacent` already identifies membership in H_F over `intOrder` with the one-step condition tau(n) ⇒_1 tau(n+1): that is the shift-of-finite-type identification up to naming. `TaskFrame.saturation_of_finite` covers Saturation for finite W. The decidability programme's RaySummary/ and PlusSlicedCertificate.lean modules reason about eventually periodic rays over finite data for a different purpose; reuse their periodicity vocabulary if it fits, and do not duplicate it.
+
+DELIVER: (1) a named statement of the SFT identification over `intOrder` for `[Finite W]` (world histories as bi-infinite paths in the graph (W, ⇒_1)); (2) the choice-free extension theorem: a bounded convex history over a finite-state regular frame over ℤ extends to an eventually periodic total history, by pigeonhole on each orbit, with #print axioms showing no Classical.choice; (3) a finite certificate type (prefix plus cycle each way) with a decidable check that it presents a possible world through a given bounded history, and the soundness and completeness of that check against (2). Docstrings cite the companion-file remark and connect to task 618's D = ℤ clause (Path(F) as the free category on (W, ⇒_1)) and to specs/ROADMAP.md's 'root paths of a finite class graph' presentation on the decidability route.
+
+PAPER ANCHOR. The remark and its footnote are kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from sub:Conclusion' (the shift-of-finite-type sentence and the footnote citing Lind2021). They are CUT from possible_worlds.tex, whose live replacement paragraph in sub:Conclusion mentions only the sheaf and Johnstone route, so treat them as a specification, not as a theorem to cite.
+
+CONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every phase.
+
+---
+
+### 796. Time reflection bl tr valid anti iso
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Prove lem:time-reflection for BL and the semantic form of thm:TR-valid, by instantiating the repository's generic anti-isomorphism transport at the reflected model. lem:time-reflection: for each task frame F, the reflected frame F⁻ (w ⇒⁻_x u := w ⇒_{-x} u) is a task frame, tau ↦ tau⁻ := tau ∘ n with n(x) = -x is a bijection H_F → H_{F⁻}, and M, tau, x ⊨ φ iff M⁻, tau⁻, -x ⊨ φ_{S|U} for every sentence of BL. thm:TR-valid: if ⊨ φ then ⊨ φ_{S|U}, as a semantic statement over all task frames, from which thm:TM-soundness's TR case follows per class because the reflected frame shares its temporal order.
+
+WHAT EXISTS -- most of the pieces, unassembled. FormalSystem/OpenLanguage/OpenReversal.lean has `FrameOver.rev`, `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, `FrameOver.rev_isRegular`, the `rev_rev` involution facts, `WorldHistory.rev_surjective` (the bijection), and the transfer `openTruthAt_rev` for the OPEN language only. FormalSystem/Semantics/TruthTransport.lean has the generic order-reversing transport `Truth.truthAt_of_truthAntiIso` for the base `Formula`: it wants a `TruthAntiIso M M'` with an order-reversing `dur` equivalence, a `hist` equivalence and atom agreement, which is exactly what negation, `WorldHistory.rev` and `TaskModel.rev` supply. FormalSystem/Metalogic/Soundness.lean has only the rule-level consequences `axiom_reflect_time_validIn` and `derivable_valid_and_reflect_time_validIn`, which are what the soundness theorem actually consumes.
+
+DELIVER: (1) `revAntiIso M : TruthAntiIso M M.rev` (dur the negation equivalence, hist the rev involution packaged as an Equiv, atom by rfl) and `truthAt_rev : TruthAt M tau t φ ↔ TruthAt M.rev tau.rev (-t) φ.reflectTime`, which is lem:time-reflection; (2) `validOn_rev_iff` and the frame-class form `ValidIn fc φ → ValidIn fc φ.reflectTime` for every fc closed under `rev` -- prove that closure for Base, Dense, ZTime and RTime, since the reflected frame shares its temporal order -- which is thm:TR-valid; (3) decide, and record in the docstring, whether `derivable_valid_and_reflect_time_validIn` should now be derived from (2) plus plain soundness or left as is with a cross-reference; (4) promote the frame-level `rev` machinery from OpenLanguage/ to Semantics/, as OpenReversal.lean's own docstring anticipates, if the import layering allows it without a cycle -- otherwise say why not.
+
+PAPER ANCHORS. def:time-reflection, lem:time-reflection, thm:TR-valid in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, each with a `% PORT:` comment to clear. Task 617 (the presheaf Reflection clause) is the categorical packaging of the same involution and is independent: cross-reference, do not merge.
+
+CONSTRAINTS. lake build FormalSystem green, no new sorry; the `assert_not_exists` guards in Semantics/Truth.lean must stay satisfied if anything is promoted.
+
+---
+
+### 795. Nomic operator uniformity axiom four
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: Task 794
+
+**Description**: Formalize the nomic operator and its three results, on the nomic frames of task 794. def:nomic-frame's clause: M, tau, x ⊨ Nomic φ iff M, sigma, x ⊨ φ for all sigma ∈ H_F^{tau(x)}, so the accessibility relation at x relates tau to the law-histories at its current state. prop:nomic-tense-free: over every nomic frame, Nomic φ ↔ □φ holds at every point for every tense-free φ (built from atoms, ⊥, →, □, Nomic), by the same state-set induction as lem:state-set, so every S5 schema for Nomic is valid on that fragment and any refutation needs S or U. thm:nomic-uniform: six equivalent conditions -- transitivity, symmetry, Euclidean (each at one time or at every time), H_F^{tau(x)} = H_F for all tau and x, Uniform, ⇒^w independent of w -- in which case the accessibility relation is H_F × H_F and Nomic φ ↔ □φ is valid for every φ; seriality (D) holds for Nomic over every nomic frame regardless. app:nomic-four: over ℤ-time, Nomic φ → Nomic Nomic φ is valid iff the frame is Uniform, and likewise Nomic φ ↔ □φ, so axiom 4 fails over some Static frame (the static-and-lawful witness of prop:nomic-hierarchy); the refuting sentence is always(¬(p ∧ Next q)) built from a one-step violation of ⇒_1^v along a law-history outside H_F^v.
+
+DEPENDS on task 794 for the frames, law-histories, occurrence, recovery and the witnesses.
+
+DELIVER: (1) a formula type with Nomic -- extend an existing language by one unary constructor or make a fresh `NomicFormula`; the OpenLanguage component is the precedent for a semantic-only extension with no proof system, so follow its 'syntax before semantics' module invariant and register the new files in scripts/measure-refactor-partitions.py; (2) truth over a `NomicFrame` with the clause above; (3) prop:nomic-tense-free via a `satSet`-style recursion on the tense-free fragment (coordinate with the state-set pin of task 792 so the two inductions share a shape); (4) thm:nomic-uniform as a cycle of implications plus the (5)⇔(6) step through lem:nomic-recovery, and the closing collapse Nomic ↔ □ under uniformity; (5) app:nomic-four over `intOrder`, using IntNormalForm's one-step membership characterization; (6) seriality of Nomic as its own theorem. The cut rmk:nomic-uniform (transitivity at w iff H_F^u ⊆ H_F^w for every u) in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex is a specification for a side lemma, not a result to cite.
+
+PAPER ANCHORS. def:nomic-frame (the Nomic clause), prop:nomic-tense-free, thm:nomic-uniform, app:nomic-four in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, each with a `% PORT:` comment to clear. app:nomic-four's proof ends with a commented remark that the ℤ-time hypothesis is essential and the dense case open -- do not attempt the dense case.
+
+CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase.
+
+---
+
+### 794. Nomic frames law histories hierarchy
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Formalize the paper's nomic frames, the frame-level half of the nomic appendix. def:nomic-frame replaces the task relation by a relativized family ⇒^w, one task relation per world state w, each satisfying def:frame, so that F^w := (W, D, ⇒^w) is a task frame; the law-histories H_F^w are the possible worlds of F^w and H_F is their union over w. def:nomic-properties: Lawful (tau ∈ H_F^{tau(x)} for all tau ∈ H_F and x), Static (H_F^{tau(x)} = H_F^{tau(y)} for all tau, x, y), Uniform (H_F^w = H_F for all w). def:nomic-witnesses fixes the ℤ-time presentation by one-step relations R_w with ⇒^w_n = R_w^n and the reflection convention for n < 0.
+
+NOTHING EXISTS. The tree has no nomic frame, no relativized relation and no law-history; FormalSystem/OpenLanguage.lean's docstring lists 'the nomic operator, over a four-place task relation ⇒ʷ indexed by world states' under 'manuscript operators without a formalization'. The operator and its logic are task 795, which depends on this one.
+
+DELIVER: (1) `NomicFrame D`: one carrier W with a family of general frames `at : W → FrameOver D` on it and a regularity hypothesis for each, the law-history sets `lawHist F w` (the world histories of `F.at w`, reindexed to one history type over W) and `H_F` as their union; (2) the three properties as Props, with the trivial implications Uniform → Static and Uniform → Lawful; (3) lem:nomic-occurrence (every state at every time along some law-history at every w) as a wrapper on `PartialHistory.occurrence` at `F.at w`; (4) lem:nomic-recovery: H_F^w = H_F^u iff ⇒^w = ⇒^u, the forward direction through the two-point partial history and `PartialHistory.extension` at F^w exactly as the paper's proof, with `nullity_identity` for d = 0 and the reflection convention for d < 0; (5) prop:nomic-hierarchy's three finite ℤ-time witnesses -- static-not-lawful on {a,b,c}, lawful-not-static on {a,b,e}, static-and-lawful-not-uniform on {a,b,c} -- each assembled from its one-step relations R_w by the ℤ-time scheme (reuse `FrameOver.mem_HF_iff_adjacent` in FormalSystem/Semantics/IntNormalForm.lean for history membership and `TaskFrame.saturation_of_finite` for Saturation), with the independence statements as theorems. OPTIONAL, only if cheap once (4) is in: the cut thm:nomic-primitive, which gives primitive-level forms of Static (a two-point equation on the relativized relation) and Lawful (a three-point condition, with partial-history and ℤ-time finite-path equivalents), kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from appendix ... thm:nomic-primitive'.
+
+PAPER ANCHORS. def:nomic-frame, def:nomic-properties, def:nomic-witnesses, prop:nomic-hierarchy, lem:nomic-occurrence, lem:nomic-recovery in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, each with a `% PORT:` comment to clear; rmk:choice records that the two lemmas go through Zorn.
+
+SITING. A new cluster under FormalSystem/Semantics/ (e.g. Semantics/Nomic/) -- decide at plan time, recording the trade-off against siting it under OpenLanguage/, where the operator of task 795 would otherwise live.
+
+CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase.
+
+---
+
+### 793. After operator negation equivalence
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Prove lem:after-negation, and the cut cor:after-negation-stable, for the event operators of def:event-operators. The paper defines in BL: After(φ,ψ) := ¬φ U (φ ∧ ψ); Release(φ,ψ) := ¬(¬φ U ¬ψ); Before(φ,ψ) := Release(ψ,¬φ) ∧ future φ; so After(φ,⊤) = ¬φ U φ says there is a next φ-time. lem:after-negation: After(φ,⊤) → (¬After(φ,ψ) ↔ After(φ,¬ψ)) is valid over every task frame. The proof is that any two next φ-times coincide (the earlier would lie strictly between x and the later), so under the guard After(φ,χ) holds at (tau, x) iff χ holds at the unique next φ-time.
+
+WHAT EXISTS. FormalSystem/Syntax/Formula.lean already defines `next` (⊥ U φ) and `release`; there is no `after` or `before`, and no next-time uniqueness lemma at the semantic layer.
+
+DELIVER: (1) `Formula.after` and `Formula.before` beside `release`, with the paper's equations as simp lemmas and `reflectTime` / `reflect_time_norm` entries if the derived-operator table requires them -- check how `release` is threaded through the `Formula.reflect_time_*` lemmas and the BimodalTools enumerators before adding anything, and do NOT register the new operators with the dataset tooling unless that tooling is updated in the same phase; (2) the semantic uniqueness lemma: if z and z' are both next φ-times after x along tau then z = z'; (3) `after_negation_valid`, the lemma itself, over every task frame; (4) the Stability corollary cor:after-negation-stable -- the same equivalence under the guard with the stability operator prefixed, in both its universal and its existential reading -- which lives in the Plus language (`PlusFormula`, `stab`): decide whether to state it there through the embedding or to leave it as a recorded follow-up, and say which.
+
+PAPER ANCHORS. def:event-operators and lem:after-negation in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under lem:after-negation is the marker to clear. cor:after-negation-stable is CUT from the paper and kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'removed by task 169 ... cor:after-negation-stable' -- a specification to implement, not a theorem to cite.
+
+CONSTRAINTS. lake build FormalSystem green, no new sorry.
+
+---
+
+### 792. Pin lem state set flow frames
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Pin lem:state-set to the tree by discharging its remaining hypothesis. The paper's lemma: over a task frame satisfying Flow (def:flow: W linearly ordered and every possible world an order-isomorphism of (D,<) onto (W,<)), truth of every sentence of BL with Stability at (tau, x) is membership of tau(x) in the state set |φ| of def:state-set; hence ⊨_F φ → Stability φ (so Determined is valid over every Flow frame), and ⊨_F φ iff |φ| = W under every assignment.
+
+WHAT EXISTS -- this is a pin, not a port. FormalSystem/Metalogic/Independence/StateSetTruth.lean already has `satSet` (def:state-set's recursion over PlusFormula), `plusTruthAt_iff_mem_satSet`, `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`, all under two hypotheses: `OrderFlow F` (FormalSystem/Metalogic/Independence/OrderTransfer.lean; it is def:flow's order-isomorphism condition) and `StateOccurs F` (every state at every time). The paper discharges the second by cor:occurrence; the tree has that as `PartialHistory.occurrence` for `[F.IsRegular]` (FormalSystem/Semantics/Extension/Extension.lean) but never composes the two. The paper's `% PORT:` comment under lem:state-set has been corrected to say exactly this.
+
+DELIVER: (1) `StateOccurs.of_isRegular : [F.IsRegular] → StateOccurs F` from `PartialHistory.occurrence`; (2) the three corollaries at `[F.IsRegular] (h : OrderFlow F)` alone, named so the paper can cite them, with docstrings citing def:flow and lem:state-set; (3) a docstring note in StateSetTruth.lean that the (H2) hypothesis is now derived for regular frames, keeping the original two-hypothesis forms for their consumers in Independence/DeterminismUndefinable.lean; (4) a docstring pointer that prop:nomic-tense-free performs the same state-set induction for the tense-free fragment with a Nomic clause, for the nomic port (task 795) to reuse.
+
+AXIOM NOTE. `occurrence` goes through thm:extension and so through Zorn; the new corollaries will carry Classical.choice. Say so in the docstring and leave the axiom pin in Independence/DeterminismUndefinable.lean and the choice-free originals untouched.
+
+PAPER ANCHORS. def:state-set, def:flow, lem:state-set in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex.
+
+CONSTRAINTS. lake build FormalSystem green, no new sorry.
+
+---
+
+### 791. Prop archimedean uz z1 fail non archimedean
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: Task 788
+
+**Description**: Prove prop:archimedean in the generality the paper states it: for every Discrete temporal order D that is not Archimedean, neither Z1 (Future(Future φ → φ) → (future Future φ → Future φ)) nor UZ (future φ → ¬φ U φ) is valid over D. Both countermodels live on the translation frame F^tr_D along sigma_0 and turn on one division of D: the times within finitely many unit steps of 0 and those beyond every multiple of the unit. For Z1, |p| is the complement of the near times; for UZ, |p| is a copy of ℤ sitting above every multiple of 1.
+
+WHAT EXISTS. FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean machine-checks the Z1 failure at the single carrier ℚ ×ₗ ℤ (`not_minus_derivable_z1`, over `multiFamTaskFrameGen`), and FormalSystem/Metalogic/Independence/LexIntWitness.lean has `LexInt.not_archimedean`. FormalSystem/Metalogic/Conservativity.lean's docstring RESTATES the paper's every-non-Archimedean-order claim as prose, but the tree proves no such theorem, and nothing refutes UZ semantically at any non-Archimedean carrier. FormalSystem/Semantics/DurationClassification.lean has `archimedean_of_succ` and the successor-Archimedean normalisation (`ValidDiscrete ↔ ValidInt`, task 475), which is the positive side of the same picture.
+
+DELIVER, over an arbitrary D with a least positive duration (`SuccOrder`) and `¬ Archimedean D`: the two countermodels on `translationFrame D` along `translationHist`, giving `¬ ValidOn (translationFrame D) (Z1 p)` and `¬ ValidOn (translationFrame D) (UZ p)`, hence failure over the Discrete class at every non-Archimedean carrier. Then decide, and record, whether the ℚ ×ₗ ℤ module becomes an instance of the general theorem or stays as the concrete witness; its downstream consumers (`tmMinusCompleteZTime_refuted`, the CEF deliverables) must keep compiling either way.
+
+DEPENDENCY AND TIMING. Depends on task 788, which is re-deriving Z1 from UZ (TM_z = TM + UZ, Z1 derived) and touches Conservativity/Backward.lean and Independence/ZTimeSharpness.lean: wait for it, then state the result against the post-788 names. The paper-side revision (PossibleWorlds task 172) will reword prop:archimedean to match; the semantic countermodels do not care which of UZ and Z1 is primitive.
+
+PAPER ANCHORS. prop:archimedean and its proof, and def:canonical-frames, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under prop:archimedean is the marker to clear.
+
+CONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every phase.
+
+---
+
+### 790. Lem canonical frames translation two state
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Prove lem:canonical-frames, the four claims the paper makes about its two canonical countermodel frames (def:canonical-frames): (a) the translation frame F^tr_D = (D, D, ⇒), with w ⇒_d u iff u = w + d, is a Deterministic task frame; (b) its possible worlds are exactly the translations sigma_c(z) = z + c for c ∈ D; (c) the two-state frame F^ts_D (W = {w0, w1}, ⇒_0 the identity, every positive duration permitting every transition) is a task frame just in case D is Discrete -- Limit fails whenever D has no least positive duration; (d) when it is, it is not Deterministic and every function D → {w0, w1} is one of its possible worlds.
+
+WHAT EXISTS. FormalSystem/Semantics/Frames/Standard.lean has `translationFrame D : FrameOver D` with `translationFrame_isRegular` for every temporal order and `translationRel_fib_subsingleton` (the singleton-fibre fact behind determinism), and `permissiveFrame D so nm`, built only under `SuccOrder` and `NoMaxOrder` instances, i.e. only for discrete D. FormalSystem/Semantics/Correspondence/DurationFrames.lean has the canonical histories `translationHist` and `permissiveHist D so nm f` for an arbitrary assignment f (already half of (d)), plus the `*_realizes` lemmas. FormalSystem/Metalogic/Independence/RealTranslationFrame.lean has the ℝ instance: `f1_deterministic`, `f1_total_eq_orbit`, `f1_eq_of_states_eq`. None of these states (b), the 'only if' half of (c), or the non-determinism in (d) for a general D.
+
+DELIVER: (b) the set equation H_F = {sigma_c | c ∈ D} for `translationFrame D`, or equivalently an `Equiv` between its world histories and D, over every temporal order; (a) `(translationFrame D).Deterministic`, generalising `f1_deterministic` (or transferred from the ℝ instance if cheaper -- say which); (c) both halves: Limit holds for the permissive relation on Bool when D has a least positive duration and fails otherwise, so the relation is regular iff D is discrete; (d) `¬ (permissiveFrame D so nm).Deterministic`, and that `permissiveHist` is a bijection between assignments D → Bool and world histories. Docstrings cite def:canonical-frames and lem:canonical-frames.
+
+PAPER ANCHORS. def:canonical-frames and lem:canonical-frames in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under lem:canonical-frames is the marker to clear.
+
+CONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two frames' definitions, which `validOn_df_iff_isDiscrete`, `validOn_dn_iff_denselyOrdered` and the Independence modules consume.
+
+---
+
+### 789. Prove app gluing general convex overlap
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Prove the paper's Gluing lemma `app:gluing` in full generality: for any task frame F and convex histories tau1, tau2 over F with domains X1, X2 such that X1 ∩ X2 is nonempty and tau1, tau2 agree on it, the union tau1 ∪ tau2 is the unique convex history over F with domain X1 ∪ X2 restricting to both.
+
+WHAT EXISTS, to reuse rather than rebuild. The repository has two special cases: the closed-interval seam case `Presheaf.sheaf_clause` (FormalSystem/Semantics/Presheaf/Sheaf.lean: sections over [0,l1] and [0,l2] glued at a shared endpoint) and the directed-family case `Presheaf.directed_gluing_clause` (FormalSystem/Semantics/Presheaf/Directed.lean), together with the ray-layer seam gluing landed by task 719 (FormalSystem/Semantics/Presheaf/Ray.lean). None covers two arbitrary convex domains with nonempty overlap. The general lemma is what the paper's convex-history layer actually uses -- the pasting operation rho ⌢_z sigma in the cut proof of cor:deterministic-completeness is an instance -- so it should be stated once at the convex-history layer (PartialHistory / convex domains under FormalSystem/Semantics/Extension/) and the two Presheaf cases either shown to be instances or left independent, by an explicit decision recorded in the docstring.
+
+DELIVER: (1) the gluing theorem: well-definedness on the overlap; convexity of X1 ∪ X2 (the paper's argument: for a ≤ b ≤ c with a ∈ X1 and c ∈ X2, compare b with a fixed z in the overlap); the constraint tau(x) ⇒_{y-x} tau(y) for x ≤ y in the union, inherited from tau_i when both times lie in one domain and otherwise composed through z by Compositionality; and uniqueness. (2) Choice-freeness: rmk:choice lists app:gluing among the choice-free results, so pin it with #print axioms. (3) Docstrings citing app:gluing.
+
+PAPER ANCHORS. app:gluing and its proof, LIVE in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (search \label{app:gluing}), and rmk:choice immediately above it. A superseded, longer draft of the same proof is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from appendix, originally inside the proof of app:gluing'. The `% PORT:` comment under app:gluing in the paper is the marker to clear: once this lands, the paper closes app:gluing with \leanproof naming the declaration.
+
+RELATION TO OPEN WORK. Task 566 (the Possible Worlds clause H_F ≅ lim Beh(F)) is a different statement; do not fold this into it, but note in the docstring how the limit presentation relates (a compatible family of sections is a gluing). specs/ROADMAP.md's Stage 1 note on app:gluing describes the seam case; this task is the general case.
+
+CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase. If a module is added under FormalSystem/Semantics/Presheaf/, the aggregator-contention note recorded on tasks 563-567 applies (one-line import in Presheaf.lean is a shared touch; batch narrowly).
+
+---
+
 ### 788. Reduce tm and extensions to minimal axiom sets
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
@@ -1104,6 +1292,8 @@ SCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency r
 
 SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of scope). A source-verified seed report for the gluing route to decidability of full L-plus lives at specs/718_omega_sequence_decidability_full_lplus/reports/01_gluing-route-seed.md. Its section 3 bears on this task: the identification of Path(F) as the free category on the graph (W, =>_1) when D = Z is exactly the 'root paths of a finite class graph' presentation that the sliced finite-model-property refutation record demands of any successor class, so this task is load-bearing for the decidability route and not only for the dictionary. The seed claims no route verdict and does not alter this task's deliverable; consult it for context and do not re-derive what it already verifies.
 
+PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Structure (def:interval-site, def:behavior-presheaf, def:twisted-arrow, lem:interval-twisted-arrow, app:presheaf-dictionary, def:conduche, def:path-category, fact:conduche-equivalence, cor:path-fibration) NO LONGER sits inside possible_worlds.tex. It is kept verbatim, still commented, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header '\subsection{Topological and Categorical Structure}' / '\label{app:Structure}'. The uncompressed conclusion paragraph that previewed this material (interval site, twisted-arrow site, Conduche fibrations, path category, the Reflection clause as what underlies TR, change of site along order-embeddings) is in the same file under the header 'moved from sub:Conclusion'. possible_worlds.tex retains only the one-paragraph live summary in sub:Conclusion and the live app:gluing. Read the anchors in the cut file; nothing in the paper defines those labels any more. The D = ℤ clause connects to task 797 (finite W over ℤ: H_F as a shift of finite type, eventually periodic extensions).
+
 ---
 
 ### 617. Reflection clause converse frame naturality
@@ -1135,6 +1325,8 @@ Reconciliation note (task 629): unrelated mathematics with no dependency on the 
 CONVENTION NOTE (2026-09-21). Task 636 has landed: write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, each key resolving in the root references.bib (typst/bibliography.bib no longer exists). The language-extension files are now under FormalSystem/{Plus,Minus,Star}Language/ with flat FormalSystem.{X}Language namespaces (task 634).
 
 SCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.
+
+PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Structure (def:interval-site, def:behavior-presheaf, def:twisted-arrow, lem:interval-twisted-arrow, app:presheaf-dictionary, def:conduche, def:path-category, fact:conduche-equivalence, cor:path-fibration) NO LONGER sits inside possible_worlds.tex. It is kept verbatim, still commented, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header '\subsection{Topological and Categorical Structure}' / '\label{app:Structure}'. The uncompressed conclusion paragraph that previewed this material (interval site, twisted-arrow site, Conduche fibrations, path category, the Reflection clause as what underlies TR, change of site along order-embeddings) is in the same file under the header 'moved from sub:Conclusion'. possible_worlds.tex retains only the one-paragraph live summary in sub:Conclusion and the live app:gluing. Read the anchors in the cut file; nothing in the paper defines those labels any more. The BL truth transfer under reflection (lem:time-reflection) and the semantic thm:TR-valid are filed as task 796; this task stays the categorical packaging of the same involution.
 
 ---
 
@@ -1170,6 +1362,8 @@ Reconciliation note (task 629): unrelated mathematics with no dependency on the 
 POST-RELOCATION NOTE (2026-09-21). Task 630 moved the archive to the repository root, so the one CategoryTheory file is Boneyard/RetiredTactics/AesopRuleSet.lean and 'grep -rl CategoryTheory FormalSystem/' now returns NOTHING (grep Boneyard/ to find it). The premise stands: no live module imports Mathlib's CategoryTheory. New files write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, keys resolving in the root references.bib (task 636 has landed).
 
 SCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.
+
+PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Structure (def:interval-site, def:behavior-presheaf, def:twisted-arrow, lem:interval-twisted-arrow, app:presheaf-dictionary, def:conduche, def:path-category, fact:conduche-equivalence, cor:path-fibration) NO LONGER sits inside possible_worlds.tex. It is kept verbatim, still commented, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header '\subsection{Topological and Categorical Structure}' / '\label{app:Structure}'. The uncompressed conclusion paragraph that previewed this material (interval site, twisted-arrow site, Conduche fibrations, path category, the Reflection clause as what underlies TR, change of site along order-embeddings) is in the same file under the header 'moved from sub:Conclusion'. possible_worlds.tex retains only the one-paragraph live summary in sub:Conclusion and the live app:gluing. Read the anchors in the cut file; nothing in the paper defines those labels any more.
 
 ---
 
@@ -1226,6 +1420,8 @@ CONVENTION NOTE (2026-09-21). Task 636 has landed: write ## References in the no
 SCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.
 
 SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of scope). A source-verified seed report for the gluing route to decidability of full L-plus lives at specs/718_omega_sequence_decidability_full_lplus/reports/01_gluing-route-seed.md. Its sections 1 and 3 bear on this task: this clause's limit presentation H_F iso lim Beh(F)(2x) IS the gluing conception -- a compatible family of sections is a gluing -- so the two are one statement in two presentations, and the decidability round depends on knowing which is the better working form. The seed claims no route verdict and does not alter this task's deliverable; consult it for context and do not re-derive what it already verifies.
+
+PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Structure (def:interval-site, def:behavior-presheaf, def:twisted-arrow, lem:interval-twisted-arrow, app:presheaf-dictionary, def:conduche, def:path-category, fact:conduche-equivalence, cor:path-fibration) NO LONGER sits inside possible_worlds.tex. It is kept verbatim, still commented, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header '\subsection{Topological and Categorical Structure}' / '\label{app:Structure}'. The uncompressed conclusion paragraph that previewed this material (interval site, twisted-arrow site, Conduche fibrations, path category, the Reflection clause as what underlies TR, change of site along order-embeddings) is in the same file under the header 'moved from sub:Conclusion'. possible_worlds.tex retains only the one-paragraph live summary in sub:Conclusion and the live app:gluing. Read the anchors in the cut file; nothing in the paper defines those labels any more. The general convex-overlap form of app:gluing, which the limit presentation of this clause rests on, is filed separately as task 789.
 
 ---
 
