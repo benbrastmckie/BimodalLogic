@@ -1,27 +1,35 @@
 {
-  "status": "partial",
-  "dispatch_seq": 8,
-  "phases_completed": 6,
+  "status": "implemented",
+  "dispatch_seq": 11,
+  "phases_completed": 9,
   "phases_total": 9,
-  "summary": "Phases 1-6 of nine are complete, committed one-per-phase and fully verified: the sliced certificate class now carries a second interesting witness (PlusSlicedCertificate.TotalEdge.certA_certifies -- width 2, total edge, snce/box-dot closure at Pp -> box-dot Pp, kernel decide under a finite heartbeat cap) with its C36 inventory row and matched C2 axiom pin, and the early-exit iteration plus the hoisted inner fixpoint are landed behind eight unconditional equality lemmas. Measured this round: the embedded witness's liveAt (-1) fell from 20225 ms to 2188 ms, and the research report's diagnosis reproduced within 1.12x. Phase 7 is BLOCKED, not excluded: its gate PASSED (5.5x on decide, 63x on eval), the cache landed and built scoped-green, and the full build then broke five rfl-proved withBx_* transfer lemmas in Complete.lean -- a file the phase's own Scope Hypothesis asserted untouched. A scratch test at ten times the heartbeat cap shows rfl fails outright rather than slowly, so no cap bump can fix it; the plan's literal Shape A is equally untransferable and separately 6.2x slower than no cache. Phases 8-9 are NOT STARTED behind Phase 7. The tree is green: full guarded lake build 2844 jobs, check-module-invariants.sh ALL CHECKS PASSED, zero sorries, axiom count unchanged at 12.",
-  "blockers": [
-    "Phase 7 needs a planning decision, recorded via /revise, before any further edit to Timed.lean. Route (i): re-express verts as G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t))) -- proved rfl-transferable in a scratch test, obtains the same 512-to-4 reduction in posAt calls, leaves Complete.lean untouched, but drops posTable / posAtC / posAtC_eq from the plan's Goals and Lean Challenge Statements, which is a decomposition change. Route (ii): keep the measured 5.5x cache and add roughly fourteen propositional withBx_* transfer lemmas to Complete.lean, which is a scope change the phase never declared. plan-compliance.md requires both to be raised rather than substituted. The attempt is preserved at specs/716_sliced_certificate_liveat_nontermination/probes/20_phase7_shapeB_attempt.diff and in git stash@{0}."
-  ],
+  "summary": "All nine phases are complete, committed one-per-phase and fully verified. The defect is fixed: #eval (certA.liveAt 0).card -- the computation that did not return in 300 s compiled on four positions and four window times -- now returns 4 in 2951 ms, and certB's, over a strictly larger position space, in 22585 ms. Phase 7 landed Shape D on its first attempt (verts as a biUnion over winTimes, succT/predT let-hoisted, mem_verts restated byte-identically, all three withBx rfl transfers holding and Complete.lean's 27 withBx_ references untouched), and Phase 8 settled certB on the returning branch: certB.Certifies proves by kernel decide in 12 s, so the sliced class now carries three interesting witness rows covering both temporal kinds at width above 1. A maxHeartbeats-20000-capped guard, its cap bisected against the built library, now fails the build if the cost returns. Full guarded lake build green at 2844 jobs, check-module-invariants.sh ALL CHECKS PASSED, verify-deploy.sh 15/0, lint-style clean, zero sorries, axiom count unchanged, and all 36 Goals declarations inside [propext, Classical.choice, Quot.sound].",
+  "blockers": [],
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/716_sliced_certificate_liveat_nontermination/summaries/01_liveat-memoization-tier2-witness-summary.md",
-      "summary": "Implementation summary, Status [BLOCKED]: what landed through Phase 5, every measured before/after figure, the full verification gate results, and the Phase 7 blocker with both candidate routes."
+      "summary": "Implementation summary, Status [COMPLETED]: what landed across all nine phases, every measured before/after figure, the full verification gate results, and the three required closing records (the Phase 7 route and its dropped identifiers; Shape D's isolated versus propagated figures stated separately; Phase 5's hoist as an open question owned by task 781)."
+    },
+    {
+      "type": "plan",
+      "path": "specs/716_sliced_certificate_liveat_nontermination/plans/02_shape-d-verts-biunion.md",
+      "summary": "The executed plan, all nine phase headings now [COMPLETED] with their checklists ticked and the two untriggered contingency branches annotated as deviations."
     },
     {
       "type": "other",
       "path": "specs/716_sliced_certificate_liveat_nontermination/progress-file.md",
-      "summary": "The measured-figure table: one row per figure with name, value, how measured, and whether it confirms or contradicts the research report's carried figure."
+      "summary": "The measured-figure record: one section per phase, with the Phase 7 isolated-versus-propagated table, the Phase 8 certB figures and bisected guard cap, and the final per-fix before/after table."
     },
     {
       "type": "other",
-      "path": "specs/716_sliced_certificate_liveat_nontermination/probes/18_cache_gate.lean",
-      "summary": "The Phase 6 decision gate: two cache shapes measured side by side, which is what caught that the plan's literal shape is 6.2x slower than no cache."
+      "path": "specs/716_sliced_certificate_liveat_nontermination/probes/25_shapeD_landed_transfer.lean",
+      "summary": "The three withBx rfl transfer checks against the edited Timed.lean -- the exact check the earlier table-shaped attempt failed -- plus mem_verts's preserved statement and its axiom profile."
+    },
+    {
+      "type": "other",
+      "path": "specs/716_sliced_certificate_liveat_nontermination/probes/19_certb.lean",
+      "summary": "certB's Scope-Hypothesis measurements, the slab repair that makes its interest expression true, and the bounded decide that returned in 12 s."
     }
   ]
 }

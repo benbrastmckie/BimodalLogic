@@ -11,8 +11,8 @@ next_project_number: 781
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780,781,782 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,714,763 | 298,464,502,616,716,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780,781,782 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763 | 298,464,502,616,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -82,8 +82,7 @@ next_project_number: 781
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
-716 [PLANNED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
-  └─ 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
+714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
@@ -1137,13 +1136,13 @@ WHY THIS MATTERS AT ALL (the surviving half of the original rationale). `FMP/REA
 ---
 
 ### 716. Sliced certificate liveat nontermination
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [716_sliced_certificate_liveat_nontermination/reports/01_liveat-nontermination-profile.md]
-- **Summary**: [716_sliced_certificate_liveat_nontermination/summaries/01_liveat-memoization-tier2-witness-summary.md]
 - **Plan**: [716_sliced_certificate_liveat_nontermination/plans/02_shape-d-verts-biunion.md]
+- **Summary**: [716_sliced_certificate_liveat_nontermination/summaries/01_liveat-memoization-tier2-witness-summary.md]
 
 **Description**: Profile and fix the PlusSlicedCertificate liveT/liveAt non-termination that blocks Tier-2 sliced certificate witnesses.
 

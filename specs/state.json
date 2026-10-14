@@ -574,7 +574,7 @@
     {
       "project_number": 716,
       "project_name": "sliced_certificate_liveat_nontermination",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Profile and fix the PlusSlicedCertificate liveT/liveAt non-termination that blocks Tier-2 sliced certificate witnesses.\n\nEVIDENCE IN HAND. A preserved reproducer lives at specs/704_certificate_non_vacuity_and_shape_gates/probes/03_tier2_sliced_certificates.lean. Two width-2 Tier-2 constructions (certA, certB) carrying the box-dot modality elaborate in about 2 seconds and their cheap conjuncts evaluate, but `liveAt 0` -- the landed checker's computed liveness fixpoint under FormalSystem/Metalogic/Decidability/PlusSlicedCertificate -- does not return within 300 seconds compiled, on only 4 positions and 4 window times. The same fixpoint is instantaneous at the self-loop embedded certificates already pinned in scripts/certificate-witness-inventory.txt, so this is not a size effect.\n\nTHE QUESTION. Determine why liveT/liveAt diverges or blows up at a 4-position TOTAL-EDGE certificate when it is instant at self-loop certificates. Decide which of three it is: a genuine algorithmic defect in the landed decision procedure, a missing termination or memoization argument, or an unavoidable cost intrinsic to the total-edge case.\n\nDELIVERABLE. The diagnosis; the fix if the cause is addressable; and certA/certB landed as the Tier-2 witness rows in the C36 inventory if the fix makes a kernel `decide` proof reachable.\n\nWHY IT MATTERS INDEPENDENTLY OF TIER 2. liveAt is part of a decision procedure that is already landed and gated, so a configuration on which it fails to return is a defect in shipped code, not merely an unbuilt feature.\n\nNOT COVERED ELSEWHERE. Checked against the TailStable junk-position/full-labels evaluation, the refuted sliced finite-model-property statement, and the finite-carrier refutation work -- none of them own this question.\n\nADJACENCY. The sliced finite-width question of the sliced-class incompleteness characterization.",
       "topic": "decidability",
@@ -603,9 +603,9 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-02T22:54:01Z",
-      "last_updated": "2026-10-14T00:29:31Z",
+      "last_updated": "2026-10-14T01:04:15Z",
       "dependencies": [],
-      "session_id": "sess_1791937255_73943e",
+      "session_id": "sess_1791937911_c3c794",
       "artifacts": [
         {
           "path": "specs/716_sliced_certificate_liveat_nontermination/reports/01_liveat-nontermination-profile.md",
@@ -613,16 +613,17 @@
           "summary": "Research report: 01_liveat-nontermination-profile.md"
         },
         {
-          "path": "specs/716_sliced_certificate_liveat_nontermination/summaries/01_liveat-memoization-tier2-witness-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary, Status [BLOCKED]: what landed through Phase 5, every measured before/after figure, the full verification gate results, and the Phase 7 blocker with both candidate routes."
-        },
-        {
           "path": "specs/716_sliced_certificate_liveat_nontermination/plans/02_shape-d-verts-biunion.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/716_sliced_certificate_liveat_nontermination/summaries/01_liveat-memoization-tier2-witness-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary, Status [COMPLETED]: what landed across all nine phases, every measured before/after figure, the full verification gate results, and the three required closing records (the Phase 7 route and its dropped identifiers; Shape D's isolated versus propagated figures stated separately; Phase 5's hoist as an open question owned by task 781)."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Fixed the PlusSlicedCertificate liveT/liveAt non-termination: the configuration that did not return in 300 s now evaluates in 2951 ms and is decided by the kernel in ~8 s, via an early-exit fixpoint iteration, a hoisted inner fixpoint, and verts re-expressed as a biUnion over the window times (one posAt call per time rather than per position-time pair). Landed two width-2 total-edge Tier-2 witnesses, certA at a snce-kind closure and certB at an untl-kind one, each a kernel-decide closed-term theorem with its C36 inventory row and matched C2 axiom pin, plus a heartbeat-capped cost regression guard whose cap was bisected against the built library. No statement weakened, no sorry, no new axiom; full build and the complete gate set green."
     },
     {
       "project_number": 714,

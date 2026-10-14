@@ -1,7 +1,7 @@
 # Implementation Plan: Task #716
 
 - **Task**: 716 - Profile and fix the PlusSlicedCertificate liveT/liveAt non-termination that blocks Tier-2 sliced certificate witnesses
-- **Status**: [IMPLEMENTING] (Phases 1-6 landed and committed; Phase 7 re-planned onto Shape D)
+- **Status**: [COMPLETED] (Phases 1-6 landed and committed; Phase 7 re-planned onto Shape D)
 - **Effort**: 14 hours total -- 9.5 h landed in Phases 1-6, 4.5 h remaining in Phases 7-9
 - **Dependencies**: None. The Shape D decision this plan records was established by task 782's
   blocker research, which is complete; no edge remains.
