@@ -65,6 +65,11 @@ lean source store, so that record must be re-read before any implementation.
 **784** is the tracker for that freeze and is itself `[BLOCKED]` on the migration. It owns the only
 part this repository can do: once the seven have landed in the source store, verify them there,
 delete them from `specs/state.json`, regenerate `specs/TODO.md`, and drop the paragraph above.
+**Coverage appendix (uncovered tasks)**:
+```
+/orchestrate 127,128,709,730,741,752,767,768
+/orchestrate 769,770,785
+```
 
 ## Stage 0 — User rulings (no agent may transition these)
 
