@@ -211,20 +211,20 @@ covering check is the single-file pair `bash -n` + `shellcheck` **plus** that de
 
 ---
 
-### Phase 3: Truth up the header [NOT STARTED]
+### Phase 3: Truth up the header [COMPLETED]
 
 **Goal**: The header states the present CI wiring, the new lock, and the three-class diagnostic
 vocabulary, so a reader triaging a red gate ranks this failure mode correctly.
 
 **Tasks**:
-- [ ] Locate the stale claim by text, not line number: `grep -n 'not wired into CI' scripts/check-evidence-probes.sh`.
-- [ ] Replace that sentence with the present wiring: the script runs in CI as step id `evidence-probes` in `.github/workflows/ci.yml`, which is `continue-on-error: true` but is counted by the aggregating report step that exits 1 on any failure — so a rotted probe fails the job.
-- [ ] Preserve the surrounding historical narration about the `specs/archive/` move and about why probes do not live in a task directory: only the CI-wiring claim is wrong. Re-word the sentence so the historical point (nothing announced either fact at the time) survives without asserting the present-tense claim.
-- [ ] Honor `rules/no-record-versioning-in-deliverables.md`: state the current design only. No "previously", "no longer", "formerly", or any note that this sentence was corrected.
-- [ ] Add a short `THREE DIAGNOSTIC CLASSES` header subsection naming rot (`does not compile`), left-version-control (`untracked:`), and environment (`environment:`), with the one-line triage rule that a missing-object-file error is never probe or source rot.
-- [ ] Add a short header note that the script takes the shared `.lake/build-guard.lock` for its whole run, cross-referencing `check-module-invariants.sh`'s `C1` block for the rationale and rejected alternatives rather than restating them, and noting the bounded, announced wait and the `PROBE_LOCK_WAIT_S` override's test-only purpose.
-- [ ] Update the `Exit status:` usage line so it covers the lock-timeout failure alongside the existing 0/1 contract.
-- [ ] Confirm every hunk in this phase's diff lies inside the `#`-comment header region (no code line touched).
+- [x] Locate the stale claim by text, not line number: `grep -n 'not wired into CI' scripts/check-evidence-probes.sh`. *(deviation: altered — that grep returns NO hit, because the phrase is line-wrapped in the source as `is not wired into` / `# CI.`; located by the wrapped two-line text instead, per this phase's own stop-and-re-read instruction)*
+- [x] Replace that sentence with the present wiring: the script runs in CI as step id `evidence-probes` in `.github/workflows/ci.yml`, which is `continue-on-error: true` but is counted by the aggregating report step that exits 1 on any failure — so a rotted probe fails the job.
+- [x] Preserve the surrounding historical narration about the `specs/archive/` move and about why probes do not live in a task directory: only the CI-wiring claim is wrong. Re-word the sentence so the historical point (nothing announced either fact at the time) survives without asserting the present-tense claim.
+- [x] Honor `rules/no-record-versioning-in-deliverables.md`: state the current design only. No "previously", "no longer", "formerly", or any note that this sentence was corrected.
+- [x] Add a short `THREE DIAGNOSTIC CLASSES` header subsection naming rot (`does not compile`), left-version-control (`untracked:`), and environment (`environment:`), with the one-line triage rule that a missing-object-file error is never probe or source rot.
+- [x] Add a short header note that the script takes the shared `.lake/build-guard.lock` for its whole run, cross-referencing `check-module-invariants.sh`'s `C1` block for the rationale and rejected alternatives rather than restating them, and noting the bounded, announced wait and the `PROBE_LOCK_WAIT_S` override's test-only purpose.
+- [x] Update the `Exit status:` usage line so it covers the lock-timeout failure alongside the existing 0/1 contract.
+- [x] Confirm every hunk in this phase's diff lies inside the `#`-comment header region (no code line touched).
 
 **Timing**: 0.5 hours
 

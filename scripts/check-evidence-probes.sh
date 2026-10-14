@@ -18,10 +18,18 @@
 # `specs/417_semantic_fmp_finite_worldstate_over_z/evidence/`.  When `/todo` archived that task the
 # whole directory moved to `specs/archive/`, which `.gitignore` excludes -- so the four probes left
 # version control entirely (absent from a fresh clone) and this guard failed on every run against a
-# path that no longer existed.  Nothing announced either fact, because this script is not wired into
-# CI.  A probe outlives the task that produced it by construction: it records a design obstruction,
+# path that no longer existed.  Nothing announced either fact at the time: no gate then reached
+# this script.  One does now -- see WIRED INTO CI below.  A probe outlives the task that
+# produced it by construction: it records a design obstruction,
 # not a unit of work.  It therefore lives in `specs/evidence/`, which is task-independent and
 # tracked, exactly as `specs/reviews/` is.  Do not move a probe back under a task directory.
+#
+# WIRED INTO CI.  This script runs in CI as step id `evidence-probes` in
+# `.github/workflows/ci.yml`.  That step carries `continue-on-error: true`, so it does not
+# hard-stop the job by itself; the aggregating `Report results` step counts its outcome and exits
+# 1 when any counted step failed.  A rotted probe therefore fails CI.  The consequence for
+# whoever reads a red run: a failure here is one of exactly three things, and only one of them is
+# a fact about a probe -- see THREE DIAGNOSTIC CLASSES below before repairing anything.
 #
 # WHAT EACH PROBE HOLDS IN PLACE.  See the tables in the WIRED and WIRED_REPO lists below.
 #
@@ -44,10 +52,43 @@
 # promoted to `specs/evidence/`, BEFORE that task is archived.  A `FAIL (untracked: ...)` from
 # this script means that did not happen.
 #
+# THREE DIAGNOSTIC CLASSES.  A failing line is exactly one of these, and the label says which:
+#
+#   `FAIL (does not compile)`  ROT.  The probe cites something that has drifted.  This is the
+#                              failure this guard exists to catch.  Repair the citation under the
+#                              no-weakening rule; never delete or restate an obstruction to make
+#                              it pass.
+#   `FAIL (untracked: ...)`    LEFT VERSION CONTROL.  The file is on this disk but absent from a
+#                              fresh clone.  Promote it into `specs/evidence/`; see TRACKED, NOT
+#                              MERELY PRESENT above.
+#   `FAIL (environment: ...)`  ENVIRONMENT.  A `.lake` artifact was absent or half-written, so the
+#                              probe's import closure could not be loaded and the probe's own
+#                              content was never measured at all.
+#
+# TRIAGE RULE: a missing-object-file error (`object file '...' of module ... does not exist`) is
+# NEVER probe rot and never source rot.  It is an I/O failure of the build tree.  The correct
+# response is to re-run once any concurrent `lake build` has finished, or to build the project if
+# it is not built -- not to touch a probe.  No probe is repaired, restated, or retired on that
+# evidence.  Reading an environment failure as rot is how a single transient `.lake` race once
+# became four apparently-rotted probes and a repair record for probes that were never broken.
+#
+# SERIALIZED AGAINST CONCURRENT BUILDS.  This script holds an `flock` on
+# `$REPO_ROOT/.lake/build-guard.lock` for its whole run -- the path
+# `.claude/scripts/lake-build-guard.sh` publishes and `scripts/check-module-invariants.sh` takes
+# at its `C1: build` block -- because every `lake env lean` invocation below reads `.lake` while
+# another guarded build may be rewriting it.  The rationale and the two rejected alternatives are
+# recorded at that `C1` block and are not restated here; the in-place detail is in the SHARED
+# `.lake` LOCK block further down this file.  The wait is bounded at 600 s and announced on
+# stderr the moment it starts.  `PROBE_LOCK_WAIT_S` overrides the bound; it exists so the timeout
+# branch can be exercised deliberately and is not a tuning knob.  A caller holding this same lock
+# around an invocation of this script would see a bounded, labeled failure rather than a hang.
+#
 # Usage:
 #   bash scripts/check-evidence-probes.sh
 #
-# Exit status: 0 if every wired probe compiles, 1 otherwise.
+# Exit status: 0 if every wired probe compiles, 1 otherwise -- including the case where no probe
+#   was compile-checked at all because the bounded wait for the shared build lock timed out,
+#   which is reported as an ENVIRONMENT-class failure.
 
 set -uo pipefail
 
