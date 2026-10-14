@@ -6,12 +6,12 @@ next_project_number: 781
 
 ## Task Order
 
-*Updated 2026-10-13. Generated from state.json dependency graph.*
+*Updated 2026-10-14. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,716,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780,781,782 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,714,763 | 298,464,502,616,716,761 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -88,6 +88,8 @@ next_project_number: 781
 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 778 [PLANNED] — Record the modulus convention for the residue-carrying ladder...
+781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
+782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 
 ### Formula Refactor
 
@@ -121,6 +123,28 @@ next_project_number: 781
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 782. Phase7 verts shape d decomposition
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 716
+
+**Description**: Adopt Shape D for the position-space leaf cache instead of the blocked posAtC cache. Blocker research confirmed vertsD := G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t))) is unconditionally rfl-transferable (vertsD = verts holds with no cache to be equal to), obtains the same 512-to-4 reduction in posAt calls, leaves Complete.lean's five rfl-proved withBx_* transfer lemmas intact, and measures ~73x faster than the landed verts (15 ms vs 1093 ms at certA, identical card 16). The rejected alternative -- route (ii), ~14 propositional transfer lemmas widening scope into Complete.lean -- would buy a SLOWER result. Requires recording the decomposition change that drops posTable/posAtC/posAtC_eq from the Goals, which plan-compliance.md requires be raised. Also land the succT/predT let-hoists independently (proved zeta-equal and rfl-transferable, no proof obligation). Evidence: parent issue log entries iss_1791930803755_uNnWEO and iss_1791930247123_2yrlt6, plus .blocker-research.json and probes/21_shapeD_transfer.lean through 24_shapeD_measure.lean.
+
+---
+
+### 781. Phase5 hoist kernel neutral decision
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 716
+
+**Description**: Decide whether the Phase 5 inner-fixpoint hoist in FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean should stay. A zero-rebuild A/B measured it NEUTRAL under the kernel (25.9 s OLD vs 24.4 s NEW on certA's backward fixpoint under decide -- 1.06x, inside variance) and roughly 25 percent WORSE at the small embedded witness, against 5.4x BETTER at certA. It is landed and proved equal via unconditional equality lemmas, so correctness is not at issue; the question is whether its justification (resting on the hard certificate alone) warrants keeping the added decomposition. Evidence: parent task issue log entry iss_1791925368675_oyqhCa, and the A/B method recorded at iss_1791925368699_dlHTwK.
+
+---
 
 ### 780. Plan-compliance spot-check misses evidence-probe-scoped Goals
 - **Effort**: low
