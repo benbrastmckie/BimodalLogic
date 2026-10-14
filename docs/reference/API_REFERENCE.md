@@ -193,10 +193,11 @@ through the instance `FrameOver.instIsRegularOfReflective`. Their bridges are
 `ofReflective_taskRel` and `ofReflectiveRegular_taskRel`, from which each frame states its own
 `@[simp]` bridge.
 
-**Derived, not fields**: `FrameOver.nullity` (`TaskRel w 0 w`, the paper's `lem:nullity`, from
+**Derived, not fields**: `FrameOver.nullity` (`TaskRel w 0 w`, the reflexivity half, from
 *Seriality* and *Limit*), `FrameOver.eq_of_taskRel_zero_of_limit` (injectivity at zero, from
 *Limit* alone, as an explicit hypothesis) with `FrameOver.eq_of_taskRel_zero` derived from it at
-`[F.IsRegular]`, and their conjunction `FrameOver.nullity_identity` (`TaskRel w 0 u ↔ w = u`).
+`[F.IsRegular]`, and their conjunction `FrameOver.nullity_identity` (`TaskRel w 0 u ↔ w = u`),
+which is the paper's `lem:nullity` as stated.
 
 **Paper Alignment**: Matches the JPL paper definition (app:TaskSemantics, def:frame,
 possible_worlds.tex:2423-2451; body statement at possible_worlds.tex:908-926).

@@ -421,37 +421,44 @@ starting.
 
 ---
 
-### Phase 6: Correct the restatements and attributions in docs, README and typst [NOT STARTED]
+### Phase 6: Correct the restatements and attributions in docs, README and typst [COMPLETED]
 
 **Goal**: Stop the non-Lean deliverables from understating the paper's lemma, and make the
 `lem:nullity` attributions point at the declaration the strengthening now names.
 
 **Tasks**:
-- [ ] Re-read each target file immediately before editing.
-- [ ] `typst/FormalFoundations.typ:230` — `#lemma("Nullity")[$w arrow.r.double.long_(0) w$ for
+- [x] Re-read each target file immediately before editing.
+- [x] `typst/FormalFoundations.typ:230` — `#lemma("Nullity")[$w arrow.r.double.long_(0) w$ for
       every world state $w$ of every frame.]` now understates the paper. State the biconditional,
       and point `#leansrc` at the biconditional's declaration rather than `nullity` (or keep
       `nullity` and say explicitly that it is the reflexivity half).
-- [ ] `typst/chapters/02-semantics.typ:137-142` — same understatement in the `#lemma("Nullity")`
+- [x] `typst/chapters/02-semantics.typ:137-142` — same understatement in the `#lemma("Nullity")`
       block, which carries a `// CONFIRM(paper): lem:nullity states this lemma` comment. State
       the biconditional. `:155` already carries the biconditional (`#leanNullityIdentity`), so
       reconcile the two rather than duplicating; keep the "Why Nullity Is a Lemma, Not an Axiom"
       remark and the derived-status claim intact.
-- [ ] `docs/reference/API_REFERENCE.md:196` — "`FrameOver.nullity` (`TaskRel w 0 w`, the paper's
+- [x] `docs/reference/API_REFERENCE.md:196` — "`FrameOver.nullity` (`TaskRel w 0 w`, the paper's
       `lem:nullity`…)": the strengthening moves the `lem:nullity` attribution to
       `nullity_identity`, with `nullity` as its reflexivity half. Re-attribute.
-- [ ] `README.md:84` — "Nullity (`w ⇒_0 w`) is **not** an axiom": the parenthetical now
+- [x] `README.md:84` — "Nullity (`w ⇒_0 w`) is **not** an axiom": the parenthetical now
       understates the paper. State the biconditional while keeping the not-an-axiom claim, which
       is the point of the sentence. The paragraph already names `nullity_identity` correctly two
       sentences later, so keep that consistent.
-- [ ] `FormalSystem/Semantics/README.md:84` — same shape; it already names
+- [x] `FormalSystem/Semantics/README.md:84` — same shape; it already names
       `FrameOver.nullity_identity`, so confirm rather than assume an edit is needed.
-- [ ] `docs/reference/transcription-audit-surface.md:82` and `:165` — "The `⊇` half [of *Limit*]
+      *(deviation: altered — confirmed, no edit needed. The file's only two `nullity` mentions are
+      the module table row and the `taskRel_eq_iter` zero case, which already names
+      `FrameOver.nullity_identity`; no bare-implication restatement exists there to correct.)*
+- [x] `docs/reference/transcription-audit-surface.md:82` and `:165` — "The `⊇` half [of *Limit*]
       is `lem:nullity`, derived" is still true of the reflexivity half but imprecise now that
       `lem:nullity` names the whole biconditional. Add a parenthetical rather than rewriting the
       row.
-- [ ] `docs/theorem-index.md` — judgment pass over its three verbatim claims on re-pinned anchors.
-- [ ] **Keep, do not rewrite** (research §4c/§4b, re-confirmed): `typst/chapters/06-notes.typ:32`
+- [x] `docs/theorem-index.md` — judgment pass over its three verbatim claims on re-pinned anchors.
+      *(deviation: altered — no edit needed. Its `lem:nullity`, `cor:saturation-finite`,
+      `def:world-history`, `def:frame-validity` and `def:constraints` mentions are anchor
+      attributions and one "clause verbatim" paraphrase reference on an unchanged clause; the file
+      reproduces no re-pinned block text, so nothing in it was falsified by the re-pin.)*
+- [x] **Keep, do not rewrite** (research §4c/§4b, re-confirmed): `typst/chapters/06-notes.typ:32`
       already covers both `nullity` and `nullity_identity`;
       `docs/development/PROPERTY_TESTING_GUIDE.md:295` ("`lem:nullity` is derived from *Seriality*
       and *Limit*") is true of both halves;
@@ -459,7 +466,11 @@ starting.
       hypothesis, and the weak loop is genuinely all `coneTopology_le_nbhdTopology` consumes;
       `FormalSystem/Semantics/Presheaf/Behavior.lean:91` correctly states what the construction
       consumes.
-- [ ] Commit per green sub-step, staging explicit file names only.
+- [x] Commit per green sub-step, staging explicit file names only.
+      *(deviation: altered — this phase additionally edited `FormalSystem/Semantics/TaskFrame.lean`'s
+      Main-Definitions list, lines 208 and 246, which carry the same `lem:nullity`-to-`nullity`
+      attribution this phase re-points in `docs/reference/API_REFERENCE.md`. Grouped here by
+      correction class rather than reopening Phase 4.)*
 
 **Timing**: 1.25 hours
 

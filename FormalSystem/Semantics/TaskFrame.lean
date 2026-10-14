@@ -205,11 +205,12 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
   relation on `D⁺` to all durations; `FrameOver.ofReflective` builds a frame from a two-sided
   relation that satisfies the reflection law
 - `FrameOver.reflection`: the reflection law (`TaskRel w d u ↔ TaskRel u (-d) w`), derived
-- `FrameOver.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, matching `lem:nullity`)
+- `FrameOver.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, `lem:nullity`'s reflexivity
+  half)
 - `FrameOver.eq_of_taskRel_zero_of_limit`, `FrameOver.eq_of_taskRel_zero`,
   `FrameOver.nullity_identity`: derived injectivity at zero — first at the constraint it actually
   uses, *Limit* alone, then at the regular class — and the resulting zero-duration law
-  `TaskRel w 0 u ↔ w = u`
+  `TaskRel w 0 u ↔ w = u`, which is `lem:nullity` as the paper states it
 - `TaskFrame.Fib`, `TaskFrame.cone`, `TaskFrame.Seg`, `TaskFrame.DirectedFamily`,
   `TaskFrame.IsFiber`, `TaskFrame.IsSegment`: the `def:task-relation` / `⊇`-directed
   apparatus over a bare relation
@@ -925,8 +926,8 @@ Recorded source (`lem:nullity`, verbatim): "$w \Rightarrow_0 u$ if and only if $
 world states $w, u \in W$ in any task frame $\F$."
 
 This theorem is the reflexivity half of that biconditional, which is all its own statement
-asserts; the full biconditional is `nullity_identity_of_serial_limit` (and `FrameOver.nullity_identity`
-on a frame), derived from the same two constraints.
+asserts; the full biconditional is `nullity_identity_of_serial_limit` (and
+`FrameOver.nullity_identity` on a frame), derived from the same two constraints.
 
 **Nullity is DERIVED, not an axiom.** `def:frame` has exactly four axioms — *Compositionality*,
 *Seriality*, *Limit*, *Saturation* — and Nullity is not among them. This theorem is the

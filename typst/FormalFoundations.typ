@@ -227,13 +227,17 @@ its absence from $#BLminus$ is what produces the split validity of @sec:dichotom
 ]
 #leansrc("Semantics", "TaskFrame")
 
-#lemma("Nullity")[$w arrow.r.double.long_(0) w$ for every world state $w$ of every frame.]
-#leansrc("Semantics.TaskFrame", "nullity")
+#lemma("Nullity")[$w arrow.r.double.long_(0) u$ if and only if $w = u$, for all world states $w, u$ of any task frame.]
+#leansrc("Semantics.TaskFrame", "nullity_identity")
 #proof[
-  *Seriality* at $x = 0$ gives $u$ with $w arrow.r.double.long_(0) u$. Since $|0| < x$ for every
-  $x > 0$, $u in (w)_x$ for every such $x$, so $u in inter.big_(x>0)(w)_x = {w}$ by *Limit*, whence
-  $u = w$.
+  For the reflexivity half, *Seriality* at $x = 0$ gives $u$ with $w arrow.r.double.long_(0) u$.
+  Since $|0| < x$ for every $x > 0$, $u in (w)_x$ for every such $x$, so
+  $u in inter.big_(x>0)(w)_x = {w}$ by *Limit*, whence $u = w$. The same *Limit* step applied to an
+  arbitrary $w arrow.r.double.long_(0) u$ gives the forward direction, and the reflexivity half
+  gives the converse.
 ]
+
+The reflexivity half alone is #leansrc("Semantics.TaskFrame", "nullity").
 
 Nullity is derived, not postulated, and its derivation uses no choice. The distinction matters
 below: two of the three results in @sec:histories are theorems of ZFC.

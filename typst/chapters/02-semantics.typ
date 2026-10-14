@@ -137,12 +137,12 @@ Fibers and segments range over *two separate classes* in *Saturation*; the retir
 Nullity is conspicuously absent from this list because it is not an axiom:
 
 #lemma("Nullity")[
-  $w arrow.r.double.long_0 w$ for every world state $w in W$ in every frame $cal(F) = (W, D, arrow.r.double.long)$.
+  $w arrow.r.double.long_0 u$ if and only if $w = u$, for all world states $w, u in W$ in any task frame $cal(F) = (W, D, arrow.r.double.long)$.
 ]
 // CONFIRM(paper): lem:nullity states this lemma (source text pinned verbatim in
 //   docs/reference/paper-definitions-of-record.md)
 
-The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get some $u in W$ with $w arrow.r.double.long_0 u$; *Limit* at $x arrow.r 0^+$ then forces $u = w$, since $w$ is the unique point in every cone around itself.
+The proof is choice-free and short. For the reflexivity half, instantiate *Seriality* at $x = 0$ to get some $u in W$ with $w arrow.r.double.long_0 u$; *Limit* at $x arrow.r 0^+$ then forces $u = w$, since $w$ is the unique point in every cone around itself. The same *Limit* step applied to an arbitrary $w arrow.r.double.long_0 u$ gives the forward direction of the biconditional, and the reflexivity half gives the converse.
 
 #remark("Why Nullity Is a Lemma, Not an Axiom")[
   A reader who has seen other presentations of similar systems might expect "zero duration is a no-op" to be postulated outright, as it was in an earlier draft of this book.
@@ -151,8 +151,8 @@ The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get so
 ]
 
 The Lean structure `TaskFrame` (`FormalSystem/Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive relation #leanPosRel is typed on the positive cone $D^+$, and the two-sided #leanTaskRel is *defined* from it by the *reflection convention*, so the reflection law is the derived theorem #leanReflection rather than a field (definitional off zero, and at zero a consequence of *Seriality* and *Limit*); the four axiom fields are stated over that extended relation. #leanComp is the biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as the frame definition states it); #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSaturation is *Saturation* verbatim, stated by citation as `TaskFrame.Saturation TaskRel` so that fibers and segments remain two separate classes, exactly as the directed-family and frame definitions require --- this field is what the Step Lemma of @sec:convex-histories consumes.
-There is no zero-duration field: #leanNullityDerived (`TaskRel w 0 w`) is a *theorem*, derived from #leanSerial and #leanLimit exactly as in the proof above, matching Nullity's derived status.
-The biconditional #leanNullityIdentity ($w arrow.r.double.long_0 u arrow.l.r.double w = u$) is derived too: its injectivity half follows from #leanLimit alone, since $w arrow.r.double.long_0 u$ puts $u$ in every cone around $w$, so it adds nothing beyond the four frame axioms.
+There is no zero-duration field: #leanNullityIdentity ($w arrow.r.double.long_0 u arrow.l.r.double w = u$) --- the lemma as the paper states it --- is a *theorem*, derived from #leanSerial and #leanLimit exactly as in the proof above, matching Nullity's derived status.
+Its injectivity half follows from #leanLimit alone, since $w arrow.r.double.long_0 u$ puts $u$ in every cone around $w$; its reflexivity half is projected out separately as #leanNullityDerived (`TaskRel w 0 w`). Neither adds anything beyond the four frame axioms.
 
 == Convex Histories <sec:convex-histories>
 
