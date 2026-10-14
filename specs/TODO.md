@@ -1,5 +1,5 @@
 ---
-next_project_number: 785
+next_project_number: 786
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 785
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -90,6 +90,7 @@ next_project_number: 785
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
+785 [NOT STARTED] — Record the two Lean plan-authoring gate-collision facts in...
 
 ### Formula Refactor
 
@@ -123,6 +124,92 @@ next_project_number: 785
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 785. Record the two Lean plan-authoring gate-collision facts in the lean extension source store
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 778
+
+**Description**: Record, in the lean extension's source store, the two gate-collision facts a Lean implementation plan must anticipate before it is written: that any change to Lean source line counts trips TWO independent generated surfaces rather than one, and that verify-deploy.sh's target argument is a deploy-tree root rather than an extension subdirectory.
+
+NOTHING IN EITHER REPOSITORY IS BROKEN, AND THIS IS NOT A DATA-REPAIR RECORD. Both gaps were observed during an implementation run and both were already resolved in that run -- the drifted generated file was regenerated and staged, and the unmeetable criterion was closed as an exclusion. `typst/generated/status.typ`, the inventory blocks, the pre-commit hook and `typst-sync-check.sh` are all correct as they stand; do not re-edit them. This record's entire deliverable is plan-authoring prose in the lean extension's source store plus its wiring.
+
+=== ITEM 1 -- THE SECOND GENERATED SURFACE ===
+
+MEASURED. A phase commit was blocked by the repository's pre-commit hook, which runs `scripts/typst-sync-check.sh --counts-only`. A +12-line Lean docstring addition had moved `formalsystem-line-count` in the generated `typst/generated/status.typ` (353796 -> 353808). The originating plan had anticipated the generated-surface collision class only for `README.md`'s module-inventory block, which it deliberately scheduled into its final phase; it had not anticipated this second generated surface at all. Remedy applied in-run: `bash scripts/typst-sync-check.sh --fix`, then staging that file into the same phase commit.
+
+THE DURABLE LESSON TO RECORD. Any change to Lean source line counts -- including a pure docstring or comment addition that adds no declaration -- trips two independent generated surfaces:
+
+  (a) The module-inventory blocks (`README.md`, `FormalSystem/Metalogic/README.md`), regenerated via `scripts/check-module-invariants.sh --emit-inventory`.
+  (b) `typst/generated/status.typ`, regenerated via `scripts/typst-sync-check.sh --fix`.
+
+The asymmetry is the load-bearing part, and the guidance must state it rather than merely listing both surfaces: surface (b) is enforced by a pre-commit hook, so drift there BLOCKS the commit of the very phase that caused it. Surface (a) is checked by a later verification step and so can legitimately be scheduled into a final reconciliation phase. A plan that schedules only (a), or that schedules (b) late alongside (a), will have its FIRST phase commit refused. Two further mechanical facts the guidance should carry, because each changes what a plan author needs to do: the hook fires only when the staged set touches a `.lean` path (a prose-only phase is a fast no-op and needs no regeneration step), and the hook is blocking rather than auto-regenerating, so the regeneration is an explicit plan step with its own staged file, not something that happens underneath the commit. The guidance should also say that CI runs the full `typst-sync-check.sh` Check 2 as the unbypassable backstop, so `--no-verify` defers the collision rather than avoiding it.
+
+=== ITEM 2 -- verify-deploy.sh TARGET SHAPE ===
+
+MEASURED. A plan's final-phase verification criterion invoked `verify-deploy.sh` with an EXTENSION DIRECTORY as its target. The script requires a deploy-tree ROOT (here `/home/benjamin/.config/nvim`), so the criterion was unmeetable exactly as written, and the phase closed `[COMPLETED WITH EXCLUSIONS]` partly for that reason. Re-run at the correct target: gate 3 (doc-lint) was already red with 10 pre-existing findings, none of which named the file the run had edited; gate 4 (task-reference lint) passed.
+
+THE DURABLE LESSON TO RECORD. When a plan's verification criterion invokes `verify-deploy.sh` against source-store work, the target argument is a deploy-tree root, never an extension subdirectory. The guidance should state the correct argument shape positively (what to pass), not only the prohibition, and should note the corollary a plan author needs: because the gate set runs against the whole deploy tree, a red gate there may be entirely pre-existing and unrelated to the plan's own edits, so the criterion should be phrased to distinguish findings that name the plan's own files from the tree's standing baseline.
+
+=== DELIMITATION FROM THE verify-deploy CONTEXT-BUDGET FIXTURE RECORD -- READ THIS BEFORE TREATING EITHER RECORD AS A DUPLICATE ===
+
+The source-store repository's task space already holds record #389 `verify_deploy_context_budget_fixture_missing_git_add` [not_started], which owns a DIFFERENT root cause of the same gate's unmeetability: `test-verify-deploy-context-budget.sh`'s fixture runs `git init` on a scratch directory but never `git add`, so Gate 22 discovers files via `git ls-files` against an empty index, finds zero `.sh` files, and exits 2 -- failing Gate 8 (`run-all.sh`) and therefore the complete gate set at 1 of 36. That is a real defect in a test fixture, fixable by code.
+
+ITEM 2 ABOVE IS NOT THAT DEFECT. Item 2 is a plan-AUTHORING error about the shape of the target argument: the criterion named the wrong kind of path, and would have been unmeetable as written even with #389's fixture fixed. Conversely, #389's fixture defect would still make the full gate set fail even for a plan that named the target correctly. The two are independent and neither record subsumes the other; do not close either as a duplicate of the other.
+
+FOLD INVITATION, FOR A MIGRATOR. If a migrator is already touching #389, item 2's one-paragraph remedy may be better folded into that record as an amendment than carried here, since both concern the same script and a reader meeting one will want the other. Item 1 is unrelated to #389 and must stay wherever this record lands.
+
+=== WHY ONE RECORD RATHER THAN TWO ===
+
+The two items have independent root causes but a single edit surface: both are plan-authoring guidance for the same audience, both land in the same new or extended guidance file, and both require the same `index-entries.json` entry and the same referrer line. Filed as two records they would collide on all three paths with no mechanism to serialize them, and item 2 alone is one paragraph -- too small to carry a record's overhead, and flagged above as a possible fold into #389. Filing them together also keeps the delimitation note and the cross-repo siting note in one place rather than duplicated. The guidance file must state the two items as two separately checkable conditions, not blur them into one "watch out for gates" paragraph.
+
+=== SITING WITHIN THE LEAN EXTENSION, AND THE ONE OPEN QUESTION ===
+
+Both items are sited in the lean extension's source store, as approved at dispatch. For item 1 this is unambiguous: the trigger condition is "a change to Lean source line counts" and both generated surfaces are this repository's own, so the knowledge is Lean-and-repository-specific and belongs beside the existing `context/project/lean4/` material. For item 2 there is a genuine open question the implementer should resolve in research rather than assume: `verify-deploy.sh` is a core-owned script, so its target-shape fact is arguably core knowledge. The approved siting is the lean extension because the measured failure was a Lean plan's criterion and a Lean plan author is the reader who needs it. If research concludes item 2 belongs in a core home instead, RAISE IT rather than silently editing core -- several core-extension paths are claimed by other open records, and an unserialized edit there is exactly the collision this repository's siting discipline exists to prevent.
+
+A grep of the lean extension's source store finds no existing home for either fact: nothing there mentions `typst-sync-check`, `check-module-invariants`, `generated/status.typ`, `verify-deploy`, pre-commit hooks or generated surfaces. A new file under `context/project/lean4/patterns/` is therefore the expected shape, wired the way `patterns/dependency-tracing.md` is wired -- an `index-entries.json` entry plus a pointer line in `EXTENSION.md`'s context-pointer list. An unreferenced guidance file is not guidance, it is a file: the entry and the referrer are part of THIS change, not a follow-up.
+
+IF A DIFFERENT FILE PATH IS CHOSEN THAN THE ONE IN file_scope, WIDEN file_scope FIRST via `update-task-status.sh` rather than writing into a file_scope-unlisted location silently.
+
+=== SOURCE-STORE BOUNDARY ===
+
+`.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect. Resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension and edit at the mirroring path there, per `.claude/rules/source-store-deploy-boundary.md`. The owning extension here is `lean`, NOT `core`: its source store is `/home/benjamin/.config/nvim/agent-system/extensions/lean`, so the edit target is `agent-system/extensions/lean/**` and never a deployed `.claude/**` tree. Then redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+
+=== CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION, NOT A DEFECT TO FIX HERE ===
+
+This record is filed in the BimodalLogic task space while its edit target resolves only under `/home/benjamin/.config/nvim/`. That mismatch is deliberate and was approved: the user was shown both gaps with their citations AND this siting trade-off, and chose to file here anyway so the record sits beside the run that measured it. A migrator should treat it as a deliberate choice, not as an authoring slip to be corrected in place.
+
+Three adjacent records in the source-store repository's own task space bear on this condition, named here so a future reader or migrator finds them without a search:
+
+  #390 `migrate_mis_sited_agent_system_tasks` -- the migration task for exactly this class of record. It already lists ten such records and explicitly names this repository's residue-index-modulus-convention record as one that names `agent-system/**` paths while appearing in no item of its list. THIS record is a further member of that class and should be added to it if that record is executed.
+  #401 `cross_repo_source_store_gate_blindness` -- documents a prior orchestrate conclusion-stage dispatch from this repository colliding with records filed in the source-store repository from identical issue entries. Read it before executing this record: the collision it documents is the one most likely to recur here.
+  #391 `agent_system_task_siting_and_target_root` -- owns the authoring hole that permits this siting, and the adjacent question of how a cross-repo task should declare its file_scope. Whatever it settles governs how THIS record's file_scope should have been written.
+
+NO DEPENDENCY EDGE EXPRESSES ANY OF THIS, AND NONE CAN. Those three records live in a different repository's task space, so no dependency edge and no file_scope overlap gate can span the two systems. The coordination above is a manual read, stated here because nothing mechanical will enforce it.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). The script names (`typst-sync-check.sh`, `check-module-invariants.sh`, `verify-deploy.sh`), the generated-file paths, the flag spellings (`--counts-only`, `--fix`, `--emit-inventory`), the hook path `.githooks/pre-commit` and the variable name `formalsystem-line-count` are durable anchors and may be cited freely. The originating task numbers, the issue entry_ids, the adjacent record numbers above and the specific measured line-count values may NOT appear in the guidance prose -- they live in this record only. State the guidance as what a plan author does and what the gates check, never as a narration of a past run's history or of this guidance's own drafting.
+
+=== ACCEPTANCE ===
+
+(1) The guidance names BOTH generated surfaces of item 1 with their regeneration commands, and states the pre-commit-versus-later-verification asymmetry explicitly enough that a plan author can tell which surface may be deferred to a final phase and which may not.
+(2) It states the `.lean`-paths-only trigger condition and the blocking (non-auto-regenerating) character of the hook, so a plan author knows when a regeneration step is needed and that it is an explicit step with a staged file.
+(3) It states item 2's correct `verify-deploy.sh` target shape positively, and carries the pre-existing-findings corollary for phrasing a meetable criterion.
+(4) It presents the two items as two separately checkable conditions.
+(5) It carries no task-number references, no record-versioning language, and no measured line-count values from the originating run.
+(6) The new or extended file has an `index-entries.json` entry whose `line_count` and `keywords` agree with the file as landed, plus at least one referrer reachable by a plan author who does not already know the file's name.
+(7) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean` afterwards.
+(8) If item 2 was relocated to a core home or folded into the source-store repository's fixture record instead, that decision and its destination are stated in the completion summary.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the residue-index modulus-convention record (task 778) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Both originating entries are in `specs/778_residue_index_modulus_convention_record/issues.jsonl`: item 1 is entry_id `iss_1791950541564_ZAJr96` (class `gate-collision`, severity minor), item 2 is entry_id `iss_1791950893587_oVovJc` (class `gate-collision`, severity costly). The user was shown both gaps with these citations and the cross-repo siting trade-off before this record was dispatched.
+
+---
 
 ### 784. Retire migrated source store bound records
 - **Status**: [BLOCKED]
