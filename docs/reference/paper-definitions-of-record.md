@@ -920,10 +920,10 @@ inside itself (true for every entry below, verified at recording time) — the e
 
 ```latex
 \begin{Ddef} \label{def:temporal-order}
-	A \textit{temporal order} is a nontrivial totally ordered abelian group $\D = \tuple{D, +, 0, \leq}$ with \textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$.
+	A \textit{temporal order} is a nontrivial totally ordered abelian group $\D = \tuple{D, +, 0, \leq}$ with \textit{positive cone} $D^+ \coloneq \set{x \in D \mid x \geq 0}$.
 \end{Ddef}
 ```
-sha256: `bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f`
+sha256: `1fa55867b57322f0dd7d6cc346e3ebe09809a5990832b34de58b1805acd14894`
 
 ### `def:task-relation` — task relation, nonempty `W`, reflection convention, fiber, cone, segment
 
@@ -937,16 +937,16 @@ constraints on that data, not part of it — see `def:frame` below.
 
 ```latex
 \begin{Ddef} \label{def:task-relation}
-	A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the \textit{reflection convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$, determining the following for any world states $w, v \in W$ and durations $x, y \in D$:
+	A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the \textit{reflection convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x > 0$, determining the following for any world states $w, v \in W$ and durations $x, y \in D$:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
-		\item[\it Fiber:] $\fib{w, x} \coloneq \set{u \in W : w \Rightarrow_x u}$.
+		\item[\it Fiber:] $\fib{w, x} \coloneq \set{u \in W \mid w \Rightarrow_x u}$.
 		\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}$ where $x > 0$.
 		\item[\it Segment:] $[w, v]_x^y \coloneq \fib{w, x} \cap \fib{v, -y}$ where $x, y \geq 0$.
 	\end{enumerate}
   \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `2179def7a16a79de8df937c7dcb44ce08b8068623db1f755d96e230776f6a737`
+sha256: `f35b1c7412b592c99a7a4bdc2889a5d19cf23712e4c9c08cd51cda917e3b60c5`
 
 ### `def:directed` — directed family (used by Saturation) — **DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest)**
 
@@ -972,7 +972,7 @@ sha256: `5164210f644bb467aadc3bd279a5774cc14b67e88bdee6b8373a2025a22031f1`
 
 ```latex
 \begin{Ddef} \label{def:frame}
-	Letting a nonempty family of sets $\mathcal{S}$ be \textit{$\supseteq$-directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$, a \textit{task frame} is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world states, $\D$ is a temporal order, and $\Rightarrow$ is a task relation satisfying the following for all positive durations $x, y \geq 0$:
+	Letting a nonempty family of sets $\mathcal{S}$ be \textit{$\supseteq$-directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$, a \textit{task frame} is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world states, $\D$ is a temporal order, and $\Rightarrow$ is a task relation satisfying the following for all durations $x, y \geq 0$:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
 		\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.
 		\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.
@@ -986,7 +986,7 @@ sha256: `5164210f644bb467aadc3bd279a5774cc14b67e88bdee6b8373a2025a22031f1`
   \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `b5d3bf93cf07486d239afcbc9379883fdbea1194e97d560b391ccbdc128b9d99`
+sha256: `1150ed22cb6a9e8e0f84a57e3b342fafb143930370814ff4f4fdf9790be5604d`
 
 Four axioms, not more, not fewer — **Nullity is NOT an axiom**, it is `lem:nullity` below, DERIVED
 from Seriality and Limit. Each axiom is also tracked individually (sub-anchors of `def:frame`, no
@@ -1034,17 +1034,23 @@ they are not expressible while the constraints are fields, which is why the enco
    Also in this block: "for $x, y \geq 0$" became "for all positive durations $x, y \geq 0$" —
    wording only, no change to the quantifier's range.
 
-### `lem:nullity` — DERIVED: `w ⇒₀ w` (Nullity is not an axiom)
+### `lem:nullity` — DERIVED: `w ⇒₀ u ↔ w = u` (Nullity is not an axiom)
 
 ```latex
 \begin{Lthm} \label{lem:nullity}
-	$w \Rightarrow_0 w$ for every world state $w \in W$ in every task frame $\F = \tuple{W, \D, \Rightarrow}$.
+	$w \Rightarrow_0 u$ if and only if $w = u$, for all world states $w, u \in W$ in any task frame $\F$.
 \end{Lthm}
 ```
-sha256: `94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973`
+sha256: `8442e2bf6b5f6515f2f906132bbe15fe919973d82ae573dba29a919ad14636f5`
 
-Proved (per the paper) from Seriality at `x = 0` plus Limit — choice-free, unlike `thm:extension`
-below which needs Zorn's lemma.
+Proved (per the paper) from Seriality at `x = 0` plus Limit. The lemma is a **biconditional**
+characterising `⇒₀` as the identity relation on `W`; the reflexivity half (`w ⇒₀ w`) is the weaker
+statement the tree's `FrameOver.nullity` carries, and the biconditional is
+`FrameOver.nullity_identity` (`Semantics/TaskFrame.lean`), with
+`nullity_identity_of_serial_limit` deriving it choice-free from *Seriality* and *Limit* over a bare
+task relation. The choice-freeness contrast with `thm:extension` (which needs Zorn's lemma) is a
+true property of the Lean proofs, but the paper footnote that asserted it was removed from
+`thm:extension` — see "Drift correction (2026-10-14)" above.
 
 ### `def:world-history` — partial history, convex history, possible world, the extension order, `H_F`
 
@@ -1052,15 +1058,16 @@ below which needs Zorn's lemma.
 \begin{Ddef} \label{def:world-history}
 	A \textit{partial history} over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$.
 	A \textit{convex history} is any partial history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever $x, z \in X$ and $x < y < z$.
-  A \textit{possible world} is any convex history whose domain is total, so that $X = D$.
+	A \textit{world history}, or \textit{possible world}, is any partial history whose domain is \textit{total}, so that $X = D$.
 	A partial history $\sigma$ \textit{extends} $\tau$ just in case $\dom{\tau} \subseteq \dom{\sigma}$ and $\tau(x) = \sigma(x)$ for all $x \in \dom{\tau}$.
 	The set of all possible worlds over $\F$ is denoted $H_{\F}$.
 \end{Ddef}
 ```
-sha256: `550661d3b388c3ef494ffb81c643ab5a550f996a5a86329afc557f41ed7872e7`
+sha256: `e94a15db019603c0c924690c29b84b6b82d2b9443e87e0050e3ffa184533c889`
 
-Layering, exactly as the paper states it: **partial history** (nonempty domain, no convexity
-requirement) → **convex history** (convex domain) → **possible world** (`X = D`). The
+Layering, as the paper states it: **partial history** (nonempty domain, no convexity
+requirement), **convex history** (convex domain), and **world history**/**possible world**
+(`X = D`), the last defined off *partial* history rather than off convex history. The
 vocabulary "task-constrained function" is retired paper-wide and must not be reintroduced as
 current terminology (see the paper-refactor cluster's task descriptions, which record the same
 point). `H_F` denotes the *possible worlds*, not the convex histories.
@@ -1069,9 +1076,11 @@ point). `H_F` denotes the *possible worlds*, not the convex histories.
 sec:Construction states the top tier without the middle one: "A \textit{world history} is any
 partial history $\tau : X \to W$ whose domain is \textit{total}, so that $X = D$", writing $H_{\F}$
 for the set of all world histories and then calling them the possible worlds. The appendix
-`def:world-history` pinned above routes the same tier through convex histories ("any convex
-history whose domain is total"). The two phrasings denote the **same set**, because a total
-domain is trivially convex. The Lean definition follows the body: `WorldHistory F` is
+`def:world-history` pinned above now states the tier the same way, off partial history and under
+both names ("A \textit{world history}, or \textit{possible world}, is any partial history whose
+domain is \textit{total}"); it previously routed the tier through convex histories. Either
+phrasing denotes the **same set**, because a total domain is trivially convex. The Lean
+definition follows the body: `WorldHistory F` is
 `{τ : PartialHistory F // τ.IsTotal}`, convexity is the predicate `PartialHistory.IsConvex`, and
 `PartialHistory.IsTotal.isConvex` records the inclusion. The paper text is not edited, and this
 note adds no anchor, `verbatim:` block, `sha256:` line or manifest row.
@@ -1079,23 +1088,20 @@ note adds no anchor, `verbatim:` block, `sha256:` line or manifest row.
 ### `thm:extension` — every partial history extends to a possible world
 
 ```latex
-\begin{Tthm} \label{thm:extension}
-	Every partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some possible world $\sigma \in H_{\F}$.%
-	  \footnote{
-	    The proof appeals to Zorn's lemma, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Saturation} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Saturation} for finite $W$ in \textbf{\ref{cor:saturation-finite}}, both of which are choice-free.
-	  }
+\begin{Tthm}[Extension] \label{thm:extension}
+	Every partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some possible world $\sigma \in H_{\F}$.
 \end{Tthm}
 ```
-sha256: `65811dcff91a3dd840058353b14667d8abfcf5d94c8be9979944f03be5234379`
+sha256: `0677bc175c0717349e5e69f257f43bd06976bffd89c3877a9f020496416822d7`
 
 ### `cor:occurrence` — DERIVED: every world state occurs at any prescribed time in some possible world (renamed from `thm:occurrence`; see "Drift correction" below)
 
 ```latex
-\begin{Cthm} \label{cor:occurrence}
+\begin{Cthm}[Occurrence] \label{cor:occurrence}
 	For any task frame $\F = \tuple{W, \D, \Rightarrow}$, world state $w \in W$, and time $x \in D$, there is a possible world $\tau \in H_{\F}$ where $\tau(x) = w$, and so $H_{\F} \neq \emptyset$.
 \end{Cthm}
 ```
-sha256: `231c1d3cd0bf70a323775c623ed36761c6e0c4990bf72106c8323a9fe78842ec`
+sha256: `e4be0b08ecd39e559fff831361440f1af2c51760a9c053e1f2dba4a65b025af4`
 
 Follows from `thm:extension`, hence is also a ZFC (not choice-free) result. The paper merged the
 former `thm:occurrence` (existential over both the history and the time) with a separate
@@ -1109,10 +1115,11 @@ under `def:time-shift-histories`, which remains untracked).
 
 ```latex
 \begin{Ddef} \label{def:constraints}
-	For a partial history $\tau : X \to W$ over a task frame $\F$ and duration $z \in D \setminus X$, the \textit{constraints on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$ when both $t,s \in X$, and the fibers $\fib{\tau(t), z - t}$ for $t \in X$ otherwise.
+	For a partial history $\tau : X \to W$ over a task frame $\F$ and duration $z \in D \setminus X$, split $X$ into $A \coloneq \set{t \in X \mid t < z}$ and $C \coloneq \set{s \in X \mid s > z}$, which exhaust $X$ since $z \notin X$, and write $F_t \coloneq \fib{\tau(t), z - t}$ for $t \in X$ and $S_{t,s} \coloneq [\tau(t), \tau(s)]_{z-t}^{s-z}$ for $\tuple{t,s} \in A \times C$.
+	The \textit{constraints on $z$} are the segments $S_{t,s}$ for $\tuple{t,s} \in A \times C$ when $A$ and $C$ are both nonempty, and the fibers $F_t$ for $t \in X$ otherwise.
 \end{Ddef}
 ```
-sha256: `50aadae779c7d57c810e94209614b5cdfe2590fa82c1c0793db948e8d0917e28`
+sha256: `f39ba974df411b9f436932fd4414146e66b333219de896758028974fc4297a21`
 
 Promoted from lead-in prose to a numbered definition so the lemmas below can cite it by name.
 The 2026-08-12 wave shortened the defined term to "the *constraints on `z`*" and added an explicit
@@ -1124,16 +1131,16 @@ appear in the live paper — this record quotes whichever one appears inside the
 
 ```latex
 \begin{Lthm} \label{lem:nesting}
-	For any partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the fibers $\fib{\tau(t'), z - t'} \subseteq \fib{\tau(t), z - t}$ nest for all times $t \leq t' < z$ in $X$ and symmetrically for all times $z < t' \leq t$ in $X$, while the segments $[\tau(t'), \tau(s')]_{z - t'}^{s' - z} \subseteq [\tau(t), \tau(s)]_{z - t}^{s - z}$ nest for all times $t \leq t' < z < s' \leq s$ in $X$.
+	For a partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the fibers and segments of \textbf{\ref{def:constraints}} nest: $F_{t'} \subseteq F_t$ for all times $t \leq t' < z$ in $X$ and symmetrically for all times $z < t' \leq t$ in $X$, while $S_{t',s'} \subseteq S_{t,s}$ for all times $t \leq t' < z < s' \leq s$ in $X$.
 \end{Lthm}
 ```
-sha256: `ed036f28b70b99d4294515c0f1da64a62e471aa4795394cda4d9010b1f1971a7`
+sha256: `6ad1e33d546003cc35a454687dfdd2dca32e99668f1f5d92ad9f0616a2f3a61d`
 
-The block carries an in-source `% FIX:` authorial note about the `\Fib` macro's italics. That line
-is literal paper source and is inside the hashed region, so it is quoted here verbatim like any
-other in-block comment; it is the paper author's note to themselves, not an instruction to this
-repository. Paper order places this lemma immediately after `def:constraints` and before
-`lem:nonempty`, which is why both sit here rather than beside `lem:constraint`.
+The lemma is now stated in terms of `def:constraints`'s own named families `F_t` and `S_{t,s}`
+rather than spelling the fibers and segments out again; the in-source `% FIX:` authorial note about
+the `\Fib` macro's italics that the block used to carry is gone from the hashed region. Paper order
+places this lemma immediately after `def:constraints` and before `lem:nonempty`, which is why both
+sit here rather than beside `lem:constraint`.
 
 ### `lem:nonempty` — DERIVED: every imposed constraint is nonempty
 
@@ -1255,7 +1262,7 @@ closes. See "Downstream consumers" below.
 
 ```latex
 \begin{Ddef} \label{def:BLplus-language}
-	The language $\BL \coloneq \tuple{\SL,\bot,\rightarrow,\Box,\since,\until}$ where $\SL \coloneq \set{p_i: i\in \N}$ is a countable set of \textit{sentence letters} with operators for \textit{falsity}, \textit{material implication}, \textit{metaphysical necessity}, \textit{since}, and \textit{until}, respectively.
+	The language $\BL \coloneq \tuple{\SL,\bot,\rightarrow,\Box,\since,\until}$ where $\SL \coloneq \set{p_i \mid i\in \N}$ is a countable set of \textit{sentence letters} with operators for \textit{falsity}, \textit{material implication}, \textit{metaphysical necessity}, \textit{since}, and \textit{until}, respectively.
 	Well-formed sentences of $\BL$ are defined by:
 	\[
 		\varphi, \psi \Coloneq p_i \mid \bot \mid \varphi \rightarrow \psi \mid \Box\varphi \mid \varphi\since\psi \mid \varphi\until\psi.
@@ -1277,7 +1284,7 @@ closes. See "Downstream consumers" below.
   \vspace{-.25in}
 \end{Ddef}
 ```
-sha256: `67a17cd2e0b0867fdbcfdaa48fe9765b135978dbaf34459ca2055629533729b3`
+sha256: `b7027d468a844f09068c7dc765498e4668708ac09b175cfc20594bcaba5d3c95`
 
 ### `def:BLplus-semantics` — the `\since` / `\until` truth clauses (and the argument-order footnote) — **DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest)**
 
@@ -1405,22 +1412,22 @@ sha256: `5d9a6febeae6e2dd4c78e1912616e75e6ae7896c929e75345b2ba6403c0693c9`
 
 ```latex
 \begin{Ddef} \label{def:time-shift-histories}
-	For a task frame $\F = \tuple{W, \D, \Rightarrow}$, the possible worlds $\tau, \sigma \in H_{\F}$ are \emph{time-shifted from $x$ to $y$}--- written $\tau \approx_x^y \sigma$--- \textit{iff} $\tau(z) = \sigma(z + y - x)$ for all $z \in D$.
+	For a task frame $\F = \tuple{W, \D, \Rightarrow}$, the possible worlds $\tau, \sigma \in H_{\F}$ are \emph{time-shifted from $x$ to $y$}--- written $\tau \approx_x^y \sigma$--- if and only if $\tau(z) = \sigma(z + y - x)$ for all $z \in D$.
 \end{Ddef}
 ```
-sha256: `0b5c05e8f579807c7701cd3d28cb8f7d00a2ec42d85eec2515c48edab355b88d`
+sha256: `99588bf0dec609563ce3fe129bee59b3ca36826726349b3e0f7fc403efdbedbc`
 
 ### `def:frame-validity` — validity over a frame
 
 ```latex
 \begin{Ddef} \label{def:frame-validity}
-	A well-formed sentence $\varphi$ of $\BL$ is \emph{valid over a task frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write $\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible world $\tau \in H_{\F}$, and time $x \in D$.%
-    \footnote{
-      Since $H_{\F} \neq \emptyset$ for every task frame by \textbf{\ref{cor:occurrence}}, frame validity is never vacuous: every task frame contributes evaluation points, and so $\nvDash_{\F} \bot$ for every task frame $\F$.
-    }
+	A well-formed sentence $\varphi$ of $\BL$ is \emph{valid over a task frame} $\F = \tuple{W, \D, \Rightarrow}$--- written $\vDash_{\F} \varphi$--- just in case $\M,\tau,x \vDash \varphi$ for every model $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ over $\F$, possible world $\tau \in H_{\F}$, and time $x \in D$.%
+    % \footnote{
+    %   Since $H_{\F} \neq \emptyset$ for every task frame by \textbf{\ref{cor:occurrence}}, frame validity is never vacuous: every task frame contributes evaluation points, and so $\nvDash_{\F} \bot$ for every task frame $\F$.
+    % }
 \end{Ddef}
 ```
-sha256: `86a0c4b220bc43d04a2bfc14ccd14f0dab0182ff735ffde9c660e3a0ce7b2259`
+sha256: `4fdc41ce401c80032aef112060e0b9ce932b82c777759272bba7998dc113ad61`
 
 ### `def:logical-consequence` — logical consequence and (global) validity
 
@@ -1479,18 +1486,10 @@ sha256: `dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257`
 
 ```latex
 \begin{Ddef} \label{def:BX}
-  The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} extends \textbf{CPL} to include the metarules \textbf{\aref{TN}} and \textbf{\aref{TR}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{US}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.%
-    \footnote{
-      \textbf{\aref{TN}} is (half of) Burgess's necessitation rule \textsc{TG}~\cite[\S1.3]{Burgess1982}, and \textbf{\aref{TS}} is his \textit{No Last Element} variant~\cite[\S1.6]{Burgess1982}.
-      \textbf{\aref{UC}}, \textbf{\aref{UG}}, \textbf{\aref{US}}, \textbf{\aref{UF}}, and \textbf{\aref{UI}} are his axioms A1a, A2a, A3a, A5a, and A6a respectively~\cite[\S1.3]{Burgess1982}, their past-tense duals following by \textbf{\aref{TR}}, his working mirror-image convention.
-      \textbf{\aref{CN}} is his axiom A7a, independently confirmed by Xu as defining linear frames~\cite[\S3]{Xu1988}.
-      \textbf{\aref{UE}} is not among Burgess's numbered axioms but follows immediately from \textbf{\aref{UC}} taking $\psi = \top$.
-      \textbf{\aref{TC}}, \textbf{\aref{UT}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} are not found in Burgess or Xu and are the present system's own additions.
-      \textbf{\aref{TL}} corresponds in spirit to the local-linearity axioms Xu gives for his frame class $\mathsf{V}_3$~\cite[\S3]{Xu1988}, though the exact correspondence among his formulas is not pinpointed here.
-    }
+  The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} extends \textbf{CPL} to include the metarules \textbf{\aref{TN}} and \textbf{\aref{TR}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{US}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.
 \end{Ddef}
 ```
-sha256: `2d1a59a446b32ff9280673f51ae26705f697a3ed21509769dcb7437142725651`
+sha256: `8fdba7ab64b74d245bd47bfa14e6baac17c9d2ce67fdea5371a5fa9fc624a903`
 
 ### `def:TMplus-f` — the discrete Burgess–Xu tense logic BX_f, and its Z-time footnote — **DANGLING as of the 2026-09-07 rename-absorption re-pin: RENAMED to `def:BX-z` (removed from manifest)**
 
@@ -1588,11 +1587,10 @@ now cites `prop:archimedean` for the failure of `UZ`/`Z1` over non-Archimedean d
 ```latex
 \begin{Ddef} \label{def:BX-z}
   The \textit{Discrete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{z}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{UZ}} and \textbf{\aref{Z1}} presented in \textbf{\S\ref{sub:Extension}}.
-  Neither \textbf{\aref{UZ}} nor \textbf{\aref{Z1}} is due to Burgess or Xu; both are the present system's own principles for capturing $\Z$-time.
-  Since \textbf{\aref{UZ}} and \textbf{\aref{Z1}} fail over every discrete temporal order that is not Archimedean (\textbf{\ref{prop:archimedean}}), and the Archimedean discrete orders are exactly $\Z$-time (\textbf{\S\ref{sub:Extension}}), the discrete task frames over which \textbf{BX}$_\textsc{z}$ and \textbf{TM}$_\textsc{z}$ are sound and complete are exactly those over $\Z$-time.
+  Since \textbf{\aref{UZ}} and \textbf{\aref{Z1}} fail over every \textsc{Discrete} temporal order that is not Archimedean by \textbf{\ref{prop:archimedean}}, and a \textsc{Discrete} temporal order is Archimedean just in case it is isomorphic to $\Z$, the \textsc{Discrete} temporal orders over whose task frames \textbf{TM}$_\textsc{z}$ is sound are exactly those of $\Z$-time.
 \end{Ddef}
 ```
-sha256: `21277d0a1046e1bc1dfe7b9a215c24a07fa0008d27a22234886a8e94b884456b`
+sha256: `96e4b25e71c457bd3618f3a818b1852176b345d2c86199fbe16b6c46076ba334`
 
 ### `def:BX-d` — the dense Burgess–Xu tense logic BX_d (RENAMED from `def:TMplus-d`)
 
@@ -1602,10 +1600,9 @@ definition cites `\S`Extensions for them.
 ```latex
 \begin{Ddef} \label{def:BX-d}
   The \textit{Dense Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{d}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{DN}} and \textbf{\aref{NN}} presented in \textbf{\S\ref{sub:Extension}}.
-  Neither \textbf{\aref{DN}} nor \textbf{\aref{NN}} is due to Burgess or Xu; both are the present system's own principles for the dense extension.
 \end{Ddef}
 ```
-sha256: `5783d60a441fcb38f44e285b7766ee176c366a1c3948daffa9684855d656dc24`
+sha256: `2423da4688632bfea7d0d3613a4bca4953c6197e6120dd43f79cbd5e44e294d0`
 
 ### `def:BX-r` — the dense-and-complete Burgess–Xu tense logic BX_r (RENAMED from `def:TMplus-c`), CO derived
 
@@ -1662,42 +1659,42 @@ sha256: `bce3cc3be256f7b4c10e34a397e4b3b14abe4e8ed6728e8e91768e9a2ad8b2af`
 
 ```latex
 \begin{Tthm}[Soundness] \label{thm:TM-soundness}
-	If $\vdash \varphi$, then $\vDash \varphi$.
+	Each system $\Lambda$ of \textbf{\ref{def:TMplus}} is sound: if $\Gamma \vdash_\Lambda \varphi$, then $\Gamma \vDash_{\mathsf{C}_\Lambda} \varphi$.
 \end{Tthm}
 ```
-sha256: `23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529`
+sha256: `05ed3f68f6491d2be65d46053a9d56df7ca606daf11837b4da4a1ffca68a68ab`
 
 ### `app:discrete` — the Discrete correspondence theorem (DF)
 
 ```latex
 \begin{Tthm} \label{app:discrete}
-	$\vDash_{\D} (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ iff $\D$ is \textsc{Discrete}.%
+	$\vDash_{\D} (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ if and only if $\D$ is \textsc{Discrete}.%
 	  \footnote{
 	    The theorems of this kind cannot be sharpened to single task frames.
 	    The \textit{static} task frame over $\D$, in which $w \Rightarrow_x u$ just in case $w = u$, satisfies every clause of \textbf{\ref{def:frame}}--- each cone and each nonempty fiber and segment being a singleton--- yet its possible worlds are constant, so that every sentence of $\BL$ has the same truth value at every time along a possible world and \textbf{\aref{DF}}, \textbf{\aref{DN}}, and \textbf{\aref{CO}} are all valid over it whatever $\D$ may be.
-	    Since the tense operators see $\D$ only through the convex histories that $\Rightarrow$ admits, correspondence holds over the fibre $\Tcls{\D}$ rather than frame by frame, as the Lean 4 repository for this paper records.
+	    Since the tense operators see $\D$ only through the possible worlds that $\Rightarrow$ admits, correspondence holds over the fibre $\Tcls{\D}$ rather than frame by frame, as the Lean 4 repository for this paper records.
 	  }
 \end{Tthm}
 ```
-sha256: `b23ad82538bf651b879667b90954669ab952d94fee55e47d97b4298df06c56ee`
+sha256: `465b089fd41ed5b599cf080621c0181bfcce5ef8374d44f9f147709d23409864`
 
 ### `app:dense` — the Dense correspondence theorem (DN)
 
 ```latex
 \begin{Tthm} \label{app:dense}
-	$\vDash_{\D} \Future\Future\varphi \rightarrow \Future\varphi$ iff $\D$ is \textsc{Dense}.
+	$\vDash_{\D} \Future\Future\varphi \rightarrow \Future\varphi$ if and only if $\D$ is \textsc{Dense}.
 \end{Tthm}
 ```
-sha256: `2b12df669aeba06156557e0bddf36aaa2461a3e76fb01fe4b85dd0ad893a90c8`
+sha256: `8b6e84aed02d8ea8313a71fb3dbc71250a009c025e295c38fad1dbe9f257f24d`
 
 ### `app:complete` — the Complete correspondence theorem (CO)
 
 ```latex
 \begin{Tthm} \label{app:complete}
-	$\vDash_{\D} \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ iff $\D$ is \textsc{Complete}.
+	$\vDash_{\D} \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ if and only if $\D$ is \textsc{Complete}.
 \end{Tthm}
 ```
-sha256: `aee906f8218c159034fe60d26dfb309ebe55abd27c7257b4ce8b19a03fe0e8f2`
+sha256: `d62b8c533b7ee02f43de493e98b4111f048215f14353ef588c03c9bd530549ce`
 
 #### Reading note (of record) on `app:discrete` / `app:dense` / `app:complete`
 
@@ -1719,7 +1716,7 @@ Adjudication of record: the "Verdict (the front's definition of record)" finding
 definitional-review-and-closure research report (2026, `app:dense` conflict adjudication).
 
 
-### `def:frame-properties` — Discrete/Dense/Complete/Deterministic frame-class predicates
+### `def:frame-properties` — Discrete/Dense/Complete/Deterministic frame-class predicates, and the ℤ-time / ℝ-time task frames
 
 ```latex
 \begin{Ddef} \label{def:frame-properties}
@@ -1729,10 +1726,10 @@ definitional-review-and-closure research report (2026, `app:dense` conflict adju
 		\item[\sc Dense] if for any $x, y \in D$ where $x < y$, there exists $z \in D$ where $x < z < y$.
 		\item[\sc Complete] if every nonempty $S \subseteq D$ bounded above has a least upper bound in $D$.
 	\end{enumerate}
-	A task frame $\F = \tuple{W, \D, \Rightarrow}$ inherits these properties from $\D$.
+	A task frame $\F = \tuple{W, \D, \Rightarrow}$ inherits these properties from $\D$, and is a \textit{$\Z$-time task frame} or an \textit{$\R$-time task frame} just in case $\D$ is isomorphic to $\Z$ or to $\R$, respectively.
 \end{Ddef}
 ```
-sha256: `d47ebef79f2988c0573f44b944ac049ea85ac841e5edab1a6f551183885fb63b`
+sha256: `a8948afad219b9d3f52cd328bfeefe04f6ccde06bb4883cfc6dfdee67a7f70f9`
 
 Note: promoted into coverage by this task (previously listed under "Deliberately not covered"
 below, which is updated accordingly).
@@ -1746,10 +1743,10 @@ citing `def:frame-properties` for determinism is now wrong.
 
 ```latex
 \begin{Ddef} \label{def:deterministic}
-	A task frame $\F = \tuple{W, \D, \Rightarrow}$ is \textsc{Deterministic} just in case $u = v$ whenever $w \Rightarrow_x u$ and $w \Rightarrow_x v$ for $w, u, v \in W$ and $x \in D$, holding in both temporal directions since \textbf{\ref{def:task-relation}}'s reflection convention already extends $x$ over all of $D$.
+	A task frame $\F = \tuple{W, \D, \Rightarrow}$ is \textsc{Deterministic} just in case $u = v$ whenever $w \Rightarrow_x u$ and $w \Rightarrow_x v$ for $w, u, v \in W$ and $x \in D$. %, holding in both temporal directions since \textbf{\ref{def:task-relation}}'s reflection convention already extends $x$ over all of $D$.
 \end{Ddef}
 ```
-sha256: `edd71fb4ce625d2573b21975602f642f7de8fcf46c3c5e5996ab721bdca88110`
+sha256: `9a347781ddbb850ddcc5500f4a614309fd47fae7e20f63eaef7335a4ab1b0d3d`
 
 ### `def:BLstar-semantics` — the truth definition for the manuscript's `\BL^\star` (pinned 2026-09-20, promoted from the KNOWN-ANCHORS `LIVE-UNPINNED` list)
 
@@ -1791,7 +1788,7 @@ Note: **coverage extension, not a drift correction** — the whole-file `PINNED_
 following the 2026-08-13 22-anchor precedent recorded elsewhere in this file: a coverage extension
 adds a manifest row without asserting that the whole file was re-verified against a new commit.
 
-### `cor:saturation-finite` — every task frame with finite W satisfies Saturation, choice-free (renamed from `cor:spherical-finite`; **environment changed `Cthm` → `Lthm`** in the 2026-09-07 wave)
+### `cor:saturation-finite` — task relations on a finite W satisfy Saturation, choice-free (renamed from `cor:spherical-finite`; **environment changed `Cthm` → `Lthm`** in the 2026-09-07 wave)
 
 The manifest row was re-keyed from `cor:spherical-finite` to `cor:saturation-finite` at the
 2026-09-02 rename absorption, but the prose entry below still quoted the pre-rename *Spherical*
@@ -1805,31 +1802,30 @@ environment is now a lemma; that mismatch is the paper's, and this record follow
 
 ```latex
 \begin{Lthm} \label{cor:saturation-finite}
-	Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Saturation}, choice-free.
+	Task relations on finite set of world states $W$ satisfy \textit{Saturation}, choice-free.
 \end{Lthm}
 ```
-sha256: `ebf7547b10df6b764b1ccc5d965e0cf5c75cd8b09977ed1572b3d0fba48101c3`
+sha256: `98fac4cfb09991ec3046ab843e1d3fa5e089e2e52d50dbe7130bacdf8528353a`
 
 ### `cor:tm-completeness` — the Completeness corollary (TM sound but not complete; completeness carried by BL+)
 
 ```latex
 \begin{Cthm}[Completeness] \label{cor:tm-completeness}
-  A proof system $\mathbf{S}$ is \textit{strongly complete} over a class $\mathsf{C}$ of task frames just in case $\Gamma \vDash_{\mathsf{C}} \varphi$ (\textbf{\ref{def:class-validity}}) implies $\Gamma \vdash_{\mathbf{S}} \varphi$ for every set of sentences $\Gamma$, and \textit{weakly complete} over $\mathsf{C}$ just in case $\vDash_{\mathsf{C}} \varphi$ implies $\vdash_{\mathbf{S}} \varphi$.
-  Completeness is then carried by the following $\BL$ systems:
+  The $\BL$ systems are complete over their classes of task frames:
   \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
     \item[\bf TM] Strongly complete over all task frames.
     \item[\bf TM$_\textsc{d}$] Strongly complete over the dense task frames.
-    \item[\bf TM$_\textsc{z}$] Weakly complete over $\Z$-time.
-    \item[\bf TM$_\textsc{r}$] Weakly complete over $\R$-time.
+    \item[\bf TM$_\textsc{z}$] Weakly complete over the $\Z$-time task frames.
+    \item[\bf TM$_\textsc{r}$] Weakly complete over the $\R$-time task frames.
   \end{enumerate}
-  Strong completeness provably fails for $\Z$-time as well as $\R$-time where compactness fails, and so weak completeness is the appropriate target.%
-    \footnote{
-      These results, together with the soundness of the corresponding systems, are established in the Lean 4 \leanrepo{} for this paper, and so their proofs are not reproduced here.
-      Each system is also extended to include \textit{Determined} and governing axioms in the language with $\Stability$, each sound over the task frames in its class validating \textit{Determined} and weakly complete over the \textsc{Deterministic} task frames in that class.
-    }
+  Strong completeness provably fails over the $\Z$-time task frames as well as the $\R$-time task frames, where compactness fails.%
+    % \footnote{
+    %   These results, together with the soundness of the corresponding systems, are established in the Lean 4 \leanrepo{} for this paper, and so their proofs are not reproduced here.
+    %   Each system is also extended to include \textit{Determined} and governing axioms in the language with $\Stability$, each sound over the task frames in its class validating \textit{Determined} and weakly complete over the \textsc{Deterministic} task frames in that class.
+    % }
 \end{Cthm}
 ```
-sha256: `da75cac2b1c97db4458549c405a279762ea3a68977bd2ea1c3954e3dc4c97664`
+sha256: `f8f5b41f998e59322052accce9ac219dfbe9fe7931329bebbdb5b1cc855f0bce`
 
 ### `cor:tm-decidability` — the Decidability corollary (open) — **DANGLING as of the 2026-08-17 re-pin (removed from manifest)**
 
@@ -1859,31 +1855,28 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
 ```latex
 \begin{Ddef} \label{def:id}
   Letting $\BL^{\Box}$ be the purely modal fragment of $\BL$, each $p_i \in \SL$ will be understood to be a \textit{propositional variable} rather than sentence letter.
-  The \textit{identity extension} of $\BL^{\Box}$ is a language $\BL^{\equiv}$ enriched to include a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ just is for $\psi\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\chi_{(\psi/\varphi)}$ is the result of replacing one or more occurrences of $\varphi$ in any formula $\chi$ with $\psi$:
+  The \textit{identity extension} of $\BL^{\Box}$ is a language $\BL^{\equiv}$ enriched to include a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ just is for $\psi\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\alpha$ and $\beta$ are both formulas or, once operator terms are available in \textbf{\ref{def:lang}}, both operator terms, and $\chi_{(\beta/\alpha)}$ is the result of replacing one or more occurrences of $\alpha$ in any formula $\chi$ with $\beta$:
 	\vspace{-.125in}
 	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
 		\begin{multicols}{2}
-			\aitem{Ref} $\vdash \varphi \equiv \varphi$.
+			\aitem{Ref} $\vdash \alpha \equiv \alpha$.
 			\aitem{Imp} $\vdash (\varphi \equiv \psi) \rightarrow (\varphi \rightarrow \psi)$.
-			\aitem[LL$^{-}$]{LL} $\vdash (\varphi \equiv \psi) \rightarrow (\chi \rightarrow \chi_{(\psi/\varphi)})$
-        where $\psi$ is free for $\varphi$ in $\chi$ and no replaced $\varphi$ lies in the scope of an operator.%
+			\aitem[LL$^{-}$]{LL} $\vdash (\alpha \equiv \beta) \rightarrow (\chi \rightarrow \chi_{(\beta/\alpha)})$
+        where $\beta$ is free for $\alpha$ in $\chi$ and no replaced occurrence of $\alpha$ lies within the argument of an operator term.%
         \footnote{
-          A formula $\psi$ is \textit{free for} $\varphi$ in $\chi$ just in case no replaced occurrence of $\varphi$ lies within the scope of a quantifier binding a variable free in $\varphi$ or $\psi$.
-          The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers.
-          % The operator-scope proviso makes $\equiv$ a congruence for the logical vocabulary--- identicals may be substituted for one another within $\rightarrow$, $\bot$, $\equiv$, and the quantifiers added below--- but not for operator terms. % as in \textbf{\S\ref{sec:Introduction}}. %: the logical constants are objective, whereas an operator may be opaque.
+          A term $\beta$ is \textit{free for} $\alpha$ in $\chi$ just in case no replaced occurrence of $\alpha$ lies within the scope of a quantifier binding a variable free in $\alpha$ or $\beta$, whether a propositional variable or, in \textbf{\ref{def:lang}}, an operator variable.
+          The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers, and substantive in the quantified extension of \textbf{\ref{def:lang}}.
         }
 		\end{multicols}
 	\end{enumerate}
 	\vspace{-.175in}
   The theory of propositional identity need not be Boolean, accommodating theories in which the absorption laws or other Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021} where transparency is maintained for the entirety of the language rather than posited for just a single operator as above.}
-  Symmetry and transitivity of $\equiv$ are nevertheless derivable, and since each replaces an occurrence lying outside any operator term, both survive the proviso on \textbf{\aref{LL}}.
-  % Given $\varphi \equiv \psi$, instantiating \textbf{\aref{Ref}} at $\varphi$ gives $\vdash \varphi \equiv \varphi$, and applying \textbf{\aref{LL}} with $\chi \coloneq (\varphi \equiv \varphi)$, replacing the first occurrence of $\varphi$, gives $\vdash (\varphi \equiv \psi) \rightarrow [(\varphi \equiv \varphi) \rightarrow (\psi \equiv \varphi)]$, which detaches by permuting antecedents and applying modus ponens to give $\psi \equiv \varphi$, i.e., symmetry.
-  % Given also $\psi \equiv \theta$, a further application of \textbf{\aref{LL}}, with $\chi \coloneq (\varphi \equiv \psi)$, replacing the occurrence of $\psi$, gives $\vdash (\psi \equiv \theta) \rightarrow [(\varphi \equiv \psi) \rightarrow (\varphi \equiv \theta)]$, which detaches with both hypotheses to give $\varphi \equiv \theta$, i.e., transitivity.
+  Symmetry and transitivity of $\equiv$ are nevertheless derivable at either type, and since each replaces an occurrence lying outside the argument of any operator term, both survive the proviso on \textbf{\aref{LL}}.
 \end{Ddef}
 ```
-sha256: `5b54c118792433e8ea89bb447c844347422e063732be8720c91c7854aa22b062`
+sha256: `88b703e86c065135de7db3bee421455be90837737fda446e633cc50904e2bc68`
 
-### `def:strongest` — strongest objective normal modal operator, Str^O_L(Q)
+### `def:strongest` — strongest objective normal modal operator Str^O_L(Q), and the meet of the objective modalities Str'^O_L(Q)
 
 ```latex
 \begin{Ddef} \label{def:strongest}
@@ -1892,28 +1885,38 @@ sha256: `5b54c118792433e8ea89bb447c844347422e063732be8720c91c7854aa22b062`
     \item $\vdash \OO(\Q)$; and
 		\item $\vdash \forall\P[\OO(\P) \rightarrow (\Q \preceq \P)]$.
 	\end{enumerate}
-  \vspace{-.1in}
+	$\Q$ is \textit{the meet of the objective modalities in $L$}--- $\Str'^{\OO}_{L}(\Q)$--- if and only if:
+	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+    \item $\vdash \OO(\Q)$; and
+		\item $\vdash \forall p\,(\Q p \equiv \forall\P(\OO(\P) \rightarrow \P p))$.
+	\end{enumerate}
+	Since the second clause of $\Str'^{\OO}_{L}(\Q)$ yields $\vdash \Q p \rightarrow (\OO(\P) \rightarrow \P p)$ by \textbf{\aref{Imp}} after instantiating at $p$ and $\P$, permuting antecedents and generalizing gives dominance, so $\Str'^{\OO}_{L}(\Q)$ implies $\Str^{\OO}_{L}(\Q)$, whereas the converse would require the identity.
 \end{Ddef}
 ```
-sha256: `57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369`
+sha256: `1df0d202e5c4ccfeb92b6c83048ece99bb80dc6ce46774a05ff9e728e93231ec`
 
 ### `thm:exist` — L has a strongest objective normal modal operator (Bm witnesses)
 
 ```latex
-\begin{Tthm} \label{thm:exist}
-	$\Str^{\OO}_{L}(\Bm)$, so $L$ includes a strongest objective modal operator.
+\begin{Tthm}[Existence] \label{thm:exist}
+	$\Str'^{\OO}_{L}(\Bm)$, and hence $\Str^{\OO}_{L}(\Bm)$, so $L$ includes a strongest objective modal operator.
 \end{Tthm}
 ```
-sha256: `fb6d83115f2effb62bc56a233e84212da50c0b692a60ebcdf2a0ea30fcfa9db9`
+sha256: `93d234140af7d36b60d55ffa2248a3f3896c6a80e115b2801efaeed07c115eef`
 
 ### `lem:uniq` — uniqueness of the strongest objective normal modal operator
 
 ```latex
-\begin{Lthm} \label{lem:uniq}
-	If $\Str^{\OO}_{L}(\Q)$ and $\Str^{\OO}_{L}(\P)$, then $\vdash \forall p(\Q p \leftrightarrow \P p)$.
+\begin{Lthm}[Uniqueness] \label{lem:uniq}
+	If $\Str^{\OO}_{L}(\Q)$ and $\Str^{\OO}_{L}(\P)$, then $\vdash \forall p(\Q p \leftrightarrow \P p)$; and if $\Str'^{\OO}_{L}(\Q)$ and $\Str'^{\OO}_{L}(\P)$, then $\vdash \Q \equiv \P$.%
+	\footnote{
+		Neither \textbf{\aref{I8}} nor the identity of two strongest objective modalities is derivable from the remaining axioms and postulates.
+		Let $\mathcal{C}$ be the class of all relations on a nonempty $\mathcal{W}$ and let operator variables range over pairs $\tuple{f, i}$ of an operation $f$ on $\wp(\mathcal{W})$ and a tag $i \in \set{0,1}$, where application and $\OO$ read $f$ alone, $\tuple{f,i} \circ \tuple{g,j} \coloneq \tuple{f \circ g, 1}$, converse likewise acts on $f$ as in \textbf{\ref{def:rel-model}} and returns tag $1$, $\Bm$ denotes $\tuple{\Q_{\mathcal{W} \times \mathcal{W}}, 0}$, and $T \equiv T'$ expresses $\mathcal{W}$ just in case $T$ and $T'$ denote the same pair.
+		Every axiom and postulate other than \textbf{\aref{I8}} is validated as in \textbf{\ref{lem:rel-model}}, since every context of an operator term is a function of the pair it denotes and the postulates read only first coordinates, and $\Str^{\OO}_{L}(\Bm)$ and $\Str^{\OO}_{L}(\Bm \circ \Bm)$ are both theorems, yet $\Bm$ and $\Bm \circ \Bm$ denote distinct pairs.
+	}
 \end{Lthm}
 ```
-sha256: `ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf`
+sha256: `56f31fcacb80f4811e98c7ab8c1bcd49502cb8d51b10f813f36a2c943a950003`
 
 ### `thm:s4` — the strongest objective operator obeys S4 — **DANGLING as of the 2026-08-25 re-pin (removed from manifest)**
 
@@ -2041,48 +2044,48 @@ human readability and are not machine-parsed. Columns: `anchor_id|kind|enclosing
 <!-- MANIFEST:BEGIN -->
 ```
 # anchor_id|kind|enclosing|locator|sha256
-def:temporal-order|env|-|-|bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f
-def:task-relation|env|-|-|2179def7a16a79de8df937c7dcb44ce08b8068623db1f755d96e230776f6a737
-def:frame|env|-|-|b5d3bf93cf07486d239afcbc9379883fdbea1194e97d560b391ccbdc128b9d99
+def:temporal-order|env|-|-|1fa55867b57322f0dd7d6cc346e3ebe09809a5990832b34de58b1805acd14894
+def:task-relation|env|-|-|f35b1c7412b592c99a7a4bdc2889a5d19cf23712e4c9c08cd51cda917e3b60c5
+def:frame|env|-|-|1150ed22cb6a9e8e0f84a57e3b342fafb143930370814ff4f4fdf9790be5604d
 def:frame#Compositionality|item|def:frame|Compositionality|4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa
 def:frame#Seriality|item|def:frame|Seriality|ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad
 def:frame#Limit|item|def:frame|Limit|3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec923cfdc165ca75dbe60a5f
 def:frame#Saturation|item|def:frame|Saturation|c293e9f830a2e1f0154d1ee7be2c7a121a7aa0ec4476266637e4fffaff345c60
-lem:nullity|env|-|-|94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973
-def:world-history|env|-|-|550661d3b388c3ef494ffb81c643ab5a550f996a5a86329afc557f41ed7872e7
-thm:extension|env|-|-|65811dcff91a3dd840058353b14667d8abfcf5d94c8be9979944f03be5234379
-cor:occurrence|env|-|-|231c1d3cd0bf70a323775c623ed36761c6e0c4990bf72106c8323a9fe78842ec
-def:constraints|env|-|-|50aadae779c7d57c810e94209614b5cdfe2590fa82c1c0793db948e8d0917e28
-lem:nesting|env|-|-|ed036f28b70b99d4294515c0f1da64a62e471aa4795394cda4d9010b1f1971a7
+lem:nullity|env|-|-|8442e2bf6b5f6515f2f906132bbe15fe919973d82ae573dba29a919ad14636f5
+def:world-history|env|-|-|e94a15db019603c0c924690c29b84b6b82d2b9443e87e0050e3ffa184533c889
+thm:extension|env|-|-|0677bc175c0717349e5e69f257f43bd06976bffd89c3877a9f020496416822d7
+cor:occurrence|env|-|-|e4be0b08ecd39e559fff831361440f1af2c51760a9c053e1f2dba4a65b025af4
+def:constraints|env|-|-|f39ba974df411b9f436932fd4414146e66b333219de896758028974fc4297a21
+lem:nesting|env|-|-|6ad1e33d546003cc35a454687dfdd2dca32e99668f1f5d92ad9f0616a2f3a61d
 lem:nonempty|env|-|-|8067bf45a360f04db7a94280bde1b359dac58e8311f2fba1d58db15bf2336598
 lem:constraint|env|-|-|ca6719adfaad9f6dc3d1b6a57de013598dd80847014d9c2fb60ed626b895370f
 lem:admissible|env|-|-|9606ef1f1264887ed51358744df7e5fc290250dd8209f445fd138700da56de8e
 lem:step|env|-|-|b1f65f70cc243de5b32d4e2a46c35c986dd0322cf3ca0524fb76701af3e3be4b
 def:BL-semantics|env|-|-|aad8ee543a63a394983e02c2c7ec81e02aaf7737768bcb0d492c668c38de3eb2
-def:BLplus-language|env|-|-|67a17cd2e0b0867fdbcfdaa48fe9765b135978dbaf34459ca2055629533729b3
-def:time-shift-histories|env|-|-|0b5c05e8f579807c7701cd3d28cb8f7d00a2ec42d85eec2515c48edab355b88d
-def:frame-validity|env|-|-|86a0c4b220bc43d04a2bfc14ccd14f0dab0182ff735ffde9c660e3a0ce7b2259
+def:BLplus-language|env|-|-|b7027d468a844f09068c7dc765498e4668708ac09b175cfc20594bcaba5d3c95
+def:time-shift-histories|env|-|-|99588bf0dec609563ce3fe129bee59b3ca36826726349b3e0f7fc403efdbedbc
+def:frame-validity|env|-|-|4fdc41ce401c80032aef112060e0b9ce932b82c777759272bba7998dc113ad61
 def:logical-consequence|env|-|-|3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486
 CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41
 def:S5|env|-|-|dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257
-def:BX|env|-|-|2d1a59a446b32ff9280673f51ae26705f697a3ed21509769dcb7437142725651
-def:BX-z|env|-|-|21277d0a1046e1bc1dfe7b9a215c24a07fa0008d27a22234886a8e94b884456b
-def:BX-d|env|-|-|5783d60a441fcb38f44e285b7766ee176c366a1c3948daffa9684855d656dc24
+def:BX|env|-|-|8fdba7ab64b74d245bd47bfa14e6baac17c9d2ce67fdea5371a5fa9fc624a903
+def:BX-z|env|-|-|96e4b25e71c457bd3618f3a818b1852176b345d2c86199fbe16b6c46076ba334
+def:BX-d|env|-|-|2423da4688632bfea7d0d3613a4bca4953c6197e6120dd43f79cbd5e44e294d0
 def:BX-r|env|-|-|650cb790801150df6a3d04a1356bb8c346b4e24694f381d8c5fbc7458da8f038
 def:TMplus|env|-|-|d71622fc325a3d40ae4a7823c0d5d17f73e4a18bcf2e1c4be59e6693db35e142
-thm:TM-soundness|env|-|-|23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529
-app:discrete|env|-|-|b23ad82538bf651b879667b90954669ab952d94fee55e47d97b4298df06c56ee
-app:dense|env|-|-|2b12df669aeba06156557e0bddf36aaa2461a3e76fb01fe4b85dd0ad893a90c8
-app:complete|env|-|-|aee906f8218c159034fe60d26dfb309ebe55abd27c7257b4ce8b19a03fe0e8f2
-def:frame-properties|env|-|-|d47ebef79f2988c0573f44b944ac049ea85ac841e5edab1a6f551183885fb63b
-def:deterministic|env|-|-|edd71fb4ce625d2573b21975602f642f7de8fcf46c3c5e5996ab721bdca88110
+thm:TM-soundness|env|-|-|05ed3f68f6491d2be65d46053a9d56df7ca606daf11837b4da4a1ffca68a68ab
+app:discrete|env|-|-|465b089fd41ed5b599cf080621c0181bfcce5ef8374d44f9f147709d23409864
+app:dense|env|-|-|8b6e84aed02d8ea8313a71fb3dbc71250a009c025e295c38fad1dbe9f257f24d
+app:complete|env|-|-|d62b8c533b7ee02f43de493e98b4111f048215f14353ef588c03c9bd530549ce
+def:frame-properties|env|-|-|a8948afad219b9d3f52cd328bfeefe04f6ccde06bb4883cfc6dfdee67a7f70f9
+def:deterministic|env|-|-|9a347781ddbb850ddcc5500f4a614309fd47fae7e20f63eaef7335a4ab1b0d3d
 def:BLstar-semantics|env|-|-|b4d3239cc96ddd1e90965901aca8c378f6ec5ca52f568ea6b2ef59d9c3ba6c95
-cor:saturation-finite|env|-|-|ebf7547b10df6b764b1ccc5d965e0cf5c75cd8b09977ed1572b3d0fba48101c3
-cor:tm-completeness|env|-|-|da75cac2b1c97db4458549c405a279762ea3a68977bd2ea1c3954e3dc4c97664
-def:id|env|-|-|5b54c118792433e8ea89bb447c844347422e063732be8720c91c7854aa22b062
-def:strongest|env|-|-|57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369
-thm:exist|env|-|-|fb6d83115f2effb62bc56a233e84212da50c0b692a60ebcdf2a0ea30fcfa9db9
-lem:uniq|env|-|-|ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf
+cor:saturation-finite|env|-|-|98fac4cfb09991ec3046ab843e1d3fa5e089e2e52d50dbe7130bacdf8528353a
+cor:tm-completeness|env|-|-|f8f5b41f998e59322052accce9ac219dfbe9fe7931329bebbdb5b1cc855f0bce
+def:id|env|-|-|88b703e86c065135de7db3bee421455be90837737fda446e633cc50904e2bc68
+def:strongest|env|-|-|1df0d202e5c4ccfeb92b6c83048ece99bb80dc6ce46774a05ff9e728e93231ec
+thm:exist|env|-|-|93d234140af7d36b60d55ffa2248a3f3896c6a80e115b2801efaeed07c115eef
+lem:uniq|env|-|-|56f31fcacb80f4811e98c7ab8c1bcd49502cb8d51b10f813f36a2c943a950003
 thm:s5|env|-|-|14b32c8a3281aa246e1f83277fd940bdb9fcb8b88b702cda42c0fbf89a0112d7
 ```
 <!-- MANIFEST:END -->

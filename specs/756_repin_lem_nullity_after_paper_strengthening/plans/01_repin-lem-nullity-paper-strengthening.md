@@ -169,27 +169,27 @@ that run's output as the inventory for every later phase.
 
 ---
 
-### Phase 2: Re-pin every drifted anchor's prose entry and manifest row [NOT STARTED]
+### Phase 2: Re-pin every drifted anchor's prose entry and manifest row [COMPLETED]
 
 **Goal**: Make `docs/reference/paper-definitions-of-record.md` reproduce the live paper for every
 drifted anchor, so `check-paper-definitions.sh` has nothing left to report.
 
 **Tasks**:
-- [ ] Re-read `docs/reference/paper-definitions-of-record.md` immediately before editing
+- [x] Re-read `docs/reference/paper-definitions-of-record.md` immediately before editing
       (sibling-task concurrency).
-- [ ] For each anchor in Phase 1's inventory, in manifest order: replace the fenced ` ```latex `
+- [x] For each anchor in Phase 1's inventory, in manifest order: replace the fenced ` ```latex `
       block in its `### <anchor>` prose entry with the `--resolve` `text:` block verbatim, and
       replace the following `sha256:` line with the `--resolve` hash. Copy from the inventory;
       never retype.
-- [ ] For the same anchor, replace the hash field in its `MANIFEST:BEGIN/END` row. Leave the
+- [x] For the same anchor, replace the hash field in its `MANIFEST:BEGIN/END` row. Leave the
       `anchor_id|kind|enclosing|locator` fields untouched.
-- [ ] Leave every non-drifted row untouched, and specifically leave the four `def:frame#*`
+- [x] Leave every non-drifted row untouched, and specifically leave the four `def:frame#*`
       sub-anchor rows untouched.
-- [ ] Where a prose entry's `### <anchor> — <gloss>` heading gloss is falsified by the new text,
+- [x] Where a prose entry's `### <anchor> — <gloss>` heading gloss is falsified by the new text,
       update the gloss. For `lem:nullity` the heading gloss `DERIVED: w ⇒₀ w (Nullity is not an
       axiom)` becomes the biconditional while **keeping the DERIVED claim**, which the
       strengthening does not touch.
-- [ ] Commit per green sub-step: one commit per anchor (or per small group of anchors) once that
+- [x] Commit per green sub-step: one commit per anchor (or per small group of anchors) once that
       anchor's recorded hash matches its `--resolve` hash. Stage `docs/reference/paper-definitions-of-record.md`
       explicitly by name.
 
