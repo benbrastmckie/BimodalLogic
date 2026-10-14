@@ -1378,7 +1378,7 @@
     {
       "project_number": 778,
       "project_name": "residue_index_modulus_convention_record",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Record the modulus convention for the residue-carrying ladder index. ladderIndexRes T P B takes residues modulo P+1 while reachN_eventually_periodic exhibits a period P >= 1; no record fixes whether the index is instantiated at P := period (modulus period+1) or P := period-1 (modulus period). The Qp fixture's own reach-set period is 2, so the modulus-3 reading is already refuted by the existing parity observable. Every refutation in specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean is stated convention-independently (quantified over all P, or over all P with a coprimality side condition), so this is a record gap, not a proof gap. Deliverable: choose and state the convention (or state explicitly that both readings are refuted and no instantiation is privileged) in the LadderModel.lean docstring and the ladder-counter-observables note in the lean extension's source store, keeping the probe's convention-independent statements unchanged. Originating observation: specs/775_residue_index_factorization_lemma/issues.jsonl entry iss_1791837548348_hYqZM0.",
       "effort": "low",
@@ -1386,7 +1386,7 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-10-12T22:10:50Z",
-      "last_updated": "2026-10-13T17:13:25Z",
+      "last_updated": "2026-10-14T04:21:48Z",
       "artifacts": [
         {
           "path": "specs/778_residue_index_modulus_convention_record/reports/01_residue-index-modulus-convention.md",
@@ -1397,6 +1397,11 @@
           "path": "specs/778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md",
           "type": "plan",
           "summary": "Six-phase plan: LadderModel.lean docstring record (local tier), RaySummary/README.md reconciliation (prose), source-store note plus index-entries.json (prose), probe docstring and evidence-gate record (local), docs/theorem-index.md alignment (prose), full gate sweep with inventory regeneration (full). Waves: {1,3} then {2,4,5} then {6}."
+        },
+        {
+          "path": "specs/778_residue_index_modulus_convention_record/summaries/01_residue-index-modulus-convention-summary.md",
+          "type": "summary",
+          "summary": "Completion summary: the convention recorded across six surfaces, the gates run, the plan deviations, and the two operator follow-ups."
         }
       ],
       "file_scope": [
@@ -1413,7 +1418,8 @@
         "specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean",
         "typst/generated/status.typ"
       ],
-      "session_id": "sess_1791910277_6e35c3"
+      "session_id": "sess_1791950208_5b4d12",
+      "completion_summary": "The modulus convention for the residue-carrying ladder index is on record in the LadderModel.lean module docstring and the lean extension's ladder-counter-observables.md note, stated by naming the modulus (P := m - 1, m := p) rather than by choosing between two off-by-one readings, together with the compiled ground that no refutation turns on the choice and that 2 <= m is forced. Four further surfaces that asserted the gap or carried the understated 'must dominate' clause were reconciled to one wording: RaySummary/README.md, docs/theorem-index.md, the probe docstring, and the check-evidence-probes.sh record comment. No declaration was added, no theorem statement was touched, and the probe's convention-independent statements are byte-for-byte unchanged."
     },
     {
       "project_name": "source_store_commit_and_registration_review",

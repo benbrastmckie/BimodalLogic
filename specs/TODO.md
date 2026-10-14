@@ -11,7 +11,7 @@ next_project_number: 785
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,778,779,780,781,782,784 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -88,7 +88,6 @@ next_project_number: 785
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-778 [PLANNED] — Record the modulus convention for the residue-carrying ladder...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 
@@ -251,13 +250,14 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO FURTHER DEPENDENCY EDGES. `agent-sys
 
 ### 778. Residue index modulus convention record
 - **Effort**: low
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 775
 - **Research**: [778_residue_index_modulus_convention_record/reports/01_residue-index-modulus-convention.md]
 - **Plan**: [778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md]
+- **Summary**: [778_residue_index_modulus_convention_record/summaries/01_residue-index-modulus-convention-summary.md]
 
 **Description**: Record the modulus convention for the residue-carrying ladder index. ladderIndexRes T P B takes residues modulo P+1 while reachN_eventually_periodic exhibits a period P >= 1; no record fixes whether the index is instantiated at P := period (modulus period+1) or P := period-1 (modulus period). The Qp fixture's own reach-set period is 2, so the modulus-3 reading is already refuted by the existing parity observable. Every refutation in specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean is stated convention-independently (quantified over all P, or over all P with a coprimality side condition), so this is a record gap, not a proof gap. Deliverable: choose and state the convention (or state explicitly that both readings are refuted and no instantiation is privileged) in the LadderModel.lean docstring and the ladder-counter-observables note in the lean extension's source store, keeping the probe's convention-independent statements unchanged. Originating observation: specs/775_residue_index_factorization_lemma/issues.jsonl entry iss_1791837548348_hYqZM0.
 

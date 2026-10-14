@@ -1,7 +1,7 @@
 # Implementation Plan: Task #778
 
 - **Task**: 778 - Record the modulus convention for the residue-carrying ladder index
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/778_residue_index_modulus_convention_record/reports/01_residue-index-modulus-convention.md
