@@ -1,0 +1,40 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-14T16:00:28Z",
+  "completed_at": "2026-10-14T16:21:06Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/reports/01_reduce-tm-minimal-axiom-sets.md",
+      "summary": "All nine schemata (UE, UT, TC, NF, NP, NA, TL, DN, Z1) verified derivable from the remaining 20 primitives with a compiling scratch file; TL to be derived from CN (A4a not restored); z1_in_frame has no dependents; full call-site, count-pin, and placement inventory with a 4-phase plan shape."
+    }
+  ],
+  "next_steps": "Run /plan 788: Phase 1 add derived theorems (DerivedAxioms.lean + new Theorems/DerivedSchemata.lean + Z1 engine module), Phase 2 delete the nine constructors and repoint every site in one full rebuild, Phase 3 regenerate tooling/Typst outputs and run C14/CHECK3, Phase 4 refresh prose.",
+  "modified_files": [
+    "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/reports/01_reduce-tm-minimal-axiom-sets.md",
+    "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/evidence/Scratch788.lean"
+  ],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, F φ is definitionally untl top φ and G φ is (F ¬φ).neg, so UT (Fφ → U(⊤,φ)) is an identity and UE ((φUψ) → Fψ) is one UG instance with TN of φ → ⊤; TL follows from CN by first enriching Fφ/Fψ with UF so CN's shared guard carries the linearity information, and DN (GGφ → Gφ) follows from NN by driving the Until guard to ⊥ (UG+UF+UE) and the event to ⊤ (UC), yielding X⊤, which NN refutes.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/evidence/Scratch788.lean",
+      "confidence": 0.9,
+      "suggested_keywords": ["derived axiom", "temp_linearity", "density", "until_F", "CN", "Burgess", "Xu 1988"]
+    },
+    {
+      "content": "Before using derivable_of_validZTime/QTime to derive a schema that is being removed from the Axiom inductive, grep the engine subtrees (Metalogic/BXCanonical, Core, WeakCanonical, Bundle) for the constructor: the Dense engine uses only dense_indicator and the ZTime engine only prior_UZ, which is what makes the detour non-circular.",
+      "category": "PATTERN",
+      "source_artifact": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/reports/01_reduce-tm-minimal-axiom-sets.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["completeness detour", "circularity", "axiom removal", "derivable_of_validZTime"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791993577_c54b32_788",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
