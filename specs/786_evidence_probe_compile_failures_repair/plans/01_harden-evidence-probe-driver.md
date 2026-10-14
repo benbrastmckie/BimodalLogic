@@ -165,20 +165,20 @@ dependent parses, and is covered by `bash -n scripts/check-evidence-probes.sh &&
 
 ---
 
-### Phase 2: Add the environment-failure diagnostic class [NOT STARTED]
+### Phase 2: Add the environment-failure diagnostic class [COMPLETED]
 
 **Goal**: A missing or half-written `.lake` artifact is reported as an environment failure, named
 as such, and never again read as probe rot.
 
 **Tasks**:
-- [ ] Add an `env_failures=0` counter beside `failures=0` and a small predicate (e.g. `probe_env_failure`) that tests captured output for the missing-object-file shape `object file '<path>' of module <Module> does not exist`, anchored on that phrase rather than on any single module name.
-- [ ] Include in the same predicate the adjacent artifact-absent shapes a never-built or mid-rewrite tree produces (for example a `no such file or directory` error naming a path under `.lake/`), and add a comment stating that the predicate is deliberately narrow: an unmatched failure must fall through to `FAIL (does not compile)`, because a false environment label would excuse genuine rot.
-- [ ] In `check_probe`'s compile-failure branch, print `FAIL (environment: ...)` when the predicate matches — naming the `.lake` artifact absence and stating explicitly that this is **not** probe rot — and increment both `env_failures` and `failures`. Keep printing the indented captured output in both branches.
-- [ ] Re-word Phase 1's lock-timeout failure to use this same environment-class vocabulary, so the three classes read consistently.
-- [ ] Leave the existing `FAIL  $failures of $wired_total wired probe(s) failed` line byte-identical; when `env_failures` is non-zero, emit the environment note as a **separate following line**.
-- [ ] Extend the foot guidance text with a third paragraph: an environment-class failure means the measurement never reached the probe's own content, so no probe is to be repaired, restated, or retired on that evidence; re-run once any concurrent `lake build` has finished, and if it persists with no other build running, the project is not built — run `lake build`.
-- [ ] Verify the untouched classes still read correctly: the existing rot paragraph and the `FAIL (untracked: ...)` paragraph keep their current wording.
-- [ ] `bash -n` and `shellcheck` clean; `bash scripts/check-evidence-probes.sh` exits 0 with 33 PASS (the new branch is unreachable on a healthy tree — it is exercised in Phase 4).
+- [x] Add an `env_failures=0` counter beside `failures=0` and a small predicate (e.g. `probe_env_failure`) that tests captured output for the missing-object-file shape `object file '<path>' of module <Module> does not exist`, anchored on that phrase rather than on any single module name.
+- [x] Include in the same predicate the adjacent artifact-absent shapes a never-built or mid-rewrite tree produces (for example a `no such file or directory` error naming a path under `.lake/`), and add a comment stating that the predicate is deliberately narrow: an unmatched failure must fall through to `FAIL (does not compile)`, because a false environment label would excuse genuine rot.
+- [x] In `check_probe`'s compile-failure branch, print `FAIL (environment: ...)` when the predicate matches — naming the `.lake` artifact absence and stating explicitly that this is **not** probe rot — and increment both `env_failures` and `failures`. Keep printing the indented captured output in both branches.
+- [x] Re-word Phase 1's lock-timeout failure to use this same environment-class vocabulary, so the three classes read consistently.
+- [x] Leave the existing `FAIL  $failures of $wired_total wired probe(s) failed` line byte-identical; when `env_failures` is non-zero, emit the environment note as a **separate following line**.
+- [x] Extend the foot guidance text with a third paragraph: an environment-class failure means the measurement never reached the probe's own content, so no probe is to be repaired, restated, or retired on that evidence; re-run once any concurrent `lake build` has finished, and if it persists with no other build running, the project is not built — run `lake build`.
+- [x] Verify the untouched classes still read correctly: the existing rot paragraph and the `FAIL (untracked: ...)` paragraph keep their current wording.
+- [x] `bash -n` and `shellcheck` clean; `bash scripts/check-evidence-probes.sh` exits 0 with 33 PASS (the new branch is unreachable on a healthy tree — it is exercised in Phase 4). *(deviation: altered — the dependent-gate expectation "no diff against the committed baseline" was measured as `--diff` exit 0 with no `FAIL SRC2` line; the `+/- REFUTED` drift it prints is pre-existing against an archived curated baseline and is untouched by this task, which edits no array line)*
 
 **Timing**: 0.75 hours
 

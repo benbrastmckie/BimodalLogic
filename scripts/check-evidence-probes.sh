@@ -1155,15 +1155,54 @@ else
   echo "check-evidence-probes: flock not found on PATH; compile-checking probes unserialized" >&2
 fi
 if [ "$PROBE_LOCK_OK" -ne 1 ]; then
-  echo "FAIL (environment: timed out after ${PROBE_LOCK_WAIT_S}s waiting for the shared build lock $LOCK_FILE)"
-  echo "No probe was compile-checked.  This is an environment failure, not probe rot: re-run once"
-  echo "the concurrent build holding the lock has finished."
+  echo "FAIL (environment: timed out after ${PROBE_LOCK_WAIT_S}s waiting for the shared build lock"
+  echo "      $LOCK_FILE)"
+  echo
+  echo "No probe was compile-checked.  This is an ENVIRONMENT failure in the sense named in the"
+  echo "header's THREE DIAGNOSTIC CLASSES: the measurement never reached any probe's content, so"
+  echo "no probe is to be repaired, restated, or retired on this evidence.  Re-run once the"
+  echo "concurrent build holding the lock has finished."
   exit 1
 fi
 
 failures=0
+env_failures=0
 echo "Evidence probes (compile-checked outside the build graph)"
 echo "========================================================="
+
+# --- THE THIRD DIAGNOSTIC CLASS: ENVIRONMENT ------------------------------------------------
+# A compile failure here has three possible causes, and conflating them is expensive.  ROT: the
+# probe cites a declaration that has drifted, which is what this guard exists to catch.
+# LEFT VERSION CONTROL: `FAIL (untracked: ...)`, handled above.  ENVIRONMENT: `lake env lean`
+# reads `.lake` for every module in the probe's import closure, and if one of those artifacts is
+# absent or half-written -- a concurrent build that outran the lock above, or a project that was
+# simply never built -- Lean reports a missing object file.  The measurement then never reached
+# the probe's own content at all.  Reporting that as rot is what once turned a single transient
+# `.lake` race into four apparently-rotted probes and a repair record for probes that were never
+# broken; naming the class is what keeps that from recurring.
+#
+# DELIBERATELY NARROW.  This predicate matches the missing-object-file shape and the adjacent
+# OS-level artifact-absent shape under `.lake/`, and nothing else.  Every unmatched failure falls
+# through to `FAIL (does not compile)` by construction: a missed environment failure costs one
+# re-run, while genuine rot mislabelled as an environment failure is excused and never repaired.
+# Widen this only against a measured error shape, never speculatively.
+probe_env_failure() {
+  local out="$1"
+  # Lean's module loader: `error: object file '<path>' of module <Module> does not exist`.
+  # Anchored on the phrase, not on any module name: the observed race named four different tail
+  # modules on four consecutive entries.
+  if printf '%s\n' "$out" | grep -q "object file '.*' of module .* does not exist"; then
+    return 0
+  fi
+  # The OS reporting the same absence directly, as a never-built or mid-rewrite tree produces.
+  # Both halves are required: a bare `no such file or directory` naming no `.lake/` path is not
+  # evidence of an environment failure.
+  if printf '%s\n' "$out" | grep -qi 'no such file or directory' &&
+     printf '%s\n' "$out" | grep -q '\.lake/'; then
+    return 0
+  fi
+  return 1
+}
 
 # One check, both entry forms: $1 is the label printed, $2 the file to compile.
 check_probe() {
@@ -1185,6 +1224,11 @@ check_probe() {
   local out
   if out=$(lake env lean "$file" 2>&1); then
     echo "PASS"
+  elif probe_env_failure "$out"; then
+    echo "FAIL (environment: absent or half-written .lake artifact -- NOT probe rot; never measured)"
+    printf '%s\n' "$out" | sed 's/^/        /'
+    env_failures=$((env_failures + 1))
+    failures=$((failures + 1))
   else
     echo "FAIL (does not compile)"
     printf '%s\n' "$out" | sed 's/^/        /'
@@ -1217,6 +1261,9 @@ if [ "$failures" -eq 0 ]; then
   exit 0
 fi
 echo "FAIL  $failures of $wired_total wired probe(s) failed"
+if [ "$env_failures" -gt 0 ]; then
+  echo "      $env_failures of those are ENVIRONMENT failures (absent or half-written .lake artifact), not probe rot"
+fi
 echo
 echo "A probe failing means a recorded design obstruction no longer compiles."
 echo "Do NOT delete the probe or weaken its statements to make this pass: repair the"
@@ -1226,4 +1273,9 @@ echo "A 'FAIL (untracked: ...)' means the record has left version control (typic
 echo "archival mv into the gitignored specs/archive/): promote the file into specs/evidence/,"
 echo "or delete the entry if the library now carries the result under lake build -- never"
 echo "force-track it under specs/archive/."
+echo "A 'FAIL (environment: ...)' means the measurement never reached the probe's own content: a"
+echo ".lake artifact was absent or half-written, so Lean could not load the probe's import"
+echo "closure.  No probe is to be repaired, restated, or retired on that evidence.  Re-run once"
+echo "any concurrent lake build has finished; if it persists with no other build running, the"
+echo "project is not built -- run lake build."
 exit 1
