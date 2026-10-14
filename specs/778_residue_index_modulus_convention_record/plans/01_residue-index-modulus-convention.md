@@ -194,28 +194,28 @@ sees a changed signature, so no dependent build is needed.
 
 ---
 
-### Phase 2: Reconcile `RaySummary/README.md` with the record [NOT STARTED]
+### Phase 2: Reconcile `RaySummary/README.md` with the record [COMPLETED]
 
 **Goal**: The library README stops asserting the convention is unrecorded, carries the sharpened
 modulus clause at all three of its occurrences, and its hand-maintained `LadderModel.lean` row
 matches the file's new line count.
 
 **Tasks**:
-- [ ] Re-read the three target regions of
+- [x] Re-read the three target regions of
       `FormalSystem/Metalogic/Decidability/RaySummary/README.md` immediately before editing.
-- [ ] Replace the clause at line 781 — `both readings of period 1 under the unrecorded P versus
+- [x] Replace the clause at line 781 — `both readings of period 1 under the unrecorded P versus
       P + 1 convention` — with the reading-neutral form: both readings of the exhibited period
       `1`, moduli `1` and `2`. State no claim about what is or is not on record.
-- [ ] Sharpen the `dominate` clause at line 784 (`the modulus dominating the period of every
+- [x] Sharpen the `dominate` clause at line 784 (`the modulus dominating the period of every
       letter-definable sub-object`) to the multiple-of form.
-- [ ] Sharpen the `dominate` clause at line 460 (`must dominate every letter-definable sub-object
+- [x] Sharpen the `dominate` clause at line 460 (`must dominate every letter-definable sub-object
       period`) to the multiple-of form.
-- [ ] Sharpen the `dominate` clause inside the `LadderModel.lean` inventory row at line 45 to the
+- [x] Sharpen the `dominate` clause inside the `LadderModel.lean` inventory row at line 45 to the
       multiple-of form.
-- [ ] Update the row's line count from the fresh `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean`
+- [x] Update the row's line count from the fresh `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean`
       taken after Phase 1 (currently `219`). This table carries no `BEGIN GENERATED` markers, so
       no gate catches its drift.
-- [ ] Confirm no new hunk contains "unrecorded", "previously", "formerly", "no longer", or
+- [x] Confirm no new hunk contains "unrecorded", "previously", "formerly", "no longer", or
       "now recorded".
 
 **Timing**: 0.5 hours
