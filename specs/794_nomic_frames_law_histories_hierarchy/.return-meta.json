@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 7,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md",
+      "summary": "Nomic-frame port design with verified Lean text: NomicFrame structure, lawHist/H_F, the three properties, lem:nomic-occurrence, the full lem:nomic-recovery biconditional, the Z-time ofStepFamily presentation and witness 1 of prop:nomic-hierarchy all machine-checked; plus siting, gate and territory findings."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792013208_936eb4_794",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
