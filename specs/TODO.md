@@ -11,7 +11,7 @@ next_project_number: 787
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -91,6 +91,7 @@ next_project_number: 787
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
+787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
 
@@ -124,6 +125,40 @@ next_project_number: 787
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
 
 ## Tasks
+
+### 787. Lake unguarded reader lock audit
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 786
+
+**Description**: Audit the remaining lake-invoking scripts for the unguarded .lake read hazard, and take the shared build-guard lock wherever a per-script judgment says it belongs.
+
+WHY THIS EXISTS. A sibling record established, by measurement, that scripts/check-evidence-probes.sh read .lake artifacts while a concurrent build rewrote them, producing `object file '.../FormalSystem/<Module>.olean' ... does not exist` errors on four consecutive wired probes. Those errors were then misread as four independent probe rots, which cost two Reasoned Exclusions and a full research/plan/implement round before re-measurement showed every probe had always compiled. The cost of this hazard is measured, not hypothetical. That script now takes an flock on `$REPO_ROOT/.lake/build-guard.lock` and distinguishes an environment failure from probe rot in its output.
+
+THE SURVEYED CONDITION, as measured at filing. Across scripts/ and .claude/scripts/, only three files reference `build-guard.lock` at all: scripts/check-evidence-probes.sh (just hardened), scripts/check-module-invariants.sh (the precedent, which documents its rejected alternatives in place at its C1 block), and .claude/scripts/lake-build-guard.sh (which publishes the lock path). Every other file that invokes `lake env lean` or `lake build` takes no lock.
+
+CANDIDATES, AND WHY EACH NEEDS ITS OWN JUDGMENT RATHER THAN A BLANKET EDIT. Do not add a lock to all of these on sight. Three distinct shapes appear among them and they do not want the same treatment:
+
+1. UNGUARDED READERS -- the exact shape just fixed. scripts/typst-module-map.sh invokes bare `lake env lean`. A reader that elaborates against .lake while another process rewrites it is the hazard verbatim; this is the strongest candidate.
+
+2. SCOPED BUILDERS -- scripts/export-training-data.sh runs `lake build dataset_generator proof_extractor`. Note the direction of the hazard here: a SCOPED build is precisely what leaves an import-closure tail stale for a later reader, so such a script is a plausible CAUSE of the fault rather than only a victim of it. Decide whether it should hold the lock (serialising it against readers) on that basis.
+
+3. PROSE-ONLY MATCHES -- .claude/scripts/lean-sorry-census.sh and .claude/scripts/plan-file-scope-harvest.sh mention `lake build` / `lake env lean --run` in comments and docstrings. Verify whether each actually invokes lake at runtime before treating it as a candidate at all; a grep hit in a comment is not an invocation.
+
+Also present in the initial survey and needing the same per-file determination: scripts/typst-sync-check.sh, scripts/typst-machine-appendix.sh, scripts/typst-status-counts.sh, .claude/scripts/lean-comparator-run.sh, .claude/scripts/lean-comparator-landrun-shim.sh, .claude/scripts/claude-refresh.sh. Re-derive this list rather than trusting it: the survey was a grep for `lake env lean`/`lake build` over scripts/ and .claude/scripts/ and may have both false positives (comments) and gaps.
+
+REUSE THE EXISTING PRECEDENT; DO NOT INVENT A SECOND LOCK. The lock is `$REPO_ROOT/.lake/build-guard.lock`, the path .claude/scripts/lake-build-guard.sh publishes. scripts/check-module-invariants.sh's C1 block and the now-hardened scripts/check-evidence-probes.sh are both working implementations of the shape: `flock -n` first, then a bounded and announced `flock -w`, fd held to process exit, audible degradation when flock is unavailable. Follow them and cross-reference their rejected-alternatives notes rather than re-litigating the design.
+
+SOURCE-STORE BOUNDARY. Any candidate under .claude/scripts/ is a deploy artifact. Resolve the source store via .claude-extensions.json's source_dir and edit the mirrored path under agent-system/extensions/<name>/scripts/ -- never hand-author under .claude/** directly, which the next regeneration silently wipes.
+
+DELIVERABLE. A per-script determination for every surveyed candidate -- lock added, or explicitly ruled out with the reason stated where a future reader will find it (not only in a commit message). Each script that gains the lock keeps its existing exit-status contract and still passes its own gate. No probe file and no manifest array is touched by this record.
+
+WHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned finding that some or all remaining candidates genuinely do not need the lock -- because they build rather than read, run only in CI where nothing is concurrent, or never invoke lake at runtime -- is a complete outcome, provided the reasoning is recorded per script. Closing a hazard by establishing it does not apply is a result, not a shortfall.
+
+---
 
 ### 786. Evidence probe compile failures repair
 - **Effort**: medium
