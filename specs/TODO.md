@@ -91,7 +91,7 @@ next_project_number: 787
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
-786 [RESEARCHED] — Repair the four wired evidence probes that fail to compile,...
+786 [PLANNED] — Harden scripts/check-evidence-probes.sh against the .lake...
 
 ### Formula Refactor
 
@@ -128,31 +128,37 @@ next_project_number: 787
 
 ### 786. Evidence probe compile failures repair
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 778
 - **Research**: [786_evidence_probe_compile_failures_repair/reports/01_evidence-probe-compile-failures.md]
+- **Plan**: [786_evidence_probe_compile_failures_repair/plans/01_harden-evidence-probe-driver.md]
 
-**Description**: Repair the four wired evidence probes that fail to compile, so check-evidence-probes.sh can be an exit-0 verification criterion again.
+**Description**: Harden scripts/check-evidence-probes.sh against the .lake read/write race that makes it emit a false red, and give it a diagnostic class that names an environment failure as one.
 
-MEASURED CONDITION. `bash scripts/check-evidence-probes.sh` exits 1 with 4 of 33 wired probes failing to compile, all four under `specs/evidence/seam-gluing-ray-product/`:
+MEASURED CONDITION (re-measured 2026-10-14, nothing else running). `bash scripts/check-evidence-probes.sh` exits 0 and prints `PASS  all 33 wired probe(s) compile`. All four probes this record originally named as broken -- finite-graph-stab-summary, mosaic-germ-amalgamation, path-quantifier-alternation, backward-dual-asymmetric-fixture -- PASS, compile sorry-free standalone, and none has been modified since the 2026-10-03 commit that created it.
 
-1. `finite-graph-stab-summary.lean`
-2. `mosaic-germ-amalgamation.lean`
-3. `path-quantifier-alternation.lean`
-4. `backward-dual-asymmetric-fixture.lean`
+WHY THIS RECORD EXISTS, AND WHAT IT IS NOW. This record was filed on the premise that four wired probes had bit-rotted and needed repair, restatement, or retirement. Research established that premise is false. The four reported failures were ONE transient environmental fault, not four independent rots: every error in the originating run's captured gate output is `object file '.../FormalSystem/<Module>.olean' ... does not exist` -- a missing-olean I/O error -- naming four DIFFERENT import-closure tail modules (Metalogic, MainResults, Examples.Walkthrough, Examples) on four CONSECUTIVE wired entries (9-12 of 33), with those oleans' mtimes falling inside the gate's own run window. Not one Lean elaboration error among them. No probe is touched by this record.
 
-WHY THIS BLOCKS OTHER WORK. Implementation plans routinely name "`check-evidence-probes.sh` exits 0" as a phase verification criterion. That criterion is currently unmeetable for reasons unrelated to any such plan's own work, so phases must close [COMPLETED WITH EXCLUSIONS] with a Reasoned Exclusions record attributing the failure as pre-existing. That is the correct handling, but it masks real failures: a genuine new breakage among the other 29 probes would be indistinguishable from these four in an exit-1 result. The originating run closed two phases this way for exactly this reason.
+THE DEFECT, precisely. Two parts, both in the driver.
 
-EVIDENCE THAT THE FOUR ARE FOREIGN AND PRE-EXISTING, not caused by the originating work: `git status --short -- specs/evidence/` listed only `ladder-residue-index-refutation.lean` as modified during that run, and that probe PASSES, as does `ladder-cell-index-obstructions`. So the four failures predate the run and were not introduced by it.
+(1) NO LOCK. scripts/check-evidence-probes.sh invokes bare `lake env lean` 33 times and takes no lock at all (`grep -c flock` returns 0), so its `.lake` reads race any concurrent `lake build` rewriting a tail module an earlier scoped build left stale. The fix pattern already exists in this repository and is already documented in place, including its rejected alternatives: scripts/check-module-invariants.sh takes an flock on `$REPO_ROOT/.lake/build-guard.lock` -- the path lake-build-guard.sh publishes -- at lines 1003-1028. Reuse that lock and that path; do not invent a second lock.
 
-WHAT IS NOT YET KNOWN, and must be established by research before planning. Nobody has investigated WHY each of the four fails. The four causes are likely independent and may differ in kind. Treat each probe as its own diagnosis, and expect that the right remedy may differ per probe: a genuine repair (the probe's statement is still wanted and its proof has bit-rotted against a changed definition), a restatement (the underlying object changed shape and the probe's claim needs re-expressing), or deliberate retirement (the probe recorded a question since answered or abandoned, and the honest action is to unwire it from the manifest and delete it rather than repair it). Do not assume all four want repairing; do not retire one without stating what it recorded and why that record is no longer wanted.
+(2) NO ENVIRONMENT-FAILURE DIAGNOSTIC CLASS. The driver's failure text offers only two classes, rot and untracked. An I/O failure that is neither gets reported as though a probe's proof had rotted. That misattribution is what converted a transient race into two Reasoned Exclusions and then into this record -- the cost of the omission is measured, not hypothetical.
 
-SCOPE AND SEQUENCING. `scripts/check-evidence-probes.sh` is the shared manifest/driver: any retirement edits its wired list, and task 734 `e4_mosaic_stabsaturated_mixed_germ_probe` [PARTIAL] also declares that script in its own `file_scope` (for a different probe, `mosaic-stab-saturated.lean`). A `dependencies[]` edge on 734 is declared for that reason, so the two serialize rather than collide on the driver. Note that 734's probe is NOT one of the four here, despite the adjacent naming: `mosaic-stab-saturated` is 734's, `mosaic-germ-amalgamation` is this record's.
+WHY THIS IS WORTH FIXING RATHER THAN ACCEPTING. The driver is wired into CI as step `evidence-probes` (.github/workflows/ci.yml:120, counted by the aggregator at :337 which exits 1). A race in a CI-gating script fails CI for reasons unrelated to any probe. Relatedly, the script's own header still asserts the opposite -- "this script is not wired into CI" at check-evidence-probes.sh:21-22 -- a stale claim that should be corrected in the same pass, since a reader who believes it will mis-rank exactly this failure mode.
 
-DELIVERABLE. All 33 wired probes compile and `bash scripts/check-evidence-probes.sh` exits 0, with each of the four resolved by a named and justified route (repair, restatement, or retirement-with-rationale). Any retirement is recorded where a future reader will find it, not only in the commit message.
+DELIVERABLE.
+1. scripts/check-evidence-probes.sh acquires the shared `$REPO_ROOT/.lake/build-guard.lock` flock, following check-module-invariants.sh's precedent and honoring lake-build-guard.sh's published path.
+2. A third diagnostic class distinguishing an environment/I/O failure (missing olean, build artifact absent) from probe rot and from untracked, with failure text that tells a reader which one they are looking at.
+3. The stale "not wired into CI" header claim corrected.
+4. No probe file modified, and the wired manifest list unchanged -- no retirement, no restatement. `bash scripts/check-evidence-probes.sh` still exits 0 after the change.
+
+HARD CONSTRAINT. Touch no file under specs/evidence/. All four originally-named probes are live, still-wanted records; the no-weakening rule for wired probes applies and nothing here weakens or retires one.
+
+SCOPE NOTE. scripts/check-evidence-probes.sh is the shared manifest/driver. Task 761 [BLOCKED] also declares it in its own file_scope; that task is idle with no execution evidence, so the overlap was admitted rather than serialized. Task 734 [PARTIAL] likewise declares it, but completed its driver edit (mosaic-stab-saturated, wired at check-evidence-probes.sh:1053); the dependencies[] edge on 734 that this record originally carried was dropped by recorded user decision (2026-10-14) because the serialization it encoded had already occurred and 734 cannot reach terminal -- it rests PARTIAL behind a paywalled Handbook acquisition.
 
 ---
 
