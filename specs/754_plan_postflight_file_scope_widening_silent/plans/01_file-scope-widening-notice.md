@@ -1,7 +1,7 @@
 # Implementation Plan: Task #754
 
 - **Task**: 754 - Make the plan-postflight file_scope widening observable instead of silent
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/754_plan_postflight_file_scope_widening_silent/reports/01_file_scope_widening_notice.md
