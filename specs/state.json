@@ -130,12 +130,12 @@
     {
       "project_number": 788,
       "project_name": "reduce_tm_and_extensions_to_minimal_axiom_sets",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Reduce TM and its extensions TM_z, TM_d, and TM_r to minimal axiom sets, moving every derivable schema out of the Axiom inductive in FormalSystem/ProofSystem/Axioms.lean and into the derived-theorem stock in FormalSystem/ProofSystem/DerivedAxioms.lean: derive UE (until_F) from UG and TN, UT (F_until_equiv) as an identity, TC (connect_future) from US and UC, NF (discrete_propagate_fwd) from NB with MF and MT, NP (discrete_symm_fwd) from US and the TR mirror of NF, and NA (discrete_propagate_bwd) from NP and NF; recover DN (density) from TM plus NN and Z1 (z1) from TM plus UZ, either by direct derivation or through derivable_of_validQTime and derivable_of_validZTime with the existing soundness lemmas, after confirming the BLOCKED lemma z1_in_frame has no dependents; decide TL (temp_linearity) against Xu 1988 §3 (keep with a derivability note, restore Burgess A4a, or derive from CN) and retract the stale underivability claim in LinearityDerivedFacts.lean, whose branching countermodel refutes CN; repoint all call sites, the automation axiom tables, the Plus, Star, and Minus language mirrors, and the minFrameClass rows and independence results 10 and 11; refresh the Axioms.lean table, docs/reference/paper-definitions-of-record.md, and docs/theorem-index.md",
       "topic": "paper-alignment",
       "created": "2026-10-14T15:55:39Z",
-      "last_updated": "2026-10-14T16:38:16Z",
+      "last_updated": "2026-10-14T21:18:16Z",
       "session_id": "sess_1791993577_c54b32",
       "artifacts": [
         {
@@ -147,6 +147,11 @@
           "path": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/plans/01_reduce-tm-minimal-axiom-sets.md",
           "type": "plan",
           "summary": "10-phase plan (17h, 7 waves) landing the nine derived schemata, repointing every site green, deleting the nine Axiom constructors atomically, regenerating outputs, and refreshing prose and docs."
+        },
+        {
+          "path": "/home/benjamin/Projects/BimodalLogic/specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/summaries/01_reduce-tm-minimal-axiom-sets-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification, decisions, and the recorded plan deviations."
         }
       ],
       "next_artifact_number": 2,
@@ -240,7 +245,8 @@
         "typst/generated/machine-appendix.jsonl",
         "typst/generated/machine-appendix.typ",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Reduced `inductive Axiom` from 29 to 20 constructors (Base 16 / ZTime 1 / Dense 1 / RTime 2) by deriving UE, UT, NF, TC, NP, NA, TL and DN as computable theorems and recovering Z1 through the ZTime completeness engine, repointing every call site, automation table, Plus/C bridge, Independence pin, test, tooling entry, Typst output and document, and retracting the stale TL underivability claim; whole-tree build green with zero sorries."
     },
     {
       "project_number": 763,

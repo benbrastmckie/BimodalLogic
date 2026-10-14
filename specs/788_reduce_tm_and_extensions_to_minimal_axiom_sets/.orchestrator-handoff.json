@@ -1,19 +1,56 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote a 10-phase, 17-hour implementation plan for reducing the Axiom inductive from 29 to 20 constructors. Phases 1-4 add the nine derived schemata in DAG-placed modules (DerivedAxioms, new ConnectDerived and LinearityDerived under Theorems, new CompletenessDerived under Metalogic for the Z1 engine route); Phases 5-6 repoint every call site, automation hook, tableau row, Minus/Plus/Star bridge, Independence shape pin, test, and tooling entry while the constructors still exist; Phase 7 deletes the nine constructors in one atomic batch verified by the single whole-tree rebuild and C14; Phases 8-10 regenerate Typst/tooling outputs, refresh Lean-side prose including the LinearityDerivedFacts retraction, and refresh the docs under the full gate set. One deviation from the research placement (module split around TemporalDerived.connectFutureThm to avoid an import cycle) is recorded in the task issue log.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "All ten plan phases closed and committed. `inductive Axiom` reduced from 29 to 20 constructors (Base 16 / ZTime 1 / Dense 1 / RTime 2): UE, UT, NF, TC, NP, NA, TL, DN derived as computable theorems (propext only) and Z1 recovered through the ZTime completeness engine; every call site, automation table, Plus/C bridge, Independence pin, test, tooling entry, Typst output and document repointed; the stale TL underivability claim retracted. Whole-tree guarded build green (4968 jobs, 0 errors, 0 sorries); invariants, typst-sync, readme-lint and verify-deploy all pass.",
   "artifacts": [
     {
+      "type": "summary",
+      "path": "/home/benjamin/Projects/BimodalLogic/specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/summaries/01_reduce-tm-minimal-axiom-sets-summary.md",
+      "summary": "Implementation summary with verification, decisions, and the recorded plan deviations."
+    },
+    {
+      "type": "implementation",
+      "path": "/home/benjamin/Projects/BimodalLogic/FormalSystem/Theorems/ConnectDerived.lean",
+      "summary": "TC, NP, NA derived computably with mirrors."
+    },
+    {
+      "type": "implementation",
+      "path": "/home/benjamin/Projects/BimodalLogic/FormalSystem/Theorems/LinearityDerived.lean",
+      "summary": "TL from CN and DN from NN, computable."
+    },
+    {
+      "type": "implementation",
+      "path": "/home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/CompletenessDerived.lean",
+      "summary": "Z1 via the ZTime completeness engine."
+    },
+    {
       "type": "plan",
-      "path": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/plans/01_reduce-tm-minimal-axiom-sets.md",
-      "summary": "10-phase plan (17h, 7 waves) landing the nine derived schemata, repointing every site green, deleting the nine Axiom constructors atomically, regenerating outputs, and refreshing prose and docs."
+      "path": "/home/benjamin/Projects/BimodalLogic/specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/plans/01_reduce-tm-minimal-axiom-sets.md",
+      "summary": "Plan with all ten phase headings [COMPLETED] and inline deviation annotations."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 10,
   "phases_total": 10,
   "blockers": [],
   "plan_markers_verified": true,
+  "skeleton": false,
+  "sorry_inventory": [],
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement; Phases 1 and 4 (wave 1) are independent and may run in parallel; every lake invocation goes through lake-build-guard.sh detached with --timeout 1800."
+  "next_action_hint": "None required. Two out-of-task findings for the operator: check-paper-definitions.sh reports pre-existing drift of 26 blocks of the external paper; the lean-challenge snapshot was never taken at plan time (advisory). The plan deviations (computable proof route for TC/NP/NA/TL/DN; GATE 3 grounding of densityRule/z1Rule; z1 tooling rows deleted) are flagged in the summary for user review.",
+  "git_checkpoint": {
+    "head": "0006346c9",
+    "phase_commits": [
+      "458d09d4e",
+      "79c244ac7",
+      "fc536b6a1",
+      "032d21f9a",
+      "078e6109f",
+      "ba6c0f5dd",
+      "de8a7e472",
+      "c3a3dd6aa",
+      "717df1f48",
+      "0006346c9"
+    ]
+  }
 }

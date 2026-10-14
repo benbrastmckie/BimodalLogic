@@ -1,15 +1,144 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "started_at": "2026-10-14T16:38:56Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+  "completed_at": "2026-10-14T21:16:38Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_note": "FormalSystem/Examples/TemporalStructures.lean:495 `int_domain_universal (t : Int) : intTimeHistory.domain t := trivial` -- present unchanged at base commit d04e7d46a, outside this task's files; a `trivial` proof of a universal-domain statement (the single-line grep is a heuristic), not a placeholder introduced here",
+    "axiom_count": 0,
+    "axiom_note": "no `axiom` declarations in any source root; the 14 `^axiom ` grep hits are prose lines inside docstrings/markdown and are identical to the base commit",
+    "build_passed": true,
+    "build_evidence": "lake-build-guard.sh build --timeout 1800 -- build FormalSystem BimodalTest BimodalTools BimodalToolsTest + 15 lean_exe roots: GUARD_EXIT=0, Build completed successfully (4968 jobs), 0 errors, 0 warnings, every touched .olean newer than its source",
+    "lean_verify": {
+      "propext_only": [
+        "FormalSystem.ProofSystem.DerivedAxioms.untilF",
+        "FormalSystem.ProofSystem.DerivedAxioms.fUntilEquiv",
+        "FormalSystem.ProofSystem.DerivedAxioms.discretePropagateFwd",
+        "FormalSystem.ProofSystem.DerivedAxioms.discretePropagateFwdMirror",
+        "FormalSystem.Theorems.ConnectDerived.connectFuture",
+        "FormalSystem.Theorems.ConnectDerived.discreteSymmFwd",
+        "FormalSystem.Theorems.ConnectDerived.discretePropagateBwd",
+        "FormalSystem.Theorems.LinearityDerived.tempLinearity",
+        "FormalSystem.Theorems.LinearityDerived.density"
+      ],
+      "pcq": [
+        "FormalSystem.Metalogic.CompletenessDerived.z1Derivable",
+        "FormalSystem.Metalogic.CompletenessDerived.z1Thm"
+      ]
+    },
+    "gates": {
+      "check-module-invariants --no-build": "exit 0",
+      "typst-sync-check": "PASS (4 checks)",
+      "readme-lint": "PASS",
+      "verify-deploy": "PASS (15 checks)",
+      "check-paper-definitions": "exit 1 -- pre-existing drift of 26 blocks of the external paper; not caused by this task (its only record edit is a 15-line amendment the block-hash comparison does not read)",
+      "lean-challenge-snapshot --check": "exit 71 (advisory) -- no plan-time snapshot manifest exists"
+    }
   },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/summaries/01_reduce-tm-minimal-axiom-sets-summary.md",
+      "summary": "Axiom reduced 29->20; TC, UE, UT, TL, NP, NF, NA, DN, Z1 derived (nine propext-only, Z1 via the ZTime engine); every consumer, tooling table, Typst output and document repointed; TL underivability claim retracted."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Theorems/ConnectDerived.lean",
+      "summary": "TC, NP, NA (computable) with mirrors and the computable propositional stock."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Theorems/LinearityDerived.lean",
+      "summary": "TL from CN and DN from NN (computable), legacy order and past mirror."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/CompletenessDerived.lean",
+      "summary": "Z1 recovered through derivable_of_validZTime; densityDerivable cross-check."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Reduced `inductive Axiom` from 29 to 20 constructors (Base 16 / ZTime 1 / Dense 1 / RTime 2) by deriving UE, UT, NF, TC, NP, NA, TL and DN as computable theorems and recovering Z1 through the ZTime completeness engine, repointing every call site, automation table, Plus/C bridge, Independence pin, test, tooling entry, Typst output and document, and retracting the stale TL underivability claim; whole-tree build green with zero sorries.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/ProofSystem/Axioms.lean",
+    "FormalSystem/ProofSystem/DerivedAxioms.lean",
+    "FormalSystem/ProofSystem/LinearityDerivedFacts.lean",
+    "FormalSystem/Theorems/ConnectDerived.lean",
+    "FormalSystem/Theorems/LinearityDerived.lean",
+    "FormalSystem/Metalogic/CompletenessDerived.lean",
+    "FormalSystem.lean",
+    "docs/reference/axiom-reference.md",
+    "docs/reference/paper-definitions-of-record.md",
+    "docs/theorem-index.md",
+    "typst/generated/machine-appendix.jsonl",
+    "typst/chapters/03-proof-theory.typ"
+  ],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, derived schemata consumed by ProofSearch/Core.mirrorCandidate (evaluated by #guard) or BimodalTools/ProofExtractorMain must be computable: avoid deductionTheorem, orElim, lceImp/rceImp, pastKDist, untlBotFalse; build proof terms from bCombinator, theoremFlip, pairing, notNotIntro, doubleNegation, contraposeImp, combineImpConj, efqAxiom.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/summaries/01_reduce-tm-minimal-axiom-sets-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "computable",
+        "noncomputable",
+        "deductionTheorem",
+        "mirrorCandidate",
+        "ProofExtractorMain"
+      ]
+    },
+    {
+      "content": "Every per-phase commit touching a .lean file in BimodalLogic must include a re-stamped typst/generated/status.typ (bash scripts/typst-sync-check.sh --fix) or the pre-commit typst-sync Check 2 blocks it.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/issues.jsonl",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "typst-sync-check",
+        "pre-commit",
+        "status.typ"
+      ]
+    },
+    {
+      "content": "RuleSpec GATE 3 (ruleAxioms_covers_ruleFrameClass, by decide) forbids an empty ruleAxioms row for a rule gated above .Base; ground such rules in the constructor their derivation consumes.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/issues.jsonl",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "RuleSpec",
+        "ruleAxioms",
+        "GATE 3"
+      ]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1791993577_c54b32",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 3,
+    "compliance_check": "passed",
+    "compliance_note": "all eleven Goals declarations found; the spot-check's two [MISSING] hits are `minFrameClass` (exists as the dotted `Axiom.minFrameClass`, which the line-anchored grep cannot match) and `z1_in_frame` (a Goals deletion target, correctly absent)",
+    "phases_completed": 10,
+    "phases_total": 10,
+    "commits": [
+      "458d09d4e",
+      "79c244ac7",
+      "fc536b6a1",
+      "032d21f9a",
+      "078e6109f",
+      "ba6c0f5dd",
+      "de8a7e472",
+      "c3a3dd6aa",
+      "717df1f48",
+      "0006346c9"
+    ]
   }
 }
