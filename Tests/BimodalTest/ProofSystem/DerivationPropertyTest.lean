@@ -234,7 +234,7 @@ example (φ : Formula) : ⊢ (φ.box.diamond.imp φ.box) :=
 Test: Temporal A axiom is derivable.
 -/
 example (φ : Formula) : ⊢ (φ.imp (Formula.allFuture φ.somePast)) :=
-  DerivationTree.axiom [] (φ.imp (Formula.allFuture φ.somePast)) (Axiom.connect_future φ) trivial
+  FormalSystem.Theorems.ConnectDerived.connectFuture φ
 
 -- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task

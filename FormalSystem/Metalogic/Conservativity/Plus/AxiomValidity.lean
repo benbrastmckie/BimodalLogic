@@ -11,6 +11,7 @@ import FormalSystem.PlusLanguage.Axioms
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.ConnectDerived
 import FormalSystem.Theorems.LinearityDerived
+import FormalSystem.Metalogic.CompletenessDerived
 
 /-!
 # Validity and reflection-validity of every TM⁺ axiom schema
@@ -98,7 +99,8 @@ theorem plusAxiom_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
     exact plusValidIn_of_tm_deriv theEncoding _
       (DerivedAxioms.rightMonoSince (A a0) (A a1) (A a2))
   | connect_future a0 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.connect_future (A a0)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.ConnectDerived.connectFuture (A a0))
   | connect_past a0 =>
     exact plusValidIn_of_tm_deriv theEncoding _
       (FormalSystem.Theorems.ConnectDerived.connectPast (A a0))
@@ -121,35 +123,43 @@ theorem plusAxiom_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
   | linear_since a0 a1 a2 a3 =>
     exact plusValidIn_of_tm_deriv theEncoding _
       (DerivedAxioms.linearSince (A a0) (A a1) (A a2) (A a3))
-  | until_F a0 a1 => exact plusValidIn_of_tm theEncoding _ (Axiom.until_F (A a0) (A a1)) le_rfl
+  | until_F a0 a1 =>
+    exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.untilF (A a0) (A a1))
   | since_P a0 a1 =>
     exact plusValidIn_of_tm_deriv theEncoding _
       (DerivedAxioms.sinceP (A a0) (A a1))
   | temp_linearity a0 a1 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.temp_linearity (A a0) (A a1)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.LinearityDerived.tempLinearity (A a0) (A a1))
   | temp_linearity_past a0 a1 =>
     exact plusValidIn_of_tm_deriv theEncoding _
       (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (A a0) (A a1))
   | F_until_equiv a0 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.F_until_equiv (A a0)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.fUntilEquiv (A a0))
   | P_since_equiv a0 =>
     exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.pSinceEquiv (A a0))
   | modal_future a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.modal_future (A a0)) le_rfl
-  | discrete_symm_fwd => exact plusValidIn_of_tm theEncoding _ Axiom.discrete_symm_fwd le_rfl
+  | discrete_symm_fwd =>
+    exact plusValidIn_of_tm_deriv theEncoding _ FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
   | discrete_symm_bwd =>
     exact plusValidIn_of_tm_deriv theEncoding _ FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
   | discrete_propagate_fwd =>
-    exact plusValidIn_of_tm theEncoding _ Axiom.discrete_propagate_fwd le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _ DerivedAxioms.discretePropagateFwd
   | discrete_propagate_bwd =>
-    exact plusValidIn_of_tm theEncoding _ Axiom.discrete_propagate_bwd le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _
+      FormalSystem.Theorems.ConnectDerived.discretePropagateBwd
   | discrete_box_necessity =>
     exact plusValidIn_of_tm theEncoding _ Axiom.discrete_box_necessity le_rfl
   | prior_UZ a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.prior_UZ (A a0)) le_rfl
   | prior_SZ a0 =>
     exact plusValidIn_of_tm_deriv theEncoding _
       (DerivedAxioms.priorSZ le_rfl (A a0))
-  | z1 a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.z1 (A a0)) le_rfl
-  | density a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.density (A a0)) le_rfl
+  | z1 a0 =>
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (FormalSystem.Metalogic.CompletenessDerived.z1Thm (A a0))
+  | density a0 =>
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.LinearityDerived.density le_rfl (A a0))
   | dense_indicator => exact plusValidIn_of_tm theEncoding _ Axiom.dense_indicator le_rfl
   | prior_U_gap a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.prior_U_gap (A a0)) le_rfl
   | prior_S_gap a0 =>
@@ -213,7 +223,8 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.rightMonoSince (A' a0) (A' a1) (A' a2))
   | connect_future a0 =>
-    exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.connect_future (A' a0)) le_rfl
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.ConnectDerived.connectFuture (A' a0))
   | connect_past a0 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       (FormalSystem.Theorems.ConnectDerived.connectPast (A' a0))
@@ -241,29 +252,33 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.linearSince (A' a0) (A' a1) (A' a2) (A' a3))
   | until_F a0 a1 =>
-    exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.until_F (A' a0) (A' a1)) le_rfl
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+      (DerivedAxioms.untilF (A' a0) (A' a1))
   | since_P a0 a1 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.sinceP (A' a0) (A' a1))
   | temp_linearity a0 a1 =>
-    exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.temp_linearity (A' a0) (A' a1)) le_rfl
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.LinearityDerived.tempLinearity (A' a0) (A' a1))
   | temp_linearity_past a0 a1 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (A' a0) (A' a1))
   | F_until_equiv a0 =>
-    exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.F_until_equiv (A' a0)) le_rfl
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.fUntilEquiv (A' a0))
   | P_since_equiv a0 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.pSinceEquiv (A' a0))
   | modal_future a0 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.modal_future (A' a0)) le_rfl
   | discrete_symm_fwd =>
-    exact plusValidIn_reflect_time_of_tm theEncoding _ Axiom.discrete_symm_fwd le_rfl
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+      FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
   | discrete_symm_bwd =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
   | discrete_propagate_fwd =>
-    exact plusValidIn_reflect_time_of_tm theEncoding _ Axiom.discrete_propagate_fwd le_rfl
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ DerivedAxioms.discretePropagateFwd
   | discrete_propagate_bwd =>
-    exact plusValidIn_reflect_time_of_tm theEncoding _ Axiom.discrete_propagate_bwd le_rfl
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+      FormalSystem.Theorems.ConnectDerived.discretePropagateBwd
   | discrete_box_necessity =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ Axiom.discrete_box_necessity le_rfl
   | prior_UZ a0 => exact plusValidIn_reflect_time_of_tm theEncoding _
@@ -271,8 +286,12 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
   | prior_SZ a0 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.priorSZ le_rfl (A' a0))
-  | z1 a0 => exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.z1 (A' a0)) le_rfl
-  | density a0 => exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.density (A' a0)) le_rfl
+  | z1 a0 =>
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+      (FormalSystem.Metalogic.CompletenessDerived.z1Thm (A' a0))
+  | density a0 =>
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.LinearityDerived.density le_rfl (A' a0))
   | dense_indicator =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ Axiom.dense_indicator le_rfl
   | prior_U_gap a0 =>

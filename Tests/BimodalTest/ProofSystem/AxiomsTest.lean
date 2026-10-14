@@ -178,16 +178,18 @@ noncomputable example : ⊢ ((Formula.atomS "p").box.allFuture.imp
 
 -- ============================================================
 -- Temporal A Axiom Tests: φ → G(somePast φ)
--- Note: Axiom.connect_future was removed in a prior task. The BX analogue is connect_future.
+-- Note: TC is the derived `Theorems.ConnectDerived.connectFuture` (from US, UC and TN).
 -- ============================================================
 
 -- Test: connect_future axiom on atom (φ → G(P(φ)))
-example : Axiom ((Formula.atomS "p").imp ((Formula.atomS "p").somePast.allFuture)) :=
-  Axiom.connect_future (Formula.atomS "p")
+example : DerivationTree FrameClass.Base []
+    ((Formula.atomS "p").imp ((Formula.atomS "p").somePast.allFuture)) :=
+  FormalSystem.Theorems.ConnectDerived.connectFuture (Formula.atomS "p")
 
 -- Test: connect_future axiom on negation
-example : Axiom ((Formula.atomS "p").neg.imp ((Formula.atomS "p").neg.somePast.allFuture)) :=
-  Axiom.connect_future (Formula.atomS "p").neg
+example : DerivationTree FrameClass.Base []
+    ((Formula.atomS "p").neg.imp ((Formula.atomS "p").neg.somePast.allFuture)) :=
+  FormalSystem.Theorems.ConnectDerived.connectFuture (Formula.atomS "p").neg
 
 -- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task

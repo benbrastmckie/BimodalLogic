@@ -102,7 +102,7 @@ noncomputable example : DerivationTree FrameClass.Base []
 /-- Test 7: temp_a axiom (p → GPp) -/
 example : DerivationTree FrameClass.Base []
     (Formula.imp (Formula.atomS "p") (Formula.allFuture (Formula.somePast (Formula.atomS "p")))) :=
-  DerivationTree.axiom [] _ (Axiom.connect_future _) trivial
+  FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 -- NOTE: quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
@@ -161,7 +161,7 @@ noncomputable example : DerivationTree FrameClass.Base []
 example : DerivationTree FrameClass.Base []
     (Formula.imp (Formula.atomS "p") (Formula.allFuture
         (Formula.somePast (Formula.atomS "p")))) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 /-- Test 17: modal_search finds modal_future axiom -/
 example : DerivationTree FrameClass.Base []
@@ -438,7 +438,7 @@ example : DerivationTree FrameClass.Base []
 example : DerivationTree FrameClass.Base []
     (Formula.imp (Formula.atomS "y") (Formula.allFuture
         (Formula.somePast (Formula.atomS "y")))) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 /-- Test 63: Modal 4 applied to compound formula -/
 example : DerivationTree FrameClass.Base []
@@ -462,7 +462,7 @@ example : DerivationTree FrameClass.Base []
 example : DerivationTree FrameClass.Base []
     (Formula.imp (Formula.atomS "r") (Formula.allFuture
         (Formula.somePast (Formula.atomS "r")))) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 /-- Test 67: Modal future with compound formula -/
 example : DerivationTree FrameClass.Base []
@@ -542,7 +542,7 @@ noncomputable example : DerivationTree FrameClass.Base []
 example : DerivationTree FrameClass.Base []
     (Formula.imp (Formula.atomS "p") (Formula.allFuture
         (Formula.somePast (Formula.atomS "p")))) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 /-!
 ## Phase 6: Tests for the modal K and temporal K inference rules
@@ -631,17 +631,17 @@ noncomputable example : DerivationTree FrameClass.Base []
 
 /-- Test 93: temp_a_tactic basic application -/
 example (p : Formula) : DerivationTree FrameClass.Base [] (p.imp p.somePast.allFuture) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 /-- Test 94: temp_a_tactic with compound formula -/
 example (p q : Formula) : DerivationTree FrameClass.Base []
     ((p.imp q).imp (p.imp q).somePast.allFuture) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 /-- Test 95: temp_a_tactic with atom -/
 example : DerivationTree FrameClass.Base []
     ((Formula.atomS "p").imp (Formula.atomS "p").somePast.allFuture) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 /-!
 ## Phase 8: Tests for Proof Search Tactics
@@ -671,7 +671,7 @@ noncomputable example (p : Formula) : DerivationTree FrameClass.Base []
 
 /-- Test 100: modal_search depth 2 on temp_a -/
 example (p : Formula) : DerivationTree FrameClass.Base [] (p.imp p.somePast.allFuture) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 /-- Test 101: modal_search with complex nested formula -/
 example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).box.imp (p.imp q).box.box) :=

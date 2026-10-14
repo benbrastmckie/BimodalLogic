@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Correspondence.DurationFrames
 import FormalSystem.Metalogic.Soundness
+import FormalSystem.Metalogic.CompletenessDerived
 -- The bare `realOrder` used in the `.RTime` results below resolves uniquely to
 -- `FormalSystem.Semantics.realOrder` only while `FormalSystem.Metalogic.DedekindNonCompactness`
 -- (which declares a second `realOrder` in a namespace this file also opens) stays out of this
@@ -19,7 +20,8 @@ import FormalSystem.Semantics.Correspondence.RigidityReal
 *smallest* frame class at which that axiom is meant to be valid, and `axiom_validIn_min`
 (`FormalSystem/Metalogic/Soundness.lean`) proves the **upper** bound: every axiom really is valid
 at its own tag. Nothing in that theorem says the tag could not have been *lower*. For the two
-axioms tagged `.ZTime` — `Axiom.prior_UZ` and `Axiom.z1`, `def:BX-z`'s ℤ-time narrowing — this
+axioms tagged `.ZTime` — `Axiom.prior_UZ` and Z1 (`CompletenessDerived.z1Thm`), `def:BX-z`'s
+ℤ-time narrowing — this
 module supplies the missing **lower** bound, and then some: neither is valid at
 `FrameClass.Base`, hence (by `eq_base_of_lt_ztime`, `.Base` being the unique class strictly below
 `.ZTime`) neither is valid at any class strictly below `.ZTime`; and neither is valid at `.Dense`
@@ -39,7 +41,8 @@ instantiates them to reach `.Base`, whose only structural requirement is regular
 
 So the property doing the work is *non-discreteness*: between any two times there is a third, so
 `Axiom.prior_UZ`'s `U(¬p, p)` can never find a first `p`-time with a `¬p`-guarded initial
-segment, and `Axiom.z1`'s `FGp → Gp` collapse fails at a threshold with no immediate predecessor.
+segment, and Z1's (`CompletenessDerived.z1Thm`) `FGp → Gp` collapse fails at a threshold with no
+immediate predecessor.
 It is **not** the Archimedean property, and no claim is made here that either axiom is refutable
 specifically over ℚ, or specifically over a non-Archimedean order, beyond what the written
 statements say. The non-Archimedean discrete carriers are a different story, told by
@@ -49,7 +52,8 @@ statements say. The non-Archimedean discrete carriers are a different story, tol
 
 `Metalogic/Conservativity/DenseObstructionTransfer.lean` runs the dense obstruction for the
 L-minus schema `Z1` on the derivability side. This module is the same story told semantically and
-in the native language: it refutes `ValidIn` of `Axiom.z1`'s own formula, so nothing has to be
+in the native language: it refutes `ValidIn` of Z1's (`CompletenessDerived.z1Thm`) own formula,
+so nothing has to be
 transferred across `MinusLanguage.tr` and the `tr_ne_untl` mismatch recorded in
 `Metalogic/Conservativity.lean` — `Formula.someFuture` is a top-level `untl` and nothing in the
 range of `tr` is — simply never arises. The two modules should be read as one result at two
@@ -129,7 +133,8 @@ namespace FormalSystem.Metalogic.Independence
 /-! ## Shape pins
 
 Each `example` below type-checks only if the formula this module refutes is *exactly* the one the
-matching `Axiom` constructor produces. They make transcription fidelity a compiler obligation
+matching derived theorem (or `Axiom` constructor) produces. They make transcription fidelity a
+compiler obligation
 rather than a reading: without them a mis-transcribed formula would yield a true but vacuous
 non-validity result about some other formula.
 
@@ -146,10 +151,12 @@ against the constructor.
 /-- Shape pin: the formula below is exactly `Axiom.prior_UZ`'s. -/
 example (φ : Formula) : Axiom (φ.someFuture.imp (Formula.untl φ.neg φ)) := Axiom.prior_UZ φ
 
-/-- Shape pin: the formula below is exactly `Axiom.z1`'s. -/
-example (φ : Formula) :
-    Axiom ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
-  Axiom.z1 φ
+/-- Shape pin: the formula below is exactly Z1's, the derived
+`Metalogic.CompletenessDerived.z1Thm` (a theorem at `FrameClass.ZTime`). -/
+noncomputable example (φ : Formula) :
+    DerivationTree FrameClass.ZTime []
+      ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
+  FormalSystem.Metalogic.CompletenessDerived.z1Thm φ
 
 /-! ## The order fact -/
 
@@ -200,7 +207,8 @@ theorem not_validOn_prior_UZ_dense (D : TemporalOrder) [DenselyOrdered (D : Type
   exact hne ((translation_realizes D A p r).mpr h0r)
 
 /--
-**`Axiom.z1` fails on the translation frame over any densely ordered duration group.**
+**Z1 (`CompletenessDerived.z1Thm`) fails on the translation frame over any densely ordered duration
+group.**
 
 At an atom `p` realized by the upper set `{x | c ≤ x}` for some `c > 0`, the auxiliary `hG`
 computes `Gp` at `t` to be exactly `c ≤ t` — the forward direction is where density is spent, via
@@ -267,7 +275,7 @@ theorem not_validIn_base_prior_UZ (p : Atom) :
   fun h => not_validOn_prior_UZ_dense ztimeSharpOrder p (h _ inferInstance)
 
 /--
-**`Axiom.z1` is not valid at `FrameClass.Base`.**
+**Z1 (`CompletenessDerived.z1Thm`) is not valid at `FrameClass.Base`.**
 
 As with `not_validIn_base_prior_UZ`, the instance is atomic by necessity rather than convenience.
 -/
@@ -317,7 +325,7 @@ theorem not_derivable_base_prior_UZ (p : Atom) :
   fun ⟨d⟩ => not_validIn_base_prior_UZ p (soundness_validIn d)
 
 /--
-**`Axiom.z1`'s atomic instance is not derivable from the `.Base` axioms.**
+**Z1's (`CompletenessDerived.z1Thm`) atomic instance is not derivable from the `.Base` axioms.**
 
 The `z1` counterpart of `not_derivable_base_prior_UZ`.
 -/
@@ -345,7 +353,7 @@ theorem not_validIn_dense_prior_UZ (p : Atom) :
   fun h => not_validOn_prior_UZ_dense ztimeSharpOrder p (h _ ⟨inferInstance, inferInstance⟩)
 
 /--
-**`Axiom.z1` is not valid at `FrameClass.Dense`.**
+**Z1 (`CompletenessDerived.z1Thm`) is not valid at `FrameClass.Dense`.**
 
 The `z1` counterpart of `not_validIn_dense_prior_UZ`, over the same rational-duration witness.
 -/
@@ -372,7 +380,7 @@ theorem not_validIn_rtime_prior_UZ (p : Atom) :
     (h _ ⟨inferInstance, inferInstance, fun _ hne hbd => Real.exists_isLUB hne hbd⟩)
 
 /--
-**`Axiom.z1` is not valid at `FrameClass.RTime`.**
+**Z1 (`CompletenessDerived.z1Thm`) is not valid at `FrameClass.RTime`.**
 
 The `z1` counterpart of `not_validIn_rtime_prior_UZ`, over the same real-duration witness.
 -/
@@ -412,7 +420,8 @@ theorem prior_UZ_validIn_iff_ztime (p : Atom) (fc : FrameClass) :
     exact prior_UZ_valid (Formula.atom p)
 
 /--
-**`Axiom.z1`'s atomic instance is valid at exactly one frame class: `.ZTime`.**
+**Z1's (`CompletenessDerived.z1Thm`) atomic instance is valid at exactly one frame class:
+`.ZTime`.**
 
 The `z1` counterpart of `prior_UZ_validIn_iff_ztime`, and with it the `.ZTime` row of
 `Axiom.minFrameClass` is characterized rather than merely bounded on both sides.

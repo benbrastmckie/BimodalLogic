@@ -691,7 +691,7 @@ def theoremRegistry : List TheoremEntry := [
     (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (fc := .Base) p q),
   -- BX12: F_until_equiv: F(φ) → U(φ, ⊤)
   mkEntry "F_until_equiv_axiom"
-    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial),
+    (DerivedAxioms.fUntilEquiv (fc := .Base) p),
   -- BX12': P_since_equiv: P(φ) → S(φ, ⊤)
   mkEntry "P_since_equiv_axiom"
     (DerivedAxioms.pSinceEquiv (fc := .Base) p),
@@ -809,7 +809,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "temp_linearity_axiom_qr"
     (FormalSystem.Theorems.LinearityDerived.tempLinearityLegacy (fc := .Base) q r),
   mkEntry "F_until_equiv_axiom_q"
-    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv q) trivial),
+    (DerivedAxioms.fUntilEquiv (fc := .Base) q),
   mkEntry "P_since_equiv_axiom_q"
     (DerivedAxioms.pSinceEquiv (fc := .Base) q),
   mkEntry "enrichment_until_axiom_qrs"
@@ -872,7 +872,7 @@ def theoremRegistry : List TheoremEntry := [
       (FormalSystem.Theorems.LinearityDerived.tempLinearityLegacy (fc := .Base) p q)),
   mkEntry "G_F_until_equiv_axiom"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial)),
+      (DerivedAxioms.fUntilEquiv (fc := .Base) p)),
   -- H-wrapped axiom instantiation variants (2 temporal steps each)
   mkEntry "H_serial_future_axiom"
     (DerivationTree.time_reflection _
@@ -902,7 +902,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "GG_F_until_equiv_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial))),
+        (DerivedAxioms.fUntilEquiv (fc := .Base) p))),
   mkEntry "GG_P_since_equiv_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
@@ -1082,13 +1082,13 @@ def theoremRegistry : List TheoremEntry := [
   -- These have minFrameClass = .Base (wildcard), but are semantically
   -- about discrete structures, so we use fc := .ZTime.
   mkEntryAt "discrete_symm_fwd_axiom" .ZTime
-    (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_symm_fwd trivial),
+    (FormalSystem.Theorems.ConnectDerived.discreteSymmFwd (fc := .ZTime)),
   mkEntryAt "discrete_symm_bwd_axiom" .ZTime
     (FormalSystem.Theorems.ConnectDerived.discreteSymmBwd (fc := .ZTime)),
   mkEntryAt "discrete_propagate_fwd_axiom" .ZTime
-    (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_propagate_fwd trivial),
+    (DerivedAxioms.discretePropagateFwd (fc := .ZTime)),
   mkEntryAt "discrete_propagate_bwd_axiom" .ZTime
-    (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_propagate_bwd trivial),
+    (FormalSystem.Theorems.ConnectDerived.discretePropagateBwd (fc := .ZTime)),
   mkEntryAt "discrete_box_necessity_axiom" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_box_necessity trivial),
   -- Prior Axioms (Discrete): F(φ) → U(φ, ¬φ) and P(φ) → S(φ, ¬φ)
@@ -1107,9 +1107,9 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.z1 q) trivial),
   -- Density Axioms (Dense): G(G(φ)) → G(φ) and ¬U(⊤,⊥)
   mkEntryAt "density_axiom" .Dense
-    (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial),
+    (FormalSystem.Theorems.LinearityDerived.density (fc := .Dense) le_rfl p),
   mkEntryAt "density_axiom_q" .Dense
-    (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density q) trivial),
+    (FormalSystem.Theorems.LinearityDerived.density (fc := .Dense) le_rfl q),
   mkEntryAt "dense_indicator_axiom" .Dense
     (DerivationTree.axiom (fc := .Dense) [] _ Axiom.dense_indicator trivial),
   -- ============================================================
@@ -1131,16 +1131,16 @@ def theoremRegistry : List TheoremEntry := [
   -- G-wrapped uniformity axioms (Discrete)
   mkEntryAt "G_discrete_symm_fwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_symm_fwd trivial)),
+      (FormalSystem.Theorems.ConnectDerived.discreteSymmFwd (fc := .ZTime))),
   mkEntryAt "G_discrete_symm_bwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (FormalSystem.Theorems.ConnectDerived.discreteSymmBwd (fc := .ZTime))),
   mkEntryAt "G_discrete_propagate_fwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_propagate_fwd trivial)),
+      (DerivedAxioms.discretePropagateFwd (fc := .ZTime))),
   mkEntryAt "G_discrete_propagate_bwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_propagate_bwd trivial)),
+      (FormalSystem.Theorems.ConnectDerived.discretePropagateBwd (fc := .ZTime))),
   mkEntryAt "G_discrete_box_necessity_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_box_necessity trivial)),
@@ -1158,7 +1158,7 @@ def theoremRegistry : List TheoremEntry := [
   -- G-wrapped density axioms (Dense)
   mkEntryAt "G_density_axiom" .Dense
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial)),
+      (FormalSystem.Theorems.LinearityDerived.density (fc := .Dense) le_rfl p)),
   mkEntryAt "G_dense_indicator_axiom" .Dense
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .Dense) [] _ Axiom.dense_indicator trivial)),
@@ -1166,7 +1166,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "H_discrete_symm_fwd_axiom" .ZTime
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_symm_fwd trivial))),
+        (FormalSystem.Theorems.ConnectDerived.discreteSymmFwd (fc := .ZTime)))),
   mkEntryAt "H_prior_UZ_axiom" .ZTime
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
@@ -1174,7 +1174,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "H_density_axiom" .Dense
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial))),
+        (FormalSystem.Theorems.LinearityDerived.density (fc := .Dense) le_rfl p))),
   -- GG-wrapped missing axioms (selected, for depth variety)
   mkEntry "GG_peirce_axiom"
     (DerivationTree.temporal_necessitation _
@@ -1183,7 +1183,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "GG_discrete_symm_fwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_symm_fwd trivial))),
+        (FormalSystem.Theorems.ConnectDerived.discreteSymmFwd (fc := .ZTime)))),
   mkEntryAt "GG_prior_UZ_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
@@ -1191,7 +1191,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "GG_density_axiom" .Dense
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial))),
+        (FormalSystem.Theorems.LinearityDerived.density (fc := .Dense) le_rfl p))),
   mkEntryAt "GG_z1_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _

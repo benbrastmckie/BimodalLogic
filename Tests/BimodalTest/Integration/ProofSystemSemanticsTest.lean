@@ -164,7 +164,7 @@ Test 12: Temporal A axiom is valid.
 Verifies that `φ → F(somePast φ)` is valid via soundness.
 -/
 example (φ : Formula) : [] ⊨ (φ.imp (Formula.allFuture φ.somePast)) := by
-  let deriv := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_future φ) trivial
+  let deriv := FormalSystem.Theorems.ConnectDerived.connectFuture (fc := FrameClass.Base) φ
   exact soundness_in [] _ deriv
 
 -- /--
@@ -570,8 +570,8 @@ Verify p → F(somePast p) is sound.
 -/
 example : [] ⊨ ((Formula.atomS "p").imp 
              (Formula.allFuture (Formula.atomS "p").somePast)) := by
-  let deriv := DerivationTree.axiom (fc := FrameClass.Base) [] _
-      (Axiom.connect_future (Formula.atomS "p")) trivial
+  let deriv :=
+    FormalSystem.Theorems.ConnectDerived.connectFuture (fc := FrameClass.Base) (Formula.atomS "p")
   exact soundness_in [] _ deriv
 
 /--

@@ -403,7 +403,7 @@ confirm with `grep -rn "Axiom\.\(until_F\|F_until_equiv\|connect_future\|discret
 
 ---
 
-### Phase 6: Repoint Conservativity, Minus/Plus/Star bridges, Independence pins, Tests, and tooling [NOT STARTED]
+### Phase 6: Repoint Conservativity, Minus/Plus/Star bridges, Independence pins, Tests, and tooling [COMPLETED]
 
 **Goal**: Repoint the remaining genuine axiom sites outside the engines, retarget the two
 Independence shape pins at the derived theorems' statements, and update every test and tooling
@@ -411,33 +411,33 @@ entry that *names* a demoted schema — still with the constructors present, so 
 green.
 
 **Tasks**:
-- [ ] `Metalogic/Conservativity/Backward.lean:205` (`z1_translate`): add
+- [x] `Metalogic/Conservativity/Backward.lean:205` (`z1_translate`): add
       `import FormalSystem.Metalogic.CompletenessDerived` and consume `z1Derivable` directly (it
       already returns `Derivable`); confirm no cycle via the scoped build
-- [ ] `Metalogic/Conservativity/MinusTemporalDerived.lean:353,360`,
+- [x] `Metalogic/Conservativity/MinusTemporalDerived.lean:353,360`,
       `Metalogic/Conservativity/SpCountermodel.lean:153` → `LinearityDerived.tempLinearity`
-      (or the moved `tempLinearityLegacy`, whichever order they consume)
-- [ ] `MinusLanguage/AxiomDischarge.lean:233` (TC), `:318` (DN), `:372` (TL) → derived theorems;
+      (or the moved `tempLinearityLegacy`, whichever order they consume) *(deviation: skipped — probe (definition lookup): both files `open FormalSystem.MinusLanguage` and their `Axiom.temp_linearity` is `MinusLanguage.Axiom.temp_linearity`, the Minus system's own constructor, not the TM one; nothing to repoint)*
+- [x] `MinusLanguage/AxiomDischarge.lean:233` (TC), `:318` (DN), `:372` (TL) → derived theorems;
       refresh its docstring asset table (line 37 "L asset: `Axiom.density`")
-- [ ] `Metalogic/Conservativity/Plus/AxiomValidity.lean:122,238` and the Plus/Star validity
+- [x] `Metalogic/Conservativity/Plus/AxiomValidity.lean:122,238` and the Plus/Star validity
       bridges: repoint to the `plusValidIn_of_tm_deriv` idiom (`AxiomValidity.lean:136` is the
       precedent); leave `PlusAxiom`/`StarAxiom` constructor sets unchanged
-- [ ] Independence shape pins: `Independence/DenseRTimeSharpness.lean:119` →
+- [x] Independence shape pins: `Independence/DenseRTimeSharpness.lean:119` →
       `example (φ) : ⊢[.Dense] … := LinearityDerived.density le_rfl φ`;
       `Independence/ZTimeSharpness.lean:152` → `example (φ) : ⊢[.ZTime] … := z1Thm φ`
       (statements unchanged; the semantic results `z1_validIn_iff_ztime`, `z1_minFrameClass_sharp`,
       `density_validIn_iff`, `density_minFrameClass_sharp`, `not_derivable_base_z1` are formula-level
       and survive); update the docstring "exactly the one the matching `Axiom` constructor produces"
-- [ ] Tests: `TacticsTest` (×8), `TemporalIntegrationTest` (×5), `AxiomsTest`, `DerivationTest`,
+- [x] Tests: `TacticsTest` (×8), `TemporalIntegrationTest` (×5), `AxiomsTest`, `DerivationTest`,
       `DerivationPropertyTest`, `ProofSystemSemanticsTest`, `AutomationProofSystemTest` — replace
       `Axiom.connect_future`-style instances with the derived theorems; tests that assert
       `modal_search` closes a TC/UE/TL-shaped goal must now succeed through `@[tmLemma]`
-- [ ] Tooling named entries (not the exhaustive arms): `BimodalTools/ProofExtractorMain.lean`
+- [x] Tooling named entries (not the exhaustive arms): `BimodalTools/ProofExtractorMain.lean`
       (`F_until_equiv_axiom`, `ctx_until_F`, layer name list 1392-1408),
       `FormulaEnumerator`, `InterestingnessMetrics`, `ProofFirstBenchmark`,
       `BenchmarkAnchorsMain` — repoint to the derived theorem so dataset coverage is preserved,
-      never dropped
-- [ ] Scoped guarded builds: `FormalSystem.Metalogic.Conservativity`, `FormalSystem.MinusLanguage`,
+      never dropped *(deviation: altered — `ProofExtractorMain`'s four `z1_axiom*` runtime rows cannot be repointed: `z1Thm` is `Classical.choice`-packaged (noncomputable) and the extractor walks trees at runtime; they are deleted in Phase 7 with a reasoned exclusion. `FormulaEnumerator`'s matcher returns `Σ φ, Axiom φ`, so its arms are deleted in Phase 7 and coverage rides on its formula lists. Every other named entry is repointed.)*
+- [x] Scoped guarded builds: `FormalSystem.Metalogic.Conservativity`, `FormalSystem.MinusLanguage`,
       `FormalSystem.PlusLanguage`, `FormalSystem.StarLanguage`, `FormalSystem.Metalogic.Independence`,
       `BimodalTest`, `BimodalTools`, `BimodalToolsTest`
 

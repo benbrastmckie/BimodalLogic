@@ -157,7 +157,7 @@ example : True := by
   let φ := p.imp (Formula.allFuture p.somePast)
   
   -- Derive using Temporal A axiom
-  let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.connect_future p) trivial
+  let d : ⊢ φ := FormalSystem.Theorems.ConnectDerived.connectFuture p
   
   -- Verify soundness
   have v : [] ⊨ φ := soundness_in [] φ d
@@ -178,7 +178,8 @@ example : True := by
   
   -- p → F(somePast p)
   let ax : Γ ⊢ (p.imp (Formula.allFuture p.somePast)) :=
-    DerivationTree.axiom Γ _ (Axiom.connect_future p) trivial
+    FormalSystem.ProofSystem.DerivedAxioms.lift Γ
+      (FormalSystem.Theorems.ConnectDerived.connectFuture p)
   
   -- p (assumption)
   let ass : Γ ⊢ p :=
@@ -420,7 +421,7 @@ example : True := by
   
   -- Derive Temporal A axiom
   let d1 : ⊢ (p.imp (Formula.allFuture p.somePast)) :=
-    DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_future p) trivial
+    FormalSystem.Theorems.ConnectDerived.connectFuture (fc := FrameClass.Base) p
   
   -- Apply time reflection
   let d2 : ⊢ ((p.imp (Formula.allFuture p.somePast)).reflectTime) :=
@@ -453,7 +454,7 @@ section MixedPastFutureDerivations
   
 --   -- Derive Temporal A: p → F(somePast p)
 --   let d1 : ⊢ (p.imp (Formula.allFuture p.somePast)) :=
---     DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_future p) trivial
+--     FormalSystem.Theorems.ConnectDerived.connectFuture (fc := FrameClass.Base) p
   
 --   -- Derive Temporal L: △p → F(Pp)
 --   let d2 : ⊢ (p.always.imp (Formula.allFuture (Formula.allPast p))) :=
@@ -478,7 +479,8 @@ example : True := by
   
   -- Step 1: p → F(somePast p)
   let ax : Γ ⊢ (p.imp (Formula.allFuture p.somePast)) :=
-    DerivationTree.axiom Γ _ (Axiom.connect_future p) trivial
+    FormalSystem.ProofSystem.DerivedAxioms.lift Γ
+      (FormalSystem.Theorems.ConnectDerived.connectFuture p)
   
   -- Step 2: p (assumption)
   let ass : Γ ⊢ p :=

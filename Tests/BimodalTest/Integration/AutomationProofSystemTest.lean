@@ -196,7 +196,7 @@ The apply_axiom macro should apply the Temporal A axiom.
 -/
 example : ⊢ ((Formula.atomS "p").imp 
              (Formula.allFuture (Formula.atomS "p").somePast)) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future (Formula.atomS "p")) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture (Formula.atomS "p")
 
 /--
 Test 16: apply_axiom works for Propositional K.
@@ -277,7 +277,7 @@ Test 24: temp_a_tactic applies Temporal A axiom.
 The temp_a_tactic should automatically apply the Temporal A axiom.
 -/
 example (p : Formula) : ⊢ (p.imp (p.somePast.allFuture)) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  exact FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 /--
 Test 25: assumption_search finds assumptions.
@@ -378,8 +378,8 @@ Test 34: temp_a_tactic produces sound derivations.
 Specific tactic applications should be valid via soundness.
 -/
 example (p : Formula) : [] ⊨ (p.imp (p.somePast.allFuture)) := by
-  have deriv : ⊢ (p.imp (p.somePast.allFuture)) := DerivationTree.axiom _ _
-      (Axiom.connect_future _) trivial
+  have deriv : ⊢ (p.imp (p.somePast.allFuture)) :=
+    FormalSystem.Theorems.ConnectDerived.connectFuture _
   exact soundness_in [] _ deriv
 
 /--

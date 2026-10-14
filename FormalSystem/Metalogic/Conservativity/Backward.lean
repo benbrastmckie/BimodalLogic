@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.MinusLanguage
+import FormalSystem.Metalogic.CompletenessDerived
 
 /-!
 # The backward TM⁻/TM conservativity bridge
@@ -132,7 +133,8 @@ theorem cef_backward {φ : MinusFormula}
 /--
 **CED**: `TM⁻_d ⊢ φ ⟹ TM_d ⊢ tr φ`, at `FrameClass.Dense`.
 
-`TM⁻_d` is TM⁻ + **DN** (`GGφ → Gφ`), whose translation is literally `Axiom.density`.
+`TM⁻_d` is TM⁻ + **DN** (`GGφ → Gφ`), whose translation is literally the derived DN
+(`Theorems.LinearityDerived.density`).
 
 Paper: — (formalization-native; the paper states no TM⁻/TM⁻-plus proof-theoretic bridge)
 -/
@@ -146,7 +148,8 @@ theorem ced_backward {φ : MinusFormula}
 
 **Why the row is the dense-and-complete one.** This repository's `FrameClass.RTime` sits
 strictly *above* `FrameClass.Dense` (`Dense ≤ RTime`, see `ProofSystem/Axioms.lean`), so a
-`.RTime` derivation may use `Axiom.density` and `Axiom.dense_indicator` as well as the Reynolds
+`.RTime` derivation may use DN (`LinearityDerived.density`) and `Axiom.dense_indicator` as well as
+the Reynolds
 gap axioms. The row is therefore `TM⁻_r ⟶ TM_r` — the dense complete / real-flow system — and
 `TM_r` is the paper's `TM⁻_r`, the `ℝ`-time row of `cor:tm-completeness`, so nothing is lost in
 translation here. There is no repository frame class for density-free completeness; that binder
@@ -189,7 +192,8 @@ def Z1 (φ : MinusFormula) : MinusFormula :=
 /--
 `⊢[Discrete] tr (Z1 φ)` — the translation of the L⁻-side Z1 schema is a `TM_z` theorem.
 
-Two steps: `ProofSystem.Axiom.z1` at `FrameClass.ZTime`, then
+Two steps: the derived Z1 (`Metalogic.CompletenessDerived.z1Thm`, recovered through the ZTime
+completeness engine) at `FrameClass.ZTime`, then
 `MinusLanguage.notGNotImpF` pushed into the antecedent of the consequent by
 `MinusLanguage.impMono`, converting the axiom's `F(Gφ)` into the `¬G¬(Gφ)` shape `tr` produces.
 
@@ -202,8 +206,7 @@ CEF being discharged, since `forward` is refuted rather than open.
 theorem z1_translate (φ : MinusFormula) :
     ProofSystem.Derivable FrameClass.ZTime [] (tr (Z1 φ)) :=
   ⟨FormalSystem.Theorems.Combinators.impTrans
-    (ProofSystem.DerivationTree.axiom [] _ (ProofSystem.Axiom.z1 (tr φ))
-      (show FrameClass.ZTime ≤ FrameClass.ZTime from le_refl _))
+    (FormalSystem.Metalogic.CompletenessDerived.z1Thm (tr φ))
     (MinusLanguage.impMono
       (MinusLanguage.notGNotImpF (tr φ).allFuture)
       (FormalSystem.Theorems.Combinators.identity (tr φ).allFuture))⟩

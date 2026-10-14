@@ -58,7 +58,7 @@ noncomputable example : ⊢ (Formula.allFuture (Formula.atomS "p")).imp
 
 -- Test: connect_future is derivable (φ → G(P(φ)), BX4)
 example : ⊢ (Formula.atomS "p").imp (Formula.allFuture (Formula.atomS "p").somePast) :=
-  DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  FormalSystem.Theorems.ConnectDerived.connectFuture _
 
 -- Test: connect_past is derivable (φ → H(F(φ)), BX4')
 example : ⊢ (Formula.atomS "p").imp (Formula.allPast (Formula.atomS "p").someFuture) :=
@@ -167,7 +167,7 @@ example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.atomS "p") :=
 -- If ⊢ φ then ⊢ reflectTime φ (using connect_future as the base derivation)
 example : ⊢ ((Formula.atomS "p").imp (Formula.allFuture
     (Formula.atomS "p").somePast)).reflectTime :=
-  DerivationTree.time_reflection _ (DerivationTree.axiom [] _ (Axiom.connect_future _) trivial)
+  DerivationTree.time_reflection _ (FormalSystem.Theorems.ConnectDerived.connectFuture _)
 
 -- The above should derive: ⊢ p → H(F(p)) (reflected from p → G(P(p)))
 

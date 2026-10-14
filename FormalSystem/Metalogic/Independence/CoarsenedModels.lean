@@ -504,7 +504,8 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
   | right_mono_since a0 a1 a2 =>
     exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.rightMonoSince (A a0) (A a1) (A a2))
   | connect_future a0 =>
-    exact cValid_of_tm theEncoding _ (Axiom.connect_future (A a0)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.ConnectDerived.connectFuture (A a0))
   | connect_past a0 =>
     exact cValid_of_tm_deriv theEncoding _ (FormalSystem.Theorems.ConnectDerived.connectPast (A a0))
   | enrichment_until a0 a1 a2 =>
@@ -524,28 +525,29 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
   | linear_since a0 a1 a2 a3 =>
     exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.linearSince (A a0) (A a1) (A a2) (A a3))
   | until_F a0 a1 =>
-    exact cValid_of_tm theEncoding _ (Axiom.until_F (A a0) (A a1)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.untilF (A a0) (A a1))
   | since_P a0 a1 =>
     exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.sinceP (A a0) (A a1))
   | temp_linearity a0 a1 =>
-    exact cValid_of_tm theEncoding _ (Axiom.temp_linearity (A a0) (A a1)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.LinearityDerived.tempLinearity (A a0) (A a1))
   | temp_linearity_past a0 a1 =>
     exact cValid_of_tm_deriv theEncoding _
       (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (A a0) (A a1))
   | F_until_equiv a0 =>
-    exact cValid_of_tm theEncoding _ (Axiom.F_until_equiv (A a0)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.fUntilEquiv (A a0))
   | P_since_equiv a0 =>
     exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.pSinceEquiv (A a0))
   | modal_future a0 =>
     exact cValid_of_tm theEncoding _ (Axiom.modal_future (A a0)) (by trivial)
   | discrete_symm_fwd =>
-    exact cValid_of_tm theEncoding _ (Axiom.discrete_symm_fwd) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
   | discrete_symm_bwd =>
     exact cValid_of_tm_deriv theEncoding _ FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
   | discrete_propagate_fwd =>
-    exact cValid_of_tm theEncoding _ (Axiom.discrete_propagate_fwd) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ DerivedAxioms.discretePropagateFwd
   | discrete_propagate_bwd =>
-    exact cValid_of_tm theEncoding _ (Axiom.discrete_propagate_bwd) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ FormalSystem.Theorems.ConnectDerived.discretePropagateBwd
   | discrete_box_necessity =>
     exact cValid_of_tm theEncoding _ (Axiom.discrete_box_necessity) (by trivial)
   | prior_UZ a0 => exact hb.elim
@@ -608,7 +610,8 @@ theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ)
     exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.rightMonoSince (A' a0) (A' a1) (A' a2))
   | connect_future a0 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.connect_future (A' a0)) (by trivial)
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.ConnectDerived.connectFuture (A' a0))
   | connect_past a0 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _
       (FormalSystem.Theorems.ConnectDerived.connectPast (A' a0))
@@ -635,30 +638,32 @@ theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ)
     exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.linearSince (A' a0) (A' a1) (A' a2) (A' a3))
   | until_F a0 a1 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.until_F (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.untilF (A' a0) (A' a1))
   | since_P a0 a1 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.sinceP (A' a0) (A' a1))
   | temp_linearity a0 a1 =>
-    exact cValid_reflect_time_of_tm theEncoding _
-        (Axiom.temp_linearity (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.LinearityDerived.tempLinearity (A' a0) (A' a1))
   | temp_linearity_past a0 a1 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _
         (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (A' a0) (A' a1))
   | F_until_equiv a0 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.F_until_equiv (A' a0)) (by trivial)
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.fUntilEquiv (A' a0))
   | P_since_equiv a0 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.pSinceEquiv (A' a0))
   | modal_future a0 =>
     exact cValid_reflect_time_of_tm theEncoding _ (Axiom.modal_future (A' a0)) (by trivial)
   | discrete_symm_fwd =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_symm_fwd) (by trivial)
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
+      FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
   | discrete_symm_bwd =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _
       FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
   | discrete_propagate_fwd =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_propagate_fwd) (by trivial)
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ DerivedAxioms.discretePropagateFwd
   | discrete_propagate_bwd =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_propagate_bwd) (by trivial)
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
+      FormalSystem.Theorems.ConnectDerived.discretePropagateBwd
   | discrete_box_necessity =>
     exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_box_necessity) (by trivial)
   | prior_UZ a0 => exact hb.elim

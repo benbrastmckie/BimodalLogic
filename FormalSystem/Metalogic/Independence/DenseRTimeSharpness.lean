@@ -8,6 +8,7 @@ import FormalSystem.Semantics.Correspondence.DurationFrames
 import FormalSystem.Semantics.Correspondence.Indicator
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.Independence.CoNotPriorU
+import FormalSystem.Theorems.LinearityDerived
 
 /-!
 # Sharpness of the `.Dense` and `.RTime` tags of `Axiom.minFrameClass`
@@ -17,7 +18,7 @@ import FormalSystem.Metalogic.Independence.CoNotPriorU
 (`FormalSystem/Metalogic/Soundness.lean`) proves the **upper** bound only: every axiom really is
 valid at its own tag. Nothing in that theorem rules out the tag having been set too high. The
 `.ZTime` row is closed in both directions by `Independence/ZTimeSharpness.lean`; this module
-closes three of the four remaining non-`.Base` rows — `Axiom.density` and
+closes three of the four remaining non-`.Base` rows — DN (`LinearityDerived.density`) and
 `Axiom.dense_indicator`, both tagged `.Dense`, and `Axiom.prior_U_gap`, tagged `.RTime` — and
 proves the obstruction that confines any refutation of the fourth, `Axiom.sep`, to a densely
 ordered duration group. `Independence/SepSharpness.lean` supplies such a refutation and closes
@@ -111,12 +112,16 @@ namespace FormalSystem.Metalogic.Independence
 /-! ## Shape pins
 
 Each `example` below type-checks only if the formula this module refutes is *exactly* the one the
-matching `Axiom` constructor produces. Without them a mis-transcribed formula would yield a true
+matching derived theorem (or `Axiom` constructor) produces. Without them a mis-transcribed
+formula would yield a true
 but entirely vacuous non-validity result about some other formula.
 -/
 
-/-- Shape pin: the formula refuted below is exactly `Axiom.density`'s. -/
-example (φ : Formula) : Axiom (φ.allFuture.allFuture.imp φ.allFuture) := Axiom.density φ
+/-- Shape pin: the formula refuted below is exactly DN's, the derived
+`Theorems.LinearityDerived.density` (a theorem at every `fc ≥ Dense`). -/
+example (φ : Formula) :
+    DerivationTree FrameClass.Dense [] (φ.allFuture.allFuture.imp φ.allFuture) :=
+  FormalSystem.Theorems.LinearityDerived.density le_rfl φ
 
 /-- Shape pin: the formula refuted below is exactly `Axiom.dense_indicator`'s. -/
 example : Axiom (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg :=
@@ -162,7 +167,8 @@ theorem not_denselyOrdered_of_isLeastPos {D : TemporalOrder} {p : (D : Type)}
   obtain ⟨c, h1, h2⟩ := h.dense 0 p hp.1
   exact absurd (hp.2 h1) (not_le.mpr h2)
 
-/-- `Axiom.density`'s atomic instance fails on the translation frame over any duration group with
+/-- DN's (`LinearityDerived.density`) atomic instance fails on the translation frame over any
+duration group with
 a least positive element `p`: let the atom hold everywhere except at `p`. Then `GG p` holds at `0`
 — every time reachable in two positive steps is at least `2p > p` — while `G p` fails, because `p`
 itself is a future time where the atom is false. -/
@@ -221,14 +227,15 @@ theorem sat_ztime_denseSharpFrame :
 
 /-! ## Row 1: density -/
 
-/-- `Axiom.density`'s atomic instance is not valid at `FrameClass.Base`. -/
+/-- DN's (`LinearityDerived.density`) atomic instance is not valid at `FrameClass.Base`. -/
 theorem not_validIn_base_density (a : Atom) :
     ¬ ValidIn FrameClass.Base
       ((Formula.atom a).allFuture.allFuture.imp (Formula.atom a).allFuture) :=
   fun h => not_validOn_density_of_isLeastPos denseSharpOrder isLeast_one_denseSharpOrder a
     (h _ sat_base_denseSharpFrame)
 
-/-- `Axiom.density`'s atomic instance is not valid at `FrameClass.ZTime`, which is incomparable
+/-- DN's (`LinearityDerived.density`) atomic instance is not valid at `FrameClass.ZTime`, which is
+incomparable
 with `FrameClass.Dense` rather than below it. -/
 theorem not_validIn_ztime_density (a : Atom) :
     ¬ ValidIn FrameClass.ZTime
@@ -236,7 +243,8 @@ theorem not_validIn_ztime_density (a : Atom) :
   fun h => not_validOn_density_of_isLeastPos denseSharpOrder isLeast_one_denseSharpOrder a
     (h _ sat_ztime_denseSharpFrame)
 
-/-- Minimality of `Axiom.density`'s `.Dense` tag: its atomic instance is not valid at any frame
+/-- Minimality of DN's (`LinearityDerived.density`) `.Dense` tag: its atomic instance is not valid
+at any frame
 class strictly below `FrameClass.Dense`. -/
 theorem density_minFrameClass_sharp (a : Atom) {fc : FrameClass} (hfc : fc < FrameClass.Dense) :
     ¬ ValidIn fc ((Formula.atom a).allFuture.allFuture.imp (Formula.atom a).allFuture) :=
@@ -254,7 +262,8 @@ theorem density_validIn_iff (a : Atom) (fc : FrameClass) :
   | ZTime => exact absurd h (not_validIn_ztime_density a)
   | RTime => exact (by decide : FrameClass.Dense ≤ FrameClass.RTime)
 
-/-- Underivability corollary through soundness: `Axiom.density`'s atomic instance is not derivable
+/-- Underivability corollary through soundness: DN's (`LinearityDerived.density`) atomic instance
+is not derivable
 in the `.Base` system. -/
 theorem not_derivable_base_density (a : Atom) :
     ¬ Derivable FrameClass.Base []

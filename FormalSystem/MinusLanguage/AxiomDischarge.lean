@@ -35,9 +35,10 @@ is a single `DerivationTree.axiom` or a single named theorem.
 * MF — L asset: `Axiom.modal_future`; Exact?: yes
 * TK — L asset: `Theorems.TemporalDerived.gDistribution`; Exact?: yes
 * T4 — L asset: `Theorems.TemporalDerived.gTransitivity`; Exact?: yes
-* DN — L asset: `Axiom.density`; Exact?: yes
+* DN — L asset: `Theorems.LinearityDerived.density` (DN is derived from NN); Exact?: yes
 * TS — L asset: `Axiom.serial_future`; Exact?: **no** — `F`-bridge
-* TC — L asset: `Axiom.connect_future`; Exact?: **no** — `P`-bridge under `G`
+* TC — L asset: `Theorems.ConnectDerived.connectFuture` (TC is derived from US); Exact?: **no** —
+  `P`-bridge under `G`
 * TL — L asset: `Theorems.LinearityDerived.tempLinearityLegacy` (TL is derived from CN);
   Exact?: **no** —
   `F`-bridge *and* a disjunct reshuffle
@@ -60,7 +61,7 @@ lines.
 
 Each extension row consumes the L⁻-side `h_fc` directly rather than re-deriving it: for `df` it
 is exactly `Discrete ≤ fc`, which is what `DerivationTree.lift` wants for `dfSchema`; for `dn`
-it is `Dense ≤ fc`, which is what `Axiom.density`'s own side condition wants; for `co` it is
+it is `Dense ≤ fc`, which is what `LinearityDerived.density`'s own gate wants; for `co` it is
 `Dedekind ≤ fc`, which is `coDerived`'s hypothesis. Base rows use `FrameClass.base_le fc`.
 
 ## Module Invariant
@@ -118,7 +119,7 @@ private def andMono {fc : FrameClass} {A A' B B' : Formula}
 /-- Implication is antitone in its antecedent and monotone in its consequent.
 
 Public (unlike its neighbours) because `Metalogic/Conservativity/Backward.lean`'s `z1_translate`
-needs it to push the `F`-bridge into the antecedent of `Axiom.z1`'s consequent. -/
+needs it to push the `F`-bridge into the antecedent of Z1's consequent. -/
 def impMono {fc : FrameClass} {A A' B B' : Formula}
     (hA : ⊢[fc] A'.imp A) (hB : ⊢[fc] B.imp B') : ⊢[fc] (A.imp B).imp (A'.imp B') := by
   refine deductionTheorem [] (A.imp B) (A'.imp B') ?_
@@ -227,18 +228,20 @@ def dischargeTempSerial {fc : FrameClass} :
     DerivationTree.axiom [] _ ProofSystem.Axiom.serial_future (FrameClass.base_le fc)
   mp serial (fImpNotGNot Formula.top)
 
-/-- **TC** (`φ → G P φ`). `Axiom.connect_future` gives `A → G(P A)`; the `P`-bridge, pushed
+/-- **TC** (`φ → G P φ`). The derived TC (`ConnectDerived.connectFuture`) gives `A → G(P A)`; the
+`P`-bridge, pushed
 under `G` by `gRule`, converts `P A` to the `¬H¬A` shape `tr` produces. -/
 def dischargeTempConnect {fc : FrameClass} (a : MinusFormula) :
     ⊢[fc] tr (a.imp a.somePast.allFuture) :=
   impTrans
-    (DerivationTree.axiom [] _ (ProofSystem.Axiom.connect_future (tr a)) (FrameClass.base_le fc))
+    (FormalSystem.Theorems.ConnectDerived.connectFuture (tr a))
     (gRule (pImpNotHNot (tr a)))
 
 /--
 **TL**, the one Base row with real friction.
 
-The paper's disjunct order is `F(Fφ ∧ ψ) ∨ F(φ ∧ ψ) ∨ F(φ ∧ Fψ)`, which `Axiom.temp_linearity`
+The paper's disjunct order is `F(Fφ ∧ ψ) ∨ F(φ ∧ ψ) ∨ F(φ ∧ Fψ)`, which the derived TL
+(`LinearityDerived.tempLinearity`)
 now states verbatim. The discharge below still routes through the derived
 `Theorems.LinearityDerived.tempLinearityLegacy`, `F(φ ∧ ψ) ∨ (F(φ ∧ Fψ) ∨ F(Fφ ∧ ψ))` — the same
 three
@@ -314,11 +317,11 @@ def dischargeTempLinearity {fc : FrameClass} (a b : MinusFormula) :
 
 DN, CO and DF, each at its own frame class, each consuming the L⁻-side `h_fc` unchanged. -/
 
-/-- **DN** at `Dense`. Exact: `Axiom.density` is literally the same formula, and the L⁻-side
-side condition `Dense ≤ fc` is exactly the one `Axiom.density` needs. -/
+/-- **DN** at `Dense`. Exact: the derived DN (`LinearityDerived.density`) is literally the same
+formula, and the L⁻-side side condition `Dense ≤ fc` is exactly its gate. -/
 def dischargeDn {fc : FrameClass} (h_fc : FrameClass.Dense ≤ fc) (a : MinusFormula) :
     ⊢[fc] tr (a.allFuture.allFuture.imp a.allFuture) :=
-  DerivationTree.axiom [] _ (ProofSystem.Axiom.density (tr a)) h_fc
+  FormalSystem.Theorems.LinearityDerived.density h_fc (tr a)
 
 /-- **CO** at `Dedekind`. `Theorems.DedekindDerived.coDerived` proves `Formula.co A`; `tr` of
 L⁻'s CO differs from it only in the inner `F(HA)`, which the bridge repairs — pushed under `→`
