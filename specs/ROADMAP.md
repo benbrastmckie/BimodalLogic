@@ -68,7 +68,7 @@ delete them from `specs/state.json`, regenerate `specs/TODO.md`, and drop the pa
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 127,128,709,730,741,752,767,768
-/orchestrate 769,770,785
+/orchestrate 769,770,785,787
 ```
 
 ## Stage 0 — User rulings (no agent may transition these)
