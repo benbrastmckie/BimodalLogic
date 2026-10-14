@@ -85,16 +85,23 @@
     {
       "project_number": 792,
       "project_name": "pin_lem_state_set_flow_frames",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "effort": "small",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Pin lem:state-set to the tree by discharging its remaining hypothesis. The paper's lemma: over a task frame satisfying Flow (def:flow: W linearly ordered and every possible world an order-isomorphism of (D,<) onto (W,<)), truth of every sentence of BL with Stability at (tau, x) is membership of tau(x) in the state set |φ| of def:state-set; hence ⊨_F φ → Stability φ (so Determined is valid over every Flow frame), and ⊨_F φ iff |φ| = W under every assignment.\n\nWHAT EXISTS -- this is a pin, not a port. FormalSystem/Metalogic/Independence/StateSetTruth.lean already has `satSet` (def:state-set's recursion over PlusFormula), `plusTruthAt_iff_mem_satSet`, `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`, all under two hypotheses: `OrderFlow F` (FormalSystem/Metalogic/Independence/OrderTransfer.lean; it is def:flow's order-isomorphism condition) and `StateOccurs F` (every state at every time). The paper discharges the second by cor:occurrence; the tree has that as `PartialHistory.occurrence` for `[F.IsRegular]` (FormalSystem/Semantics/Extension/Extension.lean) but never composes the two. The paper's `% PORT:` comment under lem:state-set has been corrected to say exactly this.\n\nDELIVER: (1) `StateOccurs.of_isRegular : [F.IsRegular] → StateOccurs F` from `PartialHistory.occurrence`; (2) the three corollaries at `[F.IsRegular] (h : OrderFlow F)` alone, named so the paper can cite them, with docstrings citing def:flow and lem:state-set; (3) a docstring note in StateSetTruth.lean that the (H2) hypothesis is now derived for regular frames, keeping the original two-hypothesis forms for their consumers in Independence/DeterminismUndefinable.lean; (4) a docstring pointer that prop:nomic-tense-free performs the same state-set induction for the tense-free fragment with a Nomic clause, for the nomic port (task 795) to reuse.\n\nAXIOM NOTE. `occurrence` goes through thm:extension and so through Zorn; the new corollaries will carry Classical.choice. Say so in the docstring and leave the axiom pin in Independence/DeterminismUndefinable.lean and the choice-free originals untouched.\n\nPAPER ANCHORS. def:state-set, def:flow, lem:state-set in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T21:29:18Z",
-      "artifacts": [],
-      "session_id": "sess_1792013208_936eb4_792"
+      "last_updated": "2026-10-14T21:51:51Z",
+      "artifacts": [
+        {
+          "path": "specs/792_pin_lem_state_set_flow_frames/reports/01_pin-lem-state-set-flow-frames.md",
+          "type": "report",
+          "summary": "All four deliverable declarations compile with zero new imports (Extension.lean is already in StateSetTruth's import closure) and the predicted Classical.choice profile; one blocking C15 paper-anchor gate collision requires three KNOWN-ANCHORS rows in a file a concurrent sibling owns."
+        }
+      ],
+      "session_id": "sess_1792013208_936eb4",
+      "next_artifact_number": 2
     },
     {
       "project_number": 793,
