@@ -352,8 +352,9 @@ at 2844 jobs. The attempt is preserved verbatim at
 ## Phase 7 (Shape D) -- probe 24 re-run, this round
 
 The plan's Scope Hypothesis names the 15 ms / 1093 ms pair as CARRIED from
-`.blocker-research.json` and `probes/24_shapeD_measure.lean`. Re-run verbatim against the
-currently built library before any edit, `lake env lean probes/24_shapeD_measure.lean`, exit 0:
+`probes/24_shapeD_measure.lean` — its three `#time #eval` lines, the only durable source for
+them. Re-run verbatim against the currently built library before any edit,
+`lake env lean probes/24_shapeD_measure.lean`, exit 0:
 
 | measurement | carried | this round |
 |---|---|---|
