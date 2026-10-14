@@ -553,37 +553,37 @@ sibling task's edit).
 
 ---
 
-### Phase 8: Full gate sweep and acceptance confirmation [NOT STARTED]
+### Phase 8: Full gate sweep and acceptance confirmation [COMPLETED]
 
 **Goal**: Confirm every acceptance criterion against the live tree, and absorb any fresh paper
 drift into the same dated correction section rather than leaving the gate red.
 
 **Tasks**:
-- [ ] Re-run `bash scripts/check-paper-definitions.sh` against the live paper. If fresh drift
+- [x] Re-run `bash scripts/check-paper-definitions.sh` against the live paper. If fresh drift
       appeared, re-resolve and absorb it into Phase 3's existing dated section (do not open a
       second section), then re-run.
-- [ ] Re-run `bash scripts/check-paper-definitions.sh --paper /nonexistent/x.tex` to confirm the
+- [x] Re-run `bash scripts/check-paper-definitions.sh --paper /nonexistent/x.tex` to confirm the
       neutral-skip CI path still exits 0 — the property that keeps this a local obligation rather
       than a release blocker.
-- [ ] Run the full Lean build, detached and routed through the guard:
+- [x] Run the full Lean build, detached and routed through the guard:
       `bash .claude/scripts/lake-build-guard.sh build` — see
       `context/patterns/bounded-build-waiter.md` for the hard-timeout / `kill -0` waiter shape.
       Confirm green.
-- [ ] `bash scripts/readme-lint.sh` exits 0.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` exits 0 with zero `FAIL` lines
+- [x] `bash scripts/readme-lint.sh` exits 0.
+- [x] `bash scripts/check-module-invariants.sh --no-build` exits 0 with zero `FAIL` lines
       (C15, C20, C35 all PASS).
-- [ ] Run the complete repository gate set: `bash .claude/scripts/verify-deploy.sh`. This is the
+- [x] Run the complete repository gate set: `bash .claude/scripts/verify-deploy.sh`. This is the
       `full` tier's own named aggregator, not a hand-picked subset of it.
-- [ ] Re-run the verbatim sweep
+- [x] Re-run the verbatim sweep
       (`grep -rn verbatim --include=*.lean --include=*.md --include=*.typ`, excluding `specs/**`
       and `Boneyard`) and confirm no claim on a re-pinned anchor misquotes its record block.
-- [ ] Confirm the DERIVED, not-an-axiom claim survives at the record's `lem:nullity` entry,
+- [x] Confirm the DERIVED, not-an-axiom claim survives at the record's `lem:nullity` entry,
       `TaskFrame.lean`'s module docstring, `README.md`, and `typst/chapters/02-semantics.typ`'s
       "Why Nullity Is a Lemma, Not an Axiom" remark.
-- [ ] Enumerate in the summary everything deliberately left alone: pre-existing false-verbatim
+- [x] Enumerate in the summary everything deliberately left alone: pre-existing false-verbatim
       claims on anchors *outside* the re-pinned set, and the typst sites' availability as a
       `typst` follow-on.
-- [ ] Final commit, staging explicit file names only.
+- [x] Final commit, staging explicit file names only.
 
 **Timing**: 1.25 hours
 
@@ -616,21 +616,21 @@ from `serial` and `limit`; there is no proof obligation anywhere in this task.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-paper-definitions.sh` exits 0 against the live paper (the task's
+- [x] `bash scripts/check-paper-definitions.sh` exits 0 against the live paper (the task's
       headline criterion).
-- [ ] `bash scripts/check-paper-definitions.sh --paper /nonexistent/x.tex` still exits 0 — the
+- [x] `bash scripts/check-paper-definitions.sh --paper /nonexistent/x.tex` still exits 0 — the
       neutral-skip CI path is intact.
-- [ ] `bash .claude/scripts/lake-build-guard.sh build` is green.
-- [ ] `bash scripts/readme-lint.sh` exits 0.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` exits 0 with zero `FAIL` lines; C15,
+- [x] `bash .claude/scripts/lake-build-guard.sh build` is green.
+- [x] `bash scripts/readme-lint.sh` exits 0.
+- [x] `bash scripts/check-module-invariants.sh --no-build` exits 0 with zero `FAIL` lines; C15,
       C20 and C35 all PASS.
-- [ ] `python3 scripts/export-lean-citations.py --check` exits 0.
-- [ ] `bash .claude/scripts/typst-element-lint.sh --verbose` reports no blocking finding on the
+- [x] `python3 scripts/export-lean-citations.py --check` exits 0.
+- [x] `bash .claude/scripts/typst-element-lint.sh --verbose` reports no blocking finding on the
       touched typst files, and those files compile.
-- [ ] `bash .claude/scripts/verify-deploy.sh` passes.
-- [ ] No docstring, README, doc page or typst block claims a verbatim quotation it does not
+- [x] `bash .claude/scripts/verify-deploy.sh` passes.
+- [x] No docstring, README, doc page or typst block claims a verbatim quotation it does not
       reproduce, for any re-pinned anchor.
-- [ ] Zero `sorry`, zero new axiom.
+- [x] Zero `sorry`, zero new axiom.
 
 ## Artifacts & Outputs
 

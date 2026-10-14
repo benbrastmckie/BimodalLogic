@@ -2033,7 +2033,7 @@ omit [IsOrderedAddMonoid D] in
 Every nonempty fiber or segment of a permissive relation is the whole carrier or a singleton.
 
 Fibers are the carrier at nonzero duration and a singleton at zero. A segment
-`[w, v]_x^y = \Fib(w, x) ∩ \Fib(v, -y)` is therefore an intersection of two such sets; when both
+`[w, v]_x^y = \fib{w, x} ∩ \fib{v, -y}` is therefore an intersection of two such sets; when both
 offsets vanish the two singletons must coincide for the segment to be nonempty.
 -/
 theorem univ_or_singleton_of_permissive {W : Type} {R : W → D → W → Prop}

@@ -57,15 +57,15 @@ re-derives every hash below directly from the live paper file on every run.
 | Line count at that re-pin | 4573 |
 | `def:id` footnote re-pin (UTC) | 2026-09-28 (one anchor re-hashed: the `Brast-McKie2021` footnote in `def:id` gained a trailing clause on transparency being maintained for the entirety of the language. Expository only -- no axiom, no substitution convention and no operator-scope proviso changed, and `def:id` has no Lean counterpart, so no citation or soundness-chain consequence. Absorbed rather than left red because the gate had been failing on this single clause since the paper edit. Re-run after the re-pin reported case (b), all 43 recorded definitions unchanged.) |
 
-| Base commit at the 27-anchor drift correction (paper repo `git HEAD`; file dirty against it, and the last commit to touch the file is `9359505a10d41edcf903958f6255201baff4127a`) | `0a51a798de3e48b64b661c91243a81fd366572e6` |
-| **File checksum, re-pinned at the 27-anchor drift correction (sha256, current authoritative pin)** | `4035f3acb2c1f407f0fd3f54d082be1bdebca8128691f66edc5b32b84989a020` |
-| Line count at that re-pin | 3961 |
-| 27-anchor drift correction re-pin (UTC) | 2026-10-14 (27 entries re-hashed in one correction, headlined by the `lem:nullity` strengthening from an implication to a biconditional; no anchor retired, none renamed, none newly pinned. See "Drift correction (2026-10-14): the 27-anchor wave" below. The three whole-file sentinels and this table's "current authoritative pin" row had diverged across the 2026-09-17 and 2026-09-28 re-pins; setting all of them to the values above resolves that.) |
+| Base commit at the 27-anchor drift correction (paper repo `git HEAD`; the file is **clean** against it, and that commit is also the last to touch the file: `4e00e00c273e19a437b65f48e1ca71c483268400` is its parent-side predecessor) | `9ad4aa5d1bda09d885d37b296fdde1bc1a0817ee` |
+| **File checksum, re-pinned at the 27-anchor drift correction (sha256, current authoritative pin)** | `0e39993c2aa955e0a3bfc224e8ba93fdfcd02ca9d4e2ca115cb4e2cccdb05d78` |
+| Line count at that re-pin | 3962 |
+| 27-anchor drift correction re-pin (UTC) | 2026-10-14 (27 entries re-hashed in one correction, headlined by the `lem:nullity` strengthening from an implication to a biconditional, plus `def:id` re-hashed a second time when the paper moved again while this correction was in flight — 28 re-hashes over 27 distinct anchors. No anchor retired, none renamed, none newly pinned. See "Drift correction (2026-10-14): the 27-anchor wave" below. The three whole-file sentinels and this table's "current authoritative pin" row had diverged across the 2026-09-17 and 2026-09-28 re-pins; setting all of them to the values above resolves that. Unlike every re-pin since 2026-08-10, this one pins a **clean** file: the paper was committed between the first and second resolution of `def:id`.) |
 <!-- PAPER_PATH: ~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: ~/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: 0a51a798de3e48b64b661c91243a81fd366572e6 -->
-<!-- FILE_CHECKSUM: 4035f3acb2c1f407f0fd3f54d082be1bdebca8128691f66edc5b32b84989a020 -->
-<!-- LINE_COUNT: 3961 -->
+<!-- PINNED_COMMIT: 9ad4aa5d1bda09d885d37b296fdde1bc1a0817ee -->
+<!-- FILE_CHECKSUM: 0e39993c2aa955e0a3bfc224e8ba93fdfcd02ca9d4e2ca115cb4e2cccdb05d78 -->
+<!-- LINE_COUNT: 3962 -->
 
 ### Drift correction (2026-10-14): the 27-anchor wave
 
@@ -83,6 +83,17 @@ from the earlier runs.
 `thm:TM-soundness`, `app:discrete`, `app:dense`, `app:complete`, `def:frame-properties`,
 `def:deterministic`, `cor:saturation-finite`, `cor:tm-completeness`, `def:id`, `def:strongest`,
 `thm:exist`, `lem:uniq`.
+
+**In-flight re-resolution of `def:id` (same wave, same section).** The paper moved a fourth time
+while this correction was being applied, and the gate came back red on `def:id` alone after
+everything below had already been re-pinned. Two expository edits inside the block: "the absorption
+laws or other Boolean identities do not hold" became "the Boolean identities do not hold", and
+"Symmetry and transitivity of $\equiv$" became "The symmetry and transitivity of $\equiv$". No
+axiom, no substitution convention, no operator-scope proviso and no type distinction changed, and
+`def:id` has no Lean counterpart, so there is no citation or soundness-chain consequence. Re-hashed
+from `--resolve` into this same section, and the whole-file sentinels re-taken against the newer
+file; the paper repo had also committed the file by then, which is why this re-pin is the first
+since 2026-08-10 to pin a clean rather than a dirty working tree.
 
 **Purely presentational in this wave (no content), recorded so a future reader does not go looking
 for a change that is not there:** set-builder `:` became `\mid` in `def:temporal-order`,
@@ -178,12 +189,57 @@ the paper (stated at `FormalSystem/Semantics/FrameAxioms.lean`). Four docstrings
 "Paper specification, transcribed" list), and `FormalSystem/Semantics/Extension/Admissible.lean`.
 Non-Lean restatements of the lemma were corrected in `README.md`,
 `docs/reference/API_REFERENCE.md`, `docs/reference/transcription-audit-surface.md`,
-`typst/FormalFoundations.typ` and `typst/chapters/02-semantics.typ`. Paraphrases that state only
-the weak loop *as what a proof consumes* were deliberately kept: a proof that needs only
-`w ⇒₀ w` keeps citing `w ⇒₀ w`, and `FormalSystem/Semantics/Presheaf/Behavior.lean`,
-`docs/reference/state-topology-appendix-support.md` and the References lines of
-`FormalSystem/Semantics/Extension/Admissible.lean` and
-`FormalSystem/Semantics/Extension/Extension.lean` are correct as they stand.
+`typst/FormalFoundations.typ` and `typst/chapters/02-semantics.typ`.
+
+The other re-pinned anchors forced these further corrections, each on a docstring that labelled
+its quotation "verbatim":
+
+- `def:frame`'s whole-definition quote in `FormalSystem/Semantics/TaskFrame.lean`'s module
+  docstring was re-quoted. It had said "A \textit{frame} is any …" where the record pins "a
+  \textit{task frame} is any …", omitted the `⊇`-directed opening clause entirely, and carried the
+  old "for $x, y \geq 0$" preamble; the blanket-condition quote above `Serial` was re-quoted for
+  the same preamble.
+- `def:task-relation`'s quotes in `TaskFrame.lean` were re-quoted for the reflection convention's
+  "for $x > 0$" and for the *Fiber* clause's `\mid`, and the retired `\Fib(w, x)`
+  function-application form was replaced with the pinned brace form `\fib{w, x}` at the three
+  *Fiber*/*Cone*/*Segment* clause quotes (and in one neighbouring prose line that used the same
+  retired notation). The module's own discussion of whether the convention covers zero was
+  rewritten: the paper's proviso is now strictly positive, so the tree's strict-at-zero split is
+  licensed outright rather than defended as a reading.
+- `def:temporal-order`'s quotes in `TaskFrame.lean`, `FormalSystem/Semantics/TemporalOrder.lean`
+  and `FormalSystem/Examples/TemporalStructures.lean` were re-quoted for the `\mid` set-builder.
+- `def:constraints`'s quotes in `FormalSystem/Semantics/FrameAxioms.lean` (twice) and
+  `FormalSystem/Semantics/Extension/{Admissible,Constraint}.lean` were re-quoted for the `A`/`C`/
+  `F_t`/`S_{t,s}` restructuring. These had also carried three pre-existing errors at once — "over
+  a frame" for "over a task frame", the retired "constraints *imposed on*" wording, and
+  `\Fib(…)` — all now gone.
+- `def:frame-validity`'s two quotes in `FormalSystem/Semantics/Validity.lean` were re-quoted for
+  the "--- written … --- just in case" rewording.
+- `def:world-history`'s block quote in `FormalSystem/Semantics/PartialHistory.lean` was re-quoted
+  for the world-history/possible-world tier, and the note claiming the appendix routes that tier
+  through convex histories was corrected.
+- `cor:saturation-finite`'s two quotes in `TaskFrame.lean` were re-quoted for the generalization
+  to bare task relations.
+- `thm:extension`'s **footnote** quotes in `FormalSystem/Semantics/Extension/Extension.lean`
+  (twice) were removed rather than re-quoted, since the footnote no longer exists to quote. Each
+  now says so and restates the choice-freeness contrast as a property of the Lean proofs.
+
+Paraphrases that state only the weak loop *as what a proof consumes* were deliberately kept: a
+proof that needs only `w ⇒₀ w` keeps citing `w ⇒₀ w`, and
+`FormalSystem/Semantics/Presheaf/Behavior.lean`,
+`docs/reference/state-topology-appendix-support.md`,
+`docs/development/PROPERTY_TESTING_GUIDE.md`, `typst/chapters/06-notes.typ` and the References
+lines of `FormalSystem/Semantics/Extension/Admissible.lean` and
+`FormalSystem/Semantics/Extension/Extension.lean` are correct as they stand. `def:frame-properties`
+and `def:deterministic` forced nothing: the clauses the tree quotes from them did not move.
+`docs/theorem-index.md` and `FormalSystem/Semantics/README.md` forced nothing either — neither
+reproduces re-pinned block text.
+
+**Left alone deliberately.** Pre-existing false-`verbatim` claims on anchors *outside* this
+re-pinned set are not fixed here, since this wave gives no occasion to touch those files. The one
+found while sweeping is `FormalSystem/Semantics/Extension/Step.lean`'s `def:frame#Saturation`
+quote, which says "for any directed family" where the record pins "for any
+$\supseteq$-directed family"; `def:frame#Saturation` is byte-stable and was not re-pinned.
 
 ### Label rename absorption (2026-09-18): `lem:temporal-duality` → `lem:time-reflection`, prose only, no re-pin
 
@@ -1992,11 +2048,11 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
 		\end{multicols}
 	\end{enumerate}
 	\vspace{-.175in}
-  The theory of propositional identity need not be Boolean, accommodating theories in which the absorption laws or other Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021} where transparency is maintained for the entirety of the language rather than posited for just a single operator as above.}
-  Symmetry and transitivity of $\equiv$ are nevertheless derivable at either type, and since each replaces an occurrence lying outside the argument of any operator term, both survive the proviso on \textbf{\aref{LL}}.
+  The theory of propositional identity need not be Boolean, accommodating theories in which the Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021} where transparency is maintained for the entirety of the language rather than posited for just a single operator as above.}
+  The symmetry and transitivity of $\equiv$ are nevertheless derivable at either type, and since each replaces an occurrence lying outside the argument of any operator term, both survive the proviso on \textbf{\aref{LL}}.
 \end{Ddef}
 ```
-sha256: `88b703e86c065135de7db3bee421455be90837737fda446e633cc50904e2bc68`
+sha256: `f56301e580b40894ddd7d69c6a72d326a8a41f984f8713cf431215b5f0fd9c92`
 
 ### `def:strongest` — strongest objective normal modal operator Str^O_L(Q), and the meet of the objective modalities Str'^O_L(Q)
 
@@ -2204,7 +2260,7 @@ def:deterministic|env|-|-|9a347781ddbb850ddcc5500f4a614309fd47fae7e20f63eaef7335
 def:BLstar-semantics|env|-|-|b4d3239cc96ddd1e90965901aca8c378f6ec5ca52f568ea6b2ef59d9c3ba6c95
 cor:saturation-finite|env|-|-|98fac4cfb09991ec3046ab843e1d3fa5e089e2e52d50dbe7130bacdf8528353a
 cor:tm-completeness|env|-|-|f8f5b41f998e59322052accce9ac219dfbe9fe7931329bebbdb5b1cc855f0bce
-def:id|env|-|-|88b703e86c065135de7db3bee421455be90837737fda446e633cc50904e2bc68
+def:id|env|-|-|f56301e580b40894ddd7d69c6a72d326a8a41f984f8713cf431215b5f0fd9c92
 def:strongest|env|-|-|1df0d202e5c4ccfeb92b6c83048ece99bb80dc6ce46774a05ff9e728e93231ec
 thm:exist|env|-|-|93d234140af7d36b60d55ffa2248a3f3896c6a80e115b2801efaeed07c115eef
 lem:uniq|env|-|-|56f31fcacb80f4811e98c7ab8c1bcd49502cb8d51b10f813f36a2c943a950003
