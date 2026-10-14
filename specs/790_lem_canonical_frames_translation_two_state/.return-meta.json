@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/790_lem_canonical_frames_translation_two_state/reports/01_lem-canonical-frames-characterizations.md",
+      "summary": "All four lem:canonical-frames claims proved in compiled probes; placement, statement shapes, and the C15/typst-status gate obligations settled, with a territory flag on docs/reference/paper-definitions-of-record.md."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792013208_936eb4_790",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

@@ -30,16 +30,23 @@
     {
       "project_number": 790,
       "project_name": "lem_canonical_frames_translation_two_state",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Prove lem:canonical-frames, the four claims the paper makes about its two canonical countermodel frames (def:canonical-frames): (a) the translation frame F^tr_D = (D, D, ⇒), with w ⇒_d u iff u = w + d, is a Deterministic task frame; (b) its possible worlds are exactly the translations sigma_c(z) = z + c for c ∈ D; (c) the two-state frame F^ts_D (W = {w0, w1}, ⇒_0 the identity, every positive duration permitting every transition) is a task frame just in case D is Discrete -- Limit fails whenever D has no least positive duration; (d) when it is, it is not Deterministic and every function D → {w0, w1} is one of its possible worlds.\n\nWHAT EXISTS. FormalSystem/Semantics/Frames/Standard.lean has `translationFrame D : FrameOver D` with `translationFrame_isRegular` for every temporal order and `translationRel_fib_subsingleton` (the singleton-fibre fact behind determinism), and `permissiveFrame D so nm`, built only under `SuccOrder` and `NoMaxOrder` instances, i.e. only for discrete D. FormalSystem/Semantics/Correspondence/DurationFrames.lean has the canonical histories `translationHist` and `permissiveHist D so nm f` for an arbitrary assignment f (already half of (d)), plus the `*_realizes` lemmas. FormalSystem/Metalogic/Independence/RealTranslationFrame.lean has the ℝ instance: `f1_deterministic`, `f1_total_eq_orbit`, `f1_eq_of_states_eq`. None of these states (b), the 'only if' half of (c), or the non-determinism in (d) for a general D.\n\nDELIVER: (b) the set equation H_F = {sigma_c | c ∈ D} for `translationFrame D`, or equivalently an `Equiv` between its world histories and D, over every temporal order; (a) `(translationFrame D).Deterministic`, generalising `f1_deterministic` (or transferred from the ℝ instance if cheaper -- say which); (c) both halves: Limit holds for the permissive relation on Bool when D has a least positive duration and fails otherwise, so the relation is regular iff D is discrete; (d) `¬ (permissiveFrame D so nm).Deterministic`, and that `permissiveHist` is a bijection between assignments D → Bool and world histories. Docstrings cite def:canonical-frames and lem:canonical-frames.\n\nPAPER ANCHORS. def:canonical-frames and lem:canonical-frames in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under lem:canonical-frames is the marker to clear.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two frames' definitions, which `validOn_df_iff_isDiscrete`, `validOn_dn_iff_denselyOrdered` and the Independence modules consume.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T21:28:47Z",
-      "artifacts": [],
-      "session_id": "sess_1792013208_936eb4_790"
+      "last_updated": "2026-10-14T21:50:53Z",
+      "artifacts": [
+        {
+          "path": "specs/790_lem_canonical_frames_translation_two_state/reports/01_lem-canonical-frames-characterizations.md",
+          "type": "report",
+          "summary": "All four lem:canonical-frames claims proved in compiled probes; placement, statement shapes, and the C15/typst-status gate obligations settled, with a territory flag on docs/reference/paper-definitions-of-record.md."
+        }
+      ],
+      "session_id": "sess_1792013208_936eb4",
+      "next_artifact_number": 2
     },
     {
       "project_number": 791,
