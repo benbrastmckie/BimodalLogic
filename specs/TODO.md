@@ -123,7 +123,7 @@ next_project_number: 798
 ### Paper Alignment
 
 756 [RESEARCHED] — Re-pin lem:nullity in the paper definitions of record after...
-789 [RESEARCHING] — Prove the paper's Gluing lemma app:gluing in full generality:...
+789 [RESEARCHED] — Prove the paper's Gluing lemma app:gluing in full generality:...
 790 [RESEARCHING] — Prove lem:canonical-frames, the four claims the paper makes...
 791 [RESEARCHING] — Prove prop:archimedean in the generality the paper states it:...
 792 [RESEARCHING] — Pin lem:state-set to the tree by discharging its remaining...
@@ -295,10 +295,11 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two f
 
 ### 789. Prove app gluing general convex overlap
 - **Effort**: medium
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
+- **Research**: [789_prove_app_gluing_general_convex_overlap/reports/01_general-convex-gluing.md]
 
 **Description**: Prove the paper's Gluing lemma `app:gluing` in full generality: for any task frame F and convex histories tau1, tau2 over F with domains X1, X2 such that X1 ∩ X2 is nonempty and tau1, tau2 agree on it, the union tau1 ∪ tau2 is the unique convex history over F with domain X1 ∪ X2 restricting to both.
 

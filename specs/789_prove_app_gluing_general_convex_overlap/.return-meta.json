@@ -1,0 +1,28 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/789_prove_app_gluing_general_convex_overlap/reports/01_general-convex-gluing.md",
+      "summary": "General gluing of two convex histories along a nonempty overlap (app:gluing): fully verified choice-free construction, the DecidablePred encoding hypothesis and why nothing cheaper works, module placement, the partialHistory_ext relocation prerequisite, instance decision for the three landed special cases, and a four-phase implementation route."
+    },
+    {
+      "type": "probe",
+      "path": "specs/789_prove_app_gluing_general_convex_overlap/gluing-probe.lean",
+      "summary": "Verified Lean probe: union domain, glued states, four-way respects_task split, convexity of the union, reading equations, both restriction identities, uniqueness, both ExistsUnique forms, and the ray-domain instance of the paper's pasting operator. lake env lean exit 0, no warnings, every declaration [propext, Quot.sound]."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792013208_936eb4_789",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "verification": {
+      "probe_runs": 6,
+      "final_exit": 0,
+      "measured_axioms": "[propext, Quot.sound] on every declaration; [propext] on isConvex_union",
+      "sorry_count": 0
+    }
+  }
+}
