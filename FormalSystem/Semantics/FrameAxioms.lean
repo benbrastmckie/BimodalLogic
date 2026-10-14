@@ -62,12 +62,17 @@ the paper source — is the citation source of record.
   definition had a `$\supseteq$-Directed` and a `$\subseteq$-Directed` clause, of which
   *Saturation* — and hence `DirectedFamily` — consumed the `$\supseteq$` half only; the paper now
   defines only that half, so the split no longer exists to choose from.
-- `lem:nullity` (verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$ in every task
-  frame $\F = \tuple{W, \D, \Rightarrow}$."
+- `lem:nullity` (verbatim): "$w \Rightarrow_0 u$ if and only if $w = u$, for all world states
+  $w, u \in W$ in any task frame $\F$." The biconditional characterises `⇒₀` as the identity
+  relation; the reflexivity half alone is what *Seriality* at `x = 0` plus *Limit* is usually
+  cited for here.
 - `def:constraints` (verbatim): "For a partial history $\tau : X \to W$ over a task frame $\F$
-  and duration $z \in D \setminus X$, the \textit{constraints on $z$} are the segments
-  $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$ when both
-  $t,s \in X$, and the fibers $\fib{\tau(t), z - t}$ for $t \in X$ otherwise."
+  and duration $z \in D \setminus X$, split $X$ into $A \coloneq \set{t \in X \mid t < z}$ and
+  $C \coloneq \set{s \in X \mid s > z}$, which exhaust $X$ since $z \notin X$, and write
+  $F_t \coloneq \fib{\tau(t), z - t}$ for $t \in X$ and
+  $S_{t,s} \coloneq [\tau(t), \tau(s)]_{z-t}^{s-z}$ for $\tuple{t,s} \in A \times C$. The
+  \textit{constraints on $z$} are the segments $S_{t,s}$ for $\tuple{t,s} \in A \times C$ when $A$
+  and $C$ are both nonempty, and the fibers $F_t$ for $t \in X$ otherwise."
 
 The `Fib` / `Seg` / `DirectedFamily` / `IsFiber` / `IsSegment` apparatus these statements are
 built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation` and (for
@@ -110,7 +115,7 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
 
 * JPL paper `def:frame` — the four frame axioms
 * JPL paper `def:directed` — the ⊇-directedness condition, folded inline into `def:frame`
-* JPL paper `lem:nullity` — the zero loop `w ⇒₀ w`
+* JPL paper `lem:nullity` — `w ⇒₀ u ↔ w = u`, whose reflexivity half is the zero loop `w ⇒₀ w`
 * JPL paper `def:constraints` — the constraints imposed on a duration
 * JPL paper `def:task-relation` — the indexed task relation
 
@@ -172,17 +177,23 @@ def IsPaired (τ : PartialHistory F) (z t : F.Duration) : Prop :=
 `def:constraints`: the constraints imposed on a new duration `z` by a partial history `τ`.
 
 Recorded source (`def:constraints`, verbatim): "For a partial history $\tau : X \to W$ over a
-frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the
-\textit{constraints imposed on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times
-$t,s \in X$ where $t < z < s$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise."
+task frame $\F$ and duration $z \in D \setminus X$, split $X$ into
+$A \coloneq \set{t \in X \mid t < z}$ and $C \coloneq \set{s \in X \mid s > z}$, which exhaust $X$
+since $z \notin X$, and write $F_t \coloneq \fib{\tau(t), z - t}$ for $t \in X$ and
+$S_{t,s} \coloneq [\tau(t), \tau(s)]_{z-t}^{s-z}$ for $\tuple{t,s} \in A \times C$. The
+\textit{constraints on $z$} are the segments $S_{t,s}$ for $\tuple{t,s} \in A \times C$ when $A$
+and $C$ are both nonempty, and the fibers $F_t$ for $t \in X$ otherwise."
 
-The two clauses are the two disjuncts, in the paper's order:
+The two clauses are the two disjuncts, in the paper's order. The paper now names the two index
+sets `A` (domain times below `z`) and `C` (domain times above `z`) and the two families `S_{t,s}`
+and `F_t`; the family defined is unchanged, and `IsPaired` is this transcription's name for
+`⟨t, s⟩ ∈ A × C` holding of some `s`.
 
-- **Segments**, for every pair of domain times `t < z < s`, written in the bracket form
+- **Segments** `S_{t,s}`, for every pair of domain times `t < z < s`, written in the bracket form
   `[τ(t), τ(s)]_{z-t}^{s-z}` — i.e. `Seg F.TaskRel (τ t) (τ s) (z - t) (s - z)`. Both offsets
   `z - t` and `s - z` are positive here, so each such member genuinely satisfies `IsSegment`.
-- **Fibers**, `Fib(τ(t), z - t)`, for every domain time `t` that is *not* paired about `z` — the
-  paper's "otherwise", transcribed as `¬ IsPaired τ z t`.
+- **Fibers** `F_t`, `Fib(τ(t), z - t)`, for every domain time `t` that is *not* paired about `z` —
+  the paper's "otherwise", transcribed as `¬ IsPaired τ z t`.
 
 `z ∉ dom τ` (the paper's `z ∈ D \ X`) is **not** carried in this definition's type; it is a
 hypothesis at the use sites that need it, matching how the `x, y ≥ 0` segment proviso is carried

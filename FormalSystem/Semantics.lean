@@ -252,11 +252,12 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 * Truth — Paper Definition: `M,τ,x ⊨ φ`; Implementation: `TruthAt M τ t φ`
 * Validity — Paper Definition: True in all models, at every total history; Implementation: `Valid φ`
 
-The frame carries **four** axioms, the four rows above. *Nullity* (`w ⇒_0 w`) is **derived**,
-choice-free, from Seriality at `x = 0` together with Limit. `FrameOver` has no zero-duration
-field: `FrameOver.nullity` and the biconditional `FrameOver.nullity_identity`
-(`TaskRel w 0 u ↔ w = u`) are theorems proved from the `serial` and `limit` fields, so the Lean
-frame class is exactly the paper's.
+The frame carries **four** axioms, the four rows above. *Nullity* is **derived**, choice-free,
+from Seriality at `x = 0` together with Limit. The paper states it as the biconditional
+`w ⇒_0 u` iff `w = u` (`lem:nullity`), and `FrameOver` has no zero-duration field: both
+`FrameOver.nullity` (`TaskRel w 0 w`, the reflexivity half) and `FrameOver.nullity_identity`
+(`TaskRel w 0 u ↔ w = u`, the paper's own statement) are theorems proved from the `serial` and
+`limit` fields, so the Lean frame class is exactly the paper's.
 
 ## Temporal Polymorphism
 

@@ -216,9 +216,9 @@ Charter §8's optional deliverable. Everything above quantifies over *all* frame
 adds the notion that holds a single frame fixed.
 
 **Definition of record — `def:frame-validity`**, verbatim:
-> A well-formed sentence phi of BL is *valid over a task frame* F = ⟨W, D, ⇒⟩ which we may write
-> |=_F phi if and only if M,tau,x |= phi for every model M = ⟨W, D, ⇒, |·|⟩ where
-> F = ⟨W, D, ⇒⟩, possible world tau in H_F, and time x in D.
+> A well-formed sentence phi of BL is *valid over a task frame* F = ⟨W, D, ⇒⟩--- written
+> |=_F phi--- just in case M,tau,x |= phi for every model M = ⟨W, D, ⇒, |·|⟩ over F, possible
+> world tau in H_F, and time x in D.
 
 **No notation is introduced for `⊨_F`.** `Truth.lean` records that a `TruthAt` notation was
 dropped because it conflicts with the `⊨` validity notation in this file; a subscripted variant
@@ -235,10 +235,10 @@ predicate rather than a competitor to it.
 every possible world `τ ∈ H_F`, and every time `x ∈ D`.
 
 Recorded source (`def:frame-validity`, verbatim): "A well-formed sentence $\varphi$ of $\BL$ is
-\emph{valid over a task frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write
-$\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model
-$\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible
-world $\tau \in H_{\F}$, and time $x \in D$."
+\emph{valid over a task frame} $\F = \tuple{W, \D, \Rightarrow}$--- written
+$\vDash_{\F} \varphi$--- just in case $\M,\tau,x \vDash \varphi$ for every model
+$\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ over $\F$, possible world $\tau \in H_{\F}$, and
+time $x \in D$."
 
 Each of the three quantifiers is rendered on the nose:
 

@@ -96,10 +96,12 @@ the regular frames exactly as they always have.
 ## Paper specification, transcribed
 
 **Task Frames (`def:frame`)**:
-The JPL paper "The Perpetuity Calculus of Agency" defines a frame (verbatim: "A \textit{frame}
-is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world states, $\D$ is
-a temporal order, and $\Rightarrow$ is a task relation satisfying the following for
-$x, y \geq 0$") with exactly FOUR axioms:
+The JPL paper "The Perpetuity Calculus of Agency" defines a task frame (verbatim: "Letting a
+nonempty family of sets $\mathcal{S}$ be \textit{$\supseteq$-directed} just in case
+$S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$, a
+\textit{task frame} is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world
+states, $\D$ is a temporal order, and $\Rightarrow$ is a task relation satisfying the following
+for all durations $x, y \geq 0$") with exactly FOUR axioms:
 - *Compositionality* (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if
   and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$." — a
   BICONDITIONAL: right-to-left is composition, left-to-right is interpolation, and both
@@ -110,9 +112,12 @@ $x, y \geq 0$") with exactly FOUR axioms:
 - *Saturation* (`def:frame#Saturation`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
   $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments."
 
-Nullity is NOT an axiom. The paper's `lem:nullity` (verbatim: "$w \Rightarrow_0 w$ for every
-world state $w \in W$ in every task frame $\F = \tuple{W, \D, \Rightarrow}$.") is DERIVED,
-choice-free, from *Seriality* at `x = 0` plus *Limit*, and asserts reflexivity only.
+Nullity is NOT an axiom. The paper's `lem:nullity` (verbatim: "$w \Rightarrow_0 u$ if and only
+if $w = u$, for all world states $w, u \in W$ in any task frame $\F$.") is DERIVED, choice-free,
+from *Seriality* at `x = 0` plus *Limit*. It is a **biconditional** characterising `⇒₀` as the
+identity relation on `W`: the reflexivity half is `FrameOver.nullity`, and the biconditional is
+`FrameOver.nullity_identity`, derived over a bare task relation by
+`nullity_identity_of_serial_limit`.
 
 The supporting apparatus — nonempty `W`, the positive-cone primitive relation, the reflection
 convention, fiber, cone, and segment (`def:task-relation`), and the `⊇`-directed family
@@ -121,7 +126,7 @@ wave inlined into `def:frame` and deleted — recorded `DANGLING` in
 `docs/reference/paper-definitions-of-record.md`) — is transcribed in this module's "Fiber, cone,
 segment, and directed-family apparatus" section. The temporal order is `def:temporal-order`
 (verbatim: "A \textit{temporal order} is a nontrivial totally ordered abelian group $\D = \tuple{D,
-+, 0, \leq}$ with \textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$.").
++, 0, \leq}$ with \textit{positive cone} $D^+ \coloneq \set{x \in D \mid x \geq 0}$.").
 
 **Implementation**:
 This implementation generalizes the time group to any type `D` with an
@@ -301,15 +306,14 @@ Recorded source (`def:task-relation`, verbatim): "A \textit{task relation} on a 
 \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation
 $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the
 \textit{reflection convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for
-$x \geq 0$".
+$x > 0$".
 
 A task relation is primitive on the positive cone only; the reflection convention is notation,
 not an axiom. `reflect P` is that extension of a primitive `P` on `{x : D // 0 ≤ x}` to all of
 `D`. The split is **strict at zero**: the primitive is read at every `d ≥ 0`, and reflected only
-at `d < 0`. (Read literally, the paper's "for $x \geq 0$" also covers `x = 0`, where `-0 = 0`, and
-would then force `⇒_0` to be symmetric. The strict split keeps the convention pure notation; the
-symmetry at zero is recovered as a theorem of every frame, `FrameOver.reflection`, from
-*Seriality* and *Limit*.)
+at `d < 0`. The paper's proviso is "for $x > 0$", so the convention is not stated at zero at all
+and the strict split is exactly what it licenses; the symmetry at zero is not a convention but a
+theorem of every frame, `FrameOver.reflection`, from *Seriality* and *Limit*.
 
 The reflection law off zero holds for every primitive (`reflect_reflection_of_ne`), and a
 two-sided relation that already satisfies the reflection law everywhere is the extension of its
@@ -392,9 +396,9 @@ corresponding axioms are carried as structure data. This apparatus is what makes
 statable at all.
 
 Recorded source, `def:task-relation` (verbatim):
-- *Fiber:* `\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}`.
-- *Cone:* `(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)` where `x > 0`.
-- *Segment:* `[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)` where `x, y \geq 0`.
+- *Fiber:* `\fib{w, x} \coloneq \set{u \in W \mid w \Rightarrow_x u}`.
+- *Cone:* `(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}` where `x > 0`.
+- *Segment:* `[w, v]_x^y \coloneq \fib{w, x} \cap \fib{v, -y}` where `x, y \geq 0`.
 
 Recorded source, `def:frame`'s opening clause (verbatim): "Letting a nonempty family of sets
 $\mathcal{S}$ be \textit{$\supseteq$-directed} just in case $S \subseteq S_1 \cap S_2$ for some
@@ -410,7 +414,7 @@ disjunction `IsFiber s ∨ IsSegment s`, never a single merged class.
 Fiber of `w` at duration `x` under the relation `R`.
 
 Recorded source (`def:task-relation`, *Fiber* clause, verbatim):
-"`\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}`."
+"`\fib{w, x} \coloneq \set{u \in W \mid w \Rightarrow_x u}`."
 
 `Fib R w x` is the set of states reachable from `w` by a task of duration exactly `x`; by the
 reflection convention, negative-duration fibers run the relation backwards. The paper defines
@@ -428,7 +432,7 @@ theorem mem_Fib {W : Type} {R : W → D → W → Prop} {w u : W} {x : D} :
 Cone of radius `x` around `w` under the relation `R`.
 
 Recorded source (`def:task-relation`, *Cone* clause, verbatim):
-"`(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)` where `x > 0`."
+"`(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}` where `x > 0`."
 
 The paper's proviso `x > 0` is carried at use sites rather than in the type: for `x ≤ 0` no
 duration `y` satisfies `|y| < x`, so the cone is empty and the definition is harmless outside
@@ -460,7 +464,7 @@ Segment between `w` and `v` at forward offset `x` and backward offset `y`, writt
 in the paper's bracket form.
 
 Recorded source (`def:task-relation`, *Segment* clause, verbatim):
-"`[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)` where `x, y \geq 0`."
+"`[w, v]_x^y \coloneq \fib{w, x} \cap \fib{v, -y}` where `x, y \geq 0`."
 
 The bracket form is the notation of record; the paper's retired `\Seg` function-application
 notation is deleted from its preamble and must not be reintroduced. The proviso `x, y ≥ 0` is
@@ -756,7 +760,8 @@ Recorded source (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \
 for some $u, v \in W$."
 
 The `0 ≤ x` proviso is `def:frame`'s own blanket condition on its axiom list (verbatim: "a task
-relation satisfying the following for $x, y \geq 0$"), carried here as an explicit hypothesis
+relation satisfying the following for all durations $x, y \geq 0$"), carried here as an explicit
+hypothesis
 rather than in the type. Both conjuncts are stated: every state has an `x`-successor *and* an
 `x`-predecessor.
 -/
@@ -916,8 +921,12 @@ omit [Nontrivial D] in
 /--
 `lem:nullity`: every world state loops at duration zero.
 
-Recorded source (`lem:nullity`, verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$
-in every task frame $\F = \tuple{W, \D, \Rightarrow}$."
+Recorded source (`lem:nullity`, verbatim): "$w \Rightarrow_0 u$ if and only if $w = u$, for all
+world states $w, u \in W$ in any task frame $\F$."
+
+This theorem is the reflexivity half of that biconditional, which is all its own statement
+asserts; the full biconditional is `nullity_identity_of_serial_limit` (and `FrameOver.nullity_identity`
+on a frame), derived from the same two constraints.
 
 **Nullity is DERIVED, not an axiom.** `def:frame` has exactly four axioms — *Compositionality*,
 *Seriality*, *Limit*, *Saturation* — and Nullity is not among them. This theorem is the
@@ -1391,7 +1400,7 @@ theorem reflection_of_limit (F : FrameOver D) (hlim : TaskFrame.Limit F.TaskRel)
 
 This is the paper's reflection convention (`def:task-relation`, verbatim: "extended to negative
 durations by the \textit{reflection convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$
-for $x \geq 0$") read back as a law of the extended relation. It is a **theorem**, not a field:
+for $x > 0$") read back as a law of the extended relation. It is a **theorem**, not a field:
 off zero it is definitional content of `TaskFrame.reflect` (`reflect_reflection_of_ne`), and at
 zero it is `eq_of_taskRel_zero` (*Limit*) applied in both directions — in the `←` direction the
 hypothesis `u ⇒_0 w` gives `u = w` and is then itself the reflected instance.
@@ -1777,8 +1786,8 @@ The *Saturation* core argument for a directed family that has a `⊆`-minimal me
 actual mathematical content, in fully constructive form**.
 
 Recorded source (`cor:saturation-finite`, via `docs/reference/paper-definitions-of-record.md`,
-verbatim: "Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies
-\textit{Saturation}, choice-free."), whose argument is: directedness upgrades a `⊆`-minimal member
+verbatim: "Task relations on finite set of world states $W$ satisfy \textit{Saturation},
+choice-free."), whose argument is: directedness upgrades a `⊆`-minimal member
 to a `⊆`-*least* member, and a least member is both nonempty and equal to the intersection.
 
 Given a minimal `Sstar` and any other member `T`, directedness supplies `S' ∈ S` with
@@ -1817,8 +1826,8 @@ omit [IsOrderedAddMonoid D] in
 **Every relation on a finite carrier satisfies *Saturation***.
 
 Recorded source (`cor:saturation-finite`, via `docs/reference/paper-definitions-of-record.md`,
-verbatim: "Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies
-\textit{Saturation}, choice-free."). Since `Set W` is well-founded under `<` when `W` is finite, a
+verbatim: "Task relations on finite set of world states $W$ satisfy \textit{Saturation},
+choice-free."). Since `Set W` is well-founded under `<` when `W` is finite, a
 directed family has a `⊆`-minimal member; `sInter_nonempty_of_directed_of_minimal` above then closes
 the goal.
 

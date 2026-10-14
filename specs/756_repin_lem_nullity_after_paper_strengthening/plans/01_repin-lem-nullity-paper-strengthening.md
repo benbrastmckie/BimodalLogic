@@ -284,39 +284,39 @@ the live paper and is the gate this phase exists to turn green.
 
 ---
 
-### Phase 4: Judgment pass and required corrections — `FormalSystem/Semantics/` top level [NOT STARTED]
+### Phase 4: Judgment pass and required corrections — `FormalSystem/Semantics/` top level [COMPLETED]
 
 **Goal**: Make every verbatim claim in the top-level `FormalSystem/Semantics/` Lean modules true
 against the freshly re-pinned record, including the three retired-`lem:nullity`-wording sites that
 live here.
 
 **Tasks**:
-- [ ] Re-read each target file immediately before editing.
-- [ ] **Required corrections** (these quote the retired `lem:nullity` sentence verbatim and become
+- [x] Re-read each target file immediately before editing.
+- [x] **Required corrections** (these quote the retired `lem:nullity` sentence verbatim and become
       false the moment Phase 2 lands): replace the quoted sentence with the newly re-pinned
       biconditional text at `FormalSystem/Semantics/TaskFrame.lean:113` (module docstring),
       `FormalSystem/Semantics/TaskFrame.lean:919` (the docstring above `nullity_of_serial_limit`),
       and `FormalSystem/Semantics/FrameAxioms.lean:65` (the "Paper specification, transcribed"
       list). Anchor by surrounding text, not by line number — the numbers shift as edits land.
-- [ ] **Judgment pass**: for every remaining `verbatim`-marked claim in these files citing a
+- [x] **Judgment pass**: for every remaining `verbatim`-marked claim in these files citing a
       re-pinned anchor, diff the *quoted clause* against the freshly re-pinned block. Edit only
       where the quoted clause actually moved. "No change needed" is the expected outcome for most
       — `def:world-history`'s first sentence and `thm:extension`'s main sentence did not move.
-- [ ] **Keep, do not rewrite** (research §4b verdicts, re-confirmed against the new text before
+- [x] **Keep, do not rewrite** (research §4b verdicts, re-confirmed against the new text before
       acting): `FormalSystem/Semantics.lean:255-259` already names both forms and already calls
       `nullity_identity` "the biconditional" — the only change worth making is the optional note
       that the biconditional is now the paper's own statement;
       `FormalSystem/Semantics/FrameAxioms.lean:113` ("`lem:nullity` itself, DERIVED … from
       *Seriality* at `x = 0` plus *Limit*") is true of both halves.
-- [ ] Fix the pre-existing false-verbatim claims that sit on *re-pinned* anchors in these files
+- [x] Fix the pre-existing false-verbatim claims that sit on *re-pinned* anchors in these files
       (they are in files being touched anyway): `TaskFrame.lean:98-102` quotes `def:frame` as
       "A \textit{frame} is any…" where the record pins "a \textit{task frame} is any…" and omits
       the `⊇`-directed opening clause; `TaskFrame.lean:394-396`, `:412-413`, `:462-463` use the
       retired `\Fib(w, x)` function-application form where the record pins the brace form
       `\fib{w, x}`.
-- [ ] Keep every edit strictly inside a `/--`/`-/` or `/-!`/`-/` comment region. Do not touch a
+- [x] Keep every edit strictly inside a `/--`/`-/` or `/-!`/`-/` comment region. Do not touch a
       declaration, a signature, or a proof.
-- [ ] Commit per green sub-step, staging explicit file names only.
+- [x] Commit per green sub-step, staging explicit file names only.
 
 **Timing**: 1.5 hours
 

@@ -34,7 +34,8 @@ paper file directly, and never by line number):
 > `A \textit{convex history} is any partial history whose domain $X$ is \textit{convex}, so that
 > $y \in X$ whenever $x, z \in X$ and $x < y < z$.`
 >
-> `A \textit{possible world} is any convex history whose domain is total, so that $X = D$.`
+> `A \textit{world history}, or \textit{possible world}, is any partial history whose domain is
+> \textit{total}, so that $X = D$.`
 >
 > `A partial history $\sigma$ \textit{extends} $\tau$ just in case
 > $\dom{\tau} \subseteq \dom{\sigma}$ and $\tau(x) = \sigma(x)$ for all $x \in \dom{\tau}$.`
@@ -257,8 +258,9 @@ The paper's **totality** predicate: `τ.IsTotal` says that `τ` is a *world hist
 
 **Paper Reference**: sec:Construction (verbatim: "A \textit{world history} is any partial history
 $\tau : X \to W$ whose domain is \textit{total}, so that $X = D$."); the appendix
-`def:world-history` phrases the same set as convex histories with total domain, which coincide
-since a total domain is convex (`IsTotal.isConvex`).
+`def:world-history` now phrases the tier the same way, off partial history and under both names.
+It previously routed the tier through convex histories, which denotes the same set anyway since a
+total domain is convex (`IsTotal.isConvex`).
 
 Note that this is `∀ t, τ.domain t` — the domain *is* all of `D` — and is deliberately **not**
 Mathlib's `IsMax` or any order-theoretic maximality predicate. Maximality under the extension

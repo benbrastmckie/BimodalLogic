@@ -14,7 +14,7 @@ import FormalSystem.Init
 # TemporalOrder — the paper's `def:temporal-order`, reified
 
 `def:temporal-order` reads, verbatim: "A *temporal order* is a nontrivial totally ordered abelian
-group `𝔇 = ⟨D, +, 0, ≤⟩` with *positive cone* `D⁺ ≔ {x ∈ D : x ≥ 0}`."
+group `𝔇 = ⟨D, +, 0, ≤⟩` with *positive cone* `D⁺ ≔ {x ∈ D ∣ x ≥ 0}`."
 
 That is an **object**. Until this module existed the library had no name for it: it was
 transcribed as an unnamed four-binder list
@@ -122,7 +122,7 @@ order once in the signature is the better trade.
 
 /--
 **The positive cone** `D⁺` of a temporal order (`def:temporal-order`, verbatim: "with
-\textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$").
+\textit{positive cone} $D^+ \coloneq \set{x \in D \mid x \geq 0}$").
 
 This is the domain of the primitive task relation of `def:task-relation`, whose extension to all
 of `D` is `TaskFrame.reflect`. It is an `abbrev`, so it is reducibly the raw subtype
