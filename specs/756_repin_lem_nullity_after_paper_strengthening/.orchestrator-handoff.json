@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 8,
+  "summary": "Wrote an 8-phase, 9.75-hour implementation plan absorbing the whole paper-definition drift wave as one dated 2026-10-14 re-pin, per the settled Option A decision. Re-derived the drift set at plan time and found the paper has moved AGAIN since research: 27 drifted anchors now, not 26 (def:strongest newly drifted; thm:exist and lem:uniq re-drifted to new hashes), so every count and hash in the plan is carried as a re-derive-at-implementation hypothesis and Phase 1 exists solely to re-establish ground truth. Phases 2-3 re-pin anchors, manifest rows and whole-file sentinels and write the dated correction section; Phases 4-6 run the verbatim judgment pass over 17 in-tree files (grounded in a fresh grep sweep, not the report's per-anchor counts); Phase 7 discharges the C35 citation-manifest gate the dispatch does not name; Phase 8 runs the full gate set. No new Lean declarations: nullity_identity already over-satisfies the strengthened lemma.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/756_repin_lem_nullity_after_paper_strengthening/plans/01_repin-lem-nullity-paper-strengthening.md",
+      "summary": "8-phase plan to absorb the paper-definition drift wave as one dated re-pin and correct every falsified in-tree verbatim claim; zero Lean proof work."
+    }
+  ],
+  "dispatch_seq": 8
+}

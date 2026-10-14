@@ -1,26 +1,29 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/756_repin_lem_nullity_after_paper_strengthening/reports/01_repin-lem-nullity-paper-strengthening.md",
-      "summary": "Verifies the lem:nullity strengthening and finds the live paper has drifted on 26 of 43 pinned anchors, not one, making the stated acceptance criterion unreachable under the stated scope; inventories every in-tree site, confirms no Lean work is needed, and names C35 citation-manifest regeneration as an unlisted gate obligation."
+      "type": "plan",
+      "path": "specs/756_repin_lem_nullity_after_paper_strengthening/plans/01_repin-lem-nullity-paper-strengthening.md",
+      "summary": "8-phase plan absorbing the full paper-definition drift wave as one dated 2026-10-14 re-pin, with the in-tree verbatim judgment pass scoped to the re-pinned anchors; zero new Lean declarations."
     }
   ],
-  "user_decision": {
-    "question": "check-paper-definitions.sh now reports 26 drifted anchors against the live paper, not the one (lem:nullity) the task description assumes, so the acceptance criterion 'exits 0 against the live paper' cannot be met by re-pinning lem:nullity alone. Absorb all 26 as one dated drift-correction re-pin (recommended: 20 of the extra 25 are presentational, 5 content-bearing, none contradicting the formalization), or re-pin lem:nullity only and amend the acceptance criterion plus spawn a follow-on for the other 25?",
-    "blocking": false,
-    "recommendation": "Absorb all 26 in one dated re-pin, following the record file's own 10-anchor and 14-anchor precedents. Option B leaves the local gate red, which is the condition the task exists to clear, and means reading the same paper twice.",
-    "options": [
-      "Option A (recommended): absorb all 26 drifted anchors as one dated 2026-10-14 drift-correction re-pin, with the in-tree verbatim judgment pass scoped to those anchors",
-      "Option B: re-pin lem:nullity only, amend the acceptance criterion to 'no longer reports lem:nullity as drifted', and spawn a follow-on task for the remaining 25"
-    ]
-  },
   "metadata": {
     "session_id": "sess_1792013208_936eb4_756",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 9.75,
+    "dependency_waves": [[1], [2], [3, 4, 5, 6], [7], [8]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Absorbing a multi-anchor paper-definition drift wave in BimodalLogic has a fixed, reverse-engineerable procedure that is recorded only as narrative inside docs/reference/paper-definitions-of-record.md's own dated sections: bare `check-paper-definitions.sh` to get the drift list -> per-anchor `--resolve` to obtain text and sha256 (never transcribe; there is no --fix mode by design) -> replace the fenced latex block, the `sha256:` line, and the MANIFEST:BEGIN/END row for each anchor -> one dated `### Drift correction (DATE)` section inserted newest-first after the sentinel block -> re-pin PINNED_COMMIT/FILE_CHECKSUM/LINE_COUNT (a drift correction re-pins all three; a case-(b) coverage extension re-pins none) -> in-tree verbatim judgment pass -> `python3 scripts/export-lean-citations.py` -> gates. Two non-obvious facts determine the blast radius. First, 'verbatim' in this tree's docstrings means verbatim against the RECORD FILE, not against the paper (stated once, in passing, at FormalSystem/Semantics/FrameAxioms.lean:45-46), so the in-tree correction scope equals the re-pin scope exactly. Second, C35 in check-module-invariants.sh asserts scripts/lean-citation-manifest.json is byte-current by recorded span_start/span_end/keyword_line, so ANY docstring edit that shifts a declaration span turns it red; the record file's own narrative never mentions this step. Also: the paper is a live, separately-versioned external input that can move mid-task (observed moving between a research dispatch and the plan dispatch ~1h later), so every anchor count and hash must be re-derived at implementation time rather than carried from a report.",
+      "category": "PATTERN",
+      "source_artifact": "specs/756_repin_lem_nullity_after_paper_strengthening/plans/01_repin-lem-nullity-paper-strengthening.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["paper-definitions-of-record", "drift-correction", "check-paper-definitions", "lean-citation-manifest", "C35", "verbatim-quotation"]
+    }
+  ],
+  "dispatch_seq": 8
 }

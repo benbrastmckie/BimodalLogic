@@ -1,5 +1,5 @@
 ---
-next_project_number: 798
+next_project_number: 801
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 798
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,789,793,796,797 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,790,792,794 | 298,464,502,616,756,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500,791,795 | 231,465,497,790,794 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,789,793,796,797,798 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,790,792,794,800 | 298,464,502,616,756,761,772,796 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500,791,795,799 | 231,465,497,790,792,794 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -122,18 +122,110 @@ next_project_number: 798
 
 ### Paper Alignment
 
-756 [RESEARCHED] — Re-pin lem:nullity in the paper definitions of record after...
+756 [PLANNED] — Re-pin lem:nullity in the paper definitions of record after...
   └─ 790 [RESEARCHED] — Prove lem:canonical-frames, the four claims the paper makes...
     └─ 791 [RESEARCHED] — Prove prop:archimedean in the generality the paper states it:...
   └─ 792 [RESEARCHED] — Pin lem:state-set to the tree by discharging its remaining...
+    └─ 799 [NOT STARTED] — Discharge the Zorn dependence that the state-set corollaries...
   └─ 794 [RESEARCHED] — Formalize the paper's nomic frames, the frame-level half of...
     └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
-789 [RESEARCHED] — Prove the paper's Gluing lemma app:gluing in full generality:...
-793 [RESEARCHED] — Prove lem:after-negation, and the cut...
+789 [PLANNING] — Prove the paper's Gluing lemma app:gluing in full generality:...
+793 [PLANNING] — Prove lem:after-negation, and the cut...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
+  └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
+798 [NOT STARTED] — Port the eleven unported modal-temporal interaction...
 
 ## Tasks
+
+### 800. Stability time reflection transport
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: Task 796
+
+**Description**: Extend the time-reflection transport from BL to the Stability language.
+
+THE SPECIFICATION, stated exactly in the paper's cut proof of cor:deterministic-completeness: lem:time-reflection extends to BL-plus by setting the mirror of a Stability formula to be the Stability of its mirror, "since tau |-> tau-minus carries the state-local class at x onto the state-local class at n(x), and F |-> F-minus preserves the class of frames validating Determined, leaving the temporal order unchanged, where F-minus validates an instance of Determined just in case F validates its mirror image, itself an instance of Determined." That passage is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'The stability logic and its completeness over the deterministic frames', inside the soundness half of the proof. It is a specification for this task, not a theorem to cite.
+
+DEPENDS on the time-reflection task, which lands `revAntiIso`, `truthAt_rev` (lem:time-reflection for the base `Formula`), `validOn_rev_iff`, and the closure of Base, Dense, ZTime and RTime under `rev`. This task is the Plus-language layer above that one and must not duplicate it.
+
+WHAT EXISTS. The Stability language is live: FormalSystem/PlusLanguage/ carries `PlusFormula`, `PlusTruth`, `PlusValidity`, `PlusDeterminism`, and `PlusStateLocal` -- the state-local equivalence the Stability clause quantifies over, which is the object the carrying lemma below is about. The frame-level involution is in FormalSystem/OpenLanguage/OpenReversal.lean (`FrameOver.rev`, `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, `rev_isRegular`, `rev_surjective`). The metalogic that consumes the reflected class is FormalSystem/Metalogic/Deterministic/ (`detSoundness`, `detSoundnessDet`, and the completeness family). Before adding anything, check whether `PlusFormula` already carries a `reflectTime` and a `reflect_time_*` simp family -- the base `Formula` does, in FormalSystem/Syntax/Formula.lean.
+
+DELIVER: (1) `PlusFormula.reflectTime` with the Stability clause commuting, and its simp lemmas, if not already present; (2) THE ONE GENUINELY NEW SEMANTIC STEP: the carrying lemma that `WorldHistory.rev` maps the state-local class at x onto the state-local class at -x -- everything else in this task is transport; (3) the BL-plus form of lem:time-reflection from (2) together with the base transport; (4) the class-closure statement -- the task frames validating Determined are closed under `rev`, by the mirror-image argument the cut proof gives -- and hence the BL-plus form of thm:TR-valid over that class; (5) a decision, recorded in the docstring, on whether the Deterministic/ soundness proof's TR case should now consume (4) or keep its present route.
+
+SCOPE LIMIT. This is the reflection transport only. It is NOT a port of cor:deterministic-completeness, which is already in the tree under Metalogic/Deterministic/, and it is not the Open-language reversal in OpenLanguage/OpenReversal.lean, which is an independent copy of the same involution at a different language. If all three can be unified behind one transport, that is a finding to REPORT, not a licence to refactor mid-task.
+
+PAPER ANCHORS. def:time-reflection, lem:time-reflection and thm:TR-valid in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, which the base task clears; this task covers the Stability extension the paper states only inside the cut proof.
+
+CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase; the `assert_not_exists` guards in Semantics/Truth.lean must stay satisfied if anything is promoted between clusters.
+
+---
+
+### 799. Choice free state occurrence applications
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: Task 792
+
+**Description**: Discharge the Zorn dependence that the state-set corollaries inherit, for the applications that do not need it.
+
+THE SPECIFICATION. The paper's companion cut file carries a footnote to lem:state-set recording the fact this task acts on: "The appeals to cor:occurrence, and hence to Zorn's lemma, are inessential to the applications below, where a possible world through any given world state at any given time is exhibited explicitly as a translation." It is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'Footnote on the appeals to choice in lem:state-set'. Treat it as a specification to implement, not as a theorem to cite.
+
+DEPENDS on the state-set pin task, which lands `StateOccurs.of_isRegular` from `PartialHistory.occurrence` and restates the three StateSetTruth corollaries at `[F.IsRegular] (h : OrderFlow F)` alone. That route goes through thm:extension and so through Zorn, and the pin task's AXIOM NOTE accepts `Classical.choice` on the new corollaries and records it in a docstring. THIS TASK DOES NOT REVISIT THAT DECISION: the general corollaries keep the general hypothesis and the general axiom cost. What it adds is the second route the paper's footnote describes, for the frames where the witness is explicit.
+
+WHAT EXISTS. FormalSystem/Metalogic/Independence/StateSetTruth.lean has `satSet`, `plusTruthAt_iff_mem_satSet`, `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow` under the two hypotheses `OrderFlow F` (Independence/OrderTransfer.lean) and `StateOccurs F`. The explicit witnesses the footnote points at are in FormalSystem/Semantics/Frames/Standard.lean (`translationFrame`, `translationFrame_isRegular`) and FormalSystem/Semantics/Correspondence/DurationFrames.lean (`translationHist` and its `_realizes` lemma). The consumers to audit are in Independence/DeterminismUndefinable.lean, which also carries the existing axiom pin.
+
+DELIVER: (1) a choice-free `StateOccurs` for the frames the applications actually instantiate at -- the translation frame first, by exhibiting the witnessing history explicitly through `translationHist` rather than extending a partial history, and any other canonical frame the consumers use; (2) the state-set corollaries re-derived at those frames without `Classical.choice`, each pinned with `#print axioms`; (3) an audit of every consumer in DeterminismUndefinable.lean: for each, state whether it can move to the choice-free route, and move the ones that can; (4) a docstring in StateSetTruth.lean recording both routes and which consumers take which, so a reader can tell at a glance whether a given result is choice-dependent.
+
+SCOPE DISCIPLINE. This is axiom hygiene, not generalisation. Do not weaken `OrderFlow`. Do not touch the two-hypothesis originals the pin task preserves for their existing consumers. Do not attempt a choice-free `occurrence` in general -- the general case genuinely needs the extension theorem, and rmk:choice in the paper says so.
+
+PAPER ANCHORS. def:state-set, def:flow and lem:state-set in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and rmk:choice for the paper's own inventory of which results are choice-free.
+
+CONSTRAINTS. lake build FormalSystem green, no new sorry. The existing axiom pin in DeterminismUndefinable.lean must keep passing.
+
+---
+
+### 798. Modal temporal interaction principles
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Port the eleven unported modal-temporal interaction principles Pthm:11 -- Pthm:22 from the paper's companion cut file, together with the duality lemma P8 that two of their proofs consume.
+
+THE SOURCE, AND WHY IT IS A PORTING CANDIDATE. The block stood after cor:tm-decidability and was cut on INTERNAL REDUNDANCY -- Pthm:17 restates P4 of sub:Logic verbatim and is the reverse half of Pthm:20, Pthm:16 is exactly Pthm:21 together with Pthm:22, and Pthm:18 follows from Pthm:15 together with Pthm:14 -- and NOT because this repository already had them. It is kept verbatim, with a complete derivation for every item, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'Twelve further interaction principles'. Redundancy in a paper is not redundancy in a library: these are true, proved, and currently absent here. Reverting commit 57dc354e in the paper repository restores the block in its original place.
+
+THE TWELVE, as Hilbert-style theorems over an arbitrary frame class, writing the paper's sometimes/always for the tree's `sometimes` / `always`:
+  Pthm:11  sometimes diamond phi -> diamond phi
+  Pthm:12  always diamond phi -> diamond phi
+  Pthm:13  sometimes box phi <-> box phi
+  Pthm:14  always box phi <-> box phi
+  Pthm:15  box always phi <-> always box phi
+  Pthm:16  diamond sometimes phi <-> sometimes diamond phi
+  Pthm:17  diamond sometimes phi -> diamond phi   [ALREADY PRESENT -- see below]
+  Pthm:18  box always phi <-> box phi
+  Pthm:19  diamond always phi -> diamond phi
+  Pthm:20  diamond phi <-> diamond sometimes phi
+  Pthm:21  sometimes diamond phi -> diamond sometimes phi
+  Pthm:22  diamond sometimes phi -> sometimes diamond phi
+
+WHAT EXISTS, verified against the tree rather than taken from the cut file's provenance note. FormalSystem/Theorems/Perpetuity/ carries P1 -- P6 as proof-term `def`s (`perpetuity1` .. `perpetuity5` in Perpetuity/Principles.lean, `perpetuity6` in Perpetuity/MonotonicityDuality.lean). Pthm:17 IS present, as `FormalSystem.Theorems.Perpetuity.perpetuity4` (Principles.lean:514) -- do not restate it. Of the premises the cut derivations cite: TF is available through `boxDiamondToFutureBoxDiamond` / `boxDiamondToPastBoxDiamond` (Principles.lean:578, :587) and `boxToFuture` / `boxToPast` (Perpetuity/Helpers.lean:61, :81); MT, M5, MK, MN, TN, TR are axioms and rules of the derivation system; P7 (not-always phi <-> sometimes-not phi) IS present, as the pair `temporalDualityNeg` (MonotonicityDuality.lean:350) and `temporalDualityNegRev` (:426).
+
+ONE CORRECTION TO THE CUT FILE'S OWN NOTE, which this task must not propagate. That note says "P7 and P8, used by two of the proofs, have none". That is STALE for P7, which exists as the pair just named, and CORRECT for P8 (not-sometimes phi <-> always-not phi), which is genuinely absent -- only the modal analogue `modalDualityNeg` / `modalDualityNegRev` (not-box phi <-> diamond-not phi, MonotonicityDuality.lean:78, :108) exists. Independently confirmed: no box-always / always-box / diamond-sometimes / sometimes-diamond interaction principle appears anywhere under FormalSystem/Theorems/ beyond perpetuity1 -- perpetuity6.
+
+DELIVER: (1) P8 in both directions, sited beside `temporalDualityNeg` / `temporalDualityNegRev` and following their proof shape; (2) the eleven unported principles as `def`s in the repository's proof-term style, each with a docstring naming its cut-file label and following the structure of the cut derivation; (3) a docstring cross-reference on `perpetuity4` recording that it is Pthm:17 of that block and the reverse half of Pthm:20 -- a cross-reference, not a restatement; (4) the block's internal dependency chain honoured rather than re-proved from the axioms: Pthm:17 from Pthm:11 and Pthm:16, Pthm:18 from Pthm:15 and Pthm:14, Pthm:21 from Pthm:11 and Pthm:20, Pthm:22 from P5, exactly as the cut proofs do.
+
+SITING AND AGGREGATOR CONTENTION. Decide at plan time between a new module (e.g. FormalSystem/Theorems/Interaction.lean) and extending the Perpetuity cluster; record the choice and the reason. A new module requires a one-line import in FormalSystem/Theorems.lean, which is a shared touch across every task adding to that aggregator: do not dispatch this concurrently with another such task, and re-run lake build after the import edit.
+
+WORTH DOING BEYOND PAPER FIDELITY. Five of the eleven (Pthm:13, 14, 15, 18, 20) are biconditionals that collapse modal-temporal nesting. Those are rewrite lemmas, not merely recorded facts. Before siting, check whether the normal-form and decidability modules can consume them, and say so in the docstrings if they can.
+
+CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase. Write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, keys resolving in the root references.bib.
+
+---
 
 ### 797. Shift finite type eventually periodic worlds
 - **Effort**: medium
@@ -216,7 +308,7 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 793. After operator negation equivalence
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
@@ -300,7 +392,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two f
 
 ### 789. Prove app gluing general convex overlap
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
@@ -937,11 +1029,12 @@ NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); 
 
 ### 756. Repin lem nullity after paper strengthening
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
 - **Research**: [756_repin_lem_nullity_after_paper_strengthening/reports/01_repin-lem-nullity-paper-strengthening.md]
+- **Plan**: [756_repin_lem_nullity_after_paper_strengthening/plans/01_repin-lem-nullity-paper-strengthening.md]
 
 **Description**: Re-pin `lem:nullity` in the paper definitions of record after the JPL paper strengthened it from an implication to a biconditional, and correct the in-tree docstrings that quote the retired wording verbatim.
 
