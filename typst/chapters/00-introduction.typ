@@ -159,7 +159,7 @@ A reader who has never opened a Lean file, and wants to go from one of these cit
 
 The Lean 4 implementation is in the `FormalSystem/` directory:
 - `FormalSystem/Syntax/` -- Defines the formula language with 6 primitive constructors (atoms, $bot$, implication, $square.stroked$, Since, Until) and derived operators.
-- `FormalSystem/ProofSystem/` -- The Burgess-Xu (BX) axiom system: #axiom-count axiom constructors in 9 layers and #rule-count inference rules forming a Hilbert-style proof system, parameterized by frame class (Base/Dense/ZTime/RTime).
+- `FormalSystem/ProofSystem/` -- The Burgess-Xu (BX) axiom system: #axiom-count axiom constructors in 8 layers and #rule-count inference rules forming a Hilbert-style proof system, parameterized by frame class (Base/Dense/ZTime/RTime).
 - `FormalSystem/Semantics/` -- Task frames model possible worlds; histories model time (partial, then convex, then total -- @sec:convex-histories); strict (irreflexive) truth conditions define meaning; `FormalSystem/Semantics/Extension/` runs the existence machinery (Constraint Lemma through the Extension Theorem) as a machine-checked chain.
 - `FormalSystem/Metalogic/` -- Soundness for all four frame classes (Base, Dense, ZTime, RTime), the deduction theorem and Lindenbaum lemma, the canonical-model machinery carrying the completeness theorems of @sec:metalogic, and the tableau-based decision procedure.
 - `FormalSystem/Theorems/` -- Perpetuity principles (P1--P6), modal and propositional theorem libraries, and derived temporal axioms.

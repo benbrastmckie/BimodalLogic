@@ -8,13 +8,13 @@
 // which is produced by the Lean exporter (interpreted via `lake env lean
 // --run`) with schema formulas extracted from the Axiom type index --
 // never hand-copied.
-// Stamped from live source at commit 8ce53d8af (2026-09-18).
+// Stamped from live source at commit de8a7e472 (2026-10-14).
 // ============================================================================
 
-#let stamp-commit = "8ce53d8af"
-#let stamp-date = "2026-09-18"
+#let stamp-commit = "de8a7e472"
+#let stamp-date = "2026-10-14"
 
-#let machine-axiom-count = 29
+#let machine-axiom-count = 20
 #let machine-rule-count = 7
 #let machine-derived-op-count = 21
 
@@ -29,22 +29,13 @@
   ("serial_future", "BX Temporal", "", "Base", "U((⊥ → ⊥), (⊥ → ⊥))"),
   ("left_mono_until_G", "BX Temporal", "φ, χ, ψ", "Base", "((U(((φ → χ) → ⊥), (⊥ → ⊥)) → ⊥) → (U(ψ, φ) → U(ψ, χ)))"),
   ("right_mono_until", "BX Temporal", "φ, ψ, χ", "Base", "((U(((φ → ψ) → ⊥), (⊥ → ⊥)) → ⊥) → (U(φ, χ) → U(ψ, χ)))"),
-  ("connect_future", "BX Temporal", "φ", "Base", "(φ → (U((S(φ, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥))"),
   ("enrichment_until", "BX Temporal", "φ, ψ, p", "Base", "(((p → (U(ψ, φ) → ⊥)) → ⊥) → U(((ψ → (S(p, φ) → ⊥)) → ⊥), φ))"),
   ("self_accum_until", "BX Temporal", "φ, ψ", "Base", "(U(ψ, φ) → U(ψ, ((φ → (U(ψ, φ) → ⊥)) → ⊥)))"),
   ("absorb_until", "BX Temporal", "φ, ψ", "Base", "(U(((φ → (U(ψ, φ) → ⊥)) → ⊥), φ) → U(ψ, φ))"),
   ("linear_until", "BX Temporal", "φ, ψ, χ, θ", "Base", "(((U(ψ, φ) → (U(θ, χ) → ⊥)) → ⊥) → ((U(((ψ → (θ → ⊥)) → ⊥), ((φ → (χ → ⊥)) → ⊥)) → ⊥) → ((U(((ψ → (χ → ⊥)) → ⊥), ((φ → (χ → ⊥)) → ⊥)) → ⊥) → U(((φ → (θ → ⊥)) → ⊥), ((φ → (χ → ⊥)) → ⊥)))))"),
-  ("until_F", "BX Temporal", "φ, ψ", "Base", "(U(ψ, φ) → U(ψ, (⊥ → ⊥)))"),
-  ("temp_linearity", "Additional BX Temporal", "φ, ψ", "Base", "(((U(φ, (⊥ → ⊥)) → (U(ψ, (⊥ → ⊥)) → ⊥)) → ⊥) → ((U(((U(φ, (⊥ → ⊥)) → (ψ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ((U(((φ → (ψ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → U(((φ → (U(ψ, (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)))))"),
-  ("F_until_equiv", "Additional BX Temporal", "φ", "Base", "(U(φ, (⊥ → ⊥)) → U(φ, (⊥ → ⊥)))"),
   ("modal_future", "Modal-Temporal Interaction", "φ", "Base", "(□φ → □(U((φ → ⊥), (⊥ → ⊥)) → ⊥))"),
-  ("discrete_symm_fwd", "Uniformity", "", "Base", "(U((⊥ → ⊥), ⊥) → S((⊥ → ⊥), ⊥))"),
-  ("discrete_propagate_fwd", "Uniformity", "", "Base", "(U((⊥ → ⊥), ⊥) → (U((U((⊥ → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥))"),
-  ("discrete_propagate_bwd", "Uniformity", "", "Base", "(U((⊥ → ⊥), ⊥) → (S((U((⊥ → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥))"),
   ("discrete_box_necessity", "Uniformity", "", "Base", "(U((⊥ → ⊥), ⊥) → □U((⊥ → ⊥), ⊥))"),
   ("prior_UZ", "Prior", "φ", "ZTime", "(U(φ, (⊥ → ⊥)) → U(φ, (φ → ⊥)))"),
-  ("z1", "Z1", "φ", "ZTime", "((U((((U((φ → ⊥), (⊥ → ⊥)) → ⊥) → φ) → ⊥), (⊥ → ⊥)) → ⊥) → (U((U((φ → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → (U((φ → ⊥), (⊥ → ⊥)) → ⊥)))"),
-  ("density", "Density", "φ", "Dense", "((U(((U((φ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (U((φ → ⊥), (⊥ → ⊥)) → ⊥))"),
   ("dense_indicator", "Density", "", "Dense", "(U((⊥ → ⊥), ⊥) → ⊥)"),
   ("prior_U_gap", "Reynolds Dedekind", "φ", "RTime", "(((U((⊥ → ⊥), φ) → (U((φ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → U((((φ → ⊥) → ⊥) → (U((⊥ → ⊥), ((φ → ⊥) → ⊥)) → ⊥)), φ))"),
   ("sep", "Reynolds Dedekind", "φ", "RTime", "((((U((⊥ → ⊥), (φ → ⊥)) → ⊥) → (((U((⊥ → ⊥), (((φ → (U(φ, (φ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((⊥ → ⊥), ((((U((⊥ → ⊥), (φ → ⊥)) → ⊥) → ((S((⊥ → ⊥), (φ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥))"),

@@ -587,24 +587,24 @@ of stale counts — the plan does not pre-commit to the figures.
 
 ---
 
-### Phase 8: Regenerate Typst/tooling outputs and diff the baselines [NOT STARTED]
+### Phase 8: Regenerate Typst/tooling outputs and diff the baselines [COMPLETED]
 
 **Goal**: Regenerate `typst/generated/*` from the reduced tree and confirm the sync checks and
 dataset/benchmark baselines agree with it.
 
 **Tasks**:
-- [ ] `bash scripts/typst-status-counts.sh` → `typst/generated/status.typ`
-- [ ] `bash scripts/typst-machine-appendix.sh` → `typst/generated/machine-appendix.jsonl` and
+- [x] `bash scripts/typst-status-counts.sh` → `typst/generated/status.typ`
+- [x] `bash scripts/typst-machine-appendix.sh` → `typst/generated/machine-appendix.jsonl` and
       `machine-appendix.typ` (interpreter path; needs
       `lake build BimodalTools.MachineAppendixMain` oleans from Phase 7); consider adding the
       derived schemata as "derived theorem" rows so the Typst reference does not silently lose
-      them — record the decision either way in the commit
-- [ ] `bash scripts/typst-sync-check.sh` (CHECK3 live count vs appendix)
-- [ ] `bash scripts/generate-decidability-inventory.sh --diff`; diff
+      them — record the decision either way in the commit *(decision: the machine appendix stays the primitive axiomatization (20 rows; its schema has no derived-theorem kind); the derived schemata are documented in `typst/chapters/03-proof-theory.typ`'s layer tables (rows marked derived, repointed to the Lean theorems — a scope addition the sync check's Check 1 forced), `docs/reference/axiom-reference.md` and `docs/theorem-index.md`)*
+- [x] `bash scripts/typst-sync-check.sh` (CHECK3 live count vs appendix)
+- [x] `bash scripts/generate-decidability-inventory.sh --diff`; diff
       `scripts/c20-declaration-baseline.txt` and `scripts/certificate-witness-inventory.txt`
       against the tree with their own tooling; regenerate benchmark anchors if
-      `BenchmarkAnchorsMain` output changed (`lake exe benchmark_anchors` via the guard)
-- [ ] `bash scripts/check-module-invariants.sh --no-build` (C2/C14 baselines)
+      `BenchmarkAnchorsMain` output changed (`lake exe benchmark_anchors` via the guard) *(completed: `generate-decidability-inventory.sh --diff` exits 0 — the drift it lists (specs/706, 710 probe rows) predates this task and is not re-baselined; `c20-declaration-baseline.txt` and `certificate-witness-inventory.txt` are checked by C20/C36, both green; the benchmark-anchor output lives under gitignored `data/`, so there is nothing to regenerate into the tree)*
+- [x] `bash scripts/check-module-invariants.sh --no-build` (C2/C14 baselines)
 
 **Timing**: 1 hour
 
