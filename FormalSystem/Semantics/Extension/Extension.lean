@@ -28,14 +28,13 @@ paper source — is the citation source of record.
 
 - `thm:extension` (verbatim): "Every partial history $\tau : X \to W$ over a task frame
   $\F = \tuple{W, \D, \Rightarrow}$ is extended by some possible world $\sigma \in H_{\F}$."
-  Its footnote (verbatim): "The proof appeals to Zorn's lemma, and so the derivation of
-  \textit{Occurrence} from \textit{Seriality} and \textit{Saturation} in
-  \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero
-  loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Saturation} for finite $W$ in
-  \textbf{\ref{cor:saturation-finite}}, both of which are choice-free."
-  The footnote **no longer says "and hence to the axiom of choice"**; the paper restructured it to
-  say the derivation is a theorem of ZFC, and widened the choice-free contrast class to include
-  `cor:saturation-finite`. The earlier wording must not be reintroduced.
+  **The footnote is gone from the paper** as of the 2026-10-14 wave, and so from the record: the
+  `thm:extension` block no longer carries any footnote, and there is nothing left here to quote.
+  What it used to assert — that Extension's appeal to Zorn's lemma makes `cor:occurrence` a
+  theorem of ZFC, in contrast with the choice-free derivations of `lem:nullity` and
+  `cor:saturation-finite` — remains **true of the Lean proofs** (`nullity_identity_of_serial_limit`
+  and `TaskFrame.saturation_of_finite` are what establish it in this tree), but it is no longer
+  backed by a live paper footnote. Do not restore a `verbatim` footnote quotation here.
 - `cor:occurrence` (verbatim): "For any task frame $\F = \tuple{W, \D, \Rightarrow}$, world state
   $w \in W$, and time $x \in D$, there is a possible world $\tau \in H_{\F}$ where
   $\tau(x) = w$, and so $H_{\F} \neq \emptyset$."
@@ -218,11 +217,11 @@ Recorded source (`thm:extension`, verbatim): "Every partial history $\tau : X \t
 frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some possible world
 $\sigma \in H_{\F}$."
 
-Recorded footnote of the source (verbatim): "The proof appeals to Zorn's lemma, and so the
-derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Saturation} in
-\textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero
-loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Saturation} for finite $W$ in
-\textbf{\ref{cor:saturation-finite}}, both of which are choice-free."
+**The source carries no footnote** as of the 2026-10-14 re-pin; the choice-freeness footnote
+this docstring used to quote was removed from the paper. The Zorn-versus-choice-free contrast it
+drew is still a true property of the Lean proofs, and is recorded as such in
+`docs/reference/paper-definitions-of-record.md`'s "Drift correction (2026-10-14)" section, but it
+is not a quotation of anything any more.
 
 **Proof recipe, exactly as recorded**: Zorn's lemma over the extension order
 (`exists_maximal_extension`) produces a maximal extension; `lem:step` forces that maximal partial

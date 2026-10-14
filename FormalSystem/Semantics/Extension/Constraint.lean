@@ -26,10 +26,13 @@ paper source — is the citation source of record.
 - `lem:constraint` (verbatim): "For any partial history $\tau : X \to W$ over a frame
   $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the constraints imposed on
   $z$ form a directed family of nonempty sets."
-- `def:constraints` (verbatim): "For a partial history $\tau : X \to W$ over a frame
-  $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints
-  imposed on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where
-  $t < z < s$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise."
+- `def:constraints` (verbatim): "For a partial history $\tau : X \to W$ over a task frame $\F$
+  and duration $z \in D \setminus X$, split $X$ into $A \coloneq \set{t \in X \mid t < z}$ and
+  $C \coloneq \set{s \in X \mid s > z}$, which exhaust $X$ since $z \notin X$, and write
+  $F_t \coloneq \fib{\tau(t), z - t}$ for $t \in X$ and
+  $S_{t,s} \coloneq [\tau(t), \tau(s)]_{z-t}^{s-z}$ for $\tuple{t,s} \in A \times C$. The
+  \textit{constraints on $z$} are the segments $S_{t,s}$ for $\tuple{t,s} \in A \times C$ when $A$
+  and $C$ are both nonempty, and the fibers $F_t$ for $t \in X$ otherwise."
 - `def:frame`'s opening clause (verbatim): "Letting a nonempty family of sets $\mathcal{S}$ be
   \textit{$\supseteq$-directed} just in case $S \subseteq S_1 \cap S_2$ for some
   $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$". **Retired anchor**: this was the

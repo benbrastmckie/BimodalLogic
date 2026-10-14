@@ -21,7 +21,7 @@ with this formalization's generalized semantics. The fibre `FrameOver D` and
 The JPL paper "The Perpetuity Calculus of Agency" specifies the temporal structure in
 `def:temporal-order` (verbatim): "A \textit{temporal order} is a nontrivial totally ordered
 abelian group $\D = \tuple{D, +, 0, \leq}$ with \textit{positive cone}
-$D^+ \coloneq \set{x \in D : x \geq 0}$." This development implements the ordered abelian group
+$D^+ \coloneq \set{x \in D \mid x \geq 0}$." This development implements the ordered abelian group
 via the unbundled typeclasses
 `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]`; the paper's nontriviality
 requirement is supplied at the sites that need it rather than by the `FrameOver` structure (see

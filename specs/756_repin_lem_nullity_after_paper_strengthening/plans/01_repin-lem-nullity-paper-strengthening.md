@@ -358,29 +358,29 @@ need no edit at all.
 
 ---
 
-### Phase 5: Judgment pass and required corrections — `Extension/`, Examples, Tests [NOT STARTED]
+### Phase 5: Judgment pass and required corrections — `Extension/`, Examples, Tests [COMPLETED]
 
 **Goal**: Same obligation as Phase 4, for the `FormalSystem/Semantics/Extension/` subtree and the
 two outlying Lean sites, including the fourth retired-wording site.
 
 **Tasks**:
-- [ ] Re-read each target file immediately before editing.
-- [ ] **Required correction**: `FormalSystem/Semantics/Extension/Admissible.lean:34` quotes the
+- [x] Re-read each target file immediately before editing.
+- [x] **Required correction**: `FormalSystem/Semantics/Extension/Admissible.lean:34` quotes the
       retired `lem:nullity` sentence verbatim *and* already misquotes the current record ("in
       every **frame**" where the record pins "in every **task frame**"). Replace with the
       re-pinned biconditional text and fix the frame/task-frame wording.
-- [ ] Fix the pre-existing false-verbatim claim on a re-pinned anchor in the same docstring:
+- [x] Fix the pre-existing false-verbatim claim on a re-pinned anchor in the same docstring:
       `Admissible.lean:35-38` quotes `def:constraints` with the retired "constraints *imposed
       on*" wording and the retired `\Fib(…)` form, and `def:constraints` was restructured with
       named `A`, `C`, `F_t`, `S_{t,s}`. Re-quote from the re-pinned block.
-- [ ] **Judgment pass** over the remaining verbatim claims in this phase's files, diffing each
+- [x] **Judgment pass** over the remaining verbatim claims in this phase's files, diffing each
       quoted clause against the re-pinned block and editing only where the clause moved.
-- [ ] **Keep, do not rewrite** (research §4b, re-confirmed): `Admissible.lean:117` and
+- [x] **Keep, do not rewrite** (research §4b, re-confirmed): `Admissible.lean:117` and
       `Extension/Extension.lean:171` are References lines naming the zero loop `w ⇒₀ w` — what
       the module actually consumes. A proof that needs only the weak loop keeps citing the weak
       loop.
-- [ ] Keep every edit strictly inside a comment region.
-- [ ] Commit per green sub-step, staging explicit file names only.
+- [x] Keep every edit strictly inside a comment region.
+- [x] Commit per green sub-step, staging explicit file names only.
 
 **Timing**: 1 hour
 

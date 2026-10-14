@@ -31,12 +31,15 @@ paper source — is the citation source of record.
   $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the function
   $\tau \cup \set{\tuple{z, u}}$ is a partial history on $X \cup \set{z}$ just in case $u$ belongs
   to every member of the constraints imposed on $z$."
-- `lem:nullity` (verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$ in every frame
-  $\F = \tuple{W, \D, \Rightarrow}$."
-- `def:constraints` (verbatim): "For a partial history $\tau : X \to W$ over a frame
-  $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints
-  imposed on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where
-  $t < z < s$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise."
+- `lem:nullity` (verbatim): "$w \Rightarrow_0 u$ if and only if $w = u$, for all world states
+  $w, u \in W$ in any task frame $\F$." Only the reflexivity half (`w ⇒₀ w`) is consumed here.
+- `def:constraints` (verbatim): "For a partial history $\tau : X \to W$ over a task frame $\F$
+  and duration $z \in D \setminus X$, split $X$ into $A \coloneq \set{t \in X \mid t < z}$ and
+  $C \coloneq \set{s \in X \mid s > z}$, which exhaust $X$ since $z \notin X$, and write
+  $F_t \coloneq \fib{\tau(t), z - t}$ for $t \in X$ and
+  $S_{t,s} \coloneq [\tau(t), \tau(s)]_{z-t}^{s-z}$ for $\tuple{t,s} \in A \times C$. The
+  \textit{constraints on $z$} are the segments $S_{t,s}$ for $\tuple{t,s} \in A \times C$ when $A$
+  and $C$ are both nonempty, and the fibers $F_t$ for $t \in X$ otherwise."
 - `def:world-history` (verbatim, the clause `adjoin` discharges): "A \textit{partial history} over
   a task frame $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set
   $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$."
