@@ -264,43 +264,43 @@ spanning five files; the specific covering check is the guarded scoped build of
 
 ---
 
-### Phase 2: The general gluing module [NOT STARTED]
+### Phase 2: The general gluing module [COMPLETED]
 
 **Goal**: Land `FormalSystem/Semantics/Gluing.lean` — the construction, both reading equations,
 convexity of the union, both restriction identities, uniqueness, and both `∃!` entry points — as
 a transcription of the verified probe, with the full module docstring.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Gluing.lean` with the project copyright header (checked by
+- [x] Create `FormalSystem/Semantics/Gluing.lean` with the project copyright header (checked by
       `scripts/check-copyright-headers.sh`), the module docstring immediately after the imports,
       and `import FormalSystem.Semantics.PartialHistory` as its **only** import — the narrow
       import closure is itself evidence for the choice-free claim and must not be widened
-- [ ] Open `namespace FormalSystem.Semantics.PartialHistory`
-- [ ] Transcribe probe Step 1 as `isConvex_union` (both convexities and the overlap point `z`; no
+- [x] Open `namespace FormalSystem.Semantics.PartialHistory`
+- [x] Transcribe probe Step 1 as `isConvex_union` (both convexities and the overlap point `z`; no
       frame constraint, no decidability)
-- [ ] Transcribe probe Step 2 as `rel_mixed_left` and `rel_mixed_right`, routing the `x ≤ z ≤ y`
+- [x] Transcribe probe Step 2 as `rel_mixed_left` and `rel_mixed_right`, routing the `x ≤ z ≤ y`
       sub-case through `PartialHistory.rel_across_seam` with
       `by rw [add_comm]; exact (sub_add_sub_cancel y z x).symm` as the duration obligation
-- [ ] Transcribe probe Step 3 as `convexGlue`, with `[DecidablePred τ₁.domain]`,
+- [x] Transcribe probe Step 3 as `convexGlue`, with `[DecidablePred τ₁.domain]`,
       `domain := fun t => τ₁.domain t ∨ τ₂.domain t`, and the four-way `respects_task` split; the
       two backwards-orientation branches use `TaskFrame.reflection_of_ne F hne` plus `neg_sub`,
       with `hne : t - s ≠ 0` obtained from the domain-membership asymmetry by
       `sub_ne_zero_of_ne`
-- [ ] Transcribe the reading and bridge lemmas: `convexGlue_domain` (`Iff.rfl`),
+- [x] Transcribe the reading and bridge lemmas: `convexGlue_domain` (`Iff.rfl`),
       `convexGlue_mem_left`/`convexGlue_mem_right` (`Or.inl`/`Or.inr`),
       `convexGlue_states_left` (`dif_pos`), `convexGlue_states_not_left` (`dif_neg`), and
       `convexGlue_states_right` — the one where `hagree` is consumed
-- [ ] Transcribe `convexGlue_isConvex`, `convexGlue_extends_left`, `convexGlue_extends_right`,
+- [x] Transcribe `convexGlue_isConvex`, `convexGlue_extends_left`, `convexGlue_extends_right`,
       and `convexGlue_unique` (which takes no frame constraint, no convexity and no overlap, and
       routes through the Phase-1 `partialHistory_ext`)
-- [ ] Transcribe both entry points: `gluing_clause` (overlap point explicit, with the
+- [x] Transcribe both entry points: `gluing_clause` (overlap point explicit, with the
       `include … in` binder directive) and `gluing_clause_of_overlap` (the paper's own hypothesis
       `∃ z, τ₁.domain z ∧ τ₂.domain z`, discharged by ordinary `Exists.elim`, which is why the
       existential form stays choice-free)
-- [ ] Build `Extends` instances by supplying the `agree` component as a **named lemma fed as a
+- [x] Build `Extends` instances by supplying the `agree` component as a **named lemma fed as a
       field**, never by `refine ⟨…, fun t ht => ?_⟩` then `rw [dif_…]`: the `dite` is not visible
       through `.states` at implicit transparency and that shape fails
-- [ ] Write the module docstring: `app:gluing` cited **by name, never block-quoted** (Decision 8);
+- [x] Write the module docstring: `app:gluing` cited **by name, never block-quoted** (Decision 8);
       `def:world-history` available for verbatim quotation of the convexity/extension vocabulary;
       the paper's four-step proof transcribed as a step map; the `DecidablePred` record with the
       Mathlib `Set.piecewise`/`PartialEquiv.piecewise` precedent and the three rejected escapes;
@@ -310,11 +310,11 @@ a transcription of the verified probe, with the full module docstring.
       decision for the three landed special cases with its `dif_pos`/`dif_neg` reason; and the
       remark that a compatible family of sections in the limit presentation of `H_F` is a gluing,
       of which this is the two-member case — conceptual, a dependency in neither direction
-- [ ] Close the file with
+- [x] Close the file with
       `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`,
       as every `Presheaf/` module does, pinning the module below `Truth.lean`
-- [ ] Use `theorem`, never `lemma` (C23 gates zero live `lemma` declarations)
-- [ ] Cite no task numbers anywhere in the file (C9 gates zero task-number citations under
+- [x] Use `theorem`, never `lemma` (C23 gates zero live `lemma` declarations)
+- [x] Cite no task numbers anywhere in the file (C9 gates zero task-number citations under
       `FormalSystem/`)
 
 **Timing**: 1.5 hours
@@ -354,28 +354,31 @@ imports (Phase 4 does the wiring), so the specific covering check is the guarded
 
 ---
 
-### Phase 3: The seam cases exhibited as instances [NOT STARTED]
+### Phase 3: The seam cases exhibited as instances [COMPLETED]
 
 **Goal**: Discharge the task's "shown to be instances or left independent, by an explicit
 decision" obligation by **witness** rather than by re-derivation: exhibit the paper's `ρ ⌢_z σ`
 as the general gluing at two ray domains, total and reading as `ρ` below the seam.
 
 **Tasks**:
-- [ ] Append a `RayInstance` section to `FormalSystem/Semantics/Gluing.lean` transcribing probe
-      Step 6
-- [ ] `pastRay_isConvex` and `futRay_isConvex`: convexity of `PartialHistory.restrict ρ (· ≤ z)`
+- [x] Append a `RayInstance` section to `FormalSystem/Semantics/Gluing.lean` transcribing probe
+      Step 6 *(deviation: altered — the section was written in the same pass as Phase 2's file
+      rather than appended afterwards, so both phases close on one commit. Both touch only
+      `Gluing.lean` and no external surface differs; splitting the write would have left Phase 2's
+      commit with a docstring pointing at an absent section.)*
+- [x] `pastRay_isConvex` and `futRay_isConvex`: convexity of `PartialHistory.restrict ρ (· ≤ z)`
       and `PartialHistory.restrict σ (z ≤ ·)`, each a one-line `le_trans`
-- [ ] `decPastRay`: declare the `DecidablePred` instance **at the call site**, as
+- [x] `decPastRay`: declare the `DecidablePred` instance **at the call site**, as
       `fun t => inferInstanceAs (Decidable (t ≤ z))`. This declaration is required, not
       cosmetic: `(PartialHistory.restrict ρ P hP).domain` does not reduce to `P` at
       instance-reducible transparency, so the instance is not found without it
-- [ ] `convexGlue_rays_isTotal`: the glued object is total, by `fun t => le_total t z` — renamed
+- [x] `convexGlue_rays_isTotal`: the glued object is total, by `fun t => le_total t z` — renamed
       from the probe's `seamGlue_isTotal` to avoid shadowing
       `FormalSystem.Semantics.Presheaf.Ray.seamGlue_isTotal` in a reader's mind (different
       namespace, so no collision, but the same name for a different gluing is a trap)
-- [ ] `convexGlue_rays_states_past`: the glued object reads as `ρ` at every `t ≤ z`, by
+- [x] `convexGlue_rays_states_past`: the glued object reads as `ρ` at every `t ≤ z`, by
       `convexGlue_states_left`
-- [ ] Record in the docstring that these two witnesses are what makes "the seam cases **are**
+- [x] Record in the docstring that these two witnesses are what makes "the seam cases **are**
       instances of `app:gluing`" a verified pointer rather than a bare claim, and that the
       optional equation `paste ρ σ z hsame = ⟨convexGlue …⟩` (shape of the existing
       `paste_eq_pasteAt`) is a deferred, strictly additive follow-up that must not touch
