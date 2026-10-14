@@ -77,32 +77,21 @@ def _root_.FormalSystem.ProofSystem.Axiom.toName {φ : Formula} : Axiom φ → S
   | .modal_t _ => "modal_t"
   | .modal_5_collapse _ => "modal_5_collapse"
   | .modal_k_dist _ _ => "modal_k_dist"
-  -- Layer 3: BX Temporal (20)
+  -- Layer 3: BX Temporal (7)
   | .serial_future => "serial_future"
   | .left_mono_until_G _ _ _ => "left_mono_until_G"
   | .right_mono_until _ _ _ => "right_mono_until"
-  | .connect_future _ => "connect_future"
   | .enrichment_until _ _ _ => "enrichment_until"
   | .self_accum_until _ _ => "self_accum_until"
   | .absorb_until _ _ => "absorb_until"
   | .linear_until _ _ _ _ => "linear_until"
-  | .until_F _ _ => "until_F"
-  | .temp_linearity _ _ => "temp_linearity"
-  -- Layer 3b: Additional BX Temporal (4)
-  | .F_until_equiv _ => "F_until_equiv"
   -- Layer 4: Modal-Temporal Interaction (1)
   | .modal_future _ => "modal_future"
-  -- Layer 5: Uniformity Axioms (5)
-  | .discrete_symm_fwd => "discrete_symm_fwd"
-  | .discrete_propagate_fwd => "discrete_propagate_fwd"
-  | .discrete_propagate_bwd => "discrete_propagate_bwd"
+  -- Layer 5: Uniformity Axioms (1)
   | .discrete_box_necessity => "discrete_box_necessity"
   -- Layer 6: Prior Axioms (2)
   | .prior_UZ _ => "prior_UZ"
-  -- Layer 7: Z1 Axiom (1)
-  | .z1 _ => "z1"
-  -- Layer 8: Density Axioms (2)
-  | .density _ => "density"
+  -- Layer 8: Density Axioms (1)
   | .dense_indicator => "dense_indicator"
   -- Layer 9: Reynolds Dedekind (3)
   | .prior_U_gap _ => "prior_U_gap"

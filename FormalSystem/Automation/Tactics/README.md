@@ -14,7 +14,7 @@ This subdirectory holds the tactic elaborators and the proof-search engine behin
 |------|-------|-------------|
 | `Commands.lean` | 175 | The `modal_search` tactic: its `SearchConfig`, its two syntax forms, and the elaborators that run the search |
 | `Deduction.lean` | 181 | `deduction`, `deduction n` and `undischarge`: frame-class-polymorphic applications of `Metalogic.Core.deductionTheorem` to derivability goals |
-| `Search.lean` | 626 | The bounded proof-search engine: `searchProof` and its five strategies, working in `TacticM` because `Axiom` and `DerivationTree` are both `Type`-valued, not `Prop`-valued, so Aesop's proof reconstruction does not apply |
+| `Search.lean` | 620 | The bounded proof-search engine: `searchProof` and its five strategies, working in `TacticM` because `Axiom` and `DerivationTree` are both `Type`-valued, not `Prop`-valued, so Aesop's proof reconstruction does not apply |
 | `UserTactics.lean` | 279 | The tactics a proof author writes by hand -- `apply_axiom`, `modal_t`, `assumption_search` -- and the `Formula` predicates and extractors that decide when they apply |
 <!-- END GENERATED -->
 

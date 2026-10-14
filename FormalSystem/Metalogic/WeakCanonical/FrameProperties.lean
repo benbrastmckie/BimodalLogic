@@ -18,20 +18,6 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 
-/-! ## Z1 in the Canonical Frame -/
-
-/-- Z1 axiom instance (for a given psi) is in every MCS of the discrete system.
-BLOCKED: z1 has minFrameClass = .ZTime, but ReflCanDomain uses fc := .Base.
-The correct fix is to parameterize ReflCanDomain (and the underlying WeakCanonical
-model construction) over fc, then instantiate with .ZTime for discrete completeness.
-This requires a cascade through the entire WeakCanonical pipeline. -/
-theorem z1_in_frame {fc : FrameClass} (h_fc : FrameClass.ZTime ≤ fc) (x : ReflCanDomain fc)
-    (psi : Formula) :
-    Formula.imp (Formula.allFuture (Formula.imp (Formula.allFuture psi) psi))
-      (Formula.imp (Formula.someFuture (Formula.allFuture psi)) (Formula.allFuture psi)) ∈
-          x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.z1 psi) h_fc)
-
 /-! ## Prior-UZ/SZ in the Canonical Frame -/
 
 /-- Prior-UZ: F(psi) → U(psi, ¬psi) is in every MCS.

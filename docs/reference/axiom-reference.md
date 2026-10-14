@@ -4,7 +4,7 @@ Complete reference for TM (Tense and Modality) axiom schemas.
 
 ## Axiom Categories
 
-TM logic uses **29 axiom constructors**: exactly the paper's primitive axiom schemata
+TM logic uses **20 axiom constructors**: exactly the paper's primitive axiom schemata
 (`def:S5`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:BX-r`; see
 `docs/reference/paper-definitions-of-record.md`). Every other schema the tree used to take as
 primitive -- the twelve past mirrors of the BX temporal group, the S5 schemata 4 and B, and the
@@ -46,9 +46,9 @@ any count that does not say which one it means is a defect. Both are anchored in
 `FormalSystem/ProofSystem/Axioms.lean`:
 
 - **(a) Primitive constructors** — the headline figure used throughout the rest of this
-  document. `inductive Axiom` declares exactly 29 constructors, partitioned by
-  `Axiom.minFrameClass` into 23 Base / 2 Dense / 2 ZTime / 2 RTime (the table above).
-- **(b) Total names, including derived mirrors** — 29 primitives plus the 16 theorems in
+  document. `inductive Axiom` declares exactly 20 constructors, partitioned by
+  `Axiom.minFrameClass` into 16 Base / 1 Dense / 1 ZTime / 2 RTime (the table above).
+- **(b) Total names, including derived mirrors** — 20 primitives plus the 16 theorems in
   `FormalSystem.ProofSystem.DerivedAxioms` and `FormalSystem.Theorems.Combinators` that mirror a
   primitive at that primitive's own least frame class (14 mirrors sit at Base; one, `priorSZ`,
   sits at ZTime; one, `priorSGap`, sits at RTime), for 45 names in all (see

@@ -1109,7 +1109,7 @@ FormalSystem/                              # Main source directory
 │   ├── SubformulaClosure/                 # Closure construction
 │   └── README.md
 ├── ProofSystem/
-│   ├── Axioms.lean                        # TM axiom schemata (29 constructors, 4 frame-class layers)
+│   ├── Axioms.lean                        # TM axiom schemata (20 constructors, 4 frame-class layers)
 │   ├── Derivable.lean                     # Derivability relation
 │   ├── Derivation.lean                    # DerivationTree (7 inference rules)
 │   ├── DerivedAxioms.lean                 # Derived axiom-schema lemmas
@@ -1581,9 +1581,9 @@ The layered architecture provides clear development milestones:
 
 **Layer 0 (Current Implementation)**:
 - Complete language: Boolean + Modal + Temporal
-- Complete proof system: TM with 29 axiom constructors and 7 inference rules
+- Complete proof system: TM with 20 axiom constructors and 7 inference rules
 - Complete semantics: Task frames, world histories, truth evaluation
-- Complete metalogic: full soundness proof over all 29 axiom constructors; weak completeness
+- Complete metalogic: full soundness proof over all 20 axiom constructors; weak completeness
   proven and sorryAx-free for all four frame classes (Base, Dense, ZTime, RTime).
   *Strong* completeness -- consequence from an arbitrary infinite premise set -- is a separate
   question with three distinct statuses across those classes

@@ -404,10 +404,10 @@ example (p : Atom) (ψ : Formula) : [ψ] ⊢ (Formula.box (Formula.atom p)).imp 
     (by intro _ h; exact absurd h (List.not_mem_nil))
 
 /--
-Example: Density axiom is derivable at `.Dense` frame class.
+Example: the dense-indicator axiom NN is derivable at the `.Dense` frame class.
 -/
-example (φ : Formula) : ⊢[FrameClass.Dense] φ.allFuture.allFuture.imp φ.allFuture :=
-  .axiom _ _ (Axiom.density _) trivial
+example : ⊢[FrameClass.Dense] (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg :=
+  .axiom _ _ Axiom.dense_indicator trivial
 
 /--
 Example: Lifting a base derivation to dense frame class.

@@ -47,40 +47,35 @@ past-directed mirror, and the S5 schemata 4 and B, are derived theorems in
 
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce (CPL)
 2. **S5 Modal** (3): modal_t (MT), modal_5_collapse (M5), modal_k_dist (MK)
-3. **BX Temporal** (11, future direction only; the past mirrors are TR-derived):
+3. **BX Temporal** (7, future direction only; the past mirrors are TR-derived):
    - TS: serial_future
    - UG: left_mono_until_G
    - UC: right_mono_until
-   - TC: connect_future
    - US: enrichment_until
    - UF: self_accum_until
    - UI: absorb_until
    - CN: linear_until
-   - UE: until_F
-   - TL: temp_linearity
-   - UT: F_until_equiv
 4. **Modal-Temporal Interaction** (1): modal_future (MF)
    Note: temp_future (□φ → G□φ) is derived from MF + T + Modal 4.
-5. **Uniformity** (4): discrete_symm_fwd (NP), discrete_propagate_fwd (NF),
-   discrete_propagate_bwd (NA; this is the paper's NA itself, `X⊤ → H X⊤`, not a mirror of
-   NF), discrete_box_necessity (NB)
+5. **Uniformity** (1): discrete_box_necessity (NB)
 6. **Prior** (1): prior_UZ (UZ)
-7. **Z1** (1): z1 (Z1)
-8. **Density** (2): density (DN), dense_indicator (NN)
+8. **Density** (1): dense_indicator (NN)
 9. **Reynolds Dedekind** (2): prior_U_gap (PU), sep (SEP)
 
-**Total**: 29 axiom constructors
-(19 core + 4 uniformity + 1 prior + 1 Z1 + 2 density + 2 Reynolds Dedekind),
-where "core" is layers 1-4 (4 + 3 + 11 + 1). By frame
-class that is 23 base (layers 1-5) + 2 discrete-only (layers 6-7) + 2 dense-only (layer 8)
-+ 2 RTime-only (layer 9), matching `scripts/typst-status-counts.sh`.
+**Total**: 20 axiom constructors
+(15 core + 1 uniformity + 1 prior + 1 density + 2 Reynolds Dedekind),
+where "core" is layers 1-4 (4 + 3 + 7 + 1). By frame
+class that is 16 base (layers 1-5) + 1 discrete-only (layer 6) + 1 dense-only (layer 8)
++ 2 RTime-only (layer 9), matching `scripts/typst-status-counts.sh`. The nine schemata the
+paper also lists — TC, UE, UT, TL, NP, NF, NA, Z1, DN — are derived theorems (see the notes in
+the inductive below).
 Note: temp_k_dist and temp_4 are derived theorems (`temporalKDistDerived`,
 `temporal4Derived` in TemporalDerived.lean).
 
 ### Key Properties
 
 - All BX axioms are sound on all linear temporal orders (no frame conditions needed)
-- The density axiom (GGφ → Gφ) is derivable from seriality (BX1 = serial_future)
+- DN (GGφ → Gφ) is derivable from NN with the Base schemata (`Theorems.LinearityDerived.density`)
 - Discrete axioms (X/Y-based) are separate extension points, not included here
 - BX5 + BX6 resolve Until-eventualities axiomatically (no forward_F needed)
 - BX7 ensures linearity of temporal witnesses
@@ -130,17 +125,16 @@ open FormalSystem.Syntax
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system: exactly the paper's
 primitive schemata.
 
-29 constructors organized into nine layers:
+20 constructors organized into eight layers (the former Layer 7, Z1, is derived):
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (3): MT, M5 and MK (4 and B are derived, `DerivedAxioms.modal4`/`modal_b`)
-- **BX Temporal** (11): Burgess-Xu axioms for Until/Since on linear orders, future direction;
+- **BX Temporal** (7): Burgess-Xu axioms for Until/Since on linear orders, future direction;
   the past mirrors are derived by TR (`DerivedAxioms`)
 - **Interaction** (1): Modal-temporal interaction axiom (MF; TF derived)
-- **Uniformity** (4): Discreteness uniformity axioms NP, NF, NA, NB (valid on all ordered
-  abelian groups)
+- **Uniformity** (1): the discreteness uniformity axiom NB (NP, NF, NA are derived; valid on
+  all ordered abelian groups)
 - **Prior** (1): Prior-UZ for discrete well-ordering (valid on discrete orders only)
-- **Z1** (1): IsSuccArchimedean characteristic axiom (discrete-only)
-- **Density** (2): GGφ → Gφ and ¬U(⊤,⊥) (dense-only)
+- **Density** (1): GGφ → Gφ and ¬U(⊤,⊥) (dense-only)
 - **Reynolds Dedekind** (2): Prior-U gap axiom and Sep (RTime-only)
 
 Base axioms (23) are valid on all linear temporal orders. Prior/Z1 axioms (2) are discrete-only.
@@ -193,11 +187,7 @@ inductive Axiom : Formula → Type where
   If φ implies ψ at all times, then U(φ,χ) implies U(ψ,χ). -/
   | right_mono_until (φ ψ χ : Formula) :
       Axiom ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ)))
-  /-- BX4: Temporal connectedness (future): `φ → G(P(φ))`.
-  If φ holds now, then at all future times, P(φ) holds — the present is
-  always in the past of the future. -/
-  | connect_future (φ : Formula) :
-      Axiom (φ.imp (φ.somePast.allFuture))
+  -- TC (`connect_future`, `φ → G(P(φ))`) is derived: `Theorems.ConnectDerived.connectFuture`.
   /-- BX13: Until-Since enrichment (Burgess A3a, Xu axiom (3)):
   Burgess: `p ∧ U(α, β) → U(α ∧ S(p, β), β)`.
   In this tree's guard-first order (untl(guard, event)):
@@ -262,32 +252,9 @@ inductive Axiom : Formula → Type where
 
   -- NOTE: BX9/BX9' (until_elim/since_elim) removed -- unsound under open guard (t,s).
   -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.
-  /-- BX10: Until implies eventuality (the paper's UE; not a Burgess axiom, since it follows
-  from UG = `left_mono_until_G` with the new guard `⊤`, plus TN for `G(φ → ⊤)`;
-  guard-first: untl(guard, event)):
-  `U(ψ, φ) → F(ψ)`.
-  U(ψ,φ) at t has witness s > t with ψ(s), so F(ψ) holds. -/
-  | until_F (φ ψ : Formula) :
-      Axiom ((Formula.untl φ ψ).imp (Formula.someFuture ψ))
-  -- Layer 3b: Additional BX Temporal (TL, UT; their past mirrors are TR-derived)
-  /-- BX11: Temporal linearity (Burgess 1984 §0.3 axiom A2a; nearest Xu 1988 formula is (13)):
-  `F(φ) ∧ F(ψ) → F(F(φ) ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)))`.
-  Stated as the paper's TL (`sub:Logic`) verbatim, with the 3-way disjunction right-associated.
-  The former disjunct order `F(φ ∧ ψ) ∨ (F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ))` is the derived
-  `DerivedAxioms.tempLinearityLegacy`.
-  Future witnesses are linearly ordered. Uses linearity of the underlying temporal order.
-  This axiom is NOT derivable from BX1-BX10 (see LinearityDerivedFacts.lean counterexample). -/
-  | temp_linearity (φ ψ : Formula) :
-      Axiom (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
-        (Formula.or (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))
-          (Formula.or (Formula.someFuture (Formula.and φ ψ))
-            (Formula.someFuture (Formula.and φ (Formula.someFuture ψ))))))
-  /-- BX12: F-Until equivalence (guard-first: untl(guard, event)):
-  `F(φ) → U(φ, ⊤)`.
-  Every future eventuality can be witnessed by an Until formula with vacuous guard.
-  Here ⊤ = ¬⊥ = ⊥ → ⊥. Bridges F-formulas to Until-formulas. -/
-  | F_until_equiv (φ : Formula) :
-      Axiom ((Formula.someFuture φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ))
+  -- UE (`until_F`), TL (`temp_linearity`) and UT (`F_until_equiv`) are derived:
+  -- `DerivedAxioms.untilF` (UG + TN), `Theorems.LinearityDerived.tempLinearity` (CN + UF + UE)
+  -- and `DerivedAxioms.fUntilEquiv` (an identity).
   -- NOTE: Layer 3c (until_guard/since_guard) removed -- unsound under open guard (t,s).
   -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.
 
@@ -295,30 +262,13 @@ inductive Axiom : Formula → Type where
   -- Note: TF (□φ → G□φ) is now derived from MF + T + Modal 4 in Theorems/Combinators.lean.
   /-- Modal-Future: `□φ → □(Gφ)`. Necessary truths remain necessary in the future. -/
   | modal_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.box (Formula.allFuture φ)))
-  -- Layer 5: Uniformity Axioms (4: NP, NF, NA, NB; the NP mirror is TR-derived)
+  -- Layer 5: Uniformity Axioms (1: NB; NP, NF, NA and the NP mirror are derived)
   -- These encode the uniformity of discreteness in ordered abelian groups.
   -- U(⊤,⊥) = "next top" witnesses an immediate successor (gap of size d > 0).
   -- By translation invariance of the group, this gap is uniform across all time points.
-  /-- Discrete symmetry forward: U(⊤,⊥) → S(⊤,⊥).
-  If there is a gap of size d ahead (no points in (t, t+d)), then by translation
-  invariance there is the same gap behind (no points in (t-d, t)). -/
-  | discrete_symm_fwd :
-      Axiom ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
-        (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)))
-  /-- Discrete propagation forward: U(⊤,⊥) → G(U(⊤,⊥)).
-  If there is a gap of size d at t, then by translation invariance the same gap
-  exists at every future point s > t (translate by s-t). -/
-  | discrete_propagate_fwd :
-      Axiom ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
-        (Formula.allFuture (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))))
-  /-- Discrete propagation backward: U(⊤,⊥) → H(U(⊤,⊥)). This is the paper's NA
-  (`X⊤ → H X⊤`) itself, a primitive axiom: despite the name it is **not** the time-reflection
-  mirror of NF (`discrete_propagate_fwd`), which would be `Y⊤ → H Y⊤`.
-  If there is a gap of size d at t, then by translation invariance the same gap
-  exists at every past point s < t. -/
-  | discrete_propagate_bwd :
-      Axiom ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
-        (Formula.allPast (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))))
+  -- NP (`discrete_symm_fwd`), NF (`discrete_propagate_fwd`) and NA (`discrete_propagate_bwd`)
+  -- are derived: `Theorems.ConnectDerived.discreteSymmFwd`, `DerivedAxioms.discretePropagateFwd`
+  -- (NB ; MF ; MT) and `Theorems.ConnectDerived.discretePropagateBwd`.
   /-- Discrete box necessity: U(⊤,⊥) → □(U(⊤,⊥)).
   If there is a gap of size d at t (discreteness witness), then by translation
   invariance the same gap exists at every accessible world at time t. Since box
@@ -345,34 +295,10 @@ inductive Axiom : Formula → Type where
   class for it. -/
   | prior_UZ (φ : Formula) :
       Axiom (φ.someFuture.imp (Formula.untl φ.neg φ))
-  -- Layer 7: Z1 Axiom (IsSuccArchimedean characteristic axiom)
-  -- Z1: G(Gφ→φ) → (FGφ→Gφ)
-  -- Valid on all IsSuccArchimedean discrete linear orders (e.g. ℤ).
-  -- Encodes the property that every definable bounded set has a maximum.
-  -- Reference: Doets 1987 Claim 10, Reynolds 1994 Section 10.
-  /-- Z1: `G(Gφ→φ) → (FGφ→Gφ)`.
-  If Gφ→φ holds at all future times (induction step), and Gφ holds at some future
-  time (base case), then Gφ holds at the current time (conclusion). This is the
-  characteristic axiom of IsSuccArchimedean frames: backward induction from any
-  reachable Gφ-witness yields Gφ everywhere.
-
-  As with `prior_UZ`, the discreteness requirement is proved rather than merely cited: an atomic
-  instance is refuted over a densely ordered duration group by
-  `Metalogic.Independence.not_validIn_base_z1`
-  (`FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`), so `.ZTime` is minimal here too. -/
-  | z1 (φ : Formula) :
-      Axiom ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture))
-  -- Layer 8: Density Axiom (1)
-  -- Valid on densely ordered frames (DenselyOrdered). Not valid on discrete frames.
-  -- GGφ → Gφ: if φ holds at all times strictly after all strict-future times,
-  -- then φ holds at all strict-future times (because density fills the gap).
-  /-- Density: `GGφ → Gφ`.
-  On a densely ordered frame, if φ holds at all times strictly after every strict
-  future time, then φ holds at all strict future times. This is because for any
-  t' > t, density provides t'' with t < t'' < t', and GGφ at t gives Gφ at t'',
-  which gives φ at t'. This axiom is NOT valid on discrete frames (ℤ has gaps). -/
-  | density (φ : Formula) :
-      Axiom (φ.allFuture.allFuture.imp φ.allFuture)
+  -- Z1 (`G(Gφ→φ) → (FGφ→Gφ)`, the former Layer 7) is derived at `.ZTime` through the ZTime
+  -- completeness engine: `Metalogic.CompletenessDerived.z1Thm`.
+  -- Layer 8: Density (1: NN; DN `GGφ → Gφ` is derived from NN with the Base schemata,
+  -- `Theorems.LinearityDerived.density`)
   /-- Dense indicator: `¬U(⊤,⊥)`.
   On a densely ordered frame, `U(⊤,⊥)` ("there exists an immediate successor") is
   false at every point, since for any s > t, density provides r with t < r < s,
@@ -651,11 +577,11 @@ would be false: `prior_UZ ⊥` has an unsatisfiable antecedent and is `.Base`-va
   `.ZTime`-valid. `prior_U_gap` claims nothing at `.ZTime` and no analogous validity is
   established for it.
 
-Total: 29 axiom constructors. (The TR mirrors `prior_SZ` and `prior_S_gap` are derived at the
+Total: 20 axiom constructors. (The TR mirrors `prior_SZ` and `prior_S_gap` are derived at the
 frame class of their primaries, `DerivedAxioms.priorSZ` / `DerivedAxioms.priorSGap`.)
 
 Since `Dense ≤ RTime`, a `DerivationTree FrameClass.RTime` admits the Base axioms,
-the two Dense axioms, and the two Reynolds axioms — but not the ZTime ones
+the Dense axiom, and the two Reynolds axioms — but not the ZTime ones
 (`ZTime` and `RTime` are incomparable).
 
 The constraint `ax.minFrameClass ≤ fc` in DerivationTree's axiom constructor
@@ -663,10 +589,8 @@ ensures that only axioms compatible with frame class `fc` can appear in a
 derivation tree parameterized by `fc`.
 -/
 def Axiom.minFrameClass {φ : Formula} : Axiom φ → FrameClass
-  | density _ => .Dense
   | dense_indicator => .Dense
   | prior_UZ _ => .ZTime
-  | z1 _ => .ZTime
   | prior_U_gap _ => .RTime
   | sep _ => .RTime
   | _ => .Base

@@ -97,7 +97,7 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 
 **Algorithm**:
 1. Extract goal type and validate it's a `DerivationTree Γ φ` goal
-2. Try axiom matching against 27 of the 29 axiom schemata (`tryAxiomMatch`'s list
+2. Try axiom matching against 18 of the 20 axiom schemata (`tryAxiomMatch`'s list
    omits the two Layer-9 Reynolds Dedekind axioms); derived schemata come from `@[tmLemma]`
 3. Try assumption matching if formula is in context
 4. Try modus ponens decomposition

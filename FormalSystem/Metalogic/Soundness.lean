@@ -908,7 +908,7 @@ are two obligations, consumed at different call sites.
 
 The Dedekind soundness chain is sorry-free end to end: both Prior gap lemmas, both Sep lemmas,
 and — since the collapse onto `soundness_in` — the single `axiom_validIn_min` /
-`axiom_reflect_time_validIn_min` pair below, whose arms cover all 29 axiom constructors once rather
+`axiom_reflect_time_validIn_min` pair below, whose arms cover all 20 axiom constructors once rather
 than once per frame class.
 -/
 
@@ -1237,23 +1237,14 @@ theorem axiom_validIn_min {φ : Formula} (ax : Axiom φ) : ValidIn ax.minFrameCl
   | serial_future => exact serial_future_paper_valid
   | left_mono_until_G a0 a1 a2 => exact left_mono_until_G_valid a0 a1 a2
   | right_mono_until a0 a1 a2 => exact right_mono_until_valid a0 a1 a2
-  | connect_future a0 => exact connect_future_valid a0
   | enrichment_until a0 a1 a2 => exact enrichment_until_valid a0 a1 a2
   | self_accum_until a0 a1 => exact self_accum_until_valid a0 a1
   | absorb_until a0 a1 => exact absorb_until_valid a0 a1
   | linear_until a0 a1 a2 a3 => exact linear_until_paper_valid a0 a1 a2 a3
-  | until_F a0 a1 => exact until_F_valid a0 a1
-  | temp_linearity a0 a1 => exact temp_linearity_paper_valid a0 a1
-  | F_until_equiv a0 => exact F_until_equiv_valid a0
   | modal_future a0 => exact modal_future_valid a0
-  | discrete_symm_fwd => exact discrete_symm_fwd_valid
-  | discrete_propagate_fwd => exact discrete_propagate_fwd_valid
-  | discrete_propagate_bwd => exact discrete_propagate_bwd_valid
   | discrete_box_necessity => exact discrete_box_necessity_valid
-  | density a0 => exact density_valid a0
   | dense_indicator => exact dense_indicator_valid
   | prior_UZ a0 => exact prior_UZ_valid a0
-  | z1 a0 => exact z1_valid a0
   | prior_U_gap a0 => exact prior_U_gap_valid a0
   | sep a0 => exact sep_valid a0
 
@@ -1266,10 +1257,8 @@ theorem axiom_reflect_time_validIn_min {φ : Formula} (ax : Axiom φ) :
     rw [heq]
     exact SoundnessLemmas.axiom_reflect_time_valid_general φ ax hbase
   · cases ax with
-    | density a0 => exact density_reflect_time_valid a0
     | dense_indicator => exact dense_indicator_reflect_time_valid
     | prior_UZ a0 => exact SoundnessLemmas.prior_SZ_valid a0.reflectTime
-    | z1 a0 => exact SoundnessLemmas.z1_past_valid a0.reflectTime
     | prior_U_gap a0 => exact prior_S_gap_valid a0.reflectTime
     | sep a0 => exact sep_reflect_time_valid a0
     | _ => exact absurd trivial hbase

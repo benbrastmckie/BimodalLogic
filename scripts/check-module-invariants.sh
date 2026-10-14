@@ -1954,7 +1954,7 @@ echo
 # ---------------------------------------------------------------------------
 C14_FAIL=0
 
-# (i) stale axiom counts. 29 is the constructor count of `inductive Axiom`, per
+# (i) stale axiom counts. 20 is the constructor count of `inductive Axiom`, per
 # `Axiom.minFrameClass` -- exactly the paper's primitive schemata. 45 is the figure from before
 # the time-reflection mirrors and modal 4/B became derived theorems (`DerivedAxioms`); 42 is
 # the figure in an older `Axioms.lean` docstring, which omitted the RTime (Dedekind-complete)
@@ -2006,7 +2006,7 @@ else
     | while IFS= read -r l; do note "$l"; done
   [ "$STALE_SORRY_COUNT" -gt 0 ] && printf '%s\n' "$STALE_SORRIES" | head -10 \
     | while IFS= read -r l; do note "$l"; done
-  note "the tree is the authority: C3 asserts zero sorries, Axiom.minFrameClass gives 29 axioms"
+  note "the tree is the authority: C3 asserts zero sorries, Axiom.minFrameClass gives 20 axioms"
 fi
 
 # (ii) #print axioms for the theorems C2 does not cover.

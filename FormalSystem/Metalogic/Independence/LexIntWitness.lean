@@ -119,8 +119,9 @@ theorem lexIntStaticFrame_not_sat :
 **The witness models every `.ZTime` axiom instance.**
 
 Dispatch: everything at `minFrameClass ≤ .Base` is sound on every task frame; `prior_UZ` and
-`prior_SZ` are the discrete `untl`/`snce` calculus; `z1` is `static_validates_z1`; the two Dense
-and three Dedekind axioms are eliminated by `Dense ≰ Discrete` and `Dedekind ≰ Discrete`.
+`prior_SZ` are the discrete `untl`/`snce` calculus (Z1 is derived, so it has no arm; the
+formula is still validated by `static_validates_z1`); the Dense and Dedekind axioms are
+eliminated by `Dense ≰ Discrete` and `Dedekind ≰ Discrete`.
 -/
 theorem lexIntStaticFrame_mem_mod :
     lexIntStaticFrame ∈ Semantics.Mod (AxiomSet FrameClass.ZTime) := by
@@ -135,9 +136,6 @@ theorem lexIntStaticFrame_mem_mod :
         intro M τ x h
         exact (static_untl_iff_disc (D := ℤ ×ₗ ℤ) hdisc Bool M τ ψ.neg ψ x).mpr
           ((static_someFuture_iff (D := ℤ ×ₗ ℤ) Bool M τ ψ x).mp h)
-    | z1 ψ =>
-        intro M τ x
-        exact static_validates_z1 (D := ℤ ×ₗ ℤ) Bool M τ ψ x
     | _ => first
         | exact absurd (show FrameClass.Dense ≤ FrameClass.ZTime from hax) (by decide)
         | exact absurd (FrameClass.base_le FrameClass.Base) hb

@@ -1100,11 +1100,8 @@ def theoremRegistry : List TheoremEntry := [
     (DerivedAxioms.priorSZ (fc := .ZTime) trivial p),
   mkEntryAt "prior_SZ_axiom_q" .ZTime
     (DerivedAxioms.priorSZ (fc := .ZTime) trivial q),
-  -- Z1 Axiom (Discrete): G(G(φ) → φ) → (F(G(φ)) → G(φ))
-  mkEntryAt "z1_axiom" .ZTime
-    (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.z1 p) trivial),
-  mkEntryAt "z1_axiom_q" .ZTime
-    (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.z1 q) trivial),
+  -- Z1 is derived through the ZTime completeness engine (`CompletenessDerived.z1Thm`,
+  -- `Classical.choice`-packaged, noncomputable): it has no runtime-walkable tree and no entry.
   -- Density Axioms (Dense): G(G(φ)) → G(φ) and ¬U(⊤,⊥)
   mkEntryAt "density_axiom" .Dense
     (FormalSystem.Theorems.LinearityDerived.density (fc := .Dense) le_rfl p),
@@ -1151,10 +1148,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "G_prior_SZ_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivedAxioms.priorSZ (fc := .ZTime) trivial p)),
-  -- G-wrapped Z1 (Discrete)
-  mkEntryAt "G_z1_axiom" .ZTime
-    (DerivationTree.temporal_necessitation _
-      (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.z1 p) trivial)),
   -- G-wrapped density axioms (Dense)
   mkEntryAt "G_density_axiom" .Dense
     (DerivationTree.temporal_necessitation _
@@ -1192,10 +1185,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
         (FormalSystem.Theorems.LinearityDerived.density (fc := .Dense) le_rfl p))),
-  mkEntryAt "GG_z1_axiom" .ZTime
-    (DerivationTree.temporal_necessitation _
-      (DerivationTree.temporal_necessitation _
-        (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.z1 p) trivial))),
   -- ============================================================
   -- ASSUMPTION AND WEAKENING RULES: Entries with non-empty
   -- contexts to exercise the 2 missing inference rules.
@@ -1391,31 +1380,22 @@ def allAxiomNames : List String :=
     "prop_k", "prop_s", "ex_falso", "peirce",
     -- Layer 2: S5 Modal (3)
     "modal_t", "modal_5_collapse", "modal_k_dist",
-    -- Layer 3: BX Temporal (10)
+    -- Layer 3: BX Temporal (7)
     "serial_future",
     "left_mono_until_G",
     "right_mono_until",
-    "connect_future",
     "enrichment_until",
     "self_accum_until",
     "absorb_until",
     "linear_until",
-    "until_F",
-    "temp_linearity",
-    -- Layer 3b: Additional BX Temporal (1)
-    "F_until_equiv",
     -- Layer 4: Modal-Temporal Interaction (1)
     "modal_future",
-    -- Layer 5: Uniformity Axioms (4)
-    "discrete_symm_fwd",
-    "discrete_propagate_fwd", "discrete_propagate_bwd",
+    -- Layer 5: Uniformity Axioms (1)
     "discrete_box_necessity",
     -- Layer 6: Prior Axioms (1)
     "prior_UZ",
-    -- Layer 7: Z1 Axiom (1)
-    "z1",
-    -- Layer 8: Density Axioms (2)
-    "density", "dense_indicator",
+    -- Layer 8: Density Axioms (1)
+    "dense_indicator",
     -- Layer 9: Reynolds Dedekind Axioms (2)
     "prior_U_gap", "sep"
   ]

@@ -24,7 +24,7 @@ and we can construct a syntactic proof.
 ## Implementation Notes
 
 The proof extraction uses a multi-strategy approach:
-1. **Direct axiom match**: Pattern-match against 27 of the 29 axiom schemata
+1. **Direct axiom match**: Pattern-match against 18 of the 20 axiom schemata
    (via `matchAxiom`, which does not cover the two Layer-9 Reynolds Dedekind axioms
    (`prior_U_gap`, `sep`))
 2. **Derived theorem match**: Known derived theorems (e.g., temporalFutureDerived)

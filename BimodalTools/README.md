@@ -377,7 +377,7 @@ implementation obligation and stays where it is.
 | File | Lines | Description |
 |------|------:|-------------|
 | `AtomCanonicalization.lean` | 141 | <!-- TODO: add description --> |
-| `AxiomNames.lean` | 59 | <!-- TODO: add description --> |
+| `AxiomNames.lean` | 53 | <!-- TODO: add description --> |
 | `BenchmarkAnchorsMain.lean` | 598 | <!-- TODO: add description --> |
 | `BenchmarkOracleMain.lean` | 359 | <!-- TODO: add description --> |
 | `CanonicalWire.lean` | 35 | Aggregator for `CanonicalWire/`: the verified certificate wire codec — canonical printer, total parser, round-trip theorems |
@@ -388,22 +388,22 @@ implementation obligation and stays where it is.
 | `ContrastiveGeneratorMain.lean` | 122 | Executable root of `lake exe contrastive_generator`: argument parsing and `main` only; imports `ContrastiveGenerator` |
 | `DataExport.lean` | 396 | <!-- TODO: add description --> |
 | `DatasetAssembly.lean` | 342 | <!-- TODO: add description --> |
-| `DatasetGenerator.lean` | 1,728 | <!-- TODO: add description --> |
+| `DatasetGenerator.lean` | 1,718 | <!-- TODO: add description --> |
 | `DatasetGeneratorMain.lean` | 1,349 | <!-- TODO: add description --> |
 | `DatasetValidatorMain.lean` | 595 | <!-- TODO: add description --> |
 | `EnrichedCountermodel.lean` | 223 | <!-- TODO: add description --> |
 | `EnumBenchmarkMain.lean` | 230 | <!-- TODO: add description --> |
-| `FormulaEnumerator.lean` | 2,041 | <!-- TODO: add description --> |
+| `FormulaEnumerator.lean` | 2,019 | <!-- TODO: add description --> |
 | `ForwardProofGenerator.lean` | 354 | <!-- TODO: add description --> |
 | `InterestingnessMetrics.lean` | 576 | <!-- TODO: add description --> |
 | `JsonParse.lean` | 268 | The tag-format JSON parser: `PState`, the scalar and skip primitives, and `pFormula`; now serving the tableau bridge ONLY — the certificate envelope moved to the verified codec in `CanonicalWire/` |
-| `MachineAppendixMain.lean` | 474 | <!-- TODO: add description --> |
+| `MachineAppendixMain.lean` | 458 | <!-- TODO: add description --> |
 | `PrefilterSoundness.lean` | 172 | <!-- TODO: add description --> |
-| `ProofExtractorMain.lean` | 1,542 | <!-- TODO: add description --> |
+| `ProofExtractorMain.lean` | 1,524 | <!-- TODO: add description --> |
 | `ProofFirstBenchmark.lean` | 194 | <!-- TODO: add description --> |
 | `ProofFirstGenerator.lean` | 160 | The proof-first export pipeline: `exportToJsonl`, `writeJsonl`, the argument parsers, and `runProofFirstGenerator`, the whole command-line body |
 | `ProofFirstGeneratorMain.lean` | 21 | Executable root of `lake exe proof_first_generator`: `main` only; calls `runProofFirstGenerator` |
-| `ProofStepExtractor.lean` | 344 | <!-- TODO: add description --> |
+| `ProofStepExtractor.lean` | 333 | <!-- TODO: add description --> |
 | `SentenceExport.lean` | 244 | The source-sentence codec: `Sentence.toJson`, `pSentence`, and `translateSentenceLineToJson` — parse, eliminate the defined operators with `tr`, serialize; the conformance channel behind `lake exe translate_sentence` |
 | `TableauBridge.lean` | 627 | The tableau bridge library: the JSONL protocol, the request parsers, `BranchGates` and the theorem-hypothesis evaluator, the command handlers, and `replLoop` |
 | `TableauBridgeMain.lean` | 23 | Executable root of `lake exe tableau_bridge`: `main` only; calls `TableauBridge.replLoop` |

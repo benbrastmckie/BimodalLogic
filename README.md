@@ -19,9 +19,9 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 678 |
-| Live lines of code | 193,400 |
-| Live comment lines | 119,789 |
+| Live `.lean` files | 681 |
+| Live lines of code | 193,553 |
+| Live comment lines | 119,960 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`
@@ -116,7 +116,7 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   ├── HybridLanguage/           # L⁺ plus the same-state modality [≡], state registers and the state binder ↓ (semantic only)
 │   ├── QuantLanguage/            # L plus propositional quantifiers ∀p over an admissible family (semantic only)
 │   ├── SourceLanguage/           # the source sentence language (17 operators) and its verified elimination into L
-│   ├── ProofSystem/              # Axioms (29 constructors, nine layers), derivation trees
+│   ├── ProofSystem/              # Axioms (20 constructors, eight layers), derivation trees
 │   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, PartialHistory, TaskModel, validity
 │   ├── Metalogic/                # Soundness, completeness, decidability
 │   │   ├── Core/                 # MCS theory, deduction theorem
@@ -220,7 +220,7 @@ Dense ≤ RTime); counting every named schema instead, including the derived pas
 37 / 40 / 39 / 42 by class (45 names in all) — see
 [Two axiom counts](docs/reference/axiom-reference.md#two-axiom-counts) for the full derivation.
 
-`inductive Axiom` has **29 constructors in nine layers** (`FormalSystem/ProofSystem/Axioms.lean`): exactly the paper's primitive axiom schemata. The 23 Base constructors are propositional (4), S5 modal (3: MT, M5, MK), Burgess-Xu temporal (9), an additional Burgess-Xu temporal layer (2: TL, UT), modal-temporal interaction (1), and uniformity (4). The remaining six are the class-specific extensions: density (2), Prior-UZ (1) and Z1 (1) for the ZTime class, and Reynolds' Dedekind axioms (2: PU, SEP). The past mirrors, obtained by the time-reflection rule TR, and the S5 schemata 4 and B are derived theorems (`FormalSystem.ProofSystem.DerivedAxioms`).
+`inductive Axiom` has **20 constructors in eight layers** (`FormalSystem/ProofSystem/Axioms.lean`): exactly the paper's primitive axiom schemata. The 23 Base constructors are propositional (4), S5 modal (3: MT, M5, MK), Burgess-Xu temporal (9), an additional Burgess-Xu temporal layer (2: TL, UT), modal-temporal interaction (1), and uniformity (4). The remaining six are the class-specific extensions: density (2), Prior-UZ (1) and Z1 (1) for the ZTime class, and Reynolds' Dedekind axioms (2: PU, SEP). The past mirrors, obtained by the time-reflection rule TR, and the S5 schemata 4 and B are derived theorems (`FormalSystem.ProofSystem.DerivedAxioms`).
 
 The Dense and ZTime logics are independent extensions — neither subsumes the other. RTime extends **Dense**: `Axiom.minFrameClass` places `density` and `dense_indicator` below `FrameClass.RTime`, because Reynolds' own axiomatization of real flow contains them. ZTime and RTime are likewise incomparable, and `RTime ≰ Dense`.
 
@@ -421,7 +421,7 @@ doc-gen4 reference for every declaration in `FormalSystem`, rebuilt on every pus
 
 ### Reference
 
-- [Axiom Reference](docs/reference/axiom-reference.md) — complete axiom schemas for all 29 constructors and the derived schemata
+- [Axiom Reference](docs/reference/axiom-reference.md) — complete axiom schemas for all 20 constructors and the derived schemata
 - [Operator Reference](docs/reference/operators.md) — formal operator definitions
 - [Tactic Reference](docs/reference/tactic-reference.md) — custom proof tactics
 - [Specification Document](typst/README.md) — full formal specification (typst, built on demand)

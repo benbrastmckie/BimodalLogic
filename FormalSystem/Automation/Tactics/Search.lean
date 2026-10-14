@@ -113,8 +113,6 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
       -- Layer 3: BX Temporal — monotonicity (4)
       ``Axiom.left_mono_until_G,  -- G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
       ``Axiom.right_mono_until,   -- G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
-      -- Layer 3: BX Temporal — connectedness (2)
-      ``Axiom.connect_future, -- φ → G(P(φ))
       -- Layer 3: BX Temporal — enrichment (2)
       ``Axiom.enrichment_until, -- p ∧ U(ψ,φ) → U(ψ ∧ S(p,φ), φ)
       -- Layer 3: BX Temporal — accumulation & absorption (4)
@@ -122,23 +120,13 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
       ``Axiom.absorb_until,      -- U(φ ∧ U(ψ,φ), φ) → U(ψ,φ)
       -- Layer 3: BX Temporal — linearity (2)
       ``Axiom.linear_until,  -- U(ψ,φ) ∧ U(θ,χ) → disjunction
-      -- Layer 3: BX Temporal — eventuality (2)
-      ``Axiom.until_F,   -- U(ψ,φ) → F(ψ)
-      -- Layer 3b: BX Temporal — additional (4)
-      ``Axiom.temp_linearity,      -- F(φ) ∧ F(ψ) → disjunction
-      ``Axiom.F_until_equiv,       -- F(φ) → U(φ, ⊤)
       -- Layer 4: Modal-Temporal Interaction (1)
       ``Axiom.modal_future,  -- □φ → □(Gφ)
-      -- Layer 5: Uniformity — discrete structure (5)
-      ``Axiom.discrete_symm_fwd,       -- U(⊤,⊥) → S(⊤,⊥)
-      ``Axiom.discrete_propagate_fwd,   -- U(⊤,⊥) → G(U(⊤,⊥))
-      ``Axiom.discrete_propagate_bwd,   -- U(⊤,⊥) → H(U(⊤,⊥))
+      -- Layer 5: Uniformity — discrete structure (1; NP, NF, NA are `@[tmLemma]` derived)
       ``Axiom.discrete_box_necessity,   -- U(⊤,⊥) → □(U(⊤,⊥))
-      -- Layer 6: Prior axioms — discrete (3)
+      -- Layer 6: Prior axiom — discrete (1; Z1 is derived, tried by `tryGatedDerivedMatch`)
       ``Axiom.prior_UZ,  -- F(φ) → U(φ, ¬φ)
-      ``Axiom.z1,         -- G(Gφ→φ) → (FGφ→Gφ)
-      -- Layer 8: Density (2)
-      ``Axiom.density,         -- GGφ → Gφ
+      -- Layer 8: Density (1; DN is derived, tried by `tryGatedDerivedMatch`)
       ``Axiom.dense_indicator  -- ¬U(⊤,⊥)
     ]
     for ctorName in axiomCtors do
@@ -569,7 +557,7 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
 Recursive proof search implementation.
 
 **Algorithm**:
-1. Check if goal matches any axiom schema `tryAxiomMatch` carries -- 27 of the 29 axiom
+1. Check if goal matches any axiom schema `tryAxiomMatch` carries -- 18 of the 20 axiom
    schemata (`tryAxiomMatch`'s list omits the two Layer-9 Reynolds Dedekind axioms)
 1b. Check if goal matches any `@[tmLemma]` database lemma (with backward
     chaining through derivability premises)

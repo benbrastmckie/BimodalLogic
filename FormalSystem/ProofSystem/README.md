@@ -9,7 +9,7 @@ TM logic variants (Base, Dense, Discrete, Dedekind), along with derived facts an
 
 | File | Lines | Description |
 |------|------:|-------------|
-| `Axioms.lean` | 621 | `Axiom` inductive type: 29 constructors (the paper's primitive schemata) in nine layers |
+| `Axioms.lean` | 621 | `Axiom` inductive type: 20 constructors (the paper's primitive schemata minus the nine derived ones) in eight layers |
 | `DerivedAxioms.lean` | 244 | The time-reflection mirrors, derived by the TR rule (`DerivedAxioms` namespace) |
 | `Derivation.lean` | 418 | `DerivationTree` inductive type: 7 inference rules as constructors |
 | `Derivable.lean` | 196 | `Derivable`: Prop-valued derivability wrapper for classical reasoning |
@@ -19,7 +19,7 @@ TM logic variants (Base, Dense, Discrete, Dedekind), along with derived facts an
 
 ### Primitive Axioms and Derived Schemata
 
-The `Axiom` inductive type has **29 constructors** organized into **nine layers**: exactly the
+The `Axiom` inductive type has **20 constructors** organized into **eight layers**: exactly the
 paper's primitive axiom schemata (`def:S5`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:BX-r`), with
 TL, CN and TS stated verbatim.
 
@@ -37,7 +37,7 @@ TL, CN and TS stated verbatim.
 | 9. Reynolds Dedekind | 2 | `prior_U_gap`, `sep` (Dedekind-only) |
 | **Total** | **29** | |
 
-**Frame classification**: 23 Base constructors, 2 Dense-only (`density`, `dense_indicator`),
+**Frame classification**: 16 Base constructors, 1 Dense-only (`dense_indicator`),
 2 Discrete-only (`prior_UZ`, `z1`), 2 Dedekind-only (`prior_U_gap`, `sep`) — see
 `Axiom.minFrameClass` in `Axioms.lean`. Cumulatively (`Dense ≤ Dedekind`): Base 23,
 Dense 25, Discrete 25, Dedekind 27.

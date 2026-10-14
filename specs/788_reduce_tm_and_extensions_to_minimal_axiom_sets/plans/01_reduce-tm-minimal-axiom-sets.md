@@ -476,7 +476,7 @@ a shape pin, a docstring, or a `validIn`-level name.
 
 ---
 
-### Phase 7: Delete the nine constructors — the single whole-tree rebuild [NOT STARTED]
+### Phase 7: Delete the nine constructors — the single whole-tree rebuild [COMPLETED]
 
 **Goal**: In one pre-declared atomic batch, delete the nine constructors and their
 `minFrameClass` rows from `Axioms.lean`, delete every exhaustive-match arm, matcher, and table
@@ -485,34 +485,34 @@ the `temp_linearity` docstring, update the count pins C14 checks, and verify wit
 full build of all four libraries.
 
 **Tasks**:
-- [ ] `bash .claude/scripts/git-snapshot.sh 788 --no-revert` (defensive checkpoint, non-reverting)
-- [ ] `FormalSystem/ProofSystem/Axioms.lean`: delete constructors `until_F` (270), `temp_linearity`
+- [x] `bash .claude/scripts/git-snapshot.sh 788 --no-revert` (defensive checkpoint, non-reverting)
+- [x] `FormalSystem/ProofSystem/Axioms.lean`: delete constructors `until_F` (270), `temp_linearity`
       (280), `F_until_equiv` (289), `connect_future` (199), `discrete_symm_fwd` (305),
       `discrete_propagate_fwd` (311), `discrete_propagate_bwd` (319), `z1` (363), `density` (374)
       with their docstrings; delete the `density _ => .Dense` and `z1 _ => .ZTime` rows (666, 669)
       and the base rows for the other seven from `minFrameClass`; the Layer 3b comment (272)
       goes with its two constructors
-- [ ] Soundness arms: `Metalogic/Soundness.lean:1245` and neighbours,
+- [x] Soundness arms: `Metalogic/Soundness.lean:1245` and neighbours,
       `SoundnessLemmas/FrameClassVariants.lean:729` and neighbours, reflect-time soundness arms;
       the formula-level lemmas `until_F_valid`, `F_until_equiv_validIn`, `temp_linearity_validIn`,
       `density_valid`, `z1_valid`, `discrete_*_reflect_time_valid` stay (they are consumed by
       Phases 3-4 and the Independence results)
-- [ ] C3 `ConvexConsequence/SurvivalTable.lean:79,114` arms (the `c3_*` results about the formulas
+- [x] C3 `ConvexConsequence/SurvivalTable.lean:79,114` arms (the `c3_*` results about the formulas
       stay, following `Mirrors.lean`'s precedent for derived schemata);
       `Independence/CoarsenedModels.lean:524,633`; `Conservativity/Plus/AxiomValidity.lean` arms;
-      `PlusLanguage/Derivation.lean:204-220`, `StarLanguage/Embedding.lean:113-138` dead arms
-- [ ] `Automation/ProofSearch/Core.lean:382-473`: delete the nine matcher arms;
+      `PlusLanguage/Derivation.lean:204-220`, `StarLanguage/Embedding.lean:113-138` dead arms *(deviation: altered — `StarLanguage/Embedding.lean`'s arms match over `PlusAxiom` (whose constructors stay), so they are live, not dead, and are untouched; the TM-matching arms in `PlusLanguage/Derivation.lean` AND the plan-unlisted `PlusLanguage/Substitution.lean` (`PlusAxiom.ofTMSubst`) were deleted)*
+- [x] `Automation/ProofSearch/Core.lean:382-473`: delete the nine matcher arms; *(completed; additionally seven computable derived arms — TC, UT, UE, TL, NP, NF, NA — were added to `mirrorCandidate` so the runtime engine keeps closing those shapes at Base)*
       `Automation/Tactics/Search.lean:115-132`: delete the nine `axiomCtors` entries and fix the
       comment counts
-- [ ] `Decidability/Verified/RuleSpec.lean` constructor-enumeration section: remove the nine
-- [ ] `Metalogic/WeakCanonical/FrameProperties.lean:28-33`: delete `z1_in_frame` and its BLOCKED
+- [x] `Decidability/Verified/RuleSpec.lean` constructor-enumeration section: remove the nine *(deviation: skipped — probe (definition lookup): that section enumerates `TableauRule` constructors (`allTableauRules`), not `Axiom` ones; nothing to remove)*
+- [x] `Metalogic/WeakCanonical/FrameProperties.lean:28-33`: delete `z1_in_frame` and its BLOCKED
       docstring (`prior_UZ_in_frame`/`prior_SZ_in_frame` untouched)
-- [ ] Tooling: `BimodalTools/AxiomNames.lean` (20-name list; header), `MachineAppendixMain.lean`
+- [x] Tooling: `BimodalTools/AxiomNames.lean` (20-name list; header), `MachineAppendixMain.lean`
       (one `mkAxiomEntry` per deleted constructor removed; assertion at 423-424 → 20; docstring
       counts at 16, 38, 69, 72, 183, 414, 437), `ProofStepExtractor`/`DatasetGenerator` exhaustive
-      name matches, `FormulaEnumerator` matcher arms
-- [ ] Tests: delete arms/`#guard`s that enumerate the constructors (`AxiomsTest` count guards)
-- [ ] Count pins (literal `29` → `20`, by-class `Base 17 / Dense 1 / ZTime 1 / RTime 2`): run
+      name matches, `FormulaEnumerator` matcher arms *(completed: the nine `mkAxiomAtIdx` arms deleted and the index space renumbered 0-19 with `pickSchemaIdx` ranges updated; `ProofExtractorMain`'s four `z1_axiom*` runtime rows deleted — `z1Thm` is noncomputable — and `Tests/BimodalToolsTest/ProofFirstTests.lean` re-pinned to 20; two further exhaustive matches the plan did not list, `Independence/RationalWitness.lean` and `Independence/LexIntWitness.lean`, lost their `z1` arms)*
+- [x] Tests: delete arms/`#guard`s that enumerate the constructors (`AxiomsTest` count guards)
+- [x] Count pins (literal `29` → `20`, by-class `Base 17 / Dense 1 / ZTime 1 / RTime 2`): run
       `bash scripts/check-module-invariants.sh --no-build` and fix exactly what C14 flags in
       `docs/`, `README.md`, and `FormalSystem/*.lean` (research inventory: `docs/ARCHITECTURE.md:135`,
       `docs/user-guide/architecture.md:1112,1584,1586`, `docs/project-info/{FEATURE_REGISTRY.md:20,implementation-status.md:32,36,78,known-limitations.md:381}`,
@@ -522,10 +522,10 @@ full build of all four libraries.
       `Metalogic/ConvexConsequence.lean:36` + `ConvexConsequence/README.md:26`, `Soundness.lean:911`,
       `FrameClassVariants.lean:18`, `scripts/check-module-invariants.sh:2009` note text,
       `Axioms.lean:72,133,654`); narrative prose waits for Phase 9
-- [ ] One guarded full build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
+- [x] One guarded full build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
       (default target `FormalSystem`), then `-- build BimodalTest BimodalTools BimodalToolsTest`;
       detached, un-piped exit capture; do not iterate `Axioms.lean` across partial builds
-- [ ] `lean_verify` on all eleven Goals identifiers (no `sorryAx`)
+- [x] `lean_verify` on all eleven Goals identifiers (no `sorryAx`)
 
 **Timing**: 2 hours (agent effort; the detached full-build wall-clock is wait time)
 

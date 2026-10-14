@@ -256,12 +256,11 @@ Extract axiom schema name as a string from an Axiom constructor.
 Covers all constructors in `FormalSystem.ProofSystem.Axiom`:
 - Layer 1: Propositional (prop_k, prop_s, ex_falso, peirce)
 - Layer 2: S5 Modal (modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist)
-- Layer 3: BX Temporal (20 constructors)
+- Layer 3: BX Temporal (7 constructors)
 - Layer 4: Modal-Temporal (modal_future)
-- Layer 5: Uniformity (5 constructors)
+- Layer 5: Uniformity (discrete_box_necessity)
 - Layer 6: Prior (prior_UZ, prior_SZ)
-- Layer 7: Z1
-- Layer 8: Density (density, dense_indicator)
+- Layer 8: Density (dense_indicator)
 - Layer 9: Reynolds Dedekind (prior_U_gap, prior_S_gap, sep)
 -/
 def extractAxiomName {φ : Formula} (ax : Axiom φ) : String :=
@@ -276,22 +275,13 @@ def extractAxiomName {φ : Formula} (ax : Axiom φ) : String :=
   | .serial_future => "serial_future"
   | .left_mono_until_G _ _ _ => "left_mono_until_G"
   | .right_mono_until _ _ _ => "right_mono_until"
-  | .connect_future _ => "connect_future"
   | .enrichment_until _ _ _ => "enrichment_until"
   | .self_accum_until _ _ => "self_accum_until"
   | .absorb_until _ _ => "absorb_until"
   | .linear_until _ _ _ _ => "linear_until"
-  | .until_F _ _ => "until_F"
-  | .temp_linearity _ _ => "temp_linearity"
-  | .F_until_equiv _ => "F_until_equiv"
   | .modal_future _ => "modal_future"
-  | .discrete_symm_fwd => "discrete_symm_fwd"
-  | .discrete_propagate_fwd => "discrete_propagate_fwd"
-  | .discrete_propagate_bwd => "discrete_propagate_bwd"
   | .discrete_box_necessity => "discrete_box_necessity"
   | .prior_UZ _ => "prior_UZ"
-  | .z1 _ => "z1"
-  | .density _ => "density"
   | .dense_indicator => "dense_indicator"
   -- Layer 9: Reynolds Dedekind (3)
   | .prior_U_gap _ => "prior_U_gap"

@@ -23,7 +23,7 @@ truth value of `φ`, the dense-carrier calculus gives `b(U(ψ, φ)) = b(φ) ∧ 
 `b(Gφ) = b(Fφ) = b(K⁺φ) = b(K⁻φ) = b(φ)`, and then:
 
 * every axiom at `minFrameClass ≤ .Dense` is delivered wholesale by
-  `axiom_dense_valid`, since `ℚ` *is* densely ordered — this discharges all 23 Base
+  `axiom_dense_valid`, since `ℚ` *is* densely ordered — this discharges all 16 Base
   constructors and both Dense constructors with no case analysis here;
 * `prior_U_gap`'s antecedent `U(φ, ⊤) ∧ F(¬φ)` reduces to `b(φ) ∧ ¬b(φ)` and is vacuous;
   `prior_S_gap` dually;
@@ -150,8 +150,6 @@ theorem ratStaticFrame_mem_mod :
         exact hc ((static_kPlus_iff_dense (D := ℚ) Bool M τ ψ x).mpr hψ)
           ((static_kMinus_iff_dense (D := ℚ) Bool M τ ψ x).mpr hψ)
     | prior_UZ _ =>
-        exact absurd (show FrameClass.ZTime ≤ FrameClass.RTime from hax) (by decide)
-    | z1 _ =>
         exact absurd (show FrameClass.ZTime ≤ FrameClass.RTime from hax) (by decide)
     | _ => exact absurd (FrameClass.base_le FrameClass.Dense) hb
 

@@ -1281,9 +1281,10 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
 
 /-! ## Axiom Instantiation with Witness -/
 
-/-- Build a random axiom witness for a given schema index. Indices range over the 29
-primitive schemata (0-22 Base, 23-24 ZTime, 25-26 Dense, 27-28 RTime); the derived
-schemata (time-reflection mirrors, modal 4 and B) are not primitive and have no index. -/
+/-- Build a random axiom witness for a given schema index. Indices range over the 20
+primitive schemata (0-15 Base, 16 ZTime, 17 Dense, 18-19 RTime); the derived
+schemata (time-reflection mirrors, modal 4 and B, and TC, UE, UT, TL, NP, NF, NA, Z1, DN) are
+not primitive and have no index. -/
 def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO
     (Option (Σ φ, Axiom φ)) := do
   match idx with
@@ -1326,58 +1327,35 @@ def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO
     return some ⟨_, Axiom.right_mono_until φ ψ χ⟩
   | 10 => do
     let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.connect_future φ⟩
-  | 11 => do
-    let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     let p ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.enrichment_until φ ψ p⟩
-  | 12 => do
+  | 11 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.self_accum_until φ ψ⟩
-  | 13 => do
+  | 12 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.absorb_until φ ψ⟩
-  | 14 => do
+  | 13 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     let χ ← randomSubFormula atoms maxParamSize
     let θ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.linear_until φ ψ χ θ⟩
-  | 15 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.until_F φ ψ⟩
-  | 16 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.temp_linearity φ ψ⟩
-  | 17 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.F_until_equiv φ⟩
-  | 18 => do
+  | 14 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.modal_future φ⟩
-  | 19 => return some ⟨_, Axiom.discrete_symm_fwd⟩
-  | 20 => return some ⟨_, Axiom.discrete_propagate_fwd⟩
-  | 21 => return some ⟨_, Axiom.discrete_propagate_bwd⟩
-  | 22 => return some ⟨_, Axiom.discrete_box_necessity⟩
-  | 23 => do
+  | 15 => return some ⟨_, Axiom.discrete_box_necessity⟩
+  | 16 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.prior_UZ φ⟩
-  | 24 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.z1 φ⟩
-  | 25 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.density φ⟩
-  | 26 => return some ⟨_, Axiom.dense_indicator⟩
-  | 27 => do
+  | 17 => return some ⟨_, Axiom.dense_indicator⟩
+  | 18 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.prior_U_gap φ⟩
-  | 28 => do
+  | 19 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.sep φ⟩
   | _ => return none
@@ -1386,12 +1364,12 @@ def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO
 def pickSchemaIdx (_atoms : List Atom) (_maxParamSize : Nat) (fc : FrameClass) : IO Nat := do
   let allowed :=
     match fc with
-    | .Base => List.range 23  -- indices 0-22 are Base
-    | .Dense => (List.range 23) ++ [25, 26]
-    | .ZTime => (List.range 23) ++ [23, 24]
+    | .Base => List.range 16  -- indices 0-15 are Base
+    | .Dense => (List.range 16) ++ [17]
+    | .ZTime => (List.range 16) ++ [16]
     -- `RTime` sits strictly above `Dense`, so it admits the Base and Dense schemas,
-    -- plus its own two Reynolds schemas (PU, SEP) at indices 27-28.
-    | .RTime => (List.range 23) ++ [25, 26, 27, 28]
+    -- plus its own two Reynolds schemas (PU, SEP) at indices 18-19.
+    | .RTime => (List.range 16) ++ [17, 18, 19]
   let idx ← IO.rand 0 (allowed.length - 1)
   match allowed[idx]? with
   | some i => return i

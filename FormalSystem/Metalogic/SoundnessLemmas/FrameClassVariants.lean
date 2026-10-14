@@ -15,7 +15,7 @@ import Mathlib.Order.SuccPred.Archimedean
 
 Per-axiom validity and reflection-validity for the base frame class, stated without density
 constraints, together with the discrete-specific axioms. The two `Per-Axiom` sections below
-hold the individual schema lemmas; `axiom_reflect_time_valid_general` dispatches over all 29 axiom
+hold the individual schema lemmas; `axiom_reflect_time_valid_general` dispatches over all 20 axiom
 constructors and delegates to them.
 -/
 
@@ -718,7 +718,6 @@ theorem axiom_reflect_time_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   | serial_future => exact serial_future_paper_reflect_time_valid
   | left_mono_until_G φ χ ψ => exact left_mono_until_G_reflect_time_valid φ χ ψ
   | right_mono_until φ ψ χ => exact right_mono_until_reflect_time_valid φ ψ χ
-  | connect_future φ => exact connect_future_reflect_time_valid φ
   | enrichment_until φ ψ p => exact enrichment_until_reflect_time_valid φ ψ p
   | self_accum_until φ ψ => exact self_accum_until_reflect_time_valid φ ψ
   | absorb_until φ ψ => exact absorb_until_reflect_time_valid φ ψ
@@ -726,21 +725,12 @@ theorem axiom_reflect_time_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
   -- NOTE: until_elim / since_elim match arms removed (constructors deleted in the
   -- open-guard refactor)
-  | until_F φ ψ => exact until_F_reflect_time_valid φ ψ
-  | temp_linearity φ ψ =>
-    exact validIn_imp_or_rotate (temp_linearity_past_validIn φ.reflectTime ψ.reflectTime)
-  | F_until_equiv φ => exact P_since_equiv_validIn φ.reflectTime
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted in the
   -- open-guard refactor)
   | modal_future ψ => exact mf_reflect_time_valid ψ
-  | discrete_symm_fwd => exact discrete_symm_fwd_reflect_time_valid
-  | discrete_propagate_fwd => exact discrete_propagate_fwd_reflect_time_valid
-  | discrete_propagate_bwd => exact discrete_propagate_bwd_reflect_time_valid
   | discrete_box_necessity => exact discrete_box_necessity_reflect_time_valid
-  | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   -- Reynolds Dedekind axioms: eliminated by frame-class incomparability
   -- (`Dedekind ≰ Base`), exactly like the Dense and Discrete cases above.
   | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])

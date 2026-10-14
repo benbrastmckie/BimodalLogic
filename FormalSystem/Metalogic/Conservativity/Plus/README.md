@@ -40,7 +40,7 @@ does not define the deterministic frames, and no L⁺ formula set does
 | File | Lines | Description |
 |------|------:|-------------|
 | `Atomization.lean` | 265 | The `⊡`-as-fresh-atom transfer: `Encoding`, `atomize`, `TaskModel.atomModel`, `plusTruthAt_iff_atomize`, and the two helpers (and their derivation-taking forms) that carry the TM schemata over L⁺. |
-| `AxiomValidity.lean` | 304 | The two dispatch lemmas, one arm per `PlusAxiom` constructor and no wildcard: every schema and every temporal dual is valid at its own minimum frame class. |
+| `AxiomValidity.lean` | 329 | The two dispatch lemmas, one arm per `PlusAxiom` constructor and no wildcard: every schema and every temporal dual is valid at its own minimum frame class. |
 | `Corollaries.lean` | 195 | The composed fragment rows named per class and the derived logic of the defined modals `Will`/`will`/`could`. |
 | `Forward.lean` | 174 | Forward conservativity of TM⁺ over TM at every class with a completeness engine, the biconditional `plusDerivable_ofFormula_iff`, and the composed L⁻ ⊂ L⁺ rows. |
 | `PlusSoundness.lean` | 190 | Soundness of TM⁺ at every frame class, by the companion recursion carrying validity and reflection-validity, plus the per-class rows and consistency at `.Base`. |

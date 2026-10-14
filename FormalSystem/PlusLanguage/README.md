@@ -34,7 +34,7 @@ atomization transfer rely on.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Axioms.lean` | 338 | `PlusAxiom`, the **closed** inductive of TM⁺ schemata: the 45 TM schemata re-declared with `PlusFormula` parameters, plus eight `⊡` schemata — SK, ST, S4, S5 (S5 for `⊡`), MS `□φ → ⊡φ`, AS `p → ⊡p` for atoms, and the two pasting schemata PS and US with pure-future/pure-past side conditions; `PlusAxiom.minFrameClass` |
-| `Derivation.lean` | 288 | `PlusDerivationTree` (the seven rules of TM, constructor for constructor), `PlusDerivable`, `⊢⁺[fc]` notation, the derived `⊡`-necessitation rule `stabNecessitation`, and the backward conservativity bridge `PlusAxiom.ofTM` / `PlusDerivationTree.ofTM` / `plusDerivable_of_derivable` |
+| `Derivation.lean` | 279 | `PlusDerivationTree` (the seven rules of TM, constructor for constructor), `PlusDerivable`, `⊢⁺[fc]` notation, the derived `⊡`-necessitation rule `stabNecessitation`, and the backward conservativity bridge `PlusAxiom.ofTM` / `PlusDerivationTree.ofTM` / `plusDerivable_of_derivable` |
 | `Formula.lean` | 466 | `PlusFormula`, the derived operators (with `Formula`'s right-hand sides), the `⊡`-specific `dstab`/`Will`/`will`/`Could`/`could`, `reflectTime` (`stab ↦ stab`), the purity predicates `IsPureFuture`/`IsPurePast` with their `reflectTime` exchange lemmas, and the embedding `ofFormula`/`ofCtx` |
 | `PlusDeterminism.lean` | 154 | `app:deterministic`'s positive half: `states_eq_of_deterministic` (the singleton bridge), `stab_iff_of_deterministic`, `determined_of_deterministic`, `stab_biconditional_plusValidOn_of_deterministic` — the collapse `⊡φ ↔ φ` over every `TaskFrame.Deterministic` frame, choice-free (`[propext]` only) |
 | `PlusIntTransfer.lean` | 204 | Carrier normalization for L⁺: `plusValidZTime_iff_plusValidInt` (`PlusValidZTime φ ↔ PlusValidInt φ`), the twin of `Semantics/IntTransfer.lean`'s `validZTime_iff_validInt`, through the direct seven-case truth transport `plusTruthAt_map` and the shared frame/model/history transport; `PlusValidInt`, validity over `ℤ`-frames alone |
@@ -46,7 +46,7 @@ atomization transfer rely on.
 | `PlusTruth.lean` | 378 | `PlusTruthAt` (the stab clause renders the paper's `⟨τ⟩_x` as `τ.state x = σ.state x`) — the truth recursion for L⁺, the `PlusTruth.*` clause lemmas, the S5 validities of `⊡`, and `stab_state_only` |
 | `PlusValidity.lean` | 220 | `PlusValidOnFrames`, `PlusValidIn`, `PlusValid` and per-class abbreviations — L⁺ mirrors of Validity.lean; `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff`, semantic conservativity of L⁺ over L at every frame class |
 | `Subformulas.lean` | 373 | <!-- TODO: add description --> |
-| `Substitution.lean` | 242 | `substPlus`, the interpretation of L in L⁺ at an arbitrary atom assignment, and the substitution transfer `plusDerivable_substPlus`, which makes every TM *schema* available at L⁺ arguments containing `⊡` |
+| `Substitution.lean` | 233 | `substPlus`, the interpretation of L in L⁺ at an arbitrary atom assignment, and the substitution transfer `plusDerivable_substPlus`, which makes every TM *schema* available at L⁺ arguments containing `⊡` |
 <!-- END GENERATED -->
 
 The sibling aggregator is `FormalSystem/PlusLanguage.lean`. The library root, the repository-root

@@ -760,7 +760,8 @@ Reynolds' own one-sentence justification, *"Because it says so in `Γ`, all the 
 instances of the other axioms hold everywhere"*, executed in Lean:
 
 1. `Axiom.prior_U_gap`, `DerivedAxioms.priorSGap` and `Axiom.sep` each have
-   `minFrameClass = FrameClass.RTime` (`ProofSystem/Axioms.lean:609`, arms `:611-612`), so under
+   `minFrameClass = FrameClass.RTime` (the `.RTime` arms of `Axiom.minFrameClass` in
+   `ProofSystem/Axioms.lean`), so under
    `hfc : FrameClass.RTime ≤ fc` every substitution instance is a `DerivationTree fc []`
    theorem;
 2. `theorem_in_mcs` (`Core/MaximalConsistent.lean:462`) puts it in the family's MCS at *every*

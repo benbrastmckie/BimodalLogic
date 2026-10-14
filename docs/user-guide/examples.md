@@ -574,7 +574,7 @@ example (P Q : Formula) : ⊢ (P.imp Q).box.imp (P.box.imp Q.box) :=
   DerivationTree.axiom [] _ (Axiom.modal_k_dist P Q)
 ```
 
-**Explanation**: Modal K distribution is one of the 29 TM axiom constructors. It's applied directly via `DerivationTree.axiom` with the `Axiom.modal_k_dist` constructor. This axiom states that if something is necessarily true as an implication, then the necessity of the antecedent implies the necessity of the consequent.
+**Explanation**: Modal K distribution is one of the 20 TM axiom constructors. It's applied directly via `DerivationTree.axiom` with the `Axiom.modal_k_dist` constructor. This axiom states that if something is necessarily true as an implication, then the necessity of the antecedent implies the necessity of the consequent.
 </details>
 
 ---

@@ -112,11 +112,12 @@ sibling directory. The list is generated, so a file that moves out (four of them
 |----------------------|------:|------|
 | `Conservativity.lean` | 449 | Conservativity of the extension |
 | `Compactness.lean` | 237 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
+| `CompletenessDerived.lean` | 69 | Z1 (`z1Derivable`/`z1Thm`) recovered at `.ZTime` through `derivable_of_validZTime` and `z1_valid`, plus `densityDerivable`, a cross-check of `Theorems.LinearityDerived.density` through the Dense engine |
 | `DedekindNonCompactness.lean` | 539 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
 | `DiscreteNonCompactness.lean` | 322 | Non-compactness of the discrete frame class |
 | `QTime.lean` | 59 | ℚ-time validity equals dense validity: `validQTime_iff_validDense`, from ℚ-time completeness and dense soundness |
 | `SetConsequence.lean` | 588 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.RTime` row (`CompactRTime`, `StrongCompletenessRTime`, `SatisfiableRTimeSet`, `ModelExistenceRTime`) |
-| `Soundness.lean` | 1,659 | The soundness theorem itself |
+| `Soundness.lean` | 1,648 | The soundness theorem itself |
 | `StrongCompleteness.lean` | 1,142 | Strong/consequence completeness, including `completeness_rtime` (`completeness_dedekind` does not exist — renamed under the Discrete/Dedekind -> ZTime/RTime convention), and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
 | `ZTimeProvability.lean` | 119 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
@@ -151,17 +152,17 @@ self-named inner root it once delegated to has been absorbed into it.
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,415 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
-| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,164 | Chronicle completeness route; the wired entry point |
+| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,165 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,863 | Bundled families of MCSs and their coherence conditions |
-| [`Conservativity/`](Conservativity/README.md) | 28 | 8,535 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
-| [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,405 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
+| [`Conservativity/`](Conservativity/README.md) | 28 | 8,563 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
+| [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,388 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 169 | 98,910 | Tableau decision procedure and countermodel extraction |
+| [`Decidability/`](Decidability/README.md) | 169 | 98,917 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 8 | 1,769 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
-| [`Independence/`](Independence/README.md) | 27 | 7,628 | Axiom-independence models |
-| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,434 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,317 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`Independence/`](Independence/README.md) | 27 | 7,652 | Axiom-independence models |
+| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,424 | Per-axiom validity lemmas feeding `Soundness.lean` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,303 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -181,8 +182,8 @@ Loose modules:
 | `Completeness.lean` | 503 |
 | `CompletenessDedekind.lean` | 620 |
 | `DiscreteCarrierProbe.lean` | 96 |
-| `Frame.lean` | 720 |
-| `OrderedSeedConsistency.lean` | 257 |
+| `Frame.lean` | 719 |
+| `OrderedSeedConsistency.lean` | 258 |
 | `TruthLemma.lean` | 294 |
 <!-- END GENERATED -->
 
@@ -191,7 +192,7 @@ Subdirectories:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/BXCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Chronicle/` | 14 | 17,913 |
+| `Chronicle/` | 14 | 17,914 |
 | `Quasimodel/` | 5 | 1,681 |
 | `Filtration/` | 1 | 120 |
 <!-- END GENERATED -->
@@ -344,7 +345,7 @@ what they validate. Nothing here touches C1, the library's own consequence relat
 - **Separations**: `F⊤` is C1-valid and refuted under C3 and C4; `F⊤ → F G⊥` is C4-valid and
   refuted under C3, so C3 ⊊ C4 (`validC3_imp_validC4`, `validC4_lastPoint`,
   `refute_C3_lastPoint`).
-- **The survival table**, one theorem per row and once over all 29 constructors
+- **The survival table**, one theorem per row and once over all 20 constructors
   (`c3_survival_table`, `c3_failure_table`): four constructors fail — `serial_future`,
   `discrete_symm_fwd`, `discrete_propagate_fwd`, `discrete_box_necessity` — together with the two
   derived mirrors `serial_past` and `discrete_symm_bwd`. Every failure is an existence assertion

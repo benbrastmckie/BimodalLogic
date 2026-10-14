@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 /-!
-# Axiom Names - Canonical 29-Constructor Name List
+# Axiom Names - Canonical 20-Constructor Name List
 
 The canonical list of all `FormalSystem.ProofSystem.Axiom` constructor names, in
 `Axioms.lean` source order.
@@ -29,30 +29,24 @@ The mismatch is caught mechanically:
 
 namespace BimodalTools
 
-/-- All 29 axiom constructor names, in `Axioms.lean` source order. These are exactly the
-primitive schemata of the paper's axiom system; the time-reflection mirrors and modal 4/B are
-derived theorems in `FormalSystem.ProofSystem.DerivedAxioms`. -/
+/-- All 20 axiom constructor names, in `Axioms.lean` source order. These are the primitive
+schemata of the reduced system; the time-reflection mirrors, modal 4/B, and the nine derived
+schemata TC, UE, UT, TL, NP, NF, NA, Z1, DN are theorems (`DerivedAxioms`, `ConnectDerived`,
+`LinearityDerived`, `CompletenessDerived`). -/
 def allAxiomNames : List String :=
   [ "prop_k", "prop_s", "ex_falso", "peirce"
   , "modal_t", "modal_5_collapse", "modal_k_dist"
   , "serial_future"
   , "left_mono_until_G"
   , "right_mono_until"
-  , "connect_future"
   , "enrichment_until"
   , "self_accum_until"
   , "absorb_until"
   , "linear_until"
-  , "until_F"
-  , "temp_linearity"
-  , "F_until_equiv"
   , "modal_future"
-  , "discrete_symm_fwd"
-  , "discrete_propagate_fwd", "discrete_propagate_bwd"
   , "discrete_box_necessity"
   , "prior_UZ"
-  , "z1"
-  , "density", "dense_indicator"
+  , "dense_indicator"
   , "prior_U_gap", "sep"
   ]
 

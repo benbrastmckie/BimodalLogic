@@ -201,23 +201,14 @@ def PlusAxiom.ofTM : {φ : Formula} → Axiom φ → PlusAxiom (ofFormula φ)
   | _, .serial_future => .serial_future
   | _, .left_mono_until_G φ χ ψ => .left_mono_until_G (ofFormula φ) (ofFormula χ) (ofFormula ψ)
   | _, .right_mono_until φ ψ χ => .right_mono_until (ofFormula φ) (ofFormula ψ) (ofFormula χ)
-  | _, .connect_future φ => .connect_future (ofFormula φ)
   | _, .enrichment_until φ ψ p => .enrichment_until (ofFormula φ) (ofFormula ψ) (ofFormula p)
   | _, .self_accum_until φ ψ => .self_accum_until (ofFormula φ) (ofFormula ψ)
   | _, .absorb_until φ ψ => .absorb_until (ofFormula φ) (ofFormula ψ)
   | _, .linear_until φ ψ χ θ =>
       .linear_until (ofFormula φ) (ofFormula ψ) (ofFormula χ) (ofFormula θ)
-  | _, .until_F φ ψ => .until_F (ofFormula φ) (ofFormula ψ)
-  | _, .temp_linearity φ ψ => .temp_linearity (ofFormula φ) (ofFormula ψ)
-  | _, .F_until_equiv φ => .F_until_equiv (ofFormula φ)
   | _, .modal_future φ => .modal_future (ofFormula φ)
-  | _, .discrete_symm_fwd => .discrete_symm_fwd
-  | _, .discrete_propagate_fwd => .discrete_propagate_fwd
-  | _, .discrete_propagate_bwd => .discrete_propagate_bwd
   | _, .discrete_box_necessity => .discrete_box_necessity
   | _, .prior_UZ φ => .prior_UZ (ofFormula φ)
-  | _, .z1 φ => .z1 (ofFormula φ)
-  | _, .density φ => .density (ofFormula φ)
   | _, .dense_indicator => .dense_indicator
   | _, .prior_U_gap φ => .prior_U_gap (ofFormula φ)
   | _, .sep φ => .sep (ofFormula φ)

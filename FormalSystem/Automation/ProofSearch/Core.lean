@@ -381,21 +381,6 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       -------------------------------------------------------------------
 
 
-      -- discrete_symm_fwd: U(⊤,⊥) → S(⊤,⊥)
-      <|> (match lhs, rhs with
-           | .untl .bot (.imp .bot .bot), .snce .bot (.imp .bot .bot) =>
-               some ⟨_, Axiom.discrete_symm_fwd⟩
-           | _, _ => none)
-      -- discrete_propagate_fwd: U(⊤,⊥) → G(U(⊤,⊥))
-      <|> (match lhs, rhs with
-           | .untl .bot (.imp .bot .bot), .allFuture (.untl .bot (.imp .bot .bot)) =>
-               some ⟨_, Axiom.discrete_propagate_fwd⟩
-           | _, _ => none)
-      -- discrete_propagate_bwd: U(⊤,⊥) → H(U(⊤,⊥))
-      <|> (match lhs, rhs with
-           | .untl .bot (.imp .bot .bot), .allPast (.untl .bot (.imp .bot .bot)) =>
-               some ⟨_, Axiom.discrete_propagate_bwd⟩
-           | _, _ => none)
       -- discrete_box_necessity: U(⊤,⊥) → □(U(⊤,⊥))
       <|> (match lhs, rhs with
            | .untl .bot (.imp .bot .bot), .box (.untl .bot (.imp .bot .bot)) =>
@@ -410,35 +395,6 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       -- 1-parameter axioms
       -------------------------------------------------------------------
 
-      -- connect_future (BX4): φ → G(P(φ))
-      <|> (match lhs, rhs with
-           | phi, .allFuture (.somePast phi') =>
-               if phi = phi' then
-                 some ⟨_, Axiom.connect_future phi⟩
-               else none
-           | _, _ => none)
-      -- F_until_equiv (BX12): F(φ) → U(φ, ⊤)
-      <|> (match lhs, rhs with
-           | .someFuture phi, .untl (.imp .bot .bot) phi' =>
-               if phi = phi' then
-                 some ⟨_, Axiom.F_until_equiv phi⟩
-               else none
-           | _, _ => none)
-      -- z1: G(Gφ→φ) → (F(Gφ)→Gφ)
-      <|> (match lhs, rhs with
-           | .allFuture (.imp (.allFuture phi) phi'),
-             .imp (.someFuture (.allFuture phi'')) (.allFuture phi''') =>
-               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' then
-                 some ⟨_, Axiom.z1 phi⟩
-               else none
-           | _, _ => none)
-      -- density: GGφ → Gφ
-      <|> (match lhs, rhs with
-           | .allFuture (.allFuture phi), .allFuture phi' =>
-               if phi = phi' then
-                 some ⟨_, Axiom.density phi⟩
-               else none
-           | _, _ => none)
       -------------------------------------------------------------------
       -- 2-parameter axioms
       -------------------------------------------------------------------
@@ -455,24 +411,6 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
            | .untl phi'' (.and phi (.untl phi' psi)), .untl phi''' psi' =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧ psi = psi' then
                  some ⟨_, Axiom.absorb_until phi psi⟩
-               else none
-           | _, _ => none)
-      -- until_F (BX10): U(ψ,φ) → F(ψ)
-      <|> (match lhs, rhs with
-           | .untl _phi psi, .someFuture psi' =>
-               if psi = psi' then
-                 some ⟨_, Axiom.until_F _phi psi⟩
-               else none
-           | _, _ => none)
-      -- temp_linearity (TL, paper order): F(φ)∧F(ψ) → F(F(φ)∧ψ) ∨ (F(φ∧ψ) ∨ F(φ∧F(ψ)))
-      <|> (match lhs, rhs with
-           | .and (.someFuture phi) (.someFuture psi),
-             .or (.someFuture (.and (.someFuture phi''') psi'''))
-               (.or (.someFuture (.and phi' psi'))
-                 (.someFuture (.and phi'' (.someFuture psi'')))) =>
-               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
-                  psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
-                 some ⟨_, Axiom.temp_linearity phi psi⟩
                else none
            | _, _ => none)
       -- prior_UZ: F(φ) → U(φ, ¬φ)
@@ -685,6 +623,54 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
                  some ⟨_, DerivedAxioms.linearUntilLegacy phi psi chi theta⟩
                else none
            | _, _ => none)
+      -- connect_future (TC, derived): φ → G(P(φ))
+      <|> (match lhs, rhs with
+           | phi, .allFuture (.somePast phi') =>
+               if phi = phi' then
+                 some ⟨_, FormalSystem.Theorems.ConnectDerived.connectFuture phi⟩
+               else none
+           | _, _ => none)
+      -- F_until_equiv (UT, derived): F(φ) → U(φ, ⊤)
+      <|> (match lhs, rhs with
+           | .someFuture phi, .untl (.imp .bot .bot) phi' =>
+               if phi = phi' then
+                 some ⟨_, DerivedAxioms.fUntilEquiv phi⟩
+               else none
+           | _, _ => none)
+      -- until_F (UE, derived): U(ψ,φ) → F(ψ)
+      <|> (match lhs, rhs with
+           | .untl _phi psi, .someFuture psi' =>
+               if psi = psi' then
+                 some ⟨_, DerivedAxioms.untilF _phi psi⟩
+               else none
+           | _, _ => none)
+      -- temp_linearity (TL, derived, paper order):
+      -- F(φ)∧F(ψ) → F(F(φ)∧ψ) ∨ (F(φ∧ψ) ∨ F(φ∧F(ψ)))
+      <|> (match lhs, rhs with
+           | .and (.someFuture phi) (.someFuture psi),
+             .or (.someFuture (.and (.someFuture phi''') psi'''))
+               (.or (.someFuture (.and phi' psi'))
+                 (.someFuture (.and phi'' (.someFuture psi'')))) =>
+               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
+                  psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
+                 some ⟨_, FormalSystem.Theorems.LinearityDerived.tempLinearity phi psi⟩
+               else none
+           | _, _ => none)
+      -- discrete_symm_fwd (NP, derived): U(⊤,⊥) → S(⊤,⊥)
+      <|> (match lhs, rhs with
+           | .untl .bot (.imp .bot .bot), .snce .bot (.imp .bot .bot) =>
+               some ⟨_, FormalSystem.Theorems.ConnectDerived.discreteSymmFwd⟩
+           | _, _ => none)
+      -- discrete_propagate_fwd (NF, derived): U(⊤,⊥) → G(U(⊤,⊥))
+      <|> (match lhs, rhs with
+           | .untl .bot (.imp .bot .bot), .allFuture (.untl .bot (.imp .bot .bot)) =>
+               some ⟨_, DerivedAxioms.discretePropagateFwd⟩
+           | _, _ => none)
+      -- discrete_propagate_bwd (NA, derived): U(⊤,⊥) → H(U(⊤,⊥))
+      <|> (match lhs, rhs with
+           | .untl .bot (.imp .bot .bot), .allPast (.untl .bot (.imp .bot .bot)) =>
+               some ⟨_, FormalSystem.Theorems.ConnectDerived.discretePropagateBwd⟩
+           | _, _ => none)
       -- serial_future_imp: ⊤ → F(⊤) (the pre-paper statement of TS)
       <|> (match lhs, rhs with
            | .imp .bot .bot, .someFuture (.imp .bot .bot) =>
@@ -720,7 +706,7 @@ def matchPriorSZ (φ : Formula) : Option (⊢[FrameClass.ZTime] φ) :=
 Check if a formula matches any of the TM axiom schemata this matcher covers, primitive or
 derived.
 
-The tree has 29 axiom constructors; `matchAxiom` covers 27 of them, omitting the two Layer-9
+The tree has 20 axiom constructors; `matchAxiom` covers 18 of them, omitting the two Layer-9
 Reynolds Dedekind axioms (`prior_U_gap`, `sep`), and `matchMirror` covers the base-class derived
 schemata (time-reflection mirrors, modal 4 and B, and the pre-paper forms of TL, CN and TS). See
 `FormalSystem.ProofSystem.Axiom` for the full nine-layer inventory.

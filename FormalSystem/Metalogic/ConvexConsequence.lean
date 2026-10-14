@@ -33,7 +33,7 @@ question, and no completeness theorem for C3 is stated here.
   including the four verdicts an earlier survey left conditional or unresolved
 - `Mirrors`: one C3 theorem per past mirror TM derives by time reflection, each proved directly
   because no mirror verdict is inherited from its forward row
-- `SurvivalTable`: the table as one theorem over the 29 constructors of `Axiom` — `Axiom.failsC3`,
+- `SurvivalTable`: the table as one theorem over the 20 constructors of `Axiom` — `Axiom.failsC3`,
   `c3_survival_table`, `c3_failure_table`, by cases with no wildcard
 - `CutContrast`: `□F⊤` is unsatisfiable under the primary box range and true at a total index
   under the named alternative `TruthAtConvexCut`

@@ -24,8 +24,8 @@ repository's metalogic is proved in.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/MinusLanguage -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `AxiomDischarge.lean` | 379 | `dischargeAxiom` — for each `MinusLanguage.Axiom` constructor, a primary-language derivation of that axiom's translation. Seven rows are exact; the rest go through the `F`/`P` bridge |
-| `Axioms.lean` | 268 | `MinusLanguage.Axiom` — TM⁻'s axiom schemata over L⁻ (MK, MT, M5, MF, TK, T4, TB, TA, TL), plus the three extension axioms routed to their frame classes by `Axiom.minFrameClass`. A second `inductive Axiom`, distinct from the primary language's |
+| `AxiomDischarge.lean` | 385 | `dischargeAxiom` — for each `MinusLanguage.Axiom` constructor, a primary-language derivation of that axiom's translation. Seven rows are exact; the rest go through the `F`/`P` bridge |
+| `Axioms.lean` | 269 | `MinusLanguage.Axiom` — TM⁻'s axiom schemata over L⁻ (MK, MT, M5, MF, TK, T4, TB, TA, TL), plus the three extension axioms routed to their frame classes by `Axiom.minFrameClass`. A second `inductive Axiom`, distinct from the primary language's |
 | `Derivation.lean` | 195 | `MinusLanguage.DerivationTree` — a constructor-for-constructor mirror of the primary `DerivationTree`, with the same 7 inference rules, over `MinusFormula` |
 | `Formula.lean` | 215 | `MinusFormula`, the tense-primitive base language, with `allPast`/`allFuture` as constructors rather than abbreviations |
 | `MinusFrame.lean` | 315 | `MinusFrame` — a native L⁻ frame notion not bound to `TaskFrame` (points with an unbounded, transitive, irreflexive, forward- and backward-linear strict order, no group structure), its truth recursion `MinusFrameTruth` with `□` as the universal modality, `MinusFrameValid`, the `MinusFrameTruth.*` characterization family, and the time-reflection transfer lemma `truth_reflectTime`; the frame class a countermodel to `(Sp)` lives on |

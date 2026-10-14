@@ -1276,8 +1276,10 @@ example (p : Formula) : ⊢[FrameClass.ZTime] p.someFuture.imp (Formula.untl p.n
 example (p : Formula) : ⊢[FrameClass.ZTime] p.somePast.imp (Formula.snce p.neg p) := by
   modal_search
 
--- Test 56: z1: G(Gφ→φ) → (FGφ→Gφ) (requires FrameClass.ZTime)
-example (p : Formula) : ⊢[FrameClass.ZTime]
+-- Test 56: z1: G(Gφ→φ) → (FGφ→Gφ) (requires FrameClass.ZTime). Z1 is the derived
+-- `CompletenessDerived.z1Thm` (noncomputable, `Classical.choice`), reached via
+-- `tryGatedDerivedMatch`.
+noncomputable example (p : Formula) : ⊢[FrameClass.ZTime]
     (p.allFuture.imp p).allFuture.imp (p.allFuture.someFuture.imp p.allFuture) := by
   modal_search
 

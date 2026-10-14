@@ -108,7 +108,7 @@ Per-constructor anchors:
 
 * `.Base ↦ TaskFrame.IsRegular`. The unconstrained class: `def:logical-consequence` quantifies
   over all models with no frame-side restriction *beyond `def:frame`'s own four constraints*, and
-  `Axiom.minFrameClass` sends 23 of the 29 axiom constructors here. **This is the lever that keeps
+  `Axiom.minFrameClass` sends 16 of the 20 axiom constructors here. **This is the lever that keeps
   `Valid`'s meaning fixed** across the general/regular split: `FrameOver` no longer carries the
   constraints as fields, so `∀ F : TaskFrame` alone would quantify over frames that violate them
   and every soundness theorem would become false. Writing the constraints here, at the one point

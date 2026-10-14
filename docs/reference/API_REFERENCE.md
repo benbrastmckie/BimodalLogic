@@ -312,7 +312,7 @@ manuscript's topology appendix is in
 
 **Module**: `FormalSystem/ProofSystem/Axioms.lean`
 
-The `Axiom` inductive type declares **29 primitive constructors**, partitioned by
+The `Axiom` inductive type declares **20 primitive constructors**, partitioned by
 `Axiom.minFrameClass` into four layers: Base 23, Dense +2, ZTime +2, RTime +2. The invariant
 `ax.minFrameClass ≤ fc` governs which constructor may appear in a derivation at frame class `fc`.
 Counting every named schema instead — including the past-mirrors proved as theorems in

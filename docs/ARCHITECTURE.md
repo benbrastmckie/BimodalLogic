@@ -132,7 +132,7 @@ Layer 0 is six entries, and four of them are easy to miss:
 | Module | Role | Constraint |
 |--------|------|------------|
 | `Syntax/` | `Formula` (six constructors), atoms, contexts, subformula closure. The L⁻/L⁺/L⋆ language family sits beside it at the library root (`PlusLanguage/` and its siblings); its syntax and proof-system files are layer 0 too, by the per-file table | — |
-| `ProofSystem/` | 29 axiom constructors (the paper's primitive schemata; mirrors derived in `DerivedAxioms`), 7 inference rules, `DerivationTree`, `FrameClass` | imports only `Syntax` |
+| `ProofSystem/` | 20 axiom constructors (the paper's primitive schemata; mirrors derived in `DerivedAxioms`), 7 inference rules, `DerivationTree`, `FrameClass` | imports only `Syntax` |
 | `ForMathlib/` | Mathlib-shaped proper/maximal/prime **filter** API | imports **nothing** from `FormalSystem.*` — it is intended for upstreaming |
 | `Init.lean` | The library-wide preamble, modelled on `Mathlib.Init`: the linters and common tactics every module inherits, plus `Tactic.Attr` | check C24 asserts every module reaches it transitively |
 | `Tactic/` | `Attr.lean`, every attribute and named simp set the library uses; `Meta.lean`, the shared `MetaM` plumbing for derivability goals | `Attr.lean` imports `Lean` **only** and carries attribute declarations and nothing else — `Init.lean` imports it, so anything heavier would be upstream of the whole library |

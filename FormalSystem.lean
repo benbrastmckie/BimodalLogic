@@ -72,6 +72,7 @@ import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import FormalSystem.Metalogic.Bundle.TemporalContent
 import FormalSystem.Metalogic.Bundle.WitnessSeed
 import FormalSystem.Metalogic.Compactness
+import FormalSystem.Metalogic.CompletenessDerived
 import FormalSystem.Metalogic.Conservativity
 import FormalSystem.Metalogic.Conservativity.Backward
 import FormalSystem.Metalogic.Conservativity.ChainBundleTruth
@@ -659,11 +660,13 @@ import FormalSystem.Tactic.Attr
 import FormalSystem.Tactic.Meta
 import FormalSystem.Theorems
 import FormalSystem.Theorems.Combinators
+import FormalSystem.Theorems.ConnectDerived
 import FormalSystem.Theorems.ContextualProofs
 import FormalSystem.Theorems.DedekindDerived
 import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Theorems.DiscreteUnfolding
 import FormalSystem.Theorems.GeneralizedNecessitation
+import FormalSystem.Theorems.LinearityDerived
 import FormalSystem.Theorems.ModalDerived
 import FormalSystem.Theorems.ModalS4
 import FormalSystem.Theorems.ModalS5

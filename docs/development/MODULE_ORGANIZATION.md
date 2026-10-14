@@ -332,7 +332,7 @@ logic with linear temporal logic. Proven sound and complete.
 * `FormalSystem.Syntax.Subformulas`
 
 ### Proof System
-* `FormalSystem.ProofSystem.Axioms` -- 29 constructors in four layers
+* `FormalSystem.ProofSystem.Axioms` -- 20 constructors in four frame-class layers
 * `FormalSystem.ProofSystem.DerivedAxioms` -- the TR-derived mirror schemata
 * `FormalSystem.ProofSystem.Derivable`
 * `FormalSystem.ProofSystem.Derivation` -- `DerivationTree`, 7 inference rules

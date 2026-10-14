@@ -67,7 +67,7 @@ this module keeps that invariant.
 ## References
 
 * `FormalSystem/PlusLanguage/Derivation.lean` — `PlusAxiom.ofTM`, the `σ = atom` special case
-* `FormalSystem/ProofSystem/Axioms.lean` — the 29 TM schemata whose arms are mirrored here
+* `FormalSystem/ProofSystem/Axioms.lean` — the 20 TM schemata whose arms are mirrored here
 
 ## Tags
 
@@ -166,24 +166,15 @@ def PlusAxiom.ofTMSubst (σ : Atom → PlusFormula) : {φ : Formula} → Axiom �
       .left_mono_until_G (substPlus σ φ) (substPlus σ χ) (substPlus σ ψ)
   | _, .right_mono_until φ ψ χ =>
       .right_mono_until (substPlus σ φ) (substPlus σ ψ) (substPlus σ χ)
-  | _, .connect_future φ => .connect_future (substPlus σ φ)
   | _, .enrichment_until φ ψ p =>
       .enrichment_until (substPlus σ φ) (substPlus σ ψ) (substPlus σ p)
   | _, .self_accum_until φ ψ => .self_accum_until (substPlus σ φ) (substPlus σ ψ)
   | _, .absorb_until φ ψ => .absorb_until (substPlus σ φ) (substPlus σ ψ)
   | _, .linear_until φ ψ χ θ =>
       .linear_until (substPlus σ φ) (substPlus σ ψ) (substPlus σ χ) (substPlus σ θ)
-  | _, .until_F φ ψ => .until_F (substPlus σ φ) (substPlus σ ψ)
-  | _, .temp_linearity φ ψ => .temp_linearity (substPlus σ φ) (substPlus σ ψ)
-  | _, .F_until_equiv φ => .F_until_equiv (substPlus σ φ)
   | _, .modal_future φ => .modal_future (substPlus σ φ)
-  | _, .discrete_symm_fwd => .discrete_symm_fwd
-  | _, .discrete_propagate_fwd => .discrete_propagate_fwd
-  | _, .discrete_propagate_bwd => .discrete_propagate_bwd
   | _, .discrete_box_necessity => .discrete_box_necessity
   | _, .prior_UZ φ => .prior_UZ (substPlus σ φ)
-  | _, .z1 φ => .z1 (substPlus σ φ)
-  | _, .density φ => .density (substPlus σ φ)
   | _, .dense_indicator => .dense_indicator
   | _, .prior_U_gap φ => .prior_U_gap (substPlus σ φ)
   | _, .sep φ => .sep (substPlus σ φ)
