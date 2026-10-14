@@ -1,30 +1,55 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-13T21:00:00Z",
+  "completed_at": "2026-10-13T21:45:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "notes": "sorry_count 0 via lean-sorry-census.sh over the resolved source roots. vacuous_count 0 attributable to this change: the single repository-wide grep hit, FormalSystem/Examples/TemporalStructures.lean:495 'int_domain_universal ... := trivial', is identical at the pre-task commit cd6eacb75 and is a genuine proof of a True-equivalent domain goal, not a placeholder. axiom_count: 14 'axiom' lines in the working tree, identical to the 14 at cd6eacb75 -- zero introduced. build_passed via 'lake-build-guard.sh build --timeout 3600 -- build' exit 0, 'Build completed successfully (2844 jobs)', zero 'error:' lines over both captured streams, and the edited module's .olean newer than its source; 'lake build BimodalTest' also green via check-module-invariants.sh C1.",
+    "gates": {
+      "check_module_invariants": "exit 0 -- ALL CHECKS PASSED (after --emit-inventory cleared the anticipated INV finding)",
+      "check_module_invariants_emit_inventory_check": "exit 0 -- regeneration is idempotent",
+      "verify_deploy_full": "exit 0 -- PASS, 15 check(s), 0 failure(s)",
+      "typst_sync_check_fix": "exit 0 -- status.typ regenerated and committed with phase 1",
+      "check_evidence_probes": "exit 1 -- PRE-EXISTING FOREIGN RED: 4 of 33 wired probes fail to compile (seam-gluing-ray-product/{finite-graph-stab-summary, mosaic-germ-amalgamation, path-quantifier-alternation, backward-dual-asymmetric-fixture}). This task's own probe PASSES; 'git status --short -- specs/evidence/' listed only it as modified. Recorded as an enumerated Reasoned Exclusion on plan phases 4 and 6.",
+      "source_store_doc_lint": "exit 1 -- PRE-EXISTING FOREIGN RED at /home/benjamin/.config/nvim: 10 findings, none naming ladder-counter-observables.md. Source-store gate 4 (task-reference lint) PASSES."
+    }
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md",
-      "summary": "Six-phase record-only plan fixing the residue-index modulus convention (P + 1 is the modulus; an instantiation names m with P := m - 1) in LadderModel.lean and the lean extension's source-store note, repairing three 'unrecorded' assertions, and aligning the understated 'dominate' clause across every deliverable surface."
+      "type": "summary",
+      "path": "specs/778_residue_index_modulus_convention_record/summaries/01_residue-index-modulus-convention-summary.md",
+      "summary": "Records the modulus convention for ladderIndexRes (P is a modulus minus one; an instantiation names m with P := m - 1, an exhibited period p enters as m := p, and 2 <= m is forced) across six surfaces, states its convention-independence on object_only_parameters_refuted and reach_period_refuted, and sharpens the understated modulus clause to the divisibility form everywhere."
     }
   ],
-  "next_steps": "Run /implement 778 to execute the plan",
-  "phase_count": 6,
-  "estimated_hours": 3.5,
-  "dependency_waves": 3,
-  "memory_candidates": [
-    {
-      "content": "When a task's deliverable is a RECORD (fixing a convention, sharpening a claim), the named deliverable files are a floor, not the blast radius. Grep the claim's wording across the repository before scoping: this project transcribes the same prose claim into a module docstring, a directory README row, a narrative section, docs/theorem-index.md, and a gate script's comment block. docs/theorem-index.md declares itself authoritative ('If two of them disagree, this page is right'), so fixing a claim anywhere else without fixing that ledger leaves the declared-authoritative surface carrying the superseded wording. A one-site fix to a multi-site transcription is worse than none, because it converts a uniform understatement into an unlabelled contradiction.",
-      "category": "PATTERN",
-      "source_artifact": "specs/778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["record-gap", "transcription-sites", "theorem-index", "authoritative-ledger", "scope-discovery", "prose-consistency"]
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1791910277_6e35c3_778",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "The modulus convention for the residue-carrying ladder index is on record in the LadderModel.lean module docstring and the lean extension's ladder-counter-observables.md note, stated by naming the modulus (P := m - 1, m := p) rather than by choosing between two off-by-one readings, together with the compiled ground that no refutation turns on the choice and that 2 <= m is forced. Four further surfaces that asserted the gap or carried the understated 'must dominate' clause were reconciled to one wording: RaySummary/README.md, docs/theorem-index.md, the probe docstring, and the check-evidence-probes.sh record comment. No declaration was added, no theorem statement was touched, and the probe's convention-independent statements are byte-for-byte unchanged.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 6
+  "metadata": {
+    "session_id": "sess_1791950208_5b4d12",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 7,
+    "compliance_check": "skipped",
+    "compliance_check_reason": "The plan declares '**Lean Intent**: false' and adds no declaration, so the spot-check has no goal declaration to resolve. The identifiers its heuristic extracts from the Goals block are not declarations this task creates: 'dominate' is an English word from the wording being replaced, 'm' and 'p' are mathematical variables in prose, and 'object_only_parameters_refuted' / 'reach_period_refuted' are pre-existing theorems that DO resolve by declaration binder at specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean:519 and :1006, outside the source roots the spot-check scans.",
+    "phases_completed": 6,
+    "phases_total": 6,
+    "phase_markers": {
+      "1": "COMPLETED",
+      "2": "COMPLETED",
+      "3": "COMPLETED WITH EXCLUSIONS",
+      "4": "COMPLETED WITH EXCLUSIONS",
+      "5": "COMPLETED",
+      "6": "COMPLETED WITH EXCLUSIONS"
+    },
+    "operator_follow_ups": [
+      "Commit the two source-store edits in /home/benjamin/.config/nvim (context/project/lean4/domain/ladder-counter-observables.md and index-entries.json under agent-system/extensions/lean). A foreign uncommitted hunk in index-entries.json (project/lean4/README.md line_count 30 -> 31) makes a scoped commit from this repository impossible without capturing another writer's change.",
+      "Run deploy-headless.sh when convenient: the deployed .claude/ copy of ladder-counter-observables.md stays stale until then. This task deliberately did not run one (a redeploy regenerates the whole gitignored tree across every extension)."
+    ]
+  }
 }

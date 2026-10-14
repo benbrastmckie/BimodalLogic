@@ -1,15 +1,25 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
-  "phases_total": 6,
-  "summary": "Wrote a six-phase, record-only plan for the residue-index modulus convention. The convention is recorded by naming the modulus (P + 1 is the modulus; an instantiation names m with 1 <= m and sets P := m - 1, so an exhibited period p enters as m := p) rather than by picking between the two off-by-one readings, with convention-independence grounded on object_only_parameters_refuted and reach_period_refuted. Every probe theorem statement stays byte-for-byte unchanged. Plan-time grep widened the scope beyond the research report: the understated 'dominate' clause occurs at 12 sites across 7 files, including the self-declared-authoritative docs/theorem-index.md, so the sharpening is folded into each file-owning phase with a residual-occurrence grep as the final mechanical check.",
-  "blockers": [],
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 7,
+  "summary": "All six plan phases are closed and committed in six phase-scoped commits: the modulus convention for ladderIndexRes is recorded in the LadderModel.lean docstring and the lean extension's ladder-counter-observables.md note by naming the modulus (P := m - 1, an exhibited period p entering as m := p, 2 <= m forced), with its convention-independence stated on object_only_parameters_refuted and reach_period_refuted. Four further surfaces that asserted the gap or carried the understated 'must dominate' clause were reconciled to one divisibility wording, and the generated inventory blocks in README.md, FormalSystem/Metalogic/README.md and typst/generated/status.typ were regenerated for the docstring's +12 lines. check-module-invariants.sh, the guarded full lake build and verify-deploy.sh are all green; no declaration was added and every probe statement is byte-for-byte unchanged. Three phases closed [COMPLETED WITH EXCLUSIONS] over two pre-existing foreign gate reds and one deferred source-store commit, each recorded with a Reasoned Exclusions table.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/778_residue_index_modulus_convention_record/summaries/01_residue-index-modulus-convention-summary.md",
+      "summary": "Completion summary: the convention recorded across six surfaces, the gates run, the plan deviations, and the two operator follow-ups."
+    },
     {
       "type": "plan",
       "path": "specs/778_residue_index_modulus_convention_record/plans/01_residue-index-modulus-convention.md",
-      "summary": "Six-phase plan: LadderModel.lean docstring record (local tier), RaySummary/README.md reconciliation (prose), source-store note plus index-entries.json (prose), probe docstring and evidence-gate record (local), docs/theorem-index.md alignment (prose), full gate sweep with inventory regeneration (full). Waves: {1,3} then {2,4,5} then {6}."
+      "summary": "Plan with all six phase markers closed and three Reasoned Exclusions tables added."
     }
   ],
-  "dispatch_seq": 6
+  "phases_completed": 6,
+  "phases_total": 6,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "sorry_inventory": [],
+  "next_action_hint": "Two operator items remain, neither actionable from this repository: commit the two source-store edits in /home/benjamin/.config/nvim (blocked by a foreign uncommitted hunk in agent-system/extensions/lean/index-entries.json), and run deploy-headless.sh to refresh the stale deployed .claude/ copy of the note.",
+  "git_checkpoint": "8ea078b4e"
 }
