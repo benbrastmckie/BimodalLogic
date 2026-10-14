@@ -859,14 +859,14 @@ check.
 
 ---
 
-### Phase 9: Full verification, axiom pins, and the record [NOT STARTED]
+### Phase 9: Full verification, axiom pins, and the record [COMPLETED]
 
 **Goal**: Everything landed is verified by the complete gate set, every Goals declaration is axiom
 pinned, and the summary states the measured before/after figures, what was excluded and why, and
 what remains open.
 
 **Tasks**:
-- [ ] **Regenerate the derived surfaces every `.lean` edit forces**, before running the gates that
+- [x] **Regenerate the derived surfaces every `.lean` edit forces**, before running the gates that
       check them: `bash scripts/check-module-invariants.sh --emit-inventory` (rewrites each
       `<!-- BEGIN GENERATED: inventory -->` block on the edited files' ancestor-directory chain —
       `FormalSystem/Metalogic/README.md`, `FormalSystem/README.md`, `README.md`) and
@@ -874,28 +874,28 @@ what remains open.
       counts cover `FormalSystem/` recursively). Neither script stages anything; stage the
       regenerated files explicitly with this phase's commit. Omitting this step blocks on the
       pre-commit `typst-sync-check.sh` gate or fails `check-module-invariants.sh`'s INV check.
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (full project),
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (full project),
       detached; read the verdict through the guard's own `result`, never from a pipe exit code
-- [ ] `bash scripts/check-module-invariants.sh` (full mode, including C1/C2/C36b and INV)
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` and
+- [x] `bash scripts/check-module-invariants.sh` (full mode, including C1/C2/C36b and INV)
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` and
       `bash scripts/typst-sync-check.sh`: both report the derived surfaces current
-- [ ] `lake exe lint-style` — no new finding on any file this task touched
-- [ ] `bash .claude/scripts/verify-deploy.sh` — the complete aggregator gate set
-- [ ] `bash .claude/scripts/check-task-references.sh` over every non-`specs/**` file touched (no
+- [x] `lake exe lint-style` — no new finding on any file this task touched
+- [x] `bash .claude/scripts/verify-deploy.sh` — the complete aggregator gate set
+- [x] `bash .claude/scripts/check-task-references.sh` over every non-`specs/**` file touched (no
       task-number citation may appear in `FormalSystem/**` or `scripts/**` — in particular not in
       Phase 7's `Complete.lean` docstring line, which states the pattern and names no task)
-- [ ] `#print axioms` in a scratch file on every declaration named under `- **Goals**:` that
+- [x] `#print axioms` in a scratch file on every declaration named under `- **Goals**:` that
       landed: no `sorryAx`, every profile within `[propext, Classical.choice, Quot.sound]`.
       `posTable` / `posAtC` / `posAtC_eq` are **not** in that list and their absence is expected,
       not a gap — see the Decomposition Change subsection
-- [ ] `grep -n 'sorry\|sorryAx\|:= True\|:= trivial\|maxHeartbeats 0'` over every Lean file this
+- [x] `grep -n 'sorry\|sorryAx\|:= True\|:= trivial\|maxHeartbeats 0'` over every Lean file this
       task touched: nothing outside docstring prose
-- [ ] Write the summary artifact per `summary-format.md`, stating plainly: what landed (the
+- [x] Write the summary artifact per `summary-format.md`, stating plainly: what landed (the
       witness row, the three fixes that passed their gates, the regression guard), what did not
       and why (each gate that failed, with its own measurement), the measured before/after figure
       for each landed fix, and the plan-time correction to the research report's recommendation 1
       that the C36 slab finding forced
-- [ ] The summary additionally records three things this round settled or left open, each in one
+- [x] The summary additionally records three things this round settled or left open, each in one
       short paragraph: (a) **the Phase 7 route** — the position-space leaf landed as Shape D rather
       than as a cache, what the rejected table shape fails on (D9's stuck matcher inside
       `Finset.filter`'s instance argument), and that three planned identifiers were dropped as a
