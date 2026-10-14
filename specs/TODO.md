@@ -1,5 +1,5 @@
 ---
-next_project_number: 788
+next_project_number: 789
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 788
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,787 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,756,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,788 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -91,7 +91,6 @@ next_project_number: 788
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
-787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
 
@@ -123,10 +122,12 @@ next_project_number: 788
 ### Paper Alignment
 
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
+787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
+788 [NOT STARTED] — Reduce TM and its extensions TM\_z, TM\_d, and TM\_r to...
 
 ## Tasks
 
-### 787. Reduce tm and extensions to minimal axiom sets
+### 788. Reduce tm and extensions to minimal axiom sets
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
@@ -140,7 +141,7 @@ next_project_number: 788
 - **Effort**: medium
 - **Status**: [NOT STARTED]
 - **Task Type**: general
-- **Topic**: decidability
+- **Topic**: paper-alignment
 - **Dependencies**: None
 - **Parent**: Task 786
 
