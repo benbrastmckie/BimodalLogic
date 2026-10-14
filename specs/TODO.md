@@ -91,6 +91,7 @@ next_project_number: 789
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
+787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
 
@@ -122,7 +123,6 @@ next_project_number: 789
 ### Paper Alignment
 
 756 [NOT STARTED] — Re-pin lem:nullity in the paper definitions of record after...
-787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 788 [NOT STARTED] — Reduce TM and its extensions TM\_z, TM\_d, and TM\_r to...
 
 ## Tasks
@@ -141,7 +141,7 @@ next_project_number: 789
 - **Effort**: medium
 - **Status**: [NOT STARTED]
 - **Task Type**: general
-- **Topic**: paper-alignment
+- **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 786
 
