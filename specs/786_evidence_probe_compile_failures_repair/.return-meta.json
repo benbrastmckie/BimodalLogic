@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/786_evidence_probe_compile_failures_repair/reports/01_evidence-probe-compile-failures.md",
+      "summary": "The task's premise is falsified: all 33 wired probes compile and the gate exits 0 today. The four reported failures were one .lake read/write race (missing-olean errors on four consecutive entries), not four source-level bit-rots; the residual defect is the driver's missing flock on .lake/build-guard.lock."
+    }
+  ],
+  "user_decision": {
+    "question": "The task's premise is false as measured: all four named probes compile and `bash scripts/check-evidence-probes.sh` exits 0 today, because the four reported failures were one transient `.lake` read/write race rather than probe rot. Should this task re-scope to close the race that produced the false red, or close as already-satisfied?",
+    "options": [
+      "Re-scope to harden the driver - add the shared `.lake/build-guard.lock` flock and a third (environment-failure) diagnostic class to `scripts/check-evidence-probes.sh`; touch no probe.",
+      "Close as already-satisfied - the stated deliverable (33 probes compile, gate exits 0) is met; accept that the gate can still emit a false red under concurrency."
+    ],
+    "recommended": "Re-scope to harden the driver - add the shared `.lake/build-guard.lock` flock and a third (environment-failure) diagnostic class to `scripts/check-evidence-probes.sh`; touch no probe.",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1791956988_9e3cf8_786",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

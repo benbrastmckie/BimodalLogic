@@ -1542,25 +1542,31 @@
     {
       "project_number": 786,
       "project_name": "evidence_probe_compile_failures_repair",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Repair the four wired evidence probes that fail to compile, so check-evidence-probes.sh can be an exit-0 verification criterion again.\n\nMEASURED CONDITION. `bash scripts/check-evidence-probes.sh` exits 1 with 4 of 33 wired probes failing to compile, all four under `specs/evidence/seam-gluing-ray-product/`:\n\n1. `finite-graph-stab-summary.lean`\n2. `mosaic-germ-amalgamation.lean`\n3. `path-quantifier-alternation.lean`\n4. `backward-dual-asymmetric-fixture.lean`\n\nWHY THIS BLOCKS OTHER WORK. Implementation plans routinely name \"`check-evidence-probes.sh` exits 0\" as a phase verification criterion. That criterion is currently unmeetable for reasons unrelated to any such plan's own work, so phases must close [COMPLETED WITH EXCLUSIONS] with a Reasoned Exclusions record attributing the failure as pre-existing. That is the correct handling, but it masks real failures: a genuine new breakage among the other 29 probes would be indistinguishable from these four in an exit-1 result. The originating run closed two phases this way for exactly this reason.\n\nEVIDENCE THAT THE FOUR ARE FOREIGN AND PRE-EXISTING, not caused by the originating work: `git status --short -- specs/evidence/` listed only `ladder-residue-index-refutation.lean` as modified during that run, and that probe PASSES, as does `ladder-cell-index-obstructions`. So the four failures predate the run and were not introduced by it.\n\nWHAT IS NOT YET KNOWN, and must be established by research before planning. Nobody has investigated WHY each of the four fails. The four causes are likely independent and may differ in kind. Treat each probe as its own diagnosis, and expect that the right remedy may differ per probe: a genuine repair (the probe's statement is still wanted and its proof has bit-rotted against a changed definition), a restatement (the underlying object changed shape and the probe's claim needs re-expressing), or deliberate retirement (the probe recorded a question since answered or abandoned, and the honest action is to unwire it from the manifest and delete it rather than repair it). Do not assume all four want repairing; do not retire one without stating what it recorded and why that record is no longer wanted.\n\nSCOPE AND SEQUENCING. `scripts/check-evidence-probes.sh` is the shared manifest/driver: any retirement edits its wired list, and task 734 `e4_mosaic_stabsaturated_mixed_germ_probe` [PARTIAL] also declares that script in its own `file_scope` (for a different probe, `mosaic-stab-saturated.lean`). A `dependencies[]` edge on 734 is declared for that reason, so the two serialize rather than collide on the driver. Note that 734's probe is NOT one of the four here, despite the adjacent naming: `mosaic-stab-saturated` is 734's, `mosaic-germ-amalgamation` is this record's.\n\nDELIVERABLE. All 33 wired probes compile and `bash scripts/check-evidence-probes.sh` exits 0, with each of the four resolved by a named and justified route (repair, restatement, or retirement-with-rationale). Any retirement is recorded where a future reader will find it, not only in the commit message.",
       "effort": "medium",
       "parent_task": 778,
       "topic": "decidability",
-      "dependencies": [
-        734
-      ],
+      "dependencies": [],
       "created": "2026-10-14T05:30:19Z",
-      "last_updated": "2026-10-14T05:30:19Z",
-      "artifacts": [],
+      "last_updated": "2026-10-14T06:13:59Z",
+      "artifacts": [
+        {
+          "path": "specs/786_evidence_probe_compile_failures_repair/reports/01_evidence-probe-compile-failures.md",
+          "type": "report",
+          "summary": "The task's premise is falsified: all 33 wired probes compile and the gate exits 0 today. The four reported failures were one .lake read/write race (missing-olean errors on four consecutive entries), not four source-level bit-rots; the residual defect is the driver's missing flock on .lake/build-guard.lock."
+        }
+      ],
       "file_scope": [
         "scripts/check-evidence-probes.sh",
         "specs/evidence/seam-gluing-ray-product/finite-graph-stab-summary.lean",
         "specs/evidence/seam-gluing-ray-product/mosaic-germ-amalgamation.lean",
         "specs/evidence/seam-gluing-ray-product/path-quantifier-alternation.lean",
         "specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean"
-      ]
+      ],
+      "session_id": "sess_1791956988_9e3cf8",
+      "next_artifact_number": 2
     }
   ],
   "artifacts": [
