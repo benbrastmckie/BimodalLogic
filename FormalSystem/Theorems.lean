@@ -16,6 +16,7 @@ import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Theorems.DedekindDerived
 import FormalSystem.Theorems.DiscreteUnfolding
 import FormalSystem.Theorems.DeductionTheorem
+import FormalSystem.Theorems.LinearityDerived
 /-!
 # FormalSystem.Theorems - Key Theorems
 

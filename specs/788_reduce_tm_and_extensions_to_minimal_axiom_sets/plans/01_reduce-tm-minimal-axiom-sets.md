@@ -217,27 +217,27 @@ in TC/NP/NA); confirm by building with `TemporalDerived` absent from the import 
 
 ---
 
-### Phase 3: `Theorems/LinearityDerived.lean` — TL and DN above `TemporalDerived` [NOT STARTED]
+### Phase 3: `Theorems/LinearityDerived.lean` — TL and DN above `TemporalDerived` [COMPLETED]
 
 **Goal**: Create `FormalSystem/Theorems/LinearityDerived.lean` holding `tempLinearity` (paper
 order, derived from CN) and `density` (direct derivation from NN), importing `TemporalDerived`
 and `Propositional.Core`; register in `Theorems.lean`.
 
 **Tasks**:
-- [ ] Create the module with imports `FormalSystem.Theorems.TemporalDerived`,
+- [x] Create the module with imports `FormalSystem.Theorems.TemporalDerived`,
       `FormalSystem.Theorems.Propositional.Core`, `FormalSystem.Theorems.DeductionTheorem`;
       namespace `FormalSystem.Theorems.LinearityDerived`
-- [ ] `orInlThm`/`orInrThm` theorem-level disjunction introductions via `deductionTheorem` (as in
+- [x] `orInlThm`/`orInrThm` theorem-level disjunction introductions via `deductionTheorem` (as in
       the scratch, or reuse Core equivalents if present)
-- [ ] `tempLinearity (φ ψ)` with the statement of `Axiom.temp_linearity` verbatim (paper order,
+- [x] `tempLinearity (φ ψ)` with the statement of `Axiom.temp_linearity` verbatim (paper order,
       right-associated): UF on `Fφ`, `Fψ`; `linear_until g₁ φ g₂ ψ`; `untilF` on each disjunct;
       `someFutureMono` with `combineImpConj`/`lceImp`/`rceImp`; two `orElim`s — `@[tmLemma]`
-- [ ] `density (h : FrameClass.Dense ≤ fc) (φ) : ⊢[fc] GGφ → Gφ` — transcribe the scratch
+- [x] `density (h : FrameClass.Dense ≤ fc) (φ) : ⊢[fc] GGφ → Gφ` — transcribe the scratch
       (`temporalKDistDerived`, `necG`, `left_mono_until_G ⊤ Gφ ¬φ`, `self_accum_until Gφ ¬φ`,
       guard collapse to `⊥` via `untilF`, `eventMono` to `X⊤`, `Axiom.dense_indicator h`);
       untagged (gated), handled by Phase 5's automation step
-- [ ] Register in `FormalSystem/Theorems.lean`
-- [ ] Scoped guarded build; `lean_verify` both
+- [x] Register in `FormalSystem/Theorems.lean`
+- [x] Scoped guarded build; `lean_verify` both
 
 **Timing**: 1.5 hours
 
