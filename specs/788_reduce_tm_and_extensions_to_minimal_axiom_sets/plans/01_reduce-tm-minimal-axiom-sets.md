@@ -263,7 +263,7 @@ order with one `orInl`/`orInr` placement per disjunct and no `orRotate` (carried
 
 ---
 
-### Phase 4: `Metalogic/CompletenessDerived.lean` — Z1 through the ZTime engine [NOT STARTED]
+### Phase 4: `Metalogic/CompletenessDerived.lean` — Z1 through the ZTime engine [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/CompletenessDerived.lean` with `z1Derivable` (Prop-level,
 via `derivable_of_validZTime` + `z1_valid`), `z1Thm` (`noncomputable`, `Classical.choice`
@@ -271,20 +271,20 @@ packaging for term consumers), and `densityDerivable` as an optional cross-check
 direct DN; register it in `FormalSystem/Metalogic.lean` next to `ZTimeProvability`.
 
 **Tasks**:
-- [ ] Create the module importing `FormalSystem.Metalogic.BXCanonical.Completeness`,
+- [x] Create the module importing `FormalSystem.Metalogic.BXCanonical.Completeness`,
       `FormalSystem.Metalogic.Soundness`, `FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants`
       (the scratch's import profile); namespace `FormalSystem.Metalogic.CompletenessDerived`
-- [ ] `theorem z1Derivable (φ) : Derivable FrameClass.ZTime [] (Z1 φ) :=
+- [x] `theorem z1Derivable (φ) : Derivable FrameClass.ZTime [] (Z1 φ) :=
       BXCanonical.derivable_of_validZTime _ (SoundnessLemmas.z1_valid φ)`
-- [ ] `noncomputable def z1Thm (φ) : ⊢[FrameClass.ZTime] Z1 φ := Classical.choice (z1Derivable φ)`
-- [ ] `theorem densityDerivable (φ) : Derivable FrameClass.Dense [] (GGφ → Gφ)` via
+- [x] `noncomputable def z1Thm (φ) : ⊢[FrameClass.ZTime] Z1 φ := Classical.choice (z1Derivable φ)`
+- [x] `theorem densityDerivable (φ) : Derivable FrameClass.Dense [] (GGφ → Gφ)` via
       `derivable_of_validQTime` + `validQTime_of_validDense (density_valid φ)` — docstring says it
       is a cross-check only; Phase 3's `density` is canonical
-- [ ] Module docstring: record the non-circularity measurement (ZTime engine uses only
+- [x] Module docstring: record the non-circularity measurement (ZTime engine uses only
       `Axiom.prior_UZ`, `Completeness.lean:351`; Dense engine only `Axiom.dense_indicator`, line
       305) and that Phase 7's full build is the mechanical confirmation
-- [ ] Register in `FormalSystem/Metalogic.lean`
-- [ ] Scoped guarded build; `lean_verify` (expect `propext`, `Classical.choice`, `Quot.sound`)
+- [x] Register in `FormalSystem/Metalogic.lean`
+- [x] Scoped guarded build; `lean_verify` (expect `propext`, `Classical.choice`, `Quot.sound`)
 
 **Timing**: 1 hour
 
