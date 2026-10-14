@@ -333,7 +333,9 @@ logic with linear temporal logic. Proven sound and complete.
 
 ### Proof System
 * `FormalSystem.ProofSystem.Axioms` -- 20 constructors in four frame-class layers
-* `FormalSystem.ProofSystem.DerivedAxioms` -- the TR-derived mirror schemata
+* `FormalSystem.ProofSystem.DerivedAxioms` -- the TR-derived mirror schemata and the
+  raw-constructor derived schemata UE, UT, NF (TC, NP, NA are in `Theorems.ConnectDerived`, TL and
+  DN in `Theorems.LinearityDerived`, Z1 in `Metalogic.CompletenessDerived`)
 * `FormalSystem.ProofSystem.Derivable`
 * `FormalSystem.ProofSystem.Derivation` -- `DerivationTree`, 7 inference rules
 

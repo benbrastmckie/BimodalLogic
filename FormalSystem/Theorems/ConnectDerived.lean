@@ -104,7 +104,10 @@ def gMonoThm {fc : FrameClass} {X Y : Formula} (h : ⊢[fc] X.imp Y) :
 
 /-- TC: `φ → G(P φ)`. From `φ ∧ U(⊤, ¬Pφ)`, US gives `U(⊤, ¬Pφ ∧ S(⊤, φ))`; the event refutes
 itself, so the Until collapses to `U(⊤, ⊥)` and `untlBotFalseThm` closes it; currying yields
-`φ → ¬U(⊤, ¬Pφ)`, which is `φ → G P φ` by definition. -/
+`φ → ¬U(⊤, ¬Pφ)`, which is `φ → G P φ` by definition.
+
+Paper: `def:BX`
+-/
 @[tmLemma]
 def connectFuture {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.imp φ.somePast.allFuture :=
@@ -132,7 +135,10 @@ def fHImp {fc : FrameClass} (ψ : Formula) : ⊢[fc] ψ.allPast.someFuture.imp �
 
 /-- NP: `X⊤ → Y⊤`, i.e. `U(⊤,⊥) → S(⊤,⊥)` (spelled `untl ⊥ (⊥→⊥)` and `snce ⊥ (⊥→⊥)` exactly
 as the former constructor did). US at `(⊥, ⊤, ⊤)` enriches `⊤ ∧ X⊤` to `U(⊥, ⊤ ∧ Y⊤)`; the
-event is lifted to `H Y⊤` by TR of NF, UE gives `F H Y⊤`, and `fHImp` yields `Y⊤`. -/
+event is lifted to `H Y⊤` by TR of NF, UE gives `F H Y⊤`, and `fHImp` yields `Y⊤`.
+
+Paper: `def:BX`
+-/
 @[tmLemma]
 def discreteSymmFwd {fc : FrameClass} :
     ⊢[fc] (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
@@ -152,7 +158,10 @@ def discreteSymmFwd {fc : FrameClass} :
 
 /-- NA: `X⊤ → H X⊤`. This is the paper's NA itself, not the TR mirror of NF (that is
 `DerivedAxioms.discretePropagateFwdMirror`, `Y⊤ → H Y⊤`). Compose NP, TR(NF), and
-`H Y⊤ → H X⊤`, which is the time reflection of `G X⊤ → G Y⊤` (G-monotonicity on NP). -/
+`H Y⊤ → H X⊤`, which is the time reflection of `G X⊤ → G Y⊤` (G-monotonicity on NP).
+
+Paper: `def:BX`
+-/
 @[tmLemma]
 def discretePropagateBwd {fc : FrameClass} :
     ⊢[fc] (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp

@@ -61,6 +61,27 @@ the mapping.
 
 ## The ledger
 
+### The derived schemata of the axiom system
+
+Nine schemata the paper lists as axioms are theorems of the 20-constructor system. These rows
+are not `pinned:` — their Axioms cells state the value `lean_verify` measures at each
+declaration, as the `θ_eq_ofFormula` exception above does, because none of them is in the C2 or
+C14 baseline pair. The nine Base-polymorphic derivations are computable and carry `propext` only.
+
+| Paper label | Statement | Lean name | File | Frame class | Axioms |
+|-------------|-----------|-----------|------|-------------|--------|
+| `def:BX` | UE: `U(ψ, φ) → Fψ`, from UG with guard `⊤` and TN | `FormalSystem.ProofSystem.DerivedAxioms.untilF` | `FormalSystem/ProofSystem/DerivedAxioms.lean` | — | propext |
+| `def:BX` | UT: `Fφ → U(φ, ⊤)`, an identity | `FormalSystem.ProofSystem.DerivedAxioms.fUntilEquiv` | `FormalSystem/ProofSystem/DerivedAxioms.lean` | — | propext |
+| `def:BX` | NF: `X⊤ → G X⊤`, as NB ; MF ; MT | `FormalSystem.ProofSystem.DerivedAxioms.discretePropagateFwd` | `FormalSystem/ProofSystem/DerivedAxioms.lean` | — | propext |
+| — | TR of NF: `Y⊤ → H Y⊤` | `FormalSystem.ProofSystem.DerivedAxioms.discretePropagateFwdMirror` | `FormalSystem/ProofSystem/DerivedAxioms.lean` | — | propext |
+| `def:BX` | TC: `φ → G P φ`, from US with UC and TN | `FormalSystem.Theorems.ConnectDerived.connectFuture` | `FormalSystem/Theorems/ConnectDerived.lean` | — | propext |
+| `def:BX` | NP: `X⊤ → Y⊤`, from US, TR of NF, UE and TC | `FormalSystem.Theorems.ConnectDerived.discreteSymmFwd` | `FormalSystem/Theorems/ConnectDerived.lean` | — | propext |
+| `def:BX` | NA: `X⊤ → H X⊤`, from NP, TR of NF and H-monotonicity | `FormalSystem.Theorems.ConnectDerived.discretePropagateBwd` | `FormalSystem/Theorems/ConnectDerived.lean` | — | propext |
+| `def:BX` | TL: `Fφ ∧ Fψ → F(Fφ ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ Fψ))`, from CN with UF and UE | `FormalSystem.Theorems.LinearityDerived.tempLinearity` | `FormalSystem/Theorems/LinearityDerived.lean` | — | propext |
+| `def:BX-d` | DN: `GGφ → Gφ`, from NN with UG, UF, UE, UC and TN | `FormalSystem.Theorems.LinearityDerived.density` | `FormalSystem/Theorems/LinearityDerived.lean` | Dense | propext |
+| `def:BX-z` | Z1 is derivable at ℤ-time: `derivable_of_validZTime` on `z1_valid` | `FormalSystem.Metalogic.CompletenessDerived.z1Derivable` | `FormalSystem/Metalogic/CompletenessDerived.lean` | ZTime | pcq |
+| `def:BX-z` | Z1 as a derivation tree (`Classical.choice` on the row above) | `FormalSystem.Metalogic.CompletenessDerived.z1Thm` | `FormalSystem/Metalogic/CompletenessDerived.lean` | ZTime | pcq |
+
 ### Soundness
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |

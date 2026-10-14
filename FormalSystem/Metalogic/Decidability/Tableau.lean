@@ -1640,7 +1640,7 @@ def zTimeRules : List TableauRule := [
 Dedekind-specific rules (R6), included only when fc >= .RTime.
 
 The tableau counterparts of `Axiom.prior_U_gap`, `DerivedAxioms.priorSGap` and `Axiom.sep`
-(`ProofSystem/Axioms.lean:381`, `ProofSystem/DerivedAxioms.lean:241`, `ProofSystem/Axioms.lean:392`)
+(`ProofSystem/Axioms.lean:381`, `ProofSystem/DerivedAxioms.lean:253`, `ProofSystem/Axioms.lean:392`)
 — the three axioms whose gap/separation content no other rule touches, and the reason
 `Discrete ≰ Dedekind` is the correct gating rather than a defect: the Dedekind terminus consumes
 `ValidRTime`, so its arm is base + dense + dedekind and never includes the Discrete rules.

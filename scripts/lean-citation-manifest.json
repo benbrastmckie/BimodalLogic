@@ -54,10 +54,10 @@
       "field": null,
       "file": "FormalSystem/ProofSystem/Axioms.lean",
       "group": "Frame-class membership",
-      "keyword_line": 476,
+      "keyword_line": 486,
       "name": "FormalSystem.ProofSystem.FrameClass",
-      "span_end": 524,
-      "span_start": 398,
+      "span_end": 534,
+      "span_start": 408,
       "status": "resolved"
     },
     {

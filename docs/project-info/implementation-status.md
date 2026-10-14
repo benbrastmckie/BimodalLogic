@@ -76,7 +76,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
 
 **Soundness** (✅):
 - Full soundness proof: `derivable Γ φ → SemanticConsequence Γ φ`, over all 20 axiom
-  constructors (Base 23 / Dense +2 / ZTime +2 / RTime +2, per `Axiom.minFrameClass` in
+  constructors (Base 16 / Dense +1 / ZTime +1 / RTime +2, per `Axiom.minFrameClass` in
   `FormalSystem/ProofSystem/Axioms.lean`; counting every named schema instead, including
   derived past-mirrors, gives 37/40/39/42 by class — see
   `docs/reference/axiom-reference.md#two-axiom-counts`)

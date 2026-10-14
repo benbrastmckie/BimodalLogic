@@ -80,7 +80,10 @@ def orElimThm {fc : FrameClass} {X Y C : Formula} (hX : ⊢[fc] X.imp C) (hY : �
 /-- TL: `Fφ ∧ Fψ → F(Fφ ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ Fψ))` (the paper's TL verbatim,
 right-associated), derived from CN. With `gᵢ := ⊤ ∧ Fχᵢ`, UF turns `Fφ`, `Fψ` into `U(g₁, φ)`,
 `U(g₂, ψ)`; CN on the pair gives a disjunction of three Untils with guard `g₁ ∧ g₂`, and each
-disjunct collapses by UE and `someFutureMono` onto the matching TL disjunct. -/
+disjunct collapses by UE and `someFutureMono` onto the matching TL disjunct.
+
+Paper: `def:BX`
+-/
 @[tmLemma]
 def tempLinearity {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
@@ -128,7 +131,10 @@ def tempLinearity {fc : FrameClass} (φ ψ : Formula) :
 `GGφ` gives `G(⊤ → Gφ)` by G-monotonicity, so UG turns `F¬φ = U(⊤, ¬φ)` into `U(Gφ, ¬φ)`, and
 UF into `U(Gφ ∧ U(Gφ, ¬φ), ¬φ)`. The guard entails `Gφ ∧ F¬φ` (by UE), a contradiction, so it
 collapses to `⊥`; widening the event to `⊤` gives `U(⊥, ⊤) = X⊤`, which NN refutes. Composing
-under the `U(⊤, ¬φ) →` binder gives `GGφ → ¬U(⊤, ¬φ) = GGφ → Gφ`. -/
+under the `U(⊤, ¬φ) →` binder gives `GGφ → ¬U(⊤, ¬φ) = GGφ → Gφ`.
+
+Paper: `def:BX-d`
+-/
 def density {fc : FrameClass} (h : FrameClass.Dense ≤ fc) (φ : Formula) :
     ⊢[fc] φ.allFuture.allFuture.imp φ.allFuture :=
   let G : Formula := φ.allFuture

@@ -220,6 +220,21 @@ The same closure corrected
 `typst/FormalFoundations.typ`'s remark that the development "has no TR rule" and that the
 uniformity layer "does not even match in count". Both claims were wrong.
 
+**Amended by** `FormalSystem/ProofSystem/LinearityDerivedFacts.lean`, 2026-10-14: the tree's
+primitive set is now a **proper subset** of `def:BX`/`def:BX-z`/`def:BX-d`'s lists with the same
+theorems. Nine schemata the paper lists as axioms are derived in the tree — TC, UE, UT, NP, NF,
+NA (`FormalSystem/Theorems/ConnectDerived.lean`, `ProofSystem/DerivedAxioms.lean`), TL and DN
+(`FormalSystem/Theorems/LinearityDerived.lean`) and Z1
+(`FormalSystem/Metalogic/CompletenessDerived.lean`, through the ℤ-time completeness engine) —
+so `inductive Axiom` has 20 constructors (CPL 4, MK/MT/M5, TS, UG, UC, US, UF, UI, CN, MF, NB,
+UZ, NN, PU, SEP). TL is derived from CN (Xu 1988 §3: Σ₄ is complete for linear frames with
+Burgess's A4a deleted; §4 Theorem 4.3: the G/H-level (13) is strictly weaker than (10)), and A4a
+is **not** restored; the derivation record is `LinearityDerivedFacts.lean`, which also retracts
+that module's earlier underivability claim (its branching frame refutes CN itself). The paper's
+`def:BX` text and `typst/FormalFoundations.typ` are not edited: the divergence is recorded here.
+The footnote erratum below stands — UE follows from UG, not UC — and is what
+`DerivedAxioms.untilF` implements.
+
 **TM⁻ de-attributed.** `MinusLanguage/Axioms.lean` no longer describes TM⁻ as a paper system. It
 now reads as this repository's own transposition, consistent with "Language correspondence
 (2026-09-08)" above.

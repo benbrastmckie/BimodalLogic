@@ -129,20 +129,29 @@ def eventMonoThm {fc : FrameClass} (e e' g : Formula) (he : ⊢[fc] e.imp e') :
 /-! ## Derived schemata from the raw constructors -/
 
 /-- UE: `U(ψ, φ) → F(ψ)` (guard-first: `untl φ ψ`). Widen the guard `φ` to `⊤` by UG + TN;
-`F ψ` is `untl ⊤ ψ` by definition. Not a Burgess axiom. -/
+`F ψ` is `untl ⊤ ψ` by definition. Not a Burgess axiom.
+
+Paper: `def:BX`
+-/
 @[tmLemma] def untilF {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (Formula.untl φ ψ).imp (Formula.someFuture ψ) :=
   guardMonoThm φ Formula.top ψ (impTop φ)
 
 /-- UT: `F(φ) → U(φ, ⊤)` (guard-first: `untl ⊤ φ`). `F φ` unfolds to exactly `untl (⊥ → ⊥) φ`,
-so this is the identity. -/
+so this is the identity.
+
+Paper: `def:BX`
+-/
 @[tmLemma] def fUntilEquiv {fc : FrameClass} (φ : Formula) :
     ⊢[fc] (Formula.someFuture φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ) :=
   identityThm _
 
 /-- NF: `X⊤ → G X⊤` with `X⊤ = U(⊤, ⊥)` spelled `untl ⊥ (⊥ → ⊥)`. The gap witness propagates
 forward as NB (`discrete_box_necessity`) ; MF (`modal_future`) ; MT (`modal_t`): `X⊤ → □X⊤ →
-□G X⊤ → G X⊤`. -/
+□G X⊤ → G X⊤`.
+
+Paper: `def:BX`
+-/
 @[tmLemma] def discretePropagateFwd {fc : FrameClass} :
     ⊢[fc] (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.allFuture (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))) :=
@@ -154,7 +163,10 @@ forward as NB (`discrete_box_necessity`) ; MF (`modal_future`) ; MT (`modal_t`):
 
 /-- TR of NF: `Y⊤ → H Y⊤` with `Y⊤ = S(⊤, ⊥)`. The reflected formula is the statement on
 the nose. (This is *not* the paper's NA, `X⊤ → H X⊤`, which is
-`Theorems.ConnectDerived.discretePropagateBwd`.) -/
+`Theorems.ConnectDerived.discretePropagateBwd`.)
+
+Paper: — (the TR mirror of NF; the paper obtains every mirror by its rule TR)
+-/
 @[tmLemma] def discretePropagateFwdMirror {fc : FrameClass} :
     ⊢[fc] (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.allPast (Formula.snce Formula.bot (Formula.bot.imp Formula.bot))) :=

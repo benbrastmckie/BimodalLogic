@@ -280,12 +280,12 @@ release version lives in `Version.lean`.
 | `ForMathlib.lean` | 45 | Re-export for ForMathlib submodule (Mathlib-shaped extensions intended for upstreaming) |
 | `HybridLanguage.lean` | 133 | Re-export for the HybridLanguage component: L⁺ plus the same-state modality `[≡]`, state registers and the state binder `↓` (semantic only; no proof system) |
 | `Init.lean` | 35 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
-| `MainResults.lean` | 295 | One page listing the headline soundness/completeness metatheory, with the kernel's own `#print axioms` audit beside each result |
+| `MainResults.lean` | 296 | One page listing the headline soundness/completeness metatheory, with the kernel's own `#print axioms` audit beside each result |
 | `Metalogic.lean` | 281 | Re-export for Metalogic submodule |
 | `MinusLanguage.lean` | 69 | <!-- TODO: add description --> |
 | `OpenLanguage.lean` | 111 | Re-export for the OpenLanguage component: L^▷, L⁺ plus the open-future modal `▷` and the open-past modal `◁` (semantic only; no proof system) |
 | `PlusLanguage.lean` | 93 | <!-- TODO: add description --> |
-| `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
+| `ProofSystem.lean` | 95 | Re-export for ProofSystem submodule |
 | `QuantLanguage.lean` | 106 | Re-export for the QuantLanguage component: the base language plus propositional quantifiers `∀p`, relative to a family of admissible propositions (semantic only; no proof system) |
 | `Semantics.lean` | 313 | Re-export for Semantics submodule |
 | `SourceLanguage.lean` | 79 | Re-export for the SourceLanguage component: the source sentence language (seventeen operators plus atoms), its elimination `tr` into L's six primitives, and the agreement theorem `sat_iff` (semantic only; no proof system) |

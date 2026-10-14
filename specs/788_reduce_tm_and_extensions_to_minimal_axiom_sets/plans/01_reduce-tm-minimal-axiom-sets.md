@@ -711,35 +711,35 @@ editing.
 
 ---
 
-### Phase 10: Documentation refresh and the full gate set [NOT STARTED]
+### Phase 10: Documentation refresh and the full gate set [COMPLETED]
 
 **Goal**: Refresh the three documents the task names plus the architecture/project-info pages,
 then run the complete gate set over the finished tree.
 
 **Tasks**:
-- [ ] `docs/reference/axiom-reference.md`: §Paper Key Correspondence gains a "primitive vs
+- [x] `docs/reference/axiom-reference.md`: §Paper Key Correspondence gains a "primitive vs
       derived" column (UE, UT, TC, NP, NF, NA, TL, DN, Z1 → derived, with the fully qualified
       theorem name); the count paragraph (426-428) describes 20 primitives by layer and class
-- [ ] `docs/reference/paper-definitions-of-record.md`: a dated amendment under the "Constructor
+- [x] `docs/reference/paper-definitions-of-record.md`: a dated amendment under the "Constructor
       naming audit: closed" paragraph (line 209) — the tree's primitive set is now a proper
       subset of `def:BX`'s list with the same theorems; TL derived from CN (A4a not restored);
       link to `LinearityDerivedFacts.lean` as the derivation record; keep the existing footnote
       errata (the "UE follows from UC" erratum is confirmed as UG)
-- [ ] `docs/theorem-index.md`: rows for `untilF`, `fUntilEquiv`, `discretePropagateFwd`,
+- [x] `docs/theorem-index.md`: rows for `untilF`, `fUntilEquiv`, `discretePropagateFwd`,
       `discretePropagateFwdMirror`, `connectFuture`, `discreteSymmFwd`, `discretePropagateBwd`,
       `tempLinearity`, `density`, `z1Derivable`, `z1Thm` with fully qualified names and the
       primitives each uses; remove rows that pointed at the deleted constructors
-- [ ] `docs/ARCHITECTURE.md`, `docs/user-guide/architecture.md`, `docs/project-info/*`,
+- [x] `docs/ARCHITECTURE.md`, `docs/user-guide/architecture.md`, `docs/project-info/*`,
       `docs/development/MODULE_ORGANIZATION.md`: narrative (counts were fixed in Phase 7); note
       that `ProofSystem/` still imports only `Syntax` (`ARCHITECTURE.md:135`)
-- [ ] Do not edit `typst/FormalFoundations.typ` (paper's own `def:BX`); the divergence lives in
+- [x] Do not edit `typst/FormalFoundations.typ` (paper's own `def:BX`); the divergence lives in
       the `paper-definitions-of-record.md` amendment
-- [ ] Full gate set: guarded full build `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
+- [x] Full gate set: guarded full build `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
       and `-- build BimodalTest BimodalTools BimodalToolsTest`; `lean_verify` on the eleven Goals
       identifiers; `bash scripts/check-module-invariants.sh --no-build`;
       `bash scripts/typst-sync-check.sh`; `bash scripts/check-paper-definitions.sh`;
       `bash scripts/readme-lint.sh`; `bash .claude/scripts/lean-challenge-snapshot.sh --check`
-      (advisory); `bash .claude/scripts/verify-deploy.sh`; record each exit status
+      (advisory); `bash .claude/scripts/verify-deploy.sh`; record each exit status *(completed; two gates carry pre-existing, out-of-task findings recorded in the summary: `check-paper-definitions.sh` exits 1 because 26 recorded blocks of the external paper drifted (its `def:frame` wording, etc.) — this task's only edit to the record is the 15-line amendment, which the hash comparison does not read; `lean-challenge-snapshot.sh --check 788 .` exits 71 because no plan-time snapshot manifest exists (advisory))*
 
 **Timing**: 2 hours
 

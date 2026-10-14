@@ -46,14 +46,20 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 
 /-- Z1 (`G(Gφ → φ) → (FGφ → Gφ)`) is derivable at `FrameClass.ZTime`: it is valid on every
-Z-time frame (`SoundnessLemmas.z1_valid`), and the ZTime engine is complete. -/
+Z-time frame (`SoundnessLemmas.z1_valid`), and the ZTime engine is complete.
+
+Paper: `def:BX-z`
+-/
 theorem z1Derivable (φ : Formula) :
     Derivable FrameClass.ZTime []
       ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
   BXCanonical.derivable_of_validZTime _ (SoundnessLemmas.z1_valid φ)
 
 /-- Z1 as a term, for consumers that need a `DerivationTree` rather than a `Derivable` proof.
-Noncomputable: it chooses a tree from `z1Derivable` with `Classical.choice`. -/
+Noncomputable: it chooses a tree from `z1Derivable` with `Classical.choice`.
+
+Paper: `def:BX-z`
+-/
 noncomputable def z1Thm (φ : Formula) :
     ⊢[FrameClass.ZTime]
       ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=

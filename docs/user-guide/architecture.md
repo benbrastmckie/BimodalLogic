@@ -1239,7 +1239,9 @@ FormalSystem/                              # Main source directory
 │   ├── DeductionTheorem.lean              # Deduction theorem
 │   ├── DiscreteUnfolding.lean             # Discrete unfolding lemmas
 │   ├── GeneralizedNecessitation.lean      # Generalized necessitation rule
+│   ├── ConnectDerived.lean                # TC, NP, NA derived (computable)
 │   ├── TemporalDerived.lean               # Derived temporal theorems
+│   ├── LinearityDerived.lean              # TL (from CN) and DN (from NN) derived
 │   ├── DedekindDerived.lean
 │   └── README.md
 ├── Automation/
