@@ -7,14 +7,21 @@
   blocker research, which is complete; no edge remains.
 - **Research Inputs**:
   - specs/716_sliced_certificate_liveat_nontermination/reports/01_liveat-nontermination-profile.md
-  - specs/716_sliced_certificate_liveat_nontermination/.blocker-research.json
   - specs/716_sliced_certificate_liveat_nontermination/probes/21_shapeD_transfer.lean
   - specs/716_sliced_certificate_liveat_nontermination/probes/22_lethoist_transfer.lean
   - specs/716_sliced_certificate_liveat_nontermination/probes/23_table_defeq_failure.lean
   - specs/716_sliced_certificate_liveat_nontermination/probes/24_shapeD_measure.lean
-- **Reports Integrated**: .blocker-research.json, probes/21_shapeD_transfer.lean,
+  - specs/716_sliced_certificate_liveat_nontermination/progress-file.md
+- **Reports Integrated**: probes/21_shapeD_transfer.lean,
   probes/22_lethoist_transfer.lean, probes/23_table_defeq_failure.lean,
   probes/24_shapeD_measure.lean
+- **Provenance note**: the blocker research that selected Shape D was delivered through the
+  orchestrator's one-shot `.blocker-research.json` channel, which is consumed and cleared once
+  read, so it is **not** on disk and is not citable as a Research Input. Its findings are
+  reproduced inline in the Research Integration subsection below, and every figure and transfer
+  claim it carried is independently re-derivable from the four probe files named above — which are
+  the durable record. An implementer who needs a source for a carried figure goes to
+  `probes/24_shapeD_measure.lean`, never to a `.blocker-research.json` path.
 - **Artifacts**: plans/02_shape-d-verts-biunion.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -60,10 +67,19 @@ here. They do not revisit the diagnosis; they settle the Phase 7 route.
   is a `List.find?` over a range built from `G.winLo`/`G.winHi` — projections of the variable `G`,
   so the matcher cannot iota-reduce and `isDefEq` returns **false**, not slow. See D9.
 - **Carried-figure status.** The 15 ms / 1093 ms pair, the card-16 agreement, and the 512-to-4
-  reduction in `posAt` calls are **CARRIED** from `.blocker-research.json` and
-  `probes/24_shapeD_measure.lean`. Phase 7's first task re-runs probe 24 against the current built
-  library before any edit, and its Scope Hypothesis names both the figures and their source. Every
-  figure from Phases 1-6 is already a this-round measurement recorded in `progress-file.md`.
+  reduction in `posAt` calls are **CARRIED**, and their single durable source is
+  `probes/24_shapeD_measure.lean` — specifically its three `#time #eval` lines
+  (`(certA.verts).card`, `(certA.vertsD).card`, `certA.verts = certA.vertsD`) under
+  `set_option maxHeartbeats 2000000`. Phase 7's first task re-runs probe 24 against the current
+  built library before any edit, and its Scope Hypothesis names both the figures and that source.
+  Every figure from Phases 1-6 is already a this-round measurement recorded in
+  `progress-file.md`.
+- **Probe status, stated so a non-zero exit is not misread.** Probes 21, 22 and 24 compile and
+  exit 0. Probe 23 is the **intended reproduction** and exits non-zero by design: its
+  `withBx_vertsB` is the failure, while `withBx_posTable` in the same file succeeds. A build
+  sweep that reports probe 23 as failing has reported it working. Every declaration across all
+  four probes sits within `[propext, Classical.choice, Quot.sound]` with no `sorryAx`, so nothing
+  Phase 7 adapts from them carries an axiom debt.
 - **The evidence's own scope caveat is preserved, not overstated.** The ~73x factor measures
   `verts` **in isolation**, not the propagated `liveAt` figure: confirming that would have required
   editing `Timed.lean`, outside an aux research dispatch's remit. Phase 7's verification step
@@ -219,6 +235,22 @@ Non-Lean outputs:
   (`iterBack`/`iterFwd` and `canAt`, each recursing on an argument that is a variable at the point
   of use). The table itself is innocent and the `let`-hoists are innocent; Phase 7 records the
   pattern in that docstring so the invariant's statement there is complete.
+  **The failure's signature, so Phase 7's scratch transfer check is recognizable when it fires.**
+  `probes/23_table_defeq_failure.lean` carries the succeeding and the failing transfer side by
+  side: `withBx_posTable … := rfl` is accepted, and `withBx_vertsB … := rfl` is rejected with
+
+  ```
+  rfl has type ?m.9 = ?m.9 but is expected to have type (G.withBx bx).vertsB = G.vertsB
+  ```
+
+  Two things about that message matter at implementation time. It is an elaboration *failure*, not
+  a timeout — reproduced at ten times the heartbeat cap with the same text — so a
+  `maxHeartbeats` bump cannot convert it into a success, which is why that bump is a Non-Goal
+  rather than a fallback. And the metavariable form `?m.9 = ?m.9` is what `isDefEq` returning
+  false looks like here, as distinct from the congruence-fallback error a genuinely mismatched
+  shape would produce. If Phase 7's `probes/25_shapeD_landed_transfer.lean` check reports this
+  same shape of message against the edited `verts`, `succT` or `predT`, the phase is `[BLOCKED]`
+  on the same cause and is raised, not retried with a larger cap.
 - **D10**: Phase 5's hoist **stays landed through this plan**, unexamined. It is proved equal and
   kernel-neutral; whether its `certA`-only justification is enough is task 781's decision, not a
   phase here. No phase re-measures it, and the summary states the open question rather than
@@ -641,7 +673,7 @@ and the gate is re-measured.
 
 ---
 
-### Phase 7: Shape D -- the posAt-hoisted verts and the succT/predT let-hoists [NOT STARTED]
+### Phase 7: Shape D -- the posAt-hoisted verts and the succT/predT let-hoists [COMPLETED]
 
 **Goal**: `verts` calls `posAt` once per window time instead of once per (position, time) pair, by
 `biUnion`-ing the position space over `winTimes` rather than filtering the product against it; and
@@ -658,53 +690,53 @@ and transfer by `rfl`. The table shape is what fails, and specifically its `matc
 `Finset.filter`'s `DecidablePred` instance argument.
 
 **Tasks**:
-- [ ] Re-run `probes/24_shapeD_measure.lean` against the currently built library and record its
+- [x] Re-run `probes/24_shapeD_measure.lean` against the currently built library and record its
       three figures in `progress-file.md` as this-round measurements. This discharges the carried
       15 ms / 1093 ms pair named in the Scope Hypothesis below. If the factor has moved, record the
       new figure and proceed on it; do not re-open the route decision on a smaller-but-still-better
       factor.
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean` immediately
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean` immediately
       before editing (concurrent-sibling discipline).
-- [ ] Replace `verts`'s body with
+- [x] Replace `verts`'s body with
       `G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t)))`. Add no `posTable`, no
       `posAtC`, no `let`-bound table and no lookup inside any `Finset.filter` predicate — Non-Goals
       rules those out and `probes/23_table_defeq_failure.lean` is the standing reproduction of why.
-- [ ] Re-prove `mem_verts` from the new body with its statement **byte-identical** to
+- [x] Re-prove `mem_verts` from the new body with its statement **byte-identical** to
       `v ∈ G.verts ↔ v.2 ∈ G.winTimes ∧ v.1 ∈ G.posAt v.2`, through `Finset.mem_biUnion` and
       `Finset.mem_image`. `probes/21_shapeD_transfer.lean`'s `mem_vertsD` is the proof script
       modulo the rename; adapt it rather than re-deriving one. If the statement cannot be restated
       unchanged, mark the phase `[BLOCKED]` and raise it rather than adjusting the statement.
-- [ ] Land the `succT` / `predT` `let`-hoists in the shape `probes/22_lethoist_transfer.lean`
+- [x] Land the `succT` / `predT` `let`-hoists in the shape `probes/22_lethoist_transfer.lean`
       pins (`let V := G.verts; let u := G.nextTime v.2; let S := G.succP v.2 v.1;
       V.filter (fun w => w.2 = u ∧ w.1 ∈ S)`, and its backward mirror). These are zeta-equal to the
       landed bodies, so `mem_succT` / `mem_predT` — today literally `Finset.mem_filter` — should
       need no repair; confirm rather than assume, and repair through the same lemma if the build
       names them.
-- [ ] **Confirm the `withBx` invariant survives, before the aggregate build.** In
+- [x] **Confirm the `withBx` invariant survives, before the aggregate build.** In
       `specs/716_sliced_certificate_liveat_nontermination/probes/25_shapeD_landed_transfer.lean`,
       compiled standalone by `lake env lean` against the edited module: `example (G) (bx) :
       (G.withBx bx).verts = G.verts := rfl`, and the same for `succT` and `predT`. This is the
       exact check the earlier table shape failed; running it here costs one scratch compile instead
       of a full build. A failure marks the phase `[BLOCKED]`; it is **not** addressed by raising
       `maxHeartbeats` in `Complete.lean` (Non-Goals, D9).
-- [ ] Add one prose line to `Complete.lean`'s `### What a changed box guess does and does not move`
+- [x] Add one prose line to `Complete.lean`'s `### What a changed box guess does and does not move`
       docstring section, beside its two named exceptions, recording the third instance of the same
       pattern: a lookup whose `match` sits inside `Finset.filter`'s `DecidablePred` instance
       argument does not transfer, because the scrutinee is a `List.find?` over a range built from
       `G.winLo` / `G.winHi` — projections of the variable `G` — so the matcher cannot iota-reduce
       and `isDefEq` returns false rather than falling back to congruence. Prose only: no
       declaration in that file is added, removed, re-proved or re-stated.
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
       FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed` detached, then
       `…PlusSlicedCertificate.Complete`, then the `…PlusSlicedCertificate` aggregate. A break is
       fixed forward in the file the build names; a statement is never weakened to accommodate one.
-- [ ] **Re-measure the propagated figures, not only the isolated one.** The factor that selected
+- [x] **Re-measure the propagated figures, not only the isolated one.** The factor that selected
       Shape D measures `verts` alone; whether it propagates is unmeasured. Record
       `(liveAt (-1)).card` at the pinned embedded witness and the `certA_certifies` `decide` wall
       clock against their Phase 5 values in `progress-file.md`, and state the propagated factor
       plainly — including when it is 1.0x. A phase that lands a 73x isolated gain and a neutral
       propagated one has still landed correctly; the summary must say so.
-- [ ] Record via `issue-record.sh` (`kind: win` or `issue`) whether the propagated factor matched
+- [x] Record via `issue-record.sh` (`kind: win` or `issue`) whether the propagated factor matched
       the isolated one, and attest explicitly if nothing arose.
 
 **Timing**: 2 hours
@@ -722,9 +754,9 @@ definitions — confirm by `grep -rn 'G.verts\|succT\|predT' FormalSystem/` and 
 outside `Timed.lean` routes through one of those three or through `_subset` / `fst_mem_*` /
 `snd_of_mem_*`; any hit that unfolds a body directly widens this phase's file list and must be
 recorded before it is edited. (2) The figures **15 ms (Shape D) against 1093 ms (landed `verts`)
-at `certA`, identical card 16** are CARRIED from `.blocker-research.json` and
-`probes/24_shapeD_measure.lean`, not facts of this round; the phase's first task re-runs probe 24
-to discharge them.
+at `certA`, identical card 16** are CARRIED from `probes/24_shapeD_measure.lean` — its three
+`#time #eval` lines, which are the only durable source for them — not facts of this round; the
+phase's first task re-runs probe 24 to discharge them.
 
 **Tier Justification**: `verts`, `succT` and `predT` are cited across `Bridge.lean`, `Stable.lean`,
 `Sound.lean`, `Complete.lean`, `EmbedComplete.lean`, `Tail.lean` and `Check.lean`, so a

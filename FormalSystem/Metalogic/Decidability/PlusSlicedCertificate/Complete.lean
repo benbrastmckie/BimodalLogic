@@ -190,6 +190,17 @@ two applications are not definitionally equal however far they are unfolded.
 Each of the two costs one short induction, and `TailStable` and `canLab` then transfer through them.
 Nothing else in this module needs a transfer lemma: `BiSerial`, `SlabTrue`, `edge`, `winTimes`,
 `posAt`, `liveAt`, `liveT`, `model` and `stepHistory` all go across by `rfl`.
+
+A third shape fails for the same reason, and is recorded here because it is the one an
+optimisation pass is likely to reach for: a lookup whose `match` sits inside `Finset.filter`'s
+`DecidablePred` instance argument does not transfer. `Finset.filter` takes that instance as an
+*explicit* argument, so `isDefEq` must compare the two synthesized instance terms; when the
+matcher's scrutinee is a `List.find?` over a range built from `G.winLo` / `G.winHi` — projections
+of the variable `G` — it is neutral, cannot iota-reduce, and the comparison returns **false**
+rather than succeeding slowly. A `maxHeartbeats` bump therefore buys nothing: measured at ten
+times the cap, `rfl` still fails outright. `Timed.lean`'s `verts` is written as a `biUnion` over
+the window times for exactly this reason — it is already one `posAt` call per time, so it needs no
+cached position table and introduces no such filter predicate.
 -/
 
 @[simp] theorem withBx_posAt (G : PlusSlicedCertificate Γ Del) (bx : PlusFormula → Bool) (s : ℤ) :

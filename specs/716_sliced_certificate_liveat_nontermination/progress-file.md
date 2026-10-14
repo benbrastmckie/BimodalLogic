@@ -348,3 +348,82 @@ routes and their costs, is on the Phase 7 heading in the plan.
 `Timed.lean` is reverted to its Phase-5 committed state; the full guarded `lake build` is green
 at 2844 jobs. The attempt is preserved verbatim at
 `probes/20_phase7_shapeB_attempt.diff` and in `git stash@{0}`.
+
+## Phase 7 (Shape D) -- probe 24 re-run, this round
+
+The plan's Scope Hypothesis names the 15 ms / 1093 ms pair as CARRIED from
+`.blocker-research.json` and `probes/24_shapeD_measure.lean`. Re-run verbatim against the
+currently built library before any edit, `lake env lean probes/24_shapeD_measure.lean`, exit 0:
+
+| measurement | carried | this round |
+|---|---|---|
+| `#eval (certA.verts).card` (landed filter shape) | 1093 ms | **1358 ms** |
+| `#eval (certA.vertsD).card` (Shape D `biUnion`) | 15 ms | **21 ms** |
+| card, both shapes | 16 | **16, both** |
+| `#eval (certA.verts = certA.vertsD)` | agreement | **`true`**, 2123 ms |
+| isolated factor | ~73x | **64.7x** |
+
+The carried pair is discharged: same direction, same card, agreement confirmed, factor 64.7x
+rather than ~73x. Per the phase's first task the route decision is **not** re-opened on a
+smaller-but-still-better factor; the landing proceeds on this round's 64.7x.
+
+## Phase 7 -- Shape D landed, and the propagated figures the evidence did not have
+
+`verts` is now `G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t)))` -- one `posAt`
+call per window time rather than one per (position, time) pair -- and `succT` / `predT` bind
+`verts`, the wrapped time and the `succP` / `predP` value once outside their filter lambdas.
+`mem_verts` is re-proved from the new body through `Finset.mem_biUnion` / `Finset.mem_image` with
+its statement byte-identical; `mem_succT` / `mem_predT` needed no repair, the `let`-hoists being
+zeta-equal. No cache, no table, no equality lemma, and no new identifier.
+
+### The `withBx` invariant, checked before the aggregate build
+
+`probes/25_shapeD_landed_transfer.lean`, run by `lake env lean` against the edited module
+(exit 0, explicit finite cap of 200000 deliberately NOT raised):
+
+| scratch goal | result |
+|---|---|
+| `(G.withBx bx).verts = G.verts := rfl` | **holds** |
+| `(G.withBx bx).succT v = G.succT v := rfl` | **holds** |
+| `(G.withBx bx).predT v = G.predT v := rfl` | **holds** |
+| `mem_verts`'s pre-phase statement, by `G.mem_verts v` | **accepted** |
+
+`#print axioms` on `mem_verts`, `mem_succT`, `mem_predT`: all `[propext, Classical.choice,
+Quot.sound]`, no `sorryAx`. Scoped guarded build of `…PlusSlicedCertificate.Complete`: **green,
+1246 jobs, zero `error:` lines** -- the exact build the earlier table shape broke -- with
+`grep -c 'withBx_'` on that file unchanged at **27** and its diff confined to docstring lines.
+
+### The propagated factor, measured rather than assumed
+
+The route evidence measured `verts` in isolation and said nothing about whether the gain reaches
+`liveAt`. It does, and under `#eval` it reaches further than the isolated figure. Each row below
+is against a figure measured the same way earlier in this round, not against a carried one:
+
+| figure | earlier this round | Shape D | factor |
+|---|---|---|---|
+| `certA verts.card` (`#eval`) | 1105 ms (Phase 6 landed col.) | **24 ms** | **46x** |
+| `certA` sum `predT` cards over `verts` (`#eval`) | 18446 ms (Phase 6) | **237 ms** | **78x** |
+| `certA bwdLiveT.card` (`#eval`) | 57183 ms (Phase 6) | **564 ms** | **101x** |
+| `certA.bwdLiveT.card = 16` kernel `decide` | 23.7 s (Phase 6 gate) | **3.1 / 4.1 s** | **~6.4x** |
+| embedded `(liveAt (-1)).card` (`#eval`) | 2188 ms (Phase 5) | **200 ms** | **10.9x** |
+| embedded `fwdLiveT.card` (`#eval`) | 860 ms (Phase 5) | **69 ms** | **12.5x** |
+| embedded `bwdLiveT.card` (`#eval`) | 228 ms (Phase 5) | **17 ms** | **13.4x** |
+| `certA_certifies` kernel `decide`, scratch wall clock | 24.6 s (Phase 5) | **8.4 s** median of 5 | **~2.9x** |
+
+Every cardinality is unchanged (`verts` 16, `predT` sum 32, `bwdLiveT` 16, embedded 12/6/12/1).
+
+**Stated plainly, as the phase requires.** The propagated factor is **not** the isolated one, and
+it differs by surface. Under `#eval` it is *larger* than the isolated 64.7x -- 101x on
+`bwdLiveT`, because the saving is paid once per `posAt` call and the fixpoint makes many. Under
+the kernel it is **~6.4x**, which is the surface that matters for `decide`: the whnf cache was
+already sharing `G.posAt t` across repeated `t`, so what Shape D removes there is the 512-fold
+`v.1 ∈ G.posAt v.2` membership test, not the slice rebuild. That ~6.4x is within noise of the
+Phase 6 gate's predicted 5.51x and *beats* the Shape B mirror it was measured against (4.3 s
+against Shape D's 3.1-4.1 s) -- so the route rejected in D7 bought nothing the cache-free shape
+does not.
+
+The `certA_certifies` row is the weakest of the eight and is reported as measured: five scratch
+runs gave 5026 / 8670 / 6080 / 8557 / 8439 ms gross, against an import-only control of 2854 /
+2046 / 2364 / 1822 ms, so roughly 6.2 s net at the median. Phase 5's 24.6 s is a gross figure
+from a differently-loaded machine, which is why the 2.9x on that row is cited as the floor of the
+propagated range and the like-for-like `bwdLiveT` `decide` A/B above as its measurement.

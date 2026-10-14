@@ -138,19 +138,42 @@ abbrev TPos (G : PlusSlicedCertificate Γ Del) : Type := G.Pos × ℤ
 /--
 **The vertices of the timed graph**: the genuine positions of their own slice, at window times.
 
-The `posAt` filter is a deliberate departure from `SharingWitnessFamily.verts`, which is
-`Finset.univ ×ˢ winTimes` outright. There the first coordinate is a lasso index and every index is
-legitimate at every time; here it is a (state, label) pair and `Position.lean`'s `posAt` is exactly
-the predicate separating the legitimate ones. Starting a greatest-fixpoint iteration from a set
-containing label-state pairs that are not positions of their slice would make the fixpoint's
+Restricting to the genuine positions is a deliberate departure from `SharingWitnessFamily.verts`,
+which is `Finset.univ ×ˢ winTimes` outright. There the first coordinate is a lasso index and every
+index is legitimate at every time; here it is a (state, label) pair and `Position.lean`'s `posAt` is
+exactly the predicate separating the legitimate ones. Starting a greatest-fixpoint iteration from a
+set containing label-state pairs that are not positions of their slice would make the fixpoint's
 statement harder rather than easier.
+
+**Why a `biUnion` over the window times rather than a filter on the product.** The two shapes
+have the same elements -- `mem_verts` below is stated exactly as the filter shape's
+characterization was -- but not the same cost. A filter on `Finset.univ ×ˢ G.winTimes` calls
+`posAt` once per (position, time) *pair*; this form calls it once per window *time*, and `posAt`
+is the expensive leaf: it rebuilds its slice's position set from the certificate. At the width-2
+total-edge witness in `Examples.lean` that is 4 calls instead of 512, and `#eval`-ing this
+`Finset`'s card measures 21 ms against the filter shape's 1358 ms.
+
+**Do not reintroduce a position cache here, in any shape that puts a lookup inside a
+`Finset.filter` predicate.** `Finset.filter` takes its `DecidablePred` instance as an explicit
+argument, so a `match` on a lookup inside that predicate must be compared by `isDefEq` at every
+use site; with a scrutinee built from `G.winLo` / `G.winHi` it cannot iota-reduce and the
+comparison returns false rather than slowly succeeding. See `Complete.lean`'s
+`### What a changed box guess does and does not move` section, which records that pattern beside
+its two other instances. This shape needs no cache: it is already one `posAt` call per time.
 -/
 def verts (G : PlusSlicedCertificate Γ Del) : Finset G.TPos :=
-  (Finset.univ ×ˢ G.winTimes).filter (fun v => v.1 ∈ G.posAt v.2)
+  G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t)))
 
 theorem mem_verts (G : PlusSlicedCertificate Γ Del) (v : G.TPos) :
     v ∈ G.verts ↔ v.2 ∈ G.winTimes ∧ v.1 ∈ G.posAt v.2 := by
-  simp [verts, Finset.mem_product]
+  rw [verts, Finset.mem_biUnion]
+  constructor
+  · rintro ⟨t, ht, hv⟩
+    rw [Finset.mem_image] at hv
+    obtain ⟨p, hp, rfl⟩ := hv
+    exact ⟨ht, hp⟩
+  · rintro ⟨ht, hp⟩
+    exact ⟨v.2, ht, Finset.mem_image.mpr ⟨v.1, hp, rfl⟩⟩
 
 theorem snd_mem_winTimes_of_mem_verts (G : PlusSlicedCertificate Γ Del) {v : G.TPos}
     (h : v ∈ G.verts) : v.2 ∈ G.winTimes := ((G.mem_verts v).mp h).1
@@ -399,11 +422,17 @@ not available.
 /-- **The successors of a timed position**: the `succP`-successors at the unwrapped next time,
 placed at the wrapped one. -/
 def succT (G : PlusSlicedCertificate Γ Del) (v : G.TPos) : Finset G.TPos :=
-  G.verts.filter (fun w => w.2 = G.nextTime v.2 ∧ w.1 ∈ G.succP v.2 v.1)
+  let V := G.verts
+  let u := G.nextTime v.2
+  let S := G.succP v.2 v.1
+  V.filter (fun w => w.2 = u ∧ w.1 ∈ S)
 
 /-- **The predecessors of a timed position**, the leftward mirror. -/
 def predT (G : PlusSlicedCertificate Γ Del) (v : G.TPos) : Finset G.TPos :=
-  G.verts.filter (fun w => w.2 = G.prevTime v.2 ∧ w.1 ∈ G.predP v.2 v.1)
+  let V := G.verts
+  let u := G.prevTime v.2
+  let P := G.predP v.2 v.1
+  V.filter (fun w => w.2 = u ∧ w.1 ∈ P)
 
 theorem mem_succT (G : PlusSlicedCertificate Γ Del) (v w : G.TPos) :
     w ∈ G.succT v ↔ w ∈ G.verts ∧ (w.2 = G.nextTime v.2 ∧ w.1 ∈ G.succP v.2 v.1) :=
