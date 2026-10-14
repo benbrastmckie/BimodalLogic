@@ -426,7 +426,7 @@ which are still valid with irreflexive semantics.
 -/
 
 /-- If GContent(M) ⊆ M', then HContent(M') ⊆ M.
-Uses `Axiom.connect_future`: φ → G(P(φ)). -/
+Uses TC (`ConnectDerived.connectFuture`): φ → G(P(φ)). -/
 theorem g_content_subset_implies_h_content_reverse
     (M M' : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
         (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')
@@ -439,7 +439,7 @@ theorem g_content_subset_implies_h_content_reverse
     · exact absurd h h_not_phi
     · exact h
   have h_ta : [] ⊢ (Formula.neg phi).imp (Formula.allFuture (Formula.neg phi).somePast) :=
-    DerivationTree.axiom [] _ (Axiom.connect_future (Formula.neg phi)) trivial
+    FormalSystem.Theorems.ConnectDerived.connectFuture (Formula.neg phi)
   have h_G_P_neg : Formula.allFuture (Formula.neg phi).somePast ∈ M :=
     SetMaximalConsistent.mp_of_theorem h_mcs h_ta h_neg_phi
   have h_P_neg_M' : (Formula.neg phi).somePast ∈ M' := h_GC h_G_P_neg
@@ -455,7 +455,7 @@ theorem g_content_subset_implies_h_content_reverse
   exact some_past_all_past_neg_absurd h_mcs' (Formula.neg phi) h_P_neg_M' h_H_nn
 
 /-- If HContent(M) ⊆ M', then GContent(M') ⊆ M.
-Uses `ModalDerived.pastTempA` (the `DerivedAxioms.connectPast` instance): φ → H(F(φ)). -/
+Uses `ModalDerived.pastTempA` (the `ConnectDerived.connectPast` instance): φ → H(F(φ)). -/
 theorem h_content_subset_implies_g_content_reverse
     (M M' : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
         (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')

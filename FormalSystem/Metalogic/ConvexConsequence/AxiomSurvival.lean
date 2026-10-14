@@ -42,7 +42,7 @@ the right end.
 
 The two failing past rows, `serial_past` and `discrete_symm_bwd`, are not constructors of
 `Axiom`: TM derives them by time reflection. They are stated against the formulas
-`DerivedAxioms.serialPast` and `DerivedAxioms.discreteSymmBwd` derive.
+`DerivedAxioms.serialPast` and `FormalSystem.Theorems.ConnectDerived.discreteSymmBwd` derive.
 
 ## Main Results
 
@@ -364,7 +364,8 @@ theorem refute_C3_discrete_symm_fwd : ¬ ValidC3 NF (gapFwd.imp gapBwd) := fun h
     (h TaskModel.allTrue bdd01 bdd01_isConvex 0 bdd01_zero_mem
       (gapFwd_bdd01_zero TaskModel.allTrue))
 
-/-- **`discrete_symm_bwd` fails under C3**, at the formula `DerivedAxioms.discreteSymmBwd`
+/-- **`discrete_symm_bwd` fails under C3**, at the formula
+`Theorems.ConnectDerived.discreteSymmBwd`
 derives: refuted dually, at the right endpoint. -/
 theorem refute_C3_discrete_symm_bwd : ¬ ValidC3 NF (gapBwd.imp gapFwd) := fun h =>
   not_gapFwd_bdd01_one TaskModel.allTrue

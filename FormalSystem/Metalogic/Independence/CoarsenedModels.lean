@@ -6,6 +6,8 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Conservativity.Plus.AxiomValidity
 import FormalSystem.Metalogic.Independence.NaiveSystem
+import FormalSystem.Theorems.ConnectDerived
+import FormalSystem.Theorems.LinearityDerived
 
 /-!
 # Coarsened-state models: a non-standard semantics for `⊡`
@@ -504,7 +506,7 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
   | connect_future a0 =>
     exact cValid_of_tm theEncoding _ (Axiom.connect_future (A a0)) (by trivial)
   | connect_past a0 =>
-    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.connectPast (A a0))
+    exact cValid_of_tm_deriv theEncoding _ (FormalSystem.Theorems.ConnectDerived.connectPast (A a0))
   | enrichment_until a0 a1 a2 =>
     exact cValid_of_tm theEncoding _ (Axiom.enrichment_until (A a0) (A a1) (A a2)) (by trivial)
   | enrichment_since a0 a1 a2 =>
@@ -528,7 +530,8 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
   | temp_linearity a0 a1 =>
     exact cValid_of_tm theEncoding _ (Axiom.temp_linearity (A a0) (A a1)) (by trivial)
   | temp_linearity_past a0 a1 =>
-    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.tempLinearityPast (A a0) (A a1))
+    exact cValid_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (A a0) (A a1))
   | F_until_equiv a0 =>
     exact cValid_of_tm theEncoding _ (Axiom.F_until_equiv (A a0)) (by trivial)
   | P_since_equiv a0 =>
@@ -538,7 +541,7 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
   | discrete_symm_fwd =>
     exact cValid_of_tm theEncoding _ (Axiom.discrete_symm_fwd) (by trivial)
   | discrete_symm_bwd =>
-    exact cValid_of_tm_deriv theEncoding _ DerivedAxioms.discreteSymmBwd
+    exact cValid_of_tm_deriv theEncoding _ FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
   | discrete_propagate_fwd =>
     exact cValid_of_tm theEncoding _ (Axiom.discrete_propagate_fwd) (by trivial)
   | discrete_propagate_bwd =>
@@ -607,7 +610,8 @@ theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ)
   | connect_future a0 =>
     exact cValid_reflect_time_of_tm theEncoding _ (Axiom.connect_future (A' a0)) (by trivial)
   | connect_past a0 =>
-    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.connectPast (A' a0))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.ConnectDerived.connectPast (A' a0))
   | enrichment_until a0 a1 a2 =>
     exact cValid_reflect_time_of_tm theEncoding _
         (Axiom.enrichment_until (A' a0) (A' a1) (A' a2)) (by trivial)
@@ -639,7 +643,7 @@ theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ)
         (Axiom.temp_linearity (A' a0) (A' a1)) (by trivial)
   | temp_linearity_past a0 a1 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _
-        (DerivedAxioms.tempLinearityPast (A' a0) (A' a1))
+        (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (A' a0) (A' a1))
   | F_until_equiv a0 =>
     exact cValid_reflect_time_of_tm theEncoding _ (Axiom.F_until_equiv (A' a0)) (by trivial)
   | P_since_equiv a0 =>
@@ -649,7 +653,8 @@ theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ)
   | discrete_symm_fwd =>
     exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_symm_fwd) (by trivial)
   | discrete_symm_bwd =>
-    exact cValid_reflect_time_of_tm_deriv theEncoding _ DerivedAxioms.discreteSymmBwd
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
+      FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
   | discrete_propagate_fwd =>
     exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_propagate_fwd) (by trivial)
   | discrete_propagate_bwd =>

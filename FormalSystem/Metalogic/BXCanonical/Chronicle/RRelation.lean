@@ -86,7 +86,7 @@ theorem until_implies_F_in_mcs (fc : FrameClass) {A : Set Formula}
     (h_until : Formula.untl γ δ ∈ A) :
     Formula.someFuture δ ∈ A := by
   have h_F : DerivationTree fc [] ((Formula.untl γ δ).imp (Formula.someFuture δ)) :=
-    DerivationTree.axiom [] _ (Axiom.until_F γ δ) trivial
+    DerivedAxioms.untilF γ δ
   exact SetMaximalConsistent.mp_of_theorem h_mcs h_F h_until
 
 /--
@@ -651,7 +651,7 @@ theorem c4_hard_case_G_neg_delta (fc : FrameClass) {A : Set Formula}
   have h_neg_top_until := mcs_contrapositive_mem fc h_mcs h_mono h_neg_until
   -- BX12 contrapositive: neg(top U delta) -> neg(F(delta))
   have h_bx12 := theorem_in_mcs h_mcs
-    (DerivationTree.axiom [] _ (Axiom.F_until_equiv δ) trivial)
+    (DerivedAxioms.fUntilEquiv δ)
   have h_neg_F := mcs_contrapositive_mem fc h_mcs h_bx12 h_neg_top_until
   -- ¬F(δ) → G(¬δ) via duality conversion
   exact FormalSystem.Metalogic.Bundle.neg_some_future_to_all_future_neg h_mcs δ h_neg_F
@@ -1361,11 +1361,11 @@ theorem burgessR_implies_burgessRSince (fc : FrameClass) {A C : Set Formula}
       -- burgessR gives untl(β, H(¬α)) ∈ A
       have h_untl : Formula.untl β (α.neg.allPast) ∈ A := h_burgessR _ h_H
       -- BX10: untl(β, H(¬α)) → F(H(¬α)), so F(H(¬α)) ∈ A
-      have h_ax10 := DerivationTree.axiom (fc := fc) [] _ (Axiom.until_F β α.neg.allPast) trivial
+      have h_ax10 := DerivedAxioms.untilF (fc := fc) β α.neg.allPast
       have h_F : Formula.someFuture (α.neg.allPast) ∈ A :=
         SetMaximalConsistent.mp_of_theorem h_mcs_A h_ax10 h_untl
       -- BX4: α → G(P(α)), so G(P(α)) ∈ A
-      have h_bx4 := DerivationTree.axiom (fc := fc) [] _ (Axiom.connect_future α) trivial
+      have h_bx4 := FormalSystem.Theorems.ConnectDerived.connectFuture (fc := fc) α
       have h_GP : Formula.allFuture (Formula.somePast α) ∈ A :=
         SetMaximalConsistent.mp_of_theorem h_mcs_A h_bx4 hα
       -- F(H(¬α)) and G(P(α)) are contradictory in MCS A
@@ -1430,7 +1430,7 @@ theorem burgessRSince_implies_burgessR (fc : FrameClass) {A C : Set Formula}
       have h_P : Formula.somePast (γ.neg.allFuture) ∈ C :=
         SetMaximalConsistent.mp_of_theorem h_mcs_C h_ax10' h_snce
       -- BX4': γ → H(F(γ)), so H(F(γ)) ∈ C
-      have h_bx4' := (DerivedAxioms.connectPast (fc := fc) γ)
+      have h_bx4' := (FormalSystem.Theorems.ConnectDerived.connectPast (fc := fc) γ)
       have h_HF : Formula.allPast (Formula.someFuture γ) ∈ C :=
         SetMaximalConsistent.mp_of_theorem h_mcs_C h_bx4' hγ
       -- P(G(¬γ)) and H(F(γ)) are contradictory in MCS C
@@ -1638,7 +1638,7 @@ theorem P_mem_of_g_content_sub (fc : FrameClass) {A C : Set Formula}
   -- BX4: α ∈ A → G(P(α)) ∈ A
   have h_GP : Formula.allFuture (Formula.somePast α) ∈ A := by
     have h_ax : DerivationTree fc [] (α.imp (Formula.allFuture (Formula.somePast α))) :=
-      DerivationTree.axiom [] _ (Axiom.connect_future α) trivial
+      FormalSystem.Theorems.ConnectDerived.connectFuture α
     exact SetMaximalConsistent.mp_of_theorem h_mcs_A h_ax h_α
   -- G(P(α)) ∈ A gives P(α) ∈ GContent(A) ⊆ C
   exact h_gc h_GP
@@ -1663,7 +1663,7 @@ theorem burgessR3Maximal_from_g_content_sub (fc : FrameClass) {A C : Set Formula
     have h_F := F_mem_of_g_content_sub fc h_mcs_A h_mcs_C h_gc γ hγ
     -- F(gamma) -> U(top, gamma) by F_until_equiv
     have h_bx12 : DerivationTree fc [] ((Formula.someFuture γ).imp (Formula.untl top γ)) :=
-      DerivationTree.axiom [] _ (Axiom.F_until_equiv γ) trivial
+      DerivedAxioms.fUntilEquiv γ
     exact SetMaximalConsistent.mp_of_theorem h_mcs_A h_bx12 h_F
   -- burgessRSince(C, top, A): for all alpha in A, S(top, alpha) in C
   have h_bRS : burgessRSince C top A := by

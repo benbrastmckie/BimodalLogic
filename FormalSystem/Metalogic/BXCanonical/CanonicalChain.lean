@@ -53,7 +53,7 @@ theorem F_imp_top_until_mcs {w : BXPoint} {ψ : Formula}
     Formula.untl (Formula.bot.imp Formula.bot) ψ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.someFuture ψ).imp
     (Formula.untl (Formula.bot.imp Formula.bot) ψ)) :=
-    DerivationTree.axiom [] _ (Axiom.F_until_equiv ψ) trivial
+    DerivedAxioms.fUntilEquiv ψ
   exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-- BX12' at MCS level: if P(ψ) ∈ w then (⊤ S ψ) ∈ w. -/

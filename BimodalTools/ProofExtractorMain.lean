@@ -13,6 +13,8 @@ import FormalSystem.Theorems.TemporalDerived
 import FormalSystem.Theorems.Perpetuity.Helpers
 import FormalSystem.Theorems.Perpetuity.Principles
 import FormalSystem.Theorems.ContextualProofs
+import FormalSystem.Theorems.ConnectDerived
+import FormalSystem.Theorems.LinearityDerived
 
 /-!
 # Proof Step Export Executable
@@ -683,10 +685,10 @@ def theoremRegistry : List TheoremEntry := [
     (DerivedAxioms.linearSince (fc := .Base) p q r s),
   -- BX11: temp_linearity: F(φ) ∧ F(ψ) → F(φ∧ψ) ∨ F(φ∧F(ψ)) ∨ F(F(φ)∧ψ)
   mkEntry "temp_linearity_axiom"
-    (DerivedAxioms.tempLinearityLegacy (fc := .Base) p q),
+    (FormalSystem.Theorems.LinearityDerived.tempLinearityLegacy (fc := .Base) p q),
   -- BX11': temp_linearity_past: P(φ) ∧ P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
   mkEntry "temp_linearity_past_axiom"
-    (DerivedAxioms.tempLinearityPast (fc := .Base) p q),
+    (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (fc := .Base) p q),
   -- BX12: F_until_equiv: F(φ) → U(φ, ⊤)
   mkEntry "F_until_equiv_axiom"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial),
@@ -805,7 +807,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "absorb_since_axiom_qr"
     (DerivedAxioms.absorbSince (fc := .Base) q r),
   mkEntry "temp_linearity_axiom_qr"
-    (DerivedAxioms.tempLinearityLegacy (fc := .Base) q r),
+    (FormalSystem.Theorems.LinearityDerived.tempLinearityLegacy (fc := .Base) q r),
   mkEntry "F_until_equiv_axiom_q"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv q) trivial),
   mkEntry "P_since_equiv_axiom_q"
@@ -867,7 +869,7 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until p q) trivial)),
   mkEntry "G_temp_linearity_axiom"
     (DerivationTree.temporal_necessitation _
-      (DerivedAxioms.tempLinearityLegacy (fc := .Base) p q)),
+      (FormalSystem.Theorems.LinearityDerived.tempLinearityLegacy (fc := .Base) p q)),
   mkEntry "G_F_until_equiv_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial)),
@@ -1082,7 +1084,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "discrete_symm_fwd_axiom" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_symm_fwd trivial),
   mkEntryAt "discrete_symm_bwd_axiom" .ZTime
-    (DerivedAxioms.discreteSymmBwd (fc := .ZTime)),
+    (FormalSystem.Theorems.ConnectDerived.discreteSymmBwd (fc := .ZTime)),
   mkEntryAt "discrete_propagate_fwd_axiom" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_propagate_fwd trivial),
   mkEntryAt "discrete_propagate_bwd_axiom" .ZTime
@@ -1132,7 +1134,7 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_symm_fwd trivial)),
   mkEntryAt "G_discrete_symm_bwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
-      (DerivedAxioms.discreteSymmBwd (fc := .ZTime))),
+      (FormalSystem.Theorems.ConnectDerived.discreteSymmBwd (fc := .ZTime))),
   mkEntryAt "G_discrete_propagate_fwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_propagate_fwd trivial)),

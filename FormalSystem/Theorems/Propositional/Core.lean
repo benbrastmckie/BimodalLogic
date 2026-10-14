@@ -742,7 +742,8 @@ def topNegImpBot {fc : FrameClass} : ⊢[fc] Formula.top.neg.imp Formula.bot := 
 
 /-- `⊢[fc] U(X, ⊥) → ⊥`: an `untl` whose *event* is refutable is itself refutable.
 
-Route: `Axiom.until_F` to `F ⊥`, event monotonicity to `F ¬¬⊥`, and temporal necessitation of
+Route: UE (`DerivedAxioms.untilF`) to `F ⊥`, event monotonicity to `F ¬¬⊥`, and temporal
+necessitation of
 `¬⊥`, whose `allFuture` unfolds to exactly `¬F ¬¬⊥`. Arguments are guard-first
 (`Formula.untl X Formula.bot` has guard `X`, event `⊥`). -/
 def untlBotFalse {fc : FrameClass} (X : Formula) :
@@ -753,7 +754,7 @@ def untlBotFalse {fc : FrameClass} (X : Formula) :
     DerivationTree.assumption _ _ (by simp)
   have h2 : [Formula.untl X Formula.bot] ⊢[fc] Formula.someFuture Formula.bot :=
     DerivationTree.modus_ponens _ _ _
-      (DerivationTree.axiom _ _ (Axiom.until_F X Formula.bot) (FrameClass.base_le fc)) h1
+      (thmIn (DerivedAxioms.untilF X Formula.bot)) h1
   have h3 : [Formula.untl X Formula.bot] ⊢[fc] Formula.someFuture Formula.bot.neg.neg :=
     eventMono _ Formula.bot Formula.bot.neg.neg Formula.top (efqAxiom _) h2
   have h4 : [Formula.untl X Formula.bot] ⊢[fc] Formula.allFuture Formula.bot.neg :=

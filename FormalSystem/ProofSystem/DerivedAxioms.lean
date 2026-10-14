@@ -31,13 +31,11 @@ Each entry reads *Derived* — *Primary (TR)*:
 * `serialPast` — `serial_future` (TS), then `prop_s`
 * `leftMonoSinceH` — `left_mono_until_G` (UG)
 * `rightMonoSince` — `right_mono_until` (UC)
-* `connectPast` — `connect_future` (TC)
 * `enrichmentSince` — `enrichment_until` (US)
 * `selfAccumSince` — `self_accum_until` (UF)
 * `absorbSince` — `absorb_until` (UI)
 * `sinceP` — `untilF` (UE, itself derived below)
 * `pSinceEquiv` — `fUntilEquiv` (UT, itself derived below)
-* `discreteSymmBwd` — `discrete_symm_fwd` (NP)
 * `priorSZ` — `prior_UZ` (UZ)
 * `priorSGap` — `prior_U_gap` (PU)
 
@@ -55,14 +53,18 @@ rather than kept as `Axiom` constructors:
 The theorem-level monotonicity forms `guardMonoThm` (UG + TN) and `eventMonoThm` (UC + TN) and
 the lemma `impTop` (`φ → ⊤`) are exported for the derived stock in `Theorems/`.
 
+The mirrors of TC and NP, `connectPast` and `discreteSymmBwd` (with their `At` forms), live in
+`Theorems/ConnectDerived.lean` next to their derived primaries `connectFuture` and
+`discreteSymmFwd`.
+
 For every `X` there is also a context-lifted form `XAt Γ … : Γ ⊢[fc] …`, obtained by
 weakening from the empty context.
 
-The two linearity mirrors `tempLinearityPast` and `linearSince` keep the historical disjunct
-order, which differs from the TR image of the paper's TL and CN by a propositional permutation;
-they are therefore derived in `Theorems/Combinators.lean`, next to the propositional combinators
-they need, together with the legacy future forms `tempLinearityLegacy` and
-`linearUntilLegacy`.
+The linearity mirror `linearSince` keeps the historical association, which differs from the TR
+image of the paper's CN by a propositional permutation; it is therefore derived in
+`Theorems/Combinators.lean`, next to the propositional combinators it needs, together with the
+legacy future form `linearUntilLegacy`. The analogous `tempLinearityPast` and
+`tempLinearityLegacy` live in `Theorems/LinearityDerived.lean`, where TL itself is derived.
 -/
 
 namespace FormalSystem.ProofSystem.DerivedAxioms
@@ -192,13 +194,6 @@ the nose. (This is *not* the paper's NA, `X⊤ → H X⊤`, which is
     (by simp [Formula.reflectTime, Formula.allFuture, Formula.allPast, Formula.someFuture,
       Formula.somePast, Formula.neg, Formula.top, Formula.reflect_time_involution])
 
-/-- `φ → H(Fφ)`: TR of TC (`connect_future`). -/
-@[tmLemma] def connectPast {fc : FrameClass} (φ : Formula) :
-    ⊢[fc] φ.imp (φ.someFuture.allPast) :=
-  ofReflect (baseAx (Axiom.connect_future φ.reflectTime) rfl)
-    (by simp [Formula.reflectTime, Formula.allFuture, Formula.allPast, Formula.someFuture,
-      Formula.somePast, Formula.neg, Formula.top, Formula.reflect_time_involution])
-
 /-- `p ∧ (φ S ψ) → φ S (ψ ∧ (φ U p))`: TR of US (`enrichment_until`). -/
 @[tmLemma] def enrichmentSince {fc : FrameClass} (φ ψ p : Formula) :
     ⊢[fc] (Formula.and p (Formula.snce φ ψ) |>.imp
@@ -231,13 +226,6 @@ the nose. (This is *not* the paper's NA, `X⊤ → H X⊤`, which is
   ofReflect (fUntilEquiv φ.reflectTime)
     (by simp [Formula.reflectTime, Formula.someFuture, Formula.somePast, Formula.top,
       Formula.reflect_time_involution])
-
-/-- `S(⊥,⊤) → U(⊥,⊤)`: TR of NP (`discrete_symm_fwd`); the reflected formula is the
-statement on the nose, so no transport is needed. -/
-@[tmLemma] def discreteSymmBwd {fc : FrameClass} :
-    ⊢[fc] (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)) :=
-  DerivationTree.time_reflection _ (baseAx Axiom.discrete_symm_fwd rfl)
 
 /-! ## Frame-class-gated mirrors -/
 
@@ -281,11 +269,6 @@ def rightMonoSinceAt {fc : FrameClass} (Γ : Context) (φ ψ χ : Formula) :
     Γ ⊢[fc] (φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ)) :=
   lift Γ (rightMonoSince φ ψ χ)
 
-/-- Context-lifted `connectPast`. -/
-def connectPastAt {fc : FrameClass} (Γ : Context) (φ : Formula) :
-    Γ ⊢[fc] φ.imp (φ.someFuture.allPast) :=
-  lift Γ (connectPast φ)
-
 /-- Context-lifted `enrichmentSince`. -/
 def enrichmentSinceAt {fc : FrameClass} (Γ : Context) (φ ψ p : Formula) :
     Γ ⊢[fc] (Formula.and p (Formula.snce φ ψ) |>.imp
@@ -311,12 +294,6 @@ def sincePAt {fc : FrameClass} (Γ : Context) (φ ψ : Formula) :
 def pSinceEquivAt {fc : FrameClass} (Γ : Context) (φ : Formula) :
     Γ ⊢[fc] (Formula.somePast φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ) :=
   lift Γ (pSinceEquiv φ)
-
-/-- Context-lifted `discreteSymmBwd`. -/
-def discreteSymmBwdAt {fc : FrameClass} (Γ : Context) :
-    Γ ⊢[fc] (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)) :=
-  lift Γ discreteSymmBwd
 
 /-- Context-lifted `priorSZ`. -/
 def priorSZAt {fc : FrameClass} (Γ : Context) (h : FrameClass.ZTime ≤ fc) (φ : Formula) :

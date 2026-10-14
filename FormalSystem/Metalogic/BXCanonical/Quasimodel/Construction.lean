@@ -130,8 +130,7 @@ theorem self_accum_mcs {w : BXPoint} {φ ψ : Formula}
 theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl ψ φ ∈ w.formulas) :
     Formula.someFuture φ ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.until_F ψ φ)
-      trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivedAxioms.untilF ψ φ
   exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-- Key lemma: BX4 connectedness at MCS level.
@@ -139,8 +138,8 @@ theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
 theorem connect_future_mcs {w : BXPoint} {φ : Formula}
     (h : φ ∈ w.formulas) :
     Formula.allFuture (Formula.somePast φ) ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
-      (Axiom.connect_future φ) trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ :=
+    FormalSystem.Theorems.ConnectDerived.connectFuture φ
   exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-! ## Since-direction MCS lemmas -/
@@ -163,7 +162,8 @@ theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
 theorem connect_past_mcs {w : BXPoint} {φ : Formula}
     (h : φ ∈ w.formulas) :
     Formula.allPast (Formula.someFuture φ) ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := (DerivedAxioms.connectPast φ)
+  have h_ax : DerivationTree FrameClass.Base [] _ :=
+    FormalSystem.Theorems.ConnectDerived.connectPast φ
   exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-! ## Until-Defect Set and Strict-Decrease Infrastructure

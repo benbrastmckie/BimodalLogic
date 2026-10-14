@@ -149,7 +149,7 @@ theorem until_witness_seed_consistent (fc : FrameClass) {A : Set Formula}
     SetConsistent (fc := fc) ({β} ∪ GContent A) := by
   have h_F_β : Formula.someFuture β ∈ A := by
     have h_ax : DerivationTree fc [] ((Formula.untl γ β).imp (Formula.someFuture β)) :=
-      DerivationTree.axiom [] _ (Axiom.until_F γ β) trivial
+      DerivedAxioms.untilF γ β
     exact SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_until
   exact forward_temporal_witness_seed_consistent A h_mcs β h_F_β
 
@@ -175,7 +175,7 @@ theorem lemma_2_4 (fc : FrameClass) {A : Set Formula}
   have h_GP : Formula.allFuture (Formula.somePast (Formula.untl γ β)) ∈ A := by
     have h_ax : DerivationTree fc [] ((Formula.untl γ β).imp
         (Formula.allFuture (Formula.somePast (Formula.untl γ β)))) :=
-      DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl γ β)) trivial
+      FormalSystem.Theorems.ConnectDerived.connectFuture (Formula.untl γ β)
     exact SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_until
   have h_P_until_C : Formula.somePast (Formula.untl γ β) ∈ C :=
     h_g_sub h_GP
@@ -188,7 +188,7 @@ theorem until_F_mcs (fc : FrameClass) {A : Set Formula}
     (h_until : Formula.untl γ β ∈ A) :
     Formula.someFuture β ∈ A := by
   have h_ax : DerivationTree fc [] ((Formula.untl γ β).imp (Formula.someFuture β)) :=
-    DerivationTree.axiom [] _ (Axiom.until_F γ β) trivial
+    DerivedAxioms.untilF γ β
   exact SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_until
 
 /-- BX5 at MCS level: U(γ,β) ∈ A implies U(γ∧U(γ,β), β) ∈ A. -/
@@ -217,7 +217,7 @@ theorem connect_future_mcs (fc : FrameClass) {A : Set Formula}
     (h_φ : φ ∈ A) :
     Formula.allFuture (Formula.somePast φ) ∈ A := by
   have h_ax : DerivationTree fc [] (φ.imp (Formula.allFuture (Formula.somePast φ))) :=
-    DerivationTree.axiom [] _ (Axiom.connect_future φ) trivial
+    FormalSystem.Theorems.ConnectDerived.connectFuture φ
   exact SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_φ
 
 /-- Conjunction introduction at MCS level. -/
@@ -387,14 +387,14 @@ theorem G_implies_F_mcs (fc : FrameClass) {A : Set Formula}
       (DerivedAxioms.serialFutureImp) h_top_in
   have h_TUT : Formula.untl top top ∈ A :=
     SetMaximalConsistent.mp_of_theorem h_mcs
-      (DerivationTree.axiom [] _ (Axiom.F_until_equiv top) trivial) h_F_top
+      (DerivedAxioms.fUntilEquiv top) h_F_top
   have h_TUα : Formula.untl top α ∈ A := by
     have h1 := SetMaximalConsistent.mp_of_theorem h_mcs
       (DerivationTree.axiom [] _ (Axiom.right_mono_until top α top) trivial)
       h_G_top_α
     exact SetMaximalConsistent.implication_property h_mcs h1 h_TUT
   exact SetMaximalConsistent.mp_of_theorem h_mcs
-    (DerivationTree.axiom [] _ (Axiom.until_F top α) trivial) h_TUα
+    (DerivedAxioms.untilF top α) h_TUα
 
 /-- In an MCS, H(α) implies P(α). Mirror of G_implies_F_mcs. -/
 theorem H_implies_P_mcs (fc : FrameClass) {A : Set Formula}
@@ -697,7 +697,7 @@ theorem xu_lemma_2_3_since_top (fc : FrameClass) {A B C : Set Formula}
   -- Step 2: Derive G(snce(top, alpha)) ∈ A from alpha ∈ A
   -- BX4: alpha → G(P(alpha))
   have h_bx4 : DerivationTree fc [] (alpha.imp (alpha.somePast.allFuture)) :=
-    DerivationTree.axiom [] _ (Axiom.connect_future alpha) trivial
+    FormalSystem.Theorems.ConnectDerived.connectFuture alpha
   have h_G_P_alpha : alpha.somePast.allFuture ∈ A :=
     SetMaximalConsistent.mp_of_theorem h_mcs_A h_bx4 h_alpha
   -- BX12': P(alpha) → snce(top, alpha) (theorem)
@@ -769,12 +769,12 @@ theorem xu_lemma_2_3_until_top (fc : FrameClass) {A B C : Set Formula}
   -- Step 2: Derive H(untl(top, gamma)) ∈ C from gamma ∈ C
   -- BX4': gamma → H(F(gamma))
   have h_bx4' : DerivationTree fc [] (gamma.imp (gamma.someFuture.allPast)) :=
-    (DerivedAxioms.connectPast gamma)
+    (FormalSystem.Theorems.ConnectDerived.connectPast gamma)
   have h_H_F_gamma : gamma.someFuture.allPast ∈ C :=
     SetMaximalConsistent.mp_of_theorem h_mcs_C h_bx4' h_gamma
   -- BX12: F(gamma) → untl(top, gamma) (theorem)
   have h_bx12 : DerivationTree fc [] (gamma.someFuture.imp (Formula.untl top gamma)) :=
-    DerivationTree.axiom [] _ (Axiom.F_until_equiv gamma) trivial
+    DerivedAxioms.fUntilEquiv gamma
   -- H(F(gamma) → untl(top, gamma)) via past necessitation
   have h_H_impl : (gamma.someFuture.imp (Formula.untl top gamma)).allPast ∈ C :=
     theorem_in_mcs h_mcs_C (FormalSystem.Theorems.pastNecessitation _ h_bx12)
@@ -1002,7 +1002,7 @@ private theorem h_content_sub_imp_g_content_sub' (fc : FrameClass) {A B : Set Fo
     · exact absurd h h_not
     · exact h
   have h_ax : DerivationTree fc [] (ψ.neg.imp (ψ.neg.someFuture.allPast)) :=
-    (DerivedAxioms.connectPast ψ.neg)
+    (FormalSystem.Theorems.ConnectDerived.connectPast ψ.neg)
   have h_HF : Formula.allPast (Formula.someFuture ψ.neg) ∈ B :=
     SetMaximalConsistent.mp_of_theorem h_mcs_B h_ax h_neg_ψ
   have h_F_neg_ψ_A : Formula.someFuture ψ.neg ∈ A := h_hBA h_HF
@@ -3409,7 +3409,7 @@ theorem lemma_2_4_with_guard (fc : FrameClass) {A : Set Formula}
   have h_GP : Formula.allFuture (Formula.somePast (Formula.untl γ β)) ∈ A := by
     have h_ax : DerivationTree fc [] ((Formula.untl γ β).imp
         (Formula.allFuture (Formula.somePast (Formula.untl γ β)))) :=
-      DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl γ β)) trivial
+      FormalSystem.Theorems.ConnectDerived.connectFuture (Formula.untl γ β)
     exact SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_until
   have h_P_until_C : Formula.somePast (Formula.untl γ β) ∈ C := h_g_sub h_GP
   -- snce(γ, α) ∈ C for all α ∈ A (from Since-obligation part of enriched seed)

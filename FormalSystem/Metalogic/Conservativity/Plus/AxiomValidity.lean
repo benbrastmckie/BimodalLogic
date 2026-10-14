@@ -9,6 +9,8 @@ import FormalSystem.PlusLanguage.PlusPasting
 import FormalSystem.PlusLanguage.PlusStateLocal
 import FormalSystem.PlusLanguage.Axioms
 import FormalSystem.Theorems.Combinators
+import FormalSystem.Theorems.ConnectDerived
+import FormalSystem.Theorems.LinearityDerived
 
 /-!
 # Validity and reflection-validity of every TM⁺ axiom schema
@@ -99,7 +101,7 @@ theorem plusAxiom_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
     exact plusValidIn_of_tm theEncoding _ (Axiom.connect_future (A a0)) le_rfl
   | connect_past a0 =>
     exact plusValidIn_of_tm_deriv theEncoding _
-      (DerivedAxioms.connectPast (A a0))
+      (FormalSystem.Theorems.ConnectDerived.connectPast (A a0))
   | enrichment_until a0 a1 a2 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.enrichment_until (A a0) (A a1) (A a2)) le_rfl
   | enrichment_since a0 a1 a2 =>
@@ -126,14 +128,16 @@ theorem plusAxiom_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
   | temp_linearity a0 a1 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.temp_linearity (A a0) (A a1)) le_rfl
   | temp_linearity_past a0 a1 =>
-    exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.tempLinearityPast (A a0) (A a1))
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (A a0) (A a1))
   | F_until_equiv a0 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.F_until_equiv (A a0)) le_rfl
   | P_since_equiv a0 =>
     exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.pSinceEquiv (A a0))
   | modal_future a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.modal_future (A a0)) le_rfl
   | discrete_symm_fwd => exact plusValidIn_of_tm theEncoding _ Axiom.discrete_symm_fwd le_rfl
-  | discrete_symm_bwd => exact plusValidIn_of_tm_deriv theEncoding _ DerivedAxioms.discreteSymmBwd
+  | discrete_symm_bwd =>
+    exact plusValidIn_of_tm_deriv theEncoding _ FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
   | discrete_propagate_fwd =>
     exact plusValidIn_of_tm theEncoding _ Axiom.discrete_propagate_fwd le_rfl
   | discrete_propagate_bwd =>
@@ -211,7 +215,8 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
   | connect_future a0 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.connect_future (A' a0)) le_rfl
   | connect_past a0 =>
-    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.connectPast (A' a0))
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+      (FormalSystem.Theorems.ConnectDerived.connectPast (A' a0))
   | enrichment_until a0 a1 a2 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _
       (Axiom.enrichment_until (A' a0) (A' a1) (A' a2)) le_rfl
@@ -243,7 +248,7 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.temp_linearity (A' a0) (A' a1)) le_rfl
   | temp_linearity_past a0 a1 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
-      (DerivedAxioms.tempLinearityPast (A' a0) (A' a1))
+      (FormalSystem.Theorems.LinearityDerived.tempLinearityPast (A' a0) (A' a1))
   | F_until_equiv a0 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.F_until_equiv (A' a0)) le_rfl
   | P_since_equiv a0 =>
@@ -253,7 +258,8 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
   | discrete_symm_fwd =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ Axiom.discrete_symm_fwd le_rfl
   | discrete_symm_bwd =>
-    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ DerivedAxioms.discreteSymmBwd
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+      FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
   | discrete_propagate_fwd =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ Axiom.discrete_propagate_fwd le_rfl
   | discrete_propagate_bwd =>

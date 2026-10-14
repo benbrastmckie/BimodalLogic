@@ -233,28 +233,34 @@ def ruleAxioms : TableauRule → List AxiomInstance
   | .someFutureNeg => []
   | .somePastPos => []
   | .somePastNeg => []
-  -- Until / Since (4). The positive rules branch into an event witness (BX10/BX10') and a
-  -- guard-and-continue arm that re-emits the eventuality (BX5/BX5', self-accumulation).
+  -- Until / Since (4). The positive rules branch into an event witness (UE, the derived
+  -- `DerivedAxioms.untilF` — no axiom image) and a guard-and-continue arm that re-emits the
+  -- eventuality (BX5/BX5', self-accumulation).
   -- The negative rules perform a Reynolds co-decomposition that is no single axiom's image.
-  | .untlPos => [⟨_, .until_F pA qA⟩, ⟨_, .self_accum_until pA qA⟩]
+  | .untlPos => [⟨_, .self_accum_until pA qA⟩]
   | .untlNeg => []
-  -- The Since rule is grounded, via the time-reflection rule TR, in the Until primaries: its
-  -- axioms BX10'/BX5' are the derived TR mirrors `DerivedAxioms.sinceP`/`self_accum_since`.
-  | .sncePos => [⟨_, .until_F pA qA⟩, ⟨_, .self_accum_until pA qA⟩]
+  -- The Since rule is grounded, via the time-reflection rule TR, in the Until primary: its
+  -- axiom BX5' is the derived TR mirror `self_accum_since`; its witness arm is UE's mirror
+  -- `DerivedAxioms.sinceP`, a derived theorem with no axiom image.
+  | .sncePos => [⟨_, .self_accum_until pA qA⟩]
   | .snceNeg => []
-  -- Order trichotomy (1): the three branches ARE the three `temp_linearity` disjuncts, in the
-  -- order of the derived `DerivedAxioms.tempLinearityLegacy` (the primitive axiom states the
-  -- paper's TL, whose disjuncts are the same three rotated). That identity is settled design,
+  -- Order trichotomy (1): the three branches ARE the three disjuncts of TL, in the order of
+  -- `Theorems.LinearityDerived.tempLinearityLegacy` (the paper's TL, derived from CN as
+  -- `LinearityDerived.tempLinearity`, has the same three disjuncts rotated). TL is a derived
+  -- theorem, so the rule has no axiom image; the identity of the disjuncts is settled design,
   -- and it is what makes the eventual admissibility lemma a one-liner.
-  | .orderTrichotomy => [⟨_, .temp_linearity pA qA⟩]
-  -- Dense (2)
+  | .orderTrichotomy => []
+  -- Dense (2). DN is the derived `Theorems.LinearityDerived.density`, obtained from NN
+  -- (`dense_indicator`) with Base schemata, so NN is the axiom grounding the density rule.
   | .denseIndicatorClosure => [⟨_, .dense_indicator⟩]
-  | .densityRule => [⟨_, .density pA⟩]
+  | .densityRule => [⟨_, .dense_indicator⟩]
   -- Discrete (3)
   | .priorUZ => [⟨_, .prior_UZ pA⟩]
   -- Grounded via TR in UZ (`DerivedAxioms.priorSZ` is its mirror).
   | .priorSZ => [⟨_, .prior_UZ pA⟩]
-  | .z1Rule => [⟨_, .z1 pA⟩]
+  -- Z1 is the derived `Metalogic.CompletenessDerived.z1Thm`, recovered through the ZTime
+  -- completeness engine, whose only frame-class-sensitive axiom is UZ.
+  | .z1Rule => [⟨_, .prior_UZ pA⟩]
   -- Dedekind (3). NOT `prior_UZ`/`prior_SZ`: those are the integer well-ordering axioms at
   -- `.ZTime`, and the similarity of the names is a known trap.
   | .priorUGap => [⟨_, .prior_U_gap pA⟩]
@@ -264,7 +270,8 @@ def ruleAxioms : TableauRule → List AxiomInstance
   -- Scheduled outside `allRulesForFC` (2)
   -- Past seriality is the TR mirror of TS (`DerivedAxioms.serialPast`).
   | .serialityRule => [⟨_, .serial_future⟩]
-  | .timeLinearity => [⟨_, .temp_linearity pA qA⟩]
+  -- TL is derived (`Theorems.LinearityDerived.tempLinearity`): no axiom image.
+  | .timeLinearity => []
 
 /-!
 ## The constructor enumeration

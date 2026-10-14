@@ -310,14 +310,14 @@ theorem burgessR3Maximal_from_h_content_sub {fc : FrameClass} {A C : Set Formula
     intro γ hγ
     -- BX4': γ → H(F(γ))
     have h_ax_cp : DerivationTree fc [] (γ.imp (Formula.allPast (Formula.someFuture γ))) :=
-      (DerivedAxioms.connectPast γ)
+      (FormalSystem.Theorems.ConnectDerived.connectPast γ)
     have h_HF : Formula.allPast (Formula.someFuture γ) ∈ C :=
       SetMaximalConsistent.mp_of_theorem h_mcs_C h_ax_cp hγ
     -- H(F(γ)) ∈ C → F(γ) ∈ HContent(C) ⊆ A
     have h_F : Formula.someFuture γ ∈ A := h_hc h_HF
     -- F(γ) → U(⊤, γ) by F_until_equiv
     have h_bx12 : DerivationTree fc [] ((Formula.someFuture γ).imp (Formula.untl top γ)) :=
-      DerivationTree.axiom [] _ (Axiom.F_until_equiv γ) trivial
+      DerivedAxioms.fUntilEquiv γ
     exact SetMaximalConsistent.mp_of_theorem h_mcs_A h_bx12 h_F
   -- burgessRSince(C, ⊤, A): ∀ α ∈ A, S(⊤, α) ∈ C
   have h_bRS : burgessRSince C top A := by

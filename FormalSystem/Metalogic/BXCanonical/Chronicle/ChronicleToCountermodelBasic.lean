@@ -899,7 +899,7 @@ theorem next_top_gives_since (fc : FrameClass) (A : Set Formula)
     Formula.snce Formula.bot topFormula ∈ LimitF fc A h_mcs x := by
   have h_mcs_x := limit_c0 fc A h_mcs x hx
   exact SetMaximalConsistent.mp_of_theorem h_mcs_x
-    (DerivationTree.axiom [] _ Axiom.discrete_symm_fwd trivial)
+    FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
     h_next
 
 /--

@@ -780,7 +780,7 @@ theorem limit_F_resolution (fc : FrameClass) (A : Set Formula)
   have h_mcs_x := limit_c0 fc A h_mcs x hx
   have h_bx12 : DerivationTree fc [] ((Formula.someFuture φ).imp
       (Formula.untl (Formula.bot.imp Formula.bot) φ)) :=
-    DerivationTree.axiom [] _ (Axiom.F_until_equiv φ) trivial
+    DerivedAxioms.fUntilEquiv φ
   have h_until : Formula.untl (Formula.bot.imp Formula.bot) φ ∈ LimitF fc A h_mcs x :=
     SetMaximalConsistent.mp_of_theorem h_mcs_x h_bx12 h_F
   exact limit_satisfies_c5_weak fc A h_mcs x hx _ φ h_until
@@ -1070,7 +1070,7 @@ theorem h_content_sub_imp_g_content_sub {fc : FrameClass} {A B : Set Formula}
     · exact h
   -- BX4': ¬ψ → H(F(¬ψ))
   have h_ax : DerivationTree fc [] (ψ.neg.imp (ψ.neg.someFuture.allPast)) :=
-    (DerivedAxioms.connectPast ψ.neg)
+    (FormalSystem.Theorems.ConnectDerived.connectPast ψ.neg)
   have h_HF : Formula.allPast (Formula.someFuture ψ.neg) ∈ B :=
     SetMaximalConsistent.mp_of_theorem h_mcs_B h_ax h_neg_ψ
   -- F(¬ψ) ∈ HContent(B) ⊆ A
@@ -1145,7 +1145,7 @@ theorem limit_forward_G (fc : FrameClass) (A : Set Formula)
     exact Bundle.some_future_all_future_neg_absurd h_mcs_x φ.neg h_abs h_G_nn
   set top := Formula.bot.imp Formula.bot with htop_def
   have h_bx10 : DerivationTree fc [] ((Formula.untl top φ.neg).imp (Formula.someFuture φ.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.until_F top φ.neg) trivial
+    DerivedAxioms.untilF top φ.neg
   have h_until_not : Formula.untl top φ.neg ∉ LimitF fc A h_mcs x := by
     intro h_in
     exact h_F_not (SetMaximalConsistent.mp_of_theorem h_mcs_x h_bx10 h_in)

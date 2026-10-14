@@ -357,7 +357,8 @@ this tree, and `FormalSystem.MinusLanguage.AxiomDischarge` consumes `dfSchema` t
 `Discrete` row of the backward conservativity bridge.
 
 The derivation is **syntactic** and uses only `succIndicator`, `unfoldForward`, `nextConj`,
-`Axiom.enrichment_until`, `Axiom.until_F` and propositional plumbing. In particular it does
+`Axiom.enrichment_until`, UE (`DerivedAxioms.untilF`) and propositional plumbing. In particular it
+does
 **not** route through any completeness theorem: a proof-theoretic bridge must not depend on the
 completeness machinery it is meant to feed, so `#print axioms dfSchema` mentioning a
 `completeness_*` result would be a defect, not an optimisation.
@@ -463,7 +464,8 @@ Three steps, in the order of the module note above:
 2. `Axiom.enrichment_until` at guard `⊥`, event `⊤`, and payload `p := Hφ ∧ φ` turns
    `(Hφ ∧ φ) ∧ X⊤` into `X (⊤ ∧ Y (Hφ ∧ φ))` — the payload is transported to the successor as
    a `Y`-formula because the successor's `snce`-guard interval is empty.
-3. `prevAllPast` converts `Y (Hφ ∧ φ)` into `Hφ` at the successor, and `Axiom.until_F` at
+3. `prevAllPast` converts `Y (Hφ ∧ φ)` into `Hφ` at the successor, and UE
+   (`DerivedAxioms.untilF`) at
    guard `⊥` weakens `X (Hφ)` to `F (Hφ)`.
 
 The `F⊤` conjunct of the antecedent is not consumed: at `FrameClass.ZTime` the stronger
@@ -490,8 +492,7 @@ def dfSchema (φ : Formula) :
   have h3 : Γ ⊢[FrameClass.ZTime] Formula.untl Formula.bot φ.allPast :=
     eventMono _ (Formula.and Formula.top (Formula.snce Formula.bot A)) φ.allPast Formula.bot
       (impTrans (rceImp Formula.top (Formula.snce Formula.bot A)) (prevAllPast φ)) h2
-  exact ctxMp (DerivationTree.axiom _ _ (Axiom.until_F Formula.bot φ.allPast)
-    (FrameClass.base_le _)) h3
+  exact ctxMp (thmIn (DerivedAxioms.untilF Formula.bot φ.allPast)) h3
 
 end -- noncomputable section
 

@@ -40,7 +40,8 @@ beside the failures they mirror. Every mirror in this file survives.
 
 * `FormalSystem/ProofSystem/DerivedAxioms.lean` — the "Base mirrors" and "Frame-class-gated
   mirrors" sections
-* `FormalSystem/Theorems/Combinators.lean` — `linearSince`, `tempLinearityPast`
+* `FormalSystem/Theorems/Combinators.lean` — `linearSince`
+* `FormalSystem/Theorems/LinearityDerived.lean` — `tempLinearityPast`
 * `FormalSystem/Metalogic/ConvexConsequence/AxiomSurvival.lean` — the forward rows
 
 ## Tags
@@ -75,7 +76,7 @@ theorem c3_right_mono_since (φ ψ χ : Formula) :
   exact ⟨s, hs, hsx, hH s hs hsx hφ, hguard⟩
 
 /-- The mirror of `connect_future` survives C3: `φ → H(Fφ)`, the formula
-`DerivedAxioms.connectPast` derives. -/
+`FormalSystem.Theorems.ConnectDerived.connectPast` derives. -/
 theorem c3_connect_past (φ : Formula) : ValidC3 F (φ.imp φ.someFuture.allPast) := by
   intro M τ _hτ x hx hφ
   refine (TruthAtConvex.allPast_iff M τ x φ.someFuture).mpr fun s _hs hsx => ?_
@@ -158,7 +159,8 @@ theorem c3_linear_since (φ ψ χ θ : Formula) :
       fun r hr hsr hrx => (TruthAtConvex.and_iff M τ r _ _).mpr
         ⟨hg₁ r hr hsr hrx, hg₂ r hr (lt_trans hgt hsr) hrx⟩⟩
 
-/-- The mirror of `temp_linearity` survives C3, at the formula `Combinators.tempLinearityPast`
+/-- The mirror of TL survives C3, at the formula
+`Theorems.LinearityDerived.tempLinearityPast`
 derives — with that derivation's order of disjuncts. Trichotomy on the two `P`-witnesses. -/
 theorem c3_temp_linearity_past (φ ψ : Formula) :
     ValidC3 F ((Formula.and (Formula.somePast φ) (Formula.somePast ψ)).imp

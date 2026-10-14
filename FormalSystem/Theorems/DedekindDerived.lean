@@ -160,17 +160,12 @@ private noncomputable def snceEventBot {fc : FrameClass} {E : Formula} (ψ : For
 
 `Hψ` is *definitionally* `¬P(¬ψ)` and `G(P¬ψ)` is *definitionally* `¬F(Hψ)` under the tree's
 abbreviations, so BX4 (`connect_future` at `¬ψ`: `¬ψ → G(P¬ψ)`) contraposes to
-`¬¬F(Hψ) → ¬¬ψ`, and double negation on both ends closes the gap.
+`¬¬F(Hψ) → ¬¬ψ`, and double negation on both ends closes the gap. That argument is carried out,
+from the derived TC, by `ConnectDerived.fHImp`, of which this is an alias.
 -/
 noncomputable def someFutureAllPastImp {fc : FrameClass} (ψ : Formula) :
     ⊢[fc] ψ.allPast.someFuture.imp ψ :=
-  let connect : ⊢[fc] ψ.neg.imp ψ.neg.somePast.allFuture :=
-    DerivationTree.axiom [] _ (Axiom.connect_future ψ.neg) (FrameClass.base_le fc)
-  let contra : ⊢[fc] ψ.neg.somePast.allFuture.neg.imp ψ.neg.neg :=
-    mp connect (baseThm (contrapositive ψ.neg ψ.neg.somePast.allFuture))
-  impTrans (notNotIntro ψ.allPast.someFuture)
-    (impTrans (show ⊢[fc] ψ.allPast.someFuture.neg.neg.imp ψ.neg.neg from contra)
-      (doubleNegation ψ))
+  ConnectDerived.fHImp ψ
 
 /--
 **L1**: `⊢[fc] F(Hψ) → U(⊤, ψ)`.

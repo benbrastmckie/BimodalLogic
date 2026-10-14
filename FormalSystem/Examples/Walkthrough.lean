@@ -13,6 +13,7 @@ import FormalSystem.Automation.Tactics.UserTactics
 import FormalSystem.Automation.Tactics.Commands
 import FormalSystem.Automation.ProofSearch.Core
 import FormalSystem.Automation.ProofSearch.Strategies
+import FormalSystem.Theorems.LinearityDerived
 
 /-!
 # A Worked Walkthrough of TM
@@ -230,17 +231,19 @@ def ggFml : Formula := pF.allFuture.allFuture.imp pF.allFuture
 /--
 `GGp → Gp`, derived over the class of dense frames.
 
-The side condition is `le_refl _` rather than `decide`: `Axiom.density`'s minimum frame class
-*is* `Dense`, so the gate is discharged by reflexivity of the frame-class order.
+DN is a derived theorem, `LinearityDerived.density`, gated by a hypothesis `Dense ≤ fc` exactly
+as the `axiom` constructor gates NN (`dense_indicator`, which the derivation consumes). The side
+condition is `le_refl _` rather than `decide`: at `Dense` itself the gate is discharged by
+reflexivity of the frame-class order.
 -/
 def ggAtDense : DerivationTree FrameClass.Dense [] ggFml :=
-  DerivationTree.axiom [] _ (Axiom.density pF) (le_refl _)
+  FormalSystem.Theorems.LinearityDerived.density (le_refl _) pF
 
 /-!
-This is where the frame-class gate on the `axiom` constructor earns its keep. `Axiom.density`
-records `Dense` as its minimum class, so `ggAtDense` type-checks at `Dense` and the very same
-constructor call is *not type-correct* at `Base` or at `ZTime` — there is no proof of
-`Dense ≤ Base` to supply, because there is none to be had. Frame-class sensitivity in this
+This is where the frame-class gate earns its keep. `density` demands a proof of `Dense ≤ fc`
+(inherited from the `axiom` constructor's gate on `dense_indicator`), so `ggAtDense` type-checks
+at `Dense` and the very same call is *not type-correct* at `Base` or at `ZTime` — there is no
+proof of `Dense ≤ Base` to supply, because there is none to be had. Frame-class sensitivity in this
 library is a typing phenomenon, not a convention the proofs agree to respect.
 
 That the axiom is unavailable at `Base` does not by itself show the formula is underivable

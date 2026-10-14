@@ -310,7 +310,7 @@ confirm in Phase 6 by the scoped build of `FormalSystem.Metalogic.Conservativity
 
 ---
 
-### Phase 5: Repoint FormalSystem core and Metalogic engines; move the dependent mirrors [NOT STARTED]
+### Phase 5: Repoint FormalSystem core and Metalogic engines; move the dependent mirrors [COMPLETED]
 
 **Goal**: With all nine derived theorems in place and the constructors still present, repoint
 every genuine `DerivationTree.axiom … (Axiom.X …)` site in `FormalSystem/Theorems`,
@@ -322,37 +322,37 @@ every genuine `DerivationTree.axiom … (Axiom.X …)` site in `FormalSystem/The
 substep stays green because nothing is deleted yet.
 
 **Tasks**:
-- [ ] `Theorems/TemporalDerived.lean`: add `import FormalSystem.Theorems.ConnectDerived`;
+- [x] `Theorems/TemporalDerived.lean`: add `import FormalSystem.Theorems.ConnectDerived`;
       `connectFutureThm := ConnectDerived.connectFuture φ` (line 306);
       `untilImpliesSomeFuture`/`untilImpF` (338, 355) become `DerivedAxioms.untilF`
-- [ ] `Theorems/Propositional/Core.lean:756` (`untlBotFalse`) → `DerivedAxioms.untilF`
-- [ ] `Theorems/ContextualProofs.lean:256,285,412,463`, `Theorems/DiscreteUnfolding.lean:493`,
+- [x] `Theorems/Propositional/Core.lean:756` (`untlBotFalse`) → `DerivedAxioms.untilF`
+- [x] `Theorems/ContextualProofs.lean:256,285,412,463`, `Theorems/DiscreteUnfolding.lean:493`,
       `Theorems/DedekindDerived.lean:168` → derived theorems (optionally make
       `someFutureAllPastImp` an alias of `ConnectDerived.fHImp`)
-- [ ] Move `connectPast`/`connectPastAt` (DerivedAxioms 107, 196) and `discreteSymmBwd` (148)
+- [x] Move `connectPast`/`connectPastAt` (DerivedAxioms 107, 196) and `discreteSymmBwd` (148)
       into `ConnectDerived`, reflecting `connectFuture`/`discreteSymmFwd`; repoint every
-      `DerivedAxioms.connectPast`/`.connectPastAt`/`.discreteSymmBwd` reference (grep the tree)
-- [ ] Move `tempLinearityLegacy`/`tempLinearityPast` (Combinators 813-860) into
+      `DerivedAxioms.connectPast`/`.connectPastAt`/`.discreteSymmBwd` reference (grep the tree) *(deviation: altered — the Phase 2/3 proofs of TC, `fHImp`, NP, NA, TL, DN were rewritten as computable combinator terms (statements verbatim) because `ProofSearch/Core.mirrorCandidate`, `BimodalTools/ProofExtractorMain` and `connectFutureThm` are computable consumers and the scratch route through `deductionTheorem`/`orElim`/`lceImp`/`rceImp`/`pastKDist`/`untlBotFalse` is `noncomputable`; see issues.jsonl)*
+- [x] Move `tempLinearityLegacy`/`tempLinearityPast` (Combinators 813-860) into
       `LinearityDerived`, built from `tempLinearity` + `orRotate`; repoint references
-- [ ] `Examples/Walkthrough.lean:237` (DN) → `LinearityDerived.density`
-- [ ] Metalogic engines: `BXCanonical/Frame.lean:697`, `CanonicalChain.lean:56`,
+- [x] `Examples/Walkthrough.lean:237` (DN) → `LinearityDerived.density`
+- [x] Metalogic engines: `BXCanonical/Frame.lean:697`, `CanonicalChain.lean:56`,
       `OrderedSeedConsistency.lean:128` (`temp_linearity_mcs` — consumed by
       `WeakCanonical/ReflexiveCanonical.lean:284,371`), `Bundle/WitnessSeed.lean:442`,
       `Filtration/DefectChain.lean:84,93`, `Chronicle/RRelation.lean:89,654,1364,1368,1641,1666`,
       `Chronicle/PointInsertion.lean:152,178,191,220,390,397,700,777,3412`,
       `Chronicle/ChronicleConstruction.lean:783,1148`, `Chronicle/CounterexampleElimination.lean:320`,
       `Chronicle/ChronicleToCountermodelBasic.lean:902`, `Quasimodel/Construction.lean:133,143`
-- [ ] `Decidability/Verified/RuleSpec.lean` `ruleAxioms`: `untlPos`/`sncePos` drop the `until_F`
+- [x] `Decidability/Verified/RuleSpec.lean` `ruleAxioms`: `untlPos`/`sncePos` drop the `until_F`
       instance (keep `self_accum_until`); `orderTrichotomy`, `timeLinearity`, `densityRule`,
       `z1Rule` become `[]` with a comment pointing at the derived theorem (the module docstring
       already allows empty lists for semantically grounded rules) — decision: do not generalize
-      `AxiomInstance`
-- [ ] Automation: `@[tmLemma]` already on UE/UT/TC/NF/NP/NA/TL from Phases 1-3; add
+      `AxiomInstance` *(deviation: altered — GATE 3 `ruleAxioms_covers_ruleFrameClass` (proved by `decide`) requires a rule gated above `.Base` to name an axiom at its own class, so `[]` fails the build for `densityRule`/`z1Rule`; those two are grounded in `dense_indicator`/`prior_UZ`, the constructors their derivations consume (the `priorSZ => prior_UZ` precedent); `orderTrichotomy`/`timeLinearity` are `[]` as planned)*
+- [x] Automation: `@[tmLemma]` already on UE/UT/TC/NF/NP/NA/TL from Phases 1-3; add
       `LinearityDerived.density` and `CompletenessDerived.z1Thm` to `tryGatedDerivedMatch`'s
       lemma list (`Tactics/Search.lean:167`) exactly as `priorSZ`/`priorSGap` are handled, with
       their gates discharged by `decide`/`le_rfl`; do NOT remove the `axiomCtors` entries or the
       `ProofSearch/Core.lean` matcher arms yet (Phase 7)
-- [ ] Scoped guarded builds of each touched module and its direct dependents
+- [x] Scoped guarded builds of each touched module and its direct dependents
       (`FormalSystem.Theorems`, `FormalSystem.Metalogic.BXCanonical`,
       `FormalSystem.Metalogic.WeakCanonical`, `FormalSystem.Metalogic.Decidability`,
       `FormalSystem.Automation`, `FormalSystem.Examples`)

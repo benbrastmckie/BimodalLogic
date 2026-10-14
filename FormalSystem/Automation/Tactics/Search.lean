@@ -10,6 +10,8 @@ import FormalSystem.Theorems.Propositional.Reasoning
 import FormalSystem.Theorems.TemporalDerived
 import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.Perpetuity
+import FormalSystem.Theorems.LinearityDerived
+import FormalSystem.Metalogic.CompletenessDerived
 
 /-!
 # The bounded proof-search engine
@@ -157,15 +159,19 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
   return result.isSome
 
 /--
-Try to close the goal with a frame-class-gated derived theorem (`DerivedAxioms.priorSZ`, the
-time-reflection mirror of the ZTime axiom UZ, or `DerivedAxioms.priorSGap`, the mirror of the
-RTime axiom PU). The gate hypothesis (`ZTime ≤ fc` / `RTime ≤ fc`) is discharged by `decide`,
-so the match fails at frame classes where the mirror is not a theorem.
+Try to close the goal with a frame-class-gated derived theorem: `DerivedAxioms.priorSZ` (the
+time-reflection mirror of the ZTime axiom UZ), `DerivedAxioms.priorSGap` (the mirror of the
+RTime axiom PU), `LinearityDerived.density` (DN, derived from NN at `Dense ≤ fc`), and
+`CompletenessDerived.z1Thm` (Z1, recovered through the ZTime completeness engine, stated at
+`FrameClass.ZTime`). A gate hypothesis (`ZTime ≤ fc` / `RTime ≤ fc` / `Dense ≤ fc`) is discharged
+by `decide`, so the match fails at frame classes where the schema is not a theorem.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
 def tryGatedDerivedMatch (goal : MVarId) : TacticM Bool := do
-  for lemmaName in [``DerivedAxioms.priorSZ, ``DerivedAxioms.priorSGap] do
+  for lemmaName in [``DerivedAxioms.priorSZ, ``DerivedAxioms.priorSGap,
+      ``FormalSystem.Theorems.LinearityDerived.density,
+      ``FormalSystem.Metalogic.CompletenessDerived.z1Thm] do
     let result ← observing? do
       setGoals [goal]
       let newGoals ← goal.apply (← mkConstWithFreshMVarLevels lemmaName)

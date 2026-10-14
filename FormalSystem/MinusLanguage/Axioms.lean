@@ -204,7 +204,8 @@ inductive Axiom : MinusFormula → Type where
       The disjunct order and right-association here are the **paper's**, transcribed verbatim.
       `ProofSystem.Axiom.temp_linearity` now states the same verbatim form; the discharge in
       `MinusLanguage/AxiomDischarge.lean` still goes through the derived pre-paper order
-      `DerivedAxioms.tempLinearityLegacy`, which is deliberately not pre-applied here. -/
+      `Theorems.LinearityDerived.tempLinearityLegacy`, which is deliberately not pre-applied
+      here. -/
   | temp_linearity (φ ψ : MinusFormula) :
       Axiom ((φ.someFuture.and ψ.someFuture).imp
         (((φ.someFuture.and ψ).someFuture).or

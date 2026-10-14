@@ -13,6 +13,7 @@ import FormalSystem.Theorems.DedekindDerived
 import FormalSystem.Theorems.DiscreteUnfolding
 import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Theorems.DeductionTheorem
+import FormalSystem.Theorems.LinearityDerived
 
 /-!
 # The axiom-discharge table: an L derivation of `tr` of every L⁻ axiom
@@ -37,7 +38,8 @@ is a single `DerivationTree.axiom` or a single named theorem.
 * DN — L asset: `Axiom.density`; Exact?: yes
 * TS — L asset: `Axiom.serial_future`; Exact?: **no** — `F`-bridge
 * TC — L asset: `Axiom.connect_future`; Exact?: **no** — `P`-bridge under `G`
-* TL — L asset: `Axiom.temp_linearity` (via `DerivedAxioms.tempLinearityLegacy`); Exact?: **no** —
+* TL — L asset: `Theorems.LinearityDerived.tempLinearityLegacy` (TL is derived from CN);
+  Exact?: **no** —
   `F`-bridge *and* a disjunct reshuffle
 * DF — L asset: `Theorems.DiscreteUnfolding.dfSchema`; Exact?: **no** — `F`-bridge on both sides
 * CO — L asset: `Theorems.DedekindDerived.coDerived`; Exact?: **no** — `F`-bridge under `△`
@@ -238,7 +240,8 @@ def dischargeTempConnect {fc : FrameClass} (a : MinusFormula) :
 
 The paper's disjunct order is `F(Fφ ∧ ψ) ∨ F(φ ∧ ψ) ∨ F(φ ∧ Fψ)`, which `Axiom.temp_linearity`
 now states verbatim. The discharge below still routes through the derived
-`DerivedAxioms.tempLinearityLegacy`, `F(φ ∧ ψ) ∨ (F(φ ∧ Fψ) ∨ F(Fφ ∧ ψ))` — the same three
+`Theorems.LinearityDerived.tempLinearityLegacy`, `F(φ ∧ ψ) ∨ (F(φ ∧ Fψ) ∨ F(Fφ ∧ ψ))` — the same
+three
 disjuncts, differently ordered and associated. On top of that every `F` has to cross the bridge.
 
 Route: bridge the antecedent down to `Fφ ∧ Fψ`, apply the axiom, then `orElim` the three
@@ -268,7 +271,7 @@ def dischargeTempLinearity {fc : FrameClass} (a b : MinusFormula) :
       ((Formula.and A B).someFuture).or
         (((Formula.and A B.someFuture).someFuture).or
           ((Formula.and A.someFuture B).someFuture)) :=
-    ctxMp (ProofSystem.DerivedAxioms.tempLinearityLegacyAt _ A B) (andIntro hFA hFB)
+    ctxMp (FormalSystem.Theorems.LinearityDerived.tempLinearityLegacyAt _ A B) (andIntro hFA hFB)
   refine orElim Γ ((Formula.and A B).someFuture)
     (((Formula.and A B.someFuture).someFuture).or ((Formula.and A.someFuture B).someFuture))
     C hLin ?_ ?_

@@ -62,7 +62,7 @@ example : ⊢ (Formula.atomS "p").imp (Formula.allFuture (Formula.atomS "p").som
 
 -- Test: connect_past is derivable (φ → H(F(φ)), BX4')
 example : ⊢ (Formula.atomS "p").imp (Formula.allPast (Formula.atomS "p").someFuture) :=
-  (DerivedAxioms.connectPastAt _ _)
+  (FormalSystem.Theorems.ConnectDerived.connectPastAt _ _)
 
 -- Test: Modal-Future is derivable
 example : ⊢ (Formula.box (Formula.atomS "p")).imp

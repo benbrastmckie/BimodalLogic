@@ -9,6 +9,7 @@ import FormalSystem.Syntax.Formula
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Theorems.Propositional.Connectives
+import FormalSystem.Theorems.ConnectDerived
 
 /-!
 # Temporal Derived Theorems from BX Axioms
@@ -21,10 +22,11 @@ under open guard semantics `(t,s)`.
 ### Original Temporal Theorems (8)
 - `gDistribution`, `hDistribution`: K-distribution (noncomputable, from BX3)
 - `gTransitivity`, `hTransitivity`: 4-axiom (noncomputable, from BX3+BX6)
-- `connectFutureThm`, `connectPastThm`: Direct BX4/BX4' (computable)
+- `connectFutureThm`, `connectPastThm`: TC and its TR mirror, via `ConnectDerived` (computable)
 - `gImpliesGId`: Propositional (computable)
-- `untilImpliesSomeFuture`, `sinceImpliesSomePast`: Direct BX10/BX10' (computable)
-- `untilImpF`, `sinceImpP`: Direct BX10/BX10' (computable, duplicates of above)
+- `untilImpliesSomeFuture`, `sinceImpliesSomePast`: UE and its TR mirror, via `DerivedAxioms`
+  (computable)
+- `untilImpF`, `sinceImpP`: UE and its TR mirror (computable, duplicates of above)
 
 ### Category B: Temporal Monotonicity (4 computable + 2 noncomputable aliases)
 - `fMono`: `G(φ→ψ) → (Fφ → Fψ)` -- BX3 with χ:=⊤
@@ -298,20 +300,21 @@ noncomputable def hTransitivity {fc : FrameClass} (φ : Formula) :
   exact h2
 
 /--
-`⊢ φ → G(P(φ))`: Temporal connectedness (future). Direct axiom (BX4).
+`⊢ φ → G(P(φ))`: Temporal connectedness (future), TC. Derived (computably) in
+`ConnectDerived.connectFuture` from US, UC and TN.
 The present is always in the past of the future.
 -/
 def connectFutureThm {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.imp (φ.somePast.allFuture) :=
-  DerivationTree.axiom [] _ (Axiom.connect_future φ) (FrameClass.base_le fc)
+  ConnectDerived.connectFuture φ
 
 /--
-`⊢ φ → H(F(φ))`: Temporal connectedness (past). Direct axiom (BX4').
+`⊢ φ → H(F(φ))`: Temporal connectedness (past), TR of TC.
 The present is always in the future of the past.
 -/
 def connectPastThm {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.imp (φ.someFuture.allPast) :=
-  (DerivedAxioms.connectPast φ)
+  (FormalSystem.Theorems.ConnectDerived.connectPast φ)
 
 /--
 `⊢ G(a) → G(a → a)`: G(a→a) is a theorem, so G(a) → G(a→a) by prop_s.
@@ -331,11 +334,11 @@ the basic Until/Since eventuality lemmas.
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Any Until formula implies eventuality of its second argument.
-Direct from BX10 axiom.
+UE, derived as `DerivedAxioms.untilF` from UG and TN.
 -/
 def untilImpliesSomeFuture {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (Formula.untl φ ψ).imp (Formula.someFuture ψ) :=
-  DerivationTree.axiom [] _ (Axiom.until_F φ ψ) (FrameClass.base_le fc)
+  DerivedAxioms.untilF φ ψ
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Any Since formula implies past eventuality.
@@ -348,11 +351,11 @@ def sinceImpliesSomePast {fc : FrameClass} (φ ψ : Formula) :
 /--
 `⊢ (φ U ψ) → F(ψ)`: Until implies eventuality of its endpoint.
 The witness s ≥ t with ψ(s) certifies F(ψ) at t.
-Direct from BX10 axiom.
+UE, derived as `DerivedAxioms.untilF`.
 -/
 def untilImpF {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (Formula.untl φ ψ).imp (Formula.someFuture ψ) :=
-  DerivationTree.axiom [] _ (Axiom.until_F φ ψ) (FrameClass.base_le fc)
+  DerivedAxioms.untilF φ ψ
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Since implies past eventuality of its endpoint.

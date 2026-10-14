@@ -693,8 +693,7 @@ theorem bx_until_eventuality_resolution
     ∃ v : BXPoint, BxLe w v ∧ ψ ∈ v.formulas := by
   -- By BX10: F(ψ) ∈ w
   have h_F_psi : Formula.someFuture ψ ∈ w.formulas := by
-    have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
-        (Axiom.until_F φ ψ) trivial
+    have h_ax : DerivationTree FrameClass.Base [] _ := DerivedAxioms.untilF φ ψ
     exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h_until
   -- By bx_forward_witness: get v with BxLe w v and ψ ∈ v
   exact bx_forward_witness w ψ h_F_psi

@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.Theorems.Combinators
+import FormalSystem.Theorems.ConnectDerived
 
 /-!
 # Contextual Proofs - Derivations from Non-Empty Contexts
@@ -253,13 +254,13 @@ def tempKCtx {fc : FrameClass} (A B : Formula) :
 /-- Connect future in context: `[A] |- G(P(A))`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
 def connectFutureCtx {fc : FrameClass} (A : Formula) : [A] ⊢[fc] A.somePast.allFuture :=
   .modus_ponens [A] A A.somePast.allFuture
-    (weakenEmpty (.axiom [] _ (Axiom.connect_future A) (FrameClass.base_le fc)))
+    (weakenEmpty (ConnectDerived.connectFuture A))
     (.assumption _ A mem0)
 
 /-- Connect past in context: `[A] |- H(F(A))`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
 def connectPastCtx {fc : FrameClass} (A : Formula) : [A] ⊢[fc] A.someFuture.allPast :=
   .modus_ponens [A] A A.someFuture.allPast
-    (weakenEmpty (DerivedAxioms.connectPast A))
+    (weakenEmpty (FormalSystem.Theorems.ConnectDerived.connectPast A))
     (.assumption _ A mem0)
 
 /-- Box future in context: `[box A] |- G(box A)`. Uses temporalFutureDerived. -/
@@ -273,7 +274,7 @@ def boxFutureCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc]
 def boxPastCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc] A.someFuture.allPast :=
   let thm := impTrans
     (DerivationTree.axiom [] _ (Axiom.modal_t A) (FrameClass.base_le fc))
-    (DerivedAxioms.connectPast A)
+    (FormalSystem.Theorems.ConnectDerived.connectPast A)
   .modus_ponens [Formula.box A] (Formula.box A) A.someFuture.allPast
     (weakenEmpty thm)
     (.assumption _ (Formula.box A) mem0)
@@ -282,7 +283,7 @@ def boxPastCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc] A.someF
   `[U(psi, phi)] |- F(psi)`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
 def untilFCtx {fc : FrameClass} (phi psi : Formula) : [Formula.untl phi psi] ⊢[fc] psi.someFuture :=
   .modus_ponens [Formula.untl phi psi] (Formula.untl phi psi) psi.someFuture
-    (weakenEmpty (.axiom [] _ (Axiom.until_F phi psi) (FrameClass.base_le fc)))
+    (weakenEmpty (DerivedAxioms.untilF phi psi))
     (.assumption _ (Formula.untl phi psi) mem0)
 
 /-- Since implies P in context:
@@ -409,12 +410,12 @@ def dniWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] A.imp A.neg.
 /-- `[psi] |- A -> G(P(A))` -/
 def connectFutureWeakened {fc : FrameClass}
     (A psi : Formula) : [psi] ⊢[fc] A.imp A.somePast.allFuture :=
-  weakenEmpty (.axiom [] _ (Axiom.connect_future A) (FrameClass.base_le fc))
+  weakenEmpty (ConnectDerived.connectFuture A)
 
 /-- `[psi] |- A -> H(F(A))` -/
 def connectPastWeakened {fc : FrameClass}
     (A psi : Formula) : [psi] ⊢[fc] A.imp A.someFuture.allPast :=
-  weakenEmpty (DerivedAxioms.connectPast A)
+  weakenEmpty (FormalSystem.Theorems.ConnectDerived.connectPast A)
 
 /-- `[psi] |- box(A) -> G(box(A))` -/
 def tempFutureWeakened {fc : FrameClass} (A psi : Formula) :
@@ -460,7 +461,7 @@ def propSWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc] A.imp (B
 /-- `[psi] |- U(B, A) -> F(B)` -/
 def untilFWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc]
     (Formula.untl A B).imp B.someFuture :=
-  weakenEmpty (.axiom [] _ (Axiom.until_F A B) (FrameClass.base_le fc))
+  weakenEmpty (DerivedAxioms.untilF A B)
 
 /-- `[psi] |- S(B, A) -> P(B)` -/
 def sincePWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc]

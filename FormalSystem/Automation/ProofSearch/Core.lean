@@ -11,6 +11,8 @@ import FormalSystem.Semantics
 import FormalSystem.Automation.SuccessPatterns
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.Perpetuity.Helpers
+import FormalSystem.Theorems.ConnectDerived
+import FormalSystem.Theorems.LinearityDerived
 
 /-!
 # Automated Proof Search
@@ -574,13 +576,13 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
       -- discrete_symm_bwd: S(⊤,⊥) → U(⊤,⊥)
       <|> (match lhs, rhs with
            | .snce .bot (.imp .bot .bot), .untl .bot (.imp .bot .bot) =>
-               some ⟨_, DerivedAxioms.discreteSymmBwd⟩
+               some ⟨_, FormalSystem.Theorems.ConnectDerived.discreteSymmBwd⟩
            | _, _ => none)
       -- connect_past (BX4'): φ → H(F(φ))
       <|> (match lhs, rhs with
            | phi, .allPast (.someFuture phi') =>
                if phi = phi' then
-                 some ⟨_, DerivedAxioms.connectPast phi⟩
+                 some ⟨_, FormalSystem.Theorems.ConnectDerived.connectPast phi⟩
                else none
            | _, _ => none)
       -- P_since_equiv (BX12'): P(φ) → S(φ, ⊤)
@@ -619,7 +621,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
                  (.somePast (.and (.somePast phi''') psi'''))) =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
                   psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
-                 some ⟨_, DerivedAxioms.tempLinearityPast phi psi⟩
+                 some ⟨_, FormalSystem.Theorems.LinearityDerived.tempLinearityPast phi psi⟩
                else none
            | _, _ => none)
       -- left_mono_since_H (BX2H): H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
@@ -667,7 +669,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
                  (.someFuture (.and (.someFuture phi''') psi'''))) =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
                   psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
-                 some ⟨_, DerivedAxioms.tempLinearityLegacy phi psi⟩
+                 some ⟨_, FormalSystem.Theorems.LinearityDerived.tempLinearityLegacy phi psi⟩
                else none
            | _, _ => none)
       -- linear_until_legacy: U(ψ,φ)∧U(θ,χ) → (U(ψ∧θ,φ∧χ) ∨ U(ψ∧χ,φ∧χ)) ∨ U(φ∧θ,φ∧χ)
