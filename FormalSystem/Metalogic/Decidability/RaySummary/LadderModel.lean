@@ -77,14 +77,26 @@ the OBJECT only.
   uniformly in the clip bound (`object_only_parameters_refuted`: the forced first idle state's
   exact distance is observable to the formula's `untl`-nesting depth, so no threshold fixed
   before the formula survives; `reach_period_refuted`: the reach-set period of the full step
-  graph is not the period of the sub-object a formula that forbids a letter carves out). The
-  threshold must therefore be formula-derived and the modulus must dominate every
-  letter-definable sub-object period — a NECESSARY condition on any index's parameters — and the
-  positive lemma for parameters depending on the object and the formula jointly is OPEN and
-  asserted nowhere. What that probe proves positively is fixture-level only
-  (`qp_cell_eq_of_depth_parity`): on the two-state object, where every history through a pending
-  state shares one object path, the cell is determined by the object state, the countdown's
-  parity and a formula-derived threshold; the general object has no such forced path.
+  graph is not the period of the sub-object a formula that forbids a letter carves out).
+  **The modulus convention.** That candidate's `P` is a modulus minus one, not a period: both
+  residue coordinates are taken modulo `P + 1`. An instantiation is therefore fixed by naming the
+  modulus `m` with `1 ≤ m` and setting `P := m - 1`, so a period `p` from
+  `reachN_eventually_periodic` (which gives `1 ≤ p`) enters as `m := p`. No refutation turns on
+  the choice: `object_only_parameters_refuted` quantifies over every `(T, P, B)`, and
+  `reach_period_refuted` holds for every modulus not divisible by `3`, so both readings of the
+  exhibited period `1` — moduli `1` and `2` — fall. At `m = 1` both residue coordinates are
+  constant and the index collapses to the clipped-coordinate shape already refuted at the
+  countdown coordinate, so `2 ≤ m` is forced — the hypothesis the parity gate of that family
+  already carries. The threshold must therefore be formula-derived and the modulus must be a
+  multiple of the period of every letter-definable sub-object — a NECESSARY condition on any
+  index's parameters, and a divisibility one rather than a magnitude one:
+  `reach_period_refuted`'s hypothesis is `¬ 3 ∣ (P + 1)`, so a modulus of `100` exceeds `3` and
+  is refuted all the same. The positive lemma for parameters depending on the object and the
+  formula jointly is OPEN and asserted nowhere. What that probe proves positively is
+  fixture-level only (`qp_cell_eq_of_depth_parity`): on the two-state object, where every
+  history through a pending state shares one object path, the cell is determined by the
+  object state, the countdown's parity and a formula-derived threshold; the general object has
+  no such forced path.
 * **`anchorCells_finite` and `anchorCells_ncard_le` are untouched**: the SET of cells of any
   model is still finite and bounded. What is absent is only the computable index of WHICH cell a
   ladder state has.

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #778
 
 - **Task**: 778 - Record the modulus convention for the residue-carrying ladder index
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/778_residue_index_modulus_convention_record/reports/01_residue-index-modulus-convention.md
@@ -134,35 +134,35 @@ it is listed as a Non-Goal below rather than silently left out.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Record the convention in the `LadderModel.lean` docstring [NOT STARTED]
+### Phase 1: Record the convention in the `LadderModel.lean` docstring [COMPLETED]
 
 **Goal**: The named deliverable's library half. The module docstring states the modulus
 convention, states that no refutation turns on it, and carries the sharpened modulus clause.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` lines 70-90
+- [x] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` lines 70-90
       immediately before editing (sibling task dispatched this cycle).
-- [ ] Insert the convention into the residue-candidate paragraph, after the sentence naming the
+- [x] Insert the convention into the residue-candidate paragraph, after the sentence naming the
       two refuted parameters (currently ending `...the period of the sub-object a formula that
       forbids a letter carves out).`). Content, wording the implementer's to finalise:
       the candidate's `P` is a modulus minus one, not a period — both residue coordinates are
       taken modulo `P + 1`, so an instantiation is fixed by naming the modulus `m` with `1 <= m`
       and setting `P := m - 1`, and a period `p` from `reachN_eventually_periodic` (which gives
       `1 <= p`) enters as `m := p`.
-- [ ] Add the convention-independence sentence: no refutation turns on the choice, because
+- [x] Add the convention-independence sentence: no refutation turns on the choice, because
       `object_only_parameters_refuted` quantifies over every `(T, P, B)` and
       `reach_period_refuted` holds for every modulus not divisible by `3`, so both readings of
       the exhibited period `1` fall (moduli `1` and `2`).
-- [ ] Add the forced lower bound: at `m = 1` both residue coordinates are constant and the index
+- [x] Add the forced lower bound: at `m = 1` both residue coordinates are constant and the index
       collapses to the three-coordinate candidate already refuted at the countdown coordinate, so
       `2 <= m` is forced — the hypothesis the parity gate of that family already carries.
-- [ ] Sharpen line 81's `the modulus must dominate every letter-definable sub-object period` to
+- [x] Sharpen line 81's `the modulus must dominate every letter-definable sub-object period` to
       the multiple-of form, with the one-clause reason that `reach_period_refuted`'s hypothesis is
       divisibility (`¬ 3 ∣ (P + 1)`), not magnitude — a modulus of `100` exceeds `3` and is still
       refuted.
-- [ ] Confirm no new hunk contains "unrecorded", "previously", "formerly", "no longer", or
+- [x] Confirm no new hunk contains "unrecorded", "previously", "formerly", "no longer", or
       "now recorded" (deliverable wording rule).
-- [ ] Record the post-edit `wc -l` of the file; Phase 2 consumes it.
+- [x] Record the post-edit `wc -l` of the file; Phase 2 consumes it.
 
 **Timing**: 0.5 hours
 
@@ -249,7 +249,7 @@ for the task-reference lint plus a literal comparison of the row's written count
 
 ---
 
-### Phase 3: Record the convention in the lean extension's source store [NOT STARTED]
+### Phase 3: Record the convention in the lean extension's source store [IN PROGRESS]
 
 **Goal**: The named deliverable's note half. `ladder-counter-observables.md` carries the
 convention inside its existing parameter-origin rule, drops its own "unrecorded" clause, records
