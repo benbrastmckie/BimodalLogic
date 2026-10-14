@@ -1,7 +1,7 @@
 # Implementation Plan: Task #756
 
 - **Task**: 756 - Re-pin `lem:nullity` in the paper definitions of record after the JPL paper strengthened it from an implication to a biconditional, and correct the in-tree docstrings that quote the retired wording
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/756_repin_lem_nullity_after_paper_strengthening/reports/01_repin-lem-nullity-paper-strengthening.md`
@@ -115,30 +115,30 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Re-establish the live drift inventory [NOT STARTED]
+### Phase 1: Re-establish the live drift inventory [COMPLETED]
 
 **Goal**: Produce the authoritative, freshly-derived inventory every later phase consumes — the
 drifted-anchor list, each anchor's live text and sha256, and the live paper provenance — without
 touching a single tracked file.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh`, capturing full output to the scratchpad.
+- [x] Run `bash scripts/check-paper-definitions.sh`, capturing full output to the scratchpad.
       Record the exact drifted-anchor count and the dangling count.
-- [ ] For each drifted anchor, run
+- [x] For each drifted anchor, run
       `bash scripts/check-paper-definitions.sh --resolve "<anchor>|env|-|-"` (use the anchor's
       own `kind|enclosing|locator` fields from its `MANIFEST:BEGIN/END` row, not a blind `env|-|-`)
       and save the emitted `sha256:` and `text:` block verbatim to the scratchpad inventory.
-- [ ] Confirm the four `def:frame#*` sub-anchors (`#Compositionality`, `#Seriality`, `#Limit`,
+- [x] Confirm the four `def:frame#*` sub-anchors (`#Compositionality`, `#Seriality`, `#Limit`,
       `#Saturation`) are absent from the drifted list. If any has drifted, STOP and report — that
       would contradict this plan's non-goals and the ~91 in-tree verbatim claims resting on them.
-- [ ] Capture live paper provenance for the sentinel re-pin: `sha256sum` and `wc -l` on the paper
+- [x] Capture live paper provenance for the sentinel re-pin: `sha256sum` and `wc -l` on the paper
       file, plus `git -C <paper repo> rev-parse HEAD` and
       `git -C <paper repo> status --porcelain -- <paper path>` to record whether the file is
       clean or dirty against that commit (the record file's dirty-pin convention turns on this).
-- [ ] Classify each drifted anchor as presentational or content-bearing, using the research
+- [x] Classify each drifted anchor as presentational or content-bearing, using the research
       report's §2 table as the starting hypothesis and the fresh `--resolve` text as the
       evidence. This classification is the input to Phase 3's correction note.
-- [ ] Record any divergence from the research report's 26-anchor list via `issue-record.sh`.
+- [x] Record any divergence from the research report's 26-anchor list via `issue-record.sh`.
 
 **Timing**: 1 hour
 
