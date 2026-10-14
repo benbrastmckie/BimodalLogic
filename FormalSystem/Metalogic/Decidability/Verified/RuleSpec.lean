@@ -62,11 +62,18 @@ Two consequences of that reading are deliberate:
   `FormalSystem.ProofSystem.DerivedAxioms`), so each rule names the future-directed primary that
   the mirror reflects. A mirror has the same minimal frame class as its primary, so every gate
   below reads the same frame class it read before.
+* `densityRule` and `z1Rule` are grounded in `dense_indicator` and `prior_UZ`: DN and Z1 are
+  derived theorems (`Theorems.LinearityDerived.density` from NN,
+  `Metalogic.CompletenessDerived.z1Thm` through the ZTime engine from UZ), and GATE 3 requires
+  a rule gated above `.Base` to name a
+  constructor at its own frame class. `orderTrichotomy` and `timeLinearity`, whose content is
+  the derived TL, carry the empty list like the quantifier-decomposition rules.
 
 ## The two rules scheduled outside `allRulesForFC`
 
 `serialityRule` and `timeLinearity` are both `.Base` rules in the soundness sense — `serial_future`
-(with its TR mirror `serial_past`) and `temp_linearity` are base axioms — but both are deliberately
+(with its TR mirror `serial_past`) is a base axiom and TL is a Base theorem
+(`Theorems.LinearityDerived.tempLinearity`, derived from CN) — but both are deliberately
 **absent** from `allRulesForFC`, because each is keyed on something other than a formula's shape
 (`serialityRule` on the label, `timeLinearity` on the branch's time structure), so no position in a
 per-formula priority list is correct for them. They are scheduled instead as the second and third
@@ -152,8 +159,8 @@ The minimum frame class at which a tableau rule is sound — the rule-side mirro
 `Axiom.minFrameClass`.
 
 Both `serialityRule` and `timeLinearity` are `.Base`: they are scheduled outside `allRulesForFC`
-for reasons of *applicability keying*, not of soundness, and their axioms (`serial_future` /
-`serial_past`, `temp_linearity`) are base axioms.
+for reasons of *applicability keying*, not of soundness: `serial_future` / `serial_past` are base
+axioms and TL is a derived Base theorem.
 -/
 def ruleFrameClass : TableauRule → FrameClass
   -- Propositional decomposition (8)

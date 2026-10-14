@@ -346,8 +346,9 @@ what they validate. Nothing here touches C1, the library's own consequence relat
   refuted under C3, so C3 ⊊ C4 (`validC3_imp_validC4`, `validC4_lastPoint`,
   `refute_C3_lastPoint`).
 - **The survival table**, one theorem per row and once over all 20 constructors
-  (`c3_survival_table`, `c3_failure_table`): four constructors fail — `serial_future`,
-  `discrete_symm_fwd`, `discrete_propagate_fwd`, `discrete_box_necessity` — together with the two
+  (`c3_survival_table`, `c3_failure_table`): two constructors fail — `serial_future` and
+  `discrete_box_necessity` — and the derived NP and NF keep their formula-level refutations
+  (`refute_C3_discrete_symm_fwd`, `refute_C3_discrete_propagate_fwd`), together with the two
   derived mirrors `serial_past` and `discrete_symm_bwd`. Every failure is an existence assertion
   about the temporal order. Everything else survives, including all six frame-class axioms on
   their own classes and every other past mirror.

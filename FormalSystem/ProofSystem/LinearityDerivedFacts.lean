@@ -8,63 +8,54 @@ import FormalSystem.ProofSystem.Derivation
 import FormalSystem.ProofSystem.Axioms
 
 /-!
-# Linearity Derived Facts
+# Linearity Derived Facts: the record of the TL decision
 
-This module documents the linearity analysis for TM logic and provides
-derived consequences of the `temp_linearity` axiom.
+This prose-only module records why the temporal-linearity schema TL,
+  `F(φ) ∧ F(ψ) → F(Fφ ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ Fψ))`,
+is a derived theorem of TM rather than an `Axiom` constructor, and retracts the earlier claim
+that it could not be derived.
 
-## Non-Derivability of Linearity from Original TM Axioms
+## TL is derived from CN
 
-**Theorem (informal)**: The linearity schema
-  `F(phi) and F(psi) -> F(phi and psi) or F(phi and F(psi)) or F(F(phi) and psi)`
-is NOT derivable from the base TM axioms (prop_k, prop_s, ex_falso, peirce,
-modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist, temp_k_dist, temp_4,
-temp_a, temp_a_dual, temp_l, modal_future, seriality_future,
-seriality_past, and the Until/Since axioms).
+`Theorems.LinearityDerived.tempLinearity` derives TL from CN (`Axiom.linear_until`, Burgess
+1982 A7a / Xu 1988 (10)) with UF (`self_accum_until`) and UE (`DerivedAxioms.untilF`): UF turns
+`Fφ` and `Fψ` into `U(⊤ ∧ Fφ, φ)` and `U(⊤ ∧ Fψ, ψ)`, CN orders the two witnesses, and UE collapses
+each of the three CN disjuncts onto the matching TL disjunct. The past form
+`Theorems.LinearityDerived.tempLinearityPast` is its time reflection.
 
-**Counterexample**: Consider the frame with 3 points {0, 1a, 1b} where:
-- The temporal relation is: 0 R 1a, 0 R 1b (strict, irreflexive)
-  (but NOT 1a R 1b or 1b R 1a)
-- The S5 modal accessibility is universal (all 3 points see each other)
+The literature anchors are Xu 1988: §3 proves Σ₄ — CN among its axioms, Burgess's A4a deleted —
+complete for the class 𝒞₄ of linear frames, which is the system this tree's chronicle
+construction already follows (it uses Xu's Lemma 3.2.1/3.2.2 in place of A4a); and §4 Theorem
+4.3 shows that the G/H-level linearity formula (13), the TL shape, is strictly weaker than the
+Until-level (10). That is the precise sense in which TL is subsumed by CN.
 
-This frame is:
-- Irreflexive (consistent with strict temporal semantics)
-- Transitive (satisfying temp_4)
-- Connected via temp_a: for any point x and y > x, P(phi) holds at y
-  if phi holds at x (with x as the past witness)
-- Satisfies temp_l: "always phi" at a point means phi at all 3 points,
-  which trivially gives G(H(phi))
-- Satisfies all S5 modal axioms and modal-temporal interaction axioms
-- But is NOT linearly ordered: 1a and 1b are incomparable
+## The retracted claim
 
-The linearity schema fails in this frame: at point 0, let phi be true only at 1a
-and psi be true only at 1b. Then F(phi) and F(psi) hold at 0, but:
-- F(phi and psi) fails (phi and psi are never simultaneously true)
-- F(phi and F(psi)) fails (at 1a, F(psi) fails since psi is not at 1a or later)
-- F(F(phi) and psi) fails (at 1b, F(phi) fails since phi is not at 1b or later)
+An earlier version of this record asserted that TL is not derivable from the base axioms and
+offered a branching frame as the witness: three points `{0, 1a, 1b}` with `0 < 1a`, `0 < 1b`,
+`1a` and `1b` incomparable, and universal modal accessibility. At `0`, with `φ` true only at `1a`
+and `ψ` only at `1b`, every TL disjunct fails.
 
-## Resolution: temp_linearity Axiom
+That frame refutes TL, but it is not a model of the current base: the CN instance
+`linear_until (Fp) p (Fq) q` already fails there at `0`, since `U(Fp, p)` and `U(Fq, q)` both hold
+(with witnesses `1a` and `1b`) while no point satisfies any of CN's three disjuncts. A frame that
+falsifies an axiom cannot witness the independence of a theorem, so the claim is withdrawn. The
+branching frame does show something true, and weaker: TL is not derivable from the base *without*
+CN, which is why TL had to be primitive before CN was added.
 
-The `temp_linearity` axiom was added to the Axiom inductive type to enforce linearity
-of the temporal order. This is sound for the intended linear integer time semantics
-(proven in SoundnessLemmas.lean and Soundness.lean).
+## Historical note
 
-**Technical debt**: This axiom extends the TM system. Remediation options:
-1. Derive from existing axioms (currently believed impossible based on counterexample)
-2. Document as a permanent axiom of TM for linear time completeness
-3. The axiom is standard in tense logics of linear orders (Kt.Li, see Goldblatt 1992)
-
-## Past Linearity via Time Reflection
-
-The past version of linearity:
-  `P(phi) and P(psi) -> P(phi and psi) or P(phi and P(psi)) or P(P(phi) and psi)`
-is derivable from `temp_linearity` via the time reflection rule (reflectTime).
-This is handled automatically by `DerivationTree.time_reflection`.
+TL was a constructor while CN was absent from the system. Once CN was adopted — stated as the
+paper's CN verbatim, with the 3-way disjunction right-associated — TL became redundant, and the
+constructor was removed in favour of the derivation above. The paper's `def:BX` still lists TL;
+`docs/reference/paper-definitions-of-record.md` records the tree's primitive set as a proper
+subset of that list with the same theorems.
 
 ## References
 
 * [R. Goldblatt, *Logics of Time and Computation*][goldblatt1992]
 * [P. Blackburn, M. de Rijke and Y. Venema, *Modal Logic*][blackburn2002]
+* [M. Xu, *On Some U, S-Tense Logics*][xu1988] — §3 (Σ₄ complete for 𝒞₄) and §4 Theorem 4.3
 -/
 
 namespace FormalSystem.ProofSystem

@@ -23,23 +23,25 @@ system) and derivation trees with 7 inference rules.
   Dedekind (2) layers
   - Propositional: K, S, EFQ (ex falso), Peirce
   - Modal S5: MT (reflexivity), M5 (collapse), MK (distribution)
-  - Temporal (BX, future direction): TS, UG, UC, TC, US, UF, UI, CN, UE, TL, UT
+  - Temporal (BX, future direction): TS, UG, UC, US, UF, UI, CN (TC, UE, TL and UT are derived)
   - Modal-Temporal: MF
-  - Uniformity: NP, NF, NA, NB
-  - Discrete: UZ, Z1; Dense: DN, NN; Reynolds Dedekind: PU, SEP
+  - Uniformity: NB (NP, NF and NA are derived)
+  - Discrete: UZ (Z1 is derived); Dense: NN (DN is derived); Reynolds Dedekind: PU, SEP
 
 - `DerivedAxioms`: the schemata the paper does not take as primitive, as derived theorems —
-  the time-reflection mirrors (by the TR rule) and, in `Theorems/Combinators.lean`, modal 4
-  and B and the pre-paper forms of TL, CN and TS
+  the time-reflection mirrors (by the TR rule) and the raw-constructor schemata UE, UT and NF;
+  modal 4 and B and the pre-paper forms of CN and TS are in `Theorems/Combinators.lean`, and the
+  remaining derived schemata live above the proof system: TC, NP, NA in
+  `Theorems/ConnectDerived.lean`, TL and DN in `Theorems/LinearityDerived.lean`, Z1 in
+  `Metalogic/CompletenessDerived.lean`
 
 - `Derivation`: Derivation tree type `Γ ⊢ φ` with 7 inference rules
   - axiom, assumption, modus_ponens, necessitation, temporal_necessitation,
     time_reflection, weakening
 
-- `LinearityDerivedFacts`: consequences of `temp_linearity`, including the
-  counterexample showing it is not derivable from the other axioms. `Axioms.lean`
-  cites this file for that non-derivability claim, so it is imported here to keep
-  the citation backed by compiled code rather than by an unbuilt file.
+- `LinearityDerivedFacts`: the prose record of the TL decision — TL is derived from CN
+  (`Theorems.LinearityDerived.tempLinearity`, Xu 1988 §3 and §4 Theorem 4.3), and the former
+  branching-frame underivability claim is retracted because that frame refutes CN itself
 
 ## Axiom Summary
 

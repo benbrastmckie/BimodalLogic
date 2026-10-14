@@ -8,7 +8,7 @@ import FormalSystem.Syntax.Formula
 import FormalSystem.ProofSystem.Derivation
 
 /-!
-# Derived Axioms: Time-Reflection Mirrors
+# Derived Axioms: Time-Reflection Mirrors and Raw-Constructor Schemata
 
 The paper's axiom system (`def:BX`, `def:BX-z`, `def:BX-r`; see
 `docs/reference/paper-definitions-of-record.md`) states only the future-directed temporal

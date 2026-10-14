@@ -43,7 +43,11 @@ The primitive axioms are exactly the paper's axiom schemata (`def:S5`, `def:BX`,
 `def:BX-d`, `def:BX-r`; see `docs/reference/paper-definitions-of-record.md`). Every
 past-directed mirror, and the S5 schemata 4 and B, are derived theorems in
 `FormalSystem.ProofSystem.DerivedAxioms` (mirrors by the time-reflection rule TR,
-`DerivationTree.time_reflection`; 4 and B from MK, MT and M5).
+`DerivationTree.time_reflection`; 4 and B from MK, MT and M5). Nine further schemata the paper
+lists are theorems rather than constructors: TC, UE, UT, NP, NF and NA (`DerivedAxioms`,
+`Theorems/ConnectDerived.lean`), TL and DN (`Theorems/LinearityDerived.lean`, TL from CN and DN
+from NN), and Z1 (`Metalogic/CompletenessDerived.lean`, recovered through the ZTime completeness
+engine from UZ). The record of the TL decision is `ProofSystem/LinearityDerivedFacts.lean`.
 
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce (CPL)
 2. **S5 Modal** (3): modal_t (MT), modal_5_collapse (M5), modal_k_dist (MK)
@@ -89,7 +93,7 @@ formula numbers of Xu 1988 ("On some U,S-tense logics"). Burgess numbers his axi
 with mirror images `A1b`-`A7b`, and B82 and B84 each have their own, unrelated, `A7a`. Burgess
 writes `U(event, guard)`, so each `Burgess:` line in a docstring below is quoted in that order.
 
-| Paper key | Lean constructor / derived mirror (`DerivedAxioms`) | Burgess | Xu 1988 |
+| Paper key | Lean constructor or derived theorem / derived mirror | Burgess | Xu 1988 |
 |---|---|---|---|
 | TN | `DerivationTree.temporal_necessitation` (rule) | B82 rule TG, its G half | — |
 | TS | `serial_future` / `serial_past` | B82 §1.6, "No Last Element" `F⊤` (and mirror) | — |
@@ -99,11 +103,14 @@ writes `U(event, guard)`, so each `Burgess:` line in a docstring below is quoted
 | UF | `self_accum_until` / `self_accum_since` | B82 A5a / A5b | (7) / (8) |
 | UI | `absorb_until` / `absorb_since` | B82 A6a / A6b | (9) / — |
 | CN | `linear_until` / `linear_since` | B82 A7a / A7b | (10) / (11) |
-| UE | `until_F` / `since_P` | not in B82: follows from UG with new guard `⊤`, plus TN | — |
-| TL | `temp_linearity` / `temp_linearity_past` | B84 §0.3 A2a / A2b, verbatim | (13) nearest |
+| UE | derived: `DerivedAxioms.untilF` / `sinceP` | not in B82: UG with new guard `⊤`, plus TN | — |
+| TL | derived: `LinearityDerived.tempLinearity` / `…Past` (from CN) | B84 §0.3 A2a / A2b | (13) |
 
 B82's A4a/A4b is the one Burgess 1982 pair the system omits (see the `BX14` note below). TC, UT,
-NP, NF, NA and NB are original to the paper, and TR is a metarule with no listed source. Xu
+NP, NF, NA and NB are original to the paper — of these only NB is a constructor; TC, UT, NP, NF
+and NA are derived (`ConnectDerived.connectFuture`, `DerivedAxioms.fUntilEquiv`,
+`ConnectDerived.discreteSymmFwd`, `DerivedAxioms.discretePropagateFwd`,
+`ConnectDerived.discretePropagateBwd`) — and TR is a metarule with no listed source. Xu
 places (10) in his axiom set Σ₄, which is complete for the class 𝒞₄ of linear frames. On its
 own, (10) defines a first-order condition on intervals, his (10)*, not linearity itself.
 
@@ -201,6 +208,9 @@ inductive Axiom : Formula → Type where
   -- REMOVED: BX14 (separation_until) and BX14' (separation_since) constructors.
   -- These axioms (Burgess A4a/A4b) are unnecessary for axiom minimality.
   -- The chronicle splitting construction now uses Xu 1988 Lemma 3.2.1/3.2.2 instead.
+  -- TL, UE, UT, TC, NP, NF, NA, DN and Z1 are likewise not constructors: they are derived
+  -- (`DerivedAxioms`, `Theorems.ConnectDerived`, `Theorems.LinearityDerived`,
+  -- `Metalogic.CompletenessDerived`); see the notes at their former positions below.
   /-- BX5: Self-accumulation of Until (Burgess A5a, Xu axiom (7)):
   Burgess: `U(p, q) ⊃ U(p, q ∧ U(p, q))`.
   Printer order (event first; the constructor itself is guard-first untl(guard, event)):

@@ -633,20 +633,20 @@ dataset/benchmark baselines agree with it.
 
 ---
 
-### Phase 9: Lean-side prose: `Axioms.lean` docstring, `LinearityDerivedFacts.lean`, module READMEs [NOT STARTED]
+### Phase 9: Lean-side prose: `Axioms.lean` docstring, `LinearityDerivedFacts.lean`, module READMEs [COMPLETED]
 
 **Goal**: Refresh every Lean-resident docstring and module README that narrates the axiom set,
 and rewrite `LinearityDerivedFacts.lean` as the short record the research specifies. Prose only;
 no declaration changes.
 
 **Tasks**:
-- [ ] `Axioms.lean` module docstring: `### Layers` (40-72) and the nine-layer paragraph (133) now
+- [x] `Axioms.lean` module docstring: `### Layers` (40-72) and the nine-layer paragraph (133) now
       describe 20 constructors by layer; Axiom Sources table rows for UE and TL (and the line-110
       sentence on TC, UT, NP, NF, NA) say "derived — see `DerivedAxioms.untilF`" etc.; the
       line-212 REMOVED note gains "TL, UE, UT, TC, NP, NF, NA, DN, Z1 are derived
       (`ConnectDerived`, `LinearityDerived`, `CompletenessDerived`)"; the Layer 7/8 comments
       (348, 365) are deleted with their constructors in Phase 7 — confirm nothing dangling
-- [ ] `LinearityDerivedFacts.lean` (prose-only module, imported by `ProofSystem.lean`): replace
+- [x] `LinearityDerivedFacts.lean` (prose-only module, imported by `ProofSystem.lean`): replace
       the docstring with (i) the branching frame `{0, 1a, 1b}` refutes the CN instance
       `linear_until (Fp) p (Fq) q` at 0, so it is not a model of the current base and is not an
       independence witness; (ii) TL is derived from CN + UF + UE (`LinearityDerived.tempLinearity`),
@@ -654,22 +654,22 @@ no declaration changes.
       (10)) as the literature anchors; (iii) a historical note that TL was once primitive because
       CN was absent; delete the "currently believed impossible" remediation list; keep the
       Goldblatt/Blackburn references
-- [ ] `DerivedAxioms.lean` docstring: final derived-stock list
-- [ ] `ConnectDerived.lean`, `LinearityDerived.lean`, `CompletenessDerived.lean` docstrings: name
+- [x] `DerivedAxioms.lean` docstring: final derived-stock list
+- [x] `ConnectDerived.lean`, `LinearityDerived.lean`, `CompletenessDerived.lean` docstrings: name
       the primitives each derivation uses (as in the Research Integration bullets)
-- [ ] `Metalogic/Independence/README.md` results 10 and 11 and `FormalSystem/MainResults.lean:260-295`:
+- [x] `Metalogic/Independence/README.md` results 10 and 11 and `FormalSystem/MainResults.lean:260-295`:
       `Axiom.z1`/`Axiom.density` → "the Z1/DN formula (now `z1Thm`/`density`)"; the sharpness
       results are about formulas and are unchanged in content
-- [ ] `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`, `ConvexConsequence/README.md`,
+- [x] `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`, `ConvexConsequence/README.md`,
       `ProofSystem.lean`, `Automation.lean:98` ("27 of the 29" → the new ratio),
       `Soundness.lean:911`, `FrameClassVariants.lean:18`, `Decidability/Verified/RuleSpec.lean`
       docstrings: narrative consistent with 20 primitives + derived stock
-- [ ] Add the "where a derived schema lives" note to `FormalSystem/Theorems/README.md` (or
+- [x] Add the "where a derived schema lives" note to `FormalSystem/Theorems/README.md` (or
       `ProofSystem/README.md`): `ProofSystem/` imports only `Syntax`; `Combinators` extends
       `DerivedAxioms`; the chain `Combinators → DeductionTheorem → Propositional.Core → Connectives
       → GeneralizedNecessitation → ConnectDerived → TemporalDerived → LinearityDerived →
       DedekindDerived`
-- [ ] Diff read-through confirming every hunk is inside a `/-! -/`, `/-- -/`, `--`, or markdown
+- [x] Diff read-through confirming every hunk is inside a `/-! -/`, `/-- -/`, `--`, or markdown
       region; `bash scripts/readme-lint.sh`; `bash .claude/scripts/verify-deploy.sh --only-gate 4`
 
 **Timing**: 2 hours

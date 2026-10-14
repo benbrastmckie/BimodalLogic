@@ -46,14 +46,15 @@ union.
 10. **The `.ZTime` row of `Axiom.minFrameClass` is characterized, not merely upper-bounded**
     (`ZTimeSharpness.lean`). `Metalogic.axiom_validIn_min` already proves every axiom valid at its
     own tag; `prior_UZ_minFrameClass_sharp` and `z1_minFrameClass_sharp` supply the other
-    direction, so no frame class strictly below `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`.
+    direction, so no frame class strictly below `.ZTime` validates `Axiom.prior_UZ` or the Z1 formula (now the derived
+    `CompletenessDerived.z1Thm`).
     `.Dense` and `.RTime` are incomparable with `.ZTime` rather than below it and so are refuted
     separately, by `not_validIn_dense_prior_UZ` / `not_validIn_dense_z1` over the rationals and
     `not_validIn_rtime_prior_UZ` / `not_validIn_rtime_z1` over the reals; with all four classes
     settled, `prior_UZ_validIn_iff_ztime` and `z1_validIn_iff_ztime` state the exhaustive form
     `ValidIn fc φ ↔ fc = .ZTime`. The underivability corollaries are
     `not_derivable_base_prior_UZ` and `not_derivable_base_z1`. What the countermodel refutes is
-    *discreteness*, not the Archimedean property: both axioms fail on the translation frame over
+    *discreteness*, not the Archimedean property: both formulas fail on the translation frame over
     any densely ordered duration group, the reals included.
 11. **The `.Dense` rows of `Axiom.minFrameClass` are characterized and its `prior_U_gap` row is
     minimal** (`DenseRTimeSharpness.lean`). One refutation on the translation frame over `ℤ` —
@@ -135,7 +136,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `ClockFrame.lean` | 229 | The periodic clock frame: temporal order `D = ℚ`, world-state carrier the rational circle `W = ℚ ⧸ ℤ`, task relation the deterministic translation flow. All `TaskFrame` obligations discharged, with a reference world history. |
 | `CoNotPriorU.lean` | 527 | The symmetric irrational arc valuation on the clock frame, the refutation of `Axiom.prior_U_gap` in that model, and the two independence statements. |
 | `CoarsenedModels.lean` | 766 | The non-standard semantics the pasting-independence argument runs on: `CoarseModel`, `SameUnder`, `CTruthAt`; the three structural ports (`c_truth_congr_ext`, `cTruthAt_timeShift`, `c_stab_state_only`); the atomization transfer; the six naive `⊡` validities; and naive soundness `naive_cValid`. |
-| `DenseRTimeSharpness.lean` | 418 | The `.Dense` rows of `Axiom.minFrameClass` characterized and its `prior_U_gap` row shown minimal: `not_validOn_density_of_isLeastPos` and `not_validOn_dense_indicator_of_isLeastPos` refute both `.Dense`-tagged axioms at frame level over any duration group with a least positive element, instantiated at `ℤ` to reach `.Base` and `.ZTime`, so `eq_base_of_lt_dense` gives `density_minFrameClass_sharp` / `dense_indicator_minFrameClass_sharp` and a four-way `cases fc` gives the exhaustive `density_validIn_iff` / `dense_indicator_validIn_iff`; `not_validOn_prior_U_gap_clock` reaches `.Base` and `.Dense` at once, so `base_or_dense_of_lt_rtime` gives `prior_U_gap_minFrameClass_sharp`. `sep_validOn_of_isLeastPos` proves the discreteness obstruction that confines any `Axiom.sep` refutation to a densely ordered duration group, and is then reused by `SepSharpness.lean` to prove `sep` valid at `.ZTime`. Three `example` shape pins make formula-transcription fidelity a compiler obligation. |
+| `DenseRTimeSharpness.lean` | 418 | The `.Dense` rows of `Axiom.minFrameClass` characterized and its `prior_U_gap` row shown minimal: `not_validOn_density_of_isLeastPos` and `not_validOn_dense_indicator_of_isLeastPos` refute both `.Dense`-tagged formulas (DN, now the derived `LinearityDerived.density`, and NN) at frame level over any duration group with a least positive element, instantiated at `ℤ` to reach `.Base` and `.ZTime`, so `eq_base_of_lt_dense` gives `density_minFrameClass_sharp` / `dense_indicator_minFrameClass_sharp` and a four-way `cases fc` gives the exhaustive `density_validIn_iff` / `dense_indicator_validIn_iff`; `not_validOn_prior_U_gap_clock` reaches `.Base` and `.Dense` at once, so `base_or_dense_of_lt_rtime` gives `prior_U_gap_minFrameClass_sharp`. `sep_validOn_of_isLeastPos` proves the discreteness obstruction that confines any `Axiom.sep` refutation to a densely ordered duration group, and is then reused by `SepSharpness.lean` to prove `sep` valid at `.ZTime`. Three `example` shape pins make formula-transcription fidelity a compiler obligation. |
 | `DeterminismUndefinable.lean` | 189 | The instantiation at `F°`/`F¹`: (T3) `determined_valid_on_non_deterministic`, (T4) `fzero_plusValidOn_iff_f1`, and `deterministic_not_plusDefinable`. |
 | `DriftFrame.lean` | 261 | `F°`, the drift band `x ≤ u - w ≤ 2x` over `ℝ`, with all six `FrameOver` axioms (`limit` and `saturation` included) and `fzero_not_deterministic`. |
 | `DriftHistories.lean` | 176 | `F°`'s world histories are strictly increasing bi-Lipschitz bijections of `ℝ` (`fzero_hits_future` is the crux, by IVT); (H1) `fzero_orderFlow` and (H2) `fzero_stateOccurs`, the latter by an explicit affine witness. |
@@ -155,9 +156,9 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `StabUndefinable.lean` | 241 | `stabNotDefinable`: no `Formula` is equivalent to `⊡Fp` over all task models, by a `TruthCorr` between the permissive frame over `ℤ` and the deterministic clock at family index `ℤ → ℕ`. |
 | `StarDiscrimination.lean` | 189 | The positive half of the discrimination footnote: the affine drift histories `driftLinear` and the manuscript's own valuation `driftModel`, which makes `p` true exactly on `[3/2, ∞)`; `fzero_refutes_sentDet`, `f1_sentDet`, `sentDet_discriminates`, and `star_discriminates_where_plus_cannot` — one `StarFormula` separates `F°` from `F¹` where `cor:no-characterization` shows no `PlusFormula` set can. |
 | `StateSetTruth.lean` | 236 | `satSet` and `plusTruthAt_iff_mem_satSet`: over an (H1)+(H2) frame, L⁺ truth depends only on the world state of evaluation. Plus `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`. |
-| `StaticFrame.lean` | 323 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and `Axiom.z1`). Turns every later axiom check into a rewrite. |
+| `StaticFrame.lean` | 323 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and the Z1 formula). Turns every later axiom check into a rewrite. |
 | `TranslationProductCoarse.lean` | 136 | Coarse models on the translation product (`Semantics/Frames/TranslationProduct.lean`, a proof device, never an intended model): `liftK` lifts a coarse model with the coarsening forgetting the clock; `c_invariance` — coarse truth is preserved by the projection; `pasteClosed_liftK` / `pasteClosed_of_liftK` — paste-closure transfers in both directions; `c_refuted_lift` — a coarse refutation on `F` is a coarse refutation on the recurrence-free, Limit-for-free product in the same frame class. |
-| `ZTimeSharpness.lean` | 442 | The `.ZTime` row of `Axiom.minFrameClass`, characterized rather than upper-bounded: `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` refute both `.ZTime`-tagged axioms at frame level over any densely ordered duration group; instantiating at ℚ and ℝ gives non-validity at `.Base`, `.Dense` and `.RTime`, and `eq_base_of_lt_ztime` covers everything strictly below `.ZTime`; `prior_UZ_validIn_iff_ztime` / `z1_validIn_iff_ztime` assemble `ValidIn fc φ ↔ fc = .ZTime`, with `not_derivable_base_*` the underivability corollaries. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
+| `ZTimeSharpness.lean` | 442 | The `.ZTime` row of `Axiom.minFrameClass`, characterized rather than upper-bounded: `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` refute UZ and the Z1 formula (now the derived `CompletenessDerived.z1Thm`) at frame level over any densely ordered duration group; instantiating at ℚ and ℝ gives non-validity at `.Base`, `.Dense` and `.RTime`, and `eq_base_of_lt_ztime` covers everything strictly below `.ZTime`; `prior_UZ_validIn_iff_ztime` / `z1_validIn_iff_ztime` assemble `ValidIn fc φ ↔ fc = .ZTime`, with `not_derivable_base_*` the underivability corollaries. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
 <!-- END GENERATED -->
 
 ## Key Results
@@ -285,7 +286,7 @@ language.
 will prove a true theorem about a different question.
 
 - The **static frame** (`FrameOver.staticFrame`, `StaticFrame.lean`) has time-invariant truth, and
-  time-invariant truth **validates** `Axiom.z1` outright — the landed `static_validates_z1`, which
+  time-invariant truth **validates** the Z1 formula (`CompletenessDerived.z1Thm`) outright — the landed `static_validates_z1`, which
   `LexIntWitness.lean` depends on. The trap is live precisely because `LexIntWitness.lean` makes
   its discrete non-Archimedean carrier look like the obvious place to start.
 - The **clock frame** (`clockFrame`, `ClockFrame.lean`) is a dead end for **`z1` only**, and the

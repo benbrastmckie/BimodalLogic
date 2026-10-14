@@ -36,6 +36,26 @@ derivations), organized by topic. These are distinguished from metalogical resul
 - **Perpetuity**: P1-P6 perpetuity principles (G-H equivalences, eternal truths)
 - **Temporal Derived**: Linearity-derived theorems (temp_k_dist, temp_4 are now derived)
 
+## Where a derived schema lives
+
+`ProofSystem/` imports only `Syntax`, so a derived schema is placed at the lowest module whose
+imports already supply its proof, and the chain is
+
+`Combinators → DeductionTheorem → Propositional.Core → Connectives → GeneralizedNecessitation →
+ConnectDerived → TemporalDerived → LinearityDerived → DedekindDerived`.
+
+- `ProofSystem/DerivedAxioms.lean` (below `Combinators`): the TR mirrors and the schemata that
+  need only raw constructors — UE (`untilF`), UT (`fUntilEquiv`), NF (`discretePropagateFwd`).
+- `ConnectDerived.lean`: TC (`connectFuture`), NP (`discreteSymmFwd`), NA
+  (`discretePropagateBwd`) with their mirrors; sits below `TemporalDerived`, which consumes TC.
+- `LinearityDerived.lean`: TL (`tempLinearity`, from CN) and DN (`density`, from NN) with the
+  legacy order and past mirror; sits above `TemporalDerived` for `someFutureMono`.
+- `Metalogic/CompletenessDerived.lean`: Z1 (`z1Thm`), recovered through the ZTime completeness
+  engine and therefore above `Metalogic/BXCanonical`.
+
+Every derivation in `ConnectDerived` and `LinearityDerived` is computable, because the runtime
+proof search and the dataset tooling build and traverse the trees.
+
 ## Related Documentation
 
 - [Parent README](../README.md)

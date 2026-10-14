@@ -97,24 +97,24 @@ exactly the paper's primitive axiom schemata.
 |-------|------------:|-------------|-------------|
 | 1. Propositional | 4 | Base | K, S, EFQ, Peirce |
 | 2. S5 Modal | 3 | Base | MT, M5 (5-collapse), MK (K-distribution); 4 and B derived |
-| 3. BX Temporal | 9 | Base | Burgess-Xu Until/Since axioms, future direction |
-| 3b. Additional BX Temporal | 2 | Base | `temp_linearity` (TL), `F_until_equiv` (UT) |
+| 3. BX Temporal | 7 | Base | Burgess-Xu Until/Since axioms, future direction (TC, UE, TL, UT are derived) |
 | 4. Interaction | 1 | Base | MF (`□φ → □Gφ`); TF is derived |
-| 5. Uniformity | 4 | Base | NP, NF, NA, NB (valid on all ordered abelian groups) |
-| 6. Prior | 1 | ZTime | Prior-UZ for discrete well-ordering |
-| 7. Z1 | 1 | ZTime | IsSuccArchimedean characteristic axiom |
-| 8. Density | 2 | Dense | `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`) |
+| 5. Uniformity | 1 | Base | NB (valid on all ordered abelian groups); NP, NF, NA are derived |
+| 6. Prior | 1 | ZTime | Prior-UZ for discrete well-ordering; Z1 is derived through the ZTime completeness engine |
+| 8. Density | 1 | Dense | `dense_indicator` (`¬U(⊤,⊥)`); DN (`GGφ → Gφ`) is derived from it |
 | 9. Reynolds RTime | 2 | RTime | `prior_U_gap`, `sep` — definable-gap-freeness for real flow |
-| **Total** | **29** | | |
+| **Total** | **20** | | |
 
 **Derived schemata**: every past mirror is obtained from its future primary by the
-time-reflection rule TR and proved as a theorem in `ProofSystem/DerivedAxioms.lean` (the
-linearity mirrors, modal 4 and B, and the pre-paper forms of TL, CN and TS are in
-`Theorems/Combinators.lean`), under the lowerCamelCase form of its former constructor name in the `DerivedAxioms`
-namespace.
+time-reflection rule TR and proved as a theorem in `ProofSystem/DerivedAxioms.lean` (modal 4 and B
+and the pre-paper forms of CN and TS are in `Theorems/Combinators.lean`), under the lowerCamelCase
+form of its former constructor name. Nine schemata the paper lists as axioms are derived too:
+UE, UT, NF in `ProofSystem/DerivedAxioms.lean`; TC, NP, NA in `Theorems/ConnectDerived.lean`; TL
+(from CN) and DN (from NN) in `Theorems/LinearityDerived.lean`; Z1 in
+`Metalogic/CompletenessDerived.lean`, through the ZTime completeness engine.
 
 **Frame classification**: 16 Base constructors (valid on all linear orders), 1 ZTime-only, 1 Dense-only,
-2 RTime-only. Cumulatively (`Dense ≤ RTime`): Base 23, Dense 25, ZTime 25, RTime 27. Counting
+2 RTime-only. Cumulatively (`Dense ≤ RTime`): Base 16, Dense 17, ZTime 17, RTime 19. Counting
 every named schema instead — including the derived past-mirrors — gives 37 / 40 / 39 / 42 by
 class (45 in all); see
 [Two axiom counts](../docs/reference/axiom-reference.md#two-axiom-counts) for the full derivation.
