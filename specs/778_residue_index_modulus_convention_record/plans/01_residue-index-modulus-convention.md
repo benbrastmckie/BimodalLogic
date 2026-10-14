@@ -391,20 +391,20 @@ probe's wiring and the comment block being edited.
 
 ---
 
-### Phase 5: Align the authoritative theorem ledger [IN PROGRESS]
+### Phase 5: Align the authoritative theorem ledger [COMPLETED]
 
 **Goal**: `docs/theorem-index.md`, which declares itself authoritative over every other surface,
 carries the same sharpened modulus clause as the module docstring it summarises.
 
 **Tasks**:
-- [ ] Re-read the four affected rows of `docs/theorem-index.md` (lines 214-217: `no_fwd`,
+- [x] Re-read the four affected rows of `docs/theorem-index.md` (lines 214-217: `no_fwd`,
       `no_bwd_of_idle`, `ladderFrameAdm_isRegular`, `ladderModel`) immediately before editing.
-- [ ] In each row, sharpen `the modulus must dominate every letter-definable sub-object period` to
+- [x] In each row, sharpen `the modulus must dominate every letter-definable sub-object period` to
       the multiple-of form, leaving every other clause of the row — including the Lean name, File,
       Frame class and Axioms columns — untouched.
-- [ ] Confirm the four rows remain single-line table rows (no inserted newline would survive the
+- [x] Confirm the four rows remain single-line table rows (no inserted newline would survive the
       markdown table).
-- [ ] Confirm the Axioms column, which `check-module-invariants.sh` generates from pinned
+- [x] Confirm the Axioms column, which `check-module-invariants.sh` generates from pinned
       baselines, is unchanged in all four rows.
 
 **Timing**: 0.5 hours
@@ -434,7 +434,7 @@ Axioms cells.
 
 ---
 
-### Phase 6: Full gate sweep, inventory reconciliation, and consistency check [NOT STARTED]
+### Phase 6: Full gate sweep, inventory reconciliation, and consistency check [IN PROGRESS]
 
 **Goal**: Every repository gate is green, the machine-owned inventory block reflects
 `LadderModel.lean`'s new size, and no deliverable surface is left carrying either the old
