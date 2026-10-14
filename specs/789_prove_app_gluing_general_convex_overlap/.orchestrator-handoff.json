@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Wrote a six-phase implementation plan for the general app:gluing lemma, transcribing the research round's fully verified, choice-free probe rather than re-deriving it. Phases: relocate partialHistory_ext into Semantics/PartialHistory.lean (prerequisite for uniqueness); create FormalSystem/Semantics/Gluing.lean with the construction, readings, convexity, both restriction identities, uniqueness and both ExistsUnique entry points; exhibit the paper's ray seam gluing as a witness instance; wire the module in (the one shared-territory touch, isolated); pin choice-freeness via two matched C14 heredoc rows plus a pinned:C14 theorem-index row; repoint the ten app:gluing citation sites and clear the full gate set. Plan validates clean under validate-artifact.sh.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/789_prove_app_gluing_general_convex_overlap/plans/01_general-convex-gluing.md",
+      "summary": "Six-phase, 7-hour plan: partialHistory_ext relocation, the new Gluing.lean module, the ray-instance witness, aggregator wiring, the C14 axiom pin, and the citation surface plus full gate set."
+    }
+  ],
+  "dispatch_seq": 9
+}

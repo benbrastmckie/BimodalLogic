@@ -1,28 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/789_prove_app_gluing_general_convex_overlap/reports/01_general-convex-gluing.md",
-      "summary": "General gluing of two convex histories along a nonempty overlap (app:gluing): fully verified choice-free construction, the DecidablePred encoding hypothesis and why nothing cheaper works, module placement, the partialHistory_ext relocation prerequisite, instance decision for the three landed special cases, and a four-phase implementation route."
-    },
-    {
-      "type": "probe",
-      "path": "specs/789_prove_app_gluing_general_convex_overlap/gluing-probe.lean",
-      "summary": "Verified Lean probe: union domain, glued states, four-way respects_task split, convexity of the union, reading equations, both restriction identities, uniqueness, both ExistsUnique forms, and the ray-domain instance of the paper's pasting operator. lake env lean exit 0, no warnings, every declaration [propext, Quot.sound]."
+      "type": "plan",
+      "path": "specs/789_prove_app_gluing_general_convex_overlap/plans/01_general-convex-gluing.md",
+      "summary": "Six-phase plan landing the general app:gluing lemma as FormalSystem/Semantics/Gluing.lean by transcribing the verified research probe, relocating partialHistory_ext as a prerequisite, exhibiting the seam cases as witnesses, and pinning choice-freeness in the C14 baseline."
     }
   ],
   "metadata": {
     "session_id": "sess_1792013208_936eb4_789",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "verification": {
-      "probe_runs": 6,
-      "final_exit": 0,
-      "measured_axioms": "[propext, Quot.sound] on every declaration; [propext] on isConvex_union",
-      "sorry_count": 0
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 7,
+    "dependency_waves": [[1], [2], [3, 4], [5], [6]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Planning a Lean task in BimodalLogic that adds or resizes any .lean file must include a generated-surface regeneration step, because scripts/check-module-invariants.sh's INV check is GATED (it FAILs, not warns) on a stale '<!-- BEGIN GENERATED: inventory -->' block, and those blocks carry per-file line counts. Find the covering blocks with: grep -rh 'BEGIN GENERATED: inventory' FormalSystem/ | sed 's/.*dir=\\([^ ]*\\).*/\\1/' | sort -u -- a block exists for FormalSystem (loose rows, covering every root-level aggregator plus the generated root FormalSystem.lean) and for most subdirectories, but NOT for FormalSystem/Semantics, whose README Contents table is hand-maintained. Regenerate with 'bash scripts/check-module-invariants.sh --emit-inventory' and verify with '--emit-inventory --check'; never hand-edit a generated block (scripts/readme-inventory.sh is a deprecated shim). Running plan-file-scope-harvest.sh on a draft plan surfaces this automatically: its generated-surface append stage adds the covering READMEs and typst/generated/status.typ to the harvested file_scope whenever any .lean path is present, so a path in the harvest that the plan's own 'Files to modify' lists do not mention is the signal that a regeneration step is missing.",
+      "category": "PATTERN",
+      "source_artifact": "specs/789_prove_app_gluing_general_convex_overlap/plans/01_general-convex-gluing.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["generated-inventory", "check-module-invariants", "plan-file-scope-harvest", "lean-plan-gates", "emit-inventory", "readme-lint"]
     }
-  }
+  ],
+  "next_steps": "Run /implement 789 to execute the plan",
+  "dispatch_seq": 9
 }
