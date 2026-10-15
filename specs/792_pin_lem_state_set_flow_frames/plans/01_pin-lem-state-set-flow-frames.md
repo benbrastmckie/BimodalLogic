@@ -350,35 +350,35 @@ build in this phase's verification plus `lean_goal` at each `:=` before committi
 
 ---
 
-### Phase 4: The two module-docstring records [IN PROGRESS]
+### Phase 4: The two module-docstring records [COMPLETED]
 
 **Goal**: `StateSetTruth.lean`'s module docstring states the current design — (H2) derivable for
 regular frames, both hypothesis forms live for different reasons — and carries the nomic forward
 pointer the nomic port will reuse.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Independence/StateSetTruth.lean` immediately before editing
-- [ ] Add the three new corollary names to the module docstring's `## Main Results` list, each
+- [x] Re-read `FormalSystem/Metalogic/Independence/StateSetTruth.lean` immediately before editing
+- [x] Add the three new corollary names to the module docstring's `## Main Results` list, each
       with a one-line gloss naming which sentence of `lem:state-set` it is
-- [ ] Add the (H2) note, phrased as the **current design** and not as a change to it: (H2) is
+- [x] Add the (H2) note, phrased as the **current design** and not as a change to it: (H2) is
       *derivable* for regular frames via `StateOccurs.of_isRegular`, and the two-hypothesis forms
       are retained because `Independence/DeterminismUndefinable.lean` discharges (H2) by explicit
       affine witnesses and so stays choice-free. Use no "is now", "no longer", "previously",
       "formerly" or any other phrasing relative to an unstated past
       (`.claude/rules/no-record-versioning-in-deliverables.md`)
-- [ ] Add the nomic forward pointer to the `## References` section: `prop:nomic-tense-free` runs
+- [x] Add the nomic forward pointer to the `## References` section: `prop:nomic-tense-free` runs
       the same state-set induction over the tense-free fragment `{p_i, ⊥, →, □, Nomic}`, with `□`
       and `Nomic` sharing one clause and no temporal clauses at all; its `□` case consumes
       `cor:occurrence` and its `Nomic` case consumes `lem:nomic-occurrence`, which is
       `cor:occurrence` applied to the relativized frame; and no nomic machinery exists in this
       tree, which `StarLanguage/README.md` and `OpenLanguage/README.md` record as a deliberate
       exclusion
-- [ ] Cite `def:flow`, `def:state-set` and `lem:state-set` by name in the `## References` list
+- [x] Cite `def:flow`, `def:state-set` and `lem:state-set` by name in the `## References` list
       alongside the existing anchors
-- [ ] Cite **no** task number anywhere (C9 asserts zero task-number citations under
+- [x] Cite **no** task number anywhere (C9 asserts zero task-number citations under
       `FormalSystem/`, and `.claude/rules/no-task-references-in-deliverables.md` binds the whole
       repository outside `specs/**`); cite no `file.lean:NNN` location
-- [ ] Write none of the seven capitalized constraint tokens on any new docstring line
+- [x] Write none of the seven capitalized constraint tokens on any new docstring line
 
 **Timing**: 0.5 hours
 
@@ -397,7 +397,8 @@ build that confirms the `/-! -/` block still parses.
 
 **Verification**:
 - `bash scripts/check-module-invariants.sh --no-build` exits 0 with zero `FAIL` lines; C15, C34a,
-  C34b, C9 and C20 all PASS
+  C34b, C9 and C20 all PASS *(deviation: altered — all five named checks PASS; the only `FAIL`
+  line is the INV generated-inventory group, regenerated in Phase 5)*
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Independence.StateSetTruth`
   exits 0
 - `grep -nE '\b(task|tasks) [0-9]+' FormalSystem/Metalogic/Independence/StateSetTruth.lean`
@@ -407,7 +408,7 @@ build that confirms the `/-! -/` block still parses.
 
 ---
 
-### Phase 5: Inventory refresh, axiom confirmation, and the full gate sweep [NOT STARTED]
+### Phase 5: Inventory refresh, axiom confirmation, and the full gate sweep [IN PROGRESS]
 
 **Goal**: Every generated inventory block the two `.lean` edits make stale is current, the six
 axiom profiles are confirmed against the implementer's own files rather than a probe, and the

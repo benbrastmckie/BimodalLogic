@@ -29,6 +29,25 @@ membership in it.
   for every `V`
 - `determined_of_orderFlow` — *Determined* is valid over **any** (H1)+(H2) frame, deterministic or
   not
+- `plusTruthAt_iff_mem_satSet_of_isRegular` — `lem:state-set`'s first sentence: the bridge over a
+  frame satisfying `def:flow`, with (H2) discharged
+- `determined_of_orderFlow_of_isRegular` — its second sentence: *Determined* is valid over every
+  such frame
+- `plusValidOn_iff_satSet_univ_of_isRegular` — its third sentence: frame-validity is the state set
+  exhausting the carrier under every assignment
+
+## The two hypothesis forms
+
+(H2) is derivable for a regular frame: `StateOccurs.of_isRegular`
+(`Independence/OrderTransfer.lean`) reads it off `cor:occurrence`. The `_of_isRegular` section at
+the end of this file therefore states all three results over `def:flow`'s hypotheses alone —
+`[LinearOrder F.WorldState]` with `OrderFlow F` — which is how `lem:state-set` itself reads.
+
+Both forms earn their keep, for different reasons. The derivation runs through `thm:extension` and
+hence Zorn's lemma, so the `_of_isRegular` forms carry `Classical.choice`. The two-hypothesis
+forms carry none: `Independence/DeterminismUndefinable.lean` discharges (H2) at each of its two
+frames by an explicit affine witness, and a choice-free axiom profile is exactly what the pin it
+keeps on them asserts.
 
 ## The recursion, clause by clause
 
@@ -59,6 +78,16 @@ the statement proved is `∀ φ, ∀ τ t, …`, with `τ` and `t` bound inside.
 ## References
 
 * JPL paper `cor:no-characterization`, `app:drift`, `lem:deterministic-singleton`
+* JPL paper `def:state-set` — the recursion `satSet` transcribes; `def:flow` — the order-isomorphism
+  condition `OrderFlow` states pointwise; `lem:state-set` — the three sentences the `_of_isRegular`
+  section states; `cor:occurrence` — the discharge of (H2)
+* JPL paper `prop:nomic-tense-free` runs this same state-set induction over the tense-free fragment
+  `{pᵢ, ⊥, →, □, nomic}`: `□` and the nomic operator share one clause, and there are no temporal
+  clauses at all. Its `□` case consumes `cor:occurrence`, as the `box` clause here does, and its
+  nomic case consumes `lem:nomic-occurrence`, which is `cor:occurrence` applied to the relativized
+  frame. No nomic machinery exists in this tree, which `StarLanguage/README.md` and
+  `OpenLanguage/README.md` both record as a deliberate exclusion; a port of that proposition can
+  reuse the recursion and the bridge here unchanged, adding one clause and one occurrence fact.
 * `FormalSystem/Metalogic/Independence/OrderTransfer.lean` — (H1), (H2) and the transfer lemmas
 -/
 
