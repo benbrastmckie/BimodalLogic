@@ -1,7 +1,7 @@
 # Implementation Plan: Task #793
 
 - **Task**: 793 - Prove lem:after-negation and the cut cor:after-negation-stable for the event operators of def:event-operators
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/793_after_operator_negation_equivalence/reports/01_after-operator-negation-equivalence.md
@@ -136,7 +136,7 @@ everywhere — each phase is independently green, so each closes with its own co
 
 ---
 
-### Phase 1: `Formula.after` and `Formula.before` [NOT STARTED]
+### Phase 1: `Formula.after` and `Formula.before` [COMPLETED]
 
 **Goal**: Add the two missing event operators beside `Formula.release` in
 `FormalSystem/Syntax/Formula.lean`, with the paper's equations machine-checked.
@@ -186,7 +186,7 @@ break a single-module build could miss.
 
 ---
 
-### Phase 2: Generic next-time tier in `TruthClauses.lean` [NOT STARTED]
+### Phase 2: Generic next-time tier in `TruthClauses.lean` [COMPLETED]
 
 **Goal**: Prove the mathematics once, language-generically: next-`φ`-time uniqueness and the
 pointwise negation equivalence under the `After(φ,⊤)` guard, over any `L` with the Boolean and

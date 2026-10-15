@@ -528,6 +528,39 @@ Semantically: ψ must hold at all future times until and including when φ first
 def release (φ ψ : Formula) : Formula := (Formula.untl ψ.neg φ.neg).neg
 
 /--
+After operator A(φ, ψ) — `def:event-operators`' `After(φ,ψ) := ¬φ U (φ ∧ ψ)`.
+
+Guard-first (`untl guard event`): `untl φ.neg (φ.and ψ)` = "¬φ holds until φ ∧ ψ", so the event
+is pinned to the **first** strictly future `φ`-time and `ψ` is read there.
+
+`After(φ,⊤) = ¬φ U φ` therefore says that there is a next `φ`-time; that formula is the guard of
+`lem:after-negation`, whose semantic content is
+`FormalSystem.Metalogic.SoundnessLemmas.after_negation_valid`.
+-/
+def after (φ ψ : Formula) : Formula := Formula.untl φ.neg (φ.and ψ)
+
+/--
+Before operator B(φ, ψ) — `def:event-operators`' `Before(φ,ψ) := Release(ψ,¬φ) ∧ fφ`.
+
+**Argument-order trap.** `Formula.release` takes the paper's `Release` arguments **swapped**:
+`Formula.release a b = ¬(¬b U ¬a)` is the paper's `Release(b,a)`. The paper's `Release(ψ,¬φ)` is
+therefore `Formula.release φ.neg ψ`, not `Formula.release ψ φ.neg`. The `example` pin below is
+what enforces this; see `docs/architecture/untl-snce-argument-order.md`.
+-/
+def before (φ ψ : Formula) : Formula :=
+  (Formula.release φ.neg ψ).and (Formula.someFuture φ)
+
+/-! `def:event-operators`' two equations, pinned against their literal primitive expansions. An
+argument order swapped in either operator fails to elaborate here rather than surviving as a
+comment. The double negation `φ.neg.neg` in the `before` pin is exactly what substituting `¬φ`
+into `Release`'s right-hand side produces, and is deliberately left unsimplified. -/
+
+example (φ ψ : Formula) : after φ ψ = Formula.untl φ.neg (φ.and ψ) := rfl
+
+example (φ ψ : Formula) :
+    before φ ψ = ((Formula.untl ψ.neg φ.neg.neg).neg).and (Formula.someFuture φ) := rfl
+
+/--
 Weak Until operator W(φ, ψ) — Until without the liveness requirement.
 
 Weak_until(φ, ψ) = (ψ U φ) ∨ G(ψ). Guard-first (`untl guard event`):
