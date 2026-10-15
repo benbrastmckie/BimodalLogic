@@ -128,7 +128,7 @@ next_project_number: 805
 798 [RESEARCHING] — Port the eleven unported modal-temporal interaction...
 799 [RESEARCHING] — Discharge the Zorn dependence that the state-set corollaries...
 801 [RESEARCHING] — Re-pin the BX/TM anchor wave in...
-  └─ 797 [RESEARCHING] — Formalize the cut shift-of-finite-type remark. The paper's...
+  └─ 797 [RESEARCHED] — Formalize the cut shift-of-finite-type remark. The paper's...
   └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
 
 ### Build Performance
@@ -328,10 +328,11 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 797. Shift finite type eventually periodic worlds
 - **Effort**: medium
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 801
+- **Research**: [797_shift_finite_type_eventually_periodic_worlds/reports/01_shift-finite-type-periodic-worlds.md]
 
 **Description**: Formalize the cut shift-of-finite-type remark. The paper's conclusion once carried a remark, now moved to the companion cut file, that when W is finite and D = ℤ the set of possible worlds H_F is a shift of finite type -- world states as alphabet symbols, the unit-step task relation ⇒_1 as the edges of a labelled graph, possible worlds as the bi-infinite paths through it -- and that thm:extension then becomes effective without Zorn: the forward and backward orbits extending a bounded convex history must each revisit a state, so every bounded convex history extends to a possible world that is eventually periodic in both directions (finite prefix plus finite cycle each way) and so finitely representable, licensing a finite certificate that a bounded history is a fragment of a possible world (Lind and Marcus is the citation).
 

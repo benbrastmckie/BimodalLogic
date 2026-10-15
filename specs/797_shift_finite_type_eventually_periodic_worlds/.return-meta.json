@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/797_shift_finite_type_eventually_periodic_worlds/reports/01_shift-finite-type-periodic-worlds.md",
+      "summary": "Scopes the shift-of-finite-type task against existing tree machinery (FrameOver.extend_periodic, PlacedBiLasso, BiLasso/Agreement.lean), and resolves the choice-free requirement with compiled axiom probes: the H_F-membership chain becomes [propext, Quot.sound] once eq_or_ne is replaced by Decidable.eq_or_ne, while Nat.card, Fintype.ofFinite and Mathlib's SymbolicDynamics API each force Classical.choice."
+    }
+  ],
+  "user_decision": {
+    "question": "Deliverable (2) asks for an extension theorem over a finite-state regular frame over ℤ with '#print axioms showing no Classical.choice', but measurement shows those two halves are incompatible: [Finite W] yields no choice-free enumeration (Fintype.ofFinite, Finset.toList and Multiset.toList all carry Classical.choice) and the Nat.card bound carries it in the statement alone. Which statement shape should the plan commit to?",
+    "options": [
+      "Carrier-as-data — restate (2) with (enum : List W), (henum : forall w, w in enum), [DecidableEq W], [DecidableRel F.step], bound enum.length; genuinely choice-free, but a different statement than the description's '[Finite W]' wording",
+      "Keep [Finite W] — deliver (2) as the existing FrameOver.extend_periodic already does, drop the choice-free requirement, and record the measured impossibility instead",
+      "Both — ship the carrier-as-data choice-free theorem and keep the [Finite W] version untouched, with each docstring naming the other"
+    ],
+    "recommended": "Both — ship the carrier-as-data choice-free theorem and keep the [Finite W] version untouched, with each docstring naming the other",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1792056489_e27cc7_797",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
