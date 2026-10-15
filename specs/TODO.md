@@ -124,7 +124,7 @@ next_project_number: 805
 
 795 [PLANNED] — Formalize the nomic operator and its three results, on the...
 797 [PLANNED] — Formalize the cut shift-of-finite-type remark. The paper's...
-802 [RESEARCHING] — Derive every TM-system theorem the paper cites, cite the...
+802 [RESEARCHED] — Derive every TM-system theorem the paper cites, cite the...
 
 ### Build Performance
 
@@ -178,10 +178,11 @@ ACCEPTANCE. A measured, reported reduction in this module's elaboration time wit
 ---
 
 ### 802. Derive cited tm theorems and cite derivations
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 801
+- **Research**: [802_derive_cited_tm_theorems_and_cite_derivations/reports/01_derive-cited-tm-theorems.md]
 
 **Description**: Derive every TM-system theorem the paper cites, cite the derivations rather than derivability, and prune the superseded derivability results.
 

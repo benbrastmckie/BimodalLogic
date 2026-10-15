@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 14,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/802_derive_cited_tm_theorems_and_cite_derivations/reports/01_derive-cited-tm-theorems.md",
+      "summary": "Per-schema audit of the paper's cited TM theorems: Z1 is the sole completeness-routed one, P5/P6 were missed by the first pass and already exist, the propext-at-most and computable-tree criteria are the same criterion and both blocked by a gratuitous Classical.propDecidable in DeductionTheorem.lean (repair probed green), plus the full prune inventory and a Z1 derivation route."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792095464_fd54b2_802",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
