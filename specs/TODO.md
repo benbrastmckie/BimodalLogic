@@ -11,9 +11,9 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,793,795,796,797,798,799,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,800,801 | 298,464,502,616,761,772,793,796 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500,802 | 231,465,497,801 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,795,796,797,798,799,801,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,800,802 | 298,464,502,616,761,772,796,801 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -122,15 +122,14 @@ next_project_number: 805
 
 ### Paper Alignment
 
-793 [PLANNED] — Prove lem:after-negation, and the cut...
-  └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
-    └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
 798 [NOT STARTED] — Port the eleven unported modal-temporal interaction...
 799 [NOT STARTED] — Discharge the Zorn dependence that the state-set corollaries...
+801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
+  └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
 
 ### Build Performance
 
@@ -410,12 +409,13 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 793. After operator negation equivalence
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 794
 - **Research**: [793_after_operator_negation_equivalence/reports/01_after-operator-negation-equivalence.md]
 - **Plan**: [793_after_operator_negation_equivalence/plans/01_after-operator-negation-equivalence.md]
+- **Summary**: [793_after_operator_negation_equivalence/summaries/01_after-operator-negation-equivalence-summary.md]
 
 **Description**: Prove lem:after-negation, and the cut cor:after-negation-stable, for the event operators of def:event-operators. The paper defines in BL: After(φ,ψ) := ¬φ U (φ ∧ ψ); Release(φ,ψ) := ¬(¬φ U ¬ψ); Before(φ,ψ) := Release(ψ,¬φ) ∧ future φ; so After(φ,⊤) = ¬φ U φ says there is a next φ-time. lem:after-negation: After(φ,⊤) → (¬After(φ,ψ) ↔ After(φ,¬ψ)) is valid over every task frame. The proof is that any two next φ-times coincide (the earlier would lie strictly between x and the later), so under the guard After(φ,χ) holds at (tau, x) iff χ holds at the unique next φ-time.
 

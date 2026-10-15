@@ -1,7 +1,7 @@
 # Implementation Plan: Task #793
 
 - **Task**: 793 - Prove lem:after-negation and the cut cor:after-negation-stable for the event operators of def:event-operators
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/793_after_operator_negation_equivalence/reports/01_after-operator-negation-equivalence.md
