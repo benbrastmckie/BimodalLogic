@@ -1,7 +1,7 @@
 # Implementation Plan: Time reflection for BL and the semantic form of thm:TR-valid
 
 - **Task**: 796 - Prove lem:time-reflection for BL and the semantic form of thm:TR-valid by instantiating the generic anti-isomorphism transport at the reflected model
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None blocking. Shares `FormalSystem/Semantics/TaskFrame.lean` with task 617 (idempotent, see Risks); shares `typst/generated/status.typ` with task 801 (see Risks)
 - **Research Inputs**: `specs/796_time_reflection_bl_tr_valid_anti_iso/reports/01_time-reflection-bl-tr-valid.md`

@@ -11,8 +11,8 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,796,798,799,801,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,795,797,800,802 | 298,464,502,616,761,772,796,801 | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,798,799,800,801,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,795,797,802 | 298,464,502,616,761,772,801 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -122,10 +122,9 @@ next_project_number: 805
 
 ### Paper Alignment
 
-796 [PLANNED] — Prove lem:time-reflection for BL and the semantic form of...
-  └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 798 [PLANNED] — Port the eleven unported modal-temporal interaction...
 799 [PLANNED] — Discharge the Zorn dependence that the state-set corollaries...
+800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 801 [PLANNED] — Re-pin the BX/TM anchor wave in...
   └─ 795 [RESEARCHED] — Formalize the nomic operator and its three results, on the...
   └─ 797 [RESEARCHED] — Formalize the cut shift-of-finite-type remark. The paper's...
@@ -354,7 +353,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every pha
 
 ### 796. Time reflection bl tr valid anti iso
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None

@@ -472,14 +472,14 @@
     {
       "project_number": 796,
       "project_name": "time_reflection_bl_tr_valid_anti_iso",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Prove lem:time-reflection for BL and the semantic form of thm:TR-valid, by instantiating the repository's generic anti-isomorphism transport at the reflected model. lem:time-reflection: for each task frame F, the reflected frame F⁻ (w ⇒⁻_x u := w ⇒_{-x} u) is a task frame, tau ↦ tau⁻ := tau ∘ n with n(x) = -x is a bijection H_F → H_{F⁻}, and M, tau, x ⊨ φ iff M⁻, tau⁻, -x ⊨ φ_{S|U} for every sentence of BL. thm:TR-valid: if ⊨ φ then ⊨ φ_{S|U}, as a semantic statement over all task frames, from which thm:TM-soundness's TR case follows per class because the reflected frame shares its temporal order.\n\nWHAT EXISTS -- most of the pieces, unassembled. FormalSystem/OpenLanguage/OpenReversal.lean has `FrameOver.rev`, `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, `FrameOver.rev_isRegular`, the `rev_rev` involution facts, `WorldHistory.rev_surjective` (the bijection), and the transfer `openTruthAt_rev` for the OPEN language only. FormalSystem/Semantics/TruthTransport.lean has the generic order-reversing transport `Truth.truthAt_of_truthAntiIso` for the base `Formula`: it wants a `TruthAntiIso M M'` with an order-reversing `dur` equivalence, a `hist` equivalence and atom agreement, which is exactly what negation, `WorldHistory.rev` and `TaskModel.rev` supply. FormalSystem/Metalogic/Soundness.lean has only the rule-level consequences `axiom_reflect_time_validIn` and `derivable_valid_and_reflect_time_validIn`, which are what the soundness theorem actually consumes.\n\nDELIVER: (1) `revAntiIso M : TruthAntiIso M M.rev` (dur the negation equivalence, hist the rev involution packaged as an Equiv, atom by rfl) and `truthAt_rev : TruthAt M tau t φ ↔ TruthAt M.rev tau.rev (-t) φ.reflectTime`, which is lem:time-reflection; (2) `validOn_rev_iff` and the frame-class form `ValidIn fc φ → ValidIn fc φ.reflectTime` for every fc closed under `rev` -- prove that closure for Base, Dense, ZTime and RTime, since the reflected frame shares its temporal order -- which is thm:TR-valid; (3) decide, and record in the docstring, whether `derivable_valid_and_reflect_time_validIn` should now be derived from (2) plus plain soundness or left as is with a cross-reference; (4) promote the frame-level `rev` machinery from OpenLanguage/ to Semantics/, as OpenReversal.lean's own docstring anticipates, if the import layering allows it without a cycle -- otherwise say why not.\n\nPAPER ANCHORS. def:time-reflection, lem:time-reflection, thm:TR-valid in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, each with a `% PORT:` comment to clear. Task 617 (the presheaf Reflection clause) is the categorical packaging of the same involution and is independent: cross-reference, do not merge.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry; the `assert_not_exists` guards in Semantics/Truth.lean must stay satisfied if anything is promoted.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-15T15:38:26Z",
+      "last_updated": "2026-10-15T17:09:31Z",
       "artifacts": [
         {
           "path": "specs/796_time_reflection_bl_tr_valid_anti_iso/reports/01_time-reflection-bl-tr-valid.md",
@@ -489,7 +489,7 @@
         {
           "path": "specs/796_time_reflection_bl_tr_valid_anti_iso/plans/01_time-reflection-bl-tr-valid.md",
           "type": "plan",
-          "summary": "6-phase, 3.5-hour plan for lem:time-reflection and thm:TR-valid, with a Lean Challenge Statements block pinning all eleven target signatures."
+          "summary": "6-phase plan, all phases [COMPLETED], with the Lean Challenge Statements block pinning all eleven target signatures."
         }
       ],
       "session_id": "sess_1792077807_2be444",
@@ -510,7 +510,8 @@
         "FormalSystem/Semantics/Validity.lean",
         "README.md",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Proved lem:time-reflection for the base language as FormalSystem.Semantics.truthAt_rev, by instantiating the repository's generic order-reversing transport Truth.truthAt_of_truthAntiIso at a new revAntiIso, and derived thm:TR-valid as validOnFrames_reflectTime with its frame-class instance validIn_reflectTime (no closure hypothesis, via FrameClass.Sat.rev) plus the involution form and the two non-tag predicates ValidComplete and ValidQTime. Promoted the frame/model/history/transport reversal machinery out of OpenLanguage/OpenReversal.lean into Semantics/TaskFrame.lean and a new G-15-guard-clean Semantics/Reversal.lean with no import cycle, and recorded the decision to leave derivable_valid_and_reflect_time_validIn uncollapsed with a cross-reference docstring. Eleven new declarations, zero sorries, axiom count unchanged, all four lake targets green."
     },
     {
       "project_number": 797,
