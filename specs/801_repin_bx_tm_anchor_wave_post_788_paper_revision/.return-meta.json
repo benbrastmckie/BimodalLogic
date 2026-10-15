@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 6,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/reports/01_bx-tm-membership-prose-audit.md",
-      "summary": "Live 10-anchor wave re-measured (lem:uniq's hash already moved since the seed); the paper's primitive set now coincides exactly with the tree's 20 constructors; 17 in-tree sites make paper-membership claims the live paper contradicts plus 4 pre-788 count defects, tiered with gate coupling (C15 binds, C35 nearly inert, C14 blind) and a measured all-green baseline except check-paper-definitions.sh."
+      "type": "plan",
+      "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/plans/01_bx-tm-repin-and-membership-prose.md",
+      "summary": "Seven-phase plan: re-derive the live 10-anchor wave, re-pin it in two cost-ordered passes with a dated drift-correction entry, then three parallel prose phases (C15-coupled Lean docstrings + theorem-index, paper-attribution rewrite in axiom-reference and both Typst documents, pre-788 count tables) and a full gate sweep with a conditional acceptance statement."
     }
   ],
+  "next_steps": "Run /implement 801 to execute the plan",
   "metadata": {
-    "session_id": "sess_1792056489_e27cc7_801",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792077807_2be444_801",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 8,
+    "dependency_waves": [[1], [2], [3], [4, 5, 6], [7]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When planning a multi-file documentation-consistency task, let GATE COUPLING set the phase boundaries, not directory structure. Two complementary rules fell out of the BX/TM membership-prose pass in BimodalLogic: (1) Files bound to each other by a cross-file invariant check must share one phase with Commit Mode: atomic-batch -- there, check-module-invariants.sh's C15 asserts that every docs/theorem-index.md row's paper-anchor cell also appears as a `Paper:` line at the Lean declaration, so changing either side alone turns the gate red in a way that reads as a regression. (2) Where a gate is structurally BLIND to the defect class (C14's stale-literal set was {14,21,42,44,45} and its markdown scope excluded nested FormalSystem/**/README.md, so two tables asserting 'Total 29' under their own correct '20 constructors' sentence both passed), the phase's Tier Justification must name an explicit re-derivation from a generator script as its covering check -- a gate verdict there is a vacuous pass and must not be cited as evidence. Read the gate's source to establish its scope and literal set rather than inferring coverage from its name.",
+      "category": "PATTERN",
+      "source_artifact": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/plans/01_bx-tm-repin-and-membership-prose.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["gate-coupling", "phase-boundaries", "atomic-batch", "vacuous-pass", "verification-tier", "cross-file-invariant"]
+    }
+  ],
+  "dispatch_seq": 10
 }

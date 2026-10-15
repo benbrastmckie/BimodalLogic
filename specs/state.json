@@ -88,7 +88,7 @@
     {
       "project_number": 801,
       "project_name": "repin_bx_tm_anchor_wave_post_788_paper_revision",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Re-pin the BX/TM anchor wave in paper-definitions-of-record.md after the paper's post-788 revision, and verify in-tree axiom-membership prose matches\n\nTHE DRIFT. `scripts/check-paper-definitions.sh` is red on four anchors against the live paper: `def:BX`, `def:BX-z`, `def:BX-d`, `def:TMplus`. The paper has been revised to demote axioms to derived theorems in the BX/TM proof systems — `def:TMplus`'s new text adds the bimodal interaction axiom NB alongside MF, and states that the uniformity schemata NP, NF and NA are \"derived theorems of TM rather than of BX\", deriving them from NB together with MF and MT by `lem:derived-schemata`.\n\nWHY THIS IS NOT A FORMALIZATION GAP. The tree is not behind the paper; the paper has caught up to the tree. Task 788 (\"Reduce tm and extensions to minimal axiom sets\") is COMPLETED (commit c77645f8d) and already landed the 20-constructor system, marking the nine derived schemata in the reference manual. So this is record-and-prose work, not Lean proof work — the same shape as the 27-anchor re-pin that just completed.\n\nSCOPE. (1) Re-pin the drifted BX/TM anchors and their sha256 values in `docs/reference/paper-definitions-of-record.md`, following that file's own dated drift-correction convention — the 27-anchor wave entry `### Drift correction (2026-10-14): the 27-anchor wave` is the immediate precedent, and the 10-anchor and 14-anchor entries precede it. `scripts/check-paper-definitions.sh --resolve` is the sanctioned way to obtain new text and hashes; there is no `--fix` mode by design. Re-pin mechanically rather than transcribing: assert each OLD block re-hashes to its OLD recorded hash before writing the replacement, so every placement is proved before the write.\n\n(2) THE REAL CONTENT OF THIS TASK: verify the in-tree axiom-membership prose matches post-788 reality. The 27-anchor re-pin verified that no in-tree site claims a VERBATIM quotation on any of the four anchors, so nothing in the tree is currently false. But the paper now asserts a specific membership claim — NP/NF/NA are derived theorems of TM, not of BX; NB is an axiom of TM — and the in-tree prose, README tables, docstrings in FormalSystem/ProofSystem/Axioms.lean and related modules, and the Typst reference manual must be checked to state the same. This is a judgment pass over every site describing BX/TM axiom membership, not a search-and-replace.\n\n(3) THE PAPER IS ACTIVELY BEING REVISED. It moved five times during a single orchestration run (4573 to 3940 to 3959 lines; dirty, then clean, then dirty again; HEAD moving under the gate). Carry every anchor count and hash as an explicit Scope Hypothesis to RE-DERIVE at implementation time rather than trusting any figure written during research or planning. Expect the live wave to differ from the four anchors named above — absorb whichever wave is live when implementation runs, and state the acceptance criterion precisely rather than claiming a green gate unconditionally.\n\nGATES. C15 in `scripts/check-module-invariants.sh` requires a MANIFEST or KNOWN-ANCHORS row for every `def:`/`thm:`/`lem:`/`cor:`/`app:` anchor cited under `FormalSystem/`. C35 (citation-manifest byte-currency) goes red on any docstring edit in files carrying seeded manifest entries; remedy is `python3 scripts/export-lean-citations.py`. Regenerate inventory blocks with `check-module-invariants.sh --emit-inventory` and verify with `--emit-inventory --check` if line counts drift.\n\nACCEPTANCE. The BX/TM anchors pinned against the live paper with hashes re-derived at implementation time; no in-tree site claims a verbatim quotation it does not reproduce; in-tree BX/TM axiom-membership prose consistent with the paper's derived-theorem framing and with 788's completed 20-constructor system; `lake build` green; `readme-lint.sh`, `check-module-invariants.sh --no-build` and `export-lean-citations.py --check` exit 0; both Typst documents compile. State the `check-paper-definitions.sh` result precisely — if the paper moves again mid-task, report which wave was absorbed and which was not, rather than claiming an unconditional exit 0.\n\nNON-GOALS: no new Lean declarations and no change to the axiom set — 788 already did that work; no edit to the paper itself (it lives in another repository and is being revised by its author); do not absorb unrelated drift waves in other subsystems without recording the decision.",
       "effort": "medium",
@@ -99,24 +99,38 @@
       ],
       "file_scope": [
         "FormalSystem/ProofSystem/Axioms.lean",
+        "FormalSystem/ProofSystem/DerivedAxioms.lean",
         "FormalSystem/ProofSystem/README.md",
         "FormalSystem/README.md",
+        "FormalSystem/Theorems/ConnectDerived.lean",
+        "FormalSystem/Theorems/README.md",
         "README.md",
+        "docs/project-info/FEATURE_REGISTRY.md",
         "docs/reference/API_REFERENCE.md",
         "docs/reference/axiom-reference.md",
         "docs/reference/paper-definitions-of-record.md",
+        "docs/theorem-index.md",
+        "docs/user-guide/architecture.md",
         "scripts/lean-citation-manifest.json",
         "typst/FormalFoundations.typ",
+        "typst/chapters/03-proof-theory.typ",
+        "typst/generated/machine-appendix.jsonl",
+        "typst/generated/machine-appendix.typ",
         "typst/generated/status.typ"
       ],
       "created": "2026-10-15T00:59:16Z",
-      "last_updated": "2026-10-15T15:24:58Z",
-      "session_id": "sess_1792077807_2be444_801",
+      "last_updated": "2026-10-15T15:39:56Z",
+      "session_id": "sess_1792077807_2be444",
       "artifacts": [
         {
           "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/reports/01_bx-tm-membership-prose-audit.md",
           "type": "report",
           "summary": "Live 10-anchor wave re-measured (lem:uniq's hash already moved since the seed); the paper's primitive set now coincides exactly with the tree's 20 constructors; 17 in-tree sites make paper-membership claims the live paper contradicts plus 4 pre-788 count defects, tiered with gate coupling (C15 binds, C35 nearly inert, C14 blind) and a measured all-green baseline except check-paper-definitions.sh."
+        },
+        {
+          "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/plans/01_bx-tm-repin-and-membership-prose.md",
+          "type": "plan",
+          "summary": "Seven-phase implementation plan, 8 hours estimated, waves [[1],[2],[3],[4,5,6],[7]]; validate-artifact.sh passes with 0 warnings."
         }
       ],
       "next_artifact_number": 2

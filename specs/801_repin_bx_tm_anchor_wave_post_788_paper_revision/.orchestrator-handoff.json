@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "task_number": 801,
+  "phase": "plan",
+  "dispatch_seq": 10,
+  "session_id": "sess_1792077807_2be444_801",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "summary": "Wrote a seven-phase plan from the research report's membership map, tier tables and gate-coupling findings. Phase 1 re-derives the live wave (no repo write); Phases 2-3 re-pin the ten anchors in two cost-ordered passes inside docs/reference/paper-definitions-of-record.md, author the dated drift-correction entry and re-take the three whole-file sentinels last; Phases 4-6 run in parallel over disjoint file sets (the C15-coupled Lean docstrings plus theorem-index anchors as one atomic-batch with a single full build; the paper-attribution rewrite in axiom-reference.md and both Typst documents; the pre-788 count tables C14 is blind to); Phase 7 is the full gate sweep with a conditional acceptance statement. Re-measured the paper during this dispatch: it moved a seventh time (whole-file sha256 76a39caf -> 9c9d8f64, now dirty against HEAD b939ccf9) but the ten drifted anchors and all ten of their live per-anchor hashes are unchanged from the research round, so the anchor-level wave is now corroborated twice while the sentinels must still be re-taken at implementation time.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/plans/01_bx-tm-repin-and-membership-prose.md",
+      "summary": "Seven-phase implementation plan, 8 hours estimated, waves [[1],[2],[3],[4,5,6],[7]]; validate-artifact.sh passes with 0 warnings."
+    }
+  ],
+  "next_steps": "Run /implement 801 to execute the plan"
+}
