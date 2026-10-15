@@ -6,7 +6,7 @@ next_project_number: 801
 
 ## Task Order
 
-*Updated 2026-10-14. Generated from state.json dependency graph.*
+*Updated 2026-10-15. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -122,13 +122,13 @@ next_project_number: 801
 
 ### Paper Alignment
 
-789 [PLANNED] — Prove the paper's Gluing lemma app:gluing in full generality:...
-790 [RESEARCHED] — Prove lem:canonical-frames, the four claims the paper makes...
+789 [IMPLEMENTING] — Prove the paper's Gluing lemma app:gluing in full generality:...
+790 [PLANNED] — Prove lem:canonical-frames, the four claims the paper makes...
   └─ 791 [RESEARCHED] — Prove prop:archimedean in the generality the paper states it:...
-792 [RESEARCHED] — Pin lem:state-set to the tree by discharging its remaining...
+792 [PLANNED] — Pin lem:state-set to the tree by discharging its remaining...
   └─ 799 [NOT STARTED] — Discharge the Zorn dependence that the state-set corollaries...
 793 [PLANNED] — Prove lem:after-negation, and the cut...
-794 [RESEARCHED] — Formalize the paper's nomic frames, the frame-level half of...
+794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
   └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
@@ -285,11 +285,12 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 794. Nomic frames law histories hierarchy
 - **Effort**: large
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 756
 - **Research**: [794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md]
+- **Plan**: [794_nomic_frames_law_histories_hierarchy/plans/01_nomic-frames-law-histories.md]
 
 **Description**: Formalize the paper's nomic frames, the frame-level half of the nomic appendix. def:nomic-frame replaces the task relation by a relativized family ⇒^w, one task relation per world state w, each satisfying def:frame, so that F^w := (W, D, ⇒^w) is a task frame; the law-histories H_F^w are the possible worlds of F^w and H_F is their union over w. def:nomic-properties: Lawful (tau ∈ H_F^{tau(x)} for all tau ∈ H_F and x), Static (H_F^{tau(x)} = H_F^{tau(y)} for all tau, x, y), Uniform (H_F^w = H_F for all w). def:nomic-witnesses fixes the ℤ-time presentation by one-step relations R_w with ⇒^w_n = R_w^n and the reflection convention for n < 0.
 
@@ -328,11 +329,12 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 
 ### 792. Pin lem state set flow frames
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 756
 - **Research**: [792_pin_lem_state_set_flow_frames/reports/01_pin-lem-state-set-flow-frames.md]
+- **Plan**: [792_pin_lem_state_set_flow_frames/plans/01_pin-lem-state-set-flow-frames.md]
 
 **Description**: Pin lem:state-set to the tree by discharging its remaining hypothesis. The paper's lemma: over a task frame satisfying Flow (def:flow: W linearly ordered and every possible world an order-isomorphism of (D,<) onto (W,<)), truth of every sentence of BL with Stability at (tau, x) is membership of tau(x) in the state set |φ| of def:state-set; hence ⊨_F φ → Stability φ (so Determined is valid over every Flow frame), and ⊨_F φ iff |φ| = W under every assignment.
 
@@ -372,11 +374,12 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every pha
 
 ### 790. Lem canonical frames translation two state
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 756
 - **Research**: [790_lem_canonical_frames_translation_two_state/reports/01_lem-canonical-frames-characterizations.md]
+- **Plan**: [790_lem_canonical_frames_translation_two_state/plans/01_lem-canonical-frames-characterizations.md]
 
 **Description**: Prove lem:canonical-frames, the four claims the paper makes about its two canonical countermodel frames (def:canonical-frames): (a) the translation frame F^tr_D = (D, D, ⇒), with w ⇒_d u iff u = w + d, is a Deterministic task frame; (b) its possible worlds are exactly the translations sigma_c(z) = z + c for c ∈ D; (c) the two-state frame F^ts_D (W = {w0, w1}, ⇒_0 the identity, every positive duration permitting every transition) is a task frame just in case D is Discrete -- Limit fails whenever D has no least positive duration; (d) when it is, it is not Deterministic and every function D → {w0, w1} is one of its possible worlds.
 
@@ -392,7 +395,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two f
 
 ### 789. Prove app gluing general convex overlap
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None

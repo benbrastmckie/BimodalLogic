@@ -9,14 +9,14 @@
     {
       "project_number": 789,
       "project_name": "prove_app_gluing_general_convex_overlap",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Prove the paper's Gluing lemma `app:gluing` in full generality: for any task frame F and convex histories tau1, tau2 over F with domains X1, X2 such that X1 ∩ X2 is nonempty and tau1, tau2 agree on it, the union tau1 ∪ tau2 is the unique convex history over F with domain X1 ∪ X2 restricting to both.\n\nWHAT EXISTS, to reuse rather than rebuild. The repository has two special cases: the closed-interval seam case `Presheaf.sheaf_clause` (FormalSystem/Semantics/Presheaf/Sheaf.lean: sections over [0,l1] and [0,l2] glued at a shared endpoint) and the directed-family case `Presheaf.directed_gluing_clause` (FormalSystem/Semantics/Presheaf/Directed.lean), together with the ray-layer seam gluing landed by task 719 (FormalSystem/Semantics/Presheaf/Ray.lean). None covers two arbitrary convex domains with nonempty overlap. The general lemma is what the paper's convex-history layer actually uses -- the pasting operation rho ⌢_z sigma in the cut proof of cor:deterministic-completeness is an instance -- so it should be stated once at the convex-history layer (PartialHistory / convex domains under FormalSystem/Semantics/Extension/) and the two Presheaf cases either shown to be instances or left independent, by an explicit decision recorded in the docstring.\n\nDELIVER: (1) the gluing theorem: well-definedness on the overlap; convexity of X1 ∪ X2 (the paper's argument: for a ≤ b ≤ c with a ∈ X1 and c ∈ X2, compare b with a fixed z in the overlap); the constraint tau(x) ⇒_{y-x} tau(y) for x ≤ y in the union, inherited from tau_i when both times lie in one domain and otherwise composed through z by Compositionality; and uniqueness. (2) Choice-freeness: rmk:choice lists app:gluing among the choice-free results, so pin it with #print axioms. (3) Docstrings citing app:gluing.\n\nPAPER ANCHORS. app:gluing and its proof, LIVE in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (search \\label{app:gluing}), and rmk:choice immediately above it. A superseded, longer draft of the same proof is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from appendix, originally inside the proof of app:gluing'. The `% PORT:` comment under app:gluing in the paper is the marker to clear: once this lands, the paper closes app:gluing with \\leanproof naming the declaration.\n\nRELATION TO OPEN WORK. Task 566 (the Possible Worlds clause H_F ≅ lim Beh(F)) is a different statement; do not fold this into it, but note in the docstring how the limit presentation relates (a compatible family of sections is a gluing). specs/ROADMAP.md's Stage 1 note on app:gluing describes the seam case; this task is the general case.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase. If a module is added under FormalSystem/Semantics/Presheaf/, the aggregator-contention note recorded on tasks 563-567 applies (one-line import in Presheaf.lean is a shared touch; batch narrowly).",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T22:08:42Z",
+      "last_updated": "2026-10-14T23:34:30Z",
       "artifacts": [
         {
           "path": "specs/789_prove_app_gluing_general_convex_overlap/reports/01_general-convex-gluing.md",
@@ -59,7 +59,7 @@
     {
       "project_number": 790,
       "project_name": "lem_canonical_frames_translation_two_state",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -68,16 +68,33 @@
       ],
       "description": "Prove lem:canonical-frames, the four claims the paper makes about its two canonical countermodel frames (def:canonical-frames): (a) the translation frame F^tr_D = (D, D, ⇒), with w ⇒_d u iff u = w + d, is a Deterministic task frame; (b) its possible worlds are exactly the translations sigma_c(z) = z + c for c ∈ D; (c) the two-state frame F^ts_D (W = {w0, w1}, ⇒_0 the identity, every positive duration permitting every transition) is a task frame just in case D is Discrete -- Limit fails whenever D has no least positive duration; (d) when it is, it is not Deterministic and every function D → {w0, w1} is one of its possible worlds.\n\nWHAT EXISTS. FormalSystem/Semantics/Frames/Standard.lean has `translationFrame D : FrameOver D` with `translationFrame_isRegular` for every temporal order and `translationRel_fib_subsingleton` (the singleton-fibre fact behind determinism), and `permissiveFrame D so nm`, built only under `SuccOrder` and `NoMaxOrder` instances, i.e. only for discrete D. FormalSystem/Semantics/Correspondence/DurationFrames.lean has the canonical histories `translationHist` and `permissiveHist D so nm f` for an arbitrary assignment f (already half of (d)), plus the `*_realizes` lemmas. FormalSystem/Metalogic/Independence/RealTranslationFrame.lean has the ℝ instance: `f1_deterministic`, `f1_total_eq_orbit`, `f1_eq_of_states_eq`. None of these states (b), the 'only if' half of (c), or the non-determinism in (d) for a general D.\n\nDELIVER: (b) the set equation H_F = {sigma_c | c ∈ D} for `translationFrame D`, or equivalently an `Equiv` between its world histories and D, over every temporal order; (a) `(translationFrame D).Deterministic`, generalising `f1_deterministic` (or transferred from the ℝ instance if cheaper -- say which); (c) both halves: Limit holds for the permissive relation on Bool when D has a least positive duration and fails otherwise, so the relation is regular iff D is discrete; (d) `¬ (permissiveFrame D so nm).Deterministic`, and that `permissiveHist` is a bijection between assignments D → Bool and world histories. Docstrings cite def:canonical-frames and lem:canonical-frames.\n\nPAPER ANCHORS. def:canonical-frames and lem:canonical-frames in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under lem:canonical-frames is the marker to clear.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two frames' definitions, which `validOn_df_iff_isDiscrete`, `validOn_dn_iff_denselyOrdered` and the Independence modules consume.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T21:50:53Z",
+      "last_updated": "2026-10-15T00:46:12Z",
       "artifacts": [
         {
           "path": "specs/790_lem_canonical_frames_translation_two_state/reports/01_lem-canonical-frames-characterizations.md",
           "type": "report",
           "summary": "All four lem:canonical-frames claims proved in compiled probes; placement, statement shapes, and the C15/typst-status gate obligations settled, with a territory flag on docs/reference/paper-definitions-of-record.md."
+        },
+        {
+          "path": "specs/790_lem_canonical_frames_translation_two_state/plans/01_lem-canonical-frames-characterizations.md",
+          "type": "plan",
+          "summary": "Implementation plan: 01_lem-canonical-frames-characterizations.md"
         }
       ],
       "session_id": "sess_1792013208_936eb4",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "FormalSystem/Metalogic/Independence/README.md",
+        "FormalSystem/Metalogic/Independence/RealTranslationFrame.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
+        "FormalSystem/Semantics/Correspondence/README.md",
+        "README.md",
+        "docs/reference/paper-definitions-of-record.md",
+        "specs/790_lem_canonical_frames_translation_two_state/summaries/01_lem-canonical-frames-characterizations-summary.md",
+        "typst/generated/status.typ"
+      ]
     },
     {
       "project_number": 791,
@@ -117,7 +134,7 @@
     {
       "project_number": 792,
       "project_name": "pin_lem_state_set_flow_frames",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "effort": "small",
       "topic": "paper-alignment",
@@ -126,16 +143,32 @@
       ],
       "description": "Pin lem:state-set to the tree by discharging its remaining hypothesis. The paper's lemma: over a task frame satisfying Flow (def:flow: W linearly ordered and every possible world an order-isomorphism of (D,<) onto (W,<)), truth of every sentence of BL with Stability at (tau, x) is membership of tau(x) in the state set |φ| of def:state-set; hence ⊨_F φ → Stability φ (so Determined is valid over every Flow frame), and ⊨_F φ iff |φ| = W under every assignment.\n\nWHAT EXISTS -- this is a pin, not a port. FormalSystem/Metalogic/Independence/StateSetTruth.lean already has `satSet` (def:state-set's recursion over PlusFormula), `plusTruthAt_iff_mem_satSet`, `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`, all under two hypotheses: `OrderFlow F` (FormalSystem/Metalogic/Independence/OrderTransfer.lean; it is def:flow's order-isomorphism condition) and `StateOccurs F` (every state at every time). The paper discharges the second by cor:occurrence; the tree has that as `PartialHistory.occurrence` for `[F.IsRegular]` (FormalSystem/Semantics/Extension/Extension.lean) but never composes the two. The paper's `% PORT:` comment under lem:state-set has been corrected to say exactly this.\n\nDELIVER: (1) `StateOccurs.of_isRegular : [F.IsRegular] → StateOccurs F` from `PartialHistory.occurrence`; (2) the three corollaries at `[F.IsRegular] (h : OrderFlow F)` alone, named so the paper can cite them, with docstrings citing def:flow and lem:state-set; (3) a docstring note in StateSetTruth.lean that the (H2) hypothesis is now derived for regular frames, keeping the original two-hypothesis forms for their consumers in Independence/DeterminismUndefinable.lean; (4) a docstring pointer that prop:nomic-tense-free performs the same state-set induction for the tense-free fragment with a Nomic clause, for the nomic port (task 795) to reuse.\n\nAXIOM NOTE. `occurrence` goes through thm:extension and so through Zorn; the new corollaries will carry Classical.choice. Say so in the docstring and leave the axiom pin in Independence/DeterminismUndefinable.lean and the choice-free originals untouched.\n\nPAPER ANCHORS. def:state-set, def:flow, lem:state-set in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T21:51:51Z",
+      "last_updated": "2026-10-15T00:46:46Z",
       "artifacts": [
         {
           "path": "specs/792_pin_lem_state_set_flow_frames/reports/01_pin-lem-state-set-flow-frames.md",
           "type": "report",
           "summary": "All four deliverable declarations compile with zero new imports (Extension.lean is already in StateSetTruth's import closure) and the predicted Classical.choice profile; one blocking C15 paper-anchor gate collision requires three KNOWN-ANCHORS rows in a file a concurrent sibling owns."
+        },
+        {
+          "path": "specs/792_pin_lem_state_set_flow_frames/plans/01_pin-lem-state-set-flow-frames.md",
+          "type": "plan",
+          "summary": "Implementation plan: 01_pin-lem-state-set-flow-frames.md"
         }
       ],
       "session_id": "sess_1792013208_936eb4",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "FormalSystem/Metalogic/Independence/OrderTransfer.lean",
+        "FormalSystem/Metalogic/Independence/README.md",
+        "FormalSystem/Metalogic/Independence/StateSetTruth.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "docs/reference/paper-definitions-of-record.md",
+        "specs/792_pin_lem_state_set_flow_frames/summaries/01_pin-lem-state-set-flow-frames-summary.md",
+        "typst/generated/status.typ"
+      ]
     },
     {
       "project_number": 793,
@@ -186,7 +219,7 @@
     {
       "project_number": 794,
       "project_name": "nomic_frames_law_histories_hierarchy",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "effort": "large",
       "topic": "paper-alignment",
@@ -195,16 +228,36 @@
       ],
       "description": "Formalize the paper's nomic frames, the frame-level half of the nomic appendix. def:nomic-frame replaces the task relation by a relativized family ⇒^w, one task relation per world state w, each satisfying def:frame, so that F^w := (W, D, ⇒^w) is a task frame; the law-histories H_F^w are the possible worlds of F^w and H_F is their union over w. def:nomic-properties: Lawful (tau ∈ H_F^{tau(x)} for all tau ∈ H_F and x), Static (H_F^{tau(x)} = H_F^{tau(y)} for all tau, x, y), Uniform (H_F^w = H_F for all w). def:nomic-witnesses fixes the ℤ-time presentation by one-step relations R_w with ⇒^w_n = R_w^n and the reflection convention for n < 0.\n\nNOTHING EXISTS. The tree has no nomic frame, no relativized relation and no law-history; FormalSystem/OpenLanguage.lean's docstring lists 'the nomic operator, over a four-place task relation ⇒ʷ indexed by world states' under 'manuscript operators without a formalization'. The operator and its logic are task 795, which depends on this one.\n\nDELIVER: (1) `NomicFrame D`: one carrier W with a family of general frames `at : W → FrameOver D` on it and a regularity hypothesis for each, the law-history sets `lawHist F w` (the world histories of `F.at w`, reindexed to one history type over W) and `H_F` as their union; (2) the three properties as Props, with the trivial implications Uniform → Static and Uniform → Lawful; (3) lem:nomic-occurrence (every state at every time along some law-history at every w) as a wrapper on `PartialHistory.occurrence` at `F.at w`; (4) lem:nomic-recovery: H_F^w = H_F^u iff ⇒^w = ⇒^u, the forward direction through the two-point partial history and `PartialHistory.extension` at F^w exactly as the paper's proof, with `nullity_identity` for d = 0 and the reflection convention for d < 0; (5) prop:nomic-hierarchy's three finite ℤ-time witnesses -- static-not-lawful on {a,b,c}, lawful-not-static on {a,b,e}, static-and-lawful-not-uniform on {a,b,c} -- each assembled from its one-step relations R_w by the ℤ-time scheme (reuse `FrameOver.mem_HF_iff_adjacent` in FormalSystem/Semantics/IntNormalForm.lean for history membership and `TaskFrame.saturation_of_finite` for Saturation), with the independence statements as theorems. OPTIONAL, only if cheap once (4) is in: the cut thm:nomic-primitive, which gives primitive-level forms of Static (a two-point equation on the relativized relation) and Lawful (a three-point condition, with partial-history and ℤ-time finite-path equivalents), kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from appendix ... thm:nomic-primitive'.\n\nPAPER ANCHORS. def:nomic-frame, def:nomic-properties, def:nomic-witnesses, prop:nomic-hierarchy, lem:nomic-occurrence, lem:nomic-recovery in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, each with a `% PORT:` comment to clear; rmk:choice records that the two lemmas go through Zorn.\n\nSITING. A new cluster under FormalSystem/Semantics/ (e.g. Semantics/Nomic/) -- decide at plan time, recording the trade-off against siting it under OpenLanguage/, where the operator of task 795 would otherwise live.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T21:52:51Z",
+      "last_updated": "2026-10-15T00:47:17Z",
       "artifacts": [
         {
           "path": "specs/794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md",
           "type": "report",
           "summary": "Nomic-frame port design with verified Lean text: NomicFrame structure, lawHist/H_F, the three properties, lem:nomic-occurrence, the full lem:nomic-recovery biconditional, the Z-time ofStepFamily presentation and witness 1 of prop:nomic-hierarchy all machine-checked; plus siting, gate and territory findings."
+        },
+        {
+          "path": "specs/794_nomic_frames_law_histories_hierarchy/plans/01_nomic-frames-law-histories.md",
+          "type": "plan",
+          "summary": "Implementation plan: 01_nomic-frames-law-histories.md"
         }
       ],
       "session_id": "sess_1792013208_936eb4",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "FormalSystem.lean",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics.lean",
+        "FormalSystem/Semantics/Nomic.lean",
+        "FormalSystem/Semantics/Nomic/Frame.lean",
+        "FormalSystem/Semantics/Nomic/README.md",
+        "FormalSystem/Semantics/Nomic/Recovery.lean",
+        "FormalSystem/Semantics/Nomic/Witnesses.lean",
+        "FormalSystem/Semantics/Nomic/ZTime.lean",
+        "FormalSystem/Semantics/README.md",
+        "README.md",
+        "docs/reference/paper-definitions-of-record.md",
+        "typst/generated/status.typ"
+      ]
     },
     {
       "project_number": 795,
