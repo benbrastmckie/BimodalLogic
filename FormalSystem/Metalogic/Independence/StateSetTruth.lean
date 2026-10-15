@@ -130,9 +130,11 @@ the statement proved is `∀ φ, ∀ τ t, …`, with `τ` and `t` bound inside.
   `{pᵢ, ⊥, →, □, nomic}`: `□` and the nomic operator share one clause, and there are no temporal
   clauses at all. Its `□` case consumes `cor:occurrence`, as the `box` clause here does, and its
   nomic case consumes `lem:nomic-occurrence`, which is `cor:occurrence` applied to the relativized
-  frame. No nomic machinery exists in this tree, which `StarLanguage/README.md` and
-  `OpenLanguage/README.md` both record as a deliberate exclusion; a port of that proposition can
-  reuse the recursion and the bridge here unchanged, adding one clause and one occurrence fact.
+  frame. That port is now in the tree: `FormalSystem/NomicLanguage/NomicTenseFree.lean` carries
+  the anticipated induction as `tenseFree_satSet_iff`, over a `nomicSatSet` that copies this
+  module's ignoring-set `box` clause verbatim for both operators -- which is exactly what makes
+  the two state sets equal by `rfl` and the collapse `nomic_iff_box_tenseFree` a two-line
+  consequence.
 * `FormalSystem/Metalogic/Independence/OrderTransfer.lean` — (H1), (H2) and the transfer lemmas
 -/
 

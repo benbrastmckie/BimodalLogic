@@ -318,7 +318,7 @@ status checked covers the whole blast radius; no module changes, so no build is 
 
 ---
 
-### Phase 2: `thm:nomic-uniform` and the cut remark's side lemma [IN PROGRESS]
+### Phase 2: `thm:nomic-uniform` and the cut remark's side lemma [COMPLETED]
 
 **Goal**: the frame-level half — the four small facts 794 lacks, the accessibility relation, the
 six conditions as a cycle of implications, the `H_F × H_F` identification, and the per-state
@@ -407,7 +407,7 @@ builds the module and that aggregator and covers every call site this phase crea
 
 ---
 
-### Phase 3: The `NomicLanguage` component and its syntax [NOT STARTED]
+### Phase 3: The `NomicLanguage` component and its syntax [COMPLETED]
 
 **Goal**: the new top-level component exists, is in the build graph, is gated, and carries the
 formula type with its derived operators and the embedding from the base language.
@@ -493,7 +493,7 @@ covers exactly that one-hop set.
 
 ---
 
-### Phase 4: `NomicModel`, the truth recursion, and the clause layer [NOT STARTED]
+### Phase 4: `NomicModel`, the truth recursion, and the clause layer [COMPLETED]
 
 **Goal**: `def:nomic-frame`'s Nomic clause as a Lean truth relation, with the full clause layer
 re-derived natively and the uniformity collapse.
@@ -578,7 +578,7 @@ builds the module and that aggregator and covers every call site this phase crea
 
 ---
 
-### Phase 5: `prop:nomic-tense-free` and the S5 schemata on the fragment [NOT STARTED]
+### Phase 5: `prop:nomic-tense-free` and the S5 schemata on the fragment [COMPLETED]
 
 **Goal**: the state-set bridge, the fragment collapse, and the five S5 schemata it makes one line
 each.
@@ -662,7 +662,7 @@ covers the whole edit.
 
 ---
 
-### Phase 6: Validity and seriality [NOT STARTED]
+### Phase 6: Validity and seriality [COMPLETED]
 
 **Goal**: the validity notion the schema results are stated at, and seriality of the nomic
 operator over **every** nomic frame.
@@ -729,7 +729,7 @@ covers the whole edit.
 
 ---
 
-### Phase 7: `app:nomic-four`, the prose repoints, and the full gate set [NOT STARTED]
+### Phase 7: `app:nomic-four`, the prose repoints, and the full gate set [COMPLETED]
 
 **Goal**: axiom 4 for the nomic operator over ℤ-time is valid exactly on the Uniform frames, the
 tree stops asserting that the nomic operator has no formalization, and the repository is green
