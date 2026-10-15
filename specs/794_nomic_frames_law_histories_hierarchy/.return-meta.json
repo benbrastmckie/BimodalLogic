@@ -3,16 +3,20 @@
   "started_at": "2026-10-14T00:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_1_complete",
-    "details": "Phase 1 (cluster scaffolding + frame layer) committed: Nomic/Frame.lean, Nomic.lean, Nomic/README.md, five record rows, regenerated root. Scoped build green, 0 sorry. Starting Phase 2 (Recovery.lean).",
-    "phases_completed": 1,
+    "stage": "phase_2_complete",
+    "details": "Phases 1-2 committed: Frame.lean and Recovery.lean green, 0 sorry, axiom sets measured (ZFC where claimed). Starting Phase 3 (ZTime.lean).",
+    "phases_completed": 2,
     "phases_total": 7
   },
   "metadata": {
     "session_id": "sess_1792026404_b03e6d",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "lean-implementation-agent"
+    ]
   },
   "dispatch_seq": 20
 }

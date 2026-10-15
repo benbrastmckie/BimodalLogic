@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Nomic.Frame
+import FormalSystem.Semantics.Nomic.Recovery
 
 /-!
 # `FormalSystem.Semantics.Nomic` — nomic frames and their law-histories
@@ -16,4 +17,6 @@ Aggregator for `Semantics/Nomic/`. See `Semantics/Nomic/README.md`.
 - `Nomic.Frame` — `def:nomic-frame` (one carrier, one task relation per world state), the derived
   family `F.at w`, the law-history sets `lawHist`/`HF`, the three properties of
   `def:nomic-properties` with the two implications from *Uniform*, and `lem:nomic-occurrence`
+- `Nomic.Recovery` — the two-point partial history as a general lemma over `TaskFrame`, and
+  `lem:nomic-recovery`: the law-histories at `w` recover the relativized relation `⇒ʷ`
 -/

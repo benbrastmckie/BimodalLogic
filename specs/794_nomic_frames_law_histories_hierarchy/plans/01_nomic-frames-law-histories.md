@@ -233,27 +233,27 @@ triggers) cover this phase's whole blast radius.
 
 ---
 
-### Phase 2: The two-point history and `lem:nomic-recovery` [NOT STARTED]
+### Phase 2: The two-point history and `lem:nomic-recovery` [COMPLETED]
 
 **Goal**: `lem:nomic-recovery` in full — `H_F^w = H_F^u` iff `⇒^w = ⇒^u` — on top of a named
 general two-point-history lemma over `TaskFrame`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Nomic/Recovery.lean` and transcribe R5's
+- [x] Create `FormalSystem/Semantics/Nomic/Recovery.lean` and transcribe R5's
       `exists_worldHistory_two_point` into `namespace FormalSystem.Semantics.PartialHistory`, so a
       later promotion into `Semantics/Extension/Extension.lean` is a pure file move
-- [ ] Its docstring records: it belongs beside `PartialHistory.point`/`occurrence`; it is stated
+- [x] Its docstring records: it belongs beside `PartialHistory.point`/`occurrence`; it is stated
       with `p q : F.WorldState` deliberately, because an inline construction at `F.at w`
       elaborates the `if`-terms at `(F.at w).WorldState` while the surrounding `have`s state them
       at `F.World`, and all four `respects_task` branches then fail on `rw`; and
       `DeterministicBridge.lean:146-165` carries the same construction inline and can call this
       lemma once that file is free
-- [ ] Transcribe R6's `taskRel_imp_of_lawHist_eq` and `lawHist_eq_iff_taskRel_eq`, keeping the
+- [x] Transcribe R6's `taskRel_imp_of_lawHist_eq` and `lawHist_eq_iff_taskRel_eq`, keeping the
       paper's case order: `d = 0` by `nullity_identity` at `F^w` and `F^u`, `d > 0` through the
       two-point history and `thm:extension`, `d < 0` by the reflection convention reducing to the
       positive case. The `⇐` direction is `simp only [lawHist, h]`
-- [ ] `Constraints consumed:` lines on both, plus the ZFC/`rmk:choice` note
-- [ ] Add the import to `Semantics/Nomic.lean` and re-run `lake exe mk_all --lib FormalSystem`
+- [x] `Constraints consumed:` lines on both, plus the ZFC/`rmk:choice` note
+- [x] Add the import to `Semantics/Nomic.lean` and re-run `lake exe mk_all --lib FormalSystem`
 
 **Timing**: 1.5 hours
 
