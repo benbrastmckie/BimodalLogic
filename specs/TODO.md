@@ -1,5 +1,5 @@
 ---
-next_project_number: 803
+next_project_number: 805
 ---
 
 # TODO
@@ -11,11 +11,11 @@ next_project_number: 803
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,791,794,796,797,798,799 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,793,795,800 | 298,464,502,616,761,772,794,796 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500,801 | 231,465,497,791,793 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 125,429,543,802 | 428,498,499,500,801 | algebraic-representation, decidability, metalogic, ... |
-| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,791,796,797,798,799,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,794,800 | 298,464,502,616,761,772,791,796 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500,793,795 | 231,465,497,794 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 125,429,543,801 | 428,498,499,500,793 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 410,501,802 | 125,429,801 | algebraic-representation, decidability, paper-alignment |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
@@ -122,20 +122,68 @@ next_project_number: 803
 
 ### Paper Alignment
 
-791 [PLANNED] — Prove prop:archimedean in the generality the paper states it:...
-  └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
-    └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, and cite...
-794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
-  └─ 793 [PLANNED] — Prove lem:after-negation, and the cut...
-    └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in... (see above)
-  └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
+791 [IMPLEMENTING] — Prove prop:archimedean in the generality the paper states it:...
+  └─ 794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
+    └─ 793 [PLANNED] — Prove lem:after-negation, and the cut...
+      └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
+        └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
+    └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
 798 [NOT STARTED] — Port the eleven unported modal-temporal interaction...
 799 [NOT STARTED] — Discharge the Zorn dependence that the state-set corollaries...
 
+### Build Performance
+
+803 [NOT STARTED] — Cut the elaboration time of...
+804 [NOT STARTED] — Determine whether...
+
 ## Tasks
+
+### 804. Narrow termination syntax layer fanin
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: build-performance
+- **Dependencies**: None
+
+**Description**: Determine whether FormalSystem/Metalogic/Decidability/Verified/Termination/ must sit downstream of the syntax layer, and narrow the fan-in if it need not.
+
+THE OBSERVATION (measured 2026-10-15, this repo, from .lake/build-guard.stdout on a full guarded build): a batch touching FormalSystem/ProofSystem/Axioms.lean, FormalSystem/Semantics.lean and Syntax modules rebuilt 414 of 2848 jobs, costing 6354s of elaboration. Metalogic was 5649s of that across 306 modules. The decidability and termination subtree dominated: SubformulaProperty 1103s, Decidability.Tableau 476s, MintBound.MintPotential 360s, Termination.Fuel 238s. SubformulaProperty.lean imports FormalSystem.Metalogic.Decidability.Tableau and FormalSystem.Syntax.SubformulaClosure.Closure.
+
+THE QUESTION. Paper-alignment work edits the syntax and proof-system layers constantly, and each such edit currently invalidates the most expensive subtree in the repository. Is that fan-in ESSENTIAL (the termination argument genuinely needs the syntax layer it imports) or INCIDENTAL (it imports a broad aggregator when a narrow one would do, or depends on a definition that could be relocated or abstracted behind a smaller interface)?
+
+RESEARCH FIRST, and this may legitimately conclude NO CHANGE. A finding that the fan-in is essential, recorded with the import-path evidence that establishes it, is a successful outcome; do not manufacture a refactor to justify the task. Map the actual import paths from the termination subtree up to the syntax and proof-system layers, identify which specific declarations create each edge, and classify each edge as essential or reducible with evidence.
+
+IF REDUCIBLE. Propose the narrowing before implementing it. Candidate shapes: import a narrower module instead of an aggregator; relocate a shared definition to a lower module both sides can import; introduce a minimal interface so the termination argument depends on a stable signature rather than on the syntax layer directly. Prefer the smallest change that breaks the invalidation path.
+
+RELATIONSHIP TO THE PER-MODULE COST. Reducing this fan-in and reducing SubformulaProperty's own 1103s elaboration are complementary, not alternatives: the first reduces how OFTEN the expensive subtree rebuilds, the second how LONG it takes when it does. Neither subsumes the other.
+
+NON-GOALS. No change to any statement that is proved. Zero new sorry. No new axiom dependency. No reorganization of modules outside the dependency path actually implicated by the measured evidence.
+
+ACCEPTANCE. A written classification of every import edge from the termination subtree to the syntax and proof-system layers as essential or reducible, each with the declaration-level evidence establishing it; a recommendation (narrow, relocate, abstract, or leave as is) with reasoning; if a change is made, measured before/after rebuild scope for an edit to FormalSystem/ProofSystem/Axioms.lean, plus lake build green, check-module-invariants.sh ALL CHECKS PASSED and sorry_count 0.
+
+---
+
+### 803. Cut subformulaproperty elaboration time
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: build-performance
+- **Dependencies**: None
+
+**Description**: Cut the elaboration time of FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean, the repository's single largest rebuild cost.
+
+MEASURED EVIDENCE (from .lake/build-guard.stdout, full guarded build, 2026-10-15, this repo): the module elaborates in 1103s (18.4 minutes) as ONE module. On that build 414 of 2848 jobs actually rebuilt, totalling 6354s of elaboration across those 414; Metalogic accounted for 5649s across 306 modules. Seven modules accounted for roughly 2500s of the total, and SubformulaProperty alone is about 17 percent of the whole incremental rebuild. Next worst: Decidability.Tableau 476s, Termination.MintBound.MintPotential 360s, Termination.Fuel 238s.
+
+WHY IT HURTS REPEATEDLY. The module imports FormalSystem.Metalogic.Decidability.Tableau and FormalSystem.Syntax.SubformulaClosure.Closure, so any edit to the syntax or proof-system layer invalidates it. Paper-alignment work routinely edits FormalSystem/ProofSystem/Axioms.lean and FormalSystem/Semantics.lean, so this 18-minute module is woken by edits unrelated to decidability.
+
+GOAL. Reduce elaboration time substantially while proving exactly the same results. Localize hotspots with lean_profile_proof BEFORE changing anything, and record before/after per-declaration timings as evidence rather than asserting an improvement. Suspects to confirm rather than assume: simp set blowup, decide on a non-trivial decidable instance, unfolding of large structures, Nat/Int arithmetic normalization. Candidate remedies: replace simp with targeted rewrites, extract heavy sublemmas into their own declarations, mark expensive defs irreducible where sound, scope set_option maxHeartbeats.
+
+NON-GOALS. No change to any statement that is proved. Zero new sorry. No new axiom dependency (verify with #print axioms before and after). No weakening of the termination argument.
+
+ACCEPTANCE. A measured, reported reduction in this module's elaboration time with before/after numbers from the build log or lean_profile_proof; lake build green; check-module-invariants.sh ALL CHECKS PASSED; sorry_count 0; axiom profiles unchanged for every declaration in the module.
+
+---
 
 ### 802. Derive cited tm theorems and cite derivations
 - **Status**: [NOT STARTED]
@@ -143,7 +191,25 @@ next_project_number: 803
 - **Topic**: paper-alignment
 - **Dependencies**: Task 801
 
-**Description**: Derive every TM-system theorem the paper cites, and cite derivations rather than derivability. Scope: every schema that the JPL paper (~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex) presents as a theorem of TM or of an extension (TM_z, TM_d, TM_r) or of BX and its extensions, in sub:Logic, sub:Extension, the Appendix definitions def:BX, def:BX-z, def:BX-d, def:BX-r, def:TMplus, and any footnote. (1) Audit: for each such schema, locate the Lean declaration in this repository and classify it as a direct derivation tree from the axioms, or as obtained through a completeness engine (derivable_of_valid*, Classical.choice over a Derivable proof). Known result of a first pass: Z1 is the only cited theorem routed through completeness (FormalSystem.Metalogic.CompletenessDerived.z1Thm wraps z1Derivable, which applies BXCanonical.derivable_of_validZTime to SoundnessLemmas.z1_valid); DF (DiscreteUnfolding.dfSchema), the discreteness witness (DiscreteUnfolding.succIndicator), CO (DedekindDerived.coDerived), DN (LinearityDerived.density), TC, TL, TK, T4, TF, P1-P4, NP, NF, NA are direct derivation trees. Re-verify this classification rather than assuming it, including any schema the audit finds that the first pass missed. (2) Lean work: for every schema that lacks a direct derivation, construct one as a DerivationTree from the axioms of the relevant system (for Z1: from UZ with the BX and TM axioms at FrameClass.ZTime, in the style of DiscreteUnfolding), name it in the Theorems namespace, verify with #print axioms that it depends on propext at most, and update docs/theorem-index.md. The completeness-route declaration may remain as a cross-check but must no longer be the cited one. (3) Paper work in the JPL source: make every citation point to the direct derivation via the existing \leanfoot convention; replace wording that says a schema is derivable, machine-checked as a theorem through the Z-time completeness engine, or similar, with wording that it is derived, citing the derivation; this includes the Z1 footnote near the UZ display, the def:BX-z remark on Z1, the DN sentence in sub:Extension, the sentence UZ makes DF derivable, and PU alone suffices to derive CO. Do not add prose explaining the citation convention. (4) Verify with the isolated paper build: cd JPL && latexmk -norc -pdf -bibtex -outdir=build-cli possible_worlds.tex, with no errors and no undefined references. Report the final per-schema table of declaration names and their #print axioms output
+**Description**: Derive every TM-system theorem the paper cites, cite the derivations rather than derivability, and prune the superseded derivability results.
+
+TARGET SET. Every schema that the JPL paper (~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex) presents as a theorem of TM or of an extension (TM_z, TM_d, TM_r) or of BX and its extensions, in sub:Logic, sub:Extension, the Appendix definitions def:BX, def:BX-z, def:BX-d, def:BX-r, def:TMplus, and any footnote. The paper is READ-ONLY for this task: it is consulted to identify which theorems are targets, and for nothing else.
+
+(1) AUDIT. For each such schema, locate the Lean declaration in this repository and classify it as a direct derivation tree from the axioms, or as obtained through a completeness engine (`derivable_of_valid*`, `Classical.choice` over a `Derivable` proof). Known result of a first pass: Z1 is the only cited theorem routed through completeness (`FormalSystem.Metalogic.CompletenessDerived.z1Thm` wraps `z1Derivable`, which applies `BXCanonical.derivable_of_validZTime` to `SoundnessLemmas.z1_valid`); DF (`DiscreteUnfolding.dfSchema`), the discreteness witness (`DiscreteUnfolding.succIndicator`), CO (`DedekindDerived.coDerived`), DN (`LinearityDerived.density`), TC, TL, TK, T4, TF, P1-P4, NP, NF, NA are direct derivation trees. Re-verify this classification rather than assuming it, including any schema the audit finds that the first pass missed. The audit must also record, per schema routed through completeness, every in-tree consumer of that route and every doc surface citing it — that inventory is the work item for (3).
+
+(2) THE DERIVATIONS. For every schema that lacks a direct derivation, construct one as a `DerivationTree` from the axioms of the relevant system (for Z1: from UZ with the BX and TM axioms, in the style of `DiscreteUnfolding`), name it in the `Theorems` namespace, verify with `#print axioms` that it depends on `propext` at most, and add its row to docs/theorem-index.md. Prefer the frame-class-gated shape the existing derived theorems use — `DerivedAxioms.priorSZ` and `DerivedAxioms.priorSGap` take `FrameClass.ZTime ≤ fc` / `FrameClass.RTime ≤ fc`, `LinearityDerived.density` takes `Dense ≤ fc` — over a statement pinned to a single frame class, because the gated shape is what `Automation/Tactics/Search.lean`'s `tryGatedDerivedMatch`, the `plusValidIn_of_tm_deriv` branches in `Conservativity/Plus/AxiomValidity.lean`, and `BimodalTools/ProofExtractorMain.lean`'s `mkEntryAt` entries all consume. A computable direct tree additionally unblocks a proof-extractor entry for Z1, which that extractor presently skips by name because the choice-packaged `z1Thm` is noncomputable and has no runtime-walkable tree.
+
+(3) PRUNE THE SUPERSEDED DERIVABILITY RESULTS. Once a schema has a direct derivation from the axioms of a system already proved sound, a proof that the schema is merely *derivable* — obtained by proving it valid and then invoking completeness — carries no further value, and neither does a validity lemma that exists only to feed that route. Remove them; do not retain them as cross-checks. Procedure, per schema: redirect every in-tree consumer of the derivability declaration to the direct derivation; delete the derivability declaration; then delete the validity lemma IF AND ONLY IF the redirect leaves it with no remaining consumer. Rewrite the prose of every affected docstring and doc surface so it cites the derivation instead of describing a recovery through an engine.
+
+As the tree stands, two instances: `CompletenessDerived.densityDerivable` (DN through the Dense engine) has no consumer outside its own file and DN already has its direct derivation `Theorems.LinearityDerived.density`, so it and the module docstring's cross-check paragraph are removable immediately. `CompletenessDerived.z1Thm` becomes removable only after its consumers are redirected: the shape pin and the frame-class results in `Independence/ZTimeSharpness.lean`, `z1_translate` in `Conservativity/Backward.lean`, two branches of `Conservativity/Plus/AxiomValidity.lean`, the gated lemma list in `Automation/Tactics/Search.lean`, and the Z1 prose in `ProofSystem/Axioms.lean`, `MainResults.lean`, `Decidability/Verified/RuleSpec.lean`, `BimodalTools/ProofExtractorMain.lean` and the two test files; `z1Derivable` goes with it. Doc surfaces to follow through: docs/theorem-index.md (two Z1 rows), docs/reference/axiom-reference.md, docs/reference/paper-definitions-of-record.md, docs/development/MODULE_ORGANIZATION.md, docs/project-info/FEATURE_REGISTRY.md, FormalSystem/README.md, FormalSystem/Theorems/README.md, FormalSystem/Metalogic/README.md (its module table carries a line count that moves) and typst/chapters/03-proof-theory.typ. If `Metalogic/CompletenessDerived.lean` ends up with nothing in it, delete the module and its import sites.
+
+WHAT MUST NOT BE PRUNED. The validity lemmas in play are NOT pure feeders and stay: `SoundnessLemmas.z1_valid` is consumed independently by the exactly-one-frame-class result in `Independence/ZTimeSharpness.lean` and by `Decidability/Verified/Decidable.lean` through `truthAt_of_validZTime`, and `Metalogic.density_valid` by `Independence/DenseRTimeSharpness.lean`. Re-verify both claims before touching either lemma, and apply the same consumer check to any other validity lemma the audit reaches rather than inferring removability from the schema's status. Out of scope for pruning entirely: the completeness engines themselves (`derivable_of_validZTime`, `derivable_of_validQTime`, `derivable_of_validDense`, the `Deterministic/Engines.lean` family), soundness, the derivability-validity equivalence in `ZTimeProvability.lean`, and the independence and non-compactness results. These are general metatheorems, not per-schema derivability shortcuts, and nothing here touches them.
+
+(4) EXPAND THE LIBRARY SYSTEMATICALLY. Beyond the cited schemata: name, rather than inline, the helper derivations the new derivations factor through, and add the further high-value derivations that fall out of them — a derivation worth having is worth naming, indexing and reusing. Follow the existing module organization (`Theorems/DiscreteUnfolding.lean`, `LinearityDerived.lean`, `DedekindDerived.lean`, `TemporalDerived.lean`, `ModalDerived.lean`, `Combinators.lean`) and the conventions in FormalSystem/Theorems/README.md; give each new declaration a docstring, a docs/theorem-index.md row, and its paper anchor where it has one. The time-reflection mirrors are the precedent for cheap duals (`DerivedAxioms.priorSZ` is UZ's mirror): add the mirror and helper results that are genuinely cheap, and REPORT the rest as findings instead of expanding scope silently.
+
+(5) VERIFY AND REPORT. `lake build` green with no new `sorry`; `#print axioms` for every new declaration, showing `propext` at most for the derivations; `scripts/readme-lint.sh`, `scripts/check-module-invariants.sh --no-build` and `python3 scripts/export-lean-citations.py --check` exit 0 (C35 goes red on any docstring edit in a file carrying seeded manifest entries — the remedy is to regenerate with `python3 scripts/export-lean-citations.py`; regenerate README inventory blocks with `check-module-invariants.sh --emit-inventory` if line counts drift); `scripts/check-phantom-citations.sh` reports no new finding, which is the mechanical check that nothing still cites a declaration this task deleted; both Typst documents compile. Report the final per-schema table: schema, direct-derivation declaration name, `#print axioms` output, and what was deleted.
+
+NON-GOALS. No edit to the JPL paper or to anything else in its repository. The paper-side citation rewording — the Z1 footnote near the UZ display, the def:BX-z remark on Z1, the DN sentence in sub:Extension, "UZ makes DF derivable", "PU alone suffices to derive CO" — is owned by a separate task in the paper's own repo; do not duplicate or anticipate it here, and do not add prose to the paper explaining a citation convention. No change to the axiom set: the minimal-axiom-set reduction already did that work. No new completeness engine, and no weakening of an existing one.
 
 ---
 
@@ -325,7 +391,7 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: Task 756, Task 792
+- **Dependencies**: Task 756, Task 791, Task 792
 - **Research**: [794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md]
 - **Plan**: [794_nomic_frames_law_histories_hierarchy/plans/01_nomic-frames-law-histories.md]
 
@@ -390,7 +456,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 
 ### 791. Prop archimedean uz z1 fail non archimedean
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 788, Task 790
