@@ -595,6 +595,7 @@ import FormalSystem.Semantics.FrameProperty
 import FormalSystem.Semantics.Frames
 import FormalSystem.Semantics.Frames.Standard
 import FormalSystem.Semantics.Frames.TranslationProduct
+import FormalSystem.Semantics.Gluing
 import FormalSystem.Semantics.HistoryMorphism
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.IntTransfer
