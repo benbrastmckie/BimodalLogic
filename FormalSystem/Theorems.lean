@@ -62,6 +62,21 @@ pairing, notNotIntro)
 - P5: `◇▽φ → △◇φ` - PROVEN (zero sorry)
 - P6: `▽□φ → □△φ` - PROVEN (zero sorry)
 
+### Modal-Temporal Interaction
+- P8: `¬▽φ ↔ △¬φ` - PROVEN (zero sorry) — the temporal duality, both directions
+- `Pthm:11`: `▽◇φ → ◇φ` - PROVEN (zero sorry)
+- `Pthm:12`: `△◇φ → ◇φ` - PROVEN (zero sorry)
+- `Pthm:13`: `▽□φ ↔ □φ` - PROVEN (zero sorry)
+- `Pthm:14`: `△□φ ↔ □φ` - PROVEN (zero sorry)
+- `Pthm:15`: `□△φ ↔ △□φ` - PROVEN (zero sorry)
+- `Pthm:16`: `◇▽φ ↔ ▽◇φ` - PROVEN (zero sorry)
+- `Pthm:17`: `◇▽φ → ◇φ` - PROVEN (zero sorry) — already present as P4, cited not restated
+- `Pthm:18`: `□△φ ↔ □φ` - PROVEN (zero sorry)
+- `Pthm:19`: `◇△φ → ◇φ` - PROVEN (zero sorry)
+- `Pthm:20`: `◇φ ↔ ◇▽φ` - PROVEN (zero sorry)
+- `Pthm:21`: `▽◇φ → ◇▽φ` - PROVEN (zero sorry)
+- `Pthm:22`: `◇▽φ → ▽◇φ` - PROVEN (zero sorry)
+
 ## Usage
 
 ```lean

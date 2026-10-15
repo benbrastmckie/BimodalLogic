@@ -35,6 +35,9 @@ derivations), organized by topic. These are distinguished from metalogical resul
 - **Modal S4/S5**: Axiom consequences for S4 and S5 fragments
 - **Perpetuity**: P1-P6 perpetuity principles (G-H equivalences, eternal truths)
 - **Temporal Derived**: Linearity-derived theorems (temp_k_dist, temp_4 are now derived)
+- **Interaction**: the modal-temporal interaction principles `Pthm:11`--`Pthm:22` (the `▽◇`/`◇▽`
+  and `△□`/`□△` collapses), the temporal duality P8, and the `temporalPastDerived` /
+  `boxToAlwaysBox` helpers they consume
 
 ## Where a derived schema lives
 

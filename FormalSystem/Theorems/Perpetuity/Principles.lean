@@ -510,6 +510,13 @@ Proof outline:
 **Note**: Uses `notNotIntro` axiom (double negation introduction) which is semantically valid
 in TM's classical semantics. The paper states P4 "follows from definitions and classical
 logic" (§3.2 lines 1070-1081).
+
+**Cross-reference**: this principle is also `Pthm:17` of the twelve further interaction
+principles the paper records in its companion material, and it is the reverse half of that
+block's `Pthm:20` (`⊢ ◇φ ↔ ◇▽φ`). The biconditional pairing it with `Pthm:20`'s forward half is
+`FormalSystem.Theorems.Interaction.diamondIffDiamondSometimes`; the forward half itself is
+`FormalSystem.Theorems.Interaction.diamondToDiamondSometimes`. Nothing restates this principle --
+the port cites it.
 -/
 def perpetuity4 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.sometimes.diamond.imp φ.diamond := by
   -- Goal: ⊢ (φ.neg.always.neg).neg.box.neg → φ.neg.box.neg
