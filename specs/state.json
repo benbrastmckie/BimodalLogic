@@ -1,11 +1,30 @@
 {
   "metadata": {
     "generated_at": "2026-08-24T21:34:14.522352",
-    "total_tasks": 81,
-    "last_sync": "2026-10-14T21:59:04Z"
+    "total_tasks": 82,
+    "last_sync": "2026-10-15T06:40:00Z"
   },
-  "next_project_number": 803,
+  "next_project_number": 804,
   "active_projects": [
+    {
+      "project_number": 803,
+      "project_name": "port_cslib_sublogics_and_generic_infrastructure",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Port the relevant, self-authored cslib sublogics and generic infrastructure back into this repository, unit by unit, with a measured verdict per unit. WHY. The fork benbrastmckie/cslib holds about 645 logic files authored there (Foundations/Logic, Propositional, Modal, Temporal, LTL, and 76 files of Logics/Bimodal) beside 63 files ported from this repository; both trees are Apache-2.0 on the same v4.33.0-rc1 toolchain, and the earlier 'port nothing' verdict (task 736, recorded in 741) ruled only on upstream cslib's omega-automata as a dependency, never on copying self-authored code. Two cslib sub-trees are maintained continuations of developments this repository archived to Boneyard/ (the GHR separation theorem; the ConservativeExtension lifting layer). SCOPE. Ten candidate units, seeded in reports/01_cslib-port-seed.md: U1 the proof-system morphism engine (ProofSig/ProofSigHom/Deriv.map); U2 the generic MCS seam (GenericMCS, Consistency, ListDeduction, PrimeExclusion); U3 the sublogic triple (propositional, S5, U/S-temporal) with the three embeddings and bimodal_conservative_over_{cpl,s5,temporal}; U4 the GHR separation theorem; U5 the D-parametric algebraic completeness; U6 frame-condition typeclasses; U7 the generic tableau substrate and RuleApplicationSpec driver; U8 the generic theorem layer; U9 the Chronicle interface; U10 HilbertSearch. The seed recommends U1, U2 in wave 1, U3 in wave 2, archaeology before a verdict on U4 and U5, U8 conditional on U1 and U2, and declines or defers U6, U7, U9, U10 with the reason stated; every verdict is a hypothesis to test, not ground truth. RESEARCH FIRST: (1) measure the Mathlib pin distance (this repo tag 79d0395a, cslib commit 169c26b5) and the API drift it implies for the units' Mathlib imports; (2) reconcile U4 against Boneyard/Kamp/KampWeakCanonical/Separation/ and the live zeta route, and run the git archaeology for the vanished Theories/.../ParametricCompleteness.lean behind U5; (3) census the consumers here of U1, U2, U8 by declaration name and the line count each would lose; (4) compute the minimal module closure of U3 from the three conservativity theorems and cost the BX re-basing (cslib's 26 primitive schemata versus this repository's 7 future-direction schemata plus time reflection) separately; (5) rule on placement: sublogics as object-language directories on the MinusLanguage/PlusLanguage precedent with LANGUAGE_FILE_LAYERS rows, versus a new layer-0 directory for the generic infrastructure with a LAYERS row; (6) produce the per-unit verdict table and a plan phased one unit per phase. CONSTRAINTS. No Lake require of cslib (the 763/781 guardrail stands). Every ported file is converted from module form to plain-import form by the seed's F5 recipe (drop module, public import -> import, Cslib.Init -> FormalSystem.Init, drop @[expose] public section and bare public, path-derived FormalSystem namespace). No warn.sorry file is ported and no sorry is admitted (C3). Nothing from cslib's Bimodal/Semantics or Bimodal/ProofSystem is ported: they sit on the older TaskFrame and the 42-axiom system; every ported proof that touches soundness is re-pointed at soundness_validIn and the 20-axiom Axiom. U7 is deferred until 763 lands because its target is the live Stage 1 and Stage 4 decidability front. Co-authored cslib files (Montesi, Waring, Girlando) are excluded unless re-attributed. Each landed unit owes a sibling aggregator (C8), layer rows (layer_of raises otherwise), a mirrored Tests/BimodalTest directory, a docs/theorem-index.md row with a C2/C14 pin for each headline result, mk_all regeneration, and zero file.lean:NNN citations into cslib paths (C20). ACCEPTANCE for the research round: the pin distance measured and recorded; a verdict table with one row per unit (port now / port later with trigger / decline with reason); the U3 closure measured in modules and lines; the placement ruling with its layer rows written; the stale FormalSystem/Metalogic/Expressiveness/Separation/README.md (lists eleven modules the directory does not hold) fixed or filed; a plan phased one unit per phase, each phase green on lake build and bash scripts/check-module-invariants.sh --no-build before the next starts.",
+      "topic": "cslib-port",
+      "created": "2026-10-15T06:40:00Z",
+      "last_updated": "2026-10-15T06:40:00Z",
+      "dependencies": [],
+      "artifacts": [
+        {
+          "path": "specs/803_port_cslib_sublogics_and_generic_infrastructure/reports/01_cslib-port-seed.md",
+          "type": "report",
+          "summary": "Seed report: provenance map of cslib's logic trees (63 ported-from-BimodalLogic files versus 645 cslib-authored), the two Boneyard continuations, ten candidate units with verdicts to test, the module-to-plain conversion recipe, the gate obligations, the unmeasured Mathlib pin-distance gate, and two placement options."
+        }
+      ],
+      "next_artifact_number": 2
+    },
     {
       "project_number": 802,
       "project_name": "derive_cited_tm_theorems_and_cite_derivations",
@@ -2159,7 +2178,7 @@
     "status": "healthy",
     "phantom_paths": 0
   },
-  "last_updated": "2026-10-14T21:59:04Z",
+  "last_updated": "2026-10-15T06:40:00Z",
   "vault_count": 1,
   "vault_history": [
     {
@@ -2196,7 +2215,8 @@
     "tableau-training",
     "toolchain",
     "codebase-cleanup",
-    "paper-alignment"
+    "paper-alignment",
+    "cslib-port"
   ],
   "active_goal": "Close the residual repository-hygiene backlog"
 }

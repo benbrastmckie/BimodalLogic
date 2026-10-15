@@ -1,5 +1,5 @@
 ---
-next_project_number: 803
+next_project_number: 804
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 803
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,790,796,797,798 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,790,796,797,798,803 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783,791,792,800 | 298,464,502,616,761,772,790,796 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500,794,799 | 231,465,497,792 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 4 | 125,429,543,793,795 | 428,498,499,500,794 | algebraic-representation, decidability, metalogic, ... |
@@ -120,6 +120,10 @@ next_project_number: 803
 744 [NOT STARTED] — Wrap the RaySummary and KTypeSummary inventory tables in...
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
+### Cslib Port
+
+803 [NOT STARTED] — Port the relevant, self-authored cslib sublogics and generic...
+
 ### Paper Alignment
 
 790 [IMPLEMENTING] — Prove lem:canonical-frames, the four claims the paper makes...
@@ -138,6 +142,17 @@ next_project_number: 803
 798 [NOT STARTED] — Port the eleven unported modal-temporal interaction...
 
 ## Tasks
+
+### 803. Port cslib sublogics and generic infrastructure
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: cslib-port
+- **Dependencies**: None
+- **Research**: [803_port_cslib_sublogics_and_generic_infrastructure/reports/01_cslib-port-seed.md]
+
+**Description**: Port the relevant, self-authored cslib sublogics and generic infrastructure back into this repository, unit by unit, with a measured verdict per unit. WHY. The fork benbrastmckie/cslib holds about 645 logic files authored there (Foundations/Logic, Propositional, Modal, Temporal, LTL, and 76 files of Logics/Bimodal) beside 63 files ported from this repository; both trees are Apache-2.0 on the same v4.33.0-rc1 toolchain, and the earlier 'port nothing' verdict (task 736, recorded in 741) ruled only on upstream cslib's omega-automata as a dependency, never on copying self-authored code. Two cslib sub-trees are maintained continuations of developments this repository archived to Boneyard/ (the GHR separation theorem; the ConservativeExtension lifting layer). SCOPE. Ten candidate units, seeded in reports/01_cslib-port-seed.md: U1 the proof-system morphism engine (ProofSig/ProofSigHom/Deriv.map); U2 the generic MCS seam (GenericMCS, Consistency, ListDeduction, PrimeExclusion); U3 the sublogic triple (propositional, S5, U/S-temporal) with the three embeddings and bimodal_conservative_over_{cpl,s5,temporal}; U4 the GHR separation theorem; U5 the D-parametric algebraic completeness; U6 frame-condition typeclasses; U7 the generic tableau substrate and RuleApplicationSpec driver; U8 the generic theorem layer; U9 the Chronicle interface; U10 HilbertSearch. The seed recommends U1, U2 in wave 1, U3 in wave 2, archaeology before a verdict on U4 and U5, U8 conditional on U1 and U2, and declines or defers U6, U7, U9, U10 with the reason stated; every verdict is a hypothesis to test, not ground truth. RESEARCH FIRST: (1) measure the Mathlib pin distance (this repo tag 79d0395a, cslib commit 169c26b5) and the API drift it implies for the units' Mathlib imports; (2) reconcile U4 against Boneyard/Kamp/KampWeakCanonical/Separation/ and the live zeta route, and run the git archaeology for the vanished Theories/.../ParametricCompleteness.lean behind U5; (3) census the consumers here of U1, U2, U8 by declaration name and the line count each would lose; (4) compute the minimal module closure of U3 from the three conservativity theorems and cost the BX re-basing (cslib's 26 primitive schemata versus this repository's 7 future-direction schemata plus time reflection) separately; (5) rule on placement: sublogics as object-language directories on the MinusLanguage/PlusLanguage precedent with LANGUAGE_FILE_LAYERS rows, versus a new layer-0 directory for the generic infrastructure with a LAYERS row; (6) produce the per-unit verdict table and a plan phased one unit per phase. CONSTRAINTS. No Lake require of cslib (the 763/781 guardrail stands). Every ported file is converted from module form to plain-import form by the seed's F5 recipe (drop module, public import -> import, Cslib.Init -> FormalSystem.Init, drop @[expose] public section and bare public, path-derived FormalSystem namespace). No warn.sorry file is ported and no sorry is admitted (C3). Nothing from cslib's Bimodal/Semantics or Bimodal/ProofSystem is ported: they sit on the older TaskFrame and the 42-axiom system; every ported proof that touches soundness is re-pointed at soundness_validIn and the 20-axiom Axiom. U7 is deferred until 763 lands because its target is the live Stage 1 and Stage 4 decidability front. Co-authored cslib files (Montesi, Waring, Girlando) are excluded unless re-attributed. Each landed unit owes a sibling aggregator (C8), layer rows (layer_of raises otherwise), a mirrored Tests/BimodalTest directory, a docs/theorem-index.md row with a C2/C14 pin for each headline result, mk_all regeneration, and zero file.lean:NNN citations into cslib paths (C20). ACCEPTANCE for the research round: the pin distance measured and recorded; a verdict table with one row per unit (port now / port later with trigger / decline with reason); the U3 closure measured in modules and lines; the placement ruling with its layer rows written; the stale FormalSystem/Metalogic/Expressiveness/Separation/README.md (lists eleven modules the directory does not hold) fixed or filed; a plan phased one unit per phase, each phase green on lake build and bash scripts/check-module-invariants.sh --no-build before the next starts.
+
+---
 
 ### 802. Derive cited tm theorems and cite derivations
 - **Status**: [NOT STARTED]
