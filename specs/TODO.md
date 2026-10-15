@@ -11,11 +11,11 @@ next_project_number: 803
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,791,792,796,797,798 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,794,799,800 | 298,464,502,616,761,772,792,796 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500,793,795 | 231,465,497,794 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 125,429,543,801 | 428,498,499,500,791,793 | algebraic-representation, decidability, metalogic, ... |
-| 5 | 410,501,802 | 125,429,801 | algebraic-representation, decidability, paper-alignment |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,791,794,796,797,798,799 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,793,795,800 | 298,464,502,616,761,772,794,796 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500,801 | 231,465,497,791,793 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 125,429,543,802 | 428,498,499,500,801 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
@@ -125,16 +125,15 @@ next_project_number: 803
 791 [PLANNED] — Prove prop:archimedean in the generality the paper states it:...
   └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
     └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, and cite...
-792 [IMPLEMENTING] — Pin lem:state-set to the tree by discharging its remaining...
-  └─ 794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
-    └─ 793 [PLANNED] — Prove lem:after-negation, and the cut...
-      └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in... (see above)
-    └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
-  └─ 799 [NOT STARTED] — Discharge the Zorn dependence that the state-set corollaries...
+794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
+  └─ 793 [PLANNED] — Prove lem:after-negation, and the cut...
+    └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in... (see above)
+  └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
 798 [NOT STARTED] — Port the eleven unported modal-temporal interaction...
+799 [NOT STARTED] — Discharge the Zorn dependence that the state-set corollaries...
 
 ## Tasks
 
@@ -367,12 +366,13 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 
 ### 792. Pin lem state set flow frames
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 756, Task 790
 - **Research**: [792_pin_lem_state_set_flow_frames/reports/01_pin-lem-state-set-flow-frames.md]
 - **Plan**: [792_pin_lem_state_set_flow_frames/plans/01_pin-lem-state-set-flow-frames.md]
+- **Summary**: [792_pin_lem_state_set_flow_frames/summaries/01_pin-lem-state-set-flow-frames-summary.md]
 
 **Description**: Pin lem:state-set to the tree by discharging its remaining hypothesis. The paper's lemma: over a task frame satisfying Flow (def:flow: W linearly ordered and every possible world an order-isomorphism of (D,<) onto (W,<)), truth of every sentence of BL with Stability at (tau, x) is membership of tau(x) in the state set |φ| of def:state-set; hence ⊨_F φ → Stability φ (so Determined is valid over every Flow frame), and ⊨_F φ iff |φ| = W under every assignment.
 

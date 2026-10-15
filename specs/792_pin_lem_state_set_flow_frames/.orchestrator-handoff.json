@@ -1,0 +1,22 @@
+{
+  "task_number": 792,
+  "phase": "implement",
+  "dispatch_seq": 18,
+  "status": "implemented",
+  "phases_completed": 5,
+  "phases_total": 5,
+  "summary": "All five plan phases completed and committed (fc2f7dc86, e895f2616, f7b703363, a292107a7, e7a4f1648). StateOccurs.of_isRegular derives (H2) from [F.IsRegular] via cor:occurrence, and three _of_isRegular corollaries state lem:state-set's three sentences over def:flow's hypotheses alone; five pointer-only LIVE-UNPINNED record rows unblocked the docstring citations under C15, and StateSetTruth.lean carries the (H2)-derivability note and the nomic forward pointer. Whole-project lake build green (2848 jobs, 0 errors), zero sorry, axiom count unchanged at 14, all six axiom profiles exactly as predicted, and the two choice-free originals plus DeterminismUndefinable.lean byte-identical. Every gate exits 0 except check-paper-definitions.sh, which is red on a pre-existing 10-anchor drift wave this task neither caused nor can fix.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/792_pin_lem_state_set_flow_frames/summaries/01_pin-lem-state-set-flow-frames-summary.md",
+      "summary": "Implementation summary: the discharge theorem, the three corollaries, the record rows, the two docstring records, and the full verification record."
+    },
+    {
+      "type": "plan",
+      "path": "specs/792_pin_lem_state_set_flow_frames/plans/01_pin-lem-state-set-flow-frames.md",
+      "summary": "Plan with all five phases marked [COMPLETED] and four deviations annotated inline."
+    }
+  ]
+}

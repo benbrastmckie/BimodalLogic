@@ -1,17 +1,33 @@
 {
-  "status": "researched",
-  "dispatch_seq": 5,
+  "status": "implemented",
+  "started_at": "2026-10-14T00:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/792_pin_lem_state_set_flow_frames/reports/01_pin-lem-state-set-flow-frames.md",
-      "summary": "All four deliverable declarations compile with zero new imports (Extension.lean is already in StateSetTruth's import closure) and the predicted Classical.choice profile; one blocking C15 paper-anchor gate collision requires three KNOWN-ANCHORS rows in a file a concurrent sibling owns."
+      "type": "summary",
+      "path": "specs/792_pin_lem_state_set_flow_frames/summaries/01_pin-lem-state-set-flow-frames-summary.md",
+      "summary": "lem:state-set pinned to the tree: StateOccurs.of_isRegular discharges (H2) from the bundling class, and three _of_isRegular corollaries state the lemma's three sentences over def:flow's hypotheses alone."
     }
   ],
+  "completion_data": {
+    "completion_summary": "Composed OrderFlow with cor:occurrence so lem:state-set exists in the tree as a statement, not only as mathematics: StateOccurs.of_isRegular derives (H2) from [F.IsRegular], and plusTruthAt_iff_mem_satSet_of_isRegular, determined_of_orderFlow_of_isRegular and plusValidOn_iff_satSet_univ_of_isRegular state the lemma's three sentences at [F.IsRegular] (h : OrderFlow F) alone, with docstrings citing def:flow and lem:state-set and recording the Classical.choice route through thm:extension. Five pointer-only LIVE-UNPINNED record rows unblocked those citations under C15; the two choice-free originals and DeterminismUndefinable.lean are byte-identical.",
+    "roadmap_items": []
+  },
   "metadata": {
-    "session_id": "sess_1792013208_936eb4_792",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792026404_b03e6d",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed"
   }
 }

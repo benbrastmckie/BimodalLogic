@@ -1,7 +1,7 @@
 # Implementation Plan: Task #792
 
 - **Task**: 792 - Pin `lem:state-set` to the tree by discharging its remaining hypothesis
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/792_pin_lem_state_set_flow_frames/reports/01_pin-lem-state-set-flow-frames.md`
