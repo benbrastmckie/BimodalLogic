@@ -98,12 +98,13 @@
         793
       ],
       "file_scope": [
-        "docs/reference/paper-definitions-of-record.md",
         "FormalSystem/ProofSystem/Axioms.lean",
         "FormalSystem/ProofSystem/README.md",
         "FormalSystem/README.md",
         "README.md",
         "docs/reference/API_REFERENCE.md",
+        "docs/reference/axiom-reference.md",
+        "docs/reference/paper-definitions-of-record.md",
         "scripts/lean-citation-manifest.json",
         "typst/FormalFoundations.typ",
         "typst/generated/status.typ"
@@ -438,7 +439,8 @@
       "effort": "large",
       "topic": "paper-alignment",
       "dependencies": [
-        794
+        794,
+        801
       ],
       "description": "Formalize the nomic operator and its three results, on the nomic frames of task 794. def:nomic-frame's clause: M, tau, x ⊨ Nomic φ iff M, sigma, x ⊨ φ for all sigma ∈ H_F^{tau(x)}, so the accessibility relation at x relates tau to the law-histories at its current state. prop:nomic-tense-free: over every nomic frame, Nomic φ ↔ □φ holds at every point for every tense-free φ (built from atoms, ⊥, →, □, Nomic), by the same state-set induction as lem:state-set, so every S5 schema for Nomic is valid on that fragment and any refutation needs S or U. thm:nomic-uniform: six equivalent conditions -- transitivity, symmetry, Euclidean (each at one time or at every time), H_F^{tau(x)} = H_F for all tau and x, Uniform, ⇒^w independent of w -- in which case the accessibility relation is H_F × H_F and Nomic φ ↔ □φ is valid for every φ; seriality (D) holds for Nomic over every nomic frame regardless. app:nomic-four: over ℤ-time, Nomic φ → Nomic Nomic φ is valid iff the frame is Uniform, and likewise Nomic φ ↔ □φ, so axiom 4 fails over some Static frame (the static-and-lawful witness of prop:nomic-hierarchy); the refuting sentence is always(¬(p ∧ Next q)) built from a one-step violation of ⇒_1^v along a law-history outside H_F^v.\n\nDEPENDS on task 794 for the frames, law-histories, occurrence, recovery and the witnesses.\n\nDELIVER: (1) a formula type with Nomic -- extend an existing language by one unary constructor or make a fresh `NomicFormula`; the OpenLanguage component is the precedent for a semantic-only extension with no proof system, so follow its 'syntax before semantics' module invariant and register the new files in scripts/measure-refactor-partitions.py; (2) truth over a `NomicFrame` with the clause above; (3) prop:nomic-tense-free via a `satSet`-style recursion on the tense-free fragment (coordinate with the state-set pin of task 792 so the two inductions share a shape); (4) thm:nomic-uniform as a cycle of implications plus the (5)⇔(6) step through lem:nomic-recovery, and the closing collapse Nomic ↔ □ under uniformity; (5) app:nomic-four over `intOrder`, using IntNormalForm's one-step membership characterization; (6) seriality of Nomic as its own theorem. The cut rmk:nomic-uniform (transitivity at w iff H_F^u ⊆ H_F^w for every u) in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex is a specification for a side lemma, not a result to cite.\n\nPAPER ANCHORS. def:nomic-frame (the Nomic clause), prop:nomic-tense-free, thm:nomic-uniform, app:nomic-four in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, each with a `% PORT:` comment to clear. app:nomic-four's proof ends with a commented remark that the ℤ-time hypothesis is essential and the dense case open -- do not attempt the dense case.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase.",
       "created": "2026-10-14T19:17:12Z",
