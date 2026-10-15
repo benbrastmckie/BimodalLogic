@@ -337,36 +337,36 @@ declaration or signature, fully covered by the guarded scoped build of
 
 ---
 
-### Phase 4: The validity level into Semantics/Validity.lean [NOT STARTED]
+### Phase 4: The validity level into Semantics/Validity.lean [COMPLETED]
 
 **Goal**: `thm:TR-valid` exists — at every frame class, in both directions, and at the two
 non-tag validity predicates.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Semantics/Validity.lean` immediately beforehand
-- [ ] Add `import FormalSystem.Semantics.Reversal` to its import block. No cycle:
+- [x] Re-read `FormalSystem/Semantics/Validity.lean` immediately beforehand
+- [x] Add `import FormalSystem.Semantics.Reversal` to its import block. No cycle:
       `Reversal.lean` imports only `TruthTransport.lean`, which `Validity.lean` already imports
       at line 8
-- [ ] Site the new block after `ValidIn.mono` (currently `Validity.lean:491`), the existing home
-      of the structural validity lemmas
-- [ ] Add `validOn_rev_iff`, with the backward arm going through
+- [x] Site the new block after `ValidIn.mono` (currently `Validity.lean:491`), the existing home
+      of the structural validity lemmas *(deviation: altered — split in two: the five frame/class lemmas sit after `ValidIn.mono`, but `validComplete_reflectTime` and `validQTime_reflectTime` had to go after the `ValidQTime` definition at ~line 680, since `ValidComplete`/`ValidQTime` are declared below `ValidIn.mono` and cannot be referenced above their own definitions)*
+- [x] Add `validOn_rev_iff`, with the backward arm going through
       `obtain ⟨τ, rfl⟩ := WorldHistory.rev_surjective τ'` and `rw [neg_neg] at key`, mirroring
       `openValidOn_rev_iff` arm for arm
-- [ ] Add `validOnFrames_reflectTime` as the primitive carrying the `rev`-closure argument, then
+- [x] Add `validOnFrames_reflectTime` as the primitive carrying the `rev`-closure argument, then
       `validIn_reflectTime` as its instance at `fc.Sat` via
       `validOnFrames_reflectTime (fun _ => FrameClass.Sat.rev) h`, mirroring the existing
       `ValidOnFrames.mono` / `ValidIn.mono` pairing in the same file
-- [ ] Add `validIn_reflectTime_iff` (forward arm by `rwa [Formula.reflect_time_involution]`) and
+- [x] Add `validIn_reflectTime_iff` (forward arm by `rwa [Formula.reflect_time_involution]`) and
       `valid_reflectTime`
-- [ ] Add `validComplete_reflectTime` and `validQTime_reflectTime`, each through
+- [x] Add `validComplete_reflectTime` and `validQTime_reflectTime`, each through
       `validOnFrames_reflectTime` with a local `⟨inferInstance, h.2⟩` closure under
       `haveI := h.1` — these are the two predicates no `FrameClass` tag denotes, which
       `validIn_reflectTime` cannot reach
-- [ ] Docstring each with its paper anchor: `validOn_rev_iff` and `truthAt_rev` as
+- [x] Docstring each with its paper anchor: `validOn_rev_iff` and `truthAt_rev` as
       `lem:time-reflection`, the `reflectTime` family as `thm:TR-valid`, and the frame-class form
       with the paper's own reason ("the reflected frame sharing its temporal order",
       `thm:TM-soundness`)
-- [ ] Stage the single path
+- [x] Stage the single path
 
 **Timing**: 0.5 hours
 
@@ -402,31 +402,31 @@ itself, and nothing outside the Lean compile surface is touched.
 
 ---
 
-### Phase 5: Record the decisions in the docstrings [NOT STARTED]
+### Phase 5: Record the decisions in the docstrings [COMPLETED]
 
 **Goal**: the soundness-collapse decision and the completed promotion are recorded where a reader
 of the tree finds them, and no docstring still describes the pre-promotion layout.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Soundness.lean` (around 1252-1340),
+- [x] Re-read `FormalSystem/Metalogic/Soundness.lean` (around 1252-1340),
       `FormalSystem/OpenLanguage/OpenReversal.lean`'s module docstring and
       `FormalSystem/OpenLanguage.lean` (around line 55) immediately beforehand
-- [ ] On `derivable_valid_and_reflect_time_validIn`, extend the docstring to record decision (3):
+- [x] On `derivable_valid_and_reflect_time_validIn`, extend the docstring to record decision (3):
       that the paper's own soundness proof routes the TR rule through `thm:TR-valid` rather than a
       per-axiom dispatch; that `Semantics.validIn_reflectTime` is now that argument in the tree and
       `validIn_reflectTime (axiom_validIn_min ax)` alone proves `axiom_reflect_time_validIn_min`;
       and that the per-axiom dispatch is retained deliberately — as an independent re-derivation of
       the same validities, and because three sibling language layers mirror this recursion arm for
       arm. State the current design only, with no draft-history or supersession framing
-- [ ] Add the matching back-reference on `axiom_reflect_time_validIn_min`
-- [ ] Rewrite `OpenReversal.lean`'s module-docstring **Siting** paragraph, which currently states
+- [x] Add the matching back-reference on `axiom_reflect_time_validIn_min`
+- [x] Rewrite `OpenReversal.lean`'s module-docstring **Siting** paragraph, which currently states
       the promotion has not happened, and its `/-!` note at lines 65-67; the `OpenLanguage`
       namespace contents (the class swaps, `openTruthAt_rev`, `openValidOn_rev_iff`,
       `openValid_reflectTime`) stay untouched and unchanged in statement
-- [ ] Rewrite `FormalSystem/OpenLanguage.lean`'s `OpenLanguage.OpenReversal` entry, which
+- [x] Rewrite `FormalSystem/OpenLanguage.lean`'s `OpenLanguage.OpenReversal` entry, which
       currently credits that module with `FrameOver.rev` / `TaskFrame.rev` / `TaskModel.rev` /
       `WorldHistory.rev`, to name only what the module still declares
-- [ ] Stage the explicit three-path list
+- [x] Stage the explicit three-path list *(deviation: altered — five paths, not three: the C15 paper-anchor gate and the generated-inventory gate both fired on the new citations and the new module, adding `docs/reference/paper-definitions-of-record.md` (two LIVE-UNPINNED rows) and the four regenerated README inventory blocks. See the Phase 5 handoff.)*
 
 **Timing**: 0.5 hours
 
@@ -463,24 +463,24 @@ named above are, and no signature anywhere changes.
 
 ---
 
-### Phase 6: Full verification and generated-artifact reconciliation [NOT STARTED]
+### Phase 6: Full verification and generated-artifact reconciliation [COMPLETED]
 
 **Goal**: the complete repository gate set is green, the two generated count artifacts are
 current, and every claim this plan makes has been observed rather than assumed.
 
 **Tasks**:
-- [ ] Re-read `typst/generated/status.typ` immediately beforehand. **Task 801 declares this path
+- [x] Re-read `typst/generated/status.typ` immediately beforehand. **Task 801 declares this path
       in its `file_scope` and was dispatched this same cycle.** If a foreign uncommitted
       modification or a foreign commit to it is present — confirmed against `git log` as not this
       task's own work — STOP and report it rather than regenerating over it
-- [ ] Regenerate it: `bash scripts/typst-status-counts.sh`. The `.lean` file count under
+- [x] Regenerate it: `bash scripts/typst-status-counts.sh`. The `.lean` file count under
       `FormalSystem/` goes 689 -> 690, so the committed `formalsystem-file-count = 689` is stale
       and `typst-sync-check.sh` Check 2 fails until this runs. The file is generated, never
       hand-authored; stage that one path explicitly
-- [ ] Run each gate below individually and record its exit status. A gate that fails for an
+- [x] Run each gate below individually and record its exit status. A gate that fails for an
       unrelated, pre-existing reason is reported as such with its output, never silently dropped
       from the list
-- [ ] Report the paper-side `% PORT:` clearance (`possible_worlds.tex:3973` and `:4003`) as
+- [x] Report the paper-side `% PORT:` clearance (`possible_worlds.tex:3973` and `:4003`) as
       deferred-to-user per the Non-Goals, naming the two line numbers and the two theorem names
       that discharge them, so the paper's owner can clear them without re-deriving anything
 
@@ -489,6 +489,19 @@ current, and every claim this plan makes has been observed rather than assumed.
 **Depends on**: 1, 2, 3, 4, 5
 
 **Verification Tier**: full
+
+**Verification note (batch deferral)**: this dispatch discharged the `full` tier against a
+SCOPED surface per the dispatch's Batch Gate Deferral directive. Every repository gate named
+below was in fact run individually and its exit status recorded (see the summary's Verification
+section). The dispatch's named narrowing scripts
+(`agent-system/extensions/core/scripts/tests/run-all.sh --only`,
+`.../verify-deploy.sh --only-gate`) do not exist in this repository -- there is no
+`agent-system/` source store and no `source_dir` key in `.claude-extensions.json` -- and this
+task touched zero files under `.claude/**`, so that gate surface is untouched by this change
+class; the deployed `verify-deploy.sh --skip-slow` was run anyway and exits 0 with 0 checks.
+The COMPLETE aggregated gate set is deferred to the batch stage at the end of this /orchestrate
+invocation, attributed back to this task by its own `modified_files`, rather than independently
+re-run here.
 
 **Scope Hypothesis**: this phase asserts that the gate list below is the complete one for this
 change class, and that the `.lean` file count under `FormalSystem/` is 689 before this task and
@@ -596,30 +609,30 @@ end FormalSystem.ProofSystem
 
 ## Testing & Validation
 
-- [ ] All eleven new declarations compile and pass `lean_verify` with no `sorryAx` and no axiom
+- [x] All eleven new declarations compile and pass `lean_verify` with no `sorryAx` and no axiom
       beyond `[propext, Classical.choice, Quot.sound]`
-- [ ] `TaskFrame.rev` still carries `@[reducible]` after the promotion — it is load-bearing for
+- [x] `TaskFrame.rev` still carries `@[reducible]` after the promotion — it is load-bearing for
       `revHistEquiv.invFun`, `WorldHistory.rev_surjective` and `validIn_reflectTime`'s final step,
       all of which need `F.rev.rev = F` by `rfl` at reducible transparency
-- [ ] `FormalSystem/Semantics/Reversal.lean` imports `FormalSystem.Semantics.TruthTransport` and
+- [x] `FormalSystem/Semantics/Reversal.lean` imports `FormalSystem.Semantics.TruthTransport` and
       nothing else, and carries the G-15 `assert_not_exists` guard verbatim
-- [ ] The `assert_not_exists` guards in `Semantics/Truth.lean`, `Semantics/TruthTransport.lean`
+- [x] The `assert_not_exists` guards in `Semantics/Truth.lean`, `Semantics/TruthTransport.lean`
       and `Semantics/TaskFrame.lean` all remain satisfied — no new import was added to any of them
-- [ ] `WorldHistory.rev`'s `respects_task` obligation closes by `rwa [neg_sub_neg] at this`, not
+- [x] `WorldHistory.rev`'s `respects_task` obligation closes by `rwa [neg_sub_neg] at this`, not
       by `abel`
-- [ ] `revAntiIso.atom` is proved by `change` + `rw [neg_neg]`, not `rfl`
-- [ ] Guarded full builds of `FormalSystem`, `BimodalTest`, `BimodalTools`, `BimodalToolsTest`
+- [x] `revAntiIso.atom` is proved by `change` + `rw [neg_neg]`, not `rfl`
+- [x] Guarded full builds of `FormalSystem`, `BimodalTest`, `BimodalTools`, `BimodalToolsTest`
       exit 0
-- [ ] `check-module-invariants.sh`, `check-copyright-headers.sh`, `readme-lint.sh`,
+- [x] `check-module-invariants.sh`, `check-copyright-headers.sh`, `readme-lint.sh`,
       `typst-sync-check.sh`, `check-phantom-citations.sh`, `verify-deploy.sh` all exit 0;
       `check-paper-definitions.sh` run untruncated and any failure cross-checked against the
       pre-existing drift set
-- [ ] `FormalSystem.lean` is byte-current with `lake exe mk_all --lib FormalSystem` (C33) and
+- [x] `FormalSystem.lean` is byte-current with `lake exe mk_all --lib FormalSystem` (C33) and
       `typst/generated/status.typ` records `formalsystem-file-count = 690`
-- [ ] Nothing outside `/home/benjamin/Projects/BimodalLogic` was written
-- [ ] `openTruthAt_rev`, `openValidOn_rev_iff` and `openValid_reflectTime` are unchanged in
+- [x] Nothing outside `/home/benjamin/Projects/BimodalLogic` was written
+- [x] `openTruthAt_rev`, `openValidOn_rev_iff` and `openValid_reflectTime` are unchanged in
       statement, and `OpenReversal.lean`'s `OpenLanguage`-namespace contents are untouched
-- [ ] `derivable_valid_and_reflect_time_validIn` is unchanged in statement and proof, and carries
+- [x] `derivable_valid_and_reflect_time_validIn` is unchanged in statement and proof, and carries
       the decision-(3) cross-reference docstring
 
 ## Artifacts & Outputs

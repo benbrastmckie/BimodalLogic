@@ -1,14 +1,19 @@
 {
-  "status": "partial",
-  "phases_completed": 1,
+  "status": "implemented",
+  "phases_completed": 6,
   "phases_total": 6,
-  "summary": "Phase 1 landed: the converse-frame block (FrameOver.rev, its regularity instance, the two task-relation lemmas, the involution facts, @[reducible] TaskFrame.rev, TaskFrame.rev_rev) promoted from OpenLanguage/OpenReversal.lean into Semantics/TaskFrame.lean, longFile ceiling 2900 -> 3000 with an extended justification, both guarded scoped builds exit 0. Semantics/Reversal.lean is created and compiles clean (9 declarations, sole import FormalSystem.Semantics.TruthTransport, G-15 guard verbatim) but is not yet registered in Semantics.lean or the library root, so Phase 2 is in progress. Phases 3-6 not started.",
+  "summary": "All six phases complete and committed. lem:time-reflection for BL is FormalSystem.Semantics.truthAt_rev, an instance of the generic order-reversing transport at a new revAntiIso; thm:TR-valid is the validOnFrames_reflectTime / validIn_reflectTime family, reaching every frame class with no closure hypothesis plus ValidComplete and ValidQTime. The reversal machinery is promoted out of OpenLanguage/ into Semantics/TaskFrame.lean and a new G-15-guard-clean Semantics/Reversal.lean, with no import cycle. Decision (3) is recorded in its docstring: derivable_valid_and_reflect_time_validIn stays uncollapsed, with validIn_reflectTime (axiom_validIn_min ax) verified to subsume axiom_reflect_time_validIn_min. Eleven declarations, zero sorries, axiom count unchanged at 14, all four lake targets green, check-module-invariants.sh and typst-sync-check.sh exit 0.",
   "blockers": [],
   "artifacts": [
     {
       "type": "plan",
       "path": "specs/796_time_reflection_bl_tr_valid_anti_iso/plans/01_time-reflection-bl-tr-valid.md",
-      "summary": "6-phase plan for lem:time-reflection and thm:TR-valid, with a Lean Challenge Statements block pinning all eleven target signatures."
+      "summary": "6-phase plan, all phases [COMPLETED], with the Lean Challenge Statements block pinning all eleven target signatures."
+    },
+    {
+      "type": "summary",
+      "path": "specs/796_time_reflection_bl_tr_valid_anti_iso/summaries/01_time-reflection-bl-tr-valid-summary.md",
+      "summary": "Implementation summary with the full per-gate verification record, three recorded gate collisions, and the deferred paper-side % PORT: clearance report."
     }
   ],
   "dispatch_seq": 11
