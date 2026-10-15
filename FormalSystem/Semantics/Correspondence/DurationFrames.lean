@@ -543,4 +543,51 @@ theorem translation_eq_sigma {D : TemporalOrder}
   change translationStates τ t = translationStates (translationSigma D _) t
   rw [translationSigma_states, translationStates_eq τ t, add_comm]
 
+
+/--
+**(b) of `lem:canonical-frames`, bijective form.** The possible worlds of the translation frame
+are exactly the durations: a history goes to its state at `0`, and a duration `c` to the
+translation `σ_c`.
+
+This is the form that makes the possible-world count of the translation frame exactly the
+duration count, which is what the paper's countermodel arguments over this frame use — each
+countermodel picks out a translation and reads a formula along it.
+
+The `right_inv` component needs a `change` to beta-reduce the composite before the state equation
+can be rewritten (measured).
+-/
+def translationHistEquiv (D : TemporalOrder) :
+    WorldHistory (translationFrame D).toTaskFrame ≃ ↑D where
+  toFun τ := translationStates τ 0
+  invFun c := translationSigma D c
+  left_inv τ := (translation_eq_sigma τ).symm
+  right_inv c := by
+    change translationStates (translationSigma D c) 0 = c
+    rw [translationSigma_states, zero_add]
+
+/--
+**(b) of `lem:canonical-frames`, set form.** The Lean reading of the paper's displayed equation
+for the translation frame's history set, `H_F = {σ_c | c ∈ D}`: the translations exhaust the
+world histories, stated as the range of `translationSigma` being everything.
+
+The paper's text is cited by anchor and quoted nowhere; this is the statement its displayed
+equation makes about the frame's own `WorldHistory` type.
+-/
+theorem translation_histSet_eq (D : TemporalOrder) :
+    Set.range (translationSigma D)
+      = (Set.univ : Set (WorldHistory (translationFrame D).toTaskFrame)) :=
+  Set.eq_univ_of_forall fun τ => ⟨translationStates τ 0, (translation_eq_sigma τ).symm⟩
+
+/--
+**(b) of `lem:canonical-frames`, uniqueness form.** Every possible world of the translation frame
+is the translation by exactly one duration — the existence half is `translation_eq_sigma` and the
+uniqueness half reads the index back off the state at `0`.
+-/
+theorem translation_exists_unique {D : TemporalOrder}
+    (τ : WorldHistory (translationFrame D).toTaskFrame) :
+    ∃! c : ↑D, τ = translationSigma D c := by
+  refine ⟨translationStates τ 0, translation_eq_sigma τ, fun c hc => ?_⟩
+  have := congrArg (fun σ => translationStates σ 0) hc
+  simpa using this.symm
+
 end FormalSystem.Semantics
