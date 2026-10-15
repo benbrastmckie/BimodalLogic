@@ -336,7 +336,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: The Choice-Free Effective Toolkit [NOT STARTED]
+### Phase 5: The Choice-Free Effective Toolkit [COMPLETED]
 
 - **Goal:** A computable successor and predecessor from an enumeration, and a choice-free
   pigeonhole at an enumerated carrier — the two pieces `FrameOver.extend_periodic` currently gets

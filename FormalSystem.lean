@@ -139,6 +139,7 @@ import FormalSystem.Metalogic.Decidability.Closure
 import FormalSystem.Metalogic.Decidability.Correctness
 import FormalSystem.Metalogic.Decidability.CountermodelExtraction
 import FormalSystem.Metalogic.Decidability.DecisionProcedure
+import FormalSystem.Metalogic.Decidability.EffectiveOrbit
 import FormalSystem.Metalogic.Decidability.FMP.ClosureMCS
 import FormalSystem.Metalogic.Decidability.FMP.FMP
 import FormalSystem.Metalogic.Decidability.FMP.Filtration
