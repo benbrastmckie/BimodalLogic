@@ -58,14 +58,154 @@ re-derives every hash below directly from the live paper file on every run.
 | `def:id` footnote re-pin (UTC) | 2026-09-28 (one anchor re-hashed: the `Brast-McKie2021` footnote in `def:id` gained a trailing clause on transparency being maintained for the entirety of the language. Expository only -- no axiom, no substitution convention and no operator-scope proviso changed, and `def:id` has no Lean counterpart, so no citation or soundness-chain consequence. Absorbed rather than left red because the gate had been failing on this single clause since the paper edit. Re-run after the re-pin reported case (b), all 43 recorded definitions unchanged.) |
 
 | Base commit at the 27-anchor drift correction (paper repo `git HEAD`; the file is **clean** against it, and that commit is also the last to touch the file: `4e00e00c273e19a437b65f48e1ca71c483268400` is its parent-side predecessor) | `9ad4aa5d1bda09d885d37b296fdde1bc1a0817ee` |
-| **File checksum, re-pinned at the 27-anchor drift correction (sha256, current authoritative pin)** | `0e39993c2aa955e0a3bfc224e8ba93fdfcd02ca9d4e2ca115cb4e2cccdb05d78` |
+| File checksum, re-pinned at the 27-anchor drift correction (sha256, superseded 2026-10-15) | `0e39993c2aa955e0a3bfc224e8ba93fdfcd02ca9d4e2ca115cb4e2cccdb05d78` |
 | Line count at that re-pin | 3962 |
 | 27-anchor drift correction re-pin (UTC) | 2026-10-14 (27 entries re-hashed in one correction, headlined by the `lem:nullity` strengthening from an implication to a biconditional, plus `def:id` re-hashed a second time when the paper moved again while this correction was in flight — 28 re-hashes over 27 distinct anchors. No anchor retired, none renamed, none newly pinned. See "Drift correction (2026-10-14): the 27-anchor wave" below. The three whole-file sentinels and this table's "current authoritative pin" row had diverged across the 2026-09-17 and 2026-09-28 re-pins; setting all of them to the values above resolves that. Unlike every re-pin since 2026-08-10, this one pins a **clean** file: the paper was committed between the first and second resolution of `def:id`.) |
+| Base commit at the BX/TM demotion wave (paper repo `git HEAD`; the file is **dirty** against it, and that commit is also the last to touch the file) | `bc010a06096299f605b12989461dc7ce86612b31` |
+| **File checksum, re-pinned at the BX/TM demotion wave (sha256, current authoritative pin)** | `ec838c9e8f10f75fefac46cb6244328c39611dfae33a1912cbdc56d82f2f0825` |
+| Line count at that re-pin | 4071 |
+| BX/TM demotion wave re-pin (UTC) | 2026-10-15 (ten entries re-hashed and `def:strongest` retired DANGLING in one correction, headlined by the coincidence of the paper's primitive axiom set with `inductive Axiom`'s 20 constructors: `UE` and `UT` were removed from the paper outright, and `TC`/`TL`/`NP`/`NF`/`NA`/`Z1`/`DN` were demoted to derived theorems inside the definitions that used to axiomatize them, with `NB` moving into `def:TMplus` alongside `MF`. See "Drift correction (2026-10-15): the BX/TM demotion wave" below. The paper moved three times during the implementation dispatch alone, and `def:id` was re-hashed three times inside this one correction; the gate's green verdict is conditional on the revision this row names, not unconditional.) |
 <!-- PAPER_PATH: ~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: ~/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: 9ad4aa5d1bda09d885d37b296fdde1bc1a0817ee -->
-<!-- FILE_CHECKSUM: 0e39993c2aa955e0a3bfc224e8ba93fdfcd02ca9d4e2ca115cb4e2cccdb05d78 -->
-<!-- LINE_COUNT: 3962 -->
+<!-- PINNED_COMMIT: bc010a06096299f605b12989461dc7ce86612b31 -->
+<!-- FILE_CHECKSUM: ec838c9e8f10f75fefac46cb6244328c39611dfae33a1912cbdc56d82f2f0825 -->
+<!-- LINE_COUNT: 4071 -->
+
+### Drift correction (2026-10-15): the BX/TM demotion wave
+
+**The paper's primitive axiom set and this tree's `inductive Axiom` now coincide key for key.**
+That is the headline of this wave, and it is an identity rather than a containment. The paper
+names sixteen primitive schemata — `MK`, `MT`, `M5` (S5); `TS`, `UI`, `UC`, `UF`, `UG`, `US`,
+`CN` (base tense); `MF`, `NB` (bimodal interaction); `UZ` (discrete); `NN` (dense); `PU`, `SEP`
+(Dedekind) — which with the four CPL constructors `prop_k`, `prop_s`, `ex_falso`, `peirce` give
+twenty, the exact constructor count and the exact key set of
+`FormalSystem/ProofSystem/Axioms.lean`'s `inductive Axiom` (verified: 20 constructors, counted
+from the inductive itself). Every earlier record entry that framed the relation as a **proper
+subset** ("the tree's primitive set is now a proper subset of `def:BX`/`def:BX-z`/`def:BX-d`'s
+lists … minus the nine of them that are theorems of the others") describes a state of affairs
+that this wave retired; the 2026-10-14 `**Amended by**` note at `def:BX` below is rewritten
+accordingly.
+
+The checker was red (exit 1, case (c)) before this correction: **ten pinned entries drifted and
+one anchor went dangling**. It gives the quiet case-(b)-then-(a) pass after it.
+
+**Re-hashed (re-quoted from live text via `--resolve`, none hand-written):** `CO`, `def:BX`,
+`def:BX-z`, `def:BX-d`, `def:TMplus`, `app:discrete`, `def:id`, `thm:exist`, `lem:uniq`,
+`thm:s5`.
+
+**Retired (manifest row removed, prose entry retained and marked `DANGLING`, `KNOWN-ANCHORS`
+row added):** `def:strongest`. The paper removed the `\label{def:strongest}` definition
+outright; `Str` survives as an `\aitem{Str}` key inside `\label{def:key-terms}`, the
+operator-predicate definition that also carries `Fac`, `Ax` and `Ord`, with the `L` subscript
+dropped and strongest-hood expressed as derivability of `$\Str^{\OO}(\Q)$`. The primed
+`Str'` notion went with it, which is why `thm:exist` and `lem:uniq` lost their `Str'` halves in
+the same wave.
+
+#### The removal and the demotions are two different editorial acts
+
+**Removal — `UE` and `UT` are no longer paper keys at all.** The live paper carries **zero**
+`\aitem`, `\alabel` or `\aref` occurrences of either (measured, not assumed). They are not
+demoted to derived theorems in the paper; they are gone from it. They survive in this tree as
+`DerivedAxioms.untilF` (UE, from UG with guard `⊤` plus TN) and `DerivedAxioms.fUntilEquiv`
+(UT, an identity), which are true theorems of the tree with **no paper key to attribute them
+to**. Any in-tree `Paper:` line or anchor cell that attributed UE or UT to `def:BX` was made
+false by this wave and is corrected in this task.
+
+**Demotion — seven schemata the paper still displays, now marked derived rather than
+axiomatic.** Each is still an item of `\S`Logic or `\S`Extensions, and each definition that used
+to axiomatize it now states in its own text that it is a derived theorem:
+
+| Schema | Still displayed as | The definition that now marks it derived | Derived in the paper of | Paper's own Lean citation |
+|---|---|---|---|---|
+| `TC` | `\aitem{TC}` | `def:BX` | **BX** | `\leanfoot{ConnectDerived.connectFuture}` |
+| `TL` | `\aitem{TL}` | `def:BX` | **BX** | `\leanfoot{LinearityDerived.tempLinearity}` |
+| `NP` | `\alabel{NP}` in prose | `def:TMplus` | **TM**, not BX | in-prose `\leanrepo{}` reference |
+| `NF` | `\alabel{NF}` in prose | `def:TMplus` | **TM**, not BX | in-prose `\leanrepo{}` reference |
+| `NA` | `\alabel{NA}` in prose | `def:TMplus` | **TM**, not BX | in-prose `\leanrepo{}` reference |
+| `Z1` | `\aitem{Z1}` | `def:BX-z` | **TM**$_\textsc{z}$, not BX$_\textsc{z}$ | `\leanfoot{CompletenessDerived.z1Thm}` |
+| `DN` | `\aitem{DN}` | `def:BX-d` | **BX**$_\textsc{d}$ | `\leanfoot{LinearityDerived.density}` |
+
+`NP`, `NF` and `NA` deserve a separate note: they are the three that lost their `\aitem` status
+as well. They are no longer displayed axiom items but `\alabel`-tagged schemata inside a
+paragraph of `\S`Logic that states them as theorems of **TM** derived from `NB` together with
+`MF` and `MT`. The system matters: they are theorems of TM rather than of BX, because their
+derivation goes through the bimodal interaction axioms, which BX does not have. `def:TMplus`
+says exactly this, and it is the only definition in the paper that can say it — which is also
+why `def:TMplus` now names **two** bimodal interaction axioms, `MF` and `NB`, where it named one.
+
+**`NB` moved, it was not demoted.** It is still a primitive, but a primitive of `def:TMplus`
+rather than of `def:BX`. In the tree it is `Axiom.discrete_box_necessity`, and it always sat in
+the uniformity layer rather than the BX temporal layer, so no Lean constructor moved.
+
+#### The four unformalized objective-modality anchors, plus a fifth
+
+`def:id`, `def:strongest`, `thm:exist` and `lem:uniq` are absorbed here **on the user's recorded
+authorization** (`specs/.../.decisions.json`, cycle 5), not as a silent widening of scope. The
+measured basis for that authorization: each has **zero citing files** under `FormalSystem/` or
+`docs/` other than this record file itself. The paper-side cause is one editorial decision —
+the primed `Str'` operator was dropped, `def:strongest` was folded into `def:key-terms`'s
+`\aitem{Str}`, and `thm:exist` and `lem:uniq` were restated in the object-language derivability
+form (`$\vdash \Str^{\OO}(\Q)$`) that drops the `L` subscript. `def:id` was rebuilt from a clean
+slate: `$\BL^{\equiv}$` is no longer the identity extension of a fragment of `$\BL$` but a
+language in its own right, with its propositional variables, its operator terms, identity at
+both types and the predicate `$\OO$` all in place before the minimal theory of identity is
+stated, and with the `free for` proviso deferred to the quantified language.
+
+**`thm:s5` is the fifth, and it was not in the authorized list.** It drifted newly, after that
+authorization was given: `If $\Str^{\OO}_{L}(\Q)$` became `If $\vdash \Str^{\OO}(\Q)$` — the
+same drop of the `L`-subscripted metalinguistic form that moved `thm:exist` and `lem:uniq`, in
+the same section of the same revision. It is absorbed on the same measured basis, re-verified
+here rather than assumed: `grep -rln thm:s5` over `FormalSystem/`, `docs/`, `typst/` and
+`README.md` returns **this record file alone**. Absorbing it has no Lean and no prose
+consequence, and naming it here is what makes the absorption auditable.
+
+#### Two changes that are not definitional
+
+- **`CO`'s drift is a citation append, nothing more.** The axiom gained
+  `\leanfoot{DedekindDerived.coDerived}` and is otherwise byte-identical. The paper is pointing
+  at this tree, which is the direction of travel this whole wave exhibits.
+- **`app:discrete`'s drift is pure addition.** The static-frame footnote gained a soundness
+  argument — over `$\Z$` the static frame validates `$\Next\top$` at every time, so extending
+  **TM** by `DN` alone does not prove `NN` — and a new `\label{fn:static-frame}`. The added
+  independence claim is **not formalized in this tree and not rowed here**: the user's recorded
+  authorization for the four unformalized anchors expressly did not extend to `app:discrete`,
+  which is formalized and has seven citing files. Whether the DN-does-not-prove-NN claim should
+  be formalized is deferred as a separate question, and no `fn:static-frame` row is added.
+
+#### `lem:derived-schemata` no longer exists
+
+The paper removed the appendix lemma *Derived Schemata* "as unreadable", recording the removal
+in an authorial source comment: each schema it collected is now stated as derived at the point
+where it is displayed (`\S`Logic, `\S`Extensions) and inside `def:BX`, `def:BX-z`, `def:BX-d`
+and `def:TMplus`, with no separate theorem. The anchor has **zero in-tree citations** (the
+`#derived-schemata` links in `docs/reference/axiom-reference.md` are intra-document anchors to
+that file's own section, not citations of the paper label), so no row is retired and no
+`DANGLING` row is added. Any task description or note still pointing at `lem:derived-schemata`
+for the derivations is stale; the live sources are the four definitions above.
+
+#### The absorbed revision, and the paper's motion during the run
+
+This correction pins a **dirty** file, and the paper moved **three times during this one
+implementation dispatch** — a tenth, eleventh and twelfth revision across the research, planning
+and execution runs of this task. Every hash below was therefore re-derived at write time from
+`--resolve` and asserted against the resolver's own sha before being written, and each old block
+was asserted to re-hash to its recorded old sha before being replaced, so no placement was
+assumed.
+
+| Field | Value |
+|---|---|
+| Paper sha256 absorbed | see the `FILE_CHECKSUM` sentinel above |
+| Line count | see the `LINE_COUNT` sentinel above |
+| Paper repo `git HEAD` | `bc010a06096299f605b12989461dc7ce86612b31` (also the last commit to touch the file) |
+| Working-tree posture | **dirty** against that commit |
+
+`def:id` was re-hashed **three times** inside this single correction, for three successive
+revisions of the same block minutes apart (`f56301e5` → `b52579e8` → `18edbbea`), which is the
+same in-flight pattern the 2026-10-14 wave recorded for the same anchor. The acceptance claim
+for this wave is therefore conditional by construction: the gate is green **against the revision
+named by the sentinels above**, not unconditionally, and a thirteenth revision landing after this
+file was written would re-red the gate without invalidating anything recorded here.
+
 
 ### Drift correction (2026-10-14): the 27-anchor wave
 
@@ -398,18 +538,24 @@ The same closure corrected
 `typst/FormalFoundations.typ`'s remark that the development "has no TR rule" and that the
 uniformity layer "does not even match in count". Both claims were wrong.
 
-**Amended by** `FormalSystem/ProofSystem/LinearityDerivedFacts.lean`, 2026-10-14: the tree's
-primitive set is now a **proper subset** of `def:BX`/`def:BX-z`/`def:BX-d`'s lists with the same
-theorems. Nine schemata the paper lists as axioms are derived in the tree — TC, UE, UT, NP, NF,
-NA (`FormalSystem/Theorems/ConnectDerived.lean`, `ProofSystem/DerivedAxioms.lean`), TL and DN
+**Amended by** `FormalSystem/ProofSystem/LinearityDerivedFacts.lean`, 2026-10-14, and
+**resolved** by the 2026-10-15 BX/TM demotion wave above: the divergence this note was opened to
+record no longer exists. The tree's primitive set is not a proper subset of `def:BX`/`def:BX-z`/
+`def:BX-d`'s lists; the paper's primitive schemata and `inductive Axiom`'s 20 constructors now
+**coincide key for key** (CPL 4, MK/MT/M5, TS, UG, UC, US, UF, UI, CN, MF, NB, UZ, NN, PU, SEP).
+The nine schemata derived in the tree — TC, UE, UT, NP, NF, NA
+(`FormalSystem/Theorems/ConnectDerived.lean`, `ProofSystem/DerivedAxioms.lean`), TL and DN
 (`FormalSystem/Theorems/LinearityDerived.lean`) and Z1
 (`FormalSystem/Metalogic/CompletenessDerived.lean`, through the ℤ-time completeness engine) —
-so `inductive Axiom` has 20 constructors (CPL 4, MK/MT/M5, TS, UG, UC, US, UF, UI, CN, MF, NB,
-UZ, NN, PU, SEP). TL is derived from CN (Xu 1988 §3: Σ₄ is complete for linear frames with
-Burgess's A4a deleted; §4 Theorem 4.3: the G/H-level (13) is strictly weaker than (10)), and A4a
-is **not** restored; the derivation record is `LinearityDerivedFacts.lean`, which also retracts
-that module's earlier underivability claim (its branching frame refutes CN itself). The paper's
-`def:BX` text and `typst/FormalFoundations.typ` are not edited: the divergence is recorded here.
+are no longer schemata the paper lists as axioms: UE and UT are not paper keys at all, TC and TL
+are derived theorems of BX in `def:BX`'s own text, NP/NF/NA are derived theorems of TM in
+`def:TMplus`'s, Z1 of TM$_z$ in `def:BX-z`'s and DN of BX$_d$ in `def:BX-d`'s. The derivation
+record for TL stands: it is derived from CN (Xu 1988 §3: Σ₄ is complete for linear frames with
+Burgess's A4a deleted; §4 Theorem 4.3: the G/H-level (13) is strictly weaker than (10)), A4a is
+**not** restored, and `LinearityDerivedFacts.lean` also retracts that module's earlier
+underivability claim (its branching frame refutes CN itself). The paper is still never edited
+from here, but it no longer needs to be: it reached the tree's position on its own, and the
+2026-10-15 entry above records how.
 The footnote erratum below stands — UE follows from UG, not UC — and is what
 `DerivedAxioms.untilF` implements.
 
@@ -1660,14 +1806,15 @@ by a live task at recording time.
 ```
 sha256: `dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257`
 
-### `def:BX` — the Base Burgess–Xu tense logic
+### `def:BX` — the Base Burgess–Xu tense logic, and the two schemata (TC, TL) it marks derived
 
 ```latex
 \begin{Ddef} \label{def:BX}
-  The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} extends \textbf{CPL} to include the metarules \textbf{\aref{TN}} and \textbf{\aref{TR}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{US}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.
+  The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} extends \textbf{CPL} to include the metarules \textbf{\aref{TN}} and \textbf{\aref{TR}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{US}}, and \textbf{\aref{CN}} presented in \textbf{\S\ref{sub:Logic}}.
+  The schemata \textbf{\aref{TC}} and \textbf{\aref{TL}} of \textbf{\S\ref{sub:Logic}} are \textit{derived theorems} of \textbf{BX} rather than further axioms, machine-checked in the Lean 4 \leanrepo{}, and so are not included among its axioms.
 \end{Ddef}
 ```
-sha256: `8fdba7ab64b74d245bd47bfa14e6baac17c9d2ce67fdea5371a5fa9fc624a903`
+sha256: `64cc5cc90860bd5c3855701a4de57c38a10ffb6d0c59025224c82869f8454ec2`
 
 ### `def:TMplus-f` — the discrete Burgess–Xu tense logic BX_f, and its Z-time footnote — **DANGLING as of the 2026-09-07 rename-absorption re-pin: RENAMED to `def:BX-z` (removed from manifest)**
 
@@ -1748,7 +1895,7 @@ labelled `SEP`, not `SP`; and the `TMP-CO` restatement quoted below no longer ex
 ```
 sha256: `116725ac133c7ce7660d6c32e3654c2e8456c03dcd1cf97cd3b254238c2d4c03`
 
-### `def:BX-z` — the discrete Burgess–Xu tense logic BX_z (RENAMED from `def:TMplus-f`), and its ℤ-time narrowing
+### `def:BX-z` — the discrete Burgess–Xu tense logic BX_z (RENAMED from `def:TMplus-f`), its ℤ-time narrowing, and Z1 marked derived
 
 **Re-hashed twice on 2026-09-07**: the second time for a comment-only deletion inside the
 environment (the `%% NEW CHANGE` editorial lines and three commented-out sentences), which changes
@@ -1764,23 +1911,25 @@ now cites `prop:archimedean` for the failure of `UZ`/`Z1` over non-Archimedean d
 
 ```latex
 \begin{Ddef} \label{def:BX-z}
-  The \textit{Discrete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{z}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{UZ}} and \textbf{\aref{Z1}} presented in \textbf{\S\ref{sub:Extension}}.
-  Since \textbf{\aref{UZ}} and \textbf{\aref{Z1}} fail over every \textsc{Discrete} temporal order that is not Archimedean by \textbf{\ref{prop:archimedean}}, and a \textsc{Discrete} temporal order is Archimedean just in case it is isomorphic to $\Z$, the \textsc{Discrete} temporal orders over whose task frames \textbf{TM}$_\textsc{z}$ is sound are exactly those of $\Z$-time.
+  The \textit{Discrete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{z}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{UZ}} presented in \textbf{\S\ref{sub:Extension}}.
+  The backward induction principle \textbf{\aref{Z1}} of \textbf{\S\ref{sub:Extension}} is a \textit{derived theorem} of the discrete extension \textbf{TM}$_\textsc{z}$ of \textbf{\ref{def:TMplus}} rather than a further axiom, machine-checked in the Lean 4 \leanrepo{} for the full bimodal system rather than for \textbf{BX}$_\textsc{z}$ alone, and so is not included among the axioms of \textbf{BX}$_\textsc{z}$.
+  Since \textbf{\aref{UZ}} fails over every \textsc{Discrete} temporal order that is not Archimedean by \textbf{\ref{prop:archimedean}}, and a \textsc{Discrete} temporal order is Archimedean just in case it is isomorphic to $\Z$, the \textsc{Discrete} temporal orders over whose task frames \textbf{TM}$_\textsc{z}$ is sound are exactly those of $\Z$-time.
 \end{Ddef}
 ```
-sha256: `96e4b25e71c457bd3618f3a818b1852176b345d2c86199fbe16b6c46076ba334`
+sha256: `c38466b21121724f71d039014c525e5e4f8c397025f37746fcfb7587c85a5581`
 
-### `def:BX-d` — the dense Burgess–Xu tense logic BX_d (RENAMED from `def:TMplus-d`)
+### `def:BX-d` — the dense Burgess–Xu tense logic BX_d (RENAMED from `def:TMplus-d`), and DN marked derived
 
 **Renamed** from `def:TMplus-d`. The axioms `DN` and `NN` are no longer displayed here; the
 definition cites `\S`Extensions for them.
 
 ```latex
 \begin{Ddef} \label{def:BX-d}
-  The \textit{Dense Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{d}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{DN}} and \textbf{\aref{NN}} presented in \textbf{\S\ref{sub:Extension}}.
+  The \textit{Dense Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{d}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{NN}} presented in \textbf{\S\ref{sub:Extension}}.
+  The density schema \textbf{\aref{DN}} of \textbf{\S\ref{sub:Extension}} is a \textit{derived theorem} of \textbf{BX}$_\textsc{d}$ rather than a further axiom, using only \textbf{\aref{NN}} and the axioms of \textbf{BX} as machine-checked in the Lean 4 \leanrepo{}, and so is not included among the axioms of \textbf{BX}$_\textsc{d}$.
 \end{Ddef}
 ```
-sha256: `2423da4688632bfea7d0d3613a4bca4953c6197e6120dd43f79cbd5e44e294d0`
+sha256: `44a74c839c0c74141fb1565120cb91193973fc33a69c35d5070bcbc67379e40c`
 
 ### `def:BX-r` — the dense-and-complete Burgess–Xu tense logic BX_r (RENAMED from `def:TMplus-c`), CO derived
 
@@ -1808,16 +1957,17 @@ completeness) exactly, and the axiom basis is settled by this entry's own text (
 **BX**$_d$ by `PU` and `SEP`). See `cor:tm-completeness` below (~line 1713) for the corollary text
 this entry's completeness axiom feeds.
 
-### `def:TMplus` — TM+ base logic for BL+, and the four-part conservativity footnote
+### `def:TMplus` — the base logic TM of tense and modality, its two bimodal interaction axioms MF and NB, and the uniformity schemata it marks derived
 
 ```latex
 \begin{Ddef} \label{def:TMplus}
-  The \textit{Base Logic of Tense and Modality} \textbf{TM} for $\BL$ extends \textbf{S5} and the base logic \textbf{BX} to include all instances of the \textit{bimodal interaction} axiom \textbf{\aref{MF}} presented in \textbf{\S\ref{sub:Logic}}.
+  The \textit{Base Logic of Tense and Modality} \textbf{TM} for $\BL$ extends \textbf{S5} and the base logic \textbf{BX} to include all instances of the \textit{bimodal interaction} axioms \textbf{\aref{MF}} and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.
+  The uniformity schemata \textbf{\aref{NP}}, \textbf{\aref{NF}}, and \textbf{\aref{NA}} of \textbf{\S\ref{sub:Logic}} are \textit{derived theorems} of \textbf{TM} rather than of \textbf{BX}, their derivations using \textbf{\aref{NB}} together with \textbf{\aref{MF}} and \textbf{\aref{MT}}, as derived in the Lean 4 \leanrepo{}.
   The discrete \textbf{TM}$_\textsc{z}$, dense \textbf{TM}$_\textsc{d}$, and dense and complete \textbf{TM}$_\textsc{r}$ extensions of \textbf{TM} include the additional axioms that distinguish \textbf{BX}$_\textsc{z}$, \textbf{BX}$_\textsc{d}$, and \textbf{BX}$_\textsc{r}$, respectively.
   The derivation relation $\vdash_\Lambda$ for the system $\Lambda$ is the smallest relation closed under the axioms and rules for $\Lambda$, omitting subscripts when ambiguity does not threaten.
 \end{Ddef}
 ```
-sha256: `d71622fc325a3d40ae4a7823c0d5d17f73e4a18bcf2e1c4be59e6693db35e142`
+sha256: `139a9a56bdf9b22c2544c6c86ec1eeb178e4908810578556ed6c057de8ef5e42`
 
 ### `thm:M5-valid` — the M5 axiom is valid — **DANGLING as of the 2026-09-17 re-pin (removed from manifest)**
 
@@ -1842,7 +1992,7 @@ sha256: `bce3cc3be256f7b4c10e34a397e4b3b14abe4e8ed6728e8e91768e9a2ad8b2af`
 ```
 sha256: `05ed3f68f6491d2be65d46053a9d56df7ca606daf11837b4da4a1ffca68a68ab`
 
-### `app:discrete` — the Discrete correspondence theorem (DF)
+### `app:discrete` — the Discrete correspondence theorem (DF), and the static-frame footnote's DN-does-not-prove-NN soundness argument
 
 ```latex
 \begin{Tthm} \label{app:discrete}
@@ -1850,11 +2000,13 @@ sha256: `05ed3f68f6491d2be65d46053a9d56df7ca606daf11837b4da4a1ffca68a68ab`
 	  \footnote{
 	    The theorems of this kind cannot be sharpened to single task frames.
 	    The \textit{static} task frame over $\D$, in which $w \Rightarrow_x u$ just in case $w = u$, satisfies every clause of \textbf{\ref{def:frame}}--- each cone and each nonempty fiber and segment being a singleton--- yet its possible worlds are constant, so that every sentence of $\BL$ has the same truth value at every time along a possible world and \textbf{\aref{DF}}, \textbf{\aref{DN}}, and \textbf{\aref{CO}} are all valid over it whatever $\D$ may be.
+	    Over $\Z$ it also validates $\Next\top$ at every time, and so by soundness extending \textbf{TM} by \textbf{\aref{DN}} alone does not prove \textbf{\aref{NN}}.
 	    Since the tense operators see $\D$ only through the possible worlds that $\Rightarrow$ admits, correspondence holds over the fibre $\Tcls{\D}$ rather than frame by frame, as the Lean 4 repository for this paper records.
+	    \label{fn:static-frame}
 	  }
 \end{Tthm}
 ```
-sha256: `465b089fd41ed5b599cf080621c0181bfcce5ef8374d44f9f147709d23409864`
+sha256: `240826f45dae75872ef1219aaac79903d775f424ac46077feac45febfd7bcc54`
 
 ### `app:dense` — the Dense correspondence theorem (DN)
 
@@ -2040,7 +2192,7 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
 			\aitem{Imp} $\vdash (\varphi \equiv \psi) \rightarrow (\varphi \rightarrow \psi)$.
 			\aitem[LL$^{-}$]{LL} $\vdash (\alpha \equiv \beta) \rightarrow (\chi \rightarrow \chi_{(\beta/\alpha)})$.
         % NEW CHANGE: the proviso is stated once for every operator term, since the operator terms now belong to BL^equiv. It is needed already here, since unrestricted LL would make Box transparent before transparency is posited for the objective modalities alone.
-        where no replaced occurrence of $\alpha$ lies within the argument of an operator term.
+        where no replaced occurrence of $\alpha$ lies within the argument of an operator.
 		\end{multicols}
 	\end{enumerate}
 	\vspace{-.175in}
@@ -2050,7 +2202,7 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
   The theory of propositional identity need not be Boolean, accommodating theories in which the Boolean identities do not hold.\footnote{I defend a hyperintensional theory of propositional identity in Brast-McKie \cite{Brast-McKie2021} where transparency is maintained for the entirety of the language rather than posited below for the objective modalities alone in \textbf{\aref{O-Tran}}.}
 \end{Ddef}
 ```
-sha256: `b52579e8e67ad0f540e5eef2a313e28567352b5e68dc0cbd28552a33d50744be`
+sha256: `18edbbea04c77945e54ef07999f7724bf3a8b38c832a91274d82580048395575`
 
 ### `def:strongest` — strongest objective modal operator Str^O_L(Q), and the meet of the objective modalities Str'^O_L(Q) — **DANGLING as of the 2026-10-15 BX/TM demotion wave (removed from manifest)**
 
@@ -2251,13 +2403,13 @@ def:frame-validity|env|-|-|4fdc41ce401c80032aef112060e0b9ce932b82c777759272bba79
 def:logical-consequence|env|-|-|3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486
 CO|aitem|-|-|707368059ff1f7cc53c8b4ca9c591781ee427263797c8d36d3fb85e8abe8e955
 def:S5|env|-|-|dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257
-def:BX|env|-|-|8fdba7ab64b74d245bd47bfa14e6baac17c9d2ce67fdea5371a5fa9fc624a903
-def:BX-z|env|-|-|96e4b25e71c457bd3618f3a818b1852176b345d2c86199fbe16b6c46076ba334
-def:BX-d|env|-|-|2423da4688632bfea7d0d3613a4bca4953c6197e6120dd43f79cbd5e44e294d0
+def:BX|env|-|-|64cc5cc90860bd5c3855701a4de57c38a10ffb6d0c59025224c82869f8454ec2
+def:BX-z|env|-|-|c38466b21121724f71d039014c525e5e4f8c397025f37746fcfb7587c85a5581
+def:BX-d|env|-|-|44a74c839c0c74141fb1565120cb91193973fc33a69c35d5070bcbc67379e40c
 def:BX-r|env|-|-|650cb790801150df6a3d04a1356bb8c346b4e24694f381d8c5fbc7458da8f038
-def:TMplus|env|-|-|d71622fc325a3d40ae4a7823c0d5d17f73e4a18bcf2e1c4be59e6693db35e142
+def:TMplus|env|-|-|139a9a56bdf9b22c2544c6c86ec1eeb178e4908810578556ed6c057de8ef5e42
 thm:TM-soundness|env|-|-|05ed3f68f6491d2be65d46053a9d56df7ca606daf11837b4da4a1ffca68a68ab
-app:discrete|env|-|-|465b089fd41ed5b599cf080621c0181bfcce5ef8374d44f9f147709d23409864
+app:discrete|env|-|-|240826f45dae75872ef1219aaac79903d775f424ac46077feac45febfd7bcc54
 app:dense|env|-|-|8b6e84aed02d8ea8313a71fb3dbc71250a009c025e295c38fad1dbe9f257f24d
 app:complete|env|-|-|d62b8c533b7ee02f43de493e98b4111f048215f14353ef588c03c9bd530549ce
 def:frame-properties|env|-|-|a8948afad219b9d3f52cd328bfeefe04f6ccde06bb4883cfc6dfdee67a7f70f9
@@ -2265,7 +2417,7 @@ def:deterministic|env|-|-|9a347781ddbb850ddcc5500f4a614309fd47fae7e20f63eaef7335
 def:BLstar-semantics|env|-|-|b4d3239cc96ddd1e90965901aca8c378f6ec5ca52f568ea6b2ef59d9c3ba6c95
 cor:saturation-finite|env|-|-|98fac4cfb09991ec3046ab843e1d3fa5e089e2e52d50dbe7130bacdf8528353a
 cor:tm-completeness|env|-|-|f8f5b41f998e59322052accce9ac219dfbe9fe7931329bebbdb5b1cc855f0bce
-def:id|env|-|-|b52579e8e67ad0f540e5eef2a313e28567352b5e68dc0cbd28552a33d50744be
+def:id|env|-|-|18edbbea04c77945e54ef07999f7724bf3a8b38c832a91274d82580048395575
 thm:exist|env|-|-|1a70ff465a8077e896592ef0cab36a4476c89864fa05920120d01e928938e9cd
 lem:uniq|env|-|-|3fe647f782b71327a8cedfae5e80a83e143453fef4b77ef96fd465369b4866b9
 thm:s5|env|-|-|be08911a0adace5f87b4870bf80a22ad92cb5e16303628887d8087a529ed57f8

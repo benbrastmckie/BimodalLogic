@@ -289,20 +289,20 @@ block and so detects a mis-placed or mis-transcribed fence directly, plus
 
 ---
 
-### Phase 3: Re-pin the five BX/TM anchors, author the drift-correction entry, re-take the sentinels [NOT STARTED]
+### Phase 3: Re-pin the five BX/TM anchors, author the drift-correction entry, re-take the sentinels [COMPLETED]
 
 **Goal**: Absorb the substantive half of the wave and turn `check-paper-definitions.sh` green, with
 the record file's own dated convention carrying the reason: the paper's primitive set and the
 tree's `inductive Axiom` now coincide.
 
 **Tasks**:
-- [ ] Re-read the file immediately before editing.
-- [ ] For each of `def:BX` (~1663), `def:BX-z` (~1751), `def:BX-d` (~1773), `def:TMplus` (~1811),
+- [x] Re-read the file immediately before editing.
+- [x] For each of `def:BX` (~1663), `def:BX-z` (~1751), `def:BX-d` (~1773), `def:TMplus` (~1811),
       `app:discrete` (~1845): assert the OLD fence re-hashes to its recorded OLD sha256, then
       replace fence, `sha256:` line and MANIFEST row from Phase 1's `--resolve` output.
-- [ ] Update `def:TMplus`'s prose-entry heading if its "four-part conservativity footnote"
+- [x] Update `def:TMplus`'s prose-entry heading if its "four-part conservativity footnote"
       description no longer matches the live block.
-- [ ] Author `### Drift correction (YYYY-MM-DD): the BX/TM demotion wave` (date = the UTC date of
+- [x] Author `### Drift correction (YYYY-MM-DD): the BX/TM demotion wave` (date = the UTC date of
       execution) immediately below the sentinel comments, in the shape of
       `### Drift correction (2026-10-14): the 27-anchor wave`:
       - lead with the coincidence: 16 named paper primitives (MK/MT/M5, TS/UI/UC/UF/UG/US/CN,
@@ -315,7 +315,11 @@ tree's `inductive Axiom` now coincide.
         and MT), Z1 (to a derived theorem of TM_z) and DN (to a derived theorem of BX_d);
       - record that `lem:derived-schemata` no longer exists in the paper ("removed as unreadable")
         and has zero in-tree citations, so no dangling anchor is retired and the task description's
-        reference to it is stale;
+        reference to it is stale; *(both halves re-verified at implementation time rather than
+        carried from the plan: the paper's only remaining occurrence is an authorial `% NEW CHANGE`
+        comment recording the removal, and the four `derived-schemata` hits in
+        `docs/reference/axiom-reference.md` are intra-document anchor links to that file's own
+        section, not citations of the paper label.)*
       - name `def:id`, `def:strongest`, `thm:exist`, `lem:uniq` explicitly as the four
         unformalized objective-modality anchors absorbed in this wave on the user's recorded
         authorization, with zero citing files under `FormalSystem/` or `docs/` as the measured
@@ -327,21 +331,25 @@ tree's `inductive Axiom` now coincide.
         rowed in this task, and that it is deferred as a separate question;
       - identify the absorbed revision by paper sha256, line count, paper-repo HEAD and
         clean/dirty posture, and note that the paper moved during the run if it did.
-- [ ] Rewrite the obsolete `**Amended by**` note (~lines 401-409): its "the tree's primitive set is
+- [x] Rewrite the obsolete `**Amended by**` note (~lines 401-409): its "the tree's primitive set is
       now a **proper subset** of `def:BX`/`def:BX-z`/`def:BX-d`'s lists" claim and its closing
       "The paper's `def:BX` text and `typst/FormalFoundations.typ` are not edited: the divergence
       is recorded here" are both superseded. Record the divergence as **resolved** by this wave and
       point forward to the new entry. Keep the TL-derivation record and the UE/UG footnote erratum,
       which still stand.
-- [ ] Re-run `bash scripts/check-paper-definitions.sh` with the OLD sentinels **still in place** —
+- [x] Re-run `bash scripts/check-paper-definitions.sh` with the OLD sentinels **still in place** —
       this forces full anchor validation; expect case (b) (checksum moved, all recorded definitions
       unchanged).
-- [ ] Only then re-pin the three sentinels (`PINNED_COMMIT`, `FILE_CHECKSUM`, `LINE_COUNT`, ~lines
+- [x] Only then re-pin the three sentinels (`PINNED_COMMIT`, `FILE_CHECKSUM`, `LINE_COUNT`, ~lines
       64-68) and add the matching summary-table rows above them (~59-62), following the existing
       convention of marking the superseded checksum row and adding a new "current authoritative
       pin" row.
-- [ ] Re-run the gate; expect the quiet case-(a) pass, exit 0.
-- [ ] Commit with an explicit single-file pathspec.
+- [x] Re-run the gate; expect the quiet case-(a) pass, exit 0. *(achieved: silent exit 0 against
+      paper sha256 `ec838c9e…`, 4071 lines, paper HEAD `bc010a06`, file dirty. The paper moved
+      three further times during this dispatch; `def:id` was re-hashed three times inside this one
+      correction (`f56301e5` → `b52579e8` → `18edbbea`), following the 27-anchor wave's in-flight
+      `def:id` precedent rather than opening a second entry.)*
+- [x] Commit with an explicit single-file pathspec.
 
 **Timing**: 1.5 hours
 
@@ -350,6 +358,15 @@ tree's `inductive Axiom` now coincide.
 **Verification Tier**: local
 
 **Commit Mode**: per-substep
+
+**Executed scope**: the five anchors came in at the hypothesized hashes exactly (`64cc5cc9`,
+`c38466b2`, `44a74c83`, `139a9a56`, `240826f4`) — the third independent measurement to agree. Two
+findings refined the entry's content beyond what the plan anticipated: `NP`/`NF`/`NA` have lost
+their `\aitem` status entirely and are now `\alabel`-tagged schemata inside a prose paragraph that
+states them as theorems of TM, not merely demoted inside a definition; and `TC`/`TL`/`Z1`/`DN` each
+now carry a `\leanfoot{…}` citation pointing at this tree's own declaration. Five prose-entry
+headings were updated, not the one the plan named, since `def:BX`, `def:BX-z`, `def:BX-d` and
+`app:discrete` all described pre-revision content too.
 
 **Scope Hypothesis**: five anchors (one prose entry and one MANIFEST row each), one new
 drift-correction section, one rewritten amendment note, three sentinel comment lines and two to
