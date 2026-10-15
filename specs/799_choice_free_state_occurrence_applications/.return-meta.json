@@ -1,26 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 5,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/799_choice_free_state_occurrence_applications/reports/01_choice-free-state-occurrence.md",
-      "summary": "Measured axiom-provenance study of the state-set corollaries: translationFrame is itself choice-borne through TaskFrame.limit_of_shift, so an absolute pin there is impossible without an upstream change; a verified choice-free route exists at the ShiftSet avatar of the same translation flow (selfShift D, equal to F1 at R by rfl), and the DeterminismUndefinable consumers are already all on the choice-free route."
+      "type": "plan",
+      "path": "specs/799_choice_free_state_occurrence_applications/plans/01_choice-free-state-occurrence.md",
+      "summary": "Five-phase plan (4.75h) delivering the choice-free state-set route as one new Independence/ leaf module, with absolute pins at the ShiftSet avatar and relative pins at translationFrame."
     }
   ],
-  "user_decision": {
-    "question": "TaskFrame.limit_of_shift admits a verified choice-free proof, which would make translationFrame itself (and every result over it) choice-free -- but shrinking an axiom set is still a divergence for check-module-invariants.sh's 202-row exact-string baseline, whose C2 failure text calls divergence a HARD STOP rather than grounds for a new baseline, and it would also falsify MainResults.lean's uniform axiom-contract prose. Should this task take that change?",
-    "options": [
-      "Leave TaskFrame.limit_of_shift alone -- deliver the absolute choice-free pin at the ShiftSet avatar (selfShift / translationFlow) and a relative pin at translationFrame, touching no baseline",
-      "Re-prove TaskFrame.limit_of_shift choice-free in this task -- gains an absolute pin at translationFrame itself, and requires re-pinning however many of the 202 baselined axiom sets shrink plus amending MainResults.lean's axiom contract"
-    ],
-    "recommended": "Leave TaskFrame.limit_of_shift alone -- deliver the absolute choice-free pin at the ShiftSet avatar (selfShift / translationFlow) and a relative pin at translationFrame, touching no baseline",
-    "blocking": false
-  },
+  "next_steps": "Run /implement 799 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "Choice-hygiene work over this repo's TemporalOrder bundle turns on three measured asymmetries, each discovered the slow way. (1) #print axioms traverses a declaration's TYPE as well as its value, so a choice-borne frame constant makes every theorem ABOUT it choice-borne however the proof is built -- only an absolute pin at a @[reducible] constructor avatar escapes; a pin at the constant can only ever be relative. (2) At a TemporalOrder, add_lt_add_right is [propext] while add_lt_add_left and sub_pos are [propext, Classical.choice, Quot.sound]; abs_eq_zero and exists_ne are likewise choice-borne, replaceable by by_contra+abs_pos.mpr and exists_pair_ne+lt_trichotomy. Write witnesses additively (-(tau.state 0) + v) and never reach for sub_pos. (3) ShiftSet.fibre_isRegular takes the Limit obligation from the structure's own sep field and never calls TaskFrame.limit_of_shift, which is the single Classical.choice source in the frame-construction neighbourhood -- routing a frame through ShiftSet rather than FrameOver.ofReflectiveRegular is what makes a whole chain choice-free. Separately: shrinking a pinned axiom set is a GOOD change that still trips check-module-invariants.sh C2/C14's exact-string baseline (a HARD STOP, not a new baseline), so re-baselining is a user decision, not a task detail.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/799_choice_free_state_occurrence_applications/plans/01_choice-free-state-occurrence.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["print-axioms", "classical-choice", "temporal-order", "shiftset", "axiom-baseline", "choice-free"]
+    }
+  ],
   "metadata": {
-    "session_id": "sess_1792056489_e27cc7_799",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792077807_2be444_799",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4.75,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
+  },
+  "dispatch_seq": 9
 }
