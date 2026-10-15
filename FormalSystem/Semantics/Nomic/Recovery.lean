@@ -42,6 +42,9 @@ done here.
 - `NomicFrame.taskRel_imp_of_lawHist_eq` — the one-directional helper `lem:nomic-recovery`'s
   forward direction applies twice, once in each orientation
 - `NomicFrame.lawHist_eq_iff_taskRel_eq` — `lem:nomic-recovery` itself
+- `NomicFrame.static_iff_taskRel_eq` — the primitive-level form of *Static*, clause (1) of the
+  cut `thm:nomic-primitive` (`appendix_cut_material.tex`, header "Primitive-level
+  characterization of the nomic frames")
 
 ## Choice dependence, recorded honestly
 
@@ -163,6 +166,47 @@ theorem lawHist_eq_iff_taskRel_eq (F : NomicFrame D) [F.IsRegular] (w u : F.Worl
       fun hpq => F.taskRel_imp_of_lawHist_eq h.symm hpq⟩
   · intro h
     simp only [lawHist, h]
+
+/--
+The **primitive-level form of *Static***: a nomic frame is *Static* exactly when any two states
+linked by any member of the relativized family determine the same relativized relation.
+
+This is clause (1) of `thm:nomic-primitive`, which is **cut material**, not a live paper anchor:
+it lives in `appendix_cut_material.tex` under the header "Primitive-level characterization of the
+nomic frames". It is cited by file and header deliberately, so that the citation is not asked to
+resolve against the record of paper definitions, which does not track that file.
+
+The equivalence is `lem:nomic-recovery` applied in both directions. For `⇒`, a task fact
+`w ⇒ᵛ_d u` at a nonzero `d` is realized by a possible world of `F^v` through `w` at `0` and `u`
+at `d` (`PartialHistory.exists_worldHistory_two_point`); *Static* equates the law-histories of the
+two states it occupies, and `lawHist_eq_iff_taskRel_eq` converts that to the equation of
+relations. At `d = 0` the two states coincide by `lem:nullity` and there is nothing to prove. For
+`⇐`, a law-history at `v` relates the states it occupies at any two times by `⇒ᵛ`, so the
+hypothesis applies directly and `lawHist_eq_iff_taskRel_eq` converts back.
+
+**Choice dependence, recorded honestly.** A theorem of ZFC through `thm:extension`, inherited from
+both lemmas above.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+-/
+theorem static_iff_taskRel_eq (F : NomicFrame D) [F.IsRegular] :
+    F.Static ↔ ∀ v w u : F.World, ∀ d : ↑D, F.TaskRel v w d u → F.TaskRel w = F.TaskRel u := by
+  constructor
+  · intro hst v w u d hwu
+    by_cases hd : (0 : ↑D) = d
+    · subst hd
+      exact congrArg F.TaskRel (((F.at v).nullity_identity w u).mp hwu)
+    · obtain ⟨σ, h0, hdu⟩ :=
+        PartialHistory.exists_worldHistory_two_point (F.at v).toTaskFrame w u hd hwu
+      have hmem : σ.state ∈ F.HF :=
+        Set.mem_iUnion.mpr ⟨v, (F.mem_lawHist_iff v σ.state).mpr ⟨σ, rfl⟩⟩
+      have e0 : F.lawHist (σ.state 0) = F.lawHist w := congrArg F.lawHist h0
+      have ed : F.lawHist (σ.state d) = F.lawHist u := congrArg F.lawHist hdu
+      exact (F.lawHist_eq_iff_taskRel_eq w u).mp
+        (e0.symm.trans ((hst σ.state hmem 0 d).trans ed))
+  · intro h τ hτ x y
+    obtain ⟨v, hv⟩ := Set.mem_iUnion.mp hτ
+    exact (F.lawHist_eq_iff_taskRel_eq (τ x) (τ y)).mpr (h v (τ x) (τ y) (y - x) (hv x y))
 
 end NomicFrame
 

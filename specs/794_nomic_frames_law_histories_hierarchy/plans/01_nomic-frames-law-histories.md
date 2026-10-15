@@ -460,7 +460,7 @@ is the cheapest check that covers it.
 
 ---
 
-### Phase 6: CONDITIONAL -- `thm:nomic-primitive` clause (1) [NOT STARTED]
+### Phase 6: CONDITIONAL -- `thm:nomic-primitive` clause (1) [COMPLETED]
 
 **Goal**: the primitive-level form of *Static* — a two-point equation on the relativized relation
 — if and only if Phases 1-5 close with time in hand.
@@ -472,15 +472,15 @@ the clause as not attempted, the reason, and the evidence (the blocking phase's 
 clause is cut material with no consumer in the tree; nothing downstream waits on it.
 
 **Tasks**:
-- [ ] Append `static_iff_taskRel_eq` to `FormalSystem/Semantics/Nomic/Recovery.lean`:
+- [x] Append `static_iff_taskRel_eq` to `FormalSystem/Semantics/Nomic/Recovery.lean`:
       `F.Static ↔ ∀ v w u d, F.TaskRel v w d u → F.TaskRel w = F.TaskRel u`. `⇒` is the two-point
       history (`exists_worldHistory_two_point`) plus `lawHist_eq_iff_taskRel_eq`; `⇐` is the
       definition of `lawHist` plus the same biconditional
-- [ ] Cite the clause as **cut material by file and header** —
+- [x] Cite the clause as **cut material by file and header** —
       `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex`, header
       "Primitive-level characterization of the nomic frames" — never as a paper anchor, so C15 is
       not asked to resolve `thm:nomic-primitive` against a record the file does not track
-- [ ] Do not attempt clause (2): its three-point partial history
+- [x] Do not attempt clause (2): its three-point partial history
       (`{⟨0,w⟩,⟨e,p⟩,⟨e+d,q⟩}`) needs a well-definedness argument with no precedent in the tree
 
 **Timing**: 1 hour
