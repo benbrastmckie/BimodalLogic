@@ -408,14 +408,14 @@ build that confirms the `/-! -/` block still parses.
 
 ---
 
-### Phase 5: Inventory refresh, axiom confirmation, and the full gate sweep [IN PROGRESS]
+### Phase 5: Inventory refresh, axiom confirmation, and the full gate sweep [COMPLETED]
 
 **Goal**: Every generated inventory block the two `.lean` edits make stale is current, the six
 axiom profiles are confirmed against the implementer's own files rather than a probe, and the
 whole repository gate set is green.
 
 **Tasks**:
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate **every**
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate **every**
       registered `BEGIN GENERATED` block, not only the Independence one. Three ancestor blocks
       cover these edits: `FormalSystem/Metalogic/Independence/README.md` (per-file line counts),
       `FormalSystem/Metalogic/README.md` (the `Independence/` subdir files/lines totals row), and
@@ -423,32 +423,36 @@ whole repository gate set is green.
       `rows=loose` over the `FormalSystem/` top level, so it may not change — let the generator
       decide, and do not hand-edit a count in any of the four. Never call
       `scripts/readme-inventory.sh` (a deprecated shim that exits 2)
-- [ ] Hand-edit only the trailing description column of the `OrderTransfer.lean` and
+- [x] Hand-edit only the trailing description column of the `OrderTransfer.lean` and
       `StateSetTruth.lean` rows in `FormalSystem/Metalogic/Independence/README.md` to name the
       new declarations, and extend the `plusTruthAt_iff_mem_satSet` bullet in that README's
       `## Key Results` section to name the three corollaries and the discharge theorem
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm every block
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm every block
       is current
-- [ ] `bash scripts/typst-sync-check.sh` to confirm `typst/generated/status.typ` is **not** stale.
+- [x] `bash scripts/typst-sync-check.sh` to confirm `typst/generated/status.typ` is **not** stale.
       This task adds no axiom, no rule, no `sorry` and no version-pin change, so the regenerated
       counts are expected byte-identical; if the check disagrees, regenerate with
       `bash scripts/typst-status-counts.sh` and say so in the summary rather than hand-patching
-- [ ] Re-confirm all six axiom profiles with `lean_verify` against the implemented files: the
+      *(deviation: altered — the byte-identical expectation was wrong. The gate keys on the
+      whole-tree LINE count, which every `.lean` addition moves, so the pre-commit gate blocked at
+      Phase 2 and `status.typ` was regenerated with `typst-sync-check.sh --fix` and staged with
+      each of the three `.lean`-touching commits. `--counts-only` exits 0 at Phase 5.)*
+- [x] Re-confirm all six axiom profiles with `lean_verify` against the implemented files: the
       four new declarations at `[propext, Classical.choice, Quot.sound]`,
       `plusTruthAt_iff_mem_satSet` at `[propext]`, `determined_of_orderFlow` at
       `[propext, Quot.sound]`
-- [ ] Before touching `README.md` or `FormalSystem/README.md`, re-read each and check
+- [x] Before touching `README.md` or `FormalSystem/README.md`, re-read each and check
       `git status --short`: both are in concurrent sibling task 789's declared `file_scope`. If
       either carries a foreign uncommitted modification, STOP and report rather than regenerate
       over it — the generator rewrites whole blocks and would silently absorb a sibling's
       in-flight hunk
-- [ ] Stage by explicit file list only — never a directory or glob `git add` — and review
+- [x] Stage by explicit file list only — never a directory or glob `git add` — and review
       `git diff --staged` to confirm every hunk in a shared generated file is a count this task's
       own `.lean` additions moved
-- [ ] Run the full gate set (below). If a failure lands in a file outside this task's declared
+- [x] Run the full gate set (below). If a failure lands in a file outside this task's declared
       scope, check `git status --short` and `git log` for a sibling's in-flight edit before
       treating it as a 792 regression, and report rather than repair
-- [ ] Record the issue-log entries for this phase, and write the implementation summary
+- [x] Record the issue-log entries for this phase, and write the implementation summary
 
 **Timing**: 1.0 hours
 
@@ -472,7 +476,9 @@ whole repository gate set is green.
   `result` subcommand
 - `bash scripts/check-module-invariants.sh --no-build` exits 0 with zero `FAIL` lines
 - `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0
-- `bash scripts/check-paper-definitions.sh` exits 0
+- `bash scripts/check-paper-definitions.sh` exits 0 *(deviation: altered — exits 1 on a
+  pre-existing drift wave of 10 recorded MANIFEST anchors, none of them this task's five; this
+  task changed zero `sha256` lines, so it neither caused nor can fix the drift)*
 - `bash scripts/check-phantom-citations.sh` exits 0
 - `bash scripts/readme-lint.sh` exits 0
 - `python3 scripts/export-lean-citations.py --check` exits 0
@@ -569,26 +575,27 @@ end FormalSystem.Metalogic.Independence
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits 0 for the
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits 0 for the
       whole project (the dispatch's headline constraint)
-- [ ] Zero `sorry` and zero new `axiom` in the diff
-- [ ] `bash scripts/check-module-invariants.sh --no-build` exits 0 with zero `FAIL` lines; C15,
+- [x] Zero `sorry` and zero new `axiom` in the diff
+- [x] `bash scripts/check-module-invariants.sh --no-build` exits 0 with zero `FAIL` lines; C15,
       C34a, C34b, C9, C20, C33 and C35 all PASS
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0
-- [ ] `bash scripts/check-paper-definitions.sh` exits 0, with no new drifted anchor and no new
-      `sha256:` line in the record
-- [ ] `bash scripts/check-phantom-citations.sh` exits 0
-- [ ] `bash scripts/readme-lint.sh` exits 0
-- [ ] `bash scripts/typst-sync-check.sh` exits 0
-- [ ] `python3 scripts/export-lean-citations.py --check` exits 0
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0, un-narrowed
-- [ ] `lean_verify` reports `[propext, Classical.choice, Quot.sound]` for all four new
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0
+- [x] `bash scripts/check-paper-definitions.sh` exits 0, with no new drifted anchor and no new
+      `sha256:` line in the record *(deviation: altered — no new drifted anchor and no new
+      `sha256:` line, both confirmed; exit is 1 on 10 inherited drifted anchors)*
+- [x] `bash scripts/check-phantom-citations.sh` exits 0
+- [x] `bash scripts/readme-lint.sh` exits 0
+- [x] `bash scripts/typst-sync-check.sh` exits 0
+- [x] `python3 scripts/export-lean-citations.py --check` exits 0
+- [x] `bash .claude/scripts/verify-deploy.sh` exits 0, un-narrowed
+- [x] `lean_verify` reports `[propext, Classical.choice, Quot.sound]` for all four new
       declarations, `[propext]` for `plusTruthAt_iff_mem_satSet`, and `[propext, Quot.sound]` for
       `determined_of_orderFlow`
-- [ ] `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` is byte-identical to HEAD
-- [ ] No docstring under `FormalSystem/` cites a task number or a `file.lean:NNN` location added
+- [x] `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` is byte-identical to HEAD
+- [x] No docstring under `FormalSystem/` cites a task number or a `file.lean:NNN` location added
       by this task
-- [ ] No new docstring line carries any of `Compositionality`, `Compositional`, `Seriality`,
+- [x] No new docstring line carries any of `Compositionality`, `Compositional`, `Seriality`,
       `Serial`, `Limit`, `Saturation`, `Saturated`
 
 ## Artifacts & Outputs
