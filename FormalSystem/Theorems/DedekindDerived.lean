@@ -323,7 +323,9 @@ private noncomputable def coEventBot {fc : FrameClass} (φ : Formula) :
 
 **Source of the formula**: JPL paper anchor `CO`, verbatim:
 "`\aitem{CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow
-(\Past\varphi \rightarrow \Future\varphi)$.`"
+(\Past\varphi \rightarrow \Future\varphi)$.\leanfoot{DedekindDerived.coDerived}`"
+The trailing `\leanfoot` is the paper's own citation of `coDerived` below, appended in the
+2026-10-15 wave; the formula itself did not move.
 In the paper's current text CO is a *derived* theorem of the dense-and-complete extension `BX_r`,
 which is `BX_d` extended by PU and SEP — the same arrangement as this tree's, and the reason this
 module exists. **Retired anchor**: this formula used to be quoted from `TMP-CO`, the `BL^+`

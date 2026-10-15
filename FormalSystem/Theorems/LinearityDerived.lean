@@ -11,8 +11,9 @@ import FormalSystem.Theorems.DeductionTheorem
 /-!
 # Linearity and Density as Derived Schemata
 
-Two schemata the paper lists under `def:BX` and `def:BX-d` are theorems of the reduced
-primitive system:
+Two schemata are theorems of the primitive system rather than constructors of it, and the paper
+marks both derived in its own text: TL inside `def:BX` (a derived theorem of BX) and DN inside
+`def:BX-d` (a derived theorem of BX_d, from NN alone with the axioms of BX):
 
 * `tempLinearity` — TL, `Fφ ∧ Fψ → F(Fφ ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ Fψ))`, in the paper's
   disjunct order, right-associated. Derived from CN (`Axiom.linear_until`) with UF

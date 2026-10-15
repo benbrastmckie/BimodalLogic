@@ -20,8 +20,9 @@ For implementation status by module, see [implementation-status.md](implementati
   - `FormalSystem/ProofSystem/Axioms.lean` - 20 axiom constructors in four frame-class layers
   - `FormalSystem/ProofSystem/DerivedAxioms.lean`, `FormalSystem/Theorems/ConnectDerived.lean`,
     `FormalSystem/Theorems/LinearityDerived.lean`, `FormalSystem/Metalogic/CompletenessDerived.lean` -
-    the derived schemata: the TR mirrors and the nine paper schemata TC, UE, UT, TL, NP, NF, NA,
-    DN, Z1 (25 names; combined with the 20 primitives, 37/40/39/42 by class — see
+    the derived schemata: the TR mirrors and the nine derived schemata TC, TL, NP, NF, NA, DN,
+    Z1 — each marked derived by the paper's own definitions — together with UE and UT, which are
+    not paper schemata at all (25 names; combined with the 20 primitives, 37/40/39/42 by class — see
     `docs/reference/axiom-reference.md#two-axiom-counts`)
   - `FormalSystem/ProofSystem/Derivation.lean` - `DerivationTree`, 7 inference rules
   - `FormalSystem/Metalogic/Soundness.lean` - Soundness theorem (proved)

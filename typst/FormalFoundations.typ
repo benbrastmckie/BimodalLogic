@@ -468,35 +468,48 @@ constrains is the points of evaluation, not the propositions.
     + *TN*: if $tack.r phi.alt$ then $tack.r #allfuture phi.alt$.
     + *TR*: if $tack.r phi.alt$ then $tack.r phi.alt_(chevron.l "S"|"U" chevron.r)$.
     + *TS*: $#somefuture top$.
-    + *TL*: $(#somefuture phi.alt and #somefuture psi) arrow.r [#somefuture (phi.alt and psi) or #somefuture (phi.alt and #somefuture psi) or #somefuture (#somefuture phi.alt and psi)]$.
     + *CN*: $[(phi.alt #until psi) and (chi #until theta)] arrow.r [(phi.alt and chi) #until (psi and theta) or (phi.alt and chi) #until (psi and chi) or (phi.alt and chi) #until (phi.alt and theta)]$.
-    + *TC*: $phi.alt arrow.r #allfuture #somepast phi.alt$.
-    + *UE*: $(phi.alt #until psi) arrow.r #somefuture psi$.
-    + *UT*: $#somefuture phi.alt arrow.r (top #until phi.alt)$.
     + *UI*: $phi.alt #until (phi.alt and (phi.alt #until psi)) arrow.r phi.alt #until psi$.
     + *UC*: $#allfuture (phi.alt arrow.r psi) arrow.r ((chi #until phi.alt) arrow.r (chi #until psi))$.
     + *UF*: $(phi.alt #until psi) arrow.r (phi.alt and (phi.alt #until psi)) #until psi$.
     + *UG*: $#allfuture (phi.alt arrow.r chi) arrow.r ((phi.alt #until psi) arrow.r (chi #until psi))$.
     + *US*: $theta and (phi.alt #until psi) arrow.r phi.alt #until (psi and (phi.alt #since theta))$.
-    + *NP*: $#Nxt top arrow.r #Prev top$.
-    + *NF*: $#Nxt top arrow.r #somefuture #Nxt top$.
-    + *NA*: $#Nxt top arrow.r #somepast #Nxt top$.
-    + *NB*: $#Nxt top arrow.r square.stroked #Nxt top$.
   ]
-  TS, TL, and CN state seriality, linearity, and connectedness respectively; TC, UE, UT, UI, UC,
-  UF, UG, and US are the primary Since/Until axioms; NP, NF, NA, and NB are the uniformity axioms,
-  holding vacuously unless the order is discrete. In every case the past/since direction is
-  derived from the future/until direction by TR, not separately postulated -- only the
-  future/until direction is stated above. NB is stated here as it belongs to BX in the paper, even
-  though $square.stroked$ is only interpreted once S5 is fused with BX below.#footnote[Seventeen named keys: two rules (TN, TR), three seriality/linearity/connectedness axioms (TS, TL, CN), eight primary Since/Until axioms (TC, UE, UT, UI, UC, UF, UG, US), and four uniformity axioms (NP, NF, NA, NB).]
+  TS and CN state seriality and linearity of temporal witnesses respectively; UI, UC, UF, UG, and
+  US are the primary Since/Until axioms. In every case the past/since direction is derived from
+  the future/until direction by TR, not separately postulated -- only the future/until direction
+  is stated above.#footnote[Nine named keys: two rules (TN, TR), seriality and linearity (TS, CN), and five primary Since/Until axioms (UI, UC, UF, UG, US).]
+
+  Two further schemata of the paper's $section$Logic are *derived theorems* of BX rather than
+  axioms of it, and the paper's own `def:BX` says so:
+  #items[
+    + *TC*: $phi.alt arrow.r #allfuture #somepast phi.alt$, from US with UC and TN.
+    + *TL*: $(#somefuture phi.alt and #somefuture psi) arrow.r [#somefuture (phi.alt and psi) or #somefuture (phi.alt and #somefuture psi) or #somefuture (#somefuture phi.alt and psi)]$, from CN with UF and UE.
+  ]
+  Two more, *UE*: $(phi.alt #until psi) arrow.r #somefuture psi$ and
+  *UT*: $#somefuture phi.alt arrow.r (top #until phi.alt)$, are theorems here with no paper key
+  at all: the paper dropped both outright. The remaining uniformity schemata NP, NF, and NA are
+  derived theorems of TM rather than of BX, and are stated with TM below, since their derivations
+  need the bimodal interaction axioms that BX does not have.
 ]
 
 #definition($op("TM")$)[
   $op("TM")$, the base logic for $#BL$, extends S5 and BX to include
-  all instances of the sole bimodal-interaction axiom:
+  all instances of the two bimodal-interaction axioms:
   #items[
     + *MF*: $square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$.
+    + *NB*: $#Nxt top arrow.r square.stroked #Nxt top$.
   ]
+  NB belongs to TM rather than to BX: $square.stroked$ is only interpreted once S5 is fused with
+  BX, and the paper's `def:TMplus` names MF and NB together as TM's bimodal interaction axioms.
+  The three uniformity schemata are *derived theorems* of TM, their derivations using NB together
+  with MF and MT:
+  #items[
+    + *NP*: $#Nxt top arrow.r #Prev top$.
+    + *NF*: $#Nxt top arrow.r #somefuture #Nxt top$.
+    + *NA*: $#Nxt top arrow.r #somepast #Nxt top$.
+  ]
+  Each holds vacuously unless the order is discrete.
 ]
 
 #definition($"BX"_z$)[

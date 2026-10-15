@@ -62,14 +62,14 @@ re-derives every hash below directly from the live paper file on every run.
 | Line count at that re-pin | 3962 |
 | 27-anchor drift correction re-pin (UTC) | 2026-10-14 (27 entries re-hashed in one correction, headlined by the `lem:nullity` strengthening from an implication to a biconditional, plus `def:id` re-hashed a second time when the paper moved again while this correction was in flight — 28 re-hashes over 27 distinct anchors. No anchor retired, none renamed, none newly pinned. See "Drift correction (2026-10-14): the 27-anchor wave" below. The three whole-file sentinels and this table's "current authoritative pin" row had diverged across the 2026-09-17 and 2026-09-28 re-pins; setting all of them to the values above resolves that. Unlike every re-pin since 2026-08-10, this one pins a **clean** file: the paper was committed between the first and second resolution of `def:id`.) |
 | Base commit at the BX/TM demotion wave (paper repo `git HEAD`; the file is **dirty** against it, and that commit is also the last to touch the file) | `bc010a06096299f605b12989461dc7ce86612b31` |
-| **File checksum, re-pinned at the BX/TM demotion wave (sha256, current authoritative pin)** | `ec838c9e8f10f75fefac46cb6244328c39611dfae33a1912cbdc56d82f2f0825` |
-| Line count at that re-pin | 4071 |
+| **File checksum, re-pinned at the BX/TM demotion wave (sha256, current authoritative pin)** | `5362b6ba32825d32e73f8adeeeade63d2f8d556cebd9ba0603a595225b970245` |
+| Line count at that re-pin | 4079 |
 | BX/TM demotion wave re-pin (UTC) | 2026-10-15 (ten entries re-hashed and `def:strongest` retired DANGLING in one correction, headlined by the coincidence of the paper's primitive axiom set with `inductive Axiom`'s 20 constructors: `UE` and `UT` were removed from the paper outright, and `TC`/`TL`/`NP`/`NF`/`NA`/`Z1`/`DN` were demoted to derived theorems inside the definitions that used to axiomatize them, with `NB` moving into `def:TMplus` alongside `MF`. See "Drift correction (2026-10-15): the BX/TM demotion wave" below. The paper moved three times during the implementation dispatch alone, and `def:id` was re-hashed three times inside this one correction; the gate's green verdict is conditional on the revision this row names, not unconditional.) |
 <!-- PAPER_PATH: ~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: ~/Philosophy/Papers/PossibleWorlds -->
 <!-- PINNED_COMMIT: bc010a06096299f605b12989461dc7ce86612b31 -->
-<!-- FILE_CHECKSUM: ec838c9e8f10f75fefac46cb6244328c39611dfae33a1912cbdc56d82f2f0825 -->
-<!-- LINE_COUNT: 4071 -->
+<!-- FILE_CHECKSUM: 5362b6ba32825d32e73f8adeeeade63d2f8d556cebd9ba0603a595225b970245 -->
+<!-- LINE_COUNT: 4079 -->
 
 ### Drift correction (2026-10-15): the BX/TM demotion wave
 
@@ -185,12 +185,13 @@ for the derivations is stale; the live sources are the four definitions above.
 
 #### The absorbed revision, and the paper's motion during the run
 
-This correction pins a **dirty** file, and the paper moved **three times during this one
-implementation dispatch** — a tenth, eleventh and twelfth revision across the research, planning
-and execution runs of this task. Every hash below was therefore re-derived at write time from
-`--resolve` and asserted against the resolver's own sha before being written, and each old block
-was asserted to re-hash to its recorded old sha before being replaced, so no placement was
-assumed.
+This correction pins a **dirty** file, and the paper was being edited *while this correction was
+being applied*: four distinct whole-file checksums were measured during the implementation
+dispatch alone, on top of the several that moved across the research and planning runs. Every
+hash below was therefore re-derived at write time from `--resolve` and asserted against the
+resolver's own sha before being written, and each old block was asserted to re-hash to its
+recorded old sha before being replaced, so no placement was assumed. The gate was re-run after
+every absorption round and the whole-file sentinels were re-taken last, after the final round.
 
 | Field | Value |
 |---|---|
@@ -199,8 +200,9 @@ assumed.
 | Paper repo `git HEAD` | `bc010a06096299f605b12989461dc7ce86612b31` (also the last commit to touch the file) |
 | Working-tree posture | **dirty** against that commit |
 
-`def:id` was re-hashed **three times** inside this single correction, for three successive
-revisions of the same block minutes apart (`f56301e5` → `b52579e8` → `18edbbea`), which is the
+`def:id` was re-hashed **five times** inside this single correction, for five successive revisions
+of the same block minutes apart (`f56301e5` → `b52579e8` → `18edbbea` → `58e1cdd6` → the hash its
+entry now carries), which is the
 same in-flight pattern the 2026-10-14 wave recorded for the same anchor. The acceptance claim
 for this wave is therefore conditional by construction: the gate is green **against the revision
 named by the sentinels above**, not unconditionally, and a thirteenth revision landing after this
@@ -540,7 +542,9 @@ uniformity layer "does not even match in count". Both claims were wrong.
 
 **Amended by** `FormalSystem/ProofSystem/LinearityDerivedFacts.lean`, 2026-10-14, and
 **resolved** by the 2026-10-15 BX/TM demotion wave above: the divergence this note was opened to
-record no longer exists. The tree's primitive set is not a proper subset of `def:BX`/`def:BX-z`/
+record no longer exists, and the "exactly the paper's 29 schemata" figure in the paragraph above
+is a superseded historical reading — 788 reduced the constructor count to 20 and the paper has
+since come to the same set. The tree's primitive set is not a proper subset of `def:BX`/`def:BX-z`/
 `def:BX-d`'s lists; the paper's primitive schemata and `inductive Axiom`'s 20 constructors now
 **coincide key for key** (CPL 4, MK/MT/M5, TS, UG, UC, US, UF, UI, CN, MF, NB, UZ, NN, PU, SEP).
 The nine schemata derived in the tree — TC, UE, UT, NP, NF, NA
@@ -2184,25 +2188,27 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
 
 ```latex
 \begin{Ddef} \label{def:id}
-  The logic for $\BL^{\equiv}$ comprises classical propositional logic and the minimal theory of identity given below, where $\alpha$ and $\beta$ are both formulas or both operator terms, and $\chi_{(\beta/\alpha)}$ is the result of replacing one or more occurrences of $\alpha$ in any formula $\chi$ with $\beta$:
+  % NEW CHANGE: the proviso on LL is folded into the definition of the substitution notation, so that the list has three clean items and no dangling `where' line. The free-for condition is still added in def:qe, where quantifiers first appear.
+  The logic for $\BL^{\equiv}$ comprises classical propositional logic and the minimal theory of identity given below, where $\alpha$ and $\beta$ are both formulas or both operator terms, and $\chi_{(\beta/\alpha)}$ is the result of replacing one or more occurrences of $\alpha$ in any formula $\chi$ with $\beta$, none of which lies within the argument of an operator:
 	\vspace{-.125in}
 	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
 		\begin{multicols}{2}
+			% NEW CHANGE: Imp is removed, being the instance of LL at chi := phi. The five proofs that cited it now cite LL, and the minimal theory of identity is Ref and LL alone.
 			\aitem{Ref} $\vdash \alpha \equiv \alpha$.
-			\aitem{Imp} $\vdash (\varphi \equiv \psi) \rightarrow (\varphi \rightarrow \psi)$.
 			\aitem[LL$^{-}$]{LL} $\vdash (\alpha \equiv \beta) \rightarrow (\chi \rightarrow \chi_{(\beta/\alpha)})$.
-        % NEW CHANGE: the proviso is stated once for every operator term, since the operator terms now belong to BL^equiv. It is needed already here, since unrestricted LL would make Box transparent before transparency is posited for the objective modalities alone.
-        where no replaced occurrence of $\alpha$ lies within the argument of an operator.
 		\end{multicols}
 	\end{enumerate}
 	\vspace{-.175in}
   % NEW CHANGE: the type note and the sentence on symmetry and transitivity return here from def:lang, since both types now exist here.
-  \textbf{\aref{Ref}} and \textbf{\aref{LL}} are schemata at both types whereas \textbf{\aref{Imp}} concerns formulas alone.
-  The symmetry and transitivity of $\equiv$ are derivable at either type from \textbf{\aref{Ref}} and \textbf{\aref{LL}}, and since each replaces an occurrence lying outside the argument of any operator term, both survive the proviso on \textbf{\aref{LL}}.
-  The theory of propositional identity need not be Boolean, accommodating theories in which the Boolean identities do not hold.\footnote{I defend a hyperintensional theory of propositional identity in Brast-McKie \cite{Brast-McKie2021} where transparency is maintained for the entirety of the language rather than posited below for the objective modalities alone in \textbf{\aref{O-Tran}}.}
+  % NEW CHANGE: Imp is recorded as the instance of LL at chi := phi, which is why it concerns formulas alone, since chi must be a formula. The label is kept because six proofs cite it.
+  The schemata above are instantiated at both types.
+  The restriction on \textbf{\aref{LL}} makes the transparency of the objective modalities is nontrivial rather than holding for the whole language.
+  % NEW CHANGE: `operator term' becomes `operator' in the phrase `the argument of an operator', here and in the gloss on O-Tran, matching the proviso on LL.
+  The symmetry and transitivity of $\equiv$ are derivable at either type from \textbf{\aref{Ref}} and \textbf{\aref{LL}}, and since each replaces an occurrence lying outside the argument of any operator, both survive the proviso on \textbf{\aref{LL}}.
+  % The theory of propositional identity need not be Boolean, accommodating theories in which the Boolean identities do not hold.\footnote{I defend a hyperintensional theory of propositional identity in Brast-McKie \cite{Brast-McKie2021} where transparency is maintained for the entirety of the language rather than posited for the objective modalities alone.}
 \end{Ddef}
 ```
-sha256: `18edbbea04c77945e54ef07999f7724bf3a8b38c832a91274d82580048395575`
+sha256: `09ab2f4451284a8774a8c63ca3a26586bb4fb175271f3affdf45bfb23776100f`
 
 ### `def:strongest` — strongest objective modal operator Str^O_L(Q), and the meet of the objective modalities Str'^O_L(Q) — **DANGLING as of the 2026-10-15 BX/TM demotion wave (removed from manifest)**
 
@@ -2417,7 +2423,7 @@ def:deterministic|env|-|-|9a347781ddbb850ddcc5500f4a614309fd47fae7e20f63eaef7335
 def:BLstar-semantics|env|-|-|b4d3239cc96ddd1e90965901aca8c378f6ec5ca52f568ea6b2ef59d9c3ba6c95
 cor:saturation-finite|env|-|-|98fac4cfb09991ec3046ab843e1d3fa5e089e2e52d50dbe7130bacdf8528353a
 cor:tm-completeness|env|-|-|f8f5b41f998e59322052accce9ac219dfbe9fe7931329bebbdb5b1cc855f0bce
-def:id|env|-|-|18edbbea04c77945e54ef07999f7724bf3a8b38c832a91274d82580048395575
+def:id|env|-|-|09ab2f4451284a8774a8c63ca3a26586bb4fb175271f3affdf45bfb23776100f
 thm:exist|env|-|-|1a70ff465a8077e896592ef0cab36a4476c89864fa05920120d01e928938e9cd
 lem:uniq|env|-|-|3fe647f782b71327a8cedfae5e80a83e143453fef4b77ef96fd465369b4866b9
 thm:s5|env|-|-|be08911a0adace5f87b4870bf80a22ad92cb5e16303628887d8087a529ed57f8
@@ -2500,7 +2506,7 @@ def:TMplus-f|DANGLING|renamed by the paper to def:BX-z, which IS pinned; cited o
 def:behavior-presheaf|DANGLING|the Ddef defining Beh(F)(l) as the convex histories on [0, l] with restriction along Tr p. app:Structure was cut from the paper IN FULL under an explicit % SECTION CUT record ("Topological and Categorical Structure" (app:Structure) in full) and the surviving commented block carries a bare % CHECK; the author has not finished reviewing it, and this anchor went with the cut. FORMALIZED as Beh and its presheaf action (FormalSystem/Semantics/Presheaf/Behavior.lean); the citation site records the cut. NOT PINNABLE, as for app:Structure
 def:directed|DANGLING|label removed; the supseteq-directed definition was folded inline into def:frame's opening clause. Retained above as a DANGLING entry
 def:interval-site|DANGLING|the Ddef defining the interval site Int(D): objects the positive cone, morphisms the translations Tr p, with the Johnstone coverage. app:Structure was cut from the paper IN FULL under an explicit % SECTION CUT record ("Topological and Categorical Structure" (app:Structure) in full) and the surviving commented block carries a bare % CHECK; the author has not finished reviewing it, and this anchor went with the cut. FORMALIZED as Obj/Tr/Tr.comp and the coverage trio (FormalSystem/Semantics/Presheaf/Site.lean); the citation site records the cut. NOT PINNABLE, as for app:Structure
-def:strongest|DANGLING|label removed by the paper in the 2026-10-15 BX/TM demotion wave; Str survives as an \aitem{Str} key inside def:key-terms, with the L subscript dropped and the primed Str' notion gone. Retained above as a DANGLING entry. Cited as a pointer by typst/FormalFoundations.typ (and whitelisted for typst-sync-check Check 1 at typst/sync-check-whitelist.txt), which records the retirement at the citation site; no docstring quotes its text
+def:strongest|DANGLING|label removed by the paper in the 2026-10-15 BX/TM demotion wave; Str survives as an \aitem{Str} key inside def:key-terms, with the L subscript dropped and the primed Str' notion gone. Retained above as a DANGLING entry. NO live in-tree citation: measured at retirement time, the only occurrence outside this file is the inert Check 1 entry at typst/sync-check-whitelist.txt:104, which suppresses nothing because no typst chapter cites the anchor any more. No docstring quotes its text
 lem:fibers|DANGLING|label removed 2026-08-17; content absorbed into lem:admissible's proof; retained above
 thm:BLplus-NextPrevious|DANGLING|label removed with the BL^+ fragment cluster. Retained above as a DANGLING entry
 thm:BLplus-PastFuture|DANGLING|label removed with the BL^+ fragment cluster. Retained above as a DANGLING entry

@@ -47,9 +47,11 @@ CN, which is why TL had to be primitive before CN was added.
 
 TL was a constructor while CN was absent from the system. Once CN was adopted — stated as the
 paper's CN verbatim, with the 3-way disjunction right-associated — TL became redundant, and the
-constructor was removed in favour of the derivation above. The paper's `def:BX` still lists TL;
-`docs/reference/paper-definitions-of-record.md` records the tree's primitive set as a proper
-subset of that list with the same theorems.
+constructor was removed in favour of the derivation above. The paper's `def:BX` still displays
+TL as a schema of its section, but no longer as an axiom of BX: its own text now marks TL a
+derived theorem of BX, machine-checked in this repository, exactly as the derivation above has
+it. `docs/reference/paper-definitions-of-record.md` records the primitive sets as coinciding key
+for key, twenty against twenty.
 
 ## References
 

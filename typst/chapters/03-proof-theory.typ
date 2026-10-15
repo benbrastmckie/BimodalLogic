@@ -139,8 +139,11 @@ Highlights of the layer:
   caption: none,
 )
 
-MF is the sole bimodal interaction axiom: necessary truths remain necessary in the future.
-Its companion TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is *derived* (see @sec:derived-axioms).
+MF says that necessary truths remain necessary in the future. It is one of the paper's two
+bimodal interaction axioms: `def:TMplus` names MF together with NB, which this presentation
+places in the uniformity layer below because that is where its constructor sits
+(`Axiom.discrete_box_necessity`). MF's companion TF
+($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is *derived* (see @sec:derived-axioms).
 
 === Layer 5: Uniformity (1 constructor; NP, NF, NA derived)
 
@@ -358,11 +361,13 @@ Derivations are represented as inductive trees.
 
 `DerivationTree` is a `Type` (not a `Prop`), so derivations can be pattern-matched and measured; the height function enables well-founded recursion in metalogical proofs (notably the deduction theorem).
 
-// CONFIRM(paper): def:S5 + def:BX + def:TMplus jointly state the system this chapter axiomatizes.
-//   The three anchor ids are unchanged, but their texts moved in the paper's 2026-09 wave: all
-//   three now cite the Logic/Extensions sections for their axioms instead of displaying them, and
-//   def:TMplus names the system TM (no + superscript) for the language BL (no + superscript),
-//   with extensions TM_z / TM_d / TM_r over BX_z / BX_d / BX_r.
+// CONFIRMED(paper), 2026-10-15: def:S5 + def:BX + def:TMplus jointly state the system this
+//   chapter axiomatizes, and the correspondence is now an identity rather than a containment.
+//   The paper's BX/TM demotion wave moved the remaining divergence: def:BX names seven axiom
+//   keys and two metarules and marks TC and TL derived; def:TMplus names MF and NB and marks
+//   NP, NF and NA derived theorems of TM; UE and UT were dropped from the paper outright. The
+//   paper's sixteen named primitives plus the four CPL constructors are exactly this chapter's
+//   twenty. See docs/reference/paper-definitions-of-record.md, "Drift correction (2026-10-15)".
 == The Tense-Primitive Subsystem <sec:paper-contrast>
 
 The system of this chapter takes Since and Until as its temporal primitives.

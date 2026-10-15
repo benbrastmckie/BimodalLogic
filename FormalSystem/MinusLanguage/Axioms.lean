@@ -63,7 +63,10 @@ the paper's `TP`/`CT` → `TP1`/`TP2`, `P9`/`P10` → `P7`/`P8`, `TB`/`TA` → `
   `MinusLanguage/Derivation.lean`.
 
 **Bimodal Logic (`\S sub:Logic`) — BX temporal group** (`BX` = Burgess–Xu tense system,
-`def:BX` in the paper):
+`def:BX` in the paper). This audit table is keyed by the paper's displayed `\S sub:Logic` keys,
+not by current axiomhood: of the keys below, `def:BX` now takes only TN, TR, TS, UI, UC, UF, UG,
+US and CN, marking TC and TL derived; NP, NF, NA and NB belong to `def:TMplus`; and UE and UT are
+no longer paper keys at all:
 
 * `TN` — Lean identifier: `MinusLanguage.DerivationTree.temporal_necessitation`; Notes: Rule;
   content matches, paper key not quoted verbatim in the doc-comment.

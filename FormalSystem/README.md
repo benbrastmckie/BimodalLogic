@@ -108,7 +108,9 @@ exactly the paper's primitive axiom schemata.
 **Derived schemata**: every past mirror is obtained from its future primary by the
 time-reflection rule TR and proved as a theorem in `ProofSystem/DerivedAxioms.lean` (modal 4 and B
 and the pre-paper forms of CN and TS are in `Theorems/Combinators.lean`), under the lowerCamelCase
-form of its former constructor name. Nine schemata the paper lists as axioms are derived too:
+form of its former constructor name. Nine schemata are derived too, and the paper lists none of
+them as an axiom — it marks TC and TL derived theorems of BX, NP, NF and NA derived theorems of
+TM, Z1 of TM_z and DN of BX_d, and carries no key at all for UE or UT:
 UE, UT, NF in `ProofSystem/DerivedAxioms.lean`; TC, NP, NA in `Theorems/ConnectDerived.lean`; TL
 (from CN) and DN (from NN) in `Theorems/LinearityDerived.lean`; Z1 in
 `Metalogic/CompletenessDerived.lean`, through the ZTime completeness engine.
@@ -181,14 +183,14 @@ is [`docs/reference/state-topology-appendix-support.md`](../docs/reference/state
 
 TM logic has four variants based on frame conditions:
 
-### TM Base (23 constructor axioms)
+### TM Base (16 constructor axioms)
 
 The core logic valid on all linear orders. See `FrameClass.Base` in [ProofSystem/Axioms.lean](ProofSystem/Axioms.lean).
 
 - **Soundness**: `axiom_valid` - all base axioms valid on linear orders
 - **Frame**: Linear temporal order (no additional constraints)
 
-### TM Dense (Base + 2 density constructors)
+### TM Dense (Base + 1 density constructor)
 
 Extension requiring densely ordered temporal domains. See `FrameClass.Dense`.
 

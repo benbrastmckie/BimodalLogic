@@ -5,11 +5,13 @@ Complete reference for TM (Tense and Modality) axiom schemas.
 ## Axiom Categories
 
 TM logic uses **20 axiom constructors**: exactly the paper's primitive axiom schemata
-(`def:S5`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:BX-r`; see
-`docs/reference/paper-definitions-of-record.md`), minus the nine of them that are theorems of the
-others. Every other schema the tree used to take as primitive -- the twelve past mirrors of the
-BX temporal group, the S5 schemata 4 and B, the past mirrors of UZ and PU, and now TC, UE, UT,
-TL, NP, NF, NA, DN and Z1 -- is a **derived theorem** (see
+(`def:S5`, `def:BX`, `def:TMplus`, `def:BX-z`, `def:BX-d`, `def:BX-r`; see
+`docs/reference/paper-definitions-of-record.md`). The correspondence is an identity, key for key:
+the paper names sixteen primitive schemata -- MK, MT, M5; TS, UI, UC, UF, UG, US, CN; MF, NB; UZ;
+NN; PU, SEP -- which with the four CPL constructors give exactly these twenty. Every other schema
+the tree used to take as primitive -- the twelve past mirrors of the BX temporal group, the S5
+schemata 4 and B, the past mirrors of UZ and PU, and now TC, UE, UT, TL, NP, NF, NA, DN and Z1 --
+is a **derived theorem** (see
 [Derived schemata](#derived-schemata) below). The layer of each constructor is given by
 `Axiom.minFrameClass` (`FormalSystem/ProofSystem/Axioms.lean`), which is the authoritative
 source -- re-derive from it rather than from this table:
@@ -96,9 +98,9 @@ convention (b) deliberately.
 | Self-accumulation | UF | `self_accum_until` |
 | Absorption | UI | `absorb_until` |
 | Linearity | CN, TL | `linear_until`; TL derived: `LinearityDerived.tempLinearity` |
-| F bridges | UE, UT | derived: `DerivedAxioms.untilF`, `DerivedAxioms.fUntilEquiv` |
-| Modal-temporal interaction | MF | `modal_future` |
-| Uniformity (discrete-shaped, Base-valid) | NP, NF, NA, NB | `discrete_box_necessity`; NP, NF, NA derived: `ConnectDerived.discreteSymmFwd`, `DerivedAxioms.discretePropagateFwd`, `ConnectDerived.discretePropagateBwd` |
+| F bridges | -- (UE, UT are not paper keys) | derived: `DerivedAxioms.untilF`, `DerivedAxioms.fUntilEquiv` |
+| Modal-temporal interaction | MF (`def:TMplus`, alongside NB) | `modal_future` |
+| Uniformity (discrete-shaped, Base-valid) | NB (`def:TMplus`); NP, NF, NA are TM-derived, not BX keys | `discrete_box_necessity`; NP, NF, NA derived: `ConnectDerived.discreteSymmFwd`, `DerivedAxioms.discretePropagateFwd`, `ConnectDerived.discretePropagateBwd` |
 
 **The temporal layer is Burgess-Xu until/since**, not a T4/TA/TL/TK basis. `untl` and `snce`
 are the primitive binary temporal constructors (`FormalSystem/Syntax/Formula.lean`);
@@ -423,42 +425,56 @@ DerivationTree.temporalNecessitation : DerivationTree [] φ →
 `axiom`, `assumption`, `modus_ponens`, `necessitation`, `temporal_necessitation`,
 `time_reflection`, and `weakening`.
 
-## Paper Key Correspondence (BX temporal group)
+## Paper Key Correspondence (the BX temporal group and TM's interaction axioms)
 
-The paper's `def:BX` names its base tense logic by `\aitem` keys (TN, TR, TS, TC, TL, UE, UT, UI,
-UC, UF, UG, US, CN, NP, NF, NA, NB). `FormalSystem/ProofSystem/Axioms.lean` states those of these
-schemata that are not theorems of the others as its primitive axioms, under descriptive
-constructor names, derives the rest (marked **derived** below), and obtains every past mirror
-the way the paper does, by the time-reflection rule TR (`DerivationTree.time_reflection`,
-`Formula.reflectTime`). "Mirror" below names the derived theorem.
+The correspondence spans two paper definitions, not one. `def:BX` names its base tense logic by
+the two metarules TN and TR together with seven axiom-schema keys -- TS, UI, UC, UF, UG, US, CN
+-- and states in its own text that TC and TL are **derived theorems of BX** rather than further
+axioms. `def:TMplus` adds the two bimodal interaction axioms MF and NB, and states that the
+uniformity schemata NP, NF and NA are **derived theorems of TM** -- not of BX -- their
+derivations using NB together with MF and MT. UE and UT appear in neither: the paper carries no
+key of any kind for them, and they survive here as theorems of this tree alone.
 
-| Paper key | Paper schema | Lean primitive constructor / derived theorem | Derived mirror (by TR) | Burgess / Xu source |
-|---|---|---|---|---|
-| TN | if ⊢φ then ⊢Gφ | `DerivationTree.temporal_necessitation` (rule) | none | Burgess 1982 rule TG (G half) |
-| TR | if ⊢φ then ⊢φ⟨S\|U⟩ | `DerivationTree.time_reflection` (rule, `reflectTime`) | none | — |
-| TS | F⊤ | `serial_future` (verbatim) | `serial_past` (⊤ → P⊤) | Burgess 1982 §1.6, No Last Element |
-| TC | φ → GPφ | **derived** `ConnectDerived.connectFuture` (US, UC, TN) | `connectPast` | original |
-| TL | Fφ∧Fψ → F(Fφ∧ψ) ∨ F(φ∧ψ) ∨ F(φ∧Fψ) | **derived** `LinearityDerived.tempLinearity` (from CN with UF and UE; verbatim, right-associated) | `tempLinearityPast` | Burgess 1984 §0.3 A2a/A2b (verbatim); Xu (13), strictly weaker than (10) by Xu §4 Thm 4.3 |
-| UE | (φUψ) → Fψ | **derived** `DerivedAxioms.untilF` | `sinceP` | not in Burgess 1982; follows from UG with new guard ⊤, plus TN |
-| UT | Fφ → (⊤Uφ) | **derived** `DerivedAxioms.fUntilEquiv` (an identity) | `pSinceEquiv` | original |
-| UI | φU(φ∧(φUψ)) → φUψ | `absorb_until` | `absorb_since` | Burgess 1982 A6a/A6b; Xu (9) |
-| UC | G(φ→ψ) → (χUφ → χUψ) | `right_mono_until` | `right_mono_since` | Burgess 1982 A1a/A1b; Xu (1)/(2) |
-| UF | (φUψ) → (φ∧(φUψ))Uψ | `self_accum_until` | `self_accum_since` | Burgess 1982 A5a/A5b; Xu (7)/(8) |
-| UG | G(φ→χ) → (φUψ → χUψ) | `left_mono_until_G` | `left_mono_since_H` | Burgess 1982 A2a/A2b; Xu (1)/(2) |
-| US | θ∧(φUψ) → φU(ψ∧(φSθ)) | `enrichment_until` | `enrichment_since` | Burgess 1982 A3a/A3b; Xu (3)/(4) |
-| CN | (φUψ ∧ χUθ) → three-way disjunction | `linear_until` (paper's order, right-associated `A∨(B∨C)`) | `linear_since` | Burgess 1982 A7a/A7b; Xu (10)/(11) |
-| NP | X⊤ → Y⊤ | **derived** `ConnectDerived.discreteSymmFwd` (US, TR of NF, UE, TC) | `discreteSymmBwd` | original |
-| NF | X⊤ → GX⊤ | **derived** `DerivedAxioms.discretePropagateFwd` (NB ; MF ; MT) | `discretePropagateFwdMirror` (Y⊤ → HY⊤) | original |
-| NA | X⊤ → HX⊤ | **derived** `ConnectDerived.discretePropagateBwd` (NP, TR of NF, H-monotonicity; despite the name this **is** NA, not the mirror of NF) | none | original |
-| NB | X⊤ → □X⊤ | `discrete_box_necessity` | none | original |
+`FormalSystem/ProofSystem/Axioms.lean` takes exactly the paper's primitive keys as its
+constructors, under descriptive names, derives the rest (marked **derived** below), and obtains
+every past mirror the way the paper does, by the time-reflection rule TR
+(`DerivationTree.time_reflection`, `Formula.reflectTime`). "Mirror" below names the derived
+theorem. The "Paper key" column gives the displayed key; the "In the paper" column says what the
+live paper makes of it.
 
-The counts reconcile exactly: of the paper's 11 non-uniformity temporal axioms, 7 are primitive
-constructors and 4 (TC, TL, UE, UT) are derived; of its 4 uniformity axioms, 1 (NB) is primitive
-and 3 (NP, NF, NA) are derived, giving the tree's 8 BX temporal/uniformity primitives; with CPL
-(4), MT/M5/MK (3), MF (1), NN (1), UZ (1) and PU/SEP (2) that is 20, with DN and Z1 derived at
-their own classes. Every surplus constructor is now a derived theorem, and the derivations are
-machine-checked (see [Derived schemata](#derived-schemata)); the primitive presentation is a
-proper subset of the paper's with the same theorems.
+| Paper key | Paper schema | In the paper | Lean primitive constructor / derived theorem | Derived mirror (by TR) | Burgess / Xu source |
+|---|---|---|---|---|---|
+| TN | if ⊢φ then ⊢Gφ | `def:BX` metarule | `DerivationTree.temporal_necessitation` (rule) | none | Burgess 1982 rule TG (G half) |
+| TR | if ⊢φ then ⊢φ⟨S\|U⟩ | `def:BX` metarule | `DerivationTree.time_reflection` (rule, `reflectTime`) | none | — |
+| TS | F⊤ | `def:BX` axiom | `serial_future` (verbatim) | `serial_past` (⊤ → P⊤) | Burgess 1982 §1.6, No Last Element |
+| TC | φ → GPφ | `def:BX`, marked derived | **derived** `ConnectDerived.connectFuture` (US, UC, TN) | `connectPast` | original |
+| TL | Fφ∧Fψ → F(Fφ∧ψ) ∨ F(φ∧ψ) ∨ F(φ∧Fψ) | `def:BX`, marked derived | **derived** `LinearityDerived.tempLinearity` (from CN with UF and UE; verbatim, right-associated) | `tempLinearityPast` | Burgess 1984 §0.3 A2a/A2b (verbatim); Xu (13), strictly weaker than (10) by Xu §4 Thm 4.3 |
+| UE | (φUψ) → Fψ | **not a paper key** | **derived** `DerivedAxioms.untilF` | `sinceP` | not in Burgess 1982; follows from UG with new guard ⊤, plus TN |
+| UT | Fφ → (⊤Uφ) | **not a paper key** | **derived** `DerivedAxioms.fUntilEquiv` (an identity) | `pSinceEquiv` | original |
+| UI | φU(φ∧(φUψ)) → φUψ | `def:BX` axiom | `absorb_until` | `absorb_since` | Burgess 1982 A6a/A6b; Xu (9) |
+| UC | G(φ→ψ) → (χUφ → χUψ) | `def:BX` axiom | `right_mono_until` | `right_mono_since` | Burgess 1982 A1a/A1b; Xu (1)/(2) |
+| UF | (φUψ) → (φ∧(φUψ))Uψ | `def:BX` axiom | `self_accum_until` | `self_accum_since` | Burgess 1982 A5a/A5b; Xu (7)/(8) |
+| UG | G(φ→χ) → (φUψ → χUψ) | `def:BX` axiom | `left_mono_until_G` | `left_mono_since_H` | Burgess 1982 A2a/A2b; Xu (1)/(2) |
+| US | θ∧(φUψ) → φU(ψ∧(φSθ)) | `def:BX` axiom | `enrichment_until` | `enrichment_since` | Burgess 1982 A3a/A3b; Xu (3)/(4) |
+| CN | (φUψ ∧ χUθ) → three-way disjunction | `def:BX` axiom | `linear_until` (paper's order, right-associated `A∨(B∨C)`) | `linear_since` | Burgess 1982 A7a/A7b; Xu (10)/(11) |
+| NP | X⊤ → Y⊤ | `def:TMplus`, marked derived (TM, not BX) | **derived** `ConnectDerived.discreteSymmFwd` (US, TR of NF, UE, TC) | `discreteSymmBwd` | original |
+| NF | X⊤ → GX⊤ | `def:TMplus`, marked derived (TM, not BX) | **derived** `DerivedAxioms.discretePropagateFwd` (NB ; MF ; MT) | `discretePropagateFwdMirror` (Y⊤ → HY⊤) | original |
+| NA | X⊤ → HX⊤ | `def:TMplus`, marked derived (TM, not BX) | **derived** `ConnectDerived.discretePropagateBwd` (NP, TR of NF, H-monotonicity; despite the name this **is** NA, not the mirror of NF) | none | original |
+| MF | □φ → □Gφ (modal-temporal interaction) | `def:TMplus` axiom | `modal_future` | none | original |
+| NB | X⊤ → □X⊤ | `def:TMplus` axiom | `discrete_box_necessity` | none | original |
+
+The counts reconcile exactly, and now as an identity rather than a containment. Re-derived from
+`Axioms.lean`'s own layer list: CPL (4) + S5 MK/MT/M5 (3) + BX temporal TS/UI/UC/UF/UG/US/CN (7)
++ interaction MF (1) + uniformity NB (1) = 16 Base, plus UZ (1, ZTime), NN (1, Dense) and PU/SEP
+(2, RTime) = **20**, which is `inductive Axiom`'s constructor count and what
+`scripts/typst-status-counts.sh` reports as `base_count` 16, `ztime_only_count` 1,
+`dense_only_count` 1, `rtime_only_count` 2. On the paper's side the same twenty are its sixteen
+named primitive schemata plus the four CPL constructors, so there is no surplus constructor on
+either side to reconcile: `def:BX` names seven axiom keys and two metarules, `def:TMplus` adds
+MF and NB, `def:BX-z` adds UZ, `def:BX-d` adds NN and `def:BX-r` adds PU and SEP. The nine
+derived schemata -- TC, TL (BX-derived), NP, NF, NA (TM-derived), Z1 (TM_z-derived), DN
+(BX_d-derived), UE and UT (tree-only, no paper key) -- are machine-checked (see
+[Derived schemata](#derived-schemata)).
 
 The "Burgess / Xu source" column cites Burgess 1982 ("Axioms for tense logic I: Since and
 Until", §1.3 unless noted), Burgess 1984 ("Basic Tense Logic") and Xu 1988 formula numbers. The

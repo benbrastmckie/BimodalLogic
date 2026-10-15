@@ -11,10 +11,11 @@ import FormalSystem.Theorems.DeductionTheorem
 /-!
 # Temporal Connectedness and Discrete Symmetry as Derived Schemata
 
-Three schemata the paper lists under `def:BX` are theorems of the reduced primitive system,
-derived here below `Theorems/TemporalDerived.lean` (which consumes `connectFuture`) from the
-Base primitives US (`enrichment_until`), UG (`left_mono_until_G`), UC (`right_mono_until`), NB,
-MF, MT, and the rules TN and TR:
+Three schemata are theorems of the primitive system rather than constructors of it, derived here
+below `Theorems/TemporalDerived.lean` (which consumes `connectFuture`) from the Base primitives
+US (`enrichment_until`), UG (`left_mono_until_G`), UC (`right_mono_until`), NB, MF, MT, and the
+rules TN and TR. The paper marks all three derived: TC inside `def:BX`, and NP and NA inside
+`def:TMplus` as derived theorems of TM rather than of BX:
 
 * `connectFuture` — TC, `φ → G P φ`. From `φ ∧ U(⊤, ¬Pφ)`, US enriches the Until to
   `U(⊤, ¬Pφ ∧ S(⊤, φ))`, whose event is contradictory, so UC drives it to `U(⊤, ⊥)`, refuted by
@@ -137,7 +138,10 @@ def fHImp {fc : FrameClass} (ψ : Formula) : ⊢[fc] ψ.allPast.someFuture.imp �
 as the former constructor did). US at `(⊥, ⊤, ⊤)` enriches `⊤ ∧ X⊤` to `U(⊥, ⊤ ∧ Y⊤)`; the
 event is lifted to `H Y⊤` by TR of NF, UE gives `F H Y⊤`, and `fHImp` yields `Y⊤`.
 
-Paper: `def:BX`
+Paper: `def:TMplus`
+
+NP is a derived theorem of TM, not of BX: `def:TMplus` states it, with NF and NA, as derived from
+NB together with MF and MT, and this derivation routes through NF.
 -/
 @[tmLemma]
 def discreteSymmFwd {fc : FrameClass} :
@@ -160,7 +164,10 @@ def discreteSymmFwd {fc : FrameClass} :
 `DerivedAxioms.discretePropagateFwdMirror`, `Y⊤ → H Y⊤`). Compose NP, TR(NF), and
 `H Y⊤ → H X⊤`, which is the time reflection of `G X⊤ → G Y⊤` (G-monotonicity on NP).
 
-Paper: `def:BX`
+Paper: `def:TMplus`
+
+NA is a derived theorem of TM, not of BX: `def:TMplus` states it, with NP and NF, as derived from
+NB together with MF and MT, and this derivation composes NP with NF.
 -/
 @[tmLemma]
 def discretePropagateBwd {fc : FrameClass} :

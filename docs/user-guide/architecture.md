@@ -1546,7 +1546,7 @@ This section maps Logos operators to their TM LEAN 4 implementations and underly
 **Temporal Operators** (Linear Time):
 - **Logos Operators**: `H`, `P`, `G`, `F` (past/future operators), `△` (always), `▽` (sometimes)
 - **TM Implementation**: `allPast`, `allFuture`, `somePast`, `someFuture`, `always`, `sometimes` in Syntax/Formula.lean
-- **Semantic System**: Linear temporal logic component of TM with bimodal interaction axioms (MF, TF)
+- **Semantic System**: Linear temporal logic component of TM with bimodal interaction axioms (MF, NB; TF is a derived theorem, not an axiom)
 
 **Explanatory Extension (Layer 1) Operators** - Planned:
 

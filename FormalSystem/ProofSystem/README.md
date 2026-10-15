@@ -9,7 +9,7 @@ TM logic variants (Base, Dense, Discrete, Dedekind), along with derived facts an
 
 | File | Lines | Description |
 |------|------:|-------------|
-| `Axioms.lean` | 621 | `Axiom` inductive type: 20 constructors (the paper's primitive schemata minus the nine derived ones) in eight layers |
+| `Axioms.lean` | 621 | `Axiom` inductive type: 20 constructors (exactly the paper's primitive schemata, key for key) in eight layers |
 | `DerivedAxioms.lean` | 244 | The time-reflection mirrors, derived by the TR rule (`DerivedAxioms` namespace) |
 | `Derivation.lean` | 418 | `DerivationTree` inductive type: 7 inference rules as constructors |
 | `Derivable.lean` | 196 | `Derivable`: Prop-valued derivability wrapper for classical reasoning |
@@ -20,27 +20,28 @@ TM logic variants (Base, Dense, Discrete, Dedekind), along with derived facts an
 ### Primitive Axioms and Derived Schemata
 
 The `Axiom` inductive type has **20 constructors** organized into **eight layers**: exactly the
-paper's primitive axiom schemata (`def:S5`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:BX-r`), with
-TL, CN and TS stated verbatim.
+paper's primitive axiom schemata (`def:S5`, `def:BX`, `def:TMplus`, `def:BX-z`, `def:BX-d`,
+`def:BX-r`), with CN and TS stated verbatim. The correspondence is an identity, key for key: the
+paper's sixteen named primitives plus the four CPL constructors are exactly these twenty.
 
 | Layer | Constructors | Description |
 |-------|------------:|-------------|
 | 1. Propositional | 4 | Classical: K, S, EFQ, Peirce |
-| 2. S5 Modal | 3 | MT, M5 (5-collapse), MK (K-distribution) |
-| 3. BX Temporal | 9 | Burgess-Xu Until/Since axioms, future direction |
-| 3b. Additional BX Temporal | 2 | `temp_linearity` (TL), `F_until_equiv` (UT) |
+| 2. S5 Modal | 3 | MT, M5 (5-collapse), MK (K-distribution); 4 and B derived |
+| 3. BX Temporal | 7 | Burgess-Xu Until/Since axioms, future direction (TC, TL, UE, UT are derived) |
 | 4. Interaction | 1 | MF: `□φ → □Gφ` (TF is derived) |
-| 5. Uniformity | 4 | NP, NF, NA, NB (valid on all ordered abelian groups) |
-| 6. Prior | 1 | Prior-UZ (discrete well-ordering) |
-| 7. Z1 | 1 | IsSuccArchimedean characteristic axiom |
-| 8. Density | 2 | `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`) (dense-only) |
-| 9. Reynolds Dedekind | 2 | `prior_U_gap`, `sep` (Dedekind-only) |
-| **Total** | **29** | |
+| 5. Uniformity | 1 | NB (valid on all ordered abelian groups); NP, NF, NA are derived theorems of TM |
+| 6. Prior | 1 | Prior-UZ (discrete well-ordering); Z1 is derived through the ZTime completeness engine |
+| 8. Density | 1 | `dense_indicator` (`¬U(⊤,⊥)`) (dense-only); DN (`GGφ → Gφ`) is derived from it |
+| 9. Reynolds Dedekind | 2 | `prior_U_gap`, `sep` (RTime-only) |
+| **Total** | **20** | |
 
 **Frame classification**: 16 Base constructors, 1 Dense-only (`dense_indicator`),
-2 Discrete-only (`prior_UZ`, `z1`), 2 Dedekind-only (`prior_U_gap`, `sep`) — see
-`Axiom.minFrameClass` in `Axioms.lean`. Cumulatively (`Dense ≤ Dedekind`): Base 23,
-Dense 25, Discrete 25, Dedekind 27.
+1 Discrete-only (`prior_UZ`), 2 RTime-only (`prior_U_gap`, `sep`) — see
+`Axiom.minFrameClass` in `Axioms.lean`, which is the authoritative source. Cumulatively
+(`Dense ≤ RTime`): Base 16, Dense 17, ZTime 17, RTime 19 — the four per-class figures are what
+`scripts/typst-status-counts.sh` reports as `base_count` 16, `dense_only_count` 1,
+`ztime_only_count` 1 and `rtime_only_count` 2.
 
 **Derived schemata**: every past mirror (`serialPast`, `leftMonoSinceH`, …, `sinceP`,
 `pSinceEquiv`, `discreteSymmBwd`, `priorSZ`, `priorSGap`) is proved by one application of

@@ -11,9 +11,10 @@ import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
 /-!
 # Schemata Recovered Through the Completeness Engines
 
-Two schemata the paper lists as axioms of the extensions TM_z and TM_d are *theorems* of the
-reduced primitive system, obtained here through the frame-class completeness engines rather
-than by a hand derivation:
+Two schemata the paper no longer lists as axioms of the extensions TM_z and TM_d are *theorems*
+of the primitive system, obtained here through the frame-class completeness engines rather than
+by a hand derivation. The paper marks Z1 a derived theorem of TM_z inside `def:BX-z` and DN a
+derived theorem of BX_d inside `def:BX-d`:
 
 * `z1Derivable` / `z1Thm` — Z1, `G(Gφ → φ) → (FGφ → Gφ)`, at `FrameClass.ZTime`, from
   `BXCanonical.derivable_of_validZTime` applied to the soundness lemma

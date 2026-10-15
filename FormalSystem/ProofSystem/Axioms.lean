@@ -39,15 +39,24 @@ requiring successor-chain constructions.
 
 ### Layers
 
-The primitive axioms are exactly the paper's axiom schemata (`def:S5`, `def:BX`, `def:BX-z`,
-`def:BX-d`, `def:BX-r`; see `docs/reference/paper-definitions-of-record.md`). Every
+The primitive axioms are exactly the paper's axiom schemata (`def:S5`, `def:BX`, `def:TMplus`,
+`def:BX-z`, `def:BX-d`, `def:BX-r`; see `docs/reference/paper-definitions-of-record.md`). The
+correspondence is an identity rather than a containment: the paper names sixteen primitive
+schemata — MK, MT, M5; TS, UI, UC, UF, UG, US, CN; MF, NB; UZ; NN; PU, SEP — which with the four
+CPL constructors give exactly the twenty below, key for key. `def:TMplus` is where MF and NB
+live. Every
 past-directed mirror, and the S5 schemata 4 and B, are derived theorems in
 `FormalSystem.ProofSystem.DerivedAxioms` (mirrors by the time-reflection rule TR,
-`DerivationTree.time_reflection`; 4 and B from MK, MT and M5). Nine further schemata the paper
-lists are theorems rather than constructors: TC, UE, UT, NP, NF and NA (`DerivedAxioms`,
-`Theorems/ConnectDerived.lean`), TL and DN (`Theorems/LinearityDerived.lean`, TL from CN and DN
-from NN), and Z1 (`Metalogic/CompletenessDerived.lean`, recovered through the ZTime completeness
-engine from UZ). The record of the TL decision is `ProofSystem/LinearityDerivedFacts.lean`.
+`DerivationTree.time_reflection`; 4 and B from MK, MT and M5). Nine further schemata are
+theorems rather than constructors, and the paper's own definitions now say so for seven of them:
+TC and TL are derived theorems of BX by `def:BX`, NP, NF and NA derived theorems of TM by
+`def:TMplus` (from NB with MF and MT), Z1 a derived theorem of TM_z by `def:BX-z` and DN a
+derived theorem of BX_d by `def:BX-d`. UE and UT are the other two, and they are not paper keys
+at all — the paper dropped both outright, so they are theorems of this tree with no paper
+attribution. In Lean: TC, NP and NA in `Theorems/ConnectDerived.lean`; UE, UT and NF in
+`DerivedAxioms`; TL and DN in `Theorems/LinearityDerived.lean` (TL from CN, DN from NN); Z1 in
+`Metalogic/CompletenessDerived.lean`, recovered through the ZTime completeness engine from UZ.
+The record of the TL decision is `ProofSystem/LinearityDerivedFacts.lean`.
 
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce (CPL)
 2. **S5 Modal** (3): modal_t (MT), modal_5_collapse (M5), modal_k_dist (MK)
@@ -70,9 +79,10 @@ engine from UZ). The record of the TL decision is `ProofSystem/LinearityDerivedF
 (15 core + 1 uniformity + 1 prior + 1 density + 2 Reynolds Dedekind),
 where "core" is layers 1-4 (4 + 3 + 7 + 1). By frame
 class that is 16 base (layers 1-5) + 1 discrete-only (layer 6) + 1 dense-only (layer 8)
-+ 2 RTime-only (layer 9), matching `scripts/typst-status-counts.sh`. The nine schemata the
-paper also lists — TC, UE, UT, TL, NP, NF, NA, Z1, DN — are derived theorems (see the notes in
-the inductive below).
++ 2 RTime-only (layer 9), matching `scripts/typst-status-counts.sh`. The nine derived schemata
+— TC, TL, NP, NF, NA, Z1, DN, UE, UT — are theorems rather than constructors; the paper marks
+the first seven derived in the definitions named above, and carries no key for UE or UT (see the
+notes in the inductive below).
 Note: temp_k_dist and temp_4 are derived theorems (`temporalKDistDerived`,
 `temporal4Derived` in TemporalDerived.lean).
 
@@ -86,8 +96,12 @@ Note: temp_k_dist and temp_4 are derived theorems (`temporalKDistDerived`,
 
 ## Axiom Sources
 
-The paper's `def:BX` footnote attributes most of the BX temporal schemata to Burgess and Xu.
-The reconciled map is below. "B82" is Burgess 1982 ("Axioms for tense logic I: Since and
+The paper used to attribute most of the BX temporal schemata to Burgess and Xu in a `def:BX`
+footnote; that footnote is gone from the live paper, so the reconciled map below is this tree's
+own record of the attribution rather than a transcription of a live paper footnote. The "Paper
+key" column names the displayed key each schema has (or had) in the paper, which for UE and TL is
+no longer an axiom key: TL is a derived theorem of BX by `def:BX`'s own text, and UE is not a
+paper key at all. "B82" is Burgess 1982 ("Axioms for tense logic I: Since and
 Until", §1.3 unless noted), "B84" is Burgess 1984 ("Basic Tense Logic"), and "Xu" gives the
 formula numbers of Xu 1988 ("On some U,S-tense logics"). Burgess numbers his axioms `A1a`-`A7a`
 with mirror images `A1b`-`A7b`, and B82 and B84 each have their own, unrelated, `A7a`. Burgess
@@ -106,11 +120,13 @@ writes `U(event, guard)`, so each `Burgess:` line in a docstring below is quoted
 | UE | derived: `DerivedAxioms.untilF` / `sinceP` | not in B82: UG with new guard `⊤`, plus TN | — |
 | TL | derived: `LinearityDerived.tempLinearity` / `…Past` (from CN) | B84 §0.3 A2a / A2b | (13) |
 
-B82's A4a/A4b is the one Burgess 1982 pair the system omits (see the `BX14` note below). TC, UT,
-NP, NF, NA and NB are original to the paper — of these only NB is a constructor; TC, UT, NP, NF
-and NA are derived (`ConnectDerived.connectFuture`, `DerivedAxioms.fUntilEquiv`,
-`ConnectDerived.discreteSymmFwd`, `DerivedAxioms.discretePropagateFwd`,
-`ConnectDerived.discretePropagateBwd`) — and TR is a metarule with no listed source. Xu
+B82's A4a/A4b is the one Burgess 1982 pair the system omits (see the `BX14` note below). TC, NP,
+NF, NA and NB are original to the paper — of these only NB is a constructor, and it is a
+constructor of `def:TMplus` rather than of `def:BX`; TC, NP, NF and NA are derived
+(`ConnectDerived.connectFuture`, `ConnectDerived.discreteSymmFwd`,
+`DerivedAxioms.discretePropagateFwd`, `ConnectDerived.discretePropagateBwd`). UT was original to
+the paper too and is derived here as `DerivedAxioms.fUntilEquiv`, but the paper has since dropped
+it, as it dropped UE, so neither has a live paper key. TR is a metarule with no listed source. Xu
 places (10) in his axiom set Σ₄, which is complete for the class 𝒞₄ of linear frames. On its
 own, (10) defines a first-order condition on intervals, his (10)*, not linearity itself.
 
@@ -141,12 +157,15 @@ primitive schemata.
 - **Uniformity** (1): the discreteness uniformity axiom NB (NP, NF, NA are derived; valid on
   all ordered abelian groups)
 - **Prior** (1): Prior-UZ for discrete well-ordering (valid on discrete orders only)
-- **Density** (1): GGφ → Gφ and ¬U(⊤,⊥) (dense-only)
+- **Density** (1): NN, the dense indicator ¬U(⊤,⊥) (dense-only; DN, GGφ → Gφ, is derived
+  from it in `Theorems/LinearityDerived.lean` and is not a constructor)
 - **Reynolds Dedekind** (2): Prior-U gap axiom and Sep (RTime-only)
 
-Base axioms (23) are valid on all linear temporal orders. Prior/Z1 axioms (2) are discrete-only.
-The density axioms (2) are valid only on densely ordered frames, and the two Reynolds
-definable-gap axioms (2) only on the RTime class.
+Base axioms (16 — layers 1-5: 4 + 3 + 7 + 1 + 1) are valid on all linear temporal orders. The
+Prior-UZ axiom (1) is discrete-only, the dense indicator NN (1) is valid only on densely ordered
+frames, and the two Reynolds definable-gap axioms (2) only on the RTime class. 16 + 1 + 1 + 2 =
+20, the constructor count, and the four figures are what `scripts/typst-status-counts.sh`
+reports as `base_count`, `ztime_only_count`, `dense_only_count` and `rtime_only_count`.
 Note: temp_k_dist and temp_4 are derived theorems (`temporalKDistDerived`,
 `temporal4Derived` in TemporalDerived.lean).
 -/
@@ -536,8 +555,11 @@ example : ¬(FrameClass.ZTime ≤ FrameClass.Dense) := by decide
 Minimum frame class for each axiom constructor.
 
 This is the single source of truth for axiom-frame-class compatibility:
-- Base (23 axioms): valid on all linear temporal orders
-- Dense (2 axioms: density, dense_indicator): valid on densely ordered frames
+- Base (16 axioms): valid on all linear temporal orders
+- Dense (1 axiom: dense_indicator): valid on densely ordered frames. DN carries `.Dense` too,
+  but as the derived `Theorems.LinearityDerived.density` rather than a constructor of this
+  inductive, so it is not counted in this row (`typst/generated/status.typ`'s
+  `dense-only-count` is 1)
 - ZTime (1 axiom: prior_UZ): valid on discrete frames. Z1 carries `.ZTime` too, but as the
   derived `Metalogic.CompletenessDerived.z1Thm` rather than a constructor of this inductive, so
   it is not counted in this row (`typst/generated/status.typ`'s `ztime-only-count` is 1)

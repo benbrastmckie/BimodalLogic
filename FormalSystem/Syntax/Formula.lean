@@ -462,7 +462,9 @@ The paper's **CO** formula (Cauchy/completeness-of-order principle), as a *named
 
 **Source**: JPL paper anchor `CO`, verbatim:
 "`\aitem{CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow
-(\Past\varphi \rightarrow \Future\varphi)$.`"
+(\Past\varphi \rightarrow \Future\varphi)$.\leanfoot{DedekindDerived.coDerived}`"
+The trailing `\leanfoot` is the paper's own citation of this repository's derivation of CO,
+appended in the 2026-10-15 wave; the formula itself did not move.
 **Retired anchor**: this used to be quoted from `TMP-CO`, the `BL^+` restatement inside the old
 `def:TMplus-c`; the paper's 2026-09 wave dropped that restatement (`def:BX-r` derives CO from PU
 instead of displaying it again), so `TMP-CO` is recorded `DANGLING` in

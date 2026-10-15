@@ -41,9 +41,10 @@ Each entry reads *Derived* — *Primary (TR)*:
 
 ## Derived schemata from the raw constructors
 
-Four schemata the paper lists under `def:BX` need nothing beyond the primitive constructors
-(`prop_k`, `prop_s`, UG, UC, NB, MF, MT) and the rules TN and TR, so they are derived here
-rather than kept as `Axiom` constructors:
+Four schemata need nothing beyond the primitive constructors (`prop_k`, `prop_s`, UG, UC, NB,
+MF, MT) and the rules TN and TR, so they are derived here rather than kept as `Axiom`
+constructors. The paper lists none of them as an axiom: UE and UT it dropped outright and carries
+no key for, and NF it marks a derived theorem of TM inside `def:TMplus`:
 
 * `untilF` — UE `U(ψ, φ) → Fψ`, from UG (`left_mono_until_G`) with the new guard `⊤`, plus TN
 * `fUntilEquiv` — UT `Fφ → U(φ, ⊤)`, an identity: `Fφ` *is* `untl ⊤ φ` by definition
@@ -131,7 +132,9 @@ def eventMonoThm {fc : FrameClass} (e e' g : Formula) (he : ⊢[fc] e.imp e') :
 /-- UE: `U(ψ, φ) → F(ψ)` (guard-first: `untl φ ψ`). Widen the guard `φ` to `⊤` by UG + TN;
 `F ψ` is `untl ⊤ ψ` by definition. Not a Burgess axiom.
 
-Paper: `def:BX`
+Paper: — (UE is not a paper key: the live paper carries no `\aitem`, `\alabel` or `\aref`
+occurrence of UE at all, so this is a theorem of the tree with no paper attribution. It used to
+be listed among `def:BX`'s axiom schemata.)
 -/
 @[tmLemma] def untilF {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (Formula.untl φ ψ).imp (Formula.someFuture ψ) :=
@@ -140,7 +143,8 @@ Paper: `def:BX`
 /-- UT: `F(φ) → U(φ, ⊤)` (guard-first: `untl ⊤ φ`). `F φ` unfolds to exactly `untl (⊥ → ⊥) φ`,
 so this is the identity.
 
-Paper: `def:BX`
+Paper: — (UT is not a paper key, for the same reason as UE above: no occurrence of any kind
+remains in the live paper. It used to be listed among `def:BX`'s axiom schemata.)
 -/
 @[tmLemma] def fUntilEquiv {fc : FrameClass} (φ : Formula) :
     ⊢[fc] (Formula.someFuture φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ) :=
@@ -150,7 +154,11 @@ Paper: `def:BX`
 forward as NB (`discrete_box_necessity`) ; MF (`modal_future`) ; MT (`modal_t`): `X⊤ → □X⊤ →
 □G X⊤ → G X⊤`.
 
-Paper: `def:BX`
+Paper: `def:TMplus`
+
+NF is a derived theorem of TM, not of BX: `def:TMplus` states it, with NP and NA, as derived from
+NB together with MF and MT — which is exactly this derivation, and which BX cannot carry out
+since it has no bimodal interaction axiom.
 -/
 @[tmLemma] def discretePropagateFwd {fc : FrameClass} :
     ⊢[fc] (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
