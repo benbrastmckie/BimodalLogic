@@ -874,5 +874,9 @@
   [
     "unusedArguments",
     "FormalSystem.Metalogic.Decidability.RaySummary.snce_iff_of_SCoh_SLive"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Semantics.NomicFrame.ofStepFamily"
   ]
 ]

@@ -37,6 +37,7 @@ import FormalSystem.Semantics.LexCarrier
 import FormalSystem.Semantics.IntTransfer
 import FormalSystem.Semantics.TimeIndexed
 import FormalSystem.Semantics.Correspondence
+import FormalSystem.Semantics.Nomic
 
 /-!
 # FormalSystem.Semantics - Task Frame Semantics
@@ -133,6 +134,18 @@ three. The subdirectories `Extension/`, `Presheaf/`, `Ultraproduct/`, `Correspon
   import-light — `TaskFrame` and `Mathlib.Data.Int.SuccPred` only — precisely so that the
   aggregate result is reachable from this aggregator, which the topology-carrying witnesses
   deliberately are not
+- `Nomic.Frame` / `Nomic.Recovery` / `Nomic.ZTime` / `Nomic.Witnesses`: the nomic frames of
+  `def:nomic-frame` — one carrier with a *relativized family* of task relations `⇒ʷ`, one per
+  world state, each satisfying `def:frame`, so that `F^w` is an ordinary task frame and the
+  law-histories `H_F^w` are its possible worlds. Carries `def:nomic-properties`' three properties
+  (*Lawful*, *Static*, *Uniform*) with the two implications from *Uniform*,
+  `lem:nomic-occurrence`, `lem:nomic-recovery` (the law-histories recover `⇒ʷ`) over a general
+  two-point-history lemma, `def:nomic-witnesses`' ℤ-time presentation `ofStepFamily`, and
+  `prop:nomic-hierarchy`'s three finite witnesses with `nomic_hierarchy`. Sited here rather than
+  under `OpenLanguage/`, where the nomic *operator* belongs: a nomic frame mentions no object
+  language, and `OpenLanguage/` imports `Semantics/` and not the reverse. Every nomic result is
+  choice-bearing, through `thm:extension` or through each witness's *Saturation*; see
+  `Semantics/Nomic/README.md`
 - `FrameAxioms`: *Saturation*, *Seriality*, and the interpolation half of *Compositionality* as
   hypothesis-form `Prop`s over a bare task relation (`def:frame`), the derived `lem:nullity`,
   and `def:constraints` — the constraints a partial history imposes on a new duration

@@ -80,6 +80,12 @@ the *only* genuine obligations a ℤ-time witness carries: *Compositionality* co
 *Limit* from ℤ being a `SuccOrder`, and *Saturation* from finiteness of the carrier. They are
 named `_fwd`/`_bwd` because they are consumed only by the lemmas below, not in this body, which
 follows `FrameOver.ofReflectiveRegular`'s `_hcomp` convention.
+
+`[Finite W]` is likewise unused *here* and kept deliberately: it is what `ofStepFamily_isRegular`
+needs (through `TaskFrame.saturation_of_finite`), and carrying it on the construction rather than
+on the instance keeps every statement about a generated family at one uniform binder set. The
+`unusedArguments` linter is told so by a `scripts/nolints.json` entry rather than being silenced
+in place.
 -/
 def ofStepFamily {W : Type} [Finite W] [Nonempty W] (R : W → W → W → Prop)
     (_fwd : ∀ w p, ∃ q, R w p q) (_bwd : ∀ w q, ∃ p, R w p q) : NomicFrame intOrder where
@@ -123,7 +129,12 @@ One term, no tactic: `lawHist` is *literally* the left-hand side of
 the all-pairs predicate on a bare function, so no `WorldHistory` detour is needed;
 `mem_HF_iff_adjacent` stays reachable through `NomicFrame.mem_lawHist_iff`.
 
-Constraints consumed: Compositionality, Seriality, Limit
+The marker below lists all four constraints because the `[F.IsRegular]` binder supplies all four,
+and no binder-free form of this statement exists: `isTotal_respects_iff_adjacent` itself takes the
+regularity instance. The *content* leans on *Compositionality* and *Limit*, but a marker records
+what the declaration consumes, not what its proof emphasises.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
 -/
 theorem mem_lawHist_iff_isStepPath (F : NomicFrame intOrder) [F.IsRegular] (w : F.World)
     (τ : ℤ → F.World) : τ ∈ F.lawHist w ↔ IsStepPath (F.at w) τ :=

@@ -1,0 +1,20 @@
+{
+  "status": "implemented",
+  "dispatch_seq": 20,
+  "phases_completed": 7,
+  "phases_total": 7,
+  "summary": "All seven phases of the nomic-frame plan closed [COMPLETED], including the conditional Phase 6. A new four-module cluster FormalSystem/Semantics/Nomic/ carries def:nomic-frame, def:nomic-properties with both implications from Uniform, lem:nomic-occurrence, lem:nomic-recovery over a general two-point-history lemma, def:nomic-witnesses' ZZ-time presentation, thm:nomic-primitive clause (1), and prop:nomic-hierarchy's three finite witnesses with nomic_hierarchy. Full lake build exit 0 with zero errors and zero warnings, zero sorry, no new axioms, and check-module-invariants.sh reports ALL CHECKS PASSED.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/794_nomic_frames_law_histories_hierarchy/summaries/01_nomic-frames-law-histories-summary.md",
+      "summary": "Seven-phase implementation record for the nomic frame cluster, its two lemmas, the cut primitive-level clause and prop:nomic-hierarchy's three witnesses."
+    },
+    {
+      "type": "code",
+      "path": "FormalSystem/Semantics/Nomic/",
+      "summary": "Four new modules (Frame, Recovery, ZTime, Witnesses) plus sibling aggregator and README: the frame-level half of the paper's nomic appendix."
+    }
+  ]
+}

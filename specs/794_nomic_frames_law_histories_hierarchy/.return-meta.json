@@ -1,22 +1,33 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-10-14T00:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "phase_6_complete",
-    "details": "Phases 1-6 committed; the conditional Phase 6 fired and landed static_iff_taskRel_eq green on the first attempt. Starting Phase 7 (library wiring, docs, full gate set).",
-    "phases_completed": 6,
-    "phases_total": 7
+  "status": "implemented",
+  "started_at": "2026-10-14T22:45:00-07:00",
+  "completed_at": "2026-10-15T00:20:00-07:00",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/794_nomic_frames_law_histories_hierarchy/summaries/01_nomic-frames-law-histories-summary.md",
+      "summary": "Seven-phase implementation record for the nomic frame cluster, its two lemmas, the cut primitive-level clause and prop:nomic-hierarchy's three witnesses."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Formalized the frame-level half of the paper's nomic appendix as FormalSystem/Semantics/Nomic/: def:nomic-frame with its relativized family and law-histories, def:nomic-properties with both implications from Uniform, lem:nomic-occurrence, lem:nomic-recovery in full over a general two-point-history lemma, def:nomic-witnesses' ZZ-time presentation with both step-path invariants, clause (1) of the cut thm:nomic-primitive, and prop:nomic-hierarchy's three finite witnesses with their independence theorems and the bundled nomic_hierarchy. Full build green, zero sorry, no new axioms, check-module-invariants.sh ALL CHECKS PASSED.",
+    "roadmap_items": []
   },
   "metadata": {
     "session_id": "sess_1792026404_b03e6d",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "lean-implementation-agent"
-    ]
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"],
+    "compliance_check": "passed",
+    "phases_completed": 7,
+    "phases_total": 7
   },
   "dispatch_seq": 20
 }

@@ -507,25 +507,25 @@ anywhere, covered by
 
 ---
 
-### Phase 7: Library wiring, docs, and the full gate set [NOT STARTED]
+### Phase 7: Library wiring, docs, and the full gate set [COMPLETED]
 
 **Goal**: the cluster is reachable from `FormalSystem/Semantics.lean`, documented in the
 directory and parent READMEs, and green under the repository's complete gate set.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Semantics.Nomic` to `FormalSystem/Semantics.lean` and one
+- [x] Add `import FormalSystem.Semantics.Nomic` to `FormalSystem/Semantics.lean` and one
       `## Submodules` bullet describing the cluster. Re-read the file immediately before editing
       and again immediately before committing — it is inside concurrent task 789's declared
       `file_scope`
-- [ ] Add a `Nomic/` entry to `FormalSystem/Semantics/README.md` (same concurrency protocol; this
+- [x] Add a `Nomic/` entry to `FormalSystem/Semantics/README.md` (same concurrency protocol; this
       is `readme-lint.sh` check 2, reported and not gated, so if the file carries foreign
-      uncommitted edits, record the entry as a reasoned exclusion rather than absorbing them)
-- [ ] Finalize `FormalSystem/Semantics/Nomic/README.md`: the four modules, the paper anchors each
+      uncommitted edits, record the entry as a reasoned exclusion rather than absorbing them) *(no exclusion needed: the file carried no foreign uncommitted edits, so the entry was added normally)*
+- [x] Finalize `FormalSystem/Semantics/Nomic/README.md`: the four modules, the paper anchors each
       one ports, the siting decision and its recorded cost, the choice-dependence note, and a
       `Last verified` date
-- [ ] Final `lake exe mk_all --lib FormalSystem` and the `git diff -- FormalSystem.lean`
+- [x] Final `lake exe mk_all --lib FormalSystem` and the `git diff -- FormalSystem.lean`
       inspection from Risks
-- [ ] Run the full gate set below and fix only this task's own findings; a finding in a file
+- [x] Run the full gate set below and fix only this task's own findings; a finding in a file
       outside this task's `file_scope` is possibly a sibling's in-flight edit and is reported, not
       silently repaired
 
@@ -706,21 +706,21 @@ end FormalSystem.Semantics
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem` green with zero new structural `sorry` at the end of every phase
+- [x] `lake build FormalSystem` green with zero new structural `sorry` at the end of every phase
       (the task's stated constraint), checked by `grep -c 'sorry'` per new file and by C3 at the
       end
-- [ ] `ofStepFamily_at` pinned as `rfl` by an `example`, and the two `match`-shaped witness
+- [x] `ofStepFamily_at` pinned as `rfl` by an `example`, and the two `match`-shaped witness
       relations' coincidences (`R1 .a ≡ R1 .b`, `R3 .b ≡ R3 .c`) likewise
-- [ ] `mem_lawHist_iff` exercised in both directions (it is the only bridge between `lawHist` and
+- [x] `mem_lawHist_iff` exercised in both directions (it is the only bridge between `lawHist` and
       `WorldHistory`)
-- [ ] All three cases of `lem:nomic-recovery` reached: `d = 0`, `d > 0`, `d < 0`
-- [ ] Each of the three witnesses' independence theorems proved as a named theorem, following
+- [x] All three cases of `lem:nomic-recovery` reached: `d = 0`, `d > 0`, `d < 0`
+- [x] Each of the three witnesses' independence theorems proved as a named theorem, following
       `Semantics/FrameConstraintIndependence.lean`'s per-witness style rather than only a bundled
       existential; `nomic_hierarchy` sits on top of them
-- [ ] `lean_verify` run on `occurrence`, `lawHist_eq_iff_taskRel_eq` and `nomic_hierarchy`, and
+- [x] `lean_verify` run on `occurrence`, `lawHist_eq_iff_taskRel_eq` and `nomic_hierarchy`, and
       the measured axiom sets stated in the docstrings — ZFC, never advertised as choice-free
-- [ ] `bash scripts/check-module-invariants.sh` exits 0 (Phase 7)
-- [ ] `bash scripts/readme-lint.sh FormalSystem` exits 0 (Phases 1 and 7)
+- [x] `bash scripts/check-module-invariants.sh` exits 0 (Phase 7)
+- [x] `bash scripts/readme-lint.sh FormalSystem` exits 0 (Phases 1 and 7)
 
 ## Artifacts & Outputs
 
