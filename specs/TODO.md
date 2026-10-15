@@ -122,11 +122,11 @@ next_project_number: 805
 
 ### Paper Alignment
 
-796 [RESEARCHED] — Prove lem:time-reflection for BL and the semantic form of...
+796 [PLANNED] — Prove lem:time-reflection for BL and the semantic form of...
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
-798 [RESEARCHED] — Port the eleven unported modal-temporal interaction...
-799 [RESEARCHED] — Discharge the Zorn dependence that the state-set corollaries...
-801 [RESEARCHED] — Re-pin the BX/TM anchor wave in...
+798 [PLANNING] — Port the eleven unported modal-temporal interaction...
+799 [PLANNING] — Discharge the Zorn dependence that the state-set corollaries...
+801 [PLANNING] — Re-pin the BX/TM anchor wave in...
   └─ 795 [RESEARCHED] — Formalize the nomic operator and its three results, on the...
   └─ 797 [RESEARCHED] — Formalize the cut shift-of-finite-type remark. The paper's...
   └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
@@ -212,7 +212,7 @@ NON-GOALS. No edit to the JPL paper or to anything else in its repository. The p
 
 ### 801. Repin bx tm anchor wave post 788 paper revision
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 791, Task 793
@@ -265,7 +265,7 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 799. Choice free state occurrence applications
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 792
@@ -291,7 +291,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry. The existing axiom pin
 
 ### 798. Modal temporal interaction principles
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
@@ -351,11 +351,12 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every pha
 
 ### 796. Time reflection bl tr valid anti iso
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
 - **Research**: [796_time_reflection_bl_tr_valid_anti_iso/reports/01_time-reflection-bl-tr-valid.md]
+- **Plan**: [796_time_reflection_bl_tr_valid_anti_iso/plans/01_time-reflection-bl-tr-valid.md]
 
 **Description**: Prove lem:time-reflection for BL and the semantic form of thm:TR-valid, by instantiating the repository's generic anti-isomorphism transport at the reflected model. lem:time-reflection: for each task frame F, the reflected frame F⁻ (w ⇒⁻_x u := w ⇒_{-x} u) is a task frame, tau ↦ tau⁻ := tau ∘ n with n(x) = -x is a bijection H_F → H_{F⁻}, and M, tau, x ⊨ φ iff M⁻, tau⁻, -x ⊨ φ_{S|U} for every sentence of BL. thm:TR-valid: if ⊨ φ then ⊨ φ_{S|U}, as a semantic statement over all task frames, from which thm:TM-soundness's TR case follows per class because the reflected frame shares its temporal order.
 

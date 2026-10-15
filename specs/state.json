@@ -88,7 +88,7 @@
     {
       "project_number": 801,
       "project_name": "repin_bx_tm_anchor_wave_post_788_paper_revision",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Re-pin the BX/TM anchor wave in paper-definitions-of-record.md after the paper's post-788 revision, and verify in-tree axiom-membership prose matches\n\nTHE DRIFT. `scripts/check-paper-definitions.sh` is red on four anchors against the live paper: `def:BX`, `def:BX-z`, `def:BX-d`, `def:TMplus`. The paper has been revised to demote axioms to derived theorems in the BX/TM proof systems — `def:TMplus`'s new text adds the bimodal interaction axiom NB alongside MF, and states that the uniformity schemata NP, NF and NA are \"derived theorems of TM rather than of BX\", deriving them from NB together with MF and MT by `lem:derived-schemata`.\n\nWHY THIS IS NOT A FORMALIZATION GAP. The tree is not behind the paper; the paper has caught up to the tree. Task 788 (\"Reduce tm and extensions to minimal axiom sets\") is COMPLETED (commit c77645f8d) and already landed the 20-constructor system, marking the nine derived schemata in the reference manual. So this is record-and-prose work, not Lean proof work — the same shape as the 27-anchor re-pin that just completed.\n\nSCOPE. (1) Re-pin the drifted BX/TM anchors and their sha256 values in `docs/reference/paper-definitions-of-record.md`, following that file's own dated drift-correction convention — the 27-anchor wave entry `### Drift correction (2026-10-14): the 27-anchor wave` is the immediate precedent, and the 10-anchor and 14-anchor entries precede it. `scripts/check-paper-definitions.sh --resolve` is the sanctioned way to obtain new text and hashes; there is no `--fix` mode by design. Re-pin mechanically rather than transcribing: assert each OLD block re-hashes to its OLD recorded hash before writing the replacement, so every placement is proved before the write.\n\n(2) THE REAL CONTENT OF THIS TASK: verify the in-tree axiom-membership prose matches post-788 reality. The 27-anchor re-pin verified that no in-tree site claims a VERBATIM quotation on any of the four anchors, so nothing in the tree is currently false. But the paper now asserts a specific membership claim — NP/NF/NA are derived theorems of TM, not of BX; NB is an axiom of TM — and the in-tree prose, README tables, docstrings in FormalSystem/ProofSystem/Axioms.lean and related modules, and the Typst reference manual must be checked to state the same. This is a judgment pass over every site describing BX/TM axiom membership, not a search-and-replace.\n\n(3) THE PAPER IS ACTIVELY BEING REVISED. It moved five times during a single orchestration run (4573 to 3940 to 3959 lines; dirty, then clean, then dirty again; HEAD moving under the gate). Carry every anchor count and hash as an explicit Scope Hypothesis to RE-DERIVE at implementation time rather than trusting any figure written during research or planning. Expect the live wave to differ from the four anchors named above — absorb whichever wave is live when implementation runs, and state the acceptance criterion precisely rather than claiming a green gate unconditionally.\n\nGATES. C15 in `scripts/check-module-invariants.sh` requires a MANIFEST or KNOWN-ANCHORS row for every `def:`/`thm:`/`lem:`/`cor:`/`app:` anchor cited under `FormalSystem/`. C35 (citation-manifest byte-currency) goes red on any docstring edit in files carrying seeded manifest entries; remedy is `python3 scripts/export-lean-citations.py`. Regenerate inventory blocks with `check-module-invariants.sh --emit-inventory` and verify with `--emit-inventory --check` if line counts drift.\n\nACCEPTANCE. The BX/TM anchors pinned against the live paper with hashes re-derived at implementation time; no in-tree site claims a verbatim quotation it does not reproduce; in-tree BX/TM axiom-membership prose consistent with the paper's derived-theorem framing and with 788's completed 20-constructor system; `lake build` green; `readme-lint.sh`, `check-module-invariants.sh --no-build` and `export-lean-citations.py --check` exit 0; both Typst documents compile. State the `check-paper-definitions.sh` result precisely — if the paper moves again mid-task, report which wave was absorbed and which was not, rather than claiming an unconditional exit 0.\n\nNON-GOALS: no new Lean declarations and no change to the axiom set — 788 already did that work; no edit to the paper itself (it lives in another repository and is being revised by its author); do not absorb unrelated drift waves in other subsystems without recording the decision.",
       "effort": "medium",
@@ -110,8 +110,8 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-15T00:59:16Z",
-      "last_updated": "2026-10-15T09:53:23Z",
-      "session_id": "sess_1792056489_e27cc7",
+      "last_updated": "2026-10-15T15:24:58Z",
+      "session_id": "sess_1792077807_2be444_801",
       "artifacts": [
         {
           "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/reports/01_bx-tm-membership-prose-audit.md",
@@ -458,23 +458,45 @@
     {
       "project_number": 796,
       "project_name": "time_reflection_bl_tr_valid_anti_iso",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Prove lem:time-reflection for BL and the semantic form of thm:TR-valid, by instantiating the repository's generic anti-isomorphism transport at the reflected model. lem:time-reflection: for each task frame F, the reflected frame F⁻ (w ⇒⁻_x u := w ⇒_{-x} u) is a task frame, tau ↦ tau⁻ := tau ∘ n with n(x) = -x is a bijection H_F → H_{F⁻}, and M, tau, x ⊨ φ iff M⁻, tau⁻, -x ⊨ φ_{S|U} for every sentence of BL. thm:TR-valid: if ⊨ φ then ⊨ φ_{S|U}, as a semantic statement over all task frames, from which thm:TM-soundness's TR case follows per class because the reflected frame shares its temporal order.\n\nWHAT EXISTS -- most of the pieces, unassembled. FormalSystem/OpenLanguage/OpenReversal.lean has `FrameOver.rev`, `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, `FrameOver.rev_isRegular`, the `rev_rev` involution facts, `WorldHistory.rev_surjective` (the bijection), and the transfer `openTruthAt_rev` for the OPEN language only. FormalSystem/Semantics/TruthTransport.lean has the generic order-reversing transport `Truth.truthAt_of_truthAntiIso` for the base `Formula`: it wants a `TruthAntiIso M M'` with an order-reversing `dur` equivalence, a `hist` equivalence and atom agreement, which is exactly what negation, `WorldHistory.rev` and `TaskModel.rev` supply. FormalSystem/Metalogic/Soundness.lean has only the rule-level consequences `axiom_reflect_time_validIn` and `derivable_valid_and_reflect_time_validIn`, which are what the soundness theorem actually consumes.\n\nDELIVER: (1) `revAntiIso M : TruthAntiIso M M.rev` (dur the negation equivalence, hist the rev involution packaged as an Equiv, atom by rfl) and `truthAt_rev : TruthAt M tau t φ ↔ TruthAt M.rev tau.rev (-t) φ.reflectTime`, which is lem:time-reflection; (2) `validOn_rev_iff` and the frame-class form `ValidIn fc φ → ValidIn fc φ.reflectTime` for every fc closed under `rev` -- prove that closure for Base, Dense, ZTime and RTime, since the reflected frame shares its temporal order -- which is thm:TR-valid; (3) decide, and record in the docstring, whether `derivable_valid_and_reflect_time_validIn` should now be derived from (2) plus plain soundness or left as is with a cross-reference; (4) promote the frame-level `rev` machinery from OpenLanguage/ to Semantics/, as OpenReversal.lean's own docstring anticipates, if the import layering allows it without a cycle -- otherwise say why not.\n\nPAPER ANCHORS. def:time-reflection, lem:time-reflection, thm:TR-valid in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, each with a `% PORT:` comment to clear. Task 617 (the presheaf Reflection clause) is the categorical packaging of the same involution and is independent: cross-reference, do not merge.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry; the `assert_not_exists` guards in Semantics/Truth.lean must stay satisfied if anything is promoted.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-15T09:51:20Z",
+      "last_updated": "2026-10-15T15:38:26Z",
       "artifacts": [
         {
           "path": "specs/796_time_reflection_bl_tr_valid_anti_iso/reports/01_time-reflection-bl-tr-valid.md",
           "type": "report",
           "summary": "Research for lem:time-reflection and thm:TR-valid: all five target declarations written and compiled via lean_run_code probes; frame-class closure proven unconditional for all four tags; decision to leave derivable_valid_and_reflect_time_validIn as is with a cross-reference; three-piece promotion plan aligned with task 617's Phase A."
+        },
+        {
+          "path": "specs/796_time_reflection_bl_tr_valid_anti_iso/plans/01_time-reflection-bl-tr-valid.md",
+          "type": "plan",
+          "summary": "6-phase, 3.5-hour plan for lem:time-reflection and thm:TR-valid, with a Lean Challenge Statements block pinning all eleven target signatures."
         }
       ],
-      "session_id": "sess_1792056489_e27cc7",
-      "next_artifact_number": 2
+      "session_id": "sess_1792077807_2be444",
+      "next_artifact_number": 2,
+      "file_scope": [
+        "FormalSystem.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/Metalogic/Soundness.lean",
+        "FormalSystem/OpenLanguage.lean",
+        "FormalSystem/OpenLanguage/OpenReversal.lean",
+        "FormalSystem/OpenLanguage/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics.lean",
+        "FormalSystem/Semantics/FrameClassValidity.lean",
+        "FormalSystem/Semantics/README.md",
+        "FormalSystem/Semantics/Reversal.lean",
+        "FormalSystem/Semantics/TaskFrame.lean",
+        "FormalSystem/Semantics/Validity.lean",
+        "README.md",
+        "typst/generated/status.typ"
+      ]
     },
     {
       "project_number": 797,
@@ -2253,14 +2275,14 @@
     {
       "project_number": 798,
       "project_name": "modal_temporal_interaction_principles",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Port the eleven unported modal-temporal interaction principles Pthm:11 -- Pthm:22 from the paper's companion cut file, together with the duality lemma P8 that two of their proofs consume.\n\nTHE SOURCE, AND WHY IT IS A PORTING CANDIDATE. The block stood after cor:tm-decidability and was cut on INTERNAL REDUNDANCY -- Pthm:17 restates P4 of sub:Logic verbatim and is the reverse half of Pthm:20, Pthm:16 is exactly Pthm:21 together with Pthm:22, and Pthm:18 follows from Pthm:15 together with Pthm:14 -- and NOT because this repository already had them. It is kept verbatim, with a complete derivation for every item, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'Twelve further interaction principles'. Redundancy in a paper is not redundancy in a library: these are true, proved, and currently absent here. Reverting commit 57dc354e in the paper repository restores the block in its original place.\n\nTHE TWELVE, as Hilbert-style theorems over an arbitrary frame class, writing the paper's sometimes/always for the tree's `sometimes` / `always`:\n  Pthm:11  sometimes diamond phi -> diamond phi\n  Pthm:12  always diamond phi -> diamond phi\n  Pthm:13  sometimes box phi <-> box phi\n  Pthm:14  always box phi <-> box phi\n  Pthm:15  box always phi <-> always box phi\n  Pthm:16  diamond sometimes phi <-> sometimes diamond phi\n  Pthm:17  diamond sometimes phi -> diamond phi   [ALREADY PRESENT -- see below]\n  Pthm:18  box always phi <-> box phi\n  Pthm:19  diamond always phi -> diamond phi\n  Pthm:20  diamond phi <-> diamond sometimes phi\n  Pthm:21  sometimes diamond phi -> diamond sometimes phi\n  Pthm:22  diamond sometimes phi -> sometimes diamond phi\n\nWHAT EXISTS, verified against the tree rather than taken from the cut file's provenance note. FormalSystem/Theorems/Perpetuity/ carries P1 -- P6 as proof-term `def`s (`perpetuity1` .. `perpetuity5` in Perpetuity/Principles.lean, `perpetuity6` in Perpetuity/MonotonicityDuality.lean). Pthm:17 IS present, as `FormalSystem.Theorems.Perpetuity.perpetuity4` (Principles.lean:514) -- do not restate it. Of the premises the cut derivations cite: TF is available through `boxDiamondToFutureBoxDiamond` / `boxDiamondToPastBoxDiamond` (Principles.lean:578, :587) and `boxToFuture` / `boxToPast` (Perpetuity/Helpers.lean:61, :81); MT, M5, MK, MN, TN, TR are axioms and rules of the derivation system; P7 (not-always phi <-> sometimes-not phi) IS present, as the pair `temporalDualityNeg` (MonotonicityDuality.lean:350) and `temporalDualityNegRev` (:426).\n\nONE CORRECTION TO THE CUT FILE'S OWN NOTE, which this task must not propagate. That note says \"P7 and P8, used by two of the proofs, have none\". That is STALE for P7, which exists as the pair just named, and CORRECT for P8 (not-sometimes phi <-> always-not phi), which is genuinely absent -- only the modal analogue `modalDualityNeg` / `modalDualityNegRev` (not-box phi <-> diamond-not phi, MonotonicityDuality.lean:78, :108) exists. Independently confirmed: no box-always / always-box / diamond-sometimes / sometimes-diamond interaction principle appears anywhere under FormalSystem/Theorems/ beyond perpetuity1 -- perpetuity6.\n\nDELIVER: (1) P8 in both directions, sited beside `temporalDualityNeg` / `temporalDualityNegRev` and following their proof shape; (2) the eleven unported principles as `def`s in the repository's proof-term style, each with a docstring naming its cut-file label and following the structure of the cut derivation; (3) a docstring cross-reference on `perpetuity4` recording that it is Pthm:17 of that block and the reverse half of Pthm:20 -- a cross-reference, not a restatement; (4) the block's internal dependency chain honoured rather than re-proved from the axioms: Pthm:17 from Pthm:11 and Pthm:16, Pthm:18 from Pthm:15 and Pthm:14, Pthm:21 from Pthm:11 and Pthm:20, Pthm:22 from P5, exactly as the cut proofs do.\n\nSITING AND AGGREGATOR CONTENTION. Decide at plan time between a new module (e.g. FormalSystem/Theorems/Interaction.lean) and extending the Perpetuity cluster; record the choice and the reason. A new module requires a one-line import in FormalSystem/Theorems.lean, which is a shared touch across every task adding to that aggregator: do not dispatch this concurrently with another such task, and re-run lake build after the import edit.\n\nWORTH DOING BEYOND PAPER FIDELITY. Five of the eleven (Pthm:13, 14, 15, 18, 20) are biconditionals that collapse modal-temporal nesting. Those are rewrite lemmas, not merely recorded facts. Before siting, check whether the normal-form and decidability modules can consume them, and say so in the docstrings if they can.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase. Write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, keys resolving in the root references.bib.",
       "created": "2026-10-14T21:59:04Z",
-      "last_updated": "2026-10-15T09:52:22Z",
+      "last_updated": "2026-10-15T15:24:26Z",
       "artifacts": [
         {
           "path": "specs/798_modal_temporal_interaction_principles/reports/01_modal-temporal-interaction-principles.md",
@@ -2268,13 +2290,13 @@
           "summary": "All eleven Pthm principles plus the P8 pair verified to compile zero-sorry via lean_run_code; recommends a new FormalSystem/Theorems/Interaction.lean, flags two errors in the task description, and shows the five biconditionals have no rewrite-lemma consumer in this tree."
         }
       ],
-      "session_id": "sess_1792056489_e27cc7",
+      "session_id": "sess_1792077807_2be444_798",
       "next_artifact_number": 2
     },
     {
       "project_number": 799,
       "project_name": "choice_free_state_occurrence_applications",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -2283,7 +2305,7 @@
       ],
       "description": "Discharge the Zorn dependence that the state-set corollaries inherit, for the applications that do not need it.\n\nTHE SPECIFICATION. The paper's companion cut file carries a footnote to lem:state-set recording the fact this task acts on: \"The appeals to cor:occurrence, and hence to Zorn's lemma, are inessential to the applications below, where a possible world through any given world state at any given time is exhibited explicitly as a translation.\" It is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'Footnote on the appeals to choice in lem:state-set'. Treat it as a specification to implement, not as a theorem to cite.\n\nDEPENDS on the state-set pin task, which lands `StateOccurs.of_isRegular` from `PartialHistory.occurrence` and restates the three StateSetTruth corollaries at `[F.IsRegular] (h : OrderFlow F)` alone. That route goes through thm:extension and so through Zorn, and the pin task's AXIOM NOTE accepts `Classical.choice` on the new corollaries and records it in a docstring. THIS TASK DOES NOT REVISIT THAT DECISION: the general corollaries keep the general hypothesis and the general axiom cost. What it adds is the second route the paper's footnote describes, for the frames where the witness is explicit.\n\nWHAT EXISTS. FormalSystem/Metalogic/Independence/StateSetTruth.lean has `satSet`, `plusTruthAt_iff_mem_satSet`, `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow` under the two hypotheses `OrderFlow F` (Independence/OrderTransfer.lean) and `StateOccurs F`. The explicit witnesses the footnote points at are in FormalSystem/Semantics/Frames/Standard.lean (`translationFrame`, `translationFrame_isRegular`) and FormalSystem/Semantics/Correspondence/DurationFrames.lean (`translationHist` and its `_realizes` lemma). The consumers to audit are in Independence/DeterminismUndefinable.lean, which also carries the existing axiom pin.\n\nDELIVER: (1) a choice-free `StateOccurs` for the frames the applications actually instantiate at -- the translation frame first, by exhibiting the witnessing history explicitly through `translationHist` rather than extending a partial history, and any other canonical frame the consumers use; (2) the state-set corollaries re-derived at those frames without `Classical.choice`, each pinned with `#print axioms`; (3) an audit of every consumer in DeterminismUndefinable.lean: for each, state whether it can move to the choice-free route, and move the ones that can; (4) a docstring in StateSetTruth.lean recording both routes and which consumers take which, so a reader can tell at a glance whether a given result is choice-dependent.\n\nSCOPE DISCIPLINE. This is axiom hygiene, not generalisation. Do not weaken `OrderFlow`. Do not touch the two-hypothesis originals the pin task preserves for their existing consumers. Do not attempt a choice-free `occurrence` in general -- the general case genuinely needs the extension theorem, and rmk:choice in the paper says so.\n\nPAPER ANCHORS. def:state-set, def:flow and lem:state-set in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and rmk:choice for the paper's own inventory of which results are choice-free.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry. The existing axiom pin in DeterminismUndefinable.lean must keep passing.",
       "created": "2026-10-14T21:59:04Z",
-      "last_updated": "2026-10-15T09:52:53Z",
+      "last_updated": "2026-10-15T15:24:42Z",
       "artifacts": [
         {
           "path": "specs/799_choice_free_state_occurrence_applications/reports/01_choice-free-state-occurrence.md",
@@ -2291,7 +2313,7 @@
           "summary": "Measured axiom-provenance study of the state-set corollaries: translationFrame is itself choice-borne through TaskFrame.limit_of_shift, so an absolute pin there is impossible without an upstream change; a verified choice-free route exists at the ShiftSet avatar of the same translation flow (selfShift D, equal to F1 at R by rfl), and the DeterminismUndefinable consumers are already all on the choice-free route."
         }
       ],
-      "session_id": "sess_1792056489_e27cc7",
+      "session_id": "sess_1792077807_2be444_799",
       "next_artifact_number": 2
     },
     {
