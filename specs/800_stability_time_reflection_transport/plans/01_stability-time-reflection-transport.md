@@ -401,31 +401,31 @@ phase's build. Confirm both by the `FormalSystem` build.
 
 ---
 
-### Phase 4: The recorded decision on the Deterministic TR case [NOT STARTED]
+### Phase 4: The recorded decision on the Deterministic TR case [COMPLETED]
 
 **Goal**: Deliverable (5). The decision on whether the Deterministic soundness proof's TR case
 should now consume deliverable (4) is **recorded in the docstring**, and the verdict is: keep the
 present route, with (4) named there as an independent second route.
 
 **Tasks**:
-- [ ] Edit `det_derivable_valid_and_reflect_time_validDeterminedIn`'s docstring in
+- [x] Edit `det_derivable_valid_and_reflect_time_validDeterminedIn`'s docstring in
       `FormalSystem/Metalogic/Deterministic/Soundness.lean`. Change nothing else in the file: the
       `.time_reflection` arm keeps its `⟨h.2, ...⟩` plus `reflect_time_involution` shape
-- [ ] Write the record in the shape `Metalogic/Soundness.lean` uses for
+- [x] Write the record in the shape `Metalogic/Soundness.lean` uses for
       `axiom_reflect_time_validIn_min`: name the second route
       (`detAxiom_validDeterminedIn` together with `plusValidDeterminedIn_reflectTime` derives
       `detAxiom_reflect_time_validDeterminedIn` on its own), name what it discharges, and point at
       the base-layer decision record in `Metalogic/Soundness.lean` for why the paired shape is kept
-- [ ] State the two reasons that bind here, both by reference rather than by restatement: the
+- [x] State the two reasons that bind here, both by reference rather than by restatement: the
       base-layer record's reason 2 names the Deterministic variant **by name** as mirroring the
       base recursion arm for arm, so switching only this copy would falsify that sentence and
       leave the four sibling recursions in three different shapes; and reason 3 — that the two
       routes are independent derivations of the same reflection validities, this one from the
       axioms' own semantics and `plusValidDeterminedIn_reflectTime` from frame reversal — applies
       verbatim, which is precisely why the second route is worth recording
-- [ ] Reference the base record by declaration name and module path only. Write no
+- [x] Reference the base record by declaration name and module path only. Write no
       `file.lean:NNN` citation and no task number; keep every line at 100 characters or fewer
-- [ ] Stage the one file; read `git diff --staged` and confirm the diff is docstring-only
+- [x] Stage the one file; read `git diff --staged` and confirm the diff is docstring-only
 
 **Timing**: 0.5 hours
 

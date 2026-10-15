@@ -94,10 +94,34 @@ theorem detAxiom_reflect_time_validDeterminedIn {φ : PlusFormula} {fc : FrameCl
 
 /-! ## The companion recursion -/
 
-/-- **The companion recursion.** An extended-system theorem at `fc` is valid over the
+/--
+**The companion recursion.** An extended-system theorem at `fc` is valid over the
 *Determined*-valid frames of `fc`, and so is its temporal dual. Mirror of
 `plus_derivable_valid_and_reflect_time_validIn`, arm for arm; well-founded on the derivation's
-height because the `weakening` case re-targets to the empty context without a structural descent. -/
+height because the `weakening` case re-targets to the empty context without a structural descent.
+
+**There is a second, independent route to the reflection half, and this recursion deliberately
+does not take it.** `plusValidDeterminedIn_reflectTime`
+(`FormalSystem/Metalogic/Deterministic/Validity.lean`) is `thm:TR-valid` at L⁺ over the
+*Determined*-valid frames, proved from frame reversal: those frames are closed under `rev`
+(`determinedSat_rev`), by the paper's own clause that `F⁻` validates an instance of *Determined*
+just in case `F` validates its mirror image, itself an instance of *Determined*. Composed with
+`detAxiom_validDeterminedIn` it discharges `detAxiom_reflect_time_validDeterminedIn` on its own,
+as one term and for every axiom arm — so the `.time_reflection` arm below could consume it in
+place of the paired shape.
+
+The paired shape is kept, for the two reasons the base-layer decision record gives at
+`FormalSystem.Metalogic.axiom_reflect_time_validIn_min` and
+`FormalSystem.Metalogic.derivable_valid_and_reflect_time_validIn`
+(`FormalSystem/Metalogic/Soundness.lean`), both of which bind here rather than merely applying by
+analogy. That record's second reason names *this* recursion by name among the siblings that
+describe themselves as mirroring the base one arm for arm, so switching only this copy would
+falsify that sentence and leave the four sibling recursions in three different shapes. Its third
+reason applies verbatim: the two routes are independent derivations of the same reflection
+validities, this one from the axioms' own semantics and the other from frame reversal, so keeping
+both is a genuine cross-check — which is precisely why the second route is worth recording here
+rather than silently preferring either.
+-/
 theorem det_derivable_valid_and_reflect_time_validDeterminedIn {fc : FrameClass} {φ : PlusFormula}
     (d : DetDerivationTree fc [] φ) :
     PlusValidDeterminedIn fc φ ∧ PlusValidDeterminedIn fc φ.reflectTime := by
