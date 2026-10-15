@@ -1,7 +1,7 @@
 # Implementation Plan: the BX/TM re-pin and the membership-prose pass
 
 - **Task**: 801 - Re-pin the BX/TM anchor wave in paper-definitions-of-record.md after the paper's post-788 revision, and verify in-tree axiom-membership prose matches
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8 hours
 - **Dependencies**: 791, 793
 - **Research Inputs**:

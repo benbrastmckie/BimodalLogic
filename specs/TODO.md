@@ -11,8 +11,8 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,801,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,795,797,802 | 298,464,502,616,761,772,801 | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,795,797,802,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -122,10 +122,9 @@ next_project_number: 805
 
 ### Paper Alignment
 
-801 [PLANNED] — Re-pin the BX/TM anchor wave in...
-  └─ 795 [RESEARCHED] — Formalize the nomic operator and its three results, on the...
-  └─ 797 [RESEARCHED] — Formalize the cut shift-of-finite-type remark. The paper's...
-  └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
+795 [RESEARCHED] — Formalize the nomic operator and its three results, on the...
+797 [RESEARCHED] — Formalize the cut shift-of-finite-type remark. The paper's...
+802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
 
 ### Build Performance
 
@@ -208,12 +207,13 @@ NON-GOALS. No edit to the JPL paper or to anything else in its repository. The p
 
 ### 801. Repin bx tm anchor wave post 788 paper revision
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 791, Task 793
 - **Research**: [801_repin_bx_tm_anchor_wave_post_788_paper_revision/reports/01_bx-tm-membership-prose-audit.md]
 - **Plan**: [801_repin_bx_tm_anchor_wave_post_788_paper_revision/plans/01_bx-tm-repin-and-membership-prose.md]
+- **Summary**: [801_repin_bx_tm_anchor_wave_post_788_paper_revision/summaries/01_bx-tm-repin-and-membership-prose-summary.md]
 
 **Description**: Re-pin the BX/TM anchor wave in paper-definitions-of-record.md after the paper's post-788 revision, and verify in-tree axiom-membership prose matches
 
