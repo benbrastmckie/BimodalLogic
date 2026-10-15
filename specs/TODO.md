@@ -11,7 +11,7 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,799,800,801,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,800,801,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783,795,797,802 | 298,464,502,616,761,772,801 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -122,8 +122,7 @@ next_project_number: 805
 
 ### Paper Alignment
 
-799 [PLANNED] — Discharge the Zorn dependence that the state-set corollaries...
-800 [RESEARCHED] — Extend the time-reflection transport from BL to the Stability...
+800 [PLANNING] — Extend the time-reflection transport from BL to the Stability...
 801 [PLANNED] — Re-pin the BX/TM anchor wave in...
   └─ 795 [RESEARCHED] — Formalize the nomic operator and its three results, on the...
   └─ 797 [RESEARCHED] — Formalize the cut shift-of-finite-type remark. The paper's...
@@ -239,7 +238,7 @@ NON-GOALS: no new Lean declarations and no change to the axiom set — 788 alrea
 
 ### 800. Stability time reflection transport
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 796
@@ -265,12 +264,13 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 799. Choice free state occurrence applications
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 792
 - **Research**: [799_choice_free_state_occurrence_applications/reports/01_choice-free-state-occurrence.md]
 - **Plan**: [799_choice_free_state_occurrence_applications/plans/01_choice-free-state-occurrence.md]
+- **Summary**: [799_choice_free_state_occurrence_applications/summaries/01_choice-free-state-occurrence-summary.md]
 
 **Description**: Discharge the Zorn dependence that the state-set corollaries inherit, for the applications that do not need it.
 

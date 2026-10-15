@@ -2333,7 +2333,7 @@
     {
       "project_number": 799,
       "project_name": "choice_free_state_occurrence_applications",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -2342,7 +2342,7 @@
       ],
       "description": "Discharge the Zorn dependence that the state-set corollaries inherit, for the applications that do not need it.\n\nTHE SPECIFICATION. The paper's companion cut file carries a footnote to lem:state-set recording the fact this task acts on: \"The appeals to cor:occurrence, and hence to Zorn's lemma, are inessential to the applications below, where a possible world through any given world state at any given time is exhibited explicitly as a translation.\" It is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'Footnote on the appeals to choice in lem:state-set'. Treat it as a specification to implement, not as a theorem to cite.\n\nDEPENDS on the state-set pin task, which lands `StateOccurs.of_isRegular` from `PartialHistory.occurrence` and restates the three StateSetTruth corollaries at `[F.IsRegular] (h : OrderFlow F)` alone. That route goes through thm:extension and so through Zorn, and the pin task's AXIOM NOTE accepts `Classical.choice` on the new corollaries and records it in a docstring. THIS TASK DOES NOT REVISIT THAT DECISION: the general corollaries keep the general hypothesis and the general axiom cost. What it adds is the second route the paper's footnote describes, for the frames where the witness is explicit.\n\nWHAT EXISTS. FormalSystem/Metalogic/Independence/StateSetTruth.lean has `satSet`, `plusTruthAt_iff_mem_satSet`, `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow` under the two hypotheses `OrderFlow F` (Independence/OrderTransfer.lean) and `StateOccurs F`. The explicit witnesses the footnote points at are in FormalSystem/Semantics/Frames/Standard.lean (`translationFrame`, `translationFrame_isRegular`) and FormalSystem/Semantics/Correspondence/DurationFrames.lean (`translationHist` and its `_realizes` lemma). The consumers to audit are in Independence/DeterminismUndefinable.lean, which also carries the existing axiom pin.\n\nDELIVER: (1) a choice-free `StateOccurs` for the frames the applications actually instantiate at -- the translation frame first, by exhibiting the witnessing history explicitly through `translationHist` rather than extending a partial history, and any other canonical frame the consumers use; (2) the state-set corollaries re-derived at those frames without `Classical.choice`, each pinned with `#print axioms`; (3) an audit of every consumer in DeterminismUndefinable.lean: for each, state whether it can move to the choice-free route, and move the ones that can; (4) a docstring in StateSetTruth.lean recording both routes and which consumers take which, so a reader can tell at a glance whether a given result is choice-dependent.\n\nSCOPE DISCIPLINE. This is axiom hygiene, not generalisation. Do not weaken `OrderFlow`. Do not touch the two-hypothesis originals the pin task preserves for their existing consumers. Do not attempt a choice-free `occurrence` in general -- the general case genuinely needs the extension theorem, and rmk:choice in the paper says so.\n\nPAPER ANCHORS. def:state-set, def:flow and lem:state-set in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and rmk:choice for the paper's own inventory of which results are choice-free.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry. The existing axiom pin in DeterminismUndefinable.lean must keep passing.",
       "created": "2026-10-14T21:59:04Z",
-      "last_updated": "2026-10-15T15:39:26Z",
+      "last_updated": "2026-10-15T18:26:02Z",
       "artifacts": [
         {
           "path": "specs/799_choice_free_state_occurrence_applications/reports/01_choice-free-state-occurrence.md",
@@ -2353,6 +2353,11 @@
           "path": "specs/799_choice_free_state_occurrence_applications/plans/01_choice-free-state-occurrence.md",
           "type": "plan",
           "summary": "Five-phase plan: new leaf module with the choice-free translation flow, three absolute corollaries plus axiom pin, the translationFrame layer with a relative pin, the consumer audit and three-route docstring record, then inventory/status sync and the full gate sweep."
+        },
+        {
+          "path": "specs/799_choice_free_state_occurrence_applications/summaries/01_choice-free-state-occurrence-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the choice-free route to lem:state-set's three sentences, in two layers, with the absolute and relative axiom pins, the consumer audit, and the C16 gate-blindness finding."
         }
       ],
       "session_id": "sess_1792077807_2be444",
@@ -2368,12 +2373,13 @@
         "README.md",
         "specs/799_choice_free_state_occurrence_applications/summaries/01_choice-free-state-occurrence-summary.md",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "The paper's claim that lem:state-set's appeals to cor:occurrence, and hence to Zorn's lemma, are inessential to its applications now has a Lean counterpart: a new leaf module, FormalSystem/Metalogic/Independence/TranslationStateSet.lean, with seventeen declarations in two layers. The flow layer discharges (H1) and (H2) by exhibiting the witnessing world history outright as a translation over an arbitrary duration group, and its ten declarations carry no Classical.choice at all; the frame layer restates the same three sentences at translationFrame D with the witness written as the paper's own sigma_c, pinned relatively because #print axioms traverses a declaration's type and the frame constant's own choice is out of reach of any proof. StateSetTruth.lean's module docstring gained a four-route choice-dependence table and the consumer-audit verdict, which found every consumer already off the Zorn route, so none moved and DeterminismUndefinable.lean stays byte-identical."
     },
     {
       "project_number": 800,
       "project_name": "stability_time_reflection_transport",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -2382,7 +2388,7 @@
       ],
       "description": "Extend the time-reflection transport from BL to the Stability language.\n\nTHE SPECIFICATION, stated exactly in the paper's cut proof of cor:deterministic-completeness: lem:time-reflection extends to BL-plus by setting the mirror of a Stability formula to be the Stability of its mirror, \"since tau |-> tau-minus carries the state-local class at x onto the state-local class at n(x), and F |-> F-minus preserves the class of frames validating Determined, leaving the temporal order unchanged, where F-minus validates an instance of Determined just in case F validates its mirror image, itself an instance of Determined.\" That passage is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'The stability logic and its completeness over the deterministic frames', inside the soundness half of the proof. It is a specification for this task, not a theorem to cite.\n\nDEPENDS on the time-reflection task, which lands `revAntiIso`, `truthAt_rev` (lem:time-reflection for the base `Formula`), `validOn_rev_iff`, and the closure of Base, Dense, ZTime and RTime under `rev`. This task is the Plus-language layer above that one and must not duplicate it.\n\nWHAT EXISTS. The Stability language is live: FormalSystem/PlusLanguage/ carries `PlusFormula`, `PlusTruth`, `PlusValidity`, `PlusDeterminism`, and `PlusStateLocal` -- the state-local equivalence the Stability clause quantifies over, which is the object the carrying lemma below is about. The frame-level involution is in FormalSystem/OpenLanguage/OpenReversal.lean (`FrameOver.rev`, `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, `rev_isRegular`, `rev_surjective`). The metalogic that consumes the reflected class is FormalSystem/Metalogic/Deterministic/ (`detSoundness`, `detSoundnessDet`, and the completeness family). Before adding anything, check whether `PlusFormula` already carries a `reflectTime` and a `reflect_time_*` simp family -- the base `Formula` does, in FormalSystem/Syntax/Formula.lean.\n\nDELIVER: (1) `PlusFormula.reflectTime` with the Stability clause commuting, and its simp lemmas, if not already present; (2) THE ONE GENUINELY NEW SEMANTIC STEP: the carrying lemma that `WorldHistory.rev` maps the state-local class at x onto the state-local class at -x -- everything else in this task is transport; (3) the BL-plus form of lem:time-reflection from (2) together with the base transport; (4) the class-closure statement -- the task frames validating Determined are closed under `rev`, by the mirror-image argument the cut proof gives -- and hence the BL-plus form of thm:TR-valid over that class; (5) a decision, recorded in the docstring, on whether the Deterministic/ soundness proof's TR case should now consume (4) or keep its present route.\n\nSCOPE LIMIT. This is the reflection transport only. It is NOT a port of cor:deterministic-completeness, which is already in the tree under Metalogic/Deterministic/, and it is not the Open-language reversal in OpenLanguage/OpenReversal.lean, which is an independent copy of the same involution at a different language. If all three can be unified behind one transport, that is a finding to REPORT, not a licence to refactor mid-task.\n\nPAPER ANCHORS. def:time-reflection, lem:time-reflection and thm:TR-valid in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, which the base task clears; this task covers the Stability extension the paper states only inside the cut proof.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase; the `assert_not_exists` guards in Semantics/Truth.lean must stay satisfied if anything is promoted between clusters.",
       "created": "2026-10-14T21:59:04Z",
-      "last_updated": "2026-10-15T17:44:25Z",
+      "last_updated": "2026-10-15T17:45:18Z",
       "artifacts": [
         {
           "path": "specs/800_stability_time_reflection_transport/reports/01_stability-time-reflection-transport.md",
@@ -2390,7 +2396,7 @@
           "summary": "Research for the Stability-language time-reflection transport: deliverable (1) already in the tree; (2) exists as OpenLanguage.sameState_rev_iff and should be promoted to Semantics/Reversal.lean; (2)-(4) verified by four green lean_run_code probes; (5) recommends keeping the Deterministic companion recursion per the base-layer decision record; full unification needs a new ReflectableLanguage class and is out of scope."
         }
       ],
-      "session_id": "sess_1792077807_2be444",
+      "session_id": "sess_1792077807_2be444_800",
       "next_artifact_number": 2
     }
   ],

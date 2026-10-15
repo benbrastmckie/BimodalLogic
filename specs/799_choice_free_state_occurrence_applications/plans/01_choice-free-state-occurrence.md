@@ -1,7 +1,7 @@
 # Implementation Plan: Task #799
 
 - **Task**: 799 - Choice-free `StateOccurs` for the state-set applications
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.75 hours
 - **Dependencies**: the state-set pin task (landed — `StateOccurs.of_isRegular` and the three
   `_of_isRegular` corollaries are in the tree)
