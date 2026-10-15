@@ -1,64 +1,50 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
+  "dispatch_seq": 17,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md",
-      "summary": "Research for prop:archimedean in full generality: both UZ and Z1 countermodels on translationFrame D at arbitrary non-Archimedean D with a least positive duration, machine-checked sorry-free during research, plus placement, glue lemmas, and the decision that the lexicographic-rational L-minus module stays as the concrete witness."
+      "type": "plan",
+      "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md",
+      "summary": "Four-phase plan landing prop:archimedean in full generality: the order lemma and frame-property bridge in FormalSystem.Semantics, a new Metalogic/Independence/ArchimedeanSharpness.lean carrying both countermodels with 14 pinned declarations, the prose amendments at the three sites that today promise the theorem, and a final full-gate phase with generated-count regeneration."
     }
   ],
-  "next_steps": "Plan the three-phase implementation: (1) exists_gt_nsmul_of_not_archimedean in Semantics/DurationClassification.lean and translationFrame_isDiscrete in Semantics/Correspondence/DurationFrames.lean; (2) the new module Metalogic/Independence/ArchimedeanSharpness.lean carrying both refutations, the four hypothesis-entry wrappers, the FrameOver-D and bare-Discrete-class corollaries, and the concrete lexicographic-integer instantiation; (3) docstring amendments in ZTimeSharpness.lean, Conservativity.lean and FrameProperty.lean.",
-  "user_decision": {
-    "question": "The dispatch names a '% PORT:' marker to clear, but it lives in possible_worlds.tex under /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL -- outside this repository -- and the dispatch also assigns the prop:archimedean rewording to PossibleWorlds task 172. Should this task edit the paper file, or leave the paper-side edit to task 172?",
-    "options": [
-      "Leave the paper-side edit to PossibleWorlds task 172 -- this task delivers the Lean theorems and names the exact identifiers for the eventual leanproof citation",
-      "Clear the marker here as a final out-of-tree step -- delete the '% PORT:' line at possible_worlds.tex:3174 and add the leanproof macro naming the two new theorems"
-    ],
-    "recommended": "Leave the paper-side edit to PossibleWorlds task 172 -- this task delivers the Lean theorems and names the exact identifiers for the eventual leanproof citation",
-    "blocking": false
-  },
+  "next_steps": "Run /implement 791 to execute the plan",
+  "phase_count": 4,
+  "estimated_hours": 4,
+  "dependency_waves": [[1], [2], [3], [4]],
   "modified_files": [
-    "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md"
+    "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md",
+    "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/issues.jsonl"
   ],
   "proposed_file_scope": [
     "FormalSystem/Semantics/DurationClassification.lean",
     "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
     "FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean",
-    "FormalSystem/Metalogic/Independence/ZTimeSharpness.lean",
     "FormalSystem/Metalogic/Independence.lean",
+    "FormalSystem/Metalogic/Independence/README.md",
+    "FormalSystem/Metalogic/Independence/ZTimeSharpness.lean",
+    "FormalSystem/Metalogic/Independence/StaticFrame.lean",
     "FormalSystem/Metalogic/Conservativity.lean",
+    "FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean",
     "FormalSystem/Semantics/FrameProperty.lean",
     "FormalSystem/ProofSystem/Axioms.lean",
-    "FormalSystem/Metalogic/Independence/StaticFrame.lean"
+    "docs/reference/paper-definitions-of-record.md",
+    "FormalSystem.lean",
+    "typst/generated/status.typ"
   ],
   "memory_candidates": [
     {
-      "content": "Opening a negated Mathlib class hypothesis (not Archimedean, not IsSuccArchimedean, not DenselyOrdered) cannot be done by structure projection: use by_contra, then `push Not` (not the deprecated push_neg), then rebuild the class with the anonymous constructor from the negated goal. Worked example: from `IsLeast {z | 0 < z} u` and `not Archimedean D`, `exists x, forall n : Nat, n (nsmul) u < x` closes in five lines via nsmul_le_nsmul_right.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["archimedean", "negated-class", "push-not", "ordered-abelian-group", "nsmul"]
-    },
-    {
-      "content": "In this tree, a paper proposition of the form 'not valid over temporal order D' is rendered as `not (forall F : FrameOver D, F.toTaskFrame.ValidOn phi)` (the idiom validOn_df_iff_isDiscrete uses), and the bare Discrete class of record is the set `{F | F.IsRegular and F.IsDiscrete}` that galoisClosed_isDiscrete is stated over -- not FrameClass.ZTime, whose Sat is the strictly stronger IsZTime. A frame can be regular and IsDiscrete yet not IsZTime, which is exactly the gap every non-Archimedean discrete countermodel lives in.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["frame-class", "isdiscrete", "isztime", "validonframes", "frameover"]
-    },
-    {
-      "content": "Verifying a planned Lean deliverable with lean_run_code probes during the RESEARCH phase (full theorem bodies against real project imports, not isolated tactic attempts) turns implementation into transcription and surfaces every tactic-name and argument-order surprise before any file is edited. Cost here: five probes, three of which needed one or two iterations.",
+      "content": "When a research report is written before a sibling task lands in the same files, re-derive the report's 'what must be added' list against the tree at plan time, not just its 'what exists' list. Measured case: a sibling commit landed isDiscrete_iff_exists_isLeast_pos (a biconditional between the pointwise Discrete clause and the least-positive-element form) three commits before planning, which made two of the report's four planned hypothesis-entry wrappers one-line applications of an existing lemma. Reading the target files' current declaration outline (grep for ^theorem/^def plus the module docstring's Main results list) costs two tool calls and removes a whole class of duplicate-declaration defects that no gate catches.",
       "category": "WORKFLOW",
-      "source_artifact": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["lean-research", "lean_run_code", "probe", "verification-first"]
+      "source_artifact": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["plan-time-verification", "stale-research", "concurrent-siblings", "duplicate-declaration", "lean"]
     }
   ],
   "metadata": {
-    "session_id": "sess_1792013208_936eb4_791",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792026404_b03e6d_791",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }

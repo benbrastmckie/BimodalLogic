@@ -150,7 +150,7 @@
     {
       "project_number": 791,
       "project_name": "prop_archimedean_uz_z1_fail_non_archimedean",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -160,32 +160,48 @@
       ],
       "description": "Prove prop:archimedean in the generality the paper states it: for every Discrete temporal order D that is not Archimedean, neither Z1 (Future(Future φ → φ) → (future Future φ → Future φ)) nor UZ (future φ → ¬φ U φ) is valid over D. Both countermodels live on the translation frame F^tr_D along sigma_0 and turn on one division of D: the times within finitely many unit steps of 0 and those beyond every multiple of the unit. For Z1, |p| is the complement of the near times; for UZ, |p| is a copy of ℤ sitting above every multiple of 1.\n\nWHAT EXISTS. FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean machine-checks the Z1 failure at the single carrier ℚ ×ₗ ℤ (`not_minus_derivable_z1`, over `multiFamTaskFrameGen`), and FormalSystem/Metalogic/Independence/LexIntWitness.lean has `LexInt.not_archimedean`. FormalSystem/Metalogic/Conservativity.lean's docstring RESTATES the paper's every-non-Archimedean-order claim as prose, but the tree proves no such theorem, and nothing refutes UZ semantically at any non-Archimedean carrier. FormalSystem/Semantics/DurationClassification.lean has `archimedean_of_succ` and the successor-Archimedean normalisation (`ValidDiscrete ↔ ValidInt`, task 475), which is the positive side of the same picture.\n\nDELIVER, over an arbitrary D with a least positive duration (`SuccOrder`) and `¬ Archimedean D`: the two countermodels on `translationFrame D` along `translationHist`, giving `¬ ValidOn (translationFrame D) (Z1 p)` and `¬ ValidOn (translationFrame D) (UZ p)`, hence failure over the Discrete class at every non-Archimedean carrier. Then decide, and record, whether the ℚ ×ₗ ℤ module becomes an instance of the general theorem or stays as the concrete witness; its downstream consumers (`tmMinusCompleteZTime_refuted`, the CEF deliverables) must keep compiling either way.\n\nDEPENDENCY AND TIMING. Depends on task 788, which is re-deriving Z1 from UZ (TM_z = TM + UZ, Z1 derived) and touches Conservativity/Backward.lean and Independence/ZTimeSharpness.lean: wait for it, then state the result against the post-788 names. The paper-side revision (PossibleWorlds task 172) will reword prop:archimedean to match; the semantic countermodels do not care which of UZ and Z1 is primitive.\n\nPAPER ANCHORS. prop:archimedean and its proof, and def:canonical-frames, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under prop:archimedean is the marker to clear.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every phase.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T21:51:22Z",
+      "last_updated": "2026-10-15T03:47:16Z",
       "artifacts": [
         {
           "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md",
           "type": "report",
           "summary": "Research for prop:archimedean in full generality: both UZ and Z1 countermodels on translationFrame D at arbitrary non-Archimedean D with a least positive duration, machine-checked sorry-free during research, plus placement, glue lemmas, and the decision that the lexicographic-rational L-minus module stays as the concrete witness."
+        },
+        {
+          "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md",
+          "type": "plan",
+          "summary": "Four-phase, ~4-hour implementation plan: order and frame glue, the new ArchimedeanSharpness module, prose amendments, full gate set."
         }
       ],
-      "session_id": "sess_1792013208_936eb4",
+      "session_id": "sess_1792026404_b03e6d",
       "file_scope": [
+        "FormalSystem.lean",
         "FormalSystem/Metalogic/Conservativity.lean",
+        "FormalSystem/Metalogic/Conservativity/README.md",
+        "FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean",
         "FormalSystem/Metalogic/Independence.lean",
         "FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean",
+        "FormalSystem/Metalogic/Independence/README.md",
         "FormalSystem/Metalogic/Independence/StaticFrame.lean",
         "FormalSystem/Metalogic/Independence/ZTimeSharpness.lean",
+        "FormalSystem/Metalogic/README.md",
         "FormalSystem/ProofSystem/Axioms.lean",
+        "FormalSystem/README.md",
         "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
         "FormalSystem/Semantics/DurationClassification.lean",
-        "FormalSystem/Semantics/FrameProperty.lean"
+        "FormalSystem/Semantics/FrameProperty.lean",
+        "README.md",
+        "docs/reference/paper-definitions-of-record.md",
+        "typst/generated/machine-appendix.jsonl",
+        "typst/generated/machine-appendix.typ",
+        "typst/generated/status.typ"
       ],
       "next_artifact_number": 2
     },
     {
       "project_number": 792,
       "project_name": "pin_lem_state_set_flow_frames",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "effort": "small",
       "topic": "paper-alignment",
@@ -195,7 +211,7 @@
       ],
       "description": "Pin lem:state-set to the tree by discharging its remaining hypothesis. The paper's lemma: over a task frame satisfying Flow (def:flow: W linearly ordered and every possible world an order-isomorphism of (D,<) onto (W,<)), truth of every sentence of BL with Stability at (tau, x) is membership of tau(x) in the state set |φ| of def:state-set; hence ⊨_F φ → Stability φ (so Determined is valid over every Flow frame), and ⊨_F φ iff |φ| = W under every assignment.\n\nWHAT EXISTS -- this is a pin, not a port. FormalSystem/Metalogic/Independence/StateSetTruth.lean already has `satSet` (def:state-set's recursion over PlusFormula), `plusTruthAt_iff_mem_satSet`, `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`, all under two hypotheses: `OrderFlow F` (FormalSystem/Metalogic/Independence/OrderTransfer.lean; it is def:flow's order-isomorphism condition) and `StateOccurs F` (every state at every time). The paper discharges the second by cor:occurrence; the tree has that as `PartialHistory.occurrence` for `[F.IsRegular]` (FormalSystem/Semantics/Extension/Extension.lean) but never composes the two. The paper's `% PORT:` comment under lem:state-set has been corrected to say exactly this.\n\nDELIVER: (1) `StateOccurs.of_isRegular : [F.IsRegular] → StateOccurs F` from `PartialHistory.occurrence`; (2) the three corollaries at `[F.IsRegular] (h : OrderFlow F)` alone, named so the paper can cite them, with docstrings citing def:flow and lem:state-set; (3) a docstring note in StateSetTruth.lean that the (H2) hypothesis is now derived for regular frames, keeping the original two-hypothesis forms for their consumers in Independence/DeterminismUndefinable.lean; (4) a docstring pointer that prop:nomic-tense-free performs the same state-set induction for the tense-free fragment with a Nomic clause, for the nomic port (task 795) to reuse.\n\nAXIOM NOTE. `occurrence` goes through thm:extension and so through Zorn; the new corollaries will carry Classical.choice. Say so in the docstring and leave the axiom pin in Independence/DeterminismUndefinable.lean and the choice-free originals untouched.\n\nPAPER ANCHORS. def:state-set, def:flow, lem:state-set in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-15T00:46:46Z",
+      "last_updated": "2026-10-15T03:26:36Z",
       "artifacts": [
         {
           "path": "specs/792_pin_lem_state_set_flow_frames/reports/01_pin-lem-state-set-flow-frames.md",
@@ -208,7 +224,7 @@
           "summary": "Implementation plan: 01_pin-lem-state-set-flow-frames.md"
         }
       ],
-      "session_id": "sess_1792013208_936eb4",
+      "session_id": "sess_1792026404_b03e6d",
       "next_artifact_number": 2,
       "file_scope": [
         "FormalSystem/Metalogic/Independence/OrderTransfer.lean",

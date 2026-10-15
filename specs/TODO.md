@@ -122,10 +122,10 @@ next_project_number: 803
 
 ### Paper Alignment
 
-791 [RESEARCHED] — Prove prop:archimedean in the generality the paper states it:...
+791 [PLANNED] — Prove prop:archimedean in the generality the paper states it:...
   └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
     └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, and cite...
-792 [PLANNED] — Pin lem:state-set to the tree by discharging its remaining...
+792 [IMPLEMENTING] — Pin lem:state-set to the tree by discharging its remaining...
   └─ 794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
     └─ 793 [PLANNED] — Prove lem:after-negation, and the cut...
       └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in... (see above)
@@ -367,7 +367,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 
 ### 792. Pin lem state set flow frames
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 756, Task 790
@@ -390,11 +390,12 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 
 ### 791. Prop archimedean uz z1 fail non archimedean
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 788, Task 790
 - **Research**: [791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md]
+- **Plan**: [791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md]
 
 **Description**: Prove prop:archimedean in the generality the paper states it: for every Discrete temporal order D that is not Archimedean, neither Z1 (Future(Future φ → φ) → (future Future φ → Future φ)) nor UZ (future φ → ¬φ U φ) is valid over D. Both countermodels live on the translation frame F^tr_D along sigma_0 and turn on one division of D: the times within finitely many unit steps of 0 and those beyond every multiple of the unit. For Z1, |p| is the complement of the near times; for UZ, |p| is a copy of ℤ sitting above every multiple of 1.
 
