@@ -181,6 +181,32 @@ theorem translation_realizes_allFuture (D : TemporalOrder) (A : Set ↑D) (p : A
   rw [Truth.future_iff]
   exact forall_congr' fun r => forall_congr' fun _ => translation_realizes D A p r
 
+/--
+**The translation frame over a duration group with a least positive element satisfies
+`def:frame-properties`' bare Discrete clause.**
+
+`x + u` is the least strict upper bound of `x`, which is `isLeast_succ_of_isLeast_pos` read at
+the frame rather than at the carrier: `TaskFrame.IsDiscrete` is the pointwise clause
+`∀ x, (∃ y, x < y) → ∃ y', IsLeast {z | x < z} y'`, and the existence hypothesis is discarded
+because the witness is produced from `u` rather than from it.
+
+**Why here and not beside `translationFrame_isRegular` in `Semantics/Frames/Standard.lean`.**
+That module's import list is `TaskFrame` and nothing else — deliberately, as its own module
+docstring records, so that an index of the standard frames does not drag its indexed modules
+into every importer's closure. `TaskFrame.IsDiscrete` lives in `Semantics/FrameProperty.lean`
+and is not in that closure, so the lemma would have to widen it; this file already imports
+both.
+
+This is the frame-level reading of `(isDiscrete_iff_exists_isLeast_pos D).mpr`, which this file
+already carries. The *converse* reading needs no new lemma at all:
+`(isDiscrete_iff_exists_isLeast_pos D).mp` is already exactly it, which is why no
+least-positive-from-Discrete wrapper is stated anywhere.
+-/
+theorem translationFrame_isDiscrete (D : TemporalOrder) {u : ↑D}
+    (hu : IsLeast {z : ↑D | 0 < z} u) :
+    (translationFrame D).toTaskFrame.IsDiscrete :=
+  fun x _ => ⟨x + u, isLeast_succ_of_isLeast_pos hu x⟩
+
 /-! ## The permissive frame's history and model
 
 `permissiveFrame` itself now lives in `Semantics/Frames/Standard.lean`; only the history and

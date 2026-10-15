@@ -71,6 +71,9 @@ module, so the edge `Separability.lean → DurationClassification.lean` is acycl
 - `complete_duration_discrete_or_dense`: `Nonempty (D ≃+o ℤ) ∨ DenselyOrdered D`.
 - `complete_not_dense_iso_int`: not densely ordered ⇒ `Nonempty (D ≃+o ℤ)`.
 - `isLeast_pos_succ_zero`: `Order.succ 0` is the least strictly positive element.
+- `exists_gt_nsmul_of_not_archimedean`: a least positive `u` plus `¬ Archimedean D` yields a
+  time beyond every `n • u` — the witness the paper's `prop:archimedean` countermodels are
+  built from, and the negative companion to `archimedean_of_succ`.
 - `archimedean_of_succ`: `IsSuccArchimedean` ⇒ `Archimedean` (the discrete branch, the
   successor-side companion to `archimedean_of_lub`).
 - `intIso`: the packaged additive transfer `D ≃+o ℤ` for a nontrivial successor-Archimedean
@@ -234,6 +237,35 @@ theorem isGreatest_pred_of_isLeast_pos {p : D} (hp : IsLeast {y : D | 0 < y} p) 
   have h2 := le_sub_iff_add_le.mp hle
   rw [add_comm] at h2
   exact le_sub_iff_add_le.mpr h2
+
+/--
+**A non-Archimedean duration group with a least positive `u` has a time beyond every multiple
+of `u`.**
+
+The paper's step 1 in `prop:archimedean`: the division of `D` into the times within finitely
+many unit steps of `0` and those beyond every multiple of the unit is non-trivial exactly when
+`D` fails to be Archimedean, and this lemma produces the witness on the far side.
+
+`Archimedean` is a `class`, not a structure the hypothesis can be destructured through, so the
+negated hypothesis is opened by `by_contra` + `push Not` and then discharged by reconstructing
+the instance with the anonymous constructor: `¬ ∃ x, ∀ n, n • u < x` gives `∀ x, ∃ n, x ≤ n • u`
+at the *unit* `u`, which is the Archimedean property at every `y > 0` because `u ≤ y` by
+minimality, transported by `nsmul_le_nsmul_right`.
+
+`push Not` rather than the deprecated `push_neg`. No `linarith`: the binder bundle is a bare
+ordered abelian group with no ring structure, on which it does not fire.
+
+`archimedean_of_succ` in the `SuccessorBranch` section below is the positive side of the same
+picture — a successor-Archimedean duration group *is* Archimedean, so the carriers this lemma
+applies to are exactly the discrete ones that are not successor-Archimedean.
+-/
+theorem exists_gt_nsmul_of_not_archimedean {u : D} (hu : IsLeast {z : D | 0 < z} u)
+    (hna : ¬ Archimedean D) : ∃ x : D, ∀ n : ℕ, n • u < x := by
+  by_contra hc
+  push Not at hc
+  refine hna ⟨fun x y hy => ?_⟩
+  obtain ⟨n, hn⟩ := hc x
+  exact ⟨n, hn.trans (nsmul_le_nsmul_right (hu.2 hy) n)⟩
 
 end LeastPositive
 
