@@ -15,6 +15,7 @@ import FormalSystem.Semantics.SlicedFrame
 import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
+import FormalSystem.Semantics.Gluing
 import FormalSystem.Semantics.Presheaf
 import FormalSystem.Semantics.FrameAxioms
 import FormalSystem.Semantics.HistoryMorphism
@@ -89,6 +90,16 @@ three. The subdirectories `Extension/`, `Presheaf/`, `Ultraproduct/`, `Correspon
   state assignments on a *nonempty* time set; carries the totality predicate `IsTotal`, the
   convexity predicate `IsConvex`, the extension relation `Extends`, time shift, and
   `WorldHistory`, the *world histories* (the paper's possible worlds), i.e. the total ones
+- `Gluing`: the paper's Gluing lemma `app:gluing` at the convex-history layer, in full
+  generality — two convex histories agreeing at a shared point of their domains glue to the
+  **unique** convex history on the union of those domains restricting to each
+  (`convexGlue`, `gluing_clause`, `gluing_clause_of_overlap`). Choice-free, and pinned so by
+  `C14`; `DecidablePred τ₁.domain` is the price of defining a function by cases on a union, in
+  the manner of Mathlib's `Set.piecewise`. Built on `PartialHistory` alone and locked **below**
+  `Truth` with `assert_not_exists` on the proof system, so its import closure provably cannot
+  reach `Extension/`, where Zorn's lemma enters. The three landed special cases
+  (`Presheaf.sheaf_clause`, `Presheaf.Ray.seamGlue`, `Presheaf.directed_gluing_clause`) are left
+  independent by recorded decision, the two seam ones witnessed as instances
 - `Presheaf.Site` / `Presheaf.Behavior`: the partial-history layer repackaged categorically —
   the interval site `Int(D)` of `def:interval-site` (objects the durations, morphisms the
   translations `Tr p`, with the three category laws and the Johnstone coverage) and the behavior
