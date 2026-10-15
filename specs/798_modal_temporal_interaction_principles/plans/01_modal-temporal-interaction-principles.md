@@ -1,7 +1,7 @@
 # Implementation Plan: Task #798
 
 - **Task**: 798 - Port the eleven unported modal-temporal interaction principles Pthm:11 -- Pthm:22 from the paper's companion cut file, together with the duality lemma P8 that two of their proofs consume
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/798_modal_temporal_interaction_principles/reports/01_modal-temporal-interaction-principles.md`

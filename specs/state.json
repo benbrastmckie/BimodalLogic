@@ -2290,14 +2290,14 @@
     {
       "project_number": 798,
       "project_name": "modal_temporal_interaction_principles",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Port the eleven unported modal-temporal interaction principles Pthm:11 -- Pthm:22 from the paper's companion cut file, together with the duality lemma P8 that two of their proofs consume.\n\nTHE SOURCE, AND WHY IT IS A PORTING CANDIDATE. The block stood after cor:tm-decidability and was cut on INTERNAL REDUNDANCY -- Pthm:17 restates P4 of sub:Logic verbatim and is the reverse half of Pthm:20, Pthm:16 is exactly Pthm:21 together with Pthm:22, and Pthm:18 follows from Pthm:15 together with Pthm:14 -- and NOT because this repository already had them. It is kept verbatim, with a complete derivation for every item, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'Twelve further interaction principles'. Redundancy in a paper is not redundancy in a library: these are true, proved, and currently absent here. Reverting commit 57dc354e in the paper repository restores the block in its original place.\n\nTHE TWELVE, as Hilbert-style theorems over an arbitrary frame class, writing the paper's sometimes/always for the tree's `sometimes` / `always`:\n  Pthm:11  sometimes diamond phi -> diamond phi\n  Pthm:12  always diamond phi -> diamond phi\n  Pthm:13  sometimes box phi <-> box phi\n  Pthm:14  always box phi <-> box phi\n  Pthm:15  box always phi <-> always box phi\n  Pthm:16  diamond sometimes phi <-> sometimes diamond phi\n  Pthm:17  diamond sometimes phi -> diamond phi   [ALREADY PRESENT -- see below]\n  Pthm:18  box always phi <-> box phi\n  Pthm:19  diamond always phi -> diamond phi\n  Pthm:20  diamond phi <-> diamond sometimes phi\n  Pthm:21  sometimes diamond phi -> diamond sometimes phi\n  Pthm:22  diamond sometimes phi -> sometimes diamond phi\n\nWHAT EXISTS, verified against the tree rather than taken from the cut file's provenance note. FormalSystem/Theorems/Perpetuity/ carries P1 -- P6 as proof-term `def`s (`perpetuity1` .. `perpetuity5` in Perpetuity/Principles.lean, `perpetuity6` in Perpetuity/MonotonicityDuality.lean). Pthm:17 IS present, as `FormalSystem.Theorems.Perpetuity.perpetuity4` (Principles.lean:514) -- do not restate it. Of the premises the cut derivations cite: TF is available through `boxDiamondToFutureBoxDiamond` / `boxDiamondToPastBoxDiamond` (Principles.lean:578, :587) and `boxToFuture` / `boxToPast` (Perpetuity/Helpers.lean:61, :81); MT, M5, MK, MN, TN, TR are axioms and rules of the derivation system; P7 (not-always phi <-> sometimes-not phi) IS present, as the pair `temporalDualityNeg` (MonotonicityDuality.lean:350) and `temporalDualityNegRev` (:426).\n\nONE CORRECTION TO THE CUT FILE'S OWN NOTE, which this task must not propagate. That note says \"P7 and P8, used by two of the proofs, have none\". That is STALE for P7, which exists as the pair just named, and CORRECT for P8 (not-sometimes phi <-> always-not phi), which is genuinely absent -- only the modal analogue `modalDualityNeg` / `modalDualityNegRev` (not-box phi <-> diamond-not phi, MonotonicityDuality.lean:78, :108) exists. Independently confirmed: no box-always / always-box / diamond-sometimes / sometimes-diamond interaction principle appears anywhere under FormalSystem/Theorems/ beyond perpetuity1 -- perpetuity6.\n\nDELIVER: (1) P8 in both directions, sited beside `temporalDualityNeg` / `temporalDualityNegRev` and following their proof shape; (2) the eleven unported principles as `def`s in the repository's proof-term style, each with a docstring naming its cut-file label and following the structure of the cut derivation; (3) a docstring cross-reference on `perpetuity4` recording that it is Pthm:17 of that block and the reverse half of Pthm:20 -- a cross-reference, not a restatement; (4) the block's internal dependency chain honoured rather than re-proved from the axioms: Pthm:17 from Pthm:11 and Pthm:16, Pthm:18 from Pthm:15 and Pthm:14, Pthm:21 from Pthm:11 and Pthm:20, Pthm:22 from P5, exactly as the cut proofs do.\n\nSITING AND AGGREGATOR CONTENTION. Decide at plan time between a new module (e.g. FormalSystem/Theorems/Interaction.lean) and extending the Perpetuity cluster; record the choice and the reason. A new module requires a one-line import in FormalSystem/Theorems.lean, which is a shared touch across every task adding to that aggregator: do not dispatch this concurrently with another such task, and re-run lake build after the import edit.\n\nWORTH DOING BEYOND PAPER FIDELITY. Five of the eleven (Pthm:13, 14, 15, 18, 20) are biconditionals that collapse modal-temporal nesting. Those are rewrite lemmas, not merely recorded facts. Before siting, check whether the normal-form and decidability modules can consume them, and say so in the docstrings if they can.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase. Write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, keys resolving in the root references.bib.",
       "created": "2026-10-14T21:59:04Z",
-      "last_updated": "2026-10-15T15:38:56Z",
+      "last_updated": "2026-10-15T17:43:45Z",
       "artifacts": [
         {
           "path": "specs/798_modal_temporal_interaction_principles/reports/01_modal-temporal-interaction-principles.md",
@@ -2308,6 +2308,11 @@
           "path": "specs/798_modal_temporal_interaction_principles/plans/01_modal-temporal-interaction-principles.md",
           "type": "plan",
           "summary": "Four-phase implementation plan: module + P8 + helpers + both aggregators; the eleven principles; the perpetuity4 cross-reference and prose surfaces; generated surfaces and the full gate sweep."
+        },
+        {
+          "path": "specs/798_modal_temporal_interaction_principles/summaries/01_modal-temporal-interaction-principles-summary.md",
+          "type": "summary",
+          "summary": "Sixteen modal-temporal interaction declarations ported into a new Interaction module, both aggregators wired, generated inventories current."
         }
       ],
       "session_id": "sess_1792077807_2be444",
@@ -2322,7 +2327,8 @@
         "README.md",
         "specs/798_modal_temporal_interaction_principles/summaries/01_modal-temporal-interaction-principles-summary.md",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Ported the eleven unported modal-temporal interaction principles Pthm:11--Pthm:22 plus the duality P8 and two auxiliary derivations into a new FormalSystem/Theorems/Interaction.lean, sixteen proof-term defs in all, wired into both aggregators. Pthm:17 was not restated: perpetuity4's docstring now records that it is Pthm:17 and Pthm:20's reverse half. Whole-project build green with zero sorry and no new axiom."
     },
     {
       "project_number": 799,
@@ -2367,7 +2373,7 @@
     {
       "project_number": 800,
       "project_name": "stability_time_reflection_transport",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -2376,8 +2382,9 @@
       ],
       "description": "Extend the time-reflection transport from BL to the Stability language.\n\nTHE SPECIFICATION, stated exactly in the paper's cut proof of cor:deterministic-completeness: lem:time-reflection extends to BL-plus by setting the mirror of a Stability formula to be the Stability of its mirror, \"since tau |-> tau-minus carries the state-local class at x onto the state-local class at n(x), and F |-> F-minus preserves the class of frames validating Determined, leaving the temporal order unchanged, where F-minus validates an instance of Determined just in case F validates its mirror image, itself an instance of Determined.\" That passage is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'The stability logic and its completeness over the deterministic frames', inside the soundness half of the proof. It is a specification for this task, not a theorem to cite.\n\nDEPENDS on the time-reflection task, which lands `revAntiIso`, `truthAt_rev` (lem:time-reflection for the base `Formula`), `validOn_rev_iff`, and the closure of Base, Dense, ZTime and RTime under `rev`. This task is the Plus-language layer above that one and must not duplicate it.\n\nWHAT EXISTS. The Stability language is live: FormalSystem/PlusLanguage/ carries `PlusFormula`, `PlusTruth`, `PlusValidity`, `PlusDeterminism`, and `PlusStateLocal` -- the state-local equivalence the Stability clause quantifies over, which is the object the carrying lemma below is about. The frame-level involution is in FormalSystem/OpenLanguage/OpenReversal.lean (`FrameOver.rev`, `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, `rev_isRegular`, `rev_surjective`). The metalogic that consumes the reflected class is FormalSystem/Metalogic/Deterministic/ (`detSoundness`, `detSoundnessDet`, and the completeness family). Before adding anything, check whether `PlusFormula` already carries a `reflectTime` and a `reflect_time_*` simp family -- the base `Formula` does, in FormalSystem/Syntax/Formula.lean.\n\nDELIVER: (1) `PlusFormula.reflectTime` with the Stability clause commuting, and its simp lemmas, if not already present; (2) THE ONE GENUINELY NEW SEMANTIC STEP: the carrying lemma that `WorldHistory.rev` maps the state-local class at x onto the state-local class at -x -- everything else in this task is transport; (3) the BL-plus form of lem:time-reflection from (2) together with the base transport; (4) the class-closure statement -- the task frames validating Determined are closed under `rev`, by the mirror-image argument the cut proof gives -- and hence the BL-plus form of thm:TR-valid over that class; (5) a decision, recorded in the docstring, on whether the Deterministic/ soundness proof's TR case should now consume (4) or keep its present route.\n\nSCOPE LIMIT. This is the reflection transport only. It is NOT a port of cor:deterministic-completeness, which is already in the tree under Metalogic/Deterministic/, and it is not the Open-language reversal in OpenLanguage/OpenReversal.lean, which is an independent copy of the same involution at a different language. If all three can be unified behind one transport, that is a finding to REPORT, not a licence to refactor mid-task.\n\nPAPER ANCHORS. def:time-reflection, lem:time-reflection and thm:TR-valid in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, which the base task clears; this task covers the Stability extension the paper states only inside the cut proof.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase; the `assert_not_exists` guards in Semantics/Truth.lean must stay satisfied if anything is promoted between clusters.",
       "created": "2026-10-14T21:59:04Z",
-      "last_updated": "2026-10-14T21:59:04Z",
-      "artifacts": []
+      "last_updated": "2026-10-15T17:10:26Z",
+      "artifacts": [],
+      "session_id": "sess_1792077807_2be444_800"
     }
   ],
   "artifacts": [

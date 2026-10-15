@@ -11,7 +11,7 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,798,799,800,801,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,799,800,801,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783,795,797,802 | 298,464,502,616,761,772,801 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -122,9 +122,8 @@ next_project_number: 805
 
 ### Paper Alignment
 
-798 [PLANNED] — Port the eleven unported modal-temporal interaction...
 799 [PLANNED] — Discharge the Zorn dependence that the state-set corollaries...
-800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
+800 [RESEARCHING] — Extend the time-reflection transport from BL to the Stability...
 801 [PLANNED] — Re-pin the BX/TM anchor wave in...
   └─ 795 [RESEARCHED] — Formalize the nomic operator and its three results, on the...
   └─ 797 [RESEARCHED] — Formalize the cut shift-of-finite-type remark. The paper's...
@@ -240,7 +239,7 @@ NON-GOALS: no new Lean declarations and no change to the axiom set — 788 alrea
 
 ### 800. Stability time reflection transport
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 796
@@ -292,12 +291,13 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry. The existing axiom pin
 
 ### 798. Modal temporal interaction principles
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
 - **Research**: [798_modal_temporal_interaction_principles/reports/01_modal-temporal-interaction-principles.md]
 - **Plan**: [798_modal_temporal_interaction_principles/plans/01_modal-temporal-interaction-principles.md]
+- **Summary**: [798_modal_temporal_interaction_principles/summaries/01_modal-temporal-interaction-principles-summary.md]
 
 **Description**: Port the eleven unported modal-temporal interaction principles Pthm:11 -- Pthm:22 from the paper's companion cut file, together with the duality lemma P8 that two of their proofs consume.
 
