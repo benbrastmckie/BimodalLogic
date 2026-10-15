@@ -219,30 +219,34 @@ commands the task list already runs for measurement.
 
 ---
 
-### Phase 2: Re-pin the five low-cost anchors (Tier A and Tier D) [NOT STARTED]
+### Phase 2: Re-pin the five low-cost anchors (Tier A and Tier D) [COMPLETED]
 
 **Goal**: Shrink the red surface by re-pinning the five anchors that carry no membership judgment —
 `CO` (a citation append only) and the four unformalized objective-modality anchors the user
 authorized absorbing — leaving the whole-file sentinels untouched.
 
 **Tasks**:
-- [ ] Re-read `docs/reference/paper-definitions-of-record.md` immediately before editing (siblings
+- [x] Re-read `docs/reference/paper-definitions-of-record.md` immediately before editing (siblings
       796/798/799 are live this cycle with no declared `file_scope`).
-- [ ] For each of `CO` (prose entry at ~line 1625, MANIFEST row ~1637), `def:id` (~2031),
+- [x] For each of `CO` (prose entry at ~line 1625, MANIFEST row ~1637), `def:id` (~2031),
       `def:strongest` (~2057), `thm:exist` (~2076), `lem:uniq` (~2085): assert the pinned latex
       fence re-hashes to the OLD sha256 recorded in Phase 1 **before** writing, then replace the
       fence with the `--resolve` text, update the entry's `sha256:` line, and update the MANIFEST
       row's trailing hash.
-- [ ] Update the three stale prose-entry headings the revision invalidates: `def:strongest`'s
+- [x] Update the three stale prose-entry headings the revision invalidates: *(deviation: altered —
+      `def:strongest`'s heading was rewritten as part of its DANGLING retirement rather than as a
+      live-entry heading fix; `thm:exist` became "L includes a strongest objective modality (the
+      existential claim)" and `lem:uniq` "uniqueness up to equivalence of the strongest objective
+      modality", both dropping "normal" and the `Str'`/`Bm` references the revision retired.)* `def:strongest`'s
       heading still names "strongest objective **normal** modal operator … and the meet of the
       objective modalities Str'^O_L(Q)" though the primed `Str'` operator was dropped;
       `thm:exist`'s heading still says "strongest objective **normal** modal operator"; check
       `lem:uniq`'s heading the same way.
-- [ ] Leave `PINNED_COMMIT`, `FILE_CHECKSUM` and `LINE_COUNT` (lines ~64-68) and the summary-table
+- [x] Leave `PINNED_COMMIT`, `FILE_CHECKSUM` and `LINE_COUNT` (lines ~64-68) and the summary-table
       rows (~59-62) **untouched** — they move in Phase 3, last.
-- [ ] Re-run `bash scripts/check-paper-definitions.sh`; confirm it still reports case (c) and is
+- [x] Re-run `bash scripts/check-paper-definitions.sh`; confirm it still reports case (c) and is
       now red on exactly the five remaining BX/TM anchors.
-- [ ] Commit with an explicit single-file pathspec.
+- [x] Commit with an explicit single-file pathspec.
 
 **Timing**: 1 hour
 
@@ -251,6 +255,16 @@ authorized absorbing — leaving the whole-file sentinels untouched.
 **Verification Tier**: local
 
 **Commit Mode**: per-substep
+
+**Executed scope** (see Phase 1's recorded delta): the five re-pinned anchors were `CO`, `def:id`,
+`thm:exist`, `lem:uniq` and `thm:s5` — `thm:s5` in place of `def:strongest`, which the paper had
+retired to a dangling label by implementation time and which was therefore removed from the
+MANIFEST with its prose entry retained and marked `DANGLING` plus a `KNOWN-ANCHORS` row, rather
+than re-pinned. `grep -c` confirmed exactly one prose heading and one MANIFEST row for each of the
+six before any write, and each OLD fence was asserted against its recorded OLD sha256 by
+`repin.py` (`CO`'s tab-prefixed single line by hand, same assertion) — nothing was written for an
+anchor whose OLD block did not re-hash. The paper moved a ninth time mid-phase, so `def:id`'s NEW
+hash is `b52579e8` (resolve-time) rather than the `36da35ab` measured minutes earlier in Phase 1.
 
 **Scope Hypothesis**: five anchors, each with exactly one prose entry and exactly one MANIFEST row
 (15 edited lines plus the latex fences), in one file. Confirm by `grep -n` for each anchor id in

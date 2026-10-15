@@ -1634,7 +1634,7 @@ demonstrate the mechanism handles both anchor kinds:
 
 | Anchor (`\label`) | Displayed key | Verbatim text | sha256 |
 |---|---|---|---|
-| `CO` | CO | `\aitem{CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.` | `5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41` |
+| `CO` | CO | `\aitem{CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.\leanfoot{DedekindDerived.coDerived}` | `707368059ff1f7cc53c8b4ca9c591781ee427263797c8d36d3fb85e8abe8e955` |
 | `TMP-CO` | CO (same displayed key, `BL^+` restatement) | `\aitem[CO]{TMP-CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.` | `2205e7115342b037faeb67a24cb7679e393af582cedf6752c0c07d9a28b8f1be` |
 
 **2026-09-07 update.** The live paper no longer carries an `\aitem{...}{TMP-CO}`: the `BL^+`
@@ -2032,29 +2032,39 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
 
 ```latex
 \begin{Ddef} \label{def:id}
-  Letting $\BL^{\Box}$ be the purely modal fragment of $\BL$, each $p_i \in \SL$ will be understood to be a \textit{propositional variable} rather than sentence letter.
-  The \textit{identity extension} of $\BL^{\Box}$ is a language $\BL^{\equiv}$ enriched to include a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ just is for $\psi\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\alpha$ and $\beta$ are both formulas or, once operator terms are available in \textbf{\ref{def:lang}}, both operator terms, and $\chi_{(\beta/\alpha)}$ is the result of replacing one or more occurrences of $\alpha$ in any formula $\chi$ with $\beta$:
+  The logic for $\BL^{\equiv}$ comprises classical propositional logic and the minimal theory of identity given below, where $\alpha$ and $\beta$ are both formulas or both operator terms, and $\chi_{(\beta/\alpha)}$ is the result of replacing one or more occurrences of $\alpha$ in any formula $\chi$ with $\beta$:
 	\vspace{-.125in}
 	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
 		\begin{multicols}{2}
 			\aitem{Ref} $\vdash \alpha \equiv \alpha$.
 			\aitem{Imp} $\vdash (\varphi \equiv \psi) \rightarrow (\varphi \rightarrow \psi)$.
-			\aitem[LL$^{-}$]{LL} $\vdash (\alpha \equiv \beta) \rightarrow (\chi \rightarrow \chi_{(\beta/\alpha)})$
-        where $\beta$ is free for $\alpha$ in $\chi$ and no replaced occurrence of $\alpha$ lies within the argument of an operator term.%
-        \footnote{
-          A term $\beta$ is \textit{free for} $\alpha$ in $\chi$ just in case no replaced occurrence of $\alpha$ lies within the scope of a quantifier binding a variable free in $\alpha$ or $\beta$, whether a propositional variable or, in \textbf{\ref{def:lang}}, an operator variable.
-          The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers, and substantive in the quantified extension of \textbf{\ref{def:lang}}.
-        }
+			\aitem[LL$^{-}$]{LL} $\vdash (\alpha \equiv \beta) \rightarrow (\chi \rightarrow \chi_{(\beta/\alpha)})$.
+        % NEW CHANGE: the proviso is stated once for every operator term, since the operator terms now belong to BL^equiv. It is needed already here, since unrestricted LL would make Box transparent before transparency is posited for the objective modalities alone.
+        where no replaced occurrence of $\alpha$ lies within the argument of an operator term.
 		\end{multicols}
 	\end{enumerate}
 	\vspace{-.175in}
-  The theory of propositional identity need not be Boolean, accommodating theories in which the Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021} where transparency is maintained for the entirety of the language rather than posited for just a single operator as above.}
-  The symmetry and transitivity of $\equiv$ are nevertheless derivable at either type, and since each replaces an occurrence lying outside the argument of any operator term, both survive the proviso on \textbf{\aref{LL}}.
+  % NEW CHANGE: the type note and the sentence on symmetry and transitivity return here from def:lang, since both types now exist here.
+  \textbf{\aref{Ref}} and \textbf{\aref{LL}} are schemata at both types whereas \textbf{\aref{Imp}} concerns formulas alone.
+  The symmetry and transitivity of $\equiv$ are derivable at either type from \textbf{\aref{Ref}} and \textbf{\aref{LL}}, and since each replaces an occurrence lying outside the argument of any operator term, both survive the proviso on \textbf{\aref{LL}}.
+  The theory of propositional identity need not be Boolean, accommodating theories in which the Boolean identities do not hold.\footnote{I defend a hyperintensional theory of propositional identity in Brast-McKie \cite{Brast-McKie2021} where transparency is maintained for the entirety of the language rather than posited below for the objective modalities alone in \textbf{\aref{O-Tran}}.}
 \end{Ddef}
 ```
-sha256: `f56301e580b40894ddd7d69c6a72d326a8a41f984f8713cf431215b5f0fd9c92`
+sha256: `b52579e8e67ad0f540e5eef2a313e28567352b5e68dc0cbd28552a33d50744be`
 
-### `def:strongest` — strongest objective normal modal operator Str^O_L(Q), and the meet of the objective modalities Str'^O_L(Q)
+### `def:strongest` — strongest objective modal operator Str^O_L(Q), and the meet of the objective modalities Str'^O_L(Q) — **DANGLING as of the 2026-10-15 BX/TM demotion wave (removed from manifest)**
+
+The paper removed the `\label{def:strongest}` definition outright. `Str` is now an object-language
+abbreviation introduced as an `\aitem{Str}` key inside `\label{def:key-terms}` — the
+operator-predicate definition that also carries `Fac`, `Ax` and `Ord` — reading
+`$\Str^{\OO}(\Q) \coloneq \OO(\Q) \wedge \forall\P[\OO(\P) \rightarrow (\Q \preceq \P)]$`,
+with the `L` subscript dropped and strongest-hood expressed by derivability of that formula.
+The primed `Str'` notion and its dominance argument went with the removed definition, which is
+why `thm:exist` and `lem:uniq` lost their `Str'` halves in the same wave. The text below is
+retained as the last-resolved historical record: any docstring still quoting it is quoting a
+version of the paper that no longer exists. Succeeded by `def:key-terms`, which this file does
+not pin — no in-tree docstring quotes its text, and the anchor carries a `LIVE-UNPINNED` row
+only if one starts to.
 
 ```latex
 \begin{Ddef} \label{def:strongest}
@@ -2073,28 +2083,23 @@ sha256: `f56301e580b40894ddd7d69c6a72d326a8a41f984f8713cf431215b5f0fd9c92`
 ```
 sha256: `1df0d202e5c4ccfeb92b6c83048ece99bb80dc6ce46774a05ff9e728e93231ec`
 
-### `thm:exist` — L has a strongest objective normal modal operator (Bm witnesses)
+### `thm:exist` — L includes a strongest objective modality (the existential claim)
 
 ```latex
 \begin{Tthm}[Existence] \label{thm:exist}
-	$\Str'^{\OO}_{L}(\Bm)$, and hence $\Str^{\OO}_{L}(\Bm)$, so $L$ includes a strongest objective modal operator.
+	$\vdash \exists\Q\,\Str^{\OO}(\Q)$, so $L$ includes a strongest objective modality.
 \end{Tthm}
 ```
-sha256: `93d234140af7d36b60d55ffa2248a3f3896c6a80e115b2801efaeed07c115eef`
+sha256: `1a70ff465a8077e896592ef0cab36a4476c89864fa05920120d01e928938e9cd`
 
-### `lem:uniq` — uniqueness of the strongest objective normal modal operator
+### `lem:uniq` — uniqueness up to equivalence of the strongest objective modality
 
 ```latex
 \begin{Lthm}[Uniqueness] \label{lem:uniq}
-	If $\Str^{\OO}_{L}(\Q)$ and $\Str^{\OO}_{L}(\P)$, then $\vdash \forall p(\Q p \leftrightarrow \P p)$; and if $\Str'^{\OO}_{L}(\Q)$ and $\Str'^{\OO}_{L}(\P)$, then $\vdash \Q \equiv \P$.%
-	\footnote{
-		Neither \textbf{\aref{I8}} nor the identity of two strongest objective modalities is derivable from the remaining axioms and postulates.
-		Let $\mathcal{C}$ be the class of all relations on a nonempty $\mathcal{W}$ and let operator variables range over pairs $\tuple{f, i}$ of an operation $f$ on $\wp(\mathcal{W})$ and a tag $i \in \set{0,1}$, where application and $\OO$ read $f$ alone, $\tuple{f,i} \circ \tuple{g,j} \coloneq \tuple{f \circ g, 1}$, converse likewise acts on $f$ as in \textbf{\ref{def:rel-model}} and returns tag $1$, $\Bm$ denotes $\tuple{\Q_{\mathcal{W} \times \mathcal{W}}, 0}$, and $T \equiv T'$ expresses $\mathcal{W}$ just in case $T$ and $T'$ denote the same pair.
-		Every axiom and postulate other than \textbf{\aref{I8}} is validated as in \textbf{\ref{lem:rel-model}}, since every context of an operator term is a function of the pair it denotes and the postulates read only first coordinates, and $\Str^{\OO}_{L}(\Bm)$ and $\Str^{\OO}_{L}(\Bm \circ \Bm)$ are both theorems, yet $\Bm$ and $\Bm \circ \Bm$ denote distinct pairs.
-	}
+	If $\vdash \Str^{\OO}(\Q)$ and $\vdash \Str^{\OO}(\P)$, then $\vdash \forall p(\Q p \leftrightarrow \P p)$.
 \end{Lthm}
 ```
-sha256: `56f31fcacb80f4811e98c7ab8c1bcd49502cb8d51b10f813f36a2c943a950003`
+sha256: `3fe647f782b71327a8cedfae5e80a83e143453fef4b77ef96fd465369b4866b9`
 
 ### `thm:s4` — the strongest objective operator obeys S4 — **DANGLING as of the 2026-08-25 re-pin (removed from manifest)**
 
@@ -2142,10 +2147,10 @@ re-pin because the pair it replaces was load-bearing and would otherwise have go
 
 ```latex
 \begin{Tthm} \label{thm:s5}
-	If $\Str^{\OO}_{L}(\Q)$, then  $\vdash \forall p(\Q p \rightarrow \Q\Q p)$, $\vdash \forall p(p \rightarrow \Q\Dual{\Q}p)$, and $\vdash \forall p(\Q p \rightarrow p)$.
+	If $\vdash \Str^{\OO}(\Q)$, then $\vdash \forall p(\Q p \rightarrow \Q\Q p)$, $\vdash \forall p(p \rightarrow \Q\Dual{\Q}p)$, and $\vdash \forall p(\Q p \rightarrow p)$.
 \end{Tthm}
 ```
-sha256: `14b32c8a3281aa246e1f83277fd940bdb9fcb8b88b702cda42c0fbf89a0112d7`
+sha256: `be08911a0adace5f87b4870bf80a22ad92cb5e16303628887d8087a529ed57f8`
 
 ### Satisfiability — **no paper-native definition exists** (recorded as a gap, not fabricated)
 
@@ -2244,7 +2249,7 @@ def:BLplus-language|env|-|-|b7027d468a844f09068c7dc765498e4668708ac09b175cfc2059
 def:time-shift-histories|env|-|-|99588bf0dec609563ce3fe129bee59b3ca36826726349b3e0f7fc403efdbedbc
 def:frame-validity|env|-|-|4fdc41ce401c80032aef112060e0b9ce932b82c777759272bba7998dc113ad61
 def:logical-consequence|env|-|-|3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486
-CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41
+CO|aitem|-|-|707368059ff1f7cc53c8b4ca9c591781ee427263797c8d36d3fb85e8abe8e955
 def:S5|env|-|-|dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257
 def:BX|env|-|-|8fdba7ab64b74d245bd47bfa14e6baac17c9d2ce67fdea5371a5fa9fc624a903
 def:BX-z|env|-|-|96e4b25e71c457bd3618f3a818b1852176b345d2c86199fbe16b6c46076ba334
@@ -2260,11 +2265,10 @@ def:deterministic|env|-|-|9a347781ddbb850ddcc5500f4a614309fd47fae7e20f63eaef7335
 def:BLstar-semantics|env|-|-|b4d3239cc96ddd1e90965901aca8c378f6ec5ca52f568ea6b2ef59d9c3ba6c95
 cor:saturation-finite|env|-|-|98fac4cfb09991ec3046ab843e1d3fa5e089e2e52d50dbe7130bacdf8528353a
 cor:tm-completeness|env|-|-|f8f5b41f998e59322052accce9ac219dfbe9fe7931329bebbdb5b1cc855f0bce
-def:id|env|-|-|f56301e580b40894ddd7d69c6a72d326a8a41f984f8713cf431215b5f0fd9c92
-def:strongest|env|-|-|1df0d202e5c4ccfeb92b6c83048ece99bb80dc6ce46774a05ff9e728e93231ec
-thm:exist|env|-|-|93d234140af7d36b60d55ffa2248a3f3896c6a80e115b2801efaeed07c115eef
-lem:uniq|env|-|-|56f31fcacb80f4811e98c7ab8c1bcd49502cb8d51b10f813f36a2c943a950003
-thm:s5|env|-|-|14b32c8a3281aa246e1f83277fd940bdb9fcb8b88b702cda42c0fbf89a0112d7
+def:id|env|-|-|b52579e8e67ad0f540e5eef2a313e28567352b5e68dc0cbd28552a33d50744be
+thm:exist|env|-|-|1a70ff465a8077e896592ef0cab36a4476c89864fa05920120d01e928938e9cd
+lem:uniq|env|-|-|3fe647f782b71327a8cedfae5e80a83e143453fef4b77ef96fd465369b4866b9
+thm:s5|env|-|-|be08911a0adace5f87b4870bf80a22ad92cb5e16303628887d8087a529ed57f8
 ```
 <!-- MANIFEST:END -->
 
@@ -2344,6 +2348,7 @@ def:TMplus-f|DANGLING|renamed by the paper to def:BX-z, which IS pinned; cited o
 def:behavior-presheaf|DANGLING|the Ddef defining Beh(F)(l) as the convex histories on [0, l] with restriction along Tr p. app:Structure was cut from the paper IN FULL under an explicit % SECTION CUT record ("Topological and Categorical Structure" (app:Structure) in full) and the surviving commented block carries a bare % CHECK; the author has not finished reviewing it, and this anchor went with the cut. FORMALIZED as Beh and its presheaf action (FormalSystem/Semantics/Presheaf/Behavior.lean); the citation site records the cut. NOT PINNABLE, as for app:Structure
 def:directed|DANGLING|label removed; the supseteq-directed definition was folded inline into def:frame's opening clause. Retained above as a DANGLING entry
 def:interval-site|DANGLING|the Ddef defining the interval site Int(D): objects the positive cone, morphisms the translations Tr p, with the Johnstone coverage. app:Structure was cut from the paper IN FULL under an explicit % SECTION CUT record ("Topological and Categorical Structure" (app:Structure) in full) and the surviving commented block carries a bare % CHECK; the author has not finished reviewing it, and this anchor went with the cut. FORMALIZED as Obj/Tr/Tr.comp and the coverage trio (FormalSystem/Semantics/Presheaf/Site.lean); the citation site records the cut. NOT PINNABLE, as for app:Structure
+def:strongest|DANGLING|label removed by the paper in the 2026-10-15 BX/TM demotion wave; Str survives as an \aitem{Str} key inside def:key-terms, with the L subscript dropped and the primed Str' notion gone. Retained above as a DANGLING entry. Cited as a pointer by typst/FormalFoundations.typ (and whitelisted for typst-sync-check Check 1 at typst/sync-check-whitelist.txt), which records the retirement at the citation site; no docstring quotes its text
 lem:fibers|DANGLING|label removed 2026-08-17; content absorbed into lem:admissible's proof; retained above
 thm:BLplus-NextPrevious|DANGLING|label removed with the BL^+ fragment cluster. Retained above as a DANGLING entry
 thm:BLplus-PastFuture|DANGLING|label removed with the BL^+ fragment cluster. Retained above as a DANGLING entry
