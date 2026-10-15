@@ -1,19 +1,24 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 801,
-  "phase": "plan",
-  "dispatch_seq": 10,
-  "session_id": "sess_1792077807_2be444_801",
-  "phases_completed": 0,
+  "phase": "implement",
+  "dispatch_seq": 11,
+  "session_id": "sess_1792095464_fd54b2",
+  "phases_completed": 7,
   "phases_total": 7,
-  "summary": "Wrote a seven-phase plan from the research report's membership map, tier tables and gate-coupling findings. Phase 1 re-derives the live wave (no repo write); Phases 2-3 re-pin the ten anchors in two cost-ordered passes inside docs/reference/paper-definitions-of-record.md, author the dated drift-correction entry and re-take the three whole-file sentinels last; Phases 4-6 run in parallel over disjoint file sets (the C15-coupled Lean docstrings plus theorem-index anchors as one atomic-batch with a single full build; the paper-attribution rewrite in axiom-reference.md and both Typst documents; the pre-788 count tables C14 is blind to); Phase 7 is the full gate sweep with a conditional acceptance statement. Re-measured the paper during this dispatch: it moved a seventh time (whole-file sha256 76a39caf -> 9c9d8f64, now dirty against HEAD b939ccf9) but the ten drifted anchors and all ten of their live per-anchor hashes are unchanged from the research round, so the anchor-level wave is now corroborated twice while the sentinels must still be re-taken at implementation time.",
+  "summary": "Absorbed the BX/TM demotion wave into docs/reference/paper-definitions-of-record.md: ten anchors re-pinned mechanically (each OLD fence asserted against its recorded OLD sha256 before any write, each NEW text reconstructed from --resolve and re-hashed against the resolver's own sha) and def:strongest retired DANGLING, under a dated drift-correction entry whose headline is a set identity -- the paper's sixteen named primitives plus the four CPL constructors are now exactly inductive Axiom's twenty, so the record's standing 'proper subset, minus the nine' framing is retired. Then corrected every in-tree claim about the paper's BX/TM membership across sixteen files: UE and UT are not paper keys at all, TC and TL are derived theorems of BX, NP/NF/NA of TM rather than BX, Z1 of TM_z, DN of BX_d, and NB is an axiom of def:TMplus alongside MF; plus five pre-788 count tables that no gate can see, and two sites that labelled a CO quotation 'verbatim' without reproducing it. Acceptance is conditional by construction: check-paper-definitions.sh exits 0 against paper sha256 5362b6ba32825d32e73f8adeeeade63d2f8d556cebd9ba0603a595225b970245 at 4079 lines, paper HEAD bc010a06, dirty -- the paper moved six times during this dispatch, five of them on def:id alone.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/summaries/01_bx-tm-repin-and-membership-prose-summary.md",
+      "summary": "Execution summary naming the absorbed revision, the five def:id re-pins, the two in-phase gate collisions and the one inherited red."
+    },
+    {
       "type": "plan",
       "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/plans/01_bx-tm-repin-and-membership-prose.md",
-      "summary": "Seven-phase implementation plan, 8 hours estimated, waves [[1],[2],[3],[4,5,6],[7]]; validate-artifact.sh passes with 0 warnings."
+      "summary": "All seven phases [COMPLETED], with per-phase executed-scope notes recording every deviation from the Scope Hypotheses."
     }
   ],
-  "next_steps": "Run /implement 801 to execute the plan"
+  "next_steps": "None within this task. Two follow-ups are recorded in the summary: app:discrete's DN-does-not-prove-NN independence claim is unformalized and unrowed by the user's recorded decision, and C14's stale-literal set and markdown scope left all five of this task's count tables mechanically invisible."
 }

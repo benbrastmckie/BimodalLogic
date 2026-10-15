@@ -1,30 +1,53 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-15T20:19:21Z",
+  "completed_at": "2026-10-15T21:38:58Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_note": "One grep hit, FormalSystem/Examples/TemporalStructures.lean:495 'int_domain_universal ... := trivial', pre-existing and byte-identical at the baseline commit 90afe55a2 (git grep -c gives one hit there too). This task added no Lean declaration, so it neither introduced nor could remove it.",
+    "axiom_count": 14,
+    "axiom_note": "Unchanged from the baseline commit 90afe55a2: same twelve files, same per-file counts.",
+    "build_passed": true,
+    "build_note": "Full guarded detached build: guard exit_status=0 with state=complete, 'Build completed successfully (2859 jobs)', zero 'error:' occurrences, and .olean newer than source for all ten touched Lean modules.",
+    "gates": {
+      "check-paper-definitions.sh": "exit 0 (quiet case-a pass), conditional on paper sha256 5362b6ba32825d32e73f8adeeeade63d2f8d556cebd9ba0603a595225b970245 at 4079 lines, paper HEAD bc010a06, dirty",
+      "check-module-invariants.sh --no-build": "exit 0, no FAIL lines; C14, C15, C20, C35 all PASS",
+      "check-module-invariants.sh --emit-inventory --check": "clean",
+      "export-lean-citations.py --check": "exit 0, 86 seeded names resolve",
+      "readme-lint.sh": "exit 0",
+      "typst-sync-check.sh": "exit 0 (after status.typ regeneration, which requires a completed build)",
+      "typst compile BimodalReference.typ": "exit 0",
+      "typst compile FormalFoundations.typ": "exit 0",
+      "check-phantom-citations.sh": "exit 0",
+      "check-copyright-headers.sh": "exit 0",
+      "check-evidence-probes.sh": "exit 0, all 33 wired probes compile (first run was an environment failure: 600s timeout on the build-guard lock held by this dispatch's own build)",
+      "check-metalogic-cycles.sh": "exit 1, INHERITED: surplus upward import MinusLanguage.AxiomDischarge -> Theorems.LinearityDerived, byte-identical at baseline 90afe55a2 in a file this task never touched",
+      "verify-deploy.sh --only-gate 4": "exit 2, cannot attest (0 checks ran; gate 4 SKIPs outside the source store). Substituted with check-task-references.sh: PASS, 0 unexempted occurrences"
+    }
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/plans/01_bx-tm-repin-and-membership-prose.md",
-      "summary": "Seven-phase plan: re-derive the live 10-anchor wave, re-pin it in two cost-ordered passes with a dated drift-correction entry, then three parallel prose phases (C15-coupled Lean docstrings + theorem-index, paper-attribution rewrite in axiom-reference and both Typst documents, pre-788 count tables) and a full gate sweep with a conditional acceptance statement."
+      "type": "summary",
+      "path": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/summaries/01_bx-tm-repin-and-membership-prose-summary.md",
+      "summary": "Ten anchors re-pinned and one retired dangling under a dated drift-correction entry, plus the in-tree BX/TM axiom-membership prose pass across sixteen files."
     }
   ],
-  "next_steps": "Run /implement 801 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1792077807_2be444_801",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 7,
-    "estimated_hours": 8,
-    "dependency_waves": [[1], [2], [3], [4, 5, 6], [7]]
+  "completion_data": {
+    "completion_summary": "Re-pinned the ten drifted BX/TM and objective-modality anchors in docs/reference/paper-definitions-of-record.md and retired def:strongest dangling, under a dated drift-correction entry recording that the paper's primitive axiom set and the tree's inductive Axiom now coincide key for key at twenty. Corrected every in-tree claim about the paper's BX/TM axiom membership across sixteen files, including five pre-788 count tables no gate can see and two false verbatim-quotation labels on CO. No Lean declaration added, removed or restated.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "When planning a multi-file documentation-consistency task, let GATE COUPLING set the phase boundaries, not directory structure. Two complementary rules fell out of the BX/TM membership-prose pass in BimodalLogic: (1) Files bound to each other by a cross-file invariant check must share one phase with Commit Mode: atomic-batch -- there, check-module-invariants.sh's C15 asserts that every docs/theorem-index.md row's paper-anchor cell also appears as a `Paper:` line at the Lean declaration, so changing either side alone turns the gate red in a way that reads as a regression. (2) Where a gate is structurally BLIND to the defect class (C14's stale-literal set was {14,21,42,44,45} and its markdown scope excluded nested FormalSystem/**/README.md, so two tables asserting 'Total 29' under their own correct '20 constructors' sentence both passed), the phase's Tier Justification must name an explicit re-derivation from a generator script as its covering check -- a gate verdict there is a vacuous pass and must not be cited as evidence. Read the gate's source to establish its scope and literal set rather than inferring coverage from its name.",
-      "category": "PATTERN",
-      "source_artifact": "specs/801_repin_bx_tm_anchor_wave_post_788_paper_revision/plans/01_bx-tm-repin-and-membership-prose.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["gate-coupling", "phase-boundaries", "atomic-batch", "vacuous-pass", "verification-tier", "cross-file-invariant"]
-    }
-  ],
-  "dispatch_seq": 10
+  "metadata": {
+    "session_id": "sess_1792095464_fd54b2",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "skipped",
+    "compliance_check_note": "The mechanical spot-check is not applicable to this plan. Its Goals bullets carry nine backticked tokens (CO, NA, NB, NF, NP, TC, TL, UE, UT), but these are the paper's axiom-schema keys quoted in prose, not Lean declaration names: the plan's Non-Goals state outright that its identifier set is empty and it carries no '## Lean Challenge Statements' section, since 788 already landed the 20-constructor system and this task adds no declaration. Running the extraction verbatim would grep for 'theorem CO' / 'def NA' and report MISSING for seven of the nine, which would be a false failure rather than a finding. Measured anyway for the record: only NB and NF match a declaration of that bare name under the source roots."
+  }
 }
