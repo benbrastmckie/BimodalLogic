@@ -38,10 +38,16 @@ touching the semantics.
   when it is true in L, at the same model, history and time
 - `plusValidIn_ofFormula_iff` — **semantic conservativity of L⁺ over L, at every frame
   class**; `plusValid_ofFormula_iff` is its `.Base` instance
+- `after_negation_stable_dstab`, `after_negation_stable_stab` — both readings of
+  `cor:after-negation-stable` (cut material, implemented from specification), stated natively in
+  L⁺ because the embedding cannot carry a top-level `stab`
 
 ## References
 
 * JPL paper `def:frame-validity`, `def:logical-consequence`, `cor:tm-completeness`
+* `cor:after-negation-stable` — CUT from the live paper, kept verbatim in
+  `JPL/appendix_cut_material.tex`; and `lem:after-negation` / `def:event-operators`, which it
+  rests on
 * `FormalSystem/Semantics/Validity.lean` — the L predicates these mirror
 * `FormalSystem/MinusLanguage/MinusValidity.lean` — the base-language mirror, the same shape
 
@@ -216,5 +222,95 @@ theorem plusValidIn_ofFormula_iff (fc : ProofSystem.FrameClass) (φ : Formula) :
 /-- Semantic conservativity at the unconstrained class: `plusValidIn_ofFormula_iff` at `.Base`. -/
 theorem plusValid_ofFormula_iff (φ : Formula) : PlusValid (ofFormula φ) ↔ Valid φ :=
   plusValidIn_ofFormula_iff ProofSystem.FrameClass.Base φ
+
+/-! ## The event-operator negation equivalence, stably
+
+`cor:after-negation-stable` is **cut material**: it is not in the tracked paper, but is kept
+verbatim in `JPL/appendix_cut_material.tex` under the header "Negation under the event operators,
+stably". It is therefore a specification implemented here, not a theorem cited from the published
+text. It states that
+
+  `⊝After(φ,⊤) → (⟐¬After(φ,ψ) ↔ ⟐After(φ,¬ψ))`
+
+is valid over every task frame, and likewise with `⊝` in place of both occurrences of `⟐`.
+
+**Why this is stated natively in L⁺ rather than transported along the embedding.**
+`plusValid_ofFormula_iff` above transports only formulas in the range of `ofFormula`, and
+`ofFormula_ne_stab` (`PlusLanguage/Formula.lean`) proves that nothing in that range is a
+top-level `stab`. The schema also ranges over arbitrary L⁺ `φ`, `ψ`, which may themselves
+contain `⊝`. Both statements below are therefore transcriptions of the paper's corollary, not
+second proofs of it: the mathematics is `TruthClauses.after_negation`, proved once in the
+language-generic clause tier, and `Metalogic/SoundnessLemmas/EventOperators.lean` instantiates
+the same lemma at L.
+
+The paper's proof opens by observing that `τ ∈ ⟨τ⟩ₓ` makes `⊝χ → χ` valid, so that the guard
+holds at `τ` itself. That step is not needed here: the `stab` clause *is*
+`∀ σ, τ.state t = σ.state t → …`, so the guard is available at each `σ` directly and the
+reflexive instance never has to be extracted.
+-/
+
+/--
+**`cor:after-negation-stable`, existential (`⟐`) reading**, as an L⁺ validity over every task
+frame:
+
+  `⊨  ⊝After(φ,⊤) → (⟐¬After(φ,ψ) ↔ ⟐After(φ,¬ψ))`
+
+Cut material (see the section note above), implemented from specification. Under the stable guard
+`TruthClauses.after_negation` holds at every `σ` sharing `τ`'s present state, so the two
+existential quantifications over `⟨τ⟩ₜ` are witnessed by the same `σ`.
+-/
+theorem after_negation_stable_dstab (φ ψ : PlusFormula) :
+    PlusValid ((PlusFormula.after φ PlusFormula.top).stab.imp
+      (PlusFormula.iff
+        (PlusFormula.dstab (PlusFormula.after φ ψ).neg)
+        (PlusFormula.dstab (PlusFormula.after φ ψ.neg)))) := by
+  refine PlusValid.of_forall fun F M τ t => ?_
+  rw [PlusTruth.imp_iff]
+  intro hstab
+  have hg := (PlusTruth.stab_iff M τ t _).mp hstab
+  have hbi : ∀ σ : WorldHistory F, τ.state t = σ.state t →
+      ((¬ PlusTruthAt M σ t (PlusFormula.after φ ψ)) ↔
+        PlusTruthAt M σ t (PlusFormula.after φ ψ.neg)) :=
+    fun σ hσ => TruthClauses.after_negation (L := PlusFormula) M σ t PUnit.unit φ ψ (hg σ hσ)
+  rw [PlusFormula.iff, PlusTruth.and_iff, PlusTruth.imp_iff, PlusTruth.imp_iff]
+  refine ⟨fun h => ?_, fun h => ?_⟩
+  · obtain ⟨σ, hσ, hn⟩ := (PlusTruth.dstab_iff M τ t _).mp h
+    exact (PlusTruth.dstab_iff M τ t _).mpr
+      ⟨σ, hσ, (hbi σ hσ).mp ((PlusTruth.neg_iff M σ t _).mp hn)⟩
+  · obtain ⟨σ, hσ, hp⟩ := (PlusTruth.dstab_iff M τ t _).mp h
+    exact (PlusTruth.dstab_iff M τ t _).mpr
+      ⟨σ, hσ, (PlusTruth.neg_iff M σ t _).mpr ((hbi σ hσ).mpr hp)⟩
+
+/--
+**`cor:after-negation-stable`, universal (`⊝`) reading**, as an L⁺ validity over every task
+frame:
+
+  `⊨  ⊝After(φ,⊤) → (⊝¬After(φ,ψ) ↔ ⊝After(φ,¬ψ))`
+
+The paper's "and likewise with `⊝` in place of both occurrences of `⟐`". Same per-`σ`
+biconditional as `after_negation_stable_dstab`, quantified universally over `⟨τ⟩ₜ` instead of
+existentially.
+-/
+theorem after_negation_stable_stab (φ ψ : PlusFormula) :
+    PlusValid ((PlusFormula.after φ PlusFormula.top).stab.imp
+      (PlusFormula.iff
+        (PlusFormula.after φ ψ).neg.stab
+        (PlusFormula.after φ ψ.neg).stab)) := by
+  refine PlusValid.of_forall fun F M τ t => ?_
+  rw [PlusTruth.imp_iff]
+  intro hstab
+  have hg := (PlusTruth.stab_iff M τ t _).mp hstab
+  have hbi : ∀ σ : WorldHistory F, τ.state t = σ.state t →
+      ((¬ PlusTruthAt M σ t (PlusFormula.after φ ψ)) ↔
+        PlusTruthAt M σ t (PlusFormula.after φ ψ.neg)) :=
+    fun σ hσ => TruthClauses.after_negation (L := PlusFormula) M σ t PUnit.unit φ ψ (hg σ hσ)
+  rw [PlusFormula.iff, PlusTruth.and_iff, PlusTruth.imp_iff, PlusTruth.imp_iff]
+  refine ⟨fun h => ?_, fun h => ?_⟩
+  · refine (PlusTruth.stab_iff M τ t _).mpr fun σ hσ => ?_
+    exact (hbi σ hσ).mp
+      ((PlusTruth.neg_iff M σ t _).mp ((PlusTruth.stab_iff M τ t _).mp h σ hσ))
+  · refine (PlusTruth.stab_iff M τ t _).mpr fun σ hσ => ?_
+    exact (PlusTruth.neg_iff M σ t _).mpr
+      ((hbi σ hσ).mpr ((PlusTruth.stab_iff M τ t _).mp h σ hσ))
 
 end FormalSystem.PlusLanguage
