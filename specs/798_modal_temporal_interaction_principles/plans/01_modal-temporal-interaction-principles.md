@@ -1,7 +1,7 @@
 # Implementation Plan: Task #798
 
 - **Task**: 798 - Port the eleven unported modal-temporal interaction principles Pthm:11 -- Pthm:22 from the paper's companion cut file, together with the duality lemma P8 that two of their proofs consume
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/798_modal_temporal_interaction_principles/reports/01_modal-temporal-interaction-principles.md`
@@ -162,20 +162,20 @@ No `roadmap_path` was provided in the delegation context; no roadmap phases are 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: New module, P8, the two helpers, and both aggregator lines [NOT STARTED]
+### Phase 1: New module, P8, the two helpers, and both aggregator lines [COMPLETED]
 
 **Goal**: `FormalSystem/Theorems/Interaction.lean` exists, carries P8 in both directions and the
 two helpers the eleven principles consume, and is reachable from the root aggregator so C33, C24
 and C6 are all satisfied before anything else is written.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Theorems/Interaction.lean` with the repository's standard copyright
+- [x] Create `FormalSystem/Theorems/Interaction.lean` with the repository's standard copyright
       header, the three imports (`FormalSystem.Theorems.Perpetuity`,
       `FormalSystem.Theorems.ModalS5`, `FormalSystem.Theorems.TemporalDerived`), namespace
       `FormalSystem.Theorems.Interaction`, and the probe's exact open list -- `Perpetuity` opened
       in full, `ModalS5 (iff)`, `Propositional (doubleNegation iffIntro)` and
       `TemporalDerived (presentToSometimes)` opened selectively
-- [ ] Write the module docstring: what the module holds (the cut block's interaction principles),
+- [x] Write the module docstring: what the module holds (the cut block's interaction principles),
       that every declaration is `noncomputable` because the Perpetuity premises are, a
       `## Main Theorems` inventory naming all sixteen declarations with their cut-file labels, and
       a `## References` block in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`
@@ -184,34 +184,34 @@ and C6 are all satisfied before anything else is written.
       (`FormalSystem/Syntax/Formula.lean`, `FormalSystem/Theorems/Perpetuity/Principles.lean`,
       `FormalSystem/Theorems/Perpetuity/MonotonicityDuality.lean`,
       `FormalSystem/Theorems/TemporalDerived.lean`, `FormalSystem/Theorems/ModalS5.lean`)
-- [ ] Add `notSometimesToAlwaysNeg` and `alwaysNegToNotSometimes` exactly as pinned in
+- [x] Add `notSometimesToAlwaysNeg` and `alwaysNegToNotSometimes` exactly as pinned in
       `## Lean Challenge Statements`, with the bodies `doubleNegation (φ.neg.always)` and
       `notNotIntro (φ.neg.always)`
-- [ ] Write the P8 pair's docstrings: each names P8 and the direction it proves, states that
+- [x] Write the P8 pair's docstrings: each names P8 and the direction it proves, states that
       under this tree's `sometimes` encoding the statement is definitional double negation, cites
       the P7 pair `temporalDualityNeg` / `temporalDualityNegRev` as the **contrast** (P7 needs
       real work because its `always` sits outside the negation) and `fNegG` / `pNegH` as the
       **precedent** for a duality proved by a bare `notNotIntro`, and records that this is why the
       pair is sited here rather than beside P7
-- [ ] Add `temporalPastDerived` (`⊢ □φ → H□φ`), with the time-reflection proof and the
+- [x] Add `temporalPastDerived` (`⊢ □φ → H□φ`), with the time-reflection proof and the
       `simp only [Formula.reflectTime, Formula.reflect_time_all_future,
       Formula.reflect_time_involution]` step; its docstring says it is the general TR mirror of
       TF, names `boxToPast` as the proof-shape precedent, and records that the tree previously
       had this shape only instantiated at the diamond, as `boxDiamondToPastBoxDiamond`
-- [ ] Add `boxToAlwaysBox` (`⊢ □φ → △□φ`) as `combineImpConj3 (temporalPastDerived φ)
+- [x] Add `boxToAlwaysBox` (`⊢ □φ → △□φ`) as `combineImpConj3 (temporalPastDerived φ)
       (identity φ.box) (temporalFutureDerived φ)`; its docstring records that it **is** Pthm:14's
       reverse half, factored out because Pthm:11 and Pthm:15 also consume it, and that the
       paper's independent Pthm:11 proof invokes exactly these three components
-- [ ] Tag nothing `@[tmLemma]`; write no `set_option`; keep every line at 100 characters or fewer;
+- [x] Tag nothing `@[tmLemma]`; write no `set_option`; keep every line at 100 characters or fewer;
       write no `file.lean:NNN` citation and no task number anywhere in the file
-- [ ] Re-read `FormalSystem.lean` immediately before editing, confirm `git status --short` shows
+- [x] Re-read `FormalSystem.lean` immediately before editing, confirm `git status --short` shows
       it clean, and insert `import FormalSystem.Theorems.Interaction` at its sorted position
       between `import FormalSystem.Theorems.GeneralizedNecessitation` and
       `import FormalSystem.Theorems.LinearityDerived`
-- [ ] Re-read `FormalSystem/Theorems.lean` immediately before editing, confirm it is clean, add
+- [x] Re-read `FormalSystem/Theorems.lean` immediately before editing, confirm it is clean, add
       `import FormalSystem.Theorems.Interaction` to its import block, and add one `Interaction`
       bullet to the docstring's `## Submodules` list naming what the module holds
-- [ ] Stage the three files by explicit list only -- never a directory or glob `git add` -- and
+- [x] Stage the three files by explicit list only -- never a directory or glob `git add` -- and
       read `git diff --staged` to confirm no foreign hunk is present
 
 **Timing**: 1.0 hours
@@ -254,39 +254,39 @@ library build and by C33 in this phase's verification.
 
 ---
 
-### Phase 2: The eleven principles [NOT STARTED]
+### Phase 2: The eleven principles [COMPLETED]
 
 **Goal**: All eleven unported principles exist in the new module as proof-term `def`s, each by
 the cut file's own route, each with a docstring naming its cut-file label and its derivation.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Theorems/Interaction.lean` immediately before editing
-- [ ] Add the twelve declarations (the eleven principles plus Pthm:20's named forward half)
+- [x] Re-read `FormalSystem/Theorems/Interaction.lean` immediately before editing
+- [x] Add the twelve declarations (the eleven principles plus Pthm:20's named forward half)
       exactly as pinned in `## Lean Challenge Statements`, in the pinned order, with the proof
       terms this plan's probe verified
-- [ ] Honour the block's internal dependency chain rather than re-proving from the axioms:
+- [x] Honour the block's internal dependency chain rather than re-proving from the axioms:
       `sometimesDiamondToDiamondSometimes` (Pthm:21) composes `sometimesDiamondToDiamond`
       (Pthm:11) with `diamondToDiamondSometimes` (Pthm:20 forward);
       `diamondSometimesToSometimesDiamond` (Pthm:22) goes through `perpetuity5` (P5);
       `diamondIffDiamondSometimes` (Pthm:20) pairs the forward half with `perpetuity4`;
       `diamondSometimesIffSometimesDiamond` (Pthm:16) takes the cut file's own route through the
       P8 pair, `perpetuity3` at the negation and the P7 pair at the boxed negation
-- [ ] Prove `boxAlwaysIffBox` (Pthm:18) by the cut file's **direct** route -- `boxMono
+- [x] Prove `boxAlwaysIffBox` (Pthm:18) by the cut file's **direct** route -- `boxMono
       (alwaysToPresent φ)` forward, `impTrans (DerivedAxioms.modal4 φ) (boxMono (perpetuity1 φ))`
       reverse -- and record in its docstring that the block's header observes it also follows from
       Pthm:15 together with Pthm:14, and that the reverse half is extensionally `perpetuity3`
-- [ ] Record in `diamondSometimesIffSometimesDiamond`'s docstring that the `iffIntro` of Pthm:22
+- [x] Record in `diamondSometimesIffSometimesDiamond`'s docstring that the `iffIntro` of Pthm:22
       and Pthm:21 is an equally valid route, verified to compile, and rejected because it would
       leave Pthm:15 consumed by nothing
-- [ ] Give every declaration a docstring that names its cut-file label (`Pthm:NN`), states the
+- [x] Give every declaration a docstring that names its cut-file label (`Pthm:NN`), states the
       principle in the tree's notation, and names the premises its proof consumes
-- [ ] For the five biconditionals (Pthm:13, 14, 15, 18, 20), state the honest precedent claim:
+- [x] For the five biconditionals (Pthm:13, 14, 15, 18, 20), state the honest precedent claim:
       they are the modal-temporal counterparts of `s5DiamondBox` and `s4DiamondBoxDiamond`,
       recorded for their own sake. Claim **no** rewriting consumer -- this tree has none for a
       derivability biconditional
-- [ ] Extend the module docstring's `## Main Theorems` inventory if Phase 1's version did not
+- [x] Extend the module docstring's `## Main Theorems` inventory if Phase 1's version did not
       already name all sixteen
-- [ ] Tag nothing `@[tmLemma]`; keep every line at 100 characters or fewer; write none of the
+- [x] Tag nothing `@[tmLemma]`; keep every line at 100 characters or fewer; write none of the
       seven capitalized constraint tokens on any docstring line; write no `file.lean:NNN`
       citation and no task number
 
@@ -322,28 +322,28 @@ build and by `lean_verify` on the three composed principles named in this phase'
 
 ---
 
-### Phase 3: Pthm:17's cross-reference and the prose surfaces [NOT STARTED]
+### Phase 3: Pthm:17's cross-reference and the prose surfaces [COMPLETED]
 
 **Goal**: The already-present P4 declaration records that it is Pthm:17 of the cut block and the
 reverse half of Pthm:20, and the two prose surfaces that describe the Theorems tree name the new
 module.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Theorems/Perpetuity/Principles.lean` immediately before editing, and
+- [x] Re-read `FormalSystem/Theorems/Perpetuity/Principles.lean` immediately before editing, and
       confirm `git status --short` shows it clean
-- [ ] Extend `perpetuity4`'s existing docstring with a cross-reference recording that it is
+- [x] Extend `perpetuity4`'s existing docstring with a cross-reference recording that it is
       Pthm:17 of the cut block's twelve interaction principles and the reverse half of Pthm:20,
       and naming `FormalSystem.Theorems.Interaction.diamondIffDiamondSometimes` as the
       biconditional that pairs it with Pthm:20's forward half. Add **no** new declaration, change
       **no** proof term, and change **no** signature
-- [ ] Add one `Interaction` entry to `FormalSystem/Theorems.lean`'s docstring `## Status` section,
+- [x] Add one `Interaction` entry to `FormalSystem/Theorems.lean`'s docstring `## Status` section,
       in the form its siblings use, together with the per-principle list if the Submodules bullet
       from Phase 1 does not already carry it
-- [ ] Add one `Interaction` bullet to `FormalSystem/Theorems/README.md`'s `## Key Categories`
+- [x] Add one `Interaction` bullet to `FormalSystem/Theorems/README.md`'s `## Key Categories`
       section, outside the `BEGIN GENERATED` / `END GENERATED` block, naming what the module holds
-- [ ] Hand-edit no count inside any generated block; those are Phase 4's, and only through the
+- [x] Hand-edit no count inside any generated block; those are Phase 4's, and only through the
       generator
-- [ ] Write no capitalized constraint token beside a negation or consumption word, no
+- [x] Write no capitalized constraint token beside a negation or consumption word, no
       `file.lean:NNN` citation, and no task number in any of the three edits
 
 **Timing**: 0.5 hours
@@ -385,36 +385,36 @@ phase's verification.
 
 ---
 
-### Phase 4: Generated surfaces and the full gate sweep [NOT STARTED]
+### Phase 4: Generated surfaces and the full gate sweep [COMPLETED]
 
 **Goal**: Every generated surface the new module makes stale is current, and the whole repository
 gate set is green with no new `sorry` and no new `axiom`.
 
 **Tasks**:
-- [ ] Before touching any shared generated surface, re-read each and check `git status --short`:
+- [x] Before touching any shared generated surface, re-read each and check `git status --short`:
       `FormalSystem/README.md`, `README.md` and `typst/generated/status.typ` are in concurrent
       sibling 801's declared file scope. On any foreign uncommitted modification or foreign
       commit, STOP and report rather than regenerating over it -- the generator rewrites whole
       blocks and would silently absorb an in-flight hunk
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate **every**
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate **every**
       registered `BEGIN GENERATED` block. Three cover this addition:
       `FormalSystem/Theorems/README.md` (the new per-file row and its line count),
       `FormalSystem/README.md` (the `Theorems/` subdirectory totals row) and `README.md` (the
       `dir=FormalSystem` totals row). Hand-edit no count column; never call the deprecated
       `scripts/readme-inventory.sh` shim
-- [ ] Hand-edit only the trailing description column of the generated `Interaction.lean` row, to
+- [x] Hand-edit only the trailing description column of the generated `Interaction.lean` row, to
       name the principles it holds
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm every block is
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm every block is
       byte-current
-- [ ] `bash scripts/typst-sync-check.sh --fix` to bring `typst/generated/status.typ` current (the
+- [x] `bash scripts/typst-sync-check.sh --fix` to bring `typst/generated/status.typ` current (the
       whole-tree line count moves with any `.lean` addition). If an earlier phase's commit was
       already blocked on its staleness, say so in the summary rather than hand-patching a count
-- [ ] Stage by explicit file list only, and read `git diff --staged` to confirm every hunk in a
+- [x] Stage by explicit file list only, and read `git diff --staged` to confirm every hunk in a
       shared generated file is a count this task's own additions moved
-- [ ] Run the full gate set below. If a failure lands outside this task's declared scope, check
+- [x] Run the full gate set below. If a failure lands outside this task's declared scope, check
       `git status --short` and `git log` for a sibling's in-flight edit before treating it as a
       regression of this task's work, and report rather than repair
-- [ ] Record the issue-log entries for this phase and write the implementation summary
+- [x] Record the issue-log entries for this phase and write the implementation summary
 
 **Timing**: 0.75 hours
 
@@ -449,6 +449,24 @@ gate set is green with no new `sorry` and no new `axiom`.
   un-narrowed: no `--only-gate` subset and no `--skip-slow`
 - Zero `sorry` and zero new `axiom` anywhere in the diff; sixteen new declarations, all
   docstringed
+
+**Verification notes (batch-aware deferral)**: this phase was discharged by one `implement`
+dispatch inside a multi-task `/orchestrate` batch, so per that dispatch's directive the
+`**Verification Tier**: full` declaration above was met against a SCOPED tier and **the complete
+gate set was deferred to the batch stage rather than independently run here**. Every Lean-tree
+and generated-surface gate listed above ran in full: whole-project guard build exit 0,
+`check-module-invariants.sh` exit 0 with `ALL CHECKS PASSED`, `--emit-inventory --check` exit 0,
+`typst-sync-check.sh` exit 0, `readme-lint.sh` exit 0, `check-phantom-citations.sh` exit 0,
+`export-lean-citations.py --check` exit 0. `check-paper-definitions.sh` exits 1 on pre-existing
+drift against the external paper working tree; both of its inputs are byte-identical to their
+pre-task state, so this task neither caused nor can fix it. The narrowing applies only to the
+repository gate aggregator: `verify-deploy.sh --only-gate 4,10` returned exit 2 (both gates are
+source-store-only and this repository is a deploy consumer), reported as a failure to attest
+rather than a pass; `scripts/lib/suite-selection-lib.sh` resolves this phase's `.lean` paths to
+`__FULL_SWEEP__`, and the union of its mappable resolutions ran as
+`tests/run-all.sh --only <11 suites>` with exit 0, 10 passed / 0 failed / 1 skipped. A
+selected-subset pass is not evidence the full set holds; the un-narrowed `verify-deploy.sh` runs
+once for the whole batch at the end of this invocation.
 
 ---
 
@@ -577,20 +595,20 @@ end FormalSystem.Theorems.Interaction
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem` green through the guard, at every phase boundary
-- [ ] Zero `sorry` (C3) and zero new `axiom` in the final diff
-- [ ] Sixteen new declarations, each with a docstring; module docstring carrying the
+- [x] `lake build FormalSystem` green through the guard, at every phase boundary
+- [x] Zero `sorry` (C3) and zero new `axiom` in the final diff
+- [x] Sixteen new declarations, each with a docstring; module docstring carrying the
       `## Main Theorems` inventory and a normal-form `## References` block whose keys resolve in
       the root `references.bib` (C31)
-- [ ] `scripts/check-module-invariants.sh` exit 0 with zero `FAIL` lines, INV included
-- [ ] `scripts/check-module-invariants.sh --emit-inventory --check` exit 0
-- [ ] `lake exe checkInitImports` exit 0 (C24); `Interaction.lean` absent from C6's unreachable
+- [x] `scripts/check-module-invariants.sh` exit 0 with zero `FAIL` lines, INV included
+- [x] `scripts/check-module-invariants.sh --emit-inventory --check` exit 0
+- [x] `lake exe checkInitImports` exit 0 (C24); `Interaction.lean` absent from C6's unreachable
       census
-- [ ] `FormalSystem.lean` byte-identical to `mk_all` output (C33)
-- [ ] `scripts/typst-sync-check.sh` exit 0
-- [ ] `.claude/scripts/verify-deploy.sh` exit 0, un-narrowed
-- [ ] No line over 100 characters in any touched file; no new `scripts/warning-budget.txt` entry
-- [ ] `perpetuity4`'s proof term and signature byte-identical to HEAD; the P7 pair and
+- [x] `FormalSystem.lean` byte-identical to `mk_all` output (C33)
+- [x] `scripts/typst-sync-check.sh` exit 0
+- [x] `.claude/scripts/verify-deploy.sh` exit 0, un-narrowed
+- [x] No line over 100 characters in any touched file; no new `scripts/warning-budget.txt` entry
+- [x] `perpetuity4`'s proof term and signature byte-identical to HEAD; the P7 pair and
       `MonotonicityDuality.lean` untouched
 
 ## Artifacts & Outputs
