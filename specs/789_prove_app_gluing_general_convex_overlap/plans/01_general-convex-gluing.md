@@ -412,7 +412,7 @@ build `lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Semantics.
 
 ---
 
-### Phase 4: Wire the module into the library [NOT STARTED]
+### Phase 4: Wire the module into the library [COMPLETED]
 
 **Goal**: Make the module part of the build graph and of the documentation surface, with the one
 shared-territory touch isolated here.
@@ -488,7 +488,7 @@ and `FormalSystem.PlusLanguage`.
 
 ---
 
-### Phase 5: Gate the choice-free claim [NOT STARTED]
+### Phase 5: Gate the choice-free claim [COMPLETED]
 
 **Goal**: Turn deliverable (2) — `rmk:choice` lists `app:gluing` among the choice-free results,
 so pin it — into a machine assertion that fails the build if the axiom set ever changes, rather
@@ -551,7 +551,7 @@ gated on `RUN_BUILD`), whose C14 and C15 assertions are exactly what these edits
 
 ---
 
-### Phase 6: Citation surface and full gate set [NOT STARTED]
+### Phase 6: Citation surface and full gate set [COMPLETED]
 
 **Goal**: Point the existing `app:gluing` citations at the general declaration where they
 currently name only a special case, and close the task against the complete repository gate set.
