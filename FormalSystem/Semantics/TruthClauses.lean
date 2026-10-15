@@ -83,7 +83,9 @@ apply to it.
 * `BoolClauses` — Primitives: `bot`, `imp`, `box`; Lemmas inherited: `neg_iff`, `top_true`,
   `and_iff`, `or_iff`, `diamond_iff`; Instantiated by: (via the three below)
 * `UntlClauses` — Primitives: + `untl`, `snce`; Lemmas inherited: + `someFuture_iff`,
-  `somePast_iff`, `allFuture_iff`, `allPast_iff`, `always_iff_tri`; Instantiated by: L
+  `somePast_iff`, `allFuture_iff`, `allPast_iff`, `always_iff_tri`, and the `After` tier
+  (`after_top_iff`, `after_iff_of_isNextTime`, `after_negation`, over `IsNextTime` and
+  `isNextTime_unique`); Instantiated by: L
 * `StabClauses` — Primitives: + `stab`; Lemmas inherited: + `dstab_iff`; Instantiated by: L⁺, L⋆
 * `TenseClauses` — Primitives: `allFuture`, `allPast` **primitive** instead of `untl`/`snce`; Lemmas
   inherited: the five Boolean ones, plus `someFuture_iff_of_allFuture`, `somePast_iff_of_allPast`,
@@ -422,6 +424,95 @@ theorem allFuture_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     exact ((neg_iff M τ s e φ).mp hn) (h s hs)
 
 end Future
+
+/-!
+## The `After` tier and next-time uniqueness
+
+`def:event-operators`' `After` operator, and the next-time machinery `lem:after-negation` runs
+on. The mathematics lives here **once**, over any `L` carrying the Boolean and `untl` clauses;
+the L statement (`Metalogic/SoundnessLemmas/EventOperators.lean`) and the two L⁺ statements
+(`PlusLanguage/PlusValidity.lean`) are instantiations of `after_negation` below, not second
+proofs of it.
+-/
+
+section After
+variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L] {F : TaskFrame}
+
+/-- `def:event-operators`' After operator: `After(φ,ψ) := ¬φ U (φ ∧ ψ)`. Guard-first, so the
+event is pinned to the first strictly future `φ`-time and `ψ` is read there. -/
+abbrev after (φ ψ : L) : L := UntlClause.untl (neg φ) (and φ ψ)
+
+/--
+`z` is the **next `φ`-time** after `t` along `τ`: strictly future, with `φ` true there and false
+everywhere strictly between. This is exactly `untl`'s witness together with its open-interval
+guard, named because `isNextTime_unique` and `after_iff_of_isNextTime` both quantify over it.
+-/
+def IsNextTime (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (e : TruthEnv.Env L F)
+    (φ : L) (z : F.Duration) : Prop :=
+  t < z ∧ TruthEnv.T M τ z e φ ∧ ∀ r : F.Duration, t < r → r < z → ¬ TruthEnv.T M τ r e φ
+
+omit [BotClause L] [ImpClause L] [UntlClause L] in
+/--
+**Next-`φ`-time uniqueness.** Any two next `φ`-times after `t` coincide: were they distinct, the
+earlier would lie strictly between `t` and the later, where the later's own open-interval clause
+forbids `φ` — contradicting that `φ` holds at the earlier. Linearity of `F.Duration` is the only
+order-theoretic input; the proof appeals to nothing about the frame.
+-/
+theorem isNextTime_unique (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) {z z' : F.Duration}
+    (hz : IsNextTime M τ t e φ z) (hz' : IsNextTime M τ t e φ z') : z = z' := by
+  rcases lt_trichotomy z z' with h | h | h
+  · exact absurd hz.2.1 (hz'.2.2 z hz.1 h)
+  · exact h
+  · exact absurd hz'.2.1 (hz.2.2 z' hz'.1 h)
+
+/-- Truth of the `lem:after-negation` guard: `After(φ,⊤)` holds at `(τ,t)` exactly when some `z`
+is a next `φ`-time, which is the paper's reading of `After(φ,⊤) = ¬φ U φ` as "there is a next
+`φ`-time". The `⊤` conjunct is discharged by `top_true`. -/
+theorem after_top_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (after φ top) ↔ ∃ z : F.Duration, IsNextTime M τ t e φ z := by
+  rw [after, UntlClause.untl_clause]
+  constructor
+  · rintro ⟨z, hz, hzand, hint⟩
+    exact ⟨z, hz, ((and_iff M τ z e φ top).mp hzand).1,
+      fun r hr hrz => (neg_iff M τ r e φ).mp (hint r hr hrz)⟩
+  · rintro ⟨z, hz, hφ, hint⟩
+    exact ⟨z, hz, (and_iff M τ z e φ top).mpr ⟨hφ, top_true M τ z e⟩,
+      fun r hr hrz => (neg_iff M τ r e φ).mpr (hint r hr hrz)⟩
+
+/-- Given a next `φ`-time `z`, `After(φ,χ)` reads `χ` **at `z`**: any `untl` witness is itself a
+next `φ`-time, so `isNextTime_unique` identifies it with `z`. -/
+theorem after_iff_of_isNextTime (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ χ : L) {z : F.Duration} (hz : IsNextTime M τ t e φ z) :
+    TruthEnv.T M τ t e (after φ χ) ↔ TruthEnv.T M τ z e χ := by
+  rw [after, UntlClause.untl_clause]
+  constructor
+  · rintro ⟨s, hs, hsand, hint⟩
+    obtain ⟨hφ, hχ⟩ := (and_iff M τ s e φ χ).mp hsand
+    have hsz : IsNextTime M τ t e φ s :=
+      ⟨hs, hφ, fun r hr hrs => (neg_iff M τ r e φ).mp (hint r hr hrs)⟩
+    exact (isNextTime_unique M τ t e φ hsz hz) ▸ hχ
+  · intro hχ
+    exact ⟨z, hz.1, (and_iff M τ z e φ χ).mpr ⟨hz.2.1, hχ⟩,
+      fun r hr hrz => (neg_iff M τ r e φ).mpr (hz.2.2 r hr hrz)⟩
+
+/--
+**`lem:after-negation`, pointwise and language-generic.** Under the guard `After(φ,⊤)`, failing
+`After(φ,ψ)` is the same as satisfying `After(φ,¬ψ)`: both read the single next `φ`-time, so the
+equivalence is `¬ T ψ ↔ T (¬ψ)` transported along `after_iff_of_isNextTime`.
+
+The guard is what makes this hold. Without it `After(φ,ψ)` and `After(φ,¬ψ)` can both fail, for
+want of any next `φ`-time at all.
+-/
+theorem after_negation (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) (hg : TruthEnv.T M τ t e (after φ top)) :
+    (¬ TruthEnv.T M τ t e (after φ ψ)) ↔ TruthEnv.T M τ t e (after φ (neg ψ)) := by
+  obtain ⟨z, hz⟩ := (after_top_iff M τ t e φ).mp hg
+  rw [after_iff_of_isNextTime M τ t e φ ψ hz, after_iff_of_isNextTime M τ t e φ (neg ψ) hz,
+    neg_iff]
+
+end After
 
 /-!
 ## The `snce` tier: the past mirror of the `untl` tier
