@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "dispatch_seq": 14,
+  "status": "implemented",
+  "phases_completed": 5,
   "phases_total": 5,
-  "summary": "Wrote a 5-phase, 4.75-hour implementation plan for the choice-free state-set route. One new leaf module (Independence/TranslationStateSet.lean) carries two layers: an absolutely choice-free ShiftSet avatar of the translation flow over an arbitrary duration group, and the same (H1)/(H2) discharge plus three corollaries at translationFrame D with an explicitly relative pin. Every signature and proof term in the plan's Lean Challenge Statements block was recompiled at plan time, which corrected two non-compiling research snippets and falsified the report's (selfShift realTemporalOrder).frame = F1 rfl claim -- so the f1_* consolidation is dropped and DeterminismUndefinable.lean stays byte-identical. TaskFrame.limit_of_shift is untouched per the settled prior decision, so no pinned axiom baseline moves.",
+  "summary": "All four deliverables landed. A new 418-line leaf module, FormalSystem/Metalogic/Independence/TranslationStateSet.lean, carries seventeen declarations in two layers: an absolutely choice-free translation flow over an arbitrary duration group via ShiftSet (ten declarations, [propext] or [propext, Quot.sound], no Classical.choice), and the same lem:state-set sentences at translationFrame D under a relative pin (eight declarations including the frame constant, all reporting the identical [propext, Classical.choice, Quot.sound], so the (H2) discharge contributes nothing). StateSetTruth.lean gained a Choice dependence route table and the consumer-audit verdict in its module docstring only; the audit found all four consumers in DeterminismUndefinable.lean already off the Zorn route, so none moved and that file stays byte-identical. Full lake build exit 0 at 2858 jobs, check-module-invariants.sh exit 0 with ALL CHECKS PASSED, zero sorry and zero new axiom. One deviation: the LinearOrder instance is named translationFrameWorldLinearOrder rather than the pinned underscore form, because mathlib's defsWithUnderscore linter counts a data-valued instance a definition; type and consumers unchanged.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/799_choice_free_state_occurrence_applications/summaries/01_choice-free-state-occurrence-summary.md",
+      "summary": "Implementation summary: the choice-free route to lem:state-set's three sentences, in two layers, with the absolute and relative axiom pins, the consumer audit, and the C16 gate-blindness finding."
+    },
+    {
       "type": "plan",
       "path": "specs/799_choice_free_state_occurrence_applications/plans/01_choice-free-state-occurrence.md",
-      "summary": "Five-phase plan: new leaf module with the choice-free translation flow, three absolute corollaries plus axiom pin, the translationFrame layer with a relative pin, the consumer audit and three-route docstring record, then inventory/status sync and the full gate sweep."
+      "summary": "Five-phase plan, all phases closed; Phase 5 as COMPLETED WITH EXCLUSIONS with a reasoned-exclusions table."
     }
-  ],
-  "dispatch_seq": 9
+  ]
 }

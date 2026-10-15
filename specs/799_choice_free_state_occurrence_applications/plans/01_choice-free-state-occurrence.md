@@ -363,8 +363,17 @@ actually build on, with the witness exhibited as the paper's own `σ_c`, and the
 **Tasks**:
 - [ ] Re-read `FormalSystem/Metalogic/Independence/TranslationStateSet.lean` immediately before
       editing
-- [ ] Open a trailing `section TranslationFrame … end TranslationFrame` and add
+- [x] Open a trailing `section TranslationFrame … end TranslationFrame` and add
       `translationState` (the identity view), the `translationFrame_worldLinearOrder` instance,
+      *(deviation: altered — the instance is named `translationFrameWorldLinearOrder`, in
+      lowerCamelCase. `LinearOrder` is a data-valued class, so mathlib's `defsWithUnderscore`
+      linter counts the declaration as a definition and the pinned underscore name is its single
+      new finding across 16536 declarations, failing C16. `IsRegular`, `NoMaxOrder` and the other
+      Prop-valued classes the tree's underscore-bearing instances inhabit are exempt, which is
+      why `translationFrame_isRegular` stands. `chroniclePriorDomainLinearOrder`
+      (`WeakCanonical/ChronicleExtraction.lean`) is the house precedent for the camelCase form on
+      exactly this shape. The instance's type, its `inferInstanceAs` body and every consumer are
+      unchanged; only the identifier differs from the pinned one)*
       `translationFrame_orderFlow`, `translationFrame_stateOccurs`,
       `translationFrame_plusTruthAt_iff_mem_satSet`, `translationFrame_determined` and
       `translationFrame_plusValidOn_iff_satSet_univ`, exactly as
@@ -522,7 +531,7 @@ it returns, not from this plan's expectation.
 
 ---
 
-### Phase 5: Inventory refresh, status sync, and the full gate sweep [NOT STARTED]
+### Phase 5: Inventory refresh, status sync, and the full gate sweep [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Every generated surface the new module makes stale is current, every axiom profile is
 confirmed against the implemented files rather than a probe, and the whole repository gate set is
@@ -589,6 +598,13 @@ record what they report rather than this list.
   `typst-sync-check.sh --fix`
 - `specs/799_choice_free_state_occurrence_applications/summaries/01_choice-free-state-occurrence-summary.md` -
   implementation summary
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `bash .claude/scripts/verify-deploy.sh` exits 0, un-narrowed | This dispatch's Batch Gate Deferral directive discharges the `full` tier against a scoped tier and defers the complete gate set to the batch stage, which runs it once for the whole invocation. No narrowed invocation of this script covers this phase's files: all twenty-three of its gates concern the deployed `.claude/` tree, and this task's diff contains zero `.claude/**` and zero `agent-system/**` paths. The deploy tree is also independently known stale for the `core` extension from a cause predating this dispatch. | `git diff cdac8ab01 --stat -- .claude/ agent-system/` is empty; `verify-deploy.sh --help` documents its gate set as deploy-tree-only; the dispatch's `<deploy-freshness-context>` records the pre-existing `core` staleness |
+| `bash scripts/check-paper-definitions.sh` adds no new drifted anchor | Honoured as written — this task adds none — but the script exits 1 on an inherited ten-anchor drift wave whose inputs are a record file and an external `.tex` in another repository. Reported, not repaired, exactly as this phase's task list directs. No anchor was repaired or dropped. | `git diff cdac8ab01 --stat -- docs/ scripts/` is empty; none of the ten drifted anchors names `StateSetTruth` or `TranslationStateSet`; all twelve anchors this task's docstrings cite already had a record row at plan time (C15 PASS, 83/83 resolve) |
 
 **Verification**:
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits 0 for the whole

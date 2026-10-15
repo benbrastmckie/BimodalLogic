@@ -1,30 +1,31 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-15T10:45:00Z",
+  "completed_at": "2026-10-15T11:35:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/799_choice_free_state_occurrence_applications/plans/01_choice-free-state-occurrence.md",
-      "summary": "Five-phase plan (4.75h) delivering the choice-free state-set route as one new Independence/ leaf module, with absolute pins at the ShiftSet avatar and relative pins at translationFrame."
+      "type": "summary",
+      "path": "specs/799_choice_free_state_occurrence_applications/summaries/01_choice-free-state-occurrence-summary.md",
+      "summary": "The choice-free route to lem:state-set's three sentences, in two layers, with the absolute and relative axiom pins, the consumer audit, and the C16 gate-blindness finding."
     }
   ],
-  "next_steps": "Run /implement 799 to execute the plan",
-  "memory_candidates": [
-    {
-      "content": "Choice-hygiene work over this repo's TemporalOrder bundle turns on three measured asymmetries, each discovered the slow way. (1) #print axioms traverses a declaration's TYPE as well as its value, so a choice-borne frame constant makes every theorem ABOUT it choice-borne however the proof is built -- only an absolute pin at a @[reducible] constructor avatar escapes; a pin at the constant can only ever be relative. (2) At a TemporalOrder, add_lt_add_right is [propext] while add_lt_add_left and sub_pos are [propext, Classical.choice, Quot.sound]; abs_eq_zero and exists_ne are likewise choice-borne, replaceable by by_contra+abs_pos.mpr and exists_pair_ne+lt_trichotomy. Write witnesses additively (-(tau.state 0) + v) and never reach for sub_pos. (3) ShiftSet.fibre_isRegular takes the Limit obligation from the structure's own sep field and never calls TaskFrame.limit_of_shift, which is the single Classical.choice source in the frame-construction neighbourhood -- routing a frame through ShiftSet rather than FrameOver.ofReflectiveRegular is what makes a whole chain choice-free. Separately: shrinking a pinned axiom set is a GOOD change that still trips check-module-invariants.sh C2/C14's exact-string baseline (a HARD STOP, not a new baseline), so re-baselining is a user decision, not a task detail.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/799_choice_free_state_occurrence_applications/plans/01_choice-free-state-occurrence.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["print-axioms", "classical-choice", "temporal-order", "shiftset", "axiom-baseline", "choice-free"]
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1792077807_2be444_799",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 4.75,
-    "dependency_waves": [[1], [2], [3], [4], [5]]
+  "completion_data": {
+    "completion_summary": "The paper's claim that lem:state-set's appeals to cor:occurrence, and hence to Zorn's lemma, are inessential to its applications now has a Lean counterpart: a new leaf module, FormalSystem/Metalogic/Independence/TranslationStateSet.lean, with seventeen declarations in two layers. The flow layer discharges (H1) and (H2) by exhibiting the witnessing world history outright as a translation over an arbitrary duration group, and its ten declarations carry no Classical.choice at all; the frame layer restates the same three sentences at translationFrame D with the witness written as the paper's own sigma_c, pinned relatively because #print axioms traverses a declaration's type and the frame constant's own choice is out of reach of any proof. StateSetTruth.lean's module docstring gained a four-route choice-dependence table and the consumer-audit verdict, which found every consumer already off the Zorn route, so none moved and DeterminismUndefinable.lean stays byte-identical.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 9
+  "metadata": {
+    "session_id": "sess_1792077807_2be444",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 14
+  }
 }

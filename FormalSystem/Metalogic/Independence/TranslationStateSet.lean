@@ -37,7 +37,7 @@ five theorems report exactly what the frame constant reports.
 - `selfShift D` — `D` acting on itself by translation, as a `ShiftSet`
 - `translationFlow D` — the task frame of that action; `W = D`, `w ⇒_x u ⟺ u = w + x`
 - `translationState` — the identity view of a `translationFrame` world state as a duration
-- `translationFrame_worldLinearOrder` — the frame's world-state order, which every (H1)
+- `translationFrameWorldLinearOrder` — the frame's world-state order, which every (H1)
   statement at that frame needs
 
 ## Main Results
@@ -97,7 +97,7 @@ not about this argument:
 ```
 #print axioms FormalSystem.Semantics.translationFrame
 #print axioms FormalSystem.Metalogic.Independence.translationState
-#print axioms FormalSystem.Metalogic.Independence.translationFrame_worldLinearOrder
+#print axioms FormalSystem.Metalogic.Independence.translationFrameWorldLinearOrder
 #print axioms FormalSystem.Metalogic.Independence.translationFrame_orderFlow
 #print axioms FormalSystem.Metalogic.Independence.translationFrame_stateOccurs
 #print axioms FormalSystem.Metalogic.Independence.translationFrame_plusTruthAt_iff_mem_satSet
@@ -301,7 +301,7 @@ by the paper's own `σ_c` rather than by `cor:occurrence`. Both happen below.
 **Why this half needs glue the flow layer does not.** `ShiftSet.fibre` and `ShiftSet.frame` are
 `@[reducible]`, so instance search sees straight through them to the carrier and
 `LinearOrder (translationFlow D).WorldState` synthesizes unaided. `translationFrame` is a plain
-`def`, so it does not: hence the `translationFrame_worldLinearOrder` instance, and hence the
+`def`, so it does not: hence the `translationFrameWorldLinearOrder` instance, and hence the
 `translationState` view, which is what lets the additive witnesses elaborate on a world-state
 operand. The same reducibility gap is why `translationStates` exists at all in
 `Semantics/Correspondence/DurationFrames.lean`.
@@ -333,7 +333,7 @@ The linear order on `translationFrame D`'s world states, which every (H1) statem
 Definitionally the carrier's own order; keyed on a head symbol no existing instance mentions, so
 no diamond arises.
 -/
-instance translationFrame_worldLinearOrder (D : TemporalOrder) :
+instance translationFrameWorldLinearOrder (D : TemporalOrder) :
     LinearOrder ((translationFrame D).toTaskFrame.WorldState) := inferInstanceAs (LinearOrder ↑D)
 
 /--
