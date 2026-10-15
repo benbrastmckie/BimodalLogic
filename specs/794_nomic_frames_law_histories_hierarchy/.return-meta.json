@@ -3,9 +3,9 @@
   "started_at": "2026-10-14T00:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_3_complete",
-    "details": "Phases 1-3 committed: Frame.lean, Recovery.lean, ZTime.lean all green, 0 sorry, 0 warnings. Starting Phase 4 (witnesses 1 and 3).",
-    "phases_completed": 3,
+    "stage": "phase_4_complete",
+    "details": "Phases 1-4 committed: witnesses 1 and 3 green with their independence theorems, 0 sorry, 0 warnings. Starting Phase 5 (witness 2 and nomic_hierarchy).",
+    "phases_completed": 4,
     "phases_total": 7
   },
   "metadata": {

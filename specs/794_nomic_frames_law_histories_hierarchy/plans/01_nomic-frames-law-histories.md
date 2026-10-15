@@ -339,34 +339,34 @@ covers every call site this phase creates.
 
 ---
 
-### Phase 4: Witnesses 1 and 3 [NOT STARTED]
+### Phase 4: Witnesses 1 and 3 [COMPLETED]
 
 **Goal**: `prop:nomic-hierarchy`'s static-not-lawful witness on `{a,b,c}` and its
 static-and-lawful-not-uniform witness on `{a,b,c}`, each with its independence theorems.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Nomic/Witnesses.lean`: the shared carrier `inductive W3 | a |
+- [x] Create `FormalSystem/Semantics/Nomic/Witnesses.lean`: the shared carrier `inductive W3 | a |
       b | c deriving DecidableEq`, a hand-written `Fintype` instance (`elems := {a,b,c}`,
       `complete := by intro x; cases x <;> simp`) and a `Nonempty` instance — the
       `OpenLanguage/OpenOckhamist.lean:130-145` house pattern; `deriving Fintype` is used nowhere
       in this tree
-- [ ] Witness 1, transcribed from R9 (compiled during research): `R1` written as a `match` with
+- [x] Witness 1, transcribed from R9 (compiled during research): `R1` written as a `match` with
       `| _ => Eq`, so `R1 .a` and `R1 .b` reduce to the same term and `F1_lawHist_a_eq_b` holds
       **by `rfl`**; `R1_fwd`/`R1_bwd`; `F1 := ofStepFamily R1 R1_fwd R1_bwd`;
       `F1_const_of_mem_a`; `F1_c_invariant`; `F1_static`; `alt` (the alternating `a`/`b` path);
       `alt_mem_c`; `F1_not_lawful`. Reflow the two long `refine … (P := …) ?_ 0 Iff.rfl n` lines
       to 100 columns
-- [ ] Witness 3, the structural mirror of witness 1: `R3` with `R_a = Eq` and
+- [x] Witness 3, the structural mirror of witness 1: `R3` with `R_a = Eq` and
       `R_b = R_c = {(a,a)} ∪ ({b,c} × {b,c})`, written as a `match` so that `R3 .b` and `R3 .c`
       reduce to the same term and `R_b ≡ R_c` is again `rfl`; `R3_fwd`/`R3_bwd`;
-      `F3 := ofStepFamily R3 R3_fwd R3_bwd`
-- [ ] `F3_static` and `F3_lawful`: `P u := (u = a)` is a two-sided `R_b`-invariant
+      `F3 := ofStepFamily R3 R3_fwd R3_bwd` *(deviation: altered — `R_b`/`R_c` written as "both ends are `a` or neither is", which is the same five-pair relation as `{(a,a)} ∪ ({b,c} × {b,c})` and makes the two-sided `R_b`-invariance of `u = a` immediate; witnesses live in a dedicated `namespace NomicHierarchy`, per `FrameConstraintIndependence.lean`'s house style, rather than at the bare `Semantics` level)*
+- [x] `F3_static` and `F3_lawful`: `P u := (u = a)` is a two-sided `R_b`-invariant
       (`stepPath_invariant`), so every `τ ∈ lawHist b` is either constantly `a` or never `a`;
       `lawHist a` is the constants (`stepPath_invariant` at `R_a = Eq`, as in
       `F1_const_of_mem_a`), and a constant lies in every `lawHist w` by reflexivity of each `R_w`
-- [ ] `F3_not_uniform`: the alternating `b`/`c` path lies in `HF` through `lawHist b` but not in
+- [x] `F3_not_uniform`: the alternating `b`/`c` path lies in `HF` through `lawHist b` but not in
       `lawHist a`, which would force `τ 0 = τ 1`
-- [ ] Add the import to `Semantics/Nomic.lean` and re-run `lake exe mk_all --lib FormalSystem`
+- [x] Add the import to `Semantics/Nomic.lean` and re-run `lake exe mk_all --lib FormalSystem`
 
 **Timing**: 2 hours
 

@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.Nomic.Frame
 import FormalSystem.Semantics.Nomic.Recovery
 import FormalSystem.Semantics.Nomic.ZTime
+import FormalSystem.Semantics.Nomic.Witnesses
 
 /-!
 # `FormalSystem.Semantics.Nomic` — nomic frames and their law-histories
@@ -22,4 +23,6 @@ Aggregator for `Semantics/Nomic/`. See `Semantics/Nomic/README.md`.
   `lem:nomic-recovery`: the law-histories at `w` recover the relativized relation `⇒ʷ`
 - `Nomic.ZTime` — `def:nomic-witnesses`: the ℤ-time presentation `ofStepFamily`, the two
   `lawHist`-over-ℤ membership bridges, law-history monotonicity, and the two step-path invariants
+- `Nomic.Witnesses` — `prop:nomic-hierarchy`: the finite ℤ-time witnesses separating *Static*,
+  *Lawful* and *Uniform*, their per-witness independence theorems, and `nomic_hierarchy`
 -/
