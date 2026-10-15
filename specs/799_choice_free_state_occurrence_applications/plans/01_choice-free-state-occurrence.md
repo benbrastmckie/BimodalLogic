@@ -354,7 +354,7 @@ re-measurement, since the docstring is a dated record of a measurement.
 
 ---
 
-### Phase 3: (H1), (H2) and the three corollaries at `translationFrame D` [NOT STARTED]
+### Phase 3: (H1), (H2) and the three corollaries at `translationFrame D` [COMPLETED]
 
 **Goal**: The same results are available at the frame constant the `*Sharpness` countermodels
 actually build on, with the witness exhibited as the paper's own `σ_c`, and the pin recorded as

@@ -37,6 +37,8 @@ five theorems report exactly what the frame constant reports.
 - `selfShift D` — `D` acting on itself by translation, as a `ShiftSet`
 - `translationFlow D` — the task frame of that action; `W = D`, `w ⇒_x u ⟺ u = w + x`
 - `translationState` — the identity view of a `translationFrame` world state as a duration
+- `translationFrame_worldLinearOrder` — the frame's world-state order, which every (H1)
+  statement at that frame needs
 
 ## Main Results
 
@@ -87,8 +89,40 @@ the `sep` discharge itself choice-free at an arbitrary duration group are record
 `selfShift` and `translationFlow_orderFlow`: additive witnesses, right-hand monotonicity of
 addition, and `abs_pos.mpr` under `by_contra`.
 
-The `translationFrame` layer below is pinned **relatively** instead, for a reason that is about
-`#print axioms` and not about this argument; see the section-level docstring there.
+### The relative pin at `translationFrame`
+
+The frame layer below is pinned **relatively** instead, for a reason about `#print axioms` and
+not about this argument:
+
+```
+#print axioms FormalSystem.Semantics.translationFrame
+#print axioms FormalSystem.Metalogic.Independence.translationState
+#print axioms FormalSystem.Metalogic.Independence.translationFrame_worldLinearOrder
+#print axioms FormalSystem.Metalogic.Independence.translationFrame_orderFlow
+#print axioms FormalSystem.Metalogic.Independence.translationFrame_stateOccurs
+#print axioms FormalSystem.Metalogic.Independence.translationFrame_plusTruthAt_iff_mem_satSet
+#print axioms FormalSystem.Metalogic.Independence.translationFrame_determined
+#print axioms FormalSystem.Metalogic.Independence.translationFrame_plusValidOn_iff_satSet_univ
+```
+
+All eight report `[propext, Classical.choice, Quot.sound]` — the frame constant's own profile and
+the seven declarations over it, the same string. `#print axioms` traverses a declaration's *type*
+as well as its value, and every statement in that section mentions `translationFrame D`, so none
+of them can report less however its proof runs.
+
+The residual source is named: `TaskFrame.limit_of_shift`, which `translationFrame` calls to
+discharge one structural obligation at the identity position function. It is left exactly as it
+stands; a choice-free rewrite of it would shrink axiom sets that are pinned by exact string
+equality across the tree, and that is a decision about a repository-wide invariant.
+
+What the equality of the eight strings does establish is that the (H2) discharge contributes
+nothing: no `cor:occurrence`, no `thm:extension`, no Zorn. The choice is frame-constant-borne,
+not argument-borne. For the same three sentences with *no* `Classical.choice` at all, read the
+flow layer.
+
+As a cross-check that the generic argument itself is choice-free, and that only instantiation can
+add choice: `plusTruthAt_iff_mem_satSet` reports `[propext]` alone and `determined_of_orderFlow`
+`[propext, Quot.sound]`.
 
 ## References
 
@@ -254,5 +288,131 @@ translation — so this reads `lem:state-set` off `def:state-set` alone, with no
 theorem translationFlow_plusValidOn_iff_satSet_univ (D : TemporalOrder) (φ : PlusFormula) :
     (translationFlow D).PlusValidOn φ ↔ ∀ V : ↑D → Atom → Prop, satSet V φ = Set.univ :=
   plusValidOn_iff_satSet_univ (translationFlow_orderFlow D) (translationFlow_stateOccurs D) φ
+
+section TranslationFrame
+
+/-!
+## The same results at `translationFrame D`
+
+`def:canonical-frames`' translation frame is the frame constant the `*Sharpness` countermodels
+build on, so the three sentences must be available there too, and (H2) must be discharged there
+by the paper's own `σ_c` rather than by `cor:occurrence`. Both happen below.
+
+**Why this half needs glue the flow layer does not.** `ShiftSet.fibre` and `ShiftSet.frame` are
+`@[reducible]`, so instance search sees straight through them to the carrier and
+`LinearOrder (translationFlow D).WorldState` synthesizes unaided. `translationFrame` is a plain
+`def`, so it does not: hence the `translationFrame_worldLinearOrder` instance, and hence the
+`translationState` view, which is what lets the additive witnesses elaborate on a world-state
+operand. The same reducibility gap is why `translationStates` exists at all in
+`Semantics/Correspondence/DurationFrames.lean`.
+
+**Why the pin here is relative.** `#print axioms` traverses a declaration's *type* as well as its
+value. Every statement below mentions `translationFrame D`, and `translationFrame` itself reports
+`[propext, Classical.choice, Quot.sound]` — the `Classical.choice` arriving through
+`TaskFrame.limit_of_shift`, the structural obligation it discharges at the identity position
+function. So no statement mentioning the frame constant can report less, whatever its proof does.
+What the measurement establishes is the other half: the five theorem-shaped declarations report
+*exactly* `translationFrame`'s own profile, so the (H2) discharge contributes nothing —
+no `cor:occurrence`, no `thm:extension`, no Zorn. The choice is frame-constant-borne, not
+argument-borne, which is the same distinction `Independence/DeterminismUndefinable.lean`'s pin
+draws for `ℝ`.
+
+The absolutely choice-free statement of the same three sentences is the flow layer above.
+-/
+
+/--
+The identity view of a `translationFrame` world state as a duration. The frame's world-state type
+*is* `↑D`, but not reducibly so, and this view is what lets `-x + w` elaborate on a world-state
+operand.
+-/
+def translationState {D : TemporalOrder}
+    (w : (translationFrame D).toTaskFrame.WorldState) : ↑D := w
+
+/--
+The linear order on `translationFrame D`'s world states, which every (H1) statement needs.
+Definitionally the carrier's own order; keyed on a head symbol no existing instance mentions, so
+no diamond arises.
+-/
+instance translationFrame_worldLinearOrder (D : TemporalOrder) :
+    LinearOrder ((translationFrame D).toTaskFrame.WorldState) := inferInstanceAs (LinearOrder ↑D)
+
+/--
+**(H1) at the translation frame.** All three fields go through `translationStates_eq`, the
+paper's pointwise law for the frame (`lem:canonical-frames`), plus right-hand monotonicity of
+addition; the witnesses are written additively, as at the flow.
+-/
+theorem translationFrame_orderFlow (D : TemporalOrder) :
+    OrderFlow (translationFrame D).toTaskFrame where
+  strictMono := by
+    intro τ s t hst
+    show (τ.state s : ↑D) < (τ.state t : ↑D)
+    rw [show (τ.state s : ↑D) = translationStates τ 0 + s from translationStates_eq τ s,
+        show (τ.state t : ↑D) = translationStates τ 0 + t from translationStates_eq τ t]
+    exact add_lt_add_right hst _
+  hits_future := by
+    intro τ x v hv
+    refine ⟨-(translationStates τ 0) + translationState v, ?_, ?_⟩
+    · have h : translationStates τ 0 + x < translationState v := by
+        rw [← translationStates_eq τ x]; exact hv
+      have h2 := add_lt_add_right h (-(translationStates τ 0))
+      rw [show -(translationStates τ 0) + (translationStates τ 0 + x) = x by abel] at h2
+      exact h2
+    · change translationStates τ (-(translationStates τ 0) + translationState v)
+        = translationState v
+      rw [translationStates_eq τ (-(translationStates τ 0) + translationState v)]
+      abel
+  hits_past := by
+    intro τ x v hv
+    refine ⟨-(translationStates τ 0) + translationState v, ?_, ?_⟩
+    · have h : translationState v < translationStates τ 0 + x := by
+        rw [← translationStates_eq τ x]; exact hv
+      have h2 := add_lt_add_right h (-(translationStates τ 0))
+      rw [show -(translationStates τ 0) + (translationStates τ 0 + x) = x by abel] at h2
+      exact h2
+    · change translationStates τ (-(translationStates τ 0) + translationState v)
+        = translationState v
+      rw [translationStates_eq τ (-(translationStates τ 0) + translationState v)]
+      abel
+
+/--
+**(H2) at the translation frame**, by the paper's own `σ_c` (`def:canonical-frames`) at
+`c = -x + w`: the translation by that duration occupies `w` at time `x`.
+
+The witness is written down, not extended into existence — `PartialHistory.extension` and
+`cor:occurrence` are both unreached. This is the frame-constant form of the paper's observation
+at `lem:state-set` that its appeals to `cor:occurrence` are inessential to the applications,
+where a world through a given state at a given time is exhibited explicitly as a translation.
+-/
+theorem translationFrame_stateOccurs (D : TemporalOrder) :
+    StateOccurs (translationFrame D).toTaskFrame := by
+  intro w x
+  refine ⟨translationSigma D (-x + translationState w), ?_⟩
+  change translationStates (translationSigma D (-x + translationState w)) x = translationState w
+  rw [translationSigma_states]
+  abel
+
+/-- **`lem:state-set`'s first sentence at the translation frame**: the state-set bridge, with
+(H2) discharged by `σ_c` rather than by `cor:occurrence`. -/
+theorem translationFrame_plusTruthAt_iff_mem_satSet (D : TemporalOrder)
+    (M : TaskModel (translationFrame D).toTaskFrame) (φ : PlusFormula) :
+    ∀ (τ : WorldHistory (translationFrame D).toTaskFrame) (t : ↑D),
+      PlusTruthAt M τ t φ ↔ τ.state t ∈ satSet M.valuation φ :=
+  plusTruthAt_iff_mem_satSet (translationFrame_orderFlow D) (translationFrame_stateOccurs D) M φ
+
+/-- **`lem:state-set`'s second sentence at the translation frame**: every instance of *Determined*
+is valid there. -/
+theorem translationFrame_determined (D : TemporalOrder) (φ : PlusFormula) :
+    (translationFrame D).toTaskFrame.PlusValidOn (.imp φ (.stab φ)) :=
+  determined_of_orderFlow (translationFrame_orderFlow D) (translationFrame_stateOccurs D) φ
+
+/-- **`lem:state-set`'s third sentence at the translation frame**: frame-validity is the state set
+exhausting the carrier under every assignment. -/
+theorem translationFrame_plusValidOn_iff_satSet_univ (D : TemporalOrder) (φ : PlusFormula) :
+    (translationFrame D).toTaskFrame.PlusValidOn φ
+      ↔ ∀ V : (translationFrame D).toTaskFrame.WorldState → Atom → Prop,
+          satSet V φ = Set.univ :=
+  plusValidOn_iff_satSet_univ (translationFrame_orderFlow D) (translationFrame_stateOccurs D) φ
+
+end TranslationFrame
 
 end FormalSystem.Metalogic.Independence
