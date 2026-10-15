@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Nomic.Frame
 import FormalSystem.Semantics.Nomic.Recovery
+import FormalSystem.Semantics.Nomic.ZTime
 
 /-!
 # `FormalSystem.Semantics.Nomic` — nomic frames and their law-histories
@@ -19,4 +20,6 @@ Aggregator for `Semantics/Nomic/`. See `Semantics/Nomic/README.md`.
   `def:nomic-properties` with the two implications from *Uniform*, and `lem:nomic-occurrence`
 - `Nomic.Recovery` — the two-point partial history as a general lemma over `TaskFrame`, and
   `lem:nomic-recovery`: the law-histories at `w` recover the relativized relation `⇒ʷ`
+- `Nomic.ZTime` — `def:nomic-witnesses`: the ℤ-time presentation `ofStepFamily`, the two
+  `lawHist`-over-ℤ membership bridges, law-history monotonicity, and the two step-path invariants
 -/

@@ -3,9 +3,9 @@
   "started_at": "2026-10-14T00:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_2_complete",
-    "details": "Phases 1-2 committed: Frame.lean and Recovery.lean green, 0 sorry, axiom sets measured (ZFC where claimed). Starting Phase 3 (ZTime.lean).",
-    "phases_completed": 2,
+    "stage": "phase_3_complete",
+    "details": "Phases 1-3 committed: Frame.lean, Recovery.lean, ZTime.lean all green, 0 sorry, 0 warnings. Starting Phase 4 (witnesses 1 and 3).",
+    "phases_completed": 3,
     "phases_total": 7
   },
   "metadata": {

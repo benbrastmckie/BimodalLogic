@@ -283,35 +283,35 @@ builds both the module and that aggregator and covers the whole edit.
 
 ---
 
-### Phase 3: The ℤ-time presentation and the step-path invariants [NOT STARTED]
+### Phase 3: The ℤ-time presentation and the step-path invariants [COMPLETED]
 
 **Goal**: `def:nomic-witnesses` as `ofStepFamily`, the two `lawHist`-over-ℤ bridges, the
 monotonicity lemma, and both step-path invariant helpers — everything the three witnesses consume.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Nomic/ZTime.lean` and transcribe R7: `def ofStepFamily` (its
+- [x] Create `FormalSystem/Semantics/Nomic/ZTime.lean` and transcribe R7: `def ofStepFamily` (its
       `PosRel` built from `ofStepRel (R w)`, which lives directly in `FormalSystem.Semantics`, not
       in `FrameOver`), `theorem ofStepFamily_at` — which holds **by `rfl`**, the fact that makes
       every ℤ-normal-form lemma apply unchanged — `instance ofStepFamily_isRegular` with
       `regular w := FrameOver.ofStep_isRegular (R w) (fwd w) (bwd w)` **as a bare term**, never
       via `rw [ofStepFamily_at w]` (which fails to synthesize
       `Finite (ofStepFamily R fwd bwd).World`)
-- [ ] `theorem mem_lawHist_iff_isStepPath := FrameOver.isTotal_respects_iff_adjacent (F.at w) τ` —
+- [x] `theorem mem_lawHist_iff_isStepPath := FrameOver.isTotal_respects_iff_adjacent (F.at w) τ` —
       one term, no tactic: `lawHist` is literally that lemma's left-hand side. Record in the
       docstring why `isTotal_respects_iff_adjacent` and not `mem_HF_iff_adjacent` is the primary
       bridge, and that the latter stays reachable through `mem_lawHist_iff`
-- [ ] `theorem mem_lawHist_ofStepFamily_iff` via `refine Iff.trans … ?_`, **not** `rw`: the
+- [x] `theorem mem_lawHist_ofStepFamily_iff` via `refine Iff.trans … ?_`, **not** `rw`: the
       membership's type is `↑intOrder → (ofStepFamily …).World`, which `rw` will not match against
       a `ℤ → W` binder (the `SlicedFrame.lean:360` pattern)
-- [ ] `theorem lawHist_mono_of_le` — pointwise containment of one `R v` in `R u` gives
+- [x] `theorem lawHist_mono_of_le` — pointwise containment of one `R v` in `R u` gives
       `lawHist v ⊆ lawHist u` — a two-line consequence of `mem_lawHist_ofStepFamily_iff`
-- [ ] Transcribe R8's `stepPath_invariant` using `omega` (not `ring`) for the three index
+- [x] Transcribe R8's `stepPath_invariant` using `omega` (not `ring`) for the three index
       identities and `Int.induction_on`'s `zero`/`succ`/`pred` case names (`hz`/`hp`/`hn` are
-      rejected on this pin)
-- [ ] Write `stepPath_forward_invariant`, the forward-only companion, by `Int.le_induction` —
+      rejected on this pin) *(deviation: altered — `Int.le_induction` is deprecated on this pin in favour of `Int.leInduction`; the `zero`/`succ`/`pred` case names for `Int.induction_on` were correct as recorded)*
+- [x] Write `stepPath_forward_invariant`, the forward-only companion, by `Int.le_induction` —
       **the one declaration in this phase whose proof was not compiled during research**; it is a
       three-line mirror of `stepPath_invariant`'s `succ` branch
-- [ ] Add the import to `Semantics/Nomic.lean` and re-run `lake exe mk_all --lib FormalSystem`
+- [x] Add the import to `Semantics/Nomic.lean` and re-run `lake exe mk_all --lib FormalSystem`
 
 **Timing**: 1.5 hours
 
