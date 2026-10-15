@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/795_nomic_operator_uniformity_axiom_four/reports/01_nomic-operator-uniformity-axiom-four.md",
-      "summary": "Research for the nomic operator and its three results: all six deliverables machine-checked sorry-free in nine lean_run_code probes, with a two-directory siting recommendation (Semantics/Nomic/Uniformity.lean plus a new NomicLanguage/ component), a seven-phase decomposition, the five required paper-record rows with resolved sha256 values, and the zero-warning-budget and task-801 territory hazards."
+      "type": "plan",
+      "path": "specs/795_nomic_operator_uniformity_axiom_four/plans/01_nomic-operator-uniformity-axiom-four.md",
+      "summary": "Seven-phase, 10-hour lean4 plan for the nomic operator, thm:nomic-uniform, prop:nomic-tense-free, seriality and app:nomic-four, with 40 pinned Challenge statements."
+    }
+  ],
+  "next_steps": "Run /implement 795 to execute the plan",
+  "phase_count": 7,
+  "estimated_hours": 10,
+  "dependency_waves": [[1], [2, 3], [4], [5, 6], [7]],
+  "memory_candidates": [
+    {
+      "content": "A semantics whose evaluation point is not (TaskModel F, WorldHistory F, F.Duration) over a TaskFrame cannot instantiate FormalSystem/Semantics/TruthClauses.lean at all: every clause class there (BotClause, ImpClause, BoxClause, UntlClause, SnceClause, StabClause) repeats that exact binder set. The concrete blocker for a nomic semantics is that H_F is a union of per-state law-history sets and, on a non-uniform frame, is the world-history set of no single task frame, so the WorldHistory F binder cannot be met. The consequence is a re-derived derived-operator clause layer -- nine short lemmas (neg, and, iff, someFuture, allFuture, somePast, allPast, always, next), each 3-8 lines, with only the two collapsed forms (always to the forall-y normal form via lt_trichotomy, and next via Order.succ) carrying content. Generalising the clause layer over the point structure is a six-component refactor across every language directory and is not worth it for one consumer; record the duplication and its cause in the new truth module's docstring instead. The same verdict will apply to any future neighbourhood or two-dimensional semantics in this tree.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/795_nomic_operator_uniformity_axiom_four/plans/01_nomic-operator-uniformity-axiom-four.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["TruthClauses", "TaskFrame", "clause-layer", "semantics", "derived-operators", "duplication"]
     }
   ],
   "metadata": {
-    "session_id": "sess_1792056489_e27cc7_795",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792095464_fd54b2_795",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 12
 }
