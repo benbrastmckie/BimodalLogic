@@ -24,7 +24,11 @@
     "session_id": "sess_1792077807_2be444",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
     "compliance_check": "passed",
     "phases_completed": 5,
     "phases_total": 5,
@@ -36,28 +40,53 @@
       "category": "PATTERN",
       "source_artifact": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
       "confidence": 0.92,
-      "suggested_keywords": ["lake-build-guard", "build-replay", "post-fingerprint", "olean-mtime", "no-share", "false-green"]
+      "suggested_keywords": [
+        "lake-build-guard",
+        "build-replay",
+        "post-fingerprint",
+        "olean-mtime",
+        "no-share",
+        "false-green"
+      ]
     },
     {
       "content": "Before planning how to REGISTER a new Lean module, read the README of the component directory you are adding it to -- it commonly documents registration surfaces the plan would otherwise discover as gate failures. Adding FormalSystem/PlusLanguage/PlusReversal.lean tripped check-metalogic-cycles.sh with 'unlayered module: the per-file table LANGUAGE_FILE_LAYERS has no row', fixed by adding the row to scripts/measure-refactor-partitions.py AND the matching name to ORGANISATION.md together, as the checker's own remediation text instructs. That requirement was NOT undocumented: FormalSystem/PlusLanguage/README.md states in bold that 'A new file in this directory needs a row in that table'. Note also that the checker SHORT-CIRCUITS -- while a module is unlayered it reports only the unlayered-module failure and suppresses the upward-import-set measurement entirely, so a second, pre-existing failure can stay hidden until the layer row lands.",
       "category": "PATTERN",
       "source_artifact": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["module-registration", "component-readme", "language-file-layers", "metalogic-cycles", "gate-short-circuit"]
+      "suggested_keywords": [
+        "module-registration",
+        "component-readme",
+        "language-file-layers",
+        "metalogic-cycles",
+        "gate-short-circuit"
+      ]
     },
     {
       "content": "A gate that exits 0 can be a VACUOUS pass, and a plan clause saying 'script X exits 0, run un-narrowed' does not by itself buy evidence. .claude/scripts/verify-deploy.sh exits 0 while printing 'PASS -- 0 check(s), 0 failure(s)' because every gate it runs is driven by a registry loaded from .claude/scripts/gate-registry.data, and that file is absent from BOTH the deployed tree and the source store; the script documents the degradation ('A missing lib degrades to an empty gate_registry_ids'), so the empty run is by design rather than a crash. An exit 0 over zero checks satisfies such a clause's LETTER while supplying strictly less evidence than the narrowed subset pass the clause was written to forbid. When a verification clause names an aggregator, check the check COUNT, not just the exit code, and obtain coverage by running the member gates individually if the aggregator is empty.",
       "category": "PATTERN",
       "source_artifact": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
       "confidence": 0.88,
-      "suggested_keywords": ["vacuous-pass", "verify-deploy", "gate-registry", "zero-checks", "verification-evidence"]
+      "suggested_keywords": [
+        "vacuous-pass",
+        "verify-deploy",
+        "gate-registry",
+        "zero-checks",
+        "verification-evidence"
+      ]
     },
     {
       "content": "A generated inventory block marked `rows=loose` is NOT inert: it lists the files sitting directly in that directory, so an edit to any AGGREGATOR file at the directory's root moves its line counts, not only adding or removing files. A plan that predicted three moved blocks (two component READMEs plus the root) was wrong twice: FormalSystem/README.md moved because Phase 1 edited FormalSystem/Semantics.lean and FormalSystem/OpenLanguage.lean -- two files sitting directly in FormalSystem/ -- and FormalSystem/Metalogic/README.md moved once a file under Metalogic/Deterministic/ grew. Derive the moved set by running `check-module-invariants.sh --emit-inventory` and reading `git status --short`, rather than reasoning about block options in advance. Relatedly, a pre-commit gate keyed on whole-tree line counts (here typst/generated/status.typ) fires at the FIRST phase commit that moves a .lean line count, so a plan that schedules its regeneration only in a final generated-surfaces phase has an unreachable step.",
       "category": "PATTERN",
       "source_artifact": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
       "confidence": 0.86,
-      "suggested_keywords": ["generated-inventory", "rows-loose", "aggregator-files", "whole-tree-counts", "pre-commit-gate"]
+      "suggested_keywords": [
+        "generated-inventory",
+        "rows-loose",
+        "aggregator-files",
+        "whole-tree-counts",
+        "pre-commit-gate"
+      ]
     }
   ],
   "dispatch_seq": 16

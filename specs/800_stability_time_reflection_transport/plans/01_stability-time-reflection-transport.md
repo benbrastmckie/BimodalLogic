@@ -1,7 +1,7 @@
 # Implementation Plan: Task #800
 
 - **Task**: 800 - Extend the time-reflection transport from BL to the Stability language
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: The base time-reflection task — LANDED (`truthAt_rev`, `revAntiIso`,
   `validOn_rev_iff` and the frame-class closure `FrameClass.Sat.rev` are all in the tree; verified

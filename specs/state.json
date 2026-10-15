@@ -2379,7 +2379,7 @@
     {
       "project_number": 800,
       "project_name": "stability_time_reflection_transport",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -2388,7 +2388,7 @@
       ],
       "description": "Extend the time-reflection transport from BL to the Stability language.\n\nTHE SPECIFICATION, stated exactly in the paper's cut proof of cor:deterministic-completeness: lem:time-reflection extends to BL-plus by setting the mirror of a Stability formula to be the Stability of its mirror, \"since tau |-> tau-minus carries the state-local class at x onto the state-local class at n(x), and F |-> F-minus preserves the class of frames validating Determined, leaving the temporal order unchanged, where F-minus validates an instance of Determined just in case F validates its mirror image, itself an instance of Determined.\" That passage is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'The stability logic and its completeness over the deterministic frames', inside the soundness half of the proof. It is a specification for this task, not a theorem to cite.\n\nDEPENDS on the time-reflection task, which lands `revAntiIso`, `truthAt_rev` (lem:time-reflection for the base `Formula`), `validOn_rev_iff`, and the closure of Base, Dense, ZTime and RTime under `rev`. This task is the Plus-language layer above that one and must not duplicate it.\n\nWHAT EXISTS. The Stability language is live: FormalSystem/PlusLanguage/ carries `PlusFormula`, `PlusTruth`, `PlusValidity`, `PlusDeterminism`, and `PlusStateLocal` -- the state-local equivalence the Stability clause quantifies over, which is the object the carrying lemma below is about. The frame-level involution is in FormalSystem/OpenLanguage/OpenReversal.lean (`FrameOver.rev`, `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, `rev_isRegular`, `rev_surjective`). The metalogic that consumes the reflected class is FormalSystem/Metalogic/Deterministic/ (`detSoundness`, `detSoundnessDet`, and the completeness family). Before adding anything, check whether `PlusFormula` already carries a `reflectTime` and a `reflect_time_*` simp family -- the base `Formula` does, in FormalSystem/Syntax/Formula.lean.\n\nDELIVER: (1) `PlusFormula.reflectTime` with the Stability clause commuting, and its simp lemmas, if not already present; (2) THE ONE GENUINELY NEW SEMANTIC STEP: the carrying lemma that `WorldHistory.rev` maps the state-local class at x onto the state-local class at -x -- everything else in this task is transport; (3) the BL-plus form of lem:time-reflection from (2) together with the base transport; (4) the class-closure statement -- the task frames validating Determined are closed under `rev`, by the mirror-image argument the cut proof gives -- and hence the BL-plus form of thm:TR-valid over that class; (5) a decision, recorded in the docstring, on whether the Deterministic/ soundness proof's TR case should now consume (4) or keep its present route.\n\nSCOPE LIMIT. This is the reflection transport only. It is NOT a port of cor:deterministic-completeness, which is already in the tree under Metalogic/Deterministic/, and it is not the Open-language reversal in OpenLanguage/OpenReversal.lean, which is an independent copy of the same involution at a different language. If all three can be unified behind one transport, that is a finding to REPORT, not a licence to refactor mid-task.\n\nPAPER ANCHORS. def:time-reflection, lem:time-reflection and thm:TR-valid in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, which the base task clears; this task covers the Stability extension the paper states only inside the cut proof.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase; the `assert_not_exists` guards in Semantics/Truth.lean must stay satisfied if anything is promoted between clusters.",
       "created": "2026-10-14T21:59:04Z",
-      "last_updated": "2026-10-15T18:26:37Z",
+      "last_updated": "2026-10-15T20:08:52Z",
       "artifacts": [
         {
           "path": "specs/800_stability_time_reflection_transport/reports/01_stability-time-reflection-transport.md",
@@ -2399,6 +2399,11 @@
           "path": "specs/800_stability_time_reflection_transport/plans/01_stability-time-reflection-transport.md",
           "type": "plan",
           "summary": "Five phases, 5 hours, fifteen plan-time-compiled Lean Challenge signatures, and a two-branch ownership check for the generated surfaces contended with sibling 799."
+        },
+        {
+          "path": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: fifteen declarations across five phases, the three plan deviations, the full verification record, and five follow-ups."
         }
       ],
       "session_id": "sess_1792077807_2be444",
@@ -2421,7 +2426,8 @@
         "FormalSystem/Semantics/Reversal.lean",
         "README.md",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Built the paper's one-sentence extension of lem:time-reflection to the Stability language as fifteen Lean declarations with the plan's pinned signatures: the carrying lemma promoted to Semantics/Reversal.lean with its paper-faithful image form, a new PlusLanguage/PlusReversal.lean carrying the seven-case plusTruthAt_rev and the L-plus thm:TR-valid family, TaskFrame.deterministic_rev with the Determined- and deterministic-class closures, and the TR-route decision recorded after verifying the alternative route elaborates. Un-narrowed full build green at 2859 jobs with zero sorry and the axiom count unchanged; build-backed check-module-invariants.sh prints ALL CHECKS PASSED."
     }
   ],
   "artifacts": [
