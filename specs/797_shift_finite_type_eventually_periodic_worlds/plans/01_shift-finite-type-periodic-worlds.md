@@ -292,7 +292,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Deliverable (1b) — The Mathlib Subshift Dictionary [NOT STARTED]
+### Phase 4: Deliverable (1b) — The Mathlib Subshift Dictionary [COMPLETED]
 
 - **Goal:** Identify the same set with Mathlib's own forbidden-pattern subshift at `G = ℤ`, as an
   explicitly choice-carrying dictionary theorem kept out of every choice-free module.
