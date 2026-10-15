@@ -402,17 +402,17 @@ covers the whole edit, and witness independence is a statement about these two f
 
 ---
 
-### Phase 5: Witness 2 and the aggregate hierarchy theorem [NOT STARTED]
+### Phase 5: Witness 2 and the aggregate hierarchy theorem [COMPLETED]
 
 **Goal**: the lawful-but-not-static witness on `{a,b,e}` — the one genuinely hard proof — and
 `nomic_hierarchy`, the bundled statement of `prop:nomic-hierarchy`.
 
 **Tasks**:
-- [ ] Add the carrier `inductive W3e | a | b | e` with its hand-written `Fintype`/`Nonempty`
+- [x] Add the carrier `inductive W3e | a | b | e` with its hand-written `Fintype`/`Nonempty`
       instances, and `R2` with `R_a = {(a,a),(b,b),(e,a),(e,e)}`,
       `R_b = {(a,a),(b,b),(e,b),(e,e)}`, `R_e = R_a ∪ R_b`; `R2_fwd`/`R2_bwd` (both relations are
       bi-serial, so `ofStepFamily` applies verbatim); `F2 := ofStepFamily R2 R2_fwd R2_bwd`
-- [ ] `F2_lawful`, case on which `lawHist v` the history came from:
+- [x] `F2_lawful`, case on which `lawHist v` the history came from:
       - `τ ∈ lawHist a`: `P u := (u = b)` is a two-sided `R_a`-invariant, so `τ x = b` forces `τ`
         constantly `b` and hence `τ ∈ lawHist b` by reflexivity of `R_b` at `b`; otherwise
         `τ x ∈ {a, e}` and `lawHist a ⊆ lawHist e` by `lawHist_mono_of_le` (`R_a ⊆ R_e`). Mirror
@@ -422,14 +422,14 @@ covers the whole edit, and witness independence is a statement about these two f
         `P u := (u = a)` and at `P u := (u = b)`. With `b` excluded, every step of `τ` lies in
         `R_a` (the `R_e`-pairs not mentioning `b` are exactly `(a,a),(e,a),(e,e) ⊆ R_a`), so
         `τ ∈ lawHist a`; symmetrically for `a` excluded
-- [ ] `F2_not_static`: `σ₀ᵃ := fun n => if n ≤ 0 then e else a` lies in `lawHist a ⊆ HF` with
+- [x] `F2_not_static`: `σ₀ᵃ := fun n => if n ≤ 0 then e else a` lies in `lawHist a ⊆ HF` with
       `σ₀ᵃ 0 = e` and `σ₀ᵃ 1 = a`, while `σ₀ᵇ := fun n => if n ≤ 0 then e else b` lies in
       `lawHist e` and not in `lawHist a` (its step at `n = 0` is `R_a e b`, which is false), so
       `Static` would equate `lawHist e` with `lawHist a`
-- [ ] State `nomic_hierarchy` as the three existentials of the Challenge block, each bundling its
+- [x] State `nomic_hierarchy` as the three existentials of the Challenge block, each bundling its
       witness's regularity instance as `∃ _ : F.IsRegular, …`, discharged by the per-witness
       theorems of Phases 4-5 plus `static_of_uniform`/`lawful_of_uniform` from Phase 1
-- [ ] If `F2_lawful` stalls: mark this phase `[BLOCKED]`, record what was reached, and raise it.
+- [ ] If `F2_lawful` stalls: mark this phase `[BLOCKED]`, record what was reached, and raise it. *(deviation: not applicable — `F2_lawful` compiled on the first attempt, so no `[BLOCKED]` escalation was needed)*
       Do **not** place a `sorry` — the constraint is zero new structural `sorry` at the end of
       every phase, and `prop:nomic-hierarchy`'s other content is already landed by Phase 4
 

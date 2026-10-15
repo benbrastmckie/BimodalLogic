@@ -52,13 +52,19 @@ against a `ℤ → W` binder, while `refine`/`exact` close the gap up to defeq �
   step-path holds everywhere along it
 - `NomicFrame.stepPath_forward_invariant` — its forward-only companion, by `Int.leInduction`
 
-## Choice dependence
+## Choice dependence, measured rather than assumed
 
 `ofStepFamily_isRegular` is choice-dependent: each member's *Saturation* is
 `TaskFrame.saturation_of_finite`, which costs `Classical.choice`, as `FrameOver.ofStep`'s own
-docstring records. The two `stepPath_*` invariants and the two membership bridges are choice-free
-— they are inductions and definitional unfoldings — so a witness proof pays for choice exactly
-once, at the frame, and not again per lemma.
+docstring records. Everything stated at a regular frame inherits that cost, so
+`mem_lawHist_iff_isStepPath`, `mem_lawHist_ofStepFamily_iff` and `lawHist_mono_of_le` all measure
+at `[propext, Classical.choice, Quot.sound]`.
+
+Of the two step-path invariants only `stepPath_invariant` is choice-free
+(`[propext, Quot.sound]`). `stepPath_forward_invariant` is **not**, and not for a reason of its
+own: Mathlib's `Int.leInduction` is itself choice-dependent on this pin, while `Int.induction_on`
+is not. These four axiom sets were measured with `#print axioms`, not inferred from the proof
+text.
 -/
 
 namespace FormalSystem.Semantics
@@ -163,7 +169,8 @@ of a bi-infinite path, and holding at one time, holds at every time.
 identities: `ring` does not close `n₀ + (↑i + 1) = n₀ + ↑i + 1` at the shape it arrives in here.
 The case names on this toolchain are `zero`/`succ`/`pred`, not the deprecated `hz`/`hp`/`hn`.
 
-Choice-free: an induction over ℤ and nothing else.
+Choice-free, measured: `[propext, Quot.sound]`. `Int.induction_on` costs no choice, which is what
+separates this lemma from its forward-only sibling below.
 -/
 theorem stepPath_invariant {W : Type} {R : W → W → Prop} {τ : ℤ → W}
     (h : ∀ n : ℤ, R (τ n) (τ (n + 1))) {P : W → Prop}
@@ -192,7 +199,10 @@ forward" needs, and it is strictly weaker than `stepPath_invariant`'s: a relatio
 forward without carrying `¬P` forward, in which case no two-sided invariant is available. By
 `Int.leInduction`, so the conclusion is bounded below by `n₀` rather than universal.
 
-Choice-free: an induction over ℤ and nothing else.
+**Choice dependence, recorded honestly.** Unlike its two-sided sibling, this one is *not*
+choice-free: `Int.leInduction` is choice-dependent on this Mathlib pin, so the measured axiom set
+is `[propext, Classical.choice, Quot.sound]`. The dependence is Mathlib's induction principle,
+not anything in this statement.
 -/
 theorem stepPath_forward_invariant {W : Type} {R : W → W → Prop} {τ : ℤ → W}
     (h : ∀ n : ℤ, R (τ n) (τ (n + 1))) {P : W → Prop}

@@ -3,9 +3,9 @@
   "started_at": "2026-10-14T00:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_4_complete",
-    "details": "Phases 1-4 committed: witnesses 1 and 3 green with their independence theorems, 0 sorry, 0 warnings. Starting Phase 5 (witness 2 and nomic_hierarchy).",
-    "phases_completed": 4,
+    "stage": "phase_5_complete",
+    "details": "Phases 1-5 committed: witness 2 and nomic_hierarchy green on first attempt, 0 sorry, 0 warnings, axiom sets measured and docstrings corrected. Phase 6 decision gate satisfied; firing it next.",
+    "phases_completed": 5,
     "phases_total": 7
   },
   "metadata": {

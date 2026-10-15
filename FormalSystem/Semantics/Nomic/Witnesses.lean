@@ -41,11 +41,14 @@ is used nowhere here — and `Finite` follows from them, as `ofStepFamily` requi
 
 ## Choice dependence
 
-Every witness is choice-dependent, at exactly one place: each member frame's *Saturation* comes
-from `TaskFrame.saturation_of_finite` through `FrameOver.ofStep_isRegular`, which costs
-`Classical.choice`. The separating arguments themselves are choice-free inductions
-(`NomicFrame.stepPath_invariant` and its forward companion), so the cost is paid once per frame
-and not again per theorem. `rmk:choice` does not cover the nomic results.
+Every witness is choice-dependent: each member frame's *Saturation* comes from
+`TaskFrame.saturation_of_finite` through `FrameOver.ofStep_isRegular`, which costs
+`Classical.choice`, and every statement about a law-history of such a frame inherits that cost.
+`nomic_hierarchy`, `F1_static`, `F2_lawful` and the rest therefore measure at
+`[propext, Classical.choice, Quot.sound]`. Of the underlying machinery only
+`NomicFrame.stepPath_invariant` is choice-free; its forward-only companion is not, because
+Mathlib's `Int.leInduction` is choice-dependent on this pin. `rmk:choice` does not cover the
+nomic results, and nothing here advertises them as choice-free.
 -/
 
 namespace FormalSystem.Semantics
@@ -336,6 +339,305 @@ theorem F3_not_uniform : ¬ F3.Uniform := by
   have h01 := F3_const_of_mem_a hla 1
   simp [altBC] at h01
 
+/-! ## Witness 2: *Lawful* but not *Static* -/
+
+/-- The three-state carrier of witness 2: two "absorbing" states `a`, `b` and one state `e` from
+which either can be reached. -/
+inductive W3e | a | b | e
+  deriving DecidableEq
+
+instance : Nonempty W3e := ⟨W3e.a⟩
+
+instance : Fintype W3e where
+  elems := {W3e.a, W3e.b, W3e.e}
+  complete := by intro x; cases x <;> simp
+
+/--
+Witness 2's one-step family: `R_a = {(a,a), (b,b), (e,a), (e,e)}`,
+`R_b = {(a,a), (b,b), (e,b), (e,e)}`, and `R_e = R_a ∪ R_b`.
+
+The shape to keep in mind: `a` and `b` are absorbing under every member, `e` is where the members
+differ, and `R_e` is the only member that can leave `e` for either of the two absorbing states.
+-/
+def R2 (w : W3e) : W3e → W3e → Prop :=
+  match w with
+  | .a => fun p q => (p = .a ∧ q = .a) ∨ (p = .b ∧ q = .b) ∨ (p = .e ∧ (q = .a ∨ q = .e))
+  | .b => fun p q => (p = .a ∧ q = .a) ∨ (p = .b ∧ q = .b) ∨ (p = .e ∧ (q = .b ∨ q = .e))
+  | .e => fun p q => (p = .a ∧ q = .a) ∨ (p = .b ∧ q = .b) ∨
+      (p = .e ∧ (q = .a ∨ q = .b ∨ q = .e))
+
+/-- Every `R2 w` is reflexive, which carries both seriality obligations and the fact that a
+constant path is a law-history at every world state. -/
+theorem R2_refl (w p : W3e) : R2 w p p := by
+  cases w <;> cases p <;> simp [R2]
+
+/-- Every `R2 w` is total: `def:nomic-witnesses`' forward seriality obligation. -/
+theorem R2_fwd : ∀ w p, ∃ q, R2 w p q := fun w p => ⟨p, R2_refl w p⟩
+
+/-- Every `R2 w` is surjective: `def:nomic-witnesses`' backward seriality obligation. -/
+theorem R2_bwd : ∀ w q, ∃ p, R2 w p q := fun w q => ⟨q, R2_refl w q⟩
+
+/-- `R_a ⊆ R_e`. -/
+theorem R2_a_le_e : ∀ p q, R2 W3e.a p q → R2 W3e.e p q := by
+  intro p q h; cases p <;> cases q <;> simp_all [R2]
+
+/-- `R_b ⊆ R_e`. -/
+theorem R2_b_le_e : ∀ p q, R2 W3e.b p q → R2 W3e.e p q := by
+  intro p q h; cases p <;> cases q <;> simp_all [R2]
+
+/-- Being at `b` is a **two-sided** `R_a`-invariant: `R_a` neither enters nor leaves `b`. -/
+theorem R2_a_b_invariant : ∀ p q, R2 W3e.a p q → (p = W3e.b ↔ q = W3e.b) := by
+  intro p q h; cases p <;> cases q <;> simp_all [R2]
+
+/-- Being at `a` is a **two-sided** `R_b`-invariant, by the mirror symmetry of the family. -/
+theorem R2_b_a_invariant : ∀ p q, R2 W3e.b p q → (p = W3e.a ↔ q = W3e.a) := by
+  intro p q h; cases p <;> cases q <;> simp_all [R2]
+
+/-- Being at `a` is **forward**-propagated by `R_e`: `a` is absorbing. It is *not* a two-sided
+invariant, since `R_e` enters `a` from `e` — which is why `stepPath_forward_invariant` exists. -/
+theorem R2_e_a_forward : ∀ p q, R2 W3e.e p q → p = W3e.a → q = W3e.a := by
+  intro p q h hp; cases p <;> cases q <;> simp_all [R2]
+
+/-- Being at `b` is **forward**-propagated by `R_e`, by the mirror symmetry of the family. -/
+theorem R2_e_b_forward : ∀ p q, R2 W3e.e p q → p = W3e.b → q = W3e.b := by
+  intro p q h hp; cases p <;> cases q <;> simp_all [R2]
+
+/-- The `R_e`-pairs mentioning no `b` are exactly `(a,a)`, `(e,a)`, `(e,e)`, all of them
+`R_a`-pairs. -/
+theorem R2_e_sub_a_of_ne_b : ∀ p q, R2 W3e.e p q → p ≠ W3e.b → q ≠ W3e.b →
+    R2 W3e.a p q := by
+  intro p q h hp hq; cases p <;> cases q <;> simp_all [R2]
+
+/-- The `R_e`-pairs mentioning no `a` are exactly `(b,b)`, `(e,b)`, `(e,e)`, all of them
+`R_b`-pairs. -/
+theorem R2_e_sub_b_of_ne_a : ∀ p q, R2 W3e.e p q → p ≠ W3e.a → q ≠ W3e.a →
+    R2 W3e.b p q := by
+  intro p q h hp hq; cases p <;> cases q <;> simp_all [R2]
+
+/-- Witness 2 of `prop:nomic-hierarchy`: a *Lawful* nomic frame over ℤ that is not *Static*. -/
+def F2 : NomicFrame intOrder := NomicFrame.ofStepFamily R2 R2_fwd R2_bwd
+
+/-- A constant path is a law-history at **every** world state, by reflexivity of each `R2 w`. -/
+theorem F2_mem_of_const {τ : ℤ → W3e} (h : ∀ n : ℤ, τ n = τ 0) (w : W3e) :
+    τ ∈ F2.lawHist w := by
+  refine (NomicFrame.mem_lawHist_ofStepFamily_iff w τ).mpr fun n => ?_
+  have hstep : τ (n + 1) = τ n := by rw [h (n + 1), h n]
+  rw [hstep]
+  exact R2_refl w (τ n)
+
+/-- `H_F^a ⊆ H_F^e`, since `R_a ⊆ R_e`. -/
+theorem F2_lawHist_a_subset_e : F2.lawHist W3e.a ⊆ F2.lawHist W3e.e :=
+  NomicFrame.lawHist_mono_of_le R2_a_le_e
+
+/-- `H_F^b ⊆ H_F^e`, since `R_b ⊆ R_e`. -/
+theorem F2_lawHist_b_subset_e : F2.lawHist W3e.b ⊆ F2.lawHist W3e.e :=
+  NomicFrame.lawHist_mono_of_le R2_b_le_e
+
+/-- Along a law-history at `a`, being at `b` is a two-sided invariant. -/
+theorem F2_b_invariant_of_mem_a {τ : ℤ → W3e} (h : τ ∈ F2.lawHist W3e.a) (n : ℤ) :
+    (τ n = W3e.b ↔ τ 0 = W3e.b) := by
+  have hstep := (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.a τ).mp h
+  refine NomicFrame.stepPath_invariant hstep
+    (P := fun u => (u = W3e.b ↔ τ 0 = W3e.b)) ?_ 0 Iff.rfl n
+  intro p q hpq
+  rw [R2_a_b_invariant p q hpq]
+
+/-- Along a law-history at `b`, being at `a` is a two-sided invariant. -/
+theorem F2_a_invariant_of_mem_b {τ : ℤ → W3e} (h : τ ∈ F2.lawHist W3e.b) (n : ℤ) :
+    (τ n = W3e.a ↔ τ 0 = W3e.a) := by
+  have hstep := (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.b τ).mp h
+  refine NomicFrame.stepPath_invariant hstep
+    (P := fun u => (u = W3e.a ↔ τ 0 = W3e.a)) ?_ 0 Iff.rfl n
+  intro p q hpq
+  rw [R2_b_a_invariant p q hpq]
+
+/--
+**The separating fact about `R_e`**: no `R_e`-path visits both `a` and `b`.
+
+Forward from `a` only `a` is reachable and forward from `b` only `b` is, so a path visiting both
+would have to visit the later of the two states twice over, as two different states. This is
+`stepPath_forward_invariant` at `P u := (u = a)` and at `P u := (u = b)`, and it is exactly where
+the forward-only invariant earns its place: neither predicate is two-sided under `R_e`.
+-/
+theorem F2_no_b_or_no_a_of_mem_e {τ : ℤ → W3e} (h : τ ∈ F2.lawHist W3e.e) :
+    (∀ n : ℤ, τ n ≠ W3e.b) ∨ (∀ n : ℤ, τ n ≠ W3e.a) := by
+  have hstep := (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.e τ).mp h
+  by_cases hb : ∃ n : ℤ, τ n = W3e.b
+  · obtain ⟨n₁, h₁⟩ := hb
+    refine Or.inr fun n₀ h₀ => ?_
+    rcases le_total n₀ n₁ with hle | hle
+    · have : τ n₁ = W3e.a :=
+        NomicFrame.stepPath_forward_invariant hstep
+          (P := fun u => u = W3e.a) (fun p q hpq hp => R2_e_a_forward p q hpq hp) h₀ n₁ hle
+      rw [h₁] at this
+      exact absurd this (by simp)
+    · have : τ n₀ = W3e.b :=
+        NomicFrame.stepPath_forward_invariant hstep
+          (P := fun u => u = W3e.b) (fun p q hpq hp => R2_e_b_forward p q hpq hp) h₁ n₀ hle
+      rw [h₀] at this
+      exact absurd this (by simp)
+  · exact Or.inl (not_exists.mp hb)
+
+/-- A law-history at `e` that never visits `b` is a law-history at `a`: all of its steps are
+`R_e`-pairs mentioning no `b`, and those are `R_a`-pairs. -/
+theorem F2_mem_a_of_mem_e_of_no_b {τ : ℤ → W3e} (h : τ ∈ F2.lawHist W3e.e)
+    (hb : ∀ n : ℤ, τ n ≠ W3e.b) : τ ∈ F2.lawHist W3e.a := by
+  have hstep := (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.e τ).mp h
+  refine (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.a τ).mpr fun n => ?_
+  exact R2_e_sub_a_of_ne_b _ _ (hstep n) (hb n) (hb (n + 1))
+
+/-- A law-history at `e` that never visits `a` is a law-history at `b`, by the mirror argument. -/
+theorem F2_mem_b_of_mem_e_of_no_a {τ : ℤ → W3e} (h : τ ∈ F2.lawHist W3e.e)
+    (ha : ∀ n : ℤ, τ n ≠ W3e.a) : τ ∈ F2.lawHist W3e.b := by
+  have hstep := (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.e τ).mp h
+  refine (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.b τ).mpr fun n => ?_
+  exact R2_e_sub_b_of_ne_a _ _ (hstep n) (ha n) (ha (n + 1))
+
+/--
+Witness 2 is *Lawful* — the heaviest proof of `prop:nomic-hierarchy`, and the one the paper's
+appendix states without working out.
+
+Three cases, on which law-history set the world came from.
+
+- `τ ∈ H_F^a`: being at `b` is a two-sided `R_a`-invariant, so either `τ` is constantly `b` — in
+  which case it lies in *every* `H_F^w` by reflexivity — or it never visits `b`, so each `τ x` is
+  `a` or `e`, and `H_F^a ⊆ H_F^e` by `lawHist_mono_of_le`.
+- `τ ∈ H_F^b`: the mirror argument.
+- `τ ∈ H_F^e`: by `F2_no_b_or_no_a_of_mem_e` the world misses `a` throughout or misses `b`
+  throughout. Missing `b`, all of its steps are `R_a`-pairs, so it lies in `H_F^a`, and each
+  `τ x` is then `a` or `e`, both of which it is a law-history at. Missing `a`, the mirror.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+-/
+theorem F2_lawful : F2.Lawful := by
+  intro τ hτ x
+  obtain ⟨v, hv⟩ := Set.mem_iUnion.mp hτ
+  cases v with
+  | a =>
+    by_cases h0 : τ 0 = W3e.b
+    · have hconst : ∀ n : ℤ, τ n = τ 0 := by
+        intro n
+        rw [(F2_b_invariant_of_mem_a hv n).mpr h0, h0]
+      exact F2_mem_of_const hconst (τ x)
+    · have hx : τ x ≠ W3e.b := fun hc => h0 ((F2_b_invariant_of_mem_a hv x).mp hc)
+      cases hxv : τ x with
+      | a => exact hv
+      | b => exact absurd hxv hx
+      | e => exact F2_lawHist_a_subset_e hv
+  | b =>
+    by_cases h0 : τ 0 = W3e.a
+    · have hconst : ∀ n : ℤ, τ n = τ 0 := by
+        intro n
+        rw [(F2_a_invariant_of_mem_b hv n).mpr h0, h0]
+      exact F2_mem_of_const hconst (τ x)
+    · have hx : τ x ≠ W3e.a := fun hc => h0 ((F2_a_invariant_of_mem_b hv x).mp hc)
+      cases hxv : τ x with
+      | a => exact absurd hxv hx
+      | b => exact hv
+      | e => exact F2_lawHist_b_subset_e hv
+  | e =>
+    rcases F2_no_b_or_no_a_of_mem_e hv with hnb | hna
+    · have hmem : τ ∈ F2.lawHist W3e.a := F2_mem_a_of_mem_e_of_no_b hv hnb
+      cases hxv : τ x with
+      | a => exact hmem
+      | b => exact absurd hxv (hnb x)
+      | e => exact hv
+    · have hmem : τ ∈ F2.lawHist W3e.b := F2_mem_b_of_mem_e_of_no_a hv hna
+      cases hxv : τ x with
+      | a => exact absurd hxv (hna x)
+      | b => exact hmem
+      | e => exact hv
+
+/-- The world that sits at `e` up to time `0` and at `a` afterwards. -/
+def sigA : ℤ → W3e := fun n => if n ≤ 0 then W3e.e else W3e.a
+
+/-- The world that sits at `e` up to time `0` and at `b` afterwards. -/
+def sigB : ℤ → W3e := fun n => if n ≤ 0 then W3e.e else W3e.b
+
+/-- `σ_a` is a law-history at `a`: its one step out of `e` is the `R_a`-pair `(e, a)`. -/
+theorem sigA_mem_a : sigA ∈ F2.lawHist W3e.a := by
+  refine (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.a sigA).mpr fun n => ?_
+  rcases lt_trichotomy n 0 with hn | hn | hn
+  · have h1 : n ≤ 0 := by omega
+    have h2 : n + 1 ≤ 0 := by omega
+    simp [sigA, h1, h2, R2]
+  · subst hn
+    simp [sigA, R2]
+  · have h1 : ¬ (n ≤ 0) := by omega
+    have h2 : ¬ (n + 1 ≤ 0) := by omega
+    simp [sigA, h1, h2, R2]
+
+/-- `σ_b` is a law-history at `b`: its one step out of `e` is the `R_b`-pair `(e, b)`. -/
+theorem sigB_mem_b : sigB ∈ F2.lawHist W3e.b := by
+  refine (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.b sigB).mpr fun n => ?_
+  rcases lt_trichotomy n 0 with hn | hn | hn
+  · have h1 : n ≤ 0 := by omega
+    have h2 : n + 1 ≤ 0 := by omega
+    simp [sigB, h1, h2, R2]
+  · subst hn
+    simp [sigB, R2]
+  · have h1 : ¬ (n ≤ 0) := by omega
+    have h2 : ¬ (n + 1 ≤ 0) := by omega
+    simp [sigB, h1, h2, R2]
+
+/-- `σ_b` is **not** a law-history at `a`: its step at time `0` would need the `R_a`-pair
+`(e, b)`, which the relation does not contain. -/
+theorem sigB_not_mem_a : sigB ∉ F2.lawHist W3e.a := by
+  intro h
+  have hstep := (NomicFrame.mem_lawHist_ofStepFamily_iff W3e.a sigB).mp h 0
+  simp [sigB, R2] at hstep
+
+/--
+Witness 2 is **not** *Static*, so *Lawful* does not imply *Static* — the second gap of
+`prop:nomic-hierarchy`.
+
+`σ_a` is a law-history at `a`, hence nomologically possible, and it occupies `e` at time `0` and
+`a` at time `1`. *Static* would therefore equate `H_F^e` with `H_F^a`. But `σ_b` lies in `H_F^b`,
+hence in `H_F^e`, and not in `H_F^a` — its step out of `e` goes to `b`, which `R_a` forbids.
+-/
+theorem F2_not_static : ¬ F2.Static := by
+  intro h
+  have hmem : sigA ∈ F2.HF := Set.mem_iUnion.mpr ⟨W3e.a, sigA_mem_a⟩
+  -- `sigA 0` and `sigA 1` reduce to `e` and `a`, so this is the equation of the two sets.
+  have heq : F2.lawHist W3e.e = F2.lawHist W3e.a := h sigA hmem 0 1
+  exact sigB_not_mem_a ((Set.ext_iff.mp heq sigB).mp (F2_lawHist_b_subset_e sigB_mem_b))
+
 end NomicHierarchy
+
+/--
+`prop:nomic-hierarchy`, bundled: *Static* does not imply *Lawful*, *Lawful* does not imply
+*Static*, and *Static* together with *Lawful* does not imply *Uniform*.
+
+With `NomicFrame.static_of_uniform` and `NomicFrame.lawful_of_uniform` (in `Nomic/Frame.lean`),
+this is the whole of the proposition: *Uniform* is strictly strongest, and *Static* and *Lawful*
+are independent of each other. Each existential bundles its witness's regularity instance, so the
+statement asserts that the separating frames really are nomic frames in the sense of
+`def:nomic-frame` and not merely relation families.
+
+The three witnesses and their per-witness independence theorems live in
+`FormalSystem.Semantics.NomicHierarchy`; this theorem only collects them.
+
+**Choice dependence, recorded honestly.** Choice-dependent, at one place per witness: each member
+frame's *Saturation* comes from `TaskFrame.saturation_of_finite` through
+`FrameOver.ofStep_isRegular`. `rmk:choice` does not cover the nomic results.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+-/
+theorem nomic_hierarchy :
+    (∃ F : NomicFrame intOrder, ∃ _ : F.IsRegular, F.Static ∧ ¬ F.Lawful) ∧
+    (∃ F : NomicFrame intOrder, ∃ _ : F.IsRegular, F.Lawful ∧ ¬ F.Static) ∧
+    (∃ F : NomicFrame intOrder, ∃ _ : F.IsRegular, F.Static ∧ F.Lawful ∧ ¬ F.Uniform) :=
+  ⟨⟨NomicHierarchy.F1,
+      NomicFrame.ofStepFamily_isRegular NomicHierarchy.R1 NomicHierarchy.R1_fwd
+        NomicHierarchy.R1_bwd,
+      NomicHierarchy.F1_static, NomicHierarchy.F1_not_lawful⟩,
+    ⟨NomicHierarchy.F2,
+      NomicFrame.ofStepFamily_isRegular NomicHierarchy.R2 NomicHierarchy.R2_fwd
+        NomicHierarchy.R2_bwd,
+      NomicHierarchy.F2_lawful, NomicHierarchy.F2_not_static⟩,
+    ⟨NomicHierarchy.F3,
+      NomicFrame.ofStepFamily_isRegular NomicHierarchy.R3 NomicHierarchy.R3_fwd
+        NomicHierarchy.R3_bwd,
+      NomicHierarchy.F3_static, NomicHierarchy.F3_lawful, NomicHierarchy.F3_not_uniform⟩⟩
 
 end FormalSystem.Semantics
