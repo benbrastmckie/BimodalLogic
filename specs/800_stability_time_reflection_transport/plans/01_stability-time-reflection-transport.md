@@ -224,17 +224,20 @@ over `--include=*.lean --include=*.md`, excluding `specs/`. Confirm all three by
 
 ---
 
-### Phase 2: `PlusLanguage/PlusReversal.lean` — the BL⁺ transport [NOT STARTED]
+### Phase 2: `PlusLanguage/PlusReversal.lean` — the BL⁺ transport [COMPLETED]
 
 **Goal**: Deliverable (3). A new semantic module mirroring `OpenLanguage/OpenReversal.lean`
 one-for-one at L⁺, carrying the seven-case `plusTruthAt_rev` and the L⁺ `thm:TR-valid` family,
 registered in both aggregators.
 
 **Tasks**:
-- [ ] Create `FormalSystem/PlusLanguage/PlusReversal.lean` with the standard copyright header
+- [x] Create `FormalSystem/PlusLanguage/PlusReversal.lean` with the standard copyright header
       (copy the four-line form from `FormalSystem/PlusLanguage/PlusValidity.lean`), and exactly
       two imports: `FormalSystem.PlusLanguage.PlusValidity` and `FormalSystem.Semantics.Reversal`
-- [ ] Write the module docstring in the shape `Semantics/Reversal.lean` and
+- [x] Write the module docstring in the shape `Semantics/Reversal.lean` and *(deviation: altered — C15 required a `cor:deterministic-completeness`
+      row in `docs/reference/paper-definitions-of-record.md` before the citation could be
+      written; added as DANGLING on the `cor:after-negation-stable` cut-material precedent.
+      One file beyond this phase's declared list.)*
       `OpenLanguage/OpenReversal.lean` use: what the transport says, `## Main Results`, and a
       `## References` block citing `lem:time-reflection`, `thm:TR-valid`, `def:time-reflection`,
       and the paper's statement of the `⊡` extension inside the cut proof of
@@ -242,31 +245,35 @@ registered in both aggregators.
       own induction rather than an instance of `Truth.truthAt_of_truthAntiIso`, for the reason
       `Semantics/Reversal.lean`'s docstring already gives: the `⊡` clause quantifies over a class
       of histories, which is not what an atom-level `TruthAntiIso` does
-- [ ] Add `plusTruthAt_rev` in namespace `FormalSystem.PlusLanguage`, signature exactly as pinned
+- [x] Add `plusTruthAt_rev` in namespace `FormalSystem.PlusLanguage`, signature exactly as pinned
       below. Body: `induction φ generalizing τ t` with explicit terms, consuming
       `WorldHistory.rev_surjective`, `neg_lt_neg`, `neg_lt_neg_iff` and the promoted
       `sameState_rev_iff` — the `stab` case is where the carrying lemma is used, and the
       `untl`/`snce` cases are where the bounds negate
-- [ ] Add `plusValidOn_rev_iff`, `plusValidOnFrames_reflectTime`, `plusValidIn_reflectTime`,
+- [x] Add `plusValidOn_rev_iff`, `plusValidOnFrames_reflectTime`, `plusValidIn_reflectTime`,
       `plusValidIn_reflectTime_iff` and `plusValid_reflectTime`, signatures exactly as pinned
       below, mirroring `Semantics/Validity.lean`'s base family statement for statement. Each
       docstring names its paper label and says it is the L⁺ twin of the base declaration;
       `plusValidIn_reflectTime` records that no closure hypothesis is needed and that this is the
       content of `ProofSystem.FrameClass.Sat.rev`
-- [ ] Re-read `FormalSystem/PlusLanguage.lean` immediately before editing, confirm `git status
+- [x] Re-read `FormalSystem/PlusLanguage.lean` immediately before editing, confirm `git status
       --short` shows it clean, add `import FormalSystem.PlusLanguage.PlusReversal` to its import
       block, and add one `PlusLanguage.PlusReversal` bullet to the docstring's
       `## Semantic modules` list
-- [ ] Re-read `FormalSystem.lean` immediately before editing and confirm `git status --short`
+- [x] Re-read `FormalSystem.lean` immediately before editing and confirm `git status --short`
       shows that path clean (it is in sibling 799's declared `file_scope`). Insert exactly one
       line, `import FormalSystem.PlusLanguage.PlusReversal`, between
       `import FormalSystem.PlusLanguage.PlusRayFibre` and
       `import FormalSystem.PlusLanguage.PlusStateLocal`. Do **not** regenerate the file with
       `lake exe mk_all`: a regeneration walks the live tree and would absorb a sibling's new
       modules into this task's hunk
-- [ ] Tag nothing `@[simp]` and declare no instance; write no `set_option`; write no
+- [x] Tag nothing `@[simp]` and declare no instance; write no `set_option`; write no *(deviation: altered — `check-metalogic-cycles.sh`
+      additionally requires a per-file layer row for every new language-directory module, which
+      the plan's Risks table did not anticipate; added `"PlusReversal": 1` to
+      `scripts/measure-refactor-partitions.py` and the matching name to `ORGANISATION.md`, as the
+      checker instructs. Two files beyond this phase's declared list.)*
       `file.lean:NNN` citation and no task number; keep every line at 100 characters or fewer
-- [ ] Stage the three files by explicit list only; read `git diff --staged` and confirm
+- [x] Stage the three files by explicit list only; read `git diff --staged` and confirm
       `FormalSystem.lean` shows exactly one added line and zero removed
 
 **Timing**: 1.5 hours

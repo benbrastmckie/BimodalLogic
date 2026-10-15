@@ -18,6 +18,7 @@ import FormalSystem.PlusLanguage.PlusStateLocal
 import FormalSystem.PlusLanguage.PlusLimitClosure
 import FormalSystem.PlusLanguage.PlusIntTransfer
 import FormalSystem.PlusLanguage.PlusRayFibre
+import FormalSystem.PlusLanguage.PlusReversal
 
 /-!
 # `FormalSystem.PlusLanguage` — the language L⁺, its logic TM⁺, and its semantics
@@ -69,6 +70,10 @@ proof system mirroring `ProofSystem.DerivationTree` constructor for constructor.
 - `PlusLanguage.PlusRayFibre` — `⊡` as a **quantifier over a product of two path spaces**:
   `plusStab_iff_rays` reads the clause over ray pairs through `Presheaf.seamFibreEquiv`, and
   `seamOmegaEquiv` / `plusStab_iff_omega` read it over pairs of ω-indexed step sequences over `ℤ`
+- `PlusLanguage.PlusReversal` — `lem:time-reflection` at L⁺: the seven-case transport
+  `plusTruthAt_rev`, whose `stab` case is the carrying of `⟨τ⟩_x` onto `⟨τ⁻⟩_{-x}`, and the
+  `thm:TR-valid` family `plusValidOn_rev_iff`, `plusValidOnFrames_reflectTime`,
+  `plusValidIn_reflectTime` with its involution form, and `plusValid_reflectTime`
 
 The cross-language bridges `Semantics/DeterministicBridge.lean` and
 `Semantics/StateLocalTransfer.lean` stay at the `Semantics/` root, because each spans two

@@ -1,16 +1,26 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 15,
-  "summary": "Wrote a five-phase, fully sequential implementation plan for the BL-plus time-reflection transport: promote the carrying lemma sameState_rev_iff into Semantics/Reversal.lean and state its paper-faithful image form, build the new PlusLanguage/PlusReversal.lean, land the Determined- and deterministic-class closures, record the TR-route decision in the Deterministic soundness docstring, then refresh the generated surfaces under the full gate. All fifteen Challenge signatures were compiled at plan time via lean_run_code (success, zero errors), and lean-challenge-snapshot.sh --dry-run cross-validates the Goals and Challenge identifier sets at exit 0. Deliverable (1) is closed as already-present and deliverable (5) resolves to keep-the-present-route.",
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 16,
+  "summary": "Implement dispatch in progress. Phase 1 is COMPLETED and committed (485eec38d): the carrying lemma sameState_rev_iff promoted into Semantics/Reversal.lean, its paper-faithful image form image_rev_stabClass added to OpenLanguage/OpenReversal.lean, the Open-layer duplicate retired with both call sites resolving unchanged, and six doc surfaces corrected. Phase 2 (PlusLanguage/PlusReversal.lean with plusTruthAt_rev and the five-member L-plus thm:TR-valid family, registered in both aggregators) is written and compiled green in a 2859-job full-library build, pending a re-verified build after a mid-build docstring edit. Phases 3 to 5 not started.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/800_stability_time_reflection_transport/plans/01_stability-time-reflection-transport.md",
-      "summary": "Five phases, 5 hours, fifteen plan-time-compiled Lean Challenge signatures, and a two-branch ownership check for the generated surfaces contended with sibling 799."
+      "type": "source",
+      "path": "FormalSystem/Semantics/Reversal.lean",
+      "summary": "Promoted sameState_rev_iff: reversal fixes the state-local class, stated at the lowest layer that can state it."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/OpenLanguage/OpenReversal.lean",
+      "summary": "Duplicate retired; image_rev_stabClass added as the paper's carries-onto form."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/PlusLanguage/PlusReversal.lean",
+      "summary": "New module: the seven-case plusTruthAt_rev and the L-plus thm:TR-valid validity family."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 1,
   "phases_total": 5,
   "blockers": []
 }
