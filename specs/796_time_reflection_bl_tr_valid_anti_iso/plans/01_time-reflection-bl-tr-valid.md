@@ -1,7 +1,7 @@
 # Implementation Plan: Time reflection for BL and the semantic form of thm:TR-valid
 
 - **Task**: 796 - Prove lem:time-reflection for BL and the semantic form of thm:TR-valid by instantiating the generic anti-isomorphism transport at the reflected model
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None blocking. Shares `FormalSystem/Semantics/TaskFrame.lean` with task 617 (idempotent, see Risks); shares `typst/generated/status.typ` with task 801 (see Risks)
 - **Research Inputs**: `specs/796_time_reflection_bl_tr_valid_anti_iso/reports/01_time-reflection-bl-tr-valid.md`
@@ -144,34 +144,34 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Promote the frame level into Semantics/TaskFrame.lean [NOT STARTED]
+### Phase 1: Promote the frame level into Semantics/TaskFrame.lean [COMPLETED]
 
 **Goal**: `FrameOver.rev` and its regularity instance, the two task-relation lemmas, the
 involution facts and `@[reducible] TaskFrame.rev` live at the base of the semantics layer, where
 both this task's `Reversal.lean` and task 617's Presheaf cluster can see them.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Semantics/TaskFrame.lean` and
+- [x] Re-read `FormalSystem/Semantics/TaskFrame.lean` and
       `FormalSystem/OpenLanguage/OpenReversal.lean` in full immediately beforehand (concurrent
       siblings are live on this tree, and task 617 may have landed the same promotion)
-- [ ] **Idempotency check**: if the `FrameOver.rev` block is already present in `TaskFrame.lean`,
+- [x] **Idempotency check**: if the `FrameOver.rev` block is already present in `TaskFrame.lean`,
       verify it matches the source being moved — in particular that `TaskFrame.rev` still carries
-      `@[reducible]` — and skip the insert, proceeding to the deletion step
-- [ ] Insert into `TaskFrame.lean`, in a `/-! ## The converse frame -/` section, the block
+      `@[reducible]` — and skip the insert, proceeding to the deletion step *(deviation: altered — block was absent, so the insert ran; task 617 had not landed)*
+- [x] Insert into `TaskFrame.lean`, in a `/-! ## The converse frame -/` section, the block
       currently at `OpenReversal.lean:72-142`: `FrameOver.rev`, the
       `instance FrameOver.rev_isRegular`, `FrameOver.rev_taskRel`, `FrameOver.rev_taskRel_neg`,
       `FrameOver.rev_rev`, `@[reducible] def TaskFrame.rev`, `TaskFrame.rev_rev` — docstrings
       verbatim, `@[reducible]` preserved
-- [ ] Raise `set_option linter.style.longFile 2900` to `3000` and extend the existing
+- [x] Raise `set_option linter.style.longFile 2900` to `3000` and extend the existing
       justification comment above it with one clause in the established style, naming the
       converse-frame block and why it belongs beside the `def:frame` constraint predicates it is
       proved against. No task-number citation (C9 gates those under `FormalSystem/`)
-- [ ] Delete the moved declarations from `OpenReversal.lean`'s `namespace FormalSystem.Semantics`
+- [x] Delete the moved declarations from `OpenReversal.lean`'s `namespace FormalSystem.Semantics`
       block, leaving `TaskModel.rev`, `TaskModel.rev_rev`, `WorldHistory.rev`,
       `WorldHistory.rev_state`, `WorldHistory.rev_rev_hist` and `WorldHistory.rev_surjective` in
       place. The deletion is in this same commit: two live declarations of the same name in the
       same namespace do not compile
-- [ ] Stage `FormalSystem/Semantics/TaskFrame.lean` and
+- [x] Stage `FormalSystem/Semantics/TaskFrame.lean` and
       `FormalSystem/OpenLanguage/OpenReversal.lean` as an explicit two-path list, never a
       directory or glob add
 

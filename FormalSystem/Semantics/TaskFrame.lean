@@ -280,9 +280,12 @@ assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.Deriva
 -- which belong beside `DirectedFamily`; raised again from 2700 for `TaskFrame.Completion`, the
 -- derived condition the extension chain consumes, which belongs beside the bare-relation axiom
 -- predicates it is compared against, and again for `NestSaturation`, the nest condition `S₁` the
--- ball-space footnote cites, which belongs beside `Saturation`.
+-- ball-space footnote cites, which belongs beside `Saturation`; and again for the converse-frame
+-- block (`FrameOver.rev`, `FrameOver.rev_isRegular`, `TaskFrame.rev`), whose content is the
+-- `def:frame` constraint predicates proved of a reversed primitive relation, so it belongs
+-- beside the constraints it is proved against.
 -- Not for parking unrelated material.
-set_option linter.style.longFile 2900
+set_option linter.style.longFile 3000
 
 namespace FormalSystem.Semantics
 
@@ -2775,6 +2778,88 @@ theorem backward_comp (F : TaskFrame) [F.IsRegular] (w u v : F.WorldState) (x y 
   exact F.reflection w (x + y) v |>.mpr h3
 
 end TaskFrame
+
+/-! ## The converse frame
+
+`lem:time-reflection` passes from a task frame to its **converse frame**, whose task relation is
+`w ⇒⁻_x u := w ⇒_{-x} u`. That construction is language-independent: it reverses the primitive
+relation and nothing else, and whether the result satisfies `def:frame`'s four constraints is a
+fact proved here, against the constraint predicates declared above. The model, history and truth
+halves of the reflection story live at their own layers (`Semantics/Reversal.lean`).
+-/
+
+section ConverseFrame
+
+variable {D : TemporalOrder}
+
+/-- **The converse frame**, as a general frame: the primitive relation is reversed,
+`PosRel' w x u := PosRel u x w`, and that is the whole of its data. Whether the converse
+satisfies `def:frame`'s four constraints is a separate fact about it, proved as
+`FrameOver.rev_isRegular` below. -/
+def FrameOver.rev (F : FrameOver D) : FrameOver D where
+  WorldState := F.WorldState
+  worldNonempty := F.worldNonempty
+  PosRel := fun w x u => F.PosRel u x w
+
+/-- **The converse of a regular frame is regular.** All four `def:frame` constraints are
+inherited: *Compositionality* by commuting the two factors, *Seriality* by exchanging its
+conjuncts, *Limit* by symmetry of equality, and *Saturation* by mapping each fibre and segment to
+its mirror through the reflection convention. Stated as a class instance on the general frame, so
+that `F.rev.comp` and its siblings are found by synthesis exactly where `F.comp` is. -/
+instance FrameOver.rev_isRegular (F : FrameOver D) [F.IsRegular] : F.rev.IsRegular where
+  comp := by
+    intro w v x y hx hy
+    have h := F.comp v w y x hy hx
+    rw [add_comm] at h
+    change F.TaskRel v (x + y) w ↔ ∃ u, F.TaskRel u x w ∧ F.TaskRel v y u
+    rw [h]
+    constructor
+    · rintro ⟨u, h1, h2⟩; exact ⟨u, h2, h1⟩
+    · rintro ⟨u, h1, h2⟩; exact ⟨u, h2, h1⟩
+  serial := by
+    intro w x hx
+    obtain ⟨⟨u, hu⟩, ⟨v, hv⟩⟩ := F.serial w x hx
+    exact ⟨⟨v, hv⟩, ⟨u, hu⟩⟩
+  limit := by
+    intro w u h
+    exact (F.limit u w h).symm
+  saturation := by
+    intro S hdir hmem
+    refine F.saturation S hdir ?_
+    intro s hs
+    obtain ⟨hcls, hne⟩ := hmem s hs
+    refine ⟨?_, hne⟩
+    rcases hcls with ⟨w, x, rfl⟩ | ⟨w, v, x, y, hx, hy, rfl⟩
+    · left
+      refine ⟨w, -x, ?_⟩
+      ext u
+      change F.TaskRel u x w ↔ F.TaskRel w (-x) u
+      exact F.reflection u x w
+    · right
+      refine ⟨v, w, y, x, hy, hx, ?_⟩
+      ext u
+      change F.TaskRel u x w ∧ F.TaskRel u (-y) v ↔ F.TaskRel v y u ∧ F.TaskRel w (-x) u
+      rw [F.reflection u x w, F.reflection u (-y) v, neg_neg, and_comm]
+
+/-- The converse frame's task relation is the converse of the original's. -/
+theorem FrameOver.rev_taskRel (F : FrameOver D) (w : F.WorldState) (d : ↑D) (u : F.WorldState) :
+    F.rev.TaskRel w d u ↔ F.TaskRel u d w := Iff.rfl
+
+/-- The manuscript's form of the converse relation: `w ⇒⁻_x u := w ⇒_{-x} u`. -/
+theorem FrameOver.rev_taskRel_neg (F : FrameOver D) [F.IsRegular] (w : F.WorldState) (d : ↑D)
+    (u : F.WorldState) : F.rev.TaskRel w d u ↔ F.TaskRel w (-d) u :=
+  F.reflection u d w
+
+/-- Reversal of frames is an involution, definitionally. -/
+theorem FrameOver.rev_rev (F : FrameOver D) : F.rev.rev = F := rfl
+
+/-- The converse of a bundled task frame: the same temporal order, the converse fibre. -/
+@[reducible] def TaskFrame.rev (F : TaskFrame) : TaskFrame := ⟨F.Duration, F.toFibre.rev⟩
+
+/-- Reversal of bundled task frames is an involution, definitionally. -/
+theorem TaskFrame.rev_rev (F : TaskFrame) : F.rev.rev = F := rfl
+
+end ConverseFrame
 
 /-! ## The round trip, and the total-space identity
 
