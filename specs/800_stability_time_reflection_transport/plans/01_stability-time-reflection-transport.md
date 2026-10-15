@@ -464,34 +464,34 @@ docstring must say so plainly rather than asserting a route that does not exist.
 
 ---
 
-### Phase 5: Generated surfaces and the full gate [NOT STARTED]
+### Phase 5: Generated surfaces and the full gate [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Every machine-owned surface the new module moves is current, and the complete repository
 gate set is observed green.
 
 **Tasks**:
-- [ ] Write the hand-written description column for the new `PlusReversal.lean` row in
+- [x] Write the hand-written description column for the new `PlusReversal.lean` row in
       `FormalSystem/PlusLanguage/README.md` — the generator owns every other column, so author the
       description first and let the regeneration place the row and its line count
-- [ ] Add one `PlusLanguage/PlusReversal.lean` entry to `FormalSystem/PlusLanguage/README.md`'s
+- [x] Add one `PlusLanguage/PlusReversal.lean` entry to `FormalSystem/PlusLanguage/README.md`'s
       paper-correspondence surface if that file carries one, naming `lem:time-reflection` and
       `thm:TR-valid` at L⁺; if it does not, skip and say so in the summary rather than inventing a
       section
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate **every**
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate **every**
       generated inventory block, then `git status --short` to see exactly which blocks moved.
       Expect at minimum `FormalSystem/PlusLanguage/README.md` (new row plus counts),
       `FormalSystem/OpenLanguage/README.md` (the `OpenReversal.lean` line count) and the root
       `README.md` (`rows=totals`, the whole-tree file and line rollup). Never hand-edit a count
       column; never call the deprecated `scripts/readme-inventory.sh` shim
-- [ ] **Contended path, root `README.md`** — it is in sibling 799's declared `file_scope`. Before
+- [x] **Contended path, root `README.md`** — it is in sibling 799's declared `file_scope`. Before
       staging it, re-read it and check `git status --short -- README.md`. If the only change is the
       regeneration this phase just produced, stage it. If a foreign uncommitted modification is
       present, `git checkout`-ing it is forbidden: leave the regenerated hunk unstaged for that one
       path, record the residual staleness in the summary and the handoff `blockers`, and report the
       foreign modification after confirming with `git log` that it is not this task's own work
-- [ ] Confirm with `bash scripts/check-module-invariants.sh --emit-inventory --check` that every
+- [x] Confirm with `bash scripts/check-module-invariants.sh --emit-inventory --check` that every
       block is byte-current
-- [ ] **Contended path, `typst/generated/status.typ`** — also in 799's `file_scope`, and
+- [x] **Contended path, `typst/generated/status.typ`** — also in 799's `file_scope`, and
       **already stale at HEAD before this task started** (`--counts-only` reported
       `committed=691 live=692` and `committed=358092 live=358279` at plan time). Check
       `git status --short -- typst/generated/status.typ`. If clean, run
@@ -500,9 +500,9 @@ gate set is observed green.
       absorbs the pre-existing one-file drift as well as this task's own, and that the pre-existing
       drift is not a regression from this task. If a foreign modification is present, leave it
       alone, record the residual staleness, and report it
-- [ ] Run the full gate set below and read each exit status un-piped. Record each command and its
+- [x] Run the full gate set below and read each exit status un-piped. Record each command and its
       exit code in the implementation summary
-- [ ] Stage by explicit file list only; read `git diff --staged` before the phase-closing commit
+- [x] Stage by explicit file list only; read `git diff --staged` before the phase-closing commit
 
 **Timing**: 1.0 hours
 
@@ -550,6 +550,20 @@ moved block is a finding to record, not a surprise to absorb silently.
 - `grep -rn "sorry" --include=*.lean FormalSystem/PlusLanguage/PlusReversal.lean` returns nothing
 
 ---
+
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-paper-definitions.sh` exits 0 | **Inherited upstream drift**, not caused by this task. The drift is the record's pinned text against the *live working tree* of `possible_worlds.tex`, a separate repository this one cannot edit; the author has been moving `TC`/`TL`/`Z1`/`DN` from axioms to derived theorems and rewriting `def:id`, with `% NEW CHANGE:` annotations in the source. Those anchors are another task's territory | Exit 1, read untruncated: ten drifted anchors (`CO`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:TMplus`, `app:discrete`, `def:id`, `thm:exist`, `lem:uniq`, `thm:s5`) plus one unresolvable (`def:strongest`). Each of the eleven checked by name against `git diff 1f0a5599b HEAD`: **zero hits**. This task's entire change to the record is one added line (`cor:deterministic-completeness|DANGLING`), touching no pinned `sha256`. Every anchor this task cites is clean, and C15 resolves all 84 |
+| `bash scripts/check-metalogic-cycles.sh` exits 0 | **Inherited SURPLUS**, present at HEAD before this task edited anything. The one failure this task *did* introduce here — the unlayered `PlusReversal` module — was fixed within Phase 2 | Exit 1 with `SURPLUS FormalSystem.MinusLanguage.AxiomDischarge -> FormalSystem.Theorems.LinearityDerived`, confirmed at HEAD by `git show HEAD:FormalSystem/MinusLanguage/AxiomDischarge.lean` (the import is on its line 16). The checker's other two groups PASS, including the syntax-before-semantics assertion that now counts 33 semantics modules rather than 32 |
+| `bash .claude/scripts/verify-deploy.sh` exits 0 as *meaningful* aggregate evidence | It exits 0 but runs **zero checks** — a vacuous pass. Every gate is registry-driven from `.claude/scripts/gate-registry.data`, which is absent from both the deployed tree and the source store, and the script documents that a missing registry degrades to an empty gate set. Exit 0 over zero checks satisfies this phase's verification sentence by its letter while supplying strictly *less* evidence than the subset pass that sentence was written to forbid | `[verify-deploy] PASS -- 0 check(s), 0 failure(s)`, exit 0; `ls` confirms `gate-registry.data` missing from `.claude/scripts/` and from `agent-system/extensions/core/scripts/`. Coverage was obtained instead by running the gates individually: the full `lake build`, build-backed `check-module-invariants.sh` (`ALL CHECKS PASSED`, C16's `env_linter` batch included), `checkInitImports`, and six further gates at exit 0 |
+
+**Note on the dispatch's Batch Gate Deferral.** That directive permitted discharging this phase
+against a *scoped* tier with the full set deferred to the batch stage. The complete un-narrowed
+set was run here instead, which is strictly stronger; nothing was deferred, so there is no
+deferral to record.
 
 ## Lean Challenge Statements
 
@@ -707,27 +721,27 @@ and `Deterministic/Validity.lean` gains exactly one.
 
 ## Testing & Validation
 
-- [ ] All fifteen `## Lean Challenge Statements` declarations exist with those exact signatures and
+- [x] All fifteen `## Lean Challenge Statements` declarations exist with those exact signatures and
       real proofs; `lean_verify` reports no `sorry` for each, fully qualified
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits 0 for the
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits 0 for the
       whole project, detached, with the exit read un-piped or from the guard's `result` subcommand
-- [ ] Zero new `sorry` and zero new `axiom` anywhere in the task's diff; C3 PASSes
-- [ ] The `assert_not_exists` guards in `Semantics/Truth.lean` and `Semantics/Reversal.lean` remain
+- [x] Zero new `sorry` and zero new `axiom` anywhere in the task's diff; C3 PASSes
+- [x] The `assert_not_exists` guards in `Semantics/Truth.lean` and `Semantics/Reversal.lean` remain
       satisfied (the promoted lemma mentions only `WorldHistory.state`)
-- [ ] `bash scripts/check-module-invariants.sh` exits 0 with zero `FAIL` lines and prints
+- [x] `bash scripts/check-module-invariants.sh` exits 0 with zero `FAIL` lines and prints
       `ALL CHECKS PASSED`
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0
-- [ ] `bash scripts/check-metalogic-cycles.sh` exits 0
-- [ ] `bash scripts/check-copyright-headers.sh` exits 0
-- [ ] `bash scripts/readme-lint.sh` exits 0
-- [ ] `bash scripts/check-phantom-citations.sh` exits 0
-- [ ] `bash scripts/check-paper-definitions.sh` exits 0, read without tail-truncation
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0
-- [ ] `lake exe checkInitImports` exits 0
-- [ ] `bash scripts/typst-sync-check.sh` exits 0, or the conditional residual is recorded with the
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0
+- [ ] `bash scripts/check-metalogic-cycles.sh` exits 0 *(excluded: inherited SURPLUS at HEAD; see Phase 5 Reasoned Exclusions)*
+- [x] `bash scripts/check-copyright-headers.sh` exits 0
+- [x] `bash scripts/readme-lint.sh` exits 0
+- [x] `bash scripts/check-phantom-citations.sh` exits 0
+- [ ] `bash scripts/check-paper-definitions.sh` exits 0, read without tail-truncation *(excluded: inherited upstream paper drift; see Phase 5 Reasoned Exclusions)*
+- [x] `bash scripts/check-evidence-probes.sh` exits 0
+- [x] `lake exe checkInitImports` exits 0
+- [x] `bash scripts/typst-sync-check.sh` exits 0, or the conditional residual is recorded with the
       foreign modification cited as evidence
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0, un-narrowed
-- [ ] No line over 100 characters in any new or edited `.lean` file; no `file.lean:NNN` citation and
+- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0, un-narrowed *(excluded: exits 0 over ZERO checks, registry data file absent; see Phase 5 Reasoned Exclusions)*
+- [x] No line over 100 characters in any new or edited `.lean` file; no `file.lean:NNN` citation and
       no task number in any file outside `specs/`
 
 ## Artifacts & Outputs

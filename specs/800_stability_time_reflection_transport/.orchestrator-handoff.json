@@ -1,26 +1,41 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "phase": "implement",
   "dispatch_seq": 16,
-  "summary": "Implement dispatch in progress. Phase 1 is COMPLETED and committed (485eec38d): the carrying lemma sameState_rev_iff promoted into Semantics/Reversal.lean, its paper-faithful image form image_rev_stabClass added to OpenLanguage/OpenReversal.lean, the Open-layer duplicate retired with both call sites resolving unchanged, and six doc surfaces corrected. Phase 2 (PlusLanguage/PlusReversal.lean with plusTruthAt_rev and the five-member L-plus thm:TR-valid family, registered in both aggregators) is written and compiled green in a 2859-job full-library build, pending a re-verified build after a mid-build docstring edit. Phases 3 to 5 not started.",
+  "summary": "All five phases complete and committed. The paper's one-sentence extension of lem:time-reflection to the Stability language is now built in Lean as fifteen declarations with the plan's pinned signatures and real proofs: the carrying lemma sameState_rev_iff promoted into Semantics/Reversal.lean with its image form image_rev_stabClass, the new PlusLanguage/PlusReversal.lean carrying the seven-case plusTruthAt_rev and the L-plus thm:TR-valid family, TaskFrame.deterministic_rev plus the Determined- and deterministic-class closures, and the TR-route decision recorded in the Deterministic soundness docstring after verifying the alternative route actually elaborates. Un-narrowed full build green (2859 jobs, zero errors, olean-newer-than-source on all six touched modules); build-backed check-module-invariants.sh prints ALL CHECKS PASSED; zero sorry, axiom count unchanged at 12. Three gate failures are reasoned exclusions with evidence: two inherited (check-paper-definitions.sh upstream paper drift, check-metalogic-cycles.sh SURPLUS at HEAD) and one vacuous (verify-deploy.sh exits 0 over ZERO checks because gate-registry.data is absent from both the deploy tree and the source store).",
   "artifacts": [
     {
-      "type": "source",
-      "path": "FormalSystem/Semantics/Reversal.lean",
-      "summary": "Promoted sameState_rev_iff: reversal fixes the state-local class, stated at the lowest layer that can state it."
-    },
-    {
-      "type": "source",
-      "path": "FormalSystem/OpenLanguage/OpenReversal.lean",
-      "summary": "Duplicate retired; image_rev_stabClass added as the paper's carries-onto form."
+      "type": "summary",
+      "path": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
+      "summary": "Implementation summary: fifteen declarations across five phases, the three plan deviations, the full verification record, and five follow-ups."
     },
     {
       "type": "source",
       "path": "FormalSystem/PlusLanguage/PlusReversal.lean",
-      "summary": "New module: the seven-case plusTruthAt_rev and the L-plus thm:TR-valid validity family."
+      "summary": "New module: lem:time-reflection at L-plus via the seven-case plusTruthAt_rev, plus the thm:TR-valid validity family."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Semantics/Reversal.lean",
+      "summary": "The promoted carrying lemma sameState_rev_iff: reversal fixes the state-local class."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Deterministic/Validity.lean",
+      "summary": "The Determined- and deterministic-class closures under rev and their thm:TR-valid consequences."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Semantics/FrameProperty.lean",
+      "summary": "TaskFrame.deterministic_rev, with the relation-transpose trap recorded in its docstring."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Deterministic/Soundness.lean",
+      "summary": "Docstring-only: the recorded decision to keep the paired TR route, with the verified second route named."
     }
   ],
-  "phases_completed": 1,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": []
 }

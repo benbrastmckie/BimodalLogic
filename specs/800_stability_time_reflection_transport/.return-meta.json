@@ -1,29 +1,64 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-15T11:28:00Z",
+  "completed_at": "2026-10-15T13:05:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 12,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/800_stability_time_reflection_transport/plans/01_stability-time-reflection-transport.md",
-      "summary": "Five-phase, fully sequential plan for the BL-plus time-reflection transport: promote the carrying lemma to Semantics/Reversal.lean and state its image form, build PlusLanguage/PlusReversal.lean, land the Determined- and deterministic-class closures, record the TR-route decision, then refresh generated surfaces under the full gate. Fifteen Challenge signatures, all compiled at plan time."
+      "type": "summary",
+      "path": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
+      "summary": "The BL-plus time-reflection transport: fifteen declarations across five phases, three plan deviations, the full verification record, and five follow-ups."
     }
   ],
+  "completion_data": {
+    "completion_summary": "Built the paper's one-sentence extension of lem:time-reflection to the Stability language as fifteen Lean declarations with the plan's pinned signatures: the carrying lemma promoted to Semantics/Reversal.lean with its paper-faithful image form, a new PlusLanguage/PlusReversal.lean carrying the seven-case plusTruthAt_rev and the L-plus thm:TR-valid family, TaskFrame.deterministic_rev with the Determined- and deterministic-class closures, and the TR-route decision recorded after verifying the alternative route elaborates. Un-narrowed full build green at 2859 jobs with zero sorry and the axiom count unchanged; build-backed check-module-invariants.sh prints ALL CHECKS PASSED.",
+    "roadmap_items": []
+  },
   "metadata": {
-    "session_id": "sess_1792077807_2be444_800",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1792077807_2be444",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 5,
-    "dependency_waves": [[1], [2], [3], [4], [5]]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 5,
+    "phases_total": 5,
+    "reasoned_exclusions": 3
   },
   "memory_candidates": [
     {
-      "content": "When a Lean task adds a new .lean file to a tree whose generated surfaces key on whole-tree file and line counts (here typst/generated/status.typ via typst-status-counts.sh, and the root README.md's `rows=totals` inventory block via check-module-invariants.sh --emit-inventory), that task structurally collides with EVERY concurrent sibling that also adds a file: both must rewrite the same scalar. Plan the generated-surface phase as a two-branch, ownership-checked step -- regenerate and stage only when `git status --short -- <path>` shows the contended path clean; otherwise leave the regenerated hunk unstaged, record the residual staleness, and report the foreign modification -- rather than as an unconditional regeneration. Measure the surface's state at PLAN time too: here it was already red at HEAD (committed 691 files vs live 692), so a phase that asserted whole-script exit 0 would have reported someone else's drift as its own regression. Separately: a generated library root guarded byte-for-byte (C33 vs `lake exe mk_all --lib FormalSystem`) must be edited by a single sorted one-line insertion, never regenerated, because a regeneration walks the live tree and absorbs a sibling's in-flight modules into this task's hunk.",
+      "content": "lake-build-guard.sh can REPLAY a green result that never covered an edited file, and guard exit 0 plus a 'Build completed successfully' line is not sufficient evidence that a build covered your sources. The guard's post_fingerprint is taken at build END, so a source edit landing mid-build (after its own module has already compiled) is captured by that fingerprint and makes the tree look 'unchanged' to the next waiter. A subsequent identical invocation then satisfies all three replay conditions and emits 'REPLAY: sharing result from holder pid N, age Ns, recorded exit status 0' without running lake at all -- and the replayed log is byte-identical to the original, per-target timings included, so nothing in the log reveals it. The only tells are the REPLAY: line on stderr and the .olean mtime still predating the source. Two rules follow: (1) never edit a source file while a guarded build is in flight; (2) verify every build with a three-tier check -- guard exit code, success line plus zero 'error:' count, AND an .olean-newer-than-source test for every module the task touched. Use --no-share to force a real build when a replay is suspected.",
       "category": "PATTERN",
-      "source_artifact": "specs/800_stability_time_reflection_transport/plans/01_stability-time-reflection-transport.md",
-      "confidence": 0.78,
-      "suggested_keywords": ["generated-surfaces", "territory-collision", "whole-tree-counts", "concurrent-siblings", "library-root", "plan-time-baseline"]
+      "source_artifact": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
+      "confidence": 0.92,
+      "suggested_keywords": ["lake-build-guard", "build-replay", "post-fingerprint", "olean-mtime", "no-share", "false-green"]
+    },
+    {
+      "content": "Before planning how to REGISTER a new Lean module, read the README of the component directory you are adding it to -- it commonly documents registration surfaces the plan would otherwise discover as gate failures. Adding FormalSystem/PlusLanguage/PlusReversal.lean tripped check-metalogic-cycles.sh with 'unlayered module: the per-file table LANGUAGE_FILE_LAYERS has no row', fixed by adding the row to scripts/measure-refactor-partitions.py AND the matching name to ORGANISATION.md together, as the checker's own remediation text instructs. That requirement was NOT undocumented: FormalSystem/PlusLanguage/README.md states in bold that 'A new file in this directory needs a row in that table'. Note also that the checker SHORT-CIRCUITS -- while a module is unlayered it reports only the unlayered-module failure and suppresses the upward-import-set measurement entirely, so a second, pre-existing failure can stay hidden until the layer row lands.",
+      "category": "PATTERN",
+      "source_artifact": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["module-registration", "component-readme", "language-file-layers", "metalogic-cycles", "gate-short-circuit"]
+    },
+    {
+      "content": "A gate that exits 0 can be a VACUOUS pass, and a plan clause saying 'script X exits 0, run un-narrowed' does not by itself buy evidence. .claude/scripts/verify-deploy.sh exits 0 while printing 'PASS -- 0 check(s), 0 failure(s)' because every gate it runs is driven by a registry loaded from .claude/scripts/gate-registry.data, and that file is absent from BOTH the deployed tree and the source store; the script documents the degradation ('A missing lib degrades to an empty gate_registry_ids'), so the empty run is by design rather than a crash. An exit 0 over zero checks satisfies such a clause's LETTER while supplying strictly less evidence than the narrowed subset pass the clause was written to forbid. When a verification clause names an aggregator, check the check COUNT, not just the exit code, and obtain coverage by running the member gates individually if the aggregator is empty.",
+      "category": "PATTERN",
+      "source_artifact": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
+      "confidence": 0.88,
+      "suggested_keywords": ["vacuous-pass", "verify-deploy", "gate-registry", "zero-checks", "verification-evidence"]
+    },
+    {
+      "content": "A generated inventory block marked `rows=loose` is NOT inert: it lists the files sitting directly in that directory, so an edit to any AGGREGATOR file at the directory's root moves its line counts, not only adding or removing files. A plan that predicted three moved blocks (two component READMEs plus the root) was wrong twice: FormalSystem/README.md moved because Phase 1 edited FormalSystem/Semantics.lean and FormalSystem/OpenLanguage.lean -- two files sitting directly in FormalSystem/ -- and FormalSystem/Metalogic/README.md moved once a file under Metalogic/Deterministic/ grew. Derive the moved set by running `check-module-invariants.sh --emit-inventory` and reading `git status --short`, rather than reasoning about block options in advance. Relatedly, a pre-commit gate keyed on whole-tree line counts (here typst/generated/status.typ) fires at the FIRST phase commit that moves a .lean line count, so a plan that schedules its regeneration only in a final generated-surfaces phase has an unreachable step.",
+      "category": "PATTERN",
+      "source_artifact": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
+      "confidence": 0.86,
+      "suggested_keywords": ["generated-inventory", "rows-loose", "aggregator-files", "whole-tree-counts", "pre-commit-gate"]
     }
   ],
-  "dispatch_seq": 15
+  "dispatch_seq": 16
 }

@@ -158,7 +158,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,388 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 169 | 98,924 | Tableau decision procedure and countermodel extraction |
-| [`Deterministic/`](Deterministic/README.md) | 8 | 1,769 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
+| [`Deterministic/`](Deterministic/README.md) | 8 | 1,863 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 29 | 8,617 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 5 | 1,515 | Per-axiom validity lemmas feeding `Soundness.lean` |
