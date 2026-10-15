@@ -608,6 +608,7 @@ import FormalSystem.Semantics.Frames.TranslationProduct
 import FormalSystem.Semantics.Gluing
 import FormalSystem.Semantics.HistoryMorphism
 import FormalSystem.Semantics.IntNormalForm
+import FormalSystem.Semantics.IntNormalFormEffective
 import FormalSystem.Semantics.IntTransfer
 import FormalSystem.Semantics.LexCarrier
 import FormalSystem.Semantics.Nomic

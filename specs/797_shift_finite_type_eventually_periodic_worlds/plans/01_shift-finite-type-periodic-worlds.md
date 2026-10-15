@@ -182,7 +182,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: The Choice-Free ℤ Membership Chain [NOT STARTED]
+### Phase 2: The Choice-Free ℤ Membership Chain [COMPLETED]
 
 - **Goal:** A choice-free route from adjacency to `H_F` membership at `D = intOrder`, measured
   `[propext]` / `[propext, Quot.sound]`, with the existing chain untouched.
