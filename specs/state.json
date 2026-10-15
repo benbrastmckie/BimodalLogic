@@ -4,8 +4,18 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 802,
+  "next_project_number": 803,
   "active_projects": [
+    {
+      "project_number": 802,
+      "project_name": "derive_cited_tm_theorems_and_cite_derivations",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Derive every TM-system theorem the paper cites, and cite derivations rather than derivability. Scope: every schema that the JPL paper (~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex) presents as a theorem of TM or of an extension (TM_z, TM_d, TM_r) or of BX and its extensions, in sub:Logic, sub:Extension, the Appendix definitions def:BX, def:BX-z, def:BX-d, def:BX-r, def:TMplus, and any footnote. (1) Audit: for each such schema, locate the Lean declaration in this repository and classify it as a direct derivation tree from the axioms, or as obtained through a completeness engine (derivable_of_valid*, Classical.choice over a Derivable proof). Known result of a first pass: Z1 is the only cited theorem routed through completeness (FormalSystem.Metalogic.CompletenessDerived.z1Thm wraps z1Derivable, which applies BXCanonical.derivable_of_validZTime to SoundnessLemmas.z1_valid); DF (DiscreteUnfolding.dfSchema), the discreteness witness (DiscreteUnfolding.succIndicator), CO (DedekindDerived.coDerived), DN (LinearityDerived.density), TC, TL, TK, T4, TF, P1-P4, NP, NF, NA are direct derivation trees. Re-verify this classification rather than assuming it, including any schema the audit finds that the first pass missed. (2) Lean work: for every schema that lacks a direct derivation, construct one as a DerivationTree from the axioms of the relevant system (for Z1: from UZ with the BX and TM axioms at FrameClass.ZTime, in the style of DiscreteUnfolding), name it in the Theorems namespace, verify with #print axioms that it depends on propext at most, and update docs/theorem-index.md. The completeness-route declaration may remain as a cross-check but must no longer be the cited one. (3) Paper work in the JPL source: make every citation point to the direct derivation via the existing \\leanfoot convention; replace wording that says a schema is derivable, machine-checked as a theorem through the Z-time completeness engine, or similar, with wording that it is derived, citing the derivation; this includes the Z1 footnote near the UZ display, the def:BX-z remark on Z1, the DN sentence in sub:Extension, the sentence UZ makes DF derivable, and PU alone suffices to derive CO. Do not add prose explaining the citation convention. (4) Verify with the isolated paper build: cd JPL && latexmk -norc -pdf -bibtex -outdir=build-cli possible_worlds.tex, with no errors and no undefined references. Report the final per-schema table of declaration names and their #print axioms output",
+      "topic": "tm-theorems",
+      "created": "2026-10-15T02:49:39Z",
+      "last_updated": "2026-10-15T02:49:39Z"
+    },
     {
       "project_number": 801,
       "project_name": "repin_bx_tm_anchor_wave_post_788_paper_revision",
@@ -88,7 +98,7 @@
     {
       "project_number": 790,
       "project_name": "lem_canonical_frames_translation_two_state",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -97,7 +107,7 @@
       ],
       "description": "Prove lem:canonical-frames, the four claims the paper makes about its two canonical countermodel frames (def:canonical-frames): (a) the translation frame F^tr_D = (D, D, ⇒), with w ⇒_d u iff u = w + d, is a Deterministic task frame; (b) its possible worlds are exactly the translations sigma_c(z) = z + c for c ∈ D; (c) the two-state frame F^ts_D (W = {w0, w1}, ⇒_0 the identity, every positive duration permitting every transition) is a task frame just in case D is Discrete -- Limit fails whenever D has no least positive duration; (d) when it is, it is not Deterministic and every function D → {w0, w1} is one of its possible worlds.\n\nWHAT EXISTS. FormalSystem/Semantics/Frames/Standard.lean has `translationFrame D : FrameOver D` with `translationFrame_isRegular` for every temporal order and `translationRel_fib_subsingleton` (the singleton-fibre fact behind determinism), and `permissiveFrame D so nm`, built only under `SuccOrder` and `NoMaxOrder` instances, i.e. only for discrete D. FormalSystem/Semantics/Correspondence/DurationFrames.lean has the canonical histories `translationHist` and `permissiveHist D so nm f` for an arbitrary assignment f (already half of (d)), plus the `*_realizes` lemmas. FormalSystem/Metalogic/Independence/RealTranslationFrame.lean has the ℝ instance: `f1_deterministic`, `f1_total_eq_orbit`, `f1_eq_of_states_eq`. None of these states (b), the 'only if' half of (c), or the non-determinism in (d) for a general D.\n\nDELIVER: (b) the set equation H_F = {sigma_c | c ∈ D} for `translationFrame D`, or equivalently an `Equiv` between its world histories and D, over every temporal order; (a) `(translationFrame D).Deterministic`, generalising `f1_deterministic` (or transferred from the ℝ instance if cheaper -- say which); (c) both halves: Limit holds for the permissive relation on Bool when D has a least positive duration and fails otherwise, so the relation is regular iff D is discrete; (d) `¬ (permissiveFrame D so nm).Deterministic`, and that `permissiveHist` is a bijection between assignments D → Bool and world histories. Docstrings cite def:canonical-frames and lem:canonical-frames.\n\nPAPER ANCHORS. def:canonical-frames and lem:canonical-frames in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under lem:canonical-frames is the marker to clear.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two frames' definitions, which `validOn_df_iff_isDiscrete`, `validOn_dn_iff_denselyOrdered` and the Independence modules consume.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-15T00:46:12Z",
+      "last_updated": "2026-10-15T02:40:35Z",
       "artifacts": [
         {
           "path": "specs/790_lem_canonical_frames_translation_two_state/reports/01_lem-canonical-frames-characterizations.md",
@@ -110,7 +120,7 @@
           "summary": "Implementation plan: 01_lem-canonical-frames-characterizations.md"
         }
       ],
-      "session_id": "sess_1792013208_936eb4",
+      "session_id": "sess_1792026404_b03e6d",
       "next_artifact_number": 2,
       "file_scope": [
         "FormalSystem/Metalogic/Independence/README.md",
@@ -2176,7 +2186,8 @@
     "tableau-training",
     "toolchain",
     "codebase-cleanup",
-    "paper-alignment"
+    "paper-alignment",
+    "tm-theorems"
   ],
   "active_goal": "Close the residual repository-hygiene backlog"
 }
