@@ -1,7 +1,7 @@
 # Implementation Plan: The nomic operator, its uniformity theorem, and axiom 4
 
 - **Task**: 795 - Formalize the nomic operator and its three results, on the nomic frames of task 794
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: Task 794 (completed) — `FormalSystem/Semantics/Nomic/` supplies the frames, law-histories, occurrence, recovery, the ℤ-time presentation and the three hierarchy witnesses
 - **Research Inputs**: specs/795_nomic_operator_uniformity_axiom_four/reports/01_nomic-operator-uniformity-axiom-four.md
@@ -245,7 +245,7 @@ language-free frame condition must not have to live in a formula directory.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Record rows for the new anchors [NOT STARTED]
+### Phase 1: Record rows for the new anchors [COMPLETED]
 
 **Goal**: C15 resolves every anchor the new docstrings will cite, before any docstring cites one.
 
@@ -318,7 +318,7 @@ status checked covers the whole blast radius; no module changes, so no build is 
 
 ---
 
-### Phase 2: `thm:nomic-uniform` and the cut remark's side lemma [NOT STARTED]
+### Phase 2: `thm:nomic-uniform` and the cut remark's side lemma [IN PROGRESS]
 
 **Goal**: the frame-level half — the four small facts 794 lacks, the accessibility relation, the
 six conditions as a cycle of implications, the `H_F × H_F` identification, and the per-state
