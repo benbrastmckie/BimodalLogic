@@ -222,6 +222,10 @@ LANGUAGE_FILE_LAYERS = {
         "Sentence": 0,
         "SentenceTruth": 1,
     },
+    "NomicLanguage": {
+        "Formula": 0,
+        "NomicFour": 1, "NomicTenseFree": 1, "NomicTruth": 1, "NomicValidity": 1,
+    },
 }
 
 # The sibling aggregators `FormalSystem/<Lang>Language.lean` import their directory's layer-0 and
