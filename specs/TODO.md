@@ -123,7 +123,7 @@ next_project_number: 805
 ### Paper Alignment
 
 799 [PLANNED] — Discharge the Zorn dependence that the state-set corollaries...
-800 [RESEARCHING] — Extend the time-reflection transport from BL to the Stability...
+800 [RESEARCHED] — Extend the time-reflection transport from BL to the Stability...
 801 [PLANNED] — Re-pin the BX/TM anchor wave in...
   └─ 795 [RESEARCHED] — Formalize the nomic operator and its three results, on the...
   └─ 797 [RESEARCHED] — Formalize the cut shift-of-finite-type remark. The paper's...
@@ -239,10 +239,11 @@ NON-GOALS: no new Lean declarations and no change to the axiom set — 788 alrea
 
 ### 800. Stability time reflection transport
 - **Effort**: medium
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 796
+- **Research**: [800_stability_time_reflection_transport/reports/01_stability-time-reflection-transport.md]
 
 **Description**: Extend the time-reflection transport from BL to the Stability language.
 

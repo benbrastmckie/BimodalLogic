@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 13,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/800_stability_time_reflection_transport/reports/01_stability-time-reflection-transport.md",
+      "summary": "Research for the Stability-language time-reflection transport: deliverable (1) already in the tree; (2) exists as OpenLanguage.sameState_rev_iff and should be promoted to Semantics/Reversal.lean; (2)-(4) verified by four green lean_run_code probes; (5) recommends keeping the Deterministic companion recursion per the base-layer decision record; full unification needs a new ReflectableLanguage class and is out of scope."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792077807_2be444_800",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
