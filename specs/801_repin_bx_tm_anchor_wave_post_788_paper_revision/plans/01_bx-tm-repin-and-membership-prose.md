@@ -1,7 +1,7 @@
 # Implementation Plan: the BX/TM re-pin and the membership-prose pass
 
 - **Task**: 801 - Re-pin the BX/TM anchor wave in paper-definitions-of-record.md after the paper's post-788 revision, and verify in-tree axiom-membership prose matches
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: 791, 793
 - **Research Inputs**:
@@ -150,7 +150,7 @@ scope (`roadmap_flag` is not set on this dispatch).
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Re-derive the live wave and freeze the absorption target [NOT STARTED]
+### Phase 1: Re-derive the live wave and freeze the absorption target [COMPLETED]
 
 **Goal**: Establish, by measurement immediately before any write, exactly which wave is being
 absorbed — the anchor set, each anchor's OLD and NEW sha256, the paper identity triple, and the
@@ -158,23 +158,31 @@ pre-edit gate baseline — and write it to a scratch file every later phase read
 re-measuring.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh` **untruncated** (no `tail`); capture the exit
+- [x] Run `bash scripts/check-paper-definitions.sh` **untruncated** (no `tail`); capture the exit
       code, the drifted-anchor count and the full anchor list.
-- [ ] For each drifted anchor, run `bash scripts/check-paper-definitions.sh --resolve 'ANCHOR|KIND|ENCLOSING|LOCATOR'`
+- [x] For each drifted anchor, run `bash scripts/check-paper-definitions.sh --resolve 'ANCHOR|KIND|ENCLOSING|LOCATOR'`
       using the locators from the MANIFEST block (`CO` is `CO|aitem|-|-`; the other nine are
       `env|-|-`), and capture live text plus NEW sha256.
-- [ ] Record the paper identity triple: `sha256sum` and `wc -l` of
+- [x] Record the paper identity triple: `sha256sum` and `wc -l` of
       `~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`, plus
       `git -C ~/Philosophy/Papers/PossibleWorlds rev-parse HEAD` and whether the file is clean or
       dirty against it.
-- [ ] Diff the measured anchor set and NEW hashes against this plan's Scope Hypothesis below;
-      record any difference explicitly rather than silently adopting it.
-- [ ] Re-confirm the baseline is otherwise green: `bash scripts/check-module-invariants.sh --no-build`,
+- [x] Diff the measured anchor set and NEW hashes against this plan's Scope Hypothesis below;
+      record any difference explicitly rather than silently adopting it. *(deviation: altered — the
+      hypothesis was falsified in three ways and the measured wave was adopted after recording the
+      delta: the paper moved an eighth time (sha256 `5fc14b67…`, 4066 lines, HEAD `bc010a06`, dirty);
+      `def:strongest` is DANGLING rather than drifted (its `\label` was removed, succeeded by
+      `def:key-terms`'s `\aitem{Str}`); and `thm:s5` drifted newly, with zero citing files outside
+      the record itself. The six BX/TM-core hashes are byte-identical to the hypothesis for a third
+      independent measurement.)*
+- [x] Re-confirm the baseline is otherwise green: `bash scripts/check-module-invariants.sh --no-build`,
       `python3 scripts/export-lean-citations.py --check`, `bash scripts/readme-lint.sh`,
       `bash scripts/typst-sync-check.sh`, `typst compile --root . typst/BimodalReference.typ`,
       `typst compile --root . typst/FormalFoundations.typ`.
-- [ ] Write all of the above to `/tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/dcced63b-0caa-4e2c-95b0-566218543ebe/scratchpad/801-wave.txt`.
-- [ ] If the measured wave differs from the hypothesis in a way that changes scope (a new anchor, a
+- [x] Write all of the above to the session scratchpad. *(deviation: altered — written to this
+      dispatch's own scratchpad, `/tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/96bf7c35-5f64-437d-a98e-0c4724081457/scratchpad/801-wave.txt`;
+      the path the plan names belongs to the planning session.)*
+- [x] If the measured wave differs from the hypothesis in a way that changes scope (a new anchor, a
       retired anchor, or an anchor no longer drifted), record the delta and carry it forward; do
       not re-plan.
 
