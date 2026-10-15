@@ -417,6 +417,17 @@ private def qAtom : Atom := Atom.mkBase "q"
 #guard Formula.foldFormulaFull (Formula.release (Formula.atom pAtom) Formula.bot)
   == EnrichedFormula.all_future (.atom pAtom)
 
+-- `def:event-operators`' `after`/`before` are deliberately NOT registered with the binary-derived
+-- census: there is no `EnrichedFormula` constructor for either, so both classify as `none`.
+-- `after φ ψ = untl φ.neg (φ.and ψ)` is NOT picked up by the `strongRelease` arm, whose guard and
+-- inner conjunct must be the same formula: here the guard is `φ.neg` and the conjunct is `φ`, so
+-- that arm's equality test fails. These rows pin that, so a later widening of the arm cannot
+-- silently reclassify the event operators.
+#guard (Formula.after (Formula.atom pAtom) (Formula.atom qAtom)).matchBinaryDerived == none
+#guard (Formula.after (Formula.atom pAtom) (Formula.atom qAtom)).foldedBinaryTag == none
+#guard (Formula.before (Formula.atom pAtom) (Formula.atom qAtom)).matchBinaryDerived == none
+#guard (Formula.before (Formula.atom pAtom) (Formula.atom qAtom)).foldedBinaryTag == none
+
 end FoldTests
 
 /-!

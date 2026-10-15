@@ -307,6 +307,12 @@ private def qCmplx : Formula := .atom (Atom.mkBase "q")
 #guard (Formula.weakSince pCmplx qCmplx).complexity == 3
 #guard (Formula.strongRelease pCmplx qCmplx).complexity == 4
 #guard (Formula.strongTrigger pCmplx qCmplx).complexity == 4
+-- `def:event-operators`' two event operators. `after` lands on the same `complexity` arm as
+-- `strongRelease` (hence 4); `before` is a conjunction of a `release` and a `someFuture`, so its
+-- primitive expansion is counted structurally (12). A changed value here means the arm analysis
+-- for the new operators is wrong, not that the pin is stale.
+#guard (Formula.after pCmplx qCmplx).complexity == 4
+#guard (Formula.before pCmplx qCmplx).complexity == 12
 
 -- Modal and compound temporal operators.
 #guard pCmplx.diamond.complexity == 2
@@ -318,5 +324,26 @@ private def qCmplx : Formula := .atom (Atom.mkBase "q")
 #guard pCmplx.weakPast.complexity == 2
 
 end ComplexityPins
+
+/-! ### `def:event-operators` construction pins
+
+`Formula.after` and `Formula.before` against their literal primitive expansions. The argument
+order is the point: `Formula.release` takes the paper's `Release` arguments **swapped**, so the
+paper's `Before(φ,ψ) := Release(ψ,¬φ) ∧ fφ` ports as `Formula.release φ.neg ψ` conjoined with
+`Formula.someFuture φ`. A swapped order fails to elaborate here. The double negation `φ.neg.neg`
+is exactly what substituting `¬φ` into `Release`'s right-hand side produces.
+-/
+
+section EventOperatorPins
+
+example (φ ψ : Formula) : Formula.after φ ψ = Formula.untl φ.neg (φ.and ψ) := rfl
+
+example (φ ψ : Formula) :
+    Formula.before φ ψ = (Formula.release φ.neg ψ).and (Formula.someFuture φ) := rfl
+
+example (φ ψ : Formula) :
+    Formula.before φ ψ = ((Formula.untl ψ.neg φ.neg.neg).neg).and (Formula.someFuture φ) := rfl
+
+end EventOperatorPins
 
 end BimodalTest.Syntax

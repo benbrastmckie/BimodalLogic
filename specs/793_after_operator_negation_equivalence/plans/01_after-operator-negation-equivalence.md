@@ -330,7 +330,7 @@ signature, fully covered by
 
 ---
 
-### Phase 5: `cor:after-negation-stable`, both readings, at L⁺ [NOT STARTED]
+### Phase 5: `cor:after-negation-stable`, both readings, at L⁺ [COMPLETED]
 
 **Goal**: State and prove the cut corollary natively in L⁺ in both its existential (`⟐`) and
 universal (`⊡`) readings.
@@ -379,7 +379,7 @@ the terminal module of the `PlusLanguage` validity layer.
 
 ---
 
-### Phase 6: Test pins [NOT STARTED]
+### Phase 6: Test pins [COMPLETED]
 
 **Goal**: Pin the measured complexity values and the census non-classification so a later change
 to the `strongRelease` complexity arm or the `matchBinaryDerived` guard cannot silently reclassify
