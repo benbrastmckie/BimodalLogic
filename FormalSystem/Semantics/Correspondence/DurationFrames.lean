@@ -432,4 +432,115 @@ theorem validOn_co_iff_isComplete (D : TemporalOrder) :
     rw [Truth.past_iff] at hHv
     exact absurd (hm.1 (show v ∈ S from hHv)) (not_le.mpr hmv)
 
+/-! ## The canonical frames' characterizations
+
+`def:canonical-frames` introduces the paper's two canonical countermodel frames — the translation
+frame `F^tr_D`, whose world states are the durations themselves and whose relation advances a
+state by the duration elapsed, and the two-state frame `F^ts_D`, whose zero duration is the
+identity and whose every positive duration permits every transition. `lem:canonical-frames` makes
+four claims about them: **(a)** the translation frame is a *Deterministic* task frame; **(b)** its
+possible worlds are exactly the translations `σ_c`; **(c)** the two-state frame is a task frame
+just in case the duration order is *Discrete*; and **(d)** in that case it is not *Deterministic*,
+and every assignment of its two states to times is one of its possible worlds.
+
+The four claims are landed below in that order, on the two frames built in
+`Semantics/Frames/Standard.lean` and the reference histories above. Claim (c) is stated at the
+**bare relation** `permRel` rather than at the frame, because `permissiveFrame` cannot be applied
+without the `SuccOrder` and `NoMaxOrder` data that discreteness itself supplies, so a frame-level
+biconditional is not well formed; `permissiveFrame_taskRel_eq` ties the relation back to the
+frame's own task relation, which is what makes the biconditionals statements about the frame
+rather than about a lookalike relation.
+-/
+
+/--
+**(a) of `lem:canonical-frames`.** The translation frame is *Deterministic* (`def:deterministic`),
+over every temporal order: its task relation is presented by the function `fun w x => w + x`, and
+a functionally presented relation has subsingleton fibres.
+
+This generalises `f1_deterministic` in `Metalogic/Independence/RealTranslationFrame.lean`, which
+proves determinism of a shift-set frame over ℝ, to the translation frame over an arbitrary
+duration group.
+
+The raw singleton-fibre fact `translationRel_fib_subsingleton` in `Semantics/Frames/Standard.lean`
+does **not** discharge this goal directly: its `Fib` argument is the bare relation
+`fun w x u => u = w + x` while the goal's is `(translationFrame D).toTaskFrame.TaskRel`, and the
+two do not unify at the transparency the `Fib` motive's elaboration uses (measured). Routing
+through `TaskFrame.fib_subsingleton_of_functional` with the relation bridge supplied pointwise is
+what goes through.
+-/
+theorem translationFrame_deterministic (D : TemporalOrder) :
+    (translationFrame D).toTaskFrame.Deterministic :=
+  TaskFrame.fib_subsingleton_of_functional (f := fun (w : ↑D) (x : ↑D) => w + x)
+    (fun w x u => translationFrame_taskRel w x u)
+
+/--
+The **state view** of a translation-frame history: its state function, retyped at the duration
+carrier `↑D`.
+
+Every statement below about arithmetic on a history's states goes through this view, and never
+through a type ascription. `translationFrame D` is a plain `def` whose body is
+`FrameOver.ofReflectiveRegular`, so its `WorldState` unifies with `↑D` at default transparency but
+does not synthesize instances through it: `τ.state 0` in a position expecting a `↑D` elaborates,
+any `+` with a `τ.state _` operand fails to synthesize `HAdd`, and ascribing the operand does not
+repair it — the `binop%` elaborator reads the operand's inferred type before the ascription's (all
+three measured). The house precedent for the view move is `WorldHistory.path` in
+`Semantics/IntNormalForm.lean`, "the bare path underlying a possible world".
+-/
+def translationStates {D : TemporalOrder}
+    (τ : WorldHistory (translationFrame D).toTaskFrame) : ↑D → ↑D := τ.state
+
+/--
+**`σ_c` of `def:canonical-frames`.** The translation by `c`, as the reference history
+`translationHist` shifted in time by `c`.
+
+Defining it as a time shift, rather than building a fresh total history over `fun z => z + c`,
+keeps the non-elaborating `+` out of the definition entirely: `WorldHistory.timeShift_state` and
+the state equation of `WorldHistory.ofTotal` are both `rfl`, so this history's state function is
+`t ↦ t + c` definitionally, with no `HAdd` synthesis on a world-state operand anywhere.
+-/
+def translationSigma (D : TemporalOrder) (c : ↑D) :
+    WorldHistory (translationFrame D).toTaskFrame :=
+  (translationHist D).timeShift c
+
+/-- The translation by `c` sends a time to that time plus `c`, read through the state view. -/
+@[simp] theorem translationSigma_states (D : TemporalOrder) (c t : ↑D) :
+    translationStates (translationSigma D c) t = t + c := rfl
+
+/-- The reference history is the identity assignment, read through the state view. -/
+@[simp] theorem translationHist_states (D : TemporalOrder) (t : ↑D) :
+    translationStates (translationHist D) t = t := rfl
+
+/-- `σ_0` is the reference history: the two agree pointwise through the state view. -/
+@[simp] theorem translationSigma_zero (D : TemporalOrder) :
+    translationSigma D 0 = translationHist D := by
+  refine WorldHistory.ext_state fun t => ?_
+  change translationStates (translationSigma D 0) t = translationStates (translationHist D) t
+  rw [translationSigma_states, translationHist_states, add_zero]
+
+/--
+The paper's pointwise law for the translation frame: a possible world's state at `t` is its state
+at `0` advanced by `t`.
+
+The content is the history's own task-respecting field read through the frame's relation bridge at
+the duration `t - 0`; `translationStates` is what lets the `+` in the statement elaborate.
+-/
+theorem translationStates_eq {D : TemporalOrder}
+    (τ : WorldHistory (translationFrame D).toTaskFrame) (t : ↑D) :
+    translationStates τ t = translationStates τ 0 + t := by
+  have h := (translationFrame_taskRel (D := D) (τ.state 0) (t - 0) (τ.state t)).mp
+    (τ.respects_task 0 t)
+  rw [sub_zero] at h
+  exact h
+
+/--
+**(b) of `lem:canonical-frames`, pointwise form.** Every possible world of the translation frame
+*is* the translation by its own state at `0` — the paper's `τ = σ_{τ(0)}`.
+-/
+theorem translation_eq_sigma {D : TemporalOrder}
+    (τ : WorldHistory (translationFrame D).toTaskFrame) :
+    τ = translationSigma D (translationStates τ 0) := by
+  refine WorldHistory.ext_state fun t => ?_
+  change translationStates τ t = translationStates (translationSigma D _) t
+  rw [translationSigma_states, translationStates_eq τ t, add_comm]
+
 end FormalSystem.Semantics
