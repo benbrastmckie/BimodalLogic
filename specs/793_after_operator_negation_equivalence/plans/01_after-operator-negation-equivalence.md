@@ -100,7 +100,7 @@ phases are added and no roadmap item is claimed.
   all six existing binary derived operators; adding two rows to it would make it less coherent,
   not more
 - Any edit to `FormalSystem/Semantics.lean`, `docs/reference/paper-definitions-of-record.md`, or
-  any other file in a concurrent sibling's declared `file_scope`
+  any other file in a concurrent sibling's declared `file_scope` *(deviation: altered — `docs/reference/paper-definitions-of-record.md` WAS edited. C15 in check-module-invariants.sh requires a manifest or KNOWN-ANCHORS row for every `def:`/`lem:`/`cor:` anchor cited under FormalSystem/ Tests/ BimodalTools/ typst/ docs/ README.md, and this plan's own Phase 7 gate list requires C15 to exit 0; three rows added (def:event-operators and lem:after-negation LIVE-UNPINNED, cor:after-negation-stable DANGLING on the thm:nomic-primitive cut-material precedent). The Non-Goal's stated rationale was concurrent-sibling territory, and every sibling in the batch had completed and committed before this edit.)*
 - A proof-theoretic (derivation-level) counterpart of either result; both deliverables are
   semantic validities
 
@@ -427,13 +427,13 @@ compiling those two modules is the whole check.
 
 ---
 
-### Phase 7: Documentation, paper marker, and full gate sweep [NOT STARTED]
+### Phase 7: Documentation, paper marker, and full gate sweep [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Record the argument-order landmine where the tree's decision record already owns that
 question, close the paper's `% PORT:` marker with `\leanproof`, and verify the whole repository.
 
 **Tasks**:
-- [ ] Add a "Derived binary operators" section to
+- [x] Add a "Derived binary operators" section to
       `docs/architecture/untl-snce-argument-order.md` stating that `Formula.release a b` is the
       paper's `Release(b,a)` (and the same reversal for `trigger`), that `Formula.before` is
       therefore `(Formula.release φ.neg ψ).and (Formula.someFuture φ)`, and naming the `rfl` pin
@@ -443,13 +443,13 @@ question, close the paper's `% PORT:` marker with `\leanproof`, and verify the w
       `% PORT: uniqueness of the next phi-time gives the negation equivalence under the guard`
       line under `lem:after-negation` and close its proof with a `\leanproof` line in the
       established style, underscores escaped:
-      `\leanproof{\texttt{SoundnessLemmas.after\_negation\_valid}}`
+      `\leanproof{\texttt{SoundnessLemmas.after\_negation\_valid}}` *(deviation: skipped — out-of-tree paper edit, dropped by recorded user decision; see .decisions.json cycle 3)*
 - [ ] In `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex`, add a
       matching `\leanproof` under `cor:after-negation-stable`'s proof naming both L⁺ theorems.
-      Traceability only — the cut file is not typeset into the live paper
-- [ ] Re-read each file immediately before editing (concurrent siblings are live on this tree)
+      Traceability only — the cut file is not typeset into the live paper *(deviation: skipped — out-of-tree paper edit, dropped by recorded user decision; see .decisions.json cycle 3)*
+- [x] Re-read each file immediately before editing (concurrent siblings are live on this tree)
       and stage explicit file lists only, never a directory or glob add
-- [ ] Run the full gate set and record each exit status
+- [x] Run the full gate set and record each exit status
 
 **Timing**: 1.25 hours
 
@@ -483,6 +483,16 @@ reported as such with its output, never silently dropped from the list.
 - `bash agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh --check` run and its
   verdict reported (advisory only; a spelling-level drift against the primitive expansions pinned
   below is expected, a content-level drift is escalated)
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| Delete the `% PORT:` marker under `lem:after-negation` in `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` and add `\leanproof{\texttt{SoundnessLemmas.after\_negation\_valid}}` | Out-of-tree paper edit. Recorded user decision: keep all paper edits out of scope; implement agents touch only this repository. Deferred to the paper's own owner, not incomplete work | `specs/793_after_operator_negation_equivalence/.decisions.json`, cycle 3, answered 2026-10-14T22:11:54Z; relayed verbatim in `.dispatch/21.md`'s "Prior Decisions" |
+| Add a matching `\leanproof` under `cor:after-negation-stable` in `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex` | Same decision, same file family. Traceability only; the cut file is not typeset into the live paper | Same decision record. The in-tree substitute is the `PlusValidity.lean` section docstring, which names both L⁺ theorems and records that the corollary is cut material |
+| `bash scripts/check-paper-definitions.sh` exits 0 | Exits 1 on ten anchors that were already drifted before this task began: `CO`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:TMplus`, `app:discrete`, `def:id`, `def:strongest`, `thm:exist`, `lem:uniq`. Inherited, not absorbed, and no sentinel re-pinned | Run without tail-truncation; the complete `--- anchor:` list was read, and none of this task's three anchors appears in it. The three new anchors resolve cleanly, confirmed by C15 at `PASS  C15  all 81 paper-anchor citation(s) resolve` |
+| `lean-challenge-snapshot.sh --check` run and its verdict reported | Not runnable: no Challenge manifest exists at `specs/793_after_operator_negation_equivalence/challenge/manifest.json`, so there is nothing to diff. Advisory only by its own file header | A stronger substitute was run instead: a compiled probe stating all five pinned Challenge statements verbatim in their primitive spelling and discharging each with the implemented theorem. All five elaborate (`lake env lean`, exit 0), so no implemented statement is weaker than its pinned one |
+
 
 ---
 

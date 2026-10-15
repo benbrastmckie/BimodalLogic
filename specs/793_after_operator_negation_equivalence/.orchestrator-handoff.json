@@ -1,15 +1,25 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 21,
+  "phases_completed": 7,
   "phases_total": 7,
-  "summary": "Wrote a 7-phase, 6.5-hour implementation plan for lem:after-negation and the cut cor:after-negation-stable. The plan adds Formula.after/Formula.before beside release with rfl pins against the paper's literal expansions, proves next-time uniqueness and the pointwise negation equivalence once in the language-generic TruthClauses tier, then instantiates it as after_negation_valid at L and as both readings of cor:after-negation-stable at L-plus. The dispatch's open question is answered: the corollary is stated natively in L-plus in this task, not through the embedding (⊡/⟐ lie outside ofFormula's range) and not deferred.",
+  "summary": "All seven plan phases closed. Formula.after and Formula.before landed with the paper's equations rfl-pinned; next-phi-time uniqueness and the pointwise negation equivalence were proved once in the language-generic clause tier of Semantics/TruthClauses.lean and instantiated three times: after_negation_valid at L in the new SoundnessLemmas/EventOperators.lean, and after_negation_stable_dstab and after_negation_stable_stab natively in L-plus for the cut cor:after-negation-stable. Full four-library build green (2963 jobs, guard exit 0, zero errors and warnings), sorry 0, axiom count unchanged at 14, statement fidelity against all five pinned Challenge statements machine-checked, and every repository gate passing except check-paper-definitions.sh, which exits 1 on exactly the ten inherited anchors named in the dispatch brief.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/793_after_operator_negation_equivalence/summaries/01_after-operator-negation-equivalence-summary.md",
+      "summary": "Implementation summary: what landed, the five theorems with measured axiom sets, three recorded plan deviations, and every gate exit status."
+    },
+    {
       "type": "plan",
       "path": "specs/793_after_operator_negation_equivalence/plans/01_after-operator-negation-equivalence.md",
-      "summary": "7-phase plan (waves 1,2 / 3,4,6 / 5 / 7) with a Lean Challenge Statements block pinning five theorems; no reflect_time, complexity, or enumerator changes."
+      "summary": "Plan with phases 1-6 [COMPLETED] and phase 7 [COMPLETED WITH EXCLUSIONS] plus its four-row Reasoned Exclusions table."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/793_after_operator_negation_equivalence/handoffs/phase-7-handoff-20261015T084318Z.md",
+      "summary": "Final phase handoff: verification evidence, the three deviations, and the answered open question."
     }
-  ],
-  "dispatch_seq": 10
+  ]
 }

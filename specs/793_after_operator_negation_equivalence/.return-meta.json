@@ -1,17 +1,34 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "started_at": "2026-10-15T07:15:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "phases_1_2_3_4_complete",
-    "details": "Phases 1-4 landed and green: Formula.after/before, the generic After tier, after_negation_valid in the new SoundnessLemmas/EventOperators.lean (wired into both the aggregator and FormalSystem.lean for C33), and PlusFormula.after with its ofFormula rfl pin. Next: Phase 5 (L-plus corollaries), Phase 6 (test pins), Phase 7 (docs plus full gate sweep).",
-    "phases_completed": 4,
-    "phases_total": 7
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/793_after_operator_negation_equivalence/summaries/01_after-operator-negation-equivalence-summary.md",
+      "summary": "def:event-operators' After and Before added to L and After mirrored to L-plus; lem:after-negation proved as a validity over every task frame and both readings of the cut cor:after-negation-stable proved natively in L-plus, all off one language-generic next-time uniqueness argument."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Added Formula.after and Formula.before with the paper's equations rfl-pinned, proved next-phi-time uniqueness and the pointwise negation equivalence once in the language-generic clause tier of Semantics/TruthClauses.lean, and instantiated it three times: after_negation_valid at L in a new SoundnessLemmas/EventOperators.lean module, and after_negation_stable_dstab / after_negation_stable_stab natively in L-plus for the cut cor:after-negation-stable. Full four-library build green with zero sorry, zero new axioms, and all repository gates passing except the ten inherited check-paper-definitions anchors. The two out-of-tree paper edits were dropped by a recorded user decision and are deferred to the user.",
+    "roadmap_items": []
+  },
+  "user_decision": {
+    "kind": "informational",
+    "blocking": false,
+    "summary": "Paper-side clearance of lem:after-negation is deferred to you: the '% PORT:' marker in JPL/possible_worlds.tex is still in place and neither \\leanproof line was added, per your recorded cycle-3 decision to keep paper edits out of implement-agent scope. The declarations to name when you close it are SoundnessLemmas.after_negation_valid for lem:after-negation, and after_negation_stable_dstab plus after_negation_stable_stab for cor:after-negation-stable in the cut appendix."
   },
   "metadata": {
     "session_id": "sess_1792026404_b03e6d",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed"
   }
 }

@@ -68,6 +68,65 @@ consumers, and is explicitly deferred (see "Deferred consequences" below).
 
 ---
 
+## Derived binary operators: `release` and `trigger` reverse the paper's argument order
+
+The three renderings above concern the two *primitive* binary constructors. A second, independent
+order question lives one layer up, at the derived binary operators, and is the easier one to get
+wrong because nothing about the names signals it.
+
+`def:event-operators` defines `Release(φ,ψ) := ¬(¬φ U ¬ψ)`. The tree's `Formula.release` is
+
+```lean
+def release (φ ψ : Formula) : Formula := (Formula.untl ψ.neg φ.neg).neg
+```
+
+which expands to `¬(¬ψ U ¬φ)`. So:
+
+| Lean | Paper |
+|---|---|
+| `Formula.release a b` | `Release(b, a)` |
+| `Formula.trigger a b` | `Trigger(b, a)` |
+
+The two arguments are **reversed** relative to the paper. The same reversal holds for
+`Formula.trigger`, the past analogue. This is not a defect to repair — each operator's own
+docstring states its expansion, and the expansion is what every consumer reasons against — but it
+is a trap at any call site that transcribes a paper formula naming `Release` or `Trigger`
+directly.
+
+### Where this bites, and what catches it
+
+`def:event-operators` defines `Before(φ,ψ) := Release(ψ,¬φ) ∧ fφ`. Transcribed with the
+reversal applied, that is
+
+```lean
+def before (φ ψ : Formula) : Formula :=
+  (Formula.release φ.neg ψ).and (Formula.someFuture φ)
+```
+
+— `Formula.release φ.neg ψ`, **not** `Formula.release ψ φ.neg`. Reading the docstring literally
+and writing the latter produces a silently different operator that still type-checks.
+
+What rules that out is machine-checked rather than described. `FormalSystem/Syntax/Formula.lean`
+carries
+
+```lean
+example (φ ψ : Formula) :
+    before φ ψ = ((Formula.untl ψ.neg φ.neg.neg).neg).and (Formula.someFuture φ) := rfl
+```
+
+pinning `before` against the literal primitive expansion of the paper's right-hand side. The
+companion rows in `Tests/BimodalTest/Syntax/FormulaTest.lean` pin the same equation plus the
+`release`-level spelling. An argument order swapped in either operator fails to elaborate at one
+of those `rfl`s. The double negation `φ.neg.neg` is left unsimplified on purpose: it is exactly
+what substituting `¬φ` into `Release`'s right-hand side produces, so simplifying it would hide
+the step the pin exists to check.
+
+`Formula.after` has no such hazard — `After(φ,ψ) := ¬φ U (φ ∧ ψ)` names only primitives, and
+`Formula.after φ ψ = Formula.untl φ.neg (φ.and ψ)` is a direct transcription in the constructor's
+own guard-first order — but it carries an `rfl` pin too, for symmetry with `before`.
+
+---
+
 ## The claim in the paper
 
 **The footnote this record was raised about has been retired and is no longer quoted here.** It
