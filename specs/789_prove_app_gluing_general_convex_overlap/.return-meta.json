@@ -1,30 +1,35 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-14T16:35:00Z",
+  "completed_at": "2026-10-14T18:35:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/789_prove_app_gluing_general_convex_overlap/plans/01_general-convex-gluing.md",
-      "summary": "Six-phase plan landing the general app:gluing lemma as FormalSystem/Semantics/Gluing.lean by transcribing the verified research probe, relocating partialHistory_ext as a prerequisite, exhibiting the seam cases as witnesses, and pinning choice-freeness in the C14 baseline."
+      "type": "summary",
+      "path": "specs/789_prove_app_gluing_general_convex_overlap/summaries/01_general-convex-gluing-summary.md",
+      "summary": "The paper's app:gluing proved in full generality at the convex-history layer, wired in, choice-freeness pinned by C14, and the ten citation sites repointed."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1792013208_936eb4_789",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 7,
-    "dependency_waves": [[1], [2], [3, 4], [5], [6]]
+  "completion_data": {
+    "completion_summary": "FormalSystem/Semantics/Gluing.lean proves app:gluing in full generality for two convex histories with a nonempty overlap: convexGlue with its reading and bridge lemmas, convexity of the union, both Extends identities, uniqueness, and the two entry points gluing_clause and gluing_clause_of_overlap, plus the ray-seam instance witness. The module is wired into FormalSystem.Semantics and the regenerated library root; the choice-free claim rmk:choice makes for the lemma is asserted on every build by two matched C14 heredoc rows pinning [propext, Quot.sound] rather than left as prose; and the ten app:gluing citation sites that named only a special case now name the general declaration, with the three landed special cases left independent by recorded decision.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "Planning a Lean task in BimodalLogic that adds or resizes any .lean file must include a generated-surface regeneration step, because scripts/check-module-invariants.sh's INV check is GATED (it FAILs, not warns) on a stale '<!-- BEGIN GENERATED: inventory -->' block, and those blocks carry per-file line counts. Find the covering blocks with: grep -rh 'BEGIN GENERATED: inventory' FormalSystem/ | sed 's/.*dir=\\([^ ]*\\).*/\\1/' | sort -u -- a block exists for FormalSystem (loose rows, covering every root-level aggregator plus the generated root FormalSystem.lean) and for most subdirectories, but NOT for FormalSystem/Semantics, whose README Contents table is hand-maintained. Regenerate with 'bash scripts/check-module-invariants.sh --emit-inventory' and verify with '--emit-inventory --check'; never hand-edit a generated block (scripts/readme-inventory.sh is a deprecated shim). Running plan-file-scope-harvest.sh on a draft plan surfaces this automatically: its generated-surface append stage adds the covering READMEs and typst/generated/status.typ to the harvested file_scope whenever any .lean path is present, so a path in the harvest that the plan's own 'Files to modify' lists do not mention is the signal that a regeneration step is missing.",
-      "category": "PATTERN",
-      "source_artifact": "specs/789_prove_app_gluing_general_convex_overlap/plans/01_general-convex-gluing.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["generated-inventory", "check-module-invariants", "plan-file-scope-harvest", "lean-plan-gates", "emit-inventory", "readme-lint"]
-    }
-  ],
-  "next_steps": "Run /implement 789 to execute the plan",
-  "dispatch_seq": 9
+  "metadata": {
+    "session_id": "sess_1792026404_b03e6d",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 12,
+    "compliance_check": "passed"
+  }
 }

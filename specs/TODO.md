@@ -11,7 +11,7 @@ next_project_number: 802
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,789,790,792,793,794,796,797,798,801 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,790,792,793,794,796,797,798,801 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783,791,795,799,800 | 298,464,502,616,761,772,790,792,794,796 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -122,7 +122,6 @@ next_project_number: 802
 
 ### Paper Alignment
 
-789 [IMPLEMENTING] — Prove the paper's Gluing lemma app:gluing in full generality:...
 790 [PLANNED] — Prove lem:canonical-frames, the four claims the paper makes...
   └─ 791 [RESEARCHED] — Prove prop:archimedean in the generality the paper states it:...
 792 [PLANNED] — Pin lem:state-set to the tree by discharging its remaining...
@@ -423,12 +422,13 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry; no change to the two f
 
 ### 789. Prove app gluing general convex overlap
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
 - **Research**: [789_prove_app_gluing_general_convex_overlap/reports/01_general-convex-gluing.md]
 - **Plan**: [789_prove_app_gluing_general_convex_overlap/plans/01_general-convex-gluing.md]
+- **Summary**: [789_prove_app_gluing_general_convex_overlap/summaries/01_general-convex-gluing-summary.md]
 
 **Description**: Prove the paper's Gluing lemma `app:gluing` in full generality: for any task frame F and convex histories tau1, tau2 over F with domains X1, X2 such that X1 ∩ X2 is nonempty and tau1, tau2 agree on it, the union tau1 ∪ tau2 is the unique convex history over F with domain X1 ∪ X2 restricting to both.
 

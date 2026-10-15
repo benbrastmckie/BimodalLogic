@@ -1,7 +1,7 @@
 # Implementation Plan: Task #789
 
 - **Task**: 789 - Prove `app:gluing` in full generality (two convex histories, nonempty overlap)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/789_prove_app_gluing_general_convex_overlap/reports/01_general-convex-gluing.md

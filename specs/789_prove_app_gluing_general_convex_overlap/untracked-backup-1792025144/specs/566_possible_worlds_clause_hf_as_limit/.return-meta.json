@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/566_possible_worlds_clause_hf_as_limit/reports/01_total-histories-limit-clause.md",
+      "summary": "The Total Histories clause H_F iso lim Beh(F)(2x) is fully proved in a machine-checked probe against the live tree, choice-free on the whole isomorphism path, with Classical.choice confined to the nonemptiness tail; includes a three-phase decomposition, the gate obligations a new cluster module incurs, and two corrections to the task description."
+    },
+    {
+      "type": "probe",
+      "path": "specs/566_possible_worlds_clause_hf_as_limit/total-histories-clause-probe.lean",
+      "summary": "The verified, sorry-free, choice-free Lean probe of the entire clause, with its measured axiom table and the two simpa prohibitions that preserve choice-freedom recorded in its header; the implementation round transcribes this."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791884692_4da550_566",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

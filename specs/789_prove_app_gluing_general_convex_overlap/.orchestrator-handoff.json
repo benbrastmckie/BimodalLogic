@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phases_completed": 6,
   "phases_total": 6,
-  "summary": "Wrote a six-phase implementation plan for the general app:gluing lemma, transcribing the research round's fully verified, choice-free probe rather than re-deriving it. Phases: relocate partialHistory_ext into Semantics/PartialHistory.lean (prerequisite for uniqueness); create FormalSystem/Semantics/Gluing.lean with the construction, readings, convexity, both restriction identities, uniqueness and both ExistsUnique entry points; exhibit the paper's ray seam gluing as a witness instance; wire the module in (the one shared-territory touch, isolated); pin choice-freeness via two matched C14 heredoc rows plus a pinned:C14 theorem-index row; repoint the ten app:gluing citation sites and clear the full gate set. Plan validates clean under validate-artifact.sh.",
+  "summary": "Took over an interrupted dispatch of seq 12 whose dead session had left phase 4/5/6 source edits uncommitted; audited them rather than redoing them, then completed the outstanding work. Phase 4: mk_all regenerated the library root (one added import, 681 -> 682), six inventory blocks regenerated, and the shared Semantics.lean aggregator touch committed alone. Phase 5: C14 passes on the first attempt with convexGlue and gluing_clause pinned at the measured [propext, Quot.sound]. Phase 6: ten citation sites repointed at the general declaration. Full guarded lake build green (2848 jobs, zero errors, oleans fresh), check-module-invariants.sh ALL CHECKS PASSED, sorry_count 0, and all 21 planned declarations present.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/789_prove_app_gluing_general_convex_overlap/plans/01_general-convex-gluing.md",
-      "summary": "Six-phase, 7-hour plan: partialHistory_ext relocation, the new Gluing.lean module, the ray-instance witness, aggregator wiring, the C14 axiom pin, and the citation surface plus full gate set."
+      "type": "summary",
+      "path": "specs/789_prove_app_gluing_general_convex_overlap/summaries/01_general-convex-gluing-summary.md",
+      "summary": "Implementation summary: the general app:gluing module, its wiring, the C14 choice-free pin, the repointed citation surface, five recorded plan deviations, and the paper-side leanproof follow-up for the author."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/789_prove_app_gluing_general_convex_overlap/handoffs/phase-4-handoff-20261014-173500.md",
+      "summary": "Phase 4 handoff recording the takeover state, the audited inherited edits, and the two carried deviations."
     }
   ],
-  "dispatch_seq": 9
+  "dispatch_seq": 12
 }

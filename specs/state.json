@@ -32,14 +32,14 @@
     {
       "project_number": 789,
       "project_name": "prove_app_gluing_general_convex_overlap",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Prove the paper's Gluing lemma `app:gluing` in full generality: for any task frame F and convex histories tau1, tau2 over F with domains X1, X2 such that X1 ∩ X2 is nonempty and tau1, tau2 agree on it, the union tau1 ∪ tau2 is the unique convex history over F with domain X1 ∪ X2 restricting to both.\n\nWHAT EXISTS, to reuse rather than rebuild. The repository has two special cases: the closed-interval seam case `Presheaf.sheaf_clause` (FormalSystem/Semantics/Presheaf/Sheaf.lean: sections over [0,l1] and [0,l2] glued at a shared endpoint) and the directed-family case `Presheaf.directed_gluing_clause` (FormalSystem/Semantics/Presheaf/Directed.lean), together with the ray-layer seam gluing landed by task 719 (FormalSystem/Semantics/Presheaf/Ray.lean). None covers two arbitrary convex domains with nonempty overlap. The general lemma is what the paper's convex-history layer actually uses -- the pasting operation rho ⌢_z sigma in the cut proof of cor:deterministic-completeness is an instance -- so it should be stated once at the convex-history layer (PartialHistory / convex domains under FormalSystem/Semantics/Extension/) and the two Presheaf cases either shown to be instances or left independent, by an explicit decision recorded in the docstring.\n\nDELIVER: (1) the gluing theorem: well-definedness on the overlap; convexity of X1 ∪ X2 (the paper's argument: for a ≤ b ≤ c with a ∈ X1 and c ∈ X2, compare b with a fixed z in the overlap); the constraint tau(x) ⇒_{y-x} tau(y) for x ≤ y in the union, inherited from tau_i when both times lie in one domain and otherwise composed through z by Compositionality; and uniqueness. (2) Choice-freeness: rmk:choice lists app:gluing among the choice-free results, so pin it with #print axioms. (3) Docstrings citing app:gluing.\n\nPAPER ANCHORS. app:gluing and its proof, LIVE in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (search \\label{app:gluing}), and rmk:choice immediately above it. A superseded, longer draft of the same proof is kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from appendix, originally inside the proof of app:gluing'. The `% PORT:` comment under app:gluing in the paper is the marker to clear: once this lands, the paper closes app:gluing with \\leanproof naming the declaration.\n\nRELATION TO OPEN WORK. Task 566 (the Possible Worlds clause H_F ≅ lim Beh(F)) is a different statement; do not fold this into it, but note in the docstring how the limit presentation relates (a compatible family of sections is a gluing). specs/ROADMAP.md's Stage 1 note on app:gluing describes the seam case; this task is the general case.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase. If a module is added under FormalSystem/Semantics/Presheaf/, the aggregator-contention note recorded on tasks 563-567 applies (one-line import in Presheaf.lean is a shared touch; batch narrowly).",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-14T23:34:30Z",
+      "last_updated": "2026-10-15T02:39:28Z",
       "artifacts": [
         {
           "path": "specs/789_prove_app_gluing_general_convex_overlap/reports/01_general-convex-gluing.md",
@@ -50,9 +50,14 @@
           "path": "specs/789_prove_app_gluing_general_convex_overlap/plans/01_general-convex-gluing.md",
           "type": "plan",
           "summary": "Six-phase, 7-hour plan: partialHistory_ext relocation, the new Gluing.lean module, the ray-instance witness, aggregator wiring, the C14 axiom pin, and the citation surface plus full gate set."
+        },
+        {
+          "path": "specs/789_prove_app_gluing_general_convex_overlap/summaries/01_general-convex-gluing-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the general app:gluing module, its wiring, the C14 choice-free pin, the repointed citation surface, five recorded plan deviations, and the paper-side leanproof follow-up for the author."
         }
       ],
-      "session_id": "sess_1792013208_936eb4",
+      "session_id": "sess_1792026404_b03e6d",
       "next_artifact_number": 2,
       "file_scope": [
         "FormalSystem.lean",
@@ -77,7 +82,8 @@
         "docs/theorem-index.md",
         "scripts/check-module-invariants.sh",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "FormalSystem/Semantics/Gluing.lean proves app:gluing in full generality for two convex histories with a nonempty overlap: convexGlue with its reading and bridge lemmas, convexity of the union, both Extends identities, uniqueness, and the two entry points gluing_clause and gluing_clause_of_overlap, plus the ray-seam instance witness. The module is wired into FormalSystem.Semantics and the regenerated library root; the choice-free claim rmk:choice makes for the lemma is asserted on every build by two matched C14 heredoc rows pinning [propext, Quot.sound] rather than left as prose; and the ten app:gluing citation sites that named only a special case now name the general declaration, with the three landed special cases left independent by recorded decision."
     },
     {
       "project_number": 790,

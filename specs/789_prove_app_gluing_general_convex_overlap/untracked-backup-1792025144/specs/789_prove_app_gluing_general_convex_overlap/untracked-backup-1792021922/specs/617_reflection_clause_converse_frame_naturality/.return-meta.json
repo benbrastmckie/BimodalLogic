@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/617_reflection_clause_converse_frame_naturality/reports/01_reflection-clause-converse-frame.md",
+      "summary": "Research for app:presheaf-dictionary's Reflection clause: the recovered paper text, the existing FrameOver.rev converse frame and the layering promotion needed to consume it, and the full clause verified by a compiled choice-free probe."
+    }
+  ],
+  "user_decision": {
+    "question": "Consuming the repository's existing converse frame requires promoting the frame-level reversal block out of FormalSystem/OpenLanguage/OpenReversal.lean down into FormalSystem/Semantics/TaskFrame.lean, because a compiled probe shows that importing OpenReversal into the Presheaf cluster trips that cluster's assert_not_exists ProofSystem.Axiom guard. That widens this task's declared file_scope from one module to three. Accept the widening, or keep the single-module scope and define a second converse frame locally?",
+    "options": [
+      "Promote the frame-level reversal block into Semantics/TaskFrame.lean and widen file_scope to include it and OpenReversal.lean, so the tree keeps exactly one converse frame",
+      "Keep file_scope at the single Reflection.lean module and define a local converse frame there, recording in the docstring why a second one was needed"
+    ],
+    "recommended": "Promote the frame-level reversal block into Semantics/TaskFrame.lean and widen file_scope to include it and OpenReversal.lean, so the tree keeps exactly one converse frame",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1791884692_4da550_617",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

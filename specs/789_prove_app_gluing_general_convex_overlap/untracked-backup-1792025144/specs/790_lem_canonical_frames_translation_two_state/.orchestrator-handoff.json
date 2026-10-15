@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "summary": "Wrote a 7-phase, 7.5-hour transcription plan for the paper's canonical-frames lemma: 23 declarations appended to FormalSystem/Semantics/Correspondence/DurationFrames.lean covering all four claims, every proof already compiled in the research round's Appendix. Phase 1 lands the two paper-anchor record rows before any citing docstring; Phases 2-5 transcribe claims (a)-(d); Phase 6 is the documentation surface; Phase 7 re-derives a gate-set entry baseline and closes against the full gate set. The plan adds three mechanical obligations the research report missed: a concurrently dispatched sibling has work staged in the shared git index (so every commit must go through git-commit-scoped.sh with explicit pathspecs), the gate set is already red and moving on entry (so closure is subset-of-baseline, not exit 0), and the root README generated inventory block plus typst/generated/status.typ carry whole-tree counts this task's line growth drifts in a sibling's declared territory (a decision gate with a defer-and-record branch).",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/790_lem_canonical_frames_translation_two_state/plans/01_lem-canonical-frames-characterizations.md",
+      "summary": "7-phase, 7.5-hour plan landing 23 declarations for the canonical-frames lemma's four claims, with a Lean Challenge Statements block whose identifier set is verified equal to the Goals list."
+    }
+  ],
+  "blockers": [],
+  "dispatch_seq": 13
+}

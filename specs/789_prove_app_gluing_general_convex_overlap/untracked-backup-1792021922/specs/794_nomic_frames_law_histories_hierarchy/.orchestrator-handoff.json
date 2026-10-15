@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "summary": "Wrote the implementation plan for the paper's nomic frames: a new FormalSystem/Semantics/Nomic/ cluster of four modules (Frame, Recovery, ZTime, Witnesses) plus a sibling aggregator and README, sited under Semantics/ rather than OpenLanguage/ with the dependency-direction trade-off recorded. Seven phases over 11 hours in five dependency waves: frame layer, lem:nomic-recovery, the ZTime presentation and step-path invariants, witnesses 1 and 3, witness 2 plus the bundled hierarchy theorem, a conditional thm:nomic-primitive clause (1), and a final full-gate wiring phase. Phases 1-3 are transcription of research text already compiled sorry-free; the real proof work is stepPath_forward_invariant, witness 2 and witness 3. The plan pins 27 identifiers under Lean Challenge Statements and records the territory protocol for FormalSystem.lean and FormalSystem/Semantics.lean, both inside concurrent task 789's declared file_scope.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/794_nomic_frames_law_histories_hierarchy/plans/01_nomic-frames-law-histories.md",
+      "summary": "Seven-phase, 11-hour plan for the nomic frame cluster, its two lemmas and prop:nomic-hierarchy's three witnesses."
+    }
+  ],
+  "dispatch_seq": 15
+}
