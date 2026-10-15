@@ -1,22 +1,27 @@
 {
-  "status": "planned",
-  "dispatch_seq": 17,
+  "status": "implemented",
+  "started_at": "2026-10-14T21:00:00Z",
+  "completed_at": "2026-10-14T23:10:00Z",
+  "dispatch_seq": 19,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md",
-      "summary": "Four-phase plan landing prop:archimedean in full generality: the order lemma and frame-property bridge in FormalSystem.Semantics, a new Metalogic/Independence/ArchimedeanSharpness.lean carrying both countermodels with 14 pinned declarations, the prose amendments at the three sites that today promise the theorem, and a final full-gate phase with generated-count regeneration."
+      "type": "summary",
+      "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/summaries/01_uz-z1-fail-non-archimedean-summary.md",
+      "summary": "prop:archimedean proved at the generality the paper states it: UZ and Z1 both fail on the translation frame over every non-Archimedean carrier with a least positive duration, with the Discrete-clause and SuccOrder entry points, the paper's own non-validity-over-D shape, the bare Discrete class at lexZOrder, and the non-IsZTime non-collision on the record."
     }
   ],
-  "next_steps": "Run /implement 791 to execute the plan",
-  "phase_count": 4,
-  "estimated_hours": 4,
-  "dependency_waves": [[1], [2], [3], [4]],
+  "completion_data": {
+    "completion_summary": "Proved prop:archimedean at full generality in the new module FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean: neither UZ nor Z1 is valid over any discrete temporal order that fails to be Archimedean, via two countermodels on translationFrame D at an arbitrary carrier with a least positive duration, plus the order lemma exists_gt_nsmul_of_not_archimedean and the frame-property bridge translationFrame_isDiscrete. All 14 pinned identifiers resolve; the three prose sites that previously restated the claim without proving it now cite the theorems by name, the ZxZ-carrier module's disposition is recorded, and the post-788 Axiom.z1 doc drift is cleared at 9 occurrences in 7 files. Full build green (2849 jobs), sorry_count 0, and check-module-invariants/typst-sync-check/readme-lint/copyright/verify-deploy all exit 0.",
+    "roadmap_items": []
+  },
   "modified_files": [
-    "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md",
-    "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/issues.jsonl"
-  ],
-  "proposed_file_scope": [
     "FormalSystem/Semantics/DurationClassification.lean",
     "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
     "FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean",
@@ -26,25 +31,41 @@
     "FormalSystem/Metalogic/Independence/StaticFrame.lean",
     "FormalSystem/Metalogic/Conservativity.lean",
     "FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean",
+    "FormalSystem/Metalogic/Conservativity/README.md",
+    "FormalSystem/Metalogic/README.md",
     "FormalSystem/Semantics/FrameProperty.lean",
+    "FormalSystem/Semantics/FrameClassValidity.lean",
     "FormalSystem/ProofSystem/Axioms.lean",
+    "FormalSystem/MinusLanguage/Axioms.lean",
+    "FormalSystem/MinusLanguage/README.md",
+    "FormalSystem/README.md",
+    "README.md",
     "docs/reference/paper-definitions-of-record.md",
     "FormalSystem.lean",
-    "typst/generated/status.typ"
-  ],
-  "memory_candidates": [
-    {
-      "content": "When a research report is written before a sibling task lands in the same files, re-derive the report's 'what must be added' list against the tree at plan time, not just its 'what exists' list. Measured case: a sibling commit landed isDiscrete_iff_exists_isLeast_pos (a biconditional between the pointwise Discrete clause and the least-positive-element form) three commits before planning, which made two of the report's four planned hypothesis-entry wrappers one-line applications of an existing lemma. Reading the target files' current declaration outline (grep for ^theorem/^def plus the module docstring's Main results list) costs two tool calls and removes a whole class of duplicate-declaration defects that no gate catches.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["plan-time-verification", "stale-research", "concurrent-siblings", "duplicate-declaration", "lean"]
-    }
+    "typst/generated/status.typ",
+    "scripts/lean-citation-manifest.json"
   ],
   "metadata": {
-    "session_id": "sess_1792026404_b03e6d_791",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1792026404_b03e6d",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "compliance_note": "All 14 plan-pinned identifiers resolve at their recorded signatures. The scripted spot-check additionally reports '[MISSING] example' and matched 'IsZTime': both are extraction artifacts, not defects -- 'example' is a Lean keyword lifted out of the Goals bullet's own explanatory prose ('Two anonymous `example` shape pins ... deliberately not in the pinned set above'), and 'IsZTime' is a cross-reference in the same prose which resolves anyway.",
+    "commits": [
+      "7883f2c0a",
+      "80215807b",
+      "2253a509f",
+      "9afba510e"
+    ],
+    "paper_citation_identifiers": [
+      "FormalSystem.Metalogic.Independence.not_validOnFrameOver_prior_UZ_nonArchimedean",
+      "FormalSystem.Metalogic.Independence.not_validOnFrameOver_z1_nonArchimedean"
+    ],
+    "advisory_findings_not_absorbed": "scripts/check-paper-definitions.sh exits 1 on a pre-existing inherited drift wave at ten MANIFEST anchors (CO, def:BX, def:BX-z, def:BX-d, def:TMplus, app:discrete, def:id, def:strongest, thm:exist, lem:uniq), all already drifted before this batch began and already seeded as task 801. prop:archimedean itself carries no drift verdict. One vacuous-pattern grep hit exists at FormalSystem/Examples/TemporalStructures.lean (`:= trivial` proving a definitionally-true domain predicate): pre-existing, last touched by task 756, untouched here, and a legitimate proof rather than a placeholder. Axiom declarations counted identically at both ends: 10 before, 10 after."
   }
 }

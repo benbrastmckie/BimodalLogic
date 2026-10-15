@@ -1,7 +1,7 @@
 # Implementation Plan: UZ and Z1 fail over every non-Archimedean Discrete order
 
 - **Task**: 791 - Prove prop:archimedean in the generality the paper states it (UZ and Z1 fail over every non-Archimedean Discrete temporal order)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: Task 788 (complete, at HEAD); tasks 789 and 790 (complete, committed earlier in this batch)
 - **Research Inputs**: specs/791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md
@@ -174,37 +174,37 @@ earlier and its docstring points at `archimedean_of_succ` as the positive side o
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: The order lemma and the frame-property bridge [NOT STARTED]
+### Phase 1: The order lemma and the frame-property bridge [COMPLETED]
 
 **Goal**: the two pieces of glue the countermodels consume exist and compile — the paper's step 1
 (`¬ Archimedean` yields a time beyond every multiple of the unit) and the fact that the translation
 frame over a least-positive duration is `IsDiscrete`.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Semantics/DurationClassification.lean` immediately before editing (a
+- [x] Re-read `FormalSystem/Semantics/DurationClassification.lean` immediately before editing (a
       sibling may have touched it since this plan was written)
-- [ ] Add `exists_gt_nsmul_of_not_archimedean` to the `LeastPositive` section, after
+- [x] Add `exists_gt_nsmul_of_not_archimedean` to the `LeastPositive` section, after
       `isGreatest_pred_of_isLeast_pos` and before `end LeastPositive`, at the section's existing
       `variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]` bundle. The
       verified body (compiled, zero diagnostics):
       `by_contra hc` / `push Not at hc` / `refine hna ⟨fun x y hy => ?_⟩` /
       `obtain ⟨n, hn⟩ := hc x` / `exact ⟨n, hn.trans (nsmul_le_nsmul_right (hu.2 hy) n)⟩`
-- [ ] Its docstring records: `Archimedean` is a `class`, so the negated hypothesis is opened by
+- [x] Its docstring records: `Archimedean` is a `class`, so the negated hypothesis is opened by
       `by_contra` + `push Not` + anonymous-constructor reconstruction rather than destructured; and
       `archimedean_of_succ` in the `SuccessorBranch` section below is the positive side of the same
       picture. Use `push Not`, not the deprecated `push_neg`
-- [ ] Add one `## Main results` bullet for it in the module docstring, in the list's existing voice
-- [ ] Re-read `FormalSystem/Semantics/Correspondence/DurationFrames.lean`, then add
+- [x] Add one `## Main results` bullet for it in the module docstring, in the list's existing voice
+- [x] Re-read `FormalSystem/Semantics/Correspondence/DurationFrames.lean`, then add
       `translationFrame_isDiscrete` to the "The translation frame's history and model" section,
       after `translation_realizes_allFuture`. Verified term-mode body:
       `fun x _ => ⟨x + u, isLeast_succ_of_isLeast_pos hu x⟩`
-- [ ] Its docstring records three things: why it lives here and not beside
+- [x] Its docstring records three things: why it lives here and not beside
       `translationFrame_isRegular` in `Frames/Standard.lean` (that module's import list is
       deliberately `TaskFrame` and nothing else, and `TaskFrame.IsDiscrete` is not in its closure —
       its module docstring says why); that it is the frame-level reading of
       `(isDiscrete_iff_exists_isLeast_pos D).mpr`, which this file already carries; and that the
       *converse* reading needs no new lemma because `(isDiscrete_iff_exists_isLeast_pos D).mp` is it
-- [ ] Cite declarations by name only — never `file.lean:NNN` (C20)
+- [x] Cite declarations by name only — never `file.lean:NNN` (C20)
 
 **Timing**: 0.75 hours
 
@@ -240,20 +240,20 @@ compiles both amended modules and is the covering check.
 
 ---
 
-### Phase 2: The new module — both countermodels, their entry points, and the corollaries [NOT STARTED]
+### Phase 2: The new module — both countermodels, their entry points, and the corollaries [COMPLETED]
 
 **Goal**: `prop:archimedean` is a theorem of this tree at an arbitrary non-Archimedean carrier with
 a least positive duration, in the paper's own `⊭_D` shape and at the bare Discrete class, with the
 non-collision against `IsZTime` on the record.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean` with the repository
+- [x] Create `FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean` with the repository
       copyright header, imports
       (`FormalSystem.Semantics.Correspondence.DurationFrames`, `FormalSystem.Metalogic.Soundness`,
       `FormalSystem.Metalogic.CompletenessDerived`, `FormalSystem.Semantics.LexCarrier`),
       `open FormalSystem FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem`, and
       `namespace FormalSystem.Metalogic.Independence` — the header shape `ZTimeSharpness.lean` uses
-- [ ] Module docstring: the paper's proof structure (one shared frame `translationFrame D`, one
+- [x] Module docstring: the paper's proof structure (one shared frame `translationFrame D`, one
       shared history `translationHist D`, one shared division of `D` into the near times
       `E = {z | 0 < z ∧ ∃ n : ℕ, z < n • u}` and its complement); that this is the least-positive
       branch of the duration dichotomy whose dense branch is `ZTimeSharpness.lean`; that a consumer
@@ -261,20 +261,22 @@ non-collision against `IsZTime` on the record.
       `duration_dense_or_least_pos` and needs no further wrapper here; and the choice-dependence
       note — `translationFrame` depends on `Classical.choice`, so nothing in this module is
       advertised as choice-free
-- [ ] Transcribe the two anonymous `example` shape pins from `ZTimeSharpness.lean`'s pins section,
+- [x] Transcribe the two anonymous `example` shape pins from `ZTimeSharpness.lean`'s pins section,
       against `Axiom.prior_UZ` and `FormalSystem.Metalogic.CompletenessDerived.z1Thm`, so this
       module's generality claim is independently a compiler obligation
-- [ ] Transcribe `not_validOn_z1_nonArchimedean` and `not_validOn_prior_UZ_nonArchimedean` verbatim
+- [x] Transcribe `not_validOn_z1_nonArchimedean` and `not_validOn_prior_UZ_nonArchimedean` verbatim
       from the research report's Appendix ("Verified proof text") — both compiled sorry-free with
       zero diagnostics against these same imports. Reflow to the 100-column limit on transcription;
       do not restructure the proofs
-- [ ] Per-theorem docstrings following the paper's step map: for Z1, `|p| = D \ E`, `FGp` at `0`
+- [x] Per-theorem docstrings following the paper's step map: for Z1, `|p| = D \ E`, `FGp` at `0`
       from `y`, `G(Gp → p)` at `0` by the `z + u ∈ E` step fact, `¬Gp` at `0` from `u ∈ E`; for UZ,
       `|p| = {y + n • u | n : ℤ}`, `Fp` at `0`, and no `p`-time having a `¬p`-guarded initial
       segment because `y + (n−1) • u` is itself a positive `p`-time. Record that step 7 is stated
       contrapositively in the paper and read forwards in Lean — a presentation reordering, not a
       deviation
-- [ ] Add the two Discrete-hypothesis entry points,
+- [x] *(deviation: altered — the `.mp` route unified through `TaskFrame.IsDiscrete` directly, so
+      the report's `exists_pos_of_nontrivial` fallback was not needed; the docstrings record
+      which route was taken, as this item required)* Add the two Discrete-hypothesis entry points,
       `not_validOn_prior_UZ_discrete_nonArchimedean` and `not_validOn_z1_discrete_nonArchimedean`,
       taking `(hdisc : (translationFrame D).toTaskFrame.IsDiscrete)` and opening it with
       `obtain ⟨u, hu⟩ := (isDiscrete_iff_exists_isLeast_pos D).mp hdisc`. If that `.mp` does not
@@ -282,21 +284,21 @@ non-collision against `IsZTime` on the record.
       `obtain ⟨q, hq⟩ := TaskFrame.exists_pos_of_nontrivial (D := (D : Type))` then `hdisc 0 ⟨q, hq⟩`
       — and say in the docstring which route was taken. These are what make the result stateable at
       the paper's own Discrete clause
-- [ ] Add the two `SuccOrder` entry points, `not_validOn_prior_UZ_succ_nonArchimedean` and
+- [x] Add the two `SuccOrder` entry points, `not_validOn_prior_UZ_succ_nonArchimedean` and
       `not_validOn_z1_succ_nonArchimedean`, at `[SuccOrder (D : Type)]`, routed through
       `isLeast_pos_succ_zero`. These are the dispatch's stated hypothesis form; their docstrings
       record that the primary binder is deliberately the weaker `Prop`-valued `IsLeast`
-- [ ] Add the paper-shape corollaries `not_validOnFrameOver_prior_UZ_nonArchimedean` and
+- [x] Add the paper-shape corollaries `not_validOnFrameOver_prior_UZ_nonArchimedean` and
       `not_validOnFrameOver_z1_nonArchimedean` — `¬ ∀ F : FrameOver D, F.toTaskFrame.ValidOn φ`,
       the idiom `validOn_df_iff_isDiscrete` renders `⊨_D` in — each `fun h => hfail (h (translationFrame D))`.
       Their docstrings name them as the two identifiers PossibleWorlds task 172 will cite in
       `\leanproof{\texttt{...}}`
-- [ ] Add `noncomputable abbrev lexZOrder : TemporalOrder := TemporalOrder.of (ℤ ×ₗ ℤ)`, mirroring
+- [x] Add `noncomputable abbrev lexZOrder : TemporalOrder := TemporalOrder.of (ℤ ×ₗ ℤ)`, mirroring
       `ztimeSharpOrder` in `ZTimeSharpness.lean`, with a docstring recording that `LexInt.isLeast_pos`
       and `LexInt.not_archimedean` hold at `α ×ₗ ℤ` for any nontrivial `α` and that
       `Rigidity.lexRat_not_archimedean` is **not** usable here (`ℚ ×ₗ ℚ` is dense, hence has no least
       positive duration)
-- [ ] Add `translationFrame_lexZ_not_isZTime`, verified body `rintro ⟨so, -, hsa, -⟩` then
+- [x] Add `translationFrame_lexZ_not_isZTime`, verified body `rintro ⟨so, -, hsa, -⟩` then
       `exact LexInt.not_archimedean (@archimedean_of_succ (ℤ ×ₗ ℤ) _ _ _ so _ hsa)` (the pattern
       `LexIntWitness.lean`'s `lexIntStaticFrame_not_sat` already uses), and the two bare-Discrete-class
       corollaries `not_validOnFrames_isDiscrete_prior_UZ` / `not_validOnFrames_isDiscrete_z1` at
@@ -305,12 +307,12 @@ non-collision against `IsZTime` on the record.
       Their docstrings must say, in the tree's own voice, that the witness frame is regular and
       `IsDiscrete` yet **not** `IsZTime`, so nothing here contradicts `prior_UZ_validIn_iff_ztime` or
       `z1_validIn_iff_ztime` — that is what `translationFrame_lexZ_not_isZTime` is for
-- [ ] Add `import FormalSystem.Metalogic.Independence.ArchimedeanSharpness` to
+- [x] Add `import FormalSystem.Metalogic.Independence.ArchimedeanSharpness` to
       `FormalSystem/Metalogic/Independence.lean`'s import block (re-read the file first), then
       regenerate the library root with `lake exe mk_all --lib FormalSystem` and inspect
       `git diff -- FormalSystem.lean`: if the only added line is the new module's, commit; if a
       foreign import line appears, STOP and report rather than absorbing it
-- [ ] Cite declarations by name only — never `file.lean:NNN` (C20). Give every declaration a
+- [x] Cite declarations by name only — never `file.lean:NNN` (C20). Give every declaration a
       docstring as it is written (C19), and keep lines inside the 100-column limit (C28)
 
 **Timing**: 1.75 hours
@@ -355,50 +357,56 @@ deferred to Phase 4's full gate by design.
 
 ---
 
-### Phase 3: Amend the prose that currently promises the theorem [NOT STARTED]
+### Phase 3: Amend the prose that currently promises the theorem [COMPLETED]
 
 **Goal**: every docstring and README that today restates the paper's general claim without proving
 it cites the new theorems instead, the concrete `ℚ ×ₗ ℤ` module's disposition is recorded at the
 module itself, and the post-788 `Axiom.z1` drift is cleared.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`, section "What is refuted is
+- [x] `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`, section "What is refuted is
       discreteness, not the Archimedean property": keep the section's point (what *that* module
       refutes is non-discreteness), and redirect its closing sentence from
       `Independence/LexIntWitness.lean` to `Independence/ArchimedeanSharpness.lean`, naming the two
       general theorems. The sentence "no claim is made here that either axiom is refutable ...
       specifically over a non-Archimedean order" is rewritten so it scopes that module's own
       statements and no longer reads as a standing prohibition
-- [ ] `FormalSystem/Metalogic/Conservativity.lean`, section "Two live-paper facts bearing on the
+- [x] `FormalSystem/Metalogic/Conservativity.lean`, section "Two live-paper facts bearing on the
       discrete rows", first bullet: the sentence restating `def:BX-z`'s every-non-Archimedean-order
       reasoning now cites `not_validOn_prior_UZ_nonArchimedean` and `not_validOn_z1_nonArchimedean`
       as the tree's own machine-checked form of it, instead of presenting it as paper prose the tree
       does not check
-- [ ] `FormalSystem/Semantics/FrameProperty.lean`, the `TaskFrame.IsZTime` docstring: same
+- [x] `FormalSystem/Semantics/FrameProperty.lean`, the `TaskFrame.IsZTime` docstring: same
       amendment at the "the axioms `UZ` and `Z1` fail over every discrete temporal order that is not
       Archimedean" sentence — cite the two theorems by name
-- [ ] `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean`: add a docstring cross-reference
+- [x] `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean`: add a docstring cross-reference
       recording the disposition decision — that module stays the concrete L⁻ witness at
       `ℚ ×ₗ ℤ` and is **not** an instance of the general theorem, with the three measured reasons
       (different language: `MinusTruthAt` on `MinusFormula` versus `TruthAt` on `Formula`;
       `MinusLanguage.tr_ne_untl` makes `tr` of the L⁻ `Z1` syntactically distinct from L's, whose
       `FGp` is a top-level `untl`; and a different valuation — the ℚ-coordinate upper set versus the
       paper's `E`). No proof change in that file
-- [ ] `FormalSystem/Metalogic/Independence.lean`'s module docstring: add the thirteenth result
+- [x] `FormalSystem/Metalogic/Independence.lean`'s module docstring: add the thirteenth result
       entry for `ArchimedeanSharpness.lean` and update the result count, matching the voice of the
       existing twelve
-- [ ] `FormalSystem/Metalogic/Independence/README.md`: the matching thirteenth entry and the
+- [x] `FormalSystem/Metalogic/Independence/README.md`: the matching thirteenth entry and the
       `Twelve results are carried here` count fix. Re-read immediately before editing — this file is
       inside concurrent task 792's declared `file_scope`; if it carries foreign uncommitted edits,
       close this one objective as a reasoned exclusion with the collision as evidence (check 2 of
       `readme-lint.sh` is reported, not gated) rather than absorbing them
-- [ ] `docs/reference/paper-definitions-of-record.md`: amend the `prop:archimedean`
+- [x] `docs/reference/paper-definitions-of-record.md`: amend the `prop:archimedean`
       `KNOWN-ANCHORS` row's prose, which currently says the repository does not check the anchor.
       Keep the row `LIVE-UNPINNED`; do not promote it to a `MANIFEST` row and do not re-pin the
       whole-file `PINNED_COMMIT`/`FILE_CHECKSUM` sentinels. Same 792 contention protocol as the
       README above
-- [ ] Droppable objective, independent of the mathematics — clear the post-788 `Axiom.z1` drift at
-      its 7 occurrences in 5 files, verified present by grep at plan time:
+- [x] *(deviation: altered — the pre-edit re-grep found 9 in-scope occurrences across 7 files,
+      not 7 across 5: `Semantics/FrameClassValidity.lean` and `MinusLanguage/Axioms.lean` carried
+      occurrences the plan-time sweep missed, admitted under this item's own "treat any new
+      occurrence as in scope" rule. `StarLanguage/Axioms.lean`'s two matches name `StarAxiom.z1`
+      and `PlusAxiom.z1`, constructors that genuinely exist, so they are not drift and were left
+      alone. Objective completed in full, not dropped.)* Droppable objective, independent of the
+      mathematics — clear the post-788 `Axiom.z1` drift at its occurrences, verified present by
+      grep at plan time:
       `FormalSystem/ProofSystem/Axioms.lean` ("ZTime (2 axioms: prior_UZ, z1)" → the one ZTime
       constructor plus the derived `CompletenessDerived.z1Thm`; `status.typ`'s
       `ztime-only-count = 1` is the cross-check),
@@ -411,7 +419,7 @@ module itself, and the post-788 `Axiom.z1` drift is cleared.
       `static_validates_z1`'s own identifier untouched). If this objective inflates the phase, close
       the phase `[COMPLETED WITH EXCLUSIONS]` with this item recorded; the mathematics does not
       depend on it
-- [ ] Do not introduce any `file.lean:NNN` citation while editing (C20), and do not re-word any
+- [x] Do not introduce any `file.lean:NNN` citation while editing (C20), and do not re-word any
       documented axiom or sorry count (C14)
 
 **Timing**: 1 hour
@@ -457,24 +465,33 @@ boundary.
 
 ---
 
-### Phase 4: Full gate set, generated-count regeneration, and final verification [NOT STARTED]
+### Phase 4: Full gate set, generated-count regeneration, and final verification [COMPLETED]
 
 **Goal**: the repository is green under its complete gate set with the new module in the build
 graph, and every generated count that the new file moves is regenerated from live source.
 
 **Tasks**:
-- [ ] Run the full guarded build first — `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
+- [x] Run the full guarded build first — `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
       — because the status-count generator reads the per-declaration axiom report out of a built
       library
-- [ ] Regenerate `typst/generated/status.typ` with `bash scripts/typst-status-counts.sh`, then
+- [x] *(deviation: altered — regenerated with `scripts/typst-sync-check.sh --fix` at every
+      `.lean` commit rather than once in this phase, because `.githooks/pre-commit` is a blocking
+      gate that refuses any commit staging a `.lean` path while Check 2 has drifted. Every diff
+      was inspected under the contention protocol and carried only the scale counts plus the
+      stamp.)* Regenerate `typst/generated/status.typ` with `bash scripts/typst-status-counts.sh`, then
       inspect `git diff -- typst/generated/status.typ` under the contention protocol in Risks: the
       expected change is `formalsystem-file-count`, `formalsystem-line-count` and the stamp
       commit/date, and nothing else
-- [ ] Final `lake exe mk_all --lib FormalSystem` and the `git diff -- FormalSystem.lean` inspection
-- [ ] Run the gate set below and fix only this task's own findings. A finding in a file outside this
+- [x] Final `lake exe mk_all --lib FormalSystem` and the `git diff -- FormalSystem.lean` inspection
+- [x] *(deviation: added — the first full gate run surfaced three of this task's own findings,
+      all fixed in this phase: a 144-column line in `Semantics/FrameClassValidity.lean` (C28), a
+      stale generated inventory block in the root `README.md` (INV), and four shifted declaration
+      spans in `scripts/lean-citation-manifest.json` (C35, regenerated with
+      `scripts/export-lean-citations.py`, never by hand). No finding in a file outside this task's
+      own list was repaired.)* Run the gate set below and fix only this task's own findings. A finding in a file outside this
       task's `Files to modify` across all four phases is possibly a sibling's in-flight edit and is
       reported, not silently repaired
-- [ ] Record the two identifiers PossibleWorlds task 172 will cite
+- [x] Record the two identifiers PossibleWorlds task 172 will cite
       (`not_validOnFrameOver_z1_nonArchimedean`, `not_validOnFrameOver_prior_UZ_nonArchimedean`,
       both in `FormalSystem.Metalogic.Independence`) in the completion summary, since the paper-side
       `% PORT:` marker is deliberately left to that task
@@ -519,7 +536,11 @@ generated file that moves is reported, not absorbed.
   itself still resolves; do not absorb the drift wave or re-pin the whole-file sentinels
 - Every command's exit status is checked directly; a diff of captured stdout against a baseline is
   not accepted as evidence for any of them
-- `git log --oneline` shows this task's commits with no foreign commit interleaved into its range
+- `git log --oneline` shows this task's four commits (`7883f2c0a`, `80215807b`, `2253a509f`,
+  `9afba510e`). **One foreign commit did interleave**: `8f1f9cc5b` ("task 801: seed report on the
+  live BX/TM anchor drift wave") landed between phases 2 and 3. It touches exactly one file, a
+  report inside its own task directory, with no overlap against this task's territory — so the
+  criterion is not literally met, and the interleave is recorded here rather than papered over
 
 ## Lean Challenge Statements
 
@@ -641,19 +662,19 @@ end FormalSystem.Metalogic.Independence
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits 0, read from
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits 0, read from
       the guard's own exit status or its `result` subcommand — never from a pipe exit code
-- [ ] `bash .claude/scripts/lean-sorry-census.sh FormalSystem` reports `sorry_count: 0` at the end
+- [x] `bash .claude/scripts/lean-sorry-census.sh FormalSystem` reports `sorry_count: 0` at the end
       of every phase and at the end of the task
-- [ ] `bash scripts/check-module-invariants.sh` exits 0
-- [ ] `bash scripts/typst-sync-check.sh` exits 0 (check 2 is the one the new file moves)
-- [ ] `bash scripts/readme-lint.sh FormalSystem` exits 0
-- [ ] `bash scripts/check-copyright-headers.sh --strict FormalSystem` exits 0
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0
-- [ ] All 14 pinned identifiers resolve at their recorded signatures; no declaration is a weaker
+- [x] `bash scripts/check-module-invariants.sh` exits 0
+- [x] `bash scripts/typst-sync-check.sh` exits 0 (check 2 is the one the new file moves)
+- [x] `bash scripts/readme-lint.sh FormalSystem` exits 0
+- [x] `bash scripts/check-copyright-headers.sh --strict FormalSystem` exits 0
+- [x] `bash .claude/scripts/verify-deploy.sh` exits 0
+- [x] All 14 pinned identifiers resolve at their recorded signatures; no declaration is a weaker
       same-named restatement (see `.claude/rules/plan-compliance.md`'s Statement Fidelity section,
       whose `lean-challenge-snapshot.sh --check` verdict is advisory, not a failure condition)
-- [ ] No declaration over `translationFrame` is advertised as choice-free, in a docstring or in a
+- [x] No declaration over `translationFrame` is advertised as choice-free, in a docstring or in a
       verification criterion
 
 ## Artifacts & Outputs

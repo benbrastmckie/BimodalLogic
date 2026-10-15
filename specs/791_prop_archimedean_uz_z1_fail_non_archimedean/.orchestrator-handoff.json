@@ -1,21 +1,26 @@
 {
-  "status": "planned",
-  "dispatch_seq": 17,
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 19,
+  "task_number": 791,
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Planned prop:archimedean in full generality as four phases against current HEAD (post-789/790). Phase 1 adds exists_gt_nsmul_of_not_archimedean to Semantics/DurationClassification.lean and translationFrame_isDiscrete to Semantics/Correspondence/DurationFrames.lean; Phase 2 creates Metalogic/Independence/ArchimedeanSharpness.lean with both countermodels (research-verified proof text), four hypothesis entry points, the paper's not-valid-over-D shape, the bare-Discrete-class corollaries at the lexicographic-integer carrier, and the non-IsZTime lemma — 14 identifiers pinned under Lean Challenge Statements; Phase 3 amends the three prose sites that today promise the theorem plus the post-788 Axiom.z1 drift; Phase 4 runs the full gate set and regenerates the two generated files. Plan validates with 0 warnings.",
+  "summary": "Proved prop:archimedean at the generality the paper states it: UZ and Z1 both fail over every non-Archimedean discrete temporal order, in the new module FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean, plus the order lemma and frame-property bridge the countermodels consume. All 14 plan-pinned identifiers resolve, the three prose sites that promised the theorem now cite it by name, and the post-788 Axiom.z1 drift is cleared. Full guarded build green (2849 jobs, exit 0), sorry_count 0, and check-module-invariants, typst-sync-check, readme-lint, check-copyright-headers and verify-deploy all exit 0.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/summaries/01_uz-z1-fail-non-archimedean-summary.md",
+      "summary": "Completion summary: what was proved, the five recorded decisions, six plan deviations, the full verification record, and the two identifiers PossibleWorlds task 172 will cite."
+    },
+    {
       "type": "plan",
       "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md",
-      "summary": "Four-phase, ~4-hour implementation plan: order and frame glue, the new ArchimedeanSharpness module, prose amendments, full gate set."
+      "summary": "All four phases marked COMPLETED with every checklist item ticked and six deviations annotated inline."
+    },
+    {
+      "type": "other",
+      "path": "FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean",
+      "summary": "New 381-line module: both countermodels, two shape pins, four hypothesis entry points, the paper-shape and bare-Discrete-class corollaries, lexZOrder, and the non-IsZTime lemma."
     }
-  ],
-  "notes": [
-    "Narrowed two research recommendations on evidence read at plan time: task 790's isDiscrete_iff_exists_isLeast_pos and succOrderOfIsLeastPos already supply what the report's isLeast_pos_of_isDiscrete / isLeast_pos_of_translationFrame_isDiscrete wrappers would have duplicated, so neither is planned.",
-    "Three files in the plan's scope are inside concurrent task 792's declared file_scope: typst/generated/status.typ (regeneration forced by typst-sync-check check 2 once a new .lean file lands; regeneration is absorbing, not merging), docs/reference/paper-definitions-of-record.md (the prop:archimedean KNOWN-ANCHORS row asserts the repository does not check the anchor, which this task falsifies), and FormalSystem/Metalogic/Independence/README.md (readme-lint check 2 is ungated, so a reasoned exclusion is the fallback). Each carries a re-read-then-inspect protocol in the plan.",
-    "Per task 790's finding, no phase states or verifies a no-choice-axiom criterion for any declaration over translationFrame; lean_verify is used for sorry scanning only.",
-    "The paper-side % PORT: marker is deliberately out of scope (cycle-1 decision). The two identifiers PossibleWorlds task 172 will cite are not_validOnFrameOver_z1_nonArchimedean and not_validOnFrameOver_prior_UZ_nonArchimedean, both in FormalSystem.Metalogic.Independence."
   ]
 }
