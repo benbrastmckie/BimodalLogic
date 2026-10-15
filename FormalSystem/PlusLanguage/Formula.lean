@@ -46,7 +46,7 @@ by `rfl` — the `rfl` pins at the end of this file are what the proof-system em
 - `PlusFormula`: seven-constructor inductive type for L⁺; `PlusContext := List PlusFormula`
 - Derived operators with `Formula`'s right-hand sides: `top`, `neg`, `and`, `or`, `iff`,
   `diamond`, `someFuture`, `somePast`, `allFuture`, `allPast`, `kPlus`, `kMinus`, `always`,
-  `sometimes`, `next`, `prev`
+  `sometimes`, `next`, `prev`, `after`
 - The `⊡`-specific operators `dstab` (`⟐`), `Will`, `will`, `Could`, `could`
 - `PlusFormula.reflectTime`: the past/future interchange for the TR rule (`stab ↦ stab`)
 - `IsPureFuture`, `IsPurePast`: the syntactic purity predicates that guard the pasting axioms
@@ -177,6 +177,14 @@ def next (φ : PlusFormula) : PlusFormula := PlusFormula.untl PlusFormula.bot φ
 
 /-- Previous-step (`Yφ`): `⊥ S φ`. Mirrors `Formula.prev`. -/
 def prev (φ : PlusFormula) : PlusFormula := PlusFormula.snce PlusFormula.bot φ
+
+/-- After (`def:event-operators`): `¬φ U (φ ∧ ψ)`. Mirrors `Formula.after` right-hand side for
+right-hand side, so `ofFormula` commutes with it by `rfl` (pinned at the end of this file).
+
+No `reflect_time_after` companion: `After` has no past dual in the paper, so a push-through
+lemma would have to invent one. The `cor:after-negation-stable` statements
+(`PlusLanguage/PlusValidity.lean`) are the only consumers. -/
+def after (φ ψ : PlusFormula) : PlusFormula := PlusFormula.untl φ.neg (φ.and ψ)
 
 /-! ### The `⊡`-specific operators (`sub:RestrictedModalities`) -/
 
@@ -462,5 +470,7 @@ example (φ : Formula) : ofFormula (Formula.always φ) = PlusFormula.always (ofF
 example (φ : Formula) : ofFormula (Formula.sometimes φ) = PlusFormula.sometimes (ofFormula φ) := rfl
 example (φ : Formula) : ofFormula (Formula.next φ) = PlusFormula.next (ofFormula φ) := rfl
 example (φ : Formula) : ofFormula (Formula.prev φ) = PlusFormula.prev (ofFormula φ) := rfl
+example (φ ψ : Formula) : ofFormula (Formula.after φ ψ) = PlusFormula.after (ofFormula φ)
+    (ofFormula ψ) := rfl
 
 end FormalSystem.PlusLanguage
