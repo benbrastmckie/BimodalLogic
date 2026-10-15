@@ -52,6 +52,44 @@ five theorems report exactly what the frame constant reports.
 - `translationFrame_plusTruthAt_iff_mem_satSet`, `translationFrame_determined`,
   `translationFrame_plusValidOn_iff_satSet_univ` — the same three sentences there
 
+## Axiom pin
+
+Recorded from `#print axioms` against this module as built, and re-checkable by uncommenting:
+
+```
+#print axioms FormalSystem.Metalogic.Independence.selfShift
+#print axioms FormalSystem.Metalogic.Independence.translationFlow
+#print axioms FormalSystem.Metalogic.Independence.translationFlow_taskRel
+#print axioms FormalSystem.Metalogic.Independence.translationFlow_states_eq
+#print axioms FormalSystem.Metalogic.Independence.translationFlow_orderFlow
+#print axioms FormalSystem.Metalogic.Independence.translationFlow_stateOccurs
+#print axioms FormalSystem.Metalogic.Independence.translationFlow_deterministic
+#print axioms FormalSystem.Metalogic.Independence.translationFlow_plusTruthAt_iff_mem_satSet
+#print axioms FormalSystem.Metalogic.Independence.translationFlow_determined
+#print axioms FormalSystem.Metalogic.Independence.translationFlow_plusValidOn_iff_satSet_univ
+```
+
+`selfShift` and `translationFlow` report `[propext]`. The other eight report
+`[propext, Quot.sound]`. **None of the ten reports `Classical.choice`**, and that holds over an
+arbitrary `(D : TemporalOrder)` — no real carrier, no instantiation at a classical field. This
+is an **absolute** pin, not a relative one.
+
+Two things make it available. First, (H2) is discharged by exhibiting the orbit history outright,
+so the chain `cor:occurrence` → `thm:extension` → Zorn is never entered. Second, the frame is
+reached through `ShiftSet.fibre_isRegular`, which takes its structural obligation from the
+structure's own `sep` field:
+
+*Limit*
+
+— read off `sep` there, rather than through `TaskFrame.limit_of_shift`, which is where the
+neighbourhood's `Classical.choice` otherwise enters. The three proof-writing choices that keep
+the `sep` discharge itself choice-free at an arbitrary duration group are recorded at
+`selfShift` and `translationFlow_orderFlow`: additive witnesses, right-hand monotonicity of
+addition, and `abs_pos.mpr` under `by_contra`.
+
+The `translationFrame` layer below is pinned **relatively** instead, for a reason that is about
+`#print axioms` and not about this argument; see the section-level docstring there.
+
 ## References
 
 * JPL paper `lem:state-set` — the three sentences instantiated here; `def:state-set` — the
@@ -177,5 +215,44 @@ corresponding fact about `F¹` off `ℝ` to an arbitrary duration group, at no c
 theorem translationFlow_deterministic (D : TemporalOrder) :
     (translationFlow D).Deterministic :=
   TaskFrame.fib_subsingleton_of_functional (f := fun w d => w + d) (translationFlow_taskRel D)
+
+/-! ## `lem:state-set`'s three sentences at the flow -/
+
+/--
+**`lem:state-set`'s first sentence at the translation flow**: L⁺ truth at a world history and a
+time is membership of the occupied state in the formula's state set.
+
+A term-mode application of the two-hypothesis bridge to `translationFlow_orderFlow` and
+`translationFlow_stateOccurs`. Since (H2) arrives by an explicit translation, the proof reaches
+neither `cor:occurrence` nor `thm:extension`, and so never Zorn's lemma.
+-/
+theorem translationFlow_plusTruthAt_iff_mem_satSet (D : TemporalOrder)
+    (M : TaskModel (translationFlow D)) (φ : PlusFormula) :
+    ∀ (τ : WorldHistory (translationFlow D)) (t : ↑D),
+      PlusTruthAt M τ t φ ↔ τ.state t ∈ satSet M.valuation φ :=
+  plusTruthAt_iff_mem_satSet (translationFlow_orderFlow D) (translationFlow_stateOccurs D) M φ
+
+/--
+**`lem:state-set`'s second sentence at the translation flow**: every instance of *Determined* is
+valid there.
+
+Again by explicit translation rather than by `cor:occurrence`, so neither `thm:extension` nor
+Zorn is reached.
+-/
+theorem translationFlow_determined (D : TemporalOrder) (φ : PlusFormula) :
+    (translationFlow D).PlusValidOn (.imp φ (.stab φ)) :=
+  determined_of_orderFlow (translationFlow_orderFlow D) (translationFlow_stateOccurs D) φ
+
+/--
+**`lem:state-set`'s third sentence at the translation flow**: frame-validity is the state set
+exhausting the carrier under every assignment.
+
+The right-hand side mentions no frame at all, and the (H2) it rests on is the explicit
+translation — so this reads `lem:state-set` off `def:state-set` alone, with no appeal to
+`cor:occurrence`, `thm:extension` or Zorn.
+-/
+theorem translationFlow_plusValidOn_iff_satSet_univ (D : TemporalOrder) (φ : PlusFormula) :
+    (translationFlow D).PlusValidOn φ ↔ ∀ V : ↑D → Atom → Prop, satSet V φ = Set.univ :=
+  plusValidOn_iff_satSet_univ (translationFlow_orderFlow D) (translationFlow_stateOccurs D) φ
 
 end FormalSystem.Metalogic.Independence

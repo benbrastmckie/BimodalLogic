@@ -292,7 +292,7 @@ build below; if an import is missing, add it and say so rather than restructurin
 
 ---
 
-### Phase 2: The three choice-free corollaries and the absolute axiom pin [NOT STARTED]
+### Phase 2: The three choice-free corollaries and the absolute axiom pin [COMPLETED]
 
 **Goal**: `lem:state-set`'s three sentences hold at the translation flow over an arbitrary
 duration group with no appeal to choice, and the module docstring records the measured profiles
