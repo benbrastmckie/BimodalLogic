@@ -230,7 +230,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Deliverable (1a) — The Named Shift-of-Finite-Type Identification [NOT STARTED]
+### Phase 3: Deliverable (1a) — The Named Shift-of-Finite-Type Identification [COMPLETED WITH EXCLUSIONS]
 
 - **Goal:** `H_F` over ℤ named as the bi-infinite paths of the labelled graph `(W, ⇒₁)`, presented
   as a forbidden-2-block subshift, with the "finite type" half earned by a separate finiteness
@@ -283,6 +283,12 @@ Phases within the same wave can execute in parallel.
     legitimately carry choice through `Set.Finite` at `[Finite W]`; whatever it reports is written
     into the docstring and into Phase 9's guard, not assumed).
   - No `sorry` in the new file.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Verification bullet "`#print axioms … mem_HF_iff_no_forbidden` reports no `Classical.choice`" | Jointly unsatisfiable with the recorded Challenge statement, which is implemented verbatim. `Forbidden F w u := ¬ F.step w u`, so `∀ n, ¬ Forbidden F (f n) (f (n+1))` is `∀ n, ¬¬ F.step (f n) (f (n+1))`, and the `←` direction is double-negation elimination at a `Prop`-valued relation carrying no `Decidable` instance. Intuitionistically underivable; the double-negation shift is not available either. The two sanctioned escapes were both rejected as weakenings: adding `[DecidableRel F.step]` to the theorem changes the recorded signature, and restating the conclusion positively is `mem_HF_iff_adjacent_int`, which already exists. Classical reasoning is in the *statement*, exactly as `Nat.card` is in the statement of `FrameOver.extend_periodic` — the plan's own Risks table names that pattern. | Measured `'FormalSystem.Semantics.FrameOver.mem_HF_iff_no_forbidden' depends on axioms: [propext, Classical.choice, Quot.sound]`. The substantive route is choice-free: `mem_HF_iff_adjacent_int` measures `[propext, Quot.sound]` (Phase 2) and is what Phases 6-8 consume; nothing downstream depends on this theorem's profile. Recorded in the theorem's own docstring and pinned in Phase 9. |
 
 ---
 

@@ -628,6 +628,7 @@ import FormalSystem.Semantics.Presheaf.Ray
 import FormalSystem.Semantics.Presheaf.Sheaf
 import FormalSystem.Semantics.Presheaf.Site
 import FormalSystem.Semantics.Reversal
+import FormalSystem.Semantics.ShiftFiniteType
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.SlicedFrame
 import FormalSystem.Semantics.StateLocalTransfer
