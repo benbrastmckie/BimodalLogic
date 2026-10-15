@@ -392,7 +392,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Deliverable (2) — The Choice-Free Extension Theorem [NOT STARTED]
+### Phase 6: Deliverable (2) — The Choice-Free Extension Theorem [COMPLETED]
 
 - **Goal:** A bounded convex history over a finite-state regular frame at ℤ-time extends to a
   doubly ultimately periodic possible world, with both periods bounded by `enum.length`, and with
