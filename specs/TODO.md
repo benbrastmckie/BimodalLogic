@@ -123,7 +123,7 @@ next_project_number: 805
 ### Paper Alignment
 
 795 [RESEARCHED] — Formalize the nomic operator and its three results, on the...
-796 [RESEARCHING] — Prove lem:time-reflection for BL and the semantic form of...
+796 [RESEARCHED] — Prove lem:time-reflection for BL and the semantic form of...
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 798 [RESEARCHING] — Port the eleven unported modal-temporal interaction...
 799 [RESEARCHING] — Discharge the Zorn dependence that the state-set corollaries...
@@ -347,10 +347,11 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every pha
 
 ### 796. Time reflection bl tr valid anti iso
 - **Effort**: medium
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: None
+- **Research**: [796_time_reflection_bl_tr_valid_anti_iso/reports/01_time-reflection-bl-tr-valid.md]
 
 **Description**: Prove lem:time-reflection for BL and the semantic form of thm:TR-valid, by instantiating the repository's generic anti-isomorphism transport at the reflected model. lem:time-reflection: for each task frame F, the reflected frame F⁻ (w ⇒⁻_x u := w ⇒_{-x} u) is a task frame, tau ↦ tau⁻ := tau ∘ n with n(x) = -x is a bijection H_F → H_{F⁻}, and M, tau, x ⊨ φ iff M⁻, tau⁻, -x ⊨ φ_{S|U} for every sentence of BL. thm:TR-valid: if ⊨ φ then ⊨ φ_{S|U}, as a semantic statement over all task frames, from which thm:TM-soundness's TR case follows per class because the reflected frame shares its temporal order.
 
