@@ -1,5 +1,5 @@
 ---
-next_project_number: 801
+next_project_number: 802
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 801
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,789,790,792,793,794,796,797,798 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,789,790,792,793,794,796,797,798,801 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783,791,795,799,800 | 298,464,502,616,761,772,790,792,794,796 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -134,8 +134,36 @@ next_project_number: 801
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
 798 [NOT STARTED] — Port the eleven unported modal-temporal interaction...
+801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
 
 ## Tasks
+
+### 801. Repin bx tm anchor wave post 788 paper revision
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Re-pin the BX/TM anchor wave in paper-definitions-of-record.md after the paper's post-788 revision, and verify in-tree axiom-membership prose matches
+
+THE DRIFT. `scripts/check-paper-definitions.sh` is red on four anchors against the live paper: `def:BX`, `def:BX-z`, `def:BX-d`, `def:TMplus`. The paper has been revised to demote axioms to derived theorems in the BX/TM proof systems — `def:TMplus`'s new text adds the bimodal interaction axiom NB alongside MF, and states that the uniformity schemata NP, NF and NA are "derived theorems of TM rather than of BX", deriving them from NB together with MF and MT by `lem:derived-schemata`.
+
+WHY THIS IS NOT A FORMALIZATION GAP. The tree is not behind the paper; the paper has caught up to the tree. Task 788 ("Reduce tm and extensions to minimal axiom sets") is COMPLETED (commit c77645f8d) and already landed the 20-constructor system, marking the nine derived schemata in the reference manual. So this is record-and-prose work, not Lean proof work — the same shape as the 27-anchor re-pin that just completed.
+
+SCOPE. (1) Re-pin the drifted BX/TM anchors and their sha256 values in `docs/reference/paper-definitions-of-record.md`, following that file's own dated drift-correction convention — the 27-anchor wave entry `### Drift correction (2026-10-14): the 27-anchor wave` is the immediate precedent, and the 10-anchor and 14-anchor entries precede it. `scripts/check-paper-definitions.sh --resolve` is the sanctioned way to obtain new text and hashes; there is no `--fix` mode by design. Re-pin mechanically rather than transcribing: assert each OLD block re-hashes to its OLD recorded hash before writing the replacement, so every placement is proved before the write.
+
+(2) THE REAL CONTENT OF THIS TASK: verify the in-tree axiom-membership prose matches post-788 reality. The 27-anchor re-pin verified that no in-tree site claims a VERBATIM quotation on any of the four anchors, so nothing in the tree is currently false. But the paper now asserts a specific membership claim — NP/NF/NA are derived theorems of TM, not of BX; NB is an axiom of TM — and the in-tree prose, README tables, docstrings in FormalSystem/ProofSystem/Axioms.lean and related modules, and the Typst reference manual must be checked to state the same. This is a judgment pass over every site describing BX/TM axiom membership, not a search-and-replace.
+
+(3) THE PAPER IS ACTIVELY BEING REVISED. It moved five times during a single orchestration run (4573 to 3940 to 3959 lines; dirty, then clean, then dirty again; HEAD moving under the gate). Carry every anchor count and hash as an explicit Scope Hypothesis to RE-DERIVE at implementation time rather than trusting any figure written during research or planning. Expect the live wave to differ from the four anchors named above — absorb whichever wave is live when implementation runs, and state the acceptance criterion precisely rather than claiming a green gate unconditionally.
+
+GATES. C15 in `scripts/check-module-invariants.sh` requires a MANIFEST or KNOWN-ANCHORS row for every `def:`/`thm:`/`lem:`/`cor:`/`app:` anchor cited under `FormalSystem/`. C35 (citation-manifest byte-currency) goes red on any docstring edit in files carrying seeded manifest entries; remedy is `python3 scripts/export-lean-citations.py`. Regenerate inventory blocks with `check-module-invariants.sh --emit-inventory` and verify with `--emit-inventory --check` if line counts drift.
+
+ACCEPTANCE. The BX/TM anchors pinned against the live paper with hashes re-derived at implementation time; no in-tree site claims a verbatim quotation it does not reproduce; in-tree BX/TM axiom-membership prose consistent with the paper's derived-theorem framing and with 788's completed 20-constructor system; `lake build` green; `readme-lint.sh`, `check-module-invariants.sh --no-build` and `export-lean-citations.py --check` exit 0; both Typst documents compile. State the `check-paper-definitions.sh` result precisely — if the paper moves again mid-task, report which wave was absorbed and which was not, rather than claiming an unconditional exit 0.
+
+NON-GOALS: no new Lean declarations and no change to the axiom set — 788 already did that work; no edit to the paper itself (it lives in another repository and is being revised by its author); do not absorb unrelated drift waves in other subsystems without recording the decision.
+
+---
 
 ### 800. Stability time reflection transport
 - **Effort**: medium
