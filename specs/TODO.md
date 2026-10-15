@@ -134,9 +134,6 @@ next_project_number: 803
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
 798 [NOT STARTED] — Port the eleven unported modal-temporal interaction...
 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
-
-### Tm Theorems
-
 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, and cite...
 
 ## Tasks
@@ -144,7 +141,7 @@ next_project_number: 803
 ### 802. Derive cited tm theorems and cite derivations
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Topic**: tm-theorems
+- **Topic**: paper-alignment
 - **Dependencies**: None
 
 **Description**: Derive every TM-system theorem the paper cites, and cite derivations rather than derivability. Scope: every schema that the JPL paper (~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex) presents as a theorem of TM or of an extension (TM_z, TM_d, TM_r) or of BX and its extensions, in sub:Logic, sub:Extension, the Appendix definitions def:BX, def:BX-z, def:BX-d, def:BX-r, def:TMplus, and any footnote. (1) Audit: for each such schema, locate the Lean declaration in this repository and classify it as a direct derivation tree from the axioms, or as obtained through a completeness engine (derivable_of_valid*, Classical.choice over a Derivable proof). Known result of a first pass: Z1 is the only cited theorem routed through completeness (FormalSystem.Metalogic.CompletenessDerived.z1Thm wraps z1Derivable, which applies BXCanonical.derivable_of_validZTime to SoundnessLemmas.z1_valid); DF (DiscreteUnfolding.dfSchema), the discreteness witness (DiscreteUnfolding.succIndicator), CO (DedekindDerived.coDerived), DN (LinearityDerived.density), TC, TL, TK, T4, TF, P1-P4, NP, NF, NA are direct derivation trees. Re-verify this classification rather than assuming it, including any schema the audit finds that the first pass missed. (2) Lean work: for every schema that lacks a direct derivation, construct one as a DerivationTree from the axioms of the relevant system (for Z1: from UZ with the BX and TM axioms at FrameClass.ZTime, in the style of DiscreteUnfolding), name it in the Theorems namespace, verify with #print axioms that it depends on propext at most, and update docs/theorem-index.md. The completeness-route declaration may remain as a cross-check but must no longer be the cited one. (3) Paper work in the JPL source: make every citation point to the direct derivation via the existing \leanfoot convention; replace wording that says a schema is derivable, machine-checked as a theorem through the Z-time completeness engine, or similar, with wording that it is derived, citing the derivation; this includes the Z1 footnote near the UZ display, the def:BX-z remark on Z1, the DN sentence in sub:Extension, the sentence UZ makes DF derivable, and PU alone suffices to derive CO. Do not add prose explaining the citation convention. (4) Verify with the isolated paper build: cd JPL && latexmk -norc -pdf -bibtex -outdir=build-cli possible_worlds.tex, with no errors and no undefined references. Report the final per-schema table of declaration names and their #print axioms output
