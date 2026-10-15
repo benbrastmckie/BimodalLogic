@@ -724,4 +724,53 @@ theorem permRel_constraints_iff_isDiscrete (D : TemporalOrder) :
       permRel_limit_of_isLeast hp,
       TaskFrame.saturation_of_permissive (permRel_iff D)⟩
 
+
+/--
+**(d) of `lem:canonical-frames`, the refutation.** Where it is a task frame, the two-state frame is
+not *Deterministic*: both states sit in one fibre over a positive duration, since every nonzero
+duration permits every transition.
+
+The positive duration comes from the nontriviality of the duration group
+(`TaskFrame.exists_pos_of_nontrivial`), so the refutation needs no hypothesis beyond the frame's
+own data.
+-/
+theorem permissiveFrame_not_deterministic (D : TemporalOrder) (so : SuccOrder ↑D)
+    (nm : NoMaxOrder ↑D) : ¬ (permissiveFrame D so nm).toTaskFrame.Deterministic := by
+  intro h
+  obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := ↑D)
+  have h1 : (true : Bool) ∈ TaskFrame.Fib (permissiveFrame D so nm).toTaskFrame.TaskRel true p :=
+    (permissiveFrame_taskRel so nm _ _ _).mpr (Or.inr rfl)
+  have h2 : (false : Bool) ∈ TaskFrame.Fib (permissiveFrame D so nm).toTaskFrame.TaskRel true p :=
+    (permissiveFrame_taskRel so nm _ _ _).mpr (Or.inl (ne_of_gt hp))
+  exact absurd (h true p h1 h2) (by simp)
+
+/--
+The **state view** of a two-state-frame history: its state function, retyped as an assignment of
+the two states to times. It exists for the same measured reason `translationStates` does — the
+frame's `WorldState` unifies with `Bool` but does not synthesize instances through it.
+-/
+def permissiveStates (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
+    (τ : WorldHistory (permissiveFrame D so nm).toTaskFrame) : ↑D → Bool := τ.state
+
+/--
+**(d) of `lem:canonical-frames`, bijective form.** Every function from durations to the two states
+is one of the two-state frame's possible worlds, and distinct functions give distinct worlds:
+`permissiveHist` and the state view are mutually inverse.
+
+The module already had this claim in substance — `permissiveHist` builds a total history over an
+arbitrary assignment — and this states it as the bijection the paper asserts.
+
+The `left_inv` component is `rfl`, which depends on `permissiveHist`'s state function being
+definitionally the assignment it is given. A future change breaking that would break this proof
+loudly at build time rather than silently weakening it.
+-/
+def permissiveHistEquiv (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) :
+    (↑D → Bool) ≃ WorldHistory (permissiveFrame D so nm).toTaskFrame where
+  toFun f := permissiveHist D so nm f
+  invFun τ := permissiveStates D so nm τ
+  left_inv f := rfl
+  right_inv τ := by
+    refine WorldHistory.ext_state fun t => ?_
+    rfl
+
 end FormalSystem.Semantics
