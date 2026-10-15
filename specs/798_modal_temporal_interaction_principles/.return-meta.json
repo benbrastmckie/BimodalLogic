@@ -1,22 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/798_modal_temporal_interaction_principles/reports/01_modal-temporal-interaction-principles.md",
-      "summary": "All eleven Pthm principles plus the P8 pair verified to compile zero-sorry via lean_run_code; recommends a new FormalSystem/Theorems/Interaction.lean, flags two errors in the task description, and shows the five biconditionals have no rewrite-lemma consumer in this tree."
+      "type": "plan",
+      "path": "specs/798_modal_temporal_interaction_principles/plans/01_modal-temporal-interaction-principles.md",
+      "summary": "Four-phase plan landing P8, two forced helpers and the eleven unported Pthm:11--Pthm:22 interaction principles in a new FormalSystem/Theorems/Interaction.lean, with both aggregators wired in Phase 1 and all sixteen signatures plan-time-verified."
     }
   ],
   "metadata": {
-    "session_id": "sess_1792056489_e27cc7_798",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792077807_2be444_798",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.5,
+    "dependency_waves": [[1], [2], [3], [4]]
   },
-  "user_decision": {
-    "question": "P8 siting departs from an explicit task instruction: the task asks for it 'sited beside temporalDualityNeg / temporalDualityNegRev and following their proof shape', but under this tree's definition of `sometimes` P8 is definitionally double negation (doubleNegation / notNotIntro one-liners), and MonotonicityDuality.lean's noncomputable section would make a computable lemma noncomputable. Research recommends siting it in the new Interaction.lean instead, following the fNegG/pNegH precedent. Confirm, or require the beside-P7 siting.",
-    "blocking": false,
-    "default": "Site P8 in the new FormalSystem/Theorems/Interaction.lean with a docstring citing both the P7 pair (contrast) and fNegG/pNegH (precedent)."
-  }
+  "memory_candidates": [
+    {
+      "content": "In the BimodalLogic (ProofChecker) Lean tree, adding a NEW module under FormalSystem/ requires TWO aggregator import lines, not one: the subtree aggregator (e.g. FormalSystem/Theorems.lean) and the ROOT FormalSystem.lean, which check C33 of scripts/check-module-invariants.sh requires to be byte-for-byte `lake exe mk_all --lib FormalSystem` output (one sorted import per .lean file). Consequence for plan decomposition: the aggregator wiring must land in the FIRST phase that creates the module, never deferred to a terminal 'isolate the shared touch' phase -- deferring leaves every intermediate commit C33-red and unclosable. A second, unavoidable consequence: the new file immediately staleness-breaks the generated inventory blocks (FormalSystem/Theorems/README.md, FormalSystem/README.md, README.md) and typst/generated/status.typ (whole-tree line counts), so check-module-invariants.sh's INV group is red by construction from module creation until a terminal regeneration phase; intermediate phases must assert their NAMED checks pass rather than whole-script exit 0, which is unsatisfiable mid-sequence.",
+      "category": "PATTERN",
+      "source_artifact": "specs/798_modal_temporal_interaction_principles/plans/01_modal-temporal-interaction-principles.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean", "new-module", "aggregator", "C33", "mk_all", "generated-inventory"]
+    }
+  ],
+  "next_steps": "Run /implement 798 to execute the plan",
+  "dispatch_seq": 8
 }

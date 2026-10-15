@@ -2275,23 +2275,39 @@
     {
       "project_number": 798,
       "project_name": "modal_temporal_interaction_principles",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
       "dependencies": [],
       "description": "Port the eleven unported modal-temporal interaction principles Pthm:11 -- Pthm:22 from the paper's companion cut file, together with the duality lemma P8 that two of their proofs consume.\n\nTHE SOURCE, AND WHY IT IS A PORTING CANDIDATE. The block stood after cor:tm-decidability and was cut on INTERNAL REDUNDANCY -- Pthm:17 restates P4 of sub:Logic verbatim and is the reverse half of Pthm:20, Pthm:16 is exactly Pthm:21 together with Pthm:22, and Pthm:18 follows from Pthm:15 together with Pthm:14 -- and NOT because this repository already had them. It is kept verbatim, with a complete derivation for every item, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'Twelve further interaction principles'. Redundancy in a paper is not redundancy in a library: these are true, proved, and currently absent here. Reverting commit 57dc354e in the paper repository restores the block in its original place.\n\nTHE TWELVE, as Hilbert-style theorems over an arbitrary frame class, writing the paper's sometimes/always for the tree's `sometimes` / `always`:\n  Pthm:11  sometimes diamond phi -> diamond phi\n  Pthm:12  always diamond phi -> diamond phi\n  Pthm:13  sometimes box phi <-> box phi\n  Pthm:14  always box phi <-> box phi\n  Pthm:15  box always phi <-> always box phi\n  Pthm:16  diamond sometimes phi <-> sometimes diamond phi\n  Pthm:17  diamond sometimes phi -> diamond phi   [ALREADY PRESENT -- see below]\n  Pthm:18  box always phi <-> box phi\n  Pthm:19  diamond always phi -> diamond phi\n  Pthm:20  diamond phi <-> diamond sometimes phi\n  Pthm:21  sometimes diamond phi -> diamond sometimes phi\n  Pthm:22  diamond sometimes phi -> sometimes diamond phi\n\nWHAT EXISTS, verified against the tree rather than taken from the cut file's provenance note. FormalSystem/Theorems/Perpetuity/ carries P1 -- P6 as proof-term `def`s (`perpetuity1` .. `perpetuity5` in Perpetuity/Principles.lean, `perpetuity6` in Perpetuity/MonotonicityDuality.lean). Pthm:17 IS present, as `FormalSystem.Theorems.Perpetuity.perpetuity4` (Principles.lean:514) -- do not restate it. Of the premises the cut derivations cite: TF is available through `boxDiamondToFutureBoxDiamond` / `boxDiamondToPastBoxDiamond` (Principles.lean:578, :587) and `boxToFuture` / `boxToPast` (Perpetuity/Helpers.lean:61, :81); MT, M5, MK, MN, TN, TR are axioms and rules of the derivation system; P7 (not-always phi <-> sometimes-not phi) IS present, as the pair `temporalDualityNeg` (MonotonicityDuality.lean:350) and `temporalDualityNegRev` (:426).\n\nONE CORRECTION TO THE CUT FILE'S OWN NOTE, which this task must not propagate. That note says \"P7 and P8, used by two of the proofs, have none\". That is STALE for P7, which exists as the pair just named, and CORRECT for P8 (not-sometimes phi <-> always-not phi), which is genuinely absent -- only the modal analogue `modalDualityNeg` / `modalDualityNegRev` (not-box phi <-> diamond-not phi, MonotonicityDuality.lean:78, :108) exists. Independently confirmed: no box-always / always-box / diamond-sometimes / sometimes-diamond interaction principle appears anywhere under FormalSystem/Theorems/ beyond perpetuity1 -- perpetuity6.\n\nDELIVER: (1) P8 in both directions, sited beside `temporalDualityNeg` / `temporalDualityNegRev` and following their proof shape; (2) the eleven unported principles as `def`s in the repository's proof-term style, each with a docstring naming its cut-file label and following the structure of the cut derivation; (3) a docstring cross-reference on `perpetuity4` recording that it is Pthm:17 of that block and the reverse half of Pthm:20 -- a cross-reference, not a restatement; (4) the block's internal dependency chain honoured rather than re-proved from the axioms: Pthm:17 from Pthm:11 and Pthm:16, Pthm:18 from Pthm:15 and Pthm:14, Pthm:21 from Pthm:11 and Pthm:20, Pthm:22 from P5, exactly as the cut proofs do.\n\nSITING AND AGGREGATOR CONTENTION. Decide at plan time between a new module (e.g. FormalSystem/Theorems/Interaction.lean) and extending the Perpetuity cluster; record the choice and the reason. A new module requires a one-line import in FormalSystem/Theorems.lean, which is a shared touch across every task adding to that aggregator: do not dispatch this concurrently with another such task, and re-run lake build after the import edit.\n\nWORTH DOING BEYOND PAPER FIDELITY. Five of the eleven (Pthm:13, 14, 15, 18, 20) are biconditionals that collapse modal-temporal nesting. Those are rewrite lemmas, not merely recorded facts. Before siting, check whether the normal-form and decidability modules can consume them, and say so in the docstrings if they can.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase. Write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, keys resolving in the root references.bib.",
       "created": "2026-10-14T21:59:04Z",
-      "last_updated": "2026-10-15T15:24:26Z",
+      "last_updated": "2026-10-15T15:38:56Z",
       "artifacts": [
         {
           "path": "specs/798_modal_temporal_interaction_principles/reports/01_modal-temporal-interaction-principles.md",
           "type": "report",
           "summary": "All eleven Pthm principles plus the P8 pair verified to compile zero-sorry via lean_run_code; recommends a new FormalSystem/Theorems/Interaction.lean, flags two errors in the task description, and shows the five biconditionals have no rewrite-lemma consumer in this tree."
+        },
+        {
+          "path": "specs/798_modal_temporal_interaction_principles/plans/01_modal-temporal-interaction-principles.md",
+          "type": "plan",
+          "summary": "Four-phase implementation plan: module + P8 + helpers + both aggregators; the eleven principles; the perpetuity4 cross-reference and prose surfaces; generated surfaces and the full gate sweep."
         }
       ],
-      "session_id": "sess_1792077807_2be444_798",
-      "next_artifact_number": 2
+      "session_id": "sess_1792077807_2be444",
+      "next_artifact_number": 2,
+      "file_scope": [
+        "FormalSystem.lean",
+        "FormalSystem/README.md",
+        "FormalSystem/Theorems.lean",
+        "FormalSystem/Theorems/Interaction.lean",
+        "FormalSystem/Theorems/Perpetuity/Principles.lean",
+        "FormalSystem/Theorems/README.md",
+        "README.md",
+        "specs/798_modal_temporal_interaction_principles/summaries/01_modal-temporal-interaction-principles-summary.md",
+        "typst/generated/status.typ"
+      ]
     },
     {
       "project_number": 799,
