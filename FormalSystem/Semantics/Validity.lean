@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.TruthTransport
+import FormalSystem.Semantics.Reversal
 import FormalSystem.Semantics.ValidityLayer
 import FormalSystem.Semantics.Extension.Extension
 import FormalSystem.Syntax.Context
@@ -492,6 +493,88 @@ theorem ValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : Formula} (h : 
     (hv : ValidIn fc₁ φ) : ValidIn fc₂ φ :=
   GenericValidIn.mono (L := Formula) (φ := φ) h hv
 
+/-! ### Time reflection — `thm:TR-valid`
+
+`lem:time-reflection` is `Semantics.truthAt_rev` (`Semantics/Reversal.lean`): truth at
+`(M, τ, t)` matches truth of the reflection at `(M⁻, τ⁻, -t)` over the converse frame. The
+block below is its validity-level consequence, which is the paper's `thm:TR-valid`, in the
+shapes the tree's consumers need.
+-/
+
+/--
+**`lem:time-reflection` at the level of a single frame**: `φ` is valid over `F` exactly when its
+time reflection is valid over the converse frame `F⁻`.
+
+The backward arm goes through `WorldHistory.rev_surjective` — every world over `F⁻` is the
+reflection of a world over `F` — and then undoes the double negation on the evaluation time. The
+open-language sibling `OpenLanguage.openValidOn_rev_iff` is this statement arm for arm at L^▷.
+
+Paper: `lem:time-reflection`
+-/
+theorem validOn_rev_iff (F : TaskFrame) (φ : Formula) :
+    F.rev.ValidOn φ.reflectTime ↔ F.ValidOn φ := by
+  constructor
+  · intro h M τ t
+    exact (truthAt_rev M τ t φ).mpr (h M.rev τ.rev (-t))
+  · intro h M' τ' t'
+    obtain ⟨τ, rfl⟩ := WorldHistory.rev_surjective τ'
+    have key := (truthAt_rev (M'.rev : TaskModel F) τ (-t') φ).mp (h _ τ (-t'))
+    rw [neg_neg] at key
+    exact key
+
+/--
+**`thm:TR-valid`, at an arbitrary frame predicate.** Validity over any `rev`-closed class of
+frames is closed under time reflection: `F⁻⁻ = F`, so a validity over the class yields the
+reflected validity by `validOn_rev_iff` at `F⁻`.
+
+This is the primitive of the family, carrying the closure as an argument, exactly as
+`ValidOnFrames.mono` above carries its order hypothesis and `ValidIn.mono` is its instance. The
+generality is what reaches `ValidComplete` and `ValidQTime`, the two predicates no `FrameClass`
+tag denotes.
+
+Paper: `thm:TR-valid`
+-/
+theorem validOnFrames_reflectTime {P : TaskFrame → Prop} {φ : Formula}
+    (hP : ∀ F : TaskFrame, P F → P F.rev) (h : ValidOnFrames P φ) :
+    ValidOnFrames P φ.reflectTime :=
+  fun F hF => (validOn_rev_iff F.rev φ).mpr (h F.rev (hP F hF))
+
+/--
+**`thm:TR-valid`, frame-class form**: if `⊨_fc φ` then `⊨_fc φ_{S|U}`, at *every* frame class.
+
+No closure hypothesis is needed, and that is the content of `ProofSystem.FrameClass.Sat.rev`
+(`Semantics/FrameClassValidity.lean`): the converse frame shares its temporal order, so each
+tag's own frame condition transfers unchanged and only regularity has to be re-derived. This is
+the shape `thm:TM-soundness`' TR case consumes — per class, from the reflected frame sharing its
+temporal order.
+
+Paper: `thm:TR-valid`
+-/
+theorem validIn_reflectTime {fc : ProofSystem.FrameClass} {φ : Formula} (h : ValidIn fc φ) :
+    ValidIn fc φ.reflectTime :=
+  validOnFrames_reflectTime (fun _ => ProofSystem.FrameClass.Sat.rev) h
+
+/--
+The involution form, which is what a caller reasoning *back* from a reflected formula wants:
+`reflectTime` is its own inverse (`Formula.reflect_time_involution`), so the implication above is
+a biconditional.
+-/
+theorem validIn_reflectTime_iff {fc : ProofSystem.FrameClass} {φ : Formula} :
+    ValidIn fc φ.reflectTime ↔ ValidIn fc φ := by
+  constructor
+  · intro h
+    have := validIn_reflectTime h
+    rwa [Formula.reflect_time_involution] at this
+  · exact validIn_reflectTime
+
+/--
+**`thm:TR-valid`** at the unconstrained class: `⊨ φ` implies `⊨ φ_{S|U}`.
+
+Paper: `thm:TR-valid`
+-/
+theorem valid_reflectTime {φ : Formula} (h : Valid φ) : Valid φ.reflectTime :=
+  validIn_reflectTime h
+
 /--
 A formula is valid over dense temporal orders if it is true in all models where D is
 densely ordered, at all total histories, and all times.
@@ -677,6 +760,29 @@ non-Archimedean and so fails commensurability.
 -/
 def ValidQTime (φ : Formula) : Prop :=
   ValidOnFrames (fun F => F.IsRegular ∧ F.IsQTime) φ
+
+/--
+**`thm:TR-valid` at `ValidComplete`**, which is `ValidOnFrames (fun F => F.IsRegular ∧
+F.IsComplete)` and therefore no `FrameClass` tag's `Sat` (see the `ValidComplete` caveat below).
+`validIn_reflectTime` does not reach it; `validOnFrames_reflectTime` does, with the closure
+supplied locally: regularity from the `FrameOver.rev_isRegular` instance, Dedekind completeness
+because `F.rev.Duration` is `F.Duration`.
+
+Paper: `thm:TR-valid`
+-/
+theorem validComplete_reflectTime {φ : Formula} (h : ValidComplete φ) :
+    ValidComplete φ.reflectTime :=
+  validOnFrames_reflectTime (fun _ hF => by haveI := hF.1; exact ⟨inferInstance, hF.2⟩) h
+
+/--
+**`thm:TR-valid` at `ValidQTime`**, the other predicate no `FrameClass` tag denotes, by the same
+locally supplied closure as `validComplete_reflectTime`.
+
+Paper: `thm:TR-valid`
+-/
+theorem validQTime_reflectTime {φ : Formula} (h : ValidQTime φ) :
+    ValidQTime φ.reflectTime :=
+  validOnFrames_reflectTime (fun _ hF => by haveI := hF.1; exact ⟨inferInstance, hF.2⟩) h
 
 namespace Validity
 
