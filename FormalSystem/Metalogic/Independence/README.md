@@ -3,10 +3,8 @@
 Underivability results, established by exhibiting a model of the assumptions in which the
 target formula fails.
 
-Twelve results are carried here. This list and the one in `Independence.lean`'s module docstring
-enumerate the same twelve results in the same order; earlier revisions of the two drifted apart
-(this README carried nine, the docstring six, overlapping in five) and were reconciled to their
-union.
+Thirteen results are carried here. This list and the one in `Independence.lean`'s module
+docstring enumerate the same thirteen results in the same order.
 
 1. The paper's `CO` principle does **not** derive Reynolds' `Axiom.prior_U_gap` over the dense
    base. The converse direction — Reynolds' triple *does* derive `CO` — is
@@ -85,10 +83,29 @@ union.
     `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc`, not `↔ .RTime ≤ fc`, which would be false. The
     underivability corollary is `not_derivable_dense_sep`.
 
-`BehSeparatedness.lean` is deliberately **not** a thirteenth numbered result. It carries a
+13. **`UZ` and `Z1` fail over every non-Archimedean discrete temporal order**
+    (`ArchimedeanSharpness.lean`) — `prop:archimedean` at the generality the paper states it,
+    rather than at one carrier. Both countermodels sit on the translation frame over an arbitrary
+    `(D : TemporalOrder)` carrying a least positive duration `u` with `¬ Archimedean ↑D`, and
+    both turn on the same division of the carrier: the near times
+    `E = {z | 0 < z ∧ ∃ n : ℕ, z < n • u}`, within finitely many unit steps of `0`, and the times
+    beyond every multiple of the unit, which `¬ Archimedean` is exactly what makes nonempty
+    (`Semantics.exists_gt_nsmul_of_not_archimedean`). For `Z1` the atom's extension is `Eᶜ`; for
+    `UZ` it is a copy of `ℤ` above every multiple of the unit, whose every member has a positive
+    predecessor in the same set — which is what denies `U(p, ¬p)` a `¬p`-guarded initial segment.
+    `not_validOn_prior_UZ_nonArchimedean` / `not_validOn_z1_nonArchimedean` are the frame-level
+    statements; `not_validOnFrameOver_*` give the paper's `⊭_D` shape, the `*_discrete_*` and
+    `*_succ_*` pairs give the same results from the bare Discrete clause and from a `[SuccOrder]`
+    instance, and `not_validOnFrames_isDiscrete_*` reach the Regular-and-Discrete class at
+    `lexZOrder := TemporalOrder.of (ℤ ×ₗ ℤ)`. `translationFrame_lexZ_not_isZTime` is the
+    non-collision on the record: the witness frame is Discrete yet **not** `IsZTime`, so result 10
+    is untouched. This is the least-positive branch of the duration dichotomy whose dense branch
+    is result 10; `Semantics.duration_dense_or_least_pos` makes the two exhaustive.
+
+`BehSeparatedness.lean` is deliberately **not** a fourteenth numbered result. It carries a
 *strictness* result — separatedness of `Beh F` is strictly stronger than the validity of
 *Determined* on `F` — rather than an underivability result established by refuting a formula in a
-model, which is what the twelve above are. Its countermodel is result 5's `F°`, reused, and the
+model, which is what the thirteen above are. Its countermodel is result 5's `F°`, reused, and the
 asymmetry it records sharpens result 5's second half on the presheaf side.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
@@ -132,6 +149,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Independence -->
 | File | Lines | Description |
 |------|-------|-------------|
+| `ArchimedeanSharpness.lean` | 381 | `prop:archimedean` at the generality the paper states it: `UZ` and `Z1` fail over every non-Archimedean discrete temporal order, not just at one carrier. `not_validOn_prior_UZ_nonArchimedean` / `not_validOn_z1_nonArchimedean` refute both formulas on the translation frame over an arbitrary `(D : TemporalOrder)` with a least positive duration and `¬ Archimedean ↑D`, off one division of the carrier into the times within finitely many unit steps of `0` and those beyond every multiple of the unit; the `*_discrete_*` and `*_succ_*` pairs restate them from the bare Discrete clause and from a `[SuccOrder]` instance, `not_validOnFrameOver_*` give the paper's `⊭_D` shape, and `not_validOnFrames_isDiscrete_*` reach the Regular-and-Discrete class at `lexZOrder`. `translationFrame_lexZ_not_isZTime` records that the witness frame is Discrete yet not `IsZTime`, so nothing here collides with `ZTimeSharpness.lean`'s characterizations. The least-positive branch of the duration dichotomy whose dense branch is `ZTimeSharpness.lean`. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
 | `BehSeparatedness.lean` | 185 | The countermodel half of the *Determinism* theorem pair of `app:presheaf-dictionary`: `driftSec` cuts the rate-1 and rate-2 affine drift worlds down to sections over `[0, 1]`, `fzero_not_separated` refutes separatedness of `Beh F°` off their shared germ at `0`, and `separated_strictly_stronger` pairs that with `fzero_determined` — separatedness is strictly stronger than the validity of *Determined* on the frame. |
 | `ClockFrame.lean` | 229 | The periodic clock frame: temporal order `D = ℚ`, world-state carrier the rational circle `W = ℚ ⧸ ℤ`, task relation the deterministic translation flow. All `TaskFrame` obligations discharged, with a reference world history. |
 | `CoNotPriorU.lean` | 527 | The symmetric irrational arc valuation on the clock frame, the refutation of `Axiom.prior_U_gap` in that model, and the two independence statements. |
@@ -156,9 +174,9 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `StabUndefinable.lean` | 241 | `stabNotDefinable`: no `Formula` is equivalent to `⊡Fp` over all task models, by a `TruthCorr` between the permissive frame over `ℤ` and the deterministic clock at family index `ℤ → ℕ`. |
 | `StarDiscrimination.lean` | 189 | The positive half of the discrimination footnote: the affine drift histories `driftLinear` and the manuscript's own valuation `driftModel`, which makes `p` true exactly on `[3/2, ∞)`; `fzero_refutes_sentDet`, `f1_sentDet`, `sentDet_discriminates`, and `star_discriminates_where_plus_cannot` — one `StarFormula` separates `F°` from `F¹` where `cor:no-characterization` shows no `PlusFormula` set can. |
 | `StateSetTruth.lean` | 328 | `satSet` and `plusTruthAt_iff_mem_satSet`: over an (H1)+(H2) frame, L⁺ truth depends only on the world state of evaluation. Plus `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`, and the three `_of_isRegular` corollaries stating `lem:state-set` over `def:flow`'s hypotheses alone. |
-| `StaticFrame.lean` | 323 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and the Z1 formula). Turns every later axiom check into a rewrite. |
+| `StaticFrame.lean` | 324 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and the Z1 formula). Turns every later axiom check into a rewrite. |
 | `TranslationProductCoarse.lean` | 136 | Coarse models on the translation product (`Semantics/Frames/TranslationProduct.lean`, a proof device, never an intended model): `liftK` lifts a coarse model with the coarsening forgetting the clock; `c_invariance` — coarse truth is preserved by the projection; `pasteClosed_liftK` / `pasteClosed_of_liftK` — paste-closure transfers in both directions; `c_refuted_lift` — a coarse refutation on `F` is a coarse refutation on the recurrence-free, Limit-for-free product in the same frame class. |
-| `ZTimeSharpness.lean` | 442 | The `.ZTime` row of `Axiom.minFrameClass`, characterized rather than upper-bounded: `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` refute UZ and the Z1 formula (now the derived `CompletenessDerived.z1Thm`) at frame level over any densely ordered duration group; instantiating at ℚ and ℝ gives non-validity at `.Base`, `.Dense` and `.RTime`, and `eq_base_of_lt_ztime` covers everything strictly below `.ZTime`; `prior_UZ_validIn_iff_ztime` / `z1_validIn_iff_ztime` assemble `ValidIn fc φ ↔ fc = .ZTime`, with `not_derivable_base_*` the underivability corollaries. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
+| `ZTimeSharpness.lean` | 450 | The `.ZTime` row of `Axiom.minFrameClass`, characterized rather than upper-bounded: `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` refute UZ and the Z1 formula (now the derived `CompletenessDerived.z1Thm`) at frame level over any densely ordered duration group; instantiating at ℚ and ℝ gives non-validity at `.Base`, `.Dense` and `.RTime`, and `eq_base_of_lt_ztime` covers everything strictly below `.ZTime`; `prior_UZ_validIn_iff_ztime` / `z1_validIn_iff_ztime` assemble `ValidIn fc φ ↔ fc = .ZTime`, with `not_derivable_base_*` the underivability corollaries. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
 <!-- END GENERATED -->
 
 ## Key Results

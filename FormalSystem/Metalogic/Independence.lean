@@ -39,9 +39,8 @@ import FormalSystem.Metalogic.Independence.TranslationProductCoarse
 Underivability results, established by exhibiting a model of the assumptions in which the target
 formula fails.
 
-Twelve results are carried here. This list and the one in `Independence/README.md` enumerate the
-same twelve results in the same order; earlier revisions of the two drifted apart (this docstring
-carried six, the README nine, overlapping in five) and were reconciled to their union.
+Thirteen results are carried here. This list and the one in `Independence/README.md` enumerate
+the same thirteen results in the same order.
 
 1. The paper's `CO` principle does not derive Reynolds' `Axiom.prior_U_gap` over the dense base.
    The converse direction — Reynolds' triple *does* derive `CO` — is
@@ -78,7 +77,7 @@ carried six, the README nine, overlapping in five) and were reconciled to their 
     (`prior_UZ_validIn_iff_ztime`, `z1_validIn_iff_ztime`): each axiom's atomic instance is valid
     at `fc` exactly when `fc = .ZTime`. Minimality is the weaker half
     (`prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp`): no frame class strictly below
-    `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`. `.Dense` and `.RTime` are incomparable with
+    `.ZTime` validates `Axiom.prior_UZ` or Z1. `.Dense` and `.RTime` are incomparable with
     `.ZTime` rather than below it, so they are refuted separately
     (`not_validIn_dense_*`, `not_validIn_rtime_*`), and `Metalogic.axiom_validIn_min` supplies the
     one positive case.
@@ -102,10 +101,25 @@ carried six, the README nine, overlapping in five) and were reconciled to their 
     `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc`, not `↔ .RTime ≤ fc`, which would be false. The
     underivability corollary is `not_derivable_dense_sep`.
 
+13. `UZ` and `Z1` fail over **every** non-Archimedean discrete temporal order
+    (`ArchimedeanSharpness.lean`), which is `prop:archimedean` at the generality the paper states
+    it. Both countermodels live on the translation frame over an arbitrary
+    `(D : TemporalOrder)` with a least positive duration and `¬ Archimedean ↑D`, and turn on one
+    division of the carrier: the times within finitely many unit steps of `0` and those beyond
+    every multiple of the unit. `not_validOn_prior_UZ_nonArchimedean` and
+    `not_validOn_z1_nonArchimedean` are the frame-level refutations;
+    `not_validOnFrameOver_*` restate them in the paper's own `⊭_D` shape, and
+    `not_validOnFrames_isDiscrete_*` reach the bare Regular-and-Discrete class at `lexZOrder`.
+    `translationFrame_lexZ_not_isZTime` records the non-collision: the witness frame is Discrete
+    but not `IsZTime`, so result 10's characterizations stand. This is the least-positive branch
+    of the duration dichotomy whose dense branch is result 10.
+
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes. Results 10, 11 and 12 together settle
 every row of `Axiom.minFrameClass`: each tag is now known minimal, and every non-`.Base` row is
-characterized outright.
+characterized outright. Result 13 is the carrier-level companion to result 10: where result 10
+asks which frame *class* validates the two formulas, result 13 asks which *carriers* refute them,
+and answers "every non-Archimedean one".
 
 ## Contents
 

@@ -538,7 +538,9 @@ Minimum frame class for each axiom constructor.
 This is the single source of truth for axiom-frame-class compatibility:
 - Base (23 axioms): valid on all linear temporal orders
 - Dense (2 axioms: density, dense_indicator): valid on densely ordered frames
-- ZTime (2 axioms: prior_UZ, z1): valid on discrete frames
+- ZTime (1 axiom: prior_UZ): valid on discrete frames. Z1 carries `.ZTime` too, but as the
+  derived `Metalogic.CompletenessDerived.z1Thm` rather than a constructor of this inductive, so
+  it is not counted in this row (`typst/generated/status.typ`'s `ztime-only-count` is 1)
 - RTime (2 axioms: prior_U_gap, sep): valid on dense Dedekind-complete frames
 
 **Upper bound, for every row**: `Metalogic.axiom_validIn_min` proves `ValidIn ax.minFrameClass φ`

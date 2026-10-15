@@ -110,7 +110,7 @@ neither side. A future dispatch attempting to prove TM⁻-completeness directly 
 
 ## CEF / `FrameClass.ZTime` — refuted, and **both halves are now machine-checked**
 
-`ProofSystem.Axiom.z1` (`ProofSystem/Axioms.lean`, `minFrameClass = .ZTime`) is
+Z1, the derived `Metalogic.CompletenessDerived.z1Thm` (a theorem at `FrameClass.ZTime`), is
 
 ```
 G(Gφ → φ) → (F(Gφ) → Gφ)
@@ -198,7 +198,13 @@ provenance, never as something this tree has machine-checked.
 - **The paper pins the `ℤ`-time class exactly** (`def:BX-z`, live text). Its closing sentence
   reasons that `UZ` and `Z1` fail over every discrete temporal order that is not Archimedean, and
   that the Archimedean discrete orders are exactly `ℤ`-time, so the discrete task frames over
-  which `BX_z` and `TM_z` are sound and complete are exactly those over `ℤ`-time. (The earlier
+  which `BX_z` and `TM_z` are sound and complete are exactly those over `ℤ`-time. The first step
+  of that reasoning is machine-checked in this tree, at the generality the paper states it:
+  `Metalogic.Independence.not_validOn_prior_UZ_nonArchimedean` and
+  `Metalogic.Independence.not_validOn_z1_nonArchimedean`
+  (`Independence/ArchimedeanSharpness.lean`) refute both formulas on the translation frame over
+  *any* carrier with a least positive duration that fails to be Archimedean, so this bullet cites
+  a theorem of the tree rather than paper prose the tree takes on trust. (The earlier
   wording, which reached that conclusion through Hölder's theorem and spoke of a
   "successor-Archimedean discrete class", has been cut from the paper; the conclusion is
   unchanged, and is restated here rather than quoted.) This is what makes

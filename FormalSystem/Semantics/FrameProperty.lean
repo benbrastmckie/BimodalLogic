@@ -149,13 +149,21 @@ The **successor-Archimedean discrete** class: `def:BX-z`'s narrowing of `IsDiscr
 `def:BX-z` closes by narrowing the discrete class over which `BX_z` and `TM_z` are sound and
 complete to exactly the frames over `ℤ`-time: the axioms `UZ` and `Z1` fail over every discrete
 temporal order that is not Archimedean, and the Archimedean discrete orders are exactly `ℤ`-time.
+The failure half of that is a theorem of this tree, at the stated generality —
+`Metalogic.Independence.not_validOn_prior_UZ_nonArchimedean` and
+`Metalogic.Independence.not_validOn_z1_nonArchimedean`
+(`Metalogic/Independence/ArchimedeanSharpness.lean`), with
+`not_validOn_prior_UZ_discrete_nonArchimedean` and `not_validOn_z1_discrete_nonArchimedean` the
+same results read off the bare Discrete clause below.
 (An earlier revision of the paper reached the same conclusion by way of Hölder's theorem, which is
 where this predicate's name comes from; the conclusion is unchanged, and is restated here in the
 tree's own voice rather than quoted.)
 
 **It is this predicate, not `TaskFrame.IsDiscrete`, that `FrameClass.ZTime` admits axioms
-for.** `Axiom.prior_UZ`, `DerivedAxioms.priorSZ` and `Axiom.z1` all carry `.ZTime` as their
-`minFrameClass`, and by the narrowing above they are sound over `ℤ`-time rather than over every
+for.** `Axiom.prior_UZ` and `DerivedAxioms.priorSZ` both carry `.ZTime` as their `minFrameClass`,
+as does Z1 — derived rather than an axiom constructor, as
+`Metalogic.CompletenessDerived.z1Thm` — and by the narrowing above they are sound over `ℤ`-time
+rather than over every
 frame satisfying `def:frame-properties`' bare Discrete clause. Interpreting `FrameClass.ZTime`
 by `IsDiscrete` would silently widen the class under `soundness_ztime` — the defect that the
 retired marker-typeclass frame-condition layer carried, and part of why that layer was removed.

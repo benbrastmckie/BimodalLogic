@@ -35,6 +35,26 @@ is what makes Deliverable 2 the `TM⁻_z`-vs-`TM_z` completeness gap rather than
 now runs through the failure of `UZ` and `Z1` over non-Archimedean discrete orders, and the
 conclusion is unchanged. See `Metalogic/Conservativity.lean` for the full statement.)
 
+## Why this module is the concrete L⁻ witness, and not an instance of the general theorem
+
+`Independence/ArchimedeanSharpness.lean` proves `prop:archimedean` at full generality — `UZ` and
+`Z1` fail over *every* non-Archimedean discrete temporal order, not just over `ℚ ×ₗ ℤ`. This
+module stays as it is regardless, as the concrete L⁻ witness, for three reasons measured against
+that module rather than guessed at:
+
+1. **A different language.** The general results are about `TruthAt` on `Formula`; Deliverable 1
+   is about `MinusTruthAt` on `MinusFormula`. Neither statement is an instance of the other.
+2. **The translation does not bridge them.** `MinusLanguage.tr_ne_untl` makes `tr` of the L⁻ `Z1`
+   syntactically distinct from L's, whose `FGφ` is a top-level `untl`, so the general refutation
+   cannot be transported across `tr` to close this one.
+3. **A different valuation.** This module's atom is the ℚ-coordinate upper set
+   (`1 ≤ (ofLex w.2).1`); the general countermodels read their atom off the near/far division of
+   the carrier by multiples of the unit duration. The two refutations are genuinely different
+   arguments that happen to share a carrier family.
+
+So the relationship is a cross-reference, not a dependency: nothing here imports that module, and
+`tmMinusCompleteZTime_refuted` and the CEF deliverables below are unaffected by it.
+
 ## Main Results
 
 - `z1_atom_iff` — the valuation lemma

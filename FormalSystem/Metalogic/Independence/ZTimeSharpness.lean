@@ -43,10 +43,18 @@ So the property doing the work is *non-discreteness*: between any two times ther
 `Axiom.prior_UZ`'s `U(¬p, p)` can never find a first `p`-time with a `¬p`-guarded initial
 segment, and Z1's (`CompletenessDerived.z1Thm`) `FGp → Gp` collapse fails at a threshold with no
 immediate predecessor.
-It is **not** the Archimedean property, and no claim is made here that either axiom is refutable
-specifically over ℚ, or specifically over a non-Archimedean order, beyond what the written
-statements say. The non-Archimedean discrete carriers are a different story, told by
-`Independence/LexIntWitness.lean`.
+It is **not** the Archimedean property. The statements in *this* module say nothing about
+refutability over ℚ specifically, or over a non-Archimedean order specifically — that is a scope
+note about what is written here, not a claim that no such refutation holds.
+
+The non-Archimedean discrete carriers are the other branch of the duration dichotomy, and they
+are refuted in `Independence/ArchimedeanSharpness.lean`: at an arbitrary `(D : TemporalOrder)`
+with a least positive duration and `¬ Archimedean ↑D`,
+`not_validOn_prior_UZ_nonArchimedean` and `not_validOn_z1_nonArchimedean` refute the same two
+formulas on the same translation frame, off a different division of the carrier. Between that
+module and this one every carrier is covered, since `Semantics.duration_dense_or_least_pos` makes
+density and a least positive element exhaustive. `Independence/LexIntWitness.lean` supplies the
+concrete non-Archimedean witness both of them instantiate at.
 
 ## The `z1` half has an antecedent in the neighbouring L-minus language
 

@@ -92,13 +92,13 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Algebraic.lean` | 40 | `Algebraic/` |
 | `BXCanonical.lean` | 43 | `BXCanonical/` |
 | `Bundle.lean` | 47 | `Bundle/` |
-| `Conservativity.lean` | 449 | `Conservativity/` |
+| `Conservativity.lean` | 455 | `Conservativity/` |
 | `ConvexConsequence.lean` | 44 | Aggregator for the metatheory of the convex-index consequence relations C3 and C4; holds no declarations |
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 202 | `Decidability/` |
 | `Deterministic.lean` | 30 | <!-- TODO: add description --> |
 | `Expressiveness.lean` | 77 | `Expressiveness/` |
-| `Independence.lean` | 218 | `Independence/` |
+| `Independence.lean` | 233 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 142 | `WeakCanonical/` |
 <!-- END GENERATED -->
@@ -110,7 +110,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic rows=loose filter=non-aggregators -->
 | Loose non-aggregator | Lines | Role |
 |----------------------|------:|------|
-| `Conservativity.lean` | 449 | Conservativity of the extension |
+| `Conservativity.lean` | 455 | Conservativity of the extension |
 | `Compactness.lean` | 237 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
 | `CompletenessDerived.lean` | 75 | Z1 (`z1Derivable`/`z1Thm`) recovered at `.ZTime` through `derivable_of_validZTime` and `z1_valid`, plus `densityDerivable`, a cross-check of `Theorems.LinearityDerived.density` through the Dense engine |
 | `DedekindNonCompactness.lean` | 539 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
@@ -154,13 +154,13 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,415 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,165 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,863 | Bundled families of MCSs and their coherence conditions |
-| [`Conservativity/`](Conservativity/README.md) | 28 | 8,563 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
+| [`Conservativity/`](Conservativity/README.md) | 28 | 8,583 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,388 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 169 | 98,924 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 8 | 1,769 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
-| [`Independence/`](Independence/README.md) | 27 | 7,764 | Axiom-independence models |
+| [`Independence/`](Independence/README.md) | 28 | 8,154 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,424 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,303 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->

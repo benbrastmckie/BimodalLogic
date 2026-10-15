@@ -101,7 +101,8 @@ the paper's `TP`/`CT` → `TP1`/`TP2`, `P9`/`P10` → `P7`/`P8`, `TB`/`TA` → `
 * `CO` — Lean identifier: `Axiom.co`; Notes: See the CEC fidelity caveat below.
 * `UZ` — Lean identifier: `ProofSystem.Axiom.prior_UZ`; Notes: Doc-comment still says "Prior-UZ"
   (the paper's pre-rename display name); documentation lag, not a Lean defect.
-* `Z1` — Lean identifier: `ProofSystem.Axiom.z1`
+* `Z1` — Lean identifier: `Metalogic.CompletenessDerived.z1Thm`; Notes: derived at
+  `FrameClass.ZTime` rather than an `Axiom` constructor
 * `NN` — Lean identifier: `ProofSystem.Axiom.dense_indicator`
 * `PU` — Lean identifier: `ProofSystem.Axiom.prior_U_gap`; Notes: Doc-comment still says "Prior-U"
   (pre-rename display name); documentation lag.

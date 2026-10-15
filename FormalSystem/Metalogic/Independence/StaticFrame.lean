@@ -52,7 +52,7 @@ apparatus is needed only for the schema half of the `FwdRec` correspondence at `
 * `static_untl_iff`, `static_untl_iff_dense`, `static_untl_iff_disc` — the `untl` calculus
 * `static_snce_iff`, `static_snce_iff_dense`, `static_snce_iff_disc` — the `snce` mirrors
 * `static_kPlus_iff_dense`, `static_kMinus_iff_dense` — Reynolds' `K⁺`/`K⁻` on a dense carrier
-* `static_validates_z1` — `Axiom.z1` holds on every static frame, from time-invariance alone
+* `static_validates_z1` — Z1 holds on every static frame, from time-invariance alone
 -/
 
 namespace FormalSystem.Metalogic.Independence
@@ -297,10 +297,11 @@ theorem static_kMinus_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
   · intro h hc
     exact (hs.mp hc).2 h
 
-/-! ## `Axiom.z1` -/
+/-! ## Z1, the derived `Metalogic.CompletenessDerived.z1Thm` -/
 
 /--
-**Every static frame validates `Axiom.z1`**, `G(Gφ → φ) → (F(Gφ) → Gφ)`.
+**Every static frame validates Z1**, `G(Gφ → φ) → (F(Gφ) → Gφ)` — the formula of the derived
+`Metalogic.CompletenessDerived.z1Thm` rather than of an `Axiom` constructor.
 
 This needs only `static_time_invariant`, not the `untl` calculus: `F(Gφ)` hands over a time `s`
 at which `Gφ` holds, and time-invariance moves that to `t`. The induction-step antecedent

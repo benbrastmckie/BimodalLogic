@@ -46,7 +46,7 @@ than deferred debt.
 | `SpWitness.lean` | 136 | <!-- TODO: add description --> |
 | `Star.lean` | 60 | Aggregator for the L⋆ metatheory; holds no declarations. |
 | `TMCompletenessReduction.lean` | 329 | <!-- TODO: add description --> |
-| `Z1Countermodel.lean` | 200 | <!-- TODO: add description --> |
+| `Z1Countermodel.lean` | 220 | <!-- TODO: add description --> |
 | `Plus/` | — | <!-- TODO: add description --> |
 | `Star/` | — | The register extension L⋆ = L⁺ + `↑ⁱ`/`↓ⁱ` and its logic TM⋆: axiom validity, soundness, conservativity over TM (unconditional) and over TM⁺ (a conditional pair, whose hypothesis is refuted at Base by `Metalogic/Independence/PlusIncompleteness.lean` and open elsewhere), and the completeness OPEN record. |
 <!-- END GENERATED -->
