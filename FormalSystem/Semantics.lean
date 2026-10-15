@@ -189,7 +189,10 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
 - `Truth`: Recursive truth evaluation `M,τ,t ⊨ φ` for formulas at model-history-time triples
 - `Reversal`: the reflected model and the reflected world — `TaskModel.rev`, `WorldHistory.rev`
   and its involution, the bijection `H_F → H_{F⁻}` as `revHistEquiv`, and `revAntiIso`, which
-  packages reversal as a `TruthAntiIso`. `truthAt_rev` is `lem:time-reflection` for the base
+  packages reversal as a `TruthAntiIso`. `sameState_rev_iff`, that reversal fixes the state-local
+  class `⟨τ⟩_x`, is owned here as well: it mentions only `WorldHistory.state`, and it is what the
+  class-quantifying clauses of L⁺ and L^▷ need beyond atom-level agreement.
+  `truthAt_rev` is `lem:time-reflection` for the base
   language: an instance of `TruthTransport`'s generic order-reversing transport, not an
   induction of its own. The frame-level half lives in `TaskFrame`; the validity-level
   consequence (`thm:TR-valid`) in `Validity`

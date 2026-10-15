@@ -41,6 +41,8 @@ what an atom-level `TruthAntiIso` does.
 - `TaskModel.rev_rev` — reversal of models is an involution, by `rfl`
 - `WorldHistory.rev_rev_hist` — reversal of worlds is an involution (propositional, not `rfl`),
   whence `WorldHistory.rev_surjective`
+- `sameState_rev_iff` — reversal fixes the state-local class `⟨τ⟩_x`, the one extra fact the
+  class-quantifying clauses need beyond atom-level agreement
 - `truthAt_rev` — `lem:time-reflection` for the base language
 
 ## References
@@ -100,6 +102,19 @@ theorem WorldHistory.rev_rev_hist {F : TaskFrame} (τ : WorldHistory F) :
 theorem WorldHistory.rev_surjective {F : TaskFrame} (σ : WorldHistory F.rev) :
     ∃ τ : WorldHistory F, τ.rev = σ :=
   ⟨(σ.rev : WorldHistory F), WorldHistory.rev_rev_hist (F := F.rev) σ⟩
+
+/-- **Reversal fixes the state-local class.** `⟨τ⟩_x` is defined by a same-time condition, so
+`σ ∈ ⟨τ⟩_x` exactly when `σ⁻ ∈ ⟨τ⁻⟩_{-x}`: this is the paper's "`τ ↦ τ⁻` carries `⟨τ⟩_x` onto
+`⟨τ⁻⟩_{n(x)}`", in its pointwise form.
+
+It sits at this layer, below every object language, because it is a statement about
+`WorldHistory.state` alone. It is the one extra fact the `⊡`, `▷` and `◁` clauses need beyond an
+atom-level `TruthAntiIso`: those clauses quantify over a class of histories, and a class has to
+be transported, which is why neither language layer owns this lemma. -/
+theorem sameState_rev_iff {F : TaskFrame} (τ σ : WorldHistory F) (t : F.Duration) :
+    τ.state t = σ.state t ↔ τ.rev.state (-t) = σ.rev.state (-t) := by
+  change _ ↔ τ.state (- -t) = σ.state (- -t)
+  rw [neg_neg]
 
 /-! ## The reversal anti-isomorphism, and `lem:time-reflection` -/
 

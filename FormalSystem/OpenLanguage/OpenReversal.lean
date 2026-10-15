@@ -42,8 +42,11 @@ notation.
 
 ## Main Results
 
-- `sameState_rev_iff`, `agreeUpTo_rev_iff`, `agreeFrom_rev_iff` — the class swaps: reversal fixes
-  `⟨τ⟩_t` and exchanges `|τ⟩_t` with `⟨τ⁻|_{-t}`
+- `agreeUpTo_rev_iff`, `agreeFrom_rev_iff` — the class swaps this layer owns: reversal exchanges
+  `|τ⟩_t` with `⟨τ⁻|_{-t}`. That it *fixes* `⟨τ⟩_t` is `sameState_rev_iff`, which is
+  language-free and lives in `Semantics/Reversal.lean`
+- `image_rev_stabClass` — the image form of that fixing: `τ ↦ τ⁻` carries `⟨τ⟩_x` **onto**
+  `⟨τ⁻⟩_{-x}`, as a `Set.image` equation
 - `openTruthAt_rev` — the transport theorem
 - `openValidOn_rev_iff` and `openValid_reflectTime` — validity is closed under time reflection
 
@@ -78,11 +81,19 @@ variable {F : TaskFrame}
 
 /-! ## The class swaps -/
 
-/-- Reversal fixes `⟨τ⟩_t`: the class is defined by a same-time condition. -/
-theorem sameState_rev_iff (τ σ : WorldHistory F) (t : F.Duration) :
-    τ.state t = σ.state t ↔ τ.rev.state (-t) = σ.rev.state (-t) := by
-  change _ ↔ τ.state (- -t) = σ.state (- -t)
-  rw [neg_neg]
+/-- **Reversal carries `⟨τ⟩_x` onto `⟨τ⁻⟩_{-x}`.** The image form of `sameState_rev_iff`, which
+is the pointwise statement and lives at the semantic layer: this is the shape the paper's word
+*onto* asserts, with `stabClass` the named `⟨τ⟩_x`. Surjectivity of reversal on histories
+(`WorldHistory.rev_surjective`) is what makes the inclusion an equality. -/
+theorem image_rev_stabClass (τ : WorldHistory F) (x : F.Duration) :
+    WorldHistory.rev '' stabClass τ x = stabClass τ.rev (-x) := by
+  ext σ'
+  constructor
+  · rintro ⟨σ, hσ, rfl⟩
+    exact (sameState_rev_iff τ σ x).mp hσ
+  · intro hσ'
+    obtain ⟨σ, rfl⟩ := WorldHistory.rev_surjective σ'
+    exact ⟨σ, (sameState_rev_iff τ σ x).mpr hσ', rfl⟩
 
 /-- Reversal sends `|τ⟩_t` to `⟨τ⁻|_{-t}`. -/
 theorem agreeUpTo_rev_iff (τ σ : WorldHistory F) (t : F.Duration) :
@@ -115,7 +126,8 @@ theorem agreeFrom_rev_iff (τ σ : WorldHistory F) (t : F.Duration) :
 reflection is true at the reflected point `(M⁻, τ⁻, -t)` of the converse frame.
 
 By induction on `φ`, generalizing the history and the time. `box` uses the surjectivity of
-reversal on histories; `untl` and `snce` negate the bounds; `stab` is `sameState_rev_iff`; `ofut`
+reversal on histories; `untl` and `snce` negate the bounds; `stab` is the semantic layer's
+`sameState_rev_iff`; `ofut`
 and `opast` are the two agreement swaps.
 -/
 theorem openTruthAt_rev (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)

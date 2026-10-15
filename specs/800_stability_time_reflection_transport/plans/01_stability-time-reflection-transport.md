@@ -1,7 +1,7 @@
 # Implementation Plan: Task #800
 
 - **Task**: 800 - Extend the time-reflection transport from BL to the Stability language
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: The base time-reflection task — LANDED (`truthAt_rev`, `revAntiIso`,
   `validOn_rev_iff` and the frame-class closure `FrameClass.Sat.rev` are all in the tree; verified
@@ -133,48 +133,48 @@ consumes the declarations the previous one lands.
 
 ---
 
-### Phase 1: The carrying lemma, promoted and stated onto [NOT STARTED]
+### Phase 1: The carrying lemma, promoted and stated onto [COMPLETED]
 
 **Goal**: Deliverable (2). One copy of the carrying lemma, at the lowest layer that can state it,
 plus the paper's "carries **onto**" image form; the Open layer's duplicate retired and every doc
 surface that claimed Open ownership corrected.
 
 **Tasks**:
-- [ ] In `FormalSystem/Semantics/Reversal.lean`, add `sameState_rev_iff` in namespace
+- [x] In `FormalSystem/Semantics/Reversal.lean`, add `sameState_rev_iff` in namespace
       `FormalSystem.Semantics`, immediately after `WorldHistory.rev_surjective` and before the
       `/-! ## The reversal anti-isomorphism, and lem:time-reflection -/` section marker. Signature
       exactly as pinned under `## Lean Challenge Statements`. Body is the promoted one, unchanged:
       `change _ ↔ τ.state (- -t) = σ.state (- -t); rw [neg_neg]`
-- [ ] Give it a docstring saying what it is for: reversal fixes `⟨τ⟩_x` because the class is
+- [x] Give it a docstring saying what it is for: reversal fixes `⟨τ⟩_x` because the class is
       defined by a same-time condition, which is the paper's "`τ ↦ τ⁻` carries `⟨τ⟩_x` onto
       `⟨τ⁻⟩_{n(x)}`"; and that it is the one extra fact the `⊡`, `▷` and `◁` clauses need beyond
       an atom-level `TruthAntiIso`, which is why it sits here rather than in either language layer
-- [ ] Add one `sameState_rev_iff` bullet to `Semantics/Reversal.lean`'s `## Main Results` block
-- [ ] Delete `OpenLanguage.sameState_rev_iff` from `FormalSystem/OpenLanguage/OpenReversal.lean`
+- [x] Add one `sameState_rev_iff` bullet to `Semantics/Reversal.lean`'s `## Main Results` block
+- [x] Delete `OpenLanguage.sameState_rev_iff` from `FormalSystem/OpenLanguage/OpenReversal.lean`
       (currently `:82-85`, with its docstring). Leave the two call sites at `:165`/`:167`
       **untouched** — `:8` imports `Semantics.Reversal` and `:75` opens `FormalSystem.Semantics`,
       so they resolve to the promoted name unchanged
-- [ ] In the same file's `/-! ## The class swaps -/` section, add `image_rev_stabClass` — the
+- [x] In the same file's `/-! ## The class swaps -/` section, add `image_rev_stabClass` — the
       paper's `onto` as a `Set.image` equation, signature exactly as pinned below. Body is probe
       4's: `ext` plus `rintro`/`obtain`, consuming the promoted `sameState_rev_iff` and
       `WorldHistory.rev_surjective`. Docstring: this is the image form of the carrying lemma, the
       shape the paper's word *onto* asserts, and `stabClass` is the named `⟨τ⟩_x`
-- [ ] Update `OpenReversal.lean`'s module docstring: the `- sameState_rev_iff, agreeUpTo_rev_iff,
+- [x] Update `OpenReversal.lean`'s module docstring: the `- sameState_rev_iff, agreeUpTo_rev_iff,
       agreeFrom_rev_iff — the class swaps` bullet at `:45` now names two swaps the Open layer owns
       plus `image_rev_stabClass`, and says `sameState_rev_iff` comes from `Semantics/Reversal.lean`.
       Fix the `:118` sentence that reads `stab` is `sameState_rev_iff` the same way
-- [ ] Update `FormalSystem/OpenLanguage.lean`'s docstring sentence at `:56`, which lists
+- [x] Update `FormalSystem/OpenLanguage.lean`'s docstring sentence at `:56`, which lists
       `sameState_rev_iff` among the swaps the Open layer carries
-- [ ] Update the two `FormalSystem/OpenLanguage/README.md` surfaces that name the lemma: the
+- [x] Update the two `FormalSystem/OpenLanguage/README.md` surfaces that name the lemma: the
       hand-written description column of the `OpenReversal.lean` row inside the generated
       inventory block (the generator rewrites every column *except* this one, so editing it now is
       correct), and the `lem:time-reflection` row of the paper-correspondence table below the block
-- [ ] Update `FormalSystem/Semantics/README.md`'s hand-maintained `Reversal.lean` row and
+- [x] Update `FormalSystem/Semantics/README.md`'s hand-maintained `Reversal.lean` row and
       `FormalSystem/Semantics.lean`'s `- Reversal:` docstring bullet to name `sameState_rev_iff`
       as a result this module now owns
-- [ ] Write no `file.lean:NNN` citation and no task number anywhere in a `.lean` or non-`specs/`
+- [x] Write no `file.lean:NNN` citation and no task number anywhere in a `.lean` or non-`specs/`
       markdown file; keep every line at 100 characters or fewer
-- [ ] Stage by explicit file list only; read `git diff --staged` and confirm no foreign hunk
+- [x] Stage by explicit file list only; read `git diff --staged` and confirm no foreign hunk
 
 **Timing**: 1.0 hours
 
