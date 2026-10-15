@@ -233,4 +233,67 @@ theorem determined_of_orderFlow (h1 : OrderFlow F) (h2 : StateOccurs F) (φ : Pl
   simp only [mem_satSet_imp, satSet_stab, Set.mem_univ, iff_true]
   exact id
 
+/-! ## `lem:state-set` over a `def:flow` frame
+
+The three results above read as `lem:state-set` does once (H2) is discharged rather than assumed.
+`def:flow` asks that the state carrier be linearly ordered and that every possible world be an
+order-isomorphism of the duration order onto it — which is `[LinearOrder F.WorldState]` together
+with `OrderFlow F`, and nothing further. The three forms in this section therefore carry exactly
+`def:flow`'s hypotheses, with the bundling class `[F.IsRegular]` standing in for the frame axioms
+every task frame of the paper has anyway.
+
+Each routes through `StateOccurs.of_isRegular`, hence `cor:occurrence`, hence `thm:extension` and
+Zorn's lemma, so each carries `Classical.choice`. The two-hypothesis forms above carry none, and
+are what `Independence/DeterminismUndefinable.lean` consumes.
+-/
+
+section Regular
+
+/--
+**`lem:state-set`, first sentence**: over a task frame satisfying `def:flow`, an L⁺ formula is
+true at a possible world and a time exactly when the world state occupied there lies in the
+formula's state set.
+
+`[LinearOrder F.WorldState]` with `(h : OrderFlow F)` *is* `def:flow`'s condition, with nothing
+left over: (H2) is supplied by `StateOccurs.of_isRegular` from the bundling class. That route runs
+through `cor:occurrence`, hence `thm:extension` and Zorn's lemma, so this form carries
+`Classical.choice` where `plusTruthAt_iff_mem_satSet` carries none.
+-/
+theorem plusTruthAt_iff_mem_satSet_of_isRegular {F : TaskFrame}
+    [LinearOrder F.WorldState] [F.IsRegular] (h : OrderFlow F)
+    (M : TaskModel F) (φ : PlusFormula) :
+    ∀ (τ : WorldHistory F) (t : F.Duration),
+      PlusTruthAt M τ t φ ↔ τ.state t ∈ satSet M.valuation φ :=
+  plusTruthAt_iff_mem_satSet h (StateOccurs.of_isRegular F) M φ
+
+/--
+**`lem:state-set`, second sentence**: *Determined* is valid over every task frame satisfying
+`def:flow`, deterministic or not.
+
+Immediate from the first sentence, since `def:state-set`'s stability clause leaves a state set
+unchanged. As above, the hypotheses are exactly `def:flow`'s, and the discharge of (H2) through
+`cor:occurrence`, `thm:extension` and Zorn's lemma makes this form carry `Classical.choice` where
+`determined_of_orderFlow` does not.
+-/
+theorem determined_of_orderFlow_of_isRegular {F : TaskFrame}
+    [LinearOrder F.WorldState] [F.IsRegular] (h : OrderFlow F) (φ : PlusFormula) :
+    F.PlusValidOn (.imp φ (.stab φ)) :=
+  determined_of_orderFlow h (StateOccurs.of_isRegular F) φ
+
+/--
+**`lem:state-set`, third sentence**: over a task frame satisfying `def:flow`, `φ` is frame-valid
+exactly when its state set exhausts the carrier under every assignment.
+
+The right-hand side mentions no frame, which is the reduction `lem:state-set` is cited for. The
+hypotheses are exactly `def:flow`'s, and the discharge of (H2) through `cor:occurrence`,
+`thm:extension` and Zorn's lemma makes this form carry `Classical.choice` where
+`plusValidOn_iff_satSet_univ` does not.
+-/
+theorem plusValidOn_iff_satSet_univ_of_isRegular {F : TaskFrame}
+    [LinearOrder F.WorldState] [F.IsRegular] (h : OrderFlow F) (φ : PlusFormula) :
+    F.PlusValidOn φ ↔ ∀ V : F.WorldState → Atom → Prop, satSet V φ = Set.univ :=
+  plusValidOn_iff_satSet_univ h (StateOccurs.of_isRegular F) φ
+
+end Regular
+
 end FormalSystem.Metalogic.Independence

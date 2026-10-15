@@ -275,34 +275,39 @@ Confirm by the scoped build in this phase's verification, and by `lean_hover_inf
 
 ---
 
-### Phase 3: The three `_of_isRegular` corollaries [IN PROGRESS]
+### Phase 3: The three `_of_isRegular` corollaries [COMPLETED]
 
 **Goal**: `lem:state-set`'s three sentences exist in the tree at `[F.IsRegular] (h : OrderFlow F)`
 alone, under names the paper can cite, with the two choice-free originals byte-identical.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Independence/StateSetTruth.lean` immediately before editing
-- [ ] Open a new trailing `section Regular` after `determined_of_orderFlow`, with its own
+- [x] Re-read `FormalSystem/Metalogic/Independence/StateSetTruth.lean` immediately before editing
+- [x] Open a new trailing `section Regular` after `determined_of_orderFlow`, with its own
       `variable {F : TaskFrame} [LinearOrder F.WorldState] [F.IsRegular]` line, and close it with
-      `end Regular` before `end FormalSystem.Metalogic.Independence`
-- [ ] Do **not** touch the file's existing `variable {F : TaskFrame} [LinearOrder F.WorldState]`
+      `end Regular` before `end FormalSystem.Metalogic.Independence` *(deviation: altered — the
+      section carries no `variable` line; each of the three signatures writes its binders
+      explicitly, exactly as `## Lean Challenge Statements` pins them. A second section-local
+      `variable {F : TaskFrame} …` would shadow the file's ambient `F`, and the resulting
+      signatures are identical either way. The originals are untouched regardless: the diff on
+      this file is 63 insertions, 0 deletions)*
+- [x] Do **not** touch the file's existing `variable {F : TaskFrame} [LinearOrder F.WorldState]`
       line — adding `[F.IsRegular]` there would re-sign the originals
-- [ ] Add `plusTruthAt_iff_mem_satSet_of_isRegular (h : OrderFlow F) (M : TaskModel F) (φ : PlusFormula)`,
+- [x] Add `plusTruthAt_iff_mem_satSet_of_isRegular (h : OrderFlow F) (M : TaskModel F) (φ : PlusFormula)`,
       proved `plusTruthAt_iff_mem_satSet h (StateOccurs.of_isRegular F) M φ`
-- [ ] Add `plusValidOn_iff_satSet_univ_of_isRegular (h : OrderFlow F) (φ : PlusFormula)`, proved
+- [x] Add `plusValidOn_iff_satSet_univ_of_isRegular (h : OrderFlow F) (φ : PlusFormula)`, proved
       `plusValidOn_iff_satSet_univ h (StateOccurs.of_isRegular F) φ`
-- [ ] Add `determined_of_orderFlow_of_isRegular (h : OrderFlow F) (φ : PlusFormula)`, proved
+- [x] Add `determined_of_orderFlow_of_isRegular (h : OrderFlow F) (φ : PlusFormula)`, proved
       `determined_of_orderFlow h (StateOccurs.of_isRegular F) φ`
-- [ ] Keep the signatures exactly as `## Lean Challenge Statements` pins them; a drift finding on
+- [x] Keep the signatures exactly as `## Lean Challenge Statements` pins them; a drift finding on
       their logical content is escalated as `[BLOCKED]`, never quietly re-pinned
-- [ ] Each docstring cites `def:flow` and `lem:state-set` by name, says which of the lemma's
+- [x] Each docstring cites `def:flow` and `lem:state-set` by name, says which of the lemma's
       three sentences it is, records that `[F.IsRegular] (h : OrderFlow F)` **is** `def:flow`'s
       hypothesis set with nothing left over, and states that the form routes through
       `cor:occurrence`, hence `thm:extension` and Zorn, so it carries `Classical.choice`
-- [ ] Tag none of the three `@[simp]`; write none of the seven capitalized constraint tokens on
+- [x] Tag none of the three `@[simp]`; write none of the seven capitalized constraint tokens on
       any docstring line; write no `Constraints consumed:` marker; cite no `file.lean:NNN`
       location and no task number
-- [ ] Add no import line
+- [x] Add no import line
 
 **Timing**: 0.75 hours
 
@@ -340,11 +345,12 @@ build in this phase's verification plus `lean_goal` at each `:=` before committi
   `lean_verify FormalSystem.Metalogic.Independence.determined_of_orderFlow` still reports
   `[propext, Quot.sound]`
 - `bash scripts/check-module-invariants.sh --no-build` exits 0; C15, C34a, C34b, C9, C20 and C33
-  all PASS
+  all PASS *(deviation: altered — all six named checks PASS; whole-script exit is 1 on the INV
+  generated-inventory group alone, regenerated in Phase 5)*
 
 ---
 
-### Phase 4: The two module-docstring records [NOT STARTED]
+### Phase 4: The two module-docstring records [IN PROGRESS]
 
 **Goal**: `StateSetTruth.lean`'s module docstring states the current design — (H2) derivable for
 regular frames, both hypothesis forms live for different reasons — and carries the nomic forward
