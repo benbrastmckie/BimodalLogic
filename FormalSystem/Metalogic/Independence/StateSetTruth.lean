@@ -49,6 +49,51 @@ forms carry none: `Independence/DeterminismUndefinable.lean` discharges (H2) at 
 frames by an explicit affine witness, and a choice-free axiom profile is exactly what the pin it
 keeps on them asserts.
 
+## Choice dependence
+
+Three routes reach `lem:state-set`'s three sentences, and they differ in what they cost. The
+table answers, at a glance, whether a given result is choice-dependent.
+
+| Route | Hypotheses | (H2) from | Choice cost | Consumers |
+|---|---|---|---|---|
+| two-hypothesis | `OrderFlow F`, `StateOccurs F` | assumed | none | `F°`, `F¹` |
+| `_of_isRegular` | `OrderFlow F`, `[F.IsRegular]` | `cor:occurrence` | argument-borne | none |
+| flow | `(D : TemporalOrder)` | explicit translation | none | none |
+| frame | `(D : TemporalOrder)` | the paper's `σ_c` | frame-borne | none |
+
+The first two rows are this file; the last two are `Independence/TranslationStateSet.lean`.
+
+Route by route:
+
+* **The two-hypothesis forms** take (H2) as a hypothesis and cost nothing:
+  `plusTruthAt_iff_mem_satSet` reports `[propext]` alone and `determined_of_orderFlow`
+  `[propext, Quot.sound]`. The whole generic argument — the recursion, the bridge and the
+  validity corollary — is therefore choice-free, and only *instantiation* can add choice.
+* **The `_of_isRegular` forms** derive (H2) through `StateOccurs.of_isRegular`, hence
+  `cor:occurrence`, hence `thm:extension`, hence Zorn's lemma, and so carry `Classical.choice`
+  argument-borne. They state `lem:state-set` at `def:flow`'s hypotheses alone, which is how the
+  paper reads it.
+* **The flow route** (`Independence/TranslationStateSet.lean`) is where the choice-free
+  instantiation lives. Over an arbitrary duration group it exhibits the witnessing world history
+  outright, as the translation through the required state, so the `cor:occurrence` chain is never
+  entered: the three sentences there report `[propext, Quot.sound]`, with no `Classical.choice`
+  at all.
+* **The frame route** (same file) restates them at the translation frame, with the witness
+  written as the paper's own `σ_c`. Its `Classical.choice` is the frame constant's own, carried by
+  the structural obligation that constant discharges, and `#print axioms` traverses a
+  declaration's type as well as its value — so the cost is frame-borne, not a consequence of how
+  (H2) is reached there.
+
+**The consumer audit.** Every consumption of the results in this file, across the whole live tree,
+sits in `Independence/DeterminismUndefinable.lean`: `fzero_determined` applies
+`determined_of_orderFlow` at `F°`, and `fzero_plusValidOn_iff_f1` applies
+`plusValidOn_iff_satSet_univ` twice, at `F°` and at `F¹`; `determined_valid_on_non_deterministic`
+and `deterministic_not_plusDefinable` rest on those two in turn. All four take the
+two-hypothesis route, each passing an explicitly constructed (H2) witness, so **none is on the
+Zorn route** and none has a choice-free route to move to that it does not already take; their
+residual `Classical.choice` is carrier-borne, from `ℝ`. The three `_of_isRegular` forms have no
+consumer at all: they exist to state `lem:state-set` at `def:flow`'s own hypotheses.
+
 ## The recursion, clause by clause
 
 Every clause but two is the obvious one. The two worth pausing on:

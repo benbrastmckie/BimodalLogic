@@ -437,7 +437,7 @@ regression — is likewise measured. Confirm by `lean_verify` on the five plus
 
 ---
 
-### Phase 4: The consumer audit and the three-route record [NOT STARTED]
+### Phase 4: The consumer audit and the three-route record [COMPLETED]
 
 **Goal**: Deliverables (3) and (4): every consumer in `DeterminismUndefinable.lean` carries a
 recorded verdict on whether it can move to the choice-free route, and
