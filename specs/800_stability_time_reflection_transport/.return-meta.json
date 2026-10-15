@@ -1,17 +1,29 @@
 {
-  "status": "researched",
-  "dispatch_seq": 13,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/800_stability_time_reflection_transport/reports/01_stability-time-reflection-transport.md",
-      "summary": "Research for the Stability-language time-reflection transport: deliverable (1) already in the tree; (2) exists as OpenLanguage.sameState_rev_iff and should be promoted to Semantics/Reversal.lean; (2)-(4) verified by four green lean_run_code probes; (5) recommends keeping the Deterministic companion recursion per the base-layer decision record; full unification needs a new ReflectableLanguage class and is out of scope."
+      "type": "plan",
+      "path": "specs/800_stability_time_reflection_transport/plans/01_stability-time-reflection-transport.md",
+      "summary": "Five-phase, fully sequential plan for the BL-plus time-reflection transport: promote the carrying lemma to Semantics/Reversal.lean and state its image form, build PlusLanguage/PlusReversal.lean, land the Determined- and deterministic-class closures, record the TR-route decision, then refresh generated surfaces under the full gate. Fifteen Challenge signatures, all compiled at plan time."
     }
   ],
   "metadata": {
     "session_id": "sess_1792077807_2be444_800",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a Lean task adds a new .lean file to a tree whose generated surfaces key on whole-tree file and line counts (here typst/generated/status.typ via typst-status-counts.sh, and the root README.md's `rows=totals` inventory block via check-module-invariants.sh --emit-inventory), that task structurally collides with EVERY concurrent sibling that also adds a file: both must rewrite the same scalar. Plan the generated-surface phase as a two-branch, ownership-checked step -- regenerate and stage only when `git status --short -- <path>` shows the contended path clean; otherwise leave the regenerated hunk unstaged, record the residual staleness, and report the foreign modification -- rather than as an unconditional regeneration. Measure the surface's state at PLAN time too: here it was already red at HEAD (committed 691 files vs live 692), so a phase that asserted whole-script exit 0 would have reported someone else's drift as its own regression. Separately: a generated library root guarded byte-for-byte (C33 vs `lake exe mk_all --lib FormalSystem`) must be edited by a single sorted one-line insertion, never regenerated, because a regeneration walks the live tree and absorbs a sibling's in-flight modules into this task's hunk.",
+      "category": "PATTERN",
+      "source_artifact": "specs/800_stability_time_reflection_transport/plans/01_stability-time-reflection-transport.md",
+      "confidence": 0.78,
+      "suggested_keywords": ["generated-surfaces", "territory-collision", "whole-tree-counts", "concurrent-siblings", "library-root", "plan-time-baseline"]
+    }
+  ],
+  "dispatch_seq": 15
 }
