@@ -20,6 +20,7 @@ import FormalSystem.Metalogic.Independence.DriftHistories
 import FormalSystem.Metalogic.Independence.OrderTransfer
 import FormalSystem.Metalogic.Independence.StateSetTruth
 import FormalSystem.Metalogic.Independence.DeterminismUndefinable
+import FormalSystem.Metalogic.Independence.TranslationStateSet
 import FormalSystem.Metalogic.Independence.StabUndefinable
 import FormalSystem.Metalogic.Independence.NaiveSystem
 import FormalSystem.Metalogic.Independence.CoarsenedModels
@@ -175,6 +176,11 @@ and answers "every non-Archimedean one".
   L⁺ truth depends only on the world state of evaluation.
 * `Independence/DeterminismUndefinable.lean` — the instantiation at `F°` and `F¹`, and
   `deterministic_not_plusDefinable`.
+* `Independence/TranslationStateSet.lean` — the choice-free route to `lem:state-set`'s three
+  sentences: the translation flow over an arbitrary duration group through `ShiftSet`
+  (`selfShift`, `translationFlow`), with (H1) and (H2) discharged by explicit translation
+  rather than by `cor:occurrence`, and the same results at `translationFrame D`. Not an
+  underivability result in its own right; an axiom-hygiene instantiation of an existing one.
 * `Independence/PastedCoarseModels.lean` — `CoarseModel.PasteClosed` (the splice exists at the
   level of `π`-images), under which PS and US are coarsely valid, so that every `.Base` theorem
   of TM⁺ is valid on every paste-closed coarse model (`not_plusDerivable_of_pcRefuted`).

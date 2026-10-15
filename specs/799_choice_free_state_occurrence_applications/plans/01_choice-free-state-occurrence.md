@@ -1,7 +1,7 @@
 # Implementation Plan: Task #799
 
 - **Task**: 799 - Choice-free `StateOccurs` for the state-set applications
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.75 hours
 - **Dependencies**: the state-set pin task (landed — `StateOccurs.of_isRegular` and the three
   `_of_isRegular` corollaries are in the tree)
@@ -206,7 +206,7 @@ No `roadmap_path` was provided in the delegation context; no roadmap phases are 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: The new leaf module and the choice-free translation flow [NOT STARTED]
+### Phase 1: The new leaf module and the choice-free translation flow [COMPLETED]
 
 **Goal**: A registered, building leaf module carrying the generic `ShiftSet` avatar of the
 translation flow with (H1) and (H2) discharged by explicit translation, and no `Classical.choice`
