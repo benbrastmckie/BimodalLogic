@@ -11,12 +11,12 @@ next_project_number: 803
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,790,792,793,794,796,797,798,801,802 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,791,795,799,800 | 298,464,502,616,761,772,790,792,794,796 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
-| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
-| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
-| 6 | 411 | 410 | decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,790,796,797,798 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,791,792,800 | 298,464,502,616,761,772,790,796 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500,794,799 | 231,465,497,792 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 125,429,543,793,795 | 428,498,499,500,794 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 410,501,801 | 125,429,791,793 | algebraic-representation, decidability, paper-alignment |
+| 6 | 411,802 | 410,801 | decidability, paper-alignment |
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
 | 9 | 482 | 412 | decidability |
@@ -124,17 +124,18 @@ next_project_number: 803
 
 790 [IMPLEMENTING] — Prove lem:canonical-frames, the four claims the paper makes...
   └─ 791 [RESEARCHED] — Prove prop:archimedean in the generality the paper states it:...
-792 [PLANNED] — Pin lem:state-set to the tree by discharging its remaining...
-  └─ 799 [NOT STARTED] — Discharge the Zorn dependence that the state-set corollaries...
-793 [PLANNED] — Prove lem:after-negation, and the cut...
-794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
-  └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
+    └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
+      └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, and cite...
+  └─ 792 [PLANNED] — Pin lem:state-set to the tree by discharging its remaining...
+    └─ 794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
+      └─ 793 [PLANNED] — Prove lem:after-negation, and the cut...
+        └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in... (see above)
+      └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
+    └─ 799 [NOT STARTED] — Discharge the Zorn dependence that the state-set corollaries...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
 798 [NOT STARTED] — Port the eleven unported modal-temporal interaction...
-801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
-802 [NOT STARTED] — Derive every TM-system theorem the paper cites, and cite...
 
 ## Tasks
 
@@ -142,7 +143,7 @@ next_project_number: 803
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: None
+- **Dependencies**: Task 801
 
 **Description**: Derive every TM-system theorem the paper cites, and cite derivations rather than derivability. Scope: every schema that the JPL paper (~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex) presents as a theorem of TM or of an extension (TM_z, TM_d, TM_r) or of BX and its extensions, in sub:Logic, sub:Extension, the Appendix definitions def:BX, def:BX-z, def:BX-d, def:BX-r, def:TMplus, and any footnote. (1) Audit: for each such schema, locate the Lean declaration in this repository and classify it as a direct derivation tree from the axioms, or as obtained through a completeness engine (derivable_of_valid*, Classical.choice over a Derivable proof). Known result of a first pass: Z1 is the only cited theorem routed through completeness (FormalSystem.Metalogic.CompletenessDerived.z1Thm wraps z1Derivable, which applies BXCanonical.derivable_of_validZTime to SoundnessLemmas.z1_valid); DF (DiscreteUnfolding.dfSchema), the discreteness witness (DiscreteUnfolding.succIndicator), CO (DedekindDerived.coDerived), DN (LinearityDerived.density), TC, TL, TK, T4, TF, P1-P4, NP, NF, NA are direct derivation trees. Re-verify this classification rather than assuming it, including any schema the audit finds that the first pass missed. (2) Lean work: for every schema that lacks a direct derivation, construct one as a DerivationTree from the axioms of the relevant system (for Z1: from UZ with the BX and TM axioms at FrameClass.ZTime, in the style of DiscreteUnfolding), name it in the Theorems namespace, verify with #print axioms that it depends on propext at most, and update docs/theorem-index.md. The completeness-route declaration may remain as a cross-check but must no longer be the cited one. (3) Paper work in the JPL source: make every citation point to the direct derivation via the existing \leanfoot convention; replace wording that says a schema is derivable, machine-checked as a theorem through the Z-time completeness engine, or similar, with wording that it is derived, citing the derivation; this includes the Z1 footnote near the UZ display, the def:BX-z remark on Z1, the DN sentence in sub:Extension, the sentence UZ makes DF derivable, and PU alone suffices to derive CO. Do not add prose explaining the citation convention. (4) Verify with the isolated paper build: cd JPL && latexmk -norc -pdf -bibtex -outdir=build-cli possible_worlds.tex, with no errors and no undefined references. Report the final per-schema table of declaration names and their #print axioms output
 
@@ -153,7 +154,7 @@ next_project_number: 803
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: None
+- **Dependencies**: Task 791, Task 793
 
 **Description**: Re-pin the BX/TM anchor wave in paper-definitions-of-record.md after the paper's post-788 revision, and verify in-tree axiom-membership prose matches
 
@@ -326,7 +327,7 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: Task 756
+- **Dependencies**: Task 756, Task 792
 - **Research**: [794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md]
 - **Plan**: [794_nomic_frames_law_histories_hierarchy/plans/01_nomic-frames-law-histories.md]
 
@@ -349,7 +350,7 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: None
+- **Dependencies**: Task 794
 - **Research**: [793_after_operator_negation_equivalence/reports/01_after-operator-negation-equivalence.md]
 - **Plan**: [793_after_operator_negation_equivalence/plans/01_after-operator-negation-equivalence.md]
 
@@ -370,7 +371,7 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
-- **Dependencies**: Task 756
+- **Dependencies**: Task 756, Task 790
 - **Research**: [792_pin_lem_state_set_flow_frames/reports/01_pin-lem-state-set-flow-frames.md]
 - **Plan**: [792_pin_lem_state_set_flow_frames/plans/01_pin-lem-state-set-flow-frames.md]
 
