@@ -246,7 +246,7 @@ no file in the tree opens the `TruthClauses` namespace (verified by grep at plan
 
 ---
 
-### Phase 3: `after_negation_valid` at L [NOT STARTED]
+### Phase 3: `after_negation_valid` at L [COMPLETED]
 
 **Goal**: Instantiate the generic result at `Formula` as a validity over every task frame, in a
 new `SoundnessLemmas` leaf module on the `CoValidity.lean` precedent.
@@ -295,7 +295,7 @@ aggregator, so the covering check is the guarded scoped build of
 
 ---
 
-### Phase 4: `PlusFormula.after` mirror [NOT STARTED]
+### Phase 4: `PlusFormula.after` mirror [COMPLETED]
 
 **Goal**: Mirror `after` into L⁺ with `Formula.after`'s right-hand side verbatim, and extend the
 `ofFormula` `rfl` pin block so the commutation is machine-checked.

@@ -3,9 +3,9 @@
   "started_at": "2026-10-15T07:15:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phases_1_2_complete",
-    "details": "Formula.after/before landed and pinned; generic After tier (IsNextTime, isNextTime_unique, after_top_iff, after_iff_of_isNextTime, after_negation) landed in TruthClauses.lean. Both scoped builds exit 0. Next: Phase 4, then 3, 5, 6, 7.",
-    "phases_completed": 2,
+    "stage": "phases_1_2_3_4_complete",
+    "details": "Phases 1-4 landed and green: Formula.after/before, the generic After tier, after_negation_valid in the new SoundnessLemmas/EventOperators.lean (wired into both the aggregator and FormalSystem.lean for C33), and PlusFormula.after with its ofFormula rfl pin. Next: Phase 5 (L-plus corollaries), Phase 6 (test pins), Phase 7 (docs plus full gate sweep).",
+    "phases_completed": 4,
     "phases_total": 7
   },
   "metadata": {

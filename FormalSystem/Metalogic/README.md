@@ -99,7 +99,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Deterministic.lean` | 30 | <!-- TODO: add description --> |
 | `Expressiveness.lean` | 77 | `Expressiveness/` |
 | `Independence.lean` | 233 | `Independence/` |
-| `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
+| `SoundnessLemmas.lean` | 38 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 142 | `WeakCanonical/` |
 <!-- END GENERATED -->
 
@@ -161,7 +161,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Deterministic/`](Deterministic/README.md) | 8 | 1,769 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 28 | 8,154 | Axiom-independence models |
-| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,424 | Per-axiom validity lemmas feeding `Soundness.lean` |
+| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 5 | 1,515 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,303 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 

@@ -473,6 +473,7 @@ import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.SoundnessLemmas
 import FormalSystem.Metalogic.SoundnessLemmas.CoValidity
 import FormalSystem.Metalogic.SoundnessLemmas.DiscreteOrder
+import FormalSystem.Metalogic.SoundnessLemmas.EventOperators
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
 import FormalSystem.Metalogic.SoundnessLemmas.Separability
 import FormalSystem.Metalogic.StrongCompleteness

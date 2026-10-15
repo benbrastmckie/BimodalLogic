@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.SoundnessLemmas.CoValidity
 import FormalSystem.Metalogic.SoundnessLemmas.DiscreteOrder
+import FormalSystem.Metalogic.SoundnessLemmas.EventOperators
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
 import FormalSystem.Metalogic.SoundnessLemmas.Separability
 
@@ -22,6 +23,8 @@ theorem; keeping them separate stops that file from growing without bound.
   soundness case: CO is derived here, not primitive)
 - `DiscreteOrder` — the order cores of the four discrete-frame validity proofs, stated over an
   abstract predicate `P : D → Prop` and mentioning neither `Formula` nor `TruthAt`
+- `EventOperators` — `after_negation_valid`, the semantic validity of `lem:after-negation` for
+  `def:event-operators`' `After` (not a soundness case: `Formula.after` is derived, not primitive)
 - `FrameClassVariants` — per-axiom validity and reflection-validity across the frame-class variants
 - `Separability` — the order-theoretic input to Reynolds' separability axiom
 
