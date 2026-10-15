@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "dispatch_seq": 5,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/799_choice_free_state_occurrence_applications/reports/01_choice-free-state-occurrence.md",
+      "summary": "Measured axiom-provenance study of the state-set corollaries: translationFrame is itself choice-borne through TaskFrame.limit_of_shift, so an absolute pin there is impossible without an upstream change; a verified choice-free route exists at the ShiftSet avatar of the same translation flow (selfShift D, equal to F1 at R by rfl), and the DeterminismUndefinable consumers are already all on the choice-free route."
+    }
+  ],
+  "user_decision": {
+    "question": "TaskFrame.limit_of_shift admits a verified choice-free proof, which would make translationFrame itself (and every result over it) choice-free -- but shrinking an axiom set is still a divergence for check-module-invariants.sh's 202-row exact-string baseline, whose C2 failure text calls divergence a HARD STOP rather than grounds for a new baseline, and it would also falsify MainResults.lean's uniform axiom-contract prose. Should this task take that change?",
+    "options": [
+      "Leave TaskFrame.limit_of_shift alone -- deliver the absolute choice-free pin at the ShiftSet avatar (selfShift / translationFlow) and a relative pin at translationFrame, touching no baseline",
+      "Re-prove TaskFrame.limit_of_shift choice-free in this task -- gains an absolute pin at translationFrame itself, and requires re-pinning however many of the 202 baselined axiom sets shrink plus amending MainResults.lean's axiom contract"
+    ],
+    "recommended": "Leave TaskFrame.limit_of_shift alone -- deliver the absolute choice-free pin at the ShiftSet avatar (selfShift / translationFlow) and a relative pin at translationFrame, touching no baseline",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1792056489_e27cc7_799",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
