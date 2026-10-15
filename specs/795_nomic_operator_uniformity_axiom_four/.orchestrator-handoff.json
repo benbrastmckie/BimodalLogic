@@ -1,15 +1,65 @@
 {
-  "status": "planned",
-  "dispatch_seq": 12,
-  "summary": "Authored a seven-phase lean4 implementation plan for the nomic operator and its three results, integrating a research report that had already compiled all six deliverables sorry-free in nine lean_run_code probes. The plan splits the work two ways: thm:nomic-uniform's six language-free conditions into a new FormalSystem/Semantics/Nomic/Uniformity.lean inside task 794's cluster, and the operator itself (formula type, truth clause, prop:nomic-tense-free bridge, validity, seriality, app:nomic-four) into a new semantic-only FormalSystem/NomicLanguage/ component following OpenLanguage/'s precedent. Forty identifiers are pinned under ## Lean Challenge Statements, matching the Goals set exactly; validate-artifact.sh passes with zero warnings.",
+  "task_number": 795,
+  "phase": "implement",
+  "status": "implemented",
+  "dispatch_seq": 15,
+  "session_id": "sess_1792095464_fd54b2",
+  "phases_completed": 7,
+  "phases_total": 7,
+  "summary": "All seven plan phases landed and are committed one commit per phase. thm:nomic-uniform's six equivalent frame conditions, the H_F x H_F identification and the cut rmk:nomic-uniform's per-state transitivity are in a new FormalSystem/Semantics/Nomic/Uniformity.lean; the operator itself is in a new semantic-only FormalSystem/NomicLanguage/ component (NomicFormula, the truth recursion with def:nomic-frame's Nomic clause, prop:nomic-tense-free's state-set bridge with its five S5 schemata, validity with seriality, and app:nomic-four over Z-time). Full lake build green with zero sorry and no new axioms; check-module-invariants.sh reports ALL CHECKS PASSED and every one of the plan's pinned Challenge declarations exists at its pinned signature.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/795_nomic_operator_uniformity_axiom_four/summaries/01_nomic-operator-uniformity-axiom-four-summary.md",
+      "summary": "Implementation summary for the nomic operator, the uniformity theorem and axiom 4."
+    },
     {
       "type": "plan",
       "path": "specs/795_nomic_operator_uniformity_axiom_four/plans/01_nomic-operator-uniformity-axiom-four.md",
-      "summary": "Seven-phase, 10-hour plan: record rows, the frame-level uniformity theorem, the NomicLanguage component and its syntax, the truth recursion and clause layer, the tense-free bridge with five S5 schemata, validity and seriality, then app:nomic-four with the prose repoints and the full gate set."
+      "summary": "The seven-phase plan, all phases now marked [COMPLETED]."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 7,
-  "blockers": []
+  "modified_files": [
+    "FormalSystem/Semantics/Nomic/Uniformity.lean",
+    "FormalSystem/Semantics/Nomic.lean",
+    "FormalSystem/Semantics/Nomic/README.md",
+    "FormalSystem/NomicLanguage.lean",
+    "FormalSystem/NomicLanguage/Formula.lean",
+    "FormalSystem/NomicLanguage/NomicTruth.lean",
+    "FormalSystem/NomicLanguage/NomicTenseFree.lean",
+    "FormalSystem/NomicLanguage/NomicValidity.lean",
+    "FormalSystem/NomicLanguage/NomicFour.lean",
+    "FormalSystem/NomicLanguage/README.md",
+    "FormalSystem/OpenLanguage/README.md",
+    "FormalSystem/StarLanguage/README.md",
+    "FormalSystem/Metalogic/Independence/StateSetTruth.lean",
+    "FormalSystem/Metalogic/Independence/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "FormalSystem.lean",
+    "README.md",
+    "docs/reference/paper-definitions-of-record.md",
+    "scripts/measure-refactor-partitions.py",
+    "typst/generated/status.typ"
+  ],
+  "commits": [
+    "452762439 task 795 phase 1: Record rows for the new anchors",
+    "18bdb3b0f task 795 phase 2: thm:nomic-uniform and the cut remark's side lemma",
+    "3c9034f9f task 795 phase 3: the NomicLanguage component and its syntax",
+    "ec0a2272d task 795 phase 4: NomicModel, the truth recursion, and the clause layer",
+    "36643e3f1 task 795 phase 5: prop:nomic-tense-free and the S5 schemata on the fragment",
+    "b4f77c3b8 task 795 phase 6: validity and seriality",
+    "739ba6923 task 795 phase 7: app:nomic-four, the prose repoints, and the gate sweep",
+    "5c0388bbd task 795: complete implementation"
+  ],
+  "verification": {
+    "build_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "module_invariants": "ALL CHECKS PASSED",
+    "reported_not_repaired": "check-metalogic-cycles.sh assertion B fails on one pre-existing SURPLUS upward edge, FormalSystem.MinusLanguage.AxiomDischarge -> FormalSystem.Theorems.LinearityDerived, added by commit ba6c0f5dd without extending that script's 7-line allowlist and byte-identical at baseline 90afe55a2. Outside this task's file set; reported per the plan's Phase 7 instruction, not a blocker. Assertions A and C pass.",
+    "deferred_gate": "verify-deploy.sh deferred to the batch stage per this dispatch's Batch Gate Deferral directive. It checks the deployed .claude/ tree against its source store and has zero overlap with this task's file set; the dispatch's own deploy-freshness context already reported the core extension stale beforehand."
+  }
 }

@@ -1,30 +1,68 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-15T15:00:00Z",
+  "completed_at": "2026-10-15T16:35:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/795_nomic_operator_uniformity_axiom_four/plans/01_nomic-operator-uniformity-axiom-four.md",
-      "summary": "Seven-phase, 10-hour lean4 plan for the nomic operator, thm:nomic-uniform, prop:nomic-tense-free, seriality and app:nomic-four, with 40 pinned Challenge statements."
+      "type": "summary",
+      "path": "specs/795_nomic_operator_uniformity_axiom_four/summaries/01_nomic-operator-uniformity-axiom-four-summary.md",
+      "summary": "The nomic operator, prop:nomic-tense-free's state-set collapse, thm:nomic-uniform's six conditions and app:nomic-four over Z-time, formalized sorry-free across a new Semantics/Nomic/Uniformity.lean and a new semantic-only FormalSystem/NomicLanguage/ component."
     }
   ],
-  "next_steps": "Run /implement 795 to execute the plan",
-  "phase_count": 7,
-  "estimated_hours": 10,
-  "dependency_waves": [[1], [2, 3], [4], [5, 6], [7]],
-  "memory_candidates": [
-    {
-      "content": "A semantics whose evaluation point is not (TaskModel F, WorldHistory F, F.Duration) over a TaskFrame cannot instantiate FormalSystem/Semantics/TruthClauses.lean at all: every clause class there (BotClause, ImpClause, BoxClause, UntlClause, SnceClause, StabClause) repeats that exact binder set. The concrete blocker for a nomic semantics is that H_F is a union of per-state law-history sets and, on a non-uniform frame, is the world-history set of no single task frame, so the WorldHistory F binder cannot be met. The consequence is a re-derived derived-operator clause layer -- nine short lemmas (neg, and, iff, someFuture, allFuture, somePast, allPast, always, next), each 3-8 lines, with only the two collapsed forms (always to the forall-y normal form via lt_trichotomy, and next via Order.succ) carrying content. Generalising the clause layer over the point structure is a six-component refactor across every language directory and is not worth it for one consumer; record the duplication and its cause in the new truth module's docstring instead. The same verdict will apply to any future neighbourhood or two-dimensional semantics in this tree.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/795_nomic_operator_uniformity_axiom_four/plans/01_nomic-operator-uniformity-axiom-four.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["TruthClauses", "TaskFrame", "clause-layer", "semantics", "derived-operators", "duplication"]
-    }
+  "modified_files": [
+    "FormalSystem/Semantics/Nomic/Uniformity.lean",
+    "FormalSystem/Semantics/Nomic.lean",
+    "FormalSystem/Semantics/Nomic/README.md",
+    "FormalSystem/NomicLanguage.lean",
+    "FormalSystem/NomicLanguage/Formula.lean",
+    "FormalSystem/NomicLanguage/NomicTruth.lean",
+    "FormalSystem/NomicLanguage/NomicTenseFree.lean",
+    "FormalSystem/NomicLanguage/NomicValidity.lean",
+    "FormalSystem/NomicLanguage/NomicFour.lean",
+    "FormalSystem/NomicLanguage/README.md",
+    "FormalSystem/OpenLanguage/README.md",
+    "FormalSystem/StarLanguage/README.md",
+    "FormalSystem/Metalogic/Independence/StateSetTruth.lean",
+    "FormalSystem/Metalogic/Independence/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "FormalSystem.lean",
+    "README.md",
+    "docs/reference/paper-definitions-of-record.md",
+    "scripts/measure-refactor-partitions.py",
+    "typst/generated/status.typ",
+    "specs/795_nomic_operator_uniformity_axiom_four/plans/01_nomic-operator-uniformity-axiom-four.md",
+    "specs/795_nomic_operator_uniformity_axiom_four/summaries/01_nomic-operator-uniformity-axiom-four-summary.md",
+    "specs/795_nomic_operator_uniformity_axiom_four/handoffs/phase-2-handoff-20261015.md",
+    "specs/795_nomic_operator_uniformity_axiom_four/handoffs/phase-3-handoff-20261015.md",
+    "specs/795_nomic_operator_uniformity_axiom_four/handoffs/phase-4-handoff-20261015.md",
+    "specs/795_nomic_operator_uniformity_axiom_four/handoffs/phase-5-handoff-20261015.md",
+    "specs/795_nomic_operator_uniformity_axiom_four/handoffs/phase-6-handoff-20261015.md",
+    "specs/795_nomic_operator_uniformity_axiom_four/handoffs/phase-7-handoff-20261015.md"
   ],
-  "metadata": {
-    "session_id": "sess_1792095464_fd54b2_795",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Formalized the nomic operator and its three paper results sorry-free: thm:nomic-uniform's six equivalent frame conditions with the H_F x H_F identification and the cut remark's per-state transitivity in a new FormalSystem/Semantics/Nomic/Uniformity.lean, and a new semantic-only FormalSystem/NomicLanguage/ component carrying NomicFormula, the truth recursion with def:nomic-frame's Nomic clause, prop:nomic-tense-free's state-set bridge with its five S5 schemata, validity with seriality, and app:nomic-four over Z-time. Full lake build green, zero sorry, no new axioms, and check-module-invariants.sh reports ALL CHECKS PASSED.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 12
+  "metadata": {
+    "session_id": "sess_1792095464_fd54b2",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 15,
+    "compliance_check": "passed",
+    "reported_not_repaired": "check-metalogic-cycles.sh assertion B fails on one pre-existing surplus upward edge FormalSystem.MinusLanguage.AxiomDischarge -> FormalSystem.Theorems.LinearityDerived (commit ba6c0f5dd, byte-identical at baseline 90afe55a2); outside this task's file set, fix is one allowlist entry in that script.",
+    "deferred_gate": "verify-deploy.sh deferred to the batch stage per this dispatch's Batch Gate Deferral directive; zero overlap with this task's file set."
+  }
 }

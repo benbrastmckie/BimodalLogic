@@ -11,7 +11,7 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,795,797,802,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,797,802,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -122,7 +122,6 @@ next_project_number: 805
 
 ### Paper Alignment
 
-795 [PLANNED] — Formalize the nomic operator and its three results, on the...
 797 [PLANNED] — Formalize the cut shift-of-finite-type remark. The paper's...
 802 [RESEARCHED] — Derive every TM-system theorem the paper cites, cite the...
 
@@ -378,12 +377,13 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry; the `assert_not_exists
 
 ### 795. Nomic operator uniformity axiom four
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 794, Task 801
 - **Research**: [795_nomic_operator_uniformity_axiom_four/reports/01_nomic-operator-uniformity-axiom-four.md]
 - **Plan**: [795_nomic_operator_uniformity_axiom_four/plans/01_nomic-operator-uniformity-axiom-four.md]
+- **Summary**: [795_nomic_operator_uniformity_axiom_four/summaries/01_nomic-operator-uniformity-axiom-four-summary.md]
 
 **Description**: Formalize the nomic operator and its three results, on the nomic frames of task 794. def:nomic-frame's clause: M, tau, x ⊨ Nomic φ iff M, sigma, x ⊨ φ for all sigma ∈ H_F^{tau(x)}, so the accessibility relation at x relates tau to the law-histories at its current state. prop:nomic-tense-free: over every nomic frame, Nomic φ ↔ □φ holds at every point for every tense-free φ (built from atoms, ⊥, →, □, Nomic), by the same state-set induction as lem:state-set, so every S5 schema for Nomic is valid on that fragment and any refutation needs S or U. thm:nomic-uniform: six equivalent conditions -- transitivity, symmetry, Euclidean (each at one time or at every time), H_F^{tau(x)} = H_F for all tau and x, Uniform, ⇒^w independent of w -- in which case the accessibility relation is H_F × H_F and Nomic φ ↔ □φ is valid for every φ; seriality (D) holds for Nomic over every nomic frame regardless. app:nomic-four: over ℤ-time, Nomic φ → Nomic Nomic φ is valid iff the frame is Uniform, and likewise Nomic φ ↔ □φ, so axiom 4 fails over some Static frame (the static-and-lawful witness of prop:nomic-hierarchy); the refuting sentence is always(¬(p ∧ Next q)) built from a one-step violation of ⇒_1^v along a law-history outside H_F^v.
 

@@ -1,7 +1,7 @@
 # Implementation Plan: The nomic operator, its uniformity theorem, and axiom 4
 
 - **Task**: 795 - Formalize the nomic operator and its three results, on the nomic frames of task 794
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: Task 794 (completed) — `FormalSystem/Semantics/Nomic/` supplies the frames, law-histories, occurrence, recovery, the ℤ-time presentation and the three hierarchy witnesses
 - **Research Inputs**: specs/795_nomic_operator_uniformity_axiom_four/reports/01_nomic-operator-uniformity-axiom-four.md
