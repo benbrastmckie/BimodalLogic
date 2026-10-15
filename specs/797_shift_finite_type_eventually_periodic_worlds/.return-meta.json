@@ -1,27 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 3,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/797_shift_finite_type_eventually_periodic_worlds/reports/01_shift-finite-type-periodic-worlds.md",
-      "summary": "Scopes the shift-of-finite-type task against existing tree machinery (FrameOver.extend_periodic, PlacedBiLasso, BiLasso/Agreement.lean), and resolves the choice-free requirement with compiled axiom probes: the H_F-membership chain becomes [propext, Quot.sound] once eq_or_ne is replaced by Decidable.eq_or_ne, while Nat.card, Fintype.ofFinite and Mathlib's SymbolicDynamics API each force Classical.choice."
+      "type": "plan",
+      "path": "specs/797_shift_finite_type_eventually_periodic_worlds/plans/01_shift-finite-type-periodic-worlds.md",
+      "summary": "Ten-phase plan for the shift-of-finite-type identification, the choice-free carrier-as-data extension theorem, and the finite prefix-plus-cycle certificate with a decidable check, with a Lean Challenge Statements block pinning all 16 committed signatures."
     }
   ],
-  "user_decision": {
-    "question": "Deliverable (2) asks for an extension theorem over a finite-state regular frame over ℤ with '#print axioms showing no Classical.choice', but measurement shows those two halves are incompatible: [Finite W] yields no choice-free enumeration (Fintype.ofFinite, Finset.toList and Multiset.toList all carry Classical.choice) and the Nat.card bound carries it in the statement alone. Which statement shape should the plan commit to?",
-    "options": [
-      "Carrier-as-data — restate (2) with (enum : List W), (henum : forall w, w in enum), [DecidableEq W], [DecidableRel F.step], bound enum.length; genuinely choice-free, but a different statement than the description's '[Finite W]' wording",
-      "Keep [Finite W] — deliver (2) as the existing FrameOver.extend_periodic already does, drop the choice-free requirement, and record the measured impossibility instead",
-      "Both — ship the carrier-as-data choice-free theorem and keep the [Finite W] version untouched, with each docstring naming the other"
-    ],
-    "recommended": "Both — ship the carrier-as-data choice-free theorem and keep the [Finite W] version untouched, with each docstring naming the other",
-    "blocking": false
-  },
+  "next_steps": "Run /implement 797 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "In Lean 4, a declaration's AXIOM PROFILE is contributed by its TYPE as well as its proof: `theorem probe {W : Type} [Finite W] : Nat.card W = Nat.card W := rfl` measures [propext, Classical.choice, Quot.sound] even though the proof is `rfl`, because `Nat.card` is choice-carrying and appears in the statement. Consequences when a task demands choice-freeness: (a) a cardinality bound in a conclusion must be an enumeration length (`enum.length`), never `Nat.card`; (b) `[Finite W]` cannot supply a choice-free enumeration at all -- `Fintype.ofFinite`, `Finset.toList` and `Multiset.toList` are each choice-carrying -- so the carrier must arrive as DATA (`enum : List W` plus `henum : forall w, w in enum`, with `[DecidableEq W]` and `[DecidableRel step]`); (c) a `Decidable`-instance substitution can scrub a whole chain: replacing `eq_or_ne` with `Decidable.eq_or_ne` at a carrier with `DecidableEq` (e.g. ℤ) moved a five-declaration membership chain from [propext, Classical.choice, Quot.sound] to [propext, Quot.sound]; (d) opening a proof with `classical`, or casing on a `Prop` with no `Decidable` instance, silently reintroduces it. Measure with a compiled `lake env lean` probe and pin the result with a `#guard_msgs` + `#print axioms` block in the test library, never in prose alone.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/797_shift_finite_type_eventually_periodic_worlds/plans/01_shift-finite-type-periodic-worlds.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["print-axioms", "classical-choice", "choice-free", "statement-carried-axioms", "nat-card", "decidable-instance"]
+    }
+  ],
   "metadata": {
-    "session_id": "sess_1792056489_e27cc7_797",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792095464_fd54b2_797",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 15,
+    "dependency_waves": [[1, 2], [3, 5], [4, 6], [7], [8], [9], [10]]
+  },
+  "dispatch_seq": 13
 }

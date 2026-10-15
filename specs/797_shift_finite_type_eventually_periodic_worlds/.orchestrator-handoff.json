@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 13,
+  "phases_completed": 0,
+  "phases_total": 10,
+  "summary": "Wrote a ten-phase implementation plan at specs/797_shift_finite_type_eventually_periodic_worlds/plans/01_shift-finite-type-periodic-worlds.md, integrating the research report's measured axiom accounting and the prior cycle's user decision (ship BOTH the carrier-as-data choice-free theorem and the untouched [Finite W] version). The plan carries a Lean Challenge Statements block whose 16 declared identifiers cross-validate exactly against its Goals list, verified by replicating lean-challenge-snapshot.sh's own extractors. Two plan-time divergences from the research recommendations are recorded in issues.jsonl: probe relocation into the task directory is dropped (check-evidence-probes.sh forbids task-directory probes), and deliverables (2) and (3) land under Metalogic/Decidability/ rather than Semantics/ because no Semantics module may import Metalogic and the choice-free pigeonhole to be reused lives there.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/797_shift_finite_type_eventually_periodic_worlds/plans/01_shift-finite-type-periodic-worlds.md",
+      "summary": "Ten-phase plan: provenance repointing, the choice-free ℤ membership chain, the named shift-of-finite-type identification plus its Mathlib dictionary, the effective toolkit, the choice-free extension theorem, the finite certificate with soundness and completeness, the axiom-profile guard test, and a final full gate sweep."
+    }
+  ]
+}
