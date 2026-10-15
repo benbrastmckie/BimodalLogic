@@ -294,22 +294,22 @@ enumerated direct dependent that previously declared all six — plus the new mo
 
 ---
 
-### Phase 3: FrameClass.Sat.rev into Semantics/FrameClassValidity.lean [NOT STARTED]
+### Phase 3: FrameClass.Sat.rev into Semantics/FrameClassValidity.lean [COMPLETED]
 
 **Goal**: every frame class is closed under reversal, stated beside the sibling `Sat` lemmas.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Semantics/FrameClassValidity.lean` immediately beforehand
-- [ ] Add `FrameClass.Sat.rev` beside `FrameClass.Sat.isRegular` and `FrameClass.Sat.anti`, inside
+- [x] Re-read `FormalSystem/Semantics/FrameClassValidity.lean` immediately beforehand
+- [x] Add `FrameClass.Sat.rev` beside `FrameClass.Sat.isRegular` and `FrameClass.Sat.anti`, inside
       the `FormalSystem.ProofSystem` namespace that file already declares and already documents as
       a deliberate namespace exception
-- [ ] Prove it exactly as recorded in research: `haveI := h.isRegular; cases fc` with
+- [x] Prove it exactly as recorded in research: `haveI := h.isRegular; cases fc` with
       `exact inferInstance` on the `.Base` arm and `exact ⟨inferInstance, h.2⟩` on each of
       `.Dense`, `.ZTime`, `.RTime`
-- [ ] Docstring it with the reason the closure is unconditional: `F.rev.Duration = F.Duration` by
+- [x] Docstring it with the reason the closure is unconditional: `F.rev.Duration = F.Duration` by
       `rfl`, so each tag's own conjunct transfers unchanged, and regularity comes from the
       promoted `FrameOver.rev_isRegular` instance
-- [ ] Stage the single path
+- [x] Stage the single path
 
 **Timing**: 0.25 hours
 

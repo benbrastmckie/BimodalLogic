@@ -20,6 +20,8 @@ by the same tag instead of by a hand-maintained binder list.
 
 - `FrameClass.Sat : FrameClass → TaskFrame → Prop` — the interpretation of record
 - `FrameClass.Sat.anti` — `Sat` is antitone in the `FrameClass` order
+- `FrameClass.Sat.rev` — every frame class is closed under reversal, because the converse frame
+  shares its temporal order
 
 Validity itself is not defined here; it is `Semantics.ValidIn` in
 `FormalSystem/Semantics/Validity.lean`, which is downstream of this module. See "Module placement"
@@ -247,5 +249,25 @@ theorem FrameClass.Sat.anti {fc₁ fc₂ : FrameClass} (h : fc₁ ≤ fc₂) {F 
       | exact And.left
       | exact fun hs => ⟨hs.1, TaskFrame.isDense_of_isRTime hs.2⟩
       | exact absurd h (by decide)
+
+/--
+**Every frame class is closed under reversal**, because the converse frame shares its temporal
+order.
+
+`.Base` is the promoted `FrameOver.rev_isRegular` instance (`Semantics/TaskFrame.lean`) found by
+synthesis off `h.isRegular`. At `.Dense`, `.ZTime` and `.RTime` the tag's own conjunct is a
+property of `F.Duration` alone, and `F.rev.Duration` is `F.Duration` by `rfl` — the reversal
+touches the fibre and nothing else — so each conjunct transfers unchanged.
+
+This is what lets `Semantics.validIn_reflectTime` (`Semantics/Validity.lean`) be stated with no
+closure hypothesis: `thm:TR-valid` holds at every frame class, not only at `rev`-closed ones.
+-/
+theorem FrameClass.Sat.rev {fc : FrameClass} {F : TaskFrame} (h : fc.Sat F) : fc.Sat F.rev := by
+  haveI := h.isRegular
+  cases fc
+  · exact inferInstance
+  · exact ⟨inferInstance, h.2⟩
+  · exact ⟨inferInstance, h.2⟩
+  · exact ⟨inferInstance, h.2⟩
 
 end FormalSystem.ProofSystem
