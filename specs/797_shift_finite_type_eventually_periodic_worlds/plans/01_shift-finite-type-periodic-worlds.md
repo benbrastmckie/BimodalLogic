@@ -1,7 +1,7 @@
 # Implementation Plan: Task #797
 
 - **Task**: 797 - Shift of finite type and eventually periodic possible worlds
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/797_shift_finite_type_eventually_periodic_worlds/reports/01_shift-finite-type-periodic-worlds.md
@@ -133,7 +133,7 @@ and never the inexact attribution.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Repoint the Provenance Records [NOT STARTED]
+### Phase 1: Repoint the Provenance Records [COMPLETED]
 
 - **Goal:** Make the "verbatim" label on both quoting surfaces true again, against the cut file
   that now holds the remark and its footnote.

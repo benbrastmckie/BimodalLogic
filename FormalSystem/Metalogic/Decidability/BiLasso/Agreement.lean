@@ -66,19 +66,36 @@ footnote attached to the discussion of the finite case. That footnote carries **
 it is not an anchor any tooling can resolve and it is deliberately **not** tracked in the
 definitions-of-record manifest; inventing a synthetic key for it would create a dangling anchor
 and a failing check. It is quoted here verbatim instead, and recorded as an untracked source in
-`docs/reference/paper-definitions-of-record.md`.
+`docs/reference/paper-definitions-of-record.md`, whose entry is the authority this quote is
+checked against.
 
-Verbatim, from the unanchored footnote in `JPL/possible_worlds.tex`, in the discussion of the
-finite case:
+The footnote is **cut from the live paper**. It is kept, with the sentence it hangs on, in
+`JPL/appendix_cut_material.tex` under the header
+`\section*{Categorical connections (cut from sub:Conclusion)}`; `JPL/possible_worlds.tex` retains
+only a `% PARAGRAPH CUT (category-theory connections)` record at the cut site, and its live
+replacement paragraph mentions only the sheaf and Johnstone route. Read what follows as a
+specification this module transcribes, not as a claim of the published paper.
 
-> In this case, the conclusion of \textbf{\ref{thm:extension}} becomes effective without appeal to
-> Zorn's lemma: since $W$ is finite, the forward and backward orbits extending a bounded convex
-> history must each revisit a world state, so every bounded convex history extends to a possible
-> world that is eventually periodic in both directions--- a finite prefix plus a finite cycle each
-> way--- and is therefore finitely representable, licensing a finite certificate that a given
-> bounded history is a fragment of a possible world.
+Verbatim, from the unanchored footnote in `JPL/appendix_cut_material.tex`, five sentences. Each
+source sentence is one source line; the soft wraps below are this file's 100-column limit and are
+not in the source.
 
-Two things in that sentence are delivered and one is qualified. Delivered: the doubly
+> In this case, the conclusion of \textbf{\ref{thm:extension}} becomes effective without appeal
+> to Zorn's lemma.
+>
+> Since $W$ is finite, the forward and backward orbits extending a bounded convex history must
+> each revisit a world state.
+>
+> Every bounded convex history therefore extends to a possible world that is eventually periodic
+> in both directions--- a finite prefix plus a finite cycle each way--- and so finitely
+> representable.
+>
+> This licenses a finite certificate that a given bounded history is a fragment of a possible
+> world.
+>
+> See Lind and Marcus~\cite{Lind2021}.
+
+Two things in that footnote are delivered and one is qualified. Delivered: the doubly
 ultimately-periodic extension, and the finite certificate. Qualified: "without appeal to Zorn's
 lemma" is preserved exactly and only as *no Zorn* — no module here imports the extension theorem
 or mentions `exists_maximal_extension`. It is **not** preserved as "choice-free" in Lean's sense,

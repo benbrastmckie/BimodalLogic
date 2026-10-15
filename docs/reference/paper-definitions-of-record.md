@@ -2543,33 +2543,52 @@ the passage has acquired a resolvable anchor upstream first.
 
 ### The finite-case effectiveness footnote
 
-- **Location**: `JPL/possible_worlds.tex`, in the footnote attached to the discussion of the
-  finite case (at the time of recording, line 1648). No `\label`, no `\aitem`.
+- **Location**: `JPL/appendix_cut_material.tex`, under the header
+  `\section*{Categorical connections (cut from sub:Conclusion)}`, in the footnote attached to the
+  shift-of-finite-type sentence (at the time of recording, the lines immediately following that
+  sentence). No `\label`, no `\aitem`. `JPL/possible_worlds.tex` retains only a
+  `% PARAGRAPH CUT (category-theory connections)` record at the cut site; the live replacement
+  paragraph in its conclusion mentions only the sheaf and Johnstone route and carries neither the
+  shift-of-finite-type sentence nor this footnote.
 - **Relied on by**: `FormalSystem/Metalogic/Decidability/BiLasso/Agreement.lean`, which quotes it
   verbatim in its module docstring, and the two `extend_periodic` theorems it introduces —
   `FormalSystem.Metalogic.Decidability.IntPresentation.extend_periodic` (effective, presented
-  frames) and `FormalSystem.Semantics.TaskFrame.extend_periodic` (general finite carrier).
-- **Text**:
+  frames) and `FormalSystem.Semantics.FrameOver.extend_periodic` (general finite carrier) —
+  together with the choice-free carrier-as-data counterpart
+  `FormalSystem.Metalogic.Decidability.extend_periodic_enum`.
+- **Text** (the footnote, five sentences):
 
-  > In this case, the conclusion of \textbf{\ref{thm:extension}} becomes effective without appeal
-  > to Zorn's lemma: since $W$ is finite, the forward and backward orbits extending a bounded
-  > convex history must each revisit a world state, so every bounded convex history extends to a
-  > possible world that is eventually periodic in both directions--- a finite prefix plus a finite
-  > cycle each way--- and is therefore finitely representable, licensing a finite certificate that
-  > a given bounded history is a fragment of a possible world.
+  > In this case, the conclusion of \textbf{\ref{thm:extension}} becomes effective without appeal to Zorn's lemma.
+  > Since $W$ is finite, the forward and backward orbits extending a bounded convex history must each revisit a world state.
+  > Every bounded convex history therefore extends to a possible world that is eventually periodic in both directions--- a finite prefix plus a finite cycle each way--- and so finitely representable.
+  > This licenses a finite certificate that a given bounded history is a fragment of a possible world.
+  > See Lind and Marcus~\cite{Lind2021}.
 
-  Re-quoted 2026-09-07 from the live paper alongside the `def:world-history` vocabulary
-  alignment: the footnote formerly read "bounded world history" in both places and now reads
-  "bounded convex history", and it gained a comma after "In this case". This source is
-  **untracked** — it carries no `sha256:` line and no manifest row, and is not read by
-  `scripts/check-paper-definitions.sh` — so re-quoting it moves no pin and re-runs no checker.
+- **Text** (the sentence the footnote is attached to — the shift-of-finite-type specification):
+
+  > When $W$ is finite and $D = \Z$, the set of possible worlds $H_{\F}$ is a shift of finite type: world states correspond to alphabet symbols, the unit-step task relation to the edges of a labeled graph, and possible worlds to the bi-infinite paths through that graph.
+
+  In the source the sentence's line ends with a `%` immediately after the final period; that `%`
+  is LaTeX's line-break suppressor attaching the footnote, not part of the sentence, and is the
+  only difference between the quoted block above and the source line.
+
+  This source is **untracked** — it carries no `sha256:` line and no manifest row, and is not read
+  by `scripts/check-paper-definitions.sh` — so re-quoting it moves no pin and re-runs no checker.
   `FormalSystem/Metalogic/Decidability/BiLasso/Agreement.lean`, which block-quotes the same
-  footnote in its module docstring, was re-quoted in the same change.
+  footnote in its module docstring, quotes it against this entry.
+
+  Because the sentence and its footnote are cut from the live paper, they are a **specification**
+  rather than a result the formalisation may cite: a Lean docstring transcribing them says what it
+  is transcribing and does not present the claim as a theorem of the published paper.
 
 - **What the formalisation preserves**: the doubly ultimately-periodic extension and the finite
-  certificate, both in full. "Without appeal to Zorn's lemma" is preserved as *no Zorn* — an
-  import-graph fact — and **not** as choice-freedom in Lean's sense, which is a claim about a
-  different axiom. The measured accounting lives in `extend_periodic`'s own docstring.
+  certificate, both in full, and the shift-of-finite-type identification itself —
+  `FormalSystem.Semantics.FrameOver.mem_HF_iff_no_forbidden` names `H_F` over ℤ as the
+  configurations of the one-step graph avoiding every forbidden 2-block, with
+  `FormalSystem.Semantics.FrameOver.finite_forbiddenBlocks` supplying the "finite type" half.
+  "Without appeal to Zorn's lemma" is preserved as *no Zorn* — an import-graph fact — and **not**
+  as choice-freedom in Lean's sense, which is a claim about a different axiom. The measured
+  accounting lives in `extend_periodic`'s and `extend_periodic_enum`'s own docstrings.
 
 ### The alternative-semantics footnote (convex-index evaluation)
 
