@@ -320,7 +320,7 @@ the library build and by C33.
 
 ---
 
-### Phase 3: The *Determined*-class closure and its deterministic sibling [NOT STARTED]
+### Phase 3: The *Determined*-class closure and its deterministic sibling [COMPLETED]
 
 **Goal**: Deliverable (4). The task frames validating *Determined* are closed under `rev`, by the
 paper's own mirror-image argument, and hence the BL⁺ form of `thm:TR-valid` over `C^⊡`; plus the
@@ -328,35 +328,39 @@ same three statements over the deterministic frames, which is the pair
 `cor:deterministic-completeness` is actually about.
 
 **Tasks**:
-- [ ] In `FormalSystem/Semantics/FrameProperty.lean`, inside `namespace TaskFrame` and immediately
+- [x] In `FormalSystem/Semantics/FrameProperty.lean`, inside `namespace TaskFrame` and immediately
       after `deterministic_iff`, add `deterministic_rev`, signature exactly as pinned below.
       Body routes through `rw [deterministic_iff]` and `FrameOver.rev_taskRel_neg`. Do **not**
       write `fun w d => h w (-d)`: `F.rev.TaskRel w x u` is `F.TaskRel u x w` definitionally
       (`FrameOver.rev_taskRel`, the relation transpose), and reaching
       `F.TaskRel w (-x) u` is exactly what `rev_taskRel_neg` does, which is why the `[F.IsRegular]`
-      instance argument is required and not decorative
-- [ ] Give it a docstring recording that trap in one sentence, and naming the paper's reason the
+      instance argument is required and not decorative *(deviation: altered — the plan's
+      named repair `rw [FrameOver.rev_taskRel_neg]` also fails: `F.rev.TaskRel` is
+      `F.toFibre.rev.TaskRel` only definitionally, so `rw` finds no syntactic occurrence of the
+      pattern. Working route applies the lemma as an explicit term at `F.toFibre`; the
+      `deterministic_iff` rewrite the plan names is still load-bearing.)*
+- [x] Give it a docstring recording that trap in one sentence, and naming the paper's reason the
       converse frame "leaves the temporal order unchanged"
-- [ ] Add `import FormalSystem.PlusLanguage.PlusReversal` to
+- [x] Add `import FormalSystem.PlusLanguage.PlusReversal` to
       `FormalSystem/Metalogic/Deterministic/Validity.lean`
-- [ ] In that file, add `reflect_determined` — that the reflection of a *Determined* instance is a
+- [x] In that file, add `reflect_determined` — that the reflection of a *Determined* instance is a
       *Determined* instance — by `simp only [PlusFormula.reflectTime, reflect_time_involution]`
       over the `reflect_time_*` family
-- [ ] Add `determinedValid_rev`, deliverable (4) proper, by the paper's mirror-image argument:
+- [x] Add `determinedValid_rev`, deliverable (4) proper, by the paper's mirror-image argument:
       `plusValidOn_rev_iff` at the instance `φ.reflectTime → ⊡φ.reflectTime`, whose own reflection
       is `φ → ⊡φ` by `reflect_time_involution`; `rwa [reflect_determined]` closes it. The
       docstring quotes the paper's clause — `F⁻` validates an instance of *Determined* just in
       case `F` validates its mirror image, itself an instance of *Determined*
-- [ ] Add `determinedSat_rev` as `⟨FrameClass.Sat.rev h.1, determinedValid_rev h.2⟩`, and
+- [x] Add `determinedSat_rev` as `⟨FrameClass.Sat.rev h.1, determinedValid_rev h.2⟩`, and
       `plusValidDeterminedIn_reflectTime` — deliverable (4)'s consequence, the BL⁺ `thm:TR-valid`
       over `C^⊡` — as `plusValidOnFrames_reflectTime` at that closure. `FrameClass.Sat.rev`
       already exists with **no** hypothesis; do not re-derive it
-- [ ] Add `detSat_rev` and `plusValidDetIn_reflectTime`, the deterministic-frames analogues.
+- [x] Add `detSat_rev` and `plusValidDetIn_reflectTime`, the deterministic-frames analogues.
       `detSat_rev` recovers `deterministic_rev`'s regularity hypothesis from inside the structure
       with `haveI := h.1.isRegular`, since every `FrameClass.Sat` value carries
       `TaskFrame.IsRegular`
-- [ ] Add one bullet per new declaration to `Deterministic/Validity.lean`'s `## Main Results` block
-- [ ] Write no `file.lean:NNN` citation and no task number; keep every line at 100 characters or
+- [x] Add one bullet per new declaration to `Deterministic/Validity.lean`'s `## Main Results` block
+- [x] Write no `file.lean:NNN` citation and no task number; keep every line at 100 characters or
       fewer; stage by explicit file list only and read `git diff --staged`
 
 **Timing**: 1.0 hours

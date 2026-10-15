@@ -365,6 +365,23 @@ theorem deterministic_iff (F : TaskFrame) :
       ∀ (w u v : F.WorldState) (x : F.Duration), F.TaskRel w x u → F.TaskRel w x v → u = v :=
   ⟨fun h w _ _ x hu hv => h w x hu hv, fun h w x _ hu _ hv => h w _ _ x hu hv⟩
 
+/-- **The converse frame of a deterministic frame is deterministic.** The paper's reason is that
+`F ↦ F⁻` leaves the temporal order unchanged: the converse frame reverses only the task relation,
+so a fibre of `F⁻` is a fibre of `F` read at the mirrored duration, and a subsingleton stays a
+subsingleton.
+
+**Caller trap.** `F.rev.TaskRel w x u` is `F.TaskRel u x w` definitionally — `FrameOver.rev` is
+the relation *transpose* (`FrameOver.rev_taskRel`), not the duration negation — so this is *not*
+`fun w d => h w (-d)`, and that shape does not elaborate. Reaching `F.TaskRel w (-x) u` is what
+`FrameOver.rev_taskRel_neg` does, through the reflection law `w ⇒_x u ↔ u ⇒_{-x} w`, and that law
+is why the `[F.IsRegular]` instance argument is required here rather than decorative. -/
+theorem deterministic_rev {F : TaskFrame} [F.IsRegular] (h : F.Deterministic) :
+    F.rev.Deterministic := by
+  rw [TaskFrame.deterministic_iff] at h ⊢
+  intro w u v x hu hv
+  exact h w u v (-x) ((FrameOver.rev_taskRel_neg F.toFibre w x u).mp hu)
+    ((FrameOver.rev_taskRel_neg F.toFibre w x v).mp hv)
+
 /-- A deterministic frame gets its *Saturation* field for free, via
 `TaskFrame.saturation_of_fib_subsingleton`: a fibre that is a subsingleton is trivially
 spherically well-behaved, and `Seg` is a subset of a fibre. No Zorn, no frame machinery. This is

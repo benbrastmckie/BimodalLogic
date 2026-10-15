@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.PlusLanguage.PlusDeterminism
 import FormalSystem.Metalogic.Independence.DeterminismUndefinable
+import FormalSystem.PlusLanguage.PlusReversal
 
 /-!
 # Validity over the deterministic frames, and the *Determined*-valid frame class
@@ -41,6 +42,12 @@ semantics is touched.
 - `plusValidDeterminedIn_le_plusValidDetIn` and the L mirror — validity over the larger class
   transports down to the smaller one
 - `PlusValidIn.toDet`, `ValidIn.toDet` — unrestricted class validity transports down
+- `reflect_determined` — the reflection of a *Determined* instance is a *Determined* instance
+- `determinedValid_rev` — **the *Determined*-valid frames are closed under reversal**, by the
+  paper's mirror-image argument; `determinedSat_rev` is the same at a frame class
+- `plusValidDeterminedIn_reflectTime` — `thm:TR-valid` at L⁺ over the *Determined*-valid frames
+- `detSat_rev`, `plusValidDetIn_reflectTime` — the deterministic-frames siblings of the previous
+  two, the pair the completeness result over the deterministic frames is about
 
 ## What these notions do NOT say
 
@@ -211,5 +218,68 @@ theorem PlusValidDeterminedIn.apply {fc : FrameClass} {φ : PlusFormula}
     (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
     PlusTruthAt M τ t φ :=
   h F ⟨hF, hDV⟩ M τ t
+
+/-! ## Both classes are closed under time reflection -/
+
+/-- The reflection of a *Determined* instance is a *Determined* instance: `reflectTime`
+distributes through `imp` and fixes `stab`, so the mirror of `φ → ⊡φ` is `φ' → ⊡φ'` at
+`φ' = φ_{S|U}`. This is the syntactic half of the paper's mirror-image clause. -/
+theorem reflect_determined (φ : PlusFormula) :
+    (φ.imp φ.stab).reflectTime = φ.reflectTime.imp φ.reflectTime.stab := by
+  simp only [PlusFormula.reflectTime]
+
+/--
+**The *Determined*-valid frames are closed under reversal.** This is the paper's own clause, in
+its own words: `F⁻` validates an instance of *Determined* just in case `F` validates its mirror
+image, itself an instance of *Determined*.
+
+The proof is that sentence read literally. The instance wanted over `F⁻` is `φ → ⊡φ`; apply
+`plusValidOn_rev_iff` at the mirror instance `φ_{S|U} → ⊡φ_{S|U}`, which `F` validates by
+hypothesis, and whose own reflection is `φ → ⊡φ` because `reflectTime` is an involution and fixes
+`stab`. Nothing about determinism itself is used: the argument runs at the *Determined* schema.
+-/
+theorem determinedValid_rev {F : TaskFrame} (h : DeterminedValid F) :
+    DeterminedValid F.rev := by
+  intro φ
+  have key := (plusValidOn_rev_iff F (φ.reflectTime.imp φ.reflectTime.stab)).mpr
+    (h φ.reflectTime)
+  rwa [reflect_determined, PlusFormula.reflect_time_involution] at key
+
+/-- The closure at a frame class. The class half is `ProofSystem.FrameClass.Sat.rev`, which needs
+no hypothesis because the converse frame shares its temporal order. -/
+theorem determinedSat_rev {fc : FrameClass} {F : TaskFrame} (h : DeterminedSat fc F) :
+    DeterminedSat fc F.rev :=
+  ⟨FrameClass.Sat.rev h.1, determinedValid_rev h.2⟩
+
+/--
+**`thm:TR-valid` at L⁺ over the *Determined*-valid frames.** `PlusValidDeterminedIn` is
+`PlusValidOnFrames` at a predicate no `FrameClass` tag denotes, so it is reached by the primitive
+`plusValidOnFrames_reflectTime` with the closure supplied as its argument — which is exactly what
+`determinedSat_rev` is.
+
+Paper: `thm:TR-valid`
+-/
+theorem plusValidDeterminedIn_reflectTime {fc : FrameClass} {φ : PlusFormula}
+    (h : PlusValidDeterminedIn fc φ) : PlusValidDeterminedIn fc φ.reflectTime :=
+  plusValidOnFrames_reflectTime (fun _ => determinedSat_rev) h
+
+/-- The deterministic-frames sibling of `determinedSat_rev`. Unlike that one this needs
+`TaskFrame.deterministic_rev`'s regularity hypothesis, which is free here: every `FrameClass.Sat`
+value carries `TaskFrame.IsRegular`, so `h.1.isRegular` supplies it from inside the structure. -/
+theorem detSat_rev {fc : FrameClass} {F : TaskFrame} (h : DetSat fc F) :
+    DetSat fc F.rev := by
+  haveI := h.1.isRegular
+  exact ⟨FrameClass.Sat.rev h.1, TaskFrame.deterministic_rev h.2⟩
+
+/--
+**`thm:TR-valid` at L⁺ over the deterministic frames.** The sibling of
+`plusValidDeterminedIn_reflectTime` at the narrower class — the pair the paper's completeness
+result over the deterministic frames is stated about.
+
+Paper: `thm:TR-valid`
+-/
+theorem plusValidDetIn_reflectTime {fc : FrameClass} {φ : PlusFormula}
+    (h : PlusValidDetIn fc φ) : PlusValidDetIn fc φ.reflectTime :=
+  plusValidOnFrames_reflectTime (fun _ => detSat_rev) h
 
 end FormalSystem.Metalogic.Deterministic
