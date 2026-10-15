@@ -536,6 +536,12 @@ import FormalSystem.MinusLanguage.MinusTruth
 import FormalSystem.MinusLanguage.MinusValidity
 import FormalSystem.MinusLanguage.Soundness
 import FormalSystem.MinusLanguage.Translation
+import FormalSystem.NomicLanguage
+import FormalSystem.NomicLanguage.Formula
+import FormalSystem.NomicLanguage.NomicFour
+import FormalSystem.NomicLanguage.NomicTenseFree
+import FormalSystem.NomicLanguage.NomicTruth
+import FormalSystem.NomicLanguage.NomicValidity
 import FormalSystem.OpenLanguage
 import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenClasses
@@ -607,6 +613,7 @@ import FormalSystem.Semantics.LexCarrier
 import FormalSystem.Semantics.Nomic
 import FormalSystem.Semantics.Nomic.Frame
 import FormalSystem.Semantics.Nomic.Recovery
+import FormalSystem.Semantics.Nomic.Uniformity
 import FormalSystem.Semantics.Nomic.Witnesses
 import FormalSystem.Semantics.Nomic.ZTime
 import FormalSystem.Semantics.PartialHistory

@@ -16,6 +16,7 @@ The nomic *operator* and its logic are not here — see "Siting, and its cost" b
 | `Recovery.lean` | The two-point partial history `{⟨0,p⟩,⟨d,q⟩}` as a **general lemma over `TaskFrame`** (`PartialHistory.exists_worldHistory_two_point`), `lem:nomic-recovery` — `H_F^w = H_F^u` iff `⇒ʷ = ⇒ᵘ` — over the one-directional helper the biconditional applies twice, and `static_iff_taskRel_eq`, the primitive-level form of *Static* |
 | `ZTime.lean` | `def:nomic-witnesses`: the ℤ-time presentation `ofStepFamily`, whose `w`-th member is `FrameOver.ofStep (R w)` **by `rfl`**, the two `lawHist`-over-ℤ membership bridges, law-history monotonicity in the one-step relation, and the two step-path invariants (two-sided and forward-only) |
 | `Witnesses.lean` | `prop:nomic-hierarchy`: three finite ℤ-time witnesses — *Static* not *Lawful*, *Lawful* not *Static*, *Static* and *Lawful* not *Uniform* — with their per-witness independence theorems, and the bundled `nomic_hierarchy` |
+| `Uniformity.lean` | `def:nomic-frame`'s accessibility relation `accRel`; the three small facts `lawHist_subset_HF`, `exists_mem_HF_eq` and `lawHist_nonempty`; `thm:nomic-uniform`'s conditions (1)-(4) as `TransAt`/`SymmAt`/`EuclAt`/`PointUniform` with the cycle `uniform_of_transAt`/`_symmAt`/`_euclAt`, `pointUniform_of_uniform` and the three choice-free `_of_pointUniform` directions, the (5)⇔(6) step `uniform_iff_taskRel_indep`, the `H_F × H_F` identification `accRel_eq_of_uniform` with `accRel_equivalence_of_uniform`, the bundled `nomic_uniform`, and the cut `rmk:nomic-uniform`'s per-state transitivity `TransAtState` with `transAtState_iff` and `uniform_iff_forall_transAtState` |
 
 ## Paper anchors ported
 
@@ -27,6 +28,7 @@ The nomic *operator* and its logic are not here — see "Siting, and its cost" b
 | `lem:nomic-recovery` | `lawHist_eq_iff_taskRel_eq`, over `taskRel_imp_of_lawHist_eq` (`Recovery.lean`) |
 | `def:nomic-witnesses` | `ofStepFamily`, `ofStepFamily_at`, `ofStepFamily_isRegular` (`ZTime.lean`) |
 | `prop:nomic-hierarchy` | `nomic_hierarchy` and the `NomicHierarchy` witnesses (`Witnesses.lean`) |
+| `thm:nomic-uniform` | `nomic_uniform` over the cycle, with `accRel_eq_of_uniform` and `accRel_equivalence_of_uniform` (`Uniformity.lean`) |
 
 `thm:nomic-primitive` is **cut material**, not a live anchor: clause (1) is `static_iff_taskRel_eq`
 and is cited by file and header (`appendix_cut_material.tex`, "Primitive-level characterization of
@@ -92,4 +94,4 @@ nothing in this directory advertises one as choice-free.
 
 ---
 
-**Last verified**: 2026-10-14
+**Last verified**: 2026-10-15

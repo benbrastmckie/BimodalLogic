@@ -8,6 +8,7 @@ import FormalSystem.Semantics.Nomic.Frame
 import FormalSystem.Semantics.Nomic.Recovery
 import FormalSystem.Semantics.Nomic.ZTime
 import FormalSystem.Semantics.Nomic.Witnesses
+import FormalSystem.Semantics.Nomic.Uniformity
 
 /-!
 # `FormalSystem.Semantics.Nomic` — nomic frames and their law-histories
@@ -25,4 +26,8 @@ Aggregator for `Semantics/Nomic/`. See `Semantics/Nomic/README.md`.
   `lawHist`-over-ℤ membership bridges, law-history monotonicity, and the two step-path invariants
 - `Nomic.Witnesses` — `prop:nomic-hierarchy`: the finite ℤ-time witnesses separating *Static*,
   *Lawful* and *Uniform*, their per-witness independence theorems, and `nomic_hierarchy`
+- `Nomic.Uniformity` — `def:nomic-frame`'s accessibility relation `accRel`, `thm:nomic-uniform`'s
+  six equivalent conditions as a cycle of implications with the bundled `nomic_uniform`, the
+  `H_F × H_F` identification and its equivalence-relation consequence, and the cut
+  `rmk:nomic-uniform`'s per-state transitivity `TransAtState`
 -/
