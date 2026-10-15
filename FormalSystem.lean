@@ -601,6 +601,8 @@ import FormalSystem.Semantics.HistoryMorphism
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.IntTransfer
 import FormalSystem.Semantics.LexCarrier
+import FormalSystem.Semantics.Nomic
+import FormalSystem.Semantics.Nomic.Frame
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.Periodicity

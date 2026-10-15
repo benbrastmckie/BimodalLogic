@@ -1,17 +1,18 @@
 {
-  "status": "researched",
-  "dispatch_seq": 7,
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md",
-      "summary": "Nomic-frame port design with verified Lean text: NomicFrame structure, lawHist/H_F, the three properties, lem:nomic-occurrence, the full lem:nomic-recovery biconditional, the Z-time ofStepFamily presentation and witness 1 of prop:nomic-hierarchy all machine-checked; plus siting, gate and territory findings."
-    }
-  ],
+  "status": "in_progress",
+  "started_at": "2026-10-14T00:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "phase_1_complete",
+    "details": "Phase 1 (cluster scaffolding + frame layer) committed: Nomic/Frame.lean, Nomic.lean, Nomic/README.md, five record rows, regenerated root. Scoped build green, 0 sorry. Starting Phase 2 (Recovery.lean).",
+    "phases_completed": 1,
+    "phases_total": 7
+  },
   "metadata": {
-    "session_id": "sess_1792013208_936eb4_794",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792026404_b03e6d",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"]
+  },
+  "dispatch_seq": 20
 }
