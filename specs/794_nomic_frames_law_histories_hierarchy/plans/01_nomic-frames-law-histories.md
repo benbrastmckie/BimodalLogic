@@ -1,7 +1,7 @@
 # Implementation Plan: Nomic frames, law-histories, and the nomic hierarchy
 
 - **Task**: 794 - Formalize the paper's nomic frames, law-histories, and the nomic hierarchy
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11 hours
 - **Dependencies**: None (task 795, the nomic operator and its logic, depends on this one)
 - **Research Inputs**: specs/794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md

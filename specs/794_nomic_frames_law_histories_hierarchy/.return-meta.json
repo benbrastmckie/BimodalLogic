@@ -24,7 +24,11 @@
     "session_id": "sess_1792026404_b03e6d",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "lean-implementation-agent"
+    ],
     "compliance_check": "passed",
     "phases_completed": 7,
     "phases_total": 7

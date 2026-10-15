@@ -11,10 +11,10 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,794,796,797,798,799,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,793,795,800 | 298,464,502,616,761,772,794,796 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500,801 | 231,465,497,793 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 125,429,543,802 | 428,498,499,500,801 | algebraic-representation, decidability, metalogic, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,793,795,796,797,798,799,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,800,801 | 298,464,502,616,761,772,793,796 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500,802 | 231,465,497,801 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -122,11 +122,10 @@ next_project_number: 805
 
 ### Paper Alignment
 
-794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
-  └─ 793 [PLANNED] — Prove lem:after-negation, and the cut...
-    └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
-      └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
-  └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
+793 [PLANNED] — Prove lem:after-negation, and the cut...
+  └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
+    └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
+795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
@@ -387,12 +386,13 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 794. Nomic frames law histories hierarchy
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 756, Task 791, Task 792
 - **Research**: [794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md]
 - **Plan**: [794_nomic_frames_law_histories_hierarchy/plans/01_nomic-frames-law-histories.md]
+- **Summary**: [794_nomic_frames_law_histories_hierarchy/summaries/01_nomic-frames-law-histories-summary.md]
 
 **Description**: Formalize the paper's nomic frames, the frame-level half of the nomic appendix. def:nomic-frame replaces the task relation by a relativized family ⇒^w, one task relation per world state w, each satisfying def:frame, so that F^w := (W, D, ⇒^w) is a task frame; the law-histories H_F^w are the possible worlds of F^w and H_F is their union over w. def:nomic-properties: Lawful (tau ∈ H_F^{tau(x)} for all tau ∈ H_F and x), Static (H_F^{tau(x)} = H_F^{tau(y)} for all tau, x, y), Uniform (H_F^w = H_F for all w). def:nomic-witnesses fixes the ℤ-time presentation by one-step relations R_w with ⇒^w_n = R_w^n and the reflection convention for n < 0.
 

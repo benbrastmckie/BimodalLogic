@@ -329,7 +329,7 @@
     {
       "project_number": 794,
       "project_name": "nomic_frames_law_histories_hierarchy",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "effort": "large",
       "topic": "paper-alignment",
@@ -340,7 +340,7 @@
       ],
       "description": "Formalize the paper's nomic frames, the frame-level half of the nomic appendix. def:nomic-frame replaces the task relation by a relativized family ⇒^w, one task relation per world state w, each satisfying def:frame, so that F^w := (W, D, ⇒^w) is a task frame; the law-histories H_F^w are the possible worlds of F^w and H_F is their union over w. def:nomic-properties: Lawful (tau ∈ H_F^{tau(x)} for all tau ∈ H_F and x), Static (H_F^{tau(x)} = H_F^{tau(y)} for all tau, x, y), Uniform (H_F^w = H_F for all w). def:nomic-witnesses fixes the ℤ-time presentation by one-step relations R_w with ⇒^w_n = R_w^n and the reflection convention for n < 0.\n\nNOTHING EXISTS. The tree has no nomic frame, no relativized relation and no law-history; FormalSystem/OpenLanguage.lean's docstring lists 'the nomic operator, over a four-place task relation ⇒ʷ indexed by world states' under 'manuscript operators without a formalization'. The operator and its logic are task 795, which depends on this one.\n\nDELIVER: (1) `NomicFrame D`: one carrier W with a family of general frames `at : W → FrameOver D` on it and a regularity hypothesis for each, the law-history sets `lawHist F w` (the world histories of `F.at w`, reindexed to one history type over W) and `H_F` as their union; (2) the three properties as Props, with the trivial implications Uniform → Static and Uniform → Lawful; (3) lem:nomic-occurrence (every state at every time along some law-history at every w) as a wrapper on `PartialHistory.occurrence` at `F.at w`; (4) lem:nomic-recovery: H_F^w = H_F^u iff ⇒^w = ⇒^u, the forward direction through the two-point partial history and `PartialHistory.extension` at F^w exactly as the paper's proof, with `nullity_identity` for d = 0 and the reflection convention for d < 0; (5) prop:nomic-hierarchy's three finite ℤ-time witnesses -- static-not-lawful on {a,b,c}, lawful-not-static on {a,b,e}, static-and-lawful-not-uniform on {a,b,c} -- each assembled from its one-step relations R_w by the ℤ-time scheme (reuse `FrameOver.mem_HF_iff_adjacent` in FormalSystem/Semantics/IntNormalForm.lean for history membership and `TaskFrame.saturation_of_finite` for Saturation), with the independence statements as theorems. OPTIONAL, only if cheap once (4) is in: the cut thm:nomic-primitive, which gives primitive-level forms of Static (a two-point equation on the relativized relation) and Lawful (a three-point condition, with partial-history and ℤ-time finite-path equivalents), kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from appendix ... thm:nomic-primitive'.\n\nPAPER ANCHORS. def:nomic-frame, def:nomic-properties, def:nomic-witnesses, prop:nomic-hierarchy, lem:nomic-occurrence, lem:nomic-recovery in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, each with a `% PORT:` comment to clear; rmk:choice records that the two lemmas go through Zorn.\n\nSITING. A new cluster under FormalSystem/Semantics/ (e.g. Semantics/Nomic/) -- decide at plan time, recording the trade-off against siting it under OpenLanguage/, where the operator of task 795 would otherwise live.\n\nCONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every phase.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-15T00:47:17Z",
+      "last_updated": "2026-10-15T07:19:22Z",
       "artifacts": [
         {
           "path": "specs/794_nomic_frames_law_histories_hierarchy/reports/01_nomic-frames-law-histories-hierarchy.md",
@@ -351,9 +351,14 @@
           "path": "specs/794_nomic_frames_law_histories_hierarchy/plans/01_nomic-frames-law-histories.md",
           "type": "plan",
           "summary": "Implementation plan: 01_nomic-frames-law-histories.md"
+        },
+        {
+          "path": "specs/794_nomic_frames_law_histories_hierarchy/summaries/01_nomic-frames-law-histories-summary.md",
+          "type": "summary",
+          "summary": "Seven-phase implementation record for the nomic frame cluster, its two lemmas, the cut primitive-level clause and prop:nomic-hierarchy's three witnesses."
         }
       ],
-      "session_id": "sess_1792013208_936eb4",
+      "session_id": "sess_1792026404_b03e6d",
       "next_artifact_number": 2,
       "file_scope": [
         "FormalSystem.lean",
@@ -369,7 +374,8 @@
         "README.md",
         "docs/reference/paper-definitions-of-record.md",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Formalized the frame-level half of the paper's nomic appendix as FormalSystem/Semantics/Nomic/: def:nomic-frame with its relativized family and law-histories, def:nomic-properties with both implications from Uniform, lem:nomic-occurrence, lem:nomic-recovery in full over a general two-point-history lemma, def:nomic-witnesses' ZZ-time presentation with both step-path invariants, clause (1) of the cut thm:nomic-primitive, and prop:nomic-hierarchy's three finite witnesses with their independence theorems and the bundled nomic_hierarchy. Full build green, zero sorry, no new axioms, check-module-invariants.sh ALL CHECKS PASSED."
     },
     {
       "project_number": 795,
