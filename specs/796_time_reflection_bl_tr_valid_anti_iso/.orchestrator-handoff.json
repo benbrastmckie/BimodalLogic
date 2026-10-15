@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "partial",
+  "phases_completed": 1,
   "phases_total": 6,
-  "summary": "Wrote a 6-phase implementation plan for task 796 from the research report, which had already compiled every target declaration, so planning was siting plus build sequencing rather than proof discovery. Phases: promote the frame-level rev block into Semantics/TaskFrame.lean (idempotent with task 617); create Semantics/Reversal.lean carrying the G-15 guard with TaskModel.rev, WorldHistory.rev, revHistEquiv, revAntiIso and truthAt_rev; FrameClass.Sat.rev into FrameClassValidity.lean; the thm:TR-valid family into Validity.lean; the decision-(3) docstrings; full gates. Two consequences the report missed are now named steps: TaskFrame.lean's longFile ceiling (2896 lines against 2900) must rise to 3000, and the new module stales both the generated library root (C33) and typst/generated/status.typ's pinned file count (689 -> 690), the latter inside task 801's declared file_scope. Paper-side % PORT: clearance is an explicit Non-Goal per the user's twice-recorded decision that implement agents touch only this repository.",
+  "summary": "Phase 1 landed: the converse-frame block (FrameOver.rev, its regularity instance, the two task-relation lemmas, the involution facts, @[reducible] TaskFrame.rev, TaskFrame.rev_rev) promoted from OpenLanguage/OpenReversal.lean into Semantics/TaskFrame.lean, longFile ceiling 2900 -> 3000 with an extended justification, both guarded scoped builds exit 0. Semantics/Reversal.lean is created and compiles clean (9 declarations, sole import FormalSystem.Semantics.TruthTransport, G-15 guard verbatim) but is not yet registered in Semantics.lean or the library root, so Phase 2 is in progress. Phases 3-6 not started.",
   "blockers": [],
   "artifacts": [
     {
       "type": "plan",
       "path": "specs/796_time_reflection_bl_tr_valid_anti_iso/plans/01_time-reflection-bl-tr-valid.md",
-      "summary": "6-phase, 3.5-hour plan for lem:time-reflection and thm:TR-valid, with a Lean Challenge Statements block pinning all eleven target signatures."
+      "summary": "6-phase plan for lem:time-reflection and thm:TR-valid, with a Lean Challenge Statements block pinning all eleven target signatures."
     }
   ],
-  "dispatch_seq": 7
+  "dispatch_seq": 11
 }

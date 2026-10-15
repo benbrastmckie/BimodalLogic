@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.OpenLanguage.OpenValidity
+import FormalSystem.Semantics.Reversal
 
 /-!
 # Time reversal of frames, histories and L^▷ truth
@@ -64,43 +65,6 @@ namespace FormalSystem.OpenLanguage
 this namespace. -/
 
 end FormalSystem.OpenLanguage
-
-namespace FormalSystem.Semantics
-
-open FormalSystem.Semantics.TaskFrame
-
-/-- A model over the converse frame: the same world states, so the same valuation. -/
-def TaskModel.rev {F : TaskFrame} (M : TaskModel F) : TaskModel F.rev := ⟨M.valuation⟩
-
-/-- Reversal of models is an involution, definitionally. -/
-theorem TaskModel.rev_rev {F : TaskFrame} (M : TaskModel F) : M.rev.rev = M := rfl
-
-/-- **The reflected world**: `τ⁻(t) = τ(-t)`, a possible world over the converse frame. -/
-def WorldHistory.rev {F : TaskFrame} (τ : WorldHistory F) : WorldHistory F.rev :=
-  WorldHistory.ofTotal F.rev (fun t => τ.state (-t)) (fun s t => by
-    change F.TaskRel (τ.state (-t)) (t - s) (τ.state (-s))
-    have := τ.respects_task (-t) (-s)
-    rwa [show (-s : F.Duration) - -t = t - s by abel] at this)
-
-@[simp] theorem WorldHistory.rev_state {F : TaskFrame} (τ : WorldHistory F) (t : F.Duration) :
-    τ.rev.state t = τ.state (-t) := rfl
-
-/-- Reversal of world histories is an involution. Propositional, not `rfl`: the two histories
-have the states `τ(- -t)` and `τ(t)`. -/
-theorem WorldHistory.rev_rev_hist {F : TaskFrame} (τ : WorldHistory F) :
-    (τ.rev.rev : WorldHistory F) = τ := by
-  apply WorldHistory.ext_state
-  intro t
-  change τ.state (- -t) = τ.state t
-  rw [neg_neg]
-
-/-- Every world over the converse frame is the reflection of a world over the original: with
-`rev_rev_hist`, the manuscript's bijection `H_F → H_{F⁻}`. -/
-theorem WorldHistory.rev_surjective {F : TaskFrame} (σ : WorldHistory F.rev) :
-    ∃ τ : WorldHistory F, τ.rev = σ :=
-  ⟨(σ.rev : WorldHistory F), WorldHistory.rev_rev_hist (F := F.rev) σ⟩
-
-end FormalSystem.Semantics
 
 namespace FormalSystem.OpenLanguage
 

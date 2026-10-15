@@ -25,6 +25,7 @@ import FormalSystem.Semantics.TruthClauses
 import FormalSystem.Semantics.ValidityLayer
 import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.TruthTransport
+import FormalSystem.Semantics.Reversal
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.Ultraproduct
 import FormalSystem.Semantics.Validity
@@ -186,6 +187,12 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   tiered by which primitives a language has. L⁻ takes the tense-primitive tier, L⁺ and L⋆ the
   stability tier, and L⋆'s environment is its stored-time vector
 - `Truth`: Recursive truth evaluation `M,τ,t ⊨ φ` for formulas at model-history-time triples
+- `Reversal`: the reflected model and the reflected world — `TaskModel.rev`, `WorldHistory.rev`
+  and its involution, the bijection `H_F → H_{F⁻}` as `revHistEquiv`, and `revAntiIso`, which
+  packages reversal as a `TruthAntiIso`. `truthAt_rev` is `lem:time-reflection` for the base
+  language: an instance of `TruthTransport`'s generic order-reversing transport, not an
+  induction of its own. The frame-level half lives in `TaskFrame`; the validity-level
+  consequence (`thm:TR-valid`) in `Validity`
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
 - `ConvexTruth`: the convex-index consequence relations C3 and C4 — `TruthAtConvex`, a truth
   recursion written beside `TruthAt` at a partial-history index, with the box over the convex

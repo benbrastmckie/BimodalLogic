@@ -216,41 +216,41 @@ repository-level gate surface is touched by a same-name, same-namespace relocati
 
 ---
 
-### Phase 2: New module Semantics/Reversal.lean -- model, history, and the anti-isomorphism [NOT STARTED]
+### Phase 2: New module Semantics/Reversal.lean -- model, history, and the anti-isomorphism [COMPLETED]
 
 **Goal**: `lem:time-reflection` for BL (`truthAt_rev`) exists, in a new G-15-guard-clean module
 that imports `FormalSystem.Semantics.TruthTransport` and nothing else.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/OpenLanguage/OpenReversal.lean`,
+- [x] Re-read `FormalSystem/OpenLanguage/OpenReversal.lean`,
       `FormalSystem/Semantics/TruthTransport.lean`, `FormalSystem/Semantics.lean` and
       `FormalSystem/Semantics/README.md` immediately beforehand
-- [ ] Create `FormalSystem/Semantics/Reversal.lean`: the four-line copyright header in the
+- [x] Create `FormalSystem/Semantics/Reversal.lean`: the four-line copyright header in the
       established style, `import FormalSystem.Semantics.TruthTransport` as the sole import, a
       module docstring (`# ...`, `## Main Definitions`, `## Tags`) as the first command after the
       imports, and the G-15 guard copied verbatim from `TruthTransport.lean:44-45`:
       `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
       FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass`
-- [ ] Move into it, from `OpenReversal.lean:144-173`: `TaskModel.rev`, `TaskModel.rev_rev`,
+- [x] Move into it, from `OpenReversal.lean:144-173`: `TaskModel.rev`, `TaskModel.rev_rev`,
       `WorldHistory.rev`, `@[simp] WorldHistory.rev_state`, `WorldHistory.rev_rev_hist`,
       `WorldHistory.rev_surjective` — with `rwa [show (-s : F.Duration) - -t = t - s by abel]`
       replaced by `rwa [neg_sub_neg] at this` in `WorldHistory.rev`'s `respects_task` obligation
-- [ ] Add `revHistEquiv`, `revAntiIso` and `truthAt_rev` as recorded under
+- [x] Add `revHistEquiv`, `revAntiIso` and `truthAt_rev` as recorded under
       `## Lean Challenge Statements` below, with `revAntiIso.atom` proved by `change` +
       `rw [neg_neg]` (**not** `rfl`) and `truthAt_rev` closed by the bare
       `Truth.truthAt_of_truthAntiIso (revAntiIso M) φ τ t`
-- [ ] Delete the six moved declarations from `OpenReversal.lean` and add
+- [x] Delete the six moved declarations from `OpenReversal.lean` and add
       `import FormalSystem.Semantics.Reversal` there (same commit, for the same duplicate-name
       reason as Phase 1)
-- [ ] Register the module: add `import FormalSystem.Semantics.Reversal` to
+- [x] Register the module: add `import FormalSystem.Semantics.Reversal` to
       `FormalSystem/Semantics.lean` in its existing position-by-layer ordering, with a matching
       module-doc entry in that file's docstring list
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm
       `FormalSystem.lean` gained exactly one sorted `import FormalSystem.Semantics.Reversal` line
       and nothing else (`check-module-invariants.sh` C33 gates this byte-for-byte)
-- [ ] Add one `| Reversal.lean | ... |` row to `FormalSystem/Semantics/README.md`, following the
+- [x] Add one `| Reversal.lean | ... |` row to `FormalSystem/Semantics/README.md`, following the
       `TruthTransport.lean` row's shape, and refresh that file's `*Last verified:*` date
-- [ ] Stage the explicit six-path list; never a directory or glob add
+- [x] Stage the explicit six-path list; never a directory or glob add
 
 **Timing**: 0.75 hours
 
