@@ -194,4 +194,19 @@ theorem StateOccurs.state_image (h : StateOccurs F) (t : F.Duration) :
   simp only [Set.mem_setOf_eq, Set.mem_univ, iff_true]
   exact h w t
 
+/--
+**(H2) discharged from the bundling class.** Over a regular task frame, `StateOccurs` — the (H2)
+hypothesis the `□` case consumes — holds outright: `cor:occurrence` supplies, for every world
+state and every time, a world history occupying that state at that time, which is exactly what
+`StateOccurs` asserts.
+
+`cor:occurrence` is proved by extending the one-point partial history through `thm:extension`,
+whose argument runs through Zorn's lemma, so this discharge carries `Classical.choice`. The
+hypothesis form above carries none, and the frames `Independence/DeterminismUndefinable.lean`
+instantiates it at discharge (H2) by explicit witnesses; both forms are therefore live, for
+different reasons.
+-/
+theorem StateOccurs.of_isRegular (F : TaskFrame) [F.IsRegular] : StateOccurs F :=
+  fun w x => PartialHistory.occurrence F w x
+
 end FormalSystem.Metalogic.Independence

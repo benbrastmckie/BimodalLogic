@@ -168,27 +168,27 @@ No `roadmap_path` was provided in the delegation context; no roadmap phases are 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Record the five paper anchors (the C15 unblock) [IN PROGRESS]
+### Phase 1: Record the five paper anchors (the C15 unblock) [COMPLETED]
 
 **Goal**: Every anchor the later phases cite resolves against
 `docs/reference/paper-definitions-of-record.md`, pointer-only, before any docstring cites it.
 
 **Tasks**:
-- [ ] Re-read the `<!-- KNOWN-ANCHORS:BEGIN -->` … `<!-- KNOWN-ANCHORS:END -->` block immediately
+- [x] Re-read the `<!-- KNOWN-ANCHORS:BEGIN -->` … `<!-- KNOWN-ANCHORS:END -->` block immediately
       before editing, and confirm `git status --short` shows the file clean
-- [ ] Confirm all five anchors are still absent from BOTH the MANIFEST and the KNOWN-ANCHORS
+- [x] Confirm all five anchors are still absent from BOTH the MANIFEST and the KNOWN-ANCHORS
       block (field-1 match on `def:flow`, `def:state-set`, `lem:nomic-occurrence`,
       `lem:state-set`, `prop:nomic-tense-free`)
-- [ ] Insert five `anchor|LIVE-UNPINNED|note` rows at their alphabetical positions inside the
+- [x] Insert five `anchor|LIVE-UNPINNED|note` rows at their alphabetical positions inside the
       `LIVE-UNPINNED` group: `def:flow` and `def:state-set` between `def:BL-language` and
       `def:task-topology`; `lem:nomic-occurrence` and `lem:state-set` between
       `lem:history-time-shift-preservation` and `lem:time-reflection`;
       `prop:nomic-tense-free` between `prop:archimedean` and `sent:det`
-- [ ] Write each note pointer-only, naming the in-tree counterpart and ending with the block's
+- [x] Write each note pointer-only, naming the in-tree counterpart and ending with the block's
       existing "cited as a pointer, text never quoted" formula, on the
       `cor:no-characterization` / `app:drift` / `prop:archimedean` precedent. Add **no**
       MANIFEST row and **no** `sha256:` line for any of the five
-- [ ] `git diff -- docs/reference/paper-definitions-of-record.md` and confirm exactly five added
+- [x] `git diff -- docs/reference/paper-definitions-of-record.md` and confirm exactly five added
       lines, zero removed, zero modified
 
 **Timing**: 0.5 hours
@@ -220,26 +220,26 @@ greps before inserting, and by the five-added/zero-removed diff check above.
 
 ---
 
-### Phase 2: Discharge (H2) — `StateOccurs.of_isRegular` [NOT STARTED]
+### Phase 2: Discharge (H2) — `StateOccurs.of_isRegular` [COMPLETED]
 
 **Goal**: `StateOccurs F` is derivable from the bundling class, so `def:flow`'s hypothesis set
 is all that `lem:state-set`'s tree forms need.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Independence/OrderTransfer.lean` immediately before editing
-- [ ] In the existing `## (H2) — every state is occupied at every time` section, directly after
+- [x] Re-read `FormalSystem/Metalogic/Independence/OrderTransfer.lean` immediately before editing
+- [x] In the existing `## (H2) — every state is occupied at every time` section, directly after
       `StateOccurs.state_image`, add
       `theorem StateOccurs.of_isRegular (F : TaskFrame) [F.IsRegular] : StateOccurs F := fun w x => PartialHistory.occurrence F w x`
-- [ ] Add **no** import line — `FormalSystem.Semantics.Extension.Extension` is already in this
+- [x] Add **no** import line — `FormalSystem.Semantics.Extension.Extension` is already in this
       file's transitive closure; if the explicit `(F : TaskFrame)` binder does not shadow the
       ambient `variable {F : TaskFrame}` cleanly, fix the binder, never the imports
-- [ ] Write its docstring: it cites `cor:occurrence` by name, states that it routes through
+- [x] Write its docstring: it cites `cor:occurrence` by name, states that it routes through
       `thm:extension` and hence Zorn so this form carries `Classical.choice`, and names
       `StateOccurs` as the (H2) hypothesis it discharges
-- [ ] Write no capitalized `Compositionality`/`Compositional`/`Seriality`/`Serial`/`Limit`/
+- [x] Write no capitalized `Compositionality`/`Compositional`/`Seriality`/`Serial`/`Limit`/
       `Saturation`/`Saturated` token on any line of that docstring, and no
       `Constraints consumed:` marker
-- [ ] Cite no `file.lean:NNN` location and no task number anywhere in the docstring
+- [x] Cite no `file.lean:NNN` location and no task number anywhere in the docstring
 
 **Timing**: 0.5 hours
 
@@ -266,14 +266,16 @@ Confirm by the scoped build in this phase's verification, and by `lean_hover_inf
   exits 0, detached via `Bash(run_in_background: true)`, exit read from the guard's `result`
   subcommand or an un-piped capture
 - `bash scripts/check-module-invariants.sh --no-build` exits 0; C15, C34a, C34b, C9 and C20 all
-  PASS
+  PASS *(deviation: altered — C15, C34a, C34b, C9 and C20 all PASS; whole-script exit is 1 on the
+  INV generated-inventory group alone, which this plan regenerates in Phase 5, so exit 0 is
+  unsatisfiable at this point in the sequence)*
 - `lean_verify FormalSystem.Metalogic.Independence.StateOccurs.of_isRegular` reports
   `[propext, Classical.choice, Quot.sound]` and no `sorry`
 - `git diff` shows no change to the `StateOccurs` definition or to `StateOccurs.state_image`
 
 ---
 
-### Phase 3: The three `_of_isRegular` corollaries [NOT STARTED]
+### Phase 3: The three `_of_isRegular` corollaries [IN PROGRESS]
 
 **Goal**: `lem:state-set`'s three sentences exist in the tree at `[F.IsRegular] (h : OrderFlow F)`
 alone, under names the paper can cite, with the two choice-free originals byte-identical.
