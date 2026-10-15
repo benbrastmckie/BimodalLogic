@@ -439,6 +439,7 @@ import FormalSystem.Metalogic.Expressiveness.Separation.SemanticBridge
 import FormalSystem.Metalogic.Expressiveness.StaviConnectives
 import FormalSystem.Metalogic.Expressiveness.Table
 import FormalSystem.Metalogic.Independence
+import FormalSystem.Metalogic.Independence.ArchimedeanSharpness
 import FormalSystem.Metalogic.Independence.BehSeparatedness
 import FormalSystem.Metalogic.Independence.ClockFrame
 import FormalSystem.Metalogic.Independence.CoNotPriorU
