@@ -1,0 +1,20 @@
+{
+  "status": "implemented",
+  "summary": "All seven phases closed. The paper's canonical-frames lemma is fully formalized: 23 declarations appended to FormalSystem/Semantics/Correspondence/DurationFrames.lean cover claims (a)-(d), with the two paper anchors recorded as LIVE-UNPINNED rows before any citing docstring landed, the module header and Correspondence README extended, and one corrected sentence in RealTranslationFrame.lean. Neither canonical frame's definition was touched and no new module was added. Verification: full guarded unscoped build exit 0 (2848 jobs, zero errors, zero warnings), zero sorry, axiom count unchanged, and the whole gate set green at exit rather than merely subset-of-baseline (invariants ALL CHECKS PASSED, typst-sync-check PASS, readme-lint PASS, copyright 0 missing, verify-deploy 15/15). Three deviations are recorded: the plan's no-choice-axiom criterion is unachievable because translationFrame itself depends on Classical.choice; a pre-commit gate forced typst/generated/status.typ into every Lean commit rather than Phase 7 alone; and two research-round proofs needed change rather than show to satisfy the house style linter.",
+  "phases_completed": 7,
+  "phases_total": 7,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/790_lem_canonical_frames_translation_two_state/summaries/01_lem-canonical-frames-characterizations-summary.md",
+      "summary": "Implementation summary: the 23 declarations per claim, the decisions, the three plan deviations, the full exit gate table, and the two recorded follow-ups."
+    },
+    {
+      "type": "plan",
+      "path": "specs/790_lem_canonical_frames_translation_two_state/plans/01_lem-canonical-frames-characterizations.md",
+      "summary": "All seven phase headings marked [COMPLETED], with deviations annotated inline on the affected checklist items."
+    }
+  ],
+  "blockers": [],
+  "dispatch_seq": 16
+}

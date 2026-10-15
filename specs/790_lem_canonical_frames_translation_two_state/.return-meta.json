@@ -1,17 +1,37 @@
 {
-  "status": "researched",
-  "dispatch_seq": 3,
+  "status": "implemented",
+  "started_at": "2026-10-14T19:41:00Z",
+  "completed_at": "2026-10-15T03:24:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 12,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/790_lem_canonical_frames_translation_two_state/reports/01_lem-canonical-frames-characterizations.md",
-      "summary": "All four lem:canonical-frames claims proved in compiled probes; placement, statement shapes, and the C15/typst-status gate obligations settled, with a territory flag on docs/reference/paper-definitions-of-record.md."
+      "type": "summary",
+      "path": "specs/790_lem_canonical_frames_translation_two_state/summaries/01_lem-canonical-frames-characterizations-summary.md",
+      "summary": "All four claims of the paper's canonical-frames lemma proved as 23 declarations in FormalSystem/Semantics/Correspondence/DurationFrames.lean, with the two paper anchors recorded and the whole gate set green at exit."
     }
   ],
+  "completion_data": {
+    "completion_summary": "Proved all four claims of the paper's canonical-frames lemma as 23 declarations appended to FormalSystem/Semantics/Correspondence/DurationFrames.lean: the translation frame is Deterministic at every temporal order and its possible worlds are exactly the translations (equivalence, set and uniqueness forms); the two-state relation satisfies the four task-frame constraints iff the duration order is Discrete, tied back to the frame by permissiveFrame_taskRel_eq; and the two-state frame is not Deterministic while every assignment of its two states to times is one of its possible worlds. Neither frame's definition changed, no new module was added, and the two cited paper anchors were recorded before any citing docstring landed.",
+    "roadmap_items": []
+  },
   "metadata": {
-    "session_id": "sess_1792013208_936eb4_790",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792026404_b03e6d",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "phases_completed": 7,
+    "phases_total": 7
+  },
+  "dispatch_seq": 16
 }

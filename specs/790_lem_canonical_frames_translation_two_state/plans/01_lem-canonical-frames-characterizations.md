@@ -1,7 +1,7 @@
 # Implementation Plan: Task #790
 
 - **Task**: 790 - Prove lem:canonical-frames, the four claims about the paper's two canonical countermodel frames
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/790_lem_canonical_frames_translation_two_state/reports/01_lem-canonical-frames-characterizations.md
