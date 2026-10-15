@@ -590,4 +590,138 @@ theorem translation_exists_unique {D : TemporalOrder}
   have := congrArg (fun σ => translationStates σ 0) hc
   simpa using this.symm
 
+
+/--
+The **bare permissive relation** on the two-state carrier: `w ⇒_d u` iff `d ≠ 0` or `w = u`, which
+is `def:canonical-frames`' two-state clause read off directly.
+
+Claim (c) of `lem:canonical-frames` is stated here rather than at `permissiveFrame`, because that
+frame cannot be applied without the `SuccOrder` and `NoMaxOrder` data that discreteness itself
+supplies — so "`permissiveFrame D so nm` is a task frame iff `D` is Discrete" is not a well-formed
+statement, its own hypotheses already presupposing the right-hand side. The relation carries no
+such data, and `permissiveFrame_taskRel_eq` ties it back to the frame.
+-/
+def permRel (D : TemporalOrder) : Bool → ↑D → Bool → Prop := fun w d u => d ≠ 0 ∨ w = u
+
+/-- The definitional bridge for `permRel`, which every helper below consumes. -/
+theorem permRel_iff (D : TemporalOrder) (w : Bool) (d : ↑D) (u : Bool) :
+    permRel D w d u ↔ (d ≠ 0 ∨ w = u) := Iff.rfl
+
+/--
+**The tie-back.** The two-state frame's own task relation *is* `permRel`.
+
+Without this lemma the biconditionals below would be statements about a lookalike relation rather
+than about the frame of `def:canonical-frames`: the frame is built by
+`FrameOver.ofReflectiveRegular`, whose relation equation is what identifies the two.
+-/
+theorem permissiveFrame_taskRel_eq (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) :
+    (permissiveFrame D so nm).TaskRel = permRel D :=
+  FrameOver.ofReflectiveRegular_taskRel_eq
+
+/--
+*Reflection* holds for `permRel` unconditionally — recorded so a reader of the biconditionals
+below sees which of the frame constraints is not at issue in them.
+-/
+theorem permRel_reflection (D : TemporalOrder) :
+    ∀ w (d : ↑D) u, permRel D w d u ↔ permRel D u (-d) w :=
+  TaskFrame.reflection_of_permissive (permRel_iff D)
+
+/--
+**(c), the "if" half.** A least positive duration `p` makes *Limit* hold for `permRel`: the
+`p`-neighbourhood of a state contains only states reachable at a duration of absolute value below
+`p`, and the only such duration is `0`, which forces the two states equal.
+-/
+theorem permRel_limit_of_isLeast {D : TemporalOrder} {p : ↑D}
+    (hp : IsLeast {x : ↑D | 0 < x} p) : TaskFrame.Limit (permRel D) := by
+  intro w u h
+  obtain ⟨y, hy, hR⟩ := h p hp.1
+  rcases hR with hne | heq
+  · exact absurd (hp.2 (abs_pos.mpr hne)) (not_le.mpr hy)
+  · exact heq.symm
+
+/--
+**(c), the "only if" half.** Over a densely ordered duration carrier *Limit* fails for `permRel`:
+every neighbourhood of a state contains the other one, since a positive duration strictly below
+the neighbourhood's radius always exists and every nonzero duration permits every transition.
+
+This machine-checks the sentence `TaskFrame.limit_of_permissive`'s docstring already asserts in
+prose — that over a dense carrier every state lies in every cone of every other state, and *Limit*
+fails outright — with `w₀` and `w₁` as the two-state witness.
+-/
+theorem permRel_not_limit_of_dense (D : TemporalOrder) (hd : DenselyOrdered ↑D) :
+    ¬ TaskFrame.Limit (permRel D) := by
+  intro h
+  have : (false : Bool) = true := by
+    refine h true false ?_
+    intro x hx
+    obtain ⟨y, hy0, hyx⟩ := hd.dense 0 x hx
+    exact ⟨y, by rwa [abs_of_pos hy0], Or.inl (ne_of_gt hy0)⟩
+  simp at this
+
+/--
+*Discrete* (`def:frame-properties`) is equivalent to carrying a least positive duration: forward
+by instantiating the discreteness clause at `0` on the positive duration a nontrivial duration
+group always has, and back by `isLeast_succ_of_isLeast_pos`, which turns a least positive `p` into
+a least element of every strict upper set.
+
+`FrameProperty.lean`'s own `IsDiscrete` docstring flags this equivalence as something that ought
+to be a proof step rather than a definitional assumption. This is that proof step, and it is what
+puts the discreteness side of the biconditionals below into the form
+`Semantics.duration_dense_or_least_pos` consumes.
+-/
+theorem isDiscrete_iff_exists_isLeast_pos (D : TemporalOrder) :
+    (∀ x : ↑D, (∃ y, x < y) → ∃ y', IsLeast {z : ↑D | x < z} y')
+      ↔ ∃ p : ↑D, IsLeast {x : ↑D | 0 < x} p := by
+  constructor
+  · intro h
+    obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := ↑D)
+    obtain ⟨y', hy'⟩ := h 0 ⟨p, hp⟩
+    exact ⟨y', hy'⟩
+  · rintro ⟨p, hp⟩ x -
+    exact ⟨x + p, isLeast_succ_of_isLeast_pos hp x⟩
+
+/--
+**(c), headline form for *Limit*.** *Limit* holds for `permRel` exactly when the duration order is
+*Discrete* — the two halves above, joined by the density dichotomy
+`Semantics.duration_dense_or_least_pos`, which makes the failure under density and the success
+under a least positive duration exhaustive.
+-/
+theorem permRel_limit_iff_isDiscrete (D : TemporalOrder) :
+    TaskFrame.Limit (permRel D)
+      ↔ (∀ x : ↑D, (∃ y, x < y) → ∃ y', IsLeast {z : ↑D | x < z} y') := by
+  rw [isDiscrete_iff_exists_isLeast_pos]
+  constructor
+  · intro h
+    rcases duration_dense_or_least_pos (D := ↑D) with hd | hp
+    · exact absurd h (permRel_not_limit_of_dense D hd)
+    · exact hp
+  · rintro ⟨p, hp⟩
+    exact permRel_limit_of_isLeast hp
+
+/--
+**(c) of `lem:canonical-frames`.** The four task-frame constraints of `def:frame` — *Compositional*,
+*Serial*, *Limit* and *Saturation* — hold for the two-state relation exactly when the duration
+order is *Discrete*.
+
+The conjunction, not *Limit* alone, is the honest Lean reading of the paper's "is a task frame
+just in case `D` is Discrete": the other three constraints hold unconditionally for a permissive
+relation, so *Limit* is the only one carrying the biconditional's weight, and saying so takes
+stating all four.
+-/
+theorem permRel_constraints_iff_isDiscrete (D : TemporalOrder) :
+    (TaskFrame.Compositional (permRel D) ∧ TaskFrame.Serial (permRel D)
+        ∧ TaskFrame.Limit (permRel D) ∧ TaskFrame.Saturation (permRel D))
+      ↔ (∀ x : ↑D, (∃ y, x < y) → ∃ y', IsLeast {z : ↑D | x < z} y') := by
+  rw [isDiscrete_iff_exists_isLeast_pos]
+  constructor
+  · rintro ⟨-, -, hlim, -⟩
+    rcases duration_dense_or_least_pos (D := ↑D) with hd | hp
+    · exact absurd hlim (permRel_not_limit_of_dense D hd)
+    · exact hp
+  · rintro ⟨p, hp⟩
+    exact ⟨TaskFrame.comp_of_permissive (permRel_iff D),
+      TaskFrame.serial_of_permissive (permRel_iff D),
+      permRel_limit_of_isLeast hp,
+      TaskFrame.saturation_of_permissive (permRel_iff D)⟩
+
 end FormalSystem.Semantics
