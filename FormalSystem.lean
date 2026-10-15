@@ -675,6 +675,7 @@ import FormalSystem.Theorems.DedekindDerived
 import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Theorems.DiscreteUnfolding
 import FormalSystem.Theorems.GeneralizedNecessitation
+import FormalSystem.Theorems.Interaction
 import FormalSystem.Theorems.LinearityDerived
 import FormalSystem.Theorems.ModalDerived
 import FormalSystem.Theorems.ModalS4

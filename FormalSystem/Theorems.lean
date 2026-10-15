@@ -18,6 +18,7 @@ import FormalSystem.Theorems.DiscreteUnfolding
 import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Theorems.ConnectDerived
 import FormalSystem.Theorems.LinearityDerived
+import FormalSystem.Theorems.Interaction
 /-!
 # FormalSystem.Theorems - Key Theorems
 
@@ -40,6 +41,9 @@ pairing, notNotIntro)
 (`succIndicator` and its `{fc}`-guarded form `succIndicatorAt`, `unfoldForward`/`unfoldBackward`,
 `nextConj`, the table-shaped variants, and
 `noBlockingTriple`)
+- `Interaction`: Modal-temporal interaction principles `Pthm:11`--`Pthm:22` -- the `▽◇`/`◇▽` and
+`△□`/`□△` collapses -- together with the temporal duality P8 and the `temporalPastDerived` /
+`boxToAlwaysBox` helpers they consume
 ## Status
 
 ### Propositional & Combinators
