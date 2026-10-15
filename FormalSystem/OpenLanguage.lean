@@ -52,9 +52,12 @@ library theorems rather than leaving it to be rediscovered.
 - `OpenLanguage.OpenValidity` — `TaskFrame.OpenValidOn`, `OpenValidOnFrames`, `OpenValidIn`,
   `OpenValid`; semantic conservativity of L^▷ over L⁺ at every frame class; S5 for `▷` and for
   `◁`, and the strength ordering `□ ⟹ ⊡ ⟹ ▷`, `⊡ ⟹ ◁`, as validities
-- `OpenLanguage.OpenReversal` — the converse frame of `lem:time-reflection` (`FrameOver.rev`,
-  `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`), the class swaps, the transport theorem
-  `openTruthAt_rev`, and `openValid_reflectTime`: validity is closed under time reflection
+- `OpenLanguage.OpenReversal` — the L^▷ half of `lem:time-reflection`: the three
+  agreement-class swaps (`sameState_rev_iff`, `agreeUpTo_rev_iff`, `agreeFrom_rev_iff`), the
+  transport theorem `openTruthAt_rev`, and `openValidOn_rev_iff` / `openValid_reflectTime`:
+  validity is closed under time reflection. The reversal operations themselves are declared in
+  `Semantics/TaskFrame.lean` and `Semantics/Reversal.lean`, the latter carrying the
+  base-language transport `truthAt_rev`
 - `OpenLanguage.OpenOckhamist` — the separating pair: the Ockhamist principle `Pα → ▷P▷̂α` valid
   over every task frame (`hnOpen_openValid`), and its stability transposition `Pp → ⊡P⟐p`
   refuted on `sinkFrame`, a three-state integer-time frame satisfying every frame axiom

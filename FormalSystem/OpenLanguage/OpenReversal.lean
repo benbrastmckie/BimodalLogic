@@ -28,20 +28,22 @@ The repository's existing reflection machinery (`TruthAntiIso`, `Semantics/Truth
 cannot serve here: it transports the six L clauses along an atom-level agreement, and a clause
 that quantifies over a *class* of histories needs the class itself to be transported.
 
-**Siting.** `FrameOver.rev` is language-independent. It lives in this component because this is
-its only consumer; the frame-level half may be promoted to `Semantics/` later.
+**Siting.** The frame, model and history halves of the reversal are language-independent and
+live in `Semantics/`: `FrameOver.rev` and `TaskFrame.rev` in `Semantics/TaskFrame.lean`, beside
+the `def:frame` constraint predicates they are proved against, and `TaskModel.rev`,
+`WorldHistory.rev` and the base-language transport in `Semantics/Reversal.lean`. This module
+carries the L^▷ half only: the three agreement-class swaps and the transport theorem over them.
 
 ## Main Definitions
 
-- `FrameOver.rev`, `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`
+None. The reversal operations this module reasons about — `FrameOver.rev`, `TaskFrame.rev`,
+`TaskModel.rev`, `WorldHistory.rev` — are declared in `Semantics/` and used here through dot
+notation.
 
 ## Main Results
 
-- `FrameOver.rev_taskRel`, `FrameOver.rev_taskRel_neg` (the manuscript's `w ⇒⁻_x u := w ⇒_{-x} u`),
-  and `FrameOver.rev_rev`, `TaskFrame.rev_rev`, `TaskModel.rev_rev` — all three by `rfl`
-- `WorldHistory.rev_rev_hist` — reversal of histories is an involution (propositional, not `rfl`),
-  whence `WorldHistory.rev_surjective`: the manuscript's bijection `H_F → H_{F⁻}`
-- `sameState_rev_iff`, `agreeUpTo_rev_iff`, `agreeFrom_rev_iff` — the class swaps
+- `sameState_rev_iff`, `agreeUpTo_rev_iff`, `agreeFrom_rev_iff` — the class swaps: reversal fixes
+  `⟨τ⟩_t` and exchanges `|τ⟩_t` with `⟨τ⁻|_{-t}`
 - `openTruthAt_rev` — the transport theorem
 - `openValidOn_rev_iff` and `openValid_reflectTime` — validity is closed under time reflection
 
@@ -51,7 +53,9 @@ its only consumer; the frame-level half may be promoted to `Semantics/` later.
 * JPL paper `def:frame` — *Compositionality*, *Seriality*, *Limit* and *Saturation*, each of
   which the converse frame inherits
 * `FormalSystem/Semantics/TaskFrame.lean` — `FrameOver`, `TaskFrame.reflect`,
-  `FrameOver.reflection`
+  `FrameOver.reflection`, and the converse frame `FrameOver.rev` / `TaskFrame.rev`
+* `FormalSystem/Semantics/Reversal.lean` — `TaskModel.rev`, `WorldHistory.rev` and
+  `truthAt_rev`, which is `lem:time-reflection` for the base language
 
 ## Tags
 
@@ -60,13 +64,10 @@ open-language · time-reflection · converse-frame
 
 namespace FormalSystem.OpenLanguage
 
-/-! The reversal operations are declared in `FormalSystem.Semantics`, for dot notation on
-`FrameOver`, `TaskFrame`, `TaskModel` and `WorldHistory`; the L^▷ transport theorems follow in
-this namespace. -/
-
-end FormalSystem.OpenLanguage
-
-namespace FormalSystem.OpenLanguage
+/-! The reversal operations live in `FormalSystem.Semantics` — `FrameOver.rev` and
+`TaskFrame.rev` in `Semantics/TaskFrame.lean`, `TaskModel.rev` and `WorldHistory.rev` in
+`Semantics/Reversal.lean` — and are used here through dot notation. What follows is the L^▷
+half: the agreement-class swaps and the transport theorems over them. -/
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage

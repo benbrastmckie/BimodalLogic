@@ -1248,7 +1248,16 @@ theorem axiom_validIn_min {φ : Formula} (ax : Axiom φ) : ValidIn ax.minFrameCl
   | prior_U_gap a0 => exact prior_U_gap_valid a0
   | sep a0 => exact sep_valid a0
 
-/-- Uniform per-axiom reflection-validity at the axiom's own minimum frame class. -/
+/--
+Uniform per-axiom reflection-validity at the axiom's own minimum frame class.
+
+**There is a second, independent route to this statement.** `Semantics.validIn_reflectTime`
+(`Semantics/Validity.lean`) is `thm:TR-valid` proved from frame reversal, and
+`validIn_reflectTime (axiom_validIn_min ax)` alone discharges this theorem for every axiom —
+the `.Base` branch and all four constrained arms. The per-axiom dispatch below is kept as a
+deliberate re-derivation of the same validities from the axioms' own semantics; see
+`derivable_valid_and_reflect_time_validIn` for why.
+-/
 theorem axiom_reflect_time_validIn_min {φ : Formula} (ax : Axiom φ) :
     ValidIn ax.minFrameClass φ.reflectTime := by
   by_cases hbase : ax.minFrameClass ≤ FrameClass.Base
@@ -1271,7 +1280,31 @@ theorem axiom_reflect_time_validIn {φ : Formula} {fc : FrameClass} (ax : Axiom 
     (h_fc : ax.minFrameClass ≤ fc) : ValidIn fc φ.reflectTime :=
   ValidIn.mono h_fc (axiom_reflect_time_validIn_min ax)
 
-/-- The uniform combined valid/reflection-valid recursion at an arbitrary `fc`. -/
+/--
+The uniform combined valid/reflection-valid recursion at an arbitrary `fc`.
+
+**Why the pair, when `thm:TR-valid` is available separately.** The paper's own soundness proof
+routes the TR rule through `thm:TR-valid` rather than through a per-axiom dispatch, and that
+argument now exists in the tree as `Semantics.validIn_reflectTime`
+(`Semantics/Validity.lean`): validity at any frame class is closed under `Formula.reflectTime`,
+because the converse frame shares its temporal order
+(`ProofSystem.FrameClass.Sat.rev`). In particular
+`validIn_reflectTime (axiom_validIn_min ax)` proves `axiom_reflect_time_validIn_min` on its own.
+
+This recursion nonetheless keeps its paired shape, for three reasons.
+
+1. Replacing it means writing a new single-valued `derivable_validIn` recursion whose
+   `time_reflection` arm applies `validIn_reflectTime` to the induction hypothesis, with its own
+   well-foundedness proof on the derivation's height, and then rewiring `soundness_in`,
+   `soundness_validIn` and `Metalogic/Independence/CoarsenedModels.lean`. `soundness_validIn` is
+   defined as `.1` of this theorem, so it cannot be used to rebuild the pair.
+2. Three sibling language layers — `plus_derivable_valid_and_reflect_time_validIn`,
+   `star_derivable_valid_and_reflect_time_validIn` and the Deterministic variant — describe
+   themselves as mirroring this recursion arm for arm, well-founded on the derivation's height.
+3. The two routes are independent derivations of the same reflection validities: this one from
+   the axioms' own semantics, `validIn_reflectTime` from frame reversal. Keeping both is a
+   genuine cross-check.
+-/
 theorem derivable_valid_and_reflect_time_validIn {fc : FrameClass} {φ : Formula}
     (d : DerivationTree fc [] φ) : ValidIn fc φ ∧ ValidIn fc φ.reflectTime := by
   match d with
