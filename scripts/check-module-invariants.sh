@@ -2130,6 +2130,20 @@ fi
 # is refuted by the wired probe `ladder-cell-refutation.lean`), no index of a ladder cell, no
 # complexity bound.
 #
+# One final matched pair, for the `docs/theorem-index.md` row of
+# `FormalSystem/Semantics/Gluing.lean`: `...PartialHistory.convexGlue` and
+# `...PartialHistory.gluing_clause` are the paper's Gluing lemma `app:gluing` in full generality
+# -- the construction and the `ExistsUnique` clause. The paper's `rmk:choice` lists `app:gluing`
+# among its CHOICE-FREE results, so these two rows exist to assert that claim on every build
+# rather than leave it to a docstring table. The hazard they guard is concrete and named in
+# `Gluing.lean`'s own Implementation Notes: the two backwards-orientation branches of
+# `convexGlue`'s `respects_task` field are closed by the OFF-ZERO reflection law
+# `TaskFrame.reflection_of_ne`, and the unrestricted `FrameOver.reflection` closes exactly the
+# same goals while measuring `Classical.choice`. Substituting one for the other during a later
+# cleanup would leave the build green and silently convert a ZF result into a ZFC one; these two
+# rows are what makes that substitution fail loudly instead. They pin an axiom profile and claim
+# nothing else: no decision procedure, no complexity bound.
+#
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
 # SORRY-FREE is pinned here or by C2, so no such claim is prose-only: the docstring asserts
@@ -2364,6 +2378,8 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.RaySummary.no_bwd_of_idle' depends on axioms: [propext]
 'FormalSystem.Metalogic.Decidability.RaySummary.ladderFrameAdm_isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.ladderModel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.convexGlue' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.gluing_clause' depends on axioms: [propext, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2598,6 +2614,8 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.no_bwd_of_idle
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderFrameAdm_isRegular
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderModel
+#print axioms FormalSystem.Semantics.PartialHistory.convexGlue
+#print axioms FormalSystem.Semantics.PartialHistory.gluing_clause
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

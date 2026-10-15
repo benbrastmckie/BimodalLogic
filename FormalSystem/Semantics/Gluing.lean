@@ -367,7 +367,10 @@ set_option linter.unusedDecidableInType false in
 include hcomp h₁ h₂ hz₁ hz₂ hagree in
 /-- `app:gluing` itself, with the overlap point explicit: the union of two convex histories
 agreeing at a shared point is the **unique** convex history on the union of their domains
-restricting to each of them. -/
+restricting to each of them.
+
+Paper: `app:gluing`
+-/
 theorem gluing_clause :
     ∃! υ : PartialHistory F,
       (∀ t, υ.domain t ↔ (τ₁.domain t ∨ τ₂.domain t)) ∧ υ.IsConvex ∧
