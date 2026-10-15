@@ -134,6 +134,11 @@ and not an `ite` because each branch needs its own half-line witness, which is a
   seam case is the one this module's rays are cut for. Cited as a **pointer only**: its record row
   in `docs/reference/paper-definitions-of-record.md` is `LIVE-UNPINNED` precisely because no
   docstring quotes its text, and this one does not either
+* `FormalSystem/Semantics/Gluing.lean` — `app:gluing` in **full generality** (`convexGlue`,
+  `gluing_clause`), together with the witness that this module's ray seam **is** an instance of
+  it: `convexGlue_rays_isTotal` and `convexGlue_rays_states_past` glue a past ray to a future ray
+  and read off totality and the past half. `seamGlue` itself is left independent by recorded
+  decision, its `dif_pos`/`dif_neg` reading lemmas being load-bearing
 * JPL paper `def:world-history` — partial, convex and world histories; a ray is the convex-history
   case at a half-line domain
 * `FormalSystem/Semantics/PartialHistory.lean` — `PartialHistory`, whose `domain` field is an

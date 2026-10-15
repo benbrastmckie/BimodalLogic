@@ -82,6 +82,9 @@ module therefore carries no `assert_not_exists` on the proof system.
   domain `PlusTruth.stab_iff` presents
 * JPL paper `app:gluing` — the gluing lemma whose seam case the ray presentation rests on. Cited
   as a **pointer only**, its record row being `LIVE-UNPINNED`
+* `FormalSystem/Semantics/Gluing.lean` — `app:gluing` in **full generality** (`convexGlue`,
+  `gluing_clause`), the general case of which the seam gluing this module rests on is an
+  instance, witnessed there by `convexGlue_rays_isTotal`
 * `FormalSystem/Semantics/Presheaf/Ray.lean` — `PastRay`, `FutRay`, `Ray.seamGlue`, `StabFibre`,
   `RayPair` and `seamFibreEquiv`, the keystone this module reads the clause through
 * `FormalSystem/Semantics/IntNormalForm.lean` — `IsStepPath`,

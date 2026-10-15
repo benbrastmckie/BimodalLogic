@@ -33,7 +33,7 @@ transferred to `⊡` by mistake.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Formula.lean` | 302 | `OpenFormula`, the derived operators (with `PlusFormula`'s right-hand sides), the duals `dofut` and `dopast`, `reflectTime` with `reflect_time_involution` and the `reflect_time_*` push-through lemmas, and the embedding `ofPlus` with `ofPlus_injective`, `ofPlus_reflectTime` and its `rfl` commutation pins |
-| `OpenClasses.lean` | 166 | The three history classes `stabClass`, `openFutureClass`, `openPastClass` (the stability, open-future and open-past classes of a world at a time); the membership lemmas `mem_stabClass_iff`, `mem_openFutureClass_iff`, `mem_openPastClass_iff`; `sameState_equivalence`, `agreeUpTo_equivalence`, `agreeFrom_equivalence`; the inclusions, `openFutureClass_inter_openPastClass`, `openFutureClass_anti`, `openPastClass_mono`, and `paste_mem_openFutureClass_inter_openPastClass` |
+| `OpenClasses.lean` | 170 | The three history classes `stabClass`, `openFutureClass`, `openPastClass` (the stability, open-future and open-past classes of a world at a time); the membership lemmas `mem_stabClass_iff`, `mem_openFutureClass_iff`, `mem_openPastClass_iff`; `sameState_equivalence`, `agreeUpTo_equivalence`, `agreeFrom_equivalence`; the inclusions, `openFutureClass_inter_openPastClass`, `openFutureClass_anti`, `openPastClass_mono`, and `paste_mem_openFutureClass_inter_openPastClass` |
 | `OpenOckhamist.lean` | 400 | The Ockhamist separating pair: `hnOpen`, `hnOpenMixed`, `hnStab` with `hnStab_eq_ofPlus`; `hnOpen_openValid` and `hnOpenMixed_openValid` over every task frame; the countermodel `SinkState`, `sinkFrame`, `sinkFunA`, `sinkFunB`, `sinkFunA_isStepPath`, `sinkFunB_isStepPath`, `sinkHistA`, `sinkHistB`, `sinkModel`; `hnStab_refuted_sinkFrame`, `not_openValid_hnStab`, `not_plusValid_hnStab`; the mirror `hnOpenMirror`, `hnStabMirror`, `hnOpenMirror_eq`, `hnStabMirror_eq`, `hnOpenMirror_openValid`, `openValid_hnOpenPast`, `not_openValid_hnStabMirror`; the five converse failures `not_openValid_box_of_stab`, `not_openValid_stab_of_ofut`, `not_openValid_stab_of_opast`, `not_openValid_opast_of_ofut`, `not_openValid_ofut_of_opast`; and the five transferred refutations `not_openValid_stab_box`, `not_openValid_allFuture_stab`, `not_openValid_stab_allFuture_past`, `not_openValid_determined`, `not_openValid_somePast_stab` |
 | `OpenReversal.lean` | 317 | The converse frame of `lem:time-reflection`: `FrameOver.rev` (all four frame axioms), `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, with `rev_taskRel`, `rev_taskRel_neg`, the three `rev_rev` by `rfl`, `rev_state`, `rev_rev_hist` and `rev_surjective`; the class swaps `sameState_rev_iff`, `agreeUpTo_rev_iff`, `agreeFrom_rev_iff`; the transport theorem `openTruthAt_rev`; `openValidOn_rev_iff` and `openValid_reflectTime` |
 | `OpenTruth.lean` | 288 | `OpenTruthAt` — the nine-clause truth recursion, the last two clauses the manuscript's for the open-future and open-past operators; the `TruthEnv` and `StabClauses` instances; the `OpenTruth.*` clause lemmas (`ofut_iff`, `opast_iff`, `dofut_iff`, `dopast_iff`); `openTruthAt_ofPlus`; pointwise S5 (`ofut_k`, `of_ofut`, `ofut_four`, `ofut_five` and the `opast` mirrors) and the ordering `stab_of_box`, `ofut_of_stab`, `opast_of_stab` |
@@ -69,7 +69,7 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | footnote to the stability clause, "`⊡` is strictly weaker than `□`" | the ordering is strict at every link: `⊡p → □p`, `▷Pp → ⊡Pp` and `◁Fp → ⊡Fp` each fail | `not_openValid_box_of_stab`, `not_openValid_stab_of_ofut`, `not_openValid_stab_of_opast` (`OpenOckhamist.lean`), each on the permissive frame `NF` over `ℤ` |
 | `▷` and `◁` are incomparable (no paper anchor) | `▷Pp → ◁Pp` and `◁Fp → ▷Fp` both fail — the manuscript records only that the two classes meet in `{τ}` | `not_openValid_opast_of_ofut`, `not_openValid_ofut_of_opast` (`OpenOckhamist.lean`) — **not a manuscript result** |
 | the L⁺ refutations (no paper anchor) | the five formulas refuted for L⁺ stay invalid in L^▷ | `not_openValid_stab_box`, `not_openValid_allFuture_stab`, `not_openValid_stab_allFuture_past`, `not_openValid_determined`, `not_openValid_somePast_stab` (`OpenOckhamist.lean`), each through `openValid_ofPlus_iff` |
-| `app:gluing` (two histories) | a world whose past is `τ`'s and whose future is `σ`'s, for `σ ∈ ⟨τ⟩_x` | `paste_mem_openFutureClass_inter_openPastClass`, over `paste` of `PlusLanguage/PlusPasting.lean` |
+| `app:gluing` (two histories) | a world whose past is `τ`'s and whose future is `σ`'s, for `σ ∈ ⟨τ⟩_x` | `paste_mem_openFutureClass_inter_openPastClass`, over `paste` of `PlusLanguage/PlusPasting.lean`; the general case of `app:gluing` is `gluing_clause` (`Semantics/Gluing.lean`) |
 
 ## Manuscript operators without a formalization
 
@@ -92,6 +92,8 @@ directory needs a row in that table.**
 
 * JPL paper — `sub:RestrictedModalities`, `def:BLstar-semantics`, `def:world-history`,
   `def:frame`, `def:frame-validity`, `lem:time-reflection`, `app:gluing`
+* `FormalSystem/Semantics/Gluing.lean` — `app:gluing` in full generality (`gluing_clause`), the
+  general case of the two-history pasting this language's product decomposition rests on
 * [M. Reynolds, *An Axiomatization of Prior's Ockhamist Logic of Historical
   Necessity*][reynolds2003] — the HN axiom
 * [R. H. Thomason, *Combinations of Tense and Modality*][thomason1984], §4 — Kamp's AK12
@@ -100,4 +102,4 @@ directory needs a row in that table.**
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-10-14*

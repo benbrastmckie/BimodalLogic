@@ -41,8 +41,9 @@ why `stabClass_subset_univ` is the form the inclusion `⟨τ⟩_x ⊆ H_F` takes
 - `openFutureClass_inter_openPastClass` — `|τ⟩_x ∩ ⟨τ|_x = {τ}`
 - `openFutureClass_anti`, `openPastClass_mono` — the monotonicity sentence
 - `paste_mem_openFutureClass_inter_openPastClass` — a world through a shared state whose past is
-  one world's and whose future is another's: the two-history instance of `app:gluing`, which is
-  why `⟨τ⟩_x` is the *product* of the open pasts and the open futures at `x`
+  one world's and whose future is another's: the two-history instance of `app:gluing`, whose
+  general case is `FormalSystem/Semantics/Gluing.lean`'s `gluing_clause`. It is why `⟨τ⟩_x` is
+  the *product* of the open pasts and the open futures at `x`
 
 ## References
 
@@ -52,6 +53,8 @@ why `stabClass_subset_univ` is the form the inclusion `⟨τ⟩_x ⊆ H_F` takes
 * JPL paper `def:BLstar-semantics` — `⟨τ⟩_x`
 * JPL paper `def:world-history` — `H_F`
 * JPL paper `app:gluing` — gluing two histories that agree on their overlap
+* `FormalSystem/Semantics/Gluing.lean` — `app:gluing` in **full generality** (`convexGlue`,
+  `gluing_clause`): the general case of which the pasting step used here is the two-ray instance
 * `FormalSystem/PlusLanguage/PlusPasting.lean` — `AgreeUpTo`, `AgreeFrom`, `paste`
 
 ## Tags
@@ -155,7 +158,8 @@ theorem openPastClass_mono (τ : WorldHistory F) {x y : F.Duration} (h : x ≤ y
 /-! ## `⟨τ⟩_x` is the product of the open pasts and the open futures -/
 
 /-- For `σ ∈ ⟨τ⟩_x`, the pasted world `τ|(-∞,x] ⌢ σ|(x,∞)` lies in `τ`'s open-future class and in
-`σ`'s open-past class at `x`: the two-history instance of `app:gluing`. -/
+`σ`'s open-past class at `x`: the two-history instance of `app:gluing`, whose general case is
+`FormalSystem/Semantics/Gluing.lean`'s `gluing_clause`. -/
 theorem paste_mem_openFutureClass_inter_openPastClass [F.IsRegular]
     (τ σ : WorldHistory F) (x : F.Duration)
     (h : τ.state x = σ.state x) :

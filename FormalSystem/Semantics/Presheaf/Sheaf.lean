@@ -128,6 +128,11 @@ against a live `\label{}`.
   of which `sheaf_clause` is the interval-site reading. Cited here as a **pointer only**: its
   record row is `LIVE-UNPINNED` precisely because no docstring quotes its text, and this one does
   not either
+* `FormalSystem/Semantics/Gluing.lean` — `app:gluing` in **full generality**, at two arbitrary
+  convex domains with a nonempty overlap (`convexGlue`, `gluing_clause`). `sheaf_clause` is the
+  closed-interval seam case and is left **independent** of it by recorded decision: re-deriving
+  it would exchange this module's `dif_pos`/`dif_neg` reading lemmas for tests on the general
+  construction's domain predicate, and their literal form is load-bearing downstream
 * `FormalSystem/Semantics/Presheaf/Site.lean` — `coverLeft`, `coverRight`, `rres`, `lres`, and
   `cover_germ_composites`, whose one-point meeting of the two covering morphisms is what makes
   this coverage's sheaf condition a two-section statement

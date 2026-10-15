@@ -120,6 +120,8 @@ row there.
 * JPL paper `def:BLstar-semantics` — `⟨τ⟩_x` and the `⊡` clause
 * JPL paper `sub:Extension` — the manuscript's registers
 * JPL paper `app:gluing` — gluing histories, the step by which transposition forces recurrence
+* `FormalSystem/Semantics/Gluing.lean` — `app:gluing` in full generality (`gluing_clause`), the
+  general case of that step
 * [P. Blackburn, M. de Rijke, Y. Venema, *Modal Logic*][blackburn2002], §7.3 — point nominals and
   the satisfaction operator
 * `FormalSystem/Semantics/HistoryMorphism.lean` — history-lifting morphisms and

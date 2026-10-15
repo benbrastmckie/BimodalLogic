@@ -45,12 +45,15 @@ Transposition is the phenomenon the manuscript's construction section (`sec:Cons
 describes in the passage "nothing prevents two histories τ and σ from passing through the same
 world states in a different order between two times x < y … as in chess games which transpose
 move order". The pasting of two histories that meet at a time is the two-history instance of
-`app:gluing`. The manuscript states no formula that expresses transposition and does not observe
-that transposition forces recurrence; both are formalization-native.
+`app:gluing`, whose general case is `FormalSystem/Semantics/Gluing.lean`'s `gluing_clause`. The
+manuscript states no formula that expresses transposition and does not observe that transposition
+forces recurrence; both are formalization-native.
 
 ## References
 
 * JPL paper `app:gluing` — gluing histories that agree where they meet
+* `FormalSystem/Semantics/Gluing.lean` — `app:gluing` in **full generality** (`convexGlue`,
+  `gluing_clause`), the general case of the pasting step this module's transposition argument uses
 * `FormalSystem/PlusLanguage/PlusPasting.lean` — `paste`, `paste_agreeUpTo`, `paste_agreeFrom`
 * `FormalSystem/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`
 * `FormalSystem/HybridLanguage/HybridRecurrence.lean` — the recurrence formula
@@ -75,7 +78,8 @@ the second at `s₂` and the first at the later `t₂`, then shifting `τ₂` by
 meet at `t₁`, and the pasted history occupies the first state at `s₁` and again at
 `t₁ + (t₂ - s₂)`.
 
-Paper: — (formalization-native; the pasting step is the two-history instance of `app:gluing`) -/
+Paper: — (formalization-native; the pasting step is the two-history instance of `app:gluing`,
+whose general case is `FormalSystem/Semantics/Gluing.lean`'s `gluing_clause`) -/
 theorem recurrenceFree_not_transposed [G.IsRegular] (hG : G.RecurrenceFree)
     (τ₁ τ₂ : WorldHistory G)
     {s₁ t₁ s₂ t₂ : G.Duration} (h₁ : s₁ < t₁) (h₂ : s₂ < t₂)

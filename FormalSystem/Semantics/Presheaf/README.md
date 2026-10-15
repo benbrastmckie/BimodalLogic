@@ -57,9 +57,9 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 |------|------:|-------------|
 | `Behavior.lean` | 279 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
 | `Determinism.lean` | 254 | The *Determinism* clause below the layering lock: `Separated` as injectivity of every restriction map, the choice-free (⇒) half, the world-to-section bridge `secOf`, and the converse's frame-side conclusion with `SingletonClasses` unfolded |
-| `Directed.lean` | 516 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
-| `Ray.lean` | 439 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
-| `Sheaf.lean` | 434 | <!-- TODO: add description --> |
+| `Directed.lean` | 521 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
+| `Ray.lean` | 444 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
+| `Sheaf.lean` | 439 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 <!-- END GENERATED -->
 
@@ -275,6 +275,15 @@ over `D = ℚ` with `W = {q ∈ ℚ : q > 0}` and `r ⇒ₓ r'` iff `|r' − r| 
 `τ(t) = 1 − t` to `(0, b]` for `b < 1` form an increasing chain whose union admits no value at time
 `1`. This is why the paper writes "in ZFC" at *Directed Gluing* and "choice-free" at *Sheaf*, and
 why the binary case's choice-freeness **must not** be imported into the directed case.
+
+`app:gluing` itself, in **full generality** — two arbitrary convex domains with a nonempty
+overlap, rather than a closed-interval or ray seam — lives at the convex-history layer, in
+`FormalSystem/Semantics/Gluing.lean` (`convexGlue`, `gluing_clause`), measured choice-free and
+pinned so by `C14`. The two seam gluings in this cluster, `sheaf_clause` and `Ray.seamGlue`, are
+**instances** of it, witnessed there by `convexGlue_rays_isTotal` and
+`convexGlue_rays_states_past` rather than re-derived: their own `dif_pos`/`dif_neg` reading
+lemmas are load-bearing downstream. `directed_gluing_clause` is not an instance at all, for the
+mathematical reason recorded above.
 
 `totality_of_isZTime` and `totality_of_completion` are **Saturation-free** — a statement about
 `def:frame`'s fourth constraint, not a claim of choice-freedom. Both still route through Zorn's

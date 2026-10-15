@@ -174,6 +174,11 @@ and pinned, and are cited plainly.
   whose footnote carries the ℚ counterexample showing *Saturation* is genuinely required in the
   directed case. Cited as a **pointer only**: its record row is `LIVE-UNPINNED` precisely because
   no docstring quotes its text, and this one does not either
+* `FormalSystem/Semantics/Gluing.lean` — `app:gluing` in **full generality**, at two arbitrary
+  convex domains with a nonempty overlap (`convexGlue`, `gluing_clause`), measured choice-free.
+  `directed_gluing_clause` is **not** an instance of it and is independent as a matter of
+  mathematics rather than of filing: the ℚ counterexample above is exactly what shows the
+  two-member case is the special one
 * `FormalSystem/Semantics/Extension/Extension.lean` — `PartialHistory.extension`,
   `PartialHistory.isRestriction_of_isRegular`
 * `FormalSystem/Semantics/Extension/Completion.lean` — `extension_of_completion`,
