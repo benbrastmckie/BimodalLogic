@@ -50,7 +50,12 @@ instance synthesis and unification work at. There are two distinct symptoms:
    `HAdd (translationFrame realTemporalOrder).toTaskFrame.WorldState realTemporalOrder.carrier ?m`
    synthesis, because `τ.state` *returns* a value in the unreduced `WorldState`. This one is **not**
    repairable by a type ascription or by a `@[reducible]` alias: the barrier sits inside
-   `translationFrame`'s own body, and neither reaches it.
+   `translationFrame`'s own body, and neither reaches it. What *does* reach it is a **view
+   definition** retyping the state function at the duration carrier: `translationStates`
+   (`Semantics/Correspondence/DurationFrames.lean`) is that view, and
+   `translationStates_eq`/`translation_eq_sigma` prove the analogue of the world-set
+   characterization through it, at an arbitrary duration group — so symptom 2 blocks the
+   ascription-shaped statement rather than the characterization itself.
 
 `cor:no-characterization`'s `F¹` half is entirely about histories, so symptom 2 is fatal to that
 route. `ShiftSet.fibre` and `ShiftSet.frame` are both `@[reducible]`, so the carrier stays

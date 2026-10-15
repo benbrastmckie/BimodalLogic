@@ -58,6 +58,24 @@ Discrete/Dense/Complete" — is true, and it is what the appendix proofs actuall
 adjudication of record is `docs/reference/paper-definitions-of-record.md`'s reading note on
 `app:discrete`/`app:dense`/`app:complete`, from the definitional review's §2.4.
 
+## The canonical frames' characterizations
+
+Beyond the correspondence witnesses, this module carries the characterizations the paper's own
+lemma on these two frames asserts. `def:canonical-frames` is where the paper introduces them —
+the translation frame and the two-state frame — and `lem:canonical-frames` makes four claims:
+the translation frame is a *Deterministic* task frame whose possible worlds are exactly the
+translations, and the two-state frame is a task frame just in case the duration order is
+*Discrete*, in which case it is not *Deterministic* and every assignment of its two states to
+times is one of its possible worlds. All four are proved in the final section below; neither
+anchor's text is quoted anywhere.
+
+Claim (c) is stated at the **bare relation** `permRel` rather than at `permissiveFrame`, because
+that frame cannot be applied without the `SuccOrder` and `NoMaxOrder` data that discreteness
+itself supplies — so a frame-level "is a task frame iff `D` is Discrete" would carry the
+right-hand side in its own hypotheses. `permissiveFrame_taskRel_eq` identifies `permRel` with the
+frame's own task relation, which is what makes the biconditionals statements about the frame of
+`def:canonical-frames` rather than about a lookalike relation.
+
 ## Main results
 
 * `translationFrame`, `permissiveFrame` — the two witness frames
@@ -67,10 +85,17 @@ adjudication of record is `docs/reference/paper-definitions-of-record.md`'s read
   `permissive_realizes` — the atom-realisation step, named once instead of rebuilt inline
 * `validOn_df_iff_isDiscrete`, `validOn_dn_iff_denselyOrdered`, `validOn_co_iff_isComplete` —
   the three (T1) biconditionals
+* `translationFrame_deterministic` — claim (a) of `lem:canonical-frames`, at every temporal order
+* `translationHistEquiv`, `translation_histSet_eq`, `translation_exists_unique` — claim (b): the
+  translation frame's possible worlds are exactly the translations, in equivalence, set and
+  uniqueness form
+* `permRel_limit_iff_isDiscrete`, `permRel_constraints_iff_isDiscrete` — claim (c), with
+  `permissiveFrame_taskRel_eq` as the tie-back to the frame
+* `permissiveFrame_not_deterministic`, `permissiveHistEquiv` — claim (d)
 
 ## Tags
 
-correspondence · duration-group · app:dense · app:discrete · app:complete
+correspondence · duration-group · app:dense · app:discrete · app:complete · lem:canonical-frames
 -/
 
 namespace FormalSystem.Semantics
