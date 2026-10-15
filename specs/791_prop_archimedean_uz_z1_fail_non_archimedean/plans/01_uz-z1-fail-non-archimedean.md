@@ -1,7 +1,7 @@
 # Implementation Plan: UZ and Z1 fail over every non-Archimedean Discrete order
 
 - **Task**: 791 - Prove prop:archimedean in the generality the paper states it (UZ and Z1 fail over every non-Archimedean Discrete temporal order)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: Task 788 (complete, at HEAD); tasks 789 and 790 (complete, committed earlier in this batch)
 - **Research Inputs**: specs/791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md

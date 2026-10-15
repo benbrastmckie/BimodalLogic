@@ -11,11 +11,11 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,791,796,797,798,799,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783,794,800 | 298,464,502,616,761,772,791,796 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500,793,795 | 231,465,497,794 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 125,429,543,801 | 428,498,499,500,793 | algebraic-representation, decidability, metalogic, ... |
-| 5 | 410,501,802 | 125,429,801 | algebraic-representation, decidability, paper-alignment |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,794,796,797,798,799,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,763,783,793,795,800 | 298,464,502,616,761,772,794,796 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500,801 | 231,465,497,793 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 125,429,543,802 | 428,498,499,500,801 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
@@ -122,12 +122,11 @@ next_project_number: 805
 
 ### Paper Alignment
 
-791 [IMPLEMENTING] — Prove prop:archimedean in the generality the paper states it:...
-  └─ 794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
-    └─ 793 [PLANNED] — Prove lem:after-negation, and the cut...
-      └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
-        └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
-    └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
+794 [PLANNED] — Formalize the paper's nomic frames, the frame-level half of...
+  └─ 793 [PLANNED] — Prove lem:after-negation, and the cut...
+    └─ 801 [NOT STARTED] — Re-pin the BX/TM anchor wave in...
+      └─ 802 [NOT STARTED] — Derive every TM-system theorem the paper cites, cite the...
+  └─ 795 [NOT STARTED] — Formalize the nomic operator and its three results, on the...
 796 [NOT STARTED] — Prove lem:time-reflection for BL and the semantic form of...
   └─ 800 [NOT STARTED] — Extend the time-reflection transport from BL to the Stability...
 797 [NOT STARTED] — Formalize the cut shift-of-finite-type remark. The paper's...
@@ -456,12 +455,13 @@ CONSTRAINTS. lake build FormalSystem green, no new sorry.
 
 ### 791. Prop archimedean uz z1 fail non archimedean
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 788, Task 790
 - **Research**: [791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md]
 - **Plan**: [791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md]
+- **Summary**: [791_prop_archimedean_uz_z1_fail_non_archimedean/summaries/01_uz-z1-fail-non-archimedean-summary.md]
 
 **Description**: Prove prop:archimedean in the generality the paper states it: for every Discrete temporal order D that is not Archimedean, neither Z1 (Future(Future φ → φ) → (future Future φ → Future φ)) nor UZ (future φ → ¬φ U φ) is valid over D. Both countermodels live on the translation frame F^tr_D along sigma_0 and turn on one division of D: the times within finitely many unit steps of 0 and those beyond every multiple of the unit. For Z1, |p| is the complement of the near times; for UZ, |p| is a copy of ℤ sitting above every multiple of 1.
 

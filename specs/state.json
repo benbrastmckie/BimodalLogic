@@ -178,7 +178,7 @@
     {
       "project_number": 791,
       "project_name": "prop_archimedean_uz_z1_fail_non_archimedean",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -188,7 +188,7 @@
       ],
       "description": "Prove prop:archimedean in the generality the paper states it: for every Discrete temporal order D that is not Archimedean, neither Z1 (Future(Future φ → φ) → (future Future φ → Future φ)) nor UZ (future φ → ¬φ U φ) is valid over D. Both countermodels live on the translation frame F^tr_D along sigma_0 and turn on one division of D: the times within finitely many unit steps of 0 and those beyond every multiple of the unit. For Z1, |p| is the complement of the near times; for UZ, |p| is a copy of ℤ sitting above every multiple of 1.\n\nWHAT EXISTS. FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean machine-checks the Z1 failure at the single carrier ℚ ×ₗ ℤ (`not_minus_derivable_z1`, over `multiFamTaskFrameGen`), and FormalSystem/Metalogic/Independence/LexIntWitness.lean has `LexInt.not_archimedean`. FormalSystem/Metalogic/Conservativity.lean's docstring RESTATES the paper's every-non-Archimedean-order claim as prose, but the tree proves no such theorem, and nothing refutes UZ semantically at any non-Archimedean carrier. FormalSystem/Semantics/DurationClassification.lean has `archimedean_of_succ` and the successor-Archimedean normalisation (`ValidDiscrete ↔ ValidInt`, task 475), which is the positive side of the same picture.\n\nDELIVER, over an arbitrary D with a least positive duration (`SuccOrder`) and `¬ Archimedean D`: the two countermodels on `translationFrame D` along `translationHist`, giving `¬ ValidOn (translationFrame D) (Z1 p)` and `¬ ValidOn (translationFrame D) (UZ p)`, hence failure over the Discrete class at every non-Archimedean carrier. Then decide, and record, whether the ℚ ×ₗ ℤ module becomes an instance of the general theorem or stays as the concrete witness; its downstream consumers (`tmMinusCompleteZTime_refuted`, the CEF deliverables) must keep compiling either way.\n\nDEPENDENCY AND TIMING. Depends on task 788, which is re-deriving Z1 from UZ (TM_z = TM + UZ, Z1 derived) and touches Conservativity/Backward.lean and Independence/ZTimeSharpness.lean: wait for it, then state the result against the post-788 names. The paper-side revision (PossibleWorlds task 172) will reword prop:archimedean to match; the semantic countermodels do not care which of UZ and Z1 is primitive.\n\nPAPER ANCHORS. prop:archimedean and its proof, and def:canonical-frames, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex; the `% PORT:` comment under prop:archimedean is the marker to clear.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every phase.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-15T03:48:28Z",
+      "last_updated": "2026-10-15T05:40:40Z",
       "artifacts": [
         {
           "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/reports/01_uz-z1-fail-non-archimedean.md",
@@ -199,6 +199,11 @@
           "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/plans/01_uz-z1-fail-non-archimedean.md",
           "type": "plan",
           "summary": "Four-phase, ~4-hour implementation plan: order and frame glue, the new ArchimedeanSharpness module, prose amendments, full gate set."
+        },
+        {
+          "path": "specs/791_prop_archimedean_uz_z1_fail_non_archimedean/summaries/01_uz-z1-fail-non-archimedean-summary.md",
+          "type": "summary",
+          "summary": "Completion summary: what was proved, the five recorded decisions, six plan deviations, the full verification record, and the two identifiers PossibleWorlds task 172 will cite."
         }
       ],
       "session_id": "sess_1792026404_b03e6d",
@@ -224,7 +229,8 @@
         "typst/generated/machine-appendix.typ",
         "typst/generated/status.typ"
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Proved prop:archimedean at full generality in the new module FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean: neither UZ nor Z1 is valid over any discrete temporal order that fails to be Archimedean, via two countermodels on translationFrame D at an arbitrary carrier with a least positive duration, plus the order lemma exists_gt_nsmul_of_not_archimedean and the frame-property bridge translationFrame_isDiscrete. All 14 pinned identifiers resolve; the three prose sites that previously restated the claim without proving it now cite the theorems by name, the ZxZ-carrier module's disposition is recorded, and the post-788 Axiom.z1 doc drift is cleared at 9 occurrences in 7 files. Full build green (2849 jobs), sorry_count 0, and check-module-invariants/typst-sync-check/readme-lint/copyright/verify-deploy all exit 0."
     },
     {
       "project_number": 792,
