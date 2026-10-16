@@ -1,15 +1,50 @@
 {
-  "status": "planned",
-  "dispatch_seq": 13,
-  "phases_completed": 0,
+  "dispatch_seq": 16,
+  "status": "implemented",
+  "phases_completed": 10,
   "phases_total": 10,
-  "summary": "Wrote a ten-phase implementation plan at specs/797_shift_finite_type_eventually_periodic_worlds/plans/01_shift-finite-type-periodic-worlds.md, integrating the research report's measured axiom accounting and the prior cycle's user decision (ship BOTH the carrier-as-data choice-free theorem and the untouched [Finite W] version). The plan carries a Lean Challenge Statements block whose 16 declared identifiers cross-validate exactly against its Goals list, verified by replicating lean-challenge-snapshot.sh's own extractors. Two plan-time divergences from the research recommendations are recorded in issues.jsonl: probe relocation into the task directory is dropped (check-evidence-probes.sh forbids task-directory probes), and deliverables (2) and (3) land under Metalogic/Decidability/ rather than Semantics/ because no Semantics module may import Metalogic and the choice-free pigeonhole to be reused lives there.",
+  "summary": "All ten plan phases closed: six new FormalSystem modules and one BimodalTest guard module deliver the shift-of-finite-type identification over intOrder, the choice-free extension theorem extend_periodic_enum at a carrier supplied as data, and the FrameLasso certificate with its decidable check proved sound and complete. Full lake build (2873 jobs) and lake build BimodalTest (2937 jobs) are green with zero warnings and no sorry, and every axiom profile the docstrings claim is pinned by one of 69 in-build guards. Phases 3 and 10 closed COMPLETED WITH EXCLUSIONS, each with a Reasoned Exclusions record.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/797_shift_finite_type_eventually_periodic_worlds/plans/01_shift-finite-type-periodic-worlds.md",
-      "summary": "Ten-phase plan: provenance repointing, the choice-free ℤ membership chain, the named shift-of-finite-type identification plus its Mathlib dictionary, the effective toolkit, the choice-free extension theorem, the finite certificate with soundness and completeness, the axiom-profile guard test, and a final full gate sweep."
+      "type": "summary",
+      "path": "specs/797_shift_finite_type_eventually_periodic_worlds/summaries/01_shift-finite-type-periodic-worlds-summary.md",
+      "summary": "Implementation summary for the shift-of-finite-type and eventually-periodic-worlds cluster."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Semantics/IntNormalFormEffective.lean",
+      "summary": "The ℤ membership chain restated choice-free at intOrder."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Semantics/ShiftFiniteType.lean",
+      "summary": "Deliverable (1a): H_F over ℤ as a shift of finite type on the one-step graph."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Semantics/ShiftFiniteTypeDictionary.lean",
+      "summary": "Deliverable (1b): the same identification against Mathlib's forbidden-pattern subshift at G = ℤ."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/EffectiveOrbit.lean",
+      "summary": "Computable successor/predecessor selection and the pigeonhole at enum.length."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/EffectivePeriodicExtension.lean",
+      "summary": "Deliverable (2): extend_periodic_enum, measured [propext, Quot.sound]."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/FrameLassoCertificate.lean",
+      "summary": "Deliverable (3): FrameLasso, presentsWindow, and both directions of its correctness."
+    },
+    {
+      "type": "test",
+      "path": "Tests/BimodalTest/Metalogic/EffectivePeriodicExtensionAxiomTest.lean",
+      "summary": "69 axiom-profile guards, the Nat.card statement probe, and the #eval evidence that the definitions run."
     }
   ]
 }
