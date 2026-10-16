@@ -49,6 +49,11 @@ work-cycle budget is per task, per invocation (5 default, 13 under `--hard`), so
 line until every member reports terminal**. Shared file scope serializes a batch rather than
 breaking it; a task with no declared `file_scope` is invisible to the overlap gate — the blindness
 751 remediates. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
+**Coverage appendix (uncovered tasks)**:
+```
+/orchestrate 127,128,709,730,741,752,767,768
+/orchestrate 769,770,785,806
+```
 
 ## Not batched, and why
 
