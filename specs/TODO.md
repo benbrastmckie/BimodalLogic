@@ -11,7 +11,7 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,802,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -120,10 +120,6 @@ next_project_number: 805
 744 [NOT STARTED] — Wrap the RaySummary and KTypeSummary inventory tables in...
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
-### Paper Alignment
-
-802 [IMPLEMENTING] — Derive every TM-system theorem the paper cites, cite the...
-
 ### Build Performance
 
 803 [NOT STARTED] — Cut the elaboration time of...
@@ -176,12 +172,13 @@ ACCEPTANCE. A measured, reported reduction in this module's elaboration time wit
 ---
 
 ### 802. Derive cited tm theorems and cite derivations
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 801
 - **Research**: [802_derive_cited_tm_theorems_and_cite_derivations/reports/01_derive-cited-tm-theorems.md]
 - **Plan**: [802_derive_cited_tm_theorems_and_cite_derivations/plans/01_derive-cited-tm-theorems.md]
+- **Summary**: [802_derive_cited_tm_theorems_and_cite_derivations/summaries/01_derive-cited-tm-theorems-summary.md]
 
 **Description**: Derive every TM-system theorem the paper cites, cite the derivations rather than derivability, and prune the superseded derivability results.
 

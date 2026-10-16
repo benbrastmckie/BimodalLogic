@@ -1,7 +1,7 @@
 # Implementation Plan: Task #802
 
 - **Task**: 802 - Derive every TM-system theorem the paper cites, cite the derivations rather than derivability, and prune the superseded derivability results.
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/802_derive_cited_tm_theorems_and_cite_derivations/reports/01_derive-cited-tm-theorems.md
