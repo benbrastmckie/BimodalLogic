@@ -1,7 +1,7 @@
 # Implementation Plan: Task #797
 
 - **Task**: 797 - Shift of finite type and eventually periodic possible worlds
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/797_shift_finite_type_eventually_periodic_worlds/reports/01_shift-finite-type-periodic-worlds.md

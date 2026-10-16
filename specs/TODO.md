@@ -6,12 +6,12 @@ next_project_number: 805
 
 ## Task Order
 
-*Updated 2026-10-15. Generated from state.json dependency graph.*
+*Updated 2026-10-16. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,797,802,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,802,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -122,7 +122,6 @@ next_project_number: 805
 
 ### Paper Alignment
 
-797 [PLANNED] — Formalize the cut shift-of-finite-type remark. The paper's...
 802 [RESEARCHED] — Derive every TM-system theorem the paper cites, cite the...
 
 ### Build Performance
@@ -335,12 +334,13 @@ CONSTRAINTS. lake build FormalSystem green with no new sorry at the end of every
 
 ### 797. Shift finite type eventually periodic worlds
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 801
 - **Research**: [797_shift_finite_type_eventually_periodic_worlds/reports/01_shift-finite-type-periodic-worlds.md]
 - **Plan**: [797_shift_finite_type_eventually_periodic_worlds/plans/01_shift-finite-type-periodic-worlds.md]
+- **Summary**: [797_shift_finite_type_eventually_periodic_worlds/summaries/01_shift-finite-type-periodic-worlds-summary.md]
 
 **Description**: Formalize the cut shift-of-finite-type remark. The paper's conclusion once carried a remark, now moved to the companion cut file, that when W is finite and D = ℤ the set of possible worlds H_F is a shift of finite type -- world states as alphabet symbols, the unit-step task relation ⇒_1 as the edges of a labelled graph, possible worlds as the bi-infinite paths through it -- and that thm:extension then becomes effective without Zorn: the forward and backward orbits extending a bounded convex history must each revisit a state, so every bounded convex history extends to a possible world that is eventually periodic in both directions (finite prefix plus finite cycle each way) and so finitely representable, licensing a finite certificate that a bounded history is a fragment of a possible world (Lind and Marcus is the citation).
 

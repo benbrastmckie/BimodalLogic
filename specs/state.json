@@ -565,7 +565,7 @@
     {
       "project_number": 797,
       "project_name": "shift_finite_type_eventually_periodic_worlds",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "effort": "medium",
       "topic": "paper-alignment",
@@ -574,7 +574,7 @@
       ],
       "description": "Formalize the cut shift-of-finite-type remark. The paper's conclusion once carried a remark, now moved to the companion cut file, that when W is finite and D = ℤ the set of possible worlds H_F is a shift of finite type -- world states as alphabet symbols, the unit-step task relation ⇒_1 as the edges of a labelled graph, possible worlds as the bi-infinite paths through it -- and that thm:extension then becomes effective without Zorn: the forward and backward orbits extending a bounded convex history must each revisit a state, so every bounded convex history extends to a possible world that is eventually periodic in both directions (finite prefix plus finite cycle each way) and so finitely representable, licensing a finite certificate that a bounded history is a fragment of a possible world (Lind and Marcus is the citation).\n\nWHAT EXISTS. FormalSystem/Semantics/IntNormalForm.lean's `FrameOver.mem_HF_iff_adjacent` already identifies membership in H_F over `intOrder` with the one-step condition tau(n) ⇒_1 tau(n+1): that is the shift-of-finite-type identification up to naming. `TaskFrame.saturation_of_finite` covers Saturation for finite W. The decidability programme's RaySummary/ and PlusSlicedCertificate.lean modules reason about eventually periodic rays over finite data for a different purpose; reuse their periodicity vocabulary if it fits, and do not duplicate it.\n\nDELIVER: (1) a named statement of the SFT identification over `intOrder` for `[Finite W]` (world histories as bi-infinite paths in the graph (W, ⇒_1)); (2) the choice-free extension theorem: a bounded convex history over a finite-state regular frame over ℤ extends to an eventually periodic total history, by pigeonhole on each orbit, with #print axioms showing no Classical.choice; (3) a finite certificate type (prefix plus cycle each way) with a decidable check that it presents a possible world through a given bounded history, and the soundness and completeness of that check against (2). Docstrings cite the companion-file remark and connect to task 618's D = ℤ clause (Path(F) as the free category on (W, ⇒_1)) and to specs/ROADMAP.md's 'root paths of a finite class graph' presentation on the decidability route.\n\nPAPER ANCHOR. The remark and its footnote are kept verbatim in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header 'moved from sub:Conclusion' (the shift-of-finite-type sentence and the footnote citing Lind2021). They are CUT from possible_worlds.tex, whose live replacement paragraph in sub:Conclusion mentions only the sheaf and Johnstone route, so treat them as a specification, not as a theorem to cite.\n\nCONSTRAINTS. lake build FormalSystem green, no new sorry at the end of every phase.",
       "created": "2026-10-14T19:17:12Z",
-      "last_updated": "2026-10-15T21:58:49Z",
+      "last_updated": "2026-10-16T01:06:22Z",
       "artifacts": [
         {
           "path": "specs/797_shift_finite_type_eventually_periodic_worlds/reports/01_shift-finite-type-periodic-worlds.md",
@@ -585,6 +585,11 @@
           "path": "specs/797_shift_finite_type_eventually_periodic_worlds/plans/01_shift-finite-type-periodic-worlds.md",
           "type": "plan",
           "summary": "Ten-phase plan: provenance repointing, the choice-free ℤ membership chain, the named shift-of-finite-type identification plus its Mathlib dictionary, the effective toolkit, the choice-free extension theorem, the finite certificate with soundness and completeness, the axiom-profile guard test, and a final full gate sweep."
+        },
+        {
+          "path": "specs/797_shift_finite_type_eventually_periodic_worlds/summaries/01_shift-finite-type-periodic-worlds-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the shift-of-finite-type and eventually-periodic-worlds cluster."
         }
       ],
       "session_id": "sess_1792095464_fd54b2",
@@ -610,7 +615,8 @@
         "docs/reference/paper-definitions-of-record.md",
         "docs/theorem-index.md",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Landed the cut shift-of-finite-type remark in six new library modules and one guard-test module: the choice-free ℤ membership chain, the named shift-of-finite-type identification with its Mathlib dictionary, the effective orbit toolkit, extend_periodic_enum (the Extension Theorem over an enumerated carrier, measured [propext, Quot.sound]), and the FrameLasso certificate with presentsWindow and both directions of its correctness. 69 declarations, every axiom profile pinned in-build; lake build and lake build BimodalTest green with zero warnings and no sorry."
     },
     {
       "project_number": 788,
