@@ -1,5 +1,5 @@
 ---
-next_project_number: 805
+next_project_number: 806
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 805
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,763,783 | 298,464,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,761,783 | 298,464,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500,763 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -87,11 +87,12 @@ next_project_number: 805
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
-  └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
+805 [RESEARCHED] — RESEARCH TASK, verdict-first, on the posture task 559 models:...
+  └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
+    └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 
 ### Formula Refactor
 
@@ -126,6 +127,34 @@ next_project_number: 805
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 805. Jointly derived cell index gate
+- **Effort**: 3-5 hours for the correction, candidate definition, gate run, and report (precedents closed in ~1-1.6h against ~9h filed estimates); the positive sufficiency attempt in step (5) beyond a survived gate is not costable and may be deferred to a successor record
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 761
+- **Research**:
+  - [761_ladder_realization_theorem/reports/02_spawn-analysis.md]
+  - [805_jointly_derived_cell_index_gate/reports/01_jointly-derived-index-gate.md]
+
+**Description**: RESEARCH TASK, verdict-first, on the posture task 559 models: reports and sorry-free evidence probe files under this task's own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation is an explicitly acceptable and successful outcome (as task 773 and task 775 both closed), and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons.
+
+Background (do not re-derive; cited from .claude/context/project/lean4/domain/ladder-counter-observables.md, source-store original at ~/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md per .claude/rules/source-store-deploy-boundary.md -- edit the source-store path if this guidance itself needs updating, never the deployed .claude/ mirror): three index shapes are refuted on compiled ground -- counter-pair clipping (cell_ne, specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean), gap-carrying clipping (exhibited_form_refuted/exists_form_refuted/cell_succ_ne, ladder-cell-index-obstructions.lean), and the six-coordinate residue-carrying candidate ladderIndexRes T P B AT ITS OBJECT-EXHIBITED (T, P) (object_only_parameters_refuted, reach_period_refuted, ladder-residue-index-refutation.lean). The parameter-origin rule requires B (gap clip) and T (threshold) to be FORMULA-derived (B from the X-nesting and snce-nesting depth of phi; T from at least phi's untl-nesting depth) and P+1 (modulus) to be a multiple of the period of every letter-definable sub-object of the OBJECT, coupled jointly to the formula's letters -- a divisibility condition, not a magnitude one. The named next candidate is parameters (T, P, B) derived from the object AND the formula JOINTLY; it has not been gated by any predecessor.
+
+Work, in order:
+(1) Correct or delete specs/761_ladder_realization_theorem/.blocker-research.json: it is STALE (dated 2026-10-11, pre-dating the fourteenth probe) and recommends the gap-carrying candidate that ladder-cell-index-obstructions.lean has since refuted. It lives under task 761's own directory, so this correction is in scope for a record updating 761's status.
+(2) Define the jointly-derived candidate: B from phi's X-nesting and snce-nesting depth; T from at least phi's untl-nesting depth; P+1 a multiple of the period of every letter-definable sub-object of the given ladder object, via a letter-restricted variant of reachN_eventually_periodic (ported in the fourteenth probe's prototype, specs/archive/773_ladder_cell_index_factorization/prototype/reach-eventual-periodicity.lean).
+(3) Run, BEFORE any sufficiency attempt, the five-part falsification gate as compiled theorems: gate 1 (counters (B,B+1) vs (B,B+2)); gate 2 (counters (2B,4B+2) vs (2B+1,4B+2)); gate 3 (one region further out, and in the past direction); gate 4 ((q,T,n) vs (q,T+(P+1),n) at n=T+(P+1)+B under X^(T+1) r -- rebuilt against the FORMULA-derived T and B, not object-exhibited ones); gate 5 (on the coprime-cycle object, (a,3(P+1)(T+1),n) vs (a,3(P+1)(T+1)+(P+1),n) under p U (r and l_a) with top U l_d in the closure -- rebuilt against the FORMULA-derived P). Gates 4 and 5 are refutations of the exhibited parameters in every predecessor, not separations a candidate passes -- a gate probing one coordinate certifies one coordinate only; passing gates 1-3 says nothing about 4 and 5.
+(4) Report the verdict (survive or refute) as a wired evidence probe, following the thirteenth/fourteenth/fifteenth probes' header convention (what was asked, why no statement exists or what is settled, what the probe does NOT say), registered in scripts/check-evidence-probes.sh.
+(5) If the gate is survived, attempt the positive factorization lemma carrying these four open proof obligations verbatim as what it would need to meet (named so they are not rediscovered): (a) eventual periodicity of the realizable types in the countdown over the product of the object with the closure; (b) a region-length pumping lemma for untl/snce-depth-bounded formulas; (c) the next deadline's coupling through Drift; (d) the box/stab letters through the anchor-layer equations (box_mem_tpOf_iff, stab_mem_tpOf_iff). If not costable within this round, name the obligations as the next round's scope rather than attempting a shortcut -- do not state a weakened LadderCons without the box/stab clause (stab_mem_tpOf_iff is per cell; dropping the clause publishes a same-named weaker statement, forbidden by plan-compliance.md's Statement Fidelity section).
+
+What is NOT in question and must not be re-attacked: the SET of cells of any regular Z-model is finite and bounded (anchorCells_finite, anchorCells_ncard_le <= 2^(2^|cl phi|), RaySummary/AnchorLayer.lean) -- only the computable INDEX is open. What is proved positively so far is fixture-level only (qp_cell_eq_of_depth_parity on the two-state object, box/stab-free phi) and is explicitly not the factorization lemma.
+
+Not costable as a full proof attempt; the gate run (steps 1-4) is costable and is the first deliverable.
+
+---
 
 ### 804. Narrow termination syntax layer fanin
 - **Status**: [NOT STARTED]
@@ -692,7 +721,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 760, Task 775
+- **Dependencies**: Task 760, Task 775, Task 805
 - **Plan**: [761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md]
 - **Summary**: [761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md]
 - **Research**: [761_ladder_realization_theorem/reports/02_spawn-analysis.md]

@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 805,
+  "next_project_number": 806,
   "active_projects": [
     {
       "project_number": 804,
@@ -67,7 +67,8 @@
       "topic": "decidability",
       "dependencies": [
         760,
-        775
+        775,
+        805
       ],
       "file_scope": [
         "FormalSystem.lean",
@@ -88,8 +89,8 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-10T23:53:38Z",
-      "last_updated": "2026-10-12T20:05:57Z",
-      "session_id": "sess_1791835542_6fe654",
+      "last_updated": "2026-10-16T10:38:33Z",
+      "session_id": "sess_1792147082_2099c3",
       "artifacts": [
         {
           "path": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
@@ -108,7 +109,7 @@
         }
       ],
       "next_artifact_number": 2,
-      "previous_status": "partial"
+      "previous_status": "blocked"
     },
     {
       "project_number": 752,
@@ -1518,6 +1519,38 @@
       "created": "2026-10-14T15:54:15Z",
       "last_updated": "2026-10-14T15:54:15Z",
       "artifacts": []
+    },
+    {
+      "project_number": 805,
+      "project_name": "jointly_derived_cell_index_gate",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "RESEARCH TASK, verdict-first, on the posture task 559 models: reports and sorry-free evidence probe files under this task's own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation is an explicitly acceptable and successful outcome (as task 773 and task 775 both closed), and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons.\n\nBackground (do not re-derive; cited from .claude/context/project/lean4/domain/ladder-counter-observables.md, source-store original at ~/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md per .claude/rules/source-store-deploy-boundary.md -- edit the source-store path if this guidance itself needs updating, never the deployed .claude/ mirror): three index shapes are refuted on compiled ground -- counter-pair clipping (cell_ne, specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean), gap-carrying clipping (exhibited_form_refuted/exists_form_refuted/cell_succ_ne, ladder-cell-index-obstructions.lean), and the six-coordinate residue-carrying candidate ladderIndexRes T P B AT ITS OBJECT-EXHIBITED (T, P) (object_only_parameters_refuted, reach_period_refuted, ladder-residue-index-refutation.lean). The parameter-origin rule requires B (gap clip) and T (threshold) to be FORMULA-derived (B from the X-nesting and snce-nesting depth of phi; T from at least phi's untl-nesting depth) and P+1 (modulus) to be a multiple of the period of every letter-definable sub-object of the OBJECT, coupled jointly to the formula's letters -- a divisibility condition, not a magnitude one. The named next candidate is parameters (T, P, B) derived from the object AND the formula JOINTLY; it has not been gated by any predecessor.\n\nWork, in order:\n(1) Correct or delete specs/761_ladder_realization_theorem/.blocker-research.json: it is STALE (dated 2026-10-11, pre-dating the fourteenth probe) and recommends the gap-carrying candidate that ladder-cell-index-obstructions.lean has since refuted. It lives under task 761's own directory, so this correction is in scope for a record updating 761's status.\n(2) Define the jointly-derived candidate: B from phi's X-nesting and snce-nesting depth; T from at least phi's untl-nesting depth; P+1 a multiple of the period of every letter-definable sub-object of the given ladder object, via a letter-restricted variant of reachN_eventually_periodic (ported in the fourteenth probe's prototype, specs/archive/773_ladder_cell_index_factorization/prototype/reach-eventual-periodicity.lean).\n(3) Run, BEFORE any sufficiency attempt, the five-part falsification gate as compiled theorems: gate 1 (counters (B,B+1) vs (B,B+2)); gate 2 (counters (2B,4B+2) vs (2B+1,4B+2)); gate 3 (one region further out, and in the past direction); gate 4 ((q,T,n) vs (q,T+(P+1),n) at n=T+(P+1)+B under X^(T+1) r -- rebuilt against the FORMULA-derived T and B, not object-exhibited ones); gate 5 (on the coprime-cycle object, (a,3(P+1)(T+1),n) vs (a,3(P+1)(T+1)+(P+1),n) under p U (r and l_a) with top U l_d in the closure -- rebuilt against the FORMULA-derived P). Gates 4 and 5 are refutations of the exhibited parameters in every predecessor, not separations a candidate passes -- a gate probing one coordinate certifies one coordinate only; passing gates 1-3 says nothing about 4 and 5.\n(4) Report the verdict (survive or refute) as a wired evidence probe, following the thirteenth/fourteenth/fifteenth probes' header convention (what was asked, why no statement exists or what is settled, what the probe does NOT say), registered in scripts/check-evidence-probes.sh.\n(5) If the gate is survived, attempt the positive factorization lemma carrying these four open proof obligations verbatim as what it would need to meet (named so they are not rediscovered): (a) eventual periodicity of the realizable types in the countdown over the product of the object with the closure; (b) a region-length pumping lemma for untl/snce-depth-bounded formulas; (c) the next deadline's coupling through Drift; (d) the box/stab letters through the anchor-layer equations (box_mem_tpOf_iff, stab_mem_tpOf_iff). If not costable within this round, name the obligations as the next round's scope rather than attempting a shortcut -- do not state a weakened LadderCons without the box/stab clause (stab_mem_tpOf_iff is per cell; dropping the clause publishes a same-named weaker statement, forbidden by plan-compliance.md's Statement Fidelity section).\n\nWhat is NOT in question and must not be re-attacked: the SET of cells of any regular Z-model is finite and bounded (anchorCells_finite, anchorCells_ncard_le <= 2^(2^|cl phi|), RaySummary/AnchorLayer.lean) -- only the computable INDEX is open. What is proved positively so far is fixture-level only (qp_cell_eq_of_depth_parity on the two-state object, box/stab-free phi) and is explicitly not the factorization lemma.\n\nNot costable as a full proof attempt; the gate run (steps 1-4) is costable and is the first deliverable.",
+      "effort": "3-5 hours for the correction, candidate definition, gate run, and report (precedents closed in ~1-1.6h against ~9h filed estimates); the positive sufficiency attempt in step (5) beyond a survived gate is not costable and may be deferred to a successor record",
+      "parent_task": 761,
+      "topic": "decidability",
+      "dependencies": [],
+      "file_scope": [
+        "specs/761_ladder_realization_theorem/.blocker-research.json",
+        "specs/evidence/seam-gluing-ray-product/",
+        "scripts/check-evidence-probes.sh",
+        "/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md"
+      ],
+      "created": "2026-10-16T10:44:05Z",
+      "last_updated": "2026-10-16T10:45:58Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/761_ladder_realization_theorem/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        },
+        {
+          "type": "research",
+          "path": "specs/805_jointly_derived_cell_index_gate/reports/01_jointly-derived-index-gate.md",
+          "summary": "Seed research report: verified starting state, parameter-origin mechanism, the five-part gate, and round-1 order"
+        }
+      ],
+      "next_artifact_number": 2
     }
   ],
   "artifacts": [
