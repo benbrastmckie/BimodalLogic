@@ -138,6 +138,7 @@ next_project_number: 806
 - **Research**:
   - [761_ladder_realization_theorem/reports/02_spawn-analysis.md]
   - [805_jointly_derived_cell_index_gate/reports/01_jointly-derived-index-gate.md]
+  - [805_jointly_derived_cell_index_gate/reports/02_joint-index-gate-verdict.md]
 
 **Description**: RESEARCH TASK, verdict-first, on the posture task 559 models: reports and sorry-free evidence probe files under this task's own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation is an explicitly acceptable and successful outcome (as task 773 and task 775 both closed), and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons.
 
