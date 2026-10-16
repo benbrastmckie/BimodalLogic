@@ -242,7 +242,7 @@ a doc-comment edit in this module has.
 
 ---
 
-### Phase 3: Full Gate Set [IN PROGRESS]
+### Phase 3: Full Gate Set [COMPLETED]
 
 **Goal**: The repository's complete gate set is green: full `lake build`, test-library build, zero
 linter errors, `scripts/check-module-invariants.sh` exit 0, C3 sorry inventory at zero.
@@ -250,27 +250,27 @@ linter errors, `scripts/check-module-invariants.sh` exit 0, C3 sorry inventory a
 **Tasks**:
 - [x] Check for a competing unguarded `lake` process before starting, per `rules/lean4.md`, so any
       failure below can be attributed correctly.
-- [ ] Full library build:
+- [x] Full library build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, detached. Expect
       exit 0. This is the check that catches a `simp`/`aesop`/`exact?` call site a name grep cannot
       see.
-- [ ] Test-library build:
+- [x] Test-library build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build BimodalTest`,
       detached. Expect exit 0; the pinned `#print axioms` / `#guard_msgs` blocks at
       `Tests/BimodalTest/Metalogic/EffectivePeriodicExtensionAxiomTest.lean:173-178` live here and
       must stay green with no edit.
-- [ ] Linter, final run:
+- [x] Linter, final run:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1500 -- exe runLinter FormalSystem`,
       detached. Expect exit 0 and `-- Found 0 errors`.
-- [ ] The repository's aggregate invariant gate: `bash scripts/check-module-invariants.sh`,
+- [x] The repository's aggregate invariant gate: `bash scripts/check-module-invariants.sh`,
       detached (it runs `lake` itself, so it is subject to the same cap). Expect exit 0 with no
       `FAIL` group — in particular `C16` PASS, both `C1 lake build` groups PASS, `C3` reporting a
       zero structural sorry inventory, and `C26` unaffected (no in-source `@[nolint]` attribute was
       added).
-- [ ] Confirm `scripts/nolints.json` is byte-identical to its committed state
+- [x] Confirm `scripts/nolints.json` is byte-identical to its committed state
       (`git diff -- scripts/nolints.json` empty) — the happy path adds no baseline entry.
-- [ ] Confirm `git status --short` shows no modified file outside this plan's `Files to modify` sets.
-- [ ] Commit the phase.
+- [x] Confirm `git status --short` shows no modified file outside this plan's `Files to modify` sets. *(deviation: altered — two generated-metadata files fell outside the declared sets and had to be regenerated with each gate's own remedy: `typst/generated/status.typ` via `typst-sync-check.sh --fix` and `README.md`'s generated inventory block via `check-module-invariants.sh --emit-inventory`, both forced by the net +1 line in `FormalSystem/`)*
+- [x] Commit the phase.
 
 **Timing**: 1.25 hours (wall-clock dominated by the full build; a `Semantics`-layer leaf edit
 rebuilds far less than a syntax- or proof-system-layer edit, but the invariant gate re-runs `lake`
@@ -303,7 +303,7 @@ is under `FormalSystem/`).
 
 ---
 
-### Phase 4: CONDITIONAL — Baseline Entry If the Binder Proves Load-Bearing [NOT STARTED]
+### Phase 4: CONDITIONAL — Baseline Entry If the Binder Proves Load-Bearing [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Only if Phase 1 or Phase 3 produces a build failure traceable to the binder deletion —
 i.e. the research's three negative call-site probes are overturned by a real unification-dependent
@@ -319,6 +319,14 @@ This phase exists so that the dispatch's own fallback ("If the binder turns out 
 at a call site, record that and add the nolints entry instead, stating why") is an in-plan branch
 rather than a plan deviation — `rules/plan-compliance.md` requires a would-be deviation on a
 `.lean` file to be escalated as `[BLOCKED]`, not silently annotated.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Restore `[Finite F.WorldState]` on `mem_HF_iff_no_forbidden` | The decision gate's four runs were all green, so no call site requires the binder for unification | Phase 1 `lake build FormalSystem.Semantics.ShiftFiniteTypeDictionary` exit 0; Phase 1 `lake exe runLinter FormalSystem` exit 0 (`-- Linting passed for FormalSystem.`); Phase 3 full `lake build` exit 0 (2872 jobs, zero `error:` lines); Phase 3 `lake build BimodalTest` exit 0 (2936 jobs, zero `error:` lines) |
+| Add a `["unusedArguments", "FormalSystem.Semantics.FrameOver.mem_HF_iff_no_forbidden"]` entry to `scripts/nolints.json` | Admissible only on the taken branch, whose justification (a real failing call site) does not exist | `git diff -- scripts/nolints.json` empty; `bash scripts/check-module-invariants.sh` exit 0 with `C16 PASS` and no `FAIL` group, i.e. the baseline needs no entry |
+| Restate the docstring paragraph to name a binder-requiring call site | There is no such call site to name; Phase 2's text stands | `lean_references` at the declaration returned only the declaration itself and the `#print axioms` command at `Tests/BimodalTest/Metalogic/EffectivePeriodicExtensionAxiomTest.lean:178`, which applies no instance arguments; that test module rebuilt green with its pinned `#guard_msgs` block unedited |
 
 **Tasks** (taken only if the gate fails):
 - [ ] Record the failing call site precisely: file, line, the elaboration error, and why the
