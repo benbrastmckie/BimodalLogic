@@ -55,7 +55,7 @@ derived theorem of BX_d by `def:BX-d`. UE and UT are the other two, and they are
 at all — the paper dropped both outright, so they are theorems of this tree with no paper
 attribution. In Lean: TC, NP and NA in `Theorems/ConnectDerived.lean`; UE, UT and NF in
 `DerivedAxioms`; TL and DN in `Theorems/LinearityDerived.lean` (TL from CN, DN from NN); Z1 in
-`Metalogic/CompletenessDerived.lean`, recovered through the ZTime completeness engine from UZ.
+`Theorems/DiscreteUnfolding.lean`, derived at `.ZTime` from UZ and US.
 The record of the TL decision is `ProofSystem/LinearityDerivedFacts.lean`.
 
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce (CPL)
@@ -229,7 +229,7 @@ inductive Axiom : Formula → Type where
   -- The chronicle splitting construction now uses Xu 1988 Lemma 3.2.1/3.2.2 instead.
   -- TL, UE, UT, TC, NP, NF, NA, DN and Z1 are likewise not constructors: they are derived
   -- (`DerivedAxioms`, `Theorems.ConnectDerived`, `Theorems.LinearityDerived`,
-  -- `Metalogic.CompletenessDerived`); see the notes at their former positions below.
+  -- `Theorems.DiscreteUnfolding`); see the notes at their former positions below.
   /-- BX5: Self-accumulation of Until (Burgess A5a, Xu axiom (7)):
   Burgess: `U(p, q) ⊃ U(p, q ∧ U(p, q))`.
   Printer order (event first; the constructor itself is guard-first untl(guard, event)):
@@ -324,8 +324,8 @@ inductive Axiom : Formula → Type where
   class for it. -/
   | prior_UZ (φ : Formula) :
       Axiom (φ.someFuture.imp (Formula.untl φ.neg φ))
-  -- Z1 (`G(Gφ→φ) → (FGφ→Gφ)`, the former Layer 7) is derived at `.ZTime` through the ZTime
-  -- completeness engine: `Metalogic.CompletenessDerived.z1Thm`.
+  -- Z1 (`G(Gφ→φ) → (FGφ→Gφ)`, the former Layer 7) is derived at `.ZTime` from UZ and US:
+  -- `Theorems.DiscreteUnfolding.z1Schema` (gated: `z1SchemaAt`).
   -- Layer 8: Density (1: NN; DN `GGφ → Gφ` is derived from NN with the Base schemata,
   -- `Theorems.LinearityDerived.density`)
   /-- Dense indicator: `¬U(⊤,⊥)`.
@@ -561,7 +561,7 @@ This is the single source of truth for axiom-frame-class compatibility:
   inductive, so it is not counted in this row (`typst/generated/status.typ`'s
   `dense-only-count` is 1)
 - ZTime (1 axiom: prior_UZ): valid on discrete frames. Z1 carries `.ZTime` too, but as the
-  derived `Metalogic.CompletenessDerived.z1Thm` rather than a constructor of this inductive, so
+  derived `Theorems.DiscreteUnfolding.z1Schema` rather than a constructor of this inductive, so
   it is not counted in this row (`typst/generated/status.typ`'s `ztime-only-count` is 1)
 - RTime (2 axioms: prior_U_gap, sep): valid on dense Dedekind-complete frames
 

@@ -44,8 +44,8 @@ docstring enumerate the same thirteen results in the same order.
 10. **The `.ZTime` row of `Axiom.minFrameClass` is characterized, not merely upper-bounded**
     (`ZTimeSharpness.lean`). `Metalogic.axiom_validIn_min` already proves every axiom valid at its
     own tag; `prior_UZ_minFrameClass_sharp` and `z1_minFrameClass_sharp` supply the other
-    direction, so no frame class strictly below `.ZTime` validates `Axiom.prior_UZ` or the Z1 formula (now the derived
-    `CompletenessDerived.z1Thm`).
+    direction, so no frame class strictly below `.ZTime` validates `Axiom.prior_UZ` or the Z1 formula (the derived
+    `DiscreteUnfolding.z1Schema`).
     `.Dense` and `.RTime` are incomparable with `.ZTime` rather than below it and so are refuted
     separately, by `not_validIn_dense_prior_UZ` / `not_validIn_dense_z1` over the rationals and
     `not_validIn_rtime_prior_UZ` / `not_validIn_rtime_z1` over the reals; with all four classes
@@ -177,7 +177,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `StaticFrame.lean` | 324 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and the Z1 formula). Turns every later axiom check into a rewrite. |
 | `TranslationProductCoarse.lean` | 136 | Coarse models on the translation product (`Semantics/Frames/TranslationProduct.lean`, a proof device, never an intended model): `liftK` lifts a coarse model with the coarsening forgetting the clock; `c_invariance` — coarse truth is preserved by the projection; `pasteClosed_liftK` / `pasteClosed_of_liftK` — paste-closure transfers in both directions; `c_refuted_lift` — a coarse refutation on `F` is a coarse refutation on the recurrence-free, Limit-for-free product in the same frame class. |
 | `TranslationStateSet.lean` | 418 | The choice-free route to `lem:state-set`'s three sentences, in two layers. The flow layer is absolutely choice-free over an arbitrary duration group: `selfShift` presents `D` acting on itself as a `ShiftSet`, `translationFlow` is its task frame, `translationFlow_taskRel` and `translationFlow_states_eq` give the task relation and the shape of a history, `translationFlow_orderFlow` is (H1), `translationFlow_stateOccurs` is (H2) by an explicit translation history rather than by `cor:occurrence`, `translationFlow_deterministic` records `def:deterministic`, and `translationFlow_plusTruthAt_iff_mem_satSet`, `translationFlow_determined` and `translationFlow_plusValidOn_iff_satSet_univ` are the three sentences — all ten with no `Classical.choice`. The frame layer restates them at `translationFrame D`, where the `*Sharpness` countermodels live, through the `translationState` view and the `translationFrameWorldLinearOrder` instance: `translationFrame_orderFlow`, `translationFrame_stateOccurs` (the paper's own `σ_c`), and the three `translationFrame_*` corollaries, pinned relatively — each reports exactly `translationFrame`'s own profile, so the (H2) discharge adds nothing and the residual choice is frame-constant-borne. |
-| `ZTimeSharpness.lean` | 450 | The `.ZTime` row of `Axiom.minFrameClass`, characterized rather than upper-bounded: `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` refute UZ and the Z1 formula (now the derived `CompletenessDerived.z1Thm`) at frame level over any densely ordered duration group; instantiating at ℚ and ℝ gives non-validity at `.Base`, `.Dense` and `.RTime`, and `eq_base_of_lt_ztime` covers everything strictly below `.ZTime`; `prior_UZ_validIn_iff_ztime` / `z1_validIn_iff_ztime` assemble `ValidIn fc φ ↔ fc = .ZTime`, with `not_derivable_base_*` the underivability corollaries. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
+| `ZTimeSharpness.lean` | 450 | The `.ZTime` row of `Axiom.minFrameClass`, characterized rather than upper-bounded: `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` refute UZ and the Z1 formula (the derived `DiscreteUnfolding.z1Schema`) at frame level over any densely ordered duration group; instantiating at ℚ and ℝ gives non-validity at `.Base`, `.Dense` and `.RTime`, and `eq_base_of_lt_ztime` covers everything strictly below `.ZTime`; `prior_UZ_validIn_iff_ztime` / `z1_validIn_iff_ztime` assemble `ValidIn fc φ ↔ fc = .ZTime`, with `not_derivable_base_*` the underivability corollaries. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
 <!-- END GENERATED -->
 
 ## Key Results
@@ -319,7 +319,7 @@ language.
 will prove a true theorem about a different question.
 
 - The **static frame** (`FrameOver.staticFrame`, `StaticFrame.lean`) has time-invariant truth, and
-  time-invariant truth **validates** the Z1 formula (`CompletenessDerived.z1Thm`) outright — the landed `static_validates_z1`, which
+  time-invariant truth **validates** the Z1 formula (`DiscreteUnfolding.z1Schema`) outright — the landed `static_validates_z1`, which
   `LexIntWitness.lean` depends on. The trap is live precisely because `LexIntWitness.lean` makes
   its discrete non-Archimedean carrier look like the obvious place to start.
 - The **clock frame** (`clockFrame`, `ClockFrame.lean`) is a dead end for **`z1` only**, and the

@@ -33,7 +33,7 @@ system) and derivation trees with 7 inference rules.
   modal 4 and B and the pre-paper forms of CN and TS are in `Theorems/Combinators.lean`, and the
   remaining derived schemata live above the proof system: TC, NP, NA in
   `Theorems/ConnectDerived.lean`, TL and DN in `Theorems/LinearityDerived.lean`, Z1 in
-  `Metalogic/CompletenessDerived.lean`
+  `Theorems/DiscreteUnfolding.lean`
 
 - `Derivation`: Derivation tree type `Γ ⊢ φ` with 7 inference rules
   - axiom, assumption, modus_ponens, necessitation, temporal_necessitation,

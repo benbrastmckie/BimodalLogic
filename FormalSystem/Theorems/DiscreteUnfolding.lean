@@ -128,7 +128,10 @@ def succIndicatorAt {fc : FrameClass} (h : FrameClass.ZTime ≤ fc) :
 
 The `le_rfl` instantiation of `succIndicatorAt`; the proof lives there and is not duplicated
 here. Kept as a declaration in its own right because every consumer below, and every consumer
-outside this file, works at `FrameClass.ZTime` itself. -/
+outside this file, works at `FrameClass.ZTime` itself.
+
+Paper: `sub:Extension`
+-/
 def succIndicator : ⊢[FrameClass.ZTime] Formula.next Formula.top := succIndicatorAt le_rfl
 
 /-- The `reflectTime` image of `succIndicatorAt`'s statement, computed once so that
@@ -145,7 +148,10 @@ primitive rule at every frame class, so applying it to `succIndicatorAt h` and n
 
 The guard `h : FrameClass.ZTime ≤ fc` is inherited from `succIndicatorAt` and is what makes the
 `{fc}`-generalization safe: a guard-free version would derive `S(⊥,⊤)` at `FrameClass.Dense`,
-where `Axiom.dense_indicator` refutes the future form and time reflection refutes this one. -/
+where `Axiom.dense_indicator` refutes the future form and time reflection refutes this one.
+
+Paper: — (the free past mirror of `succIndicatorAt`; no paper counterpart)
+-/
 def prevIndicatorAt {fc : FrameClass} (h : FrameClass.ZTime ≤ fc) :
     ⊢[fc] Formula.prev Formula.top :=
   reflect_time_next_top_eq ▸ DerivationTree.time_reflection _ (succIndicatorAt h)
@@ -154,7 +160,10 @@ def prevIndicatorAt {fc : FrameClass} (h : FrameClass.ZTime ≤ fc) :
 
 The `le_rfl` instantiation of `prevIndicatorAt`, following `succIndicator`'s convention: the
 proof lives there and is not duplicated here, and the pinned form is kept as a declaration in
-its own right because its consumers work at `FrameClass.ZTime` itself. -/
+its own right because its consumers work at `FrameClass.ZTime` itself.
+
+Paper: — (the free past mirror of `succIndicator`; no paper counterpart)
+-/
 def prevIndicator : ⊢[FrameClass.ZTime] Formula.prev Formula.top := prevIndicatorAt le_rfl
 
 /-! ## Result 2: the Z-exact one-step unfolding schema
@@ -285,7 +294,10 @@ Stated at `FrameClass.ZTime` because `unfoldForward` is: the forward half needs
 `succIndicator`, which is a theorem only from `ZTime` upwards.
 
 The `Base`-level converse — the mirror of `unfoldBackward` — is not needed by any consumer in
-this tree and is deliberately not added; it would be the same two-line recipe. -/
+this tree and is deliberately not added; it would be the same two-line recipe.
+
+Paper: — (the free past mirror of `unfoldForward`; no paper counterpart)
+-/
 def unfoldBackwardSince (e g : Formula) :
     ⊢[FrameClass.ZTime]
       (Formula.snce g e).imp
@@ -350,7 +362,10 @@ The past mirror of `nextConj`, and it is *free*: `DerivationTree.time_reflection
 rule at every frame class, so applying it to `nextConj` on the reflected arguments and
 normalizing with `reflect_time_next_conj_eq` returns exactly this statement. No past-mirrored
 axiom is introduced. `{fc}`-polymorphic for the same reason `nextConj` is — the functionality of
-the predecessor is already available at `FrameClass.Base`. -/
+the predecessor is already available at `FrameClass.Base`.
+
+Paper: — (the free past mirror of `nextConj`; no paper counterpart)
+-/
 def prevConj {fc : FrameClass} (A B : Formula) :
     ⊢[fc] ((Formula.prev A).and (Formula.prev B)).imp (Formula.prev (Formula.and A B)) :=
   reflect_time_next_conj_eq A B ▸
@@ -570,7 +585,10 @@ The `F⊤` conjunct of the antecedent is not consumed: at `FrameClass.ZTime` the
 translation of `MinusLanguage.Axiom.df` must match.
 
 Association is pinned to `((Hφ ∧ φ) ∧ F⊤) → F(Hφ)` so that
-`FormalSystem.MinusLanguage.AxiomDischarge` can use it without reassociating. -/
+`FormalSystem.MinusLanguage.AxiomDischarge` can use it without reassociating.
+
+Paper: `sub:Extension`
+-/
 def dfSchema (φ : Formula) :
     ⊢[FrameClass.ZTime]
       ((φ.allPast.and φ).and Formula.top.someFuture).imp (φ.allPast.someFuture) := by
@@ -609,7 +627,8 @@ single `eventMono` step. Read it at the nearest `Gφ`-witness `s` of the UZ inte
 3. `prevConj` merges the two `Y`-formulas, `nextAllFuture` turns the inner `X (Gφ ∧ φ)` into
    `Gφ`, which clashes with the `¬Gφ` beside it, and `snceBotFalse` closes on `Y ⊥`.
 
-Paper: `def:BX-z` -/
+Paper: `def:BX-z`
+-/
 def z1EventBot (φ : Formula) :
     ⊢[FrameClass.ZTime]
       (Formula.and (Formula.and φ.allFuture φ)
@@ -671,7 +690,8 @@ Four steps, assuming `¬Gφ` for contradiction and discharging with `doubleNegat
 Stated at `FrameClass.ZTime`, where UZ and the discreteness witness are theorems; `z1SchemaAt`
 is the frame-class-gated companion.
 
-Paper: `def:BX-z` -/
+Paper: `def:BX-z`
+-/
 def z1Schema (φ : Formula) :
     ⊢[FrameClass.ZTime]
       ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) := by
@@ -721,7 +741,8 @@ unchanged. `lift` is computable and structural, so the gated form costs one cons
 pass over the tree and nothing else — `Combinators.baseThm` and `succIndicatorAt` are the
 existing instances of the same pattern.
 
-Paper: `def:BX-z` -/
+Paper: `def:BX-z`
+-/
 def z1SchemaAt {fc : FrameClass} (h : FrameClass.ZTime ≤ fc) (φ : Formula) :
     ⊢[fc] ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
   DerivationTree.lift h (z1Schema φ)

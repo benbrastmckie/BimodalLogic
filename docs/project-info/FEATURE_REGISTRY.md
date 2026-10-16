@@ -19,7 +19,7 @@ For implementation status by module, see [implementation-status.md](implementati
   - `FormalSystem/Syntax/Formula.lean` - Formula type with all operators
   - `FormalSystem/ProofSystem/Axioms.lean` - 20 axiom constructors in four frame-class layers
   - `FormalSystem/ProofSystem/DerivedAxioms.lean`, `FormalSystem/Theorems/ConnectDerived.lean`,
-    `FormalSystem/Theorems/LinearityDerived.lean`, `FormalSystem/Metalogic/CompletenessDerived.lean` -
+    `FormalSystem/Theorems/LinearityDerived.lean`, `FormalSystem/Theorems/DiscreteUnfolding.lean` -
     the derived schemata: the TR mirrors and the nine derived schemata TC, TL, NP, NF, NA, DN,
     Z1 — each marked derived by the paper's own definitions — together with UE and UT, which are
     not paper schemata at all (25 names; combined with the 20 primitives, 37/40/39/42 by class — see

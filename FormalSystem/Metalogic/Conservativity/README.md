@@ -28,7 +28,7 @@ than deferred debt.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Conservativity -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `Backward.lean` | 215 | <!-- TODO: add description --> |
+| `Backward.lean` | 214 | <!-- TODO: add description --> |
 | `ChainBundleTruth.lean` | 243 | The valuation-only truth lemma for the flow frames of `Metalogic/Algebraic/FlowFrame.lean`: `chainSat` (Kripke satisfaction on a disjoint union of `D`-chains, `□` universal) and `chainBundle_truth_lemma`, plus the transfer corollary `not_minusValidIn_of_not_chainSat` and its ℚ/ℝ instantiations |
 | `DenseObstructionTransfer.lean` | 288 | Machine-checked evidence that neither closed row's separating witness transfers to the dense classes: `Sp` is a theorem of both `TM⁻_d` and `TM⁻_dc` (`spDerivableDense`, `spDerivableRTime`), and `Z1` is refuted on the flow frame over ℚ (`not_minusValidDense_z1`) |
 | `Fragment.lean` | 197 | <!-- TODO: add description --> |

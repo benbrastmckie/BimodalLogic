@@ -113,7 +113,7 @@ theorems**, not axioms -- they are `temporalKDistDerived` and `temporal4Derived`
 | Layer | Constructors | Frame condition |
 |-------|--------------|-----------------|
 | Dense (1) | `dense_indicator` (NN, ¬U(⊤,⊥)); DN (GGφ → Gφ) is derived from it: `LinearityDerived.density` | `DenselyOrdered` |
-| ZTime (1) | `prior_UZ` (UZ); Z1 is derived from it through the ZTime completeness engine: `CompletenessDerived.z1Thm` | `SuccArchimedean` / `PredArchimedean` |
+| ZTime (1) | `prior_UZ` (UZ); Z1 is derived from it with US: `DiscreteUnfolding.z1Schema` | `SuccArchimedean` / `PredArchimedean` |
 | RTime (2) | `prior_U_gap` (PU), `sep` (SEP) | dense + Dedekind-complete |
 
 The RTime layer is Reynolds's definable-gap axiom set (Reynolds 1992, printed p.168), less the
@@ -156,7 +156,7 @@ the dataset tooling traverse them.
 | `tempLinearity` | Fφ ∧ Fψ → F(Fφ ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ Fψ)) (**paper schema** TL) | CN with UF, then UE on each disjunct | `Theorems/LinearityDerived.lean` |
 | `tempLinearityPast` | TL's past form, historical disjunct order | TR of TL, then `orRotate` twice | `Theorems/LinearityDerived.lean` |
 | `density` | GGφ → Gφ, gated `Dense ≤ fc` (**paper schema** DN) | NN with UG, UF, UE, UC and TN | `Theorems/LinearityDerived.lean` |
-| `z1Thm` | G(Gφ→φ) → (FGφ → Gφ) at `ZTime` (**paper schema** Z1) | `derivable_of_validZTime` on `z1_valid`, packaged by `Classical.choice` | `Metalogic/CompletenessDerived.lean` |
+| `z1Schema` | G(Gφ→φ) → (FGφ → Gφ) at `ZTime` (**paper schema** Z1) | a direct derivation tree from UZ and US (gated form: `z1SchemaAt`) | `Theorems/DiscreteUnfolding.lean` |
 | `linearSince` | CN's past form, left-associated | TR of CN, then `orAssocRev` | `Theorems/Combinators.lean` |
 | `modalB` | φ → □◇φ | MT and M5 contraposed, double negation | `Theorems/Combinators.lean` |
 | `modal4` | □φ → □□φ | B at □φ, then MN of M5 and MK | `Theorems/Combinators.lean` |
@@ -366,10 +366,10 @@ and TN.
 | prior_UZ (φ : Formula) : Axiom (φ.someFuture.imp (Formula.untl φ.neg φ))
 ```
 
-Z1 (`G(Gφ→φ) → (FGφ → Gφ)`) is the derived `CompletenessDerived.z1Thm φ`
-(`FormalSystem/Metalogic/CompletenessDerived.lean`): it is valid on every ℤ-time frame
-(`z1_valid`), the ZTime engine `derivable_of_validZTime` is complete and uses only UZ among the
-frame-class-sensitive constructors, so the ZTime extension is UZ alone.
+Z1 (`G(Gφ→φ) → (FGφ → Gφ)`) is the derived `DiscreteUnfolding.z1Schema φ`
+(`FormalSystem/Theorems/DiscreteUnfolding.lean`): a direct derivation tree whose only
+frame-class-sensitive axiom is UZ, which hands back the *nearest* future `Gφ`-point and so makes
+the argument finite. The ZTime extension is therefore UZ alone.
 
 ### RTime (2)
 

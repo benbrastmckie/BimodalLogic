@@ -776,7 +776,10 @@ past-mirrored axiom is introduced.
 Sited here rather than in a later module because `FormalSystem/Theorems/README.md`'s "Where a
 derived schema lives" rule puts a derivation at the lowest module whose imports supply its
 proof, and both ingredients — `untlBotFalse` and `DerivationTree.time_reflection` — are
-available at this point in the chain. -/
+available at this point in the chain.
+
+Paper: — (the free past mirror of `untlBotFalse`; no paper counterpart)
+-/
 def snceBotFalse {fc : FrameClass} (X : Formula) :
     ⊢[fc] (Formula.snce X Formula.bot).imp Formula.bot :=
   reflect_time_untl_bot_false_eq X ▸

@@ -122,7 +122,7 @@ to axiomatize it now states in its own text that it is a derived theorem:
 | `NP` | `\alabel{NP}` in prose | `def:TMplus` | **TM**, not BX | in-prose `\leanrepo{}` reference |
 | `NF` | `\alabel{NF}` in prose | `def:TMplus` | **TM**, not BX | in-prose `\leanrepo{}` reference |
 | `NA` | `\alabel{NA}` in prose | `def:TMplus` | **TM**, not BX | in-prose `\leanrepo{}` reference |
-| `Z1` | `\aitem{Z1}` | `def:BX-z` | **TM**$_\textsc{z}$, not BX$_\textsc{z}$ | `\leanfoot{CompletenessDerived.z1Thm}` |
+| `Z1` | `\aitem{Z1}` | `def:BX-z` | **TM**$_\textsc{z}$, not BX$_\textsc{z}$ | `\leanfoot{CompletenessDerived.z1Thm}` (the paper's text; the tree's declaration is `DiscreteUnfolding.z1Schema`) |
 | `DN` | `\aitem{DN}` | `def:BX-d` | **BX**$_\textsc{d}$ | `\leanfoot{LinearityDerived.density}` |
 
 `NP`, `NF` and `NA` deserve a separate note: they are the three that lost their `\aitem` status
@@ -550,7 +550,7 @@ since come to the same set. The tree's primitive set is not a proper subset of `
 The nine schemata derived in the tree — TC, UE, UT, NP, NF, NA
 (`FormalSystem/Theorems/ConnectDerived.lean`, `ProofSystem/DerivedAxioms.lean`), TL and DN
 (`FormalSystem/Theorems/LinearityDerived.lean`) and Z1
-(`FormalSystem/Metalogic/CompletenessDerived.lean`, through the ℤ-time completeness engine) —
+(`FormalSystem/Theorems/DiscreteUnfolding.lean`, a direct derivation tree from UZ and US) —
 are no longer schemata the paper lists as axioms: UE and UT are not paper keys at all, TC and TL
 are derived theorems of BX in `def:BX`'s own text, NP/NF/NA are derived theorems of TM in
 `def:TMplus`'s, Z1 of TM$_z$ in `def:BX-z`'s and DN of BX$_d$ in `def:BX-d`'s. The derivation

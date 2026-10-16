@@ -32,7 +32,7 @@ namespace BimodalTools
 /-- All 20 axiom constructor names, in `Axioms.lean` source order. These are the primitive
 schemata of the reduced system; the time-reflection mirrors, modal 4/B, and the nine derived
 schemata TC, UE, UT, TL, NP, NF, NA, Z1, DN are theorems (`DerivedAxioms`, `ConnectDerived`,
-`LinearityDerived`, `CompletenessDerived`). -/
+`LinearityDerived`, `DiscreteUnfolding`). -/
 def allAxiomNames : List String :=
   [ "prop_k", "prop_s", "ex_falso", "peirce"
   , "modal_t", "modal_5_collapse", "modal_k_dist"

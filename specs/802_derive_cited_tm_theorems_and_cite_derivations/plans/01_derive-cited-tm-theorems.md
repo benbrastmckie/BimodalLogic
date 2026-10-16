@@ -503,35 +503,35 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: The In-Tree Prose Tail [IN PROGRESS]
+### Phase 7: The In-Tree Prose Tail [COMPLETED]
 
 - **Goal:** No Lean docstring or comment in the tree still describes Z1 or DN as recovered
   through a completeness engine; each cites the derivation instead.
 - **Tasks:**
-  - [ ] Rewrite the Z1 prose in the surfaces the dispatch names:
+  - [x] Rewrite the Z1 prose in the surfaces the dispatch names:
     `FormalSystem/ProofSystem/Axioms.lean` (four spots), `FormalSystem/MainResults.lean`,
     `FormalSystem/Metalogic/Decidability/Verified/RuleSpec.lean` (two spots),
     `Tests/BimodalTest/Automation/EdgeCaseTest.lean`,
     `Tests/BimodalTest/Automation/TacticsTest.lean`.
-  - [ ] Rewrite the Z1 prose in the surfaces the dispatch does **not** name (the report's
+  - [x] Rewrite the Z1 prose in the surfaces the dispatch does **not** name (the report's
     additions): `FormalSystem/Metalogic/Conservativity.lean`,
     `FormalSystem/Metalogic/Independence/StaticFrame.lean` (two spots),
     `FormalSystem/MinusLanguage/Axioms.lean`, `FormalSystem/ProofSystem.lean`,
     `FormalSystem/Semantics/FrameClassValidity.lean`,
     `FormalSystem/Semantics/FrameProperty.lean`, `BimodalTools/AxiomNames.lean`.
-  - [ ] In `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` and
+  - [x] In `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` and
     `ArchimedeanSharpness.lean`, rewrite the docstrings that still name
     `CompletenessDerived.z1Thm` (twelve and four mentions respectively at plan time, most of them
     prose).
-  - [ ] In `FormalSystem/Automation/Tactics/Search.lean`, rewrite `tryGatedDerivedMatch`'s
+  - [x] In `FormalSystem/Automation/Tactics/Search.lean`, rewrite `tryGatedDerivedMatch`'s
     docstring sentence about Z1 being "recovered through the ZTime completeness engine".
-  - [ ] Each rewrite says what is now true: Z1 is a direct derivation from UZ and US at
+  - [x] Each rewrite says what is now true: Z1 is a direct derivation from UZ and US at
     `FrameClass.ZTime`, named `Theorems.DiscreteUnfolding.z1Schema` (gated: `z1SchemaAt`). Do not
     add prose explaining a citation convention, and do not narrate that the engine route used to
     exist — see `.claude/rules/no-record-versioning-in-deliverables.md`.
-  - [ ] Confirm no task number entered any of these files
+  - [x] Confirm no task number entered any of these files
     (`.claude/rules/no-task-references-in-deliverables.md`).
-  - [ ] `BimodalTools/ProofExtractorMain.lean` is **not** in this phase's territory; Phase 10
+  - [x] `BimodalTools/ProofExtractorMain.lean` is **not** in this phase's territory; Phase 10
     owns both its comment and its entry.
 - **Timing:** 1.5 hours
 - **Depends on:** 6
@@ -557,18 +557,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Close the `docs/theorem-index.md` Coverage Gap [NOT STARTED]
+### Phase 8: Close the `docs/theorem-index.md` Coverage Gap [COMPLETED]
 
 - **Goal:** Every paper-cited schema in the target set has a row, and the Z1 rows cite the
   derivation.
 - **Tasks:**
-  - [ ] Re-read `docs/theorem-index.md` immediately before editing it (sibling-task territory;
+  - [x] Re-read `docs/theorem-index.md` immediately before editing it (sibling-task territory;
     see Risks).
-  - [ ] Replace the two `CompletenessDerived` Z1 rows with one row for
+  - [x] Replace the two `CompletenessDerived` Z1 rows with one row for
     `FormalSystem.Theorems.DiscreteUnfolding.z1Schema` and one for `z1SchemaAt`, each with the
     `def:BX-z` paper label, the `FormalSystem/Theorems/DiscreteUnfolding.lean` path (no line
     numbers), frame class `ZTime`, and the measured Axioms cell from Phase 4.
-  - [ ] Add rows for the schemata that have none today: DF
+  - [x] Add rows for the schemata that have none today: DF
     (`Theorems.DiscreteUnfolding.dfSchema`), the discreteness witness
     (`Theorems.DiscreteUnfolding.succIndicator`), CO (`Theorems.DedekindDerived.coDerived`), TK
     (`Theorems.TemporalDerived.temporalKDistDerived`), T4
@@ -578,19 +578,23 @@ Phases within the same wave can execute in parallel.
     `FormalSystem/Theorems/Perpetuity/Principles.lean`, `perpetuity5` at the same file,
     `perpetuity6` at `FormalSystem/Theorems/Perpetuity/MonotonicityDuality.lean` — confirm each
     path before writing the row).
-  - [ ] Add rows for Phase 3's four mirrors and their `le_rfl` instantiation, per the dispatch's
+  - [x] Add rows for Phase 3's four mirrors and their `le_rfl` instantiation, per the dispatch's
     "give each new declaration a docs/theorem-index.md row" obligation.
-  - [ ] Every Axioms cell states the value measured in Phases 1, 3 and 4, written out literally
+  - [x] Every Axioms cell states the value measured in Phases 1, 3 and 4, written out literally
     or as `pcq`, never as `pinned:` — none of these declarations is in the C2 or C14 baseline
     pair.
-  - [ ] Update the section's lead-in prose: the "Nine schemata are theorems of the 20-constructor
+  - [x] Update the section's lead-in prose: the "Nine schemata are theorems of the 20-constructor
     system" count and the per-schema enumeration behind it both move, and the closing sentence
     "The nine Base-polymorphic derivations are computable and carry `propext` only" must be
     restated to match what is now true — Phase 1 makes more of the table computable, and rows
     with a `pcq` cell now join it.
-  - [ ] Give each row its paper anchor where it has one, per the target table in the research
+  - [x] Give each row its paper anchor where it has one, per the target table in the research
     report; P5 and P6 are cited in `sub:Logic` with no `\leanfoot`, so their Paper label is the
-    `sub:Logic` anchor the neighbouring P1–P4 rows use.
+    `sub:Logic` anchor the neighbouring P1–P4 rows use. *(deviation: altered — C15's second assertion
+    requires every index row's label to be matched by a `Paper:` line in the named
+    declaration's own `/--` block, so nineteen declarations across six `Theorems/` modules
+    gained one; the free mirrors and the two new `Combinators` helpers carry
+    `Paper: — (reason)`, which C15 accepts as a satisfied cell.)*
 - **Timing:** 1.5 hours
 - **Depends on:** 6
 - **Verification Tier:** prose
@@ -614,37 +618,37 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: The Remaining Doc, README and Typst Surfaces [NOT STARTED]
+### Phase 9: The Remaining Doc, README and Typst Surfaces [COMPLETED]
 
 - **Goal:** Every documentation surface outside `docs/theorem-index.md` cites the derivation.
 - **Tasks:**
-  - [ ] `docs/reference/axiom-reference.md` — three spots: the ZTime row of the layer table, the
+  - [x] `docs/reference/axiom-reference.md` — three spots: the ZTime row of the layer table, the
     `z1Thm` row of the derived-schemata table, and the Z1 paragraph. Replace the engine
     description with the derivation in each.
-  - [ ] Re-read `docs/reference/paper-definitions-of-record.md` immediately before editing it
+  - [x] Re-read `docs/reference/paper-definitions-of-record.md` immediately before editing it
     (sibling-task territory), then update its two Z1/DN spots.
-  - [ ] `docs/development/MODULE_ORGANIZATION.md` — the "Z1 in `Metalogic.CompletenessDerived`"
+  - [x] `docs/development/MODULE_ORGANIZATION.md` — the "Z1 in `Metalogic.CompletenessDerived`"
     placement claim, now `Theorems.DiscreteUnfolding`.
-  - [ ] `docs/project-info/FEATURE_REGISTRY.md` — the entry naming
+  - [x] `docs/project-info/FEATURE_REGISTRY.md` — the entry naming
     `FormalSystem/Metalogic/CompletenessDerived.lean` among its files.
-  - [ ] `FormalSystem/README.md` — two spots: the layer-6 table row and the Z1 paragraph.
-  - [ ] `FormalSystem/Theorems/README.md` — its `CompletenessDerived` mention, plus a "Where a
+  - [x] `FormalSystem/README.md` — two spots: the layer-6 table row and the Z1 paragraph.
+  - [x] `FormalSystem/Theorems/README.md` — its `CompletenessDerived` mention, plus a "Where a
     derived schema lives" note recording that Z1 and the four mirrors now live in
     `DiscreteUnfolding.lean`. The file's `BEGIN GENERATED: inventory` block is regenerated in
     Phase 11, not hand-edited here.
-  - [ ] `FormalSystem/Metalogic/README.md` — remove the `CompletenessDerived.lean` prose outside
+  - [x] `FormalSystem/Metalogic/README.md` — remove the `CompletenessDerived.lean` prose outside
     the generated block; the generated row itself disappears when Phase 11 regenerates.
-  - [ ] `FormalSystem/Metalogic/Independence/README.md` — four Z1 spots (the report's addition;
+  - [x] `FormalSystem/Metalogic/Independence/README.md` — four Z1 spots (the report's addition;
     not in the dispatch's list).
-  - [ ] `typst/chapters/03-proof-theory.typ` — two spots: the Z1 table row (which names
+  - [x] `typst/chapters/03-proof-theory.typ` — two spots: the Z1 table row (which names
     `` `CompletenessDerived.z1Thm` (derived)``) and the paragraph asserting "it is recovered at
     `ZTime` from UZ through the ZTime completeness engine". Both become the direct derivation,
     keeping the surrounding claim that UZ remains the only `ZTime`-tagged constructor, which is
     still true.
-  - [ ] Do **not** touch `typst/FormalFoundations.typ`. Its four Z1 spots present Z1 as an axiom
+  - [x] Do **not** touch `typst/FormalFoundations.typ`. Its four Z1 spots present Z1 as an axiom
     of TM_z — demotion-wave fallout, not an engine-recovery citation — and it carries no
     engine-recovery prose at all. Record it as a finding for Phase 11's report.
-  - [ ] Confirm no task number and no draft-history or supersession language entered any of these
+  - [x] Confirm no task number and no draft-history or supersession language entered any of these
     files.
 - **Timing:** 1.5 hours
 - **Depends on:** 6
@@ -673,7 +677,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 10: The Proof-Extractor Entry for Z1 [NOT STARTED]
+### Phase 10: The Proof-Extractor Entry for Z1 [IN PROGRESS]
 
 - **Goal:** Z1 has a registry entry with a runtime-walkable tree, replacing the by-name skip.
 - **Tasks:**

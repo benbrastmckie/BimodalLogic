@@ -72,6 +72,8 @@ Derivation combines three components:
 4. Combine: `□φ → Hφ ∧ (φ ∧ Gφ)` (see `combineImpConj3`)
 
 This proof uses the `pairing` axiom for conjunction introduction.
+
+Paper: `sub:Logic`
 -/
 def perpetuity1 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp φ.always := by
   -- always φ = φ.allPast.and (φ.and φ.allFuture) = Hφ ∧ (φ ∧ Gφ)
@@ -306,6 +308,8 @@ Derivation via contraposition of P1:
 2. Contraposition: `¬△¬φ → ¬□¬φ`
 3. Since `▽φ = ¬△¬φ` and `◇φ = ¬□¬φ`:
 4. We get: `▽φ → ◇φ`
+
+Paper: `sub:Logic`
 -/
 def perpetuity2 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.sometimes.imp φ.diamond := by
   -- Goal: ⊢ ▽φ → ◇φ
@@ -441,6 +445,8 @@ Derivation combines three boxed temporal components using modal K distribution:
 
 This proof uses modal K distribution axiom and necessitation rule added in
 the axiomatic extension (Phases 1-2).
+
+Paper: `sub:Logic`
 -/
 def perpetuity3 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp (φ.always.box) := by
   -- always φ = φ.allPast.and (φ.and φ.allFuture) = Hφ ∧ (φ ∧ Gφ)
@@ -517,6 +523,8 @@ block's `Pthm:20` (`⊢ ◇φ ↔ ◇▽φ`). The biconditional pairing it with 
 `FormalSystem.Theorems.Interaction.diamondIffDiamondSometimes`; the forward half itself is
 `FormalSystem.Theorems.Interaction.diamondToDiamondSometimes`. Nothing restates this principle --
 the port cites it.
+
+Paper: `sub:Logic`
 -/
 def perpetuity4 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.sometimes.diamond.imp φ.diamond := by
   -- Goal: ⊢ (φ.neg.always.neg).neg.box.neg → φ.neg.box.neg
@@ -813,6 +821,8 @@ P5 is semantically valid in task semantics:
 1. S5 modal structure ensures possibility is stable across worlds
 2. Temporal homogeneity ensures time-invariance of modal facts
 3. Therefore: ◇▽φ at t implies ◇φ at all times in any possible world
+
+Paper: `sub:Logic`
 -/
 def perpetuity5 {fc : FrameClass}
     (φ : Formula) : ⊢[fc] φ.sometimes.diamond.imp φ.diamond.always :=

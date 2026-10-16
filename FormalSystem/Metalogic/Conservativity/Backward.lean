@@ -191,8 +191,8 @@ def Z1 (φ : MinusFormula) : MinusFormula :=
 /--
 `⊢[Discrete] tr (Z1 φ)` — the translation of the L⁻-side Z1 schema is a `TM_z` theorem.
 
-Two steps: the derived Z1 (`Metalogic.CompletenessDerived.z1Thm`, recovered through the ZTime
-completeness engine) at `FrameClass.ZTime`, then
+Two steps: the derived Z1 (`Theorems.DiscreteUnfolding.z1Schema`, a direct derivation tree from
+UZ and US) at `FrameClass.ZTime`, then
 `MinusLanguage.notGNotImpF` pushed into the antecedent of the consequent by
 `MinusLanguage.impMono`, converting the axiom's `F(Gφ)` into the `¬G¬(Gφ)` shape `tr` produces.
 

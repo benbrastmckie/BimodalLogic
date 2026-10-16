@@ -110,7 +110,7 @@ neither side. A future dispatch attempting to prove TM⁻-completeness directly 
 
 ## CEF / `FrameClass.ZTime` — refuted, and **both halves are now machine-checked**
 
-Z1, the derived `Metalogic.CompletenessDerived.z1Thm` (a theorem at `FrameClass.ZTime`), is
+Z1, the derived `Theorems.DiscreteUnfolding.z1Schema` (a theorem at `FrameClass.ZTime`), is
 
 ```
 G(Gφ → φ) → (F(Gφ) → Gφ)

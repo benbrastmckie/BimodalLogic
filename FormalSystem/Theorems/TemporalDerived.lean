@@ -192,7 +192,10 @@ private def gContraToGK {fc : FrameClass} (φ ψ : Formula) :
 K-distribution for G, derived from BX3 (right_mono_until) and propositional
 contraposition. Replaces the primitive `Axiom.temp_k_dist` constructor.
 
-**Derivation**: Compose `G(φ→ψ) → G(¬ψ→¬φ)` with `G(¬ψ→¬φ) → (Gφ → Gψ)`. -/
+**Derivation**: Compose `G(φ→ψ) → G(¬ψ→¬φ)` with `G(¬ψ→¬φ) → (Gφ → Gψ)`.
+
+Paper: `sub:Logic`
+-/
 @[tmLemma]
 def temporalKDistDerived {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
@@ -248,7 +251,10 @@ Positive introspection for G, derived from BX3 (right_mono_until), BX6
 Replaces the primitive `Axiom.temp_4` constructor.
 
 **Derivation**: The contrapositive `F(¬¬F(¬φ)) → F(¬φ)` is proved by composing
-three F-monotonicity steps, then negated to obtain `Gφ → GGφ`. -/
+three F-monotonicity steps, then negated to obtain `Gφ → GGφ`.
+
+Paper: `sub:Logic`
+-/
 @[tmLemma]
 def temporal4Derived {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.allFuture.imp φ.allFuture.allFuture :=

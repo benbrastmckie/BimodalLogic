@@ -162,7 +162,7 @@ tree's own voice rather than quoted.)
 **It is this predicate, not `TaskFrame.IsDiscrete`, that `FrameClass.ZTime` admits axioms
 for.** `Axiom.prior_UZ` and `DerivedAxioms.priorSZ` both carry `.ZTime` as their `minFrameClass`,
 as does Z1 — derived rather than an axiom constructor, as
-`Metalogic.CompletenessDerived.z1Thm` — and by the narrowing above they are sound over `ℤ`-time
+`Theorems.DiscreteUnfolding.z1Schema` — and by the narrowing above they are sound over `ℤ`-time
 rather than over every
 frame satisfying `def:frame-properties`' bare Discrete clause. Interpreting `FrameClass.ZTime`
 by `IsDiscrete` would silently widen the class under `soundness_ztime` — the defect that the

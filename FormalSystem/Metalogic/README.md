@@ -112,7 +112,6 @@ sibling directory. The list is generated, so a file that moves out (four of them
 |----------------------|------:|------|
 | `Conservativity.lean` | 455 | Conservativity of the extension |
 | `Compactness.lean` | 237 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
-| `CompletenessDerived.lean` | 76 | Z1 (`z1Derivable`/`z1Thm`) recovered at `.ZTime` through `derivable_of_validZTime` and `z1_valid` |
 | `DedekindNonCompactness.lean` | 539 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
 | `DiscreteNonCompactness.lean` | 322 | Non-compactness of the discrete frame class |
 | `QTime.lean` | 59 | ℚ-time validity equals dense validity: `validQTime_iff_validDense`, from ℚ-time completeness and dense soundness |
@@ -154,7 +153,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,415 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,165 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,863 | Bundled families of MCSs and their coherence conditions |
-| [`Conservativity/`](Conservativity/README.md) | 28 | 8,583 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
+| [`Conservativity/`](Conservativity/README.md) | 28 | 8,582 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,388 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 172 | 100,152 | Tableau decision procedure and countermodel extraction |

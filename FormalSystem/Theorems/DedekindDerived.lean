@@ -368,6 +368,8 @@ modal and temporal necessitation, and time reflection
 **Semantic cross-check.** `FormalSystem.Metalogic.SoundnessLemmas.co_valid` proves
 `ValidRTime (Formula.co φ)` by an independent least-upper-bound argument, so soundness
 applied to this derivation lands on a statement already established semantically.
+
+Paper: `def:BX-r`
 -/
 def coDerived {fc : FrameClass} (h_fc : FrameClass.RTime ≤ fc)
     (φ : Formula) : ⊢[fc] Formula.co φ :=

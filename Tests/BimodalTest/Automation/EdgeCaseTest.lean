@@ -346,9 +346,9 @@ example (φ : Formula) : ⊢[FrameClass.Dense] φ.allFuture.allFuture.imp φ.all
 example : ⊢[FrameClass.Dense] (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg := by
   modal_search
 
--- Z1 (Discrete): G(Gφ→φ) → (FGφ→Gφ). Z1 is the derived `CompletenessDerived.z1Thm`,
--- reached through `tryGatedDerivedMatch`; it is `Classical.choice`-packaged, hence noncomputable.
-noncomputable example (φ : Formula) : ⊢[FrameClass.ZTime]
+-- Z1 (Discrete): G(Gφ→φ) → (FGφ→Gφ). Z1 is the derived
+-- `DiscreteUnfolding.z1SchemaAt`, reached through `tryGatedDerivedMatch`.
+example (φ : Formula) : ⊢[FrameClass.ZTime]
     (φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture) := by
   modal_search
 

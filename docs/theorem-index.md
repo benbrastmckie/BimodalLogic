@@ -63,14 +63,24 @@ the mapping.
 
 ### The derived schemata of the axiom system
 
-Nine schemata are theorems of the 20-constructor system rather than constructors of it. The
-paper agrees on all nine and no longer lists any of them as an axiom: it marks TC and TL derived
-theorems of BX inside `def:BX`, NP, NF and NA derived theorems of TM inside `def:TMplus`, Z1 a
-derived theorem of TM_z inside `def:BX-z` and DN a derived theorem of BX_d inside `def:BX-d`,
-while UE and UT it dropped outright — neither is a paper key at all, so the two rows below carry
-no paper label. These rows are not `pinned:` — their Axioms cells state the value `lean_verify`
-measures at each declaration, as the `θ_eq_ofFormula` exception above does, because none of them is in the C2 or
-C14 baseline pair. The nine Base-polymorphic derivations are computable and carry `propext` only.
+Every schema the paper presents as a theorem of TM, of BX, or of an extension of either is a
+theorem of the 20-constructor system rather than a constructor of it, and this table carries a
+row for each. The paper agrees throughout and lists none of them as an axiom: it marks TC and TL
+derived theorems of BX inside `def:BX`, NP, NF and NA derived theorems of TM inside
+`def:TMplus`, Z1 a derived theorem of TM_z inside `def:BX-z`, DN a derived theorem of BX_d
+inside `def:BX-d` and CO a derived theorem of BX_r inside `def:BX-r`, while TK, T4, TF and
+P1–P6 it displays in `sub:Logic` and DF and the discreteness witness in `sub:Extension`. UE and
+UT it dropped outright — neither is a paper key at all, so those two rows carry no paper label,
+as do the free past mirrors at the foot of the table.
+
+These rows are not `pinned:` — their Axioms cells state the value `lean_verify` measures at each
+declaration, as the `θ_eq_ofFormula` exception above does, because none of them is in the C2 or
+C14 baseline pair. Every derivation in the table is computable. A `propext` cell marks a
+derivation built from combinator terms; a `pcq` cell marks one that routes through
+`Metalogic.Core.deductionTheorem`, whose well-founded recursion is where the `Classical.choice`
+and `Quot.sound` come from. The two cells therefore separate proof style, not proof strength:
+neither group depends on a completeness engine, which is a property of the dependency closure
+rather than of the axiom profile.
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
@@ -83,8 +93,28 @@ C14 baseline pair. The nine Base-polymorphic derivations are computable and carr
 | `def:TMplus` | NA: `X⊤ → H X⊤`, from NP, TR of NF and H-monotonicity | `FormalSystem.Theorems.ConnectDerived.discretePropagateBwd` | `FormalSystem/Theorems/ConnectDerived.lean` | — | propext |
 | `def:BX` | TL: `Fφ ∧ Fψ → F(Fφ ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ Fψ))`, from CN with UF and UE | `FormalSystem.Theorems.LinearityDerived.tempLinearity` | `FormalSystem/Theorems/LinearityDerived.lean` | — | propext |
 | `def:BX-d` | DN: `GGφ → Gφ`, from NN with UG, UF, UE, UC and TN | `FormalSystem.Theorems.LinearityDerived.density` | `FormalSystem/Theorems/LinearityDerived.lean` | Dense | propext |
-| `def:BX-z` | Z1 is derivable at ℤ-time: `derivable_of_validZTime` on `z1_valid` | `FormalSystem.Metalogic.CompletenessDerived.z1Derivable` | `FormalSystem/Metalogic/CompletenessDerived.lean` | ZTime | pcq |
-| `def:BX-z` | Z1 as a derivation tree (`Classical.choice` on the row above) | `FormalSystem.Metalogic.CompletenessDerived.z1Thm` | `FormalSystem/Metalogic/CompletenessDerived.lean` | ZTime | pcq |
+| `def:BX-z` | Z1: `G(Gφ → φ) → (FGφ → Gφ)`, a direct derivation tree from UZ and US | `FormalSystem.Theorems.DiscreteUnfolding.z1Schema` | `FormalSystem/Theorems/DiscreteUnfolding.lean` | ZTime | pcq |
+| `def:BX-z` | Z1, frame-class-gated at `ZTime ≤ fc` by `DerivationTree.lift` — the shape the tactic, the conservativity branches and the extractor consume | `FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt` | `FormalSystem/Theorems/DiscreteUnfolding.lean` | — | pcq |
+| `def:BX-z` | The refutable event of Z1's enriched UZ until-formula: `((Gφ ∧ φ) ∧ S(¬Gφ, ¬Gφ)) → ⊥` | `FormalSystem.Theorems.DiscreteUnfolding.z1EventBot` | `FormalSystem/Theorems/DiscreteUnfolding.lean` | ZTime | pcq |
+| `sub:Extension` | DF: `(Hφ ∧ φ ∧ F⊤) → F(Hφ)`, from the discreteness witness with US and `prevAllPast` | `FormalSystem.Theorems.DiscreteUnfolding.dfSchema` | `FormalSystem/Theorems/DiscreteUnfolding.lean` | ZTime | pcq |
+| `sub:Extension` | The discreteness witness `X⊤ = U(⊤,⊥)`, from TS, UZ at `⊤` and guard monotonicity | `FormalSystem.Theorems.DiscreteUnfolding.succIndicator` | `FormalSystem/Theorems/DiscreteUnfolding.lean` | ZTime | pcq |
+| `def:BX-r` | CO: the Dedekind completeness schema, from PU with the BX axioms | `FormalSystem.Theorems.DedekindDerived.coDerived` | `FormalSystem/Theorems/DedekindDerived.lean` | RTime | pcq |
+| `sub:Logic` | TK: `G(φ→ψ) → (Gφ → Gψ)`, K-distribution for `G`, from BX3 | `FormalSystem.Theorems.TemporalDerived.temporalKDistDerived` | `FormalSystem/Theorems/TemporalDerived.lean` | — | propext |
+| `sub:Logic` | T4: `Gφ → GGφ`, from BX3 with BX6 | `FormalSystem.Theorems.TemporalDerived.temporal4Derived` | `FormalSystem/Theorems/TemporalDerived.lean` | — | propext |
+| `sub:Logic` | TF: `□φ → G□φ`, from MF | `FormalSystem.Theorems.Combinators.temporalFutureDerived` | `FormalSystem/Theorems/Combinators.lean` | — | propext |
+| `sub:Logic` | P1: `□φ → △φ` | `FormalSystem.Theorems.Perpetuity.perpetuity1` | `FormalSystem/Theorems/Perpetuity/Principles.lean` | — | propext |
+| `sub:Logic` | P2: `▽φ → ◇φ` | `FormalSystem.Theorems.Perpetuity.perpetuity2` | `FormalSystem/Theorems/Perpetuity/Principles.lean` | — | propext |
+| `sub:Logic` | P3: `□φ → □△φ` | `FormalSystem.Theorems.Perpetuity.perpetuity3` | `FormalSystem/Theorems/Perpetuity/Principles.lean` | — | propext |
+| `sub:Logic` | P4: `◇▽φ → ◇φ` | `FormalSystem.Theorems.Perpetuity.perpetuity4` | `FormalSystem/Theorems/Perpetuity/Principles.lean` | — | propext |
+| `sub:Logic` | P5: `◇▽φ → △◇φ`, from P4 with persistence | `FormalSystem.Theorems.Perpetuity.perpetuity5` | `FormalSystem/Theorems/Perpetuity/Principles.lean` | — | pcq |
+| `sub:Logic` | P6: `▽□φ → □△φ`, the dual of P5 | `FormalSystem.Theorems.Perpetuity.perpetuity6` | `FormalSystem/Theorems/Perpetuity/MonotonicityDuality.lean` | — | pcq |
+| — | `Y⊤` at every `fc` with `ZTime ≤ fc`, the free past mirror of `succIndicatorAt` | `FormalSystem.Theorems.DiscreteUnfolding.prevIndicatorAt` | `FormalSystem/Theorems/DiscreteUnfolding.lean` | — | pcq |
+| — | `Y⊤`, the `le_rfl` instantiation of the row above | `FormalSystem.Theorems.DiscreteUnfolding.prevIndicator` | `FormalSystem/Theorems/DiscreteUnfolding.lean` | ZTime | pcq |
+| — | `(YA ∧ YB) → Y(A ∧ B)`, the free past mirror of `nextConj` | `FormalSystem.Theorems.DiscreteUnfolding.prevConj` | `FormalSystem/Theorems/DiscreteUnfolding.lean` | — | pcq |
+| — | `S(g,e) → Y e ∨ Y(g ∧ S(g,e))`, the free `snce` mirror of `unfoldForward` | `FormalSystem.Theorems.DiscreteUnfolding.unfoldBackwardSince` | `FormalSystem/Theorems/DiscreteUnfolding.lean` | ZTime | pcq |
+| — | `S(X, ⊥) → ⊥`, the free past mirror of `untlBotFalse` | `FormalSystem.Theorems.Propositional.snceBotFalse` | `FormalSystem/Theorems/Propositional/Core.lean` | — | pcq |
+| — | Past necessitation under a context, the free past mirror of `necG` | `FormalSystem.Theorems.Combinators.necH` | `FormalSystem/Theorems/Combinators.lean` | — | propext |
+| — | Event monotonicity for `snce`, the free past mirror of `eventMono` | `FormalSystem.Theorems.Combinators.snceEventMono` | `FormalSystem/Theorems/Combinators.lean` | — | propext |
 
 ### Soundness
 

@@ -559,6 +559,8 @@ The derivation uses:
 - `doubleContrapose` (handles DNE/DNI for contraposition)
 
 **Implementation Status**: FULLY PROVEN (zero sorry)
+
+Paper: `sub:Logic`
 -/
 def perpetuity6 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.sometimes.imp φ.always.box := by
   have p5_neg : ⊢[fc] φ.neg.sometimes.diamond.imp φ.neg.diamond.always :=

@@ -105,7 +105,7 @@ formula.
 example (φ : Formula) : Axiom (φ.someFuture.imp (Formula.untl φ.neg φ)) := Axiom.prior_UZ φ
 
 /-- Shape pin: the formula below is exactly Z1's, the derived
-`Metalogic.CompletenessDerived.z1Thm` (a theorem at `FrameClass.ZTime`). -/
+`Theorems.DiscreteUnfolding.z1Schema` (a theorem at `FrameClass.ZTime`). -/
 example (φ : Formula) :
     DerivationTree FrameClass.ZTime []
       ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
@@ -169,7 +169,7 @@ theorem not_validOn_prior_UZ_nonArchimedean (D : TemporalOrder) {u : (D : Type)}
   exact hne ((translation_realizes D A p _).mpr ⟨n - 1, rfl⟩)
 
 /--
-**Z1 (`Metalogic.CompletenessDerived.z1Thm`) fails on the same frame, under the same hypotheses.**
+**Z1 (`Theorems.DiscreteUnfolding.z1Schema`) fails on the same frame, under the same hypotheses.**
 
 The valuation is the complement of the paper's near times: `|p| = Eᶜ`, where
 `E = {z | 0 < z ∧ ∃ n : ℕ, z < n • u}` collects the times within finitely many unit steps of `0`.

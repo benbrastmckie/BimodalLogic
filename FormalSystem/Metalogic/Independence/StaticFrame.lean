@@ -297,11 +297,11 @@ theorem static_kMinus_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
   · intro h hc
     exact (hs.mp hc).2 h
 
-/-! ## Z1, the derived `Metalogic.CompletenessDerived.z1Thm` -/
+/-! ## Z1, the derived `Theorems.DiscreteUnfolding.z1Schema` -/
 
 /--
 **Every static frame validates Z1**, `G(Gφ → φ) → (F(Gφ) → Gφ)` — the formula of the derived
-`Metalogic.CompletenessDerived.z1Thm` rather than of an `Axiom` constructor.
+`Theorems.DiscreteUnfolding.z1Schema` rather than of an `Axiom` constructor.
 
 This needs only `static_time_invariant`, not the `untl` calculus: `F(Gφ)` hands over a time `s`
 at which `Gφ` holds, and time-invariance moves that to `t`. The induction-step antecedent

@@ -64,7 +64,7 @@ Two consequences of that reading are deliberate:
   below reads the same frame class it read before.
 * `densityRule` and `z1Rule` are grounded in `dense_indicator` and `prior_UZ`: DN and Z1 are
   derived theorems (`Theorems.LinearityDerived.density` from NN,
-  `Metalogic.CompletenessDerived.z1Thm` through the ZTime engine from UZ), and GATE 3 requires
+  `Theorems.DiscreteUnfolding.z1Schema` from UZ and US), and GATE 3 requires
   a rule gated above `.Base` to name a
   constructor at its own frame class. `orderTrichotomy` and `timeLinearity`, whose content is
   the derived TL, carry the empty list like the quantifier-decomposition rules.
@@ -265,8 +265,8 @@ def ruleAxioms : TableauRule → List AxiomInstance
   | .priorUZ => [⟨_, .prior_UZ pA⟩]
   -- Grounded via TR in UZ (`DerivedAxioms.priorSZ` is its mirror).
   | .priorSZ => [⟨_, .prior_UZ pA⟩]
-  -- Z1 is the derived `Metalogic.CompletenessDerived.z1Thm`, recovered through the ZTime
-  -- completeness engine, whose only frame-class-sensitive axiom is UZ.
+  -- Z1 is the derived `Theorems.DiscreteUnfolding.z1Schema`, whose only frame-class-sensitive
+  -- axiom is UZ.
   | .z1Rule => [⟨_, .prior_UZ pA⟩]
   -- Dedekind (3). NOT `prior_UZ`/`prior_SZ`: those are the integer well-ordering axioms at
   -- `.ZTime`, and the similarity of the names is a known trap.

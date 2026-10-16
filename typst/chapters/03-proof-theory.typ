@@ -182,13 +182,13 @@ Valid on discrete linear orders (frame class `ZTime`), these axioms encode well-
     table.hline(),
     [Prior-UZ], [UZ], [`Axiom.prior_UZ`], [$F phi.alt arrow.r (not phi.alt #untl phi.alt)$],
     [Prior-SZ], [], [`DerivedAxioms.priorSZ`], [$P phi.alt arrow.r (not phi.alt #snce phi.alt)$],
-    [Z1], [Z1], [`CompletenessDerived.z1Thm` (derived)], [$G(G phi.alt arrow.r phi.alt) arrow.r (F G phi.alt arrow.r G phi.alt)$],
+    [Z1], [Z1], [`DiscreteUnfolding.z1Schema` (derived)], [$G(G phi.alt arrow.r phi.alt) arrow.r (F G phi.alt arrow.r G phi.alt)$],
     table.hline(),
   ),
   caption: none,
 )
 
-Prior-UZ says that if $phi.alt$ holds somewhere in the future, there is a *nearest* future $phi.alt$-point @reynolds1992 (Venema's axiom (W)); Z1 is the characteristic backward-induction principle of successor-Archimedean orders such as $ZZ$ @doets1987. Z1 is not a constructor: it is recovered at `ZTime` from UZ through the ZTime completeness engine (`FormalSystem/Metalogic/CompletenessDerived.lean`), so UZ is the only `ZTime`-tagged constructor.
+Prior-UZ says that if $phi.alt$ holds somewhere in the future, there is a *nearest* future $phi.alt$-point @reynolds1992 (Venema's axiom (W)); Z1 is the characteristic backward-induction principle of successor-Archimedean orders such as $ZZ$ @doets1987. Z1 is not a constructor: it is derived at `ZTime` from UZ and US as a direct derivation tree (`FormalSystem/Theorems/DiscreteUnfolding.lean`), so UZ is the only `ZTime`-tagged constructor.
 
 === Layer 8: Density (1 constructor, dense-only; DN derived)
 

@@ -258,7 +258,7 @@ Proved in `FormalSystem.Metalogic.Decidability.Correctness`.
 `Axiom.minFrameClass` tags each axiom with the smallest frame class at which it is meant to be
 valid, and `axiom_validIn_min` proves only the upper half of that claim: the axiom really is valid
 at its own tag. For `Axiom.prior_UZ`, the one constructor tagged `.ZTime`, and for the Z1 formula
-(now the derived `Metalogic.CompletenessDerived.z1Thm`, stated at `.ZTime`), the lower half is
+(the derived `Theorems.DiscreteUnfolding.z1Schema`, stated at `.ZTime`), the lower half is
 proved here too, and in fact strengthened to an exhaustive characterization: their atomic
 instances are valid at `.ZTime` and at no other frame class. The refutations are frame-level, on
 the translation frame over a densely ordered duration group, so what is refuted is discreteness

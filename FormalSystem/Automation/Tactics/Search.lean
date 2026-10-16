@@ -150,8 +150,8 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
 Try to close the goal with a frame-class-gated derived theorem: `DerivedAxioms.priorSZ` (the
 time-reflection mirror of the ZTime axiom UZ), `DerivedAxioms.priorSGap` (the mirror of the
 RTime axiom PU), `LinearityDerived.density` (DN, derived from NN at `Dense ≤ fc`), and
-`CompletenessDerived.z1Thm` (Z1, recovered through the ZTime completeness engine, stated at
-`FrameClass.ZTime`). A gate hypothesis (`ZTime ≤ fc` / `RTime ≤ fc` / `Dense ≤ fc`) is discharged
+`DiscreteUnfolding.z1SchemaAt` (Z1, derived from UZ and US at `ZTime ≤ fc`). A gate hypothesis
+(`ZTime ≤ fc` / `RTime ≤ fc` / `Dense ≤ fc`) is discharged
 by `decide`, so the match fails at frame classes where the schema is not a theorem.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.

@@ -905,6 +905,8 @@ Necessary truths will always be necessary. Derived from MF + T + Modal 4:
 - T gives `□(G(□φ)) → G(□φ)` (T applied to `G(□φ)`)
 - Modal 4 gives `□φ → □(□φ)` (positive introspection)
 - Composing: `□φ → □(□φ) → □(G(□φ)) → G(□φ)`
+
+Paper: `sub:Logic`
 -/
 @[tmLemma]
 def temporalFutureDerived {fc : FrameClass} (φ : Formula) :
@@ -934,7 +936,10 @@ theorem reflect_time_necessitation_eq (χ : Formula) :
 `DerivationTree.time_reflection` is a primitive rule at every frame class, so `H` necessitation
 costs two reflections around one `temporal_necessitation` — reflect the premise, necessitate,
 reflect back — with `reflect_time_necessitation_eq` normalizing the result. No past-mirrored
-rule is introduced. -/
+rule is introduced.
+
+Paper: — (the free past mirror of `necG`; no paper counterpart)
+-/
 def necH {fc : FrameClass} (Γ : Context) (A : Formula) (h : ⊢[fc] A) :
     Γ ⊢[fc] A.allPast :=
   DerivationTree.weakening [] Γ _
@@ -946,7 +951,10 @@ def necH {fc : FrameClass} (Γ : Context) (A : Formula) (h : ⊢[fc] A) :
 /-- Event monotonicity for `snce` (TR of BX3, `DerivedAxioms.rightMonoSince`) in usable form:
 the past mirror of `eventMono`.
 
-Parameter order `(event, event', guard)`; terms guard-first, as in `eventMono`. -/
+Parameter order `(event, event', guard)`; terms guard-first, as in `eventMono`.
+
+Paper: — (the free past mirror of `eventMono`; no paper counterpart)
+-/
 def snceEventMono {fc : FrameClass} (Γ : Context) (e e' g : Formula)
     (he : ⊢[fc] e.imp e') (h : Γ ⊢[fc] Formula.snce g e) : Γ ⊢[fc] Formula.snce g e' :=
   DerivationTree.modus_ponens Γ (Formula.snce g e) (Formula.snce g e')
