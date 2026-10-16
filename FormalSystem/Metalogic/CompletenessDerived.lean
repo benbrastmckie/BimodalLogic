@@ -9,22 +9,16 @@ import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
 
 /-!
-# Schemata Recovered Through the Completeness Engines
+# Z1 Recovered Through the ZTime Completeness Engine
 
-Two schemata the paper no longer lists as axioms of the extensions TM_z and TM_d are *theorems*
-of the primitive system, obtained here through the frame-class completeness engines rather than
-by a hand derivation. The paper marks Z1 a derived theorem of TM_z inside `def:BX-z` and DN a
-derived theorem of BX_d inside `def:BX-d`:
+Z1, which the paper no longer lists as an axiom of TM_z but marks a derived theorem of it inside
+`def:BX-z`, is a *theorem* of the primitive system, obtained here through the ZTime completeness
+engine rather than by a hand derivation:
 
 * `z1Derivable` / `z1Thm` — Z1, `G(Gφ → φ) → (FGφ → Gφ)`, at `FrameClass.ZTime`, from
   `BXCanonical.derivable_of_validZTime` applied to the soundness lemma
   `SoundnessLemmas.z1_valid`. `z1Thm` packages the `Derivable` proof as a term
   (`Classical.choice`) for consumers that need a `DerivationTree`.
-* `densityDerivable` — DN, `GGφ → Gφ`, at `FrameClass.Dense`, from
-  `BXCanonical.derivable_of_validQTime` and `Validity.validQTime_of_validDense` on
-  `Metalogic.density_valid`. This is a **cross-check only**: the canonical derivation of DN is the
-  direct one, `Theorems.LinearityDerived.density`, which uses NN (`dense_indicator`) with the
-  Base schemata UG, UF, UC, UE and TN.
 
 ## Non-circularity
 
@@ -34,10 +28,9 @@ reduced tree (the demoted constructors no longer exist, so any hidden use would 
 elaborate):
 
 * the ZTime engine (`derivable_of_validZTime`, `BXCanonical/Completeness.lean`) reaches the
-  `Axiom` inductive only through `Axiom.prior_UZ`;
-* the Dense engine (`derivable_of_validQTime`, same file) only through `Axiom.dense_indicator`.
+  `Axiom` inductive only through `Axiom.prior_UZ`.
 
-Both engines are sorryAx-free with axioms exactly `propext`, `Classical.choice`, `Quot.sound`,
+The engine is sorryAx-free with axioms exactly `propext`, `Classical.choice`, `Quot.sound`,
 which is therefore the axiom profile of every declaration below.
 -/
 
@@ -65,12 +58,5 @@ noncomputable def z1Thm (φ : Formula) :
     ⊢[FrameClass.ZTime]
       ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
   Classical.choice (z1Derivable φ)
-
-/-- DN (`GGφ → Gφ`) is derivable at `FrameClass.Dense` through the Dense engine. Cross-check
-only; the canonical derivation is `Theorems.LinearityDerived.density`. -/
-theorem densityDerivable (φ : Formula) :
-    Derivable FrameClass.Dense [] (φ.allFuture.allFuture.imp φ.allFuture) :=
-  BXCanonical.derivable_of_validQTime _
-    (FormalSystem.Semantics.Validity.validQTime_of_validDense (Metalogic.density_valid φ))
 
 end FormalSystem.Metalogic.CompletenessDerived

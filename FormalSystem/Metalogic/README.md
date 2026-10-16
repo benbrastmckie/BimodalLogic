@@ -112,7 +112,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 |----------------------|------:|------|
 | `Conservativity.lean` | 455 | Conservativity of the extension |
 | `Compactness.lean` | 237 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
-| `CompletenessDerived.lean` | 76 | Z1 (`z1Derivable`/`z1Thm`) recovered at `.ZTime` through `derivable_of_validZTime` and `z1_valid`, plus `densityDerivable`, a cross-check of `Theorems.LinearityDerived.density` through the Dense engine |
+| `CompletenessDerived.lean` | 76 | Z1 (`z1Derivable`/`z1Thm`) recovered at `.ZTime` through `derivable_of_validZTime` and `z1_valid` |
 | `DedekindNonCompactness.lean` | 539 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
 | `DiscreteNonCompactness.lean` | 322 | Non-compactness of the discrete frame class |
 | `QTime.lean` | 59 | ℚ-time validity equals dense validity: `validQTime_iff_validDense`, from ℚ-time completeness and dense soundness |

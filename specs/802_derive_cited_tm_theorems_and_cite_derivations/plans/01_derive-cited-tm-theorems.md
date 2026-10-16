@@ -237,20 +237,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prune `densityDerivable` [NOT STARTED]
+### Phase 2: Prune `densityDerivable` [COMPLETED]
 
 - **Goal:** Remove the DN engine cross-check, which has no consumer anywhere outside its own
   file, together with the prose that presents it as a cross-check.
 - **Tasks:**
-  - [ ] Re-confirm zero consumers before deleting: grep `densityDerivable` across
+  - [x] Re-confirm zero consumers before deleting: grep `densityDerivable` across
     `FormalSystem/`, `Tests/`, `BimodalTools/`, `docs/`, `typst/` and expect hits only in
     `FormalSystem/Metalogic/CompletenessDerived.lean` and `FormalSystem/Metalogic/README.md`.
-  - [ ] Delete the `densityDerivable` declaration and its docstring from
+  - [x] Delete the `densityDerivable` declaration and its docstring from
     `FormalSystem/Metalogic/CompletenessDerived.lean`.
-  - [ ] Delete the module docstring's DN bullet (the "cross-check only" paragraph) and the
+  - [x] Delete the module docstring's DN bullet (the "cross-check only" paragraph) and the
     Dense-engine bullet of its "Non-circularity" section. Leave the Z1 material in place; Phase 6
     takes the whole file.
-  - [ ] Remove the `densityDerivable` clause from `FormalSystem/Metalogic/README.md`'s
+  - [x] Remove the `densityDerivable` clause from `FormalSystem/Metalogic/README.md`'s
     `CompletenessDerived.lean` row, leaving the Z1 description. The row's line count is inside a
     `BEGIN GENERATED: inventory` block and is regenerated in Phase 11, not hand-edited here.
 - **Timing:** 0.5 hours
@@ -274,7 +274,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: The Four Past Mirrors [NOT STARTED]
+### Phase 3: The Four Past Mirrors [IN PROGRESS]
 
 - **Goal:** Name, rather than inline, the helper derivations the Z1 route factors through: the
   four missing past duals, each built by the `prevAllPast` recipe, each a declaration in its own
