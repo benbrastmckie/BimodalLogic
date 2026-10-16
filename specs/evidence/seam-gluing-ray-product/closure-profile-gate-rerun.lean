@@ -274,6 +274,220 @@ theorem coh6_cycle_witness :
       coh6 (c5, Tc) (a5, Ta) = true :=
   ⟨by decide, by decide, by decide, by decide⟩
 
+/-! ## Reading the local conditions and the link at one closure member
+
+Each lemma below instantiates one of the three universally quantified conditions `coh_iff`
+delivers, at a SINGLE closure formula, with the membership side condition closed by `decide`, and
+turns the `Bool` equation into the propositional fact the hand proofs use.  No `decide` below is
+ever applied to a goal quantifying over `ClType chi`: `decide` closes closure-membership facts
+and object-graph facts only. -/
+
+theorem loc_bot {Q : Type} {lab : Q → Atom → Bool} {q : Q} {T : Finset PlusFormula}
+    {φ : PlusFormula} (h : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab q T ψ = true)
+    (hm : PlusFormula.bot ∈ plusSubformulaClosure φ) : PlusFormula.bot ∉ T := by
+  have h1 := h _ hm
+  simp only [locPred, decide_eq_true_eq] at h1
+  exact h1
+
+theorem loc_atom {Q : Type} {lab : Q → Atom → Bool} {q : Q} {T : Finset PlusFormula}
+    {φ : PlusFormula} (h : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab q T ψ = true)
+    (a : Atom) (hm : PlusFormula.atom a ∈ plusSubformulaClosure φ) :
+    (PlusFormula.atom a ∈ T ↔ lab q a = true) := by
+  have h1 := h _ hm
+  simp only [locPred, beq_iff_eq] at h1
+  by_cases hmem : PlusFormula.atom a ∈ T <;> simp_all
+
+theorem loc_imp {Q : Type} {lab : Q → Atom → Bool} {q : Q} {T : Finset PlusFormula}
+    {φ : PlusFormula} (h : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab q T ψ = true)
+    (α β : PlusFormula) (hm : α.imp β ∈ plusSubformulaClosure φ) :
+    (α.imp β ∈ T ↔ (α ∉ T ∨ β ∈ T)) := by
+  have h1 := h _ hm
+  simp only [locPred, beq_iff_eq] at h1
+  by_cases h2 : α.imp β ∈ T <;> by_cases h3 : α ∈ T <;> by_cases h4 : β ∈ T <;> simp_all
+
+theorem loc_neg {Q : Type} {lab : Q → Atom → Bool} {q : Q} {T : Finset PlusFormula}
+    {φ : PlusFormula} (h : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab q T ψ = true)
+    (hbot : PlusFormula.bot ∉ T) (α : PlusFormula)
+    (hm : α.neg ∈ plusSubformulaClosure φ) : (α.neg ∈ T ↔ α ∉ T) := by
+  have h1 : α.neg ∈ T ↔ (α ∉ T ∨ PlusFormula.bot ∈ T) := loc_imp h α .bot hm
+  rw [h1]; tauto
+
+theorem link_untl {T T' : Finset PlusFormula} {φ : PlusFormula}
+    (h : ∀ ψ ∈ plusSubformulaClosure φ, linkPred T T' ψ = true)
+    (g e : PlusFormula) (hm : PlusFormula.untl g e ∈ plusSubformulaClosure φ) :
+    (PlusFormula.untl g e ∈ T ↔ (e ∈ T' ∨ (g ∈ T' ∧ PlusFormula.untl g e ∈ T'))) := by
+  have h1 := h _ hm
+  simp only [linkPred, beq_iff_eq] at h1
+  by_cases h2 : PlusFormula.untl g e ∈ T <;> by_cases h3 : e ∈ T' <;> by_cases h4 : g ∈ T' <;>
+    by_cases h5 : PlusFormula.untl g e ∈ T' <;> simp_all
+
+/-! ## The chi-consistent product never passes through `d`
+
+The three lemmas of this section turn the claim "the pattern `psi2` and its eventuality `ev` are
+closure members, hence tracked by the product" into compiled fact. -/
+
+/-- **`chi` is in a locally coherent type exactly when the pattern and its eventuality are both
+absent.**  This is the chain `chi ∈ T ⇒ (psi2.neg.imp ev.neg.neg) ∉ T ⇒ psi2.neg ∈ T ∧
+ev.neg.neg ∉ T ⇒ ev.neg ∈ T ⇒ ev ∉ T`, read off one closure member at a time. -/
+theorem chi_mem_iff {Q : Type} {lab : Q → Atom → Bool} {q : Q} {T : Finset PlusFormula}
+    (h : ∀ ψ ∈ plusSubformulaClosure chi, locPred lab q T ψ = true) :
+    chi ∈ T ↔ (psi2 ∉ T ∧ ev ∉ T) := by
+  have hbot : PlusFormula.bot ∉ T := loc_bot h (by decide)
+  have e0 : chi ∈ T ↔ (psi2.neg.imp ev.neg.neg) ∉ T :=
+    loc_neg h hbot (psi2.neg.imp ev.neg.neg) (by decide)
+  have e1 : (psi2.neg.imp ev.neg.neg) ∈ T ↔ (psi2.neg ∉ T ∨ ev.neg.neg ∈ T) :=
+    loc_imp h psi2.neg ev.neg.neg (by decide)
+  have e2 : psi2.neg ∈ T ↔ psi2 ∉ T := loc_neg h hbot psi2 (by decide)
+  have e3 : ev.neg.neg ∈ T ↔ ev.neg ∉ T := loc_neg h hbot ev.neg (by decide)
+  have e4 : ev.neg ∈ T ↔ ev ∉ T := loc_neg h hbot ev (by decide)
+  rw [e0]; tauto
+
+/-- **At the pending `a` state the type is forced to contain the pattern's first conjunct.**  Only
+`a5`'s OWN atoms are read, which is the compiled form of "the pattern forbids no letter". -/
+theorem pa_mem_of_a {T : Finset PlusFormula}
+    (h : ∀ ψ ∈ plusSubformulaClosure chi, locPred lab6 a5 T ψ = true) : pa ∈ T := by
+  have hbot : PlusFormula.bot ∉ T := loc_bot h (by decide)
+  have hp : p ∈ T ↔ lab6 a5 pA = true := loc_atom h pA (by decide)
+  have hla : la ∈ T ↔ lab6 a5 aA = true := loc_atom h aA (by decide)
+  have hpT : p ∈ T := hp.mpr (by decide)
+  have hlaT : la ∈ T := hla.mpr (by decide)
+  have e0 : pa ∈ T ↔ (p.imp la.neg) ∉ T := loc_neg h hbot (p.imp la.neg) (by decide)
+  have e1 : (p.imp la.neg) ∈ T ↔ (p ∉ T ∨ la.neg ∈ T) := loc_imp h p la.neg (by decide)
+  have e2 : la.neg ∈ T ↔ la ∉ T := loc_neg h hbot la (by decide)
+  rw [e0]; tauto
+
+/-- **`chi` propagates forward along every `coh6` step.**  `ev = top U psi2` is a closure member,
+so the link condition carries the absence of the eventuality across the step, and `top` is forced
+into every locally coherent type. -/
+theorem coh6_chi_propagates (x y : ProdState Q5 chi) (h : coh6 x y = true)
+    (hc : chi ∈ x.2.1) : chi ∈ y.2.1 := by
+  obtain ⟨-, -, -, hx, hy, hl⟩ := (coh_iff step5 pend5 lab6 chi x y).mp h
+  have hbotY : PlusFormula.bot ∉ y.2.1 := loc_bot hy (by decide)
+  have hex : psi2 ∉ x.2.1 ∧ ev ∉ x.2.1 := (chi_mem_iff hx).mp hc
+  have l1 : ev ∈ x.2.1 ↔ (psi2 ∈ y.2.1 ∨ (top ∈ y.2.1 ∧ ev ∈ y.2.1)) :=
+    link_untl hl top psi2 (by decide)
+  have htop : top ∈ y.2.1 := by
+    have e : top ∈ y.2.1 ↔ (PlusFormula.bot ∉ y.2.1 ∨ PlusFormula.bot ∈ y.2.1) :=
+      loc_imp hy PlusFormula.bot PlusFormula.bot (by decide)
+    exact e.mpr (Or.inl hbotY)
+  have hnpsi : psi2 ∉ y.2.1 := fun hpsi => hex.2 (l1.mpr (Or.inl hpsi))
+  have hnev : ev ∉ y.2.1 := fun hev => hex.2 (l1.mpr (Or.inr ⟨htop, hev⟩))
+  exact (chi_mem_iff hy).mpr ⟨hnpsi, hnev⟩
+
+/-- **The `chi`-consistent product never passes through `d`.**  An `a`-`d`-`a` segment forces the
+pattern `psi2` into the type at the first `a`: `pa` holds at both `a` endpoints, the link on
+`Xpa = X pa` carries `pa` back one step and the link on `XXpa = X X pa` carries it back a second,
+so `XXpa` is in the first type, `B` is not, `psi2` is, and `chi` is not.  `d5`'s LABELLING is never
+read -- which is exactly the compiled form of "the pattern forbids no letter". -/
+theorem coh6_no_a_d_a (T T' T'' : ClType chi) (h1 : coh6 (a5, T) (d5, T') = true)
+    (h2 : coh6 (d5, T') (a5, T'') = true) : chi ∉ T.1 := by
+  obtain ⟨-, -, -, hx, hy, hl⟩ := (coh_iff step5 pend5 lab6 chi (a5, T) (d5, T')).mp h1
+  obtain ⟨-, -, -, -, hz, hl2⟩ := (coh_iff step5 pend5 lab6 chi (d5, T') (a5, T'')).mp h2
+  have hxT : ∀ ψ ∈ plusSubformulaClosure chi, locPred lab6 a5 T.1 ψ = true := hx
+  have hzT : ∀ ψ ∈ plusSubformulaClosure chi, locPred lab6 a5 T''.1 ψ = true := hz
+  have hlT : ∀ ψ ∈ plusSubformulaClosure chi, linkPred T.1 T'.1 ψ = true := hl
+  have hl2T : ∀ ψ ∈ plusSubformulaClosure chi, linkPred T'.1 T''.1 ψ = true := hl2
+  have hbotT : PlusFormula.bot ∉ T.1 := loc_bot hxT (by decide)
+  have hpaT : pa ∈ T.1 := pa_mem_of_a hxT
+  have hpaT'' : pa ∈ T''.1 := pa_mem_of_a hzT
+  have lXpa : Xpa ∈ T'.1 ↔ (pa ∈ T''.1 ∨ (PlusFormula.bot ∈ T''.1 ∧ Xpa ∈ T''.1)) :=
+    link_untl hl2T PlusFormula.bot pa (by decide)
+  have hXpa : Xpa ∈ T'.1 := lXpa.mpr (Or.inl hpaT'')
+  have lXXpa : XXpa ∈ T.1 ↔ (Xpa ∈ T'.1 ∨ (PlusFormula.bot ∈ T'.1 ∧ XXpa ∈ T'.1)) :=
+    link_untl hlT PlusFormula.bot Xpa (by decide)
+  have hXXpa : XXpa ∈ T.1 := lXXpa.mpr (Or.inl hXpa)
+  have e0 : psi2 ∈ T.1 ↔ B ∉ T.1 := loc_neg hxT hbotT B (by decide)
+  have e1 : B ∈ T.1 ↔ (pa ∉ T.1 ∨ XXpa.neg ∈ T.1) := loc_imp hxT pa XXpa.neg (by decide)
+  have e2 : XXpa.neg ∈ T.1 ↔ XXpa ∉ T.1 := loc_neg hxT hbotT XXpa (by decide)
+  have hpsi2 : psi2 ∈ T.1 := by rw [e0]; tauto
+  intro hchi
+  exact ((chi_mem_iff hxT).mp hchi).1 hpsi2
+
+/-- **A `d`-free `coh6`-chain out of `a` follows the 3-cycle.**  `walk_mod3`'s shape with the
+admissible-ladder run replaced by a `coh6` chain: the pending conjunct of `coh_iff` splits each
+successor state's pair, and the ported `step5_cyc` does the rest. -/
+theorem chain_cyc (g : ℕ → ProdState Q5 chi) (k : ℕ)
+    (hg : ∀ i, i < k → coh6 (g i) (g (i + 1)) = true) (h0 : (g 0).1 = a5)
+    (hd : ∀ j, j ≤ k → (g j).1 ≠ d5) :
+    ∀ i, i ≤ k → (g i).1 = (true, cyc (i : ℤ)) := by
+  intro i
+  induction i with
+  | zero => intro _; rw [h0]; rfl
+  | succ i ih =>
+    intro hik
+    have hprev := ih (by omega)
+    have hc := hg i (by omega)
+    have hp : pend5 (g (i + 1)).1 = true :=
+      ((coh_iff step5 pend5 lab6 chi (g i) (g (i + 1))).mp hc).2.2.1
+    have hp' : (g (i + 1)).1.1 = true := hp
+    have hq : (g (i + 1)).1 = (true, (g (i + 1)).1.2) := by rw [← hp']
+    have hne : (g (i + 1)).1.2 ≠ 3 := by
+      intro hthree
+      exact hd (i + 1) hik (by rw [hq, hthree]; rfl)
+    have hstep : step5 (true, cyc (i : ℤ)) (true, (g (i + 1)).1.2) = true := by
+      have := coh6_liesOver (g i) (g (i + 1)) hc
+      rw [hprev, hq] at this
+      exact this
+    have hcast : ((i : ℤ) + 1) = ((i + 1 : ℕ) : ℤ) := by push_cast; ring
+    have hcyc := step5_cyc (i : ℤ) (g (i + 1)).1.2 hstep hne
+    rw [hcast] at hcyc
+    rw [hq, hcyc]
+
+/-- **Every `coh6`-chain from a `chi`-carrying `a` back to `a` has length divisible by three.**
+This is gate 6's separation on the real fixture: the pattern `psi2` is a closure member, so the
+product tracks it, so the 3-cycle is carved out -- with no letter naming it and no parameter to
+choose. -/
+theorem coh6_chain_a_to_a_mod3 (g : ℕ → ProdState Q5 chi) (k : ℕ)
+    (hg : ∀ i, i < k → coh6 (g i) (g (i + 1)) = true) (h0 : (g 0).1 = a5)
+    (hchi : chi ∈ (g 0).2.1) (hk : (g k).1 = a5) : 3 ∣ k := by
+  have hall : ∀ i, i ≤ k → chi ∈ (g i).2.1 := by
+    intro i
+    induction i with
+    | zero => intro _; exact hchi
+    | succ i ih =>
+      intro hik
+      exact coh6_chi_propagates (g i) (g (i + 1)) (hg i (by omega)) (ih (by omega))
+  have hd : ∀ j, j ≤ k → (g j).1 ≠ d5 := by
+    intro j hj hjd
+    have hj0 : j ≠ 0 := by
+      intro he; rw [he, h0] at hjd; exact absurd hjd (by decide)
+    have hjk : j ≠ k := by
+      intro he; rw [he, hk] at hjd; exact absurd hjd (by decide)
+    obtain ⟨j', rfl⟩ : ∃ j', j = j' + 1 := ⟨j - 1, by omega⟩
+    have hc1 := hg j' (by omega)
+    have hc2 := hg (j' + 1) (by omega)
+    have hpa : pend5 (g j').1 = true :=
+      ((coh_iff step5 pend5 lab6 chi (g j') (g (j' + 1))).mp hc1).2.1
+    have hpa' : (g j').1.1 = true := hpa
+    have hqa : (g j').1 = (true, (g j').1.2) := by rw [← hpa']
+    have hpc : pend5 (g (j' + 1 + 1)).1 = true :=
+      ((coh_iff step5 pend5 lab6 chi (g (j' + 1)) (g (j' + 1 + 1))).mp hc2).2.2.1
+    have hpc' : (g (j' + 1 + 1)).1.1 = true := hpc
+    have hqc : (g (j' + 1 + 1)).1 = (true, (g (j' + 1 + 1)).1.2) := by rw [← hpc']
+    have hstep1 : step5 (true, (g j').1.2) (true, 3) = true := by
+      have := coh6_liesOver (g j') (g (j' + 1)) hc1
+      rw [hqa, hjd] at this
+      exact this
+    have hstep2 : step5 (true, 3) (true, (g (j' + 1 + 1)).1.2) = true := by
+      have := coh6_liesOver (g (j' + 1)) (g (j' + 1 + 1)) hc2
+      rw [hjd, hqc] at this
+      exact this
+    have ha1 : (g j').1 = a5 := by rw [hqa, pred_of_d _ hstep1]; rfl
+    have ha2 : (g (j' + 1 + 1)).1 = a5 := by rw [hqc, succ_of_d _ hstep2]; rfl
+    have eq1 : ((a5, (g j').2) : ProdState Q5 chi) = g j' := by rw [← ha1]
+    have eq2 : ((d5, (g (j' + 1)).2) : ProdState Q5 chi) = g (j' + 1) := by rw [← hjd]
+    have eq3 : ((a5, (g (j' + 1 + 1)).2) : ProdState Q5 chi) = g (j' + 1 + 1) := by rw [← ha2]
+    have c1 : coh6 (a5, (g j').2) (d5, (g (j' + 1)).2) = true := by rw [eq1, eq2]; exact hc1
+    have c2 : coh6 (d5, (g (j' + 1)).2) (a5, (g (j' + 1 + 1)).2) = true := by
+      rw [eq2, eq3]; exact hc2
+    exact coh6_no_a_d_a (g j').2 (g (j' + 1)).2 (g (j' + 1 + 1)).2 c1 c2 (hall j' (by omega))
+  have hcyck := chain_cyc g k hg h0 hd k le_rfl
+  rw [hk] at hcyck
+  have hc0 : cyc (k : ℤ) = 0 := by
+    have := congrArg Prod.snd hcyck
+    simpa [a5] using this.symm
+  exact dvd_of_cyc_zero k hc0
+
 end Probe806
 
 /-! ## Axiom check -/
@@ -281,3 +495,6 @@ end Probe806
 #print axioms Probe806.chi_closure_untl_only
 #print axioms Probe806.coh6_liesOver
 #print axioms Probe806.coh6_cycle_witness
+#print axioms Probe806.coh6_chi_propagates
+#print axioms Probe806.coh6_no_a_d_a
+#print axioms Probe806.coh6_chain_a_to_a_mod3
