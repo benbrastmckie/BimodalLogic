@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/808_c16_unused_finite_instance_shiftfinitetype/reports/01_c16-unused-finite-instance.md",
-      "summary": "C16 env_linter finding reproduced as exactly one unused argument ([Finite F.WorldState], argument 3) on FrameOver.mem_HF_iff_no_forbidden; three independent probes show zero call sites and a compiled probe closes the binder-free statement with an unchanged axiom profile, so the signature edit is recommended over a nolints.json entry or an in-source @[nolint] attribute."
+      "type": "plan",
+      "path": "specs/808_c16_unused_finite_instance_shiftfinitetype/plans/01_drop-unused-finite-binder.md",
+      "summary": "4-phase, 3-hour plan to drop the unused [Finite F.WorldState] binder from FrameOver.mem_HF_iff_no_forbidden, restate its docstring, clear the full gate set, and carry the nolints.json fallback as a conditional branch."
     }
   ],
+  "phase_count": 4,
+  "estimated_hours": 3,
+  "dependency_waves": [[1], [2], [3], [4]],
+  "memory_candidates": [],
+  "next_steps": "Run /implement 808 to execute the plan",
   "metadata": {
     "session_id": "sess_1792185388_11cdc4_808",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }

@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a 4-phase plan for the C16 unused-[Finite F.WorldState] fix on FrameOver.mem_HF_iff_no_forbidden: drop the binder (interface tier, scoped + direct-dependent build + runLinter), restate the docstring paragraph under no-record-versioning discipline (prose tier), run the full gate set (check-module-invariants.sh + full lake build + BimodalTest + runLinter, full tier), and a CONDITIONAL Phase 4 carrying the dispatch's nolints.json fallback as an in-plan branch so a load-bearing-binder finding is not a plan deviation. A ## Lean Challenge Statements block pins the exact target signature and was compiled standalone at plan time (lean_run_code, exit 0, one sorry warning). validate-artifact.sh passes in both default and --strict mode with 0 warnings.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/808_c16_unused_finite_instance_shiftfinitetype/plans/01_drop-unused-finite-binder.md",
+      "summary": "4-phase plan (3h): binder deletion, docstring restatement, full gate set, and a conditional nolints.json fallback branch."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": []
+}
