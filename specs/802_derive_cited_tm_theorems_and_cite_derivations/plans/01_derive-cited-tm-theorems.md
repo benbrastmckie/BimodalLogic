@@ -677,23 +677,23 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 10: The Proof-Extractor Entry for Z1 [IN PROGRESS]
+### Phase 10: The Proof-Extractor Entry for Z1 [COMPLETED]
 
 - **Goal:** Z1 has a registry entry with a runtime-walkable tree, replacing the by-name skip.
 - **Tasks:**
-  - [ ] In `BimodalTools/ProofExtractorMain.lean`, delete the two-line comment explaining that Z1
+  - [x] In `BimodalTools/ProofExtractorMain.lean`, delete the two-line comment explaining that Z1
     "has no runtime-walkable tree and no entry", and add
     `mkEntryAt "z1_axiom" .ZTime (FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt (fc := .ZTime) le_rfl p)`
     plus the `_q` companion, following the `prior_SZ_axiom` / `prior_SZ_axiom_q` pair immediately
     above it as the shape model (confirm the gate-discharge idiom those entries use — `trivial`
     for `priorSZ` — and use whatever `z1SchemaAt`'s gate actually needs).
-  - [ ] Check whether the `G_`, `H_` and `GG_` prefixed entry families further down the file have
+  - [x] Check whether the `G_`, `H_` and `GG_` prefixed entry families further down the file have
     a Z1 member by convention; add it if they do, and record the decision either way.
-  - [ ] Run the extractor and confirm the Z1 entries appear in its output with a walkable tree.
-  - [ ] Record, as a finding for Phase 11's report, that Phase 1 also unblocks extractor entries
+  - [x] Run the extractor and confirm the Z1 entries appear in its output with a walkable tree.
+  - [x] Record, as a finding for Phase 11's report, that Phase 1 also unblocks extractor entries
     for `dfSchema`, `coDerived` and `succIndicator` — and that this task deliberately does not add
     them, since they are outside the dispatch's named scope.
-  - [ ] If Phase 1's contingency is in force (the repair was reverted), skip this phase entirely,
+  - [x] *(not applicable: Phase 1's contingency was not taken.)* If Phase 1's contingency is in force (the repair was reverted), skip this phase entirely,
     mark it `[BLOCKED]` with that reason, and leave the by-name skip comment in place with its
     wording corrected to cite the direct derivation rather than the engine.
 - **Timing:** 1 hour
@@ -717,7 +717,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 11: Regeneration, the Full Gate Sweep, and the Per-Schema Report [NOT STARTED]
+### Phase 11: Regeneration, the Full Gate Sweep, and the Per-Schema Report [IN PROGRESS]
 
 - **Goal:** Every generated artefact is current, the whole repository is green except the one
   pre-existing failure, and item (5)'s per-schema table is reported.

@@ -15,6 +15,7 @@ import FormalSystem.Theorems.Perpetuity.Principles
 import FormalSystem.Theorems.ContextualProofs
 import FormalSystem.Theorems.ConnectDerived
 import FormalSystem.Theorems.LinearityDerived
+import FormalSystem.Theorems.DiscreteUnfolding
 
 /-!
 # Proof Step Export Executable
@@ -1100,8 +1101,13 @@ def theoremRegistry : List TheoremEntry := [
     (DerivedAxioms.priorSZ (fc := .ZTime) trivial p),
   mkEntryAt "prior_SZ_axiom_q" .ZTime
     (DerivedAxioms.priorSZ (fc := .ZTime) trivial q),
-  -- Z1 is derived through the ZTime completeness engine (`CompletenessDerived.z1Thm`,
-  -- `Classical.choice`-packaged, noncomputable): it has no runtime-walkable tree and no entry.
+  -- Z1 (Discrete): G(Gφ → φ) → (FGφ → Gφ), the direct derivation `DiscreteUnfolding.z1Schema`
+  -- in its gated form. Coverage matches `prior_SZ`, the neighbouring derived ZTime schema:
+  -- the base pair plus one `G_` entry, and no `H_` or `GG_` member.
+  mkEntryAt "z1_axiom" .ZTime
+    (FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt (fc := .ZTime) trivial p),
+  mkEntryAt "z1_axiom_q" .ZTime
+    (FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt (fc := .ZTime) trivial q),
   -- Density Axioms (Dense): G(G(φ)) → G(φ) and ¬U(⊤,⊥)
   mkEntryAt "density_axiom" .Dense
     (FormalSystem.Theorems.LinearityDerived.density (fc := .Dense) le_rfl p),
@@ -1148,6 +1154,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "G_prior_SZ_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivedAxioms.priorSZ (fc := .ZTime) trivial p)),
+  mkEntryAt "G_z1_axiom" .ZTime
+    (DerivationTree.temporal_necessitation _
+      (FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt (fc := .ZTime) trivial p)),
   -- G-wrapped density axioms (Dense)
   mkEntryAt "G_density_axiom" .Dense
     (DerivationTree.temporal_necessitation _
