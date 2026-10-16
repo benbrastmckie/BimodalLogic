@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 808,
+  "next_project_number": 810,
   "active_projects": [
     {
       "project_number": 806,
@@ -1612,7 +1612,7 @@
       "created": "2026-10-16T15:17:57Z"
     },
     {
-      "project_number": 1055,
+      "project_number": 808,
       "project_name": "c16_unused_finite_instance_shiftfinitetype",
       "status": "not_started",
       "task_type": "lean4",
@@ -1630,7 +1630,7 @@
       "artifacts": []
     },
     {
-      "project_number": 1056,
+      "project_number": 809,
       "project_name": "realizable_type_adequacy_countdown_profile",
       "status": "not_started",
       "task_type": "lean4",

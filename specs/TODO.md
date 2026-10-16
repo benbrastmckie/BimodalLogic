@@ -1,5 +1,5 @@
 ---
-next_project_number: 808
+next_project_number: 810
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 808
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,807,1055,1056 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,807,808,809 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,761,783 | 298,464,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -94,8 +94,8 @@ next_project_number: 808
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
-1055 [NOT STARTED] — Fix the C16 env\_linter failure that fails...
-1056 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
+808 [NOT STARTED] — Fix the C16 env\_linter failure that fails...
+809 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
 
 ### Formula Refactor
 
@@ -131,7 +131,7 @@ next_project_number: 808
 
 ## Tasks
 
-### 1056. Realizable type adequacy countdown profile
+### 809. Realizable type adequacy countdown profile
 - **Effort**: Adequacy alone is the costable first deliverable; the full gate re-run beyond it is not costable in one round
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -158,7 +158,7 @@ Fixture reuse: the coprime-cycle fixtures in the collection are label-generic; t
 
 ---
 
-### 1055. C16 unused finite instance shiftfinitetype
+### 808. C16 unused finite instance shiftfinitetype
 - **Effort**: Small -- a one-binder signature edit under FormalSystem/, gated on a call-site check and a full verified lake build
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4

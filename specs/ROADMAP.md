@@ -53,7 +53,7 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 127,128,709,730,741,752,767,768
-/orchestrate 769,770,785,805,1055,1056
+/orchestrate 769,770,785,805,808,809
 ```
 
 ## Not batched, and why
