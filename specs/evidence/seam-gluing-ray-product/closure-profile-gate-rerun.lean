@@ -1,4 +1,190 @@
-/- EIGHTEENTH PROBE -- header written in Phase 5 -/
+/-
+THE CLOSURE-INDEXED COUNTDOWN PROFILE SURVIVES THIS ROUND'S GATES ON THE COPRIME-CYCLE FIXTURE,
+AND THREE OF THOSE GATES IT DOES NOT ADDRESS AT ALL: gate 6's pattern is tracked by the closure
+and the pair it separated is separated by the profile with no parameter; gate 5's object period
+does not bind the profile; gate 4 is disarmed by construction and by nothing in this file -- this
+datum has no threshold parameter to exhibit, and the depth-`(T+1)` witness enlarges the closure
+rather than escaping a bound; gate 3 finds no refutation in either direction and reads none of
+this datum's parameters, because it has none -- its verdict is CARRIED from the sixteenth probe's
+`second_region_sets_agree` and `region_start_beyond_depth` and is re-run by nothing here; gate 7
+is passed in its definability form and witnessed non-vacuous; gate 8 is SIDESTEPPED on a
+`stab`-free fixture, not passed; gates 1 and 2 are NOT ADDRESSED -- gate 1 because this datum
+reads the countdown only and the next-deadline-side datum is obligation (c), gate 2 because it
+reduces to adequacy; gate 9, the n-side modulus, is raised in the nineteenth probe with its
+collision half compiled and its refuting half not attempted, so it is OPEN; adequacy is OPEN and
+nothing here is a factorization lemma, a cell index, or any part of one.
+
+## What was asked
+
+Four refuted index shapes later, the tuple-widening line is spent, and the candidate under
+investigation is a DIFFERENT PRESENTATION OF A CELL: a set-valued per-state datum over a
+quotient, rather than a wider tuple.  Three things were asked of this round, in this order.
+(2) Define the set-valued cell over the quotient and say what the quotient is quotienting BY; say
+which of the four refuted shapes it is not a re-presentation of, and why the gate-6
+pattern-definable sub-object does not re-refute it.  (3) BEFORE any sufficiency attempt, re-run
+the pattern-definability separation of gate 6 against the new presentation, plus the three region
+separations (gates 1-3) and the two coordinate refutations (gates 4-5), rebuilt against whatever
+parameters the presentation carries -- on the understanding that a gate probing one coordinate
+certifies one coordinate only, and that passing an earlier gate says nothing about a later one.
+(4) Report the verdict, survive or refute, as a wired evidence probe.  The research round that
+preceded this file added two further rows to that table (gate 7, non-circularity and
+non-vacuity; gate 8, `stab` self-reference), and a later read-only audit added a ninth on the
+next-deadline side.
+
+## The verdict
+
+The datum is `Prof6 : ℕ → Finset (ProdState Q5 chi)`, the countdown profile: `Prof6 k` is the set
+of product states from which a `coh6`-chain of length `k` reaches the fibre `Ea` over the pending
+`a` state.  The quotient it induces is the kernel of the profile map -- two product states are
+identified exactly when they lie in the same `Prof6 k` for every `k`.  It carries NO PARAMETER:
+no threshold, no modulus, no clip bound, and therefore nothing for a parameter-origin rule to get
+wrong.  On this fixture it separates the exact pair gate 6 used to refute the sixth index, for
+EVERY modulus coprime to three, and its period is not the object's.  It survives this round's
+gates.  It is not shown sufficient, it is not shown adequate, and three of the nine gates it does
+not address at all.
+
+`coh6` is **LOCAL coherence**, not realizability: it imposes the Hintikka conditions of the
+Boolean fragment at each endpoint and the one-step strict-until unfolding across the step, and it
+imposes NO fulfilment condition, so a `coh6`-chain may carry an `untl` eventuality forever without
+discharging it.  It therefore OVER-APPROXIMATES realizability.  Every separation below is a
+NEGATIVE result about a relation at least as large as the realizable one, so each transfers to the
+realizable sub-relation; no positive result does, and none is claimed.
+
+## Gate 1: the gap pair, equal countdown and differing next deadline
+
+`NOT ADDRESSED` by this datum, which reads the countdown only, and the
+next-deadline-side datum is obligation (c) -- plus the compiled qualification that a
+candidate datum of the refuted tuple's n-side shape does separate gate 1's pair
+(ported `gate1_gap_separates`, `2 ≤ B`) but is itself blind to the n-side modulus
+shift at every parameter triple (`nside_collides`), so the qualification narrows what
+remains to be found and passes nothing.
+
+No theorem of this file exhibits gate 1.  The two backticked names in the paragraph above are the
+nineteenth probe's (`specs/evidence/seam-gluing-ray-product/nside-modulus-gate.lean`), not this
+file's, and the qualification is a narrowing of the search space, not a verdict change.
+
+## Gate 2: the residue pair, differing countdown and equal next deadline
+
+`NOT ADDRESSED`.  The research round's expectation was that the profile separates this pair
+because below the product's threshold the profile is countdown-exact.  "Countdown-exact" is a
+statement about which types are REALIZABLE at a countdown, so the expectation reduces to
+adequacy, which is open; it is recorded here as an expectation and nothing more.  No theorem of
+this file exhibits gate 2, and the pair is not probed.
+
+## Gate 3: the second region, and the past direction
+
+CARRIED, and re-run by nothing in this file.  The sixteenth probe's verdict
+(`second_region_sets_agree`, `third_region_any_length`, `region_start_beyond_depth`, all in
+`specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean`) finds no refutation
+in either direction, and the reason it does not is that the verdict never reads the index's
+parameters: `Count false false` holds the countdown at `0` through an idle interval of any length.
+A datum with no parameters is a fortiori not refuted by a mechanism that reads parameters, so the
+carried verdict stands unchanged -- carried, not re-established.
+
+## Gate 4: the object-exhibited threshold, via the depth-`(T+1)` next-chain
+
+Disarmed by construction, and by nothing in this file.  Mechanism (4) separates a pair of
+countdowns that an index's THRESHOLD coordinate identifies; this datum has no threshold
+coordinate to exhibit, so there is no parameter for the mechanism to attack.  The diagonal does
+not close for a second, independent reason: the depth-`(T+1)` witness formula costs `untl`-depth
+exactly `T+1`, so adding it to the formula ENLARGES the closure, hence the product, hence the
+profile -- the diagonal moves the carrier rather than escaping a bound.  Both of those are
+arguments, not theorems, and no theorem here exhibits either; the disarming is recorded as a
+claim about the datum's shape.
+
+## Gate 5: the full-graph reach-set period
+
+Disarmed, and exhibited.  `reach5_eventually_constant` is the OBJECT's own exhibited period on
+this very fixture: from threshold four the full graph's reach set from `a` is constant, so period
+one is admissible for the object's graph.  `prof6_period_not_one` is the profile's answer at every
+multiple of three: the profile is not period one.  The two periods are independent, so a modulus
+read off the object's graph does not bind the profile, and mechanism (5)'s pair -- which is built
+from an object-exhibited period -- does not reach this datum.
+
+## Gate 6: the pattern-definable sub-object
+
+INTERNALISED, and this is the round's substantive positive finding about the presentation.  Gate 6
+refuted the sixth index by carving out a sub-object with a letter-FREE PATTERN -- `psi2`, a pending
+`a` with a pending `a` exactly two instants later -- that no set of atoms can carve out, on the
+coprime-cycle object with `d` given `b`'s letter.  The pattern and its eventuality are SUBFORMULAS
+of the constraint `chi`, hence members of `plusSubformulaClosure chi`, hence tracked by the closure
+component of the product.  Compiled:
+
+  - `coh6_liesOver` -- the coherence relation lies over the object's step relation, so a
+    `coh6`-chain is an object walk.
+  - `coh6_chi_propagates` -- `chi` propagates forward along every `coh6` step, through the link
+    condition on `ev = ⊤ U psi2` and the forced membership of `⊤`.
+  - `coh6_no_a_d_a` -- the `chi`-consistent product NEVER passes through `d`: an `a`-`d`-`a`
+    segment forces `psi2` into the type at the first `a`, which `chi` forbids.  `d5`'s labelling
+    is never read, which is the compiled form of "the pattern forbids no letter".
+  - `coh6_chain_a_to_a_mod3` -- hence every `coh6`-chain from a `chi`-carrying `a` back to `a` has
+    length divisible by three.
+  - `prof6_fibre_a_of_mem` and `prof6_fibre_a_witness` -- the `a`-fibre of the profile is nonempty
+    at exactly the multiples of three, for types carrying `chi`.
+  - `prof6_separates_gate6_pair` -- therefore the profile SEPARATES gate 6's own pair, the
+    countdowns `C` and `C + (P+1)` with `3 ∣ C` and `3 ∤ P+1`, for EVERY such `P`.  Its hypotheses
+    name the PAIR and nothing else: there is no threshold, no modulus and no clip bound to
+    instantiate, because this datum has none.
+
+## Gate 7: non-circularity and non-vacuity
+
+Passed in its DEFINABILITY form, and witnessed non-vacuous.  A set-valued datum can be made to
+"succeed" by simply BEING the cell, which is the characteristic failure mode this presentation
+invites and which the four tuple shapes could not exhibit.  Two things are checked here.
+Definability: `coh6` is a computable `Bool` relation built from `(Q5, step5, pend5, lab6, chi)`
+alone; it quantifies over no history, names no world, no `WorldHistory`, no `PlusTruthAt`, no
+`tpOf` and no `cellAt`, and that is checked mechanically by grepping this file for those
+identifiers outside comments.  Non-vacuity: `coh6_cycle_witness` exhibits an explicit
+`coh6`-coherent 3-cycle of closure types over the object's 3-cycle, carrying `chi`, so `coh6` is
+not the empty relation and the separations above say something.  The witness is landed BEFORE
+every negative lemma, which is the discipline this gate asks for.
+
+## Gate 8: `stab` self-reference
+
+SIDESTEPPED on this fixture, NOT passed.  `stab_mem_tpOf_iff` makes `⊡ψ`'s bit a function of the
+CELL at the state, so a datum of this shape occurs on both sides of its own defining equation --
+a fixpoint obligation that bites at DEFINITION time rather than, as for the tuple shapes, at proof
+time inside obligation (d).  `chi_closure_untl_only` records why this file does not meet it:
+`plusSubformulaClosure chi` has no `box`, `snce` or `stab` member, so the unconstrained arms of
+`locPred` and `linkPred` are never exercised here.  A `stab`-free fixture cannot pass a `stab`
+gate; it can only avoid it, and that is what happens.
+
+## Gate 9: the n-side modulus
+
+OPEN -- neither passed nor refuted.  It is raised in the nineteenth probe
+(`specs/evidence/seam-gluing-ray-product/nside-modulus-gate.lean`), whose collision half is
+compiled there and whose refuting half (a formula giving the collided pair different cells) is
+not attempted.  Nothing in this file addresses it, and nothing in this file adds a coordinate to
+the countdown profile or identifies the profile's threshold or period with any tuple coordinate.
+
+## What this does NOT say
+
+  - **Nothing here is a sufficiency claim, a factorization lemma, a cell index, or any part of
+     one.**  No declaration named `ladderRealized`, `LadderCons` or `ladderCons_localRun` appears
+     here, in those names or any others, and no same-named weaker substitute for any of them is
+     stated, with or without the `box`/`stab` clause.
+  - **The ADEQUACY of the construction is OPEN, and adequacy is the expensive half of the first
+     standing obligation.**  `coh6` is LOCAL coherence and over-approximates realizability; the
+     relation that matches the truth definition needs a fulfilment condition on `untl`/`snce`
+     eventualities, which nothing here supplies.  Eventual periodicity of the profile survives
+     that repair -- the fulfilment flags live on the same finite carrier -- but survival of the
+     periodicity fact is not adequacy, and the two must not be conflated.
+  - **The three remaining standing obligations are not started**: (b) a region-length pumping
+     lemma for `untl`/`snce`-depth-bounded formulas; (c) the next deadline's coupling through
+     `Drift`; (d) the `box`/`stab` letters through `box_mem_tpOf_iff` and `stab_mem_tpOf_iff`.
+  - **No seventh tuple coordinate is proposed**, and the profile's threshold and period are not
+     re-presented as index coordinates.  The tuple-widening line is spent and nothing here
+     reopens it.
+  - **One fixture is one fixture.**  Every separation above is proved on the coprime-cycle object
+     with gate 6's labelling and gate 6's formula.  A gate probing one coordinate certifies one
+     coordinate only; the verdict is "survives this round's gates", never "survives".  A seventh
+     mechanism this fixture does not exercise would not be visible here.
+  - **The SET of cells was never in question.**  `anchorCells_finite` and `anchorCells_ncard_le`
+     already bound it; only the computable INDEX is open, and this file does not close it.
+
+Compile:
+`lake env lean specs/evidence/seam-gluing-ray-product/closure-profile-gate-rerun.lean`
+-/
 import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 
 open FormalSystem.Syntax FormalSystem.PlusLanguage

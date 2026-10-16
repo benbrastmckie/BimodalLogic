@@ -1153,6 +1153,84 @@ EVIDENCE="specs/evidence"
 #                                                           | index, no factorization lemma and no part of one; no
 #                                                           | library declaration. Axioms `[propext, Classical.choice,
 #                                                           | Quot.sound]` on all seven.
+# seam-gluing-ray-product/closure-profile-gate-rerun        | CLOSURE-INDEXED COUNTDOWN PROFILE -- GATE TABLE RERUN
+#                                                           | (the successor presentation to the four refuted index
+#                                                           | shapes: a SET-valued per-state datum over a quotient, not
+#                                                           | a wider tuple). The datum is `Prof6 k`, the set of
+#                                                           | product states from which a `coh6`-chain of length `k`
+#                                                           | reaches the fibre `Ea` over the pending `a` state,
+#                                                           | quotiented by the kernel of the profile map; it carries
+#                                                           | NO parameter -- no threshold, no modulus, no clip bound.
+#                                                           | The decision it holds in place: the datum SURVIVES THIS
+#                                                           | ROUND'S GATES on the coprime-cycle fixture, and three of
+#                                                           | the nine it does not address at all. Gate 6 is
+#                                                           | INTERNALISED -- the letter-free pattern is a subformula,
+#                                                           | hence in the closure, hence tracked by the product
+#                                                           | (`coh6_liesOver`, `coh6_chi_propagates`, `coh6_no_a_d_a`,
+#                                                           | `coh6_chain_a_to_a_mod3`, `prof6_fibre_a_of_mem`,
+#                                                           | `prof6_fibre_a_witness`), so the profile separates gate
+#                                                           | 6's own pair for EVERY modulus coprime to three with
+#                                                           | nothing to choose (`prof6_separates_gate6_pair`). Gate 5
+#                                                           | is DISARMED and exhibited: the object's full-graph period
+#                                                           | is one from threshold four (`reach5_eventually_constant`)
+#                                                           | while the profile's is not one (`prof6_period_not_one`).
+#                                                           | Gate 7 is PASSED in its definability form and witnessed
+#                                                           | non-vacuous (`coh6_cycle_witness`, landed before every
+#                                                           | negative lemma; no history, no world, no cell in any
+#                                                           | declaration). Gate 8 is SIDESTEPPED, not passed: the
+#                                                           | closure of the constraint has no `box`, `snce` or `stab`
+#                                                           | member (`chi_closure_untl_only`), so a `stab` gate cannot
+#                                                           | be met on this fixture, only avoided. Gate 4 is disarmed
+#                                                           | by construction and by no theorem here -- there is no
+#                                                           | threshold parameter to attack, and the depth-(T+1)
+#                                                           | witness enlarges the closure rather than escaping a
+#                                                           | bound. Gate 3 is CARRIED from the sixteenth probe and
+#                                                           | re-run by nothing here. GATES 1 AND 2 ARE NOT ADDRESSED:
+#                                                           | gate 1 because this datum reads the countdown only and
+#                                                           | the next-deadline-side datum is obligation (c), gate 2
+#                                                           | because it reduces to adequacy. Gate 9 is OPEN, raised in
+#                                                           | the nineteenth probe. What it withholds: no sufficiency
+#                                                           | claim, no factorization lemma, no cell index and no part
+#                                                           | of one; no `ladderRealized`/`LadderCons` substitute and
+#                                                           | the `box`/`stab` clause never dropped; ADEQUACY IS OPEN
+#                                                           | -- `coh6` is LOCAL coherence and over-approximates
+#                                                           | realizability, having no fulfilment condition;
+#                                                           | obligations (b), (c), (d) not started; no seventh
+#                                                           | coordinate and no re-presentation of the profile's
+#                                                           | threshold or period as index coordinates; one fixture is
+#                                                           | one fixture. Axioms `[propext, Classical.choice,
+#                                                           | Quot.sound]` on all eleven.
+# seam-gluing-ray-product/nside-modulus-gate                | n-SIDE MODULUS GATE (gate 9, raised against the REFUTED
+#                                                           | tuple's n-side coordinates as a candidate shape for the
+#                                                           | datum obligation (c) owes). Two Goals, `nside_pair_ne`
+#                                                           | and `nside_collides`, plus two gate theorems ported with
+#                                                           | their hypotheses unchanged from the sixteenth probe,
+#                                                           | `gate1_gap_separates` (`2 <= B`) and
+#                                                           | `gate2_residue_separates` (`1 <= P`). The decision it
+#                                                           | holds in place: passing gates 1 and 2 does NOT make a
+#                                                           | shape adequate as the next-deadline datum. The ported
+#                                                           | coordinates do separate those two gates' pairs, re-proved
+#                                                           | here rather than inherited by citation; but `(q, c, n)`
+#                                                           | and `(q, c, n + (P+1))` collide in the WHOLE
+#                                                           | six-coordinate index at every `(T, P, B)` and every
+#                                                           | countdown (`nside_collides`), on a pair of genuinely
+#                                                           | distinct states (`nside_pair_ne`, this probe's
+#                                                           | non-vacuity obligation, landed first). What it withholds:
+#                                                           | gate 9's REFUTING half -- a formula on the coprime-cycle
+#                                                           | object giving the collided pair different cells -- is NOT
+#                                                           | ATTEMPTED, so gate 9 is OPEN, neither passed nor refuted;
+#                                                           | no cell is computed, mentioned or claimed; nothing is
+#                                                           | coupled to `Drift` and this is NOT obligation (c), only a
+#                                                           | gate on a candidate SHAPE for its datum; this is not part
+#                                                           | of the eighteenth probe's countdown profile and adds no
+#                                                           | coordinate to it, nor identifies the two notations; gate
+#                                                           | 1 remains NOT ADDRESSED by the countdown profile and
+#                                                           | nothing here changes that; the shape gated here belongs
+#                                                           | to a refuted candidate and is gated as a candidate for a
+#                                                           | datum, never revived as an index. Axioms `[propext,
+#                                                           | Quot.sound]` on `gate1_gap_separates`, `nside_pair_ne`
+#                                                           | and `nside_collides`, `[propext, Classical.choice,
+#                                                           | Quot.sound]` on `gate2_residue_separates`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1188,6 +1266,8 @@ WIRED=(
   "seam-gluing-ray-product/ladder-residue-index-refutation"
   "seam-gluing-ray-product/ladder-joint-index-refutation"
   "seam-gluing-ray-product/closure-indexed-periodicity"
+  "seam-gluing-ray-product/closure-profile-gate-rerun"
+  "seam-gluing-ray-product/nside-modulus-gate"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
