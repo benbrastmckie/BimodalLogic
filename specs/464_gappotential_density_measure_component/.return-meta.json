@@ -1,1 +1,30 @@
-{"status":"researched","artifacts":[{"type":"report","path":"specs/464_gappotential_density_measure_component/reports/01_gappotential-density-component.md","summary":"gapPotential design validated (U x U unfilled-pair ledger, monotone, identifyTime-preserved, strict drop at densityRule); MintPaysForTimeFixed shown false at Dense by measured vehicle; 5-phase repair plan (MintPaysForTimeGap + five-component measure)."}],"metadata":{"session_id":"sess_1789758953_24f7fc_464","agent_type":"lean-research-agent","delegation_depth":1,"delegation_path":["orchestrator","research","lean-research-agent"]}}
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/464_gappotential_density_measure_component/plans/01_gappotential-density-component.md",
+      "summary": "Ten-phase plan landing gapPotential (U x U unfilled-pair ledger) with its density payment, identifyTime preservation, the MintPaysForTimeFixed refutation at .Dense/.RTime, a four-disjunct MintPaysForTimeGap discharged at every frame class, and a five-component measure carrying the terminus family."
+    }
+  ],
+  "next_steps": "Run /implement 464 to execute the plan",
+  "phase_count": 10,
+  "estimated_hours": 16,
+  "dependency_waves": [[1], [2, 3, 4, 5], [6, 7], [8], [9], [10]],
+  "memory_candidates": [
+    {
+      "content": "Termination-measure component design rule, rediscovered twice in the MintBound tableau-termination work: a measure component must transcribe the MONOTONE half of a rule's guard with its polarity inverted, never the guard's target set. Two instances: selfGuardDischarged (FormalSystem/.../MintBound/TimeReuse.lean) inverts untlNeg/snceNeg's non-empty-reach guard; gapFilled inverts densityRule's second filter conjunct ('no intermediate reaches t'). densityRule's guard has two conjuncts -- (i) t' is maximal, (ii) no intermediate -- and only (ii) is monotone. A ledger over the rule's own gap-TARGET set (which needs conjunct (i)) rises at ordinary steps, because any rule minting a fresh maximal time creates a new target; a ledger over FILLED pairs only falls, because edges are only added. Corollary for the identification arm: a component whose guard never reads a quantity the renaming can lower (here ord.timeCount) is preserved by reachability transport alone, with no extra hypothesis.",
+      "category": "PATTERN",
+      "source_artifact": "specs/464_gappotential_density_measure_component/plans/01_gappotential-density-component.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["termination-measure", "tableau", "monotone-ledger", "rule-guard-polarity", "identifyTime-preservation", "lean4"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792193557_775a31_464",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 9
+}

@@ -990,16 +990,32 @@
     {
       "project_number": 464,
       "project_name": "gappotential_density_measure_component",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Design and land `gapPotential`, the density coordinate of the termination measure. This is the one genuinely OPEN MATHEMATICAL question remaining on the totality terminus; it is research, not plumbing, and should be run with --lit.\n\nTHE PROBLEM, stated exactly. `densityRule` mints a fresh time while lying OUTSIDE BOTH `freshLabelRules` AND `selfGuardRules`. Consequently no disjunct of the current measure moves at a `densityRule` step, FOR ANY sigma WHATSOEVER. This has been open since C9 register entry 17 named it, and task 434's Phase 8 records the current state bluntly: `gapPotential` \"remains implemented nowhere and assumed by nothing\". Because `densityRule` is `denseRules`-gated, this blocks a nonempty `MintPaysForTimeFixed` discharge at `.Dense` and `.Dedekind` frame classes specifically; every frame class needs `gapPotential` for a fully general result.\n\nSHAPE SUGGESTED BY PRIOR WORK (a starting point, NOT a specification to follow blindly): task 434 records the expectation that `gapPotential` is indexed by `U x U` and `denseRules`-gated. Validate or refute that shape as part of the research; if a different indexing is correct, say so and justify it.\n\nHARD REQUIREMENT -- PRESERVATION ACROSS THE IDENTIFICATION ARM. Any candidate component must be preserved across `TimeOrdering.identifyTime`, which can LOWER `ord.timeCount`. This is the same maxTime-lowering mechanism that refuted earlier candidates; see `nextTime_reissues_retired_time` and `reuse_driven_through_engine`, and task 436's oriented-arm re-gate (`orientedGate*` family, :8592-8788) for how the analogous obstacle was handled for the self-guard component. A component that pays at `densityRule` steps but is destroyed by the identification arm is not a solution.\n\nREFUTED ROUTES -- C9 register entries 14, 17, 18, 19, 20, 24. Read them ALL in full before designing anything. In particular entry 14 forbids BOTH (1) re-indexing `mintPotential` on `freshTimeRules` instead of `freshLabelRules` -- refuted by `witnessPresent_eq_false_of_not_freshLabel`, whose match has exactly eight arms so the three added columns are permanently false -- and (2) dropping disjunct 1's cardinality conjunct in favour of the ordering-rank conjunct alone -- refuted by `splitOrderedRank_lt_of_knownTimes_lt` plus `mintPaysForTime_rank_repair_false`. Neither may be re-attempted.\n\nLITERATURE. Run with --lit against the sub-index curated for this line of work, drawing specifically on: venema_2001 section 5 (interval-based temporal logic) for the density/gap-guarded component itself; caleiro_2013 sections 6-7 (mosaic-method decidability for combined tense-and-modal logics) as a structural analogue for a combined-logic termination measure; gerth_1995 and baier_katoen_2008 (closure-set LTL tableau termination) as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000 for rule-bounding technique.\n\nDONE MEANS EITHER: (a) `gapPotential` defined, its payment at `densityRule` steps proved, its preservation across `identifyTime` proved, integrated into the measure, and a nonempty `MintPaysForTimeFixed` discharge extended to `.Dense` and `.Dedekind`; OR (b) a machine-checked impossibility result showing no such component exists at the current measure's shape, with the obstruction identified precisely and a C9 entry recording it. Outcome (b) is a genuine and valuable result, NOT a failure -- this repo's practice is that a proved refutation ranks with a proof, and several of this measure's real advances came from refutations.\n\nPROHIBITED: no `sorry`, no vacuous or false predicate, no weakening presented as a repair (a direction lemma is a GATE, not a nicety -- C9 entry 7 exists because that mistake was made once); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); additive only in MintBound.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green.\n\nDependencies: 462 is a REAL SEMANTIC dependency -- the engine-level assembly is what makes a per-rule payment usable at the successor, and `gapPotential`'s payment needs the same threading. 463 is a file_scope SERIALIZATION edge only (both edit MintBound.lean), with no mathematical content.",
       "created": "2026-08-19T01:33:59Z",
-      "last_updated": "2026-10-16T23:37:26Z",
-      "session_id": "sess_1792193557_775a31_464",
+      "last_updated": "2026-10-16T23:54:29Z",
+      "session_id": "sess_1792193557_775a31",
       "file_scope": [
+        "FormalSystem.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/README.md",
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
-        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/"
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/FiveComponent.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/FourComponent.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/GapPotential.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPaysAssembly.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/README.md",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/Register.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SigmaFixed.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/TimeReuse.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "references.bib",
+        "typst/generated/status.typ"
       ],
       "dependencies": [],
       "artifacts": [
@@ -1007,6 +1023,11 @@
           "path": "specs/464_gappotential_density_measure_component/reports/01_gappotential-density-component.md",
           "type": "report",
           "summary": "gapPotential design validated (U x U unfilled-pair ledger, monotone, identifyTime-preserved, strict drop at densityRule); MintPaysForTimeFixed shown false at Dense by measured vehicle; 5-phase repair plan (MintPaysForTimeGap + five-component measure)."
+        },
+        {
+          "path": "specs/464_gappotential_density_measure_component/plans/01_gappotential-density-component.md",
+          "type": "plan",
+          "summary": "Ten-phase plan landing gapPotential, its density payment and identifyTime preservation, the MintPaysForTimeFixed refutation at .Dense/.RTime, MintPaysForTimeGap discharged at every frame class, and a five-component measure carrying the terminus family."
         }
       ],
       "priority": "low",

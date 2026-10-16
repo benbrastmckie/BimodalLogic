@@ -1,1 +1,15 @@
-{"status":"researched","dispatch_seq":1,"phases_completed":0,"phases_total":0,"artifacts":[{"type":"report","path":"specs/464_gappotential_density_measure_component/reports/01_gappotential-density-component.md","summary":"gapPotential design validated (U x U unfilled-pair ledger, monotone, identifyTime-preserved, strict drop at densityRule); MintPaysForTimeFixed shown false at Dense by measured vehicle; 5-phase repair plan (MintPaysForTimeGap + five-component measure)."}],"next_action":"plan","summary":"Outcome (a) route found: gapPotential = #{(x,y) in U x U : not gapFilled(time x, time y)} with gapFilled the monotone half of densityRule's guard; all required lemmas have in-tree templates. Literal MintPaysForTimeFixed at Dense is false; plan should land refutation + MintPaysForTimeGap + five-component measure."}
+{
+  "status": "planned",
+  "dispatch_seq": 9,
+  "phases_completed": 0,
+  "phases_total": 10,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/464_gappotential_density_measure_component/plans/01_gappotential-density-component.md",
+      "summary": "Ten-phase plan landing gapPotential, its density payment and identifyTime preservation, the MintPaysForTimeFixed refutation at .Dense/.RTime, MintPaysForTimeGap discharged at every frame class, and a five-component measure carrying the terminus family."
+    }
+  ],
+  "summary": "Planned outcome (a) from the research report: gapPotential as a U x U unfilled-pair ledger over gapFilled (densityRule's monotone second filter conjunct, polarity inverted), with the strict drop at density steps, transport across identifyTime, a four-disjunct MintPaysForTimeGap plus Fixed -> Gap direction lemma, an all-frame-class discharge with NO frame-class hypothesis, a five-component measure, and the eight _fixed termini restated with hmint discharged rather than carried. Also plans the refutation half (MintPaysForTimeFixed is false at .Dense and .RTime, so the task's literal 'extend the discharge' cannot hold). Two plan-time findings deviate from inputs and are recorded in the issue log: the research's module layout is unworkable because MintPaysAssembly.lean's pick-level helpers are private, so the import edge is inverted and the bucket lands in place; and FrameClass has no .Dedekind constructor, so the description's '.Dedekind' is read as .RTime. Plan validates clean (validate-artifact.sh PASS, 0 warnings) with Goals and Lean Challenge identifier sets equal at 24.",
+  "blockers": []
+}

@@ -73,7 +73,7 @@ next_project_number: 810
 
 ### Decidability
 
-464 [PLANNING] — Design and land gapPotential, the density coordinate of the...
+464 [PLANNED] — Design and land gapPotential, the density coordinate of the...
   └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired...
     └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns...
       └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2...
@@ -1584,11 +1584,12 @@ Dependencies: 462, 463, 464 -- all three, so that the restatements are made agai
 ---
 
 ### 464. Gappotential density measure component
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [464_gappotential_density_measure_component/reports/01_gappotential-density-component.md]
+- **Plan**: [464_gappotential_density_measure_component/plans/01_gappotential-density-component.md]
 
 **Description**: Design and land `gapPotential`, the density coordinate of the termination measure. This is the one genuinely OPEN MATHEMATICAL question remaining on the totality terminus; it is research, not plumbing, and should be run with --lit.
 
