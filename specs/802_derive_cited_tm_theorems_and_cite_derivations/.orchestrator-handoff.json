@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "dispatch_seq": 17,
-  "phases_completed": 0,
+  "dispatch_seq": 18,
+  "status": "implemented",
+  "phases_completed": 11,
   "phases_total": 11,
-  "summary": "Wrote an 11-phase, 16.5-hour plan for task 802. The critical path is a probe-verified DeductionTheorem computability repair (precursor), four named past mirrors, the direct Z1 derivation at FrameClass.ZTime with a lift-derived gated companion, a two-stage prune of Metalogic/CompletenessDerived.lean (redirect five term-level consumers, then delete the module and seven imports), a prose tail across ~26 surfaces, and a final gate sweep. The dispatch's 'propext at most' acceptance criterion is replaced with measured axiom profiles plus a no-engine-in-closure assertion, because research showed three existing direct derivations already fail the original criterion.",
+  "summary": "All 11 plan phases closed. Z1 has a direct, computable DerivationTree from UZ and US at FrameClass.ZTime (z1Schema, gated z1SchemaAt), factoring through six newly named free past mirrors; Metalogic/CompletenessDerived.lean is deleted with its consumers redirected and all seven imports removed. Every Lean, doc and Typst surface now cites the derivation, and docs/theorem-index.md gained twenty rows closing the paper-cited coverage gap. Full lake build and BimodalTest green, zero sorries, no new axioms, both Typst documents compile; the only two red gates are a pre-existing cycles surplus from ba6c0f5dd and a C16 finding in a sibling task's file.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/802_derive_cited_tm_theorems_and_cite_derivations/summaries/01_derive-cited-tm-theorems-summary.md",
+      "summary": "Per-schema table, gate battery, measured axiom profiles and the engine-closure probe result."
+    },
+    {
       "type": "plan",
       "path": "specs/802_derive_cited_tm_theorems_and_cite_derivations/plans/01_derive-cited-tm-theorems.md",
-      "summary": "11 phases across 7 waves, 16.5 hours: computability repair, four past mirrors, the Z1 derivation, the CompletenessDerived prune, the prose tail, the theorem-index coverage gap, the extractor entry, and the full gate sweep."
+      "summary": "All 11 phases marked closed; Phase 11 carries a Reasoned Exclusions table."
     }
   ]
 }

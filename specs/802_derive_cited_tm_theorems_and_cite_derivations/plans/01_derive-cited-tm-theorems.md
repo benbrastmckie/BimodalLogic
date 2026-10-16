@@ -5,7 +5,7 @@
 - **Effort**: 16.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/802_derive_cited_tm_theorems_and_cite_derivations/reports/01_derive-cited-tm-theorems.md
-- **Artifacts**: plans/01_derive-cited-tm-theorems.md (this file)
+- **Artifacts**: plans/01_derive-cited-tm-theorems.md (this file), summaries/01_derive-cited-tm-theorems-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -717,38 +717,38 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 11: Regeneration, the Full Gate Sweep, and the Per-Schema Report [IN PROGRESS]
+### Phase 11: Regeneration, the Full Gate Sweep, and the Per-Schema Report [COMPLETED WITH EXCLUSIONS]
 
 - **Goal:** Every generated artefact is current, the whole repository is green except the one
   pre-existing failure, and item (5)'s per-schema table is reported.
 - **Tasks:**
-  - [ ] Regenerate the citation manifest: `python3 scripts/export-lean-citations.py`. C35 goes
+  - [x] Regenerate the citation manifest: `python3 scripts/export-lean-citations.py`. C35 goes
     red on any docstring edit in a file carrying seeded entries, and this task edits two such
     files (`Metalogic/Independence/ZTimeSharpness.lean`, 4 entries; `ProofSystem/Axioms.lean`,
     1) — regeneration is the remedy, run before the `--check`.
-  - [ ] Regenerate the README inventory blocks:
+  - [x] Regenerate the README inventory blocks:
     `bash scripts/check-module-invariants.sh --emit-inventory`. `FormalSystem/Metalogic/README.md`
     loses its `CompletenessDerived.lean` row entirely and `FormalSystem/Theorems/README.md`'s
     line counts move.
-  - [ ] Re-run `lake exe mk_all --lib FormalSystem` and require "No update necessary".
-  - [ ] Rewrite this task's own live description in `specs/state.json` so it cites
+  - [x] Re-run `lake exe mk_all --lib FormalSystem` and require "No update necessary".
+  - [x] Rewrite this task's own live description in `specs/state.json` so it cites
     `Theorems.DiscreteUnfolding.z1Schema` instead of the three deleted declarations, then
     regenerate `specs/TODO.md` with `bash .claude/scripts/generate-todo.sh`. Without this,
     `check-phantom-citations.sh` reports the task's own record as a phantom citation.
-  - [ ] Run the complementary staleness sweep that no mechanical check covers:
+  - [x] Run the complementary staleness sweep that no mechanical check covers:
     `grep -rn "completeness engine\|recovered through\|recovered at" ` over `FormalSystem/`,
     `Tests/`, `BimodalTools/`, `docs/`, `typst/`, and confirm every surviving hit is about a
     genuine engine use (`StrongCompleteness.lean`, `Metalogic.lean`, `MainResults.lean`'s
     compactness prose, `ax-lean-appendix.typ`) and none is about Z1 or DN.
-  - [ ] Measure `#print axioms` for every new declaration (Phase 3's mirrors, Phase 4's
+  - [x] Measure `#print axioms` for every new declaration (Phase 3's mirrors, Phase 4's
     `z1Schema` and `z1SchemaAt`) and re-measure the six declarations Phase 1 touched.
-  - [ ] Run the complete gate set (below) and record every outcome in a verification-notes table.
-  - [ ] Report the per-schema table item (5) asks for — schema, direct-derivation declaration
+  - [x] Run the complete gate set (below) and record every outcome in a verification-notes table.
+  - [x] Report the per-schema table item (5) asks for — schema, direct-derivation declaration
     name, `#print axioms` output, what was deleted — covering the full target set: TC, TL, NP,
     NF, NA, P1–P6, TF, TK, T4, DF, the discreteness witness, DN, CO, Z1. State explicitly, in the
     report, that the dispatch's "`propext` at most" criterion was replaced (see Non-Goals) and
     why, with the measured profiles standing as the record.
-  - [ ] Report the findings this task deliberately did not absorb: `typst/FormalFoundations.typ`'s
+  - [x] Report the findings this task deliberately did not absorb: `typst/FormalFoundations.typ`'s
     four Z1-as-axiom spots; the three further extractor entries Phase 1 unblocks; and any cheap
     dual Phase 3 identified but did not add.
 - **Timing:** 2 hours
@@ -793,6 +793,14 @@ Phases within the same wave can execute in parallel.
     FormalSystem.Theorems.LinearityDerived` from commit `ba6c0f5dd`. Confirm the failure is that
     same surplus line and record it as a reasoned exclusion with the attribution; if the failure
     is anything else, it is this task's and must be fixed.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `scripts/check-metalogic-cycles.sh` assertion B | Pre-existing and unowned: the surplus upward edge `FormalSystem.MinusLanguage.AxiomDischarge -> FormalSystem.Theorems.LinearityDerived` comes from commit `ba6c0f5dd` and has been reported, unrepaired, by three sibling tasks in this batch. The plan records it in Risks and here as an expected exclusion. | The run reports `1 surplus, 0 shortfall` and names exactly that edge, so this task's own new edge (`DiscreteUnfolding -> TemporalDerived`) is not among the findings. |
+| `scripts/check-module-invariants.sh` C16 | Not this task's: the single new `unusedArguments` finding is `FormalSystem.Semantics.FrameOver.mem_HF_iff_no_forbidden` in `FormalSystem/Semantics/ShiftFiniteType.lean`, a file this task never edited. | `git log -1 -- FormalSystem/Semantics/ShiftFiniteType.lean` returns commit `250a74ae0`; `git log 47411ec92..HEAD --name-only` contains no occurrence of that path. |
+| The complete agent-system gate set (`run-all.sh --only` / `verify-deploy.sh --only-gate`) | The dispatch's Batch Gate Deferral narrows this phase's `full` tier to those entry points, which gate the agent-system extensions. This task modified no file under `agent-system/**` or `.claude/**`, so the scoped narrowing is empty. | `git status`/`git diff --name-only` over this task's commits show no path under `agent-system/` or `.claude/`. The repository's own gate battery was run in full here instead, and is tabulated in the summary. |
 
 ## Lean Challenge Statements
 
@@ -855,21 +863,21 @@ recipe and are not pinned here.
 
 ## Testing & Validation
 
-- [ ] `lake build` (full project) green with zero errors and no new `sorry`.
-- [ ] `lake build BimodalTest` green — in particular `Tests/BimodalTest/Automation/TacticsTest.lean`
+- [x] `lake build` (full project) green with zero errors and no new `sorry`.
+- [x] `lake build BimodalTest` green — in particular `Tests/BimodalTest/Automation/TacticsTest.lean`
       and `EdgeCaseTest.lean`, which exercise the tactic whose gated-lemma list changed.
-- [ ] `#print axioms` recorded for every new declaration and for the six Phase 1 touched; no
+- [x] `#print axioms` recorded for every new declaration and for the six Phase 1 touched; no
       `sorryAx` anywhere.
-- [ ] The Shape 1 `def`-closure probe finds no completeness engine in `z1Schema`'s closure, and a
+- [x] The Shape 1 `def`-closure probe finds no completeness engine in `z1Schema`'s closure, and a
       source reading agrees.
-- [ ] `scripts/readme-lint.sh`, `scripts/check-module-invariants.sh`,
+- [x] `scripts/readme-lint.sh`, `scripts/check-module-invariants.sh`,
       `scripts/check-copyright-headers.sh`, `lake exe checkInitImports`,
       `scripts/check-evidence-probes.sh`, `.claude/scripts/check-task-references.sh` all exit 0.
-- [ ] `python3 scripts/export-lean-citations.py --check` exits 0 after regeneration.
-- [ ] `scripts/check-phantom-citations.sh` reports no finding, including from this task's own
+- [x] `python3 scripts/export-lean-citations.py --check` exits 0 after regeneration.
+- [x] `scripts/check-phantom-citations.sh` reports no finding, including from this task's own
       live description.
-- [ ] Both Typst documents compile.
-- [ ] `scripts/check-metalogic-cycles.sh` fails only on the pre-existing assertion-B surplus line
+- [x] Both Typst documents compile.
+- [x] `scripts/check-metalogic-cycles.sh` fails only on the pre-existing assertion-B surplus line
       from commit `ba6c0f5dd`, recorded as a reasoned exclusion.
 
 ## Artifacts & Outputs

@@ -31,7 +31,7 @@ paper's sixteen named primitives plus the four CPL constructors are exactly thes
 | 3. BX Temporal | 7 | Burgess-Xu Until/Since axioms, future direction (TC, TL, UE, UT are derived) |
 | 4. Interaction | 1 | MF: `□φ → □Gφ` (TF is derived) |
 | 5. Uniformity | 1 | NB (valid on all ordered abelian groups); NP, NF, NA are derived theorems of TM |
-| 6. Prior | 1 | Prior-UZ (discrete well-ordering); Z1 is derived through the ZTime completeness engine |
+| 6. Prior | 1 | Prior-UZ (discrete well-ordering); Z1 is derived from it with US |
 | 8. Density | 1 | `dense_indicator` (`¬U(⊤,⊥)`) (dense-only); DN (`GGφ → Gφ`) is derived from it |
 | 9. Reynolds Dedekind | 2 | `prior_U_gap`, `sep` (RTime-only) |
 | **Total** | **20** | |

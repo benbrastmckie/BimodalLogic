@@ -1,22 +1,89 @@
 {
-  "status": "planned",
-  "dispatch_seq": 17,
+  "status": "implemented",
+  "started_at": "2026-10-16T02:05:00Z",
+  "completed_at": "2026-10-16T04:15:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "modified_files": [
+    "BimodalTools/AxiomNames.lean",
+    "BimodalTools/ProofExtractorMain.lean",
+    "BimodalTools/README.md",
+    "docs/development/MODULE_ORGANIZATION.md",
+    "docs/project-info/FEATURE_REGISTRY.md",
+    "docs/reference/axiom-reference.md",
+    "docs/reference/paper-definitions-of-record.md",
+    "docs/theorem-index.md",
+    "FormalSystem/Automation/Tactics/Search.lean",
+    "FormalSystem.lean",
+    "FormalSystem/MainResults.lean",
+    "FormalSystem/Metalogic/CompletenessDerived.lean",
+    "FormalSystem/Metalogic/Conservativity/Backward.lean",
+    "FormalSystem/Metalogic/Conservativity.lean",
+    "FormalSystem/Metalogic/Conservativity/Plus/AxiomValidity.lean",
+    "FormalSystem/Metalogic/Conservativity/README.md",
+    "FormalSystem/Metalogic/Decidability/Verified/RuleSpec.lean",
+    "FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean",
+    "FormalSystem/Metalogic/Independence/README.md",
+    "FormalSystem/Metalogic/Independence/StaticFrame.lean",
+    "FormalSystem/Metalogic/Independence/ZTimeSharpness.lean",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/MinusLanguage/Axioms.lean",
+    "FormalSystem/ProofSystem/Axioms.lean",
+    "FormalSystem/ProofSystem.lean",
+    "FormalSystem/ProofSystem/README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Semantics/FrameClassValidity.lean",
+    "FormalSystem/Semantics/FrameProperty.lean",
+    "FormalSystem/Theorems/Combinators.lean",
+    "FormalSystem/Theorems/ConnectDerived.lean",
+    "FormalSystem/Theorems/DedekindDerived.lean",
+    "FormalSystem/Theorems/DeductionTheorem.lean",
+    "FormalSystem/Theorems/DiscreteUnfolding.lean",
+    "FormalSystem/Theorems/GeneralizedNecessitation.lean",
+    "FormalSystem/Theorems/Interaction.lean",
+    "FormalSystem/Theorems/LinearityDerived.lean",
+    "FormalSystem/Theorems/ModalDerived.lean",
+    "FormalSystem/Theorems/ModalS4.lean",
+    "FormalSystem/Theorems/ModalS5.lean",
+    "FormalSystem/Theorems/Perpetuity/MonotonicityDuality.lean",
+    "FormalSystem/Theorems/Perpetuity/Principles.lean",
+    "FormalSystem/Theorems/Propositional/Connectives.lean",
+    "FormalSystem/Theorems/Propositional/Core.lean",
+    "FormalSystem/Theorems/Propositional/Reasoning.lean",
+    "FormalSystem/Theorems/README.md",
+    "FormalSystem/Theorems/TemporalDerived.lean",
+    "README.md",
+    "Tests/BimodalTest/Automation/EdgeCaseTest.lean",
+    "Tests/BimodalTest/Automation/TacticsTest.lean",
+    "typst/chapters/03-proof-theory.typ",
+    "typst/generated/status.typ"
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/802_derive_cited_tm_theorems_and_cite_derivations/plans/01_derive-cited-tm-theorems.md",
-      "summary": "11-phase plan: DeductionTheorem computability repair, four named past mirrors, the direct Z1 derivation and its gated companion, the two-stage CompletenessDerived prune, the prose tail, the theorem-index coverage gap, the proof-extractor entry, and the final gate sweep."
+      "type": "summary",
+      "path": "specs/802_derive_cited_tm_theorems_and_cite_derivations/summaries/01_derive-cited-tm-theorems-summary.md",
+      "summary": "Z1 given a direct, computable DerivationTree from UZ and US; the completeness-engine route and its module deleted; every citing surface rewritten."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1792095464_fd54b2_802",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 11,
-    "estimated_hours": 16.5,
-    "dependency_waves": [[1, 2], [3], [4], [5, 10], [6], [7, 8, 9], [11]]
+  "completion_data": {
+    "completion_summary": "Z1 now has a direct, computable DerivationTree from UZ and US at FrameClass.ZTime (Theorems.DiscreteUnfolding.z1Schema, gated z1SchemaAt), together with six named free past mirrors it factors through. FormalSystem/Metalogic/CompletenessDerived.lean is deleted in full with its five term-level consumers redirected and all seven import sites removed, and no surface in the tree still describes Z1 or DN as recovered through a completeness engine. A precursor repair made Metalogic.Core.deductionTheorem computable, which earned Z1 three proof-extractor entries the choice-packaged route could not have.",
+    "roadmap_items": []
   },
-  "memory_candidates": [],
-  "next_steps": "Run /implement 802 to execute the plan"
+  "metadata": {
+    "session_id": "sess_1792095464_fd54b2",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed"
+  }
 }

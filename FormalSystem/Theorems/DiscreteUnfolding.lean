@@ -360,9 +360,9 @@ theorem reflect_time_next_conj_eq (A B : Formula) :
 
 The past mirror of `nextConj`, and it is *free*: `DerivationTree.time_reflection` is a primitive
 rule at every frame class, so applying it to `nextConj` on the reflected arguments and
-normalizing with `reflect_time_next_conj_eq` returns exactly this statement. No past-mirrored
-axiom is introduced. `{fc}`-polymorphic for the same reason `nextConj` is — the functionality of
-the predecessor is already available at `FrameClass.Base`.
+normalizing with `reflect_time_next_conj_eq` returns exactly this statement, introducing no
+past-mirrored axiom. `{fc}`-polymorphic for the same reason `nextConj` is — the functionality
+of the predecessor is already available at `FrameClass.Base`.
 
 Paper: — (the free past mirror of `nextConj`; no paper counterpart)
 -/

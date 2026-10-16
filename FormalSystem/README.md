@@ -100,7 +100,7 @@ exactly the paper's primitive axiom schemata.
 | 3. BX Temporal | 7 | Base | Burgess-Xu Until/Since axioms, future direction (TC, UE, TL, UT are derived) |
 | 4. Interaction | 1 | Base | MF (`□φ → □Gφ`); TF is derived |
 | 5. Uniformity | 1 | Base | NB (valid on all ordered abelian groups); NP, NF, NA are derived |
-| 6. Prior | 1 | ZTime | Prior-UZ for discrete well-ordering; Z1 is derived through the ZTime completeness engine |
+| 6. Prior | 1 | ZTime | Prior-UZ for discrete well-ordering; Z1 is derived from it with US |
 | 8. Density | 1 | Dense | `dense_indicator` (`¬U(⊤,⊥)`); DN (`GGφ → Gφ`) is derived from it |
 | 9. Reynolds RTime | 2 | RTime | `prior_U_gap`, `sep` — definable-gap-freeness for real flow |
 | **Total** | **20** | | |
