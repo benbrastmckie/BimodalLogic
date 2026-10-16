@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 17,
+  "phases_completed": 0,
+  "phases_total": 11,
+  "summary": "Wrote an 11-phase, 16.5-hour plan for task 802. The critical path is a probe-verified DeductionTheorem computability repair (precursor), four named past mirrors, the direct Z1 derivation at FrameClass.ZTime with a lift-derived gated companion, a two-stage prune of Metalogic/CompletenessDerived.lean (redirect five term-level consumers, then delete the module and seven imports), a prose tail across ~26 surfaces, and a final gate sweep. The dispatch's 'propext at most' acceptance criterion is replaced with measured axiom profiles plus a no-engine-in-closure assertion, because research showed three existing direct derivations already fail the original criterion.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/802_derive_cited_tm_theorems_and_cite_derivations/plans/01_derive-cited-tm-theorems.md",
+      "summary": "11 phases across 7 waves, 16.5 hours: computability repair, four past mirrors, the Z1 derivation, the CompletenessDerived prune, the prose tail, the theorem-index coverage gap, the extractor entry, and the full gate sweep."
+    }
+  ]
+}

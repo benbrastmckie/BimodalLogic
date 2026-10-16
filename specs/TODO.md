@@ -122,7 +122,7 @@ next_project_number: 805
 
 ### Paper Alignment
 
-802 [RESEARCHED] — Derive every TM-system theorem the paper cites, cite the...
+802 [PLANNED] — Derive every TM-system theorem the paper cites, cite the...
 
 ### Build Performance
 
@@ -176,11 +176,12 @@ ACCEPTANCE. A measured, reported reduction in this module's elaboration time wit
 ---
 
 ### 802. Derive cited tm theorems and cite derivations
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-alignment
 - **Dependencies**: Task 801
 - **Research**: [802_derive_cited_tm_theorems_and_cite_derivations/reports/01_derive-cited-tm-theorems.md]
+- **Plan**: [802_derive_cited_tm_theorems_and_cite_derivations/plans/01_derive-cited-tm-theorems.md]
 
 **Description**: Derive every TM-system theorem the paper cites, cite the derivations rather than derivability, and prune the superseded derivability results.
 
