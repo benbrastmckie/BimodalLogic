@@ -11,7 +11,7 @@ next_project_number: 808
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,807 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,807,1055,1056 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,761,783 | 298,464,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -94,6 +94,8 @@ next_project_number: 808
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
+1055 [NOT STARTED] — Fix the C16 env\_linter failure that fails...
+1056 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
 
 ### Formula Refactor
 
@@ -128,6 +130,53 @@ next_project_number: 808
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 1056. Realizable type adequacy countdown profile
+- **Effort**: Adequacy alone is the costable first deliverable; the full gate re-run beyond it is not costable in one round
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 806
+
+**Description**: RESEARCH TASK. The adequacy half of the closure-indexed periodicity gate, successor to the countdown-profile round that discharged the cheap half.
+
+Settled on compiled ground, do not re-derive: eventual periodicity of the countdown over the object-closure product is discharged (the seventeenth wired probe, specs/evidence/seam-gluing-ray-product/closure-indexed-periodicity.lean) -- it is an instance of iterate_eventually_periodic on a finite carrier, with Fintype/DecidableEq for subsets of plusSubformulaClosure resolving by inferInstance. The set-valued countdown-profile presentation and its quotient are pinned, and the gate table is rebuilt, in specs/806_set_valued_cell_quotient_index/reports/01_closure-indexed-periodicity-gate.md. On the coprime-cycle fixture the profile survives its round: gate 6 is internalised (prof6_separates_gate6_pair separates gate 6 own pair for every modulus coprime to three, with no parameter to choose), gate 5 is disarmed and exhibited, gate 7 passed in definability form. Probes: closure-profile-gate-rerun.lean (Probe806) and nside-modulus-gate.lean (Probe806N) in the same collection.
+
+What is open, and is this task scope:
+(1) ADEQUACY -- the expensive half the earlier round scoped but did not attempt: a coherence relation that computes REALIZABLE types rather than merely locally coherent ones, with untl/snce fulfilment. The earlier round carries only the LOCAL relation coh6 on one fixture. This is the gate on everything after it.
+(2) The two gates specific to a set-valued presentation that the tuple-shaped gate table has no rows for: NON-CIRCULARITY and STAB SELF-REFERENCE.
+(3) Gate 8 was SIDESTEPPED, not passed; gate 3 is CARRIED; gates 1 and 2 are NOT ADDRESSED (with a compiled qualification -- the refuted tuple n-side coordinates pass gates 1 and 2 and are still blind to the shift the datum has to see, Branch N-VERIFIED); gate 9 is OPEN. A gate probing one coordinate certifies one coordinate only.
+
+A refutation is an acceptable and successful outcome, and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons (plan-compliance.md Statement Fidelity). Do not state a LadderCons without the box/stab clause.
+
+Not in question, do not re-attack: the SET of cells of any regular Z-model is finite and bounded (anchorCells_finite, anchorCells_ncard_le, RaySummary/AnchorLayer.lean). Only the computable INDEX is open. Four tuple-shaped index shapes are already refuted by wired probes in the collection; the tuple-widening line is spent and no further tuple coordinate is to be proposed.
+
+Scope: reports and sorry-free evidence probe files under this task own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. Register any new probe in scripts/check-evidence-probes.sh, following the header convention of the probes already in the collection (what was asked, why no statement exists or what is settled, what the probe does NOT say).
+
+Fixture reuse: the coprime-cycle fixtures in the collection are label-generic; the frame/regularity/history layer ports verbatim.
+
+---
+
+### 1055. C16 unused finite instance shiftfinitetype
+- **Effort**: Small -- a one-binder signature edit under FormalSystem/, gated on a call-site check and a full verified lake build
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 806
+
+**Description**: Fix the C16 env_linter failure that fails check-module-invariants.sh today: FormalSystem.Semantics.FrameOver.mem_HF_iff_no_forbidden at FormalSystem/Semantics/ShiftFiniteType.lean:149 carries an unused [Finite F.WorldState] instance argument, beyond the baseline recorded in scripts/nolints.json. The gate exits 1 on FAIL C16 while every other invariant group passes, including both C1 lake build groups.
+
+Provenance: the file was last touched 2026-10-15 by commit 250a74ae0 under a different task; the task whose gate set surfaced this had an empty diff over FormalSystem/ and forbade the fix by an explicit Non-Goal, so it was escalated rather than repaired in place.
+
+Scope: FormalSystem/Semantics/ShiftFiniteType.lean, and scripts/nolints.json only if the baseline genuinely needs an entry rather than the signature needing the edit. Dropping [Finite F.WorldState] is a change to a public signature, so the deliverable is a verified full lake build plus check-module-invariants.sh exit 0 -- confirm every call site of mem_HF_iff_no_forbidden still elaborates (lean_references before editing), since an instance binder other code relies on for unification cannot simply be deleted. If the binder turns out to be load-bearing at a call site, record that and add the nolints entry instead, stating why.
+
+DO NOT run lake exe runLinter --update: it would grandfather this regression into the baseline wholesale instead of resolving it. Prefer the signature edit over a nolints entry unless the call-site evidence rules it out.
+
+Deliverable: check-module-invariants.sh exit 0, full lake build exit 0, sorry count unchanged at 0.
+
+---
 
 ### 807. Backward determinism forcing check
 - **Status**: [NOT STARTED]
