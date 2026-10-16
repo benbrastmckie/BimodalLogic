@@ -161,7 +161,7 @@ GUARDRAILS: no sorry/axiom/native_decide/vacuous definition; the check is about 
 - **Dependencies**: None
 - **Parent**: Task 761
 - **Research**: [806_set_valued_cell_quotient_index/reports/01_closure-indexed-periodicity-gate.md]
-- **Plan**: [806_set_valued_cell_quotient_index/plans/01_closure-profile-gate-rerun.md]
+- **Plan**: [806_set_valued_cell_quotient_index/plans/03_closure-profile-gate-nside-rerun.md]
 
 **Description**: RESEARCH TASK, research-first successor to the refuted cell-index line. Parent: task 761 (ladder realization theorem), which stays [BLOCKED] on the corrected record. Scope: reports and sorry-free evidence probe files under this task's own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation is an acceptable and successful outcome, and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons (plan-compliance.md Statement Fidelity).
 

@@ -3,31 +3,25 @@
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/806_set_valued_cell_quotient_index/plans/01_closure-profile-gate-rerun.md",
-      "summary": "Six-phase, 9-hour plan: promote the closure-indexed periodicity prototype to the seventeenth wired probe, then land an eighteenth probe (eleven pinned theorems, compiled sorry-bodied at plan time) that defines the LOCAL coherence relation on the coprime-cycle fixture and shows the countdown profile separates gate 6's pair with no parameter; adequacy and obligations (b)-(d) stay open and are named as non-goals."
+      "path": "specs/806_set_valued_cell_quotient_index/plans/03_closure-profile-gate-nside-rerun.md",
+      "summary": "Revised plan: carries Phases 1-4 and the eleven-signature Challenge contract forward unchanged, adds Phases 4.1/4.2 (n-side index port + gate 9 collision half as a named decision gate, both branches leaving gate 1 NOT ADDRESSED), and repairs Phase 5's verdict paragraph to account for all of gates 1-9"
     }
   ],
-  "next_steps": "Run /implement 806 to execute the plan",
+  "next_steps": "Run /implement 806 to execute the revised plan (12 hours, 8 phases, waves [1,2,4.1] -> [3,4.2] -> [4] -> [5] -> [6])",
   "metadata": {
-    "session_id": "sess_1792168255_1e953c_806",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 9,
-    "dependency_waves": [[1, 2], [3], [4], [5], [6]]
-  },
-  "memory_candidates": [
-    {
-      "content": "Closure-indexed evidence probes over PlusFormula: a closure type must be built as a Finset.filter of plusSubformulaClosure with the subtype proof Finset.mem_powerset.mpr (Finset.filter_subset _ _); `decide` on Finset.powerset membership over an 18-element closure hits maxRecDepth. `decide` DOES close concrete per-type coherence facts (Hintikka conditions plus strict-until links evaluated over the closure) in under a second, and the box/snce/stab-free fragment check over the closure. Anything quantifying over all closure types (2^18 per object state) must be proved by hand through an unfolding lemma (`simp [coh, locCoh, untlLink, Bool.and_eq_true, and_assoc]`) and per-formula instantiation with membership by `decide`. Fintype/DecidableEq for Q x {T // T ∈ cl.powerset} resolve by inferInstance.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/806_set_valued_cell_quotient_index/plans/01_closure-profile-gate-rerun.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["closure type", "decide", "powerset", "evidence probe", "Hintikka", "plusSubformulaClosure"]
-    }
-  ],
-  "modified_files": [
-    "specs/806_set_valued_cell_quotient_index/plans/01_closure-profile-gate-rerun.md"
-  ],
-  "dispatch_seq": 2
+    "session_id": "sess_1792171341_115ce1",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 8,
+    "estimated_hours": 12,
+    "reports_integrated": ["01_closure-indexed-periodicity-gate.md"],
+    "plan_version": 3,
+    "dependency_waves": [[1, 2, 4.1], [3, 4.2], [4], [5], [6]],
+    "verification": {
+      "validate_artifact_strict": "PASS (0 warnings)",
+      "challenge_block_compile": "lake env lean exit 0, 13 'declaration uses sorry' warnings, no errors",
+      "original_eleven_signatures": "byte-identical to plans/01_closure-profile-gate-rerun.md"
+    },
+    "revision_notes": "The audit driving this revision is a session-scratchpad read-only analysis, not a repository artifact; its COMPILED/VERIFIED-tier rows enter the plan as evidence and its BELIEVED-tier rows only as hypotheses under test."
+  }
 }

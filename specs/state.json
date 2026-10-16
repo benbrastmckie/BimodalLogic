@@ -20,9 +20,11 @@
         "scripts/check-evidence-probes.sh",
         "specs/806_set_valued_cell_quotient_index/prototype/closure-indexed-periodicity.lean",
         "specs/806_set_valued_cell_quotient_index/summaries/01_closure-profile-gate-rerun-summary.md",
+        "specs/806_set_valued_cell_quotient_index/summaries/03_closure-profile-gate-nside-rerun-summary.md",
         "specs/evidence/seam-gluing-ray-product/",
         "specs/evidence/seam-gluing-ray-product/closure-indexed-periodicity.lean",
         "specs/evidence/seam-gluing-ray-product/closure-profile-gate-rerun.lean",
+        "specs/evidence/seam-gluing-ray-product/nside-modulus-gate.lean",
         "typst/generated/status.typ"
       ],
       "created": "2026-10-16T13:30:44Z",
@@ -35,12 +37,11 @@
           "summary": "Step (1) survives: closure-indexed eventual periodicity of the countdown over the object-closure product is discharged on compiled ground, its hard half relocated to adequacy; the set-valued countdown-profile presentation and its quotient are pinned, and the gate table is rebuilt with two new gates (non-circularity, stab self-reference)."
         },
         {
-          "path": "specs/806_set_valued_cell_quotient_index/plans/01_closure-profile-gate-rerun.md",
-          "type": "plan",
-          "summary": "Six-phase plan: promote prototype to wired probe; eighteenth probe re-running gates 5-7 on the real fixture with eleven pinned theorems; full gate and summary."
+          "path": "specs/806_set_valued_cell_quotient_index/plans/03_closure-profile-gate-nside-rerun.md",
+          "type": "plan"
         }
       ],
-      "next_artifact_number": 3
+      "next_artifact_number": 4
     },
     {
       "project_number": 804,
