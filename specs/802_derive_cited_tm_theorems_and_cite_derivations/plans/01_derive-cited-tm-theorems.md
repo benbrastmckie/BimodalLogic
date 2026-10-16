@@ -274,36 +274,36 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: The Four Past Mirrors [IN PROGRESS]
+### Phase 3: The Four Past Mirrors [COMPLETED]
 
 - **Goal:** Name, rather than inline, the helper derivations the Z1 route factors through: the
   four missing past duals, each built by the `prevAllPast` recipe, each a declaration in its own
   right.
 - **Tasks:**
-  - [ ] `prevIndicatorAt {fc} (h : FrameClass.ZTime ≤ fc) : ⊢[fc] Formula.prev Formula.top` and
+  - [x] `prevIndicatorAt {fc} (h : FrameClass.ZTime ≤ fc) : ⊢[fc] Formula.prev Formula.top` and
     `prevIndicator : ⊢[FrameClass.ZTime] Formula.prev Formula.top`, mirroring `succIndicatorAt` /
     `succIndicator` exactly — including the `le_rfl` instantiation convention and the docstring
     note on why the gate is what makes the `{fc}`-generalization safe.
-  - [ ] `prevConj {fc} (A B : Formula)`, the dual of `nextConj`, with its
+  - [x] `prevConj {fc} (A B : Formula)`, the dual of `nextConj`, with its
     `reflect_time_next_conj_eq` normalization lemma proved by one `simp only` over
     `Formula.next`, `Formula.prev`, `Formula.and`, `Formula.neg`, `Formula.reflectTime` and
     `Formula.reflect_time_involution`, following `reflect_time_next_all_future_eq` verbatim as
     the recipe.
-  - [ ] `unfoldBackwardSince (e g : Formula)`, the `snce` dual of `unfoldForward`, with its own
+  - [x] `unfoldBackwardSince (e g : Formula)`, the `snce` dual of `unfoldForward`, with its own
     `reflect_time_unfold_forward_eq` normalization lemma. Note that the mirror of
     `unfoldBackward` (the `Base`-level converse) is *not* needed by the Z1 route; add it only if
     Phase 4 turns out to need it, and otherwise report it as an available cheap dual.
-  - [ ] `snceBotFalse {fc} (X : Formula) : ⊢[fc] (Formula.snce X Formula.bot).imp Formula.bot`,
+  - [x] `snceBotFalse {fc} (X : Formula) : ⊢[fc] (Formula.snce X Formula.bot).imp Formula.bot`,
     the dual of `untlBotFalse`, with its normalization lemma.
-  - [ ] Placement: `prevIndicatorAt`/`prevIndicator`, `prevConj` and `unfoldBackwardSince` go in
+  - [x] Placement: `prevIndicatorAt`/`prevIndicator`, `prevConj` and `unfoldBackwardSince` go in
     `FormalSystem/Theorems/DiscreteUnfolding.lean` beside their primaries; `snceBotFalse` goes in
     `FormalSystem/Theorems/Propositional/Core.lean` beside `untlBotFalse`. Confirm both against
     `FormalSystem/Theorems/README.md`'s "Where a derived schema lives" rule (lowest module whose
     imports supply the proof) before writing, and follow the rule if it says otherwise.
-  - [ ] Give every new declaration a docstring naming its primary, stating that the mirror is
+  - [x] Give every new declaration a docstring naming its primary, stating that the mirror is
     free because `DerivationTree.time_reflection` is a primitive rule at every frame class, and
     recording that no past-mirrored axiom is introduced — the `prevAllPast` docstring is the model.
-  - [ ] Measure `#print axioms` and `Lean.isNoncomputable` for each new declaration and record
+  - [x] Measure `#print axioms` and `Lean.isNoncomputable` for each new declaration and record
     the values for Phase 11's table.
 - **Timing:** 2 hours
 - **Depends on:** 1

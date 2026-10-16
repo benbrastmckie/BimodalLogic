@@ -31,8 +31,12 @@ are already derivable at `FrameClass.Base`, and `nextConj` is stated `{fc}`-poly
 - `succIndicatorAt` — `⊢[fc] X ⊤` at every `fc` with `FrameClass.ZTime ≤ fc`, from
   `Axiom.serial_future` + `Axiom.prior_UZ` + guard monotonicity. No new axiom.
 - `succIndicator` — `⊢[Discrete] X ⊤`, the `le_rfl` instantiation of `succIndicatorAt`.
+- `prevIndicatorAt` / `prevIndicator` — `⊢[fc] Y ⊤` and its `le_rfl` instantiation, the free
+  past mirrors of the pair above.
 - `unfoldForward` / `unfoldBackward` — the `X (g ∧ U(e,g))` shape.
+- `unfoldBackwardSince` — the `snce` mirror of `unfoldForward`, `S(g,e) → Y e ∨ Y (g ∧ S(g,e))`.
 - `nextConj` — `{fc}`-polymorphic: `X A ∧ X B → X (A ∧ B)`, the functionality of the successor.
+- `prevConj` — its free past mirror, `Y A ∧ Y B → Y (A ∧ B)`.
 - `unfoldTableForward` / `unfoldTableBackward` — the `X g ∧ X U(e,g)` shape.
 - `noBlockingTriple` — the schema does real work: at `Discrete` a world holding `U(p,q)` while
   omitting both `U(p,r)` and `U(q,s)` is derivably impossible.
@@ -41,6 +45,14 @@ are already derivable at `FrameClass.Base`, and `nextConj` is stated `{fc}`-poly
 - `dfSchema` — the paper's **DF** schema `(Hφ ∧ φ ∧ F⊤) → F(Hφ)`, consumed by
   `FormalSystem.MinusLanguage.AxiomDischarge` for the `Discrete` row of the backward
   conservativity bridge. Derived syntactically; no completeness dependency.
+
+## The past mirrors
+
+`prevIndicatorAt`, `prevIndicator`, `unfoldBackwardSince` and `prevConj` are all built by the
+`prevAllPast` recipe: `DerivationTree.time_reflection` is a primitive rule at every frame class,
+so each mirror is its primary applied to reflected arguments, normalized by a single
+`reflect_time_*_eq` lemma proved by one `simp only`. None of them introduces a past-mirrored
+axiom, and each stays at its primary's frame class for the reason that pins the primary.
 
 ## Why `FrameClass.ZTime` is essential here
 
@@ -114,6 +126,32 @@ The `le_rfl` instantiation of `succIndicatorAt`; the proof lives there and is no
 here. Kept as a declaration in its own right because every consumer below, and every consumer
 outside this file, works at `FrameClass.ZTime` itself. -/
 def succIndicator : ⊢[FrameClass.ZTime] Formula.next Formula.top := succIndicatorAt le_rfl
+
+/-- The `reflectTime` image of `succIndicatorAt`'s statement, computed once so that
+`prevIndicatorAt` is a `▸`-rewrite rather than a `simp` inside a term. -/
+theorem reflect_time_next_top_eq :
+    Formula.reflectTime (Formula.next Formula.top) = Formula.prev Formula.top := by
+  simp only [Formula.next, Formula.prev, Formula.top, Formula.reflectTime]
+
+/-- **`⊢[fc] Y ⊤` at every `fc` with `FrameClass.ZTime ≤ fc`.**
+
+The past mirror of `succIndicatorAt`, and it is *free*: `DerivationTree.time_reflection` is a
+primitive rule at every frame class, so applying it to `succIndicatorAt h` and normalizing with
+`reflect_time_next_top_eq` returns exactly this statement. No past-mirrored axiom is introduced.
+
+The guard `h : FrameClass.ZTime ≤ fc` is inherited from `succIndicatorAt` and is what makes the
+`{fc}`-generalization safe: a guard-free version would derive `S(⊥,⊤)` at `FrameClass.Dense`,
+where `Axiom.dense_indicator` refutes the future form and time reflection refutes this one. -/
+def prevIndicatorAt {fc : FrameClass} (h : FrameClass.ZTime ≤ fc) :
+    ⊢[fc] Formula.prev Formula.top :=
+  reflect_time_next_top_eq ▸ DerivationTree.time_reflection _ (succIndicatorAt h)
+
+/-- **`⊢[Discrete] Y ⊤`.**
+
+The `le_rfl` instantiation of `prevIndicatorAt`, following `succIndicator`'s convention: the
+proof lives there and is not duplicated here, and the pinned form is kept as a declaration in
+its own right because its consumers work at `FrameClass.ZTime` itself. -/
+def prevIndicator : ⊢[FrameClass.ZTime] Formula.prev Formula.top := prevIndicatorAt le_rfl
 
 /-! ## Result 2: the Z-exact one-step unfolding schema
 
@@ -216,6 +254,41 @@ def unfoldBackward (e g : Formula) :
     exact DerivationTree.modus_ponens _ _ _
       (DerivationTree.axiom _ _ (Axiom.absorb_until g e) (FrameClass.base_le _)) a2
 
+/-- The `reflectTime` image of `unfoldForward`'s statement, computed once so that
+`unfoldBackwardSince` is a `▸`-rewrite rather than a `simp` inside a term. -/
+theorem reflect_time_unfold_forward_eq (e g : Formula) :
+    Formula.reflectTime
+      ((Formula.untl g.reflectTime e.reflectTime).imp
+        ((Formula.next e.reflectTime).or
+          (Formula.next (Formula.and g.reflectTime (Formula.untl g.reflectTime e.reflectTime)))))
+      = (Formula.snce g e).imp
+          ((Formula.prev e).or (Formula.prev (Formula.and g (Formula.snce g e)))) := by
+  simp only [Formula.next, Formula.prev, Formula.or, Formula.and, Formula.neg,
+    Formula.reflectTime, Formula.reflect_time_involution]
+
+/-- **The `snce` mirror of `unfoldForward`**: one backward step out of a since-formula,
+
+```
+S(g, e)   ->   Y e  \/  Y (g /\ S(g, e))
+```
+
+The past dual of `unfoldForward`, and it is *free*: `DerivationTree.time_reflection` is a
+primitive rule at every frame class, so applying it to `unfoldForward` on the reflected
+arguments and normalizing with `reflect_time_unfold_forward_eq` returns exactly this statement.
+No past-mirrored axiom is introduced.
+
+Stated at `FrameClass.ZTime` because `unfoldForward` is: the forward half needs
+`succIndicator`, which is a theorem only from `ZTime` upwards.
+
+The `Base`-level converse — the mirror of `unfoldBackward` — is not needed by any consumer in
+this tree and is deliberately not added; it would be the same two-line recipe. -/
+def unfoldBackwardSince (e g : Formula) :
+    ⊢[FrameClass.ZTime]
+      (Formula.snce g e).imp
+        ((Formula.prev e).or (Formula.prev (Formula.and g (Formula.snce g e)))) :=
+  reflect_time_unfold_forward_eq e g ▸
+    DerivationTree.time_reflection _ (unfoldForward e.reflectTime g.reflectTime)
+
 /-! ### `X` distributes over conjunction (Base)
 
 Needed to move between the schema's `X (g ∧ U(e,g))` and handoff §4.4's table shape
@@ -256,6 +329,28 @@ def nextConj {fc : FrameClass} (A B : Formula) :
   exact orElim (E1.or E2 :: Γ) E1 E2 T
     (DerivationTree.assumption (E1.or E2 :: Γ) (E1.or E2) (by simp))
     (keep _) (kill _ _ (rceImp A Formula.bot))
+
+/-- The `reflectTime` image of `nextConj`'s statement, computed once so that `prevConj` is a
+`▸`-rewrite rather than a `simp` inside a term. -/
+theorem reflect_time_next_conj_eq (A B : Formula) :
+    Formula.reflectTime
+      (((Formula.next A.reflectTime).and (Formula.next B.reflectTime)).imp
+        (Formula.next (Formula.and A.reflectTime B.reflectTime)))
+      = ((Formula.prev A).and (Formula.prev B)).imp (Formula.prev (Formula.and A B)) := by
+  simp only [Formula.next, Formula.prev, Formula.and, Formula.neg, Formula.reflectTime,
+    Formula.reflect_time_involution]
+
+/-- `⊢ (YA ∧ YB) → Y(A ∧ B)`: the previous-operator distributes over conjunction.
+
+The past mirror of `nextConj`, and it is *free*: `DerivationTree.time_reflection` is a primitive
+rule at every frame class, so applying it to `nextConj` on the reflected arguments and
+normalizing with `reflect_time_next_conj_eq` returns exactly this statement. No past-mirrored
+axiom is introduced. `{fc}`-polymorphic for the same reason `nextConj` is — the functionality of
+the predecessor is already available at `FrameClass.Base`. -/
+def prevConj {fc : FrameClass} (A B : Formula) :
+    ⊢[fc] ((Formula.prev A).and (Formula.prev B)).imp (Formula.prev (Formula.and A B)) :=
+  reflect_time_next_conj_eq A B ▸
+    DerivationTree.time_reflection _ (nextConj A.reflectTime B.reflectTime)
 
 /-! ### The unfolding in handoff §4.4's table shape
 

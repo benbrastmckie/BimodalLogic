@@ -759,4 +759,27 @@ def untlBotFalse {fc : FrameClass} (X : Formula) :
     wk _ _ (DerivationTree.temporal_necessitation _ (efqAxiom Formula.bot))
   exact DerivationTree.modus_ponens _ _ _ h4 h3
 
+/-- The `reflectTime` image of `untlBotFalse`'s statement, computed once so that `snceBotFalse`
+is a `▸`-rewrite rather than a `simp` inside a term. -/
+theorem reflect_time_untl_bot_false_eq (X : Formula) :
+    Formula.reflectTime ((Formula.untl X.reflectTime Formula.bot).imp Formula.bot)
+      = (Formula.snce X Formula.bot).imp Formula.bot := by
+  simp only [Formula.reflectTime, Formula.reflect_time_involution]
+
+/-- `⊢ S(X, ⊥) → ⊥`: a since-formula with a refutable event is itself refutable.
+
+The past mirror of `untlBotFalse`, and it is *free*: `DerivationTree.time_reflection` is a
+primitive rule at every frame class, so applying it to `untlBotFalse X.reflectTime` and
+normalizing with `reflect_time_untl_bot_false_eq` returns exactly this statement. No
+past-mirrored axiom is introduced.
+
+Sited here rather than in a later module because `FormalSystem/Theorems/README.md`'s "Where a
+derived schema lives" rule puts a derivation at the lowest module whose imports supply its
+proof, and both ingredients — `untlBotFalse` and `DerivationTree.time_reflection` — are
+available at this point in the chain. -/
+def snceBotFalse {fc : FrameClass} (X : Formula) :
+    ⊢[fc] (Formula.snce X Formula.bot).imp Formula.bot :=
+  reflect_time_untl_bot_false_eq X ▸
+    DerivationTree.time_reflection _ (untlBotFalse X.reflectTime)
+
 end FormalSystem.Theorems.Propositional
