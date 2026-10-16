@@ -455,7 +455,7 @@ gate-1 row text that the compiled material supports.
 
 ---
 
-### Phase 5: Header, Gate Table Verdict, and Registration of the Eighteenth and Nineteenth Probes [IN PROGRESS]
+### Phase 5: Header, Gate Table Verdict, and Registration of the Eighteenth and Nineteenth Probes [COMPLETED]
 
 **Goal**: Write the eighteenth probe's header in the collection's convention and wire both of this
 round's new probes into the guard, so the verdict of dispatch items (3) and (4) and of the n-side
@@ -493,17 +493,17 @@ hand-off is a machine-checked, tracked, CI-guarded record.
 
 ---
 
-### Phase 6: Run the Full Gate, Write the Summary, Return [NOT STARTED]
+### Phase 6: Run the Full Gate, Write the Summary, Return [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Discharge the complete gate set over the three new probes and the registration edit, write
 the implementation summary, and return `implemented` with the parent 761 untouched and still
 `[BLOCKED]`.
 
 **Tasks**:
-- [ ] Run every command under **Verification** below, checking each exit status.
-- [ ] Write `specs/806_set_valued_cell_quotient_index/summaries/03_closure-profile-gate-nside-rerun-summary.md` per summary-format.md: the three probe paths; the per-gate verdict table for gates 1-9 (exhibited / carried / sidestepped / not addressed / open) copied from the eighteenth and nineteenth probes' headers; which branch of Phase 4.1's decision gate was taken and what that licensed Phase 5 to write on gate 1's row; the explicit statement that step (1)'s adequacy half and dispatch item (5) (obligations b, c, d) are NOT started and belong to a successor record; the prototype's move and the report's now-historical path citation; the carried-figure notes — the sixteenth probe's gate outcomes were read from its header, not re-run, and the n-side material's gate-1/gate-2 standing was re-established by port rather than inherited; and the audit's status as a session-local read-only analysis, naming the compiled probes a reader can re-run instead.
-- [ ] Record issues and wins in the task's issue log as they arose (per the dispatch's Issue Log section), or attest explicitly in the summary that there were none beyond those already logged.
-- [ ] Commit the summary; return.
+- [x] Run every command under **Verification** below, checking each exit status.
+- [x] Write `specs/806_set_valued_cell_quotient_index/summaries/03_closure-profile-gate-nside-rerun-summary.md` per summary-format.md: the three probe paths; the per-gate verdict table for gates 1-9 (exhibited / carried / sidestepped / not addressed / open) copied from the eighteenth and nineteenth probes' headers; which branch of Phase 4.1's decision gate was taken and what that licensed Phase 5 to write on gate 1's row; the explicit statement that step (1)'s adequacy half and dispatch item (5) (obligations b, c, d) are NOT started and belong to a successor record; the prototype's move and the report's now-historical path citation; the carried-figure notes — the sixteenth probe's gate outcomes were read from its header, not re-run, and the n-side material's gate-1/gate-2 standing was re-established by port rather than inherited; and the audit's status as a session-local read-only analysis, naming the compiled probes a reader can re-run instead.
+- [x] Record issues and wins in the task's issue log as they arose (per the dispatch's Issue Log section), or attest explicitly in the summary that there were none beyond those already logged.
+- [x] Commit the summary; return.
 
 **Timing**: 1 hour
 
@@ -522,8 +522,8 @@ output):
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean specs/evidence/seam-gluing-ray-product/closure-indexed-periodicity.lean` exits 0 (seven `#print axioms` lines, each `[propext, Classical.choice, Quot.sound]`).
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean specs/evidence/seam-gluing-ray-product/closure-profile-gate-rerun.lean` exits 0 (eleven `#print axioms` lines, each `[propext, Classical.choice, Quot.sound]` at most; zero warnings).
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean specs/evidence/seam-gluing-ray-product/nside-modulus-gate.lean` exits 0 (four `#print axioms` lines, each `[propext, Classical.choice, Quot.sound]` at most; zero warnings).
-- `bash scripts/check-evidence-probes.sh` exits 0 with `PASS  all 36 wired probe(s) compile` (35 under Branch N-UNVERIFIED).
-- `bash scripts/check-module-invariants.sh` exits 0 (run detached with a bounded waiter per `context/patterns/bounded-build-waiter.md`; C9 in particular — zero task-number citations under `FormalSystem/`, `docs/`, `scripts/` — the new `check-evidence-probes.sh` rows must cite probe filenames and theorem names, never "task 806").
+- `bash scripts/check-evidence-probes.sh` exits 0 with `PASS  all 36 wired probe(s) compile` (35 under Branch N-UNVERIFIED). *(deviation: altered — `WIRED` holds 36 entries as predicted; the printed total also counts the one `WIRED_REPO` entry, so the observed line is `PASS  all 37 wired probe(s) compile`.)*
+- `bash scripts/check-module-invariants.sh` exits 0 (run detached with a bounded waiter per `context/patterns/bounded-build-waiter.md`; C9 in particular — zero task-number citations under `FormalSystem/`, `docs/`, `scripts/` — the new `check-evidence-probes.sh` rows must cite probe filenames and theorem names, never "task 806"). *(deviation: NOT MET, and excluded — exit 1 on `FAIL  C16  env_linter batch reports new finding(s) beyond scripts/nolints.json's grandfathered baseline`, at `FormalSystem/Semantics/ShiftFiniteType.lean:149` (`FrameOver.mem_HF_iff_no_forbidden`, unused `[Finite F.WorldState]`). Inherited, not caused here: that file was last modified 2026-10-15 by commit `250a74ae0` under a different task and is absent from this task's diff, whose `FormalSystem/ Tests/ docs/ specs/ROADMAP.md` slice is empty. C9 itself PASSES, as does every other group including both `C1 lake build` groups. The repair is an edit under `FormalSystem/`, forbidden by this plan's own Non-Goals, so it is escalated as a named follow-up instead of applied. See `#### Reasoned Exclusions`.)*
 - `bash .claude/scripts/check-task-references.sh --quiet` exits 0.
 - Full `lake build` via `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, detached (`Bash(run_in_background: true)`) per `context/project/lean4/operations/long-builds.md`, exits 0 — expected a no-op success, since no library `.lean` file changes, but mandatory before the return.
 - Lean agent Final Verification Stage over the three probe files: `bash .claude/scripts/lean-sorry-census.sh` count 0; vacuous-definition grep (`def .* := True`, `:= trivial`) count 0; `grep -c "^axiom "` count 0 in all three probes; `grep -c native_decide` count 0 in all three probes.
@@ -531,8 +531,16 @@ output):
 - `grep -rn "ladderRealized\|LadderCons" specs/evidence/seam-gluing-ray-product/closure-indexed-periodicity.lean specs/evidence/seam-gluing-ray-product/closure-profile-gate-rerun.lean specs/evidence/seam-gluing-ray-product/nside-modulus-gate.lean` matches only header lines under "What this does NOT say".
 - `grep -nE "cellAt|tpOf|WorldHistory" specs/evidence/seam-gluing-ray-product/nside-modulus-gate.lean` reports 0 hits outside comments — gate 9's refuting half stayed out of scope.
 - `bash .claude/scripts/verify-deploy.sh` exits 0.
-- `bash .claude/scripts/lean-challenge-snapshot.sh --check 806 .` reports no drift on the thirteen Goals (advisory; a drift finding is investigated, never silenced by editing the Challenge block).
+- `bash .claude/scripts/lean-challenge-snapshot.sh --check 806 .` reports no drift on the thirteen Goals (advisory; a drift finding is investigated, never silenced by editing the Challenge block). *(deviation: altered — exit 71, `no manifest found at specs/806_set_valued_cell_quotient_index/challenge/manifest.json`: the snapshot was never taken for this task, so there is nothing pinned to compare against. The tool's own header forbids using its verdict to set `verification_passed` false or to block, and a missing manifest is weaker evidence still than a drift finding. Statement fidelity was established directly instead: all thirteen `theorem` signatures were diffed against the plan's `## Lean Challenge Statements` block and all thirteen match character-for-character. The Challenge block was NOT edited.)*
 - `git status --short` shows no stray modified files outside this plan's `Files to modify` set; the `prototype/` directory no longer exists.
+
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `bash scripts/check-module-invariants.sh` exits 0 | NOT MET and not repairable within this plan. The script exits 1 on a single group, `FAIL  C16  env_linter batch reports new finding(s) beyond scripts/nolints.json's grandfathered baseline`, raised at `FormalSystem/Semantics/ShiftFiniteType.lean:149` against `FormalSystem.Semantics.FrameOver.mem_HF_iff_no_forbidden` for one unused argument, `[Finite F.WorldState]`. The finding is INHERITED: this task modified no file under `FormalSystem/`, and the repair is an edit under `FormalSystem/`, which this plan forbids by an explicit Non-Goal ("Any edit under `FormalSystem/`, `Tests/`, `docs/`, or the RaySummary README"). Escalated as a named follow-up in the summary rather than applied, and rather than silenced with `lake exe runLinter --update`, which would grandfather a genuine regression along with it. | `git log -1 -- FormalSystem/Semantics/ShiftFiniteType.lean` reports `250a74ae0 2026-10-15`, a different task's phase-10 commit. `git diff --stat 53cf15508..HEAD -- FormalSystem/ Tests/ docs/ specs/ROADMAP.md` is EMPTY. `git diff --name-only 53cf15508..HEAD \| grep -c ShiftFiniteType` reports 0. Every other invariant group PASSES, including `C1 lake build exits 0`, `C1 lake build BimodalTest exits 0`, `C9`, `C15`, and `C20` tiers 1 and 2. |
+| `lean-challenge-snapshot.sh --check 806 .` reports no drift | NOT RUNNABLE: exit 71, `no manifest found at specs/806_set_valued_cell_quotient_index/challenge/manifest.json`. No snapshot was taken for this task, so nothing is pinned to compare against. The tool's own header states its verdict is ADVISORY ONLY and MUST NOT set `verification_passed` false or block completion. Statement fidelity was established directly instead, and the Challenge block was not edited. | All thirteen `theorem` signatures in `closure-profile-gate-rerun.lean` and `nside-modulus-gate.lean` diffed against the plan's `## Lean Challenge Statements` block: thirteen matches, zero differences. |
 
 
 ## Lean Challenge Statements
@@ -705,16 +713,16 @@ end Probe806N
 
 ## Testing & Validation
 
-- [ ] All three probes compile sorry-free under the guarded `lake env lean`, with no `native_decide`, no `axiom`, and every `#print axioms` line `[propext, Classical.choice, Quot.sound]` at most.
-- [ ] `bash scripts/check-evidence-probes.sh` reports `PASS  all 36 wired probe(s) compile` (35 under Branch N-UNVERIFIED, with the nineteenth probe committed but unregistered); every probe file is git-tracked.
-- [ ] The thirteen Goal declarations match the Lean Challenge Statements block exactly (`lean-challenge-snapshot.sh --check 806 .`, advisory).
-- [ ] `coh6_cycle_witness` is proved (non-vacuity) BEFORE `coh6_no_a_d_a` lands, and `nside_pair_ne` BEFORE `nside_collides` (git log order of the sub-step commits).
-- [ ] The gate-7 mechanical check: zero non-comment hits for `WorldHistory|tpOf|cellAt|PlusTruthAt|IsSlicedStepPath` in `closure-profile-gate-rerun.lean`, and the same check passes on `nside-modulus-gate.lean`.
-- [ ] `prof6_separates_gate6_pair` carries no threshold/modulus/clip-bound hypothesis.
-- [ ] Phase 4.1's branch is recorded explicitly in the summary, and gate 1's row reads `NOT ADDRESSED` whichever branch was taken.
-- [ ] Nothing under `FormalSystem/`, `Tests/`, `docs/` or `specs/ROADMAP.md` changed; no `ladderRealized`/`LadderCons` declaration anywhere; `prototype/` directory gone.
-- [ ] `check-module-invariants.sh`, `check-task-references.sh --quiet`, full `lake build`, and `verify-deploy.sh` all exit 0.
-- [ ] The eighteenth probe's header marks gates 1 and 2 NOT ADDRESSED, gate 3 CARRIED, gate 8 SIDESTEPPED, gate 9 OPEN, adequacy OPEN, and its verdict paragraph accounts for all nine gates.
+- [x] All three probes compile sorry-free under the guarded `lake env lean`, with no `native_decide`, no `axiom`, and every `#print axioms` line `[propext, Classical.choice, Quot.sound]` at most.
+- [x] `bash scripts/check-evidence-probes.sh` reports `PASS  all 36 wired probe(s) compile` (35 under Branch N-UNVERIFIED, with the nineteenth probe committed but unregistered); every probe file is git-tracked. *(deviation: altered — `WIRED` holds 36; the printed total also counts the one `WIRED_REPO` entry, so the observed line is `PASS  all 37 wired probe(s) compile`. Exit 0; every probe file git-tracked.)*
+- [x] The thirteen Goal declarations match the Lean Challenge Statements block exactly (`lean-challenge-snapshot.sh --check 806 .`, advisory). *(deviation: altered — no snapshot manifest exists for this task (advisory tool, exit 71), so fidelity was established by a direct signature diff instead: all thirteen match.)*
+- [x] `coh6_cycle_witness` is proved (non-vacuity) BEFORE `coh6_no_a_d_a` lands, and `nside_pair_ne` BEFORE `nside_collides` (git log order of the sub-step commits).
+- [x] The gate-7 mechanical check: zero non-comment hits for `WorldHistory|tpOf|cellAt|PlusTruthAt|IsSlicedStepPath` in `closure-profile-gate-rerun.lean`, and the same check passes on `nside-modulus-gate.lean`.
+- [x] `prof6_separates_gate6_pair` carries no threshold/modulus/clip-bound hypothesis.
+- [x] Phase 4.1's branch is recorded explicitly in the summary, and gate 1's row reads `NOT ADDRESSED` whichever branch was taken.
+- [x] Nothing under `FormalSystem/`, `Tests/`, `docs/` or `specs/ROADMAP.md` changed; no `ladderRealized`/`LadderCons` declaration anywhere; `prototype/` directory gone.
+- [x] `check-module-invariants.sh`, `check-task-references.sh --quiet`, full `lake build`, and `verify-deploy.sh` all exit 0. *(deviation: NOT MET for `check-module-invariants.sh` only — exit 1 on the inherited `FAIL C16` env_linter finding at `FormalSystem/Semantics/ShiftFiniteType.lean:149`, outside this task's diff and outside its permitted edit scope. `check-task-references.sh --quiet`, full `lake build`, and `verify-deploy.sh` all exit 0.)*
+- [x] The eighteenth probe's header marks gates 1 and 2 NOT ADDRESSED, gate 3 CARRIED, gate 8 SIDESTEPPED, gate 9 OPEN, adequacy OPEN, and its verdict paragraph accounts for all nine gates.
 
 ## Artifacts & Outputs
 
