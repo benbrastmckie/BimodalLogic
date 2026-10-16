@@ -346,7 +346,7 @@ histories, and non-vacuity.
 
 ---
 
-### Phase 4: The Countdown Profile Separates Gate 6's Pair and Is Not Period 1 [NOT STARTED]
+### Phase 4: The Countdown Profile Separates Gate 6's Pair and Is Not Period 1 [IN PROGRESS]
 
 **Goal**: Define the countdown profile on the fixture and prove the four profile Goals plus the
 ported object contrast: `prof6_fibre_a_of_mem`, `prof6_fibre_a_witness`,
@@ -424,17 +424,17 @@ by Phases 4.2 and 5, and the two branches are named so that neither can be reach
 
 ---
 
-### Phase 4.2: Header and Verdict of the Nineteenth Probe [NOT STARTED]
+### Phase 4.2: Header and Verdict of the Nineteenth Probe [COMPLETED]
 
 **Goal**: Write the nineteenth probe's header in the collection's convention, so that what Phase 4.1
 established and what it deliberately did not are a tracked record, and hand Phase 5 the exact
 gate-1 row text that the compiled material supports.
 
 **Tasks**:
-- [ ] Replace the placeholder header with the convention: a capitalised verdict paragraph ("THE REFUTED TUPLE'S n-SIDE COORDINATES PASS GATES 1 AND 2 AND ARE BLIND TO THE n-SIDE MODULUS SHIFT: the gap coordinate separates gate 1's pair and the countdown residue separates gate 2's, both ported and compiled; but `(q, c, n)` and `(q, c, n + (P+1))` collide in the whole index at EVERY `(T, P, B)` and every countdown, so passing gates 1 and 2 does not make this shape adequate as the next-deadline datum; gate 9's refuting half -- a formula giving the collided pair different cells -- is NOT ATTEMPTED, so gate 9 is OPEN, neither passed nor refuted"); `## What was asked`; `## What is settled` (the port, `nside_pair_ne`, `nside_collides`); `## What this does NOT say` — at minimum: this is NOT obligation (c) and nothing here is coupled to `Drift`; this is NOT part of the countdown profile and adds no coordinate to it, nor identifies the two notations (the eighteenth probe's datum is the SET); no cell is computed, mentioned or claimed; gate 9 is open, and an open gate is not a passed one; gate 1 remains NOT ADDRESSED by the eighteenth probe's datum and nothing here changes that; the shape gated here belongs to a REFUTED candidate and is gated as a candidate for a datum, not revived as an index. Then the `Compile:` line.
-- [ ] Write the gate-1 row text for Phase 5 into the header's own "what this does NOT say", in the exact words Phase 5 will carry across, so the two records cannot drift.
-- [ ] Re-run Phase 4.1's cell-level grep on the finished file (the header must not introduce the forbidden identifiers outside its negative mentions).
-- [ ] Commit (explicit file list: the probe).
+- [x] Replace the placeholder header with the convention: a capitalised verdict paragraph ("THE REFUTED TUPLE'S n-SIDE COORDINATES PASS GATES 1 AND 2 AND ARE BLIND TO THE n-SIDE MODULUS SHIFT: the gap coordinate separates gate 1's pair and the countdown residue separates gate 2's, both ported and compiled; but `(q, c, n)` and `(q, c, n + (P+1))` collide in the whole index at EVERY `(T, P, B)` and every countdown, so passing gates 1 and 2 does not make this shape adequate as the next-deadline datum; gate 9's refuting half -- a formula giving the collided pair different cells -- is NOT ATTEMPTED, so gate 9 is OPEN, neither passed nor refuted"); `## What was asked`; `## What is settled` (the port, `nside_pair_ne`, `nside_collides`); `## What this does NOT say` — at minimum: this is NOT obligation (c) and nothing here is coupled to `Drift`; this is NOT part of the countdown profile and adds no coordinate to it, nor identifies the two notations (the eighteenth probe's datum is the SET); no cell is computed, mentioned or claimed; gate 9 is open, and an open gate is not a passed one; gate 1 remains NOT ADDRESSED by the eighteenth probe's datum and nothing here changes that; the shape gated here belongs to a REFUTED candidate and is gated as a candidate for a datum, not revived as an index. Then the `Compile:` line.
+- [x] Write the gate-1 row text for Phase 5 into the header's own "what this does NOT say", in the exact words Phase 5 will carry across, so the two records cannot drift.
+- [x] Re-run Phase 4.1's cell-level grep on the finished file (the header must not introduce the forbidden identifiers outside its negative mentions).
+- [x] Commit (explicit file list: the probe).
 
 **Timing**: 1 hour
 
@@ -450,7 +450,7 @@ gate-1 row text that the compiled material supports.
 **Verification**:
 - Guarded `lake env lean` of the probe exits 0 after the header edit; `grep -c sorry` reports 0.
 - The header contains the literal phrases "NOT ATTEMPTED", "OPEN", "NOT ADDRESSED", and "NOT obligation (c)"; it contains no sentence asserting that gate 1, gate 2 or gate 9 is passed.
-- The header's backticked identifiers all exist in the file (`grep` each against the file's declarations) and every Goal is named exactly once.
+- The header's backticked identifiers all exist in the file (`grep` each against the file's declarations) and every Goal is named exactly once. *(deviation: altered — every backticked identifier naming a declaration of this probe exists; the remaining backticked names (`Drift`, `Count`, `ladderRealized`, `LadderCons`, `box`, `stab`, and the metavariables `T`/`c`) are named precisely as things NOT in this file. `nside_pair_ne` is named once; `nside_collides` is named TWICE — once in the Goal inventory and once inside the verbatim gate-1 row block Phase 5 carries across — because keeping that block byte-identical between the two records was judged to matter more than the single-mention count.)*
 - Under Branch N-UNVERIFIED this phase instead closes `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose `Evidence` column cites Phase 4.1's failing measurement.
 
 ---

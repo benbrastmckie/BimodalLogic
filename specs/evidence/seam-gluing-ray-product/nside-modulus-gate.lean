@@ -1,4 +1,78 @@
-/- NINETEENTH PROBE -- header written in Phase 4.2 -/
+/-
+THE REFUTED TUPLE'S n-SIDE COORDINATES PASS GATES 1 AND 2 AND ARE BLIND TO THE n-SIDE MODULUS
+SHIFT: the gap coordinate separates gate 1's pair and the countdown residue separates gate 2's,
+both ported and compiled; but `(q, c, n)` and `(q, c, n + (P+1))` collide in the whole index at
+EVERY `(T, P, B)` and every countdown, so passing gates 1 and 2 does not make this shape adequate
+as the next-deadline datum; gate 9's refuting half -- a formula giving the collided pair different
+cells -- is NOT ATTEMPTED, so gate 9 is OPEN, neither passed nor refuted.
+
+## What was asked
+
+A read-only audit of the cell-index graveyard handed over a candidate shape for the datum the
+next-deadline side of the index needs, on the strength of a COMPILED observation: the refuted
+six-coordinate tuple's n-side coordinates -- `(min n T, n % (P+1), clip (n-c))` -- separate the
+pairs that the first two falsification gates are about.  The audit's further claim, that those
+coordinates are therefore the natural shape of that datum, was BELIEVED-tier in its own ledger
+and not compiled anywhere.  Re-establish the compiled half here by port rather than by citation,
+and then TEST the believed half instead of assuming it, by raising a ninth gate against the same
+coordinates.
+
+## What is settled
+
+  1. **The port.**  `ladderIndexJnt` (the refuted tuple's index body), the two-state object layer
+     (`Qp`, `pendP`, `stepP`, `st`, `idl`), `consec_mod_ne`, `gate1_gap_separates` (`2 ≤ B`) and
+     `gate2_residue_separates` (`1 ≤ P`) are carried over from
+     `specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean` with their
+     statements and hypotheses unchanged.  Nothing was added, dropped or specialised, and nothing
+     here is inherited by citation: both gate theorems are re-proved in this file.
+  2. **Non-vacuity, before the negative result.**  `nside_pair_ne`: the collided pair `xN`/`yN`
+     is a pair of DISTINCT ladder states.  A collision between equal states would say nothing at
+     all, which is this probe's characteristic failure mode, so it is ruled out first.
+  3. **Gate 9's collision half.**  `nside_collides`: at every `(T, P, B)` and every countdown
+     `c`, the whole six-coordinate index agrees on `xN T B c` and `yN T P B c`, which differ
+     exactly by the shift `n ↦ n + (P+1)`.  The threshold coordinate agrees because the next
+     deadline is beyond `T` on both sides; the residue coordinate agrees because the shift is by
+     the modulus itself; the clipped gap agrees because both gaps saturate `2B`.  So passing
+     gates 1 and 2 does not make this shape adequate.
+
+## What this does NOT say
+
+  - **This is NOT obligation (c), and nothing here is coupled to `Drift`.**  Obligation (c) is
+     the next deadline's coupling through `Drift`; what this probe does is GATE a candidate SHAPE
+     for the datum that obligation owes.  No clause of `Drift` is unfolded here, no `Count`
+     clause is read, and no admissible-ladder run appears.
+  - **This is NOT part of the countdown profile, and it adds no coordinate to it.**  The
+     eighteenth probe's datum
+     (`specs/evidence/seam-gluing-ray-product/closure-profile-gate-rerun.lean`) is a SET of
+     product states; what is gated here is a tuple of counters.  No theorem here
+     identifies the two notations, relates the profile's threshold or period to any coordinate,
+     or proposes a seventh coordinate.  The shape gated here belongs to a REFUTED candidate and
+     is gated as a candidate for a datum, not revived as an index.
+  - **No cell is computed, mentioned or claimed.**  No world, no history, no model and no cell
+     map appears in any declaration of this file.
+  - **Gate 9 is OPEN, and an open gate is not a passed one.**  Its refuting half -- a formula on
+     the coprime-cycle object giving the collided pair different cells -- is NOT ATTEMPTED here,
+     because it needs the sixteenth probe's whole model layer, which a probe may not import and
+     which this file does not restate.  Gate 9 is therefore neither passed nor refuted.
+  - **Gate 1 remains NOT ADDRESSED by the eighteenth probe's datum and nothing here changes
+     that.**  The gate-1 row of that probe's gate table reads, in these words and no others:
+
+        `NOT ADDRESSED` by this datum, which reads the countdown only, and the
+        next-deadline-side datum is obligation (c) -- plus the compiled qualification that a
+        candidate datum of the refuted tuple's n-side shape does separate gate 1's pair
+        (ported `gate1_gap_separates`, `2 ≤ B`) but is itself blind to the n-side modulus
+        shift at every parameter triple (`nside_collides`), so the qualification narrows what
+        remains to be found and passes nothing.
+
+  - **The standing lesson still binds**: a gate probing one coordinate certifies one coordinate
+     only, and passing an earlier gate says nothing about a later one.  Nothing here is a
+     factorization lemma, a cell index, or any part of one; no `ladderRealized` and no
+     `LadderCons` is stated, in those names or any others, with or without the `box`/`stab`
+     clause.
+
+Compile:
+`lake env lean specs/evidence/seam-gluing-ray-product/nside-modulus-gate.lean`
+-/
 import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 
