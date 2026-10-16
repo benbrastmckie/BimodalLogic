@@ -1,7 +1,7 @@
 # Implementation Plan: Task #808
 
 - **Task**: 808 - Fix the C16 env_linter failure: unused `[Finite F.WorldState]` on `FrameOver.mem_HF_iff_no_forbidden`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/808_c16_unused_finite_instance_shiftfinitetype/reports/01_c16-unused-finite-instance.md
@@ -108,36 +108,36 @@ Also in scope, carrying no new identifier:
 Phases within the same wave can execute in parallel. This plan is fully sequential: each phase's
 input is the previous phase's green state.
 
-### Phase 1: Drop the Unused Instance Binder [NOT STARTED]
+### Phase 1: Drop the Unused Instance Binder [COMPLETED]
 
 **Goal**: `mem_HF_iff_no_forbidden` is stated without `[Finite F.WorldState]`, the module and its one
 direct importer elaborate, and `lake exe runLinter FormalSystem` reports zero errors.
 
 **Tasks**:
-- [ ] Re-confirm the finding is still exactly one argument before editing anything:
+- [x] Re-confirm the finding is still exactly one argument before editing anything:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1500 -- exe runLinter FormalSystem`,
       detached. Expect exit 1 and the single
       `mem_HF_iff_no_forbidden 1 unused argument: argument 3: [Finite F.WorldState]` line. If a
       second finding has appeared since research, record it and stop at this phase rather than
       widening scope.
-- [ ] Re-confirm there is still no call site: `mcp__lean-lsp__lean_references` at the declaration's
+- [x] Re-confirm there is still no call site: `mcp__lean-lsp__lean_references` at the declaration's
       name position in `FormalSystem/Semantics/ShiftFiniteType.lean` (expect `total: 1`), plus
       `grep -rn "mem_HF_iff_no_forbidden" --include=*.lean .` (expect prose plus the one
       `#print axioms` command, no term-level application).
-- [ ] Edit the `theorem mem_HF_iff_no_forbidden` signature line: delete `[Finite F.WorldState]`,
+- [x] Edit the `theorem mem_HF_iff_no_forbidden` signature line: delete `[Finite F.WorldState]`,
       leaving `theorem mem_HF_iff_no_forbidden (F : FrameOver intOrder) [F.IsRegular]`. The
       `(f : ℤ → F.WorldState)` line and the four-line proof body are untouched. The resulting
       signature must match `## Lean Challenge Statements` below character for character.
-- [ ] Scoped build:
+- [x] Scoped build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 900 -- build FormalSystem.Semantics.ShiftFiniteType`,
       detached. Expect exit 0.
-- [ ] Direct-dependent build:
+- [x] Direct-dependent build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 900 -- build FormalSystem.Semantics.ShiftFiniteTypeDictionary`,
       detached. Expect exit 0. This is the one module that imports the edited one.
-- [ ] Linter:
+- [x] Linter:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1500 -- exe runLinter FormalSystem`,
-      detached. Expect exit 0 and `-- Found 0 errors`.
-- [ ] Commit the green sub-step per `rules/git-workflow.md`'s Commit-Per-Green-Substep Mandate,
+      detached. Expect exit 0 and `-- Found 0 errors`. *(deviation: altered — the green run prints `-- Linting passed for FormalSystem.` rather than a `-- Found 0 errors` line; equivalent zero-error verdict)*
+- [x] Commit the green sub-step per `rules/git-workflow.md`'s Commit-Per-Green-Substep Mandate,
       staging only `FormalSystem/Semantics/ShiftFiniteType.lean` through
       `.claude/scripts/git-commit-scoped.sh`.
 
@@ -178,7 +178,7 @@ remainder and the test library are Phase 3's business.
 
 ---
 
-### Phase 2: Restate the Docstring Paragraph [NOT STARTED]
+### Phase 2: Restate the Docstring Paragraph [IN PROGRESS]
 
 **Goal**: The declaration's docstring describes the module's current design — the identification is
 stated at any carrier, and the finite-carrier hypothesis sits on `finite_forbiddenBlocks` — without

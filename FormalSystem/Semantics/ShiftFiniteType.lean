@@ -178,7 +178,7 @@ the forbidden-block presentation, that one carries it choice-free.
 Paper: — (the specification is cut material; see
 `docs/reference/paper-definitions-of-record.md`, "The finite-case effectiveness footnote")
 -/
-theorem mem_HF_iff_no_forbidden (F : FrameOver intOrder) [F.IsRegular] [Finite F.WorldState]
+theorem mem_HF_iff_no_forbidden (F : FrameOver intOrder) [F.IsRegular]
     (f : ℤ → F.WorldState) :
     (∃ τ : WorldHistory F, τ.path = f) ↔ ∀ n : ℤ, ¬ Forbidden F (f n) (f (n + 1)) := by
   rw [F.mem_HF_iff_adjacent_int f]
