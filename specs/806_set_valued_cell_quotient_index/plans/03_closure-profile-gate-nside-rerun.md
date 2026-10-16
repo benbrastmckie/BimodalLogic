@@ -1,7 +1,7 @@
 # Implementation Plan: Task #806
 
 - **Task**: 806 - Set-valued cell over a quotient index: promote the closure-indexed periodicity prototype to a wired probe, and re-run the gate table against the countdown profile on the coprime-cycle fixture
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours
 - **Dependencies**: 761 (parent, stays `[BLOCKED]`; this task does not touch it); 805 (predecessor, refuted; its fixture and its index body are ported, not imported)
 - **Research Inputs**: specs/806_set_valued_cell_quotient_index/reports/01_closure-indexed-periodicity-gate.md; plus a read-only graveyard-and-alternatives audit held in this session's scratchpad (NOT a repository artifact and not committed — its COMPILED/VERIFIED-tier rows enter this plan as evidence, its BELIEVED-tier rows only as hypotheses under test; see `### Research Integration`)
@@ -240,7 +240,7 @@ decision rows out of probe order.
 
 ---
 
-### Phase 1: Promote the Periodicity Prototype to the Seventeenth Wired Probe [NOT STARTED]
+### Phase 1: Promote the Periodicity Prototype to the Seventeenth Wired Probe [IN PROGRESS]
 
 **Goal**: Move `prototype/closure-indexed-periodicity.lean` into the evidence collection, rewrite its
 header from "PROTOTYPE TEST (not a wired probe)" to the collection's probe convention, register it in

@@ -1125,6 +1125,34 @@ EVIDENCE="specs/evidence"
 #                                                           | `[propext, Quot.sound]` on the arithmetic and depth
 #                                                           | theorems, `[propext, Classical.choice, Quot.sound]` on
 #                                                           | the cell theorems.
+# seam-gluing-ray-product/closure-indexed-periodicity       | CLOSURE-INDEXED EVENTUAL PERIODICITY (the first of the
+#                                                           | four standing proof obligations, promoted by the
+#                                                           | sixteenth probe's gate 6 from a proof step into a
+#                                                           | NECESSARY condition on the index's own parameter): the
+#                                                           | cheap half of that obligation, generically in the object
+#                                                           | and the formula. Seven theorems:
+#                                                           | `iterate_eventually_periodic`,
+#                                                           | `prodReachN_eventually_periodic`,
+#                                                           | `prodPreN_eventually_periodic`, `prodReach_fst_subset`,
+#                                                           | `strict_object_period_one`,
+#                                                           | `strict_product_period_three`,
+#                                                           | `strict_product_not_period_one`. The decision it holds in
+#                                                           | place: a modulus must cover the period of the
+#                                                           | OBJECT-CLOSURE PRODUCT, not the object's graph: the two
+#                                                           | periods are independent (`strict_object_period_one`,
+#                                                           | `strict_product_period_three`,
+#                                                           | `strict_product_not_period_one`);
+#                                                           | the closure-indexed carrier is finite and both countdown
+#                                                           | operators are eventually periodic,
+#                                                           | `prodPreN_eventually_periodic`. What it withholds: no
+#                                                           | coherence relation is constructed (the product step
+#                                                           | relation is a PARAMETER); no modulus is computed or
+#                                                           | claimed computable; no adequacy of any product
+#                                                           | construction with respect to the truth definition -- the
+#                                                           | expensive half of the obligation stays OPEN; no cell
+#                                                           | index, no factorization lemma and no part of one; no
+#                                                           | library declaration. Axioms `[propext, Classical.choice,
+#                                                           | Quot.sound]` on all seven.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1159,6 +1187,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-cell-index-obstructions"
   "seam-gluing-ray-product/ladder-residue-index-refutation"
   "seam-gluing-ray-product/ladder-joint-index-refutation"
+  "seam-gluing-ray-product/closure-indexed-periodicity"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

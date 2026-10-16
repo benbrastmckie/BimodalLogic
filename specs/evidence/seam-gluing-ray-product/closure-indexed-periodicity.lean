@@ -1,15 +1,29 @@
 /-
-PROTOTYPE TEST (not a wired probe): the CLOSURE-INDEXED replacement for the letter-indexed
-eventual-periodicity fact, and a witness that the replacement is STRICTLY stronger.
+A MODULUS MUST COVER THE PERIOD OF THE OBJECT-CLOSURE PRODUCT, NOT THE PERIOD OF THE OBJECT'S
+GRAPH: the two periods are INDEPENDENT -- an object whose full-graph reach set is constant from
+step 4 (period 1) carries a product whose minimal period is 3 -- and the closure-indexed carrier
+on which the strengthened condition is stated is FINITE, so both countdown operators over it are
+eventually periodic. That is the whole of the CHEAP half of the first standing obligation; the
+expensive half, the ADEQUACY of any product construction with respect to the truth definition,
+is untouched and OPEN, and nothing here is a coherence relation, a modulus, a cell index, or any
+part of one.
 
-## What this exhibits
+## What was asked
 
-The sixteenth probe (`specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean`)
-refuted the six-coordinate index at rule-derived parameters by exhibiting a sub-object a formula
-carves out by forbidding a PATTERN rather than a letter, and left standing a strictly stronger
-necessary condition: a modulus must cover the period of every sub-object the formula's CLOSURE
-carves out, not merely the letter-definable ones.  Three things are needed before that condition
-can be used, and this file supplies exactly them, generically in the object and the formula:
+The sixteenth probe
+(`specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean`) refuted the
+six-coordinate index at rule-derived parameters by exhibiting a sub-object a formula carves out
+by forbidding a PATTERN rather than a letter, and left standing a strictly stronger necessary
+condition: a modulus must cover the period of every sub-object the formula's CLOSURE carves out,
+not merely the letter-definable ones.  That condition promoted the first of the four standing
+proof obligations -- eventual periodicity of the realizable types in the countdown over the
+product of the object with the closure -- from a proof step into a necessary condition on the
+index's own parameter, which is why it is attacked first and on its own.  A letter-restricted
+variant of `reachN_eventually_periodic` is NOT sufficient: the restriction must be
+closure-indexed, not letter-indexed.  Supply exactly the generic facts the strengthened
+condition needs before it can be used, generically in the object and the formula.
+
+## What is settled
 
   1. `iterate_eventually_periodic` -- iteration of an endofunction of a finite type is eventually
      periodic (ported from `specs/archive/773_ladder_cell_index_factorization/prototype/
@@ -23,10 +37,10 @@ can be used, and this file supplies exactly them, generically in the object and 
   3. The replacement is a REFINEMENT and the refinement is STRICT.  `prodReach_fst_subset` says
      the object states the product can reach in `k` steps are among those the object alone can
      reach in `k` steps, for every product step relation lying over the object's; and
-     `strict_object_period_one`/`strict_product_period_three` exhibit an object whose full-graph
-     reach set is constant from step `3` (period `1`) while a product over it has minimal period
-     `3` -- gate 6's separation in miniature, with the context component standing in for the
-     closure component that tracks the forbidden pattern.
+     `strict_object_period_one`/`strict_product_period_three`/`strict_product_not_period_one`
+     exhibit an object whose full-graph reach set is constant from step `4` (period `1`) while a
+     product over it has minimal period `3` -- gate 6's separation in miniature, with the context
+     component standing in for the closure component that tracks the forbidden pattern.
 
 ## What this does NOT say
 
@@ -40,7 +54,9 @@ names or any others, and nothing here is a weakened substitute for any of them. 
     fixpoint equation appears, and no theorem relates any set computed here to `tpOf`.  What is
     established is that WHATEVER that relation turns out to be, its reach and pre operators are
     eventually periodic, because the carrier it lives on is finite.  The adequacy of a product
-    construction with respect to the truth definition is untouched and open.
+    construction with respect to the truth definition is untouched and open.  The eighteenth
+    probe, `specs/evidence/seam-gluing-ray-product/closure-profile-gate-rerun.lean`, constructs
+    the LOCAL coherence relation on one fixture and leaves adequacy open there too.
   - **No modulus is computed, and no modulus is claimed computable.**  `iterate_eventually_periodic`
     is an existence statement proved by pigeonhole; it exhibits a threshold and a positive period
     and bounds neither.  Every quantity named is a count.
@@ -53,7 +69,7 @@ names or any others, and nothing here is a weakened substitute for any of them. 
     `box`/`stab` letters through `box_mem_tpOf_iff` and `stab_mem_tpOf_iff`.
 
 Compile:
-`lake env lean specs/806_set_valued_cell_quotient_index/prototype/closure-indexed-periodicity.lean`
+`lake env lean specs/evidence/seam-gluing-ray-product/closure-indexed-periodicity.lean`
 -/
 import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 
