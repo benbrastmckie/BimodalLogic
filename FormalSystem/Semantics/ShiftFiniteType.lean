@@ -65,8 +65,8 @@ the measurements they are, and pinned by guard blocks in
 ## *Saturation* needs no separate work here
 
 For a finite carrier, *Saturation* is already `TaskFrame.saturation_of_finite`, so the
-finite-carrier hypothesis below buys the finite-type half and nothing else has to be
-re-discharged for it.
+finite-carrier hypothesis on `finite_forbiddenBlocks` below buys the finite-type half and
+nothing else has to be re-discharged for it.
 
 ## Where the same graph appears elsewhere
 
@@ -156,8 +156,9 @@ shift on the alphabet `W` presented by the finite set `forbiddenBlocks F`: world
 alphabet symbols, the unit-step task relation supplies the edges, and the possible worlds are the
 bi-infinite paths through the resulting labelled graph.
 
-The identification itself holds at *any* carrier; `[Finite W]` is carried here only so the
-statement reads as the specification does, and it is the finiteness theorem above that uses it.
+The identification is stated at any carrier: nothing in it needs `W` finite. The finite-carrier
+hypothesis sits on `finite_forbiddenBlocks` above, which is where the specification's "when `W`
+is finite" clause is discharged — read the two together for the full specification sentence.
 
 **Measured `[propext, Classical.choice, Quot.sound]`, and unavoidably so.** The substantive
 content routes through `mem_HF_iff_adjacent_int`, deliberately not through

@@ -178,14 +178,14 @@ remainder and the test library are Phase 3's business.
 
 ---
 
-### Phase 2: Restate the Docstring Paragraph [IN PROGRESS]
+### Phase 2: Restate the Docstring Paragraph [COMPLETED]
 
 **Goal**: The declaration's docstring describes the module's current design — the identification is
 stated at any carrier, and the finite-carrier hypothesis sits on `finite_forbiddenBlocks` — without
 any record-versioning language, and the module still elaborates.
 
 **Tasks**:
-- [ ] Replace the paragraph at `ShiftFiniteType.lean:159-160` ("The identification itself holds at
+- [x] Replace the paragraph at `ShiftFiniteType.lean:159-160` ("The identification itself holds at
       *any* carrier; `[Finite W]` is carried here only so the statement reads as the specification
       does, and it is the finiteness theorem above that uses it."). Drafted candidate, usable
       verbatim or adapted — it states the current design outright and uses none of the forbidden
@@ -196,23 +196,23 @@ any record-versioning language, and the module still elaborates.
       > specification's "when `W` is finite" clause is discharged — read the two together for the
       > full specification sentence.
 
-- [ ] Re-read the module docstring at lines 38-43 ("Folding the second into the first would hide
+- [x] Re-read the module docstring at lines 38-43 ("Folding the second into the first would hide
       which hypothesis buys which half...") and confirm it now reads consistently with the
       signature. Expect no edit; if one is needed, keep it to the same restatement discipline.
-- [ ] Re-read the `## *Saturation* needs no separate work here` section at lines 65-69, whose
+- [x] Re-read the `## *Saturation* needs no separate work here` section at lines 65-69, whose
       sentence is "the finite-carrier hypothesis **below** buys the finite-type half and nothing
       else has to be re-discharged for it". Confirm "below" now points unambiguously at
       `finite_forbiddenBlocks` (the module's only finiteness-hypothesis-bearing declaration).
       Research's instruction is to verify rather than assume: either leave it as is, or name
-      `finite_forbiddenBlocks` explicitly. Record which was done.
-- [ ] Grep the changed hunk for the vocabulary `no-record-versioning-in-deliverables.md` forbids —
+      `finite_forbiddenBlocks` explicitly. Record which was done. *(done: named `finite_forbiddenBlocks` explicitly — verified by `grep -n Finite` that it is the module's only declaration carrying `[Finite F.WorldState]` after Phase 1)*
+- [x] Grep the changed hunk for the vocabulary `no-record-versioning-in-deliverables.md` forbids —
       `no longer`, `previously`, `formerly`, `used to`, `removed`, `withdrawn`, `carried forward` —
       and confirm zero hits inside the diff.
-- [ ] Scoped build:
+- [x] Scoped build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 900 -- build FormalSystem.Semantics.ShiftFiniteType`,
       detached. Expect exit 0. A docstring edit invalidates the module's `.olean`, so this is a real
       re-elaboration, not a no-op.
-- [ ] Commit the green sub-step, staging only
+- [x] Commit the green sub-step, staging only
       `FormalSystem/Semantics/ShiftFiniteType.lean`.
 
 **Timing**: 0.5 hours
@@ -242,13 +242,13 @@ a doc-comment edit in this module has.
 
 ---
 
-### Phase 3: Full Gate Set [NOT STARTED]
+### Phase 3: Full Gate Set [IN PROGRESS]
 
 **Goal**: The repository's complete gate set is green: full `lake build`, test-library build, zero
 linter errors, `scripts/check-module-invariants.sh` exit 0, C3 sorry inventory at zero.
 
 **Tasks**:
-- [ ] Check for a competing unguarded `lake` process before starting, per `rules/lean4.md`, so any
+- [x] Check for a competing unguarded `lake` process before starting, per `rules/lean4.md`, so any
       failure below can be attributed correctly.
 - [ ] Full library build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, detached. Expect
