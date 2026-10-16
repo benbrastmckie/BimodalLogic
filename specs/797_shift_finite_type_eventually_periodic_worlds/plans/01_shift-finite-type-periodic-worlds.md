@@ -544,7 +544,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: The Axiom-Profile Guard Test [NOT STARTED]
+### Phase 9: The Axiom-Profile Guard Test [COMPLETED]
 
 - **Goal:** Every axiom claim this task's docstrings make is pinned in-build, so the claims cannot
   silently rot.

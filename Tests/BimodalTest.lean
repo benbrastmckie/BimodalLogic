@@ -32,6 +32,7 @@ import BimodalTest.Theorems.PerpetuityTest
 import BimodalTest.WalkthroughAxioms
 import BimodalTest.Metalogic.PropDecideTest
 import BimodalTest.Metalogic.PeriodicExtensionAxiomTest
+import BimodalTest.Metalogic.EffectivePeriodicExtensionAxiomTest
 import BimodalTest.Metalogic.KTypeSummaryAxiomTest
 import BimodalTest.Metalogic.KTypeFinEvalTest
 import BimodalTest.Metalogic.Decidability.SaturationTest
