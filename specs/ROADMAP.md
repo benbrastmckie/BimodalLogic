@@ -10,12 +10,22 @@ and `specs/archive/`.*
 that front and preempts everything else for agent time. Stages 2–4 are subordinate and run only
 when Stage 1 is blocked on a user ruling or on open mathematics.
 
+## Run these next
+
+```bash
+/orchestrate 808                  # CI IS RED: the C16 env_linter failure; cheap, blocks nothing, fix first
+/orchestrate 809 --research --lit # THE critical path: adequacy of the realizable-type relation
+```
+
+`808` is a one-binder signature edit; `809` is the single record on the critical path. Everything
+else below is subordinate to `809`.
+
 ## Next batches
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 806 --research --lit # successor cell-presentation gate (set-valued quotient, ruled R1 2026-10-16) — the critical path's one dispatchable record
-/orchestrate 761 --hard --lit    # ladder realization theorem — BLOCKED on 806's verdict
+/orchestrate 809 --research --lit # adequacy: a relation computing REALIZABLE, not locally coherent, types
+/orchestrate 761 --hard --lit    # ladder realization theorem — BLOCKED; see the 805 note in Stage 1
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781,782 --hard  # sliced-certificate internals: full-label evaluation, Phase 5 hoist, Shape D leaf cache
 /orchestrate 807 --research --lit # cheap check: can a closed L⁺ formula force backward determinism on a regular ℤ-frame?
@@ -35,8 +45,9 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 /orchestrate 729                 # purpose-written .title fields so TODO.md stops rendering descriptions
 /orchestrate 257                 # only once the Stage 0 token exists
 # Stage 4 — the long fronts
-/orchestrate 464,465,481 --hard  # the termination measure: gapPotential, the terminus family, the refuted predicate
-/orchestrate 428,429,410,411 --hard      # the tableau spine's middle — stalled behind 428's Stage 0 scope ruling
+/orchestrate 464,465 --hard      # the termination measure: gapPotential, then the terminus family — RUN BEFORE the spine
+/orchestrate 481 --hard          # the refuted predicate; a C9 register entry is a complete outcome
+/orchestrate 428,429,410,411 --hard      # the tableau spine's middle — needs 465 landed and 428's scope ruled
 /orchestrate 430,412,482 --hard --lit    # the spine's terminus: semantic lift, Track B finish, proof extraction
 /orchestrate 502,497 --research --lit    # the literature gate on the STSA axiom set, then the G-operator gap
 /orchestrate 498,499,500 --hard  # the representation's two sides, Cm(F) and Uf(A), and their reconciliation
@@ -50,11 +61,6 @@ work-cycle budget is per task, per invocation (5 default, 13 under `--hard`), so
 line until every member reports terminal**. Shared file scope serializes a batch rather than
 breaking it; a task with no declared `file_scope` is invisible to the overlap gate — the blindness
 751 remediates. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
-**Coverage appendix (uncovered tasks)**:
-```
-/orchestrate 127,128,709,730,741,752,767,768
-/orchestrate 769,770,785,805,808,809
-```
 
 ## Not batched, and why
 
@@ -77,6 +83,11 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 - **784** is the tracker for the freeze and is itself `[BLOCKED]` on the migration. It owns the only
   part this repository can do: once the records have landed in the source store, verify them there,
   delete them from `specs/state.json`, regenerate `specs/TODO.md`, and drop this section.
+- **805** is substantively spent — its refutation is the record 806 was filed against — but it sits
+  at `[RESEARCHED]`, so it is still a live dependency edge on 761. See the 761 bullet in Stage 1.
+
+Every other open task appears in exactly one batch line above, except the two in **Run these
+next**, which repeat for priority.
 
 ## Stage 0 — User rulings (no agent may transition these)
 
@@ -90,6 +101,9 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
       periodic summary step of the run-layer programme, which returned a negative verdict; any
       surviving statement must name its restricted fragment and say why `not_finite_width_fmp` does
       not refute it
+- [ ] Close **805** or rule it open. It blocks 761 by a dependency edge while carrying no remaining
+      work; its gate 6 is the finding 806 was built on
+- [ ] Give **785** a disposition — frozen like the seven, or re-sited
 
 **713** is held by ruling (2026-10-03): its ARGUED CTL⋆ 2EXPTIME lower bound is a citable sanity
 ceiling with no consumer. **734** (route R2, mosaics) is `[PARTIAL]` by ruling and is **not** a
@@ -106,33 +120,42 @@ theorem** (`exists_hitPresented`, every regular `ℤ`-model, `sizeBound φ k` a 
 for `box`/`stab`-free `φ` at one seam; **(W)** landed its anchor layer, its run-layer frame scheme
 and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remain open:
 
-- **806 — the successor cell-presentation gate.** `ladderRealized` cannot be STATED: its
-  `[Fintype Q]` obligation ran through `truncate B`, which is defined nowhere in `FormalSystem/`,
-  and the only reading of it is refuted. What is missing is a computable `LadderState Q pend → I`
-  through which `cellAt` factors. **Four index shapes are now refuted on compiled ground**:
-  counter-pair clipping (`ladder-cell-refutation.lean`), clipped/gap-carrying
-  (`ladder-cell-index-obstructions.lean`), the six-coordinate residue-carrying candidate at its
-  object-exhibited parameters (`ladder-residue-index-refutation.lean`), and — **805, settled
-  2026-10-16** — the same six-coordinate body at parameters derived from the object AND the
-  formula jointly (`ladder-joint-index-refutation.lean`): gates 1–3 pass, gates 4 and 5 are
-  disarmed (a diagonal that cannot close; a rule-admissible modulus), and a sixth mechanism
-  refutes — a formula can carve out a sub-object no set of atoms carves out, by forbidding a
-  *pattern* instead of a letter. Every index shape the governing guidance anticipated is now
-  spent; what survives is a strictly stronger necessary condition (the modulus must cover the
-  period of every sub-object the formula's *closure*, not merely its letters, can carve out), not
-  a positive lemma. **Ruled 2026-10-16 (R1):** the successor is a different cell *presentation* —
-  a set-valued per-state datum over a quotient, not a wider tuple — filed as **806**, whose first,
-  costable obligation (promoted by 805's gate 6 from a proof step to a necessary condition) is
-  eventual periodicity of the realizable types in the countdown over the **object-closure
-  product**; before any sufficiency attempt, 806 re-runs the full six-gate falsification against
-  the new presentation. The declined alternative (R2: an index-free, `box`/`stab`-free run-layer
-  half, `slive` retained) stays on record but is not pursued — it would not reach the `box`/`stab`
-  letters Stage 1 needs. The set of cells stays finite (`anchorCells_ncard_le`); only the
-  index/presentation is open.
+- **809 — adequacy of the realizable-type relation.** `ladderRealized` cannot be STATED: its
+  `[Fintype Q]` obligation ran through `truncate B`, which is defined nowhere in `FormalSystem/`.
+  What is missing is a computable `LadderState Q pend → I` through which `cellAt` factors. **Four
+  tuple-shaped index shapes are refuted on compiled ground** — counter-pair clipping
+  (`ladder-cell-refutation.lean`), clipped/gap-carrying (`ladder-cell-index-obstructions.lean`),
+  the six-coordinate residue-carrying candidate at its object-exhibited parameters
+  (`ladder-residue-index-refutation.lean`), and the same body at jointly derived parameters
+  (`ladder-joint-index-refutation.lean`, whose gate 6 refutes via a formula carving out a
+  sub-object no set of atoms carves out, by forbidding a *pattern* instead of a letter). **The
+  tuple-widening line is spent; no seventh coordinate is to be proposed.** The successor
+  presentation — a set-valued per-state datum over a quotient — then **survived its first round**
+  (the nineteenth wired probe; `WIRED` now 36): eventual periodicity of the countdown over the
+  **object-closure product** is discharged (`closure-indexed-periodicity.lean`, an instance of
+  `iterate_eventually_periodic` on a finite carrier), gate 6 is *internalised*
+  (`prof6_separates_gate6_pair` separates gate 6's own pair for every modulus coprime to three,
+  with no parameter to choose), gate 5 is disarmed and exhibited, and gate 7 passed in its
+  definability form — all on the coprime-cycle fixture, in `closure-profile-gate-rerun.lean`
+  (`Probe806`) and `nside-modulus-gate.lean` (`Probe806N`). **What that round did NOT settle, and
+  809 owns:** adequacy — a coherence relation computing *realizable* rather than merely locally
+  coherent types, with untl/snce fulfilment. The round carries only the LOCAL relation `coh6` on
+  one fixture. Adequacy is **the gate on everything after it**. Also open, and 809's scope: the two
+  gates specific to a set-valued presentation that the tuple-shaped table has no rows for
+  (non-circularity, stab self-reference); gate 8 is **SIDESTEPPED, not passed**; gate 3 is
+  **CARRIED**; gates 1 and 2 are **NOT ADDRESSED** (with a compiled qualification — Branch
+  N-VERIFIED: the refuted tuple's n-side coordinates pass gates 1 and 2 and are still blind to the
+  shift the datum has to see); gate 9 is **OPEN**. A gate probing one coordinate certifies one
+  coordinate only. The set of cells stays finite (`anchorCells_ncard_le`); only the
+  index/presentation is open. The declined alternative (R2: an index-free, `box`/`stab`-free
+  run-layer half, `slive` retained) stays on record but is not pursued — it would not reach the
+  `box`/`stab` letters Stage 1 needs.
 - **761 — the ladder realization theorem** (`LadderCons`, `ladderRealized` per cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
-  `[BLOCKED]` on 806; its other dependency edges (760, 775, 805) are on completed or spent work.
-  NOT costable until 806 returns a verdict.
+  `[BLOCKED]`. Its dependency edges on 760, 775 and 806 are discharged; **805 is the one edge still
+  open on the graph**, though it carries no remaining work (Stage 0). Substantively 761 waits on
+  **809's adequacy verdict**, which no edge yet records — add `--depends-on-add 809` if you want the
+  graph to say so. NOT costable until adequacy returns.
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone.
   761 and 763 share the `RaySummary` library set and serialize through the edge between them.
@@ -148,12 +171,16 @@ routes (filtration R4 by `no_finite_carrier_sat`/`not_finite_width_fmp`; transla
 routes back to R1) — is authored in the `RaySummary` README and `docs/theorem-index.md`. Read those
 before proposing a shape.
 
+A refutation is a successful outcome, and is **not** to be followed by a weakened, same-named
+substitute for `ladderRealized` or `LadderCons`; do not state a `LadderCons` without the box/stab
+clause (`stab_mem_tpOf_iff` is per cell).
+
 **Two risks not covered there**, both unrealized:
 
 | Failure mode | Evidence that locates it |
 |---|---|
 | No constructor for infinite-width, finitely branching regular frames | `Rbad`/`Rok` refuted as repair shapes (`b2b-frame-constructor-branching.lean`); the positive halves need TWO-SIDED finite branching; the `Node` thread-unfolding shape (`Limits/NoFiniteWidth.lean:132`) is neither refuted nor built. **Not yet filed** — unlike the row below this is not a one-fixture check; scoping a task needs a reading of `Limits/NoFiniteWidth.lean:132` and the `b2b-frame-constructor-branching.lean` refutation first |
-| A closed L⁺ formula forces backward determinism on a regular `ℤ`-frame — the one route by which a published negative result could reach L⁺ | `stab`'s clause (`PlusLanguage/PlusTruth.lean:93`) fails the backward closure of the historical-necessity tradition (Thomason 1984 §4 Def. 6(2); Caleiro–Viganò–Volpe Def. 2.5 `Wdc`), which is why the corpus's negatives do not apply. If forcing is possible, the know-time-do-not-forget family becomes a reduction target. **Filed as 807** (2026-10-16): one fixture; `Probe719Backward` and `Probe733Mirror` already inhabit the backward factor |
+| A closed L⁺ formula forces backward determinism on a regular `ℤ`-frame — the one route by which a published negative result could reach L⁺ | `stab`'s clause (`PlusLanguage/PlusTruth.lean:93`) fails the backward closure of the historical-necessity tradition (Thomason 1984 §4 Def. 6(2); Caleiro–Viganò–Volpe Def. 2.5 `Wdc`), which is why the corpus's negatives do not apply. If forcing is possible, the know-time-do-not-forget family becomes a reduction target. **Filed as 807**: one fixture; `Probe719Backward` and `Probe733Mirror` already inhabit the backward factor |
 
 The corpus position — why no published negative result reaches TM/L⁺, and why that is not evidence
 of decidability — is recorded in `specs/literature/README.md`.
@@ -169,21 +196,30 @@ on 500 and batches with Stage 4's capstone.
 
 ## Stage 3 — Datasets, examples, documentation, hygiene
 
-Independent of every other stage. 803 and 804 both touch
-`Verified/Termination/SubformulaProperty.lean`, so the pair serializes inside one batch; that module
-is the repository's single largest rebuild cost (1103s measured on a full guarded build) and any
-edit to the syntax or proof-system layer wakes it, so paper-alignment work pays for it repeatedly —
-run the pair early. Re-check 298's line and metadata counts first: a long c7 regeneration was
-observed running and may have completed. Run 744 before any task that hand-edits the
-`RaySummary`/`KTypeSummary` inventory tables (INV fails only on a stale *wrapped* block, so four of
-six counts had drifted while the gate stayed green). 257 shares `data/README.md` with 282.
+Independent of every other stage. **808 is red right now** — `check-module-invariants.sh` exits 1 on
+`FAIL C16`, an unused `[Finite F.WorldState]` on `mem_HF_iff_no_forbidden`
+(`FormalSystem/Semantics/ShiftFiniteType.lean:149`), inherited from a commit under another task and
+beyond `scripts/nolints.json`'s baseline. Prefer the signature edit to a nolints entry, check the
+call sites first, and **do not run `lake exe runLinter --update`**, which would grandfather the
+regression wholesale.
+
+803 and 804 both touch `Verified/Termination/SubformulaProperty.lean`, so the pair serializes inside
+one batch; that module is the repository's single largest rebuild cost (1103s measured on a full
+guarded build) and any edit to the syntax or proof-system layer wakes it, so paper-alignment work
+pays for it repeatedly — run the pair early. Re-check 298's line and metadata counts first: a long
+c7 regeneration was observed running and may have completed. Run 744 before any task that
+hand-edits the `RaySummary`/`KTypeSummary` inventory tables (INV fails only on a stale *wrapped*
+block, so four of six counts had drifted while the gate stayed green). 257 shares `data/README.md`
+with 282.
 
 ## Stage 4 — The long fronts (low priority)
 
 Two chains, both containing open mathematics: the TM tableau spine (464 → 465 → 428 → 429 → 410 →
 411 → 430 → 412 → 482) and the algebraic representation front (502 → 497 → 498/499/500 → 125 → 501).
-**Every algebraic task declares an empty or absent `file_scope`, as do 410, 411 and 412** — scope
-them at plan time before running any wave concurrently.
+**The spine cannot start at 428**: 428 is `[BLOCKED]` on 465, which waits on 464, so run `464,465`
+before the spine's middle line. **411 and 412 declare an empty or absent `file_scope`, as does every
+algebraic task** — scope them at plan time before running any wave concurrently. (410 now declares
+one; it overlaps `typst/generated/status.typ` with other work.)
 
 Three things must not be re-attempted: the unconditional `buildTableau_isSome` is FALSE by
 construction at the engine's `maxBranches := 50000` guard, at any fuel; the whole decidable-branch-gate
@@ -228,7 +264,14 @@ HTML-comment stderr marker rather than a named message, so a caller cannot tell 
 `--prune` separately mis-parses any Run line whose flags follow the task list: the
 whitespace-stripping pass merges the flag into the last task id, so a flagged multi-task line
 silently loses that task and a flagged single-task line vanishes whole. Both defects are filed in
-the agent-system source store. The decidability inventory
+the agent-system source store (752), which is **frozen and undispatchable from here**.
+
+**The conflict this leaves standing**: `/orchestrate`'s own conclusion stage runs
+`roadmap-integration.sh --regenerate` as a mandated step
+(`.claude/context/contracts/conclusion-stage.md`, Step 5), so every `/orchestrate` invocation
+re-injects the coverage-appendix block into this file against the ruling above. Until 752 is
+unfrozen, **delete the appended block by hand after an orchestrate run** — that is the only remedy
+available from this repository. The decidability inventory
 (PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED) is regenerated and diffed from the tree by
 `scripts/generate-decidability-inventory.sh --diff`.
 
