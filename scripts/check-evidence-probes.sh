@@ -1067,6 +1067,64 @@ EVIDENCE="specs/evidence"
 #                                                           | on the cell theorems, `[propext, Quot.sound]` on
 #                                                           | `truth_nextPow`, `depth_collision`, `walk_mod3`,
 #                                                           | `pending_run_gen`, `idle_at_gen`.
+# seam-gluing-ray-product/ladder-joint-index-refutation     | LADDER JOINT INDEX REFUTATION (requirement (W)'s run
+#                                                           | layer, "(W): what landed and what did not", obligation
+#                                                           | (ii) item 1's cell-index sub-problem): the SAME
+#                                                           | six-coordinate index body, at parameters derived from the
+#                                                           | object AND the formula JOINTLY in the sense the
+#                                                           | parameter-origin rule states -- `B` from the formula's
+#                                                           | `X`- and `snce`-nesting depth, `T` from its `untl`-nesting
+#                                                           | depth, `P+1` a multiple of the period of every
+#                                                           | LETTER-DEFINABLE sub-object -- is REFUTED, after the
+#                                                           | five-part gate is run in full. Gates 1-3 pass
+#                                                           | (`gate1_gap_separates`, `gate2_residue_separates`,
+#                                                           | `gates_one_two_at_rule_params`,
+#                                                           | `second_region_sets_agree`, `third_region_any_length`,
+#                                                           | `region_start_beyond_depth`). Gate 4 is DISARMED by a
+#                                                           | diagonal that cannot close: the depth-`(T+1)` next-chain
+#                                                           | costs `untl`-depth exactly `T+1`
+#                                                           | (`untlDepth_phiDepth`), so it lies in the closure of no
+#                                                           | formula of `untl`-depth at most `T`
+#                                                           | (`gate4_witness_not_in_closure`, `gate4_disarmed`,
+#                                                           | `gate4_diagonal_escapes`). Gate 5 is DISARMED at a
+#                                                           | rule-admissible modulus: `l_d` names `d` and nothing else
+#                                                           | (`lab5_d_only`), so the `d`-free sub-object is
+#                                                           | letter-definable with walk lengths the multiples of three
+#                                                           | (`dfree_walk_mod3`), the rule forces `3 | P+1`, and BOTH
+#                                                           | cells of mechanism (5)'s pair then contain a type lacking
+#                                                           | its formula (`gate5_disarmed`), with
+#                                                           | `reach_period_refuted` ported and re-run. GATE 6 REFUTES:
+#                                                           | on the same object with `d` given the letter of `b`, no
+#                                                           | atom distinguishes `d` from `b` (`lab6_d_eq_b`,
+#                                                           | `lab6_keep_d_iff_b`), the 3-cycle is cut out by no set of
+#                                                           | atoms (`cycle_not_letter_definable`), every letter
+#                                                           | restriction keeping it keeps the 2-cycle beside it
+#                                                           | (`letter_definable_keeps_two_cycle`) and the full graph's
+#                                                           | exhibited period is 1 (`reach5_eventually_constant`), so
+#                                                           | `P+1 = 2` is rule-admissible; yet the letter-FREE pattern
+#                                                           | `(p AND l_a) AND X X (p AND l_a)`, forbidden at every
+#                                                           | position, carves the 3-cycle out (`pred_of_d`,
+#                                                           | `succ_of_d`, `chi_forces_dfree`, `chi_ref`) and separates
+#                                                           | a pair the index identifies for every `(T, P, B)`
+#                                                           | (`period_collision`, `exists_cell_not_phi6`,
+#                                                           | `phi6_mem_of_mem_cell`, `cell6_ne`,
+#                                                           | `joint_parameters_refuted`,
+#                                                           | `rule_derived_parameters_refuted` at `T = thrJ phi6`,
+#                                                           | `B = clipJ phi6`, `P+1 = 2`). WHAT SURVIVES: a strictly
+#                                                           | stronger NECESSARY condition -- the modulus must be a
+#                                                           | multiple of the period of every sub-object the formula's
+#                                                           | CLOSURE can carve out, i.e. of the object-closure
+#                                                           | product -- which turns the first of the four standing
+#                                                           | proof obligations into a necessary condition. What it
+#                                                           | withholds: no positive factorization lemma in any shape;
+#                                                           | no weakened `ladderRealized`/`LadderCons` substitute and
+#                                                           | the `box`/`stab` clause never dropped; no seventh
+#                                                           | coordinate; no successor chosen; no finiteness added;
+#                                                           | nothing about `HitPresented`; no library declaration.
+#                                                           | Axioms `[propext]` on `lab6_d_eq_b`,
+#                                                           | `[propext, Quot.sound]` on the arithmetic and depth
+#                                                           | theorems, `[propext, Classical.choice, Quot.sound]` on
+#                                                           | the cell theorems.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1100,6 +1158,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-liveness-forward-only"
   "seam-gluing-ray-product/ladder-cell-index-obstructions"
   "seam-gluing-ray-product/ladder-residue-index-refutation"
+  "seam-gluing-ray-product/ladder-joint-index-refutation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
