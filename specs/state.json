@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 807,
+  "next_project_number": 808,
   "active_projects": [
     {
       "project_number": 806,
@@ -85,7 +85,8 @@
       "dependencies": [
         760,
         775,
-        805
+        805,
+        806
       ],
       "file_scope": [
         "FormalSystem.lean",
@@ -1573,6 +1574,16 @@
         }
       ],
       "next_artifact_number": 3
+    },
+    {
+      "project_number": 807,
+      "project_name": "backward_determinism_forcing_check",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "decidability",
+      "priority": "high",
+      "description": "RESEARCH TASK, verdict-first -- reports and a sorry-free evidence probe under specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation (no such formula exists, or the attempt fails) is an acceptable and successful outcome.\n\nBACKGROUND (ROADMAP.md Stage 1, \"Two risks not covered\" table; do not re-derive): the stab clause (PlusLanguage/PlusTruth.lean:93, `.stab phi => forall sigma, tau.state t = sigma.state t -> PlusTruthAt M sigma t phi`) fails the backward closure condition of the historical-necessity tradition (Thomason 1984 Section 4 Def. 6(2); Caleiro-Vigano-Volpe Def. 2.5 Wdc), which is the stated reason the corpus literature's published negative decidability results do not transfer to L+ (see specs/literature/README.md). This is the ONE route by which a published negative result could reach L+: if a closed L+ formula can force backward determinism on a regular Z-frame, the know-time-do-not-forget family becomes a reduction target and the whole Stage 1 decidability programme would need to confront a genuine undecidability threat rather than an open search.\n\nWHY CHEAP: Probe719Backward (specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean) and Probe733Mirror (backward-dual-mirror-fixture.lean) already inhabit the backward factor needed to test this -- Probe719Backward is backward-deterministic by construction (singleton backward factor, step_inv_pre/x/post), Probe733Mirror branches (backward factor exactly 2 at every aft(k+1)). The check is one fixture: construct (or refute the existence of) a closed L+ formula phi such that validity of phi on a regular Z-frame forces every world state's backward factor to collapse to a singleton -- i.e. phi is Z-valid only on frames satisfying the Wdc-style backward-closure condition the historical-necessity literature needs for its negative results.\n\nWORK, in order:\n(1) State the backward-closure condition precisely as a frame property on TaskFrame/regular Z-frames, dual to whatever forward-determinism or confluence property the historical-necessity reduction needs (ground this in Thomason 1984 Section 4 Def 6(2) and Caleiro-Vigano-Volpe Def 2.5 Wdc; run with --lit against specs/literature/ for both sources).\n(2) Attempt to construct a closed L+ formula (built from stab/box/untl/snce) whose Z-validity forces this property, using Probe733Mirror's branching fixture as the test bed for whether such a formula's negation is satisfiable there (it should NOT be, if no forcing formula exists at this fixture) and Probe719Backward as the positive/degenerate control.\n(3) Report the verdict (forcing formula exists / does not exist on this evidence) as a wired evidence probe, following the existing probes' header convention, registered in scripts/check-evidence-probes.sh.\n(4) If a forcing formula is found: STOP and escalate as a Stage 0 user ruling (per risks table framing: \"the know-time-do-not-forget family becomes a reduction target\") -- do not attempt the reduction itself in this task. If refuted: update the \"Two risks not covered\" table in ROADMAP.md Stage 1 to record the closed check and its negative verdict.\n\nGUARDRAILS: no sorry/axiom/native_decide/vacuous definition; the check is about frame-level forcing, not about re-deriving stab's existing truth clause; do not weaken or restate PlusTruth.lean's stab clause under any name.",
+      "created": "2026-10-16T15:17:57Z"
     }
   ],
   "artifacts": [

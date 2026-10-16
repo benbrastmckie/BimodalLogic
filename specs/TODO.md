@@ -1,5 +1,5 @@
 ---
-next_project_number: 807
+next_project_number: 808
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 807
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,806 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,761,783 | 298,464,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,806,807 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,761,783 | 298,464,502,616,772,805,806 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -94,6 +94,8 @@ next_project_number: 807
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 806 [NOT STARTED] — RESEARCH TASK, research-first successor to the refuted...
+  └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization... (see above)
+807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
 
 ### Formula Refactor
 
@@ -128,6 +130,28 @@ next_project_number: 807
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 807. Backward determinism forcing check
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, verdict-first -- reports and a sorry-free evidence probe under specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation (no such formula exists, or the attempt fails) is an acceptable and successful outcome.
+
+BACKGROUND (ROADMAP.md Stage 1, "Two risks not covered" table; do not re-derive): the stab clause (PlusLanguage/PlusTruth.lean:93, `.stab phi => forall sigma, tau.state t = sigma.state t -> PlusTruthAt M sigma t phi`) fails the backward closure condition of the historical-necessity tradition (Thomason 1984 Section 4 Def. 6(2); Caleiro-Vigano-Volpe Def. 2.5 Wdc), which is the stated reason the corpus literature's published negative decidability results do not transfer to L+ (see specs/literature/README.md). This is the ONE route by which a published negative result could reach L+: if a closed L+ formula can force backward determinism on a regular Z-frame, the know-time-do-not-forget family becomes a reduction target and the whole Stage 1 decidability programme would need to confront a genuine undecidability threat rather than an open search.
+
+WHY CHEAP: Probe719Backward (specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean) and Probe733Mirror (backward-dual-mirror-fixture.lean) already inhabit the backward factor needed to test this -- Probe719Backward is backward-deterministic by construction (singleton backward factor, step_inv_pre/x/post), Probe733Mirror branches (backward factor exactly 2 at every aft(k+1)). The check is one fixture: construct (or refute the existence of) a closed L+ formula phi such that validity of phi on a regular Z-frame forces every world state's backward factor to collapse to a singleton -- i.e. phi is Z-valid only on frames satisfying the Wdc-style backward-closure condition the historical-necessity literature needs for its negative results.
+
+WORK, in order:
+(1) State the backward-closure condition precisely as a frame property on TaskFrame/regular Z-frames, dual to whatever forward-determinism or confluence property the historical-necessity reduction needs (ground this in Thomason 1984 Section 4 Def 6(2) and Caleiro-Vigano-Volpe Def 2.5 Wdc; run with --lit against specs/literature/ for both sources).
+(2) Attempt to construct a closed L+ formula (built from stab/box/untl/snce) whose Z-validity forces this property, using Probe733Mirror's branching fixture as the test bed for whether such a formula's negation is satisfiable there (it should NOT be, if no forcing formula exists at this fixture) and Probe719Backward as the positive/degenerate control.
+(3) Report the verdict (forcing formula exists / does not exist on this evidence) as a wired evidence probe, following the existing probes' header convention, registered in scripts/check-evidence-probes.sh.
+(4) If a forcing formula is found: STOP and escalate as a Stage 0 user ruling (per risks table framing: "the know-time-do-not-forget family becomes a reduction target") -- do not attempt the reduction itself in this task. If refuted: update the "Two risks not covered" table in ROADMAP.md Stage 1 to record the closed check and its negative verdict.
+
+GUARDRAILS: no sorry/axiom/native_decide/vacuous definition; the check is about frame-level forcing, not about re-deriving stab's existing truth clause; do not weaken or restate PlusTruth.lean's stab clause under any name.
+
+---
 
 ### 806. Set valued cell quotient index
 - **Effort**: Step (1) alone (closure-indexed eventual periodicity of the realizable types) is the costable first deliverable; the full gate re-run and sufficiency attempt are not costable in one round
@@ -754,7 +778,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 760, Task 775, Task 805
+- **Dependencies**: Task 760, Task 775, Task 805, Task 806
 - **Plan**: [761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md]
 - **Summary**: [761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md]
 - **Research**: [761_ladder_realization_theorem/reports/02_spawn-analysis.md]

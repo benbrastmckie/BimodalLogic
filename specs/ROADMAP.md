@@ -1,6 +1,6 @@
 # Roadmap
 
-*Open work only, hand-maintained (last edited 2026-10-15). This file is batch ordering and the
+*Open work only, hand-maintained (last edited 2026-10-16). This file is batch ordering and the
 rulings that gate it — nothing else. The mathematics, the (C)/(S)/(W) verdict table and every
 guardrail against a refuted shape live in `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
 (the authority); per-task detail lives in `specs/TODO.md`; finished work in `specs/CHANGE_LOG.md`
@@ -14,10 +14,11 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 805 --research --lit # the cell-index falsification gate — the critical path's one dispatchable record
-/orchestrate 761 --hard --lit    # ladder realization theorem — BLOCKED on 805's verdict
+/orchestrate 806 --research --lit # successor cell-presentation gate (set-valued quotient, ruled R1 2026-10-16) — the critical path's one dispatchable record
+/orchestrate 761 --hard --lit    # ladder realization theorem — BLOCKED on 806's verdict
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781,782 --hard  # sliced-certificate internals: full-label evaluation, Phase 5 hoist, Shape D leaf cache
+/orchestrate 807 --research --lit # cheap check: can a closed L⁺ formula force backward determinism on a regular ℤ-frame?
 # Stage 2 — supporting semantics and metalogic
 /orchestrate 616,618             # duration monoid BD⁺ and its twisted-arrow category, then Path(F) and cor:path-fibration
 /orchestrate 617,566             # the Reflection and Possible Worlds clauses of app:presheaf-dictionary
@@ -52,7 +53,7 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 127,128,709,730,741,752,767,768
-/orchestrate 769,770,785,806
+/orchestrate 769,770,785
 ```
 
 ## Not batched, and why
@@ -82,17 +83,6 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 - [ ] Rule on **127** and **128** (time addition, interior operator): long-standing abandonment
       candidates, antagonistic to the termination work Stage 4 depends on
 - [ ] Supply the Hugging Face account and token **257** is blocked on
-- [ ] **761's cell-index ruling — pending only if 805's gate refutes.** A finite index of which
-      cell a ladder state has needs a formula-derived clip AND threshold, and a modulus dominating
-      every letter-definable sub-object period; the positive factorization lemma is stated nowhere,
-      and three candidate indices are refuted on compiled ground — counter-pair stabilization
-      (`ladder-cell-refutation.lean`), clipped/gap-carrying
-      (`ladder-cell-index-obstructions.lean`) and residue-carrying
-      (`ladder-residue-index-refutation.lean`), all under
-      `specs/evidence/seam-gluing-ray-product/`. The first of the three open options — a
-      parameter-coupled index with jointly derived (T, P, B) — is now filed as **805** and needs no
-      ruling to run. Rule only if its gate refutes, choosing between a set-valued per-state datum
-      over a quotient and the index-free run-layer half (R2)
 - [ ] Rule on **428**'s scope. Its `blockers` says "paused at 4/5 cycles, NOT blocked", so the
       marker is mis-set and the next step is a scope decision: `/revise 428` to add phases for its
       four residual hypotheses, or `/spawn 428` to split them out
@@ -116,19 +106,33 @@ theorem** (`exists_hitPresented`, every regular `ℤ`-model, `sizeBound φ k` a 
 for `box`/`stab`-free `φ` at one seam; **(W)** landed its anchor layer, its run-layer frame scheme
 and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remain open:
 
-- **805 — the cell-index falsification gate.** `ladderRealized` cannot be STATED: its `[Fintype Q]`
-  obligation ran through `truncate B`, which is defined nowhere in `FormalSystem/`, and the only
-  reading of it is refuted. What is missing is a computable `LadderState Q pend → I` through which
-  `cellAt` factors. 805 defines the one ungated candidate — `(T, P, B)` derived from the object AND
-  the formula jointly — and runs the five-part falsification gate in
-  `.claude/context/project/lean4/domain/ladder-counter-observables.md` before any sufficiency
-  attempt. Verdict-first: a refutation is a successful outcome, and a weakened same-named
-  `LadderCons` is forbidden. The set of cells stays finite (`anchorCells_ncard_le`); only the index
-  is open.
+- **806 — the successor cell-presentation gate.** `ladderRealized` cannot be STATED: its
+  `[Fintype Q]` obligation ran through `truncate B`, which is defined nowhere in `FormalSystem/`,
+  and the only reading of it is refuted. What is missing is a computable `LadderState Q pend → I`
+  through which `cellAt` factors. **Four index shapes are now refuted on compiled ground**:
+  counter-pair clipping (`ladder-cell-refutation.lean`), clipped/gap-carrying
+  (`ladder-cell-index-obstructions.lean`), the six-coordinate residue-carrying candidate at its
+  object-exhibited parameters (`ladder-residue-index-refutation.lean`), and — **805, settled
+  2026-10-16** — the same six-coordinate body at parameters derived from the object AND the
+  formula jointly (`ladder-joint-index-refutation.lean`): gates 1–3 pass, gates 4 and 5 are
+  disarmed (a diagonal that cannot close; a rule-admissible modulus), and a sixth mechanism
+  refutes — a formula can carve out a sub-object no set of atoms carves out, by forbidding a
+  *pattern* instead of a letter. Every index shape the governing guidance anticipated is now
+  spent; what survives is a strictly stronger necessary condition (the modulus must cover the
+  period of every sub-object the formula's *closure*, not merely its letters, can carve out), not
+  a positive lemma. **Ruled 2026-10-16 (R1):** the successor is a different cell *presentation* —
+  a set-valued per-state datum over a quotient, not a wider tuple — filed as **806**, whose first,
+  costable obligation (promoted by 805's gate 6 from a proof step to a necessary condition) is
+  eventual periodicity of the realizable types in the countdown over the **object-closure
+  product**; before any sufficiency attempt, 806 re-runs the full six-gate falsification against
+  the new presentation. The declined alternative (R2: an index-free, `box`/`stab`-free run-layer
+  half, `slive` retained) stays on record but is not pursued — it would not reach the `box`/`stab`
+  letters Stage 1 needs. The set of cells stays finite (`anchorCells_ncard_le`); only the
+  index/presentation is open.
 - **761 — the ladder realization theorem** (`LadderCons`, `ladderRealized` per cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
-  `[BLOCKED]` on 805; its other two dependency edges are on completed work. NOT costable until
-  805 returns a verdict.
+  `[BLOCKED]` on 806; its other dependency edges (760, 775, 805) are on completed or spent work.
+  NOT costable until 806 returns a verdict.
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone.
   761 and 763 share the `RaySummary` library set and serialize through the edge between them.
@@ -144,12 +148,12 @@ routes (filtration R4 by `no_finite_carrier_sat`/`not_finite_width_fmp`; transla
 routes back to R1) — is authored in the `RaySummary` README and `docs/theorem-index.md`. Read those
 before proposing a shape.
 
-**Two risks not covered there**, both unrealized and neither filed as a task:
+**Two risks not covered there**, both unrealized:
 
 | Failure mode | Evidence that locates it |
 |---|---|
-| No constructor for infinite-width, finitely branching regular frames | `Rbad`/`Rok` refuted as repair shapes (`b2b-frame-constructor-branching.lean`); the positive halves need TWO-SIDED finite branching; the `Node` thread-unfolding shape (`Limits/NoFiniteWidth.lean:132`) is neither refuted nor built |
-| A closed L⁺ formula forces backward determinism on a regular `ℤ`-frame — the one route by which a published negative result could reach L⁺ | `stab`'s clause (`PlusLanguage/PlusTruth.lean:93`) fails the backward closure of the historical-necessity tradition (Thomason 1984 §4 Def. 6(2); Caleiro–Viganò–Volpe Def. 2.5 `Wdc`), which is why the corpus's negatives do not apply. If forcing is possible, the know-time-do-not-forget family becomes a reduction target. **Cheap check, named and not filed**: one fixture; `Probe719Backward` and `Probe733Mirror` already inhabit the backward factor |
+| No constructor for infinite-width, finitely branching regular frames | `Rbad`/`Rok` refuted as repair shapes (`b2b-frame-constructor-branching.lean`); the positive halves need TWO-SIDED finite branching; the `Node` thread-unfolding shape (`Limits/NoFiniteWidth.lean:132`) is neither refuted nor built. **Not yet filed** — unlike the row below this is not a one-fixture check; scoping a task needs a reading of `Limits/NoFiniteWidth.lean:132` and the `b2b-frame-constructor-branching.lean` refutation first |
+| A closed L⁺ formula forces backward determinism on a regular `ℤ`-frame — the one route by which a published negative result could reach L⁺ | `stab`'s clause (`PlusLanguage/PlusTruth.lean:93`) fails the backward closure of the historical-necessity tradition (Thomason 1984 §4 Def. 6(2); Caleiro–Viganò–Volpe Def. 2.5 `Wdc`), which is why the corpus's negatives do not apply. If forcing is possible, the know-time-do-not-forget family becomes a reduction target. **Filed as 807** (2026-10-16): one fixture; `Probe719Backward` and `Probe733Mirror` already inhabit the backward factor |
 
 The corpus position — why no published negative result reaches TM/L⁺, and why that is not evidence
 of decidability — is recorded in `specs/literature/README.md`.
