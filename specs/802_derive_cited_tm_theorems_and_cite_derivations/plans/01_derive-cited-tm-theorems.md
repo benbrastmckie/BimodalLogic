@@ -332,17 +332,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: The Z1 Derivation [NOT STARTED]
+### Phase 4: The Z1 Derivation [COMPLETED]
 
 - **Goal:** Z1 as a direct `DerivationTree` from the axioms at `FrameClass.ZTime`, with the
   frame-class-gated companion the tree's consumers need.
 - **Tasks:**
-  - [ ] Before building anything else, verify the sketch's US step in isolation:
+  - [x] Before building anything else, verify the sketch's US step in isolation:
     `Axiom.enrichment_until` at guard `¬Gφ`, event `Gφ`, payload `¬Gφ` should carry the
     currently-true `¬Gφ` to the nearest `Gφ`-witness as a `snce`-formula. If the payload has to
     change, record the change and adjust the remaining steps before writing them — this is the
     step the research flags as most likely to need adjustment.
-  - [ ] Build `z1Schema (φ : Formula) : ⊢[FrameClass.ZTime] ((φ.allFuture.imp φ).allFuture.imp
+  - [x] Build `z1Schema (φ : Formula) : ⊢[FrameClass.ZTime] ((φ.allFuture.imp φ).allFuture.imp
     (φ.allFuture.someFuture.imp φ.allFuture))` following the recorded route: assume `¬Gφ`,
     `G(Gφ→φ)` and `FGφ`; get `U(Gφ, ¬Gφ)` from `Axiom.prior_UZ` instantiated at `Gφ`; enrich by
     US to reach, at the nearest `Gφ`-witness, both `Gφ ∧ φ` and `S(¬Gφ, ¬Gφ)`; unfold the
@@ -350,15 +350,21 @@ Phases within the same wave can execute in parallel.
     independently get `Y(Gφ)` there by transporting `Gφ ∧ φ` to the predecessor and closing with
     `nextAllFuture`; merge the two `Y`-formulas with `prevConj` and refute with `snceBotFalse`.
     The argument is finite — no induction.
-  - [ ] Build `z1SchemaAt {fc} (h : FrameClass.ZTime ≤ fc) (φ : Formula)` as
+  - [x] Build `z1SchemaAt {fc} (h : FrameClass.ZTime ≤ fc) (φ : Formula)` as
     `DerivationTree.lift h (z1Schema φ)`, matching the argument order of
     `DerivedAxioms.priorSZ` so that `tryGatedDerivedMatch`'s `apply`-then-`decide` discharge
     works unchanged. `Combinators.baseThm` and `succIndicatorAt` are the precedents; confirm
     `lift`'s signature at `FormalSystem/ProofSystem/Derivation.lean` before writing.
-  - [ ] Docstring both: the paper anchor (`def:BX-z`), the route in the numbered-step style
+    *(deviation: altered — the route needed three additions the Scope Hypothesis did not
+    anticipate: a new `import FormalSystem.Theorems.TemporalDerived` in
+    `DiscreteUnfolding.lean` for TK, which step 2's event-strengthening requires; and two named
+    helpers in `Combinators.lean`, `necH` and `snceEventMono`, the free past mirrors of `necG`
+    and `eventMono`. The contradiction itself was additionally factored out as the named
+    theorem `z1EventBot`. The research sketch's US payload `¬Gφ` needed no adjustment.)*
+  - [x] Docstring both: the paper anchor (`def:BX-z`), the route in the numbered-step style
     `dfSchema`'s docstring uses, the named helpers it factors through, and — on `z1SchemaAt` —
     the note that the gated form is what the automation and extractor surfaces consume.
-  - [ ] Measure `#print axioms` and `Lean.isNoncomputable` for both, and run the Shape 1
+  - [x] Measure `#print axioms` and `Lean.isNoncomputable` for both, and run the Shape 1
     `def`-closure probe against the engine suspect set
     (`derivable_of_validZTime`, `derivable_of_validQTime`, `derivable_of_validDense`,
     `completeness`) to assert that no engine is in the closure. Record the result together with

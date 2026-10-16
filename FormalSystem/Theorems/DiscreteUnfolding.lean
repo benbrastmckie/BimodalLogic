@@ -8,6 +8,7 @@ import FormalSystem.ProofSystem.Derivation
 import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.Propositional.Core
+import FormalSystem.Theorems.TemporalDerived
 
 /-!
 # The Z-Exact One-Step Unfolding of `untl` at `FrameClass.ZTime`
@@ -42,6 +43,9 @@ are already derivable at `FrameClass.Base`, and `nextConj` is stated `{fc}`-poly
   omitting both `U(p,r)` and `U(q,s)` is derivably impossible.
 - `nextAllFuture` / `prevAllPast` — `X (Gφ ∧ φ) → Gφ` and its free past dual
   `Y (Hφ ∧ φ) → Hφ`, obtained through `DerivationTree.time_reflection`.
+- `z1EventBot` / `z1Schema` / `z1SchemaAt` — the paper's **Z1** schema
+  `G(Gφ → φ) → (F Gφ → Gφ)`, as a direct derivation tree from UZ and US, with its gated
+  companion.
 - `dfSchema` — the paper's **DF** schema `(Hφ ∧ φ ∧ F⊤) → F(Hφ)`, consumed by
   `FormalSystem.MinusLanguage.AxiomDischarge` for the `Discrete` row of the backward
   conservativity bridge. Derived syntactically; no completeness dependency.
@@ -586,5 +590,140 @@ def dfSchema (φ : Formula) :
     eventMono _ (Formula.and Formula.top (Formula.snce Formula.bot A)) φ.allPast Formula.bot
       (impTrans (rceImp Formula.top (Formula.snce Formula.bot A)) (prevAllPast φ)) h2
   exact ctxMp (thmIn (DerivedAxioms.untilF Formula.bot φ.allPast)) h3
+
+/-! ## Result 4: Z1, the backward-induction principle of ℤ-time -/
+
+/-- The event of the enriched UZ until-formula is refutable: `⊢[Discrete] ((Gφ ∧ φ) ∧
+S(¬Gφ, ¬Gφ)) → ⊥`.
+
+This is the whole content of `z1Schema`, isolated as a theorem so that the main derivation is a
+single `eventMono` step. Read it at the nearest `Gφ`-witness `s` of the UZ interval:
+
+1. `S(¬Gφ, ¬Gφ)` says `¬Gφ` held at some earlier point and throughout the interval since.
+   `unfoldBackwardSince` takes one step back out of it, and both disjuncts give `Y ¬Gφ` — the
+   second through `snceEventMono`.
+2. `Gφ ∧ φ` holds at `s`, and `prevIndicator` supplies `Y ⊤`, so `DerivedAxioms.enrichmentSince`
+   at guard `⊥`, event `⊤` and payload `Gφ ∧ φ` transports the payload to the predecessor as
+   `Y (⊤ ∧ X (Gφ ∧ φ))` — the past mirror of the step `dfSchema` uses, and the step that makes
+   the argument finite rather than an induction.
+3. `prevConj` merges the two `Y`-formulas, `nextAllFuture` turns the inner `X (Gφ ∧ φ)` into
+   `Gφ`, which clashes with the `¬Gφ` beside it, and `snceBotFalse` closes on `Y ⊥`.
+
+Paper: `def:BX-z` -/
+def z1EventBot (φ : Formula) :
+    ⊢[FrameClass.ZTime]
+      (Formula.and (Formula.and φ.allFuture φ)
+        (Formula.snce φ.allFuture.neg φ.allFuture.neg)).imp Formula.bot := by
+  set A := φ.allFuture with hA
+  set B := Formula.and A φ with hB
+  set S := Formula.snce A.neg A.neg with hS
+  set XB := Formula.untl Formula.bot B with hXB
+  have hinner : ⊢[FrameClass.ZTime]
+      (Formula.and A.neg (Formula.and Formula.top XB)).imp Formula.bot := by
+    refine deductionTheorem [] (Formula.and A.neg (Formula.and Formula.top XB)) Formula.bot ?_
+    have h := DerivationTree.assumption (fc := FrameClass.ZTime)
+      [Formula.and A.neg (Formula.and Formula.top XB)]
+      (Formula.and A.neg (Formula.and Formula.top XB)) (by simp)
+    exact ctxMp (andFst h) (ctxMp (wk _ _ (nextAllFuture φ)) (andSnd (andSnd h)))
+  refine deductionTheorem [] (Formula.and B S) Formula.bot ?_
+  set E : Context := [Formula.and B S] with hE
+  have h0 : E ⊢[FrameClass.ZTime] Formula.and B S :=
+    DerivationTree.assumption _ _ (by simp [hE])
+  have hB' : E ⊢[FrameClass.ZTime] B := andFst h0
+  have hS' : E ⊢[FrameClass.ZTime] S := andSnd h0
+  have hu : E ⊢[FrameClass.ZTime]
+      (Formula.prev A.neg).or (Formula.prev (Formula.and A.neg S)) :=
+    ctxMp (wk _ _ (unfoldBackwardSince A.neg A.neg)) hS'
+  have hYnA : E ⊢[FrameClass.ZTime] Formula.prev A.neg := by
+    refine orElim E _ _ (Formula.prev A.neg) hu (wk _ _ (identity _)) ?_
+    refine deductionTheorem E (Formula.prev (Formula.and A.neg S)) (Formula.prev A.neg) ?_
+    exact snceEventMono _ (Formula.and A.neg S) A.neg Formula.bot (lceImp A.neg S)
+      (DerivationTree.assumption _ (Formula.prev (Formula.and A.neg S)) (by simp))
+  have hYt : E ⊢[FrameClass.ZTime] Formula.prev Formula.top := wk _ _ prevIndicator
+  have hYXB : E ⊢[FrameClass.ZTime] Formula.prev (Formula.and Formula.top XB) :=
+    ctxMp (wk _ _ (DerivedAxioms.enrichmentSince Formula.bot Formula.top B))
+      (andIntro hB' hYt)
+  have hmerge : E ⊢[FrameClass.ZTime]
+      Formula.prev (Formula.and A.neg (Formula.and Formula.top XB)) :=
+    ctxMp (wk _ _ (prevConj A.neg (Formula.and Formula.top XB))) (andIntro hYnA hYXB)
+  have hYbot : E ⊢[FrameClass.ZTime] Formula.prev Formula.bot :=
+    snceEventMono _ _ Formula.bot Formula.bot hinner hmerge
+  exact ctxMp (wk _ _ (snceBotFalse Formula.bot)) hYbot
+
+/-- **`⊢[Discrete] G(Gφ → φ) → (F Gφ → Gφ)`** — the paper's **Z1** schema, as a direct
+derivation tree from UZ, US and the BX/TM axioms.
+
+Z1 is the characteristic backward-induction principle of the successor-Archimedean orders, and
+UZ is what makes it finite: `Axiom.prior_UZ` hands back the *nearest* future `Gφ`-point, so the
+argument looks one step back from that point instead of inducting along the interval.
+
+Four steps, assuming `¬Gφ` for contradiction and discharging with `doubleNegation`:
+
+1. `Axiom.prior_UZ` at `Gφ` turns the hypothesis `F Gφ` into `U(¬Gφ, Gφ)`.
+2. The event is strengthened from `Gφ` to `Gφ ∧ φ` by `Axiom.right_mono_until`, whose
+   `G(Gφ → (Gφ ∧ φ))` premise comes from the hypothesis `G(Gφ → φ)` through TK
+   (`TemporalDerived.temporalKDistDerived`) applied to a propositional tautology.
+3. `Axiom.enrichment_until` with payload `¬Gφ` — true now — carries it to the witness as
+   `S(¬Gφ, ¬Gφ)`, so the witness holds `(Gφ ∧ φ) ∧ S(¬Gφ, ¬Gφ)`.
+4. That event is refutable (`z1EventBot`), so `eventMono` drives the until-formula to
+   `U(¬Gφ, ⊥)` and `untlBotFalse` closes.
+
+Stated at `FrameClass.ZTime`, where UZ and the discreteness witness are theorems; `z1SchemaAt`
+is the frame-class-gated companion.
+
+Paper: `def:BX-z` -/
+def z1Schema (φ : Formula) :
+    ⊢[FrameClass.ZTime]
+      ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) := by
+  set A := φ.allFuture with hA
+  set B := Formula.and A φ with hB
+  set H1 := (A.imp φ).allFuture with hH1
+  refine deductionTheorem [] H1 (A.someFuture.imp A) ?_
+  refine deductionTheorem [H1] A.someFuture A ?_
+  set Γ : Context := [A.someFuture, H1] with hΓ
+  refine ctxMp (thmIn (doubleNegation A)) ?_
+  refine deductionTheorem Γ A.neg Formula.bot ?_
+  set Δ : Context := A.neg :: Γ with hΔ
+  have hnA : Δ ⊢[FrameClass.ZTime] A.neg := DerivationTree.assumption _ _ (by simp [hΔ])
+  have hFA : Δ ⊢[FrameClass.ZTime] A.someFuture :=
+    DerivationTree.assumption _ _ (by simp [hΔ, hΓ])
+  have hG : Δ ⊢[FrameClass.ZTime] H1 := DerivationTree.assumption _ _ (by simp [hΔ, hΓ])
+  have h1 : Δ ⊢[FrameClass.ZTime] Formula.untl A.neg A :=
+    ctxMp (DerivationTree.axiom _ _ (Axiom.prior_UZ A) le_rfl) hFA
+  have htaut : ⊢[FrameClass.ZTime] (A.imp φ).imp (A.imp B) := by
+    refine deductionTheorem [] (A.imp φ) (A.imp B) ?_
+    refine deductionTheorem [A.imp φ] A B ?_
+    have ha : [A, A.imp φ] ⊢[FrameClass.ZTime] A := DerivationTree.assumption _ _ (by simp)
+    have hf : [A, A.imp φ] ⊢[FrameClass.ZTime] A.imp φ :=
+      DerivationTree.assumption _ _ (by simp)
+    exact andIntro ha (ctxMp hf ha)
+  have hGAB : Δ ⊢[FrameClass.ZTime] (A.imp B).allFuture :=
+    ctxMp (ctxMp (wk _ _ (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived
+      (A.imp φ) (A.imp B))) (necG Δ _ htaut)) hG
+  have h2 : Δ ⊢[FrameClass.ZTime] Formula.untl A.neg B :=
+    ctxMp (ctxMp (DerivationTree.axiom _ _ (Axiom.right_mono_until A B A.neg)
+      (FrameClass.base_le _)) hGAB) h1
+  have h3 : Δ ⊢[FrameClass.ZTime]
+      Formula.untl A.neg (Formula.and B (Formula.snce A.neg A.neg)) :=
+    ctxMp (DerivationTree.axiom _ _ (Axiom.enrichment_until A.neg B A.neg)
+      (FrameClass.base_le _)) (andIntro hnA h2)
+  have h4 : Δ ⊢[FrameClass.ZTime] Formula.untl A.neg Formula.bot :=
+    eventMono _ _ Formula.bot A.neg (z1EventBot φ) h3
+  exact ctxMp (wk _ _ (untlBotFalse A.neg)) h4
+
+/-- The frame-class-gated form of `z1Schema`, by `DerivationTree.lift`.
+
+This is the shape `Automation/Tactics/Search.lean`'s `tryGatedDerivedMatch`, the
+`plusValidIn_of_tm_deriv` branches in `Conservativity/Plus/AxiomValidity.lean` and
+`BimodalTools/ProofExtractorMain.lean`'s `mkEntryAt` all consume; the argument order matches
+`DerivedAxioms.priorSZ` so that the tactic's `apply`-then-`decide` gate discharge works
+unchanged. `lift` is computable and structural, so the gated form costs one constructor-mapping
+pass over the tree and nothing else — `Combinators.baseThm` and `succIndicatorAt` are the
+existing instances of the same pattern.
+
+Paper: `def:BX-z` -/
+def z1SchemaAt {fc : FrameClass} (h : FrameClass.ZTime ≤ fc) (φ : Formula) :
+    ⊢[fc] ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
+  DerivationTree.lift h (z1Schema φ)
 
 end FormalSystem.Theorems.DiscreteUnfolding
