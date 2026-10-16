@@ -1,7 +1,7 @@
 # Implementation Plan: Task #808
 
 - **Task**: 808 - Fix the C16 env_linter failure: unused `[Finite F.WorldState]` on `FrameOver.mem_HF_iff_no_forbidden`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/808_c16_unused_finite_instance_shiftfinitetype/reports/01_c16-unused-finite-instance.md

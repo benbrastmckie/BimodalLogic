@@ -1,16 +1,20 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote a 4-phase plan for the C16 unused-[Finite F.WorldState] fix on FrameOver.mem_HF_iff_no_forbidden: drop the binder (interface tier, scoped + direct-dependent build + runLinter), restate the docstring paragraph under no-record-versioning discipline (prose tier), run the full gate set (check-module-invariants.sh + full lake build + BimodalTest + runLinter, full tier), and a CONDITIONAL Phase 4 carrying the dispatch's nolints.json fallback as an in-plan branch so a load-bearing-binder finding is not a plan deviation. A ## Lean Challenge Statements block pins the exact target signature and was compiled standalone at plan time (lean_run_code, exit 0, one sorry warning). validate-artifact.sh passes in both default and --strict mode with 0 warnings.",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 4,
+  "phases_total": 4,
+  "summary": "Deleted the unused [Finite F.WorldState] instance binder from FormalSystem.Semantics.FrameOver.mem_HF_iff_no_forbidden and restated the two docstring passages that described why it was there. scripts/check-module-invariants.sh now exits 0 with ALL CHECKS PASSED (C16 PASS, both C1 lake build groups PASS, C3 sorry inventory zero); full lake build and lake build BimodalTest both exit 0 with zero error lines and the pinned #guard_msgs axiom-profile block unedited. scripts/nolints.json is untouched, so the plan's conditional baseline-entry branch closed as not-taken with a Reasoned Exclusions record. Two generated-metadata files outside the plan's declared scope (typst/generated/status.typ and README.md's inventory block) had to be regenerated via each gate's own remedy because the docstring edit is net +1 line in FormalSystem/.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/808_c16_unused_finite_instance_shiftfinitetype/summaries/01_drop-unused-finite-binder-summary.md",
+      "summary": "Implementation summary: unused Finite binder dropped, full gate set green, nolints baseline untouched."
+    },
     {
       "type": "plan",
       "path": "specs/808_c16_unused_finite_instance_shiftfinitetype/plans/01_drop-unused-finite-binder.md",
-      "summary": "4-phase plan (3h): binder deletion, docstring restatement, full gate set, and a conditional nolints.json fallback branch."
+      "summary": "Plan with all four phases closed; Phase 4 [COMPLETED WITH EXCLUSIONS] carrying a three-row Reasoned Exclusions record."
     }
-  ],
-  "phases_completed": 0,
-  "phases_total": 4,
-  "blockers": []
+  ]
 }

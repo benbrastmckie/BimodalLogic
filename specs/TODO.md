@@ -11,7 +11,7 @@ next_project_number: 810
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,807,808,809 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,807,809 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,761,783 | 298,464,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -94,7 +94,6 @@ next_project_number: 810
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
-808 [PLANNED] — Fix the C16 env\_linter failure that fails...
 809 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
 
 ### Formula Refactor
@@ -160,13 +159,14 @@ Fixture reuse: the coprime-cycle fixtures in the collection are label-generic; t
 
 ### 808. C16 unused finite instance shiftfinitetype
 - **Effort**: Small -- a one-binder signature edit under FormalSystem/, gated on a call-site check and a full verified lake build
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 806
 - **Research**: [808_c16_unused_finite_instance_shiftfinitetype/reports/01_c16-unused-finite-instance.md]
 - **Plan**: [808_c16_unused_finite_instance_shiftfinitetype/plans/01_drop-unused-finite-binder.md]
+- **Summary**: [808_c16_unused_finite_instance_shiftfinitetype/summaries/01_drop-unused-finite-binder-summary.md]
 
 **Description**: Fix the C16 env_linter failure that fails check-module-invariants.sh today: FormalSystem.Semantics.FrameOver.mem_HF_iff_no_forbidden at FormalSystem/Semantics/ShiftFiniteType.lean:149 carries an unused [Finite F.WorldState] instance argument, beyond the baseline recorded in scripts/nolints.json. The gate exits 1 on FAIL C16 while every other invariant group passes, including both C1 lake build groups.
 
