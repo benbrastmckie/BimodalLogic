@@ -11,10 +11,10 @@ next_project_number: 810
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,807,809 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,761,783 | 298,464,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500,763 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
-| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,734,761,783 | 298,464,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,428,498,499,500,763,809 | 231,465,497,734,761 | algebraic-representation, dataset-enhancement, decidability |
+| 4 | 125,429,543,807 | 428,498,499,500,809 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -73,7 +73,7 @@ next_project_number: 810
 
 ### Decidability
 
-464 [RESEARCHED] — Design and land gapPotential, the density coordinate of the...
+464 [PLANNING] — Design and land gapPotential, the density coordinate of the...
   └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired...
     └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns...
       └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2...
@@ -86,15 +86,15 @@ next_project_number: 810
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
-734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-805 [RESEARCHED] — RESEARCH TASK, verdict-first, on the posture task 559 models:...
+805 [PLANNED] — RESEARCH TASK, verdict-first, on the posture task 559 models:...
+  └─ 734 [PARTIAL] — Run experiment E4: decide StabSaturated on the Bool fixture's...
+    └─ 809 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
+      └─ 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
-809 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
 
 ### Formula Refactor
 
@@ -135,7 +135,7 @@ next_project_number: 810
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 734, Task 805
 - **Parent**: Task 806
 
 **Description**: RESEARCH TASK. The adequacy half of the closure-indexed periodicity gate, successor to the countdown-profile round that discharged the cheap half.
@@ -184,7 +184,7 @@ Deliverable: check-module-invariants.sh exit 0, full lake build exit 0, sorry co
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 809
 
 **Description**: RESEARCH TASK, verdict-first -- reports and a sorry-free evidence probe under specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation (no such formula exists, or the attempt fails) is an acceptable and successful outcome.
 
@@ -238,7 +238,7 @@ Step (1) is costable on its own and is the first deliverable. The full sufficien
 
 ### 805. Jointly derived cell index gate
 - **Effort**: 3-5 hours for the correction, candidate definition, gate run, and report (precedents closed in ~1-1.6h against ~9h filed estimates); the positive sufficiency attempt in step (5) beyond a survived gate is not costable and may be deferred to a successor record
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -247,6 +247,7 @@ Step (1) is costable on its own and is the first deliverable. The full sufficien
   - [761_ladder_realization_theorem/reports/02_spawn-analysis.md]
   - [805_jointly_derived_cell_index_gate/reports/01_jointly-derived-index-gate.md]
   - [805_jointly_derived_cell_index_gate/reports/02_joint-index-gate-verdict.md]
+- **Plan**: [805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md]
 
 **Description**: RESEARCH TASK, verdict-first, on the posture task 559 models: reports and sorry-free evidence probe files under this task's own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation is an explicitly acceptable and successful outcome (as task 773 and task 775 both closed), and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons.
 
@@ -1001,7 +1002,7 @@ SCOPE. Source-store files under /home/benjamin/.config/nvim/agent-system/extensi
 - **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 733
+- **Dependencies**: Task 733, Task 805
 - **Research**: [734_e4_mosaic_stabsaturated_mixed_germ_probe/reports/01_e4-stabsaturated-mixed-germ-probe.md]
 - **Plan**: [734_e4_mosaic_stabsaturated_mixed_germ_probe/plans/01_e4-stabsaturated-mixed-germ-probe.md]
 - **Summary**: [734_e4_mosaic_stabsaturated_mixed_germ_probe/summaries/01_e4-stabsaturated-mixed-germ-probe-summary.md]
@@ -1583,7 +1584,7 @@ Dependencies: 462, 463, 464 -- all three, so that the restatements are made agai
 ---
 
 ### 464. Gappotential density measure component
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None

@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Planned the close-out round for task 805's REFUTED verdict. Three phases (2.25 h, waves [1,2] then [3]): re-measure the sixteenth probe and the whole wired probe collection in the implement dispatch; sweep the four records carrying the verdict (probe header, registration/decision rows, task 761's corrected .blocker-research.json, the source-store guidance note) for mutual consistency and attest mechanically that no weakened substitute for ladderRealized/LadderCons/ladderCons_localRun was published; then write the completion summary under the full gate set. No proof work is planned: dispatch step (5) was conditional on the gate being survived and the verdict removes it, and the recorded R1 ruling is already discharged by sibling task 806 (completed), so no successor task is filed.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md",
+      "summary": "Three-phase close-out plan: re-measure landed evidence, record-consistency sweep plus no-substitute attestation, completion summary under the full gate set."
+    }
+  ],
+  "dispatch_seq": 8
+}

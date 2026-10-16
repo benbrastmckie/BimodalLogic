@@ -230,10 +230,11 @@
         "specs/literature-index.json"
       ],
       "dependencies": [
-        733
+        733,
+        805
       ],
       "created": "2026-10-05T18:07:05Z",
-      "last_updated": "2026-10-09T08:47:15Z",
+      "last_updated": "2026-10-16T22:31:35Z",
       "session_id": "sess_1791529054_4455fa",
       "artifacts": [
         {
@@ -989,13 +990,13 @@
     {
       "project_number": 464,
       "project_name": "gappotential_density_measure_component",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Design and land `gapPotential`, the density coordinate of the termination measure. This is the one genuinely OPEN MATHEMATICAL question remaining on the totality terminus; it is research, not plumbing, and should be run with --lit.\n\nTHE PROBLEM, stated exactly. `densityRule` mints a fresh time while lying OUTSIDE BOTH `freshLabelRules` AND `selfGuardRules`. Consequently no disjunct of the current measure moves at a `densityRule` step, FOR ANY sigma WHATSOEVER. This has been open since C9 register entry 17 named it, and task 434's Phase 8 records the current state bluntly: `gapPotential` \"remains implemented nowhere and assumed by nothing\". Because `densityRule` is `denseRules`-gated, this blocks a nonempty `MintPaysForTimeFixed` discharge at `.Dense` and `.Dedekind` frame classes specifically; every frame class needs `gapPotential` for a fully general result.\n\nSHAPE SUGGESTED BY PRIOR WORK (a starting point, NOT a specification to follow blindly): task 434 records the expectation that `gapPotential` is indexed by `U x U` and `denseRules`-gated. Validate or refute that shape as part of the research; if a different indexing is correct, say so and justify it.\n\nHARD REQUIREMENT -- PRESERVATION ACROSS THE IDENTIFICATION ARM. Any candidate component must be preserved across `TimeOrdering.identifyTime`, which can LOWER `ord.timeCount`. This is the same maxTime-lowering mechanism that refuted earlier candidates; see `nextTime_reissues_retired_time` and `reuse_driven_through_engine`, and task 436's oriented-arm re-gate (`orientedGate*` family, :8592-8788) for how the analogous obstacle was handled for the self-guard component. A component that pays at `densityRule` steps but is destroyed by the identification arm is not a solution.\n\nREFUTED ROUTES -- C9 register entries 14, 17, 18, 19, 20, 24. Read them ALL in full before designing anything. In particular entry 14 forbids BOTH (1) re-indexing `mintPotential` on `freshTimeRules` instead of `freshLabelRules` -- refuted by `witnessPresent_eq_false_of_not_freshLabel`, whose match has exactly eight arms so the three added columns are permanently false -- and (2) dropping disjunct 1's cardinality conjunct in favour of the ordering-rank conjunct alone -- refuted by `splitOrderedRank_lt_of_knownTimes_lt` plus `mintPaysForTime_rank_repair_false`. Neither may be re-attempted.\n\nLITERATURE. Run with --lit against the sub-index curated for this line of work, drawing specifically on: venema_2001 section 5 (interval-based temporal logic) for the density/gap-guarded component itself; caleiro_2013 sections 6-7 (mosaic-method decidability for combined tense-and-modal logics) as a structural analogue for a combined-logic termination measure; gerth_1995 and baier_katoen_2008 (closure-set LTL tableau termination) as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000 for rule-bounding technique.\n\nDONE MEANS EITHER: (a) `gapPotential` defined, its payment at `densityRule` steps proved, its preservation across `identifyTime` proved, integrated into the measure, and a nonempty `MintPaysForTimeFixed` discharge extended to `.Dense` and `.Dedekind`; OR (b) a machine-checked impossibility result showing no such component exists at the current measure's shape, with the obstruction identified precisely and a C9 entry recording it. Outcome (b) is a genuine and valuable result, NOT a failure -- this repo's practice is that a proved refutation ranks with a proof, and several of this measure's real advances came from refutations.\n\nPROHIBITED: no `sorry`, no vacuous or false predicate, no weakening presented as a repair (a direction lemma is a GATE, not a nicety -- C9 entry 7 exists because that mistake was made once); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); additive only in MintBound.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green.\n\nDependencies: 462 is a REAL SEMANTIC dependency -- the engine-level assembly is what makes a per-rule payment usable at the successor, and `gapPotential`'s payment needs the same threading. 463 is a file_scope SERIALIZATION edge only (both edit MintBound.lean), with no mathematical content.",
       "created": "2026-08-19T01:33:59Z",
-      "last_updated": "2026-09-18T19:42:15Z",
-      "session_id": "sess_1789758953_24f7fc",
+      "last_updated": "2026-10-16T23:37:26Z",
+      "session_id": "sess_1792193557_775a31_464",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/"
@@ -1567,7 +1568,7 @@
     {
       "project_number": 805,
       "project_name": "jointly_derived_cell_index_gate",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "RESEARCH TASK, verdict-first, on the posture task 559 models: reports and sorry-free evidence probe files under this task's own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation is an explicitly acceptable and successful outcome (as task 773 and task 775 both closed), and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons.\n\nBackground (do not re-derive; cited from .claude/context/project/lean4/domain/ladder-counter-observables.md, source-store original at ~/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md per .claude/rules/source-store-deploy-boundary.md -- edit the source-store path if this guidance itself needs updating, never the deployed .claude/ mirror): three index shapes are refuted on compiled ground -- counter-pair clipping (cell_ne, specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean), gap-carrying clipping (exhibited_form_refuted/exists_form_refuted/cell_succ_ne, ladder-cell-index-obstructions.lean), and the six-coordinate residue-carrying candidate ladderIndexRes T P B AT ITS OBJECT-EXHIBITED (T, P) (object_only_parameters_refuted, reach_period_refuted, ladder-residue-index-refutation.lean). The parameter-origin rule requires B (gap clip) and T (threshold) to be FORMULA-derived (B from the X-nesting and snce-nesting depth of phi; T from at least phi's untl-nesting depth) and P+1 (modulus) to be a multiple of the period of every letter-definable sub-object of the OBJECT, coupled jointly to the formula's letters -- a divisibility condition, not a magnitude one. The named next candidate is parameters (T, P, B) derived from the object AND the formula JOINTLY; it has not been gated by any predecessor.\n\nWork, in order:\n(1) Correct or delete specs/761_ladder_realization_theorem/.blocker-research.json: it is STALE (dated 2026-10-11, pre-dating the fourteenth probe) and recommends the gap-carrying candidate that ladder-cell-index-obstructions.lean has since refuted. It lives under task 761's own directory, so this correction is in scope for a record updating 761's status.\n(2) Define the jointly-derived candidate: B from phi's X-nesting and snce-nesting depth; T from at least phi's untl-nesting depth; P+1 a multiple of the period of every letter-definable sub-object of the given ladder object, via a letter-restricted variant of reachN_eventually_periodic (ported in the fourteenth probe's prototype, specs/archive/773_ladder_cell_index_factorization/prototype/reach-eventual-periodicity.lean).\n(3) Run, BEFORE any sufficiency attempt, the five-part falsification gate as compiled theorems: gate 1 (counters (B,B+1) vs (B,B+2)); gate 2 (counters (2B,4B+2) vs (2B+1,4B+2)); gate 3 (one region further out, and in the past direction); gate 4 ((q,T,n) vs (q,T+(P+1),n) at n=T+(P+1)+B under X^(T+1) r -- rebuilt against the FORMULA-derived T and B, not object-exhibited ones); gate 5 (on the coprime-cycle object, (a,3(P+1)(T+1),n) vs (a,3(P+1)(T+1)+(P+1),n) under p U (r and l_a) with top U l_d in the closure -- rebuilt against the FORMULA-derived P). Gates 4 and 5 are refutations of the exhibited parameters in every predecessor, not separations a candidate passes -- a gate probing one coordinate certifies one coordinate only; passing gates 1-3 says nothing about 4 and 5.\n(4) Report the verdict (survive or refute) as a wired evidence probe, following the thirteenth/fourteenth/fifteenth probes' header convention (what was asked, why no statement exists or what is settled, what the probe does NOT say), registered in scripts/check-evidence-probes.sh.\n(5) If the gate is survived, attempt the positive factorization lemma carrying these four open proof obligations verbatim as what it would need to meet (named so they are not rediscovered): (a) eventual periodicity of the realizable types in the countdown over the product of the object with the closure; (b) a region-length pumping lemma for untl/snce-depth-bounded formulas; (c) the next deadline's coupling through Drift; (d) the box/stab letters through the anchor-layer equations (box_mem_tpOf_iff, stab_mem_tpOf_iff). If not costable within this round, name the obligations as the next round's scope rather than attempting a shortcut -- do not state a weakened LadderCons without the box/stab clause (stab_mem_tpOf_iff is per cell; dropping the clause publishes a same-named weaker statement, forbidden by plan-compliance.md's Statement Fidelity section).\n\nWhat is NOT in question and must not be re-attacked: the SET of cells of any regular Z-model is finite and bounded (anchorCells_finite, anchorCells_ncard_le <= 2^(2^|cl phi|), RaySummary/AnchorLayer.lean) -- only the computable INDEX is open. What is proved positively so far is fixture-level only (qp_cell_eq_of_depth_parity on the two-state object, box/stab-free phi) and is explicitly not the factorization lemma.\n\nNot costable as a full proof attempt; the gate run (steps 1-4) is costable and is the first deliverable.",
       "effort": "3-5 hours for the correction, candidate definition, gate run, and report (precedents closed in ~1-1.6h against ~9h filed estimates); the positive sufficiency attempt in step (5) beyond a survived gate is not costable and may be deferred to a successor record",
@@ -1575,13 +1576,17 @@
       "topic": "decidability",
       "dependencies": [],
       "file_scope": [
-        "specs/761_ladder_realization_theorem/.blocker-research.json",
-        "specs/evidence/seam-gluing-ray-product/",
+        "/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md",
         "scripts/check-evidence-probes.sh",
-        "/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md"
+        "specs/761_ladder_realization_theorem/.blocker-research.json",
+        "specs/805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md",
+        "specs/805_jointly_derived_cell_index_gate/summaries/02_joint-index-gate-verdict-summary.md",
+        "specs/evidence/seam-gluing-ray-product/",
+        "specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean",
+        "typst/generated/status.typ"
       ],
       "created": "2026-10-16T10:44:05Z",
-      "last_updated": "2026-10-16T10:45:58Z",
+      "last_updated": "2026-10-16T23:54:04Z",
       "artifacts": [
         {
           "type": "research",
@@ -1597,9 +1602,15 @@
           "path": "specs/805_jointly_derived_cell_index_gate/reports/02_joint-index-gate-verdict.md",
           "type": "report",
           "summary": "Gate verdict: the jointly-derived six-coordinate cell index is REFUTED at the parameter-origin rule's own parameters; gates 1-3 pass, gates 4 and 5 are disarmed, and a new sixth mechanism (a formula can carve out a sub-object its letters cannot name) refutes the modulus clause, leaving a strictly stronger necessary condition and no positive lemma."
+        },
+        {
+          "path": "specs/805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md",
+          "type": "plan",
+          "summary": "Three-phase close-out plan: re-measure landed evidence, record-consistency sweep plus no-substitute attestation, completion summary under the full gate set."
         }
       ],
-      "next_artifact_number": 3
+      "next_artifact_number": 3,
+      "session_id": "sess_1792193557_775a31"
     },
     {
       "project_number": 807,
@@ -1609,7 +1620,15 @@
       "topic": "decidability",
       "priority": "high",
       "description": "RESEARCH TASK, verdict-first -- reports and a sorry-free evidence probe under specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation (no such formula exists, or the attempt fails) is an acceptable and successful outcome.\n\nBACKGROUND (ROADMAP.md Stage 1, \"Two risks not covered\" table; do not re-derive): the stab clause (PlusLanguage/PlusTruth.lean:93, `.stab phi => forall sigma, tau.state t = sigma.state t -> PlusTruthAt M sigma t phi`) fails the backward closure condition of the historical-necessity tradition (Thomason 1984 Section 4 Def. 6(2); Caleiro-Vigano-Volpe Def. 2.5 Wdc), which is the stated reason the corpus literature's published negative decidability results do not transfer to L+ (see specs/literature/README.md). This is the ONE route by which a published negative result could reach L+: if a closed L+ formula can force backward determinism on a regular Z-frame, the know-time-do-not-forget family becomes a reduction target and the whole Stage 1 decidability programme would need to confront a genuine undecidability threat rather than an open search.\n\nWHY CHEAP: Probe719Backward (specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean) and Probe733Mirror (backward-dual-mirror-fixture.lean) already inhabit the backward factor needed to test this -- Probe719Backward is backward-deterministic by construction (singleton backward factor, step_inv_pre/x/post), Probe733Mirror branches (backward factor exactly 2 at every aft(k+1)). The check is one fixture: construct (or refute the existence of) a closed L+ formula phi such that validity of phi on a regular Z-frame forces every world state's backward factor to collapse to a singleton -- i.e. phi is Z-valid only on frames satisfying the Wdc-style backward-closure condition the historical-necessity literature needs for its negative results.\n\nWORK, in order:\n(1) State the backward-closure condition precisely as a frame property on TaskFrame/regular Z-frames, dual to whatever forward-determinism or confluence property the historical-necessity reduction needs (ground this in Thomason 1984 Section 4 Def 6(2) and Caleiro-Vigano-Volpe Def 2.5 Wdc; run with --lit against specs/literature/ for both sources).\n(2) Attempt to construct a closed L+ formula (built from stab/box/untl/snce) whose Z-validity forces this property, using Probe733Mirror's branching fixture as the test bed for whether such a formula's negation is satisfiable there (it should NOT be, if no forcing formula exists at this fixture) and Probe719Backward as the positive/degenerate control.\n(3) Report the verdict (forcing formula exists / does not exist on this evidence) as a wired evidence probe, following the existing probes' header convention, registered in scripts/check-evidence-probes.sh.\n(4) If a forcing formula is found: STOP and escalate as a Stage 0 user ruling (per risks table framing: \"the know-time-do-not-forget family becomes a reduction target\") -- do not attempt the reduction itself in this task. If refuted: update the \"Two risks not covered\" table in ROADMAP.md Stage 1 to record the closed check and its negative verdict.\n\nGUARDRAILS: no sorry/axiom/native_decide/vacuous definition; the check is about frame-level forcing, not about re-deriving stab's existing truth clause; do not weaken or restate PlusTruth.lean's stab clause under any name.",
-      "created": "2026-10-16T15:17:57Z"
+      "created": "2026-10-16T15:17:57Z",
+      "dependencies": [
+        809
+      ],
+      "file_scope": [
+        "scripts/check-evidence-probes.sh",
+        "specs/evidence/seam-gluing-ray-product/"
+      ],
+      "last_updated": "2026-10-16T22:30:16Z"
     },
     {
       "project_number": 808,
@@ -1660,13 +1679,16 @@
       "effort": "Adequacy alone is the costable first deliverable; the full gate re-run beyond it is not costable in one round",
       "parent_task": 806,
       "topic": "decidability",
-      "dependencies": [],
+      "dependencies": [
+        734,
+        805
+      ],
       "file_scope": [
         "scripts/check-evidence-probes.sh",
         "specs/evidence/seam-gluing-ray-product/"
       ],
       "created": "2026-10-16T19:47:38Z",
-      "last_updated": "2026-10-16T19:47:38Z",
+      "last_updated": "2026-10-16T22:31:35Z",
       "artifacts": []
     }
   ],

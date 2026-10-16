@@ -1,38 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/805_jointly_derived_cell_index_gate/reports/02_joint-index-gate-verdict.md",
-      "summary": "Gate verdict: the jointly-derived six-coordinate cell index is REFUTED at the parameter-origin rule's own parameters; gates 1-3 pass, gates 4 and 5 are disarmed, and a new sixth mechanism (a formula can carve out a sub-object its letters cannot name) refutes the modulus clause, leaving a strictly stronger necessary condition and no positive lemma."
-    },
-    {
-      "type": "evidence-probe",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean",
-      "summary": "Sixteenth wired evidence probe, 1580 lines, sorry-free, no new axiom: the six-part falsification gate as compiled theorems, ending in rule_derived_parameters_refuted. Registered in scripts/check-evidence-probes.sh; the guard reports PASS on all 34 wired probes."
+      "type": "plan",
+      "path": "specs/805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md",
+      "summary": "Close-out plan for the REFUTED verdict: three phases, 2.25 hours -- re-measure the landed probe evidence, sweep the four records for consistency with the verdict and attest no weakened substitute, then write the completion summary under the full gate set."
     }
   ],
-  "user_decision": {
-    "question": "Every cell-index shape the governing guidance anticipated is now refuted on compiled ground, so task 761's realization theorem cannot be stated over any index on record. Which standing alternative should the successor record take?",
-    "options": [
-      "R1 - A different presentation of a cell: a set-valued per-state datum over a quotient rather than a wider tuple, opened as a research-first record whose first obligation is eventual periodicity of the realizable types over the product of the object with the closure (which gate 6 promoted from a proof step to a necessary condition).",
-      "R2 - Land the index-free, box/stab-free run-layer half under an honest name such as LadderRunCons, retaining slive and replacing only ulive; roughly 250-350 lines, lands none of the acceptance criterion, has no consumer in the tree.",
-      "Neither for now - leave task 761 [BLOCKED] on the record as corrected, with no successor opened."
-    ],
-    "recommended": "R1 - A different presentation of a cell: a set-valued per-state datum over a quotient rather than a wider tuple, opened as a research-first record whose first obligation is eventual periodicity of the realizable types over the product of the object with the closure (which gate 6 promoted from a proof step to a necessary condition).",
-    "blocking": false
-  },
+  "next_steps": "Run /implement 805 to execute the plan",
+  "phase_count": 3,
+  "estimated_hours": 2.25,
+  "dependency_waves": [[1, 2], [3]],
+  "memory_candidates": [
+    {
+      "content": "When a verdict-first research task's dispatch deliverables all land inside the research round (probe written, registered, parent record corrected) and its one remaining step was explicitly conditional on a gate being survived, the plan round is a CLOSE-OUT round, not a proof round: three phases -- (1) re-measure the landed evidence in this dispatch rather than trusting the research round's 'measured this session' claims, (2) sweep every record that carries the verdict for mutual consistency plus a mechanical attestation that no weakened same-named substitute was published, (3) write the completion summary under the full gate set. Two checks before planning prevent wasted scope: read state.json for sibling tasks that may already have discharged a recorded user ruling (a successor record may exist and be completed), and re-derive every count carried from the research report (a probe-collection count goes stale as soon as a sibling round adds a probe).",
+      "category": "PATTERN",
+      "source_artifact": "specs/805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md",
+      "confidence": 0.65,
+      "suggested_keywords": ["close-out-plan", "verdict-first-research", "carried-figure-staleness", "evidence-probe-remeasure", "conditional-step-removed", "sibling-record-check"]
+    }
+  ],
   "metadata": {
-    "session_id": "sess_1792155187_c7fdae_805",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1792193557_775a31_805",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "verification": {
-      "probe_compile": "lake env lean specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean -> exit 0, sorry-free",
-      "probe_guard": "bash scripts/check-evidence-probes.sh -> PASS all 34 wired probe(s) compile",
-      "report_validator": "bash .claude/scripts/validate-artifact.sh <report> report -> PASS, 0 warnings"
-    },
-    "out_of_repo_edit": "~/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md updated with mechanism (6), gate 6 and the strengthened modulus clause; outside this repository, needs its own commit in the source store."
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 8
 }
