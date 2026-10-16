@@ -450,7 +450,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: Deliverable (3a) — The Certificate Type, Its Decidable Check, and Soundness [NOT STARTED]
+### Phase 7: Deliverable (3a) — The Certificate Type, Its Decidable Check, and Soundness [COMPLETED]
 
 - **Goal:** A finite prefix-plus-cycle-each-way certificate at a bare `FrameOver`, a `Bool`-valued
   check that it presents a possible world through a given bounded window, and the soundness of

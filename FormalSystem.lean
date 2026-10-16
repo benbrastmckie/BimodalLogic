@@ -146,6 +146,7 @@ import FormalSystem.Metalogic.Decidability.FMP.FMP
 import FormalSystem.Metalogic.Decidability.FMP.Filtration
 import FormalSystem.Metalogic.Decidability.FMP.FiniteModel
 import FormalSystem.Metalogic.Decidability.FMP.TruthPreservation
+import FormalSystem.Metalogic.Decidability.FrameLassoCertificate
 import FormalSystem.Metalogic.Decidability.IntPresentation
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Basic
