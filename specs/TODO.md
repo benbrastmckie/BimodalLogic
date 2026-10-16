@@ -1,5 +1,5 @@
 ---
-next_project_number: 806
+next_project_number: 807
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 806
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805,806 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,761,783 | 298,464,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,428,498,499,500,763 | 231,465,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -93,6 +93,7 @@ next_project_number: 806
 805 [RESEARCHED] — RESEARCH TASK, verdict-first, on the posture task 559 models:...
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
+806 [NOT STARTED] — RESEARCH TASK, research-first successor to the refuted...
 
 ### Formula Refactor
 
@@ -127,6 +128,37 @@ next_project_number: 806
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 806. Set valued cell quotient index
+- **Effort**: Step (1) alone (closure-indexed eventual periodicity of the realizable types) is the costable first deliverable; the full gate re-run and sufficiency attempt are not costable in one round
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 761
+
+**Description**: RESEARCH TASK, research-first successor to the refuted cell-index line. Parent: task 761 (ladder realization theorem), which stays [BLOCKED] on the corrected record. Scope: reports and sorry-free evidence probe files under this task's own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation is an acceptable and successful outcome, and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons (plan-compliance.md Statement Fidelity).
+
+Background, settled on compiled ground -- do not re-derive, do not re-attack: FOUR index shapes are now refuted, each by a wired evidence probe under specs/evidence/seam-gluing-ray-product/. (1) counter-pair clipping (cell_ne, ladder-cell-refutation.lean); (2) gap-carrying clipping (exhibited_form_refuted/exists_form_refuted/cell_succ_ne, ladder-cell-index-obstructions.lean); (3) the six-coordinate residue-carrying candidate at its OBJECT-EXHIBITED (T,P) (object_only_parameters_refuted, reach_period_refuted, ladder-residue-index-refutation.lean); (4) the SAME six-coordinate body at parameters derived from the object AND the formula JOINTLY in the sense the parameter-origin rule states -- B from phi's X- and snce-nesting depth, T from its untl-nesting depth, P+1 a multiple of the period of every LETTER-DEFINABLE sub-object (rule_derived_parameters_refuted, ladder-joint-index-refutation.lean). In that fourth probe gates 1-3 separate, gate 4 is disarmed by a diagonal that cannot close (the depth-(T+1) next-chain costs untl-depth exactly T+1, so it lies in the closure of no formula of untl-depth at most T), gate 5 is disarmed at a rule-admissible modulus, and GATE 6 REFUTES via a sixth mechanism: the rule's modulus clause quantifies over sub-objects a formula's LETTERS can name, but a formula can carve out a sub-object no set of atoms carves out, by forbidding a PATTERN (the letter-free (p and l_a) and X X (p and l_a), on the coprime-cycle object with d given b's letter, forces region length to be a multiple of three and separates a pair the index identifies for every (T,P,B)).
+
+What gate 6 leaves standing, and what this record is for: a strictly STRONGER necessary condition survives -- the modulus must cover the period of every sub-object the formula's CLOSURE carves out (the object-closure product), not merely the letter-definable ones. This promotes the first of the four standing proof obligations from a proof step into a necessary condition on the index's own parameter. No seventh tuple coordinate is to be proposed: the tuple-widening line is spent.
+
+The candidate this record investigates: a DIFFERENT PRESENTATION OF A CELL -- a set-valued per-state datum over a quotient, rather than a wider tuple.
+
+Work, in order:
+(1) First obligation, and the gate on everything after it: eventual periodicity of the REALIZABLE TYPES in the countdown over the product of the object with the closure. Gate 6 promoted this from a proof step to a necessary condition, so it is attacked first and on its own. A letter-restricted variant of reachN_eventually_periodic is NOT sufficient here -- the restriction must be closure-indexed, not letter-indexed; that is exactly the gap gate 6 exhibited. Prototype at specs/archive/773_ladder_cell_index_factorization/prototype/reach-eventual-periodicity.lean.
+(2) Define the set-valued cell over the quotient, and state what the quotient is quotienting BY. Say explicitly which of the four refuted shapes it is not a re-presentation of, and why the gate-6 pattern-definable sub-object does not re-refute it.
+(3) Before any sufficiency attempt, re-run the pattern-definability separation of gate 6 against the new presentation, plus the three region separations (gates 1-3) and the two coordinate refutations (gates 4-5) rebuilt against whatever parameters the presentation carries. A gate probing one coordinate certifies one coordinate only; passing an earlier gate says nothing about a later one.
+(4) Report the verdict (survive or refute) as a wired evidence probe, following the header convention of the probes already in the collection (what was asked, why no statement exists or what is settled, what the probe does NOT say), registered in scripts/check-evidence-probes.sh.
+(5) Only if the gate is survived: the three remaining standing obligations, named here so they are not rediscovered -- (b) a region-length pumping lemma for untl/snce-depth-bounded formulas; (c) the next deadline's coupling through Drift; (d) the box/stab letters through the anchor-layer equations (box_mem_tpOf_iff, stab_mem_tpOf_iff). Do not state a LadderCons without the box/stab clause: stab_mem_tpOf_iff is per cell, and dropping the clause publishes a same-named weaker statement.
+
+What is NOT in question and must not be re-attacked: the SET of cells of any regular Z-model is finite and bounded (anchorCells_finite, anchorCells_ncard_le at most 2^(2^|cl phi|), RaySummary/AnchorLayer.lean). Only the computable INDEX is open. What is proved positively so far is fixture-level only (qp_cell_eq_of_depth_parity, two-state object, box/stab-free phi) and is explicitly not the factorization lemma.
+
+Fixture reuse available: ladder-joint-index-refutation.lean's fixtures are label-generic, so the frame/regularity/history layer of the coprime-cycle object ports verbatim; only the labelling and the separating formula change.
+
+Step (1) is costable on its own and is the first deliverable. The full sufficiency attempt is not costable in one round.
+
+---
 
 ### 805. Jointly derived cell index gate
 - **Effort**: 3-5 hours for the correction, candidate definition, gate run, and report (precedents closed in ~1-1.6h against ~9h filed estimates); the positive sufficiency attempt in step (5) beyond a survived gate is not costable and may be deferred to a successor record
