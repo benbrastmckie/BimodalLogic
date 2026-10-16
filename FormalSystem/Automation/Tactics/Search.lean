@@ -12,6 +12,7 @@ import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.LinearityDerived
 import FormalSystem.Metalogic.CompletenessDerived
+import FormalSystem.Theorems.DiscreteUnfolding
 
 /-!
 # The bounded proof-search engine
@@ -159,7 +160,7 @@ by `decide`, so the match fails at frame classes where the schema is not a theor
 def tryGatedDerivedMatch (goal : MVarId) : TacticM Bool := do
   for lemmaName in [``DerivedAxioms.priorSZ, ``DerivedAxioms.priorSGap,
       ``FormalSystem.Theorems.LinearityDerived.density,
-      ``FormalSystem.Metalogic.CompletenessDerived.z1Thm] do
+      ``FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt] do
     let result ← observing? do
       setGoals [goal]
       let newGoals ← goal.apply (← mkConstWithFreshMVarLevels lemmaName)

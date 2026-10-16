@@ -12,6 +12,7 @@ import FormalSystem.Metalogic.CompletenessDerived
 -- (which declares a second `realOrder` in a namespace this file also opens) stays out of this
 -- module's import closure; importing it here reintroduces an `Ambiguous term realOrder` error.
 import FormalSystem.Semantics.Correspondence.RigidityReal
+import FormalSystem.Theorems.DiscreteUnfolding
 
 /-!
 # Sharpness of the `.ZTime` tag of `Axiom.minFrameClass`
@@ -161,10 +162,10 @@ example (φ : Formula) : Axiom (φ.someFuture.imp (Formula.untl φ.neg φ)) := A
 
 /-- Shape pin: the formula below is exactly Z1's, the derived
 `Metalogic.CompletenessDerived.z1Thm` (a theorem at `FrameClass.ZTime`). -/
-noncomputable example (φ : Formula) :
+example (φ : Formula) :
     DerivationTree FrameClass.ZTime []
       ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
-  FormalSystem.Metalogic.CompletenessDerived.z1Thm φ
+  FormalSystem.Theorems.DiscreteUnfolding.z1Schema φ
 
 /-! ## The order fact -/
 

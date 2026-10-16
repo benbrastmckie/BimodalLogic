@@ -399,31 +399,31 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Redirect the Five Term-Level Z1 Consumers [NOT STARTED]
+### Phase 5: Redirect the Five Term-Level Z1 Consumers [COMPLETED]
 
 - **Goal:** Every term-level use of `CompletenessDerived.z1Thm` points at the direct derivation,
   so that the module can be deleted.
 - **Tasks:**
-  - [ ] `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` — the shape pin at the
+  - [x] `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` — the shape pin at the
     `noncomputable example`: point it at `Theorems.DiscreteUnfolding.z1Schema` and drop the
     `noncomputable` modifier, which the direct tree no longer needs.
-  - [ ] `FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean` — the same treatment for
+  - [x] `FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean` — the same treatment for
     its own `noncomputable example` shape pin. This site is **not** in the dispatch's list; it is
     the report's addition.
-  - [ ] `FormalSystem/Metalogic/Conservativity/Backward.lean` — `z1_translate`'s
+  - [x] `FormalSystem/Metalogic/Conservativity/Backward.lean` — `z1_translate`'s
     `impTrans (… z1Thm (tr φ)) …` becomes `impTrans (… z1Schema (tr φ)) …`.
-  - [ ] `FormalSystem/Metalogic/Conservativity/Plus/AxiomValidity.lean` — both branches
+  - [x] `FormalSystem/Metalogic/Conservativity/Plus/AxiomValidity.lean` — both branches
     (`plusValidIn_of_tm_deriv` and `plusValidIn_reflect_time_of_tm_deriv`) take `z1Schema` in
     place of `z1Thm`; if either branch wants the gated form, use `z1SchemaAt`.
-  - [ ] `FormalSystem/Automation/Tactics/Search.lean` — replace
+  - [x] `FormalSystem/Automation/Tactics/Search.lean` — replace
     ``FormalSystem.Metalogic.CompletenessDerived.z1Thm`` in `tryGatedDerivedMatch`'s lemma-name
     list with ``FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt``, the gated form the
     `apply`-then-`decide` discharge expects.
-  - [ ] In each of the five files, add the `FormalSystem.Theorems.DiscreteUnfolding` import if it
+  - [x] In each of the five files, add the `FormalSystem.Theorems.DiscreteUnfolding` import if it
     is not already reachable, but leave the `FormalSystem.Metalogic.CompletenessDerived` import
     in place — Phase 6 removes it, and removing it here would red the build before the
     docstrings that still cite the old name are rewritten.
-  - [ ] Leave every *docstring* mention of `CompletenessDerived.z1Thm` untouched in this phase;
+  - [x] Leave every *docstring* mention of `CompletenessDerived.z1Thm` untouched in this phase;
     Phase 7 owns the prose, and a backticked name in a comment does not break the build.
 - **Timing:** 1.5 hours
 - **Depends on:** 4
@@ -454,7 +454,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Delete `CompletenessDerived.lean` and Its Import Sites [NOT STARTED]
+### Phase 6: Delete `CompletenessDerived.lean` and Its Import Sites [IN PROGRESS]
 
 - **Goal:** The module, its two remaining declarations and all seven imports of it are gone, and
   the library root is current.

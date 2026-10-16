@@ -206,7 +206,7 @@ CEF being discharged, since `forward` is refuted rather than open.
 theorem z1_translate (φ : MinusFormula) :
     ProofSystem.Derivable FrameClass.ZTime [] (tr (Z1 φ)) :=
   ⟨FormalSystem.Theorems.Combinators.impTrans
-    (FormalSystem.Metalogic.CompletenessDerived.z1Thm (tr φ))
+    (FormalSystem.Theorems.DiscreteUnfolding.z1Schema (tr φ))
     (MinusLanguage.impMono
       (MinusLanguage.notGNotImpF (tr φ).allFuture)
       (FormalSystem.Theorems.Combinators.identity (tr φ).allFuture))⟩

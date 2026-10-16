@@ -8,6 +8,7 @@ import FormalSystem.Semantics.Correspondence.DurationFrames
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.CompletenessDerived
 import FormalSystem.Semantics.LexCarrier
+import FormalSystem.Theorems.DiscreteUnfolding
 
 /-!
 # `UZ` and `Z1` fail over every non-Archimedean discrete temporal order
@@ -106,10 +107,10 @@ example (φ : Formula) : Axiom (φ.someFuture.imp (Formula.untl φ.neg φ)) := A
 
 /-- Shape pin: the formula below is exactly Z1's, the derived
 `Metalogic.CompletenessDerived.z1Thm` (a theorem at `FrameClass.ZTime`). -/
-noncomputable example (φ : Formula) :
+example (φ : Formula) :
     DerivationTree FrameClass.ZTime []
       ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
-  FormalSystem.Metalogic.CompletenessDerived.z1Thm φ
+  FormalSystem.Theorems.DiscreteUnfolding.z1Schema φ
 
 /-! ## The two frame-level refutations -/
 

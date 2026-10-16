@@ -12,6 +12,7 @@ import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.ConnectDerived
 import FormalSystem.Theorems.LinearityDerived
 import FormalSystem.Metalogic.CompletenessDerived
+import FormalSystem.Theorems.DiscreteUnfolding
 
 /-!
 # Validity and reflection-validity of every TM⁺ axiom schema
@@ -156,7 +157,7 @@ theorem plusAxiom_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
       (DerivedAxioms.priorSZ le_rfl (A a0))
   | z1 a0 =>
     exact plusValidIn_of_tm_deriv theEncoding _
-      (FormalSystem.Metalogic.CompletenessDerived.z1Thm (A a0))
+      (FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt le_rfl (A a0))
   | density a0 =>
     exact plusValidIn_of_tm_deriv theEncoding _
       (FormalSystem.Theorems.LinearityDerived.density le_rfl (A a0))
@@ -288,7 +289,7 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
       (DerivedAxioms.priorSZ le_rfl (A' a0))
   | z1 a0 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
-      (FormalSystem.Metalogic.CompletenessDerived.z1Thm (A' a0))
+      (FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt le_rfl (A' a0))
   | density a0 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       (FormalSystem.Theorems.LinearityDerived.density le_rfl (A' a0))
