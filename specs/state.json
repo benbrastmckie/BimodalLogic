@@ -1614,7 +1614,7 @@
     {
       "project_number": 808,
       "project_name": "c16_unused_finite_instance_shiftfinitetype",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Fix the C16 env_linter failure that fails check-module-invariants.sh today: FormalSystem.Semantics.FrameOver.mem_HF_iff_no_forbidden at FormalSystem/Semantics/ShiftFiniteType.lean:149 carries an unused [Finite F.WorldState] instance argument, beyond the baseline recorded in scripts/nolints.json. The gate exits 1 on FAIL C16 while every other invariant group passes, including both C1 lake build groups.\n\nProvenance: the file was last touched 2026-10-15 by commit 250a74ae0 under a different task; the task whose gate set surfaced this had an empty diff over FormalSystem/ and forbade the fix by an explicit Non-Goal, so it was escalated rather than repaired in place.\n\nScope: FormalSystem/Semantics/ShiftFiniteType.lean, and scripts/nolints.json only if the baseline genuinely needs an entry rather than the signature needing the edit. Dropping [Finite F.WorldState] is a change to a public signature, so the deliverable is a verified full lake build plus check-module-invariants.sh exit 0 -- confirm every call site of mem_HF_iff_no_forbidden still elaborates (lean_references before editing), since an instance binder other code relies on for unification cannot simply be deleted. If the binder turns out to be load-bearing at a call site, record that and add the nolints entry instead, stating why.\n\nDO NOT run lake exe runLinter --update: it would grandfather this regression into the baseline wholesale instead of resolving it. Prefer the signature edit over a nolints entry unless the call-site evidence rules it out.\n\nDeliverable: check-module-invariants.sh exit 0, full lake build exit 0, sorry count unchanged at 0.",
       "effort": "Small -- a one-binder signature edit under FormalSystem/, gated on a call-site check and a full verified lake build",
@@ -1626,8 +1626,16 @@
         "scripts/nolints.json"
       ],
       "created": "2026-10-16T19:47:38Z",
-      "last_updated": "2026-10-16T19:47:38Z",
-      "artifacts": []
+      "last_updated": "2026-10-16T21:23:21Z",
+      "artifacts": [
+        {
+          "path": "specs/808_c16_unused_finite_instance_shiftfinitetype/reports/01_c16-unused-finite-instance.md",
+          "type": "report",
+          "summary": "C16 env_linter finding reproduced as exactly one unused argument ([Finite F.WorldState], argument 3) on FrameOver.mem_HF_iff_no_forbidden; three independent probes show zero call sites and a compiled probe closes the binder-free statement with an unchanged axiom profile, so the signature edit is recommended over a nolints.json entry or an in-source @[nolint] attribute."
+        }
+      ],
+      "session_id": "sess_1792185388_11cdc4",
+      "next_artifact_number": 2
     },
     {
       "project_number": 809,
