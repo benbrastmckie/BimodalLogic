@@ -116,6 +116,24 @@ theorem nside_pair_ne (T P B c : ℕ) : xN T B c ≠ yN T P B c := by
   simp only [xN, yN, st] at h2
   omega
 
+/-- **GATE 9'S COLLISION HALF.**  The refuted tuple's n-side coordinates are BLIND to the shift
+`n ↦ n + (P + 1)`: at every `(T, P, B)` and every countdown `c`, the whole index agrees on the
+pair.  The threshold coordinate agrees because `T ≤ T + c + B`; the residue coordinate agrees
+because the shift is by the modulus itself; the clipped gap agrees because `T + 2B` and
+`T + 2B + (P + 1)` both saturate `2B`.
+
+So passing gates 1 and 2 does NOT make this shape adequate as the datum the next-deadline side
+needs.
+
+GATE 9'S REFUTING HALF IS NOT ATTEMPTED HERE, and gate 9 is therefore OPEN -- neither passed nor
+refuted.  That half would be a formula on the coprime-cycle object giving `xN` and `yN` different
+cells, which needs the sixteenth probe's whole model layer (`F5`, `M6`, `hist_path5`, `cellAt`); a
+probe may not import a probe, and that layer is not restated here. -/
+theorem nside_collides (T P B c : ℕ) :
+    ladderIndexJnt T P B (xN T B c) = ladderIndexJnt T P B (yN T P B c) := by
+  simp only [ladderIndexJnt, xN, yN, st, Prod.mk.injEq, Fin.mk.injEq, true_and]
+  and_intros <;> first | omega | simp [Nat.add_mod_right]
+
 end Probe806N
 
 /-! ## Axiom check -/
@@ -123,3 +141,4 @@ end Probe806N
 #print axioms Probe806N.gate1_gap_separates
 #print axioms Probe806N.gate2_residue_separates
 #print axioms Probe806N.nside_pair_ne
+#print axioms Probe806N.nside_collides
