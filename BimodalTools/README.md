@@ -399,7 +399,7 @@ implementation obligation and stays where it is.
 | `JsonParse.lean` | 268 | The tag-format JSON parser: `PState`, the scalar and skip primitives, and `pFormula`; now serving the tableau bridge ONLY — the certificate envelope moved to the verified codec in `CanonicalWire/` |
 | `MachineAppendixMain.lean` | 458 | <!-- TODO: add description --> |
 | `PrefilterSoundness.lean` | 172 | <!-- TODO: add description --> |
-| `ProofExtractorMain.lean` | 1,524 | <!-- TODO: add description --> |
+| `ProofExtractorMain.lean` | 1,533 | <!-- TODO: add description --> |
 | `ProofFirstBenchmark.lean` | 194 | <!-- TODO: add description --> |
 | `ProofFirstGenerator.lean` | 160 | The proof-first export pipeline: `exportToJsonl`, `writeJsonl`, the argument parsers, and `runProofFirstGenerator`, the whole command-line body |
 | `ProofFirstGeneratorMain.lean` | 21 | Executable root of `lake exe proof_first_generator`: `main` only; calls `runProofFirstGenerator` |
