@@ -346,22 +346,22 @@ histories, and non-vacuity.
 
 ---
 
-### Phase 4: The Countdown Profile Separates Gate 6's Pair and Is Not Period 1 [IN PROGRESS]
+### Phase 4: The Countdown Profile Separates Gate 6's Pair and Is Not Period 1 [COMPLETED]
 
 **Goal**: Define the countdown profile on the fixture and prove the four profile Goals plus the
 ported object contrast: `prof6_fibre_a_of_mem`, `prof6_fibre_a_witness`,
 `prof6_separates_gate6_pair`, `prof6_period_not_one`, `reach5_eventually_constant`.
 
 **Tasks**:
-- [ ] Define `Ea : Finset (ProdState Q5 chi) := Finset.univ.filter (fun x => x.1 = a5)` and `Prof6 (k : ℕ) := (prodPreStep coh6)^[k] Ea` as `def`s, with a docstring: `Ea` is the fibre over the pending `a` that `endA` makes the region's last pending state; `Prof6 k` is the set of product states from which a `coh6`-chain of length `k` reaches that fibre — the countdown profile at distance `k`, parameter-free.
-- [ ] Prove `mem_prof6_succ (x) (k) : x ∈ Prof6 (k+1) ↔ ∃ y ∈ Prof6 k, coh6 x y = true` via `Function.iterate_succ_apply'`, `Finset.mem_filter`, `Finset.mem_univ`.
-- [ ] Prove `prof6_chain (x) (k) (h : x ∈ Prof6 k) : ∃ g : ℕ → ProdState Q5 chi, g 0 = x ∧ (∀ i, i < k → coh6 (g i) (g (i+1)) = true) ∧ (g k).1 = a5` by induction on `k` generalising `x` (prepend `x` to the chain the inductive hypothesis returns: `g' 0 := x`, `g' (i+1) := g i`).
-- [ ] `prof6_fibre_a_of_mem`: `prof6_chain` then `coh6_chain_a_to_a_mod3`.
-- [ ] `prof6_fibre_a_witness`: induction on `m` with `k = 3 * m`; the step uses `mem_prof6_succ` three times with the witness cycle `(a5,Ta) → (b5,Tb) → (c5,Tc) → (a5,Ta)` from `coh6_cycle_witness`; the base is `(a5, Ta) ∈ Ea` by `Finset.mem_filter`.
-- [ ] `prof6_separates_gate6_pair`: `(a5, Ta) ∈ Prof6 C` by the witness; if `Prof6 C = Prof6 (C + (P+1))` then `(a5, Ta) ∈ Prof6 (C + (P+1))`, so `3 ∣ C + (P+1)` by `prof6_fibre_a_of_mem` with `chi ∈ Ta.1` (from `coh6_cycle_witness`), contradicting `3 ∣ C` and `¬ 3 ∣ P+1` by `omega`. These are exactly the countdowns of the sixteenth probe's `x5 T P B` and `y5 T P B` (`c5 T P` and `c5 T P + (P+1)`, with `c5_dvd`), at every `P` for which that probe's `cell6_ne` holds.
-- [ ] `prof6_period_not_one`: same shape with `k` and `k+1`.
-- [ ] `reach5_eventually_constant`: port the proof verbatim from the sixteenth probe (it depends only on the ported `reach5_four` and `reachStep5_univ`). This is the gate-5 contrast: the object's full-graph reach set has period 1 from threshold 4; the profile's `a`-fibre is nonempty at exactly the multiples of 3 for `chi`-types.
-- [ ] Append `#print axioms` for the five Goals; commit as a green sub-step.
+- [x] Define `Ea : Finset (ProdState Q5 chi) := Finset.univ.filter (fun x => x.1 = a5)` and `Prof6 (k : ℕ) := (prodPreStep coh6)^[k] Ea` as `def`s, with a docstring: `Ea` is the fibre over the pending `a` that `endA` makes the region's last pending state; `Prof6 k` is the set of product states from which a `coh6`-chain of length `k` reaches that fibre — the countdown profile at distance `k`, parameter-free.
+- [x] Prove `mem_prof6_succ (x) (k) : x ∈ Prof6 (k+1) ↔ ∃ y ∈ Prof6 k, coh6 x y = true` via `Function.iterate_succ_apply'`, `Finset.mem_filter`, `Finset.mem_univ`.
+- [x] Prove `prof6_chain (x) (k) (h : x ∈ Prof6 k) : ∃ g : ℕ → ProdState Q5 chi, g 0 = x ∧ (∀ i, i < k → coh6 (g i) (g (i+1)) = true) ∧ (g k).1 = a5` by induction on `k` generalising `x` (prepend `x` to the chain the inductive hypothesis returns: `g' 0 := x`, `g' (i+1) := g i`).
+- [x] `prof6_fibre_a_of_mem`: `prof6_chain` then `coh6_chain_a_to_a_mod3`.
+- [x] `prof6_fibre_a_witness`: induction on `m` with `k = 3 * m`; the step uses `mem_prof6_succ` three times with the witness cycle `(a5,Ta) → (b5,Tb) → (c5,Tc) → (a5,Ta)` from `coh6_cycle_witness`; the base is `(a5, Ta) ∈ Ea` by `Finset.mem_filter`.
+- [x] `prof6_separates_gate6_pair`: `(a5, Ta) ∈ Prof6 C` by the witness; if `Prof6 C = Prof6 (C + (P+1))` then `(a5, Ta) ∈ Prof6 (C + (P+1))`, so `3 ∣ C + (P+1)` by `prof6_fibre_a_of_mem` with `chi ∈ Ta.1` (from `coh6_cycle_witness`), contradicting `3 ∣ C` and `¬ 3 ∣ P+1` by `omega`. These are exactly the countdowns of the sixteenth probe's `x5 T P B` and `y5 T P B` (`c5 T P` and `c5 T P + (P+1)`, with `c5_dvd`), at every `P` for which that probe's `cell6_ne` holds.
+- [x] `prof6_period_not_one`: same shape with `k` and `k+1`.
+- [x] `reach5_eventually_constant`: port the proof verbatim from the sixteenth probe (it depends only on the ported `reach5_four` and `reachStep5_univ`). This is the gate-5 contrast: the object's full-graph reach set has period 1 from threshold 4; the profile's `a`-fibre is nonempty at exactly the multiples of 3 for `chi`-types.
+- [x] Append `#print axioms` for the five Goals; commit as a green sub-step.
 
 **Timing**: 2 hours
 
@@ -455,7 +455,7 @@ gate-1 row text that the compiled material supports.
 
 ---
 
-### Phase 5: Header, Gate Table Verdict, and Registration of the Eighteenth and Nineteenth Probes [NOT STARTED]
+### Phase 5: Header, Gate Table Verdict, and Registration of the Eighteenth and Nineteenth Probes [IN PROGRESS]
 
 **Goal**: Write the eighteenth probe's header in the collection's convention and wire both of this
 round's new probes into the guard, so the verdict of dispatch items (3) and (4) and of the n-side

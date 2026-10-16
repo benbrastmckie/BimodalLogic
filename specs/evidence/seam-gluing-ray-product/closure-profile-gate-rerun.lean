@@ -488,6 +488,114 @@ theorem coh6_chain_a_to_a_mod3 (g : ℕ → ProdState Q5 chi) (k : ℕ)
     simpa [a5] using this.symm
   exact dvd_of_cyc_zero k hc0
 
+/-! ## The countdown profile, and the separation gate 6 refuted the sixth index with
+
+The datum below is a SET-valued per-state datum over the object-closure product, quotiented
+implicitly by the kernel of the profile map (two product states are identified exactly when they
+lie in the same `Prof6 k` for every `k`).  It carries NO parameter: no threshold, no modulus, no
+clip bound.  That is why the separations below hold for EVERY `P`, with nothing to choose. -/
+
+/-- The fibre over the pending `a` state -- the state the region's last pending state is, on this
+fixture.  The countdown measures distance to this set. -/
+def Ea : Finset (ProdState Q5 chi) := Finset.univ.filter (fun x => x.1 = a5)
+
+/-- **The countdown profile at distance `k`**: the set of product states from which a `coh6`-chain
+of length `k` reaches the fibre `Ea`.  Parameter-free. -/
+def Prof6 (k : ℕ) : Finset (ProdState Q5 chi) := (prodPreStep coh6)^[k] Ea
+
+theorem prof6_succ (k : ℕ) : Prof6 (k + 1) = prodPreStep coh6 (Prof6 k) := by
+  simp only [Prof6, Function.iterate_succ_apply']
+
+theorem mem_prof6_succ (x : ProdState Q5 chi) (k : ℕ) :
+    x ∈ Prof6 (k + 1) ↔ ∃ y ∈ Prof6 k, coh6 x y = true := by
+  rw [prof6_succ]
+  simp [prodPreStep]
+
+/-- Prepend a state to a chain. -/
+def consChain (x : ProdState Q5 chi) (g : ℕ → ProdState Q5 chi) : ℕ → ProdState Q5 chi
+  | 0 => x
+  | j + 1 => g j
+
+/-- **Membership in the profile at distance `k` exhibits a `coh6`-chain of length `k` into the
+fibre.**  The converse direction of the profile's definition, unfolded into a chain. -/
+theorem prof6_chain (x : ProdState Q5 chi) (k : ℕ) (h : x ∈ Prof6 k) :
+    ∃ g : ℕ → ProdState Q5 chi, g 0 = x ∧ (∀ i, i < k → coh6 (g i) (g (i + 1)) = true) ∧
+      (g k).1 = a5 := by
+  induction k generalizing x with
+  | zero =>
+    refine ⟨fun _ => x, rfl, fun i hi => absurd hi (by omega), ?_⟩
+    have hx : x ∈ Ea := by simpa [Prof6] using h
+    simpa [Ea] using hx
+  | succ k ih =>
+    obtain ⟨y, hy, hxy⟩ := (mem_prof6_succ x k).mp h
+    obtain ⟨g, hg0, hgc, hgk⟩ := ih y hy
+    refine ⟨consChain x g, rfl, ?_, ?_⟩
+    · intro i hi
+      cases i with
+      | zero => show coh6 x (g 0) = true; rw [hg0]; exact hxy
+      | succ j => exact hgc j (by omega)
+    · exact hgk
+
+/-- **The `a`-fibre of the profile is empty except at the multiples of three**, for every type
+carrying `chi`.  Gate 6's 3-cycle, read off the profile. -/
+theorem prof6_fibre_a_of_mem (k : ℕ) (T : ClType chi) (hT : chi ∈ T.1)
+    (h : (a5, T) ∈ Prof6 k) : 3 ∣ k := by
+  obtain ⟨g, hg0, hgc, hgk⟩ := prof6_chain (a5, T) k h
+  refine coh6_chain_a_to_a_mod3 g k hgc ?_ ?_ hgk
+  · rw [hg0]
+  · rw [hg0]; exact hT
+
+/-- **And it is nonempty at every multiple of three**, witnessed by the coherent 3-cycle. -/
+theorem prof6_fibre_a_witness (k : ℕ) (hk : 3 ∣ k) : (a5, Ta) ∈ Prof6 k := by
+  obtain ⟨m, rfl⟩ := hk
+  induction m with
+  | zero => simp [Prof6, Ea]
+  | succ m ih =>
+    have w := coh6_cycle_witness
+    rw [show 3 * (m + 1) = 3 * m + 1 + 1 + 1 by ring]
+    refine (mem_prof6_succ _ _).mpr ⟨(b5, Tb), ?_, w.2.1⟩
+    refine (mem_prof6_succ _ _).mpr ⟨(c5, Tc), ?_, w.2.2.1⟩
+    exact (mem_prof6_succ _ _).mpr ⟨(a5, Ta), ih, w.2.2.2⟩
+
+/-- **THE COUNTDOWN PROFILE SEPARATES THE EXACT PAIR GATE 6 USED TO REFUTE THE SIXTH INDEX**, for
+EVERY modulus coprime to three, with no parameter to choose.  The two countdowns are the sixteenth
+probe's `x5`/`y5` countdowns -- `C` with `3 ∣ C`, and `C + (P+1)` -- and the hypotheses name only
+the PAIR: there is no threshold, no modulus and no clip bound to instantiate, because this datum
+has none. -/
+theorem prof6_separates_gate6_pair (C P : ℕ) (hC : 3 ∣ C) (h3 : ¬ 3 ∣ (P + 1)) :
+    Prof6 C ≠ Prof6 (C + (P + 1)) := by
+  intro h
+  have hmem : (a5, Ta) ∈ Prof6 C := prof6_fibre_a_witness C hC
+  rw [h] at hmem
+  have h1 : 3 ∣ C + (P + 1) := prof6_fibre_a_of_mem _ Ta coh6_cycle_witness.1 hmem
+  exact h3 (by omega)
+
+/-- **The profile's period is not one**, at every multiple of three. -/
+theorem prof6_period_not_one (k : ℕ) (hk : 3 ∣ k) : Prof6 (k + 1) ≠ Prof6 k := by
+  intro h
+  have hmem : (a5, Ta) ∈ Prof6 k := prof6_fibre_a_witness k hk
+  rw [← h] at hmem
+  have h1 : 3 ∣ k + 1 := prof6_fibre_a_of_mem _ Ta coh6_cycle_witness.1 hmem
+  omega
+
+/-- **GATE 5'S CONTRAST, on the same fixture.**  The OBJECT's full-graph reach set is CONSTANT
+from threshold four -- period one, exactly the shape `reachN_eventually_periodic` returns, and
+minimal -- while the profile's `a`-fibre is nonempty at exactly the multiples of three for
+`chi`-types.  So the object's exhibited period does not bind the profile, and gate 5's disarming
+mechanism (a modulus admissible for the object's own graph) does not reach this datum. -/
+theorem reach5_eventually_constant :
+    ∀ k : ℕ, 4 ≤ k → (reachStep step5)^[k + 1] {a5} = (reachStep step5)^[k] {a5} := by
+  intro k hk
+  obtain ⟨m, rfl⟩ : ∃ m, k = 4 + m := ⟨k - 4, by omega⟩
+  have huniv : ∀ m, (reachStep step5)^[4 + m] {a5} = Finset.univ := by
+    intro m
+    induction m with
+    | zero => exact reach5_four
+    | succ m ih =>
+      rw [show 4 + (m + 1) = (4 + m) + 1 by omega, Function.iterate_succ_apply', ih,
+        reachStep5_univ]
+  rw [show 4 + m + 1 = 4 + (m + 1) by omega, huniv, huniv]
+
 end Probe806
 
 /-! ## Axiom check -/
@@ -498,3 +606,8 @@ end Probe806
 #print axioms Probe806.coh6_chi_propagates
 #print axioms Probe806.coh6_no_a_d_a
 #print axioms Probe806.coh6_chain_a_to_a_mod3
+#print axioms Probe806.prof6_fibre_a_of_mem
+#print axioms Probe806.prof6_fibre_a_witness
+#print axioms Probe806.prof6_separates_gate6_pair
+#print axioms Probe806.prof6_period_not_one
+#print axioms Probe806.reach5_eventually_constant
