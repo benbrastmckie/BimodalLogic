@@ -6,7 +6,6 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Correspondence.DurationFrames
 import FormalSystem.Metalogic.Soundness
-import FormalSystem.Metalogic.CompletenessDerived
 -- The bare `realOrder` used in the `.RTime` results below resolves uniquely to
 -- `FormalSystem.Semantics.realOrder` only while `FormalSystem.Metalogic.DedekindNonCompactness`
 -- (which declares a second `realOrder` in a namespace this file also opens) stays out of this

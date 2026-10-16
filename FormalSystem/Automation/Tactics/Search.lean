@@ -11,7 +11,6 @@ import FormalSystem.Theorems.TemporalDerived
 import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.LinearityDerived
-import FormalSystem.Metalogic.CompletenessDerived
 import FormalSystem.Theorems.DiscreteUnfolding
 
 /-!

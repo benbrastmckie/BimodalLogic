@@ -11,7 +11,6 @@ import FormalSystem.PlusLanguage.Axioms
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.ConnectDerived
 import FormalSystem.Theorems.LinearityDerived
-import FormalSystem.Metalogic.CompletenessDerived
 import FormalSystem.Theorems.DiscreteUnfolding
 
 /-!

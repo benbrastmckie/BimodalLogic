@@ -5,7 +5,6 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.MinusLanguage
-import FormalSystem.Metalogic.CompletenessDerived
 
 /-!
 # The backward TM⁻/TM conservativity bridge

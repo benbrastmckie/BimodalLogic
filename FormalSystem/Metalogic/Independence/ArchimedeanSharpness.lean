@@ -6,7 +6,6 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Correspondence.DurationFrames
 import FormalSystem.Metalogic.Soundness
-import FormalSystem.Metalogic.CompletenessDerived
 import FormalSystem.Semantics.LexCarrier
 import FormalSystem.Theorems.DiscreteUnfolding
 

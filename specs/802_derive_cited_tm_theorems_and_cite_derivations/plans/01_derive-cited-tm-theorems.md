@@ -454,15 +454,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Delete `CompletenessDerived.lean` and Its Import Sites [IN PROGRESS]
+### Phase 6: Delete `CompletenessDerived.lean` and Its Import Sites [COMPLETED]
 
 - **Goal:** The module, its two remaining declarations and all seven imports of it are gone, and
   the library root is current.
 - **Tasks:**
-  - [ ] Re-confirm, immediately before deleting, that no term-level consumer of `z1Thm` or
+  - [x] Re-confirm, immediately before deleting, that no term-level consumer of `z1Thm` or
     `z1Derivable` remains (the Phase 5 grep, re-run).
-  - [ ] Delete `FormalSystem/Metalogic/CompletenessDerived.lean`.
-  - [ ] Remove the `import FormalSystem.Metalogic.CompletenessDerived` line from all seven import
+  - [x] Delete `FormalSystem/Metalogic/CompletenessDerived.lean`.
+  - [x] Remove the `import FormalSystem.Metalogic.CompletenessDerived` line from all seven import
     sites: `FormalSystem.lean`, `FormalSystem/Metalogic.lean`,
     `FormalSystem/Automation/Tactics/Search.lean`,
     `FormalSystem/Metalogic/Conservativity/Backward.lean`,
@@ -470,8 +470,8 @@ Phases within the same wave can execute in parallel.
     `FormalSystem/Metalogic/Independence/ArchimedeanSharpness.lean`,
     `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`. Confirm the count by grepping for
     the import line rather than trusting the list.
-  - [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`.
-  - [ ] Confirm no manifest, allowlist or baseline file under `scripts/` names the module
+  - [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`.
+  - [x] Confirm no manifest, allowlist or baseline file under `scripts/` names the module
     (a grep over `scripts/*.txt`, `scripts/*.json`, `scripts/*.sh` found none at plan time;
     re-run it and act on any hit).
 - **Timing:** 1 hour
@@ -503,7 +503,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: The In-Tree Prose Tail [NOT STARTED]
+### Phase 7: The In-Tree Prose Tail [IN PROGRESS]
 
 - **Goal:** No Lean docstring or comment in the tree still describes Z1 or DN as recovered
   through a completeness engine; each cites the derivation instead.

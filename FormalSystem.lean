@@ -72,7 +72,6 @@ import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import FormalSystem.Metalogic.Bundle.TemporalContent
 import FormalSystem.Metalogic.Bundle.WitnessSeed
 import FormalSystem.Metalogic.Compactness
-import FormalSystem.Metalogic.CompletenessDerived
 import FormalSystem.Metalogic.Conservativity
 import FormalSystem.Metalogic.Conservativity.Backward
 import FormalSystem.Metalogic.Conservativity.ChainBundleTruth

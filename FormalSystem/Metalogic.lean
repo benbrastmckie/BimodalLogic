@@ -21,7 +21,6 @@ import FormalSystem.Metalogic.Deterministic
 import FormalSystem.Metalogic.QTime
 import FormalSystem.Metalogic.ConvexConsequence
 import FormalSystem.Metalogic.ZTimeProvability
-import FormalSystem.Metalogic.CompletenessDerived
 
 /-!
 # Bimodal Metalogic
