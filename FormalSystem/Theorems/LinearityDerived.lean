@@ -38,7 +38,8 @@ derived here from `tempLinearity` by `orRotate`.
 As in `Theorems/ConnectDerived.lean`, every definition here is **computable** (the runtime proof
 search and the dataset tooling traverse `tempLinearityLegacy`/`tempLinearityPast` trees), so the
 disjunction elimination is the explicit classical term `orElimThm` (via consequentia mirabilis
-`claviusThm`) rather than the noncomputable `Propositional.orElim`.
+`claviusThm`), which keeps the term small rather than routing through the deduction theorem's
+well-founded recursion.
 -/
 
 namespace FormalSystem.Theorems.LinearityDerived

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #802
 
 - **Task**: 802 - Derive every TM-system theorem the paper cites, cite the derivations rather than derivability, and prune the superseded derivability results.
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/802_derive_cited_tm_theorems_and_cite_derivations/reports/01_derive-cited-tm-theorems.md
@@ -167,32 +167,38 @@ and `specs/ROADMAP.md` is neither read as a constraint nor modified.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Make the Deduction Theorem Computable [NOT STARTED]
+### Phase 1: Make the Deduction Theorem Computable [COMPLETED]
 
 - **Goal:** Remove the gratuitous classical `Decidable` instances that make
   `Metalogic.Core.deductionTheorem` noncomputable, so that Z1 — and `dfSchema`, `succIndicator`,
   `coDerived`, `perpetuity5`, `perpetuity6` with it — can carry a runtime-walkable tree.
 - **Tasks:**
-  - [ ] In `FormalSystem/Theorems/DeductionTheorem.lean`, delete the
+  - [x] In `FormalSystem/Theorems/DeductionTheorem.lean`, delete the
     `attribute [local instance] Classical.propDecidable` line and replace each of the four
     `haveI : Decidable (A ∈ Γ...) := Classical.propDecidable _` sites with `inferInstance`.
     `Formula` derives `DecidableEq` in `FormalSystem/Syntax/Formula.lean`, so `List` membership
     in a `Context` is constructively decidable and none of the five is needed.
-  - [ ] Drop the `noncomputable` marker from `deductionWithMem` and from `deductionTheorem`.
-  - [ ] Update the two docstring passages in that file that explain the `noncomputable` markers
+  - [x] Drop the `noncomputable` marker from `deductionWithMem` and from `deductionTheorem`.
+  - [x] Update the two docstring passages in that file that explain the `noncomputable` markers
     and tell consumers they need not inherit them, so the prose matches the new reality.
-  - [ ] Remove `DiscreteUnfolding.lean`'s `noncomputable section` / closing `end` pair, so the
+  - [x] Remove `DiscreteUnfolding.lean`'s `noncomputable section` / closing `end` pair, so the
     computability cascade actually reaches `succIndicator`, `nextAllFuture`, `prevAllPast` and
     `dfSchema`.
-  - [ ] Build the full project and the test library. On any failure in the cascade, revert this
+  - [x] Build the full project and the test library. On any failure in the cascade, revert this
     phase's edits in full (see the contingency below) rather than patching forward.
-  - [ ] Measure and record, for `Metalogic.Core.deductionTheorem`, `DiscreteUnfolding.dfSchema`,
+  - [x] Measure and record, for `Metalogic.Core.deductionTheorem`, `DiscreteUnfolding.dfSchema`,
     `DiscreteUnfolding.succIndicator`, `DedekindDerived.coDerived`, `Perpetuity.perpetuity5` and
     `Perpetuity.perpetuity6`: `Lean.isNoncomputable` and `#print axioms`. The axiom profiles are
     expected to be unchanged (`pcq`); only the computability flags should move.
-  - [ ] Sweep the tree for `noncomputable` markers that existed only because of
+  - [x] Sweep the tree for `noncomputable` markers that existed only because of
     `deductionTheorem` and are now redundant; remove only those whose removal keeps the build
-    green, and leave the rest.
+    green, and leave the rest. *(deviation: altered — the sweep had to be wider than the Scope
+    Hypothesis predicted. Stripping only `DedekindDerived`/`Principles`/`Interaction` left the
+    build red on upstream markers in `GeneralizedNecessitation` and `TemporalDerived`, so all 93
+    explicit `noncomputable def/abbrev` markers under `FormalSystem/Theorems/` were removed,
+    together with four inert `noncomputable section` wrappers and about fifteen stale prose
+    passages. Full build and `BimodalTest` both green afterwards, so the revert contingency was
+    not taken.)*
 - **Timing:** 1.5 hours
 - **Depends on:** none
 - **Verification Tier:** full

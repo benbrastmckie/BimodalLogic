@@ -52,7 +52,7 @@ G-distribution `G(φ→ψ) → (Gφ → Gψ)` derived from BX3 (right_mono_until
 and propositional contraposition. Defined here to avoid circular imports with
 TemporalDerived.lean. -/
 
-private noncomputable def tempKDistLocal {fc : FrameClass} (φ ψ : Formula) :
+private def tempKDistLocal {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
   -- Step 1: ⊢ ¬(¬ψ→¬φ) → ¬(φ→ψ) (negated contrapositive)
   let neg_contra := mp (contraposeImp φ ψ) (contraposeImp (φ.imp ψ) (ψ.neg.imp φ.neg))
@@ -93,7 +93,7 @@ This is derived via time reflection:
 3. Apply `time_reflection` again
 4. Simplify using `reflect_time_involution` to get `⊢ Hφ`
 -/
-noncomputable def pastNecessitation {fc : FrameClass} (φ : Formula)
+def pastNecessitation {fc : FrameClass} (φ : Formula)
     (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.allPast φ) := by
   have h_swap : DerivationTree fc [] φ.reflectTime := DerivationTree.time_reflection _ d
   have g_swap : DerivationTree fc [] φ.reflectTime.allFuture :=
@@ -112,7 +112,7 @@ Past K distribution axiom (derived via time reflection).
 This is the past analog of `temp_k_dist`, derived by applying time reflection
 to the future K distribution axiom.
 -/
-noncomputable def pastKDist {fc : FrameClass} (A B : Formula) :
+def pastKDist {fc : FrameClass} (A B : Formula) :
     DerivationTree fc [] ((A.imp B).allPast.imp (A.allPast.imp B.allPast)) := by
   -- Apply derived temp_k_dist to reflected formulas, already at `fc`
   have fk_fc : ⊢[fc] (A.reflectTime.imp B.reflectTime).allFuture.imp
@@ -145,7 +145,7 @@ Induction on the context `Γ`.
   4. By `modal_k_dist` axiom and weakening, `□Γ' ⊢ □A → □φ`.
   5. By `reverseDeduction`, `□A :: □Γ' ⊢ □φ`, which is `□(A :: Γ') ⊢ □φ`.
 -/
-noncomputable def generalizedModalK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
+def generalizedModalK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢[fc] φ) → ((Context.map Formula.box Γ) ⊢[fc] Formula.box φ)
   | [], φ, h => DerivationTree.necessitation φ h
   | A :: Γ', φ, h =>
@@ -180,7 +180,7 @@ It is now derivable from standard temporal necessitation + temporal K distributi
 
 **Proof Strategy**: Analogous to generalized modal K.
 -/
-noncomputable def generalizedTemporalK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
+def generalizedTemporalK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢[fc] φ) → ((Context.map Formula.allFuture Γ) ⊢[fc] Formula.allFuture φ)
   | [], φ, h => DerivationTree.temporal_necessitation φ h
   | A :: Γ', φ, h =>
@@ -216,7 +216,7 @@ Induction on context `Γ`:
 - **Inductive step `Γ = A :: Γ'`**: Use deduction theorem, inductive hypothesis,
   `pastKDist`, and `reverseDeduction`.
 -/
-noncomputable def generalizedPastK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
+def generalizedPastK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢[fc] φ) → ((Context.map Formula.allPast Γ) ⊢[fc] Formula.allPast φ)
   | [], φ, h => pastNecessitation φ h
   | A :: Γ', φ, h =>

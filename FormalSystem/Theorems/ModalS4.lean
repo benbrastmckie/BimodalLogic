@@ -63,7 +63,7 @@ In S4, if A is possible and B is necessary, then A ∧ □B is possible.
 a box with `modal_4` and `boxMono`, then apply `kDistDiamond` and extract from the
 conjunction premise.
 -/
-noncomputable def s4DiamondBoxConj {fc : FrameClass} (A B : Formula) :
+def s4DiamondBoxConj {fc : FrameClass} (A B : Formula) :
     ⊢[fc] (A.diamond.and B.box).imp ((A.and B.box).diamond) := by
   -- Goal: (◇A ∧ □B) → ◇(A ∧ □B)
   --
@@ -281,7 +281,7 @@ In S5, diamond distributes over conjunction with nested diamond.
 the S5 collapse of `◇◇B` to `◇B`, and `pairing`; the two are combined into the
 biconditional.
 -/
-noncomputable def s5DiamondConjDiamond {fc : FrameClass} (A B : Formula) :
+def s5DiamondConjDiamond {fc : FrameClass} (A B : Formula) :
     ⊢[fc] iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond) := by
   -- Goal: ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)
 

@@ -87,24 +87,24 @@ private def impBotOfImpNeg {fc : FrameClass} {A B : Formula}
 /-! ## `△`-elimination at an arbitrary frame class -/
 
 /-- `⊢[fc] △ψ → Hψ`. -/
-noncomputable def alwaysElimPast {fc : FrameClass} (ψ : Formula) :
+def alwaysElimPast {fc : FrameClass} (ψ : Formula) :
     ⊢[fc] ψ.always.imp ψ.allPast :=
   baseThm (alwaysImpAllPast ψ)
 
 /-- `⊢[fc] △ψ → ψ`. -/
-noncomputable def alwaysElimHere {fc : FrameClass} (ψ : Formula) :
+def alwaysElimHere {fc : FrameClass} (ψ : Formula) :
     ⊢[fc] ψ.always.imp ψ :=
   baseThm (alwaysToPresent ψ)
 
 /-- `⊢[fc] △ψ → Gψ`. -/
-noncomputable def alwaysElimFuture {fc : FrameClass} (ψ : Formula) :
+def alwaysElimFuture {fc : FrameClass} (ψ : Formula) :
     ⊢[fc] ψ.always.imp ψ.allFuture :=
   baseThm (alwaysImpAllFuture ψ)
 
 /-! ## Contradictory `U` / `S` -/
 
 /-- `⊢[fc] F(⊥) → ⊥`. -/
-private noncomputable def notSomeFutureBot {fc : FrameClass} :
+private def notSomeFutureBot {fc : FrameClass} :
     ⊢[fc] Formula.bot.someFuture.imp Formula.bot :=
   let h1 : ⊢[fc] Formula.bot.someFuture.imp Formula.top.neg.someFuture :=
     mp (DerivationTree.temporal_necessitation _ (efqAxiom (fc := fc) Formula.top.neg))
@@ -113,7 +113,7 @@ private noncomputable def notSomeFutureBot {fc : FrameClass} :
     (DerivationTree.temporal_necessitation _ (topThm (fc := fc)))
 
 /-- `⊢[fc] P(⊥) → ⊥`. -/
-private noncomputable def notSomePastBot {fc : FrameClass} :
+private def notSomePastBot {fc : FrameClass} :
     ⊢[fc] Formula.bot.somePast.imp Formula.bot :=
   let h1 : ⊢[fc] Formula.bot.somePast.imp Formula.top.neg.somePast :=
     mp (FormalSystem.Theorems.pastNecessitation _ (efqAxiom (fc := fc) Formula.top.neg))
@@ -122,7 +122,7 @@ private noncomputable def notSomePastBot {fc : FrameClass} :
     (FormalSystem.Theorems.pastNecessitation _ (topThm (fc := fc)))
 
 /-- `⊢[fc] U(⊥, ψ) → ⊥`. -/
-private noncomputable def notUntlBot {fc : FrameClass} (ψ : Formula) :
+private def notUntlBot {fc : FrameClass} (ψ : Formula) :
     ⊢[fc] (Formula.untl ψ Formula.bot).imp Formula.bot :=
   let weaken : ⊢[fc] (Formula.untl ψ Formula.bot).imp (Formula.untl Formula.top Formula.bot) :=
     mp (DerivationTree.temporal_necessitation _ (impTop (fc := fc) ψ))
@@ -130,7 +130,7 @@ private noncomputable def notUntlBot {fc : FrameClass} (ψ : Formula) :
   impTrans weaken notSomeFutureBot
 
 /-- `⊢[fc] S(⊥, ψ) → ⊥`. -/
-private noncomputable def notSnceBot {fc : FrameClass} (ψ : Formula) :
+private def notSnceBot {fc : FrameClass} (ψ : Formula) :
     ⊢[fc] (Formula.snce ψ Formula.bot).imp Formula.bot :=
   let weaken : ⊢[fc] (Formula.snce ψ Formula.bot).imp (Formula.snce Formula.top Formula.bot) :=
     mp (FormalSystem.Theorems.pastNecessitation _ (impTop (fc := fc) ψ))
@@ -138,7 +138,7 @@ private noncomputable def notSnceBot {fc : FrameClass} (ψ : Formula) :
   impTrans weaken notSomePastBot
 
 /-- If the event of an `Until` is refutable, the `Until` is refutable. -/
-private noncomputable def untlEventBot {fc : FrameClass} {E : Formula} (ψ : Formula)
+private def untlEventBot {fc : FrameClass} {E : Formula} (ψ : Formula)
     (h : ⊢[fc] E.imp Formula.bot) : ⊢[fc] (Formula.untl ψ E).imp Formula.bot :=
   impTrans
     (mp (DerivationTree.temporal_necessitation _ h)
@@ -146,7 +146,7 @@ private noncomputable def untlEventBot {fc : FrameClass} {E : Formula} (ψ : For
     (notUntlBot ψ)
 
 /-- If the event of a `Since` is refutable, the `Since` is refutable. -/
-private noncomputable def snceEventBot {fc : FrameClass} {E : Formula} (ψ : Formula)
+private def snceEventBot {fc : FrameClass} {E : Formula} (ψ : Formula)
     (h : ⊢[fc] E.imp Formula.bot) : ⊢[fc] (Formula.snce ψ E).imp Formula.bot :=
   impTrans
     (mp (FormalSystem.Theorems.pastNecessitation _ h)
@@ -163,7 +163,7 @@ abbreviations, so BX4 (`connect_future` at `¬ψ`: `¬ψ → G(P¬ψ)`) contrapo
 `¬¬F(Hψ) → ¬¬ψ`, and double negation on both ends closes the gap. That argument is carried out,
 from the derived TC, by `ConnectDerived.fHImp`, of which this is an alias.
 -/
-noncomputable def someFutureAllPastImp {fc : FrameClass} (ψ : Formula) :
+def someFutureAllPastImp {fc : FrameClass} (ψ : Formula) :
     ⊢[fc] ψ.allPast.someFuture.imp ψ :=
   ConnectDerived.fHImp ψ
 
@@ -175,7 +175,7 @@ The one guard-strengthening step in the development. BX5 (`self_accum_until`) tu
 interval; L2 converts that deposit into `ψ` pointwise via BX2G; BX3 then weakens the event
 `Hψ` to `⊤`.
 -/
-noncomputable def someFutureAllPastUntlTop {fc : FrameClass} (ψ : Formula) :
+def someFutureAllPastUntlTop {fc : FrameClass} (ψ : Formula) :
     ⊢[fc] ψ.allPast.someFuture.imp (Formula.untl ψ Formula.top) :=
   let χ := ψ.allPast
   let accum : ⊢[fc] (Formula.untl Formula.top χ).imp
@@ -211,7 +211,7 @@ position of the two witnesses, and **all three** disjuncts carry a contradictory
 The third bullet is exactly the information a bare `P(¬ψ)` would have lost, and is why the
 self-accumulation step is needed.
 -/
-noncomputable def snceAllPastAndImp {fc : FrameClass} (ψ : Formula) :
+def snceAllPastAndImp {fc : FrameClass} (ψ : Formula) :
     ⊢[fc] (Formula.snce ψ (Formula.and ψ.allPast ψ)).imp ψ.allPast :=
   let P : Formula := ψ.neg.somePast
   let G1 : Formula := Formula.and Formula.top P
@@ -287,7 +287,7 @@ yields `Hφ` at `s` by **L3**. The `△`-antecedent's `G`-component, evaluated a
 * `K⁺(¬φ) = ¬U(⊤, ¬¬φ)` dies because **L1** turns `F(Hφ)` into `U(⊤, φ)`, which BX2G lifts to
   `U(⊤, ¬¬φ)`.
 -/
-private noncomputable def coEventBot {fc : FrameClass} (φ : Formula) :
+private def coEventBot {fc : FrameClass} (φ : Formula) :
     ⊢[fc] (φ.allPast.imp φ.allPast.someFuture).imp
       ((Formula.and (Formula.or φ.neg (Formula.kPlus φ.neg))
         (Formula.snce φ (Formula.and φ.allPast φ))).imp Formula.bot) :=
@@ -369,7 +369,7 @@ modal and temporal necessitation, and time reflection
 `ValidRTime (Formula.co φ)` by an independent least-upper-bound argument, so soundness
 applied to this derivation lands on a statement already established semantically.
 -/
-noncomputable def coDerived {fc : FrameClass} (h_fc : FrameClass.RTime ≤ fc)
+def coDerived {fc : FrameClass} (h_fc : FrameClass.RTime ≤ fc)
     (φ : Formula) : ⊢[fc] Formula.co φ :=
   let χ := φ.allPast
   let tri := Formula.always (χ.imp χ.someFuture)

@@ -65,7 +65,6 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 
 open FormalSystem.Theorems.Combinators
-attribute [local instance] Classical.propDecidable
 
 /-! ## Helper Lemmas -/
 
@@ -233,10 +232,10 @@ This is the key lemma for handling the weakening case where A appears in Γ'
 but not at the front. By recursing on the structure of the derivation (not using
 exchange), all recursive calls have strictly smaller height.
 -/
-private noncomputable def deductionWithMem {fc : FrameClass} (Γ' : Context) (A φ : Formula)
+private def deductionWithMem {fc : FrameClass} (Γ' : Context) (A φ : Formula)
     (h : Γ' ⊢[fc] φ) (hA : A ∈ Γ') :
     (removeAll Γ' A) ⊢[fc] A.imp φ := by
-  haveI : Decidable (A ∈ Γ') := Classical.propDecidable _
+  haveI : Decidable (A ∈ Γ') := inferInstance
   match h with
   | DerivationTree.axiom _ ψ h_ax h_fc =>
       -- ψ is an axiom
@@ -267,7 +266,7 @@ private noncomputable def deductionWithMem {fc : FrameClass} (Γ' : Context) (A 
   | DerivationTree.time_reflection ψ h_deriv =>
       simp at hA
   | DerivationTree.weakening Γ'' _ ψ h1 h2 =>
-      haveI : Decidable (A ∈ Γ'') := Classical.propDecidable _
+      haveI : Decidable (A ∈ Γ'') := inferInstance
       by_cases hA' : A ∈ Γ''
       · -- Case: A ∈ Γ'', recurse on h1
         have ih := deductionWithMem Γ'' A ψ h1 hA'
@@ -337,10 +336,10 @@ into implicational theorems.
 **Complexity**: Core metatheorem for Hilbert systems. Uses well-founded recursion
 to handle the complex weakening case where A appears in the middle of the context.
 -/
-noncomputable def deductionTheorem {fc : FrameClass} (Γ : Context) (A B : Formula)
+def deductionTheorem {fc : FrameClass} (Γ : Context) (A B : Formula)
     (h : (A :: Γ) ⊢[fc] B) :
     Γ ⊢[fc] A.imp B := by
-  haveI : Decidable (A ∈ Γ) := Classical.propDecidable _
+  haveI : Decidable (A ∈ Γ) := inferInstance
   -- Pattern match on the derivation structure
   match h with
   | DerivationTree.axiom _ φ h_ax h_fc =>
@@ -379,7 +378,7 @@ noncomputable def deductionTheorem {fc : FrameClass} (Γ : Context) (A B : Formu
         exact deductionTheorem Γ A φ (h_eq ▸ h1)
       · -- Case: Γ' ≠ A :: Γ, so Γ' is a proper subset of A :: Γ
         -- Nested case analysis: check if A ∈ Γ'
-        haveI : Decidable (A ∈ Γ') := Classical.propDecidable _
+        haveI : Decidable (A ∈ Γ') := inferInstance
         by_cases hA : A ∈ Γ'
         · -- Case: A ∈ Γ' but Γ' ≠ A :: Γ
           -- This is the KEY CASE that requires well-founded recursion
@@ -454,10 +453,9 @@ decreasing_by
 /--
 Converse of the deduction theorem: if `Γ ⊢ A → B` then `(A :: Γ) ⊢ B`.
 
-Unlike `deductionTheorem`, this direction is **computable**: it is a direct
-composition of weakening (to bring `h` into the extended context), the
-assumption rule (to obtain `A` at the head), and modus ponens. No recursion
-on the derivation tree is needed, so no `noncomputable` marker is required.
+Unlike `deductionTheorem`, this direction needs no recursion at all: it is a
+direct composition of weakening (to bring `h` into the extended context), the
+assumption rule (to obtain `A` at the head), and modus ponens.
 -/
 def deductionConverse {fc : FrameClass} (Γ : Context) (A B : Formula)
     (h : Γ ⊢[fc] A.imp B) : (A :: Γ) ⊢[fc] B :=
@@ -470,11 +468,10 @@ def deductionConverse {fc : FrameClass} (Γ : Context) (A B : Formula)
 Prop-level deduction theorem: if `Derivable fc (A :: Γ) B` then
 `Derivable fc Γ (A.imp B)`.
 
-This is the Prop-level entry point to the deduction theorem. Because
-`Derivable` is a `Prop` (a `Nonempty` wrapper around `DerivationTree`),
-consumers of this corollary do **not** inherit the `noncomputable` marker
-that `deductionTheorem` itself carries — use this form to avoid
-`noncomputable` annotations when only derivability (not the tree) is needed.
+This is the Prop-level entry point to the deduction theorem. Use it when only
+derivability matters and the witnessing tree does not: `Derivable` is a `Prop`
+(a `Nonempty` wrapper around `DerivationTree`), so it discards the tree
+`deductionTheorem` builds.
 
 Lives in this file (not `ProofSystem/Derivable.lean`) because the proof
 depends on `deductionTheorem`, and `ProofSystem` must not import `Metalogic`.

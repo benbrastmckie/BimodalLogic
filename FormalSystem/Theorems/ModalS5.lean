@@ -60,7 +60,7 @@ From both (P → Q) and (¬P → Q), derive Q by case analysis on P ∨ ¬P.
 Proven by direct appeal to `Propositional.classicalMerge`, which states the same
 thing with `¬P` spelled out as `P → ⊥`.
 -/
-noncomputable def classicalMerge {fc : FrameClass} (P Q : Formula) :
+def classicalMerge {fc : FrameClass} (P Q : Formula) :
     ⊢[fc] (P.imp Q).imp (((P.imp Formula.bot).imp Q).imp Q) := by
   -- This is the same as Propositional.classicalMerge since P.neg = P.imp Formula.bot
   exact Propositional.classicalMerge P Q
@@ -175,7 +175,7 @@ Proof:
 3. Combine using disjunction structure (¬□A → □B) → □(¬A → B)
 -/
 @[tmLemma]
-noncomputable def boxDisjIntro {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.box.or B.box).imp
+def boxDisjIntro {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.box.or B.box).imp
     ((A.or B).box) := by
   unfold Formula.or
   -- Goal: ⊢ (¬□A → □B) → □(¬A → B)
@@ -335,7 +335,7 @@ on both directions to get `(□A → □B) ∧ (□B → □A)`, which is `□A 
 
 **Dependencies**: boxMono, lceImp, rceImp, iffIntro from Propositional
 -/
-noncomputable def boxIffIntro {fc : FrameClass} (A B : Formula)
+def boxIffIntro {fc : FrameClass} (A B : Formula)
     (h : ⊢[fc] (A.imp B).and (B.imp A)) :
     ⊢[fc] (A.box.imp B.box).and (B.box.imp A.box) := by
   -- h: (A → B) ∧ (B → A)
@@ -470,7 +470,7 @@ Box distributes over conjunction in both directions.
 - Forward direction □(A ∧ B) → (□A ∧ □B): Use boxMono on andLeft/andRight from context, then pairing
 - Backward direction (□A ∧ □B) → □(A ∧ B): Use boxConjIntro from Perpetuity.lean
 -/
-noncomputable def boxConjIff {fc : FrameClass} (A B : Formula) : ⊢[fc] iff (A.and B).box
+def boxConjIff {fc : FrameClass} (A B : Formula) : ⊢[fc] iff (A.and B).box
     (A.box.and B.box) := by
   unfold iff
   -- We need to prove both directions:
@@ -566,7 +566,7 @@ Diamond distributes over disjunction in both directions (dual of boxConjIff).
 
 **Dependencies**: Phase 1 De Morgan laws (now proven), boxConjIff
 -/
-noncomputable def diamondDisjIff {fc : FrameClass} (A B : Formula) :
+def diamondDisjIff {fc : FrameClass} (A B : Formula) :
     ⊢[fc] iff (A.or B).diamond (A.diamond.or B.diamond) := by
   -- The proof requires extensive formula manipulation with De Morgan laws.
   -- The key steps are:

@@ -38,9 +38,10 @@ Every definition in this module is **computable**: the runtime proof search
 (`BimodalTools/ProofExtractorMain.lean`) build and traverse these derivation trees at runtime,
 so the proofs are written as explicit combinator terms over `prop_k`/`prop_s` (`bCombinator`,
 `theoremFlip`, `pairing`, `notNotIntro`, `doubleNegation`, `contraposeImp`) rather than through
-the noncomputable deduction theorem. The small propositional stock this needs beyond
-`Combinators` — `compLeft`, `compRight`, `curryThm`, `lceImpThm`, `rceImpThm`, `untlBotFalseThm`,
-`gMonoThm` — is exported for `Theorems/LinearityDerived.lean`.
+the deduction theorem, whose well-founded recursion produces far larger trees. The small
+propositional stock this needs beyond `Combinators` — `compLeft`, `compRight`, `curryThm`,
+`lceImpThm`, `rceImpThm`, `untlBotFalseThm`, `gMonoThm` — is exported for
+`Theorems/LinearityDerived.lean`.
 -/
 
 namespace FormalSystem.Theorems.ConnectDerived

@@ -26,9 +26,6 @@ Two auxiliary derivations are factored out because more than one principle consu
 `temporalPastDerived`, the general TR mirror of TF, and `boxToAlwaysBox`, which is `Pthm:14`'s
 reverse half.
 
-Every declaration in this module is `noncomputable`, because the perpetuity principles it
-builds on are. This is a property of the premises, not a limitation of these derivations.
-
 ## Main Theorems
 
 ### The temporal duality P8 (absent before this module)
@@ -98,10 +95,11 @@ has to be lifted through `H`, `G` and the present. The precedent for a duality t
 the way this one does is `fNegG` / `pNegH`, each a bare `notNotIntro` with a docstring saying
 why.
 
-This is why the pair is sited here rather than beside P7: its proof term is computable, and
-`MonotonicityDuality.lean` states the P7 pair inside a long `noncomputable section`.
+This is why the pair is sited here rather than beside P7: its proof term is a bare
+`doubleNegation`, while `MonotonicityDuality.lean` states the P7 pair through the full
+`always`/`sometimes` monotonicity machinery.
 -/
-noncomputable def notSometimesToAlwaysNeg {fc : FrameClass} (φ : Formula) :
+def notSometimesToAlwaysNeg {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.sometimes.neg.imp φ.neg.always :=
   doubleNegation (φ.neg.always)
 
@@ -113,7 +111,7 @@ The mirror of `notSometimesToAlwaysNeg`: definitionally this is double negation 
 (`temporalDualityNeg` / `temporalDualityNegRev`) and the same precedent (`fNegG` / `pNegH`)
 apply, and are the reason for siting the pair here rather than beside P7.
 -/
-noncomputable def alwaysNegToNotSometimes {fc : FrameClass} (φ : Formula) :
+def alwaysNegToNotSometimes {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.neg.always.imp φ.sometimes.neg :=
   notNotIntro (φ.neg.always)
 
@@ -131,7 +129,7 @@ Before this declaration the tree carried this shape only *instantiated at the di
 `boxDiamondToPastBoxDiamond`; the general version is what `boxToAlwaysBox` needs. It does not
 collide with `boxToPast`, which proves the different statement `⊢ □φ → Hφ`.
 -/
-noncomputable def temporalPastDerived {fc : FrameClass} (φ : Formula) :
+def temporalPastDerived {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.box.imp φ.box.allPast := by
   have tf : ⊢[fc] φ.reflectTime.box.imp φ.reflectTime.box.allFuture :=
     temporalFutureDerived φ.reflectTime
@@ -149,7 +147,7 @@ This **is** `Pthm:14`'s reverse half, factored out as its own declaration becaus
 three the source's own `Pthm:14` derivation invokes -- identity, TF, and TR applied to TF --
 assembled with `combineImpConj3`.
 -/
-noncomputable def boxToAlwaysBox {fc : FrameClass} (φ : Formula) :
+def boxToAlwaysBox {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.box.imp φ.box.always :=
   combineImpConj3 (temporalPastDerived φ) (identity φ.box) (temporalFutureDerived φ)
 
@@ -181,7 +179,7 @@ are no disjuncts to split on; the three components the source invokes are exactl
 `boxToAlwaysBox` packages, which is why the dependency on `Pthm:14`'s reverse half appears here
 where the source has the two items independent. The repackaging is faithful, not a shortcut.
 -/
-noncomputable def sometimesDiamondToDiamond {fc : FrameClass} (φ : Formula) :
+def sometimesDiamondToDiamond {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.diamond.sometimes.imp φ.diamond :=
   impTrans (contraposition (impTrans (doubleNegation φ.neg.box)
     (impTrans (boxToAlwaysBox φ.neg) (alwaysMono (notNotIntro φ.neg.box)))))
@@ -193,7 +191,7 @@ noncomputable def sometimesDiamondToDiamond {fc : FrameClass} (φ : Formula) :
 Conjunction elimination on `△`, which is `alwaysToPresent` instantiated at `◇φ` -- the same
 single step the source takes.
 -/
-noncomputable def alwaysDiamondToDiamond {fc : FrameClass} (φ : Formula) :
+def alwaysDiamondToDiamond {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.diamond.always.imp φ.diamond :=
   alwaysToPresent φ.diamond
 
@@ -206,7 +204,7 @@ for the source's disjunction introduction on its disjunctive reading of `▽`.
 
 A collapse biconditional; see the section note above for what is and is not claimed of those.
 -/
-noncomputable def sometimesBoxIffBox {fc : FrameClass} (φ : Formula) :
+def sometimesBoxIffBox {fc : FrameClass} (φ : Formula) :
     ⊢[fc] iff φ.box.sometimes φ.box :=
   iffIntro _ _ (impTrans (perpetuity6 φ) (boxMono (alwaysToPresent φ)))
     (presentToSometimes φ.box)
@@ -221,7 +219,7 @@ the source's own reverse derivation invokes.
 
 A collapse biconditional; see the section note above for what is and is not claimed of those.
 -/
-noncomputable def alwaysBoxIffBox {fc : FrameClass} (φ : Formula) :
+def alwaysBoxIffBox {fc : FrameClass} (φ : Formula) :
     ⊢[fc] iff φ.box.always φ.box :=
   iffIntro _ _ (alwaysToPresent φ.box) (boxToAlwaysBox φ)
 
@@ -235,7 +233,7 @@ own routing.
 
 A collapse biconditional; see the section note above for what is and is not claimed of those.
 -/
-noncomputable def boxAlwaysIffAlwaysBox {fc : FrameClass} (φ : Formula) :
+def boxAlwaysIffAlwaysBox {fc : FrameClass} (φ : Formula) :
     ⊢[fc] iff φ.always.box φ.box.always :=
   iffIntro _ _ (impTrans (boxMono (alwaysToPresent φ)) (boxToAlwaysBox φ))
     (impTrans (alwaysToPresent φ.box) (perpetuity3 φ))
@@ -257,7 +255,7 @@ visible.
 
 A collapse biconditional; see the section note above for what is and is not claimed of those.
 -/
-noncomputable def boxAlwaysIffBox {fc : FrameClass} (φ : Formula) :
+def boxAlwaysIffBox {fc : FrameClass} (φ : Formula) :
     ⊢[fc] iff φ.always.box φ.box :=
   iffIntro _ _ (boxMono (alwaysToPresent φ))
     (impTrans (DerivedAxioms.modal4 φ) (boxMono (perpetuity1 φ)))
@@ -268,7 +266,7 @@ noncomputable def boxAlwaysIffBox {fc : FrameClass} (φ : Formula) :
 `diamondMono` applied to `alwaysToPresent φ`. The source writes this as contraposition, MN+MK,
 contraposition; `diamondMono` is exactly that composition, already named in this tree.
 -/
-noncomputable def diamondAlwaysToDiamond {fc : FrameClass} (φ : Formula) :
+def diamondAlwaysToDiamond {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.always.diamond.imp φ.diamond :=
   diamondMono (alwaysToPresent φ)
 
@@ -282,7 +280,7 @@ step that hides the dependency.
 Proved by contraposing `□¬▽φ → □¬φ`, which is `boxMono` applied to P8 forward
 (`notSometimesToAlwaysNeg`) composed with `boxMono (alwaysToPresent φ.neg)`.
 -/
-noncomputable def diamondToDiamondSometimes {fc : FrameClass} (φ : Formula) :
+def diamondToDiamondSometimes {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.diamond.imp φ.sometimes.diamond :=
   contraposition (impTrans (boxMono (notSometimesToAlwaysNeg φ))
     (boxMono (alwaysToPresent φ.neg)))
@@ -296,7 +294,7 @@ independently, and it is `Pthm:17` of the same block.
 
 A collapse biconditional; see the section note above for what is and is not claimed of those.
 -/
-noncomputable def diamondIffDiamondSometimes {fc : FrameClass} (φ : Formula) :
+def diamondIffDiamondSometimes {fc : FrameClass} (φ : Formula) :
     ⊢[fc] iff φ.diamond φ.sometimes.diamond :=
   iffIntro _ _ (diamondToDiamondSometimes φ) (perpetuity4 φ)
 
@@ -307,7 +305,7 @@ Taken from its siblings inside the block rather than re-proved from the axioms, 
 source takes it: `sometimesDiamondToDiamond` (`Pthm:11`) composed with
 `diamondToDiamondSometimes` (`Pthm:20`'s forward half).
 -/
-noncomputable def sometimesDiamondToDiamondSometimes {fc : FrameClass} (φ : Formula) :
+def sometimesDiamondToDiamondSometimes {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.diamond.sometimes.imp φ.sometimes.diamond :=
   impTrans (sometimesDiamondToDiamond φ) (diamondToDiamondSometimes φ)
 
@@ -320,7 +318,7 @@ already has as `presentToSometimes`. The source's last step appeals to disjuncti
 on its disjunctive reading of `▽`; `presentToSometimes` is that step under the `▽φ = ¬△¬φ`
 encoding, and is itself derived the same contrapositive way.
 -/
-noncomputable def diamondSometimesToSometimesDiamond {fc : FrameClass} (φ : Formula) :
+def diamondSometimesToSometimesDiamond {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.sometimes.diamond.imp φ.diamond.sometimes :=
   impTrans (perpetuity5 φ)
     (impTrans (alwaysToPresent φ.diamond) (presentToSometimes φ.diamond))
@@ -342,7 +340,7 @@ pair in the whole block, and taking the shortcut would leave `Pthm:15` consumed 
 
 A collapse biconditional; see the section note above for what is and is not claimed of those.
 -/
-noncomputable def diamondSometimesIffSometimesDiamond {fc : FrameClass} (φ : Formula) :
+def diamondSometimesIffSometimesDiamond {fc : FrameClass} (φ : Formula) :
     ⊢[fc] iff φ.sometimes.diamond φ.diamond.sometimes :=
   iffIntro _ _
     (impTrans

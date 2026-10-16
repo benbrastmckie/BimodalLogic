@@ -53,8 +53,6 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Theorems.Combinators
 
--- Many definitions in this module depend on noncomputable deductionTheorem
-noncomputable section
 
 
 /-!
@@ -657,7 +655,5 @@ def perpetuity6 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.sometimes.imp 
 2. Add `reflect_time_box` lemma to show box commutes with temporal swap (for symmetry)
 3. Document modal-temporal duality relationships more precisely
 -/
-
-end
 
 end FormalSystem.Theorems.Perpetuity

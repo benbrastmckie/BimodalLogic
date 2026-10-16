@@ -19,8 +19,6 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Theorems.Combinators
 
-noncomputable section
-
 /-!
 ## Phase 5: Natural Deduction Style Rules
 
@@ -122,7 +120,7 @@ then from A ∨ B we can derive C.
 **Dependencies**: `deductionTheorem`, `DerivationTree.weakening`, `classicalMerge`,
                `bCombinator`, `DerivationTree.assumption`
 -/
-noncomputable def de {fc : FrameClass} (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢[fc] C)
+def de {fc : FrameClass} (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢[fc] C)
     (h2 : (B :: Γ) ⊢[fc] C) :
     ((A.or B) :: Γ) ⊢[fc] C := by
   -- Apply deduction theorem to get Γ ⊢ A → C
@@ -169,8 +167,6 @@ noncomputable def de {fc : FrameClass} (Γ : Context) (A B C : Formula) (h1 : (A
   have step2 : ((A.or B) :: Γ) ⊢[fc] (A.neg.imp C).imp C :=
     DerivationTree.modus_ponens _ _ _ cm_ctx ac_ctx
   exact DerivationTree.modus_ponens _ _ _ step2 nac
-
-end -- noncomputable section
 
 
 end FormalSystem.Theorems.Propositional

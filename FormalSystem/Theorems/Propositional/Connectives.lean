@@ -19,8 +19,6 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Theorems.Combinators
 
-noncomputable section
-
 /-!
 ## Phase 3: Context Manipulation and Classical Reasoning
 
@@ -702,7 +700,5 @@ def demorganDisjNeg {fc : FrameClass} (A B : Formula) :
   exact iffIntro (A.or B).neg (A.neg.and B.neg)
     (demorganDisjNegForward A B) (demorganDisjNegBackward A B)
 
-
-end -- noncomputable section
 
 end FormalSystem.Theorems.Propositional

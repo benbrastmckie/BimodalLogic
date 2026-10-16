@@ -12,19 +12,19 @@ derivations), organized by topic. These are distinguished from metalogical resul
 | File | Lines | Description |
 |------|-------|-------------|
 | `Combinators.lean` | 926 | Propositional combinator lemmas: I, K, S, B, C, composition |
-| `ConnectDerived.lean` | 210 | TC (`connectFuture`), `F H ψ → ψ`, NP (`discreteSymmFwd`) and NA (`discretePropagateBwd`) derived computably from US, UG, UC, NB, MF, MT, TN and TR, with the TR mirrors `connectPast`/`discreteSymmBwd` and the computable propositional stock (`compLeft`, `compRight`, `curryThm`, `lceImpThm`, `rceImpThm`, `untlBotFalseThm`, `gMonoThm`) |
+| `ConnectDerived.lean` | 211 | TC (`connectFuture`), `F H ψ → ψ`, NP (`discreteSymmFwd`) and NA (`discretePropagateBwd`) derived computably from US, UG, UC, NB, MF, MT, TN and TR, with the TR mirrors `connectPast`/`discreteSymmBwd` and the computable propositional stock (`compLeft`, `compRight`, `curryThm`, `lceImpThm`, `rceImpThm`, `untlBotFalseThm`, `gMonoThm`) |
 | `ContextualProofs.lean` | 491 | Derivations carried out under a nonempty context |
 | `DedekindDerived.lean` | 413 | Dedekind-class derived theorems: `△`-eliminators, the `F(Hψ) → ψ` / `F(Hψ) → U(⊤,ψ)` / `S(Hψ∧ψ,ψ) → Hψ` point-shifting lemmas, and `coDerived` (the paper's CO principle derived from the Reynolds gap basis) |
-| `DeductionTheorem.lean` | 487 | The deduction theorem (`A :: Γ ⊢ B` gives `Γ ⊢ A → B`) and its converse. Keeps `namespace FormalSystem.Metalogic.Core`, a recorded exception its module docstring explains |
-| `DiscreteUnfolding.lean` | 499 | The ℤ-exact one-step unfolding of `untl` at `FrameClass.ZTime` |
+| `DeductionTheorem.lean` | 484 | The deduction theorem (`A :: Γ ⊢ B` gives `Γ ⊢ A → B`) and its converse. Keeps `namespace FormalSystem.Metalogic.Core`, a recorded exception its module docstring explains |
+| `DiscreteUnfolding.lean` | 495 | The ℤ-exact one-step unfolding of `untl` at `FrameClass.ZTime` |
 | `GeneralizedNecessitation.lean` | 242 | Generalized necessitation rules for modal and temporal operators |
-| `Interaction.lean` | 356 | Modal-temporal interaction principles `Pthm:11`--`Pthm:22` ported from the paper's companion material: the `▽◇`/`◇▽` and `△□`/`□△` collapses (`sometimesDiamondToDiamond`, `alwaysDiamondToDiamond`, `sometimesBoxIffBox`, `alwaysBoxIffBox`, `boxAlwaysIffAlwaysBox`, `boxAlwaysIffBox`, `diamondAlwaysToDiamond`, `diamondToDiamondSometimes`, `diamondIffDiamondSometimes`, `sometimesDiamondToDiamondSometimes`, `diamondSometimesToSometimesDiamond`, `diamondSometimesIffSometimesDiamond`), the temporal duality P8 (`notSometimesToAlwaysNeg`, `alwaysNegToNotSometimes`) and the `temporalPastDerived` / `boxToAlwaysBox` helpers they consume |
-| `LinearityDerived.lean` | 207 | TL (`tempLinearity`) derived from CN with UF and UE, DN (`density`) derived from NN with the Base schemata, the legacy order `tempLinearityLegacy`, the past mirror `tempLinearityPast`, and the computable disjunction stock (`orInlThm`, `orInrThm`, `claviusThm`, `orElimThm`) |
+| `Interaction.lean` | 354 | Modal-temporal interaction principles `Pthm:11`--`Pthm:22` ported from the paper's companion material: the `▽◇`/`◇▽` and `△□`/`□△` collapses (`sometimesDiamondToDiamond`, `alwaysDiamondToDiamond`, `sometimesBoxIffBox`, `alwaysBoxIffBox`, `boxAlwaysIffAlwaysBox`, `boxAlwaysIffBox`, `diamondAlwaysToDiamond`, `diamondToDiamondSometimes`, `diamondIffDiamondSometimes`, `sometimesDiamondToDiamondSometimes`, `diamondSometimesToSometimesDiamond`, `diamondSometimesIffSometimesDiamond`), the temporal duality P8 (`notSometimesToAlwaysNeg`, `alwaysNegToNotSometimes`) and the `temporalPastDerived` / `boxToAlwaysBox` helpers they consume |
+| `LinearityDerived.lean` | 208 | TL (`tempLinearity`) derived from CN with UF and UE, DN (`density`) derived from NN with the Base schemata, the legacy order `tempLinearityLegacy`, the past mirror `tempLinearityPast`, and the computable disjunction stock (`orInlThm`, `orInrThm`, `claviusThm`, `orElimThm`) |
 | `ModalDerived.lean` | 220 | Closed object-logic derivation helpers (`dneTheorem`, `boxDneTheorem`, the `G`/`H` analogues) collected out of `Metalogic/Bundle/` so canonical-model modules can reach them without the bundle machinery |
 | `ModalS4.lean` | 422 | S4 modal theorems: consequences of T, 4, K axioms |
 | `ModalS5.lean` | 788 | S5 modal theorems: consequences of T, 4, B, 5 axioms |
 | `Perpetuity.lean` | 94 | Re-export for the Perpetuity subdirectory |
-| `TemporalDerived.lean` | 835 | Derived temporal theorems: temp_k_dist, temp_4 (derived from BX axioms) |
+| `TemporalDerived.lean` | 837 | Derived temporal theorems: temp_k_dist, temp_4 (derived from BX axioms) |
 | `Perpetuity/` | — | Perpetuity principles P1-P6: `Helpers.lean`, `MonotonicityDuality.lean`, `Principles.lean` (3 files) |
 | `Propositional/` | — | Propositional tautologies and rules: Connectives, Core, Reasoning (3 files) |
 <!-- END GENERATED -->

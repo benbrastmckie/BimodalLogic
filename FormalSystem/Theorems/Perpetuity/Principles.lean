@@ -624,7 +624,7 @@ from the pointwise nature of implication in the temporal dimension.
 
 **Implementation Status**: FULLY DERIVED (zero sorry) using complete deduction theorem
 -/
-noncomputable def futureKDist {fc : FrameClass} (A B : Formula) :
+def futureKDist {fc : FrameClass} (A B : Formula) :
     ⊢[fc] (A.imp B).allFuture.imp (A.allFuture.imp B.allFuture) := by
   -- Step 1: [A → B, A] ⊢ B via modus ponens
   have step1 : [A.imp B, A] ⊢[fc] B := by
@@ -666,7 +666,7 @@ at all past times and A holds at all past times, then B must hold at all past ti
 
 **Derivation**: This follows from `futureKDist` applied with time reflection.
 -/
-noncomputable def pastKDistFromFuture {fc : FrameClass} (A B : Formula) :
+def pastKDistFromFuture {fc : FrameClass} (A B : Formula) :
     ⊢[fc] (A.imp B).allPast.imp (A.allPast.imp B.allPast) := by
   -- Apply futureKDist to reflected formulas
   have fk : ⊢[fc] (A.reflectTime.imp B.reflectTime).allFuture.imp
@@ -700,7 +700,7 @@ P5 is semantically valid in task semantics. In any task model, if ◇▽φ holds
 then there exists a possible world ρ and time s where φ holds. By the S5 structure of
 possibility and time-invariance of worlds, this means φ is possible at all times in τ.
 -/
-noncomputable def persistence {fc : FrameClass}
+def persistence {fc : FrameClass}
     (φ : Formula) : ⊢[fc] φ.diamond.imp φ.diamond.always := by
   -- Goal: ◇φ → △◇φ
   -- Expanded: ◇φ → H◇φ ∧ ◇φ ∧ G◇φ
@@ -814,7 +814,7 @@ P5 is semantically valid in task semantics:
 2. Temporal homogeneity ensures time-invariance of modal facts
 3. Therefore: ◇▽φ at t implies ◇φ at all times in any possible world
 -/
-noncomputable def perpetuity5 {fc : FrameClass}
+def perpetuity5 {fc : FrameClass}
     (φ : Formula) : ⊢[fc] φ.sometimes.diamond.imp φ.diamond.always :=
   impTrans (perpetuity4 φ) (persistence φ)
 

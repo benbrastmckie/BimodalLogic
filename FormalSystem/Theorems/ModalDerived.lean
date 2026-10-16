@@ -46,7 +46,7 @@ Double negation elimination theorem: ⊢ ¬¬φ → φ
 
 This is derived using Peirce's law and Ex Falso.
 -/
-noncomputable def dneTheorem (phi : Formula) : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
+def dneTheorem (phi : Formula) : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
   FormalSystem.Theorems.Propositional.doubleNegation phi
 
 /--
@@ -54,7 +54,7 @@ Box distributes over double negation elimination: ⊢ Box(¬¬φ) → Box φ
 
 Proof: By necessitation on DNE and modal K distribution.
 -/
-noncomputable def boxDneTheorem (phi : Formula) :
+def boxDneTheorem (phi : Formula) :
     [] ⊢ (Formula.box (Formula.neg (Formula.neg phi))).imp (Formula.box phi) := by
   -- Step 1: ⊢ ¬¬φ → φ (DNE)
   have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dneTheorem phi
@@ -73,7 +73,7 @@ Modal 5 collapse axiom instance: `⊢ ◇□φ → □φ`.
 
 This is a wrapper around the axiom for convenience.
 -/
-noncomputable def modal5CollapseTheorem (phi : Formula) :
+def modal5CollapseTheorem (phi : Formula) :
     [] ⊢ Formula.box phi |>.diamond.imp (Formula.box phi) :=
   DerivationTree.axiom [] _ (Axiom.modal_5_collapse phi) trivial
 
@@ -91,7 +91,7 @@ This derives negative introspection from modal_5_collapse via contraposition.
 The key observation is that `¬◇A = □¬A` (necessity of the negation equals
 negation of possibility).
 -/
-noncomputable def axiom5NegativeIntrospection (phi : Formula) :
+def axiom5NegativeIntrospection (phi : Formula) :
     [] ⊢ (Formula.box phi).neg.imp (Formula.box (Formula.box phi).neg) := by
   -- Step 1: modal_5_collapse gives ◇□φ → □φ
   have h_collapse : [] ⊢ (Formula.box phi).diamond.imp (Formula.box phi) :=
@@ -171,7 +171,7 @@ Alternative name for axiom 5: `negBoxToBoxNegBox`.
 This is the form needed for BoxContent preservation: if ¬□φ is true at a world,
 then □(¬□φ) is also true at that world (negative introspection).
 -/
-noncomputable def negBoxToBoxNegBox (phi : Formula) :
+def negBoxToBoxNegBox (phi : Formula) :
     [] ⊢ (Formula.box phi).neg.imp (Formula.box (Formula.box phi).neg) :=
   axiom5NegativeIntrospection phi
 
@@ -184,7 +184,7 @@ G distributes over double negation elimination: G(neg(neg phi)) -> G(phi)
 3. temp_k_dist: G(A -> B) -> (G(A) -> G(B))
 4. modus_ponens
 -/
-noncomputable def gDneTheorem (phi : Formula) :
+def gDneTheorem (phi : Formula) :
     [] ⊢ (Formula.allFuture (Formula.neg (Formula.neg phi))).imp (Formula.allFuture phi) := by
   have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dneTheorem phi
   have h_G_dne : [] ⊢ Formula.allFuture ((Formula.neg (Formula.neg phi)).imp phi) :=
@@ -200,7 +200,7 @@ H distributes over double negation elimination: H(neg(neg phi)) -> H(phi)
 
 Past analog of gDneTheorem.
 -/
-noncomputable def hDneTheorem (phi : Formula) :
+def hDneTheorem (phi : Formula) :
     [] ⊢ (Formula.allPast (Formula.neg (Formula.neg phi))).imp (Formula.allPast phi) := by
   have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dneTheorem phi
   have h_H_dne : [] ⊢ Formula.allPast ((Formula.neg (Formula.neg phi)).imp phi) :=
@@ -213,7 +213,7 @@ noncomputable def hDneTheorem (phi : Formula) :
 /-- Past analog of the `connect_past` axiom: ⊢ φ → H(F(φ)).
 Applied directly as a derived-theorem instance; `ConnectDerived.connectPast` (the TR mirror of the
 derived TC) is the constructor. -/
-noncomputable def pastTempA (psi : Formula) :
+def pastTempA (psi : Formula) :
     [] ⊢ psi.imp psi.someFuture.allPast :=
   (FormalSystem.Theorems.ConnectDerived.connectPast psi)
 

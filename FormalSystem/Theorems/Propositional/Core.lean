@@ -26,8 +26,6 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Theorems.Combinators
 
-noncomputable section
-
 /-!
 ## Helper Lemmas
 -/
@@ -760,7 +758,5 @@ def untlBotFalse {fc : FrameClass} (X : Formula) :
   have h4 : [Formula.untl X Formula.bot] ⊢[fc] Formula.allFuture Formula.bot.neg :=
     wk _ _ (DerivationTree.temporal_necessitation _ (efqAxiom Formula.bot))
   exact DerivationTree.modus_ponens _ _ _ h4 h3
-
-end -- noncomputable section
 
 end FormalSystem.Theorems.Propositional

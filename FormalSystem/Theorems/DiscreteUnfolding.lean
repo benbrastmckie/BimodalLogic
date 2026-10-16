@@ -81,8 +81,6 @@ open FormalSystem.Metalogic.Core
 open FormalSystem.Theorems.Combinators
 open FormalSystem.Theorems.Propositional
 
-noncomputable section
-
 /-! ## Result 1: the discreteness indicator is a theorem at `FrameClass.ZTime`
 
 `U(⊤,⊥)` says "the current point has an immediate successor".  It is asserted by no axiom
@@ -493,7 +491,5 @@ def dfSchema (φ : Formula) :
     eventMono _ (Formula.and Formula.top (Formula.snce Formula.bot A)) φ.allPast Formula.bot
       (impTrans (rceImp Formula.top (Formula.snce Formula.bot A)) (prevAllPast φ)) h2
   exact ctxMp (thmIn (DerivedAxioms.untilF Formula.bot φ.allPast)) h3
-
-end -- noncomputable section
 
 end FormalSystem.Theorems.DiscreteUnfolding
