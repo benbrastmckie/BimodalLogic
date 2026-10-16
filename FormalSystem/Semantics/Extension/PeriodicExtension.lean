@@ -77,6 +77,22 @@ elaborates the assembly sorry-free at `[propext, Classical.choice, Quot.sound]`,
 `decidability-assembly-probe.lean`. None of this weakens the objection where it applies; it fixes
 where that is.
 
+## The choice-free counterpart, and why it is not a corollary
+
+`FormalSystem.Metalogic.Decidability.extend_periodic_enum`
+(`Metalogic/Decidability/EffectivePeriodicExtension.lean`) proves the same conclusion at a frame
+whose carrier arrives as **data** — a list `enum` together with `∀ w, w ∈ enum` — with both
+periods bounded by `enum.length`, and measures `[propext, Quot.sound]`.
+
+`FrameOver.extend_periodic` below is **unchanged** by that, and is not a corollary of it in
+either direction. Two measured reasons, both in the statement rather than in the proof:
+`Nat.card` goes through `Cardinal.toNat`, so this theorem's bound carries `Classical.choice`
+before its proof is read; and `[Finite W]` is a `Prop` out of which no enumeration can be
+extracted — `Fintype.ofFinite`, `Finset.toList` and `Multiset.toList` all measure
+choice-carrying, which is the same obstruction the section above describes for
+`IntPresentation`. The two theorems coexist: this one is the hypothesis the paper's own sentence
+literally supports, and that one is the hypothesis an effective construction needs.
+
 ## Main Results
 
 - `FormalSystem.Semantics.exists_repeat_of_card_le` — pigeonhole on a window of `Nat.card W`

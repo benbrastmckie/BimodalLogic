@@ -23,7 +23,7 @@ checkable is checked here, one guard per declaration those modules introduce.
 
 | Claim | Guard |
 |---|---|
-| The ℤ membership chain is choice-free at `intOrder` | `reflection_int`, and the four below it |
+| The ℤ membership chain is choice-free at `intOrder` | `reflection_int`, and those below |
 | The SFT identification is choice-carrying *in its statement* | `mem_HF_iff_no_forbidden` |
 | The *finite type* half is choice-carrying, by API | `finite_forbiddenBlocks` |
 | The Mathlib dictionary is choice-carrying, by API | `isStepPath_iff_mem_forbidden` |
@@ -70,6 +70,12 @@ declaration where the substitution happens; the other four inherit the result. A
 that has grown `Classical.choice` means the chain has been re-routed through the general
 `FrameOver.reflection`, and every choice-free claim downstream of it has lapsed.
 -/
+
+/--
+info: 'FormalSystem.Semantics.FrameOver.reflection_int_of_limit' depends on axioms: [propext]
+-/
+#guard_msgs(whitespace := lax) in
+#print axioms FormalSystem.Semantics.FrameOver.reflection_int_of_limit
 
 /-- info: 'FormalSystem.Semantics.FrameOver.reflection_int' depends on axioms: [propext] -/
 #guard_msgs(whitespace := lax) in
@@ -507,9 +513,9 @@ info: 'FormalSystem.Metalogic.Decidability.FrameLasso.unroll_add_fwd_length' dep
 #print axioms FormalSystem.Metalogic.Decidability.FrameLasso.unroll_add_fwd_length
 
 
-/-- info: 'FormalSystem.Metalogic.Decidability.Coherent' depends on axioms: [propext] -/
+/-- info: 'FormalSystem.Metalogic.Decidability.FrameCoherent' depends on axioms: [propext] -/
 #guard_msgs(whitespace := lax) in
-#print axioms FormalSystem.Metalogic.Decidability.Coherent
+#print axioms FormalSystem.Metalogic.Decidability.FrameCoherent
 
 
 /-- info: 'FormalSystem.Metalogic.Decidability.decidableCoherent' depends on axioms: [propext] -/

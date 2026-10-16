@@ -43,7 +43,9 @@ beside them, each naming its counterpart.
 
 ## Main Results
 
-- `FrameOver.reflection_int` — the reflection law at `intOrder`, choice-free
+- `FrameOver.reflection_int_of_limit` — the reflection law at `intOrder` from *Limit* alone,
+  choice-free
+- `FrameOver.reflection_int` — the same at `[F.IsRegular]`
 - `FrameOver.taskRel_eq_iter_int` — the decomposition theorem, choice-free
 - `FrameOver.respects_of_isStepPath_int` — all-pairs task-respect from adjacency, choice-free
 - `FrameOver.mem_HF_iff_adjacent_int` — `H_F` over ℤ is exactly the bi-infinite step-paths,
@@ -61,8 +63,8 @@ namespace FrameOver
 open TaskFrame
 
 /--
-**The reflection law at `intOrder`, choice-free**: `w ⇒_d u ↔ u ⇒_{-d} w` at every integer
-duration.
+**The reflection law at `intOrder` from *Limit* alone, choice-free**: `w ⇒_d u ↔ u ⇒_{-d} w` at
+every integer duration, with no `IsRegular` instance.
 
 The general law is `FrameOver.reflection`, which is this statement at an arbitrary temporal
 order. The sole difference between the two proofs is the case split: the general one uses
@@ -75,18 +77,32 @@ Constraints consumed: Limit
 
 Paper: `def:task-relation`
 -/
-theorem reflection_int (F : FrameOver intOrder) [F.IsRegular] (w : F.WorldState) (d : ℤ)
-    (u : F.WorldState) : F.TaskRel w d u ↔ F.TaskRel u (-d) w := by
+theorem reflection_int_of_limit (F : FrameOver intOrder) (hlim : TaskFrame.Limit F.TaskRel)
+    (w : F.WorldState) (d : ℤ) (u : F.WorldState) :
+    F.TaskRel w d u ↔ F.TaskRel u (-d) w := by
   rcases Decidable.eq_or_ne d 0 with rfl | hd
   · rw [neg_zero]
     constructor
     · intro h
-      obtain rfl := F.eq_of_taskRel_zero_of_limit F.limit h
+      obtain rfl := F.eq_of_taskRel_zero_of_limit hlim h
       exact h
     · intro h
-      obtain rfl := F.eq_of_taskRel_zero_of_limit F.limit h
+      obtain rfl := F.eq_of_taskRel_zero_of_limit hlim h
       exact h
   · exact TaskFrame.reflect_reflection_of_ne hd
+
+/--
+**The reflection law at `intOrder`, choice-free**, at `[F.IsRegular]`: `reflection_int_of_limit`
+with the instance supplying the *Limit* hypothesis, and nothing else used. The relation to
+`FrameOver.reflection` is the one the binder-free form above describes.
+
+Constraints consumed: Limit
+
+Paper: `def:task-relation`
+-/
+theorem reflection_int (F : FrameOver intOrder) [F.IsRegular] (w : F.WorldState) (d : ℤ)
+    (u : F.WorldState) : F.TaskRel w d u ↔ F.TaskRel u (-d) w :=
+  F.reflection_int_of_limit F.limit w d u
 
 /--
 **The decomposition theorem, choice-free.** The counterpart of `FrameOver.taskRel_eq_iter`, which

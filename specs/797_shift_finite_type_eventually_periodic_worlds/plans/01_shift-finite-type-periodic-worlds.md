@@ -591,7 +591,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 10: Documentation, Index Rows, and the Full Gate Sweep [NOT STARTED]
+### Phase 10: Documentation, Index Rows, and the Full Gate Sweep [COMPLETED WITH EXCLUSIONS]
 
 - **Goal:** The new results are discoverable from the repository's own ledgers, and the whole
   repository is green.
@@ -644,6 +644,47 @@ Phases within the same wave can execute in parallel.
   - `bash .claude/scripts/check-task-references.sh` — no task number outside `specs/**`.
   - `grep -rn "sorry" ` over the five new library modules and the new test module returns nothing
     outside a docstring.
+
+#### Verification Notes (observed in this dispatch)
+
+| Gate | Result |
+|------|--------|
+| `lake build` (full project, guarded) | PASS — 2873 jobs, 0 errors, 0 warnings |
+| `lake build BimodalTest` (guarded) | PASS — 2937 jobs, every `#guard_msgs` satisfied |
+| `scripts/check-module-invariants.sh --no-build` | PASS (after five fixes made in this phase) |
+| `lake exe checkInitImports` | PASS |
+| `scripts/check-copyright-headers.sh` | PASS — 706 files, 0 missing |
+| `scripts/readme-lint.sh` | PASS |
+| `scripts/check-evidence-probes.sh` | PASS — all 33 wired probes compile |
+| `.claude/scripts/check-task-references.sh` | PASS — 0 occurrences outside `specs/` |
+| `grep -rn sorry` over the six new modules | PASS — 0 |
+| `lake exe mk_all --lib FormalSystem` | PASS — "No update necessary" |
+| `scripts/check-metalogic-cycles.sh` | FAIL, attributed elsewhere — see Reasoned Exclusions |
+
+Five invariant failures surfaced in this phase and were fixed here rather than deferred: three
+stale generated inventory blocks (`--emit-inventory`), a C15 dangling `cor:path-fibration`
+citation (a `DANGLING` KNOWN-ANCHORS row added, following the `cor:deterministic-completeness`
+precedent for a label that lives only in the cut file), four C15 theorem-index rows lacking a
+`Paper: — (reason)` line at their declarations, a C23 outer-shadows-inner pair (`Coherent`
+renamed to `FrameCoherent`), two C29 suppressions lacking a `--` reason block, and one C34a
+marker whose binder over-supplied (`reflection_int` demoted to a corollary of a new binder-free
+`reflection_int_of_limit`, mirroring the `reflection` / `reflection_of_limit` pair upstream).
+
+**Batch-aware deferral.** This dispatch is one `implement` phase inside a multi-task
+`/orchestrate` batch. The agent-system gate battery
+(`agent-system/extensions/core/scripts/tests/run-all.sh`, `verify-deploy.sh`) was **not** run
+here: this task touches no file under `.claude/**` or `agent-system/**`, so no suite in that
+battery is in scope for it, and the complete set runs once for the whole batch at the end of the
+invocation, attributed back by `modified_files`. The repository's own Lean gates — the eleven
+rows above, which are what this phase's `**Verification Tier**: full` actually means for a
+`lean4` task — were each run and observed in this dispatch.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `scripts/check-metalogic-cycles.sh` green | The script exits 1 on a single SURPLUS upward edge, `FormalSystem.MinusLanguage.AxiomDischarge -> FormalSystem.Theorems.LinearityDerived`. Not attributable to this task and not fixable from inside it: no commit here touches `FormalSystem/MinusLanguage/` or `FormalSystem/Theorems/`, and the remedy the script names is to relocate the module or amend the layer table in `scripts/measure-refactor-partitions.py` and `ORGANISATION.md` together — a change outside this task's scope that would silently absorb another task's in-flight work. | `git log --oneline -- FormalSystem/MinusLanguage/AxiomDischarge.lean` dates the edge to `ba6c0f5dd`, a commit of a different task. `git log --name-only` over this task's own commits (`e4aa9da5c..HEAD`) matches no path under `MinusLanguage/`. The script's two other assertions pass: exactly one directory-level cycle (the recorded `BXCanonical <-> WeakCanonical` one) and no syntax-imports-semantics edge. |
+| The agent-system gate battery | Batch-aware deferral, per this dispatch's directive. No file under `.claude/**` or `agent-system/**` is touched by this task, so no suite in that battery covers it. | The complete set runs once for the whole batch at the end of the invocation and is attributed back by `modified_files`. The repository's Lean gates were each run here and are recorded in the table above. |
 
 ---
 

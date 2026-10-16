@@ -49,7 +49,7 @@ obligations.
 
 - `FrameLasso` — the certificate: three segment lists, an absolute origin, both cycles non-empty
 - `FrameLasso.unroll` — the decoded bi-infinite path
-- `Coherent` / `AgreesWindow` — the two halves of the check, as decidable propositions
+- `FrameCoherent` / `AgreesWindow` — the two halves of the check, as decidable propositions
 - `presentsWindow` — the `Bool`-valued check
 
 ## Main Results
@@ -242,13 +242,13 @@ end FrameLasso
 of local times indexed by a `Fin` — which is what makes it decidable by
 `Fintype.decidableForallFintype` alone, with no search over ℤ.
 -/
-def Coherent {F : FrameOver intOrder} [Inhabited F.WorldState] (L : FrameLasso F) : Prop :=
+def FrameCoherent {F : FrameOver intOrder} [Inhabited F.WorldState] (L : FrameLasso F) : Prop :=
   ∀ i : Fin (L.back.length + 1 + L.mid.length + L.fwd.length),
     F.step (Periodic.unrollOf L.back L.mid L.fwd (L.windowTime i))
       (Periodic.unrollOf L.back L.mid L.fwd (L.windowTime i + 1))
 
 instance decidableCoherent {F : FrameOver intOrder} [Inhabited F.WorldState]
-    [DecidableRel F.step] (L : FrameLasso F) : Decidable (Coherent L) :=
+    [DecidableRel F.step] (L : FrameLasso F) : Decidable (FrameCoherent L) :=
   inferInstanceAs (Decidable (∀ _i : Fin (L.back.length + 1 + L.mid.length + L.fwd.length), _))
 
 /--
@@ -279,11 +279,11 @@ decided through `DecidableEq F.WorldState` over a bounded `ℕ` range. Both halv
 -/
 def presentsWindow {F : FrameOver intOrder} [Inhabited F.WorldState] [DecidableEq F.WorldState]
     [DecidableRel F.step] (L : FrameLasso F) (a : ℤ) (win : List F.WorldState) : Bool :=
-  decide (Coherent L) && decide (AgreesWindow L a win)
+  decide (FrameCoherent L) && decide (AgreesWindow L a win)
 
 theorem coherent_of_presentsWindow {F : FrameOver intOrder} [Inhabited F.WorldState]
     [DecidableEq F.WorldState] [DecidableRel F.step] {L : FrameLasso F} {a : ℤ}
-    {win : List F.WorldState} (h : presentsWindow L a win = true) : Coherent L := by
+    {win : List F.WorldState} (h : presentsWindow L a win = true) : FrameCoherent L := by
   rw [presentsWindow, Bool.and_eq_true] at h
   exact of_decide_eq_true h.1
 
@@ -293,9 +293,9 @@ theorem agreesWindow_of_presentsWindow {F : FrameOver intOrder} [Inhabited F.Wor
   rw [presentsWindow, Bool.and_eq_true] at h
   exact of_decide_eq_true h.2
 
-/-- `Coherent`, restated at a local time in the window rather than at a `Fin` index. -/
+/-- `FrameCoherent`, restated at a local time in the window rather than at a `Fin` index. -/
 theorem step_of_coherent {F : FrameOver intOrder} [Inhabited F.WorldState] {L : FrameLasso F}
-    (hc : Coherent L) {t : ℤ} (h1 : -(L.back.length : ℤ) - 1 ≤ t)
+    (hc : FrameCoherent L) {t : ℤ} (h1 : -(L.back.length : ℤ) - 1 ≤ t)
     (h2 : t < (L.mid.length : ℤ) + (L.fwd.length : ℤ)) :
     F.step (Periodic.unrollOf L.back L.mid L.fwd t)
       (Periodic.unrollOf L.back L.mid L.fwd (t + 1)) := by
@@ -309,7 +309,7 @@ theorem step_of_coherent {F : FrameOver intOrder} [Inhabited F.WorldState] {L : 
 
 /-- A coherent certificate decodes to a bi-infinite step path. -/
 theorem isStepPath_of_coherent {F : FrameOver intOrder} [Inhabited F.WorldState]
-    {L : FrameLasso F} (hc : Coherent L) : IsStepPath F L.unroll := by
+    {L : FrameLasso F} (hc : FrameCoherent L) : IsStepPath F L.unroll := by
   intro t
   have hstep := unrollOf_step_of_window L.back L.mid L.fwd L.back_ne L.fwd_ne
     (fun s hs1 hs2 => step_of_coherent hc hs1 hs2) (t - L.origin)
@@ -324,6 +324,9 @@ rightward.
 
 The `H_F` conclusion is routed through `FrameOver.worldHistoryOfStepPathInt`, not through
 `worldHistoryOfStepPath`, so soundness is choice-free.
+
+Paper: — (the specification is cut material; see
+`docs/reference/paper-definitions-of-record.md`, "The finite-case effectiveness footnote")
 -/
 theorem presentsWindow_sound {F : FrameOver intOrder} [F.IsRegular] [Inhabited F.WorldState]
     [DecidableEq F.WorldState] [DecidableRel F.step]
@@ -418,7 +421,7 @@ theorem bwdRun_getD (w : F.WorldState) (n k : ℕ) (hk : k < n) :
 end Runs
 
 /--
-**Coherence from the segments.** `Coherent` asserted segment by segment: adjacency inside each
+**Coherence from the segments.** `FrameCoherent` asserted segment by segment: adjacency inside each
 of the three lists, the two seams, and the two cycle wrap-arounds.
 
 This is the interface the completeness proof discharges. Stating it separately is what keeps the
@@ -437,7 +440,7 @@ theorem coherent_of_segments {F : FrameOver intOrder} [Inhabited F.WorldState]
     (hfwd : ∀ m : ℕ, m + 1 < L.fwd.length →
       F.step (L.fwd.getD m default) (L.fwd.getD (m + 1) default))
     (hfwdwrap : F.step (L.fwd.getD (L.fwd.length - 1) default) (L.fwd.getD 0 default)) :
-    Coherent L := by
+    FrameCoherent L := by
   have hbl : 0 < L.back.length := List.length_pos_of_ne_nil L.back_ne
   have hfl : 0 < L.fwd.length := List.length_pos_of_ne_nil L.fwd_ne
   have hml : 0 < L.mid.length := List.length_pos_of_ne_nil hmidne
@@ -517,12 +520,15 @@ length.
 The certificate is assembled from `EffectivePeriodicExtension.lean`'s own orbit segments rather
 than from a second run of the orbit argument: `bwdRun` and `fwdRun` supply the two tails and the
 two cycles, pigeonhole (`exists_dup_of_enum`) supplies the two revisits that make the cycles
-close, and `coherent_of_segments` turns segment-wise adjacency into `Coherent`.
+close, and `coherent_of_segments` turns segment-wise adjacency into `FrameCoherent`.
 
 The tails cannot live in `back` and `fwd`, because those two lists are read *cyclically* by
 `Periodic.unrollOf` and so cannot carry a non-repeating prefix. They are folded into `mid`
 instead, with `origin` shifted left by the backward tail's length — which is why `mid` is
 `bwdRun … ++ win ++ fwdRun …` and the certificate's origin is `a - i₀` rather than `a`.
+
+Paper: — (the specification is cut material; see
+`docs/reference/paper-definitions-of-record.md`, "The finite-case effectiveness footnote")
 -/
 theorem presentsWindow_complete {F : FrameOver intOrder} [F.IsRegular] [Inhabited F.WorldState]
     [DecidableEq F.WorldState] [DecidableRel F.step]
@@ -620,7 +626,7 @@ theorem presentsWindow_complete {F : FrameOver intOrder} [F.IsRegular] [Inhabite
       omega
   refine ⟨⟨bck, mdl, fwl, a - (i₀ : ℤ), hbne, hfne⟩, ?_, ?_, ?_⟩
   · -- the check passes
-    have hC : Coherent (⟨bck, mdl, fwl, a - (i₀ : ℤ), hbne, hfne⟩ : FrameLasso F) := by
+    have hC : FrameCoherent (⟨bck, mdl, fwl, a - (i₀ : ℤ), hbne, hfne⟩ : FrameLasso F) := by
       refine coherent_of_segments _ hmne ?_ ?_ ?_ ?_ ?_ ?_ ?_
       · -- inside the leftward cycle
         intro m hm

@@ -147,6 +147,13 @@ theorem bwdRun_getElem (w : F.WorldState) (n k : ℕ) (hk : k < n) :
 
 end Runs
 
+-- linter.unusedDecidableInType, suppressed deliberately: `[DecidableEq F.WorldState]` and
+-- `[DecidableRel F.step]` are consumed by the PROOF -- the first by `exists_dup_of_enum`, the
+-- second by `succOfEnum` / `predOfEnum` -- and by neither the statement nor the conclusion. A
+-- deletion trial was run: with both binders removed and `classical` supplying the instances,
+-- the theorem still compiles and `#print axioms` reports
+-- `[propext, Classical.choice, Quot.sound]` instead of `[propext, Quot.sound]`, which is
+-- exactly the property this theorem exists to have. Both binders stay.
 set_option linter.unusedDecidableInType false in
 /--
 **The choice-free extension theorem.**
@@ -166,6 +173,9 @@ Both `[DecidableEq F.WorldState]` and `[DecidableRel F.step]` are load-bearing i
 appears in the **type**. The standing remedy for that lint, dropping the binders and reaching
 for `classical`, is precisely the thing this theorem exists to avoid, so the binders stay and
 the lint is scoped off above.
+
+Paper: — (the specification is cut material; see
+`docs/reference/paper-definitions-of-record.md`, "The finite-case effectiveness footnote")
 -/
 theorem extend_periodic_enum {F : FrameOver intOrder} [F.IsRegular]
     [DecidableEq F.WorldState] [DecidableRel F.step]

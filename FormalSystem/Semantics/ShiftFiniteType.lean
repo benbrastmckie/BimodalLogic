@@ -174,6 +174,9 @@ The choice-free form of the same identification, and the one every downstream re
 cluster actually consumes, is `FrameOver.mem_HF_iff_adjacent_int`: `H_F` over ℤ is exactly the
 configurations all of whose consecutive pairs are edges. Read the two together — this one names
 the forbidden-block presentation, that one carries it choice-free.
+
+Paper: — (the specification is cut material; see
+`docs/reference/paper-definitions-of-record.md`, "The finite-case effectiveness footnote")
 -/
 theorem mem_HF_iff_no_forbidden (F : FrameOver intOrder) [F.IsRegular] [Finite F.WorldState]
     (f : ℤ → F.WorldState) :

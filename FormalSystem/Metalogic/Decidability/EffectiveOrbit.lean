@@ -185,6 +185,12 @@ theorem iterPredEnum_step (enum : List F.WorldState) (henum : ∀ w, w ∈ enum)
 
 end Selection
 
+-- linter.unusedDecidableInType, suppressed deliberately: `[DecidableEq W]` is consumed by the
+-- PROOF (`List.idxOf` needs a lawful `BEq`) and not by the TYPE. A deletion trial was run: with
+-- the binder removed and `classical` supplying the instance in the proof, the declaration still
+-- compiles and `#print axioms` reports `[propext, Classical.choice, Quot.sound]` instead of
+-- `[propext, Quot.sound]` -- i.e. the linter's standing remedy destroys the one property this
+-- declaration exists to have. The binder stays.
 set_option linter.unusedDecidableInType false in
 /--
 **Pigeonhole at an enumerated carrier, choice-free.** Any window longer than the enumeration
