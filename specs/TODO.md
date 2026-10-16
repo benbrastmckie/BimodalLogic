@@ -1,5 +1,5 @@
 ---
-next_project_number: 805
+next_project_number: 809
 ---
 
 # TODO
@@ -125,7 +125,71 @@ next_project_number: 805
 803 [NOT STARTED] — Cut the elaboration time of...
 804 [NOT STARTED] — Determine whether...
 
+### Automation
+
+805 [NOT STARTED] — Make every proof-carrying search path polymorphic in the frame...
+808 [NOT STARTED] — Package the first four user-facing tactics for the ZTime...
+
+### Tableau Training
+
+806 [NOT STARTED] — Add a derive command to lake exe tableau_bridge (BimodalTools/TableauBridge.lean:...
+807 [NOT STARTED] — Build the inverse of ProofStepExtractor.extractStepSequence: an importer that rebuilds...
+
 ## Tasks
+
+### 808. Ztime tactic bundle induction search normalisation
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: automation
+- **Dependencies**: Task 805
+
+**Description**: Package the first four user-facing tactics for the ZTime library as named strategies over the existing engine rather than as new provers, so that every goal the pipeline hands to Lean can be attempted by a tactic whose success or failure is itself recordable training data. (1) tm_tauto := propDecide (Metalogic/Decidability/Propositional/Tactic.lean), already reflective and kernel-checked; alias only. (2) tm_search := modal_search with the current @[tmLemma] set, frame-class polymorphic after the dependency task, with the goal's fc read from ⊢[fc] φ. (3) tm_induction := the Z-time induction split: reduce a goal of shape G φ (or □G φ, △φ) to the two obligations φ and G(φ → X φ) through the z1-derived induction lemma (prove it once in Theorems/DiscreteUnfolding or a sibling: (φ ∧ G(φ → Xφ)) → Gφ at ZTime, using prior_UZ / z1 / priorSZ), then tm_search on each. (4) tm_s5 / tm_temporal := simp only with the formula_fold / formula_unfold / truth_norm sets registered in Tactic/Attr.lean, followed by tm_search restricted to the modal or the temporal layer. Each tactic records nothing itself; the per-goal (tactic, outcome) log is produced by the driver that calls them, so document in Automation/README.md the exact failure modes each tactic reports (no progress / partial / timeout) so a driver can distinguish them. Update docs/project-info/tactic-registry.md, which currently lists s5_simp, temporal_simp, bimodal_simp, perpetuity and modal_reasoning as Planned, to reflect what landed. Acceptance: the safety / liveness template family (□G safe, inv ∧ G(inv → X inv) → G inv, G(req → F grant), □Gp → G□p and its converses) in a new Tests/BimodalTest/Automation/ZTimeTactics.lean closes with the four tactics where valid and reports a clean failure where not; lake build BimodalTest exits 0.
+
+---
+
+### 807. Check derivation importer and generated lemma modules
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: tableau-training
+- **Dependencies**: None
+
+**Description**: Build the inverse of ProofStepExtractor.extractStepSequence: an importer that rebuilds a DerivationTree fc [] φ from a ProofStep list, and a lake exe check_derivation that reads one {"frame_class": ..., "steps": [...]} object on stdin and prints one line, {"status": "derivation", "formula": <formula>, "height": n} or {"status": "rejected", "step": i, "reason": ...} or {"status": "error", ...}. This is the trust boundary that lets any search engine outside Lean (BimodalHarness's neural search, an LLM, a hand-written tactic) submit a derivation and have only accepted ones enter the library; it is also, by construction, the single definition of the proof-step schema both repositories currently disagree on (scripts/export-training-data.sh notes proof_extractor emits 8 fields where BimodalHarness expects 12).
+
+Reconstruction per rule, walking the pre-order list: axiom -> DerivationTree.axiom Γ φ h h_fc, finding the Axiom constructor named by axiomName whose schema unifies with goal by first-order matching against each constructor's statement (the instance is implicit in name + goal today) and deciding h.minFrameClass ≤ fc; assumption -> membership by decide; modus_ponens -> subgoals [φ → goal, φ] rebuilt from the next two subtrees; necessitation / temporal_necessitation / time_reflection -> the matching constructor with context = [] and the required goal shape; weakening -> list inclusion by decide; any derived-rule name -> the lemma's own DerivationTree looked up in a generated table name ↦ (schema, fc') of @[tmLemma] statements, unified, with fc' ≤ fc decided. DerivationTree is Type-valued and every side condition is decidable, so the importer is an ordinary def returning Option (Σ φ, DerivationTree fc [] φ), and the executable's acceptance is the erasure of a constructed term exactly as check_certificate's is (BimodalTools/README.md, 'What acceptance means').
+
+Second deliverable: a generated-module writer that turns an accepted derivation into a Lean def in a generated module (for example FormalSystem/Theorems/Generated/ZTime/<batch>.lean), tagged @[tmLemma] when it is empty-context and fc-polymorphic or ZTime, named from its folded shape, and for small formulas optionally paired with the kernel certificate theorem _ : isValid φ fc = true := by decide. Generated modules are kept out of defaultTargets until they stabilise, mirroring BimodalTools; a module that fails to elaborate is an importer bug, never silently dropped.
+
+Acceptance: round trip, for every ProofStep list lake exe proof_extractor emits from Theorems/, check_derivation accepts it and the rebuilt tree has the recorded height; a list with one axiomName swapped is rejected at that step; a generated module from ten accepted derivations builds. Register the executable in lakefile.toml and document the wire schema in BimodalTools/README.md.
+
+---
+
+### 806. Derive command on tableau bridge with failure frontier
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: tableau-training
+- **Dependencies**: Task 805
+
+**Description**: Add a derive command to lake exe tableau_bridge (BimodalTools/TableauBridge.lean: the Command inductive, its parser, and the handleDecide / handleSteps / handleCountermodel family) so that an external driver can ask for a derivation at a frame class and, when the search gives up, receive the open subgoals it got stuck on. Request: {"command": "derive", "formula": {...}, "frame_class": "ZTime", "strategy": "iddfs" | "dfs" | "best_first", "depth": 100, "visit_limit": 10000, "timeout_ms": 5000}. Responses, one JSON line each: {"status": "derived", "frame_class": ..., "height": n, "steps": [<ProofStep>, ...], "time_ms": t} where steps is exactly the pre-order list ProofStepExtractor.extractStepSequence already emits (theoremName set to the formula's canonical-wire hash, context, goal, goalFoldedJson, rule, axiomName, subgoals, frameClass); {"status": "frontier", "frontier": [{"context": [<formula>...], "goal": <formula>, "depth": d}, ...], "visits": v, "time_ms": t} listing the unproved leaves of the Visited set at the final depth (or the remaining best-first queue); {"status": "timeout", ...}; {"status": "error", "message": ...}. Strategy values map onto Automation/ProofSearch/Strategies.lean's SearchStrategy; the default is what decide uses.
+
+The frontier is the point of the command: the consuming pipeline turns each open subgoal Γ ⊢[fc] ψ into the closed candidate Γ → ψ and queues it as a conjecture, so that proving one makes the parent derivable on the next pass. This is the mechanism that turns the search engine's incompleteness (modus ponens never invents cut formulas) into a library-growth signal.
+
+Document the command in BimodalTools/README.md next to the existing tableau bridge protocol section, including that derive at ZTime depends on the frame-class-polymorphic search (the dependency task) and that frame_class accepts the same five spellings as tableau_decide. Pin request parsing, each response shape, and a frontier example in Tests/BimodalToolsTest/TableauBridgeTest.lean.
+
+---
+
+### 805. Frame class polymorphic proof carrying search
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: automation
+- **Dependencies**: None
+
+**Description**: Make every proof-carrying search path polymorphic in the frame class so that a formula valid only at ZTime can come back with a derivation. Today every such path returns a Base derivation: DecisionResult.valid carries (proof : ⊢ φ), i.e. DerivationTree .Base [] φ (Metalogic/Decidability/DecisionProcedure.lean); boundedSearchWithProof returns Option (Γ ⊢ φ) (Automation/ProofSearch/Core.lean); extractProof takes an unused _fc and returns a Base ProofExtractionResult (Metalogic/Decidability/ProofExtraction.lean); modal_search assumes Base (Automation/Tactics/Commands.lean, Tactics/Search.lean searchProof). So decide φ _ _ .ZTime closes the tableau for a prior_UZ instance and then extraction fails, and the dataset generator folds that .extractionFailed into the timeout label. Since the ZTime-first library pipeline in BimodalHarness takes refutations from the ModelChecker's Z-time certificate search and semantic validity from isValid at ZTime, derivation at ZTime is the one missing leg.
+
+Scope: (1) thread an explicit (fc : FrameClass := .Base) through boundedSearchWithProof, iddfsSearch, bestFirstSearch, search, extractProof, DecisionResult (valid (proof : ⊢[fc] φ)), decide, decideAuto, decideAutoAdaptive, decideBlocking, decideWithTrace, and the modal_search / searchProof pair, which should read fc from the goal ⊢[fc] φ via Tactic/Meta.lean's goal extraction instead of assuming Base. (2) tryAxiomMatch admits an Axiom constructor exactly when decide (h.minFrameClass ≤ fc) holds, so prior_UZ fires at .ZTime and stays out at .Base with no other change; admitting prior_U_gap and sep under .RTime the same way is optional. (3) matchDerived / matchMirror / matchPriorSZ return ⊢[fc] terms and gain the .ZTime entries priorSZ and z1 (ProofSystem/DerivedAxioms.lean) and the Theorems/DiscreteUnfolding lemmas, each guarded by a decided fc' ≤ fc as coDerived (h_fc : RTime ≤ fc) already is. (4) Widen the @[tmLemma] tagging policy in FormalSystem/Tactic/README.md from 'fc-polymorphic or Base' to 'fc-polymorphic, or pinned to fc' with the match guarded by fc' ≤ fc', so ZTime lemmas can be tagged and tryLemmaMatch finds them. (5) decide_sound and decide_result_exclusive (Decidability/Correctness.lean) generalise by using the frame-class-indexed soundness theorem; statements otherwise unchanged. (6) ProofStep.frameClass (BimodalTools/ProofStepExtractor.lean) and the DatasetGenerator / TableauProofStepsMain callers record fc rather than the literal "Base".
+
+Acceptance: decideAuto on a prior_UZ instance at .ZTime returns .valid with a derivation whose #print axioms is unchanged from today's Base derivations; the same call at .Base never returns .valid; lake build and lake build BimodalTest exit 0; bash scripts/check-module-invariants.sh --no-build has no new failures. Do not cite task numbers in FormalSystem/ (C9).
+
+---
 
 ### 804. Narrow termination syntax layer fanin
 - **Status**: [NOT STARTED]
