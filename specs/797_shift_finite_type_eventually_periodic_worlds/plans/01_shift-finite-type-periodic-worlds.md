@@ -506,7 +506,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Deliverable (3b) — Completeness of the Check Against the Extension Theorem [NOT STARTED]
+### Phase 8: Deliverable (3b) — Completeness of the Check Against the Extension Theorem [COMPLETED]
 
 - **Goal:** Every bounded convex history over an enumerated carrier is presented by some
   certificate whose check returns `true`, with segment lengths bounded by `enum.length`.

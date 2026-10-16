@@ -107,6 +107,17 @@ theorem exists_reduce_int {n : ℤ} (hn : 0 < n) (c i : ℤ) :
   · rw [show c + (i - c) % n - c = (i - c) % n by omega]
     exact Int.emod_emod_of_dvd _ (dvd_refl _)
 
+/-- `Periodic.cyc` at an index whose reduction by an explicit multiple of the length lands in
+range: the cyclic lookup is then a plain `getD`. One lemma covers every index the window
+argument meets, which keeps `omega` away from `Int.emod` at every call site. -/
+theorem cyc_eq_getD_shift {α : Type*} [Inhabited α] (l : List α) (i k : ℤ)
+    (h0 : 0 ≤ i + k * (l.length : ℤ)) (h1 : i + k * (l.length : ℤ) < (l.length : ℤ)) :
+    Periodic.cyc l i = l.getD (i + k * (l.length : ℤ)).toNat default := by
+  have h : i % (l.length : ℤ) = i + k * (l.length : ℤ) := by
+    rw [← Periodic.emod_add_mul i k (l.length : ℤ)]
+    exact Int.emod_eq_of_lt h0 h1
+  rw [Periodic.cyc, h]
+
 /-! ## One coherent window is adjacency everywhere -/
 
 /--
@@ -332,5 +343,358 @@ theorem presentsWindow_sound {F : FrameOver intOrder} [F.IsRegular] [Inhabited F
     exact L.unroll_sub_back_length ht
   · intro t ht
     exact L.unroll_add_fwd_length ht
+
+/-! ## Completeness
+
+`presentsWindow_sound` and `presentsWindow_complete` are the two directions of one claim:
+together they say the decidable check is *exactly* the predicate "this certificate presents a
+possible world through this bounded history". Soundness says a passing check is not a false
+positive; completeness says the check is not vacuously unsatisfiable — every bounded adjacent
+window over an enumerated carrier really is presented by some certificate, with both cycles
+bounded by `enum.length`.
+
+`IntPresentation.extend_periodic_extends` (`BiLasso/Agreement.lean`) is the presented-frame
+counterpart. The difference is the hypothesis, not the content: that one is stated at an
+`IntPresentation` — a carrier already packaged as `Fin card` with a `Bool`-valued adjacency
+matrix — and is choice-carrying through the decoding module it reuses. This one is stated at a
+bare `FrameOver intOrder` with its carrier handed over as a list, and is not.
+-/
+
+/--
+`getD` at an in-range index is `getElem`.
+
+Mathlib's `List.getD_eq_getElem` says exactly this and measures
+`[propext, Classical.choice, Quot.sound]`, as does every other lemma in
+`Mathlib/Data/List/GetD.lean`. The route below — `List.getD_eq_getElem?_getD` followed by
+`List.getElem?_eq_getElem` — says the same thing at `[propext]`, and is what keeps the
+certificate layer scrubbed.
+-/
+theorem getD_eq_getElem_of_lt {α : Type*} [Inhabited α] (l : List α) (n : ℕ) (h : n < l.length) :
+    l.getD n default = l[n] := by
+  rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem h]
+  rfl
+
+/-- `getD` into a `List.range`-map, at an index inside the range. -/
+theorem getD_rangeMap {α : Type*} [Inhabited α] (n : ℕ) (f : ℕ → α) (m : ℕ) (hm : m < n) :
+    ((List.range n).map f).getD m default = f m := by
+  have hlen : m < ((List.range n).map f).length := by
+    rw [List.length_map, List.length_range]; exact hm
+  rw [getD_eq_getElem_of_lt _ _ hlen, List.getElem_map, List.getElem_range]
+
+/-- `getD` into a three-fold concatenation, resolved by which block the index falls in. -/
+theorem getD_append_three {α : Type*} [Inhabited α] (l₁ l₂ l₃ : List α) (m : ℕ) :
+    (l₁ ++ l₂ ++ l₃).getD m default =
+      if m < l₁.length then l₁.getD m default
+      else if m < l₁.length + l₂.length then l₂.getD (m - l₁.length) default
+      else l₃.getD (m - l₁.length - l₂.length) default := by
+  have hlen : (l₁ ++ l₂).length = l₁.length + l₂.length := List.length_append
+  simp only [List.getD_eq_getElem?_getD]
+  rcases Nat.lt_or_ge m l₁.length with h₁ | h₁
+  · rw [if_pos h₁, List.getElem?_append_left (by omega), List.getElem?_append_left h₁]
+  rcases Nat.lt_or_ge m (l₁.length + l₂.length) with h₂ | h₂
+  · rw [if_neg (by omega), if_pos h₂, List.getElem?_append_left (by omega),
+      List.getElem?_append_right h₁]
+  · rw [if_neg (by omega), if_neg (by omega), List.getElem?_append_right (by omega), hlen,
+      Nat.sub_sub]
+
+section Runs
+
+variable (F : FrameOver intOrder) [F.IsRegular] [Inhabited F.WorldState] [DecidableRel F.step]
+  (enum : List F.WorldState) (henum : ∀ w, w ∈ enum)
+
+/-- `fwdRun` read with `getD` rather than `getElem`. -/
+theorem fwdRun_getD (w : F.WorldState) (n k : ℕ) (hk : k < n) :
+    (fwdRun F enum henum w n).getD k default = (succOfEnum F enum henum)^[k + 1] w :=
+  getD_rangeMap n _ k hk
+
+/-- `bwdRun` read with `getD` rather than `getElem`. The list is in increasing time order, so
+index `k` is `n - k` steps back. -/
+theorem bwdRun_getD (w : F.WorldState) (n k : ℕ) (hk : k < n) :
+    (bwdRun F enum henum w n).getD k default = (predOfEnum F enum henum)^[n - k] w := by
+  have hlen : k < (bwdRun F enum henum w n).length := by rw [bwdRun_length]; exact hk
+  rw [getD_eq_getElem_of_lt _ _ hlen]
+  exact bwdRun_getElem F enum henum w n k hk
+
+end Runs
+
+/--
+**Coherence from the segments.** `Coherent` asserted segment by segment: adjacency inside each
+of the three lists, the two seams, and the two cycle wrap-arounds.
+
+This is the interface the completeness proof discharges. Stating it separately is what keeps the
+modular reduction (`unrollOf_step_of_window` and the `cyc` index arithmetic) out of the
+construction, and the construction out of the arithmetic.
+-/
+theorem coherent_of_segments {F : FrameOver intOrder} [Inhabited F.WorldState]
+    (L : FrameLasso F) (hmidne : L.mid ≠ [])
+    (hback : ∀ m : ℕ, m + 1 < L.back.length →
+      F.step (L.back.getD m default) (L.back.getD (m + 1) default))
+    (hbackwrap : F.step (L.back.getD (L.back.length - 1) default) (L.back.getD 0 default))
+    (hseamL : F.step (L.back.getD (L.back.length - 1) default) (L.mid.getD 0 default))
+    (hmidadj : ∀ m : ℕ, m + 1 < L.mid.length →
+      F.step (L.mid.getD m default) (L.mid.getD (m + 1) default))
+    (hseamR : F.step (L.mid.getD (L.mid.length - 1) default) (L.fwd.getD 0 default))
+    (hfwd : ∀ m : ℕ, m + 1 < L.fwd.length →
+      F.step (L.fwd.getD m default) (L.fwd.getD (m + 1) default))
+    (hfwdwrap : F.step (L.fwd.getD (L.fwd.length - 1) default) (L.fwd.getD 0 default)) :
+    Coherent L := by
+  have hbl : 0 < L.back.length := List.length_pos_of_ne_nil L.back_ne
+  have hfl : 0 < L.fwd.length := List.length_pos_of_ne_nil L.fwd_ne
+  have hml : 0 < L.mid.length := List.length_pos_of_ne_nil hmidne
+  intro i
+  have hi := i.isLt
+  have hcycB : ∀ (x k : ℤ), 0 ≤ x + k * (L.back.length : ℤ) →
+      x + k * (L.back.length : ℤ) < (L.back.length : ℤ) →
+      Periodic.cyc L.back x = L.back.getD (x + k * (L.back.length : ℤ)).toNat default :=
+    fun x k h0 h1 => cyc_eq_getD_shift L.back x k h0 h1
+  have hcycF : ∀ (x k : ℤ), 0 ≤ x + k * (L.fwd.length : ℤ) →
+      x + k * (L.fwd.length : ℤ) < (L.fwd.length : ℤ) →
+      Periodic.cyc L.fwd x = L.fwd.getD (x + k * (L.fwd.length : ℤ)).toNat default :=
+    fun x k h0 h1 => cyc_eq_getD_shift L.fwd x k h0 h1
+  -- `t` is the local time this window index names.
+  have hwt : L.windowTime (i : ℕ) = (i : ℤ) - (L.back.length : ℤ) - 1 := rfl
+  rw [hwt]
+  set t : ℤ := (i : ℤ) - (L.back.length : ℤ) - 1 with htdef
+  have ht1 : -(L.back.length : ℤ) - 1 ≤ t := by omega
+  have ht2 : t < (L.mid.length : ℤ) + (L.fwd.length : ℤ) := by omega
+  rcases (by omega : t = -(L.back.length : ℤ) - 1 ∨ -(L.back.length : ℤ) ≤ t) with hA | hA
+  · -- the leftward wrap-around
+    rw [Periodic.unrollOf_neg _ _ _ (by omega), Periodic.unrollOf_neg _ _ _ (by omega),
+      hcycB _ 2 (by omega) (by omega), hcycB _ 1 (by omega) (by omega),
+      show (t + 2 * (L.back.length : ℤ)).toNat = L.back.length - 1 by omega,
+      show (t + 1 + 1 * (L.back.length : ℤ)).toNat = 0 by omega]
+    exact hbackwrap
+  rcases (by omega : t ≤ -2 ∨ -1 ≤ t) with hB | hB
+  · -- inside the leftward cycle
+    rw [Periodic.unrollOf_neg _ _ _ (by omega), Periodic.unrollOf_neg _ _ _ (by omega),
+      hcycB _ 1 (by omega) (by omega), hcycB _ 1 (by omega) (by omega),
+      show (t + 1 + 1 * (L.back.length : ℤ)).toNat
+        = (t + 1 * (L.back.length : ℤ)).toNat + 1 by omega]
+    exact hback _ (by omega)
+  rcases (by omega : t = -1 ∨ 0 ≤ t) with hC | hC
+  · -- the leftward seam
+    rw [Periodic.unrollOf_neg _ _ _ (by omega),
+      Periodic.unrollOf_mid _ _ _ (by omega) (by omega),
+      hcycB _ 1 (by omega) (by omega),
+      show (t + 1 * (L.back.length : ℤ)).toNat = L.back.length - 1 by omega,
+      show (t + 1).toNat = 0 by omega]
+    exact hseamL
+  rcases (by omega : t + 1 < (L.mid.length : ℤ) ∨ (L.mid.length : ℤ) ≤ t + 1) with hD | hD
+  · -- inside the window
+    rw [Periodic.unrollOf_mid _ _ _ (by omega) (by omega),
+      Periodic.unrollOf_mid _ _ _ (by omega) (by omega),
+      show (t + 1).toNat = t.toNat + 1 by omega]
+    exact hmidadj _ (by omega)
+  rcases (by omega : t = (L.mid.length : ℤ) - 1 ∨ (L.mid.length : ℤ) ≤ t) with hE | hE
+  · -- the rightward seam
+    rw [Periodic.unrollOf_mid _ _ _ (by omega) (by omega),
+      Periodic.unrollOf_fwd _ _ _ (by omega),
+      hcycF _ 0 (by omega) (by omega),
+      show t.toNat = L.mid.length - 1 by omega,
+      show (t + 1 - (L.mid.length : ℤ) + 0 * (L.fwd.length : ℤ)).toNat = 0 by omega]
+    exact hseamR
+  rcases (by omega : t + 1 < (L.mid.length : ℤ) + (L.fwd.length : ℤ) ∨
+      t = (L.mid.length : ℤ) + (L.fwd.length : ℤ) - 1) with hF | hF
+  · -- inside the rightward cycle
+    rw [Periodic.unrollOf_fwd _ _ _ (by omega), Periodic.unrollOf_fwd _ _ _ (by omega),
+      hcycF _ 0 (by omega) (by omega), hcycF _ 0 (by omega) (by omega),
+      show (t + 1 - (L.mid.length : ℤ) + 0 * (L.fwd.length : ℤ)).toNat
+        = (t - (L.mid.length : ℤ) + 0 * (L.fwd.length : ℤ)).toNat + 1 by omega]
+    exact hfwd _ (by omega)
+  · -- the rightward wrap-around
+    rw [Periodic.unrollOf_fwd _ _ _ (by omega), Periodic.unrollOf_fwd _ _ _ (by omega),
+      hcycF _ 0 (by omega) (by omega), hcycF _ (-1) (by omega) (by omega),
+      show (t - (L.mid.length : ℤ) + 0 * (L.fwd.length : ℤ)).toNat
+        = L.fwd.length - 1 by omega,
+      show (t + 1 - (L.mid.length : ℤ) + (-1) * (L.fwd.length : ℤ)).toNat = 0 by omega]
+    exact hfwdwrap
+
+/--
+**Completeness against the extension theorem.** Every bounded adjacent window over an enumerated
+carrier is presented by some certificate whose two cycles are bounded by the enumeration's
+length.
+
+The certificate is assembled from `EffectivePeriodicExtension.lean`'s own orbit segments rather
+than from a second run of the orbit argument: `bwdRun` and `fwdRun` supply the two tails and the
+two cycles, pigeonhole (`exists_dup_of_enum`) supplies the two revisits that make the cycles
+close, and `coherent_of_segments` turns segment-wise adjacency into `Coherent`.
+
+The tails cannot live in `back` and `fwd`, because those two lists are read *cyclically* by
+`Periodic.unrollOf` and so cannot carry a non-repeating prefix. They are folded into `mid`
+instead, with `origin` shifted left by the backward tail's length — which is why `mid` is
+`bwdRun … ++ win ++ fwdRun …` and the certificate's origin is `a - i₀` rather than `a`.
+-/
+theorem presentsWindow_complete {F : FrameOver intOrder} [F.IsRegular] [Inhabited F.WorldState]
+    [DecidableEq F.WorldState] [DecidableRel F.step]
+    (enum : List F.WorldState) (henum : ∀ w, w ∈ enum)
+    (a : ℤ) (win : List F.WorldState) (hne : win ≠ [])
+    (hadj : ∀ k : ℕ, k + 1 < win.length →
+      F.step (win.getD k default) (win.getD (k + 1) default)) :
+    ∃ L : FrameLasso F, presentsWindow L a win = true ∧
+      L.back.length ≤ enum.length ∧ L.fwd.length ≤ enum.length := by
+  have hwl : 0 < win.length := List.length_pos_of_ne_nil hne
+  obtain ⟨sc, hscd⟩ : ∃ f : F.WorldState → F.WorldState, f = succOfEnum F enum henum := ⟨_, rfl⟩
+  obtain ⟨pr, hprd⟩ : ∃ f : F.WorldState → F.WorldState, f = predOfEnum F enum henum := ⟨_, rfl⟩
+  obtain ⟨w₀, hw₀⟩ : ∃ w : F.WorldState, w = win.getD 0 default := ⟨_, rfl⟩
+  obtain ⟨w₁, hw₁⟩ : ∃ w : F.WorldState, w = win.getD (win.length - 1) default := ⟨_, rfl⟩
+  have hsc : ∀ w, F.step w (sc w) := by rw [hscd]; exact succOfEnum_step F enum henum
+  have hpr : ∀ w, F.step (pr w) w := by rw [hprd]; exact predOfEnum_step F enum henum
+  have hscstep : ∀ (w : F.WorldState) (n : ℕ), F.step (sc^[n] w) (sc^[n + 1] w) := by
+    intro w n
+    rw [Function.iterate_succ_apply']
+    exact hsc _
+  have hprstep : ∀ (w : F.WorldState) (n : ℕ), F.step (pr^[n + 1] w) (pr^[n] w) := by
+    intro w n
+    rw [Function.iterate_succ_apply']
+    exact hpr _
+  obtain ⟨i₁, j₁, hij₁, hj₁, heq₁⟩ :=
+    exists_dup_of_enum enum henum (enum.length + 1) (by omega) (fun k => sc^[k] w₁)
+  obtain ⟨i₀, j₀, hij₀, hj₀, heq₀⟩ :=
+    exists_dup_of_enum enum henum (enum.length + 1) (by omega) (fun k => pr^[k] w₀)
+  -- The three segments, as opaque lists with their defining equations.
+  obtain ⟨bck, hbck⟩ : ∃ l : List F.WorldState,
+      l = bwdRun F enum henum (pr^[i₀] w₀) (j₀ - i₀) := ⟨_, rfl⟩
+  obtain ⟨fwl, hfwl⟩ : ∃ l : List F.WorldState,
+      l = fwdRun F enum henum (sc^[i₁] w₁) (j₁ - i₁) := ⟨_, rfl⟩
+  obtain ⟨mdl, hmdl⟩ : ∃ l : List F.WorldState,
+      l = bwdRun F enum henum w₀ i₀ ++ win ++ fwdRun F enum henum w₁ i₁ := ⟨_, rfl⟩
+  have hbcklen : bck.length = j₀ - i₀ := by rw [hbck, bwdRun_length]
+  have hfwllen : fwl.length = j₁ - i₁ := by rw [hfwl, fwdRun_length]
+  have hmdllen : mdl.length = i₀ + win.length + i₁ := by
+    rw [hmdl, List.length_append, List.length_append, bwdRun_length, fwdRun_length]
+  have hbne : bck ≠ [] := by
+    intro h
+    have h0 : bck.length = 0 := by rw [h]; rfl
+    omega
+  have hfne : fwl ≠ [] := by
+    intro h
+    have h0 : fwl.length = 0 := by rw [h]; rfl
+    omega
+  have hmne : mdl ≠ [] := by
+    intro h
+    have h0 : mdl.length = 0 := by rw [h]; rfl
+    omega
+  -- Reading the three segments.
+  have hbckget : ∀ m : ℕ, m < j₀ - i₀ → bck.getD m default = pr^[j₀ - m] w₀ := by
+    intro m hm
+    rw [hbck, bwdRun_getD F enum henum _ _ m hm, ← hprd,
+      ← Function.iterate_add_apply pr (j₀ - i₀ - m) i₀ w₀]
+    congr 1
+    omega
+  have hfwlget : ∀ m : ℕ, m < j₁ - i₁ → fwl.getD m default = sc^[i₁ + m + 1] w₁ := by
+    intro m hm
+    rw [hfwl, fwdRun_getD F enum henum _ _ m hm, ← hscd,
+      ← Function.iterate_add_apply sc (m + 1) i₁ w₁]
+    congr 1
+    omega
+  have hmdlget : ∀ m : ℕ, m < i₀ + win.length + i₁ →
+      mdl.getD m default =
+        if m < i₀ then pr^[i₀ - m] w₀
+        else if m < i₀ + win.length then win.getD (m - i₀) default
+        else sc^[m - i₀ - win.length + 1] w₁ := by
+    intro m hm
+    rw [hmdl, getD_append_three]
+    simp only [bwdRun_length]
+    split_ifs with h1 h2
+    · rw [bwdRun_getD F enum henum w₀ i₀ m h1, ← hprd]
+    · rfl
+    · rw [fwdRun_getD F enum henum w₁ i₁ (m - i₀ - win.length) (by omega), ← hscd]
+  -- The two ends of `mdl`, which the two seams reach for.
+  have hmdlfirst : mdl.getD 0 default = pr^[i₀] w₀ := by
+    rw [hmdlget 0 (by omega)]
+    rcases Nat.eq_zero_or_pos i₀ with h | h
+    · subst h
+      rw [if_neg (by omega), if_pos (by omega)]
+      simp only [Nat.sub_self, Function.iterate_zero, id_eq, hw₀]
+    · rw [if_pos h]
+      congr 1
+  have hmdllast : mdl.getD (i₀ + win.length + i₁ - 1) default = sc^[i₁] w₁ := by
+    rw [hmdlget _ (by omega)]
+    rcases Nat.eq_zero_or_pos i₁ with h | h
+    · subst h
+      rw [if_neg (by omega), if_pos (by omega),
+        show i₀ + win.length + 0 - 1 - i₀ = win.length - 1 by omega, ← hw₁]
+      simp
+    · rw [if_neg (by omega), if_neg (by omega)]
+      congr 1
+      omega
+  refine ⟨⟨bck, mdl, fwl, a - (i₀ : ℤ), hbne, hfne⟩, ?_, ?_, ?_⟩
+  · -- the check passes
+    have hC : Coherent (⟨bck, mdl, fwl, a - (i₀ : ℤ), hbne, hfne⟩ : FrameLasso F) := by
+      refine coherent_of_segments _ hmne ?_ ?_ ?_ ?_ ?_ ?_ ?_
+      · -- inside the leftward cycle
+        intro m hm
+        change F.step (bck.getD m default) (bck.getD (m + 1) default)
+        rw [hbcklen] at hm
+        rw [hbckget m (by omega), hbckget (m + 1) (by omega),
+          show j₀ - m = (j₀ - (m + 1)) + 1 by omega]
+        exact hprstep w₀ _
+      · -- the leftward wrap-around
+        change F.step (bck.getD (bck.length - 1) default) (bck.getD 0 default)
+        rw [hbcklen, hbckget (j₀ - i₀ - 1) (by omega), hbckget 0 (by omega),
+          show j₀ - (j₀ - i₀ - 1) = i₀ + 1 by omega, show j₀ - 0 = j₀ by omega, ← heq₀]
+        exact hprstep w₀ _
+      · -- the leftward seam
+        change F.step (bck.getD (bck.length - 1) default) (mdl.getD 0 default)
+        rw [hbcklen, hbckget (j₀ - i₀ - 1) (by omega), hmdlfirst,
+          show j₀ - (j₀ - i₀ - 1) = i₀ + 1 by omega]
+        exact hprstep w₀ _
+      · -- inside the window and the two tails
+        intro m hm
+        change F.step (mdl.getD m default) (mdl.getD (m + 1) default)
+        rw [hmdllen] at hm
+        rw [hmdlget m (by omega), hmdlget (m + 1) (by omega)]
+        rcases Nat.lt_or_ge (m + 1) i₀ with h1 | h1
+        · rw [if_pos (by omega), if_pos (by omega),
+            show i₀ - m = (i₀ - (m + 1)) + 1 by omega]
+          exact hprstep w₀ _
+        rcases Nat.lt_or_ge m i₀ with h2 | h2
+        · rw [if_pos h2, if_neg (by omega), if_pos (by omega),
+            show i₀ - m = 1 by omega, show m + 1 - i₀ = 0 by omega, ← hw₀]
+          simpa using hprstep w₀ 0
+        rcases Nat.lt_or_ge (m + 1) (i₀ + win.length) with h3 | h3
+        · rw [if_neg (by omega), if_pos (by omega), if_neg (by omega), if_pos (by omega),
+            show m + 1 - i₀ = (m - i₀) + 1 by omega]
+          exact hadj (m - i₀) (by omega)
+        rcases Nat.lt_or_ge m (i₀ + win.length) with h4 | h4
+        · rw [if_neg (by omega), if_pos (by omega), if_neg (by omega), if_neg (by omega),
+            show m - i₀ = win.length - 1 by omega,
+            show m + 1 - i₀ - win.length + 1 = 1 by omega, ← hw₁]
+          simpa using hscstep w₁ 0
+        · rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega),
+            show m + 1 - i₀ - win.length + 1 = (m - i₀ - win.length + 1) + 1 by omega]
+          exact hscstep w₁ _
+      · -- the rightward seam
+        change F.step (mdl.getD (mdl.length - 1) default) (fwl.getD 0 default)
+        rw [hmdllen, hmdllast, hfwlget 0 (by omega), show i₁ + 0 + 1 = i₁ + 1 by omega]
+        exact hscstep w₁ _
+      · -- inside the rightward cycle
+        intro m hm
+        change F.step (fwl.getD m default) (fwl.getD (m + 1) default)
+        rw [hfwllen] at hm
+        rw [hfwlget m (by omega), hfwlget (m + 1) (by omega),
+          show i₁ + (m + 1) + 1 = (i₁ + m + 1) + 1 by omega]
+        exact hscstep w₁ _
+      · -- the rightward wrap-around
+        change F.step (fwl.getD (fwl.length - 1) default) (fwl.getD 0 default)
+        rw [hfwllen, hfwlget (j₁ - i₁ - 1) (by omega), hfwlget 0 (by omega),
+          show i₁ + (j₁ - i₁ - 1) + 1 = j₁ by omega, show i₁ + 0 + 1 = i₁ + 1 by omega,
+          ← heq₁]
+        exact hscstep w₁ _
+    have hA : AgreesWindow (⟨bck, mdl, fwl, a - (i₀ : ℤ), hbne, hfne⟩ : FrameLasso F) a win := by
+      intro k hk
+      change Periodic.unrollOf bck mdl fwl (a + (k : ℤ) - (a - (i₀ : ℤ))) = win.getD k default
+      rw [show a + (k : ℤ) - (a - (i₀ : ℤ)) = (i₀ : ℤ) + (k : ℤ) by omega,
+        Periodic.unrollOf_mid _ _ _ (by omega) (by rw [hmdllen]; omega),
+        show ((i₀ : ℤ) + (k : ℤ)).toNat = i₀ + k by omega,
+        hmdlget (i₀ + k) (by omega), if_neg (by omega), if_pos (by omega)]
+      congr 1
+      omega
+    rw [presentsWindow, Bool.and_eq_true]
+    exact ⟨decide_eq_true hC, decide_eq_true hA⟩
+  · change bck.length ≤ enum.length
+    omega
+  · change fwl.length ≤ enum.length
+    omega
 
 end FormalSystem.Metalogic.Decidability
