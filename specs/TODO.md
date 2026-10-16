@@ -93,7 +93,7 @@ next_project_number: 808
 805 [RESEARCHED] — RESEARCH TASK, verdict-first, on the posture task 559 models:...
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-806 [RESEARCHED] — RESEARCH TASK, research-first successor to the refuted...
+806 [PLANNED] — RESEARCH TASK, research-first successor to the refuted...
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization... (see above)
 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
 
@@ -155,12 +155,13 @@ GUARDRAILS: no sorry/axiom/native_decide/vacuous definition; the check is about 
 
 ### 806. Set valued cell quotient index
 - **Effort**: Step (1) alone (closure-indexed eventual periodicity of the realizable types) is the costable first deliverable; the full gate re-run and sufficiency attempt are not costable in one round
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 761
 - **Research**: [806_set_valued_cell_quotient_index/reports/01_closure-indexed-periodicity-gate.md]
+- **Plan**: [806_set_valued_cell_quotient_index/plans/01_closure-profile-gate-rerun.md]
 
 **Description**: RESEARCH TASK, research-first successor to the refuted cell-index line. Parent: task 761 (ladder realization theorem), which stays [BLOCKED] on the corrected record. Scope: reports and sorry-free evidence probe files under this task's own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. A refutation is an acceptable and successful outcome, and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons (plan-compliance.md Statement Fidelity).
 
