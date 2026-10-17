@@ -1,30 +1,44 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-17T01:07:00Z",
+  "completed_at": "2026-10-17T01:22:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "notes": "Probe compile through the build guard: exit 0, output confined to 27 #print axioms lines, all in the three permitted sets ([propext], [propext, Quot.sound], [propext, Classical.choice, Quot.sound]). Full-project build through the guard: 'Build completed successfully (2874 jobs)', guard exit 0, zero error: lines. Probe-collection gate 'bash scripts/check-evidence-probes.sh': exit 0, 'PASS all 37 wired probe(s) compile', with this task's probe PASS. axiom_count 14 and the single repo-wide vacuous-heuristic hit (FormalSystem/Examples/TemporalStructures.lean:495, a real proposition closed by trivial through definitional unfolding, not a placeholder) are both pre-existing and unchanged: this task touched no Lean source and git status over the resolved source roots is clean. The complete verify-deploy.sh gate set was deferred to this multi-task /orchestrate invocation's batch stage per the dispatch's Batch Gate Deferral directive; the narrowing invocation 'verify-deploy.sh --only-gate 4,10' ran here and exited 0 (gate 4 PASS, gate 10 SKIP as a deploy consumer, 1 check run, 0 failures)."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md",
-      "summary": "Close-out plan for the REFUTED verdict: three phases, 2.25 hours -- re-measure the landed probe evidence, sweep the four records for consistency with the verdict and attest no weakened substitute, then write the completion summary under the full gate set."
-    }
-  ],
-  "next_steps": "Run /implement 805 to execute the plan",
-  "phase_count": 3,
-  "estimated_hours": 2.25,
-  "dependency_waves": [[1, 2], [3]],
-  "memory_candidates": [
+      "type": "summary",
+      "path": "specs/805_jointly_derived_cell_index_gate/summaries/02_joint-index-gate-verdict-summary.md",
+      "summary": "Close-out summary for the REFUTED verdict on the jointly-derived six-coordinate cell index: measured evidence, the record-consistency sweep, the no-substitute attestation, the four unmet obligations, and the two operator actions."
+    },
     {
-      "content": "When a verdict-first research task's dispatch deliverables all land inside the research round (probe written, registered, parent record corrected) and its one remaining step was explicitly conditional on a gate being survived, the plan round is a CLOSE-OUT round, not a proof round: three phases -- (1) re-measure the landed evidence in this dispatch rather than trusting the research round's 'measured this session' claims, (2) sweep every record that carries the verdict for mutual consistency plus a mechanical attestation that no weakened same-named substitute was published, (3) write the completion summary under the full gate set. Two checks before planning prevent wasted scope: read state.json for sibling tasks that may already have discharged a recorded user ruling (a successor record may exist and be completed), and re-derive every count carried from the research report (a probe-collection count goes stale as soon as a sibling round adds a probe).",
-      "category": "PATTERN",
-      "source_artifact": "specs/805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md",
-      "confidence": 0.65,
-      "suggested_keywords": ["close-out-plan", "verdict-first-research", "carried-figure-staleness", "evidence-probe-remeasure", "conditional-step-removed", "sibling-record-check"]
+      "type": "handoff",
+      "path": "specs/805_jointly_derived_cell_index_gate/handoffs/phase-3-handoff-20261017T011339Z.md",
+      "summary": "Phase 3 recovery point."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1792193557_775a31_805",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Closed out the REFUTED verdict on the jointly-derived six-coordinate cell index: the sixteenth wired probe recompiled sorry-free with no new axiom, the probe-collection gate reported PASS all 37 wired probe(s) compile, and the full-project build is green. The record-consistency sweep found all four records carrying the verdict already in agreement with it (zero repair edits), and the mechanical attestation confirms no weakened substitute for ladderRealized, LadderCons or ladderCons_localRun exists anywhere, with FormalSystem/ and Tests/ untouched. The completion summary carries the verdict's scope caveat (it refutes the modulus clause as the rule states it, over letter-definable sub-objects, not every jointly-derived triple), the strictly stronger closure-not-letters necessary condition whose sufficiency is asserted nowhere, the four unmet proof obligations verbatim, and the two operator actions; no successor task is filed because the R1 ruling is already discharged by task 806.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 8
+  "metadata": {
+    "session_id": "sess_1792193557_775a31",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 11,
+    "phases_completed": 3,
+    "phases_total": 3,
+    "compliance_check": "skipped",
+    "compliance_check_reason": "The mechanical spot-check is inapplicable to this plan, not passed-or-failed by it. Extracting backticked identifiers from the plan's Goals block yields box, LadderCons, ladderCons_localRun, ladderRealized, sorry and stab -- names the plan requires to be ABSENT (the forbidden weakened substitutes and the forbidden placeholder), not declarations to be created. The plan states explicitly that no new Lean declaration is added and therefore carries no '## Lean Challenge Statements' section, since its identifier set would be empty. Substantive compliance was verified instead: every Phase 1-3 checklist item and every Testing & Validation item was executed and checked, with the two deviations annotated inline on their own items and recorded in the summary's Plan Deviations, and the attestation confirms none of the three forbidden names is declared anywhere."
+  }
 }

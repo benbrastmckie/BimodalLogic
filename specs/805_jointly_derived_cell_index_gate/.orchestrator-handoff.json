@@ -1,15 +1,26 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
-  "phases_total": 3,
-  "summary": "Planned the close-out round for task 805's REFUTED verdict. Three phases (2.25 h, waves [1,2] then [3]): re-measure the sixteenth probe and the whole wired probe collection in the implement dispatch; sweep the four records carrying the verdict (probe header, registration/decision rows, task 761's corrected .blocker-research.json, the source-store guidance note) for mutual consistency and attest mechanically that no weakened substitute for ladderRealized/LadderCons/ladderCons_localRun was published; then write the completion summary under the full gate set. No proof work is planned: dispatch step (5) was conditional on the gate being survived and the verdict removes it, and the recorded R1 ruling is already discharged by sibling task 806 (completed), so no successor task is filed.",
-  "blockers": [],
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 11,
+  "summary": "Close-out round for the REFUTED verdict on the jointly-derived six-coordinate cell index. All three plan phases completed: the sixteenth wired probe recompiled sorry-free through the build guard with no new axiom and the probe-collection gate reported PASS all 37 wired probe(s) compile; the record-consistency sweep found all four records (probe header, registration/decision rows, task 761's corrected .blocker-research.json, the source-store guidance note) already in agreement with the verdict, so zero repair edits were needed; and the mechanical attestation confirms no declaration of ladderRealized, LadderCons or ladderCons_localRun anywhere, with FormalSystem/ and Tests/ untouched. The completion summary validates and names the four unmet proof obligations, the strictly stronger closure-not-letters necessary condition, and the two operator actions (source-store guidance commit, redeploy).",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md",
-      "summary": "Three-phase close-out plan: re-measure landed evidence, record-consistency sweep plus no-substitute attestation, completion summary under the full gate set."
+      "type": "summary",
+      "path": "specs/805_jointly_derived_cell_index_gate/summaries/02_joint-index-gate-verdict-summary.md",
+      "summary": "Close-out summary: the jointly-derived cell index is refuted, the verdict's scope caveat and four unmet obligations are carried, no weakened substitute was published, and the two operator actions are named."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/805_jointly_derived_cell_index_gate/handoffs/phase-3-handoff-20261017T011339Z.md",
+      "summary": "Phase 3 recovery point: summary written and validated, scoped gate set green, full gate set deferred to the batch stage."
     }
   ],
-  "dispatch_seq": 8
+  "phases_completed": 3,
+  "phases_total": 3,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "skeleton": false,
+  "sorry_inventory": [],
+  "continuation_path": null,
+  "next_action_hint": "Task is implemented; postflight owns the plan's top-level Status field, specs/state.json and specs/TODO.md. The full gate set for this task's modified_files is deferred to this /orchestrate invocation's batch stage per the dispatch's Batch Gate Deferral directive. Two operator actions remain, named in the summary's Follow-ups: commit the source-store guidance edit at /home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md (outside this repository), and run 'timeout 540 bash .claude/scripts/deploy-headless.sh' to reconcile the stale deployed .claude/ tree for the core and lean extensions. No successor task is filed: the R1 ruling is already discharged by task 806 (completed)."
 }
