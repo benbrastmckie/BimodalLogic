@@ -1,33 +1,45 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-17T22:38:51Z",
+  "completed_at": "2026-10-17T22:51:06Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/709_ctl_like_fragment_finite_model_property/plans/01_f4-reasoned-exclusion-record.md",
-      "summary": "Single-phase record plan closing F4 as a reasoned exclusion ([COMPLETED WITH EXCLUSIONS], three evidenced rows) and amending PlusSlicedCertificate/Limits/README.md's closing paragraph to point at exists_periodic_subfamily; no Lean written."
+      "type": "summary",
+      "path": "specs/709_ctl_like_fragment_finite_model_property/summaries/01_f4-reasoned-exclusion-record-summary.md",
+      "summary": "Reasoned-exclusion record for F4: three evidenced rows, six kernel re-checks, the Limits README amendment hunk, and the proposed Stage 0 ROADMAP text."
     }
   ],
-  "next_steps": "Run /orchestrate 709 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1792275344_c203a3_709",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 1,
-    "estimated_hours": 1.5,
-    "dependency_waves": [[1]]
+  "completion_data": {
+    "completion_summary": "Closed as a reasoned exclusion: route R1 selected the Ramsey colour (E3) and landed its summary step over the time axis with no width hypothesis (exists_periodic_subfamily, exists_hitPresented), so the finite-width F4 form has no consumer and its premise is refuted in-fragment by not_finite_width_fmp. Amended the closing paragraph of PlusSlicedCertificate/Limits/README.md to point at the landed theorems; no Lean written, no width bound committed, full guarded lake build green.",
+    "roadmap_items": [
+      "Re-rule on **709**'s value before dispatching it"
+    ]
   },
-  "memory_candidates": [
-    {
-      "content": "When a component task's parent route lands the component in a different, consumed form (here: F4's finite-width periodicity step delivered by R1 as exists_periodic_subfamily over time-axis colourings with no width), the task closes as a single-phase record plan with [COMPLETED WITH EXCLUSIONS], citing the landed kernel-checked declaration as the Evidence column, not as [ABANDONED] or [PARTIAL]. Re-verify every cited declaration's name and axiom list in the closing dispatch (the research report's shorthand 'Fixture.not_tailStable' was actually Fixture.not_tailStable_cert).",
-      "category": "PATTERN",
-      "source_artifact": "specs/709_ctl_like_fragment_finite_model_property/plans/01_f4-reasoned-exclusion-record.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["reasoned-exclusion", "completed-with-exclusions", "superseded-by-landed-declaration", "component-task", "record-only-plan"]
-    }
-  ],
   "modified_files": [
-    "specs/709_ctl_like_fragment_finite_model_property/plans/01_f4-reasoned-exclusion-record.md"
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/README.md",
+    "specs/709_ctl_like_fragment_finite_model_property/plans/01_f4-reasoned-exclusion-record.md",
+    "specs/709_ctl_like_fragment_finite_model_property/summaries/01_f4-reasoned-exclusion-record-summary.md",
+    "specs/709_ctl_like_fragment_finite_model_property/handoffs/phase-1-handoff-20261017T224942Z.md"
   ],
-  "dispatch_seq": 2
+  "metadata": {
+    "session_id": "sess_1792275344_c203a3",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "phase_commit": "3bb709302",
+    "readme_commit": "7aba3abda",
+    "compliance_note": "Mechanical spot-check reported 'failed' on the backticked token `sorry` in the Goals sentence 'no `sorry`'; it is not a goal declaration. The sole real goal name exists_periodic_subfamily was found [OK]. False positive recorded on issues.jsonl."
+  }
 }

@@ -1,19 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote a single-phase record plan for task 709. Route R1 selected the Ramsey colour (probe E3, re-audited) and landed the summary step over the time axis with no width (exists_periodic_subfamily, exists_hitPresented, both at [propext, Classical.choice, Quot.sound]), so the finite-width F4 theorem has no consumer and its premise is refuted in-fragment by not_finite_width_fmp. The plan closes the task as [COMPLETED WITH EXCLUSIONS] with a three-row evidenced Reasoned Exclusions record, amends the closing paragraph of PlusSlicedCertificate/Limits/README.md to point at the landed theorems, and writes no Lean; ROADMAP.md's Stage 0 checkbox is left to the user with proposed wording in the summary.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "Task 709 closed as a reasoned exclusion. All six cited declarations re-verified at [propext, Classical.choice, Quot.sound] with no sorry; the closing paragraph of PlusSlicedCertificate/Limits/README.md was replaced with the plan's fixed text pointing at exists_periodic_subfamily and exists_hitPresented (commit 7aba3abda, two hunks, no .lean touched). Phase 1 closed [COMPLETED WITH EXCLUSIONS] with its three-row Reasoned Exclusions record; full guarded lake build, sorry census, module invariants, verify-deploy, task-reference lint and summary validation all green. The plan-level Status field and the ROADMAP Stage 0 tick are left to postflight and the user respectively.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/709_ctl_like_fragment_finite_model_property/summaries/01_f4-reasoned-exclusion-record-summary.md",
+      "summary": "Reasoned-exclusion record with kernel output, README diff hunk, exclusion table, and proposed ROADMAP text."
+    },
     {
       "type": "plan",
       "path": "specs/709_ctl_like_fragment_finite_model_property/plans/01_f4-reasoned-exclusion-record.md",
-      "summary": "Single-phase record plan: reasoned exclusion of F4 (three evidenced rows) plus one README amendment; 1.5 h; no Lean."
+      "summary": "Single phase closed [COMPLETED WITH EXCLUSIONS]; checklist ticked and annotated."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 1,
   "phases_total": 1,
   "blockers": [],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement: re-verify the four cited declarations, apply the fixed README paragraph, close Phase 1 as [COMPLETED WITH EXCLUSIONS], write the summary with the proposed Stage 0 ROADMAP text."
+  "next_action_hint": "Postflight: stamp plan-level Status and task status. User: apply the two-line ROADMAP text in the summary when ticking the Stage 0 ruling for 709.",
+  "git_checkpoint": "3bb709302"
 }

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #709
 
 - **Task**: 709 - ctl_like_fragment_finite_model_property (F4, finite width implies eventually periodic, as route R1's summary step)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: 703, 710, 719 (all archived `completed`; nothing here waits on them)
 - **Research Inputs**: specs/709_ctl_like_fragment_finite_model_property/reports/01_f4-summary-step-disposition.md
