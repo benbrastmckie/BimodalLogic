@@ -252,33 +252,39 @@ the source-store markdown, `bash /home/benjamin/.config/nvim/agent-system/extens
 
 ---
 
-### Phase 3: Completion Summary and Full Gate Set [NOT STARTED]
+### Phase 3: Completion Summary and Full Gate Set [COMPLETED]
 
 **Goal**: Write the task's completion summary carrying the verdict, the four unmet obligations and
 the two operator actions, and close the task under the complete gate set.
 
 **Tasks**:
-- [ ] Write `specs/805_jointly_derived_cell_index_gate/summaries/02_joint-index-gate-verdict-summary.md`
+- [x] Write `specs/805_jointly_derived_cell_index_gate/summaries/02_joint-index-gate-verdict-summary.md`
       with all six required sections (Overview, What Changed, Decisions, Plan Deviations, Impacts,
       Follow-ups) plus References, per `summary-format.md`.
-- [ ] In it: state the verdict as the successful outcome; state what the refutation does NOT say
+- [x] In it: state the verdict as the successful outcome; state what the refutation does NOT say
       (it refutes the modulus clause as the rule states it, not every jointly-derived triple);
       record the strictly stronger necessary condition (object-closure-product modulus, sufficiency
       asserted nowhere); list the four unmet obligations verbatim; record that step (5) was removed
       by the verdict rather than deferred; and record that no weakened substitute was produced.
-- [ ] In Follow-ups, name the two operator actions with their exact commands: the source-store
+- [x] In Follow-ups, name the two operator actions with their exact commands: the source-store
       guidance commit inside `~/.config/nvim/agent-system/` (outside this repository, so this
       repo's scoped-commit path cannot carry it), and
       `timeout 540 bash .claude/scripts/deploy-headless.sh` to reconcile the stale deployed
       `.claude/` tree for the `core` and `lean` extensions.
-- [ ] In Follow-ups, record that the R1 ruling is already discharged by task 806 (completed), so
+- [x] In Follow-ups, record that the R1 ruling is already discharged by task 806 (completed), so
       no successor task is filed by this record.
-- [ ] Carry Phase 1's measured figures (gate verdict, wired-probe count, axiom sets) into the
+- [x] Carry Phase 1's measured figures (gate verdict, wired-probe count, axiom sets) into the
       summary as measured in this dispatch, not as carried from `reports/02`.
-- [ ] Validate the artifact: `bash .claude/scripts/validate-artifact.sh specs/805_jointly_derived_cell_index_gate/summaries/02_joint-index-gate-verdict-summary.md summary`.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh` and require exit `0`
+- [x] Validate the artifact: `bash .claude/scripts/validate-artifact.sh specs/805_jointly_derived_cell_index_gate/summaries/02_joint-index-gate-verdict-summary.md summary`.
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh` and require exit `0`
       (detached with a bounded waiter; read the exit status, not a stdout diff).
-- [ ] Commit this task's own hunks only, with an explicit file list (never `git add -A`, never a
+      *(deviation: altered — per this dispatch's Batch Gate Deferral directive the full set is
+      deferred to the batch stage of this multi-task /orchestrate invocation and the narrowing
+      invocation `bash .claude/scripts/verify-deploy.sh --only-gate 4,10` ran instead, exit `0`,
+      1 check run, 0 failures: gate 4 PASS, gate 10 SKIP as a deploy consumer. The phase's
+      `**Verification Tier**: full` field is unedited; the full gate set is deferred, never
+      forgiven, and is attributed back to this task by its own `modified_files`.)*
+- [x] Commit this task's own hunks only, with an explicit file list (never `git add -A`, never a
       directory or glob pathspec), per the concurrency note on this dispatch.
 
 **Timing**: 1 hour
@@ -310,16 +316,18 @@ report any additional file the phase ends up touching.
 
 ## Testing & Validation
 
-- [ ] The sixteenth probe compiles `sorry`-free, with no new axiom, measured in this dispatch.
-- [ ] `bash scripts/check-evidence-probes.sh` exits `0` with the probe's `PASS` line present.
-- [ ] `jq empty specs/761_ladder_realization_theorem/.blocker-research.json` exits `0` and its
+- [x] The sixteenth probe compiles `sorry`-free, with no new axiom, measured in this dispatch.
+- [x] `bash scripts/check-evidence-probes.sh` exits `0` with the probe's `PASS` line present.
+- [x] `jq empty specs/761_ladder_realization_theorem/.blocker-research.json` exits `0` and its
       `solution_path` recommends no index candidate.
-- [ ] No declaration of `ladderRealized`, `LadderCons` or `ladderCons_localRun` exists anywhere in
+- [x] No declaration of `ladderRealized`, `LadderCons` or `ladderCons_localRun` exists anywhere in
       `FormalSystem/`, `Tests/` or `specs/evidence/`, and the `box`/`stab` clause is untouched.
-- [ ] No file under `FormalSystem/` or `Tests/` was changed by this task.
-- [ ] The summary artifact validates and names the four unmet obligations and the two operator
+- [x] No file under `FormalSystem/` or `Tests/` was changed by this task.
+- [x] The summary artifact validates and names the four unmet obligations and the two operator
       actions.
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits `0`.
+- [x] `bash .claude/scripts/verify-deploy.sh` exits `0`. *(deviation: altered — discharged as
+      `--only-gate 4,10`, exit `0`; the full set is deferred to this invocation's batch stage per
+      the Batch Gate Deferral directive.)*
 
 ## Artifacts & Outputs
 
