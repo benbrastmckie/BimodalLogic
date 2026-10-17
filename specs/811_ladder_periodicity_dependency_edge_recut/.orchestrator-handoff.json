@@ -1,17 +1,20 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "summary": "Wrote a 2-phase implementation plan applying the already-settled audit verdict. Phase 1 removes the 809-on-734 dependency edge from specs/state.json with the report's exact jq form (pre/post object diff as the check); phase 2 regenerates specs/TODO.md, verifies state.json and TODO.md agree on 809 -> [805] and 807 -> [809], and records that the surviving 807-on-809 edge still keeps the two check-evidence-probes.sh tasks out of one orchestrate wave. No Lean, no FormalSystem/ or Tests/ changes, and task 734's hold is untouched.",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 2,
+  "phases_total": 2,
+  "summary": "Applied the settled audit verdict: task 809's dependencies in specs/state.json went from [734, 805] to [805] (a full-file diff showing exactly one deleted line), and specs/TODO.md was regenerated from state.json so the two records agree. The 807-on-809 edge was kept as the sole expression of the two tasks' identical unordered file_scope overlap, and the regenerated wave table confirms the serialization holds (809 in wave 1, 807 in wave 2, blocked by 809). Task 734's [HOLD], its probe, scripts/check-evidence-probes.sh, specs/literature-index.json, FormalSystem/ and Tests/ are all untouched; verify-deploy.sh PASS with 15 checks and 0 failures.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/811_ladder_periodicity_dependency_edge_recut/summaries/01_dependency-edge-recut-summary.md",
+      "summary": "Implementation summary: the edge drop, the TODO.md regeneration, the preserved 807-on-809 serialization, and the two recorded plan deviations."
+    },
     {
       "type": "plan",
       "path": "specs/811_ladder_periodicity_dependency_edge_recut/plans/01_dependency-edge-recut.md",
-      "summary": "Two-phase plan: state.json edge deletion, then TODO.md regeneration plus edge-set and wave verification."
+      "summary": "Both phases [COMPLETED]; Phase 2 carries an inline Observed-outcome note refining its Scope Hypothesis."
     }
-  ],
-  "phases_completed": 0,
-  "phases_total": 2,
-  "blockers": [],
-  "next_action_hint": "Dispatch implement for task 811; its file_scope collides with tasks 751 and 784 on specs/state.json, so run it in a separate cycle from those.",
-  "dispatch_seq": 2
+  ]
 }

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #811
 
 - **Task**: 811 - Re-cut the dependency edges on the ladder/periodicity line
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/811_ladder_periodicity_dependency_edge_recut/reports/01_dependency-edge-recut-verdict.md

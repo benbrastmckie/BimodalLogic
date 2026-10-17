@@ -11,7 +11,7 @@ next_project_number: 812
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,809,810,811 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,809,810 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,429,497,618,763,783,807 | 298,428,502,616,761,772,809 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -91,7 +91,6 @@ next_project_number: 812
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 809 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
   └─ 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
-811 [IMPLEMENTING] — AUDIT TASK, verdict-first. Re-cut the dependency edges on the...
 
 ### Formula Refactor
 
@@ -128,12 +127,13 @@ next_project_number: 812
 ## Tasks
 
 ### 811. Ladder periodicity dependency edge recut
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [811_ladder_periodicity_dependency_edge_recut/reports/01_dependency-edge-recut-verdict.md]
 - **Plan**: [811_ladder_periodicity_dependency_edge_recut/plans/01_dependency-edge-recut.md]
+- **Summary**: [811_ladder_periodicity_dependency_edge_recut/summaries/01_dependency-edge-recut-summary.md]
 
 **Description**: AUDIT TASK, verdict-first. Re-cut the dependency edges on the ladder/periodicity line so the two never-dispatched successors are not gated behind an externally-blocked task whose technical contribution they may not need. Deliverable: a report under this task's own directory plus the edge changes themselves in specs/state.json; no changes to FormalSystem/ or Tests/, and no new Lean probe is required by this task (reading existing probes to settle the question is expected).
 

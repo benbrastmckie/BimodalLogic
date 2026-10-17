@@ -1,22 +1,39 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-17T06:22:03Z",
+  "completed_at": "2026-10-17T06:27:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": null,
+    "verification_note": "No Lean source was created or modified by this task (plan Non-Goals exclude writing a probe or running lake build), so the sorry/vacuous/axiom censuses and the full lake build are not applicable and build_passed is null rather than a claimed true. The covering verification is the plan's full tier: verify-deploy.sh PASS (15 checks, 0 failures, 1 pre-existing WARN on the lean extension's routing_hard/routing_agents_hard declaration), validate-artifact.sh PASS on plan and summary, jq -e on specs/state.json exits 0 with active_projects length unchanged at 74, and a full-file diff of specs/state.json showing exactly one deleted line."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/811_ladder_periodicity_dependency_edge_recut/plans/01_dependency-edge-recut.md",
-      "summary": "Two-phase plan applying the audit verdict: drop the 809-on-734 dependency edge in specs/state.json, then regenerate specs/TODO.md and verify the surviving 807-on-809 serialization edge keeps the two tasks out of one wave."
+      "type": "summary",
+      "path": "specs/811_ladder_periodicity_dependency_edge_recut/summaries/01_dependency-edge-recut-summary.md",
+      "summary": "Dropped the 809-on-734 dependency edge in specs/state.json, regenerated specs/TODO.md, and verified the surviving 807-on-809 edge keeps the two tasks in separate orchestrate waves."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1792217407_f3c96b_811",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 2,
-    "estimated_hours": 0.75,
-    "dependency_waves": [[1], [2]]
+  "completion_data": {
+    "completion_summary": "Applied the audit verdict mechanically: task 809's dependencies reduced from [734, 805] to [805] in specs/state.json, specs/TODO.md regenerated from it, and the 807-on-809 serialization edge verified to survive (809 in wave 1, 807 in wave 2). Task 734's [HOLD] and its probe, scripts/check-evidence-probes.sh, specs/literature-index.json, FormalSystem/ and Tests/ are all untouched. Tasks 809 and 807 are now dispatchable without lifting 734's hold.",
+    "roadmap_items": []
   },
-  "memory_candidates": [],
-  "next_steps": "Run /implement 811 to execute the plan",
-  "dispatch_seq": 2
+  "metadata": {
+    "session_id": "sess_1792217407_f3c96b",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "skipped",
+    "compliance_note": "The plan's Goals name no Lean identifiers (Lean Intent: false; no ## Lean Challenge Statements section is owed), so the goal-name grep has no backticked declaration names to check and the spot-check is correctly 'skipped' rather than 'passed'.",
+    "phases_completed": 2,
+    "phases_total": 2
+  },
+  "dispatch_seq": 3
 }
