@@ -590,6 +590,238 @@ theorem untl_propagates_along_coh {Q : Type} [Fintype Q] [DecidableEq Q]
           subst hr
           exact hu'
 
+/-! ## The certificate presentation: Route B, with seven decidable fields
+
+Route B of the research round -- GUESS the realizable set `R ⊆ ProdState Q5 chi` and CHECK
+decidable conditions on it -- rather than Route A, DECIDE realizability, whose missing piece is
+generalized-Büchi nonemptiness per state: a nested fixpoint nothing in this tree decides.  The
+shape is the one this tree already uses three times (`Cons`'s eleven fields, `AnchorCons`,
+`PlusCertifies`'s six checked components), and the `box`/`stab` clauses follow
+`BoxOracleSound`/`StabFaithful`/`AnchorCons`: a SPECIFICATION on the candidate datum, deliberately
+not a bottom-up computation, which is what breaks the DEFINITIONAL circularity gate 8 names.
+
+Every field below is a computable `Bool` built from `(Q5, step5, pend5, lab6, chi)` and the
+candidate set alone.  No history, world, model or cell appears in any of them -- that is gate 7 in
+its definability form -- and `cert_accepts_Rchi` lands a non-empty instance BEFORE every statement
+about what the certificate rejects.
+
+The fulfilment conditions are EXISTENTIAL and run INSIDE `R`: `certFwd` and `certBwd` run the
+fixpoint at `V := R` with `succ := succR R` / `preR R`, so no path outside `R` can discharge
+anything.  Weakening that to "a path somewhere in the carrier" would be strictly weaker and still
+type-correct, which is why `cert_fwd_iff_eu_lfp` puts condition (3)'s quantifier structure inside
+a THEOREM rather than leaving it only inside a definition.
+
+The `stab` and `box` clauses are PRESENT as checked biconditionals and are not dropped because
+this fixture makes them vacuous: `chi_closure_box_snce_stab_free` compiles the reason they are
+unexercised here, which is why gate 8 stays SIDESTEPPED rather than passed. -/
+
+def isUntl : PlusFormula → Bool
+  | .untl _ _ => true
+  | _ => false
+
+def isSnce : PlusFormula → Bool
+  | .snce _ _ => true
+  | _ => false
+
+def isBox : PlusFormula → Bool
+  | .box _ => true
+  | _ => false
+
+def isStab : PlusFormula → Bool
+  | .stab _ => true
+  | _ => false
+
+/-- The guard and the event of a binary temporal formula, in that order. -/
+def argsOf : PlusFormula → PlusFormula × PlusFormula
+  | .untl g e => (g, e)
+  | .snce g e => (g, e)
+  | _ => (.bot, .bot)
+
+/-- The argument of a unary modal formula. -/
+def argOf : PlusFormula → PlusFormula
+  | .box σ => σ
+  | .stab σ => σ
+  | _ => .bot
+
+/-- The successors of `x` INSIDE `R`. -/
+def succR (R : Finset (ProdState Q5 chi)) (x : ProdState Q5 chi) :
+    Finset (ProdState Q5 chi) :=
+  R.filter (fun y => coh6 x y = true)
+
+/-- The predecessors of `x` INSIDE `R`. -/
+def preR (R : Finset (ProdState Q5 chi)) (x : ProdState Q5 chi) :
+    Finset (ProdState Q5 chi) :=
+  R.filter (fun y => coh6 y x = true)
+
+/-- Condition (1): every member of the candidate set is locally coherent. -/
+def certLoc (R : Finset (ProdState Q5 chi)) : Bool :=
+  decide (∀ x ∈ R, locCoh lab6 chi x = true)
+
+/-- Condition (2): every member has a successor AND a predecessor inside `R` -- bi-infinity, read
+against `R` itself and not against the carrier. -/
+def certBiInf (R : Finset (ProdState Q5 chi)) : Bool :=
+  decide (∀ x ∈ R, 0 < (succR R x).card ∧ 0 < (preR R x).card)
+
+/-- Condition (3): every forward eventuality carried by a member is discharged by a guarded
+forward path INSIDE `R`.  EXISTENTIAL: one path suffices. -/
+def certFwd (R : Finset (ProdState Q5 chi)) : Bool :=
+  decide (∀ x ∈ R, ∀ ψ ∈ x.2.1, isUntl ψ = true →
+    x ∈ euLfp R (succR R) (fun w => decide ((argsOf ψ).2 ∈ w.2.1))
+                          (fun w => decide ((argsOf ψ).1 ∈ w.2.1)))
+
+/-- Condition (4): the past-directed mirror of condition (3), through `preR R`. -/
+def certBwd (R : Finset (ProdState Q5 chi)) : Bool :=
+  decide (∀ x ∈ R, ∀ ψ ∈ x.2.1, isSnce ψ = true →
+    x ∈ euLfp R (preR R) (fun w => decide ((argsOf ψ).2 ∈ w.2.1))
+                         (fun w => decide ((argsOf ψ).1 ∈ w.2.1)))
+
+/-- The `stab` biconditional at one member and one closure formula, read against `R`'s OWN fibre
+over the member's object state. -/
+def stabOk (R : Finset (ProdState Q5 chi)) (x : ProdState Q5 chi) (ψ : PlusFormula) : Bool :=
+  decide (ψ ∈ x.2.1) == decide (∀ y ∈ R, y.1 = x.1 → argOf ψ ∈ y.2.1)
+
+/-- Condition (5): the `stab` clause, PRESENT as a checked biconditional. -/
+def certStab (R : Finset (ProdState Q5 chi)) : Bool :=
+  decide (∀ x ∈ R, ∀ ψ ∈ plusSubformulaClosure chi, isStab ψ = true → stabOk R x ψ = true)
+
+/-- Condition (6): the `box` clause, the global bit read against `R`, PRESENT as a checked
+biconditional. -/
+def certBox (R : Finset (ProdState Q5 chi)) : Bool :=
+  decide (∀ x ∈ R, ∀ ψ ∈ plusSubformulaClosure chi, isBox ψ = true →
+    (decide (ψ ∈ x.2.1) == decide (∀ y ∈ R, argOf ψ ∈ y.2.1)) = true)
+
+/-- **THE CERTIFICATE**: a candidate realizable set is ADMISSIBLE when all six conditions hold.
+The `stab` and `box` conjuncts are part of the certificate, not optional extras. -/
+def certAdm (R : Finset (ProdState Q5 chi)) : Bool :=
+  certLoc R && certBiInf R && certFwd R && certBwd R && certStab R && certBox R
+
+/-- The `chi`-carrying 3-cycle of the eighteenth probe, as a candidate realizable set. -/
+def Rchi : Finset (ProdState Q5 chi) := {(a5, Ta), (b5, Tb), (c5, Tc)}
+
+theorem mem_Rchi (x : ProdState Q5 chi) :
+    x ∈ Rchi ↔ (x = (a5, Ta) ∨ x = (b5, Tb) ∨ x = (c5, Tc)) := by
+  simp [Rchi]
+
+/-- **The closure of `chi` has no `box`, no `snce` and no `stab` member.**  So conditions (4), (5)
+and (6) have NO CONTENT on this fixture: they are checked and vacuously satisfied.  This is the
+compiled statement of the gate-8 sidestep -- the standing `BoxStabFree` scope line of the whole
+anchor/run layer, which `Realize.lean` and the eighteenth probe buy their results under at exactly
+the same place.  Gate 8 is SIDESTEPPED here, not passed. -/
+theorem chi_closure_box_snce_stab_free :
+    ∀ ψ ∈ plusSubformulaClosure chi,
+      isBox ψ = false ∧ isSnce ψ = false ∧ isStab ψ = false := by decide
+
+/-- **Condition (3), unfolded.**  The quantifier structure of the forward discharge condition,
+stated as a theorem so that "inside `R`" is visible in a signature and not only in a definition:
+the fixpoint runs at `V := R` with `succ := succR R`. -/
+theorem cert_fwd_iff_eu_lfp (R : Finset (ProdState Q5 chi)) :
+    certFwd R = true ↔
+      ∀ x ∈ R, ∀ ψ ∈ x.2.1, isUntl ψ = true →
+        x ∈ euLfp R (succR R) (fun w => decide ((argsOf ψ).2 ∈ w.2.1))
+                              (fun w => decide ((argsOf ψ).1 ∈ w.2.1)) := by
+  simp only [certFwd, decide_eq_true_eq]
+
+/-! The three figures the non-vacuity witness below depends on, confirmed by `#eval` rather than
+trusted: the closure of `chi` has 18 members, and the `untl` members of the three types number
+`0`, `1` and `1` -- `Tb` carries `xxpa = .untl .bot xpa` and `Tc` carries `xpa = .untl .bot pa`,
+so condition (3) has exactly two obligations on `Rchi` and both are discharged in one step. -/
+#eval (Ta.1.filter (fun ψ => isUntl ψ = true)).card
+#eval (Tb.1.filter (fun ψ => isUntl ψ = true)).card
+#eval (Tc.1.filter (fun ψ => isUntl ψ = true)).card
+
+/-! ### The six conditions on `Rchi`, one at a time
+
+No `decide` below is ever applied to a goal quantifying over the candidate set: kernel-reducing
+the three-element `Rchi` literal means deciding equality of closure types, which overruns the
+recursion depth at any budget worth setting.  Each condition is therefore discharged by hand
+through `mem_Rchi` and the per-state facts, exactly as this round's Risks table directs and as the
+eighteenth probe does -- `decide` closes concrete closure memberships, concrete `coh6` facts and
+bounded quantifications over ONE closure type, and nothing else. -/
+
+theorem ta_untl_free : ∀ ψ ∈ Ta.1, isUntl ψ = false := by decide
+
+theorem tb_untl_only : ∀ ψ ∈ Tb.1, isUntl ψ = true → ψ = xxpa := by decide
+
+theorem tc_untl_only : ∀ ψ ∈ Tc.1, isUntl ψ = true → ψ = xpa := by decide
+
+theorem certLoc_Rchi : certLoc Rchi = true := by
+  simp only [certLoc, decide_eq_true_eq]
+  intro x hx
+  rcases (mem_Rchi x).mp hx with rfl | rfl | rfl
+  · decide
+  · decide
+  · decide
+
+theorem certBiInf_Rchi : certBiInf Rchi = true := by
+  simp only [certBiInf, decide_eq_true_eq]
+  intro x hx
+  rcases (mem_Rchi x).mp hx with rfl | rfl | rfl
+  · exact ⟨Finset.card_pos.mpr ⟨(b5, Tb), Finset.mem_filter.mpr
+        ⟨by rw [mem_Rchi]; exact Or.inr (Or.inl rfl), by decide⟩⟩,
+      Finset.card_pos.mpr ⟨(c5, Tc), Finset.mem_filter.mpr
+        ⟨by rw [mem_Rchi]; exact Or.inr (Or.inr rfl), by decide⟩⟩⟩
+  · exact ⟨Finset.card_pos.mpr ⟨(c5, Tc), Finset.mem_filter.mpr
+        ⟨by rw [mem_Rchi]; exact Or.inr (Or.inr rfl), by decide⟩⟩,
+      Finset.card_pos.mpr ⟨(a5, Ta), Finset.mem_filter.mpr
+        ⟨by rw [mem_Rchi]; exact Or.inl rfl, by decide⟩⟩⟩
+  · exact ⟨Finset.card_pos.mpr ⟨(a5, Ta), Finset.mem_filter.mpr
+        ⟨by rw [mem_Rchi]; exact Or.inl rfl, by decide⟩⟩,
+      Finset.card_pos.mpr ⟨(b5, Tb), Finset.mem_filter.mpr
+        ⟨by rw [mem_Rchi]; exact Or.inr (Or.inl rfl), by decide⟩⟩⟩
+
+/-- Condition (3) on `Rchi`: its two `untl` obligations -- `xxpa` in `Tb` and `xpa` in `Tc` --
+reach their events in ONE step inside `Rchi`, and `Ta` carries no `untl` member at all. -/
+theorem certFwd_Rchi : certFwd Rchi = true := by
+  rw [cert_fwd_iff_eu_lfp]
+  intro x hx ψ hψ huntl
+  rcases (mem_Rchi x).mp hx with rfl | rfl | rfl
+  · rw [ta_untl_free ψ hψ] at huntl
+    exact absurd huntl (by simp)
+  · have hb : ψ = xxpa := tb_untl_only ψ hψ huntl
+    subst hb
+    refine (eu_mem_lfp_iff Rchi (succR Rchi) _ _ (b5, Tb)).mpr
+      ⟨by rw [mem_Rchi]; exact Or.inr (Or.inl rfl), (c5, Tc), ?_, Or.inl (by decide)⟩
+    exact Finset.mem_filter.mpr ⟨by rw [mem_Rchi]; exact Or.inr (Or.inr rfl), by decide⟩
+  · have hc : ψ = xpa := tc_untl_only ψ hψ huntl
+    subst hc
+    refine (eu_mem_lfp_iff Rchi (succR Rchi) _ _ (c5, Tc)).mpr
+      ⟨by rw [mem_Rchi]; exact Or.inr (Or.inr rfl), (a5, Ta), ?_, Or.inl (by decide)⟩
+    exact Finset.mem_filter.mpr ⟨by rw [mem_Rchi]; exact Or.inl rfl, by decide⟩
+
+/-- Condition (4) on `Rchi`: VACUOUS, because the closure has no backward temporal member.  The
+condition is checked, not omitted. -/
+theorem certBwd_Rchi : certBwd Rchi = true := by
+  simp only [certBwd, decide_eq_true_eq]
+  intro x _ ψ hψ hsnce
+  rw [(chi_closure_box_snce_stab_free ψ (Finset.mem_powerset.mp x.2.2 hψ)).2.1] at hsnce
+  exact absurd hsnce (by simp)
+
+/-- Condition (5) on `Rchi`: VACUOUS, because the closure has no `stab` member.  The condition is
+checked, not omitted -- which is why gate 8 is SIDESTEPPED and not passed. -/
+theorem certStab_Rchi : certStab Rchi = true := by
+  simp only [certStab, decide_eq_true_eq]
+  intro x _ ψ hψ hstab
+  rw [(chi_closure_box_snce_stab_free ψ hψ).2.2] at hstab
+  exact absurd hstab (by simp)
+
+/-- Condition (6) on `Rchi`: VACUOUS, because the closure has no `box` member.  Checked, not
+omitted. -/
+theorem certBox_Rchi : certBox Rchi = true := by
+  simp only [certBox, decide_eq_true_eq]
+  intro x _ ψ hψ hbox
+  rw [(chi_closure_box_snce_stab_free ψ hψ).1] at hbox
+  exact absurd hbox (by simp)
+
+/-- **THE NON-VACUITY WITNESS: the certificate ACCEPTS a non-empty candidate set.**  Landed BEFORE
+every negative statement about the certificate, which is the discipline gate 7's non-vacuity
+obligation asks for: a certificate that accepted nothing would make every rejection below vacuous.
+All six conditions hold on the `chi`-carrying 3-cycle, with conditions (4), (5) and (6) vacuous by
+`chi_closure_box_snce_stab_free` and condition (3) discharged by its two `untl` obligations
+reaching their events in one step inside `Rchi`. -/
+theorem cert_accepts_Rchi : certAdm Rchi = true := by
+  simp only [certAdm, certLoc_Rchi, certBiInf_Rchi, certFwd_Rchi, certBwd_Rchi, certStab_Rchi,
+    certBox_Rchi, Bool.and_self]
+
 end Probe809C
 
 /-! ## Axiom check -/
@@ -603,3 +835,6 @@ end Probe809C
 #print axioms Probe809C.au_lfp_ne_eu_lfp_on_exit_graph
 #print axioms Probe809C.untl_propagates_along_coh
 #print axioms Probe809C.cohR_le_coh
+#print axioms Probe809C.chi_closure_box_snce_stab_free
+#print axioms Probe809C.cert_fwd_iff_eu_lfp
+#print axioms Probe809C.cert_accepts_Rchi

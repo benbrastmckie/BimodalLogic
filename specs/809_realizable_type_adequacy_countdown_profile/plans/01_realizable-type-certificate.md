@@ -341,7 +341,7 @@ eighteenth probe's `chi_closure_untl_only`-shaped `decide` in this file. Both fi
 
 ---
 
-### Phase 4: The Certificate: Seven Decidable Fields Including the Box and Stab Clauses, and the Non-Vacuity Witness [NOT STARTED]
+### Phase 4: The Certificate: Seven Decidable Fields Including the Box and Stab Clauses, and the Non-Vacuity Witness [COMPLETED]
 
 **Goal**: Define the certificate presentation as a candidate realizable set with the research
 report's six conditions as decidable fields — with `box` and `stab` PRESENT as checked
@@ -349,22 +349,22 @@ biconditionals, not omitted — compile the reason this fixture does not exercis
 non-empty instance before any statement about what the certificate rejects.
 
 **Tasks**:
-- [ ] Define `isUntl`, `isSnce`, `isBox`, `isStab`, `argsOf`, `argOf`, `succR`, `preR`.
-- [ ] Define the fields exactly as the Challenge block spells them: `certLoc` (condition 1),
+- [x] Define `isUntl`, `isSnce`, `isBox`, `isStab`, `argsOf`, `argOf`, `succR`, `preR`.
+- [x] Define the fields exactly as the Challenge block spells them: `certLoc` (condition 1),
   `certBiInf` (condition 2, a successor AND a predecessor inside `R`), `certFwd` (condition 3,
   the existential discharge of every `untl` member through `euLfp R (succR R)`), `certBwd`
   (condition 4, the `snce` mirror through `euLfp R (preR R)`), `stabOk`/`certStab` (condition 5,
   the `⊡ψ ∈ T ↔ ∀ y ∈ R with the same object state, ψ ∈ y`, read against `R`'s own fibre), `certBox`
   (condition 6, the global bit read against `R`), and `certAdm` as their conjunction. The `stab` and
   `box` fields are NOT optional and are not to be dropped because the fixture makes them vacuous.
-- [ ] Prove `chi_closure_box_snce_stab_free` by `decide` over the 18-member closure — the compiled
+- [x] Prove `chi_closure_box_snce_stab_free` by `decide` over the 18-member closure — the compiled
   statement of the gate-8 sidestep, and the reason conditions (4), (5) and (6) have no content here.
-- [ ] Prove `cert_fwd_iff_eu_lfp`, the unfolding that puts condition (3)'s quantifier structure
+- [x] Prove `cert_fwd_iff_eu_lfp`, the unfolding that puts condition (3)'s quantifier structure
   inside a theorem rather than only inside a definition.
-- [ ] Prove `cert_accepts_Rchi` — the gate-7 non-vacuity obligation, landed BEFORE every negative
+- [x] Prove `cert_accepts_Rchi` — the gate-7 non-vacuity obligation, landed BEFORE every negative
   statement, as the collection's discipline requires. Define `Rchi` as the eighteenth probe's
   `chi`-carrying 3-cycle.
-- [ ] Commit (explicit file list: the probe).
+- [x] Commit (explicit file list: the probe).
 
 **Timing**: 2 hours
 
