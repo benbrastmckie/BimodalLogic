@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 5,
+  "summary": "Wrote the four-phase implementation plan for the sufficiency close-out. The research round already compiled all three deliverables (dovetailing theorem, derived |R| bound, backward-arm refutation plus the cohBi repair), so the plan lands the one gap it named -- a two-arm non-vacuity fixture giving realizes_of_certAdm_cohBi a compiled instance -- then updates the probe header, the guard decision row and the ROADMAP paragraphs that still gate 761 on this task, and closes with the complete gate set. The Lean Challenge block (six pinned headline signatures plus four new Goals) compiled standalone at plan time, and #eval measured certAdm lab4 cohBi4 R4 = true.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md",
+      "summary": "Four phases, 5.5 hours, waves [[1],[2,3],[4]]: two-arm fixture and non-vacuous instance (lean); header and guard decision row; ROADMAP verdict and the cohBi/label-level rulings; complete gate set and summary."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement: Phase 1 appends the phi4/R4 fixture to certificate-sufficiency-dovetailing.lean; its Scope Hypothesis figures were measured at plan time by #eval, so a mismatch means the committed probe and the plan-time block differ."
+}

@@ -1,32 +1,36 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/815_certificate_sufficiency_dovetailing_realizability/reports/01_certificate-sufficiency-dovetailing.md",
-      "summary": "The dovetailing argument is compiled as a theorem over an arbitrary finite graph (forward-only sufficiency for the compiled certificate); the full sufficiency claim is refuted for the compiled relation by a three-state snce fixture (backward arm only); the repair cohBi (adding the strict-since link) makes the certificate sufficient at the label level, at no cost on snce-free closures; the |R| bound is derived and consumed by nothing."
+      "type": "plan",
+      "path": "specs/815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md",
+      "summary": "Four-phase close-out of the compiled sufficiency verdict: a two-arm non-vacuity fixture (phi4 = (T U b) and (T S a1), R4 = {y0,y1,y2}) giving realizes_of_certAdm_cohBi a compiled instance, measured true at plan time; header and guard decision-row update; ROADMAP.md rewritten to the verdict and the cohBi/label-level rulings 761 inherits; the complete gate set and summary. Six headline signatures pinned in a plan-time-compiled Lean Challenge block."
     }
   ],
-  "next_steps": "Plan: adopt cohBi as Route B's relation and pin realizes_of_certAdm_cohBi / sufficiency_refuted as Challenge statements; next fixture must carry both an untl and a snce member; state that sufficiency is label-level and name the semantic step as the remaining adequacy obligation.",
-  "modified_files": [
-    "specs/815_certificate_sufficiency_dovetailing_realizability/reports/01_certificate-sufficiency-dovetailing.md",
-    "specs/evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean",
-    "scripts/check-evidence-probes.sh"
-  ],
-  "memory_candidates": [
-    {
-      "content": "A dovetailing/run construction over a finite coherence graph needs, per eventuality, a discharge path AND a one-step link (carried at v implies delivered or carried on under the guard at every successor). A relation with the link in one temporal direction only yields sufficiency for that direction only; the product-layer linkPred has the untl arm and no snce arm, and Probe815.sufficiency_refuted is the compiled three-state counterexample. L-layer propagation lemmas (snce_propagates_to_start) carry the link inside LocalCoherentSeq and cannot be cited at a layer whose relation lacks the clause.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/815_certificate_sufficiency_dovetailing_realizability/reports/01_certificate-sufficiency-dovetailing.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["dovetailing", "one-step link", "snce arm", "certificate sufficiency", "cohBi", "evidence probe"]
-    }
-  ],
+  "next_steps": "Run /implement 815 to execute the plan",
   "metadata": {
     "session_id": "sess_1792245961_674a86_815",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 5.5,
+    "dependency_waves": [[1], [2, 3], [4]]
+  },
+  "phase_count": 4,
+  "estimated_hours": 5.5,
+  "dependency_waves": [[1], [2, 3], [4]],
+  "memory_candidates": [
+    {
+      "content": "When a lean plan pins a Lean Challenge Statements block, compile it standalone at plan time with sorry bodies AND append #eval lines after the namespace end for every decidable Scope Hypothesis figure (closure cardinalities, concrete edge facts, a certificate's Bool value on a candidate fixture). Mathlib oleans are cached, so the compile costs seconds, and the plan's figures become measurements rather than hand computations: a fixture whose certificate #evals to true cannot fail on a false statement, only on proof labour. Pair it with the collection's discipline that the committed probe keeps exactly one #eval (the closure cardinality) and proves the rest.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["lean-challenge-statements", "plan-time-eval", "scope-hypothesis", "evidence-probe", "fixture-non-vacuity"]
+    }
+  ],
+  "modified_files": [
+    "specs/815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md"
+  ],
+  "dispatch_seq": 5
 }
