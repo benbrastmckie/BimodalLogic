@@ -1784,7 +1784,7 @@
     {
       "project_number": 811,
       "project_name": "ladder_periodicity_dependency_edge_recut",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "AUDIT TASK, verdict-first. Re-cut the dependency edges on the ladder/periodicity line so the two never-dispatched successors are not gated behind an externally-blocked task whose technical contribution they may not need. Deliverable: a report under this task's own directory plus the edge changes themselves in specs/state.json; no changes to FormalSystem/ or Tests/, and no new Lean probe is required by this task (reading existing probes to settle the question is expected).\n\nTHE SITUATION, measured at the conclusion stage of the batch run that filed this task. Tasks 809 and 807 were requested in that run and were NEVER dispatched: both trace their declared dependencies through task 734, which is on [HOLD] because the Hodkinson-Reynolds Handbook of Modal Logic ch.11 sections 5.10-5.11 are paywalled with no free or preprint copy (reactivation condition recorded at specs/literature-index.json#hodkinson_2006.hazard). Task 734's own probe half IS landed, wired and committed (specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean); only its source-acquisition half is blocked, which is why 734 rests at [HOLD] rather than completed. Declared edges as filed: 809 depends on [734, 805]; 807 depends on [809]. Task 805 is [COMPLETED].\n\nTHE QUESTION. Does task 809's actual scope require task 734's technical contribution, or only task 805's verdict? Task 809's scope is the ADEQUACY half of the closure-indexed periodicity gate: a coherence relation computing REALIZABLE rather than merely locally coherent types, with untl/snce fulfilment, plus the two gates specific to a set-valued presentation that the tuple-shaped gate table has no rows for (non-circularity and stab self-reference). Settle, against the landed artifacts rather than by re-deriving: (a) whether that adequacy work consumes anything from 734's mosaic/StabSaturated probe (mosaic-stab-saturated.lean, and the report at specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/reports/01_e4-stabsaturated-mixed-germ-probe.md, which records that the landed StabSaturated predicate is identically true and that the SH1 witness-direction predicate is the non-trivial content); (b) whether it consumes anything from the Handbook sections that 734 cannot obtain; (c) whether 807's edge onto 809 is itself real -- 807 is the backward-determinism forcing check and names Probe719Backward and Probe733Mirror as its test bed, not 809's adequacy relation.\n\nWHAT TO DO WITH THE VERDICT. If 734 is not a real semantic dependency of 809, drop that edge (scripts/update-task-status.sh dependency flags, or the state.json dependencies[] field directly) so 809 and 807 become dispatchable without lifting 734's hold. If it IS real, say precisely which declaration or which Handbook section is consumed, and leave the edge in place -- recording a genuine block is a complete result, not a failed audit. Same treatment for the 807-on-809 edge. Do not lift task 734's hold, and do not weaken or restate anything in 734's landed probe to manufacture independence.\n\nPRESERVE THIS SERIALIZATION. Tasks 809 and 807 both declare scripts/check-evidence-probes.sh in their file_scope, so they serialize against each other and against any other probe-wiring task. That serialization is correct and must survive this audit; only the edge onto 734 (and the 807-on-809 edge, if the audit refutes it) is in question. If the audit drops edges, re-check that the surviving edge set still keeps the two out of the same orchestrate wave -- an unordered file_scope overlap takes a dependency edge, not a bare exclusion (context/patterns/batch-orchestration-guardrails.md).\n\nACCEPTANCE. One report naming, per edge, the verdict and the evidence it rests on; specs/state.json and specs/TODO.md agreeing on whatever edge set results; and the check-evidence-probes.sh serialization between 809 and 807 still expressed as an explicit edge.\n\nSCHEDULING. file_scope declares specs/state.json, which collides with tasks 751 and 784. Run in a separate cycle from those.",
       "topic": "decidability",
@@ -1793,9 +1793,16 @@
         "specs/state.json"
       ],
       "created": "2026-10-17T05:19:37Z",
-      "last_updated": "2026-10-17T05:19:37Z",
-      "session_id": "sess_1792193557_775a31",
-      "artifacts": []
+      "last_updated": "2026-10-17T06:17:41Z",
+      "session_id": "sess_1792217407_f3c96b",
+      "artifacts": [
+        {
+          "path": "specs/811_ladder_periodicity_dependency_edge_recut/reports/01_dependency-edge-recut-verdict.md",
+          "type": "report",
+          "summary": "Per-edge verdict for the ladder/periodicity dependency recut: drop 809->734 (refuted on landed artifacts), keep 807->809 as the check-evidence-probes.sh serialization edge, keep 809->805 (real, satisfied); state.json/TODO.md edit commands specified for the implement phase."
+        }
+      ],
+      "next_artifact_number": 2
     }
   ],
   "artifacts": [
