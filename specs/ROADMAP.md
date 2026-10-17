@@ -74,10 +74,10 @@ aim.
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 127,128,178,502,559,566,570,604
-/orchestrate 616,617,664,709,714,729,730,741
-/orchestrate 743,751,752,753,767,768,769,770
-/orchestrate 772,774,777,779,780,781,782,785
-/orchestrate 787,803,804,810,813
+/orchestrate 616,617,664,714,729,730,741,743
+/orchestrate 751,752,753,767,768,769,770,772
+/orchestrate 774,777,779,780,781,782,785,787
+/orchestrate 803,804,810,813,817,818,819
 ```
 
 ## Next batches
