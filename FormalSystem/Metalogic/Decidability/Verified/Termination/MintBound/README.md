@@ -32,25 +32,25 @@ Listed in dependency order. Line and declaration counts are of the module as it 
 
 | Module | Lines | Decls | Role |
 |--------|-------|-------|------|
-| `Invariants.lean` | 1021 | 63 | The renaming `rho`/`rhoSF`, `IrreflOrd` and its preservation at all four result shapes, the ordering-times invariant, the reachability transport stack, and the pick bridges `pickOrd`/`pickBranches` |
-| `OrderingTimes.lean` | 1016 | 51 | `OrdTimesLeMaxTime` at the branching shapes with its refutation at the identification arm, the strengthened `OrdTimesKnown`, the engine-level run invariant, and `witnessPresent` monotonicity |
-| `MintPotential.lean` | 1828 | 90 | The world dimension and a time bound that does not go through the mint chain, the fresh-world discipline, `mintPotential`, the once-only bound, the counting chain, and the fuel induction over an abstract measure |
-| `Measure.lean` | 1258 | 73 | The concrete measure and the fuel figure it earns, the difficulty toolkit and the scope decision it settles, and the closure residual as literally stated — refuted at every `D` |
+| `Invariants.lean` | 1029 | 63 | The renaming `rho`/`rhoSF`, `IrreflOrd` and its preservation at all four result shapes, the ordering-times invariant, the reachability transport stack, and the pick bridges `pickOrd`/`pickBranches` |
+| `OrderingTimes.lean` | 1024 | 51 | `OrdTimesLeMaxTime` at the branching shapes with its refutation at the identification arm, the strengthened `OrdTimesKnown`, the engine-level run invariant, and `witnessPresent` monotonicity |
+| `MintPotential.lean` | 1846 | 90 | The world dimension and a time bound that does not go through the mint chain, the fresh-world discipline, `mintPotential`, the once-only bound, the counting chain, and the fuel induction over an abstract measure |
+| `Measure.lean` | 1252 | 73 | The concrete measure and the fuel figure it earns, the difficulty toolkit and the scope decision it settles, and the closure residual as literally stated — refuted at every `D` |
 | `Terminus.lean` | 272 | 7 | The terminus at `buildTableauAt`, and its sibling terminus at the length budget |
-| `ClosureResidual.lean` | 1161 | 57 | The repaired closure residual, the four consuming theorems restated at it, and the refutations of clause 1's label and formula dimensions |
-| `TimeCensus.lean` | 696 | 33 | The time coordinate: the minting census, `applyRule_emitted_time_mem` as the time analogue of the world sweep, and the time dichotomy lifted to the engine |
-| `TimeReuse.lean` | 773 | 46 | The verdict on `MintPaysForTime` — the refuting configuration, the repair attempted and blocked, and the fourth measure component |
-| `MonotoneIssuance.lean` | 505 | 24 | Monotone time issuance at the identification-side gate, run-level monotonicity off the gate configuration, and invariant survival at the oriented arm |
-| `OrientedGate.lean` | 997 | 55 | The self-guard component re-gated at the oriented arm, its structural facts, and the σ-hit obligation discharged rather than carried |
-| `FourComponent.lean` | 768 | 26 | The four-component measure, its per-step bundle and fuel figure, and the terminus chain restated at the repaired predicate |
-| `SigmaFixed.lean` | 971 | 56 | The formula-level σ obligation and the refutation it forces, then `SigmaFixed` — the formula-level repair the residual is restated at |
-| `LabelHeadroom.lean` | 428 | 32 | Clause 1's label dimension discharged from branch-side headroom, with the refutation that generalizes to every nonempty `L` |
-| `PostBlocking.lean` | 1348 | 68 | The post-blocking settlement residual, refuted and repaired; the narrowed repair at what the terminus instantiates it at, and the verdict on it |
-| `UntlSnceFree.lean` | 699 | 37 | The residual discharged at a **nonempty** universe over the `untl`/`snce`-free fragment, with the time sweep traded for branch-level freeness |
+| `ClosureResidual.lean` | 1164 | 57 | The repaired closure residual, the four consuming theorems restated at it, and the refutations of clause 1's label and formula dimensions |
+| `TimeCensus.lean` | 710 | 33 | The time coordinate: the minting census, `applyRule_emitted_time_mem` as the time analogue of the world sweep, and the time dichotomy lifted to the engine |
+| `TimeReuse.lean` | 785 | 46 | The verdict on `MintPaysForTime` — the refuting configuration, the repair attempted and blocked, and the fourth measure component |
+| `MonotoneIssuance.lean` | 506 | 24 | Monotone time issuance at the identification-side gate, run-level monotonicity off the gate configuration, and invariant survival at the oriented arm |
+| `OrientedGate.lean` | 1000 | 55 | The self-guard component re-gated at the oriented arm, its structural facts, and the σ-hit obligation discharged rather than carried |
+| `FourComponent.lean` | 770 | 26 | The four-component measure, its per-step bundle and fuel figure, and the terminus chain restated at the repaired predicate |
+| `SigmaFixed.lean` | 982 | 56 | The formula-level σ obligation and the refutation it forces, then `SigmaFixed` — the formula-level repair the residual is restated at |
+| `LabelHeadroom.lean` | 431 | 32 | Clause 1's label dimension discharged from branch-side headroom, with the refutation that generalizes to every nonempty `L` |
+| `PostBlocking.lean` | 1315 | 67 | The post-blocking settlement residual, refuted and repaired; the narrowed repair at what the terminus instantiates it at, and the verdict on it |
+| `UntlSnceFree.lean` | 715 | 37 | The residual discharged at a **nonempty** universe over the `untl`/`snce`-free fragment, with the time sweep traded for branch-level freeness |
 | `BoxFree.lean` | 543 | 14 | The label residual **replaced**: the `boxFree` shape gate and the world coordinate, and the boundary at which the route stops |
-| `GapPotential.lean` | 621 | 34 | The density coordinate: `gapPotential` over the fixed index set `U ×ˢ U`, its ceiling, growth and identification-arm transport, the strict drop at a `densityRule` step, the refutation of `MintPaysForTimeFixed` at `.Dense`/`.RTime`, and the repaired residual `MintPaysForTimeGap` |
-| `MintPaysAssembly.lean` | 892 | 24 | The engine-level assembly: `MintPaysForTimeFixed` off `.Dense`, then the density bucket and `MintPaysForTimeGap` discharged at **every** frame class with no hypothesis, via the five-bucket case split at the `pickBranches` level |
-| `FiveComponent.lean` | 790 | 23 | The five-component measure: `BudgetStateGap`, `budgetPotentialGap`, both step lemmas re-proved against the four-disjunct residual, the enlarged figures, and the eight termini restated with the residual **discharged** rather than carried |
+| `GapPotential.lean` | 656 | 32 | The density coordinate: `gapPotential` over the fixed index set `U ×ˢ U`, its ceiling, growth and identification-arm transport, the strict drop at a `densityRule` step, the refutation of `MintPaysForTimeFixed` at `.Dense`/`.RTime`, and the repaired residual `MintPaysForTimeGap` |
+| `MintPaysAssembly.lean` | 897 | 24 | The engine-level assembly: `MintPaysForTimeFixed` off `.Dense`, then the density bucket and `MintPaysForTimeGap` discharged at **every** frame class with no hypothesis, via the five-bucket case split at the `pickBranches` level |
+| `FiveComponent.lean` | 791 | 23 | The five-component measure: `BudgetStateGap`, `budgetPotentialGap`, both step lemmas re-proved against the four-disjunct residual, the enlarged figures, and the eight termini restated with the residual **discharged** rather than carried |
 | `Register.lean` | 1014 | 0 | The do-not-re-attempt register: twenty-six refuted or unavailable statements, cited by declaration name and refuting witness. No declarations |
 | `SeedRunTermini.lean` | 258 | 7 | The seedRun terminus family: the `_fixed_seedRun` line completed at S2-S4 and a parallel `_gap_seedRun` line at S1-S4, every member carrying `PostBlockingSettlesSeedRun` as a hypothesis. The only module importing both `PostBlocking` and `FiveComponent` |
 
@@ -120,4 +120,4 @@ it, and nothing imports `Register.lean` except the aggregator.
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-10-16*
