@@ -98,7 +98,8 @@ and run `bash scripts/check-module-invariants.sh --emit-inventory`. Every column
 except the trailing Description is machine-owned; the Description is hand-written
 and is carried across regeneration by file name. A file that has just appeared
 gets `<!-- TODO: add description -->`; a row whose file no longer exists is
-dropped. The marker accepts `rows=`, `filter=`, `cols=`, `desc=`, `link=` and
+dropped. An inline `|` in a description must be written `\|`, and the
+generator preserves it. The marker accepts `rows=`, `filter=`, `cols=`, `desc=`, `link=` and
 `sort=` options — see the `--emit-inventory` header comment in
 `scripts/check-module-invariants.sh`.
 

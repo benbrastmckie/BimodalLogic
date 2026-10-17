@@ -253,10 +253,12 @@ RUN_BUILD=1
 #
 # The trailing column is HAND-WRITTEN and survives regeneration: rows are keyed
 # on the file or directory name, so an existing description is carried across
-# verbatim. A newly-appeared file gets `<!-- TODO: add description -->`; a row
-# whose file no longer exists is dropped. A row naming a file outside the
-# scanned directory (`../FormalSystem.lean`) is kept as a pinned row with its
-# numbers refreshed, as long as the path still resolves.
+# verbatim, and a GFM-escaped `\|` inside a cell is preserved as cell content
+# rather than read as a cell boundary. A newly-appeared file gets
+# `<!-- TODO: add description -->`; a row whose file no longer exists is
+# dropped. A row naming a file outside the scanned directory
+# (`../FormalSystem.lean`) is kept as a pinned row with its numbers refreshed,
+# as long as the path still resolves.
 #
 # A table that is deliberately NOT generated -- one ordered by the layering rather
 # than alphabetically, or carrying no counts at all -- registers itself instead with
@@ -329,7 +331,7 @@ def split_row(line):
     body = body[1:]
     if body.endswith("|"):
         body = body[:-1]
-    return [c.strip() for c in body.split("|")]
+    return [c.strip() for c in re.split(r"(?<!\\)\|", body)]
 
 
 def row_key(cell):

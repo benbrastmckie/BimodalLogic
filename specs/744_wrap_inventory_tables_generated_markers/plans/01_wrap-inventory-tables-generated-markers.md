@@ -101,7 +101,7 @@ Phases are serialized: every phase after 2 runs the whole-tree writer, and two w
 same working tree cannot be interleaved with the foreign-file restore step without racing. No
 two phases execute in parallel.
 
-### Phase 1: Escape-aware cell splitting in the generator [IN PROGRESS]
+### Phase 1: Escape-aware cell splitting in the generator [COMPLETED]
 
 **Goal**: Make `split_row` in `scripts/check-module-invariants.sh` treat a GFM-escaped `\|` as
 cell content rather than a cell boundary, so a wrapped table's hand-written descriptions survive
@@ -128,8 +128,8 @@ regeneration regardless of inline Lean notation.
   extract the 16 description cells with the new `split_row` (a three-line Python snippet
   importing nothing from the tree) and confirm the three cells for `HitComplete.lean`,
   `AnchorLayer.lean`, `LadderModel.lean` contain their `\|` fragments intact. *(completed: 16 rows, three `\|` cells whole)*
-- [ ] Commit `scripts/check-module-invariants.sh` and `docs/reference/readme-standard.md` by
-  explicit path.
+- [x] Commit `scripts/check-module-invariants.sh` and `docs/reference/readme-standard.md` by
+  explicit path. *(completed: phase-closing commit via git-commit-phase.sh)*
 
 **Timing**: 0.5 hours
 

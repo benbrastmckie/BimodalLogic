@@ -2,7 +2,7 @@
   "phase": 1,
   "phase_name": "Escape-aware cell splitting in the generator",
   "started_at": "2026-10-17T18:49:34Z",
-  "last_updated": "2026-10-17T18:50:15Z",
+  "last_updated": "2026-10-17T18:50:33Z",
   "objectives": [
     {
       "id": 1,
@@ -45,8 +45,11 @@
     {
       "id": 6,
       "description": "Commit by explicit path",
-      "status": "not_started",
-      "files_touched": []
+      "status": "done",
+      "files_touched": [
+        "scripts/check-module-invariants.sh",
+        "docs/reference/readme-standard.md"
+      ]
     }
   ],
   "current_objective": 6,
