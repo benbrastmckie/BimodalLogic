@@ -75,9 +75,20 @@ and no carrier bound of any kind is proved; the defect on each axis is that the 
 has no countermodel of that shape at all, not that known bounds are too small.
 
 **The semantic characterisation is argued, not proved.** The class is complete exactly on
-targets with a finite-width countermodel: necessity is this directory's shape, sufficiency —
-every finite-width model has an eventually periodic, hence tail-stable-presentable, finite-width
-model — is a Ramsey-for-pairs-style periodicity argument not formalized anywhere in this tree.
+targets with a finite-width countermodel: necessity is this directory's shape; sufficiency —
+every finite-width model has an eventually periodic finite-width model of the same width,
+presentable as a tail-stable certificate — is not a theorem of this tree, and nothing in this
+tree consumes it. The Ramsey-for-pairs periodicity argument it rests on *is* formalized, but over
+colourings of the time axis rather than over finite-width sliced structures:
+`exists_periodic_subfamily` (`FormalSystem/Metalogic/Decidability/RaySummary/Periodic.lean`)
+replaces each tail of a colouring of `ℤ` by one Ramsey-monochromatic period, with bounds that
+count pairs of profiles and no width hypothesis at all, and `exists_hitPresented`
+(`RaySummary/HitComplete.lean`) presents the result finitely. What is not formalized is the
+transfer of that periodicity back to a sliced structure of the same width, and the step from an
+eventually periodic model to a tail-stable certificate, which `Fixture.not_tailStable_cert`
+(`../FixtureStable.lean`) shows re-presentation does not supply in general. A width-level
+statement, should a consumer for one ever appear, is a corollary of `exists_periodic_subfamily`
+over the label colouring of a sliced structure's run, not a new Ramsey argument.
 
 ## Modules
 
@@ -125,4 +136,4 @@ depends on no axioms at all.
 
 ---
 
-*Last verified: 2026-10-10*
+*Last verified: 2026-10-17*
