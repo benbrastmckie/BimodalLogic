@@ -21,11 +21,11 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 else below is subordinate to `809`.
 **Coverage appendix (uncovered tasks)**:
 ```
-/orchestrate 127,128,178,464,502,559,566,570
-/orchestrate 604,616,617,664,709,714,729,730
-/orchestrate 741,743,744,751,752,753,767,768
-/orchestrate 769,770,772,774,777,779,780,781
-/orchestrate 782,785,787,803,804,805,807
+/orchestrate 127,128,178,502,559,566,570,604
+/orchestrate 616,617,664,709,714,729,730,741
+/orchestrate 743,744,751,752,753,767,768,769
+/orchestrate 770,772,774,777,779,780,781,782
+/orchestrate 785,787,803,804,810,811
 ```
 
 ## Next batches
