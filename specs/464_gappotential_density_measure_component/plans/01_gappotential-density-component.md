@@ -728,33 +728,44 @@ axiom/sorry counts, C9's zero task-number citations and C31's References-block k
 
 ---
 
-### Phase 10: Full Gate Set [NOT STARTED]
+### Phase 10: Full Gate Set [COMPLETED]
 
 **Goal**: the repository's complete gate set green, with the task's own four constraints
 independently evidenced.
 
 **Tasks**:
-- [ ] Run the complete gate set: `bash scripts/check-module-invariants.sh` (no `--no-build`, no
-      `--only`, no narrowing flag of any kind). This is the aggregator for every check this
+- [x] Run the complete gate set: `bash scripts/check-module-invariants.sh` (no `--no-build`, no
+      `--only`, no narrowing flag of any kind).
+      *(deviation: altered — this dispatch carries a `## Batch Gate Deferral` directive telling it
+      to discharge this phase's declared `full` tier against a SCOPED tier instead, naming
+      `agent-system/extensions/core/scripts/tests/run-all.sh --only SUITE` or
+      `.../verify-deploy.sh --only-gate N`. **No `agent-system/` directory exists in this
+      repository** — it is a deploy target, and `.claude-extensions.json` carries no `source_dir`
+      — and both named scripts cover the core extension's own test suites rather than
+      `FormalSystem/**`, which is the only tree this task touches. There was nothing to narrow to,
+      so the **full** unnarrowed gate set was run instead: strictly stronger than the deferral
+      asked for, not weaker. Result: exit 0, `ALL CHECKS PASSED`, 55 PASS rows, zero FAIL rows.
+      The once-per-invocation batch-level stage still owes its own run; nothing here forgives
+      it.)* This is the aggregator for every check this
       repository's Lean side gates on — C1 `lake build` exits 0, C2/C14/C21 axiom baselines,
       C3 zero structural `sorry` asserted by content, C4/C5/C33 import and aggregator currency,
       C16 the Batteries env_linter batch against `scripts/nolints.json`, C24 `Init` reachability,
       C26-C32 the source-text checks, and the remainder. Every gate it aggregates must pass; a
       findings list with any FAIL row is not a pass.
-- [ ] Confirm zero `sorry` across the task's own additions independently:
+- [x] Confirm zero `sorry` across the task's own additions independently:
       `bash .claude/scripts/lean-sorry-census.sh` and a content grep over the three touched module
       bodies.
-- [ ] Confirm the axiom constraint on every new declaration named under Goals:
+- [x] Confirm the axiom constraint on every new declaration named under Goals:
       `mcp__lean-lsp__lean_verify` on each, each reporting a subset of
       `{propext, Classical.choice, Quot.sound}`. In particular confirm no `native_decide` anywhere.
-- [ ] Confirm the frozen files are byte-unchanged: `md5sum` of `Fuel.lean`, `Saturation.lean` and
+- [x] Confirm the frozen files are byte-unchanged: `md5sum` of `Fuel.lean`, `Saturation.lean` and
       `Tableau.lean` matches their pre-task values, and `git diff --name-only` lists none of the
       three.
-- [ ] Confirm `MintBound.lean` was edited additively only: `git diff` on it shows added lines
+- [x] Confirm `MintBound.lean` was edited additively only: `git diff` on it shows added lines
       (two imports plus docstring paragraphs) and no deletions or modifications.
-- [ ] Record the measured added-line count (`git diff --stat`) against Phase 1's carried estimate,
+- [x] Record the measured added-line count (`git diff --stat`) against Phase 1's carried estimate,
       and record both figures in the implementation summary.
-- [ ] Re-read every file immediately before its commit and stage only this task's own explicit
+- [x] Re-read every file immediately before its commit and stage only this task's own explicit
       file list — a sibling task is live on this shared working tree this cycle.
 
 **Timing**: 1 hour

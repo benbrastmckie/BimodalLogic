@@ -1,15 +1,26 @@
 {
-  "status": "planned",
-  "dispatch_seq": 9,
-  "phases_completed": 0,
-  "phases_total": 10,
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 10,
+  "summary": "Landed gapPotential, the density coordinate of the termination measure, across all ten plan phases. The component counts unfilled pairs over the fixed index set U x^s U, drops strictly at densityRule steps, and survives TimeOrdering.identifyTime; the repaired residual MintPaysForTimeGap is discharged at EVERY frame class with no hypothesis, and the eight restated termini drop the hmint hypothesis entirely. Also landed the refutation half: MintPaysForTimeFixed is kernel-decided FALSE at .Dense and .RTime, so the task's literal ask was a refuted goal rather than an open one. Full unnarrowed gate set green (ALL CHECKS PASSED, zero FAIL rows), zero sorry, axiom count unchanged at 14, frozen files byte-identical.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/464_gappotential_density_measure_component/summaries/01_gappotential-density-component-summary.md",
+      "summary": "Implementation summary: the density coordinate landed, the residual discharged at every frame class, and the landed predicate refuted at .Dense/.RTime."
+    },
     {
       "type": "plan",
       "path": "specs/464_gappotential_density_measure_component/plans/01_gappotential-density-component.md",
-      "summary": "Ten-phase plan landing gapPotential, its density payment and identifyTime preservation, the MintPaysForTimeFixed refutation at .Dense/.RTime, MintPaysForTimeGap discharged at every frame class, and a five-component measure carrying the terminus family."
+      "summary": "All ten phase headings promoted to [COMPLETED], with per-phase deviation annotations and two Scope Hypothesis confirmations recorded inline."
     }
   ],
-  "summary": "Planned outcome (a) from the research report: gapPotential as a U x U unfilled-pair ledger over gapFilled (densityRule's monotone second filter conjunct, polarity inverted), with the strict drop at density steps, transport across identifyTime, a four-disjunct MintPaysForTimeGap plus Fixed -> Gap direction lemma, an all-frame-class discharge with NO frame-class hypothesis, a five-component measure, and the eight _fixed termini restated with hmint discharged rather than carried. Also plans the refutation half (MintPaysForTimeFixed is false at .Dense and .RTime, so the task's literal 'extend the discharge' cannot hold). Two plan-time findings deviate from inputs and are recorded in the issue log: the research's module layout is unworkable because MintPaysAssembly.lean's pick-level helpers are private, so the import edge is inverted and the bucket lands in place; and FrameClass has no .Dedekind constructor, so the description's '.Dedekind' is read as .RTime. Plan validates clean (validate-artifact.sh PASS, 0 warnings) with Goals and Lean Challenge identifier sets equal at 24.",
-  "blockers": []
+  "phases_completed": 10,
+  "phases_total": 10,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "skeleton": false,
+  "sorry_inventory": [],
+  "continuation_path": null,
+  "next_action_hint": "Nothing is owed on this task. The once-per-invocation batch-level gate stage still owes its own run per the dispatch's Batch Gate Deferral directive: this dispatch ran the FULL unnarrowed scripts/check-module-invariants.sh instead of a scoped tier, because the directive's two named scoped invocations live under agent-system/, which does not exist in this repository."
 }
