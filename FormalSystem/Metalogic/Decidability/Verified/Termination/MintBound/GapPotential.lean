@@ -145,4 +145,83 @@ theorem gapPotential_le_of_grow {U : Finset SignedFormula}
   · rw [gapFilled_le_of_grow hord _ _ hd] at hp
     exact absurd hp.2 (by simp)
 
+/-! ### Preservation across the identification arm — Constraint (F) for this coordinate
+
+**The obstacle the task description warned about does not arise here, and it is worth being
+precise about why.** Every earlier candidate component died at the ordered split's arm 3 because
+it was affine in a quantity `TimeOrdering.identifyTime` can *lower*: a mint raises
+`ord.timeCount` and the identification arm lowers it, so no sign of coefficient satisfies both
+(`nextTime_reissues_retired_time`, `reuse_driven_through_engine`). **Nothing in this coordinate
+reads `ord.timeCount`** — `densityRule`'s own gap-target guard never mentions it, so `gapFilled`
+transcribes a condition the lowering mechanism has no purchase on. What has to be shown instead is
+only that the arm does not *raise* the uncured count, and it does not: no constraint is dropped at
+an incomparable trigger (`identifyTime_no_collapse`), reachability transports edge by edge
+(`futureOf_transport`) length-preservingly, so the filled set only grows and the unfilled count
+only falls.
+
+The `incomparableB ord (t₁, t₂)` side condition is not a new hypothesis: it is available at the
+consuming site from `firstIncomparablePair_spec` and at the engine's own orientation from
+`incomparableB_of_firstIncomparablePair_oriented`. `IrreflOrd` is the run invariant's own first
+conjunct, and it is *necessary* rather than convenient —
+`witnessPresent_identifyTime_unconditional_false` (register entry 5) refutes the `IrreflOrd`-free
+form for the sibling predicate, and the reason carries over verbatim, since
+`TimeOrdering.identifyTime` drops a pre-existing self-loop whose two endpoints rename together. -/
+
+/-- **A filled gap survives the identification arm, renamed.**
+
+`futureOf_transport` applied to **both** memberships, with the intermediate witness `m` carried to
+`rho t₂ t₁ m`: the renamed witness is in the renamed source's forward reach, and the renamed target
+is in the renamed witness's. Both transports are length-preserving, so the fuel of `100` is re-met
+at the same length and the two hops never exceed it.
+
+Modelled on `selfGuardDischarged_identifyTime`, one membership deeper. The column index lines up
+because `rhoSF` acts on the label's time by exactly the `rho` the reach transport is stated at —
+`rhoSF src tgt sf` is `sf` with `sf.label.time` replaced by `rho src tgt sf.label.time` — which is
+what lets `gapPotential_identifyTime` below read this lemma at its own index set without moving
+it. -/
+theorem gapFilled_identifyTime {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (hinc : incomparableB ord (t₁, t₂) = true) (hnsl : IrreflOrd ord) (s t : TimeIndex)
+    (h : gapFilled ord s t = true) :
+    gapFilled (ord.identifyTime t₂ t₁) (rho t₂ t₁ s) (rho t₂ t₁ t) = true := by
+  simp only [gapFilled, List.any_eq_true, List.contains_iff_mem] at h ⊢
+  obtain ⟨m, hm, ht⟩ := h
+  exact ⟨rho t₂ t₁ m, futureOf_transport ord t₁ t₂ hinc hnsl s m hm,
+    futureOf_transport ord t₁ t₂ hinc hnsl m t ht⟩
+
+/-- **The identification arm does not increase the gap potential.**
+
+`Finset.card_le_card` over the previous lemma: the filter's `true`-set only grows, so the
+`false`-set only shrinks, inside an index set that does not move. No injection from the after-set
+into the before-set is required, and none is available — `rhoSF t₂ t₁` is not injective on `U`.
+This is `selfGuardPotential_identifyTime`'s skeleton with the inner lemma swapped.
+
+Because the renaming is **post-composed** onto the parameter, the statement applies unchanged at a
+second, third or `n`-th identification along the same run. -/
+theorem gapPotential_identifyTime {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (hinc : incomparableB ord (t₁, t₂) = true) (hnsl : IrreflOrd ord) :
+    gapPotential U (fun x => rhoSF t₂ t₁ (σ x)) (ord.identifyTime t₂ t₁)
+      ≤ gapPotential U σ ord := by
+  refine Finset.card_le_card ?_
+  intro p hp
+  obtain ⟨hmem, hafter⟩ := Finset.mem_filter.mp hp
+  refine Finset.mem_filter.mpr ⟨hmem, ?_⟩
+  rcases hd : gapFilled ord (σ p.1).label.time (σ p.2).label.time with _ | _
+  · rfl
+  · exact absurd (hafter.symm.trans (gapFilled_identifyTime hinc hnsl _ _ hd)) (by simp)
+
+/-- **…at the engine's own orientation.** `gapPotential_identifyTime` read at
+`(min t₁ t₂, max t₁ t₂)`, which is the merge arm 3 actually performs.
+
+One fact deeper and nothing else: `incomparableB_of_firstIncomparablePair_oriented` supplies the
+side condition at the flipped pair. Mirrors `selfGuardPotential_identifyOriented`. -/
+theorem gapPotential_identifyOriented {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) (hirr : IrreflOrd ord) :
+    gapPotential U
+        (fun x => rhoSF (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2 (σ x))
+        (identifyOriented b ord t₁ t₂).2
+      ≤ gapPotential U σ ord :=
+  gapPotential_identifyTime (incomparableB_of_firstIncomparablePair_oriented htrig) hirr
+
 end FormalSystem.Metalogic.Decidability

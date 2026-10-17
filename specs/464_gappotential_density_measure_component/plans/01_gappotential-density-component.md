@@ -208,29 +208,36 @@ checks the new file is subject to.
 
 ---
 
-### Phase 2: Preservation Across the Identification Arm [NOT STARTED]
+### Phase 2: Preservation Across the Identification Arm [COMPLETED]
 
 **Goal**: `gapPotential` survives `TimeOrdering.identifyTime` at the engine's own orientation —
 Constraint (F) for the new coordinate.
 
 **Tasks**:
-- [ ] Prove `gapFilled_identifyTime`: under `incomparableB ord (t₁, t₂) = true` and
+- [x] Prove `gapFilled_identifyTime`: under `incomparableB ord (t₁, t₂) = true` and
       `IrreflOrd ord`, `gapFilled ord s t = true →
       gapFilled (ord.identifyTime t₂ t₁) (rho t₂ t₁ s) (rho t₂ t₁ t) = true`, by applying
       `futureOf_transport` (`Invariants.lean:320`) to both memberships with `m ↦ rho t₂ t₁ m`
       carrying the witness. Model on `selfGuardDischarged_identifyTime`
       (`OrientedGate.lean:565`).
-- [ ] Prove `gapPotential_identifyTime` by `Finset.card_le_card` over the previous lemma — the
+- [x] Prove `gapPotential_identifyTime` by `Finset.card_le_card` over the previous lemma — the
       filter's `true`-set only grows inside an index set that does not move, so no injection from
       the after-set into the before-set is needed (and none exists: `rhoSF t₂ t₁` is not injective
       on `U`). Model on `selfGuardPotential_identifyTime` (`OrientedGate.lean:586`).
-- [ ] Prove `gapPotential_identifyOriented` at `(min t₁ t₂, max t₁ t₂)` via
+      *(deviation: altered — the model lemma's `simp only [Finset.mem_filter] at hp ⊢` shape does
+      not transfer verbatim, because this component's filter predicate carries the renaming inside
+      its own `Decidable` instance argument, so adding `rhoSF` to the simp set stops
+      `Finset.mem_filter` firing at all. Same decomposition, same single `Finset.card_le_card` over
+      `gapFilled_identifyTime`; the membership is destructured with explicit
+      `Finset.mem_filter.mp` / `.mpr` and the contradiction closed by `Eq.trans` up to defeq
+      instead of by `rw`.)*
+- [x] Prove `gapPotential_identifyOriented` at `(min t₁ t₂, max t₁ t₂)` via
       `incomparableB_of_firstIncomparablePair_oriented`, mirroring
       `selfGuardPotential_identifyOriented` (`OrientedGate.lean:607`).
-- [ ] Record in the docstring that `rhoSF` acts on the label's time by exactly the `rho` the reach
+- [x] Record in the docstring that `rhoSF` acts on the label's time by exactly the `rho` the reach
       transport is stated at, which is what lines the column index up, and that the renaming is
       *post-composed* so the statement applies unchanged at an `n`-th identification.
-- [ ] Record in the docstring that **nothing in this proof reads `ord.timeCount`**, so the
+- [x] Record in the docstring that **nothing in this proof reads `ord.timeCount`**, so the
       maxTime-lowering mechanism that refuted earlier candidates (`nextTime_reissues_retired_time`,
       `reuse_driven_through_engine`) has no purchase on this coordinate.
 
