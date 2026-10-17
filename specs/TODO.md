@@ -1,5 +1,5 @@
 ---
-next_project_number: 819
+next_project_number: 820
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 819
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813,817,818 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,429,497,618,763,783,814,816 | 298,428,502,616,761,772,777,813 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,429,497,618,761,783,814,816 | 298,428,502,616,772,777,813,819 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,410,498,499,500,763 | 231,429,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -87,11 +87,12 @@ next_project_number: 819
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
-  └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
+819 [NOT STARTED] — Research-first: choose the presentation of a ladder cell that...
+  └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
+    └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 
 ### Formula Refactor
 
@@ -127,6 +128,47 @@ next_project_number: 819
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 819. Ladder cell presentation design decision
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 761
+
+**Description**: Research-first: choose the presentation of a ladder cell that supports a positive factorization lemma, or settle the direction negatively
+
+RESEARCH-FIRST BY CONSTRUCTION. No statement is pinned here. The deliverable is a recommendation grounded in the obligations already named, plus the design decision recorded on its merits. Do NOT open with a candidate index and attempt to prove it -- that is the loop this task exists to break.
+
+WHY THIS EXISTS. The ladder realization theorem is [BLOCKED] on one sub-problem: which cell a ladder state has. Two index candidates are now refuted, both machine-checked, and the record is explicit that nothing survives of the tuple approach:
+- The three-coordinate index `Q x Fin (B+1) x Fin (B+1)` is refuted (`cell_ne`, `exhibited_form_refuted`, `exists_form_refuted` in `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`) and was deleted from the realization statement.
+- The re-scoped six-coordinate residue-carrying index `ladderIndexRes T P B = (q, min c T, c % (P+1), min n T, n % (P+1), clip (n - c) [-B, B])` is refuted at BOTH object-exhibited parameters, uniformly in the clip bound, in `specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean` (1549 lines, 0 sorry, 0 axiom, no native_decide). Mechanism (4) `object_only_parameters_refuted`: the threshold is not object-derivable, since for every (T, P, B) the index collides on a pair the depth-(T+1) next-chain separates, so the threshold must be at least the formula's `untl`-nesting depth. Mechanism (5) `reach_period_refuted`: the exhibited period is the period of the reach-SET iteration on the FULL graph, but a formula that forbids a letter restricts the object to a sub-object with a different period; period 1 is exhibited for the coprime-cycle fixture and every modulus coprime to 3 fails.
+
+WHAT SURVIVES, and is NECESSARY ONLY -- never claimed sufficient. The refined parameter-origin rule: the threshold at least the formula's `untl`-nesting depth; the modulus a multiple of the period of every letter-definable sub-object of the object. Also landed: a FIXTURE-LEVEL sufficiency theorem on the two-state object that is explicitly NOT the factorization lemma. The positive lemma for jointly object-and-formula-derived parameters is OPEN and stated nowhere.
+
+THE FOUR OBLIGATIONS A SUCCESSOR MUST MEET, quoted from the refutation probe's header and not to be re-derived:
+(1) eventual periodicity of realizable types in the countdown over the product of the object with the closure;
+(2) a region-length pumping lemma for `untl`/`snce`-depth-bounded formulas;
+(3) the next deadline's coupling through `Drift`;
+(4) the box/stab letters through the anchor-layer equations.
+Assess each candidate presentation against all four. A candidate that cannot discharge (3) is not viable: the standing obstruction is that `Count false false` holds the countdown at 0 through an idle interval of any length while `Drift` moves the next deadline freely.
+
+THE DESIGN DECISION, which is this task's substance. Two presentations are on the table and the choice was deliberately left open:
+(a) A SET-VALUED PER-STATE DATUM OVER A QUOTIENT. This is the direction already on record: the refutation probe's own closing bullet reads "the direction on record remains a different presentation of a cell -- a set-valued per-state datum over a quotient -- not a wider tuple."
+(b) A PARAMETER-COUPLED INDEX whose threshold and modulus are derived from the object AND the formula jointly, per the necessary rule above.
+Evaluate both on the merits against the four obligations. The record's lean toward (a) is a starting position, not a verdict -- say so either way, and if (b) is recommended, state explicitly why a parameter-coupled index is not just the refuted tuple with better parameters.
+
+HARD CONSTRAINT FROM THE REFUTATION RECORD: no seventh coordinate, no wider tuple, no new index candidate of the refuted shape. A recommendation that amounts to widening the tuple contradicts a machine-checked result and must be reported as such rather than proposed.
+
+A NEGATIVE OUTCOME IS A COMPLETE RESULT. If the evidence says neither presentation discharges the four obligations, say that and name what it would take -- that closes the ladder route the way filtration was closed, on evidence. Do not force a recommendation through, and do not propose a presentation whose viability rests on an unproved lemma without naming that lemma as the real open problem.
+
+GUARDRAILS. No complexity claim and no upper bound; every quantity named is a COUNT. No finiteness may be added: `anchorCells_finite` and `anchorCells_ncard_le` stay untouched, and the SET of cells is already finite and bounded -- what is open is the indexing, not the cardinality. The acceptance clause is never dropped. Zero debt: no Buchi/MSO lemma cited in place of a proof. The three earlier negatives (gap coordinate, countdown parity, bounded carrier) are untouched and their gates are not re-run.
+
+WHAT THIS UNBLOCKS. The ladder realization theorem, and through it the lift `not_plusValidZTime_iff_ladderRefutes` and the `Decidable (PlusValidZTime phi)` corollary by bounded enumeration -- the decidability result for L-plus on the rank-1 route. The dependency edge is declared on the realization record so the block is visible rather than implicit.
+
+DESIGN OF RECORD for the surrounding obligation set: `specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Sections A, C and H4. Route ranking: `specs/archive/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md` "Ranking ratification", R1.
+
+---
 
 ### 818. Wrap directory rollup tables files lines cols
 - **Status**: [NOT STARTED]
@@ -1222,7 +1264,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 760, Task 775, Task 805, Task 806
+- **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819
 - **Plan**: [761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md]
 - **Summary**: [761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md]
 - **Research**: [761_ladder_realization_theorem/reports/02_spawn-analysis.md]
