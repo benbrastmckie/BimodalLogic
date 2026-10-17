@@ -1,4 +1,102 @@
-/- Placeholder header: the collection-convention header is written in the final phase. -/
+/-
+Probe 807: **can a closed L⁺ formula force backward determinism on a regular ℤ-frame?** This is
+the one route by which a published negative result of the historical-necessity tradition could
+reach L⁺: `stab`'s clause (`PlusLanguage/PlusTruth.lean`, `.stab φ => ∀ σ, τ.state t = σ.state t →
+PlusTruthAt M σ t φ`) does not itself impose the backward closure that tradition's negative results
+need, so the question is whether the OBJECT LANGUAGE can impose it on the frame — items (1)–(3)
+of the filing: state the condition as a frame property, construct or refute a forcing formula,
+and report the verdict as a wired probe.
+
+**Verdict: POSITIVE — A FORCING FORMULA EXISTS.** `(q S ⊥) → ⊡(q S ⊥)` ("yesterday `q` is
+settled") is valid on a regular ℤ-frame **iff** the frame is backward deterministic
+(`Probe807Forcing.valid_iff_stepBwdDet`), and at the history level without any regularity
+hypothesis (`Probe807Forcing.valid_iff_histBwdDet`, choice-free). It is REFUTED on the
+backward-branching `Probe733Mirror` (`Probe733Mirror.bdForce_not_valid`) and VALID on the
+backward-deterministic, forward-BRANCHING `Probe719Backward` (`Probe719Backward.bdForce_valid`,
+`Probe719Backward.forward_branching`), so it forces backward and not forward determinism.
+
+**Why this fixture pair.** `Probe733Mirror` (`backward-dual-mirror-fixture.lean`) is the
+branching test bed: its backward factor is exactly 2 at every spine state `aft (k + 1)`, so if
+no forcing formula existed, the candidate's negation would have to be UNSATISFIABLE there; it is
+satisfiable, and `not_histBwdDet` exhibits the witness. `Probe719Backward`
+(`backward-dual-asymmetric-fixture.lean`) is the control: backward deterministic by construction
+(`step_inv_pre`, `step_inv_x`, `step_inv_post`, one predecessor at every node) and ALSO forward
+branching (`pre 1 → pre 0` and `pre 1 → x 1`), which is what separates "forces backward
+determinism" from "forces determinism". Both fixtures are transcribed verbatim from their wired
+originals below — this collection's probes import only `FormalSystem`, never one another (see
+`scripts/check-evidence-probes.sh`'s header) — and the general section is new.
+
+**The condition.** Thomason 1984 §4 Def. 6(2) — histories that agree up to `t` agree on their
+past — is rendered on `⟨τ⟩_t` at one step as `HistBwdDet F`: histories sharing the state at `t`
+share the state at `t - 1`. It is synchronous (one ℤ-time coordinate for every history),
+history-level, and choice-free. Caleiro–Viganò–Volpe Def. 2.5's `Wdc` is the asynchronous
+weakening — "no backward branching" for an arbitrary flow — whose synchronous ℤ instance is
+exactly `HistBwdDet`; `histBwdDet_iterate` recovers the full past-agreement clause of Def. 6(2)
+from the one-step form. `StepBwdDet F` is the frame-level reading — the one-step relation has
+UNIQUE PREDECESSORS, i.e. a singleton backward factor — and on a regular frame the two are
+equivalent (`histBwdDet_of_stepBwdDet` from `WorldHistory.isStepPath`;
+`stepBwdDet_of_histBwdDet` through `PartialHistory.exists_worldHistory_two_point`, where every
+step lies on a possible world).
+
+**The formula and the mechanism.** On ℤ-time `φ S ⊥` holds at `(τ, t)` iff `φ` holds at
+`(τ, t - 1)` (`yest_iff`): the `snce` clause asks for a strictly earlier witness of `φ` with `⊥`
+at every time strictly between, so the witness is forced to be `t - 1`, where "strictly between"
+is empty. `bdForce q` is `Yq → ⊡Yq` with `Y := yest`. Forcing (`histBwdDet_of_valid`): given
+`τ`, `σ` sharing the state at `t`, take the SINGLETON valuation `|q| = {τ(t - 1)}`; `Yq` holds on
+`τ` at `t`, so by validity it holds on every history through `τ(t)` at `t`, in particular on `σ`,
+so `σ(t - 1) ∈ |q| = {τ(t - 1)}`. The converse (`valid_of_histBwdDet`) is a rewrite. Why not
+`Pq → ⊡Pq`: `P` ranges over the whole past, and a backward CYCLE makes `Pq` settled without any
+determinism — the one-step `Y` is what pins the predecessor. Why ℤ-time is essential: on a dense
+flow there is no `t - 1`, `q S ⊥` is unsatisfiable, `bdForce q` is vacuously valid everywhere and
+forces nothing — which is why this does not contradict `deterministic_not_plusDefinable`
+(`Metalogic/Decidability/Independence.lean`): that theorem's frame pair is not ℤ-indexed, and
+definability-on-ℤ is a different question from definability over all flows.
+
+**Outcome on each fixture.** Mirror: the two histories `histOf 1 (-1)` and `histOf 0 (-2)`
+both pass through `aft 1` at time `0` and diverge at time `-1` — `x 1` versus `aft 0` —
+exactly the two-valued inverse `step_inv_aft`; `not_histBwdDet` is `rfl` on the shared state and
+`cases` on the distinct one, so `bdForce_not_valid` and `not_stepBwdDet` follow by contraposition
+through the general theorems. Asymmetric: `stepBwdDet_node` cases on the successor through the
+three unique-predecessor inverses, `stepBwdDet` lifts it through `F_step`, and `bdForce_valid` is
+the soundness direction; `forward_branching` exhibits `pre 1 → pre 0` and `pre 1 → x 1`
+(`Step.preDown 0`, `Step.preX 1`) and is axiom-free.
+
+**What this does NOT say.** It is a frame-DEFINABILITY theorem, not a reduction: no
+know-time-do-not-forget reduction is attempted or sketched, and no undecidability,
+non-axiomatizability, or complexity claim about L⁺ is made or implied. Thomason's own T×W
+tradition, which carries exactly this backward-closure condition, is axiomatizable and
+Kamp-valid decidable (1984 §4), and every negative result found in the corpus needs at least two
+informed agents where L⁺ has one `⊡`. Whether relativizing finitely many `Yχ → ⊡Yχ` instances
+reaches a non-r.e. row of Halpern–van der Meyden–Vardi 2004's Table 1 is an OPEN transfer
+question, held as a Stage 0 ruling in `specs/ROADMAP.md`, not here. The mirror formula
+`(q U ⊥) → ⊡(q U ⊥)` forcing FORWARD determinism is an uncompiled side remark and is not
+claimed. `not_finite_width_fmp` stands untouched; `stab`'s truth clause is used as it is and
+neither restated nor weakened under any name; no `PlusFormula.yest` enters the library — `yest`
+is a probe-local abbreviation.
+
+**Citation hygiene.** `Probe733Mirror` and `Probe719Backward` below are transcriptions of the
+namespaces of the same names in `backward-dual-mirror-fixture.lean` and
+`backward-dual-asymmetric-fixture.lean`; the collection already lives with cross-file name
+ambiguity (`decide_will`, `stabPast`, `hist_canon`, `decide_past_stab`, ...), and every
+cross-file citation here is qualified by file. The new declarations live in `Probe807Forcing`
+and in the two re-opened fixture namespaces (the instantiation sections, marked as such).
+
+**Axiom record** (the six `#print axioms` lines at the foot of this file, verbatim):
+  'Probe807Forcing.valid_iff_histBwdDet' depends on axioms: [propext, Quot.sound]
+  'Probe807Forcing.valid_iff_stepBwdDet' depends on axioms: [propext, Classical.choice, Quot.sound]
+  'Probe733Mirror.bdForce_not_valid' depends on axioms: [propext, Classical.choice, Quot.sound]
+  'Probe733Mirror.not_stepBwdDet' depends on axioms: [propext, Classical.choice, Quot.sound]
+  'Probe719Backward.bdForce_valid' depends on axioms: [propext, Classical.choice, Quot.sound]
+  'Probe719Backward.forward_branching' does not depend on any axioms
+The history-level characterization is choice-free at `[propext, Quot.sound]`. `Classical.choice`
+enters only through `hist_canon` / `FrameOver.worldHistoryOfStepPath` on the fixture side (the
+same upstream cause the two fixtures' own records name) and through
+`PartialHistory.exists_worldHistory_two_point` on the regular-frame side — never through the
+forcing argument itself.
+
+Compile-check from the repository root with:
+  lake env lean specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean
+-/
 import FormalSystem
 
 open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.PlusLanguage

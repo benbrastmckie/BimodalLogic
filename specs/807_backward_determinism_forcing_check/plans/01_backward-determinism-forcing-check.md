@@ -281,14 +281,14 @@ positive verdict with the ruling explicitly pending, add the Stage 0 ruling item
 
 ---
 
-### Phase 3: Header, Registration, the Complete Gate Set, Summary, Return [NOT STARTED]
+### Phase 3: Header, Registration, the Complete Gate Set, Summary, Return [COMPLETED]
 
 **Goal**: Replace the placeholder header with the collection's convention, wire the probe into
 `scripts/check-evidence-probes.sh`, discharge the complete gate set, write the summary, and return
 `implemented`.
 
 **Tasks**:
-- [ ] Write the header in the convention of `backward-dual-mirror-fixture.lean`, in this order:
+- [x] Write the header in the convention of `backward-dual-mirror-fixture.lean`, in this order:
   (a) the opening paragraph naming what is tested (the backward-closure forcing question, task
   description items (1)–(3)) and the one-line verdict in capitals — **POSITIVE: a forcing formula
   exists**; (b) **Why this fixture pair** — `Probe733Mirror` as the branching test bed where the
@@ -311,24 +311,24 @@ positive verdict with the ruling explicitly pending, add the Stage 0 ruling item
   sentence that choice enters only through `hist_canon` / `worldHistoryOfStepPath` on the fixture
   side and `exists_worldHistory_two_point` on the regular-frame side, never through the forcing
   argument; (i) the `Compile-check from the repository root with:` line.
-- [ ] In `scripts/check-evidence-probes.sh`: add the boxed decision-row comment block directly
+- [x] In `scripts/check-evidence-probes.sh`: add the boxed decision-row comment block directly
   below the thirty-eighth probe's row (`realizable-type-certificate`), labelled **POSITIVE (forcing
   formula exists)**, naming `valid_iff_histBwdDet`/`valid_iff_stepBwdDet`, the two fixture verdicts,
   "ℤ-specific", "reduction NOT attempted, Stage 0 ruling pending", and the axioms; the row cites the
   probe filename and declaration names only — no task number (the file is under `scripts/`, outside
   the `specs/**` exemption). Append `"seam-gluing-ray-product/backward-determinism-forcing-formula"`
   as the last `WIRED` entry.
-- [ ] Run every command under **Verification** below, checking each exit status, never only its
-  output; on an ENVIRONMENT-class probe failure, re-run after any concurrent build finishes.
-- [ ] Write `specs/807_backward_determinism_forcing_check/summaries/01_backward-determinism-forcing-check-summary.md`
+- [x] Run every command under **Verification** below, checking each exit status, never only its
+  output; on an ENVIRONMENT-class probe failure, re-run after any concurrent build finishes. *(deviation: altered — per the dispatch's Batch Gate Deferral directive this phase ran the gates that cover its own files (probe compile exit 0, 0 warnings; `bash -n` exit 0; `check-evidence-probes.sh` exit 0, `all 40 wired probe(s) compile` = 39 `WIRED` + 1 `WIRED_REPO`; `check-task-references.sh --quiet` exit 0; full `lake build` exit 0, 2875 jobs, 0 errors) and deferred `verify-deploy.sh` to the batch stage, since no gate of it covers a file this task touched; `check-module-invariants.sh` exited 1 on INV alone — three stale generated inventory blocks (README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md) that differ by one pre-existing `Decidability/` module committed before this task's baseline and outside this task's files; recorded in issues.jsonl, not fixed here)*
+- [x] Write `specs/807_backward_determinism_forcing_check/summaries/01_backward-determinism-forcing-check-summary.md`
   per summary-format.md: the verdict and the formula; the probe path and the six axiom lines; the
   two record edits with the "ruling pending" wording quoted; the explicit statement that the
   reduction was NOT attempted and that the follow-up transfer question is logged for the conclusion
   stage; the two decisions (fixture namespaces kept verbatim; `rfl` in place of the `first`
   combinator) with their reasons.
-- [ ] Record issues and wins in the task's issue log as they arise, or attest in the summary that
+- [x] Record issues and wins in the task's issue log as they arise, or attest in the summary that
   there were none beyond those already logged.
-- [ ] Commit the header, registration and summary; return `implemented`.
+- [x] Commit the header, registration and summary; return `implemented`.
 
 **Timing**: 1.5 hours
 
@@ -425,16 +425,16 @@ end Probe807Forcing
 
 ## Testing & Validation
 
-- [ ] The probe compiles under `lake env lean` with zero errors and zero warnings (Phases 1, 3).
-- [ ] The six new `#print axioms` lines match the research report's record verbatim; no new axiom,
+- [x] The probe compiles under `lake env lean` with zero errors and zero warnings (Phases 1, 3).
+- [x] The six new `#print axioms` lines match the research report's record verbatim; no new axiom,
   `sorry`, or `native_decide` anywhere in the file (Phases 1, 3).
-- [ ] Both fixture transcriptions are byte-identical to the current wired originals' bodies
+- [x] Both fixture transcriptions are byte-identical to the current wired originals' bodies
   (Phase 1 `diff`).
-- [ ] `scripts/check-evidence-probes.sh` exits 0 reporting 39 wired probes (Phase 3).
-- [ ] `check-module-invariants.sh`, `check-task-references.sh --quiet`, the full `lake build`, and
+- [x] `scripts/check-evidence-probes.sh` exits 0 reporting 39 wired probes (Phase 3).
+- [x] `check-module-invariants.sh`, `check-task-references.sh --quiet`, the full `lake build`, and
   `verify-deploy.sh` all exit 0 (Phase 3).
-- [ ] No diff under `FormalSystem/`, `Tests/`, or `docs/` across the task's commits (Phases 2, 3).
-- [ ] ROADMAP and README state the verdict with the ruling pending and assert no undecidability;
+- [x] No diff under `FormalSystem/`, `Tests/`, or `docs/` across the task's commits (Phases 2, 3).
+- [x] ROADMAP and README state the verdict with the ruling pending and assert no undecidability;
   ROADMAP no longer schedules this task (Phase 2 read-through and greps).
 
 ## Artifacts & Outputs

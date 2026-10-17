@@ -1337,6 +1337,50 @@ EVIDENCE="specs/evidence"
 #                                                           | threshold or index is computed or claimed
 #                                                           | computable. Axioms `[propext, Classical.choice,
 #                                                           | Quot.sound]` on all eighteen theorems.
+# seam-gluing-ray-product/backward-determinism-forcing-formula | POSITIVE (forcing formula exists): the
+#                                                           | closed L⁺ formula `(q S ⊥) → ⊡(q S ⊥)` --
+#                                                           | "yesterday `q` is settled" -- is valid on a
+#                                                           | regular ℤ-frame IFF the frame is BACKWARD
+#                                                           | DETERMINISTIC (`valid_iff_stepBwdDet`; at the
+#                                                           | history level with no regularity hypothesis,
+#                                                           | `valid_iff_histBwdDet`, choice-free). Thomason
+#                                                           | 1984 §4 Def. 6(2) is rendered as `HistBwdDet`
+#                                                           | (one-step, synchronous; `histBwdDet_iterate`
+#                                                           | recovers the full clause), CVV Def. 2.5 `Wdc`
+#                                                           | as its asynchronous weakening, and
+#                                                           | `StepBwdDet` as "unique predecessors"; the
+#                                                           | mechanism is `yest_iff` (`φ S ⊥` is `φ` at
+#                                                           | `t - 1` on ℤ-time) with the singleton
+#                                                           | valuation `|q| = {τ(t - 1)}`. REFUTED on the
+#                                                           | backward-branching mirror fixture
+#                                                           | (`Probe733Mirror.bdForce_not_valid`,
+#                                                           | `not_stepBwdDet`: `histOf 1 (-1)` and `histOf
+#                                                           | 0 (-2)` share `aft 1` at `0` and diverge at
+#                                                           | `-1`); VALID on the backward-deterministic,
+#                                                           | forward-BRANCHING asymmetric fixture
+#                                                           | (`Probe719Backward.bdForce_valid`,
+#                                                           | `forward_branching`), so it forces backward
+#                                                           | and NOT forward determinism. ℤ-specific: on
+#                                                           | dense time `q S ⊥` is unsatisfiable and the
+#                                                           | formula forces nothing
+#                                                           | (`deterministic_not_plusDefinable` is not
+#                                                           | contradicted). What it withholds: a
+#                                                           | frame-definability theorem, NOT a reduction --
+#                                                           | the know-time-do-not-forget reduction is NOT
+#                                                           | attempted, no undecidability or complexity
+#                                                           | claim is made (Thomason's own T×W tradition is
+#                                                           | axiomatizable and Kamp-valid decidable; every
+#                                                           | corpus negative needs ≥ 2 informed agents, L⁺
+#                                                           | has one); the transfer question is a Stage 0
+#                                                           | ruling, pending; the mirror `(q U ⊥) → ⊡(q U
+#                                                           | ⊥)` is an uncompiled side remark; `stab`'s
+#                                                           | clause and `not_finite_width_fmp` untouched.
+#                                                           | Axioms: `[propext, Quot.sound]` on
+#                                                           | `valid_iff_histBwdDet`; `[propext,
+#                                                           | Classical.choice, Quot.sound]` on
+#                                                           | `valid_iff_stepBwdDet`, `bdForce_not_valid`,
+#                                                           | `not_stepBwdDet`, `bdForce_valid`;
+#                                                           | `forward_branching` axiom-free
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1376,6 +1420,7 @@ WIRED=(
   "seam-gluing-ray-product/nside-modulus-gate"
   "seam-gluing-ray-product/realizable-type-adequacy-gap"
   "seam-gluing-ray-product/realizable-type-certificate"
+  "seam-gluing-ray-product/backward-determinism-forcing-formula"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
