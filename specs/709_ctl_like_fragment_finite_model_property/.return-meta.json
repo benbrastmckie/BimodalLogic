@@ -1,51 +1,33 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-17T22:18:38Z",
-  "completed_at": "2026-10-17T22:26:51Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/709_ctl_like_fragment_finite_model_property/reports/01_f4-summary-step-disposition.md",
-      "summary": "F4 disposition under route R1: E3 selected the time-axis Ramsey colour and R1 landed its summary step (exists_periodic_subfamily, exists_hitPresented) with no width, so the finite-width F4 theorem has no consumer; recommends closing as a reasoned exclusion with one README amendment."
+      "type": "plan",
+      "path": "specs/709_ctl_like_fragment_finite_model_property/plans/01_f4-reasoned-exclusion-record.md",
+      "summary": "Single-phase record plan closing F4 as a reasoned exclusion ([COMPLETED WITH EXCLUSIONS], three evidenced rows) and amending PlusSlicedCertificate/Limits/README.md's closing paragraph to point at exists_periodic_subfamily; no Lean written."
     }
   ],
-  "next_steps": "Plan a single-phase record close: [COMPLETED WITH EXCLUSIONS] with the Reasoned Exclusions table from the report, plus the Limits/README.md amendment; user to resolve the Stage 0 value ruling on this report.",
-  "user_decision": {
-    "question": "Route R1 selected the Ramsey colour (E3) but has already landed its summary step over the time axis with no width (Periodic.lean, HitComplete.lean), so the finite-width F4 theorem this task would prove has no consumer. How should 709 close?",
-    "options": [
-      "Option A — close as a reasoned exclusion: single-phase record plan, [COMPLETED WITH EXCLUSIONS], amend Limits/README.md to point at exists_periodic_subfamily; no Lean written",
-      "Option B — pursue the restricted-fragment finite-width periodicity theorem (safety/bounded-step stab) as a standalone sliced-class result, 40-80 h, no current consumer"
-    ],
-    "recommended": "Option A — close as a reasoned exclusion: single-phase record plan, [COMPLETED WITH EXCLUSIONS], amend Limits/README.md to point at exists_periodic_subfamily; no Lean written",
-    "blocking": false
-  },
+  "next_steps": "Run /orchestrate 709 to execute the plan",
   "metadata": {
     "session_id": "sess_1792275344_c203a3_709",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 1,
+    "estimated_hours": 1.5,
+    "dependency_waves": [[1]]
   },
   "memory_candidates": [
     {
-      "content": "When a task is a component of a parent route and the parent route lands the component in a different form (here: Ramsey periodicity over time-axis colourings instead of over finite-width structures), the honest close is a reasoned exclusion citing the landed declaration as evidence, not [ABANDONED] and not forcing the originally stated theorem through.",
+      "content": "When a component task's parent route lands the component in a different, consumed form (here: F4's finite-width periodicity step delivered by R1 as exists_periodic_subfamily over time-axis colourings with no width), the task closes as a single-phase record plan with [COMPLETED WITH EXCLUSIONS], citing the landed kernel-checked declaration as the Evidence column, not as [ABANDONED] or [PARTIAL]. Re-verify every cited declaration's name and axiom list in the closing dispatch (the research report's shorthand 'Fixture.not_tailStable' was actually Fixture.not_tailStable_cert).",
       "category": "PATTERN",
-      "source_artifact": "specs/709_ctl_like_fragment_finite_model_property/reports/01_f4-summary-step-disposition.md",
-      "confidence": 0.8,
-      "suggested_keywords": [
-        "reasoned-exclusion",
-        "component-task",
-        "F4",
-        "Ramsey",
-        "RaySummary"
-      ]
+      "source_artifact": "specs/709_ctl_like_fragment_finite_model_property/plans/01_f4-reasoned-exclusion-record.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["reasoned-exclusion", "completed-with-exclusions", "superseded-by-landed-declaration", "component-task", "record-only-plan"]
     }
   ],
   "modified_files": [
-    "specs/709_ctl_like_fragment_finite_model_property/reports/01_f4-summary-step-disposition.md"
-  ]
+    "specs/709_ctl_like_fragment_finite_model_property/plans/01_f4-reasoned-exclusion-record.md"
+  ],
+  "dispatch_seq": 2
 }

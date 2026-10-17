@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a single-phase record plan for task 709. Route R1 selected the Ramsey colour (probe E3, re-audited) and landed the summary step over the time axis with no width (exists_periodic_subfamily, exists_hitPresented, both at [propext, Classical.choice, Quot.sound]), so the finite-width F4 theorem has no consumer and its premise is refuted in-fragment by not_finite_width_fmp. The plan closes the task as [COMPLETED WITH EXCLUSIONS] with a three-row evidenced Reasoned Exclusions record, amends the closing paragraph of PlusSlicedCertificate/Limits/README.md to point at the landed theorems, and writes no Lean; ROADMAP.md's Stage 0 checkbox is left to the user with proposed wording in the summary.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/709_ctl_like_fragment_finite_model_property/plans/01_f4-reasoned-exclusion-record.md",
+      "summary": "Single-phase record plan: reasoned exclusion of F4 (three evidenced rows) plus one README amendment; 1.5 h; no Lean."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 1,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement: re-verify the four cited declarations, apply the fixed README paragraph, close Phase 1 as [COMPLETED WITH EXCLUSIONS], write the summary with the proposed Stage 0 ROADMAP text."
+}
