@@ -1,7 +1,7 @@
 # Implementation Plan: Task #805
 
 - **Task**: 805 - Jointly derived cell index gate
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.25 hours
 - **Dependencies**: None
 - **Research Inputs**:
@@ -125,27 +125,30 @@ roadmap item is claimed and no roadmap phase is added.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Re-measure the Landed Evidence [NOT STARTED]
+### Phase 1: Re-measure the Landed Evidence [COMPLETED]
 
 **Goal**: Establish, by this dispatch's own measurement, that the sixteenth probe compiles
 `sorry`-free with no new axiom and that the whole wired probe collection is green.
 
 **Tasks**:
-- [ ] Compile the probe alone first, through the guarded entry point:
+- [x] Compile the probe alone first, through the guarded entry point:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- env lean specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean`,
       detached via `Bash(run_in_background: true)` with output captured to a log; expect exit `0`
       with no output other than the file's own `#print axioms` lines.
-- [ ] Read the captured `#print axioms` lines and confirm no new axiom: `[propext]`,
+- [x] Read the captured `#print axioms` lines and confirm no new axiom: `[propext]`,
       `[propext, Quot.sound]`, and `[propext, Classical.choice, Quot.sound]` only.
-- [ ] Confirm the probe carries no `sorry`, no `axiom`, no `native_decide`, and no vacuous
+- [x] Confirm the probe carries no `sorry`, no `axiom`, no `native_decide`, and no vacuous
       definition (`grep -n 'sorry\|^axiom\|native_decide\|:= True$\|:= trivial$'` over the file;
       the only expected hits are the header's own prose about their absence).
-- [ ] Run the authoritative collection gate detached with a bounded waiter:
+- [x] Run the authoritative collection gate detached with a bounded waiter:
       `bash scripts/check-evidence-probes.sh`; require exit `0` and the line
       `seam-gluing-ray-product/ladder-joint-index-refutation   PASS` in its output.
-- [ ] Record the gate's own reported wired-probe count from this run, rather than carrying either
-      the report's `34` or this plan's `36`.
-- [ ] Confirm the probe is tracked, not merely present: `git ls-files --error-unmatch specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean`.
+- [x] Record the gate's own reported wired-probe count from this run, rather than carrying either
+      the report's `34` or this plan's `36`. *(measured: the gate reports `PASS  all 37 wired
+      probe(s) compile`, with 37 `PASS` lines; the `WIRED` array itself holds 36 entries and the
+      37th is the separately-listed archived path at `scripts/check-evidence-probes.sh:1302`, so
+      neither plan-time figure is restated)*
+- [x] Confirm the probe is tracked, not merely present: `git ls-files --error-unmatch specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean`.
 
 **Timing**: 0.75 hours (dominated by the detached collection run and its bounded wait)
 
@@ -178,34 +181,34 @@ graph.
 
 ---
 
-### Phase 2: Record-Consistency Sweep and the No-Substitute Attestation [NOT STARTED]
+### Phase 2: Record-Consistency Sweep and the No-Substitute Attestation [COMPLETED]
 
 **Goal**: Confirm the four records carrying the verdict agree with it and with each other, and
 attest mechanically that nothing weakened-substitute-shaped was published.
 
 **Tasks**:
-- [ ] Re-read the probe's header sections — "What was asked", "The verdict", the six gate
+- [x] Re-read the probe's header sections — "What was asked", "The verdict", the six gate
       sections, "What the refutation leaves standing", "What this probe does NOT say" — and
       confirm they state the verdict of `reports/02` with the letter-definable-vs-closure
       distinction intact.
-- [ ] Re-read the probe's registration row and decision row in `scripts/check-evidence-probes.sh`
+- [x] Re-read the probe's registration row and decision row in `scripts/check-evidence-probes.sh`
       and confirm the row's withholdings match the probe's own: no factorization lemma in any
       shape, no seventh coordinate, the earlier negatives untouched, the acceptance clause never
       dropped, the successor design not chosen by this record.
-- [ ] Validate `specs/761_ladder_realization_theorem/.blocker-research.json` parses
+- [x] Validate `specs/761_ladder_realization_theorem/.blocker-research.json` parses
       (`jq empty <path>`) and confirm its `solution_path` recommends **no** index candidate, names
       the strengthened modulus clause (closure, not letters), and carries `corrected_on`,
       `corrected_by` and `supersedes`.
-- [ ] Confirm the source-store guidance note
+- [x] Confirm the source-store guidance note
       `/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md`
       carries mechanism (6), the sixth gate-table row, the strengthened modulus clause, and a
       "what is still open" statement naming the object-closure-product modulus as the open
       candidate rather than a refuted one.
-- [ ] Attest the no-substitute condition mechanically: `grep -rn 'ladderRealized\|LadderCons\|ladderCons_localRun' FormalSystem/ Tests/ specs/evidence/`
+- [x] Attest the no-substitute condition mechanically: `grep -rn 'ladderRealized\|LadderCons\|ladderCons_localRun' FormalSystem/ Tests/ specs/evidence/`
       shows no declaration of any of the three (citations in prose and in probe headers are
       expected; a `theorem`/`def`/`structure` line is not), and `git status --short FormalSystem/ Tests/`
       shows this task changed nothing there.
-- [ ] Only if a discrepancy is found: repair it in the record that is wrong, toward the committed
+- [x] Only if a discrepancy is found: repair it in the record that is wrong, toward the committed
       verdict, under the probe gate's own no-weakening rule — never by restating or softening an
       obstruction to make a record agree.
 
