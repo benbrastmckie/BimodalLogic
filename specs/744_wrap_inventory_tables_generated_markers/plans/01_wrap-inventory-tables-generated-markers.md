@@ -235,24 +235,24 @@ CARRIED-UNVERIFIED from report §2 and is confirmed by the `git diff` review abo
 
 ---
 
-### Phase 3: Demonstrate INV coverage on the two named blocks [NOT STARTED]
+### Phase 3: Demonstrate INV coverage on the two named blocks [COMPLETED]
 
 **Goal**: Show, rather than assume, that a drifted count inside each newly wrapped block now
 turns INV red naming that README (scope item 4 for the two named targets; the sweep blocks get
 the same treatment in Phase 6).
 
 **Tasks**:
-- [ ] Write a scratchpad script `corrupt-check.sh <README> <module.lean>` that: `sed -i`
+- [x] Write a scratchpad script `corrupt-check.sh <README> <module.lean>` that: `sed -i`
   replaces the Lines cell on the named module's row with `1`, runs
   `bash scripts/check-module-invariants.sh --emit-inventory --check 2>&1 | tee` into the
   scratchpad, asserts the output contains the README's path, then runs the Phase 2 targeted
   regeneration procedure to restore the file and asserts a second `--check` no longer names it.
-  The README's `git diff` must be empty at the end.
-- [ ] Run it on `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (`Trace.lean`) and
+  The README's `git diff` must be empty at the end. *(completed: restore uses the writer itself rather than a pathspec checkout)*
+- [x] Run it on `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (`Trace.lean`) and
   `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md` (`Family.lean`). Save both FAIL
-  outputs for the summary.
-- [ ] State in the saved evidence that the exit code was 1 regardless while sibling 812's three
-  rollup READMEs remain stale, and that the named-file list is the evidence.
+  outputs for the summary. *(completed: both FAIL outputs name exactly the corrupted README; post-restore PASS; git diff empty)*
+- [x] State in the saved evidence that the exit code was 1 regardless while sibling 812's three
+  rollup READMEs remain stale, and that the named-file list is the evidence. *(completed: caveat moot — rollups were current, so exit was 1 on corruption and 0 after restore; recorded)*
 
 **Timing**: 0.5 hours
 
