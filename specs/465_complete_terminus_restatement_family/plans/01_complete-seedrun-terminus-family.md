@@ -1,7 +1,7 @@
 # Implementation Plan: Complete the seedRun terminus restatement family
 
 - **Task**: 465 - Complete the terminus restatement family at the repaired residuals
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: 462, 463, 464 — all three settled (463 and 433 archived; 464's phases committed, its `_gap` family landed complete at 6/6)
 - **Research Inputs**: `specs/465_complete_terminus_restatement_family/reports/01_complete-terminus-restatement-family.md`
@@ -145,26 +145,26 @@ section below.
 Phases within the same wave can execute in parallel. This plan is fully sequential: Phases 2 and 3
 write the same new file, and Phase 4's record text cites the names Phases 2 and 3 land.
 
-### Phase 1: Re-derive the matrix and record the baseline [NOT STARTED]
+### Phase 1: Re-derive the matrix and record the baseline [COMPLETED]
 
 **Goal**: Discharge the dispatch's explicit instruction to re-derive the missing-member list from
 the tree as it then stands, and record the baseline this task's additive-only and frozen-file
 contracts are checked against in Phase 5.
 
 **Tasks**:
-- [ ] Re-run the family sweep: `grep -rn "theorem buildTableauAt_isSome" FormalSystem/`. Record the
+- [x] Re-run the family sweep: `grep -rn "theorem buildTableauAt_isSome" FormalSystem/`. Record the
       declaration count and the per-family slot table.
-- [ ] Confirm no `_run` terminus exists and the retirement record is intact
+- [x] Confirm no `_run` terminus exists and the retirement record is intact
       (`grep -rn "_run" FormalSystem/.../MintBound/PostBlocking.lean` for the record's name list).
-- [ ] Confirm the seedRun suffix is still a singleton: `grep -rn "seedRun" FormalSystem/`.
-- [ ] Confirm the import DAG constraint still holds: `grep -n "^import" MintBound/*.lean` shows
+- [x] Confirm the seedRun suffix is still a singleton: `grep -rn "seedRun" FormalSystem/`.
+- [x] Confirm the import DAG constraint still holds: `grep -n "^import" MintBound/*.lean` shows
       `PostBlocking` off `SigmaFixed` and `FiveComponent` off `MintPaysAssembly`, with no edge
       between the two branches.
-- [ ] Record `md5sum` of `Fuel.lean`, `Saturation.lean`, `Tableau.lean` as the frozen-file baseline.
-- [ ] Record `git log -1 --oneline` for each target file (`MintBound.lean`, `MintBound/PostBlocking.lean`,
+- [x] Record `md5sum` of `Fuel.lean`, `Saturation.lean`, `Tableau.lean` as the frozen-file baseline.
+- [x] Record `git log -1 --oneline` for each target file (`MintBound.lean`, `MintBound/PostBlocking.lean`,
       `MintBound/Register.lean`, `MintBound/README.md`) and `git status --porcelain` for the
       `FormalSystem/` subtree.
-- [ ] GATE: if the sweep finds a `_run` family root restored, or a seedRun member beyond the one
+- [x] GATE: if the sweep finds a `_run` family root restored, or a seedRun member beyond the one
       representative, or a new family root, STOP and re-scope in the handoff rather than proceeding
       against a stale matrix.
 
