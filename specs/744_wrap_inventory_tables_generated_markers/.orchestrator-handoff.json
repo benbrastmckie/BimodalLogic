@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "summary": "Wrote a six-phase, 5.5-hour plan: land the settled one-line escape-aware split_row change first, wrap and targeted-regenerate the RaySummary and KTypeSummary tables with a key-wise byte-for-byte description diff, demonstrate INV failure on a corrupted count, then wrap 21 Tier-A sweep READMEs in two phases with a per-table fit re-check, and close with a full-gate phase delivering the three-tier sweep report. Two report Tier-A entries (Expressiveness/README.md, WeakCanonical/README.md) were demoted to report-only at plan time because their subdirectory rows carry numeric totals the default column set renders as a placeholder. Every writer run follows a targeted-regeneration procedure that restores sibling 812's three rollup READMEs and stages only this task's own files.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/744_wrap_inventory_tables_generated_markers/plans/01_wrap-inventory-tables-generated-markers.md",
+      "summary": "Six serialized phases: generator split fix, wrap two named READMEs, INV corruption demo, two Tier-A sweep phases, final full-gate phase with sweep report."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 6,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for task 744 starting at Phase 1; the regeneration procedure in Phase 2 must be followed on every --emit-inventory run while sibling 812's rollup READMEs remain stale."
+}
