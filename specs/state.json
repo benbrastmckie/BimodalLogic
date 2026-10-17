@@ -1680,7 +1680,7 @@
     {
       "project_number": 807,
       "project_name": "backward_determinism_forcing_check",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -1691,9 +1691,21 @@
       ],
       "file_scope": [
         "scripts/check-evidence-probes.sh",
-        "specs/evidence/seam-gluing-ray-product/"
+        "specs/ROADMAP.md",
+        "specs/evidence/seam-gluing-ray-product/",
+        "specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean",
+        "specs/literature/README.md"
       ],
-      "last_updated": "2026-10-16T22:30:16Z"
+      "last_updated": "2026-10-17T14:27:24Z",
+      "session_id": "sess_1792245961_674a86",
+      "artifacts": [
+        {
+          "path": "specs/807_backward_determinism_forcing_check/reports/01_backward-determinism-forcing-check.md",
+          "type": "report",
+          "summary": "VERDICT POSITIVE: the closed L+ formula (q S bot) -> stab (q S bot) is valid on a regular Z-frame iff the frame is backward deterministic (machine-checked, sorry-free draft; refuted on Probe733Mirror, valid on the forward-branching Probe719Backward); reduction not attempted; Stage 0 ruling requested."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 808,

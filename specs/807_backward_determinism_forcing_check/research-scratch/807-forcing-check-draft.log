@@ -1,0 +1,29 @@
+'Probe733Mirror.two_bwd_paths' does not depend on any axioms
+'Probe733Mirror.bwd_reaches_x' depends on axioms: [propext]
+'Probe733Mirror.allBwdPathsMeet_iff' depends on axioms: [propext, Quot.sound]
+'Probe733Mirror.stabPast_iff_aft' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe733Mirror.pastStab_iff_allBwdPathsMeet' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe733Mirror.decide_past_stab' depends on axioms: [propext, Classical.choice, Quot.sound]
+/tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/2d4f5692-b363-4363-a95a-0680822a0a61/scratchpad/scratch807.lean:676:18: warning: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/2d4f5692-b363-4363-a95a-0680822a0a61/scratchpad/scratch807.lean:676:25: warning: '(congr 1; norm_num)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/2d4f5692-b363-4363-a95a-0680822a0a61/scratchpad/scratch807.lean:676:18: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/2d4f5692-b363-4363-a95a-0680822a0a61/scratchpad/scratch807.lean:676:25: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+'Probe719Backward.allBwdPathsMeet_iff' depends on axioms: [propext, Quot.sound]
+'Probe719Backward.stabPast_iff_post' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe719Backward.pastStab_iff_allBwdPathsMeet' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe719Backward.decide_past_stab' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Scratch807.valid_iff_histBwdDet' depends on axioms: [propext, Quot.sound]
+'Scratch807.valid_iff_stepBwdDet' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe733Mirror.bdForce_not_valid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe733Mirror.not_stepBwdDet' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe719Backward.bdForce_valid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Probe719Backward.forward_branching' does not depend on any axioms
+EXIT=0
