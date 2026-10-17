@@ -392,25 +392,25 @@ Goal, and record the three cardinalities in the probe header.
 
 ---
 
-### Phase 5: The Adequacy Separation and the Restricted Countdown Profile [NOT STARTED]
+### Phase 5: The Adequacy Separation and the Restricted Countdown Profile [COMPLETED]
 
 **Goal**: Exhibit the separation that is this round's substantive deliverable — a set of product
 states local coherence accepts and the certificate rejects, with the rejection proved structurally
 rather than by brute force — and show the predecessor round's gate-6 win survives the restriction.
 
 **Tasks**:
-- [ ] Define `Rev` as the twentieth probe's `ev`-carrying 3-cycle and `ProfR` as the countdown
+- [x] Define `Rev` as the twentieth probe's `ev`-carrying 3-cycle and `ProfR` as the countdown
   profile of the restricted relation from the fibre `Ea ∩ R`.
-- [ ] Prove `coh_accepts_Rev`: local coherence and bi-infinity hold on `Rev`. This is the half that
+- [x] Prove `coh_accepts_Rev`: local coherence and bi-infinity hold on `Rev`. This is the half that
   makes the rejection informative rather than trivial, so it lands first.
-- [ ] Prove `rev_eu_lfp_empty` through `eu_lfp_eq_empty_of_no_event` — `succR Rev x ⊆ Rev` gives the
+- [x] Prove `rev_eu_lfp_empty` through `eu_lfp_eq_empty_of_no_event` — `succR Rev x ⊆ Rev` gives the
   closure hypothesis and no member of `Rev` contains `psi2` gives the no-event hypothesis. Prove it
   this way, not by `decide`: the structural proof is what shows the mechanism rather than the number.
-- [ ] Prove `cert_rejects_Rev` from `rev_eu_lfp_empty` and `cert_fwd_iff_eu_lfp` at `ψ := ev`.
-- [ ] Prove `profR_period_three` (the restricted relation on `Rchi` is exactly the 3-cycle, so the
+- [x] Prove `cert_rejects_Rev` from `rev_eu_lfp_empty` and `cert_fwd_iff_eu_lfp` at `ψ := ev`.
+- [x] Prove `profR_period_three` (the restricted relation on `Rchi` is exactly the 3-cycle, so the
   backward-reachability operator has period 3), `profR_fibre_a_witness`, and
   `profR_separates_gate6_pair` from the three concrete values.
-- [ ] Commit (explicit file list: the probe).
+- [x] Commit (explicit file list: the probe).
 
 **Timing**: 2 hours
 

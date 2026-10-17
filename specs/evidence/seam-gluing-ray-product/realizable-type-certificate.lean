@@ -411,7 +411,7 @@ def locPred {Q : Type} (lab : Q → Atom → Bool) (q : Q) (T : Finset PlusFormu
   | ψ@(.imp α β) => decide (ψ ∈ T) == (!(decide (α ∈ T)) || decide (β ∈ T))
   | _ => true
 
-/-- `PlusTruthAt`'s STRICT-until unfolding across one step.  Every arm other than the
+/-- The STRICT-until unfolding across one step.  Every arm other than the
 forward-until one is UNCONSTRAINED -- again a deliberate over-approximation; in particular the
 BACKWARD temporal arm is constrained by nothing here, so the past direction is untouched and no
 backward propagation theorem is available from this relation. -/
@@ -822,6 +822,284 @@ theorem cert_accepts_Rchi : certAdm Rchi = true := by
   simp only [certAdm, certLoc_Rchi, certBiInf_Rchi, certFwd_Rchi, certBwd_Rchi, certStab_Rchi,
     certBox_Rchi, Bool.and_self]
 
+/-! ## The adequacy separation: a set LOCAL COHERENCE ACCEPTS and the CERTIFICATE REJECTS
+
+The substantive deliverable of this round.  `Rev` is the twentieth probe's `ev`-carrying 3-cycle:
+local coherence and bi-infinity hold on it, and the certificate rejects it at the eventuality `ev`
+because no guarded path inside `Rev` ever delivers `psi2`.  The rejection is proved structurally,
+through `eu_lfp_eq_empty_of_no_event`, rather than by brute force -- the mechanism, not the
+number.
+
+This is NOT a refutation of the countdown profile, and `(a5, evTa)` is NOT claimed
+non-realizable: `psi2` is deliverable on this object through the 2-cycle exit `a → d → a`, which
+`Rev` excludes by construction.  What is rejected is `Rev` AS A CANDIDATE REALIZABLE SET. -/
+
+/-- The twentieth probe's `ev`-carrying 3-cycle, as a candidate realizable set. -/
+def Rev : Finset (ProdState Q5 chi) := {(a5, evTa), (b5, evTb), (c5, evTc)}
+
+theorem mem_Rev (x : ProdState Q5 chi) :
+    x ∈ Rev ↔ (x = (a5, evTa) ∨ x = (b5, evTb) ∨ x = (c5, evTc)) := by
+  simp [Rev]
+
+/-- The converse of `cohR_le_coh`: the restricted relation is assembled from the unrestricted one
+and the two memberships.  Used throughout below so that no goal ever kernel-reduces a candidate
+set literal. -/
+theorem cohR_mk (R : Finset (ProdState Q5 chi)) {x y : ProdState Q5 chi}
+    (h : coh6 x y = true) (hx : x ∈ R) (hy : y ∈ R) : cohR R x y = true := by
+  simp only [cohR, Bool.and_eq_true, decide_eq_true_eq]
+  exact ⟨⟨h, hx⟩, hy⟩
+
+theorem a_mem_Rchi : ((a5, Ta) : ProdState Q5 chi) ∈ Rchi := by
+  rw [mem_Rchi]; exact Or.inl rfl
+
+theorem b_mem_Rchi : ((b5, Tb) : ProdState Q5 chi) ∈ Rchi := by
+  rw [mem_Rchi]; exact Or.inr (Or.inl rfl)
+
+theorem c_mem_Rchi : ((c5, Tc) : ProdState Q5 chi) ∈ Rchi := by
+  rw [mem_Rchi]; exact Or.inr (Or.inr rfl)
+
+theorem a_mem_Rev : ((a5, evTa) : ProdState Q5 chi) ∈ Rev := by
+  rw [mem_Rev]; exact Or.inl rfl
+
+theorem b_mem_Rev : ((b5, evTb) : ProdState Q5 chi) ∈ Rev := by
+  rw [mem_Rev]; exact Or.inr (Or.inl rfl)
+
+theorem c_mem_Rev : ((c5, evTc) : ProdState Q5 chi) ∈ Rev := by
+  rw [mem_Rev]; exact Or.inr (Or.inr rfl)
+
+/-- **The countdown profile of the RESTRICTED relation**, from the fibre `Ea ∩ R`: the set of
+members of `R` from which a `cohR R`-chain of length `k` reaches `R`'s own `a`-fibre.  Still
+parameter-free: no threshold, no modulus, no clip bound. -/
+def ProfR (R : Finset (ProdState Q5 chi)) (k : ℕ) : Finset (ProdState Q5 chi) :=
+  (prodPreStep (cohR R))^[k] (Ea ∩ R)
+
+theorem profR_succ (R : Finset (ProdState Q5 chi)) (k : ℕ) :
+    ProfR R (k + 1) = prodPreStep (cohR R) (ProfR R k) := by
+  simp only [ProfR, Function.iterate_succ_apply']
+
+theorem mem_profR_succ (R : Finset (ProdState Q5 chi)) (x : ProdState Q5 chi) (k : ℕ) :
+    x ∈ ProfR R (k + 1) ↔ ∃ y ∈ ProfR R k, cohR R x y = true := by
+  rw [profR_succ]
+  simp [prodPreStep]
+
+/-- **The restricted countdown lives inside `R`.**  The compiled form of "`cohR` confines the
+iteration": the backward-reachability operator of the restricted relation never leaves `R`, so its
+value is determined by `R` alone -- three elements here -- rather than by the `2 ^ 18 × 8`
+carrier. -/
+theorem profR_step_eq (R S : Finset (ProdState Q5 chi)) :
+    prodPreStep (cohR R) S = R.filter (fun x => ∃ y ∈ S, cohR R x y = true) := by
+  ext x
+  simp only [prodPreStep, Finset.mem_filter, Finset.mem_univ, true_and]
+  constructor
+  · rintro ⟨y, hy, hxy⟩
+    exact ⟨(cohR_le_coh R x y hxy).2.1, y, hy, hxy⟩
+  · rintro ⟨-, hex⟩
+    exact hex
+
+theorem mem_Ea (x : ProdState Q5 chi) : x ∈ Ea ↔ x.1 = a5 := by simp [Ea]
+
+/-! ## Local coherence accepts `Rev`, and the certificate does not -/
+
+theorem certLoc_Rev : certLoc Rev = true := by
+  simp only [certLoc, decide_eq_true_eq]
+  intro x hx
+  rcases (mem_Rev x).mp hx with rfl | rfl | rfl
+  · decide
+  · decide
+  · decide
+
+theorem certBiInf_Rev : certBiInf Rev = true := by
+  simp only [certBiInf, decide_eq_true_eq]
+  intro x hx
+  rcases (mem_Rev x).mp hx with rfl | rfl | rfl
+  · exact ⟨Finset.card_pos.mpr ⟨(b5, evTb), Finset.mem_filter.mpr ⟨b_mem_Rev, by decide⟩⟩,
+      Finset.card_pos.mpr ⟨(c5, evTc), Finset.mem_filter.mpr ⟨c_mem_Rev, by decide⟩⟩⟩
+  · exact ⟨Finset.card_pos.mpr ⟨(c5, evTc), Finset.mem_filter.mpr ⟨c_mem_Rev, by decide⟩⟩,
+      Finset.card_pos.mpr ⟨(a5, evTa), Finset.mem_filter.mpr ⟨a_mem_Rev, by decide⟩⟩⟩
+  · exact ⟨Finset.card_pos.mpr ⟨(a5, evTa), Finset.mem_filter.mpr ⟨a_mem_Rev, by decide⟩⟩,
+      Finset.card_pos.mpr ⟨(b5, evTb), Finset.mem_filter.mpr ⟨b_mem_Rev, by decide⟩⟩⟩
+
+/-- **The half that makes the rejection informative rather than trivial**, so it lands first:
+local coherence (condition 1) and bi-infinity (condition 2) BOTH hold on `Rev`. -/
+theorem coh_accepts_Rev : certLoc Rev = true ∧ certBiInf Rev = true :=
+  ⟨certLoc_Rev, certBiInf_Rev⟩
+
+/-- **No guarded path inside `Rev` ever delivers `psi2`.**  Proved through
+`eu_lfp_eq_empty_of_no_event` -- `succR Rev` never leaves `Rev` and no member of `Rev` contains
+`psi2` -- and NOT by `decide`: the structural proof is what exhibits the mechanism rather than the
+number. -/
+theorem rev_eu_lfp_empty :
+    euLfp Rev (succR Rev) (fun w => decide (psi2 ∈ w.2.1)) (fun w => decide (top ∈ w.2.1))
+      = ∅ := by
+  refine eu_lfp_eq_empty_of_no_event Rev (succR Rev) _ _ ?_ ?_
+  · intro v _ w hw
+    exact (Finset.mem_filter.mp hw).1
+  · intro w hw
+    rcases (mem_Rev w).mp hw with rfl | rfl | rfl
+    · decide
+    · decide
+    · decide
+
+/-- **THE SEPARATION.**  `Rev` is accepted by local coherence and REJECTED by the certificate: its
+member `(a5, evTa)` carries the eventuality `ev = top U psi2`, and condition (3) demands a guarded
+forward path inside `Rev` that delivers `psi2`, which `rev_eu_lfp_empty` shows does not exist.  So
+the certificate presentation computes something STRICTLY STRONGER than local coherence, which is
+what makes the whole exercise non-vacuous.
+
+What this does NOT say: `(a5, evTa)` is not claimed non-realizable -- `psi2` is deliverable on
+this object through the 2-cycle exit `a → d → a`, which `Rev` excludes by construction -- and the
+countdown profile is not refuted. -/
+theorem cert_rejects_Rev : certAdm Rev = false := by
+  have hfwd : certFwd Rev = false := by
+    rcases Bool.eq_false_or_eq_true (certFwd Rev) with h | h
+    · exfalso
+      have hin := (cert_fwd_iff_eu_lfp Rev).mp h (a5, evTa) a_mem_Rev ev (by decide) (by decide)
+      rw [show (argsOf ev).2 = psi2 from rfl, show (argsOf ev).1 = top from rfl,
+        rev_eu_lfp_empty] at hin
+      exact absurd hin (Finset.notMem_empty _)
+    · exact h
+  simp only [certAdm, hfwd, Bool.and_false, Bool.false_and]
+
+/-! ## The restricted countdown profile, and the gate-6 separation it survives
+
+The predecessor round's gate-6 win, re-run against the SMALLER relation.  This is not a new
+gate-6 verdict: it records that the separation SURVIVES the refinement to a candidate set, and
+gate 6's own row stands exactly as the eighteenth probe left it. -/
+
+theorem profR_zero : ProfR Rchi 0 = {(a5, Ta)} := by
+  have h0 : ProfR Rchi 0 = Ea ∩ Rchi := rfl
+  rw [h0]
+  ext x
+  rw [Finset.mem_inter, mem_Ea, mem_Rchi, Finset.mem_singleton]
+  constructor
+  · rintro ⟨h1, h2 | h2 | h2⟩
+    · exact h2
+    · rw [h2] at h1; exact absurd h1 (by decide)
+    · rw [h2] at h1; exact absurd h1 (by decide)
+  · rintro rfl
+    exact ⟨rfl, Or.inl rfl⟩
+
+/-! The three values of the restricted profile, confirmed by `#eval` before the periodicity Goal
+below is proved.  The `#eval` runs through `profR_step_eq`'s right-hand side -- `Rchi.filter`,
+three elements -- and prints the OBJECT coordinate of each, since printing a closure type would
+print its whole formula set: the three values are `{(true, 0)} = {a5}`, `{(true, 2)} = {c5}` and
+`{(true, 1)} = {b5}`, so the profile runs `{(a5, Ta)}`, `{(c5, Tc)}`, `{(b5, Tb)}` at
+`k % 3 = 0, 1, 2`.  `#eval` on the `Finset.univ`-shaped `prodPreStep` is not attempted: enumerating
+the `2 ^ 18 × 8` carrier is exactly the whole-carrier computation this round's Risks table
+forbids. -/
+#eval (Ea ∩ Rchi).image Prod.fst
+#eval (Rchi.filter (fun x => ∃ y ∈ ({(a5, Ta)} : Finset (ProdState Q5 chi)),
+  cohR Rchi x y = true)).image Prod.fst
+#eval (Rchi.filter (fun x => ∃ y ∈ ({(c5, Tc)} : Finset (ProdState Q5 chi)),
+  cohR Rchi x y = true)).image Prod.fst
+#eval (Rchi.filter (fun x => ∃ y ∈ ({(b5, Tb)} : Finset (ProdState Q5 chi)),
+  cohR Rchi x y = true)).image Prod.fst
+
+theorem profR_one : ProfR Rchi 1 = {(c5, Tc)} := by
+  ext x
+  rw [mem_profR_succ, Finset.mem_singleton]
+  constructor
+  · rintro ⟨y, hy, hxy⟩
+    rw [profR_zero, Finset.mem_singleton] at hy
+    subst hy
+    obtain ⟨hcoh, hxR, -⟩ := cohR_le_coh Rchi x (a5, Ta) hxy
+    rcases (mem_Rchi x).mp hxR with rfl | rfl | rfl
+    · exact absurd hcoh (by decide)
+    · exact absurd hcoh (by decide)
+    · rfl
+  · rintro rfl
+    refine ⟨(a5, Ta), ?_, cohR_mk Rchi (by decide) c_mem_Rchi a_mem_Rchi⟩
+    rw [profR_zero]
+    exact Finset.mem_singleton_self _
+
+theorem profR_two : ProfR Rchi 2 = {(b5, Tb)} := by
+  ext x
+  rw [mem_profR_succ, Finset.mem_singleton]
+  constructor
+  · rintro ⟨y, hy, hxy⟩
+    rw [profR_one, Finset.mem_singleton] at hy
+    subst hy
+    obtain ⟨hcoh, hxR, -⟩ := cohR_le_coh Rchi x (c5, Tc) hxy
+    rcases (mem_Rchi x).mp hxR with rfl | rfl | rfl
+    · exact absurd hcoh (by decide)
+    · rfl
+    · exact absurd hcoh (by decide)
+  · rintro rfl
+    refine ⟨(c5, Tc), ?_, cohR_mk Rchi (by decide) b_mem_Rchi c_mem_Rchi⟩
+    rw [profR_one]
+    exact Finset.mem_singleton_self _
+
+theorem profR_three : ProfR Rchi 3 = {(a5, Ta)} := by
+  ext x
+  rw [mem_profR_succ, Finset.mem_singleton]
+  constructor
+  · rintro ⟨y, hy, hxy⟩
+    rw [profR_two, Finset.mem_singleton] at hy
+    subst hy
+    obtain ⟨hcoh, hxR, -⟩ := cohR_le_coh Rchi x (b5, Tb) hxy
+    rcases (mem_Rchi x).mp hxR with rfl | rfl | rfl
+    · rfl
+    · exact absurd hcoh (by decide)
+    · exact absurd hcoh (by decide)
+  · rintro rfl
+    refine ⟨(b5, Tb), ?_, cohR_mk Rchi (by decide) a_mem_Rchi b_mem_Rchi⟩
+    rw [profR_two]
+    exact Finset.mem_singleton_self _
+
+/-- **THE RESTRICTED PROFILE HAS PERIOD THREE**, with nothing to choose: the restricted relation
+on `Rchi` is the 3-cycle, so the backward-reachability operator returns to its starting value
+after three steps. -/
+theorem profR_period_three (k : ℕ) : ProfR Rchi (k + 3) = ProfR Rchi k := by
+  have h : ProfR Rchi (k + 3)
+      = (prodPreStep (cohR Rchi))^[k] ((prodPreStep (cohR Rchi))^[3] (Ea ∩ Rchi)) := by
+    rw [ProfR, Function.iterate_add_apply]
+  have h3 : (prodPreStep (cohR Rchi))^[3] (Ea ∩ Rchi) = Ea ∩ Rchi := by
+    show ProfR Rchi 3 = ProfR Rchi 0
+    rw [profR_three, profR_zero]
+  rw [h, h3]
+  rfl
+
+theorem profR_add_mul (k m : ℕ) : ProfR Rchi (k + 3 * m) = ProfR Rchi k := by
+  induction m with
+  | zero => rfl
+  | succ m ih =>
+    rw [show k + 3 * (m + 1) = k + 3 * m + 3 by ring, profR_period_three, ih]
+
+/-- **And the `a`-fibre is nonempty at every multiple of three**, witnessed by the coherent
+3-cycle the certificate accepts. -/
+theorem profR_fibre_a_witness (k : ℕ) (hk : 3 ∣ k) : (a5, Ta) ∈ ProfR Rchi k := by
+  obtain ⟨m, rfl⟩ := hk
+  have h : ProfR Rchi (3 * m) = ProfR Rchi 0 := by
+    rw [show 3 * m = 0 + 3 * m by ring, profR_add_mul]
+  rw [h, profR_zero]
+  exact Finset.mem_singleton_self _
+
+/-- And it is EMPTY at every index that is not a multiple of three. -/
+theorem profR_dvd_of_mem (n : ℕ) (h : (a5, Ta) ∈ ProfR Rchi n) : 3 ∣ n := by
+  have hmod : ProfR Rchi n = ProfR Rchi (n % 3) := by
+    conv_lhs => rw [show n = n % 3 + 3 * (n / 3) from by omega]
+    rw [profR_add_mul]
+  rw [hmod] at h
+  have h3 : n % 3 = 0 ∨ n % 3 = 1 ∨ n % 3 = 2 := by omega
+  rcases h3 with he | he | he
+  · omega
+  · rw [he, profR_one, Finset.mem_singleton] at h
+    exact absurd (congrArg Prod.fst h) (by decide)
+  · rw [he, profR_two, Finset.mem_singleton] at h
+    exact absurd (congrArg Prod.fst h) (by decide)
+
+/-- **THE PREDECESSOR ROUND'S GATE-6 SEPARATION SURVIVES THE REFINEMENT TO A CANDIDATE SET**, for
+EVERY modulus coprime to three, with no parameter to choose.  This is not a new gate-6 verdict:
+gate 6's own row stands as the eighteenth probe left it, and what is recorded here is that
+restricting the relation to the certificate's candidate set does not cost the separation. -/
+theorem profR_separates_gate6_pair (C P : ℕ) (hC : 3 ∣ C) (h3 : ¬ 3 ∣ (P + 1)) :
+    ProfR Rchi C ≠ ProfR Rchi (C + (P + 1)) := by
+  intro h
+  have hmem : (a5, Ta) ∈ ProfR Rchi C := profR_fibre_a_witness C hC
+  rw [h] at hmem
+  have h1 : 3 ∣ C + (P + 1) := profR_dvd_of_mem _ hmem
+  exact h3 (by omega)
+
 end Probe809C
 
 /-! ## Axiom check -/
@@ -838,3 +1116,9 @@ end Probe809C
 #print axioms Probe809C.chi_closure_box_snce_stab_free
 #print axioms Probe809C.cert_fwd_iff_eu_lfp
 #print axioms Probe809C.cert_accepts_Rchi
+#print axioms Probe809C.coh_accepts_Rev
+#print axioms Probe809C.rev_eu_lfp_empty
+#print axioms Probe809C.cert_rejects_Rev
+#print axioms Probe809C.profR_period_three
+#print axioms Probe809C.profR_fibre_a_witness
+#print axioms Probe809C.profR_separates_gate6_pair
