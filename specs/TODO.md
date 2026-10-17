@@ -1,5 +1,5 @@
 ---
-next_project_number: 813
+next_project_number: 815
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 813
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,807,810,812 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,429,497,618,763,783 | 298,428,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,807,810,812,813 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,429,497,618,763,783,814 | 298,428,502,616,761,772,813 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -41,6 +41,8 @@ next_project_number: 813
 784 [BLOCKED] — FROZEN-RECORD TRACKER. Seven task records in this repository...
 785 [NOT STARTED] — Record the two Lean plan-authoring gate-collision facts in...
 810 [NOT STARTED] — META TASK. ONE grouped task covering FIVE agent-system...
+813 [NOT STARTED] — State the precedence and snapshot-prerequisite rules for a...
+  └─ 814 [NOT STARTED] — Record the decide-synthesis working form, the axiom-free...
 
 ### Algebraic Representation
 
@@ -125,6 +127,184 @@ next_project_number: 813
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 814. Record the decide-synthesis working form, the axiom-free maxRecDepth remedy, and the probe guard's total arithmetic
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 813
+- **Parent**: Task 809
+
+**Description**: Record three measured Lean authoring and probe-guard facts from one evidence-probe implementation round: the working form for a `Decidable` instance under nested `Finset` binders, the axiom-free `set_option maxRecDepth` remedy and its first precedent in this probe collection, and the arithmetic behind the evidence-probe guard's printed probe total.
+
+NOTHING IS BROKEN AND THIS IS NOT A DATA-REPAIR RECORD. All three facts were measured during one implementation round and all three were already handled in that round: the synthesis failure was resolved in the probe source, the recursion budget was raised in the probe file, and the off-by-one was in a plan's predicted output rather than in the guard. `scripts/check-evidence-probes.sh` is CORRECT as it stands -- its total is right and the prediction was wrong -- so do NOT change the script, its arrays, or any probe file. This record's entire deliverable is prose plus index wiring.
+
+=== ITEM A -- `Decidable` SYNTHESIS UNDER NESTED Finset BINDERS (the first thing an implementer hits) ===
+
+MEASURED. The first compile of a pinned Challenge block failed on exactly one `Decidable` synthesis. The box clause, written as a nested iff under two `Finset` binders, would not synthesize:
+
+    decide (forall x in R, forall psi in closure, isBox psi -> (psi in x.2.1 <-> forall y in R, argOf psi in y.2.1))
+
+Two changes resolved it and recompiled to exit 0: pushing the INNER universal into its own `decide` and comparing `Bool`s rather than leaving it inside the iff, and factoring the stab clause into a named `stabOk` helper rather than inlining it.
+
+THE DURABLE LESSON TO RECORD. Capture the WORKING FORM, not merely the failure: a decidable clause of the shape "for every element of a Finset, a membership test iff a further Finset-quantified membership test" should be written with the inner quantifier decided separately and the two `Bool`s compared, and a multi-clause structure predicate should factor each clause into a named helper. The guidance should say WHY this is worth pre-empting rather than discovering: this shape is the first thing an implementer meets on the `stab`/`box` fields of a structure predicate over a closure, so a plan that pins such a predicate should pin the working form rather than the natural-looking nested-iff form.
+
+=== ITEM B -- `set_option maxRecDepth` IS AXIOM-FREE, AND IS NOW PRECEDENTED HERE ===
+
+MEASURED. Six component `decide`s of one certificate acceptance theorem (`certLoc`/`certBiInf`/`certFwd`/`certBwd`/`certStab`/`certBox` over a three-element candidate relation) all overran the default `maxRecDepth` of 512. The carrier was never enumerated -- the anticipated "`decide` over a 2^18 x 8 space" hazard did not fire at all; this was purely a kernel stack budget on reducing a closure literal and its membership tests. The remedy was a file-level `set_option maxRecDepth 20000` carrying a comment recording that it adds no axiom.
+
+THE DURABLE LESSON TO RECORD, in two parts:
+
+  - `set_option maxRecDepth <n>` is an AXIOM-FREE remedy: it raises an elaboration/kernel recursion budget and adds nothing to a declaration's axiom set, UNLIKE `native_decide`, which does. The contrast with `native_decide` is the load-bearing part and should be stated explicitly, because the two look like interchangeable "make `decide` finish" moves and are not: one is free, the other changes what the result certifies.
+  - The hazard it addresses is DISTINCT from search-space size. A budget overrun on reducing a literal and its membership tests can fire even when the carrier is never enumerated, so a plan that has ruled out the large-search-space hazard has NOT thereby ruled out this one. Before this round no probe in the collection had a `maxRecDepth` precedent; it now has one, which is worth saying so a later author treats the option as established practice in this collection rather than a novel escape hatch.
+
+A PLACEMENT NOTE, to check before writing: `context/project/lean4/domain/lean4-syntax.md` already mentions `set_option maxRecDepth` -- but only in the narrow context of where a docstring may sit relative to a `set_option ... in` prefix, which is a different subject. Decide whether item B lands in `patterns/tactic-patterns.md` beside the `### decide` material or beside that existing mention, and do not leave two divergent statements of the same fact in the two files; a pointer from one to the other is preferable to a second copy.
+
+=== ITEM C -- THE EVIDENCE-PROBE GUARD'S PRINTED TOTAL IS THE SUM OF TWO ARRAYS ===
+
+MEASURED. A phase's Scope Hypothesis predicted that the `WIRED` array in `scripts/check-evidence-probes.sh` would go from 37 to 38 entries (CONFIRMED by measurement) and inferred that the guard would therefore report "all 38 wired probe(s) compile". It reports "all 39": the script computes `wired_total` as `WIRED` plus the one-entry `WIRED_REPO` array (the archived fmp-hypothesis probe, cited by its task-directory path). The array figures were exactly as predicted; only the derived printed total was wrong, by exactly the size of `WIRED_REPO`.
+
+THE DURABLE LESSON TO RECORD. State that the guard's printed "all N wired probe(s) compile" total is the SUM of the `WIRED` and `WIRED_REPO` arrays, so a prediction of the printed total from the `WIRED` count alone is short by the size of `WIRED_REPO`. Verify the current `WIRED_REPO` size against the script rather than carrying the figure from this record, and prefer stating the relationship (sum of both arrays) over any particular numbers, which drift as probes are added.
+
+A SITING NOTE FOR THIS ITEM, which differs from A and B. The script is this repository's own (`scripts/check-evidence-probes.sh`), not an agent-system file, and `scripts/README.md` already carries a one-row description of it -- extending that row is the smallest edit that puts the fact where a reader of the script will find it, and it is an ORDINARY REPOSITORY EDIT with no source-store boundary implication. The alternative home is a lean-extension context file, serving the plan author who writes a Scope Hypothesis about the guard's output; `context/patterns/task-abandon-mode.md` and `skills/skill-todo/SKILL.md` already mention the `WIRED_REPO` form for a different purpose (re-pointing a guard that cites a file by its task-directory path) and are NOT the right home for counting semantics. Both candidate paths are in `file_scope`; choose one, or state the fact in the repository row and add a pointer from the lean side. If a third path is chosen, widen `file_scope` first.
+
+=== WHY ONE RECORD RATHER THAN THREE ===
+
+All three facts come from the same implementation round, all three are one-to-three-sentence additions to files that already exist, and each alone is far too small to carry a record's overhead. A and B share a single edit surface (the `### decide` material in `patterns/tactic-patterns.md`) and would collide there if filed separately with nothing to serialize them. C has a different edit surface and no overlap with A or B, but is a single clause. The guidance must state the three as three separately checkable facts, not blur them into one "watch out for `decide`" paragraph.
+
+=== DEPENDENCY ===
+
+This record depends on the lean plan-authoring Challenge-block contract record (task 813), for a mechanical reason: both edit the lean extension's `index-entries.json` (813 updates `challenge-snapshot.md`'s `line_count`, this record updates `tactic-patterns.md`'s), and an unordered overlap on that file is exactly the collision a dependency edge exists to serialize. There is no logical dependency between the two bodies of guidance.
+
+=== SOURCE-STORE BOUNDARY, AND ITS RESOLUTION STEP ===
+
+Items A and B are agent-system edits. `.claude/**` in this repository is a gitignored, regenerated deploy artifact: a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect (`.claude/rules/source-store-deploy-boundary.md`). Those edits land in the source store at the path mirroring the deployed one, never under `.claude/**`.
+
+RESOLVE THE SOURCE STORE BEFORE EDITING, AND DO NOT ASSUME A PATH. This repository's `<project-root>/.claude-extensions.json` has NO `source_dir` key at all -- its only top-level keys are `extensions` and `version` -- so the documented resolution step does not yield a path here. The convention adjacent records use, and which is present on this machine, is `/home/benjamin/.config/nvim/agent-system/extensions/lean`; confirm it holds before writing, and if the source store is unreachable or ambiguous, REPORT THAT AND STOP rather than falling back to editing the deploy tree. The owning extension for both agent-system paths in `file_scope` is `lean`, not `core`.
+
+Item C's `scripts/README.md` option is a plain edit in THIS repository and carries no source-store implication; the boundary rule governs only the agent-system paths.
+
+After the agent-system edits, redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+
+=== WIRING ===
+
+`context/project/lean4/patterns/tactic-patterns.md` has an entry in the lean extension's `index-entries.json` carrying a `line_count` (and `keywords`), both of which must agree with the file as landed. If `lean4-syntax.md` is edited instead or as well, its entry needs the same treatment. No new context file is expected; if one is created, it needs its own entry plus at least one referrer reachable by a reader who does not already know its name.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Durable anchors that MAY be cited freely: the option spelling `set_option maxRecDepth`, `native_decide`, `decide`, `Decidable`, `Finset`, `Bool`, the script name `scripts/check-evidence-probes.sh`, the array names `WIRED` and `WIRED_REPO`, the variable name `wired_total`, and the guard's printed string shape. The illustrative clause in item A may be shown as a generic shape with ordinary binder names; the run's own identifiers (`certLoc`/`certBiInf`/`certFwd`/`certBwd`/`certStab`/`certBox`, `stabOk` as a specific declaration, the specific closure and candidate-relation names) MUST NOT appear, nor may the measured array figures (37/38/39), the measured carrier-size hazard figure, the originating task numbers or the issue entry_ids -- those live in this record only. `set_option maxRecDepth 20000` may be cited as an illustrative value, stated as an example rather than as a required constant.
+
+=== CROSS-REPO SITING NOTE ===
+
+As with the companion record, this one is filed in the BimodalLogic task space while items A and B resolve only under `/home/benjamin/.config/nvim/`. That is a deliberate, known condition -- the record sits beside the run that measured the facts -- not an authoring slip. The source-store repository's own task space holds adjacent records on exactly this condition (`migrate_mis_sited_agent_system_tasks`, `agent_system_task_siting_and_target_root`, `cross_repo_source_store_gate_blindness`). No dependency edge can span the two task spaces; the coordination is a manual read. Item C, being a repository-local edit, is unaffected.
+
+=== ACCEPTANCE ===
+
+(1) Item A's guidance gives the WORKING form (inner quantifier decided separately with `Bool`s compared; each clause factored into a named helper) and says why it is worth pinning in advance, rather than only reporting that the nested-iff form fails.
+(2) Item B's guidance states that `set_option maxRecDepth` adds no axiom, states the explicit contrast with `native_decide`, and states that a budget overrun is a distinct hazard from search-space size -- so ruling out a large enumeration does not rule it out.
+(3) Item B's fact is stated in ONE place, with a pointer rather than a second copy if both `tactic-patterns.md` and `lean4-syntax.md` are reachable homes.
+(4) Item C's text states that the guard's printed total is the sum of `WIRED` and `WIRED_REPO`, and states the relationship rather than relying on figures that drift; the current `WIRED_REPO` size was verified against the script.
+(5) The three facts are presented as three separately checkable statements.
+(6) `scripts/check-evidence-probes.sh`, its arrays and every probe file are unchanged.
+(7) Agent-system edits landed in the resolved source store at mirroring paths; no file under `.claude/**` was hand-authored.
+(8) Every edited indexed file's `index-entries.json` `line_count` (and `keywords`, where touched) agrees with the file as landed.
+(9) The prose carries no task-number references, no record-versioning language, and none of the run-specific identifiers or figures listed under DELIVERABLE HYGIENE.
+(10) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean`.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the realizable-type adequacy / countdown-profile probe (task 809) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. All three originating entries are in `specs/809_realizable_type_adequacy_countdown_profile/issues.jsonl`: item A is entry_id `iss_1792222011856_qMPlOk` (class `lean-elaboration`, severity minor), item B is entry_id `iss_1792223234777_xNq0su` (class `tactic-budget`, severity minor), item C is entry_id `iss_1792224038265_EsUSH3` (class `scope-hypothesis-miss`, severity minor). The lead classified all three as knowledge-capture items; the aggregator supplied no `suggested_channel_hints` for any of them, so no hint was overridden.
+
+---
+
+### 813. State the precedence and snapshot-prerequisite rules for a lean plan's pinned Challenge block
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Parent**: Task 809
+
+**Description**: Close two plan-authoring contract gaps that a lean plan's pinned `## Lean Challenge Statements` block makes possible: that a plan may state a Verification criterion contradicting its own pinned block, and that a plan may name `lean-challenge-snapshot.sh --check` in a phase's Verification without ever scheduling the snapshot that check requires.
+
+NOTHING IN EITHER REPOSITORY IS BROKEN, AND THIS IS NOT A DATA-REPAIR RECORD. Both gaps were observed during one implementation run and both were resolved inside that run -- the contradiction was resolved in favour of the pinned Challenge order, and the unrunnable advisory check was replaced by a stronger self-contained substitute. `lean-challenge-snapshot.sh`, `plan-compliance.md`, `plan-format.md` and the originating probe are all correct as they stand; do not re-edit the script and do not change its exit-code behaviour. This record's entire deliverable is plan-authoring prose plus its index wiring.
+
+=== ITEM 1 -- A VERIFICATION CRITERION THAT CONTRADICTS THE PLAN'S OWN PINNED BLOCK ===
+
+MEASURED. A plan's Phase 4 Verification required that `cert_accepts_Rchi` precede every theorem whose statement is a negation or an inequality, "checked by line number". That same plan's pinned `## Lean Challenge Statements` block itself ordered two negative statements BEFORE `cert_accepts_Rchi`: an inequality (`au_lfp_ne_eu_lfp_on_exit_graph`) and a `= false` conjunction (`chi_closure_box_snce_stab_free`). The two instructions could not both be satisfied. The implementer resolved it in favour of the pinned Challenge order, on the ground that Statement Fidelity governs the contract, and honoured the non-vacuity-before-negation discipline for every negative statement ABOUT the certificate and the candidate sets (`rev_eu_lfp_empty`, `cert_rejects_Rev`, `profR_separates_gate6_pair`), all of which follow `cert_accepts_Rchi`.
+
+THE DURABLE LESSON TO RECORD, as two separately checkable conditions:
+
+  (a) A PRECEDENCE RULE for the divergence case: when a plan's own Verification prose and its pinned `## Lean Challenge Statements` block disagree about declaration order (or about anything else the block fixes), the pinned block wins. The reason is mechanical rather than stylistic and the guidance should give it: the block is pinned before implementation and is immutable by design thereafter -- `plan-compliance.md`'s Statement Fidelity section already forbids quietly editing a recorded Challenge to match what was implemented -- whereas a Verification criterion is ordinary plan prose. An implementer who resolves such a divergence the other way has silently edited the contract.
+
+  (b) AN AUTHORING PROHIBITION, so the divergence is not created in the first place: a plan author who pins a Challenge block MUST NOT then write an order-dependent Verification criterion (a "precedes", "follows", or "checked by line number" criterion) whose required order differs from the order of declarations in that block. The block is the order of record; a criterion restating it adds nothing and a criterion contradicting it is unsatisfiable as written.
+
+The guidance should also say what an implementer does when it happens anyway, since this gap cannot be fully closed by authoring discipline alone: resolve in favour of the pinned block, and record the divergence rather than silently choosing. That is what the measured run did.
+
+=== ITEM 2 -- `--check` NAMED IN A PHASE THAT HAS NO MANIFEST TO CHECK AGAINST ===
+
+MEASURED. A plan's Phase 6 Verification named `lean-challenge-snapshot.sh --check {N} .` as an advisory step. The plan round had pinned its Challenge block in the plan file but had never taken a snapshot, so no manifest existed and the script exited 71 with "no manifest found at specs/{NNN}_{SLUG}/challenge/manifest.json -- run the snapshot (without --check) first". The criterion was therefore unmeetable exactly as written. The implementer substituted a stronger, self-contained check: a mechanical declaration-by-declaration diff of the probe against the plan's own `## Lean Challenge Statements` block, reporting every declaration present and zero signature mismatches. Because `--check` is advisory-only (`plan-compliance.md`, "Mechanical check"; `challenge-snapshot.md`, "Gate Strength: Advisory Only"), the substitution did not affect `verification_passed`.
+
+THE DURABLE LESSON TO RECORD. Pinning a Challenge block in a plan file and taking a Challenge snapshot are two different acts, and only the second produces the manifest `--check` reads. State the rule in both directions so a plan author can satisfy it either way:
+
+  - If any phase's Verification names `--check`, an earlier step in the same plan MUST run `lean-challenge-snapshot.sh` WITHOUT `--check` to create the manifest. That snapshot is an explicit plan step, not something the pinned block causes to happen.
+  - Otherwise the plan MUST NOT name `--check` at all. A criterion naming a check that cannot run is not an advisory check, it is dead prose.
+
+The guidance should also record the sanctioned fallback, since a plan that pins a block but takes no snapshot still has a verifiable statement contract: a declaration-by-declaration diff of the implemented declarations against the plan's own pinned block is a legitimate self-contained substitute for `--check`, with the same advisory standing.
+
+=== ONE RESEARCH NOTE, TO CONFIRM RATHER THAN ASSUME ===
+
+`challenge-snapshot.md`'s exit-code table gives `71` as "Config error -- identifier-set mismatch between `## Lean Challenge Statements` and `**Goals**:`, or an identifier resolvable by neither R1 nor R2". The observed no-manifest-under-`--check` case also exits `71` but is not among that row's named meanings. Confirm this against the script itself. If the case is genuinely unlisted, add it to the row's meanings -- a documentation addition only. Do NOT introduce a new exit code and do NOT otherwise change the script.
+
+=== SITING, AND THE ONE OPEN QUESTION ===
+
+The approved siting is the lean extension's source store, in the two files that already own this material:
+
+  - `rules/plan-compliance.md`, whose "Statement Fidelity" section already states that a recorded Challenge's signatures are part of the contract and already forbids quietly editing the recorded Challenge. Item 1's precedence rule is the same principle applied to order, and belongs beside it.
+  - `context/project/lean4/domain/challenge-snapshot.md`, which owns the snapshot/manifest mechanism, the `--check` mode and the exit-code vocabulary. Item 2's prerequisite and the research note above belong there.
+
+THE OPEN QUESTION, to resolve in research rather than assume: the `## Lean Challenge Statements` section format itself is defined in CORE's `context/formats/plan-format.md`, and the plan author -- the reader item 1(b) and item 2 are written for -- is most likely to meet the rule there. That file is core-owned, and several core paths are claimed by other open records. If research concludes either item's natural home is `plan-format.md` (or core's `agents/planner-agent.md`), RAISE IT and widen `file_scope` via `update-task-status.sh` first; do NOT silently edit core. Writing the rule in the lean extension and adding a single pointer line from the core file is also acceptable, and is the cheaper option if it is available.
+
+IF A DIFFERENT FILE PATH IS CHOSEN THAN THE ONES IN file_scope, WIDEN file_scope FIRST rather than writing into an unlisted location silently.
+
+=== SOURCE-STORE BOUNDARY, AND ITS RESOLUTION STEP ===
+
+`.claude/**` in this repository is a gitignored, regenerated deploy artifact: a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect (`.claude/rules/source-store-deploy-boundary.md`). Every agent-system edit in this record lands in the source store at the path mirroring the deployed one, never under `.claude/**`.
+
+RESOLVE THE SOURCE STORE BEFORE EDITING, AND DO NOT ASSUME A PATH. This repository's `<project-root>/.claude-extensions.json` has NO `source_dir` key at all -- its only top-level keys are `extensions` and `version` -- so the documented resolution step does not yield a path here. The convention adjacent records use, and which is present on this machine, is `/home/benjamin/.config/nvim/agent-system/extensions/lean` for the lean extension and `.../extensions/core` for core; confirm it holds before writing, and if the source store is unreachable or ambiguous, REPORT THAT AND STOP rather than falling back to editing the deploy tree. The owning extension for every path in `file_scope` is `lean`, not `core`.
+
+After editing, redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+
+=== WIRING ===
+
+`context/project/lean4/domain/challenge-snapshot.md` has an entry in the lean extension's `index-entries.json` carrying a `line_count`, which must agree with the file as landed; update it. `rules/plan-compliance.md` is a rule and has no index entry, so it needs none. No new context file is expected -- both items extend files that already exist and are already reachable -- but if a new file is created instead, it needs its own `index-entries.json` entry and at least one referrer, because an unreferenced guidance file is not guidance.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Durable anchors that MAY be cited freely in the prose: the script name `lean-challenge-snapshot.sh`, the flag spellings (`--check`, `--force`), the exit codes (`65`, `71`, `73`), the section names (`## Lean Challenge Statements`, `**Goals**:`), the manifest path shape `specs/{NNN}_{SLUG}/challenge/manifest.json`, and the file names of the guidance's own neighbours. Things that MUST NOT appear in the prose: the originating task numbers, the issue entry_ids, the specific declaration names from the measured run (`cert_accepts_Rchi`, `au_lfp_ne_eu_lfp_on_exit_graph`, `chi_closure_box_snce_stab_free`, `rev_eu_lfp_empty`, `cert_rejects_Rev`, `profR_separates_gate6_pair`) and the measured declaration count -- those live in this record only. State the guidance as what a plan author does and what the implementer does on divergence, never as a narration of a past run.
+
+=== CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION, NOT A DEFECT TO FIX HERE ===
+
+This record is filed in the BimodalLogic task space while its edit target resolves only under `/home/benjamin/.config/nvim/`. That mismatch is deliberate: the record sits beside the run that measured the gaps. A migrator should treat it as a deliberate choice, not an authoring slip. The source-store repository's own task space holds adjacent records bearing on exactly this condition -- `migrate_mis_sited_agent_system_tasks`, `agent_system_task_siting_and_target_root`, and `cross_repo_source_store_gate_blindness` (the last documents a prior conclusion-stage dispatch from this repository colliding with records filed in the source-store repository from identical issue entries, and is worth reading before executing this record). NO DEPENDENCY EDGE EXPRESSES ANY OF THIS AND NONE CAN: those records live in a different repository's task space, so neither a dependency edge nor a file_scope overlap gate can span the two systems. The coordination is a manual read.
+
+=== ACCEPTANCE ===
+
+(1) The guidance states item 1's precedence rule (pinned block wins over contradicting Verification prose) WITH its mechanical reason, and states item 1(b)'s authoring prohibition against order-dependent criteria that contradict the pinned block, as two separately checkable conditions rather than one blurred paragraph.
+(2) It states what an implementer does when the divergence occurs anyway: resolve in favour of the pinned block and record the divergence.
+(3) It states item 2's rule in both directions -- snapshot scheduled as an explicit earlier step, or no `--check` criterion at all -- and names the declaration-by-declaration diff against the plan's own pinned block as the sanctioned self-contained substitute with the same advisory standing.
+(4) The no-manifest-under-`--check` behaviour has been confirmed against the script, and if it was genuinely absent from the `71` row's named meanings it is now listed there. The script itself is unchanged.
+(5) Every edit landed in the resolved source store at the mirroring path; no file under `.claude/**` was hand-authored.
+(6) `challenge-snapshot.md`'s `index-entries.json` `line_count` agrees with the file as landed; any new file created instead carries its own entry plus at least one referrer.
+(7) The prose carries no task-number references, no record-versioning language, and none of the run-specific declaration names or counts listed under DELIVERABLE HYGIENE.
+(8) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean`.
+(9) If either item was relocated to a core home, that was raised and `file_scope` widened first, and the destination is stated in the completion summary.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the realizable-type adequacy / countdown-profile probe (task 809) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Both originating entries are in `specs/809_realizable_type_adequacy_countdown_profile/issues.jsonl`: item 1 is entry_id `iss_1792222421761_2rrBDK` (class `plan-internal-tension`, severity minor), item 2 is entry_id `iss_1792223916681_ZOvV6R` (class `missing-prerequisite`, severity minor). The lead classified both as genuine agent-system contract gaps; the aggregator supplied no `suggested_channel_hints` for either, so no hint was overridden.
+
+---
 
 ### 812. Stale generated inventory blocks refresh
 - **Effort**: One emit-mode run plus review of the regenerated blocks
