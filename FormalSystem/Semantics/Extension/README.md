@@ -61,14 +61,16 @@ makes the same point from the Zorn side and in full generality — over `def:BX-
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/Extension -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `Admissible.lean` | 331 | `lem:fibers` (RETIRED paper anchor; resolves against the record's DANGLING entry, not a live `\label`) and `lem:admissible` — rewrites membership in *every* constraint as membership in a plain fiber, turning that into a one-point extension of the partial history. |
-| `Completion.lean` | 883 | `PartialHistory.Completion` — the exact condition `lem:step` consumes, proved **equivalent** to the one-point extension property; `extension_of_completion` derives `thm:extension` from *Completion* + *Seriality* + *Limit* with no `[F.IsRegular]` binder at all; `HasNearest` / `extension_of_isZTime` show *Saturation* is redundant over discrete time; and `completion_of_finite_domain` shows the finitary form is free, so the infinitary quantifier is essential. Also the nest reduction: `HasCofinalNest`, `sInter_constraints_nonempty_of_nestSaturation` and `sInter_constraints_nonempty_of_countable`, which settle that the `⇒`-directedness of `def:frame`'s fourth constraint is **not forced** over any carrier this development instantiates. |
-| `Constraint.lean` | 535 | `lem:constraint` — the constraints a partial history imposes on a new duration form a *directed* family of *nonempty* sets. That is the whole of the lemma; the admissibility characterization is split out into `Admissible.lean`. |
-| `Extension.lean` | 346 | `thm:extension` and `cor:occurrence` — every partial history is extended by some possible world, and every world state occurs at any prescribed time in some possible world. Also the identification `isRestriction_of_isRegular` / `exists_restrict_eq` / `exists_worldHistory_restricting_pair`, and the recorded argument for keeping `def:world-history` primitive. |
-| `PeriodicExtension.lean` | 452 | A constructive alternative over `ℤ`-time with a finite carrier: a bounded history's two departing orbits must repeat, giving a periodic total extension without Zorn's lemma. |
-| `Step.lean` | 208 | `lem:step` — the Step Lemma: every partial history extends by one arbitrary duration. The join point of the chain, and the sole *Saturation* **elimination** site. |
+| `Admissible.lean` | 357 | `lem:fibers` (RETIRED paper anchor; resolves against the record's DANGLING entry, not a live `\label`) and `lem:admissible` — rewrites membership in *every* constraint as membership in a plain fiber, turning that into a one-point extension of the partial history. |
+| `Completion.lean` | 889 | `PartialHistory.Completion` — the exact condition `lem:step` consumes, proved **equivalent** to the one-point extension property; `extension_of_completion` derives `thm:extension` from *Completion* + *Seriality* + *Limit* with no `[F.IsRegular]` binder at all; `HasNearest` / `extension_of_isZTime` show *Saturation* is redundant over discrete time; and `completion_of_finite_domain` shows the finitary form is free, so the infinitary quantifier is essential. Also the nest reduction: `HasCofinalNest`, `sInter_constraints_nonempty_of_nestSaturation` and `sInter_constraints_nonempty_of_countable`, which settle that the `⇒`-directedness of `def:frame`'s fourth constraint is **not forced** over any carrier this development instantiates. |
+| `Constraint.lean` | 755 | `lem:constraint` — the constraints a partial history imposes on a new duration form a *directed* family of *nonempty* sets. That is the whole of the lemma; the admissibility characterization is split out into `Admissible.lean`. |
+| `Extension.lean` | 363 | `thm:extension` and `cor:occurrence` — every partial history is extended by some possible world, and every world state occurs at any prescribed time in some possible world. Also the identification `isRestriction_of_isRegular` / `exists_restrict_eq` / `exists_worldHistory_restricting_pair`, and the recorded argument for keeping `def:world-history` primitive. |
+| `PeriodicExtension.lean` | 468 | A constructive alternative over `ℤ`-time with a finite carrier: a bounded history's two departing orbits must repeat, giving a periodic total extension without Zorn's lemma. |
+| `Step.lean` | 215 | `lem:step` — the Step Lemma: every partial history extends by one arbitrary duration. The join point of the chain, and the sole *Saturation* **elimination** site. |
+<!-- END GENERATED -->
 
 ## Key Results
 

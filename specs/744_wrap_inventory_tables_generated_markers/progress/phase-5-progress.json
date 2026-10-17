@@ -1,0 +1,78 @@
+{
+  "phase": 5,
+  "phase_name": "Wrap the fitting Tier-A tables under Decidability, Theorems, Automation, Semantics, Syntax, and ProofSystem",
+  "started_at": "2026-10-17T18:57:20Z",
+  "last_updated": "2026-10-17T18:58:35Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Fit check on the eleven candidates",
+      "status": "done",
+      "files_touched": [],
+      "note": "11/11 fit after escaping the one unescaped inline pipe (`|C|` -> `\\|C\\|`) in Termination TimeTypeBound row; Sharing lacks rows for Stability/Window, Termination lacks MintBound/"
+    },
+    {
+      "id": 2,
+      "description": "Wrap, regenerate once, key-sorted diff, fill TODO rows, hunk review",
+      "status": "done",
+      "files_touched": [
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/README.md",
+        "FormalSystem/Metalogic/Decidability/Verified/Bridge/README.md",
+        "FormalSystem/Metalogic/Decidability/BiLasso/README.md",
+        "FormalSystem/Metalogic/Decidability/Propositional/README.md",
+        "FormalSystem/Theorems/Propositional/README.md",
+        "FormalSystem/Automation/ProofSearch/README.md",
+        "FormalSystem/Semantics/Correspondence/README.md",
+        "FormalSystem/Semantics/Extension/README.md",
+        "FormalSystem/Syntax/SubformulaClosure/README.md",
+        "FormalSystem/ProofSystem/README.md"
+      ],
+      "note": "snapshot skipped as in phase 4; writer rewrote 11/11; 81 descriptions byte-identical; 3 TODO rows filled; 66 stale counts refreshed"
+    },
+    {
+      "id": 3,
+      "description": "--emit-inventory --check names none of this phase's READMEs",
+      "status": "done",
+      "files_touched": [],
+      "note": "PASS INV; gate 4 PASS"
+    },
+    {
+      "id": 4,
+      "description": "Commit by explicit path list",
+      "status": "done",
+      "files_touched": [
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/README.md",
+        "FormalSystem/Metalogic/Decidability/Verified/Bridge/README.md",
+        "FormalSystem/Metalogic/Decidability/BiLasso/README.md",
+        "FormalSystem/Metalogic/Decidability/Propositional/README.md",
+        "FormalSystem/Theorems/Propositional/README.md",
+        "FormalSystem/Automation/ProofSearch/README.md",
+        "FormalSystem/Semantics/Correspondence/README.md",
+        "FormalSystem/Semantics/Extension/README.md",
+        "FormalSystem/Syntax/SubformulaClosure/README.md",
+        "FormalSystem/ProofSystem/README.md"
+      ]
+    }
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "5.2",
+      "description": "git-snapshot.sh --no-revert before the writer",
+      "type": "skipped",
+      "reason": "Same as 4.3.",
+      "annotation": "*(deviation: skipped — snapshot omitted as in phase 4)*"
+    },
+    {
+      "task_id": "5.1",
+      "description": "Termination TimeTypeBound row carried an unescaped inline `|C|` that split_row reads as a cell boundary",
+      "type": "altered",
+      "reason": "Escaped it to `\\|C\\|` (a hand-description edit inside a README this task wraps) so the description survives regeneration; the fit check then passes.",
+      "annotation": "*(deviation: altered — Termination TimeTypeBound `|C|` escaped to `\\|C\\|` before wrapping)*"
+    }
+  ],
+  "handoff_count": 0
+}

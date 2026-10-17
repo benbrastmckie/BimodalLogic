@@ -14,18 +14,22 @@ producers for the one `WitnessFamily.Refutes` interface rather than as rival dev
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing -->
 | Module | Lines | Role |
 |--------|-------|------|
-| `Skeleton.lean` | 944 | **`SharingSkeleton`**, the label-free branching substrate: `rep`, `share`, `Thread`/`Step`/`ReachN`, the quotient frame and all four `def:frame` constraints, `hist` and `total_eq_thread` |
-| `Basic.lean` | 208 | `SharingWitnessFamily`, its `skeleton` projection, and the re-exports of `rep`, `share`, the equivalence laws and the two periodicities |
-| `Thread.lean` | 179 | Re-exports of `Thread` (the branching analogue of a lasso orbit), the class-level `Step`, `ReachN` and its four congruences |
-| `Frame.lean` | 258 | Re-exports of `shareSetoid`, `WorldState`, the duration-free `Conn`, the two-sided `RelZ`, the `FrameOver intOrder` `frame`, and all four `def:frame` constraints |
-| `Histories.lean` | 105 | Re-exports of `hist`, `thread_is_history` and **`total_eq_thread`** — the replacement for `ShiftSet.total_eq_orbit` |
-| `Predicates.lean` | 226 | (C0) `AtomCoherent`, (C1') `LocalCoherentShare`, (C2') `ThreadFulfilling`, and the two unconditional reductions to the deterministic conditions |
-| `Decide.lean` | 567 | The combined window, the two window collapses, and the instances for (C0) and (C1') |
-| `Fulfil.lean` | 1669 | The finite position graph, the `A[g U e]` least fixpoint, (C2')'s correctness in both directions, and the (C1')-relative decision procedure |
-| `Agreement.lean` | 411 | The branching `model`, the two inner inductions along a thread, **T1** `truth_iff_mem`, the bundle `Certifies`, `decidableCertifies`, and `refutes_of_certifies` |
-| `Specialize.lean` | 455 | `WitnessFamily.toSharing`, the four condition reductions, `certifies_toSharing`, the frame isomorphism `stateEquiv`/`histEquiv`/`truthIso` and the transported agreement |
+| `Agreement.lean` | 460 | The branching `model`, the two inner inductions along a thread, **T1** `truth_iff_mem`, the bundle `Certifies`, `decidableCertifies`, and `refutes_of_certifies` |
+| `Basic.lean` | 293 | `SharingWitnessFamily`, its `skeleton` projection, and the re-exports of `rep`, `share`, the equivalence laws and the two periodicities |
+| `Decide.lean` | 622 | The combined window, the two window collapses, and the instances for (C0) and (C1') |
+| `Frame.lean` | 267 | Re-exports of `shareSetoid`, `WorldState`, the duration-free `Conn`, the two-sided `RelZ`, the `FrameOver intOrder` `frame`, and all four `def:frame` constraints |
+| `Fulfil.lean` | 1,752 | The finite position graph, the `A[g U e]` least fixpoint, (C2')'s correctness in both directions, and the (C1')-relative decision procedure |
+| `Histories.lean` | 111 | Re-exports of `hist`, `thread_is_history` and **`total_eq_thread`** — the replacement for `ShiftSet.total_eq_orbit` |
+| `Predicates.lean` | 245 | (C0) `AtomCoherent`, (C1') `LocalCoherentShare`, (C2') `ThreadFulfilling`, and the two unconditional reductions to the deterministic conditions |
+| `Skeleton.lean` | 1,644 | **`SharingSkeleton`**, the label-free branching substrate: `rep`, `share`, `Thread`/`Step`/`ReachN`, the quotient frame and all four `def:frame` constraints, `hist` and `total_eq_thread` |
+| `Specialize.lean` | 465 | `WitnessFamily.toSharing`, the four condition reductions, `certifies_toSharing`, the frame isomorphism `stateEquiv`/`histEquiv`/`truthIso` and the transported agreement |
+| `Stability.lean` | 174 | The stability modal `⊡` at the branching frame — the obligation the branching device leaves open once `truth_iff_mem` (`Agreement.lean`) has settled the box case |
+| `Thread.lean` | 189 | Re-exports of `Thread` (the branching analogue of a lasso orbit), the class-level `Step`, `ReachN` and its four congruences |
+| `Window.lean` | 720 | The label-free position graph: the combined window — the bounded interval of times whose check decides a condition at every time — which `SharingSkeleton` deliberately does not carry |
+<!-- END GENERATED -->
 
 ## The substrate is label-free, and lives on `SharingSkeleton`
 

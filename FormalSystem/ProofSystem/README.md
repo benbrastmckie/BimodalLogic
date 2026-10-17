@@ -7,13 +7,15 @@ TM logic variants (Base, Dense, Discrete, Dedekind), along with derived facts an
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/ProofSystem -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `Axioms.lean` | 621 | `Axiom` inductive type: 20 constructors (exactly the paper's primitive schemata, key for key) in eight layers |
-| `DerivedAxioms.lean` | 244 | The time-reflection mirrors, derived by the TR rule (`DerivedAxioms` namespace) |
-| `Derivation.lean` | 418 | `DerivationTree` inductive type: 7 inference rules as constructors |
+| `Axioms.lean` | 658 | `Axiom` inductive type: 20 constructors (exactly the paper's primitive schemata, key for key) in eight layers |
 | `Derivable.lean` | 196 | `Derivable`: Prop-valued derivability wrapper for classical reasoning |
-| `LinearityDerivedFacts.lean` | 74 | Derived consequences of `temp_linearity`; non-derivability analysis |
+| `Derivation.lean` | 418 | `DerivationTree` inductive type: 7 inference rules as constructors |
+| `DerivedAxioms.lean` | 329 | The time-reflection mirrors, derived by the TR rule (`DerivedAxioms` namespace) |
+| `LinearityDerivedFacts.lean` | 67 | Derived consequences of `temp_linearity`; non-derivability analysis |
+<!-- END GENERATED -->
 
 ## Axiom System
 

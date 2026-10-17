@@ -9,12 +9,14 @@ finite model property.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Syntax/SubformulaClosure -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `Closure.lean` | 374 | `subformulaClosure`: Finset of all subformulas of a formula |
+| `Closure.lean` | 358 | `subformulaClosure`: Finset of all subformulas of a formula |
+| `IteratedTemporal.lean` | 337 | `iterF`/`iterP`: n-fold F/P application, with injectivity, nesting-depth and closure-escape lemmas |
 | `NestingDepth.lean` | 240 | Nesting depth measure for formulas; used in bounded search |
-| `TemporalFormulas.lean` | 1322 | Temporal formula classification within subformula closures |
-| `IteratedTemporal.lean` | 336 | `iterF`/`iterP`: n-fold F/P application, with injectivity, nesting-depth and closure-escape lemmas |
+| `TemporalFormulas.lean` | 1,322 | Temporal formula classification within subformula closures |
+<!-- END GENERATED -->
 
 ## Key Definitions
 

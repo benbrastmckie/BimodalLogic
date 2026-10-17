@@ -7,10 +7,12 @@ Automation layer to find derivations up to a given depth bound.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Automation/ProofSearch -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `Core.lean` | 1,283 | Proof search core engine: depth-limited derivation search, term enumeration |
-| `Strategies.lean` | 401 | Search strategies: heuristic ordering, pruning rules, backtracking policies |
+| `Core.lean` | 1,268 | Proof search core engine: depth-limited derivation search, term enumeration |
+| `Strategies.lean` | 403 | Search strategies: heuristic ordering, pruning rules, backtracking policies |
+<!-- END GENERATED -->
 
 ## Key Definitions
 

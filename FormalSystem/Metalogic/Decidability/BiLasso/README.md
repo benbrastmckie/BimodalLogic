@@ -101,27 +101,29 @@ README: `Formula` has no `⊡` constructor to write it against.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Decidability/BiLasso -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `Basic.lean` | 316 | The `BiLasso` structure, its decoding `unroll`, the two periodicities, and `unroll_isStepPath`. **Held stable** — see below |
-| `Unfold.lean` | 166 | The exact ℤ one-step unfolding of `TruthAt` for `untl` and `snce`, plus the two ℤ-distance induction principles |
-| `Periodic.lean` | 130 | The three-segment periodic decoding at an arbitrary `[Inhabited α]`, shared in scheme with `Basic.lean`'s |
+| `Agreement.lean` | 192 | Window agreement as `Extends`, with the three limits on what a lasso certificate licenses |
 | `Annotation.lean` | 360 | The `Annot` datatype, its label decoding and alignment with the state decoding, and the three predicates `LocalCoherent`, `Fulfilling`, `BoxOracleSound` |
-| `Examples.lean` | 442 | The non-vacuity witnesses: one annotated lasso satisfying both predicates, one satisfying `LocalCoherent` but not `Fulfilling` |
-| `TruthLemma.lean` | 230 | `truth_along_annot` — truth equals label membership on the closure |
-| `Decide.lean` | 905 | The corrected scan bounds and the window collapses that make `LocalCoherent` and `Fulfilling` decidable |
-| `Enumerate.lean` | 325 | `boundedBiLassos` and `boundedAnnots`, with completeness and soundness |
-| `SmallModel.lean` | 236 | The type sequence of a genuine history, shown locally coherent and fulfilling — the groundwork the extraction consumes |
-| `Realized.lean` | 297 | The realised-datum graph: `PigeonState` with its exact cardinality `P.card · 2^k`, `RealizedStep`, `CoherentEdge`, and the splice lemma `localCoherentSeq_of_edges` |
-| `GoodCycle.lean` | 653 | The eventuality-propagation lemmas, `exists_recurring_datum`, and bounded good forward and backward cycles with the explicit closed bound `cycleBound` |
-| `Extraction.lean` | 564 | `bound`, and `exists_annot_of_truth` — the small-model theorem in its windowed shape, delivering a position inside the coherence window |
-| `BoxOracle.lean` | 269 | `boxOracle`, a concrete `Formula → Bool` by strong recursion on `modalDepth`, and `boxOracle_sound` — what breaks the annotation ↔ oracle circularity |
-| `Check.lean` | 249 | `SatAtState`, `checkAt`, `check`, `check_correct`, the `Decidable` instance, and the discrimination theorems |
-| `Assembly.lean` | 113 | The route from `check` to `Decidable (ValidZTime φ)` **given** `fmp` as a hypothesis: `not_validZTime_of_satAtState`, `validZTime_iff_check`/`decidableValidZTime`, `validZTime_iff_checkFamily`/`decidableValidZTimeFamily`. Proves no part of `fmp` |
-| `Extend.lean` | 120 | `PlacedBiLasso` — a bi-lasso plus an `origin : ℤ`, so a window at arbitrary absolute times is representable — with shift-invariance of step paths |
-| `Successor.lean` | 157 | Choice-free, `#eval`-able `succOf` / `predOf` on a presentation, via `List.find?` over `List.finRange`, and their orbits |
+| `Assembly.lean` | 133 | The route from `check` to `Decidable (ValidZTime φ)` **given** `fmp` as a hypothesis: `not_validZTime_of_satAtState`, `validZTime_iff_check`/`decidableValidZTime`, `validZTime_iff_checkFamily`/`decidableValidZTimeFamily`. Proves no part of `fmp` |
+| `Basic.lean` | 317 | The `BiLasso` structure, its decoding `unroll`, the two periodicities, and `unroll_isStepPath`. **Held stable** — see below |
+| `BoxOracle.lean` | 268 | `boxOracle`, a concrete `Formula → Bool` by strong recursion on `modalDepth`, and `boxOracle_sound` — what breaks the annotation ↔ oracle circularity |
+| `Check.lean` | 309 | `SatAtState`, `checkAt`, `check`, `check_correct`, the `Decidable` instance, and the discrimination theorems |
+| `Decide.lean` | 920 | The corrected scan bounds and the window collapses that make `LocalCoherent` and `Fulfilling` decidable |
+| `Enumerate.lean` | 329 | `boundedBiLassos` and `boundedAnnots`, with completeness and soundness |
+| `Examples.lean` | 449 | The non-vacuity witnesses: one annotated lasso satisfying both predicates, one satisfying `LocalCoherent` but not `Fulfilling` |
+| `Extend.lean` | 121 | `PlacedBiLasso` — a bi-lasso plus an `origin : ℤ`, so a window at arbitrary absolute times is representable — with shift-invariance of step paths |
+| `Extraction.lean` | 560 | `bound`, and `exists_annot_of_truth` — the small-model theorem in its windowed shape, delivering a position inside the coherence window |
+| `GoodCycle.lean` | 654 | The eventuality-propagation lemmas, `exists_recurring_datum`, and bounded good forward and backward cycles with the explicit closed bound `cycleBound` |
 | `Orbit.lean` | 916 | A choice-free pigeonhole on `Fin`, the forward and backward rho decompositions, the window assembly, and `IntPresentation.extend_periodic` |
-| `Agreement.lean` | 175 | Window agreement as `Extends`, with the three limits on what a lasso certificate licenses |
+| `Periodic.lean` | 144 | The three-segment periodic decoding at an arbitrary `[Inhabited α]`, shared in scheme with `Basic.lean`'s |
+| `Realized.lean` | 298 | The realised-datum graph: `PigeonState` with its exact cardinality `P.card · 2^k`, `RealizedStep`, `CoherentEdge`, and the splice lemma `localCoherentSeq_of_edges` |
+| `SmallModel.lean` | 236 | The type sequence of a genuine history, shown locally coherent and fulfilling — the groundwork the extraction consumes |
+| `Successor.lean` | 137 | Choice-free, `#eval`-able `succOf` / `predOf` on a presentation, via `List.find?` over `List.finRange`, and their orbits |
+| `TruthLemma.lean` | 223 | `truth_along_annot` — truth equals label membership on the closure |
+| `Unfold.lean` | 205 | The exact ℤ one-step unfolding of `TruthAt` for `untl` and `snce`, plus the two ℤ-distance induction principles |
+<!-- END GENERATED -->
 
 The entry point is `check` (`Check.lean`). `BiLasso.lean`, beside this directory, is the
 subdirectory re-export; it deliberately omits `Extend`, `Successor`, `Orbit` and `Agreement`,

@@ -9,11 +9,13 @@ that higher-level proofs rely on.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Theorems/Propositional -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `Connectives.lean` | 745 | Derived connective theorems: conjunction, disjunction, negation laws |
-| `Core.lean` | 730 | Core propositional theorems: double negation, contraposition, ex falso |
-| `Reasoning.lean` | 247 | Propositional reasoning rules: hypothetical syllogism, modus tollens |
+| `Connectives.lean` | 704 | Derived connective theorems: conjunction, disjunction, negation laws |
+| `Core.lean` | 788 | Core propositional theorems: double negation, contraposition, ex falso |
+| `Reasoning.lean` | 172 | Propositional reasoning rules: hypothetical syllogism, modus tollens |
+<!-- END GENERATED -->
 
 ## Key Results
 

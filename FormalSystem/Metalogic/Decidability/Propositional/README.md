@@ -7,12 +7,14 @@ the bimodal decision procedure depend on a completeness result it does not need.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Decidability/Propositional -->
 | File | Lines | Role |
 |------|------:|------|
-| `PropForm.lean` | 234 | Propositional formula representation and the embedding of the propositional fragment of `Formula` |
+| `Decidable.lean` | 226 | Assembles the two into a decision procedure for the fragment |
 | `Kalmar.lean` | 298 | Kalmár-style tautology soundness: a truth-table-valid propositional formula is derivable |
-| `Decidable.lean` | 248 | Assembles the two into a decision procedure for the fragment |
+| `PropForm.lean` | 217 | Propositional formula representation and the embedding of the propositional fragment of `Formula` |
 | `Tactic.lean` | 158 | `propDecide`: the reflective tautology tactic that applies `Kalmar.lean`'s soundness theorem to a derivability goal |
+<!-- END GENERATED -->
 
 ## Position in the Layering
 

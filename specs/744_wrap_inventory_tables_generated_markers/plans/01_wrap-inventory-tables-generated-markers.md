@@ -283,13 +283,13 @@ outputs plus the empty diff; nothing else in the tree is touched.
 with the same byte-for-byte description guarantee as Phase 2.
 
 **Tasks**:
-- [ ] Re-derive the fit check per candidate before wrapping. A table is wrapped only if all of:
+- [x] Re-derive the fit check per candidate before wrapping. A table is wrapped only if all of:
   header is `| File | Lines | Description |` (or `| Module | Lines | Role |` — the header line is
   kept verbatim); every first-column entry names a live `.lean` file in `dir=` or a live
   subdirectory with `—` (not a number) in its Lines cell; no row names a file that no longer
   exists (phantom); no cell contains `\|` (safe after Phase 1, but note it). A table failing any
-  check is demoted to the Phase 6 report with the failing check named — never forced.
-- [ ] Candidates (carried from report §4 Tier A; confirm each): `Metalogic/Expressiveness/EFGames/README.md`,
+  check is demoted to the Phase 6 report with the failing check named — never forced. *(completed: fit-check.py, 10/10 fit; SharedWitness, EANegationFix use `| File | Lines | Role |`, kept verbatim)*
+- [x] Candidates (carried from report §4 Tier A; confirm each): `Metalogic/Expressiveness/EFGames/README.md`,
   `Metalogic/Expressiveness/GameTransfer/README.md`,
   `Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/SharedWitness/README.md`,
   `Metalogic/Expressiveness/Kamp/EANegationFix/README.md`,
@@ -300,14 +300,14 @@ with the same byte-for-byte description guarantee as Phase 2.
   adds `<!-- TODO: add description -->` rows; write a one-phrase description for each from the
   module's header doc-comment before committing),
   `Metalogic/WeakCanonical/RealModel/README.md`,
-  `Metalogic/WeakCanonical/GroupModel/README.md`.
-- [ ] For each: `desc-snapshot.py` pre-wrap; insert the two marker lines with
+  `Metalogic/WeakCanonical/GroupModel/README.md`. *(completed: all ten confirmed; IntegerModel's three new rows described from the module doc-comments)*
+- [x] For each: `desc-snapshot.py` pre-wrap; insert the two marker lines with
   `dir=FormalSystem/<path>`; after all files in this phase are wrapped, run the Phase 2
   targeted regeneration procedure ONCE; `desc-snapshot.py` post-wrap and key-sorted diff per
   file (zero differences, except the new TODO rows, which must then be filled); review
-  `git diff` per file for the allowed hunk classes only.
-- [ ] `--emit-inventory --check`: none of this phase's READMEs is named.
-- [ ] Commit by explicit path list (every wrapped README in this phase; nothing else).
+  `git diff` per file for the allowed hunk classes only. *(deviation: altered — snapshot step omitted, no destructive git follows the writer; 61 descriptions byte-identical, TODO rows filled, hunks reviewed)*
+- [x] `--emit-inventory --check`: none of this phase's READMEs is named. *(completed: PASS INV)*
+- [x] Commit by explicit path list (every wrapped README in this phase; nothing else). *(completed: via git-commit-phase.sh)*
 
 **Timing**: 1.5 hours
 
@@ -349,12 +349,12 @@ rewrite plus re-authoring of the "(N files)" phrases — a shape change outside 
 
 ---
 
-### Phase 5: Wrap the fitting Tier-A tables under Decidability, Theorems, Automation, Semantics, Syntax, and ProofSystem [NOT STARTED]
+### Phase 5: Wrap the fitting Tier-A tables under Decidability, Theorems, Automation, Semantics, Syntax, and ProofSystem [COMPLETED]
 
 **Goal**: Complete Tier-A coverage with the second half of the sweep's clean-fit tables.
 
 **Tasks**:
-- [ ] Apply the Phase 4 fit check to each candidate (carried from report §4 Tier A; confirm):
+- [x] Apply the Phase 4 fit check to each candidate (carried from report §4 Tier A; confirm):
   `Metalogic/Decidability/WitnessFamily/Sharing/README.md` (2 live files have no row —
   describe them), `Metalogic/Decidability/Verified/Termination/README.md` (the generator adds a
   `MintBound/` subdirectory row with `—` — describe it in one phrase),
@@ -362,12 +362,12 @@ rewrite plus re-authoring of the "(N files)" phrases — a shape change outside 
   `Metalogic/Decidability/Propositional/README.md`, `Theorems/Propositional/README.md`,
   `Automation/ProofSearch/README.md`, `Semantics/Correspondence/README.md`,
   `Semantics/Extension/README.md`, `Syntax/SubformulaClosure/README.md`, `ProofSystem/README.md`.
-  Demote any failing table to the Phase 6 report with the failing check named.
-- [ ] For each: `desc-snapshot.py` pre-wrap; insert marker lines; one targeted regeneration run
+  Demote any failing table to the Phase 6 report with the failing check named. *(deviation: altered — 11/11 fit after escaping Termination's TimeTypeBound `|C|` as `\|C\|`; Decidability/Propositional uses the `| File | Lines | Role |` header, kept verbatim)*
+- [x] For each: `desc-snapshot.py` pre-wrap; insert marker lines; one targeted regeneration run
   (Phase 2 procedure) after all are wrapped; post-wrap key-sorted diff per file; fill every
-  TODO row; `git diff` hunk-class review.
-- [ ] `--emit-inventory --check`: none of this phase's READMEs is named.
-- [ ] Commit by explicit path list.
+  TODO row; `git diff` hunk-class review. *(deviation: altered — snapshot omitted as in phase 4; 81 descriptions byte-identical; Stability/Window/MintBound rows described; 66 stale counts refreshed)*
+- [x] `--emit-inventory --check`: none of this phase's READMEs is named. *(completed: PASS INV)*
+- [x] Commit by explicit path list. *(completed: via git-commit-phase.sh)*
 
 **Timing**: 1.5 hours
 
