@@ -11,9 +11,9 @@ next_project_number: 812
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,811 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,429,497,618,763,783,809 | 298,428,502,616,734,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,410,498,499,500,807 | 231,429,497,809 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,809,810,811 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,429,497,618,763,783,807 | 298,428,502,616,761,772,809 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -84,14 +84,14 @@ next_project_number: 812
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-  └─ 809 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
-    └─ 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-811 [PLANNED] — AUDIT TASK, verdict-first. Re-cut the dependency edges on the...
+809 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
+  └─ 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
+811 [IMPLEMENTING] — AUDIT TASK, verdict-first. Re-cut the dependency edges on the...
 
 ### Formula Refactor
 
@@ -128,7 +128,7 @@ next_project_number: 812
 ## Tasks
 
 ### 811. Ladder periodicity dependency edge recut
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -182,7 +182,7 @@ SCHEDULING. file_scope collides with task 768 (lean_challenge_snapshot_chunk_and
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 734, Task 805
+- **Dependencies**: Task 805
 - **Parent**: Task 806
 
 **Description**: RESEARCH TASK. The adequacy half of the closure-indexed periodicity gate, successor to the countdown-profile round that discharged the cheap half.
