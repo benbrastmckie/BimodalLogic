@@ -188,19 +188,19 @@
     {
       "project_number": 744,
       "project_name": "wrap_inventory_tables_generated_markers",
-      "status": "researched",
+      "status": "planning",
       "task_type": "markdown",
       "description": "Wrap the RaySummary and KTypeSummary inventory tables in BEGIN GENERATED markers so their module line counts cannot drift again\n\nMEASURED 2026-10-08. Four of the six module line counts in FormalSystem/Metalogic/Decidability/RaySummary/README.md's inventory table had drifted from the filesystem: Closure.lean claimed 310 (actual 309), Trace.lean 336 (actual 371), Compose.lean 297 (actual 298), Present.lean 684 (actual 690). HitOf.lean (810) and StabCheck.lean (252) were correct, as was the #guard count (13 + 4 = 17). The four stale counts were corrected BY HAND in that session's commit; this task removes the recurrence, which the hand fix does not.\n\nROOT CAUSE, verified by grep. That table carries NO `<!-- BEGIN GENERATED: inventory dir=... -->` / `<!-- END GENERATED -->` markers, so it is hand-maintained and `check-module-invariants.sh`'s INV check -- which fails only on a STALE WRAPPED BLOCK -- never covered it. The gate was green throughout the drift. scripts/readme-inventory.sh is a deprecated shim whose own message states the mechanism: \"Module inventory tables are no longer pasted in by hand. A README opts into a machine-owned table by wrapping it in BEGIN GENERATED ... after which `check-module-invariants.sh --emit-inventory` rewrites every column except the hand-written trailing description, and the INV check in the same script fails if any block has gone stale.\"\n\nSO THE FIX IS OPT-IN, NOT NEW MACHINERY: wrap the table, and the existing generator owns the columns while the long hand-written trailing descriptions survive. Confirm that preservation claim against `--emit-inventory`'s actual behaviour before committing to it -- the RaySummary descriptions are several hundred words each and losing them would be a serious regression, so verify on a scratch copy first.\n\nSCOPE. (1) Wrap the RaySummary README inventory table and regenerate it via `check-module-invariants.sh --emit-inventory`, confirming every trailing description is preserved byte-for-byte. (2) Do the same for FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md, which has the same hand-maintained shape. (3) Sweep for OTHER unwrapped inventory tables under FormalSystem/ by reading the generator's marker-option list rather than enumerating from memory, and report what is found -- wrapping them is in scope only where the generator's column set actually fits. (4) Confirm `check-module-invariants.sh` INV now fails on a deliberately corrupted count in each newly wrapped block, so the coverage is demonstrated rather than assumed.\n\nDEPENDENCY NOTE, not a declared edge. Task 731 (make plan-time file_scope harvest include the generated surfaces a .lean edit forces) enumerates the generated surfaces a planner must declare. If this task lands, these two READMEs BECOME such surfaces and 731's enumeration must include them. 731 is NOT declared as a dependency here and this task is not blocked on it; the relationship runs the other way, so 731 should be re-checked after this lands. Do not edit 731's record from this task.\n\nWHY THIS IS NOT FOLDED INTO 731. Task 731's NON-GOALS state explicitly: \"no change to the generators themselves or to what they emit\". Wrapping a new table changes what the generator emits (it would own two more tables), so this work is excluded by 731's own stated scope. Folding it in would contradict that record rather than extend it.\n\nNON-GOALS. No change to the generator's column set or algorithm. No change to any module's Lean source. Do not hand-correct counts in any table this task does not wrap -- an unwrapped table left unwrapped should be REPORTED, not patched, so the recurrence stays visible rather than being papered over a second time.\n\nBACKLOG RECONCILIATION, verified 2026-10-08 against all 51 open tasks in this repo. No open task covers inventory-table marker adoption. 731 is adjacent and explicitly excludes it (above). 741 concerns agent-system context extensions, not this repo's READMEs. No overlap.",
       "topic": "repo-hygiene",
       "created": "2026-10-08T18:57:45Z",
-      "last_updated": "2026-10-17T18:39:45Z",
+      "last_updated": "2026-10-17T18:40:48Z",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
         "scripts/check-module-invariants.sh",
         "scripts/readme-inventory.sh"
       ],
       "dependencies": [],
-      "session_id": "sess_1792261594_b3e099",
+      "session_id": "sess_1792261594_b3e099_744",
       "artifacts": [
         {
           "path": "specs/744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md",
@@ -1874,7 +1874,7 @@
     {
       "project_number": 812,
       "project_name": "stale_generated_inventory_blocks_refresh",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "description": "Refresh the three stale generated inventory blocks that check-module-invariants.sh reports as an INV FAIL group: README.md, FormalSystem/README.md, and FormalSystem/Metalogic/README.md.\n\nThe condition is PRE-EXISTING and already diagnosed, do not re-derive: check-module-invariants.sh EXITS 0 but its output carries one FAIL group, 'INV 3 file(s) carry a stale generated inventory block'. The inventory block is generated from dir=FormalSystem, and the last FormalSystem commit (4155ee185, a MintBound/README module re-measure) postdates the last README.md commit (ec8483a01), which is what makes the committed blocks stale.\n\nThe remedy is the script's own emit mode: 'bash scripts/check-module-invariants.sh --emit-inventory', then review the regenerated blocks and commit the three README files. Verify by re-running check-module-invariants.sh and confirming the INV FAIL group is gone (the exit code was already 0, so the exit code alone is NOT the success signal -- the absence of the FAIL group in the output is).\n\nScope: README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md, and nothing else. No proof or definition changes under FormalSystem/, no Tests/ changes.",
       "effort": "One emit-mode run plus review of the regenerated blocks",
@@ -1887,7 +1887,7 @@
         "README.md"
       ],
       "created": "2026-10-17T13:29:04Z",
-      "last_updated": "2026-10-17T18:39:20Z",
+      "last_updated": "2026-10-17T18:40:34Z",
       "artifacts": [
         {
           "path": "specs/812_stale_generated_inventory_blocks_refresh/plans/01_refresh-stale-inventory-blocks.md",

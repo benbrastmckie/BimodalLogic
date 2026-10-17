@@ -1,7 +1,7 @@
 # Implementation Plan: Task #812
 
 - **Task**: 812 - Refresh the three stale generated inventory blocks reported by check-module-invariants.sh
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.75 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no research round; the task description already carries the diagnosis, the remedy, and the acceptance bar)
@@ -85,19 +85,19 @@ No ROADMAP.md consulted (no `roadmap_path` in the dispatch context).
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Regenerate, Review, and Commit the Three Blocks [NOT STARTED]
+### Phase 1: Regenerate, Review, and Commit the Three Blocks [IN PROGRESS]
 
 **Goal**: Bring the three stale generated inventory blocks current using the script's own writer
 mode, confirm the diff is confined to machine-owned cells, and commit exactly the three READMEs.
 
 **Tasks**:
-- [ ] Territory pre-check: `git status --short README.md FormalSystem/README.md FormalSystem/Metalogic/README.md scripts/` must be empty; `git log -1 --format='%h %s' -- FormalSystem/` and `-- README.md` should still show `4155ee185` and `ec8483a01` respectively (if FormalSystem moved further, that only changes the numbers, not the procedure; if a foreign uncommitted modification exists, STOP and report)
-- [ ] Confirm the pre-state: `bash scripts/check-module-invariants.sh --emit-inventory --check` exits non-zero and lists exactly the three READMEs
-- [ ] Run the writer: `bash scripts/check-module-invariants.sh --emit-inventory` -- expect `rewrote 3 file(s)` naming the three READMEs
-- [ ] `git status --short` lists exactly the three READMEs as modified and nothing else outside `specs/`; a fourth file is a STOP-and-report condition
-- [ ] Diff read-through (`git diff -- README.md FormalSystem/README.md FormalSystem/Metalogic/README.md`): every `-`/`+` hunk line sits between a `<!-- BEGIN GENERATED: inventory` marker and its `<!-- END GENERATED -->`; only numeric cells change; no `<!-- TODO: add description -->` appears; no row was dropped or added
-- [ ] Confirm current: `bash scripts/check-module-invariants.sh --emit-inventory --check` now exits 0
-- [ ] Record an issue-log entry (win or issue, via `issue-record.sh`, non-fatal) if anything deviated from the five-cell expectation; otherwise attest "nothing to record" in the phase summary
+- [x] Territory pre-check: `git status --short README.md FormalSystem/README.md FormalSystem/Metalogic/README.md scripts/` must be empty; `git log -1 --format='%h %s' -- FormalSystem/` and `-- README.md` should still show `4155ee185` and `ec8483a01` respectively (if FormalSystem moved further, that only changes the numbers, not the procedure; if a foreign uncommitted modification exists, STOP and report) *(completed: clean; FormalSystem at 4155ee185, README.md at ec8483a01)*
+- [x] Confirm the pre-state: `bash scripts/check-module-invariants.sh --emit-inventory --check` exits non-zero and lists exactly the three READMEs *(completed: exit 1, exactly the three READMEs)*
+- [x] Run the writer: `bash scripts/check-module-invariants.sh --emit-inventory` -- expect `rewrote 3 file(s)` naming the three READMEs *(completed: rewrote 3 file(s))*
+- [x] `git status --short` lists exactly the three READMEs as modified and nothing else outside `specs/`; a fourth file is a STOP-and-report condition *(completed: exactly the three READMEs)*
+- [x] Diff read-through (`git diff -- README.md FormalSystem/README.md FormalSystem/Metalogic/README.md`): every `-`/`+` hunk line sits between a `<!-- BEGIN GENERATED: inventory` marker and its `<!-- END GENERATED -->`; only numeric cells change; no `<!-- TODO: add description -->` appears; no row was dropped or added *(completed: 5 numeric cells, all inside generated blocks, 3 files / +5 -5)*
+- [x] Confirm current: `bash scripts/check-module-invariants.sh --emit-inventory --check` now exits 0 *(completed: exit 0)*
+- [x] Record an issue-log entry (win or issue, via `issue-record.sh`, non-fatal) if anything deviated from the five-cell expectation; otherwise attest "nothing to record" in the phase summary *(completed: win entry recorded in issues.jsonl)*
 - [ ] Commit the three files by explicit path list (`bash .claude/scripts/git-commit-scoped.sh` or an explicit `git add -- README.md FormalSystem/README.md FormalSystem/Metalogic/README.md`), message `task 812 phase 1: regenerate stale inventory blocks`
 
 **Timing**: 0.25 hours

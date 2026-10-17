@@ -91,7 +91,7 @@ next_project_number: 816
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-812 [PLANNED] — Refresh the three stale generated inventory blocks that...
+812 [IMPLEMENTING] — Refresh the three stale generated inventory blocks that...
 
 ### Formula Refactor
 
@@ -117,7 +117,7 @@ next_project_number: 816
 
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 743 [NOT STARTED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-744 [RESEARCHED] — Wrap the RaySummary and KTypeSummary inventory tables in...
+744 [PLANNING] — Wrap the RaySummary and KTypeSummary inventory tables in...
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
 ### Build Performance
@@ -351,7 +351,7 @@ Raised during orchestration of the realizable-type adequacy / countdown-profile 
 
 ### 812. Stale generated inventory blocks refresh
 - **Effort**: One emit-mode run plus review of the regenerated blocks
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: None
@@ -1205,7 +1205,7 @@ RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The roadmap-genera
 ---
 
 ### 744. Wrap inventory tables generated markers
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
