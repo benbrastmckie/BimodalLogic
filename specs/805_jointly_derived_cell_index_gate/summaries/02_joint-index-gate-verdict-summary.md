@@ -85,7 +85,8 @@ measures landed in the research round and is unchanged here.
   multi-task `/orchestrate` invocation rather than independently run here; this phase ran the
   narrowing invocation `bash .claude/scripts/verify-deploy.sh --only-gate 4,10` instead. The full
   set is deferred, never forgiven: it runs once for the whole batch at the end of the invocation
-  and its result is attributed back to this task by its own `modified_files`.
+  and its result is attributed back to this task by its own `modified_files`. The Lean side was
+  not deferred: the full-project `lake build` ran here and is green.
 - Otherwise the implementation followed the plan: every Phase 1 and Phase 2 checklist item was
   executed as written, and no step was skipped, altered or deferred.
 
@@ -96,13 +97,22 @@ Measured in this dispatch, not carried from `reports/02`:
 - Build: **Success**. `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- env lean
   specs/evidence/seam-gluing-ray-product/ladder-joint-index-refutation.lean` exited `0`
   (`lake-build-guard: STATUS: exit_status=0`), with output confined to the file's own 27
-  `#print axioms` lines. Per this dispatch's Batch Gate Deferral directive the full-project
-  `lake build` was deferred to the batch stage; the probe's own compile and the repository's
-  probe-rot entry point are this task's actual Lean surface and both ran here.
+  `#print axioms` lines. The full-project build also ran and is green:
+  `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` reports
+  `Build completed successfully (2874 jobs)`, guard exit `0`, zero `error:` lines over both
+  captured streams. No module of this task's own is in the build graph — it touched no Lean
+  source — so the `.olean`-freshness check is vacuous here by construction.
 - Sorry count: **0**. The `sorry`/`axiom`/`native_decide`/vacuous sweep over the probe returns two
   hits, both the header's own prose at lines 155-156 asserting their absence; no declaration-level
   hit.
-- Vacuous count: **0**.
+- Vacuous count: **0** for this task. The repository-wide heuristic sweep over the resolved source
+  roots returns one pre-existing hit,
+  `FormalSystem/Examples/TemporalStructures.lean:495 theorem int_domain_universal (t : Int) :
+  intTimeHistory.domain t := trivial`, which is a false positive of the grep pattern: the
+  statement is a real proposition closed by `trivial` through definitional unfolding, not a
+  placeholder body. It is not this task's — the lean source roots are clean in `git status` and
+  that line was committed long before this round.
+- Repository-wide `^axiom ` count: **14**, unchanged by this task (no Lean file was touched).
 - Axiom count: **unchanged — no new axiom**. All 27 lines fall in the three permitted sets:
   `[propext]` (`lab6_d_eq_b`), `[propext, Quot.sound]` (7 theorems, the arithmetic and depth
   results), `[propext, Classical.choice, Quot.sound]` (19 theorems, the cell results).
