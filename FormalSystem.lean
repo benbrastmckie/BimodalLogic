@@ -241,6 +241,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.BoxFree
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.ClosureResidual
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.FourComponent
+import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.GapPotential
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Invariants
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.LabelHeadroom
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Measure

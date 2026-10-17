@@ -1,7 +1,7 @@
 # Implementation Plan: Task #464
 
 - **Task**: 464 - gapPotential: the density coordinate of the termination measure
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours
 - **Dependencies**: 462 (REAL semantic; already landed as `MintBound/MintPaysAssembly.lean`, whose `pick_stage_source_rule` threading is what the density bucket plugs into); 463 (file_scope serialization edge only, no mathematical content)
 - **Research Inputs**: specs/464_gappotential_density_measure_component/reports/01_gappotential-density-component.md
@@ -138,33 +138,39 @@ first, the terminus family last.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: The Component, Its Ceiling, and Growth [NOT STARTED]
+### Phase 1: The Component, Its Ceiling, and Growth [COMPLETED]
 
 **Goal**: `gapFilled` and `gapPotential` exist in a new module wired into both aggregators, with
 the ceiling and the growth (non-increase) facts proved.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/GapPotential.lean`
+- [x] Create `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/GapPotential.lean`
       with the standard copyright header, `import ...MintBound.UntlSnceFree`, and
       `namespace FormalSystem.Metalogic.Decidability`.
-- [ ] Declare `gapFilled ord s t := (ord.futureOf s).any fun m => (ord.futureOf m).contains t` —
+- [x] Declare `gapFilled ord s t := (ord.futureOf s).any fun m => (ord.futureOf m).contains t` —
       `densityRule`'s own second filter conjunct (`Tableau.lean:1344-1385`) transcribed verbatim
       with the polarity inverted. Docstring must say, in words, that conjunct (i) (`t'` maximal) is
       deliberately absent because it is anti-monotone, and that this is the same polarity choice
       `selfGuardDischarged` explains.
-- [ ] Declare `gapPotential U σ ord :=
+- [x] Declare `gapPotential U σ ord :=
       ((U ×ˢ U).filter fun p => gapFilled ord (σ p.1).label.time (σ p.2).label.time = false).card`.
       It takes no `Branch`, exactly like `selfGuardPotential`.
-- [ ] Prove `gapPotential_le_sq` from `Finset.card_filter_le` and `Finset.card_product`.
-- [ ] Prove `gapFilled_le_of_grow` by two applications of `TimeOrdering.futureOf_mono`
+- [x] Prove `gapPotential_le_sq` from `Finset.card_filter_le` and `Finset.card_product`.
+- [x] Prove `gapFilled_le_of_grow` by two applications of `TimeOrdering.futureOf_mono`
       (`Fuel.lean:942`), modelled on `selfGuardDischarged_le_of_grow` (`OrientedGate.lean:504`).
-- [ ] Prove `gapPotential_le_of_grow` as `selfGuardPotential_le_of_grow`
+- [x] Prove `gapPotential_le_of_grow` as `selfGuardPotential_le_of_grow`
       (`OrientedGate.lean:520`) verbatim with the inner lemma swapped.
-- [ ] Add one `import` line for the new module to `MintBound.lean` (additive only) and a
+- [x] Add one `import` line for the new module to `MintBound.lean` (additive only) and a
       corresponding `/-! ## ... -/` section paragraph to its module docstring.
-- [ ] Add the matching `import` line to the repository-root `FormalSystem.lean`, in sorted
+- [x] Add the matching `import` line to the repository-root `FormalSystem.lean`, in sorted
       position between `...MintBound.FourComponent` and `...MintBound.Invariants` — gate C33
       asserts that file is byte-for-byte what `lake exe mk_all --lib FormalSystem` generates.
+- [x] *(deviation: altered — the INV generated-inventory gate additionally went stale the moment
+      the new module landed, because `README.md`, `FormalSystem/README.md` and
+      `FormalSystem/Metalogic/README.md` carry generated file/line-count blocks that the plan's
+      Phase 1 file list does not name. Regenerated with the gate's own sanctioned command
+      `bash scripts/check-module-invariants.sh --emit-inventory`; the resulting diff is exactly
+      the three counts this module moved, with no unrelated drift.)*
 
 **Timing**: 1.5 hours
 

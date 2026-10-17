@@ -20,6 +20,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.LabelH
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.PostBlocking
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.UntlSnceFree
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.BoxFree
+import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.GapPotential
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.MintPaysAssembly
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Register
 
@@ -105,6 +106,10 @@ hang off the `MintPotential`/`Measure` foundation rather than off the closure ch
   fragment, with the time sweep traded for branch-level freeness
 - `BoxFree`: the label residual **replaced** — the `boxFree` shape gate and the world coordinate,
   and the boundary at which the route stops
+- `GapPotential`: the density coordinate — `gapPotential` over the fixed index set `U ×ˢ U`,
+  its ceiling, growth and identification-arm transport, the strict drop at a `densityRule`
+  step, the refutation of `MintPaysForTimeFixed` at `.Dense`/`.RTime`, and the repaired
+  residual `MintPaysForTimeGap` the repair is stated at
 - `MintPaysAssembly`: the engine-level assembly — `MintPaysForTimeFixed` off `.Dense`, at any
   universe, via the four-bucket case split at the `pickBranches` level
 - `Register`: the do-not-re-attempt register — twenty-five statements that look like the natural
