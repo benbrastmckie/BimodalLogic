@@ -1,7 +1,7 @@
 # Implementation Plan: Task #744
 
 - **Task**: 744 - Wrap the RaySummary and KTypeSummary inventory tables in BEGIN GENERATED markers so their module line counts cannot drift again
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md
@@ -101,33 +101,33 @@ Phases are serialized: every phase after 2 runs the whole-tree writer, and two w
 same working tree cannot be interleaved with the foreign-file restore step without racing. No
 two phases execute in parallel.
 
-### Phase 1: Escape-aware cell splitting in the generator [NOT STARTED]
+### Phase 1: Escape-aware cell splitting in the generator [IN PROGRESS]
 
 **Goal**: Make `split_row` in `scripts/check-module-invariants.sh` treat a GFM-escaped `\|` as
 cell content rather than a cell boundary, so a wrapped table's hand-written descriptions survive
 regeneration regardless of inline Lean notation.
 
 **Tasks**:
-- [ ] Re-read `scripts/check-module-invariants.sh` around `def split_row` (report cites lines
+- [x] Re-read `scripts/check-module-invariants.sh` around `def split_row` (report cites lines
   331-338; locate by the `def split_row(line):` anchor). Replace `body.split("|")` with
   `re.split(r"(?<!\\)\|", body)`; `re` is already imported at the top of the heredoc. Change no
-  other line of the generator.
-- [ ] In the `--emit-inventory` header comment, extend the sentence beginning "The trailing
+  other line of the generator. *(completed)*
+- [x] In the `--emit-inventory` header comment, extend the sentence beginning "The trailing
   column is HAND-WRITTEN and survives regeneration" with one clause stating that a
-  GFM-escaped `\|` inside a cell is preserved (it is not a cell boundary). No task numbers.
-- [ ] In `docs/reference/readme-standard.md`'s "Generating the table" paragraph, add one
+  GFM-escaped `\|` inside a cell is preserved (it is not a cell boundary). No task numbers. *(completed)*
+- [x] In `docs/reference/readme-standard.md`'s "Generating the table" paragraph, add one
   sentence: an inline `|` in a description must be written `\|`, and the generator preserves
-  it. No task numbers.
-- [ ] Verify the change does not alter any existing block: run
+  it. No task numbers. *(completed)*
+- [x] Verify the change does not alter any existing block: run
   `bash scripts/check-module-invariants.sh --emit-inventory --check` before and after the edit
   and confirm the two outputs name the same stale files (expected: exactly the three rollup
   READMEs, or fewer if sibling 812 has regenerated them by then) — no block that was current
-  becomes stale and no new file appears in the list.
-- [ ] Verify the escape case directly: on a scratch copy of
+  becomes stale and no new file appears in the list. *(completed: PASS INV before and after — stale list empty both times, sibling 812 had already regenerated the rollup READMEs)*
+- [x] Verify the escape case directly: on a scratch copy of
   `FormalSystem/Metalogic/Decidability/RaySummary/README.md` under the session scratchpad,
   extract the 16 description cells with the new `split_row` (a three-line Python snippet
   importing nothing from the tree) and confirm the three cells for `HitComplete.lean`,
-  `AnchorLayer.lean`, `LadderModel.lean` contain their `\|` fragments intact.
+  `AnchorLayer.lean`, `LadderModel.lean` contain their `\|` fragments intact. *(completed: 16 rows, three `\|` cells whole)*
 - [ ] Commit `scripts/check-module-invariants.sh` and `docs/reference/readme-standard.md` by
   explicit path.
 

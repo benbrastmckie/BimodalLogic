@@ -116,7 +116,7 @@ next_project_number: 816
 
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 743 [NOT STARTED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-744 [PLANNED] — Wrap the RaySummary and KTypeSummary inventory tables in...
+744 [IMPLEMENTING] — Wrap the RaySummary and KTypeSummary inventory tables in...
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
 ### Build Performance
@@ -1205,7 +1205,7 @@ RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The roadmap-genera
 ---
 
 ### 744. Wrap inventory tables generated markers
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None

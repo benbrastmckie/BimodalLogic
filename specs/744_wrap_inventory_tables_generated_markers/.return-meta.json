@@ -1,52 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/744_wrap_inventory_tables_generated_markers/plans/01_wrap-inventory-tables-generated-markers.md",
-      "summary": "Six serialized phases, 5.5 hours: escape-aware split_row in the generator, wrap and targeted-regenerate the two named READMEs with a key-wise byte-for-byte description diff, INV corruption demonstration, two Tier-A sweep phases (21 READMEs) with per-table fit re-check, and a final full-gate phase delivering the three-tier sweep report."
-    }
-  ],
-  "next_steps": "Run /orchestrate 744 to execute the plan",
+  "status": "in_progress",
+  "dispatch_seq": 5,
   "metadata": {
-    "session_id": "sess_1792261594_b3e099_744",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 5.5,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6]]
-  },
-  "memory_candidates": [],
-  "modified_files": [
-    "specs/744_wrap_inventory_tables_generated_markers/plans/01_wrap-inventory-tables-generated-markers.md"
-  ],
-  "proposed_file_scope": [
-    "scripts/check-module-invariants.sh",
-    "docs/reference/readme-standard.md",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md",
-    "FormalSystem/Metalogic/Expressiveness/EFGames/README.md",
-    "FormalSystem/Metalogic/Expressiveness/GameTransfer/README.md",
-    "FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/SharedWitness/README.md",
-    "FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFix/README.md",
-    "FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFixFaithful/README.md",
-    "FormalSystem/Metalogic/BXCanonical/Filtration/README.md",
-    "FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/README.md",
-    "FormalSystem/Metalogic/WeakCanonical/IntegerModel/README.md",
-    "FormalSystem/Metalogic/WeakCanonical/RealModel/README.md",
-    "FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md",
-    "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
-    "FormalSystem/Metalogic/Decidability/Verified/Termination/README.md",
-    "FormalSystem/Metalogic/Decidability/Verified/Bridge/README.md",
-    "FormalSystem/Metalogic/Decidability/BiLasso/README.md",
-    "FormalSystem/Metalogic/Decidability/Propositional/README.md",
-    "FormalSystem/Theorems/Propositional/README.md",
-    "FormalSystem/Automation/ProofSearch/README.md",
-    "FormalSystem/Semantics/Correspondence/README.md",
-    "FormalSystem/Semantics/Extension/README.md",
-    "FormalSystem/Syntax/SubformulaClosure/README.md",
-    "FormalSystem/ProofSystem/README.md"
-  ],
-  "dispatch_seq": 4
+    "session_id": "sess_1792261594_b3e099",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
