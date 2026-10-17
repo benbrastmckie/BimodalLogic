@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/811_ladder_periodicity_dependency_edge_recut/reports/01_dependency-edge-recut-verdict.md",
-      "summary": "Per-edge verdict for the ladder/periodicity dependency recut: drop 809->734 (refuted on landed artifacts), keep 807->809 as the check-evidence-probes.sh serialization edge, keep 809->805 (real, satisfied); state.json/TODO.md edit commands specified for the implement phase."
+      "type": "plan",
+      "path": "specs/811_ladder_periodicity_dependency_edge_recut/plans/01_dependency-edge-recut.md",
+      "summary": "Two-phase plan applying the audit verdict: drop the 809-on-734 dependency edge in specs/state.json, then regenerate specs/TODO.md and verify the surviving 807-on-809 serialization edge keeps the two tasks out of one wave."
     }
   ],
   "metadata": {
     "session_id": "sess_1792217407_f3c96b_811",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 2,
+    "estimated_hours": 0.75,
+    "dependency_waves": [[1], [2]]
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /implement 811 to execute the plan",
+  "dispatch_seq": 2
 }

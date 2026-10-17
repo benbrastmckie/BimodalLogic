@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "summary": "Wrote a 2-phase implementation plan applying the already-settled audit verdict. Phase 1 removes the 809-on-734 dependency edge from specs/state.json with the report's exact jq form (pre/post object diff as the check); phase 2 regenerates specs/TODO.md, verifies state.json and TODO.md agree on 809 -> [805] and 807 -> [809], and records that the surviving 807-on-809 edge still keeps the two check-evidence-probes.sh tasks out of one orchestrate wave. No Lean, no FormalSystem/ or Tests/ changes, and task 734's hold is untouched.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/811_ladder_periodicity_dependency_edge_recut/plans/01_dependency-edge-recut.md",
+      "summary": "Two-phase plan: state.json edge deletion, then TODO.md regeneration plus edge-set and wave verification."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 2,
+  "blockers": [],
+  "next_action_hint": "Dispatch implement for task 811; its file_scope collides with tasks 751 and 784 on specs/state.json, so run it in a separate cycle from those.",
+  "dispatch_seq": 2
+}

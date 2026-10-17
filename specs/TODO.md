@@ -91,7 +91,7 @@ next_project_number: 812
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-811 [RESEARCHED] — AUDIT TASK, verdict-first. Re-cut the dependency edges on the...
+811 [PLANNED] — AUDIT TASK, verdict-first. Re-cut the dependency edges on the...
 
 ### Formula Refactor
 
@@ -128,11 +128,12 @@ next_project_number: 812
 ## Tasks
 
 ### 811. Ladder periodicity dependency edge recut
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [811_ladder_periodicity_dependency_edge_recut/reports/01_dependency-edge-recut-verdict.md]
+- **Plan**: [811_ladder_periodicity_dependency_edge_recut/plans/01_dependency-edge-recut.md]
 
 **Description**: AUDIT TASK, verdict-first. Re-cut the dependency edges on the ladder/periodicity line so the two never-dispatched successors are not gated behind an externally-blocked task whose technical contribution they may not need. Deliverable: a report under this task's own directory plus the edge changes themselves in specs/state.json; no changes to FormalSystem/ or Tests/, and no new Lean probe is required by this task (reading existing probes to settle the question is expected).
 
