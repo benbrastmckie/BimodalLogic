@@ -1,7 +1,7 @@
 # Implementation Plan: Task #815
 
 - **Task**: 815 - Certificate sufficiency: dovetailing, realizability (the SUFFICIENCY half of realizable-type adequacy)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: 809 (predecessor; its certificate is restated, not imported, in this task's probe); 806 (the countdown-profile round; untouched); 761 (parent, stays `[BLOCKED]` in state; this task edits no record of it except the roadmap paragraphs that name its gate)
 - **Research Inputs**: specs/815_certificate_sufficiency_dovetailing_realizability/reports/01_certificate-sufficiency-dovetailing.md
@@ -197,7 +197,7 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 touch disjoi
 probe and the guard script; the roadmap) and both describe what Phase 1 landed, so they share a
 wave; Phase 4 observes all of them.
 
-### Phase 1: The Two-Arm Fixture and the Non-Vacuous Instance of the Two-Sided Theorem [NOT STARTED]
+### Phase 1: The Two-Arm Fixture and the Non-Vacuous Instance of the Two-Sided Theorem [COMPLETED]
 
 **Goal**: Give `realizes_of_certAdm_cohBi` a compiled instance whose candidate set is accepted
 with BOTH arms non-vacuous -- a closure carrying an `untl` and a `snce` member, every member of
@@ -206,7 +206,7 @@ compiled one's refutation lives, and the two-sided theorem is not a theorem abou
 condition.
 
 **Tasks**:
-- [ ] In `specs/evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean`, after
+- [x] In `specs/evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean`, after
   `end Full` and before the `#print axioms` block, open a section
   `/-! ## Non-vacuity of the two-sided theorem: a fixture carrying BOTH arms -/` and define, with
   the bodies exactly as the Challenge block spells them: `bA`, `atomB`, `untB` (`⊤ U b`), `phi4`
@@ -215,15 +215,15 @@ condition.
   `mkT3`), `U0 = mkT4 [phi4, untB, sig1, topF]`, `U1 = mkT4 [phi4, untB, sig1, topF, atomB]`,
   `U2 = mkT4 [phi4, untB, sig1, topF, atom1]`, `y0 = (0, U0)`, `y1 = (1, U1)`, `y2 = (2, U2)`,
   `R4 = {y0, y1, y2}`. Reuse `a1A`, `atom1`, `topF`, `sig1`, `Q3`, `pend3`; do not redefine them.
-- [ ] Re-run the plan-time measurements in-file and keep the one `#eval` the collection's
+- [x] Re-run the plan-time measurements in-file and keep the one `#eval` the collection's
   discipline keeps: `#eval (plusSubformulaClosure phi4).card` (expected `9`); confirm, by `#eval`
   during development and then by the theorems, that `cohBi4 y2 y2`, `cohBi4 y2 y0`, `cohBi4 y0 y1`,
   `cohBi4 y1 y1` are `true` and that `U0.1.card = 4`, `U1.1.card = 5`, `U2.1.card = 5`.
-- [ ] Prove `mem_R4`, `y0_mem_R4`, `y1_mem_R4`, `y2_mem_R4` as `mem_R3` and its three corollaries
+- [x] Prove `mem_R4`, `y0_mem_R4`, `y1_mem_R4`, `y2_mem_R4` as `mem_R3` and its three corollaries
   are proved.
-- [ ] Prove `phi4_closure_both_arms` by `decide` (one bounded quantification over the nine-member
+- [x] Prove `phi4_closure_both_arms` by `decide` (one bounded quantification over the nine-member
   closure) and `y0_carries_both` by `decide`.
-- [ ] Prove `certLoc_R4`, `certBiInf_R4`, `certFwd_R4`, `certBwd_R4`, `certStab_R4`, `certBox_R4`
+- [x] Prove `certLoc_R4`, `certBiInf_R4`, `certFwd_R4`, `certBwd_R4`, `certStab_R4`, `certBox_R4`
   by hand through `mem_R4`, in the shape of the `R3` block. `certFwd_R4`: the only `untl` member
   is `untB`; `y1` is in the fixpoint through `eu_mem_lfp_iff` with witness `y1` (event `atomB`);
   `y0` through witness `y1`; `y2` through witness `y0` (guard `topF` and `y0 ∈` the fixpoint) --
@@ -232,12 +232,12 @@ condition.
   witness `y0` (guard, and `y0 ∈` the fixpoint). `certStab_R4`/`certBox_R4` through
   `phi4_closure_both_arms`'s third conjunct exactly as `certStab_R3`/`certBox_R3` go through
   `phi3_closure_untl_box_stab_free`.
-- [ ] Prove `cert_accepts_R4` as the conjunction, and `realizes_y0_R4` AS THE COROLLARY:
+- [x] Prove `cert_accepts_R4` as the conjunction, and `realizes_y0_R4` AS THE COROLLARY:
   `realizes_of_certAdm_cohBi step4 pend3 lab4 R4 cert_accepts_R4 y0 y0_mem_R4` (unfolding
   `cohBi4` if the elaborator needs it). Do not build the chain by hand and do not `decide` it.
-- [ ] Append four `#print axioms` lines (`phi4_closure_both_arms`, `y0_carries_both`,
+- [x] Append four `#print axioms` lines (`phi4_closure_both_arms`, `y0_carries_both`,
   `cert_accepts_R4`, `realizes_y0_R4`), bringing the block from thirteen lines to seventeen.
-- [ ] Commit (explicit file list: the probe).
+- [x] Commit (explicit file list: the probe).
 
 **Timing**: 2 hours
 
@@ -268,6 +268,8 @@ confirm by re-running the same `#eval`s in-file before proving the Goals. The `9
 - No `decide` is applied to a goal quantifying over `R4` or over `ClType phi4`: reviewed by reading each `decide` site, and mechanically by `grep -c "decide$"` on the six condition lemmas being 0 (they are hand proofs through `mem_R4`).
 - The four new signatures and the six pinned ones match the Challenge block byte for byte modulo whitespace (`diff` of each declaration's statement against the block).
 - `grep -n "a1A\|atom1\|topF\|sig1\|Q3\|pend3" ` over the new section shows uses only, never a second `def` of any of them (a duplicate would fail to compile, which is the self-check).
+
+**Verification notes (run 2026-10-17, this dispatch)**: single-file compile through the guard exit 0, zero errors, zero warnings; dev-time `#eval`s matched the Scope Hypothesis exactly before any Goal was proved (`9`; `(true, true, true, true, false, false, false)`; `(4, 5, 5)`; six conditions `true`; `certAdm` `true`); seventeen `#print axioms` lines all `[propext, Classical.choice, Quot.sound]`; `lean-sorry-census.sh` 0; `^axiom ` 0; `realizes_y0_R4`'s body is `realizes_of_certAdm_cohBi step4 pend3 lab4 R4 cert_accepts_R4 y0 y0_mem_R4`; the ten Goal statements match the Challenge block; no second `def` of a reused name. Two mechanical criteria read substantively rather than literally, recorded on the issue log (minor): `native_decide`/`maxRecDepth` each match once, in the pre-existing header sentence that says neither occurs, with no code use; `certLoc_R4` closes its three per-member concrete `locCoh` goals by `decide` exactly as `certLoc_R3` does, and no `decide` is applied to a goal over `R4` or `ClType phi4`.
 
 ---
 

@@ -1638,6 +1638,193 @@ theorem realizes_of_certAdm_cohBi (step : Q → Q → Bool) (pend : Q → Bool)
 
 end Full
 
+/-! ## Non-vacuity of the two-sided theorem: a fixture carrying BOTH arms
+
+`realizes_of_certAdm_cohBi` is a theorem about `certAdm lab (cohBi ...) R = true`, and every
+fixture above exercises at most one arm (`chi` in the compiled certificate probe: `untl` only;
+`phi3`: `snce` only).  A sufficiency theorem for a condition nothing satisfies would be the
+"antecedent failure" the standing non-vacuity obligation forbids.  This fixture shows the
+strengthened certificate SATISFIABLE with both arms live: `phi4 = (⊤ U b) ∧ (⊤ S a1)` over the
+object `2 → 0 → 1` with self-loops at `2` and `1`; `lab4` puts `a1` at `2` only and `b` at `1`
+only; every member of `R4 = {y0, y1, y2}` carries BOTH `⊤ U b` and `⊤ S a1`.  Condition (3)
+discharges `⊤ U b` at `y1` through `y1` itself (`b` is at `1`), at `y0` through `y1`, and at
+`y2` through `y0` -- a two-step guarded path, which is the point; condition (4) discharges
+`⊤ S a1` at `y2` through `y2` itself (`a1` is at `2`), at `y0` through `y2`, and at `y1` through
+`y0`.  `realizes_y0_R4` is `realizes_of_certAdm_cohBi`'s instance on it, not a hand-built chain.
+
+LABEL-LEVEL like everything else here, and `stab`/`box`-free: the closure has no `box` or
+`stab` member (`phi4_closure_both_arms`), so `certStab`/`certBox` are still exercised by nothing
+and gate 8 stays SIDESTEPPED.  It shows the repair is not vacuous, not that adequacy is
+discharged. -/
+
+def bA : Atom := ⟨"b", none⟩
+def atomB : PlusFormula := .atom bA
+/-- `⊤ U b`. -/
+def untB : PlusFormula := .untl topF atomB
+/-- **The two-arm formula**: `(⊤ U b) ∧ (⊤ S a1)`. -/
+def phi4 : PlusFormula := untB.and sig1
+
+/-- `2 → 2`, `2 → 0`, `0 → 1`, `1 → 1`, and nothing else. -/
+def step4 : Q3 → Q3 → Bool := fun q q' =>
+  (q == 2 && (q' == 2 || q' == 0)) || (q == 0 && q' == 1) || (q == 1 && q' == 1)
+
+/-- `a1` at `2` only; `b` at `1` only. -/
+def lab4 : Q3 → Atom → Bool := fun q at_ =>
+  if at_ = a1A then q == 2 else if at_ = bA then q == 1 else false
+
+/-- The two-arm relation on the fixture. -/
+def cohBi4 : ProdState Q3 phi4 → ProdState Q3 phi4 → Bool := cohBi step4 pend3 lab4 phi4
+
+/-- A closure type from a membership list, as a `filter`. -/
+def mkT4 (L : List PlusFormula) : ClType phi4 :=
+  ⟨(plusSubformulaClosure phi4).filter (fun ψ => ψ ∈ L),
+    Finset.mem_powerset.mpr (Finset.filter_subset _ _)⟩
+
+def U0 : ClType phi4 := mkT4 [phi4, untB, sig1, topF]
+def U1 : ClType phi4 := mkT4 [phi4, untB, sig1, topF, atomB]
+def U2 : ClType phi4 := mkT4 [phi4, untB, sig1, topF, atom1]
+
+def y0 : ProdState Q3 phi4 := ((0 : Fin 3), U0)
+def y1 : ProdState Q3 phi4 := ((1 : Fin 3), U1)
+def y2 : ProdState Q3 phi4 := ((2 : Fin 3), U2)
+
+/-- The candidate set. -/
+def R4 : Finset (ProdState Q3 phi4) := {y0, y1, y2}
+
+/-! The closure cardinality, confirmed by `#eval` rather than trusted: nine members. -/
+#eval (plusSubformulaClosure phi4).card
+
+theorem mem_R4 (x : ProdState Q3 phi4) : x ∈ R4 ↔ (x = y0 ∨ x = y1 ∨ x = y2) := by
+  simp [R4]
+
+theorem y0_mem_R4 : y0 ∈ R4 := by rw [mem_R4]; exact Or.inl rfl
+theorem y1_mem_R4 : y1 ∈ R4 := by rw [mem_R4]; exact Or.inr (Or.inl rfl)
+theorem y2_mem_R4 : y2 ∈ R4 := by rw [mem_R4]; exact Or.inr (Or.inr rfl)
+
+/-- **Both arms are live in the closure**, and neither `box` nor `stab` is: conditions (3) and
+(4) are both in play, (5) and (6) are vacuous. -/
+theorem phi4_closure_both_arms :
+    untB ∈ plusSubformulaClosure phi4 ∧ sig1 ∈ plusSubformulaClosure phi4 ∧
+      ∀ ψ ∈ plusSubformulaClosure phi4, isBox ψ = false ∧ isStab ψ = false := by
+  decide
+
+/-- **The member the instance is taken at carries both obligations.** -/
+theorem y0_carries_both : untB ∈ y0.2.1 ∧ sig1 ∈ y0.2.1 := by decide
+
+/-- The one `untl` member and the one `snce` member of each type, and no other. -/
+theorem u0_untl_only : ∀ ψ ∈ U0.1, isUntl ψ = true → ψ = untB := by decide
+theorem u1_untl_only : ∀ ψ ∈ U1.1, isUntl ψ = true → ψ = untB := by decide
+theorem u2_untl_only : ∀ ψ ∈ U2.1, isUntl ψ = true → ψ = untB := by decide
+theorem u0_snce_only : ∀ ψ ∈ U0.1, isSnce ψ = true → ψ = sig1 := by decide
+theorem u1_snce_only : ∀ ψ ∈ U1.1, isSnce ψ = true → ψ = sig1 := by decide
+theorem u2_snce_only : ∀ ψ ∈ U2.1, isSnce ψ = true → ψ = sig1 := by decide
+
+/-! ### The six conditions on `R4`, by hand through `mem_R4`
+
+As for `R3`: no `decide` on a goal quantifying over the candidate set or over `ClType phi4`; only
+concrete closure memberships, concrete `cohBi4` edge facts, and bounded quantifications over one
+closure type. -/
+
+theorem certLoc_R4 : certLoc lab4 R4 = true := by
+  simp only [certLoc, decide_eq_true_eq]
+  intro x hx
+  rcases (mem_R4 x).mp hx with rfl | rfl | rfl
+  · decide
+  · decide
+  · decide
+
+/-- Condition (2): `y0` has successor `y1` and predecessor `y2`; `y1` and `y2` have themselves. -/
+theorem certBiInf_R4 : certBiInf cohBi4 R4 = true := by
+  simp only [certBiInf, decide_eq_true_eq]
+  intro x hx
+  rcases (mem_R4 x).mp hx with rfl | rfl | rfl
+  · exact ⟨Finset.card_pos.mpr ⟨y1, Finset.mem_filter.mpr ⟨y1_mem_R4, by decide⟩⟩,
+      Finset.card_pos.mpr ⟨y2, Finset.mem_filter.mpr ⟨y2_mem_R4, by decide⟩⟩⟩
+  · exact ⟨Finset.card_pos.mpr ⟨y1, Finset.mem_filter.mpr ⟨y1_mem_R4, by decide⟩⟩,
+      Finset.card_pos.mpr ⟨y1, Finset.mem_filter.mpr ⟨y1_mem_R4, by decide⟩⟩⟩
+  · exact ⟨Finset.card_pos.mpr ⟨y2, Finset.mem_filter.mpr ⟨y2_mem_R4, by decide⟩⟩,
+      Finset.card_pos.mpr ⟨y2, Finset.mem_filter.mpr ⟨y2_mem_R4, by decide⟩⟩⟩
+
+/-- The forward discharge of `⊤ U b`: at `y1` through `y1` itself (event `b`); at `y0` through
+`y1`; at `y2` through `y0` under the guard `⊤` -- the two-step path. -/
+theorem y1_fwd_untB :
+    y1 ∈ euLfp R4 (succR cohBi4 R4) (fun w => decide ((argsOf untB).2 ∈ w.2.1))
+      (fun w => decide ((argsOf untB).1 ∈ w.2.1)) :=
+  (eu_mem_lfp_iff R4 (succR cohBi4 R4) _ _ y1).mpr
+    ⟨y1_mem_R4, y1, Finset.mem_filter.mpr ⟨y1_mem_R4, by decide⟩, Or.inl (by decide)⟩
+
+theorem y0_fwd_untB :
+    y0 ∈ euLfp R4 (succR cohBi4 R4) (fun w => decide ((argsOf untB).2 ∈ w.2.1))
+      (fun w => decide ((argsOf untB).1 ∈ w.2.1)) :=
+  (eu_mem_lfp_iff R4 (succR cohBi4 R4) _ _ y0).mpr
+    ⟨y0_mem_R4, y1, Finset.mem_filter.mpr ⟨y1_mem_R4, by decide⟩, Or.inl (by decide)⟩
+
+theorem y2_fwd_untB :
+    y2 ∈ euLfp R4 (succR cohBi4 R4) (fun w => decide ((argsOf untB).2 ∈ w.2.1))
+      (fun w => decide ((argsOf untB).1 ∈ w.2.1)) :=
+  (eu_mem_lfp_iff R4 (succR cohBi4 R4) _ _ y2).mpr
+    ⟨y2_mem_R4, y0, Finset.mem_filter.mpr ⟨y0_mem_R4, by decide⟩,
+      Or.inr ⟨by decide, y0_fwd_untB⟩⟩
+
+theorem certFwd_R4 : certFwd cohBi4 R4 = true := by
+  simp only [certFwd, decide_eq_true_eq]
+  intro x hx ψ hψ hu
+  rcases (mem_R4 x).mp hx with rfl | rfl | rfl
+  · obtain rfl := u0_untl_only ψ hψ hu; exact y0_fwd_untB
+  · obtain rfl := u1_untl_only ψ hψ hu; exact y1_fwd_untB
+  · obtain rfl := u2_untl_only ψ hψ hu; exact y2_fwd_untB
+
+/-- The backward discharge of `⊤ S a1`: at `y2` through `y2` itself (event `a1`); at `y0`
+through `y2`; at `y1` through `y0` under the guard `⊤` -- the mirror two-step path. -/
+theorem y2_bwd_sig1 :
+    y2 ∈ euLfp R4 (preR cohBi4 R4) (fun w => decide ((argsOf sig1).2 ∈ w.2.1))
+      (fun w => decide ((argsOf sig1).1 ∈ w.2.1)) :=
+  (eu_mem_lfp_iff R4 (preR cohBi4 R4) _ _ y2).mpr
+    ⟨y2_mem_R4, y2, Finset.mem_filter.mpr ⟨y2_mem_R4, by decide⟩, Or.inl (by decide)⟩
+
+theorem y0_bwd_sig1 :
+    y0 ∈ euLfp R4 (preR cohBi4 R4) (fun w => decide ((argsOf sig1).2 ∈ w.2.1))
+      (fun w => decide ((argsOf sig1).1 ∈ w.2.1)) :=
+  (eu_mem_lfp_iff R4 (preR cohBi4 R4) _ _ y0).mpr
+    ⟨y0_mem_R4, y2, Finset.mem_filter.mpr ⟨y2_mem_R4, by decide⟩, Or.inl (by decide)⟩
+
+theorem y1_bwd_sig1 :
+    y1 ∈ euLfp R4 (preR cohBi4 R4) (fun w => decide ((argsOf sig1).2 ∈ w.2.1))
+      (fun w => decide ((argsOf sig1).1 ∈ w.2.1)) :=
+  (eu_mem_lfp_iff R4 (preR cohBi4 R4) _ _ y1).mpr
+    ⟨y1_mem_R4, y0, Finset.mem_filter.mpr ⟨y0_mem_R4, by decide⟩,
+      Or.inr ⟨by decide, y0_bwd_sig1⟩⟩
+
+theorem certBwd_R4 : certBwd cohBi4 R4 = true := by
+  simp only [certBwd, decide_eq_true_eq]
+  intro x hx ψ hψ hs
+  rcases (mem_R4 x).mp hx with rfl | rfl | rfl
+  · obtain rfl := u0_snce_only ψ hψ hs; exact y0_bwd_sig1
+  · obtain rfl := u1_snce_only ψ hψ hs; exact y1_bwd_sig1
+  · obtain rfl := u2_snce_only ψ hψ hs; exact y2_bwd_sig1
+
+theorem certStab_R4 : certStab R4 = true := by
+  simp only [certStab, decide_eq_true_eq]
+  intro x _ ψ hψ hstab
+  rw [(phi4_closure_both_arms.2.2 ψ hψ).2] at hstab
+  exact absurd hstab (by simp)
+
+theorem certBox_R4 : certBox R4 = true := by
+  simp only [certBox, decide_eq_true_eq]
+  intro x _ ψ hψ hbox
+  rw [(phi4_closure_both_arms.2.2 ψ hψ).1] at hbox
+  exact absurd hbox (by simp)
+
+/-- **The strengthened certificate ACCEPTS `R4`, with both arms live.** -/
+theorem cert_accepts_R4 : certAdm lab4 cohBi4 R4 = true := by
+  simp only [certAdm, certLoc_R4, certBiInf_R4, certFwd_R4, certBwd_R4, certStab_R4,
+    certBox_R4, Bool.and_self]
+
+/-- **The two-sided theorem, instantiated non-vacuously**: `realizes_of_certAdm_cohBi` at
+`cert_accepts_R4`, not a hand-built chain and not a `decide`. -/
+theorem realizes_y0_R4 : Realizes cohBi4 R4 y0 :=
+  realizes_of_certAdm_cohBi step4 pend3 lab4 R4 cert_accepts_R4 y0 y0_mem_R4
+
 end Probe815
 
 #print axioms Probe815.eu_mem_lfp_path_le_card
@@ -1653,3 +1840,7 @@ end Probe815
 #print axioms Probe815.sufficiency_refuted
 #print axioms Probe815.cohBi_rejects_x1_x0
 #print axioms Probe815.realizes_of_certAdm_cohBi
+#print axioms Probe815.phi4_closure_both_arms
+#print axioms Probe815.y0_carries_both
+#print axioms Probe815.cert_accepts_R4
+#print axioms Probe815.realizes_y0_R4
