@@ -142,6 +142,117 @@ theorem buildTableauAt_isSome_at_seed_lengthBudget_fixed_seedRun
   buildTableauAt_isSome_at_seed_fixed_seedRun phi hβ hUcl
     (difficultyBounded_of_stepLengthBounded_at hL hUcl) hmint harm hpb hseed
 
+/-! ### The `_gap_seedRun` line, S1-S4
+
+The five-component route at the seed narrowing. No `hmint` binder appears anywhere on this line:
+`expandBranchWithFuel_isSome_of_budget_gap` supplies the minting residual internally from
+`mintPaysForTimeGap_of_any`, which carries no frame-class hypothesis, so these four hold at
+`.Dense` and `.RTime` as well — where their `_fixed_seedRun` counterparts above provably cannot,
+by `mintPaysForTimeFixed_dense_false` and `mintPaysForTimeFixed_rtime_false`.
+
+The price of the discharge is the enlarged mint-budget floor `10 * U.card + U.card * U.card` and
+the enlarged fuel figure `mintAwareFuelGap`, exactly as on the landed `_gap` line in
+`FiveComponent.lean`.
+
+**What the discharge does not buy.** Dropping `hmint` moves one residual from condition to
+theorem and nothing else. Every member below still carries `PostBlockingSettlesSeedRun` — neither
+refuted nor proved, with register entry 25's second refutation route against it unprobed — and
+still carries co-hypotheses register entries 9 and 11 refute. No member here makes any terminus
+non-vacuous. -/
+
+/-- **S1, the terminus.** `buildTableauAt_isSome_of_budget_gap` with `PostBlockingSettles fc`
+exchanged for `PostBlockingSettlesSeedRun fc (mintAwareFuelGap U.card Tmax mintBudget D β)` — the
+narrowing at this statement's own conclusion figure. `harm : ArmSettlement fc` is threaded
+explicitly: the `_gap` line obtains it from `armSettlement_of_postBlockingSettles`, which the
+narrowing does not support. The minting residual is discharged, not carried; the seed narrowing is
+carried, not discharged. -/
+theorem buildTableauAt_isSome_of_budget_gap_seedRun
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesSeedRun fc (mintAwareFuelGap U.card Tmax mintBudget D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 10 * U.card + U.card * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelGap U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuelGap U.card Tmax mintBudget D β) fc
+        maxBranches).isSome = true := by
+  refine buildTableauAt_isSome_of_settlesSeedRun hpb ?_
+  exact expandBranchWithFuel_isSome_of_budget_gap hβ hUcl hD harm
+    (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
+    hseed (runInvariant_initial _) hmb hT (by omega)
+
+/-- **S2, the seed-fuel form.** `Tmax` and the mint budget both read off `derivedTmaxGap`, with
+`hpb` transcribed at this statement's own conclusion figure. The minting residual is discharged;
+the seed narrowing is carried, not discharged. -/
+theorem buildTableauAt_isSome_at_seed_gap_seedRun
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {D β : Nat}
+    (phi : Formula) (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U)
+    (hD : DifficultyBounded fc U D) (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesSeedRun fc
+      (mintAwareFuelGap U.card
+        (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+        (10 * U.card + U.card * U.card) D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuelGap U.card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card + U.card * U.card) D β)
+        fc
+        (β * mintAwareFuelGap U.card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card + U.card * U.card) D β)
+      ).isSome = true :=
+  buildTableauAt_isSome_of_budget_gap_seedRun phi _ hβ hUcl hD harm hpb hseed (Nat.le_refl _)
+    (derivedTmaxGap_spec (seedBranch phi) U) (Nat.le_refl _)
+
+/-- **S3, the length-budget form.** `DifficultyBounded fc U D` traded for
+`StepLengthBounded fc U L` through `difficultyBounded_of_stepLengthBounded_at`, so the difficulty
+figure in both the conclusion and `hpb` is `difficultyCeiling U L`. The minting residual is
+discharged; the seed narrowing is carried, not discharged. -/
+theorem buildTableauAt_isSome_of_lengthBudget_gap_seedRun
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax L β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hL : StepLengthBounded fc U L)
+    (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesSeedRun fc
+      (mintAwareFuelGap U.card Tmax mintBudget (difficultyCeiling U L) β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 10 * U.card + U.card * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelGap U.card Tmax mintBudget (difficultyCeiling U L) β
+      ≤ maxBranches) :
+    (buildTableauAt phi
+        (mintAwareFuelGap U.card Tmax mintBudget (difficultyCeiling U L) β) fc
+        maxBranches).isSome = true :=
+  buildTableauAt_isSome_of_budget_gap_seedRun phi maxBranches hβ hUcl
+    (difficultyBounded_of_stepLengthBounded_at hL hUcl) harm hpb hseed hmb hT hbud
+
+/-- **S4, the seed-fuel length-budget form.** S2 through the same `StepLengthBounded` trade; both
+instantiations land in `hpb`'s figure as well as the conclusion's. The minting residual is
+discharged; the seed narrowing is carried, not discharged. -/
+theorem buildTableauAt_isSome_at_seed_lengthBudget_gap_seedRun
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {L β : Nat}
+    (phi : Formula) (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U)
+    (hL : StepLengthBounded fc U L) (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesSeedRun fc
+      (mintAwareFuelGap U.card
+        (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+        (10 * U.card + U.card * U.card) (difficultyCeiling U L) β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuelGap U.card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card + U.card * U.card) (difficultyCeiling U L) β)
+        fc
+        (β * mintAwareFuelGap U.card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card + U.card * U.card) (difficultyCeiling U L) β)
+      ).isSome = true :=
+  buildTableauAt_isSome_at_seed_gap_seedRun phi hβ hUcl
+    (difficultyBounded_of_stepLengthBounded_at hL hUcl) harm hpb hseed
+
 end SeedRunTermini
 
 end FormalSystem.Metalogic.Decidability

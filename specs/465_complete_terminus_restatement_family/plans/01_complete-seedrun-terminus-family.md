@@ -254,27 +254,27 @@ which reaches both the new module and the aggregator and which no single-module 
 
 ---
 
-### Phase 3: The `_gap_seedRun` line, S1-S4 [NOT STARTED]
+### Phase 3: The `_gap_seedRun` line, S1-S4 [COMPLETED]
 
 **Goal**: Land the whole new `_gap_seedRun` line in the same submodule — the first termini in the
 file whose S3/S4 forms carry no outright-refuted hypothesis, because the `_gap` engine lemma
 discharges the minting residual internally at every frame class.
 
 **Tasks**:
-- [ ] Land `buildTableauAt_isSome_of_budget_gap_seedRun` (S1) with **no** `hmint` binder, the
+- [x] Land `buildTableauAt_isSome_of_budget_gap_seedRun` (S1) with **no** `hmint` binder, the
       enlarged floor `10 * U.card + U.card * U.card`, the `mintAwareFuelGap` figure, and the
       three-line body: `refine buildTableauAt_isSome_of_settlesSeedRun hpb ?_` then
       `exact expandBranchWithFuel_isSome_of_budget_gap hβ hUcl hD harm (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0 hseed (runInvariant_initial _) hmb hT (by omega)`.
-- [ ] Land `buildTableauAt_isSome_at_seed_gap_seedRun` (S2) off S1 via
+- [x] Land `buildTableauAt_isSome_at_seed_gap_seedRun` (S2) off S1 via
       `derivedTmaxGap_spec (seedBranch phi) U`, `hpb` transcribed at the `derivedTmaxGap` figure.
-- [ ] Land `buildTableauAt_isSome_of_lengthBudget_gap_seedRun` (S3) off S1 via
+- [x] Land `buildTableauAt_isSome_of_lengthBudget_gap_seedRun` (S3) off S1 via
       `difficultyBounded_of_stepLengthBounded_at hL hUcl`, `hpb` at the `difficultyCeiling U L`
       figure.
-- [ ] Land `buildTableauAt_isSome_at_seed_lengthBudget_gap_seedRun` (S4) off S2 via the same trade.
-- [ ] Give each member a docstring stating which figures it reads off, that the minting residual is
+- [x] Land `buildTableauAt_isSome_at_seed_lengthBudget_gap_seedRun` (S4) off S2 via the same trade.
+- [x] Give each member a docstring stating which figures it reads off, that the minting residual is
       discharged rather than carried, and — for every member — that the seed narrowing is a carried
       hypothesis that is not proved. No member is described as making any terminus non-vacuous.
-- [ ] STOP-CONDITION check: if any of the four is not a one-line (S2-S4) or three-line (S1)
+- [x] STOP-CONDITION check: if any of the four is not a one-line (S2-S4) or three-line (S1)
       application of a landed theorem — i.e. the recipe does not actually apply — stop on that
       member, record why in the handoff and the summary, and do not force it. A member needing real
       mathematics belongs in its own task.
