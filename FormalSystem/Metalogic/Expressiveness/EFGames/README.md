@@ -9,19 +9,21 @@ combinatorial core of the expressive completeness proof.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness/EFGames -->
 | File | Lines | Description |
 |------|-------|-------------|
 | `CharacteristicFormula.lean` | 685 | Characteristic formulas for EF game positions |
 | `Composition.lean` | 641 | Game composition: combining games for complex structures |
-| `CustomGame.lean` | 1726 | Custom game configurations for bimodal logic structures |
+| `CustomGame.lean` | 1,726 | Custom game configurations for bimodal logic structures |
 | `Decomposition.lean` | 322 | Game decomposition lemmas for structured models |
 | `Defs.lean` | 559 | Core game definitions: positions, moves, strategies, winning conditions |
 | `GapDetection.lean` | 369 | Gap detection formulas of GHR93 Definition 8.5 (`leftFormula`, `rightFormula` and their base cases) with their rank bounds |
-| `GapDetectionLeft.lean` | 2130 | GHR93 Lemma 9, left direction: `left_formula_gap_detection` and its gap-uniqueness and `U'` helpers |
-| `GapDetectionRight.lean` | 2239 | GHR93 Lemma 9, right direction: `right_formula_gap_detection` and its gap-uniqueness and `S'` helpers |
+| `GapDetectionLeft.lean` | 2,130 | GHR93 Lemma 9, left direction: `left_formula_gap_detection` and its gap-uniqueness and `U'` helpers |
+| `GapDetectionRight.lean` | 2,239 | GHR93 Lemma 9, right direction: `right_formula_gap_detection` and its gap-uniqueness and `S'` helpers |
 | `MuRelativizedTruth.lean` | 434 | Mu-relativized truth agrees with ordinary truth at actual points (`stavi_truth_mu_at_point`) |
-| `StaviCompleteness.lean` | 1665 | Stavi-completeness: EF games characterize Until/Since expressiveness |
-| `TypeFormulas.lean` | 1116 | Type formula construction from game positions |
+| `StaviCompleteness.lean` | 1,665 | Stavi-completeness: EF games characterize Until/Since expressiveness |
+| `TypeFormulas.lean` | 1,116 | Type formula construction from game positions |
+<!-- END GENERATED -->
 
 `NFGameBridge.lean` is archived at `Boneyard/StaviDiscretePath/NFGameBridge.lean`.
 

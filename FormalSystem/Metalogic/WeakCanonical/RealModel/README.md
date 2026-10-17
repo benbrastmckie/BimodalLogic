@@ -17,15 +17,17 @@ renamed under the Discrete/Dedekind -> ZTime/RTime convention).
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical/RealModel -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `ChronicleRealFlow.lean` | 170 | Doets' theorem instantiated at `chronicleMonadicStructure`, the countable dense endpointless Prior structure satisfying `Sep` that this repository constructs. |
-| `DoetsTheorem.lean` | 2198 | Doets' theorem itself, section 8 Theorem 6 (printed pp.185-188). |
-| `EpsilonDense.lean` | 1109 | Lemma 12 — `ε(x,y)` defines the equivalence, and the finite `γ`-set (printed pp.186-187). |
-| `GoodDense.lean` | 1650 | Lemma 11 — countable + very good implies good, at `ℝ`-intervals (printed pp.185-186). Opens the `ℝ`-side. |
-| `OrderIsoReal.lean` | 335 | `IsRealLike` — the order-theoretic hypotheses that characterize `ℝ`: non-empty, densely ordered, without endpoints, Dedekind complete, separable (printed p.188). |
-| `Shuffle.lean` | 497 | Lemma 13 and the `ℚ`-shuffle `Σ_{q∈ℚ} σ(q)` (printed pp.186-187). |
-| `ShuffleReal.lean` | 684 | The `ℝ`-extension of the shuffle (printed p.188). |
+| `ChronicleRealFlow.lean` | 184 | Doets' theorem instantiated at `chronicleMonadicStructure`, the countable dense endpointless Prior structure satisfying `Sep` that this repository constructs. |
+| `DoetsTheorem.lean` | 2,240 | Doets' theorem itself, section 8 Theorem 6 (printed pp.185-188). |
+| `EpsilonDense.lean` | 1,123 | Lemma 12 — `ε(x,y)` defines the equivalence, and the finite `γ`-set (printed pp.186-187). |
+| `GoodDense.lean` | 1,688 | Lemma 11 — countable + very good implies good, at `ℝ`-intervals (printed pp.185-186). Opens the `ℝ`-side. |
+| `OrderIsoReal.lean` | 343 | `IsRealLike` — the order-theoretic hypotheses that characterize `ℝ`: non-empty, densely ordered, without endpoints, Dedekind complete, separable (printed p.188). |
+| `Shuffle.lean` | 524 | Lemma 13 and the `ℚ`-shuffle `Σ_{q∈ℚ} σ(q)` (printed pp.186-187). |
+| `ShuffleReal.lean` | 688 | The `ℝ`-extension of the shuffle (printed p.188). |
+<!-- END GENERATED -->
 
 ## Key Results
 

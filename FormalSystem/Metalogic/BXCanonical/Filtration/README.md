@@ -8,9 +8,11 @@ equivalence to produce a finite model that preserves truth of relevant formulas.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/BXCanonical/Filtration -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `DefectChain.lean` | 112 | Defect chain construction: handling formulas not realized in the filtrated model |
+| `DefectChain.lean` | 120 | Defect chain construction: handling formulas not realized in the filtrated model |
+<!-- END GENERATED -->
 
 ## Key Results
 

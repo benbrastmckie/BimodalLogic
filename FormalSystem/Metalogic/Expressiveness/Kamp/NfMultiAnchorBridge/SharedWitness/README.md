@@ -6,18 +6,20 @@ completeness. Each module is one storey; they are meant to be read in order.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/SharedWitness -->
 | File | Lines | Role |
 |------|------:|------|
-| `Carrier.lean` | 783 | The joint carrier definition `kvE2_sepBody` — the base of the tower |
-| `Slots.lean` | 924 | Slot structure over the carrier |
-| `OrderGate.lean` | 1,558 | The order gate constraining slot arrangement |
-| `EngineInputs.lean` | 1,405 | Inputs handed to the assembly engine |
-| `DisjunctionSpikes.lean` | 1,238 | Disjunction spike handling |
-| `FragmentFoldRight.lean` | 1,392 | Right fold over the fragment |
-| `KitFold.lean` | 1,814 | The kit fold — the tower's main combinator |
-| `Assembly.lean` | 1,723 | Assembly of the shared witness from the folds |
-| `Soundness.lean` | 1,618 | Soundness of the assembled witness |
+| `Assembly.lean` | 1,725 | Assembly of the shared witness from the folds |
+| `Carrier.lean` | 784 | The joint carrier definition `kvE2_sepBody` — the base of the tower |
 | `Completeness.lean` | 1,139 | Completeness of the assembled witness |
+| `DisjunctionSpikes.lean` | 1,238 | Disjunction spike handling |
+| `EngineInputs.lean` | 1,404 | Inputs handed to the assembly engine |
+| `FragmentFoldRight.lean` | 1,392 | Right fold over the fragment |
+| `KitFold.lean` | 1,816 | The kit fold — the tower's main combinator |
+| `OrderGate.lean` | 1,560 | The order gate constraining slot arrangement |
+| `Slots.lean` | 917 | Slot structure over the carrier |
+| `Soundness.lean` | 1,618 | Soundness of the assembled witness |
+<!-- END GENERATED -->
 
 Individual module docstrings identify each file's storey (e.g. `Carrier.lean` is
 "Module C of the `SharedWitness` tower"); that lettering is the intended reading order

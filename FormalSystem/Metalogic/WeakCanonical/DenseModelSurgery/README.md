@@ -16,17 +16,19 @@ symmetry; `Dual.lean` is that appeal, made mechanical.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `BadIntervals.lean` | 1494 | Lemmas 6 and 7 — the bad point and bad interval vocabulary (printed pp.179-181). |
-| `ChronicleInstance.lean` | 267 | Theorems 4 and 5 instantiated at the countable dense endpointless Prior structure satisfying `Sep` that this repository actually constructs. This is where **D1** and **D2** become usable. |
-| `Defs.lean` | 695 | Section 6 vocabulary at the dense instance: contemporaneous equivalence, `ρ`, `λ`, and Lemma 2 (printed pp.176-177). |
-| `Dual.lean` | 530 | The order-duality transport layer, discharging every one of section 6's duals mechanically rather than by hand. |
-| `Lemma34.lean` | 1117 | Lemmas 3 and 4 — maximal `R`-intervals (printed pp.178-179). |
-| `Lemma5.lean` | 885 | Lemma 5 — formula and elementary transfer across classes, both statements (printed p.179). |
-| `NoGaps.lean` | 1133 | Lemma 9 and Theorem 4 — the classes do not end at gaps. Closes section 6 (printed pp.182-183). |
-| `Singletons.lean` | 607 | Section 7 Theorem 5 — a dense set of singleton classes, from axiom `Sep` (printed p.184). This is **D2**. |
-| `TruthTransfer.lean` | 840 | Lemma 8 — truth preservation under bad-interval surgery (printed pp.181-182). |
+| `BadIntervals.lean` | 1,582 | Lemmas 6 and 7 — the bad point and bad interval vocabulary (printed pp.179-181). |
+| `ChronicleInstance.lean` | 297 | Theorems 4 and 5 instantiated at the countable dense endpointless Prior structure satisfying `Sep` that this repository actually constructs. This is where **D1** and **D2** become usable. |
+| `Defs.lean` | 716 | Section 6 vocabulary at the dense instance: contemporaneous equivalence, `ρ`, `λ`, and Lemma 2 (printed pp.176-177). |
+| `Dual.lean` | 544 | The order-duality transport layer, discharging every one of section 6's duals mechanically rather than by hand. |
+| `Lemma34.lean` | 1,158 | Lemmas 3 and 4 — maximal `R`-intervals (printed pp.178-179). |
+| `Lemma5.lean` | 918 | Lemma 5 — formula and elementary transfer across classes, both statements (printed p.179). |
+| `NoGaps.lean` | 1,194 | Lemma 9 and Theorem 4 — the classes do not end at gaps. Closes section 6 (printed pp.182-183). |
+| `Singletons.lean` | 636 | Section 7 Theorem 5 — a dense set of singleton classes, from axiom `Sep` (printed p.184). This is **D2**. |
+| `TruthTransfer.lean` | 890 | Lemma 8 — truth preservation under bad-interval surgery (printed pp.181-182). |
+<!-- END GENERATED -->
 
 ## Key Results
 

@@ -277,7 +277,7 @@ outputs plus the empty diff; nothing else in the tree is touched.
 
 ---
 
-### Phase 4: Wrap the fitting Tier-A tables under Metalogic/Expressiveness, BXCanonical/Filtration, and WeakCanonical [NOT STARTED]
+### Phase 4: Wrap the fitting Tier-A tables under Metalogic/Expressiveness, BXCanonical/Filtration, and WeakCanonical [COMPLETED]
 
 **Goal**: Extend generated-block coverage to the first half of the sweep's clean-fit tables,
 with the same byte-for-byte description guarantee as Phase 2.

@@ -1,0 +1,75 @@
+{
+  "phase": 4,
+  "phase_name": "Wrap the fitting Tier-A tables under Metalogic/Expressiveness, BXCanonical/Filtration, and WeakCanonical",
+  "started_at": "2026-10-17T18:55:00Z",
+  "last_updated": "2026-10-17T18:56:40Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Re-derive the fit check per candidate",
+      "status": "done",
+      "files_touched": [],
+      "note": "fit-check.py: 10/10 fit; three use the `| File | Lines | Role |` header (kept verbatim); IntegerModel has 3 live files without rows"
+    },
+    {
+      "id": 2,
+      "description": "Confirm the ten candidates",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 3,
+      "description": "Snapshot, wrap, regenerate once, key-sorted diff, fill TODO rows, hunk review",
+      "status": "done",
+      "files_touched": [
+        "FormalSystem/Metalogic/Expressiveness/EFGames/README.md",
+        "FormalSystem/Metalogic/Expressiveness/GameTransfer/README.md",
+        "FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/SharedWitness/README.md",
+        "FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFix/README.md",
+        "FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFixFaithful/README.md",
+        "FormalSystem/Metalogic/BXCanonical/Filtration/README.md",
+        "FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/README.md",
+        "FormalSystem/Metalogic/WeakCanonical/IntegerModel/README.md",
+        "FormalSystem/Metalogic/WeakCanonical/RealModel/README.md",
+        "FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md"
+      ],
+      "note": "snapshot skipped (no destructive git follows); writer rewrote 9/10 (GameTransfer already current); 61 descriptions byte-identical; 3 IntegerModel TODO rows filled from module doc-comments; hunks are markers, reorder, count refresh, separators"
+    },
+    {
+      "id": 4,
+      "description": "--emit-inventory --check names none of this phase's READMEs",
+      "status": "done",
+      "files_touched": [],
+      "note": "PASS INV; gate 4 PASS"
+    },
+    {
+      "id": 5,
+      "description": "Commit by explicit path list",
+      "status": "done",
+      "files_touched": [
+        "FormalSystem/Metalogic/Expressiveness/EFGames/README.md",
+        "FormalSystem/Metalogic/Expressiveness/GameTransfer/README.md",
+        "FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/SharedWitness/README.md",
+        "FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFix/README.md",
+        "FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFixFaithful/README.md",
+        "FormalSystem/Metalogic/BXCanonical/Filtration/README.md",
+        "FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/README.md",
+        "FormalSystem/Metalogic/WeakCanonical/IntegerModel/README.md",
+        "FormalSystem/Metalogic/WeakCanonical/RealModel/README.md",
+        "FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md"
+      ]
+    }
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "4.3",
+      "description": "git-snapshot.sh --no-revert before the writer",
+      "type": "skipped",
+      "reason": "No destructive git command follows the writer (the restore step is moot while the rollups are current), and the snapshot writes untracked-backup copies into the task directory that the phase commit sweeps up.",
+      "annotation": "*(deviation: skipped — snapshot omitted: no destructive git follows the writer; see phase 3 issue record)*"
+    }
+  ],
+  "handoff_count": 0
+}

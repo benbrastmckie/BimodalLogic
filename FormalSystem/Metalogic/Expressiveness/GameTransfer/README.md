@@ -12,6 +12,7 @@ parent directory.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness/GameTransfer -->
 | File | Lines | Description |
 |------|-------|-------------|
 | `CaseAnalysis.lean` | 2,178 | Cases I and II of the GHR93 inductive step (`ghr93_case_I`, `ghr93_case_II`) |
@@ -19,6 +20,7 @@ parent directory.
 | `DConsistencyTransport.lean` | 755 | D-consistency transport and rank-down projection for the transfer argument |
 | `SplitPoint.lean` | 4,799 | Split-point construction: the single theorem `obtain_split_point_props` |
 | `SplitPointProps.lean` | 132 | The `SplitPointProps` structure, stated apart from its construction so that `CaseAnalysis.lean` does not depend on the long proof |
+<!-- END GENERATED -->
 
 ## Key Results
 

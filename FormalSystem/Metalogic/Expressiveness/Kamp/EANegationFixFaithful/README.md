@@ -15,13 +15,15 @@ module docstrings.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFixFaithful -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `BoundedFixAnchoredFaithful.lean` | 376 | The anchored mirrors of the above: Corollary 5.4(1)/(2) at an arbitrary anchor `α`, the point type sitting at the moving endpoint after the outermost peel (PDF pp.9-10). |
-| `BoundedFixFaithful.lean` | 394 | Corollary 5.4(1)/(2) at `VVecEA2`, at the `α := ⊤` innermost fold goal (PDF p.9). |
-| `NegFixListFaithful.lean` | 670 | The inductive step of the same argument, over a witness list (PDF pp.10-11). |
-| `NegFixOneFaithful.lean` | 885 | Lemma 5.1 at one witness (PDF pp.9-10). Rabinovich's explicit three-case split, with output shape `∨ᵢ (Condᵢ ∧ Formᵢ)`. |
+| `BoundedFixAnchoredFaithful.lean` | 378 | The anchored mirrors of the above: Corollary 5.4(1)/(2) at an arbitrary anchor `α`, the point type sitting at the moving endpoint after the outermost peel (PDF pp.9-10). |
+| `BoundedFixFaithful.lean` | 392 | Corollary 5.4(1)/(2) at `VVecEA2`, at the `α := ⊤` innermost fold goal (PDF p.9). |
+| `NegFixListFaithful.lean` | 669 | The inductive step of the same argument, over a witness list (PDF pp.10-11). |
+| `NegFixOneFaithful.lean` | 889 | Lemma 5.1 at one witness (PDF pp.9-10). Rabinovich's explicit three-case split, with output shape `∨ᵢ (Condᵢ ∧ Formᵢ)`. |
 | `VecEANegFixFaithful.lean` | 336 | The Proposition 4.2 / 4.3 lift chain, carrying Lemma 5.1's recursion up to the disjunction level over `HasFaithfulDedekindINF` alone (PDF p.6 and pp.10-11). |
+<!-- END GENERATED -->
 
 ## Key Results
 

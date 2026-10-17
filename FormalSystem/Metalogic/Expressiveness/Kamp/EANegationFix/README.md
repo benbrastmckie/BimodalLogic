@@ -6,15 +6,17 @@ inward without leaving the fragment.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFix -->
 | File | Lines | Role |
 |------|------:|------|
 | `BoundedFix.lean` | 864 | The bounded negation fixpoint construction |
-| `NegFix.lean` | 706 | Core negation-fixpoint definitions and their correctness |
-| `NegFixOne.lean` | 563 | The single-step case, from which the general fold is built |
 | `BoundedFixAnchored.lean` | 490 | Bounded fixpoint at an anchored position |
-| `OnBuilder.lean` | 285 | Builder combinators used to assemble the fixpoints |
-| `VecEANegFix.lean` | 192 | `VecEA2.negFix` / `VVecEA2.negFix` — the De Morgan fold at vector level |
 | `ConcatPin.lean` | 127 | Concatenation pinning lemma used by the fold |
+| `NegFix.lean` | 707 | Core negation-fixpoint definitions and their correctness |
+| `NegFixOne.lean` | 563 | The single-step case, from which the general fold is built |
+| `OnBuilder.lean` | 287 | Builder combinators used to assemble the fixpoints |
+| `VecEANegFix.lean` | 193 | `VecEA2.negFix` / `VVecEA2.negFix` — the De Morgan fold at vector level |
+<!-- END GENERATED -->
 
 ## Why It Is a Separate Directory
 
