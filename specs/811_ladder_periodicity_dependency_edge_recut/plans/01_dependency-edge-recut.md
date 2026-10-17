@@ -1,7 +1,7 @@
 # Implementation Plan: Task #811
 
 - **Task**: 811 - Re-cut the dependency edges on the ladder/periodicity line
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/811_ladder_periodicity_dependency_edge_recut/reports/01_dependency-edge-recut-verdict.md
@@ -103,22 +103,22 @@ ladder/periodicity line without touching task 734's hold.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Drop the 809-on-734 edge in state.json [NOT STARTED]
+### Phase 1: Drop the 809-on-734 edge in state.json [COMPLETED]
 
 **Goal**: Task 809's `dependencies` array in `specs/state.json` reads `[805]`, with every other
 field of 809 and every other task object byte-identical.
 
 **Tasks**:
-- [ ] Pre-read the three task objects and keep the output for comparison:
+- [x] Pre-read the three task objects and keep the output for comparison:
       `jq '.active_projects[] | select(.project_number==734 or .project_number==807 or .project_number==809)' specs/state.json > /tmp/811-pre.json`
-- [ ] Confirm the pre-read matches the measured starting set (809 `[734,805]`, 807 `[809]`, 734
+- [x] Confirm the pre-read matches the measured starting set (809 `[734,805]`, 807 `[809]`, 734
       `hold` with `[733,805]`). If it does not, STOP: a concurrent writer moved the state; report
       rather than overwrite.
-- [ ] Apply the edge deletion with the report's exact form:
+- [x] Apply the edge deletion with the report's exact form:
       `jq '(.active_projects[] | select(.project_number==809) | .dependencies) |= map(select((. == 734) | not))' specs/state.json > specs/state.json.811.tmp && mv specs/state.json.811.tmp specs/state.json`
-- [ ] Post-read the same three objects to `/tmp/811-post.json` and `diff` against `/tmp/811-pre.json`;
+- [x] Post-read the same three objects to `/tmp/811-post.json` and `diff` against `/tmp/811-pre.json`;
       the only differing line must be 809's `dependencies`.
-- [ ] Confirm `jq 'any(.active_projects[]; .project_number==809)'` is still `true` and the
+- [x] Confirm `jq 'any(.active_projects[]; .project_number==809)'` is still `true` and the
       `active_projects` array length is unchanged (guards against a malformed filter emptying the file).
 
 **Timing**: 0.25 hours
