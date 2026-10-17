@@ -291,7 +291,7 @@ This is a plan-time hand computation, not a measured figure.
 
 ---
 
-### Phase 3: Fixture Port, the Restricted Relation, and the Chain-to-Ray Composition Theorem [NOT STARTED]
+### Phase 3: Fixture Port, the Restricted Relation, and the Chain-to-Ray Composition Theorem [COMPLETED]
 
 **Goal**: Port the coprime-cycle fixture and the LOCAL coherence relation label-generically, define
 the restriction of that relation to a candidate set, and prove the one new statement the restriction
@@ -299,21 +299,21 @@ could have silently broken: an `untl` obligation carried at an interior position
 either discharged inside the chain or still carried at its end with the guard holding throughout.
 
 **Tasks**:
-- [ ] Port, byte for byte from the eighteenth and twentieth probes: the atoms, `p`, `la`, `nextPow`,
+- [x] Port, byte for byte from the eighteenth and twentieth probes: the atoms, `p`, `la`, `nextPow`,
   `pa`, `psi2`, `chi`, `Q5`, `pend5`, `step5`, `lab6`, `a5`/`b5`/`c5`, `ClType`, `ProdState`,
   `prodPreStep`, `locPred`, `linkPred`, `locCoh`, `untlLink`, `coh`, `coh6`, `mkT`, `Ea`, the formula
   abbreviations and the six type lists (`TaL`/`TbL`/`TcL`, `evTaL`/`evTbL`/`evTcL`) with `Ta`/`Tb`/
   `Tc` and `evTa`/`evTb`/`evTc`. The ports carry no new statement and are not Goals; the fixture is
   label-generic and the frame/regularity/history layer ports verbatim, as the dispatch records.
-- [ ] Re-land the one-step unfolding lemmas the proofs need (the eighteenth probe's `loc_bot`,
+- [x] Re-land the one-step unfolding lemmas the proofs need (the eighteenth probe's `loc_bot`,
   `loc_atom`, `loc_imp`, `loc_neg`, `link_untl` shapes) as supporting lemmas, not Goals.
-- [ ] Define `cohR` (the local relation restricted to a candidate set at both endpoints) and prove
+- [x] Define `cohR` (the local relation restricted to a candidate set at both endpoints) and prove
   `cohR_le_coh`.
-- [ ] Prove `untl_propagates_along_coh` by induction on `n - i` through the `untl` link
+- [x] Prove `untl_propagates_along_coh` by induction on `n - i` through the `untl` link
   biconditional. Do NOT state a `snce` mirror: `linkPred` constrains no `snce` arm, so a backward
   propagation theorem is not available from this relation, and claiming one would be a strictly
   weaker statement wearing a stronger name.
-- [ ] Commit (explicit file list: the probe).
+- [x] Commit (explicit file list: the probe).
 
 **Timing**: 2 hours
 

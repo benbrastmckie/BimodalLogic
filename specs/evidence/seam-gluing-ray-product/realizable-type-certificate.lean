@@ -328,6 +328,268 @@ theorem au_lfp_ne_eu_lfp_on_exit_graph :
     AUFix.lfp Finset.univ exitSucc exitIsE exitIsG
       ≠ euLfp Finset.univ exitSucc exitIsE exitIsG := by decide
 
+/-! ## The fixture: the coprime-cycle object, the closure carrier, and LOCAL coherence
+
+Ported from `specs/evidence/seam-gluing-ray-product/closure-profile-gate-rerun.lean` (the
+eighteenth probe) and `specs/evidence/seam-gluing-ray-product/realizable-type-adequacy-gap.lean`
+(the twentieth), which themselves port the object layer from `ladder-joint-index-refutation.lean`
+and the carrier from `closure-indexed-periodicity.lean`.  Probes do not import probes, so
+everything used below is restated here.  Nothing in this section is new and nothing in it is
+changed: `coh` carries exactly the clauses it carries there -- the object step, pending-ness of
+BOTH endpoints, local coherence at both endpoints, and the one-step strict-until link -- and NO
+fulfilment clause.  The fixture is label-generic, so the frame/regularity/history layer ports
+verbatim.  The only edits are the four renames this round fixes: `B`/`C`/`Xpa`/`XXpa` become
+`bb`/`cc`/`xpa`/`xxpa`. -/
+
+def pA : Atom := ⟨"p", none⟩
+def rA : Atom := ⟨"r", none⟩
+def aA : Atom := ⟨"a", none⟩
+
+theorem pA_ne_rA : pA ≠ rA := by simp [pA, rA]
+theorem aA_ne_pA : aA ≠ pA := by simp [aA, pA]
+theorem aA_ne_rA : aA ≠ rA := by simp [aA, rA]
+
+def p : PlusFormula := .atom pA
+def la : PlusFormula := .atom aA
+
+/-- `k` nested nexts. -/
+def nextPow : ℕ → PlusFormula → PlusFormula
+  | 0, chi => chi
+  | k + 1, chi => .untl .bot (nextPow k chi)
+
+/-- The pending `a` state as a formula: `p AND l_a`. -/
+def pa : PlusFormula := p.and la
+
+/-- The PATTERN the 2-cycle exhibits and the 3-cycle does not. -/
+def psi2 : PlusFormula := pa.and (nextPow 2 pa)
+
+/-- Gate 6's constraint: the pattern fails here and at every strictly later instant. -/
+def chi : PlusFormula := psi2.neg.and (PlusFormula.untl (.imp .bot .bot) psi2).neg
+
+/-- Object states `(pending?, index)`; pending indices `0 = a`, `1 = b`, `2 = c`, `3 = d`. -/
+abbrev Q5 : Type := Bool × Fin 4
+
+def pend5 : Q5 → Bool := fun q => q.1
+
+/-- Pending edges `a → b → c → a` and `a → d → a`. -/
+def step5 : Q5 → Q5 → Bool := fun x y =>
+  if x.1 then
+    (if y.1 then
+      ((x.2 == 0 && (y.2 == 1 || y.2 == 3)) || (x.2 == 1 && y.2 == 2) ||
+        (x.2 == 2 && y.2 == 0) || (x.2 == 3 && y.2 == 0))
+     else (y.2 == x.2))
+  else (!y.1 && (y.2 == x.2))
+
+/-- Gate 6's labelling: `d` is given `b`'s letter, so no set of atoms carves out the 2-cycle. -/
+def lab6 : Q5 → Atom → Bool := fun q at_ =>
+  if at_ = pA then q.1 else if at_ = rA then !q.1 else (q.2 == 0)
+
+def a5 : Q5 := (true, 0)
+def b5 : Q5 := (true, 1)
+def c5 : Q5 := (true, 2)
+
+/-- The closure component: a subset of `plusSubformulaClosure φ`. -/
+abbrev ClType (φ : PlusFormula) : Type :=
+  {T : Finset PlusFormula // T ∈ (plusSubformulaClosure φ).powerset}
+
+/-- The product carrier: the object paired with the closure component. -/
+abbrev ProdState (Q : Type) (φ : PlusFormula) : Type := Q × ClType φ
+
+/-- One step of BACKWARD reachability in the product -- the operator the COUNTDOWN iterates. -/
+def prodPreStep {Q : Type} [Fintype Q] [DecidableEq Q] {φ : PlusFormula}
+    (pstep : ProdState Q φ → ProdState Q φ → Bool) (S : Finset (ProdState Q φ)) :
+    Finset (ProdState Q φ) :=
+  Finset.univ.filter (fun x => ∃ y ∈ S, pstep x y = true)
+
+/-- The Hintikka condition for one closure formula at a labelled object state.  The modal arms and
+both temporal arms are UNCONSTRAINED -- a deliberate over-approximation, and the reason gate 8 is
+NOT ADDRESSED by this relation. -/
+def locPred {Q : Type} (lab : Q → Atom → Bool) (q : Q) (T : Finset PlusFormula) :
+    PlusFormula → Bool
+  | ψ@(.atom a) => decide (ψ ∈ T) == lab q a
+  | ψ@.bot => decide (ψ ∉ T)
+  | ψ@(.imp α β) => decide (ψ ∈ T) == (!(decide (α ∈ T)) || decide (β ∈ T))
+  | _ => true
+
+/-- `PlusTruthAt`'s STRICT-until unfolding across one step.  Every arm other than the
+forward-until one is UNCONSTRAINED -- again a deliberate over-approximation; in particular the
+BACKWARD temporal arm is constrained by nothing here, so the past direction is untouched and no
+backward propagation theorem is available from this relation. -/
+def linkPred (T T' : Finset PlusFormula) : PlusFormula → Bool
+  | ψ@(.untl g e) =>
+      decide (ψ ∈ T) == (decide (e ∈ T') || (decide (g ∈ T') && decide (ψ ∈ T')))
+  | _ => true
+
+/-- Local coherence of a product state: the Hintikka condition at every closure formula. -/
+def locCoh {Q : Type} (lab : Q → Atom → Bool) (φ : PlusFormula) (x : ProdState Q φ) : Bool :=
+  decide (∀ ψ ∈ plusSubformulaClosure φ, locPred lab x.1 x.2.1 ψ = true)
+
+/-- The link condition across one step: the strict-until unfolding at every closure formula. -/
+def untlLink (φ : PlusFormula) (T T' : ClType φ) : Bool :=
+  decide (∀ ψ ∈ plusSubformulaClosure φ, linkPred T.1 T'.1 ψ = true)
+
+/-- **The LOCAL coherence relation**, with NO fulfilment clause. -/
+def coh {Q : Type} (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+    (φ : PlusFormula) (x y : ProdState Q φ) : Bool :=
+  step x.1 y.1 && pend x.1 && pend y.1 && locCoh lab φ x && locCoh lab φ y &&
+    untlLink φ x.2 y.2
+
+/-- The fixture instance: the coprime-cycle object, gate 6's labelling, gate 6's formula. -/
+def coh6 : ProdState Q5 chi → ProdState Q5 chi → Bool := coh step5 pend5 lab6 chi
+
+/-- A closure type from a membership list.  Built as a `filter`, never by `decide` on
+`Finset.powerset`. -/
+def mkT (L : List PlusFormula) : ClType chi :=
+  ⟨(plusSubformulaClosure chi).filter (fun ψ => ψ ∈ L),
+    Finset.mem_powerset.mpr (Finset.filter_subset _ _)⟩
+
+/-- The fibre over the pending `a` state. -/
+def Ea : Finset (ProdState Q5 chi) := Finset.univ.filter (fun x => x.1 = a5)
+
+def top : PlusFormula := .imp .bot .bot
+def xpa : PlusFormula := nextPow 1 pa
+def xxpa : PlusFormula := nextPow 2 pa
+def bb : PlusFormula := pa.imp xxpa.neg
+def cc : PlusFormula := p.imp la.neg
+/-- **The eventuality**: `T U psi2`, strictly in the future.  A member of
+`plusSubformulaClosure chi`, because `chi` denies it. -/
+def ev : PlusFormula := PlusFormula.untl top psi2
+def evnn : PlusFormula := ev.neg.neg
+def dd : PlusFormula := psi2.neg.imp evnn
+
+def TaL : List PlusFormula := [chi, psi2.neg, ev.neg, top, bb, pa, xxpa.neg, p, la]
+def TbL : List PlusFormula := [chi, psi2.neg, ev.neg, top, bb, xxpa, cc, p, la.neg]
+def TcL : List PlusFormula := [chi, psi2.neg, ev.neg, top, bb, xxpa.neg, xpa, cc, p, la.neg]
+
+def Ta : ClType chi := mkT TaL
+def Tb : ClType chi := mkT TbL
+def Tc : ClType chi := mkT TcL
+
+def evTaL : List PlusFormula := [psi2.neg, ev, evnn, dd, top, bb, pa, xxpa.neg, p, la]
+def evTbL : List PlusFormula := [psi2.neg, ev, evnn, dd, top, bb, xxpa, cc, p, la.neg]
+def evTcL : List PlusFormula := [psi2.neg, ev, evnn, dd, top, bb, xxpa.neg, xpa, cc, p, la.neg]
+
+def evTa : ClType chi := mkT evTaL
+def evTb : ClType chi := mkT evTbL
+def evTc : ClType chi := mkT evTcL
+
+/-! The closure cardinality this round's gate work depends on, confirmed by `#eval` rather than
+trusted: `plusSubformulaClosure chi` has 18 members. -/
+#eval (plusSubformulaClosure chi).card
+
+/-! ## Reading the local conditions and the link at one closure member
+
+Each lemma below instantiates one of the six conditions `coh_iff` delivers, at a SINGLE closure
+formula, with the membership side condition closed by `decide`, and turns the `Bool` equation into
+the propositional fact the hand proofs use.  No `decide` below is ever applied to a goal
+quantifying over `ClType chi`. -/
+
+/-- **The unfolding lemma.**  The workhorse for every hand proof below. -/
+theorem coh_iff {Q : Type} [Fintype Q] [DecidableEq Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (x y : ProdState Q φ) :
+    coh step pend lab φ x y = true ↔
+      step x.1 y.1 = true ∧ pend x.1 = true ∧ pend y.1 = true ∧
+        (∀ ψ ∈ plusSubformulaClosure φ, locPred lab x.1 x.2.1 ψ = true) ∧
+        (∀ ψ ∈ plusSubformulaClosure φ, locPred lab y.1 y.2.1 ψ = true) ∧
+        (∀ ψ ∈ plusSubformulaClosure φ, linkPred x.2.1 y.2.1 ψ = true) := by
+  simp [coh, locCoh, untlLink, Bool.and_eq_true, and_assoc]
+
+theorem loc_bot {Q : Type} {lab : Q → Atom → Bool} {q : Q} {T : Finset PlusFormula}
+    {φ : PlusFormula} (h : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab q T ψ = true)
+    (hm : PlusFormula.bot ∈ plusSubformulaClosure φ) : PlusFormula.bot ∉ T := by
+  have h1 := h _ hm
+  simp only [locPred, decide_eq_true_eq] at h1
+  exact h1
+
+theorem loc_atom {Q : Type} {lab : Q → Atom → Bool} {q : Q} {T : Finset PlusFormula}
+    {φ : PlusFormula} (h : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab q T ψ = true)
+    (a : Atom) (hm : PlusFormula.atom a ∈ plusSubformulaClosure φ) :
+    (PlusFormula.atom a ∈ T ↔ lab q a = true) := by
+  have h1 := h _ hm
+  simp only [locPred, beq_iff_eq] at h1
+  by_cases hmem : PlusFormula.atom a ∈ T <;> simp_all
+
+theorem loc_imp {Q : Type} {lab : Q → Atom → Bool} {q : Q} {T : Finset PlusFormula}
+    {φ : PlusFormula} (h : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab q T ψ = true)
+    (α β : PlusFormula) (hm : α.imp β ∈ plusSubformulaClosure φ) :
+    (α.imp β ∈ T ↔ (α ∉ T ∨ β ∈ T)) := by
+  have h1 := h _ hm
+  simp only [locPred, beq_iff_eq] at h1
+  by_cases h2 : α.imp β ∈ T <;> by_cases h3 : α ∈ T <;> by_cases h4 : β ∈ T <;> simp_all
+
+theorem loc_neg {Q : Type} {lab : Q → Atom → Bool} {q : Q} {T : Finset PlusFormula}
+    {φ : PlusFormula} (h : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab q T ψ = true)
+    (hbot : PlusFormula.bot ∉ T) (α : PlusFormula)
+    (hm : α.neg ∈ plusSubformulaClosure φ) : (α.neg ∈ T ↔ α ∉ T) := by
+  have h1 : α.neg ∈ T ↔ (α ∉ T ∨ PlusFormula.bot ∈ T) := loc_imp h α .bot hm
+  rw [h1]; tauto
+
+theorem link_untl {T T' : Finset PlusFormula} {φ : PlusFormula}
+    (h : ∀ ψ ∈ plusSubformulaClosure φ, linkPred T T' ψ = true)
+    (g e : PlusFormula) (hm : PlusFormula.untl g e ∈ plusSubformulaClosure φ) :
+    (PlusFormula.untl g e ∈ T ↔ (e ∈ T' ∨ (g ∈ T' ∧ PlusFormula.untl g e ∈ T'))) := by
+  have h1 := h _ hm
+  simp only [linkPred, beq_iff_eq] at h1
+  by_cases h2 : PlusFormula.untl g e ∈ T <;> by_cases h3 : e ∈ T' <;> by_cases h4 : g ∈ T' <;>
+    by_cases h5 : PlusFormula.untl g e ∈ T' <;> simp_all
+
+/-! ## The restriction of the local relation to a candidate set
+
+`cohR R` is LOCAL coherence with both endpoints constrained to lie in `R`.  This is the relation
+the certificate's discharge conditions run their fixpoint over, which is the "inside `R`" the
+research round insists on: no path outside `R` can discharge anything. -/
+
+def cohR (R : Finset (ProdState Q5 chi)) (x y : ProdState Q5 chi) : Bool :=
+  coh6 x y && decide (x ∈ R) && decide (y ∈ R)
+
+/-- **The restriction is a restriction**: it implies the unrestricted relation and both
+memberships, and adds nothing.  So every negative result proved through `coh6` transfers to
+`cohR R`, and no positive one does. -/
+theorem cohR_le_coh (R : Finset (ProdState Q5 chi)) (x y : ProdState Q5 chi)
+    (h : cohR R x y = true) : coh6 x y = true ∧ x ∈ R ∧ y ∈ R := by
+  simp only [cohR, Bool.and_eq_true, decide_eq_true_eq] at h
+  exact ⟨h.1.1, h.1.2, h.2⟩
+
+/-! ## The chain-to-ray composition theorem
+
+The place the restriction to `R` could silently have failed: an `untl` obligation carried at an
+interior position of a `coh`-chain must either be discharged inside the chain, with the guard
+holding at every strictly intermediate position, or still be carried at the chain's end with the
+guard holding throughout.  Stated generically over the object, the labelling and the formula, so
+it covers `coh6` and -- through `cohR_le_coh` -- the restricted relation as well.
+
+No backward mirror is stated: `linkPred` constrains no backward arm, so a backward propagation
+theorem is not available from this relation, and claiming one would be a strictly weaker statement
+wearing a stronger name. -/
+
+theorem untl_propagates_along_coh {Q : Type} [Fintype Q] [DecidableEq Q]
+    (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (g : ℕ → ProdState Q φ) (hg : ∀ k, coh step pend lab φ (g k) (g (k + 1)) = true)
+    (u e : PlusFormula) (hmem : PlusFormula.untl u e ∈ plusSubformulaClosure φ)
+    (i n : ℕ) (hin : i ≤ n) (hcar : PlusFormula.untl u e ∈ (g i).2.1) :
+    (∃ j, i < j ∧ j ≤ n ∧ e ∈ (g j).2.1 ∧ ∀ r, i < r → r < j → u ∈ (g r).2.1) ∨
+      (PlusFormula.untl u e ∈ (g n).2.1 ∧ ∀ r, i < r → r ≤ n → u ∈ (g r).2.1) := by
+  obtain ⟨d, rfl⟩ : ∃ d, n = i + d := ⟨n - i, by omega⟩
+  clear hin
+  induction d with
+  | zero => exact Or.inr ⟨hcar, fun r h1 h2 => absurd h1 (by omega)⟩
+  | succ d ih =>
+    rcases ih with hleft | hright
+    · obtain ⟨j, hij, hjn, hej, hgj⟩ := hleft
+      exact Or.inl ⟨j, hij, by omega, hej, hgj⟩
+    · obtain ⟨hcarry, hguards⟩ := hright
+      have hlink :=
+        ((coh_iff step pend lab φ (g (i + d)) (g (i + d + 1))).mp (hg (i + d))).2.2.2.2.2
+      rcases (link_untl hlink u e hmem).mp hcarry with he' | ⟨hu', hcarry'⟩
+      · exact Or.inl ⟨i + d + 1, by omega, by omega, he', fun r h1 h2 => hguards r h1 (by omega)⟩
+      · refine Or.inr ⟨hcarry', ?_⟩
+        intro r h1 h2
+        rcases Nat.lt_or_ge r (i + d + 1) with hlt | hge
+        · exact hguards r h1 (by omega)
+        · have hr : r = i + d + 1 := by omega
+          subst hr
+          exact hu'
+
 end Probe809C
 
 /-! ## Axiom check -/
@@ -339,3 +601,5 @@ end Probe809C
 #print axioms Probe809C.eu_mem_lfp_iff_exists_path
 #print axioms Probe809C.eu_lfp_eq_empty_of_no_event
 #print axioms Probe809C.au_lfp_ne_eu_lfp_on_exit_graph
+#print axioms Probe809C.untl_propagates_along_coh
+#print axioms Probe809C.cohR_le_coh
