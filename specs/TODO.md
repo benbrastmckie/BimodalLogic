@@ -1,5 +1,5 @@
 ---
-next_project_number: 817
+next_project_number: 819
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 817
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813,817,818 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,429,497,618,763,783,814,816 | 298,428,502,616,761,772,777,813 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -118,6 +118,8 @@ next_project_number: 817
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 743 [NOT STARTED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
+817 [NOT STARTED] — Wrap the remaining count-carrying inventory tables under...
+818 [NOT STARTED] — Wrap the four directory-rollup inventory tables that need the...
 
 ### Build Performance
 
@@ -125,6 +127,60 @@ next_project_number: 817
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 818. Wrap directory rollup tables files lines cols
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+- **Parent**: Task 744
+
+**Description**: Wrap the four directory-rollup inventory tables that need the cols=files-lines column set
+
+MEASURED, do not re-derive. A prior sweep wrapped 23 READMEs under FormalSystem/ in BEGIN GENERATED inventory markers. Four READMEs were demoted from the clean-fit tier to report-only for one shared reason, distinct from every other deferral: their rows are SUBDIRECTORY rollups carrying numeric line totals, and the default cols=lines column set renders a subdirectory row as an em-dash placeholder, so wrapping them as-is would silently destroy the totals.
+
+SCOPE, with the measured totals that must survive:
+- FormalSystem/Metalogic/Expressiveness/README.md -- EFGames/ 11,800, GameTransfer/ 9,507, Kamp/ 77,714, Separation/ 926
+- FormalSystem/Metalogic/WeakCanonical/README.md -- same shape, five subdirectory rows with numeric totals
+- FormalSystem/Metalogic/Expressiveness/Kamp/README.md -- a `| | Files | Lines |` rollup, i.e. cols=files-lines shape with an empty leading header cell
+- FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/README.md -- same empty-header-cell rollup shape
+
+THE WORK IS A HEADER AND OPTION QUESTION, not a row question. Establish against the generator in scripts/check-module-invariants.sh -- by reading its marker option list and exercising it, not from memory -- whether cols=files-lines emits what these four tables need, and what header the wrapped block must carry. A four-column header rewrite is expected for the first two. The two Kamp rollups already carry a files-lines shape but with an empty leading header cell, so confirm whether the generator preserves that cell or requires a named one.
+
+ALSO IN SCOPE: the earlier pass recorded that the `(N files)` phrases appearing inside some descriptions would need re-authoring if the column set changes, since a files count would then be a machine-owned column rather than prose. Resolve that duplication deliberately -- either re-author the prose or state why it stays.
+
+VERIFY, do not assume. Confirm on a scratch copy before committing that every numeric total survives and every hand-written description is preserved byte-for-byte (use a key-sorted before/after diff; alphabetical re-ordering and thousands separators are expected regeneration effects). scripts/check-module-invariants.sh split_row is already escape-aware, so an inline pipe in a description must be written \| to survive. Then demonstrate coverage per newly wrapped block: corrupt one count, confirm INV FAIL names exactly that README, restore via the writer (--emit-inventory, never a pathspec checkout), confirm the diff is empty.
+
+NON-GOALS. No change to the generator algorithm beyond using an option it already supports -- if cols=files-lines turns out not to cover these shapes, REPORT that and stop rather than extending the generator under this task. No Lean source changes. No hand-correction of counts in any table this task does not wrap.
+
+---
+
+### 817. Wrap remaining phantom row inventory tables
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+- **Parent**: Task 744
+
+**Description**: Wrap the remaining count-carrying inventory tables under FormalSystem/ whose blockers are phantom or missing rows
+
+MEASURED, do not re-derive. A prior sweep wrapped 23 READMEs under FormalSystem/ in BEGIN GENERATED inventory markers and left a measured Tier B bucket unwrapped, each with a named, re-verified blocker. At measurement time 29 of roughly 33 unwrapped Lines-bearing inventory tables under FormalSystem/ were stale, and the INV check in scripts/check-module-invariants.sh was green throughout because it fails only on a STALE WRAPPED BLOCK and never sees an unwrapped one. Wrapping is the opt-in that brings a table under that gate.
+
+SCOPE: the Tier B READMEs whose blocker is a row-set mismatch, not a column-set mismatch:
+- FormalSystem/Metalogic/BXCanonical/Chronicle/README.md -- phantom row HenkinDiscreteChain.lean; 8 live files carry no row
+- FormalSystem/Metalogic/BXCanonical/Quasimodel/README.md -- phantom row EnrichedClosure.lean
+- FormalSystem/Metalogic/Core/RestrictedMCS/README.md -- phantom row Deferral.lean
+- FormalSystem/Metalogic/Expressiveness/Separation/README.md -- 10 phantom .lean rows and 2 phantom subdirectory rows (DedekindZ/, Hierarchy/); the directory now holds only Defs, KampTranslation, SemanticBridge, so the table describes a layout that has moved
+- FormalSystem/Metalogic/Decidability/WitnessFamily/README.md -- upper table is rows=loose-shaped (no subdirectory rows for Compression/, Sharing/); lower table keys rows on Sharing/-prefixed paths the generator would not emit
+- FormalSystem/Metalogic/BXCanonical/README.md -- fits apart from the pinned row ../BXCanonical.lean, which the generator keeps with refreshed numbers; left out of the earlier pass only because the pinned-row path was never exercised against the description-preservation check
+
+PROCEDURE, established and verified by the earlier pass: a phantom row has no file, so its hand-written description has no destination and regeneration drops it. Decide per row whether the description is worth re-homing onto a live module or is simply obsolete, and state the decision -- do not let the generator silently drop prose. Then wrap and regenerate via `bash scripts/check-module-invariants.sh --emit-inventory`, and verify every surviving description byte-for-byte with a key-sorted before/after diff rather than a whole-file diff (alphabetical re-ordering and thousands separators are expected regeneration effects). Note that scripts/check-module-invariants.sh split_row is already escape-aware, so an inline pipe in a description must be written \| to survive.
+
+DEMONSTRATE COVERAGE, do not assume it: for each newly wrapped block, corrupt one count, confirm INV FAIL names exactly that README, restore via the writer (--emit-inventory, never a pathspec checkout, per the shared-worktree discipline), and confirm the diff is empty.
+
+NON-GOALS. No change to the generator column set or algorithm. No Lean source changes. Do not hand-correct counts in any table this task does not wrap -- report it instead, so the recurrence stays visible. The four READMEs whose blocker is a COLUMN-set mismatch (subdirectory rows carrying numeric totals that need cols=files-lines) are deliberately excluded here and belong to their own task.
+
+---
 
 ### 816. Snapshot artifacts contaminate phase commits
 - **Status**: [NOT STARTED]
