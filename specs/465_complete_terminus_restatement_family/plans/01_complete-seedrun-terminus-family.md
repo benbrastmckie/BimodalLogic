@@ -306,39 +306,39 @@ covers the edit's blast radius.
 
 ---
 
-### Phase 4: Correct the record [NOT STARTED]
+### Phase 4: Correct the record [COMPLETED]
 
 **Goal**: Make the deferral record truthful, so no future reader goes looking for the fourteen or
 reads the representative's docstring as naming still-outstanding work. Docstring and module-prose
 text only — no statement, binder or proof term is touched.
 
 **Tasks**:
-- [ ] Amend the C12 retirement record in `MintBound/PostBlocking.lean` with one short paragraph:
+- [x] Amend the C12 retirement record in `MintBound/PostBlocking.lean` with one short paragraph:
       the `_lengthBudget`/`signedUniverse` siblings of the nine retired names are **not available**,
       because the roots they would apply are gone and restating them would carry a refuted
       hypothesis. State it as a present-tense do-not-re-attempt fact, in the idiom the record
       already uses — cite declaration names and refuting witnesses, never a task number and never a
       draft-history framing.
-- [ ] Amend the representative's doc comment at `MintBound/PostBlocking.lean:1273` so its deferral
+- [x] Amend the representative's doc comment at `MintBound/PostBlocking.lean:1273` so its deferral
       clause reads truthfully against the landed family: the `_fixed_seedRun` line is complete
       S1-S4 (S2-S4 in the seedRun-termini module), a parallel `_gap_seedRun` line S1-S4 is landed
       there too, and the `signedUniverse` forms are deliberately absent because the label-closure
       hypothesis they carry is refuted at every nonempty label set. Touch no binder and no proof
       term.
-- [ ] Add a short cross-reference paragraph to the C9 register entry recording the run-form verdict
+- [x] Add a short cross-reference paragraph to the C9 register entry recording the run-form verdict
       (`MintBound/Register.lean`, the entry at or near `:876`): the seedRun family is landed at
       S1-S4 for both lines, the narrowing remains carried-and-unproved with the unprobed refutation
       route still open, and the `signedUniverse` slots are absent by decision. Do not add a new
       register entry — the register holds statements that are *not* available, and these are.
-- [ ] Correct the register's own stale entry count where it is asserted: `MintBound/Register.lean`'s
+- [x] Correct the register's own stale entry count where it is asserted: `MintBound/Register.lean`'s
       module docstring, `MintBound.lean`'s module-prose line describing the register, and
       `MintBound/README.md`'s register sentence. Re-derive the true count from the entry headings
       rather than trusting any recorded figure.
-- [ ] Correct `MintBound/README.md`'s module table: the stale `Register.lean` line-count figure, and
+- [x] Correct `MintBound/README.md`'s module table: the stale `Register.lean` line-count figure, and
       add a row for `SeedRunTermini.lean` with its own line and declaration counts, in the table's
       existing shape. Also extend the README's import-graph prose to name the new module as the
       join of the two parallel branches.
-- [ ] Re-read each of the four files immediately before editing it; stage explicit paths only.
+- [x] Re-read each of the four files immediately before editing it; stage explicit paths only.
 
 **Timing**: 1 hour
 

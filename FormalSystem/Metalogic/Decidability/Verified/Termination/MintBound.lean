@@ -117,7 +117,7 @@ hang off the `MintPotential`/`Measure` foundation rather than off the closure ch
   terminus family restated with `MintPaysForTimeGap` **discharged** rather than carried
 - `MintPaysAssembly`: the engine-level assembly — `MintPaysForTimeFixed` off `.Dense`, at any
   universe, via the four-bucket case split at the `pickBranches` level
-- `Register`: the do-not-re-attempt register — twenty-five statements that look like the natural
+- `Register`: the do-not-re-attempt register — twenty-six statements that look like the natural
   next lemma and are **not** available, each cited by declaration name and, where one exists, by
   refuting witness. It is documentation of what did not work, carries no declaration, and is kept
   in its own module so that a reader can always tell locally whether they are reading a live

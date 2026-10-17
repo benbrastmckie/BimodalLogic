@@ -789,6 +789,22 @@ file has **not** refuted. The landed termini stated against `PostBlockingSettles
 **What the removal cost.** Nothing measurable. A whole-environment reverse-dependency scan found
 zero dependents of the nine outside the nine themselves, and the decision procedure
 `FormalSystem.Metalogic.Decidability.decide` reaches zero constants from this file at all.
+
+**The `_lengthBudget` and `signedUniverse` siblings of the nine are NOT available, and are not
+outstanding work.** The nine names above fill only the `_of_budget` and `_at_seed` slots of the
+six-slot restatement convention (`_of_budget{_SUF}`, `_at_seed{_SUF}`, `_of_lengthBudget{_SUF}`,
+`_at_seed_lengthBudget{_SUF}`, and the two `signedUniverse` forms). A reader who goes looking for
+the remaining slots of each will not find them and should not write them. Each would be a one-line
+application of a family root that is itself gone — the roots were the nine — so landing one means
+restating its hypothesis rather than applying anything. For eight of the nine that hypothesis is
+`PostBlockingSettlesRun fc`, refuted at every positive figure by `postBlockingSettlesRun_false_succ`
+and at both terminus figures by `postBlockingSettlesRun_terminusFuel_false` and
+`postBlockingSettlesRun_mintAwareFuel_false`; for `buildTableauAt_isSome_of_budget_of_run` it is the
+unrestricted `PostBlockingSettles`, refuted at all four frame classes by
+`postBlockingSettles_fuel_zero_false`. The uniformity argument that normally favours completing a
+half-populated family does not reach these slots: the family is not half-populated but empty, and
+the slots are empty for the same reason the nine are. The live family at the seed narrowing is in
+`SeedRunTermini.lean`, complete at S1-S4 on each of its two lines.
 -/
 
 
@@ -1265,11 +1281,18 @@ theorem buildTableauAt_isSome_of_settlesSeedRun {phi : Formula} {fuel : Nat}
 this file has **not** refuted. Exactly one entry of the hypothesis list differs from the retired
 `buildTableauAt_isSome_of_budget_fixed_run`; the fuel expression is reused byte for byte.
 
-This is the representative restatement, not the family. The nine `_run` termini it once stood beside
-have been retired as vacuous (see the retirement record in section C12), so this is now the only
-terminus in the file stated at a narrowed post-blocking residual. Widening the seed narrowing to the
-rest of that family is deliberately deferred rather than forgotten — but note that widening it now
-means restating landed termini, not repairing surviving ones. -/
+This is the `_fixed_seedRun` line's root, and the only terminus in **this file** stated at a
+narrowed post-blocking residual; the nine `_run` termini it stood beside are retired as vacuous (see
+the retirement record in section C12). The rest of the family lives in `SeedRunTermini.lean`, which
+is the only module able to see both this file and `FiveComponent.lean`: the three remaining slots of
+this line (`buildTableauAt_isSome_at_seed_fixed_seedRun`,
+`buildTableauAt_isSome_of_lengthBudget_fixed_seedRun`,
+`buildTableauAt_isSome_at_seed_lengthBudget_fixed_seedRun`) and a parallel `_gap_seedRun` line at
+S1-S4, whose members carry no `MintPaysForTimeFixed` hypothesis at all. The `signedUniverse` slots
+of both lines are absent by decision: each would carry `UnorderedSuccessorLabelClosed`, which
+`unorderedSuccessorLabelClosed_nonempty_false` refutes at every nonempty finite label set, so each
+would be vacuous at exactly the universes it is aimed at. Widening the seed narrowing restates
+landed termini; it repairs none, and it makes none of them non-vacuous. -/
 theorem buildTableauAt_isSome_of_budget_fixed_seedRun
     {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
     {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)

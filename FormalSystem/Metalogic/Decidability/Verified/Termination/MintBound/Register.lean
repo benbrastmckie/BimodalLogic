@@ -8,7 +8,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
 
 /-! # C9. The do-not-re-attempt register
 
-Twenty-five statements that look like the natural next lemma and are **not** available. Each is
+Twenty-six statements that look like the natural next lemma and are **not** available. Each is
 cited by declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
@@ -934,6 +934,19 @@ already been here.
     that route first. The cheapest probe: for engine exits `ob`, does
     `blockedTimes satBr satOrd fc (armTracker satBr)` ever lose a time that
     `blockedTimes ob oOrd fc (armTracker ob)` held?
+
+    *Where the seedRun family stands, so this entry is not read as naming outstanding work.* Both
+    lines of the family are landed at S1-S4 in `SeedRunTermini.lean`, the only module importing both
+    `PostBlocking.lean` and `FiveComponent.lean`: the `_fixed_seedRun` line off
+    `buildTableauAt_isSome_of_budget_fixed_seedRun`, and a parallel `_gap_seedRun` line whose
+    members carry no `MintPaysForTimeFixed` hypothesis because `mintPaysForTimeGap_of_any` supplies
+    that residual internally at every frame class. The `signedUniverse` slots of both lines are
+    absent by decision — each would carry `UnorderedSuccessorLabelClosed`, refuted at every nonempty
+    finite `L` by `unorderedSuccessorLabelClosed_nonempty_false`, so each would be vacuous at
+    exactly the universes it is aimed at. None of the seven makes any terminus non-vacuous: every
+    member carries the narrowing as a hypothesis, and the co-hypotheses entries 9, 11 and 26 refute
+    are untouched. This is a note on availability, not a new entry — the register holds statements
+    that are **not** available, and these are.
 
     *Do not re-attempt.* The unrestricted `PostBlockingSettles` (entry 22, refuted); the
     output-branch bridge `PostBlockingExitSettled` (entry 23, refuted); an `ArmSettlement` discharge

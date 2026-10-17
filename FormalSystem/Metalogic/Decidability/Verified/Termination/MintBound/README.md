@@ -7,17 +7,17 @@ needs a bound on the number of **fresh-time mints** along a run that is independ
 growth: at an ordered split's third arm (`Branch.identifyTime`) the branch shrinks as a set, so
 the branch-cardinality measure the extending case relies on is not available.
 
-These eighteen modules supply that bound. `../MintBound.lean` is the sibling aggregator: it
-declares nothing, imports all eighteen, and is the only name any consumer outside this directory
+These twenty-one modules supply that bound. `../MintBound.lean` is the sibling aggregator: it
+declares nothing, imports all twenty-one, and is the only name any consumer outside this directory
 mentions.
 
 ## Reading this directory
 
 One module carries no declarations at all. `Register.lean` is the do-not-re-attempt register —
-twenty-five statements that look like the natural next lemma and are **not** available, each
+twenty-six statements that look like the natural next lemma and are **not** available, each
 cited by declaration name and, where one exists, by refuting witness. It is a record of what did
 not work, and it is kept out of the modules carrying what did precisely so that a reader can tell
-locally which of the two they are reading. The other nineteen modules are live development.
+locally which of the two they are reading. The other twenty modules are live development.
 
 Refutations are not confined to the register. Several live modules state and prove a negative
 result in place — `OrderingTimes` refutes `OrdTimesLeMaxTime` at the ordered split's
@@ -51,7 +51,8 @@ Listed in dependency order. Line and declaration counts are of the module as it 
 | `GapPotential.lean` | 621 | 34 | The density coordinate: `gapPotential` over the fixed index set `U ×ˢ U`, its ceiling, growth and identification-arm transport, the strict drop at a `densityRule` step, the refutation of `MintPaysForTimeFixed` at `.Dense`/`.RTime`, and the repaired residual `MintPaysForTimeGap` |
 | `MintPaysAssembly.lean` | 892 | 24 | The engine-level assembly: `MintPaysForTimeFixed` off `.Dense`, then the density bucket and `MintPaysForTimeGap` discharged at **every** frame class with no hypothesis, via the five-bucket case split at the `pickBranches` level |
 | `FiveComponent.lean` | 790 | 23 | The five-component measure: `BudgetStateGap`, `budgetPotentialGap`, both step lemmas re-proved against the four-disjunct residual, the enlarged figures, and the eight termini restated with the residual **discharged** rather than carried |
-| `Register.lean` | 923 | 0 | The do-not-re-attempt register: twenty-six refuted or unavailable statements, cited by declaration name and refuting witness. No declarations |
+| `Register.lean` | 1014 | 0 | The do-not-re-attempt register: twenty-six refuted or unavailable statements, cited by declaration name and refuting witness. No declarations |
+| `SeedRunTermini.lean` | 258 | 7 | The seedRun terminus family: the `_fixed_seedRun` line completed at S2-S4 and a parallel `_gap_seedRun` line at S1-S4, every member carrying `PostBlockingSettlesSeedRun` as a hypothesis. The only module importing both `PostBlocking` and `FiveComponent` |
 
 ## Import graph
 
@@ -76,10 +77,16 @@ TimeCensus ──────┴──> LabelHeadroom
 SigmaFixed ──> PostBlocking
 SigmaFixed ──> UntlSnceFree ──> BoxFree
 UntlSnceFree ──> GapPotential ──> MintPaysAssembly ──> FiveComponent
+
+PostBlocking ─┐
+FiveComponent ┴──> SeedRunTermini
 ```
 
-Read as: each arrow is a direct `import`. The three joins (`MonotoneIssuance`, `FourComponent`,
-`LabelHeadroom`) are where the parallel branches meet.
+Read as: each arrow is a direct `import`. The four joins (`MonotoneIssuance`, `FourComponent`,
+`LabelHeadroom`, `SeedRunTermini`) are where the parallel branches meet. `SeedRunTermini` is the
+last of them and the only one joining the two deepest branches: the post-blocking branch off
+`SigmaFixed` carries the seed narrowing and its bridge, the density branch off `UntlSnceFree`
+carries the five-component engine lemma, and neither can see the other.
 
 The density tail is a chain rather than a join, and the direction is deliberate:
 `MintPaysAssembly`'s pick-level machinery (`rule_census`, `pick_stage_source_rule`,
