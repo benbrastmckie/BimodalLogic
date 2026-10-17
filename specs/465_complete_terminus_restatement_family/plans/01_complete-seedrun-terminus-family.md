@@ -1,7 +1,7 @@
 # Implementation Plan: Complete the seedRun terminus restatement family
 
 - **Task**: 465 - Complete the terminus restatement family at the repaired residuals
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: 462, 463, 464 — all three settled (463 and 433 archived; 464's phases committed, its `_gap` family landed complete at 6/6)
 - **Research Inputs**: `specs/465_complete_terminus_restatement_family/reports/01_complete-terminus-restatement-family.md`

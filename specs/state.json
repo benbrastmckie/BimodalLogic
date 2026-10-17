@@ -220,7 +220,7 @@
     {
       "project_number": 734,
       "project_name": "e4_mosaic_stabsaturated_mixed_germ_probe",
-      "status": "partial",
+      "status": "hold",
       "task_type": "lean4",
       "description": "Run experiment E4: decide StabSaturated on the Bool fixture's mosaic set, and acquire the Hodkinson-Reynolds Handbook sections\n\nWHY THIS EXISTS. Route R2 -- mosaics and quasimodels -- is the rank-2 route to decidability of L+ over discrete time, behind the seam-gluing route R1 and ahead of the closed and low-ranked alternatives. Its amalgamation precondition is already FREE: `paste` glues two mosaics agreeing at a shared germ, choice-free and with uniqueness, exported as `amalgamate` and `amalgamate_unique`. What gates R2 is a single decidability question that the landed probe fixes as a `Prop` and proves only in a degenerate corner, plus two Handbook sections absent from the corpus. The review named this experiment E4 and left it \"open for the next round to attack by name\". It was never filed.\n\nTHE GATE, precisely. `Probe718Mosaic.StabSaturated` is proved only by `stabSaturated_of_sameState` -- the SAME-STATE corner. R2's hypothesis is that `StabSaturated` is decidable on finite mosaic sets with MIXED germ states, under `[F.IsRegular]`, and that a saturated-set existence theorem holds for L+. Neither is established. Re-verify both declaration names against the tree before relying on them; this description's reading is from 2026-10-05.\n\nWHAT TO DELIVER, in two parts.\n(1) The probe: decide `StabSaturated` on the two-state Bool fixture's mosaic set at `box-dot(Fp)`, with MIXED germ states rather than the same-state corner. This is the cheapest test of R2's load-bearing hypothesis.\n(2) The sources: the Hodkinson-Reynolds Handbook of Modal Logic sections 5.10 and 5.11 bodies are ABSENT from the corpus, which is why R2 cannot be promoted on textual grounds no matter how the probe comes out. Acquire and ingest them. R2's standing cannot be settled by a probe alone.\n\nTHE FALSIFIER, which is a valid outcome. A finite mosaic set, with mixed germ states, on which `StabSaturated` is FALSE yet every finite coherence condition holds. That would close R2 the way filtration was closed, and closing a route on evidence is a complete result -- not a failed task. Record it rather than working around it; the no-weakening rule for wired probes applies.\n\nHARD CONSTRAINTS. No complexity claim. Do not file a fourth certificate class on the strength of anything found here: any certificate class presenting finite fibres is already refuted by `Probe710.not_finite_width_fmp`, and R2 is a quasimodel route, not a certificate class. Do not promote R2 above R1 on probe evidence alone; ranking is the review's, and the Handbook sections are part of what any re-ranking would rest on.\n\nLITERATURE. Part (2) is source acquisition; run with `--lit`.\n\nSCHEDULING. Wiring into `scripts/check-evidence-probes.sh` collides with the declared file_scope of tasks 720 and 725, and with the two sibling probe tasks filed alongside this one. Run in a separate cycle from each of them.\n\nACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compiling under `lake env lean` and wired into `scripts/check-evidence-probes.sh`, whose header states whether `StabSaturated` is decidable on mixed germ states and what that does to R2's standing; plus the two Handbook sections present in the Literature index with an index entry. Either half landing without the other is a [PARTIAL], not a completion.",
       "topic": "decidability",
@@ -234,7 +234,7 @@
         805
       ],
       "created": "2026-10-05T18:07:05Z",
-      "last_updated": "2026-10-17T01:31:30Z",
+      "last_updated": "2026-10-17T03:56:35Z",
       "session_id": "sess_1792193557_775a31",
       "artifacts": [
         {
@@ -253,7 +253,10 @@
           "summary": "Implementation summary from dispatch 7: all 4 phases done, the [PARTIAL] resting state and its cause. Still accurate; not rewritten."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "hold_reason": "Externally blocked: Hodkinson-Reynolds Handbook of Modal Logic ch.11 sections 5.10-5.11 are paywalled with no free/preprint copy; acquisition needs institutional access or purchase, declined for now. The probe half (mosaic-stab-saturated.lean, mixed-germ StabSaturated) is landed, wired and committed. Reactivation condition recorded at specs/literature-index.json#hodkinson_2006.hazard. Held by user ruling after two post-completion implement dispatches found nothing to advance.",
+      "held_at": "2026-10-17",
+      "prior_status": "partial"
     },
     {
       "project_number": 730,
@@ -1045,12 +1048,12 @@
     {
       "project_number": 465,
       "project_name": "complete_terminus_restatement_family",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Complete the terminus restatement family at the repaired residuals. Task 433's Phase 6 landed EIGHT of the twenty-two restatements -- the four family roots and their four caller-facing seed forms -- and recorded the remaining FOURTEEN as a Reasoned Exclusion with the recipe written down: each is a `_lengthBudget` / `signedUniverse` substitution, \"a one-line application of its family root\".\n\nThis is deliberately MECHANICAL work with the recipe already recorded. Its value is uniformity: a caller reaching for a `_lengthBudget` or `signedUniverse` form of a repaired terminus should find it landed rather than having to re-derive it, and a half-populated family is a trap for a future reader who assumes an absent member is absent for a reason.\n\nSCOPE: read Phase 6's Reasoned Exclusions section in specs/433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md for the enumerated list and the recipe. The family roots and existing members are the `buildTableauAt_isSome_*` declarations in MintBound.lean (the `_at`, `_selfGuarded`, `_fixed` and `_run` families, roughly :6308-:12240). Land the fourteen missing members following the naming convention the file already uses; do not invent a new convention.\n\nWHY THIS RUNS LAST: it restates termini at the repaired residuals, so it must run after the residuals themselves are settled. If 462, 463 or 464 changes a predicate's shape or sheds a hypothesis, the restatements must reflect the settled form -- doing this work earlier would mean doing it twice. Before starting, RE-DERIVE the list of missing members from the file as it then stands rather than trusting the count of fourteen recorded here: earlier tasks may have landed some, or added new family roots.\n\nPROHIBITED: no `sorry`; additive only; do not alter any previously-landed declaration; do not edit Fuel.lean, Saturation.lean or Tableau.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green. If any of the fourteen turns out NOT to be a one-line application -- i.e. the recipe does not actually apply -- STOP on that member, record why, and do not force it; a member that needs real mathematics belongs in its own task, not smuggled in here.\n\nDependencies: 462, 463, 464 -- all three, so that the restatements are made against a settled set of residuals rather than a moving one.",
       "created": "2026-08-19T01:34:36Z",
-      "last_updated": "2026-10-17T01:31:55Z",
+      "last_updated": "2026-10-17T04:16:50Z",
       "session_id": "sess_1792193557_775a31",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
@@ -1076,10 +1079,16 @@
           "path": "specs/465_complete_terminus_restatement_family/plans/01_complete-seedrun-terminus-family.md",
           "type": "plan",
           "summary": "Five-phase plan: re-derivation gate, new submodule + _fixed_seedRun S2-S4, _gap_seedRun S1-S4, record correction, full gate and summary."
+        },
+        {
+          "path": "specs/465_complete_terminus_restatement_family/summaries/01_complete-seedrun-terminus-family-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the seven landed termini, the mootness verdict on the recorded fourteen, the full verification record, and the README table-drift follow-up."
         }
       ],
       "priority": "low",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Rescoped per the settled decision and landed the seedRun terminus family: a new MintBound/SeedRunTermini.lean joining the post-blocking and five-component import branches, holding _fixed_seedRun S2-S4 and a whole new _gap_seedRun line S1-S4 (seven theorems, zero sorry, axioms within {propext, Classical.choice, Quot.sound}). The task's recorded fourteen exclusions are reported moot -- their family roots were retired with the nine _run termini, so none is a one-line application of anything. Record corrections in PostBlocking.lean, Register.lean, MintBound.lean and MintBound/README.md now state the fourteen as unavailable rather than outstanding, and state that none of the seven new members makes any terminus non-vacuous."
     },
     {
       "project_number": 481,
