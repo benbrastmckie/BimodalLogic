@@ -1,7 +1,7 @@
 # Implementation Plan: Task #807
 
 - **Task**: 807 - Backward-determinism forcing check: can a closed L⁺ formula force backward closure on a regular ℤ-frame?
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: 809 (the `scripts/check-evidence-probes.sh` serialization edge; discharged — 809 is `[COMPLETED]` and its probe is the thirty-eighth `WIRED` entry this plan appends after)
 - **Research Inputs**: specs/807_backward_determinism_forcing_check/reports/01_backward-determinism-forcing-check.md
@@ -133,7 +133,7 @@ Phases within the same wave can execute in parallel. The plan is fully sequentia
 declaration names that must exist and compile first; Phase 3 registers the file Phase 1 creates and
 runs the complete gate set over everything.
 
-### Phase 1: Promote the Draft to the Probe File [NOT STARTED]
+### Phase 1: Promote the Draft to the Probe File [COMPLETED]
 
 **Goal**: Create `specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean`
 — the general characterization (namespace `Probe807Forcing`), both fixtures transcribed verbatim
@@ -141,7 +141,7 @@ from their current wired originals, and the two instantiation sections — compi
 errors, zero warnings, and the draft's axiom record, under a placeholder header.
 
 **Tasks**:
-- [ ] Assemble the file in this order, with a one-line placeholder header comment to be replaced in
+- [x] Assemble the file in this order, with a one-line placeholder header comment to be replaced in
   Phase 3: (1) `import FormalSystem` and the two `open` lines exactly as in the draft; (2) the general
   section from the draft, lines `namespace Scratch807` … `end Scratch807`, with the namespace renamed
   to `Probe807Forcing` and every `Scratch807.` qualifier in the file rewritten to `Probe807Forcing.`
@@ -159,24 +159,24 @@ errors, zero warnings, and the draft's axiom record, under a placeholder header.
   `Probe807Forcing.valid_iff_stepBwdDet`, `Probe733Mirror.bdForce_not_valid`,
   `Probe733Mirror.not_stepBwdDet`, `Probe719Backward.bdForce_valid`,
   `Probe719Backward.forward_branching`.
-- [ ] Keep the fixture namespaces `Probe733Mirror` and `Probe719Backward` as the originals have them
+- [x] Keep the fixture namespaces `Probe733Mirror` and `Probe719Backward` as the originals have them
   (decision: verbatim transcription is what makes the drift check mechanical; the collection already
   lives with cross-file name ambiguity and qualifies every citation by file — the header's citation
   hygiene paragraph in Phase 3 says so).
-- [ ] The instantiation theorems' statements are fixed as in the draft and must not be weakened:
+- [x] The instantiation theorems' statements are fixed as in the draft and must not be weakened:
   `not_histBwdDet : ¬ Probe807Forcing.HistBwdDet F`; `bdForce_not_valid (q : Atom) :
   ¬ F.toTaskFrame.PlusValidOn (Probe807Forcing.bdForce q)`; `not_stepBwdDet :
   ¬ Probe807Forcing.StepBwdDet F`; `stepBwdDet_node (u v w : Node) (hu : Step u w) (hv : Step v w) :
   u = v`; `stepBwdDet : Probe807Forcing.StepBwdDet F`; `forward_branching : ∃ w u₁ u₂ : Node,
   Step w u₁ ∧ Step w u₂ ∧ u₁ ≠ u₂`; `bdForce_valid (q : Atom) : F.toTaskFrame.PlusValidOn
   (Probe807Forcing.bdForce q)`.
-- [ ] Verify the transcriptions are byte-identical to the originals' bodies (the Verification
+- [x] Verify the transcriptions are byte-identical to the originals' bodies (the Verification
   `diff` commands below); if a diff is non-empty, the ORIGINAL wins and the instantiation section is
   re-fitted to it, never the reverse.
-- [ ] Compile under the build guard; confirm zero errors, zero warnings, and the six axiom lines
+- [x] Compile under the build guard; confirm zero errors, zero warnings, and the six axiom lines
   below. If `rfl` at `not_histBwdDet` fails, record the failure in the issue log before trying
   anything else; the research's Tactic Survey rules out `decide` and the goal must not be restated.
-- [ ] Commit the compiling file (placeholder header included) as this phase's green sub-step.
+- [x] Commit the compiling file (placeholder header included) as this phase's green sub-step.
 
 **Timing**: 1.5 hours
 
