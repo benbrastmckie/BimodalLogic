@@ -1,7 +1,7 @@
 # Implementation Plan: Task #464
 
 - **Task**: 464 - gapPotential: the density coordinate of the termination measure
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours
 - **Dependencies**: 462 (REAL semantic; already landed as `MintBound/MintPaysAssembly.lean`, whose `pick_stage_source_rule` threading is what the density bucket plugs into); 463 (file_scope serialization edge only, no mathematical content)
 - **Research Inputs**: specs/464_gappotential_density_measure_component/reports/01_gappotential-density-component.md

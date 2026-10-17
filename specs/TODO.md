@@ -6,21 +6,20 @@ next_project_number: 810
 
 ## Task Order
 
-*Updated 2026-10-16. Generated from state.json dependency graph.*
+*Updated 2026-10-17. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,713,714,729,730,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,734,761,783 | 298,464,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
-| 3 | 219,428,498,499,500,763,809 | 231,465,497,734,761 | algebraic-representation, dataset-enhancement, decidability |
-| 4 | 125,429,543,807 | 428,498,499,500,809 | algebraic-representation, decidability, metalogic |
-| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
-| 6 | 411 | 410 | decidability |
-| 7 | 430 | 411 | decidability |
-| 8 | 412 | 430 | decidability |
-| 9 | 482 | 412 | decidability |
-| 10 | 177 | 178,282,296,481,482,543 | formula-refactor |
+| 1 | 127,128,178,257,298,465,481,502,559,566,570,604,616,617,664,709,713,714,729,730,741,743,744,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,805 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,428,497,618,734,761,783 | 298,465,502,616,772,805 | agent-system, algebraic-representation, categorical-structure, ... |
+| 3 | 219,429,498,499,500,763,809 | 231,428,497,734,761 | algebraic-representation, dataset-enhancement, decidability |
+| 4 | 125,410,543,807 | 429,498,499,500,809 | algebraic-representation, decidability, metalogic |
+| 5 | 411,501 | 125,410 | algebraic-representation, decidability |
+| 6 | 430 | 411 | decidability |
+| 7 | 412 | 430 | decidability |
+| 8 | 482 | 412 | decidability |
+| 9 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -73,15 +72,14 @@ next_project_number: 810
 
 ### Decidability
 
-464 [PLANNED] — Design and land gapPotential, the density coordinate of the...
-  └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired...
-    └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns...
-      └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2...
-        └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program...
-          └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program...
-            └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction...
-              └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
-                └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
+465 [NOT STARTED] — Complete the terminus restatement family at the repaired...
+  └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns...
+    └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2...
+      └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program...
+        └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program...
+          └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction...
+            └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
+              └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
@@ -1584,12 +1582,13 @@ Dependencies: 462, 463, 464 -- all three, so that the restatements are made agai
 ---
 
 ### 464. Gappotential density measure component
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [464_gappotential_density_measure_component/reports/01_gappotential-density-component.md]
 - **Plan**: [464_gappotential_density_measure_component/plans/01_gappotential-density-component.md]
+- **Summary**: [464_gappotential_density_measure_component/summaries/01_gappotential-density-component-summary.md]
 
 **Description**: Design and land `gapPotential`, the density coordinate of the termination measure. This is the one genuinely OPEN MATHEMATICAL question remaining on the totality terminus; it is research, not plumbing, and should be run with --lit.
 
