@@ -92,7 +92,7 @@ next_project_number: 816
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 812 [RESEARCHED] — Refresh the three stale generated inventory blocks that...
-815 [NOT STARTED] — RESEARCH TASK. The SUFFICIENCY half of realizable-type...
+815 [RESEARCHED] — RESEARCH TASK. The SUFFICIENCY half of realizable-type...
 
 ### Formula Refactor
 
@@ -130,11 +130,12 @@ next_project_number: 816
 
 ### 815. Certificate sufficiency dovetailing realizability
 - **Effort**: Sufficiency alone is the costable deliverable; the backward arm in (c) may refute it, which is a successful outcome
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 809
+- **Research**: [815_certificate_sufficiency_dovetailing_realizability/reports/01_certificate-sufficiency-dovetailing.md]
 
 **Description**: RESEARCH TASK. The SUFFICIENCY half of realizable-type adequacy: that the certificate's conditions IMPLY realizability. This is the gate on 761 and therefore on the aim.
 
