@@ -89,7 +89,7 @@ next_project_number: 812
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-809 [NOT STARTED] — RESEARCH TASK. The adequacy half of the closure-indexed...
+809 [RESEARCHED] — RESEARCH TASK. The adequacy half of the closure-indexed...
   └─ 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
 
 ### Formula Refactor
@@ -179,11 +179,12 @@ SCHEDULING. file_scope collides with task 768 (lean_challenge_snapshot_chunk_and
 
 ### 809. Realizable type adequacy countdown profile
 - **Effort**: Adequacy alone is the costable first deliverable; the full gate re-run beyond it is not costable in one round
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 805
 - **Parent**: Task 806
+- **Research**: [809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md]
 
 **Description**: RESEARCH TASK. The adequacy half of the closure-indexed periodicity gate, successor to the countdown-profile round that discharged the cheap half.
 

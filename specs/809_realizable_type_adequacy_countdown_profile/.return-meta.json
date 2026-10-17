@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md",
+      "summary": "Re-costs the realizable-type adequacy obligation against in-tree machinery (Realize.lean's UCoh/ULive/Disch bundle, AUFix, GoodCycle, PlusWitnessFamily's C2'/C5), finds its residue is a universal-vs-existential strength choice plus one missing generalized-Buchi nonemptiness algorithm, resolves gate 7 and renames gate 8 as the standing BoxStabFree scope line, and compiles the adequacy-gap witness on the coprime-cycle fixture."
+    },
+    {
+      "type": "other",
+      "path": "specs/evidence/seam-gluing-ray-product/realizable-type-adequacy-gap.lean",
+      "summary": "Twentieth wired evidence probe: a coh6-coherent 3-cycle carrying the eventuality ev at every position and its event psi2 at none, so the countdown profile's membership witnesses include non-fulfilling chains; 9 theorems, sorry-free, no new axiom, registered in scripts/check-evidence-probes.sh."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792219958_0ff342_809",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

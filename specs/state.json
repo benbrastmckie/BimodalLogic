@@ -1738,7 +1738,7 @@
     {
       "project_number": 809,
       "project_name": "realizable_type_adequacy_countdown_profile",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "RESEARCH TASK. The adequacy half of the closure-indexed periodicity gate, successor to the countdown-profile round that discharged the cheap half.\n\nSettled on compiled ground, do not re-derive: eventual periodicity of the countdown over the object-closure product is discharged (the seventeenth wired probe, specs/evidence/seam-gluing-ray-product/closure-indexed-periodicity.lean) -- it is an instance of iterate_eventually_periodic on a finite carrier, with Fintype/DecidableEq for subsets of plusSubformulaClosure resolving by inferInstance. The set-valued countdown-profile presentation and its quotient are pinned, and the gate table is rebuilt, in specs/806_set_valued_cell_quotient_index/reports/01_closure-indexed-periodicity-gate.md. On the coprime-cycle fixture the profile survives its round: gate 6 is internalised (prof6_separates_gate6_pair separates gate 6 own pair for every modulus coprime to three, with no parameter to choose), gate 5 is disarmed and exhibited, gate 7 passed in definability form. Probes: closure-profile-gate-rerun.lean (Probe806) and nside-modulus-gate.lean (Probe806N) in the same collection.\n\nWhat is open, and is this task scope:\n(1) ADEQUACY -- the expensive half the earlier round scoped but did not attempt: a coherence relation that computes REALIZABLE types rather than merely locally coherent ones, with untl/snce fulfilment. The earlier round carries only the LOCAL relation coh6 on one fixture. This is the gate on everything after it.\n(2) The two gates specific to a set-valued presentation that the tuple-shaped gate table has no rows for: NON-CIRCULARITY and STAB SELF-REFERENCE.\n(3) Gate 8 was SIDESTEPPED, not passed; gate 3 is CARRIED; gates 1 and 2 are NOT ADDRESSED (with a compiled qualification -- the refuted tuple n-side coordinates pass gates 1 and 2 and are still blind to the shift the datum has to see, Branch N-VERIFIED); gate 9 is OPEN. A gate probing one coordinate certifies one coordinate only.\n\nA refutation is an acceptable and successful outcome, and is NOT to be followed by a weakened, same-named substitute for ladderRealized or LadderCons (plan-compliance.md Statement Fidelity). Do not state a LadderCons without the box/stab clause.\n\nNot in question, do not re-attack: the SET of cells of any regular Z-model is finite and bounded (anchorCells_finite, anchorCells_ncard_le, RaySummary/AnchorLayer.lean). Only the computable INDEX is open. Four tuple-shaped index shapes are already refuted by wired probes in the collection; the tuple-widening line is spent and no further tuple coordinate is to be proposed.\n\nScope: reports and sorry-free evidence probe files under this task own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. Register any new probe in scripts/check-evidence-probes.sh, following the header convention of the probes already in the collection (what was asked, why no statement exists or what is settled, what the probe does NOT say).\n\nFixture reuse: the coprime-cycle fixtures in the collection are label-generic; the frame/regularity/history layer ports verbatim.",
       "effort": "Adequacy alone is the costable first deliverable; the full gate re-run beyond it is not costable in one round",
@@ -1752,8 +1752,16 @@
         "specs/evidence/seam-gluing-ray-product/"
       ],
       "created": "2026-10-16T19:47:38Z",
-      "last_updated": "2026-10-16T22:31:35Z",
-      "artifacts": []
+      "last_updated": "2026-10-17T07:08:54Z",
+      "artifacts": [
+        {
+          "path": "specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md",
+          "type": "report",
+          "summary": "Re-costs the realizable-type adequacy obligation against in-tree machinery (Realize.lean's UCoh/ULive/Disch bundle, AUFix, GoodCycle, PlusWitnessFamily's C2'/C5), finds its residue is a universal-vs-existential strength choice plus one missing generalized-Buchi nonemptiness algorithm, resolves gate 7 and renames gate 8 as the standing BoxStabFree scope line, and compiles the adequacy-gap witness on the coprime-cycle fixture."
+        }
+      ],
+      "session_id": "sess_1792219958_0ff342",
+      "next_artifact_number": 2
     },
     {
       "project_number": 810,
