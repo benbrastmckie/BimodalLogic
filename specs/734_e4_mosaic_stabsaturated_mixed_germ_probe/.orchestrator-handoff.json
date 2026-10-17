@@ -1,23 +1,23 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 7,
-  "summary": "All four plan phases completed and verified: the E4 probe mosaic-stab-saturated.lean is landed, headed, and wired (evidence gate PASS all 27 wired probes; verify-deploy PASS; guarded full lake build exit 0), and the Handbook residual gap is recorded in specs/literature-index.json. Verdict: Probe718Mosaic.StabSaturated is identically true (VACUOUS) on every finite mosaic set, so it is decidable on mixed germ states because constant and the review's R2 falsifier is unsatisfiable; the real SH1 content is the witness direction StabWitnessedAt (holds on Smix, fails on Sdrop). Task rests [PARTIAL] by the recorded user decision: the acquisition half (Handbook ch. 11 sections 5.10-5.11) is an external paywalled blocker, not a shortfall.",
+  "dispatch_seq": 13,
+  "summary": "This dispatch made NO edits: all four plan phases were already [COMPLETED] and committed at dispatch 7, and the plan carries no unchecked item. Re-verification confirms the landed state is intact seven cycles on -- lake env lean on the E4 probe exits 0 with the four axiom lines verbatim identical to its header record, the probe is git-tracked and still wired in scripts/check-evidence-probes.sh, sorry_count is 0, and the one vacuous hit is the same pre-existing out-of-scope one. The task's [PARTIAL] rest state is caused solely by the acceptance clause's acquisition half (Handbook of Modal Logic ch. 11 sections 5.10-5.11), which is paywalled and recorded as a residual gap by the settled user decision of cycle 4. Re-dispatching implement cannot advance that half, so a further implement cycle will find nothing to do either.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/summaries/01_e4-stabsaturated-mixed-germ-probe-summary.md",
-      "summary": "Implementation summary: all 4 phases done, [PARTIAL] resting state and its cause."
+      "summary": "Implementation summary from dispatch 7: all 4 phases done, the [PARTIAL] resting state and its cause. Still accurate; not rewritten."
     },
     {
       "type": "implementation",
       "path": "specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean",
-      "summary": "The E4 probe, sorry-free, wired into scripts/check-evidence-probes.sh."
+      "summary": "The E4 probe, sorry-free, wired into scripts/check-evidence-probes.sh; re-verified exit 0 at this dispatch."
     },
     {
       "type": "handoff",
       "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md",
-      "summary": "Continuation handoff naming the reactivation condition."
+      "summary": "Continuation handoff naming the reactivation condition; still current."
     }
   ],
   "skeleton": false,
@@ -30,11 +30,12 @@
       "phase": "acquisition half (not a plan phase)",
       "target": "specs/literature-index.json#hodkinson_2006",
       "verbatim_goal": "plus the two Handbook sections present in the Literature index with an index entry. Either half landing without the other is a [PARTIAL], not a completion.",
-      "what_was_tried": "Research-phase bounded acquisition (publisher URL https://www.csc.liv.ac.uk/~frank/MLHandbook/11.pdf, both author pages, the UWA repository, DOI 10.1016/S1570-2464(07)80014-0) re-measured 2026-10-09: preview still 3 pages / 51,937 bytes, byte-identical to the corpus copy; DOI resolves to Elsevier (paywalled). User decision (cycle 4, 2026-10-09): the half stays a recorded residual gap.",
+      "what_was_tried": "Research-phase bounded acquisition (publisher URL https://www.csc.liv.ac.uk/~frank/MLHandbook/11.pdf, both author pages, the UWA repository, DOI 10.1016/S1570-2464(07)80014-0) re-measured 2026-10-09: preview still 3 pages / 51,937 bytes, byte-identical to the corpus copy; DOI resolves to Elsevier (paywalled). Not re-probed at this dispatch: the user decision of cycle 4 settled it as a recorded residual gap, so re-probing would spend budget on a question already answered.",
       "why_it_failed": "The sections are paywalled with no free or preprint copy; acquisition needs institutional access or purchase, which the user declined for now. Reactivation condition recorded in hodkinson_2006.hazard."
     }
   ],
+  "verification_notes": "Scoped tier under this dispatch's Batch Gate Deferral directive. Discharged here: lake env lean on the probe (exit 0; axiom lines [propext, Classical.choice, Quot.sound] on stabSaturated_univ, Smix_mixed, Smix_witnessed, Sdrop_not_witnessed, matching the header record verbatim); git ls-files --error-unmatch on the probe (tracked); WIRED-array membership in scripts/check-evidence-probes.sh; bash -n on that script; sorry census 0; vacuous census 1 (pre-existing, out of scope); axiom census 14 against a dispatch-7 baseline of 15, i.e. DECREASED, from another task's committed work. Plan-compliance spot-check run against the probe file rather than the Lean source roots, since the probe lives under specs/evidence/ where the canned roots-scoped grep would falsely report MISSING: all 29 names from the plan's Goals bullets are declared. DEFERRED, not forgiven: the complete gate set (check-evidence-probes.sh over all 27 wired probes, verify-deploy.sh). It was discharged PASS/PASS at dispatch 7 under the phase's declared `full` tier; this dispatch closed no phase and modified no file, so there is no new phase closure for it to gate.",
   "continuation_path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md",
-  "next_action_hint": "Nothing until Handbook ch. 11 pp. 708-712 (sections 5.10-5.11) can be acquired; then ingest via /literature and re-open task 734.",
-  "git_checkpoint": "d8e4317ae5a36e20ad4e74186c4cd62ac21b5dd9"
+  "next_action_hint": "Do not re-dispatch implement -- dispatches 7 and 13 have now both found the plan complete. Nothing can advance until Handbook ch. 11 pp. 708-712 (sections 5.10-5.11) can be acquired; then ingest via /literature and re-open. Consider whether the task should be held so the orchestrator stops scheduling it (see user_decision on .return-meta.json, non-blocking).",
+  "git_checkpoint": "4b1fc5165"
 }

@@ -72,7 +72,7 @@ next_project_number: 810
 
 ### Decidability
 
-465 [RESEARCHED] — Complete the terminus restatement family at the repaired...
+465 [PLANNING] — Complete the terminus restatement family at the repaired...
   └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns...
     └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2...
       └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program...
@@ -1562,7 +1562,7 @@ POINTER REFRESH (2026-09-16 reorganization): `MintBound.lean` was split into the
 ---
 
 ### 465. Complete terminus restatement family
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 464

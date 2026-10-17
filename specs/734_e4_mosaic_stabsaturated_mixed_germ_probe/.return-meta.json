@@ -1,9 +1,9 @@
 {
   "status": "partial",
-  "dispatch_seq": 7,
-  "started_at": "2026-10-09T08:35:45Z",
+  "dispatch_seq": 13,
+  "started_at": "2026-10-16T18:21:00Z",
   "requires_user_review": true,
-  "review_reason": "All 4 plan phases completed and verified; the task rests [PARTIAL] by the recorded user decision (cycle 4, 2026-10-09): the acceptance clause's acquisition half (Handbook of Modal Logic ch. 11 sections 5.10-5.11 in the Literature index) is an external, paywalled blocker recorded as a residual gap with its reactivation condition.",
+  "review_reason": "No plan work remained at this dispatch: all 4 phases were already [COMPLETED] and committed at dispatch 7, and re-verification at dispatch 13 confirms the landed state is intact. The task rests [PARTIAL] by the recorded user decision (cycle 4, 2026-10-09): the acceptance clause's acquisition half (Handbook of Modal Logic ch. 11 sections 5.10-5.11 in the Literature index) is an external, paywalled blocker recorded as a residual gap with its reactivation condition. Re-dispatching implement cannot advance it; only the reactivation condition can.",
   "artifacts": [
     {
       "type": "summary",
@@ -13,17 +13,17 @@
     {
       "type": "implementation",
       "path": "specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean",
-      "summary": "The E4 probe (namespace Probe734Mosaic): stabSaturated_univ, StabWitnessedAt, Smix_witnessed, Sdrop_not_witnessed on the E2 Bool fixture; sorry-free, four axiom lines at [propext, Classical.choice, Quot.sound]."
+      "summary": "The E4 probe (namespace Probe734Mosaic): stabSaturated_univ, StabWitnessedAt, Smix_witnessed, Sdrop_not_witnessed on the E2 Bool fixture; sorry-free, four axiom lines at [propext, Classical.choice, Quot.sound], re-verified exit 0 at dispatch 13."
     },
     {
       "type": "handoff",
       "path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md",
-      "summary": "Continuation handoff: nothing to do until the Handbook ch. 11 reactivation condition is met."
+      "summary": "Continuation handoff: nothing to do until the Handbook ch. 11 reactivation condition is met. Still current at dispatch 13."
     }
   ],
   "partial_progress": {
-    "stage": "all_phases_completed_external_blocker",
-    "details": "Phases 1-4 all [COMPLETED] and committed (80dd7b32b, 5a168de13, fa567569e, d8e4317ae). Not a plan-phase blocker: the acquisition half of the acceptance clause is external and recorded as a residual gap per the user decision.",
+    "stage": "all_phases_completed_external_blocker_reverified",
+    "details": "Phases 1-4 all [COMPLETED] and committed at dispatch 7 (80dd7b32b, 5a168de13, fa567569e, d8e4317ae). Dispatch 13 made NO edits: it re-verified the landed state only. Not a plan-phase blocker: the acquisition half of the acceptance clause is external and recorded as a residual gap per the user decision.",
     "phases_completed": 4,
     "phases_total": 4,
     "handoff_path": "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md"
@@ -33,62 +33,39 @@
     "sorry_count": 0,
     "vacuous_count": 1,
     "vacuous_count_introduced_by_this_task": 0,
-    "vacuous_note": "The single hit is pre-existing and out of scope: FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal ... := trivial), present identically at HEAD before this task; no file under the Lean roots was touched.",
-    "axiom_count": 15,
+    "vacuous_note": "The single hit is pre-existing and out of scope: FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal ... := trivial), unchanged since before this task; no file under the Lean roots was touched by this task at any dispatch.",
+    "axiom_count": 14,
     "axiom_count_baseline": 15,
+    "axiom_note": "Axiom count DECREASED from the dispatch-7 baseline of 15 to 14. The decrease comes from another task's committed work (no uncommitted FormalSystem/ modifications in the tree); this task touches no file under the Lean roots. A decrease satisfies the must-not-increase gate.",
     "build_passed": true,
-    "evidence_gate": "PASS all 27 wired probe(s) compile (baseline 26 + 1)",
-    "verify_deploy": "PASS 14 checks, 0 failures"
+    "build_note": "Scoped tier, per this dispatch's Batch Gate Deferral directive: `lake env lean specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean` exit 0, with the four axiom lines verbatim identical to the probe header's recorded axiom block. The full gate set (check-evidence-probes.sh over all 27 wired probes; verify-deploy.sh) was discharged at dispatch 7 (PASS/PASS) and is DEFERRED here, not forgiven, because this dispatch closed no phase and modified no file.",
+    "probe_tracked": true,
+    "probe_wired": true,
+    "gate_script_syntax": "bash -n scripts/check-evidence-probes.sh OK"
   },
   "errors": [
     {
       "type": "execution",
-      "message": "Acquisition half not landed: Handbook of Modal Logic ch. 11 sections 5.10 Mosaics and 5.11 Monodic fragments are paywalled (DOI 10.1016/S1570-2464(07)80014-0); publisher preview still 3 pages, byte-identical to the corpus copy; no preprint found.",
+      "message": "Acquisition half not landed: Handbook of Modal Logic ch. 11 sections 5.10 Mosaics and 5.11 Monodic fragments are paywalled (DOI 10.1016/S1570-2464(07)80014-0); publisher preview still 3 pages, byte-identical to the corpus copy; no preprint found. Unchanged at dispatch 13 and not re-probed, per the recorded user decision.",
       "recoverable": true,
-      "recommendation": "When institutional access, purchase, or an open release of ch. 11 pp. 708-712 is available, ingest sections 5.10-5.11 via /literature, update hodkinson_2006 in specs/literature-index.json, and re-open task 734 for completion. Do not ingest a summary from memory."
+      "recommendation": "When institutional access, purchase, or an open release of ch. 11 pp. 708-712 is available, ingest sections 5.10-5.11 via /literature, update hodkinson_2006 in specs/literature-index.json, and re-open the task for completion. Do not ingest a summary from memory. Re-dispatching implement without that access cannot advance the task."
     }
   ],
-  "modified_files": [
-    "specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean",
-    "scripts/check-evidence-probes.sh",
-    "specs/literature-index.json",
-    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/plans/01_e4-stabsaturated-mixed-germ-probe.md",
-    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/summaries/01_e4-stabsaturated-mixed-germ-probe-summary.md",
-    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-1-handoff-20261009T083718Z.md",
-    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-3-handoff-20261009T083757Z.md",
-    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-2-handoff-20261009T083948Z.md",
-    "specs/734_e4_mosaic_stabsaturated_mixed_germ_probe/handoffs/phase-4-handoff-20261009T084436Z.md"
-  ],
-  "memory_candidates": [
-    {
-      "content": "A Prop-valued saturation predicate whose body already carries the agreement hypothesis it is meant to test (here m'.hist.state t = m.hist.state t feeding a definitionally universal stab clause) is identically true; always try the one-line discharge fun _ _ _ h m' _ heq => h m'.hist heq.symm before building fixtures. The non-trivial content is the WITNESS (diamond/SH1) direction: every refuter of box-chi has a same-germ refuter of chi IN THE SET.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/evidence/seam-gluing-ray-product/mosaic-stab-saturated.lean",
-      "confidence": 0.8,
-      "suggested_keywords": [
-        "mosaic",
-        "saturation",
-        "stab",
-        "vacuous predicate",
-        "SH1",
-        "witness direction"
-      ]
-    }
-  ],
-  "next_steps": "Task rests [PARTIAL] by user decision. Re-open only when Handbook ch. 11 pp. 708-712 (sections 5.10-5.11) can be acquired; see the continuation handoff.",
+  "modified_files": [],
+  "next_steps": "Task rests [PARTIAL] by user decision. Do not re-dispatch implement: no plan work remains and re-dispatch cannot advance the acquisition half. Re-open only when Handbook ch. 11 pp. 708-712 (sections 5.10-5.11) can be acquired; see the continuation handoff.",
+  "user_decision": {
+    "question": "Task 734's implement phase has now been dispatched twice after completion (seq 7 landed all four phases; seq 13 found nothing to do). Its [PARTIAL] rest state is caused only by the paywalled Handbook acquisition half, which you already decided to leave as a recorded residual gap. Should the task be held (e.g. [HOLD]) so the orchestrator stops re-dispatching it, or left [PARTIAL] and re-dispatched each cycle?",
+    "why_user": "This is a scheduling preference about how the orchestrator treats an externally-blocked task; the artifacts cannot infer it, and the cost it trades off (repeat dispatch cycles) is the user's to accept.",
+    "blocking": false
+  },
   "metadata": {
-    "session_id": "sess_1791529054_4455fa",
+    "session_id": "sess_1792193557_775a31",
     "agent_type": "lean-implementation-agent",
-    "duration_seconds": 649,
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
     "phases_completed": 4,
     "phases_total": 4,
     "compliance_check": "passed",
-    "issue_log_contribution": 6
+    "issue_log_contribution": 2
   }
 }
