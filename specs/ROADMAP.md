@@ -13,30 +13,51 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 ## Run these next
 
 ```bash
-/orchestrate 808                  # CI IS RED: the C16 env_linter failure; cheap, blocks nothing, fix first
-/orchestrate 809 --research --lit # THE critical path: adequacy of the realizable-type relation
+/orchestrate 811                       # UNBLOCKS the critical path: re-cut 809's spurious 734 edge; cheap, do first
+/orchestrate 809,807 --research --lit   # THE critical path: adequacy, then the backward-determinism risk check
 ```
 
-`808` is a one-binder signature edit; `809` is the single record on the critical path. Everything
-else below is subordinate to `809`.
+**Run in this order — `809` cannot dispatch until `811` lands.** `809` declares
+`dependencies = [734, 805]`. The `805` edge is discharged (its refutation is committed, status
+`[COMPLETED]`). The `734` edge is the live gate, and it is **spurious**: `734` is route R2
+(mosaics), which this file's own Stage 0 ruling records as a *consumer* of R1, since deciding
+mosaics presupposes deciding `⊡` — so it cannot be a prerequisite of R1 adequacy, which is what
+`809` is. Corroborating, `734`'s own report records its landed `StabSaturated` predicate as
+identically true with `SH1` the only non-trivial content, so the probe carries nothing adequacy
+consumes. `811` is the audit that records that verdict durably and drops the edge; it is the only
+reason `809` did not dispatch on its last two attempts. `807` is one fixture and serializes behind
+`809` on `scripts/check-evidence-probes.sh`, which is correct and must survive the re-cut.
+
+Everything below is subordinate to `809`. Infrastructure repairs (`810`, and the agent-system
+records held in the source store's own task space) are subordinate to all of it — they fix how
+the system reports and gates, not what is proved, and none of them gates `809`.
+
+**Not on the critical path, and not a substitute for it**: acquiring *Handbook of Modal Logic*
+ch. 11 (Hodkinson & Reynolds, "Temporal Logic", pp. 655–720, DOI 10.1016/S1570-2464(07)80014-0)
+lifts `734`'s hold and closes its acceptance clause. Only §5.10 "Mosaics" and §5.11 "Monodic
+fragments" are needed. Confirmed absent from the local Zotero library: it holds Handbook ch. 6
+and ch. 10 as per-chapter offprints — ch. 10 ends at p. 653, the target starts at p. 655 — and no
+volume-level PDF, so there is nothing to extract the chapter from. Institutional access or
+purchase is the route. Because R2 consumes R1, this unblocks a record; it does not advance the
+aim.
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 127,128,178,502,559,566,570,604
 /orchestrate 616,617,664,709,714,729,730,741
 /orchestrate 743,744,751,752,753,767,768,769
 /orchestrate 770,772,774,777,779,780,781,782
-/orchestrate 785,787,803,804,810,811
+/orchestrate 785,787,803,804,810
 ```
 
 ## Next batches
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 809 --research --lit # adequacy: a relation computing REALIZABLE, not locally coherent, types
-/orchestrate 761 --hard --lit    # ladder realization theorem — BLOCKED; see the 805 note in Stage 1
+/orchestrate 811                      # FIRST: re-cut 809's spurious 734 edge, or 809 cannot dispatch at all
+/orchestrate 809,807 --research --lit  # adequacy (REALIZABLE, not locally coherent, types), then the backward-determinism check
+/orchestrate 761 --hard --lit    # ladder realization theorem — BLOCKED; all edges discharged but NOT costable until adequacy returns
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781,782 --hard  # sliced-certificate internals: full-label evaluation, Phase 5 hoist, Shape D leaf cache
-/orchestrate 807 --research --lit # cheap check: can a closed L⁺ formula force backward determinism on a regular ℤ-frame?
 # Stage 2 — supporting semantics and metalogic
 /orchestrate 616,618             # duration monoid BD⁺ and its twisted-arrow category, then Path(F) and cor:path-fibration
 /orchestrate 617,566             # the Reflection and Possible Worlds clauses of app:presheaf-dictionary
@@ -50,6 +71,7 @@ else below is subordinate to `809`.
 /orchestrate 777,779,780         # commit-path and plan-compliance records from the ladder-index run
 /orchestrate 772,783             # jq re-serialization of formatting-sensitive records, bounded in-file block edits
 /orchestrate 753,774             # conclusion-stage null-resolution drops, refuted-REASON recording
+/orchestrate 810                 # agent-system defect group: unfollowable batch-gate directive, vacuous-pass snapshot regex, refutation-inverting compliance check, literature --read path, gate16 — run in a separate cycle from 768 (shares lean-challenge-snapshot.sh)
 /orchestrate 729                 # purpose-written .title fields so TODO.md stops rendering descriptions
 /orchestrate 257                 # only once the Stage 0 token exists
 # Stage 4 — the long fronts
@@ -91,8 +113,9 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 - **784** is the tracker for the freeze and is itself `[BLOCKED]` on the migration. It owns the only
   part this repository can do: once the records have landed in the source store, verify them there,
   delete them from `specs/state.json`, regenerate `specs/TODO.md`, and drop this section.
-- **805** is substantively spent — its refutation is the record 806 was filed against — but it sits
-  at `[RESEARCHED]`, so it is still a live dependency edge on 761. See the 761 bullet in Stage 1.
+- **805** is closed (`[COMPLETED]`): its refutation is the record 806 was filed against, and the
+  close-out round re-measured it rather than carrying it (`PASS all 37 wired probe(s) compile`,
+  full `lake build` green, no new axiom). Its dependency edges on 761 and 809 are both discharged.
 
 Every other open task appears in exactly one batch line above, except the two in **Run these
 next**, which repeat for priority.
@@ -109,13 +132,16 @@ next**, which repeat for priority.
       periodic summary step of the run-layer programme, which returned a negative verdict; any
       surviving statement must name its restricted fragment and say why `not_finite_width_fmp` does
       not refute it
-- [ ] Close **805** or rule it open. It blocks 761 by a dependency edge while carrying no remaining
-      work; its gate 6 is the finding 806 was built on
 - [ ] Give **785** a disposition — frozen like the seven, or re-sited
 
 **713** is held by ruling (2026-10-03): its ARGUED CTL⋆ 2EXPTIME lower bound is a citable sanity
-ceiling with no consumer. **734** (route R2, mosaics) is `[PARTIAL]` by ruling and is **not** a
-fallback route — R2 is a *consumer* of R1, since deciding mosaics presupposes deciding `⊡`.
+ceiling with no consumer. **734** (route R2, mosaics) is `[HOLD]` by ruling and is **not** a
+fallback route — R2 is a *consumer* of R1, since deciding mosaics presupposes deciding `⊡`. Its
+probe half is landed, wired and committed; only the paywalled Handbook §§5.10–5.11 remain, which
+is why it is held rather than partial (two post-completion implement dispatches found nothing to
+advance). Reactivation condition: `specs/literature-index.json#hodkinson_2006.hazard`. Because R2
+consumes R1, **nothing on the critical path may be gated on it** — see the `811` note under "Run
+these next".
 
 ## Stage 1 — Decidability of L⁺
 
@@ -160,10 +186,11 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   `box`/`stab` letters Stage 1 needs.
 - **761 — the ladder realization theorem** (`LadderCons`, `ladderRealized` per cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
-  `[BLOCKED]`. Its dependency edges on 760, 775 and 806 are discharged; **805 is the one edge still
-  open on the graph**, though it carries no remaining work (Stage 0). Substantively 761 waits on
-  **809's adequacy verdict**, which no edge yet records — add `--depends-on-add 809` if you want the
-  graph to say so. NOT costable until adequacy returns.
+  `[BLOCKED]`. **Every one of its declared edges — 760, 775, 805, 806 — is now discharged**
+  (760/775 archived, 806 `[COMPLETED]`, 805 `[COMPLETED]`), so it will read as dispatchable and
+  is not. Substantively 761 waits on **809's adequacy verdict**, which no edge records — add
+  `--depends-on-add 809` so the graph says what the mathematics says. NOT costable until adequacy
+  returns.
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone.
   761 and 763 share the `RaySummary` library set and serialize through the edge between them.
@@ -204,11 +231,11 @@ on 500 and batches with Stage 4's capstone.
 
 ## Stage 3 — Datasets, examples, documentation, hygiene
 
-Independent of every other stage. **808 is red right now** — `check-module-invariants.sh` exits 1 on
-`FAIL C16`, an unused `[Finite F.WorldState]` on `mem_HF_iff_no_forbidden`
-(`FormalSystem/Semantics/ShiftFiniteType.lean:149`), inherited from a commit under another task and
-beyond `scripts/nolints.json`'s baseline. Prefer the signature edit to a nolints entry, check the
-call sites first, and **do not run `lake exe runLinter --update`**, which would grandfather the
+Independent of every other stage. The `FAIL C16` red — an unused `[Finite F.WorldState]` on
+`mem_HF_iff_no_forbidden` (`FormalSystem/Semantics/ShiftFiniteType.lean:149`) — is fixed by the
+signature edit, and `check-module-invariants.sh` now exits 0. The standing rule it established
+holds for any future recurrence: prefer the signature edit to a `scripts/nolints.json` entry, check
+the call sites first, and **do not run `lake exe runLinter --update`**, which would grandfather the
 regression wholesale.
 
 803 and 804 both touch `Verified/Termination/SubformulaProperty.lean`, so the pair serializes inside
