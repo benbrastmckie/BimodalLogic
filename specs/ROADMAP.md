@@ -13,7 +13,7 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 ## Run these next
 
 ```bash
-/orchestrate 815,807 --hard --lit   # THE critical path: certificate sufficiency, plus the backward-determinism risk check
+/orchestrate 815 --hard --lit   # THE critical path: certificate sufficiency
 ```
 
 **The gate is now SUFFICIENCY, filed as `815`.** `809` landed the certificate
@@ -43,10 +43,8 @@ coprime-cycle fixture does not. Gate 9 is OPEN, gates 1 and 2 are NOT ADDRESSED 
 compiled n-side qualification carried from `nside-modulus-gate.lean`, Branch N-VERIFIED), gate 3
 is CARRIED. A gate probing one coordinate certifies one coordinate only.
 
-`807` is dispatchable now — its only declared edge was `809`, and that edge is discharged. It is
-one fixture and shares `scripts/check-evidence-probes.sh` and
-`specs/evidence/seam-gluing-ray-product/` with `815`, so the two **batch together** rather than
-being separated; the overlap is unordered, so add an edge if the ordering between them matters.
+`807` is closed with a POSITIVE verdict (the Stage 1 risk table below and the Stage 0 ruling it
+adds); it is no longer scheduled here.
 
 **The likeliest way `815` fails is the backward arm**, and that is recorded in its own
 description: certificate condition (4) is the backward mirror of (3), but
@@ -85,8 +83,7 @@ aim.
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-# 815 shares evidence-probe territory with 807, so batch the two rather than separating them.
-/orchestrate 815,807 --hard --lit  # sufficiency: the six conditions imply realizability; then the backward-determinism check
+/orchestrate 815 --hard --lit  # sufficiency: the six conditions imply realizability
 /orchestrate 761 --hard --lit    # ladder realization theorem — do NOT dispatch until sufficiency returns; `blocked` is resumable, so the graph will not stop you
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781,782 --hard  # sliced-certificate internals: full-label evaluation, Phase 5 hoist, Shape D leaf cache
@@ -165,6 +162,14 @@ next**, which repeat for priority.
       surviving statement must name its restricted fragment and say why `not_finite_width_fmp` does
       not refute it
 - [ ] Give **785** a disposition — frozen like the seven, or re-sited
+- [ ] Rule on **807**'s positive verdict: `(q S ⊥) → ⊡(q S ⊥)` characterizes backward determinism
+      over regular `ℤ`-frames (`backward-determinism-forcing-formula.lean`), so the
+      know-time-do-not-forget family is a candidate reduction target. Options: (A, recommended)
+      keep Stage 1 moving and scope the transfer question — whether relativizing finitely many
+      `Yχ → ⊡Yχ` instances (χ over ψ's closure) reaches a non-r.e. row of Halpern–van der
+      Meyden–Vardi 2004's Table 1 or the single-agent row that "simplifies" — as its own task with
+      the HV89/HVV PDFs in hand; (B) halt Stage 1 until that is settled; (C) record the probe
+      only, no follow-up
 
 **713** is held by ruling (2026-10-03): its ARGUED CTL⋆ 2EXPTIME lower bound is a citable sanity
 ceiling with no consumer. **734** (route R2, mosaics) is `[HOLD]` by ruling and is **not** a
@@ -255,12 +260,12 @@ A refutation is a successful outcome, and is **not** to be followed by a weakene
 substitute for `ladderRealized` or `LadderCons`; do not state a `LadderCons` without the box/stab
 clause (`stab_mem_tpOf_iff` is per cell).
 
-**Two risks not covered there**, both unrealized:
+**Two risks not covered there** — the first unrealized, the second now realized with its Stage 0 ruling pending:
 
 | Failure mode | Evidence that locates it |
 |---|---|
 | No constructor for infinite-width, finitely branching regular frames | `Rbad`/`Rok` refuted as repair shapes (`b2b-frame-constructor-branching.lean`); the positive halves need TWO-SIDED finite branching; the `Node` thread-unfolding shape (`Limits/NoFiniteWidth.lean:132`) is neither refuted nor built. **Not yet filed** — unlike the row below this is not a one-fixture check; scoping a task needs a reading of `Limits/NoFiniteWidth.lean:132` and the `b2b-frame-constructor-branching.lean` refutation first |
-| A closed L⁺ formula forces backward determinism on a regular `ℤ`-frame — the one route by which a published negative result could reach L⁺ | `stab`'s clause (`PlusLanguage/PlusTruth.lean:93`) fails the backward closure of the historical-necessity tradition (Thomason 1984 §4 Def. 6(2); Caleiro–Viganò–Volpe Def. 2.5 `Wdc`), which is why the corpus's negatives do not apply. If forcing is possible, the know-time-do-not-forget family becomes a reduction target. **Filed as 807**: one fixture; `Probe719Backward` and `Probe733Mirror` already inhabit the backward factor |
+| A closed L⁺ formula forces backward determinism on a regular `ℤ`-frame — the one route by which a published negative result could reach L⁺ | **REALIZED (closed check, positive verdict; 807)**: `(q S ⊥) → ⊡(q S ⊥)` is valid on a regular `ℤ`-frame iff the frame is backward deterministic (`backward-determinism-forcing-formula.lean`: `valid_iff_histBwdDet`, choice-free at `[propext, Quot.sound]`; `valid_iff_stepBwdDet` on regular frames; refuted on `Probe733Mirror`, valid on the forward-branching `Probe719Backward`, so it forces backward and not forward determinism). `ℤ`-specific: on dense time `q S ⊥` is unsatisfiable and the formula forces nothing, consistent with `deterministic_not_plusDefinable`. The know-time-do-not-forget family is therefore a candidate reduction target; the reduction is NOT attempted and no undecidability is claimed — Thomason's own T×W tradition is axiomatizable and Kamp-valid decidable (1984 §4), and every corpus negative found needs ≥ 2 informed agents while L⁺ has one. **Stage 0 ruling pending.** |
 
 The corpus position — why no published negative result reaches TM/L⁺, and why that is not evidence
 of decidability — is recorded in `specs/literature/README.md`.

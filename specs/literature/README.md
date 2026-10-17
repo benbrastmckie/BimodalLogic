@@ -202,5 +202,13 @@ The one route by which a published negative result could still reach L⁺ is a c
 forcing backward determinism on a regular `ℤ`-frame. `stab`'s clause (`PlusTruth.lean:93`) fails the
 backward closure of the historical-necessity tradition (Thomason 1984 §4 Def. 6(2);
 Caleiro–Viganò–Volpe Def. 2.5 `Wdc`), which is why the corpus's negatives do not apply. If forcing
-is possible, the know-time-do-not-forget family becomes a reduction target. This is tracked as an
-unrealized risk in `specs/ROADMAP.md`'s Stage 1.
+is possible, the know-time-do-not-forget family becomes a reduction target. That check is now closed
+POSITIVE: `(q S ⊥) → ⊡(q S ⊥)` is valid on a regular `ℤ`-frame iff the frame is backward deterministic
+(`specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean`,
+`valid_iff_histBwdDet` / `valid_iff_stepBwdDet`; refuted on `Probe733Mirror`, valid on
+`Probe719Backward`). The dictionary, once backward closure holds: `⊡` is single-agent synchronous
+perfect-recall knowledge with the world state as the observation, `□` is the same-time universal
+modality, and state-local atoms are observable local state. The reduction itself is NOT attempted
+and no undecidability is claimed; the open question — whether that places L⁺ in a non-r.e. row of
+Halpern–van der Meyden–Vardi 2004's Table 1 (every such row found needs ≥ 2 agents) or in the
+single-agent row that "simplifies" — is tracked as a Stage 0 ruling in `specs/ROADMAP.md`.

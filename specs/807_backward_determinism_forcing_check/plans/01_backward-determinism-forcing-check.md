@@ -208,14 +208,14 @@ the current files, never trusted from here.
 
 ---
 
-### Phase 2: Record the Realized Risk in ROADMAP.md and the Literature README [NOT STARTED]
+### Phase 2: Record the Realized Risk in ROADMAP.md and the Literature README [COMPLETED]
 
 **Goal**: Turn the two places that call this risk "unrealized" into a factual record of the
 positive verdict with the ruling explicitly pending, add the Stage 0 ruling item, and stop
 `ROADMAP.md` listing this task as runnable.
 
 **Tasks**:
-- [ ] `specs/ROADMAP.md`, Stage 1 "Two risks not covered" table (line 263 at plan time): replace the
+- [x] `specs/ROADMAP.md`, Stage 1 "Two risks not covered" table (line 263 at plan time): replace the
   second row's evidence cell with a record of this shape — **REALIZED (closed check, positive
   verdict)**: `(q S ⊥) → ⊡(q S ⊥)` is valid on a regular ℤ-frame iff the frame is backward
   deterministic (`backward-determinism-forcing-formula.lean`: `valid_iff_histBwdDet`, choice-free at
@@ -226,9 +226,9 @@ positive verdict with the ruling explicitly pending, add the Stage 0 ruling item
   therefore a candidate reduction target; the reduction is NOT attempted and no undecidability is
   claimed — Thomason's own T×W tradition is axiomatizable and Kamp-valid decidable (1984 §4), and
   every corpus negative found needs ≥ 2 informed agents while L⁺ has one. **Stage 0 ruling pending.**
-- [ ] Same file, the table's lead-in sentence: change "**Two risks not covered there**, both
+- [x] Same file, the table's lead-in sentence: change "**Two risks not covered there**, both
   unrealized:" to say one is unrealized and one is now realized with its ruling pending.
-- [ ] Same file, Stage 0 list: append one checkbox — "Rule on **807**'s positive verdict:
+- [x] Same file, Stage 0 list: append one checkbox — "Rule on **807**'s positive verdict:
   `(q S ⊥) → ⊡(q S ⊥)` characterizes backward determinism over regular ℤ-frames
   (`backward-determinism-forcing-formula.lean`), so the know-time-do-not-forget family is a
   candidate reduction target. Options: (A, recommended) keep Stage 1 moving and scope the transfer
@@ -236,11 +236,11 @@ positive verdict with the ruling explicitly pending, add the Stage 0 ruling item
   non-r.e. row of Halpern–van der Meyden–Vardi 2004's Table 1 or the single-agent row that
   'simplifies' — as its own task with the HV89/HVV PDFs in hand; (B) halt Stage 1 until that is
   settled; (C) record the probe only, no follow-up."
-- [ ] Same file, the `## Run these next` block and its echoes (lines 16, 46, 88–89 at plan time):
+- [x] Same file, the `## Run these next` block and its echoes (lines 16, 46, 88–89 at plan time):
   remove `,807` from the `/orchestrate 815,807 --hard --lit` lines, drop or reword the "`807` is
   dispatchable now" sentence and the "815 shares evidence-probe territory with 807" comment so the
   roadmap no longer schedules a completed task; change nothing else in that block.
-- [ ] `specs/literature/README.md`, "The L⁺ position in the corpus": replace the closing sentence
+- [x] `specs/literature/README.md`, "The L⁺ position in the corpus": replace the closing sentence
   "This is tracked as an unrealized risk in `specs/ROADMAP.md`'s Stage 1." with: the check is closed
   POSITIVE (`backward-determinism-forcing-formula.lean`, the formula and the iff, one sentence); the
   dictionary — once backward closure holds, `⊡` is single-agent synchronous perfect-recall knowledge
@@ -249,10 +249,10 @@ positive verdict with the ruling explicitly pending, add the Stage 0 ruling item
   of HVV 2004's Table 1 (every such row found needs ≥ 2 agents) or in the single-agent row that
   "simplifies" — is tracked as a Stage 0 ruling in `specs/ROADMAP.md`. Leave the paragraph's first
   five sentences unchanged.
-- [ ] Record, via `issue-record.sh` with `--kind issue --class scope --severity none
+- [x] Record, via `issue-record.sh` with `--kind issue --class scope --severity none
   --suggested-channel follow_up_task`, the follow-up the ruling's option A needs (the transfer
   question as its own task), so the conclusion stage can create it; this plan does not create tasks.
-- [ ] Read the full diff of both files once, confirming every hunk is inside the intended table
+- [x] Read the full diff of both files once, confirming every hunk is inside the intended table
   row, lead-in sentence, Stage 0 list, run-next block, or README paragraph; commit.
 
 **Timing**: 1 hour
