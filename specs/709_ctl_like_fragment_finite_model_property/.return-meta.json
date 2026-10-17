@@ -1,0 +1,51 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-17T22:18:38Z",
+  "completed_at": "2026-10-17T22:26:51Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/709_ctl_like_fragment_finite_model_property/reports/01_f4-summary-step-disposition.md",
+      "summary": "F4 disposition under route R1: E3 selected the time-axis Ramsey colour and R1 landed its summary step (exists_periodic_subfamily, exists_hitPresented) with no width, so the finite-width F4 theorem has no consumer; recommends closing as a reasoned exclusion with one README amendment."
+    }
+  ],
+  "next_steps": "Plan a single-phase record close: [COMPLETED WITH EXCLUSIONS] with the Reasoned Exclusions table from the report, plus the Limits/README.md amendment; user to resolve the Stage 0 value ruling on this report.",
+  "user_decision": {
+    "question": "Route R1 selected the Ramsey colour (E3) but has already landed its summary step over the time axis with no width (Periodic.lean, HitComplete.lean), so the finite-width F4 theorem this task would prove has no consumer. How should 709 close?",
+    "options": [
+      "Option A — close as a reasoned exclusion: single-phase record plan, [COMPLETED WITH EXCLUSIONS], amend Limits/README.md to point at exists_periodic_subfamily; no Lean written",
+      "Option B — pursue the restricted-fragment finite-width periodicity theorem (safety/bounded-step stab) as a standalone sliced-class result, 40-80 h, no current consumer"
+    ],
+    "recommended": "Option A — close as a reasoned exclusion: single-phase record plan, [COMPLETED WITH EXCLUSIONS], amend Limits/README.md to point at exists_periodic_subfamily; no Lean written",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1792275344_c203a3_709",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a task is a component of a parent route and the parent route lands the component in a different form (here: Ramsey periodicity over time-axis colourings instead of over finite-width structures), the honest close is a reasoned exclusion citing the landed declaration as evidence, not [ABANDONED] and not forcing the originally stated theorem through.",
+      "category": "PATTERN",
+      "source_artifact": "specs/709_ctl_like_fragment_finite_model_property/reports/01_f4-summary-step-disposition.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "reasoned-exclusion",
+        "component-task",
+        "F4",
+        "Ramsey",
+        "RaySummary"
+      ]
+    }
+  ],
+  "modified_files": [
+    "specs/709_ctl_like_fragment_finite_model_property/reports/01_f4-summary-step-disposition.md"
+  ]
+}
