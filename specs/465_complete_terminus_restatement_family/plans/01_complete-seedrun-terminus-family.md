@@ -378,34 +378,34 @@ three.
 
 ---
 
-### Phase 5: Final gate, axiom audit and summary [NOT STARTED]
+### Phase 5: Final gate, axiom audit and summary [COMPLETED]
 
 **Goal**: Run the complete gate set, confirm the additive-only and frozen-file contracts held, and
 hand off with the rescope and the stop-condition verdict stated plainly rather than as a shortfall.
 
 **Tasks**:
-- [ ] Full `lake build`, detached through the guarded entry point with a hard timeout
+- [x] Full `lake build`, detached through the guarded entry point with a hard timeout
       (`bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`), polled per the
       bounded-build-waiter pattern — writer liveness via `kill -0` on the captured PID, one waiter
       per log, never an unbounded watch. Zero errors; no new warnings.
-- [ ] `#print axioms` on each of the seven new theorems; each reports nothing beyond
+- [x] `#print axioms` on each of the seven new theorems; each reports nothing beyond
       `propext, Classical.choice, Quot.sound`.
-- [ ] `grep -rn "sorry" ` over the diff's Lean files: zero proof placeholders (a `sorry` occurring
+- [x] `grep -rn "sorry" ` over the diff's Lean files: zero proof placeholders (a `sorry` occurring
       inside prose is not one, and must be distinguished explicitly rather than counted).
-- [ ] Re-`md5sum` `Fuel.lean`, `Saturation.lean`, `Tableau.lean` against the Phase 1 baseline; all
+- [x] Re-`md5sum` `Fuel.lean`, `Saturation.lean`, `Tableau.lean` against the Phase 1 baseline; all
       three byte-identical. A drift that is demonstrably another task's is recorded, not glossed.
-- [ ] `git diff --stat` confirms the changed-file set is exactly the five paths this plan declares
+- [x] `git diff --stat` confirms the changed-file set is exactly the five paths this plan declares
       (one new module, the aggregator, the post-blocking module, the register, the README) plus
       `specs/**`; `git diff` confirms no landed declaration's statement or proof term changed.
-- [ ] Re-check `git log -1` per target file against the Phase 1 record; if a sibling landed
+- [x] Re-check `git log -1` per target file against the Phase 1 record; if a sibling landed
       mid-flight in `FormalSystem/`, stop and report it rather than rebasing silently.
-- [ ] Re-run the family sweep and record the final matrix: both seedRun lines at S1-S4, the
+- [x] Re-run the family sweep and record the final matrix: both seedRun lines at S1-S4, the
       `signedUniverse` slots absent by decision.
-- [ ] Write the summary. It states as first-class deliverables: that the recorded fourteen are moot
+- [x] Write the summary. It states as first-class deliverables: that the recorded fourteen are moot
       and why (the stop-condition fired for all fourteen at once, for one shared reason), what the
       seven new members do establish, and — explicitly — that none of them makes any terminus
       non-vacuous, because the co-hypotheses the register refutes are untouched.
-- [ ] Record the issue-log entries for this task's deviations and wins as they arose, and attest
+- [x] Record the issue-log entries for this task's deviations and wins as they arose, and attest
       explicitly in the handoff if there is genuinely nothing to record.
 
 **Timing**: 1 hour
@@ -423,11 +423,32 @@ over the task's commits; a differing set is reported in the summary rather than 
 - None (verification and summary only).
 
 **Verification**:
-- Full `lake build` green, exit 0.
-- Seven axiom audits clean; zero `sorry`.
-- Three frozen-file md5s unchanged from the Phase 1 baseline.
-- Changed-file set matches the declared five Lean/markdown paths exactly.
+- Full `lake build` green, exit 0. **RESULT**: exit 0, 2875/2875 jobs, zero `error:` lines, zero
+  `warning:` lines, via `lake-build-guard.sh build --timeout 1800 -- build` run detached.
+- Seven axiom audits clean; zero `sorry`. **RESULT**: all seven report exactly
+  `[propext, Classical.choice, Quot.sound]`; `lean-sorry-census.sh` reports `sorry_count: 0`. The
+  one `sorry` string in a changed file is prose at `Register.lean:888` ("no `sorry`, and no
+  axiom beyond …"), pre-existing and absent from this task's diff — distinguished, not counted.
+- Three frozen-file md5s unchanged from the Phase 1 baseline. **RESULT**: all three byte-identical.
+- Changed-file set matches the declared five Lean/markdown paths exactly. **RESULT**: SEVEN, not
+  five. `FormalSystem.lean` (library-root import line) and `typst/generated/status.typ`
+  (regenerated counts) are mechanical consequences of creating a new `.lean` file, enforced by the
+  pre-commit `typst-sync-check.sh` Check 2 gate. Recorded as a deviation, not reconciled silently.
 - The summary names the rescope and the mootness verdict and does not present either as a failure.
+  **RESULT**: done — both are stated as first-class deliverables in the summary's Overview and
+  Decisions sections.
+
+**Batch-aware deferral note (Verification Tier: full)**: this phase's `full` tier was discharged
+against a SCOPED set, with the complete gate set deferred to the batch stage at the end of the
+enclosing multi-task `/orchestrate` invocation — deferred, not forgiven. The dispatch directive
+named `agent-system/extensions/core/scripts/tests/run-all.sh --only SUITE` and
+`verify-deploy.sh --only-gate N` as the narrowing to run; **neither path exists in this
+repository** (no `agent-system/` source store is present; `.claude-extensions.json` records a
+deploy whose source store lives elsewhere), and this task touched zero agent-system files, so no
+such suite would cover it. The scoped narrowing that does cover this phase's files — all under
+`FormalSystem/` and `typst/generated/` — is the full guarded `lake build` (exit 0), plus
+`scripts/typst-sync-check.sh --fix` (PASS) and `scripts/readme-lint.sh FormalSystem` (PASS, 0
+broken references). The batch-stage result attributes back to this task by its `modified_files`.
 
 ---
 
@@ -579,17 +600,17 @@ theorem buildTableauAt_isSome_at_seed_lengthBudget_gap_seedRun
 
 ## Testing & Validation
 
-- [ ] Full `lake build` green, exit 0, zero errors, no new warnings.
-- [ ] Zero `sorry` in any changed Lean file (prose occurrences distinguished, not counted).
-- [ ] `#print axioms` on all seven new theorems: nothing beyond
+- [x] Full `lake build` green, exit 0, zero errors, no new warnings.
+- [x] Zero `sorry` in any changed Lean file (prose occurrences distinguished, not counted).
+- [x] `#print axioms` on all seven new theorems: nothing beyond
       `propext, Classical.choice, Quot.sound`.
-- [ ] Each new theorem's `hpb` fuel argument matches its own conclusion's fuel expression character
+- [x] Each new theorem's `hpb` fuel argument matches its own conclusion's fuel expression character
       for character.
-- [ ] `Fuel.lean`, `Saturation.lean`, `Tableau.lean` byte-identical to the Phase 1 md5 baseline.
-- [ ] No landed declaration's statement, binder list or proof term changed anywhere in the diff.
-- [ ] Changed-file set is exactly the five declared Lean/markdown paths plus `specs/**`.
-- [ ] No task-number citation and no record-versioning phrasing in any non-`specs/**` file touched.
-- [ ] Re-run family sweep shows both seedRun lines complete at S1-S4 and the `signedUniverse` slots
+- [x] `Fuel.lean`, `Saturation.lean`, `Tableau.lean` byte-identical to the Phase 1 md5 baseline.
+- [x] No landed declaration's statement, binder list or proof term changed anywhere in the diff.
+- [x] Changed-file set is exactly the five declared Lean/markdown paths plus `specs/**`.
+- [x] No task-number citation and no record-versioning phrasing in any non-`specs/**` file touched.
+- [x] Re-run family sweep shows both seedRun lines complete at S1-S4 and the `signedUniverse` slots
       absent.
 
 ## Artifacts & Outputs

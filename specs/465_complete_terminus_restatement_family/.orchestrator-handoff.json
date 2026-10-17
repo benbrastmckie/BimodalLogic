@@ -1,16 +1,29 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 14,
-  "summary": "Planned the settled rescope: the fourteen recorded _lengthBudget/signedUniverse exclusions are moot (their _run family roots were retired as vacuous, so none is a one-line application and the dispatch's stop-condition fires for all fourteen at once). The plan instead lands the seedRun family -- _fixed_seedRun S2-S4 and a new _gap_seedRun line S1-S4, seven theorems total, in one new submodule MintBound/SeedRunTermini.lean joining the two parallel DAG branches -- plus the C12/C9 record correction, with S5/S6 excluded as hlab-vacuous. Five sequential phases, 5.5 hours; every research figure was re-derived against the tree during planning with zero drift.",
+  "status": "implemented",
+  "dispatch_seq": 15,
+  "phases_completed": 5,
+  "phases_total": 5,
+  "summary": "Rescoped per the settled decision and completed the seedRun terminus family: a new module FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SeedRunTermini.lean joins the two parallel import branches and holds seven new theorems -- _fixed_seedRun S2-S4 and a whole new _gap_seedRun line S1-S4. All seven compiled first try; full guarded lake build exit 0 with zero errors and zero warnings; zero sorry; #print axioms clean on all seven; axiom count unchanged at 14; the three frozen files byte-identical to the Phase 1 baseline. The task's recorded fourteen exclusions are reported MOOT -- their family roots were retired with the nine _run termini -- and the record now says so in PostBlocking.lean's C12 record, the representative's docstring, and Register.lean entry 25. The changed-file set is seven non-specs paths, two more than the plan declared: FormalSystem.lean and typst/generated/status.typ are pre-commit-gate consequences of adding a module.",
+  "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/465_complete_terminus_restatement_family/plans/01_complete-seedrun-terminus-family.md",
-      "summary": "Five-phase plan: re-derivation gate, new submodule + _fixed_seedRun S2-S4, _gap_seedRun S1-S4, record correction, full gate and summary."
+      "type": "summary",
+      "path": "specs/465_complete_terminus_restatement_family/summaries/01_complete-seedrun-terminus-family-summary.md",
+      "summary": "Implementation summary: the seven landed termini, the mootness verdict on the recorded fourteen, the full verification record, and the README table-drift follow-up."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SeedRunTermini.lean",
+      "summary": "New submodule: seven seedRun termini, 258 lines, the only module importing both PostBlocking and FiveComponent."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 5,
-  "blockers": []
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SeedRunTermini.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/PostBlocking.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/Register.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/README.md",
+    "FormalSystem.lean",
+    "typst/generated/status.typ"
+  ]
 }

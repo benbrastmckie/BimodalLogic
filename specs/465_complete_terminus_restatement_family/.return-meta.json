@@ -1,22 +1,30 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-17T03:59:38Z",
+  "completed_at": "2026-10-17T04:14:07Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/465_complete_terminus_restatement_family/plans/01_complete-seedrun-terminus-family.md",
-      "summary": "Five-phase, fully sequential plan landing the seedRun terminus family (seven new theorems in one new submodule) plus the record correction; the recorded fourteen are reported moot."
+      "type": "summary",
+      "path": "specs/465_complete_terminus_restatement_family/summaries/01_complete-seedrun-terminus-family-summary.md",
+      "summary": "Seven new seedRun termini landed in a new MintBound submodule, completing both the _fixed_seedRun and _gap_seedRun lines at S1-S4, plus the record corrections marking the fourteen recorded exclusions moot."
     }
   ],
-  "next_steps": "Run /implement 465 to execute the plan",
-  "phase_count": 5,
-  "estimated_hours": 5.5,
-  "dependency_waves": [[1], [2], [3], [4], [5]],
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1792193557_775a31_465",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Rescoped per the settled decision and landed the seedRun terminus family: a new MintBound/SeedRunTermini.lean joining the post-blocking and five-component import branches, holding _fixed_seedRun S2-S4 and a whole new _gap_seedRun line S1-S4 (seven theorems, zero sorry, axioms within {propext, Classical.choice, Quot.sound}). The task's recorded fourteen exclusions are reported moot -- their family roots were retired with the nine _run termini, so none is a one-line application of anything. Record corrections in PostBlocking.lean, Register.lean, MintBound.lean and MintBound/README.md now state the fourteen as unavailable rather than outstanding, and state that none of the seven new members makes any terminus non-vacuous.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 14
+  "metadata": {
+    "session_id": "sess_1792193557_775a31",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed"
+  }
 }
