@@ -156,28 +156,28 @@ itself.
 
 ---
 
-### Phase 2: Wrap RaySummary and KTypeSummary with targeted regeneration [NOT STARTED]
+### Phase 2: Wrap RaySummary and KTypeSummary with targeted regeneration [COMPLETED]
 
 **Goal**: Convert the two named tables into generated blocks, regenerate them without touching
 any file outside this task's territory, and prove every description survived byte-for-byte.
 
 **Tasks**:
-- [ ] Record the pre-wrap state. Write a small scratchpad script `desc-snapshot.py` that, given
+- [x] Record the pre-wrap state. Write a small scratchpad script `desc-snapshot.py` that, given
   a README path and the `| File | Lines | Description |` header line, emits one line per row as
   `key<TAB>description` using the Phase 1 escape-aware split and `row_key` semantics (strip
   backticks and link labels). Run it on both READMEs and save the output; expect 16 rows for
-  RaySummary and 6 for KTypeSummary (re-derived at plan time from the current files).
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/README.md`. Insert
+  RaySummary and 6 for KTypeSummary (re-derived at plan time from the current files). *(completed: 16 + 6 rows)*
+- [x] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/README.md`. Insert
   `<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Decidability/RaySummary -->` on
   the line immediately above the `| File | Lines | Description |` header under "What it holds"
   and `<!-- END GENERATED -->` on the line immediately after the last `.lean` row
   (`LadderModel.lean`). The Requirements table further down (its own `\|` cell included) must
-  stay outside the markers.
-- [ ] Re-read `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md`. Insert
+  stay outside the markers. *(completed)*
+- [x] Re-read `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md`. Insert
   `<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical/KTypeSummary -->`
   above the `| File | Lines | Description |` header under "Modules" and `<!-- END GENERATED -->`
-  after the `KTypeFin.lean` row. Default options suffice for both (no subdirectories).
-- [ ] Targeted regeneration procedure (reused verbatim by Phases 4-6):
+  after the `KTypeFin.lean` row. Default options suffice for both (no subdirectories). *(completed)*
+- [x] Targeted regeneration procedure (reused verbatim by Phases 4-6):
   1. Precondition: `git status --porcelain -- README.md FormalSystem/README.md FormalSystem/Metalogic/README.md`
      is empty. If it is not, STOP: a sibling has an in-flight edit; check `git log` to confirm
      it is not this task's own, report it, and fall back to the out-of-tree method (extract the
@@ -191,17 +191,17 @@ any file outside this task's territory, and prove every description survived byt
      restores exactly those three files to HEAD (pathspec form, permitted after the snapshot;
      the only content discarded is the writer's own output from step 3, by the step 1
      precondition). Confirm with `git status --porcelain` that the only modified non-`specs/`
-     paths are this task's own.
-- [ ] Post-wrap diff: re-run `desc-snapshot.py` on both READMEs and `diff` against the saved
+     paths are this task's own. *(deviation: altered — restore step 4 skipped: the writer rewrote only this task's two blocks because sibling 812 had already made the rollup READMEs current; precondition held, snapshot taken)*
+- [x] Post-wrap diff: re-run `desc-snapshot.py` on both READMEs and `diff` against the saved
   pre-wrap output after sorting both by key. Required result: zero differences (16 + 6
   descriptions byte-identical). Then `git diff -- <the two READMEs>` and confirm every other
   changed hunk is one of: the two marker lines, a refreshed count (expected on `AnchorLayer`,
   `Profile`, `Periodic`; re-derive with `wc -l` rather than trusting this list), a thousands
   separator (`1,627`, `1,004`), or a row moved by alphabetical ordering. Any other change is a
-  stop condition.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check`: neither README appears
-  in the stale-file list.
-- [ ] Commit the two READMEs by explicit path: `git add -- FormalSystem/Metalogic/Decidability/RaySummary/README.md FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md`.
+  stop condition. *(completed: both description diffs empty; hunks are markers, reorder, AnchorLayer 418 / Profile 581 / Periodic 1,627 refresh, 1,004 separator)*
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check`: neither README appears
+  in the stale-file list. *(completed: PASS INV)*
+- [x] Commit the two READMEs by explicit path: `git add -- FormalSystem/Metalogic/Decidability/RaySummary/README.md FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md`. *(completed: via git-commit-phase.sh)*
 
 **Timing**: 1 hour
 
