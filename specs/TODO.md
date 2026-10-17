@@ -91,7 +91,7 @@ next_project_number: 816
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-812 [RESEARCHED] — Refresh the three stale generated inventory blocks that...
+812 [PLANNED] — Refresh the three stale generated inventory blocks that...
 
 ### Formula Refactor
 
@@ -117,7 +117,7 @@ next_project_number: 816
 
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 743 [NOT STARTED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-744 [NOT STARTED] — Wrap the RaySummary and KTypeSummary inventory tables in...
+744 [RESEARCHING] — Wrap the RaySummary and KTypeSummary inventory tables in...
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
 ### Build Performance
@@ -351,11 +351,12 @@ Raised during orchestration of the realizable-type adequacy / countdown-profile 
 
 ### 812. Stale generated inventory blocks refresh
 - **Effort**: One emit-mode run plus review of the regenerated blocks
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 809
+- **Plan**: [812_stale_generated_inventory_blocks_refresh/plans/01_refresh-stale-inventory-blocks.md]
 
 **Description**: Refresh the three stale generated inventory blocks that check-module-invariants.sh reports as an INV FAIL group: README.md, FormalSystem/README.md, and FormalSystem/Metalogic/README.md.
 
@@ -1204,7 +1205,7 @@ RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The roadmap-genera
 ---
 
 ### 744. Wrap inventory tables generated markers
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None

@@ -1,0 +1,30 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/812_stale_generated_inventory_blocks_refresh/plans/01_refresh-stale-inventory-blocks.md",
+      "summary": "Two-phase plan: regenerate the three stale generated inventory blocks via check-module-invariants.sh --emit-inventory, review and commit the three READMEs, then confirm from gate output that the INV FAIL group is gone."
+    }
+  ],
+  "next_steps": "Run /orchestrate 812 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1792261594_b3e099_812",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 2,
+    "estimated_hours": 0.75,
+    "dependency_waves": [[1], [2]]
+  },
+  "memory_candidates": [],
+  "modified_files": [
+    "specs/812_stale_generated_inventory_blocks_refresh/plans/01_refresh-stale-inventory-blocks.md"
+  ],
+  "proposed_file_scope": [
+    "README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md"
+  ],
+  "dispatch_seq": 1
+}
