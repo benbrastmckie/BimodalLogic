@@ -224,4 +224,189 @@ theorem gapPotential_identifyOriented {U : Finset SignedFormula}
       ≤ gapPotential U σ ord :=
   gapPotential_identifyTime (incomparableB_of_firstIncomparablePair_oriented htrig) hirr
 
+/-! ### The strict drop at a density step — the payment
+
+**The direction here is a GATE, not a nicety.** `gapPotential_lt_of_density` concludes a strict
+`<`, never a `≤`, and its hypothesis list is not widened to make it close: the whole point of a
+measure coordinate is that the step it pays for strictly spends it. Register entry 7 exists
+because a weakening was once mistaken for a repair, and the same standard applies here. If the
+strict drop had failed, the honest outcome would have been a recorded impossibility result rather
+than a `≤` presented as a payment.
+
+The payment is stated at the **ordering operation** rather than at the rule, exactly as
+`selfGuardPotential_lt_of_addFuture` is: the content is that two fresh edges `(s, f)` and
+`(f, t')` fill the gap `(s, t')`, and the rule's identity enters only through the inversion
+lemmas above it, which say that `densityRule` is what produces those two edges and that its own
+guard is what makes the gap unfilled beforehand. -/
+
+/-- **`densityRule`'s own gap-target list**, transcribed verbatim from the rule's arm.
+
+Both of the rule's filter conjuncts are here, in the rule's own order and polarity: (i) `t'` is
+maximal in `s`'s forward reach, (ii) `t'` is not already reached through an intermediate. Only
+(ii) is what `gapFilled` measures — see `gapFilled`'s docstring for why (i) is deliberately not a
+measure coordinate — but the list itself needs both, because it is the rule's own selection and
+the inversion lemmas below read the rule's `match` against it. -/
+def densityGapTargets (ord : TimeOrdering) (s : TimeIndex) : List TimeIndex :=
+  (ord.futureOf s).filter fun t' =>
+    (ord.futureOf t').isEmpty
+      && !((ord.futureOf s).any fun t'' => (ord.futureOf t'').contains t')
+
+/-- **The rule's second filter conjunct, read as "the gap is unfilled".** This is the equation
+that makes `gapFilled` the right transcription rather than a guess: the rule's own conjunct (ii)
+on a selected target is literally `gapFilled ord s t' = false`. -/
+theorem gapFilled_eq_false_of_mem_densityGapTargets {ord : TimeOrdering} {s t' : TimeIndex}
+    (h : t' ∈ densityGapTargets ord s) : gapFilled ord s t' = false := by
+  simp only [densityGapTargets, List.mem_filter, Bool.and_eq_true, Bool.not_eq_true'] at h
+  exact h.2.2
+
+/-- **A selected target lies in the source's forward reach.** The `U`-side membership the density
+bucket needs for its target column: under `OrdTimesKnown` this puts `t'` in the branch's known
+times, and confinement then puts a formula at `t'` in `U`. -/
+theorem mem_futureOf_of_mem_densityGapTargets {ord : TimeOrdering} {s t' : TimeIndex}
+    (h : t' ∈ densityGapTargets ord s) : t' ∈ ord.futureOf s :=
+  List.mem_of_mem_filter h
+
+/-- **`densityRule`'s trigger shape, recovered from `isApplicable`.** The rule's arm is
+`| .densityRule, .pos, .allFuture _ => decide (FrameClass.Dense ≤ fc)`, so applicability fixes the
+sign and the formula's top constructor. Destructuring `sf` in the conclusion is what lets the
+consumer feed the inversion lemmas below, whose trigger argument is a literal
+`⟨Sign.pos, Formula.allFuture ψ, l⟩`, without a further rewrite. -/
+theorem isApplicable_densityRule_trigger {sf : SignedFormula}
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    (hA : isApplicable TableauRule.densityRule sf fc = true) :
+    ∃ ψ l, sf = ⟨Sign.pos, Formula.allFuture ψ, l⟩ := by
+  obtain ⟨sign, φ, l⟩ := sf
+  cases sign
+  case neg => simp [isApplicable] at hA
+  case pos =>
+    -- `Formula.allFuture ψ` is the derived shape `((⊥ → ⊥) untl (ψ → ⊥)) → ⊥`, so the arm's
+    -- pattern is only visible once the implication, the `untl`, its guard and its event are all
+    -- split apart. Same extra nesting `applyRule_allFuturePos_emitted_nil_of_untlSnceFree`
+    -- needs, and for the same reason.
+    cases φ with
+    | imp a c =>
+        cases c with
+        | bot =>
+            cases a with
+            | untl g e =>
+                cases g with
+                | imp g1 g2 =>
+                    cases g1 with
+                    | bot =>
+                        cases g2 with
+                        | bot =>
+                            cases e with
+                            | imp e1 e2 =>
+                                cases e2 with
+                                | bot => exact ⟨e1, l, rfl⟩
+                                | _ => simp [isApplicable] at hA
+                            | _ => simp [isApplicable] at hA
+                        | _ => simp [isApplicable] at hA
+                    | _ => simp [isApplicable] at hA
+                | _ => simp [isApplicable] at hA
+            | _ => simp [isApplicable] at hA
+        | _ => simp [isApplicable] at hA
+    | _ => simp [isApplicable] at hA
+
+/-- **The rule fires only into a nonempty target list**, inverted from a non-`notApplicable`
+result. One `by_contra`-shaped rewrite and no arm analysis: on a trigger the arm accepts there are
+exactly two outcomes — the `t' :: _` branch, or `.notApplicable` — so a reported result that is not
+`.notApplicable` *forces* the list nonempty. Same inversion shape as
+`applyRule_untlNeg_active_guard`. -/
+theorem applyRule_densityRule_targets_ne_nil {ψ : Formula} {l : Label} {b : Branch}
+    {ord : TimeOrdering} {res : RuleResult} {o : TimeOrdering}
+    (hA : applyRule TableauRule.densityRule ⟨Sign.pos, Formula.allFuture ψ, l⟩ b ord = (res, o))
+    (hne : res ≠ RuleResult.notApplicable) : densityGapTargets ord l.time ≠ [] := by
+  intro hnil
+  simp only [densityGapTargets] at hnil
+  rw [show applyRule TableauRule.densityRule ⟨Sign.pos, Formula.allFuture ψ, l⟩ b ord
+      = (RuleResult.notApplicable, ord) by
+    simp only [applyRule, Formula.allFuture, Formula.someFuture, Formula.neg, Formula.top]
+    rw [hnil]] at hA
+  exact hne (by simp_all)
+
+/-- **The ordering the rule returns, read off the engine.** Two edges and nothing else:
+`l.time < freshTime` and `freshTime < t'`, where `freshTime` is `b.nextTime` and `t'` is the head
+of the rule's own target list. This is what makes `gapPotential_lt_of_density`'s `addFuture`
+hypotheses the engine's own output rather than a modelling choice. -/
+theorem applyRule_densityRule_ord {ψ : Formula} {l : Label} {b : Branch} {ord : TimeOrdering}
+    {t' : TimeIndex} {tail : List TimeIndex}
+    (hgt : densityGapTargets ord l.time = t' :: tail) :
+    (applyRule TableauRule.densityRule ⟨Sign.pos, Formula.allFuture ψ, l⟩ b ord).2
+      = (ord.addFuture l.time b.nextTime).addFuture b.nextTime t' := by
+  simp only [densityGapTargets] at hgt
+  simp only [applyRule, Formula.allFuture, Formula.someFuture, Formula.neg, Formula.top]
+  rw [hgt]
+
+/-- **The two inversions assembled**: at a firing `densityRule` the target list has a head, the
+head's gap is unfilled, the head is in the trigger's forward reach, and the returned ordering is
+the two-edge interpolation at that head. This is the single fact the density bucket consumes. -/
+theorem applyRule_densityRule_shape {ψ : Formula} {l : Label} {b : Branch} {ord : TimeOrdering}
+    {res : RuleResult} {o : TimeOrdering}
+    (hA : applyRule TableauRule.densityRule ⟨Sign.pos, Formula.allFuture ψ, l⟩ b ord = (res, o))
+    (hne : res ≠ RuleResult.notApplicable) :
+    ∃ t', gapFilled ord l.time t' = false ∧ t' ∈ ord.futureOf l.time
+      ∧ o = (ord.addFuture l.time b.nextTime).addFuture b.nextTime t' := by
+  rcases hgt : densityGapTargets ord l.time with _ | ⟨t', tail⟩
+  · exact absurd hgt (applyRule_densityRule_targets_ne_nil hA hne)
+  · have hmem : t' ∈ densityGapTargets ord l.time := by rw [hgt]; exact List.mem_cons_self
+    refine ⟨t', gapFilled_eq_false_of_mem_densityGapTargets hmem,
+      mem_futureOf_of_mem_densityGapTargets hmem, ?_⟩
+    have ho := applyRule_densityRule_ord (ψ := ψ) (b := b) hgt
+    rw [hA] at ho
+    exact ho
+
+/-- **Interpolating into an unfilled gap strictly drops the gap potential.**
+
+Stated at the ordering operation rather than at the rule, for the same reason
+`selfGuardPotential_lt_of_addFuture` is: the content is that the two fresh edges `(s, f)` and
+`(f, t')` fill the column `(s, t')`, and `gapFilled_le_of_grow` says no other column can flip the
+other way, because edges are added and never removed. One column strictly lost from a set that
+only shrinks is a strict decrease.
+
+**The conclusion is a strict `<`.** It is not a `≤`, and the hypothesis list below is not widened
+to make it close — see the section prose on register entry 7.
+
+Every hypothesis is one a consumer already has. `hunfilled` is the rule's own conjunct (ii),
+supplied by `applyRule_densityRule_shape`. The two σ-hits are supplied at the engine level by
+`SigmaFixed` plus confinement for the trigger, and by `mem_knownTimes_of_mem_futureOf` under
+`OrdTimesKnown` plus confinement for the target. Nothing is assumed about the frame class, `Tmax`,
+or the shape of `U` — which is why the discharge this feeds carries no frame-class hypothesis.
+
+The fresh time `f` never appears in a reach longer than one edge here, so `futureOf`'s fuel of
+`100` is nowhere near reached. -/
+theorem gapPotential_lt_of_density {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {ord : TimeOrdering} {s f t' : TimeIndex}
+    (hunfilled : gapFilled ord s t' = false)
+    {x y : SignedFormula} (hx : x ∈ U) (hy : y ∈ U)
+    (hhx : (σ x).label.time = s) (hhy : (σ y).label.time = t') :
+    gapPotential U σ ((ord.addFuture s f).addFuture f t') < gapPotential U σ ord := by
+  have hgrow : ∀ q ∈ ord.constraints, q ∈ ((ord.addFuture s f).addFuture f t').constraints := by
+    intro q hq
+    simp only [TimeOrdering.addFuture, List.mem_cons]
+    exact Or.inr (Or.inr hq)
+  refine Finset.card_lt_card ⟨?_, ?_⟩
+  · intro p hp
+    obtain ⟨hmem, hafter⟩ := Finset.mem_filter.mp hp
+    refine Finset.mem_filter.mpr ⟨hmem, ?_⟩
+    rcases hd : gapFilled ord (σ p.1).label.time (σ p.2).label.time with _ | _
+    · rfl
+    · exact absurd (hafter.symm.trans (gapFilled_le_of_grow hgrow _ _ hd)) (by simp)
+  · intro hsub
+    have hcol : ((x, y) : SignedFormula × SignedFormula)
+        ∈ (U ×ˢ U).filter
+          (fun p => gapFilled ord (σ p.1).label.time (σ p.2).label.time = false) := by
+      refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hx, hy⟩, ?_⟩
+      rw [hhx, hhy]
+      exact hunfilled
+    have hfilled : gapFilled ((ord.addFuture s f).addFuture f t') s t' = true := by
+      simp only [gapFilled, List.any_eq_true, List.contains_iff_mem]
+      refine ⟨f, mem_futureOf_of_mem_constraints _ s f ?_,
+        mem_futureOf_of_mem_constraints _ f t' ?_⟩
+      · simp [TimeOrdering.addFuture]
+      · simp [TimeOrdering.addFuture]
+    have hafter := (Finset.mem_filter.mp (hsub hcol)).2
+    rw [hhx, hhy, hfilled] at hafter
+    exact absurd hafter (by simp)
+
 end FormalSystem.Metalogic.Decidability

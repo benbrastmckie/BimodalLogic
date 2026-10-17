@@ -261,23 +261,32 @@ existing signature changes, and the aggregator is the module's only dependent.
 
 ---
 
-### Phase 3: The Strict Drop at a Density Step [NOT STARTED]
+### Phase 3: The Strict Drop at a Density Step [COMPLETED]
 
 **Goal**: `gapPotential_lt_of_density` — the payment, stated at the ordering operation
 `(ord.addFuture s f).addFuture f t'` with the guard and the two σ-hits as hypotheses.
 
 **Tasks**:
-- [ ] Prove the `applyRule .densityRule` inversion facts: the trigger shape via `isApplicable`,
+- [x] Prove the `applyRule .densityRule` inversion facts: the trigger shape via `isApplicable`,
       the result shape `(.persistent (T(ψ)@f :: gProps), (ord.addFuture l.time f).addFuture f t')`,
       and `heq : (ord.futureOf l.time).filter _ = t' :: tail` as the head-of-filter fact. Use the
       `repeat' split` pattern from `applyRule_irreflOrd` (`Invariants.lean:425`) with
       `set_option maxHeartbeats 4000000 in` written declaration-scoped.
-- [ ] Derive `gapFilled ord s t' = false` for the filter head from the rule's own conjunct (ii) —
+      *(deviation: altered — no heartbeat raise is needed and none was written. The 4000000 figure
+      is `applyRule_irreflOrd`'s, and that proof pays it because it QUANTIFIES the rule and so
+      splits all 36 constructors; fixing the rule to `.densityRule` collapses the match to one
+      arm. The real obstacle was different: `Formula.allFuture ψ` is a derived shape
+      `((⊥ → ⊥) untl (ψ → ⊥)) → ⊥`, so the arm's constructor pattern is invisible until
+      `Formula.allFuture`, `someFuture`, `neg` and `top` are in the simp set — the same extra
+      nesting `applyRule_allFuturePos_emitted_nil_of_untlSnceFree` needs. With that, the
+      inversions elaborate at the default budget, so `GapPotential.lean` carries no
+      `set_option maxHeartbeats` line at all.)*
+- [x] Derive `gapFilled ord s t' = false` for the filter head from the rule's own conjunct (ii) —
       this is the before-state of the paying column.
-- [ ] Derive the after-state `gapFilled ((ord.addFuture s f).addFuture f t') s t' = true` from
+- [x] Derive the after-state `gapFilled ((ord.addFuture s f).addFuture f t') s t' = true` from
       `mem_futureOf_of_mem_constraints` (`Invariants.lean:225`) applied to the two direct edges
       `(s, f)` and `(f, t')`; both are length-1 paths, so the fuel of 100 is nowhere near reached.
-- [ ] State and prove `gapPotential_lt_of_density` with hypotheses `hunfilled : gapFilled ord s t' = false`,
+- [x] State and prove `gapPotential_lt_of_density` with hypotheses `hunfilled : gapFilled ord s t' = false`,
       `hx : x ∈ U`, `hy : y ∈ U`, `hhx : (σ x).label.time = s`, `hhy : (σ y).label.time = t'`,
       concluding `gapPotential U σ ((ord.addFuture s f).addFuture f t') < gapPotential U σ ord`.
       The proof is `Finset.card_lt_card` on a strict subset: the column `(x, y)` leaves the
@@ -285,7 +294,7 @@ existing signature changes, and the aggregator is the module's only dependent.
       is modelled exactly on `selfGuardPotential_lt_of_addFuture` (`OrientedGate.lean:700`) —
       guard as a hypothesis, σ-hit as a hypothesis, stated at the ordering operation rather than
       at the rule.
-- [ ] Docstring must say that the direction here is a **gate**, not a nicety: the lemma is a
+- [x] Docstring must say that the direction here is a **gate**, not a nicety: the lemma is a
       strict `<`, never a `≤`, and the hypothesis list is not widened to make it close (register
       entry 7).
 
