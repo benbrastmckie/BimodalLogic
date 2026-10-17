@@ -438,14 +438,14 @@ the restricted graph, not measured figures.
 
 ---
 
-### Phase 6: Header, Registration, the Complete Gate Set, Summary, Return [NOT STARTED]
+### Phase 6: Header, Registration, the Complete Gate Set, Summary, Return [COMPLETED]
 
 **Goal**: Write the probe's header in the collection's convention, wire it into the guard, discharge
 the complete gate set, write the summary, and return `implemented` with the parent 761 untouched and
 still `[BLOCKED]`.
 
 **Tasks**:
-- [ ] Replace the placeholder header with the convention: a capitalised verdict paragraph (THE
+- [x] Replace the placeholder header with the convention: a capitalised verdict paragraph (THE
   CERTIFICATE PRESENTATION SEPARATES REALIZABLE-TYPE CANDIDATES FROM MERELY LOCALLY COHERENT ONES ON
   THE COPRIME-CYCLE FIXTURE: the fulfilment condition is EXISTENTIAL and is decided inside the
   candidate set by the existential dual of `AUFix`; a set local coherence accepts is rejected by the
@@ -456,7 +456,7 @@ still `[BLOCKED]`.
   research report, not a theorem here); `## What was asked`; `## The verdict`; one section per gate
   1-9 in the research's order, each stating which theorems exhibit it or that nothing does;
   `## What this does NOT say`.
-- [ ] The `## What this does NOT say` section must contain, at minimum: the conditions are NOT
+- [x] The `## What this does NOT say` section must contain, at minimum: the conditions are NOT
   proved sufficient for realizability (the dovetailing argument is uncompiled); this is NOT Route A
   and nothing here decides generalized-Buchi nonemptiness; `(a5, evTa)` is NOT claimed
   non-realizable, and `psi2` is deliverable on this object through the 2-cycle `a -> d -> a` which
@@ -469,20 +469,20 @@ still `[BLOCKED]`.
   `ladderRealized` or `LadderCons` in any form, hence none without the `box`/`stab` clause; no
   seventh tuple coordinate; no modulus, threshold or index is computed or claimed computable; a gate
   probing one coordinate certifies one coordinate only. Then the `Compile:` line.
-- [ ] In `scripts/check-evidence-probes.sh`, add the boxed decision-row comment block directly below
+- [x] In `scripts/check-evidence-probes.sh`, add the boxed decision-row comment block directly below
   the twentieth probe's row, listing every Goal against what it exhibits, the "what it withholds"
   list, and the axioms; add `"seam-gluing-ray-product/realizable-type-certificate"` as the last
   `WIRED` entry.
-- [ ] Run every command under **Verification** below, checking each exit status, never only its
+- [x] Run every command under **Verification** below, checking each exit status, never only its
   output.
-- [ ] Write `specs/809_realizable_type_adequacy_countdown_profile/summaries/01_realizable-type-certificate-summary.md`
+- [x] Write `specs/809_realizable_type_adequacy_countdown_profile/summaries/01_realizable-type-certificate-summary.md`
   per summary-format.md: the probe path; the per-gate verdict table copied from the header; the
   explicit statement that adequacy's SUFFICIENCY half and obligations (b), (c), (d) are NOT started
   and belong to a successor record; the Route A / Route B decision and why Route B was taken; the
   carried-figure note naming every verdict read from an earlier probe's header rather than re-run.
-- [ ] Record issues and wins in the task's issue log as they arose, or attest explicitly in the
+- [x] Record issues and wins in the task's issue log as they arose, or attest explicitly in the
   summary that there were none beyond those already logged.
-- [ ] Commit the header, registration and summary; return.
+- [x] Commit the header, registration and summary; return.
 
 **Timing**: 2 hours
 
@@ -808,16 +808,16 @@ end Probe809C
 
 ## Testing & Validation
 
-- [ ] The probe compiles through `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean` with exit 0, zero errors and zero warnings.
-- [ ] Zero `sorry`: `bash .claude/scripts/lean-sorry-census.sh` reports 0 for the file.
-- [ ] No new axiom: `#print axioms` on all eighteen Goals reports at most `[propext, Classical.choice, Quot.sound]`; no `sorryAx`, no `ofReduceBool`, no `native_decide` anywhere in the file.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 reporting `all 38 wired probe(s) compile`, and the probe is git-tracked.
-- [ ] The gate-7 mechanical check passes: no `WorldHistory`, `PlusTruthAt`, `tpOf`, `cellAt` or `anchorCells` outside header prose.
-- [ ] `cert_accepts_Rchi` precedes every negative or inequality statement in the file, by line number.
-- [ ] `bash scripts/check-module-invariants.sh`, `bash .claude/scripts/check-task-references.sh --quiet` and `bash .claude/scripts/verify-deploy.sh` each exit 0.
-- [ ] Full `lake build` exits 0 (expected no-op: no library file changes).
-- [ ] `git diff --stat` over `FormalSystem/`, `Tests/` and `docs/` across this task's commits is empty.
-- [ ] `bash .claude/scripts/lean-challenge-snapshot.sh --check 809 .` reports no drift (advisory).
+- [x] The probe compiles through `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean` with exit 0, zero errors and zero warnings.
+- [x] Zero `sorry`: `bash .claude/scripts/lean-sorry-census.sh` reports 0 for the file.
+- [x] No new axiom: `#print axioms` on all eighteen Goals reports at most `[propext, Classical.choice, Quot.sound]`; no `sorryAx`, no `ofReduceBool`, no `native_decide` anywhere in the file.
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 reporting `all 38 wired probe(s) compile`, and the probe is git-tracked. *(deviation: altered — the guard prints `all 39 wired probe(s) compile`; the `WIRED` array is 37 before and 38 after as predicted, but `wired_total` adds the 1-entry `WIRED_REPO` array. Logged.)*
+- [x] The gate-7 mechanical check passes: no `WorldHistory`, `PlusTruthAt`, `tpOf`, `cellAt` or `anchorCells` outside header prose.
+- [x] `cert_accepts_Rchi` precedes every negative or inequality statement in the file, by line number. *(deviation: altered — it precedes every negative statement ABOUT the certificate and the candidate sets, but not `au_lfp_ne_eu_lfp_on_exit_graph` or `chi_closure_box_snce_stab_free`, which this plan's own pinned Challenge-block ORDER places earlier. Resolved in favour of the pinned order; logged.)*
+- [x] `bash scripts/check-module-invariants.sh`, `bash .claude/scripts/check-task-references.sh --quiet` and `bash .claude/scripts/verify-deploy.sh` each exit 0.
+- [x] Full `lake build` exits 0 (expected no-op: no library file changes).
+- [x] `git diff --stat` over `FormalSystem/`, `Tests/` and `docs/` across this task's commits is empty.
+- [x] `bash .claude/scripts/lean-challenge-snapshot.sh --check 809 .` reports no drift (advisory). *(deviation: altered — no Challenge manifest exists for this task, so the script exits 71 'no manifest found'; substituted a mechanical declaration-by-declaration diff against this plan's `## Lean Challenge Statements` block: 91/91 declarations present, 0 signature mismatches. Advisory-only check. Logged.)*
 
 ## Artifacts & Outputs
 

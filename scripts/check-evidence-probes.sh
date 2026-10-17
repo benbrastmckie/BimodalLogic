@@ -1262,6 +1262,81 @@ EVIDENCE="specs/evidence"
 #                                                           | `coh6_no_a_d_a`, whose hypothesis is a `chi`-CARRYING
 #                                                           | type. Axioms `[propext, Classical.choice, Quot.sound]` on
 #                                                           | all nine theorems.
+# seam-gluing-ray-product/realizable-type-certificate       | THE CERTIFICATE PRESENTATION SEPARATES
+#                                                           | REALIZABLE-TYPE CANDIDATES FROM MERELY LOCALLY
+#                                                           | COHERENT ONES, and ADEQUACY IS STILL NOT DISCHARGED.
+#                                                           | The twentieth probe exhibited the adequacy gap; this
+#                                                           | one builds the presentation that sees it.
+#                                                           | `euStep`/`euIter`/`euLfp` is the EXISTENTIAL dual of
+#                                                           | `AUFix`, with its fixpoint API ported one quantifier
+#                                                           | at a time (`eu_step_mono`, `eu_lfp_fixed`,
+#                                                           | `eu_mem_lfp_iff`, `eu_lfp_least`) and read as a
+#                                                           | guarded-path statement by
+#                                                           | `eu_mem_lfp_iff_exists_path` -- strictly later, `0 <
+#                                                           | n`, so strict until and not weak until.
+#                                                           | `au_lfp_ne_eu_lfp_on_exit_graph` compiles the
+#                                                           | strength choice: on a four-state cycle with an exit
+#                                                           | the UNIVERSAL fixpoint is `{3}` and the EXISTENTIAL
+#                                                           | one is `Finset.univ`, so transplanting `ULive` onto
+#                                                           | the object-closure product would reject a
+#                                                           | presentation that is realizable. `certAdm` conjoins
+#                                                           | six decidable fields on a guessed candidate set `R`
+#                                                           | -- local coherence, bi-infinity inside `R`,
+#                                                           | existential forward discharge through `euLfp R
+#                                                           | (succR R)` (`cert_fwd_iff_eu_lfp` puts the "inside
+#                                                           | `R`" in a signature), its backward mirror, and the
+#                                                           | `stab` and `box` biconditionals, which are PRESENT
+#                                                           | and not dropped. `cert_accepts_Rchi` lands a
+#                                                           | non-empty instance first; then `coh_accepts_Rev` and
+#                                                           | `cert_rejects_Rev`, through the structural
+#                                                           | `rev_eu_lfp_empty` and
+#                                                           | `eu_lfp_eq_empty_of_no_event`, exhibit a set LOCAL
+#                                                           | COHERENCE ACCEPTS AND THE CERTIFICATE REJECTS.
+#                                                           | `untl_propagates_along_coh` is the composition
+#                                                           | theorem the restriction to `R` could have broken,
+#                                                           | and `cohR_le_coh` is the restriction read as a
+#                                                           | restriction. `profR_period_three`,
+#                                                           | `profR_fibre_a_witness` and
+#                                                           | `profR_separates_gate6_pair` show the predecessor
+#                                                           | round's gate-6 separation survives the refinement,
+#                                                           | for every modulus coprime to three with nothing to
+#                                                           | choose. The decision it holds in place: the
+#                                                           | fulfilment condition for a CELL datum is EXISTENTIAL
+#                                                           | and bounded inside the candidate set, so Route B
+#                                                           | (check a guessed set) is open without the missing
+#                                                           | algorithm Route A needs, and the universal condition
+#                                                           | already landed in the tree is not a conservative
+#                                                           | substitute for it. What it withholds: the six
+#                                                           | conditions are NOT proved SUFFICIENT for
+#                                                           | realizability -- adequacy is not discharged and the
+#                                                           | dovetailing argument stays uncompiled in the
+#                                                           | research report; this is NOT Route A and nothing
+#                                                           | here decides generalized-Buchi nonemptiness, since
+#                                                           | no theorem quantifies over the SET of eventualities
+#                                                           | a state carries; `(a5, evTa)` is NOT claimed
+#                                                           | non-realizable (`psi2` is deliverable through the
+#                                                           | 2-cycle exit `a -> d -> a`, which `Rev` excludes by
+#                                                           | construction) and the countdown profile is NOT
+#                                                           | refuted; `chi_closure_box_snce_stab_free` compiles
+#                                                           | why gate 8 is SIDESTEPPED and not passed -- the
+#                                                           | closure has no `box`, `snce` or `stab` member, so
+#                                                           | conditions (4), (5) and (6) are checked and vacuous,
+#                                                           | which is the standing `BoxStabFree` scope line of
+#                                                           | the anchor/run layer; gate 3 is CARRIED, gates 1 and
+#                                                           | 2 are NOT ADDRESSED with the compiled n-side
+#                                                           | qualification, gates 4 and 5 are carried from the
+#                                                           | eighteenth probe, gate 9 is OPEN; obligations (b),
+#                                                           | (c) and (d) are untouched; eventual periodicity of
+#                                                           | the UNRESTRICTED countdown is settled by the
+#                                                           | seventeenth probe and is neither re-derived nor
+#                                                           | claimed here; no `ladderRealized` and no
+#                                                           | `LadderCons` in any form, hence none without the
+#                                                           | `box`/`stab` clause, and nothing here is a
+#                                                           | factorization lemma, a cell index or any part of
+#                                                           | one; no seventh tuple coordinate, and no modulus,
+#                                                           | threshold or index is computed or claimed
+#                                                           | computable. Axioms `[propext, Classical.choice,
+#                                                           | Quot.sound]` on all eighteen theorems.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1300,6 +1375,7 @@ WIRED=(
   "seam-gluing-ray-product/closure-profile-gate-rerun"
   "seam-gluing-ray-product/nside-modulus-gate"
   "seam-gluing-ray-product/realizable-type-adequacy-gap"
+  "seam-gluing-ray-product/realizable-type-certificate"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

@@ -1,5 +1,207 @@
 /-
-PLACEHOLDER HEADER -- replaced in Phase 6 by the collection's convention.
+THE CERTIFICATE PRESENTATION SEPARATES REALIZABLE-TYPE CANDIDATES FROM MERELY LOCALLY COHERENT
+ONES ON THE COPRIME-CYCLE FIXTURE: the fulfilment condition is EXISTENTIAL and is decided inside
+the candidate set by the existential dual of `AUFix` (`euStep`/`euIter`/`euLfp`, with
+`eu_mem_lfp_iff_exists_path` reading it as a guarded-path statement); a set LOCAL COHERENCE
+ACCEPTS is REJECTED by the certificate at the eventuality `ev = T U psi2` (`coh_accepts_Rev` and
+`cert_rejects_Rev`, through the structural `rev_eu_lfp_empty`); the universal and the existential
+operators are compiled as DIFFERENT on a cycle with an exit (`au_lfp_ne_eu_lfp_on_exit_graph`:
+the universal fixpoint is `{3}`, the existential one is `Finset.univ`); the `box` and `stab`
+clauses are PRESENT as checked biconditionals (`certStab`, `certBox`, both conjuncts of
+`certAdm`) and are UNEXERCISED on this `stab`-free fixture
+(`chi_closure_box_snce_stab_free`), so gate 8 is SIDESTEPPED, NOT passed; and ADEQUACY IS NOT
+DISCHARGED -- that these conditions are SUFFICIENT for realizability is an argument in the
+research round's report, explicitly marked uncompiled there, and is NOT a theorem here.
+
+## What was asked
+
+The predecessor round landed the set-valued countdown-profile presentation and ran the gate table
+against it (`specs/evidence/seam-gluing-ray-product/closure-profile-gate-rerun.lean`,
+`nside-modulus-gate.lean`), and the round after that EXHIBITED the adequacy gap rather than
+merely scoping it (`realizable-type-adequacy-gap.lean`: a `coh6`-coherent 3-cycle carrying `ev`
+at every position and `psi2` at none).  What those rounds left open, and what was asked here, is
+the expensive half: a coherence relation that computes REALIZABLE types rather than merely
+locally coherent ones, with `untl` fulfilment -- and the two gates a set-valued presentation has
+that the tuple-shaped table has no rows for, NON-CIRCULARITY and STAB SELF-REFERENCE.
+
+The research round re-costed that obligation against the tree and found its residue to be two
+things: a STRENGTH CHOICE between a universal and an existential fulfilment condition, and ONE
+MISSING ALGORITHM under the universal-rejecting half (generalized-Büchi nonemptiness per state, a
+nested fixpoint nothing in this tree decides).  This file executes the route that avoids the
+missing algorithm and nothing beyond it.
+
+## The verdict
+
+The strength choice is made and compiled, not left implicit.  The fulfilment condition is
+EXISTENTIAL: `euLfp V succ isE isG` collects the positions from which SOME guarded path inside
+`V` delivers the event at a strictly later index (`eu_mem_lfp_iff_exists_path`; `0 < n` and the
+event at `f n` make this strict until, not weak until).  `ULive` is never transplanted, and
+`au_lfp_ne_eu_lfp_on_exit_graph` compiles why: on the four-state graph `0 → 1 → 2 → 0` with the
+exit `0 → 3` and the self-loop at the only event state, the landed UNIVERSAL operator returns
+`{3}` and this file's EXISTENTIAL one returns `Finset.univ`.  A cycle with an exit under a
+pending eventuality is exactly the mechanism `PlusWitnessFamily/Limits/NoCertificate.lean`
+identifies as refuting a thread-universal fulfilment condition at L+, whose verdict on the
+obvious repair is quoted exactly because it forecloses it: "The defect is not a missing bound and
+no bound repairs it."
+
+Route B (CHECK a guessed realizable set) is taken over Route A (DECIDE realizability).  The
+certificate `certAdm R` conjoins six decidable fields on a candidate set `R`: local coherence
+(`certLoc`), bi-infinity inside `R` (`certBiInf`), the EXISTENTIAL forward discharge of every
+`untl` member through `euLfp R (succR R)` (`certFwd`, unfolded in `cert_fwd_iff_eu_lfp` so that
+the "inside `R`" is visible in a signature and not only in a definition), its past-directed
+mirror (`certBwd`), the `stab` biconditional against `R`'s own fibre (`certStab`), and the `box`
+bit against `R` (`certBox`).  The existential fixpoint built here is NOT Route A's algorithm: it
+decides ONE eventuality's bounded discharge inside the candidate set, never "does some chain
+discharge every eventuality it carries".
+
+The certificate is non-vacuous and it is strictly stronger than local coherence.  Non-vacuity
+first: `cert_accepts_Rchi` lands `certAdm Rchi = true` on the `chi`-carrying 3-cycle, before every
+negative statement about the certificate.  Then the separation: `coh_accepts_Rev` shows local
+coherence and bi-infinity BOTH hold on the `ev`-carrying 3-cycle `Rev`, and `cert_rejects_Rev`
+shows `certAdm Rev = false` -- because `rev_eu_lfp_empty` proves, through
+`eu_lfp_eq_empty_of_no_event` rather than by brute force, that no guarded path inside `Rev`
+delivers `psi2`.  `untl_propagates_along_coh` is the composition theorem the restriction to `R`
+could have silently broken: an `untl` obligation carried at an interior position of a `coh`-chain
+is either discharged inside the chain, with the guard holding at every strictly intermediate
+position, or still carried at its end with the guard holding throughout.  No backward mirror is
+stated, and that is deliberate: `linkPred` constrains no backward arm, so a backward propagation
+theorem is not available from this relation and claiming one would be a strictly weaker statement
+wearing a stronger name.
+
+The restricted countdown profile survives the refinement.  `ProfR R k` iterates backward
+reachability of `cohR R` -- the local relation with both endpoints confined to `R` -- from the
+fibre `Ea ∩ R`.  On `Rchi` its period is exactly three (`profR_period_three`), its `a`-fibre is
+nonempty at exactly the multiples of three (`profR_fibre_a_witness` with `profR_dvd_of_mem`), and
+it separates the exact pair gate 6 used to refute the sixth index, for every modulus coprime to
+three with no parameter to choose (`profR_separates_gate6_pair`).
+
+## The figures, confirmed in the file rather than carried
+
+Every number this round leans on is `#eval`-ed in the file, beside the theorem that depends on
+it, rather than carried from an earlier record: the two exit-graph fixpoints are `{3}`
+(universal) and `{0, 1, 2, 3} = Finset.univ` (existential); `plusSubformulaClosure chi` has 18
+members; the `untl`-member counts of `Ta`, `Tb` and `Tc` are 0, 1 and 1, so condition (3) has
+exactly TWO obligations on `Rchi` (`xxpa` in `Tb`, `xpa` in `Tc`) and both reach their events in
+one step; and the restricted profile's three values are `{(a5, Ta)}`, `{(c5, Tc)}`,
+`{(b5, Tb)}` at `k % 3 = 0, 1, 2`, printed by their object coordinate because printing a closure
+type prints its whole formula set.  What IS carried, and is marked carried wherever it appears,
+is every gate verdict read from an earlier probe's header rather than re-run here.
+
+No `decide` in this file is ever applied to a goal quantifying over a candidate set or over
+`ClType chi`: kernel-reducing even the three-element `Rchi` literal means deciding equality of
+closure types and overruns the recursion depth at any budget worth setting.  `decide` closes
+concrete closure memberships, concrete `coh6` facts, bounded quantifications over ONE closure
+type, the 18-member closure and the four-state exit graph -- nothing else.  There is no
+`native_decide` and no `set_option maxRecDepth` anywhere in the file.
+
+## Gate 1 (the first region separation, on the next-deadline side): NOT ADDRESSED
+
+Nothing here addresses it.  This datum reads the COUNTDOWN only; the next-deadline-side datum is
+standing obligation (c) and is untouched.  The qualification is compiled elsewhere and is carried,
+not re-run: the refuted tuple n-side coordinates PASS gates 1 and 2 and are still blind to the
+shift the datum has to see (`nside-modulus-gate.lean`, Branch N-VERIFIED).  A gate probing one
+coordinate certifies one coordinate only.
+
+## Gate 2 (the second region separation): NOT ADDRESSED
+
+Nothing here addresses it.  It reduces to adequacy, and adequacy's SUFFICIENCY half is not
+discharged in this file; the same compiled n-side qualification applies and is carried.
+
+## Gate 3 (the two-sided region refutation): CARRIED
+
+Not re-run by anything in this file.  Its verdict is carried from the sixteenth probe's
+`second_region_sets_agree` and `region_start_beyond_depth`, as the eighteenth probe's header
+already records.  This datum has no region parameters for the gate to read.
+
+## Gate 4 (the threshold coordinate): DISARMED BY CONSTRUCTION, carried
+
+Carried from the eighteenth probe, re-run by nothing here: neither the countdown profile nor its
+restriction `ProfR` carries a threshold parameter, so there is nothing for the gate to
+instantiate.  The depth-`(T+1)` witness enlarges the closure rather than escaping a bound.
+
+## Gate 5 (the modulus coordinate): DISARMED AND EXHIBITED, carried
+
+Carried from the eighteenth probe (`reach5_eventually_constant`), re-run by nothing here: the
+OBJECT's full-graph reach set is constant from threshold four -- period one -- while the profile's
+`a`-fibre is nonempty at exactly the multiples of three.  The object's exhibited period does not
+bind the profile.
+
+## Gate 6 (pattern-definability of the sub-object): the separation SURVIVES the refinement
+
+Gate 6's own row stands exactly as the eighteenth probe left it -- `prof6_separates_gate6_pair`
+internalises it there, with no parameter to choose.  What this file adds is that restricting the
+relation to the certificate's candidate set does NOT cost the separation:
+`profR_separates_gate6_pair` re-runs it against `cohR Rchi`.  This is NOT a new gate-6 verdict
+and must not be read as one.
+
+## Gate 7 (non-circularity and non-vacuity): PASSED in its definability form, and witnessed
+
+Every certificate field is a computable `Bool` built from `(Q5, step5, pend5, lab6, chi)` and the
+candidate set alone.  No `WorldHistory`, `PlusTruthAt`, `tpOf`, `cellAt`, `anchorCells`, world,
+model or cell appears in any declaration of this file -- no clause of the truth definition is
+unfolded anywhere.  The self-referential bits (`stab`, `box`) are stated as CHECKED CONDITIONS on
+the candidate datum, following `BiLasso/Annotation.lean`'s `BoxOracleSound` (a specification,
+deliberately not a construction) and `PlusWitnessFamily/Predicates.lean`'s `StabFaithful`: that
+is the settled in-tree pattern, and it resolves the DEFINITIONAL circularity.  Non-vacuity is
+witnessed by `cert_accepts_Rchi`, landed before every negative statement.
+
+## Gate 8 (`stab` self-reference): SIDESTEPPED on a `stab`-free fixture, NOT passed
+
+`chi_closure_box_snce_stab_free` compiles the reason: `plusSubformulaClosure chi` has no `box`,
+no `snce` and no `stab` member, so conditions (4), (5) and (6) are checked and vacuously
+satisfied here.  The clauses are PRESENT -- `certStab` and `certBox` are conjuncts of `certAdm`,
+and no datum of this file is stated without them -- but they are UNEXERCISED.  Gate 8 is the
+standing `BoxStabFree` scope line of the whole anchor/run layer, now visible as a gate rather
+than as a hypothesis: `RaySummary/Realize.lean` and the eighteenth probe buy their results at
+exactly this place, by excluding `box` and `stab` from the closure.  Every `stab` verdict in this
+line stays SIDESTEPPED.
+
+## Gate 9 (the n-side modulus): OPEN
+
+Raised in the nineteenth probe with its collision half compiled and its refuting half not
+attempted.  Nothing here attempts it and nothing here closes it.
+
+## What this does NOT say
+
+  - **The conditions are NOT proved SUFFICIENT for realizability.**  Adequacy is not discharged.
+     The dovetailing argument that Route B's six conditions suffice is an argument in the research
+     round's report, marked uncompiled there, and is stated as a theorem nowhere in this file.
+  - **This is NOT Route A, and nothing here decides generalized-Büchi nonemptiness.**  No theorem
+     in this file quantifies over the SET of eventualities a state carries.  The existential
+     fixpoint decides ONE eventuality's bounded discharge inside a candidate set; reading it as
+     "adequacy decided" is a misreading the Overview, the verdict above and this bullet all
+     foreclose.
+  - **`(a5, evTa)` is NOT claimed non-realizable, and the countdown profile is NOT refuted.**
+     `psi2` is deliverable on this object through the 2-cycle exit `a → d → a`, which `Rev`
+     excludes by construction, so some other `coh6`-chain out of `(a5, evTa)` may well discharge
+     `ev`.  What is rejected is `Rev` AS A CANDIDATE REALIZABLE SET.
+  - **Gate 8 is SIDESTEPPED, not passed**, on a `stab`-free fixture; it is the standing
+     `BoxStabFree` scope line of the anchor/run layer, not a presentation-specific obstruction.
+  - **Gate 3 is CARRIED**; gates 1 and 2 are NOT ADDRESSED, with the compiled n-side
+     qualification that the refuted tuple n-side coordinates pass gates 1 and 2 and remain blind
+     to the shift the datum has to see; gate 9 is OPEN.  Gates 4 and 5 are carried from the
+     eighteenth probe and re-run by nothing here.
+  - **Obligations (b), (c) and (d) are untouched**: region-length pumping, the `Drift` coupling of
+     the next deadline, and the `box`/`stab` letters through
+     `box_mem_tpOf_iff`/`stab_mem_tpOf_iff`.
+  - **Eventual periodicity of the UNRESTRICTED countdown is settled elsewhere** (the seventeenth
+     probe, `closure-indexed-periodicity.lean`) and is neither re-derived nor claimed here.
+     `profR_period_three` is a statement about the RESTRICTED relation on a three-element
+     candidate set, not about the unrestricted countdown.
+  - **No `ladderRealized` and no `LadderCons`, in any form.**  No declaration of this file is
+     named `ladderRealized`, `LadderCons` or `ladderCons_localRun`, under those names or any
+     others, and no same-named weaker substitute for any of them is stated -- hence none without
+     the `box`/`stab` clause.  Nothing here is a factorization lemma, a cell index, or any part
+     of one.
+  - **No seventh tuple coordinate is proposed**, and no modulus, threshold or index is computed
+     or claimed computable.  The tuple-widening line is spent and nothing here reopens it; the
+     profile's period and the closure cardinality are FACTS ABOUT A FIXTURE, not index
+     coordinates.
+  - **The SET of cells was never in question.**  `anchorCells_finite` and `anchorCells_ncard_le`
+     already bound it; only the computable INDEX is open, and this file does not close it.
+  - **One fixture is one fixture.**  Every exhibit is on the coprime-cycle object with gate 6's
+     labelling and gate 6's formula.  A gate probing one coordinate certifies one coordinate
+     only, and a seventh mechanism may exist that none of this exercises.
 
 Compile:
 `lake env lean specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean`
