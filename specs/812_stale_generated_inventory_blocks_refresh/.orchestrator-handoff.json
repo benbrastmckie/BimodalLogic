@@ -1,19 +1,16 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 1,
-  "summary": "Wrote a two-phase plan for refreshing the three stale generated inventory blocks (README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md). Phase 1 runs check-module-invariants.sh --emit-inventory, reads the diff to confirm only machine-owned count cells inside generated blocks moved, and commits the three files by explicit path; Phase 2 is the full-gate confirmation that the output no longer carries the INV FAIL group. A throwaway-worktree preview confirmed the writer changes exactly 5 numeric cells across those 3 files and nothing else.",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 2,
+  "phases_total": 2,
+  "summary": "Regenerated the three stale generated inventory blocks with check-module-invariants.sh --emit-inventory and committed README.md, FormalSystem/README.md, and FormalSystem/Metalogic/README.md (five numeric cells, commit be962c34d). A fresh --no-build invariants run reports PASS INV with no FAIL INV group, readme-lint passes, and the scoped deploy gate (--only-gate 4) passes; the full gate set is deferred to the batch stage per the dispatch directive.",
+  "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/812_stale_generated_inventory_blocks_refresh/plans/01_refresh-stale-inventory-blocks.md",
-      "summary": "Two-phase plan: regenerate and commit the three stale inventory blocks, then confirm from gate output that the INV FAIL group is gone."
+      "type": "summary",
+      "path": "specs/812_stale_generated_inventory_blocks_refresh/summaries/01_refresh-stale-inventory-blocks-summary.md",
+      "summary": "Implementation summary covering the inventory refresh, verification evidence, and the gate-deferral deviation."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 2,
-  "blockers": [],
-  "plan_markers_verified": null,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 812; Phase 1 must re-check git status on scripts/ and the three READMEs before running the writer because sibling task 744 declares scripts/check-module-invariants.sh in its research scope."
+  "modified_files": ["README.md", "FormalSystem/README.md", "FormalSystem/Metalogic/README.md"]
 }

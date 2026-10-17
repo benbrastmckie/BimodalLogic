@@ -1,10 +1,24 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/812_stale_generated_inventory_blocks_refresh/summaries/01_refresh-stale-inventory-blocks-summary.md",
+      "summary": "Regenerated the three stale inventory blocks via --emit-inventory, committed the three READMEs, and confirmed the INV FAIL group is gone from check-module-invariants.sh output."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Regenerated the three stale generated inventory blocks (README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md) with check-module-invariants.sh --emit-inventory; exactly five numeric cells moved, committed as be962c34d. A fresh --no-build run now reports PASS INV with no FAIL INV group; readme-lint and the scoped deploy gate pass, with the full gate set deferred to the batch stage."
+  },
+  "modified_files": ["README.md", "FormalSystem/README.md", "FormalSystem/Metalogic/README.md"],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1792261594_b3e099",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 2,
+    "phases_total": 2
   }
 }

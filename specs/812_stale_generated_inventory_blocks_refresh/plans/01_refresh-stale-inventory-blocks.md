@@ -85,7 +85,7 @@ No ROADMAP.md consulted (no `roadmap_path` in the dispatch context).
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Regenerate, Review, and Commit the Three Blocks [IN PROGRESS]
+### Phase 1: Regenerate, Review, and Commit the Three Blocks [COMPLETED]
 
 **Goal**: Bring the three stale generated inventory blocks current using the script's own writer
 mode, confirm the diff is confined to machine-owned cells, and commit exactly the three READMEs.
@@ -98,7 +98,7 @@ mode, confirm the diff is confined to machine-owned cells, and commit exactly th
 - [x] Diff read-through (`git diff -- README.md FormalSystem/README.md FormalSystem/Metalogic/README.md`): every `-`/`+` hunk line sits between a `<!-- BEGIN GENERATED: inventory` marker and its `<!-- END GENERATED -->`; only numeric cells change; no `<!-- TODO: add description -->` appears; no row was dropped or added *(completed: 5 numeric cells, all inside generated blocks, 3 files / +5 -5)*
 - [x] Confirm current: `bash scripts/check-module-invariants.sh --emit-inventory --check` now exits 0 *(completed: exit 0)*
 - [x] Record an issue-log entry (win or issue, via `issue-record.sh`, non-fatal) if anything deviated from the five-cell expectation; otherwise attest "nothing to record" in the phase summary *(completed: win entry recorded in issues.jsonl)*
-- [ ] Commit the three files by explicit path list (`bash .claude/scripts/git-commit-scoped.sh` or an explicit `git add -- README.md FormalSystem/README.md FormalSystem/Metalogic/README.md`), message `task 812 phase 1: regenerate stale inventory blocks`
+- [x] Commit the three files by explicit path list (`bash .claude/scripts/git-commit-scoped.sh` or an explicit `git add -- README.md FormalSystem/README.md FormalSystem/Metalogic/README.md`), message `task 812 phase 1: regenerate stale inventory blocks` *(completed: be962c34d via git-commit-phase.sh)*
 
 **Timing**: 0.25 hours
 
@@ -132,19 +132,19 @@ is `bash .claude/scripts/verify-deploy.sh --only-gate 4`, which runs alongside.
 
 ---
 
-### Phase 2: Full-Gate Confirmation That the INV FAIL Group Is Gone [NOT STARTED]
+### Phase 2: Full-Gate Confirmation That the INV FAIL Group Is Gone [COMPLETED]
 
 **Goal**: Run the repository's complete gate set and confirm, from the OUTPUT (not the exit code),
 that `check-module-invariants.sh` no longer reports the stale-inventory FAIL group.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build 2>&1 | tee` to a scratchpad log (the CI invocation; this task changes no Lean source, so the build step would add nothing to the INV verdict -- if the implementer prefers the default build-inclusive form, that is also acceptable but slower)
-- [ ] Assert on the log: `grep -c 'FAIL  INV' log` is 0 AND `grep -c 'PASS  INV  every generated inventory block is current' log` is 1 -- both conditions, because the exit code was already 0 before this task and is not the success signal
-- [ ] Note the script's overall exit code and any OTHER FAIL groups in the phase summary without acting on them (out of scope; the description limits this task to the INV group)
-- [ ] Run `bash scripts/readme-lint.sh FormalSystem BimodalTools` (the CI README-health gate) and confirm no new blocking finding against the three READMEs; "Last verified" date findings are REPORTED-not-gated and out of scope
-- [ ] Run `bash .claude/scripts/verify-deploy.sh` (the complete agent-system gate set; gate 3 SKIPs by design in this consumer tree, gate 4 is the live task-reference lint over `README.md`)
-- [ ] Record an issue-log entry via `issue-record.sh` (non-fatal) for any gate collision or unexpected FAIL group encountered, or attest "nothing to record" in the summary
-- [ ] Close the phase: update phase/plan status markers; the phase-closing commit (`task 812 phase 2: ...`) carries only `specs/812_*/**` status and summary changes, by explicit path
+- [x] Run `bash scripts/check-module-invariants.sh --no-build 2>&1 | tee` to a scratchpad log (the CI invocation; this task changes no Lean source, so the build step would add nothing to the INV verdict -- if the implementer prefers the default build-inclusive form, that is also acceptable but slower) *(completed: exit 0, log in session scratchpad)*
+- [x] Assert on the log: `grep -c 'FAIL  INV' log` is 0 AND `grep -c 'PASS  INV  every generated inventory block is current' log` is 1 -- both conditions, because the exit code was already 0 before this task and is not the success signal *(completed: FAIL INV count 0, PASS INV count 1)*
+- [x] Note the script's overall exit code and any OTHER FAIL groups in the phase summary without acting on them (out of scope; the description limits this task to the INV group) *(completed: exit 0, no other FAIL group, ALL CHECKS PASSED)*
+- [x] Run `bash scripts/readme-lint.sh FormalSystem BimodalTools` (the CI README-health gate) and confirm no new blocking finding against the three READMEs; "Last verified" date findings are REPORTED-not-gated and out of scope *(completed: RESULT PASS, 0 broken refs; only two info-level STALE DATE findings on FormalSystem/README.md and FormalSystem/Metalogic/README.md, reported-not-gated and out of scope)*
+- [x] Run `bash .claude/scripts/verify-deploy.sh` (the complete agent-system gate set; gate 3 SKIPs by design in this consumer tree, gate 4 is the live task-reference lint over `README.md`) *(deviation: altered — scoped to --only-gate 4 (PASS) per the dispatch Batch Gate Deferral; full gate set deferred to the batch-level stage)*
+- [x] Record an issue-log entry via `issue-record.sh` (non-fatal) for any gate collision or unexpected FAIL group encountered, or attest "nothing to record" in the summary *(completed: nothing to record for this phase, attested in summary)*
+- [x] Close the phase: update phase/plan status markers; the phase-closing commit (`task 812 phase 2: ...`) carries only `specs/812_*/**` status and summary changes, by explicit path *(completed)*
 
 **Timing**: 0.5 hours
 
@@ -164,11 +164,11 @@ that `check-module-invariants.sh` no longer reports the stale-inventory FAIL gro
 
 ## Testing & Validation
 
-- [ ] `--emit-inventory --check` exits non-zero before Phase 1 and 0 after it
-- [ ] Exactly three README files are modified and committed; no `.lean`, `Tests/`, or `scripts/` change
-- [ ] Committed diff hunks all lie inside generated blocks; hand-written description cells unchanged
-- [ ] `check-module-invariants.sh --no-build` output carries `PASS  INV` and no `FAIL  INV` line
-- [ ] `readme-lint.sh FormalSystem BimodalTools` and `.claude/scripts/verify-deploy.sh` pass
+- [x] `--emit-inventory --check` exits non-zero before Phase 1 and 0 after it *(completed)*
+- [x] Exactly three README files are modified and committed; no `.lean`, `Tests/`, or `scripts/` change *(completed)*
+- [x] Committed diff hunks all lie inside generated blocks; hand-written description cells unchanged *(completed)*
+- [x] `check-module-invariants.sh --no-build` output carries `PASS  INV` and no `FAIL  INV` line *(completed)*
+- [x] `readme-lint.sh FormalSystem BimodalTools` and `.claude/scripts/verify-deploy.sh` pass *(completed: verify-deploy scoped to --only-gate 4 per Batch Gate Deferral)*
 
 ## Artifacts & Outputs
 
