@@ -194,34 +194,34 @@ diff read-through over an empty diff, discharged by `git status --porcelain` sho
 
 ---
 
-### Phase 2: New submodule and the `_fixed_seedRun` family, S2-S4 [NOT STARTED]
+### Phase 2: New submodule and the `_fixed_seedRun` family, S2-S4 [COMPLETED]
 
 **Goal**: Create `MintBound/SeedRunTermini.lean`, wire it into the aggregator, and land the three
 `_fixed_seedRun` members that complete that line — each a one-line application of the landed root at
 `MintBound/PostBlocking.lean:1273`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SeedRunTermini.lean`
+- [x] Create `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SeedRunTermini.lean`
       with the repository's standard copyright header, `import ...MintBound.PostBlocking` and
       `import ...MintBound.FiveComponent` (the two parallel DAG branches this module joins), and
       `namespace FormalSystem.Metalogic.Decidability` with the same `open` lines its two imports use.
-- [ ] Write the module docstring: the section is the seedRun terminus family; it states that the
+- [x] Write the module docstring: the section is the seedRun terminus family; it states that the
       family's root S1 for the `_fixed` line lives in the post-blocking module and is reproduced
       here only by reference; it names the residual's exact status (not refuted, not proved) and
       cites the register entry carrying the unprobed refutation route; and it states plainly that
       no member here is a discharge of anything.
-- [ ] Land `buildTableauAt_isSome_at_seed_fixed_seedRun` (S2), transcribing `hpb` at
+- [x] Land `buildTableauAt_isSome_at_seed_fixed_seedRun` (S2), transcribing `hpb` at
       `mintAwareFuelAt U.card (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card) (10 * U.card) D β`
       and threading `harm` through, with the body
       `buildTableauAt_isSome_of_budget_fixed_seedRun phi _ hβ hUcl hD hmint harm hpb hseed (Nat.le_refl _) (derivedTmaxAt_spec (seedBranch phi) U) (Nat.le_refl _)`.
-- [ ] Land `buildTableauAt_isSome_of_lengthBudget_fixed_seedRun` (S3), `hpb` at the
+- [x] Land `buildTableauAt_isSome_of_lengthBudget_fixed_seedRun` (S3), `hpb` at the
       `difficultyCeiling U L` figure, body applying the root through
       `difficultyBounded_of_stepLengthBounded_at hL hUcl`.
-- [ ] Land `buildTableauAt_isSome_at_seed_lengthBudget_fixed_seedRun` (S4), body applying S2 through
+- [x] Land `buildTableauAt_isSome_at_seed_lengthBudget_fixed_seedRun` (S4), body applying S2 through
       the same `StepLengthBounded` trade.
-- [ ] Add `import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.SeedRunTermini`
+- [x] Add `import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.SeedRunTermini`
       to `MintBound.lean`'s import list, in dependency position after the `FiveComponent` line.
-- [ ] Re-read `MintBound.lean` immediately before editing it (concurrency discipline), and stage
+- [x] Re-read `MintBound.lean` immediately before editing it (concurrency discipline), and stage
       only the two explicit paths.
 
 **Timing**: 1.5 hours
