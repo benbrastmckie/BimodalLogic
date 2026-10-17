@@ -11,7 +11,7 @@ next_project_number: 816
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,812,813,815 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,812,813 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,429,497,618,763,783,814 | 298,428,502,616,761,772,813 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -92,7 +92,6 @@ next_project_number: 816
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 812 [RESEARCHED] — Refresh the three stale generated inventory blocks that...
-815 [PLANNED] — RESEARCH TASK. The SUFFICIENCY half of realizable-type...
 
 ### Formula Refactor
 
@@ -130,13 +129,14 @@ next_project_number: 816
 
 ### 815. Certificate sufficiency dovetailing realizability
 - **Effort**: Sufficiency alone is the costable deliverable; the backward arm in (c) may refute it, which is a successful outcome
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 809
 - **Research**: [815_certificate_sufficiency_dovetailing_realizability/reports/01_certificate-sufficiency-dovetailing.md]
 - **Plan**: [815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md]
+- **Summary**: [evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean]
 
 **Description**: RESEARCH TASK. The SUFFICIENCY half of realizable-type adequacy: that the certificate's conditions IMPLY realizability. This is the gate on 761 and therefore on the aim.
 

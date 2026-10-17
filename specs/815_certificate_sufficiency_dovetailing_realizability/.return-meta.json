@@ -1,36 +1,104 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "dispatch_seq": 6,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md",
-      "summary": "Four-phase close-out of the compiled sufficiency verdict: a two-arm non-vacuity fixture (phi4 = (T U b) and (T S a1), R4 = {y0,y1,y2}) giving realizes_of_certAdm_cohBi a compiled instance, measured true at plan time; header and guard decision-row update; ROADMAP.md rewritten to the verdict and the cohBi/label-level rulings 761 inherits; the complete gate set and summary. Six headline signatures pinned in a plan-time-compiled Lean Challenge block."
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean",
+      "summary": "Two-arm non-vacuity fixture: phi4_closure_both_arms, y0_carries_both, cert_accepts_R4, realizes_y0_R4 (the corollary of realizes_of_certAdm_cohBi); seventeen printed theorems, sorry-free, standard axioms only."
+    },
+    {
+      "type": "implementation",
+      "path": "scripts/check-evidence-probes.sh",
+      "summary": "Decision-row comment block extended with the non-vacuity rows and the seventeen-theorem count; no WIRED change."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/ROADMAP.md",
+      "summary": "Four regions rewritten to the sufficiency verdict; 761 now the costable critical path over cohBi, label-level."
+    },
+    {
+      "type": "summary",
+      "path": "specs/815_certificate_sufficiency_dovetailing_realizability/summaries/01_certificate-sufficiency-dovetailing-summary.md",
+      "summary": "Implementation summary: three-part verdict, label-level qualifier, gate/obligation status, deferred batch gate, carried-figure note, issue-log attestation."
     }
   ],
-  "next_steps": "Run /implement 815 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1792245961_674a86_815",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 5.5,
-    "dependency_waves": [[1], [2, 3], [4]]
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "vacuous_note": "0 in this task's modified files; the source-roots grep returns one pre-existing hit, FormalSystem/Examples/TemporalStructures.lean:495, present at HEAD~3 before this task (issue log, minor).",
+    "axiom_count": 14,
+    "axiom_baseline": 14,
+    "build_passed": true,
+    "build_note": "Full lake build via lake-build-guard.sh, detached: Build completed successfully (2875 jobs), guard exit 0, error: count 0; no touched lake module (probe is a standalone lake env lean file).",
+    "batch_gate_deferral": "verify-deploy.sh and tests/run-all.sh NOT run here, owed by the batch stage; scripts/check-evidence-probes.sh resolves to __FULL_SWEEP__ (unmappable), covering checks run: check-evidence-probes.sh exit 0 (all 41 wired probes compile), bash -n exit 0, check-module-invariants.sh exit 1 on INV only (pre-existing sibling drift in three READMEs this task never touched; C9 passes), check-task-references.sh --quiet exit 0.",
+    "challenge_check": "lean-challenge-snapshot.sh --check 815 . exited 71 (no manifest); declaration-by-declaration diff of the ten Goal statements against the Challenge block run instead: all match."
   },
-  "phase_count": 4,
-  "estimated_hours": 5.5,
-  "dependency_waves": [[1], [2, 3], [4]],
+  "completion_data": {
+    "completion_summary": "Landed the two-arm non-vacuity fixture for the strengthened certificate: cert_accepts_R4 accepts {y0,y1,y2} over (top U b) and (top S a1) with every member carrying both obligations, and realizes_y0_R4 instantiates the two-sided theorem realizes_of_certAdm_cohBi on it -- seventeen theorems sorry-free on the standard axioms. The verdict (dovetailing is a theorem; two-sided sufficiency refuted for coh on the backward arm; repaired by cohBi at the label level, non-vacuously in both arms; the |R| bound derived) is recorded in the probe header, the guard decision row and the roadmap, where 761 is now the costable critical path inheriting the cohBi ruling and the label-level qualification. Gate 8 stays SIDESTEPPED; obligation (d), the semantic step, remains.",
+    "roadmap_items": [
+      "Adequacy — SUFFICIENCY RETURNED (`815`); the semantic step, obligation (d), is what remains.",
+      "/orchestrate 761 --hard --lit   # THE critical path, now costable: the ladder realization theorem, over the two-arm relation `cohBi`"
+    ]
+  },
+  "modified_files": [
+    "specs/evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean",
+    "scripts/check-evidence-probes.sh",
+    "specs/ROADMAP.md",
+    "specs/815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md",
+    "specs/815_certificate_sufficiency_dovetailing_realizability/summaries/01_certificate-sufficiency-dovetailing-summary.md",
+    "specs/815_certificate_sufficiency_dovetailing_realizability/issues.jsonl",
+    "specs/815_certificate_sufficiency_dovetailing_realizability/handoffs/phase-1-handoff-20261017T155806Z.md",
+    "specs/815_certificate_sufficiency_dovetailing_realizability/handoffs/phase-2-handoff-20261017T160030Z.md",
+    "specs/815_certificate_sufficiency_dovetailing_realizability/handoffs/phase-3-handoff-20261017T160127Z.md",
+    "specs/815_certificate_sufficiency_dovetailing_realizability/handoffs/phase-4-handoff-20261017T161224Z.md"
+  ],
   "memory_candidates": [
     {
-      "content": "When a lean plan pins a Lean Challenge Statements block, compile it standalone at plan time with sorry bodies AND append #eval lines after the namespace end for every decidable Scope Hypothesis figure (closure cardinalities, concrete edge facts, a certificate's Bool value on a candidate fixture). Mathlib oleans are cached, so the compile costs seconds, and the plan's figures become measurements rather than hand computations: a fixture whose certificate #evals to true cannot fail on a false statement, only on proof labour. Pair it with the collection's discipline that the committed probe keeps exactly one #eval (the closure cardinality) and proves the rest.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md",
+      "content": "A plan's mechanical verification greps can contradict the plan's own mandated proof shape (e.g. grep -c decide$ = 0 over lemmas told to mirror a block that closes per-member concrete goals by decide) or its own header prose (grep -c native_decide = 0 against a header sentence saying none occurs). Read such criteria substantively, record the discrepancy on the issue log, and never weaken the statement to satisfy the grep.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/815_certificate_sufficiency_dovetailing_realizability/summaries/01_certificate-sufficiency-dovetailing-summary.md",
       "confidence": 0.7,
-      "suggested_keywords": ["lean-challenge-statements", "plan-time-eval", "scope-hypothesis", "evidence-probe", "fixture-non-vacuity"]
+      "suggested_keywords": [
+        "lean",
+        "plan-compliance",
+        "verification-criteria",
+        "decide",
+        "issue-log"
+      ]
+    },
+    {
+      "content": "Non-vacuity fixture pattern for a two-arm certificate over the object-closure product: a three-state object 2->0->1 with self-loops at both ends, atom for the until-event at the sink and atom for the since-event at the source, so every candidate-set member carries both obligations and each arm needs a two-step guarded discharge path; the six conditions are proved by hand through mem_R with per-type helper lemmas (decide only on one closure type) and the realizability instance is the generic theorem's corollary, never a hand-built chain.",
+      "category": "PATTERN",
+      "source_artifact": "specs/evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean",
+      "confidence": 0.75,
+      "suggested_keywords": [
+        "lean",
+        "fixture",
+        "certificate",
+        "cohBi",
+        "non-vacuity",
+        "euLfp"
+      ]
     }
   ],
-  "modified_files": [
-    "specs/815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md"
-  ],
-  "dispatch_seq": 5
+  "next_steps": "761 is costable over cohBi with the label-level qualification; the stab fixture for gate 8 and the semantic step (obligation (d)) are separate deliverables. The batch stage owes the full verify-deploy/run-all set.",
+  "metadata": {
+    "session_id": "sess_1792245961_674a86",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "started_at": "2026-10-17T15:53:04Z",
+    "completed_at": "2026-10-17T16:13:11Z",
+    "phases_completed": 4,
+    "phases_total": 4,
+    "compliance_check": "passed",
+    "compliance_note": "Stage 5 spot-check run over the resolved source roots plus specs/evidence/seam-gluing-ray-product (where the plan places every Goal by design): 42 backticked tokens in the Goals block, 40 declarations all found; the two misses are the namespace `Probe815` and the keyword `theorem`, not declarations. No replacement targets declared.",
+    "issue_log_contribution": 4
+  }
 }

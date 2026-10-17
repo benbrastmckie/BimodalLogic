@@ -1,7 +1,7 @@
 # Implementation Plan: Task #815
 
 - **Task**: 815 - Certificate sufficiency: dovetailing, realizability (the SUFFICIENCY half of realizable-type adequacy)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: 809 (predecessor; its certificate is restated, not imported, in this task's probe); 806 (the countdown-profile round; untouched); 761 (parent, stays `[BLOCKED]` in state; this task edits no record of it except the roadmap paragraphs that name its gate)
 - **Research Inputs**: specs/815_certificate_sufficiency_dovetailing_realizability/reports/01_certificate-sufficiency-dovetailing.md

@@ -1,18 +1,33 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 5,
-  "summary": "Wrote the four-phase implementation plan for the sufficiency close-out. The research round already compiled all three deliverables (dovetailing theorem, derived |R| bound, backward-arm refutation plus the cohBi repair), so the plan lands the one gap it named -- a two-arm non-vacuity fixture giving realizes_of_certAdm_cohBi a compiled instance -- then updates the probe header, the guard decision row and the ROADMAP paragraphs that still gate 761 on this task, and closes with the complete gate set. The Lean Challenge block (six pinned headline signatures plus four new Goals) compiled standalone at plan time, and #eval measured certAdm lab4 cohBi4 R4 = true.",
+  "status": "implemented",
+  "dispatch_seq": 6,
+  "phase": "implement",
+  "phases_completed": 4,
+  "phases_total": 4,
+  "summary": "All four phases closed and committed. The two-arm non-vacuity fixture landed in the Probe815 probe (seventeen theorems sorry-free on the standard axioms; cert_accepts_R4 and realizes_y0_R4 as the corollary of realizes_of_certAdm_cohBi), the probe header and guard decision row carry the verdict, and the roadmap now names 761 the costable critical path over cohBi with the label-level qualification. Full lake build and the evidence-probe guard pass; the complete verify-deploy/run-all set is deferred to the batch stage per the dispatch directive.",
+  "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/815_certificate_sufficiency_dovetailing_realizability/plans/01_certificate-sufficiency-dovetailing.md",
-      "summary": "Four phases, 5.5 hours, waves [[1],[2,3],[4]]: two-arm fixture and non-vacuous instance (lean); header and guard decision row; ROADMAP verdict and the cohBi/label-level rulings; complete gate set and summary."
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean",
+      "summary": "Two-arm non-vacuity fixture; seventeen printed theorems, sorry-free."
+    },
+    {
+      "type": "implementation",
+      "path": "scripts/check-evidence-probes.sh",
+      "summary": "Decision-row rows for cert_accepts_R4/realizes_y0_R4; no WIRED change."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/ROADMAP.md",
+      "summary": "Sufficiency verdict recorded; 761 costable over cohBi, label-level."
+    },
+    {
+      "type": "summary",
+      "path": "specs/815_certificate_sufficiency_dovetailing_realizability/summaries/01_certificate-sufficiency-dovetailing-summary.md",
+      "summary": "Implementation summary."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 4,
-  "blockers": [],
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement: Phase 1 appends the phi4/R4 fixture to certificate-sufficiency-dovetailing.lean; its Scope Hypothesis figures were measured at plan time by #eval, so a mismatch means the committed probe and the plan-time block differ."
+  "plan_markers_verified": true,
+  "next_action_hint": "Return implemented; batch stage runs the full gate set. check-module-invariants.sh INV failure is pre-existing sibling drift in three READMEs this task never touched (C9 passes)."
 }
