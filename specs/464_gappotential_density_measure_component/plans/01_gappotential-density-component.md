@@ -554,22 +554,22 @@ the aggregator, and this phase changes no existing declaration's signature anywh
 
 ---
 
-### Phase 8: The Figures and the Terminus Family [IN PROGRESS]
+### Phase 8: The Figures and the Terminus Family [COMPLETED]
 
 **Goal**: the enlarged figures and the eight termini restated at the five-component measure, with
 the `MintPaysForTimeGap` hypothesis **discharged** rather than carried.
 
 **Tasks**:
-- [ ] Declare `derivedTmaxGap kt0 Ucard := kt0 + 10 * Ucard + Ucard * Ucard` — `derivedTmaxAt`
+- [x] Declare `derivedTmaxGap kt0 Ucard := kt0 + 10 * Ucard + Ucard * Ucard` — `derivedTmaxAt`
       (`FourComponent.lean:508`) plus the gap ceiling `gapPotential_le_sq` supplies.
-- [ ] Prove `derivedTmaxGap_spec` (definitional, as `derivedTmaxAt_spec` is) and
+- [x] Prove `derivedTmaxGap_spec` (definitional, as `derivedTmaxAt_spec` is) and
       `derivedTmaxAt_le_derivedTmaxGap` — the new bound is an **enlargement**, never a
       replacement, so nothing stated at `derivedTmaxAt` is withdrawn.
-- [ ] Declare `mintPathBoundGap` and `mintAwareFuelGap`, mirroring `mintPathBoundAt` /
+- [x] Declare `mintPathBoundGap` and `mintAwareFuelGap`, mirroring `mintPathBoundAt` /
       `mintAwareFuelAt` (`FourComponent.lean:424,430`), and prove the two enlargement lemmas
       `mintPathBoundAt_le_mintPathBoundGap` and `mintAwareFuelAt_le_mintAwareFuelGap`.
-- [ ] Prove `budgetPotentialGap_lt_mintPathBoundGap`.
-- [ ] Declare `BudgetedTotalityGap` and restate the terminus family at it: the eight `_fixed`
+- [x] Prove `budgetPotentialGap_lt_mintPathBoundGap`.
+- [x] Declare `BudgetedTotalityGap` and restate the terminus family at it: the eight `_fixed`
       termini in `SigmaFixed.lean` (`expandBranchWithFuel_isSome_of_budget_fixed`,
       `buildTableauAt_isSome_of_budget_fixed`, `buildTableauAt_isSome_at_seed_fixed`,
       `buildTableauAt_isSome_of_lengthBudget_fixed`,
@@ -577,10 +577,10 @@ the `MintPaysForTimeGap` hypothesis **discharged** rather than carried.
       `buildTableauAt_isSome_of_lengthBudget_signedUniverse_fixed`,
       `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fixed`, plus
       `budgetPotentialAt_lt_mintPathBoundAt_fixed`) become their `_gap` counterparts.
-- [ ] In each restated terminus, **drop the `hmint` hypothesis** and discharge it internally from
+- [x] In each restated terminus, **drop the `hmint` hypothesis** and discharge it internally from
       Phase 6's `mintPaysForTimeGap_of_any`. This is the headline improvement: the residual becomes
       a theorem rather than a condition the caller must meet.
-- [ ] Docstring must preserve the de-vacuification disclaimer: dropping `hmint` does not make any
+- [x] Docstring must preserve the de-vacuification disclaimer: dropping `hmint` does not make any
       terminus non-vacuous, because entries 9, 11 and 22 still refute co-hypotheses
       (`DifficultyBounded`, clause 2 of `UniverseClosed`, `PostBlockingSettles`).
 
@@ -595,6 +595,18 @@ and measured at plan time by `grep -nE '^(def|theorem) ' SigmaFixed.lean` over t
 `BudgetedTotalityFixed` section (`SigmaFixed.lean:764-892`). Confirm the count at implementation
 time by re-running that grep against the live file; if the section has grown, restate every member
 rather than the eight named here, and record the actual count in the implementation summary.
+
+**Scope Hypothesis CONFIRMED at implementation time.** The grep was re-run against the live file
+(`awk 'NR>=764 && NR<=920 && /^(def|theorem) /' SigmaFixed.lean`) and returns **nine**
+declarations: the `def BudgetedTotalityFixed` at `:771` plus exactly the **eight** theorems the
+plan enumerates — `budgetPotentialAt_lt_mintPathBoundAt_fixed` `:764`,
+`expandBranchWithFuel_isSome_of_budget_fixed` `:783`, `buildTableauAt_isSome_of_budget_fixed`
+`:802`, `buildTableauAt_isSome_at_seed_fixed` `:819`,
+`buildTableauAt_isSome_of_lengthBudget_fixed` `:837`,
+`buildTableauAt_isSome_at_seed_lengthBudget_fixed` `:852`,
+`buildTableauAt_isSome_of_lengthBudget_signedUniverse_fixed` `:873`,
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fixed` `:892`. The section has not
+grown; the count is 8 and all 8 were restated.
 
 **Tier Justification**: A guarded `lake build` of the `MintBound` aggregator target exiting 0 is
 the complete covering check — every declaration this phase adds lands in `FiveComponent.lean`,
