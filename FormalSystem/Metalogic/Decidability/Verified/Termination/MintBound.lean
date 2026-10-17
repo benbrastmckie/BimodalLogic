@@ -22,6 +22,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.UntlSn
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.BoxFree
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.GapPotential
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.MintPaysAssembly
+import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.FiveComponent
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Register
 
 /-!
@@ -110,6 +111,9 @@ hang off the `MintPotential`/`Measure` foundation rather than off the closure ch
   its ceiling, growth and identification-arm transport, the strict drop at a `densityRule`
   step, the refutation of `MintPaysForTimeFixed` at `.Dense`/`.RTime`, and the repaired
   residual `MintPaysForTimeGap` the repair is stated at
+- `FiveComponent`: the five-component measure — `BudgetStateGap`, `budgetPotentialGap`, both
+  step lemmas re-proved against the four-disjunct residual, the enlarged figures, and the
+  terminus family restated with `MintPaysForTimeGap` **discharged** rather than carried
 - `MintPaysAssembly`: the engine-level assembly — `MintPaysForTimeFixed` off `.Dense`, at any
   universe, via the four-bucket case split at the `pickBranches` level
 - `Register`: the do-not-re-attempt register — twenty-five statements that look like the natural

@@ -240,6 +240,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.BoxFree
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.ClosureResidual
+import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.FiveComponent
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.FourComponent
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.GapPotential
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Invariants

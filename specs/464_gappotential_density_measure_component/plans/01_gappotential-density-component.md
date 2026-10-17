@@ -500,28 +500,33 @@ imports it), and that one target elaborates both.
 
 ---
 
-### Phase 7: The Five-Component Measure: State, Weight, and Step Lemmas [NOT STARTED]
+### Phase 7: The Five-Component Measure: State, Weight, and Step Lemmas [COMPLETED]
 
 **Goal**: `BudgetStateGap` and `budgetPotentialGap` exist and provably decrease at every step the
 engine can take, including all three arms of an ordered split.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/FiveComponent.lean`
+- [x] Create `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/FiveComponent.lean`
       with the standard header and `import ...MintBound.MintPaysAssembly`.
-- [ ] Declare `BudgetStateGap`: `BudgetStateFixed`'s clauses (`SigmaFixed.lean:451`) with the
+- [x] Declare `BudgetStateGap`: `BudgetStateFixed`'s clauses (`SigmaFixed.lean:451`) with the
       budget clause widened to
       `mintTimeBudget U σ b ord + selfGuardPotential U σ ord + gapPotential U σ ord ≤ Tmax`.
-- [ ] Prove `budgetStateFixed_of_budgetStateGap` (or the correctly-directed analogue), so the
+- [x] Prove `budgetStateFixed_of_budgetStateGap` (or the correctly-directed analogue), so the
       relationship to the landed state is explicit and the direction is on the record.
-- [ ] Declare `budgetPotentialGap := budgetPotentialAt U Tmax σ b ord
+      *(deviation: altered — landed under exactly that name, and the direction is the one the
+      plan's parenthetical anticipated: `BudgetStateGap → BudgetStateFixed`. The five-component
+      STATE is the stronger one (one more non-negative summand on the left of the budget clause)
+      even though the repaired RESIDUAL `MintPaysForTimeGap` is the weaker one. The two run
+      opposite ways and the docstring says so.)*
+- [x] Declare `budgetPotentialGap := budgetPotentialAt U Tmax σ b ord
       + (2 * (Tmax * Tmax + 1) + U.card) * gapPotential U σ ord`, reusing `budgetPotentialAt`'s own
       weight argument (`FourComponent.lean:67`) rather than inventing a second one. The docstring
       must say which three quantities the weight has to dominate, as `budgetPotentialAt`'s does.
-- [ ] Prove the unordered-step lemma: gap non-increase is Phase 1's `gapPotential_le_of_grow`, via
+- [x] Prove the unordered-step lemma: gap non-increase is Phase 1's `gapPotential_le_of_grow`, via
       `expandOnceUnblocked_ord_mono` (`OrderingTimes.lean:897`).
-- [ ] Prove the `splitOrdered` step lemma at all three arms: arms 1 and 2 by growth, arm 3 by
+- [x] Prove the `splitOrdered` step lemma at all three arms: arms 1 and 2 by growth, arm 3 by
       Phase 2's `gapPotential_identifyOriented`.
-- [ ] Prove `stepDecreases_budgetPotentialGap`, taking `MintPaysForTimeGap` where the landed
+- [x] Prove `stepDecreases_budgetPotentialGap`, taking `MintPaysForTimeGap` where the landed
       `stepDecreases_budgetPotentialAt_fixed` (`SigmaFixed.lean:734`) takes
       `MintPaysForTimeFixed`.
 
