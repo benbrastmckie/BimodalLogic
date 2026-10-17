@@ -1,7 +1,7 @@
 # Implementation Plan: Task #709
 
 - **Task**: 709 - ctl_like_fragment_finite_model_property (F4, finite width implies eventually periodic, as route R1's summary step)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: 703, 710, 719 (all archived `completed`; nothing here waits on them)
 - **Research Inputs**: specs/709_ctl_like_fragment_finite_model_property/reports/01_f4-summary-step-disposition.md
@@ -118,7 +118,7 @@ stays with the user, and the summary supplies the two-line text for it.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Record the F4 exclusion and amend the Limits README [NOT STARTED]
+### Phase 1: Record the F4 exclusion and amend the Limits README [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Close the task as a reasoned exclusion on kernel-checked evidence, and correct the one
 misleading sentence in the library's prose so the tree's own documentation says what is and is
@@ -127,7 +127,7 @@ not formalized. This phase closes with the marker `[COMPLETED WITH EXCLUSIONS]`,
 three rows of the record below.
 
 **Tasks**:
-- [ ] Re-verify the four cited declarations in this dispatch (lean-lsp `lean_verify` with
+- [x] Re-verify the four cited declarations in this dispatch (lean-lsp `lean_verify` with
   `scan_source: true`, or `#print axioms` through `lean_run_code` / a scratch file compiled
   with `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean <file>`;
   announce the evidence tier if `lean_local_search` reports `warming`/`unavailable`/`error`):
@@ -136,15 +136,15 @@ three rows of the record below.
   `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp`,
   `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture.not_tailStable_cert`. Each
   must report exactly `[propext, Classical.choice, Quot.sound]` and no `sorry`. Record the
-  observed output in the phase's verification notes.
-- [ ] Confirm the Scope Hypothesis below (`grep -c 'not formalized anywhere in this tree'` on the
+  observed output in the phase's verification notes. *(completed: all four, plus `not_sliced_complete` and `no_finite_width_sat`, checked via `lean_verify` with `scan_source: true`; each returned axioms `[propext, Classical.choice, Quot.sound]`, trust `standard`, warnings `[]`; full output in the summary)*
+- [x] Confirm the Scope Hypothesis below (`grep -c 'not formalized anywhere in this tree'` on the
   README returns `1`; the sentence sits in the closing paragraph of
   `## What is refuted, and what is not`, lead sentence `**The semantic characterisation is
-  argued, not proved.**`).
-- [ ] Replace that closing paragraph of
+  argued, not proved.**`). *(completed: count `1`, README lines 77-80; `Last verified` at line 128)*
+- [x] Replace that closing paragraph of
   `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/README.md` with the
   following text (verbatim; adjust only if a cited line number has drifted, in which case cite
-  the declaration without a line number):
+  the declaration without a line number): *(completed: applied verbatim, commit `7aba3abda`; 2 hunks; no `.lean` touched)*
 
   > **The semantic characterisation is argued, not proved.** The class is complete exactly on
   > targets with a finite-width countermodel: necessity is this directory's shape; sufficiency —
@@ -163,21 +163,21 @@ three rows of the record below.
   > `exists_periodic_subfamily` over the label colouring of a sliced structure's run, not a new
   > Ramsey argument.
 
-- [ ] Update the README's trailing `*Last verified: 2026-10-10*` line to the implementation date.
-- [ ] Confirm the three exclusion rows below against this dispatch's own observations (the
+- [x] Update the README's trailing `*Last verified: 2026-10-10*` line to the implementation date. *(completed: 2026-10-17)*
+- [x] Confirm the three exclusion rows below against this dispatch's own observations (the
   kernel checks above; `RaySummary/README.md`'s "No finite-fibre or finite-width assumption"
   sentence; E3's header verdict in `device-selection-probe.lean`), then set the phase heading
-  to `[COMPLETED WITH EXCLUSIONS]` and the plan-level Status to `[COMPLETED]`.
-- [ ] Write `specs/709_ctl_like_fragment_finite_model_property/summaries/01_f4-reasoned-exclusion-record-summary.md`
+  to `[COMPLETED WITH EXCLUSIONS]` and the plan-level Status to `[COMPLETED]`. *(deviation: altered — phase heading set to `[COMPLETED WITH EXCLUSIONS]`; the plan-level `- **Status**:` field is owned by `update-plan-status.sh` via `update-task-status.sh` postflight and was not hand-edited. Observations: fragment-predicate grep count `0`; E3 header line 114 "UNCHANGED — verdict (i), KEEP candidate (d)"; `RaySummary/README.md` lines 99 and 517)*
+- [x] Write `specs/709_ctl_like_fragment_finite_model_property/summaries/01_f4-reasoned-exclusion-record-summary.md`
   per summary-format.md, carrying (a) the `#### Reasoned Exclusions` table verbatim, (b) the
   kernel-check output, (c) the README diff hunk, and (d) under a heading "Proposed ROADMAP
   text (user-applied)" the two lines for the Stage 0 checkbox: that 709 closed as a reasoned
   exclusion because R1 landed the summary step over the time axis with no width
   (`exists_periodic_subfamily`, `exists_hitPresented`), and that the "Not batched, and why" entry
-  for 709 may be removed once the user ticks the ruling.
-- [ ] Issue log: record a `win` if the kernel re-checks and Scope Hypothesis confirm cleanly on
+  for 709 may be removed once the user ticks the ruling. *(completed)*
+- [x] Issue log: record a `win` if the kernel re-checks and Scope Hypothesis confirm cleanly on
   the first pass, or an `issue` for any deviation, as it arises; attest explicitly in the
-  summary if nothing further arose.
+  summary if nothing further arose. *(completed: one `win` and one minor `issue` recorded, dispatch 3)*
 
 **Timing**: 1.5 hours
 
@@ -238,14 +238,14 @@ closing the phase; a third hunk, or any `.lean` change, blocks the phase.
 
 ## Testing & Validation
 
-- [ ] Four kernel checks observed in-dispatch, each `[propext, Classical.choice, Quot.sound]`, no `sorry`.
-- [ ] `Limits/README.md`: old sentence count `0`, `exists_periodic_subfamily` present, "argued, not proved" lead kept, no record-versioning phrasing, exactly two diff hunks.
-- [ ] No `.lean` file changed anywhere in the task's commits (`git diff --stat -- '*.lean'` empty across them).
-- [ ] `bash .claude/scripts/check-task-references.sh --quiet` exits 0.
-- [ ] Full `lake build` (guarded) exits 0; `scripts/check-module-invariants.sh` exits 0 or its only failure is a pre-existing drift on files this task did not touch, recorded on the issue log; `lean-sorry-census.sh` 0; `verify-deploy.sh` exits 0.
-- [ ] `validate-artifact.sh` on the summary exits 0; the summary carries the exclusion table, the kernel output, the README hunk and the proposed ROADMAP text.
-- [ ] Phase heading `[COMPLETED WITH EXCLUSIONS]` with the `#### Reasoned Exclusions` record; plan Status `[COMPLETED]`.
-- [ ] Issue log carries at least one entry from this implementation (win or issue), or an explicit attestation in the summary that nothing arose.
+- [x] Four kernel checks observed in-dispatch, each `[propext, Classical.choice, Quot.sound]`, no `sorry`.
+- [x] `Limits/README.md`: old sentence count `0`, `exists_periodic_subfamily` present, "argued, not proved" lead kept, no record-versioning phrasing, exactly two diff hunks.
+- [x] No `.lean` file changed anywhere in the task's commits (`git diff --stat -- '*.lean'` empty across them).
+- [x] `bash .claude/scripts/check-task-references.sh --quiet` exits 0.
+- [x] Full `lake build` (guarded) exits 0; `scripts/check-module-invariants.sh` exits 0 or its only failure is a pre-existing drift on files this task did not touch, recorded on the issue log; `lean-sorry-census.sh` 0; `verify-deploy.sh` exits 0.
+- [x] `validate-artifact.sh` on the summary exits 0; the summary carries the exclusion table, the kernel output, the README hunk and the proposed ROADMAP text.
+- [x] Phase heading `[COMPLETED WITH EXCLUSIONS]` with the `#### Reasoned Exclusions` record; plan Status `[COMPLETED]`. *(deviation: altered — plan-level Status left to postflight, see Phase 1)*
+- [x] Issue log carries at least one entry from this implementation (win or issue), or an explicit attestation in the summary that nothing arose.
 
 ## Artifacts & Outputs
 
