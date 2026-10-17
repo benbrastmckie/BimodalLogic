@@ -1,0 +1,28 @@
+{
+  "status": "researched",
+  "dispatch_seq": 12,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/465_complete_terminus_restatement_family/reports/01_complete-terminus-restatement-family.md",
+      "summary": "The fourteen deferred terminus restatements are moot -- their eight _run family roots were retired as vacuous after PostBlockingSettlesRun was refuted; re-derivation finds the five landed families complete and the live gap at the single-member _fixed_seedRun line, with a sorry-free rescope recommended."
+    }
+  ],
+  "user_decision": {
+    "question": "Task 465's recorded scope (fourteen _lengthBudget/signedUniverse restatements of the _run family) is void: all nine _run termini were retired as vacuous and PostBlockingSettlesRun is refuted, so no family root remains to apply. How should the task be rescoped?",
+    "options": [
+      "Rescope to the seedRun family: correct the record (C) + complete _fixed_seedRun S2-S4 (A) + add the _gap_seedRun line S1-S4 in a new submodule (B), leaving S5/S6 out as hlab-vacuous",
+      "Record-only close: amend the C12/C9 record that the fourteen are moot (C) and land no new theorem",
+      "Full family completion: (C) + (A) + (B) plus the four S5/S6 members (D), each carrying an explicit local hlab-vacuity docstring",
+      "Abandon the task as superseded by task 433's own later phases"
+    ],
+    "recommended": "Rescope to the seedRun family: correct the record (C) + complete _fixed_seedRun S2-S4 (A) + add the _gap_seedRun line S1-S4 in a new submodule (B), leaving S5/S6 out as hlab-vacuous",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1792193557_775a31_465",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

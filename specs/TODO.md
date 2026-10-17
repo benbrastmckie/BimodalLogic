@@ -72,7 +72,7 @@ next_project_number: 810
 
 ### Decidability
 
-465 [RESEARCHING] — Complete the terminus restatement family at the repaired...
+465 [RESEARCHED] — Complete the terminus restatement family at the repaired...
   └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns...
     └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2...
       └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program...
@@ -1562,10 +1562,11 @@ POINTER REFRESH (2026-09-16 reorganization): `MintBound.lean` was split into the
 ---
 
 ### 465. Complete terminus restatement family
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 464
+- **Research**: [465_complete_terminus_restatement_family/reports/01_complete-terminus-restatement-family.md]
 
 **Description**: Complete the terminus restatement family at the repaired residuals. Task 433's Phase 6 landed EIGHT of the twenty-two restatements -- the four family roots and their four caller-facing seed forms -- and recorded the remaining FOURTEEN as a Reasoned Exclusion with the recipe written down: each is a `_lengthBudget` / `signedUniverse` substitution, "a one-line application of its family root".
 

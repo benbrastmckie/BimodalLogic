@@ -1045,21 +1045,28 @@
     {
       "project_number": 465,
       "project_name": "complete_terminus_restatement_family",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Complete the terminus restatement family at the repaired residuals. Task 433's Phase 6 landed EIGHT of the twenty-two restatements -- the four family roots and their four caller-facing seed forms -- and recorded the remaining FOURTEEN as a Reasoned Exclusion with the recipe written down: each is a `_lengthBudget` / `signedUniverse` substitution, \"a one-line application of its family root\".\n\nThis is deliberately MECHANICAL work with the recipe already recorded. Its value is uniformity: a caller reaching for a `_lengthBudget` or `signedUniverse` form of a repaired terminus should find it landed rather than having to re-derive it, and a half-populated family is a trap for a future reader who assumes an absent member is absent for a reason.\n\nSCOPE: read Phase 6's Reasoned Exclusions section in specs/433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md for the enumerated list and the recipe. The family roots and existing members are the `buildTableauAt_isSome_*` declarations in MintBound.lean (the `_at`, `_selfGuarded`, `_fixed` and `_run` families, roughly :6308-:12240). Land the fourteen missing members following the naming convention the file already uses; do not invent a new convention.\n\nWHY THIS RUNS LAST: it restates termini at the repaired residuals, so it must run after the residuals themselves are settled. If 462, 463 or 464 changes a predicate's shape or sheds a hypothesis, the restatements must reflect the settled form -- doing this work earlier would mean doing it twice. Before starting, RE-DERIVE the list of missing members from the file as it then stands rather than trusting the count of fourteen recorded here: earlier tasks may have landed some, or added new family roots.\n\nPROHIBITED: no `sorry`; additive only; do not alter any previously-landed declaration; do not edit Fuel.lean, Saturation.lean or Tableau.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green. If any of the fourteen turns out NOT to be a one-line application -- i.e. the recipe does not actually apply -- STOP on that member, record why, and do not force it; a member that needs real mathematics belongs in its own task, not smuggled in here.\n\nDependencies: 462, 463, 464 -- all three, so that the restatements are made against a settled set of residuals rather than a moving one.",
       "created": "2026-08-19T01:34:36Z",
-      "last_updated": "2026-10-17T01:04:44Z",
-      "session_id": "sess_1792193557_775a31_465",
+      "last_updated": "2026-10-17T01:17:12Z",
+      "session_id": "sess_1792193557_775a31",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "dependencies": [
         464
       ],
-      "artifacts": [],
-      "priority": "low"
+      "artifacts": [
+        {
+          "path": "specs/465_complete_terminus_restatement_family/reports/01_complete-terminus-restatement-family.md",
+          "type": "report",
+          "summary": "The fourteen deferred terminus restatements are moot -- their eight _run family roots were retired as vacuous after PostBlockingSettlesRun was refuted; re-derivation finds the five landed families complete and the live gap at the single-member _fixed_seedRun line, with a sorry-free rescope recommended."
+        }
+      ],
+      "priority": "low",
+      "next_artifact_number": 2
     },
     {
       "project_number": 481,
