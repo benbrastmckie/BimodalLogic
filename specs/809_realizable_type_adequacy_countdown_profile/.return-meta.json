@@ -1,22 +1,38 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
+  "status": "implemented",
+  "started_at": "2026-10-17T00:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/809_realizable_type_adequacy_countdown_profile/plans/01_realizable-type-certificate.md",
-      "summary": "Six-phase, 12-hour lean4 plan landing one new wired evidence probe: the existential until-fixpoint (the dual of AUFix), its guarded-path characterization, a compiled universal-vs-existential separation, the chain-to-ray composition theorem, the Route B certificate presentation with its box and stab clauses, and the compiled separation of certificate-admissible from merely locally coherent candidate sets; 18 Goal theorems pinned in a plan-time-compiled Lean Challenge block."
+      "type": "summary",
+      "path": "specs/809_realizable_type_adequacy_countdown_profile/summaries/01_realizable-type-certificate-summary.md",
+      "summary": "The twenty-first wired evidence probe: the existential until-fixpoint, the certificate presentation with its box and stab clauses, and the compiled separation of realizable-type candidates from merely locally coherent ones."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean",
+      "summary": "Eighteen Goal theorems, sorry-free, axioms [propext, Classical.choice, Quot.sound] on every one; registered in scripts/check-evidence-probes.sh."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1792219958_0ff342_809",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 12,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6]]
+  "completion_data": {
+    "completion_summary": "Landed one new wired evidence probe carrying all eighteen pinned Goal theorems sorry-free and with no new axiom: the existential until-fixpoint as the dual of the tree's universal AUFix, its guarded-path characterization, the compiled universal-versus-existential separation on a cycle with an exit, the certificate presentation as a candidate realizable set with seven decidable fields including the box and stab clauses, and the separation that makes it non-vacuous -- a set local coherence accepts and the certificate rejects. Adequacy's SUFFICIENCY half is NOT discharged and remains for a successor record, as do obligations (b), (c), (d) and gates 1, 2, 3 and 9; gate 8 stays SIDESTEPPED on a stab-free fixture.",
+    "roadmap_items": []
   },
-  "memory_candidates": [],
-  "next_steps": "Run /implement 809 to execute the plan"
+  "metadata": {
+    "session_id": "sess_1792219958_0ff342",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed"
+  }
 }

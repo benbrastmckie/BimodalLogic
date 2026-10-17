@@ -1,7 +1,7 @@
 # Implementation Plan: Task #809
 
 - **Task**: 809 - Realizable-type adequacy of the countdown profile: the certificate presentation, its existential fulfilment condition, and the compiled separation from local coherence
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: 761 (parent, stays `[BLOCKED]`; this task does not touch it); 806 (predecessor; its fixture, local relation and profile are ported, not imported); 805 (refuted predecessor; its coprime-cycle object reaches here through 806)
 - **Research Inputs**: specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md

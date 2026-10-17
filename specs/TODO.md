@@ -11,8 +11,8 @@ next_project_number: 812
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,809,810 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,429,497,618,763,783,807 | 298,428,502,616,761,772,809 | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,807,810 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,429,497,618,763,783 | 298,428,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -89,8 +89,7 @@ next_project_number: 812
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-809 [PLANNED] — RESEARCH TASK. The adequacy half of the closure-indexed...
-  └─ 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
+807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
 
 ### Formula Refactor
 
@@ -179,13 +178,14 @@ SCHEDULING. file_scope collides with task 768 (lean_challenge_snapshot_chunk_and
 
 ### 809. Realizable type adequacy countdown profile
 - **Effort**: Adequacy alone is the costable first deliverable; the full gate re-run beyond it is not costable in one round
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 805
 - **Parent**: Task 806
 - **Research**: [809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md]
 - **Plan**: [809_realizable_type_adequacy_countdown_profile/plans/01_realizable-type-certificate.md]
+- **Summary**: [809_realizable_type_adequacy_countdown_profile/summaries/01_realizable-type-certificate-summary.md]
 
 **Description**: RESEARCH TASK. The adequacy half of the closure-indexed periodicity gate, successor to the countdown-profile round that discharged the cheap half.
 
