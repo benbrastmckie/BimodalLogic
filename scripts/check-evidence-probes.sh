@@ -1381,6 +1381,40 @@ EVIDENCE="specs/evidence"
 #                                                           | `valid_iff_stepBwdDet`, `bdForce_not_valid`,
 #                                                           | `not_stepBwdDet`, `bdForce_valid`;
 #                                                           | `forward_branching` axiom-free
+# seam-gluing-ray-product/certificate-sufficiency-dovetailing | SUFFICIENCY, SPLIT (the research round's
+#                                                           | section-6 claim, resolved): the dovetailing
+#                                                           | argument IS a theorem (`exists_dovetail_chain`,
+#                                                           | over an arbitrary finite graph;
+#                                                           | `forward_chain_of_certAdm` is its forward
+#                                                           | instance for the compiled relation, LABELLED
+#                                                           | forward-only); condition (3)'s `|R|` bound IS
+#                                                           | derived (`eu_mem_lfp_path_le_card`, consumed by
+#                                                           | nothing); and the claim that the compiled
+#                                                           | certificate's conditions imply realizability IS
+#                                                           | REFUTED (`sufficiency_refuted`): `cert_accepts_R3`
+#                                                           | accepts the three-member set over
+#                                                           | `(⊤ S a1) ∧ (⊤ S a2)` whose member `x0` lies on NO
+#                                                           | backward-fulfilling chain
+#                                                           | (`no_bwdFulfilling_through_x0`), because
+#                                                           | `linkPred` constrains no backward arm and so the
+#                                                           | two discharge paths condition (4) supplies cannot
+#                                                           | be taken together. The decision it holds in
+#                                                           | place: Route B's relation must carry the
+#                                                           | strict-since link `linkPredB` (`cohBi`), under
+#                                                           | which the certificate IS sufficient
+#                                                           | (`realizes_of_certAdm_cohBi`, label-level,
+#                                                           | two-sided) at no cost on a `snce`-free closure
+#                                                           | (`cohBi_eq_coh_of_snce_free`); a backward
+#                                                           | propagation theorem is NOT to be claimed for
+#                                                           | `coh`, and `ULive`/`SLive` are NOT the repair
+#                                                           | (both arms stay existential). What it withholds:
+#                                                           | realizability is label-level only (no
+#                                                           | `PlusTruthAt`, `tpOf`, `cellAt`, history, world,
+#                                                           | model or cell); no Route A; no
+#                                                           | `ladderRealized`/`LadderCons`; no gate verdict
+#                                                           | changed, gate 8 still SIDESTEPPED. Axioms
+#                                                           | `[propext, Classical.choice, Quot.sound]` on all
+#                                                           | thirteen printed theorems.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1421,6 +1455,7 @@ WIRED=(
   "seam-gluing-ray-product/realizable-type-adequacy-gap"
   "seam-gluing-ray-product/realizable-type-certificate"
   "seam-gluing-ray-product/backward-determinism-forcing-formula"
+  "seam-gluing-ray-product/certificate-sufficiency-dovetailing"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
