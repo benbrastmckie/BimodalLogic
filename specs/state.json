@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 812,
+  "next_project_number": 813,
   "active_projects": [
     {
       "project_number": 806,
@@ -1836,6 +1836,25 @@
       ],
       "next_artifact_number": 2,
       "completion_summary": "Applied the audit verdict mechanically: task 809's dependencies reduced from [734, 805] to [805] in specs/state.json, specs/TODO.md regenerated from it, and the 807-on-809 serialization edge verified to survive (809 in wave 1, 807 in wave 2). Task 734's [HOLD] and its probe, scripts/check-evidence-probes.sh, specs/literature-index.json, FormalSystem/ and Tests/ are all untouched. Tasks 809 and 807 are now dispatchable without lifting 734's hold."
+    },
+    {
+      "project_number": 812,
+      "project_name": "stale_generated_inventory_blocks_refresh",
+      "status": "researched",
+      "task_type": "general",
+      "description": "Refresh the three stale generated inventory blocks that check-module-invariants.sh reports as an INV FAIL group: README.md, FormalSystem/README.md, and FormalSystem/Metalogic/README.md.\n\nThe condition is PRE-EXISTING and already diagnosed, do not re-derive: check-module-invariants.sh EXITS 0 but its output carries one FAIL group, 'INV 3 file(s) carry a stale generated inventory block'. The inventory block is generated from dir=FormalSystem, and the last FormalSystem commit (4155ee185, a MintBound/README module re-measure) postdates the last README.md commit (ec8483a01), which is what makes the committed blocks stale.\n\nThe remedy is the script's own emit mode: 'bash scripts/check-module-invariants.sh --emit-inventory', then review the regenerated blocks and commit the three README files. Verify by re-running check-module-invariants.sh and confirming the INV FAIL group is gone (the exit code was already 0, so the exit code alone is NOT the success signal -- the absence of the FAIL group in the output is).\n\nScope: README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md, and nothing else. No proof or definition changes under FormalSystem/, no Tests/ changes.",
+      "effort": "One emit-mode run plus review of the regenerated blocks",
+      "parent_task": 809,
+      "topic": "decidability",
+      "dependencies": [],
+      "file_scope": [
+        "README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Metalogic/README.md"
+      ],
+      "created": "2026-10-17T13:29:04Z",
+      "last_updated": "2026-10-17T13:29:04Z",
+      "artifacts": []
     }
   ],
   "artifacts": [

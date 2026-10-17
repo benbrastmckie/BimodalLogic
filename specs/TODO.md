@@ -1,5 +1,5 @@
 ---
-next_project_number: 812
+next_project_number: 813
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 812
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,807,810 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,807,810,812 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,429,497,618,763,783 | 298,428,502,616,761,772 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -90,6 +90,7 @@ next_project_number: 812
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
+812 [RESEARCHED] — Refresh the three stale generated inventory blocks that...
 
 ### Formula Refactor
 
@@ -124,6 +125,24 @@ next_project_number: 812
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 812. Stale generated inventory blocks refresh
+- **Effort**: One emit-mode run plus review of the regenerated blocks
+- **Status**: [RESEARCHED]
+- **Task Type**: general
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 809
+
+**Description**: Refresh the three stale generated inventory blocks that check-module-invariants.sh reports as an INV FAIL group: README.md, FormalSystem/README.md, and FormalSystem/Metalogic/README.md.
+
+The condition is PRE-EXISTING and already diagnosed, do not re-derive: check-module-invariants.sh EXITS 0 but its output carries one FAIL group, 'INV 3 file(s) carry a stale generated inventory block'. The inventory block is generated from dir=FormalSystem, and the last FormalSystem commit (4155ee185, a MintBound/README module re-measure) postdates the last README.md commit (ec8483a01), which is what makes the committed blocks stale.
+
+The remedy is the script's own emit mode: 'bash scripts/check-module-invariants.sh --emit-inventory', then review the regenerated blocks and commit the three README files. Verify by re-running check-module-invariants.sh and confirming the INV FAIL group is gone (the exit code was already 0, so the exit code alone is NOT the success signal -- the absence of the FAIL group in the output is).
+
+Scope: README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md, and nothing else. No proof or definition changes under FormalSystem/, no Tests/ changes.
+
+---
 
 ### 811. Ladder periodicity dependency edge recut
 - **Status**: [COMPLETED]
