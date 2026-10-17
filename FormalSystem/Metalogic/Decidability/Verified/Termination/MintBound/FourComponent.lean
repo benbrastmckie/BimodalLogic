@@ -721,9 +721,10 @@ carries. Read the paragraph below as one of two blockers, not the only one; see 
 `freshLabelRules` and `selfGuardRules`, so at a `densityRule` step disjunct 1 fails (the mint raises
 `knownTimes`), disjunct 2 cannot move (`mintPotential` does not read the rule) and disjunct 3 cannot
 move (`selfGuardDischarged` reports the catch-all `true` for it). That is the residual
-`MintPaysForTimeAt`'s obligation map already names, carried here unchanged: the intended second
-component is `gapPotential`, indexed by `U ×ˢ U` and gated on `denseRules`, and it is implemented
-nowhere and assumed by nothing.
+`MintPaysForTimeAt`'s obligation map already names, carried here unchanged: the second component
+is `gapPotential`, indexed by `U ×ˢ U`. **It is now landed** in `GapPotential`, carried through the
+measure by `FiveComponent`'s `budgetPotentialGap`, and *not* `denseRules`-gated — the gating this
+paragraph anticipated proved unnecessary and was dropped. See register entry 26.
 
 `densityRule` is `denseRules`-gated, so it cannot fire at a frame class outside `.Dense` /
 `.RTime`; a discharge restricted to the other classes is therefore not refuted. What it needs is

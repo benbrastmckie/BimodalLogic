@@ -187,11 +187,21 @@ already been here.
     time-minting step; `mintPaysForTime_rank_repair_false` decides the weakened predicate false at
     the same configuration, at every frame class, for every `Tmax ≥ 3`.
 
-    What is missing is a **fourth measure component** paying for the three self-guarded minting
+    What was missing is a **fourth measure component** paying for the three self-guarded minting
     rules — `untlNeg` / `snceNeg`, whose guards are `futureOf`/`pastOf` emptiness plus
     `ord.timeCount < 4`, and `densityRule`, whose guard is the maximal-unfilled-gap set — that also
-    survives the identification arm, which can lower `ord.timeCount`. That is open, and it is the
-    only thing that is.
+    survives the identification arm, which can lower `ord.timeCount`.
+
+    *Both halves are now closed, and neither of the two forbidden repairs above is involved in
+    either.* `untlNeg` / `snceNeg` are paid for by `selfGuardPotential` (`TimeReuse`,
+    `OrientedGate`); `densityRule` is paid for by `gapPotential` (`GapPotential`), a **fifth**
+    component over `U ×ˢ U` whose strict drop at a density step is `gapPotential_lt_of_density` and
+    whose survival across the identification arm is `gapPotential_identifyOriented`. Entry 26
+    records that half. The two prohibitions in this entry are untouched by both and remain live:
+    re-indexing `mintPotential` on `freshTimeRules` is still refuted by
+    `witnessPresent_eq_false_of_not_freshLabel`, and dropping disjunct 1's cardinality conjunct is
+    still refuted by `splitOrderedRank_lt_of_knownTimes_lt` plus
+    `mintPaysForTime_rank_repair_false`.
 
 15. **Time reuse after an identification: it happens.** Not open, and not forbidden by the run
     invariant. `nextTime_reissues_retired_time` decides a configuration where
@@ -296,9 +306,17 @@ already been here.
 
     *What is **not** refuted.* The density coordinate. `densityRule` is outside `selfGuardRules` by
     construction, its termination argument is about the *gap set* rather than about any self-guard,
-    and nothing above touches it. The intended second component `gapPotential` — indexed by
-    `U ×ˢ U`, `denseRules`-gated, quadratic in `|U|` — is a named residual recorded in the
-    subsection "The density residual" above the register, unattempted rather than refuted.
+    and nothing above touches it.
+
+    *And the density coordinate is now **closed**.* `gapPotential` (`GapPotential`) is landed —
+    indexed by `U ×ˢ U` and quadratic in `|U|`, as this entry anticipated, but **not**
+    `denseRules`-gated, which this entry's description got wrong: monotonicity, transport and the
+    strict drop all hold at every frame class, so gating would add an `fc` parameter to a measure
+    that has none and would reintroduce exactly the restriction the component exists to retire. See
+    entry 26. The σ-hit wall this entry raises against a `selfGuardRules ×ˢ U` ledger does **not**
+    arise for the gap ledger: both of its σ-hits come from branch formulas, the source end from
+    `sigma_formula_hit_of_sigmaFixed` and the target end from `mem_knownTimes_of_mem_futureOf`
+    under `OrdTimesKnown`. Nothing else in this entry is withdrawn.
 
 18. **A `nextTime` redefinition, a `TimeOrdering` highwater field, or any other bookkeeping-side
     cure for entry 15's time reuse.** Not refuted — *closed by being unnecessary*, which is why this
@@ -438,8 +456,9 @@ already been here.
     neither of the other two can move. `densityRule` is `denseRules`-gated, so a discharge
     restricted to frame classes outside `.Dense` / `.RTime` is not refuted; what it needs is a
     rule-by-rule census showing every remaining rule either mints no time, is witness-guarded, or is
-    self-guarded. That census is not attempted here, and `gapPotential` — indexed by `U ×ˢ U`,
-    `denseRules`-gated — remains implemented nowhere and assumed by nothing.
+    self-guarded. That census is not attempted here. (*`gapPotential` is now landed and that
+    census is complete: `rule_census`'s fifth bucket, `mintPays_bucketD_density`, is the
+    `densityRule` arm, so no bucket needs the frame-class hypothesis any more. See entry 26.*)
     `mintPaysForTimeStable_signedUniverse_empty` is how far the discharge goes today: the same
     boundary `mintPaysForTime_empty` records, at a concrete `signedUniverse C L`.
 
@@ -455,6 +474,10 @@ already been here.
     density coordinate is left — is wrong, and wrong in a way that was decidable when it was
     written. Read it as "missing at the density coordinate **and** at the formula coordinate";
     everything else in this entry stands.
+
+    *And both of those are now closed.* The formula coordinate by `SigmaFixed` /
+    `MintPaysForTimeFixed`, the density coordinate by `gapPotential` / `MintPaysForTimeGap`. Routes
+    1-3 of this entry are untouched by either and remain live prohibitions. See entry 26.
 
 20. **`MintPaysForTimeStable fc U Tmax` at any nonempty `U`, and the reading of entry 19's route 4
     that goes with it.** Refuted, not merely unproved, by
@@ -515,9 +538,19 @@ already been here.
     `mintPaysForTimeFixed_signedUniverse_of_not_dense` is its `signedUniverse C L` form, for
     **every** stock `C` including one carrying `untl` and `snce` — the case this entry calls the
     hard one, and the case section D3's syntactic fragment excludes. **(b)** The density coordinate,
-    exactly as entry 19 describes it and untouched by any of this, is what remains. The frame-class
-    hypothesis excludes `densityRule` rather than paying for it; a discharge at `.Dense` and
-    `.RTime` still needs `gapPotential`, which remains implemented nowhere and assumed by nothing.
+    exactly as entry 19 describes it and untouched by any of this, is what remained at the time
+    this entry was written. The frame-class hypothesis excludes `densityRule` rather than paying
+    for it; a discharge at `.Dense` and `.RTime` needs `gapPotential`.
+
+    *Item (b) is now closed, and the frame-class hypothesis is retired at the repaired predicate.*
+    `gapPotential` is landed (`GapPotential`) and `mintPaysForTimeGap_of_any` discharges
+    `MintPaysForTimeGap` at **every** frame class with no hypothesis at all. The route is not a
+    discharge of `MintPaysForTimeFixed` at `.Dense` / `.RTime` — that is **refuted**, by
+    `mintPaysForTimeFixed_dense_false` and `mintPaysForTimeFixed_rtime_false` — but a fourth
+    disjunct added to the predicate, with the direction lemma
+    `mintPaysForTimeGap_of_mintPaysForTimeFixed` on the record. See entry 26.
+    `mintPaysForTimeFixed_of_not_dense` is unchanged and remains the right statement at `.Base`
+    and `.ZTime`.
 
     *And the scope of (a), stated so it is not overread.* Landing the assembly makes **no** terminus
     in this file non-vacuous, and no artifact should claim otherwise. The nine `hlab` carriers stay
@@ -920,5 +953,49 @@ already been here.
     **unrestricted** `PostBlockingSettles`, which `postBlockingSettles_fuel_zero_false` refutes at
     every frame class, so it was unconditionally vacuous at **all four**. It sat inside what read as
     a uniform block and was not uniform with it.
+
+26. **`MintPaysForTimeFixed fc U Tmax` at `.Dense` or `.RTime`, and any density payment built on
+    `densityRule`'s own gap-TARGET set.** Two findings, one refutation and one landing.
+
+    *The refutation.* `MintPaysForTimeFixed` at `.Dense` and at `.RTime` is **false**, not merely
+    unproved: `mintPaysForTimeFixed_dense_false` and `mintPaysForTimeFixed_rtime_false` decide it,
+    at `σ = id`, at a three-formula branch `[T(Gp)@⟨0,0⟩, F(F¬p)@⟨0,0⟩, T(p)@⟨0,1⟩]` with ordering
+    `0 < 1` whose very next engine step is a `densityRule` step. `F(F¬p)@⟨0,0⟩` is there because it
+    is `negPos`'s own output at the trigger, so the cheaper rule reports nothing and the pick falls
+    straight through. All three disjuncts fail at the same step and the reason does not mention σ:
+    disjunct 1 because the mint raises `knownTimes`, disjunct 2 because
+    `densityRule ∉ freshLabelRules`, disjunct 3 because `densityRule ∉ selfGuardRules`. So "extend
+    `mintPaysForTimeFixed_of_not_dense` to `.Dense`" is a refuted goal, not an open one, and
+    `mintPaysForTimeFixed_of_not_dense` stays exactly as stated at `.Base` and `.ZTime`.
+
+    *The landing.* `gapPotential` (`GapPotential`) is the fifth measure component: the number of
+    pairs in the fixed index set `U ×ˢ U` whose gap is not yet filled. `gapPotential_lt_of_density`
+    is its strict drop at a density step, `gapPotential_identifyOriented` its survival across the
+    identification arm, `gapPotential_le_sq` its ceiling. `MintPaysForTimeGap` is
+    `MintPaysForTimeFixed`'s three disjuncts verbatim plus a fourth,
+    `mintPaysForTimeGap_of_mintPaysForTimeFixed` is the direction lemma, and
+    `mintPaysForTimeGap_of_any` discharges it at **every** frame class, at an arbitrary universe,
+    with no hypothesis. `FiveComponent` carries it through `budgetPotentialGap` to the eight `_gap`
+    termini, each of which **drops** the `hmint` hypothesis rather than carrying it.
+
+    *Do not re-attempt: a density payment built on the rule's own gap-TARGET set.* `densityRule`'s
+    gap-target filter has two conjuncts, (i) `t'` is maximal in the trigger's forward reach and
+    (ii) `t'` is not already reached through an intermediate. A ledger over the rule's own target
+    set — the obvious reading of "count what the rule still has to do" — **rises** at ordinary
+    steps, because conjunct (i) is anti-monotone: any rule minting a fresh maximal time creates a
+    new gap target. Only conjunct (ii) is monotone, and `gapFilled` is that conjunct alone, with
+    the polarity inverted. A candidate component that reads conjunct (i) is not a measure and no
+    weighting repairs it.
+
+    *Also do not re-attempt: gating the component on `denseRules`.* Entries 17 and 19 describe the
+    intended component as `denseRules`-gated. That is wrong and was dropped: growth, transport and
+    the strict drop all hold at every frame class, so an `fc` parameter buys no soundness and would
+    put back the frame-class restriction the component exists to retire.
+
+    *What this does NOT do.* It makes no terminus non-vacuous. Entries 9, 11 and 22 still refute
+    co-hypotheses — `DifficultyBounded`, clause 2 of `UniverseClosed`, `PostBlockingSettles` — and
+    nothing in `GapPotential` or `FiveComponent` touches any of the three. One residual changed
+    status from condition to theorem; the satisfiability of the statements that consume it did not
+    change.
     -/
 

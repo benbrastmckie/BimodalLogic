@@ -534,9 +534,11 @@ refutable at `.Dense` / `.RTime` by a `densityRule` vehicle: `densityRule` retur
 (`Tableau.lean:1389`), which `expandOnceUnblocked` maps to `.extended`, so
 it is inside this predicate's scope, and it mints a fresh time while lying outside **both**
 `freshLabelRules` and `selfGuardRules` — no disjunct moves at all. The intended component is
-`gapPotential`, indexed by `U ×ˢ U` and gated on `denseRules`; it is a **named residual**,
-implemented nowhere and assumed by nothing. See the subsection "The density residual" following
-`mintPaysForTimeAt_reuse_false`, and register entry 17. -/
+`gapPotential`, indexed by `U ×ˢ U`. **It is now landed** (`GapPotential`), and it is *not* gated
+on `denseRules` — the gating this paragraph anticipated turned out to be unnecessary and is
+dropped, since growth, transport and the strict drop all hold at every frame class. See the
+subsection "The density residual" following `mintPaysForTimeAt_reuse_false`, and register entries
+17 and 26. -/
 def MintPaysForTimeAt (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
     (Tmax : Nat) : Prop :=
   ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)
@@ -753,15 +755,20 @@ at all, at any `U`, independently of everything above. `freshTimeRules_incompara
 is the census fact that puts it outside the first list; `selfGuardRules` excludes it by
 construction.
 
-*The intended component, named so that its absence is legible.* `gapPotential`, indexed by `U ×ˢ U`
-rather than by `selfGuardRules ×ˢ U`. The index shape is forced by the rule's own argument:
+*The intended component, named here before it existed; it is now landed in `GapPotential`, and
+the paragraph is kept because its reasoning is what the landed component is built on.*
+`gapPotential`, indexed by `U ×ˢ U` rather than by `selfGuardRules ×ˢ U`. The index shape is
+forced by the rule's own argument:
 `densityRule` splits each *maximal unfilled gap* at most once, and a gap is a **pair**, so the
 ledger transcribes the rule's own `gapTargets` filter (`Tableau.lean:1368-1366`) —
 `(timeOrd.futureOf t').isEmpty`, together with `t'` lying below no other future time of the trigger
 — rather than any per-rule discharge test. It is therefore quadratic in `|U|` where
-`selfGuardPotential` is linear, and it is gated on `denseRules` (`Tableau.lean`,
-`allRulesForFC`), so it
-contributes nothing at `.Base` / `.ZTime`.
+`selfGuardPotential` is linear. *One correction to this paragraph, made by the landed component:
+the gating is dropped.* `densityRule` is indeed `denseRules`-gated in the engine
+(`Tableau.lean`, `allRulesForFC`), so the component contributes no *payment* at `.Base` /
+`.ZTime` — but the component itself is **not** gated, because growth, transport and the strict
+drop all hold at every frame class and an `fc` parameter would only put back the frame-class
+restriction the component exists to retire. See register entry 26.
 
 *That it has to be a separate clause is not this development's invention.* In the mosaic
 decidability argument whose residual structure this file follows, density is `(SVDns)`, listed among

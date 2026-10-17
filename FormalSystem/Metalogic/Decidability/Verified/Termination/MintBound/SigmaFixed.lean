@@ -352,7 +352,17 @@ mint raises `knownTimes`), disjunct 2 cannot move (`densityRule ∉ freshLabelRu
 cannot move (`densityRule ∉ selfGuardRules`), for every σ whatsoever — so this predicate is
 separately refutable at `.Dense` / `.RTime` by a `densityRule` vehicle, and a discharge at the
 other frame classes needs the rule-by-rule census register entries 19 and 20 name. That census is
-not attempted here, and `gapPotential` remains implemented nowhere and assumed by nothing. -/
+not attempted here.
+
+**Both of those are now closed, in `GapPotential` and `MintPaysAssembly`.** This predicate is not
+merely refutable at `.Dense` / `.RTime` but **refuted** there, by
+`mintPaysForTimeFixed_dense_false` and `mintPaysForTimeFixed_rtime_false`; the census is complete
+(`rule_census`'s fifth bucket is `mintPays_bucketD_density`); and `gapPotential` is landed, with
+`MintPaysForTimeGap` — this predicate's three disjuncts verbatim plus a fourth — discharged at
+**every** frame class with no hypothesis by `mintPaysForTimeGap_of_any`. The direction lemma is
+`mintPaysForTimeGap_of_mintPaysForTimeFixed`, so nothing stated at this predicate is withdrawn: it
+remains the right statement wherever a caller actually has it, and register entry 26 is the
+standing record. -/
 def MintPaysForTimeFixed (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
     (Tmax : Nat) : Prop :=
   ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)

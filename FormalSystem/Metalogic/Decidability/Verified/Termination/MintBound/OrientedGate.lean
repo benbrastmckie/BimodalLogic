@@ -157,11 +157,13 @@ Measured at the oriented gate, `26 + 3 = 29` before and `27 + 1 = 28` after
 (`orientedGate_disjunct3_holds`). The consequence is that `MintPaysForTimeAt`, whose third disjunct
 is the bare drop, does **not** imply this predicate; see `mintPaysForTimeStable_of_mintPaysForTime`.
 
-**The density residual is unchanged.** Everything `MintPaysForTimeAt`'s obligation map records
-about `densityRule` applies here verbatim: `densityRule` mints a fresh time while lying outside
-both `freshLabelRules` and `selfGuardRules`, so no disjunct moves, and the intended component
-`gapPotential` remains a named residual. See the subsection "The density residual" and register
-entry 17. -/
+**The density residual is unchanged *at this predicate*.** Everything `MintPaysForTimeAt`'s
+obligation map records about `densityRule` applies here verbatim: `densityRule` mints a fresh time
+while lying outside both `freshLabelRules` and `selfGuardRules`, so no disjunct of **this**
+predicate moves. The coordinate itself is no longer a residual: `gapPotential` is landed in
+`GapPotential`, and the predicate carrying it is `MintPaysForTimeGap`, discharged at every frame
+class by `mintPaysForTimeGap_of_any`. Nothing here is restated against it — this predicate keeps
+its three disjuncts. See the subsection "The density residual" and register entries 17 and 26. -/
 def MintPaysForTimeStable (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
     (Tmax : Nat) : Prop :=
   ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)

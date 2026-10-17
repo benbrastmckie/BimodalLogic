@@ -627,7 +627,11 @@ class the density rule cannot fire at.
 it is written here rather than hidden behind a definition, a `variable`, or a typeclass. It covers
 `.Dense` and `.RTime` together and admits exactly `.Base` and `.ZTime`, and it is what buys
 the exclusion of the density coordinate — register entry 20's item (b) — rather than closing it.
-`gapPotential` is still implemented nowhere and assumed by nothing.
+
+**And the restriction is not removable from THIS statement.** `mintPaysForTimeFixed_dense_false`
+and `mintPaysForTimeFixed_rtime_false` decide `MintPaysForTimeFixed` **false** at exactly the two
+classes this hypothesis excludes. What closes the density coordinate is the repaired predicate:
+see `mintPaysForTimeGap_of_any` below, which carries no frame-class hypothesis at all.
 
 **What this retires.** Entry 20's item (a): the engine-level assembly. The per-rule payments all
 existed; what was missing was the pick's rule identity at the successor, which

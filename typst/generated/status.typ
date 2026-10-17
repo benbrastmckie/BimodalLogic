@@ -5,10 +5,10 @@
 //   scripts/typst-status-counts.sh
 //
 // Reproduces the SYNC-MAP.md Phase 1 ground-truth-counts methodology.
-// Stamped from live source at commit ef3be4152 (2026-10-17).
+// Stamped from live source at commit f3913f750 (2026-10-17).
 // ============================================================================
 
-#let stamp-commit = "ef3be4152"
+#let stamp-commit = "f3913f750"
 #let stamp-date = "2026-10-17"
 
 #let axiom-count = 20
@@ -30,7 +30,7 @@
 // Repository scale, LIVE trees only. Boneyard/ is deliberately absent so that
 // no archived figure can be folded into a live one.
 #let formalsystem-file-count = 707
-#let formalsystem-line-count = 364295
+#let formalsystem-line-count = 364430
 #let tests-file-count = 78
 #let tests-line-count = 24410
 #let tools-file-count = 40

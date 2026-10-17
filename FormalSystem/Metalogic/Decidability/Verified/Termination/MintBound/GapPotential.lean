@@ -51,6 +51,40 @@ exists to retire.
   unproved there, so the repair below is a necessity rather than a preference
 - the repair `MintPaysForTimeGap` and its direction lemma
   `mintPaysForTimeGap_of_mintPaysForTimeFixed`
+
+## What the literature contributed, and what it did not
+
+Recorded in ordinary prose rather than under a `## References` heading, because three of the four
+sources below have no `references.bib` entry and an unresolvable bibliography key is worse than a
+named citation in text.
+
+*Venema's temporal-logic survey, the interval-based section, is what fixes the index shape.* Its
+interval operators are evaluated "at **pairs** of points representing the beginning and the end
+point of the interval", and its chop operator reads: `φ ∘ ψ` holds at `[s, t]` iff there is a `u`
+with `s ≤ u ≤ t` such that `φ` holds at `[s, u]` and `ψ` at `[u, t]`. `gapFilled ord s t` is that
+existential quantifier over the intermediate, with the ordering's reach for `≤`: *some* `m` in
+`s`'s forward reach reaches `t`. So "a gap is a pair, and filling it is finding a midpoint" is the
+interval reading of the rule's own conjunct (ii), and `U ×ˢ U` is the pair index that reading
+forces — not a guess that happened to work.
+
+*The closure-set termination pattern of Gerth-Peled-Vardi-Wolper and of Baier and Katoen is the
+structural analogue that matters, and the analogy is partial.* What those constructions bound is a
+search space by a **finite set fixed in advance** — the closure of the formula under construction
+— rather than by a counter over a structure that keeps growing. `gapPotential`'s index set
+`U ×ˢ U` is fixed before the run in exactly that sense, and that is the property, and the only
+property, which makes the component survive `TimeOrdering.identifyTime`: the arm renames the
+branch's times but cannot move the index set, so the count can only fall. The analogy stops there.
+`U ×ˢ U` is a product of a universe of signed formulas, not a subformula closure, and nothing here
+reproduces an automaton construction or a state-space bound.
+
+*Two sources were considered and are not used, recorded so the choice is legible.* The mosaic
+method for many-dimensional modal logics (Caleiro-Viganò-Volpe) bounds a model search by a finite
+set of locally compatible configurations; that is a decidability technique over a different object
+than a per-state measure, and nothing in the per-step inequalities here is a mosaic bound.
+Massacci's single-step tableaux bound rule application by **prefix length** along a branch; the
+gap coordinate is not prefix-bounded, and `densityRule`'s interpolant is precisely a time inserted
+*below* an existing one, which is the case a prefix-length bound does not see. Neither source is
+cited in any proof.
 -/
 
 namespace FormalSystem.Metalogic.Decidability

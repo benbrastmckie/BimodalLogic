@@ -627,40 +627,58 @@ edited, so no existing signature changes.
 
 ---
 
-### Phase 9: The Register Entry and the Prose Amendments [NOT STARTED]
+### Phase 9: The Register Entry and the Prose Amendments [COMPLETED]
 
 **Goal**: every in-tree statement that the density coordinate is open is corrected, and the
 refutation half is recorded as a C9 register entry.
 
 **Tasks**:
-- [ ] Add **C9 register entry 26** to `Register.lean` (verified at plan time: the register's
+- [x] Add **C9 register entry 26** to `Register.lean` (verified at plan time: the register's
       numbered list currently ends at entry 25, `Register.lean:843`). It records both halves: that
       `MintPaysForTimeFixed` at `.Dense`/`.RTime` is refuted, not merely unproved, with the
       deciding witnesses named; and that the repair `MintPaysForTimeGap` is landed and discharged
       at every frame class with no hypothesis. State what the entry forbids re-attempting: a
       density payment built on the rule's own gap-target set, which rises at ordinary steps because
       conjunct (i) is anti-monotone.
-- [ ] Amend register entries 14, 17, 19 and 20 in place where they say the density coordinate /
+- [x] Amend register entries 14, 17, 19 and 20 in place where they say the density coordinate /
       `gapPotential` is unimplemented, so they say it is closed. Do not delete their refutations:
       entry 14's two forbidden moves, entry 17's σ-hit refutation and entry 19's routes 1-3 are all
       untouched by this work and must remain readable as live prohibitions.
-- [ ] Amend the five remaining in-tree prose sites that assert the coordinate is open, measured at
+- [x] Amend the five remaining in-tree prose sites that assert the coordinate is open, measured at
       plan time by `grep -rn 'gapPotential' FormalSystem/`: the "density residual" subsection in
       `TimeReuse.lean` (including "no `gapPotential` is implemented in this file"), the two
       mentions in `OrientedGate.lean`, the four in `SigmaFixed.lean` (including
       `MintPaysForTimeFixed`'s own docstring closing line "`gapPotential` remains implemented
       nowhere and assumed by nothing"), the one in `FourComponent.lean`, and the two in
       `MintPaysAssembly.lean`.
-- [ ] Amend `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/README.md` and
+      *(deviation: altered — the per-file hit counts in this item are plan-time estimates of RAW
+      `gapPotential` occurrences, not of occurrences asserting the coordinate is OPEN, which is
+      the criterion the item's own first line states. Re-run at implementation time, the
+      open-assertion filter returns **six** sites in **five** `.lean` files: `SigmaFixed.lean:355`
+      (one, not four), `TimeReuse.lean:537` and `:756` (two), `OrientedGate.lean:163` (one, not
+      two), `MintPaysAssembly.lean:630` (one, not two), and `Register.lean:520`. `FourComponent.lean`
+      has one such site too (`:725`), so it IS a real target, and all six plus `FourComponent`'s
+      were amended. Total raw `gapPotential` hits across those six files: 32 — which is where the
+      larger plan-time per-file counts came from.)*
+- [x] Amend `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/README.md` and
       `FormalSystem/Metalogic/Decidability/Verified/README.md`.
-- [ ] Preserve the de-vacuification disclaimer at every site it appears. Nothing here makes a
+- [x] Preserve the de-vacuification disclaimer at every site it appears. Nothing here makes a
       terminus non-vacuous, and the amendments must not read as though it does.
-- [ ] If any literature source is cited, cite it in ordinary docstring prose. Do **not** place an
+- [x] If any literature source is cited, cite it in ordinary docstring prose. Do **not** place an
       unresolvable `[key]` inside a `## References` block: gate C31 requires every such key to
       resolve in the repository-root `references.bib`, and `caleiro2013`, `gerth1995` and
       `massacci2000` have no entry there. Either add the bib entries in this phase or cite without
       the References heading.
-- [ ] Add no task-number citation to any file under `FormalSystem/` — gate C9 asserts zero, and
+      *(done: a "What the literature contributed, and what it did not" block was added to
+      `GapPotential.lean`'s module docstring, in ordinary prose with NO `## References` heading, so
+      no bib key is introduced. It grounds Venema's interval-based section as what fixes the
+      `U ×ˢ U` pair indexing — its chop operator is literally `gapFilled`'s existential over an
+      intermediate — and the Gerth-Peled-Vardi-Wolper / Baier-Katoen closure-set pattern as the
+      fixed-index-set property that makes the component survive `identifyTime`, while stating
+      plainly that the analogy is partial and that Caleiro-Viganò-Volpe's mosaic method and
+      Massacci's prefix-length bound were considered and are NOT used. C31 re-run: all 239
+      References-block citations resolve; no new key added.)*
+- [x] Add no task-number citation to any file under `FormalSystem/` — gate C9 asserts zero, and
       `.claude/rules/no-task-references-in-deliverables.md` requires durable anchors (declaration
       names, register entry numbers, filenames) instead.
 
