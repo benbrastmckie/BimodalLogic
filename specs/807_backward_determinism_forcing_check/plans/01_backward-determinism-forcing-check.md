@@ -1,7 +1,7 @@
 # Implementation Plan: Task #807
 
 - **Task**: 807 - Backward-determinism forcing check: can a closed L⁺ formula force backward closure on a regular ℤ-frame?
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: 809 (the `scripts/check-evidence-probes.sh` serialization edge; discharged — 809 is `[COMPLETED]` and its probe is the thirty-eighth `WIRED` entry this plan appends after)
 - **Research Inputs**: specs/807_backward_determinism_forcing_check/reports/01_backward-determinism-forcing-check.md

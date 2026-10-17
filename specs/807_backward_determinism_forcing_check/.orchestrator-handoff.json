@@ -1,19 +1,35 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote a three-phase, 4-hour plan that executes the research round's recommendation on the POSITIVE verdict: Phase 1 promotes the compiled, sorry-free draft to specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean (namespace Probe807Forcing, both fixtures re-transcribed verbatim from the current wired originals with a diff check, zero warnings, the draft's six-line axiom record); Phase 2 records the realized risk with 'Stage 0 ruling pending' in ROADMAP.md (risk row, lead-in, Stage 0 checkbox, run-next lines) and specs/literature/README.md, and logs the transfer-question follow-up through the issue log's follow_up_task channel; Phase 3 writes the collection-convention header, registers the 39th WIRED entry in scripts/check-evidence-probes.sh, and discharges the complete gate set. The reduction is a Non-Goal; no FormalSystem/ or Tests/ edits. The Lean Challenge Statements block (12 identifiers) compiled at plan time and lean-challenge-snapshot.sh --dry-run exits 0.",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phase": 3,
+  "phases_completed": 3,
+  "phases_total": 3,
+  "summary": "All three phases closed. The research draft was promoted to the wired evidence probe specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean (39th WIRED entry): (q S ⊥) → ⊡(q S ⊥) is valid on a regular ℤ-frame iff the frame is backward deterministic — refuted on Probe733Mirror, valid on the forward-branching Probe719Backward — with the draft's axiom record verbatim, 0 sorries, 0 warnings. ROADMAP.md (risk row REALIZED, lead-in, one Stage 0 ruling checkbox, run-next lines) and specs/literature/README.md record the positive verdict with the ruling pending; the know-time-do-not-forget reduction was NOT attempted and no undecidability is claimed. Gates covering this task's files all pass (probe compile, check-evidence-probes 40/40, check-task-references, full lake build 2875 jobs); verify-deploy.sh is deferred to the batch stage; check-module-invariants.sh fails on INV alone for a pre-existing reason outside this task's files.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/807_backward_determinism_forcing_check/summaries/01_backward-determinism-forcing-check-summary.md",
+      "summary": "Implementation summary: POSITIVE verdict, probe path and axiom record, the two record edits, the deferred/pre-existing gate notes."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean",
+      "summary": "The wired evidence probe (namespace Probe807Forcing, both fixtures transcribed verbatim, two instantiation sections, axiom-record footer)."
+    },
     {
       "type": "plan",
       "path": "specs/807_backward_determinism_forcing_check/plans/01_backward-determinism-forcing-check.md",
-      "summary": "Three sequential phases (probe promotion; ROADMAP/README record edits; header, registration, full gate set), 4 hours, Lean Challenge Statements compiled at plan time."
+      "summary": "All three phase headings [COMPLETED]; one annotated alteration on the Phase 3 verification item (gate deferral and the pre-existing INV failure)."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/807_backward_determinism_forcing_check/handoffs/phase-3-handoff-20261017T145420Z.md",
+      "summary": "Phase 3 closure handoff."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 3,
   "blockers": [],
+  "git_checkpoint": "dcba3ecbb",
   "plan_markers_verified": true,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement for 807 starting at Phase 1; the research draft at specs/807_backward_determinism_forcing_check/research-scratch/807-forcing-check-draft.lean is the source for the general and instantiation sections, the two wired fixture files are the source for the transcriptions."
+  "sorry_inventory": [],
+  "next_action_hint": "Postflight promotion to implemented. User: Stage 0 ruling on the positive verdict (options A/B/C in specs/ROADMAP.md). Conclusion stage: create the transfer-question follow-up from the follow_up_task issue entry. Batch stage: run the deferred verify-deploy.sh; the INV failure (three stale inventory blocks from a pre-existing Decidability/ module) belongs to the owning task — fix is `bash scripts/check-module-invariants.sh --emit-inventory`."
 }

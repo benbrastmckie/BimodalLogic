@@ -1,35 +1,89 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-17T00:00:00Z",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/807_backward_determinism_forcing_check/plans/01_backward-determinism-forcing-check.md",
-      "summary": "Three sequential phases, 4 hours: promote the compiled research draft to the wired probe backward-determinism-forcing-formula.lean (verbatim fixture re-transcription, zero warnings, draft's axiom record), record the REALIZED risk with 'Stage 0 ruling pending' in ROADMAP.md and the literature README, then header + check-evidence-probes.sh registration (39th WIRED entry) under the complete gate set; reduction not attempted."
+      "type": "summary",
+      "path": "specs/807_backward_determinism_forcing_check/summaries/01_backward-determinism-forcing-check-summary.md",
+      "summary": "POSITIVE verdict: (q S ⊥) → ⊡(q S ⊥) characterizes backward determinism on regular ℤ-frames; probe wired, ROADMAP/README record the realized risk with the Stage 0 ruling pending; reduction NOT attempted."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean",
+      "summary": "The wired evidence probe (namespace Probe807Forcing plus both fixtures transcribed verbatim and their instantiations); 0 sorries, 0 warnings, axiom record as planned."
     }
   ],
-  "next_steps": "Run /implement 807 to execute the plan",
   "metadata": {
-    "session_id": "sess_1792245961_674a86_807",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1792245961_674a86",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 4,
-    "dependency_waves": [[1], [2], [3]],
-    "research_integrated": true,
-    "user_decision_note": "Not re-raised: the research round's non-blocking user_decision (recommended option A) already covers the Stage 0 ruling; the plan proceeds on option A and records the verdict with the ruling marked pending."
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "phases_completed": 3,
+    "phases_total": 3,
+    "duration_seconds": 800,
+    "deferred_gates": [
+      "verify-deploy.sh (batch stage)"
+    ],
+    "gate_failures_outside_task_files": [
+      "check-module-invariants.sh INV: 3 stale generated inventory blocks (README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md), pre-existing at baseline 08c4fe687"
+    ]
+  },
+  "completed_at": "2026-10-17T14:55:09Z",
+  "dispatch_seq": 3,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
+  "modified_files": [
+    "specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean",
+    "scripts/check-evidence-probes.sh",
+    "specs/ROADMAP.md",
+    "specs/literature/README.md",
+    "specs/807_backward_determinism_forcing_check/plans/01_backward-determinism-forcing-check.md",
+    "specs/807_backward_determinism_forcing_check/summaries/01_backward-determinism-forcing-check-summary.md",
+    "specs/807_backward_determinism_forcing_check/issues.jsonl",
+    "specs/807_backward_determinism_forcing_check/handoffs/phase-1-handoff-20261017T144321Z.md",
+    "specs/807_backward_determinism_forcing_check/handoffs/phase-2-handoff-20261017T144450Z.md",
+    "specs/807_backward_determinism_forcing_check/handoffs/phase-3-handoff-20261017T145420Z.md"
+  ],
+  "completion_data": {
+    "completion_summary": "Promoted the research draft to the wired evidence probe backward-determinism-forcing-formula.lean (39th WIRED entry): (q S ⊥) → ⊡(q S ⊥) is valid on a regular ℤ-frame iff the frame is backward deterministic, refuted on Probe733Mirror and valid on the forward-branching Probe719Backward. ROADMAP.md and the literature README now record the realized risk with the Stage 0 ruling pending; the know-time-do-not-forget reduction was NOT attempted and no undecidability is claimed.",
+    "roadmap_items": []
   },
   "memory_candidates": [
     {
-      "content": "lean4 plan authoring gotcha for `lean-challenge-snapshot.sh`: the Goals identifier range is `sed -n -E '/^-? ?\\*\\*Goals\\*\\*:/,/^-? ?\\*\\*[^G]/p'`, so (1) the header must be exactly `**Goals**:` with the colon directly after the bold (a parenthetical before the colon makes the range empty, exit 71 'no identifiers'); (2) EVERY backticked name in prose inside that range is extracted as a Goal, so keep namespace names and file paths unbackticked there and end the range with a bold-led line such as `**Non-Goals**:` before any explanatory paragraph; (3) `def`/`abbrev` declarations in the `## Lean Challenge Statements` block ARE counted as declared identifiers and must be listed under Goals too. Dry-run `lean-challenge-snapshot.sh N <root> --dry-run` at plan time to confirm exit 0 before writing success metadata.",
-      "category": "PATTERN",
-      "source_artifact": "specs/807_backward_determinism_forcing_check/plans/01_backward-determinism-forcing-check.md",
+      "content": "On ℤ-time the L⁺ formula φ S ⊥ is exactly \"φ at t−1\" (yest_iff): the snce clause forces the witness to t−1 because \"strictly between\" is empty. (q S ⊥) → ⊡(q S ⊥) with the singleton valuation |q| = {τ(t−1)} therefore forces backward determinism on regular ℤ-frames (Probe807Forcing.valid_iff_stepBwdDet), while Pq → ⊡Pq does not (backward cycles). On dense time q S ⊥ is unsatisfiable, so this is ℤ-specific and consistent with deterministic_not_plusDefinable.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "yesterday operator",
+        "backward determinism",
+        "frame definability",
+        "stab",
+        "snce",
+        "Z-time"
+      ]
+    },
+    {
+      "content": "check-evidence-probes.sh reports \"all N wired probe(s) compile\" with N = |WIRED| + |WIRED_REPO|, so a plan that predicts the count from the WIRED array alone is off by the WIRED_REPO count (39 WIRED entries report as 40).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/807_backward_determinism_forcing_check/summaries/01_backward-determinism-forcing-check-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["lean-challenge-snapshot", "Goals", "Lean Challenge Statements", "plan-format", "lean4 plan", "identifier-set mismatch"]
+      "suggested_keywords": [
+        "check-evidence-probes",
+        "WIRED_REPO",
+        "probe count"
+      ]
     }
   ],
-  "modified_files": [
-    "specs/807_backward_determinism_forcing_check/plans/01_backward-determinism-forcing-check.md"
-  ],
-  "dispatch_seq": 2
+  "next_steps": "Postflight: mark implemented. User: Stage 0 ruling on the positive verdict (options A/B/C in specs/ROADMAP.md). Conclusion stage: create the transfer-question follow-up task from the follow_up_task issue entry. Batch stage: run the deferred verify-deploy.sh; the pre-existing INV failure of check-module-invariants.sh (three stale inventory blocks) belongs to the task that added the Decidability/ module."
 }

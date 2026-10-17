@@ -1680,7 +1680,7 @@
     {
       "project_number": 807,
       "project_name": "backward_determinism_forcing_check",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -1698,7 +1698,7 @@
         "specs/literature/README.md",
         "typst/generated/status.typ"
       ],
-      "last_updated": "2026-10-17T14:38:45Z",
+      "last_updated": "2026-10-17T14:55:41Z",
       "session_id": "sess_1792245961_674a86",
       "artifacts": [
         {
@@ -1710,9 +1710,15 @@
           "path": "specs/807_backward_determinism_forcing_check/plans/01_backward-determinism-forcing-check.md",
           "type": "plan",
           "summary": "Three sequential phases (probe promotion; ROADMAP/README record edits; header, registration, full gate set), 4 hours, Lean Challenge Statements compiled at plan time."
+        },
+        {
+          "path": "specs/807_backward_determinism_forcing_check/summaries/01_backward-determinism-forcing-check-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: POSITIVE verdict, probe path and axiom record, the two record edits, the deferred/pre-existing gate notes."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Promoted the research draft to the wired evidence probe backward-determinism-forcing-formula.lean (39th WIRED entry): (q S ⊥) → ⊡(q S ⊥) is valid on a regular ℤ-frame iff the frame is backward deterministic, refuted on Probe733Mirror and valid on the forward-branching Probe719Backward. ROADMAP.md and the literature README now record the realized risk with the Stage 0 ruling pending; the know-time-do-not-forget reduction was NOT attempted and no undecidability is claimed."
     },
     {
       "project_number": 808,
