@@ -1,72 +1,35 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/807_backward_determinism_forcing_check/reports/01_backward-determinism-forcing-check.md",
-      "summary": "VERDICT POSITIVE: the closed L+ formula (q S bot) -> stab (q S bot) is valid on a regular Z-frame iff the frame is backward deterministic (machine-checked, sorry-free draft; refuted on Probe733Mirror, valid on the forward-branching Probe719Backward); reduction not attempted; Stage 0 ruling requested."
+      "type": "plan",
+      "path": "specs/807_backward_determinism_forcing_check/plans/01_backward-determinism-forcing-check.md",
+      "summary": "Three sequential phases, 4 hours: promote the compiled research draft to the wired probe backward-determinism-forcing-formula.lean (verbatim fixture re-transcription, zero warnings, draft's axiom record), record the REALIZED risk with 'Stage 0 ruling pending' in ROADMAP.md and the literature README, then header + check-evidence-probes.sh registration (39th WIRED entry) under the complete gate set; reduction not attempted."
     }
   ],
-  "next_steps": "Plan: promote research-scratch/807-forcing-check-draft.lean to specs/evidence/seam-gluing-ray-product/ as a wired probe with a POSITIVE row in scripts/check-evidence-probes.sh; add a Stage 0 ruling checkbox and re-word the Stage 1 risk row in specs/ROADMAP.md; one sentence in specs/literature/README.md. Do NOT attempt the know-time-do-not-forget reduction (task item 4).",
-  "user_decision": {
-    "question": "Task 807's check came out POSITIVE: a closed L+ formula, (q S bot) -> stab (q S bot) ('what held yesterday is settled'), characterizes backward determinism over regular Z-frames (compiled, sorry-free; refuted on Probe733Mirror, valid on Probe719Backward). Per the task's item (4) this is a Stage 0 ruling: how should the Stage 1 decidability programme respond to the realized risk?",
-    "options": [
-      "Option A - Land the positive-verdict probe and the factual record edits (ROADMAP Stage 1 risk row re-worded to 'realized, reduction not attempted, ruling pending'; Stage 0 checkbox; one README sentence), and open a separate scoped task to assess whether the know-time-do-not-forget negatives actually transfer (single-agent synchronous perfect-recall case plus a same-time universal modality; needs HV89/HVV Table 1 from the PDFs). Stage 1 keeps moving.",
-      "Option B - Treat the realized risk as blocking: land the probe, then hold Stage 1 decidability work until the transfer question is settled.",
-      "Option C - Land the probe only; no ROADMAP/README change and no follow-up task."
-    ],
-    "recommended": "Option A - Land the positive-verdict probe and the factual record edits (ROADMAP Stage 1 risk row re-worded to 'realized, reduction not attempted, ruling pending'; Stage 0 checkbox; one README sentence), and open a separate scoped task to assess whether the know-time-do-not-forget negatives actually transfer (single-agent synchronous perfect-recall case plus a same-time universal modality; needs HV89/HVV Table 1 from the PDFs). Stage 1 keeps moving.",
-    "blocking": false
-  },
-  "proposed_file_scope": [
-    "specs/evidence/seam-gluing-ray-product/backward-determinism-forcing-formula.lean",
-    "scripts/check-evidence-probes.sh",
-    "specs/ROADMAP.md",
-    "specs/literature/README.md"
-  ],
-  "memory_candidates": [
-    {
-      "content": "On Z-time (FrameOver intOrder), `phi S bot` is 'phi at t-1' and `phi U bot` is 'phi at t+1'. The closed L+ formula (q S bot) -> stab (q S bot) is valid on a regular Z-frame iff the frame is backward deterministic (unique step-predecessor); the forcing direction runs the singleton valuation |q| = {tau(t-1)}. This does not contradict deterministic_not_plusDefinable (cor:no-characterization), which is R-time and about full determinism: on dense time `q S bot` is unsatisfiable, so the formula is vacuously valid there.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/807_backward_determinism_forcing_check/reports/01_backward-determinism-forcing-check.md",
-      "confidence": 0.9,
-      "suggested_keywords": [
-        "stab",
-        "backward determinism",
-        "frame definability",
-        "Z-time",
-        "yesterday operator",
-        "snce bot",
-        "Thomason Wdc"
-      ]
-    },
-    {
-      "content": "Lean elaboration pitfalls hit in the 807 scratch: `omega` cannot use a hypothesis whose variable is bound at type `F.toTaskFrame.Duration` (bind it `(r : Z)`); `decide` fails to synthesize `DecidableEq` for an equality at type `F.toTaskFrame.WorldState` even though the carrier derives it (use `rfl`); `rw [F_step] at h` fails at reducible transparency when the variables are typed `F.WorldState` rather than the carrier (use `(F_step u w).mp h` term-mode).",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/807_backward_determinism_forcing_check/reports/01_backward-determinism-forcing-check.md",
-      "confidence": 0.8,
-      "suggested_keywords": [
-        "omega",
-        "Duration",
-        "decide",
-        "DecidableEq",
-        "FrameOver",
-        "reducible transparency",
-        "F_step"
-      ]
-    }
-  ],
+  "next_steps": "Run /implement 807 to execute the plan",
   "metadata": {
     "session_id": "sess_1792245961_674a86_807",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ],
-    "started_at": "2026-10-17T14:09:31Z",
-    "completed_at": "2026-10-17T14:26:18Z"
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 4,
+    "dependency_waves": [[1], [2], [3]],
+    "research_integrated": true,
+    "user_decision_note": "Not re-raised: the research round's non-blocking user_decision (recommended option A) already covers the Stage 0 ruling; the plan proceeds on option A and records the verdict with the ruling marked pending."
+  },
+  "memory_candidates": [
+    {
+      "content": "lean4 plan authoring gotcha for `lean-challenge-snapshot.sh`: the Goals identifier range is `sed -n -E '/^-? ?\\*\\*Goals\\*\\*:/,/^-? ?\\*\\*[^G]/p'`, so (1) the header must be exactly `**Goals**:` with the colon directly after the bold (a parenthetical before the colon makes the range empty, exit 71 'no identifiers'); (2) EVERY backticked name in prose inside that range is extracted as a Goal, so keep namespace names and file paths unbackticked there and end the range with a bold-led line such as `**Non-Goals**:` before any explanatory paragraph; (3) `def`/`abbrev` declarations in the `## Lean Challenge Statements` block ARE counted as declared identifiers and must be listed under Goals too. Dry-run `lean-challenge-snapshot.sh N <root> --dry-run` at plan time to confirm exit 0 before writing success metadata.",
+      "category": "PATTERN",
+      "source_artifact": "specs/807_backward_determinism_forcing_check/plans/01_backward-determinism-forcing-check.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean-challenge-snapshot", "Goals", "Lean Challenge Statements", "plan-format", "lean4 plan", "identifier-set mismatch"]
+    }
+  ],
+  "modified_files": [
+    "specs/807_backward_determinism_forcing_check/plans/01_backward-determinism-forcing-check.md"
+  ],
+  "dispatch_seq": 2
 }
