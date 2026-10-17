@@ -1,6 +1,6 @@
 # Roadmap
 
-*Open work only, hand-maintained (last edited 2026-10-16). This file is batch ordering and the
+*Open work only, hand-maintained (last edited 2026-10-17). This file is batch ordering and the
 rulings that gate it — nothing else. The mathematics, the (C)/(S)/(W) verdict table and every
 guardrail against a refuted shape live in `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
 (the authority); per-task detail lives in `specs/TODO.md`; finished work in `specs/CHANGE_LOG.md`
@@ -13,24 +13,53 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 ## Run these next
 
 ```bash
-/orchestrate 811                       # UNBLOCKS the critical path: re-cut 809's spurious 734 edge; cheap, do first
-/orchestrate 809,807 --research --lit   # THE critical path: adequacy, then the backward-determinism risk check
+# FILE THE SUFFICIENCY TASK FIRST — it is the critical path and has no record yet.
+# It shares evidence-probe territory with 807, so batch the two:
+/orchestrate {SUFFICIENCY},807 --hard --lit   # sufficiency, plus the backward-determinism risk check
+# 807 alone is dispatchable today if you want the cheap risk check before filing:
+/orchestrate 807 --research --lit
 ```
 
-**Run in this order — `809` cannot dispatch until `811` lands.** `809` declares
-`dependencies = [734, 805]`. The `805` edge is discharged (its refutation is committed, status
-`[COMPLETED]`). The `734` edge is the live gate, and it is **spurious**: `734` is route R2
-(mosaics), which this file's own Stage 0 ruling records as a *consumer* of R1, since deciding
-mosaics presupposes deciding `⊡` — so it cannot be a prerequisite of R1 adequacy, which is what
-`809` is. Corroborating, `734`'s own report records its landed `StabSaturated` predicate as
-identically true with `SH1` the only non-trivial content, so the probe carries nothing adequacy
-consumes. `811` is the audit that records that verdict durably and drops the edge; it is the only
-reason `809` did not dispatch on its last two attempts. `807` is one fixture and serializes behind
-`809` on `scripts/check-evidence-probes.sh`, which is correct and must survive the re-cut.
+**The gate is now SUFFICIENCY, and it is not yet filed as a task.** `809` landed the certificate
+presentation on compiled ground (the twenty-first wired probe,
+`specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean`, eighteen theorems
+sorry-free, axioms `[propext, Classical.choice, Quot.sound]` on every one): the **existential**
+until-fixpoint as the one-quantifier dual of `AUFix`, its guarded-path characterization, the
+certificate with `box` and `stab` present as checked biconditionals, a non-vacuity witness
+(`cert_accepts_Rchi`), and the separation that earns the presentation its place —
+`coh_accepts_Rev` + `cert_rejects_Rev`, a set local coherence accepts and the certificate
+rejects, proved structurally rather than by `decide`. The strength question is closed as compiled
+fact: `au_lfp_ne_eu_lfp_on_exit_graph` exhibits the universal and existential fixpoints differing
+on a cycle with an exit, so a cell-level fulfilment condition **cannot** be the tree's landed
+universal one, and any future attempt to reuse `ULive`/`Disch`/`SLive`/`DischBwd` on the
+object-closure product has to answer it.
 
-Everything below is subordinate to `809`. Infrastructure repairs (`810`, and the agent-system
-records held in the source store's own task space) are subordinate to all of it — they fix how
-the system reports and gates, not what is proved, and none of them gates `809`.
+What `809` did **not** discharge, and what now gates everything after it: **sufficiency** — that
+the six certificate conditions *imply* realizability. The dovetailing argument is written and
+marked uncompiled in `specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md`
+§6; it is NOT STARTED and **no task record exists for it**. File it before dispatching anything on
+the critical path. Route B (check a candidate realizable set) is the chosen route, taken over
+Route A (decide generalized-Büchi nonemptiness, whose missing nested fixpoint is real work not to
+be entered without a decision record).
+
+Also still open from that round: **gate 8 stays SIDESTEPPED** — `certStab`/`certBox` are present
+but unexercised, and exercising them needs a fixture whose closure has `stab` members, which the
+coprime-cycle fixture does not. Gate 9 is OPEN, gates 1 and 2 are NOT ADDRESSED (with the
+compiled n-side qualification carried from `nside-modulus-gate.lean`, Branch N-VERIFIED), gate 3
+is CARRIED. A gate probing one coordinate certifies one coordinate only.
+
+`807` is dispatchable now — its only declared edge was `809`, and that edge is discharged. It is
+one fixture and shares `scripts/check-evidence-probes.sh` and
+`specs/evidence/seam-gluing-ray-product/` with the sufficiency round, so the two **batch
+together** rather than being separated; add an edge if the ordering between them matters.
+
+`761` reads as dispatchable and **is not**. Its four declared edges (`760`, `775`, `805`, `806`)
+are all discharged, and `blocked` is a resumable status, so `/orchestrate 761` will dispatch it.
+Substantively it waits on the sufficiency verdict above, which no edge records. Do not batch it
+until sufficiency returns. Infrastructure repairs (`810`, `812`, and the agent-system records
+`813`/`814` whose edit targets resolve only under the source store's own tree) are subordinate to
+all of it — they fix how the system reports and gates, not what is proved, and none of them gates
+the critical path.
 
 **Not on the critical path, and not a substitute for it**: acquiring *Handbook of Modal Logic*
 ch. 11 (Hodkinson & Reynolds, "Temporal Logic", pp. 655–720, DOI 10.1016/S1570-2464(07)80014-0)
@@ -46,16 +75,17 @@ aim.
 /orchestrate 616,617,664,709,714,729,730,741
 /orchestrate 743,744,751,752,753,767,768,769
 /orchestrate 770,772,774,777,779,780,781,782
-/orchestrate 785,787,803,804,810
+/orchestrate 785,787,803,804,810,812,813
 ```
 
 ## Next batches
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 811                      # FIRST: re-cut 809's spurious 734 edge, or 809 cannot dispatch at all
-/orchestrate 809,807 --research --lit  # adequacy (REALIZABLE, not locally coherent, types), then the backward-determinism check
-/orchestrate 761 --hard --lit    # ladder realization theorem — BLOCKED; all edges discharged but NOT costable until adequacy returns
+# FIRST: file the sufficiency task (no record exists); it shares evidence-probe
+# territory with 807, so batch the two rather than separating them.
+/orchestrate {SUFF},807 --hard --lit  # sufficiency: the six conditions imply realizability; then the backward-determinism check
+/orchestrate 761 --hard --lit    # ladder realization theorem — do NOT dispatch until sufficiency returns; `blocked` is resumable, so the graph will not stop you
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781,782 --hard  # sliced-certificate internals: full-label evaluation, Phase 5 hoist, Shape D leaf cache
 # Stage 2 — supporting semantics and metalogic
@@ -140,8 +170,10 @@ fallback route — R2 is a *consumer* of R1, since deciding mosaics presupposes 
 probe half is landed, wired and committed; only the paywalled Handbook §§5.10–5.11 remain, which
 is why it is held rather than partial (two post-completion implement dispatches found nothing to
 advance). Reactivation condition: `specs/literature-index.json#hodkinson_2006.hazard`. Because R2
-consumes R1, **nothing on the critical path may be gated on it** — see the `811` note under "Run
-these next".
+consumes R1, **nothing on the critical path may be gated on it**: the spurious `734` edge that
+once held adequacy back was audited and dropped, and that verdict is durable — `734`'s own report
+records its landed `StabSaturated` predicate as identically true with `SH1` the only non-trivial
+content, so the probe carries nothing adequacy consumes.
 
 ## Stage 1 — Decidability of L⁺
 
@@ -154,43 +186,54 @@ theorem** (`exists_hitPresented`, every regular `ℤ`-model, `sizeBound φ k` a 
 for `box`/`stab`-free `φ` at one seam; **(W)** landed its anchor layer, its run-layer frame scheme
 and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remain open:
 
-- **809 — adequacy of the realizable-type relation.** `ladderRealized` cannot be STATED: its
-  `[Fintype Q]` obligation ran through `truncate B`, which is defined nowhere in `FormalSystem/`.
-  What is missing is a computable `LadderState Q pend → I` through which `cellAt` factors. **Four
-  tuple-shaped index shapes are refuted on compiled ground** — counter-pair clipping
-  (`ladder-cell-refutation.lean`), clipped/gap-carrying (`ladder-cell-index-obstructions.lean`),
-  the six-coordinate residue-carrying candidate at its object-exhibited parameters
+- **Adequacy — SUFFICIENCY is the open gate, and no task record exists for it.** The index
+  sub-problem's history: `ladderRealized` cannot be STATED while no computable
+  `LadderState Q pend → I` exists for `cellAt` to factor through. **Four tuple-shaped index shapes
+  are refuted on compiled ground** — counter-pair clipping (`ladder-cell-refutation.lean`),
+  clipped/gap-carrying (`ladder-cell-index-obstructions.lean`), the six-coordinate
+  residue-carrying candidate at its object-exhibited parameters
   (`ladder-residue-index-refutation.lean`), and the same body at jointly derived parameters
   (`ladder-joint-index-refutation.lean`, whose gate 6 refutes via a formula carving out a
   sub-object no set of atoms carves out, by forbidding a *pattern* instead of a letter). **The
-  tuple-widening line is spent; no seventh coordinate is to be proposed.** The successor
-  presentation — a set-valued per-state datum over a quotient — then **survived its first round**
-  (the nineteenth wired probe; `WIRED` now 36): eventual periodicity of the countdown over the
-  **object-closure product** is discharged (`closure-indexed-periodicity.lean`, an instance of
-  `iterate_eventually_periodic` on a finite carrier), gate 6 is *internalised*
+  tuple-widening line is spent; no seventh coordinate is to be proposed.**
+
+  The set-valued successor presentation then survived two rounds. Eventual periodicity of the
+  countdown over the **object-closure product** is discharged (`closure-indexed-periodicity.lean`,
+  an instance of `iterate_eventually_periodic` on a finite carrier); gate 6 is *internalised*
   (`prof6_separates_gate6_pair` separates gate 6's own pair for every modulus coprime to three,
-  with no parameter to choose), gate 5 is disarmed and exhibited, and gate 7 passed in its
+  with no parameter to choose); gate 5 is disarmed and exhibited; gate 7 passed in its
   definability form — all on the coprime-cycle fixture, in `closure-profile-gate-rerun.lean`
-  (`Probe806`) and `nside-modulus-gate.lean` (`Probe806N`). **What that round did NOT settle, and
-  809 owns:** adequacy — a coherence relation computing *realizable* rather than merely locally
-  coherent types, with untl/snce fulfilment. The round carries only the LOCAL relation `coh6` on
-  one fixture. Adequacy is **the gate on everything after it**. Also open, and 809's scope: the two
-  gates specific to a set-valued presentation that the tuple-shaped table has no rows for
-  (non-circularity, stab self-reference); gate 8 is **SIDESTEPPED, not passed**; gate 3 is
-  **CARRIED**; gates 1 and 2 are **NOT ADDRESSED** (with a compiled qualification — Branch
-  N-VERIFIED: the refuted tuple's n-side coordinates pass gates 1 and 2 and are still blind to the
-  shift the datum has to see); gate 9 is **OPEN**. A gate probing one coordinate certifies one
-  coordinate only. The set of cells stays finite (`anchorCells_ncard_le`); only the
-  index/presentation is open. The declined alternative (R2: an index-free, `box`/`stab`-free
-  run-layer half, `slive` retained) stays on record but is not pursued — it would not reach the
-  `box`/`stab` letters Stage 1 needs.
+  (`Probe806`) and `nside-modulus-gate.lean` (`Probe806N`). The round after it landed the
+  **certificate presentation** itself (`realizable-type-certificate.lean`, eighteen theorems
+  sorry-free): the existential until-fixpoint as the dual of `AUFix`, the compiled
+  universal-versus-existential separation on a cycle with an exit
+  (`au_lfp_ne_eu_lfp_on_exit_graph`), `box`/`stab` as checked biconditionals, non-vacuity
+  (`cert_accepts_Rchi`), and the separation from local coherence (`coh_accepts_Rev` +
+  `cert_rejects_Rev`). The gap itself is compiled too
+  (`realizable-type-adequacy-gap.lean`): a `coh6`-coherent 3-cycle carrying `ev = ⊤ U psi2` at
+  every position and `psi2` at none.
+
+  **What remains, and what gates everything after it: sufficiency** — that the six certificate
+  conditions imply realizability. Written and marked uncompiled at
+  `specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md`
+  §6; NOT STARTED; **not filed as a task**. The route is Route B (check a candidate realizable
+  set), chosen over Route A (decide generalized-Büchi nonemptiness — a missing nested fixpoint,
+  real work, not to be entered without a decision record). Still open alongside it: **gate 8 is
+  SIDESTEPPED, not passed** (the `stab`/`box` clauses are present but unexercised; exercising
+  them needs a fixture whose closure has `stab` members); gate 3 is **CARRIED**; gates 1 and 2
+  are **NOT ADDRESSED** (compiled qualification — Branch N-VERIFIED: the refuted tuple's n-side
+  coordinates pass gates 1 and 2 and are still blind to the shift the datum has to see); gate 9
+  is **OPEN**. A gate probing one coordinate certifies one coordinate only. The set of cells stays
+  finite (`anchorCells_ncard_le`); only the index/presentation is open. The declined alternative
+  (R2: an index-free, `box`/`stab`-free run-layer half, `slive` retained) stays on record but is
+  not pursued — it would not reach the `box`/`stab` letters Stage 1 needs.
 - **761 — the ladder realization theorem** (`LadderCons`, `ladderRealized` per cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
-  `[BLOCKED]`. **Every one of its declared edges — 760, 775, 805, 806 — is now discharged**
-  (760/775 archived, 806 `[COMPLETED]`, 805 `[COMPLETED]`), so it will read as dispatchable and
-  is not. Substantively 761 waits on **809's adequacy verdict**, which no edge records — add
-  `--depends-on-add 809` so the graph says what the mathematics says. NOT costable until adequacy
-  returns.
+  `[BLOCKED]`. **Every one of its declared edges — 760, 775, 805, 806 — is discharged**
+  (760/775 archived, 805/806 `[COMPLETED]`), and `blocked` is a resumable status, so
+  `/orchestrate 761` **will dispatch it**. Substantively it waits on the **sufficiency verdict**
+  above, which no edge records and cannot record until that task is filed. Do not dispatch it
+  until sufficiency returns; it is NOT costable before then.
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone.
   761 and 763 share the `RaySummary` library set and serialize through the edge between them.
