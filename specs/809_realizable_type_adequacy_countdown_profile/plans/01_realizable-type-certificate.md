@@ -1,7 +1,7 @@
 # Implementation Plan: Task #809
 
 - **Task**: 809 - Realizable-type adequacy of the countdown profile: the certificate presentation, its existential fulfilment condition, and the compiled separation from local coherence
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours
 - **Dependencies**: 761 (parent, stays `[BLOCKED]`; this task does not touch it); 806 (predecessor; its fixture, local relation and profile are ported, not imported); 805 (refuted predecessor; its coprime-cycle object reaches here through 806)
 - **Research Inputs**: specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md
@@ -200,7 +200,7 @@ rewrites) is free to exist in the file without being a Goal, exactly as the eigh
 Phases within the same wave can execute in parallel. Every wave here holds one phase: all five
 proof phases append to the same probe file, so they are serialized by territory, not by choice.
 
-### Phase 1: The Existential Until-Fixpoint Operator and Its Fixpoint API [NOT STARTED]
+### Phase 1: The Existential Until-Fixpoint Operator and Its Fixpoint API [COMPLETED]
 
 **Goal**: Land the existential dual of `AUFix` in the probe's own namespace — the operator, its
 iteration, its stabilized fixpoint, and the four load-bearing lemmas — generic over an arbitrary
@@ -208,17 +208,17 @@ iteration, its stabilized fixpoint, and the four load-bearing lemmas — generic
 confused with a formula-specific hack.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean` with a
+- [x] Create `specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean` with a
   placeholder header, the two imports of the Challenge block, `open FormalSystem.Syntax
   FormalSystem.PlusLanguage FormalSystem.Metalogic.Decidability`, and `namespace Probe809C`.
-- [ ] Define `euStep`, `euIter`, `euLfp` exactly as the Challenge block spells them. The only
+- [x] Define `euStep`, `euIter`, `euLfp` exactly as the Challenge block spells them. The only
   difference from `AUFix.step` is `∃ w ∈ succ v` in place of `∀ w ∈ succ v`; do not take the
   opportunity to restructure the definition.
-- [ ] Prove `eu_step_mono` (monotonicity in `X`, the only property the iteration needs) and the
+- [x] Prove `eu_step_mono` (monotonicity in `X`, the only property the iteration needs) and the
   supporting `eu_step_subset`/`eu_iter_subset`/`eu_iter_succ_mono`/`eu_iter_mono`/`eu_iter_stab`/
   `eu_exists_stab` ports as needed — each a one-quantifier edit of the `AUFix` original, which must
   be read side by side rather than reinvented.
-- [ ] Prove `eu_lfp_fixed`, `eu_mem_lfp_iff`, `eu_lfp_least`.
+- [x] Prove `eu_lfp_fixed`, `eu_mem_lfp_iff`, `eu_lfp_least`.
 - [ ] Commit (explicit file list: the probe).
 
 **Timing**: 2 hours
