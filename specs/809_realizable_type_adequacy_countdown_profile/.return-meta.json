@@ -1,22 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 2,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md",
-      "summary": "Re-costs the realizable-type adequacy obligation against in-tree machinery (Realize.lean's UCoh/ULive/Disch bundle, AUFix, GoodCycle, PlusWitnessFamily's C2'/C5), finds its residue is a universal-vs-existential strength choice plus one missing generalized-Buchi nonemptiness algorithm, resolves gate 7 and renames gate 8 as the standing BoxStabFree scope line, and compiles the adequacy-gap witness on the coprime-cycle fixture."
-    },
-    {
-      "type": "other",
-      "path": "specs/evidence/seam-gluing-ray-product/realizable-type-adequacy-gap.lean",
-      "summary": "Twentieth wired evidence probe: a coh6-coherent 3-cycle carrying the eventuality ev at every position and its event psi2 at none, so the countdown profile's membership witnesses include non-fulfilling chains; 9 theorems, sorry-free, no new axiom, registered in scripts/check-evidence-probes.sh."
+      "type": "plan",
+      "path": "specs/809_realizable_type_adequacy_countdown_profile/plans/01_realizable-type-certificate.md",
+      "summary": "Six-phase, 12-hour lean4 plan landing one new wired evidence probe: the existential until-fixpoint (the dual of AUFix), its guarded-path characterization, a compiled universal-vs-existential separation, the chain-to-ray composition theorem, the Route B certificate presentation with its box and stab clauses, and the compiled separation of certificate-admissible from merely locally coherent candidate sets; 18 Goal theorems pinned in a plan-time-compiled Lean Challenge block."
     }
   ],
   "metadata": {
     "session_id": "sess_1792219958_0ff342_809",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 12,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6]]
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /implement 809 to execute the plan"
 }
