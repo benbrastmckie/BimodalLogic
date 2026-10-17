@@ -13,29 +13,32 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 ## Run these next
 
 ```bash
-/orchestrate 815 --hard --lit   # THE critical path: certificate sufficiency
+/orchestrate 761 --hard --lit   # THE critical path, now costable: the ladder realization theorem, over the two-arm relation `cohBi`
 ```
 
-**The gate is now SUFFICIENCY, filed as `815`.** `809` landed the certificate
-presentation on compiled ground (the twenty-first wired probe,
-`specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean`, eighteen theorems
-sorry-free, axioms `[propext, Classical.choice, Quot.sound]` on every one): the **existential**
-until-fixpoint as the one-quantifier dual of `AUFix`, its guarded-path characterization, the
-certificate with `box` and `stab` present as checked biconditionals, a non-vacuity witness
-(`cert_accepts_Rchi`), and the separation that earns the presentation its place —
-`coh_accepts_Rev` + `cert_rejects_Rev`, a set local coherence accepts and the certificate
-rejects, proved structurally rather than by `decide`. The strength question is closed as compiled
-fact: `au_lfp_ne_eu_lfp_on_exit_graph` exhibits the universal and existential fixpoints differing
-on a cycle with an exit, so a cell-level fulfilment condition **cannot** be the tree's landed
-universal one, and any future attempt to reuse `ULive`/`Disch`/`SLive`/`DischBwd` on the
-object-closure product has to answer it.
-
-What `809` did **not** discharge, and what now gates everything after it: **sufficiency** — that
-the six certificate conditions *imply* realizability. The dovetailing argument is written and
-marked uncompiled in `specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md`
-§6; it is NOT STARTED and is now filed as **`815`**, which owns it. Route B (check a candidate realizable set) is the chosen route, taken over
-Route A (decide generalized-Büchi nonemptiness, whose missing nested fixpoint is real work not to
-be entered without a decision record).
+**SUFFICIENCY RETURNED (`815`, 2026-10-17).** The verdict is compiled in the twenty-third wired
+probe, `specs/evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean`
+(seventeen theorems sorry-free, axioms `[propext, Classical.choice, Quot.sound]` on every one), in
+three parts. **The dovetailing argument is a theorem** (`exists_dovetail_chain`, over an
+arbitrary finite graph), and forward-only sufficiency holds for the compiled relation
+(`forward_chain_of_certAdm`, labelled forward-only). **The two-sided claim for `coh` is
+REFUTED** (`sufficiency_refuted`, the §6 claim with its quantifiers as stated): on
+`R3 = {x0, x1, x2}` over `(⊤ S a1) ∧ (⊤ S a2)` the certificate accepts a set whose member `x0`
+lies on no backward-fulfilling chain — the backward arm, and only the backward arm, because
+`linkPred` constrains no backward arm. **The repair is the strict-since link** (`cohBi`, which is
+`coh` plus `linkPredB`), under which the certificate IS sufficient at the LABEL level
+(`realizes_of_certAdm_cohBi`), at no cost on a `snce`-free closure
+(`cohBi_eq_coh_of_snce_free`), with a compiled two-arm non-vacuous instance — `cert_accepts_R4`
+accepts `{y0, y1, y2}` over `(⊤ U b) ∧ (⊤ S a1)`, every member carrying both obligations, and
+`realizes_y0_R4` is the theorem's instance on it. Condition (3)'s `|R|` bound is derived
+(`eu_mem_lfp_path_le_card`), consumed by nothing. The rulings this carries: Route B's relation is
+`cohBi`, by name; no backward propagation theorem is ever to be claimed for `coh`, and the
+predecessor report's §7 sentence that the mirror "holds through `snce_propagates_to_start`" is
+false for `coh` (the mirror holds for `cohBi`, through `link_snce`); both arms stay EXISTENTIAL
+(`ULive`/`SLive` remain the wrong strength, `au_lfp_ne_eu_lfp_on_exit_graph` stands); and
+realizability here is LABEL-LEVEL — a bi-infinite `cohR`-chain fulfilling every `untl`/`snce`
+obligation — so the semantic step from a fulfilling label chain to membership of a type in a
+cell (obligation (d)) is what remains of adequacy.
 
 Also still open from that round: **gate 8 stays SIDESTEPPED** — `certStab`/`certBox` are present
 but unexercised, and exercising them needs a fixture whose closure has `stab` members, which the
@@ -46,18 +49,16 @@ is CARRIED. A gate probing one coordinate certifies one coordinate only.
 `807` is closed with a POSITIVE verdict (the Stage 1 risk table below and the Stage 0 ruling it
 adds); it is no longer scheduled here.
 
-**The likeliest way `815` fails is the backward arm**, and that is recorded in its own
-description: certificate condition (4) is the backward mirror of (3), but
-`untl_propagates_along_coh` is forward-only because `coh`'s `linkPred` constrains no backward
-arm, and `snce_propagates_to_start` is compiled at the L layer and not re-indexed to the
-product. A forward-only sufficiency result is acceptable **if it is labelled forward-only**; a
-backward propagation theorem claimed from this relation would be, in the probe's own words, "a
-strictly weaker statement wearing a stronger name".
+**The backward arm did fail, compiled, and was repaired by strengthening the relation** — never
+by a mirror claimed from `coh`, which would have been, in the probe's own words, "a strictly
+weaker statement wearing a stronger name". The forward-only result for `coh` is labelled
+forward-only (`forward_chain_of_certAdm`); the two-sided result is for `cohBi` and no other
+relation.
 
-`761` reads as dispatchable and **is not**. Its four declared edges (`760`, `775`, `805`, `806`)
-are all discharged, and `blocked` is a resumable status, so `/orchestrate 761` will dispatch it.
-Substantively it waits on `815`'s verdict, which no edge records. Do not batch it until `815`
-returns. Infrastructure repairs (`810`, `812`, and the agent-system records
+`761` is now costable: its four declared edges (`760`, `775`, `805`, `806`) are discharged and
+the sufficiency verdict is in. It inherits two things from `815` — the relation is `cohBi` (the
+two-arm link, not `coh`, and not `ULive`/`SLive`), and every realizability statement it builds on
+is label-level, with the semantic step (obligation (d)) still open. Infrastructure repairs (`810`, `812`, and the agent-system records
 `813`/`814` whose edit targets resolve only under the source store's own tree) are subordinate to
 all of it — they fix how the system reports and gates, not what is proved, and none of them gates
 the critical path.
@@ -83,8 +84,7 @@ aim.
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 815 --hard --lit  # sufficiency: the six conditions imply realizability
-/orchestrate 761 --hard --lit    # ladder realization theorem — do NOT dispatch until sufficiency returns; `blocked` is resumable, so the graph will not stop you
+/orchestrate 761 --hard --lit    # ladder realization theorem — sufficiency returned (815): the relation is `cohBi`, realizability label-level
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781,782 --hard  # sliced-certificate internals: full-label evaluation, Phase 5 hoist, Shape D leaf cache
 # Stage 2 — supporting semantics and metalogic
@@ -193,7 +193,7 @@ theorem** (`exists_hitPresented`, every regular `ℤ`-model, `sizeBound φ k` a 
 for `box`/`stab`-free `φ` at one seam; **(W)** landed its anchor layer, its run-layer frame scheme
 and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remain open:
 
-- **Adequacy — SUFFICIENCY is the open gate, owned by `815`.** The index
+- **Adequacy — SUFFICIENCY RETURNED (`815`); the semantic step, obligation (d), is what remains.** The index
   sub-problem's history: `ladderRealized` cannot be STATED while no computable
   `LadderState Q pend → I` exists for `cellAt` to factor through. **Four tuple-shaped index shapes
   are refuted on compiled ground** — counter-pair clipping (`ladder-cell-refutation.lean`),
@@ -220,10 +220,14 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   (`realizable-type-adequacy-gap.lean`): a `coh6`-coherent 3-cycle carrying `ev = ⊤ U psi2` at
   every position and `psi2` at none.
 
-  **What remains, and what gates everything after it: sufficiency** — that the six certificate
-  conditions imply realizability. Written and marked uncompiled at
-  `specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md`
-  §6; NOT STARTED; filed as **`815`**. The route is Route B (check a candidate realizable
+  **Sufficiency returned** (`815`, `certificate-sufficiency-dovetailing.lean`, seventeen theorems
+  sorry-free): the dovetailing argument is a theorem (`exists_dovetail_chain`); the two-sided
+  claim for `coh` is refuted (`sufficiency_refuted`, backward arm only); the repair is the
+  strict-since link `cohBi`, under which the certificate is sufficient at the label level
+  (`realizes_of_certAdm_cohBi`), non-vacuously in both arms (`cert_accepts_R4`,
+  `realizes_y0_R4`), at no cost on a `snce`-free closure; condition (3)'s bound is derived
+  (`eu_mem_lfp_path_le_card`). Route B's relation is `cohBi`; both arms stay existential; what
+  remains of adequacy is the semantic step (obligation (d)). The route is Route B (check a candidate realizable
   set), chosen over Route A (decide generalized-Büchi nonemptiness — a missing nested fixpoint,
   real work, not to be entered without a decision record). Still open alongside it: **gate 8 is
   SIDESTEPPED, not passed** (the `stab`/`box` clauses are present but unexercised; exercising
@@ -238,9 +242,9 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
   `[BLOCKED]`. **Every one of its declared edges — 760, 775, 805, 806 — is discharged**
   (760/775 archived, 805/806 `[COMPLETED]`), and `blocked` is a resumable status, so
-  `/orchestrate 761` **will dispatch it**. Substantively it waits on the **sufficiency verdict**
-  above, now owned by `815` — an edge no predecessor records. Do not dispatch it until `815`
-  returns; it is NOT costable before then.
+  `/orchestrate 761` **will dispatch it**. The **sufficiency verdict** it waited on is in
+  (`815`, above): it is now costable, over the relation `cohBi`, with every realizability
+  statement it inherits label-level.
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone.
   761 and 763 share the `RaySummary` library set and serialize through the edge between them.

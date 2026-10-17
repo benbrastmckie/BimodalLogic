@@ -333,14 +333,14 @@ Re-count both before editing the decision row's figure rather than trusting this
 
 ---
 
-### Phase 3: The Roadmap Verdict and the Two Rulings the Parent Inherits [NOT STARTED]
+### Phase 3: The Roadmap Verdict and the Two Rulings the Parent Inherits [COMPLETED]
 
 **Goal**: Rewrite the four places in `specs/ROADMAP.md` that still describe sufficiency as NOT
 STARTED and gate `761` on it, so the next `/orchestrate` run reads the verdict rather than the
 question -- and nothing else in that file.
 
 **Tasks**:
-- [ ] Read `specs/ROADMAP.md` in full first; the four edit sites are, by their current opening
+- [x] Read `specs/ROADMAP.md` in full first; the four edit sites are, by their current opening
   text: (A) the `## Run these next` code block's line `/orchestrate 815 --hard --lit`; (B) the
   two paragraphs beginning `**The gate is now SUFFICIENCY, filed as \`815\`.**` and `What \`809\`
   did **not** discharge`; (C) the paragraph beginning `**The likeliest way \`815\` fails is the
@@ -349,9 +349,9 @@ question -- and nothing else in that file.
   bullet the passage beginning `**What remains, and what gates everything after it: sufficiency**`
   together with the `761` bullet's sentence `Substantively it waits on the **sufficiency verdict**
   above, now owned by \`815\``.
-- [ ] (A): replace the `815` line with `/orchestrate 761 --hard --lit` and a comment naming it the
+- [x] (A): replace the `815` line with `/orchestrate 761 --hard --lit` and a comment naming it the
   critical path, now costable, with its relation `cohBi`.
-- [ ] (B): replace with one paragraph headed `**SUFFICIENCY RETURNED (\`815\`, 2026-10-17).**`
+- [x] (B): replace with one paragraph headed `**SUFFICIENCY RETURNED (\`815\`, 2026-10-17).**`
   stating, with theorem names: the dovetailing argument is a theorem (`exists_dovetail_chain`);
   forward-only sufficiency holds for the compiled relation (`forward_chain_of_certAdm`, labelled);
   the two-sided claim for `coh` is REFUTED (`sufficiency_refuted`, on
@@ -365,20 +365,20 @@ question -- and nothing else in that file.
   arms stay existential (`ULive`/`SLive` remain the wrong strength); realizability here is
   label-level, and the semantic step (obligation (d)) is what remains of adequacy. Keep the
   following `Also still open from that round: **gate 8 stays SIDESTEPPED**` paragraph verbatim.
-- [ ] (C): replace the first paragraph with the realized outcome in two sentences (the backward
+- [x] (C): replace the first paragraph with the realized outcome in two sentences (the backward
   arm did fail, compiled, and was repaired by strengthening the relation rather than by a mirror
   claimed from `coh`; the forward-only result is labelled forward-only), keeping the probe's
   quoted phrase. Replace the `761` paragraph: its edges are discharged AND the sufficiency verdict
   is in, so it is now costable; it inherits the `cohBi` ruling and the label-level qualification;
   the infrastructure-repair sentence about `810`, `812`, `813`, `814` stays as it is.
-- [ ] (D): remove the Stage 1 `/orchestrate 815` line; change `761`'s comment to say sufficiency
+- [x] (D): remove the Stage 1 `/orchestrate 815` line; change `761`'s comment to say sufficiency
   returned and the relation is `cohBi`; rewrite the narrative passage and the `761` bullet's
   sentence to the same verdict in compact form, keeping every sentence about gates 8, 3, 1, 2, 9,
   `anchorCells_ncard_le` and the declined R2 alternative verbatim.
-- [ ] Do not touch Stages 2-4, the coverage appendix, the guardrails paragraph, or the "Not on
+- [x] Do not touch Stages 2-4, the coverage appendix, the guardrails paragraph, or the "Not on
   the critical path" paragraph. Update the `last edited` date in the first line only if the day
   differs from the one already there.
-- [ ] Commit (explicit file list: `specs/ROADMAP.md`).
+- [x] Commit (explicit file list: `specs/ROADMAP.md`).
 
 **Timing**: 1 hour
 
@@ -404,6 +404,8 @@ regions -- a hit outside them is reviewed, not silently rewritten.
 - `grep -n "snce_propagates_to_start" specs/ROADMAP.md` either matches nothing or matches only a sentence saying the mirror claim through it is false for `coh`.
 - `grep -n "label-level\|label level" specs/ROADMAP.md` matches the new paragraph.
 - `grep -n "do NOT dispatch\|Do not dispatch it until" specs/ROADMAP.md` no longer matches a sentence gating `761` on `815`.
+
+**Verification notes (run 2026-10-17, this dispatch)**: `grep -n "815" specs/ROADMAP.md` before editing returned nine hits; eight lie in the four enumerated regions and the ninth (line 196, `**Adequacy — SUFFICIENCY is the open gate, owned by \`815\`.**`) is the heading of the same Stage 1 narrative bullet whose passage region (D) names -- reviewed and rewritten to the verdict as part of that bullet rather than left contradicting it. `git diff -- specs/ROADMAP.md` read through hunk by hunk: seven hunks, every one inside regions (A)-(D). The gate-8, gate-3, gates-1/2, gate-9, `anchorCells_ncard_le`, R2 and "one coordinate" sentence counts agree before and after (1/1/2/3/1/1/1/2). `NOT STARTED` matches no sufficiency or `815` line (its one remaining hit is an unrelated task record). `snce_propagates_to_start` matches only the sentence saying the mirror claim through it is false for `coh`. `label-level` matches the new paragraph. No `do NOT dispatch`/`Do not dispatch it until`/`Do not batch it until` sentence gating `761` on `815` remains. The `last edited` date already read 2026-10-17 and was left as is. Stages 2-4, the coverage appendix, the guardrails paragraph and the "Not on the critical path" paragraph are untouched. Nothing arose for the issue log in this phase.
 
 ---
 
