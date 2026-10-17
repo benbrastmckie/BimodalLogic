@@ -540,4 +540,252 @@ theorem stepDecreases_budgetPotentialGap {fc : FormalSystem.ProofSystem.FrameCla
     exact ⟨harity, (hD b ord tr hst.2.1).2 bs hres,
       budgetPotentialGap_step_splitOrdered hUcl hst hres⟩
 
+/-! ### The enlarged figures
+
+Every figure below **dominates** its `…At` predecessor, and each domination is recorded as its own
+lemma. Nothing stated at `derivedTmaxAt`, `mintPathBoundAt` or `mintAwareFuelAt` is withdrawn: the
+chain still reads `splitAwareFuel ≤ mintAwareFuel ≤ mintAwareFuelAt ≤ mintAwareFuelGap`, and the
+fifth coordinate's whole cost at this level is one more additive term.
+
+*The only new number.* The mint-budget floor rises from `10·|U|` to `10·|U| + |U|²`, because the
+carried state's budget clause is now the triple sum and `gapPotential ≤ |U|²`
+(`gapPotential_le_sq`). `derivedTmaxGap` carries the same enlargement into the caller-facing form.
+That is a figure, not a hypothesis: no caller's hypothesis *list* grows — it shrinks, since
+`hmint` goes away. -/
+
+/-- **The derived time bound at the five-component measure.** The initial known-time count plus the
+enlarged mint budget: `8·|U|` for the mint dimension, `2·|U|` for the self-guard dimension and
+`|U|²` for the gap dimension, the three ceilings `mintPotential_le_eight_mul`,
+`selfGuardPotential_le_two_mul` and `gapPotential_le_sq` supply. -/
+def derivedTmaxGap (kt0 Ucard : Nat) : Nat := kt0 + 10 * Ucard + Ucard * Ucard
+
+/-- The enlarged time hypothesis is satisfied at `derivedTmaxGap`, in the same sense
+`derivedTmaxAt_spec` makes the mint budget a discharged parameter rather than a caller
+obligation. -/
+theorem derivedTmaxGap_spec (b : Branch) (U : Finset SignedFormula) :
+    b.knownTimes.toFinset.card + (10 * U.card + U.card * U.card)
+      ≤ derivedTmaxGap (b.knownTimes.toFinset.card) U.card := by
+  simp only [derivedTmaxGap]; omega
+
+/-- The enlarged bound is an **enlargement**, never a replacement. -/
+theorem derivedTmaxAt_le_derivedTmaxGap (kt0 Ucard : Nat) :
+    derivedTmaxAt kt0 Ucard ≤ derivedTmaxGap kt0 Ucard := by
+  simp only [derivedTmaxAt, derivedTmaxGap]; omega
+
+/-- **The derived path bound at the five-component measure.** `mintPathBoundAt` plus the gap
+coordinate's ceiling times its weight. `gapPotential ≤ |U|²` is the ceiling
+(`gapPotential_le_sq`), and the weight is `budgetPotentialAt`'s own `2·(Tmax² + 1) + |U|`. -/
+def mintPathBoundGap (Ucard Tmax mintBudget : Nat) : Nat :=
+  mintPathBoundAt Ucard Tmax mintBudget
+  + (2 * (Tmax * Tmax + 1) + Ucard) * (Ucard * Ucard)
+
+/-- **The derived fuel figure at the five-component measure**, the landed one evaluated at the
+enlarged path bound. -/
+def mintAwareFuelGap (Ucard Tmax mintBudget D β : Nat) : Nat :=
+  fuelFigure D β (mintPathBoundGap Ucard Tmax mintBudget)
+
+/-- The enlarged path bound is an **enlargement** of the four-component one. -/
+theorem mintPathBoundAt_le_mintPathBoundGap (Ucard Tmax mintBudget : Nat) :
+    mintPathBoundAt Ucard Tmax mintBudget ≤ mintPathBoundGap Ucard Tmax mintBudget := by
+  simp only [mintPathBoundGap]; omega
+
+/-- …and so is the fuel figure, so nothing stated at `mintAwareFuelAt` — or, through
+`mintAwareFuel_le_mintAwareFuelAt`, at `mintAwareFuel` or `splitAwareFuel` — is withdrawn. -/
+theorem mintAwareFuelAt_le_mintAwareFuelGap (Ucard Tmax mintBudget D β : Nat) :
+    mintAwareFuelAt Ucard Tmax mintBudget D β ≤ mintAwareFuelGap Ucard Tmax mintBudget D β :=
+  fuelFigure_mono (mintPathBoundAt_le_mintPathBoundGap _ _ _)
+
+/-- The five-component measure sits under the enlarged path bound. The gap coordinate's
+contribution is bounded by its ceiling times its weight, which is exactly the term
+`mintPathBoundGap` adds. -/
+theorem budgetPotentialGap_lt_mintPathBoundGap {U : Finset SignedFormula}
+    {Tmax mintBudget : Nat} {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    (hst : BudgetStateGap U Tmax σ b ord) (hmb : 8 * U.card ≤ mintBudget) :
+    budgetPotentialGap U Tmax σ b ord < mintPathBoundGap U.card Tmax mintBudget := by
+  have h1 := budgetPotentialAt_lt_mintPathBoundAt_fixed
+    (budgetStateFixed_of_budgetStateGap hst) hmb
+  have h2 : (2 * (Tmax * Tmax + 1) + U.card) * gapPotential U σ ord
+      ≤ (2 * (Tmax * Tmax + 1) + U.card) * (U.card * U.card) :=
+    Nat.mul_le_mul_left _ (gapPotential_le_sq U σ ord)
+  simp only [budgetPotentialGap, mintPathBoundGap]
+  omega
+
+/-! ### The terminus family, with the residual DISCHARGED rather than carried
+
+This is the headline improvement. Every `_fixed` terminus in `SigmaFixed.lean` takes
+`MintPaysForTimeFixed fc U Tmax` as a hypothesis the caller must meet, and
+`mintPaysForTimeFixed_dense_false` / `mintPaysForTimeFixed_rtime_false` say that at `.Dense` and
+`.RTime` no caller can. Each `_gap` restatement below **drops** that hypothesis and discharges it
+internally from `mintPaysForTimeGap_of_any`. The residual stops being a condition and becomes a
+theorem.
+
+**The de-vacuification disclaimer, preserved verbatim in force.** Dropping `hmint` does **not**
+make any terminus non-vacuous. Register entries 9, 11 and 22 still refute co-hypotheses —
+`DifficultyBounded` (entry 9), clause 2 of `UniverseClosed` (entry 11), `PostBlockingSettles`
+(entry 22) — and nothing in this module touches any of the three. What improved is one residual's
+status, not the satisfiability of the statements that consume it. The `_fixed` family is untouched
+above in `SigmaFixed.lean` and remains the right statement to cite wherever
+`MintPaysForTimeFixed` is what a caller actually has. -/
+
+/-- `BudgetedTotalityFixed` at the five-component measure: the enlarged fuel figure and the
+enlarged mint-budget floor, everything else unchanged. -/
+def BudgetedTotalityGap (fc : FormalSystem.ProofSystem.FrameClass)
+    (U : Finset SignedFormula) (mintBudget Tmax D β : Nat) : Prop :=
+  ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker) (applied : AppliedSet)
+    (maxBranches branchesUsed : Nat),
+    (∀ x ∈ b, x ∈ U) →
+    RunInvariant b ord →
+    10 * U.card + U.card * U.card ≤ mintBudget →
+    b.knownTimes.toFinset.card + mintBudget ≤ Tmax →
+    branchesUsed + β * mintAwareFuelGap U.card Tmax mintBudget D β ≤ maxBranches →
+    (expandBranchWithFuel b (mintAwareFuelGap U.card Tmax mintBudget D β) ord fc tr applied
+      maxBranches branchesUsed).isSome = true
+
+/-- `expandBranchWithFuel_isSome_of_budget_fixed` with **no** `hmint`.
+
+The seed state is built at `σ = id`, where both σ clauses are free (`sigmaFormulaFixed_id`,
+`sigmaFixesFormulasFrom_id`), and the triple budget clause is discharged from the three ceilings
+against the enlarged floor. The residual is supplied internally by `mintPaysForTimeGap_of_any`,
+which needs no frame-class hypothesis — so this statement holds at `.Dense` and `.RTime` as well,
+which its `_fixed` predecessor provably cannot. -/
+theorem expandBranchWithFuel_isSome_of_budget_gap
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax D β : Nat}
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (harm : ArmSettlement fc) :
+    BudgetedTotalityGap fc U mintBudget Tmax D β := by
+  intro b ord tr applied maxBranches branchesUsed hbU hinv hmb hT hbud
+  have hst : BudgetStateGap U Tmax id b ord := by
+    refine ⟨hinv, hbU, ?_, sigmaFormulaFixed_id b, sigmaFixesFormulasFrom_id _⟩
+    have h8 := mintPotential_le_eight_mul U id b ord
+    have h2 := selfGuardPotential_le_two_mul U id ord
+    have hg := gapPotential_le_sq U id ord
+    simp only [mintTimeBudget]
+    omega
+  exact expandBranchWithFuel_isSome_of_measure (by omega)
+    (stepDecreases_budgetPotentialGap hβ hUcl hD (mintPaysForTimeGap_of_any fc U Tmax))
+    harm (mintPathBoundGap U.card Tmax mintBudget) id _ b ord tr applied maxBranches branchesUsed
+    hst (budgetPotentialGap_lt_mintPathBoundGap hst (by omega)) (Nat.le_refl _) hbud
+
+/-- **THE TERMINUS, at the five-component measure, with the residual discharged.** -/
+theorem buildTableauAt_isSome_of_budget_gap
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 10 * U.card + U.card * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelGap U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuelGap U.card Tmax mintBudget D β) fc maxBranches).isSome
+      = true := by
+  refine buildTableauAt_isSome_of_settles hpb ?_
+  exact expandBranchWithFuel_isSome_of_budget_gap hβ hUcl hD
+    (armSettlement_of_postBlockingSettles hpb)
+    (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
+    hseed (runInvariant_initial _) hmb hT (by omega)
+
+/-- The seed-fuel form, with `Tmax` and the mint budget both read off `derivedTmaxGap`. -/
+theorem buildTableauAt_isSome_at_seed_gap
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {D β : Nat}
+    (phi : Formula) (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U)
+    (hD : DifficultyBounded fc U D)
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuelGap U.card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card + U.card * U.card) D β)
+        fc
+        (β * mintAwareFuelGap U.card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card + U.card * U.card) D β)
+      ).isSome = true :=
+  buildTableauAt_isSome_of_budget_gap phi _ hβ hUcl hD hpb hseed (Nat.le_refl _)
+    (derivedTmaxGap_spec (seedBranch phi) U) (Nat.le_refl _)
+
+/-- The length-budget form: `DifficultyBounded` traded for `StepLengthBounded`. -/
+theorem buildTableauAt_isSome_of_lengthBudget_gap
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax L β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hL : StepLengthBounded fc U L)
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 10 * U.card + U.card * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelGap U.card Tmax mintBudget (difficultyCeiling U L) β
+      ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuelGap U.card Tmax mintBudget (difficultyCeiling U L) β) fc
+        maxBranches).isSome = true :=
+  buildTableauAt_isSome_of_budget_gap phi maxBranches hβ hUcl
+    (difficultyBounded_of_stepLengthBounded_at hL hUcl) hpb hseed hmb hT hbud
+
+/-- …and its seed-fuel form. -/
+theorem buildTableauAt_isSome_at_seed_lengthBudget_gap
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {L β : Nat}
+    (phi : Formula) (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U)
+    (hL : StepLengthBounded fc U L)
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuelGap U.card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card + U.card * U.card) (difficultyCeiling U L) β)
+        fc
+        (β * mintAwareFuelGap U.card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card + U.card * U.card) (difficultyCeiling U L) β)
+      ).isSome = true :=
+  buildTableauAt_isSome_at_seed_gap phi hβ hUcl
+    (difficultyBounded_of_stepLengthBounded_at hL hUcl) hpb hseed
+
+/-- **Seed-level terminus 1, with the residual discharged.** -/
+theorem buildTableauAt_isSome_of_lengthBudget_signedUniverse_gap
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {C : Finset Formula} {L : Finset Label} {mintBudget Tmax L' β : Nat}
+    (phi : Formula) (maxBranches : Nat) (hβ : 3 ≤ β)
+    (hC : TableauClosed C) (hT : TrichStock C) (hL : TimeMergeClosed L)
+    (hlab : UnorderedSuccessorLabelClosed fc L)
+    (hSL : StepLengthBounded fc (signedUniverse C L) L')
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ signedUniverse C L)
+    (hmb : 10 * (signedUniverse C L).card
+      + (signedUniverse C L).card * (signedUniverse C L).card ≤ mintBudget)
+    (hT' : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelGap (signedUniverse C L).card Tmax mintBudget
+      (difficultyCeiling (signedUniverse C L) L') β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuelGap (signedUniverse C L).card Tmax mintBudget
+        (difficultyCeiling (signedUniverse C L) L') β) fc maxBranches).isSome = true :=
+  buildTableauAt_isSome_of_lengthBudget_gap phi maxBranches hβ
+    (universeClosedAt_signedUniverse_of_headroom hC hT hL hlab) hSL hpb hseed hmb hT' hbud
+
+/-- **Seed-level terminus 2, with the residual discharged.** Every number is read off a concrete
+`signedUniverse C L`, no `U` is quantified, no frame-class restriction is carried, and there is
+no `hmint`. -/
+theorem buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_gap
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {C : Finset Formula} {L : Finset Label} {L' β : Nat} (phi : Formula) (hβ : 3 ≤ β)
+    (hC : TableauClosed C) (hT : TrichStock C) (hL : TimeMergeClosed L)
+    (hlab : UnorderedSuccessorLabelClosed fc L)
+    (hSL : StepLengthBounded fc (signedUniverse C L) L')
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ signedUniverse C L) :
+    (buildTableauAt phi
+        (mintAwareFuelGap (signedUniverse C L).card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card)
+            (signedUniverse C L).card)
+          (10 * (signedUniverse C L).card
+            + (signedUniverse C L).card * (signedUniverse C L).card)
+          (difficultyCeiling (signedUniverse C L) L') β)
+        fc
+        (β * mintAwareFuelGap (signedUniverse C L).card
+          (derivedTmaxGap ((seedBranch phi).knownTimes.toFinset.card)
+            (signedUniverse C L).card)
+          (10 * (signedUniverse C L).card
+            + (signedUniverse C L).card * (signedUniverse C L).card)
+          (difficultyCeiling (signedUniverse C L) L') β)
+      ).isSome = true :=
+  buildTableauAt_isSome_at_seed_lengthBudget_gap phi hβ
+    (universeClosedAt_signedUniverse_of_headroom hC hT hL hlab) hSL hpb hseed
+
 end FormalSystem.Metalogic.Decidability

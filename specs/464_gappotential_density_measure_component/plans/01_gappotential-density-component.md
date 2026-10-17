@@ -554,7 +554,7 @@ the aggregator, and this phase changes no existing declaration's signature anywh
 
 ---
 
-### Phase 8: The Figures and the Terminus Family [NOT STARTED]
+### Phase 8: The Figures and the Terminus Family [IN PROGRESS]
 
 **Goal**: the enlarged figures and the eight termini restated at the five-component measure, with
 the `MintPaysForTimeGap` hypothesis **discharged** rather than carried.
