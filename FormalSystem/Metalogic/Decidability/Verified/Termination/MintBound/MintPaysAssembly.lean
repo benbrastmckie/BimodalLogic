@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.UntlSnceFree
+import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.GapPotential
 
 /-! # D5. The engine-level assembly: `MintPaysForTimeFixed` off `.Dense`, at any universe
 
@@ -659,5 +659,235 @@ theorem mintPaysForTimeFixed_signedUniverse_of_not_dense
     (Tmax : Nat) (hfc : ¬ (FormalSystem.ProofSystem.FrameClass.Dense ≤ fc)) :
     MintPaysForTimeFixed fc (signedUniverse C L) Tmax :=
   mintPaysForTimeFixed_of_not_dense hfc
+
+/-! ### D5b. The density bucket, and the discharge with **no** frame-class hypothesis
+
+Everything above this point is reached only off `.Dense`, and that restriction is not an artefact
+of the assembly: `mintPaysForTimeFixed_dense_false` and `mintPaysForTimeFixed_rtime_false` decide
+that `MintPaysForTimeFixed` is **false** at the two frame classes the restriction excludes. So the
+hypothesis cannot be dropped from the landed predicate; what can be done is to add the one
+coordinate that moves at a density step and drop the hypothesis from the *repaired* one.
+
+That is this subsection. `rule_census`'s fifth bucket — `densityRule`, previously discharged by
+`absurd hden (findApplicableRule_ne_densityRule hfc hpick)`, which is the only place the
+frame-class hypothesis was ever used in this file — is *proved* here instead, from
+`gapPotential_lt_of_density`. With no bucket left needing the hypothesis, the whole chain restates
+without it, and `mintPaysForTimeGap_of_any` holds at every frame class, at an arbitrary universe,
+with no hypothesis at all.
+
+**What is kept.** `mintPaysForTimeFixed_of_not_dense`,
+`mintPaysForTimeFixed_signedUniverse_of_not_dense`, `pickBranches_mintPays` and
+`expandOnceUnblocked_mintPays` are all untouched above. They remain the correct statements at the
+landed predicate, and `mintPaysForTimeGap_of_mintPaysForTimeFixed` records that the new predicate
+is the weaker one, so nothing stated at the old one is withdrawn.
+
+**What this does not do.** It makes no terminus non-vacuous. See the de-vacuification note on
+`mintPaysForTimeGap_of_any` below, and the section prose above. -/
+
+/-- **Bucket D — the rule is `densityRule`: the new fourth disjunct.**
+
+The fifth and last bucket of `rule_census`, and the one the frame-class hypothesis used to
+discharge. `densityRule` mints a fresh time and is in neither index set, so disjunct 1 fails (a
+known time was added), disjunct 2 cannot move (`mintPotential`'s index set does not mention the
+rule) and disjunct 3 cannot move (`selfGuardPotential`'s does not either). What pays is the rule's
+own gap-target guard: the rule fires only at a target whose gap is **unfilled** and returns an
+ordering with two fresh edges that fill it, so `gapPotential` strictly drops.
+`applyRule_densityRule_shape` is the inversion that reads all of that off the engine at once.
+
+**The two σ-hits, both discharged rather than carried.** `gapPotential_lt_of_density` asks for a
+`U`-column at each end of the gap. The *source* end is the trigger itself: it is a branch formula,
+confinement puts it in `U`, and `SigmaFixed` fixes it, which is exactly
+`sigma_formula_hit_of_sigmaFixed`. The *target* end is one fact deeper: the rule's own target lies
+in the trigger's forward reach, `OrdTimesKnown` puts the forward reach inside the branch's known
+times, `exists_mem_of_mem_knownTimes` produces a branch formula sitting there, and confinement
+plus `SigmaFixed` finish it. No hypothesis is added to the predicate for either.
+
+The combined conjunct is **exact**: `|kt nb| ≤ |kt b| + 1` from the pick-level dichotomy,
+`mintPotential nb o ≤ mintPotential b ord` and `selfGuardPotential o ≤ selfGuardPotential ord`
+(branch and ordering both only grow), and `gapPotential o + 1 ≤ gapPotential ord` from the
+payment, sum to the required inequality with nothing to spare — as every bucket above does. -/
+private theorem mintPays_bucketD_density {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {sf : SignedFormula} {res : RuleResult}
+    {o : TimeOrdering} {nb : Branch}
+    (haux : OrdTimesKnown b ord) (hconf : ∀ x ∈ b, x ∈ U) (hfix : SigmaFixed σ b) (hsf : sf ∈ b)
+    (hAp : isApplicable TableauRule.densityRule sf fc = true)
+    (hA : applyRule TableauRule.densityRule sf b ord = (res, o))
+    (hnb : nb ∈ pickBranches b (some (TableauRule.densityRule, res, o))) :
+    mintTimeBudget U σ nb o + selfGuardPotential U σ o + gapPotential U σ o
+        ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord + gapPotential U σ ord ∧
+      gapPotential U σ o < gapPotential U σ ord := by
+  obtain ⟨ψ, l, hsfeq⟩ := isApplicable_densityRule_trigger hAp
+  have hne : res ≠ RuleResult.notApplicable := by
+    rintro rfl
+    simp [pickBranches, nonBranchingResultBranch, branchingResultBranches] at hnb
+  have hsfb : (⟨Sign.pos, Formula.allFuture ψ, l⟩ : SignedFormula) ∈ b := by
+    rw [← hsfeq]; exact hsf
+  have hA' : applyRule TableauRule.densityRule ⟨Sign.pos, Formula.allFuture ψ, l⟩ b ord
+      = (res, o) := by rw [← hsfeq]; exact hA
+  obtain ⟨t', hunf, ht'mem, hoeq⟩ := applyRule_densityRule_shape hA' hne
+  obtain ⟨x, hxU, hxσ⟩ := sigma_formula_hit_of_sigmaFixed hconf hfix hsfb
+  have hhx : (σ x).label.time = l.time := by rw [hxσ]
+  obtain ⟨y, hyb, hyt⟩ :=
+    exists_mem_of_mem_knownTimes (mem_knownTimes_of_mem_futureOf haux ht'mem)
+  have hhy : (σ y).label.time = t' := by rw [hfix y hyb]; exact hyt
+  have hdrop : gapPotential U σ o < gapPotential U σ ord := by
+    rw [hoeq]
+    exact gapPotential_lt_of_density hunf hxU (hconf y hyb) hhx hhy
+  refine ⟨?_, hdrop⟩
+  have hcard := pickBranches_knownTimes_card_le_succ haux
+    (pick_singleton_source hsf hA) nb hnb
+  have hordmono : ∀ q ∈ ord.constraints, q ∈ o.constraints := by
+    have hm := applyRule_ord_mono TableauRule.densityRule sf b ord
+    rwa [hA] at hm
+  have hgrowM : mintPotential U σ nb o ≤ mintPotential U σ b ord :=
+    mintPotential_le_of_grow (resultBranch_sub (b := b) (nb := nb) (res := res) hnb).1 hordmono
+  have hgrowS : selfGuardPotential U σ o ≤ selfGuardPotential U σ ord :=
+    selfGuardPotential_le_of_grow hordmono
+  simp only [mintTimeBudget]
+  omega
+
+/-- **The census case split, assembled at the repaired predicate — with no frame-class
+hypothesis.**
+
+`pickBranches_mintPays` restated, with `densityRule` **proved** by bucket D rather than excluded
+by `findApplicableRule_ne_densityRule`. That exclusion was the only consumer of `hfc` in the whole
+file, so dropping the bucket's discharge drops the hypothesis outright.
+
+The split is still driven by the `decide`-proved census rather than by a hand-written constructor
+list, so no rule is handled by an unexamined catch-all: a rule with no bucket would break
+`rule_census` rather than pass through here silently. All five buckets are now proved; there is no
+discharged-by-hypothesis arm left. -/
+private theorem pickBranches_mintPaysGap {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {Tmax : Nat}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (haux : OrdTimesKnown b ord) (hconf : ∀ x ∈ b, x ∈ U) (hfix : SigmaFixed σ b)
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧
+      (findApplicableRule sf b ord fc = some (r, res, o) ∨ ruleMintsFreshTime r = false)) :
+    ∀ nb ∈ pickBranches b p,
+      (nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card ∧
+        splitOrderedRank Tmax nb (pickOrd ord p) ≤ splitOrderedRank Tmax b ord)
+      ∨ (mintTimeBudget U σ nb (pickOrd ord p) ≤ mintTimeBudget U σ b ord ∧
+          mintPotential U σ nb (pickOrd ord p) < mintPotential U σ b ord)
+      ∨ (mintTimeBudget U σ nb (pickOrd ord p) + selfGuardPotential U σ (pickOrd ord p)
+            ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord ∧
+          selfGuardPotential U σ (pickOrd ord p) < selfGuardPotential U σ ord)
+      ∨ (mintTimeBudget U σ nb (pickOrd ord p) + selfGuardPotential U σ (pickOrd ord p)
+            + gapPotential U σ (pickOrd ord p)
+            ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord + gapPotential U σ ord ∧
+          gapPotential U σ (pickOrd ord p) < gapPotential U σ ord) := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA, hsrc⟩ := hp r res o rfl
+    intro nb hnb
+    rcases hsrc with hpick | hnm
+    · rcases rule_census r with hnm | ⟨hlabmem, htime⟩ | hun | hsn | hden
+      · exact Or.inl (mintPays_bucketA (Tmax := Tmax) haux hsf hA hnm hnb)
+      · exact Or.inr (Or.inl (mintPays_bucketB haux hconf hfix hsf hpick
+          (mem_freshLabelRules.mp hlabmem) htime hnb))
+      · subst hun
+        exact Or.inr (Or.inr (Or.inl (mintPays_bucketC_untlNeg haux hconf hfix hsf
+          (findApplicableRule_isApplicable hpick) hA hnb)))
+      · subst hsn
+        exact Or.inr (Or.inr (Or.inl (mintPays_bucketC_snceNeg haux hconf hfix hsf
+          (findApplicableRule_isApplicable hpick) hA hnb)))
+      · subst hden
+        exact Or.inr (Or.inr (Or.inr (mintPays_bucketD_density haux hconf hfix hsf
+          (findApplicableRule_isApplicable hpick) hA hnb)))
+    · exact Or.inl (mintPays_bucketA (Tmax := Tmax) haux hsf hA hnm hnb)
+
+/-- **The engine-level lift, at the repaired predicate.** The `keyO`/`keyB` pattern of
+`expandOnceUnblocked_mintPays` run once more, with the frame-class hypothesis gone and the pick's
+three-stage `match` not destructured a second time. -/
+theorem expandOnceUnblocked_mintPaysGap {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} {Tmax : Nat}
+    (haux : OrdTimesKnown b ord) (hconf : ∀ x ∈ b, x ∈ U) (hfix : SigmaFixed σ b) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      (nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card ∧
+        splitOrderedRank Tmax nb (expandOnceUnblocked b ord fc tr).2
+          ≤ splitOrderedRank Tmax b ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord ∧
+          mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+            < mintPotential U σ b ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord ∧
+          selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            < selfGuardPotential U σ ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            + gapPotential U σ (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord + gapPotential U σ ord ∧
+          gapPotential U σ (expandOnceUnblocked b ord fc tr).2 < gapPotential U σ ord) := by
+  have keyO : (expandOnceUnblocked b ord fc tr).2
+      = pickOrd ord
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_ord_eq
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyO, keyB]
+  exact pickBranches_mintPaysGap haux hconf hfix (pick_stage_source_rule b ord fc tr)
+
+/-- **THE DISCHARGE: `MintPaysForTimeGap fc U Tmax` at EVERY frame class, at an ARBITRARY
+universe, with NO hypothesis.**
+
+No frame-class restriction, no syntactic condition on the formulas, no emptiness, no added
+hypothesis on the predicate — the statement `mintPaysForTimeFixed_of_not_dense` could not reach,
+and provably could not: `mintPaysForTimeFixed_dense_false` and `mintPaysForTimeFixed_rtime_false`
+refute the landed predicate at exactly the two classes that restriction excluded.
+
+**What this retires.** Register entry 20's item (b), the density coordinate, together with the
+`¬ (FrameClass.Dense ≤ fc)` restriction that stood in for it. The residual that the terminus
+family carried as a *condition* becomes a *theorem*.
+
+**What this does not do — the de-vacuification disclaimer, preserved.** It makes no terminus in
+this file non-vacuous. Register entries 9, 11 and 22 still refute co-hypotheses
+(`DifficultyBounded`, clause 2 of `UniverseClosed`, `PostBlockingSettles`), and discharging this
+residual does not touch any of them. Nothing here should be read as making a terminus
+satisfiable. -/
+theorem mintPaysForTimeGap_of_any (fc : FormalSystem.ProofSystem.FrameClass)
+    (U : Finset SignedFormula) (Tmax : Nat) : MintPaysForTimeGap fc U Tmax := by
+  intro σ b ord tr hri hconf hfix nb hnb
+  exact expandOnceUnblocked_mintPaysGap hri.ordTimesKnown hconf hfix nb hnb
+
+/-- **…at the concrete universe the seed-level termini consume**, for every stock `C`, every label
+set `L`, and every frame class.
+
+This supersedes `mintPaysForTimeFixed_signedUniverse_of_not_dense` in reach — `C` may carry `untl`
+and `snce` nodes freely and `fc` may be `.Dense` or `.RTime` — and supersedes nothing in content:
+that theorem is unchanged above, and the direction lemma
+`mintPaysForTimeGap_of_mintPaysForTimeFixed` records which of the two predicates is the weaker.
+
+**Satisfiable rather than vacuous *as a hypothesis*.** `signedUniverse_nonempty` makes the
+universe nonempty as soon as `C` and `L` are, and this is a *theorem* there rather than a
+condition nobody meets. That is a statement about this residual only; it is not a claim that the
+termini consuming it are non-vacuous. See the disclaimer on `mintPaysForTimeGap_of_any`. -/
+theorem mintPaysForTimeGap_signedUniverse (fc : FormalSystem.ProofSystem.FrameClass)
+    (C : Finset Formula) (L : Finset Label) (Tmax : Nat) :
+    MintPaysForTimeGap fc (signedUniverse C L) Tmax :=
+  mintPaysForTimeGap_of_any fc (signedUniverse C L) Tmax
 
 end FormalSystem.Metalogic.Decidability

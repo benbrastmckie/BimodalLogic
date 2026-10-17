@@ -444,34 +444,34 @@ module's only dependent.
 
 ---
 
-### Phase 6: The Density Bucket and the All-Frame-Class Discharge [NOT STARTED]
+### Phase 6: The Density Bucket and the All-Frame-Class Discharge [COMPLETED]
 
 **Goal**: `MintPaysForTimeGap` discharged at **every** frame class, at an arbitrary universe, with
 no frame-class hypothesis — the result `mintPaysForTimeFixed_of_not_dense` could not reach.
 
 **Tasks**:
-- [ ] Re-point `MintPaysAssembly.lean`'s single import from `...MintBound.UntlSnceFree` to
+- [x] Re-point `MintPaysAssembly.lean`'s single import from `...MintBound.UntlSnceFree` to
       `...MintBound.GapPotential` (which imports `UntlSnceFree`, so nothing is lost).
-- [ ] Add `mintPays_bucketD_density`: the fifth bucket of `rule_census`'s split, closing the new
+- [x] Add `mintPays_bucketD_density`: the fifth bucket of `rule_census`'s split, closing the new
       fourth disjunct from `gapPotential_lt_of_density` plus the three non-rise facts —
       `pickBranches_knownTimes_card_le_succ` (the existing private helper, reachable because this
       bucket lives in the same module), `mintPotential_le_of_grow` (`MintPotential.lean:1021`) and
       `selfGuardPotential_le_of_grow` (`OrientedGate.lean:520`). The arithmetic must be **exact**,
       closing by `omega` from inequalities with no slack, as every existing bucket's does.
-- [ ] Supply the bucket's two σ-hits: the trigger from `SigmaFixed` plus confinement
+- [x] Supply the bucket's two σ-hits: the trigger from `SigmaFixed` plus confinement
       (`sigma_formula_hit_of_sigmaFixed`), and the target column from `mem_knownTimes_of_mem_futureOf`
       under `OrdTimesKnown` plus confinement.
-- [ ] Restate `pickBranches_mintPays` as `pickBranches_mintPaysGap`, **dropping the `hfc`
+- [x] Restate `pickBranches_mintPays` as `pickBranches_mintPaysGap`, **dropping the `hfc`
       hypothesis** — the `absurd hden (findApplicableRule_ne_densityRule hfc hpick)` arm is
       replaced by the new bucket. Keep the original intact and additive.
-- [ ] Lift to `expandOnceUnblocked_mintPaysGap` by the same `keyO`/`keyB` `pick_ord_eq` /
+- [x] Lift to `expandOnceUnblocked_mintPaysGap` by the same `keyO`/`keyB` `pick_ord_eq` /
       `pick_branches_eq` pattern the existing lift uses; do not destructure the three-stage pick a
       second time.
-- [ ] Prove `mintPaysForTimeGap_of_any (fc) (U) (Tmax) : MintPaysForTimeGap fc U Tmax` — every
+- [x] Prove `mintPaysForTimeGap_of_any (fc) (U) (Tmax) : MintPaysForTimeGap fc U Tmax` — every
       frame class, arbitrary universe, no hypothesis.
-- [ ] Prove `mintPaysForTimeGap_signedUniverse` at `signedUniverse C L`, nonempty whenever `C` and
+- [x] Prove `mintPaysForTimeGap_signedUniverse` at `signedUniverse C L`, nonempty whenever `C` and
       `L` are (`signedUniverse_nonempty`).
-- [ ] Docstring must say what this retires (the `¬ (FrameClass.Dense ≤ fc)` restriction, register
+- [x] Docstring must say what this retires (the `¬ (FrameClass.Dense ≤ fc)` restriction, register
       entry 20's item (b)) and what it does **not** do: it makes no terminus in the file
       non-vacuous. Preserve the existing de-vacuification disclaimer verbatim.
 
