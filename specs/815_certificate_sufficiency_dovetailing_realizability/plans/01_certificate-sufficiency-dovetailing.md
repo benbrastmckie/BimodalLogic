@@ -273,14 +273,14 @@ confirm by re-running the same `#eval`s in-file before proving the Goals. The `9
 
 ---
 
-### Phase 2: Header and Guard Decision Row [NOT STARTED]
+### Phase 2: Header and Guard Decision Row [COMPLETED]
 
 **Goal**: Make the probe's header and the guard's decision row say what the file now proves --
 that the two-sided theorem has a compiled, two-arm, non-vacuous instance -- without letting
 either say more than that.
 
 **Tasks**:
-- [ ] In the probe's header docstring: (i) add to the verdict paragraph one sentence that the
+- [x] In the probe's header docstring: (i) add to the verdict paragraph one sentence that the
   strengthened certificate is SATISFIABLE with both arms live (`cert_accepts_R4` on
   `phi4 = (⊤ U b) ∧ (⊤ S a1)`, every member of `R4` carrying both obligations) and that
   `realizes_y0_R4` is `realizes_of_certAdm_cohBi`'s instance there; (ii) in `## The figures,
@@ -290,18 +290,18 @@ either say more than that.
   LABEL-LEVEL like everything else here, its closure has no `box` or `stab` member, so it exercises
   neither `certStab` nor `certBox` and gate 8 stays SIDESTEPPED; it shows the repair is not
   vacuous, not that adequacy is discharged. Leave `## Gates` unchanged.
-- [ ] In `scripts/check-evidence-probes.sh`, in this probe's boxed decision-row comment block
+- [x] In `scripts/check-evidence-probes.sh`, in this probe's boxed decision-row comment block
   (the block directly above `WIRED=(`, beginning
   `# seam-gluing-ray-product/certificate-sufficiency-dovetailing | SUFFICIENCY, SPLIT`), add the
   non-vacuity rows after the `cohBi_eq_coh_of_snce_free` clause -- the strengthened certificate
   accepts a two-arm set (`cert_accepts_R4`) and the two-sided theorem has a compiled instance on
   it (`realizes_y0_R4`) -- and change `thirteen printed theorems` to `seventeen printed theorems`.
   Add NO `WIRED` entry: the probe is already the fortieth.
-- [ ] `bash -n scripts/check-evidence-probes.sh`; compile the probe once more (the header is a
+- [x] `bash -n scripts/check-evidence-probes.sh`; compile the probe once more (the header is a
   docstring and a malformed one is a compile error).
-- [ ] Record on the issue log anything that arose in Phases 1-2, or attest in the phase notes that
+- [x] Record on the issue log anything that arose in Phases 1-2, or attest in the phase notes that
   nothing did beyond the plan-time entry already logged.
-- [ ] Commit (explicit file list: the probe, the guard script).
+- [x] Commit (explicit file list: the probe, the guard script).
 
 **Timing**: 1 hour
 
@@ -328,6 +328,8 @@ Re-count both before editing the decision row's figure rather than trusting this
 - `git diff -- scripts/check-evidence-probes.sh` touches only lines beginning with `#` inside this probe's block; `sed -n '/^WIRED=(/,/^)/p' scripts/check-evidence-probes.sh | grep -c '^  "'` still prints 40.
 - `grep -n "label-level\|LABEL-LEVEL" ` on the header matches the new bullet; `grep -n "gate 8" ` on the header still reads SIDESTEPPED; `grep -c "seventeen" scripts/check-evidence-probes.sh` is at least 1 within the block and `thirteen` no longer appears in it.
 - `grep -n "snce_propagates_to_start" ` on the header matches only the existing `## What was asked` sentence that quotes the predecessor's claim as the thing refuted -- never a new sentence asserting it.
+
+**Verification notes (run 2026-10-17, this dispatch)**: probe recompile through the guard exit 0, zero diagnostics, seventeen `#print axioms` lines; `bash -n scripts/check-evidence-probes.sh` exit 0; `git diff -- scripts/check-evidence-probes.sh` changes comment lines only, inside this probe's block; `WIRED` 40 and `WIRED_REPO` 1 before and after (re-counted); `#print axioms` lines 17 (re-counted); `seventeen` 1 and `thirteen` 0 in the block; header `LABEL-LEVEL` matches the new bullet, `gate 8` still reads SIDESTEPPED, `snce_propagates_to_start` matches only the pre-existing `## What was asked` quotation. Carried-figure honesty in the header: the type cardinalities 4/5/5 and the three non-edges are named as development-time `#eval` measurements re-confirmed by no theorem; the four edges are closed by `decide` inside the theorems that use them. Issue log for Phases 1-2: one `win` (Scope Hypothesis confirmed in-file) and one `minor` issue (two over-strict mechanical criteria) recorded as they arose; nothing further arose.
 
 ---
 

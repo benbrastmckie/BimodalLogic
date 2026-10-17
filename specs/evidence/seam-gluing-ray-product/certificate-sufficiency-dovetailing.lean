@@ -61,7 +61,11 @@ which needs the arm in question in BOTH directions, and is why the theorem is fo
 the refutation for `coh`.  Cost elsewhere: NONE on a `snce`-free closure
 (`cohBi_eq_coh_of_snce_free`), which the fixture's `chi` is
 (`chi_closure_box_snce_stab_free` in the compiled certificate probe), so every gate verdict and
-every theorem of that probe stands verbatim under `cohBi`.
+every theorem of that probe stands verbatim under `cohBi`.  And the strengthened certificate is
+SATISFIABLE with both arms live: `cert_accepts_R4` accepts `R4 = {y0, y1, y2}` over
+`phi4 = (⊤ U b) ∧ (⊤ S a1)`, every member carrying both obligations (`y0_carries_both`), and
+`realizes_y0_R4` is `realizes_of_certAdm_cohBi`'s instance there -- the two-sided theorem is not
+a theorem about an empty condition.
 
 (b) THE BOUND IS DERIVED.  `eu_lfp_eq_iter_card`: the fixpoint is the `V.card`-th iterate;
 `eu_mem_lfp_path_le_card`: a member has a delivering path of at most `V.card` steps.  Nothing
@@ -74,10 +78,17 @@ a corollary, and dropping it from the condition's statement costs nothing.
 `plusSubformulaClosure phi3` has 9 members (`#eval`); it has no `untl`, `box` or `stab` member
 (`phi3_closure_untl_box_stab_free`), so conditions (3), (5) and (6) are vacuous on `R3` and the
 exhibit isolates the backward arm.  `T0` carries exactly two `snce` members (`t0_snce_only`);
-`T1` and `T2` carry none.  No `decide` is applied to a goal quantifying over a candidate set or
-over `ClType phi3`: `decide` closes concrete closure memberships, concrete `coh3`/`cohBi` facts
-and bounded quantifications over ONE closure type, nothing else.  No `native_decide` and no
-`set_option maxRecDepth` anywhere in the file.
+`T1` and `T2` carry none.  `plusSubformulaClosure phi4` has 9 members (`#eval`); it carries
+`untB` and `sig1` and no `box` or `stab` member (`phi4_closure_both_arms`); `y0` carries both
+(`y0_carries_both`).  The four `cohBi4` edges `y2 → y2`, `y2 → y0`, `y0 → y1`, `y1 → y1` are
+each closed by `decide` inside the theorem that uses them (`certBiInf_R4`, and the six
+fixpoint-membership lemmas `y1_fwd_untB` ... `y1_bwd_sig1`).  Two figures are MEASURED, by
+development-time `#eval` that is not kept in the file, and re-confirmed by no theorem: `U0`,
+`U1`, `U2` have 4, 5, 5 members, and `y0 → y0`, `y1 → y0`, `y0 → y2` are NOT `cohBi4`-edges.
+No `decide` is applied to a goal quantifying over a candidate set or over `ClType phi3` or
+`ClType phi4`: `decide` closes concrete closure memberships, concrete `coh3`/`cohBi`/`cohBi4`
+facts and bounded quantifications over ONE closure type, nothing else.  No `native_decide` and
+no `set_option maxRecDepth` anywhere in the file.
 
 ## Gates
 
@@ -95,6 +106,10 @@ exercised by no fixture of this file, since `phi3`'s closure has no `stab`; gate
      of this file mentions `PlusTruthAt`, `tpOf`, `cellAt`, `anchorCells`, a `WorldHistory`, a
      world, a model or a cell; semantic realizability through the truth definition is standing
      obligation (d) and is untouched.
+  - **The two-arm instance is LABEL-LEVEL like everything else here, and `stab`/`box`-free.**
+     `phi4`'s closure has no `box` or `stab` member, so `cert_accepts_R4` exercises neither
+     `certStab` nor `certBox` and gate 8 stays SIDESTEPPED; `realizes_y0_R4` shows the repair is
+     not vacuous, not that adequacy is discharged.
   - **The refutation is of the certificate AS COMPILED, over `coh`.**  It is not a refutation of
      Route B, which `realizes_of_certAdm_cohBi` vindicates under the two-arm relation, and it is
      not followed by a weakened same-named substitute: `sufficiency_refuted` is the section-6

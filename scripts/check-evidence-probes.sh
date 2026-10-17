@@ -1404,7 +1404,12 @@ EVIDENCE="specs/evidence"
 #                                                           | which the certificate IS sufficient
 #                                                           | (`realizes_of_certAdm_cohBi`, label-level,
 #                                                           | two-sided) at no cost on a `snce`-free closure
-#                                                           | (`cohBi_eq_coh_of_snce_free`); a backward
+#                                                           | (`cohBi_eq_coh_of_snce_free`); the strengthened
+#                                                           | certificate accepts a two-arm set (`cert_accepts_R4`,
+#                                                           | over `(⊤ U b) ∧ (⊤ S a1)`, every member carrying both
+#                                                           | obligations) and the two-sided theorem has a
+#                                                           | compiled, non-vacuous instance on it
+#                                                           | (`realizes_y0_R4`); a backward
 #                                                           | propagation theorem is NOT to be claimed for
 #                                                           | `coh`, and `ULive`/`SLive` are NOT the repair
 #                                                           | (both arms stay existential). What it withholds:
@@ -1414,7 +1419,7 @@ EVIDENCE="specs/evidence"
 #                                                           | `ladderRealized`/`LadderCons`; no gate verdict
 #                                                           | changed, gate 8 still SIDESTEPPED. Axioms
 #                                                           | `[propext, Classical.choice, Quot.sound]` on all
-#                                                           | thirteen printed theorems.
+#                                                           | seventeen printed theorems.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
