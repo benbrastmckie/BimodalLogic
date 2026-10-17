@@ -1231,6 +1231,37 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on `gate1_gap_separates`, `nside_pair_ne`
 #                                                           | and `nside_collides`, `[propext, Classical.choice,
 #                                                           | Quot.sound]` on `gate2_residue_separates`.
+# seam-gluing-ray-product/realizable-type-adequacy-gap     | THE ADEQUACY GAP, EXHIBITED (not merely scoped). The
+#                                                           | eighteenth probe records that its coherence relation
+#                                                           | `coh6` is LOCAL coherence and over-approximates
+#                                                           | realizability; that record reads a DEFINITION (no
+#                                                           | fulfilment clause is imposed). This probe exhibits the
+#                                                           | over-approximation on the same fixture: `ev_cycle_witness`
+#                                                           | is a `coh6`-coherent 3-cycle of closure types carrying
+#                                                           | `ev = T U psi2` at every position (`ev_mem_all`) and
+#                                                           | `psi2` at none (`psi2_not_mem_all`), so the forward run
+#                                                           | `evRay` is a `coh6`-chain (`evRay_coh`) with no fulfilling
+#                                                           | time anywhere (`evRay_unfulfilled`) -- the exact negation
+#                                                           | of `PlusTruthAt`'s `untl` clause and of `Fulfilling` /
+#                                                           | `PlusThreadFulfilling`. `prof6_ev_witness` puts the cycle
+#                                                           | in the countdown profile at every multiple of three, so
+#                                                           | the profile's own membership witnesses include chains of
+#                                                           | this kind. The decision it holds in place: adequacy is a
+#                                                           | real gap on the fixture, not an artefact of a conservative
+#                                                           | definition, so a plan may not treat it as disappearing
+#                                                           | once the relation is "written properly". What it
+#                                                           | withholds: `(a5, evTa)` is NOT claimed non-realizable
+#                                                           | (`psi2` is satisfiable on this object through the 2-cycle,
+#                                                           | which a `chi`-free type may enter); no adequate relation
+#                                                           | is constructed or sketched; no gate verdict of the
+#                                                           | eighteenth probe is changed and no gate is added; no
+#                                                           | clause of `PlusTruthAt` is unfolded and no cell, history,
+#                                                           | world or model appears; nothing is a factorization lemma,
+#                                                           | a cell index or any part of one. `chi_not_mem_all` is the
+#                                                           | compiled reason the exhibit does not collide with
+#                                                           | `coh6_no_a_d_a`, whose hypothesis is a `chi`-CARRYING
+#                                                           | type. Axioms `[propext, Classical.choice, Quot.sound]` on
+#                                                           | all nine theorems.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1268,6 +1299,7 @@ WIRED=(
   "seam-gluing-ray-product/closure-indexed-periodicity"
   "seam-gluing-ray-product/closure-profile-gate-rerun"
   "seam-gluing-ray-product/nside-modulus-gate"
+  "seam-gluing-ray-product/realizable-type-adequacy-gap"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
