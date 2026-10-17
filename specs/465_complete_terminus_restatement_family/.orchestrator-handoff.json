@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 14,
+  "summary": "Planned the settled rescope: the fourteen recorded _lengthBudget/signedUniverse exclusions are moot (their _run family roots were retired as vacuous, so none is a one-line application and the dispatch's stop-condition fires for all fourteen at once). The plan instead lands the seedRun family -- _fixed_seedRun S2-S4 and a new _gap_seedRun line S1-S4, seven theorems total, in one new submodule MintBound/SeedRunTermini.lean joining the two parallel DAG branches -- plus the C12/C9 record correction, with S5/S6 excluded as hlab-vacuous. Five sequential phases, 5.5 hours; every research figure was re-derived against the tree during planning with zero drift.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/465_complete_terminus_restatement_family/plans/01_complete-seedrun-terminus-family.md",
+      "summary": "Five-phase plan: re-derivation gate, new submodule + _fixed_seedRun S2-S4, _gap_seedRun S1-S4, record correction, full gate and summary."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": []
+}

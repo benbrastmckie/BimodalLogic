@@ -1,28 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 12,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/465_complete_terminus_restatement_family/reports/01_complete-terminus-restatement-family.md",
-      "summary": "The fourteen deferred terminus restatements are moot -- their eight _run family roots were retired as vacuous after PostBlockingSettlesRun was refuted; re-derivation finds the five landed families complete and the live gap at the single-member _fixed_seedRun line, with a sorry-free rescope recommended."
+      "type": "plan",
+      "path": "specs/465_complete_terminus_restatement_family/plans/01_complete-seedrun-terminus-family.md",
+      "summary": "Five-phase, fully sequential plan landing the seedRun terminus family (seven new theorems in one new submodule) plus the record correction; the recorded fourteen are reported moot."
     }
   ],
-  "user_decision": {
-    "question": "Task 465's recorded scope (fourteen _lengthBudget/signedUniverse restatements of the _run family) is void: all nine _run termini were retired as vacuous and PostBlockingSettlesRun is refuted, so no family root remains to apply. How should the task be rescoped?",
-    "options": [
-      "Rescope to the seedRun family: correct the record (C) + complete _fixed_seedRun S2-S4 (A) + add the _gap_seedRun line S1-S4 in a new submodule (B), leaving S5/S6 out as hlab-vacuous",
-      "Record-only close: amend the C12/C9 record that the fourteen are moot (C) and land no new theorem",
-      "Full family completion: (C) + (A) + (B) plus the four S5/S6 members (D), each carrying an explicit local hlab-vacuity docstring",
-      "Abandon the task as superseded by task 433's own later phases"
-    ],
-    "recommended": "Rescope to the seedRun family: correct the record (C) + complete _fixed_seedRun S2-S4 (A) + add the _gap_seedRun line S1-S4 in a new submodule (B), leaving S5/S6 out as hlab-vacuous",
-    "blocking": false
-  },
+  "next_steps": "Run /implement 465 to execute the plan",
+  "phase_count": 5,
+  "estimated_hours": 5.5,
+  "dependency_waves": [[1], [2], [3], [4], [5]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1792193557_775a31_465",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 14
 }
