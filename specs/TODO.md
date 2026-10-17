@@ -11,7 +11,7 @@ next_project_number: 816
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,429,497,618,763,783,814 | 298,428,502,616,761,772,813 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -116,7 +116,6 @@ next_project_number: 816
 
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 743 [NOT STARTED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-744 [IMPLEMENTING] — Wrap the RaySummary and KTypeSummary inventory tables in...
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
 ### Build Performance
@@ -1205,12 +1204,13 @@ RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The roadmap-genera
 ---
 
 ### 744. Wrap inventory tables generated markers
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md]
 - **Plan**: [744_wrap_inventory_tables_generated_markers/plans/01_wrap-inventory-tables-generated-markers.md]
+- **Summary**: [744_wrap_inventory_tables_generated_markers/summaries/01_wrap-inventory-tables-generated-markers-summary.md]
 
 **Description**: Wrap the RaySummary and KTypeSummary inventory tables in BEGIN GENERATED markers so their module line counts cannot drift again
 

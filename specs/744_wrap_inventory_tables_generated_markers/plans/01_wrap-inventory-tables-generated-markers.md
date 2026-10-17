@@ -1,7 +1,7 @@
 # Implementation Plan: Task #744
 
 - **Task**: 744 - Wrap the RaySummary and KTypeSummary inventory tables in BEGIN GENERATED markers so their module line counts cannot drift again
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md
