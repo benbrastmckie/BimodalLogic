@@ -1,0 +1,65 @@
+{
+  "phase": 6,
+  "phase_name": "Coverage demonstration on the sweep blocks, sweep report, and full gate",
+  "started_at": "2026-10-17T18:58:37Z",
+  "last_updated": "2026-10-17T19:04:51Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "corrupt-check.sh over every README wrapped in phases 4-5",
+      "status": "done",
+      "files_touched": [],
+      "note": "21/21 FAIL-names-file, writer restores, diff empty"
+    },
+    {
+      "id": 2,
+      "description": "Enumerate every generated block this task added",
+      "status": "done",
+      "files_touched": [],
+      "note": "23 READMEs via git log --name-only, cross-checked with grep"
+    },
+    {
+      "id": 3,
+      "description": "Sweep report (Tier B / Tier C) into the summary",
+      "status": "done",
+      "files_touched": [
+        "specs/744_wrap_inventory_tables_generated_markers/summaries/01_wrap-inventory-tables-generated-markers-summary.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Record follow-ups in the summary",
+      "status": "done",
+      "files_touched": [
+        "specs/744_wrap_inventory_tables_generated_markers/summaries/01_wrap-inventory-tables-generated-markers-summary.md"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Gate set (scoped per Batch Gate Deferral) and check-module-invariants.sh --no-build",
+      "status": "done",
+      "files_touched": [],
+      "note": "Batch Gate Deferral: scoped tier = verify-deploy --only-gate 4 (PASS) + check-module-invariants.sh --no-build (46 PASS, ALL CHECKS PASSED); full verify-deploy set deferred to the batch stage"
+    },
+    {
+      "id": 6,
+      "description": "Write the implementation summary; commit",
+      "status": "done",
+      "files_touched": [
+        "specs/744_wrap_inventory_tables_generated_markers/summaries/01_wrap-inventory-tables-generated-markers-summary.md"
+      ]
+    }
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "6.5",
+      "description": "Run the complete gate set: verify-deploy.sh and check-module-invariants.sh --no-build",
+      "type": "altered",
+      "reason": "Dispatch file carries a Batch Gate Deferral section: ran the scoped tier (gate 4 + check-module-invariants.sh --no-build) and deferred the full verify-deploy set to the batch stage.",
+      "annotation": "*(deviation: altered — scoped tier per Batch Gate Deferral: gate 4 PASS + check-module-invariants.sh --no-build ALL CHECKS PASSED; full verify-deploy deferred to the batch stage)*"
+    }
+  ],
+  "handoff_count": 0
+}
