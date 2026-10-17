@@ -387,25 +387,25 @@ module's only dependent.
 
 ---
 
-### Phase 5: `MintPaysForTimeGap` and the Direction Lemma [NOT STARTED]
+### Phase 5: `MintPaysForTimeGap` and the Direction Lemma [COMPLETED]
 
 **Goal**: the repaired four-disjunct residual exists, together with the direction lemma that makes
 every theorem restated against it a strengthening.
 
 **Tasks**:
-- [ ] Declare `MintPaysForTimeGap fc U Tmax` as `MintPaysForTimeFixed`'s three disjuncts
+- [x] Declare `MintPaysForTimeGap fc U Tmax` as `MintPaysForTimeFixed`'s three disjuncts
       **verbatim** (same order, same conjuncts, same hypothesis list — copy from
       `SigmaFixed.lean:356`), plus a fourth disjunct:
       `mintTimeBudget' + selfGuardPotential' + gapPotential' ≤ mintTimeBudget + selfGuardPotential + gapPotential
       ∧ gapPotential' < gapPotential`.
-- [ ] Prove `mintPaysForTimeGap_of_mintPaysForTimeFixed`: nothing is dropped and a disjunct is
+- [x] Prove `mintPaysForTimeGap_of_mintPaysForTimeFixed`: nothing is dropped and a disjunct is
       added, so the new predicate is **weaker** and the implication runs
       `Fixed → Gap`, never the other way. This is the
       `universeClosedAt_of_universeClosed` idiom.
-- [ ] Docstring must state the direction in words, and say that the predicate is not landed
+- [x] Docstring must state the direction in words, and say that the predicate is not landed
       without this lemma — register entry 7 exists because a weakening was once mistaken for a
       repair.
-- [ ] Docstring must also state what the fourth disjunct is *not*: it is not a re-indexing of
+- [x] Docstring must also state what the fourth disjunct is *not*: it is not a re-indexing of
       `mintPotential` on `freshTimeRules` (entry 14's first forbidden move, refuted by
       `witnessPresent_eq_false_of_not_freshLabel`, whose match has exactly eight arms so the three
       added columns are permanently false), and it does not drop disjunct 1's cardinality conjunct

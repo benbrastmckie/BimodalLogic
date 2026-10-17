@@ -409,4 +409,87 @@ theorem gapPotential_lt_of_density {U : Finset SignedFormula}
     rw [hhx, hhy, hfilled] at hafter
     exact absurd hafter (by simp)
 
+/-! ### The repaired residual, and the direction lemma that makes it a repair
+
+A repaired predicate is not landed in this file without a direction lemma. Register entry 7 exists
+because a weakening was once mistaken for a repair, and the standard it set is that the
+implication has to be *stated* and *proved*, in words and in Lean, in the same place the
+definition lands. -/
+
+/-- **The repaired time-minting residual, with the density coordinate.**
+`MintPaysForTimeFixed`'s three disjuncts **verbatim** — same order, same conjuncts, same
+hypothesis list — plus a **fourth** and nothing removed.
+
+The fourth disjunct is the density coordinate: a `densityRule` step is paid for by filling one of
+the gaps the rule's own guard selected, which is invisible to all three existing disjuncts. At
+such a step disjunct 1 fails because the mint raises `knownTimes`, disjunct 2 cannot move because
+`densityRule ∉ freshLabelRules` so `mintPotential`'s index set never mentions the rule, and
+disjunct 3 cannot move because `densityRule ∉ selfGuardRules` — **for every σ whatsoever**, which
+is why no choice of σ rescues the landed predicate. `mintPaysForTimeFixed_dense_false` and
+`mintPaysForTimeFixed_rtime_false` decide that.
+
+**The direction.** Nothing is dropped and a disjunct is added, so this predicate is **weaker**
+than `MintPaysForTimeFixed`: the implication runs `Fixed → Gap` and never the other way, and every
+theorem restated against it is a **strengthening**. That is
+`mintPaysForTimeGap_of_mintPaysForTimeFixed` below, the `universeClosedAt_of_universeClosed` idiom
+once more.
+
+**What the fourth disjunct is NOT.** It is not a re-indexing of `mintPotential` on
+`freshTimeRules` instead of `freshLabelRules` — register entry 14's first forbidden move, refuted
+by `witnessPresent_eq_false_of_not_freshLabel`, whose match has exactly eight arms so the three
+added columns would be permanently false and the component permanently inert. And it does not drop
+disjunct 1's cardinality conjunct in favour of the ordering-rank conjunct alone — entry 14's
+second forbidden move, refuted by `splitOrderedRank_lt_of_knownTimes_lt` together with
+`mintPaysForTime_rank_repair_false`. Neither is attempted here: the first three disjuncts are
+copied unchanged, and the new coordinate is a fresh ledger over a fresh index set `U ×ˢ U`.
+
+The combined conjunct is paired with the strict drop rather than offered bare, for the same reason
+disjunct 3's is: a bare drop is refuted (register entry 19's route 2), and the pairing is what
+makes the whole measure's arithmetic close exactly. -/
+def MintPaysForTimeGap (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
+    (Tmax : Nat) : Prop :=
+  ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)
+    (tr : EventualityTracker), RunInvariant b ord → (∀ x ∈ b, x ∈ U) → SigmaFixed σ b →
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      (nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card ∧
+        splitOrderedRank Tmax nb (expandOnceUnblocked b ord fc tr).2
+          ≤ splitOrderedRank Tmax b ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord ∧
+          mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+            < mintPotential U σ b ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord ∧
+          selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            < selfGuardPotential U σ ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            + gapPotential U σ (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord + gapPotential U σ ord ∧
+          gapPotential U σ (expandOnceUnblocked b ord fc tr).2 < gapPotential U σ ord)
+
+/-- **Direction lemma.** Nothing is dropped and a disjunct is added, so `MintPaysForTimeGap` is
+**weaker** than `MintPaysForTimeFixed` and every theorem restated against it is a strengthening.
+The implication runs `Fixed → Gap` and never the other way.
+
+The predicate above is not landed without this lemma; see the section prose and register entry 7.
+This is the `universeClosedAt_of_universeClosed` idiom. -/
+theorem mintPaysForTimeGap_of_mintPaysForTimeFixed
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {Tmax : Nat}
+    (h : MintPaysForTimeFixed fc U Tmax) : MintPaysForTimeGap fc U Tmax := by
+  intro σ b ord tr hri hconf hfix nb hnb
+  rcases h σ b ord tr hri hconf hfix nb hnb with h1 | h2 | h3
+  · exact Or.inl h1
+  · exact Or.inr (Or.inl h2)
+  · exact Or.inr (Or.inr (Or.inl h3))
+
+/-- …and the composite from the predicate the chain started at, so the whole chain of weakenings
+`MintPaysForTime → MintPaysForTimeStable → MintPaysForTimeFixed → MintPaysForTimeGap` is one
+statement. -/
+theorem mintPaysForTimeGap_of_mintPaysForTime {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax : Nat} (h : MintPaysForTime fc U Tmax) :
+    MintPaysForTimeGap fc U Tmax :=
+  mintPaysForTimeGap_of_mintPaysForTimeFixed (mintPaysForTimeFixed_of_mintPaysForTime h)
+
 end FormalSystem.Metalogic.Decidability
