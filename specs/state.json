@@ -1874,7 +1874,7 @@
     {
       "project_number": 812,
       "project_name": "stale_generated_inventory_blocks_refresh",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "description": "Refresh the three stale generated inventory blocks that check-module-invariants.sh reports as an INV FAIL group: README.md, FormalSystem/README.md, and FormalSystem/Metalogic/README.md.\n\nThe condition is PRE-EXISTING and already diagnosed, do not re-derive: check-module-invariants.sh EXITS 0 but its output carries one FAIL group, 'INV 3 file(s) carry a stale generated inventory block'. The inventory block is generated from dir=FormalSystem, and the last FormalSystem commit (4155ee185, a MintBound/README module re-measure) postdates the last README.md commit (ec8483a01), which is what makes the committed blocks stale.\n\nThe remedy is the script's own emit mode: 'bash scripts/check-module-invariants.sh --emit-inventory', then review the regenerated blocks and commit the three README files. Verify by re-running check-module-invariants.sh and confirming the INV FAIL group is gone (the exit code was already 0, so the exit code alone is NOT the success signal -- the absence of the FAIL group in the output is).\n\nScope: README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md, and nothing else. No proof or definition changes under FormalSystem/, no Tests/ changes.",
       "effort": "One emit-mode run plus review of the regenerated blocks",
@@ -1887,15 +1887,21 @@
         "README.md"
       ],
       "created": "2026-10-17T13:29:04Z",
-      "last_updated": "2026-10-17T18:40:34Z",
+      "last_updated": "2026-10-17T18:47:17Z",
       "artifacts": [
         {
           "path": "specs/812_stale_generated_inventory_blocks_refresh/plans/01_refresh-stale-inventory-blocks.md",
           "type": "plan",
           "summary": "Two-phase plan: regenerate and commit the three stale inventory blocks, then confirm from gate output that the INV FAIL group is gone."
+        },
+        {
+          "path": "specs/812_stale_generated_inventory_blocks_refresh/summaries/01_refresh-stale-inventory-blocks-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary covering the inventory refresh, verification evidence, and the gate-deferral deviation."
         }
       ],
-      "session_id": "sess_1792261594_b3e099"
+      "session_id": "sess_1792261594_b3e099",
+      "completion_summary": "Regenerated the three stale generated inventory blocks (README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md) with check-module-invariants.sh --emit-inventory; exactly five numeric cells moved, committed as be962c34d. A fresh --no-build run now reports PASS INV with no FAIL INV group; readme-lint and the scoped deploy gate pass, with the full gate set deferred to the batch stage."
     },
     {
       "project_number": 813,

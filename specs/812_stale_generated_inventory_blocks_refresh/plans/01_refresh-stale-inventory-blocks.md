@@ -1,7 +1,7 @@
 # Implementation Plan: Task #812
 
 - **Task**: 812 - Refresh the three stale generated inventory blocks reported by check-module-invariants.sh
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.75 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no research round; the task description already carries the diagnosis, the remedy, and the acceptance bar)

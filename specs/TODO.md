@@ -11,7 +11,7 @@ next_project_number: 816
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,812,813 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,429,497,618,763,783,814 | 298,428,502,616,761,772,813 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -91,7 +91,6 @@ next_project_number: 816
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-812 [IMPLEMENTING] — Refresh the three stale generated inventory blocks that...
 
 ### Formula Refactor
 
@@ -351,12 +350,13 @@ Raised during orchestration of the realizable-type adequacy / countdown-profile 
 
 ### 812. Stale generated inventory blocks refresh
 - **Effort**: One emit-mode run plus review of the regenerated blocks
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 809
 - **Plan**: [812_stale_generated_inventory_blocks_refresh/plans/01_refresh-stale-inventory-blocks.md]
+- **Summary**: [812_stale_generated_inventory_blocks_refresh/summaries/01_refresh-stale-inventory-blocks-summary.md]
 
 **Description**: Refresh the three stale generated inventory blocks that check-module-invariants.sh reports as an INV FAIL group: README.md, FormalSystem/README.md, and FormalSystem/Metalogic/README.md.
 
