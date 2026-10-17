@@ -170,6 +170,164 @@ theorem eu_mem_lfp_iff (V : Finset α) (succ : α → Finset α) (isE isG : α �
     rw [← eu_lfp_fixed V succ isE isG, euStep, Finset.mem_filter]
     exact hv
 
+/-! ## What the fixpoint MEANS: a guarded path that delivers the event
+
+The existential analogue of `AUFix.lfp_induction`, read as a path statement.  The path is
+STRICTLY later: `0 < n` and the event is demanded at `f n`, so this is strict until and not weak
+until.  Dropping `0 < n` would silently turn one into the other. -/
+
+/-- Every iterate lies inside the fixpoint -- for EVERY index, not only the indices below the
+stabilization bound.  This is what makes the backward direction of the path characterization need
+no path-shortening argument. -/
+theorem eu_iter_subset_lfp (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) (n : ℕ) :
+    euIter V succ isE isG n ⊆ euLfp V succ isE isG := by
+  obtain ⟨k, hk, hstab⟩ := eu_exists_stab V succ isE isG
+  rcases Nat.lt_or_ge n (V.card + 1) with hlt | hge
+  · exact eu_iter_mono V succ isE isG (by omega)
+  · have e1 : euIter V succ isE isG n = euIter V succ isE isG k :=
+      eu_iter_stab V succ isE isG hstab n (by omega)
+    have e2 : euIter V succ isE isG (V.card + 1) = euIter V succ isE isG k :=
+      eu_iter_stab V succ isE isG hstab _ (by omega)
+    rw [euLfp, e1, e2]
+
+/-- Forward: membership in an iterate exhibits a guarded path to the event. -/
+theorem eu_iter_path (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
+    ∀ (k : ℕ), ∀ v ∈ euIter V succ isE isG k,
+      ∃ (n : ℕ) (f : ℕ → α), 0 < n ∧ f 0 = v ∧ (∀ i < n, f i ∈ V) ∧
+        (∀ i < n, f (i + 1) ∈ succ (f i)) ∧ isE (f n) = true ∧
+        (∀ i, 0 < i → i < n → isG (f i) = true) := by
+  intro k
+  induction k with
+  | zero => intro v hv; simp only [euIter] at hv; exact absurd hv (by simp)
+  | succ k ih =>
+    intro v hv
+    have hv' : v ∈ euStep V succ isE isG (euIter V succ isE isG k) := hv
+    rw [euStep, Finset.mem_filter] at hv'
+    obtain ⟨hvV, w, hw, hcase⟩ := hv'
+    rcases hcase with he | ⟨hg, hwk⟩
+    · refine ⟨1, fun i => if i = 0 then v else w, Nat.one_pos, by simp, ?_, ?_, ?_, ?_⟩
+      · intro i hi
+        have hi0 : i = 0 := by omega
+        subst hi0; simpa using hvV
+      · intro i hi
+        have hi0 : i = 0 := by omega
+        subst hi0; simpa using hw
+      · simpa using he
+      · intro i h0 hi; omega
+    · obtain ⟨n, f, hn, hf0, hfV, hfs, hfe, hfg⟩ := ih w hwk
+      refine ⟨n + 1, fun i => if i = 0 then v else f (i - 1), Nat.succ_pos _, by simp,
+        ?_, ?_, ?_, ?_⟩
+      · intro i hi
+        cases i with
+        | zero => simpa using hvV
+        | succ j => simpa using hfV j (by omega)
+      · intro i hi
+        cases i with
+        | zero => simpa [hf0] using hw
+        | succ j => simpa using hfs j (by omega)
+      · simpa using hfe
+      · intro i h0 hi
+        cases i with
+        | zero => omega
+        | succ j =>
+          cases j with
+          | zero => simpa [hf0] using hg
+          | succ j' => simpa using hfg (j' + 1) (Nat.succ_pos _) (by omega)
+
+/-- Backward: a guarded path of length `n` to the event puts its origin in the `n`-th iterate. -/
+theorem eu_path_mem_iter (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
+    ∀ (n : ℕ) (f : ℕ → α), 0 < n → (∀ i < n, f i ∈ V) → (∀ i < n, f (i + 1) ∈ succ (f i)) →
+      isE (f n) = true → (∀ i, 0 < i → i < n → isG (f i) = true) →
+      f 0 ∈ euIter V succ isE isG n := by
+  intro n
+  induction n with
+  | zero => intro f h0 _ _ _ _; exact absurd h0 (by omega)
+  | succ m ih =>
+    intro f _ hV hs hE hG
+    rcases Nat.eq_zero_or_pos m with hm | hm
+    · subst hm
+      show f 0 ∈ euStep V succ isE isG (euIter V succ isE isG 0)
+      rw [euStep, Finset.mem_filter]
+      exact ⟨hV 0 (by omega), f 1, hs 0 (by omega), Or.inl hE⟩
+    · have key : f 1 ∈ euIter V succ isE isG m := by
+        have h := ih (fun i => f (i + 1)) hm
+          (fun i hi => hV (i + 1) (by omega))
+          (fun i hi => hs (i + 1) (by omega))
+          (by simpa using hE)
+          (fun i h0 hi => hG (i + 1) (by omega) (by omega))
+        simpa using h
+      show f 0 ∈ euStep V succ isE isG (euIter V succ isE isG m)
+      rw [euStep, Finset.mem_filter]
+      exact ⟨hV 0 (by omega), f 1, hs 0 (by omega),
+        Or.inr ⟨hG 1 (by omega) (by omega), key⟩⟩
+
+/-- **THE FIXPOINT IS THE GUARDED-PATH OPERATOR.**  `v` is in the existential fixpoint exactly
+when SOME path out of `v`, staying inside `V`, carries the guard at every strictly interior
+position and delivers the event at a STRICTLY later index.  This is the condition the certificate
+checks, and it is existential: one path suffices. -/
+theorem eu_mem_lfp_iff_exists_path (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool)
+    (v : α) :
+    v ∈ euLfp V succ isE isG ↔
+      ∃ (n : ℕ) (f : ℕ → α), 0 < n ∧ f 0 = v ∧ (∀ i < n, f i ∈ V) ∧
+        (∀ i < n, f (i + 1) ∈ succ (f i)) ∧ isE (f n) = true ∧
+        (∀ i, 0 < i → i < n → isG (f i) = true) := by
+  constructor
+  · intro hv
+    have hv' : v ∈ euIter V succ isE isG (V.card + 1) := hv
+    exact eu_iter_path V succ isE isG (V.card + 1) v hv'
+  · rintro ⟨n, f, hn, hf0, hfV, hfs, hfe, hfg⟩
+    have h := eu_path_mem_iter V succ isE isG n f hn hfV hfs hfe hfg
+    rw [hf0] at h
+    exact eu_iter_subset_lfp V succ isE isG n h
+
+/-- **The one negative lemma the rejection proof consumes.**  If `V` is closed under `succ` and no
+member of `V` delivers the event, the existential fixpoint is EMPTY -- no amount of guarded
+wandering inside `V` discharges anything.  Proved through `eu_lfp_least` at `X := ∅`, structurally
+rather than by brute force. -/
+theorem eu_lfp_eq_empty_of_no_event (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool)
+    (hclosed : ∀ v ∈ V, ∀ w ∈ succ v, w ∈ V) (hno : ∀ w ∈ V, isE w = false) :
+    euLfp V succ isE isG = ∅ := by
+  refine Finset.subset_empty.mp (eu_lfp_least V succ isE isG ?_)
+  intro v hv
+  rw [euStep, Finset.mem_filter] at hv
+  obtain ⟨hvV, w, hw, hcase⟩ := hv
+  rcases hcase with he | ⟨-, hx⟩
+  · rw [hno w (hclosed v hvV w hw)] at he
+    exact absurd he (by simp)
+  · exact absurd hx (Finset.notMem_empty w)
+
+/-! ## The universal and the existential operator are DIFFERENT: a cycle with an exit
+
+The four-state graph `0 → 1 → 2 → 0` with the exit `0 → 3` and the self-loop `3 → 3` at the only
+event state.  This is the mechanism the research round identified as the expensive thing to
+rediscover: a pending eventuality on a cycle that has an exit.  The universal operator rejects
+vertex `0` because the cycle branch never discharges; the existential operator accepts it because
+the exit branch does. -/
+
+def exitSucc : Fin 4 → Finset (Fin 4) := fun i =>
+  if i = 0 then {1, 3} else if i = 1 then {2} else if i = 2 then {0} else {3}
+
+def exitIsE : Fin 4 → Bool := fun i => i == 3
+
+def exitIsG : Fin 4 → Bool := fun _ => true
+
+/-! The two fixpoint values on this graph, confirmed by `#eval` before the inequality below was
+proved: the UNIVERSAL fixpoint is `{3}` -- only the event state itself -- and the EXISTENTIAL one
+is `{0, 1, 2, 3} = Finset.univ`.  Vertex `1` is the sharpest witness: every universal obligation
+through it runs `1 → 2 → 0 → 1` forever, while the existential one reaches `3` through `0`. -/
+#eval AUFix.lfp Finset.univ exitSucc exitIsE exitIsG
+#eval euLfp Finset.univ exitSucc exitIsE exitIsG
+
+/-- **THE UNIVERSAL AND THE EXISTENTIAL FULFILMENT CONDITIONS ARE DIFFERENT**, compiled on a cycle
+with an exit.  This is the strength distinction the research round identified as the single most
+expensive thing in this line to rediscover: the landed `AUFix` operator and the existential one
+built above do NOT agree, so transplanting the universal condition onto the object-closure product
+is not a conservative choice of presentation -- it rejects states the existential condition
+accepts. -/
+theorem au_lfp_ne_eu_lfp_on_exit_graph :
+    AUFix.lfp Finset.univ exitSucc exitIsE exitIsG
+      ≠ euLfp Finset.univ exitSucc exitIsE exitIsG := by decide
+
 end Probe809C
 
 /-! ## Axiom check -/
@@ -178,3 +336,6 @@ end Probe809C
 #print axioms Probe809C.eu_lfp_fixed
 #print axioms Probe809C.eu_mem_lfp_iff
 #print axioms Probe809C.eu_lfp_least
+#print axioms Probe809C.eu_mem_lfp_iff_exists_path
+#print axioms Probe809C.eu_lfp_eq_empty_of_no_event
+#print axioms Probe809C.au_lfp_ne_eu_lfp_on_exit_graph

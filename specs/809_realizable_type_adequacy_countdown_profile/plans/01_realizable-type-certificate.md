@@ -219,7 +219,7 @@ confused with a formula-specific hack.
   `eu_exists_stab` ports as needed — each a one-quantifier edit of the `AUFix` original, which must
   be read side by side rather than reinvented.
 - [x] Prove `eu_lfp_fixed`, `eu_mem_lfp_iff`, `eu_lfp_least`.
-- [ ] Commit (explicit file list: the probe).
+- [x] Commit (explicit file list: the probe).
 
 **Timing**: 2 hours
 
@@ -248,23 +248,23 @@ named above and no new Mathlib lemma; confirm by compiling the file and by `grep
 
 ---
 
-### Phase 2: The Guarded-Path Characterization, the Emptiness Lemma, and the Compiled Universal-Versus-Existential Separation [NOT STARTED]
+### Phase 2: The Guarded-Path Characterization, the Emptiness Lemma, and the Compiled Universal-Versus-Existential Separation [COMPLETED]
 
 **Goal**: Give the fixpoint its meaning as a path statement, give it the one negative lemma the
 rejection proof consumes, and compile the strength distinction the research round identified as the
 single most expensive thing in this line to rediscover.
 
 **Tasks**:
-- [ ] Prove `eu_mem_lfp_iff_exists_path`. Forward: induct along `euIter` (the existential analogue of
+- [x] Prove `eu_mem_lfp_iff_exists_path`. Forward: induct along `euIter` (the existential analogue of
   `AUFix.lfp_induction`), reading off the path index by index. Backward: a path of length `n` puts
   `f 0` in `euIter n`, and `eu_iter_stab` with `eu_exists_stab` gives `euIter n ⊆ euLfp` for EVERY
   `n` — so no path-shortening argument is needed, and none is to be invented.
-- [ ] Prove `eu_lfp_eq_empty_of_no_event` through `eu_lfp_least` at `X := ∅`.
-- [ ] Define the four-state cycle-with-an-exit graph `exitSucc`/`exitIsE`/`exitIsG` and prove
+- [x] Prove `eu_lfp_eq_empty_of_no_event` through `eu_lfp_least` at `X := ∅`.
+- [x] Define the four-state cycle-with-an-exit graph `exitSucc`/`exitIsE`/`exitIsG` and prove
   `au_lfp_ne_eu_lfp_on_exit_graph`. Expected values, computed at plan time and to be confirmed, not
   trusted: the universal fixpoint is `{3}` and the existential one is `Finset.univ`. Try `decide`
   first; on a reduction blow-up use the pointwise route in the Risks table.
-- [ ] Commit (explicit file list: the probe).
+- [x] Commit (explicit file list: the probe).
 
 **Timing**: 2 hours
 
