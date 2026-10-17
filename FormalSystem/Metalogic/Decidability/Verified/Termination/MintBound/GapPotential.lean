@@ -409,6 +409,133 @@ theorem gapPotential_lt_of_density {U : Finset SignedFormula}
     rw [hhx, hhy, hfilled] at hafter
     exact absurd hafter (by simp)
 
+/-! ### The refutation half: the landed residual is **false** at `.Dense` and `.RTime`
+
+The repair below is a **necessity**, not a preference, and this subsection is what establishes
+that. `mintPaysForTimeFixed_of_not_dense` discharges `MintPaysForTimeFixed` under
+`¬ (FrameClass.Dense ≤ fc)`, and the natural next ask — extend that discharge to `.Dense` and
+`.RTime` — cannot be met, because the predicate is **refuted** there rather than merely unproved.
+
+**Why all three disjuncts fail, independently of any witness.** At a `densityRule` step:
+
+* disjunct 1 fails because the step mints a fresh time, so `knownTimes` strictly *rises* and the
+  first conjunct `|kt nb| ≤ |kt b|` is false (and the rank conjunct rises with it, by
+  `splitOrderedRank_lt_of_knownTimes_lt`);
+* disjunct 2 cannot move because `densityRule ∉ freshLabelRules`, so `mintPotential`'s index set
+  `freshLabelRules ×ˢ U` never mentions the rule and the count is unchanged;
+* disjunct 3 cannot move because `densityRule ∉ selfGuardRules`, so `selfGuardPotential`'s index
+  set never mentions it either and that count is unchanged too.
+
+None of these three facts mentions σ, which is why the universally quantified σ in the predicate
+buys nothing: **no** choice of σ rescues it. The witnesses below decide it; the prose above is
+what explains it.
+
+**The vehicle.** One branch, three formulas, at which the engine's very next step *is* a density
+step — no prior steps needed. At `[T(Gp)@(0,0), F(F¬p)@(0,0), T(p)@(0,1)]` with ordering `0 < 1`,
+every cheaper rule is already exhausted at the trigger: `negPos`'s output `F(F¬p)@(0,0)` is
+already on the branch, `allFuturePos`'s propagation `T(p)@(0,1)` is already on the branch, and
+`orderTrichotomy` has no incomparable pair to work with. So `densityRule` fires, interpolating the
+fresh time `2` into the gap `0 < 1`, and it does so identically at `.Dense` and at `.RTime`.
+
+Measured at the vehicle and then kernel-decided below (`|U| = 3`): `knownTimes` `2 → 3`,
+`mintPotential` `24 → 24`, `selfGuardPotential` `3 → 3`, `mintTimeBudget` `26 → 27`,
+`splitOrderedRank 3` `20 → 30` — and `gapPotential` `9 → 7`, which is the coordinate this file
+adds and the only one that moves.
+
+Nothing here deletes, weakens or restates `mintPaysForTimeFixed_of_not_dense`. It remains the
+correct statement at `.Base` and `.ZTime`, and is superseded in prose only. -/
+
+/-- The witness atom. -/
+private def gapWitnessAtom : Formula := .atom (Atom.mkBase "p")
+
+/-- `G p`, the density trigger. -/
+private def gapWitnessG : Formula := Formula.allFuture gapWitnessAtom
+
+/-- `F ¬p`, carried negatively so that `negPos`'s output at the trigger is already present and the
+cheaper rule reports nothing. -/
+private def gapWitnessF : Formula := Formula.someFuture (Formula.neg gapWitnessAtom)
+
+/-- The witness branch. `T(p)@(0,1)` exists so that `allFuturePos`'s propagation into the one
+future time is already present too, and so that time `1` — which the ordering's single constraint
+mentions — is a known time, as `OrdTimesKnown` requires. -/
+private def gapWitnessBranch : Branch :=
+  [SignedFormula.pos gapWitnessG ⟨0, 0⟩, SignedFormula.neg gapWitnessF ⟨0, 0⟩,
+   SignedFormula.pos gapWitnessAtom ⟨0, 1⟩]
+
+/-- The witness ordering: `0 < 1`, one unfilled maximal gap, which is exactly `densityRule`'s
+gap-target condition. -/
+private def gapWitnessOrd : TimeOrdering := { constraints := [(0, 1)] }
+
+/-- The witness universe: the branch itself, so confinement is immediate. -/
+private def gapWitnessUniverse : Finset SignedFormula :=
+  {SignedFormula.pos gapWitnessG ⟨0, 0⟩, SignedFormula.neg gapWitnessF ⟨0, 0⟩,
+   SignedFormula.pos gapWitnessAtom ⟨0, 1⟩}
+
+/-- The successor the density step reports: the interpolant `T(p)@(0,2)` consed onto the branch,
+which the rule keeps because it is `.persistent`. -/
+private def gapWitnessSucc : Branch :=
+  [SignedFormula.pos gapWitnessAtom ⟨0, 2⟩, SignedFormula.pos gapWitnessG ⟨0, 0⟩,
+   SignedFormula.neg gapWitnessF ⟨0, 0⟩, SignedFormula.pos gapWitnessAtom ⟨0, 1⟩]
+
+/-- The witness state satisfies the run invariant, so the refutation is not reached by feeding the
+predicate a state the engine cannot occupy. -/
+private theorem gapWitness_runInvariant : RunInvariant gapWitnessBranch gapWitnessOrd := by
+  constructor
+  · unfold IrreflOrd gapWitnessOrd; decide
+  · unfold OrdTimesKnown; decide
+
+/-- …and it is confined to the witness universe. -/
+private theorem gapWitness_confined : ∀ x ∈ gapWitnessBranch, x ∈ gapWitnessUniverse := by decide
+
+/-- …and `σ = id` satisfies the predicate's own σ clause for free, so the refutation does not turn
+on an exotic renaming. This matters: register entry 17's refutation of `MintPaysForTimeAt` turned
+on a σ no run produces, and that is precisely the objection this witness does not invite. -/
+private theorem gapWitness_sigmaFixed : SigmaFixed id gapWitnessBranch := fun _ _ => rfl
+
+/-- **`MintPaysForTimeFixed` is false at `.Dense`.** Decided, at a configuration the engine itself
+drives, with `σ = id`.
+
+All three disjuncts fail at the same step, and the section prose above says why they must — this
+theorem is the kernel's confirmation of that argument rather than a separate fact. The consequence
+is that "extend the `MintPaysForTimeFixed` discharge to `.Dense`" is not an open goal but a
+refuted one; the repair `MintPaysForTimeGap` below is what replaces it. -/
+theorem mintPaysForTimeFixed_dense_false :
+    ∃ (U : Finset SignedFormula) (Tmax : Nat),
+      ¬ MintPaysForTimeFixed FormalSystem.ProofSystem.FrameClass.Dense U Tmax := by
+  refine ⟨gapWitnessUniverse, 3, ?_⟩
+  intro h
+  have key := h id gapWitnessBranch gapWitnessOrd EventualityTracker.empty
+    gapWitness_runInvariant gapWitness_confined gapWitness_sigmaFixed
+  rcases key gapWitnessSucc (by decide) with ⟨h1, -⟩ | ⟨-, h2⟩ | ⟨-, h3⟩
+  · exact absurd h1 (by decide)
+  · exact absurd h2 (by decide)
+  · exact absurd h3 (by decide)
+
+/-- **…and at `.RTime`**, the Dedekind-complete class, where the same vehicle drives the same step:
+`densityRule` is `denseRules`-gated and `FrameClass.Dense ≤ FrameClass.RTime`, and the Dedekind
+rules — which `allRulesForFC` puts *ahead* of the base rules — all trigger on a conjunction, which
+the trigger `T(G p)` is not. So the pick, the successor and every figure are identical. -/
+theorem mintPaysForTimeFixed_rtime_false :
+    ∃ (U : Finset SignedFormula) (Tmax : Nat),
+      ¬ MintPaysForTimeFixed FormalSystem.ProofSystem.FrameClass.RTime U Tmax := by
+  refine ⟨gapWitnessUniverse, 3, ?_⟩
+  intro h
+  have key := h id gapWitnessBranch gapWitnessOrd EventualityTracker.empty
+    gapWitness_runInvariant gapWitness_confined gapWitness_sigmaFixed
+  rcases key gapWitnessSucc (by decide) with ⟨h1, -⟩ | ⟨-, h2⟩ | ⟨-, h3⟩
+  · exact absurd h1 (by decide)
+  · exact absurd h2 (by decide)
+  · exact absurd h3 (by decide)
+
+/-- **The gap coordinate does move at the same step**, so the repair below is not merely consistent
+with the refutation — it is paid for at the very configuration that refutes the landed predicate.
+`9 → 7` at `|U| = 3`, decided rather than evaluated. -/
+theorem gapPotential_lt_at_gapWitness :
+    gapPotential gapWitnessUniverse id
+        (expandOnceUnblocked gapWitnessBranch gapWitnessOrd
+          FormalSystem.ProofSystem.FrameClass.Dense EventualityTracker.empty).2
+      < gapPotential gapWitnessUniverse id gapWitnessOrd := by decide
+
 /-! ### The repaired residual, and the direction lemma that makes it a repair
 
 A repaired predicate is not landed in this file without a direction lemma. Register entry 7 exists

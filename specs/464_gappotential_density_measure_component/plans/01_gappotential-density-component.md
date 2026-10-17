@@ -326,33 +326,43 @@ alone, they change no existing signature, and the aggregator is that module's on
 
 ---
 
-### Phase 4: The Refutation Half -- `MintPaysForTimeFixed` Is False at `.Dense` and `.RTime` [NOT STARTED]
+### Phase 4: The Refutation Half -- `MintPaysForTimeFixed` Is False at `.Dense` and `.RTime` [COMPLETED]
 
 **Goal**: a kernel-decided refutation establishing that the task's literal "extend the
 `MintPaysForTimeFixed` discharge to `.Dense`" cannot hold, so the repair in Phase 5 is a necessity
 rather than a preference.
 
 **Tasks**:
-- [ ] Build the vehicle as `private def`s inside `GapPotential.lean`: the pre-step branch, the
+- [x] Build the vehicle as `private def`s inside `GapPotential.lean`: the pre-step branch, the
       ordering, the universe and the `Tmax` at which the engine's chosen step is `densityRule`.
       The report's measured starting point is `[T(Gp)@⟨0,0⟩, T(p)@⟨0,1⟩]` with ordering
       `[(0, 1)]` at `.Dense`, reaching the density step after three prior steps (negPos,
       someFutureNeg, impNeg).
-- [ ] Prove `mintPaysForTimeFixed_dense_false :
+      *(deviation: altered — the vehicle landed is a different, strictly simpler one. The report's
+      starting point does reach a density step after exactly those three prior steps, confirmed by
+      a step trace. But a refutation vehicle has to be a state at which the engine's NEXT step is
+      the density step, so the three-steps-later state would have to be written out as a literal
+      six-formula branch. Adding `F(F¬p)@⟨0,0⟩` to the branch up front achieves the same thing in
+      three formulas: it is exactly `negPos`'s output at the trigger, so `negPos` reports nothing
+      and the pick falls straight through to `densityRule`. The engine's pick, successor and every
+      figure are identical at `.Dense` and `.RTime`.)*
+- [x] Prove `mintPaysForTimeFixed_dense_false :
       ∃ (U : Finset SignedFormula) (Tmax : Nat), ¬ MintPaysForTimeFixed FrameClass.Dense U Tmax`
       by `decide` (or `decide +kernel` under a declaration-scoped heartbeat budget) at that
       vehicle, with σ = `id`. All three disjuncts must be shown to fail at the same step.
-- [ ] Prove `mintPaysForTimeFixed_rtime_false` the same way at `.RTime`.
-- [ ] Docstring must state precisely **why** all three fail, independently of the witness: at a
+      *(deviation: altered — plain `decide` suffices; no `decide +kernel` and no heartbeat budget
+      were needed, so `GapPotential.lean` carries no `set_option maxHeartbeats` line.)*
+- [x] Prove `mintPaysForTimeFixed_rtime_false` the same way at `.RTime`.
+- [x] Docstring must state precisely **why** all three fail, independently of the witness: at a
       `densityRule` step disjunct 1 fails because the mint raises `knownTimes`, disjunct 2 cannot
       move because `densityRule ∉ freshLabelRules`, and disjunct 3 cannot move because
       `densityRule ∉ selfGuardRules` — for every σ whatsoever. The witness decides it; the prose
       explains it.
-- [ ] Do **not** leave any `#eval` behind in `FormalSystem/**`: gate C27 requires every live
+- [x] Do **not** leave any `#eval` behind in `FormalSystem/**`: gate C27 requires every live
       `#eval`/`#check`/`#print` under `FormalSystem/` to be on
       `scripts/debug-artifact-allowlist.txt` with an exact per-file count and a reason. Keep the
       measurement work in scratch and commit only the `decide`-backed theorems.
-- [ ] Do **not** delete, weaken or re-state `mintPaysForTimeFixed_of_not_dense`
+- [x] Do **not** delete, weaken or re-state `mintPaysForTimeFixed_of_not_dense`
       (`MintPaysAssembly.lean:637`) — it remains the correct statement at `.Base`/`.ZTime` and is
       superseded in prose only.
 
