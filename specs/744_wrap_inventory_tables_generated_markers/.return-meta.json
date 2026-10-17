@@ -1,0 +1,65 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "task_number": 744,
+  "session_id": "sess_1792261594_b3e099_744",
+  "dispatch_seq": 2,
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "started_at": "2026-10-17T04:27:20Z",
+  "completed_at": "2026-10-17T18:38:54Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md",
+      "summary": "Generator behaviour, machine-checked scratch-copy simulation (KTypeSummary preserved 6/6; RaySummary 13/16 with three descriptions truncated at escaped pipes; one-line escape-aware split preserves 16/16), recurrence evidence, three-tier sweep of ~33 unwrapped Lines-bearing tables (~29 stale), task 731 auto-coverage, and the INV-red territory hazard on sibling 812's three rollup files."
+    }
+  ],
+  "metadata": {
+    "findings_count": 7,
+    "task_type": "markdown",
+    "web_research": false,
+    "in_tree_modifications": false
+  },
+  "next_steps": "Run /orchestrate 744 to create implementation plan",
+  "user_decision": {
+    "question": "Three RaySummary description cells contain GFM-escaped pipes (\\|) that the generator's split_row truncates on regeneration; how should the task resolve this before wrapping?",
+    "options": [
+      "Option A — rewrite the inline Lean notation in RaySummary README rows 41/43/45 so no pipe remains, keeping the generator untouched per the record's NON-GOALS",
+      "Option B — make split_row escape-aware with the verified one-line re.split(r\"(?<!\\\\)\\|\", body) change in scripts/check-module-invariants.sh (preserves all 16 descriptions byte-for-byte; a stated one-line deviation from the NON-GOAL)",
+      "Option C — register RaySummary as hand-maintained and wrap only KTypeSummary (does not meet the task's goal for RaySummary)"
+    ],
+    "recommended": "Option B — make split_row escape-aware with the verified one-line re.split(r\"(?<!\\\\)\\|\", body) change in scripts/check-module-invariants.sh (preserves all 16 descriptions byte-for-byte; a stated one-line deviation from the NON-GOAL)",
+    "blocking": false
+  },
+  "claim_invalidations": [
+    {
+      "declaration_names": ["split_row", "emit-inventory", "RaySummary"],
+      "kind": "refutation",
+      "claim": "The claim that check-module-invariants.sh --emit-inventory preserves every hand-written trailing description byte-for-byte is false for any row whose description contains an escaped pipe: three RaySummary rows (HitComplete, AnchorLayer, LadderModel) are truncated to their last fragment, shown by a verbatim scratch-copy run of the generator.",
+      "evidence_path": "specs/744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md"
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "check-module-invariants.sh --emit-inventory parses existing table rows with a plain body.split('|'), so a description cell containing a GFM-escaped pipe (\\|) is truncated to the text after its last pipe on regeneration, and INV is green afterwards. Before wrapping any README table in BEGIN GENERATED markers, grep the rows for '\\|'; a one-line re.split(r'(?<!\\\\)\\|', body) in split_row makes it escape-aware (verified byte-for-byte on 16 rows). Also: rows whose file no longer exists are dropped silently with their description unless the path resolves relative to dir= (pinned rows like ../X.lean survive).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["emit-inventory", "BEGIN GENERATED", "escaped pipe", "split_row", "README inventory", "check-module-invariants"]
+    },
+    {
+      "content": "To dry-run check-module-invariants.sh --emit-inventory on specific files without touching the tree: extract the Python heredoc verbatim (awk between python3 - <<'PYEOF' and PYEOF), replace only the line 'for target in markdown_targets():' with an env-var path list, and run it from the repo root so dir= resolves against the live tree. Running --check, then write, then --check on scratch copies gives FAIL/rewrote/PASS plus a diffable before/after; a key-wise description comparison then proves preservation. This also avoids the whole-tree writer rewriting stale blocks in a concurrent sibling's file territory.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["emit-inventory", "scratch simulation", "dry run", "generated block", "territory", "check-module-invariants"]
+    },
+    {
+      "content": "The INV check in check-module-invariants.sh covers only wrapped BEGIN GENERATED blocks and INVENTORY: hand-maintained registrations (existence audit only, not counts). As of 2026-10-17 about 33 README inventory tables under FormalSystem/ carry a Lines column with no marker and ~29 of them are stale; hand reconciles have been observed to write already-wrong counts. Whole-tree rollup blocks (README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md) go INV-red whenever any .lean file is added anywhere, so during a multi-task cycle the INV exit code may be red for reasons outside a given task; key on the FAIL output's named-file list instead.",
+      "category": "PATTERN",
+      "source_artifact": "specs/744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["INV check", "inventory drift", "README line counts", "rollup block", "check-module-invariants", "hand-maintained"]
+    }
+  ]
+}

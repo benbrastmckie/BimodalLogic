@@ -117,7 +117,7 @@ next_project_number: 816
 
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 743 [NOT STARTED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-744 [RESEARCHING] — Wrap the RaySummary and KTypeSummary inventory tables in...
+744 [RESEARCHED] — Wrap the RaySummary and KTypeSummary inventory tables in...
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 
 ### Build Performance
@@ -1205,10 +1205,11 @@ RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The roadmap-genera
 ---
 
 ### 744. Wrap inventory tables generated markers
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
+- **Research**: [744_wrap_inventory_tables_generated_markers/reports/01_wrap-inventory-tables-generated-markers.md]
 
 **Description**: Wrap the RaySummary and KTypeSummary inventory tables in BEGIN GENERATED markers so their module line counts cannot drift again
 
