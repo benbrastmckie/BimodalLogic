@@ -13,14 +13,10 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 ## Run these next
 
 ```bash
-# FILE THE SUFFICIENCY TASK FIRST — it is the critical path and has no record yet.
-# It shares evidence-probe territory with 807, so batch the two:
-/orchestrate {SUFFICIENCY},807 --hard --lit   # sufficiency, plus the backward-determinism risk check
-# 807 alone is dispatchable today if you want the cheap risk check before filing:
-/orchestrate 807 --research --lit
+/orchestrate 815,807 --hard --lit   # THE critical path: certificate sufficiency, plus the backward-determinism risk check
 ```
 
-**The gate is now SUFFICIENCY, and it is not yet filed as a task.** `809` landed the certificate
+**The gate is now SUFFICIENCY, filed as `815`.** `809` landed the certificate
 presentation on compiled ground (the twenty-first wired probe,
 `specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean`, eighteen theorems
 sorry-free, axioms `[propext, Classical.choice, Quot.sound]` on every one): the **existential**
@@ -37,8 +33,7 @@ object-closure product has to answer it.
 What `809` did **not** discharge, and what now gates everything after it: **sufficiency** — that
 the six certificate conditions *imply* realizability. The dovetailing argument is written and
 marked uncompiled in `specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md`
-§6; it is NOT STARTED and **no task record exists for it**. File it before dispatching anything on
-the critical path. Route B (check a candidate realizable set) is the chosen route, taken over
+§6; it is NOT STARTED and is now filed as **`815`**, which owns it. Route B (check a candidate realizable set) is the chosen route, taken over
 Route A (decide generalized-Büchi nonemptiness, whose missing nested fixpoint is real work not to
 be entered without a decision record).
 
@@ -50,13 +45,21 @@ is CARRIED. A gate probing one coordinate certifies one coordinate only.
 
 `807` is dispatchable now — its only declared edge was `809`, and that edge is discharged. It is
 one fixture and shares `scripts/check-evidence-probes.sh` and
-`specs/evidence/seam-gluing-ray-product/` with the sufficiency round, so the two **batch
-together** rather than being separated; add an edge if the ordering between them matters.
+`specs/evidence/seam-gluing-ray-product/` with `815`, so the two **batch together** rather than
+being separated; the overlap is unordered, so add an edge if the ordering between them matters.
+
+**The likeliest way `815` fails is the backward arm**, and that is recorded in its own
+description: certificate condition (4) is the backward mirror of (3), but
+`untl_propagates_along_coh` is forward-only because `coh`'s `linkPred` constrains no backward
+arm, and `snce_propagates_to_start` is compiled at the L layer and not re-indexed to the
+product. A forward-only sufficiency result is acceptable **if it is labelled forward-only**; a
+backward propagation theorem claimed from this relation would be, in the probe's own words, "a
+strictly weaker statement wearing a stronger name".
 
 `761` reads as dispatchable and **is not**. Its four declared edges (`760`, `775`, `805`, `806`)
 are all discharged, and `blocked` is a resumable status, so `/orchestrate 761` will dispatch it.
-Substantively it waits on the sufficiency verdict above, which no edge records. Do not batch it
-until sufficiency returns. Infrastructure repairs (`810`, `812`, and the agent-system records
+Substantively it waits on `815`'s verdict, which no edge records. Do not batch it until `815`
+returns. Infrastructure repairs (`810`, `812`, and the agent-system records
 `813`/`814` whose edit targets resolve only under the source store's own tree) are subordinate to
 all of it — they fix how the system reports and gates, not what is proved, and none of them gates
 the critical path.
@@ -82,9 +85,8 @@ aim.
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-# FIRST: file the sufficiency task (no record exists); it shares evidence-probe
-# territory with 807, so batch the two rather than separating them.
-/orchestrate {SUFF},807 --hard --lit  # sufficiency: the six conditions imply realizability; then the backward-determinism check
+# 815 shares evidence-probe territory with 807, so batch the two rather than separating them.
+/orchestrate 815,807 --hard --lit  # sufficiency: the six conditions imply realizability; then the backward-determinism check
 /orchestrate 761 --hard --lit    # ladder realization theorem — do NOT dispatch until sufficiency returns; `blocked` is resumable, so the graph will not stop you
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781,782 --hard  # sliced-certificate internals: full-label evaluation, Phase 5 hoist, Shape D leaf cache
@@ -186,7 +188,7 @@ theorem** (`exists_hitPresented`, every regular `ℤ`-model, `sizeBound φ k` a 
 for `box`/`stab`-free `φ` at one seam; **(W)** landed its anchor layer, its run-layer frame scheme
 and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remain open:
 
-- **Adequacy — SUFFICIENCY is the open gate, and no task record exists for it.** The index
+- **Adequacy — SUFFICIENCY is the open gate, owned by `815`.** The index
   sub-problem's history: `ladderRealized` cannot be STATED while no computable
   `LadderState Q pend → I` exists for `cellAt` to factor through. **Four tuple-shaped index shapes
   are refuted on compiled ground** — counter-pair clipping (`ladder-cell-refutation.lean`),
@@ -216,7 +218,7 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   **What remains, and what gates everything after it: sufficiency** — that the six certificate
   conditions imply realizability. Written and marked uncompiled at
   `specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md`
-  §6; NOT STARTED; **not filed as a task**. The route is Route B (check a candidate realizable
+  §6; NOT STARTED; filed as **`815`**. The route is Route B (check a candidate realizable
   set), chosen over Route A (decide generalized-Büchi nonemptiness — a missing nested fixpoint,
   real work, not to be entered without a decision record). Still open alongside it: **gate 8 is
   SIDESTEPPED, not passed** (the `stab`/`box` clauses are present but unexercised; exercising
@@ -232,8 +234,8 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   `[BLOCKED]`. **Every one of its declared edges — 760, 775, 805, 806 — is discharged**
   (760/775 archived, 805/806 `[COMPLETED]`), and `blocked` is a resumable status, so
   `/orchestrate 761` **will dispatch it**. Substantively it waits on the **sufficiency verdict**
-  above, which no edge records and cannot record until that task is filed. Do not dispatch it
-  until sufficiency returns; it is NOT costable before then.
+  above, now owned by `815` — an edge no predecessor records. Do not dispatch it until `815`
+  returns; it is NOT costable before then.
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone.
   761 and 763 share the `RaySummary` library set and serialize through the edge between them.

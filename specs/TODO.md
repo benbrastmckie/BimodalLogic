@@ -1,5 +1,5 @@
 ---
-next_project_number: 815
+next_project_number: 816
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 815
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,807,810,812,813 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,566,570,604,616,617,664,709,713,714,729,730,734,741,743,744,751,752,753,761,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,807,810,812,813,815 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,429,497,618,763,783,814 | 298,428,502,616,761,772,813 | agent-system, algebraic-representation, categorical-structure, ... |
 | 3 | 219,410,498,499,500 | 231,429,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -93,6 +93,7 @@ next_project_number: 815
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 807 [NOT STARTED] — RESEARCH TASK, verdict-first -- reports and a sorry-free...
 812 [RESEARCHED] — Refresh the three stale generated inventory blocks that...
+815 [NOT STARTED] — RESEARCH TASK. The SUFFICIENCY half of realizable-type...
 
 ### Formula Refactor
 
@@ -127,6 +128,47 @@ next_project_number: 815
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 815. Certificate sufficiency dovetailing realizability
+- **Effort**: Sufficiency alone is the costable deliverable; the backward arm in (c) may refute it, which is a successful outcome
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 809
+
+**Description**: RESEARCH TASK. The SUFFICIENCY half of realizable-type adequacy: that the certificate's conditions IMPLY realizability. This is the gate on 761 and therefore on the aim.
+
+Settled on compiled ground, do not re-derive:
+(1) The certificate presentation is landed and sorry-free -- specs/evidence/seam-gluing-ray-product/realizable-type-certificate.lean (namespace Probe809C, eighteen theorems, axioms [propext, Classical.choice, Quot.sound] on every one). It carries the EXISTENTIAL until-fixpoint as the one-quantifier dual of AUFix (eu_step_mono, eu_lfp_fixed, eu_lfp_least, eu_mem_lfp_iff), its guarded-path reading (eu_mem_lfp_iff_exists_path), the certificate's seven decidable fields with certStab/certBox present as checked biconditionals inside certAdm, the non-vacuity witness cert_accepts_Rchi, and the separation from local coherence (coh_accepts_Rev + cert_rejects_Rev, the rejection proved structurally through eu_lfp_eq_empty_of_no_event rather than by decide).
+(2) The STRENGTH question is closed as compiled fact. au_lfp_ne_eu_lfp_on_exit_graph exhibits the universal and existential fixpoints differing on a four-state cycle with an exit ({3} versus univ). A cell-level fulfilment condition CANNOT be the tree's landed universal one. Any reuse of ULive, Disch, SLive or DischBwd on the object-closure product must answer that theorem first. Transplanting ULive is not a conservative simplification; it is the wrong condition. NoCertificate.lean's verdict forecloses the obvious repair: "The defect is not a missing bound and no bound repairs it."
+(3) The gap is compiled, not merely scoped -- realizable-type-adequacy-gap.lean exhibits a coh6-coherent 3-cycle carrying ev = top U psi2 at every position and psi2 at none.
+(4) ROUTE B IS THE CHOSEN ROUTE and is not to be re-costed: present the datum as a candidate realizable set R with decidable conditions, in the shape Cons / AnchorCons / PlusCertifies already use. Route A (decide generalized-Buchi nonemptiness per state) is NOT to be entered -- its missing nested fixpoint, a greatest fixpoint with an inner least fixpoint per eventuality, is real work and nothing in the tree decides it. Entering Route A requires a decision record first.
+(5) Eventual periodicity of the countdown over the object-closure product is discharged (closure-indexed-periodicity.lean) and the gate table is rebuilt in specs/806_set_valued_cell_quotient_index/reports/01_closure-indexed-periodicity-gate.md.
+
+What is open, and is this task scope:
+
+(a) THE DOVETAILING ARGUMENT, which is the deliverable. It is written at specs/809_realizable_type_adequacy_countdown_profile/reports/01_realizable-type-adequacy.md section 6 and marked [NOT COMPILED] there: from any x in R, round-robin the finitely many eventualities of the closure, discharging each by conditions (3)/(4) and otherwise stepping by condition (2); every eventuality is then discharged infinitely often, so the constructed bi-infinite chain is fulfilling. Turn that argument into a theorem, or refute it.
+
+(b) THE LENGTH BOUND IS NOT DERIVED. Condition (3)'s bound of |R| on the discharging path is recorded in that same section as "the obvious one rather than a derived one". Either derive it or state explicitly what is being assumed and what the assumption costs. Do not let an undischarged bound pass as a proved one.
+
+(c) THE BACKWARD ARM IS A KNOWN OBSTRUCTION, and is the likeliest place this round fails. Certificate condition (4) is the backward mirror of (3), but untl_propagates_along_coh is FORWARD-ONLY by construction: coh's linkPred constrains no backward arm, so no backward propagation theorem is available from that relation. The probe's own header records this and the reason not to paper over it -- "claiming one would be a strictly weaker statement wearing a stronger name". The report's section 7 asserts the mirror holds through snce_propagates_to_start; that lemma is compiled at the L layer and is NOT re-indexed to the product. So either strengthen the relation so the backward arm is constrained (and say what that costs elsewhere), or establish the mirror at the product layer on its own terms, or report that the backward half is unavailable and what sufficiency then does and does not establish. A forward-only result is an acceptable outcome if it is LABELLED forward-only.
+
+A refutation is an acceptable and successful outcome. It is NOT to be followed by a weakened, same-named substitute: do not restate a sufficiency theorem with a hypothesis added, a quantifier specialised, or the fulfilment condition quietly swapped for the universal one (plan-compliance.md Statement Fidelity). Do not state a LadderCons without the box/stab clause.
+
+Explicitly NOT in this task scope:
+- GATE 8 (stab self-reference) stays SIDESTEPPED. certStab and certBox are present but unexercised, and exercising them needs a fixture whose closure has stab members, which the coprime-cycle fixture does not. That fixture is a separate deliverable; do not bundle it here and do not report gate 8 as passed.
+- Gates 1 and 2 (region separation) are NOT ADDRESSED, carrying the compiled n-side qualification from nside-modulus-gate.lean (Branch N-VERIFIED). Gate 3 is CARRIED. Gate 9 is OPEN. A gate probing one coordinate certifies one coordinate only.
+- The letter-level translation of evRay into Realize.lean's sig.preds notation is marked [NOT COMPILED] at that report's section 4 and is not required here; the three facts it consumes (evRay_coh, evRay_carries, evRay_no_event) are each already compiled.
+- Standing obligations (b), (c) and (d) are untouched.
+
+Not in question, do not re-attack: the SET of cells of any regular Z-model is finite and bounded (anchorCells_finite, anchorCells_ncard_le, RaySummary/AnchorLayer.lean). Only the computable INDEX is open. Four tuple-shaped index shapes are already refuted by wired probes in this collection; the tuple-widening line is spent and no further tuple coordinate is to be proposed. The declined alternative R2 (an index-free, box/stab-free run-layer half) stays on record and is not pursued.
+
+Scope: reports and sorry-free evidence probe files under this task's own directory and specs/evidence/seam-gluing-ray-product/ only; no changes to FormalSystem/ or Tests/. The existential fixpoint and its guarded-path characterization are generic over an arbitrary DecidableEq carrier, so upstreaming them into FormalSystem/ would be a move rather than a rewrite -- but that move is NOT this task. Register any new probe in scripts/check-evidence-probes.sh following the header convention of the probes already in the collection (what was asked, why no statement exists or what is settled, what the probe does NOT say). Note that the guard prints wired_total as the sum of WIRED and the one-entry WIRED_REPO array, so a predicted printed total is one higher than the WIRED count.
+
+Fixture reuse: the coprime-cycle fixtures in the collection are label-generic; the frame/regularity/history layer ports verbatim.
+
+---
 
 ### 814. Record the decide-synthesis working form, the axiom-free maxRecDepth remedy, and the probe guard's total arithmetic
 - **Effort**: low
