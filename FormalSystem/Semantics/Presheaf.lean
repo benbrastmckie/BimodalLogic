@@ -8,6 +8,7 @@ import FormalSystem.Semantics.Presheaf.Behavior
 import FormalSystem.Semantics.Presheaf.Directed
 import FormalSystem.Semantics.Presheaf.Determinism
 import FormalSystem.Semantics.Presheaf.Duration
+import FormalSystem.Semantics.Presheaf.Path
 import FormalSystem.Semantics.Presheaf.Ray
 import FormalSystem.Semantics.Presheaf.Reflection
 import FormalSystem.Semantics.Presheaf.Sheaf
@@ -48,4 +49,12 @@ Aggregator for `Semantics/Presheaf/`. See `Semantics/Presheaf/README.md`.
   `H_F ≅ lim Beh(F)(2x)` along the central restrictions, presented concretely as the compatible
   families `Lim F`, with the choice-free isomorphism `worldsEquiv` and the nonemptiness tail
   `lim_nonempty`
+- `Presheaf.Path` — the path category `Path(F)` and `cor:path-fibration`: the morphisms `PathHom`
+  (a section with its length and endpoints), the `Category` instance on the synonym `PathCat F`,
+  the length functor `PathCat.len : Path(F) ⥤ BD⁺`, its discrete Conduché fibration property
+  `PathCat.len_isDiscreteConduche`, the associated presheaf of `len` as `Beh F` on the nose
+  (`PathHom.assocRestrict_sec`), and the `D = ℤ` clause — sections over `[0, n]` are the
+  adjacency-respecting windows and `Path(F)` is the free category on `(W, ⇒₁)`
+  (`beh_int_iff_adjacent_window`, `PathHom.pathEquiv`, `PathHom.toPath_comp`); the general
+  equivalence `fact:conduche-equivalence` is cited, not proved
 -/

@@ -630,6 +630,7 @@ import FormalSystem.Semantics.Presheaf.Behavior
 import FormalSystem.Semantics.Presheaf.Determinism
 import FormalSystem.Semantics.Presheaf.Directed
 import FormalSystem.Semantics.Presheaf.Duration
+import FormalSystem.Semantics.Presheaf.Path
 import FormalSystem.Semantics.Presheaf.Ray
 import FormalSystem.Semantics.Presheaf.Reflection
 import FormalSystem.Semantics.Presheaf.Sheaf

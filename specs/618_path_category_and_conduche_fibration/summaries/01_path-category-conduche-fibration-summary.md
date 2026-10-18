@@ -86,6 +86,12 @@ declaration measures `[propext]`, `[propext, Quot.sound]` or axiom-free; none re
   induction uses three local congruence lemmas; `toPath_id` is `rfl`; `comp_cons` applied by `change`.
 - **Phase 8** `ofStep`/`ofPath_toPath` altered: `ofStep` via `Beh.ofAdjacentWindow`; the `n + 1`
   case closes by `factor_comp` after `ofStep s = e.factorRight fac`.
+- **Phase 9** commit split: `git-commit-scoped.sh --task 618` dropped the three paths outside the
+  declared `file_scope` (`FormalSystem.lean`, `FormalSystem/Semantics/Presheaf.lean`,
+  `scripts/nolint-attribute-allowlist.txt`) under its V10 containment guard, so the shared touches
+  landed in a follow-up `phase 9.1` commit made through the same script without the `--task`
+  opt-in — the task description's own instruction not to widen `file_scope` to the aggregator,
+  and the precedent of the Reflection module's `phase 3.1` wiring commit.
 - **Phase 9** altered: `FormalSystem/README.md` has no hand-written count line (inventory only);
   `simpNF` exemption on the auto-generated `BObj.mk.injEq`; first full build relaunched detached
   after exceeding the foreground cap; `verify-deploy.sh` run as `--only-gate 4` under the

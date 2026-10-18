@@ -51,3 +51,4 @@ docBlame:bestFirstSearch.searchLoop
 defsWithUnderscore:tacticApply_axiom
 defsWithUnderscore:tacticModal_t
 defsWithUnderscore:tacticAssumption_search
+simpNF:BObj.mk.injEq
