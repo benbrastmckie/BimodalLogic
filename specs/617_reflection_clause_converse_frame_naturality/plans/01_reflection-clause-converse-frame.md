@@ -1,7 +1,7 @@
 # Implementation Plan: Task #617
 
 - **Task**: 617 - Reflection clause: converse frame and naturality
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: 563 (`Beh(F)` and `Int(D)`) — satisfied; `Presheaf/Site.lean` and `Presheaf/Behavior.lean` are in the tree
 - **Research Inputs**: specs/617_reflection_clause_converse_frame_naturality/reports/01_reflection-clause-converse-frame.md

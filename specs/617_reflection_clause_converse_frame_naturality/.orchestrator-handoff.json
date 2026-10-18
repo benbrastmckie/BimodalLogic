@@ -1,24 +1,30 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 6,
-  "summary": "Wrote a three-phase sequential plan for the Reflection clause of app:presheaf-dictionary as one new module FormalSystem/Semantics/Presheaf/Reflection.lean: Phase 1 the reflection automorphism Tr.ref and its five laws, Phase 2 the section reflection, naturality, involution and Beh.reflectEquiv, Phase 3 aggregator/README/record wiring plus the full gate. The research's promotion phase and its conditional user_decision were dropped because the converse frame already sits in Semantics/TaskFrame.lean (landed by another task); the saved probe recompiles clean against the current tree with that block removed. Every statement is carried in the plan's Lean Challenge Statements section, which type-checks standalone.",
+  "status": "implemented",
+  "dispatch_seq": 9,
+  "phase": "implement",
+  "phases_completed": 3,
+  "phases_total": 3,
+  "summary": "Proved the Reflection clause of app:presheaf-dictionary in the new module FormalSystem/Semantics/Presheaf/Reflection.lean: the reflection automorphism Tr.ref of Int(D) with its five laws, the section reflection Beh.reflectSec into the converse frame's presheaf, naturality Beh.reflect_natural, the involution Beh.reflect_reflect, and the component bijection Beh.reflectEquiv, consuming FrameOver.rev/TaskFrame.rev rather than rebuilding a converse frame. Twelve declarations, zero sorries, no frame constraint, all [propext, Quot.sound]; wired into the aggregator, library root, READMEs, Reversal.lean's pointer and the paper-definitions record. Full guarded lake build exit 0; check-module-invariants ALL CHECKS PASSED; verify-deploy --only-gate 4 PASS (full set deferred to the batch stage); check-paper-definitions exit 1 is pre-existing external paper drift on pinned rows, independent of this task.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/617_reflection_clause_converse_frame_naturality/summaries/01_reflection-clause-converse-frame-summary.md",
+      "summary": "Implementation summary: twelve declarations, verification record, plan deviations, follow-ups."
+    },
     {
       "type": "plan",
       "path": "specs/617_reflection_clause_converse_frame_naturality/plans/01_reflection-clause-converse-frame.md",
-      "summary": "Three-phase plan: Tr.ref automorphism; section reflection, naturality and Equiv; wiring, records and full gate."
+      "summary": "All three phase headings [COMPLETED]; deviations annotated inline on the Phase 3 gate-set item."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/617_reflection_clause_converse_frame_naturality/handoffs/phase-3-handoff-20261018T044815Z.md",
+      "summary": "Phase 3 progressive handoff."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 3,
-  "blockers": [],
-  "decisions_made": [
-    "Consume FrameOver.rev / TaskFrame.rev from Semantics/TaskFrame.lean; no second converse frame and no promotion phase (already landed, verified by probe recompile at plan time)",
-    "State the clause over the primitive reversal rev_taskRel (Iff.rfl), citing the paper's negated form rev_taskRel_neg as the bridge; the clause consumes no frame constraint",
-    "Plain def and theorems for ref, no CategoryTheory.Functor instance, following Site.lean's recorded decision",
-    "Accept import Mathlib.Tactic.Abel in Reflection.lean (in-cluster precedent Semantics/Extension/Constraint.lean; lock verified intact)",
-    "The aggregator import is handled as a shared touch in the final phase and deliberately not harvested into file_scope, per the task description's instruction"
-  ],
-  "continuation_path": null
+  "git_checkpoint": "aa0c3171e",
+  "plan_markers_verified": true,
+  "sorry_inventory": [],
+  "next_action_hint": "Postflight status sync; separate follow-up task to re-pin the 9 PINNED paper definitions that check-paper-definitions.sh reports drifted (external paper changed enumerate options)."
 }

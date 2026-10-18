@@ -11,7 +11,7 @@ next_project_number: 820
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,617,618,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,618,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,819 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,763 | 231,429,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -58,7 +58,6 @@ next_project_number: 820
 
 ### Categorical Structure
 
-617 [PLANNED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 
 ### Dataset Enhancement
@@ -1635,12 +1634,13 @@ PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Struct
 ---
 
 ### 617. Reflection clause converse frame naturality
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
 - **Research**: [617_reflection_clause_converse_frame_naturality/reports/01_reflection-clause-converse-frame.md]
 - **Plan**: [617_reflection_clause_converse_frame_naturality/plans/01_reflection-clause-converse-frame.md]
+- **Summary**: [617_reflection_clause_converse_frame_naturality/summaries/01_reflection-clause-converse-frame-summary.md]
 
 **Description**: Prove `app:presheaf-dictionary`'s Reflection clause: reflection is a natural isomorphism `Beh(F) iso Beh(F-) . ref` between the behavior presheaf of a task frame and that of its converse frame, precomposed with the reflection automorphism of the interval category.
 
