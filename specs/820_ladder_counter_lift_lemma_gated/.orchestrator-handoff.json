@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Plan written for the gated counter-lift record: nine sequential phases (16 hours) that promote the research prototype into the wired probe counter-lift-gates.lean, build the 4-cycle fixture at the model layer, compile the six gate rows in the research's cheapest-first order with Phases 6 and 7 (9-collision, gap-shift) as decision gates carrying an explicit negative-outcome branch, compile the pin lemma's lift half, and record every verdict in the header, guard script, README, ROADMAP and source-store context file. Seven generic Challenge statements are pinned with no positionwise completeness clause, and the block compiled standalone at authoring time; the fixture-level gate theorems are recorded per phase as target statements. No user decision is needed.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/820_ladder_counter_lift_lemma_gated/plans/01_counter-lift-gate-table.md",
+      "summary": "Nine-phase plan: probe promotion and wiring, 4-cycle fixture, gates 1/2/9-sep/short-idle/9-col/gap-shift, pin lemma lift half, records; seven generic Challenge statements pinned."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 9,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implementation at Phase 1 (promote the prototype into specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean and wire it); the chain is fully sequential."
+}

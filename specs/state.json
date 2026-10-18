@@ -9,25 +9,33 @@
     {
       "project_number": 820,
       "project_name": "ladder_counter_lift_lemma_gated",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "RESEARCH-FIRST, GATED: no sufficiency attempt before the gate table below is compiled. WHY: presentation (a) is chosen for the ladder cell -- the set-valued per-state datum `D`, the MAXIMUM `certAdm`-certified subset of the finite carrier `Q × ClType φ × K`, with the realization theorem the fibre equation (`cellAt` at `(q, c, n)` equals the fibre of `D` at `(q, κ(c, n))`) and the factorization lemma for `K` its corollary, never its hypothesis -- and its viability rests on THIS lemma, which is unproved. See the decision report at `specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md` (Findings 2, 6, 7) and the wired probe `specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean`: the certified chains of record are REGION-INTERIOR (`coh`/`cohBi` demand `pend` at both endpoints; no forward `Rlad` ray is pending forever), so `realizes_of_certAdm_cohBi` transfers to the region segments of a ladder history and never to a ladder history itself.\n\nSTATEMENT SHAPE (not pinned). Soundness: every `RladAdm` history projects to a bi-infinite chain over `Q × ClType φ × K` whose consecutive counter classes satisfy a decidable relation `R_K` and whose consecutive types satisfy the idle-extended `cohBi` link (the two `pend` conjuncts of `coh` replaced by the `Count`/`Drift` class clauses). Completeness (the lift): every such chain through `(q, κ(c, n))` lifts to an `RladAdm` history through `(q, c, n)` with the same type sequence. Consequence, by induction on `stab`-nesting depth: `cellAt` is constant on `K`-classes -- the factorization lemma for `K`, recorded as a COROLLARY, with `K`'s parameters `(T, P, B)` as OUTPUTS of the first repeat of the realizable-type iteration on the object-closure product, never exhibited from the object or the letters.\n\nGATE TABLE, compiled BEFORE any sufficiency attempt, on a fixture with a product period of at least four: gates 1, 2 and 9 (n-side, both halves: separation when `2(c + j) + 1 <` the product period and `m` is not a multiple of it; collision when `m` is a multiple); the gap-shift gate (lengthening the current region by `P` lowers the gap at every earlier position by `P` unless `n` is pumped in step, which the previous idle run must absorb); the short-idle gate (`L_{k+1} ≤ 2 L_k + j_k + 1`; a class-level chain must carry enough of `(L_k, j_k)` exactly, which may force `T` above the formula-derived depth and must be computed, not guessed).\n\nFIRST COMPILE TARGETS, each currently DERIVED and no theorem: the forward window `|L - n| ≤ c + j` for the next region's length; the backward constraint `n ∈ [c - 1, c + 2s + 1]` when the region started `s` steps ago; the region-doubling inequality.\n\nWHAT TRANSFERS and is not re-proved: `prodPreN_eventually_periodic`, `profR_period_three`, `exists_dovetail_chain`, `realizes_of_certAdm_cohBi` (region segments), `gap_le_region_age`, `region_start_beyond_depth`, `second_region_any_length`, `exists_idle_of_rlad_ray`.\n\nOBLIGATION (4): `certStab` must be rebuilt per `(q, κ)` (`stab_mem_tpOf_iff` is per cell); gate 8 stays SIDESTEPPED until a `stab`-bearing fixture is run.\n\nHARD CONSTRAINTS: no tuple index stated as a candidate at any parameters -- `K` is a carrier coordinate, not an index; no seventh coordinate; no complexity claim or upper bound, every quantity a count (the candidate enumeration over `Finset (Q × ClType φ × K)` is a count of candidates); no finiteness added (`anchorCells_finite`, `anchorCells_ncard_le` untouched); the `box`/`stab` acceptance clause never dropped; zero debt (no Buchi/MSO lemma cited in place of a proof); Route A not entered (the decision record is the report above).\n\nA NEGATIVE OUTCOME IS A COMPLETE RESULT: if either hazard is a genuine seventh mechanism resistant to every `K` of the forced shape, no computable per-ladder-state datum exists in either presentation; report `[BLOCKED]`-to-closed for the ladder route with the obstruction compiled, never a weakened same-named substitute.\n\nWHAT THIS UNBLOCKS: `ladderRealized`/`LadderCons` (the realization record, task 761), then the lift `not_plusValidZTime_iff_ladderRefutes` and `Decidable (PlusValidZTime φ)` (task 763). NOT COSTABLE: sized by an open problem; no figure is invented.",
       "topic": "decidability",
       "dependencies": [],
       "file_scope": [
-        "specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean",
+        "/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md",
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
         "scripts/check-evidence-probes.sh",
+        "specs/820_ladder_counter_lift_lemma_gated/prototype/counter-lift-arithmetic.lean",
         "specs/ROADMAP.md",
-        "FormalSystem/Metalogic/Decidability/RaySummary/README.md"
+        "specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean",
+        "typst/generated/status.typ"
       ],
       "created": "2026-10-18T15:32:06Z",
-      "last_updated": "2026-10-18T18:17:02Z",
+      "last_updated": "2026-10-18T18:33:43Z",
       "session_id": "sess_1792344910_f9a054",
       "artifacts": [
         {
           "path": "specs/820_ladder_counter_lift_lemma_gated/reports/01_counter-lift-lemma-gated.md",
           "type": "report",
           "summary": "Counter-lift lemma research: the three derived arithmetic items compiled (forward window, backward constraint, region doubling + attained + iterated); the dispatch's positionwise completeness clause refuted for every finite counter quotient (no_positionwise_lift, compiled) and replaced by the pumping form; the pin lemma reducing the lift to Lipschitz pin arithmetic plus chain pumping; both hazards assessed as the pin cascade (absorbed) and the exponential-threshold fact (a parameter-size output, not a mechanism); the gate table designed on a 4-cycle fixture with expected verdicts and compiled ground; negative outcome not reached."
+        },
+        {
+          "path": "specs/820_ladder_counter_lift_lemma_gated/plans/01_counter-lift-gate-table.md",
+          "type": "plan",
+          "summary": "Nine-phase plan: probe promotion and wiring, 4-cycle fixture, gates 1/2/9-sep/short-idle/9-col/gap-shift, pin lemma lift half, records; seven generic Challenge statements pinned."
         }
       ],
       "next_artifact_number": 2

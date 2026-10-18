@@ -1,24 +1,33 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-18T17:38:15Z",
-  "completed_at": "2026-10-18T18:24:00Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/820_ladder_counter_lift_lemma_gated/reports/01_counter-lift-lemma-gated.md",
-      "summary": "Counter-lift lemma research: the three derived arithmetic items compiled (forward window, backward constraint, region doubling + attained + iterated); the dispatch's positionwise completeness clause refuted for every finite counter quotient (no_positionwise_lift, compiled) and replaced by the pumping form; the pin lemma reducing the lift to Lipschitz pin arithmetic plus chain pumping; both hazards assessed as the pin cascade (absorbed) and the exponential-threshold fact (a parameter-size output, not a mechanism); the gate table designed on a 4-cycle fixture with expected verdicts and compiled ground; negative outcome not reached."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/820_ladder_counter_lift_lemma_gated/prototype/counter-lift-arithmetic.lean",
-      "summary": "Research-level prototype (544 lines, 0 sorry, lake env lean exit 0, not wired): forward_window, backward_constraint, region_doubling, iter_doubling, doubling_attained, no_positionwise_lift over Rlad of RunLayer.lean."
+      "type": "plan",
+      "path": "specs/820_ladder_counter_lift_lemma_gated/plans/01_counter-lift-gate-table.md",
+      "summary": "Nine sequential phases, 16 hours: promote the research prototype into the wired probe counter-lift-gates.lean and guard it; build the 4-cycle fixture at the model layer; compile the gate table in the research's order (gates 1, 2, 9-separation, short-idle, 9-collision, gap-shift, the last two as decision gates with a negative-outcome branch); compile the pin lemma's lift half (1-Lipschitz extension with pins); record verdicts in header, guard, README, ROADMAP and the source-store context file. Seven generic Challenge statements pinned (no positionwise lift), compiled standalone at authoring time."
     }
   ],
   "metadata": {
     "session_id": "sess_1792344910_f9a054_820",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 16,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8], [9]]
+  },
+  "phase_count": 9,
+  "estimated_hours": 16,
+  "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8], [9]],
+  "next_steps": "Run /orchestrate 820 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "For a lean4 plan whose targets are evidence-probe theorems over a model-layer FIXTURE (a concrete object, frame, model, formula), the `## Lean Challenge Statements` block cannot carry the fixture-level theorems: lean-challenge-snapshot.sh forces EVERY declaration body in the block to `sorry`, fixture `def`s included, so a statement mentioning `cellAt M4 phi (st4 …)` cannot type-check standalone. The working pattern: pin only the generic, fixture-free theorems (quantified over the object `Q`, `step`, `pend`, importing the library module alone) in the Challenge block, keep the Goals bullets' backticked tokens EXACTLY equal to that declaration set (the extractor treats every backticked simple identifier in the Goals range as a Goal), and record each fixture-level theorem's intended signature per phase under a `**Target statement**` line with the plan-compliance statement-fidelity obligation named explicitly. Compile the Challenge block standalone with `lake env lean` at plan-authoring time (expect one `declaration uses 'sorry'` warning per theorem, no errors).",
+      "category": "PATTERN",
+      "source_artifact": "specs/820_ladder_counter_lift_lemma_gated/plans/01_counter-lift-gate-table.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["lean-challenge-snapshot", "challenge-statements", "evidence-probe", "fixture", "plan-format", "goals-identifiers"]
+    }
+  ],
+  "dispatch_seq": 2
 }
