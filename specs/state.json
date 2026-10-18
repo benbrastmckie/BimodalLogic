@@ -1456,7 +1456,7 @@
     {
       "project_number": 566,
       "project_name": "possible_worlds_clause_hf_as_limit",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Prove `app:presheaf-dictionary`'s Possible Worlds clause: `H_F iso lim Beh(F)(2x)` along the central restrictions.\n\nEXISTING HOOK, to be used rather than rebuilt: over `D = Z` this connects to `FrameOver.mem_HF_iff_adjacent`, already proved in `FormalSystem/Semantics/IntTransfer.lean`. Do not re-derive the adjacency argument.\n\nDEPENDS on the interval-site/presheaf cluster and on the Totality clause, since the limit construction consumes Totality.\n\nCONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase. Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 5.1.\n\nReconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.\n\nCONVENTION NOTE (2026-09-21). Task 636 has landed: write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, each key resolving in the root references.bib (typst/bibliography.bib no longer exists). The language-extension files are now under FormalSystem/{Plus,Minus,Star}Language/ with flat FormalSystem.{X}Language namespaces (task 634).\n\nSCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.\n\nSEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of scope). A source-verified seed report for the gluing route to decidability of full L-plus lives at specs/718_omega_sequence_decidability_full_lplus/reports/01_gluing-route-seed.md. Its sections 1 and 3 bear on this task: this clause's limit presentation H_F iso lim Beh(F)(2x) IS the gluing conception -- a compatible family of sections is a gluing -- so the two are one statement in two presentations, and the decidability round depends on knowing which is the better working form. The seed claims no route verdict and does not alter this task's deliverable; consult it for context and do not re-derive what it already verifies.\n\nPAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Structure (def:interval-site, def:behavior-presheaf, def:twisted-arrow, lem:interval-twisted-arrow, app:presheaf-dictionary, def:conduche, def:path-category, fact:conduche-equivalence, cor:path-fibration) NO LONGER sits inside possible_worlds.tex. It is kept verbatim, still commented, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header '\\subsection{Topological and Categorical Structure}' / '\\label{app:Structure}'. The uncompressed conclusion paragraph that previewed this material (interval site, twisted-arrow site, Conduche fibrations, path category, the Reflection clause as what underlies TR, change of site along order-embeddings) is in the same file under the header 'moved from sub:Conclusion'. possible_worlds.tex retains only the one-paragraph live summary in sub:Conclusion and the live app:gluing. Read the anchors in the cut file; nothing in the paper defines those labels any more. The general convex-overlap form of app:gluing, which the limit presentation of this clause rests on, is filed separately as task 789.",
       "topic": "categorical-structure",
@@ -1465,7 +1465,7 @@
         565
       ],
       "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-10-18T00:15:26Z",
+      "last_updated": "2026-10-18T02:19:13Z",
       "priority": "high",
       "file_scope": [
         "FormalSystem.lean",
@@ -1489,8 +1489,14 @@
           "path": "specs/566_possible_worlds_clause_hf_as_limit/plans/01_total-histories-limit-clause.md",
           "type": "plan",
           "summary": "Four sequential phases (wiring + limit type; maps + keystone; round trips + Equiv + tail; record + citations + full gate), 22 pinned Lean Challenge Statements compiled green at plan time."
+        },
+        {
+          "path": "specs/566_possible_worlds_clause_hf_as_limit/summaries/01_total-histories-limit-clause-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with the measured axiom table, plan deviations, and the full gate results."
         }
-      ]
+      ],
+      "completion_summary": "Proved the Total Histories (Possible Worlds) clause of app:presheaf-dictionary in the new module FormalSystem/Semantics/Presheaf/Worlds.lean: a possible world is a compatible family of centred sections (Lim F), with worldsEquiv : WorldHistory F ≃ Lim F at no frame constraint measured choice-free and only the nonemptiness tail lim_nonempty reaching Classical.choice through PartialHistory.hF_nonempty. All 22 pinned declarations landed with their pinned signatures; the module is wired into both aggregators, the cluster and parent READMEs and the definitions-of-record row are updated, and every repository gate is green."
     },
     {
       "project_number": 570,

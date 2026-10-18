@@ -1,7 +1,7 @@
 # Implementation Plan: The *Total Histories* clause — `H_F ≅ lim Beh(F)(2x)`
 
 - **Task**: 566 - Prove `app:presheaf-dictionary`'s Possible Worlds clause: `H_F iso lim Beh(F)(2x)` along the central restrictions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.5 hours
 - **Dependencies**: 563 (interval site, behavior presheaf), 565 (Totality, Directed Gluing) — both landed and archived
 - **Research Inputs**: `specs/566_possible_worlds_clause_hf_as_limit/reports/01_total-histories-limit-clause.md`; the verified probe `specs/566_possible_worlds_clause_hf_as_limit/total-histories-clause-probe.lean`
