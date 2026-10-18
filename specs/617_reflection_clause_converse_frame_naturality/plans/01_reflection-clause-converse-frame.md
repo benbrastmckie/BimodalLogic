@@ -1,7 +1,7 @@
 # Implementation Plan: Task #617
 
 - **Task**: 617 - Reflection clause: converse frame and naturality
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: 563 (`Beh(F)` and `Int(D)`) — satisfied; `Presheaf/Site.lean` and `Presheaf/Behavior.lean` are in the tree
 - **Research Inputs**: specs/617_reflection_clause_converse_frame_naturality/reports/01_reflection-clause-converse-frame.md
@@ -109,7 +109,7 @@ Not consulted: this dispatch carries no `roadmap_path`.
 Phases within the same wave can execute in parallel. This plan is fully sequential: Phases 1 and 2
 edit the same new module, and Phase 3's wiring and full gate must observe both.
 
-### Phase 1: The reflection automorphism of `Int(D)` [NOT STARTED]
+### Phase 1: The reflection automorphism of `Int(D)` [COMPLETED]
 
 **Goal**: Create `FormalSystem/Semantics/Presheaf/Reflection.lean` with its full module docstring
 and the reflection automorphism `ref` on translations, together with its five laws: it fixes
@@ -117,13 +117,13 @@ identities, preserves composition (covariantly — `ref` fixes objects and is an
 duality), is its own inverse, and interchanges `lres` with `rres`.
 
 **Tasks**:
-- [ ] Create the module with the repository header, `import FormalSystem.Init`,
+- [x] Create the module with the repository header, `import FormalSystem.Init`,
       `import Mathlib.Tactic.Abel`, `import FormalSystem.Semantics.Presheaf.Behavior`, the
       `/-! ... -/` module docstring (structure as `Presheaf/Determinism.lean`: title, narrative,
       `## Main Definitions`, `## Main Results`, `## Implementation Notes`, `## References`,
       `## Tags`), `namespace FormalSystem.Semantics.Presheaf`, and the closing
       `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`
-- [ ] Write the docstring's load-bearing paragraphs now, not as a Phase 3 afterthought:
+- [x] Write the docstring's load-bearing paragraphs now, not as a Phase 3 afterthought:
       (a) **the point of the clause** — the natural isomorphism `Beh(F) ≅ Beh(F⁻) ∘ ref` is what
       underlies the soundness of the time reflection metarule `TR` (`thm:TR-valid`, formalized as
       `validOn_rev_iff` in `Semantics/Validity.lean`, resting on `truthAt_rev` in
@@ -140,7 +140,7 @@ duality), is its own inverse, and interchanges `lres` with `rres`.
       the primitive reversal `rev_taskRel`; the paper's negated form `w ⇒⁻_x u := w ⇒_{-x} u` is
       `rev_taskRel_neg`, which needs `[F.IsRegular]`, and is cited as the bridge, not used;
       (d) **no `Functor` instance**, following `Site.lean`'s recorded decision
-- [ ] Write `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
+- [x] Write `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
       `[P. Schultz, D. I. Spivak and C. Vasilakopoulou, *Dynamical Systems and Sheaves*][schultz2020]`;
       `[P. T. Johnstone, *A Note on Discrete Conduché Fibrations*][johnstone1999]`; the JPL anchors
       `def:behavior-presheaf` (*Reflection*, *Converse Frame*, *Reflection Automorphism* clauses),
@@ -150,15 +150,15 @@ duality), is its own inverse, and interchanges `lres` with `rres`.
       `thm:TR-valid` and `lem:time-reflection` (LIVE); and the repository modules
       `Presheaf/Site.lean`, `Presheaf/Behavior.lean`, `Semantics/TaskFrame.lean` (the
       `ConverseFrame` section), `Semantics/Reversal.lean`, `Semantics/Validity.lean`
-- [ ] Define `Tr.ref` with `ref_shift` (`@[simp]`, `rfl`); the two side conditions discharge from
+- [x] Define `Tr.ref` with `ref_shift` (`@[simp]`, `rfl`); the two side conditions discharge from
       `f.shift_add_le` and `f.shift_nonneg` via `sub_nonneg`, `le_sub_iff_add_le`,
       `sub_add_cancel`, `sub_le_self` exactly as in the probe
-- [ ] Prove `Tr.ref_ref` and `Tr.ref_comp` (`ext; simp; abel`), `Tr.ref_id` (`ext; simp`),
+- [x] Prove `Tr.ref_ref` and `Tr.ref_comp` (`ext; simp; abel`), `Tr.ref_id` (`ext; simp`),
       `Tr.ref_lres` and `Tr.ref_rres` (`ext; simp [lres, rres]`)
-- [ ] Give every declaration a `/-- ... -/` docstring carrying the line
+- [x] Give every declaration a `/-- ... -/` docstring carrying the line
       `Constraints consumed: None` (closed vocabulary of `REFERENCE_NORMAL_FORM.md` §3; check C34
       of `scripts/check-module-invariants.sh` reads it)
-- [ ] Record the issue log as events arise (`issue-record.sh --phase implement`), including an
+- [x] Record the issue log as events arise (`issue-record.sh --phase implement`), including an
       explicit "nothing to record" attestation in the phase commit if that is the case
 
 **Timing**: 0.75 hours
