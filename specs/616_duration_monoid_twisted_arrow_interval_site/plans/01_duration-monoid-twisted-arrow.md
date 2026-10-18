@@ -303,7 +303,7 @@ bijection — building green on its own with zero sorries.
 
 ---
 
-### Phase 3: `Duration.lean`, part B — `Tw(BD⁺)`, the isomorphism with `Int(D)`, and coverage transport [NOT STARTED]
+### Phase 3: `Duration.lean`, part B — `Tw(BD⁺)`, the isomorphism with `Int(D)`, and coverage transport [COMPLETED]
 
 **Goal**: Add the twisted-arrow category `Tw` with its three category laws, the hom-set bijection
 with `Tr` in both directions, functoriality, the Johnstone coverage on `Tw` indexed by the cut
@@ -311,15 +311,15 @@ point, and the two transport equations onto `Site.lean`'s `coverLeft`/`coverRigh
 `lem:interval-twisted-arrow` with the module still green and sorry-free.
 
 **Tasks**:
-- [ ] `Tw l' l`: the five-field structure as pinned (`pre`, `post`, nonnegativity, `factors : pre + l'.val + post = l.val`); `@[ext] theorem ext` on BOTH components
-- [ ] `Tw.id l := ⟨0, 0, le_refl 0, le_refl 0, by simp⟩`; `Tw.comp f g := ⟨f.pre + g.pre, g.post + f.post, add_nonneg …, add_nonneg …, factors⟩` with the second component in the paper's order `(p + p', q' + q)`, and `factors` closed by a three-step `calc` whose first step is `by simp only [add_assoc]` (a plain `rw [add_assoc, …]` leaves a goal — probe-verified)
-- [ ] `@[simp]` `rfl` lemmas `comp_pre`, `comp_post`, `id_pre`, `id_post`; then `id_comp`/`comp_id`/`comp_assoc` each `by ext <;> simp [add_assoc]`
-- [ ] `Tw.toTr f := ⟨f.pre, f.pre_nonneg, by rw [← f.factors]; exact le_add_of_nonneg_right f.post_nonneg⟩`; `Tw.ofTr f := ⟨f.shift, l.val - f.shift - l'.val, f.shift_nonneg, sub_nonneg.mpr (le_sub_iff_add_le'.mpr f.shift_add_le), by rw [sub_sub, add_sub_cancel]⟩`
-- [ ] `toTr_ofTr` by `ext; simp`; `ofTr_toTr` by `ext` then — for the `post` goal — `change l.val - f.pre - l'.val = f.post` (use `change`, not `show`: `show` trips the style linter), `rw [sub_sub, ← f.factors]`, `add_sub_cancel_left`
-- [ ] `toTr_comp`, `toTr_id` by `ext; simp` — functoriality; with `toTr_ofTr`/`ofTr_toTr` this is the identity-on-objects, bijective-on-homs isomorphism of categories
-- [ ] `Tw.coverLeft l p hp hpl : Tw ⟨p, hp⟩ l := ⟨0, l.val - p, …⟩` and `Tw.coverRight l p hp hpl : Tw ⟨l.val - p, sub_nonneg.mpr hpl⟩ l := ⟨p, 0, …⟩` — indexed by the cut point `p` with `q := l - p`, so the source objects are definitionally `Site.lean`'s
-- [ ] `toTr_coverLeft`, `toTr_coverRight` by `ext; rfl` — the coverage transport; add a docstring sentence tying these plus `Factorization.ofCut`/`ofCut_fst_self` to the "covering families correspond bijectively" step (the paper proof's final paragraph; verification report defect D2)
-- [ ] Extend the module docstring's Main Definitions / Main Results for part B; `lean_verify` every part-B theorem (expect `[propext]` or none); scoped build green; commit `task 616 phase 3: twisted-arrow category and coverage transport`
+- [x] `Tw l' l`: the five-field structure as pinned (`pre`, `post`, nonnegativity, `factors : pre + l'.val + post = l.val`); `@[ext] theorem ext` on BOTH components *(completed)*
+- [x] `Tw.id l := ⟨0, 0, le_refl 0, le_refl 0, by simp⟩`; `Tw.comp f g := ⟨f.pre + g.pre, g.post + f.post, add_nonneg …, add_nonneg …, factors⟩` with the second component in the paper's order `(p + p', q' + q)`, and `factors` closed by a three-step `calc` whose first step is `by simp only [add_assoc]` (a plain `rw [add_assoc, …]` leaves a goal — probe-verified)
+- [x] `@[simp]` `rfl` lemmas `comp_pre`, `comp_post`, `id_pre`, `id_post`; then `id_comp`/`comp_id`/`comp_assoc` each `by ext <;> simp [add_assoc]` *(completed — the unit laws need only `ext <;> simp`)*
+- [x] `Tw.toTr f := ⟨f.pre, f.pre_nonneg, by rw [← f.factors]; exact le_add_of_nonneg_right f.post_nonneg⟩`; `Tw.ofTr f := ⟨f.shift, l.val - f.shift - l'.val, f.shift_nonneg, sub_nonneg.mpr (le_sub_iff_add_le'.mpr f.shift_add_le), by rw [sub_sub, add_sub_cancel]⟩`
+- [x] `toTr_ofTr` by `ext; simp`; `ofTr_toTr` by `ext` then — for the `post` goal — `change l.val - f.pre - l'.val = f.post` (use `change`, not `show`: `show` trips the style linter), `rw [sub_sub, ← f.factors]`, `add_sub_cancel_left`
+- [x] `toTr_comp`, `toTr_id` by `ext; simp` — functoriality; with `toTr_ofTr`/`ofTr_toTr` this is the identity-on-objects, bijective-on-homs isomorphism of categories
+- [x] `Tw.coverLeft l p hp hpl : Tw ⟨p, hp⟩ l := ⟨0, l.val - p, …⟩` and `Tw.coverRight l p hp hpl : Tw ⟨l.val - p, sub_nonneg.mpr hpl⟩ l := ⟨p, 0, …⟩` — indexed by the cut point `p` with `q := l - p`, so the source objects are definitionally `Site.lean`'s
+- [x] `toTr_coverLeft`, `toTr_coverRight` by `ext; rfl` — the coverage transport; add a docstring sentence tying these plus `Factorization.ofCut`/`ofCut_fst_self` to the "covering families correspond bijectively" step (the paper proof's final paragraph; verification report defect D2)
+- [x] Extend the module docstring's Main Definitions / Main Results for part B; `lean_verify` every part-B theorem (expect `[propext]` or none); scoped build green; commit `task 616 phase 3: twisted-arrow category and coverage transport` *(completed — footprints: `Tw.ext`, `id_comp`, `comp_id`, `comp_assoc`, `toTr_id`, `toTr` are `[propext]`; `toTr_ofTr`, `ofTr_toTr`, `toTr_comp`, `toTr_coverLeft`, `toTr_coverRight`, `ofTr`, `coverLeft`, `coverRight` are `[propext, Quot.sound]`, by the same `sub_nonneg` route recorded on Phase 2 and at the identical set as `Site.lean`'s `coverRight`/`Tr.comp_assoc`; no `Classical.choice` anywhere)*
 
 **Timing**: 1.5 hours
 
@@ -340,6 +340,8 @@ point, and the two transport equations onto `Site.lean`'s `coverLeft`/`coverRigh
 - `lean_hover_info` on every `Tw.*` declaration matches the pinned signatures in `## Lean Challenge Statements`
 - `toTr_coverLeft`/`toTr_coverRight` close by `ext; rfl` with no `Eq.mpr`/cast in the elaborated term (confirms the cut-point indexing)
 - `lean_verify` footprints: every part-B theorem ≤ `[propext]`
+
+**Observed at closure**: scoped guarded build `GUARD_EXIT=0`, zero `error:`/`warning` lines, first attempt; full guarded `lake build` exit 0 (2876 jobs) with `Duration.olean` newer than its source; `grep -c sorry` prints `0`; all sixteen `Tw.*` `lean_hover_info` signatures match the pinned block; `#print` of both transport theorems gives `Tr.ext (Eq.refl _)` — no cast; footprints as annotated on the closing task above (choice-free throughout).
 
 ---
 
