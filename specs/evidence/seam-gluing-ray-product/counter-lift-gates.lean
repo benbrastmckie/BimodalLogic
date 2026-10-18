@@ -62,7 +62,7 @@ built at the model layer below once the fixture section lands); `a := (true, 0)`
 | 1 | `(a, B, B+1)` vs `(a, B, B+2)` | `p U (¬p ∧ X(p ∧ X ¬p))` (`phi1`) | SEPARATION, COMPILED (`gate1_cell_ne`, every `B`): the next region has countdown `0` after one idle state from the first (`wit1`, `exists_phi1_mem_cell`) and countdown `≥ 1` from the second (`not_phi1_of_gap_two`: the deadline at the first idle state is `≥ 1` by `Drift`, the pin makes the next countdown `≥ 1`) | `forward_window` (lower edge); `cell_ne` (two-state, `ladder-cell-refutation.lean`), `gate1_gap_separates` (index) |
 | 2 | `(a, c, n)` vs `(a, c+1, n)` | `p U (¬p ∧ ℓ (c mod 4))` (`phi2 c`) | SEPARATION, COMPILED (`gate2_cell_ne`, every `c`, `n`): the forced run ends at index `idx c` from the first (`phi2_of_path`, along EVERY path) and at `idx (c+1) ≠ idx c` from the second (`not_phi2_of_path`) | `count_pending_step`, `pin_region_end`; `gate2_residue_separates` (index) |
 | 9-sep | `(a, 0, n)` vs `(a, 0, n+m)`, `4 ∤ m`, `n ≥ 1` | `X(¬p ∧ X(p ∧ (p U (¬p ∧ ℓ ((n+2) mod 4)))))` (`phi9 n`) | SEPARATION, COMPILED (`gate9_sep_cell_ne`; `¬ 4 ∣ m` the only hypothesis on `m`, `1 ≤ n` kept from the target statement and not needed): at `c = 0, j = 1` the window is `{n-1, n, n+1}`, three of four residues, so residue `n+2` is never the next region's end index from `(a, 0, n)` (`not_phi9_of_path`) and is from `(a, 0, n+m)` for every `m ≢ 0 (mod 4)` (`exists_phi9_mem_cell`) | `forward_window` at `c = 0`; `nside_collides` (`nside-modulus-gate.lean`: the index collides at every `(T, P, B)` whose modulus is `P + 1`, so the semantic half decides) |
-| short-idle | `(a, 2, 2)` vs `(a, 2 + P, 2 + P)`, `P ≥ 1` (`k = 1`; the family `(a, 2^(k+1) - 2, ·)` a stretch) | `ψ₁ := p ∧ Y(¬p ∧ Y(p ∧ Y(¬p ∧ ¬(⊤ S p))))` | DESIGNED, NOT YET COMPILED (expected SEPARATION for every threshold `T ≤ 2`: the bound is COMPUTED by `region_doubling` at `L = 0`, `j = 1`, not guessed) | `iter_doubling`, `doubling_attained`, `backward_constraint`, `region_doubling` |
+| short-idle | `(a, 2, 2)` vs `(a, 2 + P, 2 + P)`, `P ≥ 1` | `ψ₁ := p ∧ Y(¬p ∧ Y(p ∧ Y(¬p ∧ ¬(⊤ S p))))` (`psi1`) | SEPARATION (compiled at `k = 1`; family at the arithmetic level by `iter_doubling`, not compiled): `short_idle_cell_ne` (every `P ≥ 1`), with `short_idle_shape_collides` (the six-coordinate SHAPE agrees on the pair for every threshold `T ≤ 2` and every modulus `P' + 1` dividing the shift) and `short_idle_threshold_refuted` (both at once: a same-class pair with different cells for every `K` of the forced shape with `T ≤ 2`). The bound was COMPUTED before the pair was written: first region countdown `0`, idle run `1`, `region_doubling` at `L = 0`, `j = 1` gives `L₁ ≤ 2`, attained by `doubling_attained 0` (`growRay 0 3 = (true, 2, 2)` by `decide`) | `iter_doubling`, `doubling_attained`, `backward_constraint`, `region_doubling` |
 | 9-col | `(a, 0, n)` vs `(a, 0, n+4)`, `n ≥ 2` | the closure of the 9-sep formula | DESIGNED, NOT YET COMPILED (expected COLLISION, closure-specific: pump the next region by `4` with `n` raised by `4`; the closure is `snce`-free) -- DECISION GATE | `forward_window`; `second_region_any_length`; per-member truth lemmas |
 | gap-shift | `(a, c, n)` vs `(a, c+4, n+4)`, `c ≥ T₀`, same clipped gap | a closure with a `snce` member reading the region start's letter and one pinning the previous idle run's length | DESIGNED, NOT YET COMPILED (expected COLLISION: the pin cascade terminates at an absorbing idle run or a pending-forever past) -- DECISION GATE | `backward_constraint`, `region_doubling`, `doubling_attained`; `gPast_isPath` (pending-forever pasts) |
 | statement-shape | generic (`K`, `κ`, sound `R`) | -- | REFUTED, COMPILED: no positionwise lift | `no_positionwise_lift` (this file) |
@@ -1620,6 +1620,180 @@ theorem gate9_sep_cell_ne (n m : ℕ) (hn : 1 ≤ n) (hm : ¬ 4 ∣ m) :
 
 end Gate9Sep
 
+/-! ## The short-idle gate (exponential threshold)
+
+A formula pinning a rigid past — idle forever, one pending state, an idle run of length `1`,
+then the current region starting now — bounds the current region's countdown: with the first
+region's countdown `0` and the idle run `1`, `region_doubling` at `L = 0`, `j = 1` gives
+`L₁ ≤ 2·0 + 1 + 1 = 2`, attained (`doubling_attained` at `L = 0`; on `Q4`,
+`growRay 0 3 = (true, 2, 2)` by `decide` below).  So the bound is COMPUTED, not guessed: the pair
+is `(a, 2, 2)` vs `(a, 2 + P, 2 + P)`, and every `K` of the forced shape whose countdown
+threshold is `≤ 2` identifies the two (`short_idle_shape_collides`, a SHAPE statement on the
+index body in the sense of `nside-modulus-gate.lean`) while their cells differ
+(`short_idle_cell_ne`). -/
+
+section ShortIdle
+
+/-- The hand computation, checked: the maximal-growth ray from an idle end with deadline `0`
+reaches countdown `2` three steps later. -/
+example : growRay 0 3 = (true, 2, 2) := by decide
+
+/-- `⊤ S p`: some strictly earlier position is pending. -/
+theorem truth_Sp4 (σ : WorldHistory F4) (s : ℤ) :
+    PlusTruthAt M4 σ s (.snce PlusFormula.top p) ↔ ∃ s' : ℤ, s' < s ∧ PlusTruthAt M4 σ s' p := by
+  constructor
+  · rintro ⟨(s' : ℤ), h1, h2, -⟩
+    exact ⟨s', h1, h2⟩
+  · rintro ⟨s', h1, h2⟩
+    exact ⟨s', h1, h2, fun _ _ _ => PlusTruth.top_true _ _ _⟩
+
+/-- `p ∧ Y (¬p ∧ Y (p ∧ Y (¬p ∧ ¬(⊤ S p))))`: the current region starts now, the previous idle
+run has length `1`, before it a single pending state, before that idle forever. -/
+def psi1 : PlusFormula :=
+  p.and (Y (p.neg.and (Y (p.and (Y (p.neg.and (PlusFormula.snce PlusFormula.top p).neg))))))
+
+/-- The rigid past of the witness: time `-1` idle with deadline `2`, time `-2` the single
+pending state (countdown `0`, deadline `1`), time `-3` idle with deadline `0`, idle with
+deadline `0` forever before. -/
+def pastSI (k : ℕ) : Q4 × ℕ × ℕ :=
+  if k = 0 then ((false, 0), 0, 2) else if k = 1 then ((true, 0), 0, 1) else ((false, 0), 0, 0)
+
+theorem pastSI_rlad : ∀ k, Rlad step4 pend4 0 (pastSI (k + 1)) (pastSI k) := by
+  intro k
+  rcases k with _ | _ | k
+  · simp [pastSI, rlad4_iff, step4, Drift, Count]
+  · simp [pastSI, rlad4_iff, step4, Drift, Count]
+  · simp [pastSI, rlad4_iff, step4, Drift, Count]
+
+/-- The witness: the rigid past, then from `(a, 2, 2)` the forced region and a free future. -/
+def witSI : ℤ → Q4 × ℕ × ℕ := twoRay pastSI (region4 0 2 2 1 2)
+
+theorem witSI_rlad : ∀ t, Rlad step4 pend4 t (witSI t) (witSI (t + 1)) :=
+  twoRay_rlad _ _ pastSI_rlad
+    (by rw [region4_zero]; simp [pastSI, rlad4_iff, step4, Drift, Count])
+    (region4_rlad 0 2 2 1 2 le_rfl (by omega) (by omega))
+
+theorem witSI_zero : witSI 0 = ((true, 0), 2, 2) := by
+  rw [witSI, show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, twoRay_nat, region4_zero]
+
+theorem witSI_neg (m : ℕ) : witSI (-((m : ℤ) + 1)) = pastSI m := twoRay_neg _ _ m
+
+/-- `psi1` holds at `0` along the witness. -/
+theorem psi1_pos (σ : WorldHistory F4)
+    (hσ : σ.path = fun t => (t + 0, liftAdm witSI witSI_rlad t)) :
+    PlusTruthAt M4 σ 0 psi1 := by
+  rw [psi1, PlusTruth.and_iff, truth_p4 hσ, truth_Y4, PlusTruth.and_iff, truth_np4 hσ, truth_Y4,
+    PlusTruth.and_iff, truth_p4 hσ, truth_Y4, PlusTruth.and_iff, truth_np4 hσ, PlusTruth.neg_iff,
+    truth_Sp4]
+  rw [show (0 : ℤ) - 1 = -(((0 : ℕ) : ℤ) + 1) by norm_num,
+    show -(((0 : ℕ) : ℤ) + 1) - 1 = -(((1 : ℕ) : ℤ) + 1) by norm_num,
+    show -(((1 : ℕ) : ℤ) + 1) - 1 = -(((2 : ℕ) : ℤ) + 1) by norm_num]
+  simp only [liftAdm_val, witSI_zero, witSI_neg]
+  refine ⟨trivial, by simp [pastSI], by simp [pastSI], by simp [pastSI], ?_⟩
+  rintro ⟨s', hs', hp⟩
+  rw [truth_p4 hσ] at hp
+  obtain ⟨m, hm⟩ : ∃ m : ℕ, s' = -((m : ℤ) + 1) ∧ 3 ≤ m := ⟨(-s' - 1).toNat, by omega, by omega⟩
+  rw [hm.1, liftAdm_val, witSI_neg] at hp
+  have h0 : m ≠ 0 := by omega
+  have h1 : m ≠ 1 := by omega
+  simp [pastSI, h0, h1] at hp
+
+/-- **Non-vacuity**: some type realized at `(a, 2, 2)` contains `psi1`. -/
+theorem exists_psi1_mem_cell : ∃ T ∈ cellAt M4 psi1 ((0 : ℤ), st4 0 2 2) 0, psi1 ∈ T := by
+  obtain ⟨σ, hσ, hmem⟩ := cell_of_raw psi1 witSI witSI_rlad 0 2 2 witSI_zero
+  refine ⟨_, hmem, ?_⟩
+  rw [mem_tpOf_iff]
+  exact ⟨self_mem_plusSubformulaClosure _, psi1_pos σ hσ⟩
+
+/-- **The obstruction**: along any path through `(a, c, n)` on which `psi1` holds at `0`, the
+single pending state at `-2` has countdown `0` (`pin_region_end`), so the deadline at `-3` is `0`
+(`pin_region_start`), the deadline at `-1` is at most `2` (`Drift` over two steps), and the pin
+at the region start makes `c ≤ 2` (`region_doubling` with `L = 0`, `j = 1`, read off the
+pins). -/
+theorem countdown_le_two_of_psi1 (σ : WorldHistory F4) (k : ℤ) (g : ℤ → LadderState Q4 pend4)
+    (hσ : σ.path = fun t => (t + k, g t))
+    (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1) (c n : ℕ)
+    (h0 : (g 0).1 = ((true, 0), c, n)) (h : PlusTruthAt M4 σ 0 psi1) : c ≤ 2 := by
+  rw [psi1, PlusTruth.and_iff, truth_p4 hσ, truth_Y4, PlusTruth.and_iff, truth_np4 hσ, truth_Y4,
+    PlusTruth.and_iff, truth_p4 hσ, truth_Y4, PlusTruth.and_iff, truth_np4 hσ] at h
+  obtain ⟨hp0, hi1, hp2, hi3, -⟩ := h
+  rw [show (0 : ℤ) - 1 = -1 by norm_num] at hi1
+  rw [show (0 : ℤ) - 1 - 1 = -2 by norm_num] at hp2
+  rw [show (0 : ℤ) - 1 - 1 - 1 = -3 by norm_num] at hi3
+  -- the pin at the current region's start: `c` is the deadline at `-1`
+  obtain ⟨-, hc0⟩ := region_start4 hg (-1) hi1 (by rw [show (-1 : ℤ) + 1 = 0 by norm_num]; exact hp0)
+  rw [show (-1 : ℤ) + 1 = 0 by norm_num, h0] at hc0
+  -- the pending state at `-2` ends its region: countdown `0`
+  have hend := pin_region_end step4 pend4 (-2) _ _ (hg (-2)) hp2
+    (by rw [show (-2 : ℤ) + 1 = -1 by norm_num]; exact hi1)
+  -- the pin at `-3`: the deadline there is that countdown
+  obtain ⟨-, hc2⟩ := region_start4 hg (-3) hi3 (by rw [show (-3 : ℤ) + 1 = -2 by norm_num]; exact hp2)
+  rw [show (-3 : ℤ) + 1 = -2 by norm_num] at hc2
+  -- `Drift` over the two steps from `-3` to `-1`
+  have hdr := (drift_path4 hg (-3) 2).1
+  rw [show (-3 : ℤ) + ((2 : ℕ) : ℤ) = -1 by norm_num] at hdr
+  simp only at hc0 hend hc2 hdr
+  omega
+
+/-- Every type realized at `(a, 2 + P, 2 + P)` with `1 ≤ P` omits `psi1`. -/
+theorem psi1_not_mem_of_mem_cell (P : ℕ) (hP : 1 ≤ P) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt M4 psi1 ((0 : ℤ), st4 0 (2 + P) (2 + P)) 0) : psi1 ∉ T := by
+  obtain ⟨σ, k, g, hσ, hg, h0, rfl⟩ := of_mem_cell4 psi1 0 (2 + P) (2 + P) T hT
+  intro hmem
+  rw [mem_tpOf_iff] at hmem
+  have := countdown_le_two_of_psi1 σ k g hσ hg (2 + P) (2 + P) h0 hmem.2
+  omega
+
+/-- **THE SHORT-IDLE GATE — SEPARATION** at `k = 1`: the cells at `(a, 2, 2)` and
+`(a, 2 + P, 2 + P)` differ for every `P ≥ 1`. -/
+theorem short_idle_cell_ne (P : ℕ) (hP : 1 ≤ P) :
+    cellAt M4 psi1 ((0 : ℤ), st4 0 2 2) 0 ≠ cellAt M4 psi1 ((0 : ℤ), st4 0 (2 + P) (2 + P)) 0 := by
+  intro heq
+  obtain ⟨T, hT, hmem⟩ := exists_psi1_mem_cell
+  rw [heq] at hT
+  exact psi1_not_mem_of_mem_cell P hP T hT hmem
+
+/-! ### The class-collision companion, on the index BODY as a shape
+
+Ported from `specs/evidence/seam-gluing-ray-product/nside-modulus-gate.lean` with the statement
+unchanged.  This is a statement about a SHAPE gated for a carrier coordinate, in that probe's
+own sense: the six-coordinate body belongs to a REFUTED candidate and is not revived as an
+index; no tuple index is stated as a candidate at any parameters. -/
+
+/-- The six-coordinate shape `(q, min c T, c mod (P+1), min n T, n mod (P+1), clip (n - c))`,
+byte-for-byte the body of `nside-modulus-gate.lean`'s `ladderIndexJnt`. -/
+def ladderIndexJnt (T P B : ℕ) {Q : Type} {pend : Q → Bool} (x : LadderState Q pend) :
+    Q × Fin (T + 1) × Fin (P + 1) × Fin (T + 1) × Fin (P + 1) × Fin (2 * B + 1) :=
+  (x.1.1,
+    ⟨min x.1.2.1 T, by omega⟩,
+    ⟨x.1.2.1 % (P + 1), Nat.mod_lt _ (Nat.succ_pos P)⟩,
+    ⟨min x.1.2.2 T, by omega⟩,
+    ⟨x.1.2.2 % (P + 1), Nat.mod_lt _ (Nat.succ_pos P)⟩,
+    ⟨min ((x.1.2.2 + B) - x.1.2.1) (2 * B), by omega⟩)
+
+/-- **The shape collides on the short-idle pair for every threshold `T ≤ 2`** and every modulus
+`P' + 1` dividing the shift `P`: both countdowns and both deadlines saturate `T`, the residues
+agree because the shift is a multiple of the modulus, and both clipped gaps are `B`. -/
+theorem short_idle_shape_collides (T P' B P : ℕ) (hT : T ≤ 2) (hP : (P' + 1) ∣ P) :
+    ladderIndexJnt T P' B (st4 0 2 2) = ladderIndexJnt T P' B (st4 0 (2 + P) (2 + P)) := by
+  obtain ⟨q, rfl⟩ := hP
+  simp only [ladderIndexJnt, st4, Prod.mk.injEq, Fin.mk.injEq, true_and]
+  refine ⟨by omega, ?_, by omega, ?_, by omega⟩ <;>
+    rw [show 2 + (P' + 1) * q = 2 + q * (P' + 1) by ring, Nat.add_mul_mod_self_right]
+
+/-- **The two together**: for every `K` of the forced six-coordinate shape with countdown
+threshold `T ≤ 2`, whatever its modulus and clip, the pair `(a, 2, 2)` / `(a, 2 + (P' + 1),
+2 + (P' + 1))` is a same-class pair with different cells — the threshold is a cascade OUTPUT
+(`region_doubling` iterated: `iter_doubling`), at least exponential in the depth of the rigid
+past, never a formula-depth guess. -/
+theorem short_idle_threshold_refuted (T P' B : ℕ) (hT : T ≤ 2) :
+    ladderIndexJnt T P' B (st4 0 2 2) = ladderIndexJnt T P' B (st4 0 (2 + (P' + 1)) (2 + (P' + 1))) ∧
+      cellAt M4 psi1 ((0 : ℤ), st4 0 2 2) 0 ≠
+        cellAt M4 psi1 ((0 : ℤ), st4 0 (2 + (P' + 1)) (2 + (P' + 1))) 0 :=
+  ⟨short_idle_shape_collides T P' B (P' + 1) hT (dvd_refl _), short_idle_cell_ne (P' + 1) (by omega)⟩
+
+end ShortIdle
+
 end Probe820
 
 /-! ## Axiom check -/
@@ -1633,3 +1807,6 @@ end Probe820
 #print axioms Probe820.gate1_cell_ne
 #print axioms Probe820.gate2_cell_ne
 #print axioms Probe820.gate9_sep_cell_ne
+#print axioms Probe820.short_idle_cell_ne
+#print axioms Probe820.short_idle_shape_collides
+#print axioms Probe820.short_idle_threshold_refuted

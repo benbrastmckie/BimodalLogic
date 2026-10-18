@@ -384,7 +384,7 @@ is the complete covering check — single file, outside every Lake target root.
 
 ---
 
-### Phase 5: The Short-Idle Gate (Exponential Threshold) [NOT STARTED]
+### Phase 5: The Short-Idle Gate (Exponential Threshold) [COMPLETED]
 
 **Goal**: The short-idle hazard run as a gate in the shape the research found it to have: a
 formula pinning a rigid past (idle forever, one pending state, idle runs of length 1) bounds the
@@ -413,20 +413,20 @@ formula-depth guess. The `k = 1` instance is required; the family is a scoped st
   research's prose (whose `2^k - 2` counts regions from a different base).
 
 **Tasks**:
-- [ ] Compute the bound by hand on `Q4` first: first region countdown `0`, idle run `1`, then
+- [x] Compute the bound by hand on `Q4` first: first region countdown `0`, idle run `1`, then
       `region_doubling` gives `L₁ ≤ 2`, attained by `doubling_attained`; write the pair from that
       computation and record the computation in the header (this is "computed, not guessed").
-- [ ] `psi1`, its truth lemmas (the `Y`/`S` members are functions of the three positions before
+- [x] `psi1`, its truth lemmas (the `Y`/`S` members are functions of the three positions before
       0 and of "idle forever before"), the witness history (`growRay`-shaped on `Q4`:
       `gIdleForever4` then one pending state then one idle then the region), the obstruction
       (`backward_constraint` and `region_doubling` along any history through the second state),
       `short_idle_cell_ne`.
-- [ ] `ladderIndexJnt` ported with statement unchanged; `short_idle_shape_collides`.
+- [x] `ladderIndexJnt` ported with statement unchanged; `short_idle_shape_collides`. *(deviation: altered — the target's duplicated binder `(hT' : T ≤ 2)` is read as the divisibility clause its prose names, `(hP : (P' + 1) ∣ P)`; the literal statement without it is false for `P ≥ 2`; `short_idle_threshold_refuted` added as the conjunction with the cell inequality)*
 - [ ] Stretch, time-boxed to the remainder of the phase: `psi k`, its truth lemmas by induction,
-      `short_idle_family_cell_ne`. Outcome recorded either way in the header row: `SEPARATION
+      `short_idle_family_cell_ne`. *(deviation: skipped — the time-boxed stretch was not taken; the header row reads `SEPARATION (compiled at k = 1; family at the arithmetic level by iter_doubling, not compiled)`, one of the two outcomes the plan names)* Outcome recorded either way in the header row: `SEPARATION
       (compiled at k = 1; family compiled)` or `SEPARATION (compiled at k = 1; family at the
       arithmetic level by iter_doubling, not compiled)`.
-- [ ] Extend the axiom block.
+- [x] Extend the axiom block.
 
 **Timing**: 2 hours
 
