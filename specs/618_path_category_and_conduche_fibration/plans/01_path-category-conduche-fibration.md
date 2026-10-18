@@ -484,7 +484,7 @@ remains the complete covering check — the module is still unimported.
 
 ---
 
-### Phase 6: `D = ℤ`, layer 1 — sections over `[0, n]` are the adjacency-respecting windows [NOT STARTED]
+### Phase 6: `D = ℤ`, layer 1 — sections over `[0, n]` are the adjacency-respecting windows [COMPLETED]
 
 **Goal**: Prove the paper's first `D = ℤ` sentence: for `F : FrameOver intOrder` regular and
 `0 ≤ n`, a function `g : ℤ → F.WorldState` is the state function of some `τ : Beh F.toTaskFrame n`
@@ -494,26 +494,26 @@ reflection convention covers negative differences. Choice-free by routing throug
 lemmas.
 
 **Tasks**:
-- [ ] Prove `iter_of_adjacent_window F n g hg s t hs hst htn : iter (FrameOver.step F) (Int.toNat (t - s)) (g s) (g t)`
+- [x] Prove `iter_of_adjacent_window F n g hg s t hs hst htn : iter (FrameOver.step F) (Int.toNat (t - s)) (g s) (g t)`
       by induction on `Int.toNat (t - s)` (the ℤ-window twin of `Periodicity.iter_of_path`; model
       the induction on `Periodicity.exists_path_of_iter`), consuming only `hg` — no frame
       constraint
-- [ ] Define `Beh.ofAdjacentWindow F n hn g hg : Beh F.toTaskFrame n` with domain `0 ≤ i ∧ i ≤ n`,
+- [x] Define `Beh.ofAdjacentWindow F n hn g hg : Beh F.toTaskFrame n` with domain `0 ≤ i ∧ i ≤ n`,
       states `g i`, and `respects_task` from `iter_of_adjacent_window` through
       `taskRel_natCast_iff_iter` (for `s ≤ t`, with `((t - s).toNat : ℤ) = t - s` by
       `Int.toNat_of_nonneg`) and `reflection_int` (for `t < s`) — never `taskRel_eq_iter` or
       `reflection`, which pull `Classical.choice`
-- [ ] Prove `Beh.ofAdjacentWindow_states` (`rfl`)
-- [ ] Prove `beh_int_iff_adjacent_window`: forward from `τ.val.respects_task` at `(i, i+1)` with
+- [x] Prove `Beh.ofAdjacentWindow_states` (`rfl`)
+- [x] Prove `beh_int_iff_adjacent_window`: forward from `τ.val.respects_task` at `(i, i+1)` with
       `(i + 1) - i = 1` and `FrameOver.step`'s definition (`F.TaskRel w 1 u`), states read through
       the hypothesis; backward from `ofAdjacentWindow` and `ofAdjacentWindow_states`
-- [ ] Docstrings: `Constraints consumed: None` on `iter_of_adjacent_window`;
+- [x] Docstrings: `Constraints consumed: None` on `iter_of_adjacent_window`;
       `Constraints consumed: Compositionality, Seriality, Limit` on the other three (they take
       `[F.IsRegular]` through `taskRel_natCast_iff_iter`/`reflection_int`). Cite
       `FrameOver.taskRel_natCast_iff_iter` as "iterating Compositionality",
       `FrameOver.nullity_identity` as `lem:nullity` + *Limit*, and the reflection convention, as
-      `Semantics/ShiftFiniteType.lean`'s docstring already does
-- [ ] Record the issue log as events arise
+      `Semantics/ShiftFiniteType.lean`'s docstring already does *(deviation: altered — the three `[F.IsRegular]` declarations carry the exempt all-four marker list, for the C34a reason recorded under Phase 2)*
+- [x] Record the issue log as events arise
 
 **Timing**: 1 hour
 
@@ -535,6 +535,7 @@ remains the complete covering check — the module is still unimported.
 - `#print axioms` on `beh_int_iff_adjacent_window` reports `[propext, Quot.sound]` and no
   `Classical.choice`
 - Commit: `task 618 phase 6: D = Z layer 1, sections over a window are the adjacency-respecting functions`
+- Verification record (2026-10-18): guarded scoped build exit 0, no sorry, no warnings; full guarded `lake build` exit 0 (2878 jobs, 0 errors); `#print axioms`: `beh_int_iff_adjacent_window`, `Beh.ofAdjacentWindow`, `iter_of_adjacent_window` all `[propext, Quot.sound]`, no `Classical.choice` (the sign split is `le_or_gt` on ℤ, as `taskRel_eq_iter_int` does; `omega` was not used); C34a PASS over 136 markers; C15 PASS; declaration count 42; `status.typ` regenerated and staged
 
 ---
 

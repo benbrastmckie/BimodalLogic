@@ -996,6 +996,108 @@ theorem PathHom.assocRestrict_comp {w u : F.WorldState} {l'' l' l : Obj F.Durati
   (congrArg Subtype.val
     (Beh.restrictTr_comp f g (Beh.castLen (congrArg Subtype.val hl) e.sec))).symm
 
+/-! ### `D = ℤ`, layer 1: sections over `[0, n]` are the adjacency-respecting windows -/
+
+/-- **An adjacency-respecting window iterates the one-step relation**: for `g : ℤ → W` stepping
+along `⇒₁` at every `i ∈ [0, n)`, any `0 ≤ s ≤ t ≤ n` gives an `(t - s)`-fold iterate of `⇒₁` from
+`g s` to `g t`. The ℤ-window twin of `Periodicity.iter_of_path`, by induction on the natural
+number `k` with `t = s + k`; it consumes only `hg`, no frame constraint.
+
+Constraints consumed: None -/
+theorem iter_of_adjacent_window (F : FrameOver intOrder) (n : ℤ) (g : ℤ → F.WorldState)
+    (hg : ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1)))
+    (s t : ℤ) (hs : 0 ≤ s) (hst : s ≤ t) (htn : t ≤ n) :
+    iter (FrameOver.step F) (Int.toNat (t - s)) (g s) (g t) := by
+  have aux : ∀ k : ℕ, s + (k : ℤ) ≤ n → iter (FrameOver.step F) k (g s) (g (s + k)) := by
+    intro k
+    induction k with
+    | zero =>
+      intro _
+      change g s = g (s + ((0 : ℕ) : ℤ))
+      rw [Nat.cast_zero, add_zero]
+    | succ k ih =>
+      intro hk
+      have hk1 : s + (k : ℤ) + 1 ≤ n := by rw [Nat.cast_succ, ← add_assoc] at hk; exact hk
+      have hk' : s + (k : ℤ) ≤ n := le_trans (le_add_of_nonneg_right zero_le_one) hk1
+      refine ⟨g (s + k), ih hk', ?_⟩
+      have hstep := hg (s + k) (add_nonneg hs (Int.natCast_nonneg k))
+        (Int.lt_iff_add_one_le.mpr hk1)
+      rw [Nat.cast_succ, ← add_assoc]
+      exact hstep
+  obtain ⟨k, hk⟩ : ∃ k : ℕ, t = s + (k : ℤ) :=
+    ⟨(t - s).toNat, by
+      rw [Int.toNat_of_nonneg (sub_nonneg.mpr hst)]
+      exact (add_sub_cancel s t).symm⟩
+  subst hk
+  have hkn : Int.toNat (s + (k : ℤ) - s) = k := by
+    rw [add_sub_cancel_left]
+    exact Int.toNat_natCast k
+  rw [hkn]
+  exact aux k htn
+
+/-- **The section built from an adjacency-respecting window.** Over `D = ℤ`, a function
+`g : ℤ → W` with `g i ⇒₁ g (i + 1)` for every `i ∈ [0, n)` is the state function of a section of
+`Beh F` over `n`: its task-respect obligation at `s ≤ t` is "iterating *Compositionality*" —
+`FrameOver.taskRel_natCast_iff_iter` applied to `iter_of_adjacent_window` — and at `t < s` the
+same read through the reflection convention, `FrameOver.reflection_int`. Both are the choice-free
+forms; `⇒₀` being the identity (`lem:nullity` with *Limit*) is what makes the `s = t` case of the
+iterate the base case of `taskRel_natCast_iff_iter`. The marker lists the bundle the binder
+supplies; the proof reaches it through those two lemmas.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+def Beh.ofAdjacentWindow (F : FrameOver intOrder) [F.IsRegular] (n : ℤ) (hn : 0 ≤ n)
+    (g : ℤ → F.WorldState) (hg : ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1))) :
+    Beh F.toTaskFrame n :=
+  ⟨{ domain := fun i => 0 ≤ i ∧ i ≤ n
+     nonempty_domain := ⟨0, le_rfl, hn⟩
+     states := fun i _ => g i
+     respects_task := by
+       intro s t hs ht
+       rcases le_or_gt s t with hst | hts
+       · have hit := iter_of_adjacent_window F n g hg s t hs.1 hst ht.2
+         have hcast : ((Int.toNat (t - s) : ℕ) : ℤ) = t - s :=
+           Int.toNat_of_nonneg (sub_nonneg.mpr hst)
+         have h1 := (F.taskRel_natCast_iff_iter (Int.toNat (t - s)) (g s) (g t)).mpr hit
+         rwa [hcast] at h1
+       · have hit := iter_of_adjacent_window F n g hg t s ht.1 hts.le hs.2
+         have hcast : ((Int.toNat (s - t) : ℕ) : ℤ) = s - t :=
+           Int.toNat_of_nonneg (sub_nonneg.mpr hts.le)
+         have h1 := (F.taskRel_natCast_iff_iter (Int.toNat (s - t)) (g t) (g s)).mpr hit
+         rw [hcast] at h1
+         have h2 := (F.reflection_int (g t) (s - t) (g s)).mp h1
+         rwa [neg_sub] at h2 },
+   fun _ => Iff.rfl⟩
+
+/-- The states of the window section are `g`, by `rfl`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem Beh.ofAdjacentWindow_states (F : FrameOver intOrder) [F.IsRegular] (n : ℤ) (hn : 0 ≤ n)
+    (g : ℤ → F.WorldState) (hg : ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1)))
+    (i : ℤ) (hi : (Beh.ofAdjacentWindow F n hn g hg).val.domain i) :
+    (Beh.ofAdjacentWindow F n hn g hg).val.states i hi = g i := rfl
+
+/-- **The first `D = ℤ` sentence of `cor:path-fibration`**: a function on `[0, n]` is the state
+function of a section of `Beh F` over `n` exactly when it respects adjacency, `g i ⇒₁ g (i + 1)`
+for every `i < n`. Forward: `respects_task` at `(i, i + 1)` is a task of duration `1`, which is
+`FrameOver.step` by definition. Backward: `Beh.ofAdjacentWindow`. Negative differences are covered
+by the reflection convention inside `ofAdjacentWindow`, as the paper's proof says.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem beh_int_iff_adjacent_window (F : FrameOver intOrder) [F.IsRegular] (n : ℤ) (hn : 0 ≤ n)
+    (g : ℤ → F.WorldState) :
+    (∃ τ : Beh F.toTaskFrame n, ∀ i (hi : τ.val.domain i), τ.val.states i hi = g i)
+      ↔ ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1)) := by
+  constructor
+  · rintro ⟨τ, hτ⟩ i hi0 hin
+    have hi : τ.val.domain i := Beh.mem_dom τ hi0 hin.le
+    have hi1 : τ.val.domain (i + 1) :=
+      Beh.mem_dom τ (add_nonneg hi0 zero_le_one) (Int.lt_iff_add_one_le.mp hin)
+    have h := τ.val.respects_task i (i + 1) hi hi1
+    rw [add_sub_cancel_left, hτ i hi, hτ (i + 1) hi1] at h
+    exact h
+  · intro hg
+    exact ⟨Beh.ofAdjacentWindow F n hn g hg, fun _ _ => rfl⟩
+
 end FormalSystem.Semantics.Presheaf
 
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
