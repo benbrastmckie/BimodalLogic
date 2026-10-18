@@ -39,6 +39,10 @@ finiteness is added.  The refutation in 2 is of a STATEMENT SHAPE, not of the da
 lift must pump, not that no lift exists.
 
 Compile: `lake env lean specs/820_ladder_counter_lift_lemma_gated/prototype/counter-lift-arithmetic.lean`
+
+Copy of record: the wired evidence probe `specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean`
+(guarded by `scripts/check-evidence-probes.sh`) carries every theorem of this prototype; this file is
+the research record and is not edited further.
 -/
 import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer
 import Mathlib.Data.Fintype.Pigeonhole

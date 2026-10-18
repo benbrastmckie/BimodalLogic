@@ -1,7 +1,7 @@
 # Implementation Plan: Task #820
 
 - **Task**: 820 - Ladder counter-lift lemma, research-first, gated
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours
 - **Dependencies**: None (parent record: task 761, which this task gates; 763 waits on 761)
 - **Research Inputs**: specs/820_ladder_counter_lift_lemma_gated/reports/01_counter-lift-lemma-gated.md
@@ -147,7 +147,7 @@ Phases 1-8 all edit the single probe file, and the research's gate order (cheape
 decisive first) is itself a dependency — a refutation at an early row changes what the later
 rows must say.
 
-### Phase 1: Promote the Prototype into the Wired Probe [NOT STARTED]
+### Phase 1: Promote the Prototype into the Wired Probe [COMPLETED]
 
 **Goal**: The research-level prototype becomes the arithmetic layer of the wired evidence probe
 `specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean`, guarded by
@@ -155,7 +155,7 @@ rows must say.
 cannot rot.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean` from
+- [x] Create `specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean` from
       `specs/820_ladder_counter_lift_lemma_gated/prototype/counter-lift-arithmetic.lean`:
       namespace `Probe820`, imports `RunLayer` and `Mathlib.Data.Fintype.Pigeonhole` (the
       model-layer imports `AnchorLayer`, `LadderModel` are added in Phase 2), every theorem of
@@ -164,11 +164,11 @@ cannot rot.
       `forward_window`, `countdown_back`, `backward_constraint`, `region_doubling`,
       `iter_doubling`, `growRay*`, `doubling_attained`, `drift_hist`, `countdown_of_run`,
       `tightHist*`, `cutChain`, `no_positionwise_lift`).
-- [ ] Restate `no_positionwise_lift` so its pinned form is self-contained: inline `IsHist` as
+- [x] Restate `no_positionwise_lift` so its pinned form is self-contained: inline `IsHist` as
       `∀ t, Rlad (Q := Bool) (fun _ _ => true) (fun q => q) t (σ t) (σ (t + 1))` and `proj κ x`
       as `(x.1, κ (x.2.1, x.2.2))` in the STATEMENT (keep the two `def`s for the proof body if
       convenient, but the theorem's signature must match `## Lean Challenge Statements`).
-- [ ] Write the probe header in the house shape (`no-pending-forever-ray.lean` is the template):
+- [x] Write the probe header in the house shape (`no-pending-forever-ray.lean` is the template):
       headline; "What was asked"; "What is settled" (the arithmetic layer, with the per-theorem
       axiom profile); the gate table of the research's Appendix A reproduced with every verdict
       marked `DESIGNED, NOT YET COMPILED` (Phases 3-7 flip each row); the statement in pumping
@@ -178,15 +178,15 @@ cannot rot.
       the `box`/`stab` acceptance clause kept, no `LadderCons`/`ladderRealized`/factorization
       lemma under any name, gate 8 SIDESTEPPED, gate 3 CARRIED, zero debt, Route A not entered);
       the compile line.
-- [ ] Keep the `#print axioms` block at the end of the file (six headline theorems) and extend
+- [x] Keep the `#print axioms` block at the end of the file (six headline theorems) and extend
       it as later phases add theorems.
-- [ ] Wire the probe: add `"seam-gluing-ray-product/counter-lift-gates"` to the `WIRED` array of
+- [x] Wire the probe: add `"seam-gluing-ray-product/counter-lift-gates"` to the `WIRED` array of
       `scripts/check-evidence-probes.sh` immediately after the `no-pending-forever-ray` entry,
       and add a decision-row block in the table above the array (same column shape as the
       `no-pending-forever-ray` row) naming the nine arithmetic theorems and stating that the
       gate rows are `DESIGNED` pending Phases 3-7; the row is rewritten in Phase 9 with the final
       verdicts.
-- [ ] Leave the prototype under the task directory untouched (it is the research record); add
+- [x] Leave the prototype under the task directory untouched (it is the research record); add
       one line to its header comment pointing at the wired probe as the copy of record.
 
 **Timing**: 1 hour
