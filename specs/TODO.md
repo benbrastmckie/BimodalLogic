@@ -11,8 +11,8 @@ next_project_number: 820
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,616,617,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,429,497,618,761,783,814,816 | 298,428,502,616,772,777,813,819 | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,617,618,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,819 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,763 | 231,429,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -58,9 +58,8 @@ next_project_number: 820
 
 ### Categorical Structure
 
-616 [PLANNED] — Formalize the duration monoid BD+, its twisted-arrow...
-  └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 617 [PLANNED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
+618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 
 ### Dataset Enhancement
 
@@ -1672,12 +1671,13 @@ PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Struct
 ---
 
 ### 616. Duration monoid twisted arrow interval site
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
 - **Research**: [616_duration_monoid_twisted_arrow_interval_site/reports/01_duration-monoid-twisted-arrow.md]
 - **Plan**: [616_duration_monoid_twisted_arrow_interval_site/plans/01_duration-monoid-twisted-arrow.md]
+- **Summary**: [616_duration_monoid_twisted_arrow_interval_site/summaries/01_duration-monoid-twisted-arrow-summary.md]
 
 **Description**: Formalize the duration monoid `BD+`, its twisted-arrow category, and `lem:interval-twisted-arrow`: `BD+` is factorization-linear and `Tw(BD+)` is isomorphic to the interval category `Int(D)` by an isomorphism carrying the Johnstone coverage of the one to that of the other.
 

@@ -1,19 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 5,
-  "summary": "Wrote a four-phase, 4.5-hour plan for the duration monoid BD+, the factorization category with factorization-linearity, the twisted-arrow category Tw(BD+), and its coverage-preserving isomorphism with Int(D), as one new module FormalSystem/Semantics/Presheaf/Duration.lean on Site.lean alone with no new import. Phases: DANGLING anchor rows first (C15 row-before-citation), then the module in two local-tier parts, then aggregator/root/README wiring under the full gate set. The Lean Challenge Statements block (24 identifiers) was typechecked against the live tree and passes lean-challenge-snapshot.sh --dry-run; validate-artifact.sh passes with 0 warnings.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 8,
+  "summary": "All four plan phases closed (Phase 1 with one reasoned exclusion discharged at Phase 2). FormalSystem/Semantics/Presheaf/Duration.lean formalizes the duration monoid, factorization-linearity, the twisted-arrow category Tw(BD+) and its coverage-preserving isomorphism with Int(D) — lem:interval-twisted-arrow — with zero sorries, no new axiom and no Classical.choice; it is wired into the aggregator and regenerated root, the three paper anchors carry DANGLING rows, and the README documents the measured footprints. Full guarded build (2877 jobs) and check-module-invariants.sh are green; verify-deploy.sh ran scoped to gate 4 under the Batch Gate Deferral directive.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/616_duration_monoid_twisted_arrow_interval_site/plans/01_duration-monoid-twisted-arrow.md",
-      "summary": "Four-phase plan: anchor rows, Duration.lean part A (Dur, Factorization, linearity), part B (Tw, isomorphism, coverage transport), cluster wiring and full gate."
+      "type": "summary",
+      "path": "specs/616_duration_monoid_twisted_arrow_interval_site/summaries/01_duration-monoid-twisted-arrow-summary.md",
+      "summary": "Implementation summary: scope, decisions, four plan deviations, verification record."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Semantics/Presheaf/Duration.lean",
+      "summary": "The new module with the 24 pinned declarations."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 4,
   "phases_total": 4,
   "blockers": [],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Run /orchestrate 616 to implement; dispatch this front singly or in pairs because Phase 4 edits the shared aggregator and root."
+  "next_action_hint": "Postflight only: link the summary, run the deferred batch-level gate set (complete verify-deploy.sh), and consider widening file_scope by scripts/check-module-invariants.sh (proposed_file_scope in .return-meta.json).",
+  "git_checkpoint": "fdd3612e9"
 }

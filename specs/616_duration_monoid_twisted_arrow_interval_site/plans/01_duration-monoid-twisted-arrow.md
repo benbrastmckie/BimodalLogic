@@ -1,7 +1,7 @@
 # Implementation Plan: Task #616
 
 - **Task**: 616 - Formalize the duration monoid `BD⁺`, its twisted-arrow category, and `lem:interval-twisted-arrow`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: Task 563 (landed — `FormalSystem/Semantics/Presheaf/Site.lean` exists and fixes the encoding this plan extends)
 - **Research Inputs**: specs/616_duration_monoid_twisted_arrow_interval_site/reports/01_duration-monoid-twisted-arrow.md
