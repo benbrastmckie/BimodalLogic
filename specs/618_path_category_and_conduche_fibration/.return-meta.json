@@ -1,23 +1,74 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-18T05:32:05Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/618_path_category_and_conduche_fibration/reports/01_path-category-conduche-fibration.md",
-      "summary": "Research for Path(F) and cor:path-fibration: all dependencies landed; probed encoding (val-preserving Beh.castLen, sum-form glueSum, PathHom with length in the hom, PathHom.comp) compiles sorry-free at [propext, Quot.sound]; recommends minimal synonym-scoped Mathlib.CategoryTheory in Path.lean, category laws via glue_unique, fibration property in val-level and sigma forms, associated presheaf equal to Beh F by rfl plus uniqueness, D = Z clause via taskRel_eq_iter_int and Quiver.Path over PLift step; flags missing C15 record rows for def:conduche, def:path-category, fact:conduche-equivalence."
+      "type": "plan",
+      "path": "specs/618_path_category_and_conduche_fibration/plans/01_path-category-conduche-fibration.md",
+      "summary": "Nine-phase, 11.5-hour plan for Presheaf/Path.lean: cast kit and sum-form gluing, PathHom/PathCat/BObj with the length functor, the discrete Conduche fibration property of len, the associated presheaf equal to Beh F by rfl, the D = Z clause in two layers (adjacency windows; Quiver.Path equivalence with concatenation), then wiring and the full gate; 52 Challenge-pinned identifiers compiled sorry-bodied at plan time."
     }
   ],
-  "next_steps": "Plan phase: six phases per report R6; add DANGLING record rows for the three anchors before any docstring cites them.",
-  "modified_files": [
-    "specs/618_path_category_and_conduche_fibration/reports/01_path-category-conduche-fibration.md",
-    "specs/618_path_category_and_conduche_fibration/issues.jsonl"
-  ],
+  "next_steps": "Run /orchestrate 618 to execute the plan",
   "metadata": {
     "session_id": "sess_1792301223_5bcf1c_618",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": [
+      "orchestrator",
+      "plan",
+      "planner-agent"
+    ],
+    "phase_count": 9,
+    "estimated_hours": 11.5,
+    "dependency_waves": [
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        3
+      ],
+      [
+        4
+      ],
+      [
+        5
+      ],
+      [
+        6
+      ],
+      [
+        7
+      ],
+      [
+        8
+      ],
+      [
+        9
+      ]
+    ]
+  },
+  "memory_candidates": [
+    {
+      "content": "For lean4 plans, compile the entire ## Lean Challenge Statements block at plan time with `lake env lean` on a scratch file (sorry bodies, real imports) before writing the plan. It catches signature-level defects that no amount of reading finds: in the Path(F) plan, a bare `def stepQuiver : Quiver F.WorldState` typechecked on its own but Quiver.Path.length/nil/comp then failed instance synthesis; the fix was the Mathlib `Paths V` pattern of a def synonym (`StepGraph F := F.WorldState`) carrying an `instance`, mirroring `PathCat F` for `Category`. Two related constraints on the block: the snapshot tool counts only theorem/lemma/def/instance identifiers (structures and abbrevs must stay out of **Goals**), and any Category/Quiver instance whose hom-set downstream statements depend on definitionally must carry its real `where` body in the block or those statements will not typecheck.",
+      "category": "PATTERN",
+      "source_artifact": "specs/618_path_category_and_conduche_fibration/plans/01_path-category-conduche-fibration.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "lean-challenge-statements",
+        "plan-time-compile",
+        "instance-synonym",
+        "Quiver",
+        "CategoryTheory",
+        "lake env lean"
+      ]
+    }
+  ],
+  "modified_files": [
+    "specs/618_path_category_and_conduche_fibration/plans/01_path-category-conduche-fibration.md",
+    "specs/618_path_category_and_conduche_fibration/challenge-statements-probe.lean",
+    "specs/618_path_category_and_conduche_fibration/issues.jsonl"
+  ],
+  "dispatch_seq": 3
 }
