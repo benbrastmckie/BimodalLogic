@@ -61,7 +61,7 @@ built at the model layer below once the fixture section lands); `a := (true, 0)`
 |---|---|---|---|---|
 | 1 | `(a, B, B+1)` vs `(a, B, B+2)` | `p U (¬p ∧ X(p ∧ X ¬p))` (`phi1`) | SEPARATION, COMPILED (`gate1_cell_ne`, every `B`): the next region has countdown `0` after one idle state from the first (`wit1`, `exists_phi1_mem_cell`) and countdown `≥ 1` from the second (`not_phi1_of_gap_two`: the deadline at the first idle state is `≥ 1` by `Drift`, the pin makes the next countdown `≥ 1`) | `forward_window` (lower edge); `cell_ne` (two-state, `ladder-cell-refutation.lean`), `gate1_gap_separates` (index) |
 | 2 | `(a, c, n)` vs `(a, c+1, n)` | `p U (¬p ∧ ℓ (c mod 4))` (`phi2 c`) | SEPARATION, COMPILED (`gate2_cell_ne`, every `c`, `n`): the forced run ends at index `idx c` from the first (`phi2_of_path`, along EVERY path) and at `idx (c+1) ≠ idx c` from the second (`not_phi2_of_path`) | `count_pending_step`, `pin_region_end`; `gate2_residue_separates` (index) |
-| 9-sep | `(a, 0, n)` vs `(a, 0, n+m)`, `4 ∤ m`, `n ≥ 1` | `X(¬p ∧ X(p ∧ (p U (¬p ∧ ℓ ((n+2) mod 4)))))` | DESIGNED, NOT YET COMPILED (expected SEPARATION: at `c = 0, j = 1` the window is `{n-1, n, n+1}`, three of four residues) | `forward_window` at `c = 0`; `nside_collides` (`nside-modulus-gate.lean`: the index collides at every `(T, P, B)` whose modulus is `P + 1`, so the semantic half decides) |
+| 9-sep | `(a, 0, n)` vs `(a, 0, n+m)`, `4 ∤ m`, `n ≥ 1` | `X(¬p ∧ X(p ∧ (p U (¬p ∧ ℓ ((n+2) mod 4)))))` (`phi9 n`) | SEPARATION, COMPILED (`gate9_sep_cell_ne`; `¬ 4 ∣ m` the only hypothesis on `m`, `1 ≤ n` kept from the target statement and not needed): at `c = 0, j = 1` the window is `{n-1, n, n+1}`, three of four residues, so residue `n+2` is never the next region's end index from `(a, 0, n)` (`not_phi9_of_path`) and is from `(a, 0, n+m)` for every `m ≢ 0 (mod 4)` (`exists_phi9_mem_cell`) | `forward_window` at `c = 0`; `nside_collides` (`nside-modulus-gate.lean`: the index collides at every `(T, P, B)` whose modulus is `P + 1`, so the semantic half decides) |
 | short-idle | `(a, 2, 2)` vs `(a, 2 + P, 2 + P)`, `P ≥ 1` (`k = 1`; the family `(a, 2^(k+1) - 2, ·)` a stretch) | `ψ₁ := p ∧ Y(¬p ∧ Y(p ∧ Y(¬p ∧ ¬(⊤ S p))))` | DESIGNED, NOT YET COMPILED (expected SEPARATION for every threshold `T ≤ 2`: the bound is COMPUTED by `region_doubling` at `L = 0`, `j = 1`, not guessed) | `iter_doubling`, `doubling_attained`, `backward_constraint`, `region_doubling` |
 | 9-col | `(a, 0, n)` vs `(a, 0, n+4)`, `n ≥ 2` | the closure of the 9-sep formula | DESIGNED, NOT YET COMPILED (expected COLLISION, closure-specific: pump the next region by `4` with `n` raised by `4`; the closure is `snce`-free) -- DECISION GATE | `forward_window`; `second_region_any_length`; per-member truth lemmas |
 | gap-shift | `(a, c, n)` vs `(a, c+4, n+4)`, `c ≥ T₀`, same clipped gap | a closure with a `snce` member reading the region start's letter and one pinning the previous idle run's length | DESIGNED, NOT YET COMPILED (expected COLLISION: the pin cascade terminates at an absorbing idle run or a pending-forever past) -- DECISION GATE | `backward_constraint`, `region_doubling`, `doubling_attained`; `gPast_isPath` (pending-forever pasts) |
@@ -1432,6 +1432,194 @@ theorem gate2_cell_ne (c n : ℕ) :
 
 end Gates12
 
+/-! ## Gate 9, separation
+
+The n-side separation at `c = 0`, `j = 1`: on a fixture of product period `4` the forward window
+`{n - 1, n, n + 1}` covers three of four residues, so a shift `m` with `4 ∤ m` is observable.
+The index-level collision half is `nside_collides` (`nside-modulus-gate.lean`: the six-coordinate
+shape collides on the n-side shift at EVERY `(T, P, B)` whose modulus is `P + 1`); it is cited,
+not re-proved, and the semantic half below decides: `K`'s `n`-modulus must be a multiple of the
+product period. -/
+
+section Gate9Sep
+
+/-! ### Run lemmas from an arbitrary origin (the gates read the NEXT region) -/
+
+section Run4Shift
+variable {g : ℤ → LadderState Q4 pend4}
+  (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+include hg
+
+theorem shift4 (a : ℤ) :
+    ∀ t, Rlad step4 pend4 t ((fun t => g (t + a)) t).1 ((fun t => g (t + a)) (t + 1)).1 := by
+  intro t
+  have := hg (t + a)
+  rw [show t + a + 1 = t + 1 + a by ring] at this
+  exact this
+
+/-- `pending_walk4` from the origin `a`. -/
+theorem pending_walk4_at (a : ℤ) (i : Fin 4) (c n : ℕ) (h0 : (g a).1 = ((true, i), c, n)) :
+    ∀ m : ℕ, m ≤ c →
+      (g (a + m)).1.1 = (true, i + idx m) ∧ (g (a + m)).1.2.1 = c - m := by
+  intro m hm
+  have h0' : ((fun t => g (t + a)) 0).1 = ((true, i), c, n) := by
+    simp only [zero_add]
+    exact h0
+  have := pending_walk4 (shift4 hg a) i c n h0' m hm
+  rw [show a + (m : ℤ) = (m : ℤ) + a by ring]
+  exact this
+
+/-- `idle_at4` from the origin `a`. -/
+theorem idle_at4_at (a : ℤ) (i : Fin 4) (c n : ℕ) (h0 : (g a).1 = ((true, i), c, n)) :
+    (g (a + c + 1)).1.1 = (false, i + idx c) ∧ (g (a + c + 1)).1.2.1 = 0 := by
+  have h0' : ((fun t => g (t + a)) 0).1 = ((true, i), c, n) := by
+    simp only [zero_add]
+    exact h0
+  have := idle_at4 (shift4 hg a) i c n h0'
+  rw [show a + (c : ℤ) + 1 = (c : ℤ) + 1 + a by ring]
+  exact this
+
+end Run4Shift
+
+/-- `X (¬p ∧ X (p ∧ (p U (¬p ∧ ℓ ((n + 2) mod 4)))))`: after one idle state the next region
+starts and ends at index `(n + 2) mod 4`. -/
+def phi9 (n : ℕ) : PlusFormula :=
+  X (p.neg.and (X (p.and (.untl p (p.neg.and (ℓ (idx (n + 2))))))))
+
+/-- The gate-9 witness at `(a, 0, n + m)`: one idle state, then a region of countdown `L`. -/
+def wit9 (n m L : ℕ) : ℤ → Q4 × ℕ × ℕ := gPast4 0 0 (n + m) (region4 0 0 (n + m) 1 L)
+
+theorem wit9_rlad (n m L : ℕ) (hL1 : L ≤ n + m + 1) (hL2 : n + m ≤ L + 1) :
+    ∀ t, Rlad step4 pend4 t (wit9 n m L t) (wit9 n m L (t + 1)) :=
+  gPast4_rlad 0 0 (n + m) _ (region4_zero 0 0 (n + m) 1 L)
+    (region4_rlad 0 0 (n + m) 1 L le_rfl (by omega) (by omega))
+
+theorem wit9_zero (n m L : ℕ) : wit9 n m L 0 = ((true, 0), 0, n + m) := by
+  rw [wit9, show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, gPast4_nat, region4_zero]
+
+/-- `phi9 n` holds at `0` along the witness whenever `L ≡ n + 2 (mod 4)`. -/
+theorem phi9_pos (n m L : ℕ) (hL1 : L ≤ n + m + 1) (hL2 : n + m ≤ L + 1)
+    (hLr : L % 4 = (n + 2) % 4) (σ : WorldHistory F4)
+    (hσ : σ.path = fun t => (t + 0, liftAdm (wit9 n m L) (wit9_rlad n m L hL1 hL2) t)) :
+    PlusTruthAt M4 σ 0 (phi9 n) := by
+  rw [phi9, truth_X4, PlusTruth.and_iff, truth_np4 hσ, truth_X4, PlusTruth.and_iff, truth_p4 hσ]
+  rw [show (0 : ℤ) + 1 = ((1 : ℕ) : ℤ) by norm_num, show ((1 : ℕ) : ℤ) + 1 = ((2 : ℕ) : ℤ) by norm_num]
+  refine ⟨?_, ?_, ((L + 3 : ℕ) : ℤ), show ((2 : ℕ) : ℤ) < ((L + 3 : ℕ) : ℤ) by omega, ?_, ?_⟩
+  · simp only [liftAdm_val, wit9, gPast4_nat]
+    rw [region4_idle₁ 0 0 (n + m) 1 L 1 (by omega) (by omega)]
+  · simp only [liftAdm_val, wit9, gPast4_nat]
+    rw [region4_pend₂ 0 0 (n + m) 1 L 2 (by omega) (by omega)]
+  · rw [PlusTruth.and_iff, truth_np4 hσ, truth_l4 hσ]
+    simp only [liftAdm_val, wit9, gPast4_nat]
+    rw [region4_idle₂ 0 0 (n + m) 1 L (L + 3) (by omega)]
+    refine ⟨rfl, ?_⟩
+    show 0 + idx 0 + idx L = idx (n + 2)
+    rw [idx_zero, add_zero, zero_add, idx_eq_iff]
+    exact hLr
+  · intro (r : ℤ) h1 h2
+    have h1' : ((2 : ℕ) : ℤ) < r := h1
+    have h2' : r < ((L + 3 : ℕ) : ℤ) := h2
+    rw [truth_p4 hσ]
+    have hrn : ((r.toNat : ℕ) : ℤ) = r := Int.toNat_of_nonneg (by omega)
+    rw [← hrn]
+    simp only [liftAdm_val, wit9, gPast4_nat]
+    rw [region4_pend₂ 0 0 (n + m) 1 L r.toNat (by omega) (by omega)]
+
+/-- **Non-vacuity**: for every shift `m` with `4 ∤ m`, some type realized at `(a, 0, n + m)`
+contains `phi9 n` — the next region's countdown is chosen in the window `{n+m-1, n+m, n+m+1}`
+with residue `n + 2`. -/
+theorem exists_phi9_mem_cell (n m : ℕ) (hm : ¬ 4 ∣ m) :
+    ∃ T ∈ cellAt M4 (phi9 n) ((0 : ℤ), st4 0 0 (n + m)) 0, phi9 n ∈ T := by
+  have hL : ∃ L, L ≤ n + m + 1 ∧ n + m ≤ L + 1 ∧ L % 4 = (n + 2) % 4 := by
+    have h4 : m % 4 = 1 ∨ m % 4 = 2 ∨ m % 4 = 3 := by omega
+    rcases h4 with h | h | h
+    · exact ⟨n + m + 1, le_rfl, by omega, by omega⟩
+    · exact ⟨n + m, by omega, by omega, by omega⟩
+    · exact ⟨n + m - 1, by omega, by omega, by omega⟩
+  obtain ⟨L, hL1, hL2, hLr⟩ := hL
+  obtain ⟨σ, hσ, hmem⟩ :=
+    cell_of_raw (phi9 n) (wit9 n m L) (wit9_rlad n m L hL1 hL2) 0 0 (n + m) (wit9_zero n m L)
+  refine ⟨_, hmem, ?_⟩
+  rw [mem_tpOf_iff]
+  exact ⟨self_mem_plusSubformulaClosure _, phi9_pos n m L hL1 hL2 hLr σ hσ⟩
+
+/-- **The obstruction**: along every path through `(a, 0, n)` with `1 ≤ n`, position `1` is
+idle, position `2` (if pending) starts a region whose countdown `L'` is the deadline at `1`, so
+`L' ∈ {n - 1, n, n + 1}` (`forward_window` at `c = 0`, `j = 1`) and the first idle state after it
+has index `idx L' ≠ idx (n + 2)`. -/
+theorem not_phi9_of_path (σ : WorldHistory F4) (k : ℤ) (g : ℤ → LadderState Q4 pend4)
+    (hσ : σ.path = fun t => (t + k, g t))
+    (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1) (n : ℕ)
+    (h0 : (g 0).1 = ((true, 0), 0, n)) : ¬ PlusTruthAt M4 σ 0 (phi9 n) := by
+  intro h
+  rw [phi9, truth_X4, PlusTruth.and_iff, truth_np4 hσ, truth_X4, PlusTruth.and_iff,
+    truth_p4 hσ] at h
+  rw [show (0 : ℤ) + 1 = 1 by norm_num, show (1 : ℤ) + 1 = 2 by norm_num] at h
+  obtain ⟨-, hp2, (s : ℤ), hs, hD, hguard⟩ := h
+  have hs' : (2 : ℤ) < s := hs
+  -- position `1` is idle at index `0`, position `2` starts a region with the pin
+  obtain ⟨hidle1, -⟩ := idle_at4 hg 0 0 n h0
+  simp only [Nat.cast_zero, zero_add] at hidle1
+  have hidle1' : (g 1).1.1.1 = false := congrArg Prod.fst hidle1
+  obtain ⟨hq2, hc2⟩ := region_start4 hg 1 hidle1' (by rw [show (1 : ℤ) + 1 = 2 by norm_num]; exact hp2)
+  rw [show (1 : ℤ) + 1 = 2 by norm_num] at hq2 hc2
+  rw [hidle1] at hq2
+  -- the deadline at `1` lies in the window
+  have hn0 : (g 0).1.2.2 = n := congrArg (fun x : Q4 × ℕ × ℕ => x.2.2) h0
+  have hdr := drift_path4 hg 0 1
+  simp only [Nat.cast_one, zero_add, hn0] at hdr
+  -- the run from `2`
+  have h2 : (g 2).1 = ((true, 0), (g 1).1.2.2, (g 2).1.2.2) := by
+    rw [← hc2]
+    exact Prod.ext hq2 rfl
+  obtain ⟨hidleE, -⟩ := idle_at4_at hg 2 0 (g 1).1.2.2 _ h2
+  rw [zero_add] at hidleE
+  rw [PlusTruth.and_iff, truth_np4 hσ, truth_l4 hσ] at hD
+  obtain ⟨hDp, hDl⟩ := hD
+  rcases lt_trichotomy s (2 + ((g 1).1.2.2 : ℤ) + 1) with hlt | heq | hgt
+  · -- `2 < s ≤ 2 + L'`: pending
+    have hsn : (((s - 2).toNat : ℕ) : ℤ) = s - 2 := Int.toNat_of_nonneg (by omega)
+    have hle : (s - 2).toNat ≤ (g 1).1.2.2 := by omega
+    obtain ⟨hq, -⟩ := pending_walk4_at hg 2 0 (g 1).1.2.2 _ h2 (s - 2).toNat hle
+    rw [hsn, show (2 : ℤ) + (s - 2) = s by ring] at hq
+    rw [hq] at hDp
+    exact Bool.noConfusion hDp
+  · -- `s = 3 + L'`: the index there is `idx L'`, and `L' ≡ n + 2` is impossible in the window
+    subst heq
+    rw [hidleE] at hDl
+    have hl' : idx (g 1).1.2.2 = idx (n + 2) := hDl
+    rw [idx_eq_iff] at hl'
+    omega
+  · -- `s > 3 + L'`: the guard fails at the idle state `3 + L'`
+    have hp := hguard (2 + ((g 1).1.2.2 : ℤ) + 1)
+      (show (2 : ℤ) < 2 + ((g 1).1.2.2 : ℤ) + 1 by omega) hgt
+    rw [truth_p4 hσ, hidleE] at hp
+    exact Bool.noConfusion hp
+
+/-- Every type realized at `(a, 0, n)` omits `phi9 n`. -/
+theorem phi9_not_mem_of_mem_cell (n : ℕ) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt M4 (phi9 n) ((0 : ℤ), st4 0 0 n) 0) : phi9 n ∉ T := by
+  obtain ⟨σ, k, g, hσ, hg, h0, rfl⟩ := of_mem_cell4 (phi9 n) 0 0 n T hT
+  intro hmem
+  rw [mem_tpOf_iff] at hmem
+  exact not_phi9_of_path σ k g hσ hg n h0 hmem.2
+
+set_option linter.unusedVariables false in
+/-- **GATE 9, SEPARATION HALF — SEPARATION**: the cells at `(a, 0, n)` and `(a, 0, n + m)`
+differ for every `n ≥ 1` and every shift `m` that is not a multiple of the product period
+`4`.  `¬ 4 ∣ m` is the only hypothesis on `m`.  The hypothesis `1 ≤ n` is the target statement's
+and is kept verbatim; the fixture obstruction does not need it (at `n = 0` the window is
+`{0, 1}`, which also misses residue `2`), so the linter is silenced for this one declaration
+rather than the statement widened silently. -/
+theorem gate9_sep_cell_ne (n m : ℕ) (hn : 1 ≤ n) (hm : ¬ 4 ∣ m) :
+    cellAt M4 (phi9 n) ((0 : ℤ), st4 0 0 n) 0 ≠ cellAt M4 (phi9 n) ((0 : ℤ), st4 0 0 (n + m)) 0 := by
+  intro heq
+  obtain ⟨T, hT, hmem⟩ := exists_phi9_mem_cell n m hm
+  rw [← heq] at hT
+  exact phi9_not_mem_of_mem_cell n T hT hmem
+
+end Gate9Sep
+
 end Probe820
 
 /-! ## Axiom check -/
@@ -1444,3 +1632,4 @@ end Probe820
 #print axioms Probe820.no_positionwise_lift
 #print axioms Probe820.gate1_cell_ne
 #print axioms Probe820.gate2_cell_ne
+#print axioms Probe820.gate9_sep_cell_ne

@@ -339,7 +339,7 @@ is the complete covering check — single file, outside every Lake target root.
 
 ---
 
-### Phase 4: Gate 9, Separation Half [NOT STARTED]
+### Phase 4: Gate 9, Separation Half [COMPLETED]
 
 **Goal**: The n-side separation at `c = 0, j = 1`: on a fixture of product period 4 the forward
 window `{n - 1, n, n + 1}` covers three of four residues, so a shift `m` with `4 ∤ m` is
@@ -354,15 +354,15 @@ decides that `K`'s `n`-modulus must be a multiple of the product period.
   `{n + m - 1, n + m, n + m + 1}` is `≡ n + 2 (mod 4)`.
 
 **Tasks**:
-- [ ] `phi9`, its closure's truth lemmas at position 0 (the three nested `X`/`U` members, each a
+- [x] `phi9`, its closure's truth lemmas at position 0 (the three nested `X`/`U` members, each a
       function of the next region's end index), the witness history at `(a, 0, n + m)` (choose
       the countdown in the window with the right residue; `region4` and `gPast4`), the
       obstruction at `(a, 0, n)` (`forward_window`, `pending_walk4`, a `Fin 4` residue case
       split by `omega`/`decide`), `gate9_sep_cell_ne`.
-- [ ] Record in the header that the index-level collision half is `nside_collides`
+- [x] Record in the header that the index-level collision half is `nside_collides`
       (`nside-modulus-gate.lean`, every `(T, P, B)` with modulus `P + 1`) and is cited, not
       re-proved; the semantic half decides.
-- [ ] Flip the 9-sep header row to `SEPARATION`; extend the axiom block.
+- [x] Flip the 9-sep header row to `SEPARATION`; extend the axiom block.
 
 **Timing**: 1.5 hours
 
