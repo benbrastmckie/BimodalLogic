@@ -58,7 +58,7 @@ next_project_number: 820
 
 ### Categorical Structure
 
-618 [NOT STARTED] — Formalize the path category Path(F) and prove...
+618 [RESEARCHED] — Formalize the path category Path(F) and prove...
 
 ### Dataset Enhancement
 
@@ -84,7 +84,7 @@ next_project_number: 820
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
-782 [RESEARCHED] — Adopt Shape D for the position-space leaf cache instead of...
+782 [PLANNING] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 819 [NOT STARTED] — Research-first: choose the presentation of a ladder cell that...
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
@@ -938,7 +938,7 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO FURTHER DEPENDENCY EDGES. `agent-sys
 ---
 
 ### 782. Phase7 verts shape d decomposition
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -1596,10 +1596,11 @@ Out of scope: any Lean change, and any edit to the manuscript.
 ---
 
 ### 618. Path category and conduche fibration
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563, Task 564, Task 616
+- **Research**: [618_path_category_and_conduche_fibration/reports/01_path-category-conduche-fibration.md]
 
 **Description**: Formalize the path category `Path(F)` and prove `cor:path-fibration`: the length functor `len : Path(F) -> BD+` is a discrete Conduche fibration whose associated presheaf is `Beh(F)`, together with the `D = Z` clause identifying `Path(F)` as the free category on the graph `(W, =>_1)`.
 
