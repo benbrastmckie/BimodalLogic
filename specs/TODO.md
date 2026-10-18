@@ -1,5 +1,5 @@
 ---
-next_project_number: 821
+next_project_number: 822
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 821
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,820 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,820,821 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,820 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,763 | 231,429,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -112,6 +112,7 @@ next_project_number: 821
 751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 817 [NOT STARTED] — Wrap the remaining count-carrying inventory tables under...
 818 [NOT STARTED] — Wrap the four directory-rollup inventory tables that need the...
+821 [RESEARCHED] — Reconcile specs/state.json's next\_project\_number against...
 
 ### Build Performance
 
@@ -119,6 +120,31 @@ next_project_number: 821
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 821. State counter archive numbering reconciliation
+- **Effort**: low
+- **Status**: [RESEARCHED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+- **Parent**: Task 819
+
+**Description**: Reconcile specs/state.json's next_project_number against the five archived rows carrying stray high numbers, so that validate-state.sh --deep Check 12 passes and state-write.sh --allocate-into stops refusing.
+
+OBSERVED STATE, measured and not inferred. next_project_number is 821. Five archived rows carry 949, 953, 992, 998 and 1054 -- all above the counter. Check 12 of validate-state.sh --deep fails on exactly this relation, so the validator exits 1 repo-wide, before and after any unrelated task's writes. No archived row carries 820 or 821, so no duplicate task number has been created and nothing is corrupt today; the failure is a counter-versus-archive ordering invariant, not a collision.
+
+TWO CONCRETE CONSEQUENCES, both already measured during an evidence-probe round. (1) state-write.sh --allocate-into refuses outright, forcing callers onto the literal fallback route commands/task.md Step 6 uses (re-read next_project_number immediately before the write, set next+1). That fallback works but it is a bypass of the allocator's own concurrency protection, so every task creation in this repo currently runs without it. (2) A permanently red validate-state.sh --deep masks any future real finding there: a second, genuine defect would not change the exit code and would be invisible to anyone who reads only the exit status.
+
+THE DECISION THIS TASK OWNS, which is why this is research-first rather than a mechanical fix. The validator names "reset the counter to 1055" as the repair, but that is only correct if the five high numbers are legitimate history. Determine which of the two readings holds before writing anything:
+(a) The five rows are legitimate archived tasks from a numbering range the counter lost track of -- in which case the repair is to raise next_project_number above the maximum (1055) and accept the gap from 821, documenting why the gap exists so a future reader does not "fix" it back.
+(b) The five rows are artifacts of a vault operation or an import that renumbered live tasks without renumbering the archive -- in which case raising the counter to 1055 bakes a mistake into the numbering permanently, and the right repair is to the archived rows instead.
+Read the archived directories and their CHANGE_LOG entries to establish which. State the evidence for the reading chosen, and do not raise the counter before that reading is settled.
+
+GUARDRAILS. No live task is renumbered under any reading: renumbering a live task invalidates the task-number references in its own specs/ artifacts and in git history. The archive is append-only history -- if reading (b) holds, propose the archived-row correction as its own gated step with its evidence, never apply it in passing. Whatever lands, validate-state.sh --deep must be run before and after and both exit codes reported, so the change is shown to fix Check 12 without breaking another check. Leave the fallback allocation route in place and working; this task may restore --allocate-into but must not remove the fallback that callers currently depend on.
+
+OUT OF SCOPE. The allocator's own concurrency design and git-commit-scoped.sh's cross-repository behaviour are separate standing records and are not touched here.
+
+---
 
 ### 820. Ladder counter lift lemma gated
 - **Status**: [NOT STARTED]
