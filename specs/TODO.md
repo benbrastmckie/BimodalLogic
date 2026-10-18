@@ -1,5 +1,5 @@
 ---
-next_project_number: 822
+next_project_number: 823
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 822
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,820,821 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,820 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 219,410,498,499,500,763 | 231,429,497,761 | algebraic-representation, dataset-enhancement, decidability |
+| 3 | 219,410,498,499,500,763,822 | 231,429,497,761,783 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -34,13 +34,14 @@ next_project_number: 822
 770 [NOT STARTED] — postflight writes detail-free blocking issue entry on partial...
 772 [NOT STARTED] — planned jq rewrites re-serialize formatting-sensitive JSON...
   └─ 783 [NOT STARTED] — Bounded in-file block edits: index and assert, never...
+    └─ 822 [NOT STARTED] — Record the launch-side PID-fidelity condition on the...
 774 [NOT STARTED] — EVALUATE (AND BE WILLING TO DECLINE): should plan guidance...
 777 [NOT STARTED] — Carve a task's own specs/ artifacts out of...
   └─ 816 [NOT STARTED] — Stop git-snapshot.sh's --no-revert artifacts from...
 779 [NOT STARTED] — Source-store-aware commit path and plan-time...
 780 [NOT STARTED] — Plan-compliance spot-check misses evidence-probe-scoped Goals
 784 [BLOCKED] — FROZEN-RECORD TRACKER. Seven task records in this repository...
-785 [NOT STARTED] — Record the two Lean plan-authoring gate-collision facts in...
+785 [NOT STARTED] — Record the three Lean plan-authoring gate-collision facts in...
 810 [NOT STARTED] — META TASK. ONE grouped task covering FIVE agent-system...
 813 [NOT STARTED] — State the precedence and snapshot-prerequisite rules for a...
   └─ 814 [NOT STARTED] — Record the decide-synthesis working form, the axiom-free...
@@ -120,6 +121,97 @@ next_project_number: 822
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 822. Record the launch-side PID-fidelity condition on the bounded-waiter detach form
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 783
+- **Parent**: Task 819
+
+**Description**: Record, in the core extension's bounded-waiter guidance, the launch-side condition that Rule 2 currently assumes but never states: the detach form must be one whose `$!` is the writer process itself. Rule 2 ("Writer liveness by captured PID, never by name") governs how liveness is TESTED and is explicit that a name-matching test is forbidden; it says nothing about how the writer is LAUNCHED, and therefore nothing about whether the PID it tells the caller to capture is in fact the writer's. A wrapper that forks between the shell and the writer satisfies Rule 2 to the letter and still produces a waiter that resolves immediately against a live writer.
+
+NOTHING IN ANY SCRIPT IS BROKEN AND THIS IS NOT A DATA-REPAIR RECORD. The deliverable is guidance prose in the core extension's source store plus its index wiring. The canonical idiom at `## The Canonical Idiom` is already the correct direct form (`cmd >log 2>&1 & pid=$!`) and must not be rewritten; this record adds an explicit condition naming what that form is doing, so that a caller who substitutes a wrapper knows it is a substantive change rather than a cosmetic one.
+
+=== THE MEASURED FAILURE ===
+
+An implementation round detached `scripts/check-evidence-probes.sh` via a `setsid nohup ... &` form. Because `setsid` forks, `$!` captured the setsid wrapper rather than the guard, so the `kill -0` liveness loop saw its target exit almost immediately and reported the build finished while the guard was still running. The round recovered by polling the log for the guard's own terminal verdict line, and the guard did ultimately print its `PASS` verdict for all wired probes. Later detachments in the same round used a direct `bash script &` so that `$!` is the writer's own PID.
+
+WHY IT MATTERS, AND WHY IT IS WORTH GUIDANCE AT ALL. This is a silent degradation of the idiom, not a loud failure. The waiter returns early, reports success, and whatever reads the log next sees a truncated or empty result that then gets interpreted as a real outcome. Every visible signal is a success signal. Contrast the name-matching failure already recorded in this file as symptom 3, which fails loudly by spinning forever and eventually drew an operator: that one announces itself, this one does not. A waiter that cannot tell "the writer finished" from "the wrapper I was watching exited" has lost the one property the idiom exists to provide.
+
+=== THE DISCRIMINATION THE GUIDANCE MUST GET RIGHT, MEASURED ON THIS MACHINE ===
+
+READ THIS BEFORE WRITING ANY PROSE. It is tempting to state the rule as "`setsid`/`nohup`-wrapped forms break PID capture." That is WRONG for `nohup`, and writing it would make the file contradict its own two correct examples. Measured directly, four detach forms of the same 4-second writer script, comparing the captured `$!` against the PID the writer printed for itself:
+
+  (a) `bash ./w.sh >log 2>&1 & pid=$!`              -- captured PID == writer PID. `kill -0` correctly reports alive.
+  (b) `nohup bash ./w.sh >log 2>&1 & pid=$!`        -- captured PID == writer PID. `kill -0` correctly reports alive.
+  (c) `setsid nohup bash ./w.sh >log 2>&1 & pid=$!` -- captured PID is NOT the writer PID. `kill -0` fails within 1s while the writer runs on for 4 more seconds, then completes normally and writes its full output to the log.
+  (d) `setsid bash ./w.sh >log 2>&1 & pid=$!`       -- captured PID is NOT the writer PID. Same early-exit failure as (c).
+
+The mechanism, which the guidance should state rather than merely asserting a list of banned words: `nohup` `exec`s into the command and so is PID-transparent, while `setsid` forks a child to become a process-group leader and so interposes a process between the shell and the writer. `setsid` is the breaking wrapper in the measured incident; the `nohup` in that same command line was incidental. The rule to write is therefore a POSITIVE property with a test, not a blocklist: the detach form must be one whose `$!` is the writer itself, and any wrapper that forks rather than `exec`s violates it. State `setsid` as the known concrete instance and `nohup` as the known-safe contrast, because a reader who has just been told "wrappers are dangerous" will otherwise go looking for the `nohup` forms in this very file and break them.
+
+=== TWO PASSAGES THAT MUST NOT BE EDITED ===
+
+Both are measured-correct under (b) above, and an implementer who reads the new rule as anti-`nohup` will be drawn to both. They stay exactly as they are:
+
+  1. In `## The Defect`, symptom 3's quoted incident command, which begins `nohup timeout 3000 ... check.sh > log 2>&1 & disown`. This is a verbatim quote of a historical non-conforming command, non-conforming for its name-matching poll, NOT for its `nohup`. Rewriting a quoted incident to match a later rule destroys the evidence the passage exists to carry.
+  2. In `## Conforming Examples`, the generic gate-script entry `nohup timeout 3000 bash gate.sh >log 2>&1 & pid=$!`. This remains conforming. If the new condition were written as anti-`nohup`, this example would have to be edited to stay consistent -- and that pressure is the signal the rule was written wrong, not that the example is wrong.
+
+=== HARD SCOPE BOUNDARY: DO NOT TOUCH THE GENERATED-COPY CONTRACT BULLET ===
+
+The file's `## Canonical Agent-Contract Bullet (Generated-Copy Source)` section is the single authoritative source for a MUST / MUST NOT bullet pair whose MUST half reads in part "a captured `pid=$!`, a `kill -0` liveness loop, and an outer `timeout N`". MEASURED: that bullet text appears verbatim in 27 agent files across 14 extensions, and `lint-agent-contracts.sh` Check H keeps every copy byte-identical by comparing against this file. Verify with a grep for the literal string `bounded-build-waiter.md's canonical idiom VERBATIM` across the source store.
+
+Consequently: adding the detach-form condition to that bullet converts a one-file prose change into a 28-file synchronized edit gated by a lint check. DO NOT DO IT. The bullet already binds its carriers to the canonical idiom "VERBATIM" and so already inherits whatever the idiom section says; the new condition belongs in the Required Rules prose, where a reader who follows the bullet's own pointer will meet it. If research concludes the bullet genuinely must change, RAISE IT rather than executing a 28-file edit under a record scoped and sized as a single-file guidance change.
+
+=== THE SECOND NAMED FILE IS A CROSS-REFERENCE, NOT A SECOND HOME ===
+
+The change request named `context/patterns/external-process-wait.md` as a place that "states the same idiom." MEASURED: it does not. That file contains ZERO detach-launch forms -- no `& pid=$!` line anywhere in it -- and mentions `kill -0` exactly twice, both times as a cross-reference pointing at the bounded-waiter file (once in its sub-case 3b remedy, once in its `## Local vs. Remote Waits` section, which states explicitly that it covers the case where "there is no local writer to probe" and directs the local detached case to the other file). Its subject is a polled remote status with no local PID at all, so a launch-side PID-fidelity rule has no work to do there.
+
+The correct action for that file is therefore NOTHING, or at most leaving its existing cross-references untouched because they already resolve to the amended rule. DO NOT restate the condition there: the bounded-waiter file's own `### Item 1 Ruling: One Shared Home, Rejected Candidates Recorded` section establishes the single-home principle for exactly this idiom, and a second copy in a file whose scope excludes local writers would be both redundant and wrong in its own context. If the implementer judges a pointer sentence genuinely adds navigational value, it may be added as one sentence that points, never one that restates -- and `external-process-wait.md`'s `line_count` in `index-entries.json` must then be updated with it.
+
+=== AN ADJACENCY RAISED, DELIBERATELY NOT FOLDED IN ===
+
+`hooks/validate-bounded-waiter.sh` is a PreToolUse hook that BLOCKS the name-matching waiter shape via a three-leg conjunction (a loop keyword, a delay call, and a process-name-matching liveness test). It does not detect the forking-wrapper shape, and cannot: the shape has no name-matching leg. That hook's own header argues that for this family "documentation-as-prohibition had already failed for this exact command shape, which is why this hook exists: mechanical teeth, not a sixth restatement."
+
+That argument plainly bears on the present record, which IS a documentation change for a sibling failure in the same family. It is named here so a future reader does not mistake its absence for an oversight. It is NOT in scope: the approved change request is guidance-only, a hook leg for this shape is a separate design question (what is the safe conjunction? a bare `setsid` is legitimate in other contexts, so a one-leg match would be a false-positive machine of exactly the kind that hook's header forbids), and the two have different blast radii. Whoever executes this record should state in its completion summary whether the mechanical backstop is worth proposing as a follow-up, rather than quietly adding a hook leg.
+
+A FURTHER MEASURED PROPERTY OF THAT HOOK, RECORDED HERE AS EVIDENCE RATHER THAN AS SCOPE. The hook matches the raw command TEXT, which includes heredoc payloads. During the creation of this record, an attempt to write this very description into a file via a `cat <<'EOF'` heredoc was BLOCKED by the hook, because the description's own prose about the forbidden shape supplied all three legs of the conjunction. Writing documentation about the banned shape is therefore itself blocked by the guard protecting that shape, and the workaround was to write the file with a non-Bash file-writing tool. This is a real false-positive class, it will recur for anyone editing this family of guidance, and it is NOT part of this record's deliverable -- it is reported separately to the dispatching lead for triage. It is noted here only because a future implementer of THIS record will very likely hit it while editing these same files, and should reach for a non-Bash write rather than concluding their edit is malformed.
+
+=== SOURCE-STORE BOUNDARY ===
+
+`.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect. The owning extension is `core`: its `source_dir`, resolved from `<project-root>/.claude-extensions.json`, is `/home/benjamin/.config/nvim/agent-system/extensions/core`, so every edit target is `agent-system/extensions/core/**` and never a deployed `.claude/**` path, per `.claude/rules/source-store-deploy-boundary.md`. Redeploy afterwards via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+
+=== CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION ===
+
+This record is filed in the BimodalLogic task space while its edit target resolves only under `/home/benjamin/.config/nvim/`. That mismatch is the same deliberate, previously approved condition carried by the sibling record `lean_plan_gate_collision_authoring_guidance`: the record sits beside the run that measured it. A migrator should treat it as a deliberate choice, not an authoring slip. Three records in the source-store repository's own task space bear on it and are named so a future reader finds them without a search: `migrate_mis_sited_agent_system_tasks` (the migration record for this class), `cross_repo_source_store_gate_blindness` (a prior conclusion-stage dispatch from this repository colliding with records filed in the source-store repository from identical issue entries), and `agent_system_task_siting_and_target_root` (which owns the authoring hole permitting this siting and the question of how a cross-repo record should declare file_scope). NO DEPENDENCY EDGE CAN EXPRESS ANY OF THIS -- those records live in a different repository's task space, so no dependency edge and no file_scope overlap gate spans the two systems. The coordination is a manual read.
+
+=== DEPENDENCY EDGE, AND WHY IT IS AN EDGE RATHER THAN AN EXCLUSION ===
+
+`agent-system/extensions/core/index-entries.json` is claimed by two other open records in this task space: `jq_rewrite_reserializes_json_record_files` and `bounded_block_edit_index_and_assert`, which already form a chain (the latter depends on the former). This record's `line_count` update lands in that same file, an unordered overlap. Per this repository's batching discipline, shared file territory is serialized by an explicit edge rather than excluded: this record therefore depends on `bounded_block_edit_index_and_assert`, extending the existing chain to three rather than racing a third writer into the same JSON file. Note that `jq_rewrite_reserializes_json_record_files` concerns `jq` rewrites RESERIALIZING whole JSON record files -- directly relevant to how this record's own `line_count` edit should be performed, which is a further reason to let it land first rather than to exclude it.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). The script names (`check-evidence-probes.sh`, `validate-bounded-waiter.sh`, `lint-agent-contracts.sh`), the shell tokens (`setsid`, `nohup`, `exec`, `$!`, `kill -0`, `disown`), the rule numbers and the section headings of the edited file are durable anchors and may be cited freely. The originating task number, the issue entry_id, the measured PID values and the specific probe count from the measured run may NOT appear in the guidance prose -- they live in this record only. State the condition as what a caller does and what the shell does, never as a narration of a past run.
+
+=== ACCEPTANCE ===
+
+(1) The guidance states the detach-form condition as a positive property of the launch -- that `$!` must be the writer itself -- rather than as a list of banned wrapper names, and it is reachable from Rule 2, whose assumption it makes explicit.
+(2) It names `setsid` as a concrete breaking instance WITH its mechanism (it forks to lead a new process group), and names `nohup` as PID-transparent WITH its mechanism (it `exec`s), so the two are not conflated.
+(3) It states the failure's observable signature: the waiter resolves almost immediately against a still-running writer, and the early read looks like a real, successful outcome.
+(4) Both `nohup`-bearing passages identified above are byte-identical to their current text in the landed result.
+(5) The generated-copy contract bullet is byte-identical to its current text, and the 27 agent-file copies are untouched; `lint-agent-contracts.sh` Check H still passes.
+(6) `external-process-wait.md` carries no restatement of the condition.
+(7) `index-entries.json` reflects the landed file: `line_count` for every file whose length changed agrees with the file as landed, and the file remains valid JSON parseable by `jq`.
+(8) The guidance carries no task-number references, no record-versioning language, and no measured PID or probe-count values from the originating run.
+(9) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean` afterwards.
+(10) The completion summary states whether a mechanical hook backstop for the forking-wrapper shape is worth proposing as a follow-up.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the ladder-cell presentation design-decision record and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. The originating entry is `specs/819_ladder_cell_presentation_design_decision/issues.jsonl`, entry_id `iss_1792337390065_iAkAgQ` (class `tooling`, severity minor, resolution `worked_around`). The four-form PID measurement in this record was performed fresh during task creation, not copied from the originating run, which measured only the failing form.
+
+---
 
 ### 821. State counter archive numbering reconciliation
 - **Effort**: low
@@ -823,7 +915,7 @@ WHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned find
 
 ---
 
-### 785. Record the two Lean plan-authoring gate-collision facts in the lean extension source store
+### 785. Record the three Lean plan-authoring gate-collision facts in the lean extension source store
 - **Effort**: low
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
@@ -831,7 +923,7 @@ WHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned find
 - **Dependencies**: None
 - **Parent**: Task 778
 
-**Description**: Record, in the lean extension's source store, the two gate-collision facts a Lean implementation plan must anticipate before it is written: that any change to Lean source line counts trips TWO independent generated surfaces rather than one, and that verify-deploy.sh's target argument is a deploy-tree root rather than an extension subdirectory.
+**Description**: Record, in the lean extension's source store, the three gate-collision facts a Lean implementation plan must anticipate before it is written: that any change to Lean source line counts trips TWO independent generated surfaces rather than one, that verify-deploy.sh's target argument is a deploy-tree root rather than an extension subdirectory, and that a sweep criterion asserting "matches nothing" over paths which deliberately retain refuted or pinned bodies is unsatisfiable by construction.
 
 NOTHING IN EITHER REPOSITORY IS BROKEN, AND THIS IS NOT A DATA-REPAIR RECORD. Both gaps were observed during an implementation run and both were already resolved in that run -- the drifted generated file was regenerated and staged, and the unmeetable criterion was closed as an exclusion. `typst/generated/status.typ`, the inventory blocks, the pre-commit hook and `typst-sync-check.sh` are all correct as they stand; do not re-edit them. This record's entire deliverable is plan-authoring prose in the lean extension's source store plus its wiring.
 
@@ -852,6 +944,18 @@ MEASURED. A plan's final-phase verification criterion invoked `verify-deploy.sh`
 
 THE DURABLE LESSON TO RECORD. When a plan's verification criterion invokes `verify-deploy.sh` against source-store work, the target argument is a deploy-tree root, never an extension subdirectory. The guidance should state the correct argument shape positively (what to pass), not only the prohibition, and should note the corollary a plan author needs: because the gate set runs against the whole deploy tree, a red gate there may be entirely pre-existing and unrelated to the plan's own edits, so the criterion should be phrased to distinguish findings that name the plan's own files from the tree's standing baseline.
 
+=== ITEM 3 -- A SWEEP CRITERION OVER A PATH SET THAT DELIBERATELY RETAINS REFUTED BODIES ===
+
+MEASURED. A plan's final-phase verification criterion asserted that a `grep` for `^def ladderIndex` over `FormalSystem/`, `Tests/` and `specs/evidence/` "matches nothing". The sweep in fact hits five PRE-EXISTING pinned definitional bodies of REFUTED index candidates -- `ladderIndex`, `ladderIndexRes` twice, and `ladderIndexJnt` twice -- inside four refutation probes, none of them touched by the task that authored the criterion. Those bodies are the refuted claims the evidence record keeps ON PURPOSE: pinning them is how the record preserves what was ruled out. The criterion could therefore never have held, and it was reported as mis-scoped rather than acted on.
+
+THE DURABLE LESSON TO RECORD. A plan-authored sweep that asserts "matches nothing" over a path set which deliberately retains refuted or pinned historical bodies is UNSATISFIABLE BY CONSTRUCTION. The author's intent in such a criterion is always "my new declaration is absent", but the sweep as written asks "no declaration of this shape exists anywhere in these paths" -- and in a repository whose evidence apparatus retains refuted candidates by design, the second question has a permanent, intended answer of "some exist".
+
+TWO INDEPENDENT FAILURE REASONS, WITH DIFFERENT REMEDIES, AND THE GUIDANCE MUST CARRY BOTH. (a) Retained refuted bodies: the paths hold declarations the record keeps deliberately, so any sweep ranging over them must EXCLUDE the refutation-probe paths. (b) Prefix capture: `ladderIndex` is a prefix of both `ladderIndexRes` and `ladderIndexJnt`, so a sweep anchored on a shared prefix matches sibling names even when the exact name the author cared about is genuinely absent. The remedy for (b) is different from (a): assert the absence of the SPECIFIC NEW declaration names, not a shared prefix. A criterion that fixes only one of the two is still unsatisfiable for the other reason.
+
+THE REMEDY IS CONFIRMED, NOT MERELY PROPOSED. The same phase measured that no `ladderRealized`, `LadderCons` or `ladderCons_localRun` declaration exists anywhere in those paths. An exact-name sweep over the new declaration names WOULD therefore have been satisfiable exactly as written, on the same tree, in the same phase. The guidance can state the exact-name form as a remedy that was observed to work rather than as an untested suggestion.
+
+WHY THIS IS THE SAME KIND OF FACT AS ITEMS 1 AND 2. All three are things a Lean plan author must anticipate BEFORE a criterion is written, and all three manifest the same way: a verification step that cannot be met as written, through no fault of the implementation work. Items 1 and 2 concern gate MECHANICS -- which generated surfaces a gate checks, and what shape of target argument a gate script takes. Item 3 concerns the SEARCH SPACE a sweep criterion ranges over. Same audience, same guidance file, same `index-entries.json` entry and referrer line, so it carries no additional wiring cost and belongs with the other two rather than in a record of its own.
+
 === DELIMITATION FROM THE verify-deploy CONTEXT-BUDGET FIXTURE RECORD -- READ THIS BEFORE TREATING EITHER RECORD AS A DUPLICATE ===
 
 The source-store repository's task space already holds record #389 `verify_deploy_context_budget_fixture_missing_git_add` [not_started], which owns a DIFFERENT root cause of the same gate's unmeetability: `test-verify-deploy-context-budget.sh`'s fixture runs `git init` on a scratch directory but never `git add`, so Gate 22 discovers files via `git ls-files` against an empty index, finds zero `.sh` files, and exits 2 -- failing Gate 8 (`run-all.sh`) and therefore the complete gate set at 1 of 36. That is a real defect in a test fixture, fixable by code.
@@ -860,9 +964,9 @@ ITEM 2 ABOVE IS NOT THAT DEFECT. Item 2 is a plan-AUTHORING error about the shap
 
 FOLD INVITATION, FOR A MIGRATOR. If a migrator is already touching #389, item 2's one-paragraph remedy may be better folded into that record as an amendment than carried here, since both concern the same script and a reader meeting one will want the other. Item 1 is unrelated to #389 and must stay wherever this record lands.
 
-=== WHY ONE RECORD RATHER THAN TWO ===
+=== WHY ONE RECORD RATHER THAN SEPARATE ONES ===
 
-The two items have independent root causes but a single edit surface: both are plan-authoring guidance for the same audience, both land in the same new or extended guidance file, and both require the same `index-entries.json` entry and the same referrer line. Filed as two records they would collide on all three paths with no mechanism to serialize them, and item 2 alone is one paragraph -- too small to carry a record's overhead, and flagged above as a possible fold into #389. Filing them together also keeps the delimitation note and the cross-repo siting note in one place rather than duplicated. The guidance file must state the two items as two separately checkable conditions, not blur them into one "watch out for gates" paragraph.
+The two items have independent root causes but a single edit surface: both are plan-authoring guidance for the same audience, both land in the same new or extended guidance file, and both require the same `index-entries.json` entry and the same referrer line. Filed as two records they would collide on all three paths with no mechanism to serialize them, and item 2 alone is one paragraph -- too small to carry a record's overhead, and flagged above as a possible fold into #389. Filing them together also keeps the delimitation note and the cross-repo siting note in one place rather than duplicated. The guidance file must state the items as separately checkable conditions, not blur them into one "watch out for gates" paragraph. Item 3 joins them on the same grounds: it shares the same audience, the same guidance file, and the same two wiring paths, so filing it separately would add a third claimant to all three with no mechanism to serialize them, and its own remedy is two paragraphs -- below the threshold that justifies a record's overhead.
 
 === SITING WITHIN THE LEAN EXTENSION, AND THE ONE OPEN QUESTION ===
 
@@ -897,15 +1001,19 @@ Every edited file lies outside `specs/**`, so its prose must carry no task-numbe
 (1) The guidance names BOTH generated surfaces of item 1 with their regeneration commands, and states the pre-commit-versus-later-verification asymmetry explicitly enough that a plan author can tell which surface may be deferred to a final phase and which may not.
 (2) It states the `.lean`-paths-only trigger condition and the blocking (non-auto-regenerating) character of the hook, so a plan author knows when a regeneration step is needed and that it is an explicit step with a staged file.
 (3) It states item 2's correct `verify-deploy.sh` target shape positively, and carries the pre-existing-findings corollary for phrasing a meetable criterion.
-(4) It presents the two items as two separately checkable conditions.
+(4) It presents items 1 and 2 as two separately checkable conditions.
 (5) It carries no task-number references, no record-versioning language, and no measured line-count values from the originating run.
 (6) The new or extended file has an `index-entries.json` entry whose `line_count` and `keywords` agree with the file as landed, plus at least one referrer reachable by a plan author who does not already know the file's name.
 (7) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean` afterwards.
 (8) If item 2 was relocated to a core home or folded into the source-store repository's fixture record instead, that decision and its destination are stated in the completion summary.
+(9) The guidance states item 3's unsatisfiable-by-construction class, carries BOTH of its failure reasons (retained refuted bodies, and prefix capture of sibling names) with their distinct remedies, and presents the exact-name sweep as a remedy confirmed on the measured tree rather than as an untested suggestion.
+(10) Item 3 is presented as a third separately checkable condition alongside items 1 and 2, not blurred into either.
 
 === PROVENANCE ===
 
 Raised during orchestration of the residue-index modulus-convention record (task 778) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Both originating entries are in `specs/778_residue_index_modulus_convention_record/issues.jsonl`: item 1 is entry_id `iss_1791950541564_ZAJr96` (class `gate-collision`, severity minor), item 2 is entry_id `iss_1791950893587_oVovJc` (class `gate-collision`, severity costly). The user was shown both gaps with these citations and the cross-repo siting trade-off before this record was dispatched.
+
+Item 3 was raised later, during orchestration of the ladder-cell presentation design-decision record, and approved at the orchestrate-lead level through the same conclusion-stage agent-system channel, with the explicit routing instruction that it be folded into THIS record rather than filed as a duplicate. Its originating entry is `specs/819_ladder_cell_presentation_design_decision/issues.jsonl`, entry_id `iss_1792338994747_jX9QvT` (class `gate_collision`, severity none, resolution `open`). Reading that entry's `what_happened` field gives the measurement in item 3 above verbatim.
 
 ---
 
