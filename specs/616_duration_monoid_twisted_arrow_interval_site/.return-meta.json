@@ -1,0 +1,35 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/616_duration_monoid_twisted_arrow_interval_site/plans/01_duration-monoid-twisted-arrow.md",
+      "summary": "Four-phase plan for Duration.lean: DANGLING anchor rows, the duration monoid and factorization-linearity, the twisted-arrow category with its coverage-preserving isomorphism to Int(D), and cluster wiring under the full gate set."
+    }
+  ],
+  "next_steps": "Run /orchestrate 616 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1792281062_c5e5aa_616",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 4.5,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Adding one new module under FormalSystem/ is never a one-file change in BimodalLogic: it forces (1) a DANGLING or pinned row per cited paper anchor in docs/reference/paper-definitions-of-record.md BEFORE any docstring cites it (C15, enforced; REFERENCE_NORMAL_FORM row-before-citation rule), (2) an import line plus a '## Modules' bullet in the directory's sibling aggregator (C24 root closure; the aggregator is a shared touch across every concurrent task in that directory and sits in no task's file_scope, so orchestrate such fronts singly or in pairs), (3) regeneration of FormalSystem.lean via 'lake exe mk_all --lib FormalSystem' (C33 byte-exact; never hand-edit), and (4) a module-table row plus declaration/axiom-footprint entries in the directory README. Plan the anchor rows as Phase 1 and the aggregator/root/README wiring as the final full-tier phase, with the module itself built local-tier in between (unimported, so nothing else can observe it).",
+      "category": "PATTERN",
+      "source_artifact": "specs/616_duration_monoid_twisted_arrow_interval_site/plans/01_duration-monoid-twisted-arrow.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["new-module-checklist", "C33 mk_all", "C15 paper-anchor rows", "aggregator shared touch", "lean4 planning", "FormalSystem"]
+    }
+  ],
+  "modified_files": [
+    "specs/616_duration_monoid_twisted_arrow_interval_site/plans/01_duration-monoid-twisted-arrow.md",
+    "specs/616_duration_monoid_twisted_arrow_interval_site/.orchestrator-handoff.json",
+    "specs/616_duration_monoid_twisted_arrow_interval_site/.return-meta.json"
+  ],
+  "dispatch_seq": 5
+}

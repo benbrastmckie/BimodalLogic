@@ -59,7 +59,7 @@ next_project_number: 820
 ### Categorical Structure
 
 566 [PLANNED] — Prove app:presheaf-dictionary's Possible Worlds clause: H\_F...
-616 [PLANNING] — Formalize the duration monoid BD+, its twisted-arrow...
+616 [PLANNED] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 617 [PLANNING] — Prove app:presheaf-dictionary's Reflection clause: reflection...
 
@@ -1672,11 +1672,12 @@ PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Struct
 ---
 
 ### 616. Duration monoid twisted arrow interval site
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
 - **Research**: [616_duration_monoid_twisted_arrow_interval_site/reports/01_duration-monoid-twisted-arrow.md]
+- **Plan**: [616_duration_monoid_twisted_arrow_interval_site/plans/01_duration-monoid-twisted-arrow.md]
 
 **Description**: Formalize the duration monoid `BD+`, its twisted-arrow category, and `lem:interval-twisted-arrow`: `BD+` is factorization-linear and `Tw(BD+)` is isomorphic to the interval category `Int(D)` by an isomorphism carrying the Johnstone coverage of the one to that of the other.
 
