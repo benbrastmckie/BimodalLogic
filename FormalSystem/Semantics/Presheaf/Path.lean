@@ -134,8 +134,15 @@ describes.
 - `iter_of_adjacent_window`, `beh_int_iff_adjacent_window`: over `D = ℤ`, a function on `[0, n]`
   is the state function of a section iff it respects adjacency at every step.
 - `PathHom.toPath_length`, `PathHom.toPath_id`, `PathHom.toPath_comp`, `PathHom.ofPath_toPath`,
-  `PathHom.toPath_ofPath`: sections are paths, identities are the empty paths, gluing is
-  concatenation, and the two are in bijection.
+  `PathHom.toPath_ofPath`, `PathHom.pathEquiv`: **the `D = ℤ` clause** — over the integers, the
+  sections of `Beh F` over `n` are the paths of length `n` in the one-step graph `(W, ⇒₁)`
+  (`beh_int_iff_adjacent_window` for the state functions, `pathEquiv` with `toPath_length` for the
+  morphisms), gluing is concatenation (`toPath_comp`), and identities are the empty paths
+  (`toPath_id`); so `Path(F)` is the free category on that graph, in the sense of Mathlib's
+  `CategoryTheory.Paths.categoryPaths` (`Hom := Quiver.Path`, `id := Path.nil`,
+  `comp := Path.comp`), which is matched here without being imported. This is the presentation of
+  the decidability route's search space as the root paths of a finite class graph, read off the
+  categorical packaging: see `Presheaf/README.md`.
 
 ## Implementation Notes
 
@@ -163,6 +170,20 @@ characterize every glued section by `glue_unique`. No proof below case-splits on
 `def`-valued `Quiver F.WorldState` is not found by instance synthesis, so the synonym is a
 requirement, not a style choice; and placing an instance on `F.WorldState` or `Dur D` directly
 would leak it into every module of the cluster.
+
+**Measured axiom profile** (`#print axioms`): every declaration of this module is `[propext]`,
+`[propext, Quot.sound]` or axiom-free — `Beh.castLen`, `PathHom.ext'`, `BObj.instCategory` and
+`StepGraph.instQuiver` at `[propext]`; `glueSum`, `PathHom.comp_assoc`, `PathCat.instCategory`,
+`PathCat.len_isDiscreteConduche`, `PathHom.assocRestrict_sec`, `PathHom.assocRestrict_unique`,
+`beh_int_iff_adjacent_window`, `PathHom.toPath_comp`, `PathHom.ofPath_toPath`,
+`PathHom.toPath_ofPath` and `PathHom.pathEquiv` at `[propext, Quot.sound]` — and **none reaches
+`Classical.choice`**. Two choices keep the `D = ℤ` layer on that profile: the sign split in
+`Beh.ofAdjacentWindow` routes through `FrameOver.taskRel_natCast_iff_iter` and the choice-free
+`FrameOver.reflection_int`, never `FrameOver.reflection` or `taskRel_eq_iter`; and the two-point
+section of `PathHom.ofStep` decides `i ≤ 0` on `ℤ` computably (`Int.decLe`), with its endpoint
+facts by `decide`/`omega` and, in `ofPath_toPath`, by the core `Int.not_le`/`Int.le_antisymm`
+rather than through the order-theoretic `not_le`/`le_of_add_le_add_right`, which do measure
+`Classical.choice` on this Mathlib.
 
 **Paper state: the source appendix is cut.** As for the sibling modules, the anchors cited below
 live in `app:Structure`, which the paper **cut in full** under an explicit `% SECTION CUT` record;
@@ -230,6 +251,11 @@ exists; nothing here depends on the answers.
 path-category · conduché-fibration · length-functor · associated-presheaf · free-category ·
 sheaf-clause · germs-clause · cor:path-fibration
 -/
+
+-- Length baseline: the module carries the whole of `cor:path-fibration` — the category, the
+-- fibration property, the associated-presheaf equality, and both layers of the `D = ℤ` clause —
+-- and the proofs compare sections at the `.val` level with every domain witness explicit.
+set_option linter.style.longFile 1700
 
 namespace FormalSystem.Semantics.Presheaf
 
@@ -1389,6 +1415,132 @@ theorem PathHom.toPath_comp (F : FrameOver intOrder) [F.IsRegular] {w u v : F.Wo
     rw [Nat.cast_add, Int.toNat_of_nonneg f.len.property, Int.toNat_of_nonneg g.len.property]
   exact (congr_n hadd _ _ hmn).trans
     (aux _ g (Int.toNat_of_nonneg g.len.property) _ f (Int.toNat_of_nonneg f.len.property) hmn)
+
+/-! ### `D = ℤ`, layer 2b: paths to sections, the round trips, the free category -/
+
+/-- **A one-step morphism**: the two-point section on `[0, 1]` reading `w` at `0` and `u` at `1`,
+built by `Beh.ofAdjacentWindow` from the single step `h : w ⇒₁ u`. Its task-respect obligation is
+discharged inside `ofAdjacentWindow`: forward by `h` through "iterating *Compositionality*", at
+the same point by `⇒₀` being the identity, and backward by the reflection convention
+(`FrameOver.reflection_int`), all choice-free.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+def PathHom.ofStep (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (h : FrameOver.step F w u) : PathHom F.toTaskFrame w u where
+  len := ⟨1, zero_le_one⟩
+  sec := Beh.ofAdjacentWindow F 1 zero_le_one (fun i => if i ≤ 0 then w else u) (by
+    intro i hi0 hi1
+    have hi : i = 0 := by omega
+    subst hi
+    rw [if_pos le_rfl, if_neg (by decide)]
+    exact h)
+  src := show (if (0 : ℤ) ≤ 0 then w else u) = w from if_pos le_rfl
+  tgt := show (if (1 : ℤ) ≤ 0 then w else u) = u from if_neg (by decide)
+
+/-- **Paths to sections**: the empty path to the germ, a path extended by a step to the composite
+of the path's morphism with the one-step morphism. This is Mathlib's `CategoryTheory.Paths` reading
+of the free category — `nil ↦ id`, `cons ↦ comp` — specialized to `(W, ⇒₁)`, without importing
+`PathCategory/Basic.lean`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+def PathHom.ofPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (p : StepPath F w u) : PathHom F.toTaskFrame w u :=
+  match u, p with
+  | _, Quiver.Path.nil => PathHom.id F.toTaskFrame w
+  | _, Quiver.Path.cons q ⟨h⟩ =>
+    PathHom.comp (TaskFrame.comp F.toTaskFrame) (PathHom.ofPath F q) (PathHom.ofStep F h)
+
+/-- **Round trip, sections first**: reading a morphism as a path and back returns the morphism.
+By induction on the explicit length of `toPathAux`: at `0` the morphism is the germ at its common
+endpoint (`PathHom.ext'` with `Beh.ofGerm_germ`); at `n + 1` the path's last step is the right
+factor of the morphism at the cut `n` — the two-point section and the restriction to `[n, n + 1]`
+agree at both of their points — so `factor_comp` closes the case.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem PathHom.ofPath_toPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (e : PathHom F.toTaskFrame w u) : PathHom.ofPath F (PathHom.toPath F e) = e := by
+  have aux : ∀ (n : ℕ) {w u : F.WorldState} (e : PathHom F.toTaskFrame w u)
+      (hn : (n : ℤ) = e.len.val), PathHom.ofPath F (PathHom.toPathAux F n e hn) = e := by
+    intro n
+    induction n with
+    | zero =>
+      intro w u e hn
+      have h0 : (0 : ℤ) = e.len.val := Nat.cast_zero.symm.trans hn
+      have hwu : w = u := e.src.symm.trans
+        ((PartialHistory.states_eq_of_time_eq e.sec.val 0 e.len.val h0
+          (Beh.mem_dom e.sec le_rfl e.len.property)
+          (Beh.mem_dom e.sec e.len.property le_rfl)).trans e.tgt)
+      subst hwu
+      change PathHom.id F.toTaskFrame w = e
+      have hgerm : Beh.germ (Beh.castLen h0.symm e.sec) = w := e.src
+      have hsec : (Beh.ofGerm F.toTaskFrame w).val = e.sec.val := by
+        have h := congrArg Subtype.val (Beh.ofGerm_germ (Beh.castLen h0.symm e.sec))
+        rw [hgerm] at h
+        exact h
+      exact PathHom.ext' (Subtype.ext h0) hsec
+    | succ n ih =>
+      intro w u e hn
+      have hn' : (n : ℤ) + 1 = e.len.val := (Nat.cast_succ n).symm.trans hn
+      let fac : Factorization e.len := ⟨(n : ℤ), 1, Int.natCast_nonneg n, zero_le_one, hn'⟩
+      obtain ⟨s, hs⟩ : ∃ s, PathHom.toPathAux F (n + 1) e hn
+          = Quiver.Path.cons (PathHom.toPathAux F n (e.factorLeft fac) rfl) ⟨s⟩ := ⟨_, rfl⟩
+      rw [hs]
+      -- the one-step morphism is the right factor at the cut `n`
+      have hstep : PathHom.ofStep F s = e.factorRight fac := by
+        refine PathHom.ext' (Subtype.ext rfl) (partialHistory_ext rfl ?_)
+        intro r hr h'
+        change (if r ≤ 0 then e.cutState fac else u) = e.sec.val.states ((n : ℤ) + r) _
+        by_cases hr0 : r ≤ 0
+        · have hr00 : r = 0 := le_antisymm hr0 hr.1
+          subst hr00
+          rw [if_pos le_rfl]
+          exact PartialHistory.states_eq_of_time_eq e.sec.val (n : ℤ) ((n : ℤ) + 0)
+            (add_zero _).symm _ _
+        · have hr1 : 0 + 1 ≤ r := Int.lt_iff_add_one_le.mp (Int.not_le.mp hr0)
+          rw [zero_add] at hr1
+          have hr11 : r = 1 := Int.le_antisymm hr.2 hr1
+          subst hr11
+          rw [if_neg hr0]
+          exact e.tgt.symm.trans (PartialHistory.states_eq_of_time_eq e.sec.val e.len.val
+            ((n : ℤ) + 1) hn'.symm _ _)
+      have hrest : PathHom.comp (TaskFrame.comp F.toTaskFrame) (e.factorLeft fac)
+          (PathHom.ofStep F s) = e := by
+        rw [hstep]
+        exact PathHom.factor_comp (TaskFrame.comp F.toTaskFrame) e fac
+      exact (congrArg
+        (fun x => PathHom.comp (TaskFrame.comp F.toTaskFrame) x (PathHom.ofStep F s))
+        (ih (e.factorLeft fac) rfl)).trans hrest
+  exact aux _ e _
+
+/-- **Round trip, paths first**: reading a path as a morphism and back returns the path. By
+induction on the path, using `toPath_id`, `toPath_comp`, and the fact that the one-step morphism
+reads back as the one-step path — which holds by reflexivity, because its cut state at `0` reduces
+to `w` and the transport along `w = w` collapses.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem PathHom.toPath_ofPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (p : StepPath F w u) : PathHom.toPath F (PathHom.ofPath F p) = p := by
+  induction p with
+  | nil => rfl
+  | cons q h ih =>
+    obtain ⟨h⟩ := h
+    refine (PathHom.toPath_comp F (PathHom.ofPath F q) (PathHom.ofStep F h)).trans ?_
+    rw [ih]
+    rfl
+
+/-- **The `D = ℤ` clause of `cor:path-fibration`, packaged**: the morphisms `w → u` of `Path(F)`
+are in bijection with the paths from `w` to `u` in the one-step graph `(W, ⇒₁)`. With
+`toPath_id` and `toPath_comp` — identities to empty paths, gluing to concatenation — this says
+`Path(F)` is the free category on that graph, in the sense of Mathlib's
+`CategoryTheory.Paths.categoryPaths` (`Hom := Quiver.Path`, `id := nil`, `comp := Path.comp`).
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+def PathHom.pathEquiv (F : FrameOver intOrder) [F.IsRegular] (w u : F.WorldState) :
+    PathHom F.toTaskFrame w u ≃ StepPath F w u where
+  toFun := PathHom.toPath F
+  invFun := PathHom.ofPath F
+  left_inv := PathHom.ofPath_toPath F
+  right_inv := PathHom.toPath_ofPath F
 
 end FormalSystem.Semantics.Presheaf
 

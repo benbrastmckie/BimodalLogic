@@ -597,7 +597,7 @@ remains the complete covering check — the module is still unimported.
 
 ---
 
-### Phase 8: `D = ℤ`, layer 2b — paths to sections, the round trips, the free category [NOT STARTED]
+### Phase 8: `D = ℤ`, layer 2b — paths to sections, the round trips, the free category [COMPLETED]
 
 **Goal**: Define the inverse `ofPath` by `Quiver.Path.rec` (nil to the germ, cons to a composite
 with a one-step hom), prove both round trips, and package `pathEquiv : PathHom F.toTaskFrame w u ≃ StepPath F w u`
@@ -606,20 +606,20 @@ with a one-step hom), prove both round trips, and package `pathEquiv : PathHom F
 `id := nil`, `comp := Path.comp`) without importing it.
 
 **Tasks**:
-- [ ] Define `PathHom.ofStep F (h : FrameOver.step F w u) : PathHom F.toTaskFrame w u` of length
+- [x] Define `PathHom.ofStep F (h : FrameOver.step F w u) : PathHom F.toTaskFrame w u` of length
       `1`: a two-point section on `[0, 1]` with `respects_task` from `h` (forward), `nullity`
       (same point) and `reflection_int` (backward), all choice-free
-- [ ] Define `PathHom.ofPath F : StepPath F w u → PathHom F.toTaskFrame w u` by `Quiver.Path.rec`:
+- [x] Define `PathHom.ofPath F : StepPath F w u → PathHom F.toTaskFrame w u` by `Quiver.Path.rec`:
       `nil ↦ PathHom.id F.toTaskFrame w`, `cons p ⟨h⟩ ↦ PathHom.comp (TaskFrame.comp F.toTaskFrame) (ofPath p) (ofStep F h)`
-- [ ] Prove `toPath_ofPath : toPath F (ofPath F p) = p` by induction on `p`, using `toPath_id`,
+- [x] Prove `toPath_ofPath : toPath F (ofPath F p) = p` by induction on `p`, using `toPath_id`,
       `toPath_comp`, and `toPath (ofStep F h) = Path.cons nil ⟨h⟩` (length `1`,
       `Subsingleton.elim` on the `PLift` proof)
-- [ ] Prove `ofPath_toPath : ofPath F (toPath F e) = e` by `toPathAux` induction and `ext'`:
+- [x] Prove `ofPath_toPath : ofPath F (toPath F e) = e` by `toPathAux` induction and `ext'`:
       the length half is `Int.toNat_of_nonneg`; the section half by `glue_unique` with the
-      restriction identities, comparing at `.val`
-- [ ] Define `PathHom.pathEquiv F w u` with `toFun := toPath F`, `invFun := ofPath F`, the two
+      restriction identities, comparing at `.val` *(deviation: altered — the `n + 1` case closes by `factor_comp` after showing `ofStep s = e.factorRight fac` by `ext'` (the two-point section and the restriction to `[n, n + 1]` agree at both points), rather than by a fresh `glue_unique` argument; the `0` case is `ext'` with `Beh.ofGerm_germ`)*
+- [x] Define `PathHom.pathEquiv F w u` with `toFun := toPath F`, `invFun := ofPath F`, the two
       round trips — by analogy with `Beh.germEquiv` and `Beh.reflectEquiv`
-- [ ] Add to the module docstring's `## Main Results` the `D = ℤ` paragraph: the sections of
+- [x] Add to the module docstring's `## Main Results` the `D = ℤ` paragraph: the sections of
       `Beh F` over `n` are the paths of length `n` in `(W, ⇒₁)` (`beh_int_iff_adjacent_window`,
       `pathEquiv`, `toPath_length`), gluing is concatenation (`toPath_comp`), identities are the
       empty paths (`toPath_id`), so `Path(F)` is the free category on that graph; cite
@@ -627,12 +627,12 @@ with a one-step hom), prove both round trips, and package `pathEquiv : PathHom F
       `specs/archive/718_omega_sequence_decidability_full_lplus/reports/01_gluing-route-seed.md` §3
       is NOT cited (task artifact; the connection to the root-path presentation is stated in the
       prose of `Presheaf/README.md` instead, Phase 9)
-- [ ] Measure `#print axioms` on `pathEquiv`, `len_isDiscreteConduche`, `assocRestrict_unique`,
+- [x] Measure `#print axioms` on `pathEquiv`, `len_isDiscreteConduche`, `assocRestrict_unique`,
       `comp_assoc`, `beh_int_iff_adjacent_window` and record the measured profile in the module
-      docstring's `## Implementation Notes` ("Measured axiom profile", as `Reflection.lean` does)
-- [ ] Docstrings: `Constraints consumed: Compositionality, Seriality, Limit` on every declaration
+      docstring's `## Implementation Notes` ("Measured axiom profile", as `Reflection.lean` does) *(completed: all five `[propext, Quot.sound]`; the full 52-identifier sweep reports no `Classical.choice`; profile recorded in `## Implementation Notes`)*
+- [x] Docstrings: `Constraints consumed: Compositionality, Seriality, Limit` on every declaration
       of this phase
-- [ ] Record the issue log as events arise
+- [x] Record the issue log as events arise
 
 **Timing**: 1.25 hours
 
@@ -659,6 +659,7 @@ remains the complete covering check — the module is still unimported until Pha
   no `Classical.choice`
 - The `assert_not_exists` lock still passes
 - Commit: `task 618 phase 8: D = Z layer 2b, paths to sections and the free category`
+- Verification record (2026-10-18): guarded scoped build exit 0, no sorry, no warnings (a `set_option linter.style.longFile 1700` baseline added on the C30-sanctioned precedent of `Metalogic/Soundness.lean`); full guarded `lake build` exit 0 (2878 jobs, 0 errors); `#print axioms` on all 52 `**Goals**:` identifiers: `[propext]` or `[propext, Quot.sound]`, zero `Classical.choice` (an interim measurement caught `ofStep`/`ofPath_toPath` at `Classical.choice` through Mathlib's `not_le`/`le_of_add_le_add_right`; fixed before commit); `assert_not_exists` lock passes; exactly three `^instance` lines (`BObj`, `PathCat`, `StepGraph`); every `fact:conduche-equivalence` mention in the module is docstring text saying cited/external; C34a PASS over 147 markers; C15, C29, C30 PASS; declaration count 55 = 52 Goals identifiers + `PathHom`, `BObj`, `StepPath`; no Challenge snapshot directory exists, so the Goals/Challenge identity was confirmed by the sweep above rather than by `lean-challenge-snapshot.sh --check`; `status.typ` regenerated and staged
 
 ---
 
