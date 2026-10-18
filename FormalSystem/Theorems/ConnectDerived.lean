@@ -25,7 +25,7 @@ rules TN and TR. The paper marks all three derived: TC inside `def:BX`, and NP a
 * `discreteSymmFwd` — NP, `X⊤ → Y⊤` (`X⊤ = U(⊤,⊥)`, `Y⊤ = S(⊤,⊥)`). US at `(⊥, ⊤, ⊤)` turns
   `X⊤` into `U(⊥, Y⊤)`; TR of NF (`DerivedAxioms.discretePropagateFwdMirror`) lifts the event to
   `H Y⊤`; UE (`DerivedAxioms.untilF`) gives `F H Y⊤`, and `fHImp` lands on `Y⊤`.
-* `discretePropagateBwd` — NA, `X⊤ → H X⊤`, as NP ; TR(NF) ; `H Y⊤ → H X⊤`, the last by
+* `discretePropagateBwd` — NA, `X⊤ → H X⊤`, as NP; TR(NF); `H Y⊤ → H X⊤`, the last by
   H-monotonicity (`gMonoThm` reflected) applied to NP.
 
 The TR mirrors `connectPast`, `connectPastAt`, `discreteSymmBwd` and `discreteSymmBwdAt` live

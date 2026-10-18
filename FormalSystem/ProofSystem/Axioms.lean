@@ -297,7 +297,7 @@ inductive Axiom : Formula → Type where
   -- By translation invariance of the group, this gap is uniform across all time points.
   -- NP (`discrete_symm_fwd`), NF (`discrete_propagate_fwd`) and NA (`discrete_propagate_bwd`)
   -- are derived: `Theorems.ConnectDerived.discreteSymmFwd`, `DerivedAxioms.discretePropagateFwd`
-  -- (NB ; MF ; MT) and `Theorems.ConnectDerived.discretePropagateBwd`.
+  -- (NB; MF; MT) and `Theorems.ConnectDerived.discretePropagateBwd`.
   /-- Discrete box necessity: U(⊤,⊥) → □(U(⊤,⊥)).
   If there is a gap of size d at t (discreteness witness), then by translation
   invariance the same gap exists at every accessible world at time t. Since box

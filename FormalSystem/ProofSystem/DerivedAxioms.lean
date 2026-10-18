@@ -48,7 +48,7 @@ no key for, and NF it marks a derived theorem of TM inside `def:TMplus`:
 
 * `untilF` — UE `U(ψ, φ) → Fψ`, from UG (`left_mono_until_G`) with the new guard `⊤`, plus TN
 * `fUntilEquiv` — UT `Fφ → U(φ, ⊤)`, an identity: `Fφ` *is* `untl ⊤ φ` by definition
-* `discretePropagateFwd` — NF `X⊤ → G X⊤`, as NB ; MF ; MT
+* `discretePropagateFwd` — NF `X⊤ → G X⊤`, as NB; MF; MT
 * `discretePropagateFwdMirror` — TR of NF, `Y⊤ → H Y⊤`
 
 The theorem-level monotonicity forms `guardMonoThm` (UG + TN) and `eventMonoThm` (UC + TN) and
@@ -151,7 +151,7 @@ remains in the live paper. It used to be listed among `def:BX`'s axiom schemata.
   identityThm _
 
 /-- NF: `X⊤ → G X⊤` with `X⊤ = U(⊤, ⊥)` spelled `untl ⊥ (⊥ → ⊥)`. The gap witness propagates
-forward as NB (`discrete_box_necessity`) ; MF (`modal_future`) ; MT (`modal_t`): `X⊤ → □X⊤ →
+forward as NB (`discrete_box_necessity`); MF (`modal_future`); MT (`modal_t`): `X⊤ → □X⊤ →
 □G X⊤ → G X⊤`.
 
 Paper: `def:TMplus`
