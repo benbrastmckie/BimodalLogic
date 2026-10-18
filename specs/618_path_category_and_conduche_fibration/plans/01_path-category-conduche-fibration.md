@@ -663,7 +663,7 @@ remains the complete covering check — the module is still unimported until Pha
 
 ---
 
-### Phase 9: Wiring, records, reconciliation notes, and the full gate [NOT STARTED]
+### Phase 9: Wiring, records, reconciliation notes, and the full gate [COMPLETED]
 
 **Goal**: Make the module part of the cluster and of the record of the paper: the aggregator
 import and module bullet, the library root, the README inventory row and prose, the
@@ -671,7 +671,7 @@ paper-definitions-of-record rows, the reconciliation pointers in the sibling mod
 generated status counts, then the complete gate set and a green `lake build FormalSystem`.
 
 **Tasks**:
-- [ ] **Aggregator and library root (shared touches — handle last among the edits, per the task's
+- [x] **Aggregator and library root (shared touches — handle last among the edits, per the task's
       SCOPE AND AGGREGATOR CONTENTION note)**: re-read `FormalSystem/Semantics/Presheaf.lean`
       immediately beforehand; add `import FormalSystem.Semantics.Presheaf.Path` in alphabetical
       position and a `- \`Presheaf.Path\` — ...` bullet to its `## Modules` list; regenerate the
@@ -679,7 +679,7 @@ generated status counts, then the complete gate set and a green `lake build Form
       new import line; check `git log -1 -- FormalSystem/Semantics/Presheaf.lean FormalSystem.lean`
       and `git status --short` for a foreign in-flight edit first and STOP and report if one is
       found
-- [ ] `FormalSystem/Semantics/Presheaf/README.md`: add a prose section on `Path(F)` and
+- [x] `FormalSystem/Semantics/Presheaf/README.md`: add a prose section on `Path(F)` and
       `cor:path-fibration` (what it says; that the fibration property and the equality of the
       associated presheaf with `Beh F` are proved for the instance while Johnstone's general
       equivalence is cited and external; the `D = ℤ` clause as the free category on `(W, ⇒₁)` and
@@ -692,31 +692,31 @@ generated status counts, then the complete gate set and a green `lake build Form
       "`Mathlib.CategoryTheory` enters the cluster synonym-scoped, in `Path.lean` only"; regenerate
       the inventory table with `bash scripts/check-module-invariants.sh --emit-inventory` (after
       `--emit-inventory --check` to see the delta)
-- [ ] `docs/reference/paper-definitions-of-record.md`: rewrite the `cor:path-fibration` row's
+- [x] `docs/reference/paper-definitions-of-record.md`: rewrite the `cor:path-fibration` row's
       "NO Path(F) exists in the tree" clause as FORMALIZED (`PathHom`/`PathCat`/`PathCat.len`,
       `PathCat.len_isDiscreteConduche`, `PathHom.assocRestrict_sec`, `beh_int_iff_adjacent_window`,
       `PathHom.pathEquiv` in `FormalSystem/Semantics/Presheaf/Path.lean`; the general equivalence
       cited only), and update its citation-site sentence (`ShiftFiniteType.lean` now also points
       to the module); finish the FORMALIZED clauses of the three Phase 1 rows with the final
       declaration names — hand edit, no re-pin, the anchors remain unpinnable
-- [ ] `FormalSystem/Semantics/ShiftFiniteType.lean` (docstring lines 75-80): replace "no
+- [x] `FormalSystem/Semantics/ShiftFiniteType.lean` (docstring lines 75-80): replace "no
       `Path(F)` exists in this tree" with a pointer to `Presheaf/Path.lean`'s `PathCat` and
       `PathHom.pathEquiv`, keeping the clause described rather than cited as an authority
-- [ ] One-sentence forward pointers, Implementation Notes only: `Presheaf/Site.lean`,
+- [x] One-sentence forward pointers, Implementation Notes only: `Presheaf/Site.lean`,
       `Presheaf/Duration.lean`, `Presheaf/Reflection.lean` — "weighed and adopted,
       synonym-scoped, in `Presheaf/Path.lean`; see its Implementation Notes" after each "no
       `Mathlib.CategoryTheory`" note; `Presheaf/Sheaf.lean` — the sum form "buys nothing" note
       gains "for the Sheaf clause; `Presheaf/Path.lean`'s `glueSum` is that form, as a
       val-preserving cast of `glue`, where composition in `Path(F)` consumes it"
-- [ ] Count/list lines in `FormalSystem/README.md` and `FormalSystem/Semantics/README.md`
+- [x] Count/list lines in `FormalSystem/README.md` and `FormalSystem/Semantics/README.md`
       (`Presheaf/` row: "(9 files)" becomes 10 and the list gains `Path`); regenerate
       `typst/generated/status.typ` via the sanctioned generator (`bash scripts/typst-status-counts.sh`,
       or `typst-sync-check.sh --fix` as 617 did) — **this file is in sibling 782's declared
       `file_scope` this cycle**: `git status --short typst/generated/status.typ` first; if a foreign
-      uncommitted modification is present, STOP and report rather than regenerate over it
-- [ ] Record the issue log as events arise; attest explicitly if nothing arose
-- [ ] Run the complete gate set (below); fix forward on any failure — never discard uncommitted
-      work to reach green
+      uncommitted modification is present, STOP and report rather than regenerate over it *(deviation: altered — `FormalSystem/README.md` carries no hand-written Presheaf count line; its only change is the regenerated inventory/statistics block (`--emit-inventory`), as is the root `README.md`'s. `FormalSystem/Semantics/README.md`'s `Presheaf/` row went from 9 to 10 files with a `Path` sentence. `status.typ` was regenerated via `typst-sync-check.sh --fix` after confirming `git status --short` clean on it)*
+- [x] Record the issue log as events arise; attest explicitly if nothing arose
+- [x] Run the complete gate set (below); fix forward on any failure — never discard uncommitted
+      work to reach green *(deviation: altered — two fix-forwards: (1) `check-module-invariants.sh` C16 reported the `simpNF` linter on the auto-generated `BObj.mk.injEq` (`simp` proves it by subsingleton elimination on `Unit`); exempted in-source with `attribute [nolint simpNF] BObj.mk.injEq` plus the reason comment and the `simpNF:BObj.mk.injEq` row in `scripts/nolint-attribute-allowlist.txt`, the C26-sanctioned route for a synthesized name; (2) the first full `lake build` after wiring exceeded the 10-minute foreground cap (the aggregator import fans out to the whole `Metalogic/Decidability` closure) and was relaunched detached with the bounded waiter. `verify-deploy.sh` was run as `--only-gate 4` per the dispatch's Batch Gate Deferral directive; the full set is deferred to the batch stage, not forgiven)*
 
 **Timing**: 1.5 hours
 
@@ -763,6 +763,7 @@ notes exactly as 617 phase 3 did):
 - `bash .claude/scripts/check-task-references.sh` (or the task-reference gate of `verify-deploy.sh`)
   reports no task-number citation in `FormalSystem/**` or `docs/**` from this task
 - Commit: `task 618 phase 9: wiring, records, reconciliation notes, and the full gate`, staged by
+- Verification record (2026-10-18): full guarded `lake build` exit 0 (2888 jobs, 0 errors; run detached with the bounded waiter after a 590 s foreground attempt timed out); `lean-sorry-census.sh` sorry_count 0; vacuous-pattern grep 1 hit, pre-existing and unrelated (`Examples/TemporalStructures.lean:495`, identical at the baseline commit); `^axiom` count 14 = baseline 14; `#print axioms` over all 52 Goals identifiers: no `Classical.choice`; `bash scripts/check-module-invariants.sh` exit 0 (C6, C15, C16, C24, C26, C33, C34a/b, INV all PASS; 55 PASS lines) after `--emit-inventory` (byte-stable under `--check`); `check-paper-definitions.sh` exit 1 on 9 pinned definitions drifted by the external paper — pre-existing (the pinned MANIFEST block, lines 2400-2446, is untouched by this task; `git diff -U0 HEAD` on the record shows only the `cor:path-fibration` row), the same 9-row set 617 recorded; `verify-deploy.sh --only-gate 4` PASS (1 check) — **the complete gate set is deferred to the batch stage per the dispatch's `## Batch Gate Deferral` section, exactly as 617 phase 3 recorded**; `check-task-references.sh` PASS (0 occurrences); `typst-sync-check.sh --fix` PASS; the four cut anchors remain `DANGLING`, nothing pinned
   explicit file list (`git add -- <files>`), never a directory or glob
 
 ## Lean Challenge Statements
@@ -1034,24 +1035,24 @@ end FormalSystem.Semantics.Presheaf
 
 ## Testing & Validation
 
-- [ ] Phases 1-8: guarded scoped build of `FormalSystem.Semantics.Presheaf.Path` green, no sorry,
+- [x] Phases 1-8: guarded scoped build of `FormalSystem.Semantics.Presheaf.Path` green, no sorry,
       `assert_not_exists` lock passes; Phase 1 additionally `check-module-invariants.sh --no-build`
       C15 PASS
-- [ ] Phases 2-8: the named `#print axioms` targets each `[propext, Quot.sound]`, never
+- [x] Phases 2-8: the named `#print axioms` targets each `[propext, Quot.sound]`, never
       `Classical.choice`; Phase 8 records the measured profile in the module docstring
-- [ ] Phase 5: `PathHom.assocRestrict_sec` closes by `rfl`
-- [ ] Phase 9: `lake build FormalSystem` green through the guard; `check-module-invariants.sh`,
+- [x] Phase 5: `PathHom.assocRestrict_sec` closes by `rfl`
+- [x] Phase 9: `lake build FormalSystem` green through the guard; `check-module-invariants.sh`,
       `verify-deploy.sh`, `check-task-references.sh` all exit 0; `check-paper-definitions.sh`'s
       exit, if non-zero, is attributable only to the pre-existing pinned-row drift
-- [ ] The `**Goals**:` identifier list and the `## Lean Challenge Statements`
+- [x] The `**Goals**:` identifier list and the `## Lean Challenge Statements`
       `theorem`/`def`/`instance` declaration set are identical (fifty-two identifiers)
-- [ ] The HARD SCOPE LIMIT is visible: `grep -n "fact:conduche-equivalence" FormalSystem/Semantics/Presheaf/Path.lean`
+- [x] The HARD SCOPE LIMIT is visible: `grep -n "fact:conduche-equivalence" FormalSystem/Semantics/Presheaf/Path.lean`
       hits only docstring text that says "cited" / "external", and no declaration constructs a
       category from an arbitrary sheaf or a presheaf from an arbitrary fibration
-- [ ] No `Category`/`Quiver` instance on a cluster type:
+- [x] No `Category`/`Quiver` instance on a cluster type:
       `grep -n "^instance" FormalSystem/Semantics/Presheaf/Path.lean` shows exactly three
       instances, on `BObj D`, `PathCat F`, `StepGraph F`
-- [ ] No task-number reference in any file outside `specs/**`
+- [x] No task-number reference in any file outside `specs/**`
 
 ## Artifacts & Outputs
 

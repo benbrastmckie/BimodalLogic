@@ -72,7 +72,8 @@ itself; it is the bridge between the two presentations and is cited here, not us
 **No `Functor` instance.** `Presheaf/Site.lean` records the decision to state the site concretely,
 with no `Mathlib.CategoryTheory` import; `ref` follows it as a plain `def` on `Tr` with its laws as
 plain theorems. Anything wanting the categorical packaging should add the instance beside the site
-and reconcile with that note.
+and reconcile with that note — as `Presheaf/Path.lean` has since done, synonym-scoped and without
+touching the site; see its Implementation Notes.
 
 **`Mathlib.Tactic.Abel` is imported for the time identities.** The cluster's import closure did not
 carry `abel`, and the four identities `l - (l - p - l') - l' = p`,

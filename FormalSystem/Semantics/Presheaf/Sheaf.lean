@@ -19,7 +19,8 @@ exhibits.
 The cut form is the primary one and the only one proved. Its alternative — a *sum* form over two
 independent lengths `l₁` and `l₂`, gluing to `l₁ + l₂` — would need a dependent transport along
 `l₁ + l₂ - l₁ = l₂` at every statement and buys nothing, since `l := l₁ + l₂` and `p := l₁`
-recovers it.
+recovers it — for the *Sheaf* clause; `Presheaf/Path.lean`'s `glueSum` is that form, as a
+val-preserving cast of `glue`, where composition in `Path(F)` consumes it.
 
 What makes the clause cheap is that the gluing argument is not proved here either. The relation
 across the seam is `PartialHistory.rel_across_seam`, stated once off totality with two

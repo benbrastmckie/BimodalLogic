@@ -56,7 +56,9 @@ is imported. Three reasons, recorded so the decision is not re-litigated. The li
 no category theory anywhere, so this would be the import that introduces the dependency. The
 content of the interval site, as the paper defines it, is three composition laws plus a coverage —
 all of which are stated here. And the concrete route keeps this module buildable from
-`Semantics/TemporalOrder.lean` alone, which is what puts it below `Semantics/Truth.lean`.
+`Semantics/TemporalOrder.lean` alone, which is what puts it below `Semantics/Truth.lean`. The
+categorical packaging was weighed and adopted, synonym-scoped, in `Presheaf/Path.lean`; see its
+Implementation Notes — nothing here changes.
 
 **The decision is reversible without changing a single definition.** `Tr.id`, `Tr.comp`,
 `Tr.id_comp`, `Tr.comp_id` and `Tr.comp_assoc` are precisely the data and fields a

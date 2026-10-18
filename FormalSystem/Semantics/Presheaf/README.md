@@ -6,15 +6,19 @@ histories, packaged as a presheaf on the durations rather than treated one domai
 The objects of `Int(D)` are the durations — the positive cone of a temporal order — and its
 morphisms `l' → l` are the **translations** `Tr p`, one for each offset `p` with `p + l' ≤ l`.
 `Beh(F)(l)` is the set of partial histories whose domain is exactly `[0, l]`, and restriction
-along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Five of the nine modules are built on
+along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Five of the ten modules are built on
 `Semantics/PartialHistory.lean` alone (`Presheaf/Reflection.lean` adding only the tactic import
 `Mathlib.Tactic.Abel`), and `Presheaf/Duration.lean` on `Presheaf/Site.lean` alone;
-`Presheaf/Directed.lean` and `Presheaf/Worlds.lean`
+`Presheaf/Path.lean` builds on `Presheaf/Sheaf.lean`, `Presheaf/Duration.lean` and
+`Semantics/IntNormalFormEffective.lean`, and is the one module of the cluster — and of the live
+library — importing `Mathlib.CategoryTheory` (`Mathlib.CategoryTheory.Functor.Basic`, together
+with `Mathlib.Combinatorics.Quiver.Path`), synonym-scoped as the sixth recorded verdict below
+explains; `Presheaf/Directed.lean` and `Presheaf/Worlds.lean`
 additionally import the `Semantics/Extension/` cluster — the former because the two clauses it
 discharges are wrappers on `thm:extension`, the latter for `PartialHistory.hF_nonempty` alone,
 which only its nonemptiness tail consumes — and `Presheaf/Determinism.lean` additionally imports
 `Semantics/FrameProperty.lean` for `TaskFrame.Deterministic` alone. The cluster sits strictly
-**below** `Semantics/Truth.lean` regardless: all nine modules close with `assert_not_exists` on the
+**below** `Semantics/Truth.lean` regardless: all ten modules close with `assert_not_exists` on the
 proof system, so the layering is locked rather than merely observed.
 
 `Presheaf/Duration.lean` is the categorical description of the site itself rather than of the
@@ -30,7 +34,10 @@ whose anchors — `def:twisted-arrow`, `lem:factorization-linear`, `lem:interval
 resolve as `DANGLING` rows of the definitions of record exactly as the site's own do. The
 encoding decision for the whole cluster — concrete structures, no `Mathlib.CategoryTheory` — is
 reconciled with `Site.lean`'s note in `Duration.lean`'s Implementation Notes, which state the
-trade-off and name the path-category work as the point at which it should be weighed again.
+trade-off and name the path-category work as the point at which it should be weighed again. That
+weighing is done in `Presheaf/Path.lean`, and comes out the other way there — minimally and
+synonym-scoped, as the sixth recorded verdict below records; `Site.lean` and `Duration.lean`
+themselves stay concrete.
 
 Six clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
 the zero duration with the world states (`Beh.germEquiv`), and *Sheaf* glues two sections
@@ -64,6 +71,45 @@ isomorphism is the categorical packaging of the involution behind the time refle
 `TR`: `thm:TR-valid` is `validOn_rev_iff` (`Semantics/Validity.lean`) over `truthAt_rev`
 (`Semantics/Reversal.lean`), the same involution one level down, on truth values rather than on
 sections.
+
+`Presheaf/Path.lean` is the cluster's capstone: the paper's `cor:path-fibration`, built as the
+**instance** of Johnstone's sheaf/Conduché correspondence at `X = Beh F`. The **path category**
+`Path(F)` has the world states as objects and, as morphisms `w → u` of length `l`, the sections
+`τ ∈ Beh F l` with `τ(0) = w` and `τ(l) = u` (`PathHom`, with the length carried in the hom);
+identities are the germs and composition is the *Sheaf* clause in sum form (`glueSum`, which is
+`glue` under a val-preserving cast), with the three category laws proved through uniqueness of
+gluing (`PathCat.instCategory`). The **length functor** `PathCat.len : Path(F) ⥤ BD⁺` is a
+**discrete Conduché fibration** (`PathCat.len_isDiscreteConduche`): every morphism and every
+factorization of its length admit a unique factorization through the cut state, the two factors
+being the two restrictions (`PathHom.factorLeft`/`factorRight`, `factor_comp`, `factor_unique`).
+And the **associated presheaf** of `len` is `Beh F` **as an equality**, not merely up to natural
+isomorphism: restriction along `Tr p` is the middle factor of the three-fold factorization, which
+is *defined* as `Beh.restrictTr` (`PathHom.assocRestrict_sec` closes by `rfl`), unique by
+`assocRestrict_unique`, and functorial by `Beh.restrictTr_id`/`restrictTr_comp`. What is **not**
+there, by the task's hard scope limit, is Johnstone's general equivalence
+`fact:conduche-equivalence` between sheaves on `Int(D)` and discrete Conduché fibrations over
+`BD⁺` (Johnstone, Prop. 3.6; Schultz-Spivak-Vasilakopoulou, Thm. A.2.1): it is cited and
+external, the "associated category of a sheaf" and "associated presheaf of a fibration" of
+`def:conduche` are instantiated at `Beh F` and `len` rather than defined in general, and the
+module docstring says so, so that a reader does not mistake the instance for the theorem.
+
+Over `D = ℤ` the package becomes the paper's **free category on the one-step task graph**
+`(W, ⇒₁)`. Layer 1: a function on `[0, n]` is the state function of a section iff it respects
+adjacency at every step (`beh_int_iff_adjacent_window`, from "iterating *Compositionality*" —
+`FrameOver.taskRel_natCast_iff_iter` — with `⇒₀` the identity and the reflection convention for
+negative differences, through the choice-free `FrameOver.reflection_int`). Layer 2: the morphisms
+`w → u` are in bijection with the `Quiver.Path`s of the one-step quiver on the synonym
+`StepGraph F` (`PathHom.pathEquiv`), with lengths preserved (`toPath_length`), identities to the
+empty path (`toPath_id`) and gluing to concatenation (`toPath_comp`) — the data of Mathlib's
+`CategoryTheory.Paths.categoryPaths`, matched without importing it. This is the "root paths of a
+finite class graph" presentation the decidability route's sliced finite-model-property
+refutation record asks of any successor class, now read off the categorical packaging; the
+seventh recorded verdict below reconciles the earlier statement that it had not landed. The
+constraint footprint is the cluster's: *Compositionality* alone, as an explicit hypothesis, for
+`glueSum`, `comp`, `comp_assoc`, the two factorization theorems and `assocRestrict_unique`; the
+`[F.IsRegular]` bundle wherever the germs enter (`id`, the `Category` instance, `len`) and
+throughout the `D = ℤ` layer; and `#print axioms` reports `[propext, Quot.sound]` or less on all
+fifty-five declarations — the module is choice-free in both of the senses measured below.
 
 *Germs* and *Sheaf* are choice-free in two measured senses — they use *Compositionality* alone,
 taken as an explicit hypothesis rather than a frame bundle, and `#print axioms` reports no
@@ -100,11 +146,12 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 | `Behavior.lean` | 279 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
 | `Determinism.lean` | 254 | The *Determinism* clause below the layering lock: `Separated` as injectivity of every restriction map, the choice-free (⇒) half, the world-to-section bridge `secOf`, and the converse's frame-side conclusion with `SingletonClasses` unfolded |
 | `Directed.lean` | 521 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
-| `Duration.lean` | 422 | The categorical description of the site: the duration monoid `BD⁺` as `Dur`, the factorization category `Factorization`/`Factorization.Hom` with both halves of factorization-linearity, the twisted-arrow category `Tw` with its three category laws, the hom-set bijection `Tw.toTr`/`Tw.ofTr` with `Int(D)` and its functoriality, and the coverage transport `Tw.toTr_coverLeft`/`Tw.toTr_coverRight` that makes `Tw(BD⁺) ≅ Int(D)` an isomorphism of sites |
+| `Duration.lean` | 425 | The categorical description of the site: the duration monoid `BD⁺` as `Dur`, the factorization category `Factorization`/`Factorization.Hom` with both halves of factorization-linearity, the twisted-arrow category `Tw` with its three category laws, the hom-set bijection `Tw.toTr`/`Tw.ofTr` with `Int(D)` and its functoriality, and the coverage transport `Tw.toTr_coverLeft`/`Tw.toTr_coverRight` that makes `Tw(BD⁺) ≅ Int(D)` an isomorphism of sites |
+| `Path.lean` | 1,554 | The path category `Path(F)` and `cor:path-fibration` at the instance `Beh F`: the morphisms `PathHom` (a section with its length and endpoints), the `Category` instance on the synonym `PathCat F`, the length functor `PathCat.len : Path(F) ⥤ BD⁺`, its discrete Conduché fibration property `PathCat.len_isDiscreteConduche`, the associated presheaf of `len` as `Beh F` on the nose (`PathHom.assocRestrict_sec`), and the `D = ℤ` clause — `beh_int_iff_adjacent_window` and the free-category bijection `PathHom.pathEquiv` with `PathHom.toPath_comp`; the one `Mathlib.CategoryTheory` import of the live library, synonym-scoped; choice-free throughout; `fact:conduche-equivalence` cited, not proved |
 | `Ray.lean` | 444 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
-| `Reflection.lean` | 282 | The *Reflection* clause: the reflection automorphism `Tr.ref` of `Int(D)` with its five laws, the section reflection `Beh.reflectSec` landing in the converse frame's presheaf, naturality `Beh.reflect_natural`, the involution `Beh.reflect_reflect`, and the component bijection `Beh.reflectEquiv : Beh F l ≃ Beh F.rev l`; constraint-free and measured `[propext, Quot.sound]` throughout |
-| `Sheaf.lean` | 439 | <!-- TODO: add description --> |
-| `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
+| `Reflection.lean` | 283 | The *Reflection* clause: the reflection automorphism `Tr.ref` of `Int(D)` with its five laws, the section reflection `Beh.reflectSec` landing in the converse frame's presheaf, naturality `Beh.reflect_natural`, the involution `Beh.reflect_reflect`, and the component bijection `Beh.reflectEquiv : Beh F l ≃ Beh F.rev l`; constraint-free and measured `[propext, Quot.sound]` throughout |
+| `Sheaf.lean` | 440 | <!-- TODO: add description --> |
+| `Site.lean` | 193 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 | `Worlds.lean` | 392 | The *Total Histories* clause (the record's *Possible Worlds*): the limit `Lim F` of the behavior presheaf along the central restrictions `centralTr`, presented as compatible families of centred sections, the canonical-window reading `Lim.readAt` with its keystone `Lim.read_eq`, the two maps `Lim.toWorld`/`Lim.ofWorld`, the choice-free isomorphism `worldsEquiv : WorldHistory F ≃ Lim F` at no frame constraint, and the nonemptiness tail `lim_nonempty` at `[F.IsRegular]` |
 <!-- END GENERATED -->
 
@@ -183,6 +230,30 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
   step and nothing from `Presheaf/Directed.lean` is consumed
 - `Lim.ofWorld` — the forward map: a possible world cut to each of its centred windows
   `[−x, x]` through `secOf`
+- `Beh.castLen`, `glueSum` — the val-preserving cast of a section along an equation of lengths,
+  and the *Sheaf* clause in sum form: `glue` at the cut `l₁` applied to the cast second section
+- `PathHom F w u` — a morphism of `Path(F)`: a length `len : Dur F.Duration`, a section
+  `sec : Beh F len` and the two endpoint equations; `PathHom.id` is the germ, `PathHom.comp` is
+  `glueSum`
+- `BObj D`, `PathCat F`, `StepGraph F` — the three synonyms carrying the module's instances: the
+  one object of `BD⁺` with its `Category` instance (`Hom := Dur D`), the path category on the
+  world states (`Hom := PathHom`), and the one-step quiver (`Hom a b := PLift (a ⇒₁ b)`). No
+  instance is placed on `Obj D`, `Dur D`, `Tr` or `F.WorldState`
+- `PathCat.len` — the length functor `Path(F) ⥤ BD⁺`, `map f := f.len`, functorial by `rfl`
+- `IsDiscreteConduche P` — the discrete Conduché fibration predicate of `def:conduche` for a
+  functor `P : E ⥤ BObj D`: every morphism and every `Factorization` of its image admit a unique
+  factorization. Stated in general so that `len` can be shown to satisfy it; no construction from a
+  general fibration is built
+- `PathHom.cutState`, `PathHom.factorLeft`, `PathHom.factorRight` — the unique factorization of a
+  morphism along a factorization of its length: the state at the cut, and the two restrictions
+- `PathHom.assocRestrict` — the associated presheaf of `len`: restriction along `f : Tr l' l` as
+  the middle factor of the three-fold factorization, whose section is `Beh.restrictTr f` by
+  definition
+- `Beh.ofAdjacentWindow` — over `D = ℤ`, the section over `[0, n]` built from a function that
+  respects adjacency at every step
+- `PathHom.toPath`, `PathHom.ofPath`, `PathHom.pathEquiv` — the bijection between the morphisms of
+  `Path(F)` and the `Quiver.Path`s of `(W, ⇒₁)` over `D = ℤ`, with `PathHom.ofStep` the one-step
+  morphism
 
 ## Key Results
 
@@ -303,6 +374,24 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 - `lim_nonempty` — the clause's closing tail at `[F.IsRegular]`: the limit is nonempty, through
   `PartialHistory.hF_nonempty`. The one declaration of `Presheaf/Worlds.lean` that reaches
   `Classical.choice`
+- `glueSum_restrict_left`, `glueSum_restrict_right`, `glueSum_states_zero`, `glueSum_states_end` —
+  the two restriction identities and the two endpoint readings of sum-form gluing, by delegation to
+  `restrict_glue_left`/`restrict_glue_right`
+- `PathHom.ext'`, `PathHom.id_comp`, `PathHom.comp_id`, `PathHom.comp_assoc` — extensionality of
+  morphisms (equal lengths and equal underlying partial histories), and the three category laws of
+  `Path(F)`, each through `glue_unique`
+- `PathHom.factor_comp`, `PathHom.factor_unique`, `PathCat.len_isDiscreteConduche` — **the first
+  half of `cor:path-fibration`**: the length functor is a discrete Conduché fibration
+- `PathHom.assocRestrict_sec` (by `rfl`), `PathHom.assocRestrict_unique`,
+  `PathHom.assocRestrict_id`, `PathHom.assocRestrict_comp` — **the second half**: the associated
+  presheaf of `len` is `Beh F` as an equality — same sections, same restriction, same
+  functoriality
+- `iter_of_adjacent_window`, `beh_int_iff_adjacent_window` — **the `D = ℤ` clause, layer 1**: a
+  function on `[0, n]` is a section's state function iff it steps along `⇒₁`
+- `PathHom.toPath_length`, `PathHom.toPath_id`, `PathHom.toPath_comp`, `PathHom.ofPath_toPath`,
+  `PathHom.toPath_ofPath` — **layer 2**: sections are paths of their own length, identities are
+  the empty paths, gluing is concatenation, and the two readings are mutually inverse — `Path(F)`
+  is the free category on `(W, ⇒₁)`
 
 ## Recorded verdicts
 
@@ -484,14 +573,14 @@ not determinization, not a Safraless procedure, not an MSO-over-ℤ route, not a
 summary.
 
 The path-category reading of the forward structure — the identification of `Path(F)` as the free
-category on the one-step graph when the duration is ℤ, which would be the "root paths of a finite
-class graph" presentation a decidable check is usually stated over — is likewise **not landed**.
-No free-category presentation of `Path(F)` exists anywhere under `FormalSystem/`, and the paper's
-own labels for it sit in the appendix block that
-`docs/reference/paper-definitions-of-record.md` records as *deliberately not pinned*; they are
-deliberately not named here either, since naming them is what would make them load-bearing and
-widen that record's maintenance surface for a region the tree does not depend on. The
-free-category reading must never be cited as landed.
+category on the one-step graph when the duration is ℤ, which is the "root paths of a finite
+class graph" presentation a decidable check is usually stated over — **has since landed**, in
+`Presheaf/Path.lean` (`PathHom.pathEquiv` with `PathHom.toPath_comp` and `PathHom.toPath_id`; see
+the seventh recorded verdict below). Its paper labels (`def:conduche`, `def:path-category`,
+`cor:path-fibration`, and the cited `fact:conduche-equivalence`) now carry `DANGLING` rows in
+`docs/reference/paper-definitions-of-record.md`, as the rest of the cut appendix's anchors do.
+What the landing supplies is the **presentation** and nothing more: it settles no device and
+commits no bound, and the requirement stated above is unchanged by it.
 
 ### This presentation bounds nothing
 
@@ -500,12 +589,56 @@ ray-product presentation is the **mechanism behind** that refutation rather than
 it: a product of two path spaces cannot be a finite fibre. No width, tail-period or complexity
 bound is committed anywhere in this cluster, and soundness is untouched.
 
+### Sum-form gluing is cut-form gluing under a val-preserving cast
+
+`Sheaf.lean`'s Implementation Notes record that a *sum* form of gluing — two independent lengths
+`l₁`, `l₂`, gluing to `l₁ + l₂` — "buys nothing" for the *Sheaf* clause, since `l := l₁ + l₂`,
+`p := l₁` recovers it. That verdict stands for the clause and is reconciled, not reversed, by
+`Presheaf/Path.lean`: composition in `Path(F)` consumes exactly the sum form, and it costs one
+line. `Beh.castLen h τ` is `⟨τ.val, _⟩` — the same partial history with the interval condition
+re-read along `h` — so `castLen_val` is `rfl`, `glueSum` is `glue` at the cut `l₁` applied to the
+cast second section, and its four reading lemmas delegate to `restrict_glue_left` and
+`restrict_glue_right`. The idiom that makes the whole module mechanical is the same one: cast on
+the length index, compare at `.val`, where the order proofs `Beh.restrict` carries are irrelevant.
+`glue`'s seam `dite` is never unfolded outside `Sheaf.lean`.
+
+### `Mathlib.CategoryTheory` enters the cluster synonym-scoped, in `Path.lean` only
+
+`Site.lean`, `Duration.lean` and `Reflection.lean` record the concrete-structures decision and
+`Duration.lean` defers its re-weighing to the path-category work. `Path.lean` is that re-weighing
+and it comes out the other way, for one reason: the first deliverable of `cor:path-fibration` — a
+discrete Conduché fibration `P : E ⥤ BD⁺` *in general* — quantifies over a functor from an
+arbitrary category and is unstatable without `Category` and `Functor`. The import is
+`Mathlib.CategoryTheory.Functor.Basic`, and nothing heavier (`PathCategory/Basic.lean` is matched,
+not imported). Every instance sits on a synonym introduced in `Path.lean` — `BObj D`, `PathCat F`,
+`StepGraph F` — and none on `Obj D`, `Dur D`, `Tr` or `F.WorldState`, so `Site.lean` and
+`Duration.lean` are byte-for-byte unchanged in their declarations, their concrete laws are what the
+instances are built from, and the cluster's `assert_not_exists` lock is untouched. The three
+earlier notes carry one-sentence forward pointers to this verdict so the decision is neither
+re-litigated nor misread as violated.
+
+### The free-category reading is landed, and it is choice-free
+
+The sixth verdict's companion. `PathHom.pathEquiv : PathHom F.toTaskFrame w u ≃ StepPath F w u`
+with `toPath_id` and `toPath_comp` is the free-category identification; `#print axioms` on it, on
+`PathCat.len_isDiscreteConduche`, on `PathHom.assocRestrict_unique`, on `PathHom.comp_assoc` and
+on `beh_int_iff_adjacent_window` reports `[propext, Quot.sound]`, and no declaration of
+`Path.lean` reaches `Classical.choice`. Two routing decisions keep it so: the `D = ℤ` layer's sign
+split goes through `FrameOver.taskRel_natCast_iff_iter` and the choice-free
+`FrameOver.reflection_int`, never through `FrameOver.reflection` or `taskRel_eq_iter`; and the
+one-step morphism's endpoint facts are decided computably on `ℤ` (`decide`, `omega`, the core
+`Int.not_le`), because Mathlib's order-theoretic `not_le`/`le_of_add_le_add_right` on `ℤ` measure
+`Classical.choice` on this pin.
+
 ## Dependencies
 
 - **Imports from**: `Semantics/TemporalOrder.lean`, `Semantics/PartialHistory.lean`, and —
   `Presheaf/Directed.lean` and `Presheaf/Worlds.lean` — `Semantics/Extension/Extension.lean`,
   with `Semantics/Extension/Completion.lean` imported by `Presheaf/Directed.lean` alone;
-  `Presheaf/Duration.lean` imports `Presheaf/Site.lean` and nothing else
+  `Presheaf/Duration.lean` imports `Presheaf/Site.lean` and nothing else; `Presheaf/Path.lean`
+  imports `Presheaf/Sheaf.lean`, `Presheaf/Duration.lean`,
+  `Semantics/IntNormalFormEffective.lean`, `Mathlib.CategoryTheory.Functor.Basic` and
+  `Mathlib.Combinatorics.Quiver.Path`
 - **Imported by**: `Semantics/Presheaf.lean` (the cluster aggregator), and
   `PlusLanguage/PlusRayFibre.lean`, which imports `Presheaf/Ray.lean` directly to read the `⊡`
   clause through `seamFibreEquiv`

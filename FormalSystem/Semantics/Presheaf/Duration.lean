@@ -94,7 +94,10 @@ category `Path(F)` and the discrete Conduché fibrations are stated, and that is
 introducing `Mathlib.CategoryTheory` to the live tree should be weighed. The decision is reversible
 without changing a definition here: `Dur.id`/`Dur.comp` with the three monoid laws, and — in the
 second half of this file — `Tw.id`/`Tw.comp` with the three category laws, are exactly the fields a
-`CategoryStruct`/`Category` instance would need.
+`CategoryStruct`/`Category` instance would need. That weighing is done: `Presheaf/Path.lean` adopts
+`Mathlib.CategoryTheory` minimally and synonym-scoped, building `BD⁺`'s `Category` instance on its
+own synonym `BObj D` from `Dur.id`/`Dur.comp` and the three laws here, verbatim; see its
+Implementation Notes.
 
 **`BD⁺` is a hand-rolled `comp`/`id` pair, not Mathlib's monoid on the nonneg subtype.**
 `Mathlib.Algebra.Order.Nonneg.Basic` would give `AddCommMonoid (TemporalOrder.PositiveCone D)`

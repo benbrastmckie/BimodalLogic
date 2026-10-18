@@ -531,6 +531,13 @@ structure BObj (D : TemporalOrder) where
   /-- The single object. -/
   unit : Unit
 
+-- `BObj.mk.injEq` is the auto-generated constructor-injectivity `simp` lemma of a one-field
+-- structure over `Unit`; `simp` proves it outright by subsingleton elimination, so the `simpNF`
+-- linter reports it. Lean synthesizes the lemma, so there is no source position at which it could
+-- be adjusted or dropped; the exemption is recorded here and in
+-- `scripts/nolint-attribute-allowlist.txt`.
+attribute [nolint simpNF] BObj.mk.injEq
+
 /-- **`BD⁺` as a Mathlib category**: one object, homs the durations `Dur D`, composition
 `Dur.comp` and identity `Dur.id`, with the three laws of `Presheaf/Duration.lean` verbatim. This is
 the reconciliation `Duration.lean`'s Implementation Notes promised: `Dur.id`/`Dur.comp` with those

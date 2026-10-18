@@ -77,7 +77,9 @@ Two durable anchors, neither of them a cited theorem:
   identity (`FrameOver.nullity_identity`), so a function on `[0, l]` is a convex history exactly
   when it is a length-`l` path in `(W, ⇒₁)` — and `Path(F)`, the category whose morphisms are the
   convex histories from one world state to another, is then the free category on that graph. That
-  last clause is *described* rather than cited: no `Path(F)` exists in this tree.
+  last clause is *described* here rather than cited as an authority for anything this module
+  proves; its formal home is `Semantics/Presheaf/Path.lean`, where `Path(F)` is `PathCat` and the
+  free-category identification over `ℤ` is `PathHom.pathEquiv` with `PathHom.toPath_comp`.
 - The decidability route's root-path presentation.
   `FormalSystem/Metalogic/Decidability/RaySummary/README.md` and
   `specs/evidence/seam-gluing-ray-product/device-selection-probe.lean` ("ultimately periodic
