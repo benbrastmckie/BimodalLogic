@@ -1,7 +1,7 @@
 # Implementation Plan: Task #782
 
 - **Task**: 782 - Phase7 verts shape d decomposition
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None. Parent task 716 is `[COMPLETED]` and archived; this plan reads its
   records, it does not wait on them.

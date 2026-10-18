@@ -1,27 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Planned task 782 as a two-phase verification-and-closure round. Plan-time reading showed every deliverable in the description (biUnion-shaped verts, succT/predT let-hoists, the raised posTable/posAtC/posAtC_eq decomposition change) was already landed and recorded by parent task 716 at commit fcd3ffcb0, and probe 25 re-compiled green against HEAD. Phase 1 re-derives the landed state and measures the isolated verts factor this round; Phase 2 runs the full gate and writes the summary. A non-blocking user_decision offers abandonment as superseded instead.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 4,
+  "summary": "Verification-and-closure round completed with no FormalSystem edit: every claim in the task description was re-derived on HEAD b5547cef9 (Shape D verts body, succT/predT let-hoists, no posTable/posAtC/find?, byte-identical mem_* statements, rfl withBx transfers with axioms [propext, Classical.choice, Quot.sound], Complete.lean surface 27 withBx_ refs, parent decomposition record at lines 88/223), the isolated verts factor was re-measured at ~69x (16 ms vs 1105 ms, cards 16/16), and the full guarded build is green (2878 jobs). Raised, not repaired: lake exe lint-style is red at HEAD on 4 pre-existing lines outside this task's scope; the stale core deploy was left to the orchestrator's sanctioned inter-cycle checkpoint; verify-deploy.sh deferred to the batch stage per the Batch Gate Deferral directive.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/782_phase7_verts_shape_d_decomposition/plans/01_verify-landed-shape-d-closure.md",
-      "summary": "Two-phase verification-and-closure plan; no FormalSystem file edited; 1.5 h."
+      "type": "summary",
+      "path": "specs/782_phase7_verts_shape_d_decomposition/summaries/01_verify-landed-shape-d-closure-summary.md",
+      "summary": "Closure record: deliverables landed by the parent at fcd3ffcb0, re-derived on today's tree; isolated verts factor ~69x; no source file modified; lint-style follow-up named."
+    },
+    {
+      "type": "progress",
+      "path": "specs/782_phase7_verts_shape_d_decomposition/progress-file.md",
+      "summary": "Every Phase 1 and Phase 2 check with its command and recorded output."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 2,
   "phases_total": 2,
+  "plan_markers_verified": true,
   "blockers": [],
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement: Phase 1 re-derives the landed Shape D state (probes under specs/782_.../probes/), Phase 2 runs the full gate and writes the summary. Surface the non-blocking user_decision (close vs abandon as superseded) at the cycle end.",
-  "user_decision": {
-    "question": "All three deliverables in task 782's description were landed and recorded by parent task 716's revised Phase 7 (commit fcd3ffcb0, 2026-10-13; parent COMPLETED and archived) before this plan ran. Should 782 be closed through the verification-and-closure plan, or abandoned as superseded?",
-    "options": [
-      "Proceed with the verification-and-closure plan: re-derive the landed Shape D state on the current tree, run the full gate, write the summary, complete 782 (no FormalSystem edit)",
-      "Abandon 782 as superseded by task 716 (/task --abandon 782) and skip the verification round; the parent's archived plan remains the sole record"
-    ],
-    "recommended": "Proceed with the verification-and-closure plan: re-derive the landed Shape D state on the current tree, run the full gate, write the summary, complete 782 (no FormalSystem edit)",
-    "blocking": false
-  }
+  "next_action_hint": "Postflight completion. Outside this task: a follow-up to fix the 4 pre-existing lake exe lint-style findings (Axioms.lean:300, DerivedAxioms.lean:51/154, ConnectDerived.lean:28); the inter-cycle checkpoint should clear the stale core deploy.",
+  "git_checkpoint": "d7140a1c3"
 }

@@ -11,7 +11,7 @@ next_project_number: 820
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,618,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,782,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,618,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,819 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,763 | 231,429,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -84,7 +84,6 @@ next_project_number: 820
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
-782 [IMPLEMENTING] — Adopt Shape D for the position-space leaf cache instead of...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 819 [NOT STARTED] — Research-first: choose the presentation of a ladder cell that...
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
@@ -938,12 +937,13 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO FURTHER DEPENDENCY EDGES. `agent-sys
 ---
 
 ### 782. Phase7 verts shape d decomposition
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 716
 - **Plan**: [782_phase7_verts_shape_d_decomposition/plans/01_verify-landed-shape-d-closure.md]
+- **Summary**: [782_phase7_verts_shape_d_decomposition/summaries/01_verify-landed-shape-d-closure-summary.md]
 
 **Description**: Adopt Shape D for the position-space leaf cache instead of the blocked posAtC cache. Blocker research confirmed vertsD := G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t))) is unconditionally rfl-transferable (vertsD = verts holds with no cache to be equal to), obtains the same 512-to-4 reduction in posAt calls, leaves Complete.lean's five rfl-proved withBx_* transfer lemmas intact, and measures ~73x faster than the landed verts (15 ms vs 1093 ms at certA, identical card 16). The rejected alternative -- route (ii), ~14 propositional transfer lemmas widening scope into Complete.lean -- would buy a SLOWER result. Requires recording the decomposition change that drops posTable/posAtC/posAtC_eq from the Goals, which plan-compliance.md requires be raised. Also land the succT/predT let-hoists independently (proved zeta-equal and rfl-transferable, no proof obligation). Evidence: parent issue log entries iss_1791930803755_uNnWEO and iss_1791930247123_2yrlt6, plus .blocker-research.json and probes/21_shapeD_transfer.lean through 24_shapeD_measure.lean.
 

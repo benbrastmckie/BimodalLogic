@@ -1,58 +1,57 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
+  "status": "implemented",
+  "dispatch_seq": 4,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "vacuous_regex_raw_hits": 1,
+    "vacuous_review": "The single-line vacuous regex hits one pre-existing theorem, FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal (t : Int) : intTimeHistory.domain t := trivial, unchanged since c9775647f3 2025-12-04), whose domain is fun _ => True; it is a genuine statement with its honest proof, not a placeholder, in a file this task did not touch. Reviewed count: 0.",
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "lint_style": "lake exe lint-style exit 3: 4 pre-existing 'space before a semicolon' findings outside this task's scope (Axioms.lean:300, DerivedAxioms.lean:51, :154, ConnectDerived.lean:28; commits of 2026-10-14/15). Raised as a costly open issue, not repaired (plan Non-Goals forbid FormalSystem edits).",
+    "full_gate_set": "deferred to the batch stage per the dispatch's Batch Gate Deferral directive; project gates check-module-invariants.sh, typst-sync-check.sh, check-task-references.sh, lean-sorry-census.sh all green"
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/782_phase7_verts_shape_d_decomposition/plans/01_verify-landed-shape-d-closure.md",
-      "summary": "Two-phase verification-and-closure plan: every deliverable in the task description (Shape D verts, succT/predT let-hoists, raised posTable/posAtC/posAtC_eq decomposition change) was already landed and recorded by parent task 716 at commit fcd3ffcb0; Phase 1 re-derives the landed state on the current tree, Phase 2 runs the full gate and writes the closure summary. No FormalSystem file is edited."
+      "type": "summary",
+      "path": "specs/782_phase7_verts_shape_d_decomposition/summaries/01_verify-landed-shape-d-closure-summary.md",
+      "summary": "Verification-and-closure record: the Shape D verts, the succT/predT let-hoists and the raised decomposition change were landed by the parent at fcd3ffcb0; every claim re-derived on HEAD b5547cef9 with no FormalSystem edit; isolated verts factor re-measured at ~69x."
     }
   ],
-  "next_steps": "Run /orchestrate 782 to execute the plan",
-  "phase_count": 2,
-  "estimated_hours": 1.5,
-  "dependency_waves": [
-    [
-      1
-    ],
-    [
-      2
-    ]
-  ],
-  "user_decision": {
-    "question": "All three deliverables in task 782's description were landed and recorded by parent task 716's revised Phase 7 (commit fcd3ffcb0, 2026-10-13; parent COMPLETED and archived) before this plan ran. Should 782 be closed through the verification-and-closure plan, or abandoned as superseded?",
-    "options": [
-      "Proceed with the verification-and-closure plan: re-derive the landed Shape D state on the current tree, run the full gate, write the summary, complete 782 (no FormalSystem edit)",
-      "Abandon 782 as superseded by task 716 (/task --abandon 782) and skip the verification round; the parent's archived plan remains the sole record"
-    ],
-    "recommended": "Proceed with the verification-and-closure plan: re-derive the landed Shape D state on the current tree, run the full gate, write the summary, complete 782 (no FormalSystem edit)",
-    "blocking": false
+  "completion_data": {
+    "completion_summary": "Closed as a verification-and-closure round with no FormalSystem edit: re-derived on HEAD b5547cef9 that the biUnion-shaped verts, the succT/predT let-hoists and the posTable/posAtC/posAtC_eq decomposition record were all landed by parent task 716's Phase 7 at commit fcd3ffcb0 (body shapes, byte-identical mem_* statements, rfl withBx transfers with axioms [propext, Classical.choice, Quot.sound], Complete.lean surface intact, parent record at lines 88/223), measured the isolated verts factor at certA this round (16 ms vs 1105 ms, ~69x, cards 16/16), and ran the full guarded build (green, 2878 jobs) plus the project gates. Raised, not repaired: lake exe lint-style is red at HEAD on 4 pre-existing lines outside this task's scope.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "When a follow-up task is spawned off a parent's blocker (suggested_channel follow_up_task) and the parent is then revised (/revise) to absorb the very route the follow-up proposes, the follow-up's description goes stale but its status does not: it remains dispatchable with a description asking for work the parent already landed. Before planning any task with a parent_task, check the parent's archived plan, its latest commits on the named files (git log -- <file>), and its issue log for win entries postdating the blocker; if the scope is already landed, plan a verification-and-closure round with no source edit and raise a non-blocking user_decision offering abandonment, rather than re-planning the implementation.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/782_phase7_verts_shape_d_decomposition/plans/01_verify-landed-shape-d-closure.md",
-      "confidence": 0.75,
-      "suggested_keywords": [
-        "superseded task",
-        "parent_task",
-        "blocker follow-up",
-        "revise absorbed scope",
-        "verification-only plan",
-        "user_decision"
-      ]
-    }
+  "modified_files": [
+    "specs/782_phase7_verts_shape_d_decomposition/probes/01_shapeD_landed_transfer.lean",
+    "specs/782_phase7_verts_shape_d_decomposition/probes/02_old_vs_landed_measure.lean",
+    "specs/782_phase7_verts_shape_d_decomposition/progress-file.md",
+    "specs/782_phase7_verts_shape_d_decomposition/plans/01_verify-landed-shape-d-closure.md",
+    "specs/782_phase7_verts_shape_d_decomposition/summaries/01_verify-landed-shape-d-closure-summary.md",
+    "specs/782_phase7_verts_shape_d_decomposition/issues.jsonl",
+    "specs/782_phase7_verts_shape_d_decomposition/handoffs/phase-1-handoff-20261018T055940Z.md",
+    "specs/782_phase7_verts_shape_d_decomposition/handoffs/phase-2-handoff-20261018T060914Z.md",
+    "specs/782_phase7_verts_shape_d_decomposition/.return-meta.json",
+    "specs/782_phase7_verts_shape_d_decomposition/.orchestrator-handoff.json"
   ],
   "metadata": {
-    "session_id": "sess_1792301223_5bcf1c_782",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1792301223_5bcf1c",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": [
       "orchestrator",
-      "plan",
-      "planner-agent"
+      "implement",
+      "skill-lean-implementation"
     ],
-    "issue_log_contribution": 1
+    "phases_completed": 2,
+    "phases_total": 2,
+    "compliance_check": "skipped",
+    "git_commits": [
+      "c03844462",
+      "d7140a1c3"
+    ],
+    "duration_seconds": 856
   }
 }

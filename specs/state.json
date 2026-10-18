@@ -1755,7 +1755,7 @@
     {
       "project_number": 782,
       "project_name": "phase7_verts_shape_d_decomposition",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Adopt Shape D for the position-space leaf cache instead of the blocked posAtC cache. Blocker research confirmed vertsD := G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t))) is unconditionally rfl-transferable (vertsD = verts holds with no cache to be equal to), obtains the same 512-to-4 reduction in posAt calls, leaves Complete.lean's five rfl-proved withBx_* transfer lemmas intact, and measures ~73x faster than the landed verts (15 ms vs 1093 ms at certA, identical card 16). The rejected alternative -- route (ii), ~14 propositional transfer lemmas widening scope into Complete.lean -- would buy a SLOWER result. Requires recording the decomposition change that drops posTable/posAtC/posAtC_eq from the Goals, which plan-compliance.md requires be raised. Also land the succT/predT let-hoists independently (proved zeta-equal and rfl-transferable, no proof obligation). Evidence: parent issue log entries iss_1791930803755_uNnWEO and iss_1791930247123_2yrlt6, plus .blocker-research.json and probes/21_shapeD_transfer.lean through 24_shapeD_measure.lean.",
       "effort": "",
@@ -1763,12 +1763,17 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-10-14T00:08:05Z",
-      "last_updated": "2026-10-18T05:53:06Z",
+      "last_updated": "2026-10-18T06:14:19Z",
       "artifacts": [
         {
           "path": "specs/782_phase7_verts_shape_d_decomposition/plans/01_verify-landed-shape-d-closure.md",
           "type": "plan",
           "summary": "Two-phase verification-and-closure plan; no FormalSystem file edited; 1.5 h."
+        },
+        {
+          "path": "specs/782_phase7_verts_shape_d_decomposition/summaries/01_verify-landed-shape-d-closure-summary.md",
+          "type": "summary",
+          "summary": "Closure record: deliverables landed by the parent at fcd3ffcb0, re-derived on today's tree; isolated verts factor ~69x; no source file modified; lint-style follow-up named."
         }
       ],
       "session_id": "sess_1792301223_5bcf1c",
@@ -1779,7 +1784,8 @@
         "specs/782_phase7_verts_shape_d_decomposition/progress-file.md",
         "specs/782_phase7_verts_shape_d_decomposition/summaries/01_verify-landed-shape-d-closure-summary.md",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Closed as a verification-and-closure round with no FormalSystem edit: re-derived on HEAD b5547cef9 that the biUnion-shaped verts, the succT/predT let-hoists and the posTable/posAtC/posAtC_eq decomposition record were all landed by parent task 716's Phase 7 at commit fcd3ffcb0 (body shapes, byte-identical mem_* statements, rfl withBx transfers with axioms [propext, Classical.choice, Quot.sound], Complete.lean surface intact, parent record at lines 88/223), measured the isolated verts factor at certA this round (16 ms vs 1105 ms, ~69x, cards 16/16), and ran the full guarded build (green, 2878 jobs) plus the project gates. Raised, not repaired: lake exe lint-style is red at HEAD on 4 pre-existing lines outside this task's scope."
     },
     {
       "project_number": 783,
