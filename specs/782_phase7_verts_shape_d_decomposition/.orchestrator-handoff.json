@@ -1,0 +1,27 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Planned task 782 as a two-phase verification-and-closure round. Plan-time reading showed every deliverable in the description (biUnion-shaped verts, succT/predT let-hoists, the raised posTable/posAtC/posAtC_eq decomposition change) was already landed and recorded by parent task 716 at commit fcd3ffcb0, and probe 25 re-compiled green against HEAD. Phase 1 re-derives the landed state and measures the isolated verts factor this round; Phase 2 runs the full gate and writes the summary. A non-blocking user_decision offers abandonment as superseded instead.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/782_phase7_verts_shape_d_decomposition/plans/01_verify-landed-shape-d-closure.md",
+      "summary": "Two-phase verification-and-closure plan; no FormalSystem file edited; 1.5 h."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 2,
+  "blockers": [],
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement: Phase 1 re-derives the landed Shape D state (probes under specs/782_.../probes/), Phase 2 runs the full gate and writes the summary. Surface the non-blocking user_decision (close vs abandon as superseded) at the cycle end.",
+  "user_decision": {
+    "question": "All three deliverables in task 782's description were landed and recorded by parent task 716's revised Phase 7 (commit fcd3ffcb0, 2026-10-13; parent COMPLETED and archived) before this plan ran. Should 782 be closed through the verification-and-closure plan, or abandoned as superseded?",
+    "options": [
+      "Proceed with the verification-and-closure plan: re-derive the landed Shape D state on the current tree, run the full gate, write the summary, complete 782 (no FormalSystem edit)",
+      "Abandon 782 as superseded by task 716 (/task --abandon 782) and skip the verification round; the parent's archived plan remains the sole record"
+    ],
+    "recommended": "Proceed with the verification-and-closure plan: re-derive the landed Shape D state on the current tree, run the full gate, write the summary, complete 782 (no FormalSystem edit)",
+    "blocking": false
+  }
+}

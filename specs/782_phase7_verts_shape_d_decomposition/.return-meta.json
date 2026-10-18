@@ -1,0 +1,58 @@
+{
+  "status": "planned",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/782_phase7_verts_shape_d_decomposition/plans/01_verify-landed-shape-d-closure.md",
+      "summary": "Two-phase verification-and-closure plan: every deliverable in the task description (Shape D verts, succT/predT let-hoists, raised posTable/posAtC/posAtC_eq decomposition change) was already landed and recorded by parent task 716 at commit fcd3ffcb0; Phase 1 re-derives the landed state on the current tree, Phase 2 runs the full gate and writes the closure summary. No FormalSystem file is edited."
+    }
+  ],
+  "next_steps": "Run /orchestrate 782 to execute the plan",
+  "phase_count": 2,
+  "estimated_hours": 1.5,
+  "dependency_waves": [
+    [
+      1
+    ],
+    [
+      2
+    ]
+  ],
+  "user_decision": {
+    "question": "All three deliverables in task 782's description were landed and recorded by parent task 716's revised Phase 7 (commit fcd3ffcb0, 2026-10-13; parent COMPLETED and archived) before this plan ran. Should 782 be closed through the verification-and-closure plan, or abandoned as superseded?",
+    "options": [
+      "Proceed with the verification-and-closure plan: re-derive the landed Shape D state on the current tree, run the full gate, write the summary, complete 782 (no FormalSystem edit)",
+      "Abandon 782 as superseded by task 716 (/task --abandon 782) and skip the verification round; the parent's archived plan remains the sole record"
+    ],
+    "recommended": "Proceed with the verification-and-closure plan: re-derive the landed Shape D state on the current tree, run the full gate, write the summary, complete 782 (no FormalSystem edit)",
+    "blocking": false
+  },
+  "memory_candidates": [
+    {
+      "content": "When a follow-up task is spawned off a parent's blocker (suggested_channel follow_up_task) and the parent is then revised (/revise) to absorb the very route the follow-up proposes, the follow-up's description goes stale but its status does not: it remains dispatchable with a description asking for work the parent already landed. Before planning any task with a parent_task, check the parent's archived plan, its latest commits on the named files (git log -- <file>), and its issue log for win entries postdating the blocker; if the scope is already landed, plan a verification-and-closure round with no source edit and raise a non-blocking user_decision offering abandonment, rather than re-planning the implementation.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/782_phase7_verts_shape_d_decomposition/plans/01_verify-landed-shape-d-closure.md",
+      "confidence": 0.75,
+      "suggested_keywords": [
+        "superseded task",
+        "parent_task",
+        "blocker follow-up",
+        "revise absorbed scope",
+        "verification-only plan",
+        "user_decision"
+      ]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792301223_5bcf1c_782",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "plan",
+      "planner-agent"
+    ],
+    "issue_log_contribution": 1
+  }
+}
