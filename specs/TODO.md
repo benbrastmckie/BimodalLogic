@@ -1,5 +1,5 @@
 ---
-next_project_number: 826
+next_project_number: 827
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 826
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,814,816,823,824 | 298,428,502,761,768,770,772,777,813 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,814,816,823,824,826 | 298,428,502,761,768,770,772,777,810,813 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822 | 231,429,497,783 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -45,6 +45,7 @@ next_project_number: 826
 784 [BLOCKED] — FROZEN-RECORD TRACKER. Seven task records in this repository...
 785 [NOT STARTED] — Record the three Lean plan-authoring gate-collision facts in...
 810 [NOT STARTED] — META TASK. ONE grouped task covering FIVE agent-system...
+  └─ 826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
 813 [NOT STARTED] — State the precedence and snapshot-prerequisite rules for a...
   └─ 814 [NOT STARTED] — Record the decide-synthesis working form, the axiom-free...
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and... (see above)
@@ -124,6 +125,92 @@ next_project_number: 826
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 826. Diagnose the zero-result literature retrieval and settle the degraded-signal contract
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 810
+- **Parent**: Task 761
+
+**Description**: Diagnose why a ranked literature query over indexed material returned nothing, and settle the `degraded` field's contract on an empty result set. Two coupled items in `literature-search.sh`, which must be investigated together: item 2 is the signal that misled the caller about item 1, and item 2's correct remedy depends on what item 1 turns out to be.
+
+NOTHING IN THE CORPUS IS BROKEN AND THIS IS NOT A DATA-REPAIR RECORD. The deliverable is a fix (or, for item 2, a possibly documentation-only correction) in the literature extension's source store. Do NOT re-ingest, re-convert or re-chunk any source as part of this record; if the diagnosis concludes that a reindex is required, state that conclusion and raise it rather than performing a corpus operation under a record scoped as a script fix.
+
+=== ITEM 1 -- A RANKED QUERY RETURNED NOTHING FOR MATERIAL THAT IS PRESENT ===
+
+MEASURED, in the originating run: `literature-search.sh` returned `degraded=true` with ZERO results for a query about the HWZ quasimodel construction. The caller worked around it by grepping the corpus source directory directly for `Theorem 14` and `Definition 12`, and found the material. So the content was reachable by substring search at the moment the ranked search reported nothing.
+
+MEASURED FRESH DURING THE CREATION OF THIS RECORD, not copied from the originating run: this repository's `specs/literature-index.json` holds 106 entries and contains both the token `HWZ` and the token `quasimodel` (the latter at several entries). The material is therefore NOT absent from this repository's literature sub-index.
+
+THE DISCRIMINATION THE DIAGNOSIS MUST MAKE FIRST, BEFORE ANY FIX. The sub-index and the ranked search read DIFFERENT STORES. `specs/literature-index.json` is per-repo metadata; the ranked search reads an FTS5 full-text database over converted chunk files. Presence in the former is not evidence of presence in the latter, and the measurement above establishes only the former. Settle, in this order, which of these is the actual cause before changing any code:
+
+  (a) The chunks for that source were never indexed into the FTS5 database, or the database is stale with respect to them -- a coverage/freshness problem, whose fix is not in this script at all.
+  (b) The chunks are indexed but the query did not match them -- a tokenization, query-construction or ranking problem, whose fix may be in this script.
+  (c) The query raised an FTS5 error that was swallowed into an empty result rather than surfaced -- note that the envelope carries a `query_error` field precisely for this, so check whether it was populated and, if it was, why the caller did not see it.
+
+Report which of (a), (b) or (c) it was. If it is (a), this record's item 1 deliverable is that finding plus whatever authoring or diagnostic guidance prevents the next caller from reading a coverage gap as a tool failure -- NOT a speculative change to the ranking code.
+
+=== ITEM 2 -- `degraded` CARRIES NO INFORMATION EXACTLY WHEN THE RESULT SET IS EMPTY ===
+
+MEASURED in the deployed copy, at THREE separate envelope-construction sites (the single-query builder and two others; locate all three by searching for the assignment, and fix or document all three rather than the first one found -- line numbers drift and are not durable anchors). Every site has the same shape:
+
+    if merged:
+        ... fallback_tier = 'bm25' | 'phrase_retry' | 'trigram' | 'none'
+    else:
+        fallback_tier = 'none'
+    degraded = fallback_tier != 'bm25'
+
+On an empty result set `fallback_tier` is unconditionally `'none'`, so `degraded` is unconditionally `true`. A genuine zero-result query and a retrieval-degraded zero-result query are therefore INDISTINGUISHABLE in the envelope: both report `degraded=true, fallback_tier='none'`.
+
+THIS CONTRADICTS THE FIELD'S OWN DOCUMENTED CONTRACT. The comment sitting immediately above the first of those sites states that `degraded` "is the honest, never-silent signal that distinguishes 'retrieval degraded' from 'genuine zero-result'". The code cannot make that distinction. Whatever else this record does, that comment and the code must be brought into agreement -- either by making the code deliver what the comment promises, or by correcting the comment. Leaving a comment that overpromises a field's meaning is what produced the originating confusion.
+
+CONSUMER SCOPE, MEASURED -- AND ONE PASSAGE THAT MUST NOT BE "FIXED". `literature-briefing.sh` gates its `[DEGRADED RETRIEVAL - fallback_tier: ...]` banner on `degraded` being true AND the briefing line array being NON-EMPTY. The briefing path is therefore ALREADY guarded against the tautology above and never shows a degraded banner on a zero-result query. Do not change that gate: it is correct as it stands, and an implementer who "fixes" it will be removing the one guard that works. The unguarded consumer is any caller that reads the raw envelope JSON directly, which is exactly what the originating run did.
+
+THE REMEDY IS A CHOICE, NOT A FOREGONE CONCLUSION -- MAKE IT IN RESEARCH, WITH THE CONSUMERS ENUMERATED. Two defensible shapes, and the decision must be recorded with its reason:
+
+  - Make the value honest: report `degraded=false` when the result set is empty and `query_error` is null (a genuine zero-result), reserving `degraded=true` for a real degradation. This CHANGES THE FIELD'S VALUE for existing callers and is therefore an interface change -- enumerate every consumer of `degraded` and `fallback_tier` across the source store before choosing it, including the legacy bare-array envelope shape the briefing script still accepts.
+  - Keep the value and correct the contract: document that `degraded` is meaningful only when `results` is non-empty, and state the rule a raw-JSON consumer should use instead -- most plausibly that an empty `results` with a null `query_error` is a genuine zero-result, while a non-null `query_error` is a hard failure.
+
+Whichever is chosen, a raw-JSON caller must be left with a stated, checkable rule for telling "nothing matched" from "retrieval broke". That is the actual deliverable of item 2.
+
+=== WHY THE TWO ITEMS ARE ONE RECORD ===
+
+Item 2 alone does not explain item 1, and fixing item 2 in isolation would be the worse outcome of the two: a tidied flag reporting an honest `degraded=false` on a query that STILL returns nothing for material that is present would retire the only signal that anything was wrong, while leaving the retrieval failure untouched and harder to notice next time. Item 1 is the primary; item 2 is the reason the caller misread it. Settle item 1 first.
+
+=== DEPENDENCY EDGE, AND WHY IT IS AN EDGE RATHER THAN AN EXCLUSION ===
+
+`agent-system/extensions/literature/scripts/literature-search.sh` is already claimed by the open grouped defect record `agent_system_batch_defect_group`, whose own `file_scope` lists this exact path and whose DEFECT 4 fixes the `--read` chunk-file path resolution in the same script. That is an unordered overlap on shared file territory. Per this repository's batching discipline, shared territory is serialized by an explicit edge rather than excluded: this record therefore depends on that grouped record rather than racing a second writer into the same script. The two concerns are genuinely distinct -- that record's DEFECT 4 is about resolving a chunk file's path once a row has been FOUND, while this record is about no row being found at all -- so folding this into it was considered and rejected in favour of the edge; it is also a record consolidated by an explicit user ruling, which a later writer should extend only deliberately.
+
+=== SOURCE-STORE BOUNDARY ===
+
+`.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect. The owning extension is `literature`: resolve `source_dir` from `<project-root>/.claude-extensions.json` and edit under it at the path mirroring the deployed one, per `.claude/rules/source-store-deploy-boundary.md`. At the time of writing that resolves to `/home/benjamin/.config/nvim/agent-system/extensions/literature`, so every edit target is `agent-system/extensions/literature/**` and never a deployed `.claude/**` path -- but re-resolve it rather than trusting this sentence. Redeploy afterwards via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`. Note that the measurements in this record were taken against the DEPLOYED copy; confirm each against the source-store copy before editing, since the two can differ.
+
+=== CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION ===
+
+This record is filed in the BimodalLogic task space while its edit target resolves only under `/home/benjamin/.config/nvim/`. That mismatch is the same deliberate, previously approved condition carried by the sibling records `lean_plan_gate_collision_authoring_guidance` and `bounded_waiter_detach_form_pid_fidelity`: the record sits beside the run that measured it. A migrator should treat it as a deliberate choice, not an authoring slip. No dependency edge or `file_scope` overlap gate spans the two repositories, so any coordination with records in the source-store repository's own task space is a manual read.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`, so its prose and comments must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). The script and field names (`literature-search.sh`, `literature-briefing.sh`, `specs/literature-index.json`, `degraded`, `fallback_tier`, `query_error`, `results`, `bm25`, `phrase_retry`, `trigram`) are durable anchors and may be cited freely. The originating record's number, the issue entry_id, the specific HWZ query, the `Theorem 14` / `Definition 12` strings and the 106-entry count may NOT appear in the shipped prose -- they live in this record only. If any context document is edited, that extension's `index-entries.json` `line_count` for it must be updated to agree with the file as landed and the file must remain valid JSON parseable by `jq`.
+
+=== ACCEPTANCE ===
+
+(1) The diagnosis states which of causes (a), (b) or (c) produced the zero-result query, with the evidence that settled it, and says explicitly whether the FTS5 database covered the chunks in question.
+(2) If the cause was coverage or staleness rather than a script defect, no speculative change was made to the ranking or query-construction code, and the finding is recorded with whatever guidance keeps the next caller from reading a coverage gap as a tool failure.
+(3) The `degraded` field's code and its documenting comment agree with each other in the landed result, at ALL THREE envelope-construction sites.
+(4) A raw-JSON consumer is left with a stated, checkable rule for distinguishing a genuine zero-result from a degraded or failed retrieval, and the chosen remedy shape is recorded with its reason.
+(5) If the field's VALUE was changed, every consumer of `degraded` and `fallback_tier` in the source store was enumerated and each was checked or updated, the legacy bare-array envelope shape included.
+(6) `literature-briefing.sh`'s banner gate is byte-identical to its current text.
+(7) The landed files carry no task-number references, no record-versioning language, and none of the originating run's query strings or counts.
+(8) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean` afterwards.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the ladder-realization-theorem record (task 761) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. The originating entry is in `specs/761_ladder_realization_theorem/issues.jsonl`, entry_id `iss_1791766528048_mRmvAU` (class `tooling bug or gap`, severity minor, resolution `worked_around`). The three-site `degraded` measurement, the `literature-briefing.sh` banner-gate measurement and the sub-index token measurement in this record were all performed fresh during task creation; the originating entry recorded only the symptom.
+
+---
 
 ### 825. Report a reversed validate-artifact.sh invocation as an argument-order fault, not a missing file
 - **Effort**: low
@@ -752,6 +839,10 @@ This record is filed in the BimodalLogic task space while its edit target resolv
 
 Raised during orchestration of the realizable-type adequacy / countdown-profile probe (task 809) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Both originating entries are in `specs/809_realizable_type_adequacy_countdown_profile/issues.jsonl`: item 1 is entry_id `iss_1792222421761_2rrBDK` (class `plan-internal-tension`, severity minor), item 2 is entry_id `iss_1792223916681_ZOvV6R` (class `missing-prerequisite`, severity minor). The lead classified both as genuine agent-system contract gaps; the aggregator supplied no `suggested_channel_hints` for either, so no hint was overridden.
 
+=== CORROBORATION FOR ITEM 2, FROM A SECOND INDEPENDENT RUN ===
+
+ITEM 2 recurred independently during orchestration of the ladder-realization-theorem record: a phase named `lean-challenge-snapshot.sh --check` in its Verification, no snapshot had been taken at plan time, so no manifest existed and the script exited 71 and the advisory drift check could not run. The implementer fell back to exactly the substitute this record already sanctions -- a byte-for-byte diff of the implemented Goal signatures against the plan's own pinned Challenge block, which matched. That is a second, independent confirmation both of the gap and of the sanctioned fallback. Entry: `specs/761_ladder_realization_theorem/issues.jsonl`, entry_id `iss_1791770495965_TM78BN` (class `gate-baseline`, severity minor). Approved at the orchestrate-lead level and routed here, rather than filed as a duplicate record, because this record already owns the case.
+
 ---
 
 ### 812. Stale generated inventory blocks refresh
@@ -1087,6 +1178,24 @@ THE REMEDY IS CONFIRMED, NOT MERELY PROPOSED. The same phase measured that no `l
 
 WHY THIS IS THE SAME KIND OF FACT AS ITEMS 1 AND 2. All three are things a Lean plan author must anticipate BEFORE a criterion is written, and all three manifest the same way: a verification step that cannot be met as written, through no fault of the implementation work. Items 1 and 2 concern gate MECHANICS -- which generated surfaces a gate checks, and what shape of target argument a gate script takes. Item 3 concerns the SEARCH SPACE a sweep criterion ranges over. Same audience, same guidance file, same `index-entries.json` entry and referrer line, so it carries no additional wiring cost and belongs with the other two rather than in a record of its own.
 
+=== ITEM 4 -- A GATE CRITERION STATED AS AN ABSOLUTE REPO-WIDE ZERO RATHER THAN A BASELINE DELTA ===
+
+This is item 3's class stated at its general level, and it is the item a plan author is most likely to reproduce, because the unattainable criterion reads as the obviously-correct strict one. Item 3 is the special case where a sweep's own target set guarantees matches; item 4 is the general case where the REPOSITORY already carries matches the task will not touch.
+
+MEASURED, in the originating run: a plan's phase criterion required that a repo-wide `check-task-references.sh --quiet` EXIT 0. It exited 1 on 198 pre-existing occurrences in `Boneyard/*/README.md` (archived code). None were in files the task touched, every touched file passed individually, and the task's own scoped gates passed. The criterion was unattainable without an out-of-scope cleanup of archived code that the task had no business editing.
+
+A SECOND INSTANCE OF THE SAME CLASS, FROM THE SAME RUN, IN A DIFFERENT TOOL. That run's Final Verification carried a grep for the vacuous-definition patterns `lean4.md` prohibits. The grep hit one line that was present at the pre-task commit and untouched by the task: `FormalSystem/Examples/TemporalStructures.lean`, the theorem `int_domain_universal`, whose body is `trivial` because its goal reduces to `True`. VERIFIED FRESH DURING THE CREATION OF THIS RECORD: that declaration is still present with that body, so this instance still reproduces and may be used as a worked example. It is a legitimate proof, not debt -- which is the point. An absolute "the vacuous-pattern grep matches nothing" criterion is unmeetable against a tree that legitimately contains such a line, and "fixing" the line to satisfy the criterion would damage correct code.
+
+A MEASUREMENT THAT MUST BE TAKEN BEFORE THE PROSE IS WRITTEN, AND A TRAP IT SETS. VERIFIED FRESH DURING THE CREATION OF THIS RECORD: `check-task-references.sh --quiet` NOW exits 0, reporting "repo (excluding specs/): 0 occurrence(s)", and the Boneyard READMEs (56 tracked files) now contain zero raw occurrences -- the archived-code debt was cleared by a later cleanup. The 198-occurrence figure is therefore a HISTORICAL measurement and NOT a current fact about this repository. DO NOT write the guidance as though that lint currently fails, and do not cite the 198 figure as a live baseline; a reader who checks will find it false and will discount the rest of the guidance. The honest form is to state the CLASS and its remedy, using the still-reproducing vacuous-pattern instance as the worked example if a concrete one is wanted. This is itself the sharpest argument for the rule: a baseline is a moving quantity, so a criterion that hard-codes one is wrong the moment the baseline moves -- in EITHER direction.
+
+THE DURABLE LESSON TO RECORD. A phase criterion that invokes a repo-wide lint, sweep or grep MUST be stated as a delta against the baseline, not as an absolute zero or an absolute exit 0, UNLESS the author has confirmed the baseline is in fact clean and that the criterion will still hold when it is checked. State the satisfiable forms a plan author may use, in preference order:
+
+  - Scope the criterion to the files the task touches ("every file this phase modifies passes the lint individually"), which is both meetable and the thing actually being asserted.
+  - State it as a delta ("the repo-wide count does not increase relative to the pre-task commit"), naming how the baseline is captured.
+  - If an absolute repo-wide zero genuinely is the intent, the plan must FIRST schedule the cleanup that makes it true, as an explicit in-scope step -- exactly as item 2's `--check` rule requires a plan to schedule the snapshot it later reads.
+
+And state the corollary for the implementer who meets one anyway, since authoring discipline cannot close this entirely: a gate whose only failures are pre-existing and outside the task's file scope is a PASS for that phase, recorded with the enumerated pre-existing findings and the evidence that each touched file passes individually. It is not a blocker, and it is not grounds to edit out-of-scope files.
+
 === DELIMITATION FROM THE verify-deploy CONTEXT-BUDGET FIXTURE RECORD -- READ THIS BEFORE TREATING EITHER RECORD AS A DUPLICATE ===
 
 The source-store repository's task space already holds record #389 `verify_deploy_context_budget_fixture_missing_git_add` [not_started], which owns a DIFFERENT root cause of the same gate's unmeetability: `test-verify-deploy-context-budget.sh`'s fixture runs `git init` on a scratch directory but never `git add`, so Gate 22 discovers files via `git ls-files` against an empty index, finds zero `.sh` files, and exits 2 -- failing Gate 8 (`run-all.sh`) and therefore the complete gate set at 1 of 36. That is a real defect in a test fixture, fixable by code.
@@ -1142,11 +1251,16 @@ Every edited file lies outside `specs/**`, so its prose must carry no task-numbe
 (9) The guidance states item 3's unsatisfiable-by-construction class, carries BOTH of its failure reasons (retained refuted bodies, and prefix capture of sibling names) with their distinct remedies, and presents the exact-name sweep as a remedy confirmed on the measured tree rather than as an untested suggestion.
 (10) Item 3 is presented as a third separately checkable condition alongside items 1 and 2, not blurred into either.
 
+(11) The guidance states item 4's absolute-versus-delta rule, gives the satisfiable forms in preference order, and carries the implementer-side corollary that a gate failing only on pre-existing, out-of-scope findings is a recorded PASS rather than a blocker.
+(12) Item 4's prose cites no stale baseline figure as a current fact; any worked example it uses was re-verified against the tree at implementation time.
+
 === PROVENANCE ===
 
 Raised during orchestration of the residue-index modulus-convention record (task 778) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Both originating entries are in `specs/778_residue_index_modulus_convention_record/issues.jsonl`: item 1 is entry_id `iss_1791950541564_ZAJr96` (class `gate-collision`, severity minor), item 2 is entry_id `iss_1791950893587_oVovJc` (class `gate-collision`, severity costly). The user was shown both gaps with these citations and the cross-repo siting trade-off before this record was dispatched.
 
 Item 3 was raised later, during orchestration of the ladder-cell presentation design-decision record, and approved at the orchestrate-lead level through the same conclusion-stage agent-system channel, with the explicit routing instruction that it be folded into THIS record rather than filed as a duplicate. Its originating entry is `specs/819_ladder_cell_presentation_design_decision/issues.jsonl`, entry_id `iss_1792338994747_jX9QvT` (class `gate_collision`, severity none, resolution `open`). Reading that entry's `what_happened` field gives the measurement in item 3 above verbatim.
+
+Item 4 was raised later, during orchestration of the ladder-realization-theorem record, and approved at the orchestrate-lead level through the same conclusion-stage agent-system channel. Its originating entries are in `specs/761_ladder_realization_theorem/issues.jsonl`: entry_id `iss_1791769990070_9Nl16r` (class `gate-baseline`, severity minor) for the repo-wide lint instance, and entry_id `iss_1791770495965_TM78BN` (class `gate-baseline`, severity minor) for the vacuous-pattern instance. The second of those entries also carries the advisory-check-without-a-manifest observation, which is NOT part of this record -- it duplicates the `lean_plan_challenge_block_authoring_contract` record's ITEM 2 and is cited there instead. The current-baseline measurements in item 4 were taken fresh during that dispatch, not copied from the originating run.
 
 ---
 
@@ -1493,6 +1607,10 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lake-build-gu
 
 CROSS-REPO OVERLAP ON THIS SAME SCRIPT -- CHECK BEFORE EDITING, NOTHING MECHANICAL WILL. The source-store repository (~/.config/nvim) maintains its OWN task space, and a record there already claims this script: `lean4_plan_with_zero_lean_goals`, whose file_scope is `agent-system/extensions/core/context/formats/plan-format.md`, `agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh`, and `agent-system/extensions/lean/context/project/lean4/domain/challenge-snapshot.md`. Its subject is DIFFERENT from all three defects here -- it concerns the sanctioned shape of a lean4 plan with no theorem deliverable, and the fact that a deliberate no-theorem plan and a malformed one are indistinguishable because both exit 71 -- so there is no duplication of substance. But it edits the same file, and because the two records live in different repositories' task spaces, NO dependency edge and NO file_scope overlap gate can span them. Read that record's landed state before editing this script, and coordinate rather than racing it. Note also that it claims the design record `challenge-snapshot.md`, which is deliberately NOT added to this record's file_scope for that reason; if the defects here require a change to that design record, coordinate rather than editing a file another record claims.
 
+=== CORROBORATION FOR DEFECT (c), FROM A SECOND INDEPENDENT RUN ===
+
+DEFECT (c)'s remaining non-keyword case was hit again, independently, during orchestration of the ladder-realization-theorem record. `lean-challenge-snapshot.sh --dry-run` reported `RladAdm`, `abbrev`, `gPast_adm` and `snce` as "named in Goals but not declared"; the author worked around it by de-backticking every non-goal token in the Goals block. Note that `abbrev` in that list is the ALREADY-REPAIRED keyword case -- the deployed copy that produced it was stale with respect to the landed keyword filter, so that token is not evidence of remaining work. The three non-keyword tokens are, and they are exactly the case this defect still covers. Entry: `specs/761_ladder_realization_theorem/issues.jsonl`, entry_id `iss_1791767664825_NYQS40` (class `tooling bug or gap`, severity minor). Approved at the orchestrate-lead level and routed here, rather than filed as a duplicate record, because this record already owns the case.
+
 ---
 
 ### 767. lake-build-guard replays stale result for env lean FILE
@@ -1554,9 +1672,13 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819, Task 820
-- **Plan**: [761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md]
+- **Plan**:
+  - [761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md]
+  - [761_ladder_realization_theorem/plans/01_ladder-realization-presentation-a.md]
 - **Summary**: [761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md]
-- **Research**: [761_ladder_realization_theorem/reports/02_spawn-analysis.md]
+- **Research**:
+  - [761_ladder_realization_theorem/reports/02_spawn-analysis.md]
+  - [761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md]
 
 **Description**: AMENDED 2026-10-18 (presentation chosen): the cell presentation is (a), the set-valued per-state datum — the maximum certAdm-certified subset D of Q × ClType φ × K, with ladderRealized the fibre equation and the factorization lemma for K its corollary; no tuple index is to be stated at any parameters (K is a carrier coordinate whose parameters are outputs of the counter-lift lemma). The realization theorem now waits on the counter-lift lemma (obligations (2) and (3) jointly), filed as task 820, gated before any sufficiency attempt; the label-level results of the certificate rounds are region-interior (wired probe specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean) and compose only through that lemma. Route A is not entered. See specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md.
 
