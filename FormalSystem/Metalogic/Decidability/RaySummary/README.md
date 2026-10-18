@@ -804,6 +804,38 @@ successor design not chosen. `[propext, Classical.choice, Quot.sound]` on the ce
 `[propext, Quot.sound]` on `truth_nextPow`, `depth_collision`, `pending_run_gen`, `idle_at_gen`
 and `walk_mod3`; citing `LadderModel.lean` and re-proving nothing.
 
+**The successor design is chosen.** The presentation of a ladder cell is a set-valued per-state
+datum over a quotient, in the sharpened form: `D`, the MAXIMUM `certAdm`-certified subset of the
+finite carrier `Q × ClType φ × K`, where `K` is a quotient of the two ladder counters; the
+realization theorem is the fibre equation (`cellAt` at `(q, c, n)` equals the fibre of `D` at
+`(q, κ(c, n))`), and the factorization lemma for `K` is its corollary, never its hypothesis. A
+parameter-coupled tuple index stated alone is dominated on every obligation, incomplete as a
+presentation (a tuple class carries no types) and barred by the refutation record; no tuple index
+is stated at any parameters. `K`'s SHAPE — threshold, residue and clipped gap on each counter — is
+forced by the compiled mechanisms, but `K` is a coordinate of the carrier `D` is computed over, not
+an index: its parameters are outputs of the first repeat of the realizable-type iteration on the
+object-closure product, which is the candidate the sixteenth probe's header reserved. The wired
+probe `specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean` settles what the
+decision needed: `Count true true` forces `c' + 1 = c` along every pending step
+(`count_pending_step`), so a forward `Rlad` ray reaches an idle state within `c₀ + 1` steps
+(`exists_idle_of_rlad_ray`; contrapositive `no_rlad_ray_of_pending_forever`); since the
+certificate rounds' `coh`/`cohBi` require `pend` at BOTH endpoints, every certified
+`Realizes`-chain is region-interior and is the object projection of no `Rlad` history —
+label-level sufficiency transfers to a region segment, and the ladder datum still owes the
+composition of regions through idle runs under `Count`/`Drift`. Exactness: `Real` is itself
+certified given constancy of `cellAt` on `K`-classes and every certified set lies inside it, so
+the maximum certified set is `Real`, computable by enumeration (a count of candidates), and Route A
+is not entered. The open problem on which the choice rests, stated by name: the COUNTER-LIFT
+LEMMA — soundness (every `RladAdm` history projects to a class-level chain) and completeness
+(every class-level chain lifts), obligations (2) and (3) jointly, with two hazards (gap shift
+under pumping; short idle runs cannot absorb a deadline shift) as its first gates; its failure
+would close the ladder route on evidence, because both presentations need it. Withheld: no
+`LadderCons`, `ladderRealized` or factorization lemma stated; no bound of any kind, every quantity
+a count; no finiteness added, `anchorCells_finite` and `anchorCells_ncard_le` untouched; the
+acceptance clause never dropped; `certStab` per `(q, κ)` is a rebuild the successor owes; gate 8
+still SIDESTEPPED. Axioms `[propext]` on `count_pending_step`, `[propext, Quot.sound]` on the
+other two, citing `RunLayer.lean` and re-proving nothing.
+
 The permanent computability witnesses are `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`
 (imported from `Tests/BimodalTest.lean`): thirteen `#guard`s at depth 1 over `twoLetter` that
 `kTypeOfFin` (on `segZ` and `listSeg`), `allPathTypes`, `hitOf`, `fwdLiveSep` and `bwdLiveSep`
