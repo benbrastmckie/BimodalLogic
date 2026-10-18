@@ -3688,6 +3688,19 @@ SHADOW_PAIR_ALLOW = {
      "FormalSystem.Metalogic.Decidability.SharingWindow.FwdWalk"),
     ("mem_verts", "FormalSystem.Metalogic.Decidability.SharingWindow",
      "FormalSystem.Metalogic.Decidability.SharingWindow.BwdWalk"),
+
+    # coverLeft / coverRight: one Johnstone covering-family API, declared once, outer, for the
+    # interval site Int(D) in Presheaf/Site.lean and mirrored for the twisted-arrow category
+    # Tw(BD+) in Presheaf/Duration.lean's Tw namespace. The mirror is the content: the paper's
+    # lem:interval-twisted-arrow says the isomorphism Tw(BD+) = Int(D) carries the one coverage
+    # to the other, and Tw.toTr_coverLeft / Tw.toTr_coverRight assert exactly that the inner pair
+    # is carried to the outer pair -- the only thing worth checking about them. The inner names
+    # are pinned by that module's recorded Challenge statements, and Site.lean's own note asks the
+    # categorical packaging to share the site's vocabulary. Same cohWindowLo precedent above.
+    ("coverLeft", "FormalSystem.Semantics.Presheaf",
+     "FormalSystem.Semantics.Presheaf.Tw"),
+    ("coverRight", "FormalSystem.Semantics.Presheaf",
+     "FormalSystem.Semantics.Presheaf.Tw"),
 }
 
 shadow = []
