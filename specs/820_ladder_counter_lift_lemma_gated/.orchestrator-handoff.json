@@ -1,19 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Plan written for the gated counter-lift record: nine sequential phases (16 hours) that promote the research prototype into the wired probe counter-lift-gates.lean, build the 4-cycle fixture at the model layer, compile the six gate rows in the research's cheapest-first order with Phases 6 and 7 (9-collision, gap-shift) as decision gates carrying an explicit negative-outcome branch, compile the pin lemma's lift half, and record every verdict in the header, guard script, README, ROADMAP and source-store context file. Seven generic Challenge statements are pinned with no positionwise completeness clause, and the block compiled standalone at authoring time; the fixture-level gate theorems are recorded per phase as target statements. No user decision is needed.",
+  "dispatch_seq": 3,
+  "status": "implemented",
+  "phases_completed": 9,
+  "phases_total": 9,
+  "summary": "Resumed the stalled dispatch_seq 3 on phases 7-9 and closed all three. Phase 7's gap-shift decision gate compiles as gap_shift_cell_eq, an EQUALITY of cellAt values, with the absorber exhibited as absorber4 -- so both decision gates COLLIDE and the ladder route is not closed. Phase 8 compiles the pin lemma's lift half (drift_extension_of_pins, exists_rlad_hist_of_walk) at its pinned signatures, verified verbatim against the plan's Challenge block. Phase 9 flipped every record: probe header, the evidence guard's decision row, the RaySummary README (W) paragraph, specs/ROADMAP.md (761 un-gated), and the source-store context file. Probe: 3104 lines, 0 sorry, 0 warnings; full lake build green; axioms at most [propext, Classical.choice, Quot.sound].",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/820_ladder_counter_lift_lemma_gated/summaries/01_counter-lift-gate-table-summary.md",
+      "summary": "Implementation summary for the counter-lift gate table: both decision gates collide, the positionwise lift is refuted, the pin lemma's lift half compiles."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean",
+      "summary": "The wired probe carrying the complete gate table, the statement-shape refutation, both decision-gate equalities, and the pin lemma's lift half."
+    },
     {
       "type": "plan",
       "path": "specs/820_ladder_counter_lift_lemma_gated/plans/01_counter-lift-gate-table.md",
-      "summary": "Nine-phase plan: probe promotion and wiring, 4-cycle fixture, gates 1/2/9-sep/short-idle/9-col/gap-shift, pin lemma lift half, records; seven generic Challenge statements pinned."
+      "summary": "All nine phase headings closed [COMPLETED], with inline deviation annotations on phases 7 and 9."
     }
-  ],
-  "phases_completed": 0,
-  "phases_total": 9,
-  "blockers": [],
-  "plan_markers_verified": null,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implementation at Phase 1 (promote the prototype into specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean and wire it); the chain is fully sequential."
+  ]
 }
