@@ -2457,6 +2457,257 @@ theorem wit7_next (c n s₀ : ℕ) (pp : Bool) (j : ℕ) (hj : j = 1 ∨ j = 2)
   · rw [region4_idle₁ 0 c n 2 n (c + 2) (by omega) (by omega)]
     simp
 
+
+/-! ### The closure's members read off a finite datum
+
+Each member of `cl chi` at position `0` is a function of four values: whether position `-1` is
+pending, and the truth of the three top-level members, which the lemmas below read off the
+region's age `s₀`, the previous idle run's length (`pp`) and the next region's start. -/
+
+theorem truth_andF (σ : WorldHistory F4) (s : ℤ) (a b : PlusFormula) :
+    PlusTruthAt M4 σ s (andF a b) ↔ PlusTruthAt M4 σ s a ∧ PlusTruthAt M4 σ s b :=
+  PlusTruth.and_iff M4 σ s a b
+
+theorem fin_neg_eq_zero : ∀ x : Fin 4, -x = 0 ↔ x = 0 := by decide
+
+theorem neg_nat_of_neg {r : ℤ} (h : r < 0) : ∃ t : ℕ, 1 ≤ t ∧ r = -(t : ℤ) :=
+  ⟨(-r).toNat, by omega, by omega⟩
+
+theorem pos_nat_of_pos {r : ℤ} (h : 0 < r) : ∃ m : ℕ, 1 ≤ m ∧ r = (m : ℤ) :=
+  ⟨r.toNat, by omega, by omega⟩
+
+section Raw7
+variable {σ : WorldHistory F4} {k : ℤ} {g : ℤ → LadderState Q4 pend4}
+  (hσ : σ.path = fun t => (t + k, g t))
+include hσ
+
+theorem truth_negp (s : ℤ) : PlusTruthAt M4 σ s negp ↔ (g s).1.1.1 = false := by
+  show PlusTruthAt M4 σ s p.neg ↔ _
+  exact truth_np4 hσ s
+
+theorem truth_Ynp7 (s : ℤ) :
+    PlusTruthAt M4 σ s (.snce .bot negp) ↔ (g (s - 1)).1.1.1 = false := by
+  show PlusTruthAt M4 σ s (Y p.neg) ↔ _
+  rw [truth_Y4, truth_np4 hσ]
+
+theorem truth_Yp7 (s : ℤ) :
+    PlusTruthAt M4 σ s (.snce .bot (.atom pA)) ↔ (g (s - 1)).1.1.1 = true := by
+  show PlusTruthAt M4 σ s (Y p) ↔ _
+  rw [truth_Y4, truth_p4 hσ]
+
+theorem truth_B3 (s : ℤ) (j : Fin 4) :
+    PlusTruthAt M4 σ s (B3raw j) ↔ ((g s).1.1.1 = true ∧ (g s).1.1.2 = j) := by
+  show PlusTruthAt M4 σ s (p.and (ℓ j)) ↔ _
+  rw [PlusTruth.and_iff, truth_p4 hσ, truth_l4 hσ]
+
+theorem truth_XB3 (s : ℤ) (j : Fin 4) :
+    PlusTruthAt M4 σ s (.untl .bot (B3raw j)) ↔
+      ((g (s + 1)).1.1.1 = true ∧ (g (s + 1)).1.1.2 = j) := by
+  show PlusTruthAt M4 σ s (X (B3raw j)) ↔ _
+  rw [truth_X4, truth_B3 hσ]
+
+theorem truth_S1body (s : ℤ) :
+    PlusTruthAt M4 σ s (andF (.atom (lA 0)) (.snce .bot negp)) ↔
+      ((g s).1.1.2 = 0 ∧ (g (s - 1)).1.1.1 = false) := by
+  rw [truth_andF, truth_atom_l hσ, truth_Ynp7 hσ]
+
+theorem truth_S2body (s : ℤ) :
+    PlusTruthAt M4 σ s (andF negp (.snce .bot (.atom pA))) ↔
+      ((g s).1.1.1 = false ∧ (g (s - 1)).1.1.1 = true) := by
+  rw [truth_andF, truth_negp hσ, truth_Yp7 hσ]
+
+theorem truth_U1body (s : ℤ) (j : Fin 4) :
+    PlusTruthAt M4 σ s (andF negp (.untl .bot (B3raw j))) ↔
+      ((g s).1.1.1 = false ∧ (g (s + 1)).1.1.1 = true ∧ (g (s + 1)).1.1.2 = j) := by
+  rw [truth_andF, truth_negp hσ, truth_XB3 hσ]
+
+end Raw7
+
+section Datum7
+variable {σ : WorldHistory F4} {k : ℤ} {g : ℤ → LadderState Q4 pend4}
+  (hσ : σ.path = fun t => (t + k, g t))
+  (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+include hσ hg
+
+omit hσ in
+/-- The region start's index is the index the backward walk has reached: `-(idx s₀)`. -/
+theorem start_index (s₀ : ℕ) (hst : StartAt g s₀) (h0 : (g 0).1.1 = (true, 0)) :
+    (g (-((s₀ : ℤ) + 1))).1.1.2 = -(idx s₀) := by
+  have hps : (g (-(s₀ : ℤ))).1.1.1 = true := hst.1 s₀ le_rfl
+  obtain ⟨hq, -⟩ := region_start4 hg (-((s₀ : ℤ) + 1)) hst.2
+    (by rw [show -((s₀ : ℤ) + 1) + 1 = -(s₀ : ℤ) by ring]; exact hps)
+  have hi := back_index hg h0 s₀ (fun t ht => hst.1 t ht) s₀ le_rfl
+  rw [show -((s₀ : ℤ) + 1) + 1 = -(s₀ : ℤ) by ring] at hq
+  exact (congrArg Prod.snd hq).symm.trans hi
+
+omit hg in
+/-- **`S2` reads the previous idle run's length**: `p S (¬p ∧ Y p)` at `0` holds iff the state
+two steps before the region start is pending — the previous idle run has length exactly `1`. -/
+theorem at0_S2 (s₀ : ℕ) (hst : StartAt g s₀) :
+    PlusTruthAt M4 σ 0 S2raw ↔ (g (-((s₀ : ℤ) + 2))).1.1.1 = true := by
+  rw [PlusTruth.snce_iff]
+  constructor
+  · rintro ⟨(s : ℤ), hs, hD, hgap⟩
+    have hs' : s < (0 : ℤ) := hs
+    rw [truth_S2body hσ] at hD
+    obtain ⟨hDi, hDp⟩ := hD
+    have hse : s = -((s₀ : ℤ) + 1) := by
+      by_contra hne
+      rcases lt_or_gt_of_ne hne with hlt | hgt
+      · have hp := hgap (-((s₀ : ℤ) + 1)) hlt (show -((s₀ : ℤ) + 1) < (0 : ℤ) by omega)
+        rw [truth_atom_p hσ, hst.2] at hp
+        exact Bool.noConfusion hp
+      · obtain ⟨t, ht1, rfl⟩ := neg_nat_of_neg hs'
+        rw [hst.1 t (by omega)] at hDi
+        exact Bool.noConfusion hDi
+    rw [hse, show -((s₀ : ℤ) + 1) - 1 = -((s₀ : ℤ) + 2) by ring] at hDp
+    exact hDp
+  · intro hpp
+    refine ⟨-((s₀ : ℤ) + 1), show -((s₀ : ℤ) + 1) < (0 : ℤ) by omega, ?_, ?_⟩
+    · rw [truth_S2body hσ, show -((s₀ : ℤ) + 1) - 1 = -((s₀ : ℤ) + 2) by ring]
+      exact ⟨hst.2, hpp⟩
+    · intro (r : ℤ) h1 h2
+      have h1' : -((s₀ : ℤ) + 1) < r := h1
+      have h2' : r < (0 : ℤ) := h2
+      obtain ⟨t, ht1, rfl⟩ := neg_nat_of_neg h2'
+      rw [truth_atom_p hσ]
+      exact hst.1 t (by omega)
+
+/-- **`S1` reads the region start's letter**: `p S (ℓ 0 ∧ Y ¬p)` at `0` holds iff the region's
+age is a multiple of the product period and either the region is already under way or the
+previous idle run is longer than `1`. -/
+theorem at0_S1 (s₀ : ℕ) (hst : StartAt g s₀) (h0 : (g 0).1.1 = (true, 0)) :
+    PlusTruthAt M4 σ 0 S1raw ↔
+      (idx s₀ = 0 ∧ (1 ≤ s₀ ∨ (g (-((s₀ : ℤ) + 2))).1.1.1 = false)) := by
+  rw [PlusTruth.snce_iff]
+  constructor
+  · rintro ⟨(s : ℤ), hs, hD, hgap⟩
+    have hs' : s < (0 : ℤ) := hs
+    rw [truth_S1body hσ] at hD
+    obtain ⟨hDl, hDi⟩ := hD
+    obtain ⟨t, ht1, rfl⟩ := neg_nat_of_neg hs'
+    have htle : t ≤ s₀ + 1 := by
+      by_contra hgt
+      have hp := hgap (-((s₀ : ℤ) + 1)) (show -(t : ℤ) < -((s₀ : ℤ) + 1) by omega)
+        (show -((s₀ : ℤ) + 1) < (0 : ℤ) by omega)
+      rw [truth_atom_p hσ, hst.2] at hp
+      exact Bool.noConfusion hp
+    rcases Nat.lt_or_ge t (s₀ + 1) with hlt | hge
+    · -- the witness is inside the region: it must be its first pending position
+      have hi := back_index hg h0 s₀ (fun u hu => hst.1 u hu) t (by omega)
+      rw [hi] at hDl
+      have hidt : idx t = 0 := (fin_neg_eq_zero _).mp hDl
+      have hts' : s₀ ≤ t := by
+        by_contra hlt'
+        rw [show -(t : ℤ) - 1 = -(((t + 1 : ℕ)) : ℤ) by push_cast; ring,
+          hst.1 (t + 1) (by omega)] at hDi
+        exact Bool.noConfusion hDi
+      have hte : t = s₀ := by omega
+      subst hte
+      exact ⟨hidt, Or.inl ht1⟩
+    · -- the witness is the region start itself
+      have hte : t = s₀ + 1 := by omega
+      subst hte
+      rw [show -((s₀ + 1 : ℕ) : ℤ) = -((s₀ : ℤ) + 1) by push_cast; ring,
+        start_index hg s₀ hst h0] at hDl
+      rw [show -((s₀ + 1 : ℕ) : ℤ) - 1 = -((s₀ : ℤ) + 2) by push_cast; ring] at hDi
+      exact ⟨(fin_neg_eq_zero _).mp hDl, Or.inr hDi⟩
+  · rintro ⟨hidx, hcase⟩
+    rcases hcase with hpos | hpp
+    · -- the region's first pending position
+      refine ⟨-(s₀ : ℤ), show -(s₀ : ℤ) < (0 : ℤ) by omega, ?_, ?_⟩
+      · rw [truth_S1body hσ, back_index hg h0 s₀ (fun u hu => hst.1 u hu) s₀ le_rfl, hidx,
+          show -(s₀ : ℤ) - 1 = -((s₀ : ℤ) + 1) by ring]
+        exact ⟨by decide, hst.2⟩
+      · intro (r : ℤ) h1 h2
+        have h1' : -(s₀ : ℤ) < r := h1
+        have h2' : r < (0 : ℤ) := h2
+        obtain ⟨t, ht1, rfl⟩ := neg_nat_of_neg h2'
+        rw [truth_atom_p hσ]
+        exact hst.1 t (by omega)
+    · -- the region start's idle state
+      refine ⟨-((s₀ : ℤ) + 1), show -((s₀ : ℤ) + 1) < (0 : ℤ) by omega, ?_, ?_⟩
+      · rw [truth_S1body hσ, start_index hg s₀ hst h0, hidx,
+          show -((s₀ : ℤ) + 1) - 1 = -((s₀ : ℤ) + 2) by ring]
+        exact ⟨by decide, hpp⟩
+      · intro (r : ℤ) h1 h2
+        have h1' : -((s₀ : ℤ) + 1) < r := h1
+        have h2' : r < (0 : ℤ) := h2
+        obtain ⟨t, ht1, rfl⟩ := neg_nat_of_neg h2'
+        rw [truth_atom_p hσ]
+        exact hst.1 t (by omega)
+
+omit hg in
+/-- On a pending-forever past the `ℓ 0` member finds no idle predecessor: `S1` fails. -/
+theorem at0_S1_forever (hfor : ∀ t : ℕ, (g (-(t : ℤ))).1.1.1 = true) :
+    ¬ PlusTruthAt M4 σ 0 S1raw := by
+  rw [PlusTruth.snce_iff]
+  rintro ⟨(s : ℤ), hs, hD, -⟩
+  have hs' : s < (0 : ℤ) := hs
+  rw [truth_S1body hσ] at hD
+  obtain ⟨-, hDi⟩ := hD
+  obtain ⟨t, -, rfl⟩ := neg_nat_of_neg hs'
+  rw [show -(t : ℤ) - 1 = -(((t + 1 : ℕ)) : ℤ) by push_cast; ring, hfor (t + 1)] at hDi
+  exact Bool.noConfusion hDi
+
+omit hg in
+/-- On a pending-forever past there is no idle state at all: `S2` fails. -/
+theorem at0_S2_forever (hfor : ∀ t : ℕ, (g (-(t : ℤ))).1.1.1 = true) :
+    ¬ PlusTruthAt M4 σ 0 S2raw := by
+  rw [PlusTruth.snce_iff]
+  rintro ⟨(s : ℤ), hs, hD, -⟩
+  have hs' : s < (0 : ℤ) := hs
+  rw [truth_S2body hσ] at hD
+  obtain ⟨hDi, -⟩ := hD
+  obtain ⟨t, -, rfl⟩ := neg_nat_of_neg hs'
+  rw [hfor t] at hDi
+  exact Bool.noConfusion hDi
+
+/-- **`U1` reads the next region's start**: `p U (¬p ∧ X (p ∧ ℓ j))` at `0` from
+`((true, 0), c, n)` holds iff the idle run after the current region has length exactly `1` and
+the next region's letter is `ℓ (idx c)`. -/
+theorem at0_U1 (c n : ℕ) (h0 : (g 0).1 = ((true, 0), c, n)) (j : Fin 4) :
+    PlusTruthAt M4 σ 0 (U1raw j) ↔ ((g ((c : ℤ) + 2)).1.1.1 = true ∧ idx c = j) := by
+  obtain ⟨hidle, -⟩ := idle_at4 hg 0 c n h0
+  rw [zero_add] at hidle
+  have hidle' : (g ((c : ℤ) + 1)).1.1.1 = false := congrArg Prod.fst hidle
+  rw [PlusTruth.untl_iff]
+  constructor
+  · rintro ⟨(s : ℤ), hs, hD, hgap⟩
+    have hs' : (0 : ℤ) < s := hs
+    rw [truth_U1body hσ] at hD
+    obtain ⟨hDi, hDp, hDl⟩ := hD
+    have hse : s = (c : ℤ) + 1 := by
+      by_contra hne
+      rcases lt_or_gt_of_ne hne with hlt | hgt
+      · obtain ⟨m, hm1, rfl⟩ := pos_nat_of_pos hs'
+        obtain ⟨hq, -⟩ := pending_walk4 hg 0 c n h0 m (by omega)
+        rw [hq] at hDi
+        exact Bool.noConfusion hDi
+      · have hp := hgap ((c : ℤ) + 1) (show (0 : ℤ) < (c : ℤ) + 1 by omega) hgt
+        rw [truth_atom_p hσ, hidle'] at hp
+        exact Bool.noConfusion hp
+    subst hse
+    obtain ⟨hq2, -⟩ := region_start4 hg ((c : ℤ) + 1) hidle' hDp
+    rw [hidle] at hq2
+    refine ⟨hDp, ?_⟩
+    rw [← hDl, congrArg Prod.snd hq2]
+  · rintro ⟨hp2, hj⟩
+    refine ⟨(c : ℤ) + 1, show (0 : ℤ) < (c : ℤ) + 1 by omega, ?_, ?_⟩
+    · rw [truth_U1body hσ]
+      obtain ⟨hq2, -⟩ := region_start4 hg ((c : ℤ) + 1) hidle' hp2
+      rw [hidle] at hq2
+      refine ⟨hidle', hp2, ?_⟩
+      rw [congrArg Prod.snd hq2]
+      exact hj
+    · intro (r : ℤ) h1 h2
+      have h1' : (0 : ℤ) < r := h1
+      have h2' : r < (c : ℤ) + 1 := h2
+      obtain ⟨m, hm1, rfl⟩ := pos_nat_of_pos h1'
+      obtain ⟨hq, -⟩ := pending_walk4 hg 0 c n h0 m (by omega)
+      rw [truth_atom_p hσ, hq]
+
+end Datum7
 end GapShift
 
 end Probe820
