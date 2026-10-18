@@ -602,7 +602,7 @@ is the complete covering check — single file, outside every Lake target root.
 
 ---
 
-### Phase 8: The Pin Lemma's Lift Half [NOT STARTED]
+### Phase 8: The Pin Lemma's Lift Half [COMPLETED]
 
 **Goal**: The first generic target after the gates: a 1-Lipschitz deadline function through any
 pairwise compatible family of pins, and the lift of an object walk with its forced countdown to a
@@ -614,19 +614,24 @@ placed in the probe's `Generic` section, not under `FormalSystem/` — moving th
 `RunLayer.lean` is a successor's choice, outside this task's `file_scope`).
 
 **Tasks**:
-- [ ] `drift_extension_of_pins`: the McShane extension `n t := ` the least `a + |t - s|` over
+- [x] `drift_extension_of_pins`: the McShane extension `n t := ` the least `a + |t - s|` over
       pins `(s, a)` (as a `Nat.find` over the nonempty set, or `0` when there is no pin —
       case split on `∃ s a, pin s = some a`); 1-Lipschitz by the triangle inequality on
       `natAbs`; through every pin by compatibility. `omega` on `Int` for the inequalities.
-- [ ] `exists_rlad_hist_of_walk`: define `pin t := some (c (t + 1))` at idle ends, `some n₀` at
+      *(`pinCands`/`mem_pinCands` are the candidate set and its membership lemma; `Nat.sInf` is
+      the `Nat.find` the plan names.)*
+- [x] `exists_rlad_hist_of_walk`: define `pin t := some (c (t + 1))` at idle ends, `some n₀` at
       `0` (consistent with an idle end at `0` by `hn₀`), `none` elsewhere; apply the extension;
       check the four conjuncts of `Rlad` per step by the letter case split (`count_tt/tf/ft/ff`),
-      with `n 0 = n₀`.
-- [ ] Header: the pin lemma stated once (soundness half = `forward_window`,
+      with `n 0 = n₀`. *(the pin is `walkPin`; `hzero` is the consistency of `pin 0 = some n₀`
+      with an idle end at `0`, derived from `hn₀` at `t = 0`.)*
+- [x] Header: the pin lemma stated once (soundness half = `forward_window`,
       `backward_constraint`, `region_doubling`; lift half = these two theorems), and the
       remark that this is where the lift's counter argument ends and the chain-replacement
-      argument of (C') begins.
-- [ ] Extend the axiom block with both.
+      argument of (C') begins. *(recorded as the section header `### The pin lemma, lift half`
+      in the probe's `Generic` section, beside the two theorems it describes.)*
+- [x] Extend the axiom block with both. *(both report
+      `[propext, Classical.choice, Quot.sound]`.)*
 
 **Timing**: 2 hours
 
@@ -643,6 +648,11 @@ is the complete covering check — single file, outside every Lake target root.
 **Verification**:
 - Both theorems compile with the pinned signatures (checked against `## Lean Challenge
   Statements` by `bash .claude/scripts/lean-challenge-snapshot.sh --check`, advisory).
+  *(the snapshot was never taken for this task, so `--check` exits 71 “no manifest found” — an
+  unavailable advisory check, not a drift finding. Both signatures were instead compared
+  token-by-token against the plan's `## Lean Challenge Statements` block and match verbatim;
+  that block itself was re-compiled standalone at this phase and reports exactly seven
+  `declaration uses 'sorry'` warnings with no errors.)*
 - Probe compiles, 0 sorry; axiom foot at most `[propext, Classical.choice, Quot.sound]`.
 
 ---
