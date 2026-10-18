@@ -1,5 +1,5 @@
 ---
-next_project_number: 827
+next_project_number: 828
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 827
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,814,816,823,824,826 | 298,428,502,761,768,770,772,777,810,813 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827 | 298,428,502,761,768,769,770,772,777,810,813 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822 | 231,429,497,783 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -32,6 +32,7 @@ next_project_number: 827
 768 [NOT STARTED] — lean-challenge-snapshot swallows declarations, mishandles...
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and...
 769 [NOT STARTED] — plan-format: blocked decision gates and plan-level Status...
+  └─ 827 [NOT STARTED] — Require a plan phase to agree with its own Scope Hypothesis...
 770 [NOT STARTED] — postflight writes detail-free blocking issue entry on partial...
   └─ 823 [NOT STARTED] — Tell the re-prompted dispatch to distrust the error count it...
 772 [NOT STARTED] — planned jq rewrites re-serialize formatting-sensitive JSON...
@@ -125,6 +126,94 @@ next_project_number: 827
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 827. Require a plan phase to agree with its own Scope Hypothesis and to name only artifacts that exist
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 769
+- **Parent**: Task 761
+
+**Description**: Close two plan-AUTHORING truthfulness gaps in `context/formats/plan-format.md`: that a phase's task list may contradict that same phase's own `**Scope Hypothesis**:` line, and that a plan may name an artifact as the thing to CORRECT without that artifact existing.
+
+NOTHING IN EITHER REPOSITORY IS BROKEN, AND THIS IS NOT A DATA-REPAIR RECORD. Both gaps were observed during one implementation run and both were resolved inside that run -- the contradiction was resolved in favour of the task list with a rename propagated to the next phase, and the unmeetable correction task was skipped as a recorded deviation with the durable record used as the carrier instead. `plan-format.md`, `planner-agent.md`, `plan-file-scope-harvest.sh` and the originating plan are all correct as they stand; do not re-edit the originating plan and do not change any script's behaviour. This record's entire deliverable is plan-authoring prose plus its index wiring, and one investigated-and-reported decision about a mechanical check.
+
+BOTH ITEMS ARE BATCHED INTO ONE RECORD DELIBERATELY. Each is a short prose provision in the same file, `context/formats/plan-format.md`, for the same reader (the plan author). Splitting them would create an unordered overlap on one file's prose, which the batching guardrail in `.claude/CLAUDE.md` names as a reason to batch rather than separate. They are otherwise independent and can be landed in either order.
+
+=== ITEM 1 -- A PHASE TASK LIST THAT CONTRADICTS THAT PHASE'S OWN SCOPE HYPOTHESIS ===
+
+MEASURED, and the costlier of the two. A plan's Phase 8 declared in its `**Scope Hypothesis**:` that two certificate predicates were deliberately NOT promoted into the library. The SAME phase's task list required promoting a theorem that is stated in terms of one of them and whose proof destructures that predicate's characterization lemma field-by-field, including the field supplied by the other. The theorem is therefore not statable, let alone provable, without promoting both. The two instructions could not both be satisfied, and the inconsistency was discovered mid-phase by the implementer rather than at authoring time.
+
+RESOLUTION APPLIED IN-RUN, recorded so the remedy is known to work: both predicates were promoted at the shared `K`-free carrier, the statement requirement was preserved over the scope prediction, and the next phase's same-named `K`-indexed versions -- which live over a different carrier -- were renamed to carry a `K` suffix so the two layers do not collide. No pinned Challenge-block signature was affected. VERIFIED FRESH DURING THE CREATION OF THIS RECORD: the contradiction and that resolution are both still recorded in the originating plan file as an in-place deviation note on the Phase 8 task list, so the instance can be re-read if a worked example is wanted.
+
+THE DURABLE LESSON TO RECORD, as two separately checkable conditions:
+
+  (a) AN AUTHORING OBLIGATION. A phase's `**Scope Hypothesis**:` and that phase's task list are two assertions by the same author about the same phase. An author who writes a Scope Hypothesis naming what is deliberately EXCLUDED must check every task in that same phase against the exclusion before the phase is written. `plan-format.md`'s "Counts-are-hypotheses obligation" already makes a Scope Hypothesis a claim requiring implementation-time confirmation, and that is the right framing for a claim about the WORLD; it says nothing about a Scope Hypothesis that is inconsistent with the plan's own instructions, which no implementation-time confirmation can repair because the phase is unsatisfiable as written rather than merely mis-estimated.
+
+  (b) THE IMPLEMENTER'S RULE FOR WHEN IT HAPPENS ANYWAY, since authoring discipline cannot close this entirely: preserve what the task list requires -- the statement, the declaration, the thing the phase exists to produce -- over the scope prediction, record the deviation in place with the reason, and propagate any consequence to later phases that named the same identifiers. Never silently drop the task to protect the prediction, and never silently widen the prediction without saying so. That is what the measured run did and it is the behaviour to sanction.
+
+A SIBLING INSTANCE, ALREADY OWNED ELSEWHERE -- CROSS-REFERENCE IT, DO NOT CLOSE EITHER AS A DUPLICATE. The lean extension's record `lean_plan_challenge_block_authoring_contract` owns a different surface pair of this same class: a Verification criterion contradicting the plan's own pinned `## Lean Challenge Statements` block, resolved by a precedence rule (the pinned block wins, because it is immutable by design after plan time). That precedence reasoning does NOT transfer to item 1: neither a Scope Hypothesis nor a task list is pinned or immutable, so there is no immutability argument to decide which surface wins, which is exactly why item 1(b) has to be argued from what the phase exists to produce instead. State the two rules as the siblings they are, with a pointer each way, and do not restate one in the other's home.
+
+=== ITEM 2 -- A PLAN NAMING AN ARTIFACT TO CORRECT THAT DOES NOT EXIST ===
+
+MEASURED. The same plan's Phase 1 opened with a task reading "Correct `specs/{NNN}_{SLUG}/.blocker-research.json`", and the phase's stated goal turned on retiring a stale route recommendation that this file was said to hold. When the phase ran, no such file existed in the task directory, so there was no recommendation to correct; the task was skipped as a recorded deviation and the landed route was recorded in the durable record (`specs/state.json`'s amended task description) instead.
+
+VERIFIED FRESH DURING THE CREATION OF THIS RECORD, AND A TRAP THIS SETS. That file EXISTS NOW. It was written later in the same orchestration run by a blocker-research dispatch, after the issue was logged. DO NOT write the guidance as though that path is currently missing and do not cite its absence as a live fact -- a reader who checks will find the file present and will discount the rest of the guidance. The honest form is to state the CLASS and its remedy. This is itself the sharpest argument for the rule: the artifact's existence is a moving quantity that the plan does not control, so a plan that assumes it is wrong the moment the quantity moves, in EITHER direction.
+
+THE CLASS IS SHARPER THAN "CONFIRM THE PATH EXISTS", AND THE GUIDANCE MUST CARRY BOTH LEVELS:
+
+  (a) THE GENERAL RULE. When a plan names an existing artifact as the thing to CORRECT, AMEND or RETIRE -- as distinct from one the phase will CREATE -- the author must confirm at authoring time that it exists, and the task must say what the implementer does if it does not. A correction task against a path that is absent is not a task; it is a sentence that cannot be executed, and the implementer's only honest moves are to skip it or to invent a target.
+
+  (b) THE STRONGER RULE FOR A DISPATCH-CREATED SIDECAR. The measured path is not an ordinary file: it is a machine-written orchestration sidecar whose existence is contingent on whether a particular auxiliary dispatch has run, and whose content, if it does appear, is written by that dispatch rather than by anyone the plan can consult. A plan MUST NOT make a phase's goal turn on correcting such a sidecar. The carrier for a route decision, a retirement or a withdrawn recommendation is the durable record -- the task description in `specs/state.json`, or a file under the task's own `records/` directory -- which is exactly the substitute the measured run fell back to, and which should be named in the guidance as the sanctioned carrier rather than discovered again by the next implementer.
+
+A MECHANICAL CHECK -- INVESTIGATE IN RESEARCH AND REPORT A DECISION, DO NOT ASSUME ONE IS BUILDABLE. `plan-file-scope-harvest.sh` already harvests each phase's `Files to modify` field, so the paths a plan names are already mechanically reachable. The open question is whether a lint can soundly DISCRIMINATE a path named as a correction target (which must exist) from one named as a creation target (which must not), given that `Files to modify` is a flat list with optional free-text annotations and no field distinguishing the two. A check that flags every not-yet-existing path would fire on every legitimately new file in every plan and would be worse than no check at all. DELIVERING THE PROSE PROVISION ALONE IS AN ACCEPTABLE OUTCOME: if research finds no sound discrimination, state that finding and its reason in the completion summary and build nothing. Do not add a new field to the plan format to make a check possible -- that is a larger format change and is out of scope for this record.
+
+=== SITING ===
+
+The approved siting is core's `context/formats/plan-format.md`, the file that already owns the per-phase field vocabulary (`**Scope Hypothesis**:`, `Files to modify`), the "Counts-are-hypotheses obligation" that item 1(a) sits beside, and the "Reasoned Exclusions" machinery that item 1(b)'s record-the-deviation half connects to. `agents/planner-agent.md` is the authoring agent and is in scope for a short pointer if, and only if, the provisions need to reach the author at generation time rather than at review time; decide that in planning and do not add a redundant restatement. IF A DIFFERENT FILE PATH IS CHOSEN THAN THE ONES IN `file_scope`, WIDEN `file_scope` FIRST via `update-task-status.sh` rather than writing into an unlisted location silently.
+
+=== DEPENDENCY, AND WHY IT IS AN EDGE RATHER THAN AN EXCLUSION ===
+
+This record declares the same `plan-format.md` prose territory as the open record `plan_format_blocked_decision_gates_and_status_ownership`, which adds two other provisions to that same file. The two are independent in substance and could land in either order, but they overlap on one file's prose, so per the batching guardrail in `.claude/CLAUDE.md` the overlap is expressed as a dependency edge and run as a sequence rather than as a bare exclusion. The edge carries no claim that this record needs that one's content.
+
+=== SOURCE-STORE BOUNDARY ===
+
+`.claude/**` in this repository is a gitignored, regenerated deploy artifact: a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect (`.claude/rules/source-store-deploy-boundary.md`). Every edit in this record lands in the source store at the path mirroring the deployed one, never under `.claude/**`.
+
+RESOLVE THE SOURCE STORE BEFORE EDITING, AND DO NOT ASSUME A PATH. This repository's `<project-root>/.claude-extensions.json` records `source_dir` PER EXTENSION and has NO top-level `source_dir` key, so a reader expecting the single documented top-level key will not find one. Reading of 2026-10-18: the core extension resolves to `/home/benjamin/.config/nvim/agent-system/extensions/core`. Re-derive it rather than trusting this note, and if the source store is unreachable or ambiguous, REPORT THAT AND STOP rather than falling back to editing the deploy tree. The owning extension for every path in `file_scope` is `core`.
+
+After editing, redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+
+=== WIRING ===
+
+`context/formats/plan-format.md` has an entry in core's `index-entries.json` carrying a `line_count` (784 at the reading above, matching the deployed file), which must agree with the file as landed; update it. `agents/planner-agent.md` is an agent file and needs no index entry. No new context file is expected -- both items extend a file that already exists and is already reachable -- but if a new file is created instead, it needs its own `index-entries.json` entry and at least one referrer, because an unreferenced guidance file is not guidance.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Durable anchors that MAY be cited freely in the prose: the field names (`**Scope Hypothesis**:`, `Files to modify`, `Verification`), the section names ("Counts-are-hypotheses obligation", "Reasoned Exclusions"), the script name `plan-file-scope-harvest.sh`, the sidecar filename shape `.blocker-research.json`, the record carriers `specs/state.json` and a task's `records/` directory, and the file names of the guidance's own neighbours. Things that MUST NOT appear in the prose: the originating task numbers, the issue entry_ids, the specific declaration and predicate names from the measured run, and the specific phase numbers of the originating plan -- those live in this record only. State the guidance as what a plan author does and what the implementer does when the defect occurs anyway, never as a narration of a past run.
+
+=== ACCEPTANCE ===
+
+(1) `plan-format.md` states item 1(a)'s authoring obligation (a phase's task list is checked against that phase's own Scope Hypothesis exclusions before the phase is written) and item 1(b)'s implementer rule (preserve the task list's requirement over the scope prediction, record the deviation in place, propagate the consequence to later phases) as two separately checkable conditions rather than one blurred paragraph.
+(2) The prose says explicitly why the pinned-block precedence reasoning from the lean extension's sibling record does not transfer, so a reader does not apply an immutability argument where no immutable surface exists, and carries a pointer to that sibling.
+(3) `plan-format.md` states item 2(a)'s general rule (an artifact named as a correction, amendment or retirement target is confirmed to exist at authoring time, and the task says what to do if it does not) and item 2(b)'s stronger prohibition on making a phase goal turn on a dispatch-created orchestration sidecar, naming the durable record as the sanctioned carrier instead.
+(4) The mechanical-check question has been investigated and DECIDED, with the decision and its reason stated in the completion summary: either a sound correction-target-versus-creation-target discrimination exists and is specified, or it does not and nothing was built. No new plan-format field was added.
+(5) No guidance sentence asserts that the measured sidecar path is currently absent, and the 198-style trap is avoided throughout: no moving quantity is written as a live fact.
+(6) Every edit landed in the resolved source store at the mirroring path; no file under `.claude/**` was hand-authored.
+(7) `index-entries.json`'s `line_count` for `context/formats/plan-format.md` agrees with the file as landed; any new file created instead carries its own entry plus at least one referrer.
+(8) The prose carries no task-number references, no record-versioning language, and none of the run-specific declaration names or phase numbers listed under DELIVERABLE HYGIENE.
+(9) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean`.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the ladder-realization-theorem record (task 761) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Both originating entries are in `specs/761_ladder_realization_theorem/issues.jsonl`: item 1 is entry_id `iss_1792364282470_KxINSA` (recorded as costly), item 2 is entry_id `iss_1792362555829_ZKb2Nf`. The lead grouped both as plan-authoring defects and asked whether a plan-authoring check could catch either class mechanically; item 2's "investigate and report a decision" clause is this record's answer to that question, deliberately left open rather than pre-committed.
+
+=== CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION, NOT A DEFECT TO FIX HERE ===
+
+This record is filed in the BimodalLogic task space while its edit target resolves only under `/home/benjamin/.config/nvim/`. That mismatch is deliberate: the record sits beside the run that measured the gaps. A migrator should treat it as a deliberate choice, not an authoring slip. The source-store repository's own task space holds adjacent records bearing on exactly this condition -- `migrate_mis_sited_agent_system_tasks`, `agent_system_task_siting_and_target_root`, and `cross_repo_source_store_gate_blindness`. NO DEPENDENCY EDGE EXPRESSES ANY OF THIS AND NONE CAN: those records live in a different repository's task space, so neither a dependency edge nor a `file_scope` overlap gate can span the two systems. The coordination is a manual read.
+
+---
 
 ### 826. Diagnose the zero-result literature retrieval and settle the degraded-signal contract
 - **Effort**: medium
@@ -843,6 +932,31 @@ Raised during orchestration of the realizable-type adequacy / countdown-profile 
 
 ITEM 2 recurred independently during orchestration of the ladder-realization-theorem record: a phase named `lean-challenge-snapshot.sh --check` in its Verification, no snapshot had been taken at plan time, so no manifest existed and the script exited 71 and the advisory drift check could not run. The implementer fell back to exactly the substitute this record already sanctions -- a byte-for-byte diff of the implemented Goal signatures against the plan's own pinned Challenge block, which matched. That is a second, independent confirmation both of the gap and of the sanctioned fallback. Entry: `specs/761_ladder_realization_theorem/issues.jsonl`, entry_id `iss_1791770495965_TM78BN` (class `gate-baseline`, severity minor). Approved at the orchestrate-lead level and routed here, rather than filed as a duplicate record, because this record already owns the case.
 
+
+=== ITEM 3 -- ITEM 2'S FIRST REMEDY BRANCH IS UNATTAINABLE AS WRITTEN: A PLAN STEP CANNOT TAKE THE SNAPSHOT AT ALL ===
+
+THIS ITEM CORRECTS ITEM 2 AND MUST BE LANDED WITH IT, NOT AFTER IT. Item 2 above states the rule in two branches: either an earlier step in the same plan runs `lean-challenge-snapshot.sh` without `--check` to create the manifest, or the plan must not name `--check` at all. The SECOND branch is correct and unaffected. The FIRST branch cannot be satisfied by any step of an implementation plan, and writing it as though it can would land guidance that sends the next plan author into exactly the dead end measured below.
+
+MEASURED, in a second, later run. A plan's Phase 1 task list contained, verbatim, the step item 2's first branch prescribes -- take the snapshot so that `--check` is available to later phases, scheduled as the earliest task of the earliest phase. It REFUSED with exit 73: "snapshot refused -- task {N}'s status is 'implementing' (past 'planned')". The plan had done precisely what item 2's first branch asks and the step was still unreachable.
+
+THE REASON IS STRUCTURAL AND MECHANICAL, NOT A TUNING ACCIDENT. `lean-challenge-snapshot.sh` admits only the pre-implementation statuses -- `not_started`, `researching`, `researched`, `planning`, `planned` -- without `--force`, and refuses anything past them with exit 73, on the stated ground that a Challenge must predate implementation to certify anything. By the time ANY phase of an implementation plan executes, the task's status has already advanced to `implementing`. So the set of plan steps that can take a snapshot is empty by construction: "an earlier step in the same plan" is unreachable for every plan, in every phase, including the first task of Phase 1. No plan-authoring discipline can repair this, because the obstruction is the status gate, not the plan's ordering.
+
+THE IMPLEMENTER DID NOT FORCE IT, AND THAT WAS RIGHT. `--force` exists and would have produced a manifest. It was not used, on the ground the tool's own incident banner states: a Challenge produced after implementation has started certifies nothing about what the implementation agent actually saw, so a forced manifest would have committed misleading provenance into git history to satisfy an advisory check. Record this as the sanctioned behaviour: an implementer meeting a plan-scheduled snapshot step that the status gate refuses MUST NOT reach for `--force`, and falls back to item 2's sanctioned self-contained substitute (the declaration-by-declaration diff against the plan's own pinned block) instead. That is what the measured run did.
+
+THE CORRECTED RULE TO WRITE. The act of taking a Challenge snapshot belongs to the PLAN phase, not to the implementation plan: it must happen while the task's status is still `planning` or `planned` -- by the planner, or in plan postflight -- and it is therefore an obligation on whoever produces the plan, never a task inside it. Restate item 2's branches accordingly:
+
+  - If any phase's Verification names `--check`, the snapshot MUST already have been taken before the plan's status leaves `planned`. State it as a plan-phase obligation of the plan's author, and do not describe it as a step the plan schedules for the implementer.
+  - Otherwise the plan MUST NOT name `--check` at all. (Unchanged from item 2.)
+  - A plan that schedules the snapshot as one of its own phase tasks is DEFECTIVE, and the guidance should say so explicitly with the exit code, so a reader who meets exit 73 recognises it as this defect rather than as a broken tool.
+
+WHETHER THE PLANNER SIDE ALSO NEEDS A CHANGE IS AN OPEN QUESTION FOR RESEARCH, NOT A PRE-COMMITTED EDIT. Stating the obligation in prose is this record's floor. If research finds there is no plan-phase carrier that would actually cause the snapshot to be taken -- so that the prose obligation has no executor -- RAISE IT and say so in the completion summary rather than silently widening this record into a plan-postflight mechanism change. Do NOT change `lean-challenge-snapshot.sh`, its status gate or its exit codes; the gate is correct and is the thing that revealed the defect.
+
+ADDITIONAL ACCEPTANCE FOR ITEM 3:
+
+(10) Item 2's first branch is stated as a plan-phase obligation discharged before the task's status leaves `planned`, NOT as a step an implementation plan schedules; the guidance names exit 73 and the pre-implementation status set so a reader meeting the refusal recognises the defect; it states that a plan scheduling the snapshot as a phase task is defective; and it states that an implementer meeting such a step does not use `--force` and falls back to the declaration-by-declaration diff. If research concluded the prose obligation has no executor on the plan side, that is raised in the completion summary rather than silently absorbed.
+
+ITEM 3 PROVENANCE. Raised during orchestration of the ladder-realization-theorem record (task 761) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Entry: `specs/761_ladder_realization_theorem/issues.jsonl`, entry_id `iss_1792362555851_OvmVEP`. Routed into this record rather than filed as a separate task because it lands in the identical two files as item 2 and corrects item 2's own prescribed remedy -- landing them separately would write guidance that is wrong on arrival and then correct it in a second pass over the same prose, which the batching guardrail in `.claude/CLAUDE.md` names as the case to batch rather than separate.
+
 ---
 
 ### 812. Stale generated inventory blocks refresh
@@ -1261,6 +1375,13 @@ Raised during orchestration of the residue-index modulus-convention record (task
 Item 3 was raised later, during orchestration of the ladder-cell presentation design-decision record, and approved at the orchestrate-lead level through the same conclusion-stage agent-system channel, with the explicit routing instruction that it be folded into THIS record rather than filed as a duplicate. Its originating entry is `specs/819_ladder_cell_presentation_design_decision/issues.jsonl`, entry_id `iss_1792338994747_jX9QvT` (class `gate_collision`, severity none, resolution `open`). Reading that entry's `what_happened` field gives the measurement in item 3 above verbatim.
 
 Item 4 was raised later, during orchestration of the ladder-realization-theorem record, and approved at the orchestrate-lead level through the same conclusion-stage agent-system channel. Its originating entries are in `specs/761_ladder_realization_theorem/issues.jsonl`: entry_id `iss_1791769990070_9Nl16r` (class `gate-baseline`, severity minor) for the repo-wide lint instance, and entry_id `iss_1791770495965_TM78BN` (class `gate-baseline`, severity minor) for the vacuous-pattern instance. The second of those entries also carries the advisory-check-without-a-manifest observation, which is NOT part of this record -- it duplicates the `lean_plan_challenge_block_authoring_contract` record's ITEM 2 and is cited there instead. The current-baseline measurements in item 4 were taken fresh during that dispatch, not copied from the originating run.
+
+
+=== ITEM 4'S SECOND INSTANCE NOW HAS ITS OWN CITATION ===
+
+The vacuous-definition-grep instance described under ITEM 4 ("A SECOND INSTANCE OF THE SAME CLASS, FROM THE SAME RUN, IN A DIFFERENT TOOL") was independently re-reported at the conclusion stage of the run that measured it, with the same reading this record already states: one PRE-EXISTING hit at HEAD in `FormalSystem/Examples/TemporalStructures.lean`, a `trivial` body closing a goal that is `True` by definition, reported as baseline-unchanged rather than as zero. Entry: `specs/761_ladder_realization_theorem/issues.jsonl`, entry_id `iss_1792364282512_jWKKvT`. Approved at the orchestrate-lead level and routed here, rather than filed as a duplicate record, because ITEM 4 already owns the case and already carries the remedy.
+
+Nothing in ITEM 4 changes as a result, and no further measurement is required: the entry adds a citation and one emphasis worth keeping when the prose is written -- that a legitimate `trivial` closing a real goal is simultaneously a FALSE POSITIVE for the underlying vacuous-definition grep, so the absolute-zero criterion is unmeetable not merely because the baseline is non-zero but because the pattern itself cannot distinguish debt from a correct one-line proof. State that as the reason the remedy is a baseline delta or a touched-files scope, rather than "clean up the baseline first", for this particular lint.
 
 ---
 
