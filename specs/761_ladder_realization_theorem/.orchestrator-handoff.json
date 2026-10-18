@@ -1,0 +1,27 @@
+{
+  "dispatch_seq": 6,
+  "status": "partial",
+  "phases_completed": 3,
+  "phases_total": 9,
+  "summary": "Phases 1, 7 and 8 landed clean and are committed: the records were corrected (the withdrawn hitOf (truncate B ...) statement line retired), the pin lemma's lift half was promoted into RunLayer.lean with signatures identical to its compiled oracle, and the whole K-free label-level certificate layer was promoted into a new 1451-line library module Certificate.lean. Phase 9 then surfaced and COMPILED a refutation of two of the five recorded Goals: cellAt_const_of_kappa_eq and ladderRealized, as written in the plan's Lean Challenge Statements block, are FALSE, because both universally quantify the counter-quotient parameters with no constraint and CK 0 0 0 0 is a subsingleton. Phases 9 and 13 are [BLOCKED] and Phases 10-12, 14-15 are [NOT STARTED]; every gate is green and nothing was papered over.",
+  "blockers": [
+    "Phases 9 and 13 BLOCKED: cellAt_const_of_kappa_eq and ladderRealized are refuted as recorded. Both universally quantify (Tc Tn P B : Nat) with no hypothesis relating the parameters to the object, the formula, or each other; at Tc = Tn = P = B = 0 the quotient CK 0 0 0 0 = Fin 1 x Fin 1 x Fin 1 x Fin 1 x Fin 1 is a subsingleton (ck_zero_subsingleton, by decide; inhabited, ckZero), so kappa 0 0 0 0 identifies every counter pair whatever kappa is and both statements assert the ladder cell is constant in (c, n). cell_succ_ne refutes that for EVERY c and n with the next deadline held fixed. Landed unconditionally as the fourteenth wired probe specs/evidence/seam-gluing-ray-product/ladder-unconstrained-parameter-refutation.lean, for every kappa and every candidate Dmax, with non-vacuity witnessed on both sides and no property of Dmax used. The repair -- adding (hp : ParamsOk Tc Tn P B) carrying (K1)-(K4), or existentially quantifying the parameters -- is a change to a recorded Challenge statement, which plan-compliance.md Statement Fidelity routes to the user and to /revise, never to a quiet edit of either side. NOT refuted: the presentation itself, and the three Goals ladderSound, ladderLift, ladderCons_localRun."
+  ],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/01_ladder-realization-presentation-a-summary.md",
+      "summary": "Phases 1, 7, 8 landed; Phases 9 and 13 BLOCKED on a compiled refutation of two of the five recorded Goals, with the full per-obligation status table and the guardrail read-through."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-unconstrained-parameter-refutation.lean",
+      "summary": "The fourteenth wired probe: the unconstrained-parameter refutation of the recorded factorization and fibre-equation statements, compiled unconditionally and wired into check-evidence-probes.sh (44 of 44 PASS)."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-9-handoff-20261018T231455Z.md",
+      "summary": "The blocked-phase handoff: the blocker in one paragraph, the repair the user must decide, and what is safe to build on."
+    }
+  ]
+}

@@ -1,31 +1,66 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "started_at": "2026-10-18T22:25:36Z",
+  "completed_at": "2026-10-18T23:15:00Z",
+  "requires_user_review": true,
+  "review_reason": "Phases 9 and 13 BLOCKED on a COMPILED refutation of two of the five recorded Goals: cellAt_const_of_kappa_eq and ladderRealized, as written in the plan's Lean Challenge Statements block, are FALSE. Both universally quantify (Tc Tn P B : Nat) with no constraint, and CK 0 0 0 0 = Fin 1 x Fin 1 x Fin 1 x Fin 1 x Fin 1 is a subsingleton, so both assert the cell is constant in (c, n) -- which cell_succ_ne refutes for every c and n at fixed next-deadline. Landed as the fourteenth wired probe. The repair is a change to a recorded Challenge statement, which plan-compliance.md Statement Fidelity routes to the user rather than to a quiet edit of either side. Phases 1, 7 and 8 landed clean; Phases 10-12 and 14-15 not started.",
+  "blocked_phase": 9,
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true,
+    "build_output": "Full guarded lake build: exit 0, 0 error:, 0 warning:, 2889 jobs, 'Build completed successfully'. verification_passed is false because Phases 9 and 13 are [BLOCKED], not because any gate failed: every gate is green. vacuous_count 1 is PRE-EXISTING at HEAD (FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal, whose ':= trivial' closes a real goal) and unchanged; axiom_count 14 is unchanged from baseline."
+  },
+  "partial_progress": {
+    "stage": "phase_9_blocked",
+    "details": "Phases 1, 7, 8 COMPLETED and committed. Phase 9 BLOCKED on a compiled refutation of the recorded cellAt_const_of_kappa_eq and ladderRealized statements; Phase 13 BLOCKED for the same reason (its two Goals are the refuted ones). Phases 10-12, 14-15 NOT STARTED: Phase 10 needs Phase 9's K-indexed certAdm, and no phase after 9 can proceed until the repair is decided. See the plan file's Phase 9 heading for the full blocker record.",
+    "phases_completed": 3,
+    "phases_total": 9
+  },
+  "user_decision": {
+    "question": "The recorded Challenge statements for cellAt_const_of_kappa_eq and ladderRealized are refuted as written: they quantify over the counter-quotient parameters (Tc Tn P B) with no constraint, and at the all-zero parameters the quotient CK 0 0 0 0 is a subsingleton, so both assert the ladder cell is constant in (c, n) -- which the compiled cell_succ_ne refutes. How should the two statements be repaired?",
+    "options": [
+      "Add a parameter hypothesis (hp : ParamsOk Tc Tn P B) to both statements, with ParamsOk defined in Phase 9 beside CK/kappa as the conjunction of (K1)-(K4). This is the shape the refutation points at; it also adds a task to Phase 9.",
+      "Existentially quantify the four parameters instead of universally, so the theorems claim the existence of a parameter tuple for which the equation holds.",
+      "Something else -- the design of record may prefer a different repair."
+    ],
+    "blocking": true,
+    "why_user": "The repair changes a recorded Challenge statement. plan-compliance.md's Statement Fidelity section forbids an implementation agent from either quietly changing the implementation to match a different statement or quietly editing the recorded Challenge to match what was implemented, and routes a genuinely wrong recorded statement to [BLOCKED] plus an explicit raise. Which repair is right is a design judgment about what the record intends to claim, not something the artifacts settle."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-presentation-a.md",
-      "summary": "Revised plan for presentation (a): Phase 1 re-scoped from [BLOCKED] to an executable record correction, Phases 2-6 preserved verbatim as [COMPLETED], Phases 7-15 added for the pin-lemma port, the certificate-layer promotion into the library, the counter quotient K with parameters as outputs, LadderCons, obligations (S) and (C'), the factorization corollary and the ladderRealized fibre equation, gate 8 and the records."
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/01_ladder-realization-presentation-a-summary.md",
+      "summary": "Phases 1, 7, 8 landed (records corrected, pin-lemma lift half and the K-free certificate layer promoted into the library); Phases 9 and 13 BLOCKED on a compiled refutation of two of the five recorded Goals."
     }
   ],
-  "next_steps": "Update state.json's plan artifact pointer for 761 to the new plan path (this aux dispatch is not postflighted, so the pointer still names the superseded file), then run /orchestrate 761 --hard --lit to execute the revised plan from Phase 1.",
+  "modified_files": [
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Certificate.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/RunLayer.lean",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "scripts/check-evidence-probes.sh",
+    "scripts/check-module-invariants.sh",
+    "scripts/nolints.json",
+    "specs/761_ladder_realization_theorem/plans/01_ladder-realization-presentation-a.md",
+    "specs/761_ladder_realization_theorem/records/design-of-record-amendment-2026-10-18.md",
+    "specs/761_ladder_realization_theorem/summaries/01_ladder-realization-presentation-a-summary.md",
+    "specs/TODO.md",
+    "specs/evidence/seam-gluing-ray-product/ladder-unconstrained-parameter-refutation.lean",
+    "specs/state.json",
+    "typst/generated/status.typ"
+  ],
   "metadata": {
-    "session_id": "sess_1792357877_8196ed",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "dispatch_seq": 5,
-    "aux_kind": "plan-revision",
-    "revision_sentinel": "specs/761_ladder_realization_theorem/.plan-revised.json",
-    "superseded_plan": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
-    "phase_count": 15,
-    "phases_preserved_completed": [2, 3, 4, 5, 6],
-    "phases_revised": [1],
-    "phases_added": [7, 8, 9, 10, 11, 12, 13, 14, 15],
-    "estimated_hours": 18,
-    "not_costable_phases": [12],
-    "reports_integrated": [
-      "specs/761_ladder_realization_theorem/reports/02_spawn-analysis.md",
-      "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
-      "specs/820_ladder_counter_lift_lemma_gated/summaries/01_counter-lift-gate-table-summary.md"
-    ]
+    "session_id": "sess_1792362237_9b8c2c",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped"
   }
 }
