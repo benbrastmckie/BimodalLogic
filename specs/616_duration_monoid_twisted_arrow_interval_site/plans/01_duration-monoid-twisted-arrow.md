@@ -1,7 +1,7 @@
 # Implementation Plan: Task #616
 
 - **Task**: 616 - Formalize the duration monoid `BD⁺`, its twisted-arrow category, and `lem:interval-twisted-arrow`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: Task 563 (landed — `FormalSystem/Semantics/Presheaf/Site.lean` exists and fixes the encoding this plan extends)
 - **Research Inputs**: specs/616_duration_monoid_twisted_arrow_interval_site/reports/01_duration-monoid-twisted-arrow.md
@@ -217,7 +217,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 docstrings cite the anchors Phase 1 records, Phase 3 extends the file Phase 2 creates, and Phase 4
 wires the finished module into the aggregator and root and runs the complete gate set.
 
-### Phase 1: Record the three paper anchors as DANGLING rows [NOT STARTED]
+### Phase 1: Record the three paper anchors as DANGLING rows [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Give `def:twisted-arrow`, `lem:factorization-linear` and `lem:interval-twisted-arrow`
 each a `KNOWN-ANCHORS` row in `docs/reference/paper-definitions-of-record.md`, so that C15 can
@@ -225,10 +225,10 @@ resolve the citations Phases 2 and 3 will write, and correct the prose paragraph
 counts these three among the untracked appendix anchors.
 
 **Tasks**:
-- [ ] Confirm the hypothesis: `grep -nE '^(def:twisted-arrow|lem:factorization-linear|lem:interval-twisted-arrow)\|' docs/reference/paper-definitions-of-record.md` returns nothing (a sibling may have added one — skip any row that already exists)
-- [ ] Add three `DANGLING` rows inside the `<!-- KNOWN-ANCHORS:BEGIN -->` block, in the block's existing code-point ordering beside the `def:interval-site`/`def:behavior-presheaf` rows, each in the shape `anchor_id|DANGLING|note`. Each note records: what the anchor states (the twisted-arrow category / factorization-linearity / the isomorphism of sites `Int(D) ≅ Tw(BD⁺)`), that `app:Structure` was cut IN FULL under `% SECTION CUT` with a bare `% CHECK` and the anchor went with it, that the statement of record now lives in `JPL/appendix_cut_material.tex` and the archived verification report, the Lean counterpart (`FormalSystem/Semantics/Presheaf/Duration.lean`: `Tw`/`Tw.comp`; `Factorization.hom_unique`/`hom_total`; `Tw.toTr`/`ofTr` with `toTr_coverLeft`/`toTr_coverRight`), and `NOT PINNABLE, as for app:Structure`. No task numbers in any note.
-- [ ] Update the "Twelve new appendix anchors deliberately NOT pinned" paragraph: the "remaining nine" now excludes `lem:factorization-linear` and `lem:interval-twisted-arrow` (and `def:twisted-arrow`, which that paragraph never listed — name it alongside), recording that `Duration.lean` formalizes them and that all three carry `DANGLING` rows for the same unpinnability reason as the four already recorded
-- [ ] Run the covering checks named under Verification and commit: `task 616 phase 1: record the twisted-arrow anchors`
+- [x] Confirm the hypothesis: `grep -nE '^(def:twisted-arrow|lem:factorization-linear|lem:interval-twisted-arrow)\|' docs/reference/paper-definitions-of-record.md` returns nothing (a sibling may have added one — skip any row that already exists) *(completed — grep returned nothing; all three rows were missing)*
+- [x] Add three `DANGLING` rows inside the `<!-- KNOWN-ANCHORS:BEGIN -->` block, in the block's existing code-point ordering beside the `def:interval-site`/`def:behavior-presheaf` rows, each in the shape `anchor_id|DANGLING|note`. Each note records: what the anchor states (the twisted-arrow category / factorization-linearity / the isomorphism of sites `Int(D) ≅ Tw(BD⁺)`), that `app:Structure` was cut IN FULL under `% SECTION CUT` with a bare `% CHECK` and the anchor went with it, that the statement of record now lives in `JPL/appendix_cut_material.tex` and the archived verification report, the Lean counterpart (`FormalSystem/Semantics/Presheaf/Duration.lean`: `Tw`/`Tw.comp`; `Factorization.hom_unique`/`hom_total`; `Tw.toTr`/`ofTr` with `toTr_coverLeft`/`toTr_coverRight`), and `NOT PINNABLE, as for app:Structure`. No task numbers in any note. *(completed — `def:twisted-arrow` after `def:strongest`; `lem:factorization-linear` before and `lem:interval-twisted-arrow` after `lem:fibers`)*
+- [x] Update the "Twelve new appendix anchors deliberately NOT pinned" paragraph: the "remaining nine" now excludes `lem:factorization-linear` and `lem:interval-twisted-arrow` (and `def:twisted-arrow`, which that paragraph never listed — name it alongside), recording that `Duration.lean` formalizes them and that all three carry `DANGLING` rows for the same unpinnability reason as the four already recorded *(completed — "remaining seven")*
+- [x] Run the covering checks named under Verification and commit: `task 616 phase 1: record the twisted-arrow anchors` *(completed — see Reasoned Exclusions for the one criterion that is red at this boundary by construction)*
 
 **Timing**: 0.5 hours
 
@@ -248,6 +248,14 @@ counts these three among the untracked appendix anchors.
 - `bash scripts/check-module-invariants.sh --no-build` exits 0 with `PASS C15` (check the exit status, not just the printed line)
 - `bash .claude/scripts/verify-deploy.sh --only-gate 4` passes
 - Diff read-through: no `task N` reference in any new row or amended sentence
+
+**Observed at closure**: the row-count grep printed `3`; `PASS C15` on both assertions (88 citations, 313 theorem-index rows); `verify-deploy.sh --only-gate 4` exited 0; the diff carries no task-number reference. The harness itself exited 1 — on C12 alone, see below.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The `exits 0` half of the criterion `check-module-invariants.sh --no-build` exits 0 with `PASS C15` | C12 (unresolved slash-shaped source paths under `docs/`) fails every mention of `FormalSystem/Semantics/Presheaf/Duration.lean` in the three new rows and the amended paragraph, because the module is created in Phase 2. The plan's own ordering forces this: C15's row-before-citation rule places the rows in Phase 1, while C12 needs the file to exist first, and the rows cite the Lean counterpart by path exactly as the sibling `def:interval-site` row cites `Site.lean`. Rewording the rows to dodge C12 would make them inconsistent with every other `FORMALIZED as ... (path)` row in the block. The criterion is not dropped: Phase 2's verification re-runs the same `--no-build` harness after the module exists and observes exit 0 there, within this dispatch. | `FAIL C12 4 unresolved slash-shaped source path(s) in docs/ + README.md` naming `paper-definitions-of-record.md:996`, `:2519`, `:2520`, `:2522`, each `FormalSystem/Semantics/Presheaf/Duration.lean`; `PASS C15` on both assertions in the same run; every other check group PASS |
 
 ---
 
