@@ -81,7 +81,7 @@ next_project_number: 820
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-819 [RESEARCHED] — Research-first: choose the presentation of a ladder cell that...
+819 [PLANNED] — Research-first: choose the presentation of a ladder cell that...
   └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 
@@ -121,12 +121,13 @@ next_project_number: 820
 ## Tasks
 
 ### 819. Ladder cell presentation design decision
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 761
 - **Research**: [819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md]
+- **Plan**: [819_ladder_cell_presentation_design_decision/plans/01_ladder-cell-presentation-decision.md]
 
 **Description**: Research-first: choose the presentation of a ladder cell that supports a positive factorization lemma, or settle the direction negatively
 

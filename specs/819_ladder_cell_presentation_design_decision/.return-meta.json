@@ -1,38 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
-      "summary": "Design decision: presentation (a), the set-valued per-state datum as the maximum certified subset of Q x ClType x K, over (b) a parameter-coupled tuple index (dominated, incomplete, barred); two findings -- the certified chains of record are region-interior and never Rlad histories (compiled), and any computable datum's counter quotient is forced to the six-coordinate shape with parameters as outputs of the pumping lemma; the counter-lift lemma named as the open problem on which viability rests."
+      "type": "plan",
+      "path": "specs/819_ladder_cell_presentation_design_decision/plans/01_ladder-cell-presentation-decision.md",
+      "summary": "Six phases, 6 hours: promote the compiled no-pending-forever prototype to a wired evidence probe; file the counter-lift lemma as a gated research-first successor task and declare the 761 edge plus 761's dated amendment; record the presentation decision (set-valued datum D over Q x ClType x K, no tuple index, K a carrier coordinate) in ROADMAP, the RaySummary README and the source-store guidance note; full gate set and summary."
     }
   ],
-  "next_steps": "Plan task 761 against this decision: file the counter-lift lemma (obligations 2+3) as a gated research-first record before any sufficiency attempt; rebuild cohBi across idle steps on the carrier Q x ClType x K with certStab per (q, kappa); state LadderCons as certAdm plus maximality; never state a tuple as the index.",
-  "modified_files": [
-    "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
-    "specs/819_ladder_cell_presentation_design_decision/prototype/no-pending-forever-ray.lean"
-  ],
-  "memory_candidates": [
-    {
-      "content": "The ladder's certified realizability (coh/cohBi, certAdm, Realizes) is region-interior: coh requires pend at both endpoints, so every Realizes chain is an all-pending object walk, and no forward Rlad ray is pending for more than c0+1 steps (exists_idle_of_rlad_ray). Label-level sufficiency over cohBi composes to ladder realizability only through a counter-lift lemma across idle runs under Count/Drift.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["ladder", "Rlad", "cohBi", "region-interior", "counter-lift", "realization"]
-    },
-    {
-      "content": "Carrier coordinate vs index: a counter quotient of the refuted six-coordinate shape is forced inside any computable per-ladder-state datum by the arithmetic of Count/Drift, but it is a coordinate of the carrier the set-valued datum D is computed over, with parameters that are outputs of the pumping lemma; D factors cellAt, the quotient alone does not. Exactness of D is obtained as the maximum certAdm-certified set, not by deciding generalized-Buchi nonemptiness.",
-      "category": "PATTERN",
-      "source_artifact": "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["cell index", "counter quotient", "maximum certified set", "Route B", "stab"]
-    }
-  ],
+  "next_steps": "Run /orchestrate 819 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 6,
+  "dependency_waves": [[1], [2, 4, 5], [3], [6]],
   "metadata": {
     "session_id": "sess_1792333740_591ffa_819",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "memory_candidates": [
+    {
+      "content": "Design-decision tasks in the RaySummary decidability programme decompose into a stable four-part shape: (1) promote any research-round prototype under specs/{task}/prototype/ to specs/evidence/ via git mv plus a header rewrite, #print axioms lines, one decision row and one WIRED entry in scripts/check-evidence-probes.sh; (2) file the named open problem as its own research-first, gated task through state-write.sh and declare the dependency edge on the blocked parent with update-task-status.sh --depends-on-add (status-no-op replay of the parent's current status), amending the parent's description and records/*-amendment.txt; (3) sync three records in their own registers -- specs/ROADMAP.md (batch ordering, enumerated regions, kept-sentence counts), the RaySummary README '(W)' narrative (name probes by path, never ordinal: the narrative stops at the fifteenth probe), and the lean extension's source-store guidance note (edit the working tree at source_dir, additive, never the deployed mirror; it already carries an uncommitted prior-round edit); (4) the full gate set. A refuted tuple shape may legitimately reappear as a carrier coordinate of a set-valued datum when the datum factors the cells and the tuple's parameters are lemma outputs -- record that distinction explicitly or the shape gets re-filed as an index candidate.",
+      "category": "PATTERN",
+      "source_artifact": "specs/819_ladder_cell_presentation_design_decision/plans/01_ladder-cell-presentation-decision.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["evidence-probe", "promotion", "design-decision", "dependency-edge", "source-store", "carrier-coordinate"]
+    }
+  ],
+  "dispatch_seq": 2
 }
