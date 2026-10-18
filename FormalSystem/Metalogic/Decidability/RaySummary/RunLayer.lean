@@ -331,6 +331,190 @@ theorem Rlad_slice_infinite {Q : Type} [Nonempty Q] : ¬ Finite (Q × ℕ × ℕ
     (fun a b hab => by simpa using hab)
   exact not_finite ℕ
 
+/-! ## The pin lemma, lift half
+
+PORTED, verbatim in statement and in proof, from
+`specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean` (namespace `Probe820`), which
+remains the compiled oracle and keeps its own copies unchanged. Nine declarations move: the four
+`Count` letter-pair unfoldings `count_tt`/`count_tf`/`count_ft`/`count_ff`, which the lift proof
+uses and the library did not carry, and the lift half proper — `pinCands`, `mem_pinCands`,
+`walkPin`, `drift_extension_of_pins`, `exists_rlad_hist_of_walk`. No rename was forced: none of
+the nine names was already taken in this namespace. Two tactic-level adaptations were forced by
+library linters the probe is not subject to, neither touching a statement: the two `show` steps
+inside `drift_extension_of_pins` are written `change` (`linter.style.show` requires `change` when
+the tactic actually alters the goal), and one comment line was rewrapped under the 100-column
+limit.
+
+The pin lemma's SOUNDNESS half (`forward_window`, `backward_constraint`, `region_doubling`,
+`iter_doubling`) stays in the probe and is not promoted here. Nothing below lifts a class-level
+chain: `Probe820.no_positionwise_lift` refutes that statement shape for every finite counter
+quotient, and the pumping form is what replaces it. -/
+
+/-! ### `Count` unfolded, one clause per letter pair -/
+
+theorem count_tt (c n c' : ℕ) : Count true true c n c' ↔ c' + 1 = c := by simp [Count]
+theorem count_tf (c n c' : ℕ) : Count true false c n c' ↔ c' = 0 ∧ c = 0 := by simp [Count]
+theorem count_ft (c n c' : ℕ) : Count false true c n c' ↔ c' = n := by simp [Count]
+theorem count_ff (c n c' : ℕ) : Count false false c n c' ↔ c' = 0 := by simp [Count]
+
+section PinLift
+
+variable {Q : Type} (step : Q → Q → Bool) (pend : Q → Bool) (t : ℤ)
+
+/-! ### The pin lemma, lift half
+
+The pin lemma has two halves.  Its SOUNDNESS half is `forward_window`, `backward_constraint`
+and `region_doubling`, which stay in the probe and are not promoted: what the counters of an
+`RladAdm` history must satisfy at the pins.  Its LIFT half is the two theorems below: a
+`1`-Lipschitz deadline function through any pairwise compatible family of pins
+(`drift_extension_of_pins`, the McShane extension), and the
+lift of an object walk carrying its forced countdown to a full `Rlad` history
+(`exists_rlad_hist_of_walk`).  This is where the lift's counter argument ends: everything the
+counters contribute to the completeness clause is discharged by these two statements, and what
+remains for (C') is the chain-replacement argument on the TYPE sequence, which no counter
+bound can supply.  Nothing here is a lift of a class-level chain; `no_positionwise_lift` below
+refutes that statement shape, and the pumping form is what replaces it. -/
+
+/-- The candidate set of the McShane extension at `t`: `a + |t - s|` over the pins `(s, a)`. -/
+def pinCands (pin : ℤ → Option ℕ) (t : ℤ) : Set ℕ :=
+  {m | ∃ s a, pin s = some a ∧ m = a + (t - s).natAbs}
+
+theorem mem_pinCands {pin : ℤ → Option ℕ} (t : ℤ) {s : ℤ} {a : ℕ} (h : pin s = some a) :
+    a + (t - s).natAbs ∈ pinCands pin t := ⟨s, a, h, rfl⟩
+
+/-- **The McShane extension through a compatible family of pins.**  A family of pins that is
+pairwise `1`-Lipschitz-compatible extends to a `1`-Lipschitz (`Drift`) deadline function
+through every pin: take `n t` to be the least `a + |t - s|` over the pins, which is a `Nat.find`
+over a nonempty set of naturals, or `0` when there is no pin at all. -/
+theorem drift_extension_of_pins (pin : ℤ → Option ℕ)
+    (hcompat : ∀ s t a b, pin s = some a → pin t = some b →
+      ((a : ℤ) - b).natAbs ≤ (s - t).natAbs) :
+    ∃ n : ℤ → ℕ, (∀ t, Drift (n t) (n (t + 1))) ∧ ∀ t a, pin t = some a → n t = a := by
+  classical
+  by_cases hex : ∃ s a, pin s = some a
+  · obtain ⟨s₁, a₁, hs₁⟩ := hex
+    have hne : ∀ u : ℤ, (pinCands pin u).Nonempty := fun u =>
+      ⟨a₁ + (u - s₁).natAbs, mem_pinCands u hs₁⟩
+    refine ⟨fun u => sInf (pinCands pin u), fun u => ?_, fun u a hpa => ?_⟩
+    · change Drift (sInf (pinCands pin u)) (sInf (pinCands pin (u + 1)))
+      have h1 : sInf (pinCands pin (u + 1)) ≤ sInf (pinCands pin u) + 1 := by
+        obtain ⟨s, a, hpa, hm⟩ := Nat.sInf_mem (hne u)
+        have hle := Nat.sInf_le (mem_pinCands (u + 1) hpa)
+        omega
+      have h2 : sInf (pinCands pin u) ≤ sInf (pinCands pin (u + 1)) + 1 := by
+        obtain ⟨s, a, hpa, hm⟩ := Nat.sInf_mem (hne (u + 1))
+        have hle := Nat.sInf_le (mem_pinCands u hpa)
+        omega
+      simp only [Drift]
+      omega
+    · change sInf (pinCands pin u) = a
+      have hub : sInf (pinCands pin u) ≤ a := by
+        have hmem := mem_pinCands u hpa
+        rw [show (u - u).natAbs = 0 by simp, Nat.add_zero] at hmem
+        exact Nat.sInf_le hmem
+      have hlb : a ≤ sInf (pinCands pin u) := by
+        obtain ⟨s, b, hpb, hm⟩ := Nat.sInf_mem (hne u)
+        have hc := hcompat u s a b hpa hpb
+        omega
+      omega
+  · push Not at hex
+    exact ⟨fun _ => 0, fun _ => Or.inl rfl, fun u a hpa => absurd hpa (by simpa using hex u a)⟩
+
+/-- The pins an object walk with a forced countdown imposes on the deadline: the countdown the
+next region takes at every region start, and `n₀` at `0`. -/
+def walkPin {Q : Type} (pend : Q → Bool) (w : ℤ → Q) (c : ℤ → ℕ) (n₀ : ℕ) (u : ℤ) :
+    Option ℕ :=
+  if u = 0 then some n₀
+  else if pend (w u) = false ∧ pend (w (u + 1)) = true then some (c (u + 1)) else none
+
+/-- **The lift of an object walk to an `Rlad` history.**  A walk `w` along `step` whose
+countdown `c` is idle-zero, counts down inside a region, is exhausted at a region end, and whose
+region-start values are pairwise `1`-Lipschitz-compatible (and compatible with `n₀` at `0`),
+lifts to a full `Rlad` history with `n 0 = n₀`.  No class-level chain is lifted and no
+positionwise completeness clause is used: the deadline is built by `drift_extension_of_pins`
+from the pins the walk already carries. -/
+theorem exists_rlad_hist_of_walk (w : ℤ → Q) (c : ℤ → ℕ) (n₀ : ℕ)
+    (hw : ∀ t, step (w t) (w (t + 1)) = true)
+    (hidle : ∀ t, pend (w t) = false → c t = 0)
+    (hpp : ∀ t, pend (w t) = true → pend (w (t + 1)) = true → c (t + 1) + 1 = c t)
+    (hpi : ∀ t, pend (w t) = true → pend (w (t + 1)) = false → c t = 0)
+    (hpins : ∀ s t, pend (w s) = false → pend (w (s + 1)) = true →
+      pend (w t) = false → pend (w (t + 1)) = true →
+      ((c (s + 1) : ℤ) - c (t + 1)).natAbs ≤ (s - t).natAbs)
+    (hn₀ : ∀ t, pend (w t) = false → pend (w (t + 1)) = true →
+      ((c (t + 1) : ℤ) - n₀).natAbs ≤ t.natAbs) :
+    ∃ n : ℤ → ℕ, n 0 = n₀ ∧
+      ∀ t', Rlad step pend t (w t', c t', n t') (w (t' + 1), c (t' + 1), n (t' + 1)) := by
+  classical
+  -- `n₀` is the value the pin at `0` would take anyway when `0` is itself a region start
+  have hzero : ∀ (h0 : pend (w 0) = false) (h1 : pend (w (0 + 1)) = true), c (0 + 1) = n₀ := by
+    intro h0 h1
+    have h := hn₀ 0 h0 h1
+    simp only [Int.natAbs_zero, Nat.le_zero] at h
+    omega
+  set pin : ℤ → Option ℕ := walkPin pend w c n₀ with hpin
+  -- the pin at a region start `u ≠ 0`
+  have hpin_start : ∀ u : ℤ, u ≠ 0 → pend (w u) = false → pend (w (u + 1)) = true →
+      pin u = some (c (u + 1)) := by
+    intro u hu h0 h1
+    rw [hpin, walkPin, if_neg hu, if_pos ⟨h0, h1⟩]
+  have hpin_zero : pin 0 = some n₀ := by
+    rw [hpin, walkPin, if_pos rfl]
+  -- every pin value is a region-start countdown, or `n₀` at `0`
+  have hpin_val : ∀ (u : ℤ) (a : ℕ), pin u = some a →
+      (u = 0 ∧ a = n₀) ∨ (pend (w u) = false ∧ pend (w (u + 1)) = true ∧ a = c (u + 1)) := by
+    intro u a ha
+    rw [hpin, walkPin] at ha
+    by_cases hu : u = 0
+    · rw [if_pos hu] at ha
+      exact Or.inl ⟨hu, (Option.some.inj ha).symm⟩
+    · rw [if_neg hu] at ha
+      by_cases hs : pend (w u) = false ∧ pend (w (u + 1)) = true
+      · rw [if_pos hs] at ha
+        exact Or.inr ⟨hs.1, hs.2, (Option.some.inj ha).symm⟩
+      · rw [if_neg hs] at ha
+        exact absurd ha (by simp)
+  have hcompat : ∀ s u a b, pin s = some a → pin u = some b →
+      ((a : ℤ) - b).natAbs ≤ (s - u).natAbs := by
+    intro s u a b ha hb
+    rcases hpin_val s a ha with ⟨rfl, rfl⟩ | ⟨hs0, hs1, rfl⟩
+    · rcases hpin_val u b hb with ⟨rfl, rfl⟩ | ⟨hu0, hu1, rfl⟩
+      · simp
+      · have h := hn₀ u hu0 hu1
+        omega
+    · rcases hpin_val u b hb with ⟨rfl, rfl⟩ | ⟨hu0, hu1, rfl⟩
+      · have h := hn₀ s hs0 hs1
+        omega
+      · exact hpins s u hs0 hs1 hu0 hu1
+  obtain ⟨n, hdrift, hthrough⟩ := drift_extension_of_pins pin hcompat
+  refine ⟨n, hthrough 0 n₀ hpin_zero, fun t' => ?_⟩
+  refine ⟨hw t', hidle t', hdrift t', ?_⟩
+  dsimp only
+  cases hy : pend (w (t' + 1)) with
+  | false =>
+    cases hx : pend (w t') with
+    | true =>
+      rw [count_tf]
+      exact ⟨hidle (t' + 1) hy, hpi t' hx hy⟩
+    | false =>
+      rw [count_ff]
+      exact hidle (t' + 1) hy
+  | true =>
+    cases hx : pend (w t') with
+    | true =>
+      rw [count_tt]
+      exact hpp t' hx hy
+    | false =>
+      rw [count_ft]
+      by_cases hu : t' = 0
+      · subst hu
+        rw [hthrough 0 n₀ hpin_zero]
+        exact hzero hx hy
+      · exact (hthrough t' (c (t' + 1)) (hpin_start t' hu hx hy)).symm
+
+end PinLift
+
+
 /-! ## The ladder frame -/
 
 /-- **The frame-scheme constructor of requirement (W)'s obligation (i), regularity part**: a

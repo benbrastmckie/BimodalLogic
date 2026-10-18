@@ -712,7 +712,7 @@ output):
 
 ---
 
-### Phase 7: Promote the Pin Lemma's Lift Half into `RunLayer.lean` [NOT STARTED]
+### Phase 7: Promote the Pin Lemma's Lift Half into `RunLayer.lean` [COMPLETED]
 
 **Goal**: Make the counter half of the lift available to the library. The gate-table probe proved
 `drift_extension_of_pins` and `exists_rlad_hist_of_walk` generically in `Q`, `step`, `pend`, and
@@ -720,14 +720,23 @@ its own record names moving them into `RunLayer.lean` as the successor's choice;
 cannot import a probe, so the port happens here.
 
 **Tasks**:
-- [ ] Port `pinCands`, `mem_pinCands`, `walkPin`, `drift_extension_of_pins` and
+- [x] Port `pinCands`, `mem_pinCands`, `walkPin`, `drift_extension_of_pins` and
       `exists_rlad_hist_of_walk` from `specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean`
       into `FormalSystem/Metalogic/Decidability/RaySummary/RunLayer.lean`, verbatim in statement,
       under the module's existing namespace. Port the proofs; do not re-derive them.
-- [ ] Keep the probe's copies in place and unchanged — the evidence gate compiles them and the
+      *(deviation: altered — NINE declarations moved, not five. `exists_rlad_hist_of_walk`'s proof
+      consumes `count_tt`/`count_tf`/`count_ft`/`count_ff`, probe-local `Count` letter-pair
+      unfoldings the library did not carry, so they were ported too under this phase's own Scope
+      Hypothesis licence ("port that lemma too and name it in the handoff rather than weakening
+      the statement"). Two tactic-level adaptations were forced by library linters the probe is not
+      subject to, neither touching a statement or a proof step: the two `show` steps inside
+      `drift_extension_of_pins` are written `change` (`linter.style.show` demands `change` when the
+      tactic alters the goal), and one ported comment line was rewrapped under the 100-column
+      limit. All nine elaborated signatures diff IDENTICAL against the probe's.)*
+- [x] Keep the probe's copies in place and unchanged *(completed — `check-evidence-probes.sh` exits 0, all 43 wired probes PASS)* — the evidence gate compiles them and the
       probe is the oracle. Add a one-line comment at the library site naming the probe file as
       the origin.
-- [ ] Add nothing else to `RunLayer.lean`: `Count`, `Drift`, `Rlad` and their existing lemmas are
+- [x] Add nothing else to `RunLayer.lean` *(completed — `Count`, `Drift`, `Rlad` and the existing lemmas are untouched; the insert sits between `Rlad_slice_infinite` and the ladder-frame section)*: `Count`, `Drift`, `Rlad` and their existing lemmas are
       untouched.
 
 **Timing**: 2 hours
