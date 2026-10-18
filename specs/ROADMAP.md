@@ -1,6 +1,6 @@
 # Roadmap
 
-*Open work only, hand-maintained (last edited 2026-10-17). This file is batch ordering and the
+*Open work only, hand-maintained (last edited 2026-10-18). This file is batch ordering and the
 rulings that gate it — nothing else. The mathematics, the (C)/(S)/(W) verdict table and every
 guardrail against a refuted shape live in `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
 (the authority); per-task detail lives in `specs/TODO.md`; finished work in `specs/CHANGE_LOG.md`
@@ -13,55 +13,25 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 ## Run these next
 
 ```bash
-/orchestrate 761 --hard --lit   # THE critical path, now costable: the ladder realization theorem, over the two-arm relation `cohBi`
+/orchestrate 819                # GATES 761: choose the ladder-cell presentation, or settle the direction negatively
+/orchestrate 761 --hard --lit   # THE critical path, once 819 lands: the ladder realization theorem, over the two-arm relation `cohBi`
 ```
 
-**SUFFICIENCY RETURNED (`815`, 2026-10-17).** The verdict is compiled in the twenty-third wired
-probe, `specs/evidence/seam-gluing-ray-product/certificate-sufficiency-dovetailing.lean`
-(seventeen theorems sorry-free, axioms `[propext, Classical.choice, Quot.sound]` on every one), in
-three parts. **The dovetailing argument is a theorem** (`exists_dovetail_chain`, over an
-arbitrary finite graph), and forward-only sufficiency holds for the compiled relation
-(`forward_chain_of_certAdm`, labelled forward-only). **The two-sided claim for `coh` is
-REFUTED** (`sufficiency_refuted`, the §6 claim with its quantifiers as stated): on
-`R3 = {x0, x1, x2}` over `(⊤ S a1) ∧ (⊤ S a2)` the certificate accepts a set whose member `x0`
-lies on no backward-fulfilling chain — the backward arm, and only the backward arm, because
-`linkPred` constrains no backward arm. **The repair is the strict-since link** (`cohBi`, which is
-`coh` plus `linkPredB`), under which the certificate IS sufficient at the LABEL level
-(`realizes_of_certAdm_cohBi`), at no cost on a `snce`-free closure
-(`cohBi_eq_coh_of_snce_free`), with a compiled two-arm non-vacuous instance — `cert_accepts_R4`
-accepts `{y0, y1, y2}` over `(⊤ U b) ∧ (⊤ S a1)`, every member carrying both obligations, and
-`realizes_y0_R4` is the theorem's instance on it. Condition (3)'s `|R|` bound is derived
-(`eu_mem_lfp_path_le_card`), consumed by nothing. The rulings this carries: Route B's relation is
-`cohBi`, by name; no backward propagation theorem is ever to be claimed for `coh`, and the
-predecessor report's §7 sentence that the mirror "holds through `snce_propagates_to_start`" is
-false for `coh` (the mirror holds for `cohBi`, through `link_snce`); both arms stay EXISTENTIAL
-(`ULive`/`SLive` remain the wrong strength, `au_lfp_ne_eu_lfp_on_exit_graph` stands); and
-realizability here is LABEL-LEVEL — a bi-infinite `cohR`-chain fulfilling every `untl`/`snce`
-obligation — so the semantic step from a fulfilling label chain to membership of a type in a
-cell (obligation (d)) is what remains of adequacy.
+**SUFFICIENCY RETURNED (`815`).** The certificate is sufficient at the LABEL level over the
+strict-since relation `cohBi` (`realizes_of_certAdm_cohBi`); the two-sided claim for `coh` is
+REFUTED (`sufficiency_refuted`, the backward arm and only the backward arm). The rulings this
+carries: Route B's relation is `cohBi`, by name; no backward propagation theorem is ever to be
+claimed for `coh`; both arms stay EXISTENTIAL (`ULive`/`SLive` remain the wrong strength); and
+realizability here is label-level, so the semantic step from a fulfilling label chain to
+membership of a type in a cell (obligation (d)) is what remains of adequacy. The compiled detail,
+the gate dispositions and the refuted index shapes are in Stage 1 below.
 
-Also still open from that round: **gate 8 stays SIDESTEPPED** — `certStab`/`certBox` are present
-but unexercised, and exercising them needs a fixture whose closure has `stab` members, which the
-coprime-cycle fixture does not. Gate 9 is OPEN, gates 1 and 2 are NOT ADDRESSED (with the
-compiled n-side qualification carried from `nside-modulus-gate.lean`, Branch N-VERIFIED), gate 3
-is CARRIED. A gate probing one coordinate certifies one coordinate only.
-
-`807` is closed with a POSITIVE verdict (the Stage 1 risk table below and the Stage 0 ruling it
-adds); it is no longer scheduled here.
-
-**The backward arm did fail, compiled, and was repaired by strengthening the relation** — never
-by a mirror claimed from `coh`, which would have been, in the probe's own words, "a strictly
-weaker statement wearing a stronger name". The forward-only result for `coh` is labelled
-forward-only (`forward_chain_of_certAdm`); the two-sided result is for `cohBi` and no other
-relation.
-
-`761` is now costable: its four declared edges (`760`, `775`, `805`, `806`) are discharged and
-the sufficiency verdict is in. It inherits two things from `815` — the relation is `cohBi` (the
-two-arm link, not `coh`, and not `ULive`/`SLive`), and every realizability statement it builds on
-is label-level, with the semantic step (obligation (d)) still open. Infrastructure repairs (`810`, `812`, and the agent-system records
-`813`/`814` whose edit targets resolve only under the source store's own tree) are subordinate to
-all of it — they fix how the system reports and gates, not what is proved, and none of them gates
-the critical path.
+`761` declares five edges (`760`, `775`, `805`, `806`, `819`). Four are discharged and the
+sufficiency verdict is in, so the mathematics is costable; **`819` is the one edge still open** and
+gates the dispatch. `761` inherits the `cohBi` relation and the label-level limit.
+Infrastructure repairs (`810` and the agent-system records `813`/`814`, whose edit targets resolve
+only under the source store's own tree) are subordinate to all of it — they fix how the system
+reports and gates, not what is proved, and none of them gates the critical path.
 
 **Not on the critical path, and not a substitute for it**: acquiring *Handbook of Modal Logic*
 ch. 11 (Hodkinson & Reynolds, "Temporal Logic", pp. 655–720, DOI 10.1016/S1570-2464(07)80014-0)
@@ -71,42 +41,33 @@ and ch. 10 as per-chapter offprints — ch. 10 ends at p. 653, the target starts
 volume-level PDF, so there is nothing to extract the chapter from. Institutional access or
 purchase is the route. Because R2 consumes R1, this unblocks a record; it does not advance the
 aim.
-**Coverage appendix (uncovered tasks)**:
-```
-/orchestrate 127,128,178,502,559,566,570,604
-/orchestrate 616,617,664,714,729,730,741,743
-/orchestrate 751,752,753,767,768,769,770,772
-/orchestrate 774,777,779,780,781,782,785,787
-/orchestrate 803,804,810,813,817,818,819
-```
 
 ## Next batches
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 761 --hard --lit    # ladder realization theorem — sufficiency returned (815): the relation is `cohBi`, realizability label-level
+/orchestrate 819                 # ladder-cell presentation decision — the one open edge on 761; run first
+/orchestrate 761 --hard --lit    # ladder realization theorem over `cohBi`, realizability label-level (815) — needs 819
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
-/orchestrate 714,781,782 --hard  # sliced-certificate internals: full-label evaluation, Phase 5 hoist, Shape D leaf cache
+/orchestrate 714,781 --hard      # sliced-certificate internals: full-label evaluation, Phase 5 hoist
 # Stage 2 — supporting semantics and metalogic
-/orchestrate 616,618             # duration monoid BD⁺ and its twisted-arrow category, then Path(F) and cor:path-fibration
-/orchestrate 617,566             # the Reflection and Possible Worlds clauses of app:presheaf-dictionary
 /orchestrate 664,559,570 --lit   # corpus ingest first, then TM⋆ canonical-model rounds and the C3 open question
 # Stage 3 — datasets, examples, documentation, hygiene
 /orchestrate 803,804             # the build-cost front: SubformulaProperty's elaboration time, then its fan-in
 /orchestrate 298,282,296,231,219 # the dataset chain behind the c7 labeling bug
 /orchestrate 178,604             # worked Examples/ pipeline and zstd-compressed .jsonl support
-/orchestrate 743,744             # doc gates: typst-sync Check 1 namespace resolution, GENERATED markers on inventory tables
+/orchestrate 743                 # doc gate: typst-sync Check 1 namespace resolution
 /orchestrate 751,787             # file_scope backfill for the overlap gate; the unguarded .lake reader audit
-/orchestrate 777,779,780         # commit-path and plan-compliance records from the ladder-index run
+/orchestrate 777,779,780,816     # commit-path and plan-compliance records; 816 (snapshot artifacts in phase commits) waits on 777
 /orchestrate 772,783             # jq re-serialization of formatting-sensitive records, bounded in-file block edits
 /orchestrate 753,774             # conclusion-stage null-resolution drops, refuted-REASON recording
 /orchestrate 810                 # agent-system defect group: unfollowable batch-gate directive, vacuous-pass snapshot regex, refutation-inverting compliance check, literature --read path, gate16 — run in a separate cycle from 768 (shares lean-challenge-snapshot.sh)
+/orchestrate 817,818             # wrap the remaining phantom-row inventory and directory-rollup tables
 /orchestrate 729                 # purpose-written .title fields so TODO.md stops rendering descriptions
 /orchestrate 257                 # only once the Stage 0 token exists
 # Stage 4 — the long fronts
-/orchestrate 464,465 --hard      # the termination measure: gapPotential, then the terminus family — RUN BEFORE the spine
 /orchestrate 481 --hard          # the refuted predicate; a C9 register entry is a complete outcome
-/orchestrate 428,429,410,411 --hard      # the tableau spine's middle — needs 465 landed and 428's scope ruled
+/orchestrate 428,429,410,411 --hard      # the tableau spine's middle — 465 landed; needs 428's scope ruled
 /orchestrate 430,412,482 --hard --lit    # the spine's terminus: semantic lift, Track B finish, proof extraction
 /orchestrate 502,497 --research --lit    # the literature gate on the STSA axiom set, then the G-operator gap
 /orchestrate 498,499,500 --hard  # the representation's two sides, Cm(F) and Uf(A), and their reconciliation
@@ -123,12 +84,12 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 
 ## Not batched, and why
 
-- **127, 128 and 709** await Stage 0 rulings; **713** is `HOLD` by ruling and **734** is `PARTIAL`
-  by ruling.
+- **127 and 128** await Stage 0 rulings; **713** and **734** are both `HOLD` by ruling.
 - **730, 741, 752, 767, 768, 769 and 770 are frozen: undispatchable from this repository**, and
   deliberately absent from every line above. Each names an edit target that resolves only under the
-  agent-system source store (`source_dir` in `.claude-extensions.json` →
-  `~/.config/nvim/agent-system/**`); this repo carries only the deployed `.claude/` tree, so a
+  agent-system source store (`~/.config/nvim/agent-system/**`; this repository's
+  `.claude-extensions.json` declares no `source_dir` key, so the path is not derivable from it);
+  this repo carries only the deployed `.claude/` tree, so a
   dispatch here can read nothing it is meant to edit and commit nothing it manages to write. Their
   migration into the source store's own task space is tracked there
   (`~/.config/nvim/specs/390_migrate_mis_sited_agent_system_tasks`, still `[NOT STARTED]`), not
@@ -136,16 +97,14 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 - The frozen set is **enumerated by that migration record, not derivable from `file_scope`**:
   753, 772, 774, 777, 779, 780 and 783 also edit the source store and are batched above by ruling,
   each editing at the mirroring source path and redeploying afterwards.
-- **785 has the frozen shape and is not among the seven** — its entire `file_scope` is
-  `agent-system/extensions/lean/**`, a path that does not exist in this repository. It needs the
-  same disposition as the seven and has not been given one.
+- **785, 813 and 814 have the frozen shape and are not among the seven** — each declares a
+  `file_scope` that is wholly (785, 813) or almost wholly (814) under
+  `agent-system/extensions/lean/**`, a path that does not exist in this repository, and all three
+  share `index-entries.json`, so they collide with one another as well. They need the same
+  disposition as the seven and have not been given one.
 - **784** is the tracker for the freeze and is itself `[BLOCKED]` on the migration. It owns the only
   part this repository can do: once the records have landed in the source store, verify them there,
   delete them from `specs/state.json`, regenerate `specs/TODO.md`, and drop this section.
-- **805** is closed (`[COMPLETED]`): its refutation is the record 806 was filed against, and the
-  close-out round re-measured it rather than carrying it (`PASS all 37 wired probe(s) compile`,
-  full `lake build` green, no new axiom). Its dependency edges on 761 and 809 are both discharged.
-
 Every other open task appears in exactly one batch line above, except the two in **Run these
 next**, which repeat for priority.
 
@@ -154,14 +113,11 @@ next**, which repeat for priority.
 - [ ] Rule on **127** and **128** (time addition, interior operator): long-standing abandonment
       candidates, antagonistic to the termination work Stage 4 depends on
 - [ ] Supply the Hugging Face account and token **257** is blocked on
-- [ ] Rule on **428**'s scope. Its `blockers` says "paused at 4/5 cycles, NOT blocked", so the
-      marker is mis-set and the next step is a scope decision: `/revise 428` to add phases for its
+- [ ] Rule on **428**'s scope. Its one dependency edge (`465`) is discharged and its `blockers`
+      says "paused at 4/5 cycles, NOT blocked", so the marker is mis-set and the next step is a
+      scope decision: `/revise 428` to add phases for its
       four residual hypotheses, or `/spawn 428` to split them out
-- [ ] Re-rule on **709**'s value before dispatching it. It was the finite-width ⇒ eventually
-      periodic summary step of the run-layer programme, which returned a negative verdict; any
-      surviving statement must name its restricted fragment and say why `not_finite_width_fmp` does
-      not refute it
-- [ ] Give **785** a disposition — frozen like the seven, or re-sited
+- [ ] Give **785**, **813** and **814** a disposition — frozen like the seven, or re-sited
 - [ ] Rule on **807**'s positive verdict: `(q S ⊥) → ⊡(q S ⊥)` characterizes backward determinism
       over regular `ℤ`-frames (`backward-determinism-forcing-formula.lean`), so the
       know-time-do-not-forget family is a candidate reduction target. Options: (A, recommended)
@@ -240,11 +196,11 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   not pursued — it would not reach the `box`/`stab` letters Stage 1 needs.
 - **761 — the ladder realization theorem** (`LadderCons`, `ladderRealized` per cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
-  `[BLOCKED]`. **Every one of its declared edges — 760, 775, 805, 806 — is discharged**
-  (760/775 archived, 805/806 `[COMPLETED]`), and `blocked` is a resumable status, so
-  `/orchestrate 761` **will dispatch it**. The **sufficiency verdict** it waited on is in
-  (`815`, above): it is now costable, over the relation `cohBi`, with every realizability
-  statement it inherits label-level.
+  `[BLOCKED]`. **Four of its five declared edges are discharged** (760/775 archived, 805/806
+  `[COMPLETED]`); **`819` — the ladder-cell presentation decision — is the one still open**, so a
+  bare `/orchestrate 761` defers on it. Run `819` first, or batch the two and let the engine
+  serialize them. The **sufficiency verdict** it waited on is in (`815`, above): the mathematics is
+  costable, over the relation `cohBi`, with every realizability statement it inherits label-level.
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone.
   761 and 763 share the `RaySummary` library set and serialize through the edge between them.
@@ -276,37 +232,33 @@ of decidability — is recorded in `specs/literature/README.md`.
 
 ## Stage 2 — Supporting semantics and metalogic
 
-Bounded rather than open: each remaining presheaf item is a clause of `app:presheaf-dictionary` with
-a proved hook already in the tree. **The one collision the gate cannot see**: every presheaf task
-needs a one-line import in `FormalSystem/Semantics/Presheaf.lean`, which no task declares — so batch
-only tasks already serialized by a dependency edge, and re-run `lake build` after each aggregator
-edit. 664 runs before 559 and 570 so they have the corpus. **543 is not runnable here**; it depends
+Every `app:presheaf-dictionary` clause scoped as a task is landed; what remains here is the
+canonical-model and corpus work. Should a further presheaf module be filed, **the one collision the
+gate cannot see** is the one-line import in `FormalSystem/Semantics/Presheaf.lean`, which no task
+declares — batch only tasks already serialized by a dependency edge, and re-run `lake build` after
+each aggregator edit. 664 runs before 559 and 570 so they have the corpus. **543 is not runnable here**; it depends
 on 500 and batches with Stage 4's capstone.
 
 ## Stage 3 — Datasets, examples, documentation, hygiene
 
-Independent of every other stage. The `FAIL C16` red — an unused `[Finite F.WorldState]` on
-`mem_HF_iff_no_forbidden` (`FormalSystem/Semantics/ShiftFiniteType.lean:149`) — is fixed by the
-signature edit, and `check-module-invariants.sh` now exits 0. The standing rule it established
-holds for any future recurrence: prefer the signature edit to a `scripts/nolints.json` entry, check
-the call sites first, and **do not run `lake exe runLinter --update`**, which would grandfather the
-regression wholesale.
+Independent of every other stage. Standing rule on any `C16` unused-binder red: prefer the
+signature edit to a `scripts/nolints.json` entry, check the call sites first, and **do not run
+`lake exe runLinter --update`**, which would grandfather the regression wholesale.
 
 803 and 804 both touch `Verified/Termination/SubformulaProperty.lean`, so the pair serializes inside
 one batch; that module is the repository's single largest rebuild cost (1103s measured on a full
 guarded build) and any edit to the syntax or proof-system layer wakes it, so paper-alignment work
-pays for it repeatedly — run the pair early. Re-check 298's line and metadata counts first: a long
-c7 regeneration was observed running and may have completed. Run 744 before any task that
-hand-edits the `RaySummary`/`KTypeSummary` inventory tables (INV fails only on a stale *wrapped*
-block, so four of six counts had drifted while the gate stayed green). 257 shares `data/README.md`
-with 282.
+pays for it repeatedly — run the pair early. Re-check 298's line and metadata counts before
+dispatching it. The `RaySummary`/`KTypeSummary` inventory tables are wrapped, so INV now catches a
+drifted count; a task that hand-edits one still re-runs the generator rather than editing the
+wrapped block. 257 shares `data/README.md` with 282.
 
 ## Stage 4 — The long fronts (low priority)
 
-Two chains, both containing open mathematics: the TM tableau spine (464 → 465 → 428 → 429 → 410 →
-411 → 430 → 412 → 482) and the algebraic representation front (502 → 497 → 498/499/500 → 125 → 501).
-**The spine cannot start at 428**: 428 is `[BLOCKED]` on 465, which waits on 464, so run `464,465`
-before the spine's middle line. **411 and 412 declare an empty or absent `file_scope`, as does every
+Two chains, both containing open mathematics: the TM tableau spine (428 → 429 → 410 → 411 → 430 →
+412 → 482) and the algebraic representation front (502 → 497 → 498/499/500 → 125 → 501). **The
+spine's head is now clear**: 464 and 465 are landed, so 428's one edge is discharged and the spine
+starts at its Stage 0 scope ruling. **411 and 412 declare an empty or absent `file_scope`, as does every
 algebraic task** — scope them at plan time before running any wave concurrently. (410 now declares
 one; it overlaps `typst/generated/status.typ` with other work.)
 
