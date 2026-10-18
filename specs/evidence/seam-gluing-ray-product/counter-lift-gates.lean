@@ -2148,6 +2148,317 @@ theorem gate9_col_cell_eq (n : ℕ) (hn : 2 ≤ n) :
 
 end Gate9Col
 
+/-! ## The gap-shift gate (DECISION GATE)
+
+The closure `chi`: a `snce` member reading the region start's letter (`p S (ℓ 0 ∧ Y ¬p)`), one
+pinning the previous idle run to length exactly `1` (`p S (¬p ∧ Y p)`), and the next region's
+start letter (`p U (¬p ∧ X (p ∧ ℓ j))`, `j := idx c`).  The hand computation of `T₀` on `Q4`:
+the current region's start pin is `c + s₀` at `-s₀-1`, and `Drift` to `n` at `0` needs
+`|n - (c + s₀)| ≤ s₀ + 1`, which with `n = c + g₀` does not mention `c`; the previous idle run,
+when pinned to length `1`, is preceded by a region the closure does NOT pin, which may be
+pending forever with its deadline unconstrained, so the cascade terminates at depth `2` at that
+unpinned previous region (or at the idle-forever run when the length is not pinned).  So
+`T₀ = 0` (a count), `g₀ = 1`, `i₀ = 0`, `j₀ = idx c`; the absorber is `absorber4` below: the
+previous region / idle run carrying the shifted pin with the same letters. -/
+
+section GapShift
+
+/-- The fixture threshold, computed from the cascade above: `0`. -/
+def T₀ : ℕ := 0
+/-- The fixed gap inside the clip. -/
+def g₀ : ℕ := 1
+
+/-- `p S (ℓ 0 ∧ Y ¬p)`: the region start's letter is `ℓ 0`. -/
+abbrev S1raw : PlusFormula := .snce (.atom pA) (andF (.atom (lA 0)) (.snce .bot negp))
+/-- `p S (¬p ∧ Y p)`: the previous idle run has length exactly `1`. -/
+abbrev S2raw : PlusFormula := .snce (.atom pA) (andF negp (.snce .bot (.atom pA)))
+/-- `p ∧ ℓ j`. -/
+abbrev B3raw (j : Fin 4) : PlusFormula := andF (.atom pA) (.atom (lA j))
+/-- `p U (¬p ∧ X (p ∧ ℓ j))`: the next region starts at once, at letter `ℓ j`. -/
+abbrev U1raw (j : Fin 4) : PlusFormula := .untl (.atom pA) (andF negp (.untl .bot (B3raw j)))
+abbrev chiRaw (j : Fin 4) : PlusFormula := andF S1raw (andF S2raw (U1raw j))
+
+/-- The gap-shift closure, with `j` the current region's end residue (`idx c`). -/
+def chi (j : Fin 4) : PlusFormula :=
+  (PlusFormula.snce p ((ℓ 0).and (Y p.neg))).and
+    ((PlusFormula.snce p (p.neg.and (Y p))).and (PlusFormula.untl p (p.neg.and (X (p.and (ℓ j))))))
+
+theorem chi_eq_raw (j : Fin 4) : chi j = chiRaw j := rfl
+
+/-! ### The backward structure of a path: a region start, or pending forever -/
+
+/-- The current region started `s₀` steps ago: positions `-s₀ .. 0` pending, `-(s₀+1)` idle. -/
+def StartAt (g : ℤ → LadderState Q4 pend4) (s₀ : ℕ) : Prop :=
+  (∀ t : ℕ, t ≤ s₀ → (g (-(t : ℤ))).1.1.1 = true) ∧ (g (-((s₀ : ℤ) + 1))).1.1.1 = false
+
+theorem startAt_unique {g : ℤ → LadderState Q4 pend4} {s₀ s₁ : ℕ} (h₀ : StartAt g s₀)
+    (h₁ : StartAt g s₁) : s₀ = s₁ := by
+  by_contra hne
+  rcases Nat.lt_or_gt_of_ne hne with hlt | hgt
+  · have := h₁.1 (s₀ + 1) (by omega)
+    rw [Nat.cast_succ] at this
+    rw [h₀.2] at this
+    exact Bool.noConfusion this
+  · have := h₀.1 (s₁ + 1) (by omega)
+    rw [Nat.cast_succ] at this
+    rw [h₁.2] at this
+    exact Bool.noConfusion this
+
+/-- Either some position `≤ 0` is idle (and then the region containing `0` has a start), or the
+past is pending forever. -/
+theorem startAt_or_forever (g : ℤ → LadderState Q4 pend4) (h0 : (g 0).1.1.1 = true) :
+    (∃ s₀, StartAt g s₀) ∨ ∀ t : ℕ, (g (-(t : ℤ))).1.1.1 = true := by
+  by_cases h : ∃ t : ℕ, (g (-(t : ℤ))).1.1.1 = false
+  · left
+    classical
+    let t₁ := Nat.find h
+    have ht₁ : (g (-(t₁ : ℤ))).1.1.1 = false := Nat.find_spec h
+    have hmin : ∀ t, t < t₁ → (g (-(t : ℤ))).1.1.1 = true := by
+      intro t ht
+      have := Nat.find_min h ht
+      cases hb : (g (-(t : ℤ))).1.1.1 with
+      | true => rfl
+      | false => exact absurd hb this
+    have h1 : 1 ≤ t₁ := by
+      by_contra hlt
+      have : t₁ = 0 := by omega
+      rw [this] at ht₁
+      simp only [Nat.cast_zero, neg_zero] at ht₁
+      rw [h0] at ht₁
+      exact Bool.noConfusion ht₁
+    refine ⟨t₁ - 1, fun t ht => hmin t (by omega), ?_⟩
+    rw [show ((t₁ - 1 : ℕ) : ℤ) + 1 = (t₁ : ℤ) by omega]
+    exact ht₁
+  · right
+    intro t
+    push Not at h
+    cases hb : (g (-(t : ℤ))).1.1.1 with
+    | true => rfl
+    | false => exact absurd hb (h t)
+
+section Back4
+variable {g : ℤ → LadderState Q4 pend4}
+  (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+include hg
+
+/-- Along a backward pending run from index `0` at `0`, position `-t` has index `-(idx t)`. -/
+theorem back_index (h0 : (g 0).1.1 = (true, 0)) (s₀ : ℕ)
+    (hp : ∀ t : ℕ, t ≤ s₀ → (g (-(t : ℤ))).1.1.1 = true) :
+    ∀ t : ℕ, t ≤ s₀ → (g (-(t : ℤ))).1.1.2 = -(idx t) := by
+  intro t
+  induction t with
+  | zero =>
+    intro _
+    simp only [Nat.cast_zero, neg_zero, idx_zero]
+    rw [h0]
+  | succ t ih =>
+    intro ht
+    have hi := ih (by omega)
+    obtain ⟨hs, -, -, -⟩ := (rlad4_iff _ _ _).mp (hg (-((t + 1 : ℕ) : ℤ)))
+    rw [show -((t + 1 : ℕ) : ℤ) + 1 = -(t : ℤ) by push_cast; ring] at hs
+    have hq1 : (g (-((t + 1 : ℕ) : ℤ))).1.1 = (true, (g (-((t + 1 : ℕ) : ℤ))).1.1.2) :=
+      Prod.ext (hp (t + 1) ht) rfl
+    have hq0 : (g (-(t : ℤ))).1.1 = (true, -(idx t)) :=
+      Prod.ext (hp t (by omega)) hi
+    rw [hq1, hq0] at hs
+    have := (step4_pend_iff _ _).mp hs
+    rw [idx_succ]
+    revert this
+    generalize (g (-((t + 1 : ℕ) : ℤ))).1.1.2 = a
+    generalize idx t = b
+    revert a b
+    decide
+
+/-- A pending state followed by an idle one hands over its index. -/
+theorem pend_idle_index (t : ℤ) (hp : (g t).1.1.1 = true) (hi : (g (t + 1)).1.1.1 = false) :
+    (g (t + 1)).1.1.2 = (g t).1.1.2 := by
+  obtain ⟨hs, -, -, -⟩ := (rlad4_iff _ _ _).mp (hg t)
+  have hq0 : (g t).1.1 = (true, (g t).1.1.2) := Prod.ext hp rfl
+  have hq1 : (g (t + 1)).1.1 = (false, (g (t + 1)).1.1.2) := Prod.ext hi rfl
+  rw [hq0, hq1] at hs
+  exact (step4_pi_iff _ _).mp hs
+
+/-- Any state followed by an idle state hands over its index. -/
+theorem index_of_next_idle (t : ℤ) (hi : (g (t + 1)).1.1.1 = false) :
+    (g (t + 1)).1.1.2 = (g t).1.1.2 := by
+  cases hb : (g t).1.1.1 with
+  | true => exact pend_idle_index hg t hb hi
+  | false => exact idle_run4 hg t hb
+
+end Back4
+
+/-! ### The witness family: a region start `s₀` steps back, the previous idle run of length `1`
+(`pp = true`, the previous region pending forever) or longer (`pp = false`, idle forever), the
+forced region, an idle run of length `j`, a region of countdown `n`, idle forever -/
+
+/-- The past ray: `k ↦` the state at time `-(k+1)`. -/
+def past7 (c n s₀ : ℕ) (pp : Bool) (k : ℕ) : Q4 × ℕ × ℕ :=
+  if k < s₀ then ((true, 0 - idx (k + 1)), c + k + 1, toward (c + s₀) n (s₀ - k))
+  else if k = s₀ then ((false, 0 - idx s₀), 0, c + s₀)
+  else if pp then ((true, 0 - idx s₀ - idx (k - s₀ - 1)), k - s₀ - 1, c + s₀)
+  else ((false, 0 - idx s₀), 0, c + s₀)
+
+theorem step4_sub_succ : ∀ a b : Fin 4, step4 (true, a - (b + 1)) (true, a - b) = true := by
+  decide
+
+/-! The four evaluations of `past7`: inside the current region, at its start, and before it —
+the unpinned previous region (`pp = true`) or the idle-forever run (`pp = false`). -/
+
+theorem past7_in (c n s₀ : ℕ) (pp : Bool) (k : ℕ) (h : k < s₀) :
+    past7 c n s₀ pp k = ((true, 0 - idx (k + 1)), c + k + 1, toward (c + s₀) n (s₀ - k)) := by
+  rw [past7, if_pos h]
+
+theorem past7_start (c n s₀ : ℕ) (pp : Bool) :
+    past7 c n s₀ pp s₀ = ((false, 0 - idx s₀), 0, c + s₀) := by
+  rw [past7, if_neg (lt_irrefl s₀), if_pos (rfl : s₀ = s₀)]
+
+theorem past7_deep_true (c n s₀ k : ℕ) (h : s₀ < k) :
+    past7 c n s₀ true k = ((true, 0 - idx s₀ - idx (k - s₀ - 1)), k - s₀ - 1, c + s₀) := by
+  rw [past7, if_neg (by omega : ¬ k < s₀), if_neg (by omega : ¬ k = s₀),
+    if_pos (rfl : true = true)]
+
+theorem past7_deep_false (c n s₀ k : ℕ) (h : s₀ < k) :
+    past7 c n s₀ false k = ((false, 0 - idx s₀), 0, c + s₀) := by
+  rw [past7, if_neg (by omega : ¬ k < s₀), if_neg (by omega : ¬ k = s₀),
+    if_neg (by decide : ¬ (false = true))]
+
+/-- **The absorber**: the past ray is an `Rlad` ray for EVERY `c` with the same `s₀`, letters
+and idle-run shape — the shifted pin `c + s₀` is carried by the unpinned previous region
+(`pp = true`, pending forever) or the idle-forever run (`pp = false`), whose deadline is
+unconstrained. -/
+theorem absorber4 (c n s₀ : ℕ) (pp : Bool) (hw1 : c + s₀ ≤ n + s₀ + 1)
+    (hw2 : n ≤ c + s₀ + s₀ + 1) :
+    ∀ k, Rlad step4 pend4 0 (past7 c n s₀ pp (k + 1)) (past7 c n s₀ pp k) := by
+  intro k
+  rw [rlad4_iff]
+  rcases Nat.lt_or_ge (k + 1) s₀ with hlt | hge
+  · -- pending to pending inside the current region
+    rw [past7_in c n s₀ pp (k + 1) hlt, past7_in c n s₀ pp k (by omega)]
+    dsimp only
+    refine ⟨?_, by simp, ?_, ?_⟩
+    · rw [idx_succ (k + 1)]
+      exact step4_sub_succ _ _
+    · rw [show s₀ - k = s₀ - (k + 1) + 1 by omega]
+      exact toward_drift _ _ _
+    · simp only [Count, if_true]
+      omega
+  rcases Nat.eq_or_lt_of_le hge with heq | hgt
+  · -- the region start: the idle state hands its deadline to the countdown
+    subst heq
+    rw [past7_start c n (k + 1) pp, past7_in c n (k + 1) pp k (by omega)]
+    dsimp only
+    refine ⟨step4_idle_start _, by simp, ?_, ?_⟩
+    · rw [show k + 1 - k = 1 by omega]
+      unfold toward Drift
+      split_ifs <;> omega
+    · simp only [Count, Bool.false_eq_true, if_true, if_false]
+      omega
+  · -- before the region start
+    rcases Nat.eq_or_lt_of_le (show s₀ ≤ k by omega) with heq | hlt'
+    · -- the previous idle run's last state steps to the region start's idle state
+      have hy : past7 c n s₀ pp k = ((false, 0 - idx s₀), 0, c + s₀) := by
+        rw [← heq]
+        exact past7_start c n s₀ pp
+      cases pp with
+      | true =>
+        rw [past7_deep_true c n s₀ (k + 1) hgt, hy, show k + 1 - s₀ - 1 = 0 by omega, idx_zero,
+          sub_zero]
+        dsimp only
+        exact ⟨step4_pend_idle _, by simp, by simp [Drift], by simp [Count]⟩
+      | false =>
+        rw [past7_deep_false c n s₀ (k + 1) hgt, hy]
+        dsimp only
+        exact ⟨step4_idle_self _, by simp, by simp [Drift], by simp [Count]⟩
+    · -- deeper in the past: both states inside the unpinned previous region, or both idle
+      cases pp with
+      | true =>
+        rw [past7_deep_true c n s₀ (k + 1) (by omega), past7_deep_true c n s₀ k hlt']
+        dsimp only
+        refine ⟨?_, by simp, by simp [Drift], ?_⟩
+        · rw [show k + 1 - s₀ - 1 = (k - s₀ - 1) + 1 by omega, idx_succ]
+          exact step4_sub_succ _ _
+        · simp only [Count, if_true]
+          omega
+      | false =>
+        rw [past7_deep_false c n s₀ (k + 1) (by omega), past7_deep_false c n s₀ k hlt']
+        dsimp only
+        exact ⟨step4_idle_self _, by simp, by simp [Drift], by simp [Count]⟩
+
+/-- The junction: the last past state steps to `(true, 0), c, n`. -/
+theorem past7_junction (c n s₀ : ℕ) (pp : Bool) (hw1 : c + s₀ ≤ n + s₀ + 1)
+    (hw2 : n ≤ c + s₀ + s₀ + 1) :
+    Rlad step4 pend4 0 (past7 c n s₀ pp 0) ((true, 0), c, n) := by
+  rw [rlad4_iff]
+  rcases Nat.eq_zero_or_pos s₀ with h0 | hpos
+  · subst h0
+    simp only [past7, show ¬ (0 < 0) by omega, if_false, if_true, idx_zero, sub_zero, add_zero]
+    refine ⟨step4_idle_start _, by simp, ?_, by simp [Count]⟩
+    simp only [Drift]
+    omega
+  · simp only [past7, hpos, if_true, Nat.sub_zero, add_zero]
+    refine ⟨?_, fun h => by simp at h, ?_, by simp [Count]⟩
+    · have h1 : idx (0 + 1) = 1 := by decide
+      rw [h1]
+      exact step4_pend_prev 0
+    · have := toward_drift (c + s₀) n s₀
+      rwa [toward_eq (c + s₀) n (s₀ + 1) (by omega) (by omega)] at this
+
+/-- The whole witness: the past ray, then from `(true, 0), c, n` the forced region, an idle run
+of length `j`, a region of countdown `n`, idle forever. -/
+def wit7 (c n s₀ : ℕ) (pp : Bool) (j : ℕ) : ℤ → Q4 × ℕ × ℕ :=
+  twoRay (past7 c n s₀ pp) (region4 0 c n j n)
+
+theorem wit7_rlad (c n s₀ : ℕ) (pp : Bool) (j : ℕ) (hj : 1 ≤ j) (hw1 : c + s₀ ≤ n + s₀ + 1)
+    (hw2 : n ≤ c + s₀ + s₀ + 1) :
+    ∀ t, Rlad step4 pend4 t (wit7 c n s₀ pp j t) (wit7 c n s₀ pp j (t + 1)) :=
+  twoRay_rlad _ _ (absorber4 c n s₀ pp hw1 hw2)
+    (by rw [region4_zero]; exact past7_junction c n s₀ pp hw1 hw2)
+    (region4_rlad 0 c n j n hj (by omega) (by omega))
+
+theorem wit7_zero (c n s₀ : ℕ) (pp : Bool) (j : ℕ) : wit7 c n s₀ pp j 0 = ((true, 0), c, n) := by
+  rw [wit7, show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, twoRay_nat, region4_zero]
+
+theorem wit7_neg (c n s₀ : ℕ) (pp : Bool) (j m : ℕ) :
+    wit7 c n s₀ pp j (-((m : ℤ) + 1)) = past7 c n s₀ pp m := twoRay_neg _ _ m
+
+theorem wit7_nat (c n s₀ : ℕ) (pp : Bool) (j m : ℕ) :
+    wit7 c n s₀ pp j (m : ℤ) = region4 0 c n j n m := twoRay_nat _ _ m
+
+/-- The witness has its region start exactly `s₀` steps back. -/
+theorem wit7_startAt (c n s₀ : ℕ) (pp : Bool) (j : ℕ)
+    (h : ∀ t, Rlad step4 pend4 t (wit7 c n s₀ pp j t) (wit7 c n s₀ pp j (t + 1))) :
+    StartAt (liftAdm (wit7 c n s₀ pp j) h) s₀ := by
+  refine ⟨?_, ?_⟩
+  · intro t ht
+    rw [liftAdm_val]
+    rcases Nat.eq_zero_or_pos t with h0 | hpos
+    · subst h0
+      simp only [Nat.cast_zero, neg_zero, wit7_zero]
+    · rw [show -(t : ℤ) = -(((t - 1 : ℕ) : ℤ) + 1) by omega, wit7_neg]
+      simp [past7, show t - 1 < s₀ by omega]
+  · rw [liftAdm_val, wit7_neg]
+    simp [past7]
+
+/-- The witness's previous idle run has length `1` iff `pp`. -/
+theorem wit7_prev (c n s₀ : ℕ) (pp : Bool) (j : ℕ)
+    (h : ∀ t, Rlad step4 pend4 t (wit7 c n s₀ pp j t) (wit7 c n s₀ pp j (t + 1))) :
+    (liftAdm (wit7 c n s₀ pp j) h (-((s₀ : ℤ) + 2))).1.1.1 = pp := by
+  rw [liftAdm_val, show -((s₀ : ℤ) + 2) = -(((s₀ + 1 : ℕ) : ℤ) + 1) by push_cast; ring, wit7_neg]
+  cases pp <;> simp [past7]
+
+/-- The witness's next region starts at once iff `j = 1` (for `j ∈ {1, 2}`). -/
+theorem wit7_next (c n s₀ : ℕ) (pp : Bool) (j : ℕ) (hj : j = 1 ∨ j = 2)
+    (h : ∀ t, Rlad step4 pend4 t (wit7 c n s₀ pp j t) (wit7 c n s₀ pp j (t + 1))) :
+    (liftAdm (wit7 c n s₀ pp j) h ((c : ℤ) + 2)).1.1.1 = decide (j = 1) := by
+  rw [liftAdm_val, show (c : ℤ) + 2 = ((c + 2 : ℕ) : ℤ) by push_cast; ring, wit7_nat]
+  rcases hj with rfl | rfl
+  · rw [region4_pend₂ 0 c n 1 n (c + 2) (by omega) (by omega)]
+    simp
+  · rw [region4_idle₁ 0 c n 2 n (c + 2) (by omega) (by omega)]
+    simp
+
+end GapShift
+
 end Probe820
 
 /-! ## Axiom check -/
