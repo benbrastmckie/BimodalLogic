@@ -1,7 +1,7 @@
 # Implementation Plan: Task #819
 
 - **Task**: 819 - Research-first: choose the presentation of a ladder cell that supports a positive factorization lemma, or settle the direction negatively
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None in state (`dependencies: []`). Context: 761 (parent; stays `[BLOCKED]`; this task edits its record and its dependency edges, never its plan), 806/809/815 (the set-valued rounds; untouched), 763 (the lift; untouched)
 - **Research Inputs**: specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md
@@ -193,7 +193,7 @@ Phases within the same wave can execute in parallel. Phases 2, 4 and 5 touch dis
 what Phase 1 landed; Phase 3 needs the successor's task number from Phase 2 for the roadmap lines;
 Phase 6 observes all of them.
 
-### Phase 1: Promote the No-Pending-Forever Prototype to a Wired Evidence Probe [NOT STARTED]
+### Phase 1: Promote the No-Pending-Forever Prototype to a Wired Evidence Probe [COMPLETED]
 
 **Goal**: Move `prototype/no-pending-forever-ray.lean` into the evidence collection, rewrite its
 header to the collection's probe convention, add the three `#print axioms` lines the collection
@@ -201,14 +201,14 @@ keeps, register it in `scripts/check-evidence-probes.sh`, and confirm the guard 
 its new, tracked path — so the region-interior finding is held in place by the rot guard.
 
 **Tasks**:
-- [ ] `git mv specs/819_ladder_cell_presentation_design_decision/prototype/no-pending-forever-ray.lean specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean` (the `prototype/` directory becomes empty and disappears; do not recreate it).
-- [ ] Rewrite the header block only (nothing at or below `import`): a one-paragraph capitalised verdict line (NO FORWARD `Rlad` RAY IS PENDING FOREVER; hence every `Realizes`-chain of the certificate rounds is region-interior and is the object projection of no `Rlad` history), then `## What was asked` (the presentation decision's need to know whether the certified realizability of record is ladder realizability), `## What is settled` (the three theorems, each named with its statement in one line and its axiom profile: `count_pending_step` `[propext]`; the other two `[propext, Quot.sound]`), `## What this does NOT say` (not a factorization lemma, a cell index, a `LadderCons`, a `ladderRealized`, or any part of one; no declaration mentions `cellAt`, `HitPresented`, `PlusValidZTime`; nothing about the backward direction — `gPast_isPath` stands; `c₀ + 1` is a count of steps and nothing else; the composition of regions across idle runs under `Count`/`Drift` is the successor's obligation, not discharged here), and the `Compile:` line updated to the new path. Keep the existing docstrings on the three theorems.
-- [ ] Append, after `end Probe819`, three lines: `#print axioms Probe819.count_pending_step`, `#print axioms Probe819.exists_idle_of_rlad_ray`, `#print axioms Probe819.no_rlad_ray_of_pending_forever`.
-- [ ] In `scripts/check-evidence-probes.sh`, add a boxed decision-row comment block directly below the `certificate-sufficiency-dovetailing` block (same `# <path> | <decision>` column layout, wrapped at the same width), naming the three theorems; the decision it holds in place — the certified chains of record are REGION-INTERIOR (both `coh` endpoints pending), so label-level sufficiency transfers to a region segment and never to a ladder history, and the ladder datum must compose regions through idle runs under `Count`/`Drift` (the counter-lift lemma, named as the open problem); the presentation decision it accompanies (set-valued datum over `Q × ClType φ × K`; no tuple index); what it withholds (no `cellAt`, no `LadderCons`/`ladderRealized`, no bound, every quantity a count, no finiteness added, no gate verdict changed); the axiom profile.
-- [ ] Add `"seam-gluing-ray-product/no-pending-forever-ray"` as the last entry of the `WIRED` array (after `certificate-sufficiency-dovetailing`).
-- [ ] `bash -n scripts/check-evidence-probes.sh`; compile the moved file through the guard.
-- [ ] Record on the issue log anything that arose, or attest in the phase notes that nothing did.
-- [ ] Commit the move, the header, the axiom lines and the registration as one green sub-step via `bash .claude/scripts/git-commit-scoped.sh` (explicit file list: the moved file, the removed prototype path, `scripts/check-evidence-probes.sh`).
+- [x] `git mv specs/819_ladder_cell_presentation_design_decision/prototype/no-pending-forever-ray.lean specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean` (the `prototype/` directory becomes empty and disappears; do not recreate it).
+- [x] Rewrite the header block only (nothing at or below `import`): a one-paragraph capitalised verdict line (NO FORWARD `Rlad` RAY IS PENDING FOREVER; hence every `Realizes`-chain of the certificate rounds is region-interior and is the object projection of no `Rlad` history), then `## What was asked` (the presentation decision's need to know whether the certified realizability of record is ladder realizability), `## What is settled` (the three theorems, each named with its statement in one line and its axiom profile: `count_pending_step` `[propext]`; the other two `[propext, Quot.sound]`), `## What this does NOT say` (not a factorization lemma, a cell index, a `LadderCons`, a `ladderRealized`, or any part of one; no declaration mentions `cellAt`, `HitPresented`, `PlusValidZTime`; nothing about the backward direction — `gPast_isPath` stands; `c₀ + 1` is a count of steps and nothing else; the composition of regions across idle runs under `Count`/`Drift` is the successor's obligation, not discharged here), and the `Compile:` line updated to the new path. Keep the existing docstrings on the three theorems.
+- [x] Append, after `end Probe819`, three lines: `#print axioms Probe819.count_pending_step`, `#print axioms Probe819.exists_idle_of_rlad_ray`, `#print axioms Probe819.no_rlad_ray_of_pending_forever`.
+- [x] In `scripts/check-evidence-probes.sh`, add a boxed decision-row comment block directly below the `certificate-sufficiency-dovetailing` block (same `# <path> | <decision>` column layout, wrapped at the same width), naming the three theorems; the decision it holds in place — the certified chains of record are REGION-INTERIOR (both `coh` endpoints pending), so label-level sufficiency transfers to a region segment and never to a ladder history, and the ladder datum must compose regions through idle runs under `Count`/`Drift` (the counter-lift lemma, named as the open problem); the presentation decision it accompanies (set-valued datum over `Q × ClType φ × K`; no tuple index); what it withholds (no `cellAt`, no `LadderCons`/`ladderRealized`, no bound, every quantity a count, no finiteness added, no gate verdict changed); the axiom profile.
+- [x] Add `"seam-gluing-ray-product/no-pending-forever-ray"` as the last entry of the `WIRED` array (after `certificate-sufficiency-dovetailing`).
+- [x] `bash -n scripts/check-evidence-probes.sh`; compile the moved file through the guard.
+- [x] Record on the issue log anything that arose, or attest in the phase notes that nothing did.
+- [x] Commit the move, the header, the axiom lines and the registration as one green sub-step via `bash .claude/scripts/git-commit-scoped.sh` (explicit file list: the moved file, the removed prototype path, `scripts/check-evidence-probes.sh`).
 
 **Timing**: 1 hour
 

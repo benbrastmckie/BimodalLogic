@@ -1420,6 +1420,51 @@ EVIDENCE="specs/evidence"
 #                                                           | changed, gate 8 still SIDESTEPPED. Axioms
 #                                                           | `[propext, Classical.choice, Quot.sound]` on all
 #                                                           | seventeen printed theorems.
+# seam-gluing-ray-product/no-pending-forever-ray | REGION-INTERIOR (the certified chains of
+#                                                           | record): no forward `Rlad` ray is pending
+#                                                           | forever -- `Count true true` forces `c' + 1 = c`
+#                                                           | along every pending step (`count_pending_step`),
+#                                                           | so from countdown `c₀` an idle state is reached
+#                                                           | within `c₀ + 1` steps
+#                                                           | (`exists_idle_of_rlad_ray`) and an object walk
+#                                                           | pending at every forward position is the object
+#                                                           | projection of NO `Rlad` history
+#                                                           | (`no_rlad_ray_of_pending_forever`). The decision
+#                                                           | it holds in place: `coh`/`cohBi` of the
+#                                                           | countdown-profile and certificate probes require
+#                                                           | `pend` at BOTH endpoints, so every certified
+#                                                           | `Realizes`-chain is an all-pending bi-infinite
+#                                                           | walk and `realizes_of_certAdm_cohBi` is
+#                                                           | label-level sufficiency for the INTERIOR of one
+#                                                           | region -- it transfers to the region segments of
+#                                                           | a ladder history and never to a ladder history
+#                                                           | itself; the ladder datum must compose regions
+#                                                           | through idle runs under `Count`/`Drift` (the two
+#                                                           | `pend` conjuncts replaced by `Count`/`Drift`
+#                                                           | clauses on the counter classes), which is the
+#                                                           | COUNTER-LIFT LEMMA, named as the open problem
+#                                                           | and proved nowhere. The presentation decision it
+#                                                           | accompanies: the cell presentation is a
+#                                                           | SET-VALUED per-state datum `D`, the maximum
+#                                                           | `certAdm`-certified subset of the carrier `Q ×
+#                                                           | ClType φ × K`, with the realization theorem the
+#                                                           | fibre equation and the factorization lemma for
+#                                                           | `K` its corollary; `K` is a carrier coordinate
+#                                                           | whose parameters are outputs of that lemma, and
+#                                                           | NO tuple index is stated at any parameters. What
+#                                                           | it withholds: no `cellAt`, `HitPresented` or
+#                                                           | `PlusValidZTime` in any declaration; no
+#                                                           | `LadderCons`/`ladderRealized` in any form;
+#                                                           | nothing about the backward direction
+#                                                           | (`gPast_isPath` stands); no bound of any kind,
+#                                                           | every quantity a count (`c₀ + 1` is a count of
+#                                                           | steps); no finiteness added
+#                                                           | (`anchorCells_finite`, `anchorCells_ncard_le`
+#                                                           | untouched); no gate verdict changed, gate 8
+#                                                           | still SIDESTEPPED. Axioms `[propext]` on
+#                                                           | `count_pending_step`, `[propext, Quot.sound]` on
+#                                                           | `exists_idle_of_rlad_ray` and
+#                                                           | `no_rlad_ray_of_pending_forever`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1461,6 +1506,7 @@ WIRED=(
   "seam-gluing-ray-product/realizable-type-certificate"
   "seam-gluing-ray-product/backward-determinism-forcing-formula"
   "seam-gluing-ray-product/certificate-sufficiency-dovetailing"
+  "seam-gluing-ray-product/no-pending-forever-ray"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
