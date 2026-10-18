@@ -53,8 +53,10 @@ what an atom-level `TruthAntiIso` does.
   frame's regularity
 * `FormalSystem/Semantics/TruthTransport.lean` — `TruthAntiIso`, `truthAt_of_truthAntiIso`
 * `FormalSystem/Semantics/Validity.lean` — the validity-level consequence (`thm:TR-valid`)
-* `FormalSystem/Semantics/Presheaf/` — the categorical packaging of the same involution, as the
-  Reflection clause on the frame presheaf; independent of this module
+* `FormalSystem/Semantics/Presheaf/Reflection.lean` — the categorical packaging of the same
+  involution, as the *Reflection* clause on the behavior presheaf: the natural isomorphism
+  `Beh(F) ≅ Beh(F⁻) ∘ ref`, with `Beh.reflectEquiv` as its component bijection; independent of
+  this module
 
 ## Tags
 

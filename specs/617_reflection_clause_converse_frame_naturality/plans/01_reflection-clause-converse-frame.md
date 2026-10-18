@@ -244,7 +244,7 @@ still unimported, so nothing outside it can break.
 
 ---
 
-### Phase 3: Wiring, records, and the full gate [NOT STARTED]
+### Phase 3: Wiring, records, and the full gate [COMPLETED]
 
 **Goal**: Make the module part of the cluster and the record of the paper: the aggregator import
 and module bullet, the README inventory row and prose, the paper-definitions-of-record rows, the
@@ -252,13 +252,13 @@ cross-pointer in `Semantics/Reversal.lean`, then the complete gate set and a gre
 `lake build FormalSystem`.
 
 **Tasks**:
-- [ ] **Aggregator (shared touch — handle last among the edits, per the task's SCOPE AND
+- [x] **Aggregator (shared touch — handle last among the edits, per the task's SCOPE AND
       AGGREGATOR CONTENTION note)**: re-read `FormalSystem/Semantics/Presheaf.lean` immediately
       beforehand; add `import FormalSystem.Semantics.Presheaf.Reflection` in alphabetical position
       and a `- \`Presheaf.Reflection\` — ...` bullet to its `## Modules` list; check `git log -1 --
       FormalSystem/Semantics/Presheaf.lean` and `git status --short` for a foreign in-flight edit
       first and STOP and report if one is found
-- [ ] `FormalSystem/Semantics/Presheaf/README.md`: add a prose paragraph on the *Reflection*
+- [x] `FormalSystem/Semantics/Presheaf/README.md`: add a prose paragraph on the *Reflection*
       clause (what it says, that it is constraint-free and why, that it is the categorical
       packaging of the involution behind `TR`, and that it consumes the converse frame of
       `Semantics/TaskFrame.lean`); update the "Four clauses ... are discharged here" count and the
@@ -266,7 +266,7 @@ cross-pointer in `Semantics/Reversal.lean`, then the complete gate set and a gre
       `## Key Definitions`; regenerate the inventory table with
       `bash scripts/check-module-invariants.sh --emit-inventory` (after `--emit-inventory --check`
       to see the delta)
-- [ ] `docs/reference/paper-definitions-of-record.md`: extend the `app:presheaf-dictionary`
+- [x] `docs/reference/paper-definitions-of-record.md`: extend the `app:presheaf-dictionary`
       `DANGLING` row with the *Reflection* clause's formalization (`Tr.ref` and its laws,
       `Beh.reflectSec`, `Beh.reflect_natural`, `Beh.reflectEquiv` in
       `FormalSystem/Semantics/Presheaf/Reflection.lean`, consuming `FrameOver.rev` of
@@ -274,12 +274,12 @@ cross-pointer in `Semantics/Reversal.lean`, then the complete gate set and a gre
       *Converse Frame* and *Reflection Automorphism* clauses now formalized; update the citation-site
       count ("All six citation sites" becomes seven) — hand edit, no re-pin, the anchors remain
       unpinnable
-- [ ] `FormalSystem/Semantics/Reversal.lean`: tighten the `## References` bullet that currently
+- [x] `FormalSystem/Semantics/Reversal.lean`: tighten the `## References` bullet that currently
       points at `FormalSystem/Semantics/Presheaf/` generically so it names
       `Presheaf/Reflection.lean` and `Beh.reflectEquiv`
-- [ ] Record the issue log as events arise; attest explicitly if nothing arose
-- [ ] Run the complete gate set (below); fix forward on any failure — never discard uncommitted
-      work to reach green
+- [x] Record the issue log as events arise; attest explicitly if nothing arose
+- [x] Run the complete gate set (below); fix forward on any failure — never discard uncommitted
+      work to reach green *(deviation: altered — `check-paper-definitions.sh` exits 1 on 9 PINNED definitions drifted by the external paper (pre-existing; identical against the HEAD record; this task pins nothing and leaves the cut anchors `DANGLING`); `verify-deploy.sh` run as `--only-gate 4` per the dispatch's Batch Gate Deferral directive, the full set deferred to the batch stage; two unplanned shared touches were needed to pass the pre-commit gate and C24: the `import FormalSystem.Semantics.Presheaf.Reflection` line in the library root `FormalSystem.lean`, and `typst/generated/status.typ` regenerated via `typst-sync-check.sh --fix`, plus `FormalSystem/README.md` and `FormalSystem/Semantics/README.md` count/list lines)*
 
 **Timing**: 1.5 hours
 
@@ -365,17 +365,17 @@ end FormalSystem.Semantics.Presheaf
 
 ## Testing & Validation
 
-- [ ] Phases 1-2: guarded scoped build of `FormalSystem.Semantics.Presheaf.Reflection` green, no
+- [x] Phases 1-2: guarded scoped build of `FormalSystem.Semantics.Presheaf.Reflection` green, no
       sorry, `assert_not_exists` lock passes
-- [ ] Phase 2: `#print axioms` on `Beh.reflect_natural`, `Beh.reflect_reflect`,
+- [x] Phase 2: `#print axioms` on `Beh.reflect_natural`, `Beh.reflect_reflect`,
       `Beh.reflectEquiv`, `Tr.ref_ref`, `Tr.ref_comp` each `[propext, Quot.sound]`
-- [ ] Phase 3: `lake build FormalSystem` green through the guard; `check-module-invariants.sh`,
-      `check-paper-definitions.sh`, `verify-deploy.sh` all exit 0
-- [ ] The `**Goals**:` identifier list and the `## Lean Challenge Statements` declaration set are
+- [x] Phase 3: `lake build FormalSystem` green through the guard; `check-module-invariants.sh`,
+      `check-paper-definitions.sh`, `verify-deploy.sh` all exit 0 *(deviation: altered — `check-paper-definitions.sh` exit 1 is pre-existing external paper drift on pinned rows, not this task's; `verify-deploy.sh --only-gate 4` per the batch deferral)*
+- [x] The `**Goals**:` identifier list and the `## Lean Challenge Statements` declaration set are
       identical (twelve identifiers)
-- [ ] No duplicate converse frame: `grep -rn "def .*rev\b\|converse" FormalSystem/Semantics/Presheaf/Reflection.lean`
+- [x] No duplicate converse frame: `grep -rn "def .*rev\b\|converse" FormalSystem/Semantics/Presheaf/Reflection.lean`
       shows no new frame construction, only consumption of `FrameOver.rev` / `TaskFrame.rev`
-- [ ] No task-number reference in any file outside `specs/**`
+- [x] No task-number reference in any file outside `specs/**`
 
 ## Artifacts & Outputs
 

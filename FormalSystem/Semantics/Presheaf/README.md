@@ -6,14 +6,15 @@ histories, packaged as a presheaf on the durations rather than treated one domai
 The objects of `Int(D)` are the durations — the positive cone of a temporal order — and its
 morphisms `l' → l` are the **translations** `Tr p`, one for each offset `p` with `p + l' ≤ l`.
 `Beh(F)(l)` is the set of partial histories whose domain is exactly `[0, l]`, and restriction
-along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Four of the eight modules are built on
-`Semantics/PartialHistory.lean` alone, and `Presheaf/Duration.lean` on `Presheaf/Site.lean` alone;
+along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Five of the nine modules are built on
+`Semantics/PartialHistory.lean` alone (`Presheaf/Reflection.lean` adding only the tactic import
+`Mathlib.Tactic.Abel`), and `Presheaf/Duration.lean` on `Presheaf/Site.lean` alone;
 `Presheaf/Directed.lean` and `Presheaf/Worlds.lean`
 additionally import the `Semantics/Extension/` cluster — the former because the two clauses it
 discharges are wrappers on `thm:extension`, the latter for `PartialHistory.hF_nonempty` alone,
 which only its nonemptiness tail consumes — and `Presheaf/Determinism.lean` additionally imports
 `Semantics/FrameProperty.lean` for `TaskFrame.Deterministic` alone. The cluster sits strictly
-**below** `Semantics/Truth.lean` regardless: all eight modules close with `assert_not_exists` on the
+**below** `Semantics/Truth.lean` regardless: all nine modules close with `assert_not_exists` on the
 proof system, so the layering is locked rather than merely observed.
 
 `Presheaf/Duration.lean` is the categorical description of the site itself rather than of the
@@ -31,7 +32,7 @@ encoding decision for the whole cluster — concrete structures, no `Mathlib.Cat
 reconciled with `Site.lean`'s note in `Duration.lean`'s Implementation Notes, which state the
 trade-off and name the path-category work as the point at which it should be weighed again.
 
-Five clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
+Six clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
 the zero duration with the world states (`Beh.germEquiv`), and *Sheaf* glues two sections
 agreeing at a seam into a unique section over the joined interval (`sheaf_clause`, and
 `sheaf_clause_site` in the site's own vocabulary). The gluing argument itself is not local to this
@@ -45,6 +46,24 @@ possible worlds with the limit of the presheaf along the central restrictions `T
 compatibility in the site's vocabulary as `Lim.compat_site`), and the limit is nonempty
 (`lim_nonempty`); `Presheaf/Worlds.lean` presents the limit concretely as the families `Lim F`,
 and the fourth recorded verdict below is that the isomorphism is choice-free.
+
+*Reflection* is the one clause that says something about the **logic** rather than restating the
+semantics. It states that reflection is a natural isomorphism `Beh(F) ≅ Beh(F⁻) ∘ ref` between the
+behavior presheaf of a frame and that of its **converse frame** `F⁻`, precomposed with the
+reflection automorphism `ref` of the site (`Tr p : l' → l ↦ Tr (l − p − l') : l' → l`, an
+involution fixing objects and identities, preserving composition covariantly, and interchanging
+`lres` with `rres`). A section is reflected pointwise, `τʳ(z) = τ(l − z)` (`Beh.reflectSec`),
+reflecting commutes with restriction along a reflected translation (`Beh.reflect_natural`), and
+every component is a bijection (`Beh.reflectEquiv`, from the involution `Beh.reflect_reflect` and
+`(F⁻)⁻ = F` by `rfl`). `Presheaf/Reflection.lean` is **constraint-free** — every one of its twelve
+declarations reads `Constraints consumed: None` and measures `[propext, Quot.sound]` — because the
+reflection convention on the task relation supplies the involution by definition: the converse
+frame is `FrameOver.rev` / `TaskFrame.rev` of `Semantics/TaskFrame.lean`, **consumed rather than
+rebuilt**, and its task relation is the converse of the original's by `Iff.rfl`. This natural
+isomorphism is the categorical packaging of the involution behind the time reflection metarule
+`TR`: `thm:TR-valid` is `validOn_rev_iff` (`Semantics/Validity.lean`) over `truthAt_rev`
+(`Semantics/Reversal.lean`), the same involution one level down, on truth values rather than on
+sections.
 
 *Germs* and *Sheaf* are choice-free in two measured senses — they use *Compositionality* alone,
 taken as an explicit hypothesis rather than a frame bundle, and `#print axioms` reports no
@@ -83,6 +102,7 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 | `Directed.lean` | 521 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
 | `Duration.lean` | 422 | The categorical description of the site: the duration monoid `BD⁺` as `Dur`, the factorization category `Factorization`/`Factorization.Hom` with both halves of factorization-linearity, the twisted-arrow category `Tw` with its three category laws, the hom-set bijection `Tw.toTr`/`Tw.ofTr` with `Int(D)` and its functoriality, and the coverage transport `Tw.toTr_coverLeft`/`Tw.toTr_coverRight` that makes `Tw(BD⁺) ≅ Int(D)` an isomorphism of sites |
 | `Ray.lean` | 444 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
+| `Reflection.lean` | 282 | The *Reflection* clause: the reflection automorphism `Tr.ref` of `Int(D)` with its five laws, the section reflection `Beh.reflectSec` landing in the converse frame's presheaf, naturality `Beh.reflect_natural`, the involution `Beh.reflect_reflect`, and the component bijection `Beh.reflectEquiv : Beh F l ≃ Beh F.rev l`; constraint-free and measured `[propext, Quot.sound]` throughout |
 | `Sheaf.lean` | 439 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 | `Worlds.lean` | 392 | The *Total Histories* clause (the record's *Possible Worlds*): the limit `Lim F` of the behavior presheaf along the central restrictions `centralTr`, presented as compatible families of centred sections, the canonical-window reading `Lim.readAt` with its keystone `Lim.read_eq`, the two maps `Lim.toWorld`/`Lim.ofWorld`, the choice-free isomorphism `worldsEquiv : WorldHistory F ≃ Lim F` at no frame constraint, and the nonemptiness tail `lim_nonempty` at `[F.IsRegular]` |
@@ -116,6 +136,12 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
   the site
 - `Beh.germ`, `Beh.ofGerm`, `Beh.germEquiv` — a section over `0` and its single world state, and
   the bijection between them
+- `Tr.ref` — the reflection automorphism of `Int(D)` on morphisms, `Tr p ↦ Tr (l − p − l')`;
+  objects are fixed, so no object-level map is declared
+- `Beh.reflectSec` — the reflection of a section, `τʳ(z) = τ(l − z)`, landing in `Beh F.rev l`:
+  a section of the **converse** frame, which is `TaskFrame.rev` of `Semantics/TaskFrame.lean`
+  consumed as it stands
+- `Beh.reflectEquiv` — the *Reflection* clause's component bijection `Beh F l ≃ Beh F.rev l`
 - `glue` — the glued section: `τ₁` over `p` and `τ₂` over `l - p`, agreeing at the seam, read as
   one section over `l`
 - `PastRay F t`, `FutRay F t` — the ray layer: the half-line sections at a seam time `t`, as
@@ -184,6 +210,13 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 - `Beh.germ_ofGerm`, `Beh.ofGerm_germ` — the two round trips of `Beh.germEquiv`, the *Germs*
   clause. The only results here that reach a frame constraint, through `[F.IsRegular]`
 - `Beh.isConvex`, `Beh.domain_eq_interval` — a section is convex, and its domain is `Interval 0 l`
+- `Tr.ref_ref`, `Tr.ref_id`, `Tr.ref_comp` — `ref` is an involution, fixes identities, and
+  preserves composition **covariantly**: an automorphism of `Int(D)`, not a duality
+- `Tr.ref_lres`, `Tr.ref_rres` — `ref` interchanges the left and right restrictions
+- `Beh.reflect_natural` — **naturality** of reflection in the translations: reflecting a
+  restriction is restricting the reflection along the reflected translation
+- `Beh.reflect_reflect` — reflection is an involution on sections, `(τʳ)ʳ = τ`, stated at
+  `F.rev.rev` with no cast because `TaskFrame.rev_rev` is `rfl`
 - `sheaf_clause` — the *Sheaf* clause: two sections agreeing at the seam glue to a **unique**
   section over the joined interval, stated in cut form as an `∃!`
 - `restrict_glue_left`, `restrict_glue_right` — the two restriction identities of `glue`. The
