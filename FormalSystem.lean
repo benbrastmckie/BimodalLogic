@@ -632,6 +632,7 @@ import FormalSystem.Semantics.Presheaf.Directed
 import FormalSystem.Semantics.Presheaf.Ray
 import FormalSystem.Semantics.Presheaf.Sheaf
 import FormalSystem.Semantics.Presheaf.Site
+import FormalSystem.Semantics.Presheaf.Worlds
 import FormalSystem.Semantics.Reversal
 import FormalSystem.Semantics.ShiftFiniteType
 import FormalSystem.Semantics.ShiftFiniteTypeDictionary

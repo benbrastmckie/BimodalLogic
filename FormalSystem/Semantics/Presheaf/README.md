@@ -61,6 +61,7 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 | `Ray.lean` | 444 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
 | `Sheaf.lean` | 439 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
+| `Worlds.lean` | 149 | The *Total Histories* clause (the record's *Possible Worlds*): the limit `Lim F` of the behavior presheaf along the central restrictions `centralTr`, presented as compatible families of centred sections, the canonical-window reading `Lim.readAt` with its keystone `Lim.read_eq`, the two maps `Lim.toWorld`/`Lim.ofWorld`, the choice-free isomorphism `worldsEquiv : WorldHistory F ≃ Lim F` at no frame constraint, and the nonemptiness tail `lim_nonempty` at `[F.IsRegular]` |
 <!-- END GENERATED -->
 
 ## Key Definitions

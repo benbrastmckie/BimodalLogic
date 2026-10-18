@@ -1,0 +1,149 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Init
+import FormalSystem.Semantics.Presheaf.Determinism
+import FormalSystem.Semantics.Extension.Extension
+
+/-!
+# *Total Histories*: `H_F ≅ lim Beh(F)(2x)` along the central restrictions
+
+The *Total Histories* clause of `app:presheaf-dictionary` — the clause
+`docs/reference/paper-definitions-of-record.md` records under the name *Possible Worlds* — states
+that the possible worlds of a task frame are the limit of the behavior presheaf along the central
+restrictions:
+
+    H_F ≅ lim_{x ∈ D⁺} Beh(F)(2x)   along   Tr (x' − x) : 2x → 2x',   and is nonempty.
+
+The statement was read from the recorded paper text that the sentinel commit of
+`docs/reference/paper-definitions-of-record.md` pins; the live paper no longer defines the label.
+
+The limit is presented concretely, as `sheaf_clause` presents the sheaf condition concretely: a
+point of `Lim F` is a **compatible family of centred sections** `(σ_x)_{x ∈ D⁺}`,
+`σ_x ∈ Beh(F)(2x)`, each restricting to the next along the central translation. The forward map
+cuts a world to each centred window; the backward map reads each time `t` out of its **canonical
+window** `|t|` and glues with `WorldHistory.ofTotal`. Totality is structural — the centred chain
+already covers the temporal order — so no extension step is consumed.
+
+## Main Definitions
+
+- `twice`: the object `2x` of the site, written `x.val + x.val` because an abstract temporal order
+  carries no `OfNat` literal `2`.
+- `centralTr`: the central morphism `Tr (twice x) (twice x')` with shift `x' − x`.
+- `Lim`: a point of the limit — a compatible family of centred sections.
+- `absObj`: the canonical window index `|t|` of a time `t`.
+- `Lim.readAt`, `Lim.toWorld`: the backward map and the state function it glues.
+- `Lim.ofWorld`: the forward map, a world cut to each of its centred windows.
+
+## Main Results
+
+- `restrictTr_central`: restriction along the central morphism **is** the raw-data restriction.
+- `Lim.compat_site`: the clause's compatibility in the site's own vocabulary.
+- `Lim.read_eq`: the keystone — every window at least `|t|` reads the same state at `t`.
+- `Lim.respects`, `Lim.toWorld_ofWorld`, `Lim.ofWorld_toWorld`: task-respect and both round trips.
+- `worldsEquiv`: the clause, `WorldHistory F ≃ Lim F`, at no frame constraint.
+- `lim_nonempty`: the clause's closing tail, at `[F.IsRegular]`.
+
+## Implementation Notes
+
+(Filled in with the measured axiom table once every declaration of the module is in place.)
+
+## References
+
+* JPL paper `app:presheaf-dictionary` — the dictionary theorem whose *Total Histories* clause this
+  module discharges. **`DANGLING`**: cut from the paper with `app:Structure` and recorded in
+  `docs/reference/paper-definitions-of-record.md`
+* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `Beh.restrictTr`
+* `FormalSystem/Semantics/Presheaf/Site.lean` — `Obj`, `Tr`
+* `FormalSystem/Semantics/Presheaf/Sheaf.lean` — `states_eq_of_eq`, `restrictTr_coverLeft`
+* `FormalSystem/Semantics/Presheaf/Determinism.lean` — `secOf`, `secOf_states`
+
+## Tags
+
+presheaf, limit, possible worlds, total histories, behavior presheaf, interval site
+-/
+
+namespace FormalSystem.Semantics.Presheaf
+
+variable {F : TaskFrame}
+
+/-! ## The central restriction -/
+
+/-- The central restriction's fit condition: `Tr (x' − x)` is a morphism `2x → 2x'`. Proved by
+`abel` and `add_le_add (le_refl x') h`, never by an `*_iff_*` round trip, which would measure
+`Classical.choice`. -/
+theorem central_fit {x x' : F.Duration} (h : x ≤ x') : x' - x + (x + x) ≤ x' + x' := by
+  have e : x' - x + (x + x) = x' + x := by abel
+  rw [e]; exact add_le_add (le_refl x') h
+
+/-- The object `2x` of the site. There is no `OfNat F.Duration 2` on an abstract temporal order,
+which is why `2x` is written `x.val + x.val` throughout. -/
+abbrev twice (x : Obj F.Duration) : Obj F.Duration :=
+  ⟨x.val + x.val, add_nonneg x.property x.property⟩
+
+/-- The central morphism `Tr (x' − x) : 2x → 2x'` of the interval site, for `x ≤ x'`. -/
+def centralTr {x x' : Obj F.Duration} (h : x.val ≤ x'.val) : Tr (twice x) (twice x') :=
+  ⟨x'.val - x.val, sub_nonneg.mpr h, central_fit h⟩
+
+/-- Restriction along the central morphism **is** the raw-data restriction by `x' − x` onto
+`[0, 2x]`, definitionally — the same reading `restrictTr_coverLeft` gives the covering family. -/
+theorem restrictTr_central {x x' : Obj F.Duration} (h : x.val ≤ x'.val)
+    (σ : Beh F (x'.val + x'.val)) :
+    Beh.restrictTr (centralTr h) σ
+      = Beh.restrict (x'.val - x.val) (x.val + x.val) (sub_nonneg.mpr h)
+          (add_nonneg x.property x.property) (central_fit h) σ :=
+  rfl
+
+/-! ## The limit -/
+
+/-- A point of the limit `lim_{x ∈ D⁺} Beh(F)(2x)`: a compatible family of centred sections, one
+over each window `[0, 2x]`, each restricting to the next along the central translation. The
+compatibility is stated at raw data, which is what the proofs consume; the site form is
+`Lim.compat_site`. -/
+structure Lim (F : TaskFrame) where
+  /-- The centred section over `[0, 2x]`. -/
+  sec : ∀ x : Obj F.Duration, Beh F (x.val + x.val)
+  /-- Compatibility along the central restriction `2x → 2x'`. -/
+  compat : ∀ {x x' : Obj F.Duration} (h : x.val ≤ x'.val),
+    Beh.restrict (x'.val - x.val) (x.val + x.val) (sub_nonneg.mpr h)
+      (add_nonneg x.property x.property) (central_fit h) (sec x') = sec x
+
+/-- Points of the limit are determined by their sections. Written by hand rather than by `@[ext]`,
+so that no second extensionality lemma is generated under the same name. -/
+theorem Lim.ext {L L' : Lim F} (h : ∀ x, L.sec x = L'.sec x) : L = L' := by
+  obtain ⟨s, c⟩ := L; obtain ⟨s', c'⟩ := L'
+  obtain rfl : s = s' := funext h
+  rfl
+
+/-- The clause's compatibility in the site's own vocabulary: restriction along the central
+morphism `centralTr h` carries the section over `2x'` to the section over `2x`. No transport, no
+cast — `restrictTr_central` and `compat` are the whole proof. -/
+theorem Lim.compat_site (L : Lim F) {x x' : Obj F.Duration} (h : x.val ≤ x'.val) :
+    Beh.restrictTr (centralTr h) (L.sec x') = L.sec x := by
+  rw [restrictTr_central]; exact L.compat h
+
+/-! ## Window arithmetic -/
+
+/-- `0 ≤ s + x` when the window `x` contains `s`. Choice-free: written with an explicit
+`rwa [neg_add_cancel]`, **never** `simpa`, which measures `Classical.choice` here. -/
+theorem window_lo {s x : F.Duration} (h : |s| ≤ x) : 0 ≤ s + x := by
+  have h1 : -x ≤ s := le_trans (neg_le_neg h) (neg_abs_le s)
+  have h2 := add_le_add h1 (le_refl x)
+  rwa [neg_add_cancel] at h2
+
+/-- `s + x ≤ 2x` when the window `x` contains `s`. -/
+theorem window_hi {s x : F.Duration} (h : |s| ≤ x) : s + x ≤ x + x :=
+  add_le_add (le_trans (le_abs_self s) h) (le_refl x)
+
+/-- The canonical window index of a time: the paper's own witness, `t ∈ [−|t|, |t|]`. -/
+def absObj (t : F.Duration) : Obj F.Duration := ⟨|t|, abs_nonneg t⟩
+
+/-- The canonical window index, by definition. -/
+theorem absObj_val (t : F.Duration) : (absObj t).val = |t| := rfl
+
+end FormalSystem.Semantics.Presheaf
+
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree

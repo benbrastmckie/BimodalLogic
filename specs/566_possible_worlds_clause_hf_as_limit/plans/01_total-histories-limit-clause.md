@@ -1,7 +1,7 @@
 # Implementation Plan: The *Total Histories* clause — `H_F ≅ lim Beh(F)(2x)`
 
 - **Task**: 566 - Prove `app:presheaf-dictionary`'s Possible Worlds clause: `H_F iso lim Beh(F)(2x)` along the central restrictions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: 563 (interval site, behavior presheaf), 565 (Totality, Directed Gluing) — both landed and archived
 - **Research Inputs**: `specs/566_possible_worlds_clause_hf_as_limit/reports/01_total-histories-limit-clause.md`; the verified probe `specs/566_possible_worlds_clause_hf_as_limit/total-histories-clause-probe.lean`
@@ -180,7 +180,7 @@ Phase 3's measurements.
 
 ---
 
-### Phase 1: The site-side arithmetic, the limit type, and the wiring [NOT STARTED]
+### Phase 1: The site-side arithmetic, the limit type, and the wiring [COMPLETED]
 
 **Goal**: `FormalSystem/Semantics/Presheaf/Worlds.lean` exists with the cluster's established
 shape, carries the central restriction and the `Lim` structure with its extensionality and
@@ -188,49 +188,49 @@ site-form compatibility, is wired into both aggregators, and `lake build FormalS
 with no new `sorry` and every structural gate passing.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Presheaf/Worlds.lean`: copyright header (2026, Benjamin
+- [x] Create `FormalSystem/Semantics/Presheaf/Worlds.lean`: copyright header (2026, Benjamin
       Brast-McKie, Apache 2.0), module docstring skeleton with `## Main Definitions` /
       `## Main Results` / `## Implementation Notes` / `## References` / `## Tags` (filled in
       Phase 4), `namespace FormalSystem.Semantics.Presheaf`, `variable {F : TaskFrame}`, and the
       closing `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`.
-- [ ] Imports: `FormalSystem.Init`, `FormalSystem.Semantics.Presheaf.Determinism`,
+- [x] Imports: `FormalSystem.Init`, `FormalSystem.Semantics.Presheaf.Determinism`,
       `FormalSystem.Semantics.Extension.Extension`. Not `Presheaf.Directed`.
-- [ ] `central_fit`: `x' - x + (x + x) ≤ x' + x'` from `x ≤ x'`, by `abel` then
+- [x] `central_fit`: `x' - x + (x + x) ≤ x' + x'` from `x ≤ x'`, by `abel` then
       `add_le_add (le_refl x') h`. Never `(add_le_add_iff_left _).mpr` — that idiom measures
       `Classical.choice` (recorded in `Directed.lean`'s Implementation Notes).
-- [ ] `twice` (`abbrev`): the object `2x` of the site, `⟨x.val + x.val, add_nonneg x.property x.property⟩`.
+- [x] `twice` (`abbrev`): the object `2x` of the site, `⟨x.val + x.val, add_nonneg x.property x.property⟩`.
       There is no `OfNat F.Duration 2` on an abstract temporal order, which is why `2x` is
       written `x.val + x.val` throughout.
-- [ ] `centralTr`: the central morphism `Tr (twice x) (twice x')` with shift `x'.val - x.val`,
+- [x] `centralTr`: the central morphism `Tr (twice x) (twice x')` with shift `x'.val - x.val`,
       from `sub_nonneg.mpr h` and `central_fit h`.
-- [ ] `restrictTr_central`: restriction along `centralTr h` **is** the raw-data
+- [x] `restrictTr_central`: restriction along `centralTr h` **is** the raw-data
       `Beh.restrict (x'.val - x.val) (x.val + x.val) …`. Expected `rfl`, mirroring
       `restrictTr_coverLeft`/`restrictTr_coverRight`; fallback per the risk table.
-- [ ] `structure Lim (F : TaskFrame)` with `sec : ∀ x : Obj F.Duration, Beh F (x.val + x.val)`
+- [x] `structure Lim (F : TaskFrame)` with `sec : ∀ x : Obj F.Duration, Beh F (x.val + x.val)`
       and the `Prop` field `compat` stating the raw-data central-restriction equation (pinned
       form below). The raw form is what the proofs consume; the site form is derived.
-- [ ] `Lim.ext`: pointwise equality of `sec` gives equality of limits — `obtain`, `funext`,
+- [x] `Lim.ext`: pointwise equality of `sec` gives equality of limits — `obtain`, `funext`,
       `rfl` (proof irrelevance closes `compat`). No `@[ext]` attribute, so no second
       auto-generated `Lim.ext`.
-- [ ] `Lim.compat_site`: `Beh.restrictTr (centralTr h) (L.sec x') = L.sec x`, from
+- [x] `Lim.compat_site`: `Beh.restrictTr (centralTr h) (L.sec x') = L.sec x`, from
       `restrictTr_central` and `L.compat h`. The clause's compatibility in the site's own
       vocabulary, with no transport and no cast.
-- [ ] `window_lo`, `window_hi`: `0 ≤ s + x` and `s + x ≤ x + x` from `|s| ≤ x`. **`window_lo`
+- [x] `window_lo`, `window_hi`: `0 ≤ s + x` and `s + x ≤ x + x` from `|s| ≤ x`. **`window_lo`
       is written with explicit `rwa [neg_add_cancel]`, never `simpa`** — the `simpa` form was
       measured to pull `Classical.choice`.
-- [ ] `absObj t := ⟨|t|, abs_nonneg t⟩` and `absObj_val : (absObj t).val = |t| := rfl`.
-- [ ] Re-read `FormalSystem/Semantics/Presheaf.lean` immediately beforehand, then add
+- [x] `absObj t := ⟨|t|, abs_nonneg t⟩` and `absObj_val : (absObj t).val = |t| := rfl`.
+- [x] Re-read `FormalSystem/Semantics/Presheaf.lean` immediately beforehand, then add
       `import FormalSystem.Semantics.Presheaf.Worlds` (sorted — after `…Presheaf.Site`) and a
       `## Modules` bullet (`Presheaf.Worlds` — the *Total Histories* clause).
-- [ ] Re-read `FormalSystem.lean` immediately beforehand, then add
+- [x] Re-read `FormalSystem.lean` immediately beforehand, then add
       `import FormalSystem.Semantics.Presheaf.Worlds` in code-point order (after
       `import FormalSystem.Semantics.Presheaf.Site`). C33 asserts this file is byte-for-byte
       `lake exe mk_all --lib FormalSystem` output; omitting the line fails C33 **and** leaves
       the module outside C24's root-closure walk.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate the cluster
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate the cluster
       README's `<!-- BEGIN GENERATED: inventory … -->` block (the INV check fails as soon as a
       file is added). Add the `Worlds.lean` row's hand-written trailing description.
-- [ ] Commit per green sub-step with explicit per-file `git add` lists (the module once it
+- [x] Commit per green sub-step with explicit per-file `git add` lists (the module once it
       builds; then each aggregator edit; then the inventory regeneration).
 
 **Timing**: 1.5 hours
