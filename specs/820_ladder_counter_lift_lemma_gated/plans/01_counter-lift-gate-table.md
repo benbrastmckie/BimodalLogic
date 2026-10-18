@@ -224,46 +224,46 @@ and nothing under `FormalSystem/` changes.
 
 ---
 
-### Phase 2: The 4-Cycle Fixture at the Model Layer [NOT STARTED]
+### Phase 2: The 4-Cycle Fixture at the Model Layer [COMPLETED]
 
 **Goal**: The fixture every gate row needs — the object `Q4`, its admissible ladder frame and
 model, the history-to-path bridge, the letter lemmas and the generic history constructors — so
 that Phases 3-7 each prove one gate and build no infrastructure.
 
 **Tasks**:
-- [ ] Add the imports `FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer` and
+- [x] Add the imports `FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer` and
       `FormalSystem.Metalogic.Decidability.RaySummary.LadderModel`, and `open FormalSystem.Syntax
       FormalSystem.Semantics FormalSystem.PlusLanguage` as the model-layer probes do.
-- [ ] The object: `abbrev Q4 : Type := Bool × Fin 4`; `pend4 q := q.1`; `step4` with exactly the
+- [x] The object: `abbrev Q4 : Type := Bool × Fin 4`; `pend4 q := q.1`; `step4` with exactly the
       edges `(true, i) → (true, i + 1)`, `(true, i) → (false, i)`, `(false, i) → (false, i)`,
       `(false, i) → (true, i)` (indices mod 4, `Fin 4` arithmetic); `step4_nxt`, `step4_prv`,
       `step4_idle_self`, `step4_idle_start` by `decide`; the seriality witnesses `fwd4`, `bwd4`
       in the shape `ladderFrameAdm` requires (copy `fwd5`/`bwd5` of
       `ladder-residue-index-refutation.lean`, lines near its `F5` definition).
-- [ ] The letters: atoms `pA` ("p", pending) and `lA i` ("l0".."l3", the index); `lab4 q a`
+- [x] The letters: atoms `pA` ("p", pending) and `lA i` ("l0".."l3", the index); `lab4 q a`
       reads `q.1` for `pA` and `q.2 = i` for `lA i`; `PlusFormula` abbreviations `p`, `ℓ i`,
       `X χ := .untl .bot χ`, `Y χ := .snce .bot χ`, `neg`, `and` as the other probes write them.
-- [ ] `F4 := ladderFrameAdm step4 pend4 fwd4 bwd4` with the `IsRegular` instance, `M4 :=
+- [x] `F4 := ladderFrameAdm step4 pend4 fwd4 bwd4` with the `IsRegular` instance, `M4 :=
       ladderModel step4 pend4 fwd4 bwd4 lab4`; `st4 (i : Fin 4) (c n : ℕ) : LadderState Q4 pend4`
       (pending), `idl4 (i : Fin 4) (n : ℕ)` (idle, countdown 0); `a4 := st4 0`.
-- [ ] The bridge: `hist_path4 (σ : WorldHistory F4) : ∃ k g, IsSlicedStepPath (RladAdm step4
+- [x] The bridge: `hist_path4 (σ : WorldHistory F4) : ∃ k g, IsSlicedStepPath (RladAdm step4
       pend4) k g ∧ σ.path = fun t => (t + k, g t)` and `hist_of_path4`, both through
       `ofSlicedStepFinBranch_mem_HF_iff` exactly as `hist_path5`/`hist_of_path5`.
-- [ ] Letters along a history: `p_at`, `l_at` (`PlusTruthAt`-level membership lemmas reading
+- [x] Letters along a history: `p_at`, `l_at` (`PlusTruthAt`-level membership lemmas reading
       `lab4` through `M4`), by `simp [M4, ladderModel, lab4]`.
-- [ ] Run lemmas on `Q4`: `pending_walk4` — along a sliced-step path, from `(true, i)` with
+- [x] Run lemmas on `Q4`: `pending_walk4` — along a sliced-step path, from `(true, i)` with
       countdown `c` the next `c` positions are pending at indices `i + 1, …, i + c` and position
       `c + 1` is idle at index `i + c` (from `count_pending_step`, `pin_region_end` and
       `step4`'s pending edges; the pending walk is deterministic); `idle_run4` — an idle run
       stays at its index; `region_start4` — the first pending state after an idle run at index
       `i` is `(true, i)` with countdown equal to the idle state's next deadline
       (`pin_region_start`).
-- [ ] Generic history constructors (each an `IsSlicedStepPath (RladAdm step4 pend4) 0 g` for an
+- [x] Generic history constructors (each an `IsSlicedStepPath (RladAdm step4 pend4) 0 g` for an
       explicit `g`): `gPast4` — a pending-forever past from any pending state (the backward
       completion; template `gPast_isPath` of `ladder-liveness-forward-only.lean`); `region4 L j`
       — a region of countdown `L` followed by an idle run of length `j` followed by a region of
       any countdown within the forward window, concatenable; `second_region_any_length4` (the
-      `Q4` port of `second_region_any_length`). These are the pieces Phases 3-7 glue.
+      `Q4` port of `second_region_any_length`). These are the pieces Phases 3-7 glue. *(deviation: altered — `region4 L j` is realized as `region4 i c n j L` (the forced region, an idle run of length `j ≥ 1`, a region of countdown `L` in the window, idle forever) with `region4_rlad` its ray proof and `second_region_any_length4` the realization theorem; concatenation is through the generic `twoRay`/`gPast4` glue rather than a separate `region4`-to-`region4` concatenator, which no gate needs)*
 
 **Timing**: 2 hours
 

@@ -128,8 +128,11 @@ maximum `certAdm`-certified subset.
 Compile: `lake env lean specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean`
 -/
 import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer
+import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 import Mathlib.Data.Fintype.Pigeonhole
 
+open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.PlusLanguage
 open FormalSystem.Metalogic.Decidability.RaySummary
 
 namespace Probe820
@@ -636,6 +639,599 @@ theorem no_positionwise_lift {K : Type} [Finite K] (κ : ℕ × ℕ → K)
         (∀ t, Rlad (Q := Bool) (fun _ _ => true) (fun q => q) t (σ t) (σ (t + 1))) ∧
         ∀ t, ((σ t).1, κ ((σ t).2.1, (σ t).2.2)) = ξ t :=
   no_positionwise_lift_core κ R sound
+
+/-! ## The 4-cycle fixture at the model layer
+
+Object `Q4 := Bool × Fin 4`: the pending walk is the deterministic 4-cycle `0 → 1 → 2 → 3 → 0`
+(product period `4`), every pending state steps to its idle copy, idle states self-loop and
+restart a region at their own index.  Built in the shape of the `Q5` fixture of
+`ladder-residue-index-refutation.lean` (same carrier type, a different step relation). -/
+
+section Fixture4
+
+/-- Object states `(pending?, index)`. -/
+abbrev Q4 : Type := Bool × Fin 4
+
+def pend4 : Q4 → Bool := fun q => q.1
+
+/-- Exactly the edges `(true, i) → (true, i + 1)`, `(true, i) → (false, i)`,
+`(false, i) → (false, i)`, `(false, i) → (true, i)`, indices in `Fin 4`. -/
+def step4 : Q4 → Q4 → Bool := fun x y =>
+  if x.1 then (if y.1 then y.2 == x.2 + 1 else y.2 == x.2) else (y.2 == x.2)
+
+/-- `step4` has exactly sixteen edges: four indices times four edge kinds. -/
+theorem step4_card :
+    (Finset.univ.filter (fun xy : Q4 × Q4 => step4 xy.1 xy.2 = true)).card = 16 := by decide
+
+theorem step4_pend_succ : ∀ i : Fin 4, step4 (true, i) (true, i + 1) = true := by decide
+theorem step4_pend_prev : ∀ i : Fin 4, step4 (true, i - 1) (true, i) = true := by decide
+theorem step4_pend_idle : ∀ i : Fin 4, step4 (true, i) (false, i) = true := by decide
+theorem step4_idle_self : ∀ i : Fin 4, step4 (false, i) (false, i) = true := by decide
+theorem step4_idle_start : ∀ i : Fin 4, step4 (false, i) (true, i) = true := by decide
+
+/-- The pending walk is deterministic: the only pending successor of `(true, i)` is
+`(true, i + 1)`. -/
+theorem step4_pend_iff : ∀ i j : Fin 4, step4 (true, i) (true, j) = true ↔ j = i + 1 := by decide
+theorem step4_pi_iff : ∀ i j : Fin 4, step4 (true, i) (false, j) = true ↔ j = i := by decide
+/-- An idle state keeps its index, whether it stays idle or restarts a region. -/
+theorem step4_idle_iff : ∀ (i j : Fin 4) (b : Bool), step4 (false, i) (b, j) = true ↔ j = i := by
+  decide
+
+theorem rlad4_iff (t : ℤ) (x y : Q4 × ℕ × ℕ) :
+    Rlad step4 pend4 t x y ↔
+      step4 x.1 y.1 = true ∧ (x.1.1 = false → x.2.1 = 0) ∧ Drift x.2.2 y.2.2 ∧
+        Count x.1.1 y.1.1 x.2.1 x.2.2 y.2.1 := Iff.rfl
+
+/-- The index reached after `m` pending steps from index `0`: `m mod 4`. -/
+def idx (m : ℕ) : Fin 4 := ⟨m % 4, Nat.mod_lt _ (by norm_num)⟩
+
+theorem idx_zero : idx 0 = 0 := by decide
+
+theorem idx_succ (m : ℕ) : idx (m + 1) = idx m + 1 := by
+  apply Fin.ext
+  simp only [idx, Fin.val_add, Fin.val_one]
+  omega
+
+theorem idx_add (m m' : ℕ) : idx (m + m') = idx m + idx m' := by
+  apply Fin.ext
+  simp only [idx, Fin.val_add]
+  omega
+
+theorem idx_eq_iff (m m' : ℕ) : idx m = idx m' ↔ m % 4 = m' % 4 := by
+  simp [idx, Fin.ext_iff]
+
+theorem idx_val (m : ℕ) : (idx m).val = m % 4 := rfl
+
+theorem fin_sub_succ : ∀ i j : Fin 4, i - (j + 1) + 1 = i - j := by decide
+
+/-! ### Seriality, the frame and the model -/
+
+theorem fwd4 : ∀ t x, ∃ y, RladAdm step4 pend4 t x y := by
+  rintro t ⟨⟨⟨b, i⟩, c, n⟩, hx⟩
+  cases b with
+  | false =>
+    have hc : c = 0 := hx rfl
+    subst hc
+    exact ⟨⟨((false, i), 0, n), fun _ => rfl⟩, by
+      simp [RladAdm, rlad4_iff, step4, Drift, Count]⟩
+  | true =>
+    cases c with
+    | zero =>
+      exact ⟨⟨((false, i), 0, n), fun _ => rfl⟩, by
+        simp [RladAdm, rlad4_iff, step4, Drift, Count]⟩
+    | succ c =>
+      exact ⟨⟨((true, i + 1), c, n), fun h => by cases h⟩, by
+        simp [RladAdm, rlad4_iff, Drift, Count, step4_pend_succ]⟩
+
+theorem bwd4 : ∀ t x, ∃ y, RladAdm step4 pend4 (t - 1) y x := by
+  rintro t ⟨⟨⟨b, i⟩, c, n⟩, hx⟩
+  cases b with
+  | false =>
+    have hc : c = 0 := hx rfl
+    subst hc
+    exact ⟨⟨((false, i), 0, n), fun _ => rfl⟩, by
+      simp [RladAdm, rlad4_iff, step4, Drift, Count]⟩
+  | true =>
+    exact ⟨⟨((true, i - 1), c + 1, n), fun h => by cases h⟩, by
+      simp [RladAdm, rlad4_iff, Drift, Count, step4_pend_prev]⟩
+
+def F4 : FrameOver intOrder := ladderFrameAdm step4 pend4 fwd4 bwd4
+
+instance : F4.IsRegular := ladderFrameAdm_isRegular step4 pend4 fwd4 bwd4
+
+/-- `p` reads the pending bit; `ℓ i` reads the index. -/
+def pA : Atom := ⟨"p", none⟩
+def lA (i : Fin 4) : Atom := ⟨"l", some i.val⟩
+
+theorem lA_ne_pA (i : Fin 4) : lA i ≠ pA := by simp [lA, pA]
+theorem lA_inj {i j : Fin 4} : lA i = lA j ↔ i = j := by simp [lA, Fin.ext_iff]
+
+def lab4 : Q4 → Atom → Bool := fun q a => if a = pA then q.1 else decide (a = lA q.2)
+
+def M4 : TaskModel F4.toTaskFrame := ladderModel step4 pend4 fwd4 bwd4 lab4
+
+def p : PlusFormula := .atom pA
+def ℓ (i : Fin 4) : PlusFormula := .atom (lA i)
+/-- Next: `X χ := ⊥ U χ`. -/
+def X (χ : PlusFormula) : PlusFormula := .untl .bot χ
+/-- Previous: `Y χ := ⊥ S χ`. -/
+def Y (χ : PlusFormula) : PlusFormula := .snce .bot χ
+
+/-- A pending admissible ladder state. -/
+def st4 (i : Fin 4) (c n : ℕ) : LadderState Q4 pend4 :=
+  ⟨((true, i), c, n), fun h => by cases h⟩
+
+/-- An idle admissible ladder state (countdown `0`). -/
+def idl4 (i : Fin 4) (n : ℕ) : LadderState Q4 pend4 := ⟨((false, i), 0, n), fun _ => rfl⟩
+
+def a4 : Q4 := (true, 0)
+
+/-! ### Histories of `F4` and the letters along them -/
+
+theorem hist_path4 (σ : WorldHistory F4) :
+    ∃ (k : ℤ) (g : ℤ → LadderState Q4 pend4),
+      IsSlicedStepPath (RladAdm step4 pend4) k g ∧ σ.path = fun t => (t + k, g t) :=
+  (ofSlicedStepFinBranch_mem_HF_iff (RladAdm step4 pend4) (RladAdm_fwd _ _) (RladAdm_bwd _ _)
+    fwd4 bwd4 σ.path).mp ⟨σ, rfl⟩
+
+theorem hist_of_path4 (k : ℤ) (g : ℤ → LadderState Q4 pend4)
+    (hg : IsSlicedStepPath (RladAdm step4 pend4) k g) :
+    ∃ σ : WorldHistory F4, σ.path = fun t => (t + k, g t) :=
+  (ofSlicedStepFinBranch_mem_HF_iff (RladAdm step4 pend4) (RladAdm_fwd _ _) (RladAdm_bwd _ _)
+    fwd4 bwd4 _).mpr ⟨k, g, hg, rfl⟩
+
+section Along4
+variable {σ : WorldHistory F4} {k : ℤ} {g : ℤ → LadderState Q4 pend4}
+  (hσ : σ.path = fun t => (t + k, g t))
+include hσ
+
+theorem state_eq4 (s : ℤ) : σ.state s = (s + k, g s) := congrFun hσ s
+
+theorem truth_p4 (s : ℤ) : PlusTruthAt M4 σ s p ↔ (g s).1.1.1 = true := by
+  change M4.valuation (σ.state s) pA ↔ _
+  rw [state_eq4 hσ s]
+  simp [M4, ladderModel, lab4]
+
+theorem truth_l4 (s : ℤ) (i : Fin 4) : PlusTruthAt M4 σ s (ℓ i) ↔ (g s).1.1.2 = i := by
+  change M4.valuation (σ.state s) (lA i) ↔ _
+  rw [state_eq4 hσ s]
+  show lab4 (g s).1.1 (lA i) = true ↔ _
+  simp only [lab4, if_neg (lA_ne_pA i), decide_eq_true_eq, lA_inj]
+  exact eq_comm
+
+theorem truth_np4 (s : ℤ) : PlusTruthAt M4 σ s p.neg ↔ (g s).1.1.1 = false := by
+  rw [PlusTruth.neg_iff, truth_p4 hσ]
+  cases (g s).1.1.1 <;> simp
+
+end Along4
+
+/-- Over integer time `⊥ U χ` is `χ` at the next instant. -/
+theorem truth_X4 (σ : WorldHistory F4) (s : ℤ) (χ : PlusFormula) :
+    PlusTruthAt M4 σ s (X χ) ↔ PlusTruthAt M4 σ (s + 1) χ := by
+  constructor
+  · rintro ⟨(s' : ℤ), hlt, hχ, hgap⟩
+    have hlt' : (s : ℤ) < s' := hlt
+    have hs' : s' = s + 1 := by
+      by_contra hne
+      exact hgap (s + 1) (show (s : ℤ) < s + 1 by omega) (show (s + 1 : ℤ) < s' by omega)
+    rw [hs'] at hχ
+    exact hχ
+  · intro h
+    refine ⟨s + 1, show (s : ℤ) < s + 1 by omega, h, fun (r' : ℤ) h1 h2 => ?_⟩
+    have h1' : (s : ℤ) < r' := h1
+    have h2' : (r' : ℤ) < s + 1 := h2
+    omega
+
+/-- Over integer time `⊥ S χ` is `χ` at the previous instant. -/
+theorem truth_Y4 (σ : WorldHistory F4) (s : ℤ) (χ : PlusFormula) :
+    PlusTruthAt M4 σ s (Y χ) ↔ PlusTruthAt M4 σ (s - 1) χ := by
+  constructor
+  · rintro ⟨(s' : ℤ), hlt, hχ, hgap⟩
+    have hlt' : (s' : ℤ) < s := hlt
+    have hs' : s' = s - 1 := by
+      by_contra hne
+      exact hgap (s - 1) (show (s' : ℤ) < s - 1 by omega) (show (s - 1 : ℤ) < s by omega)
+    rw [hs'] at hχ
+    exact hχ
+  · intro h
+    refine ⟨s - 1, show (s - 1 : ℤ) < s by omega, h, fun (r' : ℤ) h1 h2 => ?_⟩
+    have h1' : (s - 1 : ℤ) < r' := h1
+    have h2' : (r' : ℤ) < s := h2
+    omega
+
+/-! ### Run lemmas on `Q4`: the forced walk, idle runs, region starts -/
+
+section Run4
+variable {g : ℤ → LadderState Q4 pend4}
+  (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+include hg
+
+/-- **The pending walk is deterministic**: from `(true, i)` with countdown `c`, position
+`m ≤ c` is pending at index `i + idx m` with countdown `c - m`. -/
+theorem pending_walk4 (i : Fin 4) (c n : ℕ) (h0 : (g 0).1 = ((true, i), c, n)) :
+    ∀ m : ℕ, m ≤ c → (g (m : ℤ)).1.1 = (true, i + idx m) ∧ (g (m : ℤ)).1.2.1 = c - m := by
+  intro m
+  induction m with
+  | zero =>
+    intro _
+    rw [Nat.cast_zero, h0, idx_zero, add_zero]
+    exact ⟨rfl, by simp⟩
+  | succ m ih =>
+    intro hm
+    obtain ⟨hq, hc⟩ := ih (by omega)
+    rw [show ((m + 1 : ℕ) : ℤ) = (m : ℤ) + 1 by push_cast; ring]
+    obtain ⟨hs, -, -, hcount⟩ := (rlad4_iff _ _ _).mp (hg (m : ℤ))
+    rw [hq] at hs hcount
+    rw [hc] at hcount
+    cases hy : (g ((m : ℤ) + 1)).1.1.1 with
+    | false =>
+      rw [hy, count_tf] at hcount
+      omega
+    | true =>
+      rw [hy, count_tt] at hcount
+      refine ⟨?_, by omega⟩
+      have hs' : step4 (true, i + idx m) (g ((m : ℤ) + 1)).1.1 = true := hs
+      rw [show (g ((m : ℤ) + 1)).1.1 = (true, (g ((m : ℤ) + 1)).1.1.2) from
+        Prod.ext hy rfl] at hs' ⊢
+      rw [(step4_pend_iff _ _).mp hs', idx_succ, add_assoc]
+
+/-- **The first idle state sits at distance exactly `c + 1`**, at the index `i + idx c` the walk
+has reached, with countdown `0`. -/
+theorem idle_at4 (i : Fin 4) (c n : ℕ) (h0 : (g 0).1 = ((true, i), c, n)) :
+    (g ((c : ℤ) + 1)).1.1 = (false, i + idx c) ∧ (g ((c : ℤ) + 1)).1.2.1 = 0 := by
+  obtain ⟨hq, hc⟩ := pending_walk4 hg i c n h0 c le_rfl
+  obtain ⟨hs, -, -, hcount⟩ := (rlad4_iff _ _ _).mp (hg (c : ℤ))
+  rw [hq] at hs hcount
+  rw [hc, Nat.sub_self] at hcount
+  cases hy : (g ((c : ℤ) + 1)).1.1.1 with
+  | true =>
+    rw [hy, count_tt] at hcount
+    omega
+  | false =>
+    rw [hy, count_tf] at hcount
+    refine ⟨?_, hcount.1⟩
+    have hs' : step4 (true, i + idx c) (g ((c : ℤ) + 1)).1.1 = true := hs
+    rw [show (g ((c : ℤ) + 1)).1.1 = (false, (g ((c : ℤ) + 1)).1.1.2) from
+      Prod.ext hy rfl] at hs' ⊢
+    rw [(step4_pi_iff _ _).mp hs']
+
+/-- An idle state keeps its index, and its successor is idle or starts a region whose countdown
+is the idle state's next deadline (`pin_region_start`). -/
+theorem after_idle4 (t : ℤ) (hidle : (g t).1.1.1 = false) :
+    (g (t + 1)).1.1.2 = (g t).1.1.2 ∧
+      ((g (t + 1)).1.1.1 = false ∨
+        ((g (t + 1)).1.1.1 = true ∧ (g (t + 1)).1.2.1 = (g t).1.2.2)) := by
+  obtain ⟨hs, -, -, hcount⟩ := (rlad4_iff _ _ _).mp (hg t)
+  rw [hidle] at hcount
+  have hq : (g t).1.1 = (false, (g t).1.1.2) := Prod.ext hidle rfl
+  have hs' : step4 (false, (g t).1.1.2) ((g (t + 1)).1.1.1, (g (t + 1)).1.1.2) = true := by
+    rw [← hq]
+    exact hs
+  refine ⟨(step4_idle_iff _ _ _).mp hs', ?_⟩
+  cases hy : (g (t + 1)).1.1.1 with
+  | false => exact Or.inl rfl
+  | true =>
+    rw [hy, count_ft] at hcount
+    exact Or.inr ⟨rfl, hcount⟩
+
+/-- **A region start keeps the index and takes the pin**: idle at `t`, pending at `t + 1`. -/
+theorem region_start4 (t : ℤ) (hidle : (g t).1.1.1 = false) (hp : (g (t + 1)).1.1.1 = true) :
+    (g (t + 1)).1.1 = (true, (g t).1.1.2) ∧ (g (t + 1)).1.2.1 = (g t).1.2.2 := by
+  obtain ⟨hi, h⟩ := after_idle4 hg t hidle
+  rcases h with h | ⟨-, hc⟩
+  · rw [h] at hp; exact Bool.noConfusion hp
+  · exact ⟨Prod.ext hp hi, hc⟩
+
+/-- An idle run stays at its index. -/
+theorem idle_run4 (t : ℤ) (hidle : (g t).1.1.1 = false) :
+    (g (t + 1)).1.1.2 = (g t).1.1.2 := (after_idle4 hg t hidle).1
+
+/-- A pending state with `1 ≤ c` is followed by a pending state. -/
+theorem after_pending4 (t : ℤ) (hp : (g t).1.1.1 = true) (hc : 1 ≤ (g t).1.2.1) :
+    (g (t + 1)).1.1.1 = true := by
+  obtain ⟨-, -, -, hcount⟩ := (rlad4_iff _ _ _).mp (hg t)
+  rw [hp] at hcount
+  cases hy : (g (t + 1)).1.1.1 with
+  | false =>
+    rw [hy, count_tf] at hcount
+    omega
+  | true => rfl
+
+/-- The next deadline is `1`-Lipschitz along the path, forward and backward. -/
+theorem drift_path4 (a : ℤ) (m : ℕ) :
+    (g (a + m)).1.2.2 ≤ (g a).1.2.2 + m ∧ (g a).1.2.2 ≤ (g (a + m)).1.2.2 + m := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    obtain ⟨-, -, hd, -⟩ := (rlad4_iff _ _ _).mp (hg (a + m))
+    simp only [Drift] at hd
+    rw [show a + ((m + 1 : ℕ) : ℤ) = a + m + 1 by push_cast; omega]
+    omega
+
+/-- Every state of a path is admissible as a source: idle means countdown `0`. -/
+theorem adm_of_path4 (t : ℤ) (hidle : (g t).1.1.1 = false) : (g t).1.2.1 = 0 :=
+  ((rlad4_iff _ _ _).mp (hg t)).2.1 hidle
+
+end Run4
+
+/-! ### Generic history constructors -/
+
+/-- A bi-infinite raw chain from a backward ray (`past k` the state at time `-(k + 1)`) and a
+forward ray (`fut k` the state at time `k`). -/
+def twoRay (past fut : ℕ → Q4 × ℕ × ℕ) (t : ℤ) : Q4 × ℕ × ℕ :=
+  if t < 0 then past (-t - 1).toNat else fut t.toNat
+
+theorem twoRay_nat (past fut : ℕ → Q4 × ℕ × ℕ) (m : ℕ) : twoRay past fut (m : ℤ) = fut m := by
+  simp [twoRay]
+
+theorem twoRay_neg (past fut : ℕ → Q4 × ℕ × ℕ) (m : ℕ) :
+    twoRay past fut (-((m : ℤ) + 1)) = past m := by
+  have h : -((m : ℤ) + 1) < 0 := by omega
+  simp only [twoRay, h, if_true]
+  congr 1
+  omega
+
+theorem twoRay_rlad (past fut : ℕ → Q4 × ℕ × ℕ)
+    (hp : ∀ k, Rlad step4 pend4 0 (past (k + 1)) (past k))
+    (hj : Rlad step4 pend4 0 (past 0) (fut 0))
+    (hf : ∀ k, Rlad step4 pend4 0 (fut k) (fut (k + 1))) :
+    ∀ t, Rlad step4 pend4 t (twoRay past fut t) (twoRay past fut (t + 1)) := by
+  intro t
+  have hT : Rlad step4 pend4 t (twoRay past fut t) (twoRay past fut (t + 1)) ↔
+      Rlad step4 pend4 0 (twoRay past fut t) (twoRay past fut (t + 1)) := Iff.rfl
+  rw [hT]
+  rcases lt_trichotomy t (-1) with hlt | heq | hgt
+  · have h1 : t < 0 := by omega
+    have h2 : t + 1 < 0 := by omega
+    simp only [twoRay, h1, h2, if_true]
+    rw [show (-t - 1).toNat = (-(t + 1) - 1).toNat + 1 by omega]
+    exact hp _
+  · subst heq
+    simp only [twoRay, show (-1 : ℤ) < 0 by norm_num, show ¬ ((-1 : ℤ) + 1 < 0) by norm_num,
+      if_true, if_false, show (-(-1 : ℤ) - 1).toNat = 0 by rfl, show ((-1 : ℤ) + 1).toNat = 0 by rfl]
+    exact hj
+  · have h1 : ¬ t < 0 := by omega
+    have h2 : ¬ t + 1 < 0 := by omega
+    simp only [twoRay, h1, h2, if_false]
+    rw [show (t + 1).toNat = t.toNat + 1 by omega]
+    exact hf _
+
+/-- A raw `Rlad` chain lifts to the admissible carrier: every state is the source of a step. -/
+def liftAdm (raw : ℤ → Q4 × ℕ × ℕ) (h : ∀ t, Rlad step4 pend4 t (raw t) (raw (t + 1))) (t : ℤ) :
+    LadderState Q4 pend4 :=
+  ⟨raw t, fun h' => (h t).2.1 h'⟩
+
+theorem liftAdm_val (raw : ℤ → Q4 × ℕ × ℕ) (h : ∀ t, Rlad step4 pend4 t (raw t) (raw (t + 1)))
+    (t : ℤ) : (liftAdm raw h t).1 = raw t := rfl
+
+theorem liftAdm_isPath (raw : ℤ → Q4 × ℕ × ℕ)
+    (h : ∀ t, Rlad step4 pend4 t (raw t) (raw (t + 1))) :
+    IsSlicedStepPath (RladAdm step4 pend4) 0 (liftAdm raw h) := fun t => h t
+
+/-- Every raw `Rlad` chain is the path of a history of `F4`. -/
+theorem hist_of_raw (raw : ℤ → Q4 × ℕ × ℕ)
+    (h : ∀ t, Rlad step4 pend4 t (raw t) (raw (t + 1))) :
+    ∃ σ : WorldHistory F4, σ.path = fun t => (t + 0, liftAdm raw h t) :=
+  hist_of_path4 0 _ (liftAdm_isPath raw h)
+
+/-- The type realized at `0` by a raw chain through `(true, i), c, n` lies in that state's
+cell. -/
+theorem cell_of_raw (φ : PlusFormula) (raw : ℤ → Q4 × ℕ × ℕ)
+    (h : ∀ t, Rlad step4 pend4 t (raw t) (raw (t + 1))) (i : Fin 4) (c n : ℕ)
+    (h0 : raw 0 = ((true, i), c, n)) :
+    ∃ σ : WorldHistory F4, σ.path = (fun t => (t + 0, liftAdm raw h t)) ∧
+      tpOf M4 φ σ 0 ∈ cellAt M4 φ ((0 : ℤ), st4 i c n) 0 := by
+  obtain ⟨σ, hσ⟩ := hist_of_raw raw h
+  refine ⟨σ, hσ, σ, ?_, rfl⟩
+  have hw : ((0 : ℤ), liftAdm raw h 0) = ((0 : ℤ), st4 i c n) :=
+    Prod.ext rfl (Subtype.ext h0)
+  rw [← hw]
+  exact congrFun hσ 0
+
+/-- Every type in the cell of `(true, i), c, n` is the type at `0` of some sliced path through
+that state. -/
+theorem of_mem_cell4 (φ : PlusFormula) (i : Fin 4) (c n : ℕ) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt M4 φ ((0 : ℤ), st4 i c n) 0) :
+    ∃ (σ : WorldHistory F4) (k : ℤ) (g : ℤ → LadderState Q4 pend4),
+      σ.path = (fun t => (t + k, g t)) ∧ (∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1) ∧
+      (g 0).1 = ((true, i), c, n) ∧ tpOf M4 φ σ 0 = T := by
+  obtain ⟨σ, hσz, rfl⟩ := hT
+  obtain ⟨k, g, hg, hpath⟩ := hist_path4 σ
+  have hst : ((0 : ℤ) + k, g 0) = ((0 : ℤ), st4 i c n) := by
+    rw [← hσz]
+    exact (congrFun hpath 0).symm
+  exact ⟨σ, k, g, hpath, fun t => hg t,
+    congrArg (fun w : ℤ × LadderState Q4 pend4 => w.2.1) hst, rfl⟩
+
+/-! ### The pending-forever past -/
+
+/-- The state `k + 1` steps before `(true, i), c, n` along the backward pending walk: index
+`i - idx (k + 1)`, countdown `c + k + 1`, next deadline `n`. -/
+def pastRay4 (i : Fin 4) (c n : ℕ) (k : ℕ) : Q4 × ℕ × ℕ :=
+  ((true, i - idx (k + 1)), c + k + 1, n)
+
+theorem pastRay4_rlad (i : Fin 4) (c n : ℕ) :
+    ∀ k, Rlad step4 pend4 0 (pastRay4 i c n (k + 1)) (pastRay4 i c n k) := by
+  intro k
+  rw [rlad4_iff]
+  simp only [pastRay4]
+  rw [idx_succ (k + 1)]
+  refine ⟨?_, fun h => by simp at h, ?_, ?_⟩
+  · have := step4_pend_succ (i - (idx (k + 1) + 1))
+    rwa [fin_sub_succ] at this
+  · simp [Drift]
+  · simp [Count]
+    omega
+
+/-- The junction: the last past state steps to any forward ray starting at `(true, i), c, n`. -/
+theorem pastRay4_junction (i : Fin 4) (c n : ℕ) (fut : ℕ → Q4 × ℕ × ℕ)
+    (h0 : fut 0 = ((true, i), c, n)) : Rlad step4 pend4 0 (pastRay4 i c n 0) (fut 0) := by
+  rw [h0, rlad4_iff]
+  simp only [pastRay4]
+  refine ⟨?_, fun h => by simp at h, ?_, ?_⟩
+  · have h1 : idx 1 = 1 := by decide
+    rw [h1]
+    exact step4_pend_prev i
+  · simp [Drift]
+  · simp [Count]
+
+/-- The pending-forever past glued to a forward ray starting at `(true, i), c, n`. -/
+def gPast4 (i : Fin 4) (c n : ℕ) (fut : ℕ → Q4 × ℕ × ℕ) : ℤ → Q4 × ℕ × ℕ :=
+  twoRay (pastRay4 i c n) fut
+
+theorem gPast4_rlad (i : Fin 4) (c n : ℕ) (fut : ℕ → Q4 × ℕ × ℕ)
+    (h0 : fut 0 = ((true, i), c, n)) (hf : ∀ k, Rlad step4 pend4 0 (fut k) (fut (k + 1))) :
+    ∀ t, Rlad step4 pend4 t (gPast4 i c n fut t) (gPast4 i c n fut (t + 1)) :=
+  twoRay_rlad _ _ (pastRay4_rlad i c n) (pastRay4_junction i c n fut h0) hf
+
+theorem gPast4_nat (i : Fin 4) (c n : ℕ) (fut : ℕ → Q4 × ℕ × ℕ) (m : ℕ) :
+    gPast4 i c n fut (m : ℤ) = fut m := twoRay_nat _ _ m
+
+theorem gPast4_neg (i : Fin 4) (c n : ℕ) (fut : ℕ → Q4 × ℕ × ℕ) (m : ℕ) :
+    gPast4 i c n fut (-((m : ℤ) + 1)) = ((true, i - idx (m + 1)), c + m + 1, n) :=
+  twoRay_neg _ _ m
+
+/-- The past is pending at every time `≤ 0`. -/
+theorem gPast4_pending (i : Fin 4) (c n : ℕ) (fut : ℕ → Q4 × ℕ × ℕ)
+    (h0 : fut 0 = ((true, i), c, n)) (z : ℤ) (hz : z ≤ 0) :
+    (gPast4 i c n fut z).1.1 = true := by
+  rcases lt_or_eq_of_le hz with hlt | heq
+  · obtain ⟨m, hm⟩ : ∃ m : ℕ, z = -((m : ℤ) + 1) := ⟨(-z - 1).toNat, by omega⟩
+    rw [hm, gPast4_neg]
+  · subst heq
+    rw [show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, gPast4_nat, h0]
+
+/-! ### A region, an idle run, a region in the forward window, then idle forever -/
+
+/-- The next deadline walking one step per step from `n` toward `L`. -/
+def toward (n L m : ℕ) : ℕ :=
+  if n + m ≤ L then n + m else if L + m ≤ n then n - m else L
+
+theorem toward_zero (n L : ℕ) : toward n L 0 = n := by
+  unfold toward
+  split_ifs <;> omega
+
+theorem toward_drift (n L m : ℕ) : Drift (toward n L m) (toward n L (m + 1)) := by
+  unfold toward Drift
+  split_ifs <;> omega
+
+theorem toward_eq (n L m : ℕ) (h1 : L ≤ n + m) (h2 : n ≤ L + m) : toward n L m = L := by
+  unfold toward
+  split_ifs <;> omega
+
+/-- From `(true, i), c, n` at `0`: the forced region (positions `0 .. c`, the deadline walking
+toward `L`), an idle run of length `j` at index `i + idx c` (positions `c + 1 .. c + j`, the
+deadline reaching `L` at `c + j`), a region of countdown `L` (positions `c + j + 1 ..
+c + j + 1 + L`), then idle forever at index `i + idx c + idx L` with deadline `L`. -/
+def region4 (i : Fin 4) (c n j L : ℕ) (m : ℕ) : Q4 × ℕ × ℕ :=
+  if m ≤ c then ((true, i + idx m), c - m, toward n L m)
+  else if m ≤ c + j then ((false, i + idx c), 0, toward n L m)
+  else if m ≤ c + j + 1 + L then
+    ((true, i + idx c + idx (m - (c + j + 1))), c + j + 1 + L - m, L)
+  else ((false, i + idx c + idx L), 0, L)
+
+theorem region4_zero (i : Fin 4) (c n j L : ℕ) : region4 i c n j L 0 = ((true, i), c, n) := by
+  simp [region4, idx_zero, toward_zero]
+
+theorem region4_pend (i : Fin 4) (c n j L m : ℕ) (hm : m ≤ c) :
+    region4 i c n j L m = ((true, i + idx m), c - m, toward n L m) := by
+  simp [region4, hm]
+
+theorem region4_idle₁ (i : Fin 4) (c n j L m : ℕ) (h1 : c < m) (h2 : m ≤ c + j) :
+    region4 i c n j L m = ((false, i + idx c), 0, toward n L m) := by
+  have h1' : ¬ m ≤ c := by omega
+  simp [region4, h1', h2]
+
+theorem region4_pend₂ (i : Fin 4) (c n j L m : ℕ) (h1 : c + j < m) (h2 : m ≤ c + j + 1 + L) :
+    region4 i c n j L m = ((true, i + idx c + idx (m - (c + j + 1))), c + j + 1 + L - m, L) := by
+  have h1' : ¬ m ≤ c := by omega
+  have h1'' : ¬ m ≤ c + j := by omega
+  simp [region4, h1', h1'', h2]
+
+theorem region4_idle₂ (i : Fin 4) (c n j L m : ℕ) (h : c + j + 1 + L < m) :
+    region4 i c n j L m = ((false, i + idx c + idx L), 0, L) := by
+  have h1' : ¬ m ≤ c := by omega
+  have h1'' : ¬ m ≤ c + j := by omega
+  have h1''' : ¬ m ≤ c + j + 1 + L := by omega
+  simp [region4, h1', h1'', h1''']
+
+/-- **`region4` is an `Rlad` ray** whenever the idle run is nonempty and `L` lies in the forward
+window `|L - n| ≤ c + j`. -/
+theorem region4_rlad (i : Fin 4) (c n j L : ℕ) (hj : 1 ≤ j) (hL1 : L ≤ n + c + j)
+    (hL2 : n ≤ L + c + j) :
+    ∀ m, Rlad step4 pend4 0 (region4 i c n j L m) (region4 i c n j L (m + 1)) := by
+  intro m
+  rw [rlad4_iff]
+  rcases Nat.lt_or_ge m c with hmc | hmc
+  · -- pending to pending inside the first region
+    rw [region4_pend i c n j L m (by omega), region4_pend i c n j L (m + 1) (by omega)]
+    refine ⟨?_, fun h => by simp at h, toward_drift n L m, ?_⟩
+    · rw [idx_succ, ← add_assoc]
+      exact step4_pend_succ _
+    · simp [Count]
+      omega
+  rcases Nat.lt_or_ge m (c + j) with hmj | hmj
+  · rcases Nat.eq_or_lt_of_le hmc with heq | hlt
+    · -- the region ends: pending with countdown `0` to the first idle state
+      rw [← heq, region4_pend i c n j L c le_rfl,
+        region4_idle₁ i c n j L (c + 1) (by omega) (by omega)]
+      refine ⟨step4_pend_idle _, fun h => by simp at h, toward_drift n L c, ?_⟩
+      simp [Count]
+    · -- idle to idle
+      rw [region4_idle₁ i c n j L m hlt (by omega), region4_idle₁ i c n j L (m + 1) (by omega) hmj]
+      exact ⟨step4_idle_self _, fun _ => rfl, toward_drift n L m, by simp [Count]⟩
+  rcases Nat.lt_or_ge m (c + j + 1 + L) with hmL | hmL
+  · rcases Nat.eq_or_lt_of_le hmj with heq | hlt
+    · -- the second region starts: the pin
+      rw [← heq, region4_idle₁ i c n j L (c + j) (by omega) le_rfl,
+        region4_pend₂ i c n j L (c + j + 1) (by omega) (by omega)]
+      rw [toward_eq n L (c + j) (by omega) (by omega), Nat.sub_self, idx_zero, add_zero]
+      refine ⟨step4_idle_start _, fun _ => rfl, by simp [Drift], ?_⟩
+      simp [Count]
+    · -- pending to pending inside the second region
+      rw [region4_pend₂ i c n j L m hlt (by omega), region4_pend₂ i c n j L (m + 1) (by omega) hmL]
+      refine ⟨?_, fun h => by simp at h, by simp [Drift], ?_⟩
+      · rw [show m + 1 - (c + j + 1) = m - (c + j + 1) + 1 by omega, idx_succ, ← add_assoc]
+        exact step4_pend_succ _
+      · simp [Count]
+        omega
+  rcases Nat.eq_or_lt_of_le hmL with heq | hlt
+  · -- the second region ends
+    rw [← heq, region4_pend₂ i c n j L (c + j + 1 + L) (by omega) le_rfl,
+      region4_idle₂ i c n j L (c + j + 1 + L + 1) (by omega)]
+    rw [show c + j + 1 + L - (c + j + 1) = L by omega, Nat.sub_self]
+    exact ⟨step4_pend_idle _, fun h => by simp at h, by simp [Drift], by simp [Count]⟩
+  · -- idle forever
+    rw [region4_idle₂ i c n j L m hlt, region4_idle₂ i c n j L (m + 1) (by omega)]
+    exact ⟨step4_idle_self _, fun _ => rfl, by simp [Drift], by simp [Count]⟩
+
+/-- **Any countdown in the forward window is realized by the next region** (the `Q4` port of
+`second_region_any_length`): through `(true, i), c, n` there is a history whose state at
+`c + j + 1` is pending at index `i + idx c` with countdown `L`, for every `L` with
+`|L - n| ≤ c + j` and every idle-run length `j ≥ 1`. -/
+theorem second_region_any_length4 (i : Fin 4) (c n j L : ℕ) (hj : 1 ≤ j) (hL1 : L ≤ n + c + j)
+    (hL2 : n ≤ L + c + j) :
+    ∃ (σ : WorldHistory F4) (g : ℤ → LadderState Q4 pend4),
+      σ.path = (fun t => (t + 0, g t)) ∧ (g 0).1 = ((true, i), c, n) ∧
+      (g ((c + j + 1 : ℕ) : ℤ)).1 = ((true, i + idx c), L, L) := by
+  have hr := gPast4_rlad i c n (region4 i c n j L) (region4_zero i c n j L)
+    (region4_rlad i c n j L hj hL1 hL2)
+  obtain ⟨σ, hσ⟩ := hist_of_raw _ hr
+  refine ⟨σ, _, hσ, ?_, ?_⟩
+  · rw [liftAdm_val, show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, gPast4_nat, region4_zero]
+  · rw [liftAdm_val, gPast4_nat, region4_pend₂ i c n j L (c + j + 1) (by omega) (by omega),
+      Nat.sub_self, idx_zero, add_zero]
+    simp
+
+/-- **Non-vacuity of the fixture**: every pending state `(true, i), c, n` lies on a history. -/
+theorem exists_hist4 (i : Fin 4) (c n : ℕ) :
+    ∃ σ : WorldHistory F4, σ.state 0 = ((0 : ℤ), st4 i c n) := by
+  obtain ⟨σ, g, hσ, h0, -⟩ := second_region_any_length4 i c n 1 n le_rfl (by omega) (by omega)
+  refine ⟨σ, ?_⟩
+  rw [state_eq4 hσ 0]
+  exact Prod.ext (by simp) (Subtype.ext h0)
+
+end Fixture4
 
 end Probe820
 
