@@ -506,7 +506,7 @@ is the complete covering check — single file, outside every Lake target root.
 
 ---
 
-### Phase 7: The Gap-Shift Gate (Decision Gate) [IN PROGRESS]
+### Phase 7: The Gap-Shift Gate (Decision Gate) [COMPLETED]
 
 **Goal**: The gap-shift hazard run as a gate: with a closure carrying a `snce` member that reads
 the region start's letter and one that pins the previous idle run's length, the pair `(a, c, n)`
@@ -526,28 +526,55 @@ reading of Finding 3; a resistant inequality is the other candidate seventh mech
   realizable and the gap equal; `c` and `c + 4` with `n` and `n + 4` is the pair, unchanged.
 
 **Tasks**:
-- [ ] Compute `T₀` on `Q4` by hand from the cascade: the current region's start pin is `c + s`;
+- [x] Compute `T₀` on `Q4` by hand from the cascade: the current region's start pin is `c + s`;
       with the previous idle run pinned at length 1 and the previous region free, the absorber
       is the previous region's saturated zone when `c + 4 ≤ 2 L_prev + 2` (`region_doubling`),
       else the previous region lengthened by 4 with the idle run before it (unseen by `chi`)
       lengthened by 4; record the computation and `T₀` in the header (a count).
-- [ ] Non-vacuity: explicit histories through both states realizing a type containing `chi`
+      *(deviation: altered — the hand computation came out stronger than the Scope Hypothesis
+      anticipated: with the previous idle run pinned at length 1 the previous region is NOT
+      pinned by `chi` at all, so it may be pending forever with its deadline unconstrained and
+      the cascade terminates at depth 2 WITHOUT any `region_doubling` application. The cascade
+      therefore imposes no lower bound on `c`. The threshold the gate does need is forced by a
+      different closure member — `X (p ∧ ℓ j₀)` reads position 1, which the current region must
+      still fill — giving `T₀ = 1`, `g₀ = 1`, `i₀ = 0`, `j₀ = idx c`; recorded as a count in
+      the probe header, which also records why `region_doubling` is not needed here.)*
+- [x] Non-vacuity: explicit histories through both states realizing a type containing `chi`
       (`hist_of_path4` on paths glued from `gPast4`, `region4`, an idle run of length 1, the
-      current region, and a free future).
-- [ ] Per-member truth lemmas for `cl chi` at position 0 as functions of the finite datum
+      current region, and a free future). *(three witness families, every datum of `D7`
+      realized at BOTH states before any equality: `datum7_realized_forever` (`gPast4` +
+      `region4`), `datum7_realized_start` (`wit7` at age `ageOf r ≥ 1`), `datum7_realized_fresh`
+      (`wit7` at age 0).)*
+- [x] Per-member truth lemmas for `cl chi` at position 0 as functions of the finite datum
       (start letter, previous idle run length `= 1`, next region's start letter — the last is
       always `ℓ (end index)`, read through `pending_walk4`); `tpOf_eq_of_datum'`.
-- [ ] The datum sets achievable from the two states coincide: the `⊆` direction by the pins
+      *(`at0_S1`, `at0_S2`, `at0_U1`, `at0_S1_forever`, `at0_S2_forever`, `at0_p7`, `at0_l7`,
+      `at0_Ynp7`, `at0_Yp7`, `at0_XB7`, collected in `truth_of_datum7`; the closure induction is
+      `agree7` and the type equality `tpOf_eq_of_datum'`.)*
+- [x] The datum sets achievable from the two states coincide: the `⊆` direction by the pins
       (`backward_constraint`, `region_doubling`, `forward_window`), the `⊇` direction by the
       pumped histories — the current region lengthened by 4 at its start (letter unchanged mod
       4), `n` raised by 4 from the previous idle run onward, the previous region lengthened by 4
       when its slack is exhausted, the idle run before it lengthened by 4, every later region
       lengthened by 4 (pumped in step; the forward cascade of Phase 6).
-- [ ] `gap_shift_cell_eq`; the absorber exhibited as its own lemma `absorber4` (the lengthened
+      *(deviation: altered — compiled as `datum7_achievable`, a two-sided set equality against
+      an explicit `D7`, plus `datum7_achievable_shift`. The `⊆` direction needed only
+      `startAt_or_forever` and `startAt_pend_neg_one`, not `backward_constraint` or
+      `region_doubling`: the only constraint on the datum is that an idle position `-1` forces
+      the region's age to be 0. The `⊇` direction is the three witness families rather than a
+      pumping of a given history, which is what the absorber buys: `absorber4` is an `Rlad` ray
+      for EVERY `c` at fixed age, letters and idle-run shape, so `D7` mentions neither `c` nor
+      `n` and the shift equality is the same set on both sides. No statement was narrowed.)*
+- [x] `gap_shift_cell_eq`; the absorber exhibited as its own lemma `absorber4` (the lengthened
       previous region / idle run is an `IsSlicedStepPath`), so the header can point at it.
+      *(compiled at `chi (idx c)` — the plan's own `j₀ = idx c`, which is invariant under the
+      shift since `idx (c+4) = idx c`; `cell_subset_of_datum7` is the one-inclusion step and
+      `gap_shift_cell_eq` the two-sided equality.)*
 - [ ] Contingency, as in Phase 6: if an inequality compiles instead, try modulus 8 and a larger
       `T₀`; if resistant, compile `gap_shift_refuted`, mark `[BLOCKED]`, take the negative branch.
-- [ ] Flip the gap-shift header row; extend the axiom block.
+      *(deviation: skipped — not reached; the equality compiled, so no contingency was taken.)*
+- [x] Flip the gap-shift header row; extend the axiom block. *(`#print axioms` added for
+      `absorber4` and `gap_shift_cell_eq`; both report `[propext, Classical.choice, Quot.sound]`.)*
 
 **Timing**: 2 hours
 

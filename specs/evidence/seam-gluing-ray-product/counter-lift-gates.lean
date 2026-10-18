@@ -64,7 +64,7 @@ built at the model layer below once the fixture section lands); `a := (true, 0)`
 | 9-sep | `(a, 0, n)` vs `(a, 0, n+m)`, `4 ∤ m`, `n ≥ 1` | `X(¬p ∧ X(p ∧ (p U (¬p ∧ ℓ ((n+2) mod 4)))))` (`phi9 n`) | SEPARATION, COMPILED (`gate9_sep_cell_ne`; `¬ 4 ∣ m` the only hypothesis on `m`, `1 ≤ n` kept from the target statement and not needed): at `c = 0, j = 1` the window is `{n-1, n, n+1}`, three of four residues, so residue `n+2` is never the next region's end index from `(a, 0, n)` (`not_phi9_of_path`) and is from `(a, 0, n+m)` for every `m ≢ 0 (mod 4)` (`exists_phi9_mem_cell`) | `forward_window` at `c = 0`; `nside_collides` (`nside-modulus-gate.lean`: the index collides at every `(T, P, B)` whose modulus is `P + 1`, so the semantic half decides) |
 | short-idle | `(a, 2, 2)` vs `(a, 2 + P, 2 + P)`, `P ≥ 1` | `ψ₁ := p ∧ Y(¬p ∧ Y(p ∧ Y(¬p ∧ ¬(⊤ S p))))` (`psi1`) | SEPARATION (compiled at `k = 1`; family at the arithmetic level by `iter_doubling`, not compiled): `short_idle_cell_ne` (every `P ≥ 1`), with `short_idle_shape_collides` (the six-coordinate SHAPE agrees on the pair for every threshold `T ≤ 2` and every modulus `P' + 1` dividing the shift) and `short_idle_threshold_refuted` (both at once: a same-class pair with different cells for every `K` of the forced shape with `T ≤ 2`). The bound was COMPUTED before the pair was written: first region countdown `0`, idle run `1`, `region_doubling` at `L = 0`, `j = 1` gives `L₁ ≤ 2`, attained by `doubling_attained 0` (`growRay 0 3 = (true, 2, 2)` by `decide`) | `iter_doubling`, `doubling_attained`, `backward_constraint`, `region_doubling` |
 | 9-col | `(a, 0, n)` vs `(a, 0, n+4)`, `n ≥ 2` | the closure of `phi9 n` | COLLISION, COMPILED (`gate9_col_cell_eq`: an EQUALITY of `cellAt` values) -- DECISION GATE PASSED. The closure sees one finite datum from `0` (`datum9`: position `2` idle, or the end index of the region starting there); equal data give equal types (`tpOf_eq_of_datum`, by a structural induction over the closure, `agree9`); the achievable data are `{none, some (idx (n-1)), some (idx n), some (idx (n+1))}` as a two-sided set equality (`datum_achievable`: `⊆` by the pin and `Drift`, `⊇` by `region4` with `j ∈ {1, 2}`), and the same set at `n + 4` (`datum_achievable_shift`); the past is the pending-forever past throughout. No contingency taken | `forward_window`; `second_region_any_length`; per-member truth lemmas |
-| gap-shift | `(a, c, n)` vs `(a, c+4, n+4)`, `c ≥ T₀`, same clipped gap | a closure with a `snce` member reading the region start's letter and one pinning the previous idle run's length | DESIGNED, NOT YET COMPILED (expected COLLISION: the pin cascade terminates at an absorbing idle run or a pending-forever past) -- DECISION GATE | `backward_constraint`, `region_doubling`, `doubling_attained`; `gPast_isPath` (pending-forever pasts) |
+| gap-shift | `(a, c, n)` vs `(a, c+4, n+4)`, `c ≥ T₀ = 1`, gap `g₀ = 1` | `(p S (ℓ 0 ∧ Y ¬p)) ∧ (p S (¬p ∧ Y p)) ∧ (p U (¬p ∧ X (p ∧ ℓ (idx c))))` (`chi (idx c)`) | COLLISION, COMPILED (`gap_shift_cell_eq`: an EQUALITY of `cellAt` values) -- DECISION GATE PASSED. The closure sees one finite datum from `0` (`HasDatum7`: position `-1`'s pendingness; whether the past has a region start at all, with the region's age residue and whether the previous idle run has length exactly `1`; whether the next region starts at once), each member read off it by `at0_S1`, `at0_S2`, `at0_U1`, `at0_S1_forever`, `at0_S2_forever` and collected in `truth_of_datum7`; equal data give equal types (`tpOf_eq_of_datum'`, by a structural induction over the closure, `agree7`); the achievable data are `D7 = {τ | τ.1 = false → τ.2.1 = true ∧ τ.2.2.1 = 0}` as a two-sided set equality (`datum7_achievable`: `⊆` by `startAt_or_forever` and `startAt_pend_neg_one`, `⊇` by `datum7_realized_forever`, `datum7_realized_start`, `datum7_realized_fresh`), a set mentioning neither `c` nor `n`, hence literally the same set at `(c+4, n+4)` (`datum7_achievable_shift`). **The absorber** is `absorber4`: the past ray is an `Rlad` ray for EVERY `c` at fixed age, letters and idle-run shape, because the previous region -- which `chi` does not pin -- is pending forever with its deadline unconstrained, or is an idle-forever run. No contingency taken | `absorber4`, `past7_junction`, `wit7_rlad`; `forward_window` (the window conditions on `past7`); per-member truth lemmas |
 | statement-shape | generic (`K`, `κ`, sound `R`) | -- | REFUTED, COMPILED: no positionwise lift | `no_positionwise_lift` (this file) |
 
 A gate probing one coordinate certifies one coordinate; passing an earlier row says nothing
@@ -2158,13 +2158,18 @@ the current region's start pin is `c + s₀` at `-s₀-1`, and `Drift` to `n` at
 when pinned to length `1`, is preceded by a region the closure does NOT pin, which may be
 pending forever with its deadline unconstrained, so the cascade terminates at depth `2` at that
 unpinned previous region (or at the idle-forever run when the length is not pinned).  So
-`T₀ = 0` (a count), `g₀ = 1`, `i₀ = 0`, `j₀ = idx c`; the absorber is `absorber4` below: the
-previous region / idle run carrying the shifted pin with the same letters. -/
+the cascade imposes NO lower bound on `c`: it terminates at depth `2` at that unpinned previous
+region.  The threshold the gate does need is forced by a different member -- `X (p ∧ ℓ j)` reads
+position `1`, which the current region must still fill -- so `T₀ = 1` (a count), `g₀ = 1`
+(`n = c + 1` is what makes the age-`0` datum realizable: at age `0` the pin forces `n ≤ c + 1`),
+`i₀ = 0`, `j₀ = idx c` (unchanged under the shift, `idx (c+4) = idx c`); the absorber is
+`absorber4` below: the previous region / idle run carrying the shifted pin with the same
+letters. -/
 
 section GapShift
 
-/-- The fixture threshold, computed from the cascade above: `0`. -/
-def T₀ : ℕ := 0
+/-- The fixture threshold, computed from the cascade above: `1`. -/
+def T₀ : ℕ := 1
 /-- The fixed gap inside the clip. -/
 def g₀ : ℕ := 1
 
@@ -2829,6 +2834,253 @@ theorem tpOf_eq_of_datum' {σ σ' : WorldHistory F4} {k k' : ℤ}
     exact ⟨hcl, (agree7 hσ hσ' hg hg' h0 h0' hc hc' hm1 j hS1 hS2 hU1 ψ hcl).mp ht⟩
   · rintro ⟨hcl, ht⟩
     exact ⟨hcl, (agree7 hσ hσ' hg hg' h0 h0' hc hc' hm1 j hS1 hS2 hU1 ψ hcl).mpr ht⟩
+
+/-! ### The finite datum and the sets achievable from the two states -/
+
+/-- The finite datum the gap-shift closure reads at `0`: whether position `-1` is pending;
+whether the past has a region start at all (`false` = pending forever, where both `snce` members
+fail), with the region's age residue and whether the previous idle run has length exactly `1`;
+and whether the next region starts at once. -/
+abbrev Datum7T : Type := Bool × Bool × Fin 4 × Bool × Bool
+
+/-- `g` carries the datum `τ` at `0`, the current region ending `c` steps on. -/
+def HasDatum7 (c : ℕ) (g : ℤ → LadderState Q4 pend4) (τ : Datum7T) : Prop :=
+  (g (-1)).1.1.1 = τ.1 ∧
+    (τ.2.1 = true → ∃ s₀, StartAt g s₀ ∧ idx s₀ = τ.2.2.1 ∧
+      (g (-((s₀ : ℤ) + 2))).1.1.1 = τ.2.2.2.1) ∧
+    (τ.2.1 = false → ∀ t : ℕ, (g (-(t : ℤ))).1.1.1 = true) ∧
+    (g ((c : ℤ) + 2)).1.1.1 = τ.2.2.2.2
+
+/-- `S1`'s value as a function of the datum. -/
+def S1val (τ : Datum7T) : Prop :=
+  τ.2.1 = true ∧ τ.2.2.1 = 0 ∧ (τ.1 = true ∨ τ.2.2.2.1 = false)
+
+/-- `S2`'s value as a function of the datum. -/
+def S2val (τ : Datum7T) : Prop := τ.2.1 = true ∧ τ.2.2.2.1 = true
+
+/-- Position `-1` is pending exactly when the region is already under way. -/
+theorem startAt_pend_neg_one {g : ℤ → LadderState Q4 pend4} {s₀ : ℕ} (hst : StartAt g s₀) :
+    (g (-1)).1.1.1 = true ↔ 1 ≤ s₀ := by
+  constructor
+  · intro h
+    by_contra hlt
+    have hz : s₀ = 0 := by omega
+    rw [hz] at hst
+    rw [show (-1 : ℤ) = -(((0 : ℕ) : ℤ) + 1) by norm_num, hst.2] at h
+    exact Bool.noConfusion h
+  · intro h1
+    have h := hst.1 1 h1
+    rwa [show -((1 : ℕ) : ℤ) = -1 by norm_num] at h
+
+/-- Every path through `((true, 0), c, n)` carries a datum. -/
+theorem exists_datum7 {g : ℤ → LadderState Q4 pend4} (c n : ℕ)
+    (h0 : (g 0).1 = ((true, 0), c, n)) : ∃ τ : Datum7T, HasDatum7 c g τ := by
+  have hp0 : (g 0).1.1.1 = true := by rw [h0]
+  rcases startAt_or_forever g hp0 with ⟨s₀, hst⟩ | hfor
+  · exact ⟨((g (-1)).1.1.1, true, idx s₀, (g (-((s₀ : ℤ) + 2))).1.1.1, (g ((c : ℤ) + 2)).1.1.1),
+      rfl, fun _ => ⟨s₀, hst, rfl, rfl⟩, by simp, rfl⟩
+  · refine ⟨(true, false, 0, false, (g ((c : ℤ) + 2)).1.1.1), ?_, by simp, fun _ => hfor, rfl⟩
+    rw [show (-1 : ℤ) = -((1 : ℕ) : ℤ) by norm_num]
+    exact hfor 1
+
+section Truth7
+variable {σ : WorldHistory F4} {k : ℤ} {g : ℤ → LadderState Q4 pend4}
+  (hσ : σ.path = fun t => (t + k, g t))
+  (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+include hσ hg
+
+/-- **The three top-level members are functions of the datum.** -/
+theorem truth_of_datum7 {c n : ℕ} (h0 : (g 0).1 = ((true, 0), c, n)) (τ : Datum7T)
+    (hd : HasDatum7 c g τ) :
+    (PlusTruthAt M4 σ 0 S1raw ↔ S1val τ) ∧ (PlusTruthAt M4 σ 0 S2raw ↔ S2val τ) ∧
+      (PlusTruthAt M4 σ 0 (U1raw (idx c)) ↔ τ.2.2.2.2 = true) := by
+  obtain ⟨hd1, hdstart, hdfor, hd4⟩ := hd
+  have hq0 : (g 0).1.1 = (true, 0) := congrArg Prod.fst h0
+  refine ⟨?_, ?_, ?_⟩
+  · cases hb : τ.2.1 with
+    | false =>
+      exact iff_of_false (at0_S1_forever hσ (hdfor hb))
+        (fun hv => Bool.noConfusion (hb.symm.trans hv.1))
+    | true =>
+      obtain ⟨s₀, hst, hr, hpp⟩ := hdstart hb
+      rw [at0_S1 hσ hg s₀ hst hq0]
+      show _ ↔ τ.2.1 = true ∧ τ.2.2.1 = 0 ∧ (τ.1 = true ∨ τ.2.2.2.1 = false)
+      rw [hb, ← hr, ← hpp, ← hd1, startAt_pend_neg_one hst]
+      simp
+  · cases hb : τ.2.1 with
+    | false =>
+      exact iff_of_false (at0_S2_forever hσ (hdfor hb))
+        (fun hv => Bool.noConfusion (hb.symm.trans hv.1))
+    | true =>
+      obtain ⟨s₀, hst, -, hpp⟩ := hdstart hb
+      rw [at0_S2 hσ s₀ hst]
+      show _ ↔ τ.2.1 = true ∧ τ.2.2.2.1 = true
+      rw [hb, ← hpp]
+      simp
+  · rw [at0_U1 hσ hg c n h0 (idx c), hd4]
+    simp
+
+end Truth7
+
+/-- A datum is realized at `(a, c, n)` when some offset-`0` sliced path through that state
+carries it. -/
+def datum7_realized (c n : ℕ) (τ : Datum7T) : Prop :=
+  ∃ (σ : WorldHistory F4) (g : ℤ → LadderState Q4 pend4),
+    σ.path = (fun t => (t + 0, g t)) ∧ (∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1) ∧
+    (g 0).1 = ((true, 0), c, n) ∧ HasDatum7 c g τ
+
+/-- **The data achievable from a pending state whose region still has `1 ≤ c` steps to run and
+whose gap is `1`**: an idle position `-1` forces the region's age to be `0`, hence a start of
+residue `0`; nothing else is constrained — and the set mentions neither `c` nor `n`. -/
+def D7 : Set Datum7T := {τ | τ.1 = false → (τ.2.1 = true ∧ τ.2.2.1 = 0)}
+
+/-- The idle-run length realizing a prescribed next-region flag. -/
+def runLen (d : Bool) : ℕ := if d then 1 else 2
+
+theorem runLen_cases (d : Bool) : runLen d = 1 ∨ runLen d = 2 := by
+  cases d <;> simp [runLen]
+
+theorem runLen_pos (d : Bool) : 1 ≤ runLen d := by cases d <;> simp [runLen]
+
+theorem decide_runLen (d : Bool) : decide (runLen d = 1) = d := by cases d <;> simp [runLen]
+
+/-- An age `≥ 1` with a prescribed residue. -/
+def ageOf (r : Fin 4) : ℕ := if r.val = 0 then 4 else r.val
+
+theorem ageOf_pos : ∀ r : Fin 4, 1 ≤ ageOf r := by decide
+theorem idx_ageOf : ∀ r : Fin 4, idx (ageOf r) = r := by decide
+
+/-- **Non-vacuity, pending-forever past**: every datum with no region start is realized. -/
+theorem datum7_realized_forever (c n : ℕ) (r : Fin 4) (pp d : Bool) :
+    datum7_realized c n (true, false, r, pp, d) := by
+  have hr := gPast4_rlad 0 c n (region4 0 c n (runLen d) n) (region4_zero 0 c n (runLen d) n)
+    (region4_rlad 0 c n (runLen d) n (runLen_pos d) (by omega) (by omega))
+  obtain ⟨σ, hσ⟩ := hist_of_raw _ hr
+  refine ⟨σ, _, hσ, fun t => hr t, ?_, ?_, by simp, ?_, ?_⟩
+  · rw [liftAdm_val, show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, gPast4_nat, region4_zero]
+  · rw [liftAdm_val]
+    exact gPast4_pending 0 c n _ (region4_zero 0 c n (runLen d) n) (-1) (by omega)
+  · intro _ t
+    rw [liftAdm_val]
+    exact gPast4_pending 0 c n _ (region4_zero 0 c n (runLen d) n) (-(t : ℤ)) (by omega)
+  · rw [liftAdm_val, show (c : ℤ) + 2 = ((c + 2 : ℕ) : ℤ) by push_cast; ring, gPast4_nat]
+    cases d with
+    | true =>
+      rw [show runLen true = 1 from by simp [runLen],
+        region4_pend₂ 0 c n 1 n (c + 2) (by omega) (by omega)]
+    | false =>
+      rw [show runLen false = 2 from by simp [runLen],
+        region4_idle₁ 0 c n 2 n (c + 2) (by omega) (by omega)]
+
+/-- **Non-vacuity, a region already under way**: every datum with a region start of age `≥ 1` is
+realized, with the previous idle run's length and the next region's start prescribed. -/
+theorem datum7_realized_start (c n : ℕ) (hn : n = c + 1) (r : Fin 4) (pp d : Bool) :
+    datum7_realized c n (true, true, r, pp, d) := by
+  have hpos := ageOf_pos r
+  have hr := wit7_rlad c n (ageOf r) pp (runLen d) (runLen_pos d) (by omega) (by omega)
+  obtain ⟨σ, hσ⟩ := hist_of_raw _ hr
+  refine ⟨σ, _, hσ, fun t => hr t, ?_, ?_,
+    fun _ => ⟨ageOf r, wit7_startAt c n (ageOf r) pp (runLen d) hr, idx_ageOf r,
+      wit7_prev c n (ageOf r) pp (runLen d) hr⟩, by simp, ?_⟩
+  · rw [liftAdm_val, wit7_zero]
+  · rw [liftAdm_val, show (-1 : ℤ) = -(((0 : ℕ) : ℤ) + 1) by norm_num, wit7_neg,
+      past7_in c n (ageOf r) pp 0 (by omega)]
+  · rw [wit7_next c n (ageOf r) pp (runLen d) (runLen_cases d) hr, decide_runLen]
+
+/-- **Non-vacuity, a region just started**: the only datum with an idle position `-1` — the
+region's age is `0`, so its residue is `0`. -/
+theorem datum7_realized_fresh (c n : ℕ) (hn : n = c + 1) (pp d : Bool) :
+    datum7_realized c n (false, true, 0, pp, d) := by
+  have hr := wit7_rlad c n 0 pp (runLen d) (runLen_pos d) (by omega) (by omega)
+  obtain ⟨σ, hσ⟩ := hist_of_raw _ hr
+  refine ⟨σ, _, hσ, fun t => hr t, ?_, ?_,
+    fun _ => ⟨0, wit7_startAt c n 0 pp (runLen d) hr, idx_zero,
+      wit7_prev c n 0 pp (runLen d) hr⟩, by simp, ?_⟩
+  · rw [liftAdm_val, wit7_zero]
+  · rw [liftAdm_val, show (-1 : ℤ) = -(((0 : ℕ) : ℤ) + 1) by norm_num, wit7_neg,
+      past7_start c n 0 pp]
+  · rw [wit7_next c n 0 pp (runLen d) (runLen_cases d) hr, decide_runLen]
+
+/-- **The achievable data, a two-sided set equality** — and the set does not mention `c` or
+`n`. -/
+theorem datum7_achievable (c n : ℕ) (hn : n = c + 1) :
+    {τ | datum7_realized c n τ} = D7 := by
+  ext τ
+  simp only [Set.mem_setOf_eq, D7]
+  constructor
+  · intro h ha
+    obtain ⟨σ, g, hσ, hg, h0, hd⟩ := h
+    obtain ⟨hd1, hdstart, hdfor, -⟩ := hd
+    cases hb : τ.2.1 with
+    | false =>
+      have hfor := hdfor hb
+      have hone := hfor 1
+      rw [show -((1 : ℕ) : ℤ) = -1 by norm_num, hd1, ha] at hone
+      exact Bool.noConfusion hone
+    | true =>
+      obtain ⟨s₀, hst, hr, -⟩ := hdstart hb
+      have hz : s₀ = 0 := by
+        by_contra hne
+        have hp := (startAt_pend_neg_one hst).mpr (by omega)
+        rw [hd1, ha] at hp
+        exact Bool.noConfusion hp
+      rw [hz, idx_zero] at hr
+      exact ⟨rfl, hr.symm⟩
+  · intro hD
+    obtain ⟨a, hs, r, pp, d⟩ := τ
+    cases a with
+    | false =>
+      obtain ⟨hs1, hr0⟩ := hD rfl
+      simp only at hs1 hr0
+      subst hs1
+      subst hr0
+      exact datum7_realized_fresh c n hn pp d
+    | true =>
+      cases hs with
+      | true => exact datum7_realized_start c n hn r pp d
+      | false => exact datum7_realized_forever c n r pp d
+
+/-- The achievable data at `(c, n)` and at `(c + 4, n + 4)` coincide: the set is the same. -/
+theorem datum7_achievable_shift (c n : ℕ) (hn : n = c + 1) :
+    {τ | datum7_realized c n τ} = {τ | datum7_realized (c + 4) (n + 4) τ} := by
+  rw [datum7_achievable c n hn, datum7_achievable (c + 4) (n + 4) (by omega)]
+
+/-- One inclusion of cells from one inclusion of achievable data. -/
+theorem cell_subset_of_datum7 (c n c' n' : ℕ) (hc : 1 ≤ c) (hc' : 1 ≤ c') (hcc : idx c = idx c')
+    (hsub : {τ | datum7_realized c n τ} ⊆ {τ | datum7_realized c' n' τ}) :
+    cellAt M4 (chi (idx c)) ((0 : ℤ), st4 0 c n) 0 ⊆
+      cellAt M4 (chi (idx c)) ((0 : ℤ), st4 0 c' n') 0 := by
+  intro T hT
+  obtain ⟨σ, g, hσ, hg, h0, rfl⟩ := of_mem_cell4_zero (chi (idx c)) 0 c n T hT
+  obtain ⟨τ, hd⟩ := exists_datum7 c n h0
+  have hmem : τ ∈ {τ | datum7_realized c n τ} := ⟨σ, g, hσ, hg, h0, hd⟩
+  obtain ⟨σ', g', hσ', hg', h0', hd'⟩ := hsub hmem
+  obtain ⟨hS1, hS2, hU1⟩ := truth_of_datum7 hσ hg h0 τ hd
+  obtain ⟨hS1', hS2', hU1'⟩ := truth_of_datum7 hσ' hg' h0' τ hd'
+  have hU1'' : PlusTruthAt M4 σ' 0 (U1raw (idx c)) ↔ τ.2.2.2.2 = true := by
+    rw [hcc]; exact hU1'
+  refine ⟨σ', ?_, ?_⟩
+  · rw [state_eq4 hσ' 0]
+    exact Prod.ext (by simp) (Subtype.ext h0')
+  · exact tpOf_eq_of_datum' hσ' hσ hg' hg h0' h0 hc' hc (hd'.1.trans hd.1.symm) (idx c)
+      (hS1'.trans hS1.symm) (hS2'.trans hS2.symm) (hU1''.trans hU1.symm)
+
+/-- **THE GAP-SHIFT GATE — COLLISION**: the cells at `(a, c, c + g₀)` and
+`(a, c + 4, c + g₀ + 4)` are EQUAL for the gap-shift closure, every `c ≥ T₀`.  The pin cascade
+terminates with the absorber exhibited (`absorber4`): the previous region, which `chi` does not
+pin, carries the shifted deadline. -/
+theorem gap_shift_cell_eq (c n : ℕ) (hc : T₀ ≤ c) (hn : n = c + g₀) :
+    cellAt M4 (chi (idx c)) ((0 : ℤ), st4 0 c n) 0
+      = cellAt M4 (chi (idx c)) ((0 : ℤ), st4 0 (c + 4) (n + 4)) 0 := by
+  have hc1 : 1 ≤ c := by simpa [T₀] using hc
+  have hn1 : n = c + 1 := by simpa [g₀] using hn
+  have hcc : idx c = idx (c + 4) := by rw [idx_eq_iff]; omega
+  refine Set.Subset.antisymm ?_ ?_
+  · exact cell_subset_of_datum7 c n (c + 4) (n + 4) hc1 (by omega) hcc
+      (datum7_achievable_shift c n hn1).le
+  · have h2 := cell_subset_of_datum7 (c + 4) (n + 4) c n (by omega) hc1 hcc.symm
+      (datum7_achievable_shift c n hn1).ge
+    rwa [← hcc] at h2
 end GapShift
 
 end Probe820
@@ -2848,3 +3100,5 @@ end Probe820
 #print axioms Probe820.short_idle_shape_collides
 #print axioms Probe820.short_idle_threshold_refuted
 #print axioms Probe820.gate9_col_cell_eq
+#print axioms Probe820.absorber4
+#print axioms Probe820.gap_shift_cell_eq
