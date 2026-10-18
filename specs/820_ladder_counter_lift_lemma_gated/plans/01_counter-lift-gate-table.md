@@ -506,7 +506,7 @@ is the complete covering check — single file, outside every Lake target root.
 
 ---
 
-### Phase 7: The Gap-Shift Gate (Decision Gate) [NOT STARTED]
+### Phase 7: The Gap-Shift Gate (Decision Gate) [IN PROGRESS]
 
 **Goal**: The gap-shift hazard run as a gate: with a closure carrying a `snce` member that reads
 the region start's letter and one that pins the previous idle run's length, the pair `(a, c, n)`
