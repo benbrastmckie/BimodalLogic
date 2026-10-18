@@ -631,6 +631,7 @@ import FormalSystem.Semantics.Presheaf.Determinism
 import FormalSystem.Semantics.Presheaf.Directed
 import FormalSystem.Semantics.Presheaf.Duration
 import FormalSystem.Semantics.Presheaf.Ray
+import FormalSystem.Semantics.Presheaf.Reflection
 import FormalSystem.Semantics.Presheaf.Sheaf
 import FormalSystem.Semantics.Presheaf.Site
 import FormalSystem.Semantics.Presheaf.Worlds

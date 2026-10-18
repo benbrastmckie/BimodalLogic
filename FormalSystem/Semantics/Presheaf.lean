@@ -9,6 +9,7 @@ import FormalSystem.Semantics.Presheaf.Directed
 import FormalSystem.Semantics.Presheaf.Determinism
 import FormalSystem.Semantics.Presheaf.Duration
 import FormalSystem.Semantics.Presheaf.Ray
+import FormalSystem.Semantics.Presheaf.Reflection
 import FormalSystem.Semantics.Presheaf.Sheaf
 import FormalSystem.Semantics.Presheaf.Site
 import FormalSystem.Semantics.Presheaf.Worlds
@@ -39,6 +40,10 @@ Aggregator for `Semantics/Presheaf/`. See `Semantics/Presheaf/README.md`.
 - `Presheaf.Ray` — the ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam
   projections, the restrictions of a possible world to its two rays, and the bridges to
   `PartialHistory` and to `Beh F l`
+- `Presheaf.Reflection` — the *Reflection* clause: the reflection automorphism `Tr.ref` of `Int(D)`,
+  the section reflection `Beh.reflectSec` into the converse frame's presheaf, naturality, and the
+  component bijection `Beh.reflectEquiv : Beh F l ≃ Beh F.rev l`; constraint-free, the categorical
+  packaging of the involution behind the time reflection metarule `TR`
 - `Presheaf.Worlds` — the *Total Histories* clause (the record's *Possible Worlds*):
   `H_F ≅ lim Beh(F)(2x)` along the central restrictions, presented concretely as the compatible
   families `Lim F`, with the choice-free isomorphism `worldsEquiv` and the nonemptiness tail
