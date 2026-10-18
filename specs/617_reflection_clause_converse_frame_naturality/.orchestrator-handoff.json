@@ -1,0 +1,24 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 6,
+  "summary": "Wrote a three-phase sequential plan for the Reflection clause of app:presheaf-dictionary as one new module FormalSystem/Semantics/Presheaf/Reflection.lean: Phase 1 the reflection automorphism Tr.ref and its five laws, Phase 2 the section reflection, naturality, involution and Beh.reflectEquiv, Phase 3 aggregator/README/record wiring plus the full gate. The research's promotion phase and its conditional user_decision were dropped because the converse frame already sits in Semantics/TaskFrame.lean (landed by another task); the saved probe recompiles clean against the current tree with that block removed. Every statement is carried in the plan's Lean Challenge Statements section, which type-checks standalone.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/617_reflection_clause_converse_frame_naturality/plans/01_reflection-clause-converse-frame.md",
+      "summary": "Three-phase plan: Tr.ref automorphism; section reflection, naturality and Equiv; wiring, records and full gate."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 3,
+  "blockers": [],
+  "decisions_made": [
+    "Consume FrameOver.rev / TaskFrame.rev from Semantics/TaskFrame.lean; no second converse frame and no promotion phase (already landed, verified by probe recompile at plan time)",
+    "State the clause over the primitive reversal rev_taskRel (Iff.rfl), citing the paper's negated form rev_taskRel_neg as the bridge; the clause consumes no frame constraint",
+    "Plain def and theorems for ref, no CategoryTheory.Functor instance, following Site.lean's recorded decision",
+    "Accept import Mathlib.Tactic.Abel in Reflection.lean (in-cluster precedent Semantics/Extension/Constraint.lean; lock verified intact)",
+    "The aggregator import is handled as a shared touch in the final phase and deliberately not harvested into file_scope, per the task description's instruction"
+  ],
+  "continuation_path": null
+}

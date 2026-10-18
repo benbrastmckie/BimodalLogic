@@ -61,7 +61,7 @@ next_project_number: 820
 566 [PLANNED] — Prove app:presheaf-dictionary's Possible Worlds clause: H\_F...
 616 [PLANNED] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
-617 [PLANNING] — Prove app:presheaf-dictionary's Reflection clause: reflection...
+617 [PLANNED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
 
 ### Dataset Enhancement
 
@@ -1637,11 +1637,12 @@ PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Struct
 ---
 
 ### 617. Reflection clause converse frame naturality
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
 - **Research**: [617_reflection_clause_converse_frame_naturality/reports/01_reflection-clause-converse-frame.md]
+- **Plan**: [617_reflection_clause_converse_frame_naturality/plans/01_reflection-clause-converse-frame.md]
 
 **Description**: Prove `app:presheaf-dictionary`'s Reflection clause: reflection is a natural isomorphism `Beh(F) iso Beh(F-) . ref` between the behavior presheaf of a task frame and that of its converse frame, precomposed with the reflection automorphism of the interval category.
 

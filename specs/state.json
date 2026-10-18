@@ -485,7 +485,7 @@
     {
       "project_number": 617,
       "project_name": "reflection_clause_converse_frame_naturality",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Prove `app:presheaf-dictionary`'s Reflection clause: reflection is a natural isomorphism `Beh(F) iso Beh(F-) . ref` between the behavior presheaf of a task frame and that of its converse frame, precomposed with the reflection automorphism of the interval category.\n\nDELIVER, following `def:behavior-presheaf` and the Reflection paragraph of `app:presheaf-dictionary`'s proof:\n- The reflection of a section: `tau^r (z) = tau(l - z)` on `[0, l]`.\n- The converse frame `F- = (W, D, =>-)` with `w =>-_x u` iff `w =>_{-x} u`.\n- The reflection automorphism `ref` of `Int(D)`: involutive, fixing objects, sending `Tr p : l' -> l` to `Tr (l - p - l') : l' -> l`, thereby interchanging left and right restrictions. Prove it preserves composition, fixes identities, and is its own inverse.\n- That `tau^r` lies in `Beh(F-)(l)` whenever `tau` lies in `Beh(F)(l)`, naturality in the translations, and that each component is a bijection, using `(F-)- = F` and `(tau^r)^r = tau`.\n\nTHE POINT OF THE CLAUSE, which belongs in the module docstring rather than being left implicit in the proof terms: this natural isomorphism is what underlies the soundness of the time reflection metarule `TR` (`thm:TR-valid` in the paper). The reflection convention on the task relation supplies the involution by definition rather than by assumption, which is why the clause costs so little. Along with the Determinism clause of task 567, this is one of the few places where the categorical packaging says something about the logic rather than merely restating the semantics.\n\nREUSE, NOT REBUILD. This repository already carries time-reflection and converse machinery -- `FormalSystem/Semantics/TruthTransport.lean` and the `reflectTime` vocabulary adopted in the TD->TR rename, with the `swapUS`/`swapMinus` families still under review in task 608. Survey what exists before defining a second converse-frame construction. If the existing API already yields the converse frame, this task consumes it; if not, say in the docstring why a separate one was needed. A duplicate converse frame is a failure of this task, not a side effect of it.\n\nPAPER ANCHOR. The Reflection clauses of `def:behavior-presheaf` and `app:presheaf-dictionary` in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, both COMMENTED OUT inside the \"SECTION CUT\" block holding `app:Structure` -- read them there.\n\nDEPENDENCY. Task 563, for `Beh(F)` and `Int(D)`.\n\nCONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of every phase.\n\nReconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.\n\nCONVENTION NOTE (2026-09-21). Task 636 has landed: write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, each key resolving in the root references.bib (typst/bibliography.bib no longer exists). The language-extension files are now under FormalSystem/{Plus,Minus,Star}Language/ with flat FormalSystem.{X}Language namespaces (task 634).\n\nSCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.\n\nPAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Structure (def:interval-site, def:behavior-presheaf, def:twisted-arrow, lem:interval-twisted-arrow, app:presheaf-dictionary, def:conduche, def:path-category, fact:conduche-equivalence, cor:path-fibration) NO LONGER sits inside possible_worlds.tex. It is kept verbatim, still commented, in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/appendix_cut_material.tex under the header '\\subsection{Topological and Categorical Structure}' / '\\label{app:Structure}'. The uncompressed conclusion paragraph that previewed this material (interval site, twisted-arrow site, Conduche fibrations, path category, the Reflection clause as what underlies TR, change of site along order-embeddings) is in the same file under the header 'moved from sub:Conclusion'. possible_worlds.tex retains only the one-paragraph live summary in sub:Conclusion and the live app:gluing. Read the anchors in the cut file; nothing in the paper defines those labels any more. The BL truth transfer under reflection (lem:time-reflection) and the semantic thm:TR-valid are filed as task 796; this task stays the categorical packaging of the same involution.",
       "topic": "categorical-structure",
@@ -493,17 +493,28 @@
         563
       ],
       "created": "2026-09-17T23:52:40Z",
-      "last_updated": "2026-10-18T00:00:00Z",
+      "last_updated": "2026-10-18T00:16:27Z",
       "priority": "high",
       "file_scope": [
-        "FormalSystem/Semantics/Presheaf/Reflection.lean"
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics/Presheaf/README.md",
+        "FormalSystem/Semantics/Presheaf/Reflection.lean",
+        "FormalSystem/Semantics/Reversal.lean",
+        "README.md",
+        "docs/reference/paper-definitions-of-record.md",
+        "typst/generated/status.typ"
       ],
-      "session_id": "sess_1792281062_c5e5aa_617",
+      "session_id": "sess_1792281062_c5e5aa",
       "artifacts": [
         {
           "path": "specs/617_reflection_clause_converse_frame_naturality/reports/01_reflection-clause-converse-frame.md",
           "type": "report",
           "summary": "Research report: 01_reflection-clause-converse-frame.md"
+        },
+        {
+          "path": "specs/617_reflection_clause_converse_frame_naturality/plans/01_reflection-clause-converse-frame.md",
+          "type": "plan",
+          "summary": "Three-phase plan: Tr.ref automorphism; section reflection, naturality and Equiv; wiring, records and full gate."
         }
       ]
     },
