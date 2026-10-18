@@ -539,14 +539,14 @@ remains the complete covering check — the module is still unimported.
 
 ---
 
-### Phase 7: `D = ℤ`, layer 2a — sections to paths in the one-step graph [NOT STARTED]
+### Phase 7: `D = ℤ`, layer 2a — sections to paths in the one-step graph [COMPLETED]
 
 **Goal**: Carry the one-step quiver on a synonym `StepGraph F`, define `toPath` from a
 `PathHom F.toTaskFrame w u` to a `Quiver.Path w u` by peeling the last step, and prove its
 length, identity, and composition laws — "sections are paths" and "gluing is concatenation".
 
 **Tasks**:
-- [ ] Define `def StepGraph (F : FrameOver intOrder) : Type := F.WorldState` and
+- [x] Define `def StepGraph (F : FrameOver intOrder) : Type := F.WorldState` and
       `instance StepGraph.instQuiver F : Quiver (StepGraph F) := ⟨fun a b => PLift (FrameOver.step F a b)⟩`
       (`Quiver.Hom` is `Type v`-valued in this Mathlib, so the `Prop`-valued `step` is lifted;
       `PLift` of a `Prop` is a `Subsingleton`, so path equality is unaffected by proof terms), and
@@ -554,21 +554,21 @@ length, identity, and composition laws — "sections are paths" and "gluing is c
       the docstring that the synonym exists so that no `Quiver` instance is placed on
       `F.WorldState` (the plan-time compile showed a bare `def`-valued quiver is not found by
       instance synthesis)
-- [ ] Define `PathHom.toPathAux F (n : ℕ) (e : PathHom F.toTaskFrame w u) (hn : (n : ℤ) = e.len.val) : StepPath F w u`
+- [x] Define `PathHom.toPathAux F (n : ℕ) (e : PathHom F.toTaskFrame w u) (hn : (n : ℤ) = e.len.val) : StepPath F w u`
       by recursion on `n`: at `0`, `w = u` from `src`/`tgt` and `Quiver.Path.nil` transported along
       that equality; at `n+1`, `Quiver.Path.cons (toPathAux n (restriction of e to [0, n]) _) ⟨step at (n, n+1)⟩`
       with the restriction a `PathHom` built from `Beh.restrict 0 n` and the step from
-      `respects_task` at `(n, n+1)`
-- [ ] Define `PathHom.toPath F e := toPathAux F (Int.toNat e.len.val) e (Int.toNat_of_nonneg e.len.property)`
-- [ ] Prove `toPath_length : (toPath F e).length = Int.toNat e.len.val` (by `toPathAux`
+      `respects_task` at `(n, n+1)` *(deviation: altered — the restriction of `e` to `[0, n]` is `e.factorLeft ⟨n, 1, _, _, _⟩` (Phase 4's left factor, which is exactly `Beh.restrict 0 n`), and the step is read off `e.sec.val.respects_task n (n + 1)` directly; recursion by `match n, e, hn`)*
+- [x] Define `PathHom.toPath F e := toPathAux F (Int.toNat e.len.val) e (Int.toNat_of_nonneg e.len.property)`
+- [x] Prove `toPath_length : (toPath F e).length = Int.toNat e.len.val` (by `toPathAux`
       induction, `Quiver.Path.length_cons`), `toPath_id : toPath F (PathHom.id F.toTaskFrame w) = Quiver.Path.nil`
       (length `0`), and `toPath_comp : toPath F (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g) = (toPath F f).comp (toPath F g)`
       (induction on `g`'s length via `toPathAux`; `Int.toNat_add` on the two nonnegative lengths;
-      `Quiver.Path.comp_cons`; a `castLen` at every peeled step, compared at `.val`)
-- [ ] Docstrings: `Constraints consumed: None` on `StepGraph`, `StepGraph.instQuiver`;
+      `Quiver.Path.comp_cons`; a `castLen` at every peeled step, compared at `.val`) *(deviation: altered — `toPath_id` closes by `rfl` (the `0`-case transport along `w = w` reduces by K-like reduction of `Eq.rec`), and `toPath_comp`'s induction is carried by three local congruence lemmas (`congr_n` on the index, `congr_e` across an equality of targets, `cons_congr` across an equality of the intermediate vertex) with the "castLen at the peeled step, compared at `.val`" discharged by `glue_unique`; `Quiver.Path.comp_cons` is applied as a definitional `change` because `rw` did not match it against the `StepGraph` quiver instance)*
+- [x] Docstrings: `Constraints consumed: None` on `StepGraph`, `StepGraph.instQuiver`;
       `Constraints consumed: Compositionality, Seriality, Limit` on the `toPath*` family (they take
-      `[F.IsRegular]`)
-- [ ] Record the issue log as events arise — in particular any divergence from the recursion shape
+      `[F.IsRegular]`) *(deviation: altered — the `toPath*` family carries `[F.IsRegular]` and therefore the exempt all-four marker list, for the C34a reason recorded under Phase 2)*
+- [x] Record the issue log as events arise — in particular any divergence from the recursion shape
       above, since this is the phase the report flags as the largest risk
 
 **Timing**: 1.5 hours
@@ -593,6 +593,7 @@ remains the complete covering check — the module is still unimported.
   (`Int.toNat` arithmetic must stay off `omega`-introduced choice; if a lemma pulls it, replace the
   arithmetic step with the named `Int.toNat_*` lemma)
 - Commit: `task 618 phase 7: D = Z layer 2a, sections to paths in the one-step graph`
+- Verification record (2026-10-18): guarded scoped build exit 0, no sorry, no warnings; full guarded `lake build` exit 0 (2878 jobs, 0 errors); `#print axioms`: `toPath_comp`, `toPath_length`, `toPath_id`, `toPathAux` all `[propext, Quot.sound]`, no `Classical.choice` (no `omega`; `Int.toNat_add` and `Int.toNat_of_nonneg` are the only `toNat` facts used); C34a PASS over 142 markers; C15 PASS; declaration count 50; `status.typ` regenerated and staged
 
 ---
 

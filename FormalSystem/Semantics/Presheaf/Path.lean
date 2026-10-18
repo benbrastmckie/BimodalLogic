@@ -1098,6 +1098,298 @@ theorem beh_int_iff_adjacent_window (F : FrameOver intOrder) [F.IsRegular] (n : 
   · intro hg
     exact ⟨Beh.ofAdjacentWindow F n hn g hg, fun _ _ => rfl⟩
 
+/-! ### `D = ℤ`, layer 2a: sections to paths in the one-step graph -/
+
+/-- **The one-step task graph `(W, ⇒₁)` as a type**: a synonym of `F.WorldState` carrying the
+`Quiver` instance below, so that no instance is placed on `F.WorldState` itself. The synonym is a
+requirement, not a style choice: a bare `def`-valued `Quiver F.WorldState` is not found by the
+instance-synthesis search, so `Quiver.Path.length`/`nil`/`comp` fail to elaborate without it. -/
+def StepGraph (F : FrameOver intOrder) : Type := F.WorldState
+
+/-- **The quiver of one-step tasks**: an arrow `a ⟶ b` is a proof of `a ⇒₁ b`, lifted to `Type`
+by `PLift` because `Quiver.Hom` is `Type`-valued. `PLift` of a proposition is a subsingleton, so
+the proof terms never distinguish two paths.
+
+Constraints consumed: None -/
+instance StepGraph.instQuiver (F : FrameOver intOrder) : Quiver (StepGraph F) :=
+  ⟨fun a b => PLift (FrameOver.step F a b)⟩
+
+/-- The paths of the one-step graph from `w` to `u`: `Quiver.Path` over `StepGraph F`. -/
+abbrev StepPath (F : FrameOver intOrder) (w u : F.WorldState) : Type :=
+  Quiver.Path (V := StepGraph F) w u
+
+/-- **Sections to paths, at an explicit natural-number length**: a morphism `e` of length `n` is
+read as a path of length `n` by peeling its last step. At `0` the two endpoints coincide (`src`
+and `tgt` at the same time) and the path is `nil` transported along that equality; at `n + 1` the
+path is the one for the left factor of `e` at the cut `n` (`factorLeft`, the restriction to
+`[0, n]`), extended by the step `e(n) ⇒₁ e(n + 1)` that `respects_task` supplies at `(n, n + 1)`.
+Defined at an explicit `n` with `hn : n = e.len` so that the recursion is structural; `toPath`
+instantiates `n := Int.toNat e.len`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+def PathHom.toPathAux (F : FrameOver intOrder) [F.IsRegular] (n : ℕ) {w u : F.WorldState}
+    (e : PathHom F.toTaskFrame w u) (hn : (n : ℤ) = e.len.val) : StepPath F w u :=
+  match n, e, hn with
+  | 0, e, hn =>
+    have h0 : (0 : ℤ) = e.len.val := Nat.cast_zero.symm.trans hn
+    have hwu : w = u := e.src.symm.trans
+      ((PartialHistory.states_eq_of_time_eq e.sec.val 0 e.len.val h0
+        (Beh.mem_dom e.sec le_rfl e.len.property) (Beh.mem_dom e.sec e.len.property le_rfl)).trans
+        e.tgt)
+    hwu ▸ Quiver.Path.nil
+  | n + 1, e, hn =>
+    have hn' : (n : ℤ) + 1 = e.len.val := (Nat.cast_succ n).symm.trans hn
+    have hle : (n : ℤ) ≤ e.len.val := by rw [← hn']; exact le_add_of_nonneg_right zero_le_one
+    have hstep : FrameOver.step F
+        (e.cutState ⟨(n : ℤ), 1, Int.natCast_nonneg n, zero_le_one, hn'⟩) u := by
+      have h := e.sec.val.respects_task (n : ℤ) ((n : ℤ) + 1)
+        (Beh.mem_dom e.sec (Int.natCast_nonneg n) hle)
+        (Beh.mem_dom e.sec (add_nonneg (Int.natCast_nonneg n) zero_le_one) (le_of_eq hn'))
+      rw [add_sub_cancel_left,
+        PartialHistory.states_eq_of_time_eq e.sec.val ((n : ℤ) + 1) e.len.val hn'
+          (Beh.mem_dom e.sec (add_nonneg (Int.natCast_nonneg n) zero_le_one) (le_of_eq hn'))
+          (Beh.mem_dom e.sec e.len.property le_rfl),
+        e.tgt] at h
+      exact h
+    Quiver.Path.cons
+      (PathHom.toPathAux F n (e.factorLeft ⟨(n : ℤ), 1, Int.natCast_nonneg n, zero_le_one, hn'⟩)
+        rfl)
+      ⟨hstep⟩
+
+/-- **Sections to paths**: a morphism of `Path(F)` over `D = ℤ` read as a path in `(W, ⇒₁)`, at
+the natural-number length `Int.toNat e.len`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+def PathHom.toPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (e : PathHom F.toTaskFrame w u) : StepPath F w u :=
+  PathHom.toPathAux F (Int.toNat e.len.val) e (Int.toNat_of_nonneg e.len.property)
+
+/-- **Sections are paths of their own length**: `toPath e` has length `Int.toNat e.len`. By
+induction on the explicit length of `toPathAux`; the `0` case closes by reflexivity once the two
+endpoints are identified, because the transport along `w = w` reduces.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem PathHom.toPath_length (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (e : PathHom F.toTaskFrame w u) :
+    (PathHom.toPath F e).length = Int.toNat e.len.val := by
+  have aux : ∀ (n : ℕ) {w u : F.WorldState} (e : PathHom F.toTaskFrame w u)
+      (hn : (n : ℤ) = e.len.val), (PathHom.toPathAux F n e hn).length = n := by
+    intro n
+    induction n with
+    | zero =>
+      intro w u e hn
+      have h0 : (0 : ℤ) = e.len.val := Nat.cast_zero.symm.trans hn
+      have hwu : w = u := e.src.symm.trans
+        ((PartialHistory.states_eq_of_time_eq e.sec.val 0 e.len.val h0
+          (Beh.mem_dom e.sec le_rfl e.len.property)
+          (Beh.mem_dom e.sec e.len.property le_rfl)).trans e.tgt)
+      subst hwu
+      rfl
+    | succ n ih =>
+      intro w u e hn
+      exact congrArg Nat.succ (ih _ rfl)
+  exact aux _ e _
+
+/-- **Identities are the empty paths**: the germ at `w` is read as `nil`. Its length is `0`, so
+the transport along `w = w` reduces and the equation holds by reflexivity.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem PathHom.toPath_id (F : FrameOver intOrder) [F.IsRegular] (w : F.WorldState) :
+    PathHom.toPath F (PathHom.id F.toTaskFrame w) = Quiver.Path.nil := rfl
+
+/-- **Gluing is concatenation**: the path of a composite is the concatenation of the paths. By
+induction on the explicit length of the second factor: at `0` the second factor is the identity
+(`PathHom.comp_id`); at `n + 1` both sides peel one step (`Quiver.Path.comp_cons`), the induction
+hypothesis identifies the composite's left factor with the composite of `f` and `g`'s left factor
+up to a cast at the cut state, and that cast is discharged by comparing the two sections at the
+`.val` level through `glue_unique` and the restriction identities. The outer index is moved
+from `Int.toNat (l₁ + l₂)` to `Int.toNat l₁ + Int.toNat l₂` by `Int.toNat_add`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem PathHom.toPath_comp (F : FrameOver intOrder) [F.IsRegular] {w u v : F.WorldState}
+    (f : PathHom F.toTaskFrame w u) (g : PathHom F.toTaskFrame u v) :
+    PathHom.toPath F (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g)
+      = (PathHom.toPath F f).comp (PathHom.toPath F g) := by
+  -- congruence in the index: the index proof is irrelevant
+  have congr_n : ∀ {n n' : ℕ} (h : n = n') {w u : F.WorldState} (e : PathHom F.toTaskFrame w u)
+      (hn : (n : ℤ) = e.len.val) (hn' : (n' : ℤ) = e.len.val),
+      PathHom.toPathAux F n e hn = PathHom.toPathAux F n' e hn' := by
+    intro n n' h w u e hn hn'
+    subst h
+    rfl
+  -- congruence in the morphism, across an equality of targets
+  have congr_e : ∀ (k : ℕ) {w c₁ c₂ : F.WorldState} (hc : c₁ = c₂)
+      (e₁ : PathHom F.toTaskFrame w c₁) (e₂ : PathHom F.toTaskFrame w c₂)
+      (h₁ : (k : ℤ) = e₁.len.val) (h₂ : (k : ℤ) = e₂.len.val) (hs : e₁.sec.val = e₂.sec.val),
+      (hc ▸ PathHom.toPathAux F k e₁ h₁ : StepPath F w c₂) = PathHom.toPathAux F k e₂ h₂ := by
+    intro k w c₁ c₂ hc e₁ e₂ h₁ h₂ hs
+    subst hc
+    have he : e₁ = e₂ := PathHom.ext' (Subtype.ext (h₁.symm.trans h₂)) hs
+    subst he
+    rfl
+  -- congruence for `cons` across an equality of the intermediate vertex
+  have cons_congr : ∀ {w v c₁ c₂ : F.WorldState} (hc : c₁ = c₂) (p₁ : StepPath F w c₁)
+      (p₂ : StepPath F w c₂) (s₁ : FrameOver.step F c₁ v) (s₂ : FrameOver.step F c₂ v),
+      (hc ▸ p₁ : StepPath F w c₂) = p₂ →
+        (Quiver.Path.cons p₁ ⟨s₁⟩ : StepPath F w v) = Quiver.Path.cons p₂ ⟨s₂⟩ := by
+    intro w v c₁ c₂ hc p₁ p₂ s₁ s₂ hp
+    subst hc
+    subst hp
+    rfl
+  have aux : ∀ (n : ℕ) {u v : F.WorldState} (g : PathHom F.toTaskFrame u v)
+      (hn : (n : ℤ) = g.len.val) (m : ℕ) {w : F.WorldState} (f : PathHom F.toTaskFrame w u)
+      (hm : (m : ℤ) = f.len.val)
+      (hmn : ((m + n : ℕ) : ℤ) = (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).len.val),
+      PathHom.toPathAux F (m + n) (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g) hmn
+        = (PathHom.toPathAux F m f hm).comp (PathHom.toPathAux F n g hn) := by
+    intro n
+    induction n with
+    | zero =>
+      intro u v g hn m w f hm hmn
+      have h0 : (0 : ℤ) = g.len.val := Nat.cast_zero.symm.trans hn
+      have huv : u = v := g.src.symm.trans
+        ((PartialHistory.states_eq_of_time_eq g.sec.val 0 g.len.val h0
+          (Beh.mem_dom g.sec le_rfl g.len.property)
+          (Beh.mem_dom g.sec g.len.property le_rfl)).trans g.tgt)
+      subst huv
+      -- a morphism of length `0` is the identity
+      have hgerm : Beh.germ (Beh.castLen h0.symm g.sec) = u := g.src
+      have hsec : g.sec.val = (Beh.ofGerm F.toTaskFrame u).val := by
+        have h := congrArg Subtype.val (Beh.ofGerm_germ (Beh.castLen h0.symm g.sec))
+        rw [hgerm] at h
+        exact h.symm
+      have hg : g = PathHom.id F.toTaskFrame u := PathHom.ext' (Subtype.ext h0.symm) hsec
+      subst hg
+      change PathHom.toPathAux F m
+        (PathHom.comp (TaskFrame.comp F.toTaskFrame) f (PathHom.id F.toTaskFrame u)) hmn
+        = PathHom.toPathAux F m f hm
+      exact congr_e m rfl _ _ hmn hm
+        (congrArg (fun x : PathHom F.toTaskFrame w u => x.sec.val) (PathHom.comp_id f))
+    | succ n ih =>
+      intro u v g hn m w f hm hmn
+      have hn' : (n : ℤ) + 1 = g.len.val := (Nat.cast_succ n).symm.trans hn
+      have hle_n : (n : ℤ) ≤ g.len.val := by
+        rw [← hn']; exact le_add_of_nonneg_right zero_le_one
+      have hmn' : ((m + n : ℕ) : ℤ) + 1
+          = (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).len.val :=
+        (Nat.cast_succ (m + n)).symm.trans hmn
+      have hsum : ((m + n : ℕ) : ℤ) = f.len.val + (n : ℤ) := by rw [Nat.cast_add, hm]
+      -- the two factorizations the unfoldings of `toPathAux` introduce
+      let facL : Factorization (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).len :=
+        ⟨((m + n : ℕ) : ℤ), 1, Int.natCast_nonneg _, zero_le_one, hmn'⟩
+      let facR : Factorization g.len := ⟨(n : ℤ), 1, Int.natCast_nonneg n, zero_le_one, hn'⟩
+      obtain ⟨sL, hL⟩ : ∃ s, PathHom.toPathAux F (m + (n + 1))
+          (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g) hmn
+          = Quiver.Path.cons (PathHom.toPathAux F (m + n)
+              ((PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).factorLeft facL) rfl) ⟨s⟩ :=
+        ⟨_, rfl⟩
+      obtain ⟨sR, hR⟩ : ∃ s, PathHom.toPathAux F (n + 1) g hn
+          = Quiver.Path.cons (PathHom.toPathAux F n (g.factorLeft facR) rfl) ⟨s⟩ := ⟨_, rfl⟩
+      have hmn'' : ((m + n : ℕ) : ℤ)
+          = (PathHom.comp (TaskFrame.comp F.toTaskFrame) f (g.factorLeft facR)).len.val := hsum
+      rw [hL, hR]
+      change _ = Quiver.Path.cons
+        (Quiver.Path.comp (PathHom.toPathAux F m f hm)
+          (PathHom.toPathAux F n (g.factorLeft facR) rfl)) ⟨sR⟩
+      rw [← ih (g.factorLeft facR) rfl m f hm hmn'']
+      -- the cut states agree
+      have hc : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).cutState facL
+          = g.cutState facR := by
+        have hd : (Beh.restrict f.len.val g.len.val f.len.property g.len.property le_rfl
+            (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec).val.domain (n : ℤ) :=
+          ⟨Int.natCast_nonneg n, hle_n⟩
+        have s1 := states_eq_of_eq (glueSum_restrict_right (TaskFrame.comp F.toTaskFrame)
+          f.len.property g.len.property f.sec g.sec (f.tgt.trans g.src.symm)) (n : ℤ) hd
+          (Beh.mem_dom g.sec (Int.natCast_nonneg n) hle_n)
+        exact (PartialHistory.states_eq_of_time_eq
+          (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val ((m + n : ℕ) : ℤ)
+          (f.len.val + (n : ℤ)) hsum _
+          (Beh.mem_dom _ (add_nonneg f.len.property (Int.natCast_nonneg n))
+            (add_le_add (le_refl f.len.val) hle_n))).trans s1
+      -- the left factor of the composite is the composite of `f` with the left factor of `g`
+      have hb : ((PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).factorLeft facL).sec.val
+          = (PathHom.comp (TaskFrame.comp F.toTaskFrame) f (g.factorLeft facR)).sec.val := by
+        have hpl : f.len.val ≤ f.len.val + (n : ℤ) :=
+          le_add_of_nonneg_right (Int.natCast_nonneg n)
+        let υ : Beh F.toTaskFrame (f.len.val + (n : ℤ)) :=
+          Beh.castLen hsum ((PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).factorLeft facL).sec
+        have hL' : Beh.restrict 0 f.len.val le_rfl f.len.property (by rw [zero_add]; exact hpl) υ
+            = f.sec := by
+          refine Beh.ext (partialHistory_ext ?_ ?_)
+          · funext z
+            change (0 ≤ z ∧ z ≤ f.len.val) = f.sec.val.domain z
+            exact propext (f.sec.property z).symm
+          · intro r hr h'
+            have hw : υ.val.domain (0 + r) :=
+              Beh.mem_dom υ (add_nonneg le_rfl hr.1) (by rw [zero_add]; exact le_trans hr.2 hpl)
+            rw [Beh.restrict_states 0 f.len.val le_rfl f.len.property
+              (by rw [zero_add]; exact hpl) υ r hr hw]
+            have s1 := states_eq_of_eq (glueSum_restrict_left (TaskFrame.comp F.toTaskFrame)
+              f.len.property g.len.property f.sec g.sec (f.tgt.trans g.src.symm)) r hr h'
+            have hw2 : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val.domain (0 + r) :=
+              Beh.mem_dom _ (add_nonneg le_rfl hr.1)
+                (by rw [zero_add]; exact le_trans hr.2 (le_add_of_nonneg_right g.len.property))
+            have hw1 : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val.domain
+                (0 + (0 + r)) :=
+              Beh.mem_dom _ (add_nonneg le_rfl (add_nonneg le_rfl hr.1))
+                (by
+                  rw [zero_add, zero_add]
+                  exact le_trans hr.2 (le_add_of_nonneg_right g.len.property))
+            exact (PartialHistory.states_eq_of_time_eq
+              (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val (0 + (0 + r)) (0 + r)
+              (by rw [zero_add]) hw1 hw2).trans s1
+        have hR' : Beh.restrict f.len.val (f.len.val + (n : ℤ) - f.len.val) f.len.property
+            (sub_nonneg.mpr hpl) (by rw [add_sub_cancel]) υ
+            = Beh.castLen (add_sub_cancel_left f.len.val (n : ℤ)).symm (g.factorLeft facR).sec := by
+          refine Beh.ext (partialHistory_ext ?_ ?_)
+          · funext z
+            change (0 ≤ z ∧ z ≤ f.len.val + (n : ℤ) - f.len.val) = (0 ≤ z ∧ z ≤ (n : ℤ))
+            rw [add_sub_cancel_left]
+          · intro r hr h'
+            have hrn : r ≤ (n : ℤ) := by
+              have := hr.2
+              rwa [add_sub_cancel_left] at this
+            have hw : υ.val.domain (f.len.val + r) :=
+              Beh.mem_dom υ (add_nonneg f.len.property hr.1) (add_le_add (le_refl _) hrn)
+            rw [Beh.restrict_states f.len.val (f.len.val + (n : ℤ) - f.len.val) f.len.property
+              (sub_nonneg.mpr hpl) (by rw [add_sub_cancel]) υ r hr hw]
+            have hd : (Beh.restrict f.len.val g.len.val f.len.property g.len.property le_rfl
+                (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec).val.domain r :=
+              ⟨hr.1, le_trans hrn hle_n⟩
+            have s1 := states_eq_of_eq (glueSum_restrict_right (TaskFrame.comp F.toTaskFrame)
+              f.len.property g.len.property f.sec g.sec (f.tgt.trans g.src.symm)) r hd
+              (Beh.mem_dom g.sec hr.1 (le_trans hrn hle_n))
+            have hw2 : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val.domain
+                (f.len.val + r) :=
+              Beh.mem_dom _ (add_nonneg f.len.property hr.1)
+                (add_le_add (le_refl _) (le_trans hrn hle_n))
+            have hw3 : g.sec.val.domain (0 + r) :=
+              Beh.mem_dom g.sec (add_nonneg le_rfl hr.1)
+                (by rw [zero_add]; exact le_trans hrn hle_n)
+            have hw1 : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val.domain
+                (0 + (f.len.val + r)) :=
+              Beh.mem_dom _ (add_nonneg le_rfl (add_nonneg f.len.property hr.1))
+                (by
+                  rw [zero_add]
+                  exact add_le_add (le_refl _) (le_trans hrn hle_n))
+            exact ((PartialHistory.states_eq_of_time_eq
+              (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val (0 + (f.len.val + r))
+              (f.len.val + r) (zero_add _) hw1 hw2).trans s1).trans
+              (PartialHistory.states_eq_of_time_eq g.sec.val r (0 + r) (zero_add r).symm
+                (Beh.mem_dom g.sec hr.1 (le_trans hrn hle_n)) hw3)
+        have hu := glue_unique (TaskFrame.comp F.toTaskFrame) f.len.property hpl f.sec
+          (Beh.castLen (add_sub_cancel_left f.len.val (n : ℤ)).symm (g.factorLeft facR).sec)
+          (f.tgt.trans (g.factorLeft facR).src.symm) υ hL' hR'
+        exact congrArg Subtype.val hu
+      exact cons_congr hc _ _ sL sR (congr_e (m + n) hc _ _ rfl hmn'' hb)
+  have hadd : Int.toNat (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).len.val
+      = Int.toNat f.len.val + Int.toNat g.len.val :=
+    Int.toNat_add f.len.property g.len.property
+  have hmn : ((Int.toNat f.len.val + Int.toNat g.len.val : ℕ) : ℤ) = f.len.val + g.len.val := by
+    rw [Nat.cast_add, Int.toNat_of_nonneg f.len.property, Int.toNat_of_nonneg g.len.property]
+  exact (congr_n hadd _ _ hmn).trans
+    (aux _ g (Int.toNat_of_nonneg g.len.property) _ f (Int.toNat_of_nonneg f.len.property) hmn)
+
 end FormalSystem.Semantics.Presheaf
 
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
