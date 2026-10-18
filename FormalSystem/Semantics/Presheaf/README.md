@@ -6,22 +6,29 @@ histories, packaged as a presheaf on the durations rather than treated one domai
 The objects of `Int(D)` are the durations — the positive cone of a temporal order — and its
 morphisms `l' → l` are the **translations** `Tr p`, one for each offset `p` with `p + l' ≤ l`.
 `Beh(F)(l)` is the set of partial histories whose domain is exactly `[0, l]`, and restriction
-along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Four of the six modules are built on
-`Semantics/PartialHistory.lean` alone; `Presheaf/Directed.lean` additionally imports the
-`Semantics/Extension/` cluster, because the two clauses it discharges are wrappers on
-`thm:extension`, and `Presheaf/Determinism.lean` additionally imports
+along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Four of the seven modules are built on
+`Semantics/PartialHistory.lean` alone; `Presheaf/Directed.lean` and `Presheaf/Worlds.lean`
+additionally import the `Semantics/Extension/` cluster — the former because the two clauses it
+discharges are wrappers on `thm:extension`, the latter for `PartialHistory.hF_nonempty` alone,
+which only its nonemptiness tail consumes — and `Presheaf/Determinism.lean` additionally imports
 `Semantics/FrameProperty.lean` for `TaskFrame.Deterministic` alone. The cluster sits strictly
-**below** `Semantics/Truth.lean` regardless: all six modules close with `assert_not_exists` on the
+**below** `Semantics/Truth.lean` regardless: all seven modules close with `assert_not_exists` on the
 proof system, so the layering is locked rather than merely observed.
 
-Four clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
+Five clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
 the zero duration with the world states (`Beh.germEquiv`), and *Sheaf* glues two sections
 agreeing at a seam into a unique section over the joined interval (`sheaf_clause`, and
 `sheaf_clause_site` in the site's own vocabulary). The gluing argument itself is not local to this
 cluster: it is `PartialHistory.rel_across_seam`, shared with history pasting. *Totality* makes
 every restriction map surjective (`totality_clause`, `totality_clause_site`) and *Directed Gluing*
 extends a directed compatible family to the whole interval (`directed_gluing_clause`); both are
-wrappers on `thm:extension`, and `Presheaf/Directed.lean` is where that is made visible.
+wrappers on `thm:extension`, and `Presheaf/Directed.lean` is where that is made visible. *Total
+Histories* — the clause the definitions of record list as *Possible Worlds* — identifies the
+possible worlds with the limit of the presheaf along the central restrictions `Tr (x' − x) :
+2x → 2x'`: a world **is** a compatible family of centred sections (`worldsEquiv`, with the
+compatibility in the site's vocabulary as `Lim.compat_site`), and the limit is nonempty
+(`lim_nonempty`); `Presheaf/Worlds.lean` presents the limit concretely as the families `Lim F`,
+and the fourth recorded verdict below is that the isomorphism is choice-free.
 
 *Germs* and *Sheaf* are choice-free in two measured senses — they use *Compositionality* alone,
 taken as an explicit hypothesis rather than a frame bundle, and `#print axioms` reports no
@@ -61,7 +68,7 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 | `Ray.lean` | 444 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
 | `Sheaf.lean` | 439 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
-| `Worlds.lean` | 149 | The *Total Histories* clause (the record's *Possible Worlds*): the limit `Lim F` of the behavior presheaf along the central restrictions `centralTr`, presented as compatible families of centred sections, the canonical-window reading `Lim.readAt` with its keystone `Lim.read_eq`, the two maps `Lim.toWorld`/`Lim.ofWorld`, the choice-free isomorphism `worldsEquiv : WorldHistory F ≃ Lim F` at no frame constraint, and the nonemptiness tail `lim_nonempty` at `[F.IsRegular]` |
+| `Worlds.lean` | 392 | The *Total Histories* clause (the record's *Possible Worlds*): the limit `Lim F` of the behavior presheaf along the central restrictions `centralTr`, presented as compatible families of centred sections, the canonical-window reading `Lim.readAt` with its keystone `Lim.read_eq`, the two maps `Lim.toWorld`/`Lim.ofWorld`, the choice-free isomorphism `worldsEquiv : WorldHistory F ≃ Lim F` at no frame constraint, and the nonemptiness tail `lim_nonempty` at `[F.IsRegular]` |
 <!-- END GENERATED -->
 
 ## Key Definitions
@@ -105,6 +112,18 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
   since `thm:extension` consumes a single history. Its natural home is beside `chainSup` in
   `Semantics/PartialHistoryOrder.lean`, from which `chainSup` could then be derived; that
   consolidation is recorded as a follow-up in `Presheaf/Directed.lean`'s Implementation Notes
+- `twice`, `centralTr` — the object `2x` of the site (written `x.val + x.val`, there being no
+  `OfNat` literal `2` on an abstract temporal order) and the central morphism
+  `Tr (x' − x) : 2x → 2x'`
+- `Lim F` — a point of the limit `lim_{x ∈ D⁺} Beh(F)(2x)`: a compatible family of centred
+  sections, one over each `[0, 2x]`, each restricting to the next along the central translation.
+  Presented concretely, as `glue` presents the sheaf condition, with no `Mathlib.CategoryTheory`
+- `absObj`, `Lim.readAt`, `Lim.toWorld` — the canonical window index `|t|` of a time, the state
+  read out of that window, and the possible world `WorldHistory.ofTotal` glues from it: the
+  backward map. Totality is structural — the centred chain covers the order — so no extension
+  step and nothing from `Presheaf/Directed.lean` is consumed
+- `Lim.ofWorld` — the forward map: a possible world cut to each of its centred windows
+  `[−x, x]` through `secOf`
 
 ## Key Results
 
@@ -189,6 +208,21 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
   directedness nor any frame constraint; sections are functions on points
 - `directed_gluing_clause` — the *Directed Gluing* clause itself, as the `∃!` the two halves
   package
+- `restrictTr_central` — restriction along the central morphism **is** the raw-data restriction
+  by `x' − x` onto `[0, 2x]`, by `rfl`, as `restrictTr_coverLeft` is for the covering family
+- `Lim.compat_site` — the *Total Histories* compatibility in the site's own vocabulary, with no
+  transport and no cast
+- `Lim.read_eq` — **the keystone** of the clause: every window at least `|t|` reads the same
+  state at `t`. Every later proof goes through it rather than through `compat` directly
+- `Lim.respects` — task-respect for the glued state function, read out of the common window
+  `max |s| |t|`
+- `Lim.toWorld_ofWorld`, `Lim.ofWorld_toWorld` — the two round trips, the second through the
+  componentwise `Lim.ofWorld_toWorld_sec` and the recentring bound `abs_sub_le_of_mem`
+- `worldsEquiv` — **the *Total Histories* clause**: `WorldHistory F ≃ Lim F`, at **no** frame
+  constraint, measured `[propext, Quot.sound]`
+- `lim_nonempty` — the clause's closing tail at `[F.IsRegular]`: the limit is nonempty, through
+  `PartialHistory.hF_nonempty`. The one declaration of `Presheaf/Worlds.lean` that reaches
+  `Classical.choice`
 
 ## Recorded verdicts
 
@@ -290,6 +324,36 @@ mathematical reason recorded above.
 `def:frame`'s fourth constraint, not a claim of choice-freedom. Both still route through Zorn's
 lemma and both measure `[propext, Classical.choice, Quot.sound]`.
 
+### The *Total Histories* clause is choice-free; only its nonemptiness tail is not
+
+`worldsEquiv : WorldHistory F ≃ Lim F` holds at **no** frame constraint and measures
+`[propext, Quot.sound]`, as does every declaration on the path to it; `lim_nonempty` alone
+measures `Classical.choice`, attributably — through `PartialHistory.hF_nonempty` and hence Zorn's
+lemma, which is where `cor:occurrence` places the paper's own use of choice. Every row below was
+measured with `lean_verify` and a `#print axioms` sweep over every declaration of
+`Presheaf/Worlds.lean`; the module's own docstring carries the same table.
+
+| Declaration | Measured axioms |
+|---|---|
+| `twice` | `[propext]` |
+| `central_fit`, `centralTr`, `restrictTr_central`, `Lim`, `Lim.ext`, `Lim.compat_site` | `[propext, Quot.sound]` |
+| `window_lo`, `window_hi`, `absObj`, `absObj_val` | `[propext, Quot.sound]` |
+| `Lim.readAt`, `Lim.readAt_def`, `Lim.read_eq`, `Lim.respects`, `Lim.toWorld`, `Lim.ofWorld` | `[propext, Quot.sound]` |
+| `Lim.toWorld_ofWorld`, `abs_sub_le_of_mem`, `Lim.ofWorld_toWorld_sec`, `Lim.ofWorld_toWorld` | `[propext, Quot.sound]` |
+| `worldsEquiv` | `[propext, Quot.sound]` |
+| `lim_nonempty` | `[propext, Classical.choice, Quot.sound]` |
+
+Two things earn the choice-free row and would lose it if rewritten, both recorded in the
+module's Implementation Notes: the window arithmetic (`window_lo`, `abs_sub_le_of_mem`) is
+written with explicit `rwa` rewrites rather than `simpa`, which was measured to pull
+`Classical.choice`; and the backward map reads each time out of its canonical window `|t|`
+rather than through `directedSup`, which is independently non-constructive. The clause does not
+consume *Totality* at all — the centred chain already covers the order — so it joins *Germs*,
+*Sheaf* and the ray layer on the choice-free side of the split recorded above, while its tail
+joins *Totality* and *Directed Gluing*. Over `D = ℤ` the same identification of `H_F` is
+`FrameOver.mem_HF_iff_adjacent` (`Semantics/IntNormalForm.lean`), a consequence of this clause's
+shape rather than an input to it.
+
 ### What a decidable stability check on the path-space presentation requires
 
 `plusStab_iff_rays` and `plusStab_iff_omega` present `⊡` as a quantifier over a **product of two
@@ -338,8 +402,8 @@ bound is committed anywhere in this cluster, and soundness is untouched.
 ## Dependencies
 
 - **Imports from**: `Semantics/TemporalOrder.lean`, `Semantics/PartialHistory.lean`, and —
-  `Presheaf/Directed.lean` only — `Semantics/Extension/Extension.lean` and
-  `Semantics/Extension/Completion.lean`
+  `Presheaf/Directed.lean` and `Presheaf/Worlds.lean` — `Semantics/Extension/Extension.lean`,
+  with `Semantics/Extension/Completion.lean` imported by `Presheaf/Directed.lean` alone
 - **Imported by**: `Semantics/Presheaf.lean` (the cluster aggregator), and
   `PlusLanguage/PlusRayFibre.lean`, which imports `Presheaf/Ray.lean` directly to read the `⊡`
   clause through `seamFibreEquiv`
@@ -361,4 +425,4 @@ bound is committed anywhere in this cluster, and soundness is untouched.
 
 ---
 
-*Last verified: 2026-10-14*
+*Last verified: 2026-10-18*

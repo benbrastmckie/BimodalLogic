@@ -14,56 +14,148 @@ import FormalSystem.Semantics.Extension.Extension
 The *Total Histories* clause of `app:presheaf-dictionary` — the clause
 `docs/reference/paper-definitions-of-record.md` records under the name *Possible Worlds* — states
 that the possible worlds of a task frame are the limit of the behavior presheaf along the central
-restrictions:
+restrictions, and that this limit is nonempty:
 
     H_F ≅ lim_{x ∈ D⁺} Beh(F)(2x)   along   Tr (x' − x) : 2x → 2x',   and is nonempty.
 
 The statement was read from the recorded paper text that the sentinel commit of
 `docs/reference/paper-definitions-of-record.md` pins; the live paper no longer defines the label.
 
-The limit is presented concretely, as `sheaf_clause` presents the sheaf condition concretely: a
-point of `Lim F` is a **compatible family of centred sections** `(σ_x)_{x ∈ D⁺}`,
-`σ_x ∈ Beh(F)(2x)`, each restricting to the next along the central translation. The forward map
-cuts a world to each centred window; the backward map reads each time `t` out of its **canonical
-window** `|t|` and glues with `WorldHistory.ofTotal`. Totality is structural — the centred chain
-already covers the temporal order — so no extension step is consumed.
+The limit is presented concretely, as `sheaf_clause` presents the sheaf condition concretely and
+with no `Mathlib.CategoryTheory`: a point of `Lim F` is a **compatible family of centred
+sections** `(σ_x)_{x ∈ D⁺}`, `σ_x ∈ Beh(F)(2x)`, each restricting to the next along the central
+translation. The forward map `Lim.ofWorld` cuts a world to each centred window `[−x, x]` through
+`secOf`; the backward map `Lim.toWorld` reads each time `t` out of its **canonical window** `|t|`
+and glues with `WorldHistory.ofTotal`. Totality is structural — the centred chain already covers
+the temporal order — so no extension step is consumed and nothing from the *Totality* clause is
+imported. The isomorphism `worldsEquiv` holds at **no** frame constraint and is **choice-free**;
+only the tail `lim_nonempty` reaches `Classical.choice`, through `PartialHistory.hF_nonempty` and
+hence Zorn's lemma, which is where the paper puts it too (`cor:occurrence`).
 
 ## Main Definitions
 
 - `twice`: the object `2x` of the site, written `x.val + x.val` because an abstract temporal order
   carries no `OfNat` literal `2`.
 - `centralTr`: the central morphism `Tr (twice x) (twice x')` with shift `x' − x`.
-- `Lim`: a point of the limit — a compatible family of centred sections.
+- `Lim`: a point of the limit — a compatible family of centred sections, with the compatibility
+  stated at raw data.
 - `absObj`: the canonical window index `|t|` of a time `t`.
-- `Lim.readAt`, `Lim.toWorld`: the backward map and the state function it glues.
+- `Lim.readAt`, `Lim.toWorld`: the state function read out of the canonical windows, and the
+  possible world it glues to — the backward map.
 - `Lim.ofWorld`: the forward map, a world cut to each of its centred windows.
 
 ## Main Results
 
-- `restrictTr_central`: restriction along the central morphism **is** the raw-data restriction.
-- `Lim.compat_site`: the clause's compatibility in the site's own vocabulary.
-- `Lim.read_eq`: the keystone — every window at least `|t|` reads the same state at `t`.
-- `Lim.respects`, `Lim.toWorld_ofWorld`, `Lim.ofWorld_toWorld`: task-respect and both round trips.
-- `worldsEquiv`: the clause, `WorldHistory F ≃ Lim F`, at no frame constraint.
+- `restrictTr_central`: restriction along the central morphism **is** the raw-data restriction,
+  by `rfl`, as `restrictTr_coverLeft` is for the covering family.
+- `Lim.compat_site`: the clause's compatibility in the site's own vocabulary, with no transport
+  and no cast.
+- `Lim.read_eq`: **the keystone** — every window at least `|t|` reads the same state at `t`.
+  Every later proof goes through it rather than through `compat` directly.
+- `Lim.respects`: task-respect for `Lim.readAt`, read out of the common window `max |s| |t|`.
+- `Lim.toWorld_ofWorld`, `Lim.ofWorld_toWorld`: the two round trips.
+- `worldsEquiv`: **the clause**, `WorldHistory F ≃ Lim F`, at no frame constraint.
 - `lim_nonempty`: the clause's closing tail, at `[F.IsRegular]`.
+  `Constraints consumed: Compositionality, Seriality, Limit, Saturation`.
+
+## The choice record
+
+Every row below was measured in this round with `lean_verify` and a `#print axioms` sweep over
+every declaration of the module, not inferred and not sampled.
+
+| Declaration | Measured axioms |
+|---|---|
+| `twice` | `[propext]` |
+| `central_fit`, `centralTr`, `restrictTr_central` | `[propext, Quot.sound]` |
+| `Lim`, `Lim.ext`, `Lim.compat_site` | `[propext, Quot.sound]` |
+| `window_lo`, `window_hi`, `absObj`, `absObj_val` | `[propext, Quot.sound]` |
+| `Lim.readAt`, `Lim.readAt_def`, `Lim.read_eq`, `Lim.respects` | `[propext, Quot.sound]` |
+| `Lim.toWorld`, `Lim.ofWorld` | `[propext, Quot.sound]` |
+| `Lim.toWorld_ofWorld`, `abs_sub_le_of_mem` | `[propext, Quot.sound]` |
+| `Lim.ofWorld_toWorld_sec`, `Lim.ofWorld_toWorld` | `[propext, Quot.sound]` |
+| `worldsEquiv` | `[propext, Quot.sound]` |
+| `lim_nonempty` | `[propext, Classical.choice, Quot.sound]` |
+
+Reading the table: **the isomorphism is choice-free.** Every declaration on the path to
+`worldsEquiv` measures `[propext]` or `[propext, Quot.sound]`, and only the closing tail reaches
+`Classical.choice` — attributably, through `PartialHistory.hF_nonempty` and hence Zorn's lemma,
+exactly where `cor:occurrence` places the paper's own use of choice. On the cluster's recorded
+split, this clause therefore joins *Germs*, *Sheaf* and the ray layer on the choice-free side,
+while its nonemptiness tail joins *Totality* and *Directed Gluing* on the other.
 
 ## Implementation Notes
 
-(Filled in with the measured axiom table once every declaration of the module is in place.)
+**Two `simpa` prohibitions, measured both ways.** `window_lo` closes with an explicit
+`rwa [neg_add_cancel] at h2`, and `abs_sub_le_of_mem` with `rwa [zero_sub] at h2` and
+`rwa [add_sub_cancel_right] at h2`. Writing either step as `simpa` leaves the build green and
+**measures `Classical.choice`** (measured, not suspected), which would silently turn the
+choice-free clause into a choice-dependent one. The same caution applies to the `*_iff_*` round
+trip `(add_le_add_iff_left _).mpr` that `Presheaf/Directed.lean`'s Implementation Notes record:
+`central_fit` uses `abel` and `add_le_add (le_refl x') h` instead. When a measurement is the
+result, measure the arithmetic helpers too.
+
+**The backward map reads the canonical window `|t|`, not `Presheaf.directedSup`.** The centred
+family is directed, so its sections could be unioned with `directedSup` and extended; but
+`directedSup` is independently non-constructive (it measures `Classical.choice` on its own, as
+`Presheaf/Directed.lean` records), and routing the backward map through it would import choice
+for nothing. Reading each time out of its own canonical window `absObj t`, and proving with
+`Lim.read_eq` that every larger window agrees, is what keeps `worldsEquiv` choice-free.
+
+**Totality is not consumed.** The chain of centred windows `[−x, x]` already covers the whole
+temporal order, so `WorldHistory.ofTotal` supplies totality structurally and no extension step —
+no `thm:extension`, nothing from `Presheaf/Directed.lean` — is needed. The module therefore
+imports `Presheaf.Determinism` (for `secOf`) and `Extension/Extension.lean` (for
+`PartialHistory.hF_nonempty`, used by the tail alone), and not `Presheaf.Directed`.
+
+**Two syntactic devices.** `rw [hL]` under a dependent `states` witness fails with "motive is not
+type correct", so `Lim.ofWorld_toWorld_sec` reads through `states_eq_of_eq hL r hr hsec` instead.
+`rw [Lim.readAt]` has no equation lemma, so the definition is restated as the `rfl` lemma
+`Lim.readAt_def` and rewritten with; it is an implementation device, not a result of the clause.
+
+**The ℤ reading is a consequence, not an input.** `FrameOver.mem_HF_iff_adjacent`
+(`FormalSystem/Semantics/IntNormalForm.lean`) identifies the possible worlds of a frame over
+`D = ℤ` with the adjacency-compatible state sequences: the same identification of `H_F` this
+clause makes, specialised to discrete time, where the compatible families collapse to the
+adjacency condition. It is cited as that reading and is not re-derived here.
+
+**Paper state: the source appendix is cut.** As for the sibling clause modules, the dictionary
+anchors cited below live in `app:Structure`, which the paper **cut in full** under an explicit
+`% SECTION CUT` record. They resolve against `docs/reference/paper-definitions-of-record.md`,
+where each carries a `DANGLING` row, and not against a live `\label{}`; `cor:occurrence` is live
+and pinned and is cited plainly.
 
 ## References
 
-* JPL paper `app:presheaf-dictionary` — the dictionary theorem whose *Total Histories* clause this
-  module discharges. **`DANGLING`**: cut from the paper with `app:Structure` and recorded in
-  `docs/reference/paper-definitions-of-record.md`
-* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `Beh.restrictTr`
+* [P. Schultz, D. I. Spivak and C. Vasilakopoulou, *Dynamical Systems and Sheaves*][schultz2020],
+  §3.2 Def. 3.2.1 and §3.1 Defs. 3.1.1–3.1.5 — the behavior sheaf and the interval site whose
+  limit presentation this clause instantiates on a task frame
+* JPL paper `app:presheaf-dictionary` — the dictionary theorem whose *Total Histories* clause
+  `worldsEquiv` and `lim_nonempty` discharge. **`DANGLING`**: cut from the paper with
+  `app:Structure` and recorded in `docs/reference/paper-definitions-of-record.md`
+* JPL paper `def:interval-site` — the site `Int(D)` whose central morphisms `centralTr` are.
+  **`DANGLING`**, as above
+* JPL paper `def:behavior-presheaf` — `Beh(F)(l)` and restriction along `Tr p`. **`DANGLING`**,
+  as above
+* JPL paper `app:Structure` — the cut appendix containing all three. **`DANGLING`**, as above
+* JPL paper `cor:occurrence` — the occurrence corollary drawn off `thm:extension`, whose route
+  through Zorn's lemma is the one use of choice this module's tail inherits
+* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `Beh.restrictTr`,
+  `Beh.mem_dom`, `Beh.restrict_states`
 * `FormalSystem/Semantics/Presheaf/Site.lean` — `Obj`, `Tr`
-* `FormalSystem/Semantics/Presheaf/Sheaf.lean` — `states_eq_of_eq`, `restrictTr_coverLeft`
-* `FormalSystem/Semantics/Presheaf/Determinism.lean` — `secOf`, `secOf_states`
+* `FormalSystem/Semantics/Presheaf/Sheaf.lean` — `states_eq_of_eq`, and `restrictTr_coverLeft`,
+  the model for `restrictTr_central`
+* `FormalSystem/Semantics/Presheaf/Determinism.lean` — `secOf`, `secOf_states`, the
+  world-to-section bridge the forward map is built from
+* `FormalSystem/Semantics/PartialHistory.lean` — `PartialHistory`, `WorldHistory`,
+  `WorldHistory.ofTotal`, `WorldHistory.ext_state`, `partialHistory_ext`, `states_eq_of_time_eq`
+* `FormalSystem/Semantics/Extension/Extension.lean` — `PartialHistory.hF_nonempty`, the sole
+  source of the tail's `Classical.choice`
+* `FormalSystem/Semantics/IntNormalForm.lean` — `FrameOver.mem_HF_iff_adjacent`, the ℤ reading of
+  this clause
 
 ## Tags
 
-presheaf, limit, possible worlds, total histories, behavior presheaf, interval site
+presheaf, limit, possible worlds, total histories, behavior presheaf, interval site, choice-free
 -/
 
 namespace FormalSystem.Semantics.Presheaf

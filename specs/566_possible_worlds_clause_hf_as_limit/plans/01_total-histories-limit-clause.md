@@ -405,14 +405,14 @@ the aggregators imports the module.
 
 ---
 
-### Phase 4: The record, the citations, and the gate [NOT STARTED]
+### Phase 4: The record, the citations, and the gate [COMPLETED]
 
 **Goal**: the module's docstring carries the measured axiom table and the Implementation Notes
 that protect it, the References block resolves, the cluster and parent READMEs and the
 definitions-of-record row are true after landing, and the complete gate set is green.
 
 **Tasks**:
-- [ ] Module docstring: title the clause *Total Histories* and name the record's *Possible
+- [x] Module docstring: title the clause *Total Histories* and name the record's *Possible
       Worlds* in the same sentence; state the clause verbatim as recorded
       (`H_F ≅ lim_{x ∈ D⁺} Beh(F)(2x)` along `Tr (x' − x) : 2x → 2x'`, and nonempty) and that
       the statement was read from the sentinel commit `docs/reference/paper-definitions-of-record.md`
@@ -420,13 +420,13 @@ definitions-of-record row are true after landing, and the complete gate set is g
       (`twice`, `centralTr`, `Lim`, `absObj`, `Lim.readAt`, `Lim.toWorld`, `Lim.ofWorld`) and
       `## Main Results` (`restrictTr_central`, `Lim.compat_site`, `Lim.read_eq`,
       `Lim.respects`, both round trips, `worldsEquiv`, `lim_nonempty`).
-- [ ] Docstring: **the measured axiom table**, two columns (`Declaration` | `Measured axioms`)
+- [x] Docstring: **the measured axiom table**, two columns (`Declaration` | `Measured axioms`)
       as `Directed.lean` renders it, every row from Phase 3's `lean_verify` sweep, not a sample;
       the reading that the isomorphism is choice-free and only the tail reaches Zorn, through
       `PartialHistory.hF_nonempty`, where the paper also puts it (`cor:occurrence`); and the
       note that this clause joins *Germs*, *Sheaf* and the ray layer on the choice-free side of
       the cluster's recorded split while its tail joins *Totality* and *Directed Gluing*.
-- [ ] Docstring `## Implementation Notes`: (i) the two `simpa` prohibitions in `window_lo` and
+- [x] Docstring `## Implementation Notes`: (i) the two `simpa` prohibitions in `window_lo` and
       `abs_sub_le_of_mem` with their `rwa` replacements, measured both ways; (ii) why the
       backward map reads the canonical window `|t|` rather than routing through
       `Presheaf.directedSup`, which is independently non-constructive; (iii) why Totality is
@@ -436,14 +436,14 @@ definitions-of-record row are true after landing, and the complete gate set is g
       (`FormalSystem/Semantics/IntNormalForm.lean`) is the same identification of `H_F`
       specialised to discrete time, a consequence of this clause's shape rather than an input,
       cited and not re-derived.
-- [ ] `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
+- [x] `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
       `[schultz2020]` (§3.2 Def. 3.2.1 and §3.1 Defs. 3.1.1–3.1.5) resolving in the root
       `references.bib`; `app:presheaf-dictionary`, `def:interval-site`, `def:behavior-presheaf`,
       `app:Structure` each marked **`DANGLING`** with the cut stated at the site, copying the
       sibling modules' form; `cor:occurrence` cited plainly; module cross-references to
       `Behavior.lean`, `Site.lean`, `Sheaf.lean`, `Determinism.lean`, `PartialHistory.lean`,
       `Extension/Extension.lean`, `IntNormalForm.lean`. `## Tags` line.
-- [ ] `FormalSystem/Semantics/Presheaf/README.md` (re-read immediately before editing; grep each
+- [x] `FormalSystem/Semantics/Presheaf/README.md` (re-read immediately before editing; grep each
       quoted phrase first — a sibling may already have amended it): "Four of the six modules
       are built on …" and "all six modules close with `assert_not_exists`" → the actual module
       count after this and any landed sibling; "Four clauses of the presheaf dictionary are
@@ -454,19 +454,19 @@ definitions-of-record row are true after landing, and the complete gate set is g
       nonemptiness tail is not", with the table; re-run
       `bash scripts/check-module-invariants.sh --emit-inventory` once the module's line count
       has settled, and fill the `Worlds.lean` row's trailing description.
-- [ ] `FormalSystem/Semantics/README.md`: minimally extend the hand-written `Presheaf/` row
+- [x] `FormalSystem/Semantics/README.md`: minimally extend the hand-written `Presheaf/` row
       (observed at line 68 at plan time: lists `Site`, `Behavior`, `Sheaf`, `Ray`, `Directed`
       "(5 files)" — already stale by `Determinism`): add `Worlds`, correct the file count to the
       actual number, one sentence on the clause. Minimal addition only (SHARED TOUCH).
-- [ ] `docs/reference/paper-definitions-of-record.md`: extend the `app:presheaf-dictionary`
+- [x] `docs/reference/paper-definitions-of-record.md`: extend the `app:presheaf-dictionary`
       `DANGLING` row's description (observed at line 2498) with one sentence citing
       `worldsEquiv`, `Lim.compat_site`/`centralTr`, and `lim_nonempty`
       (`FormalSystem/Semantics/Presheaf/Worlds.lean`), naming *Total Histories* as the recorded
       text's name for the record's *Possible Worlds* clause and the choice split. The row is
       `DANGLING`, carries no hash, and stays unpinned; no pipe characters inside the description.
-- [ ] Run the complete gate set (Verification below); fix forward on any finding.
-- [ ] Commit per green sub-step with explicit per-file `git add`; final commit
-      `task 566: complete implementation` per `rules/git-workflow.md`.
+- [x] Run the complete gate set (Verification below); fix forward on any finding. *(deviation: altered — the agent-system gates `verify-deploy.sh`/`run-all.sh` were deferred to the batch stage per the dispatch's Batch Gate Deferral directive (no touched file is under `.claude/`); every repository gate — full guarded `lake build`, `check-module-invariants.sh` with build, `check-task-references.sh`, `typst-sync-check.sh` — ran in this dispatch and is green; `lean-challenge-snapshot.sh --check` could not run because no Challenge manifest was snapshotted at plan time (advisory))*
+- [x] Commit per green sub-step with explicit per-file `git add`; final commit
+      `task 566: complete implementation` per `rules/git-workflow.md`. *(deviation: altered — the summary rides in the phase 4 commit per the phase-closure contract's single-commit-per-phase ruling; the `task 566: complete implementation` commit is the orchestrator postflight's)*
 
 **Timing**: 2 hours
 
