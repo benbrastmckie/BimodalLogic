@@ -63,7 +63,7 @@ built at the model layer below once the fixture section lands); `a := (true, 0)`
 | 2 | `(a, c, n)` vs `(a, c+1, n)` | `p U (¬p ∧ ℓ (c mod 4))` (`phi2 c`) | SEPARATION, COMPILED (`gate2_cell_ne`, every `c`, `n`): the forced run ends at index `idx c` from the first (`phi2_of_path`, along EVERY path) and at `idx (c+1) ≠ idx c` from the second (`not_phi2_of_path`) | `count_pending_step`, `pin_region_end`; `gate2_residue_separates` (index) |
 | 9-sep | `(a, 0, n)` vs `(a, 0, n+m)`, `4 ∤ m`, `n ≥ 1` | `X(¬p ∧ X(p ∧ (p U (¬p ∧ ℓ ((n+2) mod 4)))))` (`phi9 n`) | SEPARATION, COMPILED (`gate9_sep_cell_ne`; `¬ 4 ∣ m` the only hypothesis on `m`, `1 ≤ n` kept from the target statement and not needed): at `c = 0, j = 1` the window is `{n-1, n, n+1}`, three of four residues, so residue `n+2` is never the next region's end index from `(a, 0, n)` (`not_phi9_of_path`) and is from `(a, 0, n+m)` for every `m ≢ 0 (mod 4)` (`exists_phi9_mem_cell`) | `forward_window` at `c = 0`; `nside_collides` (`nside-modulus-gate.lean`: the index collides at every `(T, P, B)` whose modulus is `P + 1`, so the semantic half decides) |
 | short-idle | `(a, 2, 2)` vs `(a, 2 + P, 2 + P)`, `P ≥ 1` | `ψ₁ := p ∧ Y(¬p ∧ Y(p ∧ Y(¬p ∧ ¬(⊤ S p))))` (`psi1`) | SEPARATION (compiled at `k = 1`; family at the arithmetic level by `iter_doubling`, not compiled): `short_idle_cell_ne` (every `P ≥ 1`), with `short_idle_shape_collides` (the six-coordinate SHAPE agrees on the pair for every threshold `T ≤ 2` and every modulus `P' + 1` dividing the shift) and `short_idle_threshold_refuted` (both at once: a same-class pair with different cells for every `K` of the forced shape with `T ≤ 2`). The bound was COMPUTED before the pair was written: first region countdown `0`, idle run `1`, `region_doubling` at `L = 0`, `j = 1` gives `L₁ ≤ 2`, attained by `doubling_attained 0` (`growRay 0 3 = (true, 2, 2)` by `decide`) | `iter_doubling`, `doubling_attained`, `backward_constraint`, `region_doubling` |
-| 9-col | `(a, 0, n)` vs `(a, 0, n+4)`, `n ≥ 2` | the closure of the 9-sep formula | DESIGNED, NOT YET COMPILED (expected COLLISION, closure-specific: pump the next region by `4` with `n` raised by `4`; the closure is `snce`-free) -- DECISION GATE | `forward_window`; `second_region_any_length`; per-member truth lemmas |
+| 9-col | `(a, 0, n)` vs `(a, 0, n+4)`, `n ≥ 2` | the closure of `phi9 n` | COLLISION, COMPILED (`gate9_col_cell_eq`: an EQUALITY of `cellAt` values) -- DECISION GATE PASSED. The closure sees one finite datum from `0` (`datum9`: position `2` idle, or the end index of the region starting there); equal data give equal types (`tpOf_eq_of_datum`, by a structural induction over the closure, `agree9`); the achievable data are `{none, some (idx (n-1)), some (idx n), some (idx (n+1))}` as a two-sided set equality (`datum_achievable`: `⊆` by the pin and `Drift`, `⊇` by `region4` with `j ∈ {1, 2}`), and the same set at `n + 4` (`datum_achievable_shift`); the past is the pending-forever past throughout. No contingency taken | `forward_window`; `second_region_any_length`; per-member truth lemmas |
 | gap-shift | `(a, c, n)` vs `(a, c+4, n+4)`, `c ≥ T₀`, same clipped gap | a closure with a `snce` member reading the region start's letter and one pinning the previous idle run's length | DESIGNED, NOT YET COMPILED (expected COLLISION: the pin cascade terminates at an absorbing idle run or a pending-forever past) -- DECISION GATE | `backward_constraint`, `region_doubling`, `doubling_attained`; `gPast_isPath` (pending-forever pasts) |
 | statement-shape | generic (`K`, `κ`, sound `R`) | -- | REFUTED, COMPILED: no positionwise lift | `no_positionwise_lift` (this file) |
 
@@ -1794,6 +1794,360 @@ theorem short_idle_threshold_refuted (T P' B : ℕ) (hT : T ≤ 2) :
 
 end ShortIdle
 
+/-! ## Gate 9, collision (DECISION GATE)
+
+The closure of `phi9 n` at position `0` of a path through `(a, 0, n)` sees exactly one thing
+beyond `n mod 4`: whether position `2` is pending and, if so, the end index of the region it
+starts (`datum9`).  Two paths with equal data have equal types (`tpOf_eq_of_datum`); the data
+achievable from `(a, 0, n)` form the set `{none, some (idx (n-1)), some (idx n), some (idx (n+1))}`
+(`datum_achievable`, a two-sided set equality), which is the same set at `n + 4`; hence the
+cells are EQUAL (`gate9_col_cell_eq`).  The past is replaced by a pending-forever past
+throughout: the closure is `snce`-free. -/
+
+section Gate9Col
+
+/-- The raw constructor forms of the closure members, so that `simp` on
+`PlusFormula.subformulas` matches them. -/
+abbrev negp : PlusFormula := .imp (.atom pA) .bot
+abbrev andF (a b : PlusFormula) : PlusFormula := .imp (.imp a (.imp b .bot)) .bot
+abbrev Draw (r : Fin 4) : PlusFormula := andF negp (.atom (lA r))
+abbrev Craw (r : Fin 4) : PlusFormula := .untl (.atom pA) (Draw r)
+abbrev Braw (r : Fin 4) : PlusFormula := andF (.atom pA) (Craw r)
+abbrev XBraw (r : Fin 4) : PlusFormula := .untl .bot (Braw r)
+abbrev Araw (r : Fin 4) : PlusFormula := andF negp (XBraw r)
+abbrev phi9raw (r : Fin 4) : PlusFormula := .untl .bot (Araw r)
+
+theorem phi9_eq_raw (n : ℕ) : phi9 n = phi9raw (idx (n + 2)) := rfl
+
+/-- The finite datum the closure sees from position `0`: `none` if position `2` is idle, else
+the end index of the region starting there (`idx` of its countdown; the start index is `0`). -/
+def datum9 (g : ℤ → LadderState Q4 pend4) : Option (Fin 4) :=
+  if (g 2).1.1.1 = true then some (idx (g 2).1.2.1) else none
+
+section Truth9
+variable {σ : WorldHistory F4} {k : ℤ} {g : ℤ → LadderState Q4 pend4}
+  (hσ : σ.path = fun t => (t + k, g t))
+  (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+include hσ
+
+theorem truth_atom_p (s : ℤ) : PlusTruthAt M4 σ s (.atom pA) ↔ (g s).1.1.1 = true :=
+  truth_p4 hσ s
+
+theorem truth_atom_l (s : ℤ) (i : Fin 4) :
+    PlusTruthAt M4 σ s (.atom (lA i)) ↔ (g s).1.1.2 = i :=
+  truth_l4 hσ s i
+
+theorem truth_Draw (s : ℤ) (r : Fin 4) :
+    PlusTruthAt M4 σ s (Draw r) ↔ (g s).1.1.1 = false ∧ (g s).1.1.2 = r := by
+  show PlusTruthAt M4 σ s (p.neg.and (ℓ r)) ↔ _
+  rw [PlusTruth.and_iff, truth_np4 hσ, truth_l4 hσ]
+
+theorem truth_Braw (s : ℤ) (r : Fin 4) :
+    PlusTruthAt M4 σ s (Braw r) ↔ (g s).1.1.1 = true ∧ PlusTruthAt M4 σ s (Craw r) := by
+  show PlusTruthAt M4 σ s (p.and (Craw r)) ↔ _
+  rw [PlusTruth.and_iff, truth_p4 hσ]
+
+theorem truth_Araw (s : ℤ) (r : Fin 4) :
+    PlusTruthAt M4 σ s (Araw r) ↔ (g s).1.1.1 = false ∧ PlusTruthAt M4 σ (s + 1) (Braw r) := by
+  show PlusTruthAt M4 σ s (p.neg.and (X (Braw r))) ↔ _
+  rw [PlusTruth.and_iff, truth_np4 hσ, truth_X4]
+
+include hg
+
+/-- **`C` at a pending position reads the end index of the region there**: from `(true, i)` with
+countdown `L'` at time `a`, `p U (¬p ∧ ℓ r)` holds iff the first idle state after the region,
+at index `i + idx L'`, carries `ℓ r`. -/
+theorem truth_Craw_at (a : ℤ) (i : Fin 4) (L' n2 : ℕ) (ha : (g a).1 = ((true, i), L', n2))
+    (r : Fin 4) : PlusTruthAt M4 σ a (Craw r) ↔ i + idx L' = r := by
+  obtain ⟨hidle, -⟩ := idle_at4_at hg a i L' n2 ha
+  constructor
+  · rintro ⟨(s : ℤ), hs, hD, hguard⟩
+    have hs' : a < s := hs
+    rw [truth_Draw hσ] at hD
+    obtain ⟨hDp, hDl⟩ := hD
+    rcases lt_trichotomy s (a + L' + 1) with hlt | heq | hgt
+    · have hsn : (((s - a).toNat : ℕ) : ℤ) = s - a := Int.toNat_of_nonneg (by omega)
+      have hle : (s - a).toNat ≤ L' := by omega
+      obtain ⟨hq, -⟩ := pending_walk4_at hg a i L' n2 ha (s - a).toNat hle
+      rw [hsn, show a + (s - a) = s by ring] at hq
+      rw [hq] at hDp
+      exact Bool.noConfusion hDp
+    · subst heq
+      rw [hidle] at hDl
+      exact hDl
+    · have hp := hguard (a + L' + 1) (show a < a + L' + 1 by omega) hgt
+      rw [truth_atom_p hσ, hidle] at hp
+      exact Bool.noConfusion hp
+  · intro hr
+    refine ⟨a + L' + 1, show a < a + L' + 1 by omega, ?_, ?_⟩
+    · rw [truth_Draw hσ, hidle]
+      exact ⟨rfl, hr⟩
+    · intro (s : ℤ) h1 h2
+      have h1' : a < s := h1
+      have h2' : s < a + L' + 1 := h2
+      rw [truth_atom_p hσ]
+      have hsn : (((s - a).toNat : ℕ) : ℤ) = s - a := Int.toNat_of_nonneg (by omega)
+      have hle : (s - a).toNat ≤ L' := by omega
+      obtain ⟨hq, -⟩ := pending_walk4_at hg a i L' n2 ha (s - a).toNat hle
+      rw [hsn, show a + (s - a) = s by ring] at hq
+      rw [hq]
+
+variable {m : ℕ} (h0 : (g 0).1 = ((true, 0), 0, m))
+include h0
+
+omit hg in
+/-- At `0`, `p` holds. -/
+theorem at0_p : PlusTruthAt M4 σ 0 (.atom pA) ↔ True := by
+  rw [truth_atom_p hσ, h0]
+  simp
+
+omit hg in
+/-- At `0`, `ℓ i` holds iff `i = 0`. -/
+theorem at0_l (i : Fin 4) : PlusTruthAt M4 σ 0 (.atom (lA i)) ↔ i = 0 := by
+  rw [truth_atom_l hσ, h0]
+  exact eq_comm
+
+/-- At `0`, `C` holds iff `r = 0` (the region ends at once, at index `0`). -/
+theorem at0_C (r : Fin 4) : PlusTruthAt M4 σ 0 (Craw r) ↔ r = 0 := by
+  rw [truth_Craw_at hσ hg 0 0 0 m h0 r, idx_zero, add_zero]
+  exact eq_comm
+
+/-- At `0`, `X B` fails: position `1` is idle. -/
+theorem at0_XB (r : Fin 4) : PlusTruthAt M4 σ 0 (XBraw r) ↔ False := by
+  show PlusTruthAt M4 σ 0 (X (Braw r)) ↔ _
+  rw [truth_X4, truth_Braw hσ, show (0 : ℤ) + 1 = 1 by norm_num]
+  obtain ⟨hidle, -⟩ := idle_at4 hg 0 0 m h0
+  simp only [Nat.cast_zero, zero_add] at hidle
+  rw [hidle]
+  simp
+
+/-- At `0`, `phi9` holds iff the datum is `some r`. -/
+theorem at0_phi (r : Fin 4) : PlusTruthAt M4 σ 0 (phi9raw r) ↔ datum9 g = some r := by
+  show PlusTruthAt M4 σ 0 (X (Araw r)) ↔ _
+  rw [truth_X4, truth_Araw hσ, truth_Braw hσ]
+  rw [show (0 : ℤ) + 1 = 1 by norm_num, show (1 : ℤ) + 1 = 2 by norm_num]
+  obtain ⟨hidle, -⟩ := idle_at4 hg 0 0 m h0
+  simp only [Nat.cast_zero, zero_add] at hidle
+  have hidle' : (g 1).1.1.1 = false := congrArg Prod.fst hidle
+  unfold datum9
+  constructor
+  · rintro ⟨-, hp2, hC⟩
+    obtain ⟨hq2, -⟩ := region_start4 hg 1 hidle' (by rw [show (1 : ℤ) + 1 = 2 by norm_num]; exact hp2)
+    rw [show (1 : ℤ) + 1 = 2 by norm_num, hidle] at hq2
+    have h2 : (g 2).1 = ((true, 0), (g 2).1.2.1, (g 2).1.2.2) := Prod.ext hq2 rfl
+    rw [truth_Craw_at hσ hg 2 0 _ _ h2 r, zero_add] at hC
+    rw [if_pos hp2, hC]
+  · intro h
+    split_ifs at h with hp2
+    · refine ⟨hidle', hp2, ?_⟩
+      obtain ⟨hq2, -⟩ := region_start4 hg 1 hidle' (by rw [show (1 : ℤ) + 1 = 2 by norm_num]; exact hp2)
+      rw [show (1 : ℤ) + 1 = 2 by norm_num, hidle] at hq2
+      have h2 : (g 2).1 = ((true, 0), (g 2).1.2.1, (g 2).1.2.2) := Prod.ext hq2 rfl
+      rw [truth_Craw_at hσ hg 2 0 _ _ h2 r, zero_add]
+      exact Option.some.inj h
+
+end Truth9
+
+/-- **Every closure member of `phi9` has the same truth at `0` along two paths with equal
+data**: a structural induction over the closure (atoms and the three `untl` members by the
+atomic lemmas, `imp` by the closure's closedness, no `box`/`snce`/`stab` in the closure). -/
+theorem agree9 {σ σ' : WorldHistory F4} {k k' : ℤ} {g g' : ℤ → LadderState Q4 pend4}
+    (hσ : σ.path = fun t => (t + k, g t)) (hσ' : σ'.path = fun t => (t + k', g' t))
+    (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+    (hg' : ∀ t, Rlad step4 pend4 t (g' t).1 (g' (t + 1)).1) {m m' : ℕ}
+    (h0 : (g 0).1 = ((true, 0), 0, m)) (h0' : (g' 0).1 = ((true, 0), 0, m'))
+    (hd : datum9 g = datum9 g') (r : Fin 4) :
+    ∀ ψ ∈ plusSubformulaClosure (phi9raw r),
+      (PlusTruthAt M4 σ 0 ψ ↔ PlusTruthAt M4 σ' 0 ψ) := by
+  intro ψ
+  induction ψ with
+  | atom a =>
+    intro h
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+    rcases h with rfl | rfl <;>
+      first
+      | rw [at0_p hσ h0, at0_p hσ' h0']
+      | rw [at0_l hσ h0, at0_l hσ' h0']
+  | bot => intro _; exact Iff.rfl
+  | imp φ₁ φ₂ ih1 ih2 =>
+    intro h
+    have h1 := plusClosure_imp_left _ _ _ h
+    have h2 := plusClosure_imp_right _ _ _ h
+    rw [PlusTruth.imp_iff, PlusTruth.imp_iff, ih1 h1, ih2 h2]
+  | box φ _ =>
+    intro h
+    exfalso
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+  | untl χ ψ _ _ =>
+    intro h
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+    rcases h with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · rw [at0_phi hσ hg h0, at0_phi hσ' hg' h0', hd]
+    · rw [at0_XB hσ hg h0, at0_XB hσ' hg' h0']
+    · rw [at0_C hσ hg h0, at0_C hσ' hg' h0']
+  | snce χ ψ _ _ =>
+    intro h
+    exfalso
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+  | stab φ _ =>
+    intro h
+    exfalso
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+
+/-- **Two paths with equal data realize the same type at `0`.** -/
+theorem tpOf_eq_of_datum {σ σ' : WorldHistory F4} {k k' : ℤ} {g g' : ℤ → LadderState Q4 pend4}
+    (hσ : σ.path = fun t => (t + k, g t)) (hσ' : σ'.path = fun t => (t + k', g' t))
+    (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+    (hg' : ∀ t, Rlad step4 pend4 t (g' t).1 (g' (t + 1)).1) {m m' : ℕ}
+    (h0 : (g 0).1 = ((true, 0), 0, m)) (h0' : (g' 0).1 = ((true, 0), 0, m'))
+    (hd : datum9 g = datum9 g') (n : ℕ) :
+    tpOf M4 (phi9 n) σ 0 = tpOf M4 (phi9 n) σ' 0 := by
+  ext ψ
+  rw [mem_tpOf_iff, mem_tpOf_iff]
+  constructor
+  · rintro ⟨hcl, ht⟩
+    exact ⟨hcl, (agree9 hσ hσ' hg hg' h0 h0' hd (idx (n + 2)) ψ hcl).mp ht⟩
+  · rintro ⟨hcl, ht⟩
+    exact ⟨hcl, (agree9 hσ hσ' hg hg' h0 h0' hd (idx (n + 2)) ψ hcl).mpr ht⟩
+
+/-- Every cell member is the type at `0` of a sliced path with offset `0` through the state. -/
+theorem of_mem_cell4_zero (φ : PlusFormula) (i : Fin 4) (c n : ℕ) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt M4 φ ((0 : ℤ), st4 i c n) 0) :
+    ∃ (σ : WorldHistory F4) (g : ℤ → LadderState Q4 pend4),
+      σ.path = (fun t => (t + 0, g t)) ∧ (∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1) ∧
+      (g 0).1 = ((true, i), c, n) ∧ tpOf M4 φ σ 0 = T := by
+  obtain ⟨σ, hσz, rfl⟩ := hT
+  obtain ⟨k, g, hg, hpath⟩ := hist_path4 σ
+  have hst : ((0 : ℤ) + k, g 0) = ((0 : ℤ), st4 i c n) := by
+    rw [← hσz]
+    exact (congrFun hpath 0).symm
+  have hk : k = 0 := by
+    have := congrArg Prod.fst hst
+    simpa using this
+  subst hk
+  exact ⟨σ, g, hpath, fun t => hg t,
+    congrArg (fun w : ℤ × LadderState Q4 pend4 => w.2.1) hst, rfl⟩
+
+/-- A datum is realized at `(a, 0, m)` when some offset-`0` sliced path through that state
+carries it. -/
+def datum_realized (m : ℕ) (d : Option (Fin 4)) : Prop :=
+  ∃ (σ : WorldHistory F4) (g : ℤ → LadderState Q4 pend4),
+    σ.path = (fun t => (t + 0, g t)) ∧ (∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1) ∧
+    (g 0).1 = ((true, 0), 0, m) ∧ datum9 g = d
+
+/-- A raw chain through `(a, 0, m)` realizes its own datum. -/
+theorem datum_realized_of_raw (m : ℕ) (raw : ℤ → Q4 × ℕ × ℕ)
+    (h : ∀ t, Rlad step4 pend4 t (raw t) (raw (t + 1))) (h0 : raw 0 = ((true, 0), 0, m)) :
+    datum_realized m (datum9 (liftAdm raw h)) := by
+  obtain ⟨σ, hσ⟩ := hist_of_raw raw h
+  exact ⟨σ, _, hσ, fun t => h t, h0, rfl⟩
+
+/-- **The data achievable from `(a, 0, m)`, `1 ≤ m`**: position `2` idle, or pending with a
+countdown in the window `{m - 1, m, m + 1}` (`forward_window` at `c = 0`, `j = 1`) — a
+two-sided set equality. -/
+theorem datum_achievable (m : ℕ) (hm : 1 ≤ m) :
+    {d | datum_realized m d} =
+      {none, some (idx (m - 1)), some (idx m), some (idx (m + 1))} := by
+  ext d
+  simp only [Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff]
+  constructor
+  · rintro ⟨σ, g, hσ, hg, h0, rfl⟩
+    unfold datum9
+    split_ifs with hp2
+    · -- the region at `2` has the deadline at `1` as countdown, within one of `m`
+      obtain ⟨hidle, -⟩ := idle_at4 hg 0 0 m h0
+      simp only [Nat.cast_zero, zero_add] at hidle
+      have hidle' : (g 1).1.1.1 = false := congrArg Prod.fst hidle
+      obtain ⟨-, hc2⟩ := region_start4 hg 1 hidle' (by rw [show (1 : ℤ) + 1 = 2 by norm_num]; exact hp2)
+      rw [show (1 : ℤ) + 1 = 2 by norm_num] at hc2
+      have hn0 : (g 0).1.2.2 = m := congrArg (fun x : Q4 × ℕ × ℕ => x.2.2) h0
+      have hdr := drift_path4 hg 0 1
+      simp only [Nat.cast_one, zero_add, hn0] at hdr
+      rw [hc2]
+      have : (g 1).1.2.2 = m - 1 ∨ (g 1).1.2.2 = m ∨ (g 1).1.2.2 = m + 1 := by omega
+      rcases this with h | h | h <;> rw [h] <;> simp
+    · left; rfl
+  · rintro (rfl | rfl | rfl | rfl)
+    · -- `none`: an idle run of length `2`
+      have hr := gPast4_rlad 0 0 m (region4 0 0 m 2 m) (region4_zero 0 0 m 2 m)
+        (region4_rlad 0 0 m 2 m (by omega) (by omega) (by omega))
+      have := datum_realized_of_raw m _ hr (by
+        rw [show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, gPast4_nat, region4_zero])
+      convert this using 1
+      unfold datum9
+      rw [liftAdm_val, show (2 : ℤ) = ((2 : ℕ) : ℤ) by rfl, gPast4_nat,
+        region4_idle₁ 0 0 m 2 m 2 (by omega) (by omega)]
+      simp
+    · -- `some (idx (m - 1))`
+      have hr := gPast4_rlad 0 0 m (region4 0 0 m 1 (m - 1)) (region4_zero 0 0 m 1 (m - 1))
+        (region4_rlad 0 0 m 1 (m - 1) le_rfl (by omega) (by omega))
+      have := datum_realized_of_raw m _ hr (by
+        rw [show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, gPast4_nat, region4_zero])
+      convert this using 1
+      unfold datum9
+      rw [liftAdm_val, show (2 : ℤ) = ((2 : ℕ) : ℤ) by rfl, gPast4_nat,
+        region4_pend₂ 0 0 m 1 (m - 1) 2 (by omega) (by omega)]
+      simp only [if_true]
+      congr 2
+      omega
+    · -- `some (idx m)`
+      have hr := gPast4_rlad 0 0 m (region4 0 0 m 1 m) (region4_zero 0 0 m 1 m)
+        (region4_rlad 0 0 m 1 m le_rfl (by omega) (by omega))
+      have := datum_realized_of_raw m _ hr (by
+        rw [show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, gPast4_nat, region4_zero])
+      convert this using 1
+      unfold datum9
+      rw [liftAdm_val, show (2 : ℤ) = ((2 : ℕ) : ℤ) by rfl, gPast4_nat,
+        region4_pend₂ 0 0 m 1 m 2 (by omega) (by omega)]
+      simp only [if_true]
+      congr 2
+      omega
+    · -- `some (idx (m + 1))`
+      have hr := gPast4_rlad 0 0 m (region4 0 0 m 1 (m + 1)) (region4_zero 0 0 m 1 (m + 1))
+        (region4_rlad 0 0 m 1 (m + 1) le_rfl (by omega) (by omega))
+      have := datum_realized_of_raw m _ hr (by
+        rw [show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, gPast4_nat, region4_zero])
+      convert this using 1
+      unfold datum9
+      rw [liftAdm_val, show (2 : ℤ) = ((2 : ℕ) : ℤ) by rfl, gPast4_nat,
+        region4_pend₂ 0 0 m 1 (m + 1) 2 (by omega) (by omega)]
+      simp only [if_true]
+      congr 2
+      omega
+
+/-- The achievable data at `m` and at `m + 4` coincide: the window shifts by the product
+period. -/
+theorem datum_achievable_shift (m : ℕ) (hm : 1 ≤ m) :
+    {d | datum_realized m d} = {d | datum_realized (m + 4) d} := by
+  rw [datum_achievable m hm, datum_achievable (m + 4) (by omega)]
+  have e1 : idx (m + 4 - 1) = idx (m - 1) := by rw [idx_eq_iff]; omega
+  have e2 : idx (m + 4) = idx m := by rw [idx_eq_iff]; omega
+  have e3 : idx (m + 4 + 1) = idx (m + 1) := by rw [idx_eq_iff]; omega
+  rw [e1, e2, e3]
+
+/-- One inclusion of cells from one inclusion of achievable data. -/
+theorem cell_subset_of_datum (n m m' : ℕ)
+    (hsub : {d | datum_realized m d} ⊆ {d | datum_realized m' d}) :
+    cellAt M4 (phi9 n) ((0 : ℤ), st4 0 0 m) 0 ⊆ cellAt M4 (phi9 n) ((0 : ℤ), st4 0 0 m') 0 := by
+  intro T hT
+  obtain ⟨σ, g, hσ, hg, h0, rfl⟩ := of_mem_cell4_zero (phi9 n) 0 0 m T hT
+  have hd : datum9 g ∈ {d | datum_realized m d} := ⟨σ, g, hσ, hg, h0, rfl⟩
+  obtain ⟨σ', g', hσ', hg', h0', hd'⟩ := hsub hd
+  refine ⟨σ', ?_, ?_⟩
+  · rw [state_eq4 hσ' 0]
+    exact Prod.ext (by simp) (Subtype.ext h0')
+  · exact tpOf_eq_of_datum hσ' hσ hg' hg h0' h0 hd' n
+
+/-- **GATE 9, COLLISION HALF — COLLISION**: the cells at `(a, 0, n)` and `(a, 0, n + 4)` are
+EQUAL for the closure of `phi9 n`, every `n ≥ 2`. -/
+theorem gate9_col_cell_eq (n : ℕ) (hn : 2 ≤ n) :
+    cellAt M4 (phi9 n) ((0 : ℤ), st4 0 0 n) 0 = cellAt M4 (phi9 n) ((0 : ℤ), st4 0 0 (n + 4)) 0 :=
+  Set.Subset.antisymm
+    (cell_subset_of_datum n n (n + 4) (datum_achievable_shift n (by omega)).le)
+    (cell_subset_of_datum n (n + 4) n (datum_achievable_shift n (by omega)).ge)
+
+end Gate9Col
+
 end Probe820
 
 /-! ## Axiom check -/
@@ -1810,3 +2164,4 @@ end Probe820
 #print axioms Probe820.short_idle_cell_ne
 #print axioms Probe820.short_idle_shape_collides
 #print axioms Probe820.short_idle_threshold_refuted
+#print axioms Probe820.gate9_col_cell_eq

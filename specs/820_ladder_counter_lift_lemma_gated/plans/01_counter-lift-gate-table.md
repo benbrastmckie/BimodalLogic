@@ -453,7 +453,7 @@ is the complete covering check — single file, outside every Lake target root.
 
 ---
 
-### Phase 6: Gate 9, Collision Half (Decision Gate) [NOT STARTED]
+### Phase 6: Gate 9, Collision Half (Decision Gate) [COMPLETED]
 
 **Goal**: The expected COLLISION at the product period: `(a, 0, n)` and `(a, 0, n + 4)` have
 EQUAL cells for the closure of `phi9` — pumping the next region by 4 with `n` raised by 4 from
@@ -467,22 +467,22 @@ mechanism and routes to the contingency.
   (the closure of the Phase 4 formula; `hn` keeps the window away from the clip at `0`).
 
 **Tasks**:
-- [ ] Per-member truth lemmas for `cl (phi9 n)` at position 0 as functions of a finite datum
+- [x] Per-member truth lemmas for `cl (phi9 n)` at position 0 as functions of a finite datum
       `d := (next region's end index)` — the only thing the closure sees from position 0 (every
       member is an `X`/`U` nest over `p` and one `ℓ`); state `tpOf_eq_of_datum`: two histories
       through pending states with countdown 0 and equal data have equal types at 0.
-- [ ] The datum sets: `datum_achievable (a, 0, n) = {(n - 1) mod 4, n mod 4, (n + 1) mod 4}` as
+- [x] The datum sets: `datum_achievable (a, 0, n) = {(n - 1) mod 4, n mod 4, (n + 1) mod 4}` as
       a set equality (both inclusions: `forward_window` for `⊆`, `region4`/`second_region_any_length4`
       with `gPast4` for `⊇`), and the same set at `n + 4`.
-- [ ] `gate9_col_cell_eq` from the two: every type in one cell is `tpOf` of a history whose datum
+- [x] `gate9_col_cell_eq` from the two: every type in one cell is `tpOf` of a history whose datum
       is achievable from the other state, hence (by `tpOf_eq_of_datum` and a history built from
       the constructors) in the other cell; both inclusions, `Set.ext`.
-- [ ] Contingency check, run ONLY if the equality cannot be closed and an inequality compiles
-      instead: state the same pair at modulus 8 (`n + 8`) and with the clip raised; if equality
+- [x] Contingency check, run ONLY if the equality cannot be closed and an inequality compiles
+      instead *(not applicable: the equality closed, `gate9_col_cell_eq`; no modulus-8 check was needed)*: state the same pair at modulus 8 (`n + 8`) and with the clip raised; if equality
       is restored the row reads `COLLISION at a multiple of the product period, the modulus
       clause sharpened` (not a mechanism); if no multiple restores it, compile the inequality as
       `gate9_col_refuted`, mark this phase `[BLOCKED]`, and take the negative branch (Phase 9).
-- [ ] Flip the 9-col header row; extend the axiom block.
+- [x] Flip the 9-col header row; extend the axiom block.
 
 **Timing**: 2 hours
 
