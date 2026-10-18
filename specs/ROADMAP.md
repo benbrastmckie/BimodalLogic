@@ -13,8 +13,8 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 ## Run these next
 
 ```bash
-/orchestrate 819                # GATES 761: choose the ladder-cell presentation, or settle the direction negatively
-/orchestrate 761 --hard --lit   # THE critical path, once 819 lands: the ladder realization theorem, over the two-arm relation `cohBi`
+/orchestrate 820                # GATES 761: the counter-lift lemma, research-first, gated — a refutation there closes the ladder route
+/orchestrate 761 --hard --lit   # THE critical path, once 820 lands: the ladder realization theorem over the idle-extended `cohBi` on the carrier `Q × ClType φ × K`
 ```
 
 **SUFFICIENCY RETURNED (`815`).** The certificate is sufficient at the LABEL level over the
@@ -26,9 +26,16 @@ realizability here is label-level, so the semantic step from a fulfilling label 
 membership of a type in a cell (obligation (d)) is what remains of adequacy. The compiled detail,
 the gate dispositions and the refuted index shapes are in Stage 1 below.
 
-`761` declares five edges (`760`, `775`, `805`, `806`, `819`). Four are discharged and the
-sufficiency verdict is in, so the mathematics is costable; **`819` is the one edge still open** and
-gates the dispatch. `761` inherits the `cohBi` relation and the label-level limit.
+`761` declares six edges (`760`, `775`, `805`, `806`, `819`, `820`). Five are discharged or about to
+be — `819` lands the presentation decision — and **`820`, the counter-lift lemma, is the one still
+open** and gates the dispatch. The decision: presentation (a) is chosen, the set-valued per-state
+datum in its maximum-certified form (`D`, the maximum `certAdm`-certified subset of the carrier
+`Q × ClType φ × K`; `ladderRealized` the fibre equation; the factorization lemma a corollary);
+presentation (b), a parameter-coupled tuple index stated alone, is dominated on every obligation,
+incomplete as a presentation (a tuple class carries no types) and barred by the refutation record —
+reported, not proposed. The ruling: no tuple index is to be stated at any parameters; `K` is a
+carrier coordinate whose parameters are outputs of the lemma. `761` inherits the idle-extended
+`cohBi` on that carrier and the label-level limit, now read as region-interior.
 Infrastructure repairs (`810` and the agent-system records `813`/`814`, whose edit targets resolve
 only under the source store's own tree) are subordinate to all of it — they fix how the system
 reports and gates, not what is proved, and none of them gates the critical path.
@@ -46,8 +53,8 @@ aim.
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 819                 # ladder-cell presentation decision — the one open edge on 761; run first
-/orchestrate 761 --hard --lit    # ladder realization theorem over `cohBi`, realizability label-level (815) — needs 819
+/orchestrate 820                 # the counter-lift lemma, research-first, gated — the gate on 761; a refutation there closes the ladder route
+/orchestrate 761 --hard --lit    # ladder realization theorem over the idle-extended `cohBi` on `Q × ClType φ × K`; waits on 820
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781 --hard      # sliced-certificate internals: full-label evaluation, Phase 5 hoist
 # Stage 2 — supporting semantics and metalogic
@@ -149,7 +156,7 @@ theorem** (`exists_hitPresented`, every regular `ℤ`-model, `sizeBound φ k` a 
 for `box`/`stab`-free `φ` at one seam; **(W)** landed its anchor layer, its run-layer frame scheme
 and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remain open:
 
-- **Adequacy — SUFFICIENCY RETURNED (`815`); the semantic step, obligation (d), is what remains.** The index
+- **Adequacy — SUFFICIENCY RETURNED (`815`); PRESENTATION CHOSEN (`819`); what remains is (2), (3) jointly — the counter-lift lemma — then the semantic step (d).** The index
   sub-problem's history: `ladderRealized` cannot be STATED while no computable
   `LadderState Q pend → I` exists for `cellAt` to factor through. **Four tuple-shaped index shapes
   are refuted on compiled ground** — counter-pair clipping (`ladder-cell-refutation.lean`),
@@ -183,7 +190,8 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   (`realizes_of_certAdm_cohBi`), non-vacuously in both arms (`cert_accepts_R4`,
   `realizes_y0_R4`), at no cost on a `snce`-free closure; condition (3)'s bound is derived
   (`eu_mem_lfp_path_le_card`). Route B's relation is `cohBi`; both arms stay existential; what
-  remains of adequacy is the semantic step (obligation (d)). The route is Route B (check a candidate realizable
+  remains of adequacy is the counter-lift lemma — obligations (2) and (3) jointly — and then the
+  semantic step (obligation (d)). The route is Route B (check a candidate realizable
   set), chosen over Route A (decide generalized-Büchi nonemptiness — a missing nested fixpoint,
   real work, not to be entered without a decision record). Still open alongside it: **gate 8 is
   SIDESTEPPED, not passed** (the `stab`/`box` clauses are present but unexercised; exercising
@@ -194,13 +202,41 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   finite (`anchorCells_ncard_le`); only the index/presentation is open. The declined alternative
   (R2: an index-free, `box`/`stab`-free run-layer half, `slive` retained) stays on record but is
   not pursued — it would not reach the `box`/`stab` letters Stage 1 needs.
+
+  **Presentation chosen** (`819`; decision report
+  `specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md`):
+  the index is `D`, the maximum `certAdm`-certified subset of the carrier `Q × ClType φ × K`, where
+  `K` is a quotient of the two ladder counters; `ladderRealized` is the fibre equation (`cellAt` at
+  `(q, c, n)` equals the fibre of `D` at `(q, κ(c, n))`); the factorization lemma for `K` is its
+  corollary, with `K`'s parameters as OUTPUTS of the counter-lift lemma — `K` is a carrier
+  coordinate, not an index, and no tuple index is stated at any parameters. Finding 1, compiled:
+  the certified chains of record are REGION-INTERIOR — `coh`/`cohBi` require `pend` at both
+  endpoints and no forward `Rlad` ray is pending forever (wired probe
+  `no-pending-forever-ray.lean`: `exists_idle_of_rlad_ray`, `no_rlad_ray_of_pending_forever`) — so
+  the label-level results compose only through the counter-lift lemma (soundness: every `RladAdm`
+  history projects to a class-level chain over the carrier under the idle-extended `cohBi`;
+  completeness: every such chain lifts). Finding 3, exactness: `Real` is itself certified given
+  constancy of `cellAt` on `K`-classes and every certified set lies inside it, so the maximum
+  certified set is `Real` and is computable by enumeration over `Finset (Q × ClType φ × K)` — a
+  count of candidates, no bound of any kind; this is the decision record the Route A sentence
+  above asked for, and its verdict is that Route A is not entered. The lemma's two hazards are
+  `820`'s first gates: gap shift under pumping (lengthening a region by `P` lowers every earlier
+  gap by `P` unless `n` is pumped in step, which the previous idle run must absorb) and short idle
+  runs that cannot absorb a deadline shift (`L_{k+1} ≤ 2 L_k + j_k + 1`). The negative branch
+  stays live: a seventh mechanism resistant to every `K` of the forced shape closes the ladder
+  route for BOTH presentations, on evidence, with no weakened same-named substitute.
 - **761 — the ladder realization theorem** (`LadderCons`, `ladderRealized` per cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
-  `[BLOCKED]`. **Four of its five declared edges are discharged** (760/775 archived, 805/806
-  `[COMPLETED]`); **`819` — the ladder-cell presentation decision — is the one still open**, so a
-  bare `/orchestrate 761` defers on it. Run `819` first, or batch the two and let the engine
-  serialize them. The **sufficiency verdict** it waited on is in (`815`, above): the mathematics is
-  costable, over the relation `cohBi`, with every realizability statement it inherits label-level.
+  `[BLOCKED]`. **Five of its six declared edges are discharged once `819` completes** (760/775
+  archived, 805/806 `[COMPLETED]`, 819 the presentation decision); **it now waits on `820` — the
+  counter-lift lemma — alone**, so a bare `/orchestrate 761` defers on it. Run `820` first; a
+  refutation there closes the ladder route on evidence. It inherits presentation (a) — `D` the
+  maximum `certAdm`-certified subset of the carrier `Q × ClType φ × K`, `ladderRealized` the fibre
+  equation — the idle-extended `cohBi` on that carrier, the `certStab`-per-`(q, κ)` rebuild, and
+  the label-level qualification of `815` with its region-interior reading:
+  `realizes_of_certAdm_cohBi` is sufficiency for the interior of one region and transfers to the
+  region segments of a ladder history, never to the history itself. The **sufficiency verdict** it
+  waited on is in (`815`, above): the mathematics is costable over that relation.
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone.
   761 and 763 share the `RaySummary` library set and serialize through the edge between them.
