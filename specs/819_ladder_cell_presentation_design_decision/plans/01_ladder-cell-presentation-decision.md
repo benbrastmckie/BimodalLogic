@@ -400,7 +400,7 @@ the next index-shaped proposal is checked against the decision as well as the si
 
 ---
 
-### Phase 6: The Complete Gate Set, Summary, Return [NOT STARTED]
+### Phase 6: The Complete Gate Set, Summary, Return [COMPLETED]
 
 **Goal**: Discharge the complete gate set on the task's whole edit set, write the summary with the
 decision, the open problem, the successor's number, the carried-figure notes and the issue-log
@@ -408,11 +408,11 @@ attestation, and return `implemented` with 761 still `[BLOCKED]` in state and de
 successor.
 
 **Tasks**:
-- [ ] Run every command under **Verification** below, checking each exit status, never only its output; detached long runs use a bounded waiter per `context/patterns/bounded-build-waiter.md`.
-- [ ] Diff the three Goal declarations' statements in the promoted probe against `## Lean Challenge Statements` declaration by declaration; attempt `bash .claude/scripts/lean-challenge-snapshot.sh --check 819 .` first and record its exit (71 without a manifest is expected; the declaration diff is the recorded substitute).
-- [ ] Sweep every artifact this task wrote (the probe header, the guard decision row, the roadmap hunks, the README paragraph, the guidance note hunks, the successor description, 761's amendment) for a stated tuple index, a bound or complexity claim, a dropped acceptance clause, a Buchi/MSO citation in place of a proof, or any `LadderCons`/`ladderRealized` declaration; report the grep results.
-- [ ] Write `specs/819_ladder_cell_presentation_design_decision/summaries/01_ladder-cell-presentation-decision-summary.md` per summary-format.md: the decision in the three-part form (presentation (a) in the maximum-certified form, (b) dominated/incomplete/barred and reported not proposed, `K` a carrier coordinate with parameters as outputs); Finding 1 with the probe path and its three theorems and axiom profile; Finding 3 and why Route A is not entered; the counter-lift lemma named as the open problem with its two hazards and the gate table, and the successor's task number; the negative branch and what it would take; the edge declared on 761 and 761's amendment; the three record edits; the carried-figure note (every verdict read from an earlier probe's header rather than re-run is named as such); the check actually run in place of the challenge snapshot; gate 8 SIDESTEPPED, gates 1, 2, 3, 9 as carried; the guidance-note edit's location in the source-store working tree, uncommitted there by design; and an explicit attestation of the issue-log entries made in every phase.
-- [ ] Commit the summary; return.
+- [x] Run every command under **Verification** below, checking each exit status, never only its output; detached long runs use a bounded waiter per `context/patterns/bounded-build-waiter.md`.
+- [x] Diff the three Goal declarations' statements in the promoted probe against `## Lean Challenge Statements` declaration by declaration; attempt `bash .claude/scripts/lean-challenge-snapshot.sh --check 819 .` first and record its exit (71 without a manifest is expected; the declaration diff is the recorded substitute).
+- [x] Sweep every artifact this task wrote (the probe header, the guard decision row, the roadmap hunks, the README paragraph, the guidance note hunks, the successor description, 761's amendment) for a stated tuple index, a bound or complexity claim, a dropped acceptance clause, a Buchi/MSO citation in place of a proof, or any `LadderCons`/`ladderRealized` declaration; report the grep results. *(deviation: altered — the `^def ladderIndex` sweep matches five PRE-EXISTING pinned definitional bodies of the refuted candidates inside the four refutation probes, untouched by this task and kept on purpose; reported, not acted on. `lean-challenge-snapshot.sh --check` exit 71 (no manifest); the declaration diff agrees modulo whitespace.)*
+- [x] Write `specs/819_ladder_cell_presentation_design_decision/summaries/01_ladder-cell-presentation-decision-summary.md` per summary-format.md: the decision in the three-part form (presentation (a) in the maximum-certified form, (b) dominated/incomplete/barred and reported not proposed, `K` a carrier coordinate with parameters as outputs); Finding 1 with the probe path and its three theorems and axiom profile; Finding 3 and why Route A is not entered; the counter-lift lemma named as the open problem with its two hazards and the gate table, and the successor's task number; the negative branch and what it would take; the edge declared on 761 and 761's amendment; the three record edits; the carried-figure note (every verdict read from an earlier probe's header rather than re-run is named as such); the check actually run in place of the challenge snapshot; gate 8 SIDESTEPPED, gates 1, 2, 3, 9 as carried; the guidance-note edit's location in the source-store working tree, uncommitted there by design; and an explicit attestation of the issue-log entries made in every phase.
+- [x] Commit the summary; return.
 
 **Timing**: 1.5 hours
 
@@ -482,19 +482,19 @@ end Probe819
 
 ## Testing & Validation
 
-- [ ] The promoted probe compiles through `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean` with exit 0, zero errors, zero warnings, three `#print axioms` lines at most `[propext, Quot.sound]`.
-- [ ] Zero `sorry` in the probe (`lean-sorry-census.sh` 0); no `axiom`, `native_decide`, `maxRecDepth`, vacuous definition.
-- [ ] The three pinned Goal signatures are byte-unchanged modulo whitespace from the Challenge block.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 reporting `all 42 wired probe(s) compile`; `WIRED` has 41 entries.
-- [ ] The successor task exists (`not_started`, `lean4`, `decidability`, four-path `file_scope`); 761 depends on it and is still `blocked`; `validate-state.sh --deep` exits 0; 761's description and `records/761-amendment.txt` carry the 2026-10-18 amendment.
-- [ ] `specs/ROADMAP.md`'s diff lies entirely inside the five enumerated regions and keeps every listed sentence verbatim; the successor's number appears in Run-these-next, Next-batches, region (B) and region (E).
-- [ ] The README diff is one hunk between the two quoted paragraphs, outside the generated block; C9 and `check-task-references.sh --quiet` pass.
-- [ ] The source-store guidance note carries the four additions, still carries mechanism (6), and passes `verify-deploy.sh --skip-slow --only-gate 3,4 <agent-system root>`; the deployed mirror and `.claude/**` in this repository are untouched.
-- [ ] No artifact of this task states a tuple index, a bound or complexity claim, a `LadderCons`/`ladderRealized` declaration, or a Buchi/MSO citation in place of a proof (grep sweep reported).
-- [ ] `bash scripts/check-module-invariants.sh`, `bash .claude/scripts/check-task-references.sh --quiet` and `bash .claude/scripts/verify-deploy.sh` each exit 0 (pre-existing staleness/drift recorded, not repaired).
-- [ ] Full `lake build` exits 0 (expected no-op: no library `.lean` file changes).
-- [ ] `git diff --stat` over `FormalSystem/`, `Tests/`, `docs/` across this task's commits names only the RaySummary README.
-- [ ] `lean-challenge-snapshot.sh --check 819 .` attempted and its outcome recorded; on exit 71 the declaration-by-declaration diff is the recorded substitute (advisory).
+- [x] The promoted probe compiles through `bash .claude/scripts/lake-build-guard.sh build --timeout 600 -- env lean specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean` with exit 0, zero errors, zero warnings, three `#print axioms` lines at most `[propext, Quot.sound]`.
+- [x] Zero `sorry` in the probe (`lean-sorry-census.sh` 0); no `axiom`, `native_decide`, `maxRecDepth`, vacuous definition.
+- [x] The three pinned Goal signatures are byte-unchanged modulo whitespace from the Challenge block.
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 reporting `all 42 wired probe(s) compile`; `WIRED` has 41 entries.
+- [x] The successor task exists (`not_started`, `lean4`, `decidability`, four-path `file_scope`); 761 depends on it and is still `blocked`; `validate-state.sh --deep` exits 0; 761's description and `records/761-amendment.txt` carry the 2026-10-18 amendment.
+- [x] `specs/ROADMAP.md`'s diff lies entirely inside the five enumerated regions and keeps every listed sentence verbatim; the successor's number appears in Run-these-next, Next-batches, region (B) and region (E).
+- [x] The README diff is one hunk between the two quoted paragraphs, outside the generated block; C9 and `check-task-references.sh --quiet` pass.
+- [x] The source-store guidance note carries the four additions, still carries mechanism (6), and passes `verify-deploy.sh --skip-slow --only-gate 3,4 <agent-system root>`; the deployed mirror and `.claude/**` in this repository are untouched.
+- [x] No artifact of this task states a tuple index, a bound or complexity claim, a `LadderCons`/`ladderRealized` declaration, or a Buchi/MSO citation in place of a proof (grep sweep reported).
+- [x] `bash scripts/check-module-invariants.sh`, `bash .claude/scripts/check-task-references.sh --quiet` and `bash .claude/scripts/verify-deploy.sh` each exit 0 (pre-existing staleness/drift recorded, not repaired).
+- [x] Full `lake build` exits 0 (expected no-op: no library `.lean` file changes).
+- [x] `git diff --stat` over `FormalSystem/`, `Tests/`, `docs/` across this task's commits names only the RaySummary README.
+- [x] `lean-challenge-snapshot.sh --check 819 .` attempted and its outcome recorded; on exit 71 the declaration-by-declaration diff is the recorded substitute (advisory).
 
 ## Artifacts & Outputs
 
