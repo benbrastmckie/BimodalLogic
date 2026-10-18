@@ -11,7 +11,7 @@ next_project_number: 820
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,618,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,819 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,763 | 231,429,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -55,10 +55,6 @@ next_project_number: 820
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
-
-### Categorical Structure
-
-618 [PLANNED] — Formalize the path category Path(F) and prove...
 
 ### Dataset Enhancement
 
@@ -1597,12 +1593,13 @@ Out of scope: any Lean change, and any edit to the manuscript.
 ---
 
 ### 618. Path category and conduche fibration
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563, Task 564, Task 616
 - **Research**: [618_path_category_and_conduche_fibration/reports/01_path-category-conduche-fibration.md]
 - **Plan**: [618_path_category_and_conduche_fibration/plans/01_path-category-conduche-fibration.md]
+- **Summary**: [618_path_category_and_conduche_fibration/summaries/01_path-category-conduche-fibration-summary.md]
 
 **Description**: Formalize the path category `Path(F)` and prove `cor:path-fibration`: the length functor `len : Path(F) -> BD+` is a discrete Conduche fibration whose associated presheaf is `Beh(F)`, together with the `D = Z` clause identifying `Path(F)` as the free category on the graph `(W, =>_1)`.
 

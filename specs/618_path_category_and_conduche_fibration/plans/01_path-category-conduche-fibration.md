@@ -1,7 +1,7 @@
 # Implementation Plan: Task #618
 
 - **Task**: 618 - Formalize the path category `Path(F)` and prove `cor:path-fibration`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11.5 hours
 - **Dependencies**: 563 (interval site, behavior presheaf), 564 (Sheaf clause), 616 (duration monoid, twisted-arrow site), 617 (Reflection clause) — all landed; `Presheaf/{Site,Duration,Behavior,Sheaf,Reflection}.lean` are in the tree at `d034460fd`
 - **Research Inputs**: specs/618_path_category_and_conduche_fibration/reports/01_path-category-conduche-fibration.md

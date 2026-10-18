@@ -1,19 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 3,
-  "summary": "Wrote a nine-phase, 11.5-hour implementation plan for FormalSystem/Semantics/Presheaf/Path.lean: cast kit and sum-form gluing, the PathHom/PathCat/BObj categories with the length functor, the discrete Conduche fibration property of len, the associated presheaf identified with Beh F as an equality, the D = Z clause in two layers (adjacency windows, then a Quiver.Path equivalence carrying composition to concatenation), and a final wiring-and-full-gate phase. The plan's 55-declaration Lean Challenge Statements block was compiled sorry-bodied against the built tree at plan time and exits 0; its 52 theorem/def/instance identifiers equal the Goals list exactly. The HARD SCOPE LIMIT is preserved: the general Conduche equivalence is cited, never built.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 5,
+  "summary": "All nine plan phases closed and committed (8d4169ce5 through 4cebbea77): FormalSystem/Semantics/Presheaf/Path.lean formalizes Path(F), the length functor as a discrete Conduche fibration, the associated-presheaf equality with Beh F, and the D = Z free-category clause, choice-free, with Johnstone's general equivalence cited not proved. Wiring, records and READMEs landed; full lake build and check-module-invariants.sh exit 0; the complete verify-deploy.sh set is deferred to the batch stage per the dispatch's Batch Gate Deferral.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/618_path_category_and_conduche_fibration/plans/01_path-category-conduche-fibration.md",
-      "summary": "Nine sequential phases (eight local-tier proof phases on the unimported module, one full-tier wiring phase); every pinned statement compiled at plan time."
+      "type": "summary",
+      "path": "specs/618_path_category_and_conduche_fibration/summaries/01_path-category-conduche-fibration-summary.md",
+      "summary": "Implementation summary for the path category and Conduche fibration module."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Semantics/Presheaf/Path.lean",
+      "summary": "The new module: 55 declarations, zero sorry, no Classical.choice."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 9,
   "phases_total": 9,
   "blockers": [],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement for Phase 1: add the three DANGLING record rows before any docstring cites def:conduche, def:path-category or fact:conduche-equivalence (C15), then create Path.lean with the full import set and the cast kit."
+  "next_action_hint": "Nothing further for this task; batch stage runs the deferred full verify-deploy gate set.",
+  "git_checkpoint": "4cebbea77"
 }
