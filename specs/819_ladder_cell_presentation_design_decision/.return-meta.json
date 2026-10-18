@@ -1,0 +1,38 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
+      "summary": "Design decision: presentation (a), the set-valued per-state datum as the maximum certified subset of Q x ClType x K, over (b) a parameter-coupled tuple index (dominated, incomplete, barred); two findings -- the certified chains of record are region-interior and never Rlad histories (compiled), and any computable datum's counter quotient is forced to the six-coordinate shape with parameters as outputs of the pumping lemma; the counter-lift lemma named as the open problem on which viability rests."
+    }
+  ],
+  "next_steps": "Plan task 761 against this decision: file the counter-lift lemma (obligations 2+3) as a gated research-first record before any sufficiency attempt; rebuild cohBi across idle steps on the carrier Q x ClType x K with certStab per (q, kappa); state LadderCons as certAdm plus maximality; never state a tuple as the index.",
+  "modified_files": [
+    "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
+    "specs/819_ladder_cell_presentation_design_decision/prototype/no-pending-forever-ray.lean"
+  ],
+  "memory_candidates": [
+    {
+      "content": "The ladder's certified realizability (coh/cohBi, certAdm, Realizes) is region-interior: coh requires pend at both endpoints, so every Realizes chain is an all-pending object walk, and no forward Rlad ray is pending for more than c0+1 steps (exists_idle_of_rlad_ray). Label-level sufficiency over cohBi composes to ladder realizability only through a counter-lift lemma across idle runs under Count/Drift.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["ladder", "Rlad", "cohBi", "region-interior", "counter-lift", "realization"]
+    },
+    {
+      "content": "Carrier coordinate vs index: a counter quotient of the refuted six-coordinate shape is forced inside any computable per-ladder-state datum by the arithmetic of Count/Drift, but it is a coordinate of the carrier the set-valued datum D is computed over, with parameters that are outputs of the pumping lemma; D factors cellAt, the quotient alone does not. Exactness of D is obtained as the maximum certAdm-certified set, not by deciding generalized-Buchi nonemptiness.",
+      "category": "PATTERN",
+      "source_artifact": "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["cell index", "counter quotient", "maximum certified set", "Route B", "stab"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792333740_591ffa_819",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
