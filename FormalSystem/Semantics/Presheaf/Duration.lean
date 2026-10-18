@@ -120,7 +120,7 @@ the Lean statement from reproducing that defect.
 
 **Why `hom_unique` cancels on the left.** Both `left` fields read `z + a.fst = b.fst`, so the
 natural cancellation is `add_right_cancel`. At `↑D` that lemma drags `Classical.choice` into the
-axiom footprint, where the commuted form — rewrite both sides to `a.fst + z` and apply
+measured footprint, where the commuted form — rewrite both sides to `a.fst + z` and apply
 `add_left_cancel` — stays at `[propext]`. The Presheaf README publishes a per-declaration
 footprint table, so the commuted form is used throughout this module.
 

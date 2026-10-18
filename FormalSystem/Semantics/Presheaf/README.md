@@ -6,14 +6,30 @@ histories, packaged as a presheaf on the durations rather than treated one domai
 The objects of `Int(D)` are the durations — the positive cone of a temporal order — and its
 morphisms `l' → l` are the **translations** `Tr p`, one for each offset `p` with `p + l' ≤ l`.
 `Beh(F)(l)` is the set of partial histories whose domain is exactly `[0, l]`, and restriction
-along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Four of the seven modules are built on
-`Semantics/PartialHistory.lean` alone; `Presheaf/Directed.lean` and `Presheaf/Worlds.lean`
+along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Four of the eight modules are built on
+`Semantics/PartialHistory.lean` alone, and `Presheaf/Duration.lean` on `Presheaf/Site.lean` alone;
+`Presheaf/Directed.lean` and `Presheaf/Worlds.lean`
 additionally import the `Semantics/Extension/` cluster — the former because the two clauses it
 discharges are wrappers on `thm:extension`, the latter for `PartialHistory.hF_nonempty` alone,
 which only its nonemptiness tail consumes — and `Presheaf/Determinism.lean` additionally imports
 `Semantics/FrameProperty.lean` for `TaskFrame.Deterministic` alone. The cluster sits strictly
-**below** `Semantics/Truth.lean` regardless: all seven modules close with `assert_not_exists` on the
+**below** `Semantics/Truth.lean` regardless: all eight modules close with `assert_not_exists` on the
 proof system, so the layering is locked rather than merely observed.
+
+`Presheaf/Duration.lean` is the categorical description of the site itself rather than of the
+presheaf on it: the **duration monoid** `BD⁺` (`Dur`, the one-object category whose morphisms are
+the durations, composing by addition), the **factorization category** of each duration
+(`Factorization`, `Factorization.Hom`) with **factorization-linearity** in its two halves
+(`Factorization.hom_unique`, `Factorization.hom_total`), and the **twisted-arrow category**
+`Tw(BD⁺)` (`Tw`) with the identity-on-objects, bijective-on-homs isomorphism `Tw(BD⁺) ≅ Int(D)`
+(`Tw.toTr`/`Tw.ofTr`, functorial by `Tw.toTr_comp`/`Tw.toTr_id`) that carries the Johnstone
+coverage of the one onto that of the other (`Tw.toTr_coverLeft`/`Tw.toTr_coverRight`, both `rfl`
+because both coverages are indexed by the cut point). That is the paper's `lem:interval-twisted-arrow`,
+whose anchors — `def:twisted-arrow`, `lem:factorization-linear`, `lem:interval-twisted-arrow` —
+resolve as `DANGLING` rows of the definitions of record exactly as the site's own do. The
+encoding decision for the whole cluster — concrete structures, no `Mathlib.CategoryTheory` — is
+reconciled with `Site.lean`'s note in `Duration.lean`'s Implementation Notes, which state the
+trade-off and name the path-category work as the point at which it should be weighed again.
 
 Five clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
 the zero duration with the world states (`Beh.germEquiv`), and *Sheaf* glues two sections
@@ -65,6 +81,7 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 | `Behavior.lean` | 279 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
 | `Determinism.lean` | 254 | The *Determinism* clause below the layering lock: `Separated` as injectivity of every restriction map, the choice-free (⇒) half, the world-to-section bridge `secOf`, and the converse's frame-side conclusion with `SingletonClasses` unfolded |
 | `Directed.lean` | 521 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
+| `Duration.lean` | 422 | The categorical description of the site: the duration monoid `BD⁺` as `Dur`, the factorization category `Factorization`/`Factorization.Hom` with both halves of factorization-linearity, the twisted-arrow category `Tw` with its three category laws, the hom-set bijection `Tw.toTr`/`Tw.ofTr` with `Int(D)` and its functoriality, and the coverage transport `Tw.toTr_coverLeft`/`Tw.toTr_coverRight` that makes `Tw(BD⁺) ≅ Int(D)` an isomorphism of sites |
 | `Ray.lean` | 444 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
 | `Sheaf.lean` | 439 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
@@ -77,6 +94,22 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 - `Tr.id`, `Tr.comp` — the identity `Tr 0` and composition, which adds offsets
 - `coverLeft`, `coverRight` — the two members of the Johnstone covering family of `l` at a cut
   point `p ≤ l`
+- `Dur D`, `Dur.comp`, `Dur.id` — the morphisms of the duration monoid `BD⁺` (equal to `Obj D` by
+  design; the alias names the role in play), composing by addition with identity `0`
+- `Factorization l`, `Factorization.Hom a b` — the objects and morphisms of the factorization
+  category `Fact(l)` of a duration: a factorization `l = fst + snd`, and the duration `z` with
+  `z + a.fst = b.fst` and `a.snd = z + b.snd`. Named `Factorization`, not `Fact`, because `Fact` is
+  Mathlib's typeclass-carried-proposition class; `Hom` is its own declaration because the morphism
+  identification is the load-bearing step of factorization-linearity
+- `Factorization.homOfLe`, `Factorization.ofCut` — the comparison morphism when `a.fst ≤ b.fst`,
+  and the factorization `l = p + (l - p)` determined by a cut point `p ∈ [0, l]`
+- `Tw l' l`, `Tw.id`, `Tw.comp` — the morphisms `l' → l` of the twisted-arrow category `Tw(BD⁺)`:
+  the paper's pairs `(p, q)` with `p + l' + q = l`, as `pre`/`post`, composing
+  `(p, q) ∘ (p', q') = (p + p', q' + q)` with identity `(0, 0)`
+- `Tw.toTr`, `Tw.ofTr` — the hom-set maps `(p, q) ↦ Tr p` and `Tr p ↦ (p, l - p - l')` between
+  `Tw(BD⁺)` and `Int(D)`
+- `Tw.coverLeft`, `Tw.coverRight` — the Johnstone covering family of `l` in `Tw(BD⁺)`, indexed by
+  the cut point `p` with `q := l - p` so that its source objects are definitionally the site's
 - `Beh F l` — the sections of the behavior presheaf over `l`: the partial histories whose domain
   is exactly `[0, l]`
 - `Beh.restrict`, `Beh.restrictTr` — the presheaf action, at raw data and indexed by a morphism of
@@ -131,6 +164,20 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 - `Tr.le_of_hom` — a morphism `l' → l` witnesses `l' ≤ l`
 - `cover_germ_composites` — the two covering morphisms have equal composite shift with the germ,
   which is what makes the sheaf condition on this coverage a two-section gluing statement
+- `Dur.id_comp`, `Dur.comp_id`, `Dur.comp_assoc`, `Dur.comp_comm` — `BD⁺` is a commutative monoid
+- `Factorization.ext` — a factorization is determined by its first summand alone
+- `Factorization.hom_unique`, `Factorization.hom_total` — **factorization-linearity** of `BD⁺`:
+  at most one morphism between any two factorizations (cancellation alone), and at least one in
+  one direction or the other (totality of the order). Every `Fact(l)` is a linear preorder
+- `Factorization.fst_le`, `Factorization.ofCut_fst`, `Factorization.ofCut_fst_self` — the
+  factorizations of `l` correspond bijectively to the cut points `p ∈ [0, l]`
+- `Tw.id_comp`, `Tw.comp_id`, `Tw.comp_assoc` — the three category laws of `Tw(BD⁺)`
+- `Tw.toTr_ofTr`, `Tw.ofTr_toTr`, `Tw.toTr_comp`, `Tw.toTr_id` — the hom-set map is a bijection
+  and functorial: identity on objects plus bijective on homs, `Tw(BD⁺) ≅ Int(D)` as categories
+- `Tw.toTr_coverLeft`, `Tw.toTr_coverRight` — **coverage transport**: the isomorphism carries the
+  Johnstone covering family of `Tw(BD⁺)` at a cut point to that of `Int(D)` at the same cut point,
+  both by `rfl`. With the cut-point bijection, the correspondence of covering families is itself a
+  bijection, so `Tw(BD⁺) ≅ Int(D)` as **sites** — the paper's `lem:interval-twisted-arrow`
 - `Beh.restrict_id`, `Beh.restrict_comp` — presheaf functoriality at raw data
 - `Beh.restrictTr_id`, `Beh.restrictTr_comp` — the same at the site, where the contravariance is
   visible: `restrictTr (Tr.comp f g) = restrictTr g ∘ restrictTr f`
@@ -354,6 +401,27 @@ joins *Totality* and *Directed Gluing*. Over `D = ℤ` the same identification o
 `FrameOver.mem_HF_iff_adjacent` (`Semantics/IntNormalForm.lean`), a consequence of this clause's
 shape rather than an input to it.
 
+### The twisted-arrow site is choice-free, at the site's own baseline
+
+Every declaration of `Presheaf/Duration.lean` measures `[propext]` or `[propext, Quot.sound]`;
+none reaches `Classical.choice`. Every row below was measured with `lean_verify` or `#print axioms`.
+
+| Declaration | Measured axioms |
+|---|---|
+| `Factorization.ext`, `Factorization.hom_unique`, `Factorization.fst_le`, `Dur.comp_assoc` | `[propext]` |
+| `Tw.ext`, `Tw.id_comp`, `Tw.comp_id`, `Tw.comp_assoc`, `Tw.toTr`, `Tw.toTr_id` | `[propext]` |
+| `Factorization.homOfLe`, `Factorization.ofCut`, `Factorization.hom_total`, `Factorization.ofCut_fst_self` | `[propext, Quot.sound]` |
+| `Tw.ofTr`, `Tw.toTr_ofTr`, `Tw.ofTr_toTr`, `Tw.toTr_comp` | `[propext, Quot.sound]` |
+| `Tw.coverLeft`, `Tw.coverRight`, `Tw.toTr_coverLeft`, `Tw.toTr_coverRight` | `[propext, Quot.sound]` |
+
+Two things in the table were deliberate. `Factorization.hom_unique` cancels on the **left**: both
+`left` fields read `z + a.fst = b.fst`, so the natural lemma is `add_right_cancel`, which at `↑D`
+was measured to drag `Classical.choice` into the footprint; the commuted `add_left_cancel` form
+stays at `[propext]`. And the `Quot.sound` rows all enter through one Mathlib lemma, `sub_nonneg`,
+used wherever `l - p` is shown to be a duration — the same route by which `Site.lean`'s own
+`coverRight` and `Tr.comp_assoc` measure the identical `[propext, Quot.sound]`. The module is
+therefore at the site's own baseline, not above it.
+
 ### What a decidable stability check on the path-space presentation requires
 
 `plusStab_iff_rays` and `plusStab_iff_omega` present `⊡` as a quantifier over a **product of two
@@ -403,7 +471,8 @@ bound is committed anywhere in this cluster, and soundness is untouched.
 
 - **Imports from**: `Semantics/TemporalOrder.lean`, `Semantics/PartialHistory.lean`, and —
   `Presheaf/Directed.lean` and `Presheaf/Worlds.lean` — `Semantics/Extension/Extension.lean`,
-  with `Semantics/Extension/Completion.lean` imported by `Presheaf/Directed.lean` alone
+  with `Semantics/Extension/Completion.lean` imported by `Presheaf/Directed.lean` alone;
+  `Presheaf/Duration.lean` imports `Presheaf/Site.lean` and nothing else
 - **Imported by**: `Semantics/Presheaf.lean` (the cluster aggregator), and
   `PlusLanguage/PlusRayFibre.lean`, which imports `Presheaf/Ray.lean` directly to read the `⊡`
   clause through `seamFibreEquiv`
@@ -419,8 +488,9 @@ bound is committed anywhere in this cluster, and soundness is untouched.
   readings of `seamFibreEquiv`, over ray pairs and over pairs of ω-indexed step sequences. It
   sits above `Semantics/Truth.lean` and so cannot live in this cluster
 - [`docs/reference/paper-definitions-of-record.md`](../../../docs/reference/paper-definitions-of-record.md)
-  — where `def:interval-site` and `def:behavior-presheaf` resolve, both `DANGLING`: the paper cut
-  the containing appendix `app:Structure` in full, and its surviving commented block carries a
+  — where `def:interval-site`, `def:behavior-presheaf`, `def:twisted-arrow`,
+  `lem:factorization-linear` and `lem:interval-twisted-arrow` resolve, all `DANGLING`: the paper
+  cut the containing appendix `app:Structure` in full, and its surviving commented block carries a
   bare `% CHECK`
 
 ---

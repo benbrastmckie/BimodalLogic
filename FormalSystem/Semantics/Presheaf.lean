@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.Presheaf.Behavior
 import FormalSystem.Semantics.Presheaf.Directed
 import FormalSystem.Semantics.Presheaf.Determinism
+import FormalSystem.Semantics.Presheaf.Duration
 import FormalSystem.Semantics.Presheaf.Ray
 import FormalSystem.Semantics.Presheaf.Sheaf
 import FormalSystem.Semantics.Presheaf.Site
@@ -21,6 +22,9 @@ Aggregator for `Semantics/Presheaf/`. See `Semantics/Presheaf/README.md`.
 
 - `Presheaf.Site` — the interval site `Int(D)`: the translations `Tr p`, the three category laws,
   and the Johnstone coverage
+- `Presheaf.Duration` — the duration monoid `BD⁺`, the factorization category of a duration and
+  factorization-linearity, the twisted-arrow category `Tw(BD⁺)`, and its coverage-preserving
+  isomorphism with `Int(D)`
 - `Presheaf.Behavior` — the behavior presheaf `Beh F`: the sections over a duration, the
   restriction action in both its raw-data and site-indexed forms, presheaf functoriality, and the
   *Germs* clause `Beh F 0 ≃ F.WorldState`
