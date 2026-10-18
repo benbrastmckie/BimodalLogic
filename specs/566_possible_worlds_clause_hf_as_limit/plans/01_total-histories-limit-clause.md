@@ -339,35 +339,35 @@ re-export the module and no other module imports it.
 
 ---
 
-### Phase 3: The round trips, the clause, and the tail [NOT STARTED]
+### Phase 3: The round trips, the clause, and the tail [COMPLETED]
 
 **Goal**: both round trips, `worldsEquiv`, and `lim_nonempty` are proved; every declaration in
 the module is measured with `lean_verify`; the isomorphism path measures `[propext, Quot.sound]`
 and only `lim_nonempty` measures `Classical.choice`.
 
 **Tasks**:
-- [ ] `Lim.toWorld_ofWorld`: `WorldHistory.ext_state`, then `secOf_states` and
+- [x] `Lim.toWorld_ofWorld`: `WorldHistory.ext_state`, then `secOf_states` and
       `w.state_congr (by abel)` at each `t`. Use `change`, not `show`, when restating the goal.
-- [ ] `abs_sub_le_of_mem`: `|r - x| ≤ x` on `[0, 2x]`, by `abs_le.mpr` with two
+- [x] `abs_sub_le_of_mem`: `|r - x| ≤ x` on `[0, 2x]`, by `abs_le.mpr` with two
       `sub_le_sub_right` and **explicit `rwa [zero_sub]` / `rwa [add_sub_cancel_right]`, never
       `simpa`** (measured to pull `Classical.choice`).
-- [ ] `Lim.ofWorld_toWorld_sec`: `Beh.ext (partialHistory_ext _ _)`; the domain half is
+- [x] `Lim.ofWorld_toWorld_sec`: `Beh.ext (partialHistory_ext _ _)`; the domain half is
       `propext` of the two section conditions; the states half reads through
       `states_eq_of_eq hL r hr hsec` (**never `rw [hL]`**), `secOf_states`, then `Lim.read_eq`
       at `|r + -x.val| ≤ x.val` from `abs_sub_le_of_mem`, closing with
       `PartialHistory.states_eq_of_time_eq … (by abel)`.
-- [ ] `Lim.ofWorld_toWorld := Lim.ext (Lim.ofWorld_toWorld_sec L)`.
-- [ ] `worldsEquiv F : WorldHistory F ≃ Lim F` (`noncomputable`): `toFun := Lim.ofWorld`,
+- [x] `Lim.ofWorld_toWorld := Lim.ext (Lim.ofWorld_toWorld_sec L)`.
+- [x] `worldsEquiv F : WorldHistory F ≃ Lim F` (`noncomputable`): `toFun := Lim.ofWorld`,
       `invFun := Lim.toWorld`, the two round trips. **At no frame constraint** — do not add
       `[F.IsRegular]`.
-- [ ] `lim_nonempty F [F.IsRegular] (w : F.WorldState) : Nonempty (Lim F)` from
+- [x] `lim_nonempty F [F.IsRegular] (w : F.WorldState) : Nonempty (Lim F)` from
       `PartialHistory.hF_nonempty F w` and `Lim.ofWorld`. Docstring marker
       `Constraints consumed: Compositionality, Seriality, Limit, Saturation`.
-- [ ] Measure **every** declaration of the module with `lean_verify` (fully qualified names)
+- [x] Measure **every** declaration of the module with `lean_verify` (fully qualified names)
       and record the results for Phase 4's table. Expected: all of Phase 1–3 except
       `lim_nonempty` at `[propext, Quot.sound]` (or `[propext]`); `lim_nonempty` at
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] Commit per green sub-step with explicit per-file `git add`.
+- [x] Commit per green sub-step with explicit per-file `git add`.
 
 **Timing**: 1.5 hours
 

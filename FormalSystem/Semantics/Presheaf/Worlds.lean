@@ -217,6 +217,84 @@ noncomputable def Lim.ofWorld (w : WorldHistory F) : Lim F where
       secOf_states w (-x.val) (x.val + x.val) (add_nonneg x.property x.property) hr']
     exact w.state_congr (by abel)
 
+/-! ## The round trips and the clause -/
+
+/-- Round trip one: gluing a world's own centred family returns the world. -/
+theorem Lim.toWorld_ofWorld (w : WorldHistory F) : (Lim.ofWorld w).toWorld = w := by
+  refine WorldHistory.ext_state ?_
+  intro t
+  have hL : (Lim.ofWorld w).readAt t
+      = (secOf w (-(absObj t).val) ((absObj t).val + (absObj t).val)
+            (add_nonneg (absObj t).property (absObj t).property)).val.states
+          (t + (absObj t).val)
+          (Beh.mem_dom _ (window_lo (le_refl (absObj t).val))
+            (window_hi (le_refl (absObj t).val))) := rfl
+  change (Lim.ofWorld w).readAt t = w.state t
+  rw [hL, secOf_states w (-(absObj t).val) ((absObj t).val + (absObj t).val)
+    (add_nonneg (absObj t).property (absObj t).property)
+    (Beh.mem_dom _ (window_lo (le_refl (absObj t).val)) (window_hi (le_refl (absObj t).val)))]
+  exact w.state_congr (by abel)
+
+/-- A point of `[0, 2x]`, recentred, lies within `|·| ≤ x`. Choice-free: written with explicit
+`rwa [zero_sub]` / `rwa [add_sub_cancel_right]`, **never** `simpa`, which measures
+`Classical.choice` here. -/
+theorem abs_sub_le_of_mem (r x : F.Duration) (h0 : 0 ≤ r) (h1 : r ≤ x + x) : |r - x| ≤ x := by
+  refine abs_le.mpr ⟨?_, ?_⟩
+  · have h2 : (0 : F.Duration) - x ≤ r - x := sub_le_sub_right h0 x
+    rwa [zero_sub] at h2
+  · have h2 : r - x ≤ x + x - x := sub_le_sub_right h1 x
+    rwa [add_sub_cancel_right] at h2
+
+/-- Round trip two, componentwise: cutting the glued world back to the window `2x` returns the
+family's own section there. Note `states_eq_of_eq hL`, not `rw [hL]`: rewriting a section
+equality under a dependent `states` witness fails with "motive is not type correct". -/
+theorem Lim.ofWorld_toWorld_sec (L : Lim F) (x : Obj F.Duration) :
+    (Lim.ofWorld L.toWorld).sec x = L.sec x := by
+  refine Beh.ext (partialHistory_ext ?_ ?_)
+  · funext z
+    change (0 ≤ z ∧ z ≤ x.val + x.val) = (L.sec x).val.domain z
+    exact propext ((L.sec x).property z).symm
+  · intro r hr hr'
+    have hd : (0 : F.Duration) ≤ r ∧ r ≤ x.val + x.val :=
+      (((Lim.ofWorld L.toWorld).sec x).property r).mp hr
+    have hb : |r + -x.val| ≤ x.val := by
+      rw [show r + -x.val = r - x.val from by abel]
+      exact abs_sub_le_of_mem r x.val hd.1 hd.2
+    have hsec : (secOf L.toWorld (-x.val) (x.val + x.val)
+        (add_nonneg x.property x.property)).val.domain r := ⟨hd.1, hd.2⟩
+    have hL : (Lim.ofWorld L.toWorld).sec x
+        = secOf L.toWorld (-x.val) (x.val + x.val) (add_nonneg x.property x.property) := rfl
+    rw [states_eq_of_eq hL r hr hsec,
+      secOf_states L.toWorld (-x.val) (x.val + x.val) (add_nonneg x.property x.property) hsec]
+    change L.readAt (r + -x.val) = _
+    rw [L.read_eq (r + -x.val) x hb]
+    exact PartialHistory.states_eq_of_time_eq _ _ _ (by abel) _ _
+
+/-- Round trip two: cutting the glued world back to its centred family returns the family. -/
+theorem Lim.ofWorld_toWorld (L : Lim F) : Lim.ofWorld L.toWorld = L :=
+  Lim.ext (Lim.ofWorld_toWorld_sec L)
+
+/-- **The *Total Histories* clause**: `H_F ≅ lim_{x ∈ D⁺} Beh(F)(2x)` along the central
+restrictions — a possible world **is** a compatible family of centred sections. At **no** frame
+constraint: only the nonemptiness tail `lim_nonempty` below reaches `[F.IsRegular]`, and
+bundling the binder here would claim strictly less than the recorded clause. Measured
+choice-free, `[propext, Quot.sound]`. -/
+noncomputable def worldsEquiv (F : TaskFrame) : WorldHistory F ≃ Lim F where
+  toFun := Lim.ofWorld
+  invFun := Lim.toWorld
+  left_inv := Lim.toWorld_ofWorld
+  right_inv := Lim.ofWorld_toWorld
+
+/--
+The clause's closing tail: the limit is nonempty. This is the one declaration of the module that
+reaches `Classical.choice`, and it is attributable — `cor:occurrence` through Zorn's lemma, via
+`PartialHistory.hF_nonempty`, which is where the paper puts it too.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+-/
+theorem lim_nonempty (F : TaskFrame) [F.IsRegular] (w : F.WorldState) : Nonempty (Lim F) :=
+  (PartialHistory.hF_nonempty F w).elim fun τ => ⟨Lim.ofWorld τ⟩
+
 end FormalSystem.Semantics.Presheaf
 
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
