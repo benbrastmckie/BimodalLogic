@@ -840,7 +840,61 @@ once `K` enters (Phase 9).
 
 ---
 
-### Phase 9: The Counter Quotient `K`, Its Parameters, and the Maximum Certified Subset [NOT STARTED]
+### Phase 9: The Counter Quotient `K`, Its Parameters, and the Maximum Certified Subset [BLOCKED]
+
+**BLOCKER** (Phase 9; the refuted statements are Phase 13's, which is marked `[BLOCKED]` too):
+- **What failed**: Not a proof attempt — a REFUTATION of two of the five recorded Goals, landed
+  as the fourteenth wired probe
+  `specs/evidence/seam-gluing-ray-product/ladder-unconstrained-parameter-refutation.lean`
+  (`Probe761R`, compiled through the build guard: exit 0, 0 errors, 0 warnings, all six headline
+  theorems on `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, no custom axiom, no
+  `native_decide`; wired, `check-evidence-probes.sh` reports 44 of 44 PASS).
+  `cellAt_const_of_kappa_eq` and `ladderRealized`, AS RECORDED in the `## Lean Challenge
+  Statements` block, are FALSE. Both universally quantify `(Tc Tn P B : Nat)` and carry NO
+  hypothesis relating those parameters to the object, to the formula, or to each other. At
+  `Tc = Tn = P = B = 0` the quotient `CK 0 0 0 0 = Fin 1 × Fin 1 × Fin 1 × Fin 1 × Fin 1` is a
+  SUBSINGLETON (`ck_zero_subsingleton`, by `decide`; inhabited, `ckZero`), so `kappa 0 0 0 0`
+  identifies EVERY counter pair whatever `kappa` is. `cellAt_const_of_kappa_eq` then asserts that
+  the cell is constant in `(c, n)` outright, and `ladderRealized`'s right-hand side reads `(c, n)`
+  only through `kappa Tc Tn P B (c, n)`, so it too is constant. Both contradict
+  `cell_succ_ne` — the cells at `(q, c, n)` and `(q, c + 1, n)` differ for EVERY `c` and `n` with
+  the next deadline held fixed, on the four-state tag object, ported verbatim from the wired probe
+  `ladder-cell-index-obstructions.lean`. The refutation holds for EVERY `kappa` and every
+  candidate `Dmax`, and its proof uses no property of `Dmax`, so it is not an artefact of a
+  degenerate candidate set. Non-vacuity is witnessed on both sides
+  (`separating_pair_nonvacuous`: each cell contains a type).
+- **What was tried**: Phase 9's own first task. Writing `CK`/`kappa` of the forced five-coordinate
+  shape, and then reading what the Challenge-block consumers of `kappa` actually assume about
+  `Tc`/`Tn`/`P`/`B`, is what surfaced the defect: the (K1)-(K4) constraints that Phase 9 is
+  required to realise as OUTPUTS are referenced by NO statement that consumes `K`. Phase 9 would
+  have had to prove its four parameters' properties for every parameter tuple, the all-zero tuple
+  included. The refutation was then compiled before anything was asserted.
+- **Why it's stuck**: The repair is a CHANGE TO A RECORDED CHALLENGE STATEMENT — adding a
+  parameter hypothesis (a `ParamsOk Tc Tn P B` predicate carrying (K1)-(K4)) to
+  `cellAt_const_of_kappa_eq` and `ladderRealized`, or existentially quantifying the parameters
+  instead of universally. `plan-compliance.md`'s Statement Fidelity section routes a genuinely
+  wrong recorded statement to `[BLOCKED]` and an explicit raise, and forbids both quietly
+  changing the implementation to match a different statement and quietly editing the recorded
+  Challenge to match what was implemented. Phase 9 cannot define the parameters against a
+  contract whose consumers are refuted, and `ParamsOk` is not in Phase 9's task list.
+- **What is needed**: a user decision on the repair, then a `/revise` that rewrites the Challenge
+  block. The shape the refutation points at (stated in the probe header and NOT taken there): add
+  `(hp : ParamsOk Tc Tn P B)` to `cellAt_const_of_kappa_eq` and `ladderRealized`, define
+  `ParamsOk` in Phase 9 beside `CK`/`kappa` as the conjunction of (K1)-(K4), and leave
+  `ladderSound`, `ladderLift` and `ladderCons_localRun` unchanged — the refutation says nothing
+  about those three. `ladderSound`'s conclusion is an existential over `Dmax`, which a coarser
+  quotient can satisfy, so it is not refuted by this argument; `ladderLift` is untouched.
+- **What is NOT refuted**: the PRESENTATION. The set-valued per-state datum, the fibre equation
+  over the maximum certified subset, and the factorization lemma as a COROLLARY all stand. Route A
+  stays closed. The refutation is of the statements' FREE quantification over the parameters, not
+  of the design. It asserts no bound, names every quantity as a count, and makes no
+  device-discrimination claim.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, an axiom, a vacuous
+  placeholder, a trace-level `Presented` hypothesis, a finite-fibre or finite-width assumption, a
+  capped ladder, or a positionwise restatement. Do NOT silently add the parameter hypothesis and
+  proceed, and do NOT silently edit the Challenge block: either move launders the defect this
+  probe exists to surface.
+
 
 **Goal**: Create `FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean`: the
 finite counter quotient `K` of the forced shape, its parameters as OUTPUTS of the periodicity
@@ -1041,7 +1095,16 @@ phase `[BLOCKED]`.
 
 ---
 
-### Phase 13: The Factorization Corollary and `ladderRealized` [NOT STARTED]
+### Phase 13: The Factorization Corollary and `ladderRealized` [BLOCKED]
+
+**BLOCKER** (Phase 13): both of this phase's Goals — `cellAt_const_of_kappa_eq` and
+`ladderRealized` — are REFUTED as recorded, by the fourteenth wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-unconstrained-parameter-refutation.lean`. The full
+blocker record is under Phase 9's heading; in one line: both statements quantify over
+`(Tc Tn P B : Nat)` with no constraint, `CK 0 0 0 0` is a subsingleton, so both assert the cell is
+constant in `(c, n)`, which `cell_succ_ne` refutes for every `c` and `n`. The repair is a change
+to a recorded Challenge statement and is therefore the user's, not this dispatch's.
+
 
 **Goal**: Land the two remaining Goals: `cellAt_const_of_kappa_eq` (the factorization lemma for
 `K`, as a COROLLARY of (S) and (C'), never as a hypothesis) and `ladderRealized` (the fibre

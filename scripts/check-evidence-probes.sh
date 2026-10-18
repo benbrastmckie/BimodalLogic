@@ -1536,6 +1536,51 @@ EVIDENCE="specs/evidence"
 #                                                           | `[propext, Classical.choice, Quot.sound]` on
 #                                                           | every other headline theorem. No `sorryAx`,
 #                                                           | no custom axiom, no `native_decide`.
+# seam-gluing-ray-product/ladder-unconstrained-parameter-refutation | THE UNCONSTRAINED-PARAMETER
+#                                                           | REFUTATION: the ladder realization
+#                                                           | record's factorization and
+#                                                           | fibre-equation statements, AS
+#                                                           | RECORDED, are FALSE -- not open --
+#                                                           | because they quantify over the
+#                                                           | counter-quotient parameters
+#                                                           | `Tc`/`Tn`/`P`/`B` with NO constraint,
+#                                                           | and `CK 0 0 0 0` is a SUBSINGLETON
+#                                                           | (`ck_zero_subsingleton`, by `decide`;
+#                                                           | inhabited, `ckZero`). From one
+#                                                           | separating pair of cells at the same
+#                                                           | object state the factorization shape
+#                                                           | (`const_shape_refuted_of_separating_pair`)
+#                                                           | and the fibre-equation shape
+#                                                           | (`realized_shape_refuted_of_separating_pair`)
+#                                                           | both fall, for EVERY `kappa` and every
+#                                                           | candidate `Dmax`, with no property of
+#                                                           | `Dmax` used. The pair is COMPILED, not
+#                                                           | assumed: `cell_succ_ne` on the
+#                                                           | four-state tag object, ported verbatim
+#                                                           | from `ladder-cell-index-obstructions`,
+#                                                           | giving the unconditional
+#                                                           | `const_shape_refuted` and
+#                                                           | `realized_shape_refuted`. Non-vacuity
+#                                                           | on both sides:
+#                                                           | `separating_pair_nonvacuous`. The
+#                                                           | PRESENTATION is untouched -- the
+#                                                           | set-valued datum, the fibre equation
+#                                                           | over the maximum certified subset and
+#                                                           | the factorization lemma as a corollary
+#                                                           | all stand; what is refuted is the
+#                                                           | statements' FREE quantification over
+#                                                           | the parameters, and the repair (a
+#                                                           | `ParamsOk` hypothesis carrying
+#                                                           | (K1)-(K4)) is a change to a recorded
+#                                                           | Challenge statement and is NOT made
+#                                                           | here. A gate probing one coordinate
+#                                                           | certifies one coordinate: this probe
+#                                                           | certifies the parameter quantification
+#                                                           | and nothing else. Axioms
+#                                                           | `[propext, Classical.choice, Quot.sound]`
+#                                                           | on all six headline theorems. No
+#                                                           | `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1579,6 +1624,7 @@ WIRED=(
   "seam-gluing-ray-product/certificate-sufficiency-dovetailing"
   "seam-gluing-ray-product/no-pending-forever-ray"
   "seam-gluing-ray-product/counter-lift-gates"
+  "seam-gluing-ray-product/ladder-unconstrained-parameter-refutation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
