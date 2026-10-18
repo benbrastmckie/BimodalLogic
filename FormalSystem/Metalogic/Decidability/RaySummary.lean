@@ -20,6 +20,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.Realize
 import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
+import FormalSystem.Metalogic.Decidability.RaySummary.Certificate
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -169,4 +170,21 @@ nothing about `PlusValidZTime` — see the README's verdict.
   counter pair is refuted by the wired probe `ladder-cell-refutation.lean`), no index of a
   ladder cell claimed, nothing about `HitPresented`, nothing about `PlusValidZTime`, no
   complexity bound.
+* `RaySummary.Certificate` — the `K`-free, LABEL-LEVEL certificate of realizable closure types,
+  promoted from the compiled probes `realizable-type-certificate.lean` and
+  `certificate-sufficiency-dovetailing.lean`: the existential until-fixpoint
+  (`euStep`/`euIter`/`euLfp` through `eu_mem_lfp_path_le_card`), the dovetailing theorem
+  (`exists_dovetail_chain`), the product layer (`ClType`, `ProdState`, `locCoh`, `untlLink`,
+  `coh`, `coh_iff`), the backward arm (`snceLink`, `cohBi`, `cohBi_iff`), the certificate
+  predicates with the relation as a PARAMETER (`certLoc`, `certBiInf`, `certFwd`, `certBwd`,
+  `certStab`, `certBox`, `certAdm`, `certAdm_iff`), the forward and backward chain
+  constructions, `Realizes`, the splice, and the label-level sufficiency
+  `realizes_of_certAdm_cohBi`. The idle-extended relation `cohIdle` is `cohBi` with both `pend`
+  conjuncts dropped (`cohIdle_eq_cohBi_of_pend`, `cohIdle_of_cohBi`). REGION-INTERIOR: `coh` and
+  `cohBi` require `pend` at both endpoints and no forward `Rlad` ray is pending forever
+  (`exists_idle_of_rlad_ray`, `no_rlad_ray_of_pending_forever`, wired probe
+  `no-pending-forever-ray.lean`), so the sufficiency is sufficiency for the interior of ONE
+  region and transfers to the region segments of a ladder history, never to the history itself.
+  NO ladder consequence is stated here; `[Fintype Q]` on the OBJECT only, no fibre bound, no
+  finite width, nothing about `HitPresented` or `PlusValidZTime`, no complexity bound.
 -/

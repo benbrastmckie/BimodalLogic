@@ -764,30 +764,52 @@ that lemma too and name it in the handoff rather than weakening the statement.
 
 ---
 
-### Phase 8: Promote the Certificate Layer into the Library [NOT STARTED]
+### Phase 8: Promote the Certificate Layer into the Library [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/Decidability/RaySummary/Certificate.lean` carrying the
 `K`-free part of the certificate layer, so that the ladder module has a library-side object to
 state over. Everything promoted here exists as a compiled probe declaration; this is a port.
 
 **Tasks**:
-- [ ] Port `ClType φ` (the closure-type carrier), `locCoh`, `untlLink`, `snceLink`, `coh` and
+- [x] Port `ClType φ` (the closure-type carrier), `locCoh`, `untlLink`, `snceLink`, `coh` and
       `cohBi` from `realizable-type-certificate.lean` and
       `certificate-sufficiency-dovetailing.lean`, keeping statements verbatim and recording every
-      rename forced by a namespace collision in the module header.
-- [ ] Define the IDLE-EXTENDED relation as its own definition beside `cohBi` — `coh`'s two `pend`
+      rename forced by a namespace collision in the module header. *(completed — ZERO renames
+      were forced; the module header records that, and names the two same-spelled declarations
+      elsewhere in the library whose different full names make them non-collisions.)*
+- [x] Define the IDLE-EXTENDED relation as its own definition beside `cohBi` — `coh`'s two `pend`
       conjuncts dropped — with a docstring citing `exists_idle_of_rlad_ray` /
       `no_rlad_ray_of_pending_forever` for why the all-pending relation cannot be the ladder's:
-      the certified chains of record are region-interior.
-- [ ] Port the `K`-free certificate predicates `certLoc`, `certBiInf`, `certFwd`, `certBwd`,
+      the certified chains of record are region-interior. *(completed as `cohIdle`, with
+      `cohIdle_eq_cohBi_of_pend` and `cohIdle_of_cohBi` pinning the comparison. Note: dropping
+      both `pend` conjuncts removes the relation's dependence on the pending bit entirely, so
+      `cohIdle` takes no `pend` parameter — carrying one would be an unused binder, which the
+      library's `linter.unusedVariables` rejects and which would misrepresent the relation.)*
+- [x] Port the `K`-free certificate predicates `certLoc`, `certBiInf`, `certFwd`, `certBwd`,
       `certBox` and the existential-fulfilment fixpoint (`euLfp`) with its discharge lemma, plus
       `Realizes` and the dovetailing theorem `exists_dovetail_chain` and the label-level
-      sufficiency `realizes_of_certAdm_cohBi`.
-- [ ] Record in the module header, in one paragraph, the REGION-INTERIOR reading: this layer is
+      sufficiency `realizes_of_certAdm_cohBi`. *(deviation: altered — `certStab` and `certAdm`
+      WERE promoted too, at the `K`-free carrier `ProdState Q φ`, contradicting this phase's
+      Scope Hypothesis. REASON: `realizes_of_certAdm_cohBi`, which this same task list requires,
+      is stated in terms of `certAdm` and its proof destructures `certAdm_iff`'s six fields
+      including the `stab` one; the theorem cannot be promoted without both. The two task-list
+      items are therefore inconsistent as written, and the resolution preserves the statement
+      rather than the prediction. CONSEQUENCE FOR PHASE 9: Phase 9's `K`-indexed versions of the
+      same two conditions are over the different carrier `Q × ClType φ × K` and must carry
+      different names (`certStabK`, `certAdmK`); Phase 9's text saying "define `certAdm` over
+      `Q × ClType φ × K`" is renamed accordingly. No Challenge-block theorem signature is
+      affected: `certAdm` appears in none of the five.)*
+- [x] Record in the module header, in one paragraph, the REGION-INTERIOR reading *(completed — the paragraph names both compiled theorems and states that no ladder consequence is drawn here)*: this layer is
       sufficiency for the interior of one region, it transfers to the region segments of a ladder
       history, and it never applies to the history itself. Do not state a ladder consequence here.
-- [ ] Wire the module: add the import to `FormalSystem/Metalogic/Decidability/RaySummary.lean`,
+- [x] Wire the module: add the import to `FormalSystem/Metalogic/Decidability/RaySummary.lean`,
       to `FormalSystem.lean`, and the C14 heredoc entry in `scripts/check-module-invariants.sh`.
+      *(completed — two C14 baseline/`#print axioms` pairs added (`realizes_of_certAdm_cohBi`,
+      `exists_dovetail_chain`), plus three wiring steps the plan did not anticipate and the
+      invariant gate demanded: a `RaySummary.lean` module-list docstring entry, a
+      `scripts/nolints.json` `unusedArguments` exemption for `coh_iff`'s verbatim-ported unused
+      instance binders, and a regeneration of the four generated inventory blocks via
+      `check-module-invariants.sh --emit-inventory`.)*
 
 **Timing**: 3 hours
 

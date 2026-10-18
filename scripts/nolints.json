@@ -878,5 +878,9 @@
   [
     "unusedArguments",
     "FormalSystem.Semantics.NomicFrame.ofStepFamily"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.coh_iff"
   ]
 ]
