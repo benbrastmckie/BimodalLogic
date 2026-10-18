@@ -1,7 +1,7 @@
 # Implementation Plan: Task #618
 
 - **Task**: 618 - Formalize the path category `Path(F)` and prove `cor:path-fibration`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11.5 hours
 - **Dependencies**: 563 (interval site, behavior presheaf), 564 (Sheaf clause), 616 (duration monoid, twisted-arrow site), 617 (Reflection clause) — all landed; `Presheaf/{Site,Duration,Behavior,Sheaf,Reflection}.lean` are in the tree at `d034460fd`
 - **Research Inputs**: specs/618_path_category_and_conduche_fibration/reports/01_path-category-conduche-fibration.md
@@ -139,7 +139,7 @@ all edit the single new module `Presheaf/Path.lean` (Phase 6's content is logica
 of Phases 2-5, but it shares the file, so it is sequenced rather than parallelized), and Phase 9's
 wiring and full gate must observe everything.
 
-### Phase 1: Record rows, module skeleton, cast kit, and sum-form gluing [NOT STARTED]
+### Phase 1: Record rows, module skeleton, cast kit, and sum-form gluing [COMPLETED]
 
 **Goal**: Make the three uncited paper anchors citable (C15), create
 `FormalSystem/Semantics/Presheaf/Path.lean` with its full module docstring and import set, and
@@ -147,7 +147,7 @@ land the val-preserving cast kit and the sum-form gluing `glueSum` with its four
 the bedrock every later phase composes over.
 
 **Tasks**:
-- [ ] `docs/reference/paper-definitions-of-record.md`: add three `DANGLING` `KNOWN-ANCHORS` rows
+- [x] `docs/reference/paper-definitions-of-record.md`: add three `DANGLING` `KNOWN-ANCHORS` rows
       — `def:conduche`, `def:path-category`, `fact:conduche-equivalence` — in alphabetical position
       among the existing rows, modelled word-for-word in structure on the `def:twisted-arrow` row
       (statement of record transposed from `appendix_cut_material.tex`; the `app:Structure` cut
@@ -159,7 +159,7 @@ the bedrock every later phase composes over.
       `cor:path-fibration` are now load-bearing (the `cor:path-fibration` row itself is edited in
       Phase 9, once `Path(F)` exists). Re-read the surrounding lines immediately before editing —
       sibling tasks on this front edit the same rows
-- [ ] Create `FormalSystem/Semantics/Presheaf/Path.lean` with the repository header,
+- [x] Create `FormalSystem/Semantics/Presheaf/Path.lean` with the repository header,
       `import FormalSystem.Init`, `import Mathlib.CategoryTheory.Functor.Basic`,
       `import Mathlib.Combinatorics.Quiver.Path`, `import FormalSystem.Semantics.Presheaf.Sheaf`,
       `import FormalSystem.Semantics.Presheaf.Duration`,
@@ -168,7 +168,7 @@ the bedrock every later phase composes over.
       `## Main Results`, `## Implementation Notes`, `## References`, `## Tags`),
       `namespace FormalSystem.Semantics.Presheaf`, `open CategoryTheory`, and the closing
       `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`
-- [ ] Write the docstring's load-bearing paragraphs now, not as a Phase 9 afterthought:
+- [x] Write the docstring's load-bearing paragraphs now, not as a Phase 9 afterthought:
       (a) **the HARD SCOPE LIMIT** — `fact:conduche-equivalence` (Johnstone 1999 Prop. 3.6;
       Schultz-Spivak-Vasilakopoulou 2020 Thm. A.2.1) is cited and external; this module builds the
       INSTANCE at `X = Beh F` and proves the fibration property for it; the "associated category of
@@ -190,7 +190,7 @@ the bedrock every later phase composes over.
       length `l` projects to a `PathHom F w v` with `e = d + l`, the shape of the pullback of `len`
       along `(D, ≤) → BD⁺`; questions (a)-(c) posed, not settled, pointer to
       `FormalSystem/Semantics/Frames/TranslationProduct.lean` (`prodRel`, `liftH`, `projH`)
-- [ ] Write `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
+- [x] Write `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
       `[P. T. Johnstone, *A Note on Discrete Conduché Fibrations*][johnstone1999]` (Introduction,
       §2, Prop. 3.6 cited only); `[P. Schultz, D. I. Spivak and C. Vasilakopoulou, *Dynamical
       Systems and Sheaves*][schultz2020]` (Def. A.1.1, §§A.2-A.3, Prop. 3.2.3, Thm. A.2.1 cited
@@ -202,21 +202,21 @@ the bedrock every later phase composes over.
       `Semantics/IntNormalForm.lean`, `Semantics/IntNormalFormEffective.lean`,
       `Semantics/ShiftFiniteType.lean`; and Mathlib's `CategoryTheory.Paths.categoryPaths` as the
       definition the `D = ℤ` clause matches
-- [ ] Define the cast kit: `Beh.castLen (h : l = l') (τ : Beh F l) : Beh F l'` as
+- [x] Define the cast kit: `Beh.castLen (h : l = l') (τ : Beh F l) : Beh F l'` as
       `⟨τ.val, fun t => by rw [← h]; exact τ.property t⟩`, `@[simp] Beh.castLen_val` (`rfl`),
       `Beh.castLen_eq_iff` (via `Beh.ext`/`Subtype.ext_iff`)
-- [ ] Define `glueSum hcomp h₁ h₂ τ₁ τ₂ hmatch : Beh F (l₁ + l₂)` as
+- [x] Define `glueSum hcomp h₁ h₂ τ₁ τ₂ hmatch : Beh F (l₁ + l₂)` as
       `glue hcomp h₁ (le_add_of_nonneg_right h₂) τ₁ (Beh.castLen (add_sub_cancel_left l₁ l₂).symm τ₂) hmatch`
       with `hmatch` passed by `exact` (definitional); prove `glueSum_restrict_left` (delegate to
       `restrict_glue_left`), `glueSum_restrict_right` (delegate to `restrict_glue_right`, landing
       the cast with `Beh.ext`/`castLen_val`), `glueSum_states_zero` and `glueSum_states_end` (the
       three-step `states_eq_of_eq` + `Beh.restrict_states` + `PartialHistory.states_eq_of_time_eq`
       shape of `restrict_glue_left`'s body, read against the two restriction identities)
-- [ ] Every declaration docstring carries `Constraints consumed: Compositionality` for `glueSum`
+- [x] Every declaration docstring carries `Constraints consumed: Compositionality` for `glueSum`
       and its lemmas (explicit `hcomp`, the Sheaf module's convention) and
       `Constraints consumed: None` for the cast kit (closed vocabulary of
       `REFERENCE_NORMAL_FORM.md` §3; C34)
-- [ ] Record the issue log as events arise (`issue-record.sh --phase implement`), with an
+- [x] Record the issue log as events arise (`issue-record.sh --phase implement`), with an
       explicit "nothing to record" attestation in the phase commit if that is the case
 
 **Timing**: 1 hour
@@ -249,7 +249,8 @@ docstring's anchors are checked against the new rows even before wiring).
   `lake env lean` probe or a temporary line removed before commit) reports `[propext, Quot.sound]`
 - The file ends with the `assert_not_exists` line and it passes
 - Commit: `task 618 phase 1: record rows, module skeleton, cast kit, and sum-form gluing`, staged
-  by explicit file list
+  by explicit file list *(deviation: altered — the pre-commit `typst-sync-check.sh` gate refuses any commit while `typst/generated/status.typ`'s FormalSystem file/line counts are stale, and the new module changes both; `status.typ` was therefore regenerated via `typst-sync-check.sh --fix` and staged with this phase's commit — and will be at every later phase commit — rather than only in Phase 9 as planned. `git status --short typst/generated/status.typ` was clean beforehand: sibling 782 had already completed)*
+- Verification record (2026-10-18): guarded scoped build of `FormalSystem.Semantics.Presheaf.Path` exit 0, no sorry; full guarded `lake build` exit 0 (2878 jobs, 0 errors); `check-module-invariants.sh --no-build` C15 PASS (93 citations), C34a/C34b PASS; `#print axioms`: `glueSum_restrict_right`, `glueSum_states_end`, `glueSum_states_zero` all `[propext, Quot.sound]`, `Beh.castLen_eq_iff` `[propext]`; declaration count 8, record rows 3. C6/INV/C33 report the module as unwired, as expected before Phase 9
 
 ---
 
