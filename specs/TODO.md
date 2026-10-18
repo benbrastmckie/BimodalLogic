@@ -6,7 +6,7 @@ next_project_number: 820
 
 ## Task Order
 
-*Updated 2026-10-17. Generated from state.json dependency graph.*
+*Updated 2026-10-18. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -58,10 +58,10 @@ next_project_number: 820
 
 ### Categorical Structure
 
-566 [RESEARCHING] — Prove app:presheaf-dictionary's Possible Worlds clause: H\_F...
-616 [RESEARCHING] — Formalize the duration monoid BD+, its twisted-arrow...
+566 [PLANNED] — Prove app:presheaf-dictionary's Possible Worlds clause: H\_F...
+616 [PLANNING] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
-617 [RESEARCHING] — Prove app:presheaf-dictionary's Reflection clause: reflection...
+617 [PLANNING] — Prove app:presheaf-dictionary's Reflection clause: reflection...
 
 ### Dataset Enhancement
 
@@ -1637,10 +1637,11 @@ PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Struct
 ---
 
 ### 617. Reflection clause converse frame naturality
-- **Status**: [RESEARCHING]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
+- **Research**: [617_reflection_clause_converse_frame_naturality/reports/01_reflection-clause-converse-frame.md]
 
 **Description**: Prove `app:presheaf-dictionary`'s Reflection clause: reflection is a natural isomorphism `Beh(F) iso Beh(F-) . ref` between the behavior presheaf of a task frame and that of its converse frame, precomposed with the reflection automorphism of the interval category.
 
@@ -1671,10 +1672,11 @@ PAPER ANCHOR RELOCATION (2026-10-14). The 'SECTION CUT' block holding app:Struct
 ---
 
 ### 616. Duration monoid twisted arrow interval site
-- **Status**: [RESEARCHING]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
+- **Research**: [616_duration_monoid_twisted_arrow_interval_site/reports/01_duration-monoid-twisted-arrow.md]
 
 **Description**: Formalize the duration monoid `BD+`, its twisted-arrow category, and `lem:interval-twisted-arrow`: `BD+` is factorization-linear and `Tw(BD+)` is isomorphic to the interval category `Int(D)` by an isomorphism carrying the Johnstone coverage of the one to that of the other.
 
@@ -1740,10 +1742,12 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 566. Possible worlds clause hf as limit
-- **Status**: [RESEARCHING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563, Task 565
+- **Research**: [566_possible_worlds_clause_hf_as_limit/reports/01_total-histories-limit-clause.md]
+- **Plan**: [566_possible_worlds_clause_hf_as_limit/plans/01_total-histories-limit-clause.md]
 
 **Description**: Prove `app:presheaf-dictionary`'s Possible Worlds clause: `H_F iso lim Beh(F)(2x)` along the central restrictions.
 
