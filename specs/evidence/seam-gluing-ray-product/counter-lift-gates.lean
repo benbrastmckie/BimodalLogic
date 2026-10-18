@@ -2708,6 +2708,127 @@ theorem at0_U1 (c n : ℕ) (h0 : (g 0).1 = ((true, 0), c, n)) (j : Fin 4) :
       rw [truth_atom_p hσ, hq]
 
 end Datum7
+
+/-! ### The members at position `0` -/
+
+section At0_7
+variable {σ : WorldHistory F4} {k : ℤ} {g : ℤ → LadderState Q4 pend4}
+  (hσ : σ.path = fun t => (t + k, g t))
+  (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+  {c n : ℕ} (h0 : (g 0).1 = ((true, 0), c, n))
+include hσ hg h0
+
+omit hg in
+/-- At `0`, `p` holds. -/
+theorem at0_p7 : PlusTruthAt M4 σ 0 (.atom pA) ↔ True := by
+  rw [truth_atom_p hσ, h0]
+  simp
+
+omit hg in
+/-- At `0`, `ℓ i` holds iff `i = 0`. -/
+theorem at0_l7 (i : Fin 4) : PlusTruthAt M4 σ 0 (.atom (lA i)) ↔ i = 0 := by
+  rw [truth_atom_l hσ, h0]
+  exact eq_comm
+
+omit hg h0 in
+/-- At `0`, `Y ¬p` reads position `-1`. -/
+theorem at0_Ynp7 : PlusTruthAt M4 σ 0 (.snce .bot negp) ↔ (g (-1)).1.1.1 = false := by
+  rw [truth_Ynp7 hσ, show (0 : ℤ) - 1 = -1 by norm_num]
+
+omit hg h0 in
+/-- At `0`, `Y p` reads position `-1`. -/
+theorem at0_Yp7 : PlusTruthAt M4 σ 0 (.snce .bot (.atom pA)) ↔ (g (-1)).1.1.1 = true := by
+  rw [truth_Yp7 hσ, show (0 : ℤ) - 1 = -1 by norm_num]
+
+/-- At `0`, `X (p ∧ ℓ j)` reads position `1`, which the region fills whenever `1 ≤ c`. -/
+theorem at0_XB7 (hc : 1 ≤ c) (j : Fin 4) :
+    PlusTruthAt M4 σ 0 (.untl .bot (B3raw j)) ↔ (1 : Fin 4) = j := by
+  obtain ⟨hq, -⟩ := pending_walk4 hg 0 c n h0 1 hc
+  rw [show ((1 : ℕ) : ℤ) = (0 : ℤ) + 1 by norm_num] at hq
+  rw [truth_XB3 hσ, hq]
+  simp [show idx 1 = 1 from by decide]
+
+end At0_7
+
+/-! ### Equal data, equal type -/
+
+/-- **Every closure member of `chi` has the same truth at `0` along two paths with equal data**:
+a structural induction over the closure (atoms, the two `Y` members and `X (p ∧ ℓ j)` by the
+atomic lemmas, the three top-level members by hypothesis, `imp` by the closure's closedness, no
+`box`/`stab` in the closure). -/
+theorem agree7 {σ σ' : WorldHistory F4} {k k' : ℤ} {g g' : ℤ → LadderState Q4 pend4}
+    (hσ : σ.path = fun t => (t + k, g t)) (hσ' : σ'.path = fun t => (t + k', g' t))
+    (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+    (hg' : ∀ t, Rlad step4 pend4 t (g' t).1 (g' (t + 1)).1) {c n c' n' : ℕ}
+    (h0 : (g 0).1 = ((true, 0), c, n)) (h0' : (g' 0).1 = ((true, 0), c', n'))
+    (hc : 1 ≤ c) (hc' : 1 ≤ c')
+    (hm1 : (g (-1)).1.1.1 = (g' (-1)).1.1.1) (j : Fin 4)
+    (hS1 : PlusTruthAt M4 σ 0 S1raw ↔ PlusTruthAt M4 σ' 0 S1raw)
+    (hS2 : PlusTruthAt M4 σ 0 S2raw ↔ PlusTruthAt M4 σ' 0 S2raw)
+    (hU1 : PlusTruthAt M4 σ 0 (U1raw j) ↔ PlusTruthAt M4 σ' 0 (U1raw j)) :
+    ∀ ψ ∈ plusSubformulaClosure (chiRaw j),
+      (PlusTruthAt M4 σ 0 ψ ↔ PlusTruthAt M4 σ' 0 ψ) := by
+  intro ψ
+  induction ψ with
+  | atom a =>
+    intro h
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+    rcases h with rfl | rfl | rfl <;>
+      first
+      | rw [at0_p7 hσ h0, at0_p7 hσ' h0']
+      | rw [at0_l7 hσ h0, at0_l7 hσ' h0']
+  | bot => intro _; exact Iff.rfl
+  | imp φ₁ φ₂ ih1 ih2 =>
+    intro h
+    have h1 := plusClosure_imp_left _ _ _ h
+    have h2 := plusClosure_imp_right _ _ _ h
+    rw [PlusTruth.imp_iff, PlusTruth.imp_iff, ih1 h1, ih2 h2]
+  | box φ _ =>
+    intro h
+    exfalso
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+  | untl χ ψ _ _ =>
+    intro h
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+    rcases h with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+      first
+      | exact hU1
+      | rw [at0_XB7 hσ hg h0 hc, at0_XB7 hσ' hg' h0' hc']
+  | snce χ ψ _ _ =>
+    intro h
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+    rcases h with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+      first
+      | exact hS1
+      | exact hS2
+      | rw [at0_Ynp7 hσ, at0_Ynp7 hσ', hm1]
+      | rw [at0_Yp7 hσ, at0_Yp7 hσ', hm1]
+  | stab φ _ =>
+    intro h
+    exfalso
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at h
+
+/-- **Two paths with equal data realize the same type at `0`.** -/
+theorem tpOf_eq_of_datum' {σ σ' : WorldHistory F4} {k k' : ℤ}
+    {g g' : ℤ → LadderState Q4 pend4}
+    (hσ : σ.path = fun t => (t + k, g t)) (hσ' : σ'.path = fun t => (t + k', g' t))
+    (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1)
+    (hg' : ∀ t, Rlad step4 pend4 t (g' t).1 (g' (t + 1)).1) {c n c' n' : ℕ}
+    (h0 : (g 0).1 = ((true, 0), c, n)) (h0' : (g' 0).1 = ((true, 0), c', n'))
+    (hc : 1 ≤ c) (hc' : 1 ≤ c')
+    (hm1 : (g (-1)).1.1.1 = (g' (-1)).1.1.1) (j : Fin 4)
+    (hS1 : PlusTruthAt M4 σ 0 S1raw ↔ PlusTruthAt M4 σ' 0 S1raw)
+    (hS2 : PlusTruthAt M4 σ 0 S2raw ↔ PlusTruthAt M4 σ' 0 S2raw)
+    (hU1 : PlusTruthAt M4 σ 0 (U1raw j) ↔ PlusTruthAt M4 σ' 0 (U1raw j)) :
+    tpOf M4 (chi j) σ 0 = tpOf M4 (chi j) σ' 0 := by
+  rw [chi_eq_raw]
+  ext ψ
+  rw [mem_tpOf_iff, mem_tpOf_iff]
+  constructor
+  · rintro ⟨hcl, ht⟩
+    exact ⟨hcl, (agree7 hσ hσ' hg hg' h0 h0' hc hc' hm1 j hS1 hS2 hU1 ψ hcl).mp ht⟩
+  · rintro ⟨hcl, ht⟩
+    exact ⟨hcl, (agree7 hσ hσ' hg hg' h0 h0' hc hc' hm1 j hS1 hS2 hU1 ψ hcl).mpr ht⟩
 end GapShift
 
 end Probe820
