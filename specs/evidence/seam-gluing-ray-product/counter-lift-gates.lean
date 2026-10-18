@@ -2,11 +2,12 @@
 THE COUNTER-LIFT GATE TABLE: the counter arithmetic of the ladder compiled (forward window,
 backward constraint, region doubling, iterated doubling), the POSITIONWISE lift refuted for every
 finite counter quotient (`no_positionwise_lift`), and the gate rows of the counter-lift record --
-gates 1, 2, 9 (both halves), the short-idle gate and the gap-shift gate -- to be run on a 4-cycle
-fixture at the model layer, each row flipped from DESIGNED to a compiled verdict as it lands.
-The counter-lift lemma itself is NOT proved here: a green table LICENSES its two halves in
-pumping form for the successor record; a compiled refutation at a decision gate CLOSES the
-ladder route.
+gates 1, 2, 9 (both halves), the short-idle gate and the gap-shift gate -- run on a 4-cycle
+fixture at the model layer, EVERY ROW now carrying a compiled verdict, and the pin lemma's lift
+half.  The counter-lift lemma itself is NOT proved here: the table is green at every row,
+INCLUDING BOTH DECISION GATES (`gate9_col_cell_eq`, `gap_shift_cell_eq`), which LICENSES its two
+halves in pumping form for the successor record.  Neither decision gate refuted, so the ladder
+route is not closed and no `*_refuted` obstruction was compiled for it.
 
 ## What was asked
 
@@ -45,11 +46,26 @@ targets.
      (pigeonhole), and the cut chain whose two pins are at distance `< m`, which `Drift` forbids.
      So the completeness clause cannot be positionwise for any `K` and any local `R_K`; it must
      be allowed to PUMP.
+  6. **The pin lemma, lift half** (`drift_extension_of_pins`, `exists_rlad_hist_of_walk`): a
+     family of pins that is pairwise `1`-Lipschitz-compatible extends to a `Drift` deadline
+     function through every pin (the McShane extension, `pinCands` and `Nat.sInf`); and an
+     object walk along `step` whose countdown is idle-zero, counts down inside a region, is
+     exhausted at a region end, and whose region-start values are pairwise compatible (and
+     compatible with `n₀` at `0`) lifts to a full `Rlad` history with `n 0 = n₀` (`walkPin`).
+     This is where the lift's COUNTER argument ends: everything the counters contribute to the
+     completeness clause is discharged by these two statements, and what remains for (C') is the
+     chain-replacement argument on the TYPE sequence, which no counter bound can supply.  The
+     soundness half of the same lemma is items 2-4 above.
 
-Per-theorem axiom profile (the `#print axioms` block at the end of this file):
-`forward_window`, `backward_constraint`, `region_doubling`, `no_positionwise_lift` on
-`[propext, Classical.choice, Quot.sound]` (`Classical.choice` enters through `omega` on `Int`);
-`iter_doubling`, `doubling_attained` on `[propext, Quot.sound]`.
+Per-theorem axiom profile, from the final `#print axioms` run (the block at the end of this
+file), pasted as it prints: `iter_doubling`, `doubling_attained` and `short_idle_shape_collides`
+on `[propext, Quot.sound]`; every other headline theorem -- `forward_window`,
+`backward_constraint`, `region_doubling`, `no_positionwise_lift`, `gate1_cell_ne`,
+`gate2_cell_ne`, `gate9_sep_cell_ne`, `short_idle_cell_ne`, `short_idle_threshold_refuted`,
+`gate9_col_cell_eq`, `absorber4`, `gap_shift_cell_eq`, `drift_extension_of_pins`,
+`exists_rlad_hist_of_walk` -- on `[propext, Classical.choice, Quot.sound]` (`Classical.choice`
+enters through `omega` on `Int` and through the classical case splits of the truth lemmas).  No
+`sorryAx`, no custom axiom, no `native_decide`.
 
 ## The gate table
 
@@ -74,7 +90,10 @@ stays CARRIED.
 ## The licensed shape of the counter-lift lemma (NOT a theorem of this file)
 
 Recorded verbatim from the research round as the shape a successor record may state; nothing
-below is pinned, proved, or cited as proved here.
+below is pinned, proved, or cited as proved here.  The table above is green at every row,
+including both decision gates, so this shape is LICENSED -- the positive branch of the task's
+contingency.  Licensed is not proved: (S), (C') and (K1)-(K4) remain statements a successor
+record must discharge, and the gates certify only the coordinates they probe.
 
 Fix the object `(Q, step, pend, lab)` and `φ`.  Let `K` be the quotient
 `(min c T_c, c mod P, min n T_n, n mod P, clip (n - c) [-B, B])` and `R_K` the image of
@@ -113,8 +132,10 @@ maximum `certAdm`-certified subset.
   - No tuple index is stated as a candidate at any parameters: `K` is a carrier coordinate, not
     an index.  Where a class-collision statement is needed (the short-idle row) it is stated on
     the index BODY as a SHAPE, in the sense and wording of `nside-modulus-gate.lean`'s header.
-  - No seventh coordinate is proposed.  No complexity claim and no upper bound: `c + j`,
-    `2s + 1`, `2L + j + 1`, `2^k`, `c₀ + 1` are counts read off `Drift` and `Count`.
+  - No seventh coordinate is proposed.  Neither decision gate exhibited one: both compiled an
+    EQUALITY of cells, which is what a mechanism already inside `K` looks like.  No complexity
+    claim and no upper bound: `c + j`, `2s + 1`, `2L + j + 1`, `2^k`, `c₀ + 1`, and the
+    gap-shift gate's `T₀ = 1` and `g₀ = 1`, are counts read off `Drift` and `Count`.
   - No finiteness is added: `anchorCells_finite` and `anchorCells_ncard_le` are untouched.
   - The `box`/`stab` acceptance clause is never dropped from any statement sketched above.
   - No `LadderCons`, no `ladderRealized`, no factorization lemma for `K`, under any name; no

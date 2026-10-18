@@ -657,7 +657,7 @@ is the complete covering check — single file, outside every Lake target root.
 
 ---
 
-### Phase 9: Records — Header, Guard, README, ROADMAP, Context File [NOT STARTED]
+### Phase 9: Records — Header, Guard, README, ROADMAP, Context File [COMPLETED]
 
 **Goal**: Every record says exactly what was compiled: the probe header's gate table carries only
 compiled verdicts, the evidence guard's decision row names them, the RaySummary README's (W)
@@ -666,32 +666,42 @@ source-store context file gains the pin lemma, the positionwise-lift impossibili
 parameter source. Either outcome branch is recorded honestly.
 
 **Tasks**:
-- [ ] Probe header: final gate table (every row `SEPARATION`/`COLLISION` with theorem names, or
+- [x] Probe header: final gate table (every row `SEPARATION`/`COLLISION` with theorem names, or
       `REFUTED` with the compiled obstruction), the (S)/(C') statement and (K1)-(K4) left as the
       LICENSED shape (positive branch) or struck as closed (negative branch), the "does NOT say"
       list re-checked against the hard constraints, the per-theorem axiom profile from the final
-      `#print axioms` run.
-- [ ] `scripts/check-evidence-probes.sh`: rewrite the Phase 1 decision-row block with the final
+      `#print axioms` run. *(positive branch taken; the licensed-shape section says explicitly
+      that licensed is not proved, and the "does NOT say" list gained the no-seventh-coordinate
+      finding and the gap-shift gate's two counts.)*
+- [x] `scripts/check-evidence-probes.sh`: rewrite the Phase 1 decision-row block with the final
       verdicts and the decision it holds in place (positive: the counter-lift lemma's two halves
       are licensed in pumping form with parameters as outputs; negative: the ladder route is
-      closed on the compiled obstruction, named).
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: extend the (W) paragraph that
+      closed on the compiled obstruction, named). *(positive branch recorded; probe stays
+      `WIRED` and the guard exits 0 with all 43 probes compiling.)*
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: extend the (W) paragraph that
       cites `no-pending-forever-ray.lean` (near the end of the file) with one paragraph citing
       `counter-lift-gates.lean` by filename and theorem names — the positionwise lift refuted,
       the pumping form, the gate verdicts, the pin lemma — with NO task number (deliverable
       file; cite the probe, not the task) and no draft-history wording.
-- [ ] `specs/ROADMAP.md`: "Run these next" — drop the `/orchestrate 820` line and un-gate 761
+      *(`check-task-references.sh` reports 0 occurrences outside `specs/`.)*
+- [x] `specs/ROADMAP.md`: "Run these next" — drop the `/orchestrate 820` line and un-gate 761
       (positive) or replace both with the closed-route note (negative); Stage 1's adequacy
       bullet — the two hazards now carry compiled verdicts; the "761 waits on 820" sentence
-      updated accordingly. Task numbers are permitted here (`specs/**`).
-- [ ] Context file at the SOURCE-STORE path
+      updated accordingly. Task numbers are permitted here (`specs/**`). *(both
+      `/orchestrate 820` lines dropped, in "Run these next" and in "Next batches"; the
+      gates-1/2/9 line in the adequacy bullet moved from NOT ADDRESSED / OPEN to the compiled
+      verdicts.)*
+- [x] Context file at the SOURCE-STORE path
       `/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md`
       (never the deployed mirror): a "What the counters constrain" item (the pin lemma, both
       halves, by theorem name); one paragraph beside the parameter-origin rule citing
       `no_positionwise_lift` and naming the pumping form as the shape of the completeness clause;
       the third parameter source (K2, the cascade bound, `iter_doubling` its arithmetic) added to
       the rule's list with the "carrier coordinate vs index" distinction. No task numbers.
-- [ ] Issue log: record the gate outcomes (`win` per compiled row, `issue` per contingency taken)
+      *(also relabelled the three DERIVED counter items as COMPILED with their theorem names and
+      gave the two hazards their compiled verdicts — this phase's goal is that every record say
+      exactly what was compiled, and "DERIVED, no theorem" had stopped being true of them.)*
+- [x] Issue log: record the gate outcomes (`win` per compiled row, `issue` per contingency taken)
       with `issue-record.sh` as they land, not reconstructed here.
 
 **Timing**: 1.5 hours

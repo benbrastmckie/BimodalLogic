@@ -13,8 +13,7 @@ when Stage 1 is blocked on a user ruling or on open mathematics.
 ## Run these next
 
 ```bash
-/orchestrate 820                # GATES 761: the counter-lift lemma, research-first, gated — a refutation there closes the ladder route
-/orchestrate 761 --hard --lit   # THE critical path, once 820 lands: the ladder realization theorem over the idle-extended `cohBi` on the carrier `Q × ClType φ × K`
+/orchestrate 761 --hard --lit   # THE critical path, now un-gated: 820's gate table is compiled and COLLIDES at both decision gates, so the ladder route is open and the counter-lift lemma's two halves are licensed in pumping form
 ```
 
 **SUFFICIENCY RETURNED (`815`).** The certificate is sufficient at the LABEL level over the
@@ -26,9 +25,12 @@ realizability here is label-level, so the semantic step from a fulfilling label 
 membership of a type in a cell (obligation (d)) is what remains of adequacy. The compiled detail,
 the gate dispositions and the refuted index shapes are in Stage 1 below.
 
-`761` declares six edges (`760`, `775`, `805`, `806`, `819`, `820`). Five are discharged or about to
-be — `819` lands the presentation decision — and **`820`, the counter-lift lemma, is the one still
-open** and gates the dispatch. The decision: presentation (a) is chosen, the set-valued per-state
+`761` declares six edges (`760`, `775`, `805`, `806`, `819`, `820`). All six are now discharged —
+`819` landed the presentation decision and **`820`'s counter-lift gate table is compiled and
+COLLIDES at both decision gates** (`gate9_col_cell_eq`, `gap_shift_cell_eq`, each an EQUALITY of
+`cellAt` values), so neither hazard is a seventh mechanism, the ladder route is NOT closed, and
+the counter-lift lemma's two halves are LICENSED in pumping form — licensed, not proved: (S), the
+pumping completeness clause and the parameter sources are `761`'s obligations to discharge. The decision: presentation (a) is chosen, the set-valued per-state
 datum in its maximum-certified form (`D`, the maximum `certAdm`-certified subset of the carrier
 `Q × ClType φ × K`; `ladderRealized` the fibre equation; the factorization lemma a corollary);
 presentation (b), a parameter-coupled tuple index stated alone, is dominated on every obligation,
@@ -61,8 +63,7 @@ aim.
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 820                 # the counter-lift lemma, research-first, gated — the gate on 761; a refutation there closes the ladder route
-/orchestrate 761 --hard --lit    # ladder realization theorem over the idle-extended `cohBi` on `Q × ClType φ × K`; waits on 820
+/orchestrate 761 --hard --lit    # ladder realization theorem over the idle-extended `cohBi` on `Q × ClType φ × K`; 820's gate table is compiled and un-gates it
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781 --hard      # sliced-certificate internals: full-label evaluation, Phase 5 hoist
 # Stage 2 — supporting semantics and metalogic
@@ -203,10 +204,14 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   set), chosen over Route A (decide generalized-Büchi nonemptiness — a missing nested fixpoint,
   real work, not to be entered without a decision record). Still open alongside it: **gate 8 is
   SIDESTEPPED, not passed** (the `stab`/`box` clauses are present but unexercised; exercising
-  them needs a fixture whose closure has `stab` members); gate 3 is **CARRIED**; gates 1 and 2
-  are **NOT ADDRESSED** (compiled qualification — Branch N-VERIFIED: the refuted tuple's n-side
-  coordinates pass gates 1 and 2 and are still blind to the shift the datum has to see); gate 9
-  is **OPEN**. A gate probing one coordinate certifies one coordinate only. The set of cells stays
+  them needs a fixture whose closure has `stab` members); gate 3 is **CARRIED**. Gates 1, 2 and 9
+  are **ADDRESSED AND COMPILED** on `820`'s 4-cycle fixture
+  (`specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean`): SEPARATION at gate 1
+  (`gate1_cell_ne`), gate 2 (`gate2_cell_ne`) and gate 9's n-side separation half
+  (`gate9_sep_cell_ne`), COLLISION at gate 9's collision half (`gate9_col_cell_eq`), and the
+  earlier compiled qualification — Branch N-VERIFIED, that the refuted tuple's n-side coordinates
+  pass gates 1 and 2 while staying blind to the shift the datum has to see — stands unchanged.
+  A gate probing one coordinate certifies one coordinate only. The set of cells stays
   finite (`anchorCells_ncard_le`); only the index/presentation is open. The declined alternative
   (R2: an index-free, `box`/`stab`-free run-layer half, `slive` retained) stays on record but is
   not pursued — it would not reach the `box`/`stab` letters Stage 1 needs.
@@ -227,18 +232,27 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   constancy of `cellAt` on `K`-classes and every certified set lies inside it, so the maximum
   certified set is `Real` and is computable by enumeration over `Finset (Q × ClType φ × K)` — a
   count of candidates, no bound of any kind; this is the decision record the Route A sentence
-  above asked for, and its verdict is that Route A is not entered. The lemma's two hazards are
+  above asked for, and its verdict is that Route A is not entered. The lemma's two hazards were
   `820`'s first gates: gap shift under pumping (lengthening a region by `P` lowers every earlier
   gap by `P` unless `n` is pumped in step, which the previous idle run must absorb) and short idle
-  runs that cannot absorb a deadline shift (`L_{k+1} ≤ 2 L_k + j_k + 1`). The negative branch
-  stays live: a seventh mechanism resistant to every `K` of the forced shape closes the ladder
-  route for BOTH presentations, on evidence, with no weakened same-named substitute.
+  runs that cannot absorb a deadline shift (`L_{k+1} ≤ 2 L_k + j_k + 1`). **Both now carry compiled
+  verdicts, and both COLLIDE** (`specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean`:
+  `gap_shift_cell_eq`, with the absorber exhibited as `absorber4`; `gate9_col_cell_eq`), each an
+  EQUALITY of `cellAt` values with non-vacuity witnessed on both sides first — so neither hazard is
+  a seventh mechanism and the negative branch is closed out, not merely unexercised. The same probe
+  compiles the statement-shape refutation `no_positionwise_lift` (no POSITIONWISE lift exists for
+  ANY finite `K`, so the completeness clause must PUMP) and the pin lemma's lift half
+  (`drift_extension_of_pins`, `exists_rlad_hist_of_walk`), which is where the lift's counter
+  argument ends: what remains is the chain-replacement argument on the type sequence.
 - **761 — the ladder realization theorem** (`LadderCons`, `ladderRealized` per cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
-  `[BLOCKED]`. **Five of its six declared edges are discharged once `819` completes** (760/775
-  archived, 805/806 `[COMPLETED]`, 819 the presentation decision); **it now waits on `820` — the
-  counter-lift lemma — alone**, so a bare `/orchestrate 761` defers on it. Run `820` first; a
-  refutation there closes the ladder route on evidence. It inherits presentation (a) — `D` the
+  `[BLOCKED]`. **All six of its declared edges are discharged** (760/775 archived, 805/806
+  `[COMPLETED]`, 819 the presentation decision, 820 the counter-lift gate table); it is no longer
+  gated. `820` returned the POSITIVE branch: both decision gates collide, so the ladder route is
+  open and the counter-lift lemma's two halves are licensed in pumping form, with `K`'s parameters
+  as outputs of the first repeat of the realizable-type iteration. Licensed is not proved — (S),
+  (C') and the parameter sources are this task's own obligations, and a gate probing one coordinate
+  certifies one coordinate. It inherits presentation (a) — `D` the
   maximum `certAdm`-certified subset of the carrier `Q × ClType φ × K`, `ladderRealized` the fibre
   equation — the idle-extended `cohBi` on that carrier, the `certStab`-per-`(q, κ)` rebuild, and
   the label-level qualification of `815` with its region-interior reading:

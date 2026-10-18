@@ -1465,51 +1465,77 @@ EVIDENCE="specs/evidence"
 #                                                           | `count_pending_step`, `[propext, Quot.sound]` on
 #                                                           | `exists_idle_of_rlad_ray` and
 #                                                           | `no_rlad_ray_of_pending_forever`.
-# seam-gluing-ray-product/counter-lift-gates | THE COUNTER-LIFT GATE TABLE (the arithmetic
-#                                                           | layer compiled, the gate rows DESIGNED pending
-#                                                           | their fixture-level runs): the forward window
-#                                                           | (`forward_window`: `|L - n| ≤ c + j`), the
-#                                                           | backward constraint (`backward_constraint`:
-#                                                           | `n ∈ [c - 1, c + 2s + 1]`, pin `c + s`), region
-#                                                           | doubling (`region_doubling`: `L' ≤ 2L + j + 1`,
+# seam-gluing-ray-product/counter-lift-gates | THE COUNTER-LIFT GATE TABLE, COMPLETE (the
+#                                                           | arithmetic layer, every gate row compiled at
+#                                                           | the model layer, and the pin lemma's lift
+#                                                           | half): the forward window (`forward_window`:
+#                                                           | `|L - n| <= c + j`), the backward constraint
+#                                                           | (`backward_constraint`: `n` in
+#                                                           | `[c - 1, c + 2s + 1]`, pin `c + s`), region
+#                                                           | doubling (`region_doubling`: `L' <= 2L+j+1`,
 #                                                           | attained at `j = 1` by `doubling_attained`,
 #                                                           | iterated by `iter_doubling` to
-#                                                           | `a k + J + 1 ≤ 2^k (a 0 + J + 1)`), the pins
+#                                                           | `a k + J + 1 <= 2^k (a 0 + J + 1)`), the pins
 #                                                           | (`pin_region_start`, `pin_region_end`,
 #                                                           | `count_pending_step`), the Lipschitz bound
-#                                                           | (`drift_step`, `drift_ray`), and the
-#                                                           | STATEMENT-SHAPE refutation: no POSITIONWISE
+#                                                           | (`drift_step`, `drift_ray`), the
+#                                                           | STATEMENT-SHAPE refutation (no POSITIONWISE
 #                                                           | lift exists for ANY finite counter quotient
-#                                                           | `K`, any `κ`, any sound local relation `R`
-#                                                           | (`no_positionwise_lift`: a Lipschitz-tight
-#                                                           | history, a class repeat along its idle climb,
-#                                                           | and the cut chain whose two pins are too close
-#                                                           | for `Drift`). The decision it holds in place:
-#                                                           | the counter-lift lemma's completeness half
-#                                                           | must be stated in PUMPING form (loops inserted
-#                                                           | or deleted in saturated zones, the state at
-#                                                           | position `0` kept), never position by
-#                                                           | position; the gate rows 1, 2, 9-sep,
-#                                                           | short-idle, 9-col and gap-shift are DESIGNED
-#                                                           | with expected verdicts and compiled ground,
-#                                                           | NOT YET COMPILED at the model layer, and the
-#                                                           | two decision gates (9-col, gap-shift) carry a
-#                                                           | live negative branch that closes the ladder
-#                                                           | route. What it withholds: no `cellAt`,
+#                                                           | `K`, any `kappa`, any sound local relation
+#                                                           | `R` -- `no_positionwise_lift`: a
+#                                                           | Lipschitz-tight history, a class repeat along
+#                                                           | its idle climb, and the cut chain whose two
+#                                                           | pins are too close for `Drift`), and the pin
+#                                                           | lemma's lift half
+#                                                           | (`drift_extension_of_pins`: the McShane
+#                                                           | extension through a compatible pin family;
+#                                                           | `exists_rlad_hist_of_walk`: the lift of an
+#                                                           | object walk with its forced countdown). Gate
+#                                                           | verdicts, all compiled: SEPARATION at gate 1
+#                                                           | (`gate1_cell_ne`), gate 2 (`gate2_cell_ne`),
+#                                                           | gate 9-sep (`gate9_sep_cell_ne`) and the
+#                                                           | short-idle gate (`short_idle_cell_ne`, with
+#                                                           | `short_idle_shape_collides` and
+#                                                           | `short_idle_threshold_refuted`); COLLISION at
+#                                                           | both DECISION GATES -- gate 9-col
+#                                                           | (`gate9_col_cell_eq`) and the gap-shift gate
+#                                                           | (`gap_shift_cell_eq`, with the absorber
+#                                                           | exhibited as `absorber4`), each an EQUALITY
+#                                                           | of `cellAt` values, non-vacuity witnessed
+#                                                           | before the equality on both sides. THE
+#                                                           | DECISION IT HOLDS IN PLACE: the counter-lift
+#                                                           | lemma's completeness half must be stated in
+#                                                           | PUMPING form (loops inserted or deleted in
+#                                                           | saturated zones, the state at position `0`
+#                                                           | kept), never position by position; and with
+#                                                           | both decision gates COLLIDING, the ladder
+#                                                           | route is NOT closed -- the lemma's two halves
+#                                                           | are LICENSED in that pumping form, with
+#                                                           | `K`'s parameters `(T, P, B)` as OUTPUTS of
+#                                                           | the first repeat of the realizable-type
+#                                                           | iteration, never exhibited from the object or
+#                                                           | the letters. Licensed is not proved: (S),
+#                                                           | (C') and (K1)-(K4) remain the successor
+#                                                           | record's obligations. What it withholds: no
 #                                                           | `HitPresented` or `PlusValidZTime` in any
-#                                                           | declaration yet; no `LadderCons`/
-#                                                           | `ladderRealized`/factorization lemma under any
-#                                                           | name; no tuple index at any parameters (`K` is
-#                                                           | a carrier coordinate); no seventh coordinate;
-#                                                           | no bound, every quantity a count; no
-#                                                           | finiteness added; the `box`/`stab` clause
-#                                                           | kept; gate 8 SIDESTEPPED, gate 3 CARRIED; the
-#                                                           | refutation is of a statement SHAPE, not of the
-#                                                           | datum. Axioms `[propext, Classical.choice,
-#                                                           | Quot.sound]` on `forward_window`,
-#                                                           | `backward_constraint`, `region_doubling`,
-#                                                           | `no_positionwise_lift`; `[propext, Quot.sound]`
-#                                                           | on `iter_doubling`, `doubling_attained`.
+#                                                           | declaration; no `LadderCons`/
+#                                                           | `ladderRealized`/factorization lemma under
+#                                                           | any name; no tuple index at any parameters
+#                                                           | (`K` is a carrier coordinate); no seventh
+#                                                           | coordinate (neither decision gate exhibited
+#                                                           | one); no bound, every quantity a count
+#                                                           | (including the gap-shift gate's `T0 = 1` and
+#                                                           | `g0 = 1`); no finiteness added; the
+#                                                           | `box`/`stab` clause kept; gate 8 SIDESTEPPED
+#                                                           | (no `stab` member in any closure), gate 3
+#                                                           | CARRIED; the refutation is of a statement
+#                                                           | SHAPE, not of the datum. Axioms
+#                                                           | `[propext, Quot.sound]` on `iter_doubling`,
+#                                                           | `doubling_attained`,
+#                                                           | `short_idle_shape_collides`;
+#                                                           | `[propext, Classical.choice, Quot.sound]` on
+#                                                           | every other headline theorem. No `sorryAx`,
+#                                                           | no custom axiom, no `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"

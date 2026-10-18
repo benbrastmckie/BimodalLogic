@@ -836,6 +836,40 @@ acceptance clause never dropped; `certStab` per `(q, κ)` is a rebuild the succe
 still SIDESTEPPED. Axioms `[propext]` on `count_pending_step`, `[propext, Quot.sound]` on the
 other two, citing `RunLayer.lean` and re-proving nothing.
 
+**The counter-lift gate table is compiled, and it collides.** The wired probe
+`specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean` runs that open problem as a gate
+table on a 4-cycle fixture of product period four, before any sufficiency attempt. Its arithmetic
+layer compiles the three derived items as theorems: the forward window (`forward_window`), the
+backward constraint (`backward_constraint`) and region doubling (`region_doubling`, attained at
+`j = 1` by `doubling_attained`, iterated by `iter_doubling`). Its statement-shape result is
+`no_positionwise_lift`: for EVERY finite counter quotient `K`, every `κ`, and every relation on
+`Bool × K` that is sound for the two-state object, some chain is the projection of no history —
+so the completeness clause cannot be positionwise for any `K`, and must be allowed to PUMP. The
+gate rows then separate where separation was expected — `gate1_cell_ne`, `gate2_cell_ne`,
+`gate9_sep_cell_ne`, `short_idle_cell_ne` (with `short_idle_shape_collides` and
+`short_idle_threshold_refuted`) — and COLLIDE at both decision gates: `gate9_col_cell_eq` and
+`gap_shift_cell_eq`, each an EQUALITY of `cellAt` values with non-vacuity witnessed on both sides
+before the equality. The gap-shift row's absorber is exhibited as its own theorem, `absorber4`:
+the past ray is an `Rlad` ray for every countdown at fixed region age, letters and idle-run
+shape, because the previous region — which the closure does not pin — may be pending forever with
+its deadline unconstrained. The pin lemma's lift half compiles too: `drift_extension_of_pins` (a
+pairwise `1`-Lipschitz-compatible family of pins extends to a `Drift` deadline function through
+every pin) and `exists_rlad_hist_of_walk` (an object walk with its forced countdown lifts to a
+full `Rlad` history), which is where the lift's counter argument ends — what remains for the
+completeness clause is a chain-replacement argument on the type sequence, which no counter bound
+supplies. Consequence for the record: neither decision gate exhibited a seventh mechanism, so the
+ladder route is NOT closed, and the counter-lift lemma's two halves are LICENSED in pumping form
+with `K`'s parameters as outputs of the first repeat of the realizable-type iteration. Licensed
+is not proved: soundness, the pumping completeness clause and the parameter sources remain
+statements a successor record must discharge, and a gate probing one coordinate certifies one
+coordinate. Withheld, unchanged: no tuple index at any parameters, no seventh coordinate, no
+bound of any kind (every quantity a count, including the gap-shift gate's threshold `1` and gap
+`1`), no finiteness added, the acceptance clause never dropped, gate 8 still SIDESTEPPED and gate
+3 CARRIED, and no Büchi or MSO lemma cited in place of a proof. Axioms
+`[propext, Quot.sound]` on `iter_doubling`, `doubling_attained` and `short_idle_shape_collides`,
+`[propext, Classical.choice, Quot.sound]` on every other headline theorem; no `sorryAx`, no
+custom axiom, no `native_decide`.
+
 The permanent computability witnesses are `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean`
 (imported from `Tests/BimodalTest.lean`): thirteen `#guard`s at depth 1 over `twoLetter` that
 `kTypeOfFin` (on `segZ` and `listSeg`), `allPathTypes`, `hitOf`, `fwdLiveSep` and `bwdLiveSep`
