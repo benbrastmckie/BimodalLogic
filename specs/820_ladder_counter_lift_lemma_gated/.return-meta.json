@@ -1,0 +1,24 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-18T17:38:15Z",
+  "completed_at": "2026-10-18T18:24:00Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/820_ladder_counter_lift_lemma_gated/reports/01_counter-lift-lemma-gated.md",
+      "summary": "Counter-lift lemma research: the three derived arithmetic items compiled (forward window, backward constraint, region doubling + attained + iterated); the dispatch's positionwise completeness clause refuted for every finite counter quotient (no_positionwise_lift, compiled) and replaced by the pumping form; the pin lemma reducing the lift to Lipschitz pin arithmetic plus chain pumping; both hazards assessed as the pin cascade (absorbed) and the exponential-threshold fact (a parameter-size output, not a mechanism); the gate table designed on a 4-cycle fixture with expected verdicts and compiled ground; negative outcome not reached."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/820_ladder_counter_lift_lemma_gated/prototype/counter-lift-arithmetic.lean",
+      "summary": "Research-level prototype (544 lines, 0 sorry, lake env lean exit 0, not wired): forward_window, backward_constraint, region_doubling, iter_doubling, doubling_attained, no_positionwise_lift over Rlad of RunLayer.lean."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1792344910_f9a054_820",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

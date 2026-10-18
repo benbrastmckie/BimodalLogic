@@ -82,7 +82,7 @@ next_project_number: 823
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-820 [NOT STARTED] — RESEARCH-FIRST, GATED: no sufficiency attempt before the gate...
+820 [RESEARCHED] — RESEARCH-FIRST, GATED: no sufficiency attempt before the gate...
   └─ 761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 
@@ -239,10 +239,11 @@ OUT OF SCOPE. The allocator's own concurrency design and git-commit-scoped.sh's 
 ---
 
 ### 820. Ladder counter lift lemma gated
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [820_ladder_counter_lift_lemma_gated/reports/01_counter-lift-lemma-gated.md]
 
 **Description**: RESEARCH-FIRST, GATED: no sufficiency attempt before the gate table below is compiled. WHY: presentation (a) is chosen for the ladder cell -- the set-valued per-state datum `D`, the MAXIMUM `certAdm`-certified subset of the finite carrier `Q × ClType φ × K`, with the realization theorem the fibre equation (`cellAt` at `(q, c, n)` equals the fibre of `D` at `(q, κ(c, n))`) and the factorization lemma for `K` its corollary, never its hypothesis -- and its viability rests on THIS lemma, which is unproved. See the decision report at `specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md` (Findings 2, 6, 7) and the wired probe `specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean`: the certified chains of record are REGION-INTERIOR (`coh`/`cohBi` demand `pend` at both endpoints; no forward `Rlad` ray is pending forever), so `realizes_of_certAdm_cohBi` transfers to the region segments of a ladder history and never to a ladder history itself.
 
@@ -972,6 +973,8 @@ The two items have independent root causes but a single edit surface: both are p
 
 Both items are sited in the lean extension's source store, as approved at dispatch. For item 1 this is unambiguous: the trigger condition is "a change to Lean source line counts" and both generated surfaces are this repository's own, so the knowledge is Lean-and-repository-specific and belongs beside the existing `context/project/lean4/` material. For item 2 there is a genuine open question the implementer should resolve in research rather than assume: `verify-deploy.sh` is a core-owned script, so its target-shape fact is arguably core knowledge. The approved siting is the lean extension because the measured failure was a Lean plan's criterion and a Lean plan author is the reader who needs it. If research concludes item 2 belongs in a core home instead, RAISE IT rather than silently editing core -- several core-extension paths are claimed by other open records, and an unserialized edit there is exactly the collision this repository's siting discipline exists to prevent.
 
+Item 3's siting raises NO comparable open question, and the reason is worth stating rather than leaving the reader to infer it from item 2's paragraph above. Item 3's trap is specific to a repository whose evidence apparatus RETAINS refuted declaration bodies on purpose, and the retained bodies in question are Lean declarations under this repository's own `specs/evidence/` refutation probes. A plan author sweeping those paths is a Lean plan author by construction, so the lean extension is the correct home on the same grounds that make item 1 unambiguous -- not merely the approved one. Nothing about item 3 argues for a core home.
+
 A grep of the lean extension's source store finds no existing home for either fact: nothing there mentions `typst-sync-check`, `check-module-invariants`, `generated/status.typ`, `verify-deploy`, pre-commit hooks or generated surfaces. A new file under `context/project/lean4/patterns/` is therefore the expected shape, wired the way `patterns/dependency-tracing.md` is wired -- an `index-entries.json` entry plus a pointer line in `EXTENSION.md`'s context-pointer list. An unreferenced guidance file is not guidance, it is a file: the entry and the referrer are part of THIS change, not a follow-up.
 
 IF A DIFFERENT FILE PATH IS CHOSEN THAN THE ONE IN file_scope, WIDEN file_scope FIRST via `update-task-status.sh` rather than writing into a file_scope-unlisted location silently.
@@ -994,7 +997,7 @@ NO DEPENDENCY EDGE EXPRESSES ANY OF THIS, AND NONE CAN. Those three records live
 
 === DELIVERABLE HYGIENE ===
 
-Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). The script names (`typst-sync-check.sh`, `check-module-invariants.sh`, `verify-deploy.sh`), the generated-file paths, the flag spellings (`--counts-only`, `--fix`, `--emit-inventory`), the hook path `.githooks/pre-commit` and the variable name `formalsystem-line-count` are durable anchors and may be cited freely. The originating task numbers, the issue entry_ids, the adjacent record numbers above and the specific measured line-count values may NOT appear in the guidance prose -- they live in this record only. State the guidance as what a plan author does and what the gates check, never as a narration of a past run's history or of this guidance's own drafting.
+Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). The script names (`typst-sync-check.sh`, `check-module-invariants.sh`, `verify-deploy.sh`), the generated-file paths, the flag spellings (`--counts-only`, `--fix`, `--emit-inventory`), the hook path `.githooks/pre-commit` and the variable name `formalsystem-line-count` are durable anchors and may be cited freely. For item 3, the declaration names of the retained refuted candidates (`ladderIndex`, `ladderIndexRes`, `ladderIndexJnt`), the path roots the sweep ranged over (`FormalSystem/`, `Tests/`, `specs/evidence/`) and the `^def` anchor spelling are likewise durable anchors and may be cited freely -- the refuted bodies are retained deliberately, so their names persist and a worked example naming them is far clearer about the prefix-capture trap than a sanitized one. The originating task numbers, the issue entry_ids, the adjacent record numbers above, the specific measured line-count values and item 3's count of matched bodies may NOT appear in the guidance prose -- they live in this record only. State the guidance as what a plan author does and what the gates check, never as a narration of a past run's history or of this guidance's own drafting.
 
 === ACCEPTANCE ===
 
