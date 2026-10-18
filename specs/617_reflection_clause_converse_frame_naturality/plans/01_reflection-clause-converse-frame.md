@@ -188,33 +188,33 @@ nothing imports it until Phase 3, so no other module can observe this phase.
 
 ---
 
-### Phase 2: The section reflection, naturality, and the component bijections [NOT STARTED]
+### Phase 2: The section reflection, naturality, and the component bijections [COMPLETED]
 
 **Goal**: Add the section reflection `Beh.reflectSec` landing in `Beh F.rev l.val`, its reading
 equation, naturality in the translations against `Tr.ref`, the involution `(τ^r)^r = τ`, and the
 `Equiv` `Beh F l.val ≃ Beh F.rev l.val`; measure and record the axiom profile.
 
 **Tasks**:
-- [ ] Define `Beh.reflectSec {F} (l : Obj F.Duration) (τ : Beh F l.val) : Beh F.rev l.val` with
+- [x] Define `Beh.reflectSec {F} (l : Obj F.Duration) (τ : Beh F l.val) : Beh F.rev l.val` with
       domain `0 ≤ z ∧ z ≤ l.val`, states `τ.val.states (l.val - z) _` via `Beh.mem_dom`, and
       `respects_task` through `(FrameOver.rev_taskRel F.toFibre _ (t - s) _).mpr` and
       `τ.val.respects_task (l.val - t) (l.val - s)`, closing the time identity by `abel`
-- [ ] Prove `Beh.reflectSec_states` (`rfl`)
-- [ ] Prove `Beh.reflect_natural`: `reflectSec l' (Beh.restrictTr f τ) = Beh.restrictTr (F := F.rev)
+- [x] Prove `Beh.reflectSec_states` (`rfl`)
+- [x] Prove `Beh.reflect_natural`: `reflectSec l' (Beh.restrictTr f τ) = Beh.restrictTr (F := F.rev)
       (Tr.ref f) (reflectSec l τ)` via `Beh.ext (partialHistory_ext rfl ?_)` and
       `PartialHistory.states_eq_of_time_eq` with the time equality by `abel`
-- [ ] Prove `Beh.reflect_reflect`: `reflectSec (F := F.rev) l (reflectSec l τ) = τ`; the domain
+- [x] Prove `Beh.reflect_reflect`: `reflectSec (F := F.rev) l (reflectSec l τ) = τ`; the domain
       half by `propext ((τ.property z).symm)`, the states half as in naturality with
       `l.val - (l.val - r) = r` by `abel`
-- [ ] Define `Beh.reflectEquiv (F) (l) : Beh F l.val ≃ Beh F.rev l.val` with `toFun := reflectSec l`,
+- [x] Define `Beh.reflectEquiv (F) (l) : Beh F l.val ≃ Beh F.rev l.val` with `toFun := reflectSec l`,
       `invFun := reflectSec (F := F.rev) l`, both inverse laws from `reflect_reflect` — the
       `Equiv` form by analogy with `Beh.germEquiv`
-- [ ] Every declaration docstring carries `Constraints consumed: None`
-- [ ] Measure `#print axioms` on `Beh.reflect_natural`, `Beh.reflect_reflect`,
+- [x] Every declaration docstring carries `Constraints consumed: None`
+- [x] Measure `#print axioms` on `Beh.reflect_natural`, `Beh.reflect_reflect`,
       `Beh.reflectEquiv` and record the measured profile in the module docstring's
       `## Implementation Notes` ("Measured axiom profile", as `Determinism.lean` does), together
       with the sentence that the clause is choice-free in both of the README's measured senses
-- [ ] Record the issue log as events arise
+- [x] Record the issue log as events arise
 
 **Timing**: 1.25 hours
 

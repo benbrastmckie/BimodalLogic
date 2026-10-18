@@ -87,6 +87,16 @@ precedent: `Semantics/Extension/Constraint.lean`. The import leaves the cluster'
 compares it with `τ` directly. The `Equiv` is then assembled from the one lemma applied twice, once
 at `F` and once at `F.rev`, exactly as `Beh.germEquiv` is assembled from its two round trips.
 
+**Measured axiom profile** (`#print axioms`): every one of the twelve declarations — `Tr.ref` and
+its six laws, `Beh.reflectSec`, `Beh.reflectSec_states`, `Beh.reflect_natural`,
+`Beh.reflect_reflect` and `Beh.reflectEquiv` — is `[propext, Quot.sound]`. The clause is therefore
+**choice-free in both of `Presheaf/README.md`'s measured senses**, and in the first more strongly
+than *Germs* and *Sheaf* are: it consumes **no** frame constraint at all, not even
+*Compositionality* as an explicit hypothesis (every doc block below reads
+`Constraints consumed: None`), and `#print axioms` reports no `Classical.choice` anywhere. This is
+the measured content of the claim that the reflection convention supplies the involution by
+definition.
+
 **Paper state: the source appendix is cut.** As for the sibling modules, the anchors cited below
 live in `app:Structure`, which the paper **cut in full** under an explicit `% SECTION CUT` record;
 the text is kept verbatim, still commented, in the paper repository's `appendix_cut_material.tex`.
@@ -184,6 +194,88 @@ theorem ref_rres {l l' : Obj D} (h : l'.val ≤ l.val) : ref (rres h) = lres h :
   ext; simp [lres, rres]
 
 end Tr
+
+/-! ### The reflection of a section -/
+
+namespace Beh
+
+/-- **The reflection of a section.** A section `τ` of `Beh F` over `[0, l]` is sent to
+`τʳ(z) = τ(l - z)`, a section of the **converse** frame `F.rev` over the same interval. The domain
+is the interval again; the states read `τ` at the mirrored time; and `respects_task` for `F.rev` is
+`respects_task` for `F` at the mirrored pair, transported across `FrameOver.rev_taskRel` — the
+primitive reversal, which is `Iff.rfl` — with the time identity `(l - s) - (l - t) = t - s`.
+
+Constraints consumed: None -/
+def reflectSec {F : TaskFrame} (l : Obj F.Duration) (τ : Beh F l.val) : Beh F.rev l.val :=
+  ⟨{ domain := fun z => 0 ≤ z ∧ z ≤ l.val
+     nonempty_domain := ⟨0, le_refl 0, l.property⟩
+     states := fun z hz =>
+       τ.val.states (l.val - z)
+         (Beh.mem_dom τ (sub_nonneg.mpr hz.2) (sub_le_self _ hz.1))
+     respects_task := by
+       intro s t hs ht
+       refine (FrameOver.rev_taskRel F.toFibre _ (t - s) _).mpr ?_
+       have h := τ.val.respects_task (l.val - t) (l.val - s)
+         (Beh.mem_dom τ (sub_nonneg.mpr ht.2) (sub_le_self _ ht.1))
+         (Beh.mem_dom τ (sub_nonneg.mpr hs.2) (sub_le_self _ hs.1))
+       rwa [show (l.val - s) - (l.val - t) = t - s by abel] at h },
+   fun _ => Iff.rfl⟩
+
+/-- The reading equation of `reflectSec`: the reflected section at `z` is `τ` at `l - z`.
+
+Constraints consumed: None -/
+theorem reflectSec_states {F : TaskFrame} (l : Obj F.Duration) (τ : Beh F l.val)
+    (z : F.Duration) (hz : (reflectSec l τ).val.domain z) (h' : τ.val.domain (l.val - z)) :
+    (reflectSec l τ).val.states z hz = τ.val.states (l.val - z) h' := rfl
+
+/-! ### Naturality -/
+
+/-- **Naturality of reflection in the translations.** Reflecting the restriction of `τ` along
+`f : Tr l' l` is restricting the reflection of `τ` along the reflected translation `Tr.ref f`.
+Both sides read `τ` at `p + (l' - r)` and at `l - ((l - p - l') + r)`, which `abel` identifies.
+This is the square that makes `reflectSec` a natural transformation `Beh F ⟶ Beh F.rev ∘ ref`.
+
+Constraints consumed: None -/
+theorem reflect_natural {F : TaskFrame} {l' l : Obj F.Duration} (f : Tr l' l)
+    (τ : Beh F l.val) :
+    reflectSec l' (Beh.restrictTr f τ)
+      = Beh.restrictTr (F := F.rev) (Tr.ref f) (reflectSec l τ) := by
+  refine Beh.ext (partialHistory_ext rfl ?_)
+  intro r hr hr'
+  change τ.val.states (f.shift + (l'.val - r)) _
+      = τ.val.states (l.val - ((l.val - f.shift - l'.val) + r)) _
+  exact PartialHistory.states_eq_of_time_eq τ.val _ _ (by abel) _ _
+
+/-! ### Each component is a bijection -/
+
+/-- **Reflection is an involution on sections**: `(τʳ)ʳ = τ`. Stated at `F.rev.rev`, which is `F`
+by `rfl` since `TaskFrame.rev` is `@[reducible]`, so no cast appears. The domain half is the
+section's own interval condition; the states half is `l - (l - r) = r`.
+
+Constraints consumed: None -/
+theorem reflect_reflect {F : TaskFrame} (l : Obj F.Duration) (τ : Beh F l.val) :
+    reflectSec (F := F.rev) l (reflectSec l τ) = τ := by
+  refine Beh.ext (partialHistory_ext ?_ ?_)
+  · funext z
+    change (0 ≤ z ∧ z ≤ l.val) = τ.val.domain z
+    exact propext ((τ.property z).symm)
+  · intro r hr h'
+    change τ.val.states (l.val - (l.val - r)) _ = τ.val.states r _
+    exact PartialHistory.states_eq_of_time_eq τ.val _ _ (by abel) _ _
+
+/-- **The *Reflection* clause's component bijection**: `Beh F l ≃ Beh F.rev l`. Both inverse laws
+are `reflect_reflect`, once at `F` and once at `F.rev`, using `(F.rev).rev = F` by `rfl`.
+Together with `reflect_natural` this is the natural isomorphism `Beh(F) ≅ Beh(F⁻) ∘ ref` of
+`app:presheaf-dictionary`.
+
+Constraints consumed: None -/
+def reflectEquiv (F : TaskFrame) (l : Obj F.Duration) : Beh F l.val ≃ Beh F.rev l.val where
+  toFun := reflectSec l
+  invFun := reflectSec (F := F.rev) l
+  left_inv := reflect_reflect l
+  right_inv := reflect_reflect (F := F.rev) l
+
+end Beh
 
 end FormalSystem.Semantics.Presheaf
 
