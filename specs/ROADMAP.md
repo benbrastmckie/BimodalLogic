@@ -48,6 +48,14 @@ and ch. 10 as per-chapter offprints — ch. 10 ends at p. 653, the target starts
 volume-level PDF, so there is nothing to extract the chapter from. Institutional access or
 purchase is the route. Because R2 consumes R1, this unblocks a record; it does not advance the
 aim.
+**Coverage appendix (uncovered tasks)**:
+```
+/orchestrate 127,128,178,502,559,570,604,664
+/orchestrate 714,729,730,741,743,751,752,753
+/orchestrate 767,768,769,770,772,774,777,779
+/orchestrate 780,781,785,787,803,804,810,813
+/orchestrate 817,818,821
+```
 
 ## Next batches
 
