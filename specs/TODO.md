@@ -1,5 +1,5 @@
 ---
-next_project_number: 820
+next_project_number: 821
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 820
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,819 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,819 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,819,820 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,819,820 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,763 | 231,429,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -81,9 +81,11 @@ next_project_number: 820
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-819 [PLANNED] — Research-first: choose the presentation of a ladder cell that...
-  └─ 761 [BLOCKED] — AMENDED 2026-10-12 (realization blocked): the realization...
+819 [IMPLEMENTING] — Research-first: choose the presentation of a ladder cell that...
+  └─ 761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
+820 [NOT STARTED] — RESEARCH-FIRST, GATED: no sufficiency attempt before the gate...
+  └─ 761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell... (see above)
 
 ### Formula Refactor
 
@@ -120,8 +122,34 @@ next_project_number: 820
 
 ## Tasks
 
+### 820. Ladder counter lift lemma gated
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: RESEARCH-FIRST, GATED: no sufficiency attempt before the gate table below is compiled. WHY: presentation (a) is chosen for the ladder cell -- the set-valued per-state datum `D`, the MAXIMUM `certAdm`-certified subset of the finite carrier `Q × ClType φ × K`, with the realization theorem the fibre equation (`cellAt` at `(q, c, n)` equals the fibre of `D` at `(q, κ(c, n))`) and the factorization lemma for `K` its corollary, never its hypothesis -- and its viability rests on THIS lemma, which is unproved. See the decision report at `specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md` (Findings 2, 6, 7) and the wired probe `specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean`: the certified chains of record are REGION-INTERIOR (`coh`/`cohBi` demand `pend` at both endpoints; no forward `Rlad` ray is pending forever), so `realizes_of_certAdm_cohBi` transfers to the region segments of a ladder history and never to a ladder history itself.
+
+STATEMENT SHAPE (not pinned). Soundness: every `RladAdm` history projects to a bi-infinite chain over `Q × ClType φ × K` whose consecutive counter classes satisfy a decidable relation `R_K` and whose consecutive types satisfy the idle-extended `cohBi` link (the two `pend` conjuncts of `coh` replaced by the `Count`/`Drift` class clauses). Completeness (the lift): every such chain through `(q, κ(c, n))` lifts to an `RladAdm` history through `(q, c, n)` with the same type sequence. Consequence, by induction on `stab`-nesting depth: `cellAt` is constant on `K`-classes -- the factorization lemma for `K`, recorded as a COROLLARY, with `K`'s parameters `(T, P, B)` as OUTPUTS of the first repeat of the realizable-type iteration on the object-closure product, never exhibited from the object or the letters.
+
+GATE TABLE, compiled BEFORE any sufficiency attempt, on a fixture with a product period of at least four: gates 1, 2 and 9 (n-side, both halves: separation when `2(c + j) + 1 <` the product period and `m` is not a multiple of it; collision when `m` is a multiple); the gap-shift gate (lengthening the current region by `P` lowers the gap at every earlier position by `P` unless `n` is pumped in step, which the previous idle run must absorb); the short-idle gate (`L_{k+1} ≤ 2 L_k + j_k + 1`; a class-level chain must carry enough of `(L_k, j_k)` exactly, which may force `T` above the formula-derived depth and must be computed, not guessed).
+
+FIRST COMPILE TARGETS, each currently DERIVED and no theorem: the forward window `|L - n| ≤ c + j` for the next region's length; the backward constraint `n ∈ [c - 1, c + 2s + 1]` when the region started `s` steps ago; the region-doubling inequality.
+
+WHAT TRANSFERS and is not re-proved: `prodPreN_eventually_periodic`, `profR_period_three`, `exists_dovetail_chain`, `realizes_of_certAdm_cohBi` (region segments), `gap_le_region_age`, `region_start_beyond_depth`, `second_region_any_length`, `exists_idle_of_rlad_ray`.
+
+OBLIGATION (4): `certStab` must be rebuilt per `(q, κ)` (`stab_mem_tpOf_iff` is per cell); gate 8 stays SIDESTEPPED until a `stab`-bearing fixture is run.
+
+HARD CONSTRAINTS: no tuple index stated as a candidate at any parameters -- `K` is a carrier coordinate, not an index; no seventh coordinate; no complexity claim or upper bound, every quantity a count (the candidate enumeration over `Finset (Q × ClType φ × K)` is a count of candidates); no finiteness added (`anchorCells_finite`, `anchorCells_ncard_le` untouched); the `box`/`stab` acceptance clause never dropped; zero debt (no Buchi/MSO lemma cited in place of a proof); Route A not entered (the decision record is the report above).
+
+A NEGATIVE OUTCOME IS A COMPLETE RESULT: if either hazard is a genuine seventh mechanism resistant to every `K` of the forced shape, no computable per-ladder-state datum exists in either presentation; report `[BLOCKED]`-to-closed for the ladder route with the obstruction compiled, never a weakened same-named substitute.
+
+WHAT THIS UNBLOCKS: `ladderRealized`/`LadderCons` (the realization record, task 761), then the lift `not_plusValidZTime_iff_ladderRefutes` and `Decidable (PlusValidZTime φ)` (task 763). NOT COSTABLE: sized by an open problem; no figure is invented.
+
+---
+
 ### 819. Ladder cell presentation design decision
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -1259,12 +1287,14 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819
+- **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819, Task 820
 - **Plan**: [761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md]
 - **Summary**: [761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md]
 - **Research**: [761_ladder_realization_theorem/reports/02_spawn-analysis.md]
 
-**Description**: AMENDED 2026-10-12 (realization blocked): the realization theorem is [BLOCKED] on the open index sub-problem — `hitOf (truncate B …)` is a residue of the deleted index (`truncate` is defined nowhere; its only reading is `Q × Fin (B+1) × Fin (B+1)`) and is withdrawn from the statement line; every per-cell soundness statement presupposes a finite index of ladder states (`cell_ne`; the `Count` clause; the `stab` clause's collapse of any per-state labelling), and the `box`/`stab` acceptance clause presupposes it too; the ladder's structural liveness is FORWARD-ONLY (wired probe `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`: `gPast_isPath`), so a ladder bundle replaces `ulive` only and keeps `slive` — "`ulive`/`slive` replaced" reads `ulive` replaced, `slive` retained. No library module; the index-free run-layer half is a user option (R2) not taken. See specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md.
+**Description**: AMENDED 2026-10-18 (presentation chosen): the cell presentation is (a), the set-valued per-state datum — the maximum certAdm-certified subset D of Q × ClType φ × K, with ladderRealized the fibre equation and the factorization lemma for K its corollary; no tuple index is to be stated at any parameters (K is a carrier coordinate whose parameters are outputs of the counter-lift lemma). The realization theorem now waits on the counter-lift lemma (obligations (2) and (3) jointly), filed as task 820, gated before any sufficiency attempt; the label-level results of the certificate rounds are region-interior (wired probe specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean) and compose only through that lemma. Route A is not entered. See specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md.
+
+AMENDED 2026-10-12 (realization blocked): the realization theorem is [BLOCKED] on the open index sub-problem — `hitOf (truncate B …)` is a residue of the deleted index (`truncate` is defined nowhere; its only reading is `Q × Fin (B+1) × Fin (B+1)`) and is withdrawn from the statement line; every per-cell soundness statement presupposes a finite index of ladder states (`cell_ne`; the `Count` clause; the `stab` clause's collapse of any per-state labelling), and the `box`/`stab` acceptance clause presupposes it too; the ladder's structural liveness is FORWARD-ONLY (wired probe `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`: `gPast_isPath`), so a ladder bundle replaces `ulive` only and keeps `slive` — "`ulive`/`slive` replaced" reads `ulive` replaced, `slive` retained. No library module; the index-free run-layer half is a user option (R2) not taken. See specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md.
 
 AMENDED 2026-10-11 (carrier repair): the frame this record is stated on is the admissible-carrier frame of RaySummary/LadderModel.lean; see specs/765_ladder_frame_carrier_repair_and_index_deletion/plans/01_ladder-carrier-repair-index-deletion.md.
 
