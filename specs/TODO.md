@@ -11,8 +11,8 @@ next_project_number: 821
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,819,820 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,819,820 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,820 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,820 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,763 | 231,429,497,761 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -81,11 +81,9 @@ next_project_number: 821
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-819 [IMPLEMENTING] — Research-first: choose the presentation of a ladder cell that...
+820 [NOT STARTED] — RESEARCH-FIRST, GATED: no sufficiency attempt before the gate...
   └─ 761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell...
     └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-820 [NOT STARTED] — RESEARCH-FIRST, GATED: no sufficiency attempt before the gate...
-  └─ 761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell... (see above)
 
 ### Formula Refactor
 
@@ -149,13 +147,14 @@ WHAT THIS UNBLOCKS: `ladderRealized`/`LadderCons` (the realization record, task 
 ---
 
 ### 819. Ladder cell presentation design decision
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 761
 - **Research**: [819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md]
 - **Plan**: [819_ladder_cell_presentation_design_decision/plans/01_ladder-cell-presentation-decision.md]
+- **Summary**: [819_ladder_cell_presentation_design_decision/summaries/01_ladder-cell-presentation-decision-summary.md]
 
 **Description**: Research-first: choose the presentation of a ladder cell that supports a positive factorization lemma, or settle the direction negatively
 

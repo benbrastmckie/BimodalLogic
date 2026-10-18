@@ -1,19 +1,19 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Plan written for task 819: six phases, 6 hours. Phase 1 promotes the research round's compiled no-pending-forever prototype to a wired evidence probe (three pinned theorems, Challenge block compiled at plan time); Phase 2 files the counter-lift lemma as a gated research-first successor task, adds the 761 edge and amends 761's record; Phases 3-5 record the decision (presentation (a) as the maximum certAdm-certified subset of Q x ClType x K; no tuple index; K a carrier coordinate) in ROADMAP, the RaySummary README and the source-store guidance note; Phase 6 runs the complete gate set and writes the summary. validate-artifact.sh --strict passes with 0 warnings.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "Implemented all six phases of the task 819 plan. The presentation decision (presentation (a): D, the maximum certAdm-certified subset of Q x ClType phi x K; realization the fibre equation; factorization a corollary; no tuple index, K a carrier coordinate) is recorded in specs/ROADMAP.md, the RaySummary README and the source-store guidance note; the compiled region-interior finding is promoted to the wired probe specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean (guard prints PASS all 42); the counter-lift lemma is filed as gated research-first task 820 with 761 depending on it and a dated amendment on 761. Full lake build, evidence guard, module invariants, task-reference lint and verify-deploy all pass; no library .lean file changed.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/819_ladder_cell_presentation_design_decision/plans/01_ladder-cell-presentation-decision.md",
-      "summary": "Six-phase plan: probe promotion, successor task and 761 edge, ROADMAP/README/guidance-note decision records, full gate set."
+      "type": "summary",
+      "path": "specs/819_ladder_cell_presentation_design_decision/summaries/01_ladder-cell-presentation-decision-summary.md",
+      "summary": "Implementation summary: the three-part decision, Finding 1 with the probe and its axiom profile, Finding 3 and Route A, the counter-lift lemma as the open problem with its hazards and gate table, successor task 820, the 761 edge and amendment, the three record edits, carried figures, deviations, and the issue-log attestation."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 6,
   "phases_total": 6,
   "blockers": [],
-  "plan_markers_verified": null,
+  "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 819 starting at Phase 1 (git mv of the prototype into specs/evidence/)."
+  "next_action_hint": "Postflight: mark 819 complete. Then dispatch task 820 (research-first, gated) -- it is the one open edge on 761; 820 is deferred by the overlap gate on scripts/check-evidence-probes.sh only while 819 is non-terminal."
 }

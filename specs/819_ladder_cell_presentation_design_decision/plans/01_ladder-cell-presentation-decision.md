@@ -1,7 +1,7 @@
 # Implementation Plan: Task #819
 
 - **Task**: 819 - Research-first: choose the presentation of a ladder cell that supports a positive factorization lemma, or settle the direction negatively
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None in state (`dependencies: []`). Context: 761 (parent; stays `[BLOCKED]`; this task edits its record and its dependency edges, never its plan), 806/809/815 (the set-valued rounds; untouched), 763 (the lift; untouched)
 - **Research Inputs**: specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md

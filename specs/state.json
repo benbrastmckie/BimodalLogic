@@ -26,14 +26,14 @@
     {
       "project_number": 819,
       "project_name": "ladder_cell_presentation_design_decision",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Research-first: choose the presentation of a ladder cell that supports a positive factorization lemma, or settle the direction negatively\n\nRESEARCH-FIRST BY CONSTRUCTION. No statement is pinned here. The deliverable is a recommendation grounded in the obligations already named, plus the design decision recorded on its merits. Do NOT open with a candidate index and attempt to prove it -- that is the loop this task exists to break.\n\nWHY THIS EXISTS. The ladder realization theorem is [BLOCKED] on one sub-problem: which cell a ladder state has. Two index candidates are now refuted, both machine-checked, and the record is explicit that nothing survives of the tuple approach:\n- The three-coordinate index `Q x Fin (B+1) x Fin (B+1)` is refuted (`cell_ne`, `exhibited_form_refuted`, `exists_form_refuted` in `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`) and was deleted from the realization statement.\n- The re-scoped six-coordinate residue-carrying index `ladderIndexRes T P B = (q, min c T, c % (P+1), min n T, n % (P+1), clip (n - c) [-B, B])` is refuted at BOTH object-exhibited parameters, uniformly in the clip bound, in `specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean` (1549 lines, 0 sorry, 0 axiom, no native_decide). Mechanism (4) `object_only_parameters_refuted`: the threshold is not object-derivable, since for every (T, P, B) the index collides on a pair the depth-(T+1) next-chain separates, so the threshold must be at least the formula's `untl`-nesting depth. Mechanism (5) `reach_period_refuted`: the exhibited period is the period of the reach-SET iteration on the FULL graph, but a formula that forbids a letter restricts the object to a sub-object with a different period; period 1 is exhibited for the coprime-cycle fixture and every modulus coprime to 3 fails.\n\nWHAT SURVIVES, and is NECESSARY ONLY -- never claimed sufficient. The refined parameter-origin rule: the threshold at least the formula's `untl`-nesting depth; the modulus a multiple of the period of every letter-definable sub-object of the object. Also landed: a FIXTURE-LEVEL sufficiency theorem on the two-state object that is explicitly NOT the factorization lemma. The positive lemma for jointly object-and-formula-derived parameters is OPEN and stated nowhere.\n\nTHE FOUR OBLIGATIONS A SUCCESSOR MUST MEET, quoted from the refutation probe's header and not to be re-derived:\n(1) eventual periodicity of realizable types in the countdown over the product of the object with the closure;\n(2) a region-length pumping lemma for `untl`/`snce`-depth-bounded formulas;\n(3) the next deadline's coupling through `Drift`;\n(4) the box/stab letters through the anchor-layer equations.\nAssess each candidate presentation against all four. A candidate that cannot discharge (3) is not viable: the standing obstruction is that `Count false false` holds the countdown at 0 through an idle interval of any length while `Drift` moves the next deadline freely.\n\nTHE DESIGN DECISION, which is this task's substance. Two presentations are on the table and the choice was deliberately left open:\n(a) A SET-VALUED PER-STATE DATUM OVER A QUOTIENT. This is the direction already on record: the refutation probe's own closing bullet reads \"the direction on record remains a different presentation of a cell -- a set-valued per-state datum over a quotient -- not a wider tuple.\"\n(b) A PARAMETER-COUPLED INDEX whose threshold and modulus are derived from the object AND the formula jointly, per the necessary rule above.\nEvaluate both on the merits against the four obligations. The record's lean toward (a) is a starting position, not a verdict -- say so either way, and if (b) is recommended, state explicitly why a parameter-coupled index is not just the refuted tuple with better parameters.\n\nHARD CONSTRAINT FROM THE REFUTATION RECORD: no seventh coordinate, no wider tuple, no new index candidate of the refuted shape. A recommendation that amounts to widening the tuple contradicts a machine-checked result and must be reported as such rather than proposed.\n\nA NEGATIVE OUTCOME IS A COMPLETE RESULT. If the evidence says neither presentation discharges the four obligations, say that and name what it would take -- that closes the ladder route the way filtration was closed, on evidence. Do not force a recommendation through, and do not propose a presentation whose viability rests on an unproved lemma without naming that lemma as the real open problem.\n\nGUARDRAILS. No complexity claim and no upper bound; every quantity named is a COUNT. No finiteness may be added: `anchorCells_finite` and `anchorCells_ncard_le` stay untouched, and the SET of cells is already finite and bounded -- what is open is the indexing, not the cardinality. The acceptance clause is never dropped. Zero debt: no Buchi/MSO lemma cited in place of a proof. The three earlier negatives (gap coordinate, countdown parity, bounded carrier) are untouched and their gates are not re-run.\n\nWHAT THIS UNBLOCKS. The ladder realization theorem, and through it the lift `not_plusValidZTime_iff_ladderRefutes` and the `Decidable (PlusValidZTime phi)` corollary by bounded enumeration -- the decidability result for L-plus on the rank-1 route. The dependency edge is declared on the realization record so the block is visible rather than implicit.\n\nDESIGN OF RECORD for the surrounding obligation set: `specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Sections A, C and H4. Route ranking: `specs/archive/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md` \"Ranking ratification\", R1.",
       "topic": "decidability",
       "parent_task": 761,
       "dependencies": [],
       "created": "2026-10-17T21:53:52Z",
-      "last_updated": "2026-10-18T15:17:15Z",
+      "last_updated": "2026-10-18T16:07:27Z",
       "session_id": "sess_1792333740_591ffa",
       "artifacts": [
         {
@@ -45,6 +45,11 @@
           "path": "specs/819_ladder_cell_presentation_design_decision/plans/01_ladder-cell-presentation-decision.md",
           "type": "plan",
           "summary": "Six-phase plan: probe promotion, successor task and 761 edge, ROADMAP/README/guidance-note decision records, full gate set."
+        },
+        {
+          "path": "specs/819_ladder_cell_presentation_design_decision/summaries/01_ladder-cell-presentation-decision-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the three-part decision, Finding 1 with the probe and its axiom profile, Finding 3 and Route A, the counter-lift lemma as the open problem with its hazards and gate table, successor task 820, the 761 edge and amendment, the three record edits, carried figures, deviations, and the issue-log attestation."
         }
       ],
       "next_artifact_number": 2,
@@ -60,6 +65,12 @@
         "specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean",
         "specs/state.json",
         "typst/generated/status.typ"
+      ],
+      "completion_summary": "Chose presentation (a) for the ladder cell -- the maximum certAdm-certified subset D of Q x ClType phi x K, realization the fibre equation, factorization lemma a corollary -- and recorded it in ROADMAP, the RaySummary README and the source-store guidance note; promoted the compiled region-interior finding (no forward Rlad ray is pending forever) to a wired evidence probe (guard now 42); filed the counter-lift lemma as gated research-first task 820 and declared the 761 -> 820 edge with a dated amendment on 761. No tuple index stated; no library .lean changed; 761 stays [BLOCKED] on 820.",
+      "roadmap_items": [
+        "Stage 1 critical path: presentation chosen; the gate on 761 relocated to the counter-lift lemma (task 820)",
+        "Ruling: no tuple index at any parameters; K is a carrier coordinate",
+        "Route A decision record: not entered (maximum certified set is Real)"
       ]
     },
     {
