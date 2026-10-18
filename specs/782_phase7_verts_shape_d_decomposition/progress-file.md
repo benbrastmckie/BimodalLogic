@@ -95,3 +95,48 @@ One `kind: win` entry recorded via `issue-record.sh` (`--phase implement --dispa
 ### Source scope
 
 `git status --porcelain FormalSystem/` empty after this phase: no `FormalSystem/**` file edited.
+
+## Phase 2: Full gate, summary, and close
+
+### Deploy freshness
+
+`bash .claude/scripts/check-deploy-freshness.sh` → `WARN: deployed extension 'core' is stale` (exit 0). **Not redeployed by this dispatch**: `deploy-headless.sh`'s header and `context/patterns/regeneration-is-manual-only.md` § Automated Exception sanction only the orchestrator's inter-cycle redeploy checkpoint (`orchestrate-cycle-plan.sh`) and `command-gate-out.sh`'s rc==6 branch as automated callers, "licensing no other"; sibling dispatches were live on the shared tree. Deferred to that checkpoint; recorded as issue iss_1792303574127_9gVd6r (minor). No file under `.claude/**` touched (`git status --porcelain .claude/` unchanged).
+
+### Full guarded build (Phase 1 end and final)
+
+`timeout 1800 bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` — foreground form (build known to be a no-op from `lake build --no-build`: "All targets up-to-date (2878 jobs)").
+
+| Run | Guard exit | Terminal line | `error:` lines | Wall |
+|-----|-----------|---------------|----------------|------|
+| Phase 1 end | 0 | `Build completed successfully (2878 jobs).` / `lake-build-guard: STATUS: exit_status=0` | 0 | 7.5 s |
+| Final | 0 | `Build completed successfully (2878 jobs).` | 0 | 2.3 s |
+
+Tier 3: `Timed.olean`, `Complete.olean`, `Examples.olean` each newer than its source.
+
+### Gate set (scoped per the dispatch's Batch Gate Deferral)
+
+| Command | Exit | Result |
+|---------|------|--------|
+| `bash scripts/check-module-invariants.sh` | 0 | `ALL CHECKS PASSED` (125.4 s) |
+| `bash scripts/typst-sync-check.sh` | 0 | `PASS (all 4 checks green)` (19.1 s) |
+| `bash .claude/scripts/check-task-references.sh` | 0 | `PASS: 0 unexempted task-reference occurrences` |
+| `bash .claude/scripts/lean-sorry-census.sh <roots>` | 0 | `sorry_count: 0` |
+| plan census `grep -rn 'sorry' …/PlusSlicedCertificate/ \| grep -v …` | — | only prose hits: `README.md:214`, `Limits/README.md:125`, `EmbedComplete.lean:924` (doc comment) |
+| vacuous regex over roots | — | 1 raw hit: `FormalSystem/Examples/TemporalStructures.lean:495` `theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial` — pre-existing (c9775647f3, 2025-12-04), `domain := fun _ => True`, genuine statement; manual review clears it |
+| `^axiom ` count over roots | — | 14 at working tree, HEAD b5547cef9 and fcd3ffcb0 — unchanged |
+| `lake exe lint-style` | **3** | **4 pre-existing findings** (space before a semicolon): `FormalSystem/ProofSystem/Axioms.lean:300`, `FormalSystem/ProofSystem/DerivedAxioms.lean:51`, `:154`, `FormalSystem/Theorems/ConnectDerived.lean:28`; latest commits on those files 2026-10-15 (cec66f898, 7ef396e45, 5a94c259d), blame of Axioms.lean:300 → de8a7e4722 (2026-10-14). Outside this task's scope; raised not repaired (issue, `costly`, `follow_up_task`) |
+| `bash .claude/scripts/verify-deploy.sh` | not run | deferred to the batch stage per the Batch Gate Deferral directive; this task's `modified_files` are all under `specs/**`, which no `--only-gate` selection or `run-all.sh --only` suite covers (`run-all.sh` is not present in this consumer repo) |
+
+The plan's `**Verification Tier**: full` field is unchanged; the full set is deferred, not forgiven.
+
+### Summary
+
+`summaries/01_verify-landed-shape-d-closure-summary.md` written; `validate-artifact.sh … summary` run (result recorded in the dispatch's final text).
+
+### Issue-record attestation (Phase 2)
+
+Two `kind: issue` entries recorded (`--phase implement --dispatch-seq 4`): the deploy-redeploy sanctioned-caller conflict (minor, worked_around) and the pre-existing `lake exe lint-style` red (costly, open, follow_up_task — also noting the vacuous-regex false positive). No `kind: win` for Phase 2: the gate round did not pass first time (lint-style), unlike the parent's Phase 9.
+
+### Source scope
+
+`git status --porcelain FormalSystem/` empty after Phase 2.

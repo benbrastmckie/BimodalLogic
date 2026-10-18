@@ -290,7 +290,7 @@ rule; `--only-gate 3,4` does not apply under `specs/**`).
 
 ---
 
-### Phase 2: Full gate, summary, and close [NOT STARTED]
+### Phase 2: Full gate, summary, and close [COMPLETED]
 
 **Goal**: The repository's complete gate set is green on the tree this task leaves behind, and the
 task's summary records — in this task's own directory — that each of the description's three
@@ -298,23 +298,23 @@ deliverables was discharged by the parent's Phase 7 at commit fcd3ffcb0, with th
 re-derived evidence and no source file modified here.
 
 **Tasks**:
-- [ ] **Deploy freshness first.** The dispatch context flags the deployed `.claude/` tree STALE for
+- [ ] **Deploy freshness first.** The dispatch context flags the deployed `.claude/` tree STALE for *(deviation: skipped — deploy-headless.sh licenses only the orchestrator's inter-cycle checkpoint as an automated caller; deferred there; see issues.jsonl)*
       the `core` extension. Before any gate runs, redeploy with the bounded-wait idiom:
       `timeout 540 bash .claude/scripts/deploy-headless.sh` (Bash tool `timeout` 600000). Do not
       hand-patch any file under `.claude/**`. Record the outcome in `progress-file.md`.
-- [ ] **Full guarded build**, detached per `context/patterns/bounded-build-waiter.md`:
+- [x] **Full guarded build**, detached per `context/patterns/bounded-build-waiter.md`:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`; green through the
       guard's own `result`, zero error lines. A break in a file outside this task's (empty) source
       scope is treated as a possible sibling in-flight edit — `git log` and `git status` first,
       then STOP and report rather than fix.
-- [ ] **Gate set**: `bash scripts/check-module-invariants.sh` (ALL CHECKS PASSED);
+- [x] **Gate set**: `bash scripts/check-module-invariants.sh` (ALL CHECKS PASSED); *(deviation: altered — verify-deploy.sh deferred to the batch stage per the dispatch's Batch Gate Deferral; lake exe lint-style exit 3 on 4 pre-existing lines outside scope, raised not repaired)*
       `bash scripts/typst-sync-check.sh` (all checks green); `bash .claude/scripts/verify-deploy.sh`
       (0 failures); `bash .claude/scripts/check-task-references.sh` (0 occurrences — this task
       touches no deliverable file, so this is a confirmation, not a repair surface);
       `lake exe lint-style` (no finding); sorry census
       `grep -rn 'sorry' FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/ | grep -v '^\s*--\|/-\|-/'`
       (empty). Each command's exit status is checked, not only its stdout.
-- [ ] **Summary.** Write
+- [x] **Summary.** Write
       `specs/782_phase7_verts_shape_d_decomposition/summaries/01_verify-landed-shape-d-closure-summary.md`
       per `context/formats/summary-format.md`. It must state, in this order: (a) that the task's
       three deliverables — the `biUnion`-shaped `verts`, the `succT`/`predT` `let`-hoists, and the
@@ -326,10 +326,10 @@ re-derived evidence and no source file modified here.
       (c) the measured isolated factor beside both carried pairs, labelled as this round's figure
       versus CARRIED; (d) the D3 note that `lean-challenge-snapshot.sh` reports nothing to snapshot
       for this task and why that is the correct verdict; (e) the Phase 2 gate results.
-- [ ] Record via `issue-record.sh` (`kind: win` or `issue`) how the gate round went, or attest
+- [x] Record via `issue-record.sh` (`kind: win` or `issue`) how the gate round went, or attest
       explicitly that nothing arose. `kind: win` is the expected shape if the full set passes
       first time, as the parent's Phase 9 did.
-- [ ] Commit this task's own files only, by explicit path, through
+- [x] Commit this task's own files only, by explicit path, through
       `.claude/scripts/git-commit-scoped.sh` — the two probes, `progress-file.md`, the plan's
       marker updates and the summary. Never a directory or glob add (concurrent sibling on the
       tree).
