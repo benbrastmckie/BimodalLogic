@@ -687,6 +687,196 @@ Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
 theorem PathCat.len_map (F : TaskFrame) [F.IsRegular] {w u : PathCat F} (f : w ⟶ u) :
     (PathCat.len F).map f = PathHom.len f := rfl
 
+/-! ### The discrete Conduché fibration property of `len` -/
+
+/-- **Discrete Conduché fibrations over `BD⁺`** — the first clause of `def:conduche`, stated in
+general: a functor `P : E ⥤ BD⁺` is a discrete Conduché fibration when every morphism `e : A ⟶ B`
+and every factorization `P(e) = x + y` of its image into two durations (a `Factorization (P.map e)`)
+admit a **unique** pair `e₁ : A ⟶ C`, `e₂ : C ⟶ B` with `e = e₂ ∘ e₁`, `P(e₁) = x`, `P(e₂) = y`.
+The predicate is general so that `PathCat.len` can be shown to satisfy it
+(`PathCat.len_isDiscreteConduche`); **no construction from a general fibration is built here** —
+the associated presheaf of a general fibration is the half of the cited, external
+`fact:conduche-equivalence` this module instantiates at `len` only (the HARD SCOPE LIMIT).
+
+Constraints consumed: None -/
+def IsDiscreteConduche {D : TemporalOrder} {E : Type*} [Category E] (P : E ⥤ BObj D) : Prop :=
+  ∀ {A B : E} (e : A ⟶ B) (fac : Factorization (P.map e)),
+    ∃! t : Σ C : E, (A ⟶ C) × (C ⟶ B),
+      t.2.1 ≫ t.2.2 = e ∧ (P.map t.2.1).val = fac.fst ∧ (P.map t.2.2).val = fac.snd
+
+/-- **The cut state**: the state a morphism passes through at the cut point `fac.fst` of a
+factorization of its length — the object `C` of the unique factorization.
+
+Constraints consumed: None -/
+def PathHom.cutState {w u : F.WorldState} (e : PathHom F w u) (fac : Factorization e.len) :
+    F.WorldState :=
+  e.sec.val.states fac.fst (Beh.mem_dom e.sec fac.fst_nonneg fac.fst_le)
+
+/-- **The left factor**: the restriction of `e` to `[0, fac.fst]`, a morphism `w → cutState`.
+
+Constraints consumed: None -/
+def PathHom.factorLeft {w u : F.WorldState} (e : PathHom F w u) (fac : Factorization e.len) :
+    PathHom F w (e.cutState fac) where
+  len := ⟨fac.fst, fac.fst_nonneg⟩
+  sec := Beh.restrict 0 fac.fst le_rfl fac.fst_nonneg (by rw [zero_add]; exact fac.fst_le) e.sec
+  src := (PartialHistory.states_eq_of_time_eq e.sec.val (0 + 0) 0 (add_zero 0) _
+    (Beh.mem_dom e.sec le_rfl e.len.property)).trans e.src
+  tgt := PartialHistory.states_eq_of_time_eq e.sec.val (0 + fac.fst) fac.fst (zero_add _) _
+    (Beh.mem_dom e.sec fac.fst_nonneg fac.fst_le)
+
+/-- **The right factor**: the restriction of `e` to `[fac.fst, fac.fst + fac.snd]`, a morphism
+`cutState → u`.
+
+Constraints consumed: None -/
+def PathHom.factorRight {w u : F.WorldState} (e : PathHom F w u) (fac : Factorization e.len) :
+    PathHom F (e.cutState fac) u where
+  len := ⟨fac.snd, fac.snd_nonneg⟩
+  sec := Beh.restrict fac.fst fac.snd fac.fst_nonneg fac.snd_nonneg (le_of_eq fac.add_eq) e.sec
+  src := PartialHistory.states_eq_of_time_eq e.sec.val (fac.fst + 0) fac.fst (add_zero _) _
+    (Beh.mem_dom e.sec fac.fst_nonneg fac.fst_le)
+  tgt := (PartialHistory.states_eq_of_time_eq e.sec.val (fac.fst + fac.snd) e.len.val fac.add_eq _
+    (Beh.mem_dom e.sec e.len.property le_rfl)).trans e.tgt
+
+/-- The left factor has length `fac.fst`, by `rfl`.
+
+Constraints consumed: None -/
+@[simp] theorem PathHom.factorLeft_len {w u : F.WorldState} (e : PathHom F w u)
+    (fac : Factorization e.len) : (e.factorLeft fac).len.val = fac.fst := rfl
+
+/-- The right factor has length `fac.snd`, by `rfl`.
+
+Constraints consumed: None -/
+@[simp] theorem PathHom.factorRight_len {w u : F.WorldState} (e : PathHom F w u)
+    (fac : Factorization e.len) : (e.factorRight fac).len.val = fac.snd := rfl
+
+/-- **Existence of the factorization**: the two factors compose to `e`. The length half is
+`fac.add_eq`; the section half characterizes the glued section by `glue_unique` against `e.sec` cast
+to length `fac.fst + fac.snd`, whose two restrictions are the two factors by definition.
+
+Constraints consumed: Compositionality -/
+theorem PathHom.factor_comp (hcomp : TaskFrame.Compositional F.TaskRel) {w u : F.WorldState}
+    (e : PathHom F w u) (fac : Factorization e.len) :
+    PathHom.comp hcomp (e.factorLeft fac) (e.factorRight fac) = e := by
+  refine PathHom.ext' (Subtype.ext fac.add_eq) ?_
+  have hpl : fac.fst ≤ fac.fst + fac.snd := le_add_of_nonneg_right fac.snd_nonneg
+  let υ : Beh F (fac.fst + fac.snd) := Beh.castLen fac.add_eq.symm e.sec
+  have hL : Beh.restrict 0 fac.fst le_rfl fac.fst_nonneg (by rw [zero_add]; exact hpl) υ
+      = (e.factorLeft fac).sec := by
+    refine Beh.ext (partialHistory_ext rfl ?_)
+    intro r hr h'
+    rfl
+  have hR : Beh.restrict fac.fst (fac.fst + fac.snd - fac.fst) fac.fst_nonneg (sub_nonneg.mpr hpl)
+      (by rw [add_sub_cancel]) υ
+      = Beh.castLen (add_sub_cancel_left fac.fst fac.snd).symm (e.factorRight fac).sec := by
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ fac.fst + fac.snd - fac.fst) = (0 ≤ z ∧ z ≤ fac.snd)
+      rw [add_sub_cancel_left]
+    · intro r hr h'
+      rfl
+  have hu := glue_unique hcomp fac.fst_nonneg hpl (e.factorLeft fac).sec
+    (Beh.castLen (add_sub_cancel_left fac.fst fac.snd).symm (e.factorRight fac).sec)
+    ((e.factorLeft fac).tgt.trans (e.factorRight fac).src.symm) υ hL hR
+  exact (congrArg Subtype.val hu).symm
+
+/-- **Uniqueness of the factorization, at the `PathHom` level and cast-free**: any pair `e₁`, `e₂`
+composing to `e` with the lengths of the factorization passes through the cut state and has the two
+factors' underlying partial histories. Read off `glueSum_restrict_left`/`glueSum_restrict_right`
+for `e₁`, `e₂` against `e` through `h`; the `.val`-level statement keeps the dependent equality
+`c = cutState` out of the section equations, so no transport appears.
+
+Constraints consumed: Compositionality -/
+theorem PathHom.factor_unique (hcomp : TaskFrame.Compositional F.TaskRel) {w u : F.WorldState}
+    (e : PathHom F w u) (fac : Factorization e.len) {c : F.WorldState}
+    (e₁ : PathHom F w c) (e₂ : PathHom F c u) (h : PathHom.comp hcomp e₁ e₂ = e)
+    (h₁ : e₁.len.val = fac.fst) (h₂ : e₂.len.val = fac.snd) :
+    c = e.cutState fac ∧ e₁.sec.val = (e.factorLeft fac).sec.val
+      ∧ e₂.sec.val = (e.factorRight fac).sec.val := by
+  have key : ∀ {σ τ : PartialHistory F} (hστ : σ = τ) (r : F.Duration) (hσ : σ.domain r)
+      (hτ : τ.domain r), σ.states r hσ = τ.states r hτ := by
+    intro σ τ hστ r hσ hτ
+    subst hστ
+    rfl
+  have hv : (PathHom.comp hcomp e₁ e₂).sec.val = e.sec.val :=
+    congrArg (fun x : PathHom F w u => x.sec.val) h
+  have hl₁ := e₁.len.property
+  have hl₂ := e₂.len.property
+  have hLeft := glueSum_restrict_left hcomp hl₁ hl₂ e₁.sec e₂.sec (e₁.tgt.trans e₂.src.symm)
+  have hRight := glueSum_restrict_right hcomp hl₁ hl₂ e₁.sec e₂.sec (e₁.tgt.trans e₂.src.symm)
+  have hfst_le : e₁.len.val ≤ e.len.val := by rw [h₁]; exact fac.fst_le
+  refine ⟨?_, ?_, ?_⟩
+  · refine e₁.tgt.symm.trans ?_
+    have hG : (PathHom.comp hcomp e₁ e₂).sec.val.domain (0 + e₁.len.val) :=
+      Beh.mem_dom _ (by rw [zero_add]; exact hl₁)
+        (by rw [zero_add]; exact le_add_of_nonneg_right hl₂)
+    have hE : e.sec.val.domain (0 + e₁.len.val) :=
+      Beh.mem_dom e.sec (by rw [zero_add]; exact hl₁) (by rw [zero_add]; exact hfst_le)
+    have s1 := states_eq_of_eq hLeft e₁.len.val ⟨hl₁, le_rfl⟩ (Beh.mem_dom e₁.sec hl₁ le_rfl)
+    have s2 := key hv (0 + e₁.len.val) hG hE
+    have s3 := PartialHistory.states_eq_of_time_eq e.sec.val (0 + e₁.len.val) fac.fst
+      (by rw [zero_add]; exact h₁) hE (Beh.mem_dom e.sec fac.fst_nonneg fac.fst_le)
+    exact s1.symm.trans (s2.trans s3)
+  · refine partialHistory_ext ?_ ?_
+    · funext z
+      change e₁.sec.val.domain z = (0 ≤ z ∧ z ≤ fac.fst)
+      rw [← h₁]
+      exact propext (e₁.sec.property z)
+    · intro r hr h'
+      have hr0 : 0 ≤ r := ((e₁.sec.property r).mp hr).1
+      have hrl : r ≤ e₁.len.val := ((e₁.sec.property r).mp hr).2
+      have hG : (PathHom.comp hcomp e₁ e₂).sec.val.domain (0 + r) :=
+        Beh.mem_dom _ (by rw [zero_add]; exact hr0)
+          (by rw [zero_add]; exact le_trans hrl (le_add_of_nonneg_right hl₂))
+      have hE : e.sec.val.domain (0 + r) :=
+        Beh.mem_dom e.sec (by rw [zero_add]; exact hr0)
+          (by rw [zero_add]; exact le_trans hrl hfst_le)
+      have s1 := states_eq_of_eq hLeft r ⟨hr0, hrl⟩ hr
+      have s2 := key hv (0 + r) hG hE
+      exact s1.symm.trans s2
+  · refine partialHistory_ext ?_ ?_
+    · funext z
+      change e₂.sec.val.domain z = (0 ≤ z ∧ z ≤ fac.snd)
+      rw [← h₂]
+      exact propext (e₂.sec.property z)
+    · intro r hr h'
+      have hr0 : 0 ≤ r := ((e₂.sec.property r).mp hr).1
+      have hrl : r ≤ e₂.len.val := ((e₂.sec.property r).mp hr).2
+      have hr_snd : r ≤ fac.snd := by rw [← h₂]; exact hrl
+      have hfr : fac.fst + r ≤ e.len.val :=
+        le_trans (add_le_add (le_refl fac.fst) hr_snd) (le_of_eq fac.add_eq)
+      have hG : (PathHom.comp hcomp e₁ e₂).sec.val.domain (e₁.len.val + r) :=
+        Beh.mem_dom _ (add_nonneg hl₁ hr0) (add_le_add (le_refl e₁.len.val) hrl)
+      have hE : e.sec.val.domain (e₁.len.val + r) :=
+        Beh.mem_dom e.sec (add_nonneg hl₁ hr0) (by rw [h₁]; exact hfr)
+      have hE' : e.sec.val.domain (fac.fst + r) :=
+        Beh.mem_dom e.sec (add_nonneg fac.fst_nonneg hr0) hfr
+      have s1 := states_eq_of_eq hRight r ⟨hr0, hrl⟩ hr
+      have s2 := key hv (e₁.len.val + r) hG hE
+      have s3 := PartialHistory.states_eq_of_time_eq e.sec.val (e₁.len.val + r) (fac.fst + r)
+        (by rw [h₁]) hE hE'
+      exact s1.symm.trans (s2.trans s3)
+
+/-- **The first half of `cor:path-fibration`: `len : Path(F) ⥤ BD⁺` is a discrete Conduché
+fibration.** Existence is the pair of factors with `factor_comp` and the two length readings;
+uniqueness is `factor_unique`, after which the one dependent equality `c = cutState` is
+substituted and the two factors are identified by `PathHom.ext'`. This is the fibration property
+of the instance at `X = Beh F`; the general equivalence it is an instance of is cited, not proved.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem PathCat.len_isDiscreteConduche (F : TaskFrame) [F.IsRegular] :
+    IsDiscreteConduche (PathCat.len F) := by
+  intro A B e fac
+  refine ⟨⟨PathHom.cutState e fac, (PathHom.factorLeft e fac, PathHom.factorRight e fac)⟩,
+    ⟨PathHom.factor_comp F.comp e fac, rfl, rfl⟩, ?_⟩
+  rintro ⟨c, e₁, e₂⟩ ⟨h, h₁, h₂⟩
+  obtain ⟨hc, hs₁, hs₂⟩ := PathHom.factor_unique F.comp e fac e₁ e₂ h h₁ h₂
+  subst hc
+  have he₁ : e₁ = PathHom.factorLeft e fac := PathHom.ext' (Subtype.ext h₁) hs₁
+  have he₂ : e₂ = PathHom.factorRight e fac := PathHom.ext' (Subtype.ext h₂) hs₂
+  subst he₁
+  subst he₂
+  rfl
+
 end FormalSystem.Semantics.Presheaf
 
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree

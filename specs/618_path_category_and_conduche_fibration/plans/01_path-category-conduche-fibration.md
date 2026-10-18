@@ -365,42 +365,42 @@ remains the complete covering check — the module is still unimported.
 
 ---
 
-### Phase 4: The discrete Conduché fibration property of `len` [NOT STARTED]
+### Phase 4: The discrete Conduché fibration property of `len` [COMPLETED]
 
 **Goal**: Define the general predicate `IsDiscreteConduche (P : E ⥤ BObj D)` (the paper's
 `def:conduche`, first clause), prove the cast-free `PathHom`-level factorization existence and
 uniqueness, and derive `PathCat.len_isDiscreteConduche` — the first half of `cor:path-fibration`.
 
 **Tasks**:
-- [ ] Define `IsDiscreteConduche {D} {E : Type*} [Category E] (P : E ⥤ BObj D) : Prop :=
+- [x] Define `IsDiscreteConduche {D} {E : Type*} [Category E] (P : E ⥤ BObj D) : Prop :=
       ∀ {A B : E} (e : A ⟶ B) (fac : Factorization (P.map e)), ∃! t : Σ C : E, (A ⟶ C) × (C ⟶ B), t.2.1 ≫ t.2.2 = e ∧ (P.map t.2.1).val = fac.fst ∧ (P.map t.2.2).val = fac.snd`
       (the probed form; `Factorization e.len` is exactly the paper's "factorization
       `P(e) = x + y`")
-- [ ] Define `PathHom.cutState e fac := e.sec.val.states fac.fst (Beh.mem_dom e.sec fac.fst_nonneg fac.fst_le)`,
+- [x] Define `PathHom.cutState e fac := e.sec.val.states fac.fst (Beh.mem_dom e.sec fac.fst_nonneg fac.fst_le)`,
       `PathHom.factorLeft e fac : PathHom F w (e.cutState fac)` with `len := ⟨fac.fst, fac.fst_nonneg⟩`
       and `sec := Beh.restrict 0 fac.fst le_rfl fac.fst_nonneg _ e.sec`, and
       `PathHom.factorRight e fac : PathHom F (e.cutState fac) u` with `len := ⟨fac.snd, fac.snd_nonneg⟩`
       and `sec := Beh.restrict fac.fst fac.snd fac.fst_nonneg fac.snd_nonneg (by rw [fac.add_eq]) e.sec`;
       endpoints by `Beh.restrict_states` + `PartialHistory.states_eq_of_time_eq`
-- [ ] Prove `@[simp] factorLeft_len`, `@[simp] factorRight_len` (`rfl`)
-- [ ] Prove `PathHom.factor_comp hcomp e fac : PathHom.comp hcomp (e.factorLeft fac) (e.factorRight fac) = e`
+- [x] Prove `@[simp] factorLeft_len`, `@[simp] factorRight_len` (`rfl`)
+- [x] Prove `PathHom.factor_comp hcomp e fac : PathHom.comp hcomp (e.factorLeft fac) (e.factorRight fac) = e`
       by `ext'` (length: `Factorization.add_eq`) + `glue_unique` with `υ := castLen fac.add_eq.symm e.sec`
       and the two restriction identities
-- [ ] Prove `PathHom.factor_unique hcomp e fac e₁ e₂ h h₁ h₂ : c = e.cutState fac ∧ e₁.sec.val = (e.factorLeft fac).sec.val ∧ e₂.sec.val = (e.factorRight fac).sec.val`
+- [x] Prove `PathHom.factor_unique hcomp e fac e₁ e₂ h h₁ h₂ : c = e.cutState fac ∧ e₁.sec.val = (e.factorLeft fac).sec.val ∧ e₂.sec.val = (e.factorRight fac).sec.val`
       by reading `glueSum_restrict_left`/`glueSum_restrict_right` against `e` through `h`, with
       `c` recovered as `e₁.tgt` (the `.val`-level statement keeps the dependent equality out)
-- [ ] Prove `PathCat.len_isDiscreteConduche F : IsDiscreteConduche (PathCat.len F)`: existence
+- [x] Prove `PathCat.len_isDiscreteConduche F : IsDiscreteConduche (PathCat.len F)`: existence
       from `factorLeft`/`factorRight`/`factor_comp`/the two length lemmas; uniqueness from
       `factor_unique`, then `subst` on `c = e.cutState fac` and `Sigma.ext`/`Prod.ext`/`ext'` —
       this sigma form is where the one dependent equality lives; keep it out of the `PathHom`-level
       statements
-- [ ] Docstrings: `Constraints consumed: None` on `IsDiscreteConduche`, `cutState`,
+- [x] Docstrings: `Constraints consumed: None` on `IsDiscreteConduche`, `cutState`,
       `factorLeft`, `factorRight`, the two length lemmas; `Constraints consumed: Compositionality`
       on `factor_comp`, `factor_unique`; `Constraints consumed: Compositionality, Seriality, Limit`
       on `len_isDiscreteConduche`. Say in `IsDiscreteConduche`'s docstring that this is the general
       notion of `def:conduche` stated so that `len` can be shown to satisfy it, and that no general
-      construction from a fibration is built (the HARD SCOPE LIMIT)
-- [ ] Record the issue log as events arise
+      construction from a fibration is built (the HARD SCOPE LIMIT) *(deviation: altered — `len_isDiscreteConduche` carries `[F.IsRegular]` and therefore the exempt all-four marker list, for the C34a reason recorded under Phase 2; every other marker as planned)*
+- [x] Record the issue log as events arise
 
 **Timing**: 1.5 hours
 
@@ -422,6 +422,7 @@ remains the complete covering check — the module is still unimported.
 - `#print axioms` on `PathHom.factor_unique` and `PathCat.len_isDiscreteConduche` reports
   `[propext, Quot.sound]` and no `Classical.choice`
 - Commit: `task 618 phase 4: the discrete Conduché fibration property of len`
+- Verification record (2026-10-18): guarded scoped build exit 0 on the first attempt, no sorry, no warnings; full guarded `lake build` exit 0 (2878 jobs, 0 errors); `#print axioms`: `PathHom.factor_unique`, `PathHom.factor_comp`, `PathCat.len_isDiscreteConduche` all `[propext, Quot.sound]`, no `Classical.choice`; C34a/C34b PASS; C15 PASS; declaration count 32; `status.typ` regenerated and staged. `factor_unique` uses a local `have key` (PartialHistory-level states-of-equality, proved by `subst`) because `Sheaf.states_eq_of_eq` is stated at a fixed `Beh` length and the two sides here have different length types
 
 ---
 
