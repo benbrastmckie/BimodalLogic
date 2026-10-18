@@ -144,6 +144,79 @@ def absObj (t : F.Duration) : Obj F.Duration := ⟨|t|, abs_nonneg t⟩
 /-- The canonical window index, by definition. -/
 theorem absObj_val (t : F.Duration) : (absObj t).val = |t| := rfl
 
+/-! ## The backward map: a compatible family is a possible world -/
+
+/-- The state at `t`, read out of the canonical window `absObj t` at position `t + |t|`. -/
+def Lim.readAt (L : Lim F) (t : F.Duration) : F.WorldState :=
+  (L.sec (absObj t)).val.states (t + (absObj t).val)
+    (Beh.mem_dom _ (window_lo (le_refl (absObj t).val)) (window_hi (le_refl (absObj t).val)))
+
+/-- `Lim.readAt`'s defining equation. An unpinned rewriting device: `rw [Lim.readAt]` has no
+equation lemma, so the definition is restated as a `rfl` and rewritten with. -/
+theorem Lim.readAt_def (L : Lim F) (t : F.Duration) :
+    L.readAt t = (L.sec (absObj t)).val.states (t + (absObj t).val)
+      (Beh.mem_dom _ (window_lo (le_refl (absObj t).val)) (window_hi (le_refl (absObj t).val))) :=
+  rfl
+
+/-- **The keystone**: every window at least as large as `|t|` reads the same state at `t`. Every
+later proof goes through this rather than through `compat` directly. The hypothesis `|t| ≤ x.val`
+is definitionally `(absObj t).val ≤ x.val`, so it feeds `compat` at `(absObj t, x)` directly. -/
+theorem Lim.read_eq (L : Lim F) (t : F.Duration) (x : Obj F.Duration) (hx : |t| ≤ x.val) :
+    L.readAt t
+      = (L.sec x).val.states (t + x.val) (Beh.mem_dom _ (window_lo hx) (window_hi hx)) := by
+  have hc := L.compat (x := absObj t) (x' := x) hx
+  have hzd : (Beh.restrict (x.val - (absObj t).val) ((absObj t).val + (absObj t).val)
+      (sub_nonneg.mpr hx) (add_nonneg (absObj t).property (absObj t).property) (central_fit hx)
+      (L.sec x)).val.domain (t + (absObj t).val) :=
+    ⟨window_lo (le_refl (absObj t).val), window_hi (le_refl (absObj t).val)⟩
+  have e1 := states_eq_of_eq hc (t + (absObj t).val) hzd
+    (Beh.mem_dom _ (window_lo (le_refl (absObj t).val)) (window_hi (le_refl (absObj t).val)))
+  have hin : (L.sec x).val.domain (x.val - (absObj t).val + (t + (absObj t).val)) := by
+    have e : x.val - (absObj t).val + (t + (absObj t).val) = t + x.val := by abel
+    exact Beh.mem_dom _ (by rw [e]; exact window_lo hx) (by rw [e]; exact window_hi hx)
+  rw [Lim.readAt_def, ← e1,
+    Beh.restrict_states (x.val - (absObj t).val) ((absObj t).val + (absObj t).val)
+      (sub_nonneg.mpr hx) (add_nonneg (absObj t).property (absObj t).property) (central_fit hx)
+      (L.sec x) (t + (absObj t).val) hzd hin]
+  exact PartialHistory.states_eq_of_time_eq _ _ _ (by abel) _ _
+
+/-- Task-respect for the glued state function: read both times out of the common window
+`max |s| |t|` and use the section's own `respects_task`. -/
+theorem Lim.respects (L : Lim F) (s t : F.Duration) :
+    F.TaskRel (L.readAt s) (t - s) (L.readAt t) := by
+  have hx0 : (0 : F.Duration) ≤ max |s| |t| := le_trans (abs_nonneg s) (le_max_left _ _)
+  have hs : |s| ≤ (⟨max |s| |t|, hx0⟩ : Obj F.Duration).val := le_max_left _ _
+  have ht : |t| ≤ (⟨max |s| |t|, hx0⟩ : Obj F.Duration).val := le_max_right _ _
+  rw [L.read_eq s ⟨max |s| |t|, hx0⟩ hs, L.read_eq t ⟨max |s| |t|, hx0⟩ ht]
+  have h := (L.sec ⟨max |s| |t|, hx0⟩).val.respects_task
+    (s + max |s| |t|) (t + max |s| |t|) (Beh.mem_dom _ (window_lo hs) (window_hi hs))
+    (Beh.mem_dom _ (window_lo ht) (window_hi ht))
+  rwa [show (t + max |s| |t|) - (s + max |s| |t|) = t - s from by abel] at h
+
+/-- **Backward map**: a compatible family **is** a possible world. Totality is structural — the
+canonical window covers every time, so no extension step and no `thm:extension` is consumed. -/
+def Lim.toWorld (L : Lim F) : WorldHistory F :=
+  WorldHistory.ofTotal F L.readAt L.respects
+
+/-! ## The forward map: a possible world, cut to its centred windows -/
+
+/-- **Forward map**: a possible world, cut to each of its centred windows `[−x, x]` through
+`secOf`. Noncomputable because `secOf` is. -/
+noncomputable def Lim.ofWorld (w : WorldHistory F) : Lim F where
+  sec x := secOf w (-x.val) (x.val + x.val) (add_nonneg x.property x.property)
+  compat {x x'} h := by
+    refine Beh.ext (partialHistory_ext rfl ?_)
+    intro r hr hr'
+    have hin : (secOf w (-x'.val) (x'.val + x'.val)
+        (add_nonneg x'.property x'.property)).val.domain (x'.val - x.val + r) :=
+      Beh.mem_dom _ (add_nonneg (sub_nonneg.mpr h) hr.1)
+        (le_trans (add_le_add (le_refl _) hr.2) (central_fit h))
+    rw [Beh.restrict_states (x'.val - x.val) (x.val + x.val) (sub_nonneg.mpr h)
+      (add_nonneg x.property x.property) (central_fit h) _ r hr hin,
+      secOf_states w (-x'.val) (x'.val + x'.val) (add_nonneg x'.property x'.property) hin,
+      secOf_states w (-x.val) (x.val + x.val) (add_nonneg x.property x.property) hr']
+    exact w.state_congr (by abel)
+
 end FormalSystem.Semantics.Presheaf
 
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree

@@ -281,32 +281,32 @@ is the complete covering check; no other module imports `Worlds`.
 
 ---
 
-### Phase 2: The two maps and the keystone [NOT STARTED]
+### Phase 2: The two maps and the keystone [COMPLETED]
 
 **Goal**: the backward map `Lim.toWorld` and the forward map `Lim.ofWorld` exist, the keystone
 reading lemma and task-respect are proved, and `lake build FormalSystem` is green with no new
 `sorry`.
 
 **Tasks**:
-- [ ] `Lim.readAt L t`: the state at `t` read out of the canonical window `absObj t` at
+- [x] `Lim.readAt L t`: the state at `t` read out of the canonical window `absObj t` at
       position `t + |t|`, with the domain witness `Beh.mem_dom _ (window_lo (le_refl _)) (window_hi (le_refl _))`.
-- [ ] If `rw [Lim.readAt]` is needed and fails for lack of an equation lemma, state the
+- [x] If `rw [Lim.readAt]` is needed and fails for lack of an equation lemma, state the
       **unpinned** helper `Lim.readAt_def … := rfl` and rewrite with it, as the probe does.
-- [ ] `Lim.read_eq` — **the keystone**: for any `x` with `|t| ≤ x.val`,
+- [x] `Lim.read_eq` — **the keystone**: for any `x` with `|t| ≤ x.val`,
       `L.readAt t = (L.sec x).val.states (t + x.val) …`. Transcribe the probe: `L.compat` at
       `(absObj t, x)` read at one point through `states_eq_of_eq`, then `Beh.restrict_states`,
       then one `PartialHistory.states_eq_of_time_eq` across
       `x - |t| + (t + |t|) = t + x` (`abel`). `(absObj t).val` is definitionally `|t|`, so the
       pinned `|t| ≤ x.val` hypothesis feeds `compat` directly.
-- [ ] `Lim.respects`: task-respect for `readAt`, reading both times out of the common window
+- [x] `Lim.respects`: task-respect for `readAt`, reading both times out of the common window
       `⟨max |s| |t|, _⟩` via two `read_eq`s and the section's own `respects_task`; the time
       difference survives because `(t + m) - (s + m) = t - s` (`abel`).
-- [ ] `Lim.toWorld L := WorldHistory.ofTotal F L.readAt L.respects`. Totality is structural;
+- [x] `Lim.toWorld L := WorldHistory.ofTotal F L.readAt L.respects`. Totality is structural;
       no extension step, no `thm:extension`.
-- [ ] `Lim.ofWorld w` (`noncomputable`, because `secOf` is): `sec x := secOf w (-x.val) (x.val + x.val) …`,
+- [x] `Lim.ofWorld w` (`noncomputable`, because `secOf` is): `sec x := secOf w (-x.val) (x.val + x.val) …`,
       `compat` by `Beh.ext (partialHistory_ext rfl _)`, `Beh.restrict_states`, two
       `secOf_states`, and one `w.state_congr (by abel)`.
-- [ ] Commit per green sub-step with explicit per-file `git add`.
+- [x] Commit per green sub-step with explicit per-file `git add`.
 
 **Timing**: 1.5 hours
 
