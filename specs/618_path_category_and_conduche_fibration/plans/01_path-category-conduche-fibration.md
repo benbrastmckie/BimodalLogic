@@ -254,39 +254,39 @@ docstring's anchors are checked against the new rows even before wiring).
 
 ---
 
-### Phase 2: The hom type, identities, composition, unit laws, and the duration category [NOT STARTED]
+### Phase 2: The hom type, identities, composition, unit laws, and the duration category [COMPLETED]
 
 **Goal**: Define `PathHom F w u` (length in the hom), its extensionality principle, the identity
 (the germ at `w`) and the composition (sum-form gluing), the two length-reading lemmas, the two
 unit laws, and the one-object `Category` instance on `BObj D` whose homs are the durations.
 
 **Tasks**:
-- [ ] Define `structure PathHom (F : TaskFrame) (w u : F.WorldState)` with fields
+- [x] Define `structure PathHom (F : TaskFrame) (w u : F.WorldState)` with fields
       `len : Dur F.Duration`, `sec : Beh F len.val`,
       `src : sec.val.states 0 (Beh.mem_dom sec le_rfl len.property) = w`,
       `tgt : sec.val.states len.val (Beh.mem_dom sec len.property le_rfl) = u` (the probed shape)
-- [ ] Prove `PathHom.ext' (hl : f.len = g.len) (hs : f.sec.val = g.sec.val) : f = g` by
+- [x] Prove `PathHom.ext' (hl : f.len = g.len) (hs : f.sec.val = g.sec.val) : f = g` by
       `obtain`/`subst`/`Subtype.ext` (`[propext]`); this is the key that keeps every category law
       at a `Dur` equation plus a `PartialHistory` equation, with no `HEq` and no `▸`
-- [ ] Define `PathHom.id F [F.IsRegular] w := ⟨Dur.id, Beh.ofGerm F w, rfl, rfl⟩` and
+- [x] Define `PathHom.id F [F.IsRegular] w := ⟨Dur.id, Beh.ofGerm F w, rfl, rfl⟩` and
       `PathHom.comp hcomp f g := { len := Dur.comp f.len g.len, sec := glueSum hcomp f.len.property g.len.property f.sec g.sec (f.tgt.trans g.src.symm), src := (glueSum_states_zero …).trans f.src, tgt := (glueSum_states_end …).trans g.tgt }`
       — rewrite the hypotheses, never the goal (`rw [← f.src]` on the goal fails: motive not type
       correct, per the report's tactic survey)
-- [ ] Prove `@[simp] PathHom.comp_len` and `@[simp] PathHom.id_len` (both `rfl`)
-- [ ] Prove `PathHom.id_comp` and `PathHom.comp_id` by `PathHom.ext'`: the length half is
+- [x] Prove `@[simp] PathHom.comp_len` and `@[simp] PathHom.id_len` (both `rfl`)
+- [x] Prove `PathHom.id_comp` and `PathHom.comp_id` by `PathHom.ext'`: the length half is
       `Dur.id_comp`/`Dur.comp_id`; the section half via `glue_unique` with `υ := castLen … f.sec`
       — the left restriction to `0` is `Beh.ofGerm (…)` by `Beh.ofGerm_germ` after `Beh.ext`, the
       restriction to the full length is `f.sec` by `Beh.restrict_id` up to `castLen`
-- [ ] Define `structure BObj (D : TemporalOrder) where unit : Unit` and
+- [x] Define `structure BObj (D : TemporalOrder) where unit : Unit` and
       `instance BObj.instCategory (D) : Category (BObj D)` with `Hom _ _ := Dur D`,
       `id _ := Dur.id`, `comp f g := Dur.comp f g`, laws `Dur.id_comp`/`Dur.comp_id`/`Dur.comp_assoc`
       verbatim (the reconciliation `Duration.lean`'s note promised)
-- [ ] Docstrings: `Constraints consumed: Compositionality` on `comp`, `comp_len`;
+- [x] Docstrings: `Constraints consumed: Compositionality` on `comp`, `comp_len`;
       `Constraints consumed: Seriality, Limit` on `id`, `id_len` (through `Beh.ofGerm`'s
       `[F.IsRegular]` via `nullity_identity`); `Constraints consumed: Compositionality, Seriality, Limit`
       on `id_comp`/`comp_id` (they take `[F.IsRegular]` and use `F.comp`);
-      `Constraints consumed: None` on `ext'`, `BObj`, `BObj.instCategory`
-- [ ] Record the issue log as events arise
+      `Constraints consumed: None` on `ext'`, `BObj`, `BObj.instCategory` *(deviation: altered — `check-module-invariants.sh` C34a FAILS any marker that omits a constraint while the declaration carries an `[F.IsRegular]` binder unless the body names a binder-free twin with the identical list, which none of `id`, `id_len`, `id_comp`, `comp_id` can; those four therefore carry the exempt all-four list `Compositionality, Seriality, Limit, Saturation`, with the constraints the proof actually reaches (*Seriality*, *Limit* via `Beh.ofGerm`/`nullity_identity`; *Compositionality* via `F.comp`) stated in prose. `comp`/`comp_len` keep `Compositionality`; `ext'`, `BObj`, `BObj.instCategory` keep `None`)*
+- [x] Record the issue log as events arise
 
 **Timing**: 1.5 hours
 
@@ -309,6 +309,7 @@ break.
 - Guarded scoped build exits 0 with no `sorry` warning
 - `#print axioms` on `PathHom.id_comp` and `PathHom.comp_id` reports `[propext, Quot.sound]`
 - Commit: `task 618 phase 2: the hom type, identities, composition, unit laws, and the duration category`
+- Verification record (2026-10-18): guarded scoped build exit 0, no sorry; full guarded `lake build` exit 0 (2878 jobs, 0 errors); `#print axioms`: `PathHom.id_comp`, `PathHom.comp_id` `[propext, Quot.sound]`, `PathHom.ext'`, `BObj.instCategory` `[propext]`; C34a PASS over 113 markers; declaration count 18; `status.typ` regenerated and staged with the commit (see Phase 1 deviation)
 
 ---
 

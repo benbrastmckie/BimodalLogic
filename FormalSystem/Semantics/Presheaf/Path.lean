@@ -347,6 +347,169 @@ theorem glueSum_states_end (hcomp : TaskFrame.Compositional F.TaskRel) {l₁ l�
     (Beh.mem_dom _ (add_nonneg h₁ h₂) le_rfl)] at h1
   exact h1
 
+/-! ### The morphisms of `Path(F)` -/
+
+/-- **A morphism `w → u` of `Path(F)`**: a length `len`, a section `sec` of `Beh F` over that
+length, and the two endpoint equations `sec(0) = w` and `sec(len) = u`. The length is carried in the
+hom rather than in the type, so that composition is total and `len` is a plain projection; this is
+`def:path-category`'s "section `τ ∈ Beh(F)(l)` with `τ(0) = w` and `τ(l) = u`" with `l` packaged
+alongside `τ`. -/
+structure PathHom (F : TaskFrame) (w u : F.WorldState) where
+  /-- The length of the morphism: a duration. -/
+  len : Dur F.Duration
+  /-- The section of `Beh F` over the length. -/
+  sec : Beh F len.val
+  /-- The section starts at `w`. -/
+  src : sec.val.states 0 (Beh.mem_dom sec le_rfl len.property) = w
+  /-- The section ends at `u`. -/
+  tgt : sec.val.states len.val (Beh.mem_dom sec len.property le_rfl) = u
+
+/-- **Extensionality for morphisms**: equal lengths and equal underlying partial histories give
+equal morphisms. Every category law below reduces through this to a `Dur` equation plus a
+`PartialHistory` equation — no `HEq`, no transport.
+
+Constraints consumed: None -/
+theorem PathHom.ext' {w u : F.WorldState} {f g : PathHom F w u} (hl : f.len = g.len)
+    (hs : f.sec.val = g.sec.val) : f = g := by
+  obtain ⟨l, s, hs₁, ht₁⟩ := f
+  obtain ⟨l', s', hs₂, ht₂⟩ := g
+  simp only at hl hs
+  subst hl
+  have : s = s' := Subtype.ext hs
+  subst this
+  rfl
+
+/-- **The identity at `w`**: the germ `Beh.ofGerm F w` at length `0`. Its two endpoint equations
+hold by `rfl`. The proof term reaches *Seriality* and *Limit* through `Beh.ofGerm`'s use of
+`nullity_identity`; the marker lists the whole bundle the binder supplies.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+def PathHom.id (F : TaskFrame) [F.IsRegular] (w : F.WorldState) : PathHom F w w :=
+  ⟨Dur.id, Beh.ofGerm F w, rfl, rfl⟩
+
+/-- **Composition in `Path(F)`**: the *Sheaf* clause. The two sections meet at `u` — `f.tgt` and
+`g.src` supply the seam hypothesis — and glue, in sum form, to a section over the summed length;
+the endpoints are read through `glueSum_states_zero` and `glueSum_states_end`. The hypotheses are
+rewritten, never the goal: `rw [← f.src]` on the goal fails because `f` depends on `w`.
+
+Constraints consumed: Compositionality -/
+def PathHom.comp (hcomp : TaskFrame.Compositional F.TaskRel) {w u v : F.WorldState}
+    (f : PathHom F w u) (g : PathHom F u v) : PathHom F w v where
+  len := Dur.comp f.len g.len
+  sec := glueSum hcomp f.len.property g.len.property f.sec g.sec (f.tgt.trans g.src.symm)
+  src := (glueSum_states_zero hcomp f.len.property g.len.property f.sec g.sec
+    (f.tgt.trans g.src.symm)).trans f.src
+  tgt := (glueSum_states_end hcomp f.len.property g.len.property f.sec g.sec
+    (f.tgt.trans g.src.symm)).trans g.tgt
+
+/-- The length of a composite is the composite of the lengths in `BD⁺`, by `rfl`.
+
+Constraints consumed: Compositionality -/
+@[simp] theorem PathHom.comp_len (hcomp : TaskFrame.Compositional F.TaskRel)
+    {w u v : F.WorldState} (f : PathHom F w u) (g : PathHom F u v) :
+    (PathHom.comp hcomp f g).len = Dur.comp f.len g.len := rfl
+
+/-- The length of an identity is the identity of `BD⁺`, by `rfl`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+@[simp] theorem PathHom.id_len (F : TaskFrame) [F.IsRegular] (w : F.WorldState) :
+    (PathHom.id F w).len = Dur.id := rfl
+
+/-- **Left unit law**: the germ at `w` composed with `f` is `f`. The length half is `Dur.id_comp`;
+the section half characterizes the glued section by `glue_unique` against `f.sec` cast to length
+`0 + l`: its left restriction to `[0, 0]` is the germ at `f(0) = w` (`Beh.ofGerm_germ`), and its
+right restriction onto `0 + l - 0` is `f.sec` itself.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem PathHom.id_comp [F.IsRegular] {w u : F.WorldState} (f : PathHom F w u) :
+    PathHom.comp F.comp (PathHom.id F w) f = f := by
+  refine PathHom.ext' (Dur.id_comp f.len) ?_
+  have hpl : (0 : F.Duration) ≤ 0 + f.len.val := le_add_of_nonneg_right f.len.property
+  let υ : Beh F (0 + f.len.val) := Beh.castLen (zero_add f.len.val).symm f.sec
+  have hL : Beh.restrict 0 0 le_rfl le_rfl (by rw [zero_add]; exact hpl) υ = Beh.ofGerm F w := by
+    have h : Beh.germ (Beh.restrict 0 0 le_rfl le_rfl (by rw [zero_add]; exact hpl) υ) = w := by
+      change f.sec.val.states (0 + 0) _ = w
+      exact (PartialHistory.states_eq_of_time_eq f.sec.val (0 + 0) 0 (add_zero 0) _
+        (Beh.mem_dom f.sec le_rfl f.len.property)).trans f.src
+    exact (Beh.ofGerm_germ _).symm.trans (congrArg (Beh.ofGerm F) h)
+  have hR : Beh.restrict 0 (0 + f.len.val - 0) le_rfl (sub_nonneg.mpr hpl)
+      (by rw [add_sub_cancel]) υ = Beh.castLen (add_sub_cancel_left 0 f.len.val).symm f.sec := by
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ 0 + f.len.val - 0) = f.sec.val.domain z
+      rw [zero_add, sub_zero]
+      exact propext (f.sec.property z).symm
+    · intro r hr h'
+      change f.sec.val.states (0 + r) _ = f.sec.val.states r h'
+      exact PartialHistory.states_eq_of_time_eq f.sec.val (0 + r) r (zero_add r) _ h'
+  have hu := glue_unique F.comp le_rfl hpl (Beh.ofGerm F w)
+    (Beh.castLen (add_sub_cancel_left 0 f.len.val).symm f.sec)
+    ((PathHom.id F w).tgt.trans f.src.symm) υ hL hR
+  exact (congrArg Subtype.val hu).symm
+
+/-- **Right unit law**: `f` composed with the germ at `u` is `f`. The length half is `Dur.comp_id`;
+the section half characterizes the glued section by `glue_unique` against `f.sec` cast to length
+`l + 0`: its left restriction to `[0, l]` is `f.sec`, and its right restriction onto `l + 0 - l` is
+the one-point section at `f(l) = u`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem PathHom.comp_id [F.IsRegular] {w u : F.WorldState} (f : PathHom F w u) :
+    PathHom.comp F.comp f (PathHom.id F u) = f := by
+  refine PathHom.ext' (Dur.comp_id f.len) ?_
+  have hpl : f.len.val ≤ f.len.val + 0 := le_add_of_nonneg_right le_rfl
+  let υ : Beh F (f.len.val + 0) := Beh.castLen (add_zero f.len.val).symm f.sec
+  have hL : Beh.restrict 0 f.len.val le_rfl f.len.property (by rw [zero_add]; exact hpl) υ
+      = f.sec := by
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ f.len.val) = f.sec.val.domain z
+      exact propext (f.sec.property z).symm
+    · intro r hr h'
+      change f.sec.val.states (0 + r) _ = f.sec.val.states r h'
+      exact PartialHistory.states_eq_of_time_eq f.sec.val (0 + r) r (zero_add r) _ h'
+  have hR : Beh.restrict f.len.val (f.len.val + 0 - f.len.val) f.len.property (sub_nonneg.mpr hpl)
+      (by rw [add_sub_cancel]) υ
+      = Beh.castLen (add_sub_cancel_left f.len.val 0).symm (Beh.ofGerm F u) := by
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ f.len.val + 0 - f.len.val) = (0 ≤ z ∧ z ≤ 0)
+      rw [add_sub_cancel_left]
+    · intro r hr _
+      have hr2 : r ≤ 0 := by
+        have := hr.2
+        rwa [add_sub_cancel_left] at this
+      have hr0 : r = 0 := le_antisymm hr2 hr.1
+      subst hr0
+      change f.sec.val.states (f.len.val + 0) _ = u
+      exact (PartialHistory.states_eq_of_time_eq f.sec.val (f.len.val + 0) f.len.val (add_zero _) _
+        (Beh.mem_dom f.sec f.len.property le_rfl)).trans f.tgt
+  have hu := glue_unique F.comp f.len.property hpl f.sec
+    (Beh.castLen (add_sub_cancel_left f.len.val 0).symm (Beh.ofGerm F u))
+    (f.tgt.trans (PathHom.id F u).src.symm) υ hL hR
+  exact (congrArg Subtype.val hu).symm
+
+/-! ### The duration monoid as a one-object category -/
+
+/-- **The one object of `BD⁺`.** A synonym structure rather than `Unit` itself, so that the
+`Category` instance below sits on a type this module owns and leaks onto nothing. -/
+structure BObj (D : TemporalOrder) where
+  /-- The single object. -/
+  unit : Unit
+
+/-- **`BD⁺` as a Mathlib category**: one object, homs the durations `Dur D`, composition
+`Dur.comp` and identity `Dur.id`, with the three laws of `Presheaf/Duration.lean` verbatim. This is
+the reconciliation `Duration.lean`'s Implementation Notes promised: `Dur.id`/`Dur.comp` with those
+laws are exactly the fields a `Category` instance needs.
+
+Constraints consumed: None -/
+instance BObj.instCategory (D : TemporalOrder) : Category (BObj D) where
+  Hom _ _ := Dur D
+  id _ := Dur.id
+  comp f g := Dur.comp f g
+  id_comp := Dur.id_comp
+  comp_id := Dur.comp_id
+  assoc := Dur.comp_assoc
+
 end FormalSystem.Semantics.Presheaf
 
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
