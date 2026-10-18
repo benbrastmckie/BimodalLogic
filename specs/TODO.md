@@ -1,5 +1,5 @@
 ---
-next_project_number: 823
+next_project_number: 826
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 823
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,814,816 | 298,428,502,761,772,777,813 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,814,816,823,824 | 298,428,502,761,768,770,772,777,813 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822 | 231,429,497,783 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -30,8 +30,10 @@ next_project_number: 823
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
 767 [NOT STARTED] — lake-build-guard replays stale result for env lean FILE
 768 [NOT STARTED] — lean-challenge-snapshot swallows declarations, mishandles...
+  └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and...
 769 [NOT STARTED] — plan-format: blocked decision gates and plan-level Status...
 770 [NOT STARTED] — postflight writes detail-free blocking issue entry on partial...
+  └─ 823 [NOT STARTED] — Tell the re-prompted dispatch to distrust the error count it...
 772 [NOT STARTED] — planned jq rewrites re-serialize formatting-sensitive JSON...
   └─ 783 [NOT STARTED] — Bounded in-file block edits: index and assert, never...
     └─ 822 [NOT STARTED] — Record the launch-side PID-fidelity condition on the...
@@ -45,6 +47,8 @@ next_project_number: 823
 810 [NOT STARTED] — META TASK. ONE grouped task covering FIVE agent-system...
 813 [NOT STARTED] — State the precedence and snapshot-prerequisite rules for a...
   └─ 814 [NOT STARTED] — Record the decide-synthesis working form, the axiom-free...
+  └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and... (see above)
+825 [NOT STARTED] — Report a reversed validate-artifact.sh invocation as an...
 
 ### Algebraic Representation
 
@@ -120,6 +124,131 @@ next_project_number: 823
 804 [NOT STARTED] — Determine whether...
 
 ## Tasks
+
+### 825. Report a reversed validate-artifact.sh invocation as an argument-order fault, not a missing file
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Parent**: Task 820
+
+**Description**: Make `validate-artifact.sh` report an argument-order fault as an argument-order fault, instead of as a missing file that does not exist.
+
+MEASURED. The script's contract is `validate-artifact.sh <artifact_path> <type> [--fix] [--strict]`, with `<type>` one of `report`, `plan`, `summary`. Invoked in the reversed order it fails with `[FAIL] File not found: report` and exit 3 -- naming the TYPE as though it were a path. The reader is pointed at a filesystem problem that does not exist: a path they never passed, reported absent, while the real fault is positional. No deliverable was affected; the re-run in the documented order passed with 0 warnings. The cost is diagnostic misdirection, which is why the severity is minor and the fix should stay small.
+
+WHY IT HAPPENS. The guard sequence in `agent-system/extensions/core/scripts/validate-artifact.sh` is: a both-arguments-non-empty check (empty either side prints the usage line and exits 4), then `[ ! -f "$artifact_path" ]` (exit 3, the observed message), then `[ ! -s "$artifact_path" ]` (exit 1), and only then the `case "$artifact_type"` dispatch whose `*)` arm prints `[FAIL] Unknown artifact type: ... (expected: report, plan, summary)`. A reversed invocation passes the non-empty check with both slots filled, then dies on the file test before the type test is ever reached. The type-validation arm that could have named the real fault is downstream of the file test that cannot.
+
+NOTE THE NEAR-MISS REMEDY. Merely moving the `case` dispatch ahead of the file-existence test does NOT fix this. On a reversed invocation the type slot holds the PATH, so the type check would fire with `[FAIL] Unknown artifact type: specs/.../01_foo.md (expected: report, plan, summary)` -- a different misdirection, not a correction. The fault must be detected as a swap, not inferred from one slot in isolation.
+
+DESIGN SPACE. Two options, both acceptable; the change request approved either:
+  (a) ACCEPT EITHER ORDER. Detect the swap -- the second argument is not one of the three type keywords while the first argument is -- and transparently swap the two before validating. Permissive and friction-free, at the cost of making the documented argument order advisory in practice; if chosen, decide whether to emit an advisory note on the swapped path or stay silent, and say which in the summary.
+  (b) NAME THE REAL FAULT. Keep the documented order strict, but detect the same swap condition and fail with a message that says so -- argument order reversed, expected `<artifact_path> <type>`, naming both received values -- rather than reporting a phantom missing file. If a new exit code is introduced for this, treat it as a vocabulary change and check the existing consumers of exits 1, 3 and 4 first; reusing 4 (the usage/arity code) is the natural choice and needs no new vocabulary.
+Whichever is chosen, the detection predicate must handle the genuinely ambiguous cases deliberately rather than by accident: both arguments being type keywords, neither being one (which should keep today's behaviour -- a real missing-file report is correct then), and a real file on disk literally named `report`, `plan`, or `summary`.
+
+OVERLAP -- CROSS-REPO ONLY, AND NOTHING MECHANICAL WILL CATCH IT. No record in this repository claims this script. The source-store repository (~/.config/nvim) maintains its own task space that no dependency edge or file_scope gate can reach, and two records there are not_started and claim `agent-system/extensions/core/scripts/validate-artifact.sh`: `validate_that_every_carried_unverified_mark_names_a_source` and `extend_the_carried_figure_obligation_to_a_recommendations_mechanical_claim`. The second also claims `agent-system/extensions/core/scripts/tests/test-validate-artifact.sh`, the test suite this record must extend. Both are about CARRIED-UNVERIFIED mark validation -- a different concern from argument parsing, so there is no duplication of substance and neither record subsumes this one. Re-derive their state at implement time rather than trusting this snapshot, read whatever has landed, and coordinate rather than racing. Because the overlap cannot be expressed as a dependency across repositories, this coordination is a human obligation, not a gated one.
+
+ACCEPTANCE.
+  (1) A reversed invocation no longer reports a missing file. It either succeeds (option a) or fails with a message naming argument order as the fault (option b).
+  (2) The chosen option is recorded with its reasoning, and the rejected one on its own merits.
+  (3) The ambiguous cases enumerated above each have a decided, tested behaviour -- in particular, a genuinely missing path with a valid type still reports `File not found` at exit 3, unchanged.
+  (4) `agent-system/extensions/core/scripts/tests/test-validate-artifact.sh` reports zero failures, with a failing-first case for the reversed invocation. Demonstrate it fails against the source-store script before the fix.
+  (5) The usage line at the top of the script and its header comment agree with the implemented behaviour. If option (a) is chosen, the usage line must not imply the order is mandatory.
+  (6) The deployed tree is not hand-authored. The edit lands in `agent-system/extensions/core/**` and reaches `.claude/**` only by deploy.
+
+DELIVERABLE PROSE CONSTRAINTS. The edited files lie outside `specs/**`: no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Durable anchors citable freely: the script name `validate-artifact.sh`, the flag spellings (`--fix`, `--strict`), the type keywords (`report`, `plan`, `summary`), the exit codes (`1`, `3`, `4`), and the message texts themselves. MUST NOT appear: the originating task number, the issue entry_id, and the specific artifact path from the measured run.
+
+PROVENANCE. Raised during orchestration and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Originating entry: {task: 820, entry_id: iss_1792347398463_OSs9p5}, class `tooling`, severity `minor`, phase `research`, in specs/820_*/issues.jsonl. No `suggested_channel` hint was carried, so there is no hint-versus-decision override to record.
+
+---
+
+### 824. Make a fixture-dependent Lean gate statement expressible and mechanically checkable in a plan Challenge block
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 768, Task 813
+- **Parent**: Task 820
+
+**Description**: Give the Lean Challenge-pinning mechanism a way to express and mechanically check a gate statement that depends on a model-layer fixture. Today such a statement cannot be pinned at all, and the workaround in use -- a per-phase "Target statement" line in prose -- is checked by nothing.
+
+MEASURED MECHANISM. `agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh` forces EVERY matched declaration body to `sorry` when it assembles the standalone challenge module. The declaration regex (`DECL_RE`, the `(?:theorem|lemma|def|instance)` alternation) matches `def` as well as `theorem`, so a fixture `def` is not exempt: its body is replaced too, by the same `head + " := sorry"` rewrite at the body-forcing assembler, and again at the git-pinned signature reader's own `header + " := sorry"` site. The consequence to confirm against the script before designing the fix: a fixture `def` reduced to `sorry` no longer carries the model it defined, so a gate theorem whose statement mentions that fixture cannot elaborate standalone in the assembled module, and the whole pin attempt fails rather than the one statement degrading. Verify the precise failure mode -- whether elaboration fails on the fixture `def` itself (an unannotated `:= sorry` has no inferrable type) or downstream on the theorem's own statement -- since the two admit different remedies and the design choice depends on which it is.
+
+THE WORKAROUND, AND WHY IT IS UNENFORCED. The approach actually used was to pin only the fixture-free generic theorems in the plan's `## Lean Challenge Statements` block, and to record each fixture-level gate theorem's intended signature per phase under a "Target statement" line, naming the statement-fidelity obligation in prose. That split is sound as a plan-authoring judgment and should not be condemned; the defect is that it has no contract and no check. The string "Target statement" appears NOWHERE in the source store's context or rules trees -- not in `plan-format.md`, not in `challenge-snapshot.md`, not in `plan-compliance.md` -- so it is private ad-hoc prose, carrying none of the standing a pinned block carries and verified by nothing. A pinned statement is diffed declaration-by-declaration; a Target statement line is read by a human or not at all.
+
+DESIGN SPACE -- DECIDE, DO NOT ASSUME. At least three shapes are available and the record deliberately does not pick one:
+  (a) Exempt fixture declarations from body-forcing, so the assembled module retains enough of the model layer for a fixture-dependent statement to elaborate. This is the most direct fix and the most invasive: it weakens the "every body is `sorry`" invariant the script's own comment asserts, and the reason that invariant exists (a challenge module must not smuggle in a proof) must be re-established for whatever carve-out is chosen. An opt-in marker on the fixture, rather than a blanket `def` exemption, is likely the narrower form.
+  (b) Promote "Target statement" from prose to a recognised plan-format construct with its own mechanical check -- a declaration-by-declaration signature diff against the implemented declaration, with the same advisory standing `--check` has. This leaves the script's sorry invariant untouched and makes the workaround enforceable as-is.
+  (c) Allow a pinned statement to declare its fixture dependencies explicitly, so the snapshot can assemble a module that includes them unforced while still forcing every theorem body.
+Choose on the merits during the plan round, state the reasoning, and record the rejected options on their own merits.
+
+SECONDARY ANGLE -- SAME TOOL, AND LARGELY ALREADY OWNED ELSEWHERE. At implement time `lean-challenge-snapshot.sh --check` was unavailable: it exited 71 because no snapshot had been taken at plan time, so even the pinned generic statements were verified only by a hand token-by-token comparison against the plan. CORRECT THE FRAMING BEFORE ACTING ON IT: the failure is not silent. The script prints `ERROR: no manifest found at <path> -- run the snapshot (without --check) first.` to stderr before exiting. The real deficiencies are that exit 71 is overloaded (it is also the identifier-set-mismatch code and the catch-all config-error code, at several distinct sites), and that nothing at plan time makes the snapshot prerequisite visible before `--check` is written into a Verification criterion. BOTH of those are already owned by #813 `State the precedence and snapshot-prerequisite rules for a lean plan's pinned Challenge block` [not_started], whose item 2 states the prerequisite rule in both directions, names the declaration-by-declaration diff as the sanctioned self-contained substitute, and adds the no-manifest case to the exit-code table's 71 row -- while explicitly binding itself NOT to change the script. Do not re-do that work here and do not close either record as a duplicate of the other. The residue genuinely left to this record is the tooling question that record forbade itself: whether the script should distinguish no-manifest from identifier-mismatch at all, and if so how, given that a new exit code is a vocabulary change with its own consumers. Treat that as a scoped decision with "leave the exit code alone, the contract fix suffices" as a legitimate outcome -- in which case say so in the completion summary rather than leaving it unaddressed.
+
+OVERLAP ON THESE SAME FILES -- TWO RECORDS IN THIS REPO, ONE ACROSS REPOS. Both in-repo records are claimed as dependency edges rather than excluded, because the overlap is unordered and the territory is shared:
+  - #768 `lean-challenge-snapshot swallows declarations, mishandles Unicode names, and over-reads Goals prose` [not_started] owns three defects in this same script and touches the same declaration-alternation and body-forcing sites this record must touch. Its record also warns that the source store carries UNCOMMITTED repairs to the script and its test suite plus two untracked fixtures, and that the DEPLOYED copy is stale and will mislead anyone who reads it to establish current behaviour. Read the source store, not the deploy tree, and read that record's landed state first.
+  - #813, delimited above, owns `challenge-snapshot.md` and `plan-compliance.md`. If the option chosen here requires a change to the design record `challenge-snapshot.md`, coordinate rather than editing a file another record claims.
+  - CROSS-REPO, AND NOTHING MECHANICAL WILL CATCH IT: the source-store repository (~/.config/nvim) holds `lean4_plan_with_zero_lean_goals` [not_started] -- "Define the sanctioned shape for a lean4-typed plan that commits to no theorem, and make lean-challenge-snapshot.sh distinguish it from a malformed one" -- whose file_scope is exactly `agent-system/extensions/core/context/formats/plan-format.md`, `agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh`, and `agent-system/extensions/lean/context/project/lean4/domain/challenge-snapshot.md`. Its subject (a deliberate no-theorem plan being indistinguishable from a malformed one, both exiting 71) is different from this one, but it is the third claimant on the same three files and the two task spaces cannot see each other. Re-derive its state at implement time and coordinate.
+
+ACCEPTANCE.
+  (1) The fixture-dependent failure mode has been reproduced against the script as it stands in the SOURCE STORE (including its uncommitted modifications), and the completion summary names which elaboration step actually fails.
+  (2) One of the design options is implemented, with the rejected ones recorded on their own merits, and the chosen option states explicitly what remains of the "every theorem body is `sorry`" invariant and why a challenge module still cannot smuggle in a proof.
+  (3) A fixture-dependent statement is now expressible AND mechanically checkable -- a change that makes it expressible but still unchecked does not satisfy this record, since unenforceability is the defect.
+  (4) `agent-system/extensions/lean/scripts/tests/test-lean-challenge-snapshot.sh` reports zero failures, with a failing-first case covering a gate statement that depends on a fixture declaration. Demonstrate the case fails against the source-store script before the fix, not against the stale deployed copy.
+  (5) The secondary angle is dispositioned: either the exit-code distinction is implemented, or the summary records the decision to leave it to the contract-level record and why.
+  (6) The deployed tree is not hand-authored. Every edit lands under `agent-system/extensions/lean/**` (or `core/**` if plan-format is touched) and reaches `.claude/**` only by deploy.
+
+DELIVERABLE PROSE CONSTRAINTS. Every edited file lies outside `specs/**`: no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Durable anchors citable freely: the script name `lean-challenge-snapshot.sh`, flag spellings (`--check`, `--force`, `--dry-run`), exit codes (`65`, `71`, `73`), section names (`## Lean Challenge Statements`, `**Goals**:`), the manifest path shape `specs/{NNN}_{SLUG}/challenge/manifest.json`, and neighbouring file names. MUST NOT appear: the originating task number, the issue entry_id, and the specific declaration or fixture names from the measured run -- those live in this record only.
+
+PROVENANCE. Raised during orchestration and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Originating entry: {task: 820, entry_id: iss_1792348402766_UnLOsz}, class `planning`, severity `minor`, phase `plan`, in specs/820_*/issues.jsonl. No `suggested_channel` hint was carried, so there is no hint-versus-decision override to record.
+
+FILE_SCOPE IS DELIBERATELY NARROWER THAN THE DESIGN SPACE -- RAISE, DO NOT WIDEN SILENTLY. This record's file_scope names only the script, its test suite and its fixtures directory. It deliberately OMITS `agent-system/extensions/lean/context/project/lean4/domain/challenge-snapshot.md` and `agent-system/extensions/core/context/formats/plan-format.md`, because #813 claims the first and the cross-repo record claims both. Design option (b) in particular -- promoting "Target statement" to a recognised plan-format construct -- cannot be executed without one or both of them. If the chosen option requires either file, RAISE IT at plan time and have the scope widened or the work re-sited by agreement, rather than editing a file another record claims or quietly expanding scope at implement time. "The option I picked needs a file outside scope" is a planning signal, not an obstacle to route around.
+
+---
+
+### 823. Tell the re-prompted dispatch to distrust the error count it inherited from the interrupting context
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 770
+- **Parent**: Task 820
+
+**Description**: Make the stall/strand re-prompt remedy tell the resuming dispatch that an error count inherited from the interrupting context is unverified and non-exhaustive. The remedy text today orders foreground re-verification but says nothing about the provenance of the failure count the resumer was handed, so a resumer that re-runs the build and then reconciles against the handed-down number can stop early believing it is done.
+
+MEASURED. The interrupting context reported exactly one compile error in its uncommitted fragment (a type mismatch at a single line). The resuming instance, running the build itself, found eight -- all inside the same declaration, caused by `rw` leaving tuple projections unreduced inside the Rlad conjuncts. One reported, eight real, same fragment: the handed-down count was neither a floor that happened to be low nor a stale snapshot of a different state, it was a partial read of the same state. A resumer treating it as the error inventory would have fixed one site and declared the fragment clean.
+
+WHY THE EXISTING TEXT DOES NOT ALREADY COVER THIS. Read the current remedy before editing; it is close enough that the gap is easy to misjudge. The doc's "Loop obligation" list carries four instructions, and item 2 already says to "Attribute each failure to its own edits or to pre-existing breakage, with `git log` / `git status` overlap evidence." That is an attribution obligation over the failures the resumer has in hand -- it presupposes an inventory and says how to apportion it. It does not say where the inventory comes from, does not forbid seeding it from the interrupting context, and does not say that a count arriving with the re-prompt carries no evidentiary weight. Item 1 orders the foreground re-run but stops at the re-run; nothing closes the loop by saying the re-run's own output is the sole inventory and the inherited count is discarded, not reconciled against.
+
+ENUMERATE EVERY EMISSION SITE -- A FIX APPLIED TO ONE IS A FIX APPLIED TO NONE. `agent-system/extensions/core/scripts/orchestrate-cycle-postflight.sh` emits remedy prose at four sites, two per detector, and the script-side and doc-side wordings are read by different consumers:
+  - the `stall_suspected` notice ("STALL SUSPECTED for task ... REMEDY: re-prompt this same dispatch ONCE, instructing it to re-run its verification in the FOREGROUND ...");
+  - the `stall`-flavoured `recovery_declined_detail` ("RECORD-TIME CORROBORATION: ... commit(s) for this task landed inside the dispatch window ... REMEDY: one re-prompt, foreground verification, do NOT charge to failed_tasks without that re-prompt.");
+  - the `stranded_suspected` notice ("STRAND SUSPECTED for task ...");
+  - the `strand`-flavoured `recovery_declined_detail` ("dispatch-strand-probe.sh reports a stale heartbeat with a live holder pid ...").
+Locate all four mechanically rather than trusting this list, and decide per site rather than globally. The two stall-flavoured sites MUST carry the addition: that detector fires precisely when work landed and the wrap-up did not, which is the case that produces an inherited partial count. The two strand-flavoured sites route into the identical one-re-prompt relay, so a resumer reaching them inherits the same hazard; if they are left unchanged, the completion summary must state why the asymmetry is correct rather than leaving it as an oversight. The two `recovery_declined_detail` sites are terse by construction and may carry a shorter form than the notices, provided the shorter form still says the count is not to be trusted.
+
+DOC-SIDE TARGET. `agent-system/extensions/core/docs/architecture/orchestrate-state-machine.md`, section "Abandoned Wrap-Up: Re-Prompt Once Before Accepting a No-Outcome Verdict", subsection "Loop obligation". The four-item list there is the canonical statement the relay prompt is built from; the addition belongs in it, either as a new item or as a clause on item 1 that the re-run's output is the only inventory. Whichever shape is chosen, the script-side prose and the doc-side list must say the same thing -- a divergence between them is the defect this record exists to avoid reproducing.
+
+SUBSTANCE OF THE ADDITION. Three things, stated as what the resumer does:
+  (1) Re-run the full build or verification itself, in the foreground, and derive the failure inventory solely from that run's own output.
+  (2) Treat any error count, error list, or "only N failures remain" claim arriving with the re-prompt or recoverable from the interrupting context as unverified and non-exhaustive -- a lower bound at best, and not a stopping condition.
+  (3) Do not stop on the inherited count being reached or cleared. Completion is the re-run reporting clean (or a documented exclusion), never agreement with a handed-down number.
+
+DELIMITATION FROM THE DETAIL-FREE-ENTRY RECORD, WHICH CLAIMS THIS SAME SCRIPT. #770 `postflight writes detail-free blocking issue entry on partial returns` is not_started and its file_scope already names `.claude/scripts/orchestrate-cycle-postflight.sh`, `agent-system/extensions/core/scripts/orchestrate-cycle-postflight.sh`, and `agent-system/extensions/core/scripts/tests/test-orchestrate-cycle-postflight.sh`. Its subject -- the detail content of a blocking issue entry written on a partial return -- is different from the remedy prose handed to a re-prompted dispatch, so neither record subsumes the other and neither should be closed as a duplicate. But they edit the same script, which is why this record carries a dependency edge on it rather than a bare exclusion: run them as a sequence, and read its landed state before editing.
+
+CROSS-REPO OVERLAP -- CHECK BEFORE EDITING, NOTHING MECHANICAL WILL. The source-store repository (~/.config/nvim) maintains its own task space, and no dependency edge or file_scope gate can span the two. Records there currently claiming `orchestrate-cycle-postflight.sh` or `orchestrate-state-machine.md` and not yet complete include `teach_the_batch_admission_gate_that_a_whole_tree_regeneration_phase_is_an_implicit_scope_claim`, `surface_a_plan_size_versus_per_run_cycle_budget_mismatch`, and `contain_the_regression_anchor_source_store_mutation`. Re-derive that list at implement time rather than trusting this snapshot, read the landed state of whatever is open, and coordinate rather than racing.
+
+ACCEPTANCE.
+  (1) All four remedy-emission sites in the source-store script have been enumerated by a mechanical search, and the completion summary lists each one with the decision taken for it.
+  (2) Both stall-flavoured sites carry the addition. If either strand-flavoured site does not, the summary states the reason.
+  (3) The "Loop obligation" list in `orchestrate-state-machine.md` carries the obligation, and its wording and the script's wording agree on substance.
+  (4) `agent-system/extensions/core/scripts/tests/test-orchestrate-cycle-postflight.sh` still reports zero failures, with a case asserting the new clause is present in the emitted stall notice. A test asserting only that the notice is non-empty does not exercise this.
+  (5) The deployed tree is not hand-authored. Every edit lands in the source store under `agent-system/extensions/core/**` and reaches `.claude/**` only by deploy.
+
+DELIVERABLE PROSE CONSTRAINTS. Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Durable anchors that may be cited freely: the script name `orchestrate-cycle-postflight.sh`, the field names `stall_suspected`, `stranded_suspected`, `recovery_declined_detail`, `failed_tasks`, `dispatch_seq`, the section names "Abandoned Wrap-Up" and "Loop obligation", and `context/patterns/bounded-build-waiter.md` symptom 2. Things that MUST NOT appear in the deliverable prose: the originating task number, the issue entry_id, the measured counts (one versus eight), and the specific Lean particulars (`rw`, tuple projections, the Rlad conjuncts) -- those live in this record only. State the guidance as what a resumer does, never as a narration of a past run.
+
+PROVENANCE. Raised during orchestration and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Originating entry: {task: 820, entry_id: iss_1792352683728_T7G7i4}, class `dispatch-stall`, severity `costly`, phase `implement`, in specs/820_*/issues.jsonl. The entry carried no `suggested_channel` hint, so there is no hint-versus-decision override to record; the lead classified it to the agent-system channel on its own judgment.
+
+---
 
 ### 822. Record the launch-side PID-fidelity condition on the bounded-waiter detach form
 - **Effort**: low
