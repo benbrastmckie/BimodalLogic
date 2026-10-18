@@ -1,7 +1,7 @@
 # Implementation Plan: Task #782
 
 - **Task**: 782 - Phase7 verts shape d decomposition
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None. Parent task 716 is `[COMPLETED]` and archived; this plan reads its
   records, it does not wait on them.
@@ -168,26 +168,26 @@ the Lean Challenge Statements section below is empty to match.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Re-derive the landed Shape D state against the acceptance bar [NOT STARTED]
+### Phase 1: Re-derive the landed Shape D state against the acceptance bar [COMPLETED]
 
 **Goal**: Every claim the task description makes about the landed `Timed.lean` is confirmed on the
 current tree by a command whose output is recorded, and the isolated `verts` factor is measured
 this round. No source file is edited.
 
 **Tasks**:
-- [ ] Create `specs/782_phase7_verts_shape_d_decomposition/progress-file.md` and record HEAD
+- [x] Create `specs/782_phase7_verts_shape_d_decomposition/progress-file.md` and record HEAD
       (`git rev-parse HEAD`), the latest commit on `Timed.lean`
       (`git log -1 --format=%h -- FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean`,
       expected fcd3ffcb0), and `git status --porcelain FormalSystem/` (expected empty) before any
       other check. A foreign uncommitted modification or a foreign build here is a STOP-and-report
       per the territory contract, not a check failure.
-- [ ] **Body shapes.** Re-read `Timed.lean` immediately beforehand, then confirm by
+- [x] **Body shapes.** Re-read `Timed.lean` immediately beforehand, then confirm by
       `grep -n -A1 '^def verts\|^def succT\|^def predT' …/Timed.lean` that `verts`'s body is exactly
       `G.winTimes.biUnion (fun t => (G.posAt t).image (fun p => (p, t)))` and that `succT`/`predT`
       each open with `let V := G.verts`, bind `u` to `G.nextTime v.2` / `G.prevTime v.2` and `S`/`P`
       to `G.succP v.2 v.1` / `G.predP v.2 v.1`, and filter `V` on `w.2 = u ∧ w.1 ∈ S` (resp. `∈ P`).
       Confirm `grep -n 'posTable\|posAtC\|find?' …/Timed.lean` returns nothing. Record both outputs.
-- [ ] **Statement fidelity.** Confirm the three characterization statements are byte-identical to
+- [x] **Statement fidelity.** Confirm the three characterization statements are byte-identical to
       their pre-Shape-D form: for each of `mem_verts`, `mem_succT`, `mem_predT`, compare
       `grep -n -A2 '^theorem NAME ' …/Timed.lean` against the same grep over
       `git show 960e39ede:FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean`;
@@ -201,7 +201,7 @@ this round. No source file is edited.
       theorem mem_predT (G : PlusSlicedCertificate Γ Del) (v w : G.TPos) :
           w ∈ G.predT v ↔ w ∈ G.verts ∧ (w.2 = G.prevTime v.2 ∧ w.1 ∈ G.predP v.2 v.1)
       ```
-- [ ] **`withBx` transfer and axiom profiles.** Copy the parent's
+- [x] **`withBx` transfer and axiom profiles.** Copy the parent's
       `probes/25_shapeD_landed_transfer.lean` to
       `specs/782_phase7_verts_shape_d_decomposition/probes/01_shapeD_landed_transfer.lean`
       (header comment updated to name this task's directory; cap stays `maxHeartbeats 200000`,
@@ -210,13 +210,13 @@ this round. No source file is edited.
       `example`s accepted, and the three `#print axioms` lines list only
       `[propext, Classical.choice, Quot.sound]` with no `sorryAx`. Record the exit code, the axiom
       lines and the wall clock. (Plan-time re-derivation against d034460fd: exit 0, 1.9 s.)
-- [ ] **`Complete.lean` surface.** Confirm `grep -c 'withBx_' …/Complete.lean` reports 27 (CARRIED
+- [x] **`Complete.lean` surface.** Confirm `grep -c 'withBx_' …/Complete.lean` reports 27 (CARRIED
       from issue iss_1791938399591_KHUXUs; re-derived at plan time as 27) and that the
       `### What a changed box guess does and does not move` section still carries the recorded third
       instance of the stuck-matcher pattern (`grep -n 'List.find?' …/Complete.lean` is non-empty).
       Whether every `rfl`-proved `withBx_*` lemma there still elaborates is the full build's job in
       Phase 2, not a grep's.
-- [ ] **Isolated factor, measured this round (D4).** Write
+- [x] **Isolated factor, measured this round (D4).** Write
       `specs/782_phase7_verts_shape_d_decomposition/probes/02_old_vs_landed_measure.lean`:
       `import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Examples`,
       `set_option maxHeartbeats 2000000`, then inside
@@ -229,11 +229,11 @@ this round. No source file is edited.
       (task description / parent probe 24) and the docstring's **21 ms vs 1358 ms**
       (`Timed.lean`, `verts` docstring). Both cards must read 16 and the equality must print `true`;
       the factor is recorded whatever it is.
-- [ ] **Decomposition-change record.** Confirm the raised record exists:
+- [x] **Decomposition-change record.** Confirm the raised record exists:
       `grep -n '^### Decomposition Change\|^- \*\*D8\*\*' specs/archive/716_sliced_certificate_liveat_nontermination/plans/02_shape-d-verts-biunion.md`
       returns both lines. Record the line numbers for the summary to cite by heading. Add nothing
       to the parent's archived plan.
-- [ ] Record via `issue-record.sh` (`--phase implement --dispatch-seq <this dispatch>`) anything
+- [x] Record via `issue-record.sh` (`--phase implement --dispatch-seq <this dispatch>`) anything
       that arises — a check that needed a second look, a figure that moved, a smooth run — or
       attest explicitly in `progress-file.md` that nothing did.
 
