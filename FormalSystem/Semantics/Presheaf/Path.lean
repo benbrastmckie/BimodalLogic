@@ -510,6 +510,183 @@ instance BObj.instCategory (D : TemporalOrder) : Category (BObj D) where
   comp_id := Dur.comp_id
   assoc := Dur.comp_assoc
 
+/-! ### Associativity, the path category, and the length functor -/
+
+/-- **Associativity of composition.** The length half is `Dur.comp_assoc`. The section half
+characterizes the right-nested glued section by `glue_unique` against the left-nested one cast to
+length `l₁ + (l₂ + l₃)`: its left restriction to `[0, l₁]` is `f.sec` (the left restriction
+identity read twice, through `[0, l₁ + l₂]`), and its right restriction onto `l₂ + l₃` is the glued
+section of `g` and `h` — itself characterized by `glue_unique` from the two restriction identities
+of the left-nested section. Every comparison is made at the `.val` level, where the order proofs
+carried by `Beh.restrict` are irrelevant; `glue`'s seam `dite` is never unfolded.
+
+Constraints consumed: Compositionality -/
+theorem PathHom.comp_assoc (hcomp : TaskFrame.Compositional F.TaskRel)
+    {w u v x : F.WorldState} (f : PathHom F w u) (g : PathHom F u v) (h : PathHom F v x) :
+    PathHom.comp hcomp (PathHom.comp hcomp f g) h
+      = PathHom.comp hcomp f (PathHom.comp hcomp g h) := by
+  refine PathHom.ext' (Dur.comp_assoc f.len g.len h.len) ?_
+  have h₁ := f.len.property
+  have h₂ := g.len.property
+  have h₃ := h.len.property
+  have hassoc : f.len.val + (g.len.val + h.len.val) ≤ f.len.val + g.len.val + h.len.val :=
+    le_of_eq (add_assoc f.len.val g.len.val h.len.val).symm
+  have hpl : f.len.val ≤ f.len.val + (g.len.val + h.len.val) :=
+    le_add_of_nonneg_right (add_nonneg h₂ h₃)
+  -- the left-nested section, read at the right-nested length
+  let υ : Beh F (f.len.val + (g.len.val + h.len.val)) :=
+    Beh.castLen (add_assoc f.len.val g.len.val h.len.val)
+      (PathHom.comp hcomp (PathHom.comp hcomp f g) h).sec
+  -- its restriction onto `[l₁, l₁ + l₂ + l₃]` is the glued section of `g` and `h`
+  have hL' : Beh.restrict 0 g.len.val le_rfl h₂
+      (by rw [zero_add]; exact le_add_of_nonneg_right h₃)
+      (Beh.restrict f.len.val (g.len.val + h.len.val) h₁ (add_nonneg h₂ h₃) hassoc
+        (PathHom.comp hcomp (PathHom.comp hcomp f g) h).sec) = g.sec := by
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ g.len.val) = g.sec.val.domain z
+      exact propext (g.sec.property z).symm
+    · intro r hr h'
+      have hr' : 0 + r ≤ g.len.val + h.len.val := by
+        rw [zero_add]; exact le_trans hr.2 (le_add_of_nonneg_right h₃)
+      rw [Beh.restrict_states 0 g.len.val le_rfl h₂
+          (by rw [zero_add]; exact le_add_of_nonneg_right h₃) _ r hr
+          ⟨add_nonneg le_rfl hr.1, hr'⟩,
+        Beh.restrict_states f.len.val (g.len.val + h.len.val) h₁ (add_nonneg h₂ h₃) hassoc
+          (PathHom.comp hcomp (PathHom.comp hcomp f g) h).sec (0 + r) ⟨add_nonneg le_rfl hr.1, hr'⟩
+          (Beh.mem_dom _ (add_nonneg h₁ (add_nonneg le_rfl hr.1))
+            (le_trans (add_le_add (le_refl f.len.val) hr') hassoc))]
+      have hA := states_eq_of_eq (glueSum_restrict_left hcomp (add_nonneg h₁ h₂) h₃
+        (PathHom.comp hcomp f g).sec h.sec ((PathHom.comp hcomp f g).tgt.trans h.src.symm))
+        (f.len.val + r) ⟨add_nonneg h₁ hr.1, add_le_add (le_refl f.len.val) hr.2⟩
+        (Beh.mem_dom _ (add_nonneg h₁ hr.1) (add_le_add (le_refl f.len.val) hr.2))
+      have hB := states_eq_of_eq (glueSum_restrict_right hcomp h₁ h₂ f.sec g.sec
+        (f.tgt.trans g.src.symm)) r hr h'
+      have hw2 : (PathHom.comp hcomp (PathHom.comp hcomp f g) h).sec.val.domain
+          (0 + (f.len.val + r)) :=
+        Beh.mem_dom _ (add_nonneg le_rfl (add_nonneg h₁ hr.1))
+          (by
+            rw [zero_add]
+            exact le_trans (add_le_add (le_refl f.len.val) hr.2) (le_add_of_nonneg_right h₃))
+      exact (PartialHistory.states_eq_of_time_eq _ (f.len.val + (0 + r)) (0 + (f.len.val + r))
+        (by rw [zero_add, zero_add]) _ hw2).trans (hA.trans hB)
+  have hR' : Beh.restrict g.len.val (g.len.val + h.len.val - g.len.val) h₂
+      (sub_nonneg.mpr (le_add_of_nonneg_right h₃)) (by rw [add_sub_cancel])
+      (Beh.restrict f.len.val (g.len.val + h.len.val) h₁ (add_nonneg h₂ h₃) hassoc
+        (PathHom.comp hcomp (PathHom.comp hcomp f g) h).sec)
+      = Beh.castLen (add_sub_cancel_left g.len.val h.len.val).symm h.sec := by
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ g.len.val + h.len.val - g.len.val) = h.sec.val.domain z
+      rw [add_sub_cancel_left]
+      exact propext (h.sec.property z).symm
+    · intro r hr h'
+      have hr3 : r ≤ h.len.val := by
+        have := hr.2
+        rwa [add_sub_cancel_left] at this
+      rw [Beh.restrict_states g.len.val (g.len.val + h.len.val - g.len.val) h₂
+          (sub_nonneg.mpr (le_add_of_nonneg_right h₃)) (by rw [add_sub_cancel]) _ r hr
+          ⟨add_nonneg h₂ hr.1, add_le_add (le_refl g.len.val) hr3⟩,
+        Beh.restrict_states f.len.val (g.len.val + h.len.val) h₁ (add_nonneg h₂ h₃) hassoc
+          (PathHom.comp hcomp (PathHom.comp hcomp f g) h).sec (g.len.val + r)
+          ⟨add_nonneg h₂ hr.1, add_le_add (le_refl g.len.val) hr3⟩
+          (Beh.mem_dom _ (add_nonneg h₁ (add_nonneg h₂ hr.1))
+            (le_trans (add_le_add (le_refl f.len.val) (add_le_add (le_refl g.len.val) hr3))
+              hassoc))]
+      have hC := states_eq_of_eq (glueSum_restrict_right hcomp (add_nonneg h₁ h₂) h₃
+        (PathHom.comp hcomp f g).sec h.sec ((PathHom.comp hcomp f g).tgt.trans h.src.symm))
+        r ⟨hr.1, hr3⟩ h'
+      exact (PartialHistory.states_eq_of_time_eq _ (f.len.val + (g.len.val + r))
+        (f.len.val + g.len.val + r) (add_assoc f.len.val g.len.val r).symm _
+        (Beh.mem_dom _ (add_nonneg (add_nonneg h₁ h₂) hr.1)
+          (add_le_add (le_refl (f.len.val + g.len.val)) hr3))).trans hC
+  have hu' := glue_unique hcomp h₂ (le_add_of_nonneg_right h₃) g.sec
+    (Beh.castLen (add_sub_cancel_left g.len.val h.len.val).symm h.sec)
+    (g.tgt.trans h.src.symm)
+    (Beh.restrict f.len.val (g.len.val + h.len.val) h₁ (add_nonneg h₂ h₃) hassoc
+      (PathHom.comp hcomp (PathHom.comp hcomp f g) h).sec) hL' hR'
+  -- the two restriction identities of the right-nested gluing, for the cast left-nested section
+  have hL : Beh.restrict 0 f.len.val le_rfl h₁ (by rw [zero_add]; exact hpl) υ = f.sec := by
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ f.len.val) = f.sec.val.domain z
+      exact propext (f.sec.property z).symm
+    · intro r hr h'
+      have hw : υ.val.domain (0 + r) :=
+        Beh.mem_dom υ (add_nonneg le_rfl hr.1) (by rw [zero_add]; exact le_trans hr.2 hpl)
+      rw [Beh.restrict_states 0 f.len.val le_rfl h₁ (by rw [zero_add]; exact hpl) υ r hr hw]
+      have hA := states_eq_of_eq (glueSum_restrict_left hcomp (add_nonneg h₁ h₂) h₃
+        (PathHom.comp hcomp f g).sec h.sec ((PathHom.comp hcomp f g).tgt.trans h.src.symm))
+        r ⟨hr.1, le_trans hr.2 (le_add_of_nonneg_right h₂)⟩
+        (Beh.mem_dom _ hr.1 (le_trans hr.2 (le_add_of_nonneg_right h₂)))
+      have hB := states_eq_of_eq (glueSum_restrict_left hcomp h₁ h₂ f.sec g.sec
+        (f.tgt.trans g.src.symm)) r hr h'
+      have hw2 : (PathHom.comp hcomp f g).sec.val.domain (0 + r) :=
+        Beh.mem_dom _ (add_nonneg le_rfl hr.1)
+          (by
+            rw [zero_add]
+            exact le_trans hr.2 (le_add_of_nonneg_right h₂))
+      exact hA.trans ((PartialHistory.states_eq_of_time_eq _ r (0 + r) (zero_add r).symm _
+        hw2).trans hB)
+  have hR : Beh.restrict f.len.val (f.len.val + (g.len.val + h.len.val) - f.len.val) h₁
+      (sub_nonneg.mpr hpl) (by rw [add_sub_cancel]) υ
+      = Beh.castLen (add_sub_cancel_left f.len.val (g.len.val + h.len.val)).symm
+          (PathHom.comp hcomp g h).sec := by
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ f.len.val + (g.len.val + h.len.val) - f.len.val)
+        = (PathHom.comp hcomp g h).sec.val.domain z
+      rw [add_sub_cancel_left]
+      exact propext ((PathHom.comp hcomp g h).sec.property z).symm
+    · intro r hr h'
+      have hr23 : r ≤ g.len.val + h.len.val := by
+        have := hr.2
+        rwa [add_sub_cancel_left] at this
+      exact states_eq_of_eq hu' r ⟨hr.1, hr23⟩ h'
+  have hu := glue_unique hcomp h₁ hpl f.sec
+    (Beh.castLen (add_sub_cancel_left f.len.val (g.len.val + h.len.val)).symm
+      (PathHom.comp hcomp g h).sec)
+    (f.tgt.trans (PathHom.comp hcomp g h).src.symm) υ hL hR
+  exact congrArg Subtype.val hu
+
+/-- **The path category `Path(F)` as a type**: a synonym of `F.WorldState`, so that the
+`Category` instance below sits on a type this module owns and no instance is placed on
+`F.WorldState` itself. Its objects are the world states — the *Germs* clause's identification of
+the germs of `Beh F` with the states of `F`. -/
+def PathCat (F : TaskFrame) : Type := F.WorldState
+
+/-- **`Path(F)` as a Mathlib category**: homs the morphisms `PathHom F w u`, identities the germs,
+composition by gluing, with the three laws proved above. `F.comp` supplies *Compositionality* to
+`PathHom.comp`; the identities reach *Seriality* and *Limit* through `Beh.ofGerm`. This is
+`def:path-category`'s `Path(F) := Beh(F)‾`, the associated category of `Beh F`, built directly.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+instance PathCat.instCategory (F : TaskFrame) [F.IsRegular] : Category (PathCat F) where
+  Hom w u := PathHom F w u
+  id w := PathHom.id F w
+  comp f g := PathHom.comp F.comp f g
+  id_comp f := PathHom.id_comp f
+  comp_id f := PathHom.comp_id f
+  assoc f g h := PathHom.comp_assoc F.comp f g h
+
+/-- **The length functor `len : Path(F) ⥤ BD⁺`**: every object to the one object of `BD⁺`, every
+morphism to its length. Functoriality is `rfl` on both counts, because `PathHom.id` has length
+`Dur.id` and `PathHom.comp` has length `Dur.comp` definitionally. This is `def:conduche`'s length
+functor, instantiated at `X = Beh F`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+def PathCat.len (F : TaskFrame) [F.IsRegular] : PathCat F ⥤ BObj F.Duration where
+  obj _ := ⟨()⟩
+  map f := f.len
+  map_id _ := rfl
+  map_comp _ _ := rfl
+
+/-- `len` reads off the length of a morphism, by `rfl`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+theorem PathCat.len_map (F : TaskFrame) [F.IsRegular] {w u : PathCat F} (f : w ⟶ u) :
+    (PathCat.len F).map f = PathHom.len f := rfl
+
 end FormalSystem.Semantics.Presheaf
 
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree

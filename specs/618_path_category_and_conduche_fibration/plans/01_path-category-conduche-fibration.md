@@ -313,34 +313,34 @@ break.
 
 ---
 
-### Phase 3: Associativity, the path category, and the length functor [NOT STARTED]
+### Phase 3: Associativity, the path category, and the length functor [COMPLETED]
 
 **Goal**: Prove associativity of `PathHom.comp` through uniqueness of gluing, package
 `PathCat F := F.WorldState` as a `Category`, and define the length functor
 `PathCat.len : PathCat F ⥤ BObj F.Duration` with its reading lemma.
 
 **Tasks**:
-- [ ] Prove `PathHom.comp_assoc hcomp f g h`: by `PathHom.ext'`, the length half is
+- [x] Prove `PathHom.comp_assoc hcomp f g h`: by `PathHom.ext'`, the length half is
       `Dur.comp_assoc`; the section half via `glue_unique` applied to
       `castLen (add_assoc …) (glueSum (glueSum f.sec g.sec) h.sec)`, whose left restriction to
       `l₁` is `f.sec` (`Beh.restrict_comp` chaining `restrict 0 l₁ ∘ restrict 0 (l₁ + l₂)`, then
       `glueSum_restrict_left` twice) and whose right restriction onto `l₂ + l₃` is
       `glueSum g.sec h.sec` (itself characterized by `glue_unique`); every comparison at the
-      `.val` level through the cast kit (R2)
-- [ ] Define `def PathCat (F : TaskFrame) : Type := F.WorldState` and
+      `.val` level through the cast kit (R2) *(deviation: altered — the `Beh.restrict_comp` chaining is carried out at the `.val` level by two explicit `Beh.restrict_states` rewrites followed by `states_eq_of_eq` on the restriction identities and `states_eq_of_time_eq`, per the Risks table's own mitigation; `restrict_comp` is not invoked by name because its proof arguments would have to be matched by `rw`)*
+- [x] Define `def PathCat (F : TaskFrame) : Type := F.WorldState` and
       `instance PathCat.instCategory (F) [F.IsRegular] : Category (PathCat F)` with
       `Hom w u := PathHom F w u`, `id w := PathHom.id F w`, `comp f g := PathHom.comp F.comp f g`,
       `id_comp f := PathHom.id_comp f`, `comp_id f := PathHom.comp_id f`,
       `assoc f g h := PathHom.comp_assoc F.comp f g h`
-- [ ] Define `PathCat.len (F) [F.IsRegular] : PathCat F ⥤ BObj F.Duration` with `obj _ := ⟨()⟩`,
+- [x] Define `PathCat.len (F) [F.IsRegular] : PathCat F ⥤ BObj F.Duration` with `obj _ := ⟨()⟩`,
       `map f := f.len`, `map_id _ := rfl`, `map_comp _ _ := rfl` (both `rfl` per the probe), and
       prove `PathCat.len_map (f : w ⟶ u) : (PathCat.len F).map f = PathHom.len f` (`rfl`)
-- [ ] Docstrings: `Constraints consumed: Compositionality` on `comp_assoc`;
+- [x] Docstrings: `Constraints consumed: Compositionality` on `comp_assoc`;
       `Constraints consumed: Compositionality, Seriality, Limit` on `PathCat.instCategory`,
       `PathCat.len`, `PathCat.len_map`; `Constraints consumed: None` on `PathCat`. Note in
       `PathCat`'s docstring that it is a synonym so that no `Category` instance is placed on
-      `F.WorldState`
-- [ ] Record the issue log as events arise
+      `F.WorldState` *(deviation: altered — `PathCat.instCategory`, `PathCat.len`, `PathCat.len_map` carry `[F.IsRegular]` and therefore the exempt all-four marker list, for the C34a reason recorded under Phase 2; `comp_assoc` keeps `Compositionality`, `PathCat` keeps no marker, being a bare synonym with no binder)*
+- [x] Record the issue log as events arise
 
 **Timing**: 1.25 hours
 
@@ -361,6 +361,7 @@ remains the complete covering check — the module is still unimported.
 - Guarded scoped build exits 0 with no `sorry` warning
 - `#print axioms` on `PathHom.comp_assoc` and `PathCat.instCategory` reports `[propext, Quot.sound]`
 - Commit: `task 618 phase 3: associativity, the path category, and the length functor`
+- Verification record (2026-10-18): guarded scoped build exit 0, no sorry, no warnings; full guarded `lake build` exit 0 (2878 jobs, 0 errors); `#print axioms`: `PathHom.comp_assoc`, `PathCat.instCategory`, `PathCat.len`, `PathCat.len_map` all `[propext, Quot.sound]`; C34a PASS over 117 markers; C15 PASS; declaration count 23; `status.typ` regenerated and staged
 
 ---
 
