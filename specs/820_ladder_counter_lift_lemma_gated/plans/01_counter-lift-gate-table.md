@@ -1,7 +1,7 @@
 # Implementation Plan: Task #820
 
 - **Task**: 820 - Ladder counter-lift lemma, research-first, gated
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours
 - **Dependencies**: None (parent record: task 761, which this task gates; 763 waits on 761)
 - **Research Inputs**: specs/820_ladder_counter_lift_lemma_gated/reports/01_counter-lift-lemma-gated.md

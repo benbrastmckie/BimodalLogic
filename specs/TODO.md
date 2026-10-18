@@ -11,9 +11,9 @@ next_project_number: 823
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,820,821 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,761,783,814,816 | 298,428,502,772,777,813,820 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 219,410,498,499,500,763,822 | 231,429,497,761,783 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,814,816 | 298,428,502,761,772,777,813 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 3 | 219,410,498,499,500,822 | 231,429,497,783 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -80,11 +80,10 @@ next_project_number: 823
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
+761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell...
+  └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-820 [IMPLEMENTING] — RESEARCH-FIRST, GATED: no sufficiency attempt before the gate...
-  └─ 761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell...
-    └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 
 ### Formula Refactor
 
@@ -239,12 +238,13 @@ OUT OF SCOPE. The allocator's own concurrency design and git-commit-scoped.sh's 
 ---
 
 ### 820. Ladder counter lift lemma gated
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [820_ladder_counter_lift_lemma_gated/reports/01_counter-lift-lemma-gated.md]
 - **Plan**: [820_ladder_counter_lift_lemma_gated/plans/01_counter-lift-gate-table.md]
+- **Summary**: [820_ladder_counter_lift_lemma_gated/summaries/01_counter-lift-gate-table-summary.md]
 
 **Description**: RESEARCH-FIRST, GATED: no sufficiency attempt before the gate table below is compiled. WHY: presentation (a) is chosen for the ladder cell -- the set-valued per-state datum `D`, the MAXIMUM `certAdm`-certified subset of the finite carrier `Q × ClType φ × K`, with the realization theorem the fibre equation (`cellAt` at `(q, c, n)` equals the fibre of `D` at `(q, κ(c, n))`) and the factorization lemma for `K` its corollary, never its hypothesis -- and its viability rests on THIS lemma, which is unproved. See the decision report at `specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md` (Findings 2, 6, 7) and the wired probe `specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean`: the certified chains of record are REGION-INTERIOR (`coh`/`cohBi` demand `pend` at both endpoints; no forward `Rlad` ray is pending forever), so `realizes_of_certAdm_cohBi` transfers to the region segments of a ladder history and never to a ladder history itself.
 
