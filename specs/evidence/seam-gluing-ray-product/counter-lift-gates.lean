@@ -59,8 +59,8 @@ built at the model layer below once the fixture section lands); `a := (true, 0)`
 
 | Gate | Pair | Formula / closure | Verdict | Compiled ground |
 |---|---|---|---|---|
-| 1 | `(a, B, B+1)` vs `(a, B, B+2)` | `p U (¬p ∧ X(p ∧ X ¬p))` | DESIGNED, NOT YET COMPILED (expected SEPARATION: the next region can have countdown `0` from the first, `L ≥ n - c - j = 0`, and not from the second, `L ≥ 1`) | `forward_window` (lower edge); `cell_ne` (two-state, `ladder-cell-refutation.lean`), `gate1_gap_separates` (index) |
-| 2 | `(a, c, n)` vs `(a, c+1, n)` | `p U (¬p ∧ ℓ (c mod 4))` | DESIGNED, NOT YET COMPILED (expected SEPARATION: the forced run ends at index `c mod 4`) | `count_pending_step`, `pin_region_end`; `gate2_residue_separates` (index) |
+| 1 | `(a, B, B+1)` vs `(a, B, B+2)` | `p U (¬p ∧ X(p ∧ X ¬p))` (`phi1`) | SEPARATION, COMPILED (`gate1_cell_ne`, every `B`): the next region has countdown `0` after one idle state from the first (`wit1`, `exists_phi1_mem_cell`) and countdown `≥ 1` from the second (`not_phi1_of_gap_two`: the deadline at the first idle state is `≥ 1` by `Drift`, the pin makes the next countdown `≥ 1`) | `forward_window` (lower edge); `cell_ne` (two-state, `ladder-cell-refutation.lean`), `gate1_gap_separates` (index) |
+| 2 | `(a, c, n)` vs `(a, c+1, n)` | `p U (¬p ∧ ℓ (c mod 4))` (`phi2 c`) | SEPARATION, COMPILED (`gate2_cell_ne`, every `c`, `n`): the forced run ends at index `idx c` from the first (`phi2_of_path`, along EVERY path) and at `idx (c+1) ≠ idx c` from the second (`not_phi2_of_path`) | `count_pending_step`, `pin_region_end`; `gate2_residue_separates` (index) |
 | 9-sep | `(a, 0, n)` vs `(a, 0, n+m)`, `4 ∤ m`, `n ≥ 1` | `X(¬p ∧ X(p ∧ (p U (¬p ∧ ℓ ((n+2) mod 4)))))` | DESIGNED, NOT YET COMPILED (expected SEPARATION: at `c = 0, j = 1` the window is `{n-1, n, n+1}`, three of four residues) | `forward_window` at `c = 0`; `nside_collides` (`nside-modulus-gate.lean`: the index collides at every `(T, P, B)` whose modulus is `P + 1`, so the semantic half decides) |
 | short-idle | `(a, 2, 2)` vs `(a, 2 + P, 2 + P)`, `P ≥ 1` (`k = 1`; the family `(a, 2^(k+1) - 2, ·)` a stretch) | `ψ₁ := p ∧ Y(¬p ∧ Y(p ∧ Y(¬p ∧ ¬(⊤ S p))))` | DESIGNED, NOT YET COMPILED (expected SEPARATION for every threshold `T ≤ 2`: the bound is COMPUTED by `region_doubling` at `L = 0`, `j = 1`, not guessed) | `iter_doubling`, `doubling_attained`, `backward_constraint`, `region_doubling` |
 | 9-col | `(a, 0, n)` vs `(a, 0, n+4)`, `n ≥ 2` | the closure of the 9-sep formula | DESIGNED, NOT YET COMPILED (expected COLLISION, closure-specific: pump the next region by `4` with `n` raised by `4`; the closure is `snce`-free) -- DECISION GATE | `forward_window`; `second_region_any_length`; per-member truth lemmas |
@@ -1233,6 +1233,205 @@ theorem exists_hist4 (i : Fin 4) (c n : ℕ) :
 
 end Fixture4
 
+/-! ## Gates 1 and 2
+
+Gate 1: the gap is observable at large counters — `(a, B, B+1)` admits a next region of
+countdown `0` after one idle state (`L ≥ n - c - j = 0`) and `(a, B, B+2)` does not
+(`forward_window`'s lower edge: `L ≥ 1`).  Gate 2: consecutive countdowns are observable through
+the end letter — the forced run from `(a, c, n)` ends at index `idx c`, from `(a, c+1, n)` at
+`idx (c+1)`. -/
+
+section Gates12
+
+/-- `p U (¬p ∧ X (p ∧ X ¬p))`: the current region ends, and the next region has length one. -/
+def phi1 : PlusFormula := .untl p (p.neg.and (X (p.and (X p.neg))))
+
+/-- The gate-1 witness: the pending-forever past, the forced region, one idle state with the
+deadline walked down to `0`, a region of countdown `0`, idle forever. -/
+def wit1 (B : ℕ) : ℤ → Q4 × ℕ × ℕ := gPast4 0 B (B + 1) (region4 0 B (B + 1) 1 0)
+
+theorem wit1_rlad (B : ℕ) : ∀ t, Rlad step4 pend4 t (wit1 B t) (wit1 B (t + 1)) :=
+  gPast4_rlad 0 B (B + 1) _ (region4_zero 0 B (B + 1) 1 0)
+    (region4_rlad 0 B (B + 1) 1 0 le_rfl (by omega) (by omega))
+
+theorem wit1_zero (B : ℕ) : wit1 B 0 = ((true, 0), B, B + 1) := by
+  rw [wit1, show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, gPast4_nat, region4_zero]
+
+/-- `phi1` holds at `0` along the witness. -/
+theorem phi1_pos (B : ℕ) (σ : WorldHistory F4)
+    (hσ : σ.path = fun t => (t + 0, liftAdm (wit1 B) (wit1_rlad B) t)) :
+    PlusTruthAt M4 σ 0 phi1 := by
+  refine ⟨((B + 1 : ℕ) : ℤ), show (0 : ℤ) < ((B + 1 : ℕ) : ℤ) by omega, ?_, ?_⟩
+  · rw [PlusTruth.and_iff, truth_np4 hσ, truth_X4, PlusTruth.and_iff, truth_p4 hσ, truth_X4,
+      truth_np4 hσ]
+    rw [show ((B + 1 : ℕ) : ℤ) + 1 = ((B + 2 : ℕ) : ℤ) by push_cast; ring,
+      show ((B + 2 : ℕ) : ℤ) + 1 = ((B + 3 : ℕ) : ℤ) by push_cast; ring]
+    simp only [liftAdm_val, wit1, gPast4_nat]
+    rw [region4_idle₁ 0 B (B + 1) 1 0 (B + 1) (by omega) (by omega),
+      region4_pend₂ 0 B (B + 1) 1 0 (B + 2) (by omega) (by omega),
+      region4_idle₂ 0 B (B + 1) 1 0 (B + 3) (by omega)]
+    simp
+  · intro (s' : ℤ) h1 h2
+    have h1' : (0 : ℤ) < s' := h1
+    have h2' : s' < ((B + 1 : ℕ) : ℤ) := h2
+    rw [truth_p4 hσ]
+    have hsn : ((s'.toNat : ℕ) : ℤ) = s' := Int.toNat_of_nonneg (by omega)
+    have hle : s'.toNat ≤ B := by omega
+    rw [← hsn]
+    simp only [liftAdm_val, wit1, gPast4_nat]
+    rw [region4_pend 0 B (B + 1) 1 0 s'.toNat hle]
+
+/-- **Non-vacuity**: some type realized at `(a, B, B + 1)` contains `phi1`. -/
+theorem exists_phi1_mem_cell (B : ℕ) :
+    ∃ T ∈ cellAt M4 phi1 ((0 : ℤ), st4 0 B (B + 1)) 0, phi1 ∈ T := by
+  obtain ⟨σ, hσ, hmem⟩ := cell_of_raw phi1 (wit1 B) (wit1_rlad B) 0 B (B + 1) (wit1_zero B)
+  refine ⟨_, hmem, ?_⟩
+  rw [mem_tpOf_iff]
+  exact ⟨self_mem_plusSubformulaClosure phi1, phi1_pos B σ hσ⟩
+
+/-- **The obstruction**: along every path through `(a, B, B + 2)` the first idle state (at
+`B + 1`) carries a deadline `≥ 1` (`Drift` over `B + 1` steps from `B + 2`), so the next region
+has countdown `≥ 1` (`region_start4`) and `X ¬p` fails at its first state. -/
+theorem not_phi1_of_gap_two (σ : WorldHistory F4) (k : ℤ) (g : ℤ → LadderState Q4 pend4)
+    (hσ : σ.path = fun t => (t + k, g t))
+    (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1) (B : ℕ)
+    (h0 : (g 0).1 = ((true, 0), B, B + 2)) : ¬ PlusTruthAt M4 σ 0 phi1 := by
+  rintro ⟨(s : ℤ), hs, hχ, hguard⟩
+  have hs' : (0 : ℤ) < s := hs
+  rw [PlusTruth.and_iff, truth_np4 hσ] at hχ
+  obtain ⟨hr, hX⟩ := hχ
+  obtain ⟨hidle, -⟩ := idle_at4 hg 0 B (B + 2) h0
+  rcases lt_trichotomy s ((B : ℤ) + 1) with hlt | heq | hgt
+  · -- `0 < s ≤ B`: the state at `s` is pending, so `¬p` fails there
+    have hsn : ((s.toNat : ℕ) : ℤ) = s := Int.toNat_of_nonneg (by omega)
+    have hle : s.toNat ≤ B := by omega
+    obtain ⟨hq, -⟩ := pending_walk4 hg 0 B (B + 2) h0 s.toNat hle
+    rw [← hsn, hq] at hr
+    exact Bool.noConfusion hr
+  · -- `s = B + 1`: the next region has countdown at least one
+    subst heq
+    rw [truth_X4, PlusTruth.and_iff, truth_p4 hσ, truth_X4, truth_np4 hσ] at hX
+    obtain ⟨hp2, hr3⟩ := hX
+    have hn0 : (g 0).1.2.2 = B + 2 := congrArg (fun x : Q4 × ℕ × ℕ => x.2.2) h0
+    have hdr := (drift_path4 hg 0 (B + 1)).2
+    rw [zero_add, hn0] at hdr
+    push_cast at hdr
+    have hidle' : (g ((B : ℤ) + 1)).1.1.1 = false := congrArg Prod.fst hidle
+    obtain ⟨-, hc⟩ := region_start4 hg ((B : ℤ) + 1) hidle' hp2
+    have := after_pending4 hg ((B : ℤ) + 1 + 1) hp2 (by omega)
+    rw [this] at hr3
+    exact Bool.noConfusion hr3
+  · -- `s > B + 1`: the guard `p` fails at the idle state `B + 1`
+    have hp := hguard ((B : ℤ) + 1) (show (0 : ℤ) < (B : ℤ) + 1 by omega) hgt
+    rw [truth_p4 hσ] at hp
+    have hidle' : (g ((B : ℤ) + 1)).1.1.1 = false := congrArg Prod.fst hidle
+    rw [hidle'] at hp
+    exact Bool.noConfusion hp
+
+/-- Every type realized at `(a, B, B + 2)` omits `phi1`. -/
+theorem phi1_not_mem_of_mem_cell (B : ℕ) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt M4 phi1 ((0 : ℤ), st4 0 B (B + 2)) 0) : phi1 ∉ T := by
+  obtain ⟨σ, k, g, hσ, hg, h0, rfl⟩ := of_mem_cell4 phi1 0 B (B + 2) T hT
+  intro hmem
+  rw [mem_tpOf_iff] at hmem
+  exact not_phi1_of_gap_two σ k g hσ hg B h0 hmem.2
+
+/-- **GATE 1 — SEPARATION**: the cells at `(a, B, B + 1)` and `(a, B, B + 2)` differ, for every
+`B`. -/
+theorem gate1_cell_ne (B : ℕ) :
+    cellAt M4 phi1 ((0 : ℤ), st4 0 B (B + 1)) 0 ≠ cellAt M4 phi1 ((0 : ℤ), st4 0 B (B + 2)) 0 := by
+  intro heq
+  obtain ⟨T, hT, hmem⟩ := exists_phi1_mem_cell B
+  rw [heq] at hT
+  exact phi1_not_mem_of_mem_cell B T hT hmem
+
+/-- `p U (¬p ∧ ℓ (c mod 4))`: the current region ends at index `c mod 4`. -/
+def phi2 (c : ℕ) : PlusFormula := .untl p (p.neg.and (ℓ (idx c)))
+
+/-- Along EVERY path through `(a, c, n)`, `phi2 c` holds at `0`: the first idle state is at
+`c + 1` with index `idx c`, and positions `1 .. c` are pending. -/
+theorem phi2_of_path (σ : WorldHistory F4) (k : ℤ) (g : ℤ → LadderState Q4 pend4)
+    (hσ : σ.path = fun t => (t + k, g t))
+    (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1) (c n : ℕ)
+    (h0 : (g 0).1 = ((true, 0), c, n)) : PlusTruthAt M4 σ 0 (phi2 c) := by
+  obtain ⟨hidle, -⟩ := idle_at4 hg 0 c n h0
+  rw [zero_add] at hidle
+  refine ⟨(c : ℤ) + 1, show (0 : ℤ) < (c : ℤ) + 1 by omega, ?_, ?_⟩
+  · rw [PlusTruth.and_iff, truth_np4 hσ, truth_l4 hσ, hidle]
+    exact ⟨rfl, rfl⟩
+  · intro (s' : ℤ) h1 h2
+    have h1' : (0 : ℤ) < s' := h1
+    have h2' : s' < (c : ℤ) + 1 := h2
+    rw [truth_p4 hσ]
+    have hsn : ((s'.toNat : ℕ) : ℤ) = s' := Int.toNat_of_nonneg (by omega)
+    have hle : s'.toNat ≤ c := by omega
+    obtain ⟨hq, -⟩ := pending_walk4 hg 0 c n h0 s'.toNat hle
+    rw [← hsn, hq]
+
+/-- Along EVERY path through `(a, c + 1, n)`, `phi2 c` fails at `0`: the first idle state is at
+`c + 2` with index `idx (c + 1) ≠ idx c`, and no later witness has a pending guard across it. -/
+theorem not_phi2_of_path (σ : WorldHistory F4) (k : ℤ) (g : ℤ → LadderState Q4 pend4)
+    (hσ : σ.path = fun t => (t + k, g t))
+    (hg : ∀ t, Rlad step4 pend4 t (g t).1 (g (t + 1)).1) (c n : ℕ)
+    (h0 : (g 0).1 = ((true, 0), c + 1, n)) : ¬ PlusTruthAt M4 σ 0 (phi2 c) := by
+  rintro ⟨(s : ℤ), hs, hχ, hguard⟩
+  have hs' : (0 : ℤ) < s := hs
+  rw [PlusTruth.and_iff, truth_np4 hσ, truth_l4 hσ] at hχ
+  obtain ⟨hr, hl⟩ := hχ
+  obtain ⟨hidle, -⟩ := idle_at4 hg 0 (c + 1) n h0
+  rw [zero_add] at hidle
+  push_cast at hidle
+  rcases lt_trichotomy s ((c : ℤ) + 1 + 1) with hlt | heq | hgt
+  · -- `0 < s ≤ c + 1`: pending
+    have hsn : ((s.toNat : ℕ) : ℤ) = s := Int.toNat_of_nonneg (by omega)
+    have hle : s.toNat ≤ c + 1 := by omega
+    obtain ⟨hq, -⟩ := pending_walk4 hg 0 (c + 1) n h0 s.toNat hle
+    rw [← hsn, hq] at hr
+    exact Bool.noConfusion hr
+  · -- `s = c + 2`: the index there is `idx (c + 1)`, not `idx c`
+    subst heq
+    rw [hidle] at hl
+    have hl' : idx (c + 1) = idx c := hl
+    rw [idx_eq_iff] at hl'
+    omega
+  · -- `s > c + 2`: the guard fails at the idle state `c + 2`
+    have hp := hguard ((c : ℤ) + 1 + 1) (show (0 : ℤ) < (c : ℤ) + 1 + 1 by omega) hgt
+    rw [truth_p4 hσ, hidle] at hp
+    exact Bool.noConfusion hp
+
+/-- **Non-vacuity**: some type realized at `(a, c, n)` contains `phi2 c`. -/
+theorem exists_phi2_mem_cell (c n : ℕ) :
+    ∃ T ∈ cellAt M4 (phi2 c) ((0 : ℤ), st4 0 c n) 0, phi2 c ∈ T := by
+  obtain ⟨σ, hσ0⟩ := exists_hist4 0 c n
+  refine ⟨tpOf M4 (phi2 c) σ 0, ⟨σ, hσ0, rfl⟩, ?_⟩
+  obtain ⟨k, g, hg, hpath⟩ := hist_path4 σ
+  have hst : ((0 : ℤ) + k, g 0) = ((0 : ℤ), st4 0 c n) := by
+    rw [← hσ0]
+    exact (congrFun hpath 0).symm
+  have hg0 : (g 0).1 = ((true, 0), c, n) :=
+    congrArg (fun w : ℤ × LadderState Q4 pend4 => w.2.1) hst
+  rw [mem_tpOf_iff]
+  exact ⟨self_mem_plusSubformulaClosure _, phi2_of_path σ k g hpath (fun t => hg t) c n hg0⟩
+
+/-- Every type realized at `(a, c + 1, n)` omits `phi2 c`. -/
+theorem phi2_not_mem_of_mem_cell (c n : ℕ) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt M4 (phi2 c) ((0 : ℤ), st4 0 (c + 1) n) 0) : phi2 c ∉ T := by
+  obtain ⟨σ, k, g, hσ, hg, h0, rfl⟩ := of_mem_cell4 (phi2 c) 0 (c + 1) n T hT
+  intro hmem
+  rw [mem_tpOf_iff] at hmem
+  exact not_phi2_of_path σ k g hσ hg c n h0 hmem.2
+
+/-- **GATE 2 — SEPARATION**: the cells at `(a, c, n)` and `(a, c + 1, n)` differ, for every `c`
+and `n`. -/
+theorem gate2_cell_ne (c n : ℕ) :
+    cellAt M4 (phi2 c) ((0 : ℤ), st4 0 c n) 0 ≠ cellAt M4 (phi2 c) ((0 : ℤ), st4 0 (c + 1) n) 0 := by
+  intro heq
+  obtain ⟨T, hT, hmem⟩ := exists_phi2_mem_cell c n
+  rw [heq] at hT
+  exact phi2_not_mem_of_mem_cell c n T hT hmem
+
+end Gates12
+
 end Probe820
 
 /-! ## Axiom check -/
@@ -1243,3 +1442,5 @@ end Probe820
 #print axioms Probe820.iter_doubling
 #print axioms Probe820.doubling_attained
 #print axioms Probe820.no_positionwise_lift
+#print axioms Probe820.gate1_cell_ne
+#print axioms Probe820.gate2_cell_ne

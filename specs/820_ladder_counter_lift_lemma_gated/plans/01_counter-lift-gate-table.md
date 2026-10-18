@@ -290,7 +290,7 @@ consumer other than the guard script wired in Phase 1.
 
 ---
 
-### Phase 3: Gates 1 and 2 on the 4-Cycle Fixture [NOT STARTED]
+### Phase 3: Gates 1 and 2 on the 4-Cycle Fixture [COMPLETED]
 
 **Goal**: The two NOT ADDRESSED rows of the record are compiled on `Q4` as cell inequalities,
 each with its compiled ground named: gate 1 (the gap is observable at large counters) and gate 2
@@ -308,15 +308,15 @@ each with its compiled ground named: gate 1 (the gap is observable at large coun
   second.
 
 **Tasks**:
-- [ ] `phi1`, the per-member truth lemmas for its closure at the two states, `exists_phi1_mem_cell`
+- [x] `phi1`, the per-member truth lemmas for its closure at the two states, `exists_phi1_mem_cell`
       (witness via `hist_of_path4` on an explicit path built from `region4 0 1` glued to
       `gPast4`), `phi1_not_mem_of_mem_cell` (every history through `st4 0 B (B + 2)` has, at the
       first idle state, next deadline `≥ 1` by `drift_ray`, so the next region's countdown is
       `≥ 1` by `pin_region_start`), `gate1_cell_ne`.
-- [ ] `phi2`, its truth lemmas, `gate2_cell_ne` by the same two-sided pattern, with
+- [x] `phi2`, its truth lemmas, `gate2_cell_ne` by the same two-sided pattern, with
       `pending_walk4` supplying the end index on both sides.
-- [ ] Flip the two header rows to their compiled verdicts (`SEPARATION`, with the theorem names).
-- [ ] Add both theorems to the `#print axioms` block.
+- [x] Flip the two header rows to their compiled verdicts (`SEPARATION`, with the theorem names).
+- [x] Add both theorems to the `#print axioms` block.
 
 **Timing**: 2 hours
 
