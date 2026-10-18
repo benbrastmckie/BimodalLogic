@@ -120,8 +120,17 @@ describes.
 - `PathCat.len_isDiscreteConduche`: **the first half of `cor:path-fibration`** — `len` is a
   discrete Conduché fibration.
 - `PathHom.assocRestrict_sec`, `PathHom.assocRestrict_unique`, `PathHom.assocRestrict_id`,
-  `PathHom.assocRestrict_comp`: **the second half** — the associated presheaf of `len` is `Beh F`,
-  as an equality (see below).
+  `PathHom.assocRestrict_comp`: **the second half** — the associated presheaf of `len` is `Beh F`
+  **itself, as an equality and not merely up to natural isomorphism**. Same sections: a morphism
+  of length `l` is a `Beh F l` with two endpoint equations. Same restriction: `def:conduche`
+  restricts along `Tr p : l' → l` to the middle factor of the unique three-fold factorization,
+  and that middle factor's section **is** `Beh.restrictTr` — `assocRestrict_sec` closes by `rfl`,
+  because the middle factor is *defined* as the restriction and `assocRestrict_unique` is the
+  theorem that any middle factor has that section. Same functoriality: `assocRestrict_id` and
+  `assocRestrict_comp` are `Beh.restrictTr_id` and `Beh.restrictTr_comp`. This is why the paper's
+  proof of `cor:path-fibration` can claim equality where `fact:conduche-equivalence` returns only a
+  natural isomorphism, and it is how the "associated presheaf of a fibration" of `def:conduche` is
+  instantiated at `len` without being defined in general.
 - `iter_of_adjacent_window`, `beh_int_iff_adjacent_window`: over `D = ℤ`, a function on `[0, n]`
   is the state function of a section iff it respects adjacency at every step.
 - `PathHom.toPath_length`, `PathHom.toPath_id`, `PathHom.toPath_comp`, `PathHom.ofPath_toPath`,
@@ -876,6 +885,116 @@ theorem PathCat.len_isDiscreteConduche (F : TaskFrame) [F.IsRegular] :
   subst he₁
   subst he₂
   rfl
+
+/-! ### The associated presheaf of `len` is `Beh F` -/
+
+/-- **The associated presheaf of `len`, as restriction along a site morphism**: for `f : Tr l' l`
+and a morphism `e` of length `l`, the middle factor of the three-fold factorization of `e` over
+`l = f.shift + l' + (l - f.shift - l')` — a morphism of length `l'` from `e(f.shift)` to
+`e(f.shift + l')` whose section is **by definition** `Beh.restrictTr f` of `e`'s section. The
+endpoints are carried in the Σ-type because the middle factor's source and target are determined
+by `e` and `f`, not given in advance.
+
+Constraints consumed: None -/
+def PathHom.assocRestrict {w u : F.WorldState} {l' l : Obj F.Duration} (f : Tr l' l)
+    (e : PathHom F w u) (hl : e.len = l) : Σ c c' : F.WorldState, PathHom F c c' :=
+  have hlv : e.len.val = l.val := congrArg Subtype.val hl
+  have hs : f.shift ≤ e.len.val := by
+    rw [hlv]; exact le_trans (le_add_of_nonneg_right l'.property) f.shift_add_le
+  have hsl : f.shift + l'.val ≤ e.len.val := by rw [hlv]; exact f.shift_add_le
+  ⟨e.sec.val.states f.shift (Beh.mem_dom e.sec f.shift_nonneg hs),
+   e.sec.val.states (f.shift + l'.val)
+     (Beh.mem_dom e.sec (add_nonneg f.shift_nonneg l'.property) hsl),
+   { len := l'
+     sec := Beh.restrictTr f (Beh.castLen hlv e.sec)
+     src := PartialHistory.states_eq_of_time_eq e.sec.val (f.shift + 0) f.shift (add_zero _) _
+       (Beh.mem_dom e.sec f.shift_nonneg hs)
+     tgt := rfl }⟩
+
+/-- The middle factor has length `l'`, by `rfl`.
+
+Constraints consumed: None -/
+theorem PathHom.assocRestrict_len {w u : F.WorldState} {l' l : Obj F.Duration} (f : Tr l' l)
+    (e : PathHom F w u) (hl : e.len = l) :
+    (PathHom.assocRestrict f e hl).2.2.len = l' := rfl
+
+/-- **The equality `cor:path-fibration`'s proof claims**: the section of the middle factor **is**
+the restriction of `def:behavior-presheaf`, `z ↦ τ(f.shift + z)` on `[0, l']`, by `rfl`. It is
+available where `fact:conduche-equivalence` yields only a natural isomorphism because the middle
+factor is *defined* as the restriction; uniqueness (`assocRestrict_unique`) is a theorem about it,
+not an input to it.
+
+Constraints consumed: None -/
+theorem PathHom.assocRestrict_sec {w u : F.WorldState} {l' l : Obj F.Duration} (f : Tr l' l)
+    (e : PathHom F w u) (hl : e.len = l) :
+    (PathHom.assocRestrict f e hl).2.2.sec.val
+      = (Beh.restrictTr f (Beh.castLen (congrArg Subtype.val hl) e.sec)).val := rfl
+
+/-- **Uniqueness of the middle factor**: any three-fold factorization `e = e₃ ∘ e₂ ∘ e₁` of `e`
+with `P(e₁) = f.shift` and `P(e₂) = l'` has `e₂`'s section equal to the associated restriction's.
+`factor_unique` applied twice — first cutting `e` at `f.shift` (after re-associating `h`), then
+cutting the right factor at `l'` — followed by one `.val`-level reading of the nested restriction.
+
+Constraints consumed: Compositionality -/
+theorem PathHom.assocRestrict_unique (hcomp : TaskFrame.Compositional F.TaskRel)
+    {w u : F.WorldState} {l' l : Obj F.Duration} (f : Tr l' l) (e : PathHom F w u)
+    (hl : e.len = l) {c c' : F.WorldState} (e₁ : PathHom F w c) (e₂ : PathHom F c c')
+    (e₃ : PathHom F c' u) (h : PathHom.comp hcomp (PathHom.comp hcomp e₁ e₂) e₃ = e)
+    (h₁ : e₁.len.val = f.shift) (h₂ : e₂.len.val = l'.val) :
+    e₂.sec.val = (PathHom.assocRestrict f e hl).2.2.sec.val := by
+  have h' : PathHom.comp hcomp e₁ (PathHom.comp hcomp e₂ e₃) = e :=
+    (PathHom.comp_assoc hcomp e₁ e₂ e₃).symm.trans h
+  have hlen' : e₁.len.val + (PathHom.comp hcomp e₂ e₃).len.val = e.len.val :=
+    congrArg (fun x : PathHom F w u => x.len.val) h'
+  -- the first cut, at `f.shift`; the factorization is introduced opaquely so that `c` can be
+  -- substituted without a dependency cycle through it
+  obtain ⟨fac₁, hf₁, hf₂⟩ : ∃ fac : Factorization e.len,
+      fac.fst = f.shift ∧ fac.snd = (PathHom.comp hcomp e₂ e₃).len.val :=
+    ⟨⟨f.shift, (PathHom.comp hcomp e₂ e₃).len.val, f.shift_nonneg,
+      (PathHom.comp hcomp e₂ e₃).len.property, by rw [← h₁]; exact hlen'⟩, rfl, rfl⟩
+  obtain ⟨hc, -, hs23⟩ := PathHom.factor_unique hcomp e fac₁ e₁ (PathHom.comp hcomp e₂ e₃) h'
+    (h₁.trans hf₁.symm) hf₂.symm
+  subst hc
+  have hg : PathHom.comp hcomp e₂ e₃ = e.factorRight fac₁ :=
+    PathHom.ext' (Subtype.ext hf₂.symm) hs23
+  -- the second cut, at `l'` inside the right factor
+  obtain ⟨fac₂, hg₁, hg₂⟩ : ∃ fac : Factorization (e.factorRight fac₁).len,
+      fac.fst = l'.val ∧ fac.snd = e₃.len.val :=
+    ⟨⟨l'.val, e₃.len.val, l'.property, e₃.len.property, by
+      change l'.val + e₃.len.val = fac₁.snd
+      rw [hf₂, ← h₂]
+      rfl⟩, rfl, rfl⟩
+  obtain ⟨-, hs₂, -⟩ := PathHom.factor_unique hcomp (e.factorRight fac₁) fac₂ e₂ e₃ hg
+    (h₂.trans hg₁.symm) hg₂.symm
+  refine hs₂.trans (partialHistory_ext ?_ ?_)
+  · funext z
+    change (0 ≤ z ∧ z ≤ fac₂.fst) = (0 ≤ z ∧ z ≤ l'.val)
+    rw [hg₁]
+  · intro r hr h'
+    exact PartialHistory.states_eq_of_time_eq e.sec.val (fac₁.fst + (0 + r)) (f.shift + r)
+      (by rw [hf₁, zero_add]) _ _
+
+/-- **Functoriality of the associated presheaf, identity**: restricting along `Tr.id` returns the
+section — `Beh.restrictTr_id`, read at the `.val` level so that no transport along
+`assocRestrict_len` appears.
+
+Constraints consumed: None -/
+theorem PathHom.assocRestrict_id {w u : F.WorldState} (e : PathHom F w u) :
+    (PathHom.assocRestrict (Tr.id e.len) e rfl).2.2.sec.val = e.sec.val :=
+  congrArg Subtype.val (Beh.restrictTr_id (Beh.castLen (congrArg Subtype.val rfl) e.sec))
+
+/-- **Functoriality of the associated presheaf, composition**: restricting along `f` and then
+along `g` is restricting along `Tr.comp f g` — `Beh.restrictTr_comp`, contravariantly, read at
+the `.val` level.
+
+Constraints consumed: None -/
+theorem PathHom.assocRestrict_comp {w u : F.WorldState} {l'' l' l : Obj F.Duration}
+    (f : Tr l' l) (g : Tr l'' l') (e : PathHom F w u) (hl : e.len = l) :
+    (PathHom.assocRestrict g (PathHom.assocRestrict f e hl).2.2
+        (PathHom.assocRestrict_len f e hl)).2.2.sec.val
+      = (PathHom.assocRestrict (Tr.comp f g) e hl).2.2.sec.val :=
+  (congrArg Subtype.val
+    (Beh.restrictTr_comp f g (Beh.castLen (congrArg Subtype.val hl) e.sec))).symm
 
 end FormalSystem.Semantics.Presheaf
 

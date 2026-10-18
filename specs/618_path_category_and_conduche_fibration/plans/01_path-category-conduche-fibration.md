@@ -426,7 +426,7 @@ remains the complete covering check — the module is still unimported.
 
 ---
 
-### Phase 5: The associated presheaf of `len` is `Beh F`, as an equality [NOT STARTED]
+### Phase 5: The associated presheaf of `len` is `Beh F`, as an equality [COMPLETED]
 
 **Goal**: Formalize the paper's sharper claim: the associated presheaf of `len` (sections over
 `l` the morphisms of length `l`; restriction along `Tr p : l' → l` the middle factor of the unique
@@ -435,29 +435,29 @@ construction (`rfl`) and uniqueness is the theorem; its functoriality is then `B
 `restrictTr_comp`.
 
 **Tasks**:
-- [ ] Define `PathHom.assocRestrict (f : Tr l' l) (e : PathHom F w u) (hl : e.len = l) : Σ c c' : F.WorldState, PathHom F c c'`
+- [x] Define `PathHom.assocRestrict (f : Tr l' l) (e : PathHom F w u) (hl : e.len = l) : Σ c c' : F.WorldState, PathHom F c c'`
       as the middle factor: endpoints `e.sec` read at `f.shift` and `f.shift + l'.val`, section
       `Beh.restrictTr f (Beh.castLen (congrArg Subtype.val hl) e.sec)`, length `l'`
-- [ ] Prove `assocRestrict_len` (`rfl`) and `assocRestrict_sec : (assocRestrict f e hl).2.2.sec.val = (Beh.restrictTr f (Beh.castLen (congrArg Subtype.val hl) e.sec)).val`
+- [x] Prove `assocRestrict_len` (`rfl`) and `assocRestrict_sec : (assocRestrict f e hl).2.2.sec.val = (Beh.restrictTr f (Beh.castLen (congrArg Subtype.val hl) e.sec)).val`
       **by `rfl`** — this is the equality `cor:path-fibration`'s proof claims; the docstring says
       so and says why it is available where `fact:conduche-equivalence` returns only a natural
       isomorphism (the middle factor is *defined* as the restriction; uniqueness is a theorem about
       it)
-- [ ] Prove `assocRestrict_unique hcomp f e hl e₁ e₂ e₃ h h₁ h₂ : e₂.sec.val = (assocRestrict f e hl).2.2.sec.val`
+- [x] Prove `assocRestrict_unique hcomp f e hl e₁ e₂ e₃ h h₁ h₂ : e₂.sec.val = (assocRestrict f e hl).2.2.sec.val`
       from Phase 4's `factor_unique` applied twice (first cut at `f.shift`, then at `l'.val` inside
-      the right factor), comparing at the `.val` level through `Beh.restrict_comp`
-- [ ] Prove the functoriality corollaries `assocRestrict_id` (from `Beh.restrictTr_id`) and
+      the right factor), comparing at the `.val` level through `Beh.restrict_comp` *(deviation: altered — the two cuts are exactly as planned (first at `f.shift` after re-associating `h` by `comp_assoc`, then at `l'` inside the right factor), but each `Factorization` is introduced opaquely via `obtain ⟨fac, hfst, hsnd⟩ : ∃ fac, …` rather than as a `let`, because `subst` on `c = e.cutState fac₁` fails with a dependency cycle when `fac₁` is a `let` whose value mentions `e₂`; the final nested-restriction reading is one `states_eq_of_time_eq` rather than a `Beh.restrict_comp` rewrite)*
+- [x] Prove the functoriality corollaries `assocRestrict_id` (from `Beh.restrictTr_id`) and
       `assocRestrict_comp` (from `Beh.restrictTr_comp`), each a `.val`-level equation so that no
       transport along `assocRestrict_len` appears
-- [ ] Add to the module docstring's `## Main Results` the sentence that the associated presheaf
+- [x] Add to the module docstring's `## Main Results` the sentence that the associated presheaf
       of `len` is `Beh F` itself — same sections (`PathHom` of length `l` is a `Beh F l` with two
       endpoint equations), same restriction (`assocRestrict_sec`), same functoriality
       (`assocRestrict_id`/`assocRestrict_comp`) — and that the "associated presheaf of a
       fibration" notion is thereby instantiated at `len`, not defined in general
-- [ ] Docstrings: `Constraints consumed: None` on `assocRestrict`, `assocRestrict_len`,
+- [x] Docstrings: `Constraints consumed: None` on `assocRestrict`, `assocRestrict_len`,
       `assocRestrict_sec`, `assocRestrict_id`, `assocRestrict_comp`;
       `Constraints consumed: Compositionality` on `assocRestrict_unique`
-- [ ] Record the issue log as events arise
+- [x] Record the issue log as events arise
 
 **Timing**: 1 hour
 
@@ -480,6 +480,7 @@ remains the complete covering check — the module is still unimported.
   drifted from "the restriction" and must be corrected, not the lemma weakened)
 - `#print axioms` on `assocRestrict_unique` reports `[propext, Quot.sound]`
 - Commit: `task 618 phase 5: the associated presheaf of len is Beh F, as an equality`
+- Verification record (2026-10-18): guarded scoped build exit 0, no sorry, no warnings; full guarded `lake build` exit 0 (2878 jobs, 0 errors); `assocRestrict_sec` closes by `rfl` as required; `#print axioms`: `assocRestrict_unique`, `assocRestrict_sec`, `assocRestrict_id`, `assocRestrict_comp` all `[propext, Quot.sound]`; C34a PASS over 132 markers; C15 PASS; declaration count 38; `## Main Results` equality paragraph added to the module docstring; `status.typ` regenerated and staged
 
 ---
 
