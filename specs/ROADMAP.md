@@ -56,7 +56,7 @@ aim.
 /orchestrate 714,729,730,741,743,751,752,753
 /orchestrate 767,768,769,770,772,774,777,779
 /orchestrate 780,781,785,787,803,804,810,813
-/orchestrate 817,818,821
+/orchestrate 817,818,821,825
 ```
 
 ## Next batches
