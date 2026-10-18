@@ -202,7 +202,7 @@ of each other and both only need Phase 1's corrected statement line; Phase 12 ne
 (Phase 7) as well as (S) (Phase 11), which is the one cross-wave edge that is not simply
 sequential. Phase 15 is the final phase.
 
-### Phase 1: Retire the Deleted Statement Line and Record the Discharge [NOT STARTED]
+### Phase 1: Retire the Deleted Statement Line and Record the Discharge [COMPLETED]
 
 **Goal**: Make the task's own records say what is now true — the three declarations are statable
 in presentation (a)'s fibre form, every declared edge is discharged, and the 2026-10-11 blocker
@@ -210,26 +210,26 @@ artifact recommends a refuted candidate — so that no later phase and no future
 withdrawn statement line or a dead route as live.
 
 **Tasks**:
-- [ ] Correct `specs/761_ladder_realization_theorem/.blocker-research.json`: its `solution_path`
+- [ ] Correct `specs/761_ladder_realization_theorem/.blocker-research.json` *(deviation: skipped — the file does not exist; `ls -a specs/761_ladder_realization_theorem/` lists no `.blocker-research.json`, so there is no recommendation to correct. The landed route is instead recorded in `specs/state.json`'s amended description, item 2 below)*: its `solution_path`
       recommends gating the gap-carrying candidate refuted by
       `specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean`
       (`exhibited_form_refuted`, `exists_form_refuted`, `cell_succ_ne`). Replace the
       recommendation with the landed state: presentation (a), the counter-lift lemma licensed in
       pumping form, and this plan as the live route. Write it through `state-write.sh`; never
       hand-edit under a held mutex.
-- [ ] Amend the task description in `specs/state.json` (via `update-task-status.sh` /
+- [x] Amend the task description in `specs/state.json` *(completed)* (via `update-task-status.sh` /
       `state-write.sh`, scoped by `select(.project_number == 761)`) so the STATEMENT paragraph
       names the fibre equation instead of `hitOf (truncate B …)`, and records that all six edges
       are discharged. Regenerate `specs/TODO.md` with `generate-todo.sh`; never hand-edit it.
-- [ ] Amend the design of record
+- [x] Amend the design of record *(completed — the archived path is writable; one dated `**Amended by**` paragraph added to each of Sections A and C)*
       (`specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md`, Sections
       A and C) with one paragraph each: the statement line is the fibre equation over `D`; the
       factorization lemma for `K` is its corollary. If the archived path is read-only by
       convention, record the amendment in `specs/761_ladder_realization_theorem/records/` instead
       and name that choice in the phase handoff.
-- [ ] Re-compile the `## Lean Challenge Statements` block below standalone through the build
+- [x] Re-compile the `## Lean Challenge Statements` block below standalone through the build
       guard and confirm it still reports exactly twelve `declaration uses 'sorry'` warnings and
-      zero errors (it did at plan time). Take the snapshot:
+      zero errors (it did at plan time) *(completed — guard exit 0, exactly twelve `declaration uses \`sorry\`` warnings, zero errors)*. Take the snapshot *(deviation: altered — `lean-challenge-snapshot.sh 761 .` REFUSED with exit 73: "task 761's status is 'implementing' (past 'planned')". The tool's own `--force` banner states that a Challenge produced after implementation has started "certifies nothing about what the implementation agent actually saw", so forcing one would commit a misleading manifest into git history. `--check` is therefore unavailable to later phases and signature fidelity is verified by direct diff against this plan's Challenge block instead — which is what the token-for-token criterion in Phases 10-13 actually asks for.)*:
       `bash .claude/scripts/lean-challenge-snapshot.sh 761 .` so `--check` is available to later
       phases — the absence of a snapshot was a named follow-up of the predecessor record.
 
