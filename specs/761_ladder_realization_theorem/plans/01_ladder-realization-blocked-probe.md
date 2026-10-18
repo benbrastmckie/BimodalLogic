@@ -10,6 +10,13 @@
 - **Type**: lean4
 - **Lean Intent**: true
 
+> **SUPERSEDED — read `plans/01_ladder-realization-presentation-a.md` instead.** That file is
+> the live plan for this task. It reproduces Phases 2-6 below verbatim as the completed record
+> of the round that landed the thirteenth wired probe, revises Phase 1 (the obstruction it
+> recorded is discharged: all six declared edges are closed, presentation (a) is chosen, and the
+> counter-lift lemma's two halves are licensed in pumping form), and adds Phases 7-15. Nothing
+> below is deleted; nothing below is an instruction to the current round.
+
 ## Overview
 
 The filed record asked for a library module `RaySummary/LadderRealize.lean` carrying `LadderCons`,

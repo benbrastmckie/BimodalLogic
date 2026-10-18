@@ -1,0 +1,31 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-presentation-a.md",
+      "summary": "Revised plan for presentation (a): Phase 1 re-scoped from [BLOCKED] to an executable record correction, Phases 2-6 preserved verbatim as [COMPLETED], Phases 7-15 added for the pin-lemma port, the certificate-layer promotion into the library, the counter quotient K with parameters as outputs, LadderCons, obligations (S) and (C'), the factorization corollary and the ladderRealized fibre equation, gate 8 and the records."
+    }
+  ],
+  "next_steps": "Update state.json's plan artifact pointer for 761 to the new plan path (this aux dispatch is not postflighted, so the pointer still names the superseded file), then run /orchestrate 761 --hard --lit to execute the revised plan from Phase 1.",
+  "metadata": {
+    "session_id": "sess_1792357877_8196ed",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "dispatch_seq": 5,
+    "aux_kind": "plan-revision",
+    "revision_sentinel": "specs/761_ladder_realization_theorem/.plan-revised.json",
+    "superseded_plan": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
+    "phase_count": 15,
+    "phases_preserved_completed": [2, 3, 4, 5, 6],
+    "phases_revised": [1],
+    "phases_added": [7, 8, 9, 10, 11, 12, 13, 14, 15],
+    "estimated_hours": 18,
+    "not_costable_phases": [12],
+    "reports_integrated": [
+      "specs/761_ladder_realization_theorem/reports/02_spawn-analysis.md",
+      "specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md",
+      "specs/820_ladder_counter_lift_lemma_gated/summaries/01_counter-lift-gate-table-summary.md"
+    ]
+  }
+}
