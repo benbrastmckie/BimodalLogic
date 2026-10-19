@@ -1,64 +1,34 @@
 {
-  "status": "partial",
-  "started_at": "2026-10-18T18:20:00Z",
-  "completed_at": "2026-10-18T18:50:00Z",
-  "requires_user_review": true,
-  "review_reason": "Phases 10 and 11 are [BLOCKED] on a second, independent circularity the settled 11-before-10 merge does not touch: ladderSound's certStabK obligation needs constancy of cellAt on K-classes, which is Phase 13's Goal and which Phase 13 derives from (S) and (C'). Phases 11, 12 and 13 are mutually circular as decomposed, so a plan revision choosing between two routes is required before any implementation step is available.",
-  "blocked_phase": 11,
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": null,
-    "build_output": "No library file was modified by this dispatch, so no full-project build verdict is claimed. git diff over FormalSystem/ is empty. Two standalone snippets compiled through the build guard (lake-build-guard.sh build --timeout 500 -- env lean <file>): exit 0 each, no errors, no sorry. sorry_count 0 and axiom_count 14 are unchanged from the dispatch's starting commit; vacuous_count 1 is the pre-existing FormalSystem/Examples/TemporalStructures.lean false positive, also unchanged."
-  },
-  "partial_progress": {
-    "stage": "phase_11_blocked",
-    "details": "The merged Phase 11-before-10 was entered per the settled decision and both phases closed [BLOCKED]. See the plan file's two structured BLOCKER records and specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T015000Z.md for the four candidate certified sets ruled out, the two compiled obstruction lemmas, and the two candidate routes.",
-    "phases_completed": 9,
-    "phases_total": 15
-  },
+  "status": "planned",
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/03_ladder-paramsok-parameter-repair.md",
-      "summary": "Phases 10 and 11 marked [BLOCKED] with structured BLOCKER records; all eight of their checklist items annotated inline."
-    },
-    {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/02_ladder-paramsok-parameter-repair-summary.md",
-      "summary": "Round-2 implementation summary updated in place for this dispatch: Status [BLOCKED], with the obstruction, the two routes and the recommendation."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T015000Z.md",
-      "summary": "Phase handoff: the obstruction in full, the two standalone-compiled obstruction lemmas quoted verbatim, and the two candidate routes."
+      "path": "specs/761_ladder_realization_theorem/plans/04_ladder-agreement-first-decomposition.md",
+      "summary": "Agreement-first, acyclic decomposition on recorded route (R-b): Phases 1-9 preserved verbatim (1-8 [COMPLETED], 9 [COMPLETED WITH EXCLUSIONS]); the circular Phases 10-15 replaced by Phases 10-18 whose Depends on edges form a DAG with Phase 18 the single terminal node and transitively dependent on every other phase."
     }
   ],
-  "modified_files": [
-    "specs/761_ladder_realization_theorem/plans/03_ladder-paramsok-parameter-repair.md",
-    "specs/761_ladder_realization_theorem/summaries/02_ladder-paramsok-parameter-repair-summary.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T015000Z.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/.orchestrator-handoff.json"
-  ],
-  "user_decision": {
-    "question": "Phases 11, 12 and 13 of the live plan are mutually circular as decomposed: ladderSound (S) needs constancy of cellAt on K-classes, which is Phase 13's Goal and which Phase 13 derives from (S) and (C'). Which route should the plan be revised to?",
-    "options": [
-      "(R-a) One simultaneous induction on stab-nesting depth across Phases 11-13 over depth-stratified internal statements of (S), (C') and the agreement, with the three pinned Goals as the d = max corollaries; adds a depth-stratified certificate family beside Phase 9's layer, since Dmax is not stratified",
-      "(R-b) Prove cellAt_const_of_kappa_eq first and directly at the history level — the licensed pumping counter-lift lemma, Phase 12's chain-replacement machinery — then Real's certification by Finding 3, then (S), then (C'), then the fibre equation; every pinned signature unchanged, Phase 13's 'COROLLARY of (S) and (C')' route directive and the phase order change"
-    ],
-    "recommended": "(R-b) Prove cellAt_const_of_kappa_eq first and directly at the history level — the licensed pumping counter-lift lemma, Phase 12's chain-replacement machinery — then Real's certification by Finding 3, then (S), then (C'), then the fibre equation; every pinned signature unchanged, Phase 13's 'COROLLARY of (S) and (C')' route directive and the phase order change",
-    "blocking": true
-  },
+  "next_steps": "Run /orchestrate 761 to execute the revised plan from Phase 10. Phases 10 and 11 form one wave and are independent; Phase 11 is the first mathematical contingency point and is NOT COSTABLE.",
   "metadata": {
-    "session_id": "sess_1792369938_5187f7",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 11,
-    "compliance_check": "skipped",
-    "handoff_path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T015000Z.md"
+    "session_id": "sess_1792384915_8c97c1",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "task_number": 761,
+    "phase_count": 18,
+    "estimated_hours": 26.5,
+    "reports_integrated": [],
+    "revision_inputs": [
+      "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T015000Z.md",
+      "specs/761_ladder_realization_theorem/.orchestrator-handoff.json",
+      "specs/761_ladder_realization_theorem/issues.jsonl",
+      "specs/761_ladder_realization_theorem/.decisions.json"
+    ],
+    "decisions_taken": {
+      "route_for_mutual_circularity": "(R-b) — agreement first, at the history level; the route already recorded in .decisions.json at 2026-10-19T02:24:59Z. Rationale carried in the plan's 'The Two Decisions This Decomposition Implements' section: the task's 2026-10-18 amendment gates the counter-lift lemma before any sufficiency attempt and task 820 discharged it in pumping form; every pinned Goal signature survives unchanged; (R-a) would add a depth-stratified certificate family beside the landed Dmax layer and stratify certChain, without escaping the lift.",
+      "paramsOk_repair_form": "The parameter-hypothesis form (hp : ParamsOk step pend lab phi Tc Tn P B) on cellAt_const_of_kappa_eq and ladderRealized, NOT existential quantification of the parameters — the option recorded in .decisions.json at 2026-10-18T23:39:29Z and already landed in CounterQuotient.lean (ParamsOk, paramsOk_params, not_paramsOk_allZero). Preserved unchanged; ladderSound, ladderLift and ladderCons_localRun carry no parameter hypothesis."
+    },
+    "acyclicity_verified": true,
+    "lean_challenge_block_recompiled": "lake-build-guard.sh build --timeout 800 -- env lean: exit 0, 0 errors, exactly 18 'declaration uses sorry' warnings (12 abbrev, 6 theorem)",
+    "validate_artifact": "PASS, 0 warnings",
+    "new_statement_level_risk_raised": "ladderSound's pinned signature carries no parameter hypothesis, but the only route this decomposition provides runs through Real's certification, which consumes the agreement and therefore hp. Recorded as the plan's top risk with a three-branch Phase 13 contingency (probe for refutability at the all-zero tuple; else prove the pinned statement; else land ladderSound_of_paramsOk under that honest auxiliary name, mark the filed statement [BLOCKED] and raise). Adding hp to a recorded Challenge statement is routed to the user, never taken by an implementer."
   }
 }
