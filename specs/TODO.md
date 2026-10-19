@@ -86,7 +86,7 @@ next_project_number: 828
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [IMPLEMENTING] — AMENDED 2026-10-18 (presentation chosen): the cell...
+761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
@@ -1762,6 +1762,18 @@ PROVENANCE. Raised during orchestration of the ladder-model cell-stabilization w
 
 RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. The `lean-challenge-snapshot.sh` declaration-chunk and Unicode-identifier record came out of the same orchestration and is the sibling Lean-extension script defect; the plan-format decision-gate record covers the contract-prose surface from the same batch. Nothing here blocks on either, and the three touch disjoint files.
 
+=== SECOND INDEPENDENT REPRODUCTION, AND ONE MECHANISM CLAIM TO CONFIRM RATHER THAN TRUST ===
+
+This defect was re-observed independently during orchestration of the ladder-realization-theorem record and approved at the orchestrate-lead level through the conclusion stage's agent-system change-request channel. The citation is recorded here rather than filed as a duplicate record because this record already owns the defect and already carries both candidate remedies. Entry: `specs/761_ladder_realization_theorem/issues.jsonl`, entry_id `iss_1792362861192_o99zDu` (class `tooling-trap`, severity `costly`, phase `implement`).
+
+NOTHING IN THIS RECORD'S SCOPE, REMEDY SET OR ACCEPTANCE CONDITIONS CHANGES. The second observation matches the account above in every structural respect: a repeated `build -- env lean <same path>` invocation replayed the previous run's captured output after the file at that path had been corrected on disk, and the run was worked around with `--no-share`. Two things it adds are worth carrying into the fix.
+
+  (1) A MECHANISM CLAIM BEARING ON THE (i)/(ii) DISCRIMINATION ABOVE, WHICH IT DOES NOT SETTLE. The second observation reports that the `scope_key` is the lake ARGUMENT VECTOR and that the project inputs were unchanged between the two runs. That is consistent with candidate mechanism (i) -- the rewritten file is not a member of the fingerprinted set at all -- and inconsistent with (ii). It is NOT a measurement of set membership; it is an inference from reading the script, which is exactly what this record already forbids relying on ("Reproduce the replay mechanically first; do not infer the mechanism from the header's prose"). Treat it as a prior that makes (i) the first hypothesis to test, never as the finding itself.
+
+  (2) THE SEVERITY IS NOW EXHIBITED, NOT ONLY ARGUED. This record argues that a silent stale replay "undermines EVERY single-file verification in the system". The second run supplies a concrete instance in the opposite polarity from the one the prose above imagines: two successive signature-fidelity diffs reported a phantom `end Generic` syntax error that no longer existed on disk, so a CORRECT file was made to look broken. A stale replay therefore produces false negatives as readily as false greens, and the caller cannot distinguish either from a fresh run without inspecting stderr for the `lake-build-guard: REPLAY:` marker. This strengthens the case for remedy (b) -- refuse to share for an `env lean ...` invocation at all -- on the ground that the failure is silent in both directions, and it supplies a second regression-test polarity worth asserting: a run whose second outcome is PASS after a first outcome of FAIL, not only the reverse.
+
+ONE ATTRIBUTION CORRECTION, SO IT IS NOT RE-INTRODUCED FROM THE CHANGE REQUEST. The dispatching change request attributed `lake-build-guard.sh` to the `lean` extension. VERIFIED DURING THE CREATION OF THIS NOTE, two ways: the script exists in the source store only at `/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/lake-build-guard.sh`, and `<project-root>/.claude-extensions.json` attributes the deployed `.claude/scripts/lake-build-guard.sh` to the `core` extension. The owning extension is `core`, which agrees with this record's existing `file_scope`; no `file_scope` change is required.
+
 ---
 
 ### 763. Ladder lift decidability corollary
@@ -1789,7 +1801,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 ---
 
 ### 761. Ladder realization theorem
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819, Task 820
