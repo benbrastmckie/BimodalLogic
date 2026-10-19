@@ -1,51 +1,47 @@
 {
-  "status": "blocked",
-  "dispatch_seq": 11,
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T015000Z.md",
-  "continuation_context": "Resume at the merged Phase 11-before-10 once the plan is revised to route (R-a) or (R-b). Phase 9 is [COMPLETED WITH EXCLUSIONS] and its layer (CounterQuotient.lean) is landed and green; no library file was changed by dispatch 11, so there is nothing to undo. The handoff carries the four candidate certified sets already ruled out, the two compiled obstruction lemmas to land wherever the revision puts them, and the two Phase 10 task-list discrepancies the revision must absorb.",
-  "phases_completed": 9,
-  "phases_total": 15,
-  "summary": "Entered the merged Phase 11-before-10 that the settled decision fixed, and closed both phases [BLOCKED] on a second, independent circularity the merge does not touch: ladderSound's certStabK obligation needs constancy of cellAt on K-classes, which is Phase 13's Goal and which Phase 13 derives from (S) and (C'). The plan's own Finding 3 records the same dependency in the other direction, so Phases 11, 12 and 13 are mutually circular as decomposed. No library file was changed and no sorry, axiom or vacuous definition was written; the obstruction is landed as structured BLOCKER records in the plan plus two lemmas compiled standalone through the build guard and quoted in the handoff.",
+  "status": "partial",
+  "dispatch_seq": 13,
+  "phases_completed": 10,
+  "phases_total": 18,
+  "summary": "Phase 10 closed green: the definitional layer of LadderRealize.lean (typeOfCl, certChain, LadderCons) landed at the signatures the Challenge block pins, verified by direct diff. Phase 11 created LadderAgree.lean and landed its rigid-anchor layer -- 22 compiled declarations including the cell-level reading of the box-dot bit, the rigid pending region, the countdown rigidity under a fixed object walk, and the window/dichotomy pair with the gap coordinate's segregation of the two regimes -- but the agreement cellAt_const_of_kappa_eq is BLOCKED and is not stated anywhere. Full lake build exit 0 at 2892 jobs with 0 errors and 0 warnings, module invariants ALL CHECKS PASSED, 44 of 44 wired probes PASS, sorry count 0, axiom count and vacuous count unchanged from the starting commit.",
   "blockers": [
     {
       "phase": 11,
-      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean (ladderSound)",
-      "verbatim_goal": "exists T : ClType phi, typeOfCl T = tpOf (ladderModel step pend fwd bwd lab) phi sigma z AND (q, T, kappa Tc Tn P B (c, n)) IN Dmax step pend lab phi Tc Tn P B",
-      "what_was_tried": "Four candidate certified sets: (1) the projection of one admissible ladder history; (2) the full realizable set (the plan's Real, Finding 3); (3) the cell at one representative state per (q, kappa)-class; (4) a set confined to a single state's cell. Two obstruction lemmas were compiled standalone through the build guard (exit 0) and are quoted verbatim in the phase-11 handoff.",
-      "why_it_failed": "Dmax is the union of certAdmK-certified sets and its own certification is unavailable (Phase 9's recorded exclusion: certStabK and certBoxK are biconditionals, so only the four monotone conditions survive a union). Candidate 1 fails certBoxK, whose backward direction needs a global box bit that one chain cannot refute. Candidate 2 fails certStabK: stab_mem_tpOf_iff makes the stab bit a datum of one world state while certStabK's fibre is taken over the whole (q, kappa)-class. Candidates 3 and 4 fail certBiInfK, which forbids confining a certified set to one state's cell. The gap between (5) and (2) is exactly the constancy of cellAt on K-classes, which is Phase 13's Goal and which Phase 13 derives from (S) and (C'); the plan's Finding 3 records the same dependency in the other direction. The depth stratification Phase 11's Scope Hypothesis offers as the escape does not escape: at depth d the argument calls the lift (C') at depth d-1, so the induction is simultaneous in (S) and (C') and cannot be split across phases whose Depends on edges run one way."
+      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean :: cellAt_const_of_kappa_eq",
+      "verbatim_goal": "cellAt (ladderModel step pend fwd bwd lab) phi (t, <(q, c, n), h>) z = cellAt (ladderModel step pend fwd bwd lab) phi (t, <(q, c', n'), h'>) z, under (hp : ParamsOk step pend lab phi Tc Tn P B) and kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')",
+      "what_was_tried": "Built the chain-replacement machinery from the Count clause up: the four readings of Count along a path, the rigid pending region (the countdown IS the distance to the region's end, so the first idle position sits at distance exactly cntAt g u + 1), the countdown rigidity under a fixed object walk, the 1-Lipschitz window on the next-deadline register with its dichotomy, and the collision reading of the class map. All 22 declarations compile with no sorry and no axiom. The type-transfer half was then attempted and is where it stops.",
+      "why_it_failed": "A THIRD circularity, distinct from the two the agreement-first revision resolved. cntAt_eq_of_obj_eq forces the replacement to pump the OBJECT walk, and pumping preserves the realized type only through a MODEL-level periodicity statement about tpOf along a ladder path. The only landed periodicity statement is the eventual periodicity of prodPreStep (cohIdle) on Finset (ProdState Q phi), with outputs satThreshold/satPeriod -- a CERTIFICATE-relation fact, and CounterQuotient.lean states in source that nothing there relates cohIdle to Rlad, ladderModel, tpOf or cellAt. That bridge is exactly obligations (S) and (C'), Phases 12-15, which read this agreement. A model-level pumping lemma must be authored and no phase of plan 04 costs one."
     },
     {
-      "phase": 10,
-      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean (ladderCons_localRun, LadderCons, certChain, typeOfCl)",
-      "verbatim_goal": "certChain step pend lab phi Tc Tn P B xi AND forall t, xi t IN R",
-      "what_was_tried": "The merged 11-before-10 order the settled decision of 2026-10-19T01:16:48Z fixes, so that the second conjunct would come from ladderSound plus LadderCons's maximality clause (Dmax subset R) rather than from a soundness field on LadderCons.",
-      "why_it_failed": "Phase 11 is blocked, so ladderSound is unavailable and no clause of LadderCons can supply the membership conjunct without carrying soundness as a field -- the weakened-statement move the plan and plan-compliance.md both forbid. The first conjunct (the projection lemma) was deliberately not attempted either: certChain is pinned BY POSITION ONLY and route (R-a) would stratify it by stab-nesting depth, so authoring it now would prejudge the route decision. Two further discrepancies in this phase's task list are recorded for the revision: Realize.lean's SLive/UCoh/SCoh/deferGraph/bwdDeferGraph/Disch/persist/snce_iff_of_SCoh_SLive are indexed by (clSig phi).preds letters over a labelling Q -> (clSig phi).preds -> Bool and cannot be formed from LadderCons's pinned lab : Q -> Atom -> Bool, so task 2's 'retain slive over Q's step' does not type-check; and certChain is carried by no phase's task list at all."
+      "phase": 11,
+      "target": "plans/04_ladder-agreement-first-decomposition.md :: Phase 11 task list",
+      "verbatim_goal": "Prove cellAt_const_of_kappa_eq at the history level on route (R-b), with no induction step in the task list",
+      "what_was_tried": "Followed the task list in order; landed stab_mem_tpOf_iff_cell as task 2 directs and then read the Goal through it.",
+      "why_it_failed": "By stab_mem_tpOf_iff_cell the box-dot bit inside tpOf is a datum of the very cell the agreement compares, so the proof runs by induction on box-dot-nesting depth whatever the phase order is. Route (R-b) relocates the stratification into this phase's proof rather than removing it. At the model level the stratified objects are Finset PlusFormula values of tpOf, so (R-a)'s recorded cost -- a stratified certificate family beside Phase 9's layer -- does not transfer, but the task list contains no induction step."
+    },
+    {
+      "phase": 11,
+      "target": "specs/state.json :: active_projects[project_number=761].file_scope",
+      "verbatim_goal": "Commit FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean, which plan 04 Phase 11 directs creating",
+      "what_was_tried": "git-commit-scoped.sh --task 761 with the new module in the pathspec list.",
+      "why_it_failed": "The field was harvested before plan 04 existed and lists only LadderRealize.lean, so the V10 containment guard dropped the path; --file-scope-add is restricted to operation=postflight with target_status in {research, plan}, so an implement dispatch cannot widen it. The commit was made with the containment guard off (--task is opt-in) and the path is proposed via proposed_file_scope on .return-meta.json for postflight to merge."
     }
   ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/03_ladder-paramsok-parameter-repair.md",
-      "summary": "Phases 10 and 11 marked [BLOCKED], each with a structured BLOCKER record; all eight of their checklist items annotated with inline blocked-deviation notes."
-    },
-    {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/02_ladder-paramsok-parameter-repair-summary.md",
-      "summary": "Round-2 summary updated in place for this dispatch: Status [BLOCKED], with the obstruction, the two candidate routes and the recommendation recorded."
+      "path": "specs/761_ladder_realization_theorem/summaries/04_ladder-agreement-first-decomposition-summary.md",
+      "summary": "Round-4 summary: Phase 10 completed, Phase 11 blocked with the three obstructions recorded."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T015000Z.md",
-      "summary": "The four candidate certified sets worked through, the two compiled obstruction lemmas quoted verbatim, why the depth stratification does not escape the lift, and the two routes with the task description's own ordering argument for (R-b)."
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T081457Z.md",
+      "summary": "Phase 11 handoff: what landed, the three obstructions, and the two steps a revision must add."
     }
   ],
-  "user_decision": {
-    "question": "Phases 11, 12 and 13 of the live plan are mutually circular as decomposed: ladderSound (S) needs constancy of cellAt on K-classes, which is Phase 13's Goal and which Phase 13 derives from (S) and (C'). Which route should the plan be revised to?",
-    "options": [
-      "(R-a) One simultaneous induction on stab-nesting depth across Phases 11-13 over depth-stratified internal statements of (S), (C') and the agreement, with the three pinned Goals as the d = max corollaries; adds a depth-stratified certificate family beside Phase 9's layer, since Dmax is not stratified",
-      "(R-b) Prove cellAt_const_of_kappa_eq first and directly at the history level — the licensed pumping counter-lift lemma, Phase 12's chain-replacement machinery — then Real's certification by Finding 3, then (S), then (C'), then the fibre equation; every pinned signature unchanged, Phase 13's 'COROLLARY of (S) and (C')' route directive and the phase order change"
-    ],
-    "recommended": "(R-b) Prove cellAt_const_of_kappa_eq first and directly at the history level — the licensed pumping counter-lift lemma, Phase 12's chain-replacement machinery — then Real's certification by Finding 3, then (S), then (C'), then the fibre equation; every pinned signature unchanged, Phase 13's 'COROLLARY of (S) and (C')' route directive and the phase order change",
-    "blocking": true
-  }
+  "next_action_hint": "A plan revision for Phase 11: add a model-level pumping lemma (inserting a pending cycle of length divisible by P+1 at distance at least Tc from the position preserves tpOf there) and an explicit box-dot-nesting-depth induction with that lemma as its base case, both ahead of the pinned Goal. Neither is costable. clipIdx_regime_of_eq lets the pumping lemma be given separately in the two regimes.",
+  "plan_markers_verified": true,
+  "phase": "implement",
+  "git_checkpoint": "262f91c26",
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T081457Z.md"
 }
