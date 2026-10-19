@@ -1189,4 +1189,203 @@ no certificate object is named, and no pin is a complexity bound. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_spliced_ladderPath_of_pend_past
 
+/-! ## Requirement (W): the type layer of the replacement — the bridge and the clause audit
+(`RaySummary/LadderAgree.lean`)
+
+Seventeen further pins, one per declaration of the module's type layer. The two TEMPORAL fixpoint
+readings of a closure type, which the anchor layer does not land (`untl_mem_tpOf_iff`,
+`snce_mem_tpOf_iff`): with the anchor layer's `⊥`, `→`, `□` and `⊡` equations they are the local
+coherence conditions the type sequence along a path satisfies. The BRIDGE between the two layers
+the module speaks in — a ladder path is an offset step path of `RladAdm` at every offset because
+`Rlad` ignores its time argument (`isSlicedStepPath_iff_isLadderPath`), every ladder path is a
+world history of the ladder frame (`exists_hist_of_isLadderPath`) and every world history is a
+ladder path up to its origin's offset (`exists_isLadderPath_of_hist`), so the cell of a ladder
+state is exactly what the ladder paths through it realize, with no offset left over
+(`mem_cellAt_ladder_iff`). The INDEX MAPS of the splice: the retraction along which the spliced
+walk is the original (`spliceIdx`, its two readings, `spliceObj_eq_objAt_spliceIdx`) and the order
+embedding it retracts (`spliceEmb`, `spliceEmb_monotone`, `spliceIdx_spliceEmb`). And the CLAUSE
+AUDIT of what a replacement argument owes: the `□` letters transfer under every replacement
+whatsoever because their bit names no path (`box_mem_tpOf_transfer`), and the ATOMIC letters read
+the object walk at the position and nothing else (`atom_mem_tpOf_ladder_iff`), so they transfer
+whenever the object at the position does (`atom_mem_tpOf_transfer_of_objAt_eq`) — which
+`spliceObj_eq_of_le` says the splice arranges.
+
+**What these pins certify, and what they do not.** The standard profile or a strict subset of it
+on each declaration, and nothing else. They pin the TYPE-LEVEL STATEMENT LAYER of the replacement
+and the two clause families that transfer for free; they do NOT pin any transfer of a temporal
+letter or of a `⊡` letter across the splice, and they do not pin the agreement of
+class-equivalent cells, which is not landed. `spliceIdx_seam_lt` is pinned as an OBSTRUCTION
+record, not as a step of a proof: the retraction drops back by the block length at the seam, so a
+temporal witness found in the second copy of the pumped block retracts to a position that need not
+be later than the position being evaluated, and the index maps alone therefore do not transport
+`untl_mem_tpOf_iff`'s right-hand side. Nothing here is a finite-fibre or finite-width hypothesis,
+no certificate object is named, and no pin is a complexity bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.untl_mem_tpOf_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.untl_mem_tpOf_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.snce_mem_tpOf_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.snce_mem_tpOf_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.box_mem_tpOf_transfer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.box_mem_tpOf_transfer
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx_of_lt' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx_of_lt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx_of_ge' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx_of_ge
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_eq_objAt_spliceIdx' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_eq_objAt_spliceIdx
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceEmb' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceEmb
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceEmb_monotone' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceEmb_monotone
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx_spliceEmb' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx_spliceEmb
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx_seam_lt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceIdx_seam_lt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.isSlicedStepPath_iff_isLadderPath' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.isSlicedStepPath_iff_isLadderPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_hist_of_isLadderPath' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_hist_of_isLadderPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_isLadderPath_of_hist' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_isLadderPath_of_hist
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.mem_cellAt_ladder_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.mem_cellAt_ladder_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.atom_mem_tpOf_ladder_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.atom_mem_tpOf_ladder_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.atom_mem_tpOf_transfer_of_objAt_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.atom_mem_tpOf_transfer_of_objAt_eq
+
+/-! ## Requirement (W): the truth-transport layer, half (i)
+(`RaySummary/LadderAgree.lean`)
+
+Eleven further pins, one per declaration of the module's transport layer. The `⊡`-nesting depth
+and the pinned-letter predicate (`stabDepth`, `StabPinned`) with the three facts an induction on
+that depth steps by (`stabDepth_stab`, `stabDepth_arg_le_of_le_succ`, `stabDepth_le_sup` — the
+depth is bounded on a closure by a `φ`-determined quantity, so the induction terminates) and the
+two bridges to the hypothesis the transport statements take (`stabPinned_of_stabDepth_le`,
+`stabPinned_false_of_mem_closure`). Then HALF (i) itself: two ladder paths with the SAME object
+walk satisfy the same closure formulas at every position, for every formula whose `⊡` letters are
+pinned (`truthAt_iff_of_objAt_eq_of_stabPinned`), its reading on closure types
+(`tpOf_eq_of_objAt_eq_of_pinned`) and the stab-free instance (`tpOf_stabFree_eq_of_objAt_eq`). And
+its NON-VACUITY (`exists_ladderPath_pair_nxtAt_ne`): `cntAt_eq_of_obj_eq` fixes the countdown from
+the walk, but the next-deadline register only has to drift, so two ladder paths can share an object
+walk and differ at every position in `n` — the pair half (i) transports between.
+
+**What these pins certify, and what they do not.** The standard profile or a strict subset of it
+on each declaration, and nothing else. Half (i) is stated RELATIVE to the pinned-letter parameter,
+which is what an induction on `⊡`-nesting depth can consume; the stab-free statement is its
+instance and not its shape. These pins do NOT certify half (ii), splice invariance: no statement
+here transports a type between paths with DIFFERENT object walks, which is what pumping produces,
+and the agreement of class-equivalent cells remains unlanded. No certificate object and no
+certificate-side periodicity identifier is named anywhere in the module, no finite-fibre or
+finite-width hypothesis appears, and no pin is a complexity bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stabDepth' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabDepth
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.StabPinned' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.StabPinned
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stabDepth_stab' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabDepth_stab
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stabDepth_arg_le_of_le_succ' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabDepth_arg_le_of_le_succ
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stabDepth_le_sup' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabDepth_le_sup
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stabPinned_of_stabDepth_le' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabPinned_of_stabDepth_le
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stabPinned_false_of_mem_closure' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabPinned_false_of_mem_closure
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.truthAt_iff_of_objAt_eq_of_stabPinned' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.truthAt_iff_of_objAt_eq_of_stabPinned
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_of_objAt_eq_of_pinned' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_of_objAt_eq_of_pinned
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.tpOf_stabFree_eq_of_objAt_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf_stabFree_eq_of_objAt_eq
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_pair_nxtAt_ne' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_pair_nxtAt_ne
+
 end BimodalTest.Metalogic

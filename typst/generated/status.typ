@@ -30,9 +30,9 @@
 // Repository scale, LIVE trees only. Boneyard/ is deliberately absent so that
 // no archived figure can be folded into a live one.
 #let formalsystem-file-count = 716
-#let formalsystem-line-count = 370867
+#let formalsystem-line-count = 371433
 #let tests-file-count = 78
-#let tests-line-count = 24703
+#let tests-line-count = 24902
 #let tools-file-count = 40
 #let tools-line-count = 18142
 
