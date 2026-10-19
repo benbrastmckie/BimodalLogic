@@ -300,7 +300,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-10T23:53:38Z",
-      "last_updated": "2026-10-19T09:19:51Z",
+      "last_updated": "2026-10-19T10:05:26Z",
       "session_id": "sess_1792395030_22ac66",
       "artifacts": [
         {
@@ -334,9 +334,9 @@
           "summary": "ladder agreement first decomposition (backfilled by --sync)"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/04_ladder-agreement-first-decomposition-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-truth-transport-layer-summary.md",
           "type": "summary",
-          "summary": "Round 4 summary, extended with the replacement-admissibility layer and the four-obstruction record."
+          "summary": "Implementation summary for the round that landed half (i) of the model-level truth-transport layer and left half (ii) open."
         }
       ],
       "next_artifact_number": 5,
