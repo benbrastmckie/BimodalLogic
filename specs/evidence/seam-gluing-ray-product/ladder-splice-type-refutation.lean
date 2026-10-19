@@ -59,6 +59,13 @@ position at or below `0`, `1` at position `1`, `0` at positions `2` and `3`, and
      `spliced_rehypotheses` shows the spliced path satisfies the splice hypotheses again at
      `(0, 2)` -- so the iteration is genuinely available and `chiS` is true at every stage of it
      while false along the original throughout.
+  8. **WHY the block is the wrong unit**, compiled rather than left to prose:
+     `splice_block_not_type_respecting`. The pumped block's two endpoints carry the SAME object
+     state and DIFFERENT realized types -- `⊤ U p` holds at the block's entry, the single `p`-hit
+     lying inside the block, and fails at its exit. An object cycle is therefore not a unit of
+     type-invariance, and the seam has nothing to disarm it. This is what keeps the refutation
+     strictly OFF a block whose endpoint TYPES agree: such a block is a different object and
+     nothing here speaks about it.
 
 ## Non-vacuity, witnessed on both sides
 
@@ -81,18 +88,26 @@ original state realizes `chiS` is not decided here and no claim is made either w
 nothing about `ladderSound`, `ladderLift` or `ladderRealized`.  It is not a device-discrimination
 claim, it asserts no bound, and every quantity it names is a count.
 
+Above all, it says NOTHING about a splice at a TYPE-RESPECTING block -- one whose two endpoints
+carry the same realized type as well as the same object state.  `splice_block_not_type_respecting`
+shows the block refuted here is not of that kind, so the refutation is confined to the
+object-cycle splice by construction rather than by silence.
+
 ## What is refuted, precisely
 
-The claim refuted is that the FIXED surgery `spliceObj`/`spliceCnt` -- chosen to preserve
-ADMISSIBILITY -- also preserves the realized TYPE.  It does not: the surgery is type-blind, and a
-nested eventuality reads the occurrence count the surgery changes.  Nothing here says a
-type-aware lengthening of the region is impossible; that is a different construction, not stated
-anywhere in the tree, and this probe neither supplies nor refutes it.
+The claim refuted is that the FIXED surgery `spliceObj`/`spliceCnt` applied at an OBJECT cycle --
+a block chosen to preserve ADMISSIBILITY -- also preserves the realized TYPE.  It does not: the
+surgery is type-blind, and a nested eventuality reads the occurrence count the surgery changes.
+The diagnosis is compiled, not asserted: the block's endpoint types DIFFER
+(`splice_block_not_type_respecting`), so the loop is not a unit of type-invariance.  Nothing here
+says a splice at a TYPE-RESPECTING block is impossible, or that a type-aware lengthening of the
+region is; those are different constructions, not stated anywhere in the tree, and this probe
+neither supplies nor refutes them.
 
 ## Verification
 
 `#print axioms` on every headline theorem: `[propext, Classical.choice, Quot.sound]`, the
-fixture's own profile.  No `sorry`, no axiom, no `native_decide`, no placeholder body and no
+fixture's own profile (twenty-one printed theorems).  No `sorry`, no axiom, no `native_decide`, no placeholder body and no
 vacuous definition anywhere in this file.
 
 Compile: `lake env lean` on this file
@@ -391,6 +406,59 @@ theorem chiS_true_of_spliced {g g' : ℤ → LadderState Qs pendS} {k : ℤ}
   chiS_true_of_twoHits σ' hσ' (twoHits_of_spliced (by rw [hobj 1]; exact wS_one) hobj') z hz
 
 
+/-! ### WHY the block is the wrong unit, compiled
+
+The refutation runs on an OBJECT cycle: the block's two endpoints carry the same object state.
+They do NOT carry the same realized type, and that is the precise defect. `⊤ U p` holds at the
+block's entry (the single `p`-hit lies inside the block) and fails at its exit (nothing after it
+hits `p`), so the loop is not a unit of type-invariance and the seam has nothing to disarm it.
+This is what keeps the refutation OFF a block whose endpoint types agree: such a block is a
+different object, and nothing here speaks about it. -/
+
+/-- `⊤ U p`, the inner eventuality of `chiS`, is a closure member of `chiS`. -/
+theorem futp_mem_closure_chiS :
+    PlusFormula.untl PlusFormula.top (PlusFormula.atom pS) ∈ plusSubformulaClosure chiS := by
+  have h0 : PlusFormula.untl PlusFormula.top
+      ((PlusFormula.atom pS).and (.untl PlusFormula.top (.atom pS)))
+      ∈ plusSubformulaClosure chiS := self_mem_plusSubformulaClosure chiS
+  have h1 : ((PlusFormula.atom pS).and (.untl PlusFormula.top (.atom pS)))
+      ∈ plusSubformulaClosure chiS := plusClosure_untl_left chiS _ _ h0
+  have h2 : ((PlusFormula.atom pS).imp
+      ((PlusFormula.untl PlusFormula.top (PlusFormula.atom pS)).imp PlusFormula.bot))
+      ∈ plusSubformulaClosure chiS := plusClosure_imp_left chiS _ _ h1
+  have h3 : ((PlusFormula.untl PlusFormula.top (PlusFormula.atom pS)).imp PlusFormula.bot)
+      ∈ plusSubformulaClosure chiS := plusClosure_imp_right chiS _ _ h2
+  exact plusClosure_imp_left chiS _ _ h3
+
+/-- **THE PUMPED BLOCK IS NOT TYPE-RESPECTING.** Its two endpoints carry the same object state and
+DIFFERENT realized types. So what this file refutes is the splice at an OBJECT cycle; a block whose
+endpoint TYPES agree is a different object, and this probe says nothing about it either way. -/
+theorem splice_block_not_type_respecting {g : ℤ → LadderState Qs pendS} {k : ℤ}
+    (σ : WorldHistory (ladderFrameAdm stepS pendS fwdS bwdS).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t)) (hobj : ∀ v, objAt g v = wS v) :
+    objAt g 0 = objAt g (0 + ((2 : ℕ) : ℤ)) ∧
+      tpOf (ladderModel stepS pendS fwdS bwdS labS) chiS σ 0
+        ≠ tpOf (ladderModel stepS pendS fwdS bwdS labS) chiS σ 2 := by
+  have h2 : (0 : ℤ) + ((2 : ℕ) : ℤ) = 2 := by norm_num
+  refine ⟨?_, ?_⟩
+  · rw [h2, hobj 0, hobj 2, wS_of_le 0 (by omega) (by omega), wS_of_le 2 (by omega) (by omega)]
+  · intro heq
+    -- `⊤ U p` holds at the block's entry: the single `p`-hit is at position `1`
+    have hin : PlusFormula.untl PlusFormula.top (PlusFormula.atom pS)
+        ∈ tpOf (ladderModel stepS pendS fwdS bwdS labS) chiS σ 0 := by
+      rw [mem_tpOf_iff]
+      refine ⟨futp_mem_closure_chiS, ?_⟩
+      rw [PlusTruth.untl_iff]
+      refine ⟨1, by norm_num, ?_, fun r _ _ => PlusTruth.top_true _ _ _⟩
+      rw [atom_truth_iff σ hσ 1, hobj 1]
+      exact wS_one
+    -- and fails at its exit: nothing after position `2` hits the `p`-state
+    rw [heq, mem_tpOf_iff, PlusTruth.untl_iff] at hin
+    obtain ⟨s, hs, hp, -⟩ := hin.2
+    rw [atom_truth_iff σ hσ s, hobj s, wS_eq_one_iff] at hp
+    subst hp
+    exact absurd hs (by norm_num)
+
 /-! ### The parameters, discharged at the periodicity fixpoint's own outputs -/
 
 noncomputable def TcS : ℕ := Tcof stepS pendS labS chiS
@@ -501,6 +569,8 @@ end Probe761S
 #print axioms Probe761S.spliced_rehypotheses
 #print axioms Probe761S.chiS_true_of_spliced
 #print axioms Probe761S.paramsOkS
+#print axioms Probe761S.futp_mem_closure_chiS
+#print axioms Probe761S.splice_block_not_type_respecting
 #print axioms Probe761S.two_dvd_PS_succ
 #print axioms Probe761S.exists_separating_splice
 #print axioms Probe761S.splice_type_invariance_refuted
