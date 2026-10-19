@@ -1,9 +1,10 @@
 {
-  "status": "partial",
-  "started_at": "2026-10-19T09:28:00Z",
-  "completed_at": "2026-10-19T10:05:00Z",
+  "status": "blocked",
+  "started_at": "2026-10-19T10:26:21Z",
+  "completed_at": "2026-10-19T10:45:00Z",
   "requires_user_review": true,
-  "review_reason": "Phase 11.1 closes [PARTIAL]: half (i) of the model-level truth-transport layer is landed and verified, half (ii) (splice invariance) is open and not refuted. Phases 11.2, 11.3, 11.4 and 12-18 remain NOT STARTED and every one of them depends, directly or transitively, on the agreement that half (ii) feeds.",
+  "blocked_phase": "11.1",
+  "review_reason": "Phase 11.1's half (ii) (tpOf_stabFree_eq_of_splice) is REFUTED, not open: the admissibility-preserving splice is type-blind, and the schema with every recorded hypothesis is refuted by the new wired probe. Phases 11.2, 11.3 and 11.4 consume it as decomposed and cannot be entered as written, so a route decision and a /revise are owed before any further implementation dispatch.",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
@@ -11,17 +12,16 @@
     "axiom_count": 14,
     "build_passed": true
   },
-  "partial_progress": {
-    "stage": "phase_11.1_partial",
-    "details": "Phase 11.1 half (i) met and verified; half (ii) open. The live plan was revised mid-dispatch to plans/05_ladder-truth-transport-layer.md and the work was re-derived from the fresh text.",
-    "phases_completed": 11,
-    "phases_total": 22
-  },
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-truth-transport-layer-summary.md",
-      "summary": "Half (i) of the model-level truth-transport layer landed: 28 compiled declarations carrying the path/history bridge, the stab-depth measure, the temporal fixpoint readings, the clause audit and object-trace locality with its non-vacuity."
+      "path": "specs/761_ladder_realization_theorem/summaries/06_ladder-splice-type-refutation-summary.md",
+      "summary": "Half (ii) of the model-level truth-transport layer refuted and wired as the forty-fifth probe; Phase 11.1 closes BLOCKED on a route decision."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T104251Z.md",
+      "summary": "The refutation's mechanism, what it does and does not touch, and the two candidate routes."
     }
   ],
   "modified_files": [
@@ -29,21 +29,38 @@
     "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
     "FormalSystem/Metalogic/README.md",
     "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "scripts/check-evidence-probes.sh",
     "typst/generated/status.typ",
+    "specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean",
     "specs/761_ladder_realization_theorem/plans/05_ladder-truth-transport-layer.md",
-    "specs/761_ladder_realization_theorem/summaries/05_ladder-truth-transport-layer-summary.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T100500Z.md",
     "specs/761_ladder_realization_theorem/issues.jsonl",
+    "specs/761_ladder_realization_theorem/summaries/06_ladder-splice-type-refutation-summary.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T104251Z.md",
     "specs/761_ladder_realization_theorem/.orchestrator-handoff.json",
     "specs/761_ladder_realization_theorem/.return-meta.json"
   ],
+  "user_decision": {
+    "question": "Half (ii) of the truth-transport layer is refuted: the admissibility-preserving splice is type-blind, so Phases 11.2, 11.3 and 11.4 cannot be entered as decomposed. Which route should the plan be revised to?",
+    "options": [
+      "(a) A TYPE-AWARE region lengthening — choose the lengthened region's walk so the realized type at z is preserved instead of taking the fixed spliceObj, re-establishing Phase 11's admissibility content for whatever walk it produces",
+      "(b) Argue cellAt_const_of_kappa_eq at the level of the CELL — the set over all histories the Goal actually names, strictly weaker than pointwise type equality along a chosen pair of paths, and left entirely open by the refutation"
+    ],
+    "recommended": "(b) Argue cellAt_const_of_kappa_eq at the level of the CELL — the set over all histories the Goal actually names, strictly weaker than pointwise type equality along a chosen pair of paths, and left entirely open by the refutation",
+    "blocking": false
+  },
   "metadata": {
     "session_id": "sess_1792395030_22ac66",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "passed",
-    "dispatch_seq": 17
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "failed",
+    "dispatch_seq": 19,
+    "phases_completed": 11,
+    "phases_total": 22,
+    "compliance_check_note": "The mechanical spot-check reports MISSING for cellAt_const_of_kappa_eq, ladderSound, ladderCons_localRun, ladderLift and ladderRealized (and for the token 'abbrev', a false positive from the Goals block's prose). All five are Phases 12-18's Goals and are not yet reached; paramsOk_params, the one Goal whose phase has closed, is [OK]. Phase 11.1 lands NO Goal by the plan's own statement, so this is the check reading a plan mid-execution, not a compliance defect of this dispatch. No recorded Challenge signature was weakened, specialised or restated: the two touched declarations are a docstring and a new probe."
   }
 }

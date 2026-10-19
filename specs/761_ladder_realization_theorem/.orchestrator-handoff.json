@@ -1,33 +1,47 @@
 {
-  "dispatch_seq": 17,
-  "status": "partial",
+  "status": "blocked",
+  "dispatch_seq": 19,
+  "phase": "11.1",
+  "summary": "Phase 11.1's open half (ii), splice invariance of the realized stab-free type, is not open: it is FALSE as stated, and this dispatch entered the plan's own declared refuting branch rather than attempting it a third time. The forty-fifth wired probe ladder-splice-type-refutation.lean compiles splice_type_invariance_refuted against a schema carrying every recorded hypothesis, with every one discharged (seriality, the landed lift and the landed pending-forever splice, l | P+1 through (K1) on a compiled object 2-cycle, ParamsOk through paramsOk_params) and with the refutation checked against the ITERATED surgery the residue coordinate needs. Half (i), the presentation, and cellAt_const_of_kappa_eq itself are untouched and not refuted; what is refuted is that the admissibility-preserving surgery also preserves the type.",
   "phases_completed": 11,
   "phases_total": 22,
-  "summary": "Phase 11.1's half (i) is landed and verified; half (ii) is open and not refuted, so the phase closes [PARTIAL]. 28 new compiled declarations in LadderAgree.lean carry the path/history bridge (with mem_cellAt_ladder_iff, the agreement's own object in the replacement layer's language), the stab-depth measure and pinned-letter predicate, the two temporal fixpoint readings of a closure type, the clause audit, the splice's index maps, and half (i) itself with its non-vacuity witnessed. The live plan was revised MID-DISPATCH to plans/05_ladder-truth-transport-layer.md; the pre-write re-read obligation fired and the work was re-derived from the fresh text. Full guarded lake build exit 0 with 0 errors and 0 warnings, all gates green, sorry 0, vacuous and axiom counts unchanged.",
-  "blockers": [
-    "Phase 11.1 half (ii), splice invariance (tpOf_stabFree_eq_of_splice): a structural induction carrying one uniform claim at every position fails at the positions inside and adjacent to the pumped block, where the claim IS the pumping claim and the phase's Tc-distance hypothesis protects z alone. spliceIdx_seam_lt compiles the reason. What is needed is a model-level periodicity of the type sequence along a periodic object segment, the model-side analogue of the certificate graph's own periodicity, which this phase may not cite. NOT REFUTED: no separating object exists, and the plan's own split makes the halves separately reportable."
-  ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-truth-transport-layer-summary.md",
-      "summary": "Implementation summary for the round that landed half (i) of the model-level truth-transport layer and left half (ii) open."
+      "path": "specs/761_ladder_realization_theorem/summaries/06_ladder-splice-type-refutation-summary.md",
+      "summary": "Half (ii) of the truth-transport layer refuted and wired as the forty-fifth probe; Phase 11.1 closes BLOCKED on a route decision."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T100500Z.md",
-      "summary": "Phase 11.1 handoff: what landed, the compiled reason half (ii) did not close, two recorded observations toward it, and two routes not to spend a dispatch on."
-    },
-    {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/05_ladder-truth-transport-layer.md",
-      "summary": "The live plan, revised mid-dispatch by the preceding plan-revision dispatch and carrying this dispatch's Phase 11.1 status marker, HALF (i) MET record, and four inline deviation annotations."
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T104251Z.md",
+      "summary": "The refutation's mechanism, what it does and does not touch, and the two candidate routes."
     }
   ],
-  "phase": "implement",
+  "blockers": [
+    {
+      "phase": "11.1",
+      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean — tpOf_stabFree_eq_of_splice (half (ii) of the model-level truth-transport layer)",
+      "verbatim_goal": "Prove tpOf_stabFree_eq_of_splice: given hg : IsLadderPath, a pending region at a, an object cycle of length l with l | P + 1 inside it, a spliced ladder path g' supplied as a hypothesis, and Tc <= |a - z| with hp : ParamsOk, the stab-free part of tpOf at z is the same along both.",
+      "what_was_tried": "The uniform-claim structural induction (refuted at the seam by the compiled spliceIdx_seam_lt, dispatch seq 17), then the preceding round's two intelligence items: a distance budget per U/S-nesting depth together with the splice's monotonicity on future object positions. The budget item was pursued to its conclusion and then abandoned in favour of compiling the counterexample it predicts.",
+      "why_it_failed": "The statement is false. One splice duplicates the pumped block, so it adds one occurrence of every object state of that block to the walk's future, and a nested eventuality counts occurrences at unbounded distance — so the distance hypothesis Tc <= |a - z| buys nothing. On a three-state object whose walk hits the p-state exactly once, the nesting-depth-three formula (top U (p AND top U p)) is false along the original at every position and true along the spliced path. Compiled as Probe761S.splice_type_invariance_refuted, and it survives the (P + 1) / l iterations the residue coordinate of kappa needs (twoHits_iterate, spliced_rehypotheses)."
+    }
+  ],
+  "user_decision": {
+    "question": "Half (ii) of the truth-transport layer is refuted: the admissibility-preserving splice is type-blind, so Phases 11.2, 11.3 and 11.4 cannot be entered as decomposed. Which route should the plan be revised to?",
+    "options": [
+      "(a) A TYPE-AWARE region lengthening — choose the lengthened region's walk so the realized type at z is preserved instead of taking the fixed spliceObj, re-establishing Phase 11's admissibility content for whatever walk it produces",
+      "(b) Argue cellAt_const_of_kappa_eq at the level of the CELL — the set over all histories the Goal actually names, strictly weaker than pointwise type equality along a chosen pair of paths, and left entirely open by the refutation"
+    ],
+    "recommended": "(b) Argue cellAt_const_of_kappa_eq at the level of the CELL — the set over all histories the Goal actually names, strictly weaker than pointwise type equality along a chosen pair of paths, and left entirely open by the refutation",
+    "blocking": false
+  },
   "plan_markers_verified": true,
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T100500Z.md",
-  "next_action_hint": "Phase 11.1 half (ii), splice invariance (tpOf_stabFree_eq_of_splice). The handoff records the compiled reason the uniform-claim induction fails, two observations toward a model-level periodicity of the type sequence (a per-nesting-depth distance budget plus the splice's monotonicity on future object-positions), and two routes not to spend a dispatch on.",
-  "git_checkpoint": "51c4ba9e6975232e7ee8637d388b78e9ab624950",
-  "sorry_inventory": []
+  "sorry_inventory": [],
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T104251Z.md",
+  "continuation_context": {
+    "handoff_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T104251Z.md",
+    "orchestrator_mode": true
+  },
+  "next_action_hint": "A route decision, then /revise: Phases 11.2, 11.3 and 11.4 consume half (ii) as decomposed and none can be entered as written. No implementation dispatch can make progress before the revision.",
+  "git_checkpoint": "0885b5a02"
 }
