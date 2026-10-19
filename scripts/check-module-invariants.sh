@@ -2146,6 +2146,19 @@ fi
 # rows are what makes that substitution fail loudly instead. They pin an axiom profile and claim
 # nothing else: no decision procedure, no complexity bound.
 #
+# Three further matched pairs close the block, for the counter-quotient layer
+# (`RaySummary/CounterQuotient.lean`). `...paramsOk_params` is the discharge lemma of the
+# parameter conditions (K1)-(K4) at the four parameters the periodicity fixpoint defines, which
+# is what keeps the two factorization-side statements that carry those conditions non-vacuous.
+# `...AllZero.not_paramsOk_allZero` is the companion exclusion: the same conditions FAIL at the
+# all-zero parameter tuple, on the object of the wired probe
+# `specs/evidence/seam-gluing-ray-product/ladder-unconstrained-parameter-refutation.lean`, whose
+# refutation of the unconstrained quantification is the reason the hypothesis exists -- the pair
+# is what makes a later removal of that hypothesis fail loudly rather than silently.
+# `...dmax_maximal` pins the maximality of the maximum certified subset: every certified set lies
+# inside `Dmax`. They pin axiom profiles and nothing else: no ladder consequence, no decision
+# procedure, no complexity bound, and no index of a ladder cell is claimed at any parameters.
+#
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
 # SORRY-FREE is pinned here or by C2, so no such claim is prose-only: the docstring asserts
@@ -2384,6 +2397,9 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.RaySummary.exists_dovetail_chain' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.PartialHistory.convexGlue' depends on axioms: [propext, Quot.sound]
 'FormalSystem.Semantics.PartialHistory.gluing_clause' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_params' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.AllZero.not_paramsOk_allZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.dmax_maximal' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2622,6 +2638,9 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_dovetail_chain
 #print axioms FormalSystem.Semantics.PartialHistory.convexGlue
 #print axioms FormalSystem.Semantics.PartialHistory.gluing_clause
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_params
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.AllZero.not_paramsOk_allZero
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.dmax_maximal
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

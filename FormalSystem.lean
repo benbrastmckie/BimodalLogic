@@ -203,6 +203,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.Certificate
 import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 import FormalSystem.Metalogic.Decidability.RaySummary.Compose
+import FormalSystem.Metalogic.Decidability.RaySummary.CounterQuotient
 import FormalSystem.Metalogic.Decidability.RaySummary.HitComplete
 import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel

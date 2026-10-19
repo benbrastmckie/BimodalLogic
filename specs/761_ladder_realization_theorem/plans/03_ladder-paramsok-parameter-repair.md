@@ -7,7 +7,7 @@
 - **Research Inputs**:
   - specs/761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md
   - specs/761_ladder_realization_theorem/reports/02_spawn-analysis.md
-  - specs/761_ladder_realization_theorem/.blocker-research.json — the parameter-hypothesis research (signature and dischargeability requirements)
+  - specs/761_ladder_realization_theorem/.dispatch/8-aux-plan-revision.md — the parameter-hypothesis research (signature and dischargeability requirements), carried verbatim in that dispatch's `## Prompt` block; transcribed in full under "Research Integration" below
   - specs/761_ladder_realization_theorem/.decisions.json — the recorded repair decision
   - specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md
   - specs/820_ladder_counter_lift_lemma_gated/summaries/01_counter-lift-gate-table-summary.md
@@ -58,8 +58,9 @@ mark the phase `[BLOCKED]` with the goal state recorded.
 
 No new research report is integrated: both reports under `reports/` predate the live plan and
 their findings are already carried below. This round's new input is the parameter-hypothesis
-research recorded in `specs/761_ladder_realization_theorem/.blocker-research.json` and the repair
-decision recorded in `specs/761_ladder_realization_theorem/.decisions.json`.
+research — transcribed in the bullets of this section, and quoted verbatim in the `## Prompt`
+block of `specs/761_ladder_realization_theorem/.dispatch/8-aux-plan-revision.md` — together with
+the repair decision recorded in `specs/761_ladder_realization_theorem/.decisions.json`.
 
 - **The parameter hypothesis, and the two requirements that make it more than cosmetic.**
   (i) SIGNATURE: the predicate is NOT a predicate on four naturals. (K1) quantifies the
@@ -139,11 +140,14 @@ decision recorded in `specs/761_ladder_realization_theorem/.decisions.json`.
   `T_c ≥ 2 T_short + T_idle + 2`. (K4) `B`: at least `2 d_back + 1` for the formula's backward
   exactness depth, and at least `2` (gate 1). These four are exactly the conjuncts of the
   parameter hypothesis.
-- **The blocker artifact on disk is live, not stale.**
-  `specs/761_ladder_realization_theorem/.blocker-research.json` now carries the
-  parameter-hypothesis research named above and is the input to this round. No dispatch is to
-  treat it as the superseded 2026-10-11 recommendation that Phase 1's first task was written
-  against; that recommendation is not in the file.
+- **Where the blocker research lives, now that the transient artifact is gone.**
+  `.blocker-research.json` is an orchestrator-mediated handoff file: the cycle planner CONSUMES it
+  when it builds the aux dispatch, so it is absent from the task directory and no phase is to
+  treat its absence as missing input or go looking for it. Its content is carried in two durable
+  places: the bullets of this section, and the `## Prompt` block of
+  `specs/761_ladder_realization_theorem/.dispatch/8-aux-plan-revision.md`. Neither carrier holds
+  the superseded 2026-10-11 recommendation that Phase 1's first task was written against — that
+  recommendation is withdrawn on compiled ground and is nowhere in this round's input.
 - **What is NOT in question and is not re-proved:** the SET of cells of any regular ℤ-model is
   finite and bounded (`anchorCells_finite`, `anchorCells_ncard_le`). Both stay untouched.
 
@@ -279,7 +283,7 @@ in presentation (a)'s fibre form and every declared edge is discharged — so th
 and no future dispatch reads a withdrawn statement line or a dead route as live.
 
 **Tasks**:
-- [ ] Correct `specs/761_ladder_realization_theorem/.blocker-research.json` *(deviation: skipped — at execution time the file did not exist; `ls -a specs/761_ladder_realization_theorem/` listed no `.blocker-research.json`, so there was no recommendation to correct. The landed route was instead recorded in `specs/state.json`'s amended description, item 2 below. The artifact present on disk now was written later and carries this round's live parameter-hypothesis research, not the superseded 2026-10-11 recommendation this bullet was written against, so nothing is owed here.)*
+- [ ] Correct `specs/761_ladder_realization_theorem/.blocker-research.json` *(deviation: skipped — at execution time the file did not exist; `ls -a specs/761_ladder_realization_theorem/` listed no `.blocker-research.json`, so there was no recommendation to correct. The landed route was instead recorded in `specs/state.json`'s amended description, item 2 below. A later blocker artifact carried this round's live parameter-hypothesis research rather than the superseded 2026-10-11 recommendation this bullet was written against, and the cycle planner has since consumed it — see "Where the blocker research lives" under Research Integration — so nothing is owed here.)*
 - [x] Amend the task description in `specs/state.json` *(completed)* (via `update-task-status.sh` /
       `state-write.sh`, scoped by `select(.project_number == 761)`) so the STATEMENT paragraph
       names the fibre equation instead of `hitOf (truncate B …)`, and records that all six edges
@@ -909,7 +913,7 @@ were demanded by the invariant gate.)*
 
 ---
 
-### Phase 9: The Counter Quotient `K`, Its Parameters, the Parameter Conditions, and the Maximum Certified Subset [NOT STARTED]
+### Phase 9: The Counter Quotient `K`, Its Parameters, the Parameter Conditions, and the Maximum Certified Subset [COMPLETED WITH EXCLUSIONS]
 
 **Refutation of record (why the parameter hypothesis exists)**: the fourteenth wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-unconstrained-parameter-refutation.lean`
@@ -934,19 +938,19 @@ outputs, `certStabK` rebuilt per `(q, κ)`, `certAdmK` over the full carrier, an
 MAXIMUM certified subset with its maximality proved.
 
 **Tasks**:
-- [ ] Define `K T_c T_n P B` as `Fin (T_c+1) × Fin (P+1) × Fin (T_n+1) × Fin (P+1) × Fin (2B+1)`
+- [x] Define `K T_c T_n P B` as `Fin (T_c+1) × Fin (P+1) × Fin (T_n+1) × Fin (P+1) × Fin (2B+1)`
       and `κ` as `(min c T_c, c mod P, min n T_n, n mod P, clip (n - c) [-B, B])`, with a
       docstring stating that `K` is a CARRIER COORDINATE and never an index: `K` does not factor
       `cellAt` on its own, `Dmax` does.
-- [ ] Define `R_K`, the image of `Count`/`Drift` on classes, and prove it decidable.
-- [ ] Define each parameter as an output, each citing its source: `P` from (K1), a common
+- [x] Define `R_K`, the image of `Count`/`Drift` on classes, and prove it decidable. *(deviation: altered — the two nested bounded existentials exceeded `Decidable` instance resolution, so `R_K` is split into `rkStepB` (inner) and `RKb` (outer), decidable by construction, with `rk_iff` recovering the single bounded existential)*
+- [x] Define each parameter as an output, each citing its source: `P` from (K1), a common
       multiple of the cycle lengths of the certificate graph restricted to saturated classes,
       via the set-level periodicity form `prodPreN_eventually_periodic`; `T_c` from (K2), at
       least the cascade bound (`iter_doubling`) and at least the semantic periodicity threshold;
       `T_n` and the ordering from (K3); `B` from (K4). No parameter may be an exhibited constant
       of the object or of the letters — mechanisms (4), (5) and (6) each refuted exactly that.
       The four output functions are what the Challenge block pins as `Tcof`, `Tnof`, `Pof`, `Bof`.
-- [ ] **Define the parameter-conditions predicate**, beside `CK`/`κ`, as the conjunction of
+- [x] **Define the parameter-conditions predicate**, beside `CK`/`κ`, as the conjunction of
       (K1)-(K4), with the signature the Challenge block pins:
       `ParamsOk step pend lab phi Tc Tn P B`. It is NOT a predicate on four naturals: (K1)
       quantifies the certificate graph's cycle lengths on saturated classes, (K2) the cascade
@@ -955,29 +959,45 @@ MAXIMUM certified subset with its maximality proved.
       (`T_n ≥ T_c + 2ℓ₀ - 1`, `T_c ≥ 2 T_short + T_idle + 2`) is partly numeric. Each conjunct
       carries a docstring naming its (K1)-(K4) source and its compiled anchor. Each of the four
       conjuncts must be present: a predicate missing one is the same contract gap one level down.
-- [ ] **Prove the discharge lemma `paramsOk_params`**: the predicate holds at the four defined
+- [x] **Prove the discharge lemma `paramsOk_params`**: the predicate holds at the four defined
       outputs. Without it both repaired theorems are safe but VACUOUS — a hypothesis no one can
       discharge is indistinguishable from an unproved statement for every downstream consumer,
       and Phases 11-13 consume `Dmax`'s maximality through exactly those two Goals. If the
       predicate cannot be discharged at the outputs, STOP and mark the phase `[BLOCKED]` with the
       goal state recorded: that means the parameter sources and the fixpoint's outputs disagree,
       which is a real finding and not a reason to weaken the predicate.
-- [ ] **Prove the hypothesis is load-bearing, not cosmetic**: on the refutation probe's own
+- [x] **Prove the hypothesis is load-bearing, not cosmetic**: on the refutation probe's own
       object (`stepP`, `pendP`, `labP`, `phiP`), the predicate FAILS at `Tc = Tn = P = B = 0` —
       the tuple the refutation turns on. (K1) alone suffices: `P = 0` cannot be a common multiple
       of that object's cycle length 2. If this cannot be proved, the predicate is too weak to
       exclude the refuted tuple: raise it in the handoff, never proceed.
-- [ ] Rebuild `certStab` per `(q, κ)` as `certStabK` (`stab_mem_tpOf_iff` is per cell, so the
+- [x] Rebuild `certStab` per `(q, κ)` as `certStabK` (`stab_mem_tpOf_iff` is per cell, so the
       `K`-free fibre over `q` in `ProdState Q φ` promoted in Phase 8 is the wrong granularity for
       the ladder — F2(a), `cell_ne`), and define `certAdmK` over `Q × ClType φ × K` as the
       conjunction of the promoted predicates with the rebuilt `certStabK` and `certBox`. The
       `K`-free `certStab`/`certAdm` in `Certificate.lean` are untouched.
-- [ ] Define `Dmax` as the MAXIMUM `certAdmK`-certified subset and prove maximality: the union of
+- [x] Define `Dmax` as the MAXIMUM `certAdmK`-certified subset and prove maximality: the union of
       certified sets is certified, so the maximum exists; `Dmax` is computable by enumeration over
       `Finset (Q × ClType φ × K)` — state this as a count of candidates, never a bound.
-- [ ] Wire the module (RaySummary.lean and its module-list docstring, FormalSystem.lean, C14
+      *(deviation: altered — `Dmax` IS the union and `dmax_maximal` proves every certified set
+      lies inside it, but the clause "the union of certified sets is certified" is NOT proved and
+      is false for this certificate: `certStabK` and `certBoxK` are biconditionals between a
+      letter's bit and a fibre of the candidate set, so enlarging the set breaks them. The four
+      union-stable conditions ARE proved of `Dmax` (`dmax_certLocK`, `dmax_certBiInfK`,
+      `dmax_certFwdK`, `dmax_certBwdK`). See the Reasoned Exclusions record below.)*
+- [x] Wire the module (RaySummary.lean and its module-list docstring, FormalSystem.lean, C14
       heredoc, and the generated inventory blocks via `check-module-invariants.sh
       --emit-inventory` if the gate demands it, as it did in Phase 8).
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The `Dmax` task's justifying clause "the union of certified sets is certified, so the maximum exists" | FALSE for this certificate, so proving it would mean proving a false statement. `certStabK` and `certBoxK` are BICONDITIONALS between a letter's bit and a fibre of the candidate set (`ψ ∈ x.2.1.val ↔ ∀ y ∈ R, …`), so a member whose bit is set in a small certified set has that bit falsified as soon as the union adds a member missing the argument; only the four monotone conditions survive a union. The maximum is still well defined and is the union — the lattice join — and its own certification is Finding 3's route (the realizable set is certified GIVEN constancy of `cellAt` on `K`-classes), which the presentation-decision record assigns to the soundness and completeness obligations, never to a union argument. | Landed in `CounterQuotient.lean`: `dmax_maximal` (every `certAdmK`-certified set `⊆ Dmax`) plus `dmax_certLocK`, `dmax_certBiInfK`, `dmax_certFwdK`, `dmax_certBwdK` (the four union-stable conditions proved OF `Dmax`). No theorem claims `certStabK`/`certBoxK` of `Dmax`, and the module's "What this module does NOT hold" section says so in the source. The two definitions whose shape is the reason are `certStabK` and `certBoxK`, both stated with `↔`. Gates at closure: full guarded `lake build` exit 0, 0 errors, 0 warnings, 2890 jobs; `check-module-invariants.sh` ALL CHECKS PASSED; `check-evidence-probes.sh` exit 0, 44 of 44 wired probes PASS; `lean-sorry-census.sh` 0. |
+
+No residual work follows from this exclusion: the clause as written will not be revisited,
+because it is false. The certification of `Dmax` itself is Phases 11-13's own obligation along
+Finding 3's route, and is already in this plan.
 
 **Timing**: 3.5 hours
 

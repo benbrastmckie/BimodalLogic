@@ -21,6 +21,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.AnchorLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 import FormalSystem.Metalogic.Decidability.RaySummary.Certificate
+import FormalSystem.Metalogic.Decidability.RaySummary.CounterQuotient
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -187,4 +188,25 @@ nothing about `PlusValidZTime` — see the README's verdict.
   region and transfers to the region segments of a ladder history, never to the history itself.
   NO ladder consequence is stated here; `[Fintype Q]` on the OBJECT only, no fibre bound, no
   finite width, nothing about `HitPresented` or `PlusValidZTime`, no complexity bound.
+* `RaySummary.CounterQuotient` — the `K`-indexed half of that certificate layer: the counter
+  quotient `CK` of the forced five-coordinate shape with its class map `kappa` (a CARRIER
+  COORDINATE, never an index — `CK` does not factor `cellAt` on its own, which
+  `ladder-cell-refutation.lean` refutes), the class-level step relation `RK` (the image of
+  `Count`/`Drift` on classes, decidable by construction, with NO faithfulness claim — that is
+  the gated counter-lift lemma's own content), the four parameters `Tcof`/`Tnof`/`Pof`/`Bof` as
+  OUTPUTS of the periodicity fixpoint (`prodPre_periodic`, ported from the wired probe
+  `closure-indexed-periodicity.lean`) and of the cascade recurrence (`iter_doubling`), the
+  parameter-conditions predicate `ParamsOk` as the conjunction of the four sources (K1)-(K4)
+  with its discharge lemma `paramsOk_params` at those outputs, the exclusion
+  `AllZero.not_paramsOk_allZero` recording that the predicate FAILS at the all-zero tuple the
+  fourteenth wired probe's refutation turns on, the `K`-indexed certificate conditions with
+  `certStabK` rebuilt per `(q, κ)` (`certLocK`, `certBiInfK`, `certFwdK`, `certBwdK`,
+  `certStabK`, `certBoxK`, `certAdmK`), and `Dmax` with its maximality (`dmax_maximal`: every
+  certified set lies inside it) and the four union-stable conditions holding of it
+  (`dmax_certLocK`, `dmax_certBiInfK`, `dmax_certFwdK`, `dmax_certBwdK`). NO ladder consequence:
+  nothing relates `CK`, `RK`, `certAdmK` or `Dmax` to `Rlad`, `ladderModel`, `tpOf` or `cellAt`,
+  and that `Dmax` itself satisfies the two acceptance conditions `certStabK`/`certBoxK` — which
+  are equalities and so not union-stable — is claimed nowhere. `[Fintype Q]` on the OBJECT
+  only, no fibre bound, no finite width, every quantity a COUNT, nothing about `PlusValidZTime`,
+  no complexity bound.
 -/

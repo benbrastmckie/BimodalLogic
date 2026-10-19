@@ -882,5 +882,13 @@
   [
     "unusedArguments",
     "FormalSystem.Metalogic.Decidability.RaySummary.coh_iff"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.Bof"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_params"
   ]
 ]
