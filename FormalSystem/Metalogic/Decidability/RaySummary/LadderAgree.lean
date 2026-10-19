@@ -153,16 +153,24 @@ depth `d + 1`. The stab-free statement is the instance `L := fun _ => False`
   alone do not settle the temporal pair.
 * **No discharge of the pin side condition outside the pending-forever regime.** The cascade that
   would re-establish pin compatibility after a region is lengthened is not landed.
-* **NO SPLICE INVARIANCE — half (ii) of the transport layer is not landed.** Half (i) transports
-  a type between two paths with the SAME object walk. Pumping produces a path with a DIFFERENT
-  object walk, and nothing here transports a type across that difference. The obstruction is
-  compiled rather than asserted: the spliced walk is the original read along a retraction of
-  positions (`spliceObj_eq_objAt_spliceIdx`) which drops back by the block length at the seam
-  (`spliceIdx_seam_lt`), so a structural induction carrying one uniform claim at every position
-  fails at the positions adjacent to and inside the pumped block — where the claim IS the pumping
-  claim and no distance hypothesis protects it. What is missing is a model-level periodicity of
-  the TYPE sequence along a periodic object segment, the model-side analogue of the certificate
-  graph's own periodicity, which may not be cited across that boundary.
+* **NO SPLICE INVARIANCE — half (ii) of the transport layer is REFUTED, not merely absent.** Half
+  (i) transports a type between two paths with the SAME object walk. Pumping produces a path with
+  a DIFFERENT object walk, and no statement here transports a type across that difference —
+  because none is true. The wired probe
+  `specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean` compiles the
+  separating pair: one splice DUPLICATES the pumped block, so it adds one occurrence of every
+  object state of that block to the walk's future, and a nested eventuality counts occurrences at
+  unbounded distance. On a three-state object whose walk hits one letter exactly once,
+  `⊤ U (p ∧ ⊤ U p)` is false along the original at every position and true along the spliced path,
+  with every recorded hypothesis met — `l ∣ P + 1` through `(K1)` on a compiled object `2`-cycle,
+  `ParamsOk` discharged at the periodicity fixpoint's own outputs, and `T_c ≤ |a - z|` at a
+  position arbitrarily far below the splice point. The refutation survives the iterated surgery the
+  residue coordinate of `kappa` needs. The index maps say where the uniform-claim induction breaks
+  (`spliceObj_eq_objAt_spliceIdx`, `spliceIdx_seam_lt`: the retraction drops back by the block
+  length at the seam); the probe says the statement itself is false. What is refuted is that the
+  FIXED surgery, chosen to preserve ADMISSIBILITY, also preserves the realized TYPE: it is
+  type-blind. A type-AWARE lengthening of the region is a different construction, stated nowhere in
+  the tree, and the probe neither supplies nor refutes it.
 * **No `⊡`-depth induction.** `stabDepth`, `StabPinned` and their bounds are the MEASURE and the
   hypothesis shape such an induction needs; the induction itself is not stated here, and neither
   is the agreement it would carry.
