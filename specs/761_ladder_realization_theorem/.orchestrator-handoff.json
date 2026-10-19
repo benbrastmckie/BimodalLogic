@@ -1,30 +1,33 @@
 {
+  "dispatch_seq": 17,
   "status": "partial",
-  "phase": "implement",
-  "dispatch_seq": 15,
-  "summary": "Phase 11's replacement-admissibility layer landed in LadderAgree.lean: 24 new compiled declarations that extract a pending region's object cycle, put its length in P+1's divisors under (K1), splice the walk, lift the splice to a ladder path, and discharge the lift's pin side condition outright in the pending-forever-into-the-past regime. That DISCHARGES obstruction 1 of the phase's blocker record (the walk can now be pumped) and adds a new, compiled obstruction 4 (pinCompat_of_ladderPath: pin compatibility is forced on every ladder path, so the cascade is a real uncosted obligation). The phase Goal cellAt_const_of_kappa_eq is still not stated, so Phase 11 stays [BLOCKED] on model-level type preservation and the stab-depth induction. Full build exit 0, 2892 jobs, 0 errors, 0 warnings; invariants, typst sync and 44/44 probes green; sorry 0, vacuous 1, axioms 14 all unchanged.",
+  "phases_completed": 11,
+  "phases_total": 22,
+  "summary": "Phase 11.1's half (i) is landed and verified; half (ii) is open and not refuted, so the phase closes [PARTIAL]. 28 new compiled declarations in LadderAgree.lean carry the path/history bridge (with mem_cellAt_ladder_iff, the agreement's own object in the replacement layer's language), the stab-depth measure and pinned-letter predicate, the two temporal fixpoint readings of a closure type, the clause audit, the splice's index maps, and half (i) itself with its non-vacuity witnessed. The live plan was revised MID-DISPATCH to plans/05_ladder-truth-transport-layer.md; the pre-write re-read obligation fired and the work was re-derived from the fresh text. Full guarded lake build exit 0 with 0 errors and 0 warnings, all gates green, sorry 0, vacuous and axiom counts unchanged.",
+  "blockers": [
+    "Phase 11.1 half (ii), splice invariance (tpOf_stabFree_eq_of_splice): a structural induction carrying one uniform claim at every position fails at the positions inside and adjacent to the pumped block, where the claim IS the pumping claim and the phase's Tc-distance hypothesis protects z alone. spliceIdx_seam_lt compiles the reason. What is needed is a model-level periodicity of the type sequence along a periodic object segment, the model-side analogue of the certificate graph's own periodicity, which this phase may not cite. NOT REFUTED: no separating object exists, and the plan's own split makes the halves separately reportable."
+  ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/04_ladder-agreement-first-decomposition-summary.md",
-      "summary": "Round 4 summary, extended with the replacement-admissibility layer and the four-obstruction record."
+      "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-truth-transport-layer-summary.md",
+      "summary": "Implementation summary for the round that landed half (i) of the model-level truth-transport layer and left half (ii) open."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T091503Z.md",
-      "summary": "The walk-pumping surgery landed; the three uncostable steps a Phase 11 revision must add."
-    }
-  ],
-  "phases_completed": 10,
-  "phases_total": 18,
-  "blockers": [
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T100500Z.md",
+      "summary": "Phase 11.1 handoff: what landed, the compiled reason half (ii) did not close, two recorded observations toward it, and two routes not to spend a dispatch on."
+    },
     {
-      "phase": "11",
-      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean :: cellAt_const_of_kappa_eq",
-      "verbatim_goal": "Prove cellAt_const_of_kappa_eq: under the parameter conditions, the cell at (q, c, n) equals the cell at (q, c', n') whenever kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n'), at the history level and with no certificate object.",
-      "what_was_tried": "The replacement was built on the WALK, which cntAt_eq_of_obj_eq forces. Landed and compiled: the saturated segment (objCycleLens_of_segment, exists_objCycle_of_card_le_cnt, objCycle_dvd_succ_of_paramsOk, exists_pumpSeg_of_card_le_cnt); the splice (spliceObj, spliceCnt, four accessors, spliceSeg, spliceObj_step, and the three local readings of Count holding unconditionally); the payoff spliced_at_region (a second ladder path through the same object state with the countdown moved by exactly the cycle length); the lift (exists_ladderPath_of_walk over RunLayer's exists_rlad_hist_of_walk, exists_spliced_ladderPath); and the side condition's necessity and its regime-2 discharge (nxtAt_lipschitz_two_sided, pinCompat_of_ladderPath, spliceObj_pend_of_lt_of_pend_past, exists_spliced_ladderPath_of_pend_past).",
-      "why_it_failed": "Three obstructions stand. (2) Pumping the walk preserves the realized type only through a MODEL-level periodicity statement about tpOf along a ladder path; the only landed periodicity is prodPre_periodic on the CERTIFICATE relation, whose bridge to tpOf is obligations (S)/(C') (Phases 12-15), which read this agreement -- a third circularity, so a model-level pumping lemma must be authored and no phase costs one. (3) By stab_mem_tpOf_iff_cell the stab bit of a realized type is a datum of the cell being compared, so the proof runs by induction on stab-nesting depth and the phase's task list has no induction step. (4) NEW AND COMPILED: pinCompat_of_ladderPath shows the region-start countdowns of EVERY ladder path are pairwise 1-Lipschitz-compatible, so lengthening one region by l raises that one pin by l without moving earlier starts; re-establishing compatibility is the cascade (K2)'s cascadeBound sizes, which no phase costs. Only the pending-forever-into-the-past regime escapes it."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/05_ladder-truth-transport-layer.md",
+      "summary": "The live plan, revised mid-dispatch by the preceding plan-revision dispatch and carrying this dispatch's Phase 11.1 status marker, HALF (i) MET record, and four inline deviation annotations."
     }
   ],
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T091503Z.md"
+  "phase": "implement",
+  "plan_markers_verified": true,
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T100500Z.md",
+  "next_action_hint": "Phase 11.1 half (ii), splice invariance (tpOf_stabFree_eq_of_splice). The handoff records the compiled reason the uniform-claim induction fails, two observations toward a model-level periodicity of the type sequence (a per-nesting-depth distance budget plus the splice's monotonicity on future object-positions), and two routes not to spend a dispatch on.",
+  "git_checkpoint": "51c4ba9e6975232e7ee8637d388b78e9ab624950",
+  "sorry_inventory": []
 }
