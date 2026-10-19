@@ -1173,7 +1173,7 @@ and the phase is `[BLOCKED]`.
 
 ---
 
-### Phase 10: The Definitional Layer of `LadderRealize.lean` — `typeOfCl`, `certChain`, `LadderCons` [NOT STARTED]
+### Phase 10: The Definitional Layer of `LadderRealize.lean` — `typeOfCl`, `certChain`, `LadderCons` [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` carrying ONLY
 the definitions the later phases' statements quantify over: `typeOfCl`, `certChain` and
@@ -1190,10 +1190,10 @@ projection); it is owned here too. (iii) "RETAIN `slive` as `Realize.lean`'s `SL
 condition over `Q`'s `step`" does not type-check and is not what this phase does — see task 3.
 
 **Tasks**:
-- [ ] Define `typeOfCl : ClType φ → Finset PlusFormula` as the projection out of `Certificate.lean`'s
+- [x] Define `typeOfCl : ClType φ → Finset PlusFormula` as the projection out of `Certificate.lean`'s
       landed `ClType` abbrev, with a docstring recording that `ClType` is landed and only its
       projection was missing. The Challenge block pins this by position.
-- [ ] **Define `certChain`** at the signature the Challenge block pins:
+- [x] **Define `certChain`** at the signature the Challenge block pins:
       `certChain step pend lab φ Tc Tn P B (xi : Int → Q × ClType φ × CK Tc Tn P B) : Prop`. It is
       the bi-infinite chain condition over the product carrier: `relK` between consecutive
       positions, together with the `untl`/`snce` links read as formula membership in the `ClType`
@@ -1201,7 +1201,7 @@ condition over `Q`'s `step`" does not type-check and is not what this phase does
       (R-b) is the recorded route, so the unstratified definition is the one this plan asks for.
       Cite `relK`, `certLocK` and `DischPathK` (all landed in `CounterQuotient.lean`) rather than
       re-deriving their content.
-- [ ] **State `LadderCons step pend lab φ Tc Tn P B (R : Set (Q × ClType φ × CK …)) : Prop`** as
+- [x] **State `LadderCons step pend lab φ Tc Tn P B (R : Set (Q × ClType φ × CK …)) : Prop`** as
       `certAdmK … R ∧ Dmax … ⊆ R` — the certificate conditions plus the maximality clause — with
       the `box`/`stab` letters PINNED through `certAdmK`'s own `certBoxK` (one global bit,
       `box_mem_tpOf_iff`) and `certStabK` (per `(q, κ)`, `stab_mem_tpOf_iff`). The acceptance
@@ -1210,7 +1210,7 @@ condition over `Q`'s `step`" does not type-check and is not what this phase does
       `ladderCons_localRun`'s second conjunct near-vacuous under a filed name, which
       `plan-compliance.md`'s Statement Fidelity forbids; the conjunct is instead discharged in
       Phase 14 from `ladderSound` plus this maximality clause.
-- [ ] Record, in the module docstring, the ladder's structural liveness and the shape the backward
+- [x] Record, in the module docstring, the ladder's structural liveness and the shape the backward
       half is retained in. `ulive` is replaced by the `Count`-driven decrease of `c` while pending;
       the backward half (`slive`) is RETAINED as `certBwdK`, the backward instance of Phase 9's
       landed `DischPathK` over the product carrier `Q × ClType φ × CK …` under `relK`, with the
@@ -1224,10 +1224,18 @@ condition over `Q`'s `step`" does not type-check and is not what this phase does
       Cite the thirteenth probe (`gPast_isPath`, `gPast_pending_past`, `gPast_count`) for why the
       backward half is not replaceable by `Count`, and say so in the forward-only wording
       guardrail (e) requires — with no device-discrimination claim.
-- [ ] Wire the module (RaySummary.lean and its module-list docstring, FormalSystem.lean, C14
+- [x] Wire the module (RaySummary.lean and its module-list docstring, FormalSystem.lean, C14
       heredoc, `KTypeSummaryAxiomTest.lean`, and the generated inventory blocks via
       `check-module-invariants.sh --emit-inventory` if the gate demands them, as it did in
       Phases 8 and 9).
+      *(conditional clause resolved: the C14 heredoc took NO entry. C14 pins the axiom profile of
+      declarations paired with a `docs/theorem-index.md` row carrying `pinned:C14`, and this phase
+      lands three definitions and no theorem, so it adds no such row; `check-module-invariants.sh`
+      exits 0 with C14 unchanged. The three definitions are pinned instead in
+      `KTypeSummaryAxiomTest.lean`, which the task list names in the same breath, as the
+      `[propext, Classical.choice, Quot.sound]` profile each one carries. The generated inventory
+      blocks WERE demanded, exactly as in Phases 8 and 9: `--emit-inventory` rewrote four README
+      files. `scripts/nolints.json` was not demanded — no ported binder forced an exemption.)*
 
 **Timing**: 2 hours
 

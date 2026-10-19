@@ -896,4 +896,34 @@ a complexity bound. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.ladderModel
 
+/-! ## Requirement (W): the definitional layer of the ladder's realization statement
+(`RaySummary/LadderRealize.lean`)
+
+Three pins, one per declaration of the module: `typeOfCl`, the projection out of the landed
+closure component `ClType`; `certChain`, the bi-infinite certificate chain over the product
+carrier `Q × ClType φ × CK Tc Tn P B` (`relK` between consecutive positions, `certLocK` at every
+position, and the two temporal obligations read as formula membership in the closure component);
+and `LadderCons`, the consistency bundle — `certAdmK` on a candidate set together with the
+maximality clause `Dmax ⊆ R`, the acceptance conditions `certStabK` and `certBoxK` included
+through `certAdmK` and never dropped.
+
+**What these pins certify, and what they do not.** The standard profile
+`[propext, Classical.choice, Quot.sound]` on each of the three declarations, and nothing else.
+All three are DEFINITIONS: the module holds no theorem, so no pin here is a realization theorem,
+a soundness claim, or a lift. Nothing is pinned about `HitPresented` or `PlusValidZTime`, no
+index of a ladder cell is claimed at any parameters, `certChain` carries no `⊡`-nesting-depth
+stratification, and no pin is a complexity bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.typeOfCl' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.typeOfCl
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.certChain' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.certChain
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LadderCons' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.LadderCons
+
 end BimodalTest.Metalogic

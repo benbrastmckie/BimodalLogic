@@ -22,6 +22,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.RunLayer
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 import FormalSystem.Metalogic.Decidability.RaySummary.Certificate
 import FormalSystem.Metalogic.Decidability.RaySummary.CounterQuotient
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -209,4 +210,24 @@ nothing about `PlusValidZTime` — see the README's verdict.
   are equalities and so not union-stable — is claimed nowhere. `[Fintype Q]` on the OBJECT
   only, no fibre bound, no finite width, every quantity a COUNT, nothing about `PlusValidZTime`,
   no complexity bound.
+* `RaySummary.LadderRealize` — the DEFINITIONAL layer of the ladder's realization statement, and
+  only that: `typeOfCl` (the projection out of `Certificate.lean`'s landed closure component
+  `ClType`), `certChain` (the bi-infinite certificate chain over the product carrier
+  `Q × ClType φ × CK Tc Tn P B` — `relK` between consecutive positions, `certLocK` at every
+  position, and the forward `untl` and backward `snce` obligations read as formula membership in
+  the closure component, with NO `⊡`-nesting-depth stratification), and `LadderCons` (the
+  consistency bundle: `certAdmK` on a candidate set together with the maximality clause
+  `Dmax ⊆ R`, the acceptance conditions `certStabK` per `(q, κ)` and `certBoxK` as one global bit
+  included through `certAdmK` and never dropped, and NO soundness field). `Cons`'s forward
+  liveness field is REPLACED by the `Count`-driven decrease of the current deadline while the
+  object is pending; its backward field is RETAINED as `certAdmK`'s own `certBwdK`, because the
+  ladder's structural liveness is FORWARD-ONLY (wired probe
+  `ladder-liveness-forward-only.lean`: an admissible path pending at every past time with its
+  countdown unbounded into the past), and `Realize.lean`'s `SLive` and its neighbours do not
+  transfer at all — they are indexed by `(clSig φ).preds` letters over a different labelling and
+  do not elaborate at this carrier. NO theorem: the module holds three definitions, so nothing
+  here is a soundness claim, a lift, or a realization theorem, nothing relates these conditions
+  to `tpOf`, `cellAt` or `ladderModel`, nothing is claimed about `HitPresented` or
+  `PlusValidZTime`, no index of a ladder cell is claimed at any parameters, and no complexity
+  bound and no device-discrimination claim is made.
 -/
