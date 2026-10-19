@@ -300,7 +300,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-10T23:53:38Z",
-      "last_updated": "2026-10-19T08:29:29Z",
+      "last_updated": "2026-10-19T09:19:51Z",
       "session_id": "sess_1792395030_22ac66",
       "artifacts": [
         {
@@ -336,7 +336,7 @@
         {
           "path": "specs/761_ladder_realization_theorem/summaries/04_ladder-agreement-first-decomposition-summary.md",
           "type": "summary",
-          "summary": "Round-4 summary: Phase 10 completed, Phase 11 blocked with the three obstructions recorded."
+          "summary": "Round 4 summary, extended with the replacement-admissibility layer and the four-obstruction record."
         }
       ],
       "next_artifact_number": 5,
