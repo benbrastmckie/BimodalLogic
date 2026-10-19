@@ -1686,10 +1686,15 @@ was weakened to get there. Half (i) stands either way and is untouched.
   other history through the original state realizes the separating formula is NOT decided and no
   claim is made either way. Nothing about `ladderSound`, `ladderLift` or `ladderRealized`. No
   bound; every quantity named is a count.
-- **What is refuted, precisely**: that the FIXED surgery `spliceObj`/`spliceCnt` — chosen to
-  preserve ADMISSIBILITY — also preserves the realized TYPE. It is type-blind. Nothing here says a
-  type-AWARE lengthening of the region is impossible; that is a different construction, stated
-  nowhere in the tree, and the probe neither supplies nor refutes it.
+- **What is refuted, precisely**: that the FIXED surgery `spliceObj`/`spliceCnt` applied at an
+  OBJECT cycle — a block chosen to preserve ADMISSIBILITY — also preserves the realized TYPE. It is
+  type-blind. The DIAGNOSIS is compiled, not asserted: `splice_block_not_type_respecting` shows the
+  refuted block's two endpoints carry the SAME object state and DIFFERENT realized types (`⊤ U p`
+  holds at the block's entry, the single `p`-hit lying inside it, and fails at its exit), so an
+  object cycle is not a unit of type-invariance and the seam has nothing to disarm it. The
+  refutation is therefore confined to the object-cycle splice BY CONSTRUCTION rather than by
+  silence: nothing here says a splice at a TYPE-RESPECTING block (endpoints agreeing on the type as
+  well as the object) is impossible, and the probe neither supplies nor refutes one.
 - **Prohibited workarounds observed**: no `sorry`, no axiom, no vacuous definition, no trace-level
   `Presented` hypothesis, no finite-fibre or finite-width assumption, no positionwise narrowing, no
   raised `Tc`, no parameter added, no fifth parameter source, no strengthening of `ParamsOk`, and
@@ -1711,15 +1716,46 @@ was weakened to get there. Half (i) stands either way and is untouched.
 - **Why it is stuck**: the splice is a surgery chosen for ADMISSIBILITY and it is blind to the
   TYPE. The pumped block's duplication is observable by a closure formula of nesting depth three,
   whatever the parameters.
-- **What is needed**: a decision on the route, which is the user's or the reviser's and not this
-  dispatch's. Two candidates, neither stated anywhere in the tree and neither endorsed here: (a) a
-  TYPE-AWARE region lengthening — choose the lengthened region's walk so that the realized type at
-  `z` is preserved, rather than taking the fixed `spliceObj`; the refutation does not touch this,
-  and the admissibility machinery of Phase 11 would have to be re-established for whatever walk it
-  produces; (b) abandon the pointwise-type route for `cellAt_const_of_kappa_eq` and argue at the
-  level of the CELL (a set over all histories), which is the object the Goal actually names and
-  which the refutation leaves entirely open. Phases 11.2, 11.3 and 11.4 all consume half (ii) as
-  decomposed and cannot proceed until that decision is made.
+- **What is needed**: a revision of Phases 11.1-11.4, to the TYPE-RESPECTING-BLOCK route. The
+  blocker research at `specs/761_ladder_realization_theorem/.blocker-research.json` (which landed
+  after this dispatch started) names it in four steps, and it is consistent with the refutation
+  rather than touched by it: pigeonhole on `(objAt v, tpOf v)` PAIRS instead of on object states
+  alone, so the pumped block's endpoint TYPES agree — exactly the property
+  `splice_block_not_type_respecting` shows the refuted block lacks — and then repair `kappa`'s
+  residue coordinate by iterating the splice `P + 1` times rather than by the divisibility
+  `l ∣ P + 1`, since a total shift of `L · (P + 1)` leaves `c % (P + 1)` unmoved for ANY `L`. That
+  second move is what answers the objection the preceding round recorded against this route
+  (`objCycleLens` has `l ≤ Fintype.card Q` built into its definition at `CounterQuotient.lean:252`,
+  so the divisibility route is closed to a long type-respecting loop): the iterated route does not
+  need divisibility at all, so it does not need `l ≤ Fintype.card Q` either. Iteration is safe in
+  the pending-forever-into-the-past regime, where `exists_spliced_ladderPath_of_pend_past` lifts
+  with no side condition, so it does not depend on Phase 11.2.
+- **STEP 0 OF THAT ROUTE IS SETTLED, AFFIRMATIVELY AND COMPILED** (this dispatch, prototype at
+  `specs/761_ladder_realization_theorem/prototype/step0-budget-check.lean`, compiled standalone
+  through the build guard, four theorems all on `[propext, Classical.choice, Quot.sound]`; NOT a
+  wired probe and NOT gate-covered until the revision lands it in the library). The research names
+  one question that could have killed the route — whether the available countdown is at least
+  `Fintype.card Q * 2 ^ |plusSubformulaClosure φ|`, the type pigeonhole's budget, given that the
+  plan forbids strengthening `ParamsOk` to get it. It is, with exponential room, and the reason is
+  an identity rather than an estimate:
+  `card_prodState : Fintype.card (ProdState Q φ) = Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card`
+  — the pigeonhole budget IS the cardinality of the certificate product carrier — while
+  `cascadeBound pend φ = 2 ^ Fintype.card (ProdState Q φ) * (tIdle pend + 2)` carries that budget as
+  its own EXPONENT. Hence `budget_le_cascadeBound`, then `budget_le_Tc` through `(K2)`'s
+  `cascadeBound pend φ ≤ Tc` conjunct, then `budget_le_cnt`: in the saturated regime the landed
+  `eq_or_both_ge_of_min_eq` puts both compared countdowns at or above `Tc`, so either `c = c'`
+  (nothing to pump) or both exceed the budget. No new parameter, no `ParamsOk` change, no raised
+  `Tc`, and `satThreshold`/`satPeriod`/`prodPre_periodic`/`prodPreStep`/`cohIdle` are not cited —
+  the budget comes from `cascadeBound` alone.
+- **What the research's own RISK note leaves open, and this dispatch does not settle**: its Step 2
+  needs the endpoint type equality to propagate to the block's INTERIOR positions, not only its
+  endpoints. If only the endpoints agree, the fallback it names is a pigeonhole for a loop whose
+  interior types also match pairwise, at a larger budget. The budget facts above are stated at
+  `card (ProdState Q φ) + 1` and would have to be re-derived at whatever that larger figure is; the
+  exponential gap between `card (ProdState Q φ)` and `2 ^ card (ProdState Q φ)` is wide, but no
+  claim is made here about how wide is wide enough.
+- **Phases 11.2, 11.3 and 11.4** all consume half (ii) as decomposed and none can be entered as
+  written until that revision lands.
 - **Prohibited workarounds**: do NOT use `sorry`, `axiom`, a vacuous definition, a conditional
   restatement whose hypothesis is the refuted claim, a positionwise narrowing, a raised `Tc`, a
   finite-fibre or finite-width assumption, or a trace-level `Presented` hypothesis to make half

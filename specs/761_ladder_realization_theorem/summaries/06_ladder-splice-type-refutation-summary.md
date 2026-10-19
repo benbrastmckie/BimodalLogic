@@ -100,6 +100,41 @@ the refutation is of the PUMPING ROUTE, not of half (i) and not of the presentat
 - Tests: Passed (the axiom-test target above).
 - Files verified: Yes.
 
+## Addendum: the blocker research, and its STEP 0 settled
+
+The blocker research at `specs/761_ladder_realization_theorem/.blocker-research.json` landed after
+this dispatch started and was relayed mid-dispatch. It is consistent with the refutation and
+complementary to it: it diagnoses the pumped block as only an OBJECT cycle, not a unit of
+type-invariance, and the refutation is the compiled witness that the diagnosis is right and that
+the statement is false rather than merely unproved. One correction of emphasis — the research says
+the repair claim `truth(g', v) ↔ truth(g, spliceIdx v)` is false inside the block; the refutation
+says the stronger thing, that half (ii)'s own CONCLUSION is false.
+
+Two things were added in response, both compiled:
+
+- `Probe761S.splice_block_not_type_respecting` (the probe now carries 21 printed theorems): the
+  refuted block's two endpoints carry the SAME object state and DIFFERENT realized types, so the
+  refutation is confined to the object-cycle splice by construction rather than by silence and
+  leaves a splice at a TYPE-RESPECTING block entirely open.
+- `specs/761_ladder_realization_theorem/prototype/step0-budget-check.lean` — the research's STEP 0,
+  the one feasibility question it says to settle before any surgery, **settled affirmatively**.
+  Four theorems, all on `[propext, Classical.choice, Quot.sound]`, compiled standalone through the
+  build guard. **NOT a wired probe and NOT gate-covered**; the revision should land them in the
+  library. `card_prodState` is an identity, not an estimate:
+  `Fintype.card (ProdState Q φ) = Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card` — the type
+  pigeonhole's budget IS the cardinality of the certificate product carrier — while
+  `cascadeBound pend φ = 2 ^ Fintype.card (ProdState Q φ) * (tIdle pend + 2)` carries that budget as
+  its own EXPONENT. `budget_le_Tc` then goes through `(K2)`'s `cascadeBound` conjunct ALONE, and
+  `budget_le_cnt` lands it at the compared countdowns via the landed `eq_or_both_ge_of_min_eq`. No
+  new parameter, no `ParamsOk` change, no raised `Tc`, and none of the prohibited certificate-side
+  identifiers cited.
+
+What STEP 0 does not settle: the research's own RISK note, that its Step 2 needs the endpoint type
+equality to propagate to the block's INTERIOR positions. The fallback it names (a pigeonhole for a
+loop whose interior types match pairwise) carries a LARGER budget, and the four facts above are
+stated at `card (ProdState Q φ) + 1`. That re-derivation should be settled before Step 2 is built,
+for the same reason STEP 0 was.
+
 ## Impacts
 
 - Phases 11.2, 11.3 and 11.4 consume half (ii) as decomposed and cannot proceed as written;
@@ -113,12 +148,14 @@ the refutation is of the PUMPING ROUTE, not of half (i) and not of the presentat
 
 ## Follow-ups
 
-- A route decision is owed and is not this dispatch's to make. Two candidates, neither stated
-  anywhere in the tree and neither endorsed: (a) a TYPE-AWARE region lengthening, choosing the
-  lengthened region's walk so the realized type at `z` is preserved, with Phase 11's admissibility
-  content re-established for whatever walk it produces; (b) abandon the pointwise-type route and
-  argue `cellAt_const_of_kappa_eq` at the level of the CELL, the object the Goal names and which
-  the refutation leaves open.
+- A revision of Phases 11.1-11.4 to the TYPE-RESPECTING-BLOCK route the blocker research names:
+  pigeonhole on `(objAt v, tpOf v)` PAIRS so the block's endpoint types agree, then repair
+  `kappa`'s residue by iterating the splice `P + 1` times rather than by `l ∣ P + 1` — which is
+  what answers the objection the preceding round recorded against this route, since the iterated
+  form needs no divisibility and hence no `l ≤ Fintype.card Q`. Its STEP 0 is settled above; its
+  interior-propagation risk is not.
+- The cell-level route (argue `cellAt_const_of_kappa_eq` over the set of all histories the Goal
+  names) remains available as a fallback and is refuted by nothing.
 - No estimate is offered for either, and none is to be invented.
 
 ## References
@@ -130,4 +167,8 @@ the refutation is of the PUMPING ROUTE, not of half (i) and not of the presentat
 - `specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T104251Z.md` (this
   round)
 - `specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean` (the probe)
+- `specs/761_ladder_realization_theorem/.blocker-research.json` (the blocker research relayed
+  mid-dispatch)
+- `specs/761_ladder_realization_theorem/prototype/step0-budget-check.lean` (STEP 0, compiled, not
+  gate-covered)
 - `specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md`

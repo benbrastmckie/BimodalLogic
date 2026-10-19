@@ -117,3 +117,75 @@ than unproved, and its pending-forever instantiation not reached and now unreach
 deviations: the summary is numbered `06` rather than the dispatch's pinned `04` (the live plan is
 `05` and this is the second round against it), and the probe plus `LadderAgree.lean` are committed
 separately as a declared `file_scope` excursion, as the two preceding rounds did.
+
+---
+
+## Addendum (same dispatch): the blocker research, and STEP 0 settled
+
+The blocker research at `specs/761_ladder_realization_theorem/.blocker-research.json` landed after
+this dispatch started and was relayed mid-dispatch. It is CONSISTENT with the refutation, and the
+two are complementary rather than competing: the research diagnoses the splice's pumped block as
+only an OBJECT cycle, which is not a unit of type-invariance, and the refutation is the compiled
+witness that the diagnosis is right and that the resulting statement is false rather than merely
+unproved.
+
+One correction of emphasis. The research says the repair claim `truth(g', v) ↔ truth(g, spliceIdx v)`
+is false inside the pumped block. That is right, and the refutation says something strictly
+stronger: the CONCLUSION of half (ii) itself — equality of the stab-free type at `z` under
+`Tc ≤ |a - z|` — is false. So what is closed is not only the proof route through the retraction but
+the statement.
+
+### The diagnosis is now compiled, not prose
+
+`Probe761S.splice_block_not_type_respecting` (added this dispatch, bringing the probe to 21 printed
+theorems): the refuted block's two endpoints carry the SAME object state and DIFFERENT realized
+types — `⊤ U p` holds at the block's entry, the single `p`-hit lying inside the block, and fails at
+its exit. So the refutation is confined to the object-cycle splice BY CONSTRUCTION, not by silence,
+and it leaves a splice at a TYPE-RESPECTING block entirely open.
+
+### STEP 0: SETTLED AFFIRMATIVELY, with exponential room
+
+Prototype: `specs/761_ladder_realization_theorem/prototype/step0-budget-check.lean`, compiled
+standalone through the build guard, four theorems all on `[propext, Classical.choice, Quot.sound]`,
+no `sorryAx`. **It is NOT a wired probe and is NOT gate-covered** — the revision should land these
+four statements in the library, where the axiom test and the module invariants cover them.
+
+The question the research says to settle first is whether the available countdown is at least
+`Fintype.card Q * 2 ^ |plusSubformulaClosure φ|`, the type pigeonhole's budget, given that the plan
+forbids strengthening `ParamsOk` to get it. It is, and the reason is an IDENTITY rather than an
+estimate:
+
+- `card_prodState : Fintype.card (ProdState Q φ) = Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card`
+  — the pigeonhole budget IS the cardinality of the certificate product carrier (`ProdState Q φ` is
+  `Q × ClType φ` and `ClType φ` is the powerset of the closure).
+- `cascadeBound pend φ = 2 ^ Fintype.card (ProdState Q φ) * (tIdle pend + 2)` carries that budget as
+  its own EXPONENT, so `budget_le_cascadeBound` is `n + 1 ≤ 2 ^ n * (tIdle + 2)`.
+- `budget_le_Tc` then goes through `(K2)`'s `cascadeBound pend φ ≤ Tc` conjunct ALONE —
+  `satThreshold`, `satPeriod`, `prodPre_periodic`, `prodPreStep` and `cohIdle` are not cited, no
+  parameter is added, `ParamsOk` is not strengthened and `Tc` is not raised.
+- `budget_le_cnt` lands it where the agreement needs it: by the landed `eq_or_both_ge_of_min_eq`,
+  a collision of the clipped coordinate gives either `c = c'` (nothing to pump) or both countdowns
+  at or above `Tc`, hence both above the budget.
+
+So the route needs no new parameter and the sharper blocker the research warned of does NOT
+materialise.
+
+### What STEP 0 does NOT settle
+
+The research's own RISK note: its Step 2 needs the endpoint type equality to propagate to the
+block's INTERIOR positions, not only its endpoints. If only the endpoints agree, the fallback is a
+pigeonhole for a loop whose interior types also match pairwise, at a LARGER budget. The four facts
+above are stated at `card (ProdState Q φ) + 1` and would have to be re-derived at whatever that
+larger figure is. The gap between `card (ProdState Q φ)` and `2 ^ card (ProdState Q φ)` is wide,
+but no claim is made here about how wide is wide enough — that is the next thing to settle, and it
+should be settled before Step 2 is built, for the same reason STEP 0 was.
+
+### The route recommendation, updated
+
+The earlier recommendation in this handoff — argue at the level of the CELL — is superseded. The
+research's type-respecting-block route is a concrete construction that respects every prohibition
+in plan 05, its one named feasibility risk is now settled affirmatively and compiled, and the
+objection the preceding round recorded against it (`objCycleLens` has `l ≤ Fintype.card Q` built
+into its definition, so divisibility is closed to a long loop) is answered by iterating the splice
+`P + 1` times instead of relying on `l ∣ P + 1`. The cell-level route remains available as a
+fallback and is not refuted by anything.

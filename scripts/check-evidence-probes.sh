@@ -1633,13 +1633,23 @@ EVIDENCE="specs/evidence"
 #                                                           | `cellAt_const_of_kappa_eq` itself (a
 #                                                           | cell quantifies over ALL histories
 #                                                           | through a state, this probe compares
-#                                                           | two), and nothing about a type-AWARE
-#                                                           | lengthening of the region, which is a
-#                                                           | different construction not stated
-#                                                           | anywhere in the tree. No bound, every
-#                                                           | quantity a count. Axioms
+#                                                           | two), and nothing about a splice at a
+#                                                           | TYPE-RESPECTING block or a type-AWARE
+#                                                           | lengthening of the region -- different
+#                                                           | constructions, stated nowhere in the
+#                                                           | tree. WHY the block is the wrong unit
+#                                                           | is itself compiled
+#                                                           | (`splice_block_not_type_respecting`):
+#                                                           | the pumped block's endpoints carry the
+#                                                           | SAME object state and DIFFERENT
+#                                                           | realized types, so the object cycle is
+#                                                           | not a unit of type-invariance and the
+#                                                           | refutation is confined to it by
+#                                                           | construction rather than by silence.
+#                                                           | No bound, every quantity a count.
+#                                                           | Axioms
 #                                                           | `[propext, Classical.choice, Quot.sound]`
-#                                                           | on all nineteen printed theorems. No
+#                                                           | on all twenty-one printed theorems. No
 #                                                           | `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
 WIRED=(
