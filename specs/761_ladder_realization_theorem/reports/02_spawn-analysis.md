@@ -166,6 +166,13 @@ untouched by any of the above.
 
 ### New Item 0: Gate and attempt the formula-coupled residue index against the five-part falsification table
 - **Effort**: ~3-5 hours for the correction + gate run + report (precedents closed in ~1-1.6h
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
   against ~9h filed estimates); the positive sufficiency attempt beyond a survived gate is NOT
   costable and may be deferred to a successor record.
 - **Task Type**: lean4
