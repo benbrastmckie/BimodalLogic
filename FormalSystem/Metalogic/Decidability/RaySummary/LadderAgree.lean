@@ -67,6 +67,59 @@ all and the condition discharges outright (`exists_spliced_ladderPath_of_pend_pa
 other regime it is carried as a hypothesis by `exists_spliced_ladderPath`, and its discharge is
 the cascade the parameter condition `(K2)` sizes, which is not landed here.
 
+## The type layer: the bridge, and what a replacement argument owes
+
+A replacement performed on the WALK has to be read as a statement about the CELL, and the two are
+stated in different languages: the replacement layer speaks of functions `ℤ → LadderState Q pend`
+stepping along `RladAdm`, the cell of `WorldHistory`s of `ladderFrameAdm`. The bridge is
+`exists_hist_of_isLadderPath` and `exists_isLadderPath_of_hist` — the two layers are the same
+object, by `ofSlicedStepFinBranch_mem_HF_iff` at a relation whose time argument `Rlad` ignores —
+and `mem_cellAt_ladder_iff` is the agreement's own object in the replacement layer's language:
+the closure types realized at a ladder state are exactly those the ladder paths through it
+realize, with no offset left over.
+
+With the bridge the open half becomes a clause-by-clause question, and two of the six families
+are answered. The `□` letters transfer under EVERY replacement whatsoever, because their bit
+quantifies over all histories and all times and so names no path (`box_mem_tpOf_transfer`); the
+ATOMIC letters read the object walk at the position and nothing else, the ladder model's
+valuation ignoring the time coordinate and both counters (`atom_mem_tpOf_ladder_iff`), so they
+transfer whenever the object at the position is unmoved — which is what `spliceObj_eq_of_le` says
+the splice arranges (`atom_mem_tpOf_transfer_of_objAt_eq`). `⊥` and `→` are structural. What is
+left is exactly the two TEMPORAL letters, whose fixpoint readings on types are landed here
+(`untl_mem_tpOf_iff`, `snce_mem_tpOf_iff`) because the anchor layer stops at the four non-temporal
+ones, and the `⊡` letters, whose bits are by `stab_mem_tpOf_iff_cell` data of the very cells being
+compared.
+
+For the temporal pair the index maps are not enough, and this too is compiled rather than
+asserted. The spliced walk is the original read along a RETRACTION of positions
+(`spliceObj_eq_objAt_spliceIdx`), which retracts a monotone embedding (`spliceEmb_monotone`,
+`spliceIdx_spliceEmb`) — so a temporal witness of the original transports forward. The retraction
+itself is not monotone: at the seam it drops back by the block length (`spliceIdx_seam_lt`), so a
+witness of `ψ U χ` found in the second copy of the pumped block retracts to a position that need
+not be later than the position being evaluated, and `untl_mem_tpOf_iff`'s right-hand side is not
+transported. Closing that gap takes a statement about truth at the positions the retraction folds
+together, which is the model-level pumping lemma this module does not land.
+
+## The truth-transport layer, half (i)
+
+The transport of a realized type between two DISTINCT ladder states is the layer the agreement
+needs and the repository did not have: the only other model-level transport moves along the TIME
+axis at a FIXED world state (`tpOf_timeShift`, `cellAt_eq_cellAt`). Half (i) of it is landed here
+and closes on its own ground, with no parameter, no splice and no cascade: two ladder paths with
+the SAME object walk satisfy the same closure formulas at every position
+(`truthAt_iff_of_objAt_eq_of_stabPinned`, with `tpOf_eq_of_objAt_eq_of_pinned` on types). The
+counters are what differ, and the statement is the mechanical form of the claim that they are
+invisible to every clause but `⊡`. It is not vacuous: `cntAt_eq_of_obj_eq` fixes the countdown
+from the walk, but the next-deadline register only has to drift, so two ladder paths can share an
+object walk and differ at every position in `n` (`exists_ladderPath_pair_nxtAt_ne`).
+
+Half (i) is stated RELATIVE to a set of pinned `⊡` letters (`StabPinned`, with the depth function
+`stabDepth` and its bound on a closure) rather than for the stab-free fragment alone, because the
+stab-free statement is the one shape an induction on `⊡`-nesting depth cannot consume: that
+induction's step needs the transport for the letters of depth at most `d` while proving it for
+depth `d + 1`. The stab-free statement is the instance `L := fun _ => False`
+(`tpOf_stabFree_eq_of_objAt_eq`).
+
 ## What this module does NOT hold
 
 * **THE AGREEMENT ITSELF IS NOT LANDED.** The statement this module exists for — that the cell at
@@ -88,12 +141,31 @@ the cascade the parameter condition `(K2)` sizes, which is not landed here.
   being compared, so the agreement's own proof runs by induction on `⊡`-nesting depth whatever the
   phase order is; what the history-level route buys is that the stratification is at the MODEL
   level and needs no stratified certificate family.
-* **No type preservation under the replacement.** Every statement of the replacement layer is
+* **No type preservation under the replacement.** Every statement of the REPLACEMENT layer is
   about admissibility — the spliced walk is a ladder path and its counters are what `Count` forces.
-  Nothing says the spliced path realizes the same closure type at the position, and no statement
-  of this module mentions `tpOf` or `cellAt` outside `stab_mem_tpOf_iff_cell`.
+  Nothing says the spliced path realizes the same closure type at the position. What the type
+  layer below lands is the STATEMENT layer for that claim and a clause-by-clause audit of what it
+  owes: of the six clause families of a closure type, four are settled — `⊥` and `→` structurally,
+  the `□` letters under every replacement whatsoever (`box_mem_tpOf_transfer`), and the atomic
+  letters whenever the object at the position is unmoved (`atom_mem_tpOf_transfer_of_objAt_eq`,
+  with `spliceObj_eq_of_le` supplying the hypothesis for the splice) — and two are OPEN: the two
+  temporal letters and the `⊡` letters. `spliceIdx_seam_lt` compiles the reason the index maps
+  alone do not settle the temporal pair.
 * **No discharge of the pin side condition outside the pending-forever regime.** The cascade that
   would re-establish pin compatibility after a region is lengthened is not landed.
+* **NO SPLICE INVARIANCE — half (ii) of the transport layer is not landed.** Half (i) transports
+  a type between two paths with the SAME object walk. Pumping produces a path with a DIFFERENT
+  object walk, and nothing here transports a type across that difference. The obstruction is
+  compiled rather than asserted: the spliced walk is the original read along a retraction of
+  positions (`spliceObj_eq_objAt_spliceIdx`) which drops back by the block length at the seam
+  (`spliceIdx_seam_lt`), so a structural induction carrying one uniform claim at every position
+  fails at the positions adjacent to and inside the pumped block — where the claim IS the pumping
+  claim and no distance hypothesis protects it. What is missing is a model-level periodicity of
+  the TYPE sequence along a periodic object segment, the model-side analogue of the certificate
+  graph's own periodicity, which may not be cited across that boundary.
+* **No `⊡`-depth induction.** `stabDepth`, `StabPinned` and their bounds are the MEASURE and the
+  hypothesis shape such an induction needs; the induction itself is not stated here, and neither
+  is the agreement it would carry.
 * **No certificate object.** See the first paragraph. `CounterQuotient` is imported for `kappa`
   and `ParamsOk`, which the agreement statement consumes; with that statement not yet landed, the
   import is the one the module's own route declares and nothing in the results above reads it.
@@ -130,6 +202,174 @@ theorem stab_mem_tpOf_iff_cell (M : TaskModel F.toTaskFrame) (φ : PlusFormula)
     exact H _ ⟨σ', hσ'.symm, rfl⟩
 
 end Stab
+/-! ## The temporal fixpoint readings of a closure type
+
+The anchor layer lands the fixpoint equations of `⊥`, `→`, `□` and `⊡` on types and stops there.
+A replacement argument needs the two TEMPORAL readings as well, because what it has to compare
+across a replacement is the whole type and `U`/`S` are the two letters whose bit is a statement
+about other positions of the SAME path. They are the clause lemmas `PlusTruth.untl_iff` and
+`PlusTruth.snce_iff` with the closure projections that keep the guard and the event inside
+`plusSubformulaClosure φ`; together with the four anchor-layer equations they are the local
+coherence conditions the type sequence along a path satisfies. -/
+
+section Temporal
+
+variable {F : FrameOver intOrder}
+
+/-- **The closure-wide `until` equation**: `ψ U χ` is in the closure type at `(σ, z)` iff `χ` is
+in the closure type at some later time of the SAME history with `ψ` in the closure type at every
+time strictly between. The one letter of the type whose bit is unbounded in the future. -/
+theorem untl_mem_tpOf_iff (M : TaskModel F.toTaskFrame) (φ : PlusFormula)
+    (σ : WorldHistory F.toTaskFrame) (z : ℤ) {ψ χ : PlusFormula}
+    (h : PlusFormula.untl ψ χ ∈ plusSubformulaClosure φ) :
+    PlusFormula.untl ψ χ ∈ tpOf M φ σ z ↔
+      ∃ s : ℤ, z < s ∧ χ ∈ tpOf M φ σ s ∧
+        ∀ r : ℤ, z < r → r < s → ψ ∈ tpOf M φ σ r := by
+  have hev : χ ∈ plusSubformulaClosure φ := plusClosure_untl_left φ χ ψ h
+  have hgd : ψ ∈ plusSubformulaClosure φ := plusClosure_untl_right φ χ ψ h
+  rw [mem_tpOf_iff, PlusTruth.untl_iff]
+  constructor
+  · rintro ⟨-, s, hs, hχs, hr⟩
+    exact ⟨s, hs, (mem_tpOf_iff M φ σ s χ).mpr ⟨hev, hχs⟩,
+      fun r h1 h2 => (mem_tpOf_iff M φ σ r ψ).mpr ⟨hgd, hr r h1 h2⟩⟩
+  · rintro ⟨s, hs, hχs, hr⟩
+    exact ⟨h, s, hs, ((mem_tpOf_iff M φ σ s χ).mp hχs).2,
+      fun r h1 h2 => ((mem_tpOf_iff M φ σ r ψ).mp (hr r h1 h2)).2⟩
+
+/-- **The closure-wide `since` equation**: the mirror of `untl_mem_tpOf_iff` into the past. The
+one letter of the type whose bit is unbounded in the past, and the letter `(K4)`'s backward
+exactness depth counts. -/
+theorem snce_mem_tpOf_iff (M : TaskModel F.toTaskFrame) (φ : PlusFormula)
+    (σ : WorldHistory F.toTaskFrame) (z : ℤ) {ψ χ : PlusFormula}
+    (h : PlusFormula.snce ψ χ ∈ plusSubformulaClosure φ) :
+    PlusFormula.snce ψ χ ∈ tpOf M φ σ z ↔
+      ∃ s : ℤ, s < z ∧ χ ∈ tpOf M φ σ s ∧
+        ∀ r : ℤ, s < r → r < z → ψ ∈ tpOf M φ σ r := by
+  have hev : χ ∈ plusSubformulaClosure φ := plusClosure_snce_left φ χ ψ h
+  have hgd : ψ ∈ plusSubformulaClosure φ := plusClosure_snce_right φ χ ψ h
+  rw [mem_tpOf_iff, PlusTruth.snce_iff]
+  constructor
+  · rintro ⟨-, s, hs, hχs, hr⟩
+    exact ⟨s, hs, (mem_tpOf_iff M φ σ s χ).mpr ⟨hev, hχs⟩,
+      fun r h1 h2 => (mem_tpOf_iff M φ σ r ψ).mpr ⟨hgd, hr r h1 h2⟩⟩
+  · rintro ⟨s, hs, hχs, hr⟩
+    exact ⟨h, s, hs, ((mem_tpOf_iff M φ σ s χ).mp hχs).2,
+      fun r h1 h2 => ((mem_tpOf_iff M φ σ r ψ).mp (hr r h1 h2)).2⟩
+
+/-- **THE `□` LETTERS OF A TYPE TRANSFER UNDER EVERY REPLACEMENT WHATSOEVER.** `box_mem_tpOf_iff`
+read as a transfer statement rather than as a fixpoint equation: the right-hand side quantifies
+over every history and every time, so it names no path at all and a `□`-letter's bit is the same
+at any two points of the model. This is the one clause family of the type that a replacement
+argument owes nothing for, and recording it is what isolates what such an argument DOES owe: the
+two temporal letters and the `⊡` letters. -/
+theorem box_mem_tpOf_transfer (M : TaskModel F.toTaskFrame) (φ : PlusFormula)
+    (σ σ' : WorldHistory F.toTaskFrame) (z z' : ℤ) {ψ : PlusFormula}
+    (h : PlusFormula.box ψ ∈ plusSubformulaClosure φ) :
+    PlusFormula.box ψ ∈ tpOf M φ σ z ↔ PlusFormula.box ψ ∈ tpOf M φ σ' z' := by
+  rw [box_mem_tpOf_iff M φ σ z h, box_mem_tpOf_iff M φ σ' z' h]
+
+end Temporal
+
+/-! ## The `⊡`-nesting depth, and the pinned-letter parameter
+
+The transport statements below are not stated for the stab-free fragment alone. They carry a
+parameter `L : PlusFormula → Prop` — "these `⊡` letters are already known to transport" — and hold
+for every formula all of whose `⊡` subformulas satisfy `L` (`StabPinned`). The stab-free statement
+is the instance `L := fun _ => False`; the instance `L := (stabDepth · ≤ d)` is what an induction
+on `⊡`-nesting depth consumes at its step, and stating the transport for the stab-free fragment
+alone is the one shape such an induction cannot use.
+
+`stabDepth` is `0` on `□ψ` whatever `ψ` is, and that is deliberate: the `box` clause of
+`PlusTruthAt` carries no state constraint and no history argument on its right-hand side
+(`box_mem_tpOf_transfer`), so a `□` letter's bit is the same proposition at both compared points
+and the depth of its argument is irrelevant to transport. -/
+
+section Pinned
+
+/-- **The `⊡`-nesting depth of a formula**: `0` on the atomic arms and on `□` (whose clause is
+path-independent), the `max` across the three binary arms, and one more than its argument's on
+`⊡`. -/
+def stabDepth : PlusFormula → ℕ
+  | .atom _ => 0
+  | .bot => 0
+  | .imp a b => max (stabDepth a) (stabDepth b)
+  | .box _ => 0
+  | .untl a b => max (stabDepth a) (stabDepth b)
+  | .snce a b => max (stabDepth a) (stabDepth b)
+  | .stab a => stabDepth a + 1
+
+/-- **Every `⊡` subformula of this formula is pinned by `L`.** The `box` arm is `True` for the
+reason `stabDepth` is `0` there: the clause names no path. The `⊡` arm asks `L` of the LETTER
+`⊡χ` itself and nothing of `χ`, which is what makes the induction below one case per clause. -/
+def StabPinned (L : PlusFormula → Prop) : PlusFormula → Prop
+  | .atom _ => True
+  | .bot => True
+  | .imp a b => StabPinned L a ∧ StabPinned L b
+  | .box _ => True
+  | .untl a b => StabPinned L a ∧ StabPinned L b
+  | .snce a b => StabPinned L a ∧ StabPinned L b
+  | .stab a => L (PlusFormula.stab a)
+
+theorem stabDepth_stab (χ : PlusFormula) : stabDepth (PlusFormula.stab χ) = stabDepth χ + 1 := rfl
+
+/-- **A `⊡` letter of depth at most `d + 1` has its argument at depth at most `d`**: the fact an
+induction on `⊡`-nesting depth steps by. -/
+theorem stabDepth_arg_le_of_le_succ {χ : PlusFormula} {d : ℕ}
+    (h : stabDepth (PlusFormula.stab χ) ≤ d + 1) : stabDepth χ ≤ d := by
+  rw [stabDepth_stab] at h
+  omega
+
+/-- **The depth is bounded on a closure by a `φ`-determined quantity**, so an induction on
+`⊡`-nesting depth over `plusSubformulaClosure φ` terminates. -/
+theorem stabDepth_le_sup (φ : PlusFormula) {ψ : PlusFormula}
+    (h : ψ ∈ plusSubformulaClosure φ) :
+    stabDepth ψ ≤ (plusSubformulaClosure φ).sup stabDepth :=
+  Finset.le_sup h
+
+/-- **A formula of depth at most `d` has every `⊡` letter of depth at most `d`.** The bridge from
+the depth bound to the pinned-letter hypothesis the transport statements take. -/
+theorem stabPinned_of_stabDepth_le (d : ℕ) :
+    ∀ ψ : PlusFormula, stabDepth ψ ≤ d → StabPinned (fun χ => stabDepth χ ≤ d) ψ := by
+  intro ψ
+  induction ψ with
+  | atom p => intro _; exact trivial
+  | bot => intro _; exact trivial
+  | imp a b iha ihb =>
+      intro h
+      exact ⟨iha (le_trans (le_max_left _ _) h), ihb (le_trans (le_max_right _ _) h)⟩
+  | box a _ => intro _; exact trivial
+  | untl a b iha ihb =>
+      intro h
+      exact ⟨iha (le_trans (le_max_left _ _) h), ihb (le_trans (le_max_right _ _) h)⟩
+  | snce a b iha ihb =>
+      intro h
+      exact ⟨iha (le_trans (le_max_left _ _) h), ihb (le_trans (le_max_right _ _) h)⟩
+  | stab a _ => intro h; exact h
+
+/-- **A closure with no `⊡` member pins every one of its formulas at `L := fun _ => False`**, which
+is the stab-free instance of the transport statements. The `⊡` arm is the only one with content:
+a `⊡` letter inside a closure member is itself a closure member, so a closure with none at all
+leaves the arm unreachable. -/
+theorem stabPinned_false_of_mem_closure {φ : PlusFormula}
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) :
+    ∀ ψ ∈ plusSubformulaClosure φ, StabPinned (fun _ => False) ψ := by
+  intro ψ
+  induction ψ with
+  | atom p => intro _; exact trivial
+  | bot => intro _; exact trivial
+  | imp a b iha ihb =>
+      intro hm
+      exact ⟨iha (plusClosure_imp_left φ a b hm), ihb (plusClosure_imp_right φ a b hm)⟩
+  | box a _ => intro _; exact trivial
+  | untl a b iha ihb =>
+      intro hm
+      exact ⟨iha (plusClosure_untl_right φ b a hm), ihb (plusClosure_untl_left φ b a hm)⟩
+  | snce a b iha ihb =>
+      intro hm
+      exact ⟨iha (plusClosure_snce_right φ b a hm), ihb (plusClosure_snce_left φ b a hm)⟩
+  | stab a _ => intro hm; exact absurd hm (hno a)
+
+end Pinned
 
 /-! ## The components of a ladder path
 
@@ -870,5 +1110,331 @@ theorem exists_spliced_ladderPath_of_pend_past
 end Splice
 
 end Path
+
+/-! ## The index maps of the splice, and where they stop working
+
+The splice is a surgery on positions as well as on the walk, and the two maps below are what a
+type-level argument would have to quantify over. `spliceIdx` is the RETRACTION — the spliced
+path's position `v` carries the original's object at `spliceIdx a l v` — and `spliceEmb` is the
+order EMBEDDING in the other direction, which `spliceIdx` retracts.
+
+`spliceEmb` is monotone, so a temporal witness of the ORIGINAL transports along it. `spliceIdx`
+is not: at the seam it drops back by `l` (`spliceIdx_seam_lt`), which is the mechanical reason the
+index maps ALONE cannot carry a temporal letter of the spliced path back to the original at a
+position inside the pumped block. A witness of `ψ U χ` found in the second copy retracts to a
+position that may lie BEFORE the position being evaluated, so the retracted witness is not a
+witness. This is the precise form of the model-level obstruction the module's header records: what
+is missing is not an index map but a statement about truth along the path at the positions the
+retraction folds together. -/
+
+section SpliceIdx
+
+variable {Q : Type} {pend : Q → Bool}
+
+/-- **The retraction of the splice on positions**: a position below the splice point is the
+original's own, and a position at or above it is the original's `l` earlier. -/
+def spliceIdx (a : ℤ) (l : ℕ) (v : ℤ) : ℤ := if v < a + (l : ℤ) then v else v - (l : ℤ)
+
+theorem spliceIdx_of_lt (a : ℤ) (l : ℕ) (v : ℤ) (h : v < a + (l : ℤ)) :
+    spliceIdx a l v = v := by
+  simp only [spliceIdx, if_pos h]
+
+theorem spliceIdx_of_ge (a : ℤ) (l : ℕ) (v : ℤ) (h : a + (l : ℤ) ≤ v) :
+    spliceIdx a l v = v - (l : ℤ) := by
+  simp only [spliceIdx, if_neg (by omega : ¬ v < a + (l : ℤ))]
+
+/-- **The spliced walk is the original read along the retraction**, which is the single statement
+`spliceObj_of_lt` and `spliceObj_of_ge` make between them. -/
+theorem spliceObj_eq_objAt_spliceIdx (g : ℤ → LadderState Q pend) (a : ℤ) (l : ℕ) (v : ℤ) :
+    spliceObj g a l v = objAt g (spliceIdx a l v) := by
+  rcases lt_or_ge v (a + (l : ℤ)) with h | h
+  · rw [spliceObj_of_lt v h, spliceIdx_of_lt a l v h]
+  · rw [spliceObj_of_ge v h, spliceIdx_of_ge a l v h]
+
+/-- **The order embedding of the splice on positions**: the original's position `v` sits at `v`
+below the splice and at `v + l` from the splice point on. -/
+def spliceEmb (a : ℤ) (l : ℕ) (v : ℤ) : ℤ := if v < a then v else v + (l : ℤ)
+
+/-- **The embedding is monotone.** This is the direction that works: a temporal witness of the
+original transports along it, because the order of positions is preserved. -/
+theorem spliceEmb_monotone (a : ℤ) (l : ℕ) : Monotone (spliceEmb a l) := by
+  intro u v huv
+  simp only [spliceEmb]
+  split <;> split <;> omega
+
+/-- **The retraction retracts the embedding.** So the original's positions are exactly the
+positions the retraction hits, and nothing of the original is lost by the surgery. -/
+theorem spliceIdx_spliceEmb (a : ℤ) (l : ℕ) (v : ℤ) : spliceIdx a l (spliceEmb a l v) = v := by
+  simp only [spliceIdx, spliceEmb]
+  split <;> split <;> omega
+
+/-- **THE RETRACTION DROPS BACK AT THE SEAM**, whenever the pumped block has length at least two:
+the spliced position `a + l` retracts to `a` while its own predecessor `a + l - 1` retracts to
+`a + l - 1`, which is strictly later. Compiled here because it is the mechanical reason the index
+maps alone do not carry a temporal letter across the block: a witness found in the second copy of
+the block retracts to a position that need not be later than the position being evaluated, so the
+retracted witness is not a witness and `untl_mem_tpOf_iff`'s right-hand side is not transported.
+Nothing weaker than a statement about truth at the folded positions closes that gap. -/
+theorem spliceIdx_seam_lt (a : ℤ) (l : ℕ) (hl : 2 ≤ l) :
+    spliceIdx a l (a + (l : ℤ)) < spliceIdx a l (a + (l : ℤ) - 1) := by
+  rw [spliceIdx_of_ge a l (a + (l : ℤ)) le_rfl,
+    spliceIdx_of_lt a l (a + (l : ℤ) - 1) (by omega)]
+  have : (2 : ℤ) ≤ (l : ℤ) := by exact_mod_cast hl
+  omega
+
+end SpliceIdx
+
+/-! ## The ladder paths ARE the world histories of the ladder frame
+
+Everything above the `Stab` section is about a function `g : ℤ → LadderState Q pend` stepping
+along `RladAdm`; everything about a realized TYPE is about a `WorldHistory` of `ladderFrameAdm`.
+The two layers are the same object, and the bridge below is what lets a replacement performed on
+the WALK be read as a statement about the CELL — the object the agreement compares. It is the
+history-space characterization `ofSlicedStepFinBranch_mem_HF_iff` at `RladAdm`, whose time
+argument `Rlad` ignores, so the offset a history carries is invisible to the step condition and a
+ladder path is an offset step path at EVERY offset.
+
+The bridge also says what a replacement argument owes and what it does not, clause family by
+clause family. `⊥` and `→` are structural (`bot_not_mem_tpOf`, `imp_mem_tpOf_iff`); the `□`
+letters transfer under every replacement whatsoever (`box_mem_tpOf_transfer`); the ATOMIC letters
+read the object walk at the position and nothing else (`atom_mem_tpOf_ladder_iff`), so they
+transfer whenever the replacement leaves the object at the position alone — which
+`spliceObj_eq_of_le` says the splice does (`atom_mem_tpOf_transfer_of_objAt_eq`). What is left
+open is exactly two clause families: the two TEMPORAL letters, whose bits are statements about
+unboundedly distant positions of the same path (`untl_mem_tpOf_iff`, `snce_mem_tpOf_iff`), and
+the `⊡` letters, whose bits are by `stab_mem_tpOf_iff_cell` data of the very cells being
+compared. -/
+
+section Hist
+
+variable {Q : Type} [Finite Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+omit [Finite Q] [Nonempty Q] in
+/-- **The offset is invisible to the step condition.** `Rlad` ignores its time argument, so an
+offset step path of `RladAdm` at one offset is one at every offset, and both readings are the
+ladder path condition. -/
+theorem isSlicedStepPath_iff_isLadderPath (k : ℤ) (g : ℤ → LadderState Q pend) :
+    IsSlicedStepPath (RladAdm step pend) k g ↔ IsLadderPath step pend g := Iff.rfl
+
+/-- **Every ladder path IS a world history of the ladder frame**, at the offset `0`: its state at
+every time is the path's value there, with the frame's own time coordinate alongside. This is the
+direction a replacement argument consumes — the spliced walk is a ladder path
+(`exists_spliced_ladderPath_of_pend_past`), hence a history, hence a witness for the cell. -/
+theorem exists_hist_of_isLadderPath
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) :
+    ∃ τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+      ∀ t : ℤ, τ.state t = (t, g t) := by
+  obtain ⟨τ, hτ⟩ :=
+    (ofSlicedStepFinBranch_mem_HF_iff (RladAdm step pend) (RladAdm_fwd step pend)
+        (RladAdm_bwd step pend) fwd bwd (fun t => (t, g t))).mpr
+      ⟨0, g, (isSlicedStepPath_iff_isLadderPath 0 g).mpr hg, by funext t; simp⟩
+  refine ⟨τ, fun t => ?_⟩
+  have h : τ.path t = (t, g t) := by rw [hτ]
+  exact h
+
+/-- **Every world history of the ladder frame IS a ladder path**, up to the offset its origin
+carries: `τ.state t = (t + k, g t)` for a ladder path `g`. This is the direction a replacement
+argument consumes to get its hands on a walk in the first place. -/
+theorem exists_isLadderPath_of_hist
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame) :
+    ∃ (k : ℤ) (g : ℤ → LadderState Q pend), IsLadderPath step pend g ∧
+      ∀ t : ℤ, τ.state t = (t + k, g t) := by
+  obtain ⟨k, g, hg, hpath⟩ :=
+    (ofSlicedStepFinBranch_mem_HF_iff (RladAdm step pend) (RladAdm_fwd step pend)
+        (RladAdm_bwd step pend) fwd bwd τ.path).mp ⟨τ, rfl⟩
+  refine ⟨k, g, (isSlicedStepPath_iff_isLadderPath k g).mp hg, fun t => ?_⟩
+  have h : τ.path t = (t + k, g t) := by rw [hpath]
+  exact h
+
+/-- **The cell of a ladder state, read on ladder paths.** The closure types realized at a ladder
+state are exactly those realized at it by the LADDER PATHS through it, with no offset left over:
+a history through a world state whose time coordinate is `z` carries offset `0`. This is the
+agreement's own object translated into the language the replacement layer speaks — a replacement
+that produces a ladder path through the other state realizing the same type is exactly what the
+agreement asks for, and nothing else is. -/
+theorem mem_cellAt_ladder_iff
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (x : LadderState Q pend) (z : ℤ)
+    (T : Finset PlusFormula) :
+    T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, x) : (ladderFrameAdm step pend fwd bwd).WorldState) z ↔
+      ∃ (g : ℤ → LadderState Q pend)
+        (τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        IsLadderPath step pend g ∧ g z = x ∧ (∀ t : ℤ, τ.state t = (t, g t)) ∧
+        tpOf (ladderModel step pend fwd bwd lab) φ τ z = T := by
+  constructor
+  · rintro ⟨τ, hs, rfl⟩
+    obtain ⟨k, g, hg, hp⟩ := exists_isLadderPath_of_hist fwd bwd τ
+    have hz : ((z, x) : (ladderFrameAdm step pend fwd bwd).WorldState) = (z + k, g z) :=
+      hs.symm.trans (hp z)
+    have hk : k = 0 := by
+      have := congrArg Prod.fst hz
+      simp only at this
+      omega
+    subst hk
+    refine ⟨g, τ, hg, ?_, fun t => ?_, rfl⟩
+    · have := congrArg Prod.snd hz
+      simpa using this.symm
+    · rw [hp t, add_zero]
+  · rintro ⟨g, τ, -, hgz, hτ, hT⟩
+    exact ⟨τ, by rw [hτ z, hgz], hT⟩
+
+/-- **The ATOMIC letters of a realized type read the object walk at the position and nothing
+else.** The ladder model's valuation ignores the time coordinate and both counters, so an atomic
+letter's bit is `lab` at the object the path carries there — whatever offset the history has. -/
+theorem atom_mem_tpOf_ladder_iff
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) {k : ℤ} {g : ℤ → LadderState Q pend}
+    (τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hτ : ∀ t : ℤ, τ.state t = (t + k, g t)) (z : ℤ) (p : Atom) :
+    PlusFormula.atom p ∈ tpOf (ladderModel step pend fwd bwd lab) φ τ z ↔
+      PlusFormula.atom p ∈ plusSubformulaClosure φ ∧ lab (objAt g z) p = true := by
+  rw [mem_tpOf_iff, PlusTruth.atom_iff, hτ z]
+  exact Iff.rfl
+
+/-- **The atomic letters transfer whenever the object at the position does.** With
+`box_mem_tpOf_transfer` this is the whole of what a replacement argument gets for free: the splice
+leaves the object at a position of the lengthened region alone (`spliceObj_eq_of_le`), so the
+atomic bits of the two compared types already agree. What is owed is therefore exactly two clause
+families — the two temporal letters and the `⊡` letters. -/
+theorem atom_mem_tpOf_transfer_of_objAt_eq
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) {k k' : ℤ} {g g' : ℤ → LadderState Q pend}
+    (τ τ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hτ : ∀ t : ℤ, τ.state t = (t + k, g t)) (hτ' : ∀ t : ℤ, τ'.state t = (t + k', g' t))
+    (z : ℤ) (hobj : objAt g z = objAt g' z) (p : Atom) :
+    PlusFormula.atom p ∈ tpOf (ladderModel step pend fwd bwd lab) φ τ z ↔
+      PlusFormula.atom p ∈ tpOf (ladderModel step pend fwd bwd lab) φ τ' z := by
+  rw [atom_mem_tpOf_ladder_iff fwd bwd lab φ τ hτ z p,
+    atom_mem_tpOf_ladder_iff fwd bwd lab φ τ' hτ' z p, hobj]
+
+/-! ### Half (i): object-trace locality
+
+The transport of a realized type between two DISTINCT ladder states, in the one case where it
+closes on its own ground: the two paths have the SAME object walk. No parameter, no splice and no
+cascade enters, and the proof is one case per clause of `PlusTruthAt`. The counters are what
+differ, and the statement is the mechanical form of the claim that they are invisible to every
+clause but `⊡`: the valuation reads the object component only, `□` names no path at all, `⊥` and
+`→` are structural, and `U`/`S` quantify over the time axis of the same history, so each of them
+is settled by the induction hypothesis at the other positions. The `⊡` clause is the only one
+that reads the world STATE, and it is carried by the pinned-letter hypothesis rather than proved
+here.
+
+Half (i) is not vacuous: `cntAt_eq_of_obj_eq` fixes the countdown from the walk, but the
+next-deadline register only drifts (`nxtAt_drift`), so two ladder paths with one object walk can
+differ at every position in `n` — `exists_ladderPath_pair_nxtAt_ne` exhibits such a pair whenever
+the object has an idle self-loop. -/
+
+/-- **HALF (i), OBJECT-TRACE LOCALITY, at the pinned-letter parameter.** Two ladder paths with the
+same object walk satisfy the same closure formulas at every position, for every formula whose `⊡`
+letters are pinned by `L`. One case per clause: the atomic one reads the object walk, `⊥` and `→`
+are structural, `□` is literally the same proposition on both sides because its clause names no
+history, `U` and `S` are the induction hypothesis at the other positions, and `⊡` is the pinned
+hypothesis. -/
+theorem truthAt_iff_of_objAt_eq_of_stabPinned
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (L : PlusFormula → Prop)
+    {k k' : ℤ} {g g' : ℤ → LadderState Q pend}
+    (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t)) (hσ' : ∀ t : ℤ, σ'.state t = (t + k', g' t))
+    (hobj : ∀ v : ℤ, objAt g v = objAt g' v)
+    (hL : ∀ χ : PlusFormula, L (PlusFormula.stab χ) → ∀ v : ℤ,
+      (PlusTruthAt (ladderModel step pend fwd bwd lab) σ v (PlusFormula.stab χ) ↔
+        PlusTruthAt (ladderModel step pend fwd bwd lab) σ' v (PlusFormula.stab χ))) :
+    ∀ ψ : PlusFormula, StabPinned L ψ → ∀ z : ℤ,
+      (PlusTruthAt (ladderModel step pend fwd bwd lab) σ z ψ ↔
+        PlusTruthAt (ladderModel step pend fwd bwd lab) σ' z ψ) := by
+  intro ψ
+  induction ψ with
+  | atom p =>
+      intro _ z
+      rw [PlusTruth.atom_iff, PlusTruth.atom_iff, hσ z, hσ' z]
+      change lab (objAt g z) p = true ↔ lab (objAt g' z) p = true
+      rw [hobj z]
+  | bot => intro _ z; exact Iff.rfl
+  | imp a b iha ihb => intro h z; exact imp_congr (iha h.1 z) (ihb h.2 z)
+  | box a _ => intro _ z; exact Iff.rfl
+  | untl a b iha ihb =>
+      intro h z
+      rw [PlusTruth.untl_iff, PlusTruth.untl_iff]
+      constructor
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mp he, fun r h1 h2 => (iha h.1 r).mp (hgd r h1 h2)⟩
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mpr he, fun r h1 h2 => (iha h.1 r).mpr (hgd r h1 h2)⟩
+  | snce a b iha ihb =>
+      intro h z
+      rw [PlusTruth.snce_iff, PlusTruth.snce_iff]
+      constructor
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mp he, fun r h1 h2 => (iha h.1 r).mp (hgd r h1 h2)⟩
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mpr he, fun r h1 h2 => (iha h.1 r).mpr (hgd r h1 h2)⟩
+  | stab a _ => intro h z; exact hL a h z
+
+/-- **Half (i) on closure TYPES**: the realized types of two ladder paths with the same object walk
+coincide at every position, whenever every member of the closure has its `⊡` letters pinned. -/
+theorem tpOf_eq_of_objAt_eq_of_pinned
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (L : PlusFormula → Prop)
+    {k k' : ℤ} {g g' : ℤ → LadderState Q pend}
+    (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t)) (hσ' : ∀ t : ℤ, σ'.state t = (t + k', g' t))
+    (hobj : ∀ v : ℤ, objAt g v = objAt g' v)
+    (hL : ∀ χ : PlusFormula, L (PlusFormula.stab χ) → ∀ v : ℤ,
+      (PlusTruthAt (ladderModel step pend fwd bwd lab) σ v (PlusFormula.stab χ) ↔
+        PlusTruthAt (ladderModel step pend fwd bwd lab) σ' v (PlusFormula.stab χ)))
+    (hcl : ∀ ψ ∈ plusSubformulaClosure φ, StabPinned L ψ) (z : ℤ) :
+    tpOf (ladderModel step pend fwd bwd lab) φ σ z
+      = tpOf (ladderModel step pend fwd bwd lab) φ σ' z := by
+  ext ψ
+  rw [mem_tpOf_iff, mem_tpOf_iff]
+  exact and_congr_right fun hmem =>
+    truthAt_iff_of_objAt_eq_of_stabPinned fwd bwd lab L σ σ' hσ hσ' hobj hL ψ (hcl ψ hmem) z
+
+/-- **The stab-free instance of half (i)**: when the closure carries no `⊡` letter at all, the
+pinned-letter hypothesis is vacuous and the realized types of two ladder paths with the same
+object walk simply coincide. -/
+theorem tpOf_stabFree_eq_of_objAt_eq
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    {k k' : ℤ} {g g' : ℤ → LadderState Q pend}
+    (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t)) (hσ' : ∀ t : ℤ, σ'.state t = (t + k', g' t))
+    (hobj : ∀ v : ℤ, objAt g v = objAt g' v)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) (z : ℤ) :
+    tpOf (ladderModel step pend fwd bwd lab) φ σ z
+      = tpOf (ladderModel step pend fwd bwd lab) φ σ' z :=
+  tpOf_eq_of_objAt_eq_of_pinned fwd bwd lab φ (fun _ => False) σ σ' hσ hσ' hobj
+    (fun _ h => absurd h (fun h => h)) (stabPinned_false_of_mem_closure hno) z
+
+omit [Finite Q] [Nonempty Q] in
+/-- **HALF (i) IS NOT VACUOUS.** Whenever the object has an idle state with a self-loop, the
+constant walk at it lifts to a ladder path for EVERY value of the next-deadline register: the
+countdown is pinned to `0` by the idle clause of `Count` and the register only has to `Drift`,
+which a constant does. So two ladder paths can share an object walk — hence, by
+`cntAt_eq_of_obj_eq`, their whole countdown — and still differ at every position in `n`, which is
+exactly the pair half (i) transports between. -/
+theorem exists_ladderPath_pair_nxtAt_ne (q : Q) (hq : pend q = false) (hs : step q q = true)
+    {n n' : ℕ} (hn : n ≠ n') :
+    ∃ g g' : ℤ → LadderState Q pend, IsLadderPath step pend g ∧ IsLadderPath step pend g' ∧
+      (∀ v : ℤ, objAt g v = objAt g' v) ∧ ∀ v : ℤ, nxtAt g v ≠ nxtAt g' v := by
+  refine ⟨fun _ => ⟨(q, 0, n), fun _ => rfl⟩, fun _ => ⟨(q, 0, n'), fun _ => rfl⟩,
+    fun u => ⟨hs, fun _ => rfl, Or.inl rfl, ?_⟩, fun u => ⟨hs, fun _ => rfl, Or.inl rfl, ?_⟩,
+    fun _ => rfl, fun _ => hn⟩
+  · simp [Count, hq]
+  · simp [Count, hq]
+
+end Hist
 
 end FormalSystem.Metalogic.Decidability.RaySummary
