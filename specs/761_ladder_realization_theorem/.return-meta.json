@@ -46,8 +46,18 @@
     "session_id": "sess_1792395030_22ac66",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
     "compliance_check": "skipped",
     "dispatch_seq": 15
-  }
+  },
+  "proposed_file_scope": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean",
+    "specs/761_ladder_realization_theorem/plans/04_ladder-agreement-first-decomposition.md",
+    "specs/761_ladder_realization_theorem/summaries/04_ladder-agreement-first-decomposition-summary.md"
+  ]
 }

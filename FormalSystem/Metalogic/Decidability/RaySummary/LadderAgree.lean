@@ -45,24 +45,55 @@ argument has to respect.
   one position constrains its value at another only up to the distance between them. This is the
   anchor the `n` coordinate of the counter quotient reads.
 
+## The replacement, and what it buys
+
+Because the walk is what has to move, the replacement is performed ON the walk: `spliceObj`
+repeats a segment of the object walk once and `spliceCnt` is the countdown the repeated walk
+forces. A pending region at least as long as the object count carries such a segment
+(`exists_objCycle_of_card_le_cnt`), its length is an object pending-cycle length and so divides
+`P + 1` under `(K1)` (`exists_pumpSeg_of_card_le_cnt`), and the surgery satisfies all three local
+readings of `Count` unconditionally (`spliceCnt_idle`, `spliceCnt_pend_pend`,
+`spliceCnt_pend_idle`). Its payoff is `spliced_at_region`: a second ladder path through the SAME
+object state whose countdown is the original's plus the cycle length — exactly the move
+`cntAt_eq_of_obj_eq` forbids on a fixed walk, with the residue coordinate of `kappa` unmoved.
+
+The lift to a ladder path carries one SIDE CONDITION, and the condition is forced rather than an
+artefact: a region start's countdown IS the deadline register's value at the idle position before
+it (`cntAt_eq_nxtAt_of_idle_pend`) and the register is `1`-Lipschitz, so the region-start
+countdowns of EVERY ladder path are pairwise compatible (`pinCompat_of_ladderPath`). Lengthening
+one region raises that one pin and moves no earlier region start, so compatibility has to be
+re-established. In the pending-forever-into-the-past regime there is no earlier region start at
+all and the condition discharges outright (`exists_spliced_ladderPath_of_pend_past`); in the
+other regime it is carried as a hypothesis by `exists_spliced_ladderPath`, and its discharge is
+the cascade the parameter condition `(K2)` sizes, which is not landed here.
+
 ## What this module does NOT hold
 
 * **THE AGREEMENT ITSELF IS NOT LANDED.** The statement this module exists for — that the cell at
   a pending position is constant on the classes of the counter quotient, under the parameter
   conditions — is NOT proved here and is not assumed anywhere. What landed is the rigid-anchor
   layer above, which any proof of it has to respect, and the cell-level reading of the `⊡` bit.
-  Three obstructions are on the record for it, each a consequence of what IS compiled here.
-  First, by `cntAt_eq_of_obj_eq` no replacement can keep the object walk and move the counters, so
-  the argument must pump the object walk itself. Second, pumping the walk changes the realized
-  type at the position only through a model-level periodicity statement about truth along a ladder
-  path, and the only landed periodicity statement (the backward-reachability fixpoint of the
-  certificate graph) is a statement about the certificate relation, whose bridge to truth along a
-  ladder path is exactly the soundness and completeness obligations that READ the agreement — so
-  that machinery cannot be reused here without closing a cycle, and a model-level pumping lemma
-  has to be authored instead. Third, the `⊡` bit inside a realized type is by
-  `stab_mem_tpOf_iff_cell` a datum of the cell being compared, so the agreement's own proof runs
-  by induction on `⊡`-nesting depth whatever the phase order is; what the history-level route buys
-  is that the stratification is at the MODEL level and needs no stratified certificate family.
+  Two obstructions are on the record for it, each a consequence of what IS compiled here. The
+  first obstruction of the earlier record — that by `cntAt_eq_of_obj_eq` no replacement can keep
+  the object walk and move the counters, so the argument must pump the walk itself — is DISCHARGED
+  by the replacement layer above: the walk-level surgery exists, it is a ladder path, and it moves
+  the countdown by a divisor of `P + 1`.
+  What stands is, first, that pumping the walk preserves the realized type at the position only
+  through a model-level periodicity statement about truth along a ladder path, and the only landed
+  periodicity statement (the backward-reachability fixpoint of the certificate graph) is a
+  statement about the certificate relation, whose bridge to truth along a ladder path is exactly
+  the soundness and completeness obligations that READ the agreement — so that machinery cannot be
+  reused here without closing a cycle, and a model-level pumping lemma has to be authored instead.
+  Second, the `⊡` bit inside a realized type is by `stab_mem_tpOf_iff_cell` a datum of the cell
+  being compared, so the agreement's own proof runs by induction on `⊡`-nesting depth whatever the
+  phase order is; what the history-level route buys is that the stratification is at the MODEL
+  level and needs no stratified certificate family.
+* **No type preservation under the replacement.** Every statement of the replacement layer is
+  about admissibility — the spliced walk is a ladder path and its counters are what `Count` forces.
+  Nothing says the spliced path realizes the same closure type at the position, and no statement
+  of this module mentions `tpOf` or `cellAt` outside `stab_mem_tpOf_iff_cell`.
+* **No discharge of the pin side condition outside the pending-forever regime.** The cascade that
+  would re-establish pin compatibility after a region is lengthened is not landed.
 * **No certificate object.** See the first paragraph. `CounterQuotient` is imported for `kappa`
   and `ParamsOk`, which the agreement statement consumes; with that statement not yet landed, the
   import is the one the module's own route declares and nothing in the results above reads it.
@@ -385,6 +416,458 @@ theorem clipIdx_regime_of_eq (B c c' n : ℕ) (hB : 2 ≤ B) (hlt : c < c')
     (h : clipIdx B c n = clipIdx B c' n) : c' ≤ n ∨ n + 2 ≤ c := by
   unfold clipIdx at h
   split at h <;> split at h <;> omega
+
+/-! ### The saturated segment of a long pending region
+
+The replacement argument of the pumping form needs a segment it may repeat. Inside a pending
+region the walk is forced to stay pending (`cntAt_sub_of_pend`), so a region at least as long as
+the object count revisits an object state, and the segment between the two visits is a cycle of
+the OBJECT's own pending graph. Its length is therefore one of the lengths `(K1)` requires to
+divide `P + 1`, which is what puts a repeated segment in the same residue class mod `P`. -/
+
+/-- **A repeated object state inside a pending region yields an object cycle.** The periodic
+walk `k ↦ objAt g (u + i + (k % l))` steps along `step`, is pending throughout because the whole
+segment lies inside the region, and closes up at `l` because the two visits agree. -/
+theorem objCycleLens_of_segment [Fintype Q] (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (u : ℤ) (hu : pend (objAt g u) = true)
+    (i l : ℕ) (hl : 0 < l) (hle : i + l ≤ cntAt g u)
+    (hrep : objAt g (u + (i : ℤ)) = objAt g (u + (i : ℤ) + (l : ℤ)))
+    (hcard : l ≤ Fintype.card Q) :
+    l ∈ objCycleLens step pend := by
+  refine ⟨hl, hcard, fun k => objAt g (u + (i : ℤ) + ((k % l : ℕ) : ℤ)), ?_, ?_, ?_⟩
+  · intro k
+    dsimp only
+    have hmod : k % l < l := Nat.mod_lt _ hl
+    have hs : (k + 1) % l = (k % l + 1) % l := (Nat.mod_add_mod k l 1).symm
+    by_cases hlast : k % l + 1 = l
+    · -- the wrap-around step: the segment's last position steps to the segment's first
+      have hk1 : (k + 1) % l = 0 := by rw [hs, hlast, Nat.mod_self]
+      have hstep := objAt_step g hg (u + (i : ℤ) + ((k % l : ℕ) : ℤ))
+      have hcast : ((k % l : ℕ) : ℤ) + 1 = (l : ℤ) := by exact_mod_cast hlast
+      rw [show u + (i : ℤ) + ((k % l : ℕ) : ℤ) + 1 = u + (i : ℤ) + (l : ℤ) by
+        rw [← hcast]; ring] at hstep
+      rw [hk1, Nat.cast_zero, add_zero, hrep]
+      exact hstep
+    · -- an interior step of the segment
+      have hk1 : (k + 1) % l = k % l + 1 := by
+        rw [hs, Nat.mod_eq_of_lt (by omega)]
+      have hstep := objAt_step g hg (u + (i : ℤ) + ((k % l : ℕ) : ℤ))
+      rw [hk1, show ((k % l + 1 : ℕ) : ℤ) = ((k % l : ℕ) : ℤ) + 1 by push_cast; ring,
+        ← add_assoc]
+      exact hstep
+  · intro k
+    dsimp only
+    have hmod : k % l < l := Nat.mod_lt _ hl
+    have hp := (cntAt_sub_of_pend g hg u hu (i + k % l) (by omega)).1
+    rw [show u + ((i + k % l : ℕ) : ℤ) = u + (i : ℤ) + ((k % l : ℕ) : ℤ) by push_cast; ring] at hp
+    exact hp
+  · dsimp only
+    rw [Nat.mod_self, Nat.zero_mod]
+
+/-- **A pending region at least as long as the object count carries an object cycle.** The
+pigeonhole on the `Fintype.card Q + 1` positions `u, …, u + Fintype.card Q`, all pending because
+the region is that long, with the cycle exhibited as a periodic walk so that its length lands in
+`objCycleLens`. -/
+theorem exists_objCycle_of_card_le_cnt [Fintype Q] (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (u : ℤ) (hu : pend (objAt g u) = true)
+    (hlen : Fintype.card Q ≤ cntAt g u) :
+    ∃ i l : ℕ, 0 < l ∧ l ≤ Fintype.card Q ∧ i + l ≤ cntAt g u ∧
+      objAt g (u + (i : ℤ)) = objAt g (u + (i : ℤ) + (l : ℤ)) ∧
+      l ∈ objCycleLens step pend := by
+  classical
+  -- every position at distance at most `cntAt g u` is pending
+  have hpend : ∀ j : ℕ, j ≤ cntAt g u → pend (objAt g (u + (j : ℤ))) = true :=
+    fun j hj => (cntAt_sub_of_pend g hg u hu j hj).1
+  -- the pigeonhole on one more position than the object has states
+  have hcard : Fintype.card Q < Fintype.card (Fin (Fintype.card Q + 1)) := by
+    simp
+  obtain ⟨a, b, hab, hfe⟩ :=
+    Fintype.exists_ne_map_eq_of_card_lt (fun k : Fin (Fintype.card Q + 1) =>
+      objAt g (u + ((k : ℕ) : ℤ))) hcard
+  -- orient the pair
+  rcases lt_or_gt_of_ne (fun h : (a : ℕ) = (b : ℕ) => hab (Fin.ext h)) with hlt | hlt
+  · refine ⟨(a : ℕ), (b : ℕ) - (a : ℕ), by omega, by omega, by
+      have hb : (b : ℕ) ≤ Fintype.card Q := by omega
+      omega, ?_, ?_⟩
+    · rw [show u + ((a : ℕ) : ℤ) + (((b : ℕ) - (a : ℕ) : ℕ) : ℤ) = u + ((b : ℕ) : ℤ) by
+        have : ((a : ℕ) : ℤ) ≤ ((b : ℕ) : ℤ) := by exact_mod_cast le_of_lt hlt
+        push_cast [Nat.cast_sub (le_of_lt hlt)]
+        ring]
+      exact hfe
+    · exact objCycleLens_of_segment g hg u hu (a : ℕ) ((b : ℕ) - (a : ℕ)) (by omega)
+        (by have hb : (b : ℕ) ≤ Fintype.card Q := by omega
+            omega)
+        (by rw [show u + ((a : ℕ) : ℤ) + (((b : ℕ) - (a : ℕ) : ℕ) : ℤ) = u + ((b : ℕ) : ℤ) by
+              push_cast [Nat.cast_sub (le_of_lt hlt)]
+              ring]
+            exact hfe)
+        (by have hb : (b : ℕ) ≤ Fintype.card Q := by omega
+            omega)
+  · refine ⟨(b : ℕ), (a : ℕ) - (b : ℕ), by omega, by omega, by
+      have ha : (a : ℕ) ≤ Fintype.card Q := by omega
+      omega, ?_, ?_⟩
+    · rw [show u + ((b : ℕ) : ℤ) + (((a : ℕ) - (b : ℕ) : ℕ) : ℤ) = u + ((a : ℕ) : ℤ) by
+        push_cast [Nat.cast_sub (le_of_lt hlt)]
+        ring]
+      exact hfe.symm
+    · exact objCycleLens_of_segment g hg u hu (b : ℕ) ((a : ℕ) - (b : ℕ)) (by omega)
+        (by have ha : (a : ℕ) ≤ Fintype.card Q := by omega
+            omega)
+        (by rw [show u + ((b : ℕ) : ℤ) + (((a : ℕ) - (b : ℕ) : ℕ) : ℤ) = u + ((a : ℕ) : ℤ) by
+              push_cast [Nat.cast_sub (le_of_lt hlt)]
+              ring]
+            exact hfe.symm)
+        (by have ha : (a : ℕ) ≤ Fintype.card Q := by omega
+            omega)
+
+/-- **The cycle a long pending region carries divides `P + 1`.** `(K1)`'s object conjunct read
+on the cycle `exists_objCycle_of_card_le_cnt` exhibits: this is what puts a repeated segment in
+the same residue class mod `P`, and it is the only place the parameter conditions enter the
+replacement construction. -/
+theorem objCycle_dvd_succ_of_paramsOk [Fintype Q] (lab : Q → Atom → Bool) (φ : PlusFormula)
+    {Tc Tn P B : ℕ} (hp : ParamsOk step pend lab φ Tc Tn P B)
+    {l : ℕ} (hl : l ∈ objCycleLens step pend) : l ∣ (P + 1) :=
+  hp.1.2.1 l hl
+
+/-- **The pumping length of a long pending region.** `exists_objCycle_of_card_le_cnt` and
+`objCycle_dvd_succ_of_paramsOk` composed: a region at least as long as the object count carries a
+segment whose repetition changes the region's length by a divisor of `P + 1`, hence leaves the
+residue coordinate of `kappa` fixed. -/
+theorem exists_pumpSeg_of_card_le_cnt [Fintype Q] (lab : Q → Atom → Bool) (φ : PlusFormula)
+    {Tc Tn P B : ℕ} (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (u : ℤ)
+    (hu : pend (objAt g u) = true) (hlen : Fintype.card Q ≤ cntAt g u) :
+    ∃ i l : ℕ, 0 < l ∧ i + l ≤ cntAt g u ∧
+      objAt g (u + (i : ℤ)) = objAt g (u + (i : ℤ) + (l : ℤ)) ∧ l ∣ (P + 1) := by
+  obtain ⟨i, l, hl, _, hle, hrep, hmem⟩ := exists_objCycle_of_card_le_cnt g hg u hu hlen
+  exact ⟨i, l, hl, hle, hrep, objCycle_dvd_succ_of_paramsOk lab φ hp hmem⟩
+
+/-! ### The replacement: the segment repeated once
+
+`spliceObj` repeats the segment `[a, a + l)` of the object walk once, and `spliceCnt` is the
+countdown the repeated walk forces. The three local readings of `Count` hold unconditionally
+(`spliceCnt_idle`, `spliceCnt_pend_pend`, `spliceCnt_pend_idle`): the surgery is locally
+admissible wherever it is performed, and `spliceCnt_add_of_mem_region` is its payoff — the
+countdown at a position of the spliced region is the original's plus `l`, EXACTLY, which is the
+move `cntAt_eq_of_obj_eq` says cannot be made without changing the walk.
+
+What is NOT unconditional is the deadline register. The region-start values of a ladder path are
+PINNED (`cntAt_eq_nxtAt_of_idle_pend`) and the register is `1`-Lipschitz (`nxtAt_drift`), so the
+pins of any ladder path are pairwise compatible — and lengthening one region by `l` while leaving
+every earlier region start where it is raises that one pin by `l` without moving the pins it must
+stay compatible with. The compatibility is therefore a genuine SIDE CONDITION on the surgery,
+carried explicitly by `spliceLift_of_pinCompat` below rather than discharged here. -/
+
+section Splice
+
+variable (g : ℤ → LadderState Q pend) (a : ℤ) (l : ℕ)
+
+/-- The object walk with the segment `[a, a + l)` repeated once: unchanged below `a + l`, and the
+original read `l` positions earlier from `a + l` on. -/
+def spliceObj : ℤ → Q :=
+  fun v => objAt g (if v < a + (l : ℤ) then v else v - (l : ℤ))
+
+/-- The countdown the spliced walk forces: raised by `l` inside the lengthened region, unchanged
+in the regions that end before the splice point, and the original's `l` positions earlier from
+`a + l` on. -/
+def spliceCnt : ℤ → ℕ :=
+  fun v => if v < a + (l : ℤ) then
+      (if a ≤ v + (cntAt g v : ℤ) then cntAt g v + l else cntAt g v)
+    else cntAt g (v - (l : ℤ))
+
+variable {g a l}
+
+theorem spliceObj_of_lt (v : ℤ) (h : v < a + (l : ℤ)) : spliceObj g a l v = objAt g v := by
+  simp only [spliceObj, if_pos h]
+
+theorem spliceObj_of_ge (v : ℤ) (h : a + (l : ℤ) ≤ v) :
+    spliceObj g a l v = objAt g (v - (l : ℤ)) := by
+  simp only [spliceObj, if_neg (by omega : ¬ v < a + (l : ℤ))]
+
+theorem spliceCnt_of_lt (v : ℤ) (h : v < a + (l : ℤ)) :
+    spliceCnt g a l v =
+      (if a ≤ v + (cntAt g v : ℤ) then cntAt g v + l else cntAt g v) := by
+  simp only [spliceCnt, if_pos h]
+
+theorem spliceCnt_of_ge (v : ℤ) (h : a + (l : ℤ) ≤ v) :
+    spliceCnt g a l v = cntAt g (v - (l : ℤ)) := by
+  simp only [spliceCnt, if_neg (by omega : ¬ v < a + (l : ℤ))]
+
+/-- Inside the spliced segment the original walk is pending and its countdown is the distance to
+the region's end. The segment is `[a, a + l]`, which lies inside `a`'s region because
+`l ≤ cntAt g a`. -/
+theorem spliceSeg (hg : IsLadderPath step pend g) (hpa : pend (objAt g a) = true)
+    (hcl : l ≤ cntAt g a)
+    (v : ℤ) (h1 : a ≤ v) (h2 : v ≤ a + (l : ℤ)) :
+    pend (objAt g v) = true ∧ (cntAt g v : ℤ) + (v - a) = (cntAt g a : ℤ) := by
+  obtain ⟨hp, hc⟩ := cntAt_sub_of_pend g hg a hpa (v - a).toNat (by omega)
+  rw [show a + (((v - a).toNat : ℕ) : ℤ) = v by omega] at hp hc
+  exact ⟨hp, by omega⟩
+
+/-- **The spliced walk steps along `step`.** The only new step is the wrap-around at `a + l`,
+where the repeated segment closes up: `objAt g (a + l - 1)` steps to `objAt g (a + l)`, which is
+`objAt g a` by the repetition hypothesis. -/
+theorem spliceObj_step (hg : IsLadderPath step pend g)
+    (hrep : objAt g a = objAt g (a + (l : ℤ))) (v : ℤ) :
+    step (spliceObj g a l v) (spliceObj g a l (v + 1)) = true := by
+  rcases lt_trichotomy (v + 1) (a + (l : ℤ)) with hv | hv | hv
+  · rw [spliceObj_of_lt v (by omega), spliceObj_of_lt (v + 1) hv]
+    exact objAt_step g hg v
+  · rw [spliceObj_of_lt v (by omega), spliceObj_of_ge (v + 1) (by omega),
+      show v + 1 - (l : ℤ) = a by omega, hrep]
+    have h := objAt_step g hg v
+    rw [show v + 1 = a + (l : ℤ) from hv] at h
+    exact h
+  · rw [spliceObj_of_ge v (by omega), spliceObj_of_ge (v + 1) (by omega),
+      show v + 1 - (l : ℤ) = v - (l : ℤ) + 1 by ring]
+    exact objAt_step g hg (v - (l : ℤ))
+
+/-- **The spliced countdown is idle-zero**: the first local reading of `Count`. -/
+theorem spliceCnt_idle (hg : IsLadderPath step pend g)
+    (hpa : pend (objAt g a) = true) (hcl : l ≤ cntAt g a)
+    (v : ℤ) (h : pend (spliceObj g a l v) = false) : spliceCnt g a l v = 0 := by
+  rcases lt_or_ge v (a + (l : ℤ)) with hv | hv
+  · rw [spliceObj_of_lt v hv] at h
+    have hlt : v < a := by
+      by_contra hge
+      exact Bool.false_ne_true (h.symm.trans (spliceSeg hg hpa hcl v (by omega) (by omega)).1)
+    have hz : cntAt g v = 0 := cntAt_eq_zero_of_idle g hg v h
+    rw [spliceCnt_of_lt v hv, if_neg (by omega : ¬ a ≤ v + (cntAt g v : ℤ)), hz]
+  · rw [spliceObj_of_ge v hv] at h
+    rw [spliceCnt_of_ge v hv]
+    exact cntAt_eq_zero_of_idle g hg _ h
+
+/-- **The spliced countdown counts down inside a region**: the second local reading of `Count`.
+The one new transition is at `a + l`, where the countdown resumes at `cntAt g a` — exactly one
+more than the value `cntAt g (a + l - 1) + l` the repeated segment's last position carries. -/
+theorem spliceCnt_pend_pend (hg : IsLadderPath step pend g) (hl : 0 < l)
+    (hpa : pend (objAt g a) = true) (hcl : l ≤ cntAt g a)
+    (v : ℤ) (hx : pend (spliceObj g a l v) = true) (hy : pend (spliceObj g a l (v + 1)) = true) :
+    spliceCnt g a l (v + 1) + 1 = spliceCnt g a l v := by
+  rcases lt_trichotomy (v + 1) (a + (l : ℤ)) with hv | hv | hv
+  · rw [spliceObj_of_lt v (by omega)] at hx
+    rw [spliceObj_of_lt (v + 1) hv] at hy
+    have hstep := cntAt_succ_of_pend_pend g hg v hx hy
+    rw [spliceCnt_of_lt v (by omega), spliceCnt_of_lt (v + 1) hv]
+    by_cases hc : a ≤ v + (cntAt g v : ℤ)
+    · rw [if_pos hc, if_pos (by omega : a ≤ v + 1 + (cntAt g (v + 1) : ℤ))]
+      omega
+    · rw [if_neg hc, if_neg (by omega : ¬ a ≤ v + 1 + (cntAt g (v + 1) : ℤ))]
+      omega
+  · have hva : v = a + (l : ℤ) - 1 := by omega
+    have hseg := spliceSeg hg hpa hcl v (by omega) (by omega)
+    rw [spliceCnt_of_lt v (by omega), spliceCnt_of_ge (v + 1) (by omega),
+      show v + 1 - (l : ℤ) = a by omega, if_pos (by omega : a ≤ v + (cntAt g v : ℤ))]
+    omega
+  · rw [spliceObj_of_ge v (by omega)] at hx
+    rw [spliceObj_of_ge (v + 1) (by omega)] at hy
+    rw [show v + 1 - (l : ℤ) = v - (l : ℤ) + 1 by ring] at hy
+    have hstep := cntAt_succ_of_pend_pend g hg (v - (l : ℤ)) hx hy
+    rw [spliceCnt_of_ge v (by omega), spliceCnt_of_ge (v + 1) (by omega),
+      show v + 1 - (l : ℤ) = v - (l : ℤ) + 1 by ring]
+    exact hstep
+
+/-- **The spliced countdown is exhausted at a region end**: the third local reading of `Count`.
+The transition at `a + l` is never a region end, because the repeated segment's first position is
+pending. -/
+theorem spliceCnt_pend_idle (hg : IsLadderPath step pend g)
+    (hpa : pend (objAt g a) = true) (hcl : l ≤ cntAt g a)
+    (v : ℤ) (hx : pend (spliceObj g a l v) = true)
+    (hy : pend (spliceObj g a l (v + 1)) = false) : spliceCnt g a l v = 0 := by
+  rcases lt_trichotomy (v + 1) (a + (l : ℤ)) with hv | hv | hv
+  · rw [spliceObj_of_lt v (by omega)] at hx
+    rw [spliceObj_of_lt (v + 1) hv] at hy
+    have hlt : v + 1 < a := by
+      by_contra hge
+      exact Bool.false_ne_true
+        (hy.symm.trans (spliceSeg hg hpa hcl (v + 1) (by omega) (by omega)).1)
+    have hz : cntAt g v = 0 := (cntAt_eq_zero_of_pend_idle g hg v hx hy).1
+    rw [spliceCnt_of_lt v (by omega), if_neg (by omega : ¬ a ≤ v + (cntAt g v : ℤ)), hz]
+  · exfalso
+    rw [spliceObj_of_ge (v + 1) (by omega), show v + 1 - (l : ℤ) = a by omega] at hy
+    exact Bool.false_ne_true (hy.symm.trans hpa)
+  · rw [spliceObj_of_ge v (by omega)] at hx
+    rw [spliceObj_of_ge (v + 1) (by omega), show v + 1 - (l : ℤ) = v - (l : ℤ) + 1 by ring] at hy
+    rw [spliceCnt_of_ge v (by omega)]
+    exact (cntAt_eq_zero_of_pend_idle g hg (v - (l : ℤ)) hx hy).1
+
+/-- **THE PAYOFF OF THE SPLICE.** At a position of the lengthened region the spliced countdown is
+the original's plus `l`, EXACTLY. This is the move `cntAt_eq_of_obj_eq` forbids on a fixed object
+walk, and the reason the replacement has to be performed on the walk: the countdown coordinate of
+`kappa` is shifted by exactly the cycle length, which `objCycle_dvd_succ_of_paramsOk` puts in
+`P + 1`'s divisors, so the residue coordinate is unmoved. -/
+theorem spliceCnt_add_of_mem_region (hl : 0 < l) (v : ℤ) (hv : v ≤ a)
+    (hreg : a ≤ v + (cntAt g v : ℤ)) : spliceCnt g a l v = cntAt g v + l := by
+  rw [spliceCnt_of_lt v (by omega), if_pos hreg]
+
+/-- **The object of the splice is unmoved below the splice point**, so a position at or before
+`a` keeps its object state while its countdown moves. -/
+theorem spliceObj_eq_of_le (hl : 0 < l) (v : ℤ) (hv : v ≤ a) :
+    spliceObj g a l v = objAt g v :=
+  spliceObj_of_lt v (by omega)
+
+end Splice
+
+/-! ### The pins of a ladder path are pairwise compatible
+
+The region-start countdowns of a ladder path are the deadline register's values at the idle
+positions before them, and the register is `1`-Lipschitz, so they are pairwise compatible. This
+is a NECESSARY condition on every ladder path, not a convenience of the lift lemma's shape, and
+it is what makes the pin side condition of the splice a real obstruction rather than an artefact. -/
+
+/-- **The deadline register is `1`-Lipschitz between any two positions**, in either order. -/
+theorem nxtAt_lipschitz_two_sided (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (u v : ℤ) : ((nxtAt g u : ℤ) - nxtAt g v).natAbs ≤ (u - v).natAbs := by
+  rcases le_total u v with h | h
+  · have hlip := nxtAt_lipschitz g hg u (v - u).toNat
+    rw [show u + (((v - u).toNat : ℕ) : ℤ) = v by omega] at hlip
+    omega
+  · have hlip := nxtAt_lipschitz g hg v (u - v).toNat
+    rw [show v + (((u - v).toNat : ℕ) : ℤ) = u by omega] at hlip
+    omega
+
+/-- **THE PINS OF A LADDER PATH ARE PAIRWISE COMPATIBLE.** Two region starts carry countdowns
+differing by at most the distance between them. The forced form of the lift lemma's own pin
+hypothesis, proved here on an arbitrary ladder path. -/
+theorem pinCompat_of_ladderPath (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (s v : ℤ) (hs0 : pend (objAt g s) = false) (hs1 : pend (objAt g (s + 1)) = true)
+    (hv0 : pend (objAt g v) = false) (hv1 : pend (objAt g (v + 1)) = true) :
+    ((cntAt g (s + 1) : ℤ) - cntAt g (v + 1)).natAbs ≤ (s - v).natAbs := by
+  rw [cntAt_eq_nxtAt_of_idle_pend g hg s hs0 hs1, cntAt_eq_nxtAt_of_idle_pend g hg v hv0 hv1]
+  exact nxtAt_lipschitz_two_sided g hg s v
+
+/-! ### The lift of a walk to a ladder path, and the spliced path
+
+`exists_rlad_hist_of_walk` (`RunLayer.lean`, Phase 7's promoted lift half) builds the deadline
+register from the pins a walk already carries. `exists_ladderPath_of_walk` repackages it on the
+admissible carrier, and `exists_spliced_ladderPath` applies it to the splice.
+
+The two pin hypotheses are the surgery's SIDE CONDITION and are carried explicitly. They are not
+an artefact of the lift lemma's shape: a region start's countdown IS the register's value at the
+idle position before it (`cntAt_eq_nxtAt_of_idle_pend`) and the register is `1`-Lipschitz
+(`nxtAt_drift`), so pairwise compatibility of the region-start countdowns is NECESSARY for any
+ladder path whatsoever. Lengthening one region by `l` raises that one pin by `l` and moves no
+earlier region start, so the condition is not automatic and the surgery is not free: the
+preceding idle runs have to be lengthened with it, which is the cascade the parameter condition
+`(K2)` sizes and which this phase does not land. -/
+
+/-- **The lift of a walk with its forced countdown to a ladder path on the admissible carrier.**
+`exists_rlad_hist_of_walk` with the admissibility proof read off the idle-zero clause. -/
+theorem exists_ladderPath_of_walk (w : ℤ → Q) (c : ℤ → ℕ) (n₀ : ℕ)
+    (hw : ∀ v, step (w v) (w (v + 1)) = true)
+    (hidle : ∀ v, pend (w v) = false → c v = 0)
+    (hpp : ∀ v, pend (w v) = true → pend (w (v + 1)) = true → c (v + 1) + 1 = c v)
+    (hpi : ∀ v, pend (w v) = true → pend (w (v + 1)) = false → c v = 0)
+    (hpins : ∀ s v, pend (w s) = false → pend (w (s + 1)) = true →
+      pend (w v) = false → pend (w (v + 1)) = true →
+      ((c (s + 1) : ℤ) - c (v + 1)).natAbs ≤ (s - v).natAbs)
+    (hn₀ : ∀ v, pend (w v) = false → pend (w (v + 1)) = true →
+      ((c (v + 1) : ℤ) - n₀).natAbs ≤ v.natAbs) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v, objAt g' v = w v) ∧ (∀ v, cntAt g' v = c v) := by
+  obtain ⟨n, _, hR⟩ :=
+    exists_rlad_hist_of_walk step pend 0 w c n₀ hw hidle hpp hpi hpins hn₀
+  refine ⟨fun v => ⟨(w v, c v, n v), fun h => hidle v h⟩, fun v => hR v, fun _ => rfl,
+    fun _ => rfl⟩
+
+section Splice
+
+variable {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+
+/-- **THE ADMISSIBILITY HALF OF THE PUMPING REPLACEMENT.** Under the pin side condition the
+spliced walk lifts to a ladder path whose object walk is the splice and whose countdown is the
+spliced countdown. Nothing here says the realized TYPE is preserved: that is the model-level half
+and it is not landed. -/
+theorem exists_spliced_ladderPath (hg : IsLadderPath step pend g) (hl : 0 < l)
+    (hpa : pend (objAt g a) = true) (hcl : l ≤ cntAt g a)
+    (hrep : objAt g a = objAt g (a + (l : ℤ))) (n₀ : ℕ)
+    (hpins : ∀ s v, pend (spliceObj g a l s) = false → pend (spliceObj g a l (s + 1)) = true →
+      pend (spliceObj g a l v) = false → pend (spliceObj g a l (v + 1)) = true →
+      ((spliceCnt g a l (s + 1) : ℤ) - spliceCnt g a l (v + 1)).natAbs ≤ (s - v).natAbs)
+    (hn₀ : ∀ v, pend (spliceObj g a l v) = false → pend (spliceObj g a l (v + 1)) = true →
+      ((spliceCnt g a l (v + 1) : ℤ) - n₀).natAbs ≤ v.natAbs) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v, objAt g' v = spliceObj g a l v) ∧ (∀ v, cntAt g' v = spliceCnt g a l v) :=
+  exists_ladderPath_of_walk (spliceObj g a l) (spliceCnt g a l) n₀
+    (spliceObj_step hg hrep) (spliceCnt_idle hg hpa hcl)
+    (spliceCnt_pend_pend hg hl hpa hcl) (spliceCnt_pend_idle hg hpa hcl) hpins hn₀
+
+/-- **The spliced path moves the countdown at a position of the region by exactly the cycle
+length, and leaves its object state alone.** The conjunction `exists_spliced_ladderPath` buys at
+the position the agreement compares: a second ladder path through the SAME object state with the
+countdown shifted by `l`. Its residue mod `P + 1` is unmoved whenever `l ∣ P + 1`, which
+`objCycle_dvd_succ_of_paramsOk` supplies. -/
+theorem spliced_at_region {g' : ℤ → LadderState Q pend} (hl : 0 < l)
+    (hobj : ∀ v, objAt g' v = spliceObj g a l v) (hcnt : ∀ v, cntAt g' v = spliceCnt g a l v)
+    (v : ℤ) (hv : v ≤ a) (hreg : a ≤ v + (cntAt g v : ℤ)) :
+    objAt g' v = objAt g v ∧ cntAt g' v = cntAt g v + l := by
+  refine ⟨?_, ?_⟩
+  · rw [hobj v, spliceObj_eq_of_le hl v hv]
+  · rw [hcnt v, spliceCnt_add_of_mem_region hl v hv hreg]
+
+/-! ### The pending-forever regime discharges the side condition
+
+In the second regime of the dichotomy — the path is pending at every position at or before the
+splice point, the regime `pend_past_of_nxtAt_lt` populates and `clipIdx_regime_of_eq` keeps a
+class collision inside — the spliced walk has NO region start below `a + l`, and every region
+start above it is the original's own start displaced by exactly `l`. The pins therefore keep the
+original's compatibility, which `pinCompat_of_ladderPath` supplies, and the surgery is admissible
+with no side condition at all. -/
+
+/-- Below the splice point a pending-forever past leaves the spliced walk pending throughout: at
+or before `a` by the regime hypothesis, and inside the repeated segment because the segment lies
+inside the region. -/
+theorem spliceObj_pend_of_lt_of_pend_past
+    (hg : IsLadderPath step pend g) (hcl : l ≤ cntAt g a)
+    (hpast : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true)
+    (s : ℤ) (hs : s < a + (l : ℤ)) : pend (spliceObj g a l s) = true := by
+  rw [spliceObj_of_lt s hs]
+  rcases le_total s a with h | h
+  · exact hpast s h
+  · exact (spliceSeg hg (hpast a le_rfl) hcl s h (by omega)).1
+
+/-- **THE ADMISSIBILITY HALF, UNCONDITIONAL IN THE PENDING-FOREVER REGIME.** No pin side
+condition: the spliced walk's region starts are exactly the original's, displaced by `l`, so
+`pinCompat_of_ladderPath` on the original discharges both pin hypotheses, with the deadline
+register's own value `l` positions before the origin as the base pin. -/
+theorem exists_spliced_ladderPath_of_pend_past
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (hpast : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true)
+    (hrep : objAt g a = objAt g (a + (l : ℤ))) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v, objAt g' v = spliceObj g a l v) ∧ (∀ v, cntAt g' v = spliceCnt g a l v) := by
+  -- every region start of the spliced walk sits at or above `a + l`
+  have hstart : ∀ s : ℤ, pend (spliceObj g a l s) = false → a + (l : ℤ) ≤ s := by
+    intro s hs
+    by_contra hlt
+    exact Bool.false_ne_true
+      (hs.symm.trans (spliceObj_pend_of_lt_of_pend_past hg hcl hpast s (by omega)))
+  -- and is the original's own region start, displaced by `l`
+  have hpull : ∀ s : ℤ, pend (spliceObj g a l s) = false →
+      pend (spliceObj g a l (s + 1)) = true →
+      pend (objAt g (s - (l : ℤ))) = false ∧ pend (objAt g (s - (l : ℤ) + 1)) = true ∧
+        spliceCnt g a l (s + 1) = cntAt g (s - (l : ℤ) + 1) := by
+    intro s h0 h1
+    have hge := hstart s h0
+    rw [spliceObj_of_ge s hge] at h0
+    rw [spliceObj_of_ge (s + 1) (by omega), show s + 1 - (l : ℤ) = s - (l : ℤ) + 1 by ring] at h1
+    refine ⟨h0, h1, ?_⟩
+    rw [spliceCnt_of_ge (s + 1) (by omega), show s + 1 - (l : ℤ) = s - (l : ℤ) + 1 by ring]
+  refine exists_spliced_ladderPath hg hl (hpast a le_rfl) hcl hrep (nxtAt g (-(l : ℤ)))
+    (fun s v hs0 hs1 hv0 hv1 => ?_) (fun v hv0 hv1 => ?_)
+  · obtain ⟨hs0', hs1', hsc⟩ := hpull s hs0 hs1
+    obtain ⟨hv0', hv1', hvc⟩ := hpull v hv0 hv1
+    rw [hsc, hvc]
+    have := pinCompat_of_ladderPath g hg (s - (l : ℤ)) (v - (l : ℤ)) hs0' hs1' hv0' hv1'
+    rw [show s - (l : ℤ) - (v - (l : ℤ)) = s - v by ring] at this
+    exact this
+  · obtain ⟨hv0', hv1', hvc⟩ := hpull v hv0 hv1
+    rw [hvc, cntAt_eq_nxtAt_of_idle_pend g hg (v - (l : ℤ)) hv0' hv1']
+    have := nxtAt_lipschitz_two_sided g hg (v - (l : ℤ)) (-(l : ℤ))
+    rw [show v - (l : ℤ) - -(l : ℤ) = v by ring] at this
+    exact this
+
+end Splice
 
 end Path
 
