@@ -1,47 +1,30 @@
 {
   "status": "partial",
-  "dispatch_seq": 13,
-  "phases_completed": 10,
-  "phases_total": 18,
-  "summary": "Phase 10 closed green: the definitional layer of LadderRealize.lean (typeOfCl, certChain, LadderCons) landed at the signatures the Challenge block pins, verified by direct diff. Phase 11 created LadderAgree.lean and landed its rigid-anchor layer -- 22 compiled declarations including the cell-level reading of the box-dot bit, the rigid pending region, the countdown rigidity under a fixed object walk, and the window/dichotomy pair with the gap coordinate's segregation of the two regimes -- but the agreement cellAt_const_of_kappa_eq is BLOCKED and is not stated anywhere. Full lake build exit 0 at 2892 jobs with 0 errors and 0 warnings, module invariants ALL CHECKS PASSED, 44 of 44 wired probes PASS, sorry count 0, axiom count and vacuous count unchanged from the starting commit.",
-  "blockers": [
-    {
-      "phase": 11,
-      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean :: cellAt_const_of_kappa_eq",
-      "verbatim_goal": "cellAt (ladderModel step pend fwd bwd lab) phi (t, <(q, c, n), h>) z = cellAt (ladderModel step pend fwd bwd lab) phi (t, <(q, c', n'), h'>) z, under (hp : ParamsOk step pend lab phi Tc Tn P B) and kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')",
-      "what_was_tried": "Built the chain-replacement machinery from the Count clause up: the four readings of Count along a path, the rigid pending region (the countdown IS the distance to the region's end, so the first idle position sits at distance exactly cntAt g u + 1), the countdown rigidity under a fixed object walk, the 1-Lipschitz window on the next-deadline register with its dichotomy, and the collision reading of the class map. All 22 declarations compile with no sorry and no axiom. The type-transfer half was then attempted and is where it stops.",
-      "why_it_failed": "A THIRD circularity, distinct from the two the agreement-first revision resolved. cntAt_eq_of_obj_eq forces the replacement to pump the OBJECT walk, and pumping preserves the realized type only through a MODEL-level periodicity statement about tpOf along a ladder path. The only landed periodicity statement is the eventual periodicity of prodPreStep (cohIdle) on Finset (ProdState Q phi), with outputs satThreshold/satPeriod -- a CERTIFICATE-relation fact, and CounterQuotient.lean states in source that nothing there relates cohIdle to Rlad, ladderModel, tpOf or cellAt. That bridge is exactly obligations (S) and (C'), Phases 12-15, which read this agreement. A model-level pumping lemma must be authored and no phase of plan 04 costs one."
-    },
-    {
-      "phase": 11,
-      "target": "plans/04_ladder-agreement-first-decomposition.md :: Phase 11 task list",
-      "verbatim_goal": "Prove cellAt_const_of_kappa_eq at the history level on route (R-b), with no induction step in the task list",
-      "what_was_tried": "Followed the task list in order; landed stab_mem_tpOf_iff_cell as task 2 directs and then read the Goal through it.",
-      "why_it_failed": "By stab_mem_tpOf_iff_cell the box-dot bit inside tpOf is a datum of the very cell the agreement compares, so the proof runs by induction on box-dot-nesting depth whatever the phase order is. Route (R-b) relocates the stratification into this phase's proof rather than removing it. At the model level the stratified objects are Finset PlusFormula values of tpOf, so (R-a)'s recorded cost -- a stratified certificate family beside Phase 9's layer -- does not transfer, but the task list contains no induction step."
-    },
-    {
-      "phase": 11,
-      "target": "specs/state.json :: active_projects[project_number=761].file_scope",
-      "verbatim_goal": "Commit FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean, which plan 04 Phase 11 directs creating",
-      "what_was_tried": "git-commit-scoped.sh --task 761 with the new module in the pathspec list.",
-      "why_it_failed": "The field was harvested before plan 04 existed and lists only LadderRealize.lean, so the V10 containment guard dropped the path; --file-scope-add is restricted to operation=postflight with target_status in {research, plan}, so an implement dispatch cannot widen it. The commit was made with the containment guard off (--task is opt-in) and the path is proposed via proposed_file_scope on .return-meta.json for postflight to merge."
-    }
-  ],
+  "phase": "implement",
+  "dispatch_seq": 15,
+  "summary": "Phase 11's replacement-admissibility layer landed in LadderAgree.lean: 24 new compiled declarations that extract a pending region's object cycle, put its length in P+1's divisors under (K1), splice the walk, lift the splice to a ladder path, and discharge the lift's pin side condition outright in the pending-forever-into-the-past regime. That DISCHARGES obstruction 1 of the phase's blocker record (the walk can now be pumped) and adds a new, compiled obstruction 4 (pinCompat_of_ladderPath: pin compatibility is forced on every ladder path, so the cascade is a real uncosted obligation). The phase Goal cellAt_const_of_kappa_eq is still not stated, so Phase 11 stays [BLOCKED] on model-level type preservation and the stab-depth induction. Full build exit 0, 2892 jobs, 0 errors, 0 warnings; invariants, typst sync and 44/44 probes green; sorry 0, vacuous 1, axioms 14 all unchanged.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/761_ladder_realization_theorem/summaries/04_ladder-agreement-first-decomposition-summary.md",
-      "summary": "Round-4 summary: Phase 10 completed, Phase 11 blocked with the three obstructions recorded."
+      "summary": "Round 4 summary, extended with the replacement-admissibility layer and the four-obstruction record."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T081457Z.md",
-      "summary": "Phase 11 handoff: what landed, the three obstructions, and the two steps a revision must add."
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T091503Z.md",
+      "summary": "The walk-pumping surgery landed; the three uncostable steps a Phase 11 revision must add."
     }
   ],
-  "next_action_hint": "A plan revision for Phase 11: add a model-level pumping lemma (inserting a pending cycle of length divisible by P+1 at distance at least Tc from the position preserves tpOf there) and an explicit box-dot-nesting-depth induction with that lemma as its base case, both ahead of the pinned Goal. Neither is costable. clipIdx_regime_of_eq lets the pumping lemma be given separately in the two regimes.",
-  "plan_markers_verified": true,
-  "phase": "implement",
-  "git_checkpoint": "262f91c26",
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T081457Z.md"
+  "phases_completed": 10,
+  "phases_total": 18,
+  "blockers": [
+    {
+      "phase": "11",
+      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean :: cellAt_const_of_kappa_eq",
+      "verbatim_goal": "Prove cellAt_const_of_kappa_eq: under the parameter conditions, the cell at (q, c, n) equals the cell at (q, c', n') whenever kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n'), at the history level and with no certificate object.",
+      "what_was_tried": "The replacement was built on the WALK, which cntAt_eq_of_obj_eq forces. Landed and compiled: the saturated segment (objCycleLens_of_segment, exists_objCycle_of_card_le_cnt, objCycle_dvd_succ_of_paramsOk, exists_pumpSeg_of_card_le_cnt); the splice (spliceObj, spliceCnt, four accessors, spliceSeg, spliceObj_step, and the three local readings of Count holding unconditionally); the payoff spliced_at_region (a second ladder path through the same object state with the countdown moved by exactly the cycle length); the lift (exists_ladderPath_of_walk over RunLayer's exists_rlad_hist_of_walk, exists_spliced_ladderPath); and the side condition's necessity and its regime-2 discharge (nxtAt_lipschitz_two_sided, pinCompat_of_ladderPath, spliceObj_pend_of_lt_of_pend_past, exists_spliced_ladderPath_of_pend_past).",
+      "why_it_failed": "Three obstructions stand. (2) Pumping the walk preserves the realized type only through a MODEL-level periodicity statement about tpOf along a ladder path; the only landed periodicity is prodPre_periodic on the CERTIFICATE relation, whose bridge to tpOf is obligations (S)/(C') (Phases 12-15), which read this agreement -- a third circularity, so a model-level pumping lemma must be authored and no phase costs one. (3) By stab_mem_tpOf_iff_cell the stab bit of a realized type is a datum of the cell being compared, so the proof runs by induction on stab-nesting depth and the phase's task list has no induction step. (4) NEW AND COMPILED: pinCompat_of_ladderPath shows the region-start countdowns of EVERY ladder path are pairwise 1-Lipschitz-compatible, so lengthening one region by l raises that one pin by l without moving earlier starts; re-establishing compatibility is the cascade (K2)'s cascadeBound sizes, which no phase costs. Only the pending-forever-into-the-past regime escapes it."
+    }
+  ],
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11-handoff-20261019T091503Z.md"
 }

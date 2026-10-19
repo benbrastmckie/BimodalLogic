@@ -1043,4 +1043,150 @@ is a complexity bound. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.clipIdx_regime_of_eq
 
+/-! ## Requirement (W): the pumping replacement, admissibility half
+(`RaySummary/LadderAgree.lean`)
+
+Twenty-four further pins, one per declaration of the module's replacement layer. The segment: a
+pending region at least as long as the object count carries an object cycle
+(`objCycleLens_of_segment`, `exists_objCycle_of_card_le_cnt`) whose length divides `P + 1` under
+`(K1)` (`objCycle_dvd_succ_of_paramsOk`, `exists_pumpSeg_of_card_le_cnt`), so repeating it leaves
+the residue coordinate of `kappa` fixed. The surgery: `spliceObj`/`spliceCnt` and their four
+accessors, the segment's interior (`spliceSeg`), the step relation of the spliced walk
+(`spliceObj_step`), the three local readings of `Count` on the spliced countdown
+(`spliceCnt_idle`, `spliceCnt_pend_pend`, `spliceCnt_pend_idle`) and the payoff
+(`spliceCnt_add_of_mem_region`, `spliceObj_eq_of_le`, `spliced_at_region`) — the countdown at a
+position of the region moves by EXACTLY the cycle length while the object state stays put, the
+move `cntAt_eq_of_obj_eq` forbids on a fixed walk. The lift: `exists_ladderPath_of_walk` repackages
+`RunLayer.lean`'s `exists_rlad_hist_of_walk` on the admissible carrier, and
+`exists_spliced_ladderPath` applies it to the splice under the pin side condition. The side
+condition's necessity and its discharge: `nxtAt_lipschitz_two_sided` and
+`pinCompat_of_ladderPath` (the region-start countdowns of EVERY ladder path are pairwise
+compatible, so the condition is forced and not an artefact), and
+`spliceObj_pend_of_lt_of_pend_past`/`exists_spliced_ladderPath_of_pend_past` (in the
+pending-forever-into-the-past regime the spliced walk's region starts are the original's
+displaced by the cycle length, so the condition discharges and the surgery is unconditional).
+
+**What these pins certify, and what they do not.** The standard profile or a strict subset of it
+on each declaration, and nothing else. They pin the ADMISSIBILITY half of the pumping
+replacement: the surgery exists, it is a ladder path, and it moves the countdown by a divisor of
+`P + 1`. They do NOT pin preservation of the realized TYPE under the surgery — the model-level
+half, which is not landed and which the module's own docstring records as the standing
+obstruction — and they therefore do NOT pin the agreement of class-equivalent cells. In the
+regime where the side condition is not discharged the surgery is available only under that
+condition, whose discharge is the cascade the parameter condition `(K2)` sizes. Nothing is pinned
+about `HitPresented` or `PlusValidZTime`, no index of a ladder cell is claimed at any parameters,
+no certificate object is named, and no pin is a complexity bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.objCycleLens_of_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.objCycleLens_of_segment
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_objCycle_of_card_le_cnt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_objCycle_of_card_le_cnt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.objCycle_dvd_succ_of_paramsOk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.objCycle_dvd_succ_of_paramsOk
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_pumpSeg_of_card_le_cnt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_pumpSeg_of_card_le_cnt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceObj' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceObj
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_of_lt' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_of_lt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_of_ge' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_of_ge
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_of_lt' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_of_lt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_of_ge' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_of_ge
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceSeg' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceSeg
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_step' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_step
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_idle' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_idle
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_pend_pend' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_pend_pend
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_pend_idle' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_pend_idle
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_add_of_mem_region' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceCnt_add_of_mem_region
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_eq_of_le' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_eq_of_le
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_lipschitz_two_sided' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_lipschitz_two_sided
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pinCompat_of_ladderPath' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pinCompat_of_ladderPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_of_walk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_of_walk
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_spliced_ladderPath' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_spliced_ladderPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliced_at_region' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliced_at_region
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_pend_of_lt_of_pend_past' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.spliceObj_pend_of_lt_of_pend_past
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_spliced_ladderPath_of_pend_past' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_spliced_ladderPath_of_pend_past
+
 end BimodalTest.Metalogic

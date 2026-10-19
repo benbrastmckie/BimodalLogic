@@ -1284,55 +1284,79 @@ its module is the mechanical form of that claim.
 
 **BLOCKER** (Phase 11):
 - **What failed**: `cellAt_const_of_kappa_eq` is NOT proved and is not stated anywhere in the
-  tree. The module `FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean` IS created
-  and carries 22 compiled declarations — `stab_mem_tpOf_iff_cell` verbatim from the phase-11
-  handoff, the rigid-anchor layer, and the collision reading of the counter quotient — with no
-  `sorry`, no axiom and no vacuous definition. What is missing is the TYPE-TRANSFER half of the
-  chain-replacement machinery (task 3's second clause, "preserving ... the realized type") and
-  everything downstream of it (tasks 4 and 5).
-- **What was tried**: the machinery was built from the `Count` clause up. Landed and compiled:
-  the four readings of `Count` along a path; the rigid pending region (`cntAt_sub_of_pend`,
-  `not_pend_of_count`, `cntAt_add_of_pend_back`) — the countdown at a pending position IS the
-  distance to the region's last pending position, so the region's first idle position sits at
-  distance exactly `cntAt g u + 1`; the rigidity `cntAt_eq_of_obj_eq`; the `1`-Lipschitz window
-  `nxtAt_lipschitz`/`cntAt_le_nxtAt_succ_of_idle_past` (a pending position with ANY idle position
-  in its past satisfies `c ≤ n + 1`) and its dichotomy `pend_past_of_nxtAt_lt`; and the collision
-  reading `kappa_eq_components`/`eq_or_both_ge_of_min_eq`/`clipIdx_regime_of_eq`. Full guarded
+  tree. The module `FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean` carries 46
+  compiled declarations — `stab_mem_tpOf_iff_cell`, the rigid-anchor layer, the collision reading
+  of the counter quotient, and now the ADMISSIBILITY HALF of the pumping replacement — with no
+  `sorry`, no axiom and no vacuous definition. What is missing is the TYPE-PRESERVATION half of
+  the chain-replacement machinery (task 3's second clause, "preserving ... the realized type") and
+  everything downstream of it (tasks 4's cascade and task 5).
+- **What was tried**: the machinery was built from the `Count` clause up, in two rounds. The first
+  round landed the rigid anchors (the four readings of `Count` along a path; the rigid pending
+  region `cntAt_sub_of_pend`/`not_pend_of_count`/`cntAt_add_of_pend_back`; the rigidity
+  `cntAt_eq_of_obj_eq`; the `1`-Lipschitz window `nxtAt_lipschitz`/
+  `cntAt_le_nxtAt_succ_of_idle_past` with its dichotomy `pend_past_of_nxtAt_lt`; and the collision
+  reading `kappa_eq_components`/`eq_or_both_ge_of_min_eq`/`clipIdx_regime_of_eq`). The second round
+  acted on what the rigidity forces — that the WALK has to move — and landed the walk-level
+  surgery: the segment (`objCycleLens_of_segment`, `exists_objCycle_of_card_le_cnt`,
+  `objCycle_dvd_succ_of_paramsOk`, `exists_pumpSeg_of_card_le_cnt`), the splice
+  (`spliceObj`, `spliceCnt`, their four accessors, `spliceSeg`, `spliceObj_step`, the three local
+  readings of `Count` — `spliceCnt_idle`, `spliceCnt_pend_pend`, `spliceCnt_pend_idle` — and the
+  payoff `spliceCnt_add_of_mem_region`/`spliceObj_eq_of_le`/`spliced_at_region`), the lift
+  (`exists_ladderPath_of_walk` over `RunLayer.lean`'s `exists_rlad_hist_of_walk`,
+  `exists_spliced_ladderPath`), and the side condition's necessity and its regime-2 discharge
+  (`nxtAt_lipschitz_two_sided`, `pinCompat_of_ladderPath`,
+  `spliceObj_pend_of_lt_of_pend_past`, `exists_spliced_ladderPath_of_pend_past`). Full guarded
   `lake build` exit 0, 2892 jobs, 0 errors, 0 warnings; `check-module-invariants.sh` ALL CHECKS
-  PASSED; 44 of 44 wired probes PASS.
-- **Why it is stuck**: three obstructions, each a consequence of what is now compiled.
-  1. **The walk must be pumped, not the counters.** `cntAt_eq_of_obj_eq` proves that two ladder
-     paths with the same object walk carry the SAME countdown at every position. So no replacement
-     can hold the object walk fixed and move `(c, n)`; the region containing the position has to be
-     lengthened or shortened, which changes the walk at distance `c` from the position.
-  2. **The periodicity the pumping needs is not the periodicity that is landed.** Changing the
-     walk changes the realized type at the position unless the inserted or deleted block is
-     type-neutral, which is a MODEL-level periodicity statement about `tpOf` along a ladder path.
-     The only landed periodicity statement is `prodPre_periodic` with its outputs `satThreshold`
-     and `satPeriod` — the eventual periodicity of the backward-reachability fixpoint
-     `prodPreStep (cohIdle …)` on `Finset (ProdState Q φ)`. That is a statement about the
-     CERTIFICATE relation, and `CounterQuotient.lean` says in source that nothing there relates
-     `cohIdle` to `Rlad`, `ladderModel`, `tpOf` or `cellAt`: that bridge IS obligations (S) and
-     (C'), Phases 12-15, which READ this agreement. Reusing the landed fixpoint here would
-     therefore close a THIRD cycle, distinct from the two the agreement-first revision resolved.
-     A model-level pumping lemma has to be authored instead, and no phase of this plan costs one.
-  3. **The `⊡` bit forces an induction on `⊡`-nesting depth even at the history level.** By the
-     landed `stab_mem_tpOf_iff_cell`, `⊡χ ∈ tpOf M φ σ z` iff `χ` belongs to every type in
-     `cellAt M φ (σ.state z) z` — the very object the agreement compares. So the agreement's own
-     proof is by induction on `⊡`-nesting depth whatever the phase order is. Route (R-b) does not
-     remove that stratification; it RELOCATES it, from a stratification across phases to one
-     inside this phase's proof. The relocation is still worth its price — at the model level the
-     stratified objects are `Finset PlusFormula` values of `tpOf`, so no stratified certificate
-     family beside Phase 9's layer is needed, which was (R-a)'s recorded cost — but the phase's
-     task list contains no induction step and the revision that chose (R-b) did not anticipate one.
+  PASSED; `typst-sync-check.sh` PASS; 44 of 44 wired probes PASS.
+- **Why it is stuck**: obstruction 1 of the previous record is DISCHARGED and two stand.
+  1. **DISCHARGED — the walk can now be pumped.** The previous record's first obstruction was
+     that `cntAt_eq_of_obj_eq` forbids keeping the object walk and moving the counters, so the
+     argument has to pump the walk itself, and no such surgery existed. It exists now. A pending
+     region at least as long as the object count carries an object pending cycle
+     (`exists_objCycle_of_card_le_cnt`) whose length divides `P + 1` under `(K1)`
+     (`exists_pumpSeg_of_card_le_cnt`); repeating that segment yields a walk satisfying all three
+     local readings of `Count`, lifting to a ladder path through the SAME object state with the
+     countdown raised by EXACTLY the cycle length (`spliced_at_region`), hence with the residue
+     coordinate of `kappa` unmoved. In the pending-forever-into-the-past regime the lift needs no
+     side condition at all (`exists_spliced_ladderPath_of_pend_past`).
+  2. **STANDING — the type-preservation half is a model-level periodicity statement, and the only
+     landed periodicity is on the certificate relation.** Every statement of the replacement layer
+     is about admissibility; none mentions `tpOf` or `cellAt`. Changing the walk changes the
+     realized type at the position unless the repeated block is type-neutral, which is a
+     MODEL-level statement about truth along a ladder path. The only landed periodicity statement
+     is `prodPre_periodic` with its outputs `satThreshold`/`satPeriod` — the eventual periodicity
+     of `prodPreStep (cohIdle …)` on `Finset (ProdState Q φ)` — and `CounterQuotient.lean` says in
+     source that nothing there relates `cohIdle` to `Rlad`, `ladderModel`, `tpOf` or `cellAt`:
+     that bridge IS obligations (S) and (C'), Phases 12-15, which READ this agreement. Reusing it
+     here closes a THIRD cycle. A model-level pumping lemma has to be authored instead, and no
+     phase of this plan costs one.
+  3. **STANDING — the `⊡` bit forces an induction on `⊡`-nesting depth even at the history
+     level.** By the landed `stab_mem_tpOf_iff_cell`, `⊡χ ∈ tpOf M φ σ z` iff `χ` belongs to every
+     type in `cellAt M φ (σ.state z) z` — the very object the agreement compares. Route (R-b)
+     relocates that stratification into this phase's proof rather than removing it; the phase's
+     task list contains no induction step.
+  4. **STANDING, NEW AND PRECISE — the pin side condition is a real obstruction outside the
+     pending-forever regime, and the cascade that would discharge it is not landed.** A region
+     start's countdown IS the deadline register's value at the idle position before it
+     (`cntAt_eq_nxtAt_of_idle_pend`) and the register is `1`-Lipschitz, so the region-start
+     countdowns of EVERY ladder path are pairwise compatible — `pinCompat_of_ladderPath`, compiled
+     here, so this is forced and not an artefact of the lift lemma's shape. Lengthening one region
+     by `l` raises that one pin by `l` and moves no earlier region start, so compatibility has to
+     be re-established by lengthening the preceding idle runs with it. That is exactly the cascade
+     `(K2)`'s `cascadeBound` sizes (`iter_doubling`, exponential in the number of pinned regions),
+     and it is not landed. `exists_spliced_ladderPath` therefore carries the condition as an
+     explicit hypothesis, and only `exists_spliced_ladderPath_of_pend_past` discharges it.
 - **What is needed**: a plan revision adding, before the Goal, (a) a model-level pumping lemma —
-  inserting a pending cycle whose length is divisible by `P + 1` at a position at least `Tc` away
-  from `z` preserves `tpOf` at `z` — stated and proved on ladder paths with no certificate object,
-  and (b) an explicit `⊡`-nesting-depth induction carrying the agreement, with the pumping lemma
-  as its temporal/atomic base case. The compiled `clipIdx_regime_of_eq` says the two regimes of
-  `pend_past_of_nxtAt_lt` never collide at a fixed next deadline, so (a) may be given separately
-  in each regime and no path has to be carried from one into the other. Neither (a) nor (b) is
-  costable, for the reason this phase is not.
+  repeating a pending segment whose length divides `P + 1` at a position at least `Tc` away from
+  `z` preserves `tpOf` at `z` — stated and proved on ladder paths with no certificate object, with
+  the landed `exists_spliced_ladderPath_of_pend_past` as its admissibility input; (b) an explicit
+  `⊡`-nesting-depth induction carrying the agreement, with (a) as its temporal/atomic base case;
+  and (c) the cascade discharging the pin side condition in the regime where an idle position lies
+  in the past, which is the only part of the admissibility half still open. The compiled
+  `clipIdx_regime_of_eq` says the two regimes of `pend_past_of_nxtAt_lt` never collide at a fixed
+  next deadline, so (a) may be given separately in each regime and no path has to be carried from
+  one into the other — and the regime in which the admissibility half is already unconditional is
+  one of the two. None of (a), (b), (c) is costable, for the reason this phase is not.
 - **Prohibited workarounds**: do NOT use `sorry`, `def X := True` or any vacuous placeholder; do
   NOT add a finite-fibre or finite-width hypothesis; do NOT state the agreement with a trace-level
   `Presented` hypothesis; do NOT narrow it to the positionwise shape (`no_positionwise_lift` is
@@ -1357,9 +1381,16 @@ its module is the mechanical form of that claim.
       `tpOf` only, which is why it belongs in this module and not in the certificate layer.
 - [ ] **State the chain-replacement machinery as named, reusable lemmas, independent of the
       agreement's own statement.** *(deviation: blocked — the RIGID-ANCHOR half is landed as 21
-      named, exported declarations, each citable by Phase 15 and none mentioning the agreement;
-      the REPLACEMENT half ("saturated segments ... can be replaced ... preserving admissibility
-      and the realized type") is not, for obstructions 1-3 of the BLOCKER record.)* Identify the rigid anchors of a ladder history (exact `c`,
+      named, exported declarations and the REPLACEMENT half's ADMISSIBILITY conjunct as 24 more,
+      each citable by Phase 15 and none mentioning the agreement: the saturated segment is
+      identified (`exists_objCycle_of_card_le_cnt`), its length is shown to divide `P + 1`
+      (`exists_pumpSeg_of_card_le_cnt`), the replacement is constructed and shown to be a ladder
+      path (`spliceObj`/`spliceCnt`, `spliceObj_step`, the three `Count` readings,
+      `exists_spliced_ladderPath`) and to move the countdown by exactly the cycle length
+      (`spliced_at_region`). The second conjunct — "preserving ... the realized TYPE" — is not
+      landed, for obstructions 2 and 3 of the BLOCKER record, and the admissibility conjunct is
+      unconditional only in the pending-forever-into-the-past regime
+      (`exists_spliced_ladderPath_of_pend_past`), for obstruction 4.)* Identify the rigid anchors of a ladder history (exact `c`,
       exact `n`, exact gap) and prove that saturated segments between anchors can be replaced by
       segments of other lengths in the same residue class mod `P`, preserving admissibility and
       the realized type. This is the counter-lift lemma in its PUMPING form; the POSITIONWISE form
@@ -1367,16 +1398,20 @@ its module is the mechanical form of that claim.
       narrowing to it would be stating a false theorem, not a weaker one. Phase 15 CONSUMES these
       lemmas, so each must be stated without reference to the agreement.
 - [ ] Iterate the replacement until the pin lemma's inequalities hold, *(deviation: blocked —
-      not reached: there is no replacement to iterate. The pin lemma's own inequality is now
-      landed at the library level in the direction this task needs it, as
-      `cntAt_le_nxtAt_succ_of_idle_past`.)*  then apply
+      the replacement now exists and `exists_rlad_hist_of_walk` IS applied to it
+      (`exists_ladderPath_of_walk`, `exists_spliced_ladderPath`), and the pin inequalities are
+      discharged outright in the pending-forever-into-the-past regime
+      (`exists_spliced_ladderPath_of_pend_past`). What is not landed is the ITERATION — the
+      cascade that re-establishes pin compatibility in the other regime, obstruction 4 of the
+      BLOCKER record, whose necessity is now compiled as `pinCompat_of_ladderPath`.)*  then apply
       `exists_rlad_hist_of_walk` and `drift_extension_of_pins` (Phase 7, landed) to produce the
       replacement history. Compose across idle runs using the compiled arithmetic:
       `forward_window` (`|L - n| ≤ c + j`), `backward_constraint` (`n ∈ [c-1, c+2s+1]`),
       `region_doubling` (`L' ≤ 2L + j + 1`) and `doubling_attained`. These are cited, not
       re-proved.
 - [ ] Prove `cellAt_const_of_kappa_eq` at the signature the Challenge block pins, *(deviation:
-      blocked — not stated anywhere in the tree, so no `sorry` carries it.)*  with
+      blocked — not stated anywhere in the tree, so no `sorry` carries it; the type-preservation
+      half it needs is obstruction 2 of the BLOCKER record.)*  with
       `(hp : ParamsOk step pend lab φ Tc Tn P B)` in the recorded position. The hypothesis is
       CONSUMED in the argument — it is what rules out the collapsing parameter tuples, by making
       every `kappa`-collision a collision within a residue class mod `P` — and must appear in the
@@ -1387,9 +1422,10 @@ its module is the mechanical form of that claim.
       heredoc, `KTypeSummaryAxiomTest.lean`). *(the C14 heredoc took no entry, for the same
       reason as in Phase 10: C14 pins declarations paired with a `docs/theorem-index.md` row
       carrying `pinned:C14`, and this phase lands no Goal and adds no such row;
-      `check-module-invariants.sh` exits 0 with C14 unchanged. All 22 declarations are pinned in
-      `KTypeSummaryAxiomTest.lean` instead. `typst/generated/status.typ` was resynced, as the
-      pre-commit gate requires whenever a `.lean` file is added.)*
+      `check-module-invariants.sh` exits 0 with C14 unchanged. All 46 declarations are pinned in
+      `KTypeSummaryAxiomTest.lean` instead. The three generated README inventory blocks and
+      `typst/generated/status.typ` were resynced, as the pre-commit gate requires whenever a
+      `.lean` file changes length.)*
 
 **Timing**: NOT COSTABLE. This is the pumping counter-lift mathematics, moved to the front of the
 open work by the recorded route decision. The predecessors that attempted comparable rounds closed
