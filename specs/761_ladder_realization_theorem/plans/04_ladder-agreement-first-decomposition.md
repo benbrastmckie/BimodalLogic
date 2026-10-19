@@ -1272,7 +1272,7 @@ because a stratified `certChain` changes `ladderLift`'s pinned signature.
 
 ---
 
-### Phase 11: The Agreement `cellAt_const_of_kappa_eq`, Proved at the History Level [NOT STARTED]
+### Phase 11: The Agreement `cellAt_const_of_kappa_eq`, Proved at the History Level [BLOCKED]
 
 **Goal**: Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean` and prove
 `cellAt_const_of_kappa_eq`: under the parameter conditions, the cell at `(q, c, n)` equals the cell
@@ -1282,40 +1282,114 @@ machinery produces a history through the other realizing the same type — and u
 object whatsoever. This is the phase that breaks the circularity, and the certificate-freedom of
 its module is the mechanical form of that claim.
 
+**BLOCKER** (Phase 11):
+- **What failed**: `cellAt_const_of_kappa_eq` is NOT proved and is not stated anywhere in the
+  tree. The module `FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean` IS created
+  and carries 22 compiled declarations — `stab_mem_tpOf_iff_cell` verbatim from the phase-11
+  handoff, the rigid-anchor layer, and the collision reading of the counter quotient — with no
+  `sorry`, no axiom and no vacuous definition. What is missing is the TYPE-TRANSFER half of the
+  chain-replacement machinery (task 3's second clause, "preserving ... the realized type") and
+  everything downstream of it (tasks 4 and 5).
+- **What was tried**: the machinery was built from the `Count` clause up. Landed and compiled:
+  the four readings of `Count` along a path; the rigid pending region (`cntAt_sub_of_pend`,
+  `not_pend_of_count`, `cntAt_add_of_pend_back`) — the countdown at a pending position IS the
+  distance to the region's last pending position, so the region's first idle position sits at
+  distance exactly `cntAt g u + 1`; the rigidity `cntAt_eq_of_obj_eq`; the `1`-Lipschitz window
+  `nxtAt_lipschitz`/`cntAt_le_nxtAt_succ_of_idle_past` (a pending position with ANY idle position
+  in its past satisfies `c ≤ n + 1`) and its dichotomy `pend_past_of_nxtAt_lt`; and the collision
+  reading `kappa_eq_components`/`eq_or_both_ge_of_min_eq`/`clipIdx_regime_of_eq`. Full guarded
+  `lake build` exit 0, 2892 jobs, 0 errors, 0 warnings; `check-module-invariants.sh` ALL CHECKS
+  PASSED; 44 of 44 wired probes PASS.
+- **Why it is stuck**: three obstructions, each a consequence of what is now compiled.
+  1. **The walk must be pumped, not the counters.** `cntAt_eq_of_obj_eq` proves that two ladder
+     paths with the same object walk carry the SAME countdown at every position. So no replacement
+     can hold the object walk fixed and move `(c, n)`; the region containing the position has to be
+     lengthened or shortened, which changes the walk at distance `c` from the position.
+  2. **The periodicity the pumping needs is not the periodicity that is landed.** Changing the
+     walk changes the realized type at the position unless the inserted or deleted block is
+     type-neutral, which is a MODEL-level periodicity statement about `tpOf` along a ladder path.
+     The only landed periodicity statement is `prodPre_periodic` with its outputs `satThreshold`
+     and `satPeriod` — the eventual periodicity of the backward-reachability fixpoint
+     `prodPreStep (cohIdle …)` on `Finset (ProdState Q φ)`. That is a statement about the
+     CERTIFICATE relation, and `CounterQuotient.lean` says in source that nothing there relates
+     `cohIdle` to `Rlad`, `ladderModel`, `tpOf` or `cellAt`: that bridge IS obligations (S) and
+     (C'), Phases 12-15, which READ this agreement. Reusing the landed fixpoint here would
+     therefore close a THIRD cycle, distinct from the two the agreement-first revision resolved.
+     A model-level pumping lemma has to be authored instead, and no phase of this plan costs one.
+  3. **The `⊡` bit forces an induction on `⊡`-nesting depth even at the history level.** By the
+     landed `stab_mem_tpOf_iff_cell`, `⊡χ ∈ tpOf M φ σ z` iff `χ` belongs to every type in
+     `cellAt M φ (σ.state z) z` — the very object the agreement compares. So the agreement's own
+     proof is by induction on `⊡`-nesting depth whatever the phase order is. Route (R-b) does not
+     remove that stratification; it RELOCATES it, from a stratification across phases to one
+     inside this phase's proof. The relocation is still worth its price — at the model level the
+     stratified objects are `Finset PlusFormula` values of `tpOf`, so no stratified certificate
+     family beside Phase 9's layer is needed, which was (R-a)'s recorded cost — but the phase's
+     task list contains no induction step and the revision that chose (R-b) did not anticipate one.
+- **What is needed**: a plan revision adding, before the Goal, (a) a model-level pumping lemma —
+  inserting a pending cycle whose length is divisible by `P + 1` at a position at least `Tc` away
+  from `z` preserves `tpOf` at `z` — stated and proved on ladder paths with no certificate object,
+  and (b) an explicit `⊡`-nesting-depth induction carrying the agreement, with the pumping lemma
+  as its temporal/atomic base case. The compiled `clipIdx_regime_of_eq` says the two regimes of
+  `pend_past_of_nxtAt_lt` never collide at a fixed next deadline, so (a) may be given separately
+  in each regime and no path has to be carried from one into the other. Neither (a) nor (b) is
+  costable, for the reason this phase is not.
+- **Prohibited workarounds**: do NOT use `sorry`, `def X := True` or any vacuous placeholder; do
+  NOT add a finite-fibre or finite-width hypothesis; do NOT state the agreement with a trace-level
+  `Presented` hypothesis; do NOT narrow it to the positionwise shape (`no_positionwise_lift` is
+  compiled, so the narrowed form is FALSE, not weaker); and do NOT discharge it by citing
+  `prodPre_periodic` across the certificate/model boundary, which is obstruction 2.
+
 **Tasks**:
-- [ ] Create the module importing only `LadderModel`, `AnchorLayer`, `RunLayer` and
+- [x] Create the module importing only `LadderModel`, `AnchorLayer`, `RunLayer` and
       `CounterQuotient` (for `kappa` and `ParamsOk`). Its docstring states, in one paragraph, that
       the agreement is proved on its own ground rather than as a corollary of soundness and the
       lift, and why: `certStabK` on any certified set containing a realized item forces exactly
       this agreement (`stab_bit_agree_of_certStabK` read through `stab_mem_tpOf_iff_cell` and
       `certBiInfK`), so deriving the agreement from the certificate side closes a cycle.
-- [ ] Land `stab_mem_tpOf_iff_cell` here, verbatim from the phase-11 handoff (it compiled
+      *(deviation: altered — the import list is the MINIMAL form of the four named modules:
+      `AnchorLayer` and `CounterQuotient` only, which transitively carry `LadderModel` and
+      `RunLayer`. The acyclicity paragraph is written WITHOUT naming the certificate conditions,
+      so the certificate-freedom grep returns nothing at all rather than docstring-only
+      occurrences — stricter than the criterion asks.)*
+- [x] Land `stab_mem_tpOf_iff_cell` here, verbatim from the phase-11 handoff (it compiled
       standalone through the build guard, exit 0, no `sorry`): the `⊡` bit of a realized type is a
       datum of the cell at the point's own world state. It is a statement about `cellAt` and
       `tpOf` only, which is why it belongs in this module and not in the certificate layer.
 - [ ] **State the chain-replacement machinery as named, reusable lemmas, independent of the
-      agreement's own statement.** Identify the rigid anchors of a ladder history (exact `c`,
+      agreement's own statement.** *(deviation: blocked — the RIGID-ANCHOR half is landed as 21
+      named, exported declarations, each citable by Phase 15 and none mentioning the agreement;
+      the REPLACEMENT half ("saturated segments ... can be replaced ... preserving admissibility
+      and the realized type") is not, for obstructions 1-3 of the BLOCKER record.)* Identify the rigid anchors of a ladder history (exact `c`,
       exact `n`, exact gap) and prove that saturated segments between anchors can be replaced by
       segments of other lengths in the same residue class mod `P`, preserving admissibility and
       the realized type. This is the counter-lift lemma in its PUMPING form; the POSITIONWISE form
       is REFUTED for every finite `CK` and every `kappa` (`no_positionwise_lift`, compiled), so
       narrowing to it would be stating a false theorem, not a weaker one. Phase 15 CONSUMES these
       lemmas, so each must be stated without reference to the agreement.
-- [ ] Iterate the replacement until the pin lemma's inequalities hold, then apply
+- [ ] Iterate the replacement until the pin lemma's inequalities hold, *(deviation: blocked —
+      not reached: there is no replacement to iterate. The pin lemma's own inequality is now
+      landed at the library level in the direction this task needs it, as
+      `cntAt_le_nxtAt_succ_of_idle_past`.)*  then apply
       `exists_rlad_hist_of_walk` and `drift_extension_of_pins` (Phase 7, landed) to produce the
       replacement history. Compose across idle runs using the compiled arithmetic:
       `forward_window` (`|L - n| ≤ c + j`), `backward_constraint` (`n ∈ [c-1, c+2s+1]`),
       `region_doubling` (`L' ≤ 2L + j + 1`) and `doubling_attained`. These are cited, not
       re-proved.
-- [ ] Prove `cellAt_const_of_kappa_eq` at the signature the Challenge block pins, with
+- [ ] Prove `cellAt_const_of_kappa_eq` at the signature the Challenge block pins, *(deviation:
+      blocked — not stated anywhere in the tree, so no `sorry` carries it.)*  with
       `(hp : ParamsOk step pend lab φ Tc Tn P B)` in the recorded position. The hypothesis is
       CONSUMED in the argument — it is what rules out the collapsing parameter tuples, by making
       every `kappa`-collision a collision within a residue class mod `P` — and must appear in the
       proof, not be discarded at the top. If a proof appears to close without using `hp`, that is
       a signal the argument has collapsed into the refuted shape: stop and record it, because the
       fourteenth probe's refutation holds for every `kappa` and every candidate `Dmax`.
-- [ ] Wire the module (RaySummary.lean and its module-list docstring, FormalSystem.lean, C14
-      heredoc, `KTypeSummaryAxiomTest.lean`).
+- [x] Wire the module (RaySummary.lean and its module-list docstring, FormalSystem.lean, C14
+      heredoc, `KTypeSummaryAxiomTest.lean`). *(the C14 heredoc took no entry, for the same
+      reason as in Phase 10: C14 pins declarations paired with a `docs/theorem-index.md` row
+      carrying `pinned:C14`, and this phase lands no Goal and adds no such row;
+      `check-module-invariants.sh` exits 0 with C14 unchanged. All 22 declarations are pinned in
+      `KTypeSummaryAxiomTest.lean` instead. `typst/generated/status.typ` was resynced, as the
+      pre-commit gate requires whenever a `.lean` file is added.)*
 
 **Timing**: NOT COSTABLE. This is the pumping counter-lift mathematics, moved to the front of the
 open work by the recorded route decision. The predecessors that attempted comparable rounds closed

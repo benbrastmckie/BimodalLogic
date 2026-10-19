@@ -926,4 +926,121 @@ stratification, and no pin is a complexity bound. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.LadderCons
 
+/-! ## Requirement (W): the rigid anchors of a ladder history
+(`RaySummary/LadderAgree.lean`)
+
+Twenty-two pins, one per declaration of the module. `stab_mem_tpOf_iff_cell` is the cell-level
+reading of the `⊡` bit of a realized type. The rest are the RIGID ANCHORS of a ladder history and
+the accessors they are stated at: the four readings of `Count` along a path
+(`cntAt_succ_of_pend_pend`, `cntAt_eq_zero_of_pend_idle`, `cntAt_eq_nxtAt_of_idle_pend`,
+`cntAt_eq_zero_of_idle`), the rigid pending region (`cntAt_sub_of_pend`, `not_pend_of_count`,
+`cntAt_add_of_pend_back`), the rigidity of the countdown under a fixed object walk
+(`cntAt_eq_of_obj_eq`), and the window the `1`-Lipschitz next-deadline register imposes with its
+dichotomy (`nxtAt_lipschitz`, `cntAt_le_nxtAt_succ_of_idle_past`, `pend_past_of_nxtAt_lt`), and
+the reading of a class collision of the counter quotient off its coordinates
+(`kappa_eq_components`, `eq_or_both_ge_of_min_eq`, `clipIdx_regime_of_eq` — at `2 ≤ B` a collision
+at a fixed next deadline cannot straddle the two regimes).
+
+**What these pins certify, and what they do not.** The standard profile or a strict subset of it
+on each declaration — `[propext, Classical.choice, Quot.sound]` on `stab_mem_tpOf_iff_cell`,
+`[propext, Quot.sound]` or `[propext]` on the anchor theorems, and no axiom at all on the four
+definitions and the three one-line projections — and nothing else. They do NOT pin the agreement
+of class-equivalent cells: that statement is not landed, and the module's own docstring records
+the three obstructions on its record. Nothing is pinned about `HitPresented` or `PlusValidZTime`,
+no index of a ladder cell is claimed at any parameters, no certificate object is named, and no pin
+is a complexity bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_mem_tpOf_iff_cell' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stab_mem_tpOf_iff_cell
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.objAt' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.objAt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.nxtAt' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.nxtAt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.IsLadderPath' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.IsLadderPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.isLadderPath_components' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.isLadderPath_components
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.objAt_step' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.objAt_step
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_zero_of_idle' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_zero_of_idle
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_drift' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_drift
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_succ_of_pend_pend' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_succ_of_pend_pend
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_zero_of_pend_idle' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_zero_of_pend_idle
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_nxtAt_of_idle_pend' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_nxtAt_of_idle_pend
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_sub_of_pend' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_sub_of_pend
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.not_pend_of_count' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.not_pend_of_count
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_of_obj_eq' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_of_obj_eq
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_lipschitz' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_lipschitz
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_add_of_pend_back' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_add_of_pend_back
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_le_nxtAt_succ_of_idle_past' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_le_nxtAt_succ_of_idle_past
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pend_past_of_nxtAt_lt' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pend_past_of_nxtAt_lt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.kappa_eq_components' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.kappa_eq_components
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.eq_or_both_ge_of_min_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.eq_or_both_ge_of_min_eq
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.clipIdx_regime_of_eq' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.clipIdx_regime_of_eq
+
 end BimodalTest.Metalogic

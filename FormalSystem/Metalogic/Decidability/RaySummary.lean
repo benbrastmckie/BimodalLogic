@@ -23,6 +23,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 import FormalSystem.Metalogic.Decidability.RaySummary.Certificate
 import FormalSystem.Metalogic.Decidability.RaySummary.CounterQuotient
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -230,4 +231,31 @@ nothing about `PlusValidZTime` — see the README's verdict.
   to `tpOf`, `cellAt` or `ladderModel`, nothing is claimed about `HitPresented` or
   `PlusValidZTime`, no index of a ladder cell is claimed at any parameters, and no complexity
   bound and no device-discrimination claim is made.
+* `RaySummary.LadderAgree` — the RIGID ANCHORS of a ladder history, and the module the agreement
+  of class-equivalent cells is to be proved in: `stab_mem_tpOf_iff_cell` (the `⊡` bit of a
+  realized type is a datum of the cell at the point's own world state), the accessors `objAt`,
+  `cntAt`, `nxtAt` and the path predicate `IsLadderPath`, the four readings of `Count` along a
+  path, the rigid pending region (`cntAt_sub_of_pend`, `not_pend_of_count`,
+  `cntAt_add_of_pend_back`: the countdown IS the distance to the region's end, so the region's
+  first idle position sits at distance exactly `cntAt g u + 1`), the rigidity of the countdown
+  under a fixed object walk (`cntAt_eq_of_obj_eq`: two paths with the same object walk carry the
+  same countdown everywhere, so no replacement can move a counter without changing the walk — the
+  library-level form of the refutation of the positionwise statement shape), and the window the
+  `1`-Lipschitz next-deadline register imposes (`nxtAt_lipschitz`,
+  `cntAt_le_nxtAt_succ_of_idle_past`: a pending position with any idle position in its past has
+  `c ≤ n + 1`) with its dichotomy (`pend_past_of_nxtAt_lt`: a pending position with
+  `n + 2 ≤ c` lies on a path pending at EVERY earlier position — the second regime, populated by
+  the thirteenth wired probe's forward-only witness, and the one the gap coordinate separates),
+  with the reading of a class collision off the counter quotient's coordinates
+  (`kappa_eq_components`, `eq_or_both_ge_of_min_eq`, and `clipIdx_regime_of_eq`: at `2 ≤ B`, which
+  `(K4)` requires, a collision at a fixed next deadline cannot straddle the two regimes, so a
+  replacement argument may be given separately in each).
+  CERTIFICATE-FREE by construction: no certificate condition, no maximum certified subset and no
+  consistency bundle is named, because the acceptance condition collapses the `⊡` bits across a
+  counter class and would make the agreement a consequence of the very obligations that read it.
+  **The agreement itself is NOT landed**: three obstructions are recorded in the module docstring
+  — the walk must be pumped, the model-level periodicity that pumping needs is not the landed
+  certificate-graph fixpoint, and the `⊡` bit forces an induction on `⊡`-nesting depth. Nothing
+  here is a realization theorem, nothing is claimed about `HitPresented` or `PlusValidZTime`, no
+  index of a ladder cell is claimed at any parameters, and no complexity bound is claimed.
 -/
