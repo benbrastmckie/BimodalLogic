@@ -1604,7 +1604,7 @@ Scope Hypothesis is allowed to overrun.
 
 ---
 
-### Phase 11.1: The Model-Level Truth-Transport Layer — the Stab-Free Type Along a Splice [PARTIAL]
+### Phase 11.1: The Model-Level Truth-Transport Layer — the Stab-Free Type Along a Splice [BLOCKED]
 
 **Goal**: Author in `LadderAgree.lean` the layer the repository does not have — transport of the
 realized type between two DISTINCT ladder states — in two named halves, neither of which mentions
@@ -1626,13 +1626,15 @@ only landed periodicity (`prodPre_periodic`) is a certificate-graph fact whose b
 obligations (S) and (C') themselves. The gap is a missing layer, not a missing parameter:
 `ParamsOk` already supplies every numeric input a pumping argument needs.
 
-**HALF (i) MET, HALF (ii) OPEN** (dispatch seq 17; the halves are separately reportable by this
-phase's own split, so the marker is `[PARTIAL]` and not `[BLOCKED]` — half (ii) is not REFUTED,
-no separating object exists, and nothing was weakened to close it):
-- **What landed**: 28 new compiled declarations in `LadderAgree.lean`, no `sorry`, no axiom, no
-  vacuous definition, and the certificate-freedom grep (now including the five certificate-side
-  periodicity identifiers) still returns NOTHING at all. The `⊡`-depth measure and the
-  pinned-letter predicate with their five supporting facts (`stabDepth`, `StabPinned`,
+**HALF (i) MET, HALF (ii) REFUTED** (half (i) dispatch seq 17; the refutation dispatch seq 19).
+The marker is `[BLOCKED]` on this phase's own refuting-branch rule: half (ii) is not open and not
+merely unproved — it is FALSE as stated, the separating object is compiled and wired, and nothing
+was weakened to get there. Half (i) stands either way and is untouched.
+
+- **What landed in half (i)**: 28 compiled declarations in `LadderAgree.lean`, no `sorry`, no
+  axiom, no vacuous definition, and the certificate-freedom grep (now including the five
+  certificate-side periodicity identifiers) still returns NOTHING at all. The `⊡`-depth measure and
+  the pinned-letter predicate with their five supporting facts (`stabDepth`, `StabPinned`,
   `stabDepth_stab`, `stabDepth_arg_le_of_le_succ`, `stabDepth_le_sup`,
   `stabPinned_of_stabDepth_le`, `stabPinned_false_of_mem_closure`); the path/history bridge in both
   directions (`isSlicedStepPath_iff_isLadderPath`, `exists_hist_of_isLadderPath`,
@@ -1646,34 +1648,82 @@ no separating object exists, and nothing was weakened to close it):
   the splice's two index maps with the obstruction record (`spliceIdx`, its readings,
   `spliceObj_eq_objAt_spliceIdx`, `spliceEmb`, `spliceEmb_monotone`, `spliceIdx_spliceEmb`,
   `spliceIdx_seam_lt`).
-- **Why half (ii) did not close, now compiled rather than asserted**: a structural induction
-  carrying ONE uniform claim at every position — "the spliced path's type at `v` is the original's
-  at `spliceIdx v`" — fails, and `spliceIdx_seam_lt` is the reason. The retraction drops back by
-  the block length at the seam, so at a position inside or adjacent to the pumped block the claim
-  IS the pumping claim and the phase's `Tc ≤ |a - z|` hypothesis protects `z` ALONE, not those
-  positions. The `untl` case is where it bites: a witness found in the second copy of the block
-  retracts to a position that need not be later than the position being evaluated, so
-  `untl_mem_tpOf_iff`'s right-hand side is not transported. What the argument needs instead is a
-  MODEL-LEVEL periodicity of the TYPE sequence along a periodic object segment — the model-side
-  analogue of the certificate graph's own periodicity, which this phase may not cite.
-- **Intelligence for the next round, not a claim**: two observations that make that periodicity
-  plausible and neither of which is landed. First, `untl ⊥ ψ` pins the immediate successor, so a
-  formula of `U`/`S`-nesting depth `d` distinguishes positions only up to distance `d` from a
-  region's end — positions far from both ends of a pumped region carry types determined by the
-  local object pattern, which the splice makes periodic with the cycle length. Second, the splice
-  only ADDS future positions carrying objects already present, so a pure eventuality (`⊤ U p`)
-  transports in both directions by monotonicity. A proof would have to combine a distance budget
-  per nesting depth with that monotonicity; no part of it is landed and no estimate is offered.
-- **A route the next round should NOT spend a dispatch on**: arranging TYPE equality at the seam
-  by pigeonhole. Inside a certificate-free module the only available source of `l ∣ P + 1` is
-  `(K1)`'s `objCycleLens` conjunct, whose members satisfy `l ≤ Fintype.card Q`; a pigeonhole on
-  (object, type) pairs needs a block up to `Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card`
-  long, and `(K1)`'s other two divisors are certificate-side objects whose citation here is the
-  prohibited third circularity.
-- **Prohibited workarounds observed**: no `sorry`, no axiom, no vacuous definition, no
-  trace-level `Presented` hypothesis, no finite-fibre or finite-width assumption, no positionwise
-  narrowing, no raised `Tc`, no parameter added and `CounterQuotient.lean` untouched
-  (`git diff --stat` on it is empty).
+- **Half (ii) is REFUTED, compiled and wired**: the forty-fifth wired probe
+  `specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean` (`Probe761S`,
+  19 printed theorems, all on `[propext, Classical.choice, Quot.sound]`) compiles
+  `splice_type_invariance_refuted : ¬ SpliceTypeInvariance`, against a schema carrying EVERY
+  hypothesis this phase records — `ParamsOk`, the stab-free closure condition, `0 < l`,
+  `pend (objAt g a) = true`, `l ≤ cntAt g a`, `objAt g a = objAt g (a + l)`, `l ∣ P + 1`, the
+  spliced path's existence with its object and countdown equations, and `Tc ≤ |a - z|`.
+- **The mechanism, stated plainly**: one splice DUPLICATES the pumped block, so it ADDS one
+  occurrence of every object state of that block to the walk's future. A nested eventuality COUNTS
+  occurrences, at unbounded distance. On a three-state object (`0`, `1` pending, `2` idle) whose
+  walk hits the `p`-state EXACTLY ONCE, the formula `⊤ U (p ∧ ⊤ U p)` is false along the original
+  at every position and true along the spliced path at every position below the hit. The distance
+  hypothesis `Tc ≤ |a - z|` buys nothing, because `U` has unbounded reach — which is exactly where
+  the preceding round's "distance budget per nesting depth" intelligence was wrong.
+- **Every hypothesis is DISCHARGED, not sidestepped**: seriality in both directions (`fwdS`,
+  `bwdS`), the original path through the landed `exists_ladderPath_of_walk` (its pin side condition
+  vacuous — the walk has no region start), the spliced path through the landed
+  `exists_spliced_ladderPath_of_pend_past` (the record's own surgery, not a variant), the
+  divisibility `2 ∣ P + 1` through `(K1)` on a compiled object `2`-cycle
+  (`two_mem_objCycleLensS`, `two_dvd_PS_succ`), and `ParamsOk` through `paramsOk_params` at the
+  periodicity fixpoint's own four outputs.
+- **It survives the ITERATED surgery.** One splice raises the countdown by `l`, so `kappa`'s
+  residue coordinate returns only after `(P + 1) / l` repetitions; the refutation is therefore
+  checked against the iteration rather than against one application. `twoHits_of_spliced` creates
+  the second hit, `twoHits_iterate` shows no further splice at `(0, 2)` destroys it, and
+  `spliced_rehypotheses` shows the spliced path satisfies the splice hypotheses again at `(0, 2)`,
+  so the iteration is genuinely available and the statement is not about an unreachable
+  configuration.
+- **Non-vacuity, on both sides**: `exists_separating_splice` carries
+  `PlusFormula.top ∈ tpOf … σ z` and `PlusFormula.top ∈ tpOf … σ' z` as conjuncts, so neither
+  realized type is empty and the inequality is not an artefact of two empty sets.
+- **What the refutation does NOT touch**, said here so no later round over-reads it: half (i); the
+  PRESENTATION (the set-valued datum, the fibre equation over `Dmax`, the factorization lemma as
+  its corollary); and `cellAt_const_of_kappa_eq` ITSELF — a cell is the set of types realized by
+  ALL histories through a state, and the probe compares two particular histories, so whether some
+  other history through the original state realizes the separating formula is NOT decided and no
+  claim is made either way. Nothing about `ladderSound`, `ladderLift` or `ladderRealized`. No
+  bound; every quantity named is a count.
+- **What is refuted, precisely**: that the FIXED surgery `spliceObj`/`spliceCnt` — chosen to
+  preserve ADMISSIBILITY — also preserves the realized TYPE. It is type-blind. Nothing here says a
+  type-AWARE lengthening of the region is impossible; that is a different construction, stated
+  nowhere in the tree, and the probe neither supplies nor refutes it.
+- **Prohibited workarounds observed**: no `sorry`, no axiom, no vacuous definition, no trace-level
+  `Presented` hypothesis, no finite-fibre or finite-width assumption, no positionwise narrowing, no
+  raised `Tc`, no parameter added, no fifth parameter source, no strengthening of `ParamsOk`, and
+  `CounterQuotient.lean` untouched (`git diff --stat` on it is empty). No certificate-side
+  periodicity identifier is cited anywhere: the certificate-freedom grep on `LadderAgree.lean`
+  returns zero occurrences.
+
+**BLOCKER** (Phase 11.1):
+- **What failed**: half (ii), `tpOf_stabFree_eq_of_splice`. It cannot be proved because it is
+  false. The schema with every recorded hypothesis is refuted by
+  `Probe761S.splice_type_invariance_refuted`.
+- **What was tried**: the uniform-claim structural induction (refuted at the seam by the compiled
+  `spliceIdx_seam_lt`, dispatch seq 17); then the preceding round's two intelligence items — a
+  distance budget per `U`/`S`-nesting depth together with the splice's monotonicity on future
+  object positions. The budget item is the one that fails: nested `U` reads an occurrence COUNT at
+  unbounded distance, so no budget in the distance from the splice point can protect the position
+  being evaluated. Pursuing that reading was abandoned in favour of compiling the counterexample
+  it predicts.
+- **Why it is stuck**: the splice is a surgery chosen for ADMISSIBILITY and it is blind to the
+  TYPE. The pumped block's duplication is observable by a closure formula of nesting depth three,
+  whatever the parameters.
+- **What is needed**: a decision on the route, which is the user's or the reviser's and not this
+  dispatch's. Two candidates, neither stated anywhere in the tree and neither endorsed here: (a) a
+  TYPE-AWARE region lengthening — choose the lengthened region's walk so that the realized type at
+  `z` is preserved, rather than taking the fixed `spliceObj`; the refutation does not touch this,
+  and the admissibility machinery of Phase 11 would have to be re-established for whatever walk it
+  produces; (b) abandon the pointwise-type route for `cellAt_const_of_kappa_eq` and argue at the
+  level of the CELL (a set over all histories), which is the object the Goal actually names and
+  which the refutation leaves entirely open. Phases 11.2, 11.3 and 11.4 all consume half (ii) as
+  decomposed and cannot proceed until that decision is made.
+- **Prohibited workarounds**: do NOT use `sorry`, `axiom`, a vacuous definition, a conditional
+  restatement whose hypothesis is the refuted claim, a positionwise narrowing, a raised `Tc`, a
+  finite-fibre or finite-width assumption, or a trace-level `Presented` hypothesis to make half
+  (ii) appear to close.
 
 **The operator-by-operator reading this phase rests on** (`PlusLanguage/PlusTruth.lean`, six
 clauses, read against `ladderModel`):
@@ -1752,16 +1802,21 @@ clauses, read against `ladderModel`):
       what `exists_spliced_ladderPath` and `exists_spliced_ladderPath_of_pend_past` produce), and
       `Tc ≤ |a - z|` with `hp : ParamsOk …`, the stab-free part of `tpOf` at `z` is the same along
       both. The `untl`/`snce` cases are the whole content: the witness and the guard interval must
-      be re-exhibited across the pumped block, and `(K2)`'s threshold is what the argument spends. *(deviation: blocked — not
-      stated anywhere in the tree, so no `sorry` carries it. See the HALF (i) MET, HALF (ii) OPEN
-      record above: the uniform-claim structural induction is refuted at the positions inside and
-      adjacent to the pumped block by the compiled `spliceIdx_seam_lt`, and what is needed is a
-      model-level periodicity of the type sequence along a periodic object segment.)*
+      be re-exhibited across the pumped block, and `(K2)`'s threshold is what the argument spends. *(deviation: blocked — REFUTED, so
+      not stated anywhere in the tree and no `sorry` carries it. The schema with every hypothesis
+      above is refuted by `Probe761S.splice_type_invariance_refuted` in the wired probe
+      `specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean`: one splice
+      duplicates the pumped block, and the nesting-depth-three formula `⊤ U (p ∧ ⊤ U p)` counts the
+      occurrence it adds at unbounded distance. See the HALF (i) MET, HALF (ii) REFUTED record and
+      the BLOCKER entry above.)*
 - [ ] Instantiate (ii) in the regime that needs no cascade: `tpOf_stabFree_eq_of_splice_pend_past`,
       discharging the existence hypothesis from `exists_spliced_ladderPath_of_pend_past`. By
       `clipIdx_regime_of_eq` (landed) a class collision at a fixed next deadline cannot straddle
       the two regimes, so this instance is not a special case of convenience — it is one of the two
-      exhaustive cases the agreement has to cover. *(deviation: blocked — not reached; it instantiates (ii).)*
+      exhaustive cases the agreement has to cover. *(deviation: blocked — not reached, and now unreachable: it instantiates (ii), which is
+      refuted. The refuting instance is itself in the pending-forever regime and is produced by
+      `exists_spliced_ladderPath_of_pend_past`, so this instance is the one the refutation runs
+      in.)*
 - [x] Wire the new declarations: axiom-profile pins in `KTypeSummaryAxiomTest.lean`, the module
       docstring's "what this module does NOT hold" paragraph extended to say that the transport is
       stab-free and relative to pinned letters, and the generated README inventory blocks and

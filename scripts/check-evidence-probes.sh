@@ -1581,6 +1581,67 @@ EVIDENCE="specs/evidence"
 #                                                           | on all six headline theorems. No
 #                                                           | `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# seam-gluing-ray-product/ladder-splice-type-refutation     | THE SPLICE TYPE REFUTATION: the
+#                                                           | pumping surgery of the ladder
+#                                                           | replacement layer does NOT preserve
+#                                                           | the realized closure type, at ANY
+#                                                           | distance from the splice point. Half
+#                                                           | (ii) of the model-level
+#                                                           | truth-transport layer -- repeating an
+#                                                           | object cycle of length `l ∣ P + 1`
+#                                                           | inside a pending region whose splice
+#                                                           | point lies at least `T_c` from `z`
+#                                                           | preserves the stab-free part of
+#                                                           | `tpOf` at `z` -- is FALSE as stated
+#                                                           | (`splice_type_invariance_refuted`,
+#                                                           | against the schema
+#                                                           | `SpliceTypeInvariance` carrying every
+#                                                           | recorded hypothesis). Mechanism: one
+#                                                           | splice DUPLICATES the pumped block,
+#                                                           | so it ADDS one occurrence of every
+#                                                           | object state of that block to the
+#                                                           | walk's future, and the nested
+#                                                           | eventuality `⊤ U (p ∧ ⊤ U p)` COUNTS
+#                                                           | occurrences at unbounded distance --
+#                                                           | so the preceding record's
+#                                                           | distance-budget-per-nesting-depth
+#                                                           | reading was wrong. Three pending/idle
+#                                                           | states, walk hitting the `p`-state
+#                                                           | EXACTLY ONCE, no region start at all;
+#                                                           | seriality DISCHARGED (`fwdS`,
+#                                                           | `bwdS`), the path lifted by
+#                                                           | `exists_ladderPath_of_walk`, the
+#                                                           | spliced path by the landed
+#                                                           | `exists_spliced_ladderPath_of_pend_past`,
+#                                                           | the divisibility MET through `(K1)`
+#                                                           | on a compiled object `2`-cycle
+#                                                           | (`two_mem_objCycleLensS`,
+#                                                           | `two_dvd_PS_succ`) and `ParamsOk`
+#                                                           | discharged at the periodicity
+#                                                           | fixpoint's own outputs
+#                                                           | (`paramsOkS`). The refutation
+#                                                           | SURVIVES THE ITERATED surgery the
+#                                                           | residue coordinate needs
+#                                                           | (`twoHits_iterate`,
+#                                                           | `spliced_rehypotheses`). Non-vacuity
+#                                                           | on both sides: both realized types
+#                                                           | contain `top`, carried as conjuncts
+#                                                           | of `exists_separating_splice`. Half
+#                                                           | (i) is UNTOUCHED and the PRESENTATION
+#                                                           | is untouched; the probe settles
+#                                                           | NOTHING about
+#                                                           | `cellAt_const_of_kappa_eq` itself (a
+#                                                           | cell quantifies over ALL histories
+#                                                           | through a state, this probe compares
+#                                                           | two), and nothing about a type-AWARE
+#                                                           | lengthening of the region, which is a
+#                                                           | different construction not stated
+#                                                           | anywhere in the tree. No bound, every
+#                                                           | quantity a count. Axioms
+#                                                           | `[propext, Classical.choice, Quot.sound]`
+#                                                           | on all nineteen printed theorems. No
+#                                                           | `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1625,6 +1686,7 @@ WIRED=(
   "seam-gluing-ray-product/no-pending-forever-ray"
   "seam-gluing-ray-product/counter-lift-gates"
   "seam-gluing-ray-product/ladder-unconstrained-parameter-refutation"
+  "seam-gluing-ray-product/ladder-splice-type-refutation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
