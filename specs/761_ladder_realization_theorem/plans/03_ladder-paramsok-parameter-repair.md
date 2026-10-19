@@ -1037,7 +1037,37 @@ and the phase is `[BLOCKED]`.
 
 ---
 
-### Phase 10: `LadderCons` and `ladderCons_localRun` [NOT STARTED]
+### Phase 10: `LadderCons` and `ladderCons_localRun` [BLOCKED]
+
+**BLOCKER** (Phase 10):
+
+- **What failed**: `ladderCons_localRun`'s second conjunct `∀ t, xi t ∈ R`. Under the settled
+  decision of 2026-10-19T01:16:48Z this phase was merged with Phase 11 and run 11-first, so that
+  the conjunct would come from `ladderSound` plus `LadderCons`'s maximality clause
+  (`Dmax ⊆ R`). Phase 11 is `[BLOCKED]`; see its own BLOCKER entry for the obstruction and the two
+  candidate routes. Nothing was authored in the library: no `LadderRealize.lean`, no `typeOfCl`,
+  no `certChain`, no `LadderCons`.
+- **What was tried**: the 11-before-10 order the decision fixes, which is why the first conjunct
+  (`certChain … xi`, the projection lemma) was not attempted either — its definition `certChain` is
+  pinned BY POSITION ONLY, and route (R-a) of Phase 11's blocker would stratify it by `⊡`-depth,
+  so authoring it now would prejudge the route decision.
+- **Why it is stuck**: `LadderCons` is a hypothesis bundle over `R`, so no clause of it can supply
+  the membership conjunct without carrying soundness as a field — the weakened-statement move this
+  plan and `plan-compliance.md` both forbid.
+- **What is needed**: Phase 11's route decision, then this phase's four tasks unchanged, with the
+  two recorded discrepancies below folded in.
+- **Two recorded discrepancies in this phase's task list, for the revision to absorb**:
+  1. Task 2's "RETAIN `slive` as `Realize.lean`'s `SLive` deferral-graph condition over `Q`'s
+     `step`" does not type-check as written. `Realize.lean`'s `UCoh`/`ULive`/`SCoh`/`SLive`/
+     `deferGraph`/`bwdDeferGraph`/`Disch`/`persist`/`snce_iff_of_SCoh_SLive` are all indexed by
+     `(clSig φ).preds` letters over a labelling `Q → (clSig φ).preds → Bool`, whereas
+     `LadderCons`'s pinned signature carries `lab : Q → Atom → Bool` and keeps the closure
+     component in `ClType φ`. The reusable shape is the deferral graph over the product carrier
+     `Q × ClType φ × CK …` under `cohIdle`/`relK`, with the letters read as formula membership in
+     the `ClType` component; the translation layer is named nowhere in the plan.
+  2. `certChain` is pinned in the Challenge block but carried by no phase's task list (recorded in
+     Phase 9's handoff). It falls to this phase.
+- **Prohibited workarounds**: as Phase 11's.
 
 **Goal**: Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` with the
 consistency bundle and the local-run theorem — the ladder analogue of `Realize.lean`'s `Cons` and
@@ -1047,20 +1077,20 @@ consistency bundle and the local-run theorem — the ladder analogue of `Realize
 - [ ] State `LadderCons (φ) (lab) (step) (pend) (R) : Prop` as `certAdmK … R ∧ R` maximal, with
       the `box`/`stab` letters PINNED: `lab q (□ψ)` one global bit (`box_mem_tpOf_iff`), the
       `stab` letter per `(q, κ)` (`stab_mem_tpOf_iff`). The acceptance clause is part of the
-      structure and is never dropped to make it writable.
+      structure and is never dropped to make it writable. *(deviation: blocked — not attempted; Phase 11 runs first per the settled merge decision and is [BLOCKED])*
 - [ ] Replace `ulive` by the ladder's structural liveness (`c` strictly decreases while pending,
       by `Count`) and RETAIN `slive` as `Realize.lean`'s `SLive` deferral-graph condition over
       `Q`'s `step`. Cite the thirteenth probe (`gPast_isPath`, `gPast_pending_past`,
       `gPast_count`) in the docstring for why the backward half is not replaceable, and say so in
-      the forward-only wording guardrail (e) requires — with no device-discrimination claim.
+      the forward-only wording guardrail (e) requires — with no device-discrimination claim. *(deviation: blocked — not attempted; and `SLive` does not type-check over `Q`, see this phase's BLOCKER discrepancy 1)*
 - [ ] Prove `ladderCons_localRun`: the projection of every admissible ladder history is a
       certificate chain lying inside `R`. Reuse `Realize.lean`'s transferable parts
       (`UCoh`, `deferGraph`, `Disch`, `persist`, `SCoh`, `bwdDeferGraph`, `SLive`,
       `snce_iff_of_SCoh_SLive` on the `Q`-projection); do not re-prove `presented_modelOf`,
       `run_seam_state` or `isRun_of_chain_seam`, none of which transfer. The signature carries NO
-      parameter hypothesis: this theorem is not one of the two the refutation touches.
+      parameter hypothesis: this theorem is not one of the two the refutation touches. *(deviation: blocked — second conjunct needs `ladderSound`; the first conjunct was deferred so as not to prejudge the route decision)*
 - [ ] Wire the module (RaySummary.lean and its module-list docstring, FormalSystem.lean, C14
-      heredoc, `KTypeSummaryAxiomTest.lean`).
+      heredoc, `KTypeSummaryAxiomTest.lean`). *(deviation: blocked — no module was authored)*
 
 **Timing**: 2 hours
 
@@ -1090,7 +1120,72 @@ test, not a local elaboration.
 
 ---
 
-### Phase 11: Obligation (S) — `ladderSound` [NOT STARTED]
+### Phase 11: Obligation (S) — `ladderSound` [BLOCKED]
+
+**BLOCKER** (Phase 11; entered as the MERGED phase 11-before-10 per the settled decision of
+2026-10-19T01:16:48Z, and blocked for a reason the merge does not touch):
+
+- **What failed**: `ladderSound`'s conclusion is `(q, T, kappa Tc Tn P B (c, n)) ∈ Dmax …`, and
+  `Dmax` is by definition the union of the `certAdmK`-certified subsets, so the proof must exhibit
+  ONE certified `R` containing that member. Condition (5), `certStabK`, cannot be discharged on any
+  such `R`.
+- **What was tried**:
+  1. `R` := the projection of ONE admissible ladder history. Conditions (1)-(4) are reachable, but
+     condition (6) `certBoxK` fails: its `←` direction forces `□ψ ∈ x.2.1.val` whenever every
+     member of `R` carries `ψ`, while `box_mem_tpOf_iff` makes the real bit quantify over EVERY
+     history of the model, not over one.
+  2. `R` := the full realizable set (the plan's `Real`, Finding 3). (1), (2), (4) and (6) are
+     reachable — (6) exactly because `box_mem_tpOf_iff`'s quantifier is global and every member of
+     `Real` is some `tpOf M φ σ' z'` and conversely. (5) is NOT: `stab_mem_tpOf_iff` makes the `⊡`
+     bit a datum of the ONE world state `⟨(q, c, n), h⟩` (compiled below as
+     `stab_mem_tpOf_iff_cell`), while `certStabK`'s fibre is taken over the whole `(q, κ)`-class.
+     Both directions then need the cells of class-equivalent states to agree.
+  3. `R` := the cell at one representative state per `(q, κ)`-class. (5) then holds at that state,
+     but (2) `certBiInfK` fails: the successor forced at a member lies at the NEXT ladder state,
+     whose class has its own representative, and the successor's type need not lie in that
+     representative's cell — which is again the agreement of (2).
+  4. Confining `R` to a single state's cell: refuted by (2) for the same reason as 3.
+- **Why it is stuck** — two compiled facts and the plan's own Finding 3:
+  - `stab_bit_agree_of_certStabK` (compiled standalone through the build guard, exit 0, NOT landed
+    — see the handoff for the source): for every `R` with `certStabK φ Tc Tn P B R` and every
+    `x y ∈ R` with `y.1 = x.1` and `y.2.2 = x.2.2`, and every `ψ ∈ plusSubformulaClosure φ` with
+    `isStab ψ = true`, `ψ ∈ x.2.1.val ↔ ψ ∈ y.2.1.val`. ANY certified set collapses the `⊡` bits
+    across a `(q, κ)`-class.
+  - `stab_mem_tpOf_iff_cell` (compiled standalone, exit 0, NOT landed): the `⊡` bit of a realized
+    type is a datum of the cell at the point's own world state.
+  - Together with `certBiInfK`, which forbids confining `R` to one state's cell, discharging (5)
+    requires exactly the agreement `cellAt_const_of_kappa_eq` states — Phase 13's Goal, which
+    Phase 13 derives from (S) and (C'). The plan records the same dependency in its own Research
+    Integration, Finding 3: "`Real` is itself certified GIVEN constancy of `cellAt` on
+    `K`-classes". Phase 9's handoff records that no union argument substitutes, because (5) and (6)
+    are BICONDITIONALS and only the four monotone conditions survive a union.
+  - Hence Phases 11, 12 and 13 are MUTUALLY circular as decomposed: 11 needs 13, 13 needs 11 and
+    12, 12 declares `Depends on: 7, 11`. This is independent of the 10↔11 circularity the merge
+    resolved, and the merge does not touch it.
+- **What is needed** — a plan revision choosing between two routes (recorded as a `user_decision`
+  on this dispatch's return metadata, since the artifacts cannot infer which the record wants):
+  - **(R-a) One simultaneous induction on `⊡`-nesting depth** across Phases 11-13, over
+    depth-stratified internal statements of (S), (C') and the agreement, with the three pinned
+    Goals as the `d = max` corollaries. Phase 11 task 3 and Phase 13 task 1 each already say "by
+    induction on `stab`-nesting depth", but a stratified induction cannot be split across phases
+    whose `Depends on` edges run one way. `Dmax` itself is not depth-stratified, so this route adds
+    a stratified certificate family to Phase 9's layer.
+  - **(R-b) Prove `cellAt_const_of_kappa_eq` FIRST**, directly at the history level (the
+    counter-lift lemma in its PUMPING form — Phase 12's chain-replacement machinery, with
+    `no_positionwise_lift` keeping the positionwise form closed), then `Real`'s certification by
+    Finding 3, then (S), then (C'), then the fibre equation. Every pinned signature is unchanged
+    and `cellAt_const_of_kappa_eq` is still never a HYPOTHESIS of `ladderRealized`; what changes is
+    Phase 13's route directive "as a COROLLARY of (S) and (C')" and the phase order. This route is
+    not costable for the same reason Phase 12 is not. **(R-b) is the recommended route**: the
+    task's 2026-10-18 amendment states the realization theorem "waits on the counter-lift lemma
+    (obligations (2) and (3) jointly) … gated before any sufficiency attempt", and task 820 is
+    discharged with both decision gates colliding so that the lemma's two halves are licensed in
+    PUMPING form. The record orders the lift BEFORE sufficiency; this plan's phase order inverts
+    it.
+- **Prohibited workarounds**: no `sorry`, no `axiom`, no vacuous definition, no trace-level
+  `Presented` hypothesis, no finite-fibre or finite-width assumption, and no soundness clause
+  carried as a `LadderCons` hypothesis field (which would make `ladderCons_localRun`'s second
+  conjunct near-vacuous under a filed name — `plan-compliance.md`, Statement Fidelity).
 
 **Goal**: Prove that every admissible ladder history projects into `Dmax`: types by the truth
 clauses and fulfilment along the history, `box` by `box_mem_tpOf_iff`, `stab` by
@@ -1098,15 +1193,15 @@ clauses and fulfilment along the history, `box` by `box_mem_tpOf_iff`, `stab` by
 
 **Tasks**:
 - [ ] Prove the projection is a certificate chain: local coherence and the `untl`/`snce` links
-      along an actual history, with the counter classes following `R_K` by `Count`/`Drift`.
+      along an actual history, with the counter classes following `R_K` by `Count`/`Drift`. *(deviation: blocked — reachable in itself, but it certifies nothing without (5); not authored, see this phase's BLOCKER)*
 - [ ] Prove forward and backward fulfilment along the history (both arms stay EXISTENTIAL —
-      `ULive`/`SLive` are the wrong strength, per the sufficiency record).
+      `ULive`/`SLive` are the wrong strength, per the sufficiency record). *(deviation: blocked — not attempted)*
 - [ ] Discharge the `box` clause globally and the `stab` clause per `(q, κ)` by induction on
-      `stab`-nesting depth, treating lower-depth `box`/`stab` letters as letters of `(q, κ)`.
+      `stab`-nesting depth, treating lower-depth `box`/`stab` letters as letters of `(q, κ)`. *(deviation: blocked — THE obstruction: the depth induction needs (C') at lower depth, so it cannot be split from Phase 12; see this phase's BLOCKER)*
 - [ ] Conclude membership in `Dmax` from certifiedness of the projection plus `Dmax`'s maximality
       (Phase 9). The signature carries NO parameter hypothesis: `ladderSound`'s conclusion is an
       existential over `Dmax`, which a coarser quotient can satisfy, so the refutation does not
-      reach it and the statement stays as recorded.
+      reach it and the statement stays as recorded. *(deviation: blocked — maximality cannot be reached by a union argument, per Phase 9's exclusion)*
 
 **Timing**: 3 hours
 
