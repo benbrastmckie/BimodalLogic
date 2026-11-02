@@ -4,7 +4,7 @@
 # THREE ASSERTIONS BEHIND ONE EXIT CODE:
 #
 #   A. FormalSystem/Metalogic/ contains exactly ONE directory-level import cycle.
-#   B. The library-wide UPWARD import set equals a recorded 7-line allowlist.
+#   B. The library-wide UPWARD import set equals a recorded 8-line allowlist.
 #   C. Inside the language directories, no syntax module imports a semantics module.
 #
 # A and B are independent: A is a single-subtree cycle claim, B is a whole-library layer-order
@@ -52,8 +52,8 @@
 #   shortfall means an allowlisted line is no longer measured, which someone should confirm
 #   rather than have silently absorbed.
 #
-#   THE ALLOWLIST HOLDS 7 LINES, all `FormalSystem.MinusLanguage.AxiomDischarge` (layer 0) importing
-#   a `Theorems` module (layer 2). They are recorded, not excused. The same 7 lines were recorded
+#   THE ALLOWLIST HOLDS 8 LINES, all `FormalSystem.MinusLanguage.AxiomDischarge` (layer 0) importing
+#   a `Theorems` module (layer 2). They are recorded, not excused. The same 8 lines were recorded
 #   under the file's old path, `Syntax/MinusLanguage/AxiomDischarge.lean`, until the
 #   language-extension merge (docs/development/PUBLICATION_REFACTOR.md Phase 5) moved the file
 #   into a directory the layer table did not cover; the list then read empty because the edges
@@ -183,7 +183,7 @@ _measure = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_measure)
 LIB, layer_of = _measure.LIB, _measure.layer_of
 
-# The recorded allowlist: 7 lines, all from `FormalSystem.MinusLanguage.AxiomDischarge`
+# The recorded allowlist: 8 lines, all from `FormalSystem.MinusLanguage.AxiomDischarge`
 # (layer 0 by its pre-merge origin, `Syntax/MinusLanguage/`) into `Theorems` (layer 2).
 # They are recorded, not excused: the file discharges the Minus axioms through derived
 # theorems of the base logic, and relocating it is separate work.  Every entry is derived
@@ -195,6 +195,7 @@ ALLOWLIST = frozenset((_SRC, "FormalSystem.Theorems." + t) for t in (
     "DeductionTheorem",
     "DiscreteUnfolding",
     "GeneralizedNecessitation",
+    "LinearityDerived",
     "Propositional.Core",
     "TemporalDerived",
 ))

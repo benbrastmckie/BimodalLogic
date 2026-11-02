@@ -1,22 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/828_metalogic_upward_edge_allowlist_count_drift/plans/01_upward-edge-allowlist-count-drift.md",
-      "summary": "2-phase plan: one atomic-batch allowlist-plus-count correction across four files, then acceptance verification and residual-count sweep."
-    }
-  ],
-  "memory_candidates": [],
-  "next_steps": "Run /orchestrate 828 to execute the plan",
+  "status": "in_progress",
+  "dispatch_seq": 3,
   "metadata": {
-    "session_id": "sess_1793657755_192cdd_828",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 2,
-    "estimated_hours": 1.0,
-    "dependency_waves": 2
-  },
-  "dispatch_seq": 2
+    "session_id": "sess_1793657755_192cdd",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

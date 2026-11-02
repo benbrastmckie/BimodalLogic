@@ -51,24 +51,25 @@ same table in signpost form.
     layer 3   1 file     │    MinusLanguage/Soundness       │             │
     layer 1  16 files    │    <Lang>Truth, <Lang>Validity … │             │
     layer 0  13 files    │    Formula, Axioms, Derivation … │   UPWARD    │
-                         │    MinusLanguage/AxiomDischarge ─┼── 7 lines ──┘
+                         │    MinusLanguage/AxiomDischarge ─┼── 8 lines ──┘
                          └──────────────────────────────────┘
 ```
 
-### The upward set: seven lines, all from one file
+### The upward set: eight lines, all from one file
 
-The library has **seven** measured upward import lines, and they are one class. All run from
+The library has **eight** measured upward import lines, and they are one class. All run from
 `MinusLanguage/AxiomDischarge.lean` to `Theorems/*`: the L⁻ axiom-discharge proofs apply derived
 object-logic theorems (`Combinators`, `DedekindDerived`, `DeductionTheorem`,
-`DiscreteUnfolding`, `GeneralizedNecessitation`, `Propositional.Core`, `TemporalDerived`), and
-the file is a syntax-side file at layer 0 while `Theorems/` is at layer 2. They are recorded,
-not excused; turning them downward means relocating the file, which is separate work.
+`DiscreteUnfolding`, `GeneralizedNecessitation`, `LinearityDerived`, `Propositional.Core`,
+`TemporalDerived`), and the file is a syntax-side file at layer 0 while `Theorems/` is at layer 2.
+They are recorded, not excused; turning them downward means relocating the file, which is
+separate work.
 
-These are the same seven lines the file carried as `Syntax/MinusLanguage/AxiomDischarge.lean`.
+These are the same eight lines the file carried as `Syntax/MinusLanguage/AxiomDischarge.lean`.
 The `{Plus,Minus,Star}Language` directory merges moved it to the library root, into a directory
 the layer table did not then cover, and for a while the measured set read zero. **That move did
 not turn the edges downward; it stopped them being measured.** The three language directories
-are now layered, and the seven lines are back under their new path.
+are now layered, and the eight lines are back under their new path.
 
 ### The language directories are layered per file
 
@@ -183,12 +184,12 @@ rule is the load-bearing one.
 
 ## Verifying this page
 
-The three structural claims are machine-checked, including the one count on this page (the seven
+The three structural claims are machine-checked, including the one count on this page (the eight
 upward lines), which is asserted by equality rather than stated:
 
 ```bash
 bash scripts/check-metalogic-cycles.sh      # exactly one directory-level cycle, AND the
-                                            # upward set is exactly the 7 recorded lines, AND
+                                            # upward set is exactly the 8 recorded lines, AND
                                             # syntax before semantics in the language directories
 python3 scripts/measure-refactor-partitions.py upward-edges   # the same set, enumerated
 bash scripts/check-module-invariants.sh     # B0, C4 imports, C8 aggregators, and the rest

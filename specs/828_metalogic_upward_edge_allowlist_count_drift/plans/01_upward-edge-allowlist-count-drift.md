@@ -1,7 +1,7 @@
 # Implementation Plan: Task #828
 
 - **Task**: 828 - Metalogic upward-edge allowlist count drift (CI red on `main`)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.0 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/828_metalogic_upward_edge_allowlist_count_drift/reports/01_upward_edge_allowlist_count_drift.md
@@ -114,36 +114,36 @@ No `roadmap_path` was provided in this dispatch; no ROADMAP.md consultation perf
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Admit the eighth edge and correct every recorded count [NOT STARTED]
+### Phase 1: Admit the eighth edge and correct every recorded count [COMPLETED]
 
 **Goal**: One atomic change that adds `LinearityDerived` to the recorded allowlist and brings
 every live count statement in the four in-scope files from seven to eight.
 
 **Tasks**:
-- [ ] Re-run `bash scripts/check-metalogic-cycles.sh` and confirm it still exits 1 with the
+- [x] Re-run `bash scripts/check-metalogic-cycles.sh` and confirm it still exits 1 with the
       single `SURPLUS ... Theorems.LinearityDerived` line (establish the red baseline in this
-      dispatch; do not inherit it from this plan).
-- [ ] Re-run `python3 scripts/measure-refactor-partitions.py upward-edges` and confirm eight
-      edges, all `AxiomDischarge -> Theorems.*`.
-- [ ] Re-grep each line number in the inventory below before editing it; the file may have
-      moved under this plan. The anchor text, not the number, is authoritative.
-- [ ] `scripts/check-metalogic-cycles.sh`: insert `    "LinearityDerived",` into the `ALLOWLIST`
+      dispatch; do not inherit it from this plan). *(completed: confirmed red baseline exactly as described)*
+- [x] Re-run `python3 scripts/measure-refactor-partitions.py upward-edges` and confirm eight
+      edges, all `AxiomDischarge -> Theorems.*`. *(completed)*
+- [x] Re-grep each line number in the inventory below before editing it; the file may have
+      moved under this plan. The anchor text, not the number, is authoritative. *(completed: all line numbers matched the plan exactly)*
+- [x] `scripts/check-metalogic-cycles.sh`: insert `    "LinearityDerived",` into the `ALLOWLIST`
       frozenset tuple (currently at `:192`-`:200`) between `"GeneralizedNecessitation"` and
-      `"Propositional.Core"`.
-- [ ] `scripts/check-metalogic-cycles.sh`: four prose counts -> eight.
+      `"Propositional.Core"`. *(completed)*
+- [x] `scripts/check-metalogic-cycles.sh`: four prose counts -> eight.
       `:7` `recorded 7-line allowlist` -> `8-line`;
       `:55` `THE ALLOWLIST HOLDS 7 LINES` -> `8 LINES`;
       `:56` `The same 7 lines were recorded` -> `8 lines`;
-      `:186` `The recorded allowlist: 7 lines` -> `8 lines`.
-- [ ] `scripts/measure-refactor-partitions.py`: five prose counts -> eight.
+      `:186` `The recorded allowlist: 7 lines` -> `8 lines`. *(completed)*
+- [x] `scripts/measure-refactor-partitions.py`: five prose counts -> eight.
       `:49` `7 import lines in total` -> `8`;
       `:51` `importing 7 Theorems modules` -> `8`;
       `:57` `recorded 7-line` -> `8-line`;
       `:175` `whose 7 imports of Theorems` -> `8`;
       `:179` `The 7 lines are recorded` -> `8 lines`.
       MUST NOT touch `:24`, `:59`, `:127` (all "the seven language directories"), `:79`, or the
-      `LAYERS` / `LANGUAGE_FILE_LAYERS` tables.
-- [ ] `docs/ARCHITECTURE.md`: seven prose/diagram counts -> eight.
+      `LAYERS` / `LANGUAGE_FILE_LAYERS` tables. *(completed: forbidden lines verified untouched)*
+- [x] `docs/ARCHITECTURE.md`: seven prose/diagram counts -> eight.
       `:54` diagram label `── 7 lines ──┘` -> `── 8 lines ──┘`;
       `:58` heading `seven lines` -> `eight lines`;
       `:60` `**seven**` -> `**eight**`;
@@ -151,22 +151,23 @@ every live count statement in the four in-scope files from seven to eight.
       `:71` `the seven lines are back` -> `eight lines`;
       `:186` `the one count on this page (the seven` -> `eight`;
       `:191` fenced-block comment `the 7 recorded lines` -> `8`.
-      MUST NOT touch `:135` ("7 inference rules").
-- [ ] `docs/ARCHITECTURE.md`: insert `LinearityDerived` into the parenthesized theorem-name list
+      MUST NOT touch `:135` ("7 inference rules"). *(completed: line :135 verified untouched)*
+- [x] `docs/ARCHITECTURE.md`: insert `LinearityDerived` into the parenthesized theorem-name list
       spanning `:61`-`:63`, between `GeneralizedNecessitation` and `Propositional.Core`; re-wrap
       the paragraph only if the inserted name pushes a line past the file's existing wrap width.
-- [ ] `ORGANISATION.md`: three prose counts -> eight.
+      *(completed: paragraph re-wrapped slightly to fit the inserted name)*
+- [x] `ORGANISATION.md`: three prose counts -> eight.
       `:51` `**The measured upward set is 7 import lines**` -> `8 import lines`;
       `:53` `All 7 run from` -> `All 8 run from`;
       `:220` fenced-block comment `the recorded 7 AxiomDischarge lines` -> `8`.
       MUST NOT touch `:73`-`:78` (dated counterfactual table, see Decisions), `:75`, `:76`, or
-      `:91` ("The seven sibling aggregators").
-- [ ] Run `bash scripts/check-metalogic-cycles.sh` and confirm exit 0 with
-      `PASS  upward import set is exactly the recorded 8 line(s)`.
-- [ ] Run `python3 scripts/measure-refactor-partitions.py upward-edges` once more and confirm it
+      `:91` ("The seven sibling aggregators"). *(completed: forbidden lines verified untouched)*
+- [x] Run `bash scripts/check-metalogic-cycles.sh` and confirm exit 0 with
+      `PASS  upward import set is exactly the recorded 8 line(s)`. *(completed: exact message confirmed)*
+- [x] Run `python3 scripts/measure-refactor-partitions.py upward-edges` once more and confirm it
       still reports the same eight edges (the prose edits touched its docstring, so a smoke run
-      confirms no syntax damage).
-- [ ] Commit all four files together, one commit.
+      confirms no syntax damage). *(completed)*
+- [x] Commit all four files together, one commit. *(completed)*
 
 **Timing**: 0.6 hours
 

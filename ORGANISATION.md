@@ -48,9 +48,9 @@ One class of edge is called out against that stack:
   reading of the proof-side frame-class tag, so that both sides can be indexed by the same tag
   instead of by a hand-maintained binder list that would drift.
 
-**The measured upward set is 7 import lines**, and that is asserted rather than trusted:
+**The measured upward set is 8 import lines**, and that is asserted rather than trusted:
 `bash scripts/check-metalogic-cycles.sh` fails if it is anything other than the recorded
-allowlist — on a surplus and on a shortfall alike. All 7 run from
+allowlist — on a surplus and on a shortfall alike. All 8 run from
 `MinusLanguage/AxiomDischarge.lean` (layer 0) into `Theorems/*` (layer 2): the L⁻ axiom-discharge
 proofs reaching for the derived object-logic theorems. They are recorded, not excused.
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) draws the graph, explains the relocations that were
@@ -217,7 +217,7 @@ The layering claims above are structural, so they are checkable rather than asse
 python3 scripts/measure-refactor-partitions.py upward-edges
 
 # the same claim as a gate: exactly one Metalogic cycle, and the upward set is exactly
-# the recorded 7 AxiomDischarge lines (fails on a surplus AND on a shortfall)
+# the recorded 8 AxiomDischarge lines (fails on a surplus AND on a shortfall)
 bash scripts/check-metalogic-cycles.sh
 
 # the single Semantics -> ProofSystem edge

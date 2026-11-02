@@ -46,15 +46,15 @@ set and none into BXCanonical.  Never weaken it; if it fails, the offending
 edges are the work, and the relocation has to be dependency-first.
 
 Measured on the tree as it stands after the language directories were layered:
-  upward-edges              7 import lines in total, one class, MinusLanguage ->
+  upward-edges              8 import lines in total, one class, MinusLanguage ->
                             Theorems: MinusLanguage/AxiomDischarge.lean (layer 0)
-                            importing 7 Theorems modules (layer 2).  0 into
+                            importing 8 Theorems modules (layer 2).  0 into
                             Automation from any of the four acceptance source
                             directories (Syntax, Semantics, ProofSystem,
                             Theorems); 0 Theorems files import Metalogic; 29
                             Metalogic files import Theorems; 0 stale per-file
                             rows.  scripts/check-metalogic-cycles.sh asserts
-                            that the upward set EQUALS its recorded 7-line
+                            that the upward set EQUALS its recorded 8-line
                             allowlist.
                             The seven language directories (MinusLanguage/,
                             PlusLanguage/, StarLanguage/, OpenLanguage/,
@@ -172,11 +172,11 @@ LAYERS = {
 # (`Syntax/<Lang>/`) takes 0, a semantic file (`Semantics/<Lang>/`) takes 1 -- which is what
 # assertion C of scripts/check-metalogic-cycles.sh already enforces.
 #
-# A content judgement is deliberately NOT the rule.  It could file `AxiomDischarge` -- whose 7
+# A content judgement is deliberately NOT the rule.  It could file `AxiomDischarge` -- whose 8
 # imports of `Theorems` are the whole measured upward set -- at layer 2 and empty the allowlist
 # in scripts/check-metalogic-cycles.sh by assertion.  That allowlist once emptied because these
 # directories stopped being measured; reclassifying the file would reach the same blind spot by
-# another route.  The 7 lines are recorded, not excused.
+# another route.  The 8 lines are recorded, not excused.
 #
 # AN EXPLICIT TABLE, NOT A FILENAME HEURISTIC.  Every layer-1 file happens to carry its
 # language's name as a prefix (`PlusTruth`, `MinusFrame`) and every unprefixed file is layer 0 --
