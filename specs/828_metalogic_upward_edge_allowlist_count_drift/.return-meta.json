@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1793657755_192cdd_828",
-  "dispatch_seq": 1,
-  "findings_count": 12,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/828_metalogic_upward_edge_allowlist_count_drift/reports/01_upward_edge_allowlist_count_drift.md",
-      "summary": "Re-verifies the CI-red metalogic upward-edge allowlist count drift, enumerates the exact edit sites (one ALLOWLIST frozenset entry plus eleven prose-count occurrences) across the four in-scope files, corrects the task description's provenance commit citation, and flags two out-of-scope residual 'seven' mentions."
+      "type": "plan",
+      "path": "specs/828_metalogic_upward_edge_allowlist_count_drift/plans/01_upward-edge-allowlist-count-drift.md",
+      "summary": "2-phase plan: one atomic-batch allowlist-plus-count correction across four files, then acceptance verification and residual-count sweep."
     }
   ],
   "memory_candidates": [],
-  "next_steps": "Run /orchestrate 828 to create implementation plan"
+  "next_steps": "Run /orchestrate 828 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1793657755_192cdd_828",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 2,
+    "estimated_hours": 1.0,
+    "dependency_waves": 2
+  },
+  "dispatch_seq": 2
 }

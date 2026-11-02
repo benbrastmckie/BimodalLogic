@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 2,
+  "summary": "Wrote a 2-phase plan for the upward-edge allowlist count drift. Phase 1 is one atomic-batch change across all four in-scope files: add \"LinearityDerived\" to the ALLOWLIST frozenset in scripts/check-metalogic-cycles.sh and correct nineteen live count statements (7/seven -> 8/eight) plus insert the theorem name into docs/ARCHITECTURE.md's enumerated list. Phase 2 verifies the three named acceptance criteria and re-runs the residual-count sweep. Independent re-verification during planning found two live count sites the research report's enumeration omitted (check-metalogic-cycles.sh:7 and the ASCII diagram label at docs/ARCHITECTURE.md:54) and established that ORGANISATION.md:73-78 is a dated counterfactual table that must be left unchanged.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/828_metalogic_upward_edge_allowlist_count_drift/plans/01_upward-edge-allowlist-count-drift.md",
+      "summary": "2-phase plan: one atomic-batch allowlist-plus-count correction across four files, then acceptance verification and residual-count sweep."
+    }
+  ],
+  "dispatch_seq": 2
+}

@@ -1689,7 +1689,7 @@
     {
       "project_number": 828,
       "project_name": "metalogic_upward_edge_allowlist_count_drift",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "topic": "repo-hygiene",
       "description": "**CI IS CURRENTLY RED ON `main`.** `bash scripts/check-metalogic-cycles.sh` exits 1 with:\n\n```\nSURPLUS  FormalSystem.MinusLanguage.AxiomDischarge -> FormalSystem.Theorems.LinearityDerived\nFAIL  upward import set is not the recorded allowlist (1 surplus, 0 shortfall)\n```\n\nSTANDING INSTRUCTION -- RE-VERIFY BEFORE CITING. Re-run the script and re-grep every path and line number below before citing them; do not inherit a name from this text.\n\nVERIFIED AT FILING (2026-11-02):\n- `python3 scripts/measure-refactor-partitions.py upward-edges` reports EIGHT upward edges, all from `FormalSystem/MinusLanguage/AxiomDischarge.lean`. The eighth is the `Theorems.LinearityDerived` line, imported at `AxiomDischarge.lean:16` and used at `:277`, `:320`, `:324`.\n- THREE places still record seven: the allowlist comment at `scripts/check-metalogic-cycles.sh:186`; `docs/ARCHITECTURE.md:58` (\"### The upward set: seven lines, all from one file\"), `:60`, `:67`, `:71`, and `:186` (\"the one count on this page\"); and the layer table consumed by the measurement script.\n- ORIGIN: the edge arrived with commit `ba6c0f5dd` (\"task 788 phase 6: repoint Conservativity, Plus/C bridges, Independence pins, tests and tooling to the derived schemata\"). It is the SAME FILE and the SAME DOCUMENTED CLASS as the other seven (AxiomDischarge consuming derived schemata from `Theorems/*`), so it reads as a legitimate eighth line of an accepted class, NOT a layering violation. Confirm that reading before acting; if the repointing was meant to be temporary, relocating the import is the alternative.\n\nWHY THIS IS NOT A SOFT WARNING. `ci.yml:174-181` runs the script with `continue-on-error: true`, but the aggregating gate at `ci.yml:283+` reports `steps.metalogic-cycles.outcome` (line 341) and `exit 1`s when any reported outcome failed (lines 352-356). The script is pure grep over import lines with no lake or cache dependency, so it fails identically in CI. The per-step `continue-on-error` is the deliberate collect-then-fail-once pattern, not an exemption -- which is exactly why this failure is easy to miss.\n\nDELIVERABLE. The script's own FAIL message prescribes the fix: \"if the edge is genuinely correct, change the layer table in `scripts/measure-refactor-partitions.py` and `ORGANISATION.md` together\". Admit the eighth edge to the allowlist AND correct all three recorded counts in the same change. A change that fixes the allowlist without the docs (or vice versa) re-opens the same drift.\n\nACCEPTANCE. `bash scripts/check-metalogic-cycles.sh` exits 0; `bash scripts/check-module-invariants.sh --no-build` still exits 0 with its 47 PASSes; no count anywhere in `docs/ARCHITECTURE.md` or `ORGANISATION.md` still says seven upward lines.\n\nFILE SCOPE: `scripts/measure-refactor-partitions.py`, `scripts/check-metalogic-cycles.sh`, `docs/ARCHITECTURE.md`, `ORGANISATION.md`.\n\nPROVENANCE: `specs/reviews/review-2026-11-02.md`, Critical Issues section.",
@@ -1699,12 +1699,23 @@
           "path": "specs/828_metalogic_upward_edge_allowlist_count_drift/reports/01_upward_edge_allowlist_count_drift.md",
           "type": "report",
           "summary": "Re-verifies the CI-red metalogic upward-edge allowlist count drift, enumerates the exact edit sites (one ALLOWLIST frozenset entry plus eleven prose-count occurrences) across the four in-scope files, corrects the task description's provenance commit citation, and flags two out-of-scope residual 'seven' mentions."
+        },
+        {
+          "path": "specs/828_metalogic_upward_edge_allowlist_count_drift/plans/01_upward-edge-allowlist-count-drift.md",
+          "type": "plan",
+          "summary": "2-phase plan: one atomic-batch allowlist-plus-count correction across four files, then acceptance verification and residual-count sweep."
         }
       ],
       "created": "2026-11-02T17:35:34Z",
-      "last_updated": "2026-11-02T22:26:51Z",
+      "last_updated": "2026-11-02T22:32:07Z",
       "session_id": "sess_1793657755_192cdd",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "ORGANISATION.md",
+        "docs/ARCHITECTURE.md",
+        "scripts/check-metalogic-cycles.sh",
+        "scripts/measure-refactor-partitions.py"
+      ]
     },
     {
       "project_number": 829,

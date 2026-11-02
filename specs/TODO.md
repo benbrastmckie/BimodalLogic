@@ -126,7 +126,7 @@ next_project_number: 838
 817 [NOT STARTED] — Wrap the remaining count-carrying inventory tables under...
 818 [NOT STARTED] — Wrap the four directory-rollup inventory tables that need the...
 821 [RESEARCHED] — Reconcile specs/state.json's next\_project\_number against...
-828 [RESEARCHED] — CI IS CURRENTLY RED ON main. bash...
+828 [PLANNED] — CI IS CURRENTLY RED ON main. bash...
 832 [NOT STARTED] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Build Performance
@@ -540,11 +540,12 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Mediu
 ---
 
 ### 828. Metalogic upward edge allowlist count drift
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [828_metalogic_upward_edge_allowlist_count_drift/reports/01_upward_edge_allowlist_count_drift.md]
+- **Plan**: [828_metalogic_upward_edge_allowlist_count_drift/plans/01_upward-edge-allowlist-count-drift.md]
 
 **Description**: **CI IS CURRENTLY RED ON `main`.** `bash scripts/check-metalogic-cycles.sh` exits 1 with:
 
