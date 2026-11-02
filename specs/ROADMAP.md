@@ -10,11 +10,32 @@ and `specs/archive/`.*
 that front and preempts everything else for agent time. Stages 2–4 are subordinate and run only
 when Stage 1 is blocked on a user ruling or on open mathematics.
 
+**ORDERING RULING (2026-11-02, user): decidability before completeness, and the two are not
+symmetric.** Deciding validity makes the valid set r.e., and an r.e. valid set means a recursive
+axiomatization exists (Craig) — so landing Stage 1 *settles* `559`'s priority question `(P1)`, the
+gate on the whole completeness programme by that task's own USER DECISION. Completeness going the
+other way yields only r.e.-ness, never decidability: that would additionally need non-validity
+r.e., which is what `not_finite_width_fmp` makes hard here. Stage 1 is also the better-resourced
+front — (C) is a settled theorem, (S) and (W)'s anchor layer are landed, all six of `761`'s edges
+are discharged — whereas the completeness engine's only blueprint is a published *sketch*. The
+caveat, stated so it is not oversold: Craig's trick buys *an* axiomatization, not a natural one, so
+finding a natural system stays real work; what Stage 1 removes is the risk that the search is for
+something nonexistent. **The pivot, if `761` blocks on open mathematics rather than on a ruling**,
+is `559`'s `(P1)` at Base — not its engine: `(P1)` is independent of ZTime, has a located
+obstruction, and either verdict pays (positive opens Base, negative unlocks the bundled fallback
+that `559`'s USER DECISION otherwise forbids).
+
 ## Run these next
 
 ```bash
-/orchestrate 761 --hard --lit   # THE critical path, now un-gated: 820's gate table is compiled and COLLIDES at both decision gates, so the ladder route is open and the counter-lift lemma's two halves are licensed in pumping form
+/orchestrate 828                # CI IS RED and it is minutes of work; a red gate masks every signal you would read while 761 runs
+/orchestrate 833                # the L^▷ keystone, ~40 lines of transcription — NOT in the same cycle as 761, which it collides with on docs/theorem-index.md
+/orchestrate 761 --hard --lit   # THE critical path, un-gated: 820's gate table is compiled and COLLIDES at both decision gates, so the ladder route is open and the counter-lift lemma's two halves are licensed in pumping form
 ```
+
+The first two are cheap and are not a detour from Stage 1: `828` clears the red gate that would
+otherwise swallow a real failure, and `833` is the one implementation step the completeness front
+needs before it can be run at all (`559` declares it). Neither touches the `RaySummary` set.
 
 **SUFFICIENCY RETURNED (`815`).** The certificate is sufficient at the LABEL level over the
 strict-since relation `cohBi` (`realizes_of_certAdm_cohBi`); the two-sided claim for `coh` is
@@ -65,8 +86,7 @@ cause is easy to miss. Filed as 828; fix the allowlist and all three recorded co
 /orchestrate 729,730,741,743,751,752,753,767
 /orchestrate 768,769,770,772,774,777,779,780
 /orchestrate 781,785,787,803,804,810,813,817
-/orchestrate 818,821,825,828,829,830,831,832
-/orchestrate 833
+/orchestrate 818,821,825,829,830,831,832
 ```
 
 ## Next batches
@@ -82,6 +102,7 @@ cause is easy to miss. Filed as 828; fix the allowlist and all three recorded co
 /orchestrate 830 --hard          # Γ-generalize the landed Compression.decidableValidZTime; strengthens L, does NOT advance the L⁺ aim
 # Stage 3 — datasets, examples, documentation, hygiene
 /orchestrate 828                 # CI IS RED: an 8th upward import edge against an allowlist and docs that say seven. Smallest item on this page; fix it first
+/orchestrate 821                 # validate-state.sh --deep is permanently red on Check 12 (five archived rows sit above the counter), which masks any later finding there
 /orchestrate 803,804,829         # the build-cost front: SubformulaProperty's elaboration time, its fan-in, then the absent .lake/build CI cache
 /orchestrate 298,282,296,231,219 # the dataset chain behind the c7 labeling bug
 /orchestrate 178,604             # worked Examples/ pipeline and zstd-compressed .jsonl support
@@ -128,16 +149,19 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 - The frozen set is **enumerated by that migration record, not derivable from `file_scope`**:
   753, 772, 774, 777, 779, 780 and 783 also edit the source store and are batched above by ruling,
   each editing at the mirroring source path and redeploying afterwards.
-- **785, 813 and 814 have the frozen shape and are not among the seven** — each declares a
-  `file_scope` that is wholly (785, 813) or almost wholly (814) under
-  `agent-system/extensions/lean/**`, a path that does not exist in this repository, and all three
-  share `index-entries.json`, so they collide with one another as well. They need the same
-  disposition as the seven and have not been given one.
+- **Nine tasks have the frozen shape and are not among the seven: 785, 813, 814 and 822–827.**
+  Each declares a `file_scope` wholly (785, 813, 822–827) or almost wholly (814) under
+  `agent-system/**`, a path that does not exist in this repository — `ls -d agent-system` fails
+  here. They collide with one another too: 785, 813 and 814 share the lean extension's
+  `index-entries.json`, and 822 and 827 share the core extension's. They need the same disposition
+  as the seven and have not been given one; 822–827 were filed after that bullet was last written,
+  which is why they were absent from it.
 - **784** is the tracker for the freeze and is itself `[BLOCKED]` on the migration. It owns the only
   part this repository can do: once the records have landed in the source store, verify them there,
   delete them from `specs/state.json`, regenerate `specs/TODO.md`, and drop this section.
-Every other open task appears in exactly one batch line above, except the two in **Run these
-next**, which repeat for priority.
+Every other open task appears in exactly one batch line above, except the items repeated in
+**Run these next** for priority. Checked mechanically on 2026-11-02 against `state.json`: of 77
+open tasks, every one is either in a batch line or named in this section.
 
 ## Stage 0 — User rulings (no agent may transition these)
 
@@ -148,7 +172,8 @@ next**, which repeat for priority.
       says "paused at 4/5 cycles, NOT blocked", so the marker is mis-set and the next step is a
       scope decision: `/revise 428` to add phases for its
       four residual hypotheses, or `/spawn 428` to split them out
-- [ ] Give **785**, **813** and **814** a disposition — frozen like the seven, or re-sited
+- [ ] Give **785**, **813**, **814** and **822–827** a disposition — frozen like the seven, or
+      re-sited. All nine declare `agent-system/**` paths absent from this repository
 - [ ] Rule on **807**'s positive verdict: `(q S ⊥) → ⊡(q S ⊥)` characterizes backward determinism
       over regular `ℤ`-frames (`backward-determinism-forcing-formula.lean`), so the
       know-time-do-not-forget family is a candidate reduction target. Options: (A, recommended)
@@ -261,7 +286,7 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   argument ends: what remains is the chain-replacement argument on the type sequence.
 - **761 — the ladder realization theorem** (`LadderCons`, `ladderRealized` per cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
-  `[BLOCKED]`. **All six of its declared edges are discharged** (760/775 archived, 805/806
+  `[IMPLEMENTING]`. **All six of its declared edges are discharged** (760/775 archived, 805/806
   `[COMPLETED]`, 819 the presentation decision, 820 the counter-lift gate table); it is no longer
   gated. `820` returned the POSITIVE branch: both decision gates collide, so the ladder route is
   open and the counter-lift lemma's two halves are licensed in pumping form, with `K`'s parameters
@@ -332,6 +357,15 @@ has no blockers. Note also that
 this front and Stage 1 meet: a decision procedure for `PlusValidZTime` makes the `⊡`-validities
 r.e., which is 559's `(P1)` gate at ZTime, and report 03 §1.3's MSO/Rabin argument already settles
 that gate on paper — non-constructively, which is why it is no route to Stage 1's own aim.
+
+**Scope of the next `559` round, and the one churn hazard on this page.** Run it for `(P0b)`,
+`(P0c)` and `(P0d)` only — three probes: whether `▷` is L⁺-definable at all (a positive answer
+retires the language ruling, so run it first), whether `tw_invariance`/`clock_invariance` extend to
+`▷`/`◁`, and whether `LC_n` holds in its `▷` form over ℤ. **Do not open `(P2)`, the ZTime truth
+lemma, while `761` is live**: 559's own COORDINATION NOTE records that `(P2)` and the
+certificate line's agreement lemma "target THE SAME MATHEMATICS from two directions. Neither
+should prove it twice." That is the sequencing reason, and it was written before the ordering
+ruling above rather than to justify it.
 
 ## Stage 3 — Datasets, examples, documentation, hygiene
 
