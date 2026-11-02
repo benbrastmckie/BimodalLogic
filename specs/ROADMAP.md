@@ -1,6 +1,6 @@
 # Roadmap
 
-*Open work only, hand-maintained (last edited 2026-10-18). This file is batch ordering and the
+*Open work only, hand-maintained (last edited 2026-11-02). This file is batch ordering and the
 rulings that gate it — nothing else. The mathematics, the (C)/(S)/(W) verdict table and every
 guardrail against a refuted shape live in `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
 (the authority); per-task detail lives in `specs/TODO.md`; finished work in `specs/CHANGE_LOG.md`
@@ -50,13 +50,24 @@ and ch. 10 as per-chapter offprints — ch. 10 ends at p. 653, the target starts
 volume-level PDF, so there is nothing to extract the chapter from. Institutional access or
 purchase is the route. Because R2 consumes R1, this unblocks a record; it does not advance the
 aim.
+
+**Red gate, not on the critical path, and a few minutes' work**: `scripts/check-metalogic-cycles.sh`
+currently exits 1. The measurement reports an **eighth** upward import line
+(`MinusLanguage.AxiomDischarge -> Theorems.LinearityDerived`, arrived with `ba6c0f5dd`) while the
+allowlist and `docs/ARCHITECTURE.md` both still record **seven**. It is the same file and the same
+documented class as the other seven, so it reads as a legitimate eighth line whose counts were
+never updated. It does not fail the job loudly — that step is `continue-on-error: true` — but
+`ci.yml`'s aggregating gate reports its `outcome` and exits 1, so the default branch is red and the
+cause is easy to miss. Filed as 828; fix the allowlist and all three recorded counts together.
+
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 127,128,178,502,559,570,604,664
 /orchestrate 714,729,730,741,743,751,752,753
 /orchestrate 767,768,769,770,772,774,777,779
 /orchestrate 780,781,785,787,803,804,810,813
-/orchestrate 817,818,821,825
+/orchestrate 817,818,821,825,828,829,830,831
+/orchestrate 832
 ```
 
 ## Next batches
@@ -68,8 +79,10 @@ aim.
 /orchestrate 714,781 --hard      # sliced-certificate internals: full-label evaluation, Phase 5 hoist
 # Stage 2 — supporting semantics and metalogic
 /orchestrate 664,559,570 --lit   # corpus ingest first, then TM⋆ canonical-model rounds and the C3 open question
+/orchestrate 830 --hard          # Γ-generalize the landed Compression.decidableValidZTime; strengthens L, does NOT advance the L⁺ aim
 # Stage 3 — datasets, examples, documentation, hygiene
-/orchestrate 803,804             # the build-cost front: SubformulaProperty's elaboration time, then its fan-in
+/orchestrate 828                 # CI IS RED: an 8th upward import edge against an allowlist and docs that say seven. Smallest item on this page; fix it first
+/orchestrate 803,804,829         # the build-cost front: SubformulaProperty's elaboration time, its fan-in, then the absent .lake/build CI cache
 /orchestrate 298,282,296,231,219 # the dataset chain behind the c7 labeling bug
 /orchestrate 178,604             # worked Examples/ pipeline and zstd-compressed .jsonl support
 /orchestrate 743                 # doc gate: typst-sync Check 1 namespace resolution
@@ -80,9 +93,11 @@ aim.
 /orchestrate 810                 # agent-system defect group: unfollowable batch-gate directive, vacuous-pass snapshot regex, refutation-inverting compliance check, literature --read path, gate16 — run in a separate cycle from 768 (shares lean-challenge-snapshot.sh)
 /orchestrate 817,818             # wrap the remaining phantom-row inventory and directory-rollup tables
 /orchestrate 729                 # purpose-written .title fields so TODO.md stops rendering descriptions
+/orchestrate 832                 # local-disk reclamation: .opencode_OLD/ (62M, safe) and data/'s two abandoned .partial files (390M, user decision)
 /orchestrate 257                 # only once the Stage 0 token exists
 # Stage 4 — the long fronts
 /orchestrate 481 --hard          # the refuted predicate; a C9 register entry is a complete outcome
+/orchestrate 831 --research --lit        # off-spine: state and attempt the Log(all) = Log(ZTime) ∩ Log(Dense) dichotomy that gates any dense-time certificate route
 /orchestrate 428,429,410,411 --hard      # the tableau spine's middle — 465 landed; needs 428's scope ruled
 /orchestrate 430,412,482 --hard --lit    # the spine's terminus: semantic lift, Track B finish, proof extraction
 /orchestrate 502,497 --research --lit    # the literature gate on the STSA axiom set, then the G-operator gap
@@ -217,7 +232,7 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   not pursued — it would not reach the `box`/`stab` letters Stage 1 needs.
 
   **Presentation chosen** (`819`; decision report
-  `specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md`):
+  `specs/archive/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md`):
   the index is `D`, the maximum `certAdm`-certified subset of the carrier `Q × ClType φ × K`, where
   `K` is a quotient of the two ladder counters; `ladderRealized` is the fibre equation (`cellAt` at
   `(q, c, n)` equals the fibre of `D` at `(q, κ(c, n))`); the factorization lemma for `K` is its
@@ -306,10 +321,15 @@ signature edit to a `scripts/nolints.json` entry, check the call sites first, an
 803 and 804 both touch `Verified/Termination/SubformulaProperty.lean`, so the pair serializes inside
 one batch; that module is the repository's single largest rebuild cost (1103s measured on a full
 guarded build) and any edit to the syntax or proof-system layer wakes it, so paper-alignment work
-pays for it repeatedly — run the pair early. Re-check 298's line and metadata counts before
-dispatching it. The `RaySummary`/`KTypeSummary` inventory tables are wrapped, so INV now catches a
-drifted count; a task that hand-edits one still re-runs the generator rather than editing the
-wrapped block. 257 shares `data/README.md` with 282.
+pays for it repeatedly — run the pair early. **829 is a different lever and does not serialize with
+them**: it adds the `actions/cache` step for `.lake/build` that no workflow currently has (only
+`use-mathlib-cache: true` is set, in all three), so every CI run re-elaborates 716 modules /
+371,441 lines from scratch. 803/804 cut what one module costs to elaborate; 829 stops paying that
+cost twice. Its `precompileModules` and matrix-split notes are measured experiments, not part of
+the cache change, and neither lands without a before/after timing. Re-check 298's line and
+metadata counts before dispatching it. The `RaySummary`/`KTypeSummary` inventory tables are
+wrapped, so INV now catches a drifted count; a task that hand-edits one still re-runs the
+generator rather than editing the wrapped block. 257 shares `data/README.md` with 282.
 
 ## Stage 4 — The long fronts (low priority)
 
@@ -355,22 +375,38 @@ record is `specs/CHANGE_LOG.md` and `specs/archive/`. Update the batches when `/
 `/spawn` or a dependency change alters the graph, and treat any claim here that no check can
 reproduce as a defect in this file rather than a fact about the tree.
 
-**Do not run `roadmap-integration.sh` against this file in either write mode.** `--regenerate`
-exits 0 and does write, but half-applies to this authored layout: it appends a
-`**Coverage appendix (uncovered tasks)**` fenced block without assembling the `## Open work` /
-`## Next` sections or touching the authored Stage prose, and emits its only diagnostic as an
-HTML-comment stderr marker rather than a named message, so a caller cannot tell the outcomes apart.
-`--prune` separately mis-parses any Run line whose flags follow the task list: the
-whitespace-stripping pass merges the flag into the last task id, so a flagged multi-task line
-silently loses that task and a flagged single-task line vanishes whole. Both defects are filed in
-the agent-system source store (752), which is **frozen and undispatchable from here**.
+**`roadmap-integration.sh --regenerate` is safe against this file, and the stage layout is now
+taught.** Re-verified 2026-11-02 against the live script, by dry run and by reading it: the
+`--regenerate` path is `mode_regenerate_stage`, which retains every `## ` section byte-for-byte
+**except** the run-order section (`## Run these next` — the first section holding a fenced
+`/orchestrate` block), whose body it round-trips, stripping the previously-generated coverage
+appendix and appending a freshly rendered one. A dry run reports `retained=11` and its only diff is
+that appendix, so the authored Stage prose is not at risk and stale copies do not accumulate. One
+residual defect, cosmetic: the diagnostic is still an HTML-comment marker on stderr
+(`<!-- roadmap-generation mode=... -->`) rather than a named message.
 
-**The conflict this leaves standing**: `/orchestrate`'s own conclusion stage runs
+**`--prune`'s flag-merge defect is fixed.** Its source-store record
+(`prune_next_body_flag_misparse_drops_active_task`) is completed, and the fix is verified here on
+two fixture shapes against scratch copies, never the live file: a flagged multi-task Run line drops
+only the terminal id and keeps both the surviving id and the trailing flags
+(`/orchestrate 761,820 --hard --lit` → `/orchestrate 761 --hard --lit`), and a flagged single-task
+line whose only task is terminal is removed whole. `--prune` also reaches only the run-order
+section; every other section is retained byte-for-byte.
+
+**THE ONE WAY TO LOSE AUTHORED WORK IN THIS FILE.** `strip_coverage_appendix` stops reading at the
+`**Coverage appendix (uncovered tasks)**:` marker and discards everything after it *within the
+run-order section*. Anything authored below that marker inside `## Run these next` is therefore
+destroyed by the next `--regenerate`, silently and with exit 0. Keep authored content above the
+appendix, and leave the appendix last in its section.
+
+**No hand-deletion after an orchestrate run.** `/orchestrate`'s conclusion stage runs
 `roadmap-integration.sh --regenerate` as a mandated step
-(`.claude/context/contracts/conclusion-stage.md`, Step 5), so every `/orchestrate` invocation
-re-injects the coverage-appendix block into this file against the ruling above. Until 752 is
-unfrozen, **delete the appended block by hand after an orchestrate run** — that is the only remedy
-available from this repository. The decidability inventory
+(`.claude/context/contracts/conclusion-stage.md`, Step 5). That is the intended path rather than a
+conflict with this file: it refreshes the coverage index idempotently. The former standing
+instruction to delete the appended block by hand no longer applies — deleting it only means the
+next run re-adds it. What is left of the source-store record (752) is the diagnostic-message half
+alone; it remains **frozen and undispatchable from here**, and its own description predates both
+fixes above. The decidability inventory
 (PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED) is regenerated and diffed from the tree by
 `scripts/generate-decidability-inventory.sh --diff`.
 
