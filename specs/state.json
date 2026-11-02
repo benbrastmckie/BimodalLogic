@@ -206,9 +206,9 @@
           "type": "plan"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-atom-valuation-agreement-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-cell-agreement-construction-refuted-summary.md",
           "type": "summary",
-          "summary": "Phase 11.4 implementation summary: the atom-valuation closure agreement, the fragment-shape decision, and the affirmative box-widening finding."
+          "summary": "Phase 11.5: the cell-level route's construction refuted, the depth-0 obligation stated and not proved, the forty-sixth probe wired."
         }
       ],
       "next_artifact_number": 6,
