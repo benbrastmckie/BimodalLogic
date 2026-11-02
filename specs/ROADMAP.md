@@ -25,17 +25,39 @@ is `559`'s `(P1)` at Base — not its engine: `(P1)` is independent of ZTime, ha
 obstruction, and either verdict pays (positive opens Base, negative unlocks the bundled fallback
 that `559`'s USER DECISION otherwise forbids).
 
+**THE PIVOT HAS FIRED (2026-11-02), and the ruling stays in force.** `761` is blocked on open
+mathematics, not on a ruling: Phase 11.5 closed `[BLOCKED]` on its own plan-sanctioned refuting
+branch, the construction it named is refuted on compiled ground, and the construction that would
+replace it is stated nowhere in the tree (Stage 1 below). Decidability-before-completeness is
+unchanged; what the pivot licenses is the subordinate front running in parallel rather than
+waiting.
+
+**One asymmetry in the gate, stated so the ruling is not read as stronger than it is.** `(P1)` is
+the gate at **Base/Dense/RTime**, where its r.e. status is OPEN with a located obstruction. At
+**ZTime it is already settled affirmatively on paper** — `559` item (k), report 03 §1.3, resting on
+recalled Rabin with the finite model property not established. So `559`'s `(P2)`, which targets
+ZTime specifically, is **not** gated on Stage 1: it is gated on `833` and on `(P0b)` alone. What
+Stage 1 would add at ZTime is a *constructive* settlement of a question the paper route already
+answers non-constructively — which is also why that route is no substitute for Stage 1's own aim.
+
 ## Run these next
 
 ```bash
-/orchestrate 828                # CI IS RED and it is minutes of work; a red gate masks every signal you would read while 761 runs
-/orchestrate 833                # the L^▷ keystone, ~40 lines of transcription — NOT in the same cycle as 761, which it collides with on docs/theorem-index.md
-/orchestrate 761 --hard --lit   # THE critical path, un-gated: 820's gate table is compiled and COLLIDES at both decision gates, so the ladder route is open and the counter-lift lemma's two halves are licensed in pumping form
+/orchestrate 828                # CI IS RED and it is minutes of work; a red gate masks every signal you would read anywhere else
+/revise 761                     # THE critical path, and it needs a PLAN not a dispatch: Phase 11.5 is [BLOCKED] and 11.6 inducts from its unproved base case, so 11.6-11.7 and 12-18 are unreachable and only 11.2 is enterable
+/orchestrate 836 --hard --lit   # the open mathematics 11.5 left: a construction preserving the realized TYPE without preserving the valuation pointwise
+/orchestrate 833                # the L^▷ keystone, ~40 lines of transcription — NOT in the same cycle as 761/763/836, which it collides with on docs/theorem-index.md
 ```
 
-The first two are cheap and are not a detour from Stage 1: `828` clears the red gate that would
-otherwise swallow a real failure, and `833` is the one implementation step the completeness front
-needs before it can be run at all (`559` declares it). Neither touches the `RaySummary` set.
+**Do not re-dispatch `761` as an implement round.** Its plan's critical path is severed at Phase
+11.5, so a dispatch spends its cycle budget on phases that cannot close — which is exactly what the
+last round showed, closing 11.3 and 11.4 cleanly and then hitting the wall at 11.5. `/revise 761`
+with the refutation as input is the cheap move; `836` carries the mathematics meanwhile.
+
+`828` clears the red gate that would otherwise swallow a real failure, and `833` is the one
+implementation step the completeness front needs before it can be run at all (`559` declares it,
+and by the gate asymmetry above `(P2)` waits on `833` rather than on Stage 1). Neither touches the
+`RaySummary` set.
 
 **SUFFICIENCY RETURNED (`815`).** The certificate is sufficient at the LABEL level over the
 strict-since relation `cohBi` (`realizes_of_certAdm_cohBi`); the two-sided claim for `coh` is
@@ -86,19 +108,20 @@ cause is easy to miss. Filed as 828; fix the allowlist and all three recorded co
 /orchestrate 729,730,741,743,751,752,753,767
 /orchestrate 768,769,770,772,774,777,779,780
 /orchestrate 781,785,787,803,804,810,813,817
-/orchestrate 818,821,825,829,830,831,832,836
-/orchestrate 837
+/orchestrate 818,821,825,829,830,831,832,837
 ```
 
 ## Next batches
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 761 --hard --lit    # ladder realization theorem over the idle-extended `cohBi` on `Q × ClType φ × K`; 820's gate table is compiled and un-gates it
-/orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
+/revise 761                      # NOT an implement dispatch: Phase 11.5 is [BLOCKED] and severs the plan's critical path (only 11.2 is enterable)
+/orchestrate 836 --hard --lit    # the open mathematics 11.5 left: type-preserving transport without pointwise valuation agreement
+/orchestrate 837                 # the sanctioned Challenge-statement repair (ParamsOk vs. existential quantification), barred from any implement dispatch by Statement Fidelity
+/orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761, which now waits on 836
 /orchestrate 714,781 --hard      # sliced-certificate internals: full-label evaluation, Phase 5 hoist
 # Stage 2 — supporting semantics and metalogic
-/orchestrate 833                 # land ⊡φ ↔ ▷◁φ in OpenLanguage; 559 waits on it. Shares docs/theorem-index.md with 761/763 — never in the same cycle as Stage 1
+/orchestrate 833                 # land ⊡φ ↔ ▷◁φ in OpenLanguage; 559's (P2) waits on it, NOT on Stage 1. Shares docs/theorem-index.md with 761/763/836 — never in the same cycle as Stage 1
 /orchestrate 664,559,570 --lit   # corpus ingest first, then TM⁺ completeness rounds (559, now over L^▷) and the C3 open question
 /orchestrate 830 --hard          # Γ-generalize the landed Compression.decidableValidZTime; strengthens L, does NOT advance the L⁺ aim
 # Stage 3 — datasets, examples, documentation, hygiene
@@ -150,19 +173,51 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 - The frozen set is **enumerated by that migration record, not derivable from `file_scope`**:
   753, 772, 774, 777, 779, 780 and 783 also edit the source store and are batched above by ruling,
   each editing at the mirroring source path and redeploying afterwards.
-- **Nine tasks have the frozen shape and are not among the seven: 785, 813, 814 and 822–827.**
-  Each declares a `file_scope` wholly (785, 813, 822–827) or almost wholly (814) under
-  `agent-system/**`, a path that does not exist in this repository — `ls -d agent-system` fails
-  here. They collide with one another too: 785, 813 and 814 share the lean extension's
-  `index-entries.json`, and 822 and 827 share the core extension's. They need the same disposition
-  as the seven and have not been given one; 822–827 were filed after that bullet was last written,
-  which is why they were absent from it.
+- **Eleven tasks have the frozen shape and are not among the seven: 785, 813, 814, 822–827, and
+  834/835.** Each declares a `file_scope` wholly (785, 813, 822–827, 834, 835) or almost wholly
+  (814) under `agent-system/**`, a path that does not exist in this repository — `ls -d
+  agent-system` fails here. They collide with one another too: 785, 813 and 814 share the lean
+  extension's `index-entries.json`; 822, 827 and 835 share the core extension's; and 834 shares
+  `docs/architecture/orchestrate-state-machine.md` with 823. They need the same disposition as the
+  seven and have not been given one.
+
+  **834 and 835 were filed on 2026-11-02** by an `/orchestrate` conclusion stage, from defects
+  observed while running 761. They are recorded here rather than in a batch line because they carry
+  the frozen shape, and they are worth reading even if the disposition goes against them:
+
+  - **834** — an `[IMPLEMENTING]` re-dispatch fires even when the handoff's own recorded next action
+    was a PLAN REVISION, because the blocker-research aux chain is **a dead drop with no receipt**:
+    `orchestrate-cycle-plan.sh` clears `aux_pending[t]` at *emission* time, before anything confirms
+    the fork wrote `.blocker-research.json`, so if that write never happens the pending entry is
+    already gone, the later file test fails, no cycle ever emits the `plan-revision` row, and the
+    task falls back to status-derived routing into the known-blocked phase.
+    `MAX_BLOCKER_ESCALATIONS` never fires because the counter advances on the signal being
+    *re-recorded*, not on a round producing nothing. This is the mechanism behind 761's own
+    repeated re-entries into blocked phases, so it is not a cosmetic defect.
+  - **835** — a generic cross-extension provision in core's `plan-format.md` that a repo-wide gate
+    criterion be stated relative to a recorded baseline rather than as an absolute zero. 785 owns
+    the lean-extension siting of the same finding; 835 owns only the generic clause, with an
+    explicit division-of-labour pointer each way.
+
+  Three further defects from the same round were **already owned** and were not re-filed: the
+  `lake-build-guard.sh` stale-replay (767), and the two `lean-challenge-snapshot.sh` items (768,
+  813). Two of those may be stale: the backtick-token misparse 768 records appears **already fixed**
+  by commit `42c23f442`, and 813's exit-73 refusal already carries a documented `--force` bypass, so
+  that item may be discoverability rather than a tool gap. Neither record was amended — that is a
+  `/revise` call.
 - **784** is the tracker for the freeze and is itself `[BLOCKED]` on the migration. It owns the only
   part this repository can do: once the records have landed in the source store, verify them there,
   delete them from `specs/state.json`, regenerate `specs/TODO.md`, and drop this section.
 Every other open task appears in exactly one batch line above, except the items repeated in
-**Run these next** for priority. Checked mechanically on 2026-11-02 against `state.json`: of 77
-open tasks, every one is either in a batch line or named in this section.
+**Run these next** for priority. Re-checked mechanically on 2026-11-02 against `state.json`: of 81
+open tasks, every one is either in a batch line or named in this section. The count moved by four
+that day — 834/835 (frozen, named above) and 836/837 (Stage 1, batched).
+
+**Reading the generated coverage appendix.** It is not a list of unbatched tasks. It lists the
+tasks whose status is *ready* that are absent from **`## Run these next`** alone — coverage is
+computed from that section's body, never from `## Next batches` or from this section. So a task
+batched in Stage 1 and deliberately kept out of the immediate run list (837, today) appears there
+correctly, and its presence is not a gap to close.
 
 ## Stage 0 — User rulings (no agent may transition these)
 
@@ -287,22 +342,131 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   argument ends: what remains is the chain-replacement argument on the type sequence.
 - **761 — the ladder realization theorem** (`LadderCons`, `ladderRealized` per cell, for ALL `φ`
   including `box`/`stab` letters — where (S)'s limitation lands by the README's assignment).
-  `[IMPLEMENTING]`. **All six of its declared edges are discharged** (760/775 archived, 805/806
-  `[COMPLETED]`, 819 the presentation decision, 820 the counter-lift gate table); it is no longer
-  gated. `820` returned the POSITIVE branch: both decision gates collide, so the ladder route is
-  open and the counter-lift lemma's two halves are licensed in pumping form, with `K`'s parameters
-  as outputs of the first repeat of the realizable-type iteration. Licensed is not proved — (S),
-  (C') and the parameter sources are this task's own obligations, and a gate probing one coordinate
-  certifies one coordinate. It inherits presentation (a) — `D` the
+  `[IMPLEMENTING]`, and **blocked at its own heart — revise it, do not dispatch it.** All six of
+  its declared edges are discharged (760/775 archived, 805/806 `[COMPLETED]`, 819 the presentation
+  decision, 820 the counter-lift gate table), so nothing *gates* it; what stops it is open
+  mathematics inside it. Phases 11.3 and 11.4 landed clean (below); **Phase 11.5, the depth-0
+  cell-level agreement on `κ`-classes, closed `[BLOCKED]` on the refuting branch its own task
+  provided for** (commit `9347d41d1`, the 46th wired probe
+  `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`). Phase 11.6
+  inducts from 11.5's base case, which is STATED and proved nowhere, so 11.6-11.7 and 12-18 are
+  unreachable along this route and **11.2 is the only enterable phase left** — and its single
+  consumer, Phase 15, is itself unreachable. The successor mathematics is 836; the barred
+  Challenge-statement repair is 837.
+
+  **What 11.5 established, and the distinction that is not a hedge.** `CellLEZeroConstOfKappaEq`
+  is stated as a Prop-valued schema in `LadderAgree.lean` and the name
+  `cellLE_zero_const_of_kappa_eq` is reserved and claimed by nothing. The construction it needs was
+  identified as `AtomPreservingCountMove` — an atom-row-preserving ladder path through the other
+  counter pair, which is exactly the hypothesis of 11.4's `tpOf_stabFree_eq_of_lab_eq`, the only
+  landed way to make two ladder paths realize the same stab-free type — and **that construction is
+  REFUTED**, generally, with the mechanism compiled: `cntAt_eq_of_pend_eq` sharpens
+  `cntAt_eq_of_obj_eq` to the hypothesis its proof actually consumes, making the countdown a
+  function of the **pend profile alone**, so moving `c` moves the pend profile;
+  `pendFactorsLab_of_atom` shows the pending bit factors through the atom row as soon as the
+  labelling carries it as one of its atoms, which a statement quantifying over every
+  `lab : Q → Atom → Bool` does not exclude; `cntAt_eq_of_lab_eq_of_pendFactorsLab` then forbids any
+  atom-row-preserving path from carrying a different countdown anywhere. The `n` half closes
+  (`nxt_free`); the obstruction is confined to `c` by construction. Non-vacuity is carried on both
+  sides in one statement (`exists_refuting_collision`: `ParamsOk` at the periodicity fixpoint's own
+  outputs, a populated `kappa`-collision at `c ≠ c'` through `kappa_eq_of_shift`, and a ladder path
+  through EACH of the two ladder states). **What is refuted is the CONSTRUCTION, not the
+  obligation**: a cell is a set of types over all histories through a state, two ladder paths can
+  realize the same closure type without agreeing on a single atom row, and the probe exhibits a
+  path through each state while saying nothing about whether the two cells coincide. The obligation
+  is neither proved nor refuted.
+
+  **The index/transport line is now five refutations deep, every one by the same mechanism — the
+  counter is observable through the closure, so it cannot be quotiented away.** Read the table
+  before proposing a shape; the tuple-widening line was already declared spent and the pointwise
+  transport line is spent too.
+
+  | | Refuted shape | Mechanism | Probe |
+  |---|---|---|---|
+  | 1 | counter-pair clipping | the gap `n − c` is observable, so bounding each counter bounds nothing the cells depend on | `ladder-cell-refutation.lean` |
+  | 2 | clipped/gap-carrying (third coordinate) | a pending region's first idle state sits at distance exactly `c + 1`, where the countdown's PARITY is observable | `ladder-cell-index-obstructions.lean` |
+  | 3 | six-coordinate residue-carrying, object-exhibited parameters | the threshold must be formula-derived and the modulus a multiple of every letter-definable sub-object's period | `ladder-residue-index-refutation.lean` |
+  | 4 | the same body at jointly derived parameters | a formula carves out a sub-object no set of atoms carves out, by forbidding a *pattern* rather than a letter | `ladder-joint-index-refutation.lean` |
+  | 5 | `AtomPreservingCountMove` (pointwise-valuation transport) | the countdown is a function of the pend profile alone, and `pend` factors through the atom row | `ladder-cell-agreement-refutation.lean` |
+
+  **Three live moves, in the order they should be tried.** (a) **Attack the obligation, not another
+  construction**: five refutations by one mechanism is evidence `cellAt` may not be constant on
+  `K`-classes at all, and a deliberate refutation attempt on `CellLEZeroConstOfKappaEq` pays either
+  way — a refutation drops presentation (a) before more rounds are spent inside it, a failed attempt
+  localizes what `K` must quotient by. (b) **Re-open `819`'s Route A / Route B decision**: it chose
+  Route B (check a candidate realizable set) over Route A (decide generalized-Büchi nonemptiness)
+  *because* `Real` is computable by enumeration and B was therefore cheaper; B's check is precisely
+  the blocked agreement, so the cost comparison the decision rested on has changed. (c) **Stop
+  quotienting the counter and decide the counter system instead**: the index line tries to make the
+  counter invisible and every refutation says it is not, while the ladder's counters are tightly
+  disciplined (`Count` a deterministic countdown while pending and pinned at `0` while idle, `Drift`
+  at most `±1` per step) — the reversal-bounded / one-counter shape whose emptiness is decidable in
+  the literature. Nothing of that is in Mathlib, so it is bespoke, and it embraces the observability
+  problem rather than dodging it; it is named here as the architecturally distinct option, not as a
+  costed plan.
+
+  **One asset the decidability front has not used.** `⊡φ ↔ ▷◁φ ↔ ◁▷φ` holds on every regular task
+  frame, choice-free (`559` probe 05; `833` lands it in the library), and `559` item (n1) records it
+  as "the TWO-SIDED DECOMPOSITION report 03 §4 named as the device the engine lacks" — the
+  metatheory's `plusStab_iff_rays` promoted to syntax. It is currently filed on the completeness
+  front only. What `836` needs is transport that preserves the realized TYPE without preserving the
+  valuation pointwise, and `▷`/`◁` give a ONE-SIDED factorization of exactly that condition (`▷`
+  fixes the past and varies the future over `AgreeUpTo`, `◁` fixes the future and varies the past
+  over `AgreeFrom`), while the ladder's `c` is a FORWARD deadline countdown and refutation 5's
+  mechanism is a statement about forward structure. So a one-sided transport has a principled reason
+  to behave differently from the refuted two-sided pointwise one. **This is a conjecture recorded as
+  one cheap probe's worth of work, not a result and not a route** — it is cheap only because `833`
+  is a transcription of an already-compiled proof. `559`'s COORDINATION NOTE is the reason it
+  belongs on this page at all: `(P2)` and this front's agreement lemma "target THE SAME MATHEMATICS
+  from two directions", and the blocked obligation IS that lemma.
+
+  **What landed before the wall, and is not at risk.** Phase 11.3 promoted the alternative-history
+  construction into `LadderAgree.lean` as ten gate-covered declarations, generalised off the
+  prototype's three-state fixture to an arbitrary object. Phase 11.4 landed the atom-valuation
+  closure agreement at the pointwise-`lab` hypothesis the ladder model's valuation actually reads
+  (not half (i)'s object-walk equality), and **settled its own open question affirmatively: the
+  `box` arm WIDENS** — `box_mem_tpOf_transfer`'s only hypothesis beyond closure membership is
+  same-model, and both compared histories are histories of the same `ladderModel`, so that induction
+  case is `Iff.rfl`. The usable fragment is therefore **stab-free with `□` included**, strictly wider
+  than the route decision assumed. Through all of it: full build green, `sorry` 0, and the repo-wide
+  axiom count and vacuous count unchanged.
+
+  `820` returned the POSITIVE branch: both decision gates collide, so the ladder route was not
+  closed and the counter-lift lemma's two halves are licensed in pumping form, with `K`'s parameters
+  as outputs of the first repeat of the realizable-type iteration. **Licensed is not proved**, and
+  Phase 11.5 is where that distinction became load-bearing — (S), (C') and the parameter sources are
+  this task's own obligations, and a gate probing one coordinate certifies one coordinate. It
+  inherits presentation (a) — `D` the
   maximum `certAdm`-certified subset of the carrier `Q × ClType φ × K`, `ladderRealized` the fibre
   equation — the idle-extended `cohBi` on that carrier, the `certStab`-per-`(q, κ)` rebuild, and
   the label-level qualification of `815` with its region-interior reading:
   `realizes_of_certAdm_cohBi` is sufficiency for the interior of one region and transfers to the
   region segments of a ladder history, never to the history itself. The **sufficiency verdict** it
   waited on is in (`815`, above): the mathematics is costable over that relation.
+- **836 — the type-preserving construction**, Phase 11.5's successor and now the front's open
+  mathematics. A construction preserving the realized TYPE without preserving the valuation
+  pointwise; stated nowhere in the tree. Filed as a child of 761 with the refutation, its mechanism
+  and the available ground in its description: 11.4's
+  `truthAt_iff_of_lab_eq_of_stabBoxFree` / `truthAt_iff_of_lab_eq_of_stabPinned` /
+  `tpOf_stabFree_eq_of_lab_eq` / `tpOf_stabBoxFree_eq_of_lab_eq` with the `box` arm widened, and
+  11.3's `altWalkPath` / `altWalkPath_eq_of_objAt_eq`. Read the five-row refutation table above
+  before proposing a shape.
+- **837 — the barred Challenge-statement repair.** `cellAt_const_of_kappa_eq` and `ladderRealized`
+  are refuted as recorded, because both universally quantify `(Tc Tn P B : Nat)` with no hypothesis
+  relating the parameters to the object, the formula, or each other — at `Tc = Tn = P = B = 0` the
+  quotient is a subsingleton and `cell_succ_ne` refutes constancy for every `c` and `n`. The two
+  candidate repairs (add a `ParamsOk Tc Tn P B` hypothesis carrying (K1)-(K4), or existentially
+  quantify the parameters) are each a change to a RECORDED Challenge statement, which
+  `plan-compliance.md`'s Statement Fidelity forbids an implement dispatch from making — which is why
+  761's Phases 9 and 13 closed `[BLOCKED]` rather than proceeding, correctly. `paramsOk_params`
+  already discharges `ParamsOk` at the periodicity fixpoint's own outputs, so repair (a) has a
+  landed witness. Deliverable is a sanctioned decision with the revised statement recorded, not an
+  implementation. Also settles Phase 8's internal inconsistency (promoting
+  `realizes_of_certAdm_cohBi` while the Scope Hypothesis says `certAdm` is not promoted).
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
-  `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone.
-  761 and 763 share the `RaySummary` library set and serialize through the edge between them.
+  `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone,
+  and 761 now waits on 836, so this is two open steps away rather than one. 761 and 763 share the
+  `RaySummary` library set and serialize through the edge between them.
 - **714 — sliced-certificate full-label evaluation**: does removing the `TailStable` junk-position
   obstruction preserve decidability of the check? The `liveAt` non-termination that blocked it is
   fixed. **Do not file a fourth certificate class** — no class presenting finite per-time fibres is
@@ -362,11 +526,27 @@ that gate on paper — non-constructively, which is why it is no route to Stage 
 **Scope of the next `559` round, and the one churn hazard on this page.** Run it for `(P0b)`,
 `(P0c)` and `(P0d)` only — three probes: whether `▷` is L⁺-definable at all (a positive answer
 retires the language ruling, so run it first), whether `tw_invariance`/`clock_invariance` extend to
-`▷`/`◁`, and whether `LC_n` holds in its `▷` form over ℤ. **Do not open `(P2)`, the ZTime truth
-lemma, while `761` is live**: 559's own COORDINATION NOTE records that `(P2)` and the
-certificate line's agreement lemma "target THE SAME MATHEMATICS from two directions. Neither
-should prove it twice." That is the sequencing reason, and it was written before the ordering
-ruling above rather than to justify it.
+`▷`/`◁`, and whether `LC_n` holds in its `▷` form over ℤ. **`(P0b)` genuinely is first**: if `▷`
+turns out L⁺-definable the language ruling is a notational change and nothing in item (n)'s
+consequences survives as new content, so it gates the other two and the engine both.
+
+**Do not open `(P2)`, the ZTime truth lemma, while `761`/`836` are live** — but the reason is the
+COORDINATION NOTE, not the gate. 559 records that `(P2)` and the certificate line's agreement lemma
+"target THE SAME MATHEMATICS from two directions. Neither should prove it twice", and the obligation
+`836` now carries IS that lemma, so the collision is live rather than hypothetical. What has
+*changed* is the reading of the gate: by the asymmetry recorded at the top of this file, `(P1)` is
+already settled affirmatively at ZTime on paper, so `(P2)` is not waiting on Stage 1 to be
+licensed — it is waiting on `833`, on `(P0b)`, and on not duplicating `836`. Whichever of the two
+fronts reaches the agreement lemma first states it in reusable form and the other cites it; that is
+559's own instruction and it is now the operative sequencing rule between the two stages.
+
+**The binding obstruction on this front is unchanged, and it is not `(P1)`.** It is closedness of
+the canonical bundle (559 item (c)): all-histories semantics = *closed* bundles, PS/US give
+paste-closure, MF gives translation-closure, and **nothing gives closedness**. The cure of record is
+`LC_n` in the logic plus progress measures carried in the state (items (i), (j)), with `LC_n`
+already ZTime-valid for every `n ≥ 1` (`lcN_valid_full`). `▷`/`◁` supply no closure principle — the
+language ruling is a decision about where to look for an engine, never a claim that it closes the
+gap.
 
 ## Stage 3 — Datasets, examples, documentation, hygiene
 
