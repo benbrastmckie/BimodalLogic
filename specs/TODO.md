@@ -1,5 +1,5 @@
 ---
-next_project_number: 834
+next_project_number: 836
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 834
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,828,829,830,831,832,833 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827 | 298,428,502,761,768,769,770,772,777,810,813,833 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 219,410,498,499,500,822 | 231,429,497,783 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -33,8 +33,10 @@ next_project_number: 834
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and...
 769 [NOT STARTED] — plan-format: blocked decision gates and plan-level Status...
   └─ 827 [NOT STARTED] — Require a plan phase to agree with its own Scope Hypothesis...
+    └─ 835 [NOT STARTED] — State a repo-wide gate criterion relative to a recorded...
 770 [NOT STARTED] — postflight writes detail-free blocking issue entry on partial...
   └─ 823 [NOT STARTED] — Tell the re-prompted dispatch to distrust the error count it...
+    └─ 834 [NOT STARTED] — Confirm the blocker-research aux carrier landed, and refuse...
 772 [NOT STARTED] — planned jq rewrites re-serialize formatting-sensitive JSON...
   └─ 783 [NOT STARTED] — Bounded in-file block edits: index and assert, never...
     └─ 822 [NOT STARTED] — Record the launch-side PID-fidelity condition on the...
@@ -122,7 +124,7 @@ next_project_number: 834
 817 [NOT STARTED] — Wrap the remaining count-carrying inventory tables under...
 818 [NOT STARTED] — Wrap the four directory-rollup inventory tables that need the...
 821 [RESEARCHED] — Reconcile specs/state.json's next\_project\_number against...
-828 [NOT STARTED] — CI IS CURRENTLY RED ON main. bash...
+828 [RESEARCHING] — CI IS CURRENTLY RED ON main. bash...
 832 [NOT STARTED] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Build Performance
@@ -132,6 +134,187 @@ next_project_number: 834
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 835. State a repo-wide gate criterion relative to a recorded baseline rather than an absolute zero
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 827
+- **Parent**: Task 761
+
+**Description**: State, in core's `context/formats/plan-format.md`, that a plan criterion invoking a repo-wide lint or sweep is expressed relative to a recorded baseline or a scoped path set -- never as an absolute "exits 0" or "count 0" -- wherever a pre-existing baseline exists.
+
+NOTHING IS BROKEN AND THIS IS NOT A DATA-REPAIR RECORD. The deliverable is plan-authoring prose plus its index wiring, and one investigated-and-reported decision about a mechanical check. Do NOT repair any pre-existing lint finding, do not edit any originating plan, and do not change the behaviour of any lint or gate script. The scripts named below are correct as they stand; the defect is in how a plan CITES them.
+
+THIS RECORD OWNS THE GENERIC PROVISION, NOT THE INSTANCES. Three measured instances of this class are already owned by other open records (named under SIBLING RECORDS below) and are sited in the lean extension's own pattern file, where they reach Lean plan authors only. The gap this record closes is that the rule is general -- it applies to every extension's plans and to every repo-wide gate -- and core's `plan-format.md` is the file that owns the per-phase `Verification` field vocabulary for all of them.
+
+=== WHAT WAS MEASURED, AND THE ONE WAY NOT TO WRITE IT DOWN ===
+
+Three criteria, all authored in good faith, all unattainable from the moment they were written:
+
+  (i) A repo-wide invocation of the task-reference lint was required to exit 0. It cannot: the lint reports a large standing population of pre-existing occurrences in an archived-code directory, none of them in any file the plan touched. The criterion was unmeetable before the first phase ran.
+  (ii) A sweep criterion required a grep count of zero for a vacuous-definition pattern. The tree carries a pre-existing hit whose body closes a real goal -- an INTENDED occurrence, not a defect -- so the count can never be zero.
+  (iii) A gate invocation against the wrong target shape, whose red result turned out to be an entirely pre-existing baseline naming none of the plan's own files.
+
+THE COUNTS ARE MOVING QUANTITIES AND MUST NOT BE WRITTEN INTO THE SHIPPED PROSE AS LIVE FACTS. The occurrence count in instance (i), the specific archived directory, the declaration name in instance (ii) and its file and line are all properties of ONE repository at ONE moment. A core-extension guidance file is read from every repository the system deploys into, where none of those facts hold. A reader who checks a stale count and finds it wrong discounts the rest of the guidance -- which is itself the sharpest argument for the provision, since the whole point is that a baseline is a quantity the plan does not control. State the CLASS and its remedy. This prohibition is an acceptance condition, not a style note.
+
+=== THE SCOPING FACILITIES ALREADY EXIST -- NAME THEM RATHER THAN IMPLYING A TOOL GAP ===
+
+MEASURED during this record's creation. `scripts/check-task-references.sh` already accepts an optional `PATH_SCOPE` argument alongside `--quiet`, documented in its own usage header, so a scoped criterion is available today with no new tooling. `scripts/verify-deploy.sh` already accepts `--only-gate N[,M,...]`, and `plan-format.md` ALREADY documents that facility along with the conditions under which a gate subset is legitimate and the zero-check-under-filter condition it must avoid. The provision therefore extends prose that is already in this file and already has the right vocabulary; it is not a new mechanism. Confirm both facilities still behave as described before citing them.
+
+=== THE PROVISION, AS THREE SEPARATELY CHECKABLE CONDITIONS ===
+
+  (a) THE CRITERION'S FORM. A phase criterion that invokes a repo-wide lint or sweep is stated either as "no findings naming the files this phase touches" or as "no NEW findings against the baseline recorded at authoring time" -- never as an absolute exit-zero or count-zero assertion -- wherever a pre-existing baseline exists. The two forms are not interchangeable and the author should know which one is meant: the scoped form is stronger and cheaper to check when the gate supports a path scope, and the baseline-relative form is the fallback when it does not.
+
+  (b) THE AUTHOR'S OBLIGATION. Run the gate ONCE at authoring time and record what it reports in the plan, or scope the invocation so the question is about the plan's own files. A criterion whose satisfiability was never checked against the tree it will run on is a guess, and the cost of the guess lands on the implementer mid-phase. This sits naturally beside this file's existing "Counts-are-hypotheses obligation", which already makes a count in a plan a claim requiring confirmation -- but note the difference and state it: that obligation is about a claim concerning the WORLD that implementation-time confirmation can settle, whereas an unsatisfiable absolute criterion cannot be repaired by any later measurement, because it was false when written.
+
+  (c) THE IMPLEMENTER'S RULE WHEN IT HAPPENS ANYWAY. Report the criterion as mis-scoped, measure and record the baseline, and close the phase against the baseline-relative reading. TWO THINGS NOT TO DO, both of which must be named explicitly because both are tempting and both are worse: do not repair unrelated pre-existing findings to drive a gate green -- that is scope creep wearing a verification costume, and it rewrites files the phase has no business touching; and do not quietly invent an exclusion that hides the whole gate, which retires the signal along with the noise. The honest move is to narrow the criterion to what the phase is responsible for and say so in the phase's own record.
+
+=== A MECHANICAL CHECK -- INVESTIGATE IN RESEARCH AND REPORT A DECISION; DO NOT ASSUME ONE IS BUILDABLE ===
+
+A lint would have to recognize an absolute-zero gate assertion inside a `Verification` field's free text AND know whether a baseline exists for that gate in the repository the plan targets. The second half is the hard part: the answer differs per repository and per gate, and a check that flags every absolute criterion would fire on the many legitimate cases where the gate genuinely is clean. DELIVERING THE PROSE PROVISION ALONE IS AN ACCEPTABLE AND POSSIBLY THE CORRECT OUTCOME: if research finds no sound discrimination, state that finding and its reason in the completion summary and build nothing. DO NOT add a new plan-format field to make a check possible -- that is a larger format change and is out of scope for this record.
+
+=== SIBLING RECORDS -- CROSS-REFERENCE, DO NOT RESTATE, DO NOT CLOSE EITHER AS A DUPLICATE ===
+
+`lean_plan_gate_collision_authoring_guidance` owns all three measured instances above and sites them in the lean extension's `context/project/lean4/patterns/plan-authoring-gate-collisions.md`. Its item 2 already states a baseline-distinguishing corollary for one specific gate's target shape, and its item 3 already states the unsatisfiable-sweep class for a Lean-specific path set. READ THAT RECORD BEFORE WRITING ANY PROSE HERE. The division of labour to preserve: that record keeps the Lean-specific facts and the worked instances; this record states the general rule in core, with a pointer each way and no duplicated sentences. If writing the general rule makes one of that record's sentences redundant, say so in the completion summary rather than editing the other record's territory, which is not in this record's `file_scope`.
+
+`plan_self_consistency_and_artifact_existence` adds two other truthfulness provisions to this same file and reaches the same reader; its own dependency chain and its stated prohibitions on re-editing originating plans apply here in the same spirit.
+
+=== DEPENDENCY EDGE, AND WHY IT IS AN EDGE RATHER THAN AN EXCLUSION ===
+
+This record declares the same `context/formats/plan-format.md` prose territory as the open record `plan_self_consistency_and_artifact_existence`, which is itself sequenced behind `plan_format_blocked_gate_and_status_ownership`. Three records adding provisions to one file's prose is an unordered overlap, and per the batching discipline in `.claude/CLAUDE.md` shared territory is serialized with an explicit edge rather than excluded. This record takes the tail of that chain. The edge carries no claim that this record needs the predecessor's content; it only prevents two writers racing into one file's prose.
+
+=== SOURCE-STORE BOUNDARY ===
+
+`.claude/**` in this repository is a gitignored, regenerated deploy artifact: a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect (`.claude/rules/source-store-deploy-boundary.md`). Resolve `source_dir` PER EXTENSION from `<project-root>/.claude-extensions.json` -- there is NO top-level `source_dir` key, so a reader expecting one will not find it. The owning extension for every path in `file_scope` is `core`; at the reading taken during this record's creation that resolves to `/home/benjamin/.config/nvim/agent-system/extensions/core`. Re-derive it rather than trusting this sentence, and if the source store is unreachable or ambiguous, REPORT THAT AND STOP rather than falling back to editing the deploy tree. Redeploy afterwards via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+
+=== WIRING ===
+
+`context/formats/plan-format.md` has an entry in core's `index-entries.json` carrying a `line_count` which must agree with the file as landed; update it, and keep the file valid JSON parseable by `jq`. Re-read the current value rather than trusting any number quoted in a sibling record, since the predecessor in this record's dependency chain edits the same file and will have moved it. `agents/planner-agent.md` is in scope for a SHORT pointer if and only if the provision needs to reach the author at generation time rather than at review time; decide that in planning and do not add a redundant restatement. No new context file is expected -- this extends a file that already exists and is already reachable -- but if one is created instead it needs its own `index-entries.json` entry plus at least one referrer, because an unreferenced guidance file is not guidance.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`. Durable anchors that MAY be cited freely in the landed prose: the field and section names (`Verification`, `**Scope Hypothesis**:`, `Files to modify`, "Counts-are-hypotheses obligation", "Reasoned Exclusions"), the script names (`check-task-references.sh`, `verify-deploy.sh`), and the flag and argument names (`--quiet`, `PATH_SCOPE`, `--only-gate`, `--skip-slow`). Things that MUST NOT appear in the landed prose: the originating task numbers, the issue entry_ids, the pre-existing occurrence count, the archived directory name, the specific declaration name and file:line from instance (ii), and the phase numbers of any originating plan. No task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`).
+
+=== ACCEPTANCE ===
+
+(1) `plan-format.md` states conditions (a), (b) and (c) as three separately checkable provisions rather than one blurred paragraph, and distinguishes the scoped form from the baseline-relative form with guidance on which to use.
+(2) The prose says why the "Counts-are-hypotheses obligation" does not already cover this -- that an unsatisfiable absolute criterion is false at authoring time and no implementation-time confirmation can repair it.
+(3) Condition (c) names both wrong moves explicitly: repairing unrelated pre-existing findings, and hiding the gate behind an invented exclusion.
+(4) The provision names the scoping facilities that already exist (`PATH_SCOPE`, `--only-gate`) rather than implying a tool gap, and both were re-confirmed to behave as cited.
+(5) No moving quantity appears as a live fact: no occurrence count, no archived directory name, no declaration name, no file:line from any originating run.
+(6) The mechanical-check question has been investigated and DECIDED, with the decision and its reason in the completion summary; no new plan-format field was added.
+(7) The lean-extension sibling record's territory was not edited, the division of labour is stated with a pointer each way, and no sentence is duplicated across the two homes.
+(8) Every edit landed in the resolved source store at the mirroring path; no file under `.claude/**` was hand-authored.
+(9) `index-entries.json`'s `line_count` for `context/formats/plan-format.md` agrees with the file as landed; the file remains valid JSON.
+(10) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean`.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the ladder-realization-theorem record (task 761) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. The originating entries are in `specs/761_ladder_realization_theorem/issues.jsonl`: `iss_1791769990070_9Nl16r` and `iss_1791770495965_TM78BN` (class `gate-baseline`) and `iss_1792364282512_jWKKvT` (class `verification-criterion`). All three instances are owned, as instances, by the lean-extension sibling record named above; the lead's approved change request asked additionally for the generic provision and for the lint question to be considered, which is what this record carries. The `PATH_SCOPE` and `--only-gate` facility measurements were taken fresh during this record's creation.
+
+=== CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION ===
+
+This record is filed in the BimodalLogic task space while its edit target resolves only under `/home/benjamin/.config/nvim/`. That mismatch is the same deliberate, previously approved condition carried by its sibling records: the record sits beside the run that measured the gaps. A migrator should treat it as a deliberate choice, not an authoring slip. No dependency edge or `file_scope` overlap gate can span the two repositories, so any coordination with records in the source-store repository's own task space is a manual read.
+
+---
+
+### 834. Confirm the blocker-research aux carrier landed, and refuse an implement re-dispatch when a plan revision is owed
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 823
+- **Parent**: Task 761
+
+**Description**: Close ONE mechanism that produced two separately-reported defect classes: the orchestrate aux chain's blocker-research carrier is written on instruction alone and never confirmed, and nothing in the dispatch-admission path refuses an implement round for a task that is owed a plan revision.
+
+THE TWO ITEMS ARE ONE RECORD BECAUSE THEY ARE ONE CHAIN, NOT MERELY ONE FILE. Item 1 breaks the carrier that the chain's plan-revision hop depends on; item 2 is the absence of any backstop that would notice. Either alone leaves the observed failure reachable: fixing item 1 without item 2 leaves every OTHER way of losing the hop unguarded, and fixing item 2 without item 1 converts a wasted implement round into a stalled task. They also share `scripts/orchestrate-cycle-plan.sh` territory, which the batching guardrail in `.claude/CLAUDE.md` names as a reason to batch rather than separate.
+
+=== THE MECHANISM, MEASURED IN THE SOURCE STORE DURING THE CREATION OF THIS RECORD -- RE-DERIVE IT RATHER THAN TRUSTING THIS ACCOUNT, WHICH IS A SNAPSHOT OF A ~2400-LINE SCRIPT ===
+
+The chain has four hops, and each is in a different file:
+
+  (1) `scripts/orchestrate-cycle-postflight.sh` records the signal: `.aux_pending[t] = {kind: "blocker-research", blocker_desc}`.
+  (2) `scripts/orchestrate-cycle-plan.sh`'s AUX CHAIN block reads `aux_pending[t]`, emits a `blocker-research` aux row (agent `fork`), checks `blocker_escalation_count[t]` against `MAX_BLOCKER_ESCALATIONS`, and sets `aux_clear_pending[t]="true"` -- THE PENDING ENTRY IS CLEARED AT EMISSION TIME, before anything confirms the fork did anything.
+  (3) `scripts/orchestrate-build-aux-dispatch.sh` builds the fork's prompt, which INSTRUCTS it to "Write compact JSON to '${TASK_DIR_ABS}/.blocker-research.json' with fields: summary (string), root_cause (string), solution_path (string)".
+  (4) A LATER cycle's AUX CHAIN block tests `[ -f "$aux_blocker_file" ] && jq empty "$aux_blocker_file"`; on success it emits the `plan-revision` row (`revision_reason=blocker`, agent `reviser-agent`), resolves the latest plan path, and sets `aux_consume_blocker_file[t]="true"` so the carrier is removed. The chain comment states that this chain hop "always produces a `plan-revision` row".
+
+THE FAILURE IS A DEAD DROP WITH NO RECEIPT. If the fork at hop (3) returns without writing the file, hop (2) has ALREADY discarded the pending entry and hop (4)'s file test fails, so NO cycle ever emits the plan-revision row. The task falls through to ordinary status-derived routing and receives another implement dispatch into the phase already known to be blocked. `MAX_BLOCKER_ESCALATIONS` is never approached, because `blocker_escalation_count[t]` advances on the signal being RE-RECORDED rather than on a round failing to produce anything -- so the loop guard that exists cannot see this shape of loop.
+
+ONE CONTRAST WORTH CARRYING INTO THE FIX, because it shows the system already knows the difference. The `plan-revision` prompt in the same `case` statement of the same file ends with: "Do this every time, unconditionally, even if you cannot tell whether an implement dispatch for this task is live this cycle", and points at `context/patterns/plan-revision-notification.md` for the sentinel's full contract. The `blocker-research` prompt carries no such insistence and no contract pointer. That asymmetry is not obviously deliberate and the research phase should settle whether it is.
+
+=== ITEM 1 -- THE CARRIER WRITE IS INSTRUCTED BUT NEVER VERIFIED ===
+
+MEASURED, in the originating run: a plan phase named `specs/{NNN}_{SLUG}/.blocker-research.json` as the artifact to CORRECT, in order to retire a stale route recommendation it was said to hold. No such file existed when the phase ran. The concurrent aux blocker-research dispatch produced no artifact, so the recommendation the plan wanted retired had no on-disk carrier, and the task was skipped as a recorded deviation.
+
+A TRAP THIS SETS FOR THE IMPLEMENTER, STATED SO IT IS NOT WALKED INTO. That path EXISTS in the originating task directory now -- it was written later in the same orchestration by a subsequent dispatch. Do NOT reproduce the defect by checking that one path, finding a file, and concluding the mechanism is sound. The observable to reproduce is a blocker-research aux round that RETURNS WITHOUT WRITING, which is a fork-behaviour condition, not a property of any particular task directory. Drive it from a test that stubs the aux dispatch rather than from live evidence.
+
+THREE REMEDY SHAPES, NONE PRE-COMMITTED; DECIDE IN RESEARCH AND RECORD THE REASON:
+
+  (a) CONFIRM-THEN-CLEAR. Do not clear `aux_pending[t]` until the carrier is confirmed present and parseable, so the next cycle re-emits. This needs a bound against unbounded re-emission, and the obvious bound -- `blocker_escalation_count[t]` -- currently increments at a different point in the flow than this remedy needs; settle where it must increment, and say what happens at the cap.
+  (b) SYNTHESIZE A MINIMAL CARRIER from the aux fork's own return payload when the fork wrote none, so hop (4) still fires with whatever the fork actually reported. This preserves the chain at the cost of a carrier whose provenance differs from the documented one; if chosen, the synthesized shape must be distinguishable from a fork-written one by anything that reads it.
+  (c) FAIL LOUD. Treat an absent carrier as a hard escalation: surface the task in `blocked[]` with a reason naming the absent path and the aux round that should have produced it, and let a human decide.
+
+WHATEVER IS CHOSEN, THE MINIMUM BAR IS AUDIBILITY. Today the absence is silent in every channel -- no stderr notice, no issue-log entry, no `blocked[]` row, no state field. A reader of the run cannot tell a chain that completed from a chain that evaporated. Any landed remedy must leave the absence detectable from the run's own output.
+
+=== ITEM 2 -- NOTHING REFUSES AN IMPLEMENT DISPATCH WHEN A PLAN REVISION IS OWED ===
+
+MEASURED THREE TIMES, across two orchestration sessions. Two dispatches resumed a phase from `[BLOCKED]` with no intervening plan revision. A third was an implement dispatch although the preceding handoff's own recorded immediate next action was a PLAN REVISION. The effect each time was an implement round entering a phase already known to be blocked and re-deriving the blocker instead of advancing.
+
+MEASURED IN THE SOURCE STORE, AND THIS IS THE LOAD-BEARING FINDING: the staleness check exists, but on the WRONG SIDE of the dispatch. The `.plan-revised.json` sentinel's `revised_at` field appears in `scripts/orchestrate-build-aux-dispatch.sh`, `context/patterns/plan-revision-notification.md`, `agents/general-implementation-agent.md` and `agents/reviser-agent.md` -- and in NO code path of `scripts/orchestrate-cycle-plan.sh`. The implementation agent compares `revised_at` against `dispatch_start_ts` AFTER it has already been dispatched; the planner that decides WHETHER to dispatch never consults the sentinel at all. An in-agent check can therefore only report the wasted round, never prevent it. That is exactly what the originating run shows: the sentinel's `revised_at` predated `dispatch_start_ts` and the round proceeded anyway.
+
+MEASURED, ON HOW A `blocked` CANDIDATE IS READMITTED -- the two engines differ and the difference matters. `scripts/orchestrate-triage-classify.sh`'s own routing table routes a DISCHARGED `blocked` candidate (all `dependencies[]` completed, no handoff blockers) by its `previous_status`, so a task whose `previous_status` was `implementing` re-enters the implement arm; `needs_human` is reserved for the non-discharged cases. The inline fallback table inside `orchestrate-cycle-plan.sh` maps `blocked` unconditionally to `needs_human`. So it is the live classifier's DISCHARGE path that readmits implement, and the fallback would not have. Any fix must be made in the live engine and the fallback kept in lockstep with it -- that file's own comments state the two tables must agree, and `tests/test-orchestrate-cycle-plan.sh` already carries a parity fixture asserting it.
+
+THE HOOK ALREADY EXISTS, PARTLY. The classifier already reads `.orchestrator-handoff.json` for a `blocked` or `partial` candidate and already extracts `blocker_count`, `continuation_ok` and `age_min`. It reads whether blockers are present and whether the continuation pointer is valid -- NOT what the handoff says the next action is.
+
+AND HERE IS THE CONSTRAINT THAT MAKES THIS A DECISION RATHER THAN AN EDIT. `context/schemas/orchestrator-handoff-schema.json` does carry a `next_action_hint` field, but its schema reads in full: `{"type": "string", "description": "Optional short hint describing the immediate next step for a resuming dispatch."}`. It is OPTIONAL and FREE TEXT, it is not in the schema's `required` list, and it is consumed by NO routing code -- its only source-store readers are `scripts/validate-handoff.sh`, `scripts/tests/test-handoff-reader-parity.sh`, `docs/architecture/handoff-schema.md` and `context/patterns/system-defect-discrimination.md`. A routing predicate CANNOT soundly key on free prose; a substring match for "revis" would be a guess dressed as a mechanism. Choose deliberately among:
+
+  (i) Give `next_action_hint` a constrained vocabulary (or add a sibling enum field) so a router can read it. This is a handoff-schema change and obliges updating the schema, `docs/architecture/handoff-schema.md`, `validate-handoff.sh` and every writer that emits a handoff -- a real cost to state before choosing it.
+  (ii) Key the predicate on CHAIN STATE instead of on handoff prose: a task with an outstanding blocker-research or plan-revision obligation is recorded in the multi-task state file, which the planner already reads. This needs no schema change and is the cheaper shape, and it composes with item 1's remedy -- note that it also DEPENDS on item 1, because today the obligation is erased at emission time.
+  (iii) Key it on the sentinel directly: a `blocked`/`partial` candidate whose `previous_status` was `implementing` is not implement-eligible unless `.plan-revised.json` exists with `revised_at >= dispatch_start_ts` of the dispatch that blocked it. This moves the EXISTING check to the right side of the dispatch and is the smallest change, but it must not deadlock a task for which no revision was ever owed.
+
+FORCING FLAGS MUST KEEP WORKING, AND THIS IS AN ACCEPTANCE CONDITION, NOT A FOOTNOTE. An explicit `/orchestrate --implement` override admits one dispatch deliberately; `/orchestrate --research|--plan|--implement` is also the documented admit-once path for a held task. The new predicate MUST NOT silently defeat an explicit override. State in the landed prose what an override does against an owed plan revision -- admit with a warning is the expected answer, but it must be stated and tested rather than left to the reader.
+
+=== SIBLING RECORD -- CROSS-REFERENCE, DO NOT RESTATE, NO DEPENDENCY EDGE ===
+
+The record `plan_self_consistency_and_artifact_existence` owns the plan-AUTHORING half of item 1's same observation: that a plan must not make a phase goal turn on a dispatch-created orchestration sidecar, and must name the durable record as the carrier instead. It cites the same originating issue entry. That record explicitly forbids itself from changing any script's behaviour; THIS record owns the script half and must not restate that record's prose. The two touch disjoint files and may land in either order, so no edge is declared between them. Read it before writing any prose here, so the two do not contradict each other on what the sanctioned carrier is.
+
+=== DEPENDENCY EDGE, AND WHY IT IS AN EDGE RATHER THAN AN EXCLUSION ===
+
+This record declares `docs/architecture/orchestrate-state-machine.md`, which is also declared by the open record `stall_reprompt_distrust_inherited_error_count` (itself behind `postflight_detail_free_blocking_partial_issue_entry`). That is an unordered overlap on one document's prose. Per the batching discipline in `.claude/CLAUDE.md`, shared territory is serialized with an explicit edge rather than excluded. The edge carries no claim that this record needs that one's content.
+
+=== SOURCE-STORE BOUNDARY ===
+
+`.claude/**` in this repository is a gitignored, regenerated deploy artifact: a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect (`.claude/rules/source-store-deploy-boundary.md`). Resolve `source_dir` PER EXTENSION from `<project-root>/.claude-extensions.json` -- there is no top-level `source_dir` key, so a reader expecting one will not find it. The owning extension for every path in `file_scope` is `core`; at the reading taken during this record's creation that resolves to `/home/benjamin/.config/nvim/agent-system/extensions/core`. Re-derive it rather than trusting this sentence, and if the source store is unreachable or ambiguous, REPORT THAT AND STOP rather than falling back to editing the deploy tree. Every measurement in this record was taken against the SOURCE-STORE copy; confirm each still holds before editing. Redeploy afterwards via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+
+=== ACCEPTANCE ===
+
+(1) FAILING-FIRST REGRESSION TESTS, in the existing suites rather than new ones: `scripts/tests/test-orchestrate-cycle-plan.sh` and `scripts/tests/test-orchestrate-build-aux-dispatch.sh` are both present and MUST be extended, not replaced. Demonstrate each new test fails against the unmodified scripts before landing the fix.
+(2) Item 1: a cycle in which the blocker-research aux round leaves no parseable carrier does not silently drop the chain, and the absence is detectable from the run's own output. The chosen remedy shape (a), (b) or (c) is recorded with its reason, and if (a), the re-emission bound and its cap behaviour are stated.
+(3) Item 2: a `blocked` candidate whose previous status was `implementing` and for which a plan revision is owed receives no implement dispatch until the revision has run. The chosen hook (i), (ii) or (iii) is recorded with its reason; if (i), every handoff writer and `validate-handoff.sh` were updated with the schema.
+(4) The live classifier and the inline fallback table in `orchestrate-cycle-plan.sh` still agree, with the existing parity fixture passing.
+(5) An explicit forcing-flag override still admits one dispatch, its behaviour against an owed revision is stated in the landed prose, and a test asserts it.
+(6) `docs/architecture/orchestrate-state-machine.md` agrees in writing with what landed; a reader of that document alone can predict both the carrier-absence case and the implement-readmission case.
+(7) Every edit landed in the resolved source store at the mirroring path; no file under `.claude/**` was hand-authored.
+(8) If any context or schema document is edited, core's `index-entries.json` `line_count` for it agrees with the file as landed and the file remains valid JSON parseable by `jq`.
+(9) The landed files carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`).
+(10) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean`.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`. Durable anchors that MAY be cited freely in the landed prose: the script and document names, the aux kinds (`blocker-research`, `plan-revision`, `drift-inspection`, `divergence-audit`), the carrier filenames (`.blocker-research.json`, `.plan-revised.json`, `.orchestrator-handoff.json`), the field names (`aux_pending`, `revised_at`, `dispatch_start_ts`, `next_action_hint`, `continuation_path`, `previous_status`, `blocker_count`), and the counter names (`blocker_escalation_count`, `MAX_BLOCKER_ESCALATIONS`). Things that MUST NOT appear in the landed prose: the originating task numbers, the issue entry_ids, the dispatch sequence numbers, and the specific Lean declaration names from the originating run -- those live in this record only. State the guidance as what the system does, never as a narration of a past run.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the ladder-realization-theorem record (task 761) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. The originating entries are in `specs/761_ladder_realization_theorem/issues.jsonl`. Item 2: `iss_1792373673886_BRjcBd`, `iss_1792406811246_IbcMbS` and `iss_1793656974938_2KUzSa` (class `orchestration defect`, hint `agent_system`), plus `iss_1792402772606_5yyZmx` (class `plan-staleness`, severity costly, the sentinel-predates-dispatch observation). Item 1: `iss_1792362555829_ZKb2Nf` (class `evidence-gap`), whose plan-authoring half is owned by the sibling record named above. The four-hop chain account, the `aux_clear_pending`-at-emission finding, the `revised_at`-absent-from-the-planner finding, the two-engine `blocked` discharge asymmetry and the `next_action_hint` free-text constraint were all measured fresh during this record's creation; the originating entries recorded only the symptoms.
+
+=== CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION ===
+
+This record is filed in the BimodalLogic task space while its edit target resolves only under `/home/benjamin/.config/nvim/`. That mismatch is the same deliberate, previously approved condition carried by its sibling records: the record sits beside the run that measured it. A migrator should treat it as a deliberate choice, not an authoring slip. No dependency edge or `file_scope` overlap gate can span the two repositories, so any coordination with records in the source-store repository's own task space is a manual read.
+
+---
 
 ### 833. Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage, with its ledger and README rows
 - **Status**: [NOT STARTED]
@@ -311,7 +494,7 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Mediu
 ---
 
 ### 828. Metalogic upward edge allowlist count drift
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
