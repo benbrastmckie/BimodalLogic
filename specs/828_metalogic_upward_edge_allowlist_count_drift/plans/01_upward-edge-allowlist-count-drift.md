@@ -206,28 +206,34 @@ surface, so no build or cross-file interface is in this edit's blast radius.
 
 ---
 
-### Phase 2: Acceptance verification and residual-count sweep [NOT STARTED]
+### Phase 2: Acceptance verification and residual-count sweep [COMPLETED]
 
 **Goal**: Prove the three stated acceptance criteria hold, and prove no live "seven upward
 lines" claim survives anywhere in the two documentation files the acceptance line names.
 
 **Tasks**:
-- [ ] Re-run `bash scripts/check-metalogic-cycles.sh`; require exit 0.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build`; require exit 0 and
+- [x] Re-run `bash scripts/check-metalogic-cycles.sh`; require exit 0. *(completed: exit 0)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build`; require exit 0 and
       `ALL CHECKS PASSED`. Record the observed PASS count rather than asserting a number: the
       task description says 47, research measured 46 PASS lines plus one
       `INFO C36b skipped (--no-build)`. Either is acceptable; a FAIL is not.
-- [ ] Re-run the residual sweep
+      *(completed: exit 0, ALL CHECKS PASSED, 46 PASS + 1 INFO C36b skipped)*
+- [x] Re-run the residual sweep
       `grep -nE 'seven|\b7\b|7-line|7 line' scripts/check-metalogic-cycles.sh scripts/measure-refactor-partitions.py docs/ARCHITECTURE.md ORGANISATION.md`
       and confirm every surviving hit is on the explicitly-forbidden list from Phase 1
       (`measure-refactor-partitions.py:24,59,79,127`; `docs/ARCHITECTURE.md:135`;
       `ORGANISATION.md:75,76,91`) and none is a live upward-set count.
-- [ ] Run the repository's full gate set (see Verification below). If a gate fails for a reason
+      *(completed: 8 surviving hits, all on the forbidden list; docs/ARCHITECTURE.md's hit shifted
+      to line 136 after the theorem-name insertion but is the same forbidden "7 inference rules"
+      text)*
+- [x] Run the repository's full gate set (see Verification below). If a gate fails for a reason
       traceable to Phase 1's edits, correct it in this phase; if it fails for a pre-existing
       reason unrelated to the four in-scope files, record that as a finding via
       `issue-record.sh` and do not expand scope to fix it.
-- [ ] If and only if the sweep surfaces a missed live count, correct it and commit; otherwise
-      this phase makes no edits and commits nothing.
+      *(completed: `bash .claude/scripts/verify-deploy.sh` PASS, 15 checks, 0 failures)*
+- [x] If and only if the sweep surfaces a missed live count, correct it and commit; otherwise
+      this phase makes no edits and commits nothing. *(completed: sweep surfaced no missed count;
+      no edits made, no commit for this phase)*
 
 **Timing**: 0.4 hours
 
