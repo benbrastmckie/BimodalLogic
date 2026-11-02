@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 1700
+set_option linter.style.longFile 1800
 
 namespace BimodalTest.Metalogic
 
@@ -1539,5 +1539,71 @@ finite-fibre or finite-width hypothesis appears, and no pin is a bound. -/
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_of_altWalkPath_of_lab_eq
+
+/-! ## Requirement (W): the countdown rigidity of the atom-valuation agreement, and the obligation
+of the depth-`0` cell-level agreement
+
+The pins below are the eight declarations the cell-level route's own question landed. Four are the
+RIGIDITY: `cntAt_eq_of_pend_eq` (the countdown is a function of the PEND PROFILE alone — the proof
+of `cntAt_eq_of_obj_eq` at the hypothesis it actually consumes, with `cntAt_eq_of_obj_eq` left
+exactly as it stands), `PendFactorsLab` and `pendFactorsLab_of_atom` (the pending bit factors
+through the atom row, which happens as soon as the labelling carries the pending bit as one of its
+atoms), and `cntAt_eq_of_lab_eq_of_pendFactorsLab` (under that condition the atom-valuation
+transport cannot move a countdown anywhere). Two are the CONSTRUCTION the route named and its
+refutation: `AtomPreservingCountMove` and `atomPreservingCountMove_refuted`. Two are the
+OBLIGATION and the fact that its hypothesis is never empty: `CellLEZeroConstOfKappaEq`, stated as a
+schema and proved nowhere, and `kappa_eq_of_shift`, by which `kappa`-collisions with `c ≠ c'` exist
+at every parameter tuple whatsoever.
+
+**What these pins certify, and what they do not.** A strict subset of the standard profile on each
+declaration, and nothing else. They certify that the ONE construction the cell-level route named is
+unavailable for every object whose pending bit is readable in the language — and the realization
+statement quantifies over every `lab`, so no such object is excluded. They do NOT certify that the
+obligation is false: `CellLEZeroConstOfKappaEq` is a definition, nothing proves or refutes it, and
+a cell is a set of TYPES over all histories through a state, so two ladder paths can realize the
+same closure type without agreeing on a single atom row. A construction that does not preserve the
+valuation pointwise is left entirely open and is stated nowhere in the tree. No pin here mentions
+`ladderSound`, `ladderLift`, `ladderRealized` or the filed `cellAt_const_of_kappa_eq`; half (i) and
+the atom-valuation agreement are untouched and both still hold at their own hypotheses; no
+certificate object is named; no finite-fibre or finite-width hypothesis appears; and no pin is a
+bound. The wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` carries the
+non-vacuity on both sides. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_of_pend_eq' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_of_pend_eq
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.PendFactorsLab' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.PendFactorsLab
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pendFactorsLab_of_atom' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pendFactorsLab_of_atom
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_of_lab_eq_of_pendFactorsLab' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_eq_of_lab_eq_of_pendFactorsLab
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.AtomPreservingCountMove' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.AtomPreservingCountMove
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.atomPreservingCountMove_refuted' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.atomPreservingCountMove_refuted
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.kappa_eq_of_shift' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.kappa_eq_of_shift
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.CellLEZeroConstOfKappaEq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.CellLEZeroConstOfKappaEq
 
 end BimodalTest.Metalogic

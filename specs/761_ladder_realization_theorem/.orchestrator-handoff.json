@@ -1,39 +1,27 @@
 {
-  "status": "partial",
-  "dispatch_seq": 23,
+  "status": "blocked",
+  "dispatch_seq": 24,
   "phases_completed": 14,
   "phases_total": 25,
-  "summary": "Phase 11.4, the atom-valuation closure agreement, landed [COMPLETED]: seven declarations in LadderAgree.lean transporting a realized closure type between two ladder paths whose object walks carry the same atom row at every position, at the pointwise-lab hypothesis the ladder model's valuation actually reads rather than half (i)'s object-walk equality. The phase's one open question was answered AFFIRMATIVELY and compiled: the box arm WIDENS, because box_mem_tpOf_transfer's only hypothesis beyond closure membership is same-model and both compared histories are histories of the same ladderModel, so Phase 11.5's fragment is STAB-FREE with box included rather than stab-free-and-box-free. Full project build green (2892 jobs, 0 errors, 0 warnings), zero sorries, axiom and vacuous counts identical to the starting commit, all six lint gates exit 0.",
-  "blockers": [],
+  "summary": "Phase 11.5 closed [BLOCKED] on the refuting branch its own task 3 provides for. The depth-0 cell-level agreement is STATED (CellLEZeroConstOfKappaEq, a Prop-valued schema, proved nowhere) and the construction route B needs is identified (AtomPreservingCountMove) and REFUTED (atomPreservingCountMove_refuted) for every object whose pending bit is readable in the language: cntAt_eq_of_pend_eq makes the countdown a function of the pend profile alone, so moving c moves the pend profile, and PendFactorsLab turns that into moving an atom row. The forty-sixth wired probe discharges ParamsOk at the periodicity fixpoint's outputs, exhibits a populated kappa-collision at c != c', and carries a ladder path through EACH of the two ladder states, so the obligation is non-vacuous on both sides while the construction is unavailable. The obligation itself is neither proved nor refuted.",
+  "blockers": [
+    "Phase 11.5 BLOCKED: route B's named construction (an atom-row-preserving ladder path through the other counter pair) is refuted as a theorem, so Phases 11.6, 11.7 and 12-18 cannot be entered along this route. What is needed is a construction that preserves the realized TYPE without preserving the valuation pointwise; no such construction is stated anywhere in the tree. Phase 11.2 remains independently enterable (its single consumer is Phase 15) and is the only unblocked phase on the board; the alternatives are a successor task for the open construction, or /revise of the route with this refutation as input."
+  ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-atom-valuation-agreement-summary.md",
-      "summary": "Phase 11.4 implementation summary: the atom-valuation closure agreement, the fragment-shape decision, and the affirmative box-widening finding."
+      "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-cell-agreement-construction-refuted-summary.md",
+      "summary": "Phase 11.5: the cell-level route's construction refuted, the depth-0 obligation stated and not proved, the forty-sixth probe wired."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.4-handoff-20261102T211915Z.md",
-      "summary": "Phase-end handoff naming Phase 11.5 as the immediate next action and the widened stab-free fragment it must consume."
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.5-handoff-20261102T215926Z.md",
+      "summary": "Phase-end handoff: what landed, what the refutation does and does not give, the three options for the next dispatch."
     },
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/07_cell-level-agreement-route.md",
-      "summary": "Phase 11.4 marked [COMPLETED] with every checklist item annotated, including the one recorded deviation."
+      "type": "probe",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
+      "summary": "Probe761C, the forty-sixth wired probe: the cell-agreement construction refuted with non-vacuity on both sides."
     }
-  ],
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/plans/07_cell-level-agreement-route.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.4-handoff-20261102T211915Z.md",
-    "specs/761_ladder_realization_theorem/summaries/05_ladder-atom-valuation-agreement-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/.return-meta.json"
-  ],
-  "next_action": "Phase 11.5, the stab-free cell agreement on kappa-classes (Depends on: 11.4, now discharged). It is the route's mathematical heart, NOT COSTABLE, and no construction for it is recorded anywhere in the tree: its first task is to STATE the obligation and IDENTIFY the construction, with a compiled separating object plus [BLOCKED] as an equally complete and reportable outcome. It warrants its own dispatch with a full context budget. Phase 11.2 remains [NOT STARTED] and independently enterable; its single consumer is Phase 15."
+  ]
 }

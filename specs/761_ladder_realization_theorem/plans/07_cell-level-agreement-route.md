@@ -2501,7 +2501,50 @@ declarations, to be confirmed by the landed count at phase close rather than tru
 
 ---
 
-### Phase 11.5: The Stab-Free Cell Agreement on `kappa`-Classes [NOT STARTED]
+### Phase 11.5: The Stab-Free Cell Agreement on `kappa`-Classes [BLOCKED]
+
+**BLOCKER** (Phase 11.5):
+- **What failed**: the CONSTRUCTION this phase's task 2 names, and only it. The obligation is
+  stated (`CellLEZeroConstOfKappaEq`, a Prop-valued schema in `LadderAgree.lean`, proved nowhere);
+  the construction it needs is stated (`AtomPreservingCountMove`: given a ladder path and a target
+  counter pair at the same object state, produce a ladder path through that pair preserving the
+  ATOM ROW at every position); and that construction is now REFUTED
+  (`atomPreservingCountMove_refuted`), for every object whose pending bit is readable in the
+  language.
+- **What was tried**: the route's own two requirements were pushed together at the point task 2
+  says they meet. The `n` half closes — `nxt_free` in the probe compiles a ladder path with any
+  target value of the next-deadline register, the same object walk and every atom row preserved.
+  The `c` half does not, and the reason is mechanical rather than a failure of proof search:
+  `cntAt_eq_of_pend_eq` (landed this phase, the proof of the already-landed `cntAt_eq_of_obj_eq`
+  at the hypothesis it actually consumes) makes the countdown a function of the PEND PROFILE
+  alone, so moving `c` means moving the pend profile; `pendFactorsLab_of_atom` shows the pending
+  bit factors through the atom row as soon as the labelling carries it as one of its atoms; and
+  `cntAt_eq_of_lab_eq_of_pendFactorsLab` then forbids any atom-row-preserving path from carrying a
+  different countdown anywhere. No goal was left open mid-proof: the two requirements are jointly
+  unsatisfiable and the refutation is a theorem, not an abandoned attempt.
+- **Why it's stuck**: the realization statement quantifies over every `lab : Q → Atom → Bool`, so
+  a labelling one of whose atoms IS the pending bit is admitted exactly as any other is, and no
+  parameter condition excludes it. Phase 11.4's atom-valuation agreement is weaker than half (i)
+  by exactly the non-injectivity of `lab`, and that is also the exact extent of the freedom it
+  buys: freedom in the OBJECT STATE at a position, never in the counter. Route B therefore has no
+  landed way to produce the second path the cell inclusion asks for.
+- **What is needed**: a construction that preserves the realized TYPE without preserving the
+  valuation pointwise. The cell-level obligation is NOT refuted and this is not a hedge: a cell is
+  a set of TYPES over all histories through a state, two ladder paths can realize the same closure
+  type without agreeing on a single atom row, and the probe carries a ladder path through EACH of
+  the two states (so the obligation is non-vacuous on both sides) while saying nothing about
+  whether the two cells coincide. Such a construction is stated nowhere in the tree; identifying
+  it is a successor task's work, and the refuted construction plus the compiled mechanism of its
+  refutation is the input that task starts from.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder; do
+  NOT narrow the obligation to one pair of histories (`Probe761S` refutes that, and it is FALSE
+  rather than weaker); do NOT reinstate `tpOf_stabFree_eq_of_splice` in any form; do NOT narrow to
+  the positionwise lift shape (`no_positionwise_lift`); do NOT derive the statement from (S) or
+  (C'); do NOT enter route A; do NOT add a parameter, a fifth parameter source, or strengthen
+  `ParamsOk`; do NOT raise `Tc`; do NOT add a trace-level `Presented`, finite-fibre or
+  finite-width hypothesis; do NOT cite a Büchi or MSO lemma in place of a proof; do NOT require
+  `cslib`.
+
 
 **Goal**: Prove the depth-`0` half of the agreement AT THE LEVEL OF THE CELL: under
 `hp : ParamsOk step pend lab φ Tc Tn P B`, for `kappa`-colliding `(c, n)` and `(c', n')`, the
@@ -2543,11 +2586,20 @@ phase's first task is therefore to STATE the obligation and IDENTIFY the constru
 contingency is `[BLOCKED]` with the goal state recorded.
 
 **Tasks**:
-- [ ] State `cellLE_zero_const_of_kappa_eq` with Phase 11.4's fragment and `hp` in the hypothesis
+- [x] State `cellLE_zero_const_of_kappa_eq` with Phase 11.4's fragment and `hp` in the hypothesis
       list, and record in its docstring which of (a)-(e) above the statement's own shape commits
       to. The statement is an equality of SETS of types over all histories, never a transport along
       a chosen pair of paths.
-- [ ] **Identify the construction, and record what it needs.** Given a ladder path `g` with
+      *(completed — landed as the Prop-valued schema `CellLEZeroConstOfKappaEq`, on the same
+      precedent as `LadderCons`/`certChain` in `LadderRealize.lean` and `SpliceTypeInvariance` in
+      `Probe761S`: this phase's own task 4 makes the PROOF a separate task, and a `sorry`-free tree
+      admits no stated-but-unproved theorem, so the schema is the only way to state an obligation
+      without proving it. The theorem name `cellLE_zero_const_of_kappa_eq` is reserved and claimed
+      by nothing. `ParamsOk` is the first hypothesis and the fragment is the stab-free one Phase
+      11.4 widened to. Docstring records the commitments: (d) and `ParamsOk`, plus (b)'s stab-free
+      fragment; NOT (a) and NOT (c) — no relabelling and no splice appears in it, and it is an
+      equality of SETS of types over all histories)*
+- [x] **Identify the construction, and record what it needs.** Given a ladder path `g` with
       `g z = ⟨(q, c, n), h⟩` and a `kappa`-collision with `(c', n')`, the inclusion needs a ladder
       path `g'` with `g' z = ⟨(q, c', n'), h'⟩` and `∀ v p, lab (objAt g' v) p = lab (objAt g v) p`;
       Phase 11.4 then gives the equal fragment at `z`, and the reverse inclusion is the same
@@ -2555,22 +2607,54 @@ contingency is `[BLOCKED]` with the goal state recorded.
       is where the work is: `cntAt_eq_of_obj_eq` ties the countdown to the pend profile, so moving
       `c` means moving the pend profile, while (a) changes object labels at a FIXED pend profile.
       The two requirements meet exactly here, and that meeting is this phase's open question.
-- [ ] **Record the finding either way, as a compiled object.** If the atom valuation can be
+      *(completed — the construction is landed as the schema `AtomPreservingCountMove`, and what it
+      needs is recorded as the two requirements it conjoins. The `n` coordinate is free, confirmed
+      by `nxt_free` on the probe's own object; the `c` coordinate is where the requirements meet,
+      and `cntAt_eq_of_pend_eq` sharpens `cntAt_eq_of_obj_eq` to the pend-profile hypothesis that
+      makes the meeting exact: moving `c` moves the pend profile, and `PendFactorsLab` is the
+      condition under which moving the pend profile moves an atom row)*
+- [x] **Record the finding either way, as a compiled object.** If the atom valuation can be
       preserved while the pend profile is moved to the one forcing `c'`, the construction closes and
       the theorem follows. If it cannot, exhibit the incompatibility as a compiled separating object
       with non-vacuity witnessed on both sides and wire it as a probe: that is a COMPLETE and
       reportable outcome, refuting route B as decisively as `Probe761S` refuted the pumping route,
       and it is the strongest possible input to a successor task. Neither outcome is to be worked
       around by any item in the prohibited list below.
+      *(completed — the REFUTING BRANCH fired. The atom valuation CANNOT be preserved while the
+      pend profile is moved, whenever the pending bit is readable in the language:
+      `atomPreservingCountMove_refuted` in the library, wired at a concrete object as the
+      forty-sixth probe
+      `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` (`Probe761C`),
+      with non-vacuity on both sides carried as conjuncts of `exists_refuting_collision`:
+      `ParamsOk` discharged at the periodicity fixpoint's own outputs, a populated
+      `kappa`-collision at `c ≠ c'` through the new `kappa_eq_of_shift`, a ladder path through EACH
+      of the two ladder states, and the closure's atom realized on each side. What is refuted is
+      the CONSTRUCTION, not the obligation — recorded in that exact form in the probe, the module
+      docstring and the axiom ledger)*
 - [ ] If the construction closes: prove `cellLE_zero_const_of_kappa_eq` and confirm `hp` is a USED
       binder — it is what keeps every `kappa`-collision inside a residue class by `(K1)`. If the
       proof appears to close without `hp`, stop and record it: the fourteenth probe's refutation
       holds for every `kappa` and every candidate `Dmax`, so a proof that does not consume the
       parameter conditions has collapsed into the refuted shape.
-- [ ] Wire the new declarations: axiom-profile pins, the module docstring's transport section, the
+      *(deviation: not applicable — the construction does NOT close, so this item's guard is false
+      and nothing is proved under it. `hp` is a hypothesis of the stated schema, where it cannot be
+      redundant because nothing consumes it yet; the used-binder check belongs to the proof this
+      phase does not land)*
+- [x] Wire the new declarations: axiom-profile pins, the module docstring's transport section, the
       generated README inventory blocks and `typst/generated/status.typ`; on the refuting branch
       only, the new probe file and its one wiring row in `scripts/check-evidence-probes.sh`. No C14
       heredoc entry and no `docs/theorem-index.md` row: this phase lands no filed Goal.
+      *(completed — eight `#print axioms` pins with their own prose section in
+      `KTypeSummaryAxiomTest.lean`; the module docstring's new
+      `## The countdown rigidity of the atom-valuation agreement, and the obligation it leaves open`
+      section plus a new `What this module does NOT hold` bullet; the probe file and its table block
+      and `WIRED` row in `scripts/check-evidence-probes.sh` (46 of 46 PASS); the three generated
+      README inventory blocks rewritten by `check-module-invariants.sh --emit-inventory`;
+      `status.typ` resynced by `typst-status-counts.sh`. No theorem-index row and no C14 entry, as
+      directed. Two file-scope additions this item did not anticipate, both continuing the in-repo
+      pattern: `set_option linter.style.longFile 2400` in `LadderAgree.lean` (2252 lines, past the
+      2100 the prior phase set) and `1800` in `KTypeSummaryAxiomTest.lean` (1609 lines, past the
+      1700 the prior phase set))*
 
 **Prohibited workarounds**: do NOT narrow the statement to one pair of histories — that is the
 path-level claim `Probe761S` refuted, and it is a FALSE statement rather than a weaker one; do NOT

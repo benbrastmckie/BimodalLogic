@@ -1652,6 +1652,83 @@ EVIDENCE="specs/evidence"
 #                                                           | on all twenty-one printed theorems. No
 #                                                           | `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# seam-gluing-ray-product/ladder-cell-agreement-refutation  | THE CELL-AGREEMENT CONSTRUCTION
+#                                                           | REFUTATION: the ONE construction the
+#                                                           | cell-level route to the ladder's
+#                                                           | agreement on `kappa`-classes names is
+#                                                           | REFUTED. The construction
+#                                                           | (`AtomPreservingCountMove`): replace a
+#                                                           | ladder path, at a chosen position, by
+#                                                           | one through the same object state with
+#                                                           | any admissible counter pair there,
+#                                                           | preserving the ATOM ROW at every
+#                                                           | position -- which is the hypothesis
+#                                                           | `tpOf_stabFree_eq_of_lab_eq`, the only
+#                                                           | landed way to make two ladder paths
+#                                                           | realize the same stab-free type,
+#                                                           | carries. Mechanism, compiled in the
+#                                                           | library: `cntAt_eq_of_pend_eq` makes
+#                                                           | the countdown a function of the PEND
+#                                                           | PROFILE alone, so moving `c` means
+#                                                           | moving the pend profile; and
+#                                                           | `PendFactorsLab` (via
+#                                                           | `pendFactorsLab_of_atom`) turns that
+#                                                           | into moving an atom row as soon as the
+#                                                           | labelling carries the pending bit as
+#                                                           | one of its atoms -- which the
+#                                                           | realization statement, quantifying
+#                                                           | over EVERY `lab`, does not exclude. So
+#                                                           | the construction's two requirements are
+#                                                           | jointly unsatisfiable
+#                                                           | (`atomPreservingCountMove_refutedC`).
+#                                                           | Two states (one pending, one idle),
+#                                                           | step complete, the pending bit carried
+#                                                           | as the atom `p`; seriality DISCHARGED
+#                                                           | (`fwdC`, `bwdC`); the walk pending at
+#                                                           | every PAST position (the forward-only
+#                                                           | liveness regime of
+#                                                           | `ladder-liveness-forward-only`), which
+#                                                           | leaves the next-deadline register free
+#                                                           | of every pin. NON-VACUITY ON BOTH
+#                                                           | SIDES, carried as conjuncts of
+#                                                           | `exists_refuting_collision`: `ParamsOk`
+#                                                           | discharged at the periodicity
+#                                                           | fixpoint's own outputs (`paramsOkC`),
+#                                                           | a POPULATED `kappa`-collision with
+#                                                           | `c ≠ c'` (`kappa_collisionC`, through
+#                                                           | the library's `kappa_eq_of_shift`), a
+#                                                           | ladder path through EACH of the two
+#                                                           | ladder states, and the closure's atom
+#                                                           | realized on each side
+#                                                           | (`mem_cell_of_gC`). The `n` HALF of the
+#                                                           | construction CLOSES (`nxt_free`), so
+#                                                           | the obstruction is confined to the `c`
+#                                                           | coordinate by construction rather than
+#                                                           | by silence. WHAT IS NOT SETTLED: the
+#                                                           | obligation `CellLEZeroConstOfKappaEq`
+#                                                           | itself is NOT refuted -- a cell is a
+#                                                           | set of TYPES over all histories, and
+#                                                           | two paths can realize the same closure
+#                                                           | type without agreeing on a single atom
+#                                                           | row, so a construction that does not
+#                                                           | preserve the valuation pointwise is
+#                                                           | left entirely open and is stated
+#                                                           | nowhere in the tree. Nothing about
+#                                                           | `cellAt_const_of_kappa_eq`,
+#                                                           | `ladderSound`, `ladderLift` or
+#                                                           | `ladderRealized`; the PRESENTATION is
+#                                                           | untouched; half (i) and the
+#                                                           | atom-valuation agreement are untouched
+#                                                           | and both still hold at their own
+#                                                           | hypotheses. No bound, every quantity a
+#                                                           | count; no device-discrimination claim.
+#                                                           | Axioms: `[propext]` on
+#                                                           | `pendFactorsLabC`, `fwdC` and `bwdC`,
+#                                                           | and `[propext, Quot.sound]` or
+#                                                           | `[propext, Classical.choice,
+#                                                           | Quot.sound]` on the other fourteen
+#                                                           | printed theorems. No `sorryAx`, no
+#                                                           | custom axiom, no `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1697,6 +1774,7 @@ WIRED=(
   "seam-gluing-ray-product/counter-lift-gates"
   "seam-gluing-ray-product/ladder-unconstrained-parameter-refutation"
   "seam-gluing-ray-product/ladder-splice-type-refutation"
+  "seam-gluing-ray-product/ladder-cell-agreement-refutation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

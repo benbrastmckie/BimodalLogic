@@ -186,11 +186,43 @@ refutation to a cell-level obstruction: a cell is the set of types realized by A
 through a state, and the refutation compares two particular histories, so it decides nothing
 about the others.
 
+## The countdown rigidity of the atom-valuation agreement, and the obligation it leaves open
+
+The atom-valuation agreement answers how two ladder paths can realize the same stab-free type. The
+cell-level route needs more than that: it needs the second path to run through a ladder state whose
+COUNTER PAIR differs. That is `AtomPreservingCountMove`, the construction the route names, and this
+layer compiles how far it can reach.
+
+`cntAt_eq_of_pend_eq` sharpens `cntAt_eq_of_obj_eq` to the hypothesis its own proof consumes: the
+countdown is a function of the PEND PROFILE alone, so a replacement that moves a countdown must
+move the pend profile, whether or not it moves the walk. `PendFactorsLab` names the condition under
+which moving the pend profile means moving an atom row — that the pending bit is recoverable from
+the atom row — and `pendFactorsLab_of_atom` shows it holds as soon as the labelling carries the
+pending bit as one of its atoms, which the realization statement, quantifying over every
+`lab : Q → Atom → Bool`, does not exclude. Under that condition the construction's two requirements
+are jointly unsatisfiable (`cntAt_eq_of_lab_eq_of_pendFactorsLab`,
+`atomPreservingCountMove_refuted`). The wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` exhibits such an
+object with the parameter conditions discharged at the periodicity fixpoint's own outputs, a
+populated `kappa`-collision at `c ≠ c'` (through `kappa_eq_of_shift`), and a ladder path through
+EACH of the two ladder states — so the obligation is non-vacuous on both sides while the
+construction is unavailable. The `n` half of the construction is free, by
+`exists_ladderPath_pair_nxtAt_ne`; the obstruction is confined to the `c` coordinate.
+
+`CellLEZeroConstOfKappaEq` is the obligation itself, stated as a schema and proved NOWHERE. It is
+not refuted either, and the distinction is the whole content of this layer: a cell is a set of
+TYPES over all histories through a state, and two ladder paths can realize the same closure type
+without agreeing on a single atom row, so a construction that does not preserve the valuation
+pointwise is left entirely open. No such construction is stated anywhere in the tree and none is
+invented here.
+
 ## What this module does NOT hold
 
 * **THE AGREEMENT ITSELF IS NOT LANDED.** The statement this module exists for — that the cell at
   a pending position is constant on the classes of the counter quotient, under the parameter
-  conditions — is NOT proved here and is not assumed anywhere. What landed is the rigid-anchor
+  conditions — is NOT proved here and is not assumed anywhere. Its depth-`0` cell-level half is
+  STATED as the schema `CellLEZeroConstOfKappaEq` and proved nowhere; a schema is not a theorem and
+  no result in this module or elsewhere discharges it. What landed is the rigid-anchor
   layer above, which any proof of it has to respect, and the cell-level reading of the `⊡` bit.
   Two obstructions are on the record for it, each a consequence of what IS compiled here. The
   first obstruction of the earlier record — that by `cntAt_eq_of_obj_eq` no replacement can keep
@@ -245,6 +277,11 @@ about the others.
   import is the one the module's own route declares and nothing in the results above reads it.
 * **No positionwise completeness clause.** Nothing here lifts a class-level chain positionwise;
   that statement shape is refuted for every finite counter quotient.
+* **NO ATOM-PRESERVING COUNTER MOVE — the construction the cell-level route named is REFUTED, not
+  merely absent.** `atomPreservingCountMove_refuted` compiles that no replacement preserving the
+  atom row at every position can move a countdown, for every object whose pending bit is readable
+  in the language. What is refuted is the CONSTRUCTION and not the obligation: see the section
+  above for the difference, which is load-bearing and not a hedge.
 * **No finite-fibre and no finite-width hypothesis.** `[Finite Q]` is on the OBJECT only, and the
   admissible carrier is infinite.
 * **No decision procedure and no bound.** Every quantity named is a count.
@@ -252,9 +289,9 @@ about the others.
 
 -- The module crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): the rigid-anchor
 -- layer, the replacement layer, the alternative-history construction, the truth-transport
--- half (i) and the atom-valuation agreement are one argument about ladder paths and stay in one
--- module.
-set_option linter.style.longFile 2100
+-- half (i), the atom-valuation agreement and the countdown rigidity of that agreement are one
+-- argument about ladder paths and stay in one module.
+set_option linter.style.longFile 2400
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -646,6 +683,45 @@ theorem cntAt_eq_of_obj_eq (g g' : ℤ → LadderState Q pend)
       simp at h2
   · rw [Bool.not_eq_true] at hu
     have hu' : pend (objAt g' u) = false := by rw [← hobj u]; exact hu
+    rw [cntAt_eq_zero_of_idle g hg u hu, cntAt_eq_zero_of_idle g' hg' u hu']
+/-- **THE COUNTDOWN IS A FUNCTION OF THE PEND PROFILE ALONE.** The sharpening of
+`cntAt_eq_of_obj_eq` the cell-level route needs: two ladder paths whose objects agree on the
+PENDING BIT at every position carry the same countdown at every position, whether or not the
+object states themselves agree. The proof of `cntAt_eq_of_obj_eq` already reads its hypothesis
+only through `pend`, and this is that proof at the hypothesis it actually consumes;
+`cntAt_eq_of_obj_eq` is left exactly as it stands.
+
+What this buys, and what it costs. It buys the sharpest form of the rigidity: a replacement that
+moves a countdown must move the PEND PROFILE, not merely the walk. It costs the route the one
+freedom the alternative-history construction supplies — `altWalkPath` relabels the walk at a FIXED
+pend profile (`altWalkPath_isLadderPath` takes `hpend` as a hypothesis), so by this lemma every
+alternative history carries the ORIGINAL countdown everywhere, and no amount of relabelling can
+reach a ladder state whose countdown differs.
+
+Paper: — (a statement about this frame scheme's counters, with no literature counterpart) -/
+theorem cntAt_eq_of_pend_eq (g g' : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (hg' : IsLadderPath step pend g')
+    (hpend : ∀ v : ℤ, pend (objAt g v) = pend (objAt g' v)) (u : ℤ) :
+    cntAt g u = cntAt g' u := by
+  by_cases hu : pend (objAt g u) = true
+  · have hu' : pend (objAt g' u) = true := by rw [← hpend u]; exact hu
+    by_contra hne
+    rcases Nat.lt_or_ge (cntAt g u) (cntAt g' u) with hlt | hge
+    · have h1 := not_pend_of_count g hg u hu
+      have h2 := (cntAt_sub_of_pend g' hg' u hu' (cntAt g u + 1) (by omega)).1
+      rw [show u + ((cntAt g u + 1 : ℕ) : ℤ) = u + (cntAt g u : ℤ) + 1 by push_cast; ring] at h2
+      rw [hpend] at h1
+      rw [h1] at h2
+      simp at h2
+    · have hlt' : cntAt g' u < cntAt g u := by omega
+      have h1 := not_pend_of_count g' hg' u hu'
+      have h2 := (cntAt_sub_of_pend g hg u hu (cntAt g' u + 1) (by omega)).1
+      rw [show u + ((cntAt g' u + 1 : ℕ) : ℤ) = u + (cntAt g' u : ℤ) + 1 by push_cast; ring] at h2
+      rw [hpend] at h2
+      rw [h1] at h2
+      simp at h2
+  · rw [Bool.not_eq_true] at hu
+    have hu' : pend (objAt g' u) = false := by rw [← hpend u]; exact hu
     rw [cntAt_eq_zero_of_idle g hg u hu, cntAt_eq_zero_of_idle g' hg' u hu']
 
 /-! ### The window the next-deadline register imposes, and the two regimes of a pending position
@@ -1991,5 +2067,175 @@ theorem tpOf_eq_of_altWalkPath_of_lab_eq
   exact hlab v p
 
 end Hist
+
+/-! ## The construction the cell-level route names, and the rigidity it meets
+
+The cell-level agreement asks, for a `kappa`-collision between `(c, n)` and `(c', n')`, that the
+stab-free part of the cell at `⟨(q, c, n), _⟩` equal the stab-free part of the cell at
+`⟨(q, c', n'), _⟩`. Read through `mem_cellAt_ladder_iff`, the inclusion asks for a LADDER PATH
+through the second state realizing the type a given path through the first realizes; and the one
+landed way to make two ladder paths realize the same stab-free type is `tpOf_stabFree_eq_of_lab_eq`,
+whose hypothesis is pointwise agreement of the ATOM ROW. So the construction the route names is:
+
+  given a ladder path `g` and a target counter pair `(c', n')`, produce a ladder path `g'` with
+  `objAt g' z = objAt g z`, `cntAt g' z = c'`, `nxtAt g' z = n'`, and the SAME atom row as `g` at
+  every position.
+
+That is `AtomPreservingCountMove` below. Its `n` half is free: the next-deadline register only has
+to `Drift`, and `exists_ladderPath_pair_nxtAt_ne` already compiles two ladder paths sharing an
+object walk and differing in `n` at every position. Its `c` half is where the two requirements
+meet, and they meet BADLY. `cntAt_eq_of_pend_eq` says the countdown is a function of the pend
+profile alone, so moving `c` means moving the pend profile; and `PendFactorsLab` below names the
+condition under which moving the pend profile means moving some atom row — namely that the pending
+bit is recoverable from the atom row, which `pendFactorsLab_of_atom` shows happens as soon as the
+labelling carries the pending bit as one of its atoms. Under that condition the two requirements
+are jointly unsatisfiable: `atomPreservingCountMove_refuted`.
+
+**What this refutes and what it does not.** It refutes the CONSTRUCTION, for every object whose
+pending bit is readable in the language — and the realization statement quantifies over every
+labelling, so such objects are not excluded by anything. It does NOT refute
+`CellLEZeroConstOfKappaEq`: a cell is a set of TYPES, and two ladder paths can realize the same
+closure type without agreeing on a single atom row, so the obligation can be met by a construction
+that does not preserve the valuation pointwise. No such construction is stated anywhere in the
+tree, and none is invented here. -/
+
+section Rigid
+
+variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **The pending bit factors through the atom row.** Two object states with the same atom row
+carry the same pending bit. This is a condition on the PAIR `(pend, lab)` and on nothing else, and
+it is what turns `cntAt_eq_of_pend_eq`'s pend-profile rigidity into a rigidity of the atom-valuation
+transport itself.
+
+Paper: — (a condition on this frame scheme's labelling, with no literature counterpart) -/
+def PendFactorsLab (pend : Q → Bool) (lab : Q → Atom → Bool) : Prop :=
+  ∀ q q' : Q, (∀ p : Atom, lab q p = lab q' p) → pend q = pend q'
+
+/-- **The condition holds as soon as the labelling carries the pending bit as one of its atoms.**
+There is nothing exotic about such a labelling: the realization statement quantifies over every
+`lab : Q → Atom → Bool`, so a labelling one of whose atoms IS the pending bit is admitted by the
+statement exactly as any other is. -/
+theorem pendFactorsLab_of_atom (lab : Q → Atom → Bool) (p : Atom)
+    (h : ∀ q : Q, pend q = lab q p) : PendFactorsLab pend lab :=
+  fun q q' hrow => by rw [h q, h q', hrow p]
+
+/-- **THE ATOM-VALUATION TRANSPORT IS COUNTDOWN-RIGID.** When the pending bit factors through the
+atom row, two ladder paths with the same atom row at every position carry the same countdown at
+every position. The atom-valuation agreement of the preceding section therefore reaches only ladder
+states whose countdown is already the original one, and the freedom it buys over half (i) — which
+is real, `altWalkPath_not_vacuous` — is freedom in the OBJECT STATE at a position, never in the
+counter. -/
+theorem cntAt_eq_of_lab_eq_of_pendFactorsLab (lab : Q → Atom → Bool)
+    (hfac : PendFactorsLab pend lab)
+    (g g' : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (hg' : IsLadderPath step pend g')
+    (hlab : ∀ (v : ℤ) (p : Atom), lab (objAt g v) p = lab (objAt g' v) p) (u : ℤ) :
+    cntAt g u = cntAt g' u :=
+  cntAt_eq_of_pend_eq g g' hg hg' (fun v => hfac _ _ (fun p => hlab v p)) u
+
+/-- **THE CONSTRUCTION THE CELL-LEVEL ROUTE NAMES**, as a schema so that its refutation is a
+theorem about a named object rather than a remark. Every ladder path can be replaced, at a chosen
+position, by one through the same object state with ANY admissible counter pair there, preserving
+the atom row at every position. Nothing is assumed about how the replacement is built. -/
+def AtomPreservingCountMove (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) : Prop :=
+  ∀ (g : ℤ → LadderState Q pend) (z : ℤ) (c' n' : ℕ), IsLadderPath step pend g →
+    c' ∈ Adm pend (objAt g z) →
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z = c' ∧ nxtAt g' z = n' ∧
+      ∀ (v : ℤ) (p : Atom), lab (objAt g' v) p = lab (objAt g v) p
+
+/-- **THE CONSTRUCTION IS REFUTED whenever the pending bit factors through the atom row**, at
+every ladder path and every admissible target countdown that differs from the path's own. The
+`c` coordinate is the whole of the obstruction: the hypothesis names a target countdown `c'`
+different from `cntAt g z`, and the conclusion of the schema would hand back a path whose atom row
+agrees with `g`'s everywhere and whose countdown at `z` is `c'`, which
+`cntAt_eq_of_lab_eq_of_pendFactorsLab` forbids. -/
+theorem atomPreservingCountMove_refuted (lab : Q → Atom → Bool)
+    (hfac : PendFactorsLab pend lab)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ) (c' : ℕ)
+    (hadm : c' ∈ Adm pend (objAt g z)) (hne : cntAt g z ≠ c') :
+    ¬ AtomPreservingCountMove step pend lab := by
+  intro hmove
+  obtain ⟨g', hg', _, hc, _, hlab⟩ := hmove g z c' 0 hg hadm
+  exact hne (((cntAt_eq_of_lab_eq_of_pendFactorsLab lab hfac g' g hg' hg hlab z).symm.trans hc))
+
+end Rigid
+
+/-! ## The obligation of the cell-level agreement, stated and not proved
+
+The deliverable the route names is `cellLE_zero_const_of_kappa_eq`: the depth-`0` half of the
+agreement, at the level of the CELL. It is stated here as the schema below and it is NOT proved;
+the theorem name is reserved for its proof and is claimed by nothing in this module.
+
+**Which of the route's landed inputs the statement's own shape commits to.** It commits to (d), the
+collision readings of `kappa` (`kappa_eq_components`, `eq_or_both_ge_of_min_eq`,
+`clipIdx_regime_of_eq`), which is what the hypothesis `kappa … (c, n) = kappa … (c', n')` is read
+through, and to the parameter conditions `ParamsOk`, without which the statement is FALSE
+(`ladder-unconstrained-parameter-refutation.lean`). It commits to the stab-free fragment of
+(b) — the closure carrying no `⊡` letter is the hypothesis, exactly as `tpOf_stabFree_eq_of_lab_eq`
+carries it — and so is the depth-`0` statement rather than the whole agreement. It does NOT commit
+to (a) or to (c): no relabelling and no splice appears in it, and it is an equality of SETS of
+types over ALL histories through the two states, never a transport along a chosen pair of paths.
+That is what keeps it clear of `Probe761S`, which separates two particular histories
+(`AltHistory.chiS_in_cell_at_original_state` compiles that the separating formula does not separate
+the CELLS at the refutation's own witness position), and clear of `no_positionwise_lift`, which
+refutes the positionwise lift shape.
+
+**The construction is the open part, and it is open in a specific way.** The one construction the
+route named is refuted above for every object whose pending bit is readable in the language; the
+wired probe `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`
+exhibits such an object with the parameter conditions discharged at the periodicity fixpoint's own
+outputs, a populated collision at `c ≠ c'`, and a ladder path through EACH of the two states — so
+the obligation is non-vacuous on both sides while the construction is unavailable. What is left
+open is a construction that preserves the realized TYPE without preserving the valuation
+pointwise. -/
+
+section Obligation
+
+variable {Q : Type} [Fintype Q] [Nonempty Q]
+
+/-- **The collision family is populated, uniformly in the parameters.** Shifting both counters by
+a common multiple of `P + 1` leaves every one of `kappa`'s five coordinates alone, once both
+counters are at or above their own thresholds: the two clipped coordinates are pinned at the
+threshold, the two residues are unmoved by a multiple of the modulus, and the gap is unmoved by a
+COMMON shift. So `kappa`-collisions with `c ≠ c'` exist at every parameter tuple whatsoever, and
+the agreement's hypothesis is never vacuous. -/
+theorem kappa_eq_of_shift (Tc Tn P B c n m : ℕ) (hc : Tc ≤ c) (hn : Tn ≤ n) :
+    kappa Tc Tn P B (c + m * (P + 1), n + m * (P + 1)) = kappa Tc Tn P B (c, n) := by
+  have hcm : (c + m * (P + 1)) % (P + 1) = c % (P + 1) := by
+    simp [Nat.add_mul_mod_self_right]
+  have hnm : (n + m * (P + 1)) % (P + 1) = n % (P + 1) := by
+    simp [Nat.add_mul_mod_self_right]
+  have hclip : clipIdx B (c + m * (P + 1)) (n + m * (P + 1)) = clipIdx B c n := by
+    unfold clipIdx; split <;> split <;> omega
+  simp only [kappa, Prod.mk.injEq, Fin.mk.injEq]
+  refine ⟨by omega, hcm, by omega, hnm, hclip⟩
+
+/-- **THE OBLIGATION OF THE DEPTH-`0` CELL-LEVEL AGREEMENT**, stated as a schema and proved
+nowhere. Under the parameter conditions, for a `kappa`-collision between two admissible counter
+pairs at the same object state, and for a closure carrying no `⊡` letter, the cells of the ladder
+model at the two ladder states are EQUAL. The `ℤ` component of the world state is invisible to
+`cellAt` and is written all the same, as the record requires.
+
+This is the statement `cellLE_zero_const_of_kappa_eq` would carry. It is a definition and not a
+theorem precisely because the construction it needs is not identified: see the section docstring
+above for what is refuted, what is open, and why the two are different. -/
+def CellLEZeroConstOfKappaEq (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
+  ParamsOk step pend lab φ Tc Tn P B →
+    (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) →
+    ∀ (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q) (z : ℤ),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+      cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+        = cellAt (ladderModel step pend fwd bwd lab) φ
+            ((z, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+
+end Obligation
+
 
 end FormalSystem.Metalogic.Decidability.RaySummary
