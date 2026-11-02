@@ -1388,4 +1388,79 @@ finite-width hypothesis appears, and no pin is a complexity bound. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_pair_nxtAt_ne
 
+/-! ## Requirement (W): the alternative-history construction
+(`RaySummary/LadderAgree.lean`)
+
+Ten further pins, one per declaration of the module's alternative-history layer. The
+CONSTRUCTION (`altWalkPath`) and its three accessor readings (`objAt_altWalkPath`,
+`cntAt_altWalkPath`, `nxtAt_altWalkPath`): a walk agreeing with a ladder path's PEND PROFILE at
+every position carries that path's `cntAt` and `nxtAt` verbatim, the admissibility side condition
+transporting through the pend equality alone. Its LADDER-PATH property
+(`altWalkPath_isLadderPath`): the `step` clause is the hypothesis and the other three clauses of
+`Rlad` transfer with the original's own counters, because each of them reads the object only
+through `pend`. Its POSITIONWISE STATE IDENTITY (`altWalkPath_eq_of_objAt_eq`): at every position
+the relabelling leaves alone the alternative path is at the IDENTICAL ladder state, not merely a
+class-equivalent one, with no finiteness in the statement. The CELL-LEVEL COROLLARY
+(`mem_cellAt_of_altWalkPath`): the cell at a ladder state contains the type realized by every
+pend-profile-preserving relabelling of every path through it. And NON-VACUITY
+(`altPend_altW'`, `exists_altLadderPath`, `altWalkPath_not_vacuous`): a three-state object, a
+ladder path with a real pending region, a relabelling that moves one PENDING position, and the
+compiled fact that the alternative path differs from the original there — so the corollary is not
+a restatement of `mem_cellAt_ladder_iff`.
+
+**What these pins certify, and what they do not.** The standard profile or a strict subset of it
+on each declaration, and nothing else. They certify a construction that ENLARGES a cell, not one
+that preserves a type: nothing here says the alternative history realizes the SAME type as the
+original, and in general it does not. These pins are therefore NOT a repair of half (ii), which
+is refuted rather than open, and they are not a conditional, positionwise-narrowed or
+raised-`Tc` restatement of it. The agreement of class-equivalent cells remains unlanded. No
+certificate object and no certificate-side periodicity identifier is named anywhere in the
+construction, no finite-fibre or finite-width hypothesis appears, and no pin is a bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.altWalkPath' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.altWalkPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.objAt_altWalkPath' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.objAt_altWalkPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cntAt_altWalkPath' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cntAt_altWalkPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_altWalkPath' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_altWalkPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.altWalkPath_isLadderPath' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.altWalkPath_isLadderPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.altWalkPath_eq_of_objAt_eq' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.altWalkPath_eq_of_objAt_eq
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.altPend_altW'' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.altPend_altW'
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_altLadderPath' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_altLadderPath
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.altWalkPath_not_vacuous' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.altWalkPath_not_vacuous
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.mem_cellAt_of_altWalkPath' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.mem_cellAt_of_altWalkPath
+
 end BimodalTest.Metalogic

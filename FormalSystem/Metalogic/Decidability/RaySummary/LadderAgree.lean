@@ -120,6 +120,34 @@ induction's step needs the transport for the letters of depth at most `d` while 
 depth `d + 1`. The stab-free statement is the instance `L := fun _ => False`
 (`tpOf_stabFree_eq_of_objAt_eq`).
 
+## The alternative-history freedom, and what it does and does not give
+
+Half (ii) is refuted: the fixed surgery chosen to preserve ADMISSIBILITY is type-blind, so no
+statement here transports a realized type across a change of the object walk. The
+alternative-history construction (`altWalkPath`) moves in the opposite direction and is untouched
+by that refutation, because it asserts no type transport at all. It holds BOTH counters fixed and
+relabels the WALK: a walk agreeing with the original's PEND PROFILE at every position carries the
+original path's `cntAt` and `nxtAt` verbatim — every clause of `Rlad` but the `step` clause reads
+the object only through `pend` — so only the `step` clause has to be rechecked
+(`altWalkPath_isLadderPath`), and at every position the relabelling leaves alone the alternative
+path is at the IDENTICAL ladder state, not merely a class-equivalent one
+(`altWalkPath_eq_of_objAt_eq`, stated positionwise with no finiteness anywhere).
+
+What it gives is that a ladder state has MORE histories through it than its own path's, and hence
+that the cell at that state contains the types those histories realize
+(`mem_cellAt_of_altWalkPath`). The relabellings are not all the identity — `altWalkPath_not_vacuous`
+exhibits a ladder path, a pend-profile-preserving relabelling and a PENDING position at which the
+two paths differ — so that corollary is not a restatement of `mem_cellAt_ladder_iff`.
+
+What it does NOT give is any type-level comparison. No claim is made that the alternative history
+realizes the same type as the original; in general it does not, and the point of the construction
+is that it ENLARGES the cell rather than preserving a type. In particular it is not a repair of
+half (ii), it is not a conditional, narrowed or raised-`Tc` restatement of it, and it supplies no
+step of an induction over a closure. What it removes is the inference from the splice-type
+refutation to a cell-level obstruction: a cell is the set of types realized by ALL histories
+through a state, and the refutation compares two particular histories, so it decides nothing
+about the others.
+
 ## What this module does NOT hold
 
 * **THE AGREEMENT ITSELF IS NOT LANDED.** The statement this module exists for — that the cell at
@@ -183,6 +211,11 @@ depth `d + 1`. The stab-free statement is the instance `L := fun _ => False`
   admissible carrier is infinite.
 * **No decision procedure and no bound.** Every quantity named is a count.
 -/
+
+-- The module crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): the rigid-anchor
+-- layer, the replacement layer, the alternative-history construction and the truth-transport
+-- half (i) are one argument about ladder paths and stay in one module.
+set_option linter.style.longFile 1800
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1117,7 +1150,195 @@ theorem exists_spliced_ladderPath_of_pend_past
 
 end Splice
 
+/-! ### The alternative history: a pend-profile-preserving relabelling of the walk
+
+The replacement layer above moves the COUNTDOWN, which forces the walk to move with it
+(`cntAt_eq_of_obj_eq`) and makes the realized type move too — that is what the splice refutation
+says. The construction below moves in the opposite direction: it moves the WALK while holding
+BOTH counters fixed. Every clause of `Rlad` except the `step` clause reads the object only
+through `pend`, so a walk agreeing with the original's PEND PROFILE at every position carries the
+original path's `cntAt` AND `nxtAt` verbatim, and only the `step` clause has to be rechecked.
+
+The payoff is not another replacement: it is that a ladder state has MORE histories through it
+than its own path's. At every position the relabelling leaves alone, the alternative path is at
+the IDENTICAL ladder state — not merely a class-equivalent one — so the cell at that state
+contains the type the alternative history realizes. That is strictly more than the cell's own
+path gives, and it is the freedom the pumping route had no analogue of.
+
+Nothing here is a type-transport statement. No claim is made that the alternative history
+realizes the SAME type as the original — in general it does not, and that is the point: the
+construction enlarges the cell rather than preserving a type. -/
+
+/-- **The alternative path**: the original path's two counters carried on a different object
+walk. The admissibility side condition transports through the pend equality alone — the
+hypothesis `hpend` is exactly what the carrier's `Adm` clause reads. -/
+def altWalkPath (g : ℤ → LadderState Q pend) (w' : ℤ → Q)
+    (hpend : ∀ v, pend (w' v) = pend (objAt g v)) (v : ℤ) : LadderState Q pend :=
+  ⟨(w' v, cntAt g v, nxtAt g v), by
+    intro hfalse
+    exact (g v).2 ((hpend v).symm.trans hfalse)⟩
+
+/-- The object component of the alternative path is the new walk. -/
+theorem objAt_altWalkPath (g : ℤ → LadderState Q pend) (w' : ℤ → Q)
+    (hpend : ∀ v, pend (w' v) = pend (objAt g v)) (v : ℤ) :
+    objAt (altWalkPath g w' hpend) v = w' v := rfl
+
+/-- The current-deadline component of the alternative path is the ORIGINAL's, verbatim. -/
+theorem cntAt_altWalkPath (g : ℤ → LadderState Q pend) (w' : ℤ → Q)
+    (hpend : ∀ v, pend (w' v) = pend (objAt g v)) (v : ℤ) :
+    cntAt (altWalkPath g w' hpend) v = cntAt g v := rfl
+
+/-- The next-deadline component of the alternative path is the ORIGINAL's, verbatim. -/
+theorem nxtAt_altWalkPath (g : ℤ → LadderState Q pend) (w' : ℤ → Q)
+    (hpend : ∀ v, pend (w' v) = pend (objAt g v)) (v : ℤ) :
+    nxtAt (altWalkPath g w' hpend) v = nxtAt g v := rfl
+
+/-- **The alternative walk IS a ladder path**, with the original's counters. The `step` clause is
+the hypothesis `hstep`; the idle-zero clause, `Drift` and `Count` all transfer through the pend
+equality with the original's own `cntAt` and `nxtAt`. No splice, no parameter, no divisibility
+and no `ParamsOk` enters. -/
+theorem altWalkPath_isLadderPath (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (w' : ℤ → Q)
+    (hpend : ∀ v, pend (w' v) = pend (objAt g v))
+    (hstep : ∀ v, step (w' v) (w' (v + 1)) = true) :
+    IsLadderPath step pend (altWalkPath g w' hpend) := by
+  intro u
+  obtain ⟨-, h2, h3, h4⟩ := hg u
+  refine ⟨hstep u, ?_, h3, ?_⟩
+  · intro hfalse
+    exact h2 ((hpend u).symm.trans hfalse)
+  · change Count (pend (w' u)) (pend (w' (u + 1))) (cntAt g u) (nxtAt g u) (cntAt g (u + 1))
+    rw [hpend u, hpend (u + 1)]
+    exact h4
+
+/-- **And it passes through the ORIGINAL state** at every position the relabelling leaves alone:
+the IDENTICAL ladder state, not merely a class-equivalent one, because all three components
+agree there. Stated POSITIONWISE on the hypothesis `w' v = objAt g v` — no finiteness, no
+"off a finite set" and no cardinality side condition enters the statement. -/
+theorem altWalkPath_eq_of_objAt_eq (g : ℤ → LadderState Q pend) (w' : ℤ → Q)
+    (hpend : ∀ v, pend (w' v) = pend (objAt g v)) (v : ℤ) (hv : w' v = objAt g v) :
+    altWalkPath g w' hpend v = g v := by
+  apply Subtype.ext
+  change (w' v, cntAt g v, nxtAt g v) = (g v).1
+  rw [hv]
+  rfl
+
 end Path
+
+/-! ### The alternative-history construction is NOT vacuous
+
+The construction above is only worth the name if a pend-profile-preserving relabelling can differ
+from the identity, which needs an object with two distinct states carrying the same `pend` bit
+and a ladder path through one of them. The fixture below exhibits one, and exhibits it at a
+PENDING position rather than an idle one, so the witness is not confined to the degenerate regime
+where every counter is pinned to `0`: three states, `0` and `1` pending and `2` idle, with a walk
+pending on `(-∞, 0]` and idle from `1` on, whose countdown `Count` forces to be the distance to
+the region's end. The relabelling moves position `0` from the `0`-state to the `1`-state — both
+pending — and so leaves the whole counter structure untouched. -/
+
+section AltNonVacuous
+
+/-- The witness object: three states, `0` and `1` pending, `2` idle. -/
+abbrev AltQ : Type := Fin 3
+
+/-- The witness pending predicate: `0` and `1` pending, `2` idle. -/
+def altPend : AltQ → Bool := fun q => decide (q.val < 2)
+
+/-- The witness step relation: every step permitted, so the `step` clause never obstructs. -/
+def altStep : AltQ → AltQ → Bool := fun _ _ => true
+
+/-- The witness walk: pending on `(-∞, 0]`, idle from `1` on. -/
+def altW : ℤ → AltQ := fun v => if 1 ≤ v then 2 else 0
+
+/-- The countdown `Count` forces on `altW`: the distance to the region's end. -/
+def altC : ℤ → ℕ := fun v => (-v).toNat
+
+/-- The witness relabelling: `altW` with position `0` moved from the `0`-state to the `1`-state.
+Both are pending, so the pend profile is untouched. -/
+def altW' : ℤ → AltQ := fun v => if 1 ≤ v then 2 else if v = 0 then 1 else 0
+
+theorem altStep_true (x y : AltQ) : altStep x y = true := rfl
+
+theorem altPend_altW_of_le (v : ℤ) (h : v ≤ 0) : altPend (altW v) = true := by
+  have : altW v = 0 := by simp only [altW, if_neg (show ¬ (1 : ℤ) ≤ v by omega)]
+  rw [this]; decide
+
+theorem altPend_altW_of_ge (v : ℤ) (h : 1 ≤ v) : altPend (altW v) = false := by
+  have : altW v = 2 := by simp only [altW, if_pos h]
+  rw [this]; decide
+
+theorem le_zero_of_altPend_altW (v : ℤ) (h : altPend (altW v) = true) : v ≤ 0 := by
+  by_contra hc
+  exact Bool.false_ne_true ((altPend_altW_of_ge v (by omega)).symm.trans h)
+
+/-- The witness walk has NO region start: it is pending into the past forever, so both pin
+hypotheses of `exists_ladderPath_of_walk` discharge vacuously. -/
+theorem altNoRegionStart (s : ℤ) (h0 : altPend (altW s) = false)
+    (h1 : altPend (altW (s + 1)) = true) : False := by
+  have h := le_zero_of_altPend_altW (s + 1) h1
+  exact Bool.false_ne_true (h0.symm.trans (altPend_altW_of_le s (by omega)))
+
+theorem altW'_zero : altW' 0 = 1 := by
+  simp only [altW', if_neg (show ¬ (1 : ℤ) ≤ (0 : ℤ) by omega), if_pos]
+
+theorem altW_zero : altW 0 = 0 := by
+  simp only [altW, if_neg (show ¬ (1 : ℤ) ≤ (0 : ℤ) by omega)]
+
+/-- **The relabelling preserves the pend profile at every position**, which is the one hypothesis
+`altWalkPath` consumes. -/
+theorem altPend_altW' (v : ℤ) : altPend (altW' v) = altPend (altW v) := by
+  by_cases h1 : (1 : ℤ) ≤ v
+  · simp only [altW', altW, if_pos h1]
+  · by_cases h0 : v = 0
+    · subst h0; rw [altW'_zero, altW_zero]; decide
+    · simp only [altW', altW, if_neg h1, if_neg h0]
+
+/-- The witness ladder path, through `exists_ladderPath_of_walk` with both pin hypotheses
+discharged by `altNoRegionStart`. -/
+theorem exists_altLadderPath :
+    ∃ g : ℤ → LadderState AltQ altPend, IsLadderPath altStep altPend g ∧
+      (∀ v, objAt g v = altW v) ∧ (∀ v, cntAt g v = altC v) := by
+  refine exists_ladderPath_of_walk altW altC 0 (fun v => altStep_true _ _) ?_ ?_ ?_
+    (fun s v hs0 hs1 _ _ => absurd (altNoRegionStart s hs0 hs1) not_false)
+    (fun v hv0 hv1 => absurd (altNoRegionStart v hv0 hv1) not_false)
+  · intro v h
+    have : ¬ v ≤ 0 := fun hv => Bool.false_ne_true (h.symm.trans (altPend_altW_of_le v hv))
+    simp only [altC]; omega
+  · intro v h h'
+    have hv := le_zero_of_altPend_altW v h
+    have hv' := le_zero_of_altPend_altW (v + 1) h'
+    simp only [altC]; omega
+  · intro v h h'
+    have hv := le_zero_of_altPend_altW v h
+    have hv' : ¬ (v + 1 ≤ 0) := fun hc =>
+      Bool.false_ne_true (h'.symm.trans (altPend_altW_of_le (v + 1) hc))
+    have hz : v = 0 := by omega
+    simp only [altC, hz]; norm_num
+
+/-- **`altWalkPath` IS NOT ALWAYS THE ORIGINAL PATH.** At the witness object there is a ladder
+path, a pend-profile-preserving relabelling of its walk satisfying the `step` clause, and a
+PENDING position at which the alternative path and the original differ. So
+`mem_cellAt_of_altWalkPath` is not a restatement of `mem_cellAt_ladder_iff`: it names histories
+the original path does not supply. -/
+theorem altWalkPath_not_vacuous :
+    ∃ (g : ℤ → LadderState AltQ altPend)
+      (hpend : ∀ v, altPend (altW' v) = altPend (objAt g v)),
+      IsLadderPath altStep altPend g ∧
+      (∀ v, altStep (altW' v) (altW' (v + 1)) = true) ∧
+      altPend (objAt g 0) = true ∧
+      altWalkPath g altW' hpend 0 ≠ g 0 := by
+  obtain ⟨g, hg, hobj, -⟩ := exists_altLadderPath
+  have hpend : ∀ v, altPend (altW' v) = altPend (objAt g v) := by
+    intro v; rw [hobj v]; exact altPend_altW' v
+  refine ⟨g, hpend, hg, fun v => altStep_true _ _, ?_, ?_⟩
+  · rw [hobj 0, altW_zero]; decide
+  · intro heq
+    have h1 : altW' 0 = objAt g 0 :=
+      congrArg (fun x : LadderState AltQ altPend => x.1.1) heq
+    rw [hobj 0, altW'_zero, altW_zero] at h1
+    exact absurd h1 (by decide)
+
+end AltNonVacuous
 
 /-! ## The index maps of the splice, and where they stop working
 
@@ -1442,6 +1663,37 @@ theorem exists_ladderPath_pair_nxtAt_ne (q : Q) (hq : pend q = false) (hs : step
     fun _ => rfl, fun _ => hn⟩
   · simp [Count, hq]
   · simp [Count, hq]
+
+/-- **THE CELL CONTAINS THE TYPES OF THE ALTERNATIVE HISTORIES.** At every position the
+relabelling leaves alone, the alternative path is at the IDENTICAL ladder state, so the type it
+realizes there belongs to the cell at the ORIGINAL state. The general form of what the
+alternative-history prototype exhibited at its fixture: the cell at a ladder state contains the
+type realized by every pend-profile-preserving relabelling of every path through it, and so is in
+general strictly larger than the type its own history realizes (`altWalkPath_not_vacuous` is the
+compiled witness that the relabellings are not all the identity).
+
+This is what makes the cell-level reading of the agreement weaker than a pointwise type equality
+along a chosen pair of paths — and so untouched by the splice-type refutation, which compares two
+particular histories and says nothing about the other histories through either state. -/
+theorem mem_cellAt_of_altWalkPath
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (w' : ℤ → Q) (hpend : ∀ v, pend (w' v) = pend (objAt g v))
+    (hstep : ∀ v, step (w' v) (w' (v + 1)) = true)
+    (z : ℤ) (hz : w' z = objAt g z) :
+    ∃ τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+      (∀ t : ℤ, τ.state t = (t, altWalkPath g w' hpend t)) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ τ z
+        ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+            ((z, g z) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  have halt : IsLadderPath step pend (altWalkPath g w' hpend) :=
+    altWalkPath_isLadderPath g hg w' hpend hstep
+  obtain ⟨τ, hτ⟩ := exists_hist_of_isLadderPath fwd bwd (altWalkPath g w' hpend) halt
+  refine ⟨τ, hτ, ?_⟩
+  exact (mem_cellAt_ladder_iff fwd bwd lab φ (g z) z _).mpr
+    ⟨altWalkPath g w' hpend, τ, halt, altWalkPath_eq_of_objAt_eq g w' hpend z hz, hτ, rfl⟩
 
 end Hist
 

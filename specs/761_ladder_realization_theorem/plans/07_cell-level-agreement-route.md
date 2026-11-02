@@ -2216,7 +2216,7 @@ of a filed statement.
 
 ---
 
-### Phase 11.3: Land the Alternative-History Construction in the Library, Generalised [NOT STARTED]
+### Phase 11.3: Land the Alternative-History Construction in the Library, Generalised [COMPLETED]
 
 **Goal**: Promote the load-bearing content of the alternative-history prototype
 (`specs/761_ladder_realization_theorem/prototype/alt-history-cell-check.lean`, items 1-3 of its
@@ -2239,35 +2239,42 @@ The prototype is compiled standalone through `lake env lean`, every printed theo
 definition; it is NOT a wired probe and NOT gate-covered, which is what this phase repairs.
 
 **Tasks**:
-- [ ] State and prove the general construction `altWalkPath` (the plan's own name; it is not a
+- [x] State and prove the general construction `altWalkPath` (the plan's own name; it is not a
       filed Challenge statement and carries no pinned signature): for a ladder path `g` and a walk
       `w' : ℤ → Q` with `∀ v, pend (w' v) = pend (objAt g v)` and
       `∀ v, step (w' v) (w' (v + 1)) = true`, the assignment
       `v ↦ ⟨(w' v, cntAt g v, nxtAt g v), _⟩` is well-formed — the `Adm` side condition transports
       through the pend equality, exactly as the prototype's `altPath` discharges it. Prove the
       three accessor readings `objAt_altWalkPath`, `cntAt_altWalkPath`, `nxtAt_altWalkPath`.
-- [ ] Prove `altWalkPath_isLadderPath`, the general form of `altPath_isLadderPath`: the `step`
+- [x] Prove `altWalkPath_isLadderPath`, the general form of `altPath_isLadderPath`: the `step`
       clause is the hypothesis and the other three clauses of `Rlad` transfer through the pend
       equality with the original's own counters. Follow the prototype line by line — it is a
       compiled oracle — rather than re-deriving the case split.
-- [ ] Prove `altWalkPath_eq_of_objAt_eq`, the general form of `altPath_eq_of_ne`: at every
+- [x] Prove `altWalkPath_eq_of_objAt_eq`, the general form of `altPath_eq_of_ne`: at every
       position `v` with `w' v = objAt g v`, the alternative path is at the IDENTICAL ladder state,
       by `Subtype.ext`. State it POSITIONWISE on the hypothesis `w' v = objAt g v`, never as "off a
       finite set" and never with a cardinality side condition, so no finiteness enters the
       statement.
-- [ ] Land the cell-level corollary as a compiled theorem rather than as prose:
+- [x] Land the cell-level corollary as a compiled theorem rather than as prose:
       `mem_cellAt_of_altWalkPath`, by instantiating the landed `mem_cellAt_ladder_iff` and
       `exists_hist_of_isLadderPath` (both Phase 11.1) at `altWalkPath`. This is the general form of
       the prototype's headline with the fixture's `chiS` replaced by whatever type the alternative
       history realizes: the cell at a ladder state contains the type realized by every
       pend-profile-preserving relabelling of every path through it.
-- [ ] Witness NON-VACUITY as a compiled theorem in the module: exhibit an object, a ladder path and
+- [x] Witness NON-VACUITY as a compiled theorem in the module: exhibit an object, a ladder path and
       a pend-profile-preserving relabelling that is NOT the identity, so `altWalkPath` is not
       always `g` and the corollary above is not a restatement of `mem_cellAt_ladder_iff`. The
       prototype's three-state object with `w2`/`pendS_w2` is a compiled witness and may be reused.
       If no such object exists the construction IS vacuous: say so in the phase record and do not
-      count it.
-- [ ] **Record the disposition of the two budget prototypes, which this phase does NOT land.**
+      count it. *(deviation: altered — a FRESH three-state fixture (`AltQ`/`altPend`/`altStep`/
+      `altW`/`altC`/`altW'`) was authored instead of transcribing the prototype's, because the
+      prototype's fixture carries `fwdS`/`bwdS` seriality, a formula `chiS` and two truth readings
+      that the non-vacuity statement does not consume; the fresh fixture needs none of them and
+      is built through the landed `exists_ladderPath_of_walk` with both pin hypotheses vacuous.
+      The witness is STRONGER than the task asks: the relabelled position is PENDING
+      (`altPend (objAt g 0) = true` is a conjunct), so the witness is not confined to the
+      degenerate all-idle regime where every countdown is pinned to `0`.)*
+- [x] **Record the disposition of the two budget prototypes, which this phase does NOT land.**
       `specs/761_ladder_realization_theorem/prototype/step0-budget-check.lean` and
       `specs/761_ladder_realization_theorem/prototype/interior-budget-check.lean` are RETAINED AS
       PROTOTYPE RECORDS, not promoted to the library. Two reasons, the second mechanical. (1) No
@@ -2280,12 +2287,18 @@ definition; it is NOT a wired probe and NOT gate-covered, which is what this pha
       `ClType` is one of the grep's own identifiers. Their value is preserved where it lies: the
       budget objection against the type-respecting-block route is closed on the record, which is
       why the budget is no longer a discriminator between the routes.
-- [ ] Wire the new declarations: axiom-profile pins in `KTypeSummaryAxiomTest.lean`; the module
+- [x] Wire the new declarations: axiom-profile pins in `KTypeSummaryAxiomTest.lean`; the module
       docstring's truth-transport section extended with one paragraph naming the alternative-history
       freedom and what it does and does not give; the three generated README inventory blocks and
       `typst/generated/status.typ` resynced (the pre-commit gate requires it whenever a `.lean`
       file changes length). No C14 heredoc entry and no `docs/theorem-index.md` row: this phase
-      lands no filed Goal.
+      lands no filed Goal. *(deviation: altered — the docstring paragraph was added as its own
+      top-level section (`## The alternative-history freedom, and what it does and does not give`)
+      rather than as a paragraph inside the existing half-(i) section, because it says what the
+      construction does NOT give and that belongs beside, not inside, the transport layer. One
+      file-scope addition the task list did not anticipate: `set_option linter.style.longFile 1800`
+      with its explanatory comment, since the module crossed the package-wide 1500-line limit —
+      the same in-repo pattern `Periodic.lean` already uses.)*
 
 **Prohibited workarounds**: do NOT state the construction with a finiteness, finite-fibre or
 finite-width hypothesis on the set of relabelled positions; do NOT weaken
