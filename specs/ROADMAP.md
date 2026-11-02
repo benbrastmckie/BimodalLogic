@@ -59,15 +59,14 @@ documented class as the other seven, so it reads as a legitimate eighth line who
 never updated. It does not fail the job loudly — that step is `continue-on-error: true` — but
 `ci.yml`'s aggregating gate reports its `outcome` and exits 1, so the default branch is red and the
 cause is easy to miss. Filed as 828; fix the allowlist and all three recorded counts together.
-
 **Coverage appendix (uncovered tasks)**:
 ```
-/orchestrate 127,128,178,502,559,570,604,664
-/orchestrate 714,729,730,741,743,751,752,753
-/orchestrate 767,768,769,770,772,774,777,779
-/orchestrate 780,781,785,787,803,804,810,813
-/orchestrate 817,818,821,825,828,829,830,831
-/orchestrate 832
+/orchestrate 127,128,178,502,570,604,664,714
+/orchestrate 729,730,741,743,751,752,753,767
+/orchestrate 768,769,770,772,774,777,779,780
+/orchestrate 781,785,787,803,804,810,813,817
+/orchestrate 818,821,825,828,829,830,831,832
+/orchestrate 833
 ```
 
 ## Next batches
@@ -78,7 +77,8 @@ cause is easy to miss. Filed as 828; fix the allowlist and all three recorded co
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761 alone
 /orchestrate 714,781 --hard      # sliced-certificate internals: full-label evaluation, Phase 5 hoist
 # Stage 2 — supporting semantics and metalogic
-/orchestrate 664,559,570 --lit   # corpus ingest first, then TM⋆ canonical-model rounds and the C3 open question
+/orchestrate 833                 # land ⊡φ ↔ ▷◁φ in OpenLanguage; 559 waits on it. Shares docs/theorem-index.md with 761/763 — never in the same cycle as Stage 1
+/orchestrate 664,559,570 --lit   # corpus ingest first, then TM⁺ completeness rounds (559, now over L^▷) and the C3 open question
 /orchestrate 830 --hard          # Γ-generalize the landed Compression.decidableValidZTime; strengthens L, does NOT advance the L⁺ aim
 # Stage 3 — datasets, examples, documentation, hygiene
 /orchestrate 828                 # CI IS RED: an 8th upward import edge against an allowlist and docs that say seven. Smallest item on this page; fix it first
@@ -311,6 +311,27 @@ gate cannot see** is the one-line import in `FormalSystem/Semantics/Presheaf.lea
 declares — batch only tasks already serialized by a dependency edge, and re-run `lake build` after
 each aggregator edit. 664 runs before 559 and 570 so they have the corpus. **543 is not runnable here**; it depends
 on 500 and batches with Stage 4's capstone.
+
+**559 is a TM⁺ task, not a TM⋆ one** — its directory name is a legacy misnomer; its own AIM is a
+sound and complete proof system for the stability modal `⊡` over the all-histories task semantics.
+Its object language is now **L^▷** by user ruling (2026-11-02): L⁺ plus the manuscript's
+open-future `▷` and open-past `◁`, whose semantics is already built and sorry-free at
+`FormalSystem/OpenLanguage/`. The ruling rests on one compiled fact —
+`⊡φ ↔ ▷◁φ ↔ ◁▷φ` on every regular task frame, choice-free
+(`specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/05_stab-definable-from-open-modals.lean`)
+— so `⊡` is definable and no L⁺ result is traded away; and it buys the two-sided decomposition the
+engine obstruction named, plus a sound home for the Ockhamist axiom HN, which is valid for `▷`
+(`hnOpen_openValid`) and refuted for `⊡` (`hnStab_refuted_sinkFrame`). It does **not** close the
+gap: the binding obstruction is closedness of the canonical bundle, `▷`/`◁` supply no closure
+principle, and an `LC_n`-style schema is still required. **Nothing here is a completeness claim**,
+and the four cheap discriminating checks (559's `(P0)`) run before any engine work. The first of
+them, `(P0a)`, is **task 833** — landing that biconditional in the library, with its
+`docs/theorem-index.md` row and its README rows — which 559 cannot do itself because its own hard
+constraints forbid any change under `FormalSystem/`; **559 declares 833 as a dependency**, and 833
+has no blockers. Note also that
+this front and Stage 1 meet: a decision procedure for `PlusValidZTime` makes the `⊡`-validities
+r.e., which is 559's `(P1)` gate at ZTime, and report 03 §1.3's MSO/Rabin argument already settles
+that gate on paper — non-constructively, which is why it is no route to Stage 1's own aim.
 
 ## Stage 3 — Datasets, examples, documentation, hygiene
 
