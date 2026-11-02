@@ -1,62 +1,37 @@
 {
-  "status": "partial",
-  "started_at": "2026-11-02T21:30:00Z",
-  "completed_at": "2026-11-02T22:05:00Z",
-  "requires_user_review": true,
-  "blocked_phase": "11.5",
-  "review_reason": "Phase 11.5 BLOCKED on its own refuting branch: route B's named construction (an atom-row-preserving ladder path through the other counter pair) is refuted as a theorem, so Phases 11.6, 11.7 and 12-18 cannot be entered along this route. The depth-0 obligation is stated as a schema and is neither proved nor refuted. Phase 11.2 remains independently enterable; the alternatives are a successor task for the open construction or /revise of the route.",
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 14,
-    "build_passed": true
-  },
-  "partial_progress": {
-    "stage": "phase_11.5_blocked",
-    "details": "Phase 11.5 stated the depth-0 cell-level obligation, identified the construction it needs, and refuted that construction as a compiled theorem with a wired probe. The obligation itself is not proved and not refuted. See the plan file's BLOCKER block.",
-    "phases_completed": 14,
-    "phases_total": 25
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-cell-agreement-construction-refuted-summary.md",
-      "summary": "Phase 11.5: the cell-level route's construction refuted, the depth-0 obligation stated and not proved, the forty-sixth probe wired."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.5-handoff-20261102T215926Z.md",
-      "summary": "Phase-end handoff for Phase 11.5."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/08_cell-agreement-construction-handoff.md",
+      "summary": "Revised plan: Phase 11.5 closed [COMPLETED WITH EXCLUSIONS] on the compiled refutation of route B's construction, the open cell-agreement construction relocated to task 836 as an external gate on Phases 11.6-11.7 and 12-18, and the pin cascade split into a closable Phase 11.2 and the new Phase 11.8 so a dispatch has enterable work"
     }
   ],
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "scripts/check-evidence-probes.sh",
-    "typst/generated/status.typ",
-    "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
-    "specs/761_ladder_realization_theorem/plans/07_cell-level-agreement-route.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.5-handoff-20261102T215926Z.md",
-    "specs/761_ladder_realization_theorem/summaries/05_ladder-cell-agreement-construction-refuted-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/.orchestrator-handoff.json",
+    "specs/761_ladder_realization_theorem/plans/08_cell-agreement-construction-handoff.md",
+    "specs/761_ladder_realization_theorem/.plan-revised.json",
     "specs/761_ladder_realization_theorem/.return-meta.json"
   ],
+  "next_steps": "Run /orchestrate 761 to dispatch the enterable work (Phase 11.2, then Phase 11.8). Phases 11.6-11.7 and 12-18 stay gated until task 836 delivers a construction preserving the realized type without preserving the valuation pointwise; re-entry is a further /revise with 836's finding as its input.",
   "metadata": {
-    "session_id": "sess_1793651515_3f23fb",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
+    "session_id": "sess_1793662081_4fb94d",
+    "agent_type": "reviser-agent",
     "delegation_path": [
       "orchestrator",
-      "implement",
-      "skill-lean-implementation"
+      "revise",
+      "reviser-agent"
     ],
-    "compliance_check": "failed",
-    "dispatch_seq": 24,
-    "compliance_note": "The spot-check's own mechanics report MISSING for abbrev (a false extraction from the Goals prose), cellAt_const_of_kappa_eq, ladderCons_localRun, ladderLift, ladderRealized and ladderSound; paramsOk_params is OK. All five real names are the PLAN'S TERMINAL GOALS, due in Phases 12-16, every one of which is [NOT STARTED] and none of which this dispatch was dispatched to land. This is the expected reading of the check against a plan 14 of whose 25 phases are closed, not a compliance defect of Phase 11.5: the two deviations this dispatch did take are recorded inline on Phase 11.5's checklist, in its BLOCKER block, and in the summary's Plan Deviations section."
+    "phase_count": 26,
+    "phases_closed": 15,
+    "phases_open": 11,
+    "estimated_hours": 26.5,
+    "reports_integrated": [
+      "summaries/05_ladder-cell-agreement-construction-refuted-summary.md",
+      "handoffs/phase-11.5-handoff-20261102T215926Z.md",
+      "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
+      ".dispatch/25-aux-blocker-research.md",
+      "FormalSystem/Metalogic/Decidability/RaySummary/README.md"
+    ],
+    "revision_notes": "No new research reports landed, so new_research_paths was empty; the revision's inputs are Phase 11.5's close, its handoff, and the 46th wired probe. Phases 1-11, 11.1, 11.3 and 11.4 are untouched (markers, records, exclusion tables and timing figures all verbatim). The one re-marked phase is 11.5. One new phase: 11.8. Effort re-derived from the plan's own Timing lines and unchanged at 26.5 costable hours."
   }
 }
