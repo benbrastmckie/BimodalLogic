@@ -1,5 +1,5 @@
 ---
-next_project_number: 836
+next_project_number: 838
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 836
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,828,829,830,831,832,833 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,828,829,830,831,832,833,836,837 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827 | 298,428,502,761,768,769,770,772,777,810,813,833 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -94,6 +94,8 @@ next_project_number: 836
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
+836 [RESEARCHED] — The depth-0 cell-level agreement for ladder realization needs...
+837 [RESEARCHED] — The recorded Challenge statements...
 
 ### Formula Refactor
 
@@ -134,6 +136,50 @@ next_project_number: 836
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 837. Challenge statement repair paramsok quantification
+- **Effort**: medium
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 761
+
+**Description**: The recorded Challenge statements cellAt_const_of_kappa_eq and ladderRealized are REFUTED as written, and the repair is barred by the Statement Fidelity rule, so it needs its own sanctioned revision rather than an in-flight edit.
+
+Established by task 761 (the 14th wired probe): both statements universally quantify (Tc Tn P B : Nat) with no hypothesis relating the parameters to the object, the formula, or each other. At Tc = Tn = P = B = 0 the quotient CK 0 0 0 0 = Fin 1 x Fin 1 x Fin 1 x Fin 1 x Fin 1 is a subsingleton, so both assert the cell is constant in (c, n) -- which cell_succ_ne refutes for every c and n at fixed next-deadline. This holds for EVERY kappa and every candidate Dmax, with no property of Dmax used. Compiled unconditional on the four-state tag object, non-vacuity witnessed on both sides, exit 0, axiom profile [propext, Classical.choice, Quot.sound] on all six headline theorems.
+
+The presentation is not what is wrong; the free-parameter quantification is. The two candidate repairs are (a) add a ParamsOk Tc Tn P B hypothesis carrying (K1)-(K4), or (b) existentially quantify the parameters. Either is a change to a RECORDED Challenge statement, which .claude/rules/plan-compliance.md Statement Fidelity forbids an implement dispatch from making -- which is why task 761 Phases 9 and 13 closed BLOCKED rather than proceeding, correctly. paramsOk_params already discharges ParamsOk at the periodicity fixpoint own outputs, so repair (a) has a landed witness available.
+
+A second, independent inconsistency to settle in the same pass: Phase 8 task list required promoting realizes_of_certAdm_cohBi while its own Scope Hypothesis said certStab and certAdm are deliberately NOT promoted. That theorem is stated in terms of certAdm and its proof destructures certAdm_iff, so the two directives cannot both hold.
+
+Deliverable: a sanctioned decision on which repair to adopt, with the revised statement recorded so a later implement dispatch can land it without violating Statement Fidelity.
+
+Evidence: task 761 issues.jsonl entries iss_1792365111362_wjBgRA (statement-defect, blocking), iss_1792365551644_Swi1MU (environment, blocking), iss_1792364282470_KxINSA (plan-inconsistency, costly).
+
+---
+
+### 836. Ladder type preserving cell agreement construction
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 761
+
+**Description**: The depth-0 cell-level agreement for ladder realization needs a construction that preserves the REALIZED TYPE without preserving the valuation pointwise. Such a construction is stated nowhere in the tree.
+
+Established by task 761 Phase 11.5 (commit 9347d41d1), compiled rather than observed: the construction that route B named, AtomPreservingCountMove (given a ladder path and a target counter pair at the same object state, produce a ladder path through that pair preserving the atom row at every position), is REFUTED for every object whose pending bit is readable in the language. Mechanism: cntAt_eq_of_pend_eq makes the countdown a function of the pend profile alone, so moving c moves the pend profile; pendFactorsLab_of_atom shows the pending bit factors through the atom row as soon as the labelling carries it as one of its atoms, which the realization statement (quantifying over every lab : Q -> Atom -> Bool) does not exclude; cntAt_eq_of_lab_eq_of_pendFactorsLab then forbids any atom-row-preserving path from carrying a different countdown anywhere. The n half closes (nxt_free); the obstruction is confined to c by construction. Non-vacuity on both sides is discharged by the 46th wired probe, specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean (Probe761C): ParamsOk at the periodicity fixpoint own outputs, a populated kappa-collision at c != c prime via kappa_eq_of_shift, and a ladder path through EACH of the two ladder states.
+
+What is refuted is the CONSTRUCTION, not the obligation. A cell is a set of types over all histories through a state; two ladder paths can realize the same closure type without agreeing on a single atom row. The probe exhibits a path through each state and says nothing about whether the two cells coincide. CellLEZeroConstOfKappaEq is STATED in FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean as a Prop-valued schema and proved nowhere; the theorem name cellLE_zero_const_of_kappa_eq is reserved and claimed by nothing.
+
+Available ground to build on: Phase 11.4 landed truthAt_iff_of_lab_eq_of_stabBoxFree, truthAt_iff_of_lab_eq_of_stabPinned, tpOf_stabFree_eq_of_lab_eq and tpOf_stabBoxFree_eq_of_lab_eq, and established that the box arm WIDENS (box_mem_tpOf_transfer needs only same-model, and both compared histories are histories of the same ladderModel, so that induction case is Iff.rfl) -- so the usable fragment is stab-free WITH box included, strictly wider than the route decision assumed. Phase 11.3 landed altWalkPath and altWalkPath_eq_of_objAt_eq.
+
+Consequence if unresolved: task 761 Phase 11.6 is not enterable (it inducts from 11.5 base case, which is stated rather than landed), so 11.7 and 12-18 are unreachable along this route. Phase 11.2 is the only unblocked phase remaining there.
+
+Evidence: task 761 issues.jsonl entries iss_1793655395836_WUA3Kc (route-refuted, blocking), iss_1792373250168_HQM6Je (blocker), iss_1792404913585_GTqC0g (refuted-statement), iss_1792402772629_BNdiN5 (refuted-approach), iss_1792401253858_iZyQNA (plan-gap).
+
+---
 
 ### 835. State a repo-wide gate criterion relative to a recorded baseline rather than an absolute zero
 - **Effort**: medium
