@@ -413,7 +413,7 @@ directories (`MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/`
 `HybridLanguage/`, `QuantLanguage/`) **file by
 file**, because each holds syntax and semantics (the first three a proof system as well) and no
 single layer fits it. It asserts that set **equals** a
-recorded allowlist of 7 lines, all from
+recorded allowlist of 8 lines, all from
 `FormalSystem/MinusLanguage/AxiomDischarge.lean` into `Theorems/*`. Sibling aggregators are
 excluded as sources here too.
 
