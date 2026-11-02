@@ -1,7 +1,7 @@
 # Implementation Plan: Task #828
 
 - **Task**: 828 - Metalogic upward-edge allowlist count drift (CI red on `main`)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.0 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/828_metalogic_upward_edge_allowlist_count_drift/reports/01_upward_edge_allowlist_count_drift.md

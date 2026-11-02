@@ -11,7 +11,7 @@ next_project_number: 838
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,828,829,830,831,832,833,836,837 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827 | 298,428,502,761,768,769,770,772,777,810,813,833 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -126,7 +126,6 @@ next_project_number: 838
 817 [NOT STARTED] — Wrap the remaining count-carrying inventory tables under...
 818 [NOT STARTED] — Wrap the four directory-rollup inventory tables that need the...
 821 [RESEARCHED] — Reconcile specs/state.json's next\_project\_number against...
-828 [IMPLEMENTING] — CI IS CURRENTLY RED ON main. bash...
 832 [NOT STARTED] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Build Performance
@@ -540,12 +539,13 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Mediu
 ---
 
 ### 828. Metalogic upward edge allowlist count drift
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [828_metalogic_upward_edge_allowlist_count_drift/reports/01_upward_edge_allowlist_count_drift.md]
 - **Plan**: [828_metalogic_upward_edge_allowlist_count_drift/plans/01_upward-edge-allowlist-count-drift.md]
+- **Summary**: [828_metalogic_upward_edge_allowlist_count_drift/summaries/01_upward-edge-allowlist-count-drift-summary.md]
 
 **Description**: **CI IS CURRENTLY RED ON `main`.** `bash scripts/check-metalogic-cycles.sh` exits 1 with:
 
