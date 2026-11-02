@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1793657755_192cdd_828",
+  "dispatch_seq": 1,
+  "findings_count": 12,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/828_metalogic_upward_edge_allowlist_count_drift/reports/01_upward_edge_allowlist_count_drift.md",
+      "summary": "Re-verifies the CI-red metalogic upward-edge allowlist count drift, enumerates the exact edit sites (one ALLOWLIST frozenset entry plus eleven prose-count occurrences) across the four in-scope files, corrects the task description's provenance commit citation, and flags two out-of-scope residual 'seven' mentions."
+    }
+  ],
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 828 to create implementation plan"
+}
