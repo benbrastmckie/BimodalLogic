@@ -1,47 +1,25 @@
 {
-  "status": "blocked",
-  "dispatch_seq": 19,
-  "phase": "11.1",
-  "summary": "Phase 11.1's open half (ii), splice invariance of the realized stab-free type, is not open: it is FALSE as stated, and this dispatch entered the plan's own declared refuting branch rather than attempting it a third time. The forty-fifth wired probe ladder-splice-type-refutation.lean compiles splice_type_invariance_refuted against a schema carrying every recorded hypothesis, with every one discharged (seriality, the landed lift and the landed pending-forever splice, l | P+1 through (K1) on a compiled object 2-cycle, ParamsOk through paramsOk_params) and with the refutation checked against the ITERATED surgery the residue coordinate needs. Half (i), the presentation, and cellAt_const_of_kappa_eq itself are untouched and not refuted; what is refuted is that the admissibility-preserving surgery also preserves the type.",
-  "phases_completed": 11,
-  "phases_total": 22,
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 21,
+  "summary": "Phase 11.3 of the cell-level agreement route is COMPLETED and committed (83403c38c): the alternative-history construction is promoted into LadderAgree.lean as ten named, gate-covered declarations, generalised away from the prototype's three-state fixture to an arbitrary object, with a fresh non-vacuity witness whose relabelled position is PENDING. Verification is fully green -- full guarded lake build exit 0 / 2892 jobs / 0 error / 0 warning with oleans fresh, check-module-invariants.sh ALL CHECKS PASSED, 45/45 wired probes, sorry 0, axiom count 14 unchanged, certificate-freedom grep still returning nothing. Twelve of the plan's twenty-five phases remain NOT STARTED, so this dispatch is partial rather than implemented; Phase 11.4 is the next action and its only dependency is now discharged.",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/06_ladder-splice-type-refutation-summary.md",
-      "summary": "Half (ii) of the truth-transport layer refuted and wired as the forty-fifth probe; Phase 11.1 closes BLOCKED on a route decision."
+      "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-alternative-history-construction-summary.md",
+      "summary": "Phase 11.3 implementation summary: the ten landed declarations, the two inline-annotated deviations, and the full verification record."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T104251Z.md",
-      "summary": "The refutation's mechanism, what it does and does not touch, and the two candidate routes."
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.3-handoff-20261102T204919Z.md",
+      "summary": "Phase 11.3 phase handoff: what landed, what the construction does and does not give, the budget-prototype disposition, and Phase 11.4 as the immediate next action."
     }
   ],
-  "blockers": [
-    {
-      "phase": "11.1",
-      "target": "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean — tpOf_stabFree_eq_of_splice (half (ii) of the model-level truth-transport layer)",
-      "verbatim_goal": "Prove tpOf_stabFree_eq_of_splice: given hg : IsLadderPath, a pending region at a, an object cycle of length l with l | P + 1 inside it, a spliced ladder path g' supplied as a hypothesis, and Tc <= |a - z| with hp : ParamsOk, the stab-free part of tpOf at z is the same along both.",
-      "what_was_tried": "The uniform-claim structural induction (refuted at the seam by the compiled spliceIdx_seam_lt, dispatch seq 17), then the preceding round's two intelligence items: a distance budget per U/S-nesting depth together with the splice's monotonicity on future object positions. The budget item was pursued to its conclusion and then abandoned in favour of compiling the counterexample it predicts.",
-      "why_it_failed": "The statement is false. One splice duplicates the pumped block, so it adds one occurrence of every object state of that block to the walk's future, and a nested eventuality counts occurrences at unbounded distance — so the distance hypothesis Tc <= |a - z| buys nothing. On a three-state object whose walk hits the p-state exactly once, the nesting-depth-three formula (top U (p AND top U p)) is false along the original at every position and true along the spliced path. Compiled as Probe761S.splice_type_invariance_refuted, and it survives the (P + 1) / l iterations the residue coordinate of kappa needs (twoHits_iterate, spliced_rehypotheses)."
-    }
-  ],
-  "user_decision": {
-    "question": "Half (ii) of the truth-transport layer is refuted: the admissibility-preserving splice is type-blind, so Phases 11.2, 11.3 and 11.4 cannot be entered as decomposed. Which route should the plan be revised to?",
-    "options": [
-      "(a) A TYPE-AWARE region lengthening — choose the lengthened region's walk so the realized type at z is preserved instead of taking the fixed spliceObj, re-establishing Phase 11's admissibility content for whatever walk it produces",
-      "(b) Argue cellAt_const_of_kappa_eq at the level of the CELL — the set over all histories the Goal actually names, strictly weaker than pointwise type equality along a chosen pair of paths, and left entirely open by the refutation"
-    ],
-    "recommended": "(b) Argue cellAt_const_of_kappa_eq at the level of the CELL — the set over all histories the Goal actually names, strictly weaker than pointwise type equality along a chosen pair of paths, and left entirely open by the refutation",
-    "blocking": false
-  },
+  "phases_completed": 13,
+  "phases_total": 25,
+  "blockers": [],
   "plan_markers_verified": true,
-  "sorry_inventory": [],
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T104251Z.md",
-  "continuation_context": {
-    "handoff_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.1-handoff-20261019T104251Z.md",
-    "orchestrator_mode": true
-  },
-  "next_action_hint": "A route decision, then /revise: Phases 11.2, 11.3 and 11.4 consume half (ii) as decomposed and none can be entered as written. No implementation dispatch can make progress before the revision.",
-  "git_checkpoint": "0885b5a02"
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.3-handoff-20261102T204919Z.md",
+  "next_action_hint": "Enter Phase 11.4 (the atom-valuation closure agreement). Its Depends on set names 11.3, now discharged. Phase 11.2 (the pin cascade) is independently enterable and off the critical path -- its single consumer is Phase 15.",
+  "git_checkpoint": "83403c38c"
 }

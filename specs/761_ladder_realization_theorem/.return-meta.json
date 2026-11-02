@@ -1,45 +1,50 @@
 {
-  "status": "planned",
-  "started_at": "2026-11-02T00:00:00Z",
-  "completed_at": "2026-11-02T00:00:00Z",
+  "status": "partial",
+  "started_at": "2026-11-02T20:33:27Z",
+  "completed_at": "2026-11-02T21:10:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/07_cell-level-agreement-route.md",
-      "summary": "Revised plan implementing the route decision: the cell-level route to cellAt_const_of_kappa_eq is adopted, the pumping/splice route to the truth-transport layer is retired, half (ii) is withdrawn as refuted, and Phases 11.3-11.7 replace the retired 11.3-11.4."
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-alternative-history-construction-summary.md",
+      "summary": "Phase 11.3 landed: the alternative-history construction promoted into LadderAgree.lean as ten gate-covered declarations, generalised away from the prototype's three-state fixture."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.3-handoff-20261102T204919Z.md",
+      "summary": "Phase 11.3 handoff: what landed, what the construction does and does not give, the budget-prototype disposition, and Phase 11.4 as the immediate next action."
     }
   ],
-  "next_steps": "Run /orchestrate 761 to execute the revised plan. The first open phase on the agreement's critical path is Phase 11.3 (land the alternative-history construction in the library, generalised); Phase 11.2 (the pin cascade) is also open but now gates Phase 15 only.",
   "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
     "specs/761_ladder_realization_theorem/plans/07_cell-level-agreement-route.md",
-    "specs/761_ladder_realization_theorem/.plan-revised.json",
-    "specs/761_ladder_realization_theorem/.return-meta.json"
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.3-handoff-20261102T204919Z.md",
+    "specs/761_ladder_realization_theorem/summaries/05_ladder-alternative-history-construction-summary.md",
+    "specs/761_ladder_realization_theorem/issues.jsonl"
   ],
+  "partial_progress": {
+    "stage": "phase_11.3_completed",
+    "details": "Phase 11.3 [COMPLETED] and committed (83403c38c). Verification fully green: full guarded lake build exit 0 / 2892 jobs / 0 error / 0 warning with oleans fresh, check-module-invariants.sh ALL CHECKS PASSED, 45/45 wired probes, typst-sync PASS, readme-lint PASS, task-refs 0, sorry 0. Vacuous count 1 and axiom count 14 are both UNCHANGED from the starting commit (the vacuous 1 is the known false positive the plan records). Twelve phases remain NOT STARTED; Phase 11.4 is the next action and its only dependency (11.3) is now discharged.",
+    "phases_completed": 13,
+    "phases_total": 25
+  },
   "metadata": {
-    "session_id": "sess_1793650157_3b2076",
-    "agent_type": "reviser-agent",
+    "session_id": "sess_1793651515_3f23fb",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "dispatch_seq": 20,
-    "revision_mode": "plan_revision",
-    "phase_count": 25,
-    "estimated_hours": 26.5,
-    "not_costable_phases": ["11", "11.1", "11.2", "11.3", "11.4", "11.5", "11.6", "11.7", "15"],
-    "phases_preserved_landed": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "11.1"],
-    "phases_resequenced": ["11.2", "12", "15"],
-    "phases_added": ["11.3", "11.4", "11.5", "11.6", "11.7"],
-    "phases_removed": ["old 11.3 (depth induction, carried forward as 11.6)", "old 11.4 (the Goal, carried forward as 11.7)"],
-    "reports_integrated": [
-      "01_ladder-realization-theorem.md",
-      "02_spawn-analysis.md",
-      "alt-history-cell-check.lean",
-      "interior-budget-check.lean",
-      "step0-budget-check.lean",
-      "ladder-splice-type-refutation.lean",
-      "06_ladder-splice-type-refutation-summary.md"
-    ],
-    "validation": "bash .claude/scripts/validate-artifact.sh <plan> plan --strict -> PASS, 0 warnings",
-    "challenge_block_unchanged": true,
-    "challenge_block_check": "sed-extracted '## Lean Challenge Statements' block diffed against plans/05_ladder-truth-transport-layer.md: identical, 6 theorem declarations, Goals identifier set equal to them"
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "compliance_note": "The plan's Goals bullets name this task's FILED Challenge statements (ladderRealized, cellAt_const_of_kappa_eq, LadderCons), which Phase 11.3 does not land and is not scoped to land -- Phase 11.3's own deliverables (altWalkPath and its six companions) are explicitly 'not a filed Challenge statement and carries no pinned signature' by the plan's own wording. A Goals-name grep would therefore report every filed Goal MISSING on a phase that was never meant to land one, so the spot-check is recorded as skipped rather than run to a misleading verdict. Every declaration Phase 11.3 DOES name was checked present by name in LadderAgree.lean and pinned in KTypeSummaryAxiomTest.lean."
   }
 }
