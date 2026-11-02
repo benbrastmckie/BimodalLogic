@@ -120,6 +120,44 @@ induction's step needs the transport for the letters of depth at most `d` while 
 depth `d + 1`. The stab-free statement is the instance `L := fun _ => False`
 (`tpOf_stabFree_eq_of_objAt_eq`).
 
+## The atom-valuation closure agreement
+
+Half (i)'s hypothesis — the SAME object walk — is strictly stronger than anything the cell-level
+route can assume, because the whole point of the alternative-history construction below is that
+the two walks DIFFER at the positions the relabelling moves. What the ladder model's valuation
+reads at a position is `lab` of the object component there and nothing else
+(`atom_mem_tpOf_ladder_iff`), so the hypothesis the `atom` clause consumes is POINTWISE AGREEMENT
+OF `lab` — `∀ v p, lab (objAt g v) p = lab (objAt g' v) p` — and it is weaker than half (i)'s by
+exactly the non-injectivity of `lab`: two distinct object states with the same atom row are
+indistinguishable to every clause of `PlusTruthAt` but `⊡`. At that hypothesis the transport is
+landed on the fragment the route decision names, stab-free AND box-free
+(`truthAt_iff_of_lab_eq_of_stabBoxFree`, with `tpOf_stabBoxFree_eq_of_lab_eq` on closure types and
+`StabBoxFree` the fragment predicate, which is `StabPinned`'s shape with the `box` arm tightened to
+`False` and the pinned-letter parameter dropped). Half (i) itself is reused, not re-proved: its
+three statements are untouched, and it is cited as the model for the induction's shape. **Stating
+this transport with the object-walk-equality hypothesis would be half (i) under a new name and
+would prove nothing new**, which is recorded in the declaration's own docstring so no later round
+re-derives it.
+
+The `box` arm WIDENS, and that is a compiled result rather than an assumption. The `box` clause of
+`PlusTruthAt` quantifies over every history and every time of the model and so names no path at all
+(`box_mem_tpOf_transfer` is its type-level reading), and the two compared histories live in the
+SAME model — that lemma's only hypothesis beyond closure membership — so the `box` case of the
+induction is literally `Iff.rfl`, no hypothesis of it fails, and `□` does not have to be excluded.
+The widened form is `truthAt_iff_of_lab_eq_of_stabPinned`, stated at the pinned-letter parameter so
+that an induction on `⊡`-nesting depth can consume it, with `tpOf_stabFree_eq_of_lab_eq` its
+stab-free type-level instance; the stab-free fragment is the one a consumer of this layer reads.
+`tpOf_eq_of_altWalkPath_of_lab_eq` is the instance over the construction below — a
+pend-profile-preserving relabelling that leaves every atom row alone realizes the same stab-free
+closure type as the original — and it is what the alternative-history prototype's own atom-level
+agreement becomes: an instance of a HYPOTHESIS rather than a statement of its own.
+
+What this layer does NOT do is transport a type across a change of the realized valuation. The
+relabelling may move the object state at a position (`altWalkPath_not_vacuous`); what it may not
+move is that state's atom row. So this is not a repair of half (ii), which is refuted rather than
+open: the refuted statement is about the SPLICE, which lengthens a pending region and changes which
+positions exist, and no hypothesis here constrains such a surgery.
+
 ## The alternative-history freedom, and what it does and does not give
 
 Half (ii) is refuted: the fixed surgery chosen to preserve ADMISSIBILITY is type-blind, so no
@@ -213,9 +251,10 @@ about the others.
 -/
 
 -- The module crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): the rigid-anchor
--- layer, the replacement layer, the alternative-history construction and the truth-transport
--- half (i) are one argument about ladder paths and stay in one module.
-set_option linter.style.longFile 1800
+-- layer, the replacement layer, the alternative-history construction, the truth-transport
+-- half (i) and the atom-valuation agreement are one argument about ladder paths and stay in one
+-- module.
+set_option linter.style.longFile 2100
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -409,6 +448,56 @@ theorem stabPinned_false_of_mem_closure {φ : PlusFormula}
       intro hm
       exact ⟨iha (plusClosure_snce_right φ b a hm), ihb (plusClosure_snce_left φ b a hm)⟩
   | stab a _ => intro hm; exact absurd hm (hno a)
+
+/-! ### The narrow fragment of the atom-valuation transport
+
+The transport below takes a hypothesis strictly weaker than half (i)'s — pointwise agreement of
+`lab` rather than of the object walk — and the route decision names its fragment as stab-free AND
+box-free. That fragment is stated as its OWN predicate rather than as `StabPinned` with a second
+parameter: `StabPinned`'s `box` arm is `True` whatever its argument and so restricts nothing, and
+a parameter over `□` letters would carry no information, because the narrow fragment asks nothing
+of the letter inside a `□` — it excludes the letter outright. The cheaper shape is therefore a
+predicate with the `box` arm tightened to `False` and no parameter at all; that is the choice this
+module records.
+
+The narrow reading is not the last word on the `box` arm: `truthAt_iff_of_lab_eq_of_stabPinned`
+below widens it and `tpOf_stabFree_eq_of_lab_eq` is the widened type-level corollary. -/
+
+/-- **The stab-free AND box-free fragment**: `False` on `⊡` and on `□`, structural elsewhere. It is
+`StabPinned`'s shape with the `box` arm TIGHTENED and the pinned-letter parameter dropped; see the
+section note above for why no parameter appears. -/
+def StabBoxFree : PlusFormula → Prop
+  | .atom _ => True
+  | .bot => True
+  | .imp a b => StabBoxFree a ∧ StabBoxFree b
+  | .box _ => False
+  | .untl a b => StabBoxFree a ∧ StabBoxFree b
+  | .snce a b => StabBoxFree a ∧ StabBoxFree b
+  | .stab _ => False
+
+/-- **The narrow fragment restricts to a closure with no `⊡` and no `□` member.** The two arms with
+content are `⊡` and `□`: such a letter inside a closure member is itself a closure member, so a
+closure with none at all leaves both arms unreachable. The four structural arms are the landed
+closure projections and no new closure lemma is authored. -/
+theorem stabBoxFree_of_mem_closure {φ : PlusFormula}
+    (hnos : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (hnob : ∀ χ : PlusFormula, PlusFormula.box χ ∉ plusSubformulaClosure φ) :
+    ∀ ψ ∈ plusSubformulaClosure φ, StabBoxFree ψ := by
+  intro ψ
+  induction ψ with
+  | atom p => intro _; exact trivial
+  | bot => intro _; exact trivial
+  | imp a b iha ihb =>
+      intro hm
+      exact ⟨iha (plusClosure_imp_left φ a b hm), ihb (plusClosure_imp_right φ a b hm)⟩
+  | box a _ => intro hm; exact absurd hm (hnob a)
+  | untl a b iha ihb =>
+      intro hm
+      exact ⟨iha (plusClosure_untl_right φ b a hm), ihb (plusClosure_untl_left φ b a hm)⟩
+  | snce a b iha ihb =>
+      intro hm
+      exact ⟨iha (plusClosure_snce_right φ b a hm), ihb (plusClosure_snce_left φ b a hm)⟩
+  | stab a _ => intro hm; exact absurd hm (hnos a)
 
 end Pinned
 
@@ -1694,6 +1783,212 @@ theorem mem_cellAt_of_altWalkPath
   refine ⟨τ, hτ, ?_⟩
   exact (mem_cellAt_ladder_iff fwd bwd lab φ (g z) z _).mpr
     ⟨altWalkPath g w' hpend, τ, halt, altWalkPath_eq_of_objAt_eq g w' hpend z hz, hτ, rfl⟩
+
+/-! ### The atom-valuation closure agreement
+
+Half (i) transports a realized type between two ladder paths with the SAME OBJECT WALK. That
+hypothesis is strictly stronger than anything the cell-level route can assume: the whole point of
+the alternative-history construction is that the two walks DIFFER at the positions the relabelling
+moves. What the ladder model's valuation actually reads at a position is `lab` of the object
+component there and nothing else (`atom_mem_tpOf_ladder_iff`), so the hypothesis the `atom` clause
+consumes is POINTWISE AGREEMENT OF `lab`, not of the object state:
+
+  `∀ v : ℤ, ∀ p : Atom, lab (objAt g v) p = lab (objAt g' v) p`
+
+and it is weaker than half (i)'s exactly to the extent that `lab` is not injective — two distinct
+object states with the same atom row are indistinguishable to every clause of `PlusTruthAt` but
+`⊡`. **Stating the transport with the object-walk-equality hypothesis would be half (i) under a new
+name and would prove nothing new**; that is recorded here so no later round re-derives it. Half (i)
+itself is reused below, not re-proved, and its three statements are untouched.
+
+The `box` arm WIDENS, and this is a result rather than an assumption. The `box` clause of
+`PlusTruthAt` quantifies over every history and every time of the model and so names no path at
+all — `box_mem_tpOf_transfer` is its type-level reading, and the two compared histories here live
+in the SAME model `ladderModel step pend fwd bwd lab`, which is that lemma's only hypothesis
+besides closure membership. So the `box` case of the induction is literally `Iff.rfl`, exactly as
+it is in half (i), and the fragment does not have to exclude `□`. The narrow, stab-free AND
+box-free form the route decision names is landed as `truthAt_iff_of_lab_eq_of_stabBoxFree` with
+`StabBoxFree`; the widened form is `truthAt_iff_of_lab_eq_of_stabPinned`, stated at the
+pinned-letter parameter so that an induction on `⊡`-nesting depth can consume it, with
+`tpOf_stabFree_eq_of_lab_eq` its stab-free type-level instance. Phase 11.5's fragment is the
+widened one. -/
+
+/-- **THE ATOM-VALUATION CLOSURE AGREEMENT, NARROW FRAGMENT.** Two ladder paths whose object walks
+carry the SAME ATOM ROW at every position satisfy the same stab-free, box-free closure formulas at
+every position. One case per clause: `atom` is the hypothesis read through the ladder model's
+valuation, `⊥` and `→` are structural, `U` and `S` are the induction hypothesis at the other
+positions of the same history, and `□` and `⊡` are excluded by `StabBoxFree`.
+
+The hypothesis is POINTWISE `lab` AGREEMENT, not object-walk equality: the latter is the landed
+half (i) (`truthAt_iff_of_objAt_eq_of_stabPinned`), which is cited as the model for this
+induction's shape and is neither re-proved nor altered. -/
+theorem truthAt_iff_of_lab_eq_of_stabBoxFree
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool)
+    {k k' : ℤ} {g g' : ℤ → LadderState Q pend}
+    (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t)) (hσ' : ∀ t : ℤ, σ'.state t = (t + k', g' t))
+    (hlab : ∀ (v : ℤ) (p : Atom), lab (objAt g v) p = lab (objAt g' v) p) :
+    ∀ ψ : PlusFormula, StabBoxFree ψ → ∀ z : ℤ,
+      (PlusTruthAt (ladderModel step pend fwd bwd lab) σ z ψ ↔
+        PlusTruthAt (ladderModel step pend fwd bwd lab) σ' z ψ) := by
+  intro ψ
+  induction ψ with
+  | atom p =>
+      intro _ z
+      rw [PlusTruth.atom_iff, PlusTruth.atom_iff, hσ z, hσ' z]
+      change lab (objAt g z) p = true ↔ lab (objAt g' z) p = true
+      rw [hlab z p]
+  | bot => intro _ z; exact Iff.rfl
+  | imp a b iha ihb => intro h z; exact imp_congr (iha h.1 z) (ihb h.2 z)
+  | box a _ => intro h _; exact absurd h (fun h => h)
+  | untl a b iha ihb =>
+      intro h z
+      rw [PlusTruth.untl_iff, PlusTruth.untl_iff]
+      constructor
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mp he, fun r h1 h2 => (iha h.1 r).mp (hgd r h1 h2)⟩
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mpr he, fun r h1 h2 => (iha h.1 r).mpr (hgd r h1 h2)⟩
+  | snce a b iha ihb =>
+      intro h z
+      rw [PlusTruth.snce_iff, PlusTruth.snce_iff]
+      constructor
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mp he, fun r h1 h2 => (iha h.1 r).mp (hgd r h1 h2)⟩
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mpr he, fun r h1 h2 => (iha h.1 r).mpr (hgd r h1 h2)⟩
+  | stab a _ => intro h _; exact absurd h (fun h => h)
+
+/-- **THE ATOM-VALUATION CLOSURE AGREEMENT ON CLOSURE TYPES, NARROW FRAGMENT.** The realized types
+of two ladder paths with the same atom row at every position coincide at every position, whenever
+every member of the closure is stab-free and box-free. -/
+theorem tpOf_stabBoxFree_eq_of_lab_eq
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    {k k' : ℤ} {g g' : ℤ → LadderState Q pend}
+    (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t)) (hσ' : ∀ t : ℤ, σ'.state t = (t + k', g' t))
+    (hlab : ∀ (v : ℤ) (p : Atom), lab (objAt g v) p = lab (objAt g' v) p)
+    (hcl : ∀ ψ ∈ plusSubformulaClosure φ, StabBoxFree ψ) (z : ℤ) :
+    tpOf (ladderModel step pend fwd bwd lab) φ σ z
+      = tpOf (ladderModel step pend fwd bwd lab) φ σ' z := by
+  ext ψ
+  rw [mem_tpOf_iff, mem_tpOf_iff]
+  exact and_congr_right fun hmem =>
+    truthAt_iff_of_lab_eq_of_stabBoxFree fwd bwd lab σ σ' hσ hσ' hlab ψ (hcl ψ hmem) z
+
+/-- **THE `box` ARM WIDENS: the atom-valuation agreement at the pinned-letter parameter.** The same
+transport with `□` ADMITTED and the `⊡` letters carried by the pinned-letter hypothesis, which is
+the shape an induction on `⊡`-nesting depth consumes. The `box` case is `Iff.rfl`: its clause
+quantifies over all histories and all times of the model (`box_mem_tpOf_transfer` is the type-level
+reading), the two compared histories live in the same model, and that is the lemma's only
+hypothesis beyond closure membership — so no hypothesis of it fails here and nothing has to be
+excluded. This is the answer to the question the route decision left open, and it is a compiled
+answer rather than an assumption. -/
+theorem truthAt_iff_of_lab_eq_of_stabPinned
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (L : PlusFormula → Prop)
+    {k k' : ℤ} {g g' : ℤ → LadderState Q pend}
+    (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t)) (hσ' : ∀ t : ℤ, σ'.state t = (t + k', g' t))
+    (hlab : ∀ (v : ℤ) (p : Atom), lab (objAt g v) p = lab (objAt g' v) p)
+    (hL : ∀ χ : PlusFormula, L (PlusFormula.stab χ) → ∀ v : ℤ,
+      (PlusTruthAt (ladderModel step pend fwd bwd lab) σ v (PlusFormula.stab χ) ↔
+        PlusTruthAt (ladderModel step pend fwd bwd lab) σ' v (PlusFormula.stab χ))) :
+    ∀ ψ : PlusFormula, StabPinned L ψ → ∀ z : ℤ,
+      (PlusTruthAt (ladderModel step pend fwd bwd lab) σ z ψ ↔
+        PlusTruthAt (ladderModel step pend fwd bwd lab) σ' z ψ) := by
+  intro ψ
+  induction ψ with
+  | atom p =>
+      intro _ z
+      rw [PlusTruth.atom_iff, PlusTruth.atom_iff, hσ z, hσ' z]
+      change lab (objAt g z) p = true ↔ lab (objAt g' z) p = true
+      rw [hlab z p]
+  | bot => intro _ z; exact Iff.rfl
+  | imp a b iha ihb => intro h z; exact imp_congr (iha h.1 z) (ihb h.2 z)
+  | box a _ => intro _ z; exact Iff.rfl
+  | untl a b iha ihb =>
+      intro h z
+      rw [PlusTruth.untl_iff, PlusTruth.untl_iff]
+      constructor
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mp he, fun r h1 h2 => (iha h.1 r).mp (hgd r h1 h2)⟩
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mpr he, fun r h1 h2 => (iha h.1 r).mpr (hgd r h1 h2)⟩
+  | snce a b iha ihb =>
+      intro h z
+      rw [PlusTruth.snce_iff, PlusTruth.snce_iff]
+      constructor
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mp he, fun r h1 h2 => (iha h.1 r).mp (hgd r h1 h2)⟩
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb h.2 s).mpr he, fun r h1 h2 => (iha h.1 r).mpr (hgd r h1 h2)⟩
+  | stab a _ => intro h z; exact hL a h z
+
+/-- **THE WIDENED COROLLARY: the stab-free atom-valuation agreement on closure types.** With the
+`box` arm widened, the fragment Phase 11.5 consumes is STAB-FREE and nothing more: when the closure
+carries no `⊡` letter the pinned-letter hypothesis is vacuous and two ladder paths with the same
+atom row at every position realize the same closure type at every position, `□` letters
+included. -/
+theorem tpOf_stabFree_eq_of_lab_eq
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    {k k' : ℤ} {g g' : ℤ → LadderState Q pend}
+    (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t)) (hσ' : ∀ t : ℤ, σ'.state t = (t + k', g' t))
+    (hlab : ∀ (v : ℤ) (p : Atom), lab (objAt g v) p = lab (objAt g' v) p)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) (z : ℤ) :
+    tpOf (ladderModel step pend fwd bwd lab) φ σ z
+      = tpOf (ladderModel step pend fwd bwd lab) φ σ' z := by
+  ext ψ
+  rw [mem_tpOf_iff, mem_tpOf_iff]
+  exact and_congr_right fun hmem =>
+    truthAt_iff_of_lab_eq_of_stabPinned fwd bwd lab (fun _ => False) σ σ' hσ hσ' hlab
+      (fun _ h => absurd h (fun h => h)) ψ (stabPinned_false_of_mem_closure hno ψ hmem) z
+
+/-- **THE INSTANCE THE ALTERNATIVE-HISTORY PROTOTYPE PREDICTED, GENERALISED AWAY FROM THE FIXTURE.**
+A pend-profile-preserving relabelling of a ladder path that leaves every ATOM ROW alone realizes the
+SAME stab-free closure type as the original at every position. The prototype's compiled
+`alt_atoms_eq_spliced_atoms` — one atom, one fixture, the alternative and the spliced path hitting
+the `p`-state at exactly the same positions — becomes an instance of this statement's HYPOTHESIS
+rather than a statement of its own.
+
+This is the one place the alternative-history construction and the truth-transport layer meet, and
+it is worth saying exactly how far it reaches. The relabelling may move the object state at a
+position (`altWalkPath_not_vacuous`); what it may not move is that state's atom row. So this is not
+a type transport across a change of the realized valuation, and it is not a repair of half (ii):
+the refuted statement is about the SPLICE, which lengthens a pending region and changes which
+positions exist, and no hypothesis here constrains such a surgery. -/
+theorem tpOf_eq_of_altWalkPath_of_lab_eq
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (w' : ℤ → Q) (hpend : ∀ v, pend (w' v) = pend (objAt g v))
+    (hstep : ∀ v, step (w' v) (w' (v + 1)) = true)
+    (hlab : ∀ (v : ℤ) (p : Atom), lab (w' v) p = lab (objAt g v) p)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t)) (z : ℤ) :
+    ∃ τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+      (∀ t : ℤ, τ.state t = (t, altWalkPath g w' hpend t)) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ τ z
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  have halt : IsLadderPath step pend (altWalkPath g w' hpend) :=
+    altWalkPath_isLadderPath g hg w' hpend hstep
+  obtain ⟨τ, hτ⟩ := exists_hist_of_isLadderPath fwd bwd (altWalkPath g w' hpend) halt
+  refine ⟨τ, hτ, ?_⟩
+  refine tpOf_stabFree_eq_of_lab_eq fwd bwd lab φ (k := 0) (k' := 0) τ σ
+    (fun t => by simpa using hτ t) (fun t => by simpa using hσ t) ?_ hno z
+  intro v p
+  rw [objAt_altWalkPath]
+  exact hlab v p
 
 end Hist
 

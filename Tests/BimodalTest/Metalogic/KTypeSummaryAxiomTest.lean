@@ -105,6 +105,11 @@ outside the standard three, or that reports `sorryAx`, is a regression to invest
 expectation to rewrite.
 -/
 
+-- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
+-- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
+-- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
+set_option linter.style.longFile 1700
+
 namespace BimodalTest.Metalogic
 
 /-! ## Step 4's ingredient: infinite Ramsey for pairs
@@ -1462,5 +1467,77 @@ construction, no finite-fibre or finite-width hypothesis appears, and no pin is 
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.mem_cellAt_of_altWalkPath
+
+/-! ## Requirement (W): the atom-valuation closure agreement
+(`RaySummary/LadderAgree.lean`)
+
+Seven further pins, one per declaration of the module's atom-valuation transport layer. The NARROW
+FRAGMENT (`StabBoxFree`) and its restriction to a closure with no `⊡` and no `□` member
+(`stabBoxFree_of_mem_closure`): `StabPinned`'s shape with the `box` arm tightened to `False` and
+the pinned-letter parameter dropped, since the narrow fragment asks nothing of the letter inside a
+`□` and excludes the letter outright. Then the TRANSPORT itself at the weaker hypothesis
+(`truthAt_iff_of_lab_eq_of_stabBoxFree`, with `tpOf_stabBoxFree_eq_of_lab_eq` on closure types):
+two ladder paths whose object walks carry the SAME ATOM ROW at every position satisfy the same
+stab-free, box-free closure formulas at every position. The hypothesis is POINTWISE `lab`
+agreement, not object-walk equality — the latter is half (i), and these pins are not a second
+pinning of it. Then the WIDENED form (`truthAt_iff_of_lab_eq_of_stabPinned`, with
+`tpOf_stabFree_eq_of_lab_eq` its stab-free type-level instance): the `box` arm widens, because the
+`box` clause quantifies over all histories and all times of the model and the two compared
+histories live in the SAME model, so nothing has to be excluded. And the INSTANCE over the
+alternative-history construction (`tpOf_eq_of_altWalkPath_of_lab_eq`): a pend-profile-preserving
+relabelling that leaves every atom row alone realizes the same stab-free closure type as the
+original.
+
+**What these pins certify, and what they do not.** The standard profile or a strict subset of it
+on each declaration, and nothing else. They certify a transport whose hypothesis is weaker than
+half (i)'s by exactly the non-injectivity of `lab`, and nothing more: the relabelling may move the
+object state at a position, but no statement here moves that state's ATOM ROW. These pins are
+therefore NOT a repair of half (ii), which is refuted rather than open — the refuted statement is
+about the SPLICE, which lengthens a pending region and changes which positions exist, and no
+hypothesis here constrains such a surgery. They are not a conditional, positionwise-narrowed or
+raised-`Tc` restatement of it either. The agreement of class-equivalent cells remains unlanded: no
+statement here mentions `kappa`, a counter class or a cell's constancy on one. No certificate
+object and no certificate-side periodicity identifier is named anywhere in the layer, no
+finite-fibre or finite-width hypothesis appears, and no pin is a bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.StabBoxFree' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.StabBoxFree
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stabBoxFree_of_mem_closure' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stabBoxFree_of_mem_closure
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.truthAt_iff_of_lab_eq_of_stabBoxFree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.truthAt_iff_of_lab_eq_of_stabBoxFree
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.tpOf_stabBoxFree_eq_of_lab_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf_stabBoxFree_eq_of_lab_eq
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.truthAt_iff_of_lab_eq_of_stabPinned' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.truthAt_iff_of_lab_eq_of_stabPinned
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.tpOf_stabFree_eq_of_lab_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf_stabFree_eq_of_lab_eq
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_of_altWalkPath_of_lab_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_of_altWalkPath_of_lab_eq
 
 end BimodalTest.Metalogic

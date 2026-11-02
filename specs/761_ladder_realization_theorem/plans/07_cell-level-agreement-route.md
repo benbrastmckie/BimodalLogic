@@ -2352,7 +2352,7 @@ decision recorded in the task list above.
 
 ---
 
-### Phase 11.4: The Atom-Valuation Closure Agreement [NOT STARTED]
+### Phase 11.4: The Atom-Valuation Closure Agreement [COMPLETED]
 
 **Goal**: Prove, generally and away from the fixture, that two ladder paths with the SAME ATOM
 VALUATION realize the same stab-free, box-free closure formulas at every position — and hence that
@@ -2373,40 +2373,81 @@ half (i) already closed; this phase re-states them at the weaker hypothesis and 
 untouched, cited, and not re-proved.
 
 **Tasks**:
-- [ ] State the hypothesis in the form the `atom` clause actually reads:
+- [x] State the hypothesis in the form the `atom` clause actually reads:
       `∀ v : ℤ, ∀ p : Atom, lab (objAt g v) p = lab (objAt g' v) p`, pointwise in the atom, through
       the landed `atom_mem_tpOf_ladder_iff`. Stating it as object-walk equality would collapse the
       statement into the landed half (i) and prove nothing new — record that explicitly in the
       declaration's docstring so no later round re-derives half (i) under a new name.
-- [ ] Define the fragment the route decision names: stab-free AND box-free. Either a new predicate
+      *(completed — `hlab : ∀ (v : ℤ) (p : Atom), lab (objAt g v) p = lab (objAt g' v) p` on all
+      four transport declarations; the no-object-walk-equality warning is a bolded sentence in
+      `truthAt_iff_of_lab_eq_of_stabBoxFree`'s docstring and in the module docstring's new
+      `## The atom-valuation closure agreement` section)*
+- [x] Define the fragment the route decision names: stab-free AND box-free. Either a new predicate
       (`StabBoxFree`, false on `stab _` and on `box _`, structural elsewhere) or the landed
       `StabPinned` with its `box` arm tightened — choose the cheaper shape and record which, since
       `StabPinned`'s `box` arm is `True` whatever its argument and so does not restrict. Prove it
       restricts to `plusSubformulaClosure φ` using the landed closure facts; do not author a new
       closure lemma.
-- [ ] Prove `truthAt_iff_of_lab_eq_of_stabBoxFree` (the plan's own name; not a filed Challenge
+      *(completed — NEW PREDICATE chosen and recorded: `StabBoxFree`, `False` on `⊡` and on `□`,
+      structural elsewhere, with NO pinned-letter parameter. Reason recorded in the module: the
+      narrow fragment asks nothing of the letter inside a `□`, it excludes the letter outright, so
+      a parameter over `□` letters would carry no information. Closure restriction is
+      `stabBoxFree_of_mem_closure`, routed through the landed `plusClosure_{imp,untl,snce}_*`
+      projections; no new closure lemma)*
+- [x] Prove `truthAt_iff_of_lab_eq_of_stabBoxFree` (the plan's own name; not a filed Challenge
       statement) by induction on the formula, one case per clause: `atom` by the hypothesis through
       `atom_mem_tpOf_ladder_iff`; `bot` and `imp` structural; `untl` and `snce` by the induction
       hypothesis at the other positions, through the landed fixpoint readings `untl_mem_tpOf_iff`
       and `snce_mem_tpOf_iff`; `stab` and `box` excluded by the fragment predicate. Cite
       `truthAt_iff_of_objAt_eq_of_stabPinned` as the model for the induction's shape; do NOT
       re-prove it and do NOT alter it.
-- [ ] Derive the type-level corollary `tpOf_stabBoxFree_eq_of_lab_eq`, and the instance that
+      *(deviation: altered — the `untl`/`snce` cases route through the TRUTH-level clause lemmas
+      `PlusTruth.untl_iff`/`PlusTruth.snce_iff`, not the type-level `untl_mem_tpOf_iff`/
+      `snce_mem_tpOf_iff` this item names. The two directives in this item are in tension: the
+      theorem is a statement about `PlusTruthAt`, so a `tpOf`-level `iff` is not applicable inside
+      its induction, and the item's own second directive — cite
+      `truthAt_iff_of_objAt_eq_of_stabPinned` as the model for the induction's shape — points at a
+      proof that uses exactly the two truth-level clause lemmas. `untl_mem_tpOf_iff` is itself
+      proved by `rw [mem_tpOf_iff, PlusTruth.untl_iff]`, so the routing is through the same fact
+      one layer down. No named declaration is skipped and no signature is weakened; half (i)
+      is neither re-proved nor altered)*
+- [x] Derive the type-level corollary `tpOf_stabBoxFree_eq_of_lab_eq`, and the instance that
       records what the prototype predicted — generalised away from the fixture: whenever two ladder
       paths agree pointwise on `lab`, they agree on the fragment, so the prototype's
       `alt_atoms_eq_spliced_atoms` becomes one instance of a hypothesis rather than a statement of
       its own.
-- [ ] **Record, do not assume, whether the `box` arm can be widened.** The `box` bit quantifies
+      *(completed — `tpOf_stabBoxFree_eq_of_lab_eq` and the instance
+      `tpOf_eq_of_altWalkPath_of_lab_eq`, which states the alternative history realizing the same
+      stab-free closure type as the original whenever the relabelling leaves every atom row alone)*
+- [x] **Record, do not assume, whether the `box` arm can be widened.** The `box` bit quantifies
       over all histories and all times and so names no path, which is what the landed
       `box_mem_tpOf_transfer` compiles. If that lemma applies at this hypothesis, land the wider
       corollary `tpOf_stabFree_eq_of_lab_eq` and let Phase 11.5 consume the stab-free fragment; if
       it does not, name the hypothesis of `box_mem_tpOf_transfer` that fails and leave the fragment
       stab-free-and-box-free as the route decision states it. Either answer is a result; neither is
       to be assumed in advance.
-- [ ] Wire the new declarations: axiom-profile pins in `KTypeSummaryAxiomTest.lean`, the module
+      *(completed — ANSWER: AFFIRMATIVE, the `box` arm WIDENS. `box_mem_tpOf_transfer`'s only
+      hypothesis beyond closure membership is that both points lie in the SAME model, and the two
+      compared histories here are both histories of `ladderModel step pend fwd bwd lab`; no
+      hypothesis of it fails. The `box` case of the widened induction is literally `Iff.rfl`,
+      compiled. Landed: `truthAt_iff_of_lab_eq_of_stabPinned` (widened truth level, at the
+      pinned-letter parameter so a `⊡`-depth induction can consume it) and
+      `tpOf_stabFree_eq_of_lab_eq` (the widened type-level corollary). Phase 11.5's fragment is
+      therefore STAB-FREE, `□` included)*
+- [x] Wire the new declarations: axiom-profile pins in `KTypeSummaryAxiomTest.lean`, the module
       docstring's transport section extended, the generated README inventory blocks and
       `typst/generated/status.typ` resynced. No C14 heredoc entry and no `docs/theorem-index.md`
       row: this phase lands no filed Goal.
+      *(completed — seven `#print axioms` pins with their own `## Requirement (W): the
+      atom-valuation closure agreement` prose section in `KTypeSummaryAxiomTest.lean`; the module
+      docstring's new `## The atom-valuation closure agreement` section; the three generated README
+      inventory blocks rewritten by `check-module-invariants.sh --emit-inventory`; `status.typ`
+      resynced by `typst-status-counts.sh`. No theorem-index row and no C14 entry, as directed.
+      Two file-scope additions this item did not anticipate: `set_option
+      linter.style.longFile 2100` in `LadderAgree.lean` (the module reached 1995 lines, past the
+      1800 the prior phase set) and `set_option linter.style.longFile 1700` in
+      `KTypeSummaryAxiomTest.lean` (the ledger reached 1539 lines, past the package-wide 1500) —
+      both with explanatory comments, the same in-repo pattern the module already used)*
 
 **Prohibited workarounds**: do NOT state the transport with the object-walk-equality hypothesis —
 that is the landed half (i), and restating it is not progress; do NOT reintroduce
