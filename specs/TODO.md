@@ -1,5 +1,5 @@
 ---
-next_project_number: 828
+next_project_number: 833
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 828
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,828,829,830,831,832 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827 | 298,428,502,761,768,769,770,772,777,810,813 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822 | 231,429,497,783 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -90,6 +90,8 @@ next_project_number: 828
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
+830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
+831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 
 ### Formula Refactor
 
@@ -119,13 +121,181 @@ next_project_number: 828
 817 [NOT STARTED] — Wrap the remaining count-carrying inventory tables under...
 818 [NOT STARTED] — Wrap the four directory-rollup inventory tables that need the...
 821 [RESEARCHED] — Reconcile specs/state.json's next\_project\_number against...
+828 [NOT STARTED] — CI IS CURRENTLY RED ON main. bash...
+832 [NOT STARTED] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Build Performance
 
 803 [NOT STARTED] — Cut the elaboration time of...
 804 [NOT STARTED] — Determine whether...
+829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 832. Reclaim opencode old and data partials
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Two local-disk reclamations found by the 2026-11-02 review. Both are LOCAL-DISK ONLY: every path below is gitignored with zero tracked files, so nothing here produces a commit and nothing is recoverable from git afterwards. That asymmetry is the whole reason item 2 is a user decision rather than an action.
+
+STANDING INSTRUCTION -- RE-VERIFY BEFORE DELETING. Re-check sizes, mtimes and `git ls-files` for each path before removing anything. Never delete on the strength of this description alone.
+
+ITEM 1 -- `.opencode_OLD/`: SAFE TO DELETE (62 MB). Verified at filing: gitignored at `.gitignore:105`, zero tracked files; mtime 2026-05-07 against `.opencode/`'s 2026-05-14; `diff -rq .opencode .opencode_OLD` shows 38 entries differing, mostly `node_modules` plus a `python` extension present in the live `.opencode/` and absent here. It is strictly a stale subset of the live tree. Confirm the subset relation once more (`diff -rq`), then delete. No commit follows.
+
+ITEM 2 -- `data/`: USER DECISION, NOT AN AUTOMATIC DELETE (2.3 GB total). Verified at filing: gitignored at `.gitignore:107`, zero tracked files. Composition: `proof_steps.jsonl` 1.6 GB, plus two abandoned checkpoints, `bmlogic-c8-clean.jsonl.partial` (375 MB) and `.checkpoint.partial` (15 MB).
+  - The two `.partial` files (390 MB combined) are the unambiguous candidates -- abandoned checkpoints of an interrupted run.
+  - `proof_steps.jsonl` is NOT a safe unilateral delete: it feeds the training-dataset pipeline consumed by the separate BimodalHarness repository (private, per `README.md`'s Related Projects section). Removing it may destroy a dataset that is not reproducible without re-running the generator. ASK before touching it; do not treat its size as justification.
+
+NOT IN SCOPE -- the rest of the top-level directories were audited and are each intentional or harmless, so do not sweep them: `Boneyard/` (5.4 MB, 225 TRACKED files, intentional and justified by `Boneyard/README.md`, ADR-009 retention and ADR-005 single-archive; `#exit`-guarded, not a Lake root -- DO NOT DELETE), `research/` (`.gitignore:90`), `training/` (:91), `other/` (:109, single `dana.md`), `build/` (:3, stray LaTeX aux output), `.memory/` (:76), `.agent-logs/` (:108), `.playwright-mcp/` (:118), `.opencode/` (:75, the LIVE tree).
+
+ALSO NOT IN SCOPE -- documentation staleness. `CHANGELOG.md` is roughly six weeks stale (last touched 2026-09-21 against a 2026-11-02 last commit) and `FormalSystem/Metalogic/README.md` cites `completeness_discrete`, a name that no longer exists (renamed to the ZTime form; the README admits the discrepancy in prose). Both fold into the already-filed documentation-polish record (177), which is last in the programme. Do NOT fix them here and do not file them separately.
+
+ACCEPTANCE. `.opencode_OLD/` removed after a confirming `diff -rq`; a recorded decision on the two `data/*.partial` files; `proof_steps.jsonl` untouched unless the user says otherwise. No commit is expected from this task -- if `git status` shows anything staged after it, something outside scope was touched.
+
+FILE SCOPE: `.opencode_OLD/`, `data/` (inspection and the two `.partial` files only).
+
+PROVENANCE: `specs/reviews/review-2026-11-02.md`, Low Priority Issues section.
+
+---
+
+### 831. Dense time certificate dichotomy gate
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, verdict-first. State and attempt the logic-level dichotomy that gates the dense-time certificate route (L-R3).
+
+CLASSIFICATION: RESEARCH, not implementation. The deliverable is a verdict plus grounds, not a landed theorem. Do not re-describe this as engineering, and do not budget it as a routine task.
+
+WHY IT MATTERS. Every landed and in-flight decidability result in this tree is ZTime-shaped. L-R3 is the ONLY identified non-spine route to Base/Dense/RTime. The review `specs/archive/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md` marks L-R3 "NEW, UNFILED"; this record is what makes that reference resolve.
+
+STANDING INSTRUCTION -- RE-VERIFY BEFORE CITING. Re-read the followup-scope-spec and re-grep before citing any name below. The spec lives under `specs/archive/`; confirm the path still resolves before quoting it.
+
+THE GATE, VERIFIED AT FILING (2026-11-02). L-R3 is blocked on a logic-level dichotomy of the shape
+
+    Log(all) = Log(ZTime) INTERSECT Log(Dense)
+
+and NO Lean declaration states it -- confirmed by grep over `FormalSystem/` at filing time. Re-confirm that absence before writing anything, and if a declaration has since appeared, say so and stop: the premise of this task would then be stale.
+
+CHEAPEST HONEST FIRST INCREMENT. State the dichotomy as a Lean proposition and attempt it. A refutation is a complete outcome; so is a verdict that it is open with the obstruction named. What is NOT acceptable is a plan that assumes the dichotomy and builds the certificate class on top of it -- that is the shape this record exists to prevent.
+
+RELATION TO THE TABLEAU SPINE. This is deliberately OFF the spine (428 / 429 / 430 / 412 / 482). 430's own record states the spine is no longer the critical path to a first decidability result, and 429 and 482 are both flagged open mathematics, multi-month. Do not fold this into any of them, and do not schedule it as a substitute for ROADMAP Stage 1 (`/orchestrate 761 --hard --lit`), which it does not advance.
+
+ACCEPTANCE. A report recording (a) the dichotomy as stated in Lean, (b) the attempt and its outcome -- proved, refuted, or open with the obstruction named -- and (c) a verdict on whether L-R3 is worth filing as an implementation front at all. No Lean needs to land beyond the statement itself and whatever the attempt produces.
+
+FILE SCOPE: research-only; no committed Lean required beyond a probe. Any probe goes under this task's own `specs/` directory, not into `FormalSystem/`.
+
+PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section.
+
+---
+
+### 830. Generalize decidable validztime finite premises
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Generalize `Compression.decidableValidZTime` from the empty-premise case to arbitrary finite premises.
+
+CLASSIFICATION: IMPLEMENTATION, bounded residue, NO OPEN MATHEMATICS. This is the one genuinely new tractable piece of decidability work the 2026-11-02 review found. It is NOT open research and must not be re-described as such.
+
+SCOPE LIMIT, STATED FIRST SO IT IS NOT MISREAD. This strengthens the BASE-LANGUAGE result and does **not** advance the L+ aim (`Decidable (PlusValidZTime phi)`, ROADMAP Stage 1). `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/README.md:132` records why: `ValidZTime` is stated for `FormalSystem.Syntax.Formula`, which carries no stability operator, and the durable scope sentence lives in `BiLasso/Assembly.lean`'s docstring. Do not let a plan or report claim this moves Stage 1.
+
+STANDING INSTRUCTION -- RE-VERIFY BEFORE CITING. Re-read the README and re-grep every declaration name below before citing it.
+
+VERIFIED AT FILING (2026-11-02). `Compression/README.md:114-129` ("## What is out of scope", "General finite-premise consequence") enumerates the residue and bounds it. Already stated at arbitrary `Gamma Del`, so NOT part of the work: `WitnessFamily.Refutes`, `WitnessFamily.refutes_of_certifies`, `WitnessFamily.joint_countermodel`, `exists_labelledLasso_of_history_realized`, `compressionBound`, and `WitnessFamily.decidableCertifies` with its four component instances.
+
+THE RESIDUE IS EXACTLY THREE ITEMS (README:124-127):
+1. The consequence analogue of `validZTime_iff_validInt`, for the entry point's carrier normalization.
+2. `WitnessFamily.Target`'s premise clause.
+3. `Enumerate.lean`'s phi-specializations: `closureSubsetsOf`, `rawLabelledLassos`, `IsLabelledLasso`, `boundedLassos`, `cands`.
+
+THE README'S OWN CAVEAT, CARRIED FORWARD VERBATIM IN SUBSTANCE: "That residue is bounded and enumerated, and it is unproved -- the consequence-form normalization has never been written, so the general form is not known to compile." Treat item 1 as the risk-bearing item. If it does not go through, report that as the finding rather than forcing items 2-3 around it.
+
+WHAT THIS CLOSES. The gap `decidableSemanticConsequenceNil` leaves -- it covers the empty-premise case only. The obstruction is narrower than it looks (README:116-121): a context-conjunction deduction theorem, which this tree does NOT have, is what the *reduction* route (`Gamma |= sigma` from `|= AND Gamma -> sigma`) would need; the *direct* route needs none, because `SemanticConsequenceIn` unfolds to local consequence at a point. Take the direct route.
+
+ALREADY SPENT, DO NOT RE-DERIVE. `Decidable (Derivable .ZTime [] phi)` has already landed as `decidableDerivableZTime` in `FormalSystem/Metalogic/ZTimeProvability.lean`. That corollary is not available as this task's deliverable.
+
+NOT IN SCOPE. A usable executable: `cands` is astronomically large and [GKWZ] section 6.5 gives an EXPSPACE-hardness lower bound for `PTL x S5`, so the cost is the literature's own (README:130-131, `Assembly.lean` docstring). Do not file performance work against it here.
+
+ACCEPTANCE. The general finite-premise form is stated and proved sorry-free, or the attempt is reported with the specific item that blocked it; `lake build` green; axioms of any new headline declaration pinned to exactly `[propext, Classical.choice, Quot.sound]`; no regression in `scripts/check-module-invariants.sh`.
+
+FILE SCOPE: `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/` (README plus the normalization entry point), `FormalSystem/Metalogic/Decidability/WitnessFamily/Enumerate.lean`, `FormalSystem/Metalogic/Decidability/WitnessFamily/Target.lean` (verify this path before relying on it).
+
+PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section.
+
+---
+
+### 829. Ci lake build cache and job config
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: build-performance
+- **Dependencies**: None
+
+**Description**: **NO BUILD CACHE FOR `.lake/build` IN ANY CI WORKFLOW.** Every CI run re-elaborates the whole library from scratch.
+
+STANDING INSTRUCTION -- RE-VERIFY BEFORE CITING. Re-grep the workflow files before citing any line number below.
+
+VERIFIED AT FILING (2026-11-02):
+- All three workflows set `use-mathlib-cache: true` (`ci.yml:55`, `docs.yml:92`, `release.yml:115`), so Mathlib oleans are FETCHED, not built. That part is correct and is not what this record is about.
+- There is NO `actions/cache` step anywhere under `.github/workflows/`: grep returns no `actions/cache`, no `key:`, no `restore-keys`. The project's OWN build artifacts are therefore discarded between runs.
+- Scale being discarded: 716 `FormalSystem` modules, 371,441 lines; local `.lake/build` is 6.3 GB.
+
+THIS IS DISTINCT FROM THE TWO FILED BUILD-COST TASKS (803 SubformulaProperty elaboration time, 804 its fan-in). Those reduce the cost of elaborating one module and its dependents; this one is cross-run artifact reuse. Neither subsumes the other, and this one is independent of both -- do not fold it into either.
+
+TWO SUBORDINATE CONFIGURATION FINDINGS, same surface:
+1. `ci.yml`'s `build` job (declared at `:17`, `runs-on: ubuntu-latest` at `:19`) has NO `timeout-minutes`, inheriting GitHub's 360-minute default, while `docs.yml:57` sets 300. Parity is the cheap fix.
+2. `lakefile.toml` carries ZERO build-performance configuration: no `moreLeanArgs`, no `precompileModules`, no `extraDepTargets`, no parallelism or memory setting. All its `leanOptions` are linter-related (`linter.mathlibStandardSet`, `linter.style.longFile = 1500`, `unicodeLinter = false`). This is a greenfield area, NOT a misconfiguration -- say it that way in any report.
+3. CI is a single serial job with no `strategy:`/`matrix:`. Four further sequential `lake build` invocations stack after the main step: the 15-target `lean_exe` root loop, `BimodalTools --wfail`, `BimodalToolsTest --wfail`, and the check scripts.
+
+DELIVERABLE, ORDERED. (a) Add an `actions/cache` step scoped to `.lake/build` ONLY (Mathlib stays on `use-mathlib-cache`), keyed on the toolchain plus `lake-manifest.json` plus a cache-epoch segment -- an epoch segment such as `lake-recheck-v3-` is a sanctioned durable version axis under `rules/no-record-versioning-in-deliverables.md`, so it is permitted in the key. (b) Set `timeout-minutes` on `ci.yml`'s build job for parity with `docs.yml`.
+
+GUARDRAIL. `precompileModules` and any matrix split are MEASURED EXPERIMENTS, not part of (a) or (b). Do not land either without a before/after timing recorded in the task's own artifacts. If a matrix split is ever evaluated, the natural seams are the two subdirectories that are 57% of the library: `Metalogic/Decidability/` (179 files, 106,266 lines) and `Metalogic/Expressiveness/` (143 files, 104,211 lines), then `WeakCanonical/` (45 / 29,303) and `BXCanonical/` (28 / 23,165).
+
+NOT IN SCOPE. The agent-side mitigations are already in place and are a different problem: `.claude/context/project/lean4/operations/long-builds.md`, `multi-instance-optimization.md`, and `lake-build-guard.sh` (flock serialization, PSI/swap preflight, opt-in cgroup bounding) mitigate MULTI-SESSION CONTENTION, not build duration. Do not touch them here; they also live in the source store, not this repo.
+
+ACCEPTANCE. A second CI run on an unchanged tree restores from cache rather than re-elaborating (visible in the run log); `ci.yml` declares a `timeout-minutes`; no change to what any check step verifies.
+
+FILE SCOPE: `.github/workflows/ci.yml`, `lakefile.toml`.
+
+PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Medium Priority Issues sections.
+
+---
+
+### 828. Metalogic upward edge allowlist count drift
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: **CI IS CURRENTLY RED ON `main`.** `bash scripts/check-metalogic-cycles.sh` exits 1 with:
+
+```
+SURPLUS  FormalSystem.MinusLanguage.AxiomDischarge -> FormalSystem.Theorems.LinearityDerived
+FAIL  upward import set is not the recorded allowlist (1 surplus, 0 shortfall)
+```
+
+STANDING INSTRUCTION -- RE-VERIFY BEFORE CITING. Re-run the script and re-grep every path and line number below before citing them; do not inherit a name from this text.
+
+VERIFIED AT FILING (2026-11-02):
+- `python3 scripts/measure-refactor-partitions.py upward-edges` reports EIGHT upward edges, all from `FormalSystem/MinusLanguage/AxiomDischarge.lean`. The eighth is the `Theorems.LinearityDerived` line, imported at `AxiomDischarge.lean:16` and used at `:277`, `:320`, `:324`.
+- THREE places still record seven: the allowlist comment at `scripts/check-metalogic-cycles.sh:186`; `docs/ARCHITECTURE.md:58` ("### The upward set: seven lines, all from one file"), `:60`, `:67`, `:71`, and `:186` ("the one count on this page"); and the layer table consumed by the measurement script.
+- ORIGIN: the edge arrived with commit `ba6c0f5dd` ("task 788 phase 6: repoint Conservativity, Plus/C bridges, Independence pins, tests and tooling to the derived schemata"). It is the SAME FILE and the SAME DOCUMENTED CLASS as the other seven (AxiomDischarge consuming derived schemata from `Theorems/*`), so it reads as a legitimate eighth line of an accepted class, NOT a layering violation. Confirm that reading before acting; if the repointing was meant to be temporary, relocating the import is the alternative.
+
+WHY THIS IS NOT A SOFT WARNING. `ci.yml:174-181` runs the script with `continue-on-error: true`, but the aggregating gate at `ci.yml:283+` reports `steps.metalogic-cycles.outcome` (line 341) and `exit 1`s when any reported outcome failed (lines 352-356). The script is pure grep over import lines with no lake or cache dependency, so it fails identically in CI. The per-step `continue-on-error` is the deliberate collect-then-fail-once pattern, not an exemption -- which is exactly why this failure is easy to miss.
+
+DELIVERABLE. The script's own FAIL message prescribes the fix: "if the edge is genuinely correct, change the layer table in `scripts/measure-refactor-partitions.py` and `ORGANISATION.md` together". Admit the eighth edge to the allowlist AND correct all three recorded counts in the same change. A change that fixes the allowlist without the docs (or vice versa) re-opens the same drift.
+
+ACCEPTANCE. `bash scripts/check-metalogic-cycles.sh` exits 0; `bash scripts/check-module-invariants.sh --no-build` still exits 0 with its 47 PASSes; no count anywhere in `docs/ARCHITECTURE.md` or `ORGANISATION.md` still says seven upward lines.
+
+FILE SCOPE: `scripts/measure-refactor-partitions.py`, `scripts/check-metalogic-cycles.sh`, `docs/ARCHITECTURE.md`, `ORGANISATION.md`.
+
+PROVENANCE: `specs/reviews/review-2026-11-02.md`, Critical Issues section.
+
+---
 
 ### 827. Require a plan phase to agree with its own Scope Hypothesis and to name only artifacts that exist
 - **Effort**: low
