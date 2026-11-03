@@ -282,7 +282,7 @@ imports it) and of `BimodalTest.Metalogic.KTypeSummaryAxiomTest`, plus
 
 ---
 
-### Phase 2: The `(K2)`-Level Pigeonhole Over Region Starts [NOT STARTED]
+### Phase 2: The `(K2)`-Level Pigeonhole Over Region Starts [COMPLETED]
 
 **Goal**: `LadderPin.lean`'s second half: given enough region starts in a window, two of them at
 least two apart carry the same object state and the same realized type at their successor
@@ -292,7 +292,7 @@ pin density alone.
 
 **Tasks**:
 
-- [ ] `exists_pinTypeBlock_of_budget_lt_pins` (Goal, signature as pinned below): with
+- [x] `exists_pinTypeBlock_of_budget_lt_pins` (Goal, signature as pinned below) *(completed; the even-index collision is factored through one internal `key` step so the two symmetric branches of the pigeonhole share a single proof)*: with
   `s : ℕ → ℤ` strictly monotone, `N` region starts at `s 0 … s (N - 1)`, and
   `2 · (Fintype.card Q · 2 ^ (plusSubformulaClosure φ).card) + 2 ≤ N`, the map
   `i ↦ (objAt g (s (2 · i) + 1), tpOf M φ σ (s (2 · i) + 1))` on the even indices has domain
@@ -300,17 +300,17 @@ pin density alone.
   gives `i < j` even with `j ≥ i + 2`. Take `u := s i + 1`, `l := (s j - s i).toNat`,
   `t := s (i + 1)`. The block's interior region start is `t` (`u ≤ t` by monotonicity and
   `t + 1 < u + l` because `s (i + 1) < s j`).
-- [ ] Model the proof on `exists_typeBlock_of_budget_le_cnt_within` (`LadderPump.lean`): the same
+- [x] Model the proof on `exists_typeBlock_of_budget_le_cnt_within` *(completed)* (`LadderPump.lean`): the same
   `Fintype.exists_ne_map_eq_of_card_lt` over `Q × {T // T ∈ (plusSubformulaClosure φ).powerset}`,
   the same `Finset.card_powerset` / `Fintype.card_prod` arithmetic, the same `rcases` on which of
   the two indices is smaller. Do NOT route through the certificate layer's `ProdState` — that is
   `LadderChain.lean`'s and is on this module's forbidden grep.
-- [ ] A corollary naming the spanning-block data in the shape task 836's refuted `def`s took
+- [x] A corollary naming the spanning-block data in the shape task 836's refuted `def`s took *(completed as `exists_spanningBlock_of_pins_below`, the backward shape; the forward shape needs no corollary because the Goal already delivers `s 0 < u`, which IS `SpanningBlockFwd`'s `z < u` at `z := s 0`)*
   (`u`, `l`, the interior region start, the two endpoint equalities), so Phase 4's gate statement
   can consume it without re-deriving the tuple.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: extend Phase 1's pin block with a
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` *(completed; both pins read the standard profile)*: extend Phase 1's pin block with a
   `#guard_msgs in #print axioms` pin for the Goal and the corollary.
-- [ ] Record in `issues.jsonl` whether the even-index restriction was needed as written or whether
+- [x] Record in `issues.jsonl` whether the even-index restriction was needed as written *(completed: needed exactly as written; no tighter constant fell out, and the pinned constant was not loosened)* or whether
   a tighter constant (`budget + 2` rather than `2 · budget + 2`) fell out of the proof. Do NOT
   loosen the pinned constant to match a tighter proof: a tightening is a follow-up, and the
   pinned signature is the contract (`rules/plan-compliance.md`, Statement Fidelity).

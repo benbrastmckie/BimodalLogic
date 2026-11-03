@@ -1761,4 +1761,28 @@ and neither pin asserts that pins are dense on a general path. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.pendPast_or_cntAt_le_nxtAt_succ
 
+/-! ## Requirement (W): the pigeonhole over region starts (`RaySummary/LadderPin.lean`)
+
+`exists_pinTypeBlock_of_budget_lt_pins` runs the `(objAt, tpOf)` pigeonhole over the PINS rather
+than over the positions inside one region, so the block it produces SPANS a pin: with more than
+twice the type-pigeonhole budget of pins enumerated in a window, two of them at least two apart
+carry the same object state and the same realized type at their successor positions, and a third
+pin lies strictly inside the block they bound. `exists_spanningBlock_of_pins_below` reads that
+tuple off in the shape the refuted spanning-block condition's statement took. The hypothesis is
+the PIN COUNT in the window: neither pin claims that count is derivable from the parameter
+conditions, and neither revives the refuted device, which asserted a spanning block
+unconditionally. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_pinTypeBlock_of_budget_lt_pins' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_pinTypeBlock_of_budget_lt_pins
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_spanningBlock_of_pins_below' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_spanningBlock_of_pins_below
+
 end BimodalTest.Metalogic
