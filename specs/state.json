@@ -2048,7 +2048,7 @@
     {
       "project_number": 844,
       "project_name": "reanchored_deletion_half_depth_zero_cell",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Land the downward (deletion) half of the depth-0 cell obligation by re-anchoring the lift, then discharge the single residual inequality.\n\nTHE REPORTED BLOCKER DOES NOT HOLD AS STATED. The depth-0 obligation's downward inclusion was reported blocked by a \"forward register cascade\" with the deletion mirror unlanded. Blocker research refuted both halves, and this task proceeds from the refutation rather than re-litigating it.\n\nThe mirror IS landed and green: exists_deleted_ladderPath_of_pend_past (FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean:287) already defeats the exact bound that was reported undischargeable. It does so by passing nxtAt g (l : ℤ) -- the anchor value re-read at the SHIFTED position -- and closing the anchor clause in two lines via nxtAt_lipschitz_two_sided g hg (v + (l : ℤ)) (l : ℤ) followed by the rewrite v + l - l = v, giving |nxtAt g (v+l) - nxtAt g l| <= |v| exactly, with zero slack. tightChain_slack_zero therefore does not refute the route: zero slack is precisely what the re-anchored bound consumes.\n\nROOT CAUSE: an anchor-position mismatch between two landed layers, not a cascade. The lift is hardwired to position 0 -- hn0 measures v.natAbs and exists_rlad_hist_of_walk (RunLayer.lean:436) discharges nxtAt g' 0 = n0 existentially (LadderChain.lean:424) -- while the deletion window sits at a and reads l positions right (delCnt_of_ge). Composing them charges the l-shift against a distance from 0, producing a gap of exactly l. n0 is a FREE PARAMETER of the lift, not a datum of g; the correct pairing, which the landed proof already uses, is anchor POSITION unshifted, anchor VALUE shifted.\n\nTHE GENUINE RESIDUAL, never reached by the blocked phase: the landed deletion theorem exposes only objAt and cntAt, because it calls exists_ladderPath_of_walk rather than the _nxt variant, while the consumer cellAt_subset_of_shift_of_pend_past (LadderChain.lean:597) reads nxtAt g z = n and needs nxtAt g' z = n. The missing nxt-exposure is what blocked the phase.\n\nTHE CASCADE IS NOT INFINITE. The landed proof's own hstart shows that under hpast every region start of the deleted walk sits strictly above a, so the anchor clause at any pin follows from the clause at the NEAREST pin v0 by triangle through the deleted walk's landed pin compatibility. The obligation collapses to one inequality at one region start.\n\nSOLUTION PATH (two mechanical steps plus one bounded inequality):\n(1) a z-anchored lift, by conjugating the existing lift with the landed isLadderPath_shift;\n(2) a nxt-exposing deletion theorem, re-running LadderPump.lean:287 through that lift at z := a, n0 := n, reusing all five landed clauses verbatim;\n(3) the single bound |nxtAt g (v0+l) - n| <= v0 - a, dischargeable from the landed forward window nxtAt_le_cntAt_add_of_next_region plus the consumer's hgap and hTc.\n\nHONEST OUTCOME IF (3) IS FALSE: a named side hypothesis on a single region start -- a regime restriction with a finite witness, not a reopened open core. Never a weakened statement under the reserved name cellLE_zero_const_of_kappa_eq, which remains claimed by nothing.\n\nFALLBACK, recorded but not required: a Helly-style alternative (hn0 for some n0 iff pairwise anchor-straddle, following from the landed hpins by |u-v| <= |u|+|v|). Not pursued because hstart makes the cheaper route above sufficient.\n\nAVAILABLE GROUND. The parent's pin layer is landed and green: LadderPin.lean (certificate-free, imports LadderPump alone) carries the pin-free dichotomy (idle_of_idle_of_no_pin_below, pend_past_or_idle_of_no_pin_below, pendPast_or_cntAt_le_nxtAt_succ) and the pigeonhole over the pins (exists_pinTypeBlock_of_budget_lt_pins, exists_spanningBlock_of_pins_below), and LadderChain.lean carries two_pow_card_prodState_le_Tc. All five pin at a subset of [propext, Classical.choice, Quot.sound]. Full research detail is in the parent's .blocker-research.json.\n\nSETTLED AND NOT TO BE REOPENED: (K1) provably does not constrain a spanning block's length. Both cycle-length conjuncts carry \"pending throughout\" on the walk they quantify and a spanning block's walk is idle at the pin inside it (spanning_walk_not_pending); satPeriod is a datum of step/lab/phi alone. The refuting object is the alternating path. A (K1) amendment is a separate decision, not part of this task.\n\nAUTHORING NOTE: a commit touching FormalSystem/**/*.lean is refused unless it also carries a regenerated typst/generated/status.typ. Name that file in every phase's Files-to-modify list, and run scripts/typst-sync-check.sh --fix before committing.",
       "effort": "high",
@@ -2056,12 +2056,17 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-11-03T18:48:29Z",
-      "last_updated": "2026-11-03T22:48:14Z",
+      "last_updated": "2026-11-03T23:26:52Z",
       "artifacts": [
         {
           "path": "specs/844_reanchored_deletion_half_depth_zero_cell/plans/01_reanchored-deletion-half.md",
           "type": "plan",
           "summary": "5-phase plan: z-anchored lift, nxt-exposing deletion theorem, residual-inequality gate, branch-selected downward assembly, record and full gate."
+        },
+        {
+          "path": "specs/844_reanchored_deletion_half_depth_zero_cell/summaries/01_reanchored-deletion-half-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: five new declarations, gate verdict FAIL (upper direction), verification results, and the two remaining pieces for the cell-level inclusion."
         }
       ],
       "session_id": "sess_1793744958_a6d2e1",
@@ -2074,7 +2079,8 @@
         "README.md",
         "specs/844_reanchored_deletion_half_depth_zero_cell/summaries/01_reanchored-deletion-half-summary.md",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Landed the z-anchored lift, the register-exposing deletion theorem, and the collapse of its anchor clause to one inequality at the first region start, all in LadderChain.lean with the standard axiom profile and no sorry. The gate on that inequality failed in its upper direction (climbing-register witness n=0, C=3, I=1, l=1, nxtAt s0=4), so the single-block downward assembly is landed under the named path-level hypothesis HasForwardSlack, never under the reserved name cellLE_zero_const_of_kappa_eq."
     },
     {
       "project_number": 845,

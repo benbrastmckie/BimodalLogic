@@ -1,19 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 1,
-  "summary": "Wrote a 5-phase, 7.5-hour plan for the re-anchored deletion half: a z-anchored lift (Phase 1), a register-exposing deletion theorem under an explicit anchor clause (Phase 2), a decision gate collapsing the clause to the first region start and attempting the residual inequality (Phase 3), the branch-selected single-block downward assembly (Phase 4), and record plus full gate (Phase 5). Two authoring-time findings shape it: every new declaration goes in LadderChain.lean because LadderPump.lean is upstream of the lift and at the longFile ceiling, and the residual inequality's upper direction has no landed source (Drift permits a climbing register), so the FAIL branch with a named forward-slack hypothesis is fully specified. Both pinned Challenge statements were elaborated standalone against the built library.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 2,
+  "summary": "All five plan phases closed: the z-anchored lift, the register-exposing deletion theorem, and the collapse lemma landed in LadderChain.lean with the standard axiom profile and no sorry. The gate on the residual inequality FAILED in its upper direction as the plan predicted (climbing-register witness n=0, C=3, I=1, l=1, nxtAt s0=4), so the single-block downward assembly is landed under the named path-level hypothesis HasForwardSlack; the reserved name cellLE_zero_const_of_kappa_eq remains claimed by nothing. Full guarded lake build exit 0 (2895 jobs), typst-sync-check and verify-deploy green.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/844_reanchored_deletion_half_depth_zero_cell/plans/01_reanchored-deletion-half.md",
-      "summary": "5-phase plan: z-anchored lift, nxt-exposing deletion theorem, residual-inequality gate, branch-selected downward assembly, record and full gate."
+      "type": "summary",
+      "path": "specs/844_reanchored_deletion_half_depth_zero_cell/summaries/01_reanchored-deletion-half-summary.md",
+      "summary": "Implementation summary: five new declarations, gate verdict FAIL (upper direction), verification results, and the two remaining pieces for the cell-level inclusion."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+      "summary": "exists_ladderPath_of_walk_nxt_at, exists_deleted_ladderPath_of_pend_past_nxt, anchor_clause_of_first_region_start, HasForwardSlack, exists_ladderPath_through_deleted_of_pend_past, plus updated docstrings."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement for Phase 1 (LadderChain.lean, section Assembly); every phase commits typst/generated/status.typ alongside the .lean file after scripts/typst-sync-check.sh --fix."
+  "git_checkpoint": "2c0aa6b85",
+  "next_action_hint": "None for this task. Named follow-ups: the exact-shift iteration of the deletion and the path-versus-state quantification, both recorded in the DelNxtFin docstring and the summary."
 }

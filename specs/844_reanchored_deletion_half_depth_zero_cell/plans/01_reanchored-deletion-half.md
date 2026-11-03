@@ -1,7 +1,7 @@
 # Implementation Plan: Task #844
 
 - **Task**: 844 - Land the downward (deletion) half of the depth-0 cell obligation by re-anchoring the lift, then discharge the single residual inequality
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7.5 hours (Phases 1-5 at 1 / 1.5 / 2 / 2 / 1). Phase 3 is a decision gate and Phase 4 is branch-selected by it; both branches of Phase 4 are sized at 2 hours, so the total does not depend on the verdict
 - **Dependencies**: None at the `state.json` level. Parent: task 838, whose Phase 5 closed `[BLOCKED]` on the register goal this task re-anchors, and whose `.blocker-research.json` is this plan's primary input. Nothing here edits any artifact of 838 or 836
 - **Research Inputs**: None as a `reports/` artifact (`--fast` dispatch; Stage 1.5 assessment passed — the task description is a specification, and every claim it carries was re-read in source at authoring time). The parent's `specs/838_two_sided_open_core_pin_free_pigeonhole/.blocker-research.json` is consumed as the research record
