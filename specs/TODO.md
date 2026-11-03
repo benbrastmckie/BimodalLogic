@@ -1,5 +1,5 @@
 ---
-next_project_number: 839
+next_project_number: 844
 ---
 
 # TODO
@@ -11,10 +11,10 @@ next_project_number: 839
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827 | 298,428,502,761,768,769,770,772,777,810,813,833 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840 | 298,428,502,761,768,769,770,772,777,785,810,813,833 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
+| 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
 | 7 | 482 | 412 | decidability |
@@ -40,6 +40,7 @@ next_project_number: 839
 772 [NOT STARTED] — planned jq rewrites re-serialize formatting-sensitive JSON...
   └─ 783 [NOT STARTED] — Bounded in-file block edits: index and assert, never...
     └─ 822 [NOT STARTED] — Record the launch-side PID-fidelity condition on the...
+      └─ 843 [NOT STARTED] — Extend the bounded-waiter lint beyond Rule 2 to the...
 774 [NOT STARTED] — EVALUATE (AND BE WILLING TO DECLINE): should plan guidance...
 777 [NOT STARTED] — Carve a task's own specs/ artifacts out of...
   └─ 816 [NOT STARTED] — Stop git-snapshot.sh's --no-revert artifacts from...
@@ -47,12 +48,16 @@ next_project_number: 839
 780 [NOT STARTED] — Plan-compliance spot-check misses evidence-probe-scoped Goals
 784 [BLOCKED] — FROZEN-RECORD TRACKER. Seven task records in this repository...
 785 [NOT STARTED] — Record the three Lean plan-authoring gate-collision facts in...
+  └─ 840 [NOT STARTED] — Give the Lean unusedArguments remedy a narrow route instead...
 810 [NOT STARTED] — META TASK. ONE grouped task covering FIVE agent-system...
   └─ 826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
 813 [NOT STARTED] — State the precedence and snapshot-prerequisite rules for a...
   └─ 814 [NOT STARTED] — Record the decide-synthesis working form, the axiom-free...
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and... (see above)
 825 [NOT STARTED] — Report a reversed validate-artifact.sh invocation as an...
+839 [NOT STARTED] — Harvest a plan's declared contingency files into file\_scope,...
+841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
+842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
 
 ### Algebraic Representation
 
@@ -136,6 +141,429 @@ next_project_number: 839
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 843. Extend the bounded-waiter lint beyond Rule 2 to the backgrounded-and-blocked shape that stranded two dispatches
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 822
+- **Parent**: Task 836
+
+**Description**: Give the bounded-waiter discipline mechanical coverage of the shape that actually stranded two
+dispatches, instead of leaving a blocking gate on the one rule that was not broken.
+
+ORIGIN. Recorded as context rather than as a numbered observation in the change request that
+/orchestrate's conclusion stage handed the meta builder for session `sess_1793665477_08dde0`:
+"two implementation dispatches in this run stranded themselves by backgrounding a command and then
+blocking on a completion notification whose waiter had already died; both needed an out-of-band
+resume."
+
+EDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
+the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
+know what re-derivation currently yields: the rule says to read `source_dir` from
+`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
+`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
+at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
+array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+still absent when this task runs, record that as an observation of its own rather than silently
+hand-authoring under `.claude/**`.
+
+THIS IS NOT A GUIDANCE GAP. `extensions/core/context/patterns/bounded-build-waiter.md` already
+states every rule the strand broke: Rule 1 (wrap the wait in `timeout N` so the waiter cannot
+outlive its writer), Rule 3 (a dead writer ends the wait immediately -- treat a missing sentinel as
+"the writer died", never as "keep waiting"), Rule 4 (one waiter per log; a second would-be waiter
+attaches or fails loudly and "must never silently stop and hand the turn back"), and its "Shape
+Taxonomy" section, whose shape 1 prohibits `Bash(run_in_background: true)` and an armed `Monitor`
+outright for agent-chosen local-gate backgrounding. The observed strand is a VIOLATION of rules
+that already exist in full. The deliverable is therefore mechanical coverage, not more prose.
+
+THE GAP, measured by reading the hook. `extensions/core/hooks/validate-bounded-waiter.sh` enforces
+Rule 2 ONLY -- its own header says so, naming Rule 2's prohibition on `ps | grep`, `pgrep -f` and
+any process-name-matching test -- and it does so by pattern-matching the raw command STRING,
+deliberately without parsing shell structure. Nothing mechanically catches:
+  - a wait with no outer `timeout` (Rule 1);
+  - a wait with no `kill -0` liveness check backing it (Rule 3);
+  - a `Bash(run_in_background: true)` or armed-`Monitor` wait (shape 1's outright prohibition).
+Rule 2 has a blocking gate. The rules the strand actually broke have none.
+
+WHAT TO DECIDE AND RECORD. Which of those shapes is detectable from the command string alone at
+the hook's existing fidelity, and which is not. A shape that is NOT detectable must be recorded as
+not-detectable WITH THE REASON -- never approximated by a lint that fires on correct code, since
+this hook blocks. Note in particular that detecting the ABSENCE of a liveness check is a different
+problem from detecting a textual pattern's presence, and that the `run_in_background` and `Monitor`
+shapes are tool-call parameters rather than command text, so they may not be visible to a
+command-string hook at all; if they are not, name the surface that could see them instead of
+forcing them into this one.
+
+DO NOT REOPEN A SETTLED DECISION WITHOUT ENGAGING IT. The hook's own header already REJECTS a
+shared pattern library for this file, recording the `validate-no-task-references.sh` /
+`scripts/lib/task-reference-patterns.sh` split as the established precedent and explaining why it
+does not apply here. If this record's fix needs that split after all, address the recorded
+reasoning directly rather than silently adopting the rejected shape.
+
+DEPENDENCY AND RELATION. Task 822 holds `bounded-build-waiter.md` and
+`agent-system/extensions/core/index-entries.json` in its own `file_scope` and is unstarted, so this
+record depends on it rather than editing the same guidance file concurrently -- the batching
+guardrail's rule for an unordered overlap is to add the edge and run as a sequence. That task's
+subject is adjacent but distinct: it states the launch-side condition that the detach form's `$!`
+be the writer process itself, i.e. a waiter resolving IMMEDIATELY against the wrong live process,
+whereas this record concerns a waiter that DIED and left the dispatch blocked indefinitely. Both
+are Rule-2-adjacent failures that Rule 2's own lint cannot see.
+
+VERIFICATION: extend `tests/test-validate-bounded-waiter.sh`. Every newly-blocked shape needs both
+a positive case and a negative case proving the hook stays silent on the canonical idiom from
+`bounded-build-waiter.md`'s own "The Canonical Idiom" and "Conforming Examples"
+sections.
+
+---
+
+### 842. Close the recurring stale-handoff defect and find out why the return-meta schema violation left no record
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Parent**: Task 836
+
+**Description**: Close one surface carrying two separately-visible defects in the orchestrate cycle-postflight
+detection-and-recording path: a stale-handoff detection that has fired six times over four weeks
+without a fix, and a second detection that reached the user with no ledger entry behind it.
+
+ORIGIN. Recorded as context rather than as a numbered observation in the change request that
+/orchestrate's conclusion stage handed the meta builder for session `sess_1793665477_08dde0`:
+"the orchestrator detected two of its own defects this run -- HANDOFF_STALE_OR_ABSENT and
+RETURN_META_SCHEMA_VIOLATION (`partial_progress` present while `status='blocked'`), both
+attributed to `agent-system/extensions/core/skills/skill-orchestrate/SKILL.md`, with durable
+records in `specs/events.jsonl`."
+
+EDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
+the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
+know what re-derivation currently yields: the rule says to read `source_dir` from
+`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
+`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
+at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
+array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+still absent when this task runs, record that as an observation of its own rather than silently
+hand-authoring under `.claude/**`.
+
+=== ITEM 1 -- HANDOFF_STALE_OR_ABSENT IS RECURRING, NOT A ONE-OFF ===
+
+MEASURED, re-derivable with `grep -c 'HANDOFF_STALE_OR_ABSENT' specs/events.jsonl` (= 6 at this
+record's creation). The six records span tasks 711, 748, 749, 788, 820 and 836 and five distinct
+sessions, from 2026-10-06 to 2026-11-03. Every one carries the identical `attributed_source_path`
+(`agent-system/extensions/core/skills/skill-orchestrate/SKILL.md`), the identical `detecting_site`
+(`skill-orchestrate/SKILL.md:cycle-postflight-stale-handoff`) and the same message shape ("handoff
+mtime <t1> predates this dispatch window <t2>"). The observed gap ranges from roughly 52 seconds
+(the task 749 record) to roughly 2,000 seconds (the task 748 record). This run's record is
+`evt_1793671238367_eZQVVj` (gap 70 seconds).
+
+Six identical detections over four weeks with no fix IS the finding. Settle which of these it is,
+using the six records as the sample:
+  (a) the handoff writer does not write when the state machine believes it does;
+  (b) the dispatch-window comparison is wrong (an mtime-vs-window boundary or clock-source
+      mismatch), in which case some or all six are false positives;
+  (c) the detection is correct but harmless and should state what it costs, or be retired.
+The wide spread of observed gaps is evidence worth engaging: a near-boundary 52s and a 2,000s
+staleness are unlikely to share one cause, so a single explanation must account for both or the
+sample must be split.
+
+=== ITEM 2 -- THE SECOND DETECTION LEFT NO DURABLE RECORD ===
+
+MEASURED, and it contradicts the origin paragraph's own claim. `grep -c
+'RETURN_META_SCHEMA_VIOLATION' specs/events.jsonl` returns 0, and `grep -rl
+'RETURN_META_SCHEMA_VIOLATION' specs/` matches nothing anywhere under `specs/` -- while item 1's
+record from the SAME run and the SAME session is present in `specs/events.jsonl`. The defect class
+is real and has named sites: `extensions/core/scripts/orchestrate-cycle-postflight.sh`,
+`extensions/core/scripts/system-defect-record.sh`,
+`extensions/core/context/patterns/system-defect-discrimination.md` and
+`extensions/core/context/formats/return-metadata-file.md` all reference it, and
+`extensions/core/scripts/tests/test-orchestrate-cycle-postflight.sh` exercises it.
+
+So a detection was reported with no ledger write behind it. Determine WHICH, because the two have
+different fixes and guessing picks the wrong one:
+  (a) the recording path for this class is broken (the check fires, but the
+      `system-defect-record.sh` call is absent, mis-ordered, or swallowed); or
+  (b) the detection was narrated by the dispatching agent from the schema rule in
+      `return-metadata-file.md` without any script-level check running at all, in which case the
+      gap is that the check does not exist where it was believed to exist.
+Verify by reading the actual code path before changing it.
+
+=== WHY ONE RECORD ===
+
+Both items are the same detect-and-record surface in the orchestrate cycle-postflight path, and
+item 2 is precisely the reason item 1's kind of evidence cannot be assumed to exist: a recurrence
+count is only trustworthy if every detection writes. Fixing item 1 against a ledger that silently
+drops a class is fixing against an unreliable sample.
+
+CONTEXT for item 2's trigger shape: the originating task ended `[BLOCKED]` at phase 10 in this run
+(commit `aff37327b`, "orchestration dispatch blocked"), which is the
+`partial_progress`-present-while-`status='blocked'` pair the check names.
+
+TERRITORY. Task 834 holds `orchestrate-cycle-plan.sh`, `orchestrate-build-aux-dispatch.sh`,
+`orchestrate-triage-classify.sh` and `docs/architecture/orchestrate-state-machine.md` in its own
+`file_scope`. This record deliberately stays on `orchestrate-cycle-postflight.sh` and
+`system-defect-record.sh` so the two do not collide. If the fix turns out to require any of those
+files, add the dependency edge (`update-task-status.sh --depends-on-add`) rather than taking the
+overlap.
+
+---
+
+### 841. Probe the Lean LSP index state at dispatch start and propagate the degraded evidence tier downstream
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Parent**: Task 836
+
+**Description**: Make a cold or unavailable Lean LSP index a measured, propagated condition instead of a notice the
+research round observes and nothing downstream ever learns.
+
+EDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
+the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
+know what re-derivation currently yields: the rule says to read `source_dir` from
+`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
+`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
+at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
+array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+still absent when this task runs, record that as an observation of its own rather than silently
+hand-authoring under `.claude/**`.
+
+MEASURED {task 836, entry_id iss_1793666803790_QXkGkm}. `lean_local_search` reported
+`index: unavailable` for this project at research-dispatch start (phase `research`, dispatch_seq 2),
+so every existence and absence claim in that research round is grep-backed rather than LSP-backed.
+Per the MCP contract an empty `lean_local_search` result is proof of absence ONLY when its `index`
+field says `consulted`; under `unavailable` or `warming` the search never happened, so absence was
+never established.
+
+WHAT ALREADY EXISTS -- DO NOT REBUILD IT. `extensions/lean/scripts/lean-mcp-preflight-check.sh
+--dispatch-block` is already called unconditionally and already injects a
+`<lean-readiness-context>` block into Lean dispatches, and that block already carries both a
+REACHABILITY tier (`reachable` / `not_reachable` / `unknown`) and the full three-state `index`
+interpretation rule, ending with the instruction to "Proceed, but announce this evidence tier
+rather than treating a degraded or unavailable index" as proof of absence.
+`context/project/lean4/tools/mcp-tools-guide.md`'s `lean_local_search` subsection already carries
+the same three-state table and already tells the agent to check for the readiness block before its
+first call. So this is NOT a documentation gap and NOT a missing readiness block.
+
+THE ACTUAL GAP, TWO PARTS:
+  1. The probe measures REACHABILITY, never index STATE. A server can be reachable while its index
+     is `unavailable` or `warming` -- which is what the cited research round hit -- so the injected
+     tier was silent about the condition that actually degraded the evidence. The injected prose
+     explains how to interpret an `index` value the probe never obtains.
+  2. Nothing carries the degraded tier OUT of the research round. The research agent did announce
+     it -- the cited issue record is that announcement -- and the downstream planner received no
+     machine-readable signal, so a plan was built on grep-backed absence claims with no indication
+     they were weaker than LSP-backed ones.
+
+DECIDE AND RECORD, both questions, with the rejected option stated:
+  - Should the preflight WARM the index, or only CLASSIFY it? Warming must be bounded against the
+     hook's absolute existing contract, which this record must not weaken: always exits 0, always
+     emits exactly one line of valid JSON, WARN-never-BLOCK, silent on success, and degrades every
+     failure path to a silent empty object rather than non-JSON noise. The `--dispatch-block`
+     mode's measured non-Lean early exit of ~6ms is also a cost baseline to respect.
+  - What is the propagation carrier for the degraded tier: a field in the research return metadata,
+     an explicit statement in the research report, or both? Name the consumer that reads it.
+
+ALSO SETTLE: whether `extensions/lean/hooks/lean-lsp-register-project.sh`'s own documented
+session-start snapshot trap -- "a SessionStart hook's own write is NOT reliably visible within the
+SAME session that performed it" -- is a contributing cause of `index: unavailable` on a first call,
+or an unrelated mechanism. State the finding either way; a negative finding here is a useful result,
+not a dead end.
+
+SCOPE BOUND, deliberate: no new context file, and no edit to `extensions/lean/manifest.json` or
+`extensions/lean/index-entries.json`. Task 810 holds `extensions/lean/manifest.json` and task 785
+holds `extensions/lean/index-entries.json` in their own declared `file_scope`; this record stays
+off that territory on purpose. If the chosen design turns out to require a new context file and
+therefore index wiring, STOP and raise it rather than taking the overlap.
+
+---
+
+### 840. Give the Lean unusedArguments remedy a narrow route instead of the wholesale runLinter --update rewrite
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 785
+- **Parent**: Task 836
+
+**Description**: Record, in the lean extension's plan-authoring gate-collision guidance, that the standard
+`unusedArguments` remedy is a WHOLESALE ledger rewrite rather than an additive insert, and name
+the narrow route a plan should pre-authorize instead.
+
+EDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
+the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
+know what re-derivation currently yields: the rule says to read `source_dir` from
+`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
+`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
+at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
+array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+still absent when this task runs, record that as an observation of its own rather than silently
+hand-authoring under `.claude/**`.
+
+DEPENDENCY, load-bearing. This record's deliverable belongs in
+`extensions/lean/context/project/lean4/patterns/plan-authoring-gate-collisions.md`, which does not
+exist yet -- task 785 creates it, together with its `index-entries.json` and `EXTENSION.md`
+wiring. Hence the dependency. Do NOT create a competing home for the same material: this is a
+fourth gate-collision fact appended to that file, not a new pattern file.
+
+MEASURED {task 836, entry_id iss_1793678690684_DJyQpP}. Phase 5's Goal
+`tpOf_eq_spliceIdx_of_tpOf_eq` carries `hl : 0 < l`, pinned by the plan's Lean Challenge
+Statements block and deliberately not read by the proof, so gate C16's env_linter batch reported
+one `unusedArguments` finding. C16's own remedy text named `lake exe runLinter --update
+FormalSystem`. Running it rewrote `scripts/nolints.json` wholesale into a different serialization,
+1,119 lines changed, rather than adding the single row. The file was restored from HEAD and the one
+exemption was inserted by hand in the file's own existing format, next to `Bof`'s identical
+exemption; the in-source `set_option` suppressions (`unusedVariables`, `unusedFintypeInType`)
+carried the reason. Recorded cost: 10 minutes, resolution `worked_around`. The same remedy was then
+needed again for the Phase 6 Goal, so this is a repeating collision within a single task, not a
+one-off.
+
+SCOPE FINDING -- THERE IS NO GATE DEFINITION TO EDIT. C16 was a PLAN-LOCAL gate label in that
+task's own plan, not a gate defined anywhere in the source store: `grep -rn 'C16'` over
+`agent-system` matches only `extensions/core/scripts/tests/test-lake-build-guard.sh` (unrelated),
+and `grep -rln 'runLinter|nolints|unusedArguments'` over `agent-system` finds no `nolints` and no
+`unusedArguments` guidance at all. So the deliverable is durable plan-authoring guidance that a
+future Lean plan's own remedy text can be written against, not a correction to a stored gate.
+
+WHAT THE GUIDANCE MUST STATE:
+  1. `lake exe runLinter --update <lib>` regenerates the whole lint ledger in its own
+     serialization; it is not an additive insert, and a plan that names it as a remedy is
+     authorizing a repository-wide file rewrite in the middle of a phase.
+  2. The narrow route is a hand-inserted row in `scripts/nolints.json`'s own existing format,
+     placed next to an existing exemption of the same shape, with the in-source `set_option`
+     suppressions carrying the reason.
+  3. A Goal whose signature is PINNED by a Challenge Statements block will predictably produce
+     exactly this finding whenever the pinned hypothesis is not read by the proof. The plan should
+     pre-authorize the narrow remedy at authoring time instead of discovering it mid-phase.
+
+DECIDE AND RECORD: whether the pinned-Challenge-block/`unusedArguments` collision warrants an
+in-source `set_option` suppression at the Goal instead of a ledger row, and under what condition
+each is the correct choice. State the rejected option on its own merits.
+
+NOTHING IS BROKEN AND THIS IS NOT A DATA-REPAIR RECORD. `scripts/nolints.json` is correct as it now
+stands on disk and its four exemption rows are intended. Do NOT run `lake exe runLinter --update`
+as part of this record, and do not re-edit the Goals or their `set_option` lines.
+
+RELATION, check before writing: tasks 813 and 824 both concern the pinned Challenge Statements
+block. This record adds the LINTER-REMEDY consequence of pinning, not a new pinning rule -- read
+them first so this guidance does not restate their content.
+
+---
+
+### 839. Harvest a plan's declared contingency files into file_scope, and stop the containment drop from losing a legitimately-modified file
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Parent**: Task 836
+
+**Description**: META TASK. TWO defects, ONE record, because they are one mechanism: `git-commit-scoped.sh`'s
+V10 containment guard drops any pathspec the dispatching task's declared `file_scope` does not
+contain, and `file_scope` is computed by `plan-file-scope-harvest.sh` from the per-phase
+`Files to modify` lists and nothing else. Item 1 is the harvesting gap that produced an
+uncontained path; item 2 is the same drop firing on a file class no plan phase would ever name.
+They share the V10 effective-scope computation and the harvest contract, which the batching
+guardrail in `.claude/CLAUDE.md` names as a reason to batch rather than separate.
+
+EDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
+the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
+know what re-derivation currently yields: the rule says to read `source_dir` from
+`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
+`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
+at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
+array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+still absent when this task runs, record that as an observation of its own rather than silently
+hand-authoring under `.claude/**`.
+
+=== ITEM 1 -- A PLAN'S DECLARED CONTINGENCY FILE IS NEVER HARVESTED ===
+
+MEASURED {task 836, entry_id iss_1793680230317_j91ffI}. A plan declared a Scope Hypothesis
+contingency -- move the type lemmas to `LadderPumpType.lean` once `LadderPump.lean` passes 1,000
+lines. The implementation took that contingency. `git-commit-scoped.sh` then dropped
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderPumpType.lean` from the commit pathspec as
+not contained in that task's declared `file_scope`, and the split had to be reverted (commit
+`54ba68cc4`). That is real rework caused by a harvesting gap, not by a bad implementation
+decision.
+
+THE EXCLUSION IS DELIBERATE AND DOCUMENTED, NOT AN OVERSIGHT. `plan-file-scope-harvest.sh`'s own
+header grammar states it outright: "`**Scope Hypothesis**:` is deliberately never treated as a
+second harvest source (see plan-format.md's 'Counts-are-hypotheses obligation'
+cross-reference) -- only the `Files to modify` block above is read." So this record must SETTLE a
+design question, not patch a parser. The two candidate resolutions:
+
+  (a) Scope Hypothesis contingency paths become a second harvest source, and the
+      counts-are-hypotheses rationale is amended to say why a contingency PATH is not a
+      contingency COUNT.
+  (b) `plan-format.md` gains an authoring obligation: a Scope Hypothesis that names a file must
+      also list that file in the owning phase's `Files to modify`. The harvester already supports
+      this with no code change -- the same header records that it "never stats, resolves, or
+      filesystem-validates a harvested path" precisely so that "a path a plan names for a file it
+      will CREATE is exactly what must be harvested, not filtered out."
+
+Pick one, implement it, and record the rejected alternative on its own merits.
+
+=== ITEM 2 -- THE SAME DROP, ON A FILE NO PHASE WOULD NAME ===
+
+MEASURED {task 836, entry_id iss_1793678719709_NIgfxx} and {task 836, entry_id
+iss_1793679130246_5z9d25}. `git-commit-scoped.sh` dropped `scripts/nolints.json` from a commit
+pathspec twice in the same session, for the same containment reason. That file holds four
+`unusedArguments` exemption rows for hypotheses the task's pinned Goal signatures carry but their
+proofs do not read -- a legitimate, intended modification that no per-phase `Files to modify`
+list would plausibly have anticipated.
+
+CURRENT STATE, verify before acting: the file was still uncommitted in the working tree at
+`/home/benjamin/Projects/BimodalLogic/scripts/nolints.json` when this record was created
+(`git status --short scripts/nolints.json` reported ` M`). Committing it is NOT this record's
+deliverable and must not be done under a record scoped as a source-store change. If it is still
+uncommitted when this task runs, raise it rather than committing it.
+
+=== THE TWO DECISIONS THIS RECORD OWES ===
+
+Both were named explicitly in the originating change request and both must be answered, with the
+rejected option recorded:
+
+  1. Should V10's drop-and-warn posture additionally surface an explicit `proposed_file_scope`
+     follow-up rather than only warning? Today a V10 drop produces a WARN textually distinct from
+     the other drop classes, an entry in the dedicated `containment_dropped` ledger, and one
+     non-fatal `issue-record.sh --class "scope excursion"` call -- which is exactly how the three
+     citations above exist at all. The warning is therefore working as designed; the question is
+     whether a warning is a sufficient terminus for a drop that silently changes what a commit
+     contains.
+  2. Should a lint-ledger file like `scripts/nolints.json` belong in a default-permitted scope?
+     Note that V10's effective scope is ALREADY wider than the bare declared array: it admits the
+     task's own resolved directory, the two fixed literals `specs/TODO.md` and `specs/state.json`,
+     and every declared derived-output prefix from `lib/derived-artifact-probe-lib.sh`'s
+     `derived_probe_output_prefixes`. So this is a question about extending an existing widening
+     mechanism, not about inventing one.
+
+=== CONSTRAINTS ===
+
+NOT a data-repair record. V10's unconditional fail-open posture (on a missing `--task`, a missing
+state entry, a malformed `file_scope`, or any internal resolution error), its `issue-record.sh`
+call, and the derived-output widening are all correct as they stand. Do NOT weaken V10 into a
+refusal: its documented posture is drop-and-warn, never refuse, and the exit-7 observability path
+depends on the commit still succeeding. Do not disturb V6's partial-drop gate or V9's
+out-of-repository classification; both share the `dropped_pathspecs` ledger with V10 by design and
+the header explains why each keeps its own separate array.
+
+VERIFICATION: extend `tests/test-plan-file-scope-harvest.sh` and `tests/test-git-commit-scoped.sh`
+rather than replacing them. A regression case reproducing the LadderPumpType drop from a plan
+fixture is the minimum bar for item 1.
+
+---
 
 ### 838. Two sided open core pin free pigeonhole
 - **Effort**: high
