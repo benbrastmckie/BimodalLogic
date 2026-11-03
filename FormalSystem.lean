@@ -209,7 +209,6 @@ import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderPump
-import FormalSystem.Metalogic.Decidability.RaySummary.LadderPumpType
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize
 import FormalSystem.Metalogic.Decidability.RaySummary.Periodic
 import FormalSystem.Metalogic.Decidability.RaySummary.Present

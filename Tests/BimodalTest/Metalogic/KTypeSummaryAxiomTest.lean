@@ -1645,7 +1645,7 @@ is named, no finite-fibre or finite-width hypothesis appears, no pin is a bound.
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_deleted_ladderPath_of_pend_past
 
-/-! ## Requirement (W): the type half of the pump layer (`RaySummary/LadderPumpType.lean`)
+/-! ## Requirement (W): the type half of the pump layer (`RaySummary/LadderPump.lean`)
 
 The pins below are the TYPE lemmas of the pump layer: duplicating or deleting a block whose two
 ends carry the same object state and the same realized stab-free type preserves the realized
