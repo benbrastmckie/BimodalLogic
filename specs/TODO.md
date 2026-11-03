@@ -1,5 +1,5 @@
 ---
-next_project_number: 1057
+next_project_number: 1055
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 1057
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,1055 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,1056 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,844 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -56,7 +56,7 @@ next_project_number: 1057
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and... (see above)
 825 [NOT STARTED] — Report a reversed validate-artifact.sh invocation as an...
 839 [NOT STARTED] — Harvest a plan's declared contingency files into file\_scope,...
-  └─ 1056 [NOT STARTED] — Name the typst-sync gate as the cause when...
+  └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
 
@@ -103,7 +103,7 @@ next_project_number: 1057
 836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
-1055 [RESEARCHED] — Land the downward (deletion) half of the depth-0 cell...
+844 [RESEARCHED] — Land the downward (deletion) half of the depth-0 cell...
 
 ### Formula Refactor
 
@@ -144,7 +144,7 @@ next_project_number: 1057
 
 ## Tasks
 
-### 1056. Name the typst-sync gate as the cause when git-commit-scoped.sh reports a refused commit
+### 845. Name the typst-sync gate as the cause when git-commit-scoped.sh reports a refused commit
 - **Effort**: low
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
@@ -344,7 +344,7 @@ different repository's task space.
 
 ---
 
-### 1055. Reanchored deletion half depth zero cell
+### 844. Reanchored deletion half depth zero cell
 - **Effort**: high
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4

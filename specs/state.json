@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 1057,
+  "next_project_number": 1055,
   "active_projects": [
     {
       "project_number": 833,
@@ -2046,7 +2046,7 @@
       "session_id": "sess_1793665477_08dde0"
     },
     {
-      "project_number": 1055,
+      "project_number": 844,
       "project_name": "reanchored_deletion_half_depth_zero_cell",
       "status": "researched",
       "task_type": "lean4",
@@ -2056,11 +2056,11 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-11-03T18:48:29Z",
-      "last_updated": "2026-11-03T18:48:29Z",
+      "last_updated": "2026-11-03T19:10:24Z",
       "artifacts": []
     },
     {
-      "project_number": 1056,
+      "project_number": 845,
       "project_name": "git_commit_scoped_gate_refusal_diagnostic",
       "status": "not_started",
       "task_type": "meta",
@@ -2078,7 +2078,7 @@
       ],
       "artifacts": [],
       "created": "2026-11-03T18:52:40Z",
-      "last_updated": "2026-11-03T18:52:40Z",
+      "last_updated": "2026-11-03T19:10:24Z",
       "session_id": "sess_1793726849_746040"
     }
   ],
