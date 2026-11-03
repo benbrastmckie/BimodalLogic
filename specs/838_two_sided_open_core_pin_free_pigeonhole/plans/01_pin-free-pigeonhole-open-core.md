@@ -1,7 +1,7 @@
 # Implementation Plan: Task #838
 
 - **Task**: 838 - Two-sided open core: attack the depth-`0` cell obligation through a `(K2)`-level pigeonhole over region starts on the pin-free side, or restate the obligation under a new name
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours (Phases 1-6 at 2 / 2 / 1.5 / 2 / 2 / 1.5). Phase 4 is a decision gate and Phase 5 is branch-selected by it: on the PASS branch Phase 5 lands the obligation under the reserved name, on the FAIL branch it states a regime-restricted obligation under a NEW name and closes in roughly one hour, so the honest range is 10-11 hours
 - **Dependencies**: None at the `state.json` level. Parent: task 836, whose Phase 10 closed `[BLOCKED]` on exactly this core and whose landed pump layer is this plan's entire input. Task 761 is the downstream CONSUMER (its Phase 11.6 inducts from the depth-`0` base case); nothing here edits any artifact of 761 or 836
 - **Research Inputs**: None. No research report was dispatched for this round; the inputs are the landed library, the two compiled prototypes of task 836, and the task description. See "Research Integration" for the Stage 1.5 assessment that settled this
@@ -191,7 +191,7 @@ item.
 Phases within the same wave can execute in parallel. Phase 6 is the final phase: it is a terminal
 node of this graph and depends, transitively through Phase 5 and Phase 4, on every other phase.
 
-### Phase 1: `LadderPin.lean` — the Pin-Free Dichotomy and Module Wiring [NOT STARTED]
+### Phase 1: `LadderPin.lean` — the Pin-Free Dichotomy and Module Wiring [COMPLETED]
 
 **Goal**: A new certificate-free module beside `LadderPump.lean` holds the pin layer's first
 half: no pin below a position forces the past to be uniformly idle or uniformly pending, and
@@ -201,13 +201,13 @@ imports, the generated README inventories and the axiom test.
 
 **Tasks**:
 
-- [ ] Re-run the authoring greps and announce the evidence tier (`lean_local_search` may report
+- [x] Re-run the authoring greps and announce the evidence tier *(completed: both greps re-ran as grep-tier evidence; the reserved-name grep returned the two `LadderAgree.lean` docstring lines plus one `RaySummary/README.md` narrative line, and the new-name grep returned nothing)* (`lean_local_search` may report
   `index: unavailable` or `warming`, in which case an empty result is NOT proof of absence and the
   tier degrades to grep):
   `grep -rn 'cellLE_zero_const_of_kappa_eq' FormalSystem/ Tests/` returns only the two docstring
   lines of `LadderAgree.lean`; `grep -rnE 'LadderPin|pend_past_or_idle_of_no_pin_below|pinTypeBlock|two_pow_card_prodState' FormalSystem/ Tests/`
   returns nothing.
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderPin.lean`: copyright header;
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderPin.lean` *(completed)*: copyright header;
   `import FormalSystem.Metalogic.Decidability.RaySummary.LadderPump` and nothing else; module
   docstring stating its contract — certificate-free under `LadderPump.lean`'s own grep
   (`certAdmK|certStabK|certBoxK|certBiInfK|certLocK|certFwdK|certBwdK|certChain|Dmax|ClType|LadderCons|prodPre_periodic|prodPreStep|cohIdle|satThreshold|satPeriod`),
@@ -216,30 +216,30 @@ imports, the generated README inventories and the axiom test.
   landed windows it sits between (`cntAt_le_nxtAt_succ_of_idle_past` backward,
   `nxtAt_le_cntAt_add_of_next_region` forward) and states that it holds no cell-level agreement
   and no `ParamsOk`-level assembly.
-- [ ] `pend_past_or_idle_of_no_pin_below` (Goal, signature as pinned below): from "no `s` with
+- [x] `pend_past_or_idle_of_no_pin_below` (Goal, signature as pinned below) *(completed)*: from "no `s` with
   `s + 1 ≤ p`, `objAt g s` idle and `objAt g (s + 1)` pending", the pending positions at or below
   `p` are downward closed, so either every position at or below `p` is idle, or some `v ≤ p` has
   every position at or below `v` pending. The proof is by contraposition on a single step: a
   pending `w` with an idle `w - 1` IS a pin at `w - 1`.
-- [ ] `pendPast_or_cntAt_le_nxtAt_succ` (Goal, signature as pinned below): the counter-level
+- [x] `pendPast_or_cntAt_le_nxtAt_succ` (Goal, signature as pinned below) *(completed; the pin-free branch consumes `pend_past_or_idle_of_no_pin_below`'s uniformly-idle disjunct to refute it at `z` itself, and reaches the uniformly-pending conclusion through the shared single-step helper `idle_of_idle_of_no_pin_below` that this phase's Scope Hypothesis budgets, because the dichotomy's existential disjunct names SOME `v ≤ p` rather than `p` itself)*: the counter-level
   dichotomy at a pending `z` — either the past is uniformly pending, or `cntAt g z ≤ nxtAt g z + 1`.
   Routed through the landed `cntAt_le_nxtAt_succ_of_idle_past` on the second branch and through
   `pend_past_or_idle_of_no_pin_below` on the first; `pend_past_of_nxtAt_lt` is the landed converse
   and is cited in the docstring, not re-proved.
-- [ ] A `noPinBelow` / `noPinAbove` abbreviation pair ONLY if the two Goals' statements read more
+- [x] A `noPinBelow` / `noPinAbove` abbreviation pair ONLY if *(completed on the do-not-introduce branch: the unfolded hypotheses read fine and the Challenge block pins the unfolded form, so no abbreviation was introduced)* the two Goals' statements read more
   clearly through them; if the unfolded hypotheses read fine, do not introduce the abbreviations
   (the Challenge block below pins the unfolded form, which is the contract).
-- [ ] Wiring: `import FormalSystem.Metalogic.Decidability.RaySummary.LadderPin` after the
+- [x] Wiring *(completed)*: `import FormalSystem.Metalogic.Decidability.RaySummary.LadderPin` after the
   `LadderPump` line in `FormalSystem/Metalogic/Decidability/RaySummary.lean` and in
   `FormalSystem.lean`'s RaySummary block; `bash scripts/check-module-invariants.sh --emit-inventory`
   then hand-write the `LadderPin.lean` description cell in the regenerated tables (the generator
   seeds `<!-- TODO: add description -->` for a new file); `--emit-inventory --check` exits 0.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: a new
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` *(completed; both pins read `[propext, Classical.choice, Quot.sound]`)*: a new
   `/-! ## Requirement (W): the pin layer (`RaySummary/LadderPin.lean`) … -/` block with
   `#guard_msgs in #print axioms` pins for both Goals.
-- [ ] The certificate-freedom grep above returns nothing on `LadderPin.lean`.
-- [ ] Record in `issues.jsonl` whether the three generated inventory blocks needed regeneration
-  and whether any other file moved.
+- [x] The certificate-freedom grep above returns nothing on `LadderPin.lean`. *(completed)*
+- [x] Record in `issues.jsonl` whether the three generated inventory blocks needed regeneration
+  and whether any other file moved. *(completed: FOUR generated inventory blocks needed regeneration, not three — `FormalSystem/README.md` is a fourth consumer of a RaySummary module's line count; no other file moved)*
 
 **Timing**: 2 hours
 

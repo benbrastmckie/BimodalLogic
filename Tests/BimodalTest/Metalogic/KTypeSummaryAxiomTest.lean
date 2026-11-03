@@ -1738,4 +1738,27 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_shift_of_pend_past
 
+/-! ## Requirement (W): the pin layer (`RaySummary/LadderPin.lean`)
+
+`pend_past_or_idle_of_no_pin_below` is the PIN-FREE DICHOTOMY: below a position carrying no pin
+at all — no idle position immediately followed by a pending one — pending is downward closed, so
+the past is either uniformly idle or uniformly pending from some position down.
+`pendPast_or_cntAt_le_nxtAt_succ` is its counter-level form at a pending position of a ladder
+path: either the past is uniformly pending (the pin-free side, which is the hypothesis the landed
+upward cell inclusion already consumes) or the countdown is at most the register plus one (the
+backward window). The standard profile on each, and nothing else; no certificate object is named,
+and neither pin asserts that pins are dense on a general path. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pend_past_or_idle_of_no_pin_below' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pend_past_or_idle_of_no_pin_below
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pendPast_or_cntAt_le_nxtAt_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pendPast_or_cntAt_le_nxtAt_succ
+
 end BimodalTest.Metalogic
