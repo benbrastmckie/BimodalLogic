@@ -1,5 +1,5 @@
 ---
-next_project_number: 1055
+next_project_number: 1056
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 1055
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,1055 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840 | 298,428,502,761,768,769,770,772,777,785,810,813,833 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -102,6 +102,7 @@ next_project_number: 1055
 836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
+1055 [RESEARCHED] — Land the downward (deletion) half of the depth-0 cell...
 
 ### Formula Refactor
 
@@ -141,6 +142,43 @@ next_project_number: 1055
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 1055. Reanchored deletion half depth zero cell
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 838
+
+**Description**: Land the downward (deletion) half of the depth-0 cell obligation by re-anchoring the lift, then discharge the single residual inequality.
+
+THE REPORTED BLOCKER DOES NOT HOLD AS STATED. The depth-0 obligation's downward inclusion was reported blocked by a "forward register cascade" with the deletion mirror unlanded. Blocker research refuted both halves, and this task proceeds from the refutation rather than re-litigating it.
+
+The mirror IS landed and green: exists_deleted_ladderPath_of_pend_past (FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean:287) already defeats the exact bound that was reported undischargeable. It does so by passing nxtAt g (l : ℤ) -- the anchor value re-read at the SHIFTED position -- and closing the anchor clause in two lines via nxtAt_lipschitz_two_sided g hg (v + (l : ℤ)) (l : ℤ) followed by the rewrite v + l - l = v, giving |nxtAt g (v+l) - nxtAt g l| <= |v| exactly, with zero slack. tightChain_slack_zero therefore does not refute the route: zero slack is precisely what the re-anchored bound consumes.
+
+ROOT CAUSE: an anchor-position mismatch between two landed layers, not a cascade. The lift is hardwired to position 0 -- hn0 measures v.natAbs and exists_rlad_hist_of_walk (RunLayer.lean:436) discharges nxtAt g' 0 = n0 existentially (LadderChain.lean:424) -- while the deletion window sits at a and reads l positions right (delCnt_of_ge). Composing them charges the l-shift against a distance from 0, producing a gap of exactly l. n0 is a FREE PARAMETER of the lift, not a datum of g; the correct pairing, which the landed proof already uses, is anchor POSITION unshifted, anchor VALUE shifted.
+
+THE GENUINE RESIDUAL, never reached by the blocked phase: the landed deletion theorem exposes only objAt and cntAt, because it calls exists_ladderPath_of_walk rather than the _nxt variant, while the consumer cellAt_subset_of_shift_of_pend_past (LadderChain.lean:597) reads nxtAt g z = n and needs nxtAt g' z = n. The missing nxt-exposure is what blocked the phase.
+
+THE CASCADE IS NOT INFINITE. The landed proof's own hstart shows that under hpast every region start of the deleted walk sits strictly above a, so the anchor clause at any pin follows from the clause at the NEAREST pin v0 by triangle through the deleted walk's landed pin compatibility. The obligation collapses to one inequality at one region start.
+
+SOLUTION PATH (two mechanical steps plus one bounded inequality):
+(1) a z-anchored lift, by conjugating the existing lift with the landed isLadderPath_shift;
+(2) a nxt-exposing deletion theorem, re-running LadderPump.lean:287 through that lift at z := a, n0 := n, reusing all five landed clauses verbatim;
+(3) the single bound |nxtAt g (v0+l) - n| <= v0 - a, dischargeable from the landed forward window nxtAt_le_cntAt_add_of_next_region plus the consumer's hgap and hTc.
+
+HONEST OUTCOME IF (3) IS FALSE: a named side hypothesis on a single region start -- a regime restriction with a finite witness, not a reopened open core. Never a weakened statement under the reserved name cellLE_zero_const_of_kappa_eq, which remains claimed by nothing.
+
+FALLBACK, recorded but not required: a Helly-style alternative (hn0 for some n0 iff pairwise anchor-straddle, following from the landed hpins by |u-v| <= |u|+|v|). Not pursued because hstart makes the cheaper route above sufficient.
+
+AVAILABLE GROUND. The parent's pin layer is landed and green: LadderPin.lean (certificate-free, imports LadderPump alone) carries the pin-free dichotomy (idle_of_idle_of_no_pin_below, pend_past_or_idle_of_no_pin_below, pendPast_or_cntAt_le_nxtAt_succ) and the pigeonhole over the pins (exists_pinTypeBlock_of_budget_lt_pins, exists_spanningBlock_of_pins_below), and LadderChain.lean carries two_pow_card_prodState_le_Tc. All five pin at a subset of [propext, Classical.choice, Quot.sound]. Full research detail is in the parent's .blocker-research.json.
+
+SETTLED AND NOT TO BE REOPENED: (K1) provably does not constrain a spanning block's length. Both cycle-length conjuncts carry "pending throughout" on the walk they quantify and a spanning block's walk is idle at the pin inside it (spanning_walk_not_pending); satPeriod is a datum of step/lab/phi alone. The refuting object is the alternating path. A (K1) amendment is a separate decision, not part of this task.
+
+AUTHORING NOTE: a commit touching FormalSystem/**/*.lean is refused unless it also carries a regenerated typst/generated/status.typ. Name that file in every phase's Files-to-modify list, and run scripts/typst-sync-check.sh --fix before committing.
+
+---
 
 ### 843. Extend the bounded-waiter lint beyond Rule 2 to the backgrounded-and-blocked shape that stranded two dispatches
 - **Effort**: medium
