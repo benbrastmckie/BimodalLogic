@@ -59,7 +59,7 @@ next_project_number: 1055
   └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
-846 [RESEARCHED] — Make task-number allocation membership-based rather than...
+846 [PLANNED] — Make task-number allocation membership-based rather than...
 
 ### Algebraic Representation
 
@@ -147,11 +147,12 @@ next_project_number: 1055
 
 ### 846. Make task-number allocation membership-based rather than max-based
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [846_membership_based_task_number_allocation/reports/01_membership-based-allocation.md]
+- **Plan**: [846_membership_based_task_number_allocation/plans/01_membership-based-allocation.md]
 
 **Description**: META TASK. Make task-number allocation MEMBERSHIP-based rather than MAX-based, so the allocator
 issues the smallest number that is actually free instead of one past the largest number ever used.

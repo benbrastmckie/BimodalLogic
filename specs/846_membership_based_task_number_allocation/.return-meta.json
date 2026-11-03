@@ -1,25 +1,22 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1793735258_0b8896_846",
-  "dispatch_seq": 1,
-  "findings_count": 9,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/846_membership_based_task_number_allocation/reports/01_membership-based-allocation.md",
-      "summary": "Confirms the two documented sync sites (state-write.sh --allocate-into prefix and validate-state.sh Check 12), identifies a third undocumented site (scripts/test-state-write-concurrency.sh Cases 10-14, sibling of state-write.sh, not under scripts/tests/) and a bash-level counter-advance assertion that also needs updating, and flags four existing test fixtures (Case 12, and test-validate-state.sh Fixtures (c)/(g)) whose expected PASS/FAIL outcome inverts under the corrected membership-based bound. All repository-state figures independently re-measured and confirmed live."
+      "type": "plan",
+      "path": "specs/846_membership_based_task_number_allocation/plans/01_membership-based-allocation.md",
+      "summary": "5-phase, 5.75-hour plan for the membership-based allocation bound: shared in-use definition lib, atomic rewire of both bound sites, deploy, test-suite realignment, live-state verification and counter repair."
     }
   ],
-  "memory_candidates": [
-    {
-      "content": "When auditing a two-site 'must stay in sync' invariant documented via cross-referencing header comments in a bash+jq codebase, also grep the whole source store for the shared computed-value names (e.g. combined_max-style bindings) rather than trusting the two named files alone -- test suites can independently duplicate the same max-based assertion in their own fixtures (e.g. a *_concurrency.sh test living as a sibling script rather than under a tests/ subdirectory), and those fixtures' PASS/FAIL expectations can silently invert when the underlying bound's semantics change from max-based to membership-based, even though no production code outside the two named sites changed.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/846_membership_based_task_number_allocation/reports/01_membership-based-allocation.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["sync-invariant-audit", "test-fixture-inversion", "max-based-vs-membership-bound", "bash-jq-allocator", "sibling-test-file"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 846 to create implementation plan"
+  "metadata": {
+    "session_id": "sess_1793735258_0b8896_846",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5.75,
+    "dependency_waves": 5
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 846 to execute the plan",
+  "dispatch_seq": 2
 }

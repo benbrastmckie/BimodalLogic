@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 2,
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Wrote a 5-phase, 5.75-hour plan replacing the max-based allocation bound with a membership-based one. The counter-advance wrinkle is decided in the plan: the counter becomes a regenerable cache, the issued number is derived from the in-use set, and the monotonic-advance assertion is replaced by a recording assertion plus in-mutex cache regeneration, with the rejected counter-as-authority option stated on its own merits. The two bound sites stop computing the bound independently and both consume a new shared lib/project-number-inuse.sh. Planning also surfaced a coupling neither the dispatch nor the report names: five suites copy state-write.sh into a temp root with a hard-coded lib allow-list that must gain the new library.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/846_membership_based_task_number_allocation/plans/01_membership-based-allocation.md",
+      "summary": "5-phase plan: shared in-use lib, atomic rewire of both bound sites, deploy, test-suite realignment, live-state verification and counter repair."
+    }
+  ]
+}
