@@ -28,12 +28,6 @@
       "summary": "Phase 11 close-out with the full gate set."
     }
   ],
-  "partial_progress": {
-    "stage": "phase_10_blocked",
-    "details": "Phase 10 could not be entered as a proof attempt (FAIL branch of the Phase 3 gate); see the plan's Phase 10 blocker and the Phase 10 handoff. Phases 1-9 and 11 completed.",
-    "phases_completed": 10,
-    "phases_total": 11
-  },
   "modified_files": [
     "FormalSystem.lean",
     "FormalSystem/Metalogic/Decidability/RaySummary.lean",
@@ -123,7 +117,7 @@
       ]
     },
     {
-      "content": "Lean idioms for the ladder layer: a '<' goal typed at F.Duration is invisible to omega -- open it with `change (_ : Int) < _` first; witnesses from PlusTruth.untl_iff/snce_iff are Duration-typed -- convert with `obtain \u27e8s', rfl\u27e9 : \u2203 s' : \u2124, s' = s := \u27e8s, rfl\u27e9`; keep a cast product `\u2191(d * l)` as ONE atom for omega (no push_cast); decide-algebra on locPred/linkPred closes by by_cases on memberships plus simp [key, h...], not by rw with Bool.decide_and.",
+      "content": "Lean idioms for the ladder layer: a '<' goal typed at F.Duration is invisible to omega -- open it with `change (_ : Int) < _` first; witnesses from PlusTruth.untl_iff/snce_iff are Duration-typed -- convert with `obtain ⟨s', rfl⟩ : ∃ s' : ℤ, s' = s := ⟨s, rfl⟩`; keep a cast product `↑(d * l)` as ONE atom for omega (no push_cast); decide-algebra on locPred/linkPred closes by by_cases on memberships plus simp [key, h...], not by rw with Bool.decide_and.",
       "category": "TECHNIQUE",
       "source_artifact": "specs/836_ladder_type_preserving_cell_agreement_construction/handoffs/phase-5-handoff-20261103T035357Z.md",
       "confidence": 0.85,

@@ -889,6 +889,22 @@
   ],
   [
     "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_spliceIdx_of_tpOf_eq"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_delIdx_of_tpOf_eq"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.exists_typeBlock_of_budget_le_cnt"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.realized_typeBlock_mem_prodCycleLens"
+  ],
+  [
+    "unusedArguments",
     "FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_params"
   ]
 ]
