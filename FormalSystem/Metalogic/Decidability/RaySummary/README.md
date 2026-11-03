@@ -985,3 +985,41 @@ on its mirror — where the only candidate device, a type-respecting block SPANN
 start, is refuted in both directions as a consequence of the parameter conditions (the
 standalone prototype `tight-chain-regime-b.lean` in the task record that landed this layer, not
 a wired probe).
+
+**The pin layer, and what it settles about the two cascades.** `LadderPin.lean` sits beside the
+pump layer, certificate-free under the same grep and importing it alone, and holds what the PINS
+of a ladder path — an idle position immediately followed by a pending one — force. Its first half
+is the DICHOTOMY: pending is downward closed below a pin-free position
+(`idle_of_idle_of_no_pin_below`), so the past at or below such a position is either uniformly idle
+or uniformly pending from some position down (`pend_past_or_idle_of_no_pin_below`), and every
+pending position of a ladder path is on exactly one of the two sides the cell's replacement
+argument treats separately (`pendPast_or_cntAt_le_nxtAt_succ`: a uniformly pending past — the
+pin-free side, which is the hypothesis `cellAt_subset_of_shift_of_pend_past` already consumes — or
+a countdown at most the register plus one, which is the backward window). Its second half is a
+PIGEONHOLE over the pins rather than over the positions inside one region, so the block it
+produces SPANS a pin (`exists_pinTypeBlock_of_budget_lt_pins`, with the tuple read off in the
+refuted condition's own shape by `exists_spanningBlock_of_pins_below`). The hypothesis is the pin
+COUNT in a window: the pigeonhole produces a spanning block AT A GIVEN OBJECT where the pins are
+dense, and asserts nothing unconditionally, so it does not revive the refuted device. Beside it,
+`LadderChain.lean` carries the EXPONENTIAL reading of `(K2)` the pigeonhole consumes
+(`two_pow_card_prodState_le_Tc`: every admissible `T_c` dominates
+`2 ^ Fintype.card (ProdState Q φ)`, because `cascadeBound` carries that power as a factor).
+
+**`(K1)` does not constrain a spanning block's length.** This is settled, by a compiled object
+rather than by argument. Both cycle-length conjuncts of `(K1)` carry `∀ i, pend (f i) = true` on
+the closed walk they quantify — the walk is PENDING THROUGHOUT, which is the region-interior
+restriction — and the walk a spanning block induces is idle at the index of the pin strictly
+inside it; `objCycleLens` additionally bounds the length by `Fintype.card Q`, which a pigeonhole
+over a pin window does not respect; and `satPeriod` is a datum of `step`, `lab` and `φ` alone,
+not quantified over block lengths at all. A refuting object settles it outright: the ALTERNATING
+path — idle at every even position, pending at every odd one — carries, for a stab-free atomic
+closure at the periodicity fixpoint's own outputs, a type-respecting block of EVERY even length
+with a pin strictly inside it, so no single modulus divides them all. (The standalone prototype
+`spanning-divisibility.lean` in the task record, not a wired probe.) The consequence for the
+depth-`0` obligation is that the DOWNWARD cell inclusion cannot be assembled from the
+pigeonhole's block: the deletion mirror of the regime-A assembly demands, at the first pin above
+the compared position, a register bound stronger than the `1`-Lipschitz register supplies by
+exactly the amount deleted, and the tight chain has slack exactly `0` at every gap between pins.
+The reserved name `cellLE_zero_const_of_kappa_eq` is therefore still claimed by nothing, and so is
+every regime-restricted variant of it: the obligation concludes cell EQUALITY and only the upward
+inclusion is landed.

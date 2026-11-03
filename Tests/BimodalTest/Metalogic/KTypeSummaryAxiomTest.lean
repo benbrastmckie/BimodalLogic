@@ -1560,8 +1560,17 @@ declaration, and nothing else. They certify that the ONE construction the cell-l
 unavailable for every object whose pending bit is readable in the language — and the realization
 statement quantifies over every `lab`, so no such object is excluded. The pin on
 `CellLEZeroConstOfKappaEq` certifies the schema's axiom profile only, never its truth value: the
-schema is a definition, and its REFUTATION at the parameter conditions the obligation was filed
-against (the probe's frozen `ParamsOkPre`, whose `(K4)` reads the backward exactness depth alone)
+schema is a definition, it is proved nowhere and claimed by nothing — and no regime-restricted
+variant of it is claimed either, because the schema concludes cell EQUALITY and only the UPWARD
+inclusion is landed (`cellAt_subset_of_shift_of_pend_past`). The pin layer's two halves pinned
+below bear on it without closing it: the DICHOTOMY splits every pending position into the pin-free
+side the upward inclusion already consumes and the backward window's side, and the PIGEONHOLE over
+region starts produces, from a pin COUNT in a window, the type-respecting block SPANNING a pin that
+the downward inclusion would need — whose length `(K1)` provably does not constrain, since both
+cycle-length conjuncts carry `pending throughout` on the walk they quantify. The `(K2)` pin beside
+them is the EXPONENTIAL reading of that conjunct (`two_pow_card_prodState_le_Tc`), which is the
+quantity such a pigeonhole consumes. Its REFUTATION at the parameter conditions the obligation was
+filed against (the probe's frozen `ParamsOkPre`, whose `(K4)` reads the backward exactness depth alone)
 is carried by the wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`
 (`Probe836A.cellLEZeroConstOfKappaEqPre_refuted`, with non-vacuity on both sides as the conjuncts of

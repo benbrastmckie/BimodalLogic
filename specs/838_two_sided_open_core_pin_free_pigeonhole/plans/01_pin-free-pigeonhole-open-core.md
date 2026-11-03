@@ -516,7 +516,67 @@ either path.
 
 ---
 
-### Phase 5: Close the Obligation — GATED ON PHASE 4 [NOT STARTED]
+### Phase 5: Close the Obligation — GATED ON PHASE 4 [BLOCKED]
+
+**BLOCKER** (Phase 5):
+
+- **What failed**: the FAIL branch's one load-bearing clause — "prove it from the landed upward
+  inclusion plus the deletion mirror in that regime" — rests on a deletion mirror that is NOT
+  landed and that the library itself documents as blocked. `LadderChain.lean`'s assembly
+  docstring states it in its own words: "This is ONE direction only: the upward shift with the
+  register held. The downward inclusion shrinks the forward window of the register and, on a tight
+  chain of pins after `z`, needs the next region shortened type-respectingly, which is the cascade
+  the Phase 3 gate refuted as a device." The obligation schema `CellLEZeroConstOfKappaEq`
+  concludes cell EQUALITY, so it needs both inclusions; only the upward one exists
+  (`cellAt_subset_of_shift_of_pend_past`), and no pin-free hypothesis on the PAST supplies the
+  other.
+- **What was tried**: (i) an inventory of the deletion layer — `LadderPump.lean` carries
+  single-step deletion admissibility (`exists_deleted_ladderPath_of_pend_past`) and the deletion
+  type lemma (`tpOf_eq_delIdx_of_tpOf_eq`), but NO iterated deletion (no mirror of
+  `exists_iterSpliced_ladderPath_of_pend_past`) and no downward assembly; the single-step lemma
+  also does not prescribe the register at the compared position — it fixes the deleted path's
+  register base at `nxtAt g (l : ℤ)`. (ii) The register-rebuild step was then attempted directly,
+  feeding the deleted walk to `exists_ladderPath_of_walk_nxt` with `n₀ := nxtAt g 0`, which
+  compiles down to exactly one undischargeable goal:
+
+  ```
+  v : ℤ
+  hv0 : pend (delObj g a l v) = false
+  hv1 : pend (delObj g a l (v + 1)) = true
+  ⊢ (↑(delCnt g a l (v + 1)) - ↑(nxtAt g 0)).natAbs ≤ v.natAbs
+  ```
+
+  For `a ≤ v` the deleted walk's pin `v` IS the original's pin `v + l`, and
+  `delCnt g a l (v + 1) = cntAt g (v + (l : ℤ) + 1)`, so the bound DEMANDED is
+  `|cntAt g (v + l + 1) − nxtAt g 0| ≤ |v|` while the original path supplies only
+  `|cntAt g (v + l + 1) − nxtAt g 0| ≤ |v + l|` (`pinCompat_of_ladderPath`,
+  `nxtAt_lipschitz_two_sided`). The demand is stronger than the supply by exactly `l`, and
+  iterated `m · (P + 1) / l` times, by exactly `m · (P + 1)`.
+- **Why it's stuck**: that gap is the FORWARD register cascade — the second side of this task's
+  two-sided open core. It is not slack that a sharper proof recovers: the tight doubling chain has
+  Lipschitz slack exactly `0` at every gap between pins (`tightChain_slack_zero`, re-derived in
+  `prototype/pin-free-side.lean`), so the demanded bound fails there for every `m ≥ 1`. The
+  pin-free hypothesis this phase was to carry constrains the PAST (uniformly pending below the
+  lower state); the obstruction lives among the pins ABOVE it, and `gC_pinFree_above` shows the
+  forward pin-free side is a property of a PATH, not of a counter state — while `cellAt`
+  quantifies over EVERY path through the state, so no forward hypothesis can be read off the
+  state the schema compares.
+- **What is needed**: either (a) a downward/deletion assembly carrying an explicit forward-slack
+  hypothesis, together with a decision about how the cell's universal quantification over paths is
+  to be restricted so that such a hypothesis is statable at a counter state at all; or (b) a `(K1)`
+  amendment, which this plan's Non-Goals forbid and which would alter the parameter contract every
+  wired probe discharges; or (c) accepting the landed one-directional upward inclusion as this
+  round's deliverable, with the consumer supplying the reverse inclusion. This is raised as a
+  `user_decision`: the prior cycle's recorded answer ("land the regime-restricted obligation under
+  `cellLE_zero_const_of_kappa_eq_of_pinFree`") rests on a premise this phase refuted, namely that a
+  pin-free restriction makes the obligation provable from what is landed.
+- **Prohibited workarounds**: no `sorry`, no `def X := True`, no vacuous placeholder, and — per
+  this plan's Non-Goals and task 836's inherited prohibition — no narrowed or regime-restricted
+  statement under the reserved name `cellLE_zero_const_of_kappa_eq`. A strictly weaker directed
+  INCLUSION was deliberately NOT landed under the planned name
+  `cellLE_zero_const_of_kappa_eq_of_pinFree` either: the planned statement concludes equality, and
+  a same-named weaker statement is the one defect `rules/plan-compliance.md` exists to catch.
+
 
 **Goal**: On Phase 4's PASS verdict, `cellLE_zero_const_of_kappa_eq` is landed in
 `LadderChain.lean` as a theorem on the standard axiom profile and the reserved name is claimed.
@@ -602,7 +662,7 @@ exported theorem can reach, and nothing in it is a shared tactic or a core type.
 
 ---
 
-### Phase 6: Records, the Full Gate Set, and the Summary [NOT STARTED]
+### Phase 6: Records, the Full Gate Set, and the Summary [COMPLETED]
 
 **Goal**: Every record that states the depth-`0` obligation's status says what this task
 established; the complete gate set runs green; the summary hands task 761's reviser the branch
@@ -610,26 +670,26 @@ verdict and, on the FAIL branch, the exact hypothesis its induction must now sup
 
 **Tasks**:
 
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: the narrative sections that
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md` *(completed: two new narrative paragraphs — the pin layer and what it settles, and `(K1)`'s non-constraint of a spanning block's length, with the reserved name's continued reservation stated explicitly)*: the narrative sections that
   state the obligation's status are brought current with Phase 4's verdict and Phase 5's branch;
   the pin layer gets its paragraph beside the pump layer's. Durable anchors only — module names,
   declaration names, section headings — no task numbers.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: the `(W)` requirement narrative
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` *(completed; the obligation block's narrative now names both halves of the pin layer, the exponential `(K2)` reading, and that no regime-restricted variant is claimed either)*: the `(W)` requirement narrative
   states what the pins now certify, including that the `(K2)` bound is exponential and what the
   pin layer's two halves are.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 and reports all wired probes compiling. The
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 and reports all wired probes compiling. *(completed: exit 0, `all 47 wired probe(s) compile`; both of this task's prototypes stay prototypes, and wiring the gate's refuting object is recorded as a follow-up candidate in the summary)* The
   two prototypes of this task are NOT wired — they stay prototypes under
   `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/`. If Phase 4's verdict was FAIL
   and its refuting object is the kind of record a wired probe should hold in place, record that as
   a candidate follow-up in the summary rather than wiring it here.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0; all three
-  generated inventory blocks are current.
-- [ ] Write `specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md`
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0; all three
+  generated inventory blocks are current. *(completed: exit 0; FOUR blocks were in play across the task, as Phase 1 recorded)*
+- [x] Write `specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md` *(completed; `validate-artifact.sh ... summary` exits 0)*
   per `summary-format.md`: the branch taken, the verdict with its mechanism, every declaration
   landed with its axiom profile, what remains open, and the named follow-up candidates (a `(K1)`
   amendment on the FAIL branch; a tighter pigeonhole constant if Phase 2 found one; wiring Phase
   4's refuting object as a probe if applicable).
-- [ ] Run the complete gate set and read its verdict, not a piped exit code.
+- [x] Run the complete gate set and read its verdict, not a piped exit code. *(completed: `verify-deploy.sh` with no gate filter and no `--skip-slow` reports `PASS -- 15 check(s), 0 failure(s)`, exit 0; the unscoped full `lake build` reports `exit_status=0` with zero `error:` and `.olean` newer than source on every touched module)*
 
 **Timing**: 1.5 hours
 
