@@ -334,18 +334,21 @@ and are realigned in Phase 4.
 
 ---
 
-### Phase 3: Deploy the corrected bound to the derived tree [NOT STARTED]
+### Phase 3: Deploy the corrected bound to the derived tree [COMPLETED]
 
 **Goal**: `.claude/**` carries the corrected scripts and the new library, by deploy rather than by
 hand, so Phase 4's layer-agreement fixture exercises a current deployed allocator.
 
 **Tasks**:
 
-- [ ] Run `bash .claude/scripts/deploy-headless.sh` from the repository root.
-- [ ] Confirm `.claude/scripts/lib/project-number-inuse.sh` exists in the deployed tree and that
-      both deployed scripts carry the membership bound.
-- [ ] Confirm no file under `.claude/**` differs from its source-store counterpart in a way that
-      implies a hand edit.
+- [x] Run `bash .claude/scripts/deploy-headless.sh` from the repository root. *(completed:
+      RESULT=landed_verify_clean, 7 extensions resynced)*
+- [x] Confirm `.claude/scripts/lib/project-number-inuse.sh` exists in the deployed tree and that
+      both deployed scripts carry the membership bound. *(completed: byte-for-byte diff against
+      the source store reports no difference for all three files)*
+- [x] Confirm no file under `.claude/**` differs from its source-store counterpart in a way that
+      implies a hand edit. *(completed: `.claude/` is gitignored in this repository, so drift is
+      confirmed via direct diff rather than git status)*
 
 **Timing**: 0.5 hours
 
