@@ -1,5 +1,5 @@
 ---
-next_project_number: 844
+next_project_number: 1055
 ---
 
 # TODO
@@ -164,10 +164,15 @@ tree is a gitignored, disposable deploy artifact regenerated from a source store
 file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
 the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
 know what re-derivation currently yields: the rule says to read `source_dir` from
-`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
-`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
-at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
-array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+`<project-root>/.claude-extensions.json`, and that file DOES carry it -- per-extension, at
+`.extensions.<name>.source_dir`, not as a top-level key. All seven loaded extensions (core, lean,
+formal, typst, memory, literature, filetypes) resolve to
+`/home/benjamin/.config/nvim/agent-system/extensions/<name>`, so the store root is
+`/home/benjamin/.config/nvim/agent-system` and resolution works exactly as the rule documents.
+Re-derive the path for the extension you are editing with:
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+A top-level `jq -r '.source_dir'` returns null and must not be read as the key being absent; that
+mistake is what produced an earlier claim of a missing key. If `source_dir` is
 still absent when this task runs, record that as an observation of its own rather than silently
 hand-authoring under `.claude/**`.
 
@@ -244,10 +249,15 @@ tree is a gitignored, disposable deploy artifact regenerated from a source store
 file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
 the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
 know what re-derivation currently yields: the rule says to read `source_dir` from
-`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
-`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
-at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
-array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+`<project-root>/.claude-extensions.json`, and that file DOES carry it -- per-extension, at
+`.extensions.<name>.source_dir`, not as a top-level key. All seven loaded extensions (core, lean,
+formal, typst, memory, literature, filetypes) resolve to
+`/home/benjamin/.config/nvim/agent-system/extensions/<name>`, so the store root is
+`/home/benjamin/.config/nvim/agent-system` and resolution works exactly as the rule documents.
+Re-derive the path for the extension you are editing with:
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+A top-level `jq -r '.source_dir'` returns null and must not be read as the key being absent; that
+mistake is what produced an earlier claim of a missing key. If `source_dir` is
 still absent when this task runs, record that as an observation of its own rather than silently
 hand-authoring under `.claude/**`.
 
@@ -333,10 +343,15 @@ tree is a gitignored, disposable deploy artifact regenerated from a source store
 file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
 the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
 know what re-derivation currently yields: the rule says to read `source_dir` from
-`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
-`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
-at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
-array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+`<project-root>/.claude-extensions.json`, and that file DOES carry it -- per-extension, at
+`.extensions.<name>.source_dir`, not as a top-level key. All seven loaded extensions (core, lean,
+formal, typst, memory, literature, filetypes) resolve to
+`/home/benjamin/.config/nvim/agent-system/extensions/<name>`, so the store root is
+`/home/benjamin/.config/nvim/agent-system` and resolution works exactly as the rule documents.
+Re-derive the path for the extension you are editing with:
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+A top-level `jq -r '.source_dir'` returns null and must not be read as the key being absent; that
+mistake is what produced an earlier claim of a missing key. If `source_dir` is
 still absent when this task runs, record that as an observation of its own rather than silently
 hand-authoring under `.claude/**`.
 
@@ -407,10 +422,15 @@ tree is a gitignored, disposable deploy artifact regenerated from a source store
 file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
 the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
 know what re-derivation currently yields: the rule says to read `source_dir` from
-`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
-`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
-at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
-array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+`<project-root>/.claude-extensions.json`, and that file DOES carry it -- per-extension, at
+`.extensions.<name>.source_dir`, not as a top-level key. All seven loaded extensions (core, lean,
+formal, typst, memory, literature, filetypes) resolve to
+`/home/benjamin/.config/nvim/agent-system/extensions/<name>`, so the store root is
+`/home/benjamin/.config/nvim/agent-system` and resolution works exactly as the rule documents.
+Re-derive the path for the extension you are editing with:
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+A top-level `jq -r '.source_dir'` returns null and must not be read as the key being absent; that
+mistake is what produced an earlier claim of a missing key. If `source_dir` is
 still absent when this task runs, record that as an observation of its own rather than silently
 hand-authoring under `.claude/**`.
 
@@ -485,10 +505,15 @@ tree is a gitignored, disposable deploy artifact regenerated from a source store
 file landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under
 the source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but
 know what re-derivation currently yields: the rule says to read `source_dir` from
-`<project-root>/.claude-extensions.json`, and as of 2026-11-02 that file carries only the keys
-`extensions` and `version` -- there is NO `source_dir` key to read. The store was located instead
-at `/home/benjamin/.config/nvim/agent-system`, which is the prefix every existing `file_scope`
-array in `specs/state.json` already uses (see tasks 785, 810, 816, 822, 834). If `source_dir` is
+`<project-root>/.claude-extensions.json`, and that file DOES carry it -- per-extension, at
+`.extensions.<name>.source_dir`, not as a top-level key. All seven loaded extensions (core, lean,
+formal, typst, memory, literature, filetypes) resolve to
+`/home/benjamin/.config/nvim/agent-system/extensions/<name>`, so the store root is
+`/home/benjamin/.config/nvim/agent-system` and resolution works exactly as the rule documents.
+Re-derive the path for the extension you are editing with:
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+A top-level `jq -r '.source_dir'` returns null and must not be read as the key being absent; that
+mistake is what produced an earlier claim of a missing key. If `source_dir` is
 still absent when this task runs, record that as an observation of its own rather than silently
 hand-authoring under `.claude/**`.
 
