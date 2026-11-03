@@ -59,7 +59,7 @@ next_project_number: 1055
   └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
-846 [PLANNED] — Make task-number allocation membership-based rather than...
+846 [IMPLEMENTING] — Make task-number allocation membership-based rather than...
 
 ### Algebraic Representation
 
@@ -147,7 +147,7 @@ next_project_number: 1055
 
 ### 846. Make task-number allocation membership-based rather than max-based
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #846
 
 - **Task**: 846 - membership_based_task_number_allocation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.75 hours
 - **Dependencies**: None (owning record 821 is research-only; no dependency edge, and no edge to
   751 by the deliberate decision recorded in the task description's Territory Note)
@@ -174,17 +174,18 @@ read as the key being absent.
 
 ---
 
-### Phase 1: Shared in-use definition library [NOT STARTED]
+### Phase 1: Shared in-use definition library [COMPLETED]
 
 **Goal**: One place defines "in use", the active max, the next free number, and a number's
 location, so neither consumer computes a bound of its own.
 
 **Tasks**:
 
-- [ ] Create `$SD/scripts/lib/project-number-inuse.sh`, following `lib/common.sh`'s stated
+- [x] Create `$SD/scripts/lib/project-number-inuse.sh`, following `lib/common.sh`'s stated
       contract: sets no shell options, never calls `exit`, leaks no state, signals a miss by an
-      inert default rather than a non-zero status.
-- [ ] Export the shared jq source as readonly bash strings. The definitions take the live state
+      inert default rather than a non-zero status. *(completed: also discovered and fixed a
+      heredoc-read exit-status hazard -- see deviation entry in phase 1's progress file)*
+- [x] Export the shared jq source as readonly bash strings. The definitions take the live state
       document as input and the archive document as `$pnum_archive_doc`:
       - `pnum_active_numbers` — `[.active_projects[]?.project_number] | map(select(type == "number"))`
       - `pnum_archive_numbers` — the union of `archived_projects`, `abandoned_projects` and
@@ -196,15 +197,18 @@ location, so neither consumer computes a bound of its own.
       - `pnum_next_free` — the smallest integer strictly greater than `pnum_active_max` whose
         string form is absent from `pnum_inuse_set`
       - `pnum_location($n)` — the array name holding `$n`, or `null`
-- [ ] Write the library's header comment to state, in its own words: that it is the single
+      *(completed: all six verified directly against hand-built fixtures, including the trap
+      case)*
+- [x] Write the library's header comment to state, in its own words: that it is the single
       definition both `scripts/state-write.sh`'s `--allocate-into` bound and
       `scripts/validate-state.sh`'s `Check 12` consume; that `specs/vault/**` is deliberately
       outside the in-use set because vault operations recycle that number space; and that the set
       is keyed by number so duplicate rows across archive arrays are tolerated rather than
-      refused.
-- [ ] Add `lib/project-number-inuse.sh` to `$SD/manifest.json`'s `provides.scripts` array, in the
-      same `lib/`-prefixed form the existing entries use.
-- [ ] Do NOT wire either consumer in this phase. The library lands unreferenced and inert.
+      refused. *(completed)*
+- [x] Add `lib/project-number-inuse.sh` to `$SD/manifest.json`'s `provides.scripts` array, in the
+      same `lib/`-prefixed form the existing entries use. *(completed)*
+- [x] Do NOT wire either consumer in this phase. The library lands unreferenced and inert.
+      *(completed: confirmed by scope -- only manifest.json and the new file changed)*
 
 **Timing**: 0.75 hours
 
