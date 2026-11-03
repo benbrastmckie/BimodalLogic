@@ -270,14 +270,14 @@ covers the edit — one additive declaration in one module, no landed signature 
 
 ---
 
-### Phase 3: Collapse to the first region start, and the residual gate [NOT STARTED]
+### Phase 3: Collapse to the first region start, and the residual gate [COMPLETED]
 
 **Goal**: A lemma on the ORIGINAL path reduces Phase 2's anchor clause to one inequality at the
 first region start `s₀` above the anchor's region, and the gate attempts to discharge that
 inequality from the consumer's hypotheses. The verdict selects Phase 4's branch.
 
 **Tasks**:
-- [ ] `anchor_clause_of_first_region_start` (name suggested, not pinned): for a ladder path `g`,
+- [x] `anchor_clause_of_first_region_start` (name suggested, not pinned): for a ladder path `g`,
   a pending position `z` with `C := cntAt g z`, a block length `l`, a value `n`, and a hypothesis
   `hfirst` quantified over the first idle run after `z`'s region — for every `I`, `0 < I`,
   `(∀ i < I, pend (objAt g (z + C + 1 + i)) = false)`, `pend (objAt g (z + C + 1 + I)) = true` —
@@ -289,25 +289,26 @@ inequality from the consumer's hypotheses. The verdict selects Phase 4's branch.
   `|nxtAt g (v + l) − n| ≤ |nxtAt g (v + l) − nxtAt g s₀| + |nxtAt g s₀ − n| ≤ (v + l − s₀) + (s₀ − l − z) = v − z`
   by `nxtAt_lipschitz_two_sided` and `hfirst`; `omega` closes the `natAbs` arithmetic once the
   two summands are stated over `ℤ`.
-- [ ] THE GATE. In a scratch `example` (via `lean_multi_attempt`, not committed on FAIL), state
+- [x] THE GATE. In a scratch `example` (via `lean_multi_attempt`, not committed on FAIL), state
   the single-pin bound under the consumer's hypotheses — `hgap : n + l ≤ C` (the form the
   consumer's `n + 2 ≤ c` with `c + m · (P + 1) = C` and `l ≤ P + 1` yields), the two-sided
   Lipschitz fact `nxtAt_lipschitz_two_sided g hg (z + C + I) z`, and the forward window
   `nxtAt_le_cntAt_add_of_next_region g hg z I hI hidle hnext` — and attempt `omega` on each
   direction separately.
-- [ ] Record the verdict in this phase's notes. PASS: both directions close. FAIL: the upper
+- [x] Record the verdict in this phase's notes. PASS: both directions close. FAIL: the upper
   direction `nxtAt g (z + C + I) − n ≤ C + I − l` does not close; record the exact goal from
   `lean_goal` and the arithmetic witness (`n = 0, C = 3, I = 1, l = 1, nxtAt g s₀ = 4` satisfies
   Lipschitz, the window, and `hgap` and violates the bound), together with the path-level reading:
   `Drift`'s `n' = n + 1` rung taken at every step from `z` to `s₀` realizes it on any object with
   one pending and one idle state. Severity of the authoring-time prediction: FAIL is expected.
+  *(verdict: FAIL — `lean_run_code` with one `example` per direction: the lower direction closes by `omega` from `hgap` alone; the upper direction `↑(nxtAt g (z + ↑(cntAt g z) + ↑I)) - ↑n ≤ ↑(cntAt g z) + ↑I - ↑l` is left open, omega's counterexample constraints `b - c + e - h ≤ -1` with `b := ↑n, c := ↑l, e := |z + C + I - z|, h := ↑(nxtAt g s₀)` and `a - e ≤ -1` with `a := ↑(cntAt g z)`, i.e. the witness `n = 0, C = 3, I = 1, l = 1, nxtAt g s₀ = 4`. Phase 4 takes the FAIL branch.)*
 - [ ] On PASS only: land the discharge as a lemma
-  `first_region_start_bound_of_gap` (name suggested) and commit it with the collapse lemma.
-- [ ] On FAIL: land the collapse lemma alone, and define the side hypothesis
+  `first_region_start_bound_of_gap` (name suggested) and commit it with the collapse lemma. *(deviation: skipped — gate verdict FAIL; the PASS branch is not taken)*
+- [x] On FAIL: land the collapse lemma alone, and define the side hypothesis
   `HasForwardSlack (g) (z : ℤ) (l n : ℕ) : Prop` (name suggested, not pinned) as exactly the
   upper direction at the first region start — `∀ I, 0 < I → (idle on z + C + 1 … z + C + I) → pending at z + C + 1 + I → nxtAt g (z + C + I) ≤ n + C + I − l` (stated over `ℤ` to avoid truncated subtraction) — with a docstring that names it a regime restriction on ONE region start, with a finite witness, and says why no cell-level hypothesis can replace it.
-- [ ] Record the verdict via `issue-record.sh` (`--kind issue --class "design-record defect or ambiguity"` on FAIL, since the research's "dischargeable from the forward window" claim is then measured false; `--kind win` on PASS).
-- [ ] Scoped build; `--fix`; commit.
+- [x] Record the verdict via `issue-record.sh` (`--kind issue --class "design-record defect or ambiguity"` on FAIL, since the research's "dischargeable from the forward window" claim is then measured false; `--kind win` on PASS).
+- [x] Scoped build; `--fix`; commit.
 
 **Timing**: 2 hours
 

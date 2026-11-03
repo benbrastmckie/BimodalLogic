@@ -705,6 +705,97 @@ theorem exists_deleted_ladderPath_of_pend_past_nxt
     rw [hvc, cntAt_eq_nxtAt_of_idle_pend g hg (v + (l : ℤ)) hv0' hv1']
     exact hanch v (hstart v hv0) hv0' hv1'
 
+/-- **THE COLLAPSE OF THE ANCHOR CLAUSE TO THE FIRST REGION START.** Every pin of the deleted
+walk is a region start `v + l` of the original lying above `a`, hence above the end `z + cntAt g z`
+of `z`'s region, hence at or after the idle position `z + cntAt g z + I` just before the FIRST
+region start above that end (found by `Nat.find` on the offset past `z + cntAt g z + 1`, the
+mirror of `cntAt_le_nxtAt_succ_of_idle_past`'s backward search). The register's value at the pin
+is within `v + l − (z + cntAt g z + I)` of its value at that idle position
+(`nxtAt_lipschitz_two_sided`), and `hfirst` bounds the latter within `cntAt g z + I − l` of `n`;
+the two summands add to `v − z` exactly, so the anchor clause at every pin follows from the
+single inequality at the nearest one. The hypothesis is stated on the ORIGINAL path only, so the
+collapse and the deletion do not entangle. -/
+theorem anchor_clause_of_first_region_start (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (z : ℤ) (hz : pend (objAt g z) = true) (l n : ℕ)
+    (hfirst : ∀ I : ℕ, 0 < I →
+      (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+      ((nxtAt g (z + (cntAt g z : ℤ) + (I : ℤ)) : ℤ) - n).natAbs
+        ≤ ((cntAt g z : ℤ) + I - l).natAbs)
+    (a : ℤ) (hza : z ≤ a) (hal : a + (l : ℤ) ≤ z + (cntAt g z : ℤ)) :
+    ∀ v : ℤ, a < v → pend (objAt g (v + (l : ℤ))) = false →
+      pend (objAt g (v + (l : ℤ) + 1)) = true →
+      ((nxtAt g (v + (l : ℤ)) : ℤ) - n).natAbs ≤ (v - z).natAbs := by
+  classical
+  intro v hav hv0 hv1
+  -- the pin lies strictly above the region's end, which is pending throughout
+  have hvC : z + (cntAt g z : ℤ) < v + (l : ℤ) := by
+    by_contra hle
+    rw [not_lt] at hle
+    have := (cntAt_sub_of_pend g hg z hz (v + (l : ℤ) - z).toNat (by omega)).1
+    rw [show z + (((v + (l : ℤ) - z).toNat : ℕ) : ℤ) = v + (l : ℤ) by omega] at this
+    exact Bool.false_ne_true (hv0.symm.trans this)
+  -- the first pending position after the region's end, found by its offset
+  have hex : ∃ k : ℕ, pend (objAt g (z + (cntAt g z : ℤ) + 1 + (k : ℤ))) = true :=
+    ⟨(v + (l : ℤ) - (z + (cntAt g z : ℤ))).toNat, by
+      rw [show z + (cntAt g z : ℤ) + 1 + (((v + (l : ℤ) - (z + (cntAt g z : ℤ))).toNat : ℕ) : ℤ)
+          = v + (l : ℤ) + 1 by omega]
+      exact hv1⟩
+  set I := Nat.find hex with hI
+  have hnext : pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true := Nat.find_spec hex
+  have hidle : ∀ i : ℕ, i < I →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false := by
+    intro i hi
+    have := Nat.find_min hex (m := i) (by omega)
+    rw [Bool.not_eq_true] at this
+    exact this
+  -- the idle run is non-empty: the region's end forces an idle successor
+  have hIpos : 0 < I := by
+    rcases Nat.eq_zero_or_pos I with h | h
+    · exfalso
+      have h0 := not_pend_of_count g hg z hz
+      rw [h, show z + (cntAt g z : ℤ) + 1 + ((0 : ℕ) : ℤ) = z + (cntAt g z : ℤ) + 1 by
+        push_cast; ring] at hnext
+      exact Bool.false_ne_true (h0.symm.trans hnext)
+    · exact h
+  -- the pin sits at or after the idle position before the first region start
+  have hvs : z + (cntAt g z : ℤ) + (I : ℤ) ≤ v + (l : ℤ) := by
+    by_contra hlt
+    rw [not_le] at hlt
+    have := hidle (v + (l : ℤ) - (z + (cntAt g z : ℤ))).toNat (by omega)
+    rw [show z + (cntAt g z : ℤ) + 1 + (((v + (l : ℤ) - (z + (cntAt g z : ℤ))).toNat : ℕ) : ℤ)
+        = v + (l : ℤ) + 1 by omega] at this
+    exact Bool.false_ne_true (this.symm.trans hv1)
+  -- the triangle through the first region start
+  have hbound := hfirst I hIpos hidle hnext
+  have hlip := nxtAt_lipschitz_two_sided g hg (v + (l : ℤ)) (z + (cntAt g z : ℤ) + (I : ℤ))
+  omega
+
+/-- **THE FORWARD-SLACK HYPOTHESIS: a regime restriction on ONE region start, with a finite
+witness.** The collapse above reduces the anchor clause to the two-sided bound
+`|nxtAt g s₀ − n| ≤ cntAt g z + I − l` at the idle position `s₀ = z + cntAt g z + I` before the
+first region start above `z`'s region. Its lower direction follows from the consumer's gap
+hypothesis `n + l ≤ cntAt g z` alone. Its upper direction, stated here over `ℤ` to avoid
+truncated subtraction, is NOT implied by anything the path carries: `nxtAt_lipschitz_two_sided`
+gives only `nxtAt g s₀ ≤ nxtAt g z + cntAt g z + I`, and the forward window
+`nxtAt_le_cntAt_add_of_next_region` bounds the register at `z` from above by the next region's
+countdown, which is the free direction. The gate's `omega` run on the three facts closes the
+lower direction and leaves the upper one open with the arithmetic witness
+`n = 0, cntAt g z = 3, I = 1, l = 1, nxtAt g s₀ = 4`, which satisfies the gap, the Lipschitz
+bound, and the window and violates this inequality by exactly `l`. The path-level reading of
+that witness: the register relation `Drift` (`RunLayer.lean`) admits the rung `n' = n + 1` at
+every step, so a ladder path whose register climbs by one per step from `z` to `s₀` — realized
+on any object with one pending and one idle state — satisfies every hypothesis of the deletion
+and has no room to shorten the chain by `l`. The hypothesis is therefore a property of a PATH,
+quantified over the single idle position it constrains; no hypothesis on the counter STATE
+`(q, c, n)` at `z` can replace it, because the cell's universal quantification over paths
+through the state ranges over the climbing path too. -/
+def HasForwardSlack (g : ℤ → LadderState Q pend) (z : ℤ) (l n : ℕ) : Prop :=
+  ∀ I : ℕ, 0 < I →
+    (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+    pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+    (nxtAt g (z + (cntAt g z : ℤ) + (I : ℤ)) : ℤ) ≤ (n : ℤ) + cntAt g z + I - l
+
 end DelNxt
 
 /-- **THE UPWARD CELL INCLUSION along the common-shift chain.** In the pending-forever regime
