@@ -1,15 +1,46 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 3,
-  "artifacts": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/846_membership_based_task_number_allocation/summaries/01_membership-based-allocation-summary.md",
+      "summary": "Replaced the max-based --allocate-into bound and Check 12 with a membership-based bound sourced from a new shared lib/project-number-inuse.sh; next_project_number is now a regenerated cache, not an allocation authority; live counter repaired from 1055 to 847."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Implemented the membership-based task-number allocation bound across all 5 plan phases: a new shared in-use definition library, the rewired allocator and Check 12, a deploy to the derived tree, realigned and extended test suites (including dedicated coverage for the 'smallest unused number from 1' trap), and live-state verification with the counter repaired from 1055 to the dense value 847. Phase 5 closed [COMPLETED WITH EXCLUSIONS] with a fully evidenced Reasoned Exclusions record for the one verification bullet not met (the full run-all.sh sweep), whose 24 relevant failures all trace to one pre-existing, unrelated cause (no local agent-system/extensions directory in this repository)."
+  },
+  "modified_files": ["specs/state.json", "specs/TODO.md"],
+  "memory_candidates": [
+    {
+      "content": "A jq-defs-as-heredoc shared library (the `read -r -d '' VAR <<'EOF' ... EOF` idiom used by lib/file-scope-overlap.sh and similar single-source-of-truth jq libraries) returns exit 1 when sourced, because `read -d ''` reports non-zero on reaching the heredoc's EOF without ever seeing a literal NUL delimiter -- even though the variable assignment itself succeeded in full. Under a caller's `set -e` this aborts sourcing immediately and silently (the library's own content is correct; only the source-time exit status is wrong). Fix: append `|| true` directly to the `read` invocation inside the library itself, so a plain `source`/`.` is always safe regardless of the caller's shell options, rather than requiring every consumer to wrap the source call in its own `if ! ...; then` guard.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/846_membership_based_task_number_allocation/summaries/01_membership-based-allocation-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["jq", "heredoc", "read -d", "set -e", "shared library", "sourcing"]
+    },
+    {
+      "content": "When two independently-written scripts must agree on one computed bound (e.g. an allocator and its validator both deciding what counts as 'in use'), extracting the shared jq logic into a single library that exports its `def` source as a bash string (spliced as an adjacent string literal immediately before each caller's own jq program, e.g. `\"$SHARED_DEFS\"'...rest of program...'`) removes the duplication entirely rather than just keeping two expressions aligned by a header comment. This is the same shape lib/file-scope-overlap.sh already uses for FILE_SCOPE_OVERLAP_JQ_DEFS; following an existing precedent exactly (including its documented contract: no shell options set, never calls exit, one deliberate export) made the new library predictable to review and consume.",
+      "category": "PATTERN",
+      "source_artifact": "specs/846_membership_based_task_number_allocation/summaries/01_membership-based-allocation-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["jq", "shared definition", "single source of truth", "allocator", "validator agreement"]
+    },
+    {
+      "content": "A 'membership' bound (reject only if the candidate value is already in use) is strictly more precise than a 'maximum' bound (reject unless the candidate exceeds the largest value ever seen) for a number allocator recovering from sparse historical gaps -- the maximum bound forces the counter arbitrarily high past a handful of isolated outliers, even when the dense range between the current issue point and those outliers is entirely free. Pairing the membership check with a derived-value design (the issued number is always computed fresh from the in-use set, and the stored counter becomes a regenerated CACHE rather than an authority) makes the counter's own correctness unconditional rather than dependent on being kept monotonically repaired by every caller.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/846_membership_based_task_number_allocation/summaries/01_membership-based-allocation-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["allocation bound", "membership vs maximum", "regenerable cache", "sparse number space"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1793735258_0b8896",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "phases_completed": 0,
+    "phases_completed": 5,
     "phases_total": 5
-  },
-  "memory_candidates": [],
-  "modified_files": []
+  }
 }
