@@ -311,6 +311,10 @@ TERRITORY. Task 834 holds `orchestrate-cycle-plan.sh`, `orchestrate-build-aux-di
 files, add the dependency edge (`update-task-status.sh --depends-on-add`) rather than taking the
 overlap.
 
+EVIDENCE CORRECTION (verified against specs/events.jsonl by the dispatching orchestrator, after this task was authored): the recurrence is substantially wider than six records. system_defect events carrying HANDOFF_STALE_OR_ABSENT span at least TWELVE distinct task numbers -- 507, 631, 644, 655, 703, 708, 711, 748, 749, 788, 820, 836 -- with task 703 alone firing ten times, and the earliest records predate 2026-09-29 rather than starting 2026-10-06. Count distinct occurrences with: jq -rc "select((.. | strings?) | test(\"HANDOFF_STALE_OR_ABSENT\")) | (.task // .project_number)" specs/events.jsonl | sort | uniq -c | sort -rn
+
+This strengthens rather than weakens the authored observation that one explanation may not cover every firing: the spread crosses many more tasks, sessions and dates than six, and a single stale-predecessor story is unlikely to account for a task that fired ten times. Treat the twelve-task spread as the investigation surface, not the six-record one.
+
 ---
 
 ### 841. Probe the Lean LSP index state at dispatch start and propagate the degraded evidence tier downstream
