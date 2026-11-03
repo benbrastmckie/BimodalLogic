@@ -1,0 +1,35 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/844_reanchored_deletion_half_depth_zero_cell/plans/01_reanchored-deletion-half.md",
+      "summary": "5-phase plan: z-anchored lift, nxt-exposing deletion theorem, residual-inequality decision gate, branch-selected single-block downward assembly, record and full gate."
+    }
+  ],
+  "next_steps": "Run /orchestrate 844 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1793744958_a6d2e1_844",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 7.5,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
+  },
+  "memory_candidates": [
+    {
+      "content": "In the RaySummary ladder layer, the deadline register between pins is constrained only by Drift (1-Lipschitz) and by the pin equation cntAt (u+1) = nxtAt u at region starts; nothing bounds the register's growth toward the next region from the countdown or Tc. Any lift of a surgically altered walk that must HOLD the register at a position z therefore owes exactly one inequality per direction at the first region start above z's region: the lower direction follows from the gap hypothesis n + l <= cntAt g z, while the upper direction (register at the first pin <= n + distance - l) is a genuine side condition a climbing register refutes. Plan the forward-slack hypothesis as a named def on that single pin rather than searching for a landed discharge.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/844_reanchored_deletion_half_depth_zero_cell/plans/01_reanchored-deletion-half.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["ladder register", "nxtAt", "Drift", "forward slack", "deletion lift", "RaySummary"]
+    }
+  ],
+  "modified_files": [
+    "specs/844_reanchored_deletion_half_depth_zero_cell/plans/01_reanchored-deletion-half.md",
+    "specs/844_reanchored_deletion_half_depth_zero_cell/.orchestrator-handoff.json",
+    "specs/844_reanchored_deletion_half_depth_zero_cell/issues.jsonl"
+  ],
+  "dispatch_seq": 1
+}

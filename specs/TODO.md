@@ -105,7 +105,7 @@ next_project_number: 849
 836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
-844 [RESEARCHED] — Land the downward (deletion) half of the depth-0 cell...
+844 [PLANNED] — Land the downward (deletion) half of the depth-0 cell...
 
 ### Formula Refactor
 
@@ -569,11 +569,12 @@ different repository's task space.
 
 ### 844. Reanchored deletion half depth zero cell
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 838
+- **Plan**: [844_reanchored_deletion_half_depth_zero_cell/plans/01_reanchored-deletion-half.md]
 
 **Description**: Land the downward (deletion) half of the depth-0 cell obligation by re-anchoring the lift, then discharge the single residual inequality.
 
