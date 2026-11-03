@@ -348,7 +348,7 @@ established and verified the module's two import edges, and no third file reads 
 
 ---
 
-### Phase 3: The `(K2)` Exponential Bound, and the Pin-Free Side of Both Refuting Objects [NOT STARTED]
+### Phase 3: The `(K2)` Exponential Bound, and the Pin-Free Side of Both Refuting Objects [COMPLETED]
 
 **Goal**: `LadderChain.lean` carries the arithmetic that makes pins dense wherever the register
 is tight — `2 ^ Fintype.card (ProdState Q φ) ≤ Tc` from `(K2)` and `cascadeBound` alone — and a
@@ -357,13 +357,13 @@ prototype compiles that each of the two refuting objects has the pin-free side t
 
 **Tasks**:
 
-- [ ] `two_pow_card_prodState_le_Tc` (Goal, signature as pinned below) in `LadderChain.lean`'s
+- [x] `two_pow_card_prodState_le_Tc` (Goal, signature as pinned below) *(completed; six lines, beside `budget_le_Tc`, plus the docstring sentence)* in `LadderChain.lean`'s
   `section Budget`, beside `budget_le_Tc`: `cascadeBound pend φ = 2 ^ Fintype.card (ProdState Q φ) * (tIdle pend + 2)`
   by `rw [cascadeBound]`, `tIdle pend + 2 ≥ 1`, `Nat.le_mul_of_pos_right`, then `(K2)`'s first
   conjunct `hp.2.1.1`. The module docstring's budget paragraph gains one sentence: `(K2)` bounds
   `Tc` below by an EXPONENTIAL in the product carrier's cardinality, not by the carrier's
   cardinality, which is what a pigeonhole over region starts of a doubling chain consumes.
-- [ ] Create `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/pin-free-side.lean`:
+- [x] Create `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/pin-free-side.lean` *(completed at 474 lines; the sibling prototype was NOT importable, so the object, the chain and both witnesses are re-declared verbatim. `tightChain_pin_count_ge` reaches the pin count through `tightChain_pin` + `nxtAt_lipschitz_two_sided` from the pin at `0` + the landed backward window, which bounds the countdown at a pending `z` by `z + 1`, rather than by extracting `z`'s region index from `idleT`; `cT_pin_succ` and `pin_eq` are read transitively through `tightChain_pin` and `tightChain_pins`)*:
   import `LadderPin`, namespace `Probe838A`, header stating it is a prototype compiled standalone
   through the build guard and NOT a wired probe. Re-declare (or import, if the 836 prototype is
   importable as written — check, do not assume) the two refuting objects `gB` and `gC` of
@@ -379,10 +379,10 @@ prototype compiles that each of the two refuting objects has the pin-free side t
     route (a) and the one new mathematical step of this phase; it reads `cT_pin_succ` and
     `pin_eq` from the 836 prototype.
   Each headline gets a `#print axioms` line, as the 836 prototypes do.
-- [ ] Extend the axiom test's pin block with `#guard_msgs in #print axioms` for
-  `two_pow_card_prodState_le_Tc`.
-- [ ] Record in `issues.jsonl` whether the 836 prototype was importable or had to be re-declared,
-  and what `tightChain_pin_count_ge` actually cost.
+- [x] Extend the axiom test's pin block with `#guard_msgs in #print axioms` for
+  `two_pow_card_prodState_le_Tc`. *(completed as its own `(W)` block; the standard profile)*
+- [x] Record in `issues.jsonl` whether the 836 prototype was importable or had to be re-declared,
+  and what `tightChain_pin_count_ge` actually cost. *(completed: not importable, re-declared; the pin count cost roughly 30 lines)*
 
 **Timing**: 1.5 hours
 

@@ -1715,6 +1715,20 @@ form of the module's distance from the recorded circularity. The standard profil
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.typeBlock_length_dvd_of_paramsOk
 
+/-! ## Requirement (W): `(K2)` as an exponential lower bound (`RaySummary/LadderChain.lean`)
+
+`two_pow_card_prodState_le_Tc`: `(K2)` bounds `Tc` below by `2 ^ Fintype.card (ProdState Q φ)`,
+an EXPONENTIAL in the product carrier's cardinality and not the cardinality itself, because
+`cascadeBound` carries that power as a factor. This is the quantity a pigeonhole over the REGION
+STARTS of a doubling chain consumes, where the weaker `budget_le_Tc` beside it is the
+linear-in-the-carrier reading of the same conjunct. The standard profile. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.two_pow_card_prodState_le_Tc' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.two_pow_card_prodState_le_Tc
+
 /-! ## Requirement (W): the regime-A assembly (`RaySummary/LadderChain.lean`)
 
 `exists_ladderPath_through_shifted_of_pend_past`: through a pending-forever path's state at

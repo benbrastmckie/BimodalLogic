@@ -32,7 +32,12 @@ conditions by the fixpoint equations of `AnchorLayer.lean` (`atom`, `bot`, `imp`
 one-step unfoldings of the two temporal equations of `LadderAgree.lean`. The type-pigeonhole
 budget of `LadderPump.lean` equals the cardinality of the certificate layer's product carrier
 (`card_prodState`), and `(K2)`'s cascade bound dominates it (`budget_le_cascadeBound`,
-`budget_le_Tc`).
+`budget_le_Tc`). `(K2)` bounds `Tc` below by an EXPONENTIAL in the
+product carrier's cardinality and not by the cardinality itself
+(`two_pow_card_prodState_le_Tc`), which is the quantity a pigeonhole over the REGION STARTS of a
+doubling chain consumes: a chain whose last region has countdown at least `Tc` carries on the
+order of `log₂ Tc` region starts below it, and that bound makes `log₂ Tc` dominate the carrier's
+cardinality.
 
 ## What this module does NOT hold
 
@@ -80,6 +85,21 @@ theorem budget_le_Tc {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q 
     (hp : ParamsOk step pend lab φ Tc Tn P B) :
     Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1 ≤ Tc :=
   le_trans (budget_le_cascadeBound pend φ) hp.2.1.1
+
+/-- **`(K2)` IS AN EXPONENTIAL LOWER BOUND ON `Tc`**, not a linear one: `cascadeBound` carries
+`2 ^ Fintype.card (ProdState Q φ)` as a factor, so every `Tc` the parameter conditions admit
+dominates that power. This is the quantity a pigeonhole over the REGION STARTS of a doubling
+chain consumes — a chain whose last region has countdown at least `Tc` carries on the order of
+`log₂ Tc` region starts below it, and this bound is what makes `log₂ Tc` dominate the product
+carrier's cardinality. The budget bound `budget_le_Tc` beside it is the weaker, linear-in-the-
+carrier reading of the same conjunct. -/
+theorem two_pow_card_prodState_le_Tc {Q : Type} [Fintype Q] (step : Q → Q → Bool)
+    (pend : Q → Bool) (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B) :
+    2 ^ Fintype.card (ProdState Q φ) ≤ Tc := by
+  refine le_trans ?_ hp.2.1.1
+  rw [cascadeBound]
+  exact Nat.le_mul_of_pos_right _ (by omega)
 
 end Budget
 
