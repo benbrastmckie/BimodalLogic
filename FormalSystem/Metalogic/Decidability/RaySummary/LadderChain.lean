@@ -798,6 +798,113 @@ def HasForwardSlack (g : ℤ → LadderState Q pend) (z : ℤ) (l n : ℕ) : Pro
 
 end DelNxt
 
+/-! ## The single-block downward assembly: the countdown lowered by the block's length, the
+register held
+
+The mirror of the regime-A assembly for ONE block. Through a pending-forever path's state at `z`
+with countdown at least `Tc`, a ladder path with the countdown LOWERED by the type-respecting
+block's length `l` (a divisor of `P + 1`), the object state and the register at `z` held, and the
+same realized stab-free type at `z`. The register is rebuilt by the z-anchored deletion with
+`n := nxtAt g z`, and its anchor clause is reduced to the first region start by the collapse; the
+single inequality left there is NOT discharged from the path's own facts (the gate's verdict),
+so it is carried as the named hypothesis `HasForwardSlack g z (P + 1) (nxtAt g z)`. -/
+
+section DelNxtFin
+
+variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE SINGLE-BLOCK DOWNWARD ASSEMBLY, under the forward-slack hypothesis.** The gate on the
+residual inequality FAILED in its upper direction (see `HasForwardSlack`), so this is the
+regime-restricted branch: beyond the upward mirror's hypotheses and the gap
+`nxtAt g z + (P + 1) ≤ cntAt g z`, the consumer must supply
+`HasForwardSlack g z (P + 1) (nxtAt g z)`, one inequality at one region start, and the
+`l`-instance the block needs follows from it by monotonicity (`l ≤ P + 1`). Nothing is weakened
+under an existing name, and the reserved name
+`cellLE_zero_const_of_kappa_eq` remains claimed by nothing. Two pieces still separate this from
+the cell-level downward inclusion `cellAt … (q, c + m · (P + 1), n) ⊆ cellAt … (q, c, n)`: the
+exact-shift ITERATION of the deletion (deleting `(P + 1) / l` blocks needs that many consecutive
+type-equal copies in the ORIGINAL, which the pigeonhole does not supply, whereas the upward
+iteration manufactures its copies by splicing), and the PATH-versus-STATE quantification (the
+forward slack is a property of a path, and the cell quantifies over every path through the
+state, the climbing-register path included). -/
+theorem exists_ladderPath_through_deleted_of_pend_past
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (hTc : Tc ≤ cntAt g z)
+    (hgap : nxtAt g z + (P + 1) ≤ cntAt g z)
+    (hslack : HasForwardSlack g z (P + 1) (nxtAt g z)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧
+      (∃ l : ℕ, 0 < l ∧ l ∣ P + 1 ∧ cntAt g' z + l = cntAt g z) ∧
+      nxtAt g' z = nxtAt g z ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  classical
+  have hz : pend (objAt g z) = true := hpast z le_rfl
+  have hbud := budget_le_Tc step pend lab φ Tc Tn P B hp
+  -- a history of the original, and the type-respecting block of `z`'s region
+  obtain ⟨σ₀, hσ₀⟩ := exists_hist_of_isLadderPath fwd bwd g hg
+  have hσ₀' : ∀ t : ℤ, σ₀.state t = (t + 0, g t) := fun t => by rw [add_zero]; exact hσ₀ t
+  obtain ⟨u, l, hl, hlb, hzu, hcl, hul, hrep, hty⟩ :=
+    exists_typeBlock_of_budget_le_cnt_within step pend fwd bwd lab φ σ₀ hg z hz (by omega)
+  -- the block lies inside `z`'s region
+  have hul' : u + (l : ℤ) ≤ z + (cntAt g z : ℤ) := by omega
+  -- every position up to `u` is pending: below `z` by hypothesis, from `z` to `u` by the region
+  have hpast_u : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true := fun p hp' => by
+    rcases le_or_gt p z with hpz | hpz
+    · exact hpast p hpz
+    · have := (cntAt_sub_of_pend g hg z hz (p - z).toNat (by omega)).1
+      rwa [show z + (((p - z).toNat : ℕ) : ℤ) = p by omega] at this
+  have hpu : pend (objAt g u) = true := hpast_u u le_rfl
+  -- the block's length divides `P + 1`
+  have hdvd : l ∣ P + 1 := typeBlock_length_dvd_of_paramsOk step pend fwd bwd lab φ hp σ₀ hσ₀'
+    hg hno u l hl hlb hpu hcl hrep hty
+  have hlP : l ≤ P + 1 := Nat.le_of_dvd (Nat.succ_pos P) hdvd
+  -- the single-pin bound, from the gap and the forward slack; then the collapse
+  have hfirst : ∀ I : ℕ, 0 < I →
+      (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+      ((nxtAt g (z + (cntAt g z : ℤ) + (I : ℤ)) : ℤ) - nxtAt g z).natAbs
+        ≤ ((cntAt g z : ℤ) + I - l).natAbs := fun I hI hidle hnext => by
+    have := hslack I hI hidle hnext
+    omega
+  have hanch := anchor_clause_of_first_region_start g hg z hz l (nxtAt g z) hfirst u hzu hul'
+  -- the deleted path, with the register held at `z`
+  obtain ⟨g', hg', hobj', hcnt', hnxt'⟩ :=
+    exists_deleted_ladderPath_of_pend_past_nxt hg hl hcl hpast_u hrep z (nxtAt g z) hanch
+  refine ⟨g', hg', ?_, ⟨l, hl, hdvd, ?_⟩, hnxt', fun σ σ' hσ hσ' => ?_⟩
+  · rw [hobj' z, delObj_eq_of_le hrep z hzu]
+  · rw [hcnt' z, delCnt_sub_of_mem_region hg hl hcl z hzu (by omega)]
+    omega
+  · -- the realized type at `z`, read through `delIdx u l`
+    have hσ0 : ∀ t : ℤ, σ.state t = (t + 0, g t) := fun t => by rw [add_zero]; exact hσ t
+    have hσ'0 : ∀ t : ℤ, σ'.state t = (t + 0, g' t) := fun t => by rw [add_zero]; exact hσ' t
+    have hty_σ : tpOf (ladderModel step pend fwd bwd lab) φ σ u
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + (l : ℤ)) := by
+      have e1 := tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ₀ σ hσ₀' hσ0
+        (fun _ => rfl) hno u
+      have e2 := tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ₀ σ hσ₀' hσ0
+        (fun _ => rfl) hno (u + (l : ℤ))
+      rw [← e1, ← e2]
+      exact hty
+    have hdel := tpOf_eq_delIdx_of_tpOf_eq step pend fwd bwd lab φ u l hl (k := 0) (k' := 0)
+      σ σ' hσ0 hσ'0 (fun w => (hobj' w).trans rfl) hno hty_σ z
+    rw [hdel]
+    rcases lt_or_eq_of_le hzu with hlt | heq
+    · rw [delIdx_of_lt u l z hlt]
+    · rw [heq, delIdx_of_ge u l u le_rfl, ← hty_σ]
+
+end DelNxtFin
+
 /-- **THE UPWARD CELL INCLUSION along the common-shift chain.** In the pending-forever regime
 (`n + 2 ≤ c`, so by `pend_past_of_nxtAt_lt` every path through the state is pending forever into
 the past) at countdown at least `Tc`, the cell at `(q, c, n)` is contained in the cell at

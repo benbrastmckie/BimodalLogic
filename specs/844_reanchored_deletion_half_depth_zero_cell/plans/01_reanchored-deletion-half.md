@@ -338,7 +338,7 @@ evidence is the `lean_goal` state, which is produced by the same elaboration.
 
 ---
 
-### Phase 4: The consumer-regime downward assembly — BRANCH-SELECTED BY PHASE 3 [NOT STARTED]
+### Phase 4: The consumer-regime downward assembly — BRANCH-SELECTED BY PHASE 3 [COMPLETED]
 
 **Goal**: The single-block downward mirror of `exists_ladderPath_through_shifted_of_pend_past`
 lands in `LadderChain.lean`: through a pending-forever path's state at `z` with countdown at
@@ -347,15 +347,16 @@ least `Tc`, a ladder path with the countdown LOWERED by the pigeonhole block's l
 type at `z`. Unconditional on PASS; under `HasForwardSlack g z (P + 1) (nxtAt g z)` on FAIL.
 
 **Tasks** (both branches):
-- [ ] `exists_ladderPath_through_deleted_of_pend_past` (name suggested, not pinned), in
+- [x] `exists_ladderPath_through_deleted_of_pend_past` (name suggested, not pinned), in
   `section DelNxtFin` with `[Fintype Q] [Nonempty Q]`, mirroring the upward assembly's
   hypothesis list (`step pend fwd bwd lab φ Tc Tn P B hp hno g hg z hpast hTc`) plus a gap
   hypothesis of the weakest form the proof needs (at least `nxtAt g z + (P + 1) ≤ cntAt g z`, so
   that `n + l ≤ C` holds for every `l ∣ P + 1`; record the exact form chosen). On FAIL, add
   `(hslack : HasForwardSlack g z (P + 1) (nxtAt g z))` and derive the `l`-instance by
   monotonicity (`l ≤ P + 1`).
-- [ ] Conclusion shape: `∃ g', IsLadderPath step pend g' ∧ objAt g' z = objAt g z ∧ (∃ l, 0 < l ∧ l ∣ P + 1 ∧ cntAt g' z + l = cntAt g z) ∧ nxtAt g' z = nxtAt g z ∧ ∀ σ σ', (∀ t, σ.state t = (t, g t)) → (∀ t, σ'.state t = (t, g' t)) → tpOf … φ σ' z = tpOf … φ σ z`.
-- [ ] Proof skeleton, step by step: `exists_hist_of_isLadderPath` for `σ₀`;
+  *(branch: FAIL; gap form chosen: `hgap : nxtAt g z + (P + 1) ≤ cntAt g z`, plus `hslack : HasForwardSlack g z (P + 1) (nxtAt g z)`; the `l`-instance is derived inline in `hfirst` by `omega` from `hslack`, `hgap`, and `l ≤ P + 1` via `Nat.le_of_dvd`)*
+- [x] Conclusion shape: `∃ g', IsLadderPath step pend g' ∧ objAt g' z = objAt g z ∧ (∃ l, 0 < l ∧ l ∣ P + 1 ∧ cntAt g' z + l = cntAt g z) ∧ nxtAt g' z = nxtAt g z ∧ ∀ σ σ', (∀ t, σ.state t = (t, g t)) → (∀ t, σ'.state t = (t, g' t)) → tpOf … φ σ' z = tpOf … φ σ z`.
+- [x] Proof skeleton, step by step: `exists_hist_of_isLadderPath` for `σ₀`;
   `exists_typeBlock_of_budget_le_cnt_within` at `z` (via `budget_le_Tc`) for `u, l, hl, hlb, hzu, hcl, hul, hrep, hty`;
   `typeBlock_length_dvd_of_paramsOk` for `l ∣ P + 1`; `hpast_u` exactly as in the upward
   assembly; Phase 3's collapse lemma with `a := u` to build `hanch` (PASS: from the discharge
@@ -364,10 +365,10 @@ type at `z`. Unconditional on PASS; under `HasForwardSlack g z (P + 1) (nxtAt g 
   `u ≤ z + cntAt g z` are `hzu`/`hul`); `delObj_eq_of_le` for `objAt g' z`;
   `tpOf_eq_delIdx_of_tpOf_eq` composed with `tpOf_stabFree_eq_of_objAt_eq` for the type, read
   through `delIdx u l z = z` (`delIdx_of_lt`, or `delIdx_of_ge` at `z = u` with `hrep`).
-- [ ] Docstring: name the branch taken, the hypothesis the consumer must supply on FAIL, and the
+- [x] Docstring: name the branch taken, the hypothesis the consumer must supply on FAIL, and the
   two remaining pieces for the cell-level inclusion (the exact-shift iteration and the
   path-versus-state quantification), in that order.
-- [ ] `lean_verify`; scoped build; `--fix`; commit.
+- [x] `lean_verify`; scoped build; `--fix`; commit.
 
 **Timing**: 2 hours
 
