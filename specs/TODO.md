@@ -11,7 +11,7 @@ next_project_number: 1055
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,844 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,844,846 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -59,6 +59,7 @@ next_project_number: 1055
   └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
+846 [NOT STARTED] — Make task-number allocation membership-based rather than...
 
 ### Algebraic Representation
 
@@ -143,6 +144,168 @@ next_project_number: 1055
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 846. Make task-number allocation membership-based rather than max-based
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: META TASK. Make task-number allocation MEMBERSHIP-based rather than MAX-based, so the allocator
+issues the smallest number that is actually free instead of one past the largest number ever used.
+All figures below were measured against this repository's live state, not inferred; re-verify them
+against live data at implement time rather than trusting them.
+
+=== THE DEFECT ===
+
+`state-write.sh --allocate-into` refuses any `next_project_number` that is not strictly greater
+than the combined active-plus-archive MAXIMUM. This repository's archive max is 1054, carried by
+just five isolated rows (949, 953, 992, 998, 1054) that are legitimate pre-reset-era history. The
+844-1054 range is otherwise empty: zero archived directories lie in it apart from four on-disk
+outliers, against 86 directories densely filling 700-843. The bound forced the counter to 1055,
+and a conclusion-stage allocation issued 1055 and 1056 for two tasks whose natural numbers were
+844 and 845; both were renumbered by hand afterwards.
+
+A max-based bound is CONSERVATIVE where a MEMBERSHIP-based bound is PRECISE. The invariant that
+actually matters -- and which Check 12's own failure message names ("a counter this stale can
+issue a DUPLICATE project_number") -- is that an allocated number must not already be in use, NOT
+that it must exceed the largest number ever used.
+
+=== THE SPEC, AND THE TRAP IT MUST AVOID ===
+
+Do NOT implement "smallest unused number". That is the obvious reading and it is wrong. Measured:
+the in-use set holds 817 numbers spanning 3-1054, and the smallest unused numbers counting from 1
+upward are 1, 2, 4, 5, 7, 9, 10, 11, 12, 13, 14, 15. A naive smallest-unused allocator would
+issue #1, then #2, then #4 -- recycling ancient numbers that appear in git commit messages,
+archived artifacts and cross-references throughout `specs/`, which is far worse than the gap it
+set out to fix.
+
+THE CORRECT SPEC: the smallest unused number strictly greater than the maximum ACTIVE
+project_number -- active max, not combined max. That runs the sequence densely and skips the five
+outliers as it reaches them; only 5 numbers in 846-1054 are in use.
+
+=== TWO SITES THAT MUST STAY IN SYNC ===
+
+This is the main correctness risk, and each file already says so about the other.
+
+(1) `state-write.sh`'s `--allocate-into` allocation prefix, whose header says it "computes the
+    identical archive-aware combined max as scripts/validate-state.sh's Check 12". It binds
+    `$__alloc_archive_max`, `$__alloc_active_max`, `$__alloc_combined_max`, then refuses via jq
+    `error()` when the counter is not strictly greater than `$__alloc_combined_max`.
+
+(2) `validate-state.sh`'s Check 12 (FAIL-level, archive-aware), whose header names the
+    `--allocate-into` bound as its sibling expression.
+
+Change BOTH together or neither. Changing one alone reintroduces exactly the desynchronisation
+both comments exist to prevent.
+
+=== A DESIGN WRINKLE THE IMPLEMENTER MUST OWN, NOT PAPER OVER ===
+
+`--allocate-into` binds `$NAME` to `.next_project_number` and requires the caller's filter to
+advance the counter, enforced by a post-transform assertion that the staged result's
+`next_project_number` advanced strictly past its pre-transform value (a filter consuming `$NAME`
+without advancing is refused, exit 3, no write).
+
+Under the new spec that assertion breaks: allocating 846 while the counter reads 1055 means the
+caller sets 847, which is not strictly greater than 1055. Decide and RECORD which of these holds:
+
+  (a) The counter remains the allocation authority and may move DOWN to the dense sequence, with
+      the monotonic-advance assertion replaced by a weaker one such as "the counter is not left
+      naming an in-use number".
+  (b) The counter stops being the authority and becomes a regenerable cache, the number derived
+      from the in-use set on every allocation, with the assertion's purpose restated or retired.
+
+Either is acceptable. Silently DELETING the assertion is not: it exists to stop the same number
+being re-issued on the next call, and whatever replaces it must still prevent that.
+
+=== MUST PRESERVE (all currently true; none to be relaxed) ===
+
+- `specs/vault/**` stays excluded from the in-use set. Vault operations recycle that number space,
+  and both sites document the exclusion deliberately.
+- The fail-closed posture: an absent, non-numeric or in-use counter value still refuses with no
+  write via the existing jq `error()` surfacing as exit 3. No new exit-code plumbing.
+- The allocation stays inside the same mutex that guards the write.
+- The archive stays append-only history. Do NOT renumber, move or delete any archived row.
+- Archive mode's Check A6 reports 24 cross-array duplicate project_numbers on this repository's
+  real archive, so the in-use collection must be a SET that tolerates duplicates without erroring.
+
+=== REJECTED ALTERNATIVE (stated on its own merits) ===
+
+Relocating the five pre-reset rows to `specs/vault/`, which `state-write.sh` already excludes from
+the bound for exactly this recycling rationale, would also free the range and uses a mechanism
+designed for the case. It is rejected here because it is a migration on append-only history, which
+the owning record's guardrail says must be a separately gated step with its own evidence, whereas
+the bound's shape can be corrected without touching any historical row.
+
+=== TERRITORY NOTE -- NO DEPENDENCY EDGE, BY DELIBERATE DECISION ===
+
+Open record #751 (`file_scope_declaration_hygiene_remediation`, not_started) also claims
+`validate-state.sh`, so the overlap was considered and a serializing edge was deliberately NOT
+added. Three reasons, each checkable:
+
+(1) #751 claims the DEPLOY path `.claude/scripts/validate-state.sh`, not the source-store path
+    this record edits, so there is no literal file_scope collision for the admission gate to see.
+(2) #751's subject is file_scope declaration hygiene, and its own description names Check 8
+    (coarse whole-directory roots) and Check 9 (duplicates) as detectors that ALREADY EXIST and
+    which it consumes rather than edits -- its validate-state.sh relation reads as a
+    read-dependency, not an edit claim.
+(3) The regions are disjoint: Check 8/Check 9 versus Check 12 and the allocation prefix.
+
+This leaves a HUMAN COORDINATION OBLIGATION rather than a mechanical one: if #751 turns out to
+edit `validate-state.sh` after all, the two must be sequenced by hand, because no edge exists to
+serialize them. Whoever implements the later of the two re-reads the other's landed diff first.
+
+=== ACCEPTANCE ===
+
+(1) Allocating against this repository's live state issues the smallest unused number above the
+    active max, not 1055, and a subsequent allocation issues the next one after that.
+(2) An allocation that would issue an in-use number is refused with no write, the message naming
+    the number and where it is in use.
+(3) Check 12 and the `--allocate-into` bound agree on one shared notion of "in use", and both
+    cross-referencing header comments are updated to describe the membership bound.
+(4) `validate-state.sh` exits 0 on this repository before and after, with both exit codes
+    reported. Check 12 must PASS once the counter is set to the dense next value, which the
+    present max-based check rejects.
+(5) `validate-state.sh --archive` and `--deep` are unaffected.
+(6) The counter-advance wrinkle is decided, implemented and recorded, with the rejected option
+    stated on its own merits.
+(7) The deployed tree is not hand-authored: the edit lands under
+    `agent-system/extensions/core/**` and reaches `.claude/**` only by deploy.
+
+=== SOURCE STORE ===
+
+Resolve via `jq -r '.extensions.core.source_dir' .claude-extensions.json`. Note that `source_dir`
+is PER-EXTENSION, so a top-level `jq -r '.source_dir'` returns `null`, which must NOT be read as
+the key being absent. Here it resolves to
+`/home/benjamin/.config/nvim/agent-system/extensions/core`.
+
+FILE SCOPE NOTE, measured rather than assumed: `scripts/tests/test-validate-state.sh` EXISTS in
+the source store and is in scope. There is NO `scripts/tests/test-state-write.sh` -- the
+allocator has no dedicated test file today, so coverage for the new bound must either be added to
+the existing validate-state suite or land as a new test file, and the implementer decides which.
+
+=== PROVENANCE ===
+
+This implements remedy (i) of task 821 (`state_counter_archive_numbering_reconciliation`, status
+researched), which owns the counter-versus-archive question and whose amendment records the
+settled reading and both candidate remedies. The user selected remedy (i) explicitly. Reference
+821 as the owning record and CONSUME its evidence rather than re-deriving it.
+
+=== DELIVERABLE PROSE CONSTRAINTS ===
+
+The edited files lie outside `specs/**`, so no task-number references and no record-versioning
+language may appear in them (`.claude/rules/no-task-references-in-deliverables.md`,
+`.claude/rules/no-record-versioning-in-deliverables.md`).
+
+Durable anchors citable freely in the deliverable: the script names, the flag spelling
+`--allocate-into`, the check name `Check 12`, the exit codes, the key name `next_project_number`,
+and the message texts themselves.
+
+MUST NOT appear in the deliverable: any task number, and the inflated counter value as a
+narrative of what went wrong.
+
+---
 
 ### 845. Name the typst-sync gate as the cause when git-commit-scoped.sh reports a refused commit
 - **Effort**: low
