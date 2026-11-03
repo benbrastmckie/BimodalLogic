@@ -6,7 +6,7 @@ next_project_number: 838
 
 ## Task Order
 
-*Updated 2026-11-02. Generated from state.json dependency graph.*
+*Updated 2026-11-03. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -94,7 +94,7 @@ next_project_number: 838
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-836 [RESEARCHED] — The depth-0 cell-level agreement for ladder realization needs...
+836 [RESEARCHING] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 
 ### Formula Refactor
@@ -160,7 +160,7 @@ Evidence: task 761 issues.jsonl entries iss_1792365111362_wjBgRA (statement-defe
 
 ### 836. Ladder type preserving cell agreement construction
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
