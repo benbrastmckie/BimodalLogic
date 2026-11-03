@@ -1694,4 +1694,25 @@ complexity bound. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_typeBlock_of_budget_le_cnt
 
+/-! ## Requirement (W): the realized-chain bridge (`RaySummary/LadderChain.lean`)
+
+`realized_typeBlock_mem_prodCycleLens`: a type-respecting block of a pending region, of length
+at most the budget, read as a periodic walk on `(objAt, tpOf)` pairs, is a `cohIdle`-cycle of
+the certificate graph through saturated pending classes, so its length is in `prodCycleLens`;
+`typeBlock_length_dvd_of_paramsOk`: hence it divides `P + 1` under `(K1)`. These pins read the
+LOCAL half of the certificate layer only — no certificate-SET object — which is the mechanical
+form of the module's distance from the recorded circularity. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.realized_typeBlock_mem_prodCycleLens' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.realized_typeBlock_mem_prodCycleLens
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.typeBlock_length_dvd_of_paramsOk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.typeBlock_length_dvd_of_paramsOk
+
 end BimodalTest.Metalogic

@@ -340,17 +340,17 @@ Phases within the same wave can execute in parallel. Phase 11 is the final phase
 
 ---
 
-### Phase 8: `LadderChain.lean` — the Realized-Chain Bridge and the Exact Shift [NOT STARTED]
+### Phase 8: `LadderChain.lean` — the Realized-Chain Bridge and the Exact Shift [COMPLETED]
 
 **Goal**: A second new module, not certificate-free by design, proves that a realized pending type-respecting block is a `prodCycleLens` member, hence that its length divides `P + 1` under `(K1)`; the budget lemmas of the `step0` prototype are promoted beside it.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean`: imports `LadderPump` and `CounterQuotient`; module docstring stating that it reads `locCoh`, `untlLink`, `snceLink`, `SatCl` and `prodCycleLens` — the LOCAL, one-directional half of obligation (S) — and NO certificate-set object; its own grep `certAdmK|certStabK|certBoxK|certBiInfK|certLocK|certFwdK|certBwdK|certChain|Dmax|LadderCons|prodPre_periodic|prodPreStep|satThreshold|satPeriod` returns nothing; why this is not the recorded circularity (which runs through `certStabK` and `certBiInfK`).
-- [ ] Promote `card_prodState`, `budget_le_cascadeBound`, `budget_le_Tc` from `specs/761_ladder_realization_theorem/prototype/step0-budget-check.lean` verbatim (the prototype stays in place as the record).
-- [ ] Local coherence of realized types: `locCoh_of_realized` (the `atom` arm from `atom_mem_tpOf_ladder_iff` against `ladderModel`'s valuation, `bot` from `bot_not_mem_tpOf`, `imp` from `imp_mem_tpOf_iff`; the modal and temporal arms of `locPred` are `true`); `untlLink_of_realized` and `snceLink_of_realized` (the strict one-step unfoldings from `untl_mem_tpOf_iff`/`snce_mem_tpOf_iff` over `ℤ` by splitting the witness at `z + 1`, resp. `z - 1`); `satCl_of_cycle` (the `l`-periodic walk is its own infinite forward `cohIdle`-walk).
-- [ ] `realized_typeBlock_mem_prodCycleLens` (Goal): the walk `f i := (objAt g (u + i % l), ⟨tpOf M φ σ (u + i % l), _⟩)` is `cohIdle`-linked (`step` along the ladder path from `IsLadderPath`'s step component; the link conditions above), pending throughout (`cntAt_sub_of_pend` with `l ≤ cntAt g u`), saturated at every point, closes at `l` by `hrep`/`hty`, and `l ≤ card (ProdState Q φ)` by `hbud` and `card_prodState`.
-- [ ] Corollary `typeBlock_length_dvd_of_paramsOk : … → l ∣ P + 1` from `hp.1.1`.
-- [ ] Wiring as in Phase 4: both root imports, `--emit-inventory` plus the description cell, axiom-test pins for the Goal and the corollary.
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean`: imports `LadderPump` and `CounterQuotient`; module docstring stating that it reads `locCoh`, `untlLink`, `snceLink`, `SatCl` and `prodCycleLens` — the LOCAL, one-directional half of obligation (S) — and NO certificate-set object; its own grep `certAdmK|certStabK|certBoxK|certBiInfK|certLocK|certFwdK|certBwdK|certChain|Dmax|LadderCons|prodPre_periodic|prodPreStep|satThreshold|satPeriod` returns nothing; why this is not the recorded circularity (which runs through `certStabK` and `certBiInfK`).
+- [x] Promote `card_prodState`, `budget_le_cascadeBound`, `budget_le_Tc` from `specs/761_ladder_realization_theorem/prototype/step0-budget-check.lean` verbatim (the prototype stays in place as the record).
+- [x] Local coherence of realized types: `locCoh_of_realized` (the `atom` arm from `atom_mem_tpOf_ladder_iff` against `ladderModel`'s valuation, `bot` from `bot_not_mem_tpOf`, `imp` from `imp_mem_tpOf_iff`; the modal and temporal arms of `locPred` are `true`); `untlLink_of_realized` and `snceLink_of_realized` (the strict one-step unfoldings from `untl_mem_tpOf_iff`/`snce_mem_tpOf_iff` over `ℤ` by splitting the witness at `z + 1`, resp. `z - 1`); `satCl_of_cycle` (the `l`-periodic walk is its own infinite forward `cohIdle`-walk).
+- [x] `realized_typeBlock_mem_prodCycleLens` (Goal): the walk `f i := (objAt g (u + i % l), ⟨tpOf M φ σ (u + i % l), _⟩)` is `cohIdle`-linked (`step` along the ladder path from `IsLadderPath`'s step component; the link conditions above), pending throughout (`cntAt_sub_of_pend` with `l ≤ cntAt g u`), saturated at every point, closes at `l` by `hrep`/`hty`, and `l ≤ card (ProdState Q φ)` by `hbud` and `card_prodState`.
+- [x] Corollary `typeBlock_length_dvd_of_paramsOk : … → l ∣ P + 1` from `hp.1.1`.
+- [x] Wiring as in Phase 4: both root imports, `--emit-inventory` plus the description cell, axiom-test pins for the Goal and the corollary.
 
 **Timing**: 2 hours
 
