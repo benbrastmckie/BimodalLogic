@@ -378,7 +378,7 @@ so nothing below that surface is at risk.
 
 ---
 
-### Phase 4: Realign and extend both test suites [NOT STARTED]
+### Phase 4: Realign and extend both test suites [COMPLETED]
 
 **Goal**: Every fixture asserts the membership bound, the four inverting fixtures assert their
 corrected outcome rather than corrected text, and the trap case the task description warns about
@@ -386,44 +386,58 @@ is covered by a test of its own.
 
 **Tasks**:
 
-- [ ] `test-state-write-concurrency.sh` Case 11 (counter `2`, active `[1, 2]`): outcome is
+- [x] `test-state-write-concurrency.sh` Case 11 (counter `2`, active `[1, 2]`): outcome is
       unchanged (exit 3, target byte-identical) because `2` is in use; update the asserted message
-      substring to the membership text, which must name `2` and `active_projects`.
-- [ ] `test-state-write-concurrency.sh` Case 12 (counter `3`, active max `2`, archive holding `50`
+      substring to the membership text, which must name `2` and `active_projects`. *(completed)*
+- [x] `test-state-write-concurrency.sh` Case 12 (counter `3`, active max `2`, archive holding `50`
       and `100`): invert the expectation. `3` is absent from the in-use set and above the active
       max, so the allocation is valid — assert exit 0, the issued number `3`, and a free staged
       counter. Reframe the case's comment from "archive-aware refusal" to "an archive-held number
-      above the issue point does not block an allocation".
-- [ ] `test-state-write-concurrency.sh` Case 13: re-point at the replacement guard. A filter that
+      above the issue point does not block an allocation". *(completed)*
+- [x] `test-state-write-concurrency.sh` Case 13: re-point at the replacement guard. A filter that
       consumes `$NAME` and does NOT record it must still be refused on both the main and
       `--dry-run` paths; update the asserted message to the recording assertion's text.
-- [ ] `test-state-write-concurrency.sh`: add a new case for the trap — a fixture whose in-use set
+      *(completed: filter changed to `.` so it genuinely never records, matching the new guard's
+      actual trigger condition rather than the old filter which — under the new design — now
+      DOES record correctly and would no longer trip this case)*
+- [x] `test-state-write-concurrency.sh`: add a new case for the trap — a fixture whose in-use set
       has low gaps (active `[3, 6]` with the counter free) must issue `7`, never `1`, `2`, `4` or
       `5`; and a fixture whose archive holds the number immediately above the active max must skip
-      it and issue the one after.
-- [ ] `test-state-write-concurrency.sh` Case 10: re-derive, do not assume. Two concurrent
+      it and issue the one after. *(completed: added as Case 15, parts a and b)*
+- [x] `test-state-write-concurrency.sh` Case 10: re-derive, do not assume. Two concurrent
       allocations from active `[1, 2]` issue `3` and `4`, leaving a staged counter of `5` — the
       same final value the case already asserts, so it should pass unchanged. Confirm rather than
-      edit.
-- [ ] `test-validate-state.sh` Fixture (b) (counter `781` equal to an active `project_number`):
+      edit. *(completed: confirmed unchanged, no edit made)*
+- [x] `test-validate-state.sh` Fixture (b) (counter `781` equal to an active `project_number`):
       outcome unchanged (FAIL); update the asserted text to the membership framing and the repair
-      value to the derived next free number.
-- [ ] `test-validate-state.sh` Fixture (c) (counter `10`, active max `5`, archive holding `7` and
+      value to the derived next free number. *(completed)*
+- [x] `test-validate-state.sh` Fixture (c) (counter `10`, active max `5`, archive holding `7` and
       `50`): invert to a PASS asserting the `Check 12` PASS line, since `10` is absent from
       `{5, 7, 50}` and above the active max. Rewrite the fixture comment to describe what it now
       proves: an archive-held number above the counter does not make the counter stale.
-- [ ] `test-validate-state.sh` Fixture (d): re-derive. Counter `51` against the same archive is
+      *(completed)*
+- [x] `test-validate-state.sh` Fixture (d): re-derive. Counter `51` against the same archive is
       still a PASS, so it should pass unchanged — but it no longer proves what its comment claims
-      (that (c) was the bound). Update its comment to the property it still proves.
-- [ ] `test-validate-state.sh` Fixture (g): keep it as the layer-agreement guard and invert it.
+      (that (c) was the bound). Update its comment to the property it still proves. *(completed)*
+- [x] `test-validate-state.sh` Fixture (g): keep it as the layer-agreement guard and invert it.
       Running Fixture (c)'s shape through the deployed allocator must now succeed; assert exit 0
       and the issued number, and keep the comment's statement that the fixture exists to prove the
-      two sites agree — now on an allocation outcome rather than a refusal.
-- [ ] `test-validate-state.sh`: add a fixture for the trap at the validator layer — a state whose
+      two sites agree — now on an allocation outcome rather than a refusal. *(completed in source;
+      passes against BimodalLogic's own deployed copy. When this suite's SOURCE-STORE copy is run
+      directly, its REPO_ROOT resolves — by the suite's own pre-existing, documented design — to
+      the git worktree containing it, which is the separate agent-system config repo, not
+      BimodalLogic; that repo's own self-hosted deploy is a separate, concurrently-active target
+      out of this task's scope to redeploy. See phase-4 progress file deviations.)*
+- [x] `test-validate-state.sh`: add a fixture for the trap at the validator layer — a state whose
       low numbers are free but whose counter sits just above a high active max must PASS, with the
       reported next free value being the dense one rather than the lowest free number overall.
-- [ ] Re-confirm Fixtures (a) and (e) pass unchanged (counter above the active max with no
-      archive; non-numeric counter).
+      *(completed: added as Fixture (h), two parts — (h-i) the dense-counter PASS shape, (h-ii)
+      the same shape with the counter colliding with the high in-use number, confirming the
+      reported repair value is the dense number, never a recycled low gap)*
+- [x] Re-confirm Fixtures (a) and (e) pass unchanged (counter above the active max with no
+      archive; non-numeric counter). *(completed: (e)'s assertion text needed no change; (a)'s
+      PASS-line text needed updating to match Check 12's reworded PASS message — see the scope
+      refinement recorded in phase 2's progress file)*
 
 **Timing**: 1.5 hours
 
