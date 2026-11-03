@@ -241,7 +241,7 @@ file edited. Confirm by `git status --short` under the source store showing one 
 
 ---
 
-### Phase 2: Rewire both bound sites onto the shared definition [NOT STARTED]
+### Phase 2: Rewire both bound sites onto the shared definition [COMPLETED]
 
 **Goal**: `Check 12` and the `--allocate-into` bound both become membership-based, both consume
 the shared library, and the counter-advance assertion is replaced per the Design Decision above —
@@ -250,36 +250,39 @@ prevent.
 
 **Tasks**:
 
-- [ ] In `$SD/scripts/state-write.sh`: source `lib/project-number-inuse.sh` beside the existing
-      `lib/common.sh` source.
-- [ ] Rewrite the `alloc_prefix` construction so it binds the derived number: keep the archive
+- [x] In `$SD/scripts/state-write.sh`: source `lib/project-number-inuse.sh` beside the existing
+      `lib/common.sh` source. *(completed)*
+- [x] Rewrite the `alloc_prefix` construction so it binds the derived number: keep the archive
       slurp and the absent/non-numeric counter checks verbatim, replace the
       `$__alloc_ctr > $__alloc_combined_max` comparison with a membership test on the counter, and
       bind `$NAME` to `pnum_next_free` rather than to the counter. Drop the now-unused
-      `$__alloc_archive_max` / `$__alloc_combined_max` bindings.
-- [ ] Reword the allocation prefix's refusal message to a membership framing that names the number
-      and where it is in use, and whose repair hint names the derived next free value.
-- [ ] Replace the counter-advance assertion on BOTH the main path and the `--dry-run` preview path
+      `$__alloc_archive_max` / `$__alloc_combined_max` bindings. *(completed)*
+- [x] Reword the allocation prefix's refusal message to a membership framing that names the number
+      and where it is in use, and whose repair hint names the derived next free value. *(completed)*
+- [x] Replace the counter-advance assertion on BOTH the main path and the `--dry-run` preview path
       with the recording assertion from the Design Decision, and add the in-mutex cache
       regeneration step after the caller's transform and before the atomic replace. Keep the
-      `[dry-run]` message prefix convention on the preview path.
-- [ ] Update `state-write.sh`'s `--allocate-into` header comment block to describe the membership
+      `[dry-run]` message prefix convention on the preview path. *(completed: verified against
+      fixtures for dense allocation, outlier skip, in-use-counter refusal, and both main/dry-run
+      recording-assertion refusals)*
+- [x] Update `state-write.sh`'s `--allocate-into` header comment block to describe the membership
       bound, the derived number, the regenerated cache, the replaced assertion, and the retained
       `specs/vault/**` exclusion — and to name `Check 12` and the shared library as what it now
-      agrees with.
-- [ ] In `$SD/scripts/validate-state.sh`: resolve and source the shared library using the same
+      agrees with. *(completed)*
+- [x] In `$SD/scripts/validate-state.sh`: resolve and source the shared library using the same
       multi-candidate pattern the file already uses for `status-vocabulary.sh` and
-      `file-scope-overlap.sh`.
-- [ ] Rewrite `Check 12` to a single jq invocation over the live file with the archive supplied as
+      `file-scope-overlap.sh`. *(completed)*
+- [x] Rewrite `Check 12` to a single jq invocation over the live file with the archive supplied as
       a slurped argument (or an empty object when no sibling archive exists), FAILing when the
       counter is absent, non-numeric, or in use, and PASSing otherwise. Its FAIL text names the
       number, the array it is in use in, and the derived next free value as the repair target; its
-      PASS text states that the counter names a free number.
-- [ ] Update `Check 12`'s own header comment, the checks-inventory entry near the top of the file
-      that summarises it, and the stale "exactly two jq invocations" cost note.
-- [ ] Extend the lib allow-list and the pre-flight existence loop in every suite that copies
+      PASS text states that the counter names a free number. *(completed)*
+- [x] Update `Check 12`'s own header comment, the checks-inventory entry near the top of the file
+      that summarises it, and the stale "exactly two jq invocations" cost note. *(completed)*
+- [x] Extend the lib allow-list and the pre-flight existence loop in every suite that copies
       `state-write.sh` into a temp root. Sweep for the set rather than trusting this list:
-      `grep -rln 'cp .*state-write\.sh' "$SD/scripts/"`.
+      `grep -rln 'cp .*state-write\.sh' "$SD/scripts/"`. *(completed: swept set matched the plan's
+      measured 5 suites exactly)*
 
 **Timing**: 1.75 hours
 
