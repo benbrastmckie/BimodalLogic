@@ -422,7 +422,7 @@ one file.
 
 ---
 
-### Phase 4: DECISION GATE — Is a Spanning Block's Length Constrained by `(K1)`? [NOT STARTED]
+### Phase 4: DECISION GATE — Is a Spanning Block's Length Constrained by `(K1)`? [COMPLETED]
 
 **Goal**: ONE question, answered by a compiled object, with a named verdict recorded in the plan
 and in `issues.jsonl`: a type-respecting block `[u, u + l)` that SPANS a region start — the data
@@ -431,31 +431,54 @@ Phase 2 now produces from pin density — crosses an idle position, so the lande
 the block inside one pending region). Is `l ∣ P + 1` nevertheless derivable from `(K1)`, through
 `objCycleLens` or `satPeriod`, or is it not?
 
+**VERDICT: FAIL.** `(K1)` does NOT constrain the length of a type-respecting block that spans a
+pin, and the schema is refuted rather than merely unproved. The verdict object is
+`Probe838B.spanningBlockLengthDvd_refuted` in
+`specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/spanning-divisibility.lean`
+(`[propext, Classical.choice, Quot.sound]`, no `sorryAx`).
+
+Mechanism, conjunct by conjunct. `prodCycleLens` and `objCycleLens` both carry
+`∀ i, pend (f i) = true` on the closed walk they quantify — the walk is PENDING THROUGHOUT, which
+is the region-interior restriction — and the walk a spanning block induces is idle at the index of
+the pin strictly inside it, so the block's own length witnesses neither membership
+(`spanning_walk_not_pending`, compiled). `objCycleLens` additionally bounds the length by
+`Fintype.card Q`, which the pigeonhole's block does not respect either: its length is bounded by
+the pin window. `satPeriod` is a datum of `step`, `lab` and `φ` alone and is not quantified over
+block lengths at all, so it constrains `P + 1` without constraining `l`. The refuting object is
+the ALTERNATING path (idle at every even position, pending at every odd one, every countdown `0`,
+register constantly `0`), which for the stab-free atomic closure carries a type-respecting block
+of EVERY even length with the pin at `0` strictly inside it; at the periodicity fixpoint's own
+outputs, discharged by the landed `paramsOk_params`, the length `2 · (P + 1)` exceeds `P + 1` and
+so cannot divide it.
+
+Consequence: Phase 5 proceeds on its FAIL branch, and the `(K1)` amendment the analysis points at
+is recorded as a follow-up candidate in Phase 6's summary, never implemented here.
+
 **Tasks**:
 
-- [ ] State the gate as a named `def` in the prototype
+- [x] State the gate as a named `def` in the prototype
   `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/spanning-divisibility.lean`
   (namespace `Probe838B`, standalone, not wired): `SpanningBlockLengthDvd`, carrying `ParamsOk`,
   the stab-free closure hypothesis, a ladder path, and Phase 2's spanning-block tuple, concluding
   `l ∣ P + 1`. State it as a schema so the verdict is a theorem about a named object either way,
   on the precedent of `AtomPreservingCountMove` and `SpanningBlockBwd`.
-- [ ] Re-read `paramsOkK1`'s three conjuncts against the schema and decide which, if any, can
-  carry a spanning block: `prodCycleLens` (pending throughout — ruled out by inspection, record
+- [x] Re-read `paramsOkK1`'s three conjuncts against the schema and decide which, if any, can
+  carry a spanning block *(completed; see the VERDICT paragraph above — none of the three can)*: `prodCycleLens` (pending throughout — ruled out by inspection, record
   the one-line reason), `objCycleLens` (the object's own pending cycle lengths — check whether an
   idle-crossing cycle is a member), `satPeriod` (the periodicity fixpoint's period — check whether
   the block's length is forced to be a multiple of it).
-- [ ] PASS branch: compile `spanningBlockLengthDvd` as a theorem and record the verdict PASS with
-  the conjunct it routes through. Phase 5 then proceeds on its PASS branch.
-- [ ] FAIL branch: compile a refuting object — a ladder path, admissible under `ParamsOk` at the
+- [x] PASS branch: compile `spanningBlockLengthDvd` as a theorem and record the verdict PASS with
+  the conjunct it routes through. Phase 5 then proceeds on its PASS branch. *(deviation: skipped — the gate returned FAIL, so this branch does not apply)*
+- [x] FAIL branch *(completed; this is the branch taken)*: compile a refuting object — a ladder path, admissible under `ParamsOk` at the
   periodicity fixpoint's own outputs for a stab-free closure, carrying a spanning type-respecting
   block whose length does NOT divide `P + 1` — and name it `spanningBlockLengthDvd_refuted`.
   Record the verdict FAIL with the mechanism. Phase 5 then proceeds on its FAIL branch. If neither
   a proof nor a refutation lands within this phase's budget, record the verdict INCONCLUSIVE with
   what was tried and what goal state was reached, close the phase `[PARTIAL]`, and let Phase 5
   take the FAIL branch — an unproved divisibility is not a usable one.
-- [ ] Record the verdict in `issues.jsonl` with `--class "decision gate"` and the branch named, and
-  write the verdict into this plan's Phase 4 heading status line and body before closing the phase.
-- [ ] Prohibited on every branch: no `sorry` in any library file, no `def X := True`, and no edit
+- [x] Record the verdict in `issues.jsonl` with `--class "decision gate"` and the branch named, and
+  write the verdict into this plan's Phase 4 heading status line and body before closing the phase. *(completed)*
+- [x] Prohibited on every branch *(honoured: no library file changed in this phase at all)*: no `sorry` in any library file, no `def X := True`, and no edit
   to `paramsOkK1` or any other `ParamsOk` conjunct. A `(K1)` amendment, if the analysis shows one
   would close the gap, is recorded as a follow-up task in Phase 6's summary — never implemented
   here.
