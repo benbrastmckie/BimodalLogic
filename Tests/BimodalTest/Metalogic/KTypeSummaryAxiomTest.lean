@@ -1645,4 +1645,25 @@ is named, no finite-fibre or finite-width hypothesis appears, no pin is a bound.
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_deleted_ladderPath_of_pend_past
 
+/-! ## Requirement (W): the type half of the pump layer (`RaySummary/LadderPump.lean`)
+
+The pins below are the TYPE lemmas of the pump layer: duplicating or deleting a block whose two
+ends carry the same object state and the same realized stab-free type preserves the realized
+type at EVERY position, read through the block's index map (`spliceIdx` for the duplication,
+`delIdx` for the deletion). Each is the `L := fun _ => False` instance of a pinned-letter
+transport proved at the truth level by one induction per clause, with the temporal clauses
+routed through the endpoint equality of the block's ends. HWZ 2000 Lemma 17 is the deletion
+form; the duplication form is its mirror.
+
+**What these pins certify, and what they do not.** The standard profile on each declaration,
+and nothing else. They certify the type half of each surgery under no pending-region hypothesis,
+no `ParamsOk` and no pin condition. No certificate object is named, no finite-fibre or
+finite-width hypothesis appears, no pin is a bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_spliceIdx_of_tpOf_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_spliceIdx_of_tpOf_eq
+
 end BimodalTest.Metalogic
