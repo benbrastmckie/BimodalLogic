@@ -1,7 +1,7 @@
 # Implementation Plan: Task #844
 
 - **Task**: 844 - Land the downward (deletion) half of the depth-0 cell obligation by re-anchoring the lift, then discharge the single residual inequality
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7.5 hours (Phases 1-5 at 1 / 1.5 / 2 / 2 / 1). Phase 3 is a decision gate and Phase 4 is branch-selected by it; both branches of Phase 4 are sized at 2 hours, so the total does not depend on the verdict
 - **Dependencies**: None at the `state.json` level. Parent: task 838, whose Phase 5 closed `[BLOCKED]` on the register goal this task re-anchors, and whose `.blocker-research.json` is this plan's primary input. Nothing here edits any artifact of 838 or 836
 - **Research Inputs**: None as a `reports/` artifact (`--fast` dispatch; Stage 1.5 assessment passed — the task description is a specification, and every claim it carries was re-read in source at authoring time). The parent's `specs/838_two_sided_open_core_pin_free_pigeonhole/.blocker-research.json` is consumed as the research record
@@ -168,7 +168,7 @@ timeout 590 bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- bui
 
 ---
 
-### Phase 1: The z-anchored lift [NOT STARTED]
+### Phase 1: The z-anchored lift [COMPLETED]
 
 **Goal**: `exists_ladderPath_of_walk_nxt_at` lands in `LadderChain.lean`'s `section Assembly`,
 directly after `isLadderPath_shift`: the landed lift with the hardwired anchor position `0`
@@ -176,20 +176,20 @@ replaced by a parameter `z`, so that `hn₀` measures each pin's distance as `(v
 the conclusion reads `nxtAt g' z = n₀`.
 
 **Tasks**:
-- [ ] State the theorem exactly as pinned under `## Lean Challenge Statements` below.
-- [ ] Prove it by applying `exists_ladderPath_of_walk_nxt` to the translated walk
+- [x] State the theorem exactly as pinned under `## Lean Challenge Statements` below.
+- [x] Prove it by applying `exists_ladderPath_of_walk_nxt` to the translated walk
   `fun v => w (v + z)` and countdown `fun v => c (v + z)`: each of `hw`, `hidle`, `hpp`, `hpi`,
   `hpins` transports by instantiating at `v + z` (with `v + 1 + z = v + z + 1` by `ring` where
   needed), and `hn₀` transports because `(v + z − z).natAbs = v.natAbs`.
-- [ ] Translate back with `fun v => g₃ (v − z)`: `IsLadderPath` by the one-line rewrite
+- [x] Translate back with `fun v => g₃ (v − z)`: `IsLadderPath` by the one-line rewrite
   `v − z + 1 = v + 1 − z`; the three component equations by `change … (v − z) = _` then
   `sub_add_cancel`; `nxtAt g' z = n₀` by `sub_self`. Copy the four bullets from
   `exists_ladderPath_through_shifted_of_pend_past`'s translate-back block.
-- [ ] Docstring: one paragraph saying this is the landed lift with the anchor position freed, and
+- [x] Docstring: one paragraph saying this is the landed lift with the anchor position freed, and
   that `z := 0` recovers `exists_ladderPath_of_walk_nxt` verbatim.
-- [ ] `lean_verify` on the fully qualified name: axioms a subset of
+- [x] `lean_verify` on the fully qualified name: axioms a subset of
   `[propext, Classical.choice, Quot.sound]`, no `sorry`.
-- [ ] Scoped build green; `typst-sync-check.sh --fix`; commit with both files.
+- [x] Scoped build green; `typst-sync-check.sh --fix`; commit with both files.
 
 **Timing**: 1 hour
 

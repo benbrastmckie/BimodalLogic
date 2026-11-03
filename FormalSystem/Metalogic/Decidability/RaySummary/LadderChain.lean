@@ -444,6 +444,60 @@ theorem isLadderPath_shift {g : ℤ → LadderState Q pend} (hg : IsLadderPath s
   have := hg (v + z)
   rwa [show v + z + 1 = v + 1 + z by ring] at this
 
+/-- **The landed lift with the anchor position freed.** `exists_ladderPath_of_walk_nxt` pins the
+register's base value at the hardwired position `0`, measuring each pin's distance from `0`;
+here the anchor is a parameter `z`, each pin's distance is measured from `z`, and the register
+is exposed at `z`. The proof conjugates the landed lift with the translation: lift the walk read
+from `z` (`fun v => w (v + z)`) with its countdown, then translate the result back by
+`fun v => g₃ (v - z)`. With `z := 0` this recovers `exists_ladderPath_of_walk_nxt` verbatim. -/
+theorem exists_ladderPath_of_walk_nxt_at (w : ℤ → Q) (c : ℤ → ℕ) (z : ℤ) (n₀ : ℕ)
+    (hw : ∀ v, step (w v) (w (v + 1)) = true)
+    (hidle : ∀ v, pend (w v) = false → c v = 0)
+    (hpp : ∀ v, pend (w v) = true → pend (w (v + 1)) = true → c (v + 1) + 1 = c v)
+    (hpi : ∀ v, pend (w v) = true → pend (w (v + 1)) = false → c v = 0)
+    (hpins : ∀ s v, pend (w s) = false → pend (w (s + 1)) = true →
+      pend (w v) = false → pend (w (v + 1)) = true →
+      ((c (s + 1) : ℤ) - c (v + 1)).natAbs ≤ (s - v).natAbs)
+    (hn₀ : ∀ v, pend (w v) = false → pend (w (v + 1)) = true →
+      ((c (v + 1) : ℤ) - n₀).natAbs ≤ (v - z).natAbs) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v, objAt g' v = w v) ∧ (∀ v, cntAt g' v = c v) ∧ nxtAt g' z = n₀ := by
+  -- the walk read from `z`, lifted with the anchor at the origin
+  obtain ⟨g₃, hg₃, hobj₃, hcnt₃, hnxt₃⟩ :=
+    exists_ladderPath_of_walk_nxt (fun v => w (v + z)) (fun v => c (v + z)) n₀
+      (fun v => by
+        rw [show v + 1 + z = v + z + 1 by ring]
+        exact hw (v + z))
+      (fun v h => hidle (v + z) h)
+      (fun v h0 h1 => by
+        rw [show v + 1 + z = v + z + 1 by ring]
+        exact hpp (v + z) h0 (by rwa [show v + z + 1 = v + 1 + z by ring]))
+      (fun v h0 h1 =>
+        hpi (v + z) h0 (by rwa [show v + z + 1 = v + 1 + z by ring]))
+      (fun s v hs0 hs1 hv0 hv1 => by
+        have := hpins (s + z) (v + z) hs0 (by rwa [show s + z + 1 = s + 1 + z by ring])
+          hv0 (by rwa [show v + z + 1 = v + 1 + z by ring])
+        rwa [show s + z + 1 = s + 1 + z by ring, show v + z + 1 = v + 1 + z by ring,
+          show s + z - (v + z) = s - v by ring] at this)
+      (fun v h0 h1 => by
+        have := hn₀ (v + z) h0 (by rwa [show v + z + 1 = v + 1 + z by ring])
+        rwa [show v + z + 1 = v + 1 + z by ring, show v + z - z = v by ring] at this)
+  -- translate back
+  refine ⟨fun v => g₃ (v - z), ?_, ?_, ?_, ?_⟩
+  · intro v
+    have := hg₃ (v - z)
+    rwa [show v - z + 1 = v + 1 - z by ring] at this
+  · intro v
+    change objAt g₃ (v - z) = _
+    rw [hobj₃]
+    rw [sub_add_cancel]
+  · intro v
+    change cntAt g₃ (v - z) = _
+    rw [hcnt₃]
+    rw [sub_add_cancel]
+  · change nxtAt g₃ (z - z) = _
+    rw [sub_self, hnxt₃]
+
 end Assembly
 
 section AssemblyFin
