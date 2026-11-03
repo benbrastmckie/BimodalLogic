@@ -1,5 +1,5 @@
 ---
-next_project_number: 1056
+next_project_number: 1057
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 1056
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,1055 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840 | 298,428,502,761,768,769,770,772,777,785,810,813,833 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,1056 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -56,6 +56,7 @@ next_project_number: 1056
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and... (see above)
 825 [NOT STARTED] — Report a reversed validate-artifact.sh invocation as an...
 839 [NOT STARTED] — Harvest a plan's declared contingency files into file\_scope,...
+  └─ 1056 [NOT STARTED] — Name the typst-sync gate as the cause when...
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
 
@@ -142,6 +143,206 @@ next_project_number: 1056
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 1056. Name the typst-sync gate as the cause when git-commit-scoped.sh reports a refused commit
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 839
+- **Parent**: Task 838
+
+**Description**: META TASK. ONE defect, ONE record: when `git-commit-scoped.sh`'s commit attempt is refused by
+this repository's typst-sync pre-commit gate, the script's own caller-facing verdict misnames the
+cause as the V8 silent-staging-drop defect and calls the refusal "non-blocking", naming neither
+the gate that refused nor the remedy that clears it. The deliverable is the DIAGNOSTIC MESSAGE
+ONLY.
+
+EDIT TARGET, binding. Per `rules/source-store-deploy-boundary.md` this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file landing under `.claude/**` is silently wiped by the next regeneration -- the edit appears to
+succeed and has no lasting effect. Make every edit under the source store at the path mirroring
+the deployed `.claude/scripts/git-commit-scoped.sh`. RE-DERIVE the store rather than trusting
+this note, but know what re-derivation currently yields: `source_dir` lives PER-EXTENSION at
+`.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a top-level
+key. A top-level `jq -r '.source_dir'` returns null and must NOT be read as the key being
+absent. Re-derive with:
+
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+
+which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`, so the edit
+target is `agent-system/extensions/core/scripts/git-commit-scoped.sh`. The owning extension is
+`core`, not `typst` and not `lean`: the file to change is the commit wrapper, not the gate. If
+`source_dir` is absent or its path does not exist when this task runs, record that as an
+observation of its own rather than silently hand-authoring under `.claude/**`.
+
+=== THE DEFECT AS OBSERVED ===
+
+MEASURED {task 838, entry_id iss_1793728724405_1fBgOG} (class `gate collision`, severity
+`costly`, resolution open). A commit touching `FormalSystem/**/*.lean` is refused by the
+typst-sync pre-commit gate unless the same commit also carries a regenerated
+`typst/generated/status.typ`, whose theorem and line counts are derived from the Lean tree.
+`git-commit-scoped.sh` surfaced this as a "PARTIAL commit" report rather than naming the gate as
+the cause.
+
+COST, which is why this is filed rather than absorbed. It recurred at EVERY phase of that
+implementation run, and each recurrence cost a diagnosis cycle -- the operator had to re-derive
+the same cause from the same misleading text repeatedly. One recurrence additionally provoked a
+reproduction probe that committed `README.md` under the placeholder message `x` (commit
+`947dd9e8d`); the amend that would have folded it into the phase commit was refused by the
+history-rewrite guard because a concurrent writer was live, so that commit remains in history.
+That stray commit is a consequence of the misdiagnosis, not a separate defect, and it is NOT in
+scope here: do not attempt to rewrite history to remove it.
+
+THE REMEDY THAT ACTUALLY WORKED, each time, and the text the new message must carry:
+
+  bash scripts/typst-sync-check.sh --fix
+  # then add typst/generated/status.typ to the commit pathspec
+
+=== MECHANISM -- VERIFIED BY SOURCE READING, NOT YET REPRODUCED END-TO-END ===
+
+The following is a reading of the deployed script at the time this record was written. Confirm it
+against the source store before acting, and confirm the end-to-end shape by actually driving a
+refusal; the claims below are code-path reasoning plus the measured symptom, not a reproduction.
+
+(1) `commit_output=$(git commit -m "$full_message" -- "${pathspecs[@]}" 2>&1)` captures the
+    hook's stderr, and `echo "$commit_output"` later emits it on STDOUT. The gate's own text is
+    therefore present but buried mid-stream, below the script's own authoritative-sounding
+    stderr lines.
+
+(2) The V8 post-commit integrity gate runs UNCONDITIONALLY, regardless of `commit_exit` -- its
+    own header comment says so. When the hook refuses, no commit is created, so every
+    V8-snapshotted path compares as `absent from HEAD` (or as differing content), V8's mismatch
+    array is non-empty, and it prints on stderr: "ERROR: git-commit-scoped.sh detected a PARTIAL
+    commit -- one or more named positive pathspecs did not land in HEAD as intended (Verified
+    Finding V8). This is the silent-staging-drop defect: ...". That attribution is WRONG for this
+    shape. Nothing was silently dropped; a gate refused the whole commit.
+
+(3) `if [ "$commit_exit" -ne 0 ]; then echo "NOTE: Nothing to commit or git commit failed
+    (non-blocking)" >&2; fi` then characterizes a HARD gate refusal as non-blocking, which
+    invites exactly the wrong response -- proceeding as though nothing is owed.
+
+(4) THE EXIT CODE IS ALREADY CORRECT AND MUST NOT CHANGE. V8's dedicated `exit 5` is guarded by
+    `[ "$commit_exit" -eq 0 ]`, so it does NOT fire on a refusal; the script falls through to
+    `exit "$commit_exit"`, which is git's own nonzero code. The defect is PURELY TEXTUAL. A fix
+    that alters exit codes has exceeded its scope.
+
+WHERE THE GATE LIVES, as durable anchors the new message may name. `core.hooksPath` is
+`.githooks`, so the gate is `.githooks/pre-commit`; it invokes
+`scripts/typst-sync-check.sh --counts-only`, fires only when the staged set touches a `.lean`
+path, and is blocking rather than auto-regenerating. Its own text already names the remedy
+(`lake build && bash scripts/typst-sync-check.sh --fix && git add typst/generated/status.typ`).
+The gate is NOT broken and must not be edited by this task -- the hook's diagnosis is correct; it
+is the wrapper's verdict on top of it that is wrong.
+
+=== THE DESIGN QUESTION TO SETTLE, NOT A PARSER TO PATCH ===
+
+`git-commit-scoped.sh` is deployed into repositories that do not have a typst gate, so the fix
+must NOT hard-code one repository's hook. Research must settle which of these the change is, and
+say why:
+
+  (a) Detect the refusal class generically -- a nonzero `commit_exit` whose `commit_output`
+      indicates a pre-commit hook refusal rather than an empty diff -- and reframe BOTH the V8
+      ERROR and the "non-blocking" NOTE for that shape, re-emitting the hook's own captured text
+      as the authoritative cause instead of burying it. This generalizes to every hook in every
+      deploy and names no repository-specific path in the script.
+  (b) Additionally pattern-match the typst-sync gate specifically to name `--fix` and the
+      `status.typ` pathspec in the wrapper's own words.
+
+(a) is the structurally sound half and is likely sufficient on its own, since the hook already
+prints the remedy and (a) promotes that text rather than paraphrasing it. Prefer (a); adopt (b)
+only if research shows the hook's text does not in fact reach the caller, and if it does, keep
+any repository-specific knowledge out of the script body. The minimum acceptable outcome is that
+a reader of the script's output can tell a gate refusal from a staging drop WITHOUT re-reading
+the script.
+
+=== TERRITORY -- WHY THIS DEPENDS ON THE CONTINGENCY/CONTAINMENT RECORD ===
+
+Open record #839 (`plan_contingency_file_scope_and_containment_drop`, not_started) already claims
+`agent-system/extensions/core/scripts/git-commit-scoped.sh` AND
+`agent-system/extensions/core/scripts/tests/test-git-commit-scoped.sh` in its `file_scope` --
+both of this record's files. The two changes are INDEPENDENT in substance: #839 settles the V10
+containment guard and the `plan-file-scope-harvest.sh` contract, which is a different code path
+from the post-commit reporting block changed here. Neither subsumes the other and neither should
+be closed as a duplicate of the other.
+
+They are nonetheless the same file with no mechanism to serialize them, which `.claude/CLAUDE.md`'s
+batching guardrail names as a reason to sequence rather than exclude. The edge runs #839 -> this
+record, with #839 first, because #839 is the structural change that may itself move the reporting
+block this record edits, and because #839 must settle a design question before its own code lands.
+Applying the smaller message change on top of the settled structure is strictly cheaper than the
+reverse. If #839 is abandoned or descoped away from `git-commit-scoped.sh`, this record becomes
+independent and the edge may be dropped.
+
+=== SCOPE BOUNDARY -- THREE THINGS DELIBERATELY EXCLUDED ===
+
+(1) THE PLAN-AUTHORING HALF IS ALREADY OWNED ELSEWHERE. Open record #785
+    (`lean_plan_gate_collision_authoring_guidance`, not_started) owns the gate-collision facts a
+    Lean implementation plan must anticipate BEFORE a criterion is written -- including this
+    exact typst-sync surface, its `--fix` remedy, and the pre-commit-versus-later-verification
+    asymmetry. Its `file_scope` is entirely within the lean extension and does not overlap this
+    record. DO NOT write plan-authoring guidance here and DO NOT duplicate #785. It is named as
+    related context only: a reader who wants "how should a plan have avoided this" goes there,
+    while this record answers only "what should the script have said when it happened".
+
+(2) The stray `947dd9e8d` commit and the history-rewrite guard refusal described above are
+    consequences, not deliverables. No history rewrite.
+
+(3) Two further findings from the same run were considered for this channel and DELIBERATELY
+    EXCLUDED by the user's choice. They are NOT in scope and no task is to be created for them:
+    the Scope-Hypothesis inventory-consumer miscount, and the non-importable prototype file under
+    `specs/**`.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`, so its contents -- including any new message string --
+must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and
+no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). The
+script names (`typst-sync-check.sh`, `git-commit-scoped.sh`), the flag spellings
+(`--counts-only`, `--fix`), the generated path `typst/generated/status.typ`, the hook path
+`.githooks/pre-commit` and the existing finding labels (V6, V8, V10) are durable anchors and may
+be cited freely. The originating task number, the issue entry_id, the adjacent record numbers
+above and the `947dd9e8d` sha may NOT appear in the script or in any deliverable prose -- they
+live in this record only.
+
+=== ACCEPTANCE ===
+
+(1) A pre-commit-hook refusal no longer produces the V8 "PARTIAL commit ... silent-staging-drop
+    defect" ERROR as its cause attribution, and the V8 ERROR still fires unchanged for the shape
+    it genuinely owns (a commit that WAS created and still dropped a named path).
+(2) The "non-blocking" characterization no longer applies to a hard gate refusal.
+(3) The hook's own text reaches the caller as the authoritative cause, not buried below the
+    script's own stderr lines.
+(4) The remedy is recoverable from the output without re-reading the script.
+(5) No exit code changes: a hook refusal still exits with git's own nonzero code via
+    `exit "$commit_exit"`, and the dedicated codes 4/5/6/7 keep their existing guards and
+    precedence.
+(6) No repository-specific hook knowledge is hard-coded into the script, or if any is, the
+    research record states why (a) alone was insufficient.
+(7) `scripts/tests/test-git-commit-scoped.sh` covers the refusal shape, asserting on the new text
+    AND on the preserved exit code.
+(8) The typst gate itself (`.githooks/pre-commit`, `scripts/typst-sync-check.sh`,
+    `typst/generated/status.typ`) is unmodified.
+(9) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean` afterwards.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the two-sided open-core pin-free pigeonhole record (task 838) and
+approved at the orchestrate-lead level as an agent-system change request, dispatched through the
+conclusion stage's agent-system channel. Originating entry:
+`specs/838_two_sided_open_core_pin_free_pigeonhole/issues.jsonl`, entry_id
+`iss_1793728724405_1fBgOG`. The user was shown this finding with its citation, together with the
+two findings listed as excluded above, and chose this one alone for this channel.
+
+CROSS-REPO SITING NOTE. This record is filed in the BimodalLogic task space while its edit target
+resolves only under `/home/benjamin/.config/nvim/`. That mismatch is the same deliberate,
+previously-approved condition #785 carries and documents at length: the record sits beside the run
+that measured it. A migrator should treat it as a deliberate choice rather than an authoring slip,
+and should read #785's own cross-repo siting note for the three adjacent source-store records that
+bear on it. No dependency edge can express that coordination, because those records live in a
+different repository's task space.
+
+---
 
 ### 1055. Reanchored deletion half depth zero cell
 - **Effort**: high
