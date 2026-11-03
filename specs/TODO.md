@@ -1,5 +1,5 @@
 ---
-next_project_number: 847
+next_project_number: 849
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 847
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,844 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,844,847,848 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -59,6 +59,8 @@ next_project_number: 847
   └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
+847 [NOT STARTED] — file\_scope containment drops external source-store paths...
+848 [NOT STARTED] — Test sweep permanently red where the source store is external
 
 ### Algebraic Representation
 
@@ -143,6 +145,62 @@ next_project_number: 847
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 848. Test sweep permanently red where the source store is external
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: MEASURED during task 846's Phase 5. `run-all.sh` with no filter reported 26 failing suites of 156 (130 passed). Citations, from task 846's `issues.jsonl`: iss_1793736739875_sDC3Vt, iss_1793740991529_beV238.
+
+Two of the 26 are the repo's own `known-failures.txt` baseline (`.claude/scripts/tests/known-failures.txt`) and are expected. The remaining 24 all trace to ONE cause: this repository has never had a local `agent-system/extensions` directory, its source store being external via `.claude-extensions.json`. Independently re-confirmed here: `agent-system/` does not exist at this repository's root.
+
+That cause was confirmed directly on 7 of the 24: `test-askuserquestion-rehome.sh`, `test-deploy-propagation.sh`, `test-gate-cache-lib.sh`, `test-orchestrate-build-aux-dispatch.sh`, `test-routing-resolution.sh`, `test-update-task-status.sh`, `test-lint-dead-command-recommendations.sh`. A separate instance of the same cause: `test-manifest-scripts-sync.sh`'s no-`REPO_ROOT`-override assertion fails because `sync-manifest-scripts.sh` assumes a local extensions directory; its other 18 of 19 assertions pass.
+
+WHY IT MATTERS. A permanently-red sweep masks real findings: a genuinely new failure does not change the exit code and is invisible to anyone reading only the exit status. This is the same pathology the existing record `state_counter_archive_numbering_reconciliation` (see `specs/821_state_counter_archive_numbering_reconciliation/`) documented for `validate-state.sh`. Read that record for the argument rather than re-deriving it.
+
+DESIGN SPACE. Either (a) teach the affected suites to resolve the source store through `.claude-extensions.json`, or (b) declare the external-source-store case a recognised SKIP with a reason rather than a failure, or (c) extend the `known-failures.txt` baseline mechanism to cover it. Prefer a fix that makes the suites actually RUN over one that merely silences them, and say why if you choose silencing.
+
+VERIFY THE COUNT INDEPENDENTLY before implementing -- do not trust the 24/26/156 figures in this description. Re-run `run-all.sh` with no filter and re-derive them.
+
+ACCEPTANCE: (1) `run-all.sh` in this repository either passes or fails only on genuine findings, with every environmental failure either fixed or explicitly declared with a reason. (2) The exit code again discriminates a new failure from the standing baseline. (3) No suite is silenced without a recorded reason.
+
+SOURCE STORE AND PROSE CONSTRAINTS. Resolve the source store via `jq -r '.extensions.core.source_dir' .claude-extensions.json`; `source_dir` is PER-EXTENSION, so a top-level `jq -r '.source_dir'` returns `null`, which must NOT be read as the key being absent. This repository resolves it to `/home/benjamin/.config/nvim/agent-system/extensions/core`. Edits land under `agent-system/extensions/core/**` and reach `.claude/**` only by deploy; never hand-author the deployed tree. The edited files lie outside `specs/**`, so no task-number references and no record-versioning language may appear in the deliverables (.claude/rules/no-task-references-in-deliverables.md, .claude/rules/no-record-versioning-in-deliverables.md). Durable anchors citable freely: script names, flag spellings, check names, exit codes, key names, message texts. The originating task number and the issue entry_ids belong in this description only, never in deliverable prose.
+
+PROVENANCE: raised during an orchestration run and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. No `suggested_channel` hint was carried on any citation, so there is no hint-versus-decision override to record.
+
+---
+
+### 847. file_scope containment drops external source-store paths from phase commits
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: OBSERVED 13 times during task 846's implementation. Every `agent-system/extensions/core/**` path was dropped from its phase-commit pathspec by `git-commit-phase.sh`, each reported with the message text `not contained in this task's declared file_scope` (git-commit-phase.sh, the `--what-happened` string at the excursion-report call site). Citations, all from task 846's `issues.jsonl`: iss_1793736794251_k7Q3J8, iss_1793736794311_yUp8Vp, iss_1793737815724_0ZfGnJ, iss_1793737815788_QHk1wn, iss_1793737815847_SJ3yxu, iss_1793737815907_UKDkzX, iss_1793737815965_izbdkL, iss_1793737816029_P1dXET, iss_1793737816087_3YZSsX, iss_1793738678082_9E2Jin, iss_1793738678146_o1Q504, iss_1793741189717_sYrKgg, iss_1793741189826_eDqokf.
+
+TWO COMPOUNDING CAUSES. The task must address both or state explicitly why not.
+
+(1) This repository's source store is EXTERNAL. `jq -r '.extensions.core.source_dir' .claude-extensions.json` resolves to `/home/benjamin/.config/nvim/agent-system/extensions/core` -- a different git repository. A path there is not under this repo's root at all, so a containment check against this repo's `file_scope` cannot match it, and a commit in this repo could not carry it even if the check passed. Independently confirmed: `agent-system/` does not exist in this repository at all, so even the plain `agent-system/extensions/core/scripts/...` entries present in task 846's `file_scope` match nothing locally.
+
+(2) The declared `file_scope` carried LITERAL, UNEXPANDED `$SD/...` entries. Verify this directly rather than trusting this description: `jq -r '.active_projects[] | select(.project_number==846) | .file_scope[]' specs/state.json` shows `$SD/manifest.json`, `$SD/scripts/state-write.sh`, `$SD/scripts/validate-state.sh`, `$SD/scripts/lib/project-number-inuse.sh`, `$SD/scripts/tests/test-validate-state.sh`, `$SD/scripts/test-state-write-concurrency.sh`, and `$SD/context/reference/state-management-schema.md`. Those strings match nothing mechanically. No `SD=` assignment exists in `git-commit-phase.sh` or `update-task-status.sh`, so the variable is not expanded anywhere on the commit path. ESTABLISH WHERE THE UNEXPANDED FORM IS INTRODUCED before proposing a fix -- candidate sites are a plan's Files-to-modify list, a postflight `--file-scope-add` call (the flag is consumed by `orchestrator-postflight.sh`, `command-gate-out.sh`, `update-task-status.sh`, `reconcile-task-status.sh`, `skill-base.sh`, and `backfill-file-scope.sh`), or the planner's own authoring.
+
+WHY IT MATTERS, STATED HONESTLY. No work was lost this time: the dispatched agent noticed and committed the source store separately, and all six files are confirmed committed there across four commits. The defect is that nothing ENSURED that. An agent that did not notice would have left the deliverable uncommitted in the source store while this repo's phase commit reported success. The excursion notice is indistinguishable from the ordinary, correct refusals the guard emits when it is genuinely preventing over-staging. The guard is not malfunctioning -- it is correctly declining to stage paths outside the repo. What is missing is a sanctioned route for the external-source-store case.
+
+DESIGN SPACE, all acceptable, decide with evidence. (a) Teach `file_scope` to express a source-store path in a form that resolves -- expanding `source_dir` at the point the scope is declared, or adopting an explicit marker the containment check understands. (b) Give the phase-commit path an explicit second-repository commit step, so a source-store edit is committed in its own repo as part of phase closure rather than left to the agent's vigilance. (c) Keep the drop but make the notice unambiguous -- distinguish 'outside this repository, commit it in the source store' from 'not in your declared scope', so the two cannot be confused. Options (b) and (c) are complementary rather than exclusive. Whatever is chosen, state the rejected options on their own merits.
+
+MUST NOT: do not weaken the over-staging protections in `guard-destructive-git.sh` or the scoped-staging contract in `context/standards/git-staging-scope.md`. The fail-safe direction (under-stage rather than over-stage) stays as written.
+
+ACCEPTANCE: (1) A task whose deliverable lives in an external source store either has its source-store paths committed by a sanctioned mechanism, or receives a notice that unambiguously says so and names the repository. (2) An unexpanded-variable `file_scope` entry is either impossible to declare or is detected and reported, rather than silently matching nothing. (3) The existing excursion behaviour for genuinely out-of-scope in-repo paths is unchanged, with a test demonstrating it. (4) The edit lands under `agent-system/extensions/core/**` and reaches `.claude/**` only by deploy.
+
+SOURCE STORE AND PROSE CONSTRAINTS. Resolve the source store via `jq -r '.extensions.core.source_dir' .claude-extensions.json`; `source_dir` is PER-EXTENSION, so a top-level `jq -r '.source_dir'` returns `null`, which must NOT be read as the key being absent. Edits land under `agent-system/extensions/core/**` and reach `.claude/**` only by deploy; never hand-author the deployed tree. The edited files lie outside `specs/**`, so no task-number references and no record-versioning language may appear in the deliverables (.claude/rules/no-task-references-in-deliverables.md, .claude/rules/no-record-versioning-in-deliverables.md). Durable anchors citable freely: script names, flag spellings, check names, exit codes, key names, message texts. The originating task number and the issue entry_ids belong in this description only, never in deliverable prose.
+
+PROVENANCE: raised during an orchestration run and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. No `suggested_channel` hint was carried on any citation, so there is no hint-versus-decision override to record.
+
+---
 
 ### 846. Make task-number allocation membership-based rather than max-based
 - **Effort**: medium
