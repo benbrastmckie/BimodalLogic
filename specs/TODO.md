@@ -11,7 +11,7 @@ next_project_number: 838
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827 | 298,428,502,761,768,769,770,772,777,810,813,833 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -96,6 +96,7 @@ next_project_number: 838
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 836 [IMPLEMENTING] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
+838 [RESEARCHED] — The depth-0 cell obligation is blocked on a two-sided open...
 
 ### Formula Refactor
 
@@ -135,6 +136,34 @@ next_project_number: 838
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 838. Two sided open core pin free pigeonhole
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 836
+
+**Description**: The depth-0 cell obligation is blocked on a two-sided open combinatorial core: the spanning-block device is refuted in BOTH directions, so a new route is needed.
+
+Established by the Phase 3 decision gate of the ladder pump layer (commits fb99cfa0f, f88de40a9), compiled rather than argued. The tight doubling chain was built (tightChain_isLadderPath, tightChain_pin, tightChain_slack_zero), the spanning-block condition was stated in both directions, and both directions were refuted by compiled objects in specs/836_ladder_type_preserving_cell_agreement_construction/prototype/tight-chain-regime-b.lean: spanningBlockBwd_refuted at a path with one idle position and the closure of a S not-a, and spanningBlockFwd_refuted at Probe761C own gC.
+
+Mechanism: the only candidate device for rebuilding the register type-respectingly across a tight pin -- duplicate a block SPANNING a region start, then pump the copies -- is false as a consequence of ParamsOk. The two cascades (backward on the tight doubling chain, forward on its mirror) are the open core. This is two-sided, not regime-B-only: the downward inclusion (shortening the region of z by deletion) and the n-sub-regime where the register must drop by more than the window allows cascade forward exactly as regime B cascades backward.
+
+What is NOT settled: both refuting objects have a pin-free side on which the register IS rebuildable without a spanning block, so the obligation under the repaired two-depth (K4) is NEITHER proved NOR refuted. cellLE_zero_const_of_kappa_eq remains reserved in FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean and is claimed by nothing.
+
+Two named routes, both open:
+(a) a (K2)-level pigeonhole over region starts that exploits the pin-free side the two refuting objects both have;
+(b) revising the obligation statement itself -- never under the reserved name.
+
+Available ground: the certificate-free pump layer is landed and green. LadderPump.lean (1,485 lines) carries deletion admissibility, both type lemmas (duplication and deletion, HWZ 2000 Lemma 17 over the integers), the forward window nxtAt_le_cntAt_add_of_next_region, the pigeonhole and iterated duplication. LadderChain.lean (612 lines) carries the budget lemmas, the realized-chain bridge, the regime-A assembly and the upward cell inclusion. Seven of eight pinned Lean Challenge Statements are theorems on the standard axiom profile, pinned in Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean. (K4) is repaired with the forward exactness depth dFwd and the obligation refutation at the frozen one-depth (K4) is wired as the forty-seventh probe.
+
+Consequence if unresolved: the depth-0 base case does not land, so the parent ladder realization theorem Phase 11.6 (which inducts from it) stays unenterable, and the phases above it remain unreachable along this route.
+
+Origin: conclusion-stage channel (c) of an orchestration run, citations iss_1793676481950_X5nVmj (Phase 3 FAIL, design-record defect, blocking), iss_1793682949115_VWHeyc (Phase 10 BLOCKED, design-record defect, blocking), iss_1793666338306_aFixsS (plan-gap, blocking), iss_1793672574750_4C3zev (two-sidedness, plan-gap, costly).
+
+---
 
 ### 837. Challenge statement repair paramsok quantification
 - **Effort**: medium
