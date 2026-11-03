@@ -210,11 +210,17 @@ construction is unavailable. The `n` half of the construction is free, by
 `exists_ladderPath_pair_nxtAt_ne`; the obstruction is confined to the `c` coordinate.
 
 `CellLEZeroConstOfKappaEq` is the obligation itself, stated as a schema and proved NOWHERE. It is
-not refuted either, and the distinction is the whole content of this layer: a cell is a set of
-TYPES over all histories through a state, and two ladder paths can realize the same closure type
-without agreeing on a single atom row, so a construction that does not preserve the valuation
-pointwise is left entirely open. No such construction is stated anywhere in the tree and none is
-invented here.
+REFUTED at the parameter conditions as `ParamsOk` reads, by the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`, through a
+mechanism different from the construction's: the cell reads the next-deadline register FORWARD
+through the next region's pin, and `(K4)`'s gap clip does not dominate what a closure formula can
+pin there (the obligation section at the end of this module states the mechanism). The
+distinction between the two refutations is the content of this layer: a cell is a set of TYPES
+over all histories through a state, and two ladder paths can realize the same closure type
+without agreeing on a single atom row, so the atom-row construction's unavailability says nothing
+about the obligation, and the obligation's own refutation is a fact about the register. No
+construction that preserves the realized type without preserving the valuation pointwise is
+stated anywhere in the tree, and none is invented here.
 
 ## What this module does NOT hold
 
@@ -222,7 +228,9 @@ invented here.
   a pending position is constant on the classes of the counter quotient, under the parameter
   conditions — is NOT proved here and is not assumed anywhere. Its depth-`0` cell-level half is
   STATED as the schema `CellLEZeroConstOfKappaEq` and proved nowhere; a schema is not a theorem and
-  no result in this module or elsewhere discharges it. What landed is the rigid-anchor
+  no result in this module or elsewhere discharges it, and the wired probe
+  `ladder-cell-obligation-refutation.lean` refutes it at the parameter conditions as `ParamsOk`
+  reads. What landed is the rigid-anchor
   layer above, which any proof of it has to respect, and the cell-level reading of the `⊡` bit.
   Two obstructions are on the record for it, each a consequence of what IS compiled here. The
   first obstruction of the earlier record — that by `cntAt_eq_of_obj_eq` no replacement can keep
@@ -2093,11 +2101,13 @@ are jointly unsatisfiable: `atomPreservingCountMove_refuted`.
 
 **What this refutes and what it does not.** It refutes the CONSTRUCTION, for every object whose
 pending bit is readable in the language — and the realization statement quantifies over every
-labelling, so such objects are not excluded by anything. It does NOT refute
+labelling, so such objects are not excluded by anything. It does NOT by itself refute
 `CellLEZeroConstOfKappaEq`: a cell is a set of TYPES, and two ladder paths can realize the same
-closure type without agreeing on a single atom row, so the obligation can be met by a construction
-that does not preserve the valuation pointwise. No such construction is stated anywhere in the
-tree, and none is invented here. -/
+closure type without agreeing on a single atom row. The obligation's own refutation is a separate
+fact, about the register's forward window rather than the atom row, carried by the wired probe
+`ladder-cell-obligation-refutation.lean` and stated in the obligation section below. No
+construction that preserves the realized type without preserving the valuation pointwise is stated
+anywhere in the tree, and none is invented here. -/
 
 section Rigid
 
@@ -2163,11 +2173,34 @@ theorem atomPreservingCountMove_refuted (lab : Q → Atom → Bool)
 
 end Rigid
 
-/-! ## The obligation of the cell-level agreement, stated and not proved
+/-! ## The obligation of the cell-level agreement, stated and refuted
 
 The deliverable the route names is `cellLE_zero_const_of_kappa_eq`: the depth-`0` half of the
-agreement, at the level of the CELL. It is stated here as the schema below and it is NOT proved;
-the theorem name is reserved for its proof and is claimed by nothing in this module.
+agreement, at the level of the CELL. It is stated here as the schema below, and the schema is
+REFUTED: the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean` compiles
+`Probe836A.cellLEZeroConstOfKappaEq_refuted` at the object of
+`ladder-cell-agreement-refutation.lean` (two states, one pending and one idle, step complete, the
+pending bit carried as the atom `p`), at the periodicity fixpoint's own parameter outputs
+(`paramsOk_params`), for a stab-free, `S`-free closure, with non-vacuity on both sides carried as
+the conjuncts of `Probe836A.exists_refuting_cell_collision` (`ParamsOk` discharged, a populated
+`kappa`-collision, a ladder path through EACH of the two states). The theorem name stays reserved
+and is claimed by nothing in this module or elsewhere; the `def` is kept so that the refutation is
+a theorem about a named object rather than a remark, on the precedent of
+`AtomPreservingCountMove`.
+
+**The mechanism.** The cell at a ladder state reads the next-deadline register FORWARD, through
+the next region's pin: by `cntAt_eq_nxtAt_of_idle_pend` the register's value at the first idle
+position after `z`'s region IS the countdown of the region that follows, and the register is
+`1`-Lipschitz (`nxtAt_lipschitz`), so `nxtAt z ≤ cntAt z + I₁ + L₁ - 1` where `I₁` is the length
+of the next idle run and `L₁` that of the next region. `kappa`'s gap coordinate clips `n - c` at
+`B`, and `(K4)` as it reads bounds `B` by the backward exactness depth `dBack` alone, so `Bof` is
+`2` for a closure with no `S`. A `U`-only formula of bounded `X`-depth pins `I₁ = 1` and
+`L₁ = 2`, bounding the register at `z` by `cntAt z + 2`, so a type carrying it lies in the cell at
+`(q, c, c + 2)` and in no type of the cell at `(q, c, c + 2 + (P + 1))`, while `kappa` identifies
+the two states. The gap clip does not dominate what a closure formula can pin forward; that is
+the whole of the refutation, and it is confined to the register's forward window — the backward
+window `cntAt_le_nxtAt_succ_of_idle_past` is what `(K4)` was shaped against.
 
 **Which of the route's landed inputs the statement's own shape commits to.** It commits to (d), the
 collision readings of `kappa` (`kappa_eq_components`, `eq_or_both_ge_of_min_eq`,
@@ -2183,14 +2216,16 @@ That is what keeps it clear of `Probe761S`, which separates two particular histo
 the CELLS at the refutation's own witness position), and clear of `no_positionwise_lift`, which
 refutes the positionwise lift shape.
 
-**The construction is the open part, and it is open in a specific way.** The one construction the
-route named is refuted above for every object whose pending bit is readable in the language; the
-wired probe `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`
-exhibits such an object with the parameter conditions discharged at the periodicity fixpoint's own
-outputs, a populated collision at `c ≠ c'`, and a ladder path through EACH of the two states — so
-the obligation is non-vacuous on both sides while the construction is unavailable. What is left
-open is a construction that preserves the realized TYPE without preserving the valuation
-pointwise. -/
+**Two refutations, two mechanisms.** The one construction the route named is refuted above for
+every object whose pending bit is readable in the language; the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` exhibits such an
+object with the parameter conditions discharged at the periodicity fixpoint's own outputs, a
+populated collision at `c ≠ c'`, and a ladder path through EACH of the two states — so the
+obligation is non-vacuous on both sides while the construction is unavailable. That refutation
+is about the ATOM ROW and says nothing about the obligation. The obligation's own refutation,
+above, is about the REGISTER, and holds at the same object: no construction preserving the
+realized type without preserving the valuation pointwise can meet the schema at the parameter
+conditions as `ParamsOk` reads, because the schema is false there. -/
 
 section Obligation
 
@@ -2213,15 +2248,18 @@ theorem kappa_eq_of_shift (Tc Tn P B c n m : ℕ) (hc : Tc ≤ c) (hn : Tn ≤ n
   simp only [kappa, Prod.mk.injEq, Fin.mk.injEq]
   refine ⟨by omega, hcm, by omega, hnm, hclip⟩
 
-/-- **THE OBLIGATION OF THE DEPTH-`0` CELL-LEVEL AGREEMENT**, stated as a schema and proved
-nowhere. Under the parameter conditions, for a `kappa`-collision between two admissible counter
-pairs at the same object state, and for a closure carrying no `⊡` letter, the cells of the ladder
-model at the two ladder states are EQUAL. The `ℤ` component of the world state is invisible to
-`cellAt` and is written all the same, as the record requires.
+/-- **THE OBLIGATION OF THE DEPTH-`0` CELL-LEVEL AGREEMENT**, stated as a schema, and REFUTED
+at the parameter conditions as `ParamsOk` reads by the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`. Under the
+parameter conditions, for a `kappa`-collision between two admissible counter pairs at the same
+object state, and for a closure carrying no `⊡` letter, the cells of the ladder model at the two
+ladder states are EQUAL. The `ℤ` component of the world state is invisible to `cellAt` and is
+written all the same, as the record requires.
 
 This is the statement `cellLE_zero_const_of_kappa_eq` would carry. It is a definition and not a
-theorem precisely because the construction it needs is not identified: see the section docstring
-above for what is refuted, what is open, and why the two are different. -/
+theorem: the schema is false at the periodicity fixpoint's own outputs for a stab-free closure
+(the section docstring above states the mechanism), and the `def` is kept so that the refutation
+is a theorem about a named object. The reserved name is claimed by nothing. -/
 def CellLEZeroConstOfKappaEq (step : Q → Q → Bool) (pend : Q → Bool)
     (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
     (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)

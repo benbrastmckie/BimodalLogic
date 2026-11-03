@@ -1729,6 +1729,57 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on the other fourteen
 #                                                           | printed theorems. No `sorryAx`, no
 #                                                           | custom axiom, no `native_decide`.
+# seam-gluing-ray-product/ladder-cell-obligation-refutation | THE DEPTH-0 CELL OBLIGATION IS
+#                                                           | REFUTED: the schema
+#                                                           | `CellLEZeroConstOfKappaEq` is FALSE
+#                                                           | at the parameter conditions as
+#                                                           | `ParamsOk` reads, at the object of
+#                                                           | `ladder-cell-agreement-refutation`
+#                                                           | (two states, one pending and one
+#                                                           | idle, step complete, the pending bit
+#                                                           | carried as the atom `p`), at the
+#                                                           | periodicity fixpoint's own parameter
+#                                                           | outputs (`paramsOk_params`), for a
+#                                                           | stab-free, `S`-free closure.
+#                                                           | Mechanism: the gap coordinate of
+#                                                           | `kappa` clips `n - c` at `B = Bof`,
+#                                                           | which `(K4)` bounds by the BACKWARD
+#                                                           | exactness depth `dBack` alone (so
+#                                                           | `B = 2` with no `S`); but the cell
+#                                                           | reads the next-deadline register
+#                                                           | FORWARD through the next region's
+#                                                           | pin (`cntAt_eq_nxtAt_of_idle_pend`,
+#                                                           | `nxtAt_lipschitz`), so
+#                                                           | `nxtAt z ≤ cntAt z + I₁ + L₁ - 1`
+#                                                           | for the next idle run `I₁` and the
+#                                                           | next region `L₁`, and a `U`-only
+#                                                           | formula of bounded `X`-depth
+#                                                           | (`chiD`) pins `I₁ = 1`, `L₁ = 2`.
+#                                                           | The type carrying `chiD` lies in the
+#                                                           | cell at `(q, c, c + 2)` and in NO
+#                                                           | type of the cell at
+#                                                           | `(q, c, c + 2 + (P + 1))`, while the
+#                                                           | two states collide under `kappa`
+#                                                           | (`kappa_D`). The gap clip does not
+#                                                           | dominate the register's forward
+#                                                           | window. Headlines:
+#                                                           | `cellLEZeroConstOfKappaEq_refuted`
+#                                                           | and
+#                                                           | `exists_refuting_cell_collision`
+#                                                           | (NON-VACUITY ON BOTH SIDES as
+#                                                           | conjuncts: `ParamsOk` discharged at
+#                                                           | the fixpoint's outputs, a populated
+#                                                           | collision with `n ≠ n'`, a ladder
+#                                                           | path through EACH of the two
+#                                                           | states, the closure stab-free, and
+#                                                           | the schema refuted at that very
+#                                                           | object). Seriality DISCHARGED
+#                                                           | (`fwdC`, `bwdC`). No bound, every
+#                                                           | quantity a count. Axioms
+#                                                           | `[propext, Classical.choice,
+#                                                           | Quot.sound]` on all six printed
+#                                                           | theorems. No `sorryAx`, no custom
+#                                                           | axiom, no `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1775,6 +1826,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-unconstrained-parameter-refutation"
   "seam-gluing-ray-product/ladder-splice-type-refutation"
   "seam-gluing-ray-product/ladder-cell-agreement-refutation"
+  "seam-gluing-ray-product/ladder-cell-obligation-refutation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

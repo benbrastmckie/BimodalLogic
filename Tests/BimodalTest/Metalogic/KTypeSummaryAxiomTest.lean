@@ -1558,11 +1558,18 @@ at every parameter tuple whatsoever.
 **What these pins certify, and what they do not.** A strict subset of the standard profile on each
 declaration, and nothing else. They certify that the ONE construction the cell-level route named is
 unavailable for every object whose pending bit is readable in the language — and the realization
-statement quantifies over every `lab`, so no such object is excluded. They do NOT certify that the
-obligation is false: `CellLEZeroConstOfKappaEq` is a definition, nothing proves or refutes it, and
-a cell is a set of TYPES over all histories through a state, so two ladder paths can realize the
-same closure type without agreeing on a single atom row. A construction that does not preserve the
-valuation pointwise is left entirely open and is stated nowhere in the tree. No pin here mentions
+statement quantifies over every `lab`, so no such object is excluded. The pin on
+`CellLEZeroConstOfKappaEq` certifies the schema's axiom profile only, never its truth value: the
+schema is a definition, and its REFUTATION at the parameter conditions as `ParamsOk` reads is
+carried by the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`
+(`Probe836A.cellLEZeroConstOfKappaEq_refuted`, with non-vacuity on both sides as the conjuncts of
+`Probe836A.exists_refuting_cell_collision`), through the register's forward window rather than
+through the atom row. The two refutations are different facts: a cell is a set of TYPES over all
+histories through a state, so two ladder paths can realize the same closure type without agreeing
+on a single atom row, and the construction's unavailability says nothing about the obligation.
+No construction that preserves the realized type without preserving the valuation pointwise is
+stated anywhere in the tree. No pin here mentions
 `ladderSound`, `ladderLift`, `ladderRealized` or the filed `cellAt_const_of_kappa_eq`; half (i) and
 the atom-valuation agreement are untouched and both still hold at their own hypotheses; no
 certificate object is named; no finite-fibre or finite-width hypothesis appears; and no pin is a
