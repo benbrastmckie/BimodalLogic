@@ -1560,10 +1560,11 @@ declaration, and nothing else. They certify that the ONE construction the cell-l
 unavailable for every object whose pending bit is readable in the language — and the realization
 statement quantifies over every `lab`, so no such object is excluded. The pin on
 `CellLEZeroConstOfKappaEq` certifies the schema's axiom profile only, never its truth value: the
-schema is a definition, and its REFUTATION at the parameter conditions as `ParamsOk` reads is
-carried by the wired probe
+schema is a definition, and its REFUTATION at the parameter conditions the obligation was filed
+against (the probe's frozen `ParamsOkPre`, whose `(K4)` reads the backward exactness depth alone)
+is carried by the wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`
-(`Probe836A.cellLEZeroConstOfKappaEq_refuted`, with non-vacuity on both sides as the conjuncts of
+(`Probe836A.cellLEZeroConstOfKappaEqPre_refuted`, with non-vacuity on both sides as the conjuncts of
 `Probe836A.exists_refuting_cell_collision`), through the register's forward window rather than
 through the atom row. The two refutations are different facts: a cell is a set of TYPES over all
 histories through a state, so two ladder paths can realize the same closure type without agreeing

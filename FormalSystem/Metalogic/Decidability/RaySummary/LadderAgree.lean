@@ -210,11 +210,16 @@ construction is unavailable. The `n` half of the construction is free, by
 `exists_ladderPath_pair_nxtAt_ne`; the obstruction is confined to the `c` coordinate.
 
 `CellLEZeroConstOfKappaEq` is the obligation itself, stated as a schema and proved NOWHERE. It is
-REFUTED at the parameter conditions as `ParamsOk` reads, by the wired probe
-`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`, through a
-mechanism different from the construction's: the cell reads the next-deadline register FORWARD
-through the next region's pin, and `(K4)`'s gap clip does not dominate what a closure formula can
-pin there (the obligation section at the end of this module states the mechanism). The
+REFUTED at the parameter conditions the obligation was filed against — `ParamsOk` with its
+`(K4)` bounding the gap clip by the backward exactness depth alone, frozen in the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean` as
+`ParamsOkPre` — through a mechanism different from the construction's: the cell reads the
+next-deadline register FORWARD through the next region's pin, and a gap clip bounded by the
+backward depth alone does not dominate what a closure formula can pin there (the obligation
+section at the end of this module states the mechanism). `ParamsOk`'s `(K4)` bounds the clip by
+BOTH exactness depths, `dBack` and `dFwd`, which answers that separating object
+(`Probe836A.not_paramsOkK4_two`, `Probe836A.kappa_D_dissolves`) and settles nothing about the
+schema under `ParamsOk` itself. The
 distinction between the two refutations is the content of this layer: a cell is a set of TYPES
 over all histories through a state, and two ladder paths can realize the same closure type
 without agreeing on a single atom row, so the atom-row construction's unavailability says nothing
@@ -229,8 +234,9 @@ stated anywhere in the tree, and none is invented here.
   conditions — is NOT proved here and is not assumed anywhere. Its depth-`0` cell-level half is
   STATED as the schema `CellLEZeroConstOfKappaEq` and proved nowhere; a schema is not a theorem and
   no result in this module or elsewhere discharges it, and the wired probe
-  `ladder-cell-obligation-refutation.lean` refutes it at the parameter conditions as `ParamsOk`
-  reads. What landed is the rigid-anchor
+  `ladder-cell-obligation-refutation.lean` refutes it at the parameter conditions the obligation
+  was filed against (the probe's frozen `ParamsOkPre`, whose `(K4)` reads the backward exactness
+  depth alone). What landed is the rigid-anchor
   layer above, which any proof of it has to respect, and the cell-level reading of the `⊡` bit.
   Two obstructions are on the record for it, each a consequence of what IS compiled here. The
   first obstruction of the earlier record — that by `cntAt_eq_of_obj_eq` no replacement can keep
@@ -2177,9 +2183,12 @@ end Rigid
 
 The deliverable the route names is `cellLE_zero_const_of_kappa_eq`: the depth-`0` half of the
 agreement, at the level of the CELL. It is stated here as the schema below, and the schema is
-REFUTED: the wired probe
-`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean` compiles
-`Probe836A.cellLEZeroConstOfKappaEq_refuted` at the object of
+REFUTED at the parameter conditions the obligation was filed against: the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean` freezes
+`ParamsOk`'s conjunction with a `(K4)` that bounds the gap clip by the backward exactness depth
+alone (`ParamsOkPre`), restates this schema's text against it
+(`CellLEZeroConstOfKappaEqPre`), and compiles `Probe836A.cellLEZeroConstOfKappaEqPre_refuted`
+at the object of
 `ladder-cell-agreement-refutation.lean` (two states, one pending and one idle, step complete, the
 pending bit carried as the atom `p`), at the periodicity fixpoint's own parameter outputs
 (`paramsOk_params`), for a stab-free, `S`-free closure, with non-vacuity on both sides carried as
@@ -2194,13 +2203,18 @@ the next region's pin: by `cntAt_eq_nxtAt_of_idle_pend` the register's value at 
 position after `z`'s region IS the countdown of the region that follows, and the register is
 `1`-Lipschitz (`nxtAt_lipschitz`), so `nxtAt z ≤ cntAt z + I₁ + L₁ - 1` where `I₁` is the length
 of the next idle run and `L₁` that of the next region. `kappa`'s gap coordinate clips `n - c` at
-`B`, and `(K4)` as it reads bounds `B` by the backward exactness depth `dBack` alone, so `Bof` is
-`2` for a closure with no `S`. A `U`-only formula of bounded `X`-depth pins `I₁ = 1` and
+`B`, and a `(K4)` bounding `B` by the backward exactness depth `dBack` alone admits `B = 2` for
+a closure with no `S`. A `U`-only formula of bounded `X`-depth pins `I₁ = 1` and
 `L₁ = 2`, bounding the register at `z` by `cntAt z + 2`, so a type carrying it lies in the cell at
 `(q, c, c + 2)` and in no type of the cell at `(q, c, c + 2 + (P + 1))`, while `kappa` identifies
-the two states. The gap clip does not dominate what a closure formula can pin forward; that is
-the whole of the refutation, and it is confined to the register's forward window — the backward
-window `cntAt_le_nxtAt_succ_of_idle_past` is what `(K4)` was shaped against.
+the two states. A gap clip bounded by the backward depth alone does not dominate what a closure
+formula can pin forward; that is the whole of the refutation, and it is confined to the
+register's forward window — the backward window `cntAt_le_nxtAt_succ_of_idle_past` is what the
+backward conjunct of `(K4)` answers. `ParamsOk`'s `(K4)` bounds `B` by both exactness depths
+(`paramsOkK4`, with `dFwd` the `U`-nesting and `Bof` the matching output); the probe compiles
+that this rejects the refuting clip (`Probe836A.not_paramsOkK4_two`) and dissolves the specific
+collision (`Probe836A.kappa_D_dissolves`). Whether the schema holds under `ParamsOk` is not
+settled by either fact.
 
 **Which of the route's landed inputs the statement's own shape commits to.** It commits to (d), the
 collision readings of `kappa` (`kappa_eq_components`, `eq_or_both_ge_of_min_eq`,
@@ -2225,7 +2239,7 @@ obligation is non-vacuous on both sides while the construction is unavailable. T
 is about the ATOM ROW and says nothing about the obligation. The obligation's own refutation,
 above, is about the REGISTER, and holds at the same object: no construction preserving the
 realized type without preserving the valuation pointwise can meet the schema at the parameter
-conditions as `ParamsOk` reads, because the schema is false there. -/
+conditions the obligation was filed against, because the schema is false there. -/
 
 section Obligation
 
@@ -2249,8 +2263,9 @@ theorem kappa_eq_of_shift (Tc Tn P B c n m : ℕ) (hc : Tc ≤ c) (hn : Tn ≤ n
   refine ⟨by omega, hcm, by omega, hnm, hclip⟩
 
 /-- **THE OBLIGATION OF THE DEPTH-`0` CELL-LEVEL AGREEMENT**, stated as a schema, and REFUTED
-at the parameter conditions as `ParamsOk` reads by the wired probe
-`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`. Under the
+at the parameter conditions the obligation was filed against (the frozen `ParamsOkPre` of the
+wired probe `specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`,
+whose `(K4)` reads the backward exactness depth alone). Under the
 parameter conditions, for a `kappa`-collision between two admissible counter pairs at the same
 object state, and for a closure carrying no `⊡` letter, the cells of the ladder model at the two
 ladder states are EQUAL. The `ℤ` component of the world state is invisible to `cellAt` and is
@@ -2258,8 +2273,10 @@ written all the same, as the record requires.
 
 This is the statement `cellLE_zero_const_of_kappa_eq` would carry. It is a definition and not a
 theorem: the schema is false at the periodicity fixpoint's own outputs for a stab-free closure
-(the section docstring above states the mechanism), and the `def` is kept so that the refutation
-is a theorem about a named object. The reserved name is claimed by nothing. -/
+when the gap clip is bounded by the backward depth alone (the section docstring above states the
+mechanism), and the `def` is kept so that the refutation is a theorem about a named object. Under
+`ParamsOk` itself, whose `(K4)` reads both exactness depths, the schema is neither proved nor
+refuted. The reserved name is claimed by nothing. -/
 def CellLEZeroConstOfKappaEq (step : Q → Q → Bool) (pend : Q → Bool)
     (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
     (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)

@@ -1,15 +1,33 @@
 /-
-THE DEPTH-0 CELL OBLIGATION IS REFUTED: `CellLEZeroConstOfKappaEq` fails at Probe761C's own
-object, at the periodicity fixpoint's own parameter outputs, for a stab-free, `S`-free closure.
+THE DEPTH-0 CELL OBLIGATION IS REFUTED AT THE PARAMETER CONDITIONS AS THE OBLIGATION WAS FILED
+AGAINST: `CellLEZeroConstOfKappaEqPre` — the library schema `CellLEZeroConstOfKappaEq` with the
+parameter conditions' fourth conjunct frozen at `paramsOkK4Pre φ B := 2 * dBack φ + 1 ≤ B ∧ 2 ≤ B`,
+the (K4) that bounds the gap clip by the BACKWARD exactness depth alone — fails at Probe761C's own
+object, at the parameter outputs `Tcof`, `Tnof`, `Pof` and the gap clip `B = 2` that the frozen
+(K4) admits, for a stab-free, `S`-free closure.
 
-Mechanism. The gap coordinate of `kappa` clips `n - c` at `B = Bof = max (2 * dBack φ + 1) 2`,
-which is `2` for a formula with no `S`. But the next-deadline register is `1`-Lipschitz and its
-value at the first idle position after `z`'s region IS the countdown of the region that follows
+Mechanism. The gap coordinate of `kappa` clips `n - c` at `B`, and the frozen (K4) admits `B = 2`
+for a formula with no `S`. But the next-deadline register is `1`-Lipschitz and its value at the
+first idle position after `z`'s region IS the countdown of the region that follows
 (`cntAt_eq_nxtAt_of_idle_pend`), so `nxtAt z ≤ cntAt z + I₁ + L₁ - 1` where `I₁` is the length of
 the next idle run and `L₁` the length of the next region. A `U`-only formula of bounded `X`-depth
 pins `I₁ = 1` and `L₁ = 2`, bounding the register at `z` by `cntAt z + 2`, while the collision
 partner `(c, n + (P + 1))` has register `≥ c + 3`. So the type carrying that formula lies in the
 cell at `(q, c, c + 2)` and in NO type of the cell at `(q, c, c + 2 + (P + 1))`.
+
+What the repair of (K4) changes, compiled here as two positive facts. The library's (K4) now reads
+`paramsOkK4 φ B := 2 * dBack φ + 1 ≤ B ∧ 2 * dFwd φ + 1 ≤ B ∧ 2 ≤ B`, with `dFwd` the forward
+exactness depth (the `U`-nesting), and `Bof` is the matching output. `not_paramsOkK4_two`: the
+repaired (K4) rejects `B = 2` for the separating formula (`dFwd chiD = 4`). `kappa_D_dissolves`:
+at the repaired output `Bof stepC pendC labC chiD = 9`, the specific collision the refutation
+turns on is no longer a collision — the unclipped gap `2` is distinguished from a gap of at least
+`3`. Neither fact is a proof of the obligation under the repaired predicate; they say only that
+THIS separating object is answered by the repair.
+
+The frozen copies (`paramsOkK4Pre`, `ParamsOkPre`, `CellLEZeroConstOfKappaEqPre`) are verbatim
+the library's conjunction and schema text with the fourth conjunct as the obligation was filed
+against, so that the refutation stays a theorem about a named object after the library predicate
+changed. Precedent: `AtomPreservingCountMove`, kept as a `def` so its refutation is a theorem.
 
 The forty-seventh wired probe, compiled by `scripts/check-evidence-probes.sh`.
 -/
@@ -19,6 +37,35 @@ open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.PlusLanguage
 open FormalSystem.Metalogic.Decidability.RaySummary
 
 namespace Probe836A
+
+/-! ### The parameter conditions as the obligation was filed against
+
+`paramsOkK4Pre` is (K4) with the gap clip bounded by the backward exactness depth alone;
+`ParamsOkPre` is the library's `ParamsOk` conjunction verbatim with that fourth conjunct;
+`CellLEZeroConstOfKappaEqPre` is the library schema's text with `ParamsOkPre` in place of
+`ParamsOk`. -/
+
+def paramsOkK4Pre (φ : PlusFormula) (B : ℕ) : Prop :=
+  2 * dBack φ + 1 ≤ B ∧ 2 ≤ B
+
+def ParamsOkPre {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
+  paramsOkK1 step pend lab φ P ∧ paramsOkK2 step pend lab φ Tc ∧
+    paramsOkK3 Q pend φ Tc Tn ∧ paramsOkK4Pre φ B
+
+def CellLEZeroConstOfKappaEqPre {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
+  ParamsOkPre step pend lab φ Tc Tn P B →
+    (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) →
+    ∀ (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q) (z : ℤ),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+      cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+        = cellAt (ladderModel step pend fwd bwd lab) φ
+            ((z, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
 
 /-! ### The object: Probe761C's own -/
 
@@ -90,18 +137,50 @@ theorem no_stab_in_closure_chiD :
 theorem dBack_chiD : dBack chiD = 0 := by
   simp [dBack, chiD, X, aD, naD, PlusFormula.neg, PlusFormula.and]
 
-/-! ### The parameters: the periodicity fixpoint's own outputs -/
+theorem dFwd_chiD : dFwd chiD = 4 := by
+  simp [dFwd, chiD, X, aD, naD, PlusFormula.neg, PlusFormula.and]
+
+/-! ### The parameters: the periodicity fixpoint's own outputs, and the gap clip the frozen
+(K4) admits -/
 
 noncomputable def TcC : ℕ := Tcof stepC pendC labC chiD
 noncomputable def TnC : ℕ := Tnof stepC pendC labC chiD
 noncomputable def PC : ℕ := Pof stepC pendC labC chiD
-noncomputable def BC : ℕ := Bof stepC pendC labC chiD
 
-theorem paramsOkD : ParamsOk stepC pendC labC chiD TcC TnC PC BC :=
-  paramsOk_params stepC pendC labC chiD
+/-- The gap clip the frozen (K4) admits for a formula with no `S`. -/
+def BC : ℕ := 2
 
-theorem BC_eq_two : BC = 2 := by
-  simp [BC, Bof, dBack_chiD]
+theorem BC_eq_two : BC = 2 := rfl
+
+/-- The frozen parameter conditions at the fixpoint's three outputs and the gap clip `2`: the
+first three conjuncts are `paramsOk_params`'s own, the fourth is `dBack chiD = 0`. -/
+theorem paramsOkPreD : ParamsOkPre stepC pendC labC chiD TcC TnC PC BC :=
+  ⟨(paramsOk_params stepC pendC labC chiD).1, (paramsOk_params stepC pendC labC chiD).2.1,
+    (paramsOk_params stepC pendC labC chiD).2.2.1, by
+      show 2 * dBack chiD + 1 ≤ 2 ∧ 2 ≤ 2
+      rw [dBack_chiD]; omega⟩
+
+/-- **The repaired (K4) rejects the gap clip `2` for the separating formula.** -/
+theorem not_paramsOkK4_two : ¬ paramsOkK4 chiD 2 := by
+  intro h
+  have := h.2.1
+  rw [dFwd_chiD] at this
+  omega
+
+theorem Bof_chiD : Bof stepC pendC labC chiD = 9 := by
+  simp [Bof, dBack_chiD, dFwd_chiD]
+
+/-- **The specific collision dissolves at the repaired output.** At `Bof = 9` the unclipped gap
+`2` is distinguished from a gap of at least `3`. -/
+theorem kappa_D_dissolves :
+    kappa TcC TnC PC (Bof stepC pendC labC chiD) (c0, c0 + 2)
+      ≠ kappa TcC TnC PC (Bof stepC pendC labC chiD) (c0, c0 + 2 + (PC + 1)) := by
+  intro h
+  rw [Bof_chiD] at h
+  simp only [kappa, Prod.mk.injEq, Fin.mk.injEq] at h
+  have hgap := h.2.2.2.2
+  unfold clipIdx at hgap
+  split_ifs at hgap <;> omega
 
 noncomputable def c0 : ℕ := max TcC TnC
 
@@ -412,12 +491,13 @@ theorem kappa_D :
   unfold clipIdx
   split <;> split <;> omega
 
-/-- **THE DEPTH-`0` CELL-LEVEL OBLIGATION IS FALSE** at Probe761C's object, at the periodicity
-fixpoint's own parameter outputs, for a stab-free closure. -/
-theorem cellLEZeroConstOfKappaEq_refuted :
-    ¬ CellLEZeroConstOfKappaEq stepC pendC fwdC bwdC labC chiD TcC TnC PC BC := by
+/-- **THE DEPTH-`0` CELL-LEVEL OBLIGATION, AS FILED, IS FALSE** at Probe761C's object, at the
+periodicity fixpoint's own outputs and the gap clip the frozen (K4) admits, for a stab-free
+closure. -/
+theorem cellLEZeroConstOfKappaEqPre_refuted :
+    ¬ CellLEZeroConstOfKappaEqPre stepC pendC fwdC bwdC labC chiD TcC TnC PC BC := by
   intro h
-  have hcell := h paramsOkD no_stab_in_closure_chiD 0 c0 (c0 + 2) c0 (c0 + 2 + (PC + 1))
+  have hcell := h paramsOkPreD no_stab_in_closure_chiD 0 c0 (c0 + 2) c0 (c0 + 2 + (PC + 1))
     (admZeroC c0 (c0 + 2)) (admZeroC c0 (c0 + 2 + (PC + 1))) 0 kappa_D
   obtain ⟨τ, hτ⟩ := exists_hist_of_isLadderPath fwdC bwdC (gD c0) (gD_isPath c0)
   have hmem : tpOf MD chiD τ 0 ∈ cellAt MD chiD
@@ -434,21 +514,21 @@ theorem cellLEZeroConstOfKappaEq_refuted :
   have htrue : PlusTruthAt MD τ' 0 chiD := ((mem_tpOf_iff MD chiD τ' 0 chiD).mp hchi).2
   exact not_chiD_of_path g' hg' c0 _ (congrArg Subtype.val hg'0) (by omega) τ' hτ' htrue
 
-/-- **Non-vacuity, witnessed on both sides**: `ParamsOk` at the fixpoint's outputs, a populated
-collision with `n ≠ n'`, a ladder path through EACH of the two states, and the obligation
-refuted at the very object carrying all of it. -/
+/-- **Non-vacuity, witnessed on both sides**: the frozen parameter conditions at the fixpoint's
+outputs, a populated collision with `n ≠ n'`, a ladder path through EACH of the two states, and
+the obligation as filed refuted at the very object carrying all of it. -/
 theorem exists_refuting_cell_collision :
     ∃ c n c' n' : ℕ, n ≠ n' ∧
       kappa TcC TnC PC BC (c, n) = kappa TcC TnC PC BC (c', n') ∧
-      ParamsOk stepC pendC labC chiD TcC TnC PC BC ∧
+      ParamsOkPre stepC pendC labC chiD TcC TnC PC BC ∧
       (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure chiD) ∧
       (∃ g : ℤ → LadderState Qc pendC, IsLadderPath stepC pendC g ∧
         objAt g 0 = 0 ∧ cntAt g 0 = c ∧ nxtAt g 0 = n) ∧
       (∃ g : ℤ → LadderState Qc pendC, IsLadderPath stepC pendC g ∧
         objAt g 0 = 0 ∧ cntAt g 0 = c' ∧ nxtAt g 0 = n') ∧
-      ¬ CellLEZeroConstOfKappaEq stepC pendC fwdC bwdC labC chiD TcC TnC PC BC := by
-  refine ⟨c0, c0 + 2, c0, c0 + 2 + (PC + 1), by omega, kappa_D, paramsOkD,
-    no_stab_in_closure_chiD, ?_, ?_, cellLEZeroConstOfKappaEq_refuted⟩
+      ¬ CellLEZeroConstOfKappaEqPre stepC pendC fwdC bwdC labC chiD TcC TnC PC BC := by
+  refine ⟨c0, c0 + 2, c0, c0 + 2 + (PC + 1), by omega, kappa_D, paramsOkPreD,
+    no_stab_in_closure_chiD, ?_, ?_, cellLEZeroConstOfKappaEqPre_refuted⟩
   · refine ⟨gD c0, gD_isPath c0, ?_, ?_, ?_⟩
     · show wD c0 0 = 0
       exact wD_of_le c0 0 (by omega)
@@ -464,5 +544,7 @@ end Probe836A
 #print axioms Probe836A.chiD_true
 #print axioms Probe836A.not_chiD_of_path
 #print axioms Probe836A.kappa_D
-#print axioms Probe836A.cellLEZeroConstOfKappaEq_refuted
+#print axioms Probe836A.cellLEZeroConstOfKappaEqPre_refuted
 #print axioms Probe836A.exists_refuting_cell_collision
+#print axioms Probe836A.not_paramsOkK4_two
+#print axioms Probe836A.kappa_D_dissolves

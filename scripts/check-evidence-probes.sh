@@ -1729,11 +1729,14 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on the other fourteen
 #                                                           | printed theorems. No `sorryAx`, no
 #                                                           | custom axiom, no `native_decide`.
-# seam-gluing-ray-product/ladder-cell-obligation-refutation | THE DEPTH-0 CELL OBLIGATION IS
-#                                                           | REFUTED: the schema
-#                                                           | `CellLEZeroConstOfKappaEq` is FALSE
-#                                                           | at the parameter conditions as
-#                                                           | `ParamsOk` reads, at the object of
+# seam-gluing-ray-product/ladder-cell-obligation-refutation | THE DEPTH-0 CELL OBLIGATION AS
+#                                                           | FILED IS REFUTED: the schema
+#                                                           | `CellLEZeroConstOfKappaEqPre` (the
+#                                                           | library's text with the parameter
+#                                                           | conditions' fourth conjunct FROZEN
+#                                                           | at `paramsOkK4Pre`, the (K4) that
+#                                                           | bounds the gap clip by `dBack`
+#                                                           | alone) is FALSE at the object of
 #                                                           | `ladder-cell-agreement-refutation`
 #                                                           | (two states, one pending and one
 #                                                           | idle, step complete, the pending bit
@@ -1742,10 +1745,9 @@ EVIDENCE="specs/evidence"
 #                                                           | outputs (`paramsOk_params`), for a
 #                                                           | stab-free, `S`-free closure.
 #                                                           | Mechanism: the gap coordinate of
-#                                                           | `kappa` clips `n - c` at `B = Bof`,
-#                                                           | which `(K4)` bounds by the BACKWARD
-#                                                           | exactness depth `dBack` alone (so
-#                                                           | `B = 2` with no `S`); but the cell
+#                                                           | `kappa` clips `n - c` at `B`, and
+#                                                           | the frozen (K4) admits `B = 2` for
+#                                                           | a formula with no `S`; but the cell
 #                                                           | reads the next-deadline register
 #                                                           | FORWARD through the next region's
 #                                                           | pin (`cntAt_eq_nxtAt_of_idle_pend`,
@@ -1763,23 +1765,37 @@ EVIDENCE="specs/evidence"
 #                                                           | (`kappa_D`). The gap clip does not
 #                                                           | dominate the register's forward
 #                                                           | window. Headlines:
-#                                                           | `cellLEZeroConstOfKappaEq_refuted`
+#                                                           | `cellLEZeroConstOfKappaEqPre_refuted`
 #                                                           | and
 #                                                           | `exists_refuting_cell_collision`
 #                                                           | (NON-VACUITY ON BOTH SIDES as
-#                                                           | conjuncts: `ParamsOk` discharged at
-#                                                           | the fixpoint's outputs, a populated
+#                                                           | conjuncts: `ParamsOkPre` discharged
+#                                                           | at the fixpoint's outputs, a populated
 #                                                           | collision with `n ≠ n'`, a ladder
 #                                                           | path through EACH of the two
 #                                                           | states, the closure stab-free, and
 #                                                           | the schema refuted at that very
-#                                                           | object). Seriality DISCHARGED
+#                                                           | object). WHAT THE REPAIR OF (K4)
+#                                                           | ANSWERS, compiled as two positive
+#                                                           | facts: the library's (K4) now
+#                                                           | bounds `B` by BOTH exactness depths
+#                                                           | (`dBack`, `dFwd`) and by `2`;
+#                                                           | `not_paramsOkK4_two` (the repaired
+#                                                           | (K4) rejects `B = 2` for `chiD`,
+#                                                           | whose `dFwd` is `4`) and
+#                                                           | `kappa_D_dissolves` (at the
+#                                                           | repaired output `Bof = 9` the
+#                                                           | specific collision is no longer
+#                                                           | one). Neither is a proof of the
+#                                                           | obligation under the repaired
+#                                                           | predicate. Seriality DISCHARGED
 #                                                           | (`fwdC`, `bwdC`). No bound, every
 #                                                           | quantity a count. Axioms
 #                                                           | `[propext, Classical.choice,
-#                                                           | Quot.sound]` on all six printed
-#                                                           | theorems. No `sorryAx`, no custom
-#                                                           | axiom, no `native_decide`.
+#                                                           | Quot.sound]` on the printed
+#                                                           | theorems (a subset on the two
+#                                                           | positive facts). No `sorryAx`, no
+#                                                           | custom axiom, no `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"

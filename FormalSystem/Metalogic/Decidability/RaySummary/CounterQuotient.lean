@@ -63,8 +63,13 @@ load-bearing: it FAILS at the tuple the refutation turns on, on that probe's own
   the formula alone: `short_idle_threshold_refuted` is the compiled refutation of that.
 * **(K3)** Ordering: `T_n + 1 ≥ T_c + 2ℓ₀` for `ℓ₀` the longest shortest path between saturated
   classes, and `T_c ≥ 2 T_short + T_idle + 2`.
-* **(K4)** `B`: at least `2 d_back + 1` for the formula's backward exactness depth `dBack`, and
-  at least `2` (gate 1, `gate1_cell_ne`).
+* **(K4)** `B`: at least `2 d_back + 1` for the formula's backward exactness depth `dBack`, at
+  least `2 d_fwd + 1` for its forward exactness depth `dFwd`, and at least `2` (gate 1,
+  `gate1_cell_ne`). The forward conjunct is forced by the wired probe
+  `specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`: the cell reads
+  the next-deadline register forward through the next region's pin, and a `U`-only formula of
+  bounded `X`-depth pins that register below any gap clip that `dBack` alone would admit, so the
+  gap clip must dominate what a closure formula can pin forward as well as backward.
 
 Each of the four parameter outputs `Tcof`, `Tnof`, `Pof`, `Bof` is a function of `step`, `pend`,
 `lab` and `phi` — never an exhibited constant of the object or of the letters, which mechanisms
@@ -326,6 +331,21 @@ def dBack : PlusFormula → ℕ
   | .snce α β => max (dBack α) (dBack β) + 1
   | .stab α => dBack α
 
+/-- **The formula's forward exactness depth** `d_fwd` of (K4): the nesting depth of the forward
+strict-until operator, the mirror of `dBack`. A syntactic function of the formula. The wired
+probe `specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean` is what
+forces (K4) to read it: its separating formula `chiD` has `dBack chiD = 0` and `dFwd chiD = 4`,
+and the cell at a ladder state reads the next-deadline register forward by exactly the amount
+such a formula pins. -/
+def dFwd : PlusFormula → ℕ
+  | .atom _ => 0
+  | .bot => 0
+  | .imp α β => max (dFwd α) (dFwd β)
+  | .box α => dFwd α
+  | .untl α β => max (dFwd α) (dFwd β) + 1
+  | .snce α β => max (dFwd α) (dFwd β)
+  | .stab α => dFwd α
+
 /-- **(K3)'s idle-run slack** `T_idle`: an idle run that revisits an idle object state repeats,
 so the slack is counted by the number of idle object states. An OVER-ESTIMATE of the quantity it
 names; (K3) is a lower bound on `T_c`, so the over-estimate strengthens the condition. -/
@@ -433,23 +453,29 @@ noncomputable def Tnof {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : 
   Tcof step pend lab φ + 2 * ell0 Q φ
 
 -- `linter.unusedVariables`, scoped to this declaration. `Bof` does not read `step`, `pend` or
--- `lab`: (K4) is the one parameter source that quantifies the FORMULA alone -- the backward
--- exactness depth `dBack`, and gate 1's `2 ≤ B`. The three binders are kept because the four
--- parameter outputs are pinned at ONE signature, and dropping a binder from one of them changes
+-- `lab`: (K4) is the one parameter source that quantifies the FORMULA alone -- the two
+-- exactness depths `dBack` and `dFwd`, and gate 1's `2 ≤ B`. The three binders are kept because
+-- the four parameter outputs are pinned at ONE signature, and dropping a binder from one of them
+-- changes
 -- that signature. A deletion trial of the suppression reports three `unused variable` warnings,
 -- one per binder (`[apply] _step`, `_pend`, `_lab`); a deletion trial of the binders instead
 -- leaves `paramsOk_params` unable to elaborate against the signature it is pinned at. The
 -- matching `unusedArguments` env_linter finding is exempted in `scripts/nolints.json` for the
 -- same reason, as `coh_iff`'s ported binders are.
 set_option linter.unusedVariables false in
-/-- **(K4)'s parameter output `B`.** The larger of `2 d_back + 1` and `2`. Source: (K4) — the
-formula's backward exactness depth `dBack`, and gate 1 (`gate1_cell_ne`), which reads the gap
-`n - c` and needs `2 ≤ B`. The signature carries `step`, `pend` and `lab` because the four
-parameter outputs are pinned at one signature; (K4) is the one source that quantifies the
-formula alone, and that is the content of this definition rather than an omission. -/
+/-- **(K4)'s parameter output `B`.** The largest of `2 d_back + 1`, `2 d_fwd + 1` and `2`.
+Source: (K4) — the formula's backward exactness depth `dBack`, its forward exactness depth `dFwd`
+(the wired probe `ladder-cell-obligation-refutation.lean`: the gap clip must dominate what a
+closure formula can pin forward through the next region's pin), and gate 1 (`gate1_cell_ne`),
+which reads the gap `n - c` and needs `2 ≤ B`. The factor `2` on the forward depth is the
+conservative mirror of the backward bound; the probe's separating family scales with `B` through
+an `X`-chain of depth `B + 2`, whose `dFwd` is `B + 3`, so this output exceeds every `B` that
+family can defeat. The signature carries `step`, `pend` and `lab` because the four parameter
+outputs are pinned at one signature; (K4) is the one source that quantifies the formula alone,
+and that is the content of this definition rather than an omission. -/
 noncomputable def Bof {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
     (lab : Q → Atom → Bool) (φ : PlusFormula) : ℕ :=
-  max (2 * dBack φ + 1) 2
+  max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)
 
 /-! ## The parameter conditions (K1)-(K4) -/
 
@@ -478,15 +504,18 @@ n-side separation that makes the two thresholds independent. -/
 def paramsOkK3 (Q : Type) [Fintype Q] (pend : Q → Bool) (φ : PlusFormula) (Tc Tn : ℕ) : Prop :=
   Tc + 2 * ell0 Q φ ≤ Tn + 1 ∧ 2 * tShort Q φ + tIdle pend + 2 ≤ Tc
 
-/-- **(K4)**: `B` is at least `2 d_back + 1` and at least `2`. Compiled anchor:
-`gate1_cell_ne`, which reads the gap at distance two. -/
+/-- **(K4)**: `B` is at least `2 d_back + 1`, at least `2 d_fwd + 1`, and at least `2`. Compiled
+anchors: `gate1_cell_ne`, which reads the gap at distance two, and the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`, which refutes
+the depth-`0` cell obligation at a gap clip bounded by `dBack` alone — the cell reads the register
+forward through the next region's pin, so the clip must dominate the forward depth too. -/
 def paramsOkK4 (φ : PlusFormula) (B : ℕ) : Prop :=
-  2 * dBack φ + 1 ≤ B ∧ 2 ≤ B
+  2 * dBack φ + 1 ≤ B ∧ 2 * dFwd φ + 1 ≤ B ∧ 2 ≤ B
 
 /-- **THE PARAMETER CONDITIONS**, the conjunction of the four sources (K1)-(K4). This is NOT a
 predicate on four naturals: (K1) quantifies the certificate graph's cycle lengths on saturated
 classes and the periodicity fixpoint's period, (K2) the cascade bound and the periodicity
-threshold, and (K4) the formula's backward exactness depth — none of which a numeric-only
+threshold, and (K4) the formula's two exactness depths — none of which a numeric-only
 predicate can express. Only (K3)'s ordering is partly numeric. All four conjuncts are present: a
 predicate missing one is the same contract gap one level down. -/
 def ParamsOk {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
@@ -503,7 +532,7 @@ theorem paramsOk_params {Q : Type} [Fintype Q] [Nonempty Q] (step : Q → Q → 
     ParamsOk step pend lab φ (Tcof step pend lab φ) (Tnof step pend lab φ)
       (Pof step pend lab φ) (Bof step pend lab φ) := by
   classical
-  refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩, ?_, ?_⟩
+  refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩, ?_, ?_, ?_⟩
   · intro l hl
     rw [Pof.succ, modulusOf]
     exact Dvd.dvd.mul_right (Finset.dvd_lcm (mem_cycleLensF_of_prod step pend lab φ hl)) _
@@ -517,7 +546,8 @@ theorem paramsOk_params {Q : Type} [Fintype Q] [Nonempty Q] (step : Q → Q → 
   · unfold Tnof; omega
   · exact le_trans (le_max_right _ _) (le_max_right _ _)
   · exact le_max_left _ _
-  · exact le_max_right _ _
+  · exact le_trans (le_max_left _ _) (le_max_right _ _)
+  · exact le_trans (le_max_right _ _) (le_max_right _ _)
 
 /-! ## The predicate is LOAD-BEARING: it fails at the refuted tuple
 
