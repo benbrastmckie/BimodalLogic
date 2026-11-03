@@ -1715,4 +1715,27 @@ form of the module's distance from the recorded circularity. The standard profil
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.typeBlock_length_dvd_of_paramsOk
 
+/-! ## Requirement (W): the regime-A assembly (`RaySummary/LadderChain.lean`)
+
+`exists_ladderPath_through_shifted_of_pend_past`: through a pending-forever path's state at
+countdown at least `Tc`, a ladder path with the countdown raised by exactly `m · (P + 1)`, the
+register and the object state held, and the same realized stab-free type.
+`cellAt_subset_of_shift_of_pend_past`: hence the UPWARD inclusion of cells along the
+common-shift chain in the pending-forever regime. ONE direction only; the downward inclusion is
+not claimed, and the depth-`0` cell obligation under `ParamsOk` is neither proved nor refuted by
+these pins. The standard profile on each. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_through_shifted_of_pend_past' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_ladderPath_through_shifted_of_pend_past
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_shift_of_pend_past' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_shift_of_pend_past
+
 end BimodalTest.Metalogic
