@@ -947,3 +947,40 @@ additionally pinned by C14 for their **Conditional** rows in `docs/theorem-index
 ---
 
 *Last verified: 2026-10-13*
+
+#### What the cell reads of the register
+
+The next-deadline register is read by a cell in BOTH directions, and the two windows are
+compiled. **Backward**, `cntAt_le_nxtAt_succ_of_idle_past` (`LadderAgree.lean`): a pending
+position with an idle position in its past has countdown at most its register plus one.
+**Forward**, `nxtAt_le_cntAt_add_of_next_region` (`LadderPump.lean`): the register at a position
+is at most the countdown there plus the length of the next idle run plus the countdown at the
+next region's start — the register's value at the first idle position after a region IS the
+following region's start countdown (`cntAt_eq_nxtAt_of_idle_pend`), and the register is
+`1`-Lipschitz. `kappa`'s gap coordinate clips `n - c` at `B`, so `(K4)` must make `B` dominate
+what a closure formula can pin in EITHER direction: it bounds `B` by the backward exactness depth
+`dBack` (the `S`-nesting), by the forward exactness depth `dFwd` (the `U`-nesting), and by `2`
+(`CounterQuotient.lean`). The forty-seventh wired probe,
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`, is why the
+forward conjunct is there: with the gap clip bounded by `dBack` alone (frozen in the probe as
+`ParamsOkPre`), a `U`-only formula of bounded `X`-depth pins the register forward below the
+clip and the depth-`0` cell obligation `CellLEZeroConstOfKappaEq` is FALSE at the periodicity
+fixpoint's own outputs; the probe also compiles that the two-depth `(K4)` rejects that clip and
+dissolves that collision.
+
+**The depth-`0` obligation's status.** `CellLEZeroConstOfKappaEq` is refuted at the one-depth
+parameter conditions and is neither proved nor refuted under `ParamsOk`; the reserved name
+`cellLE_zero_const_of_kappa_eq` is claimed by nothing. What is landed around it is the
+certificate-free type-preserving pump layer of `LadderPump.lean` — deletion admissibility, the
+duplication and deletion TYPE lemmas (HWZ 2000 Lemma 17 and its mirror), the type pigeonhole
+and the iterated duplication — and, in `LadderChain.lean`, the realized-chain bridge (a
+type-respecting block's length lies in `prodCycleLens`, hence divides `P + 1` under `(K1)`) and
+the one-directional regime-A assembly: through a pending-forever path's state at countdown at
+least `Tc`, the countdown rises by exactly `m · (P + 1)` with the register, the object state and
+the realized stab-free type held (`exists_ladderPath_through_shifted_of_pend_past`), hence the
+UPWARD cell inclusion along the common-shift chain (`cellAt_subset_of_shift_of_pend_past`). The
+open core is the two cascades on a tight chain of pins — backward on the doubling chain, forward
+on its mirror — where the only candidate device, a type-respecting block SPANNING a region
+start, is refuted in both directions as a consequence of the parameter conditions (the
+standalone prototype `tight-chain-regime-b.lean` in the task record that landed this layer, not
+a wired probe).
