@@ -1,5 +1,5 @@
 ---
-next_project_number: 849
+next_project_number: 850
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 849
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,847,848 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,847,848,849 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -105,6 +105,7 @@ next_project_number: 849
 836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
+849 [NOT STARTED] — Discharge or regime-restrict the named hypothesis...
 
 ### Formula Refactor
 
@@ -144,6 +145,30 @@ next_project_number: 849
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 849. Forward slack discharge and exact shift iteration
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 844
+
+**Description**: Discharge or regime-restrict the named hypothesis HasForwardSlack, then land the exact-shift iterated deletion the cell-level downward inclusion still needs.
+
+ORIGIN (measured, not conjectured). The re-anchored deletion half is landed and green in FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean: exists_ladderPath_of_walk_nxt_at (the lift with the anchor position freed to z), exists_deleted_ladderPath_of_pend_past_nxt (the deletion with nxtAt g' z = n exposed under an explicit anchor clause), anchor_clause_of_first_region_start (the clause collapsed to one inequality at the first region start via Nat.find), def HasForwardSlack, and exists_ladderPath_through_deleted_of_pend_past (the single-block downward assembly). Full guarded lake build exit 0, sorry 0, axioms unchanged from the pre-work baseline.
+
+PIECE 1 -- the residual inequality's upper direction. The prior record's claim that the single-pin anchor bound is dischargeable from nxtAt_le_cntAt_add_of_next_region plus hgap and hTc MEASURED FALSE at the gate. One omega per direction: the lower direction (n - nxtAt s0 <= C + I - l) closes from hgap alone; the upper direction (nxtAt g s0 - n <= (s0 - z) - l) is refuted by the climbing-register witness n=0, C=3, I=1, l=1, nxtAt g s0=4 -- Drift permits an n' = n+1 rung at every step, and the forward window bounds the register only from above, the already-free direction. The assembly therefore carries HasForwardSlack g z (P+1) (nxtAt g z) as a named path-level hypothesis. Two honest routes: find a landed source for the missing lower bound on the register's climb (a Drift-level invariant not yet isolated), or restrict the regime and prove HasForwardSlack holds there with a finite witness. Either outcome is acceptable; a weakened statement under the reserved name cellLE_zero_const_of_kappa_eq is not -- that name remains claimed by nothing.
+
+PIECE 2 -- exact-shift iteration. The cell-level downward inclusion needs a block deleted d times, which requires d + 1 consecutive type-equal copies in the original walk; the landed pigeonhole supplies one spanning block, not d + 1. Also open: the path-versus-state quantification mismatch between the assembly and its consumer.
+
+SETTLED, NOT TO BE REOPENED. Every new declaration goes in LadderChain.lean: it imports LadderPump.lean (not the reverse), the lift being conjugated lives in LadderChain.lean's Assembly section, and LadderPump.lean sits at 1485 of its 1500 longFile lines. (K1) provably does not constrain a spanning block's length -- the refuting object is the alternating path.
+
+PROCESS NOTE. No Challenge manifest was taken for the predecessor work, so lean-challenge-snapshot.sh --check exits 71; take one at plan time here. The RaySummary README.md still describes the downward direction without the new assembly and should be updated.
+
+AUTHORING NOTE: a commit touching FormalSystem/**/*.lean is refused unless it also carries a regenerated typst/generated/status.typ. Name that file in every phase's Files-to-modify list, and run scripts/typst-sync-check.sh --fix before committing.
+
+---
 
 ### 848. Test sweep permanently red where the source store is external
 - **Effort**: medium
