@@ -101,7 +101,7 @@ next_project_number: 1055
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
-838 [PLANNED] — The depth-0 cell obligation is blocked on a two-sided open...
+838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
 
 ### Formula Refactor
 
@@ -596,12 +596,13 @@ fixture is the minimum bar for item 1.
 
 ### 838. Two sided open core pin free pigeonhole
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 836
 - **Plan**: [838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md]
+- **Summary**: [838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md]
 
 **Description**: The depth-0 cell obligation is blocked on a two-sided open combinatorial core: the spanning-block device is refuted in BOTH directions, so a new route is needed.
 
