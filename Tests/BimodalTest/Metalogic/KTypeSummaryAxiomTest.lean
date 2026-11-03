@@ -1672,4 +1672,26 @@ finite-width hypothesis appears, no pin is a bound. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_delIdx_of_tpOf_eq
 
+/-! ## Requirement (W): the forward window and the type pigeonhole (`RaySummary/LadderPump.lean`)
+
+`nxtAt_le_cntAt_add_of_next_region` is the FORWARD window of the next-deadline register — the
+register at a position is at most the countdown there plus the next idle run plus the next
+region's start countdown — the mirror of the landed backward window
+`cntAt_le_nxtAt_succ_of_idle_past` and the quantity `(K4)`'s forward conjunct dominates.
+`exists_typeBlock_of_budget_le_cnt` is the `(objAt, tpOf)` pigeonhole: a region of countdown at
+least `|Q| · 2^|cl φ|` carries a type-respecting block of length at most that budget. The
+standard profile on each, and nothing else; no certificate object is named, no pin is a
+complexity bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_le_cntAt_add_of_next_region' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_le_cntAt_add_of_next_region
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_typeBlock_of_budget_le_cnt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_typeBlock_of_budget_le_cnt
+
 end BimodalTest.Metalogic

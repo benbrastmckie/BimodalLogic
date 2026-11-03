@@ -1236,4 +1236,250 @@ theorem tpOf_eq_delIdx_of_tpOf_eq {Q : Type} [Fintype Q] [Nonempty Q]
 
 end DelType
 
+/-! ## The forward window of the register
+
+The mirror of the landed backward window `cntAt_le_nxtAt_succ_of_idle_past`. The register at a
+pending position is read FORWARD by the cell through the next region's pin: at the first idle
+position after the region the register's value is the countdown of the region that follows
+(`cntAt_eq_nxtAt_of_idle_pend`), and the register is `1`-Lipschitz, so the register at `z` is at
+most the countdown there plus the length of the next idle run plus the countdown at the next
+region's start. This is the quantity `(K4)`'s forward conjunct must dominate, and the quantity the
+wired probe `ladder-cell-obligation-refutation.lean` pins with a `U`-only formula. -/
+
+section Window
+
+variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE FORWARD WINDOW.** With the next idle run of length `I` starting right after `z`'s
+region and the next region starting after it, the register at `z` is at most
+`cntAt g z + I + cntAt g (start of the next region)`. -/
+theorem nxtAt_le_cntAt_add_of_next_region
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ) (I : ℕ)
+    (hI : 0 < I)
+    (hidle : ∀ i : ℕ, i < I →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false)
+    (hnext : pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true) :
+    nxtAt g z ≤ cntAt g z + I + cntAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ)) := by
+  -- the last idle position before the next region, and its pin
+  have h0 : pend (objAt g (z + (cntAt g z : ℤ) + 1 + ((I - 1 : ℕ) : ℤ))) = false :=
+    hidle (I - 1) (by omega)
+  have h1 : pend (objAt g (z + (cntAt g z : ℤ) + 1 + ((I - 1 : ℕ) : ℤ) + 1)) = true := by
+    rw [show z + (cntAt g z : ℤ) + 1 + ((I - 1 : ℕ) : ℤ) + 1
+        = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by push_cast [Nat.cast_sub (by omega : 1 ≤ I)]; ring]
+    exact hnext
+  have hpin := cntAt_eq_nxtAt_of_idle_pend g hg _ h0 h1
+  rw [show z + (cntAt g z : ℤ) + 1 + ((I - 1 : ℕ) : ℤ) + 1
+      = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by push_cast [Nat.cast_sub (by omega : 1 ≤ I)]; ring]
+    at hpin
+  -- the register is `1`-Lipschitz over the `cntAt g z + I` steps from `z` to that idle position
+  have hlip := nxtAt_lipschitz g hg z (cntAt g z + I)
+  rw [show z + ((cntAt g z + I : ℕ) : ℤ) = z + (cntAt g z : ℤ) + 1 + ((I - 1 : ℕ) : ℤ) by
+    push_cast [Nat.cast_sub (by omega : 1 ≤ I)]; ring] at hlip
+  omega
+
+end Window
+
+/-! ## The `(objAt, tpOf)` pigeonhole, and the iterated duplication
+
+A region of countdown at least the budget `|Q| · 2^|cl φ|` (written out, never through the
+certificate layer's product carrier) carries a type-respecting block of length at most the
+budget; iterating its duplication `d` times raises every countdown before the block by `d · l`
+and preserves the realized type there, by `tpOf_eq_spliceIdx_of_tpOf_eq` at each step. -/
+
+section Pigeonhole
+
+variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE TYPE PIGEONHOLE, with the block's position recorded**: the block lies within the first
+`budget + 1` positions of `z`'s region. -/
+theorem exists_typeBlock_of_budget_le_cnt_within
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) {g : ℤ → LadderState Q pend}
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hg : IsLadderPath step pend g) (z : ℤ) (hz : pend (objAt g z) = true)
+    (hbud : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ≤ cntAt g z) :
+    ∃ (u : ℤ) (l : ℕ), 0 < l ∧
+      l ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ∧
+      z ≤ u ∧ l ≤ cntAt g u ∧
+      u + (l : ℤ) ≤ z + (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card : ℕ) ∧
+      objAt g u = objAt g (u + (l : ℤ)) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ σ u
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + (l : ℤ)) := by
+  classical
+  set b := Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card with hb
+  let f : Fin (b + 1) → Q × {T : Finset PlusFormula // T ∈ (plusSubformulaClosure φ).powerset} :=
+    fun i => (objAt g (z + ((i : ℕ) : ℤ)),
+      ⟨tpOf (ladderModel step pend fwd bwd lab) φ σ (z + ((i : ℕ) : ℤ)),
+        Finset.mem_powerset.mpr (tpOf_subset _ φ σ _)⟩)
+  obtain ⟨a, c, hac, hf⟩ := Fintype.exists_ne_map_eq_of_card_lt f (by
+    rw [Fintype.card_prod, Fintype.card_coe, Finset.card_powerset, Fintype.card_fin]
+    omega)
+  have hf' : f a = f c := hf
+  simp only [f, Prod.mk.injEq, Subtype.mk.injEq] at hf'
+  obtain ⟨hobj, hty⟩ := hf'
+  have ha : (a : ℕ) ≤ b := by omega
+  have hc : (c : ℕ) ≤ b := by omega
+  rcases lt_or_gt_of_ne (fun h : (a : ℕ) = (c : ℕ) => hac (Fin.ext h)) with hlt | hlt
+  · have hcast : z + ((a : ℕ) : ℤ) + (((c : ℕ) - (a : ℕ) : ℕ) : ℤ) = z + ((c : ℕ) : ℤ) := by
+      push_cast [Nat.cast_sub (le_of_lt hlt)]; ring
+    refine ⟨z + ((a : ℕ) : ℤ), (c : ℕ) - (a : ℕ), by omega, by omega, by omega, ?_,
+      by rw [hcast]; omega, ?_, ?_⟩
+    · have := (cntAt_sub_of_pend g hg z hz (a : ℕ) (by omega)).2
+      omega
+    · rw [hcast]; exact hobj
+    · rw [hcast]; exact hty
+  · have hcast : z + ((c : ℕ) : ℤ) + (((a : ℕ) - (c : ℕ) : ℕ) : ℤ) = z + ((a : ℕ) : ℤ) := by
+      push_cast [Nat.cast_sub (le_of_lt hlt)]; ring
+    refine ⟨z + ((c : ℕ) : ℤ), (a : ℕ) - (c : ℕ), by omega, by omega, by omega, ?_,
+      by rw [hcast]; omega, ?_, ?_⟩
+    · have := (cntAt_sub_of_pend g hg z hz (c : ℕ) (by omega)).2
+      omega
+    · rw [hcast]; exact hobj.symm
+    · rw [hcast]; exact hty.symm
+
+-- `linter.unusedVariables`, scoped to this declaration: the signature is pinned by the plan's
+-- Lean Challenge Statements block, and `hσ` (the history's offset) is not read — the pigeonhole
+-- is a statement about one history's types along the walk, whatever its offset.
+set_option linter.unusedVariables false in
+/-- **THE TYPE PIGEONHOLE.** A region of countdown at least the budget carries a type-respecting
+block of length at most the budget, at or after the chosen position. -/
+theorem exists_typeBlock_of_budget_le_cnt
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    {k : ℤ} {g : ℤ → LadderState Q pend}
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t))
+    (hg : IsLadderPath step pend g) (z : ℤ) (hz : pend (objAt g z) = true)
+    (hbud : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ≤ cntAt g z) :
+    ∃ (u : ℤ) (l : ℕ), 0 < l ∧
+      l ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ∧
+      z ≤ u ∧ l ≤ cntAt g u ∧
+      objAt g u = objAt g (u + (l : ℤ)) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ σ u
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + (l : ℤ)) := by
+  obtain ⟨u, l, hl, hlb, hzu, hcl, -, hrep, hty⟩ :=
+    exists_typeBlock_of_budget_le_cnt_within step pend fwd bwd lab φ σ hg z hz hbud
+  exact ⟨u, l, hl, hlb, hzu, hcl, hrep, hty⟩
+
+end Pigeonhole
+
+section Iterate
+
+variable {Q : Type} [Finite Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE ITERATED DUPLICATION.** `d` duplications of a type-respecting block `[u, u + l)` of a
+pending-forever region: the walk agrees with the original before `u + l`, carries `objAt g u`
+at `u + l`, every countdown before the block whose region reaches it is raised by `d · l`, the
+`d + 1` copies are pending, the walk from `u + (d + 1) l` on is the original `d · l` earlier,
+and the realized type is the original's before `u + l` (and `u`'s at `u + l`). -/
+theorem exists_iterSpliced_ladderPath_of_pend_past
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    {g : ℤ → LadderState Q pend} (hg : IsLadderPath step pend g) {u : ℤ} {l : ℕ}
+    (hl : 0 < l) (hcl : l ≤ cntAt g u)
+    (hpast : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true)
+    (hrep : objAt g u = objAt g (u + (l : ℤ)))
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t))
+    (hty : tpOf (ladderModel step pend fwd bwd lab) φ σ u
+         = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + (l : ℤ))) (d : ℕ) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v : ℤ, v < u + (l : ℤ) → objAt g' v = objAt g v) ∧
+      objAt g' (u + (l : ℤ)) = objAt g u ∧
+      (∀ v : ℤ, v ≤ u → u ≤ v + (cntAt g v : ℤ) → cntAt g' v = cntAt g v + d * l) ∧
+      (∀ v : ℤ, u ≤ v → v < u + ((d + 1) * l : ℕ) → pend (objAt g' v) = true) ∧
+      (∀ v : ℤ, u + ((d + 1) * l : ℕ) ≤ v →
+        objAt g' v = objAt g (v - (d * l : ℕ)) ∧ cntAt g' v = cntAt g (v - (d * l : ℕ))) ∧
+      ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        (∀ w : ℤ, w < u + (l : ℤ) →
+          tpOf (ladderModel step pend fwd bwd lab) φ σ' w
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ w) ∧
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' (u + (l : ℤ))
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ u := by
+  have hpu : pend (objAt g u) = true := hpast u le_rfl
+  induction d with
+  | zero =>
+      refine ⟨g, hg, fun _ _ => rfl, hrep.symm, fun v _ _ => by simp, fun v hv1 hv2 => ?_,
+        fun v _ => by simp, fun σ' hσ' => ?_⟩
+      · have := (cntAt_sub_of_pend g hg u hpu (v - u).toNat (by
+          have : v < u + (l : ℤ) := by simpa using hv2
+          omega)).1
+        rwa [show u + (((v - u).toNat : ℕ) : ℤ) = v by omega] at this
+      have hsame : ∀ w : ℤ, tpOf (ladderModel step pend fwd bwd lab) φ σ' w
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ w := fun w =>
+        tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ' σ
+          (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ t)
+          (fun _ => rfl) hno w
+      exact ⟨fun w _ => hsame w, by rw [hsame, hty]⟩
+  | succ d ih =>
+      obtain ⟨g₁, hg₁, hobj₁, hend₁, hcnt₁, hpend₁, habove₁, hty₁⟩ := ih
+      have e1 : (((d + 1) * l : ℕ) : ℤ) = (d : ℤ) * l + l := by push_cast; ring
+      have e2 : (((d + 1 + 1) * l : ℕ) : ℤ) = (d : ℤ) * l + l + l := by push_cast; ring
+      -- the block of `g₁` is still type-respecting, pending-forever below, and inside its region
+      have hpast₁ : ∀ p : ℤ, p ≤ u → pend (objAt g₁ p) = true := fun p hp => by
+        rw [hobj₁ p (by omega)]; exact hpast p hp
+      have hrep₁ : objAt g₁ u = objAt g₁ (u + (l : ℤ)) := by
+        rw [hobj₁ u (by omega), hend₁]
+      have hcu₁ : cntAt g₁ u = cntAt g u + d * l := hcnt₁ u le_rfl (by omega)
+      have hcl₁ : l ≤ cntAt g₁ u := by rw [hcu₁]; omega
+      obtain ⟨g₂, hg₂, hobj₂, hcnt₂⟩ :=
+        exists_spliced_ladderPath_of_pend_past hg₁ hl hcl₁ hpast₁ hrep₁
+      refine ⟨g₂, hg₂, fun v hv => ?_, ?_, fun v hv hreg => ?_, fun v hv1 hv2 => ?_,
+        fun v hv => ?_, fun σ₂ hσ₂ => ?_⟩
+      · rw [hobj₂ v, spliceObj_of_lt v hv, hobj₁ v hv]
+      · rw [hobj₂ (u + (l : ℤ)), spliceObj_of_ge (u + (l : ℤ)) le_rfl,
+          show u + (l : ℤ) - (l : ℤ) = u by ring, hobj₁ u (by omega)]
+      · have hreg₁ : u ≤ v + (cntAt g₁ v : ℤ) := by rw [hcnt₁ v hv hreg]; push_cast; omega
+        rw [hcnt₂ v, spliceCnt_add_of_mem_region hl v hv hreg₁, hcnt₁ v hv hreg]
+        ring
+      · -- the copies are pending
+        have hv2' : v < u + ((d + 1 + 1) * l : ℕ) := hv2
+        rw [e2] at hv2'
+        rw [hobj₂ v]
+        by_cases hvl : v < u + (l : ℤ)
+        · rw [spliceObj_of_lt v hvl]
+          exact hpend₁ v hv1 (by rw [e1]; omega)
+        · rw [spliceObj_of_ge v (by omega)]
+          exact hpend₁ (v - (l : ℤ)) (by omega) (by rw [e1]; omega)
+      · -- above the copies the walk is the original, `(d + 1) · l` earlier
+        have hv' : u + ((d + 1 + 1) * l : ℕ) ≤ v := hv
+        rw [e2] at hv'
+        have hge : u + ((d + 1) * l : ℕ) ≤ v - (l : ℤ) := by rw [e1]; omega
+        obtain ⟨ho, hc⟩ := habove₁ (v - (l : ℤ)) hge
+        refine ⟨?_, ?_⟩
+        · rw [hobj₂ v, spliceObj_of_ge v (by omega), ho]
+          congr 1; push_cast; ring
+        · rw [hcnt₂ v, spliceCnt_of_ge v (by omega), hc]
+          congr 1; push_cast; ring
+      · obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+        obtain ⟨hlt₁, hend_ty₁⟩ := hty₁ σ₁ hσ₁
+        have hty₁' : tpOf (ladderModel step pend fwd bwd lab) φ σ₁ u
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ (u + (l : ℤ)) := by
+          rw [hlt₁ u (by omega), hend_ty₁]
+        have hobj₂' : ∀ w : ℤ, objAt g₂ w = objAt g₁ (spliceIdx u l w) := fun w => by
+          rw [hobj₂ w, spliceObj_eq_objAt_spliceIdx]
+        have htr : ∀ w : ℤ, tpOf (ladderModel step pend fwd bwd lab) φ σ₂ w
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ (spliceIdx u l w) := fun w => by
+          ext ψ
+          rw [mem_tpOf_iff, mem_tpOf_iff]
+          exact and_congr_right fun hmem =>
+            plusTruthAt_iff_spliceIdx_of_tpOf_eq_of_stabPinned fwd bwd lab φ (fun _ => False) u l
+              (k := 0) (k' := 0) σ₁ σ₂ (fun t => by rw [add_zero]; exact hσ₁ t)
+              (fun t => by rw [add_zero]; exact hσ₂ t) hobj₂' (fun _ h => absurd h (fun h => h))
+              hty₁' ψ hmem (stabPinned_false_of_mem_closure hno ψ hmem) w
+        refine ⟨fun w hw => ?_, ?_⟩
+        · rw [htr w, spliceIdx_of_lt u l w hw, hlt₁ w hw]
+        · rw [htr (u + (l : ℤ)), spliceIdx_of_ge u l (u + (l : ℤ)) le_rfl,
+            show u + (l : ℤ) - (l : ℤ) = u by ring, hlt₁ u (by omega)]
+
+end Iterate
+
 end FormalSystem.Metalogic.Decidability.RaySummary
