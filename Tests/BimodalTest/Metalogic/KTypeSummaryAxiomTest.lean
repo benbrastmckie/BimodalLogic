@@ -1614,4 +1614,35 @@ non-vacuity on both sides. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.CellLEZeroConstOfKappaEq
 
+/-! ## Requirement (W): the type-preserving pump layer (`RaySummary/LadderPump.lean`)
+
+The pins below are the deletion admissibility layer, the mirror of the splice layer pinned
+above: the deletion index map `delIdx` (a definition; no axioms), the payoff
+`delCnt_sub_of_mem_region` (at every position whose region reaches the deleted block the forced
+countdown is the original's minus the block's length, exactly), and the admissibility half
+`exists_deleted_ladderPath_of_pend_past` (in the pending-forever regime the deleted walk lifts to
+a ladder path with no pin side condition, through `exists_ladderPath_of_walk` with the pins above
+the block displaced by `-l`).
+
+**What these pins certify, and what they do not.** The standard profile on each declaration,
+and nothing else. They certify that the surgery is a ladder path; nothing here says the realized
+TYPE is preserved — that is the type half of the layer, pinned separately. No certificate object
+is named, no finite-fibre or finite-width hypothesis appears, no pin is a bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.delIdx' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.delIdx
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.delCnt_sub_of_mem_region' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.delCnt_sub_of_mem_region
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_deleted_ladderPath_of_pend_past' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_deleted_ladderPath_of_pend_past
+
 end BimodalTest.Metalogic
