@@ -71,8 +71,10 @@ shown to be too weak by a compiled refutation.
   this session from the same two facts, NOT landed as a named lemma): if the first idle position
   after `z`'s region is `e = z + c + 1`, the next idle run has length `I₁` and the next region
   length `L₁`, then `nxtAt (e + I₁ - 1) = L₁ - 1` and Lipschitz over `c + I₁` steps gives
-  `nxtAt z ≤ c + I₁ + L₁ - 1`. `RunLayer.lean`'s `forward_window` (`|L - n| ≤ c + j`) is the
-  same inequality in the certificate layer's vocabulary.
+  `nxtAt z ≤ c + I₁ + L₁ - 1`. `forward_window` is a prose name occurring in `RunLayer.lean`'s
+  and `Certificate.lean`'s docstrings (the pin lemma's soundness half), not a declared lemma in
+  either file; the implementation plan lands this inequality as the named Lean Challenge
+  Statement Goal `nxtAt_le_cntAt_add_of_next_region`.
 - **The truth clauses.** `PlusTruth.untl_iff` / `snce_iff` (`PlusTruth.lean:140-146`) are strict
   on the witness (`t < s`), require the guard strictly between (`t < r → r < s`), and require
   nothing at `t` or at `s`. `PlusTruth.box_iff` quantifies over histories at the SAME time, but
