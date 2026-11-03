@@ -1,13 +1,19 @@
 {
-  "status": "needs_research",
+  "status": "planned",
   "phase": "plan",
-  "dispatch_seq": 1,
-  "summary": "No research artifact was provided, so Stage 1.5 ran: the planner read LadderAgree.lean, CounterQuotient.lean, RunLayer.lean, Probe761C and task 761 plan 08, and found the plan would rest on an unidentified construction. The planner's own reasoning settles the shape of a type-respecting block pump (duplicate/delete a block with equal (objAt, tpOf) endpoints, seam cases closed by the endpoint type equality on the formula itself) but NOT the two facts a plan needs: how such a pump hits the EXACT countdown c + m(P+1) when its block length has no certificate-free divisibility into P+1, and how the region-start pin cascade is absorbed without a type-blind idle-run lengthening. No plan file was written; six focused research questions are carried in .return-meta.json.",
-  "artifacts": [],
+  "dispatch_seq": 3,
+  "summary": "Wrote the eleven-phase implementation plan for task 836 from the research report, which found the obligation CellLEZeroConstOfKappaEq refuted at the fixpoint's own outputs. The plan wires that refutation as the forty-seventh probe, repairs (K4) with a forward exactness depth per the recorded decision, lands the certificate-free type-preserving pump layer in two new modules with eight Lean Challenge Statements (elaborated standalone, exit 0, eleven sorry warnings), and gates the depth-0 theorem on an early regime-B decision gate whose FAIL branch closes [BLOCKED] rather than narrowing the reserved name. Plan validates in --strict mode and the challenge-snapshot dry-run cross-validates the Goals set.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/836_ladder_type_preserving_cell_agreement_construction/plans/01_obligation-repair-and-pump-layer.md",
+      "summary": "Eleven-phase plan: refutation wiring, (K4) repair, regime-B gate, LadderPump/LadderChain pump layer, gated depth-0 theorem, records and full gate."
+    }
+  ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 11,
   "blockers": [],
-  "plan_markers_verified": null,
+  "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch research on task 836 with the six research_questions in .return-meta.json as --focus; --lit is useful (Hodkinson-Wolter-Zakharyaschev 2000 Lemma 17 and the composition-method entries are the relevant corpus items). Then re-dispatch plan."
+  "next_action_hint": "Dispatch implement for task 836 starting at Phase 1 (wire the probe); Phase 3's gate verdict decides Phase 10's branch."
 }

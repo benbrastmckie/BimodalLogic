@@ -1,70 +1,50 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/836_ladder_type_preserving_cell_agreement_construction/reports/01_type-preserving-cell-agreement-construction.md",
-      "summary": "Answers Q1-Q6: the depth-0 obligation CellLEZeroConstOfKappaEq is REFUTED (compiled prototype, fixpoint's own outputs, forward Lipschitz window vs. kappa's gap clip); the type-preserving duplication/deletion lemma is settled on paper with its Lean statement shape; exactness needs the prodCycleLens bridge (non-circular, new module); regime B is the open core; (K4) needs a forward exactness depth."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/836_ladder_type_preserving_cell_agreement_construction/prototype/cell-obligation-refutation.lean",
-      "summary": "Compiled standalone prototype (exit 0, no sorry, standard axiom profile) refuting CellLEZeroConstOfKappaEq at Probe761C's object at Tcof/Tnof/Pof/Bof; candidate forty-seventh wired probe."
+      "type": "plan",
+      "path": "specs/836_ladder_type_preserving_cell_agreement_construction/plans/01_obligation-repair-and-pump-layer.md",
+      "summary": "Eleven-phase plan: wire the compiled refutation of CellLEZeroConstOfKappaEq as the forty-seventh probe, repair (K4) with the forward exactness depth dFwd, probe the regime-B open core at a decision gate, land the certificate-free type-preserving pump layer (LadderPump.lean, LadderChain.lean) with eight pinned Lean Challenge Statements, and attempt the depth-0 theorem only on the gate's PASS branch."
     }
   ],
-  "next_steps": "Plan: wire the refutation as a probe, decide the (K4) repair (forward exactness depth), then pin the Q1/Q2 Lean Challenge statements in new modules LadderPump.lean / LadderChain.lean; probe the tight doubling chain before committing to regime B.",
-  "user_decision": {
-    "question": "CellLEZeroConstOfKappaEq is refuted at the fixpoint's own parameters because (K4) bounds the gap clip B by the backward depth dBack only; the cell also reads the register forward. How should the obligation be repaired before a construction is planned?",
-    "options": [
-      "Option A \u2014 repair (K4) with a forward exactness depth dFwd (untl nesting), redefine Bof, restate the obligation and filed Goals against the repaired ParamsOk",
-      "Option B \u2014 keep ParamsOk and restate the obligation for the pending-forever-into-the-past regime only (regime A), escalating regime B as a design question",
-      "Option C \u2014 abandon the kappa-class cell agreement route and re-plan the realization theorem with a different quotient of the counter pair"
-    ],
-    "recommended": "Option A \u2014 repair (K4) with a forward exactness depth dFwd (untl nesting), redefine Bof, restate the obligation and filed Goals against the repaired ParamsOk",
-    "blocking": false
-  },
+  "next_steps": "Run /orchestrate 836 to execute the plan",
   "metadata": {
     "session_id": "sess_1793665477_08dde0_836",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 4500,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 11,
+    "estimated_hours": 20,
+    "dependency_waves": [[1, 4], [2, 5, 6, 7, 8], [3, 9], [10], [11]],
+    "issue_log_contribution": 3
   },
+  "modified_files": [
+    "specs/836_ladder_type_preserving_cell_agreement_construction/plans/01_obligation-repair-and-pump-layer.md",
+    "specs/836_ladder_type_preserving_cell_agreement_construction/issues.jsonl"
+  ],
+  "proposed_file_scope": [
+    "specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean",
+    "scripts/check-evidence-probes.sh",
+    "FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "typst/generated/status.typ",
+    "specs/836_ladder_type_preserving_cell_agreement_construction/prototype/tight-chain-regime-b.lean",
+    "specs/836_ladder_type_preserving_cell_agreement_construction/summaries/01_obligation-repair-and-pump-layer-summary.md"
+  ],
   "memory_candidates": [
     {
-      "content": "omega cannot see hypotheses whose comparison is typed at a frame's Duration (defeq to Int but not syntactically); substitute an Int-typed copy via `obtain \u27e8s', rfl\u27e9 : \u2203 s' : \u2124, s' = s := \u27e8s, rfl\u27e9` before calling omega. Likewise `_` placeholders in `rw [lemma c _ (by omega)]` are still metavariables when omega runs; give explicit positions.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/836_ladder_type_preserving_cell_agreement_construction/prototype/cell-obligation-refutation.lean",
-      "confidence": 0.9,
-      "suggested_keywords": [
-        "omega",
-        "Duration",
-        "FrameOver intOrder",
-        "rw placeholder"
-      ]
-    },
-    {
-      "content": "In the ladder model the cell at (q,c,n) reads the next-deadline register FORWARD through the next region's pin: nxtAt z <= cntAt z + I1 + L1 - 1; a U-only formula of bounded X-depth pins I1 and L1, so kappa's gap clip must exceed the formula's forward exactness depth, not only 2*dBack+1.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/836_ladder_type_preserving_cell_agreement_construction/reports/01_type-preserving-cell-agreement-construction.md",
-      "confidence": 0.85,
-      "suggested_keywords": [
-        "ladder",
-        "kappa",
-        "clipIdx",
-        "forward window",
-        "CellLEZeroConstOfKappaEq"
-      ]
+      "content": "When one task both wires a refutation probe against a library predicate and then repairs that predicate, order the phases wire-first/repair-second and re-anchor the probe in the SAME phase as the repair: freeze a verbatim local copy of the pre-repair conjunct (e.g. paramsOkK4Pre / ParamsOkPre) and restate the refuted schema locally against it, so the refutation remains a theorem about a named object after the library definition changes and no commit leaves the evidence gate red. Add two positive facts in the same probe: the repaired predicate rejects the refuting parameter, and the specific collision dissolves at the repaired output. Precedent: AtomPreservingCountMove kept as a def so its refutation is a theorem.",
+      "category": "PATTERN",
+      "source_artifact": "specs/836_ladder_type_preserving_cell_agreement_construction/plans/01_obligation-repair-and-pump-layer.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["evidence-probe", "refutation", "ParamsOk", "predicate-repair", "frozen-predicate", "wired-probe"]
     }
   ],
-  "modified_files": [
-    "specs/836_ladder_type_preserving_cell_agreement_construction/reports/01_type-preserving-cell-agreement-construction.md",
-    "specs/836_ladder_type_preserving_cell_agreement_construction/prototype/cell-obligation-refutation.lean",
-    "specs/836_ladder_type_preserving_cell_agreement_construction/issues.jsonl"
-  ]
+  "dispatch_seq": 3
 }
