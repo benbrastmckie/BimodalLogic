@@ -1,0 +1,25 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 1,
+  "summary": "Authored a six-phase plan for the two-sided open core, taking the task's route (a): a (K2)-level pigeonhole over region starts on the pin-free side. Phases 1-3 land three independently provable pieces (a pin-free dichotomy and a pigeonhole over region starts in a new certificate-free module LadderPin.lean, plus the exponential (K2) bound two_pow_card_prodState_le_Tc in LadderChain.lean); Phase 4 is a compiled decision gate, run entirely in a specs/** prototype so no verdict touches a library file, asking whether a block spanning a region start has a length (K1) constrains; Phase 5 is branch-selected (reserved name on PASS, a new regime-restricted name on FAIL) and Phase 6 is the full-gate closing phase. Four Lean Challenge Statements were elaborated standalone through the build guard at authoring time (exit_status=0, four sorry warnings, zero errors).",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
+      "summary": "Six-phase plan attacking the depth-0 cell obligation via a (K2)-level pigeonhole over region starts on the pin-free side, with a compiled decision gate on spanning-block divisibility and a branch-selected closing phase."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 6,
+  "blockers": [],
+  "user_decision": {
+    "question": "If Phase 4's decision gate returns FAIL (a type-respecting block spanning a region start has a length that (K1) does not constrain), should this task land a regime-restricted obligation under a NEW name so the consumer has something to induct from, or leave the depth-0 obligation entirely open pending a dedicated (K1)-amendment task?",
+    "options": [
+      "Land the regime-restricted obligation under a new name (cellLE_zero_const_of_kappa_eq_of_pinFree), with the record naming the extra hypothesis the consumer must supply",
+      "Leave the depth-0 obligation entirely open and close the task after Phase 4, filing the (K1) amendment as the single named follow-up"
+    ],
+    "recommended": "Land the regime-restricted obligation under a new name (cellLE_zero_const_of_kappa_eq_of_pinFree), with the record naming the extra hypothesis the consumer must supply",
+    "blocking": false
+  }
+}

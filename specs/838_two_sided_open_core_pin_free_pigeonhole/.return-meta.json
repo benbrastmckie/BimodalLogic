@@ -1,0 +1,39 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
+      "summary": "Six-phase plan attacking the depth-0 cell obligation via a (K2)-level pigeonhole over region starts on the pin-free side, with a compiled decision gate on spanning-block divisibility and a branch-selected closing phase."
+    }
+  ],
+  "next_steps": "Run /orchestrate 838 to execute the plan",
+  "user_decision": {
+    "question": "If Phase 4's decision gate returns FAIL (a type-respecting block spanning a region start has a length that (K1) does not constrain), should this task land a regime-restricted obligation under a NEW name so the consumer has something to induct from, or leave the depth-0 obligation entirely open pending a dedicated (K1)-amendment task?",
+    "options": [
+      "Land the regime-restricted obligation under a new name (cellLE_zero_const_of_kappa_eq_of_pinFree), with the record naming the extra hypothesis the consumer must supply",
+      "Leave the depth-0 obligation entirely open and close the task after Phase 4, filing the (K1) amendment as the single named follow-up"
+    ],
+    "recommended": "Land the regime-restricted obligation under a new name (cellLE_zero_const_of_kappa_eq_of_pinFree), with the record naming the extra hypothesis the consumer must supply",
+    "blocking": false
+  },
+  "memory_candidates": [
+    {
+      "content": "When a construction/device is refuted in BOTH directions by compiled counter-objects, the productive planning move is not to search for a new device but to decompose the attack as a dichotomy over the free side the refuting objects share: the refuting witnesses are evidence about where the device is unavailable, and their complement is usually already a landed regime. Shape: (1) name the dichotomy as a theorem over landed lemmas, (2) prove the generic pigeonhole/counting half that the dense side needs, (3) put the single remaining open question in a prototype under specs/** as a named schema, so the decision gate's verdict -- PASS, FAIL or INCONCLUSIVE -- never touches a library file and no branch requires reverting earlier phases, (4) branch-select the closing phase. Keeps the FAIL branch as informative as the PASS branch and keeps the build green throughout.",
+      "category": "PATTERN",
+      "source_artifact": "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
+      "confidence": 0.6,
+      "suggested_keywords": ["decision-gate", "two-sided-refutation", "dichotomy-decomposition", "prototype-gate", "phase-branching", "formal-proof-planning"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793726849_746040_838",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 11,
+    "dependency_waves": [[1], [2, 3], [4], [5], [6]]
+  },
+  "dispatch_seq": 1
+}
