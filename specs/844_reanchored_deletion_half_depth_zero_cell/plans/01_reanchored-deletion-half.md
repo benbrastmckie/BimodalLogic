@@ -396,31 +396,32 @@ changes.
 
 ---
 
-### Phase 5: Record, sync, and the full gate [NOT STARTED]
+### Phase 5: Record, sync, and the full gate [COMPLETED]
 
 **Goal**: The library's own account of the downward direction is brought current, the generated
 Typst status is in sync, and the complete gate set runs green.
 
 **Tasks**:
-- [ ] `LadderChain.lean`: the `Assembly` section docstring's sentence "This is ONE direction only
+- [x] `LadderChain.lean`: the `Assembly` section docstring's sentence "This is ONE direction only
   … which is the cascade the Phase 3 gate refuted as a device" and
   `cellAt_subset_of_shift_of_pend_past`'s "ONE direction only — the downward inclusion … is not
   claimed" are rewritten to say what is now landed: the register obstruction was an anchor-position
   mismatch, the single-block downward assembly exists (naming the branch and, on FAIL, the
   `HasForwardSlack` hypothesis), and the cell-level inclusion still needs the exact-shift
   iteration. Durable anchors only, no task numbers.
-- [ ] `LadderAgree.lean`: the obligation section's docstring (around `CellLEZeroConstOfKappaEq`)
+- [x] `LadderAgree.lean`: the obligation section's docstring (around `CellLEZeroConstOfKappaEq`)
   gains one sentence pointing at `LadderChain.lean`'s downward assembly as the current state of
   the second inclusion; the reserved-name sentence is unchanged.
-- [ ] `bash scripts/typst-sync-check.sh --fix` then the bare `bash scripts/typst-sync-check.sh`
+- [x] `bash scripts/typst-sync-check.sh --fix` then the bare `bash scripts/typst-sync-check.sh`
   (all four checks) exits 0.
-- [ ] `bash .claude/scripts/lean-challenge-snapshot.sh --check` against this plan: both pinned
+- [x] `bash .claude/scripts/lean-challenge-snapshot.sh --check` against this plan: both pinned
   signatures match the landed declarations (advisory; a drift finding is investigated, not
   auto-failed).
-- [ ] Full project build through the guard (unscoped `-- build`), detached as a shell-level
+  *(deviation: altered — no Challenge manifest exists for this task, so `--check` exits 71 and cannot run; the two pinned signatures were compared by hand against the landed declarations and match)*
+- [x] Full project build through the guard (unscoped `-- build`), detached as a shell-level
   background job and waited on with the bounded single-call idiom if it does not fit one call.
-- [ ] `bash .claude/scripts/verify-deploy.sh` — the complete gate set.
-- [ ] Commit; write the summary naming the branch taken, the verdict's evidence, and the two
+- [x] `bash .claude/scripts/verify-deploy.sh` — the complete gate set.
+- [x] Commit; write the summary naming the branch taken, the verdict's evidence, and the two
   named next pieces.
 
 **Timing**: 1 hour
@@ -490,11 +491,11 @@ end FormalSystem.Metalogic.Decidability.RaySummary
 
 ## Testing & Validation
 
-- [ ] Each of Phases 1-4: scoped guarded build of `LadderChain` exits 0; `lean_verify` on every new name reports the standard axiom profile and no `sorry`.
-- [ ] Phase 2's sanity instance (`z := 0`, `n := nxtAt g l`) recovers the landed deletion theorem's conclusions from the new one.
-- [ ] Phase 3's verdict is recorded with its evidence (goal state on FAIL, discharge lemma on PASS) before Phase 4 is entered.
-- [ ] Phase 5: `verify-deploy.sh`, the unscoped guarded build, and `typst-sync-check.sh` all exit 0; `lean-challenge-snapshot.sh --check` reports no drift on the two pinned names.
-- [ ] No file under `FormalSystem/` or `typst/` carries a task-number reference.
+- [x] Each of Phases 1-4: scoped guarded build of `LadderChain` exits 0; `lean_verify` on every new name reports the standard axiom profile and no `sorry`.
+- [x] Phase 2's sanity instance (`z := 0`, `n := nxtAt g l`) recovers the landed deletion theorem's conclusions from the new one.
+- [x] Phase 3's verdict is recorded with its evidence (goal state on FAIL, discharge lemma on PASS) before Phase 4 is entered.
+- [x] Phase 5: `verify-deploy.sh`, the unscoped guarded build, and `typst-sync-check.sh` all exit 0; `lean-challenge-snapshot.sh --check` reports no drift on the two pinned names. *(altered — no manifest; compared by hand, see Phase 5)*
+- [x] No file under `FormalSystem/` or `typst/` carries a task-number reference.
 
 ## Artifacts & Outputs
 

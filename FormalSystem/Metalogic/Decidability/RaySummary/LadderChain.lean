@@ -411,10 +411,16 @@ among the divisors of `P + 1`; the iterated duplication, `d := m · ((P + 1) / l
 is rebuilt by the landed lift with `z` translated to the origin and `n₀ := nxtAt g z` — the base
 pin is admissible because the first pin above `z` is the original's first pin displaced by
 `m · (P + 1)`, so the `1`-Lipschitz register of the original already bridges the shorter
-distance. This is ONE direction only: the upward shift with the register held. The downward
-inclusion shrinks the forward window of the register and, on a tight chain of pins after `z`,
-needs the next region shortened type-respectingly, which is the cascade the Phase 3 gate
-refuted as a device. -/
+distance. This is the upward shift with the register held. The downward direction's register
+obstruction was an anchor-position mismatch, not a cascade: the landed lift is anchored at
+position `0` while the deletion window sits at `z` and reads `l` positions to the right, so
+composing them charges the `l`-shift against a distance from `0`. The z-anchored lift
+`exists_ladderPath_of_walk_nxt_at` removes the mismatch, and the single-block downward assembly
+`exists_ladderPath_through_deleted_of_pend_past` (below) lowers the countdown by one
+type-respecting block with the register held — under the named hypothesis `HasForwardSlack`, one
+inequality at the first region start above `z`'s region that the path's own facts do not
+discharge. The cell-level downward inclusion still needs the exact-shift iteration of the
+deletion. -/
 
 section Assembly
 
@@ -909,8 +915,10 @@ end DelNxtFin
 (`n + 2 ≤ c`, so by `pend_past_of_nxtAt_lt` every path through the state is pending forever into
 the past) at countdown at least `Tc`, the cell at `(q, c, n)` is contained in the cell at
 `(q, c + m · (P + 1), n)`: every type realized at the former is realized at the latter by the
-regime-A assembly. ONE direction only — the downward inclusion shrinks the register's forward
-window and is not claimed. Under `kappa_eq_components` this covers the sub-regime `n = n'`;
+regime-A assembly. The downward inclusion is not claimed at the cell level: its single-block,
+path-level form is `exists_ladderPath_through_deleted_of_pend_past`, under the forward-slack
+hypothesis `HasForwardSlack` on the path, and the exact-shift iteration of the deletion is the
+piece still missing. Under `kappa_eq_components` this covers the sub-regime `n = n'`;
 the common shift `n' = n + m · (P + 1)` is the same construction with `n₀ := n'` inside the
 widened window and is not stated here. -/
 theorem cellAt_subset_of_shift_of_pend_past {Q : Type} [Fintype Q] [Nonempty Q]
