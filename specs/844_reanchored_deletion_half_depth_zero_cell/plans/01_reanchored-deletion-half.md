@@ -217,7 +217,7 @@ signature, so no dependent can break.
 
 ---
 
-### Phase 2: The nxt-exposing deletion theorem [NOT STARTED]
+### Phase 2: The nxt-exposing deletion theorem [COMPLETED]
 
 **Goal**: `exists_deleted_ladderPath_of_pend_past_nxt` lands in `LadderChain.lean`, in a new
 `section DelNxt` placed after `section AssemblyFin`: the landed deletion theorem re-run through
@@ -225,23 +225,23 @@ Phase 1's lift at anchor `z` with value `n`, exposing `nxtAt g' z = n`, under an
 clause `hanch` on the pins above the block.
 
 **Tasks**:
-- [ ] Open `section DelNxt` with `variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}`
+- [x] Open `section DelNxt` with `variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}`
   and state the theorem exactly as pinned below. The `{g} {a} {l}` binders are implicit, matching
   the landed theorem's use of `LadderPump.lean`'s `Del` section variables.
-- [ ] Reproduce `hstart` and `hpull` from the landed proof verbatim (they are `have`s inside
+- [x] Reproduce `hstart` and `hpull` from the landed proof verbatim (they are `have`s inside
   `exists_deleted_ladderPath_of_pend_past`, not exported lemmas; copy the ~15 lines rather than
   refactoring the landed file).
-- [ ] `refine exists_ladderPath_of_walk_nxt_at (delObj g a l) (delCnt g a l) z n (delObj_step hg hrep) (delCnt_idle hg) (delCnt_pend_pend hg hl hcl) (delCnt_pend_idle hg hl hcl) (fun s v hs0 hs1 hv0 hv1 => ?_) (fun v hv0 hv1 => ?_)` — the first five clauses are the landed ones, untouched.
-- [ ] Pin-compatibility goal: identical to the landed proof's first bullet
+- [x] `refine exists_ladderPath_of_walk_nxt_at (delObj g a l) (delCnt g a l) z n (delObj_step hg hrep) (delCnt_idle hg) (delCnt_pend_pend hg hl hcl) (delCnt_pend_idle hg hl hcl) (fun s v hs0 hs1 hv0 hv1 => ?_) (fun v hv0 hv1 => ?_)` — the first five clauses are the landed ones, untouched.
+- [x] Pin-compatibility goal: identical to the landed proof's first bullet
   (`hpull` twice, `pinCompat_of_ladderPath` at `s + l` and `v + l`, the `ring` rewrite).
-- [ ] Anchor goal: from `hpull v hv0 hv1` obtain `hv0'`, `hv1'`, `hvc`; rewrite
+- [x] Anchor goal: from `hpull v hv0 hv1` obtain `hv0'`, `hv1'`, `hvc`; rewrite
   `delCnt g a l (v + 1)` to `cntAt g (v + l + 1)` to `nxtAt g (v + l)` via
   `cntAt_eq_nxtAt_of_idle_pend g hg (v + l) hv0' hv1'`; close with
   `hanch v (hstart v hv0) hv0' hv1'`.
-- [ ] Docstring: the register is now EXPOSED at `z`, the anchor clause is the one hypothesis the
+- [x] Docstring: the register is now EXPOSED at `z`, the anchor clause is the one hypothesis the
   landed theorem discharges internally (with `z := 0`, `n := nxtAt g l`, by Lipschitz), and
   Phase 3 reduces it to a single pin.
-- [ ] `lean_verify` on the fully qualified name; scoped build; `--fix`; commit.
+- [x] `lean_verify` on the fully qualified name; scoped build; `--fix`; commit.
 
 **Timing**: 1.5 hours
 

@@ -640,6 +640,73 @@ theorem exists_ladderPath_through_shifted_of_pend_past
 
 end AssemblyFin
 
+/-! ## The deletion with the register exposed
+
+The landed deletion theorem `exists_deleted_ladderPath_of_pend_past` (`LadderPump.lean`) exposes
+only the object walk and the countdown of the deleted path, because it calls
+`exists_ladderPath_of_walk` rather than the register-exposing lift; the consumer
+`cellAt_subset_of_shift_of_pend_past` reads `nxtAt g z = n` and needs `nxtAt g' z = n` on the
+replacement path. This section re-runs the same construction through the z-anchored lift
+`exists_ladderPath_of_walk_nxt_at`, reusing the five landed counter and pin clauses verbatim,
+and makes the register's anchor clause an explicit hypothesis on the pins above the block. -/
+
+section DelNxt
+
+variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE DELETION WITH THE REGISTER EXPOSED AT `z`.** The landed deletion theorem's five
+clauses (`delObj_step`, `delCnt_idle`, `delCnt_pend_pend`, `delCnt_pend_idle`, and the pin
+compatibility through `pinCompat_of_ladderPath`) are reused untouched; the one new hypothesis
+is the anchor clause `hanch`: every pin of the deleted walk — a region start `v + l` of the
+original with `a < v`, read at the deleted position `v` — carries a register value within
+`|v − z|` of `n`. The landed theorem discharges this clause internally with `z := 0` and
+`n := nxtAt g l`, by `nxtAt_lipschitz_two_sided g hg (v + l) l` and the rewrite `v + l − l = v`;
+exposing it here lets the anchor be chosen at the consumer's position `z` with the consumer's
+value `n`, and the clause is reduced to a single pin by the collapse lemma that follows. -/
+theorem exists_deleted_ladderPath_of_pend_past_nxt
+    {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (hpast : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true)
+    (hrep : objAt g a = objAt g (a + (l : ℤ)))
+    (z : ℤ) (n : ℕ)
+    (hanch : ∀ v : ℤ, a < v → pend (objAt g (v + (l : ℤ))) = false →
+      pend (objAt g (v + (l : ℤ) + 1)) = true →
+      ((nxtAt g (v + (l : ℤ)) : ℤ) - n).natAbs ≤ (v - z).natAbs) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v, objAt g' v = delObj g a l v) ∧ (∀ v, cntAt g' v = delCnt g a l v) ∧
+      nxtAt g' z = n := by
+  -- every region start of the deleted walk sits above `a`
+  have hstart : ∀ s : ℤ, pend (delObj g a l s) = false → a < s := by
+    intro s hs
+    by_contra hle
+    exact Bool.false_ne_true
+      (hs.symm.trans (delObj_pend_of_le_of_pend_past hrep hpast s (by omega)))
+  -- and is the original's own region start, displaced by `-l`
+  have hpull : ∀ s : ℤ, pend (delObj g a l s) = false →
+      pend (delObj g a l (s + 1)) = true →
+      pend (objAt g (s + (l : ℤ))) = false ∧ pend (objAt g (s + (l : ℤ) + 1)) = true ∧
+        delCnt g a l (s + 1) = cntAt g (s + (l : ℤ) + 1) := by
+    intro s h0 h1
+    have hgt := hstart s h0
+    rw [delObj_of_ge s (by omega)] at h0
+    rw [delObj_of_ge (s + 1) (by omega), show s + 1 + (l : ℤ) = s + (l : ℤ) + 1 by ring] at h1
+    refine ⟨h0, h1, ?_⟩
+    rw [delCnt_of_ge (s + 1) (by omega), show s + 1 + (l : ℤ) = s + (l : ℤ) + 1 by ring]
+  refine exists_ladderPath_of_walk_nxt_at (delObj g a l) (delCnt g a l) z n
+    (delObj_step hg hrep) (delCnt_idle hg) (delCnt_pend_pend hg hl hcl)
+    (delCnt_pend_idle hg hl hcl) (fun s v hs0 hs1 hv0 hv1 => ?_) (fun v hv0 hv1 => ?_)
+  · obtain ⟨hs0', hs1', hsc⟩ := hpull s hs0 hs1
+    obtain ⟨hv0', hv1', hvc⟩ := hpull v hv0 hv1
+    rw [hsc, hvc]
+    have := pinCompat_of_ladderPath g hg (s + (l : ℤ)) (v + (l : ℤ)) hs0' hs1' hv0' hv1'
+    rw [show s + (l : ℤ) - (v + (l : ℤ)) = s - v by ring] at this
+    exact this
+  · obtain ⟨hv0', hv1', hvc⟩ := hpull v hv0 hv1
+    rw [hvc, cntAt_eq_nxtAt_of_idle_pend g hg (v + (l : ℤ)) hv0' hv1']
+    exact hanch v (hstart v hv0) hv0' hv1'
+
+end DelNxt
+
 /-- **THE UPWARD CELL INCLUSION along the common-shift chain.** In the pending-forever regime
 (`n + 2 ≤ c`, so by `pend_past_of_nxtAt_lt` every path through the state is pending forever into
 the past) at countdown at least `Tc`, the cell at `(q, c, n)` is contained in the cell at
