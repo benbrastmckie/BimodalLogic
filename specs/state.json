@@ -1819,7 +1819,7 @@
     {
       "project_number": 836,
       "project_name": "ladder_type_preserving_cell_agreement_construction",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "The depth-0 cell-level agreement for ladder realization needs a construction that preserves the REALIZED TYPE without preserving the valuation pointwise. Such a construction is stated nowhere in the tree.\n\nEstablished by task 761 Phase 11.5 (commit 9347d41d1), compiled rather than observed: the construction that route B named, AtomPreservingCountMove (given a ladder path and a target counter pair at the same object state, produce a ladder path through that pair preserving the atom row at every position), is REFUTED for every object whose pending bit is readable in the language. Mechanism: cntAt_eq_of_pend_eq makes the countdown a function of the pend profile alone, so moving c moves the pend profile; pendFactorsLab_of_atom shows the pending bit factors through the atom row as soon as the labelling carries it as one of its atoms, which the realization statement (quantifying over every lab : Q -> Atom -> Bool) does not exclude; cntAt_eq_of_lab_eq_of_pendFactorsLab then forbids any atom-row-preserving path from carrying a different countdown anywhere. The n half closes (nxt_free); the obstruction is confined to c by construction. Non-vacuity on both sides is discharged by the 46th wired probe, specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean (Probe761C): ParamsOk at the periodicity fixpoint own outputs, a populated kappa-collision at c != c prime via kappa_eq_of_shift, and a ladder path through EACH of the two ladder states.\n\nWhat is refuted is the CONSTRUCTION, not the obligation. A cell is a set of types over all histories through a state; two ladder paths can realize the same closure type without agreeing on a single atom row. The probe exhibits a path through each state and says nothing about whether the two cells coincide. CellLEZeroConstOfKappaEq is STATED in FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean as a Prop-valued schema and proved nowhere; the theorem name cellLE_zero_const_of_kappa_eq is reserved and claimed by nothing.\n\nAvailable ground to build on: Phase 11.4 landed truthAt_iff_of_lab_eq_of_stabBoxFree, truthAt_iff_of_lab_eq_of_stabPinned, tpOf_stabFree_eq_of_lab_eq and tpOf_stabBoxFree_eq_of_lab_eq, and established that the box arm WIDENS (box_mem_tpOf_transfer needs only same-model, and both compared histories are histories of the same ladderModel, so that induction case is Iff.rfl) -- so the usable fragment is stab-free WITH box included, strictly wider than the route decision assumed. Phase 11.3 landed altWalkPath and altWalkPath_eq_of_objAt_eq.\n\nConsequence if unresolved: task 761 Phase 11.6 is not enterable (it inducts from 11.5 base case, which is stated rather than landed), so 11.7 and 12-18 are unreachable along this route. Phase 11.2 is the only unblocked phase remaining there.\n\nEvidence: task 761 issues.jsonl entries iss_1793655395836_WUA3Kc (route-refuted, blocking), iss_1792373250168_HQM6Je (blocker), iss_1792404913585_GTqC0g (refuted-statement), iss_1792402772629_BNdiN5 (refuted-approach), iss_1792401253858_iZyQNA (plan-gap).",
       "effort": "high",
@@ -1827,7 +1827,7 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-11-02T22:19:51Z",
-      "last_updated": "2026-11-03T02:31:53Z",
+      "last_updated": "2026-11-03T02:32:49Z",
       "artifacts": [
         {
           "path": "specs/836_ladder_type_preserving_cell_agreement_construction/reports/01_type-preserving-cell-agreement-construction.md",
@@ -1838,6 +1838,11 @@
           "path": "specs/836_ladder_type_preserving_cell_agreement_construction/plans/01_obligation-repair-and-pump-layer.md",
           "type": "plan",
           "summary": "Eleven-phase plan: refutation wiring, (K4) repair, regime-B gate, LadderPump/LadderChain pump layer, gated depth-0 theorem, records and full gate."
+        },
+        {
+          "path": "specs/836_ladder_type_preserving_cell_agreement_construction/summaries/01_obligation-repair-and-pump-layer-summary.md",
+          "type": "summary",
+          "summary": "The implementation summary: what landed, the repair, the FAIL verdict, what task 761's reviser needs."
         }
       ],
       "session_id": "sess_1793665477_08dde0",

@@ -94,7 +94,7 @@ next_project_number: 838
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-836 [PLANNED] — The depth-0 cell-level agreement for ladder realization needs...
+836 [IMPLEMENTING] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 
 ### Formula Refactor
@@ -160,13 +160,14 @@ Evidence: task 761 issues.jsonl entries iss_1792365111362_wjBgRA (statement-defe
 
 ### 836. Ladder type preserving cell agreement construction
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 761
 - **Research**: [836_ladder_type_preserving_cell_agreement_construction/reports/01_type-preserving-cell-agreement-construction.md]
 - **Plan**: [836_ladder_type_preserving_cell_agreement_construction/plans/01_obligation-repair-and-pump-layer.md]
+- **Summary**: [836_ladder_type_preserving_cell_agreement_construction/summaries/01_obligation-repair-and-pump-layer-summary.md]
 
 **Description**: The depth-0 cell-level agreement for ladder realization needs a construction that preserves the REALIZED TYPE without preserving the valuation pointwise. Such a construction is stated nowhere in the tree.
 
