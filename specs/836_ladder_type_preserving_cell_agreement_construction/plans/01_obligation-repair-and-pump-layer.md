@@ -279,14 +279,14 @@ Phases within the same wave can execute in parallel. Phase 11 is the final phase
 
 ---
 
-### Phase 6: The Deletion Type Lemma — HWZ 2000 Lemma 17 over `ℤ` [NOT STARTED]
+### Phase 6: The Deletion Type Lemma — HWZ 2000 Lemma 17 over `ℤ` [COMPLETED]
 
 **Goal**: `tpOf_eq_delIdx_of_tpOf_eq` is landed: deleting a type-respecting block preserves the stab-free closure type at every position, read through the monotone `delIdx`.
 
 **Tasks**:
-- [ ] The truth-level pinned-form lemma `plusTruthAt_iff_delIdx_of_tpOf_eq_of_stabPinned`, the same induction as Phase 5 with `delIdx u l` in place of `spliceIdx u l`. Because `delIdx` is monotone, witnesses transport forward trivially; the only gap is the deleted block `[u, u + l)` inside a guard interval or carrying the witness. Sub-cases, following HWZ 2000 Lemma 17's `⇒`-case for `ψ₁ U ψ₂` verbatim: witness `s` of the original with `s ≥ u + l` (shift by `-l`, guard retracted across the block through `E(ψ)` at `u`); witness inside the block, `s > u` (then `ψ U χ` holds at `u` on `σ`, so by `E(ψ U χ)` at `u + l` with a new witness beyond the block); witness `s = u` (through `E(χ)`); and the `S` mirrors with the block in the past.
-- [ ] `tpOf_eq_delIdx_of_tpOf_eq` (Goal) as the `L := fun _ => False` instance; docstring citing "HWZ 2000 Lemma 17" in the prose form; axiom-test pin.
-- [ ] Record in the docstring that the lemma needs no pending-region hypothesis and that the admissibility side (`exists_deleted_ladderPath_of_pend_past`) is where the pins enter.
+- [x] The truth-level pinned-form lemma `plusTruthAt_iff_delIdx_of_tpOf_eq_of_stabPinned`, the same induction as Phase 5 with `delIdx u l` in place of `spliceIdx u l`. Because `delIdx` is monotone, witnesses transport forward trivially; the only gap is the deleted block `[u, u + l)` inside a guard interval or carrying the witness. Sub-cases, following HWZ 2000 Lemma 17's `⇒`-case for `ψ₁ U ψ₂` verbatim: witness `s` of the original with `s ≥ u + l` (shift by `-l`, guard retracted across the block through `E(ψ)` at `u`); witness inside the block, `s > u` (then `ψ U χ` holds at `u` on `σ`, so by `E(ψ U χ)` at `u + l` with a new witness beyond the block); witness `s = u` (through `E(χ)`); and the `S` mirrors with the block in the past.
+- [x] `tpOf_eq_delIdx_of_tpOf_eq` (Goal) as the `L := fun _ => False` instance; docstring citing "HWZ 2000 Lemma 17" in the prose form; axiom-test pin. *(deviation: altered — `LadderPump.lean` reached 1,239 lines, so per this phase's Scope Hypothesis the two type lemmas (Phases 5 and 6) moved to `LadderPumpType.lean`, same import and grep contract; `LadderPump.lean` is 336 lines, `LadderPumpType.lean` 948)*
+- [x] Record in the docstring that the lemma needs no pending-region hypothesis and that the admissibility side (`exists_deleted_ladderPath_of_pend_past`) is where the pins enter.
 
 **Timing**: 1.5 hours
 
