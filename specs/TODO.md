@@ -11,7 +11,7 @@ next_project_number: 847
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,844,846 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,844 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -59,7 +59,6 @@ next_project_number: 847
   └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
-846 [IMPLEMENTING] — Make task-number allocation membership-based rather than...
 
 ### Algebraic Representation
 
@@ -147,12 +146,13 @@ next_project_number: 847
 
 ### 846. Make task-number allocation membership-based rather than max-based
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [846_membership_based_task_number_allocation/reports/01_membership-based-allocation.md]
 - **Plan**: [846_membership_based_task_number_allocation/plans/01_membership-based-allocation.md]
+- **Summary**: [846_membership_based_task_number_allocation/summaries/01_membership-based-allocation-summary.md]
 
 **Description**: META TASK. Make task-number allocation MEMBERSHIP-based rather than MAX-based, so the allocator
 issues the smallest number that is actually free instead of one past the largest number ever used.

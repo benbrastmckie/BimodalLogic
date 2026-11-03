@@ -1,7 +1,7 @@
 # Implementation Plan: Task #846
 
 - **Task**: 846 - membership_based_task_number_allocation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.75 hours
 - **Dependencies**: None (owning record 821 is research-only; no dependency edge, and no edge to
   751 by the deliberate decision recorded in the task description's Territory Note)
