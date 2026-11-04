@@ -26110,7 +26110,9 @@
       "dependencies": [
         334
       ],
-      "file_scope": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
+      ],
       "created": "2026-07-08T21:34:34Z",
       "last_updated": "2026-07-08T22:30:00Z",
       "session_id": "sess_1783546987_0faeae_336",
@@ -26603,7 +26605,9 @@
         345,
         346
       ],
-      "file_scope": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/",
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
+      ],
       "created": "2026-07-08T21:34:34Z",
       "last_updated": "2026-07-11T19:10:40Z",
       "session_id": "sess_1783796165_b5b482_335",
