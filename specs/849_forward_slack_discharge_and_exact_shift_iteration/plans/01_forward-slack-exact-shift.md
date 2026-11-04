@@ -363,7 +363,7 @@ the edit -- additive declarations in one module, no landed signature touched.
 
 ---
 
-### Phase 4: The register-held iterated duplication of a given block [NOT STARTED]
+### Phase 4: The register-held iterated duplication of a given block [COMPLETED]
 
 **Goal**: The regime-A assembly's proof body (from `obtain ⟨g₁, …⟩ := exists_iterSpliced_ladderPath_of_pend_past …`
 through the translate-back and the type bullet) is factored into a lemma that takes the block and
@@ -372,30 +372,31 @@ pigeonhole block of a path that has since been shortened; the regime-A assembly 
 corollary with its statement unchanged.
 
 **Tasks**:
-- [ ] Before the edit, extract and save the regime-A assembly's header text:
+- [x] Before the edit, extract and save the regime-A assembly's header text:
   `sed -n '/^theorem exists_ladderPath_through_shifted_of_pend_past/,/:= by$/p' FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean > /tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/a7c76d9b-f04a-4a0f-8ec1-4e2cb1cb7183/scratchpad/regimeA-header-before.txt` (any scratchpad path; absolute).
-- [ ] `exists_ladderPath_through_iterSpliced_nxt_of_pend_past` (name suggested, not pinned), in
+- [x] `exists_ladderPath_through_iterSpliced_nxt_of_pend_past` (name suggested, not pinned), in
   `section AssemblyFin` BEFORE the regime-A assembly, with hypotheses
   `(step pend fwd bwd lab φ) (hno) {g} (hg : IsLadderPath step pend g) (z : ℤ) {u : ℤ} {l : ℕ} (hl : 0 < l) (hcl : l ≤ cntAt g u) (hzu : z ≤ u) (hul : u + (l : ℤ) ≤ z + (cntAt g z : ℤ)) (hpast : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true) (hrep : objAt g u = objAt g (u + (l : ℤ))) (σ : WorldHistory …) (hσ : ∀ t, σ.state t = (t, g t)) (hty : tpOf … σ u = tpOf … σ (u + (l : ℤ))) (d : ℕ)`
   and conclusion
   `∃ g', IsLadderPath step pend g' ∧ (∀ v : ℤ, v < u + (l : ℤ) → objAt g' v = objAt g v) ∧ cntAt g' z = cntAt g z + d * l ∧ nxtAt g' z = nxtAt g z ∧ ∀ σ', (∀ t, σ'.state t = (t, g' t)) → tpOf … σ' z = tpOf … σ z`.
   Record the exact hypothesis list chosen at the goal state in this phase's notes.
-- [ ] Proof: move the regime-A assembly's body from its `obtain ⟨g₁, …⟩ := exists_iterSpliced_ladderPath_of_pend_past …`
+  *(phase note: landed with binders `{Q : Type} [Finite Q] [Nonempty Q] (step pend fwd bwd lab φ) (hno) {g} (hg) (z) {u} {l} (hl) (hcl) (hzu) (hul) (hpast) (hrep) (σ) (hσ) (hty) (d)` — `[Finite Q]` in place of the section's `[Fintype Q]`, with `Fintype.ofFinite` in the proof, because the `unusedFintypeInType` linter flagged `Fintype` as used only inside a proof in the type; conclusion exactly as planned)*
+- [x] Proof: move the regime-A assembly's body from its `obtain ⟨g₁, …⟩ := exists_iterSpliced_ladderPath_of_pend_past …`
   line to its end into the new lemma, with `d` the parameter (no `m * q` substitution), `hpast_u`
   replaced by the hypothesis `hpast`, `hcz` proved from `hcnt₁ z hzu (by omega)` using `hul`, and
   the object-walk agreement below `u + l` read off `hobj₁`. The register rebuild (`w`, `c`,
   `hg₂`, the five clauses, `hn₀` through `habove₁` and `nxtAt_lipschitz_two_sided`), the
   translate-back, and the type bullet are copied, not re-derived.
-- [ ] Re-prove `exists_ladderPath_through_shifted_of_pend_past` as a corollary: its opening block
+- [x] Re-prove `exists_ladderPath_through_shifted_of_pend_past` as a corollary: its opening block
   (history, pigeonhole, `hpast_u`, the bridge's `q` with `P + 1 = l * q`) stays; then apply the new
   lemma with `d := m * q` and `hul : u + l ≤ z + cntAt g z` (from the pigeonhole's
   `u + l ≤ z + b` and `b ≤ Tc ≤ cntAt g z`), and finish with `hdl : (m * q) * l = m * (P + 1)` by
   `rw [hq]; ring`. The STATEMENT is not touched.
-- [ ] After the edit, extract the header again and `diff` it against the saved copy: empty diff
+- [x] After the edit, extract the header again and `diff` it against the saved copy: empty diff
   required.
-- [ ] Update the `Assembly` section's module docstring sentence that describes the regime-A
+- [x] Update the `Assembly` section's module docstring sentence that describes the regime-A
   assembly's proof structure, if the factoring changes how it reads (one clause at most).
-- [ ] `lean_verify` on both names; scoped build; `--fix`; commit.
+- [x] `lean_verify` on both names; scoped build; `--fix`; commit.
 
 **Timing**: 2 hours
 

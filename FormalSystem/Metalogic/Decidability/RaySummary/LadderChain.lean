@@ -522,7 +522,10 @@ among the divisors of `P + 1`; the iterated duplication, `d := m · ((P + 1) / l
 is rebuilt by the landed lift with `z` translated to the origin and `n₀ := nxtAt g z` — the base
 pin is admissible because the first pin above `z` is the original's first pin displaced by
 `m · (P + 1)`, so the `1`-Lipschitz register of the original already bridges the shorter
-distance. This is the upward shift with the register held. The downward direction's register
+distance. The duplication-and-register-rebuild step is factored as the given-block lemma
+`exists_ladderPath_through_iterSpliced_nxt_of_pend_past`, which takes the block and the number of
+copies as inputs, and the assembly is its corollary. This is the upward shift with the register
+held. The downward direction's register
 obstruction was an anchor-position mismatch, not a cascade: the landed lift is anchored at
 position `0` while the deletion window sits at `z` and reads `l` positions to the right, so
 composing them charges the `l`-shift against a distance from `0`. The z-anchored lift
@@ -621,57 +624,52 @@ section AssemblyFin
 
 variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
 
-/-- **THE REGIME-A ASSEMBLY.** -/
-theorem exists_ladderPath_through_shifted_of_pend_past
+/-- **THE REGISTER-HELD ITERATED DUPLICATION OF A GIVEN BLOCK.** The regime-A assembly's
+construction with the block as an input: given a type-respecting block `[u, u + l)` of `z`'s
+region of a path pending up to `u`, and a number `d` of copies, a ladder path that agrees with
+the original below `u + l`, has `z`'s countdown raised by exactly `d · l`, the register at `z`
+held, and the realized stab-free type at `z` held. The iterated duplication
+`exists_iterSpliced_ladderPath_of_pend_past` supplies the walk and the countdown; the register is
+rebuilt by the landed lift with `z` translated to the origin and `n₀ := nxtAt g z`, the base pin
+admissible because every pin of the duplicated path sits above the copies, where it is the
+original's pin displaced by `d · l`, and the original's `1`-Lipschitz register already bridges the
+shorter distance. Taking the block as an input (rather than finding it by the pigeonhole inside)
+is what lets the exact-shift construction apply this raise to the ORIGINAL pigeonhole block of a
+path that has since been shortened by the overshoot loop. -/
+theorem exists_ladderPath_through_iterSpliced_nxt_of_pend_past {Q : Type} [Finite Q] [Nonempty Q]
     (step : Q → Q → Bool) (pend : Q → Bool)
     (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
     (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
-    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
-    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
     (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
-    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
-    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
-    (hTc : Tc ≤ cntAt g z) (m : ℕ) :
+    {g : ℤ → LadderState Q pend} (hg : IsLadderPath step pend g) (z : ℤ) {u : ℤ} {l : ℕ}
+    (hl : 0 < l) (hcl : l ≤ cntAt g u) (hzu : z ≤ u)
+    (hul : u + (l : ℤ) ≤ z + (cntAt g z : ℤ))
+    (hpast : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true)
+    (hrep : objAt g u = objAt g (u + (l : ℤ)))
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t))
+    (hty : tpOf (ladderModel step pend fwd bwd lab) φ σ u
+         = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + (l : ℤ))) (d : ℕ) :
     ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
-      objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z + m * (P + 1) ∧
+      (∀ v : ℤ, v < u + (l : ℤ) → objAt g' v = objAt g v) ∧
+      cntAt g' z = cntAt g z + d * l ∧
       nxtAt g' z = nxtAt g z ∧
-      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
-        (∀ t : ℤ, σ.state t = (t, g t)) →
+      ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
         (∀ t : ℤ, σ'.state t = (t, g' t)) →
         tpOf (ladderModel step pend fwd bwd lab) φ σ' z
           = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
   classical
-  have hz : pend (objAt g z) = true := hpast z le_rfl
-  have hbud := budget_le_Tc step pend lab φ Tc Tn P B hp
-  set b := Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card with hb
-  -- a history of the original, and the type-respecting block of `z`'s region
-  obtain ⟨σ₀, hσ₀⟩ := exists_hist_of_isLadderPath fwd bwd g hg
-  have hσ₀' : ∀ t : ℤ, σ₀.state t = (t + 0, g t) := fun t => by rw [add_zero]; exact hσ₀ t
-  obtain ⟨u, l, hl, hlb, hzu, hcl, hul, hrep, hty⟩ :=
-    exists_typeBlock_of_budget_le_cnt_within step pend fwd bwd lab φ σ₀ hg z hz (by omega)
-  -- every position up to `u` is pending: below `z` by hypothesis, from `z` to `u` by the region
-  have hpast_u : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true := fun p hp' => by
-    rcases le_or_gt p z with hpz | hpz
-    · exact hpast p hpz
-    · have := (cntAt_sub_of_pend g hg z hz (p - z).toNat (by omega)).1
-      rwa [show z + (((p - z).toNat : ℕ) : ℤ) = p by omega] at this
-  have hpu : pend (objAt g u) = true := hpast_u u le_rfl
-  -- the block's length divides `P + 1`
-  obtain ⟨q, hq⟩ := typeBlock_length_dvd_of_paramsOk step pend fwd bwd lab φ hp σ₀ hσ₀' hg hno
-    u l hl hlb hpu hcl hrep hty
-  set d := m * q with hd
-  have hdl : d * l = m * (P + 1) := by rw [hd, hq]; ring
+  haveI : Fintype Q := Fintype.ofFinite Q
   -- the iterated duplication
   obtain ⟨g₁, hg₁, hobj₁, hend₁, hcnt₁, hpend₁, habove₁, hty₁⟩ :=
-    exists_iterSpliced_ladderPath_of_pend_past step pend fwd bwd lab φ hno hg hl hcl hpast_u hrep
-      σ₀ hσ₀ hty d
-  have hcz : cntAt g₁ z = cntAt g z + m * (P + 1) := by
-    rw [hcnt₁ z hzu (by omega), hdl]
-  have hoz : objAt g₁ z = objAt g z := hobj₁ z (by omega)
+    exists_iterSpliced_ladderPath_of_pend_past step pend fwd bwd lab φ hno hg hl hcl hpast hrep
+      σ hσ hty d
+  have hcz : cntAt g₁ z = cntAt g z + d * l := hcnt₁ z hzu (by omega)
   -- every position of `g₁` below `u + (d + 1) l` is pending
   have hpend_all : ∀ v : ℤ, v < u + ((d + 1) * l : ℕ) → pend (objAt g₁ v) = true := fun v hv => by
     rcases lt_or_ge v u with hvu | hvu
-    · rw [hobj₁ v (by omega)]; exact hpast_u v (le_of_lt hvu)
+    · rw [hobj₁ v (by omega)]; exact hpast v (le_of_lt hvu)
     · exact hpend₁ v hvu hv
   -- the register, rebuilt with `z` at the origin
   let w : ℤ → Q := fun v => objAt g₁ (v + z)
@@ -722,14 +720,16 @@ theorem exists_ladderPath_through_shifted_of_pend_past
   obtain ⟨g₃, hg₃, hobj₃, hcnt₃, hnxt₃⟩ :=
     exists_ladderPath_of_walk_nxt w c (nxtAt g z) hw hidle hpp hpi hpins hn₀
   -- translate back
-  refine ⟨fun v => g₃ (v - z), ?_, ?_, ?_, ?_, fun σ σ' hσ hσ' => ?_⟩
+  refine ⟨fun v => g₃ (v - z), ?_, ?_, ?_, ?_, fun σ' hσ' => ?_⟩
   · intro v
     have := hg₃ (v - z)
     rwa [show v - z + 1 = v + 1 - z by ring] at this
-  · change objAt g₃ (z - z) = _
-    rw [sub_self, hobj₃]
-    change objAt g₁ (0 + z) = _
-    rw [zero_add, hoz]
+  · intro v hv
+    change objAt g₃ (v - z) = _
+    rw [hobj₃]
+    change objAt g₁ (v - z + z) = _
+    rw [sub_add_cancel]
+    exact hobj₁ v hv
   · change cntAt g₃ (z - z) = _
     rw [sub_self, hcnt₃]
     change cntAt g₁ (0 + z) = _
@@ -749,11 +749,58 @@ theorem exists_ladderPath_through_shifted_of_pend_past
         (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ₁ t)
         hobj' hno z
     have e2 := (hty₁ σ₁ hσ₁).1 z (by omega)
-    have e3 : tpOf (ladderModel step pend fwd bwd lab) φ σ₀ z
-        = tpOf (ladderModel step pend fwd bwd lab) φ σ z :=
-      tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ₀ σ
-        hσ₀' (fun t => by rw [add_zero]; exact hσ t) (fun _ => rfl) hno z
-    rw [e1, e2, e3]
+    rw [e1, e2]
+
+/-- **THE REGIME-A ASSEMBLY.** -/
+theorem exists_ladderPath_through_shifted_of_pend_past
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (hTc : Tc ≤ cntAt g z) (m : ℕ) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z + m * (P + 1) ∧
+      nxtAt g' z = nxtAt g z ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  classical
+  have hz : pend (objAt g z) = true := hpast z le_rfl
+  have hbud := budget_le_Tc step pend lab φ Tc Tn P B hp
+  -- a history of the original, and the type-respecting block of `z`'s region
+  obtain ⟨σ₀, hσ₀⟩ := exists_hist_of_isLadderPath fwd bwd g hg
+  have hσ₀' : ∀ t : ℤ, σ₀.state t = (t + 0, g t) := fun t => by rw [add_zero]; exact hσ₀ t
+  obtain ⟨u, l, hl, hlb, hzu, hcl, hul, hrep, hty⟩ :=
+    exists_typeBlock_of_budget_le_cnt_within step pend fwd bwd lab φ σ₀ hg z hz (by omega)
+  -- the block lies inside `z`'s region
+  have hul' : u + (l : ℤ) ≤ z + (cntAt g z : ℤ) := by omega
+  -- every position up to `u` is pending: below `z` by hypothesis, from `z` to `u` by the region
+  have hpast_u : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true := fun p hp' => by
+    rcases le_or_gt p z with hpz | hpz
+    · exact hpast p hpz
+    · have := (cntAt_sub_of_pend g hg z hz (p - z).toNat (by omega)).1
+      rwa [show z + (((p - z).toNat : ℕ) : ℤ) = p by omega] at this
+  have hpu : pend (objAt g u) = true := hpast_u u le_rfl
+  -- the block's length divides `P + 1`
+  obtain ⟨q, hq⟩ := typeBlock_length_dvd_of_paramsOk step pend fwd bwd lab φ hp σ₀ hσ₀' hg hno
+    u l hl hlb hpu hcl hrep hty
+  have hdl : (m * q) * l = m * (P + 1) := by rw [hq]; ring
+  -- the given-block raise, `m · q` copies
+  obtain ⟨g', hg', hobj', hcnt', hnxt', hty'⟩ :=
+    exists_ladderPath_through_iterSpliced_nxt_of_pend_past step pend fwd bwd lab φ hno hg z hl hcl
+      hzu hul' hpast_u hrep σ₀ hσ₀ hty (m * q)
+  refine ⟨g', hg', hobj' z (by omega), by rw [hcnt', hdl], hnxt', fun σ σ' hσ hσ' => ?_⟩
+  have e3 : tpOf (ladderModel step pend fwd bwd lab) φ σ₀ z
+      = tpOf (ladderModel step pend fwd bwd lab) φ σ z :=
+    tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ₀ σ
+      hσ₀' (fun t => by rw [add_zero]; exact hσ t) (fun _ => rfl) hno z
+  rw [hty' σ' hσ', e3]
 
 end AssemblyFin
 
