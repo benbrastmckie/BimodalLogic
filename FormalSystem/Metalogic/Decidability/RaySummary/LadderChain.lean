@@ -914,6 +914,157 @@ theorem hasForwardSlack_of_idle_above (g : ℤ → LadderState Q pend) (z : ℤ)
 
 end Slack
 
+/-! ## The two-state witness: the forward-slack regime is necessary and inhabited
+
+The object is `Bool` with `true` pending, `false` idle, and every step allowed (`stepT`,
+`pendT`). Two concrete ladder paths on it bracket the regime. The CLIMBING path realizes the
+gate's arithmetic witness `n = 0, cntAt g z = 3, I = 1, l = 1, nxtAt g s₀ = 4` exactly: pending
+forever into the past at `z = 0` with countdown `3`, its register climbs by one per step from `0`
+at `z` to `4` at the single idle position `s₀ = 4`, so the next region (countdown `4`) is longer
+than the deleted amount leaves room for and `HasForwardSlack` fails at amount `1`. Nothing in the
+ladder relation prevents this: `Drift` admits the rung `n' = n + 1` at every step, and a pending
+self-loop on `true` realizes any next-region length, so no `Drift`-level invariant bounds the
+climb — which is why the regime is a hypothesis and not a theorem. The PLATEAU path (register
+constant `0`, countdown `C` at `z = 0`, then alternating idle and length-`1` pending regions)
+satisfies the regime at every amount `l ≤ C + 1` with a genuine next region (`I = 1`), so the
+hypothesis is inhabited at every amount and is not a disguised `sorry`. The two headline
+statements are exact mirrors of each other with the negation removed. -/
+
+namespace ClimbWitness
+
+/-- Two-state object: `true` pending, `false` idle, every step allowed. -/
+def stepT : Bool → Bool → Bool := fun _ _ => true
+
+/-- The pending predicate of the two-state object is the identity. -/
+def pendT : Bool → Bool := fun b => b
+
+/-- The climbing-register path: pending forever up to `3` with countdown `3 - v`, register `0`
+for `v ≤ 0` climbing by one per step to `4` at the idle position `4`, then periodic with period
+`6` (five pending positions with countdown `4, 3, 2, 1, 0`, one idle), register `4`. -/
+def climbRaw (v : ℤ) : Bool × ℕ × ℕ :=
+  if v ≤ 3 then (true, (3 - v).toNat, (max 0 v).toNat)
+  else if v = 4 then (false, 0, 4)
+  else if (v - 5) % 6 = 5 then (false, 0, 4)
+  else (true, (4 - (v - 5) % 6).toNat, 4)
+
+theorem climbRaw_adm (v : ℤ) : (climbRaw v).2.1 ∈ Adm pendT (climbRaw v).1 := by
+  intro h
+  unfold climbRaw at *
+  split_ifs at * <;> simp_all [pendT]
+
+/-- The climbing path as a ladder state function. -/
+def climb (v : ℤ) : LadderState Bool pendT := ⟨climbRaw v, climbRaw_adm v⟩
+
+theorem climb_isLadderPath : IsLadderPath stepT pendT climb := by
+  intro u
+  change Rlad stepT pendT u (climbRaw u) (climbRaw (u + 1))
+  unfold Rlad Drift Count climbRaw stepT pendT
+  split_ifs <;> simp_all <;> omega
+
+theorem climb_pend_past : ∀ p : ℤ, p ≤ 0 → pendT (objAt climb p) = true := by
+  intro p hp
+  simp [objAt, climb, climbRaw, pendT, show p ≤ 3 by omega]
+
+theorem climb_gap : nxtAt climb 0 + (0 + 1) ≤ cntAt climb 0 := by
+  simp [nxtAt, cntAt, climb, climbRaw]
+
+theorem climb_not_hasForwardSlack : ¬ HasForwardSlack climb 0 (0 + 1) (nxtAt climb 0) := by
+  intro h
+  have := h 1 (by omega) (fun i hi => by
+      have : i = 0 := by omega
+      subst this
+      simp [objAt, climb, climbRaw, pendT, cntAt])
+    (by simp [objAt, climb, climbRaw, pendT, cntAt])
+  simp [nxtAt, cntAt, climb, climbRaw] at this
+
+/-- **The unconditional forward-slack claim is refuted by a ladder path**: pending forever into
+the past at `0`, gap `nxtAt + (P + 1) ≤ cntAt` with `P = 0`, and no forward slack. -/
+theorem hasForwardSlack_refuted_unconditional :
+    ∃ g : ℤ → LadderState Bool pendT, IsLadderPath stepT pendT g ∧
+      (∀ p : ℤ, p ≤ 0 → pendT (objAt g p) = true) ∧
+      nxtAt g 0 + (0 + 1) ≤ cntAt g 0 ∧ ¬ HasForwardSlack g 0 (0 + 1) (nxtAt g 0) :=
+  ⟨climb, climb_isLadderPath, climb_pend_past, climb_gap, climb_not_hasForwardSlack⟩
+
+/-- The plateau path at height `C`: pending with countdown `C - v` up to `C` (register `0`), then
+alternating idle (`v - C` odd) and length-`1` pending regions (`v - C` even), register `0`
+throughout. -/
+def plateauRaw (C : ℕ) (v : ℤ) : Bool × ℕ × ℕ :=
+  if v ≤ (C : ℤ) then (true, ((C : ℤ) - v).toNat, 0)
+  else if (v - (C : ℤ)) % 2 = 1 then (false, 0, 0)
+  else (true, 0, 0)
+
+theorem plateauRaw_adm (C : ℕ) (v : ℤ) :
+    (plateauRaw C v).2.1 ∈ Adm pendT (plateauRaw C v).1 := by
+  intro h
+  unfold plateauRaw at *
+  split_ifs at * <;> simp_all [pendT]
+
+/-- The plateau path as a ladder state function. -/
+def plateau (C : ℕ) (v : ℤ) : LadderState Bool pendT := ⟨plateauRaw C v, plateauRaw_adm C v⟩
+
+theorem plateau_isLadderPath (C : ℕ) : IsLadderPath stepT pendT (plateau C) := by
+  intro u
+  change Rlad stepT pendT u (plateauRaw C u) (plateauRaw C (u + 1))
+  unfold Rlad Drift Count plateauRaw stepT pendT
+  split_ifs <;> simp_all <;> omega
+
+theorem plateau_pend_past (C : ℕ) : ∀ p : ℤ, p ≤ 0 → pendT (objAt (plateau C) p) = true := by
+  intro p hp
+  simp [objAt, plateau, plateauRaw, pendT, show p ≤ (C : ℤ) by omega]
+
+/-- The plateau's register is `0` everywhere. -/
+theorem plateau_nxt (C : ℕ) (v : ℤ) : nxtAt (plateau C) v = 0 := by
+  change (plateauRaw C v).2.2 = 0
+  unfold plateauRaw
+  split_ifs <;> rfl
+
+/-- The plateau's countdown at `0` is `C`. -/
+theorem plateau_cnt_zero (C : ℕ) : cntAt (plateau C) 0 = C := by
+  change (plateauRaw C 0).2.1 = C
+  unfold plateauRaw
+  rw [if_pos (by omega)]
+  change ((C : ℤ) - 0).toNat = C
+  omega
+
+theorem plateau_gap (C l : ℕ) (hl : l ≤ C) :
+    nxtAt (plateau C) 0 + l ≤ cntAt (plateau C) 0 := by
+  rw [plateau_nxt, plateau_cnt_zero]; omega
+
+/-- **The plateau satisfies the regime at every amount `l ≤ C + 1`**, with a genuine next region:
+the first region start above `0`'s region is at `C + 2` (`I = 1`), its countdown is `0`, and the
+inequality `0 ≤ 0 + C + 1 - l` is the regime. -/
+theorem hasForwardSlack_plateau (C l : ℕ) (hl : l ≤ C + 1) :
+    HasForwardSlack (plateau C) 0 l 0 := by
+  intro I hI hidle hnext
+  rw [plateau_cnt_zero] at hidle hnext ⊢
+  have hI1 : I = 1 := by
+    by_contra hne
+    have h1 := hidle 1 (by omega)
+    have hpos : ((0 : ℤ) + (C : ℤ) + 1 + ((1 : ℕ) : ℤ)) = (C : ℤ) + 2 := by push_cast; ring
+    rw [hpos] at h1
+    change (plateauRaw C ((C : ℤ) + 2)).1 = false at h1
+    unfold plateauRaw at h1
+    rw [if_neg (by omega), if_neg (by omega)] at h1
+    exact Bool.false_ne_true h1.symm
+  subst hI1
+  rw [plateau_nxt]
+  push_cast
+  omega
+
+/-- **The regime is inhabited at every amount**: the exact mirror of
+`hasForwardSlack_refuted_unconditional` with the negation removed. The witness is the plateau at
+height `L`, whose next region starts at `L + 2` — a path with a next region, not an idle-forever
+one. -/
+theorem exists_hasForwardSlack_inhabitant (L : ℕ) :
+    ∃ g : ℤ → LadderState Bool pendT, IsLadderPath stepT pendT g ∧
+      (∀ p : ℤ, p ≤ 0 → pendT (objAt g p) = true) ∧
+      nxtAt g 0 + L ≤ cntAt g 0 ∧ HasForwardSlack g 0 L (nxtAt g 0) := by
+  refine ⟨plateau L, plateau_isLadderPath L, plateau_pend_past L, plateau_gap L L le_rfl, ?_⟩
+  rw [plateau_nxt]
+  exact hasForwardSlack_plateau L L (by omega)
+
+end ClimbWitness
+
 /-! ## The single-block downward assembly: the countdown lowered by the block's length, the
 register held
 

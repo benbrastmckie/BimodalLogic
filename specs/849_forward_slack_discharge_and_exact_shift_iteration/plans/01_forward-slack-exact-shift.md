@@ -249,7 +249,7 @@ signature, so no dependent can break.
 
 ---
 
-### Phase 2: The wired refutation and the non-vacuity inhabitant [NOT STARTED]
+### Phase 2: The wired refutation and the non-vacuity inhabitant [COMPLETED]
 
 **Goal**: The FAIL verdict on the unconditional claim is a library fact about a named object, and
 the regime is shown inhabited by a path with a next region at every slack amount, so a consumer of
@@ -257,7 +257,7 @@ the regime is shown inhabited by a path with a next region at every slack amount
 `sorry`.
 
 **Tasks**:
-- [ ] Open `namespace ClimbWitness` directly after `end Slack`. Port
+- [x] Open `namespace ClimbWitness` directly after `end Slack`. Port
   `prototype/climb-witness.lean` verbatim: `stepT`, `pendT`, `climbRaw` (the prototype's `gRaw`),
   `climbRaw_adm`, `climb` (the prototype's `g`), `climb_isLadderPath`, `climb_pend_past`,
   `climb_gap`, `climb_not_hasForwardSlack`, and the headline
@@ -265,7 +265,7 @@ the regime is shown inhabited by a path with a next region at every slack amount
   `∃ g : ℤ → LadderState Bool pendT, IsLadderPath stepT pendT g ∧ (∀ p : ℤ, p ≤ 0 → pendT (objAt g p) = true) ∧ nxtAt g 0 + (0 + 1) ≤ cntAt g 0 ∧ ¬ HasForwardSlack g 0 (0 + 1) (nxtAt g 0)`.
   The prototype's proofs (`unfold Rlad Drift Count … ; split_ifs <;> simp_all <;> omega`) compiled
   during research; the one `show`-linter warning is already fixed in the saved file.
-- [ ] The plateau inhabitant, parametric in `C : ℕ`: `plateauRaw C v := if v ≤ C then (true, (C - v).toNat, 0) else if (v - C) % 2 = 1 then (false, 0, 0) else (true, 0, 0)`
+- [x] The plateau inhabitant, parametric in `C : ℕ`: `plateauRaw C v := if v ≤ C then (true, (C - v).toNat, 0) else if (v - C) % 2 = 1 then (false, 0, 0) else (true, 0, 0)`
   (register constant `0`; `z = 0`'s region has countdown `C`; then alternating idle / length-`1`
   regions). `plateauRaw_adm`, `plateau C`, `plateau_isLadderPath C` (same tactic script as the
   climb, with `% 2` in place of `% 6`), `plateau_pend_past C : ∀ p ≤ 0, pendT (objAt (plateau C) p) = true`,
@@ -274,21 +274,21 @@ the regime is shown inhabited by a path with a next region at every slack amount
   `intro I hI hidle hnext`; show `I = 1` (if `2 ≤ I`, `hidle 1` says position `C + 2` is idle,
   but it is pending by definition); then `subst` and `simp [nxtAt, cntAt, plateau, plateauRaw]`
   leaves `0 ≤ 0 + C + 1 - l` over `ℤ`, closed by `omega` from `hl`.
-- [ ] The headline inhabitant `exists_hasForwardSlack_inhabitant (L : ℕ) : ∃ g : ℤ → LadderState Bool pendT, IsLadderPath stepT pendT g ∧ (∀ p : ℤ, p ≤ 0 → pendT (objAt g p) = true) ∧ nxtAt g 0 + L ≤ cntAt g 0 ∧ HasForwardSlack g 0 L (nxtAt g 0)`
+- [x] The headline inhabitant `exists_hasForwardSlack_inhabitant (L : ℕ) : ∃ g : ℤ → LadderState Bool pendT, IsLadderPath stepT pendT g ∧ (∀ p : ℤ, p ≤ 0 → pendT (objAt g p) = true) ∧ nxtAt g 0 + L ≤ cntAt g 0 ∧ HasForwardSlack g 0 L (nxtAt g 0)`
   by `⟨plateau L, …, plateau_gap L L le_rfl, hasForwardSlack_plateau L L (by omega)⟩` (with
   `nxtAt (plateau L) 0 = 0` by `rfl`/`simp`). This is the exact mirror of the refutation's
   statement with the negation removed, which is what makes the pair readable as "necessary and
   satisfiable".
-- [ ] FALLBACK (inside this phase, not a deviation): if the parametric `plateau_isLadderPath`
+- [ ] FALLBACK (not needed: the parametric plateau closed as planned) (inside this phase, not a deviation): if the parametric `plateau_isLadderPath`
   fights `split_ifs`/`omega` for more than 45 minutes, land `plateau` at the literal `C := 3`
   with `hasForwardSlack_plateau` for `l ≤ 4` and `plateau_gap` for `l ≤ 3`, drop the `∀ L`
   headline, record the narrowing via `issue-record.sh` (`--kind issue --class "landed-lemma exposure gap" --severity minor`),
   and say so in the namespace docstring.
-- [ ] Namespace docstring: the two-state object; the climbing path realizes the gate's arithmetic
+- [x] Namespace docstring: the two-state object; the climbing path realizes the gate's arithmetic
   witness `n = 0, C = 3, I = 1, l = 1, nxtAt g s₀ = 4` exactly; `Drift` admits `n' = n + 1` at
   every step and a pending self-loop realizes any next-region length, so no Drift-level invariant
   bounds the climb; the plateau shows the regime is inhabited at every amount.
-- [ ] `lean_verify` on the two headline names; scoped build; `--fix`; commit.
+- [x] `lean_verify` on the two headline names; scoped build; `--fix`; commit.
 
 **Timing**: 2 hours
 
