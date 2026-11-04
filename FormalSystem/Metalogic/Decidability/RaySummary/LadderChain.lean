@@ -63,7 +63,7 @@ passes through a state satisfying every state-level hypothesis the consumer carr
 downward inclusion held here is the path-level one above.
 -/
 
-set_option linter.style.longFile 2400
+set_option linter.style.longFile 2300
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -2018,19 +2018,70 @@ theorem exists_ladderPath_through_deleted_exact_upfirst_of_pend_past
         hσ₀' (fun t => by rw [add_zero]; exact hσ t) (fun _ => rfl) hno z
     rw [hz₂', hty₂ σ₂ hσ₂ z (by omega), hty₁ σ₁ hσ₁, iterSpliceIdx_of_lt u l _ z (by omega), e3]
 
-/-- **THE EXACT-SHIFT THEOREM: the countdown lowered by EXACTLY `m · (P + 1)`, the register
-held.** Through a pending-forever path's state at `z` with room `Tc + m · (P + 1) ≤ cntAt g z`,
+/-- **THE DOWNWARD CELL INCLUSION ON THE WITNESSING PATH, under the regime at exactly
+`m · (P + 1)`.** In the pending-forever regime (`n + 2 ≤ c`) at countdown at least `Tc`: every
+type realized at `(q, c + m · (P + 1), n)` BY A PATH `g` satisfying
+`HasForwardSlack g z (m · (P + 1)) n` is realized at `(q, c, n)`, by the up-first exact-shift
+theorem. The hypotheses are exactly `n + 2 ≤ c`, `Tc ≤ c` and the regime at `m · (P + 1)`: no
+`budget²` term in the gap or in the regime amount. The hypothesis is on the WITNESSING PATH, not
+on the state: `cellAt` is existential over histories, so this is the only sound downward statement
+under a path-level regime — the climbing-register path `ClimbWitness.climb` passes through a state
+satisfying every state-level hypothesis the consumer carries and violates the regime, so no
+state-level variant can be stated (`ClimbWitness.hasForwardSlack_refuted_unconditional`). The
+reserved name `cellLE_zero_const_of_kappa_eq` remains claimed by nothing: the obligation
+quantifies over every path through the state and concludes cell EQUALITY, and what separates this
+inclusion from it is the tight (doubling) chain, no finite deletion-derivative of which lifts —
+argued in the task record, not compiled. -/
+theorem mem_cellAt_of_shift_of_hasForwardSlack_exact
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m : ℕ) (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hTc : Tc ≤ c) (z : ℤ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (hgz : g z = ⟨(q, c + m * (P + 1), n), h'⟩)
+    (hslack : HasForwardSlack g z (m * (P + 1)) n)
+    (τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hτ : ∀ t : ℤ, τ.state t = (t, g t)) :
+    tpOf (ladderModel step pend fwd bwd lab) φ τ z ∈
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  classical
+  have hoz : objAt g z = q := by simp [objAt, hgz]
+  have hcz : cntAt g z = c + m * (P + 1) := by simp [cntAt, hgz]
+  have hnz : nxtAt g z = n := by simp [nxtAt, hgz]
+  have hz : pend (objAt g z) = true := by
+    by_contra hne
+    rw [Bool.not_eq_true, hoz] at hne
+    have := h hne
+    omega
+  have hpast := pend_past_of_nxtAt_lt g hg z hz (by rw [hcz, hnz]; omega)
+  obtain ⟨g', hg', ho, hc, hn, hty⟩ :=
+    exists_ladderPath_through_deleted_exact_upfirst_of_pend_past step pend fwd bwd lab φ Tc Tn P B
+      hp hno g hg z hpast m (by rw [hcz]; omega) (by rw [hcz, hnz]; omega)
+      (by rw [hnz]; exact hslack)
+  have hc' : cntAt g' z = c := by omega
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
+  rw [mem_cellAt_ladder_iff]
+  refine ⟨g', τ', hg', ?_, hτ', ?_⟩
+  · apply Subtype.ext
+    change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c, n)
+    rw [ho, hc', hn, hoz, hnz]
+  · exact hty τ τ' hτ hτ'
+
+/-- **THE EXACT-SHIFT THEOREM under the regime at `m · (P + 1) + budget²`** (statement kept
+verbatim): through a pending-forever path's state at `z` with room `Tc + m · (P + 1) ≤ cntAt g z`,
 under the gap and the forward-slack regime at amount `m · (P + 1) + budget²`, a ladder path with
 `z`'s countdown lowered by exactly `m · (P + 1)`, the object state and the register at `z` held,
-and the realized stab-free type at `z` held. The device is OVERSHOOT-THEN-UP: the original
-pigeonhole block `[u, u + l)` has `l ∣ P + 1`, so the target is `R := m · ((P + 1) / l)` blocks of
-length `l`; the overshoot loop, sampling at spacing `l` from `u + l`, deletes `t · l` positions
-with `R ≤ t < R + budget` while preserving the walk and the types up to `u + l`; and the
-register-held iterated duplication of that same original block, `t − R` copies, raises the
-countdown back by exactly `(t − R) · l`. The price of ordering the deletions first (the landed
-iteration exposes types only below `u + l` and at `u + l`) is the `budget²` summand in both the
-gap and the regime hypothesis: the overshoot is fewer than `budget` blocks of length
-`l ≤ budget`. -/
+and the realized stab-free type at `z` held. A corollary of the up-first
+`exists_ladderPath_through_deleted_exact_upfirst_of_pend_past`: monotonicity of the regime
+(`hasForwardSlack_mono`) brings the amount down to `m · (P + 1)`, and arithmetic on the gap drops
+its `budget²` summand. The `budget²` term in both hypotheses is slack this statement carries and
+the up-first ordering does not need. -/
 theorem exists_ladderPath_through_deleted_exact_of_pend_past
     {Q : Type} [Fintype Q] [Nonempty Q]
     (step : Q → Q → Bool) (pend : Q → Bool)
@@ -2055,94 +2106,20 @@ theorem exists_ladderPath_through_deleted_exact_of_pend_past
         (∀ t : ℤ, σ.state t = (t, g t)) →
         (∀ t : ℤ, σ'.state t = (t, g' t)) →
         tpOf (ladderModel step pend fwd bwd lab) φ σ' z
-          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
-  classical
-  have hz : pend (objAt g z) = true := hpast z le_rfl
-  have hbud := budget_le_Tc step pend lab φ Tc Tn P B hp
-  have hb2 := budget_mul_succ_le_Tc step pend lab φ Tc Tn P B hp
-  -- a history of the original, and the type-respecting block of `z`'s region
-  obtain ⟨σ₀, hσ₀⟩ := exists_hist_of_isLadderPath fwd bwd g hg
-  have hσ₀' : ∀ t : ℤ, σ₀.state t = (t + 0, g t) := fun t => by rw [add_zero]; exact hσ₀ t
-  obtain ⟨u, l, hl, hlb, hzu, hcl, hul, hrep, hty⟩ :=
-    exists_typeBlock_of_budget_le_cnt_within step pend fwd bwd lab φ σ₀ hg z hz (by omega)
-  -- every position up to `u` is pending: below `z` by hypothesis, from `z` to `u` by the region
-  have hpast_u : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true := fun p hp' => by
-    rcases le_or_gt p z with hpz | hpz
-    · exact hpast p hpz
-    · have := (cntAt_sub_of_pend g hg z hz (p - z).toNat (by omega)).1
-      rwa [show z + (((p - z).toNat : ℕ) : ℤ) = p by omega] at this
-  have hpu : pend (objAt g u) = true := hpast_u u le_rfl
-  -- the block's length divides `P + 1`; the target in `l`-units is `R := m · q`
-  obtain ⟨q, hq⟩ := typeBlock_length_dvd_of_paramsOk step pend fwd bwd lab φ hp σ₀ hσ₀' hg hno
-    u l hl hlb hpu hcl hrep hty
-  have hRl : (m * q) * l = m * (P + 1) := by rw [hq]; ring
-  -- the budget products the loop's hypotheses need
-  have hbl : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l
-      ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
-        (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card) :=
-    Nat.mul_le_mul_left _ hlb
-  have hbb : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
-      (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1)
-      = Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
-        (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card) +
-        Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card := Nat.mul_succ _ _
-  have hwin : u + (l : ℤ) + (((m * q) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l
-      : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ) := by
-    generalize hbq : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card = b
-      at hul hbl hbb hb2 hbud ⊢
-    omega
-  -- the overshoot loop, sampling from `u + l` so that the original block survives it
-  obtain ⟨g₁, t, hg₁, hRt, htR, hagree₁, hcnt₁, hnxt₁, hslack₁, hty₁⟩ :=
-    exists_deleted_ladderPath_overshoot_of_pend_past step pend fwd bwd lab φ hno hg z hpast σ₀
-      hσ₀ (u + (l : ℤ)) (by omega) l hl hlb (m * q) hwin (by omega)
-      (hasForwardSlack_mono g z hslack (by omega))
-  -- the raise on the ORIGINAL block `[u, u + l)` of `g₁`, by the overshoot `t − m · q`
-  obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
-  have hrep₁ : objAt g₁ u = objAt g₁ (u + (l : ℤ)) := by
-    rw [hagree₁ u (by omega), hagree₁ (u + (l : ℤ)) le_rfl]; exact hrep
-  have hty₁' : tpOf (ladderModel step pend fwd bwd lab) φ σ₁ u
-      = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ (u + (l : ℤ)) := by
-    rw [hty₁ σ₁ hσ₁ u (by omega), hty₁ σ₁ hσ₁ (u + (l : ℤ)) le_rfl]; exact hty
-  have hpast₁ : ∀ p : ℤ, p ≤ u → pend (objAt g₁ p) = true := fun p hp' => by
-    rw [hagree₁ p (by omega)]; exact hpast_u p hp'
-  have hz₁ : pend (objAt g₁ z) = true := hpast₁ z hzu
-  -- the shortened region still holds the block: fewer than `budget · l ≤ budget²` positions went
-  have htl : t * l ≤ (m * q) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l := by
-    rw [← Nat.add_mul]; exact Nat.mul_le_mul_right l (le_of_lt htR)
-  have hcz₁ : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ≤ cntAt g₁ z := by omega
-  have hul₁ : u + (l : ℤ) ≤ z + (cntAt g₁ z : ℤ) := by omega
-  have hcl₁ : l ≤ cntAt g₁ u := by
-    have := (cntAt_sub_of_pend g₁ hg₁ z hz₁ (u - z).toNat (by omega)).2
-    rw [show z + (((u - z).toNat : ℕ) : ℤ) = u by omega] at this
-    omega
-  obtain ⟨g₂, hg₂, hobj₂, hcnt₂, hnxt₂, hty₂⟩ :=
-    exists_ladderPath_through_iterSpliced_nxt_of_pend_past step pend fwd bwd lab φ hno hg₁ z hl
-      hcl₁ hzu hul₁ hpast₁ hrep₁ σ₁ hσ₁ hty₁' (t - m * q)
-  have e : (t - m * q) * l + (m * q) * l = t * l := by
-    rw [← Nat.add_mul, Nat.sub_add_cancel hRt]
-  refine ⟨g₂, hg₂, (hobj₂ z (by omega)).trans (hagree₁ z (by omega)), ?_, hnxt₂.trans hnxt₁,
-    fun σ σ' hσ hσ' => ?_⟩
-  · rw [hcnt₂]; omega
-  · -- the type at `z`: through `σ₁` (the raise), then `σ₀` (the loop), then `σ`
-    have e3 : tpOf (ladderModel step pend fwd bwd lab) φ σ₀ z
-        = tpOf (ladderModel step pend fwd bwd lab) φ σ z :=
-      tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ₀ σ
-        hσ₀' (fun t => by rw [add_zero]; exact hσ t) (fun _ => rfl) hno z
-    rw [hty₂ σ' hσ', hty₁ σ₁ hσ₁ z (by omega), e3]
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z :=
+  exists_ladderPath_through_deleted_exact_upfirst_of_pend_past step pend fwd bwd lab φ Tc Tn P B
+    hp hno g hg z hpast m hTc (by omega) (hasForwardSlack_mono g z hslack (Nat.le_add_right _ _))
 
-/-- **THE DOWNWARD CELL INCLUSION ON THE WITNESSING PATH, under the forward-slack regime.** In
-the pending-forever regime (`n + 2 ≤ c`) at countdown at least `Tc`, with the gap
-`n + budget² ≤ c`: every type realized at `(q, c + m · (P + 1), n)` BY A PATH `g` satisfying
-`HasForwardSlack g z (m · (P + 1) + budget²) n` is realized at `(q, c, n)`, by the exact-shift
-theorem. The hypothesis is on the WITNESSING PATH, not on the state: `cellAt` is existential over
-histories, so this is the only sound downward statement under a path-level regime — the
-climbing-register path `ClimbWitness.climb` passes through a state satisfying every state-level
-hypothesis the consumer carries and violates the regime, so no state-level variant can be stated
-(`ClimbWitness.hasForwardSlack_refuted_unconditional`). The reserved name
-`cellLE_zero_const_of_kappa_eq` remains claimed by nothing: the obligation quantifies over every
-path through the state and concludes cell EQUALITY, and what separates this inclusion from it is
-the tight (doubling) chain, no finite deletion-derivative of which lifts — argued in the task
-record, not compiled. -/
+-- `linter.unusedVariables`: the statement is kept verbatim; `hslk` (the gap `n + budget² ≤ c`)
+-- is slack the `_exact` form does not need once the regime amount is `m · (P + 1)`, so it is
+-- not read.
+set_option linter.unusedVariables false in
+/-- **THE DOWNWARD CELL INCLUSION ON THE WITNESSING PATH, under the regime at
+`m · (P + 1) + budget²`** (statement kept verbatim): a corollary of
+`mem_cellAt_of_shift_of_hasForwardSlack_exact`, which carries the witnessing-path discussion and
+the reserved-name boundary. Monotonicity of the regime (`hasForwardSlack_mono`) brings the amount
+down to `m · (P + 1)`; the gap `hslk` is slack this statement carries and the `_exact` form does
+not need. -/
 theorem mem_cellAt_of_shift_of_hasForwardSlack
     {Q : Type} [Fintype Q] [Nonempty Q]
     (step : Q → Q → Bool) (pend : Q → Bool)
@@ -2165,28 +2142,9 @@ theorem mem_cellAt_of_shift_of_hasForwardSlack
     (hτ : ∀ t : ℤ, τ.state t = (t, g t)) :
     tpOf (ladderModel step pend fwd bwd lab) φ τ z ∈
       cellAt (ladderModel step pend fwd bwd lab) φ
-        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
-  classical
-  have hoz : objAt g z = q := by simp [objAt, hgz]
-  have hcz : cntAt g z = c + m * (P + 1) := by simp [cntAt, hgz]
-  have hnz : nxtAt g z = n := by simp [nxtAt, hgz]
-  have hz : pend (objAt g z) = true := by
-    by_contra hne
-    rw [Bool.not_eq_true, hoz] at hne
-    have := h hne
-    omega
-  have hpast := pend_past_of_nxtAt_lt g hg z hz (by rw [hcz, hnz]; omega)
-  obtain ⟨g', hg', ho, hc, hn, hty⟩ :=
-    exists_ladderPath_through_deleted_exact_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno
-      g hg z hpast m (by rw [hcz]; omega) (by rw [hcz, hnz]; omega) (by rw [hnz]; exact hslack)
-  have hc' : cntAt g' z = c := by omega
-  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
-  rw [mem_cellAt_ladder_iff]
-  refine ⟨g', τ', hg', ?_, hτ', ?_⟩
-  · apply Subtype.ext
-    change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c, n)
-    rw [ho, hc', hn, hoz, hnz]
-  · exact hty τ τ' hτ hτ'
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z :=
+  mem_cellAt_of_shift_of_hasForwardSlack_exact step pend fwd bwd lab φ Tc Tn P B hp hno q c n h m
+    h' hgap hTc z g hg hgz (hasForwardSlack_mono g z hslack (Nat.le_add_right _ _)) τ hτ
 
 end DelNxtIter
 
