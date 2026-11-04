@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 1900
+set_option linter.style.longFile 2000
 
 namespace BimodalTest.Metalogic
 
@@ -1862,5 +1862,52 @@ the two regimes. None of these constructs a path, and no pin hypothesis of
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.regime_exhaustive_of_clipIdx_eq
+
+/-! ## `Real` and its agreement-free conditions (`RaySummary/LadderRealize.lean`)
+
+`stab_bit_agree_of_certStabK` is why the acceptance clause is the hard condition: a certified set
+assigns the same `⊡` bit to any two members sharing an object state and a counter class, and by
+`stab_mem_tpOf_iff_cell` those bits are cell-level data of the members' own world states.
+`Real` is the actually realizable subset, `realItem`/`mem_real_realItem` say every point of every
+admissible ladder history projects into it, `mem_clType_iff_truth` is the bridge from membership
+in a member's closure type to truth at the witnessing point, and `real_certLocK`/`real_certBoxK`
+are conditions (1) and (6) of `Real`. Neither condition quantifies a relation between two
+members, which is why both are available without the counter-lift lemma; conditions (2), (3) and
+(4) do quantify `relK` and are NOT claimed here. No pin below consumes the agreement or the
+schema `CellLEZeroConstOfKappaEq`. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_bit_agree_of_certStabK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.stab_bit_agree_of_certStabK
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.mem_real_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.mem_real_iff
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.mem_real_realItem' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.mem_real_realItem
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.mem_clType_iff_truth' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.mem_clType_iff_truth
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certLocK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.real_certLocK
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certBoxK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.real_certBoxK
 
 end BimodalTest.Metalogic

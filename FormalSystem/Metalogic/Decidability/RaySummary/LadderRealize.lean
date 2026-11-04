@@ -9,14 +9,43 @@ import FormalSystem.Metalogic.Decidability.RaySummary.CounterQuotient
 /-!
 # The definitional layer of the ladder's realization statement
 
-This module lands the three objects the ladder realization statements quantify over, and nothing
-else: `typeOfCl`, the projection out of `Certificate.lean`'s closure component `ClType`;
-`certChain`, the bi-infinite certificate chain over the product carrier
-`Q × ClType φ × CK Tc Tn P B`; and `LadderCons`, the consistency bundle on a candidate set.
+This module lands the objects the ladder realization statements quantify over: `typeOfCl`, the
+projection out of `Certificate.lean`'s closure component `ClType`; `certChain`, the bi-infinite
+certificate chain over the product carrier `Q × ClType φ × CK Tc Tn P B`; `LadderCons`, the
+consistency bundle on a candidate set; and `Real`, the actually realizable subset of that
+carrier, with the certificate conditions of `Real` that need no relation between its members.
 
-There is no theorem in this module. The three hard obligations — soundness, the agreement of
-class-equivalent cells, and the lift in pumping form — are each stated and proved elsewhere, and
-none of the three definitions below consumes any of them.
+The three hard obligations — soundness, the agreement of class-equivalent cells, and the lift in
+pumping form — are each stated and proved elsewhere, and nothing below consumes any of them. In
+particular no theorem here consumes `cellAt_const_of_kappa_eq` or the schema
+`CellLEZeroConstOfKappaEq`, which are the input of the conditions this module does NOT carry.
+
+## What `Real` carries here, and what it does not
+
+Landed: `Real` itself, `realItem` and `mem_real_realItem` (every point of every admissible ladder
+history projects into `Real`), `mem_clType_iff_truth` (the bridge from membership in a member's
+closure type to truth at the witnessing point), `real_certLocK` (condition (1)) and
+`real_certBoxK` (condition (6)). Neither condition mentions a relation between two members, which
+is why both are available here.
+
+NOT landed, and the reason is one shared obstruction rather than three: conditions (2), (3) and
+(4) — `certBiInfK`, `certFwdK` and `certBwdK` — all quantify `relK`, whose counter conjunct is
+`RK Tc Tn P B (pend x.1) (pend y.1) x.2.2 y.2.2`. `RK` is the image of `Count`/`Drift` taken over
+the BOUNDED representative set `repsCnt Tc Tn P B`, and no theorem of this library derives an
+`RK` edge from an actual `Count`/`Drift` step at arbitrary counters —
+`CounterQuotient.lean`'s own `R_K` section says so in terms, and assigns it to the gated
+counter-lift lemma's obligations. The missing step is a bounded-representative lemma: given
+`Count px py c n c'` and `Drift n n'`, exhibit `x, y ∈ repsCnt Tc Tn P B` with
+`kappa x = kappa (c, n)`, `kappa y = kappa (c', n')`, `Count px py x.1 x.2 y.1` and
+`Drift x.2 y.2`. It is not a reduction coordinate by coordinate: `kappa`'s gap coordinate
+`clipIdx B c n` couples the two counters, so reducing each counter independently within its own
+threshold and residue can move the gap (at `c = 100`, `n = 101`, `B = 3`, `Tc = Tn = 1`, `P = 0`
+the independent reduction sends a gap of `1` to a gap of `0`). A COMMON downward shift by a
+multiple of `P + 1` does preserve all five coordinates — that is `kappa_eq_of_shift`
+(`LadderAgree.lean`) read downward — but it is limited by whichever counter reaches its own
+threshold first, so the construction needs the saturated-gap regime as a second case. Whether
+`repsCnt`'s own bound `Tc + Tn + P + B + 2` suffices for that construction is itself open and is
+not assumed anywhere here.
 
 ## The ladder's structural liveness, and the shape the backward half is retained in
 
@@ -65,7 +94,8 @@ the ladder's statements are pinned at.
   named is a count, and no tuple is stated as an index of a ladder cell at any parameters.
 -/
 
-open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Metalogic.Decidability
+open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Semantics
+open FormalSystem.Metalogic.Decidability
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -128,5 +158,214 @@ def LadderCons {Q : Type} (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q
     (φ : PlusFormula) (Tc Tn P B : ℕ)
     (R : Set (Q × ClType φ × CK Tc Tn P B)) : Prop :=
   certAdmK step pend lab φ Tc Tn P B R ∧ Dmax step pend lab φ Tc Tn P B ⊆ R
+
+
+/-! ## The `⊡` bits of a certified set across a `(q, κ)`-class
+
+The first theorem of this module, and the one that says why the acceptance clause is the hard
+one: a `certStabK`-certified set assigns the SAME `⊡` bit to any two of its members sharing an
+object state and a counter class, because `certStabK` reads that bit off the fibre of the set
+over `(q, κ)` and the fibre is the same for both. Read together with `certBiInfK` — which forbids
+confining a certified set to one state's cell — and with `stab_mem_tpOf_iff_cell`
+(`LadderAgree.lean`), which makes the `⊡` bit of a realized type a datum of the CELL at the
+member's own world state, this is why discharging condition (5) of a realizable set asks for the
+agreement of class-equivalent cells and for nothing weaker. It is a statement about certified
+sets, which is why it lives on the certificate side and not in `LadderAgree.lean`. -/
+
+section Stab
+
+/-- **Any `certStabK`-certified set collapses the `⊡` bits across a `(q, κ)`-class.** -/
+theorem stab_bit_agree_of_certStabK {Q : Type} (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B))
+    (hR : certStabK φ Tc Tn P B R)
+    (x y : Q × ClType φ × CK Tc Tn P B) (hx : x ∈ R) (hy : y ∈ R)
+    (hq : y.1 = x.1) (hk : y.2.2 = x.2.2)
+    (ψ : PlusFormula) (hψ : ψ ∈ plusSubformulaClosure φ) (hs : isStab ψ = true) :
+    (ψ ∈ x.2.1.val ↔ ψ ∈ y.2.1.val) := by
+  have hX := hR x hx ψ hψ hs
+  have hY := hR y hy ψ hψ hs
+  rw [hX, hY]
+  constructor
+  · intro h z hz hz1 hz2
+    exact h z hz (by rw [hz1, hq]) (by rw [hz2, hk])
+  · intro h z hz hz1 hz2
+    exact h z hz (by rw [hz1, ← hq]) (by rw [hz2, ← hk])
+
+end Stab
+
+/-! ## `Real`, the actually realizable subset
+
+`Real` is the set-valued per-state datum of presentation (a), read at the carrier the certificate
+conditions are pinned at: the triples `(q, T, κ)` for which SOME admissible ladder history
+realizes `T` at a world state whose ladder component is `⟨(q, c, n), h⟩` with
+`kappa Tc Tn P B (c, n) = κ`. `Real` is NOT an index — `Dmax` is the object the fibre equation
+factors through, and no tuple is stated here as an index of a ladder cell at any parameters.
+
+The `ℤ` component of the world state is existentially quantified rather than pinned to the time
+of evaluation. That is the faithful reading of "some history and some `z` realize `T` at a state
+`⟨(q, c, n), h⟩`": the state the datum is about is the LADDER state, and the time coordinate is
+invisible to `cellAt` (`cellAt_eq_cellAt`). Quantifying it is also what makes `Real` closed under
+the model's own re-anchoring, which `certBoxK` below needs in its right-to-left direction. -/
+
+section Realizable
+
+variable {Q : Type} [Finite Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **The item a point of a ladder history realizes**: its object state, its realized closure
+type as a `ClType` (a subset of the closure by `tpOf_subset`), and the class of its counter pair.
+Classical through `tpOf`, hence noncomputable. -/
+noncomputable def realItem (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame) (z : ℤ) :
+    Q × ClType φ × CK Tc Tn P B :=
+  ((σ.state z).2.1.1,
+    ⟨tpOf (ladderModel step pend fwd bwd lab) φ σ z,
+      Finset.mem_powerset.mpr (tpOf_subset (ladderModel step pend fwd bwd lab) φ σ z)⟩,
+    kappa Tc Tn P B ((σ.state z).2.1.2.1, (σ.state z).2.1.2.2))
+
+/-- **THE ACTUALLY REALIZABLE SUBSET.** The triples some admissible ladder history realizes. This
+is the candidate the presentation decision's Finding 3 names, and the one the agreement makes
+reachable; the three candidates a named condition already refutes are not reinstated here under
+any shape. -/
+def Real (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+    (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) :
+    Set (Q × ClType φ × CK Tc Tn P B) :=
+  {x | ∃ (c n : ℕ) (h : c ∈ Adm pend x.1) (t z : ℤ)
+         (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+         σ.state z = ((t, ⟨(x.1, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) ∧
+         kappa Tc Tn P B (c, n) = x.2.2 ∧
+         tpOf (ladderModel step pend fwd bwd lab) φ σ z = x.2.1.val}
+
+/-- Membership in `Real`, unfolded. -/
+theorem mem_real_iff (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (x : Q × ClType φ × CK Tc Tn P B) :
+    x ∈ Real step pend lab φ Tc Tn P B fwd bwd ↔
+      ∃ (c n : ℕ) (h : c ∈ Adm pend x.1) (t z : ℤ)
+        (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        σ.state z = ((t, ⟨(x.1, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) ∧
+        kappa Tc Tn P B (c, n) = x.2.2 ∧
+        tpOf (ladderModel step pend fwd bwd lab) φ σ z = x.2.1.val :=
+  Iff.rfl
+
+/-- **Every point of every admissible ladder history realizes a member of `Real`.** `Real` is
+non-vacuous exactly when the frame has a history at all, and this is also the closure property
+`certBoxK`'s right-to-left direction reads: the `□` letter's bit is the fibre over EVERYTHING,
+and everything is reached because every point projects in. -/
+theorem mem_real_realItem (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame) (z : ℤ) :
+    realItem step pend lab φ Tc Tn P B fwd bwd σ z
+      ∈ Real step pend lab φ Tc Tn P B fwd bwd := by
+  refine ⟨(σ.state z).2.1.2.1, (σ.state z).2.1.2.2, (σ.state z).2.2, (σ.state z).1, z, σ,
+    ?_, rfl, rfl⟩
+  show σ.state z = ((σ.state z).1, _)
+  apply Prod.ext rfl
+  apply Subtype.ext
+  rfl
+
+/-- **A member of `Real` carries its witness's truth values at every closure formula.** The
+bridge every condition of `Real` is proved across: the closure type a member carries IS the
+realized type, so a letter's membership in it is truth at the witnessing point. -/
+theorem mem_clType_iff_truth (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    {x : Q × ClType φ × CK Tc Tn P B}
+    {σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame} {z : ℤ}
+    (hT : tpOf (ladderModel step pend fwd bwd lab) φ σ z = x.2.1.val)
+    (χ : PlusFormula) (hχ : χ ∈ plusSubformulaClosure φ) :
+    (χ ∈ x.2.1.val ↔ PlusTruthAt (ladderModel step pend fwd bwd lab) σ z χ) := by
+  rw [← hT, mem_tpOf_iff]
+  exact and_iff_right hχ
+
+/-- **CONDITION (1) OF `Real`**: local coherence at every member. The three constrained arms of
+`locPred` are the three truth-functional clauses of `PlusTruthAt` — the atomic bit is the ladder
+model's valuation, which reads the object component and nothing else, `⊥` is never true, and the
+implication arm is truth-functional. The four modal and temporal arms of `locPred` are
+unconstrained and need nothing. No relation and no parameter condition enters. -/
+theorem real_certLocK (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) :
+    certLocK lab φ Tc Tn P B (Real step pend lab φ Tc Tn P B fwd bwd) := by
+  rintro x ⟨c, n, h, t, z, σ, hst, -, hT⟩
+  rw [locCoh, decide_eq_true_eq]
+  intro ψ hψ
+  have hiff := mem_clType_iff_truth lab φ Tc Tn P B fwd bwd hT
+  cases ψ with
+  | atom a =>
+    have hq : (σ.state z).2.1.1 = x.1 := by rw [hst]
+    have hv : PlusTruthAt (ladderModel step pend fwd bwd lab) σ z (PlusFormula.atom a)
+        ↔ lab x.1 a = true := by
+      rw [PlusTruth.atom_iff]
+      change lab (σ.state z).2.1.1 a = true ↔ lab x.1 a = true
+      rw [hq]
+    have hb := (hiff (PlusFormula.atom a) hψ).trans hv
+    simp only [locPred, beq_iff_eq]
+    rcases Bool.eq_false_or_eq_true (lab x.1 a) with hl | hl
+    · simp [hl, hb.mpr hl]
+    · have hno : PlusFormula.atom a ∉ x.2.1.val := by
+        intro hc
+        exact Bool.false_ne_true (hl.symm.trans (hb.mp hc))
+      simp [hl, hno]
+  | bot =>
+    have hb := hiff PlusFormula.bot hψ
+    simp only [locPred, decide_eq_true_eq]
+    intro hc
+    exact PlusTruth.bot_false (ladderModel step pend fwd bwd lab) σ z (hb.mp hc)
+  | imp α β =>
+    have ha := hiff α (plusClosure_imp_left φ α β hψ)
+    have hbb := hiff β (plusClosure_imp_right φ α β hψ)
+    have hi := (hiff (PlusFormula.imp α β) hψ).trans
+      (PlusTruth.imp_iff (ladderModel step pend fwd bwd lab) σ z α β)
+    simp only [locPred, beq_iff_eq]
+    by_cases hA : α ∈ x.2.1.val
+    · by_cases hBt : β ∈ x.2.1.val
+      · have hin : PlusFormula.imp α β ∈ x.2.1.val := hi.mpr (fun _ => hbb.mp hBt)
+        simp [hA, hBt, hin]
+      · have hno : PlusFormula.imp α β ∉ x.2.1.val := by
+          intro hc
+          exact hBt (hbb.mpr (hi.mp hc (ha.mp hA)))
+        simp [hA, hBt, hno]
+    · have hin : PlusFormula.imp α β ∈ x.2.1.val := by
+        refine hi.mpr (fun hc => ?_)
+        exact absurd (ha.mpr hc) hA
+      simp [hA, hin]
+  | box _ => rfl
+  | untl _ _ => rfl
+  | snce _ _ => rfl
+  | stab _ => rfl
+
+/-- **CONDITION (6) OF `Real`**: the `□` letter's bit is ONE GLOBAL BIT. This is the condition
+the candidate "all of `Q × ClType φ × CK`" fails, and it is reachable for `Real` exactly because
+`box_mem_tpOf_iff`'s right-hand side quantifies over EVERY history and EVERY time — so the bit is
+already the fibre of the whole model, and `mem_real_realItem` says every point of the model is a
+member. No relation, no parameter condition, and no union argument enters: nothing here claims
+`certBoxK` of a union of certified sets. -/
+theorem real_certBoxK (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) :
+    certBoxK φ Tc Tn P B (Real step pend lab φ Tc Tn P B fwd bwd) := by
+  rintro x ⟨c, n, h, t, z, σ, hst, -, hT⟩ ψ hψ hs
+  obtain ⟨χ, rfl⟩ : ∃ χ, ψ = PlusFormula.box χ := by
+    cases ψ <;> first | exact ⟨_, rfl⟩ | simp [isBox] at hs
+  have hbox := box_mem_tpOf_iff (ladderModel step pend fwd bwd lab) φ σ z hψ
+  change PlusFormula.box χ ∈ x.2.1.val ↔ _
+  rw [← hT, hbox]
+  constructor
+  · intro hall y hy
+    obtain ⟨c', n', h', t', z', σ', -, -, hT'⟩ := hy
+    show argOf (PlusFormula.box χ) ∈ y.2.1.val
+    simpa only [argOf] using hT' ▸ hall σ' z'
+  · intro hall σ' z'
+    have hmem := mem_real_realItem lab φ Tc Tn P B fwd bwd σ' z'
+    simpa only [argOf, realItem] using hall _ hmem
+
+end Realizable
 
 end FormalSystem.Metalogic.Decidability.RaySummary

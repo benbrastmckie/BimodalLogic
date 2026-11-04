@@ -1471,7 +1471,7 @@ theorem-index row and no inventory block moves.
 
 ---
 
-### Phase 12.1: `Real` and Its Agreement-Free Conditions [NOT STARTED]
+### Phase 12.1: `Real` and Its Agreement-Free Conditions [COMPLETED WITH EXCLUSIONS]
 
 **ENTERABLE NOW. SPLIT OUT BY THIS REVISION FROM THE PREDECESSOR PLAN'S PHASE 12; CONTENT UNCHANGED —
 ONLY THE COMMIT BOUNDARY MOVES.** Phase 12 carried nine deliverables in one unit behind the agreement,
@@ -1486,24 +1486,24 @@ the four monotone conditions, and `certBoxK`. This is Finding 3's route to `Dmax
 and candidate (2) of the four — the one the agreement makes reachable.
 
 **Tasks**:
-- [ ] Define `Real step pend lab φ Tc Tn P B fwd bwd : Set (Q × ClType φ × CK Tc Tn P B)` as the set
+- [x] Define `Real step pend lab φ Tc Tn P B fwd bwd : Set (Q × ClType φ × CK Tc Tn P B)` as the set
       of `(q, T, κ)` for which some admissible ladder history `σ` and some `z` realize `T` at a state
       `⟨(q, c, n), h⟩` with `kappa Tc Tn P B (c, n) = κ`. Docstring: this is the set-valued per-state
       datum of presentation (a), and `Real` is not an index — `Dmax` is.
-- [ ] Land `stab_bit_agree_of_certStabK` here, verbatim from the phase-11 handoff: any
+- [x] Land `stab_bit_agree_of_certStabK` here, verbatim from the phase-11 handoff: any
       `certStabK`-certified set collapses the `⊡` bits across a `(q, κ)`-class. It is a statement about
       certified sets, which is why it belongs in the certificate-side module and not in
       `LadderAgree.lean`.
-- [ ] Prove the four monotone conditions of `Real` — `certLocK`, `certBiInfK`, `certFwdK`, `certBwdK` —
+- [ ] Prove the four monotone conditions of `Real` — `certLocK`, `certBiInfK`, `certFwdK`, `certBwdK` — *(deviation: altered — `certLocK` landed as `real_certLocK`; `certBiInfK`, `certFwdK` and `certBwdK` EXCLUDED, see `#### Reasoned Exclusions` below)*
       from the structure of an admissible ladder history: local coherence and the `untl`/`snce` links
       along an actual history, with the counter classes following `RK` by `Count`/`Drift`, and both
       fulfilment arms EXISTENTIAL.
-- [ ] Prove `certBoxK` of `Real`. This is the condition candidate (1) failed, and it is reachable for
+- [x] Prove `certBoxK` of `Real`. This is the condition candidate (1) failed, and it is reachable for
       `Real` exactly because `box_mem_tpOf_iff`'s quantifier is GLOBAL.
-- [ ] **Do not state or prove `certStabK` of `Real`, `real_certAdmK_of_paramsOk` or `real_subset_dmax`
+- [x] **Do not state or prove `certStabK` of `Real`, `real_certAdmK_of_paramsOk` or `real_subset_dmax`
       here.** All three consume the agreement and are Phase 12.2's; the split exists so that this phase
       closes without them.
-- [ ] **Do not state or prove `Dmax ⊆ Real` in this phase or in 12.2.** The reverse inclusion is the
+- [x] **Do not state or prove `Dmax ⊆ Real` in this phase or in 12.2.** The reverse inclusion is the
       lift's own content and is Phase 15's corollary.
 
 **Prohibited workarounds**: do NOT shrink `Real` to one of candidates (1), (3) or (4) — each is already
@@ -1547,6 +1547,94 @@ with a `#### Reasoned Exclusions` record rather than being held open.
 - No union argument appears: no theorem claims `certStabK` or `certBoxK` of a union of certified sets, and none claims `certAdmK … (Dmax …)` (grep).
 - `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`; module-scoped vacuous grep over `LadderRealize.lean` count 0; the repository-wide vacuous grep and `^axiom ` counts unchanged from their measured baselines.
 - `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `certBiInfK` of `Real` (condition (2)) | Quantifies `relK`, whose counter conjunct is `RK Tc Tn P B (pend x.1) (pend y.1) x.2.2 y.2.2`. No theorem of this library derives an `RK` edge from an actual `Count`/`Drift` step at arbitrary counters, so a successor-and-predecessor claim inside `Real` cannot be stated, let alone proved, from a ladder history alone. | `grep -rn "RK Tc" FormalSystem/ --include=*.lean` returns three lines, all in `CounterQuotient.lean`: the `Decidable` instance, `rk_iff`'s own statement, and `relK`'s definition. `CounterQuotient.lean`'s `R_K` section docstring: "NOTHING below says the image is faithful — that every counter step of a ladder history is an `R_K` edge at the two classes — and nothing assumes it: that is the gated counter-lift lemma's own content (obligations (2) and (3))". |
+| `certFwdK` of `Real` (condition (3)) | Its `DischPathK` quantifies `relK (f i) (f (i + 1))` at every position of the discharge path, so it inherits the same missing step. The temporal content itself is available — `untl_mem_tpOf_iff` (`LadderAgree.lean`) gives the fulfilling position and the guard along the intervening stretch of the SAME history — and the discharge path would be the contiguous stretch `z, z+1, …, z+m` of that history, every position of which lies in `Real` by `mem_real_realItem`. The one missing link is the relation between consecutive positions. | Same as the row above, plus `DischPathK`'s own definition in `CounterQuotient.lean`, whose fourth conjunct is `∀ i < m, rel (f i) (f (i + 1)) ∧ f (i + 1) ∈ R`. |
+| `certBwdK` of `Real` (condition (4)) | The past-directed mirror of the row above, along the reversed `relK`; `snce_mem_tpOf_iff` supplies the temporal content and the same relation link is missing. | Same as the two rows above. |
+
+**What the three exclusions need, stated so a successor does not re-derive it.** One lemma, and
+its statement is:
+
+```lean
+theorem rk_of_count_drift (Tc Tn P B : ℕ) (px py : Bool) (c n c' n' : ℕ)
+    (hc : Count px py c n c') (hd : Drift n n') :
+    RK Tc Tn P B px py (kappa Tc Tn P B (c, n)) (kappa Tc Tn P B (c', n'))
+```
+
+By `rk_iff` this asks for `x, y ∈ repsCnt Tc Tn P B` with `kappa x = kappa (c, n)`,
+`kappa y = kappa (c', n')`, `Count px py x.1 x.2 y.1` and `Drift x.2 y.2`. Three findings about
+it, each derived at this phase's close rather than guessed:
+
+1. **It is not a reduction coordinate by coordinate.** `kappa`'s fifth coordinate
+   `clipIdx B c n` COUPLES the two counters, so reducing each counter independently inside its own
+   threshold and residue class can move the gap. At `c = 100`, `n = 101`, `B = 3`, `Tc = Tn = 1`,
+   `P = 0` the independent reduction sends both coordinates to `3` and the gap from `1` to `0`,
+   which is a different class.
+2. **A COMMON downward shift by a multiple of `P + 1` does preserve all five coordinates** — that
+   is `kappa_eq_of_shift` (`LadderAgree.lean`) read downward, since a common shift leaves the gap
+   alone — but it is bounded by whichever counter reaches its own threshold first, so it does not
+   by itself bring a pair with a large gap into range. The construction therefore needs the
+   saturated-gap regime (`|n - c| ≥ B`, where the two coordinates decouple because the clip is
+   pinned at `0` or `2B`) as a second case, and the `py = false` arm of `Count` as a third, where
+   `c' = 0` is forced and cannot be shifted at all.
+3. **Whether `repsCnt`'s own bound `Tc + Tn + P + B + 2` suffices for that construction is
+   itself open**, and nothing in this phase assumes it. If it does not, `rk_of_count_drift` is
+   false as stated and the bound is the defect — which would be a finding about
+   `CounterQuotient.lean`, not about `Real`.
+
+This is the Scope Hypothesis's own contingency fired: a condition turned out to need more than
+the phase expected, the deliverable is recorded as such with the reason stated, and the phase is
+closed rather than held open. The three conditions do NOT belong in Phase 12.2 as that phase is
+written — 12.2's input is Phase 11.7's agreement, which is a different missing ingredient — so
+they are recorded here as owed to whichever round lands `rk_of_count_drift`, and a `/revise` is
+the route that re-homes them.
+
+**CLOSURE RECORD (measured, not estimated).** Landed in `LadderRealize.lean`:
+`stab_bit_agree_of_certStabK` (verbatim from the phase-11 handoff, which had it compiling
+standalone), `realItem` (def), `Real` (def), `mem_real_iff`, `mem_real_realItem`,
+`mem_clType_iff_truth`, `real_certLocK` and `real_certBoxK` — six theorems and two definitions.
+The module measures 363 lines against the Scope Hypothesis's 132 at this plan's authoring, so no
+length remedy was needed for it; `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` crossed
+its own in-source baseline and had it raised in place from `1900` to `2000` (the same
+pre-authorized primary remedy the 11-series phases use, on a file this phase's
+`Files to modify` already lists).
+
+- **`Real`'s time coordinate is quantified, not pinned.** "Some history and some `z` realize `T`
+  at a state `⟨(q, c, n), h⟩`" names the LADDER state; the `ℤ` component of the world state is
+  invisible to `cellAt` (`cellAt_eq_cellAt`), and quantifying it is what makes `Real` closed
+  under the model's own re-anchoring, which `real_certBoxK`'s right-to-left direction reads
+  through `mem_real_realItem`. No new import was needed: `CounterQuotient` already pulls in
+  `Certificate` → `AnchorLayer` and `LadderModel`.
+- **Measured at close.** Scoped build of `LadderRealize` and of
+  `BimodalTest.Metalogic.KTypeSummaryAxiomTest`: exit 0, 0 errors, 0 warnings each. Full
+  `lake build`: exit 0, 0 errors, 0 warnings, 2,895 jobs; `.olean` newer than source for both
+  touched modules. `#print axioms` on all six new theorems: `[propext, Classical.choice,
+  Quot.sound]`; no `sorryAx`, no custom axiom, no `native_decide`.
+  `lean-sorry-census.sh FormalSystem Tests`: exit 0, `sorry_count: 0`. Module-scoped vacuous
+  grep over `LadderRealize.lean`: 0. Repository-wide vacuous grep: 1, unchanged; `^axiom ` 10 in
+  `FormalSystem/` and 2 in `Tests/`, both unchanged. `cellAt_const_of_kappa_eq`,
+  `CellLEZeroConstOfKappaEq` and `cellLE_zero_const_of_kappa_eq` appear in `LadderRealize.lean`
+  only in two module-docstring lines naming them as the input of the conditions this module does
+  NOT carry — the split's own acceptance criterion. No theorem states `certStabK … (Real …)`,
+  `real_certAdmK_of_paramsOk`, `real_subset_dmax`, `Dmax … ⊆ Real …` or `Dmax … = Real …`; no
+  union argument appears and no theorem claims `certAdmK … (Dmax …)`. `typst-sync-check.sh`,
+  `readme-lint.sh` and `check-task-references.sh --quiet` each exit 0, and
+  `check-module-invariants.sh`'s `INV` inventory group passes after regeneration.
+- **One criterion NOT met, for the same pre-existing reason Phase 11.2 recorded.**
+  `check-module-invariants.sh` still exits 1 on `FAIL C16` — the single `unusedArguments` finding
+  on `mem_cellAt_of_shift_of_hasForwardSlack` (`LadderChain.lean:2136`), unchanged in content and
+  count from this dispatch's starting commit, in a module this plan forbids editing. Every other
+  group passes, `C23`'s shadowing check included (the new `Real` is namespace-scoped and does not
+  trip it).
+- **Inventory regeneration again rewrote all three READMEs**, two of which this phase's
+  `Files to modify` does not list, for the same generated-line-count reason Phase 11.2 recorded;
+  committed with the phase as a declared `file_scope` excursion.
+
+---
 
 ---
 
