@@ -1,5 +1,5 @@
 ---
-next_project_number: 853
+next_project_number: 854
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 853
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,851,852 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,853 | 298,428,502,761,768,769,770,772,777,785,810,813,833,838,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -104,6 +104,7 @@ next_project_number: 853
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
+  └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
 851 [RESEARCHED] — Prove rk\_of\_count\_drift: derive an RK edge from an actual...
 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
 
@@ -145,6 +146,33 @@ next_project_number: 853
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 853. Ladder path insertion cascade idle past
+- **Effort**: large
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 838
+- **Parent**: Task 761
+
+**Description**: Construct the Phase 11.8 insertion cascade for the ladder-path region lemmas: the idle-past half (exists_ladderPath_at_region_of_idle_past) and, given it, the unconditional join (exists_ladderPath_at_region), which follows by by_cases on the pending-past predicate.
+
+VERIFIED STARTING POSITION (blocker research, checked against the Lean source):
+(1) Both unlanded names are gated on a SINGLE owed construction, not two.
+(2) The obvious route is REFUTED, not absent: pinCompat_of_ladderPath proves the splice demand necessary, and on a pin-tight original it reads s-v+l <= s-v, false for l>0 (tight witness tightChain_slack_zero compiles). No pin hypothesis can be relaxed -- a relaxed lift lemma would be FALSE, not weaker.
+(3) cntAt_eq_of_obj_eq makes the countdown a function of the object walk, so the surgery cannot be confined to the countdown.
+(4) No insertion/lengthening walk constructor exists under FormalSystem/. Only cascade bookkeeping is landed (pinnedRegions_subset_Ico/_finite/_ncard_le, pin_deficit_le_of_lengthen, cascadeDemand*, LadderAgree.lean:1424-1484).
+
+SIZING: three new components, none landed, with a refuted predecessor -- a standalone construction, not a residual phase.
+TRAP: two_pow_card_prodState_le_Tc lives in LadderChain.lean, which IMPORTS LadderAgree.lean and is unavailable here. Only cascadeBound from CounterQuotient.lean is citable.
+SOUNDNESS: the parent is sound as recorded; the counter-lift admissibility half is unconditional in the pending-forever regime and conditional in the idle-past one. The parent proceeds on certStabK, independent of this blocker.
+
+RECONCILIATION: overlaps-open against the two-sided open-core pigeonhole task (shared LadderAgree.lean, sibling open core, different construction) -- a serializing dependency edge is recorded. A duplicate-of-open against the nondeterministic-canonical-model research task was ruled a Pass-2 false positive at the lead level.
+
+ORIGIN: Conclusion stage (channel c) of an /orchestrate invocation over the ladder realization theorem task, user-approved.
+CITATIONS: parent issues.jsonl iss_1793819583011_jsu079 and iss_1792373250168_HQM6Je.
+
+---
 
 ### 852. Model level pumping lemma for tpof along ladder path
 - **Status**: [RESEARCHED]
