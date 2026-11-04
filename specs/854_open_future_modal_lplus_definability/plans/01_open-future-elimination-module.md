@@ -408,7 +408,7 @@ blast radius of a rows-only edit to the ledger.
 
 ---
 
-### Phase 4: The directory README row and the regenerated inventories [NOT STARTED]
+### Phase 4: The directory README row and the regenerated inventories [COMPLETED]
 
 **Goal**: Record the module in `FormalSystem/Metalogic/Expressiveness/README.md` in that file's
 existing row shape, re-measure its hand-written content counts, and regenerate every machine-owned

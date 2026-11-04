@@ -21,6 +21,7 @@ a genuine partition; `scripts/measure-refactor-partitions.py --check` asserts th
 | `EFGameTactics.lean` | 333 | EF game automation tactics for expressive completeness proofs |
 | `MonadicFO.lean` | 823 | Monadic first-order logic translation for expressiveness results |
 | `NormalForm.lean` | 882 | Normal form for TM formulas used in the expressiveness proofs |
+| `OpenFutureElimination.lean` | 413 | Elimination of a disjunction under the open-future and open-past modals, its conjunctive-normal-form version, and a translation into L⁺ conditional on a named separation hypothesis |
 | `PriorDefs.lean` | 47 | Shared definitions for the Prior expressiveness development |
 | `PriorDefsDense.lean` | 409 | Prior definitions specialized to the dense setting |
 | `PriorExpressiveness.lean` | 378 | Prior's theorem on temporal expressiveness |
@@ -32,10 +33,14 @@ a genuine partition; `scripts/measure-refactor-partitions.py --check` asserts th
 | `Kamp/` | 77,714 | Kamp/Rabinovich separation machinery (116 files) -- by far the largest subtree in the repository |
 | `Separation/` | 926 | Separation theorem and supporting lemmas (3 files) |
 
-Measured live contents: **9 loose modules and 4 subdirectories**, 141 modules in total.
-The aggregator for this directory is the sibling `Metalogic/Expressiveness.lean`, not a
-self-named file inside it. Counts above are measured and exclude the archive. Run
-`scripts/check-module-invariants.sh` rather than an ad-hoc `find` to re-derive live counts.
+Measured live contents: **10 loose modules and 4 subdirectories**, 144 modules in total
+(10 loose + EFGames 11 + GameTransfer 5 + Kamp 115 + Separation 3), re-derived rather than
+incremented. The per-subdirectory file and line figures in the table above are hand-written and
+lag that measurement; the live figures and the generated `Expressiveness/` row in
+[`Metalogic/README.md`](../README.md) are the authority, not the table cells. The aggregator for
+this directory is the sibling `Metalogic/Expressiveness.lean`, not a self-named file inside it.
+Counts above exclude the archive. Run `scripts/check-module-invariants.sh` rather than an ad-hoc
+`find` to re-derive live counts.
 
 ## Key Results
 
@@ -44,9 +49,25 @@ self-named file inside it. Counts above are measured and exclude the archive. Ru
 - `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean`): the load-bearing corollary
   consumed by the live completeness chain.
 
-Both are on the main-results page (`FormalSystem/MainResults.lean`) and both are pinned by
-check C14's axiom baseline in `scripts/check-module-invariants.sh`, recorded as depending on
-exactly `[propext, Classical.choice, Quot.sound]` with no `sorryAx`.
+- `ofutP_or_iff` / `opastP_or_iff` and `ofutP_sepForm_iff` / `opastP_sepForm_iff`
+  (`OpenFutureElimination.lean`): the open-future and open-past modals eliminated against a
+  separated disjunction and against a separated conjunctive normal form, on every regular task
+  frame. On top of them, `openValidIn_ztime_iff_tr` and `openValidIn_rtime_iff_tr` transfer
+  validity along the translation `tr` at `.ZTime` and `.RTime` — **conditional on
+  `SeparationOver`**, an explicit named hypothesis standing for separation theorems this tree
+  does not formalize and discharges nowhere. The hypothesis fails over the non-Dedekind-complete
+  flows, so nothing in that module reaches the dense or unconstrained classes, and no
+  completeness or decidability claim is made for the open-future language.
+  That module also **owns the shared vocabulary** `PastDet`, `FutDet`, `OfutP` and `OpastP`, all
+  public and documented, together with the syntactic bridges `pastDet_of_isPurePast` and
+  `futDet_of_isPureFuture` and the two split-free ends `ofutP_of_pastDet` and `ofutP_of_futDet`;
+  a consumer elsewhere in the tree imports them from here rather than redefining them.
+
+The first two are on the main-results page (`FormalSystem/MainResults.lean`) and both are pinned
+by check C14's axiom baseline in `scripts/check-module-invariants.sh`, recorded as depending on
+exactly `[propext, Classical.choice, Quot.sound]` with no `sorryAx`. The elimination layer is
+pinned by the same baseline but is deliberately absent from the main-results page, because its
+headline statement is conditional on unformalized literature.
 
 ## Architecture
 
@@ -64,6 +85,8 @@ MonadicFO.lean            (monadic signature, MonadicFormula, evaluation)
        +-- Kamp/                (the Kamp theorem chain)
        +-- PriorDefs{,Dense}.lean / PriorExpressiveness{,Dense}.lean
        +-- StaviConnectives.lean
+       +-- OpenFutureElimination.lean  (open-future/open-past elimination; conditional
+                                        translation into L-plus)
 ```
 
 ## Dependencies
@@ -80,4 +103,4 @@ MonadicFO.lean            (monadic signature, MonadicFormula, evaluation)
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-11-04*
