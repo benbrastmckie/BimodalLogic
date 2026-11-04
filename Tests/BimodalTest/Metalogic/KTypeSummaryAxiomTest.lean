@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 2000
+set_option linter.style.longFile 2100
 
 namespace BimodalTest.Metalogic
 
@@ -1922,7 +1922,12 @@ against `pinCompat_of_ladderPath`'s necessity, and the tight doubling chain of
 pair exactly tight with an idle past — and the insertion cascade the restated statement would
 need has no landed component. `exists_spliced_ladderPath_of_idle_past`,
 `exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region` are therefore
-claimed by nothing. The standard profile. -/
+claimed by nothing.
+
+That last sentence about the cascade is now NARROWER than when it was written, and the
+subsection below says exactly how: the insertion walk and its four LOCAL ladder conditions ARE
+landed. Its PIN conditions are not, no existential over them is claimed, and the three names above
+stay claimed by nothing. The standard profile. -/
 
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_pend_past' depends on axioms: [propext,
  Classical.choice,
@@ -1930,6 +1935,99 @@ claimed by nothing. The standard profile. -/
 #guard_msgs in
 #print axioms
   FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_pend_past
+
+/-! ### The idle-insertion walk and its four LOCAL ladder conditions
+
+The cascade's first missing component, landed as a DEFINITION with its elementary local facts:
+`insIdx` (identity above the insertion site, constantly `u` on the collapsed block `[u - d, u]`,
+`· + d` below it), `insObj`/`insCnt` (the spliced walk read through it), the index map's three
+retraction facts plus the two readings `insIdx_of_ge` and `insIdx_succ_of_lt_block` the local
+conditions rewrite with, the two pointwise facts `insObj_of_gt`/`insCnt_of_gt` that carry the
+comparison position BY CONSTRUCTION, the four local hypotheses `exists_ladderPath_of_walk`
+consumes (`insObj_step`, `insCnt_idle`, `insCnt_pend_pend`, `insCnt_pend_idle`), and
+`le_region_start_of_idle` — the one place the idle-past regime hypothesis enters, saying the
+regime's idle witness is a legal insertion site.
+
+**WHAT IS PINNED HERE IS NOT AN EXISTENTIAL AND NOT A PIN CONDITION.** `hpins` and `hn₀` for the
+inserted walk are owed in full; nothing below applies `exists_ladderPath_of_walk` to it, and no
+binder was added to any of the three unclaimed `exists_ladderPath_at_region*` names.
+
+**THE SELF-LOOP PRIMITIVE IS AN EXPLICIT HYPOTHESIS, AND `insObj_step` IS THE ONLY SITE.**
+`insObj_step` carries `hself : step (objAt g u) (objAt g u) = true`, consumed at exactly one
+place — the collapsed block, where the index map sends two consecutive positions to the inserted
+idle object. `IsLadderPath` supplies no self-loop, and the pigeonhole alternative needs MANY idle
+runs below the region start where the regime hypothesis gives ONE; the module's own section
+docstring records that decision and its reason. The consequence is recorded rather than buried: on
+a general object relation the self-loop is a genuine additional premise, so an unconditional
+idle-past interface needs more than this layer lands.
+
+Profiles: the three definitions depend on no axioms at all; the plumbing facts carry `[propext]`
+or `[propext, Quot.sound]`; the four local conditions and the two `if`-dichotomy readings carry
+the standard profile or a subset of it. No `sorryAx`, no custom axiom anywhere. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insIdx' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insIdx
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insObj' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insObj
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insCnt' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insCnt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insIdx_of_gt' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insIdx_of_gt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insIdx_of_mem_block' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insIdx_of_mem_block
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insIdx_of_lt_block' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insIdx_of_lt_block
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insIdx_of_ge' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insIdx_of_ge
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insIdx_succ_of_lt_block' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insIdx_succ_of_lt_block
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insObj_of_gt' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insObj_of_gt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insCnt_of_gt' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insCnt_of_gt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insObj_step' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insObj_step
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insCnt_idle' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insCnt_idle
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insCnt_pend_pend' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insCnt_pend_pend
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insCnt_pend_idle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insCnt_pend_idle
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.le_region_start_of_idle' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.le_region_start_of_idle
 
 /-! ### `Real`'s three RELATIONAL conditions
 

@@ -303,9 +303,12 @@ stated anywhere in the tree, and none is invented here.
 
 -- The module crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): the rigid-anchor
 -- layer, the replacement layer, the alternative-history construction, the truth-transport
--- half (i), the atom-valuation agreement and the countdown rigidity of that agreement are one
--- argument about ladder paths and stay in one module.
-set_option linter.style.longFile 2600
+-- half (i), the atom-valuation agreement, the countdown rigidity of that agreement and the
+-- cascade's idle-insertion walk with its four local ladder conditions are one argument about
+-- ladder paths and stay in one module.  The baseline is raised in place rather than the module
+-- split: the insertion walk reads `spliceObj`/`spliceCnt` and the pin bookkeeping of the same
+-- Cascade section at every step, so a split would put one argument across an import edge.
+set_option linter.style.longFile 2900
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1583,7 +1586,229 @@ unclaimed. The reason is recorded rather than worked around:
 
 The consumer inherits this: the admissibility half of the counter-lift lemma is UNCONDITIONAL in
 the pending-forever regime and CONDITIONAL in the idle-past regime, and no declaration anywhere
-claims otherwise. -/
+claims otherwise.
+
+**WHAT THE SUBSECTION BELOW CHANGES, AND WHAT IT DOES NOT.** The third bullet above is now
+narrower than when it was written: the inserted walk and its four LOCAL ladder conditions ARE
+built below (`insIdx`, `insObj`, `insCnt`, `insObj_step`, `insCnt_idle`, `insCnt_pend_pend`,
+`insCnt_pend_idle`). What stays exactly as recorded is the rest of that bullet and the whole of
+the other two: the walk's PIN hypotheses (`hpins`, `hn₀`) are untouched, the iteration over the
+pins is unbuilt, no existential is claimed, and the restated existential remains open rather than
+known. -/
+
+/-! #### The idle-insertion walk, its index map, and its four LOCAL ladder conditions
+
+A DEFINITION and its elementary local facts, landable whether or not the pin half ever closes.
+What is landed: the index map `insIdx`, the inserted walk `insObj`/`insCnt` over the SPLICED one,
+the index map's three retraction facts, the two pointwise facts at and above the insertion site
+that carry the comparison position BY CONSTRUCTION, the four LOCAL hypotheses
+`exists_ladderPath_of_walk` consumes, and the legality of the regime's own idle witness as an
+insertion site. What is NOT: any existential, and any pin hypothesis — `hpins` and `hn₀` remain
+entirely owed, and nothing below weakens either.
+
+`insIdx u d` fixes every position above `u`, collapses the `d + 1` positions `u - d, …, u` onto
+`u`, and sends `v ↦ v + d` below them. So the idle run at `u` is extended downward by `d` while
+the walk at and above `u` is pointwise fixed — which is what makes `objAt g' v = objAt g v` and
+`cntAt g' v = cntAt g v + l` survive at a comparison position `v > u` by construction rather than
+by a further argument — and the past below is shifted down by `d`, which grows `|s - v'|` by `d`
+for a region start `s` above `u` and one `v'` below it. That growth is the relaxation the pin
+obstruction needs; converting it into `hpins` is not attempted here.
+
+**THE SELF-LOOP PRIMITIVE, DECIDED AND RECORDED.** `hw` asks for
+`step (insObj v) (insObj (v + 1)) = true` at every position, and on the collapsed block that is
+`step q q = true` for `q = objAt g u`, the inserted idle object. `IsLadderPath` constrains `step`
+only along the original walk and supplies no self-loop, so the obligation is real. Of the two
+candidates this layer takes the FIRST: the self-loop is carried as an EXPLICIT hypothesis
+`hself` on the auxiliary `insObj_step`, and on nothing else — no binder is added to any of
+`exists_ladderPath_at_region_of_idle_past`, `exists_ladderPath_at_region` or
+`exists_spliced_ladderPath_of_idle_past`, all three of which remain unclaimed names.
+
+**Why not the second candidate** (insert a copy of an idle-containing cycle, obtained by a
+pigeonhole over a finite object type). The premise it needs is not available at this layer, and
+`[Fintype Q]` does not supply it: the idle-past regime hypothesis gives exactly ONE idle position
+at or below the splice point, while a pigeonhole producing `u ≤ u'` with `objAt g u = objAt g u'`
+AND an idle position in `[u, u')` needs MANY idle runs below the region start. The one landed
+pigeonhole of this family lives in
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderPin.lean`, which is ABOVE this module in the
+import DAG; it is cited here by path and is not a proof term.
+
+**The consequence, recorded rather than buried.** With the first candidate taken, an
+unconditional `exists_ladderPath_at_region_of_idle_past` needs MORE than this layer lands: on a
+general object relation the self-loop is a genuine additional premise, not a consequence of
+`IsLadderPath`. The wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean` exhibits the
+whole construction working at a single instance — and records in its own docstring that its
+carrier's `step` is TOTAL, so it pays none of this cost and decides REFUTABILITY rather than
+PROVABILITY.
+
+**THE REINDEXED COUNTDOWN IS THE RIGHT COUNTDOWN**, confirmed rather than assumed.
+`insCnt = spliceCnt ∘ insIdx` is not automatically the countdown of `insObj`, because the
+countdown is read off the walk (`cntAt_eq_of_obj_eq`) and `insIdx` is not injective. Its one
+non-injective place is the collapsed block, where `d + 1` positions go to `u`; there the walk is
+idle, so the countdown must be `0`, and `spliceCnt g a l u = 0` already holds because `u` is idle
+(`spliceCnt_idle`). The reindexed form therefore needs no correction, and `insCnt_pend_pend` /
+`insCnt_pend_idle` below prove that at EVERY position rather than at the block alone. -/
+
+/-- **The index map of the insertion.** Identity above `u`, constantly `u` on the collapsed block
+`[u - d, u]`, and `· + d` below it. -/
+def insIdx (u : ℤ) (d : ℕ) : ℤ → ℤ :=
+  fun v => if u < v then v else if u - (d : ℤ) < v then u else v + (d : ℤ)
+
+/-- **The inserted walk's object component**: the spliced walk read through the index map. -/
+def insObj (g : ℤ → LadderState Q pend) (a : ℤ) (l : ℕ) (u : ℤ) (d : ℕ) : ℤ → Q :=
+  fun v => spliceObj g a l (insIdx u d v)
+
+/-- **The inserted walk's countdown**: the spliced countdown read through the same index map. The
+docstring above records why no correction is needed at the collapsed block. -/
+def insCnt (g : ℤ → LadderState Q pend) (a : ℤ) (l : ℕ) (u : ℤ) (d : ℕ) : ℤ → ℕ :=
+  fun v => spliceCnt g a l (insIdx u d v)
+
+/-- Retraction fact 1: strictly above the insertion site the index map is the identity. -/
+theorem insIdx_of_gt (u : ℤ) (d : ℕ) (v : ℤ) (h : u < v) : insIdx u d v = v := by
+  simp only [insIdx, if_pos h]
+
+/-- Retraction fact 2: on the collapsed block `[u - d, u]` the index map is constantly `u`. -/
+theorem insIdx_of_mem_block (u : ℤ) (d : ℕ) (v : ℤ) (h1 : u - (d : ℤ) ≤ v) (h2 : v ≤ u) :
+    insIdx u d v = u := by
+  simp only [insIdx, if_neg (by omega : ¬ u < v)]
+  by_cases h : u - (d : ℤ) < v
+  · rw [if_pos h]
+  · rw [if_neg h]; omega
+
+/-- Retraction fact 3: strictly below the collapsed block the index map is `· + d`. -/
+theorem insIdx_of_lt_block (u : ℤ) (d : ℕ) (v : ℤ) (h : v < u - (d : ℤ)) :
+    insIdx u d v = v + (d : ℤ) := by
+  simp only [insIdx, if_neg (by omega : ¬ u < v), if_neg (by omega : ¬ u - (d : ℤ) < v)]
+
+/-- At or above the insertion site the index map is the identity — retraction facts 1 and 2 read
+together at the block's own top position. -/
+theorem insIdx_of_ge (u : ℤ) (d : ℕ) (v : ℤ) (h : u ≤ v) : insIdx u d v = v := by
+  rcases eq_or_lt_of_le h with rfl | hlt
+  · exact insIdx_of_mem_block u d u (by omega) le_rfl
+  · exact insIdx_of_gt u d v hlt
+
+/-- One step below the collapsed block the index map still advances by one: `v + 1 ↦ v + 1 + d`,
+whether `v + 1` is below the block or is its own bottom position. -/
+theorem insIdx_succ_of_lt_block (u : ℤ) (d : ℕ) (v : ℤ) (h : v < u - (d : ℤ)) :
+    insIdx u d (v + 1) = v + (d : ℤ) + 1 := by
+  rcases lt_or_ge (v + 1) (u - (d : ℤ)) with hv | hv
+  · rw [insIdx_of_lt_block u d (v + 1) hv]; ring
+  · rw [insIdx_of_mem_block u d (v + 1) (by omega) (by omega)]; omega
+
+/-- **THE COMPARISON POSITION IS CARRIED BY CONSTRUCTION, OBJECT HALF.** Strictly above the
+insertion site the inserted walk IS the spliced walk. Composed with `spliceObj_eq_of_le` and
+`spliced_at_region` this is what gives `objAt g' v = objAt g v` once a path exists. The insertion
+site is strictly below the comparison position, carried here as the hypothesis `hv`. -/
+theorem insObj_of_gt {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ} (u : ℤ) (d : ℕ) (v : ℤ)
+    (hv : u < v) : insObj g a l u d v = spliceObj g a l v := by
+  simp only [insObj, insIdx_of_gt u d v hv]
+
+/-- **THE COMPARISON POSITION IS CARRIED BY CONSTRUCTION, COUNTDOWN HALF.** Same hypothesis, same
+reason: with `spliceCnt_add_of_mem_region` this is what gives `cntAt g' v = cntAt g v + l`. -/
+theorem insCnt_of_gt {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ} (u : ℤ) (d : ℕ) (v : ℤ)
+    (hv : u < v) : insCnt g a l u d v = spliceCnt g a l v := by
+  simp only [insCnt, insIdx_of_gt u d v hv]
+
+/-- **`hw` FOR THE INSERTED WALK.** `exists_ladderPath_of_walk`'s first hypothesis, token-for-token.
+The self-loop `hself` is the primitive this layer DECIDED to carry explicitly — see the subsection
+docstring for why the pigeonhole alternative is unavailable here — and it is consumed at exactly
+one place: the collapsed block, where the index map sends two consecutive positions to `u`. Every
+other position reduces to `spliceObj_step` on the spliced walk, at `v` above the block and at
+`v + d` below it. -/
+theorem insObj_step {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l)
+    (hrep : objAt g a = objAt g (a + (l : ℤ)))
+    (u : ℤ) (d : ℕ) (hua : u ≤ a)
+    (hself : step (objAt g u) (objAt g u) = true) (v : ℤ) :
+    step (insObj g a l u d v) (insObj g a l u d (v + 1)) = true := by
+  simp only [insObj]
+  rcases lt_or_ge v u with hv | hv
+  · rcases lt_or_ge v (u - (d : ℤ)) with hv2 | hv2
+    · rw [insIdx_of_lt_block u d v hv2, insIdx_succ_of_lt_block u d v hv2]
+      exact spliceObj_step hg hrep (v + (d : ℤ))
+    · rw [insIdx_of_mem_block u d v hv2 (by omega),
+        insIdx_of_mem_block u d (v + 1) (by omega) (by omega)]
+      rwa [spliceObj_eq_of_le hl u hua]
+  · rw [insIdx_of_ge u d v hv, insIdx_of_gt u d (v + 1) (by omega)]
+    exact spliceObj_step hg hrep v
+
+/-- **`hidle` FOR THE INSERTED WALK.** No case analysis: the inserted countdown at `v` IS the
+spliced countdown at `insIdx u d v`, and the inserted object at `v` IS the spliced object there,
+so the spliced walk's own idle-zero clause applies verbatim at the image position. This is the
+confirmation that the reindexed countdown needs no correction on the collapsed block. -/
+theorem insCnt_idle {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hpa : pend (objAt g a) = true) (hcl : l ≤ cntAt g a)
+    (u : ℤ) (d : ℕ) (v : ℤ) (h : pend (insObj g a l u d v) = false) :
+    insCnt g a l u d v = 0 := by
+  simp only [insObj] at h
+  simp only [insCnt]
+  exact spliceCnt_idle hg hpa hcl _ h
+
+/-- **`hpp` FOR THE INSERTED WALK.** The collapsed block is where this could have failed, and it
+does not: the block's image is the IDLE position `u`, so the hypothesis `pend (insObj … v) = true`
+is already false there and the case is vacuous. The hypothesis `hu` — the insertion site is idle —
+is what makes it vacuous, and it is the only thing this lemma needs about `u` beyond `u ≤ a`. -/
+theorem insCnt_pend_pend {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l)
+    (hpa : pend (objAt g a) = true) (hcl : l ≤ cntAt g a)
+    (u : ℤ) (d : ℕ) (hu : pend (objAt g u) = false) (hua : u ≤ a) (v : ℤ)
+    (hx : pend (insObj g a l u d v) = true) (hy : pend (insObj g a l u d (v + 1)) = true) :
+    insCnt g a l u d (v + 1) + 1 = insCnt g a l u d v := by
+  simp only [insObj] at hx hy
+  simp only [insCnt]
+  rcases lt_or_ge v u with hv | hv
+  · rcases lt_or_ge v (u - (d : ℤ)) with hv2 | hv2
+    · rw [insIdx_of_lt_block u d v hv2] at hx
+      rw [insIdx_succ_of_lt_block u d v hv2] at hy
+      rw [insIdx_of_lt_block u d v hv2, insIdx_succ_of_lt_block u d v hv2]
+      exact spliceCnt_pend_pend hg hl hpa hcl _ hx hy
+    · exfalso
+      rw [insIdx_of_mem_block u d v hv2 (by omega), spliceObj_eq_of_le hl u hua] at hx
+      exact Bool.false_ne_true (hu.symm.trans hx)
+  · rw [insIdx_of_ge u d v hv] at hx
+    rw [insIdx_of_gt u d (v + 1) (by omega)] at hy
+    rw [insIdx_of_ge u d v hv, insIdx_of_gt u d (v + 1) (by omega)]
+    exact spliceCnt_pend_pend hg hl hpa hcl v hx hy
+
+/-- **`hpi` FOR THE INSERTED WALK.** The one position whose image pair straddles the block's
+bottom — `v` with `v + 1 = u - d` — lands on `(u - 1, u)`, where the spliced walk's own
+region-end clause applies because `u` is idle. The block itself is vacuous for the same reason as
+in `insCnt_pend_pend`. -/
+theorem insCnt_pend_idle {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l)
+    (hpa : pend (objAt g a) = true) (hcl : l ≤ cntAt g a)
+    (u : ℤ) (d : ℕ) (hu : pend (objAt g u) = false) (hua : u ≤ a) (v : ℤ)
+    (hx : pend (insObj g a l u d v) = true) (hy : pend (insObj g a l u d (v + 1)) = false) :
+    insCnt g a l u d v = 0 := by
+  simp only [insObj] at hx hy
+  simp only [insCnt]
+  rcases lt_or_ge v u with hv | hv
+  · rcases lt_or_ge v (u - (d : ℤ)) with hv2 | hv2
+    · rw [insIdx_of_lt_block u d v hv2] at hx ⊢
+      rw [insIdx_succ_of_lt_block u d v hv2] at hy
+      exact spliceCnt_pend_idle hg hpa hcl _ hx hy
+    · exfalso
+      rw [insIdx_of_mem_block u d v hv2 (by omega), spliceObj_eq_of_le hl u hua] at hx
+      exact Bool.false_ne_true (hu.symm.trans hx)
+  · rw [insIdx_of_ge u d v hv] at hx ⊢
+    rw [insIdx_of_gt u d (v + 1) (by omega)] at hy
+    exact spliceCnt_pend_idle hg hpa hcl v hx hy
+
+/-- **THE REGIME'S IDLE WITNESS IS A LEGAL INSERTION SITE.** An idle position at or below the
+splice point lies at or below the region start of the splice point's own region: every position of
+that region's span is pending (`pend_of_mem_region`), so an idle one cannot be strictly inside it.
+This is the one place the idle-past regime hypothesis enters the construction, and it is cheap.
+
+The `pinnedRegions` membership clause `s + 1 ≤ a` is NOT among the hypotheses, deliberately: the
+window inequality `a ≤ s + 1 + cntAt g (s + 1)` and `p ≤ a` already place `p` inside the span
+whenever `s < p`, so adding `s + 1 ≤ a` would be an unused binder rather than a real condition. -/
+theorem le_region_start_of_idle (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (s p a : ℤ) (hs1 : pend (objAt g (s + 1)) = true)
+    (hreg : a ≤ s + 1 + (cntAt g (s + 1) : ℤ))
+    (hp : pend (objAt g p) = false) (hpa : p ≤ a) : p ≤ s := by
+  by_contra hlt
+  exact Bool.false_ne_true
+    (hp.symm.trans (pend_of_mem_region g hg s p hs1 (by omega) (by omega)))
 
 end Cascade
 

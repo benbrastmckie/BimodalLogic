@@ -2348,7 +2348,7 @@ Phases 11.11-11.13 stay gated.
 
 ---
 
-### Phase 11.11: The Idle-Insertion Walk, Its Primitive, and Its Four Local Ladder Conditions [NOT STARTED]
+### Phase 11.11: The Idle-Insertion Walk, Its Primitive, and Its Four Local Ladder Conditions [COMPLETED]
 
 **GATED ON PHASE 11.10's VERDICT, AND CARRIES NO OPEN MATHEMATICS OF ITS OWN.** The first missing
 component the Phase 11.8 handoff names — "no declaration anywhere builds an idle-insertion walk" —
@@ -2412,46 +2412,158 @@ Phase 11.8 blocker record names as needed.
    phase's deliverable, not a reason to stop.
 
 **Tasks**:
-- [ ] FIRST, read Phase 11.10's recorded verdict. If it is REFUTED, close this phase
+- [x] FIRST, read Phase 11.10's recorded verdict. If it is REFUTED, close this phase
       `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column
       cites that phase's compiled object, and do not define anything. If it is INCONCLUSIVE, leave
       this phase `[NOT STARTED]` and report the gate. Only a WITNESSED verdict admits the rest of
-      this task list.
-- [ ] Decide finding 29's primitive, (a) or (b), and record the decision with its reason in the
+      this task list. *(Read: **WITNESSED**. The rest of the list is admitted, and no
+      `#### Reasoned Exclusions` record is owed.)*
+- [x] Decide finding 29's primitive, (a) or (b), and record the decision with its reason in the
       module docstring and in the phase body. If (b) is chosen, state the pigeonhole lemma this
       module must land for it as a NAMED sub-item of this phase rather than leaving it implicit;
       if it cannot be landed at this layer, fall back to (a) with the auxiliary named, and record
-      that the unconditional statement then needs more than this plan lands.
-- [ ] Define `insIdx`, `insObj` and `insCnt` (or the corrected countdown) in the Cascade section
+      that the unconditional statement then needs more than this plan lands. *(DECIDED: **(a)**.
+      See `#### THE PRIMITIVE DECISION` below for the decision and its reason; recorded in the
+      module's own subsection docstring and in the axiom test's subsection docstring as well. The
+      auxiliary is named: `insObj_step`, carrying `hself : step (objAt g u) (objAt g u) = true`,
+      and that is the ONLY site. The consequence is recorded, not buried.)*
+- [x] Define `insIdx`, `insObj` and `insCnt` (or the corrected countdown) in the Cascade section
       of `LadderAgree.lean`, with `{g a l}` as explicit implicit binders, since that section
       declares none — the same adjustment the landed
-      `exists_ladderPath_at_region_of_pend_past` needed.
-- [ ] Land the index map's three retraction facts as named lemmas: `insIdx` is the identity above
+      `exists_ladderPath_at_region_of_pend_past` needed. *(All three landed in the Cascade section,
+      with `{g a l}` per-declaration as required. `insCnt = spliceCnt ∘ insIdx` needed NO
+      correction, and that is proved rather than assumed — see `#### THE REINDEXED COUNTDOWN`
+      below.)*
+- [x] Land the index map's three retraction facts as named lemmas: `insIdx` is the identity above
       `u`, is constantly `u` on the collapsed block, and is `· + d` below it. These are `omega`- and
       `if`-level facts and are what every later proof rewrites with, on the model of
-      `spliceObj_of_lt` (`:1040`) and `spliceObj_eq_of_le` (`:1165`).
-- [ ] Land the two pointwise facts at the comparison position: `insObj … v = spliceObj g a l v` and
+      `spliceObj_of_lt` (`:1040`) and `spliceObj_eq_of_le` (`:1165`). *(`insIdx_of_gt`,
+      `insIdx_of_mem_block`, `insIdx_of_lt_block`. Two further readings were needed by the local
+      conditions and are landed beside them rather than inlined: `insIdx_of_ge` (the first two read
+      together at the block's own top position) and `insIdx_succ_of_lt_block` (`v + 1 ↦ v + 1 + d`
+      whether `v + 1` is below the block or is its bottom position) — five named lemmas where the
+      plan anticipated three.)*
+- [x] Land the two pointwise facts at the comparison position: `insObj … v = spliceObj g a l v` and
       `insCnt … v = spliceCnt g a l v` for `v > u`, which composed with `spliced_at_region`
       (`:1260`) give `objAt g' v = objAt g v` and `cntAt g' v = cntAt g v + l` once a path exists.
       **The insertion site must be strictly below the comparison position**: carry that as an
-      explicit hypothesis of these lemmas, never as a side remark.
-- [ ] Land `hw`, `hidle`, `hpp` and `hpi` for the inserted walk, under whichever primitive the
+      explicit hypothesis of these lemmas, never as a side remark. *(`insObj_of_gt` and
+      `insCnt_of_gt`, each carrying `hv : u < v` as an explicit hypothesis of the statement.)*
+- [x] Land `hw`, `hidle`, `hpp` and `hpi` for the inserted walk, under whichever primitive the
       first task chose, as four named lemmas matching `exists_ladderPath_of_walk`'s hypothesis
-      shapes token-for-token so Phase 11.12 can pass them positionally.
-- [ ] Land, from `hidle` and `pend_of_mem_region` (`:1414`), the fact finding 28 names: the
+      shapes token-for-token so Phase 11.12 can pass them positionally. *(`insObj_step`,
+      `insCnt_idle`, `insCnt_pend_pend`, `insCnt_pend_idle`. Positional compatibility verified
+      MECHANICALLY rather than by reading: a scratch `example` outside the library ascribes each
+      of the four against `exists_ladderPath_of_walk`'s exact hypothesis type at
+      `w := insObj g a l u d`, `c := insCnt g a l u d`, and all four elaborate. The collapsed block
+      is where `hpp`/`hpi` could have failed and does not: its image is the IDLE position `u`, so
+      the pending hypothesis is already false there and the case is vacuous — which is why both
+      carry `hu : pend (objAt g u) = false`.)*
+- [x] Land, from `hidle` and `pend_of_mem_region` (`:1414`), the fact finding 28 names: the
       regime's idle witness lies at or below the region start of `a`'s region, so it is a legal
       insertion site. This is the one place the regime hypothesis enters the construction, and it
-      is cheap.
-- [ ] Keep the module under its length ceiling. **Re-measured at this revision's authoring: 2,558
+      is cheap. *(`le_region_start_of_idle`, three lines. One honest narrowing recorded in its own
+      docstring: the `pinnedRegions` membership clause `s + 1 ≤ a` is NOT a hypothesis, because the
+      window inequality `a ≤ s + 1 + cntAt g (s + 1)` and `p ≤ a` already place `p` inside the span
+      whenever `s < p` — carrying it would be an unused binder, and the `unusedVariables` linter
+      says so.)*
+- [x] Keep the module under its length ceiling. **Re-measured at this revision's authoring: 2,558
       lines against the in-source `set_option linter.style.longFile 2600` (`:308`), so 42 lines of
       headroom** — far less than the 123 the predecessor plan carried, so expect to take the
       pre-authorized primary remedy (raise the in-source baseline in place, never split). The
       contingency module `LadderCascade.lean` and both import edges are LISTED under
       `Files to modify` so a dispatch taking the remedy of last resort can commit them in one
-      commit.
-- [ ] Wire the new declarations: axiom-profile entries in the axiom test, the generated inventory
+      commit. *(PRIMARY REMEDY TAKEN, as anticipated: `LadderAgree.lean` is **2,783 lines** at
+      close and its in-source baseline is raised in place to **2,900** (the value the linter itself
+      names as expected at that length), with the comment extended to say why a split is wrong here
+      — the insertion walk reads `spliceObj`/`spliceCnt` and the same Cascade section's pin
+      bookkeeping at every step, so a split would put one argument across an import edge.
+      `LadderCascade.lean` was NOT created and neither import edge was touched. **A second ceiling
+      fired that the plan did not anticipate**: the axiom test crossed its own in-source `2000` at
+      2,081 lines, and its baseline is raised in place to `2,100` by the same remedy.)*
+- [x] Wire the new declarations: axiom-profile entries in the axiom test, the generated inventory
       blocks, and `status.typ`. No `docs/theorem-index.md` row and no C14 entry: this phase lands
-      no filed Goal.
+      no filed Goal. *(All **fifteen** new declarations pinned in `KTypeSummaryAxiomTest.lean` under
+      a new subsection that records the primitive decision and states in its own prose that nothing
+      pinned there is an existential or a pin condition; the three definitions depend on no axioms
+      at all. Inventory blocks and `status.typ` regenerated by their OWN generators
+      (`bash scripts/check-module-invariants.sh --emit-inventory`,
+      `bash scripts/typst-status-counts.sh`), never hand-edited. No
+      `docs/theorem-index.md` row and no C14 entry, as directed. **Two generated blocks beyond this
+      phase's `Files to modify` rolled**, because they are aggregate roll-ups of the same line
+      count: `FormalSystem/Metalogic/README.md` (the `Decidability/` row) and the root `README.md`
+      (two repository metrics). That is the 744 cross-set territory the task description leaves to
+      the admission gate; no hand edit was made to either.)*
+
+
+#### THE PRIMITIVE DECISION: **(a)**, the self-loop as an explicit hypothesis on an auxiliary
+
+The decision this phase was required to make, with its reason, recorded here as well as in the
+module's own subsection docstring and in the axiom test's.
+
+`hw` asks for `step (insObj v) (insObj (v + 1)) = true` at every position, and on the collapsed
+block that is `step q q = true` for `q = objAt g u`, the inserted idle object. `IsLadderPath`
+constrains `step` only along the original walk and supplies no self-loop, so the obligation is
+real and neither candidate is free.
+
+**Candidate (b) was found UNAVAILABLE AT THIS LAYER, and not merely inconvenient.** It asks for a
+copy of an idle-containing cycle: `u ≤ u'` at or below the region start with
+`objAt g u = objAt g u'` AND an idle position in `[u, u')`, from a pigeonhole over a finite object
+type. The premise that pigeonhole needs is MANY idle runs below the region start. The idle-past
+regime hypothesis supplies exactly ONE idle position at or below the splice point, and
+`[Fintype Q]` does not supply the rest: a finite object type bounds how many distinct states the
+positions below can carry, not how many idle runs they contain. So (b) is statable here and
+unprovable here, and the one landed pigeonhole of this family lives in
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderPin.lean`, ABOVE this module in the import
+DAG — cited by path in the docstring, never as a proof term (the scoped build with
+`LadderAgree.lean`'s import list unchanged at `AnchorLayer` and `CounterQuotient` is the
+mechanical check that it was not).
+
+**Candidate (a) is therefore taken**, with `hself : step (objAt g u) (objAt g u) = true` on
+`insObj_step` and on NOTHING else. No binder was added to any of
+`exists_ladderPath_at_region_of_idle_past`, `exists_ladderPath_at_region` or
+`exists_spliced_ladderPath_of_idle_past`, all three of which remain unclaimed names in the
+library (the only `exists_ladderPath_at_region*` declaration anywhere under `FormalSystem/` is
+still the landed `exists_ladderPath_at_region_of_pend_past`).
+
+**THE CONSEQUENCE, RECORDED RATHER THAN BURIED.** With (a) taken, an unconditional
+`exists_ladderPath_at_region_of_idle_past` needs MORE than this plan lands: on a general object
+relation the self-loop is a genuine additional premise, not a consequence of `IsLadderPath`.
+Phase 11.12's existential therefore inherits it, and Phase 11.13's join inherits it through
+Phase 11.12. The wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean` exhibits the
+whole construction working at a single instance precisely BECAUSE its carrier's `step` is total —
+which is why that probe's own docstring says it decides REFUTABILITY and never PROVABILITY, and
+why a witness there is not evidence that this premise is discharge-able in general.
+
+#### THE REINDEXED COUNTDOWN IS THE RIGHT COUNTDOWN, confirmed rather than assumed
+
+The phase's second required decision. `insCnt = spliceCnt ∘ insIdx` is not automatically the
+countdown of `insObj`, because the countdown is read off the walk (`cntAt_eq_of_obj_eq`) and
+`insIdx` is not injective. Its one non-injective place is the collapsed block, where `d + 1`
+positions go to `u`; there the walk is idle, so the countdown must be `0`, and
+`spliceCnt g a l u = 0` already holds because `u` is idle (`spliceCnt_idle`). **No correction was
+needed**, and that is proved rather than asserted: `insCnt_idle` discharges the idle-zero clause at
+EVERY position with no case analysis at all (the spliced walk's own clause applies verbatim at the
+image position), and `insCnt_pend_pend`/`insCnt_pend_idle` discharge the other two at every
+position, with the collapsed block vacuous by `hu`.
+
+#### Measurements at close
+
+| Quantity | At revision authoring | At close |
+|----------|-----------------------|----------|
+| `LadderAgree.lean` lines | 2,558 | **2,783** |
+| `LadderAgree.lean` in-source `longFile` | 2,600 | **2,900** (primary remedy) |
+| `KTypeSummaryAxiomTest.lean` lines | not carried | **2,081** |
+| `KTypeSummaryAxiomTest.lean` in-source `longFile` | 2,000 | **2,100** (same remedy) |
+| New declarations in `LadderAgree.lean` | 3 defs + ~10 lemmas (estimate) | **3 defs + 12 lemmas**, all pinned |
+| Wired evidence probes | 49 | **50** (Phase 11.10's probe) |
+
+Against the phase's own Scope Hypothesis: three definitions (as estimated), FIVE retraction/reading
+lemmas rather than three, two pointwise lemmas (as estimated), four local-condition lemmas (as
+estimated), one insertion-site lemma (as estimated), and ZERO additional declarations from the
+chosen primitive — candidate (a) adds a hypothesis, not a lemma. The primitive decision DID have a
+landable answer at this layer, so the `[BLOCKED]` outcome the Scope Hypothesis admits did not fire.
 
 **Prohibited workarounds**: do NOT add a binder to any of the three recorded
 `exists_ladderPath_at_region*` signatures; do NOT land an existential of any kind in this phase —
