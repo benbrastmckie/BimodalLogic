@@ -2120,7 +2120,7 @@ count; every other group passes.
 
 ---
 
-### Phase 11.10: The Idle-Past Interface Decision Probe on the Compiled Tight Chain [NOT STARTED]
+### Phase 11.10: The Idle-Past Interface Decision Probe on the Compiled Tight Chain [COMPLETED]
 
 **ENTERABLE NOW. Its two dependencies, Phases 11.2 and 11.9, are both closed, and it needs no
 component that is missing.** This is a DECISION GATE, and it is the cheap test Phase 11.8's own
@@ -2169,43 +2169,134 @@ discharges by `decide` at every pair. The probe therefore pays for the pin half 
   exists to prevent.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean` as a
+- [x] Create `specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean` as a
       standalone probe in its own namespace, importing the same library layer
       `ladder-tight-chain-nonliftability.lean` imports. **Do NOT edit that file**: its refutation is
       wired and its statements are not re-signed by this phase. Re-derive the chain's objects inside
       the new probe, or import the probe module if the two are importable from one another — read
-      which, do not assume.
-- [ ] Fix the instance: name a concrete region start `s = 2 ^ j - 2` of the chain (`pin_eq`), a
+      which, do not assume. *(READ, not assumed: a probe is compiled by `check_probe`'s
+      `lake env lean` on a file OUTSIDE the Lake module graph, so no probe is importable from
+      another; namespace `Probe761IdlePast`, import `…RaySummary.LadderAgree`, and the chain's
+      objects `idleT`/`wT`/`cT`/`pin_eq`/`cT_pin_succ`/`cT_pend_pend`/`cT_pend_idle`/
+      `tightChain_exists`/`tightChain` re-derived verbatim. `ladder-tight-chain-nonliftability.lean`
+      byte-identical.)*
+- [x] Fix the instance: name a concrete region start `s = 2 ^ j - 2` of the chain (`pin_eq`), a
       splice point `a` inside the region it opens, a comparison position `v` with `v ≤ a` and
       `a ≤ v + cntAt tightChain v`, a cycle length `l > 0` with `l ≤ cntAt tightChain a`, and an
       idle witness `p ≤ a` with `pendC (objAt tightChain p) = false`. Record each as an explicit
       numeral or an explicit function of `j`, never as an existential the probe then cannot compute
-      with.
-- [ ] Confirm, inside the probe, that the instance is really in the regime the general statement
+      with. *(Every one an explicit numeral: `s = 2 = 2 ^ 2 - 2`, `a = 3`, `v = 3`, `l = 1`,
+      `p = 2`. The region `s` opens is the pending run `3, 4, 5` (`not_idleT_mid`), and
+      `cntAt tightChain 3 = 2` is compiled as `cT_three`.)*
+- [x] Confirm, inside the probe, that the instance is really in the regime the general statement
       names: `hrep : objAt tightChain a = objAt tightChain (a + l)` holds at the chosen `l` (on a
       two-element carrier this is a `decide`-level fact about `wT`, not an assumption), and the
       idle witness makes `hidle` true. **If the chosen instance cannot satisfy `hrep` at any
       `l > 0` with `l ≤ cntAt tightChain a`, that is a reportable finding in its own right** — it
       would mean the chain does not populate the regime and is the wrong decision object — and the
-      phase closes `[BLOCKED]` naming it rather than weakening the instance.
-- [ ] Attempt the WITNESSED branch: define a candidate walk by inserting `d` copies of the idle
+      phase closes `[BLOCKED]` naming it rather than weakening the instance. *(`Probe761IdlePast.
+      instance_is_in_regime` compiles all eight clauses as a conjunction of FACTS, not hypotheses:
+      the pin, the region, `0 < 1`, `1 ≤ cntAt tightChain 3`, `3 ≤ 3`, `3 ≤ 3 + cntAt tightChain 3`,
+      `hrep` at `l = 1`, and `2 ≤ 3` with `pendC (objAt tightChain 2) = false`. The regime is
+      populated — and MORE: the chain is idle at every `v ≤ 0`, so NO position of it has a
+      pending-forever past and the landed `exists_ladderPath_at_region_of_pend_past` is VACUOUS on
+      this object. The chain exercises the idle-past half and nothing else, which makes it the right
+      decision object rather than merely an admissible one.)*
+- [x] Attempt the WITNESSED branch: define a candidate walk by inserting `d` copies of the idle
       object into the idle run at the witness, push the past below it down by `d`, and discharge
       the six hypotheses of `exists_ladderPath_of_walk` — `hw` by `decide` on `stepC`, `hidle`,
       `hpp` and `hpi` from the chain's own `cT` lemmas, and `hpins`/`hn₀` by the arithmetic the
-      chain's pins make explicit (`pin_eq`, `cT_pin_succ`, `tightChain_slack_zero`).
-- [ ] If the WITNESSED branch stalls, attempt the REFUTED branch on the same instance: derive a
+      chain's pins make explicit (`pin_eq`, `cT_pin_succ`, `tightChain_slack_zero`). *(LANDED, with
+      one correction to this task's own recipe recorded rather than worked around: the insertion
+      ALONE moves no countdown at the comparison position, because it lengthens an idle run below
+      the comparison position and the countdown there reads the distance to the next idle position
+      ABOVE. The witness therefore carries BOTH moves — the region `3, 4, 5` lengthened to
+      `3, 4, 5, 6` with the chain's idle positions `2 ^ j - 2` (`j ≥ 3`) displaced up to `2 ^ j - 1`
+      (this is what raises the countdown), AND one idle copy inserted at the witness `p = 2` with
+      the past strictly below pushed down by `1` (this is what restores pin compatibility). The
+      resulting walk `wW` is idle exactly at `x ≤ -1`, `1`, `2`, and `2 ^ j - 1` for `j ≥ 3`; its
+      pins are `-1`, `2`, `2 ^ j - 1`. The six hypotheses: `hw` by `rfl` (not `decide` — `stepC` is
+      literally `fun _ _ => true`), `hidle`/`hpp`/`hpi` from `cW_of_idle`/`cW_pend_pend`/
+      `cW_pend_idle` (the walk's OWN countdown lemmas, re-derived in the walk's idle set rather
+      than the chain's `cT` ones, because the walk is not the chain), `hpins` as `hpinsW` and `hn₀`
+      as `hn0W` with base register `n₀ = 1`. `cW_pin` is the pin arithmetic in closed form —
+      region-start countdown `s + 1` at the two low pins, `s - 1` at every high one — and `hpinsW`
+      then falls to a four-case `omega`.)*
+- [x] If the WITNESSED branch stalls, attempt the REFUTED branch on the same instance: derive a
       contradiction from the existence of any such `g'`, using `cntAt_eq_of_obj_eq` plus the
       chain's tightness. Keep both attempts in the same file so the verdict and its derivation are
-      one object.
-- [ ] **Record the non-generality in the probe's own module docstring**, in one sentence naming
+      one object. *(NOT REACHED, and correctly so: the WITNESSED branch did not stall, so the
+      REFUTED branch is not merely unattempted but FORECLOSED on this instance — a compiled witness
+      and a compiled refutation of the same existential cannot both exist. The verdict and its
+      derivation are one object, as required.)*
+- [x] **Record the non-generality in the probe's own module docstring**, in one sentence naming
       `stepC`'s permissiveness and finding 29's obstruction: a witness here pays none of the
       self-loop cost the general statement pays, so this probe decides REFUTABILITY and never
-      PROVABILITY.
-- [ ] Wire the probe on the two branches that land an object (WITNESSED or REFUTED): its table
+      PROVABILITY. *(Its own `## NON-GENERALITY` section, and restated at the two headline
+      theorems and in the gate script's table block.)*
+- [x] Wire the probe on the two branches that land an object (WITNESSED or REFUTED): its table
       block and its `WIRED` array entry in `scripts/check-evidence-probes.sh`, in the SAME commit
-      as the file. On the INCONCLUSIVE branch, land nothing and wire nothing.
-- [ ] Record the verdict in the phase body and in the handoff, naming the branch AND the instance
-      AND the derivation, and name which of Phases 11.11-11.13 the verdict opens or closes.
+      as the file. On the INCONCLUSIVE branch, land nothing and wire nothing. *(Table block and
+      `WIRED` entry added; `bash scripts/check-evidence-probes.sh` reports `PASS  all 50 wired
+      probe(s) compile`, exit 0 — a delta of exactly one against the 49 measured at this revision's
+      authoring. Same commit as the probe file.)*
+- [x] Record the verdict in the phase body and in the handoff, naming the branch AND the instance
+      AND the derivation, and name which of Phases 11.11-11.13 the verdict opens or closes. *(See
+      `#### VERDICT` below and the phase-11.10 handoff.)*
+
+
+#### VERDICT: **WITNESSED**
+
+Recorded here as the phase's deliverable, with the branch, the instance and the derivation named.
+
+**Branch**: WITNESSED. **Object**: `specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean`
+(615 lines, MEASURED at phase close, against the 480 of the chain probe this revision measured;
+the excess is the re-derived chain core, which a probe cannot import).
+
+**Instance**: pin `s = 2 = 2 ^ 2 - 2`, splice point `a = 3`, comparison position `v = 3`, cycle
+length `l = 1`, idle witness `p = 2`. All eight regime clauses compiled as facts in
+`instance_is_in_regime`, with `cntAt tightChain 3 = 2` (`cT_three`). The chain is idle at every
+`v ≤ 0`, so the landed pending-forever half is VACUOUS on this object and the idle-past half is the
+only half it exercises.
+
+**Derivation**: `idle_past_interface_witnessed` exhibits a ladder path `gW` over `(stepC, pendC)`
+with `objAt gW 3 = objAt tightChain 3` and `cntAt gW 3 = cntAt tightChain 3 + 1` (that is,
+`3 = 2 + 1`), and `exists_ladderPath_at_region_on_tightChain_instance` restates it in the
+existential shape the unlanded interface declaration carries, AT THE INSTANCE and not under its
+name. The witness is the CASCADE walk, not the splice. The splice `spliceObj tightChain 3 1` fails
+exactly the pin clause: it raises the region start `2` to countdown `3` while the pin at `0` below
+it keeps countdown `0`, and `|3 - 0| = 3 > |2 - 0| = 2` violates the pairwise condition
+`pinCompat_of_ladderPath` proves NECESSARY for any ladder path whatsoever. The cascade walk repairs
+precisely that, by the two moves jointly: the region is lengthened and the structure above
+displaced up by `l` (which raises the countdown at `v`), and one idle copy is inserted into the
+idle run at the witness with the past strictly below pushed down by `l` (which moves every pin
+below `v` down by `l` and restores compatibility). Its pins are `-1`, `2` and `2 ^ j - 1` (`j ≥ 3`),
+with region-start countdowns `s + 1` at the two low pins and `s - 1` at every high one (`cW_pin`);
+`hpinsW` and `hn0W` (base register `n₀ = 1`) then discharge `exists_ladderPath_of_walk`'s two pin
+hypotheses by a four-case `omega`, and `hw` by `rfl`.
+
+**What this establishes, stated exactly**: `exists_ladderPath_at_region_of_idle_past` as restated is
+NOT refuted on the one compiled object that refutes the `spliceObj` shape — it survives its sharpest
+available test. **What it does NOT establish**: anything about the general statement. `stepC` is
+TOTAL, so `hw` discharges by `rfl` and the witness pays NONE of the self-loop cost the general
+statement pays; the probe decides REFUTABILITY and never PROVABILITY. Nothing is landed under
+`exists_ladderPath_at_region_of_idle_past`, `exists_ladderPath_at_region` or
+`exists_spliced_ladderPath_of_idle_past`, in the library or in the probe.
+
+**What the verdict opens and closes**: it OPENS Phase 11.11 (the insertion walk and its four local
+ladder conditions — `wW`, `cW`, `cW_of_idle`, `cW_pend_pend`, `cW_pend_idle` and the pin arithmetic
+`cW_pin` are its worked example at a single instance), and with it Phases 11.12 and 11.13, which
+stay `[NOT STARTED]` and in their recorded order. It CLOSES none of them: the REFUTED branch, which
+would have closed all three `[COMPLETED WITH EXCLUSIONS]`, did not fire. It does NOT touch Phase
+11.9's INCONCLUSIVE verdict on the depth-`0` core, and the gating of Phases 11.6, 11.7, 12.2, 13,
+14, 15.1, 15.2 and 16-18 behind that verdict is unchanged.
+
+**One recorded measurement correction, not a deviation of this phase's work.** This phase's own
+Verification list carried the baseline `the ^axiom counts are 10 and 2`. Measured at phase close:
+`grep -rn '^axiom ' FormalSystem` is **12** and `Tests` is **2**, and `git grep -c '^axiom ' HEAD`
+over the same two roots returns the SAME 12 and 2. The counts are therefore UNCHANGED by this phase
+(this phase touches no file under `FormalSystem/` or `Tests/` at all); the recorded `10` was stale
+when this revision was authored. The criterion's intent — no new axiom — is met.
 
 **Prohibited workarounds**: do NOT edit `ladder-tight-chain-nonliftability.lean` or re-sign any of
 its theorems; do NOT weaken the instance to make a branch close (a chosen `l` that is `0`, a

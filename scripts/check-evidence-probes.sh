@@ -1929,6 +1929,84 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on every headline.
 #                                                           | No `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# seam-gluing-ray-product/ladder-idle-past-interface-decision | THE IDLE-PAST INTERFACE
+#                                                           | EXISTENTIAL IS **NOT REFUTED** ON
+#                                                           | THE TIGHT DOUBLING CHAIN -- the
+#                                                           | decision gate for the unlanded
+#                                                           | `exists_ladderPath_at_region_of_idle_past`,
+#                                                           | run on the one compiled object that
+#                                                           | refutes the `spliceObj`-shaped
+#                                                           | conclusion. The chain of
+#                                                           | `ladder-tight-chain-nonliftability`
+#                                                           | is RE-DERIVED here (a probe is
+#                                                           | compiled with `lake env lean` and
+#                                                           | sits outside the Lake module graph,
+#                                                           | so no probe can import another);
+#                                                           | that file is NOT edited or
+#                                                           | re-signed. Instance, explicit and
+#                                                           | compiled non-vacuous
+#                                                           | (`instance_is_in_regime`): pin
+#                                                           | `s = 2 = 2^2 - 2`, splice point
+#                                                           | `a = 3`, comparison position
+#                                                           | `v = 3`, cycle length `l = 1`
+#                                                           | (`l <= cntAt tightChain 3 = 2`,
+#                                                           | `cT_three`), idle witness `p = 2`.
+#                                                           | The chain is idle at every
+#                                                           | `v <= 0`, so NO position of it has
+#                                                           | a pending-forever past and the
+#                                                           | LANDED half
+#                                                           | `exists_ladderPath_at_region_of_pend_past`
+#                                                           | is VACUOUS on this object -- the
+#                                                           | idle-past half is the only half it
+#                                                           | exercises. Headline:
+#                                                           | `idle_past_interface_witnessed`
+#                                                           | (`objAt gW 3 = objAt tightChain 3`
+#                                                           | and
+#                                                           | `cntAt gW 3 = cntAt tightChain 3 + 1`,
+#                                                           | i.e. `3 = 2 + 1`), with
+#                                                           | `exists_ladderPath_at_region_on_tightChain_instance`
+#                                                           | the same fact in existential shape
+#                                                           | AT THE INSTANCE. The witness is the
+#                                                           | CASCADE walk, not the splice: it
+#                                                           | lengthens the region `3, 4, 5` to
+#                                                           | `3, 4, 5, 6` and displaces the
+#                                                           | chain's idle positions `2^j - 2`
+#                                                           | (`j >= 3`) up to `2^j - 1`, AND
+#                                                           | inserts one idle copy into the idle
+#                                                           | run at the witness, pushing the past
+#                                                           | strictly below it down by `1`. The
+#                                                           | plain splice `spliceObj tightChain
+#                                                           | 3 1` fails exactly the pin clause:
+#                                                           | it raises the region start `2` to
+#                                                           | countdown `3` while the pin at `0`
+#                                                           | keeps `0`, and
+#                                                           | `|3 - 0| = 3 > |2 - 0| = 2`
+#                                                           | violates the pairwise condition
+#                                                           | `pinCompat_of_ladderPath` proves
+#                                                           | NECESSARY for any ladder path
+#                                                           | whatsoever. The repaired pin
+#                                                           | arithmetic is `cW_pin`/`hpinsW`
+#                                                           | (region-start countdown `s + 1` at
+#                                                           | the two low pins `-1`, `2`; `s - 1`
+#                                                           | at every high pin `2^j - 1`) with
+#                                                           | base register `n0 = 1` (`hn0W`).
+#                                                           | **NON-GENERALITY, and it is the
+#                                                           | point**: `stepC` is TOTAL, so `hw`
+#                                                           | discharges by `rfl` and a witness
+#                                                           | here pays NONE of the self-loop
+#                                                           | cost the general statement pays.
+#                                                           | This probe decides REFUTABILITY and
+#                                                           | never PROVABILITY, and nothing under
+#                                                           | the names
+#                                                           | `exists_ladderPath_at_region_of_idle_past`,
+#                                                           | `exists_ladderPath_at_region` or
+#                                                           | `exists_spliced_ladderPath_of_idle_past`
+#                                                           | is landed by it. No bound, every
+#                                                           | quantity a count. Axioms: a subset
+#                                                           | of `[propext, Classical.choice,
+#                                                           | Quot.sound]` on every headline. No
+#                                                           | `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1978,6 +2056,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-cell-obligation-refutation"
   "seam-gluing-ray-product/ladder-tight-chain-nonliftability"
   "seam-gluing-ray-product/ladder-reps-bound-refutation"
+  "seam-gluing-ray-product/ladder-idle-past-interface-decision"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
