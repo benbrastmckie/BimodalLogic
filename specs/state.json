@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 851,
+  "next_project_number": 853,
   "active_projects": [
     {
       "project_number": 833,
@@ -174,11 +174,12 @@
         "scripts/nolints.json",
         "specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md",
         "specs/757_lplus_decidability_successor_task_set/successor-records.json",
+        "specs/761_ladder_realization_theorem/plans/09_tight-chain-gate-regated-graph.md",
         "specs/761_ladder_realization_theorem/records/761-amendment.txt",
         "specs/761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md",
-        "specs/761_ladder_realization_theorem/summaries/03_ladder-paramsok-parameter-repair-summary.md",
+        "specs/761_ladder_realization_theorem/summaries/02_ladder-paramsok-parameter-repair-summary.md",
         "specs/761_ladder_realization_theorem/summaries/04_ladder-agreement-first-decomposition-summary.md",
-        "specs/761_ladder_realization_theorem/summaries/09_tight-chain-gate-regated-graph-summary.md",
+        "specs/761_ladder_realization_theorem/summaries/07_tight-chain-gate-regated-graph-summary.md",
         "specs/TODO.md",
         "specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md",
         "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
@@ -2209,6 +2210,34 @@
         "typst/generated/status.typ"
       ],
       "completion_summary": "Re-derived the iterated splice in LadderChain.lean through the index map iterSpliceIdx, exposing the walk and the realized types at every copy boundary and above the run, and restated the exact-shift theorem (exists_ladderPath_through_deleted_exact_upfirst_of_pend_past) and its cell inclusion (mem_cellAt_of_shift_of_hasForwardSlack_exact) under exactly HasForwardSlack g z (m*(P+1)) n with n+2 <= c, dropping the budget-squared slack term in both anchor directions; the two predecessor-pinned theorems survive verbatim as corollaries. Full guarded build exit 0 with 0 warnings, sorry 0, axiom census unchanged (10/20), thirteen header matches, README and docstrings record the new ordering."
+    },
+    {
+      "project_number": 851,
+      "project_name": "rk_of_count_drift_bounded_representative_lemma",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Prove rk_of_count_drift: derive an RK edge from an actual Count/Drift step at arbitrary counters, via the bounded representative set repsCnt Tc Tn P B.\n\nWHY: RK Tc Tn P B is defined as the image of Count/Drift over the BOUNDED representative set repsCnt Tc Tn P B. A repository-wide search finds NO theorem concluding RK from an actual Count/Drift step at arbitrary counters -- only rk_iff (the unfolding) and the definition of relK itself mention it. The CounterQuotient.lean section docstring states this explicitly: NOTHING below says the image is faithful; that is the content of the gated counter-lift lemma, obligations (2) and (3).\n\nPAYOFF: this single lemma unblocks all three conditions excluded as Reasoned Exclusions from Real: certBiInfK, certFwdK and certBwdK. All three quantify relK, whose second conjunct is RK Tc Tn P B (pend x.1) (pend y.1) x.2.2 y.2.2. certLocK and certBoxK need no relation at all and are already landed.\n\nCONSTRAINT -- NOT a per-coordinate reduction: the gap coordinate clipIdx B c n couples the two counters, so an independent per-coordinate reduction does not preserve kappa. Counterexample on record: c=100, n=101, B=3, Tc=Tn=1, P=0.\n\nThe lemma statement is given in full in the Reasoned Exclusions record of the phase that excluded the three conditions, in plans/09_tight-chain-gate-regated-graph.md (stated around line 1697).\n\nGUARDRAILS: no sorry, no new axiom, no vacuous definition, no finite-fibre or finite-width assumption. If it does not close, mark BLOCKED with the goal state recorded.",
+      "effort": null,
+      "parent_task": 761,
+      "topic": "decidability",
+      "dependencies": [],
+      "created": "2026-11-04T06:48:13Z",
+      "last_updated": "2026-11-04T06:48:13Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 852,
+      "project_name": "model_level_pumping_lemma_for_tpof_along_ladder_path",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Author a model-level pumping lemma for tpOf along a ladder path: the model-side analogue of the periodicity of the certificate graph.\n\nWHY: the absence of this lemma is the third circularity, hit independently in three separate implementation rounds. Pumping the object walk preserves the realized type only through a MODEL-level periodicity statement about tpOf along a ladder path. The only landed periodicity statement is prodPre_periodic, with outputs satThreshold/satPeriod -- a statement about the backward-reachability fixpoint prodPreStep (cohIdle) on Finset (ProdState Q phi), i.e. a CERTIFICATE-relation fact. CounterQuotient.lean states in source that nothing there relates cohIdle to Rlad, ladderModel, tpOf or cellAt. The bridge from that certificate fact to tpOf is exactly obligations (S) and (C-prime), which READ the agreement that needs this lemma -- so citing prodPre_periodic here closes a cycle rather than discharging one.\n\nNo phase of any plan version to date costs this lemma; it must be authored rather than cited.\n\nKNOWN REFUTATION TO RESPECT -- do not restate the refuted shape. Splice invariance of the realized stab-free type (tpOf_stabFree_eq_of_splice) is FALSE, not merely open: a single splice duplicates the pumped block, adding one occurrence of every object state in that block to the future of the walk, so a nested-eventuality counting formula F(p AND F p) flips between the original and the spliced path at EVERY position below the splice point, however far. Nested until has unbounded reach, so any distance-budget-per-nesting-depth framing is wrong. The refutation is compiled as the wired probe specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean (splice_type_invariance_refuted), checked against the ITERATED surgery the residue coordinate needs, with every recorded hypothesis discharged. What is refuted is that the admissibility-preserving surgery also preserves the type; the presentation itself and cellAt_const_of_kappa_eq are untouched.\n\nA further relevant compiled fact: by stab_mem_tpOf_iff_cell the stab bit of a realized type is a datum of the very cell being compared, so an agreement proof runs by induction on stab-nesting depth whatever the phase order is.\n\nGUARDRAILS: no sorry, no new axiom, no vacuous definition. State what the lemma actually quantifies over; if the honest form is weaker than the circularity needs, say so rather than widening the statement.",
+      "effort": null,
+      "parent_task": 761,
+      "topic": "decidability",
+      "dependencies": [],
+      "created": "2026-11-04T06:48:13Z",
+      "last_updated": "2026-11-04T06:48:13Z",
+      "artifacts": []
     }
   ],
   "artifacts": [

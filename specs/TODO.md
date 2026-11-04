@@ -1,5 +1,5 @@
 ---
-next_project_number: 851
+next_project_number: 853
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 851
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,851,852 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -104,6 +104,8 @@ next_project_number: 851
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
+851 [RESEARCHED] — Prove rk\_of\_count\_drift: derive an RK edge from an actual...
+852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
 
 ### Formula Refactor
 
@@ -143,6 +145,48 @@ next_project_number: 851
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 852. Model level pumping lemma for tpof along ladder path
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 761
+
+**Description**: Author a model-level pumping lemma for tpOf along a ladder path: the model-side analogue of the periodicity of the certificate graph.
+
+WHY: the absence of this lemma is the third circularity, hit independently in three separate implementation rounds. Pumping the object walk preserves the realized type only through a MODEL-level periodicity statement about tpOf along a ladder path. The only landed periodicity statement is prodPre_periodic, with outputs satThreshold/satPeriod -- a statement about the backward-reachability fixpoint prodPreStep (cohIdle) on Finset (ProdState Q phi), i.e. a CERTIFICATE-relation fact. CounterQuotient.lean states in source that nothing there relates cohIdle to Rlad, ladderModel, tpOf or cellAt. The bridge from that certificate fact to tpOf is exactly obligations (S) and (C-prime), which READ the agreement that needs this lemma -- so citing prodPre_periodic here closes a cycle rather than discharging one.
+
+No phase of any plan version to date costs this lemma; it must be authored rather than cited.
+
+KNOWN REFUTATION TO RESPECT -- do not restate the refuted shape. Splice invariance of the realized stab-free type (tpOf_stabFree_eq_of_splice) is FALSE, not merely open: a single splice duplicates the pumped block, adding one occurrence of every object state in that block to the future of the walk, so a nested-eventuality counting formula F(p AND F p) flips between the original and the spliced path at EVERY position below the splice point, however far. Nested until has unbounded reach, so any distance-budget-per-nesting-depth framing is wrong. The refutation is compiled as the wired probe specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean (splice_type_invariance_refuted), checked against the ITERATED surgery the residue coordinate needs, with every recorded hypothesis discharged. What is refuted is that the admissibility-preserving surgery also preserves the type; the presentation itself and cellAt_const_of_kappa_eq are untouched.
+
+A further relevant compiled fact: by stab_mem_tpOf_iff_cell the stab bit of a realized type is a datum of the very cell being compared, so an agreement proof runs by induction on stab-nesting depth whatever the phase order is.
+
+GUARDRAILS: no sorry, no new axiom, no vacuous definition. State what the lemma actually quantifies over; if the honest form is weaker than the circularity needs, say so rather than widening the statement.
+
+---
+
+### 851. Rk of count drift bounded representative lemma
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 761
+
+**Description**: Prove rk_of_count_drift: derive an RK edge from an actual Count/Drift step at arbitrary counters, via the bounded representative set repsCnt Tc Tn P B.
+
+WHY: RK Tc Tn P B is defined as the image of Count/Drift over the BOUNDED representative set repsCnt Tc Tn P B. A repository-wide search finds NO theorem concluding RK from an actual Count/Drift step at arbitrary counters -- only rk_iff (the unfolding) and the definition of relK itself mention it. The CounterQuotient.lean section docstring states this explicitly: NOTHING below says the image is faithful; that is the content of the gated counter-lift lemma, obligations (2) and (3).
+
+PAYOFF: this single lemma unblocks all three conditions excluded as Reasoned Exclusions from Real: certBiInfK, certFwdK and certBwdK. All three quantify relK, whose second conjunct is RK Tc Tn P B (pend x.1) (pend y.1) x.2.2 y.2.2. certLocK and certBoxK need no relation at all and are already landed.
+
+CONSTRAINT -- NOT a per-coordinate reduction: the gap coordinate clipIdx B c n couples the two counters, so an independent per-coordinate reduction does not preserve kappa. Counterexample on record: c=100, n=101, B=3, Tc=Tn=1, P=0.
+
+The lemma statement is given in full in the Reasoned Exclusions record of the phase that excluded the three conditions, in plans/09_tight-chain-gate-regated-graph.md (stated around line 1697).
+
+GUARDRAILS: no sorry, no new axiom, no vacuous definition, no finite-fibre or finite-width assumption. If it does not close, mark BLOCKED with the goal state recorded.
+
+---
 
 ### 850. Upfirst exact shift copy boundary types
 - **Effort**: high
