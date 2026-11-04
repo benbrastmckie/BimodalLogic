@@ -1,7 +1,7 @@
 # Implementation Plan: Task #849
 
 - **Task**: 849 - Discharge or regime-restrict the named hypothesis HasForwardSlack, then land the exact-shift iterated deletion the cell-level downward inclusion still needs
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours (Phases 1-8 at 1.5 / 2 / 1 / 2 / 1.5 / 1.5 / 2 / 1.5)
 - **Dependencies**: None at the `state.json` level. Predecessor record: `specs/844_reanchored_deletion_half_depth_zero_cell/` (its five landed declarations are consumed, none edited)
 - **Research Inputs**: `specs/849_forward_slack_discharge_and_exact_shift_iteration/reports/01_forward-slack-exact-shift.md`, with its two compiled prototypes `prototype/climb-witness.lean` and `prototype/helpers-compiled.lean`
@@ -196,7 +196,7 @@ timeout 590 bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- bui
 
 ---
 
-### Phase 1: The regime lemmas [NOT STARTED]
+### Phase 1: The regime lemmas [COMPLETED]
 
 **Goal**: A new `section Slack` directly after `section DelNxt` holds the three pinned regime
 lemmas and the vacuity entry lemma, so that `HasForwardSlack` has an entry point with a finite
@@ -204,22 +204,22 @@ witness, is monotone, transports across a deletion, and holds trivially when not
 anchor's region.
 
 **Tasks**:
-- [ ] Open `section Slack` with `variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}`
+- [x] Open `section Slack` with `variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}`
   after `end DelNxt`. State `hasForwardSlack_mono`, `hasForwardSlack_of_next_region_cnt_le`, and
   `hasForwardSlack_del` with the headers EXACTLY as pinned under `## Lean Challenge Statements`
   (explicit `{Q : Type} …` binders included; see Decisions). Copy the three bodies from
   `specs/849_forward_slack_discharge_and_exact_shift_iteration/prototype/helpers-compiled.lean`.
-- [ ] `hasForwardSlack_of_idle_above` (name suggested, not pinned): for `g`, `z`, `l`, `n`, if
+- [x] `hasForwardSlack_of_idle_above` (name suggested, not pinned): for `g`, `z`, `l`, `n`, if
   `∀ i : ℕ, pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false` then
   `HasForwardSlack g z l n`. Proof: `intro I hI hidle hnext`; `hnext` contradicts the hypothesis
   at `i := I` (`Bool.false_ne_true`).
-- [ ] Docstrings: `hasForwardSlack_of_next_region_cnt_le` names the finite witness (the countdown
+- [x] Docstrings: `hasForwardSlack_of_next_region_cnt_le` names the finite witness (the countdown
   of the first region start above `z`'s region, read at the idle position before it by
   `cntAt_eq_nxtAt_of_idle_pend`); `hasForwardSlack_del` says the transported amount is exactly
   `L - l`; the vacuity lemma says the regime is empty-handed when no region follows.
-- [ ] `lean_verify` on each fully qualified name: axioms a subset of
+- [x] `lean_verify` on each fully qualified name: axioms a subset of
   `[propext, Classical.choice, Quot.sound]`, no `sorry`.
-- [ ] Scoped build green; `typst-sync-check.sh --fix`; commit with both files.
+- [x] Scoped build green; `typst-sync-check.sh --fix`; commit with both files.
 
 **Timing**: 1.5 hours
 

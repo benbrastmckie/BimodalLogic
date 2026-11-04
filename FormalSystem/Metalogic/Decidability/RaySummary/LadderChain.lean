@@ -804,6 +804,116 @@ def HasForwardSlack (g : ℤ → LadderState Q pend) (z : ℤ) (l n : ℕ) : Pro
 
 end DelNxt
 
+/-! ## The forward-slack regime: entry, monotonicity, transport, vacuity
+
+`HasForwardSlack g z l n` is a property of the PATH `g` at the single idle position before the
+first region start above `z`'s region. This section equips it with what a consumer needs: an
+entry lemma with a finite witness (the countdown of that first region start, read at the idle
+position before it through `cntAt_eq_nxtAt_of_idle_pend`), monotonicity in the deleted amount,
+transport across a deletion inside `z`'s region (decreased by exactly the deleted length), and
+the vacuous case (no region follows, so the regime asks nothing). -/
+
+section Slack
+
+variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **Monotone in the deleted amount**: slack for a larger amount is slack for a smaller one. -/
+theorem hasForwardSlack_mono {Q : Type} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend) (z : ℤ) {l l' n : ℕ}
+    (h : HasForwardSlack g z l n) (hle : l' ≤ l) : HasForwardSlack g z l' n := by
+  intro I hI hidle hnext
+  have := h I hI hidle hnext
+  omega
+
+/-- **The regime from its finite witness.** The first region start above `z`'s region sits at
+`z + cntAt g z + 1 + I` for the unique `I > 0` whose predecessors are idle; its countdown is the
+register's value at the idle position before it (`cntAt_eq_nxtAt_of_idle_pend`), so a bound
+`cntAt ≤ n + cntAt g z + I - l` on that one countdown is exactly the regime at amount `l`. -/
+theorem hasForwardSlack_of_next_region_cnt_le {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (z : ℤ) (l n : ℕ)
+    (hnext : ∀ I : ℕ, 0 < I →
+      (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+      (cntAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ)) : ℤ) ≤ (n : ℤ) + cntAt g z + I - l) :
+    HasForwardSlack g z l n := by
+  intro I hI hidle hnx
+  have h0 := hidle (I - 1) (by omega)
+  have hcast : z + (cntAt g z : ℤ) + 1 + ((I - 1 : ℕ) : ℤ) = z + (cntAt g z : ℤ) + (I : ℤ) := by
+    push_cast [Nat.cast_sub (by omega : 1 ≤ I)]; ring
+  rw [hcast] at h0
+  have h1 : pend (objAt g (z + (cntAt g z : ℤ) + (I : ℤ) + 1)) = true := by
+    rw [show z + (cntAt g z : ℤ) + (I : ℤ) + 1 = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by ring]
+    exact hnx
+  have hpin := cntAt_eq_nxtAt_of_idle_pend g hg _ h0 h1
+  have := hnext I hI hidle hnx
+  rw [show z + (cntAt g z : ℤ) + 1 + (I : ℤ) = z + (cntAt g z : ℤ) + (I : ℤ) + 1 by ring, hpin]
+    at this
+  exact this
+
+/-- **Forward slack transports across a deletion inside `z`'s region**, decreased by exactly the
+deleted length `l`: the deleted path's region at `z` is shorter by `l`, the first region start
+above it is the original's displaced by `-l` with the same countdown, so the regime at amount
+`L` on the original is the regime at amount `L - l` on the deleted path. -/
+theorem hasForwardSlack_del {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (z : ℤ) {a : ℤ} {l : ℕ} (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (hza : z ≤ a) (hal : a + (l : ℤ) ≤ z + (cntAt g z : ℤ)) {L n : ℕ}
+    (hslack : HasForwardSlack g z L n) (hlL : l ≤ L)
+    (g' : ℤ → LadderState Q pend) (hg' : IsLadderPath step pend g')
+    (hobj : ∀ v, objAt g' v = delObj g a l v) (hcnt : ∀ v, cntAt g' v = delCnt g a l v) :
+    HasForwardSlack g' z (L - l) n := by
+  intro I hI hidle hnext
+  have hcz : cntAt g' z = cntAt g z - l := by
+    rw [hcnt z]; exact delCnt_sub_of_mem_region hg hl hcl z hza (by omega)
+  have hczZ : (cntAt g' z : ℤ) = (cntAt g z : ℤ) - l := by rw [hcz]; omega
+  have hpull : ∀ v : ℤ, a ≤ v → objAt g' v = objAt g (v + (l : ℤ)) := fun v hv => by
+    rw [hobj v, delObj_of_ge v hv]
+  have hidle' : ∀ i : ℕ, i < I →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false := by
+    intro i hi
+    have := hidle i hi
+    rw [hczZ, hpull _ (by omega)] at this
+    rwa [show z + ((cntAt g z : ℤ) - l) + 1 + (i : ℤ) + (l : ℤ)
+        = z + (cntAt g z : ℤ) + 1 + (i : ℤ) by ring] at this
+  have hnext' : pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true := by
+    have := hnext
+    rw [hczZ, hpull _ (by omega)] at this
+    rwa [show z + ((cntAt g z : ℤ) - l) + 1 + (I : ℤ) + (l : ℤ)
+        = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by ring] at this
+  have hb := hslack I hI hidle' hnext'
+  have h0' := hidle' (I - 1) (by omega)
+  have h0 := hidle (I - 1) (by omega)
+  have hcast : ∀ C : ℤ, C + 1 + ((I - 1 : ℕ) : ℤ) = C + (I : ℤ) := by
+    intro C; push_cast [Nat.cast_sub (by omega : 1 ≤ I)]; ring
+  rw [hcast] at h0' h0
+  have h1' : pend (objAt g (z + (cntAt g z : ℤ) + (I : ℤ) + 1)) = true := by
+    rw [show z + (cntAt g z : ℤ) + (I : ℤ) + 1 = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by ring]
+    exact hnext'
+  have h1 : pend (objAt g' (z + (cntAt g' z : ℤ) + (I : ℤ) + 1)) = true := by
+    rw [show z + (cntAt g' z : ℤ) + (I : ℤ) + 1 = z + (cntAt g' z : ℤ) + 1 + (I : ℤ) by ring]
+    exact hnext
+  have hpin' := cntAt_eq_nxtAt_of_idle_pend g hg _ h0' h1'
+  have hpin := cntAt_eq_nxtAt_of_idle_pend g' hg' _ h0 h1
+  have hreg : nxtAt g' (z + (cntAt g' z : ℤ) + (I : ℤ))
+      = nxtAt g (z + (cntAt g z : ℤ) + (I : ℤ)) := by
+    rw [← hpin, ← hpin', hcnt, delCnt_of_ge _ (by omega), hczZ]
+    congr 1; ring
+  rw [hreg, hczZ]
+  have hlLZ : ((L - l : ℕ) : ℤ) = (L : ℤ) - l := by omega
+  rw [hlLZ]
+  omega
+
+/-- **The vacuous case**: when every position above `z`'s region is idle, no region start exists
+for the regime to constrain, and `HasForwardSlack` holds at every amount and every register. -/
+theorem hasForwardSlack_of_idle_above (g : ℤ → LadderState Q pend) (z : ℤ) (l n : ℕ)
+    (hidle_all : ∀ i : ℕ, pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) :
+    HasForwardSlack g z l n := by
+  intro I _ _ hnext
+  exact absurd ((hidle_all I).symm.trans hnext) Bool.false_ne_true
+
+end Slack
+
 /-! ## The single-block downward assembly: the countdown lowered by the block's length, the
 register held
 
