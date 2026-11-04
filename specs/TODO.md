@@ -11,7 +11,7 @@ next_project_number: 851
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,847,848 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -102,7 +102,6 @@ next_project_number: 851
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
 
@@ -1171,31 +1170,6 @@ A second, independent inconsistency to settle in the same pass: Phase 8 task lis
 Deliverable: a sanctioned decision on which repair to adopt, with the revised statement recorded so a later implement dispatch can land it without violating Statement Fidelity.
 
 Evidence: task 761 issues.jsonl entries iss_1792365111362_wjBgRA (statement-defect, blocking), iss_1792365551644_Swi1MU (environment, blocking), iss_1792364282470_KxINSA (plan-inconsistency, costly).
-
----
-
-### 836. Ladder type preserving cell agreement construction
-- **Effort**: high
-- **Status**: [BLOCKED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Parent**: Task 761
-- **Research**: [836_ladder_type_preserving_cell_agreement_construction/reports/01_type-preserving-cell-agreement-construction.md]
-- **Plan**: [836_ladder_type_preserving_cell_agreement_construction/plans/01_obligation-repair-and-pump-layer.md]
-- **Summary**: [836_ladder_type_preserving_cell_agreement_construction/summaries/01_obligation-repair-and-pump-layer-summary.md]
-
-**Description**: The depth-0 cell-level agreement for ladder realization needs a construction that preserves the REALIZED TYPE without preserving the valuation pointwise. Such a construction is stated nowhere in the tree.
-
-Established by task 761 Phase 11.5 (commit 9347d41d1), compiled rather than observed: the construction that route B named, AtomPreservingCountMove (given a ladder path and a target counter pair at the same object state, produce a ladder path through that pair preserving the atom row at every position), is REFUTED for every object whose pending bit is readable in the language. Mechanism: cntAt_eq_of_pend_eq makes the countdown a function of the pend profile alone, so moving c moves the pend profile; pendFactorsLab_of_atom shows the pending bit factors through the atom row as soon as the labelling carries it as one of its atoms, which the realization statement (quantifying over every lab : Q -> Atom -> Bool) does not exclude; cntAt_eq_of_lab_eq_of_pendFactorsLab then forbids any atom-row-preserving path from carrying a different countdown anywhere. The n half closes (nxt_free); the obstruction is confined to c by construction. Non-vacuity on both sides is discharged by the 46th wired probe, specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean (Probe761C): ParamsOk at the periodicity fixpoint own outputs, a populated kappa-collision at c != c prime via kappa_eq_of_shift, and a ladder path through EACH of the two ladder states.
-
-What is refuted is the CONSTRUCTION, not the obligation. A cell is a set of types over all histories through a state; two ladder paths can realize the same closure type without agreeing on a single atom row. The probe exhibits a path through each state and says nothing about whether the two cells coincide. CellLEZeroConstOfKappaEq is STATED in FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean as a Prop-valued schema and proved nowhere; the theorem name cellLE_zero_const_of_kappa_eq is reserved and claimed by nothing.
-
-Available ground to build on: Phase 11.4 landed truthAt_iff_of_lab_eq_of_stabBoxFree, truthAt_iff_of_lab_eq_of_stabPinned, tpOf_stabFree_eq_of_lab_eq and tpOf_stabBoxFree_eq_of_lab_eq, and established that the box arm WIDENS (box_mem_tpOf_transfer needs only same-model, and both compared histories are histories of the same ladderModel, so that induction case is Iff.rfl) -- so the usable fragment is stab-free WITH box included, strictly wider than the route decision assumed. Phase 11.3 landed altWalkPath and altWalkPath_eq_of_objAt_eq.
-
-Consequence if unresolved: task 761 Phase 11.6 is not enterable (it inducts from 11.5 base case, which is stated rather than landed), so 11.7 and 12-18 are unreachable along this route. Phase 11.2 is the only unblocked phase remaining there.
-
-Evidence: task 761 issues.jsonl entries iss_1793655395836_WUA3Kc (route-refuted, blocking), iss_1792373250168_HQM6Je (blocker), iss_1792404913585_GTqC0g (refuted-statement), iss_1792402772629_BNdiN5 (refuted-approach), iss_1792401253858_iZyQNA (plan-gap).
 
 ---
 
