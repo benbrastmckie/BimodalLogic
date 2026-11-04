@@ -40,7 +40,8 @@
         }
       },
       "dependencies": [
-        854
+        854,
+        859
       ]
     },
     {
@@ -4339,7 +4340,7 @@
     {
       "project_number": 859,
       "project_name": "qtime_open_future_definability_base_dense",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Settle whether the open-future modal ▷ (and its mirror ◁) is L⁺-definable on the Base and Dense frame classes, where the ZTime/RTime argument fails. The positive ZTime/RTime verdict rests on Gabbay separation (GHR Thm 10.2.9 over ℤ, Thm 10.3.20 over Dedekind-complete time) plus the elimination ▷(α ∨ β) ↔ α ∨ ⊡β; that route is closed over ℚ-time, since Until/Since is not separable over the rationals (Rabinovich 2014 §7) and separation ⇒ expressive completeness (GHR Thm 9.3.1), while ℚ is a TemporalOrder. Pursue the two routes named in the parent task's report 01_open-future-definability-verdict.md: (R3a) a Stavi/γ_π⁺-style candidate ▷φ together with a ℚ-time bisimulation discharging the invariance half of a negative result; (R3b) a ▷-specific elimination that avoids full separation. Deliver a definite verdict per class (definable / not definable) with a compiled-live Lean probe for whichever half is constructive, reusing the paste / paste_agreeUpTo / paste_agreeFrom / IsPurePast / IsPureFuture / truth_congr_agreeUpTo infrastructure in PlusPasting.lean that the ZTime probe already exercised. Do not touch FormalSystem/ or Tests/ outside a probes/ directory. The Base-class language ruling and the L^▷ proof-system work remain gated on this verdict. Audit note: the backlog audit flagged duplicate-of-open against 559 (nondeterministic_canonical_model_tm_star_completeness) at semantic 0.69 with no shared file_scope; judged a vocabulary overlap, not a duplicate — 559 builds a canonical model for TM* completeness, this task decides an expressiveness question.",
       "effort": "high",
@@ -4347,8 +4348,14 @@
       "topic": "metalogic",
       "dependencies": [],
       "created": "2026-11-04T21:27:12Z",
-      "last_updated": "2026-11-04T21:27:12Z",
-      "artifacts": [],
+      "last_updated": "2026-11-04T22:07:26Z",
+      "artifacts": [
+        {
+          "path": "specs/859_qtime_open_future_definability_base_dense/reports/01_qtime-open-future-definability.md",
+          "type": "report",
+          "summary": "Verdict: the open-future modal is NOT L-plus-definable at .Base or at .Dense, via a new marker gadget whose compiled lemmas show the modal computes a gap-anchored past property that U/S cannot express over Q-time."
+        }
+      ],
       "audit_verdict": {
         "proposal": {
           "id": "qtime_open_future_definability_base_dense",
@@ -4468,7 +4475,9 @@
           "mechanical": true,
           "semantic": true
         }
-      }
+      },
+      "session_id": "sess_1793827858_5fe829",
+      "next_artifact_number": 2
     }
   ],
   "artifacts": [

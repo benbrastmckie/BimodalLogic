@@ -12,7 +12,7 @@ next_project_number: 860
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,854,855,857,858,859 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,852,853,856 | 298,428,502,761,768,769,770,772,777,785,810,813,833,838,839,854,855 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,852,853,856 | 298,428,502,761,768,769,770,772,777,785,810,813,833,838,839,854,855,859 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -132,7 +132,8 @@ next_project_number: 860
 854 [RESEARCHED] — Decide whether the open-future modal ▷ is L⁺-definable
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe... (see above)
   └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
-859 [NOT STARTED] — Settle whether the open-future modal ▷ (and its mirror ◁) is...
+859 [RESEARCHED] — Settle whether the open-future modal ▷ (and its mirror ◁) is...
+  └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,... (see above)
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -155,11 +156,12 @@ next_project_number: 860
 
 ### 859. Qtime open future definability base dense
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Parent**: Task 854
+- **Research**: [859_qtime_open_future_definability_base_dense/reports/01_qtime-open-future-definability.md]
 
 **Description**: Settle whether the open-future modal ▷ (and its mirror ◁) is L⁺-definable on the Base and Dense frame classes, where the ZTime/RTime argument fails. The positive ZTime/RTime verdict rests on Gabbay separation (GHR Thm 10.2.9 over ℤ, Thm 10.3.20 over Dedekind-complete time) plus the elimination ▷(α ∨ β) ↔ α ∨ ⊡β; that route is closed over ℚ-time, since Until/Since is not separable over the rationals (Rabinovich 2014 §7) and separation ⇒ expressive completeness (GHR Thm 9.3.1), while ℚ is a TemporalOrder. Pursue the two routes named in the parent task's report 01_open-future-definability-verdict.md: (R3a) a Stavi/γ_π⁺-style candidate ▷φ together with a ℚ-time bisimulation discharging the invariance half of a negative result; (R3b) a ▷-specific elimination that avoids full separation. Deliver a definite verdict per class (definable / not definable) with a compiled-live Lean probe for whichever half is constructive, reusing the paste / paste_agreeUpTo / paste_agreeFrom / IsPurePast / IsPureFuture / truth_congr_agreeUpTo infrastructure in PlusPasting.lean that the ZTime probe already exercised. Do not touch FormalSystem/ or Tests/ outside a probes/ directory. The Base-class language ruling and the L^▷ proof-system work remain gated on this verdict. Audit note: the backlog audit flagged duplicate-of-open against 559 (nondeterministic_canonical_model_tm_star_completeness) at semantic 0.69 with no shared file_scope; judged a vocabulary overlap, not a duplicate — 559 builds a canonical model for TM* completeness, this task decides an expressiveness question.
 
@@ -488,7 +490,7 @@ is a fault in the agent system, not in that work.
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 854
+- **Dependencies**: Task 854, Task 859
 
 **Description**: IMPLEMENTATION TASK, gated: build the proof system for L^▷ -- `OpenAxiom`, `OpenDerivationTree`, and their soundness recursion -- beside `FormalSystem/OpenLanguage/`'s existing semantic half, plus the two conservativity directions over TM⁺ and the collapse under `Determined`. This is a PREREQUISITE for any completeness statement about L^▷ and it is currently owed by nobody.
 

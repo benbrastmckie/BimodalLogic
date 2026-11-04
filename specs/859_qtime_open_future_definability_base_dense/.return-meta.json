@@ -1,0 +1,32 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/859_qtime_open_future_definability_base_dense/reports/01_qtime-open-future-definability.md",
+      "summary": "Verdict: the open-future modal is NOT L-plus-definable at .Base or at .Dense, via a new marker gadget whose compiled lemmas show the modal computes a gap-anchored past property that U/S cannot express over Q-time."
+    },
+    {
+      "type": "probe",
+      "path": "specs/859_qtime_open_future_definability_base_dense/probes/01_ofut-marker-gadget-and-nondefinability.lean",
+      "summary": "Compiled-live (exit 0, no sorry/error/warning, 419 lines): past/future-determinedness of the two open modals, the theta/nu/R marker gadget, the exact computation that the open-future modal's existential dual equals DeltaProp, the conditional non-definability theorem, and the regular four-colour clock frame over any duration."
+    }
+  ],
+  "user_decision": {
+    "question": "The negative verdict's invariance half (the collapse of every L-plus formula to one of p, not-p, top, bottom on GHR-nice Q-structures) is written out and auditable in the report but is not machine-checked; formalizing it is a multi-phase task comparable to formalizing Gabbay's eight eliminations. Should that formalization be filed?",
+    "options": [
+      "Accept the paper step - treat the verdict as settled on the report's written argument, and file only the cheap follow-up (compile the 'every colour function is a history' bridge lemma)",
+      "File the full formalization of the collapse argument as a separate implementation task, accepting a multi-phase cost with heavy Q-combinatorics",
+      "File both, with the cheap bridge lemma first"
+    ],
+    "recommended": "Accept the paper step - treat the verdict as settled on the report's written argument, and file only the cheap follow-up (compile the 'every colour function is a history' bridge lemma)",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1793827858_5fe829_859",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
