@@ -736,6 +736,100 @@ theorem iterSpliceIdx_mem (u : ℤ) (l : ℕ) (d : ℕ) (v : ℤ) (hv : u ≤ v)
 
 end IterIdx
 
+/-! ## The iterated duplication with the realized types exposed everywhere -/
+
+section Iterate
+
+variable {Q : Type} [Finite Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE ITERATED DUPLICATION, READ THROUGH THE INDEX MAP.** `d` duplications of a
+type-respecting block `[u, u + l)` of a pending-forever region: the walk is the original read
+through `iterSpliceIdx u l d` at EVERY position, every countdown before the block whose region
+reaches it is raised by `d · l`, above the run the countdown is the original's `d · l` earlier,
+and the realized stab-free type at every position is the original's at the retracted position —
+in particular the original's type at `u` at every copy boundary `u + i · l` (`i ≤ d`) and its
+type at `u + l` at the run's top `u + (d + 1) · l`. The landed
+`exists_iterSpliced_ladderPath_of_pend_past` exposes types only below `u + l` and at `u + l`;
+every one of its clauses is a reading of this one through the characterization lemmas of
+`iterSpliceIdx`. -/
+theorem exists_iterSpliced_ladderPath_idx_of_pend_past {Q : Type} [Finite Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    {g : ℤ → LadderState Q pend} (hg : IsLadderPath step pend g) {u : ℤ} {l : ℕ}
+    (hl : 0 < l) (hcl : l ≤ cntAt g u)
+    (hpast : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true)
+    (hrep : objAt g u = objAt g (u + (l : ℤ)))
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t))
+    (hty : tpOf (ladderModel step pend fwd bwd lab) φ σ u
+         = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + (l : ℤ))) (d : ℕ) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v : ℤ, objAt g' v = objAt g (iterSpliceIdx u l d v)) ∧
+      (∀ v : ℤ, v ≤ u → u ≤ v + (cntAt g v : ℤ) → cntAt g' v = cntAt g v + d * l) ∧
+      (∀ v : ℤ, u + ((d + 1) * l : ℕ) ≤ v → cntAt g' v = cntAt g (v - (d * l : ℕ))) ∧
+      ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        ∀ w : ℤ, tpOf (ladderModel step pend fwd bwd lab) φ σ' w
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ (iterSpliceIdx u l d w) := by
+  classical
+  haveI : Fintype Q := Fintype.ofFinite Q
+  induction d with
+  | zero =>
+      refine ⟨g, hg, fun _ => rfl, fun v _ _ => by simp, fun v _ => by simp, fun σ' hσ' w => ?_⟩
+      exact tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ' σ
+        (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ t)
+        (fun _ => rfl) hno w
+  | succ d ih =>
+      obtain ⟨g₁, hg₁, hobj₁, hcnt₁, habove₁, hty₁⟩ := ih
+      -- the original's object and type at the retraction of `u + l` are those at `u`
+      have hidx_ul : objAt g (iterSpliceIdx u l d (u + (l : ℤ))) = objAt g u := by
+        rcases d with _ | d
+        · rw [iterSpliceIdx_zero]; exact hrep.symm
+        · rw [show u + (l : ℤ) = u + ((1 * l : ℕ) : ℤ) by push_cast; ring,
+            iterSpliceIdx_boundary u l hl (d + 1) 1 (by omega)]
+      have hty_ul : tpOf (ladderModel step pend fwd bwd lab) φ σ (iterSpliceIdx u l d (u + (l : ℤ)))
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ u := by
+        rcases d with _ | d
+        · rw [iterSpliceIdx_zero]; exact hty.symm
+        · rw [show u + (l : ℤ) = u + ((1 * l : ℕ) : ℤ) by push_cast; ring,
+            iterSpliceIdx_boundary u l hl (d + 1) 1 (by omega)]
+      have hpast₁ : ∀ p : ℤ, p ≤ u → pend (objAt g₁ p) = true := fun p hp => by
+        rw [hobj₁ p, iterSpliceIdx_of_lt u l d p (by omega)]; exact hpast p hp
+      have hrep₁ : objAt g₁ u = objAt g₁ (u + (l : ℤ)) := by
+        rw [hobj₁ u, hobj₁ (u + (l : ℤ)), iterSpliceIdx_of_lt u l d u (by omega), hidx_ul]
+      have hcu₁ : cntAt g₁ u = cntAt g u + d * l := hcnt₁ u le_rfl (by omega)
+      have hcl₁ : l ≤ cntAt g₁ u := by rw [hcu₁]; omega
+      obtain ⟨g₂, hg₂, hobj₂, hcnt₂⟩ :=
+        exists_spliced_ladderPath_of_pend_past hg₁ hl hcl₁ hpast₁ hrep₁
+      have hobj₂' : ∀ w : ℤ, objAt g₂ w = objAt g₁ (spliceIdx u l w) := fun w => by
+        rw [hobj₂ w, spliceObj_eq_objAt_spliceIdx]
+      refine ⟨g₂, hg₂, fun v => ?_, fun v hv hreg => ?_, fun v hv => ?_, fun σ₂ hσ₂ w => ?_⟩
+      · rw [hobj₂' v, hobj₁, iterSpliceIdx_succ]
+      · have hreg₁ : u ≤ v + (cntAt g₁ v : ℤ) := by rw [hcnt₁ v hv hreg]; push_cast; omega
+        rw [hcnt₂ v, spliceCnt_add_of_mem_region hl v hv hreg₁, hcnt₁ v hv hreg]
+        ring
+      · have e : (((d + 1 + 1) * l : ℕ) : ℤ) = ((d + 1) * l : ℕ) + (l : ℤ) := by push_cast; ring
+        rw [e] at hv
+        have hge : u + (l : ℤ) ≤ v := by
+          have : (0 : ℤ) ≤ (((d + 1) * l : ℕ) : ℤ) := Int.natCast_nonneg _
+          omega
+        rw [hcnt₂ v, spliceCnt_of_ge v hge, habove₁ (v - (l : ℤ)) (by omega)]
+        congr 1; push_cast; ring
+      · obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+        have hty₁' : tpOf (ladderModel step pend fwd bwd lab) φ σ₁ u
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ (u + (l : ℤ)) := by
+          rw [hty₁ σ₁ hσ₁ u, hty₁ σ₁ hσ₁ (u + (l : ℤ)), iterSpliceIdx_of_lt u l d u (by omega),
+            hty_ul]
+        have htr := tpOf_eq_spliceIdx_of_tpOf_eq step pend fwd bwd lab φ u l hl (k := 0) (k' := 0)
+          σ₁ σ₂ (fun t => by rw [add_zero]; exact hσ₁ t) (fun t => by rw [add_zero]; exact hσ₂ t)
+          hobj₂' hno hty₁' w
+        rw [htr, hty₁ σ₁ hσ₁, iterSpliceIdx_succ]
+
+end Iterate
+
 section AssemblyFin
 
 variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
