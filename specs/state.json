@@ -78,7 +78,7 @@
     {
       "project_number": 854,
       "project_name": "open_future_modal_lplus_definability",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "title": "Decide whether the open-future modal ▷ is L⁺-definable",
@@ -87,7 +87,7 @@
         "specs/854_open_future_modal_lplus_definability/"
       ],
       "created": "2026-11-04T20:40:35Z",
-      "last_updated": "2026-11-04T20:58:47Z",
+      "last_updated": "2026-11-04T21:22:21Z",
       "audit_verdict": {
         "verdict": "covered-by-closed",
         "project_number": 443,
@@ -104,7 +104,15 @@
           "title": "Decide whether the open-future modal ▷ is L⁺-definable"
         }
       },
-      "session_id": "sess_1793825909_81e493_854"
+      "session_id": "sess_1793825909_81e493",
+      "artifacts": [
+        {
+          "path": "specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md",
+          "type": "report",
+          "summary": "Class-split verdict: ▷ (and ◁) are L⁺-definable over ZTime and RTime frames via Gabbay separation plus pasting (Lean half compiled-live); open at Base/Dense because U/S is not separable over ℚ-time, with the obstruction and both candidate routes located; sinkFrame excluded as a negative fixture."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 833,

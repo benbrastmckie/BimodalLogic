@@ -129,7 +129,7 @@ next_project_number: 859
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 833 [NOT STARTED] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-854 [RESEARCHING] — Decide whether the open-future modal ▷ is L⁺-definable
+854 [RESEARCHED] — Decide whether the open-future modal ▷ is L⁺-definable
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe... (see above)
   └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -536,10 +536,11 @@ CONTENTION. `specs/evidence/seam-gluing-ray-product/` and `scripts/check-evidenc
 ---
 
 ### 854. Decide whether the open-future modal ▷ is L⁺-definable
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
+- **Research**: [854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md]
 
 **Description**: RESEARCH TASK, verdict-first, and it is the GATE on the whole L^▷ language ruling: is the open-future modal ▷ definable in L⁺? Reports and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/. Run with `/orchestrate 854 --research --lit`.
 

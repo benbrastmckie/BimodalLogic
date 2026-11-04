@@ -1,0 +1,47 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md",
+      "summary": "Class-split verdict: ▷ (and ◁) are L⁺-definable over ZTime and RTime frames via Gabbay separation plus pasting (Lean half compiled-live); open at Base/Dense because U/S is not separable over ℚ-time, with the obstruction and both candidate routes located; sinkFrame excluded as a negative fixture."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/854_open_future_modal_lplus_definability/probes/01_ofut-elimination-and-translation.lean",
+      "summary": "Compiled-live probe (exit 0, no sorry): the elimination ▷(α∨β) ↔ α∨⊡β and ◁(α∨β) ↔ ⊡α∨β for past-/future-determined parts, CNF forms, and the translation tr : OpenFormula → PlusFormula with truth- and validity-transfer at ZTime/RTime conditional on a SeparationOver hypothesis."
+    }
+  ],
+  "next_steps": "Record the class-split verdict in 559 (n3)/(P0b) and the ROADMAP; keep 856 gated; file the follow-on research task on ▷-definability over ℚ-time (report R3); optionally file the GHR-separation formalization (report R4).",
+  "user_decision": {
+    "question": "The definability gate returned split: ▷ is L⁺-definable at ZTime/RTime (the language ruling is notational there) but open at Base/Dense. Where should the L^▷ programme point next?",
+    "options": [
+      "Settle Base/Dense first — file the ℚ-time definability research task (report R3) and keep 856 and the Base-class language ruling gated on it",
+      "Treat the ruling as retired at every class now — drop 856, and run the L^▷ engine questions only through L⁺ translations",
+      "Keep the ruling alive at Base/Dense and enter 856 scoped to Base/Dense only, accepting the risk that a later positive Base verdict makes it redundant"
+    ],
+    "recommended": "Settle Base/Dense first — file the ℚ-time definability research task (report R3) and keep 856 and the Base-class language ruling gated on it",
+    "blocking": false
+  },
+  "memory_candidates": [
+    {
+      "content": "Over the repository's task frames, an L^▷/L⁺ definability question hinges on Gabbay separation: ▷(α∨β) ↔ α∨⊡β for past-/future-determined parts via paste, so ▷ is L⁺-definable exactly where U/S separates (ℤ, ℝ) and the question is open where it does not (ℚ). Never attempt a negative fixture on a ℤ-time frame.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["separation theorem", "open-future modal", "definability", "pasting", "ZTime", "rationals"]
+    }
+  ],
+  "modified_files": [
+    "specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md",
+    "specs/854_open_future_modal_lplus_definability/probes/01_ofut-elimination-and-translation.lean",
+    "specs/854_open_future_modal_lplus_definability/issues.jsonl"
+  ],
+  "metadata": {
+    "session_id": "sess_1793825909_81e493_854",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
