@@ -2343,7 +2343,7 @@ Phases 11.11-11.13 stay gated.
 - No library module is touched: `git diff --stat` over this phase's commits names no file under `FormalSystem/` or `Tests/`.
 - `grep -rn 'exists_ladderPath_at_region_of_idle_past\|exists_ladderPath_at_region\b\|exists_spliced_ladderPath_of_idle_past' FormalSystem/ Tests/` returns only docstring prose and the one landed `exists_ladderPath_at_region_of_pend_past` declaration — the three unclaimed names stay unclaimed by this phase.
 - On the WITNESSED or REFUTED branch: `bash scripts/check-evidence-probes.sh` exits 0 and reports 50 wired entries, stated as a delta of one against the 49 measured at this revision's authoring, with the probe file and its gate entry in the SAME commit. On the INCONCLUSIVE branch the gate script is unmodified and reports 49.
-- `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`; the repository-wide vacuous grep is 1, unchanged from the measured baseline; the `^axiom ` counts are 10 and 2, unchanged.
+- `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`; the repository-wide vacuous grep is 1, unchanged from the measured baseline; the `^axiom ` counts are 12 and 2, unchanged.
 - `bash .claude/scripts/check-task-references.sh --quiet` exits 0.
 
 ---
