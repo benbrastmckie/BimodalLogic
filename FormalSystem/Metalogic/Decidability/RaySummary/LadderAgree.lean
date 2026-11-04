@@ -2196,10 +2196,11 @@ the conjuncts of `Probe836A.exists_refuting_cell_collision` (`ParamsOk` discharg
 `kappa`-collision, a ladder path through EACH of the two states). The theorem name stays reserved
 and is claimed by nothing in this module or elsewhere; the `def` is kept so that the refutation is
 a theorem about a named object rather than a remark, on the precedent of
-`AtomPreservingCountMove`. The current state of the second (downward) inclusion is the
-single-block, path-level assembly `exists_ladderPath_through_deleted_of_pend_past` of
-`LadderChain.lean`, under its named forward-slack hypothesis `HasForwardSlack`; the upward
-inclusion is `cellAt_subset_of_shift_of_pend_past` there.
+`AtomPreservingCountMove`. The second (downward) inclusion is landed in `LadderChain.lean` on
+the witnessing path, under the named forward-slack hypothesis `HasForwardSlack`: the exact-shift
+theorem `exists_ladderPath_through_deleted_exact_of_pend_past` and its cell-level consumer
+`mem_cellAt_of_shift_of_hasForwardSlack`; the upward inclusion is
+`cellAt_subset_of_shift_of_pend_past` there, and no state-level downward inclusion is claimed.
 
 **The mechanism.** The cell at a ladder state reads the next-deadline register FORWARD, through
 the next region's pin: by `cntAt_eq_nxtAt_of_idle_pend` the register's value at the first idle

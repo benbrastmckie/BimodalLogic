@@ -626,13 +626,13 @@ the phase -- additive declarations, consumed by nothing yet, no landed signature
 
 ---
 
-### Phase 8: Record, sync, and the full gate [NOT STARTED]
+### Phase 8: Record, sync, and the full gate [COMPLETED]
 
 **Goal**: The library's own record describes the new state, the Challenge drift check passes,
 and the complete gate set runs green.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: the `LadderChain.lean` row --
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: the `LadderChain.lean` row --
   re-derive the line count with `wc -l` (the row currently reads `632`, stale since the
   predecessor), and extend the description with: the slack regime (`HasForwardSlack` with its
   entry, monotonicity, transport and vacuity lemmas), the wired refutation and the plateau
@@ -643,7 +643,7 @@ and the complete gate set runs green.
   `LadderPump.lean` row saying which positions `exists_iterSpliced_ladderPath_of_pend_past`
   exposes types at (below `u + l` and at `u + l` only), per the research's context-extension
   recommendation.
-- [ ] README, the paragraph "The depth-`0` obligation's status" and the final sentences of
+- [x] README, the paragraph "The depth-`0` obligation's status" and the final sentences of
   "(K1) does not constrain a spanning block's length": state that the downward direction is now
   landed at the cell level ON THE WITNESSING PATH under the forward-slack regime, that the regime
   is necessary (the compiled climbing path) and inhabited (the plateau), and that the reserved
@@ -652,28 +652,28 @@ and the complete gate set runs green.
   "and so is every regime-restricted variant of it" so it no longer contradicts the landed
   path-level inclusion (a regime-restricted PATH-level inclusion is landed; no STATE-level
   variant is).
-- [ ] `LadderChain.lean` docstrings: the module header's "What it holds" paragraph; the
+- [x] `LadderChain.lean` docstrings: the module header's "What it holds" paragraph; the
   `Assembly` section docstring's last two sentences ("The cell-level downward inclusion still
   needs the exact-shift iteration of the deletion"); the `DelNxtFin` section docstring and the
   single-block assembly's docstring ("Two pieces still separate this from the cell-level downward
   inclusion"); `cellAt_subset_of_shift_of_pend_past`'s docstring ("the exact-shift iteration of
   the deletion is the piece still missing"). Each is rewritten to point at the new section.
-- [ ] `LadderAgree.lean`, the module-level docstring under "The obligation of the cell-level
+- [x] `LadderAgree.lean`, the module-level docstring under "The obligation of the cell-level
   agreement, stated and refuted": its sentence "The current state of the second (downward)
   inclusion is the single-block, path-level assembly …" is updated to name the exact-shift
   theorem and the slack-restricted cell inclusion (docstring only; no proof edited).
-- [ ] `bash .claude/scripts/lean-challenge-snapshot.sh --check 849 .` from the repository root:
+- [x] `bash .claude/scripts/lean-challenge-snapshot.sh --check 849 .` from the repository root:
   expected exit 0 (no drift on the seven pinned names). A 65 is advisory: investigate, and if a
   pinned statement was changed, escalate per `plan-compliance.md` rather than editing the
-  Challenge.
-- [ ] Unscoped guarded build: `timeout 590 bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
+  Challenge. *(deviation: altered — the checker exits 71, not 0 or 65: five pinned names resolve to two declarations because the research prototype `prototype/helpers-compiled.lean` under `specs/` carries same-named copies and the checker scans the whole tree with no scope flag. Drift was verified independently: whitespace-normalized header diff of all seven pinned declarations against `Challenge.lean` is MATCH 7/7; the prototype (research record) was not edited.)*
+- [x] Unscoped guarded build: `timeout 590 bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
   (or detached with the bounded waiter if it does not fit one call), exit 0; `sorry` count `0`
   across `FormalSystem/`; `lean_verify` on every name landed in Phases 1-7.
-- [ ] `bash scripts/typst-sync-check.sh --fix`; then `bash scripts/typst-sync-check.sh` exits 0.
-- [ ] The complete gate set: `bash .claude/scripts/verify-deploy.sh` exits 0.
-- [ ] `grep -rn "task 8" FormalSystem/ typst/` returns nothing (no task-number references in
+- [x] `bash scripts/typst-sync-check.sh --fix`; then `bash scripts/typst-sync-check.sh` exits 0.
+- [x] The complete gate set: `bash .claude/scripts/verify-deploy.sh` exits 0.
+- [x] `grep -rn "task 8" FormalSystem/ typst/` returns nothing (no task-number references in
   deliverables); the README and docstrings cite durable anchors only.
-- [ ] Commit (`.lean` files, README, `status.typ`); write the implementation summary.
+- [x] Commit (`.lean` files, README, `status.typ`); write the implementation summary.
 
 **Timing**: 1.5 hours
 

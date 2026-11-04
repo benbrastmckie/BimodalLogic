@@ -39,10 +39,28 @@ doubling chain consumes: a chain whose last region has countdown at least `Tc` c
 order of `log₂ Tc` region starts below it, and that bound makes `log₂ Tc` dominate the carrier's
 cardinality.
 
+Beyond the bridge, the two assemblies and their cell-level consumers. UPWARD: the regime-A
+assembly `exists_ladderPath_through_shifted_of_pend_past` (a corollary of the register-held
+iterated duplication of a given block, `exists_ladderPath_through_iterSpliced_nxt_of_pend_past`)
+and the upward cell inclusion `cellAt_subset_of_shift_of_pend_past`. DOWNWARD, under the
+forward-slack regime: the deletion with the register exposed and the collapse of its anchor
+clause to the first region start; the regime `HasForwardSlack` with its entry lemma (a finite
+witness, `hasForwardSlack_of_next_region_cnt_le`), monotonicity, transport across a deletion and
+vacuity (`section Slack`); the two-state witness `ClimbWitness`, showing the regime NECESSARY (the
+climbing-register path refutes the unconditional claim) and INHABITED at every amount (the
+plateau); the room bound `budget_mul_succ_le_Tc` and the spaced pigeonhole
+`exists_typeBlock_of_spacing`; the one-step deletion, the overshoot loop, and the EXACT-SHIFT
+theorem `exists_ladderPath_through_deleted_exact_of_pend_past` (the countdown lowered by exactly
+`m · (P + 1)`, the register and the realized type held); and its consumer, the downward cell
+inclusion ON THE WITNESSING PATH, `mem_cellAt_of_shift_of_hasForwardSlack`.
+
 ## What this module does NOT hold
 
-No cell-level agreement, no assembly beyond the bridge; the regime-A assembly consumes the
-bridge and is stated separately below the bridge's section.
+No cell-level agreement: the reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing,
+because the obligation quantifies over every path through the state and concludes cell EQUALITY,
+and no STATE-level downward inclusion can be stated under a path-level regime (the climbing path
+passes through a state satisfying every state-level hypothesis the consumer carries). The
+downward inclusion held here is the path-level one above.
 -/
 
 set_option linter.style.longFile 1800
@@ -535,8 +553,9 @@ composing them charges the `l`-shift against a distance from `0`. The z-anchored
 `exists_ladderPath_through_deleted_of_pend_past` (below) lowers the countdown by one
 type-respecting block with the register held — under the named hypothesis `HasForwardSlack`, one
 inequality at the first region start above `z`'s region that the path's own facts do not
-discharge. The cell-level downward inclusion still needs the exact-shift iteration of the
-deletion. -/
+discharge. The exact-shift iteration of that deletion is `section DelNxtIter` below:
+`exists_ladderPath_through_deleted_exact_of_pend_past`, and its consumer
+`mem_cellAt_of_shift_of_hasForwardSlack`, the downward cell inclusion on the witnessing path. -/
 
 section Assembly
 
@@ -1234,7 +1253,9 @@ block's length `l` (a divisor of `P + 1`), the object state and the register at 
 same realized stab-free type at `z`. The register is rebuilt by the z-anchored deletion with
 `n := nxtAt g z`, and its anchor clause is reduced to the first region start by the collapse; the
 single inequality left there is NOT discharged from the path's own facts (the gate's verdict),
-so it is carried as the named hypothesis `HasForwardSlack g z (P + 1) (nxtAt g z)`. -/
+so it is carried as the named hypothesis `HasForwardSlack g z (P + 1) (nxtAt g z)`;
+`section Slack` above equips the regime, and `section DelNxtIter` below iterates this assembly to
+the exact shift. -/
 
 section DelNxtFin
 
@@ -1247,13 +1268,17 @@ regime-restricted branch: beyond the upward mirror's hypotheses and the gap
 `HasForwardSlack g z (P + 1) (nxtAt g z)`, one inequality at one region start, and the
 `l`-instance the block needs follows from it by monotonicity (`l ≤ P + 1`). Nothing is weakened
 under an existing name, and the reserved name
-`cellLE_zero_const_of_kappa_eq` remains claimed by nothing. Two pieces still separate this from
-the cell-level downward inclusion `cellAt … (q, c + m · (P + 1), n) ⊆ cellAt … (q, c, n)`: the
-exact-shift ITERATION of the deletion (deleting `(P + 1) / l` blocks needs that many consecutive
-type-equal copies in the ORIGINAL, which the pigeonhole does not supply, whereas the upward
-iteration manufactures its copies by splicing), and the PATH-versus-STATE quantification (the
-forward slack is a property of a path, and the cell quantifies over every path through the
-state, the climbing-register path included). -/
+`cellLE_zero_const_of_kappa_eq` remains claimed by nothing. Two pieces separate this single-block
+assembly from the cell-level downward inclusion, and `section DelNxtIter` supplies both on the
+witnessing path: the exact-shift ITERATION of the deletion is
+`exists_ladderPath_through_deleted_exact_of_pend_past` (every deletion lemma is length-agnostic,
+so `d` deletions of an `l`-block are one deletion of a `d · l`-block and the obstacle is
+EXACTNESS, met by overshooting with sampled blocks at spacing `l` and raising by the overshoot
+with the register-held iterated duplication of the original block), and the PATH-versus-STATE
+quantification (the forward slack is a property of a path, and the cell quantifies over every
+path through the state, the climbing-register path included) is answered by stating the inclusion
+on the witnessing path, `mem_cellAt_of_shift_of_hasForwardSlack`, the only sound form under a
+path-level regime. -/
 theorem exists_ladderPath_through_deleted_of_pend_past
     (step : Q → Q → Bool) (pend : Q → Bool)
     (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
@@ -1710,10 +1735,11 @@ end DelNxtIter
 (`n + 2 ≤ c`, so by `pend_past_of_nxtAt_lt` every path through the state is pending forever into
 the past) at countdown at least `Tc`, the cell at `(q, c, n)` is contained in the cell at
 `(q, c + m · (P + 1), n)`: every type realized at the former is realized at the latter by the
-regime-A assembly. The downward inclusion is not claimed at the cell level: its single-block,
-path-level form is `exists_ladderPath_through_deleted_of_pend_past`, under the forward-slack
-hypothesis `HasForwardSlack` on the path, and the exact-shift iteration of the deletion is the
-piece still missing. Under `kappa_eq_components` this covers the sub-regime `n = n'`;
+regime-A assembly. The downward inclusion is `mem_cellAt_of_shift_of_hasForwardSlack`, stated on
+the witnessing path under the forward-slack hypothesis `HasForwardSlack` (with the gap
+`n + budget² ≤ c`), through the exact-shift theorem
+`exists_ladderPath_through_deleted_exact_of_pend_past`; no state-level downward inclusion is
+claimed. Under `kappa_eq_components` this covers the sub-regime `n = n'`;
 the common shift `n' = n + m · (P + 1)` is the same construction with `n₀ := n'` inside the
 widened window and is not stated here. -/
 theorem cellAt_subset_of_shift_of_pend_past {Q : Type} [Fintype Q] [Nonempty Q]
