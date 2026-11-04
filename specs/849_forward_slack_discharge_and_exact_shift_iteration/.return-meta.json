@@ -1,44 +1,34 @@
 {
-  "status": "researched",
-  "started_at": "2026-11-03T23:49:27Z",
-  "completed_at": "2026-11-04T00:15:25Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/849_forward_slack_discharge_and_exact_shift_iteration/reports/01_forward-slack-exact-shift.md",
-      "summary": "Route (a) for HasForwardSlack refuted by a compiled climbing-register ladder path; route (b) regime with finite witness and three compiled entry lemmas; exact-shift reformulated as overshoot-then-up with a compiled spaced pigeonhole, slack transport, and (K2) room bound; cell-level statement on the witnessing path; phased plan recommendation."
+      "type": "plan",
+      "path": "specs/849_forward_slack_discharge_and_exact_shift_iteration/plans/01_forward-slack-exact-shift.md",
+      "summary": "Eight linear phases (13 h): forward-slack regime lemmas, wired refutation plus plateau inhabitant, spaced pigeonhole and room bound, given-block iterated duplication, one-step deletion, overshoot loop, exact-shift theorem with the slack-restricted cell inclusion, record and full gate; seven statements pinned and snapshotted."
     }
   ],
-  "next_steps": "Plan phase: pin Challenge statements from prototype/helpers-compiled.lean and climb-witness.lean; take the Challenge snapshot at plan time; every new declaration in LadderChain.lean; regenerate typst/generated/status.typ before each commit.",
   "metadata": {
     "session_id": "sess_1793749155_be5944_849",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 1558,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 13,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8]],
+    "challenge_snapshot": {
+      "commit": "cd052276c1d1734ac8d94f8fc5ee8d7c2c9932db",
+      "manifest": "specs/849_forward_slack_discharge_and_exact_shift_iteration/challenge/manifest.json"
+    }
   },
-  "modified_files": [
-    "specs/849_forward_slack_discharge_and_exact_shift_iteration/reports/01_forward-slack-exact-shift.md",
-    "specs/849_forward_slack_discharge_and_exact_shift_iteration/prototype/climb-witness.lean",
-    "specs/849_forward_slack_discharge_and_exact_shift_iteration/prototype/helpers-compiled.lean",
-    "specs/849_forward_slack_discharge_and_exact_shift_iteration/issues.jsonl"
-  ],
   "memory_candidates": [
     {
-      "content": "On a ladder path the pins are determined by the object walk (region length L gives start countdown L-1, read into the register at the preceding idle position), and the register is any 1-Lipschitz interpolation; a walk lifts iff L1-1 <= n + c + I1 and L_{k+1} <= 2 L_k + I_{k+1}. Deleting from z's region only shrinks the first distance, so every forward-slack obligation sits at the first region start.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/849_forward_slack_discharge_and_exact_shift_iteration/reports/01_forward-slack-exact-shift.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["ladder path", "register", "pins", "forward slack", "deletion"]
-    },
-    {
-      "content": "The landed deletion lemmas are length-agnostic: d deletions of an l-block equal one deletion of a d*l-block. Exactness (a prescribed total) is obtained by overshoot-then-up: delete pigeonhole blocks until the total exceeds the target by less than budget*l, then raise by the overshoot with the free iterated duplication of a block kept intact below the deletions.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/849_forward_slack_discharge_and_exact_shift_iteration/reports/01_forward-slack-exact-shift.md",
+      "content": "lean-challenge-snapshot.sh --check compares the whitespace-normalized header text (from the theorem keyword to :=) of each pinned Challenge declaration against the working tree's same-named declaration. A library declaration that takes {Q : Type} or {pend : Q -> Bool} from a section `variable` line therefore reads as drift against a Challenge block that writes those binders explicitly (the Challenge module must write them, since it is elaborated standalone). Lean plans in this repo should instruct the implementer to restate the implicit binders verbatim in the landed declaration (shadowing the section variables is harmless), and should never pin an already-landed theorem whose body is being refactored: a same-named declaration in a module importing the target does not elaborate; use a before/after header diff for that case instead.",
+      "category": "PATTERN",
+      "source_artifact": "specs/849_forward_slack_discharge_and_exact_shift_iteration/plans/01_forward-slack-exact-shift.md",
       "confidence": 0.8,
-      "suggested_keywords": ["exact shift", "pigeonhole", "pumping", "deletion", "duplication"]
+      "suggested_keywords": ["lean-challenge-snapshot", "challenge statements", "statement drift", "section variable", "plan-compliance", "lean4 planning"]
     }
   ],
-  "errors": []
+  "next_steps": "Run /orchestrate 849 to execute the plan",
+  "dispatch_seq": 2
 }
