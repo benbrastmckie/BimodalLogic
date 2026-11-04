@@ -6,7 +6,7 @@ next_project_number: 850
 
 ## Task Order
 
-*Updated 2026-11-03. Generated from state.json dependency graph.*
+*Updated 2026-11-04. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -105,7 +105,7 @@ next_project_number: 850
 836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
-849 [NOT STARTED] — Discharge or regime-restrict the named hypothesis...
+849 [RESEARCHED] — Discharge or regime-restrict the named hypothesis...
 
 ### Formula Refactor
 
@@ -148,11 +148,12 @@ next_project_number: 850
 
 ### 849. Forward slack discharge and exact shift iteration
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 844
+- **Research**: [849_forward_slack_discharge_and_exact_shift_iteration/reports/01_forward-slack-exact-shift.md]
 
 **Description**: Discharge or regime-restrict the named hypothesis HasForwardSlack, then land the exact-shift iterated deletion the cell-level downward inclusion still needs.
 
