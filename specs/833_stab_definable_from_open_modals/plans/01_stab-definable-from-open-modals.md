@@ -1,7 +1,7 @@
 # Implementation Plan: Task #833
 
 - **Task**: 833 - Land the definability biconditional `⊡φ ↔ ▷◁φ` in OpenLanguage, with its ledger and README rows
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None declared. Shared-file serialization against 761 and 763 on `docs/theorem-index.md` (overlap gate; see Risks R4)
 - **Research Inputs**: specs/833_stab_definable_from_open_modals/reports/01_stab-definable-from-open-modals.md
@@ -124,7 +124,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 bodies delegate to Phase 1's pointwise theorems, and Phase 3's inventory regeneration needs both
 files' final line counts.
 
-### Phase 1: The four pointwise results in `OpenTruth.lean` [NOT STARTED]
+### Phase 1: The four pointwise results in `OpenTruth.lean` [COMPLETED]
 
 **Goal**: Land `stab_to_ofut_opast`, `ofut_opast_to_stab`, `stab_iff_ofut_opast` and
 `stab_iff_opast_ofut` in `OpenTruth.lean`, transcribed unweakened from probe 05, each carrying a

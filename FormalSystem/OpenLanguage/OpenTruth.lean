@@ -41,6 +41,11 @@ rendered on the nose: `σ : WorldHistory F` with `AgreeUpTo τ σ x`, resp. `Agr
   `ofut_four`, `ofut_five`, and the four `opast` mirrors
 - The pointwise **strength ordering** `□ ⟹ ⊡ ⟹ ▷` and `⊡ ⟹ ◁`: `stab_of_box`, `ofut_of_stab`,
   `opast_of_stab`, from `⟨τ⟩_x ⊆ H_F`, `|τ⟩_x ⊆ ⟨τ⟩_x` and `⟨τ|_x ⊆ ⟨τ⟩_x`
+- **`⊡` is definable from the two restricted modals**: `⊡φ ↔ ▷◁φ ↔ ◁▷φ`, pointwise on every
+  regular task frame — `stab_to_ofut_opast` (the `→` half, no frame axiom),
+  `ofut_opast_to_stab` (the `←` half, one `paste`), and the two biconditionals
+  `stab_iff_ofut_opast`, `stab_iff_opast_ofut`. This is the operator-level form of the product
+  structure of `⟨τ⟩_x`
 
 ## References
 
@@ -284,5 +289,67 @@ theorem ofut_of_stab (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (�
 theorem opast_of_stab (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : OpenFormula)
     (h : OpenTruthAt M τ t (.stab φ)) : OpenTruthAt M τ t (.opast φ) :=
   fun σ hσ => h σ (openPastClass_subset_stabClass τ t hσ)
+
+/-! ## `⊡` is definable: `⊡φ ↔ ▷◁φ ↔ ◁▷φ`
+
+The stability modal is the composite of the two restricted modals, in either order. This is the
+operator-level reading of the product structure of `⟨τ⟩_x`: `|τ⟩_x` and `⟨τ|_x` are its two
+factors (`openFutureClass_inter_openPastClass`, `paste_mem_openFutureClass_inter_openPastClass`),
+so one `▷`-step followed by one `◁`-step reaches exactly the members of `⟨τ⟩_x`.
+
+The `→` half is the two class inclusions at the point of evaluation and needs no frame axiom; the
+`←` half is the two-history instance of `app:gluing` and is the only user of `[F.IsRegular]`,
+which it consumes through `paste`. -/
+
+/-- **`⊡φ → ▷◁φ`**. If `σ` agrees with `τ` up to `t` and `ρ` agrees with `σ` from `t`, then `ρ`
+occupies `τ`'s state at `t`, so `⊡φ` already applies to `ρ`. Only the two class inclusions at the
+point of evaluation are used: **no frame axiom**, and no `[F.IsRegular]` instance.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+such equation) -/
+theorem stab_to_ofut_opast (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (φ : OpenFormula) (h : OpenTruthAt M τ t (.stab φ)) :
+    OpenTruthAt M τ t (.ofut (.opast φ)) := by
+  intro σ hup ρ hfrom
+  exact h ρ ((hup t le_rfl).trans (hfrom t le_rfl))
+
+/-- **`▷◁φ → ⊡φ`**, the pasting direction. For `ρ ∈ ⟨τ⟩_t` the pasted world `paste τ ρ t` lies in
+`|τ⟩_t` and carries `ρ` in its open-past class at `t` (`paste_agreeUpTo`, `paste_agreeFrom`), so
+one `▷`-step followed by one `◁`-step reaches every member of `⟨τ⟩_t`. This is the two-history
+instance of `app:gluing`; `[F.IsRegular]` enters only here, and only through `paste`.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+such equation) -/
+theorem ofut_opast_to_stab [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (φ : OpenFormula) (h : OpenTruthAt M τ t (.ofut (.opast φ))) :
+    OpenTruthAt M τ t (.stab φ) := by
+  intro ρ hs
+  exact h (paste τ ρ t hs) (fun s hst => (paste_agreeUpTo τ ρ t hs s hst).symm)
+    ρ (paste_agreeFrom τ ρ t hs)
+
+/-- **`⊡φ ↔ ▷◁φ`**, pointwise, on every regular task frame. The two halves above.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+such equation) -/
+theorem stab_iff_ofut_opast [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (φ : OpenFormula) :
+    OpenTruthAt M τ t (.stab φ) ↔ OpenTruthAt M τ t (.ofut (.opast φ)) :=
+  ⟨stab_to_ofut_opast M τ t φ, ofut_opast_to_stab M τ t φ⟩
+
+/-- **`⊡φ ↔ ◁▷φ`**, the mirror, pointwise on every regular task frame. Proved **directly**, by
+the same two class inclusions in the `→` direction and the same paste with the two histories
+exchanged (`hs.symm`) in the `←` direction.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+such equation) -/
+theorem stab_iff_opast_ofut [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (φ : OpenFormula) :
+    OpenTruthAt M τ t (.stab φ) ↔ OpenTruthAt M τ t (.opast (.ofut φ)) := by
+  constructor
+  · intro h σ hfrom ρ hup
+    exact h ρ ((hfrom t le_rfl).trans (hup t le_rfl))
+  · intro h ρ hs
+    exact h (paste ρ τ t hs.symm) (fun s hts => (paste_agreeFrom ρ τ t hs.symm s hts).symm)
+      ρ (paste_agreeUpTo ρ τ t hs.symm)
 
 end FormalSystem.OpenLanguage
