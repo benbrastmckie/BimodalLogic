@@ -39,6 +39,9 @@ axiomatization; none is claimed here.
 - **The strength ordering** `□ ⟹ ⊡ ⟹ ▷` and `⊡ ⟹ ◁`: `openValid_stab_of_box`,
   `openValid_ofut_of_stab`, `openValid_opast_of_stab`. The failure of each converse is in
   `OpenLanguage/OpenOckhamist.lean`
+- **`⊡` is definable from the two restricted modals**, `⊡φ ↔ ▷◁φ ↔ ◁▷φ`, as validities:
+  `openValid_stab_imp_ofut_opast` and `openValid_ofut_opast_imp_stab`. The pointwise forms and
+  the two biconditionals are in `OpenLanguage/OpenTruth.lean`
 
 ## References
 
@@ -225,5 +228,32 @@ theorem openValid_ofut_of_stab
 theorem openValid_opast_of_stab
     (φ : OpenFormula) : OpenValid (imp (stab φ) (opast φ)) :=
   OpenValid.of_forall_regular fun _ _ M τ t h => opast_of_stab M τ t φ h
+
+/-! ## `⊡` is definable: `⊡φ ↔ ▷◁φ ↔ ◁▷φ`
+
+Both halves of the definability biconditional as validities. The pointwise forms, with the two
+`↔` statements, are `stab_to_ofut_opast`, `ofut_opast_to_stab`, `stab_iff_ofut_opast` and
+`stab_iff_opast_ofut` of `OpenLanguage/OpenTruth.lean`. The two implications below are the
+operator-level reading of the product structure of `⟨τ⟩_x`. -/
+
+/-- **`⊡φ → ▷◁φ` is valid.** The `→` half needs only the two class inclusions at the point of
+evaluation, so it holds at every frame; it is stated here at the frame class of `OpenValid` for
+uniformity with its converse.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+such equation) -/
+theorem openValid_stab_imp_ofut_opast (φ : OpenFormula) :
+    OpenValid (imp (stab φ) (ofut (opast φ))) :=
+  OpenValid.of_forall_regular fun _ _ M τ t h => stab_to_ofut_opast M τ t φ h
+
+/-- **`▷◁φ → ⊡φ` is valid**, i.e. over every regular task frame. The adapter
+`OpenValid.of_forall_regular` is where the `FrameClass.Base` membership is consumed and the
+`[F.IsRegular]` instance that `ofut_opast_to_stab` needs is registered.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+such equation) -/
+theorem openValid_ofut_opast_imp_stab (φ : OpenFormula) :
+    OpenValid (imp (ofut (opast φ)) (stab φ)) :=
+  OpenValid.of_forall_regular fun _ _ M τ t h => ofut_opast_to_stab M τ t φ h
 
 end FormalSystem.OpenLanguage

@@ -193,7 +193,7 @@ outside this file can be affected.
 
 ---
 
-### Phase 2: Both implications as `OpenValid` in `OpenValidity.lean` [NOT STARTED]
+### Phase 2: Both implications as `OpenValid` in `OpenValidity.lean` [COMPLETED]
 
 **Goal**: Land `openValid_stab_imp_ofut_opast` and `openValid_ofut_opast_imp_stab` beside the
 existing `openValid_stab_of_box` / `openValid_ofut_of_stab` / `openValid_opast_of_stab` block, in
