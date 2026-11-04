@@ -317,26 +317,26 @@ landed signature.
 
 ---
 
-### Phase 3: The spaced pigeonhole and the room bound [NOT STARTED]
+### Phase 3: The spaced pigeonhole and the room bound [COMPLETED]
 
 **Goal**: The two combinatorial ingredients of the loop are landed: among `b + 1` samples at
 spacing `s` inside the anchor's region, two share `(objAt, tpOf)`; and `(K2)` alone gives
 `b · (b + 1) ≤ Tc`, the room a `(b + 1)`-sample window at spacing `l ≤ b` needs.
 
 **Tasks**:
-- [ ] `budget_mul_succ_le_Tc` joins `section Budget` directly after `budget_le_Tc`, header exactly
+- [x] `budget_mul_succ_le_Tc` joins `section Budget` directly after `budget_le_Tc`, header exactly
   as pinned; body from the prototype (`cascadeBound`, `card_prodState`, `tIdle ≥ 1` so
   `3 ≤ tIdle pend + 2`, the induction `b * (b + 1) ≤ 2 ^ b * 3` with the hint
   `Nat.lt_two_pow_self : k < 2 ^ k` in context for `nlinarith`).
-- [ ] Open `section Spacing` directly after `end Bridge` with
+- [x] Open `section Spacing` directly after `end Bridge` with
   `variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}`;
   state `exists_typeBlock_of_spacing` exactly as pinned (explicit binders, no `hs`); body from
   the prototype (`Fintype.exists_ne_map_eq_of_card_lt` on `Fin (b + 1) → Q × {T // T ∈ powerset}`,
   the `hcnt` region fact from `cntAt_sub_of_pend`, the two symmetric cases on `a < c` / `c < a`
   with `push_cast [Nat.cast_sub …]; ring`).
-- [ ] Docstrings: the pigeonhole returns a block of length `d · s` with `1 ≤ d ≤ b` lying in the
+- [x] Docstrings: the pigeonhole returns a block of length `d · s` with `1 ≤ d ≤ b` lying in the
   sampling window `[w₀, w₀ + b · s]`; the room bound is what makes the window fit when `s ≤ b`.
-- [ ] `lean_verify` on both names; scoped build; `--fix`; commit.
+- [x] `lean_verify` on both names; scoped build; `--fix`; commit.
 
 **Timing**: 1 hour
 

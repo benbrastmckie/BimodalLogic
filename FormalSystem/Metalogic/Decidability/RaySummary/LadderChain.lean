@@ -86,6 +86,30 @@ theorem budget_le_Tc {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q 
     Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1 ≤ Tc :=
   le_trans (budget_le_cascadeBound pend φ) hp.2.1.1
 
+/-- **`(K2)` dominates `budget · (budget + 1)`**: the room a `(budget + 1)`-sample window at
+spacing at most `budget` needs inside a region of countdown at least `Tc`. From `cascadeBound`
+alone, by `b · (b + 1) ≤ 2 ^ b · 3 ≤ 2 ^ b · (tIdle pend + 2)`. -/
+theorem budget_mul_succ_le_Tc {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B) :
+    Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
+      (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) ≤ Tc := by
+  classical
+  refine le_trans ?_ hp.2.1.1
+  rw [cascadeBound, ← card_prodState Q φ]
+  have h3 : 3 ≤ tIdle pend + 2 := by unfold tIdle; omega
+  have key : ∀ b : ℕ, b * (b + 1) ≤ 2 ^ b * 3 := by
+    intro b
+    induction b with
+    | zero => simp
+    | succ k ih =>
+        have hk : k < 2 ^ k := Nat.lt_two_pow_self
+        rw [pow_succ]
+        nlinarith
+  calc Fintype.card (ProdState Q φ) * (Fintype.card (ProdState Q φ) + 1)
+      ≤ 2 ^ Fintype.card (ProdState Q φ) * 3 := key _
+    _ ≤ 2 ^ Fintype.card (ProdState Q φ) * (tIdle pend + 2) := Nat.mul_le_mul_left _ h3
+
 /-- **`(K2)` IS AN EXPONENTIAL LOWER BOUND ON `Tc`**, not a linear one: `cascadeBound` carries
 `2 ^ Fintype.card (ProdState Q φ)` as a factor, so every `Tc` the parameter conditions admit
 dominates that power. This is the quantity a pigeonhole over the REGION STARTS of a doubling
@@ -399,6 +423,93 @@ theorem typeBlock_length_dvd_of_paramsOk
     hpu hcl hrep hty)
 
 end Bridge
+
+/-! ## The spaced type pigeonhole
+
+`exists_typeBlock_of_budget_le_cnt_within` (`LadderPump.lean`) samples consecutive positions and
+returns a block of length at most the budget. The overshoot loop needs its samples at a prescribed
+spacing `s` so that every block it deletes has length a multiple of `s`: among `budget + 1`
+samples at spacing `s` from `w₀` inside `z`'s region, two share `(objAt, tpOf)`, giving a
+type-respecting block of length `d · s` with `1 ≤ d ≤ budget` lying in the sampling window
+`[w₀, w₀ + budget · s]`. The room bound `budget_mul_succ_le_Tc` is what makes that window fit
+inside a region of countdown at least `Tc` when `s ≤ budget`. -/
+
+section Spacing
+
+variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE SPACED TYPE PIGEONHOLE.** Among `budget + 1` samples at spacing `s` from `w₀` inside
+`z`'s region, two share `(objAt, tpOf)`: a type-respecting block of length `d · s` with
+`1 ≤ d ≤ budget`, lying in the sampling window. -/
+theorem exists_typeBlock_of_spacing {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) {g : ℤ → LadderState Q pend}
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hg : IsLadderPath step pend g) (z : ℤ) (hz : pend (objAt g z) = true)
+    (w₀ : ℤ) (s : ℕ) (hzw : z ≤ w₀)
+    (hroom : w₀ + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * s : ℕ) : ℤ)
+      ≤ z + (cntAt g z : ℤ)) :
+    ∃ (u : ℤ) (d : ℕ), 0 < d ∧
+      d ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ∧
+      w₀ ≤ u ∧
+      u + ((d * s : ℕ) : ℤ)
+        ≤ w₀ + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * s : ℕ) : ℤ) ∧
+      d * s ≤ cntAt g u ∧
+      objAt g u = objAt g (u + ((d * s : ℕ) : ℤ)) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ σ u
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + ((d * s : ℕ) : ℤ)) := by
+  classical
+  set b := Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card with hb
+  let f : Fin (b + 1) → Q × {T : Finset PlusFormula // T ∈ (plusSubformulaClosure φ).powerset} :=
+    fun i => (objAt g (w₀ + (((i : ℕ) * s : ℕ) : ℤ)),
+      ⟨tpOf (ladderModel step pend fwd bwd lab) φ σ (w₀ + (((i : ℕ) * s : ℕ) : ℤ)),
+        Finset.mem_powerset.mpr (tpOf_subset _ φ σ _)⟩)
+  obtain ⟨a, c, hac, hf⟩ := Fintype.exists_ne_map_eq_of_card_lt f (by
+    rw [Fintype.card_prod, Fintype.card_coe, Finset.card_powerset, Fintype.card_fin]
+    omega)
+  have hf' : f a = f c := hf
+  simp only [f, Prod.mk.injEq, Subtype.mk.injEq] at hf'
+  obtain ⟨hobj, hty⟩ := hf'
+  have ha : (a : ℕ) ≤ b := by omega
+  have hc : (c : ℕ) ≤ b := by omega
+  have hcnt : ∀ i : ℕ, i ≤ b → ∀ d : ℕ,
+      w₀ + ((i * s : ℕ) : ℤ) + ((d * s : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ) →
+      d * s ≤ cntAt g (w₀ + ((i * s : ℕ) : ℤ)) := by
+    intro i hi d hd
+    have hle : (w₀ + ((i * s : ℕ) : ℤ) - z).toNat ≤ cntAt g z := by
+      have : ((d * s : ℕ) : ℤ) ≥ 0 := Int.natCast_nonneg _
+      omega
+    have := (cntAt_sub_of_pend g hg z hz _ hle).2
+    rw [show z + (((w₀ + ((i * s : ℕ) : ℤ) - z).toNat : ℕ) : ℤ) = w₀ + ((i * s : ℕ) : ℤ) by
+      omega] at this
+    omega
+  rcases lt_or_gt_of_ne (fun h : (a : ℕ) = (c : ℕ) => hac (Fin.ext h)) with hlt | hlt
+  · have hcast : w₀ + (((a : ℕ) * s : ℕ) : ℤ) + ((((c : ℕ) - (a : ℕ)) * s : ℕ) : ℤ)
+        = w₀ + (((c : ℕ) * s : ℕ) : ℤ) := by
+      push_cast [Nat.cast_sub (le_of_lt hlt)]; ring
+    have hwin : w₀ + (((c : ℕ) * s : ℕ) : ℤ) ≤ w₀ + ((b * s : ℕ) : ℤ) := by
+      have : (c : ℕ) * s ≤ b * s := Nat.mul_le_mul_right _ hc
+      omega
+    refine ⟨w₀ + (((a : ℕ) * s : ℕ) : ℤ), (c : ℕ) - (a : ℕ), by omega, by omega,
+      by omega, by rw [hcast]; exact hwin, ?_, ?_, ?_⟩
+    · exact hcnt (a : ℕ) ha _ (by rw [hcast]; omega)
+    · rw [hcast]; exact hobj
+    · rw [hcast]; exact hty
+  · have hcast : w₀ + (((c : ℕ) * s : ℕ) : ℤ) + ((((a : ℕ) - (c : ℕ)) * s : ℕ) : ℤ)
+        = w₀ + (((a : ℕ) * s : ℕ) : ℤ) := by
+      push_cast [Nat.cast_sub (le_of_lt hlt)]; ring
+    have hwin : w₀ + (((a : ℕ) * s : ℕ) : ℤ) ≤ w₀ + ((b * s : ℕ) : ℤ) := by
+      have : (a : ℕ) * s ≤ b * s := Nat.mul_le_mul_right _ ha
+      omega
+    refine ⟨w₀ + (((c : ℕ) * s : ℕ) : ℤ), (a : ℕ) - (c : ℕ), by omega, by omega,
+      by omega, by rw [hcast]; exact hwin, ?_, ?_, ?_⟩
+    · exact hcnt (c : ℕ) hc _ (by rw [hcast]; omega)
+    · rw [hcast]; exact hobj.symm
+    · rw [hcast]; exact hty.symm
+
+end Spacing
 
 /-! ## The regime-A assembly: the countdown raised by a multiple of `P + 1`, the register held
 
