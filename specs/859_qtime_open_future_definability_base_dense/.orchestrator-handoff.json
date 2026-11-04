@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 9,
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Wrote a five-phase implementation plan landing the open-future NON-definability result as FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean, calibrated against the completed companion plan for the sibling Expressiveness module. Phases: the module plus aggregator wiring and library-root regeneration; eleven measured C14 axiom pins; two conditional theorem-index rows in the Characterization-and-definability table beside stabNotDefinable; the directory README's fourteenth numbered result plus regenerated inventories and typst counts; then a full audit. The plan's central discipline is that only the marker-gadget reduction and colourFibre_isRegular earn pinned rows, with hinexpr named as the unformalized paper step on every prose surface.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/859_qtime_open_future_definability_base_dense/plans/01_open-future-undefinable-module.md",
+      "summary": "Five-phase plan for the OpenFutureUndefinable library module, its conditional ledger rows, and the eight affected repository surfaces."
+    }
+  ]
+}

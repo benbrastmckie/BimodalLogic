@@ -126,7 +126,7 @@ next_project_number: 861
 
 559 [PLANNING] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-859 [PLANNING] — IMPLEMENTATION TASK: land the open-future NON-definability...
+859 [PLANNED] — IMPLEMENTATION TASK: land the open-future NON-definability...
   └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -163,12 +163,13 @@ next_project_number: 861
 
 ### 859. Qtime open future definability base dense
 - **Effort**: medium
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 854
 - **Parent**: Task 854
 - **Research**: [859_qtime_open_future_definability_base_dense/reports/01_qtime-open-future-definability.md]
+- **Plan**: [859_qtime_open_future_definability_base_dense/plans/01_open-future-undefinable-module.md]
 
 **Description**: IMPLEMENTATION TASK: land the open-future NON-definability result in the Lean library, so the verdict survives /todo archival. The research is DONE and must not be redone -- its verdict is in reports/01_qtime-open-future-definability.md and its machine-checked content is in probes/01_ofut-marker-gadget-and-nondefinability.lean (419 lines, sorry-free, no axiom declarations, imports FormalSystem.OpenLanguage and FormalSystem.Semantics.Frames.TranslationProduct).
 

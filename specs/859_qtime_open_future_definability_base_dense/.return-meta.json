@@ -1,32 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/859_qtime_open_future_definability_base_dense/reports/01_qtime-open-future-definability.md",
-      "summary": "Verdict: the open-future modal is NOT L-plus-definable at .Base or at .Dense, via a new marker gadget whose compiled lemmas show the modal computes a gap-anchored past property that U/S cannot express over Q-time."
-    },
-    {
-      "type": "probe",
-      "path": "specs/859_qtime_open_future_definability_base_dense/probes/01_ofut-marker-gadget-and-nondefinability.lean",
-      "summary": "Compiled-live (exit 0, no sorry/error/warning, 419 lines): past/future-determinedness of the two open modals, the theta/nu/R marker gadget, the exact computation that the open-future modal's existential dual equals DeltaProp, the conditional non-definability theorem, and the regular four-colour clock frame over any duration."
+      "type": "plan",
+      "path": "specs/859_qtime_open_future_definability_base_dense/plans/01_open-future-undefinable-module.md",
+      "summary": "Five-phase plan landing the open-future non-definability result as FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean, with eleven measured C14 axiom pins, two conditional theorem-index rows, and the directory README's fourteenth numbered result."
     }
   ],
-  "user_decision": {
-    "question": "The negative verdict's invariance half (the collapse of every L-plus formula to one of p, not-p, top, bottom on GHR-nice Q-structures) is written out and auditable in the report but is not machine-checked; formalizing it is a multi-phase task comparable to formalizing Gabbay's eight eliminations. Should that formalization be filed?",
-    "options": [
-      "Accept the paper step - treat the verdict as settled on the report's written argument, and file only the cheap follow-up (compile the 'every colour function is a history' bridge lemma)",
-      "File the full formalization of the collapse argument as a separate implementation task, accepting a multi-phase cost with heavy Q-combinatorics",
-      "File both, with the cheap bridge lemma first"
-    ],
-    "recommended": "Accept the paper step - treat the verdict as settled on the report's written argument, and file only the cheap follow-up (compile the 'every colour function is a history' bridge lemma)",
-    "blocking": false
-  },
   "metadata": {
-    "session_id": "sess_1793827858_5fe829_859",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1793832648_193830_859",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 6.25,
+    "dependency_waves": 4
+  },
+  "memory_candidates": [
+    {
+      "content": "In the BimodalLogic repository, landing ONE new .lean module under FormalSystem/ obliges five machine-owned surfaces beyond the module and its directory aggregator, each with its own gate: (1) FormalSystem.lean, the generated library root, asserted byte-for-byte against `mk_all --lib FormalSystem` by check-module-invariants.sh C33 -- regenerate with C33's render algorithm, never hand-insert; (2) the C14 axiom baseline, a MATCHED PAIR of heredocs (C14BASE values and C14LEAN `#print axioms` lines) inside check-module-invariants.sh, compared by exact string equality so order and relative position matter as much as the values; (3) the generated `<!-- BEGIN GENERATED: inventory -->` blocks in the directory README and its parent, rewritten only by `check-module-invariants.sh --emit-inventory`; (4) typst/generated/status.typ's repository file/line counts, gated by typst-sync-check.sh Check 2 and repaired by `typst-sync-check.sh --fix` (needs a built library); (5) docs/theorem-index.md rows, whose Axioms column is GENERATED FROM the C14 baseline rather than typed, so the pin must precede the row. A plan that lists only the module, the aggregator and the README understates the scope by three paths.",
+      "category": "PATTERN",
+      "source_artifact": "specs/859_qtime_open_future_definability_base_dense/plans/01_open-future-undefinable-module.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["lean-module-scope", "check-module-invariants", "generated-inventory", "C14-axiom-baseline", "theorem-index", "typst-sync-check"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 859 to execute the plan",
+  "dispatch_seq": 9
 }
