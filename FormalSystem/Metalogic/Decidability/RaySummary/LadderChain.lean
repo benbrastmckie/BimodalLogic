@@ -1661,8 +1661,10 @@ section DelNxtIter
 
 variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
 
-/-- **ONE STEP OF THE OVERSHOOT LOOP.** Sample at spacing `l` from `w₀` inside `z`'s region,
-delete the type-respecting block the spaced pigeonhole returns, and hand back a ladder path that
+/-- **ONE STEP OF THE OVERSHOOT LOOP.** With the sampling window `[w₀, w₀ + budget · l]` inside
+`z`'s region as the one room hypothesis (`hwin`, so the loop can sample from a start pushed out
+by a run of copies), sample at spacing `l` from `w₀`, delete the type-respecting block the spaced
+pigeonhole returns, and hand back a ladder path that
 agrees with the input at every position up to and including `w₀` (object walk and realized
 type), has `z`'s countdown lowered by `d · l` with `1 ≤ d ≤ budget`, keeps the register at `z`,
 and carries the regime at the amount decreased by exactly `d · l`. The spine mirrors
@@ -1682,11 +1684,9 @@ theorem exists_deleted_ladderPath_step_of_pend_past
     (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
     (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
     (hσ : ∀ t : ℤ, σ.state t = (t, g t))
-    (w₀ : ℤ) (hzw : z ≤ w₀)
-    (hwb : w₀ ≤ z + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card : ℕ) : ℤ))
-    (l : ℕ) (hl : 0 < l) (hlb : l ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card)
-    (hroom : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
-      (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) ≤ cntAt g z)
+    (w₀ : ℤ) (hzw : z ≤ w₀) (l : ℕ) (hl : 0 < l)
+    (hwin : w₀ + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ)
+      ≤ z + (cntAt g z : ℤ))
     {L : ℕ} (hLb : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l ≤ L)
     (hgap : nxtAt g z + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l ≤ cntAt g z)
     (hslack : HasForwardSlack g z L (nxtAt g z)) :
@@ -1703,22 +1703,15 @@ theorem exists_deleted_ladderPath_step_of_pend_past
             = tpOf (ladderModel step pend fwd bwd lab) φ σ v := by
   classical
   have hz : pend (objAt g z) = true := hpast z le_rfl
-  -- the sampling window `[w₀, w₀ + budget · l]` fits inside `z`'s region
-  have hroom' : w₀ + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ)
-      ≤ z + (cntAt g z : ℤ) := by
-    generalize hb : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card = b at hwb hlb hroom ⊢
-    have h1 : b * l ≤ b * b := Nat.mul_le_mul_left b hlb
-    have h2 : b * (b + 1) = b * b + b := Nat.mul_succ b b
-    omega
   -- the spaced pigeonhole
   obtain ⟨a, d, hd, hdb, hwa, haw, hcl, hrep, hty⟩ :=
-    exists_typeBlock_of_spacing step pend fwd bwd lab φ σ hg z hz w₀ l hzw hroom'
+    exists_typeBlock_of_spacing step pend fwd bwd lab φ σ hg z hz w₀ l hzw hwin
   have hdl : 0 < d * l := Nat.mul_pos hd hl
   have hdlb : d * l ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l :=
     Nat.mul_le_mul_right l hdb
   have hdlL : d * l ≤ L := le_trans hdlb hLb
   have hza : z ≤ a := le_trans hzw hwa
-  have hal : a + ((d * l : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ) := le_trans haw hroom'
+  have hal : a + ((d * l : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ) := le_trans haw hwin
   -- every position up to `a` is pending: below `z` by hypothesis, from `z` to `a` by the region
   have hpast_a : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true := fun p hp' => by
     rcases le_or_gt p z with hpz | hpz
@@ -1759,9 +1752,9 @@ theorem exists_deleted_ladderPath_step_of_pend_past
 
 /-- **THE OVERSHOOT LOOP.** Iterating the step by strong induction on the target number `R` of
 `l`-units deletes at least `R · l` positions and fewer than `(R + budget) · l` — the overshoot is
-fewer than `budget` blocks of length `l`, hence fewer than `budget · l ≤ budget²` positions, which
-is what the exact-shift theorem's `budget²` summand pays for — preserving the object walk and the
-realized types up to `w₀` (inclusive), the register at `z`, and the regime at the decreased amount.
+fewer than `budget` blocks of length `l` — preserving the object walk and the realized types up to
+`w₀` (inclusive), the register at `z`, and the regime at the decreased amount. The one room
+hypothesis is the sampling window: `R + budget` blocks of length `l` from `w₀` inside `z`'s region.
 The only new structure is the induction generalizing the path and its history, so that each step's
 output is the next step's input; every path fact comes from the step lemma. -/
 theorem exists_deleted_ladderPath_overshoot_of_pend_past
@@ -1774,12 +1767,10 @@ theorem exists_deleted_ladderPath_overshoot_of_pend_past
     (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
     (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
     (hσ : ∀ t : ℤ, σ.state t = (t, g t))
-    (w₀ : ℤ) (hzw : z ≤ w₀)
-    (hwb : w₀ ≤ z + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card : ℕ) : ℤ))
-    (l : ℕ) (hl : 0 < l) (hlb : l ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card)
-    (R : ℕ)
-    (hroom : R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
-      (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) ≤ cntAt g z)
+    (w₀ : ℤ) (hzw : z ≤ w₀) (l : ℕ) (hl : 0 < l)
+    (hlb : l ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card) (R : ℕ)
+    (hwin : w₀ + ((R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ)
+      ≤ z + (cntAt g z : ℤ))
     (hgap : nxtAt g z + R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l
       ≤ cntAt g z)
     (hslack : HasForwardSlack g z
@@ -1808,9 +1799,15 @@ theorem exists_deleted_ladderPath_overshoot_of_pend_past
       (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ t)
       (fun _ => rfl) hno v
   · -- step: one deletion of `d · l` positions, then recurse on `R - d` if any units remain
+    have hwin₀ : w₀ + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ)
+        ≤ z + (cntAt g z : ℤ) := by
+      have hc : ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ)
+          ≤ ((R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ) := by
+        exact_mod_cast Nat.le_add_left _ _
+      omega
     obtain ⟨g₁, d, hg₁, hd, hdb, hagree₁, hcnt₁, hnxt₁, hslack₁, hty₁⟩ :=
       exists_deleted_ladderPath_step_of_pend_past step pend fwd bwd lab φ hno hg z hpast σ hσ
-        w₀ hzw hwb l hl hlb (by omega) (Nat.le_add_left _ _) (by omega) hslack
+        w₀ hzw l hl hwin₀ (Nat.le_add_left _ _) (by omega) hslack
     rcases le_or_gt R d with hRd | hdR
     · -- a single block already covers the target
       exact ⟨g₁, d, hg₁, hRd, by omega, hagree₁, hcnt₁, hnxt₁, hslack₁, hty₁⟩
@@ -1820,8 +1817,15 @@ theorem exists_deleted_ladderPath_overshoot_of_pend_past
       obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
       have hpast₁ : ∀ p : ℤ, p ≤ z → pend (objAt g₁ p) = true := fun p hp => by
         rw [hagree₁ p (by omega)]; exact hpast p hp
-      have hroom₁ : (R - d) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
-          (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) ≤ cntAt g₁ z := by omega
+      have hwin₁ : w₀ + (((R - d) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l
+          : ℕ) : ℤ) ≤ z + (cntAt g₁ z : ℤ) := by
+        have hc : ((R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ)
+            = (((R - d) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ)
+              + ((d * l : ℕ) : ℤ) := by
+          rw [← e]; push_cast; ring
+        have hc1 : (cntAt g₁ z : ℤ) + ((d * l : ℕ) : ℤ) = (cntAt g z : ℤ) := by
+          exact_mod_cast hcnt₁
+        omega
       have hgap₁ : nxtAt g₁ z + (R - d) * l +
           Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l ≤ cntAt g₁ z := by
         rw [hnxt₁]; omega
@@ -1834,7 +1838,7 @@ theorem exists_deleted_ladderPath_overshoot_of_pend_past
         rw [hamt] at hslack₁
         exact hslack₁
       obtain ⟨g₂, t', hg₂, hRt', ht'R, hagree₂, hcnt₂, hnxt₂, hslack₂, hty₂⟩ :=
-        ih (R - d) (by omega) hg₁ hpast₁ σ₁ hσ₁ hroom₁ hgap₁ hslack₁'
+        ih (R - d) (by omega) hg₁ hpast₁ σ₁ hσ₁ hwin₁ hgap₁ hslack₁'
       refine ⟨g₂, d + t', hg₂, by omega, by omega,
         fun v hv => (hagree₂ v hv).trans (hagree₁ v hv), ?_, hnxt₂.trans hnxt₁, ?_,
         fun σ' hσ' v hv => (hty₂ σ' hσ' v hv).trans (hty₁ σ₁ hσ₁ v hv)⟩
@@ -1915,12 +1919,15 @@ theorem exists_ladderPath_through_deleted_exact_of_pend_past
       = Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
         (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card) +
         Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card := Nat.mul_succ _ _
-  have hroom : (m * q) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
-      (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) ≤ cntAt g z := by omega
+  have hwin : u + (l : ℤ) + (((m * q) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l
+      : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ) := by
+    generalize hbq : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card = b
+      at hul hbl hbb hb2 hbud ⊢
+    omega
   -- the overshoot loop, sampling from `u + l` so that the original block survives it
   obtain ⟨g₁, t, hg₁, hRt, htR, hagree₁, hcnt₁, hnxt₁, hslack₁, hty₁⟩ :=
     exists_deleted_ladderPath_overshoot_of_pend_past step pend fwd bwd lab φ hno hg z hpast σ₀
-      hσ₀ (u + (l : ℤ)) (by omega) hul l hl hlb (m * q) hroom (by omega)
+      hσ₀ (u + (l : ℤ)) (by omega) l hl hlb (m * q) hwin (by omega)
       (hasForwardSlack_mono g z hslack (by omega))
   -- the raise on the ORIGINAL block `[u, u + l)` of `g₁`, by the overshoot `t − m · q`
   obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
