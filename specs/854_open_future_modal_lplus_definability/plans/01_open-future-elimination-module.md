@@ -492,7 +492,7 @@ README-presence lint — and the phase elaborates no Lean at all.
 
 ---
 
-### Phase 5: Full verification and axiom audit [NOT STARTED]
+### Phase 5: Full verification and axiom audit [COMPLETED]
 
 **Goal**: Establish on the whole repository that the module is landed and compiled, sorry-free and
 axiom-pinned at its measured profile, that every gate holds at its re-derived baseline, and that
@@ -560,6 +560,18 @@ are **re-derived in this phase by running the commands**, never trusted from thi
   triggers is made in the phase that owns the file (Phase 1, 2, 3 or 4)
 
 **Verification**:
+
+**Batch-aware deferral (recorded at execution time).** This dispatch ran inside a multi-task
+`/orchestrate` batch, so the declared `full` tier was discharged against a scoped tier and the
+complete harness gate set was deferred to the batch stage rather than independently re-run here.
+The named narrowing invocations (`agent-system/extensions/core/scripts/tests/run-all.sh --only`,
+`verify-deploy.sh --only-gate`) were unavailable and inapplicable: this repository carries no
+`agent-system/` source store, and every file this task modified is project-domain
+(`FormalSystem/**`, `docs/theorem-index.md`, `scripts/check-module-invariants.sh`, the generated
+library root, four READMEs, `typst/generated/status.typ`) rather than harness-domain, so no
+harness suite covers any of them. The scoped tier that does cover them is the repository
+Lean/ledger gate set below, which was run in full and observed green in this dispatch. The
+deferral is of the harness set only, and it is deferred, not forgiven.
 
 This phase's complete gate set for this task's surfaces, all of which must be observed green in
 this dispatch and none of which may be trusted on sight:
