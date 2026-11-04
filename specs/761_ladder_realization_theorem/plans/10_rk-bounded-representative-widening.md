@@ -2308,7 +2308,7 @@ record the discrepancy rather than widening further by guess.
 
 ---
 
-### Phase 12.4: The Frozen-Bound Refutation Witnesses, and the Evidence Gate's Two Owed Wirings [NOT STARTED]
+### Phase 12.4: The Frozen-Bound Refutation Witnesses, and the Evidence Gate's Two Owed Wirings [COMPLETED]
 
 **NEW IN THIS REVISION.** Two deliverables under one commit boundary, because both are edits to
 `scripts/check-evidence-probes.sh` and splitting them would have two phases contend for the same
@@ -2331,7 +2331,7 @@ the pattern the forty-seventh wired probe already uses against the frozen `Param
 device.
 
 **Tasks**:
-- [ ] Author `specs/evidence/seam-gluing-ray-product/ladder-reps-bound-refutation.lean` in namespace
+- [x] Author `specs/evidence/seam-gluing-ray-product/ladder-reps-bound-refutation.lean` *(deviation: altered — the namespace is `Probe761W`, not `Probe761R`: that name is already taken by `ladder-unconstrained-parameter-refutation.lean`, the fourteenth wired probe, which `CounterQuotient.lean`'s own module docstring names as `Probe761R`. All three witnesses, their steps and the recorded `set_option` values are as filed)* in namespace
       `Probe761R`: `repsCntPre` at the pre-widening `Tc + Tn + P + B + 2`, the three derived
       Booleans over it, and the three witnesses — A at `(1,2,2,2)` with `Count false false 9 5 0`
       and `Drift 5 4`; B at `(4,6,5,2)` with `Count true true 20 11 19` and `Drift 11 12`; C at
@@ -2341,19 +2341,19 @@ device.
       `maxHeartbeats 4000000`; C: `maxRecDepth 400000`), and say in the probe's docstring that
       `decide` over this predicate is `M^4`-shaped in the bound `M`, so the heartbeat ceiling is
       the practical limit on how large a tuple any probe may name.
-- [ ] **Name witness C explicitly as the `P = 0` half** in its own docstring, so a later reader
+- [x] **Name witness C explicitly as the `P = 0` half** *(completed: its own section docstring says so in those words and spells out that at `P = 0` the modulus is `1`, so both residue coordinates are trivial and both clipped coordinates are pinned at `0`, leaving the gap as the only obstruction; witness A's worked mechanism, least admissible first coordinate `9`, is in its own docstring too)* in its own docstring, so a later reader
       cannot conclude the defect was only about residues. Witness A's worked mechanism — the least
       admissible first coordinate is `9`, exactly one above the old bound `Tc + Tn + P + B + 2 = 9`
       — belongs in the docstring too.
-- [ ] Compile the POSITIVE counterpart for each of the three tuples at the library's widened `RK`,
+- [x] Compile the POSITIVE counterpart for each of the three tuples at the library's widened `RK`, *(completed: `witnessA_RK`, `witnessB_RK`, `witnessC_RK`, each ONE application of `rk_of_count_drift` and no `decide`; `both_sides_A`/`both_sides_B`/`both_sides_C` carry the two sides as conjuncts per tuple)*
       **by applying Phase 12.3's `rk_of_count_drift` to the same `Count`/`Drift` steps, never by
       `decide`**: at tuple B the widened bound is 34, so a `decide` there is `34^4`-shaped and
       infeasible, while the lemma discharges it in one application. These three are the probe's
       non-vacuity on the positive side and are also the first use site of the new lemma.
-- [ ] Wire BOTH probes into `scripts/check-evidence-probes.sh` — this new one and
+- [x] Wire BOTH probes into `scripts/check-evidence-probes.sh` *(completed: table block and `WIRED` entry for each, in the same commit as the probe file; the gate reports PASS at 49 wired probes, the authoring baseline of 47 plus these two)* — this new one and
       `specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean` — adding a
       table block and a `WIRED` array entry for each, in the SAME commit as the probe file.
-- [ ] Record, in this phase's body, the repaired form of Phase 11.9's three recorded statements, so
+- [x] Record, in this phase's body, the repaired form of Phase 11.9's three recorded statements *(completed, and recorded HERE rather than as new prose because this agent's plan-file write authority covers phase headings and checklist items only. The correspondence: (i) `0 < m` on the deletion count is carried by `tightChain_iter_deletion_does_not_lift` and `tightChain_deletion_derivative_does_not_lift` — at `m = 0` the derivative IS the chain and is a ladder path; (ii) the LIFTING form, with the countdown and the register existentially quantified away rather than the register-specific `¬ IsLadderPath (delIterWalk …)`, is carried by all three headlines, `tightChain_positive_deletion_does_not_lift` included; (iii) the chain with pins UNBOUNDED ABOVE is the probe's declared object — on a finite-`J` chain the last region carries no pin above it and the chain HAS a lifting deletion-derivative. Phase 11.9's own body and its `#### Reasoned Exclusions` record are untouched)*, so
       a later reader does not take that phase's recorded block as the live statement. Phase 11.9's
       own body stays byte-identical; the repairs are (i) `0 < m` on the deletion count, since at
       `m = 0` the derivative IS the chain and is a ladder path; (ii) the LIFTING form, with the
@@ -2365,7 +2365,7 @@ device.
       (`tightChain_positive_deletion_does_not_lift`, `tightChain_iter_deletion_does_not_lift`,
       `tightChain_deletion_derivative_does_not_lift`); this task records that correspondence, it
       does not restate or re-sign them.
-- [ ] **No library file is edited by this phase**, and no declaration is added under any reserved
+- [x] **No library file is edited by this phase** *(completed: `git status --short FormalSystem/ Tests/` empty at close; the only non-probe file touched is `scripts/check-evidence-probes.sh`. The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing)*, and no declaration is added under any reserved
       name.
 
 **Prohibited workarounds**: do NOT state the refutation against the library's own `RK` after the

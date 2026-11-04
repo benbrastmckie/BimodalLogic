@@ -1796,6 +1796,139 @@ EVIDENCE="specs/evidence"
 #                                                           | theorems (a subset on the two
 #                                                           | positive facts). No `sorryAx`, no
 #                                                           | custom axiom, no `native_decide`.
+# seam-gluing-ray-product/ladder-tight-chain-nonliftability | NO FINITE DELETION-DERIVATIVE OF
+#                                                           | THE TIGHT DOUBLING CHAIN LIFTS --
+#                                                           | the one claim the RaySummary README
+#                                                           | recorded as ARGUED rather than
+#                                                           | compiled, now compiled, on the
+#                                                           | two-state object of
+#                                                           | `ladder-cell-agreement-refutation`
+#                                                           | and the doubling chain with pins
+#                                                           | UNBOUNDED ABOVE (idle at every
+#                                                           | `v <= 0` and exactly at `2^j - 2`
+#                                                           | for `j >= 1`). The register equals
+#                                                           | the POSITION at every pin, so every
+#                                                           | gap has Lipschitz slack exactly `0`
+#                                                           | (`tightChain_slack_zero`) and there
+#                                                           | is no slack anywhere to absorb a
+#                                                           | surgery. Headlines:
+#                                                           | `tightChain_positive_deletion_does_not_lift`
+#                                                           | (for every `a >= 4` and every
+#                                                           | `L > 0`, NO ladder path has the
+#                                                           | chain's walk with `[a, a + L)`
+#                                                           | deleted -- the countdown and the
+#                                                           | register both existentially
+#                                                           | quantified away, which is the
+#                                                           | LIFTING form, not the weaker
+#                                                           | register-specific one),
+#                                                           | `tightChain_iter_deletion_does_not_lift`
+#                                                           | and
+#                                                           | `tightChain_deletion_derivative_does_not_lift`
+#                                                           | (the latter two carrying `0 < m`:
+#                                                           | at `m = 0` the derivative IS the
+#                                                           | chain and is a ladder path).
+#                                                           | Mechanism: two pins of the DELETED
+#                                                           | walk on opposite sides of the
+#                                                           | deletion -- the pin at `0` below it
+#                                                           | and a pin `2^j - 2 - L` above it --
+#                                                           | fall `L` closer while their
+#                                                           | countdown difference does not move,
+#                                                           | and `pinCompat_of_ladderPath`
+#                                                           | (`LadderAgree.lean`) makes pairwise
+#                                                           | compatibility NECESSARY for any
+#                                                           | ladder path. The carrier's own
+#                                                           | arithmetic: no register, type,
+#                                                           | parameter condition or certificate
+#                                                           | object enters. WHAT IT DOES NOT
+#                                                           | SETTLE, reported with it: the step
+#                                                           | from non-liftability to a cell
+#                                                           | inequality needs a closure formula
+#                                                           | whose letters FORCE the realizing
+#                                                           | path to be a deletion-derivative of
+#                                                           | the chain, which is the open
+#                                                           | depth-`0` core itself -- so the
+#                                                           | gate's verdict is INCONCLUSIVE and
+#                                                           | the reserved name
+#                                                           | `cellLE_zero_const_of_kappa_eq` is
+#                                                           | claimed by nothing. The
+#                                                           | finite-`J` chain is NOT the object:
+#                                                           | its last region carries no pin
+#                                                           | above it, so it HAS a lifting
+#                                                           | deletion-derivative. No bound,
+#                                                           | every quantity a count.
+# seam-gluing-ray-product/ladder-reps-bound-refutation      | `repsCnt`'S NARROWER BOUND
+#                                                           | `Tc + Tn + P + B + 2` IS REFUTED:
+#                                                           | the bounded-representative set is
+#                                                           | too small for the
+#                                                           | bounded-representative lemma, and
+#                                                           | the failure runs in two independent
+#                                                           | directions. The narrower bound is
+#                                                           | FROZEN inside the probe as
+#                                                           | `repsCntPre`, with `rkStepBPre`,
+#                                                           | `RKbPre` and `RKPre` over it
+#                                                           | (verbatim the library's text with
+#                                                           | the one range argument as it
+#                                                           | stood), because at the widened
+#                                                           | library bound `RK` is TRUE at all
+#                                                           | three tuples and a refutation
+#                                                           | against the library's own `RK`
+#                                                           | would not compile -- the same
+#                                                           | device as the frozen `ParamsOkPre`
+#                                                           | of
+#                                                           | `ladder-cell-obligation-refutation`.
+#                                                           | Headlines, each `decide`-checked:
+#                                                           | `witnessA_not_RKPre` at
+#                                                           | `(1, 2, 2, 2)` with
+#                                                           | `Count false false 9 5 0` and
+#                                                           | `Drift 5 4` (the RESIDUE-COUPLING
+#                                                           | direction, worked: the only
+#                                                           | in-range pre-step pair is `(6, 2)`
+#                                                           | and `Drift 2 b'` cannot reach the
+#                                                           | post-step class; the least
+#                                                           | admissible first coordinate is `9`,
+#                                                           | exactly the narrower bound's own
+#                                                           | value, so one place outside
+#                                                           | `Finset.range 9`),
+#                                                           | `witnessB_not_RKPre` at
+#                                                           | `(4, 6, 5, 2)` with
+#                                                           | `Count true true 20 11 19` and
+#                                                           | `Drift 11 12` (the same mechanism at
+#                                                           | a larger modulus), and
+#                                                           | `witnessC_not_RKPre` at
+#                                                           | `(0, 0, 0, 3)` with
+#                                                           | `Count false false 5 2 0` and
+#                                                           | `Drift 2 3` -- THE `P = 0` HALF,
+#                                                           | the SATURATED-GAP direction with no
+#                                                           | residue at all, which locates the
+#                                                           | defect in the gap window alone: the
+#                                                           | two saturations together demand a
+#                                                           | window `B + 2` wide and the
+#                                                           | narrower bound pays only `B`.
+#                                                           | NON-VACUITY ON BOTH SIDES, PER
+#                                                           | TUPLE (`both_sides_A`,
+#                                                           | `both_sides_B`, `both_sides_C`):
+#                                                           | each tuple also carries its
+#                                                           | POSITIVE `RK` at the widened
+#                                                           | library definition, discharged by
+#                                                           | ONE application of
+#                                                           | `rk_of_count_drift` and never by
+#                                                           | `decide` -- `decide` over this
+#                                                           | predicate is `M^4`-shaped in the
+#                                                           | range bound `M`, so the heartbeat
+#                                                           | ceiling is the practical limit on
+#                                                           | how large a tuple any probe may
+#                                                           | name (at tuple B the widened bound
+#                                                           | is `34` and `34^4` is infeasible
+#                                                           | where `19^4` is merely expensive).
+#                                                           | This is also the first use site of
+#                                                           | `rk_of_count_drift`. No bound,
+#                                                           | upper or lower: every quantity is
+#                                                           | a COUNT of candidate pairs.
+#                                                           | Axioms: a subset of
+#                                                           | `[propext, Classical.choice,
+#                                                           | Quot.sound]` on every headline.
+#                                                           | No `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -1843,6 +1976,8 @@ WIRED=(
   "seam-gluing-ray-product/ladder-splice-type-refutation"
   "seam-gluing-ray-product/ladder-cell-agreement-refutation"
   "seam-gluing-ray-product/ladder-cell-obligation-refutation"
+  "seam-gluing-ray-product/ladder-tight-chain-nonliftability"
+  "seam-gluing-ray-product/ladder-reps-bound-refutation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
