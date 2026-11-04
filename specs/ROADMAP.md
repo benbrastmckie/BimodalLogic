@@ -43,7 +43,6 @@ answers non-constructively — which is also why that route is no substitute for
 ## Run these next
 
 ```bash
-bash scripts/check-module-invariants.sh --emit-inventory   # FIRST, and it is one command: the tree is RED on two gates (below)
 /orchestrate 850 --hard --lit    # the front's live mathematics: the up-first exact-shift ordering, needing copy-boundary types re-derived in LadderChain.lean
 /revise 761                      # THE critical path, and it needs a PLAN not a dispatch: Phase 11.5 is [BLOCKED] and 11.6 inducts from its unproved base case, so 11.6-11.7 and 12-18 are unreachable and only 11.2 is enterable
 /orchestrate 833                 # the L^▷ keystone, ~40 lines of transcription — NOT in the same cycle as 761/763/850, which it collides with on docs/theorem-index.md
@@ -144,32 +143,35 @@ volume-level PDF, so there is nothing to extract the chapter from. Institutional
 purchase is the route. Because R2 consumes R1, this unblocks a record; it does not advance the
 aim.
 
-**TWO red gates, neither on the critical path, and together a few minutes' work.** The
-upward-import count is settled: `docs/ARCHITECTURE.md` now records **eight** lines and no
-upward-import check fails, so that condition is discharged and its record is closed. What is red in
-its place, both reported by a bare `scripts/check-module-invariants.sh` (exit 1, two check groups):
+**THE GATES ARE GREEN, and this is the baseline any new claim is measured against.** A bare
+`scripts/check-module-invariants.sh` exits 0 — `ALL CHECKS PASSED` — and a full guarded
+`lake build` exits 0 over 2,895 jobs with zero warnings in the log. Three conditions were red at
+the last check and all three are discharged: the upward-import count (`docs/ARCHITECTURE.md`
+records **eight** lines, and that record is closed); **INV**, the three generated inventory blocks
+left stale by the forward-slack chain's declarations and README prose, regenerated with
+`bash scripts/check-module-invariants.sh --emit-inventory`; and **C28**, the compiler-warning
+budget, which `scripts/warning-budget.py` now reports as `0 warning(s) across 0 file(s)`.
 
-- **INV — three stale generated inventory blocks**, in
-  `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `FormalSystem/Metalogic/README.md`
-  and `README.md`. This is the mechanical consequence of the declarations `849` added to
-  `LadderChain.lean` and of its README prose edits; the blocks were not regenerated afterwards.
-  **The fix is one command** — `bash scripts/check-module-invariants.sh --emit-inventory` — and it
-  is the single cheapest green-making move available, which is why it heads the run list above.
-  Commit the three regenerated READMEs on their own.
-- **C28 — the compiler-warning budget**, reporting two entries above
-  `scripts/warning-budget.txt`: `linter.style.longFile` and `linter.style.longLine`, both NEW with
-  no baseline entry, both in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`. That file
-  was edited to wire the forty-seventh probe, which pushed it past the long-file limit and left one
-  long line. This one is a genuine (small) edit, not a regeneration.
+**What C28 cost, since the remedy is the reusable part.** Both entries were in
+`Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, NEW with no baseline row, from the edit
+that wired the forty-seventh probe. `linter.style.longLine` was one real violation at a 103-char
+docstring line, rewrapped — note that 207 lines in that file still exceed 100 characters and none
+is flagged, because they sit in plain comments, which are not in the syntax tree the linter walks;
+only the docstring line was. `linter.style.longFile` was the file crossing its recorded 1,800-line
+ceiling at 1,812, re-tightened to `set_option linter.style.longFile 1900` per
+`docs/development/LEAN_STYLE_GUIDE.md`'s long-file baseline rule — `N` is accepted only when
+`N - 200 ≤ lines < N`, long files are **baselined, not split**, and C30 still passes, so this is a
+recorded ceiling and not a suppression. `scripts/warning-budget.txt` was NOT touched: with no
+baseline row for the file there was nothing to decrement.
 
-**Why it was reported green, which is the part worth remembering.** The dispatch that introduced it
-ran `check-module-invariants.sh --emit-inventory --check`, which exits 0 — C28 is not in that
-check selection. A bare `check-module-invariants.sh` is what exits 1. A verification claim is only
-as wide as the flags it was made under, so prefer the bare invocation when the question is "is the
-tree green", and never read a flagged subset's exit 0 as the whole gate passing. The budget's
-counts are a ceiling that may only decrease: fix the two warnings and let the count drop in the
-same commit, and do NOT reach for `--update`, which rewrites the file wholesale from current
-findings and would bless the regression along with everything else.
+**Two standing disciplines this episode confirms, neither of them status.** First, **a verification
+claim is only as wide as the flags it was made under.** The dispatch that introduced C28 ran
+`check-module-invariants.sh --emit-inventory --check`, which exits 0 because C28 is not in that
+check selection; the bare invocation is what exits 1. Prefer the bare form whenever the question is
+"is the tree green", and never read a flagged subset's exit 0 as the whole gate passing. Second,
+**the budget's counts are a ceiling that may only decrease**: fix the warning and let the count
+drop in the same commit, and do NOT reach for `--update`, which rewrites the file wholesale from
+current findings and would bless a regression along with everything else.
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 127,128,178,502,570,604,664,714
@@ -587,8 +589,7 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   the overshoot loop. Full guarded `lake build` exit 0 with 0 warnings, sorry 0, axioms 14 at
   baseline. The two rulings it settles — `HasForwardSlack` is a regime and not a missing lemma, and
   `d` deletions are one deletion of a `d·l`-block — are stated above the batch lists and are not to
-  be reopened. Note that its own README edits left the generated inventory blocks stale (the INV
-  gate above).
+  be reopened.
 - **850 — the up-first ordering, and the live front.** The cost reduction, not a new theorem: drop
   the `budget²` slack the landed deletions-first ordering pays in both anchor directions, by
   re-deriving the iteration in `LadderChain.lean` with realized types exposed at every copy
