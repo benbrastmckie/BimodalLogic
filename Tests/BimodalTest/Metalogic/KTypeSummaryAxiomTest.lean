@@ -1808,4 +1808,59 @@ unconditionally. The standard profile on each. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_spanningBlock_of_pins_below
 
+/-! ## The pin cascade's front half (`RaySummary/LadderAgree.lean`)
+
+`pinnedRegions` is the set of region starts whose span meets a window, and
+`pinnedRegions_subset_Ico` is the fact the cascade's well-foundedness rests on: an IDLE anchor
+admits no region start below it whose span reaches it, so the pinned regions a window meets lie
+inside the window. `pinnedRegions_finite` and `pinnedRegions_ncard_le` are its corollaries, the
+second stating the cascade's iteration count as a COUNT. `pin_deficit_le_of_lengthen` is the
+per-step increment over `pinCompat_of_ladderPath`, `cascadeDemand` the recurrence it sums,
+`cascadeDemand_add_succ` that recurrence's closed form, and `cascadeDemand_le_cascadeBound` the
+sizing against `(K2)`'s own `cascadeBound`. `regime_exhaustive_of_clipIdx_eq` records the regime
+exhaustiveness as a lemma: a gap-coordinate collision at a fixed next deadline never straddles
+the two regimes. None of these constructs a path, and no pin hypothesis of
+`exists_spliced_ladderPath` is relaxed by any of them. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pend_of_mem_region' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pend_of_mem_region
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pinnedRegions_subset_Ico' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pinnedRegions_subset_Ico
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pinnedRegions_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pinnedRegions_finite
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pinnedRegions_ncard_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pinnedRegions_ncard_le
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pin_deficit_le_of_lengthen' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.pin_deficit_le_of_lengthen
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cascadeDemand_add_succ' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cascadeDemand_add_succ
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cascadeDemand_le_cascadeBound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cascadeDemand_le_cascadeBound
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.regime_exhaustive_of_clipIdx_eq' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.regime_exhaustive_of_clipIdx_eq
+
 end BimodalTest.Metalogic

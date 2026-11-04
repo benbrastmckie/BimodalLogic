@@ -305,7 +305,7 @@ stated anywhere in the tree, and none is invented here.
 -- layer, the replacement layer, the alternative-history construction, the truth-transport
 -- half (i), the atom-valuation agreement and the countdown rigidity of that agreement are one
 -- argument about ladder paths and stay in one module.
-set_option linter.style.longFile 2400
+set_option linter.style.longFile 2600
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1328,6 +1328,183 @@ theorem exists_spliced_ladderPath_of_pend_past
     exact this
 
 end Splice
+
+/-! ### The pin cascade's front half: regime exhaustiveness, finiteness, and the sizing
+
+The pending-forever regime above discharges the lift lemma's pin side condition with no cascade.
+The OTHER regime — an idle position in the splice point's past — does not, and the construction
+that discharges it there has to lengthen the preceding idle runs along with the spliced region.
+Three facts are needed before that construction can be written, and none of them needs the
+construction itself.
+
+**Regime exhaustiveness.** `pend_past_of_nxtAt_lt` is the dichotomy and `clipIdx_regime_of_eq`
+says a class collision at a fixed next deadline stays inside one regime; together they say every
+collision the lift must transport is covered by one of the two regimes, and that no path is ever
+carried from one into the other. `regime_exhaustive_of_clipIdx_eq` states that as a lemma rather
+than leaving it as prose. The pin-free dichotomy of `LadderPin.lean` is a DIFFERENT dichotomy
+over a different hypothesis, is above this module in the import DAG, and is neither cited nor
+restated here.
+
+**Finiteness.** A pending region can be arbitrarily long, so a region whose span meets the window
+`[p, a]` can START arbitrarily far in the window's past, and the set of such region starts is not
+bounded below by the window. What bounds it is `p` being IDLE: an idle `p` lies in no pending
+region, so no region start below `p` can have its span reach `p`, and the set collapses into
+`Set.Ico p a`. That is `pinnedRegions_subset_Ico`, and it is where the idleness of `p` is
+consumed — `pinnedRegions_finite` and `pinnedRegions_ncard_le` are its corollaries. This is what
+makes the cascade's iteration well-founded: it runs once per element of a finite set, and that
+set is finite because of where the cascade is anchored and not by assumption.
+
+**The sizing, as a COUNT.** One lengthening of a region by `l` raises that one pin by `l` and
+moves no earlier region start, so the deficit it creates at an earlier pin is at most `l`
+(`pin_deficit_le_of_lengthen`, over `pinCompat_of_ladderPath`); restoring compatibility there
+lengthens that run in turn, which is the recurrence `a (k + 1) = 2 * a k + J + 1` at idle-run
+slack `J`. `cascadeDemand` is that recurrence, `cascadeDemand_add_succ` its closed form, and
+`cascadeDemand_le_cascadeBound` says the demand after at most `Fintype.card (ProdState Q φ)`
+iterations is at or below `(K2)`'s own `cascadeBound` (`CounterQuotient.lean`), which this module
+imports and which is the ONLY sizing anchor citable here as a proof term. The probe-level record
+of the same arithmetic — `forward_window`, `backward_constraint`, `region_doubling`,
+`doubling_attained` and `iter_doubling` — lives in
+`specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean` and is deliberately not promoted
+(`RunLayer.lean` and `Certificate.lean` say so in their own docstrings); it is cited here by path
+and never as a proof term. The exponential in the number of pinned regions is named as a COUNT of
+iterations: nothing here claims anything about size, and nothing here is a complexity statement.
+The exponential `(K2)` reading `two_pow_card_prodState_le_Tc` lives in `LadderChain.lean`, which
+imports this module, so it is unavailable here and is not reached for.
+
+No new path and no construction is built in this section: `exists_spliced_ladderPath_of_idle_past`
+is NOT landed here, and none of the pin hypotheses of `exists_spliced_ladderPath` is dropped or
+relaxed — `pinCompat_of_ladderPath` proves the condition is forced by the carrier, so a relaxed
+lift lemma would be false rather than weaker. -/
+
+section Cascade
+
+/-- **The pinned regions a window meets.** A region start is a position `s` that is idle with
+`s + 1` pending; the region it opens spans the pending positions `s + 1` through
+`s + 1 + cntAt g (s + 1)` (`cntAt_sub_of_pend`, `not_pend_of_count`). This is the set of region
+starts whose span meets the window `[p, a]` — exactly the pins the cascade has to re-establish
+when the region at `a` is lengthened. -/
+def pinnedRegions (g : ℤ → LadderState Q pend) (p a : ℤ) : Set ℤ :=
+  {s | pend (objAt g s) = false ∧ pend (objAt g (s + 1)) = true ∧
+        s + 1 ≤ a ∧ p ≤ s + 1 + (cntAt g (s + 1) : ℤ)}
+
+/-- **Every position of a region's span is pending.** `cntAt_sub_of_pend` read at a position of
+the span rather than at an offset from its start. -/
+theorem pend_of_mem_region (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (s u : ℤ) (hs1 : pend (objAt g (s + 1)) = true)
+    (hu1 : s + 1 ≤ u) (hu2 : u ≤ s + 1 + (cntAt g (s + 1) : ℤ)) :
+    pend (objAt g u) = true := by
+  have hle : (u - (s + 1)).toNat ≤ cntAt g (s + 1) := by omega
+  have hmem := (cntAt_sub_of_pend g hg (s + 1) hs1 _ hle).1
+  rwa [show s + 1 + (((u - (s + 1)).toNat : ℕ) : ℤ) = u by omega] at hmem
+
+/-- **AN IDLE ANCHOR CONFINES THE PINNED REGIONS TO THE WINDOW.** This is the content of the
+finiteness, and the hypothesis it consumes is that `p` is IDLE. A region start below `p` whose
+span reached `p` would make `p` pending (`pend_of_mem_region`), so an idle `p` admits none, and
+every region start the window meets lies at or above `p`. Nothing is assumed about how many
+there are. -/
+theorem pinnedRegions_subset_Ico (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (p a : ℤ) (hp : pend (objAt g p) = false) : pinnedRegions g p a ⊆ Set.Ico p a := by
+  intro s hs
+  obtain ⟨-, hs1, hsa, hsp⟩ := hs
+  refine ⟨?_, by omega⟩
+  by_contra hlt
+  exact Bool.false_ne_true
+    (hp.symm.trans (pend_of_mem_region g hg s p hs1 (by omega) hsp))
+
+/-- **THE FINITENESS THE CASCADE'S ITERATION IS WELL-FOUNDED ON.** Derived from `p` being idle by
+`pinnedRegions_subset_Ico`, never assumed. -/
+theorem pinnedRegions_finite (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (p a : ℤ) (hp : pend (objAt g p) = false) : (pinnedRegions g p a).Finite :=
+  Set.Finite.subset (Set.finite_Ico p a) (pinnedRegions_subset_Ico g hg p a hp)
+
+/-- **The cascade's iteration count, as a COUNT.** The number of pins the cascade re-establishes
+is the number of region starts the window meets, and an idle anchor counts them inside the window
+itself. A count of iterations, not a statement about size. -/
+theorem pinnedRegions_ncard_le (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (p a : ℤ) (hp : pend (objAt g p) = false) :
+    (pinnedRegions g p a).ncard ≤ (a - p).toNat := by
+  have h := Set.ncard_le_ncard (pinnedRegions_subset_Ico g hg p a hp) (Set.finite_Ico p a)
+  rwa [← Finset.coe_Ico, Set.ncard_coe_finset, Int.card_Ico] at h
+
+/-- **One lengthening's deficit at an earlier pin is at most the lengthening.** Raising the pin at
+`s` by `l` and leaving the pin at `v` where it was costs at most `l` against the compatibility
+`pinCompat_of_ladderPath` supplies on the original path. The per-step increment the cascade's
+recurrence sums. -/
+theorem pin_deficit_le_of_lengthen (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (s v : ℤ)
+    (hs0 : pend (objAt g s) = false) (hs1 : pend (objAt g (s + 1)) = true)
+    (hv0 : pend (objAt g v) = false) (hv1 : pend (objAt g (v + 1)) = true) (l : ℕ) :
+    ((cntAt g (s + 1) + l : ℤ) - cntAt g (v + 1)).natAbs ≤ (s - v).natAbs + l := by
+  have h := pinCompat_of_ladderPath g hg s v hs0 hs1 hv0 hv1
+  omega
+
+/-- **The cascade's demand after `k` iterations**: the recurrence `a (k + 1) = 2 * a k + J + 1` at
+idle-run slack `J`, the one the probe-level `iter_doubling` records
+(`specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean`, cited by path and not as a
+proof term). A COUNT. -/
+def cascadeDemand (J : ℕ) : ℕ → ℕ
+  | 0 => 0
+  | k + 1 => 2 * cascadeDemand J k + J + 1
+
+/-- **The recurrence's closed form**: `a k = (J + 1) * (2 ^ k - 1)`, stated additively so that no
+truncated subtraction enters. -/
+theorem cascadeDemand_add_succ (J k : ℕ) :
+    cascadeDemand J k + (J + 1) = (J + 1) * 2 ^ k := by
+  induction k with
+  | zero => simp [cascadeDemand]
+  | succ k ih =>
+    have hr : (J + 1) * (2 ^ k * 2) = 2 * ((J + 1) * 2 ^ k) := by ring
+    rw [cascadeDemand, pow_succ, hr, ← ih]
+    ring
+
+/-- **THE SIZING.** The cascade's demand over at most `Fintype.card (ProdState Q φ)` iterations at
+idle-run slack `tIdle pend` is at or below `(K2)`'s own `cascadeBound` — the single sizing anchor
+this module imports and the only one citable here as a proof term. The quantity is a COUNT of
+iterations and the exponential is named as such; nothing here is a complexity claim, and no
+parameter is raised to reach it. -/
+theorem cascadeDemand_le_cascadeBound [Fintype Q] (φ : PlusFormula) {k : ℕ}
+    (hk : k ≤ Fintype.card (ProdState Q φ)) :
+    cascadeDemand (tIdle pend) k ≤ cascadeBound pend φ := by
+  have h1 := cascadeDemand_add_succ (tIdle pend) k
+  have h2 : (2 : ℕ) ^ k ≤ 2 ^ Fintype.card (ProdState Q φ) :=
+    Nat.pow_le_pow_right (by omega) hk
+  have h3 : (tIdle pend + 1) * 2 ^ k
+      ≤ (tIdle pend + 2) * 2 ^ Fintype.card (ProdState Q φ) :=
+    le_trans (Nat.mul_le_mul_left _ h2) (Nat.mul_le_mul_right _ (by omega))
+  have h4 : (tIdle pend + 2) * 2 ^ Fintype.card (ProdState Q φ) = cascadeBound pend φ := by
+    rw [cascadeBound]; ring
+  omega
+
+/-- **REGIME EXHAUSTIVENESS, AS A LEMMA.** Two ladder paths meeting at a class collision of the
+gap coordinate at a FIXED next deadline lie in the SAME regime: either both countdowns sit inside
+the window `c ≤ n`, where an idle position in the past is admissible and the cascade is the
+construction owed, or both paths are pending at every earlier position, where
+`exists_spliced_ladderPath_of_pend_past` already discharges the pin side condition with no
+cascade at all. There is no third case and no straddling collision, so the two regimes together
+cover every collision the lift must transport and no path is ever carried from one into the
+other. `clipIdx_regime_of_eq` is the segregation and `pend_past_of_nxtAt_lt` the dichotomy; `(K4)`'s
+`2 ≤ B` is what makes the first available. -/
+theorem regime_exhaustive_of_clipIdx_eq {B : ℕ} (hB : 2 ≤ B)
+    (g g' : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (hg' : IsLadderPath step pend g') (z z' : ℤ)
+    (hz : pend (objAt g z) = true) (hz' : pend (objAt g' z') = true)
+    (hn : nxtAt g z = nxtAt g' z') (hne : cntAt g z ≠ cntAt g' z')
+    (h : clipIdx B (cntAt g z) (nxtAt g z) = clipIdx B (cntAt g' z') (nxtAt g' z')) :
+    (cntAt g z ≤ nxtAt g z ∧ cntAt g' z' ≤ nxtAt g' z') ∨
+      ((∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧
+        (∀ p : ℤ, p ≤ z' → pend (objAt g' p) = true)) := by
+  rw [← hn] at h
+  rcases lt_or_gt_of_ne hne with hlt | hgt
+  · rcases clipIdx_regime_of_eq B _ _ _ hB hlt h with hw | hgap
+    · exact Or.inl ⟨by omega, by omega⟩
+    · exact Or.inr ⟨pend_past_of_nxtAt_lt g hg z hz (by omega),
+        pend_past_of_nxtAt_lt g' hg' z' hz' (by omega)⟩
+  · rcases clipIdx_regime_of_eq B _ _ _ hB hgt h.symm with hw | hgap
+    · exact Or.inl ⟨by omega, by omega⟩
+    · exact Or.inr ⟨pend_past_of_nxtAt_lt g hg z hz (by omega),
+        pend_past_of_nxtAt_lt g' hg' z' hz' (by omega)⟩
+
+end Cascade
 
 /-! ### The alternative history: a pend-profile-preserving relabelling of the walk
 

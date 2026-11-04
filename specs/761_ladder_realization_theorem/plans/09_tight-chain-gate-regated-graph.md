@@ -715,7 +715,7 @@ Phase 11.1.
 
 ---
 
-### Phase 11.2: The Pin Cascade, Front Half — Regime Exhaustiveness, Finiteness, and the Sizing [NOT STARTED]
+### Phase 11.2: The Pin Cascade, Front Half — Regime Exhaustiveness, Finiteness, and the Sizing [COMPLETED]
 
 **ENTERABLE NOW, AND GATED ON NOTHING OPEN.** Re-confirmed at this revision's authoring rather than
 carried: its two prerequisites (Phases 7 and 11) are both closed; `exists_spliced_ladderPath`,
@@ -745,11 +745,11 @@ earlier region start, so compatibility must be re-established rather than assume
 forced by the carrier, not an artefact of the lift lemma's shape.
 
 **Tasks**:
-- [ ] State and prove the FINITENESS: given a splice at `a` of length `l` and an idle position
+- [x] State and prove the FINITENESS: given a splice at `a` of length `l` and an idle position
       `p ≤ a` on the original path, the set of pinned regions between `p` and `a` is finite. Prove
       that finiteness FROM `p` being idle rather than assuming it — that derivation is the content
       of this item, and it is what makes the cascade's iteration well-founded.
-- [ ] State the sizing as a COUNT (guardrail (c)). **Finding 8 applies and is binding**: of the six
+- [x] State the sizing as a COUNT (guardrail (c)). **Finding 8 applies and is binding**: of the six
       anchors the predecessor plan named, only `cascadeBound` (`CounterQuotient.lean`, which this
       module imports) is a library declaration and so the only one citable as a PROOF TERM.
       `forward_window`, `backward_constraint`, `region_doubling`, `doubling_attained` and
@@ -762,11 +762,11 @@ forced by the carrier, not an artefact of the lift lemma's shape.
       imports this module, so it is NOT available here; it is available to Phase 15 and above. Do
       not attempt to import it. No complexity claim: the exponential in the number of pinned regions
       is named as a count of iterations.
-- [ ] Record the regime exhaustiveness explicitly, as a lemma rather than as prose, from
+- [x] Record the regime exhaustiveness explicitly, as a lemma rather than as prose, from
       `pend_past_of_nxtAt_lt` and `clipIdx_regime_of_eq`. The pin-free dichotomy of `LadderPin.lean`
       is a DIFFERENT dichotomy over a different hypothesis and is above this module in any case; do
       not cite it, and do not restate it here under a new name.
-- [ ] **Keep the module under its length ceiling, by the pre-authorized remedy.** Measured at this
+- [x] **Keep the module under its length ceiling, by the pre-authorized remedy.** Measured at this
       plan's authoring: `LadderAgree.lean` is 2,300 lines against an in-source
       `set_option linter.style.longFile 2400`. PRIMARY REMEDY: raise the in-source baseline in place
       to the next value the linter accepts, and record the new value in the phase's own notes; never
@@ -774,8 +774,13 @@ forced by the carrier, not an artefact of the lift lemma's shape.
       dispatch can actually commit it: move this phase's three facts into a new
       `LadderCascade.lean` importing `LadderAgree` alone, with the two import edges, and record that
       Phase 15 must then import it.
-- [ ] Wire the new declarations (axiom pins, docstring, generated inventory blocks, `status.typ`).
-      No C14 entry and no theorem-index row: this phase lands no Goal.
+- [x] Wire the new declarations (axiom pins, docstring, generated inventory blocks, `status.typ`).
+      No C14 entry and no theorem-index row: this phase lands no Goal. *(deviation: altered — the
+      inventory regeneration rewrote `FormalSystem/Metalogic/README.md` and the root `README.md`
+      as well as the RaySummary README; both are generated line-count cascades of the one library
+      edit, neither is listed under `Files to modify`, and both are committed with this phase as a
+      declared `file_scope` excursion, because leaving them out leaves the INV inventory check
+      stale.)*
 
 **Prohibited workarounds**: do NOT state, assume or anticipate the cascade construction here — it is
 Phase 11.8's; do NOT weaken `exists_spliced_ladderPath` by dropping or relaxing a pin hypothesis
@@ -835,6 +840,59 @@ hypothesis.
 - `#print axioms` on every new declaration: no `sorryAx`, no custom axiom, no `native_decide`. `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0` (baseline 0, measured at this plan's authoring). The repository-wide vacuous-definition grep is UNCHANGED from the dispatch's starting commit (baseline 1 hit, `FormalSystem/Examples/TemporalStructures.lean:495`, `theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial`, a false positive where `:= trivial` closes a real goal — "count 0" is unmeetable for this pattern and is not asked for), and a MODULE-SCOPED grep over `LadderAgree.lean` is count 0. `grep -rn '^axiom ' FormalSystem/ --include=*.lean | wc -l` is unchanged from its baseline of 10, and the same over `Tests/` unchanged from 2 (both measured at this plan's authoring; both counts are docstring prose, so "count 0" is unmeetable and is not asked for).
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0, each exit status read directly.
 - If the phase closes `[BLOCKED]`: the goal state is recorded, Phase 11.8's and Phase 15's inherited contingency is named in the handoff, and no pin hypothesis anywhere has been relaxed to get past it.
+
+**CLOSURE RECORD (measured, not estimated).** Landed in `LadderAgree.lean`, in a new
+`section Cascade` between the splice section and the alternative-history section: `pinnedRegions`
+(def), `pend_of_mem_region`, `pinnedRegions_subset_Ico`, `pinnedRegions_finite`,
+`pinnedRegions_ncard_le`, `pin_deficit_le_of_lengthen`, `cascadeDemand` (def),
+`cascadeDemand_add_succ` and `cascadeDemand_le_cascadeBound`, plus
+`regime_exhaustive_of_clipIdx_eq` — nine theorems and two definitions, against the Scope
+Hypothesis's "three declarations plus whatever helpers the finiteness derivation needs".
+
+- **Finiteness, and where `p` idle is consumed.** The load-bearing statement is
+  `pinnedRegions_subset_Ico`: a pending region can be arbitrarily long, so a region whose span
+  meets the window `[p, a]` can start arbitrarily far below `p`, and nothing about the window
+  bounds that set below. An IDLE `p` lies in no pending region (`pend_of_mem_region`, over
+  `cntAt_sub_of_pend`), so no region start below `p` can have its span reach `p`, and the set
+  collapses into `Set.Ico p a`. `lean_minimal_hypotheses` on `pinnedRegions_subset_Ico` reports
+  every explicit binder, `hp` included, **load-bearing**. `pinnedRegions_finite` and
+  `pinnedRegions_ncard_le` are its corollaries; no bound on the number of pinned regions is
+  assumed anywhere.
+- **The sizing, as a count.** `cascadeDemand` is the recurrence `a (k + 1) = 2 * a k + J + 1`,
+  `cascadeDemand_add_succ` its closed form `a k + (J + 1) = (J + 1) * 2 ^ k`, and
+  `cascadeDemand_le_cascadeBound` the sizing against `cascadeBound` — the only sizing anchor
+  citable here as a proof term, as finding 8 says. The five probe-level anchors are cited by PATH
+  in the section docstring and appear nowhere in a proof term; `two_pow_card_prodState_le_Tc` is
+  named only as unavailable (finding 9).
+- **Length remedy: the PRIMARY one.** The in-source baseline was raised in place from
+  `set_option linter.style.longFile 2400` to `2600`; the module measures 2,476 lines at close.
+  The contingency module `LadderCascade.lean` was NOT created and no import edge moved.
+- **Measured at close.** Scoped build of `LadderAgree` and of
+  `BimodalTest.Metalogic.KTypeSummaryAxiomTest`: exit 0, 0 errors, 0 warnings each. Full
+  `lake build`: exit 0, 0 errors, 0 warnings, 2,895 jobs. `#print axioms` on all nine new
+  theorems: subsets of `[propext, Classical.choice, Quot.sound]`; no `sorryAx`, no custom axiom,
+  no `native_decide`. `lean-sorry-census.sh FormalSystem Tests`: exit 0, `sorry_count: 0`.
+  Module-scoped vacuous grep: 0. Repository-wide vacuous grep: 1, unchanged. `^axiom `: 10 in
+  `FormalSystem/`, 2 in `Tests/`, both unchanged. `git diff --numstat` on `LadderAgree.lean`:
+  178 added, 1 removed — the one removal is the `longFile` line, so
+  `exists_spliced_ladderPath`, `pinCompat_of_ladderPath`,
+  `exists_spliced_ladderPath_of_pend_past` and `atomPreservingCountMove_refuted` are byte-identical
+  and no pin hypothesis was relaxed. `exists_spliced_ladderPath_of_idle_past` appears once, in a
+  docstring sentence saying it is NOT landed here. Certificate-freedom grep (extended form): 0;
+  the import list is unchanged at `AnchorLayer` and `CounterQuotient`.
+  `typst-sync-check.sh`, `readme-lint.sh`, `check-evidence-probes.sh` (47 wired probes) and
+  `check-task-references.sh --quiet` each exit 0.
+- **One criterion NOT met, and why it is not this phase's.** `check-module-invariants.sh` exits 1
+  on `FAIL C16`: `lake exe runLinter` reports an `unusedArguments` finding on
+  `mem_cellAt_of_shift_of_hasForwardSlack` (`LadderChain.lean:2136`, the `hslk` binder) that is
+  absent from `scripts/nolints.json`. `LadderChain.lean` is clean at this dispatch's starting
+  commit and this phase is forbidden to edit it, so the finding is pre-existing and outside this
+  phase's territory. Every other group of that script passes, the `INV` inventory group included
+  after regeneration. This is the exact "absolute criterion against a pre-existing baseline"
+  class the Risks table names; recorded rather than worked around, and the narrow remedy belongs
+  to whoever owns that module's lint pins.
+
+---
 
 ---
 
