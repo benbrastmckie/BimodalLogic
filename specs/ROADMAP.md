@@ -31,12 +31,31 @@ lives in the cited record, not here.
   renamed.** Absorb-and-rename is REFUSED: mutating that inductive would turn
   `plus_incomplete_base`, `blc_not_plusDerivable_base` and `not_plus_complete_base` into
   statements about a different language. L⁺ stays an embedded sub-language.
-- **Path A — gate, probe, then decide** (2026-11-04). Stage 1's aim stays `PlusValidZTime` over
-  `PlusFormula` until `854` (is `▷` even L⁺-definable?) and `855` (does one-sided `▷`/`◁`
-  transport crack the refuted two-sided shape?) both return. Retarget only on the strength of
-  both. Until then L^▷ work is confined to `833`, `854`, `855`, `856`, and no `▷`/`◁` clause is
-  added to `clSig`, `LocalRun` or `Anchored`. A positive `854` makes the extension notational and
-  retires `856`.
+- **`854` HAS RETURNED, and the verdict is SPLIT BY FRAME CLASS** (report
+  `854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md`).
+  - **At `.ZTime` and `.RTime`: POSITIVE.** `▷`/`◁` *are* L⁺-definable, uniformly in their
+    argument — a translation `tr` with `OpenTruthAt M τ t φ ↔ PlusTruthAt M τ t (tr φ)` at every
+    model, world and time. The elimination `▷(α ∨ β) ↔ α ∨ ⊡β` is compiled-live; the paper half
+    is Gabbay separation (GHR Thm 10.2.9 over ℤ, Thm 10.3.20 over Dedekind-complete flows).
+  - **At `.Base` and `.Dense`: OPEN, obstruction located.** The only general `▷`-elimination goes
+    through separation, and U/S is **not separable over ℚ-time** (separation ⇒ expressive
+    completeness, GHR Thm 9.3.1; U/S not expressively complete over ℚ, Rabinovich 2014). ℚ is a
+    `TemporalOrder`, so no translation obtained this way is valid at `.Dense`/`.Base`.
+  - **The Stage 1 retarget is therefore answered negatively at ZTime, at no further cost**: over ℤ
+    every L^▷ formula *is* an L⁺ formula under an effective translation, so there is no expressive
+    gain to retarget onto. This is an expressiveness statement only — no decidability or
+    completeness claim.
+  - **Spend nothing further on a ℤ-time separation.** `sinkFrame` and every `.ZTime` frame are
+    excluded as separators: on every ℤ-time frame `▷φ` coincides with an L⁺ formula. A negative
+    answer, if one exists, lives on a non-Dedekind-complete duration (ℚ first, ℚ ×ₗ ℤ second).
+  - New validity worth recording: `▷φ⁺ ↔ ⊡φ⁺` for pure-future `φ⁺` (`ofutP_of_futDet`), on every
+    regular frame; the rigidity companion is `ofutP_of_pastDet`.
+- **The Base/Dense open item is `859`** — the follow-on the verdict's R3 proposed, now filed and
+  `[RESEARCHING]`. It runs the negative route (a ℚ-time bisimulation separating a Stavi/`γ_π⁺`-type
+  candidate) against the positive one (a `▷`-specific elimination avoiding full separation). A
+  precisely located obstruction is a complete outcome. **`856` is gated on it.**
+- **L^▷ work stays confined** to `833`, `855`, `856`, `859`, and no `▷`/`◁` clause is added to
+  `clSig`, `LocalRun` or `Anchored`.
 - **Gate asymmetry.** `(P1)` is the gate at Base/Dense/RTime, where its r.e. status is open with a
   located obstruction. At ZTime it is already settled affirmatively *on paper* (`559` item (k)),
   so `559`'s `(P2)` is gated on `833` and `(P0b)` alone, **not** on Stage 1. What Stage 1 adds at
@@ -60,9 +79,9 @@ lives in the cited record, not here.
 ## Run these next
 
 ```bash
-/orchestrate 854 --research --lit   # PATH A's GATE: is ▷ L⁺-definable? A positive verdict retires the language ruling. No file collision with anything live — run it first
+/orchestrate 859 --research --lit   # THE LIVE GATE: is ▷ L⁺-definable at Base/Dense? 854 answered ZTime/RTime positively and left this as the single open item. Gates 856 and the Base-class language ruling
 /orchestrate 833                    # the L^▷ keystone, ~40 lines of transcription — AFTER 761's current cycle clears docs/theorem-index.md, never concurrently
-/orchestrate 855 --hard --lit       # PATH A's second measurement: the one-sided ▷/◁ transport against the five-row refutation table — its own cycle (collides with live 761 on specs/evidence/ and check-evidence-probes.sh)
+/orchestrate 855 --hard --lit       # the one-sided ▷/◁ transport against the five-row refutation table — its own cycle (collides with live 761 on specs/evidence/ and check-evidence-probes.sh)
 ```
 
 **`761` is at `[IMPLEMENTING]` 24/37 (plan v11, Phase 11.12 next) — do not batch anything that
@@ -70,7 +89,7 @@ shares its scope.** Its `file_scope` is the widest in the repository (the whole 
 library set, `docs/theorem-index.md`, `scripts/check-module-invariants.sh`,
 `scripts/check-evidence-probes.sh`, `specs/evidence/seam-gluing-ray-product/`, `specs/state.json`,
 `specs/TODO.md`), so **`833`, `855`, `852`, `853` and `763` all serialize behind it**. That
-serialization is correct and must not be worked around. `854` collides with nothing.
+serialization is correct and must not be worked around. `859` collides with nothing.
 
 **`761`'s open core is `852`, with `853` beside it.** `852` is the model-level pumping lemma for
 `tpOf` along a ladder path — hit independently in three implementation rounds, costed by no phase
@@ -91,7 +110,7 @@ successors measured false. Re-planning this area from `838`'s two-sided framing 
 /orchestrate 768,769,770,772,774,777,779,780
 /orchestrate 781,785,787,803,804,810,813,817
 /orchestrate 818,821,825,829,830,831,832,837
-/orchestrate 839,841,842,847,848,857,858,859
+/orchestrate 839,841,842,847,848,857,858
 ```
 
 ## Next batches
@@ -105,9 +124,9 @@ successors measured false. Re-planning this area from `838`'s two-sided framing 
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761
 /orchestrate 714,781 --hard      # sliced-certificate internals
 # Stage 2 — the L^▷ front (Path A), then supporting semantics and metalogic
-/orchestrate 854 --research --lit   # PATH A's GATE. Gates 856, 559's (P0c)/(P0d), the Stage 1 retarget
+/orchestrate 859 --research --lit   # the Base/Dense open item left by 854. Gates 856 and the Base-class language ruling
 /orchestrate 833                    # land ⊡φ ↔ ▷◁φ. Shares docs/theorem-index.md with live 761
-/orchestrate 856 --hard             # the L^▷ proof system. HARD-GATED on 854 — do not enter before that verdict
+/orchestrate 856 --hard             # the L^▷ proof system. HARD-GATED: unnecessary at ZTime/RTime (854), undecided at Base/Dense pending 859 — do not enter
 /orchestrate 664,559,570 --lit      # corpus ingest, then TM⁺ completeness rounds and the C3 open question
 /orchestrate 830 --hard             # Γ-generalize decidableValidZTime; does NOT advance the L⁺ aim
 # Stage 3 — datasets, examples, documentation, hygiene
@@ -231,10 +250,15 @@ deliberately kept out of the immediate run list appears there correctly; its pre
 
 - **`559` is a TM⁺ task, not TM⋆** (its directory name is a legacy misnomer). Its object language
   is L^▷ by ruling; `⊡φ ↔ ▷◁φ ↔ ◁▷φ` holds on every regular task frame, choice-free, so `⊡` is
-  definable and no L⁺ result is traded away. `(P0a)` is `833`, `(P0b)` is `854`; `559` declares
-  both as dependencies and retains only `(P0c)`/`(P0d)`. **Run neither before `854` returns.**
+  definable and no L⁺ result is traded away. `(P0a)` is `833`, `(P0b)` is `854` — **returned**,
+  class-split, so `559`'s (n1)–(n2) survive at ZTime only as restatements: (n2)'s rigidity schema
+  `▷ψ⁻ ↔ ψ⁻` is `ofutP_of_pastDet`, its companion `▷φ⁺ ↔ ⊡φ⁺` is `ofutP_of_futDet`. (n3) stays
+  open at Base/Dense. `(P0c)` is unaffected (invariance, not definability). `(P0d)` (`LC_n` in
+  `▷`-form at ZTime) is now an L⁺ question by `openValidIn_ztime_iff_tr`; the forward-splice
+  argument `559` names is still the way to settle it.
 - **`559` is not to build the proof system** — its own constraints forbid changes under
-  `FormalSystem/`. That is `856`, hard-gated on `854`. No completeness statement about L^▷ is
+  `FormalSystem/`. That is `856`, now gated on `859` rather than `854`: there is nothing for it
+  to do at ZTime/RTime, and its rationale survives only at Base/Dense. No completeness statement about L^▷ is
   stateable until it lands. Its three acceptance baselines are `559`'s: soundness over the class,
   conservativity over TM⁺ in both directions, and collapse under `Determined`.
 - **Do not open `(P2)` while `761`/`836` are live** — the reason is the coordination note, not the
