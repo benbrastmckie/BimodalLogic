@@ -13,7 +13,7 @@ next_project_number: 861
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,855,857,858,859,860 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827,840,845,852,853,856 | 298,428,502,761,768,769,770,772,777,785,810,813,838,839,855,859 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 410,498,499,500,822,834,835 | 429,497,783,823,827 | agent-system, algebraic-representation, decidability |
+| 3 | 410,498,499,500,822,834 | 429,497,783,823 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -33,7 +33,6 @@ next_project_number: 861
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and...
 769 [NOT STARTED] — plan-format: blocked decision gates and plan-level Status...
   └─ 827 [NOT STARTED] — Require a plan phase to agree with its own Scope Hypothesis...
-    └─ 835 [NOT STARTED] — State a repo-wide gate criterion relative to a recorded...
 770 [NOT STARTED] — postflight writes detail-free blocking issue entry on partial...
   └─ 823 [NOT STARTED] — Tell the re-prompted dispatch to distrust the error count it...
     └─ 834 [NOT STARTED] — Confirm the blocker-research aux carrier landed, and refuse...
@@ -125,9 +124,9 @@ next_project_number: 861
 
 ### Metalogic
 
-559 [RESEARCHED] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
+559 [PLANNING] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-859 [RESEARCHED] — IMPLEMENTATION TASK: land the open-future NON-definability...
+859 [PLANNING] — IMPLEMENTATION TASK: land the open-future NON-definability...
   └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -164,7 +163,7 @@ next_project_number: 861
 
 ### 859. Qtime open future definability base dense
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 854
@@ -515,6 +514,18 @@ defect_class HANDOFF_VALIDATION_FAILED, detecting_site
 `skill-orchestrate/SKILL.md:cycle-postflight-handoff-validation`. The mathematical work of the
 originating task closed green (full `lake build` exit 0, sorry 0, five repo gates passing); this
 is a fault in the agent system, not in that work.
+
+
+=== CANDIDATE DUPLICATE, NOT YET RULED (2026-11-04) ===
+
+The source-store repository's open record #472 handoff_validator_crash_and_defect_record_gap
+addresses the same validate-handoff.sh crash as this record. #472 is 15,791 characters against this
+record's 8,752 and carries a second half this record does not (the defect recorder refusing every
+consumer-repo attribution). This record's own promise to settle the canonical blockers shape may or
+may not fall inside #472's scope, and neither record cites an entry_id, so there is no provenance
+shortcut. RULING THIS PAIR REQUIRES READING BOTH IN FULL -- it was deliberately left undecided
+rather than guessed from the titles. The identifier #472 is a number in THAT repository's task space
+and does not resolve here.
 
 ---
 
@@ -2235,6 +2246,16 @@ Every edited file lies outside `specs/**`, so its prose and comments must carry 
 
 Raised during orchestration of the ladder-realization-theorem record (task 761) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. The originating entry is in `specs/761_ladder_realization_theorem/issues.jsonl`, entry_id `iss_1791766528048_mRmvAU` (class `tooling bug or gap`, severity minor, resolution `worked_around`). The three-site `degraded` measurement, the `literature-briefing.sh` banner-gate measurement and the sub-index token measurement in this record were all performed fresh during task creation; the originating entry recorded only the symptom.
 
+
+=== FOLD DIRECTION, MEASURED 2026-11-04 -- THIS RECORD IS THE LARGER ONE ===
+
+This record and the source-store repository's open record #453
+degraded_retrieval_zero_result_directive share the SAME originating entry_id,
+iss_1791766528048_mRmvAU, and are the same defect. DO NOT ABANDON THIS RECORD AS COVERED: at 12,222
+characters against #453's 8,124 it is the RICHER of the two, so the correct disposition is a fold
+of this record's content INTO #453, with roughly 4 KB to move, before this one is retired. The
+identifier #453 is a number in THAT repository's task space and does not resolve here.
+
 ---
 
 ### 825. Report a reversed validate-artifact.sh invocation as an argument-order fault, not a missing file
@@ -3086,6 +3107,79 @@ GUARDRAILS.
 
 RELATED, NOT OWNED HERE. The roadmap-integration.sh --prune flag-merge defect is a separate source-store record (numbered 388 there, filed 2026-10-11): when a Run line's flags follow the task list, the whitespace-stripping pass merges the flag into the last task id, so a flagged multi-task line silently loses that task and a flagged single-task line vanishes whole. Observed live here on 2026-10-13: it would have deleted the still-active 761 and 763 lines from specs/ROADMAP.md. Do not run either write mode of that script against specs/ROADMAP.md until both records land.
 
+========================================================================
+AMENDED 2026-11-04 -- THE FROZEN SET IS 32 RECORDS, NOT SEVEN
+========================================================================
+
+THE SEVEN-RECORD LIST AT THE TOP OF THIS RECORD IS BADLY UNDER-COUNTED and must not be used as the
+freeze list. It was accurate when written; the backlog has since grown. Measured 2026-11-04
+against this repository's own specs/state.json -- re-derive with the queries named below rather
+than trusting these numbers, which will drift the same way the original seven did.
+
+--- THE MEASURED FROZEN SET: 32 non-terminal `meta` records ---
+
+(a) TWENTY-SEVEN declare at least one agent-system/** path in file_scope, so they are frozen on
+    the face of their own declaration:
+    767, 768, 769, 770, 772, 777, 783, 785, 810, 813, 814, 816, 822, 823, 824, 825, 826, 827,
+    834, 839, 840, 841, 842, 843, 845, 857, 858
+
+(b) THREE declare only .claude/** paths, which is the SAME condition one step removed and is the
+    easiest case to miss: .claude/ is a disposable deploy artifact regenerated from the source
+    store, so a record naming a .claude/** file has its real edit target under
+    agent-system/** and is just as frozen as group (a). These are 752, 753 and 774.
+
+(c) TWO declare no file_scope at all and were already frozen by the predecessor migration record
+    on other grounds: 730 and 741.
+
+Derive (a) and (b) mechanically rather than by eye:
+  jq '[.active_projects[]|select(.task_type=="meta")
+       |select(.status|IN("completed","abandoned","expanded")|not)
+       |select((.file_scope//[])|any(test("^agent-system/")))|.project_number]|sort' specs/state.json
+  jq '[.active_projects[]|select(.task_type=="meta")
+       |select(.status|IN("completed","abandoned","expanded")|not)
+       |select(((.file_scope//[])|length)>0)
+       |select(((.file_scope//[])|any(test("^agent-system/")))|not)|{n:.project_number,s:.file_scope}]' specs/state.json
+
+--- FIVE MORE ARE PROBABLY FROZEN BUT UNDECIDED -- DO NOT DISPATCH THEM EITHER ---
+
+729, 779, 780, 847 and 848 declare NO file_scope, so their edit target cannot be read off their
+declaration. Their own names point at the source store (source_store_commit_and_registration_review,
+file_scope_external_source_store_containment, test_sweep_external_source_store_failures,
+plan_compliance_spotcheck_probe_scope, state_json_title_fields_for_todo_readability). Treat them as
+frozen until a target is derived for each, by the predecessor migration record's own
+derive-a-file_scope procedure. A record with no declared scope is the one shape that defeats both
+the freeze list and the file_scope overlap gate, so guessing in the permissive direction here is
+the expensive mistake.
+
+--- ONE PARTIAL CASE, WHICH THE BINARY FROZEN/NOT-FROZEN FRAMING CANNOT EXPRESS ---
+
+751 file_scope_declaration_hygiene_remediation declares specs/state.json (genuinely local and
+workable here) alongside .claude/scripts/validate-state.sh (a deploy path whose real target is the
+source store). It is therefore PARTIALLY frozen: its local half can be worked here, its script
+half cannot. Either split it or freeze it whole; do not dispatch it as-is on the strength of its
+local path.
+
+--- THIS RECORD ITSELF IS NOT FROZEN ---
+
+784 declares specs/state.json and specs/ROADMAP.md only. Both are local, so this tracker can be
+maintained from here. That is why it is the right place for this list.
+
+--- ONE RECORD LEFT THE SET BY DISPOSITION, NOT BY MIGRATION ---
+
+835 plan_format_baseline_relative_gate_criteria was abandoned 2026-11-04 as covered by the source
+store repository's own open record #452 baseline_relative_gate_criteria, after its one unique
+section was transplanted there. It is archived and is deliberately absent from every list above.
+Do not re-add it.
+
+--- WHAT THIS RECORD DOES AND DOES NOT CLAIM ---
+
+Freezing is not a disposition. Nothing above rules on whether a frozen record should be migrated,
+folded into an existing source-store record, or abandoned as already covered -- that ruling is
+owned by the source store repository's #481, which also now carries the measured four-group
+classification and a bounded reading list for it. The identifiers #452 and #481 are numbers in
+THAT repository's task space and do not resolve here. This record's only job is to stop a doomed
+dispatch in the meantime.
+
 ---
 
 ### 783. Bounded in-file block edits: index and assert, never string-splice
@@ -3519,6 +3613,27 @@ DELIVERABLE HYGIENE. The edited files are not under `specs/**`, so the prose mus
 
 RELATED RECORDS, FOR ORIENTATION AND NOT AS DEPENDENCY EDGES. The roadmap-generator record covering `roadmap-integration.sh`'s partial-write behavior is the sibling core-extension defect with the same source-store boundary, and the file_scope-declaration-hygiene record covers a different blindness in the same admission machinery. No dependency edge to either -- nothing here blocks on them.
 
+=== DISPOSITION PENDING 2026-11-04 -- DO NOT DISPATCH, DO NOT ABANDON YET ===
+
+The underlying defect is FIXED. Verified in this repository's deployed tree 2026-11-04:
+context/contracts/conclusion-stage.md now states that a null or omitted `resolution` is read
+identically to `open`, and `implicit_open_count` is present in both that contract and the live
+output of orchestrate-conclusion-aggregate.sh --aggregate (observed returning 6 the same day). The
+source-store repository's record #373 null_resolution_entries_unreachable_by_conclusion_stage,
+which did that work, is `completed` with 3 artifacts.
+
+ABANDONMENT IS RULED CORRECT BUT IS BLOCKED ON A PRECONDITION THAT CANNOT BE MET AS WRITTEN. The
+migration record in that repository requires transplanting two items this record holds into the
+absorbing record FIRST, and adds an explicit fail-safe: if the transplant is not possible for any
+reason encountered, do NOT abandon -- report it and leave the record open. The absorbing record
+#373 is CLOSED and archived, so there is no live record to amend. Checked 2026-11-04: #373 carries
+no "FOLDED IN" marker, so the transplant has never happened.
+
+This record therefore STAYS OPEN under that fail-safe. The question of where a transplant goes when
+the absorbing record is already closed is now recorded on that repository's #481, which must settle
+it; the identifiers #373, #390 and #481 are numbers in THAT repository's task space and do not
+resolve here.
+
 ---
 
 ### 752. Roadmap integration regenerate silent abort
@@ -3776,7 +3891,7 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 
 ### 559. Nondeterministic canonical model tm star completeness
 - **Effort**: large
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 833, Task 854
