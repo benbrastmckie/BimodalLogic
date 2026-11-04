@@ -1198,11 +1198,48 @@ patched by inlining a new argument here.
 
 ---
 
-### Phase 11.8: The Pin Cascade, The Construction — Replacement Admissibility in the Remaining Regime [NOT STARTED]
+### Phase 11.8: The Pin Cascade, The Construction — Replacement Admissibility in the Remaining Regime [BLOCKED]
 
 **ENTERABLE BEHIND PHASE 11.2, AND GATED ON NOTHING OPEN.** Re-confirmed at this revision's authoring:
 its deliverable `exists_spliced_ladderPath_of_idle_past` exists nowhere in the library, so nothing the
 abandoned round or the live successor chain landed has pre-empted it.
+
+**BLOCKER** (Phase 11.8), raised before any proof attempt rather than discovered mid-proof:
+
+- **What failed**: This phase's Goal and its third task contradict each other, and the shape the
+  third task names is REFUTABLE rather than merely hard. The Goal says the construction discharges
+  the pin hypotheses "by lengthening the preceding idle runs along with the spliced region", which
+  changes the object walk BELOW the splice point. The third task asks for
+  `exists_spliced_ladderPath_of_idle_past` "with the same conclusion shape the landed
+  pending-forever companion has" — that companion concludes about `spliceObj g a l` and
+  `spliceCnt g a l`, which leave the walk below `a + l` untouched (`spliceObj_of_lt`). A walk that
+  lengthens the earlier idle runs is not `spliceObj g a l`, so no construction can satisfy both.
+- **What was tried**: the two statements were read against the landed module rather than attacked.
+  `spliceCnt`'s own definition raises the pin at the start `s` of `a`'s region by exactly `l` — its
+  `if a ≤ v + (cntAt g v : ℤ)` branch fires at `v = s + 1`, because `a` lies in that region — while
+  leaving an earlier region start `v` whose region ends below `s` at `cntAt g (v + 1)`, since the
+  branch does not fire there. `pinCompat_of_ladderPath` (compiled, Phase 11) proves pairwise
+  compatibility of region-start countdowns NECESSARY for ANY ladder path whatsoever. So the spliced
+  walk needs `((cntAt g (s+1) + l : ℤ) - cntAt g (v+1)).natAbs ≤ (s - v).natAbs` where the original
+  path only supplies the same inequality without the `+ l`.
+- **Why it is stuck**: whenever the original is TIGHT at that pair — `cntAt g (s+1) - cntAt g (v+1)
+  = s - v` — the spliced walk demands `s - v + l ≤ s - v`, so for `l > 0` no ladder path has that
+  object walk and that countdown. The regime's hypotheses are satisfiable together with tightness:
+  Phase 11.9's compiled `tightChain_slack_zero` makes EVERY pair of pins of the tight doubling
+  chain exactly tight, and every `v ≤ 0` of that chain is idle, which is the idle-past regime. The
+  `spliceObj`-shaped conclusion is therefore false in this regime, not open.
+- **What is needed**: a restatement, by `/revise`, of what the cascade concludes about — the walk
+  that lengthens the earlier idle runs as well, with its own object and countdown, rather than
+  `spliceObj`/`spliceCnt`; and a decision about what interface Phase 15 then consumes, since "one
+  interface serves both regimes" is exactly what the refutation denies. A one-theorem probe would
+  compile the refutation on the chain Phase 11.9 already declares, and is cheap, but no file under
+  `specs/evidence/**` is listed under this phase's `Files to modify`, and an unlisted contingency
+  file cannot be committed by an implement dispatch.
+- **Prohibited workarounds**: NOT taken. No pin hypothesis of `exists_spliced_ladderPath` was
+  relaxed, nothing was landed under the deliverable's name, no `sorry`, axiom or vacuous definition
+  was written, and no checklist item was annotated and walked past. Phase 11.2's three landed facts
+  are left standing and untouched. Phase 15 inherits this as its own contingency, as this phase's
+  Scope Hypothesis says; the agreement does not.
 
 **Goal**: Discharge `exists_spliced_ladderPath`'s two explicit pin hypotheses in the regime the landed
 `exists_spliced_ladderPath_of_pend_past` does NOT cover — the regime where an idle position lies in the

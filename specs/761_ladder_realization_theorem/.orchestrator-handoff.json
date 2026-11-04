@@ -1,27 +1,30 @@
 {
-  "status": "blocked",
-  "dispatch_seq": 24,
-  "phases_completed": 14,
-  "phases_total": 25,
-  "summary": "Phase 11.5 closed [BLOCKED] on the refuting branch its own task 3 provides for. The depth-0 cell-level agreement is STATED (CellLEZeroConstOfKappaEq, a Prop-valued schema, proved nowhere) and the construction route B needs is identified (AtomPreservingCountMove) and REFUTED (atomPreservingCountMove_refuted) for every object whose pending bit is readable in the language: cntAt_eq_of_pend_eq makes the countdown a function of the pend profile alone, so moving c moves the pend profile, and PendFactorsLab turns that into moving an atom row. The forty-sixth wired probe discharges ParamsOk at the periodicity fixpoint's outputs, exhibits a populated kappa-collision at c != c', and carries a ladder path through EACH of the two ladder states, so the obligation is non-vacuous on both sides while the construction is unavailable. The obligation itself is neither proved nor refuted.",
+  "dispatch_seq": 26,
+  "status": "partial",
+  "phases_completed": 18,
+  "phases_total": 28,
+  "summary": "Executed all four phases plan v09 declares enterable. Phase 11.2 closed [COMPLETED] with nine theorems and two definitions in LadderAgree.lean; Phase 12.1 closed [COMPLETED WITH EXCLUSIONS] with Real and two of its six certificate conditions in LadderRealize.lean; Phase 11.9's decision gate closed [COMPLETED WITH EXCLUSIONS] with verdict INCONCLUSIVE, having COMPILED the one claim the live RaySummary README records as argued rather than compiled (no positive deletion-derivative of the tight doubling chain lifts) in a form strictly stronger than the recorded statement. Phase 11.8 is [BLOCKED]: its Goal and its own third task contradict each other and the shape the task names is refutable. Full lake build green at every phase end; sorry_count 0; no new axioms.",
   "blockers": [
-    "Phase 11.5 BLOCKED: route B's named construction (an atom-row-preserving ladder path through the other counter pair) is refuted as a theorem, so Phases 11.6, 11.7 and 12-18 cannot be entered along this route. What is needed is a construction that preserves the realized TYPE without preserving the valuation pointwise; no such construction is stated anywhere in the tree. Phase 11.2 remains independently enterable (its single consumer is Phase 15) and is the only unblocked phase on the board; the alternatives are a successor task for the open construction, or /revise of the route with this refutation as input."
+    "Phase 11.8 [BLOCKED]: the Goal lengthens the preceding idle runs (moving the walk below the splice point) while the third task asks for the spliceObj/spliceCnt conclusion shape (which does not move it), and that shape is REFUTABLE in the idle-past regime -- spliceCnt raises the pin at the start of the splice point's region by exactly l while leaving an earlier region start alone, and pinCompat_of_ladderPath makes pin compatibility necessary for any ladder path. Populated by Phase 11.9's compiled tightChain_slack_zero. Remedy: /revise restates what the cascade concludes about.",
+    "Phase 11.9 recorded statement defects (verdict INCONCLUSIVE): tightChain_deletion_derivative_not_ladderPath is false at m = 0 (the derivative deletes nothing and is the chain), and its conclusion is register-specific rather than the lifting form the record claims. The chain's pin set must also be unbounded above, since a finite-J chain has a lifting deletion-derivative. Recorded block left byte-identical; remedy: /revise.",
+    "Phase 12.1 exclusions: certBiInfK, certFwdK and certBwdK of Real all quantify relK, hence RK, and no theorem in the library derives an RK edge from an actual Count/Drift step. One lemma unblocks all three -- rk_of_count_drift, stated in full in the phase's Reasoned Exclusions record -- and it is not a per-coordinate reduction because clipIdx couples the counters.",
+    "Pre-existing and outside every entered phase's territory: check-module-invariants.sh exits 1 on one C16 unusedArguments finding on mem_cellAt_of_shift_of_hasForwardSlack (LadderChain.lean:2136), unchanged from this dispatch's starting commit."
   ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/05_ladder-cell-agreement-construction-refuted-summary.md",
-      "summary": "Phase 11.5: the cell-level route's construction refuted, the depth-0 obligation stated and not proved, the forty-sixth probe wired."
+      "path": "specs/761_ladder_realization_theorem/summaries/07_tight-chain-gate-regated-graph-summary.md",
+      "summary": "Round summary: three enterable phases closed, Phase 11.8 blocked, the tight-chain non-liftability compiled."
     },
     {
-      "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.5-handoff-20261102T215926Z.md",
-      "summary": "Phase-end handoff: what landed, what the refutation does and does not give, the three options for the next dispatch."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/09_tight-chain-gate-regated-graph.md",
+      "summary": "Phase markers, closure records, Reasoned Exclusions and the Phase 11.8 blocker record updated in place."
     },
     {
-      "type": "probe",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
-      "summary": "Probe761C, the forty-sixth wired probe: the cell-agreement construction refuted with non-vacuity on both sides."
+      "type": "other",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean",
+      "summary": "480-line probe: the tight doubling chain with pins unbounded above, and the compiled non-liftability of its positive deletion-derivatives. NOT wired into the evidence gate, per the INCONCLUSIVE branch."
     }
   ]
 }
