@@ -3,35 +3,109 @@
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/08_cell-agreement-construction-handoff.md",
-      "summary": "Revised plan: Phase 11.5 closed [COMPLETED WITH EXCLUSIONS] on the compiled refutation of route B's construction, the open cell-agreement construction relocated to task 836 as an external gate on Phases 11.6-11.7 and 12-18, and the pin cascade split into a closable Phase 11.2 and the new Phase 11.8 so a dispatch has enterable work"
+      "path": "specs/761_ladder_realization_theorem/plans/09_tight-chain-gate-regated-graph.md",
+      "summary": "Revised plan: removes the gate on the abandoned external construction task, re-sequences the phase graph so every gate is a phase of this plan, adds Phase 11.9 (the tight-chain decision gate) and splits Phase 12 into an enterable 12.1 and a gated 12.2"
     }
   ],
-  "modified_files": [
-    "specs/761_ladder_realization_theorem/plans/08_cell-agreement-construction-handoff.md",
-    "specs/761_ladder_realization_theorem/.plan-revised.json",
-    "specs/761_ladder_realization_theorem/.return-meta.json"
-  ],
-  "next_steps": "Run /orchestrate 761 to dispatch the enterable work (Phase 11.2, then Phase 11.8). Phases 11.6-11.7 and 12-18 stay gated until task 836 delivers a construction preserving the realized type without preserving the valuation pointwise; re-entry is a further /revise with 836's finding as its input.",
+  "next_steps": "Run /orchestrate 761 to execute the revised plan. The enterable work is Phases 11.2, 11.8, 11.9 and 12.1; Phase 11.9 is the decision gate whose verdict decides whether Phases 11.6, 11.7, 12.2 and 13-18 are a route at all. A decision on task 838's raised user_decision, and a resumption of 838, are the complementary move from the open-core side.",
   "metadata": {
-    "session_id": "sess_1793662081_4fb94d",
+    "session_id": "sess_1793766221_49a0b0",
     "agent_type": "reviser-agent",
     "delegation_path": [
       "orchestrator",
       "revise",
       "reviser-agent"
     ],
-    "phase_count": 26,
-    "phases_closed": 15,
-    "phases_open": 11,
+    "delegation_depth": 1,
+    "revision_mode": "plan_revision",
+    "plan_version": 9,
+    "artifact_number": "09",
+    "phase_count": 28,
     "estimated_hours": 26.5,
-    "reports_integrated": [
-      "summaries/05_ladder-cell-agreement-construction-refuted-summary.md",
-      "handoffs/phase-11.5-handoff-20261102T215926Z.md",
-      "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
-      ".dispatch/25-aux-blocker-research.md",
-      "FormalSystem/Metalogic/Decidability/RaySummary/README.md"
+    "estimated_hours_landed": 15.5,
+    "estimated_hours_open": 11,
+    "not_costable_phases": [
+      "11",
+      "11.1",
+      "11.2",
+      "11.3",
+      "11.4",
+      "11.5",
+      "11.6",
+      "11.7",
+      "11.8",
+      "11.9",
+      "15"
     ],
-    "revision_notes": "No new research reports landed, so new_research_paths was empty; the revision's inputs are Phase 11.5's close, its handoff, and the 46th wired probe. Phases 1-11, 11.1, 11.3 and 11.4 are untouched (markers, records, exclusion tables and timing figures all verbatim). The one re-marked phase is 11.5. One new phase: 11.8. Effort re-derived from the plan's own Timing lines and unchanged at 26.5 costable hours."
-  }
+    "phases_preserved_closed": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "11.1",
+      "11.3",
+      "11.4",
+      "11.5"
+    ],
+    "phases_resequenced": [
+      "11.2",
+      "11.6",
+      "11.7",
+      "11.8",
+      "13",
+      "15"
+    ],
+    "phases_added": [
+      "11.9",
+      "12.1",
+      "12.2"
+    ],
+    "phases_removed": [
+      "12"
+    ],
+    "external_gates_removed": 1,
+    "complexity": "complex",
+    "research_integrated": true,
+    "reports_integrated": [
+      "specs/archive/836_ladder_type_preserving_cell_agreement_construction/summaries/01_obligation-repair-and-pump-layer-summary.md",
+      "specs/archive/836_ladder_type_preserving_cell_agreement_construction/reports/01_type-preserving-cell-agreement-construction.md",
+      "specs/archive/836_ladder_type_preserving_cell_agreement_construction/plans/01_obligation-repair-and-pump-layer.md",
+      "specs/archive/836_ladder_type_preserving_cell_agreement_construction/handoffs/phase-10-handoff-20261103T051549Z.md",
+      "specs/archive/836_ladder_type_preserving_cell_agreement_construction/handoffs/phase-11-handoff-20261103T053018Z.md",
+      "specs/archive/836_ladder_type_preserving_cell_agreement_construction/issues.jsonl",
+      "specs/archive/836_ladder_type_preserving_cell_agreement_construction/.decisions.json",
+      "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
+      "specs/844_reanchored_deletion_half_depth_zero_cell/summaries/01_reanchored-deletion-half-summary.md",
+      "specs/849_forward_slack_discharge_and_exact_shift_iteration/summaries/01_forward-slack-exact-shift-summary.md",
+      "specs/850_upfirst_exact_shift_copy_boundary_types/summaries/01_upfirst-exact-shift-copy-boundary-summary.md"
+    ],
+    "route_chosen": "route (b) read as DECIDE THE STATEMENT: compile the one argued-not-compiled claim (no finite deletion-derivative of the tight doubling chain lifts) as a wired evidence probe, which decides the depth-0 schema and therefore both filed Challenge statements, since the schema is a weaker instance of cellAt_const_of_kappa_eq and is implied by ladderRealized",
+    "routes_closed": [
+      "route (a), the (K2)-level pigeonhole over region starts: closed by task 838's compiled decision gate -- (K1) does not constrain a spanning block's length",
+      "route (b) read as a weakening: the path-level restatement is already landed, the state-level one is refuted by the compiled climbing-register path, and neither can feed Phase 11.6 because stab_mem_tpOf_iff_cell makes the stab bit a universal over the FULL cell"
+    ],
+    "successor_task_recommended": false,
+    "successor_task_rationale": "No new task is recommended for the open core: task 838 (partial) already owns it and has a raised user_decision; the recommendation is a decision on that question plus a resumption of 838. A second, conditional record is named as a Follow-up in the plan -- owed ONLY on Phase 11.9's REFUTED branch, to re-file the presentation once cellAt_const_of_kappa_eq and ladderRealized are known false.",
+    "statement_fidelity": "The six recorded Lean Challenge Statements are carried verbatim and unedited. Phase 11.9's three new probe statements are recorded in full, token-for-token, in that phase's own body, and are deliberately NOT added to the Challenge block because the block's identifier set must equal the Goals set and a probe declaration is not a filed Goal.",
+    "validation": "bash .claude/scripts/validate-artifact.sh <plan> plan exits 0 with 0 warnings; --strict also exits 0 with 0 warnings; bash .claude/scripts/plan-file-scope-harvest.sh parses 28 paths including the pre-authorized contingency module and the new probe",
+    "carry_forward_resolved": "The four scripts/nolints.json unusedArguments rows are COMMITTED (commit e379d42c6), so the abandoned round's follow-up is discharged and nothing needs admitting to file_scope; scripts/nolints.json is already in this task's file_scope and no phase of plan 09 edits it, so it will drop out of a harvested scope by design",
+    "phase_count_closed": 15,
+    "phase_count_open": 13
+  },
+  "modified_files": [
+    "specs/761_ladder_realization_theorem/plans/09_tight-chain-gate-regated-graph.md",
+    "specs/761_ladder_realization_theorem/.plan-revised.json",
+    "specs/761_ladder_realization_theorem/.return-meta.json"
+  ],
+  "proposed_file_scope": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCascade.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean"
+  ]
 }

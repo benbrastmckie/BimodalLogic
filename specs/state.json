@@ -160,6 +160,7 @@
         "FormalSystem/Metalogic/Decidability/RaySummary/Certificate.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderCascade.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
         "FormalSystem/Metalogic/Decidability/RaySummary/RunLayer.lean",
@@ -177,6 +178,7 @@
         "specs/761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md",
         "specs/761_ladder_realization_theorem/summaries/03_ladder-paramsok-parameter-repair-summary.md",
         "specs/761_ladder_realization_theorem/summaries/04_ladder-agreement-first-decomposition-summary.md",
+        "specs/761_ladder_realization_theorem/summaries/09_tight-chain-gate-regated-graph-summary.md",
         "specs/TODO.md",
         "specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md",
         "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
@@ -184,6 +186,7 @@
         "specs/evidence/seam-gluing-ray-product/ladder-sound-unconstrained-parameter-refutation.lean",
         "specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean",
         "specs/evidence/seam-gluing-ray-product/ladder-stab-acceptance.lean",
+        "specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean",
         "specs/state.json",
         "typst/generated/status.typ"
       ],
@@ -207,11 +210,11 @@
           "summary": "Phase 11.5: the cell-level route's construction refuted, the depth-0 obligation stated and not proved, the forty-sixth probe wired."
         },
         {
-          "path": "specs/761_ladder_realization_theorem/plans/08_cell-agreement-construction-handoff.md",
+          "path": "specs/761_ladder_realization_theorem/plans/09_tight-chain-gate-regated-graph.md",
           "type": "plan"
         }
       ],
-      "next_artifact_number": 7,
+      "next_artifact_number": 8,
       "previous_status": "blocked"
     },
     {
