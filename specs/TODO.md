@@ -124,7 +124,7 @@ next_project_number: 861
 
 ### Metalogic
 
-559 [PLANNING] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
+559 [PLANNED] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 859 [PLANNED] — IMPLEMENTATION TASK: land the open-future NON-definability...
   └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
@@ -3892,11 +3892,12 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 
 ### 559. Nondeterministic canonical model tm star completeness
 - **Effort**: large
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 833, Task 854
 - **Research**: [559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md]
+- **Plan**: [559_nondeterministic_canonical_model_tm_star_completeness/plans/04_naming-rule-soundness-toolkit.md]
 
 **Description**: IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness toolkit -- the only content of this task's four research rounds that is still absent from the library. Everything else this task found has ALREADY LANDED and must not be re-derived.
 
