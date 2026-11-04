@@ -530,7 +530,7 @@ blast radius of a rows-only edit to the ledger.
 
 ---
 
-### Phase 4: The directory README, the fourteenth result, and the regenerated inventories [NOT STARTED]
+### Phase 4: The directory README, the fourteenth result, and the regenerated inventories [COMPLETED]
 
 **Goal**: Record the module in `FormalSystem/Metalogic/Independence/README.md` in that file's
 existing shapes — the fourteenth numbered result, Key Results bullets, the Dependencies bullet,

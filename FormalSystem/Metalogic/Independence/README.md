@@ -3,8 +3,8 @@
 Underivability results, established by exhibiting a model of the assumptions in which the
 target formula fails.
 
-Thirteen results are carried here. This list and the one in `Independence.lean`'s module
-docstring enumerate the same thirteen results in the same order.
+Fourteen results are carried here. This list and the one in `Independence.lean`'s module
+docstring enumerate the same fourteen results in the same order.
 
 1. The paper's `CO` principle does **not** derive Reynolds' `Axiom.prior_U_gap` over the dense
    base. The converse direction — Reynolds' triple *does* derive `CO` — is
@@ -102,10 +102,31 @@ docstring enumerate the same thirteen results in the same order.
     is untouched. This is the least-positive branch of the duration dichotomy whose dense branch
     is result 10; `Semantics.duration_dense_or_least_pos` makes the two exhaustive.
 
-`BehSeparatedness.lean` is deliberately **not** a fourteenth numbered result. It carries a
+14. **The open-future modal `▷` is not L⁺-definable** over non-Dedekind-complete time
+    (`OpenFutureUndefinable.lean`) — **conditionally**, and the conditionality is the content of
+    the entry. What is machine-checked is the reduction
+    `ofut_not_plusDefinable_of_deltaProp_inexpressible`: given a frame's enough-worlds condition
+    `hmarkers` and the inexpressibility `hinexpr` of the gap-anchored past property
+    `MarkerGadget.DeltaProp`, truth-level L⁺-definability of the whole of L^▷ fails at that
+    frame. The route is the marker gadget: one extra atom makes the point of evaluation a
+    definable singleton (`MarkerGadget.theta_eq_iff`), hence the closed past a definable region
+    (`nu_iff_le`), hence backward-run membership definable *without naming the run's lower
+    endpoint* (`run_iff`) — the step `U`/`S` cannot take over a carrier where that endpoint is a
+    gap — and `▷` then computes `DeltaProp` exactly (`dofut_probe_iff`, `ofut_neg_probe_iff`).
+    `colourFibre_isRegular` puts the four-colour clock witness frame in the regular class over
+    **every** temporal order. `hinexpr` is **not formalized in this tree**: it is a collapse
+    argument in the style of Gabbay, Hodkinson and Reynolds vol. 1, Lemma 12.4.2, derived in
+    prose rather than quoted, so the unconditional verdict "`▷` is not L⁺-definable at `.Base`
+    and not at `.Dense`" is recorded in that module's docstring with its citation and is **not**
+    machine-checked here. With the positive half at `.ZTime`/`.RTime`
+    (`FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean`) the class split closes,
+    making `▷` a genuine expressive extension of L⁺ rather than notation. Nothing is claimed
+    about a validity-level-only translation, which `OfutPlusDefinable` does not speak to.
+
+`BehSeparatedness.lean` is deliberately **not** a numbered result of its own. It carries a
 *strictness* result — separatedness of `Beh F` is strictly stronger than the validity of
 *Determined* on `F` — rather than an underivability result established by refuting a formula in a
-model, which is what the thirteen above are. Its countermodel is result 5's `F°`, reused, and the
+model, which is what the fourteen above are. Its countermodel is result 5's `F°`, reused, and the
 asymmetry it records sharpens result 5's second half on the presheaf side.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
@@ -164,6 +185,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `LimitClosureFrame.lean` | 327 | `EF` — `W = Option (Bool × ℕ)`, `D = ℤ`: a hub `none` reaching every state, and class/budget pairs whose budget never increases and strictly drops on entering the `true` class — with all six `FrameOver` obligations (`eR_trans` and `eR_dense` give the task relation in closed form; *Saturation* via `sInter_nonempty_of_directed_of_finite_mem` and "every fibre or segment contains the hub or is finite"); `isWalk_state`, `walk_lt`, `histOfWalk`: the world histories of `EF` are exactly the bi-infinite `eR`-walks. |
 | `LoopingDuration.lean` | 237 | The reusable content. A frame carrying a *looping duration* (a nonzero `π` whose task relation is the identity) has periodic histories, hence periodic truth, hence validates `Hψ → Gψ` and every instance of `CO`. Proved for an arbitrary such frame. |
 | `NaiveSystem.lean` | 143 | TM⁺ with the two pasting axioms withheld, as a predicate on the *existing* derivation trees (`NaiveOnly`, `NaiveDerivable`) rather than a second axiom inductive, plus its derived rules. |
+| `OpenFutureUndefinable.lean` | 515 | The marker gadget, and the open-future modal's conditional non-definability. `ofut_pastDet` / `opast_futDet` confine any separator to the past side; inside `MarkerGadget`, one extra atom makes the point of evaluation a definable singleton (`theta_eq_iff`), hence the closed past a definable region (`nu_iff_le`), hence backward-run membership definable without naming the run's lower endpoint (`run_iff`), hence the L⁺ formula `Δ'` says exactly the gap-anchored `DeltaProp` (`delta_iff`); `dofut_probe_iff` / `ofut_neg_probe_iff` are the exactness claim that `▷` computes `DeltaProp` with no slack, and `deltaProp_of_no_p_between` the non-vacuity witness. `OfutPlusDefinable` is the truth-level notion and `ofut_not_plusDefinable_of_deltaProp_inexpressible` the reduction, **conditional** on `hmarkers` and on `hinexpr`, the latter an unformalized collapse argument, so the unconditional `.Base`/`.Dense` verdict is not machine-checked here. `colourFibre` is the four-colour clock witness frame, regular over every temporal order (`colourFibre_isRegular`). |
 | `OrderTransfer.lean` | 212 | The frame-independent layer: `OrderFlow` (H1), `StateOccurs` (H2), and the order-transfer lemmas — `future_image`, `past_image`, `between`, `between_past`, `state_image`. Plus `StateOccurs.of_isRegular`, which derives (H2) for a regular frame from `cor:occurrence`. |
 | `PastedCoarseModels.lean` | 275 | `CoarseModel.PasteClosed` — the splice of two world histories exists at the level of `π`-images — the purity congruences `c_truth_congr_from` / `c_truth_congr_upTo`, PS and US with their reflected forms (`c_paste`, `c_paste'`, `c_untl_paste`, `c_snce_paste`), and soundness of all of TM⁺ at `.Base` for paste-closed coarse models (`plus_pcValid_and_reflect_time`, `not_plusDerivable_of_pcRefuted`). |
 | `PastingIndependence.lean` | 279 | One coarsened-state model over the deterministic clock on `ℤ`, coarsened by absolute value of the clock offset, refuting both pasting schemata: `pasteNotNaiveDerivable`, `untlPasteNotNaiveDerivable`, and hence `plusAxiomSetNonRedundant` — PS and US are not theorems of TM together with the naive `⊡`-set {SK, ST, S4, S5, MS, AS}. |
@@ -265,6 +287,32 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
   `starConservative_of_plusComplete` at Base, refuted. Halves: `blc_plusValid`
   (`PlusLanguage/PlusLimitClosure.lean`) and `blc_not_plusDerivable_base`
   (`LimitClosureCountermodel.lean`).
+- `ofut_not_plusDefinable_of_deltaProp_inexpressible` (`OpenFutureUndefinable.lean`) — the
+  headline result, and it is **conditional**: given a frame's enough-worlds condition `hmarkers`
+  and the inexpressibility `hinexpr` of the gap-anchored past property `MarkerGadget.DeltaProp`,
+  the open-future modal `▷` is not truth-level L⁺-definable at that frame. `hinexpr` is a
+  collapse argument derived in prose and **not formalized in this tree**, so the unconditional
+  `.Base`/`.Dense` verdict is not machine-checked here.
+- `colourFibre_isRegular` (`OpenFutureUndefinable.lean`) — the four-colour clock witness frame is
+  regular over **every** temporal order: the clock discharges *Limit* and finiteness of
+  `MarkerColour` discharges *Saturation*. This is what removes the obstruction that forbids the
+  naive permissive rational-time frame, where a finite-state history over a dense duration would
+  be a uniformly discrete step function with no gap to anchor at.
+- `ofut_pastDet`, `opast_futDet` (`OpenFutureUndefinable.lean`) — `▷ψ` depends only on the past
+  and `◁ψ` only on the future, for **every** `OpenFormula` `ψ`. These confine any separator for
+  `▷` to the past side and rule out whole families of attempts.
+- `MarkerGadget.theta_eq_iff`, `nu_iff_le`, `run_iff`, `delta_iff`
+  (`OpenFutureUndefinable.lean`) — the gadget chain: the point of evaluation is a definable
+  singleton, hence the closed past a definable region, hence backward-run membership definable
+  without naming the run's lower endpoint, hence the L⁺ formula `Δ'` says exactly `DeltaProp`.
+- `MarkerGadget.dofut_probe_iff`, `MarkerGadget.ofut_neg_probe_iff`
+  (`OpenFutureUndefinable.lean`) — the exactness claim: `▷` computes `DeltaProp` with no slack,
+  because the marker atom occurs in the probe formula only inside the marker condition itself.
+- `MarkerGadget.deltaProp_of_no_p_between` (`OpenFutureUndefinable.lean`) — the non-vacuity
+  witness, so that `DeltaProp` is visibly not an empty condition.
+- `MarkerColour`, `cRel`, `cRel_reflection`, `cRel_comp`, `cRel_serial`, `cRel_zero`,
+  `colourFibre` (`OpenFutureUndefinable.lean`) — the four colours, the base relation free at
+  every nonzero duration, and its four `colourClock` inputs, which are the frame's entire input.
 
 ## Building a countermodel: what to reach for first
 
@@ -415,7 +463,10 @@ is a one-line check against the criterion above, not a research question.
 
 - **Imports from**: `FormalSystem.Semantics` (including
   `Semantics.Correspondence.{Galois, Indicator}` for the two sandwich statements),
-  `FormalSystem.Metalogic.Soundness`, `FormalSystem.ProofSystem`, Mathlib's `ℚ ⧸ ℤ`
+  `FormalSystem.Metalogic.Soundness`, `FormalSystem.ProofSystem`,
+  `FormalSystem.Metalogic.Expressiveness.OpenFutureElimination` (the shared determinedness
+  vocabulary `PastDet`/`FutDet`/`OfutP`/`OpastP` and the `ofutP_iff` bridge),
+  `FormalSystem.Semantics.Frames.TranslationProduct` (`colourClock`), Mathlib's `ℚ ⧸ ℤ`
 - **Imported by**: `FormalSystem.Metalogic.Independence` (the sibling aggregator)
 
 ## Related Documentation
@@ -426,8 +477,8 @@ is a one-line check against the criterion above, not a research question.
 
 ---
 
-**Last verified**: 2026-09-25
+**Last verified**: 2026-11-04
 
 ---
 
-*Last verified: 2026-09-25*
+*Last verified: 2026-11-04*
