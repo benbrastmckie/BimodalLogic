@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/833_stab_definable_from_open_modals/reports/01_stab-definable-from-open-modals.md",
+      "summary": "Transcription research for landing stab_iff_ofut_opast and its five siblings: probe recompiled and axioms re-measured (including the sixth declaration the probe does not print), the mirror route shown to be an import cycle, C15's undocumented Paper:-line obligation surfaced, ledger axiom-column vocabulary pinned, and both verification gates re-baselined per-check."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793830217_548036_833",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

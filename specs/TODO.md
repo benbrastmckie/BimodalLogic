@@ -127,7 +127,7 @@ next_project_number: 861
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-833 [RESEARCHING] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
+833 [RESEARCHED] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 854 [RESEARCHED] — Decide whether the open-future modal ▷ is L⁺-definable
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe... (see above)
@@ -1908,10 +1908,11 @@ This record is filed in the BimodalLogic task space while its edit target resolv
 ---
 
 ### 833. Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage, with its ledger and README rows
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
+- **Research**: [833_stab_definable_from_open_modals/reports/01_stab-definable-from-open-modals.md]
 
 **Description**: IMPLEMENTATION TASK, small and fully specified: the proof is already written and compiled. Land in `FormalSystem/OpenLanguage/` the fact that the stability modal is DEFINABLE from the manuscript's open-future and open-past modals:
 
