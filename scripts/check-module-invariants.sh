@@ -2159,6 +2159,26 @@ fi
 # inside `Dmax`. They pin axiom profiles and nothing else: no ladder consequence, no decision
 # procedure, no complexity bound, and no index of a ladder cell is claimed at any parameters.
 #
+# Eight further matched pairs sit in the open-modal neighbourhood of the first block, directly
+# after the four `FormalSystem.OpenLanguage.*` lines, for the open-future elimination layer
+# (`Metalogic/Expressiveness/OpenFutureElimination.lean`). `...ofutP_or_iff` and
+# `...opastP_or_iff` are the elimination of a disjunction under the restricted modals for a
+# past-determined / future-determined pair; `...ofutP_sepForm_iff` and `...opastP_sepForm_iff`
+# are its conjunctive-normal-form version; `...openTruthAt_iff_tr`,
+# `...openValidIn_ztime_iff_tr` and `...openValidIn_rtime_iff_tr` are the translation into L+
+# and its two validity transfers. `Classical.choice` enters the first six through the case split
+# the disjunctive statement forces, and the translation also uses it to choose a separated form,
+# as any function defined from an existential must; the eighth, `...ofutP_of_futDet`, needs no
+# split and measures the strict subset `[propext, Quot.sound]`, which is not a regression.
+#
+# WHAT THESE EIGHT LINES DO NOT ASSERT. Five of them pin results that are CONDITIONAL on
+# `SeparationOver`, an explicit named hypothesis standing for the separation theorems of Gabbay,
+# Hodkinson and Reynolds, Chapter 10, which are cited literature and are NOT formalized in this
+# tree. Their presence in this baseline pins axiom profiles and nothing else: no unconditional
+# definability claim for the restricted modals is asserted here, the hypothesis itself is
+# discharged nowhere, and it is false over the non-Dedekind-complete flows, so nothing here
+# reaches the dense or unconstrained classes.
+#
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
 # SORRY-FREE is pinned here or by C2, so no such claim is prose-only: the docstring asserts
@@ -2299,6 +2319,14 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.OpenLanguage.hnStab_refuted_sinkFrame' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.OpenLanguage.hnOpenMirror_openValid' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.OpenLanguage.openValid_reflectTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.ofutP_or_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.opastP_or_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.ofutP_sepForm_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.opastP_sepForm_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.openTruthAt_iff_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.openValidIn_rtime_iff_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.ofutP_of_futDet' depends on axioms: [propext, Quot.sound]
 'FormalSystem.HybridLanguage.regFree_invariance' depends on axioms: [propext, Quot.sound]
 'FormalSystem.HybridLanguage.recF_defines' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.HybridLanguage.transF_defines' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2540,6 +2568,14 @@ import FormalSystem
 #print axioms FormalSystem.OpenLanguage.hnStab_refuted_sinkFrame
 #print axioms FormalSystem.OpenLanguage.hnOpenMirror_openValid
 #print axioms FormalSystem.OpenLanguage.openValid_reflectTime
+#print axioms FormalSystem.Metalogic.Expressiveness.ofutP_or_iff
+#print axioms FormalSystem.Metalogic.Expressiveness.opastP_or_iff
+#print axioms FormalSystem.Metalogic.Expressiveness.ofutP_sepForm_iff
+#print axioms FormalSystem.Metalogic.Expressiveness.opastP_sepForm_iff
+#print axioms FormalSystem.Metalogic.Expressiveness.openTruthAt_iff_tr
+#print axioms FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr
+#print axioms FormalSystem.Metalogic.Expressiveness.openValidIn_rtime_iff_tr
+#print axioms FormalSystem.Metalogic.Expressiveness.ofutP_of_futDet
 #print axioms FormalSystem.HybridLanguage.regFree_invariance
 #print axioms FormalSystem.HybridLanguage.recF_defines
 #print axioms FormalSystem.HybridLanguage.transF_defines
