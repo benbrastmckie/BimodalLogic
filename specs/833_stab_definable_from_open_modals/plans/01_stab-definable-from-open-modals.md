@@ -252,7 +252,7 @@ existing signature.
 
 ---
 
-### Phase 3: The three documentation surfaces [NOT STARTED]
+### Phase 3: The three documentation surfaces [COMPLETED]
 
 **Goal**: Land the component README's descriptions and correspondence row, the regenerated
 inventory block, and six ledger rows in `docs/theorem-index.md`, with INV and both C15 assertions

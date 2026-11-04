@@ -515,6 +515,12 @@ this semantics that answers to Ockhamist historical necessity.
 | — | Its stability transposition `Pp → ⊡P⟐p` is refuted on `sinkFrame`, a three-state integer-time frame satisfying all four frame axioms | `FormalSystem.OpenLanguage.hnStab_refuted_sinkFrame` | `FormalSystem/OpenLanguage/OpenOckhamist.lean` | — | pcq pinned:C14 |
 | — | L^▷ validity is closed under time reflection, which exchanges `▷` with `◁` and fixes `⊡` | `FormalSystem.OpenLanguage.openValid_reflectTime` | `FormalSystem/OpenLanguage/OpenReversal.lean` | Base | pcq pinned:C14 |
 | — | The open-past mirror of the Ockhamist principle is valid | `FormalSystem.OpenLanguage.hnOpenMirror_openValid` | `FormalSystem/OpenLanguage/OpenOckhamist.lean` | Base | pcq pinned:C14 |
+| — | `⊡φ → ▷◁φ` pointwise, from the two class inclusions at the point of evaluation alone — **no frame axiom is used**, and no `[F.IsRegular]` instance is taken | `FormalSystem.OpenLanguage.stab_to_ofut_opast` | `FormalSystem/OpenLanguage/OpenTruth.lean` | Base | `[propext]` |
+| — | `▷◁φ → ⊡φ` pointwise, the pasting direction: the two-history instance of `app:gluing`, and the only user of regularity | `FormalSystem.OpenLanguage.ofut_opast_to_stab` | `FormalSystem/OpenLanguage/OpenTruth.lean` | Base | `[propext, Quot.sound]` |
+| — | `⊡φ ↔ ▷◁φ` pointwise: the stability modal is **definable** as the open-future modal composed with the open-past modal | `FormalSystem.OpenLanguage.stab_iff_ofut_opast` | `FormalSystem/OpenLanguage/OpenTruth.lean` | Base | `[propext, Quot.sound]` |
+| — | `⊡φ ↔ ◁▷φ` pointwise: the same definability in the other order, proved directly | `FormalSystem.OpenLanguage.stab_iff_opast_ofut` | `FormalSystem/OpenLanguage/OpenTruth.lean` | Base | `[propext, Quot.sound]` |
+| — | `⊡φ → ▷◁φ` as a validity | `FormalSystem.OpenLanguage.openValid_stab_imp_ofut_opast` | `FormalSystem/OpenLanguage/OpenValidity.lean` | Base | `[propext]` |
+| — | `▷◁φ → ⊡φ` as a validity, i.e. over every regular task frame | `FormalSystem.OpenLanguage.openValid_ofut_opast_imp_stab` | `FormalSystem/OpenLanguage/OpenValidity.lean` | Base | `[propext, Quot.sound]` |
 
 ### The hybrid state language — state registers and the same-state modality
 
