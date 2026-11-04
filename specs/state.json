@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 859,
+  "next_project_number": 860,
   "active_projects": [
     {
       "project_number": 856,
@@ -4333,6 +4333,140 @@
             998,
             1054
           ]
+        }
+      }
+    },
+    {
+      "project_number": 859,
+      "project_name": "qtime_open_future_definability_base_dense",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Settle whether the open-future modal ▷ (and its mirror ◁) is L⁺-definable on the Base and Dense frame classes, where the ZTime/RTime argument fails. The positive ZTime/RTime verdict rests on Gabbay separation (GHR Thm 10.2.9 over ℤ, Thm 10.3.20 over Dedekind-complete time) plus the elimination ▷(α ∨ β) ↔ α ∨ ⊡β; that route is closed over ℚ-time, since Until/Since is not separable over the rationals (Rabinovich 2014 §7) and separation ⇒ expressive completeness (GHR Thm 9.3.1), while ℚ is a TemporalOrder. Pursue the two routes named in the parent task's report 01_open-future-definability-verdict.md: (R3a) a Stavi/γ_π⁺-style candidate ▷φ together with a ℚ-time bisimulation discharging the invariance half of a negative result; (R3b) a ▷-specific elimination that avoids full separation. Deliver a definite verdict per class (definable / not definable) with a compiled-live Lean probe for whichever half is constructive, reusing the paste / paste_agreeUpTo / paste_agreeFrom / IsPurePast / IsPureFuture / truth_congr_agreeUpTo infrastructure in PlusPasting.lean that the ZTime probe already exercised. Do not touch FormalSystem/ or Tests/ outside a probes/ directory. The Base-class language ruling and the L^▷ proof-system work remain gated on this verdict. Audit note: the backlog audit flagged duplicate-of-open against 559 (nondeterministic_canonical_model_tm_star_completeness) at semantic 0.69 with no shared file_scope; judged a vocabulary overlap, not a duplicate — 559 builds a canonical model for TM* completeness, this task decides an expressiveness question.",
+      "effort": "high",
+      "parent_task": 854,
+      "topic": "metalogic",
+      "dependencies": [],
+      "created": "2026-11-04T21:27:12Z",
+      "last_updated": "2026-11-04T21:27:12Z",
+      "artifacts": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "qtime_open_future_definability_base_dense",
+          "project_number": 859,
+          "title": "qtime_open_future_definability_base_dense"
+        },
+        "verdicts": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 559,
+            "project_name": "nondeterministic_canonical_model_tm_star_completeness",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.6914893617021277
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 719,
+            "project_name": "ray_layer_seam_gluing_and_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/summaries/01_ray-layer-seam-gluing-stab-fibre-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the two new modules, the four pinned keystone axiom rows, the measured pre-edit gate baseline, the recorded verdicts, the wired E1 probe, and five annotated plan deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4148936170212766
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5425531914893617
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.44680851063829785
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 624,
+            "project_name": "translation_product_task_semantics_visibility",
+            "discharging_artifact": {
+              "path": "specs/624_translation_product_task_semantics_visibility/summaries/01_translation-product-closeout-summary.md",
+              "type": "summary",
+              "summary": "Closeout record: reconciliation ledger for all four recommendations, ownership table for all nine Appendix B UNVERIFIED items, and the terminal disposition."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.40425531914893614
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.48936170212765956
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5106382978723404
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5106382978723404
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 414,
+            "project_name": "refactor_semantics_to_total_history_validity",
+            "discharging_artifact": {
+              "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/09_phase29-2-preguard-differential-rebaseline.md",
+              "type": "summary",
+              "summary": "Phase 29.2: pre-guard differential obtained (P0=edcecd551^, P1, P2=HEAD) via non-destructive worktree; BimodalTest mismatches 40 -> 7; 33 rows re-baselined with measured attribution to trivialEventWitnessed; the declared ten pre-existing mismatches confirmed correct and identified at row level for the first time; 7 residual rows owned by an out-of-task 2026-07-29 engine change."
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.40425531914893614
+          }
+        ],
+        "scope_blind_count": 451,
+        "degradations_scope_blind_count": 451,
+        "degradations": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
         }
       }
     }
