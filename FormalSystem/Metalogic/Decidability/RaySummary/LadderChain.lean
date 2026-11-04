@@ -63,7 +63,7 @@ passes through a state satisfying every state-level hypothesis the consumer carr
 downward inclusion held here is the path-level one above.
 -/
 
-set_option linter.style.longFile 2100
+set_option linter.style.longFile 2400
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1850,6 +1850,173 @@ theorem exists_deleted_ladderPath_overshoot_of_pend_past
           rw [Nat.add_mul]; omega
         rw [hamt]
         exact hslack₂
+
+/-- **THE EXACT-SHIFT THEOREM, UP-FIRST.** Under the gap `nxtAt g z + m · (P + 1) ≤ cntAt g z`
+and the regime at EXACTLY the amount `m · (P + 1)`: the countdown lowered by exactly
+`m · (P + 1)`, the object state, the register and the realized stab-free type at `z` held. The
+ordering: (i) the original pigeonhole block `[u, u + l)`, `l ∣ P + 1`, target `R := m · q` blocks;
+(ii) RAISE by `b := budget` copies of it with the register held, which adds exactly `b · l` of
+slack (`hasForwardSlack_raise`) and exposes `(objAt, tpOf)` at every copy boundary `u + i · l`,
+`i ≤ b`; (iii) the overshoot loop ABOVE the run, sampling from `u + (b + 1) · l`, deletes `t · l`
+with `R ≤ t < R + b` and leaves the run untouched; (iv) the remainder `r := R + b − t ∈ [1, b]`
+is deleted EXACTLY as the single block `[u, u + r · l)` of the run, whose ends carry the
+original's `(objAt, tpOf)` at `u`. No `budget²` term: the raise pays for the overshoot before it
+happens. -/
+theorem exists_ladderPath_through_deleted_exact_upfirst_of_pend_past
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true) (m : ℕ)
+    (hTc : Tc + m * (P + 1) ≤ cntAt g z)
+    (hgap : nxtAt g z + m * (P + 1) ≤ cntAt g z)
+    (hslack : HasForwardSlack g z (m * (P + 1)) (nxtAt g z)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z + m * (P + 1) = cntAt g z ∧
+      nxtAt g' z = nxtAt g z ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  classical
+  have hz : pend (objAt g z) = true := hpast z le_rfl
+  have hbud := budget_le_Tc step pend lab φ Tc Tn P B hp
+  have hb2 := budget_mul_succ_le_Tc step pend lab φ Tc Tn P B hp
+  -- a history of the original, and the type-respecting block of `z`'s region
+  obtain ⟨σ₀, hσ₀⟩ := exists_hist_of_isLadderPath fwd bwd g hg
+  have hσ₀' : ∀ t : ℤ, σ₀.state t = (t + 0, g t) := fun t => by rw [add_zero]; exact hσ₀ t
+  obtain ⟨u, l, hl, hlb, hzu, hcl, hul, hrep, hty⟩ :=
+    exists_typeBlock_of_budget_le_cnt_within step pend fwd bwd lab φ σ₀ hg z hz (by omega)
+  have hpast_u : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true := fun p hp' => by
+    rcases le_or_gt p z with hpz | hpz
+    · exact hpast p hpz
+    · have := (cntAt_sub_of_pend g hg z hz (p - z).toNat (by omega)).1
+      rwa [show z + (((p - z).toNat : ℕ) : ℤ) = p by omega] at this
+  have hpu : pend (objAt g u) = true := hpast_u u le_rfl
+  obtain ⟨q, hq⟩ := typeBlock_length_dvd_of_paramsOk step pend fwd bwd lab φ hp σ₀ hσ₀' hg hno
+    u l hl hlb hpu hcl hrep hty
+  have hRl : (m * q) * l = m * (P + 1) := by rw [hq]; ring
+  have hul' : u + (l : ℤ) ≤ z + (cntAt g z : ℤ) := by omega
+  -- the budget products
+  have hbl : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l
+      ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
+        (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card) :=
+    Nat.mul_le_mul_left _ hlb
+  have hbb : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
+      (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1)
+      = Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
+        (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card) +
+        Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card := Nat.mul_succ _ _
+  have hb1l : (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) * l
+      = Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l + l := Nat.succ_mul _ _
+  -- (ii) the raise by `b` copies, the register held
+  obtain ⟨g₁, hg₁, hobj₁, hcz₁, hnxt₁, habove₁, hty₁⟩ :=
+    exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past step pend fwd bwd lab φ hno hg z
+      hl hcl hzu hul' hpast_u hrep σ₀ hσ₀ hty (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card)
+  have hobj_above₁ : ∀ v : ℤ,
+      u + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) * l : ℕ) ≤ v →
+      objAt g₁ v = objAt g (v - (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ)) ∧
+      cntAt g₁ v = cntAt g (v - (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ)) :=
+    fun v hv => ⟨by rw [hobj₁ v, iterSpliceIdx_of_ge u l _ v hv], habove₁ v hv⟩
+  have hslack₁ : HasForwardSlack g₁ z
+      ((m * q) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l) (nxtAt g z) := by
+    rw [hRl]
+    exact hasForwardSlack_raise g hg z hul' hslack g₁ hg₁ hcz₁ hobj_above₁
+  -- (iii) the overshoot loop above the run
+  obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+  have hpast₁ : ∀ p : ℤ, p ≤ z → pend (objAt g₁ p) = true := fun p hp => by
+    rw [hobj₁ p, iterSpliceIdx_of_lt u l _ p (by omega)]; exact hpast p hp
+  have hwin : u + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) * l : ℕ)
+      + (((m * q) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ)
+      ≤ z + (cntAt g₁ z : ℤ) := by
+    rw [hcz₁, hb1l]
+    generalize hbq : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card = b
+      at hul hbl hbb hb2 hbud ⊢
+    omega
+  obtain ⟨g₂, t, hg₂, hRt, htR, hagree₂, hcnt₂, hnxt₂, hslack₂, hty₂⟩ :=
+    exists_deleted_ladderPath_overshoot_of_pend_past step pend fwd bwd lab φ hno hg₁ z hpast₁
+      σ₁ hσ₁ (u + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) * l : ℕ))
+      (by omega) l hl hlb (m * q) hwin (by rw [hnxt₁, hcz₁]; omega)
+      (by rw [hnxt₁]; exact hslack₁)
+  -- (iv) the exact remainder `r`, deleted as one block of the run
+  obtain ⟨r, hr⟩ : ∃ r : ℕ, r + t = m * q + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card :=
+    ⟨m * q + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card - t, by omega⟩
+  have hr1 : 1 ≤ r := by omega
+  have hrb : r ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card := by omega
+  have hrl : 0 < r * l := Nat.mul_pos hr1 hl
+  have ert : r * l + t * l
+      = (m * q) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l := by
+    rw [← Nat.add_mul, hr, Nat.add_mul]
+  have hcz₂ : cntAt g₂ z + (m * q) * l = cntAt g z + r * l := by omega
+  have hrw₀ : u + ((r * l : ℕ) : ℤ)
+      ≤ u + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) * l : ℕ) := by
+    have : r * l ≤ (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) * l :=
+      Nat.mul_le_mul_right l (by omega)
+    omega
+  have hrep₂ : objAt g₂ u = objAt g₂ (u + ((r * l : ℕ) : ℤ)) := by
+    rw [hagree₂ u (by omega), hagree₂ _ hrw₀, hobj₁, hobj₁, iterSpliceIdx_of_lt u l _ u (by omega),
+      iterSpliceIdx_boundary u l hl _ r hrb]
+  have hpast₂ : ∀ p : ℤ, p ≤ u → pend (objAt g₂ p) = true := fun p hp' => by
+    rw [hagree₂ p (by omega), hobj₁ p, iterSpliceIdx_of_lt u l _ p (by omega)]
+    exact hpast_u p hp'
+  have hz₂ : pend (objAt g₂ z) = true := hpast₂ z hzu
+  -- the run block lies inside `z`'s (still long enough) region
+  have huzb : u - z ≤ ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card : ℕ) : ℤ) := by
+    omega
+  have hc₂big : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + r * l ≤ cntAt g₂ z := by
+    omega
+  have hcl₂ : r * l ≤ cntAt g₂ u := by
+    have h2 : (u - z).toNat ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card := by omega
+    have h1 := (cntAt_sub_of_pend g₂ hg₂ z hz₂ (u - z).toNat (by omega)).2
+    rw [show z + (((u - z).toNat : ℕ) : ℤ) = u by omega] at h1
+    omega
+  have hal₂ : u + ((r * l : ℕ) : ℤ) ≤ z + (cntAt g₂ z : ℤ) := by omega
+  -- the regime at exactly the remainder, and the anchor clause
+  have hamt : (m * q) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l - t * l
+      = r * l := by omega
+  rw [hamt, hnxt₁] at hslack₂
+  have hfirst : ∀ I : ℕ, 0 < I →
+      (∀ i : ℕ, i < I → pend (objAt g₂ (z + (cntAt g₂ z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g₂ (z + (cntAt g₂ z : ℤ) + 1 + (I : ℤ))) = true →
+      ((nxtAt g₂ (z + (cntAt g₂ z : ℤ) + (I : ℤ)) : ℤ) - nxtAt g z).natAbs
+        ≤ ((cntAt g₂ z : ℤ) + I - (r * l : ℕ)).natAbs := fun I hI hidle hnext => by
+    have := hslack₂ I hI hidle hnext
+    omega
+  have hanch := anchor_clause_of_first_region_start g₂ hg₂ z hz₂ (r * l) (nxtAt g z) hfirst u hzu
+    hal₂
+  obtain ⟨g₃, hg₃, hobj₃, hcnt₃, hnxt₃⟩ :=
+    exists_deleted_ladderPath_of_pend_past_nxt hg₂ hrl hcl₂ hpast₂ hrep₂ z (nxtAt g z) hanch
+  refine ⟨g₃, hg₃, ?_, ?_, hnxt₃, fun σ σ' hσ hσ' => ?_⟩
+  · rw [hobj₃ z, delObj_eq_of_le hrep₂ z hzu, hagree₂ z (by omega), hobj₁ z,
+      iterSpliceIdx_of_lt u l _ z (by omega)]
+  · rw [hcnt₃ z, delCnt_sub_of_mem_region hg₂ hrl hcl₂ z hzu (by omega)]
+    omega
+  · -- the type at `z`: through `σ₂` (the deletion), `σ₁` (the loop), `σ₀` (the raise), `σ`
+    obtain ⟨σ₂, hσ₂⟩ := exists_hist_of_isLadderPath fwd bwd g₂ hg₂
+    have hσ₂0 : ∀ t : ℤ, σ₂.state t = (t + 0, g₂ t) := fun t => by rw [add_zero]; exact hσ₂ t
+    have hσ'0 : ∀ t : ℤ, σ'.state t = (t + 0, g₃ t) := fun t => by rw [add_zero]; exact hσ' t
+    have hty₂' : tpOf (ladderModel step pend fwd bwd lab) φ σ₂ u
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ₂ (u + ((r * l : ℕ) : ℤ)) := by
+      rw [hty₂ σ₂ hσ₂ u (by omega), hty₂ σ₂ hσ₂ _ hrw₀, hty₁ σ₁ hσ₁, hty₁ σ₁ hσ₁,
+        iterSpliceIdx_of_lt u l _ u (by omega), iterSpliceIdx_boundary u l hl _ r hrb]
+    have hdel := tpOf_eq_delIdx_of_tpOf_eq step pend fwd bwd lab φ u (r * l) hrl (k := 0)
+      (k' := 0) σ₂ σ' hσ₂0 hσ'0 (fun w => (hobj₃ w).trans rfl) hno hty₂' z
+    have hz₂' : tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ₂ z := by
+      rw [hdel]
+      rcases lt_or_eq_of_le hzu with hlt | heq
+      · rw [delIdx_of_lt u (r * l) z hlt]
+      · rw [heq, delIdx_of_ge u (r * l) u le_rfl, ← hty₂']
+    have e3 : tpOf (ladderModel step pend fwd bwd lab) φ σ₀ z
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ z :=
+      tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ₀ σ
+        hσ₀' (fun t => by rw [add_zero]; exact hσ t) (fun _ => rfl) hno z
+    rw [hz₂', hty₂ σ₂ hσ₂ z (by omega), hty₁ σ₁ hσ₁, iterSpliceIdx_of_lt u l _ z (by omega), e3]
 
 /-- **THE EXACT-SHIFT THEOREM: the countdown lowered by EXACTLY `m · (P + 1)`, the register
 held.** Through a pending-forever path's state at `z` with room `Tc + m · (P + 1) ≤ cntAt g z`,
