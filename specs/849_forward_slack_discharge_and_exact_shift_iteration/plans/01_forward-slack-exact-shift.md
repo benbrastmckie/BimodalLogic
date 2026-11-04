@@ -545,7 +545,7 @@ covers the phase -- one additive declaration, consumed by nothing yet, no landed
 
 ---
 
-### Phase 7: The exact-shift theorem and the slack-restricted cell inclusion [NOT STARTED]
+### Phase 7: The exact-shift theorem and the slack-restricted cell inclusion [COMPLETED]
 
 **Goal**: The two pinned deliverables of Piece 2 land: through a pending-forever path's state at
 `z` with room `Tc + m · (P + 1) ≤ cntAt g z`, under the gap and the regime at amount
@@ -554,20 +554,20 @@ object state and register at `z` held, and the realized stab-free type at `z` he
 consumer, the downward cell inclusion stated on the witnessing path.
 
 **Tasks**:
-- [ ] `exists_ladderPath_through_deleted_exact_of_pend_past`, header exactly as pinned, in
+- [x] `exists_ladderPath_through_deleted_exact_of_pend_past`, header exactly as pinned, in
   `section DelNxtIter` after the loop. Proof: `hz`; `hbud := budget_le_Tc …`;
   `hb2 := budget_mul_succ_le_Tc …`; `σ₀` from `exists_hist_of_isLadderPath`; the block
   `u, l, hl, hlb, hzu, hcl, hul, hrep, hty` from `exists_typeBlock_of_budget_le_cnt_within … σ₀ hg z hz (by omega)`;
   `hpast_u` as in the landed assemblies; `q` with `P + 1 = l * q` from
   `typeBlock_length_dvd_of_paramsOk`; `R := m * q` with `hRl : R * l = m * (P + 1)` by
   `rw [hq]; ring`.
-- [ ] The loop at `w₀ := u + l` (so `z ≤ w₀` and `w₀ ≤ z + b` from the pigeonhole's `u + l ≤ z + b`),
+- [x] The loop at `w₀ := u + l` (so `z ≤ w₀` and `w₀ ≤ z + b` from the pigeonhole's `u + l ≤ z + b`),
   with `hroom : R * l + b * (b + 1) ≤ cntAt g z` (from `hRl`, `hb2`, `hTc`),
   `hgap' : nxtAt g z + R * l + b * l ≤ cntAt g z` (from `hRl`, `hgap`, `b * l ≤ b * b`), and
   `hslack' := hasForwardSlack_mono g z hslack (by nlinarith/omega : R * l + b * l ≤ m * (P + 1) + b * b)`;
   obtain `g₁, t, hg₁, hRt, htR, hagree₁, hcnt₁, hnxt₁, hslack₁, hty₁`; set `e := t - R` with
   `e < b`.
-- [ ] The raise on the ORIGINAL block in `g₁`: `σ₁` from `exists_hist_of_isLadderPath`;
+- [x] The raise on the ORIGINAL block in `g₁`: `σ₁` from `exists_hist_of_isLadderPath`;
   `hrep₁ : objAt g₁ u = objAt g₁ (u + l)` by rewriting both sides through `hagree₁` (`u ≤ u + l = w₀`)
   to `hrep`; `hty₁' : tpOf … σ₁ u = tpOf … σ₁ (u + l)` by `hty₁ σ₁ hσ₁` at `u` and `u + l` and
   `hty`; `hpast₁ : ∀ p ≤ u, pend (objAt g₁ p) = true` from `hagree₁` and `hpast_u`;
@@ -577,12 +577,12 @@ consumer, the downward cell inclusion stated on the witnessing path.
   context for `omega`). Apply Phase 4's lemma with `d := e` to get `g₂` with
   `cntAt g₂ z = cntAt g₁ z + e * l`, `nxtAt g₂ z = nxtAt g₁ z`, `objAt g₂ z = objAt g₁ z`
   (`z < u + l`), and the type at `z` equal to `σ₁`'s.
-- [ ] Conclusions: `objAt` by the two agreements; `cntAt g₂ z + m * (P + 1) = cntAt g z` by `omega`
+- [x] Conclusions: `objAt` by the two agreements; `cntAt g₂ z + m * (P + 1) = cntAt g z` by `omega`
   from `hcnt₁`, `cntAt g₂ z = cntAt g₁ z + e * l`, `t = R + e`, `hRl` (with `(R + e) * l = R * l + e * l`);
   `nxtAt` by the two register equalities; the type: `tpOf σ' z = tpOf σ₂ z` (two histories of
   `g₂`, `tpOf_stabFree_eq_of_objAt_eq`), `= tpOf σ₁ z` (Phase 4's type clause), `= tpOf σ₀ z`
   (the loop's type clause at `z ≤ w₀`), `= tpOf σ z` (two histories of `g`).
-- [ ] `mem_cellAt_of_shift_of_hasForwardSlack`, header exactly as pinned, directly after. Proof:
+- [x] `mem_cellAt_of_shift_of_hasForwardSlack`, header exactly as pinned, directly after. Proof:
   `hoz, hcz, hnz` by `simp [objAt, cntAt, nxtAt, hgz]`; `hz` by contradiction from
   `h'` (an idle state has countdown `0`, but `n + 2 ≤ c`); `hpast := pend_past_of_nxtAt_lt g hg z hz (by rw [hcz, hnz]; omega)`;
   apply the exact-shift theorem with `hTc' : Tc + m * (P + 1) ≤ cntAt g z` (from `hTc`, `hcz`),
@@ -592,13 +592,13 @@ consumer, the downward cell inclusion stated on the witnessing path.
   `change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c, n)` with `omega` for the countdown
   (`cntAt g' z + m * (P + 1) = c + m * (P + 1)`); the type by the exact-shift's clause at
   `τ τ'`.
-- [ ] Docstrings: the exact-shift theorem names the overshoot-then-up device and the price
+- [x] Docstrings: the exact-shift theorem names the overshoot-then-up device and the price
   (`b · b` in both hypotheses); the cell inclusion says the hypothesis is on the WITNESSING PATH,
   that `cellAt` is existential over histories so this is the only sound downward statement under
   a path-level regime, that the reserved name `cellLE_zero_const_of_kappa_eq` remains claimed by
   nothing, and that the gap between this and the obligation is the tight (doubling) chain, no
   finite deletion-derivative of which lifts (argued in the task record, not compiled).
-- [ ] `lean_verify` on both names; scoped build; `--fix`; commit.
+- [x] `lean_verify` on both names; scoped build; `--fix`; commit.
 
 **Timing**: 2 hours
 
