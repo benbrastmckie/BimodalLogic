@@ -49,10 +49,21 @@ witness, `hasForwardSlack_of_next_region_cnt_le`), monotonicity, transport acros
 vacuity (`section Slack`); the two-state witness `ClimbWitness`, showing the regime NECESSARY (the
 climbing-register path refutes the unconditional claim) and INHABITED at every amount (the
 plateau); the room bound `budget_mul_succ_le_Tc` and the spaced pigeonhole
-`exists_typeBlock_of_spacing`; the one-step deletion, the overshoot loop, and the EXACT-SHIFT
-theorem `exists_ladderPath_through_deleted_exact_of_pend_past` (the countdown lowered by exactly
-`m · (P + 1)`, the register and the realized type held); and its consumer, the downward cell
-inclusion ON THE WITNESSING PATH, `mem_cellAt_of_shift_of_hasForwardSlack`.
+`exists_typeBlock_of_spacing`; the iterated splice index map `iterSpliceIdx` with the iterated
+duplication and the register-held wrapper read through it
+(`exists_iterSpliced_ladderPath_idx_of_pend_past`,
+`exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past`: the walk and the realized types
+exposed at EVERY position, in particular at every copy boundary) and the slack transport across
+a raise (`hasForwardSlack_raise`); the one-step deletion and the overshoot loop with the sampling
+window as their room hypothesis; the UP-FIRST EXACT-SHIFT theorem
+`exists_ladderPath_through_deleted_exact_upfirst_of_pend_past` (raise by `budget` copies of the
+original block first, overshoot above the run, delete the exact remainder inside it: the
+countdown lowered by exactly `m · (P + 1)`, the register and the realized type held, under the
+gap and the regime at EXACTLY `m · (P + 1)`); and its consumer, the downward cell inclusion ON
+THE WITNESSING PATH, `mem_cellAt_of_shift_of_hasForwardSlack_exact`, under exactly `n + 2 ≤ c`,
+`Tc ≤ c` and the regime at `m · (P + 1)`. The same statements with a `budget²` slack term in
+both anchor directions, `exists_ladderPath_through_deleted_exact_of_pend_past` and
+`mem_cellAt_of_shift_of_hasForwardSlack`, are corollaries.
 
 ## What this module does NOT hold
 
@@ -1556,13 +1567,14 @@ under an existing name, and the reserved name
 `cellLE_zero_const_of_kappa_eq` remains claimed by nothing. Two pieces separate this single-block
 assembly from the cell-level downward inclusion, and `section DelNxtIter` supplies both on the
 witnessing path: the exact-shift ITERATION of the deletion is
-`exists_ladderPath_through_deleted_exact_of_pend_past` (every deletion lemma is length-agnostic,
-so `d` deletions of an `l`-block are one deletion of a `d · l`-block and the obstacle is
-EXACTNESS, met by overshooting with sampled blocks at spacing `l` and raising by the overshoot
-with the register-held iterated duplication of the original block), and the PATH-versus-STATE
-quantification (the forward slack is a property of a path, and the cell quantifies over every
-path through the state, the climbing-register path included) is answered by stating the inclusion
-on the witnessing path, `mem_cellAt_of_shift_of_hasForwardSlack`, the only sound form under a
+`exists_ladderPath_through_deleted_exact_upfirst_of_pend_past` (every deletion lemma is
+length-agnostic, so `d` deletions of an `l`-block are one deletion of a `d · l`-block and the
+obstacle is EXACTNESS, met by raising first by `budget` copies of the original block with the
+register held, overshooting with sampled blocks at spacing `l` above the run, and deleting the
+exact remainder as one block of the run), and the PATH-versus-STATE quantification (the forward
+slack is a property of a path, and the cell quantifies over every path through the state, the
+climbing-register path included) is answered by stating the inclusion on the witnessing path,
+`mem_cellAt_of_shift_of_hasForwardSlack_exact`, the only sound form under a
 path-level regime. -/
 theorem exists_ladderPath_through_deleted_of_pend_past
     (step : Q → Q → Bool) (pend : Q → Bool)
@@ -1642,20 +1654,27 @@ theorem exists_ladderPath_through_deleted_of_pend_past
 
 end DelNxtFin
 
-/-! ## The exact-shift iteration: overshoot by sampled blocks, then raise by the overshoot
+/-! ## The exact-shift iteration: raise first, overshoot above the run, delete the exact
+remainder inside it
 
 Every landed deletion lemma is length-agnostic, so `d` deletions of an `l`-block are one deletion
 of a `d · l`-block; what the cell-level downward inclusion needs is EXACTNESS — the countdown
 lowered by exactly `m · (P + 1)` — and a pigeonhole never returns a prescribed length. The
-device: sample at spacing `l` (the length of the original pigeonhole block, a divisor of
-`P + 1`) from a fixed position `w₀`, delete the type-respecting block the spaced pigeonhole
-returns (length `d · l`, `1 ≤ d ≤ budget`), and repeat until at least `R · l = m · (P + 1)`
-positions are gone; the overshoot is fewer than `budget` blocks of length `l`, and the
-register-held iterated duplication of the ORIGINAL block (`[u, u + l)`, which every step
-preserves because the sampling starts at `w₀ = u + l`) raises the countdown back by exactly the
-overshoot. The price is a `budget²` summand in both the gap and the regime hypothesis, paid
-because the landed iteration exposes types only below `u + l` and at `u + l`, so the raise must
-come last. -/
+device, with `l` the length of the original pigeonhole block `[u, u + l)` (a divisor of `P + 1`)
+and `R := m · ((P + 1) / l)` the target in `l`-units: RAISE first by `budget` copies of that
+block with the register held (`exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past`),
+which adds exactly `budget · l` of forward slack (`hasForwardSlack_raise`); then run the
+overshoot loop ABOVE the run of copies, sampling at spacing `l` from `u + (budget + 1) · l` and
+deleting the type-respecting block the spaced pigeonhole returns (length `d · l`,
+`1 ≤ d ≤ budget`) until at least `R · l` positions are gone, the overshoot `t − R` fewer than
+`budget` blocks; finally delete the remainder `r := R + budget − t ∈ [1, budget]` EXACTLY, as the
+single block `[u, u + r · l)` of the run, whose ends carry the original's `(objAt, tpOf)` at `u`.
+What makes the raise-first order possible is the index-map exposure of the iterated duplication:
+`iterSpliceIdx` reads the walk and the realized types at every copy boundary, so the remainder
+block is type-respecting after the loop has run above it. The hypotheses are exactly the gap and
+the regime at `m · (P + 1)`: the raise pays for the overshoot before it happens, and no `budget²`
+slack term enters either anchor direction. The step and the loop take their sampling window as
+their one room hypothesis, which is what lets the loop start above the run. -/
 
 section DelNxtIter
 
@@ -2152,11 +2171,11 @@ end DelNxtIter
 (`n + 2 ≤ c`, so by `pend_past_of_nxtAt_lt` every path through the state is pending forever into
 the past) at countdown at least `Tc`, the cell at `(q, c, n)` is contained in the cell at
 `(q, c + m · (P + 1), n)`: every type realized at the former is realized at the latter by the
-regime-A assembly. The downward inclusion is `mem_cellAt_of_shift_of_hasForwardSlack`, stated on
-the witnessing path under the forward-slack hypothesis `HasForwardSlack` (with the gap
-`n + budget² ≤ c`), through the exact-shift theorem
-`exists_ladderPath_through_deleted_exact_of_pend_past`; no state-level downward inclusion is
-claimed. Under `kappa_eq_components` this covers the sub-regime `n = n'`;
+regime-A assembly. The downward inclusion is `mem_cellAt_of_shift_of_hasForwardSlack_exact`,
+stated on the witnessing path under exactly `n + 2 ≤ c`, `Tc ≤ c` and
+`HasForwardSlack g z (m · (P + 1)) n`, through the up-first exact-shift theorem
+`exists_ladderPath_through_deleted_exact_upfirst_of_pend_past`; no state-level downward
+inclusion is claimed. Under `kappa_eq_components` this covers the sub-regime `n = n'`;
 the common shift `n' = n + m · (P + 1)` is the same construction with `n₀ := n'` inside the
 widened window and is not stated here. -/
 theorem cellAt_subset_of_shift_of_pend_past {Q : Type} [Fintype Q] [Nonempty Q]
