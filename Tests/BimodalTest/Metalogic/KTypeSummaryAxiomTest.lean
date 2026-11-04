@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 1800
+set_option linter.style.longFile 1900
 
 namespace BimodalTest.Metalogic
 
@@ -1570,8 +1570,8 @@ the downward inclusion would need — whose length `(K1)` provably does not cons
 cycle-length conjuncts carry `pending throughout` on the walk they quantify. The `(K2)` pin beside
 them is the EXPONENTIAL reading of that conjunct (`two_pow_card_prodState_le_Tc`), which is the
 quantity such a pigeonhole consumes. Its REFUTATION at the parameter conditions the obligation was
-filed against (the probe's frozen `ParamsOkPre`, whose `(K4)` reads the backward exactness depth alone)
-is carried by the wired probe
+filed against (the probe's frozen `ParamsOkPre`, whose `(K4)` reads the backward exactness
+depth alone) is carried by the wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`
 (`Probe836A.cellLEZeroConstOfKappaEqPre_refuted`, with non-vacuity on both sides as the conjuncts of
 `Probe836A.exists_refuting_cell_collision`), through the register's forward window rather than
