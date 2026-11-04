@@ -441,6 +441,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.ZetaUniformExtract
 import FormalSystem.Metalogic.Expressiveness.Kamp.ZetaUniformExtractFaithful
 import FormalSystem.Metalogic.Expressiveness.MonadicFO
 import FormalSystem.Metalogic.Expressiveness.NormalForm
+import FormalSystem.Metalogic.Expressiveness.OpenFutureElimination
 import FormalSystem.Metalogic.Expressiveness.PriorDefs
 import FormalSystem.Metalogic.Expressiveness.PriorDefsDense
 import FormalSystem.Metalogic.Expressiveness.PriorExpressiveness
