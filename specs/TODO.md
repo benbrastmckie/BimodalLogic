@@ -11,7 +11,7 @@ next_project_number: 850
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,847,848 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,847,848,850 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -105,6 +105,7 @@ next_project_number: 850
 836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
+850 [NOT STARTED] — Re-derive the iterated splice in LadderChain.lean with...
 
 ### Formula Refactor
 
@@ -144,6 +145,41 @@ next_project_number: 850
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 850. Upfirst exact shift copy boundary types
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 849
+
+**Description**: Re-derive the iterated splice in LadderChain.lean with copy-boundary realized types exposed, then restate the exact-shift theorem under the clean up-first hypotheses, dropping the budget-squared slack penalty the landed deletions-first ordering pays.
+
+ORIGIN. Conclusion stage (channel c, follow-up tasks) of an /orchestrate invocation over task 849 (forward slack discharge and exact shift iteration), user-approved at the lead level. Citations are entry_ids in that task's issue log, specs/849_forward_slack_discharge_and_exact_shift_iteration/issues.jsonl:
+  iss_1793751135379_U13gPw (class landed-lemma exposure gap, severity costly, research phase) -- the exposure gap itself.
+  iss_1793753638060_ApI93s (class landed-lemma exposure gap, severity minor, implement phase) -- the binder-level consequence met while landing the deletions-first route.
+The predecessor's plan named this an explicit non-goal and an optional later phase; this record is that phase.
+
+MEASURED STATE OF THE OBSTACLE (re-derived by direct read at creation time; line numbers drift, re-derive before editing). exists_iterSpliced_ladderPath_of_pend_past at FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean:1379 exposes realized types only BELOW u+l and AT u+l -- not at the copy boundaries u+i*l for 2 <= i <= d+1, and not above the run. The clean up-first exact-shift ordering needs exactly those copy-boundary types, so it cannot be built on the landed iteration as that iteration currently states its conclusion. LadderPump.lean sits at 1485 lines against the 1500-line longFile limit, so the iteration cannot simply be strengthened in place; re-deriving it in LadderChain.lean (which imports LadderPump.lean, never the reverse) is the direction the predecessor's settled constraints already fix.
+
+WHAT THE CLEAN ORDERING BUYS. The landed route deletes first and then raises, which forces budget-squared extra slack into BOTH anchor directions. The up-first ordering carries hypotheses that are exactly HasForwardSlack g z (m*(P+1)) n together with n+2 <= c -- no budget-squared term in either direction. That reduction in hypothesis strength, not a new theorem, is this task's deliverable.
+
+LANDED BASELINE, GREEN AND NOT TO BE REGRESSED. In FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean (now 1780 lines under an explicit set_option linter.style.longFile 1800 at L66, per LEAN_STYLE_GUIDE.md's "The long-file baseline" and MODULE_INVARIANTS C30): the HasForwardSlack regime with its entry, monotonicity, deletion-transport and vacuity lemmas (hasForwardSlack_of_next_region_cnt_le, hasForwardSlack_mono, hasForwardSlack_del); the ClimbWitness namespace; the spaced type pigeonhole exists_typeBlock_of_spacing and the room bound budget_mul_succ_le_Tc; the given-block raise exists_ladderPath_through_iterSpliced_nxt_of_pend_past with the regime-A assembly as its corollary; the one-step deletion, the overshoot loop, exists_ladderPath_through_deleted_exact_of_pend_past, and mem_cellAt_of_shift_of_hasForwardSlack. Full guarded lake build exit 0 with 0 warnings, sorry 0, axioms 14 at baseline.
+
+SETTLED, NOT TO BE REOPENED. HasForwardSlack is a genuine regime, not a missing lemma: the unconditional claim is refuted by a compiled climbing-register ladder path on the two-state object (ClimbWitness in LadderChain.lean; the research prototype is at specs/849_forward_slack_discharge_and_exact_shift_iteration/prototype/climb-witness.lean). Do not re-attempt a Drift-level invariant to discharge it. Spacing P+1 is not usable for the pigeonhole -- its room is not derivable from ParamsOk; spacing l is. (K1) provably does not constrain a spanning block's length, the refuting object being the alternating path.
+
+OUT OF SCOPE. The path-versus-state quantification gap is NOT this task's problem to close. The only honest cell-level downward statement names the witnessing path, and the gap to the reserved name cellLE_zero_const_of_kappa_eq is exactly the tight chain the RaySummary README already names as the open core. That name remains claimed by nothing and MUST NOT be claimed by a weakened statement here.
+
+AUTHORING CONSTRAINTS.
+- A commit touching FormalSystem/**/*.lean is refused unless it also carries a regenerated typst/generated/status.typ. Name that file in every phase's Files-to-modify list and run scripts/typst-sync-check.sh --fix before committing.
+- LadderChain.lean is at 1780 of its 1800-line baseline, leaving roughly 20 lines of headroom. Decide at plan time whether this work re-baselines the linter again or decomposes the file, and record the reason; do not discover the ceiling mid-phase as the predecessor did.
+- Take the Challenge snapshot at PLAN time (lean-challenge-snapshot.sh), not during implement, where the status gate refuses with exit 73.
+- Be aware that --check resolves pinned identifiers by walking the whole project root and will report a false ambiguity if a prototype under specs/** declares a pinned name. The predecessor hit this (advisory only, exit 71); a fix is filed in the agent-system source store repository. Check drift by header diff if --check cannot run.
+
+ACCEPTANCE. (a) An iteration lemma in LadderChain.lean exposes realized types at every copy boundary u+i*l for 1 <= i <= d+1 and above the run, stated so the exact-shift theorem can consume it. (b) The exact-shift theorem is restated under hypotheses exactly HasForwardSlack g z (m*(P+1)) n and n+2 <= c, with no budget-squared slack term in either anchor direction. (c) The landed exists_ladderPath_through_deleted_exact_of_pend_past and mem_cellAt_of_shift_of_hasForwardSlack either survive unchanged or are re-derived as corollaries of the new ordering, with the statement diff shown to be empty. (d) Full guarded lake build exit 0, sorry 0, axioms unchanged from the 14-axiom baseline. (e) The RaySummary README records the new ordering and the dropped slack penalty.
+
+---
 
 ### 849. Forward slack discharge and exact shift iteration
 - **Effort**: high
