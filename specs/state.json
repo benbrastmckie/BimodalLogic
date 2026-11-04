@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 860,
+  "next_project_number": 861,
   "active_projects": [
     {
       "project_number": 856,
@@ -118,14 +118,14 @@
     {
       "project_number": 833,
       "project_name": "stab_definable_from_open_modals",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "metalogic",
       "title": "Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage, with its ledger and README rows",
       "description": "IMPLEMENTATION TASK, small and fully specified: the proof is already written and compiled. Land in `FormalSystem/OpenLanguage/` the fact that the stability modal is DEFINABLE from the manuscript's open-future and open-past modals:\n\n    ⊡φ  ↔  ▷◁φ  ↔  ◁▷φ        on every regular task frame\n\nThis is item (P0a) of task 559, which cannot do it itself: 559 is a research task whose hard constraints forbid any change under `FormalSystem/` or `Tests/`. 559 declares a dependency on this task so that its next round cites a library declaration rather than a probe.\n\nSOURCE OF THE PROOF, ALREADY COMPILED. `specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/05_stab-definable-from-open-modals.lean` is compiled-live against the repository's own oleans (bare `lean` with LEAN_PATH set, no `lake` process; exit 0, no warnings) and carries all six declarations in final form. This is a TRANSCRIPTION task, not a proof-search task: port the probe, do not re-derive it, and do not weaken any statement. Axioms measured on the probe: `[propext]` for the `→` half, `[propext, Quot.sound]` for the other five -- CHOICE-FREE throughout, and that must be preserved.\n\nWHAT TO LAND, and where the layering puts it. Every statement mentions `OpenTruthAt`, so all of it is layer-1 (semantic) and none of it may go in `Formula.lean`.\n- In `OpenTruth.lean` (beside the existing `stab_of_box` / `ofut_of_stab` / `opast_of_stab` ordering block): `stab_to_ofut_opast` (the `→` half: the two class inclusions at the point, NO frame axiom), `ofut_opast_to_stab` (the `←` half, `[F.IsRegular]`, one `paste`), and the two pointwise biconditionals `stab_iff_ofut_opast` and `stab_iff_opast_ofut`.\n- In `OpenValidity.lean` (beside `openValid_stab_of_box` / `openValid_ofut_of_stab` / `openValid_opast_of_stab`): both implications as `OpenValid`. `FrameClass.Sat .Base F` IS the class `F.IsRegular`, so a bare `intro` registers the instance the `←` half needs -- name the binder `_hF` to keep the file warning-free.\n- OPTIONAL, implementer's call: a class-level corollary in `OpenClasses.lean` stating `stabClass τ x` as the union over `openFutureClass τ x` of the open-past classes -- the set-level form of the same fact, under that file's existing heading \"`⟨τ⟩_x` is the product of the open pasts and the open futures\". Land it only if it is used; a theorem with no consumer is not worth an INV row.\n\nTHE MIRROR IS FREE, AND SHOULD BE TAKEN THAT WAY WHERE IT READS BETTER. `reflectTime` fixes `⊡` and exchanges `▷` with `◁` (`OpenReversal.lean`), so `stab_iff_opast_ofut` is one line from `stab_iff_ofut_opast` through `openValid_reflectTime`. The probe gives the direct proof instead, deliberately, to stay independent of the reversal layer. Either is acceptable; if the reversal route is taken, say so in the docstring, because it changes which module the result depends on.\n\nDOCUMENTATION OBLIGATIONS -- these are part of the task, not follow-up.\n1. `FormalSystem/OpenLanguage/README.md`: add the new names to the `## Main Results` list and to the paper-label correspondence table. The correspondence row is an EXTENSION of the existing `app:gluing` (two histories) row, whose Lean cell is `paste_mem_openFutureClass_inter_openPastClass` and whose prose already says \"It is why `⟨τ⟩_x` is the *product* of the open pasts and the open futures\"; the new row states the operator-level consequence and is **formalization-native** (the manuscript sets the restricted modals aside and states no such equation), so label it that way exactly as the sibling formalization-native rows are labelled.\n2. The README's `<!-- BEGIN GENERATED: inventory -->` block is GENERATED. Do NOT hand-edit it: re-run `bash scripts/check-module-invariants.sh --emit-inventory` and let it rewrite the per-file line counts and descriptions, then check the `INV` check passes. Hand-editing it is the drift the check exists to catch.\n3. `docs/theorem-index.md` is \"the repository's single ledger\" and every result needs a row there: statement, fully-qualified Lean name (bare identifiers are not row keys), file, frame class, and the pinned axiom set. Frame class for all of these is `Base` -- `OpenValid` is `OpenValidIn FrameClass.Base`, i.e. validity over every regular task frame. Axiom column: the `→` half is `p` alone (propext), the rest are `pq` (propext, Quot.sound); do NOT write `pcq`, which would claim choice the proofs do not use.\n\nNOT IN SCOPE, and each of these is a way to get this task wrong.\n- NO proof system, NO axiom, NO completeness claim. This is a semantic theorem about `OpenTruthAt`. L^▷ stays semantic-only: do not add `OpenAxiom`, `OpenDerivationTree`, or any constructor, here or anywhere. Adding no constructor to `PlusAxiom`/`PlusDerivationTree` likewise still stands.\n- Do not state or imply that this closes any gap. It supplies NO limit-closure principle: `plus_incomplete_base` stands exactly as proved, `blc` stays a non-theorem, and an `LC_n`-style schema is still required in L^▷ exactly as in L⁺. Any docstring sentence suggesting otherwise is a defect.\n- Do not assert that `▷` is undefinable in L⁺. Nothing in the tree establishes it; that is 559's (P0b) and it is open. The landed strictness results separate the OPERATORS, not the LANGUAGES.\n- No new FILE is needed, and adding one costs more than it looks: every file under a language directory needs a row in the `LANGUAGE_FILE_LAYERS` table of `scripts/measure-refactor-partitions.py` or `bash scripts/check-metalogic-cycles.sh` fails, naming the file. Prefer editing the three existing modules. If a new file is added anyway, add the row (layer 1) in the same phase.\n\nSHARED-FILE CONTENTION -- read before batching. `docs/theorem-index.md` is also declared by 761 and 763, the Stage 1 critical path, and 761 is `[IMPLEMENTING]`. The overlap gate will therefore serialize this task against them, which is correct and must not be worked around: run it in a cycle of its own, or after 761/763's current cycle, never concurrently. `scripts/check-module-invariants.sh` is deliberately NOT declared in this task's `file_scope`: pinning the new declarations' axiom sets in the C-check harness is OPTIONAL, out of scope here, and declaring it would add a second contention point with the critical path for no gain. If the pin is wanted later, file it separately.\n\nVERIFICATION GATE.\n- `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.OpenLanguage` green, then the unscoped build for final verification. Never bare `lake`.\n- `lean_verify` (or `#print axioms`) on each landed declaration, and the result compared against the probe's measured sets above. A declaration that picks up `Classical.choice` on transcription is a regression, not a new baseline -- the likely cause would be routing the `←` half through something other than `paste`.\n- `bash scripts/check-module-invariants.sh` (INV, and C15 for the paper-label citations) and `bash scripts/check-metalogic-cycles.sh` both green. NOTE: `check-metalogic-cycles.sh` currently exits 1 for an unrelated, pre-existing reason -- an eighth upward import edge against an allowlist and docs that record seven, which is task 828. Confirm the failure is that one and not a new edge introduced here; do not fix 828 from this task.\n- Zero `sorry`, zero vacuous definitions.\n\nWHY IT IS WORTH LANDING AT ALL, given that it closes nothing. Three reasons, in order. (1) It is the keystone every other item of 559's revised plan cites, and a library declaration is a durable citation where a probe is not. (2) It is `PlusLanguage.PlusRayFibre.plusStab_iff_rays` -- `⊡` as a quantifier over pairs of a past ray and a future ray agreeing at the seam state -- promoted from the metatheory into the object language, with `▷` and `◁` as the two projections; that is the two-sided decomposition report 03 §4 of task 559 named as the device the completeness engine lacks. (3) It is true and cheap regardless of how 559's (P0b) comes back: even if `▷` turned out L⁺-definable and the L^▷ ruling were retired, the biconditional remains a correct and useful statement of the product structure of `⟨τ⟩_x`.",
       "dependencies": [],
       "created": "2026-11-02T21:20:35Z",
-      "last_updated": "2026-11-02T21:20:35Z",
+      "last_updated": "2026-11-04T22:13:28Z",
       "priority": "medium",
       "file_scope": [
         "FormalSystem/OpenLanguage/OpenTruth.lean",
@@ -133,7 +133,8 @@
         "FormalSystem/OpenLanguage/OpenClasses.lean",
         "FormalSystem/OpenLanguage/README.md",
         "docs/theorem-index.md"
-      ]
+      ],
+      "session_id": "sess_1793830217_548036_833"
     },
     {
       "project_number": 827,
@@ -4478,6 +4479,123 @@
       },
       "session_id": "sess_1793827858_5fe829",
       "next_artifact_number": 2
+    },
+    {
+      "project_number": 860,
+      "project_name": "colourclock_history_bridge_lemma",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Add the bridge lemma in FormalSystem/Semantics/Frames/TranslationProduct.lean that makes the \"every colour function is a history\" step compiled rather than stated. Context: the colourClock wrapper carries an internal Nonempty instance that blocks ofReflectiveRegular_taskRel from unifying, so the open-future non-definability probe had to leave the hmarkers hypothesis as a one-line audited paper step. Deliverable: a lemma stating that every function from the duration carrier into the colour component of colourClock is a history of the colourClock frame, discharging Limit via the clock component and Saturation via finiteness of the colour set, stated so that the probe can discharge hmarkers by application rather than by assumption. Then update that probe to use it and confirm it still compiles clean (exit 0, no sorry/error/warning). Scope: TranslationProduct.lean plus the probes/ file only; the verdict itself (open-future not L-plus-definable at Base and Dense) is settled on the written report and is not reopened by this task.",
+      "effort": "low",
+      "parent_task": 859,
+      "topic": "metalogic",
+      "dependencies": [],
+      "file_scope": [
+        "FormalSystem/Semantics/Frames/TranslationProduct.lean"
+      ],
+      "created": "2026-11-04T22:14:53Z",
+      "last_updated": "2026-11-04T22:14:53Z",
+      "artifacts": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "colourclock_history_bridge_lemma",
+          "project_number": null,
+          "title": "colourclock_history_bridge_lemma"
+        },
+        "verdicts": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 833,
+            "project_name": "stab_definable_from_open_modals",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4266666666666667
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 559,
+            "project_name": "nondeterministic_canonical_model_tm_star_completeness",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.6
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 768,
+            "project_name": "lean_challenge_snapshot_chunk_and_unicode_defects",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4266666666666667
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4266666666666667
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 813,
+            "project_name": "lean_plan_challenge_block_authoring_contract",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 858,
+            "project_name": "state_write_audit_verdict_argv_overflow",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 747,
+            "project_name": "closure_wide_quasimodel_lift_to_validity",
+            "discharging_artifact": {
+              "path": "specs/747_closure_wide_quasimodel_lift_to_validity/summaries/01_closure-wide-quasimodel-anchor-layer-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: anchor layer landed and bounded for every model; run layer blocked on three named obligations; (S) untouched; no decidability statement."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.41333333333333333
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 746,
+            "project_name": "hit_level_soundness_realize_presentation_b2b",
+            "discharging_artifact": {
+              "path": "specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md",
+              "type": "plan",
+              "summary": "8 phases, 6 waves, 14 hours: Cons (untl half transcribed from a compiled probe, snce mirror proved outright), modelOf via ofSlicedStep on W := Q, presented_modelOf through eq_clTrace_of_localRun_anchored, and the Hit-level corollary, with 8 Challenge-pinned signatures."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4266666666666667
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 737,
+            "project_name": "discharge_presents_mso_reduction_seam_summary",
+            "discharging_artifact": {
+              "path": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+              "type": "summary",
+              "summary": "Field-by-field verdict, what landed where, measured axiom profiles, the B1-B4 residue (CARRIED-UNVERIFIED costs), and the recommendation to re-point the assembly record at Hit."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.44
+          }
+        ],
+        "scope_blind_count": 453,
+        "degradations_scope_blind_count": 447,
+        "degradations": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        }
+      }
     }
   ],
   "artifacts": [

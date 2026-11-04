@@ -1,5 +1,5 @@
 ---
-next_project_number: 860
+next_project_number: 861
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 860
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,854,855,857,858,859 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,854,855,857,858,859,860 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,852,853,856 | 298,428,502,761,768,769,770,772,777,785,810,813,833,838,839,854,855,859 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -127,13 +127,14 @@ next_project_number: 860
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-833 [NOT STARTED] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
+833 [RESEARCHING] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 854 [RESEARCHED] — Decide whether the open-future modal ▷ is L⁺-definable
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe... (see above)
   └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 859 [RESEARCHED] — Settle whether the open-future modal ▷ (and its mirror ◁) is...
   └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,... (see above)
+860 [RESEARCHED] — Add the bridge lemma in...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -153,6 +154,18 @@ next_project_number: 860
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 860. Colourclock history bridge lemma
+- **Effort**: low
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+- **Parent**: Task 859
+
+**Description**: Add the bridge lemma in FormalSystem/Semantics/Frames/TranslationProduct.lean that makes the "every colour function is a history" step compiled rather than stated. Context: the colourClock wrapper carries an internal Nonempty instance that blocks ofReflectiveRegular_taskRel from unifying, so the open-future non-definability probe had to leave the hmarkers hypothesis as a one-line audited paper step. Deliverable: a lemma stating that every function from the duration carrier into the colour component of colourClock is a history of the colourClock frame, discharging Limit via the clock component and Saturation via finiteness of the colour set, stated so that the probe can discharge hmarkers by application rather than by assumption. Then update that probe to use it and confirm it still compiles clean (exit 0, no sorry/error/warning). Scope: TranslationProduct.lean plus the probes/ file only; the verdict itself (open-future not L-plus-definable at Base and Dense) is settled on the written report and is not reopened by this task.
+
+---
 
 ### 859. Qtime open future definability base dense
 - **Effort**: high
@@ -1895,7 +1908,7 @@ This record is filed in the BimodalLogic task space while its edit target resolv
 ---
 
 ### 833. Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage, with its ledger and README rows
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
