@@ -2416,7 +2416,7 @@ Tactic Survey, and the `34^4` figure for tuple B under the widened bound is deri
 
 ---
 
-### Phase 12.5: The Three Re-Homed Conditions of `Real` [NOT STARTED]
+### Phase 12.5: The Three Re-Homed Conditions of `Real` [COMPLETED]
 
 **NEW IN THIS REVISION.** It lands exactly the three deliverables Phase 12.1 closed with a
 `#### Reasoned Exclusions` record, whose single shared missing link — an `RK` edge from an actual
@@ -2430,25 +2430,25 @@ as `real_certBiInfK`, `real_certFwdK` and `real_certBwdK`, named on the pattern 
 landed and only `certStabK` — the one that consumes the agreement — remains for Phase 12.2.
 
 **Tasks**:
-- [ ] Prove `real_certBiInfK`: every member of `Real` has a successor and a predecessor inside
+- [x] Prove `real_certBiInfK` *(completed: both witnesses are the neighbouring points of the member's own witnessing history, `realItem … σ (z + 1)` and `realItem … σ (z - 1)`; both arms existential; `Real` unmodified and not confined to one state's cell)*: every member of `Real` has a successor and a predecessor inside
       `Real`, with the `relK` edge at each supplied by `rk_of_count_drift` applied to the actual
       `Count`/`Drift` step of the witnessing history. Both fulfilment arms stay EXISTENTIAL.
-- [ ] Prove `real_certFwdK`: the discharge path is the contiguous stretch `z, z+1, …, z+m` of the
+- [x] Prove `real_certFwdK` *(completed by exactly the recorded decomposition: `m = (s - z).toNat` for the `s` that `untl_mem_tpOf_iff` supplies, `f i = realItem … σ (z + i)`, membership by `mem_real_realItem`, the consecutive-position relation by `relK_realItem_succ`)*: the discharge path is the contiguous stretch `z, z+1, …, z+m` of the
       SAME history — `untl_mem_tpOf_iff` (`LadderAgree.lean`) supplies the fulfilling position and
       the guard along the intervening stretch — every position of which lies in `Real` by
       `mem_real_realItem`, with the consecutive-position relation by `rk_of_count_drift`. This is
       the decomposition Phase 12.1's exclusion record already identified; follow it rather than
       re-deriving one.
-- [ ] Prove `real_certBwdK`: the past-directed mirror along the reversed `relK`, with
+- [x] Prove `real_certBwdK` *(completed: the mirror with `m = (z - s).toNat` and `f i = realItem … σ (z - i)`, `snce_mem_tpOf_iff` supplying the temporal content)*: the past-directed mirror along the reversed `relK`, with
       `snce_mem_tpOf_iff` supplying the temporal content and the same relation link.
-- [ ] Record in the module docstring that the three exclusions are DISCHARGED and by what, naming
+- [x] Record in the module docstring that the three exclusions are DISCHARGED and by what *(completed: the predecessor's "NOT landed, and the reason is one shared obstruction rather than three" paragraph is REPLACED by what is now true — five of six conditions landed, condition (5) `certStabK` the only one outstanding — and the discharge names `rk_of_count_drift` and the widened `repsCnt` range by figure)*, naming
       `rk_of_count_drift` and the widened `repsCnt` by declaration name. The paragraph the
       predecessor round wrote — "NOT landed, and the reason is one shared obstruction rather than
       three" — is replaced by what is now true, not annotated.
-- [ ] **Do not state or prove `certStabK` of `Real`, `real_certAdmK_of_paramsOk` or
+- [x] **Do not state or prove `certStabK` of `Real`, `real_certAdmK_of_paramsOk` or *(completed: none of the three is stated; greps return only docstring prose naming them as Phase 12.2's)*
       `real_subset_dmax` here.** All three consume the agreement and stay Phase 12.2's; the split
       Phase 12.1 established is preserved by this phase.
-- [ ] Wire the new declarations (axiom pins, generated inventory blocks, `status.typ`). No C14
+- [x] Wire the new declarations (axiom pins, generated inventory blocks, `status.typ`) *(deviation: altered — `LadderRealize.lean` gains `import …RaySummary.LadderChain`, which the phase's tasks imply but do not state: `untl_mem_tpOf_iff`/`snce_mem_tpOf_iff` live in `LadderAgree.lean` and `cohIdle_of_realized` in `LadderChain.lean`, neither of which the module previously imported. The import is cycle-free — `LadderChain → LadderPump → LadderAgree → {AnchorLayer, CounterQuotient}`, and only `RaySummary.lean` imports `LadderRealize`. Three generated-block files again, not one)*. No C14
       entry and no theorem-index row: this phase lands no filed Goal.
 
 **Prohibited workarounds**: do NOT consume `cellAt_const_of_kappa_eq` or the schema

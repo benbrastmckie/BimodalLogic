@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.RaySummary.CounterQuotient
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderChain
 
 /-!
 # The definitional layer of the ladder's realization statement
@@ -24,28 +25,45 @@ particular no theorem here consumes `cellAt_const_of_kappa_eq` or the schema
 
 Landed: `Real` itself, `realItem` and `mem_real_realItem` (every point of every admissible ladder
 history projects into `Real`), `mem_clType_iff_truth` (the bridge from membership in a member's
-closure type to truth at the witnessing point), `real_certLocK` (condition (1)) and
-`real_certBoxK` (condition (6)). Neither condition mentions a relation between two members, which
-is why both are available here.
+closure type to truth at the witnessing point), `real_certLocK` (condition (1)),
+`real_certBoxK` (condition (6)), and the three RELATIONAL conditions `real_certBiInfK`,
+`real_certFwdK` and `real_certBwdK` (conditions (2), (3) and (4)). Five of `Real`'s six conditions
+are therefore landed.
 
-NOT landed here: conditions (2), (3) and (4) — `certBiInfK`, `certFwdK` and `certBwdK` — all
-quantify `relK`, whose counter conjunct is `RK Tc Tn P B (pend x.1) (pend y.1) x.2.2 y.2.2`. `RK`
-is the image of `Count`/`Drift` taken over the BOUNDED representative set `repsCnt Tc Tn P B`,
-and the step from an actual `Count`/`Drift` step at arbitrary counters to an `RK` edge at the two
-classes IS now landed, as `CounterQuotient.lean`'s `rk_of_count_drift`: given
-`Count px py c n c'` and `Drift n n'` it exhibits `x, y ∈ repsCnt Tc Tn P B` with
-`kappa x = kappa (c, n)`, `kappa y = kappa (c', n')`, `Count px py x.1 x.2 y.1` and
-`Drift x.2 y.2`, with no parameter, size or regime hypothesis. It is not a reduction coordinate
-by coordinate: `kappa`'s gap coordinate `clipIdx B c n` couples the two counters, so reducing
-each counter independently within its own threshold and residue can move the gap (at `c = 100`,
-`n = 101`, `B = 3`, `Tc = Tn = 1`, `P = 0` the independent reduction sends a gap of `1` to a gap
-of `0`). A COMMON downward shift by a multiple of `P + 1` does preserve all five coordinates —
-that is `kappa_eq_of_shift` (`LadderAgree.lean`) read downward, `clipIdx_sub_sub` the gap half of
-it — but it is limited by whichever counter reaches its own threshold first, so the construction
-needs the saturated-gap regime as a second case. `repsCnt`'s own bound answers the sizing
-question that case raises, and the answer is compiled rather than open: the narrower
-`Tc + Tn + P + B + 2` does NOT suffice — three `decide`-checked witnesses refute it at the frozen
-bound in the wired probe
+The three relational conditions were owed to whichever round landed a theorem deriving an `RK`
+edge from an actual `Count`/`Drift` step, and that is `CounterQuotient.lean`'s
+`rk_of_count_drift`, stated over the WIDENED `repsCnt` (range `Tc + Tn + 3*P + 2*B + 5` in both
+factors — the narrower `Tc + Tn + P + B + 2` is refuted, see that module's own docstring). All
+three go through it, and through the three facts the history layer already supplies:
+`exists_ladderWalk_of_history` (every history of `ladderFrameAdm` is an offset ladder path, so
+its consecutive states carry an actual `Count`/`Drift` step), `cohIdle_of_realized`
+(`LadderChain.lean`, the relation's object/closure half), and `untl_mem_tpOf_iff` /
+`snce_mem_tpOf_iff` (`LadderAgree.lean`, the temporal content of the two discharge conditions).
+The discharge path a member of `Real` owes is a contiguous stretch of its OWN witnessing history,
+so the `DischPathK` witness is `realItem` read along the integers, not a path assembled inside a
+candidate set.
+
+NOT landed here: condition (5), `certStabK` of `Real`, which is the ONE condition that consumes
+the agreement of class-equivalent cells. `certStabK` reads the `⊡` letter's bit off the fibre of
+the candidate set over `(q, κ)`, and `stab_mem_tpOf_iff_cell` (`LadderAgree.lean`) makes that bit
+a datum of the CELL at the member's own world state, so the condition asks exactly for the
+agreement and for nothing weaker (`stab_bit_agree_of_certStabK` below is the statement of that
+collapse). It is not claimed here, and neither is `real_certAdmK_of_paramsOk` or
+`real_subset_dmax`: all three wait on the agreement.
+
+**Why the three relational conditions needed `rk_of_count_drift` and nothing less.** `relK`'s
+counter conjunct is `RK Tc Tn P B (pend x.1) (pend y.1) x.2.2 y.2.2`, and `RK` is the image of
+`Count`/`Drift` taken over the BOUNDED representative set `repsCnt Tc Tn P B`. Deriving such an
+edge is not a reduction coordinate by coordinate: `kappa`'s gap coordinate `clipIdx B c n`
+couples the two counters, so reducing each counter independently within its own threshold and
+residue can move the gap (at `c = 100`, `n = 101`, `B = 3`, `Tc = Tn = 1`, `P = 0` the
+independent reduction sends a gap of `1` to a gap of `0`). A COMMON downward shift by a multiple
+of `P + 1` does preserve all five coordinates — that is `kappa_eq_of_shift`
+(`LadderAgree.lean`) read downward, `clipIdx_sub_sub` the gap half of it — but it is limited by
+whichever counter reaches its own threshold first, so the construction needs the saturated-gap
+regime as a second case. `repsCnt`'s own bound answers the sizing question that case raises, and
+the answer is compiled rather than open: the narrower `Tc + Tn + P + B + 2` does NOT suffice —
+three `decide`-checked witnesses refute it at the frozen bound in the wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-reps-bound-refutation.lean` — and `repsCnt` is
 stated at the widened `Tc + Tn + 3*P + 2*B + 5`, which `rk_of_count_drift`'s construction
 discharges. Nothing in this module assumes either figure; both are read from
@@ -369,6 +387,189 @@ theorem real_certBoxK (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B 
   · intro hall σ' z'
     have hmem := mem_real_realItem lab φ Tc Tn P B fwd bwd σ' z'
     simpa only [argOf, realItem] using hall _ hmem
+
+/-! ## The relational conditions of `Real`
+
+Conditions (2), (3) and (4) — the three that quantify `relK` between two members. Their one
+shared missing link was a theorem deriving an `RK` edge from an actual `Count`/`Drift` step, and
+that is `CounterQuotient.lean`'s `rk_of_count_drift` over the widened `repsCnt`. The other half
+of `relK`, the `cohIdle` edge on the object and closure components, is `LadderChain.lean`'s
+`cohIdle_of_realized`, and the bridge between them is `exists_ladderWalk_of_history`: a history
+of `ladderFrameAdm` has no freedom beyond its offset, so its consecutive states carry an actual
+ladder step and its realized types are `cohIdle`-linked.
+
+No proof below consumes `cellAt_const_of_kappa_eq`, the schema `CellLEZeroConstOfKappaEq`, or any
+union argument, and none claims `certStabK` of `Real`, `certAdmK` of `Dmax`, or any inclusion
+between `Real` and `Dmax`. -/
+
+/-- **A history of `ladderFrameAdm` is an offset ladder path.** `ofSlicedStepFinBranch_mem_HF_iff`
+read at the admissible ladder relation: the time component is forced to be `t + k` for an offset
+`k` the history fixes once, and the state component is a ladder path. This is what turns a
+condition on a history into the actual `Count`/`Drift` step between two of its states, and it is
+the only place in this module where the frame's construction is unfolded. -/
+theorem exists_ladderWalk_of_history
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame) :
+    ∃ (k : ℤ) (g : ℤ → LadderState Q pend), IsLadderPath step pend g ∧
+      ∀ t : ℤ, σ.state t = (t + k, g t) := by
+  obtain ⟨k, g, hpath, hf⟩ :=
+    (ofSlicedStepFinBranch_mem_HF_iff (RladAdm step pend) (RladAdm_fwd step pend)
+      (RladAdm_bwd step pend) fwd bwd σ.path).mp ⟨σ, rfl⟩
+  exact ⟨k, g, fun u => hpath u, fun t => congrFun hf t⟩
+
+/-- **A member of `Real` IS the item its own witness realizes.** The three conjuncts of
+membership pin all three components of `realItem` at the witnessing point, so the member and the
+item are the same triple. This is what lets every condition below be proved about `realItem`
+read along the integers and then transported to the member. -/
+theorem realItem_eq_of_witness (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    {x : Q × ClType φ × CK Tc Tn P B} {c n : ℕ} {h : c ∈ Adm pend x.1} {t z : ℤ}
+    {σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame}
+    (hst : σ.state z = ((t, ⟨(x.1, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState))
+    (hk : kappa Tc Tn P B (c, n) = x.2.2)
+    (hT : tpOf (ladderModel step pend fwd bwd lab) φ σ z = x.2.1.val) :
+    realItem step pend lab φ Tc Tn P B fwd bwd σ z = x := by
+  have h1 : (σ.state z).2.1.1 = x.1 := by rw [hst]
+  have h2 : (σ.state z).2.1.2.1 = c := by rw [hst]
+  have h3 : (σ.state z).2.1.2.2 = n := by rw [hst]
+  refine Prod.ext h1 (Prod.ext (Subtype.ext hT) ?_)
+  change kappa Tc Tn P B ((σ.state z).2.1.2.1, (σ.state z).2.1.2.2) = x.2.2
+  rw [h2, h3]; exact hk
+
+/-- **CONSECUTIVE POINTS OF A LADDER HISTORY ARE `relK`-LINKED.** The edge every relational
+condition of `Real` is built from: the `cohIdle` half by `cohIdle_of_realized`, the `RK` half by
+`rk_of_count_drift` applied to the actual `Count`/`Drift` step `exists_ladderWalk_of_history`
+exposes. No parameter condition and no agreement enters. -/
+theorem relK_realItem_succ (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame) (z : ℤ) :
+    relK step pend lab φ Tc Tn P B
+      (realItem step pend lab φ Tc Tn P B fwd bwd σ z)
+      (realItem step pend lab φ Tc Tn P B fwd bwd σ (z + 1)) := by
+  obtain ⟨k, g, hg, hτ⟩ := exists_ladderWalk_of_history fwd bwd σ
+  have e1 : (realItem step pend lab φ Tc Tn P B fwd bwd σ z).1 = objAt g z := by
+    change (σ.state z).2.1.1 = (g z).1.1
+    rw [hτ z]
+  have e2 : (realItem step pend lab φ Tc Tn P B fwd bwd σ (z + 1)).1 = objAt g (z + 1) := by
+    change (σ.state (z + 1)).2.1.1 = (g (z + 1)).1.1
+    rw [hτ (z + 1)]
+  have f1 : (realItem step pend lab φ Tc Tn P B fwd bwd σ z).2.2
+      = kappa Tc Tn P B (cntAt g z, nxtAt g z) := by
+    change kappa Tc Tn P B ((σ.state z).2.1.2.1, (σ.state z).2.1.2.2) = _
+    rw [hτ z]; rfl
+  have f2 : (realItem step pend lab φ Tc Tn P B fwd bwd σ (z + 1)).2.2
+      = kappa Tc Tn P B (cntAt g (z + 1), nxtAt g (z + 1)) := by
+    change kappa Tc Tn P B ((σ.state (z + 1)).2.1.2.1, (σ.state (z + 1)).2.1.2.2) = _
+    rw [hτ (z + 1)]; rfl
+  obtain ⟨-, -, hdrift, hcount⟩ := hg z
+  refine ⟨?_, ?_⟩
+  · simp only [e1, e2]
+    exact cohIdle_of_realized fwd bwd lab φ hg σ hτ z
+  · rw [e1, e2, f1, f2]
+    exact rk_of_count_drift Tc Tn P B (pend (objAt g z)) (pend (objAt g (z + 1)))
+      (cntAt g z) (nxtAt g z) (cntAt g (z + 1)) (nxtAt g (z + 1)) hcount hdrift
+
+/-- **CONDITION (2) OF `Real`**: every member has a successor AND a predecessor inside `Real`.
+Both fulfilment arms stay EXISTENTIAL, and both witnesses are the neighbouring points of the
+member's own witnessing history — which is also why `Real` is never confined to one state's
+cell. -/
+theorem real_certBiInfK (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) :
+    certBiInfK step pend lab φ Tc Tn P B (Real step pend lab φ Tc Tn P B fwd bwd) := by
+  rintro x ⟨c, n, h, t, z, σ, hst, hk, hT⟩
+  have hx : realItem step pend lab φ Tc Tn P B fwd bwd σ z = x :=
+    realItem_eq_of_witness lab φ Tc Tn P B fwd bwd hst hk hT
+  refine ⟨⟨realItem step pend lab φ Tc Tn P B fwd bwd σ (z + 1),
+      mem_real_realItem lab φ Tc Tn P B fwd bwd σ (z + 1), ?_⟩,
+    ⟨realItem step pend lab φ Tc Tn P B fwd bwd σ (z - 1),
+      mem_real_realItem lab φ Tc Tn P B fwd bwd σ (z - 1), ?_⟩⟩
+  · rw [← hx]; exact relK_realItem_succ lab φ Tc Tn P B fwd bwd σ z
+  · have hrel := relK_realItem_succ lab φ Tc Tn P B fwd bwd σ (z - 1)
+    rw [show z - 1 + 1 = z from by ring] at hrel
+    rw [← hx]
+    exact hrel
+
+/-- **CONDITION (3) OF `Real`**: EXISTENTIAL forward discharge inside `Real`. The discharge path
+is the contiguous stretch `z, z + 1, …, z + m` of the member's OWN witnessing history, with
+`untl_mem_tpOf_iff` (`LadderAgree.lean`) supplying the fulfilling position `s = z + m` and the
+guard along the intervening stretch, every position of the stretch lying in `Real` by
+`mem_real_realItem` and the consecutive-position relation by `relK_realItem_succ`. -/
+theorem real_certFwdK (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) :
+    certFwdK step pend lab φ Tc Tn P B (Real step pend lab φ Tc Tn P B fwd bwd) := by
+  rintro x ⟨c, n, h, t, z, σ, hst, hk, hT⟩ ψ hψx hu
+  obtain ⟨γ, ε, rfl⟩ : ∃ γ ε, ψ = PlusFormula.untl γ ε := by
+    cases ψ <;> first | exact ⟨_, _, rfl⟩ | simp [isUntl] at hu
+  have hcl : PlusFormula.untl γ ε ∈ plusSubformulaClosure φ :=
+    Finset.mem_powerset.mp x.2.1.property hψx
+  have hx : realItem step pend lab φ Tc Tn P B fwd bwd σ z = x :=
+    realItem_eq_of_witness lab φ Tc Tn P B fwd bwd hst hk hT
+  have hmem : PlusFormula.untl γ ε ∈ tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+    rw [hT]; exact hψx
+  obtain ⟨s, hzs, hε, hγ⟩ :=
+    (untl_mem_tpOf_iff (ladderModel step pend fwd bwd lab) φ σ z hcl).mp hmem
+  refine ⟨(s - z).toNat,
+    fun i => realItem step pend lab φ Tc Tn P B fwd bwd σ (z + (i : ℤ)), by omega, ?_,
+    fun i _ => mem_real_realItem lab φ Tc Tn P B fwd bwd σ _, fun i _ => ⟨?_, ?_⟩, ?_, ?_⟩
+  · simpa using hx
+  · have hrel := relK_realItem_succ lab φ Tc Tn P B fwd bwd σ (z + (i : ℤ))
+    change relK step pend lab φ Tc Tn P B
+      (realItem step pend lab φ Tc Tn P B fwd bwd σ (z + (i : ℤ)))
+      (realItem step pend lab φ Tc Tn P B fwd bwd σ (z + ((i + 1 : ℕ) : ℤ)))
+    rw [show z + ((i + 1 : ℕ) : ℤ) = (z + (i : ℤ)) + 1 from by push_cast; ring]
+    exact hrel
+  · exact mem_real_realItem lab φ Tc Tn P B fwd bwd σ _
+  · change ε ∈ tpOf (ladderModel step pend fwd bwd lab) φ σ (z + (((s - z).toNat : ℕ) : ℤ))
+    rw [show z + (((s - z).toNat : ℕ) : ℤ) = s from by omega]
+    exact hε
+  · intro i hi0 him
+    change γ ∈ tpOf (ladderModel step pend fwd bwd lab) φ σ (z + (i : ℤ))
+    exact hγ (z + (i : ℤ)) (by omega) (by omega)
+
+/-- **CONDITION (4) OF `Real`**: the past-directed mirror, along the reversed `relK`. The
+discharge path is the stretch `z, z - 1, …, z - m` of the same history, with
+`snce_mem_tpOf_iff` (`LadderAgree.lean`) supplying the temporal content and
+`relK_realItem_succ` the same relation link read backwards. The mirror is available here although
+the ladder's STRUCTURAL liveness is forward-only: what is mirrored is the realized type's own
+`since` equation along a history, not the `Count`-driven decrease. -/
+theorem real_certBwdK (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) :
+    certBwdK step pend lab φ Tc Tn P B (Real step pend lab φ Tc Tn P B fwd bwd) := by
+  rintro x ⟨c, n, h, t, z, σ, hst, hk, hT⟩ ψ hψx hs
+  obtain ⟨γ, ε, rfl⟩ : ∃ γ ε, ψ = PlusFormula.snce γ ε := by
+    cases ψ <;> first | exact ⟨_, _, rfl⟩ | simp [isSnce] at hs
+  have hcl : PlusFormula.snce γ ε ∈ plusSubformulaClosure φ :=
+    Finset.mem_powerset.mp x.2.1.property hψx
+  have hx : realItem step pend lab φ Tc Tn P B fwd bwd σ z = x :=
+    realItem_eq_of_witness lab φ Tc Tn P B fwd bwd hst hk hT
+  have hmem : PlusFormula.snce γ ε ∈ tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+    rw [hT]; exact hψx
+  obtain ⟨s, hsz, hε, hγ⟩ :=
+    (snce_mem_tpOf_iff (ladderModel step pend fwd bwd lab) φ σ z hcl).mp hmem
+  refine ⟨(z - s).toNat,
+    fun i => realItem step pend lab φ Tc Tn P B fwd bwd σ (z - (i : ℤ)), by omega, ?_,
+    fun i _ => mem_real_realItem lab φ Tc Tn P B fwd bwd σ _, fun i _ => ⟨?_, ?_⟩, ?_, ?_⟩
+  · simpa using hx
+  · have hrel := relK_realItem_succ lab φ Tc Tn P B fwd bwd σ (z - ((i : ℤ) + 1))
+    change relK step pend lab φ Tc Tn P B
+      (realItem step pend lab φ Tc Tn P B fwd bwd σ (z - ((i + 1 : ℕ) : ℤ)))
+      (realItem step pend lab φ Tc Tn P B fwd bwd σ (z - (i : ℤ)))
+    rw [show z - ((i + 1 : ℕ) : ℤ) = z - ((i : ℤ) + 1) from by push_cast; ring,
+      show z - (i : ℤ) = (z - ((i : ℤ) + 1)) + 1 from by ring]
+    exact hrel
+  · exact mem_real_realItem lab φ Tc Tn P B fwd bwd σ _
+  · change ε ∈ tpOf (ladderModel step pend fwd bwd lab) φ σ (z - (((z - s).toNat : ℕ) : ℤ))
+    rw [show z - (((z - s).toNat : ℕ) : ℤ) = s from by omega]
+    exact hε
+  · intro i hi0 him
+    change γ ∈ tpOf (ladderModel step pend fwd bwd lab) φ σ (z - (i : ℤ))
+    exact hγ (z - (i : ℤ)) (by omega) (by omega)
 
 end Realizable
 

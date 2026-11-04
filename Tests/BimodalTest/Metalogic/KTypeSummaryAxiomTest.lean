@@ -1910,6 +1910,36 @@ schema `CellLEZeroConstOfKappaEq`. The standard profile on each. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.real_certBoxK
 
+/-! ### `Real`'s three RELATIONAL conditions
+
+Conditions (2), (3) and (4) of `Real` — the three that quantify `relK` between two members, and
+whose one shared missing link was a theorem deriving an `RK` edge from an actual `Count`/`Drift`
+step. That link is `rk_of_count_drift`, pinned below; each of the three cites it. The discharge
+path conditions (3) and (4) owe is a contiguous stretch of the member's OWN witnessing history,
+supplied by `relK_realItem_succ` together with `untl_mem_tpOf_iff`/`snce_mem_tpOf_iff`. Five of
+`Real`'s six conditions are landed with these; only `certStabK`, the one that consumes the
+agreement of class-equivalent cells, is not claimed. No pin here consumes the agreement or the
+schema `CellLEZeroConstOfKappaEq`, and none claims `certAdmK` of `Dmax` or any inclusion between
+`Real` and `Dmax`. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certBiInfK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.real_certBiInfK
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certFwdK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.real_certFwdK
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certBwdK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.real_certBwdK
+
 /-! ### The bounded-representative lemma of `R_K`
 
 `rk_of_count_drift` is the one fact `RK`'s bounded-representative definition does not give for
