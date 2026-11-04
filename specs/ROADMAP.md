@@ -43,36 +43,71 @@ answers non-constructively — which is also why that route is no substitute for
 ## Run these next
 
 ```bash
-/orchestrate 844 --hard --lit   # the front's live mathematics: the re-anchored deletion half, narrowed to a nxt-exposure plus ONE bounded inequality
-/revise 761                     # THE critical path, and it needs a PLAN not a dispatch: Phase 11.5 is [BLOCKED] and 11.6 inducts from its unproved base case, so 11.6-11.7 and 12-18 are unreachable and only 11.2 is enterable
-/orchestrate 833                # the L^▷ keystone, ~40 lines of transcription — NOT in the same cycle as 761/763/844, which it collides with on docs/theorem-index.md
+bash scripts/check-module-invariants.sh --emit-inventory   # FIRST, and it is one command: the tree is RED on two gates (below)
+/orchestrate 850 --hard --lit    # the front's live mathematics: the up-first exact-shift ordering, needing copy-boundary types re-derived in LadderChain.lean
+/revise 761                      # THE critical path, and it needs a PLAN not a dispatch: Phase 11.5 is [BLOCKED] and 11.6 inducts from its unproved base case, so 11.6-11.7 and 12-18 are unreachable and only 11.2 is enterable
+/orchestrate 833                 # the L^▷ keystone, ~40 lines of transcription — NOT in the same cycle as 761/763/850, which it collides with on docs/theorem-index.md
 ```
 
 **Do not re-dispatch `761` as an implement round.** Its plan's critical path is severed at Phase
 11.5, so a dispatch spends its cycle budget on phases that cannot close — which is exactly what the
 last round showed, closing 11.3 and 11.4 cleanly and then hitting the wall at 11.5. `/revise 761`
-with the refutation as input is the cheap move; `844` carries the mathematics meanwhile.
+with the refutation as input is the cheap move; the `850` line carries the mathematics meanwhile.
 
-**Do not dispatch `836` either: it is `[BLOCKED]` and the front has descended past it.** The chain
-is `836` → `838` → `844`, and `844` is the only member of it that is dispatchable. Dispatching
-`836` re-enters a record whose own successor already refuted the framing it was filed under.
+**Do not dispatch `836` or `838`: both are superseded by work that landed below them.** The chain
+is `836` → `838` → `844` → `849` → `850`, and `850` is the only member of it that is dispatchable.
+`836` is `[BLOCKED]`; `838` is `[PARTIAL]` with its Phase 5 closed `[BLOCKED]` on a framing its own
+successors measured false. Dispatching either re-enters a record whose descendants already refuted
+the framing it was filed under.
 
 `833` is the one implementation step the completeness front needs before it can be run at all
 (`559` declares it, and by the gate asymmetry above `(P2)` waits on `833` rather than on Stage 1).
 It does not touch the `RaySummary` set.
 
-**THE OPEN CORE IS NARROWER THAN IT WAS FILED AS (2026-11-03), and this is the ruling that moves
-the front.** `838` was filed as a TWO-SIDED open core on the strength of a spanning-block device
-refuted in both directions. Two of its three load-bearing claims did not survive. First, `(K1)`
+**THE OPEN CORE IS NARROWER THAN IT WAS FILED AS, and this is the ruling that moves the front.**
+`838` was filed as a TWO-SIDED open core on the strength of a spanning-block device refuted in both
+directions. Two of its three load-bearing claims did not survive. First, `(K1)`
 provably does not constrain a spanning block's length at all — settled by compiled refutation, not
 left open, so no amount of work on that device pays. Second, and the one that matters for ordering:
 the "forward register cascade" that blocked Phase 5 **rests on a mistake**. The deletion mirror it
 called unlanded is landed and green, and defeats the exact bound by re-anchoring the anchor VALUE
 while leaving the anchor POSITION fixed; `tightChain_slack_zero` does not refute that route,
-because zero slack is exactly what the re-anchored bound consumes. What remains is a missing
-`nxt`-exposure plus ONE bounded inequality at ONE region start. **Do not re-plan this area from the
-two-sided framing** — read `844`'s record and `838`'s `.blocker-research.json` first; they carry
-the refutation with the declaration names and line numbers.
+because zero slack is exactly what the re-anchored bound consumes. **Do not re-plan this area from
+the two-sided framing** — read `844`'s and `849`'s records and `838`'s `.blocker-research.json`
+first; they carry the refutation with the declaration names and line numbers.
+
+**AND THE RESIDUAL IS NOW DISCHARGED TOO (2026-11-03): both halves of what `844` left open are
+landed and green, and the front has moved to `850`.** The two measured results, each of which
+closes a question rather than deferring it:
+
+- **The residual inequality does NOT hold unconditionally, and that is settled by a compiled
+  object, not by argument.** Of the two directions, the lower one closes from the gap hypothesis
+  alone; the upper one (`nxtAt g s0 − n ≤ (s0 − z) − l`) is REFUTED by a climbing-register ladder
+  path on the two-state object, pending forever into the past, satisfying the assembly's gap — the
+  `ClimbWitness` namespace in `LadderChain.lean`. Drift permits an `n+1` rung at every step while
+  the forward window bounds the register only from above, the direction already free. So
+  **`HasForwardSlack` is a genuine regime, not a missing lemma**: there is no Drift-level invariant
+  to isolate and the honest route was always the regime restriction with a finite witness (the
+  first region start's countdown). It is landed with its entry, monotonicity, deletion-transport
+  and vacuity lemmas, a library-wired refutation, and a parametric non-vacuity inhabitant. **Do
+  not re-attempt route (a).**
+- **The exact-shift piece was a REFORMULATION, not an iteration.** The task was filed needing `d+1`
+  consecutive type-equal copies for `d` deletions; measured against the landed deletion lemmas,
+  which are length-agnostic, `d` deletions of an `l`-block ARE one deletion of a `d·l`-block. The
+  real obstacle was exactness, solved by an overshoot-then-up loop on a spaced type pigeonhole
+  (`exists_typeBlock_of_spacing`) with the room bound `budget·(budget+1) ≤ Tc` from `(K2)` alone.
+  Spacing `P+1` is not usable — its room is not derivable from `ParamsOk`; spacing `l` is.
+
+**What `850` is, and why it is a cost reduction rather than an open question.** The landed ordering
+deletes first and then raises, which forces `budget²` extra slack into BOTH anchor directions. The
+clean up-first ordering carries hypotheses that are exactly `HasForwardSlack g z (m*(P+1)) n` and
+`n+2 ≤ c`. It is not buildable on the landed iteration as stated:
+`exists_iterSpliced_ladderPath_of_pend_past` (`LadderPump.lean:1379`) exposes realized types only
+below and at `u+l`, never at the copy boundaries `u+i*l`, and `LadderPump.lean` is at 1485 of its
+1500-line ceiling — so the iteration must be re-derived in `LadderChain.lean`. **The
+path-versus-state gap is NOT part of `850`**: the only honest cell-level downward statement names
+the witnessing path, the gap to `cellLE_zero_const_of_kappa_eq` is the tight chain the `RaySummary`
+README already names as the open core, and that reserved name remains claimed by nothing.
 
 **SUFFICIENCY RETURNED (`815`).** The certificate is sufficient at the LABEL level over the
 strict-since relation `cohBi` (`realizes_of_certAdm_cohBi`); the two-sided claim for `coh` is
@@ -109,15 +144,23 @@ volume-level PDF, so there is nothing to extract the chapter from. Institutional
 purchase is the route. Because R2 consumes R1, this unblocks a record; it does not advance the
 aim.
 
-**Red gate, not on the critical path, and a few minutes' work.** The upward-import count is
-settled: `docs/ARCHITECTURE.md` now records **eight** lines and no upward-import check fails, so
-that condition is discharged and its record is closed. A DIFFERENT gate is red in its place, and it
-is this session's own regression rather than an inherited one: `scripts/check-module-invariants.sh`
-exits 1 on **C28, the compiler-warning budget**, reporting two entries above
-`scripts/warning-budget.txt` — `linter.style.longFile` and `linter.style.longLine`, both NEW with
-no baseline entry, both in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`. That file was
-edited to wire the forty-seventh probe, which pushed it past the long-file limit and left one long
-line.
+**TWO red gates, neither on the critical path, and together a few minutes' work.** The
+upward-import count is settled: `docs/ARCHITECTURE.md` now records **eight** lines and no
+upward-import check fails, so that condition is discharged and its record is closed. What is red in
+its place, both reported by a bare `scripts/check-module-invariants.sh` (exit 1, two check groups):
+
+- **INV — three stale generated inventory blocks**, in
+  `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `FormalSystem/Metalogic/README.md`
+  and `README.md`. This is the mechanical consequence of the declarations `849` added to
+  `LadderChain.lean` and of its README prose edits; the blocks were not regenerated afterwards.
+  **The fix is one command** — `bash scripts/check-module-invariants.sh --emit-inventory` — and it
+  is the single cheapest green-making move available, which is why it heads the run list above.
+  Commit the three regenerated READMEs on their own.
+- **C28 — the compiler-warning budget**, reporting two entries above
+  `scripts/warning-budget.txt`: `linter.style.longFile` and `linter.style.longLine`, both NEW with
+  no baseline entry, both in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`. That file
+  was edited to wire the forty-seventh probe, which pushed it past the long-file limit and left one
+  long line. This one is a genuine (small) edit, not a regeneration.
 
 **Why it was reported green, which is the part worth remembering.** The dispatch that introduced it
 ran `check-module-invariants.sh --emit-inventory --check`, which exits 0 — C28 is not in that
@@ -134,20 +177,20 @@ findings and would bless the regression along with everything else.
 /orchestrate 768,769,770,772,774,777,779,780
 /orchestrate 781,785,787,803,804,810,813,817
 /orchestrate 818,821,825,829,830,831,832,837
-/orchestrate 839,841,842,847,848,849
+/orchestrate 839,841,842,847,848
 ```
 
 ## Next batches
 
 ```bash
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 844 --hard --lit    # the live front: the re-anchored deletion half — a nxt-exposure plus ONE bounded inequality (836 is [BLOCKED]; the chain 836 -> 838 -> 844 descends past it)
+/orchestrate 850 --hard --lit    # the live front: the up-first exact-shift ordering — copy-boundary types re-derived in LadderChain.lean, dropping the budget^2 slack penalty (836 [BLOCKED] and 838 [PARTIAL] are both descended past)
 /revise 761                      # NOT an implement dispatch: Phase 11.5 is [BLOCKED] and severs the plan's critical path (only 11.2 is enterable)
 /orchestrate 837                 # the sanctioned Challenge-statement repair (ParamsOk vs. existential quantification), barred from any implement dispatch by Statement Fidelity
-/orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761, which now waits on the 836 -> 838 -> 844 chain
+/orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — waits on 761, which now waits on the 836 -> 838 -> 844 -> 849 -> 850 chain
 /orchestrate 714,781 --hard      # sliced-certificate internals: full-label evaluation, Phase 5 hoist
 # Stage 2 — supporting semantics and metalogic
-/orchestrate 833                 # land ⊡φ ↔ ▷◁φ in OpenLanguage; 559's (P2) waits on it, NOT on Stage 1. Shares docs/theorem-index.md with 761/763/844 — never in the same cycle as Stage 1
+/orchestrate 833                 # land ⊡φ ↔ ▷◁φ in OpenLanguage; 559's (P2) waits on it, NOT on Stage 1. Shares docs/theorem-index.md with 761/763/850 — never in the same cycle as Stage 1
 /orchestrate 664,559,570 --lit   # corpus ingest first, then TM⁺ completeness rounds (559, now over L^▷) and the C3 open question
 /orchestrate 830 --hard          # Γ-generalize the landed Compression.decidableValidZTime; strengthens L, does NOT advance the L⁺ aim
 # Stage 3 — datasets, examples, documentation, hygiene
@@ -200,13 +243,22 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
 - The frozen set is **enumerated by that migration record, not derivable from `file_scope`**:
   753, 772, 774, 777, 779, 780 and 783 also edit the source store and are batched above by ruling,
   each editing at the mirroring source path and redeploying afterwards.
-- **Eleven tasks have the frozen shape and are not among the seven: 785, 813, 814, 822–827, and
-  834/835.** Each declares a `file_scope` wholly (785, 813, 822–827, 834, 835) or almost wholly
-  (814) under `agent-system/**`, a path that does not exist in this repository — `ls -d
-  agent-system` fails here. They collide with one another too: 785, 813 and 814 share the lean
-  extension's `index-entries.json`; 822, 827 and 835 share the core extension's; and 834 shares
-  `docs/architecture/orchestrate-state-machine.md` with 823. They need the same disposition as the
-  seven and have not been given one.
+- **Thirteen tasks have the frozen shape and are not among the seven: 785, 813, 814, 822–827,
+  834/835, and 840/843.** Each declares a `file_scope` wholly (785, 813, 822–827, 834, 835, 840,
+  843) or almost wholly (814) under `agent-system/**`, a path that does not exist in this
+  repository — `ls -d agent-system` fails here. They collide with one another too: 785, 813 and 814
+  share the lean extension's `index-entries.json`; 822, 827 and 835 share the core extension's; and
+  834 shares `docs/architecture/orchestrate-state-machine.md` with 823. They need the same
+  disposition as the seven and have not been given one.
+
+  **840 and 843 are the two newest members of the set**, and both were filed from observed
+  dispatch failures rather than from review: **840** records that the standard `unusedArguments`
+  remedy is a wholesale ledger rewrite rather than an additive insert, and names the narrow route a
+  plan should pre-authorize instead (lean extension, `plan-authoring-gate-collisions.md`);
+  **843** gives the bounded-waiter discipline mechanical coverage of the shape that actually
+  stranded two dispatches — backgrounding a command and then blocking on a completion notification
+  whose waiter had already died — instead of leaving a blocking gate on the one rule that was not
+  broken (core extension, `validate-bounded-waiter.sh` and its test).
 
   **834 and 835 were filed on 2026-11-02** by an `/orchestrate` conclusion stage, from defects
   observed while running 761. They are recorded here rather than in a batch line because they carry
@@ -236,9 +288,14 @@ breaking it; a task with no declared `file_scope` is invisible to the overlap ga
   part this repository can do: once the records have landed in the source store, verify them there,
   delete them from `specs/state.json`, regenerate `specs/TODO.md`, and drop this section.
 Every other open task appears in exactly one batch line above, except the items repeated in
-**Run these next** for priority. Re-checked mechanically on 2026-11-02 against `state.json`: of 81
-open tasks, every one is either in a batch line or named in this section. The count moved by four
-that day — 834/835 (frozen, named above) and 836/837 (Stage 1, batched).
+**Run these next** for priority. Re-checked mechanically on 2026-11-03 against `state.json`: of 90
+open tasks, every one is either in a batch line or named in this section. The movement since the
+previous check — `850` (Stage 1, the live front), `845`/`847`/`848` (batched), and `840`/`843`
+(frozen, named below); `844`, `846`, `849` and `828` left the open set by completing.
+
+**Four completed tasks are still in `active_projects` awaiting archival** — `828`, `844`, `846`
+and `849`. Run `/todo` to move them to `specs/archive/` and `specs/CHANGE_LOG.md`; until then the
+open-task count above reads four high in any check that does not filter on status.
 
 **Reading the generated coverage appendix.** It is not a list of unbatched tasks. It lists the
 tasks whose status is *ready* that are absent from **`## Run these next`** alone — coverage is
@@ -492,8 +549,9 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   (`spanning_walk_not_pending`), and `satPeriod` is a datum of `step`/`lab`/`φ` alone. The refuting
   object is the alternating path. A `(K1)` amendment is a separate decision, not part of this
   record. Phase 5 closed `[BLOCKED]`; nothing was landed under the reserved name
-  `cellLE_zero_const_of_kappa_eq`, which is still claimed by nothing.
-- **844 — the re-anchored deletion half, and the live front.** It exists because `838`'s reported
+  `cellLE_zero_const_of_kappa_eq`, which is still claimed by nothing. The record is `[PARTIAL]`
+  and its successors carry what is left of it — do not re-dispatch it.
+- **844 — the re-anchored deletion half, LANDED.** It exists because `838`'s reported
   blocker DOES NOT HOLD as stated, which is the one thing to read before touching this area. The
   deletion mirror reported unlanded IS landed and green: `exists_deleted_ladderPath_of_pend_past`
   (`LadderPump.lean:287`) already defeats the exact bound called undischargeable, by passing
@@ -508,10 +566,39 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   `nxt`-exposure, plus ONE bounded inequality at ONE region start**, since `hstart` collapses the
   cascade to the nearest pin. Route: a `z`-anchored lift conjugating the landed
   `isLadderPath_shift`, a `nxt`-exposing deletion theorem re-running the landed one through it,
-  then `|nxtAt g (v₀+l) − n| ≤ v₀ − a` from the landed forward window. If that inequality is false
-  the honest outcome is a named side hypothesis on a single region start — a regime restriction with
-  a finite witness, never a reopened open core and never a weakened statement under the reserved
-  name.
+  then `|nxtAt g (v₀+l) − n| ≤ v₀ − a` from the landed forward window. **That route is now in and
+  green**: `exists_ladderPath_of_walk_nxt_at` (the lift with the anchor position freed to `z`),
+  `exists_deleted_ladderPath_of_pend_past_nxt`, `anchor_clause_of_first_region_start` (the clause
+  collapsed to one inequality at the first region start via `Nat.find`), and the single-block
+  downward assembly `exists_ladderPath_through_deleted_of_pend_past`. The inequality's upper
+  direction turned out FALSE, so the honest outcome fired exactly as this record anticipated: a
+  named side hypothesis, `HasForwardSlack`, discharged as a regime by `849`.
+- **849 — the forward-slack regime and the exact shift, LANDED; this is where the front's
+  mathematics currently rests.** Both halves `844` left open are in, with
+  `LadderChain.lean` at 1780 lines under an explicit `set_option linter.style.longFile 1800`. Seven
+  pinned declarations, headers matching the plan-time Challenge 7/7:
+  `hasForwardSlack_of_next_region_cnt_le`, `hasForwardSlack_mono`, `hasForwardSlack_del`,
+  `budget_mul_succ_le_Tc`, `exists_typeBlock_of_spacing`,
+  `exists_ladderPath_through_deleted_exact_of_pend_past`, and
+  `mem_cellAt_of_shift_of_hasForwardSlack` — plus a vacuity lemma, the `ClimbWitness` namespace
+  carrying the refutation of the unconditional claim, a parametric plateau inhabitant for
+  non-vacuity, the given-block raise `exists_ladderPath_through_iterSpliced_nxt_of_pend_past` with
+  `844`'s assembly re-derived as its corollary on an empty statement diff, the one-step deletion and
+  the overshoot loop. Full guarded `lake build` exit 0 with 0 warnings, sorry 0, axioms 14 at
+  baseline. The two rulings it settles — `HasForwardSlack` is a regime and not a missing lemma, and
+  `d` deletions are one deletion of a `d·l`-block — are stated above the batch lists and are not to
+  be reopened. Note that its own README edits left the generated inventory blocks stale (the INV
+  gate above).
+- **850 — the up-first ordering, and the live front.** The cost reduction, not a new theorem: drop
+  the `budget²` slack the landed deletions-first ordering pays in both anchor directions, by
+  re-deriving the iteration in `LadderChain.lean` with realized types exposed at every copy
+  boundary `u+i*l` and above the run, then restating the exact-shift theorem under hypotheses
+  exactly `HasForwardSlack g z (m*(P+1)) n` and `n+2 ≤ c`. `LadderPump.lean:1379` cannot be
+  strengthened in place (1485 of 1500 lines), and `LadderChain.lean` has about 20 lines of headroom
+  under its own baseline — so decide re-baseline versus decomposition at plan time rather than
+  discovering the ceiling mid-phase, as the predecessor did. The landed
+  `exists_ladderPath_through_deleted_exact_of_pend_past` and `mem_cellAt_of_shift_of_hasForwardSlack`
+  must survive unchanged or come back as corollaries on an empty statement diff.
 - **837 — the barred Challenge-statement repair.** `cellAt_const_of_kappa_eq` and `ladderRealized`
   are refuted as recorded, because both universally quantify `(Tc Tn P B : Nat)` with no hypothesis
   relating the parameters to the object, the formula, or each other — at `Tc = Tn = P = B = 0` the
@@ -526,7 +613,7 @@ and the admissible carrier (`ladderFrameAdm`, `ladderModel`). Three things remai
   `realizes_of_certAdm_cohBi` while the Scope Hypothesis says `certAdm` is not promoted).
 - **763 — the lift** (`not_plusValidZTime_iff_ladderRefutes`, `objBound φ` a count) and the
   `Decidable (PlusValidZTime φ)` corollary by bounded enumeration — the AIM. It waits on 761 alone,
-  and 761 now waits on 836, so this is two open steps away rather than one. 761 and 763 share the
+  and 761 now waits on 850, so this is two open steps away rather than one. 761 and 763 share the
   `RaySummary` library set and serialize through the edge between them.
 - **714 — sliced-certificate full-label evaluation**: does removing the `TailStable` junk-position
   obstruction preserve decidability of the check? The `liveAt` non-termination that blocked it is
