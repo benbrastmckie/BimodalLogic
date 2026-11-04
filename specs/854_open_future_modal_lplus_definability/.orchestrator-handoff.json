@@ -1,15 +1,25 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 8,
+  "phases_completed": 5,
   "phases_total": 5,
-  "summary": "Wrote a 5-phase implementation plan landing probe 01's open-future elimination content as the library module FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean. Phase 1 transcribes the module with docstrings and the aggregator import; Phase 2 re-measures axioms and pins eight matched C14 baseline pairs; Phase 3 adds six theorem-index rows stating the conditional-on-SeparationOver form; Phase 4 adds the README row and regenerates the machine-owned inventory blocks; Phase 5 is the full gate and axiom audit. The plan carries a Lean Challenge Statements block pinning every signature verbatim from the sorry-free probe.",
+  "summary": "Landed FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean (413 lines, 28 documented declarations, sorry-free, no new axiom, no vacuous definition) carrying the probe's open-future/open-past eliminations, their CNF forms, the named SeparationOver hypothesis and the separation-conditional translation with validity transfer at ZTime and RTime. Recorded it on every ledger surface it owes: the Expressiveness aggregator import and docstring, the directory README row with re-derived content counts, six conditional rows in docs/theorem-index.md, and eight re-measured C14 axiom-baseline pairs. Full guarded lake build green at 0 errors and 0 warnings; INV, C2, C3, C4, C5, C9, C9D, C12, C13, both C14 halves, both C15 assertions, C21, C24 and C33 all PASS, with the C16 finding list byte-identical to its pre-task baseline and check-metalogic-cycles.sh exit 0 at the unchanged 8-line allowlist.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/854_open_future_modal_lplus_definability/summaries/01_open-future-elimination-module-summary.md",
+      "summary": "Execution summary for the open-future elimination module and its four ledger surfaces."
+    },
+    {
       "type": "plan",
       "path": "specs/854_open_future_modal_lplus_definability/plans/01_open-future-elimination-module.md",
-      "summary": "5-phase plan: new Expressiveness module, aggregator import, README row, six conditional theorem-index rows, re-measured C14 axiom baseline."
+      "summary": "All five phases marked [COMPLETED], with deviation annotations and the batch-gate deferral recorded in Phase 5's verification notes."
+    },
+    {
+      "type": "other",
+      "path": "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
+      "summary": "The task deliverable: the open-future elimination layer as library code, conditional on SeparationOver."
     }
-  ],
-  "dispatch_seq": 7
+  ]
 }

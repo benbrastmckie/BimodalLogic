@@ -1,22 +1,49 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-11-04T00:00:00Z",
+  "completed_at": "2026-11-04T01:30:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/854_open_future_modal_lplus_definability/plans/01_open-future-elimination-module.md",
-      "summary": "5-phase plan landing the open-future elimination as FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean plus its aggregator import, README row, six conditional theorem-index rows, and a re-measured C14 axiom baseline."
+      "type": "summary",
+      "path": "specs/854_open_future_modal_lplus_definability/summaries/01_open-future-elimination-module-summary.md",
+      "summary": "Landed the open-future/open-past elimination and the separation-conditional translation as the library module FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean, with its aggregator import, README row, six conditional theorem-index rows and a re-measured C14 axiom baseline."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1793832648_193830_854",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 5,
-    "dependency_waves": 4
+  "completion_data": {
+    "completion_summary": "The open-future elimination result is now a library module: FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean carries the probe's 28 declarations as public documented code (413 lines, sorry-free, no new axiom, no vacuous definition), compiled by the unscoped guarded build at 0 errors and 0 warnings. Its four ledger surfaces are recorded: the Expressiveness aggregator import plus docstring, the directory README row with re-derived counts, six conditional rows in docs/theorem-index.md, and eight re-measured C14 axiom-baseline pairs in scripts/check-module-invariants.sh. Every pinned row states the conditional on SeparationOver; the unconditional L-plus-definability verdict appears only as cited docstring prose, never as a machine-checked claim.",
+    "roadmap_items": []
   },
-  "memory_candidates": [],
-  "next_steps": "Run /orchestrate 854 to execute the plan",
-  "dispatch_seq": 7
+  "modified_files": [
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic/Expressiveness.lean",
+    "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
+    "FormalSystem/Metalogic/Expressiveness/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh",
+    "typst/generated/status.typ",
+    "specs/854_open_future_modal_lplus_definability/plans/01_open-future-elimination-module.md",
+    "specs/854_open_future_modal_lplus_definability/summaries/01_open-future-elimination-module-summary.md",
+    "specs/854_open_future_modal_lplus_definability/handoffs/phase-5-handoff-20261104T000000Z.md"
+  ],
+  "metadata": {
+    "session_id": "sess_1793832648_193830",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed"
+  }
 }

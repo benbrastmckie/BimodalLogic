@@ -1,7 +1,7 @@
 # Implementation Plan: Task #854
 
 - **Task**: 854 - Land the positive open-future elimination result as a library module
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md`; `specs/854_open_future_modal_lplus_definability/probes/01_ofut-elimination-and-translation.lean` (341 lines, compiled-live, sorry-free)
