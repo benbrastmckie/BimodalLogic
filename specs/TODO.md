@@ -1,5 +1,5 @@
 ---
-next_project_number: 854
+next_project_number: 857
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 854
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,851,852 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,853 | 298,428,502,761,768,769,770,772,777,785,810,813,833,838,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,854,855 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,852,853,856 | 298,428,502,761,768,769,770,772,777,785,810,813,833,838,839,854,855 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -96,7 +96,7 @@ next_project_number: 854
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [PLANNED] — AMENDED 2026-10-18 (presentation chosen): the cell...
+761 [IMPLEMENTING] — AMENDED 2026-10-18 (presentation chosen): the cell...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
@@ -105,8 +105,8 @@ next_project_number: 854
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
-851 [RESEARCHED] — Prove rk\_of\_count\_drift: derive an RK edge from an actual...
-852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
+855 [NOT STARTED] — Probe the one-sided ▷/◁ type transport against the refuted...
+  └─ 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
 
 ### Formula Refactor
 
@@ -127,6 +127,9 @@ next_project_number: 854
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 833 [NOT STARTED] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
+854 [NOT STARTED] — Decide whether the open-future modal ▷ is L⁺-definable
+  └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe... (see above)
+  └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -146,6 +149,96 @@ next_project_number: 854
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 856. Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: Task 854
+
+**Description**: IMPLEMENTATION TASK, gated: build the proof system for L^▷ -- `OpenAxiom`, `OpenDerivationTree`, and their soundness recursion -- beside `FormalSystem/OpenLanguage/`'s existing semantic half, plus the two conservativity directions over TM⁺ and the collapse under `Determined`. This is a PREREQUISITE for any completeness statement about L^▷ and it is currently owed by nobody.
+
+THE GAP THIS FILLS, VERIFIED AT FILING. `FormalSystem/OpenLanguage/` is 1,611 lines over six files (`Formula.lean`, `OpenTruth.lean`, `OpenValidity.lean`, `OpenClasses.lean`, `OpenReversal.lean`, `OpenOckhamist.lean`), sorry-free, and carries NO proof system: no axiom type, no derivation tree, no soundness theorem. Task 559 names this exact omission and the exact remedy -- "The sanctioned home for a proof system over L^▷ is a NEW OpenAxiom/OpenDerivationTree beside OpenLanguage/'s semantic half, which perturbs no existing recursion" -- and explicitly defers the work: "it is not to be built from this task either: this task reports, and files the implementation as its own lean4 task". This is that task.
+
+DEPENDENCY, AND IT IS A HARD GATE, NOT A COURTESY. This task declares the ▷-definability check as a dependency and MUST NOT be entered before that verdict is in. If ▷ turns out L⁺-definable, L^▷ is a notational variant of L⁺, `PlusAxiom`/`PlusDerivationTree` already are its proof system, and this entire task is unnecessary -- building it first would be the single most expensive way to learn that. Re-read that verdict before planning.
+
+WHAT TO BUILD, and the template is named rather than invented. `FormalSystem/PlusLanguage/README.md`'s "Extension recipe: adding a `PlusAxiom` constructor" is the per-constructor cost model: `PlusAxiom` is closed, exactly three declarations pattern-match on its constructors (`PlusAxiom.minFrameClass`, `plusAxiom_validIn_min`, `plusAxiom_reflect_time_validIn_min`), neither dispatch lemma has a wildcard arm, and every other module reaches the axiom type only through `minFrameClass` and the two lifted forms. Mirror that shape for `OpenAxiom`: one constructor line, one `minFrameClass` arm, one validity arm and one reflection-validity arm per schema, with the reflection arm cheap because `reflectTime` fixes ⊡ and exchanges ▷ with ◁ (`OpenReversal.lean`), so every ◁ obligation is one line from its ▷ twin through `openValid_reflectTime`.
+
+THE SCHEMA SET, from 559's (P2) candidate, each with its soundness status as recorded there. Soundness is LARGELY PRE-BUILT and that is the reason this task is tractable: the S5 laws for ▷ and for ◁ (`ofut_k`, `of_ofut`, `ofut_four`, `ofut_five` and the four `opast` mirrors), the ordering `□ ⟹ ⊡ ⟹ ▷/◁` (`stab_of_box`, `ofut_of_stab`, `opast_of_stab`), strictness at every link, incomparability of ▷ and ◁, HN for ▷ (`hnOpen_openValid`, and refuted for ⊡ by `hnStab_refuted_sinkFrame` -- do not state HN for ⊡), and the reversal transport are all landed in `OpenLanguage/`. What is missing is the proof system, not the semantics. The two rigidity schemata `◁φ⁺ ↔ φ⁺` and `▷ψ⁻ ↔ ψ⁻` have their semantic halves landed as `PlusLanguage.truth_congr_agreeFrom` and `truth_congr_agreeUpTo`. The definability equation `⊡φ ↔ ▷◁φ` comes from the OpenLanguage landing of that biconditional -- declare that task as a dependency too, or cite its landed names if it has already run.
+
+WHAT IS EXPLICITLY NOT IN SCOPE, each of these being a way to get this task wrong.
+- NO COMPLETENESS CLAIM, in any form, for any frame class. This task delivers a sound system and nothing more. 559's binding obstruction is closedness of the canonical bundle and ▷/◁ supply no closure principle; `plus_incomplete_base` stands exactly as proved; `blc` stays a non-theorem; an LC_n-style schema is still required in L^▷ exactly as in L⁺. Any docstring sentence suggesting otherwise is a defect.
+- ADD NO CONSTRUCTOR to `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`, and do not alter `OpenFormula`'s nine constructors. The separate-inductive-plus-embedding architecture (`ofPlus : PlusFormula → OpenFormula`, constructor-to-constructor, every derived operator sharing its `PlusFormula` namesake's right-hand side so `ofPlus` commutes by `rfl`) is the pattern and it is load-bearing: mutating `PlusFormula` would turn the landed `plus_incomplete_base`, the Independence block and both conservativity directions over TM into statements about a different language, requiring re-proof rather than inheritance.
+- Do NOT define ⊡ away as `▷◁`. `OpenFormula.stab` stays PRIMITIVE. The ← half of the biconditional needs `[F.IsRegular]`, so a syntactic abbreviation would change ⊡'s truth conditions off the regular class; and the decidability front's one working anchor for ⊡ is one bit per cell (`stab_mem_tpOf_iff_cell`, resting on `stab_state_only`), which routing through two non-state-local operators would lose. Definability here means a proved biconditional with the primitive retained.
+- A schema valid only over a restricted frame class that no `FrameClass` tag denotes must NOT be added to the axiom type; state its validity through the frame-predicate form instead, exactly as the `PlusLanguage` recipe directs for `Determined`.
+
+THE THREE BASELINES ANY CANDIDATE MUST MEET, from 559's own list, and they are acceptance criteria rather than suggestions. (1) Soundness over all task frames of the class, one lemma per new constructor. (2) Conservativity over TM⁺ in BOTH directions -- which the definability equation makes statable rather than conditional, in deliberate contrast to `Conservativity.starConservative_of_plusComplete`, whose hypothesis is FALSE at Base by `plus_incomplete_base`; do not model this task's conservativity statement on that one. (3) Collapse under `Determined`, where ⊡ = ▷ = ◁ = id on a deterministic frame, so the landed deterministic completeness must still be recovered.
+
+LAYERING AND THE GATES THAT CHECK IT. Syntax-layer files import nothing from `FormalSystem/Semantics/` and no semantic module of any language -- `OpenLanguage/Formula.lean` records this as a module invariant and `scripts/check-metalogic-cycles.sh` checks the edge. Every new file under a language directory needs a row in the `LANGUAGE_FILE_LAYERS` table of `scripts/measure-refactor-partitions.py` or `check-metalogic-cycles.sh` FAILS naming the file; add the row in the same phase as the file. `docs/theorem-index.md` is the repository's single ledger and every result needs a row there: statement, fully-qualified Lean name, file, frame class, pinned axiom set. The README's generated inventory block is NOT hand-edited -- re-run `bash scripts/check-module-invariants.sh --emit-inventory`.
+
+VERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, then the unscoped build for final verification; never bare `lake`. Zero `sorry`, zero vacuous definitions. `bash scripts/check-module-invariants.sh` (bare form -- a flagged subset's exit 0 is not the whole gate) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration and compared against the semantic halves being lifted; picking up `Classical.choice` where the semantic half was choice-free is a regression, not a new baseline.
+
+SIZING. This is multi-dispatch work: a new axiom type, a new derivation tree, a soundness recursion over both, two conservativity directions and a collapse theorem. Expect it to be planned in phases with one schema family per phase, not landed in one round.
+
+---
+
+### 855. Probe the one-sided ▷/◁ type transport against the refuted two-sided shape
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, one probe's worth of work, aimed squarely at the Stage 1 wall: does the ONE-SIDED factorization given by the open modals ▷/◁ crack the transport condition whose two-sided pointwise form is refuted? Reports and sorry-free probes under this task's directory and `specs/evidence/seam-gluing-ray-product/`; no changes to `FormalSystem/` or `Tests/`.
+
+WHAT THIS IS, AND WHY IT IS CHEAP. The ROADMAP records it as "a conjecture recorded as one cheap probe's worth of work, not a result and not a route". It is cheap because the enabling biconditional is already compiled and its library landing is a transcription, not a proof search. It is worth running now because it targets the front's CURRENT open core rather than a side question, and because it is the measurement on which the retarget decision for Stage 1's object language rests.
+
+THE REFUTED SHAPE, WHICH MUST NOT BE RESTATED. What the ladder front needs is transport that preserves the REALIZED TYPE without preserving the valuation pointwise. Two attempts at that are refuted on compiled ground and both are two-sided:
+- `AtomPreservingCountMove` (pointwise-valuation transport), refuted by `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`. Mechanism: the countdown is a function of the pend profile alone (`cntAt_eq_of_pend_eq` sharpening `cntAt_eq_of_obj_eq`), and `pend` factors through the atom row (`pendFactorsLab_of_atom`), so `cntAt_eq_of_lab_eq_of_pendFactorsLab` forbids any atom-row-preserving path from carrying a different countdown anywhere.
+- Splice invariance of the realized stab-free type (`tpOf_stabFree_eq_of_splice`), refuted by `ladder-splice-type-refutation.lean` (`splice_type_invariance_refuted`): one splice duplicates the pumped block, so a nested-eventuality counting formula `F(p ∧ F p)` flips at EVERY position below the splice point, however far. Nested until has unbounded reach, so any distance-budget-per-nesting-depth framing is wrong.
+The index/transport line is FIVE refutations deep by one mechanism -- the counter is observable through the closure, so it cannot be quotiented away. Read the refutation table in `FormalSystem/Metalogic/Decidability/RaySummary/README.md` before proposing anything. The tuple-widening line is declared spent and the pointwise transport line is spent too.
+
+THE CONJECTURE, STATED SO IT CAN BE REFUTED. `⊡φ ↔ ▷◁φ ↔ ◁▷φ` on every regular task frame (compiled, choice-free; `specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/05_stab-definable-from-open-modals.lean`) is `PlusLanguage.PlusRayFibre.plusStab_iff_rays` promoted to the object language -- ⊡ as a quantifier over pairs of a past ray and a future ray agreeing at the seam state, with ▷ and ◁ as the two PROJECTIONS. ▷ fixes the past and varies the future over `AgreeUpTo`; ◁ fixes the future and varies the past over `AgreeFrom`. The ladder's `c` is a FORWARD deadline countdown, and refutation 5's mechanism is a statement about forward structure. So a ONE-SIDED transport has a principled reason to behave differently from the refuted two-sided pointwise one. The probe's job is to find out whether it does.
+
+WHAT TO MEASURE, in this order.
+1. State the one-sided transport condition the ▷ projection gives, against the declarations that actually exist -- `tpOf`, `cellAt`, `Rlad`/`RladAdm`, `ladderModel` (`RaySummary/LadderModel.lean`, `AnchorLayer.lean`) -- and say explicitly which of the two directions (past-fixed/future-varying, or its mirror) it constrains.
+2. Check it against each of the five recorded refutation mechanisms IN TURN, and report for each whether the mechanism applies to the one-sided form or is confined to the two-sided one. A probe that only shows the one-sided form is not literally the refuted statement has measured nothing; the question is whether the MECHANISM still bites.
+3. If it survives all five, state the one-sided lemma in the form the consuming obligation reads and name that consumer by declaration name. If it does not, record which mechanism kills it, with the probe exhibiting the collision.
+
+THE HONEST PRIOR, recorded so a negative verdict is not read as a surprise. The biconditional's ← half needs `[F.IsRegular]` and supplies NO closure principle anywhere; it is a decomposition of ⊡, not a new invariant. Nothing in the tree says the one-sided projection is better behaved under pumping than the two-sided product, and a negative verdict here is a complete and useful outcome: it closes the last recorded idea for using the open modals on the decidability front and removes the main argument for retargeting Stage 1's object language.
+
+RELATION TO THE OPEN CORE, so this does not duplicate it. The owed model-level pumping lemma for `tpOf` along a ladder path is a separate record (the third circularity, costed by no plan phase, which must be AUTHORED rather than cited -- citing `prodPre_periodic` closes a cycle rather than discharging one). This task does not prove that lemma. It measures whether the one-sided factorization changes the terms under which that lemma can be stated at all. If it does, this task's report is the input to re-planning that record; if it does not, that record proceeds unchanged.
+
+GUARDRAILS. No sorry, no new axiom, no vacuous definition, no finite-fibre and no finite-width assumption (`not_finite_width_fmp` stands). Do not claim any decidability consequence. Do not weaken a recorded Challenge statement anywhere. Any probe added under `specs/evidence/seam-gluing-ray-product/` is wired into `scripts/check-evidence-probes.sh` in the same round, and that script takes the shared build-guard flock -- an unguarded reader of `.lake` is a measured hazard, not a hypothetical one.
+
+CONTENTION. `specs/evidence/seam-gluing-ray-product/` and `scripts/check-evidence-probes.sh` are declared by the live ladder-realization task. The overlap gate will serialize this against it, which is correct and must not be worked around: run it in a cycle of its own, never concurrently with that task's dispatch.
+
+---
+
+### 854. Decide whether the open-future modal ▷ is L⁺-definable
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, verdict-first, and it is the GATE on the whole L^▷ language ruling: is the open-future modal ▷ definable in L⁺? Reports and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/. Run with `/orchestrate 854 --research --lit`.
+
+THIS IS ITEM (P0b) OF TASK 559, PROMOTED TO ITS OWN RECORD because it gates both of that task's remaining cheap checks ((P0c), (P0d)) and the engine work behind them, and because a negative verdict is the only thing that licenses spending anything further on L^▷ as a distinct language. 559 states the dependency in its own (P0) block: "A POSITIVE answer retires the LANGUAGE RULING; run this before (P0c)/(P0d)."
+
+THE QUESTION, STATED EXACTLY. ▷ is the manuscript's open-future modal (`sub:RestrictedModalities`), interpreted over `|τ⟩_x` = the worlds agreeing with the world of evaluation at every time up to and including the present (`AgreeUpTo`), built semantically at `FormalSystem/OpenLanguage/OpenTruth.lean` (`ofut_iff`). Ask whether there is a translation `t : OpenFormula → PlusFormula` agreeing with `OpenTruthAt` on the ▷-fragment -- equivalently, whether ▷ is expressible by some L⁺ formula uniformly in its argument. Settle it either way and say which.
+
+WHY IT IS GENUINELY OPEN, AND WHAT DOES NOT ANSWER IT. Nothing in the tree establishes undefinability, and the task must not assume it. The landed strictness and ordering results separate the OPERATORS, not the LANGUAGES: `stab_of_box`, `ofut_of_stab`, `opast_of_stab` give the pointwise ordering `□ ⟹ ⊡ ⟹ ▷` and `⊡ ⟹ ◁`; the non-validity siblings (including `not_openValid_stab_of_ofut`) refute the converses; `hnStab_refuted_sinkFrame` refutes HN for ⊡ while `hnOpen_openValid` proves it for ▷. All of that shows ▷ ≠ ⊡ as operators and NONE of it shows ▷ is beyond L⁺'s reach, because an L⁺ formula definining ▷ need not be ⊡ψ for any ψ. 833's biconditional runs the OTHER way (⊡ is definable from ▷ and ◁) and is silent here. Task 559's own item (n3) records this reading as the prerequisite it is.
+
+EXPECTED SHAPE OF A NEGATIVE ANSWER, and the fixture is already built. A bisimulation-style separation: exhibit two pointed task models that agree on every L⁺ formula and disagree on some ▷φ. The natural fixture is `sinkFrame` (`FormalSystem/OpenLanguage/OpenOckhamist.lean`), which 559 names, and which is already the fixture carrying `hnStab_refuted_sinkFrame`. The invariance to establish and then break is the one L⁺ has and ▷ should not: ⊡-truth is a function of the present world state alone (`Semantics.stab_state_only`, every `D`), while ▷-truth reads the whole past of the history, so the separation wants two histories sharing a state at the evaluation time with different pasts. Build the L⁺-agreement half by a genuine invariance argument over the two models, not by case-checking a finite formula list -- a finite check establishes nothing about a language.
+
+EXPECTED SHAPE OF A POSITIVE ANSWER, and what it costs. A uniform L⁺ translation of ▷. If this is what comes back, say so plainly and in full: the LANGUAGE RULING becomes a notational convenience, 559's item (n1)-(n2) survive only as restatements rather than new content, the separate L^▷ proof-system programme is unnecessary, and the retarget question for the decidability front (ROADMAP Stage 1) is answered negatively at no further cost. That is a valuable verdict, not a failure, and it must not be hedged into an inconclusive report to protect the ruling.
+
+AN INCONCLUSIVE VERDICT IS AN ACCEPTABLE OUTCOME, under one condition: it names the precise obstruction -- which invariance L⁺ is not known to have, or which model pair resists the agreement proof, with the goal state recorded -- in the form this repository's hard constraints already require. A precisely located obstruction is a complete outcome for a round.
+
+GUARDRAILS. No sorry; no new axiom; no vacuous definition; every probe sorry-free or explicitly labelled UNVERIFIED. Every literature claim tied to a held source or labelled recalled; never reconstruct an unread paper's theorem as if cited. Do not edit `FormalSystem/` or `Tests/` from this task. Do not state or imply any completeness or decidability consequence -- this task settles an expressiveness question and nothing else.
+
+CONSUMERS, so the verdict is routed rather than filed and forgotten. Task 559 items (n3), (P0b), (P0c) and (P0d); the L^▷ proof-system task, which declares this task as a dependency and should not be entered before the verdict is in; and the ROADMAP's Stage 2 ordering, where the retarget decision for Stage 1 is gated on this plus the one-sided transport probe.
+
+---
 
 ### 853. Ladder path insertion cascade idle past
 - **Effort**: large
@@ -178,7 +271,7 @@ CITATIONS: parent issues.jsonl iss_1793819583011_jsu079 and iss_1792373250168_HQ
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 855
 - **Parent**: Task 761
 
 **Description**: Author a model-level pumping lemma for tpOf along a ladder path: the model-side analogue of the periodicity of the certificate graph.
@@ -196,7 +289,7 @@ GUARDRAILS: no sorry, no new axiom, no vacuous definition. State what the lemma 
 ---
 
 ### 851. Rk of count drift bounded representative lemma
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -3013,7 +3106,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 ---
 
 ### 761. Ladder realization theorem
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819, Task 820
@@ -3328,7 +3421,7 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 833
+- **Dependencies**: Task 833, Task 854
 - **Research**: [559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md]
 
 **Description**: RESEARCH TASK, verdict-first -- reports and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/. Run further rounds with `/orchestrate 559 --research --lit`.
