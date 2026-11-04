@@ -1290,7 +1290,7 @@ pin hypothesis and never a quiet narrowing of a filed statement.
 
 ---
 
-### Phase 11.9: The Tight-Chain Decision Gate — Compile the One Argued Claim and Decide the Depth-`0` Schema [NOT STARTED]
+### Phase 11.9: The Tight-Chain Decision Gate — Compile the One Argued Claim and Decide the Depth-`0` Schema [COMPLETED WITH EXCLUSIONS]
 
 **NEW IN THIS REVISION, AND ENTERABLE NOW.** This phase replaces the external gate the predecessor
 plan carried on an abandoned task. It is a DECISION GATE in the sense `plan-format.md`'s "Decision
@@ -1381,19 +1381,19 @@ PASS or branch INCONCLUSIVE below and the positive content is reported, never la
 name.
 
 **Tasks**:
-- [ ] Author the probe at `specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean`.
+- [x] Author the probe at `specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean`.
       Re-declare the tight doubling chain and its register facts verbatim from the archived prototypes
       `specs/archive/836_ladder_type_preserving_cell_agreement_construction/prototype/tight-chain-regime-b.lean`
       and `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/pin-free-side.lean`
       (`tightChain_isLadderPath`, `tightChain_pin`, `tightChain_slack_zero`, `tightChain_pins`,
       `tightChain_pin_count_ge`), and define `delIterWalk` beside them. Compile standalone through the
       build guard.
-- [ ] Attempt `tightChain_deletion_derivative_not_ladderPath` at the statement recorded above,
+- [ ] Attempt `tightChain_deletion_derivative_not_ladderPath` at the statement recorded above, *(deviation: altered — the recorded statement is false at `m = 0` and its conclusion is register-specific; the claim is landed in its lifting form under its own names and the recorded block is left byte-identical, see `#### Reasoned Exclusions`)*
       token-for-token. The obstruction to localize is the one the successor chain already localized at
       the path level: feeding the deleted walk to the assembly leaves a register demand exceeding what
       `1`-Lipschitz pin compatibility supplies by exactly the amount deleted, and the chain has slack
       exactly `0` at every gap between pins. Record the goal state if it does not close.
-- [ ] **DECISION GATE.** Read the verdict and take exactly one branch:
+- [x] **DECISION GATE.** Read the verdict and take exactly one branch: *(INCONCLUSIVE taken)*
       - **REFUTED** — `tightChain_deletion_derivative_not_ladderPath` closes AND
         `cellLEZeroConstOfKappaEq_refuted` and `exists_refuting_tight_collision` close with it. Wire
         the probe into `scripts/check-evidence-probes.sh` (table block and `WIRED` array entry) and
@@ -1411,7 +1411,7 @@ name.
         resisted; the probe is NOT wired on this branch, because the evidence gate holds compiled
         records in place and has nothing to hold. Phase 11.6 stays gated and the honest report is that
         the enterable work is Phases 11.2, 11.8 and 12.1.
-- [ ] Record the verdict in the durable carriers only: this phase's own body, the dispatch handoff,
+- [x] Record the verdict in the durable carriers only: this phase's own body, the dispatch handoff,
       and the round summary. **Do not amend
       `FormalSystem/Metalogic/Decidability/RaySummary/README.md` in this phase** — its depth-`0`
       status paragraph is live territory of the successor chain, and Phase 18 is this plan's records
@@ -1468,6 +1468,103 @@ theorem-index row and no inventory block moves.
 - `bash .claude/scripts/check-task-references.sh --quiet` exits 0 on the probe: its prose cites the archived prototypes and the live declarations by PATH and by NAME, never by task number, since `specs/evidence/**` is outside the `specs/**` task-artifact exemption's intent for deliverable prose.
 - `bash scripts/check-module-invariants.sh` and `bash scripts/typst-sync-check.sh` each exit 0; neither should move, and a move is itself a finding to record.
 - The verdict is recorded in this phase's body, the handoff and the summary, naming which of the three branches was taken and why, with the goal state recorded verbatim on the PASS and INCONCLUSIVE branches.
+
+#### VERDICT: INCONCLUSIVE
+
+Neither `cellLEZeroConstOfKappaEq_refuted` nor `exists_refuting_tight_collision` closes, so by the
+branch definitions this is the INCONCLUSIVE branch: the probe is NOT wired into
+`scripts/check-evidence-probes.sh` (which stays at its measured 47), `scripts/` is untouched,
+Phase 11.6 stays gated, and the honest report is that the enterable work was Phases 11.2, 11.8 and
+12.1. The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing, and the two filed
+Challenge statements `cellAt_const_of_kappa_eq` and `ladderRealized` are NOT named REFUTED.
+
+**What the branch nevertheless landed, and why it is more than an empty inconclusive.** The claim
+the live README records as ARGUED rather than compiled is now COMPILED, in a form strictly stronger
+than the recorded statement. `specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean`
+(480 lines, measured at close against a Scope Hypothesis calibrated at 474) declares, in namespace
+`Probe761T`:
+
+- the two-state object, and the tight doubling chain with its pins UNBOUNDED ABOVE — `idleT`,
+  `wT`, `cT`, `pin_eq`, `no_idle_between`, `cT_pin_succ`, `cT_pend_pend`, `cT_pend_idle`,
+  `tightChain_exists`, and `tightChain` itself with `tightChain_isLadderPath`,
+  `tightChain_objAt`, `tightChain_cntAt`;
+- `tightChain_pins` (a pin at every `2^j - 2`) and `tightChain_slack_zero` (the register equals
+  the POSITION at every pin, so every gap between pins has Lipschitz slack exactly `0`);
+- `delObj`/`delIterObj`, the deletion-derivative's object walk;
+- **`tightChain_positive_deletion_does_not_lift`**: for every `a ≥ 4` and every `L > 0`, NO ladder
+  path whatsoever has the chain's object walk with `[a, a + L)` deleted — the countdown and the
+  register are both existentially quantified away;
+- `tightChain_iter_deletion_does_not_lift` and
+  `tightChain_deletion_derivative_does_not_lift`, the same claim at the iterated shape and at the
+  gate's own hypothesis `Tcof … ≤ cntAt tightChain z` (which does place `z` where the claim needs
+  it: `two_le_Tcof` and `three_le_of_two_le_cT` derive `3 ≤ z` from it);
+- `paramsOk_chain` (the parameter conditions discharged at the fixpoint's own outputs for this
+  object and formula) and `stabFree_chiT`.
+
+`#print axioms` on every headline theorem reports `[propext, Classical.choice, Quot.sound]`: no
+`sorryAx`, no custom axiom, no `native_decide`. The mechanism is the chain's own tightness read at
+two pins of the DELETED walk on opposite sides of the deletion — the pin at `0`, whose region is
+the single position `1` and lies entirely below the deletion, and a pin `2^j - 2 - L` whose region
+lies entirely above it — whose distance has fallen by exactly `L` while their countdown difference
+has not moved, against `pinCompat_of_ladderPath`'s necessity. No type, no parameter condition and
+no certificate object enters the argument.
+
+**The sub-claim that resisted, stated exactly.** Going from non-liftability of the chain's
+deletion-derivatives to `¬ CellLEZeroConstOfKappaEq` needs the realized-type layer over the chain,
+and the missing link is NOT an arithmetic one. A cell equality at a `kappa`-collision `(c, n)`
+versus `(c', n')` with `c' < c` asks that every type realized at the first state be realized at the
+second by SOME ladder path through it. Nothing makes that path a deletion-derivative of the chain:
+the cell quantifies over every history through the state, so non-liftability of the derivatives
+does not by itself exclude the equality. What is owed is a closure formula whose own letters FORCE
+the realizing path to be a deletion-derivative of the chain — and the two compiled facts that bear
+on the choice both cut against the obvious candidates: the schema is refuted at the frozen
+`ParamsOkPre` whose `(K4)` reads the backward depth alone, while under `ParamsOk` the same probe's
+`not_paramsOkK4_two` and `kappa_D_dissolves` show the two-depth predicate rejects that clip and
+dissolves that collision. A formula at `atom`-level depth is no use either: the closure of
+`chiT := atom p` has a single member, so its cell depends on the object state alone and the schema
+holds for it. The owed object is therefore a deeper formula together with a surviving collision,
+which is the open core itself.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `cellLEZeroConstOfKappaEq_refuted` at the recorded statement | Not attempted and not claimed. The step from the compiled non-liftability to a cell inequality needs a closure formula forcing the realizing path to be a deletion-derivative; see "The sub-claim that resisted" above. Nothing was weakened or re-signed to reach a verdict. | The recorded `## Lean Challenge Statements` block and this phase's own recorded statement block are byte-identical to their pre-dispatch text. `grep -rn 'cellLE_zero_const_of_kappa_eq' FormalSystem/ Tests/` returns the same seven prose lines measured at this plan's authoring. |
+| `exists_refuting_tight_collision` at the recorded statement | Its fourth conjunct is the row above. Its other three conjuncts ARE available — `paramsOk_chain` discharges `ParamsOk` at the fixpoint outputs and `stabFree_chiT` the stab-free condition — but a conjunction whose last conjunct is unproved is not landed, and a probe carrying a `sorry` is not evidence. | `paramsOk_chain`, `stabFree_chiT` in the probe; `kappa_eq_of_shift` (`LadderAgree.lean`) is the landed source of a populated `kappa`-collision at `c ≠ c'` whenever both counters are at or above their thresholds. |
+| The probe is NOT wired into `scripts/check-evidence-probes.sh` | The INCONCLUSIVE branch's own instruction, and `scripts/check-evidence-probes.sh` is listed under `Files to modify` for the REFUTED branch ONLY. The consequence is recorded rather than hidden: the 480-line probe is unprotected by the evidence gate and will rot silently, so the revision that repairs the recorded statements should wire it in the same round. | `bash scripts/check-evidence-probes.sh` exits 0 and still reports `all 47 wired probe(s) compile`, unchanged from the figure measured at this plan's authoring. `git status --short scripts/` is empty. |
+
+**Three statement-level findings, reported and not worked around.**
+
+1. **The recorded statement is false at `m = 0`.** It quantifies `(m l : Nat)` with `0 < l` and no
+   constraint on `m`; at `m = 0` the deletion-derivative deletes nothing and IS the chain, which is
+   a ladder path. It needs `0 < m`. The landed theorems carry `hm : 0 < m` and honest names of
+   their own; the recorded block is left exactly as recorded.
+2. **The recorded conclusion is register-specific, and the record's claim is not.**
+   `¬ IsLadderPath step pend (delIterWalk …)` constrains the deleted walk's own register, so it is
+   weaker than "the derivative does not LIFT". The landed form quantifies the countdown and the
+   register away, which is the claim the README makes and the claim a consumer needs.
+3. **The object must be the chain with pins unbounded above.** On the archived prototype's
+   finite-`J` chain the LAST region is followed by the idle-forever tail and so carries no pin
+   above it; deleting a block from it moves no later pin, the register demand at the last pin drops
+   by the deleted amount while every earlier pin keeps its own, and the `1`-Lipschitz pin condition
+   admits that. A finite-`J` chain therefore HAS a lifting deletion-derivative and the claim is
+   false at that object. The probe declares the unbounded chain and says so in its own docstring;
+   the archived finite-`J` prototype is unmodified and is not restated.
+
+**Measured at close.** The probe compiles standalone through the build guard: exit 0, zero
+`error:`, zero `declaration uses 'sorry'`. `#print axioms` on all eight headline theorems:
+`[propext, Classical.choice, Quot.sound]`. `git status --short FormalSystem/ Tests/ scripts/` is
+empty — no library file and no script changed by this phase, as the phase's own verification
+requires — and `git status --short specs/evidence/` names the one new probe.
+`bash scripts/check-evidence-probes.sh` exits 0 at 47 wired probes;
+`bash .claude/scripts/check-task-references.sh --quiet` exits 0 on the probe, whose prose cites the
+archived prototypes and the live declarations by path and by name and never by task number;
+`bash scripts/typst-sync-check.sh` exits 0 and did not move. Full `lake build`: exit 0, 0 errors,
+0 warnings, 2,895 jobs. `bash scripts/check-module-invariants.sh` still exits 1 on the same single
+pre-existing `C16` finding in `LadderChain.lean` recorded by Phase 11.2, unchanged in content and
+count; every other group passes.
+
+---
 
 ---
 
