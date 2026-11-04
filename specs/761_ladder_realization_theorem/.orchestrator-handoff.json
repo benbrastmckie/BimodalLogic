@@ -1,24 +1,34 @@
 {
-  "status": "partial",
-  "dispatch_seq": 30,
-  "phases_completed": 4,
-  "phases_total": 5,
-  "summary": "Executed the whole enterable set of plan v10. Phases 12.3, 12.4, 12.5 and 12.6 closed [COMPLETED]: rk_of_count_drift landed over a widened repsCnt (Tc+Tn+3P+2B+5, the narrower bound compiled-refuted), the frozen-bound probe wired alongside Phase 11.9's unprotected tight-chain probe (gate 47 to 49), Real's three relational conditions landed so five of its six are done, and the maximum-certified-set finding re-read with a derived MOVED verdict. Phase 11.8 closed [BLOCKED] after its ordered first task landed green: the idle-past half needs an insertion construction with no landed component. Full guarded lake build green at every phase end and at the close, sorry_count 0, no new axioms.",
+  "status": "implemented",
+  "dispatch_seq": 33,
+  "phases_completed": 24,
+  "phases_total": 37,
+  "summary": "Closed plan v11's two enterable cascade phases, both committed with a green full-project build. Phase 11.10's decision gate returned WITNESSED: a new wired probe (ladder-idle-past-interface-decision.lean, 615 lines, probe count 49 -> 50) exhibits a ladder path over the tight doubling chain carrying the chain's object state at the comparison position with the countdown raised by exactly the cycle length, so the restated idle-past interface existential is NOT refutable on the one compiled object that refutes the spliceObj shape. Phase 11.11 then landed fifteen declarations in LadderAgree.lean's Cascade section -- insIdx/insObj/insCnt, five retraction and reading lemmas, two pointwise facts, the four LOCAL ladder conditions exists_ladderPath_of_walk consumes, and le_region_start_of_idle -- all axiom-pinned, with finding 29's self-loop primitive decided as candidate (a) and the reason candidate (b) is unavailable at this layer recorded. No filed Goal moved and no existential or pin hypothesis was claimed.",
   "blockers": [
-    "Phase 11.8 idle-past half: exists_ladderPath_at_region_of_idle_past and the unconditional exists_ladderPath_at_region are not landed. cntAt_eq_of_obj_eq forces any path with the countdown raised by l to carry a different object walk; spliceObj is the refuted candidate in that regime (tightChain_slack_zero); and Phase 11.2 landed only the cascade's bookkeeping, not the inserted walk, its ladder-path proof, or the iteration over the pins. Both names are unclaimed. Phase 15 inherits the conditionality.",
-    "Phase 11.8's directed join regime_exhaustive_of_clipIdx_eq cannot type-check against the three recorded signatures (it consumes hB, a second path, a second position, an nxtAt equality and a clipIdx equality, none of which they carry); the join they admit is the plain dichotomy on the idle-past hypothesis. Needs a /revise.",
-    "Phase 12.6's MOVED verdict makes Dmax subset-of Real an inherited contingency of Phase 15 rather than a corollary; a /revise should re-scope that task against the record's own 'Real subset-of R' form or name the strengthened lift as a gated input."
+    "Five of this task's six filed Goals (cellAt_const_of_kappa_eq, ladderSound, ladderCons_localRun, ladderLift, ladderRealized) remain unlanded, so the plan-compliance spot-check records 'failed'. This is plan v11's OWN recorded state, not a regression of this round: those five sit behind Phase 11.9's INCONCLUSIVE verdict on the depth-0 core, and both phases this round closed state in their own task lists that they land no filed Goal. What would lift that gate is recorded in the plan's '### What would lift the depth-0 gate' section; this round did not attempt it.",
+    "Phase 11.12 (the pin half: hpins, hn0, and exists_ladderPath_at_region_of_idle_past) is next in order, is the open construction, and carries no hour estimate by the plan's own declaration. It now inherits one premise this round put on the record: the self-loop step (objAt g u) (objAt g u) = true, carried explicitly on insObj_step because candidate (b)'s pigeonhole needs MANY idle runs below the region start while the idle-past regime hypothesis supplies exactly ONE idle position. On a general object relation that premise is not a consequence of IsLadderPath, so an unconditional idle-past interface needs more than plan v11 lands.",
+    "Plan v11's Phase 11.10 Verification list carries a stale baseline, 'the ^axiom counts are 10 and 2'. Measured at close, and identically at HEAD, they are 12 and 2 -- unchanged by this round, which touches no ^axiom line. A future /revise should correct the carried figure rather than a future dispatch re-deriving the discrepancy."
   ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/09_rk-bounded-representative-widening-summary.md",
-      "summary": "The round's record: what landed in each of the five phases, the construction's confirmed-tight bound, every plan deviation, and the verification evidence."
+      "path": "specs/761_ladder_realization_theorem/summaries/11_idle-insertion-cascade-restatement-summary.md",
+      "summary": "Round summary: Phase 11.10 WITNESSED, Phase 11.11 landed, no filed Goal moved, every mechanical gate green."
     },
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/10_rk-bounded-representative-widening.md",
-      "summary": "Phase markers updated: 12.3, 12.4, 12.5, 12.6 [COMPLETED]; 11.8 [BLOCKED]. Deviations annotated inline on the affected checklist items."
+      "type": "evidence",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean",
+      "summary": "The decision probe (wired, entry 50): the idle-past interface existential is not refutable on the tight doubling chain; decides REFUTABILITY and never PROVABILITY because its carrier's step is total."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.10-handoff-20261104T203227Z.md",
+      "summary": "Phase 11.10 closure record: the WITNESSED verdict, the instance, the derivation, and what the verdict opens."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.11-handoff-20261104T205250Z.md",
+      "summary": "Phase 11.11 closure record: the fifteen landed declarations, the primitive decision and its reason, and the measurements at close."
     }
   ]
 }

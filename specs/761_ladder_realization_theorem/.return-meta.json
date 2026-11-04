@@ -1,51 +1,53 @@
 {
-  "status": "planned",
-  "started_at": "2026-11-04T19:30:00Z",
-  "completed_at": "2026-11-04T20:05:00Z",
-  "requires_user_review": false,
+  "status": "implemented",
+  "started_at": "2026-11-04T20:13:23Z",
+  "completed_at": "2026-11-04T20:58:00Z",
+  "dispatch_seq": 33,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/11_idle-insertion-cascade-restatement.md",
-      "summary": "Plan v11, superseding v10. Answers the three items the last implement dispatch recorded: Phase 11.8's blocked idle-past half is restated as four phases (11.10 a decision probe on the compiled tight chain, enterable now; 11.11 the insertion walk and its four local ladder conditions; 11.12 the pin half and the existential, NOT COSTABLE; 11.13 the join), its directed join is restated against the signatures that exist rather than regime_exhaustive_of_clipIdx_eq, and Phase 15 is split into 15.1 (ladderLift over the widened relK) and 15.2 (dmax_subset_real with the strengthened lift named as its gated input). Every closed phase is carried forward with its marker and recorded deviations intact; Phase 11.9's INCONCLUSIVE depth-0 gate is left closed with the two events that would lift it written out."
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/11_idle-insertion-cascade-restatement-summary.md",
+      "summary": "Phase 11.10 decision gate closed WITNESSED on the tight doubling chain and Phase 11.11 landed the idle-insertion walk with its four local ladder conditions; no filed Goal moved."
     }
   ],
-  "next_steps": "Run /orchestrate 761 to execute the revised plan. The only enterable phase is 11.10, the idle-past interface decision probe (dependencies 11.2 and 11.9 both closed; edits only specs/evidence/** and scripts/check-evidence-probes.sh). Phases 11.11-11.13 open behind it. Phases 11.6, 11.7, 12.2, 13, 14, 15.1, 15.2 and 16-18 remain behind Phase 11.9's INCONCLUSIVE verdict on the open depth-0 core, so five of the task's six filed Goals stay unlanded; see the plan's '### What would lift the depth-0 gate' section.",
+  "completion_data": {
+    "completion_summary": "Closed plan v11's two enterable cascade phases. Phase 11.10's decision gate returned WITNESSED: a new wired probe (ladder-idle-past-interface-decision.lean, 615 lines) exhibits a ladder path over the tight doubling chain carrying the chain's object state at the comparison position with the countdown raised by exactly the cycle length, so the restated idle-past interface existential is NOT refutable on the one compiled object that refutes the spliceObj shape. Phase 11.11 then landed fifteen declarations in LadderAgree.lean's Cascade section -- insIdx/insObj/insCnt, five retraction and reading lemmas, two pointwise facts, the four LOCAL ladder conditions exists_ladderPath_of_walk consumes, and le_region_start_of_idle -- with finding 29's self-loop primitive decided as an explicit hypothesis on one auxiliary and the reason candidate (b)'s pigeonhole is unavailable at this layer recorded. No filed Goal landed and no existential or pin hypothesis was claimed.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean",
+    "scripts/check-evidence-probes.sh",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "typst/generated/status.typ",
+    "specs/761_ladder_realization_theorem/plans/11_idle-insertion-cascade-restatement.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.10-handoff-20261104T203227Z.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.11-handoff-20261104T205250Z.md",
+    "specs/761_ladder_realization_theorem/summaries/11_idle-insertion-cascade-restatement-summary.md",
+    "specs/761_ladder_realization_theorem/issues.jsonl",
+    "specs/761_ladder_realization_theorem/.return-meta.json",
+    "specs/761_ladder_realization_theorem/.orchestrator-handoff.json"
+  ],
   "metadata": {
-    "session_id": "sess_1793821366_e761e2",
-    "agent_type": "reviser-agent",
+    "session_id": "sess_1793823065_4dcf25",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "plan_version": 11,
-    "phase_count": 37,
-    "estimated_hours": 36.5,
-    "preserved_phases": 31,
-    "preserved_phase_markers": {
-      "COMPLETED": 16,
-      "COMPLETED WITH EXCLUSIONS": 6,
-      "BLOCKED": 1,
-      "NOT STARTED": 8
-    },
-    "new_phases": ["11.10", "11.11", "11.12", "11.13", "15.1", "15.2"],
-    "revised_phase_range": "11.8 (forward pointer only, marker unchanged), 11.10-11.13 (new), 15 -> 15.1/15.2 (split), 16 (Depends on re-pointed to 15.2), 18 (summary path aligned)",
-    "removed_phases": ["15"],
-    "reopened_phases": [],
-    "reports_integrated": [
-      "handoffs/phase-11.8-handoff-20261104T191423Z.md",
-      "handoffs/phase-12.6-handoff-20261104T185402Z.md",
-      "handoffs/phase-12.3-handoff-20261104T180621Z.md",
-      "handoffs/phase-12.4-handoff-20261104T182353Z.md",
-      "handoffs/phase-12.5-handoff-20261104T184348Z.md",
-      ".orchestrator-handoff.json",
-      "summaries/09_rk-bounded-representative-widening-summary.md",
-      "issues.jsonl"
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
     ],
-    "new_research_reports_integrated": 0,
-    "gate_status": "Phase 11.9's INCONCLUSIVE verdict on the open depth-0 core is UNCHANGED and was neither lifted nor re-run. ladderSound, ladderCons_localRun, ladderLift, ladderRealized and cellAt_const_of_kappa_eq remain unlanded because every phase that would land them sits behind it; paramsOk_params and LadderCons are landed. This is the plan's own recorded state, not a regression.",
-    "verification_run": false,
-    "verification_note": "No .lean source was modified, no lake build was run and no verification was executed: this was a planning operation only. The plan's own baseline table marks the sorry census CARRIED from the round's .return-meta.json and re-derives every other baseline by direct read (LadderAgree.lean 2558/2600, LadderRealize.lean 613, CounterQuotient.lean 1013, 49 wired probes, axiom counts 10/2, vacuous grep 1).",
-    "validation": "bash .claude/scripts/validate-artifact.sh <plan> plan --strict => PASS, 0 warnings; bash .claude/scripts/plan-file-scope-harvest.sh <plan> harvests 31 paths including docs/theorem-index.md (shared territory with tasks 763 and 833) and the new probe file",
-    "orchestrator_handoff_written": false,
-    "orchestrator_handoff_note": "Delegation context carries no orchestrator_mode: true and no handoff_path, which is the aux-dispatch plan-revision path; no .orchestrator-handoff.json is owed or written. {task_dir}/.plan-revised.json WAS written per Stage 5c, with dispatch_seq omitted rather than invented because the delegation context carries none."
+    "compliance_check": "failed",
+    "compliance_note": "Recorded as failed and NOT laundered, with the reason stated. The spot-check extracts seven tokens from the plan's **Goals** block; six are the filed Goals and one ('abbrev') is a false positive from that block's own parenthetical prose, which the plan explicitly warns about ('the snapshot tool reads every backticked token here as a Goal'). Of the six real Goals, paramsOk_params is landed and the other five -- cellAt_const_of_kappa_eq, ladderSound, ladderCons_localRun, ladderLift, ladderRealized -- are unlanded. That is the plan's OWN recorded state, not a regression of this round: plan v11's Overview says those five 'are unlanded precisely because every phase that would land them sits behind' Phase 11.9's INCONCLUSIVE verdict on the depth-0 core, and the two phases this round was dispatched to close (11.10, 11.11) both state in their own task lists that they land no filed Goal. verification_passed stays true because every mechanical gate passed: sorry 0, new vacuous 0, ^axiom counts unchanged at 12/2 against HEAD, full lake build exit 0 with 2895 jobs, scoped builds and all five repo gates exit 0. requires_user_review is NOT set: there is no choice here that needs the user's judgment, and the Goal gap is carried in the handoff's blockers[] instead so the orchestrator sees it as an open item rather than a halt."
   }
 }

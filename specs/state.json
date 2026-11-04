@@ -305,13 +305,13 @@
           "summary": "Refutes rk_of_count_drift at repsCnt's current bound with three compiled decide witnesses, settles the LadderRealize docstring's open sub-question negatively, shows ParamsOk is not the repair, establishes that every class pair is liftable in a wider window, and recommends widening repsCnt to Tc+Tn+3P+2B+5 plus interface-level restatements for Phases 11.8 and 11.9."
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/09_rk-bounded-representative-widening-summary.md",
-          "type": "summary",
-          "summary": "The round's record: what landed in each of the five phases, the construction's confirmed-tight bound, every plan deviation, and the verification evidence."
-        },
-        {
           "path": "specs/761_ladder_realization_theorem/plans/11_idle-insertion-cascade-restatement.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/761_ladder_realization_theorem/summaries/11_idle-insertion-cascade-restatement-summary.md",
+          "type": "summary",
+          "summary": "Round summary: Phase 11.10 WITNESSED, Phase 11.11 landed, no filed Goal moved, every mechanical gate green."
         }
       ],
       "next_artifact_number": 12,
