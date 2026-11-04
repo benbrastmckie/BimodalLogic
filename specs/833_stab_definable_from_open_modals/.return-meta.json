@@ -1,30 +1,41 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-11-04T22:33:42Z",
+  "completed_at": "2026-11-04T22:50:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/833_stab_definable_from_open_modals/plans/01_stab-definable-from-open-modals.md",
-      "summary": "4-phase, 2.5-hour transcription plan: six definability declarations into OpenTruth.lean and OpenValidity.lean, README and theorem-index documentation surfaces, full verification and axiom audit."
+      "type": "summary",
+      "path": "specs/833_stab_definable_from_open_modals/summaries/01_stab-definable-from-open-modals-summary.md",
+      "summary": "Landed the definability biconditional the stability modal equals the open-future modal composed with the open-past modal, in either order, as six library declarations plus their README and theorem-ledger rows."
     }
   ],
-  "next_steps": "Run /orchestrate 833 to execute the plan",
-  "memory_candidates": [
-    {
-      "content": "A docs/theorem-index.md row in this repository imposes a round-trip obligation on the declaration site that is easy to discover only at gate time: check-module-invariants.sh's second C15 assertion requires every ledger-row declaration to carry a 'Paper: <label>' line inside its own /-- doc comment, and for an unlabelled formalization-native result the value must start with '- ('. The checker walks back from the declaration over any @[...] attribute lines to the preceding -/, then to the opening /--, and requires a line matching ^\\s*Paper: (.+)$ inside that block. Consequence for planning: the Paper: line must be written in the same edit as the declaration, never as a documentation afterthought, or a batch of ledger rows produces one C15 failure per row after the Lean work already looks finished. Two companion conventions travel with it: the Axioms cell abbreviates only [propext, Classical.choice, Quot.sound] as 'pcq' and writes anything else out literally (no 'p'/'pq' tokens exist), and a generated README inventory block's Description cells are hand-maintained in place while its Lines cells are generator-owned.",
-      "category": "PATTERN",
-      "source_artifact": "specs/833_stab_definable_from_open_modals/plans/01_stab-definable-from-open-modals.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["theorem-index", "C15", "paper-label", "check-module-invariants", "ledger-row", "generated-inventory"]
-    }
+  "completion_data": {
+    "completion_summary": "Transcribed six already-compiled declarations from task 559's probe 05 into FormalSystem/OpenLanguage/, landing the definability biconditional for the stability modal as library results: four pointwise results in OpenTruth.lean and both implications as OpenValid in OpenValidity.lean. All six measure their pinned axiom sets exactly and are choice-free; the component README's inventory descriptions, a formalization-native paper-label correspondence row, and six fully-qualified rows in docs/theorem-index.md all landed with INV, C2 and both C15 assertions passing.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/OpenLanguage/OpenTruth.lean",
+    "FormalSystem/OpenLanguage/OpenValidity.lean",
+    "FormalSystem/OpenLanguage/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "typst/generated/status.typ",
+    "specs/833_stab_definable_from_open_modals/plans/01_stab-definable-from-open-modals.md",
+    "specs/833_stab_definable_from_open_modals/summaries/01_stab-definable-from-open-modals-summary.md",
+    "specs/833_stab_definable_from_open_modals/issues.jsonl"
   ],
   "metadata": {
-    "session_id": "sess_1793830217_548036_833",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1793830217_548036",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 2.5,
-    "dependency_waves": [[1], [2], [3], [4]]
-  },
-  "dispatch_seq": 2
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed"
+  }
 }

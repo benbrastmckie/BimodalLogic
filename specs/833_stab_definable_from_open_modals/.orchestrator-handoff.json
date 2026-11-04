@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "dispatch_seq": 3,
+  "status": "implemented",
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Wrote a 4-phase, 2.5-hour transcription plan landing the six probe-05 declarations for the definability biconditional in FormalSystem/OpenLanguage/ plus the three documentation surfaces. Phases: OpenTruth.lean pointwise results (local), OpenValidity.lean validity forms (local), README and theorem-index rows (prose), full verification and axiom audit (full). The plan carries a '## Lean Challenge Statements' section pinning all six exact signatures, which was compile-checked at plan time (bare lean against the repository oleans, exit 0, only the six expected sorry warnings) and whose identifier set matches the Goals block exactly. Research's three corrections to the dispatch are integrated: the mirror route through openValid_reflectTime is an import cycle and is forbidden, all six declarations need a 'Paper:' doc-comment line for C15, and both gate scripts are asserted per-check against re-measured baselines rather than by exit code.",
+  "summary": "Transcribed six already-compiled declarations from task 559's probe 05 into FormalSystem/OpenLanguage/, landing the stability modal's definability from the open-future and open-past modals as library results: four pointwise theorems in OpenTruth.lean and both implications as OpenValid in OpenValidity.lean, each with a C15-satisfying Paper: line. Landed the component README's inventory descriptions and a formalization-native paper-label correspondence row, the regenerated inventory block, and six fully-qualified rows in docs/theorem-index.md. Unscoped guarded build green with zero warnings; all six declarations measure their pinned axiom sets exactly and are choice-free, confirmed twice by two independent mechanisms.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/833_stab_definable_from_open_modals/summaries/01_stab-definable-from-open-modals-summary.md",
+      "summary": "Implementation summary: the six landed declarations, the three documentation surfaces, the full verification record, and the two generator-owned-file deviations."
+    },
+    {
       "type": "plan",
       "path": "specs/833_stab_definable_from_open_modals/plans/01_stab-definable-from-open-modals.md",
-      "summary": "4-phase plan transcribing the six definability declarations into OpenTruth.lean and OpenValidity.lean plus README and theorem-index rows, with pinned Lean Challenge Statements and a per-check verification gate."
+      "summary": "The executed plan, all four phases marked [COMPLETED]."
     }
   ]
 }

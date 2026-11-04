@@ -331,7 +331,7 @@ elaboration surface, so the tier table's diff read-through is the rest.
 
 ---
 
-### Phase 4: Full verification and axiom audit [NOT STARTED]
+### Phase 4: Full verification and axiom audit [COMPLETED]
 
 **Goal**: Establish on the whole repository that the six declarations are landed, choice-free at
 their pinned sets, sorry-free, and that both gate scripts hold at their re-measured baselines.
