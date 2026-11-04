@@ -1,5 +1,5 @@
 ---
-next_project_number: 857
+next_project_number: 858
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 857
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,854,855 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,854,855,857 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,852,853,856 | 298,428,502,761,768,769,770,772,777,785,810,813,833,838,839,854,855 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -61,6 +61,7 @@ next_project_number: 857
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
 847 [NOT STARTED] — file\_scope containment drops external source-store paths...
 848 [NOT STARTED] — Test sweep permanently red where the source store is external
+857 [NOT STARTED] — Fix validate-handoff.sh crash-as-false-negative and settle...
 
 ### Algebraic Representation
 
@@ -127,7 +128,7 @@ next_project_number: 857
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 833 [NOT STARTED] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-854 [NOT STARTED] — Decide whether the open-future modal ▷ is L⁺-definable
+854 [RESEARCHING] — Decide whether the open-future modal ▷ is L⁺-definable
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe... (see above)
   └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -149,6 +150,142 @@ next_project_number: 857
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 857. Fix validate-handoff.sh crash-as-false-negative and settle the canonical blockers shape
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: META TASK. Fix a validator that reports a well-formed handoff as invalid, and settle the
+canonical `blockers` shape that three different authorities currently disagree about.
+
+=== MEASURED SYMPTOM, RE-DERIVABLE ===
+
+During cycle 2 postflight of the ladder-realization work, `orchestrate-cycle-postflight.sh` ran
+`validate-handoff.sh` against that task's `.orchestrator-handoff.json`. The validator printed
+eleven consecutive `[PASS]` lines and not one `[FAIL]`, then postflight emitted:
+  ERROR: HANDOFF VALIDATION FAILED - <file> fails validate-handoff.sh's required-field checks
+Reproduce (read-only):
+  bash .claude/scripts/validate-handoff.sh specs/761_ladder_realization_theorem/.orchestrator-handoff.json; echo "EXIT=$?"
+Observed: EXIT=5, and the output STOPS after "Blockers array present with 3 entry(s)" - the
+"All blockers have required fields" line, the Validation Summary block, and the final verdict
+line are all absent. The validator never reaches its own summary.
+
+=== ROOT CAUSE, PINNED - NOT A HYPOTHESIS ===
+
+`validate-handoff.sh` sets `set -euo pipefail`. Its Check 7 block, having confirmed a non-empty
+`blockers` array, loops over the entries probing each as an OBJECT:
+  has_phase=$(jq -r ".blockers[$i].phase // \"__MISSING__\"" "$HANDOFF_FILE" 2>/dev/null)
+In the observed handoff the `blockers` entries are STRINGS, not objects. Indexing a string with
+`.phase` is a jq runtime error ("Cannot index string with ..."), jq exits 5, `2>/dev/null`
+discards the message, and under `set -e` the failed command substitution terminates the script
+immediately with that exit 5. Confirm the per-entry failure directly:
+  jq -r '.blockers[0].phase' specs/761_ladder_realization_theorem/.orchestrator-handoff.json; echo "EXIT=$?"
+Note that 5 is not a documented exit code: the script's own header documents only 0 (valid),
+1 (invalid) and 3 (file not found). The script therefore has an undocumented crash exit that is
+indistinguishable, to any caller testing `-ne 0`, from a legitimate validation failure.
+
+=== WHY THE CONSEQUENCE IS WORSE THAN A WRONG MESSAGE ===
+
+The postflight call site treats any non-zero exit as a required-field failure, then tries to name
+the failing fields by parsing `^\[FAIL\]` lines out of the captured output. A crash produces no
+FAIL lines, so that parse yields an empty list and the `--extra-detail-json` flag is omitted by
+the call site's own never-guess rule. The result is a HANDOFF_VALIDATION_FAILED system defect
+raised against a handoff that is in fact well-formed, carrying no evidence of what failed,
+because nothing did. A defect channel that reports healthy inputs as defective erodes trust in
+every other entry it carries; this one firing is enough to warrant the fix.
+
+=== THE REAL DISAGREEMENT: WHAT SHAPE IS `blockers`? ===
+
+Settle this FIRST; it decides which side of the fix is the non-conforming one. Three authorities
+disagree, measured:
+  (a) `context/schemas/orchestrator-handoff-schema.json` - `blockers.items` is `type: "object"`
+      with `required: ["phase", "target"]`, plus optional `verbatim_goal`, `what_was_tried`,
+      `why_it_failed`. Its own description calls this "Canonical wrap-up/hard-mode blocker shape".
+  (b) `extensions/lean/agents/lean-implementation-hard-agent.md` - instructs, in prose: "On
+      `partial` or `blocked`: populate `blockers` with verbatim goal text from plan checklist."
+      Followed literally, that yields an array of STRINGS, which is what the live handoff holds.
+  (c) `validate-handoff.sh` Check 7 - probes `.phase`/`.target` unguarded, i.e. assumes (a) and
+      crashes rather than failing on (b).
+So the writer's instruction and the schema contradict each other, and the validator cannot survive
+the contradiction. Do not resolve this by guarding the validator alone: that would leave a writer
+producing data its own schema rejects, silently. Decide which shape is canonical, then conform the
+other two sides to it, and say in the plan which authority was chosen and why.
+
+A fourth data point to weigh, because it cuts against (b): the open record
+`postflight_detail_free_blocking_partial_issue_entry` (task 770) asserts as measured fact that
+"the live returns carry `{phase, target, verbatim_goal, what_was_tried, why_it_failed}`" and that
+jq's `join` on them errors. Both that record and this one observed a jq exit 5 on `blockers`, from
+OPPOSITE shape assumptions - which means the shape varies across writers or across time. Establish
+the actual distribution before ruling; a ruling that explains only one of the two observations is
+incomplete. Check the object-shaped and string-shaped producers separately rather than assuming one
+global shape.
+
+=== STRUCTURAL HARDENING, IN SCOPE ===
+
+Independently of the shape ruling: an unguarded `jq` under `set -euo pipefail` with `2>/dev/null`
+converts any data-shape surprise into a silent, undocumented, non-zero exit with no diagnostic.
+Make the validator detect a shape it cannot probe and report it as a real `[FAIL]` line with a
+documented exit code, so the summary block is always reached and callers can distinguish
+"invalid handoff" from "validator crashed". Removing or redirecting the error-swallowing
+`2>/dev/null` on these probes is in scope and is the reason this was invisible.
+
+=== TERRITORY - DO NOT TAKE THESE FILES ===
+
+`orchestrate-cycle-postflight.sh` is claimed by three open records (tasks 770, 823 and 842) and
+`system-defect-record.sh` by task 842. This record deliberately declares NEITHER, and confines
+itself to the validator, the schema and the lean hard agent's instruction. If the fix turns out to
+require changing how the call site interprets the validator's exit status - a reasonable outcome,
+since distinguishing crash from failure is only useful if the caller acts on it - add a dependency
+edge with `update-task-status.sh --depends-on-add` rather than editing a file another record owns.
+Recommended sequencing to raise at plan time: this record's shape ruling is load-bearing for task
+770, whose fix renders blocker entries into prose on the assumption they are objects. Settle the
+shape here first, or fold the two together deliberately.
+
+=== EDIT TARGET, BINDING ===
+
+Per `rules/source-store-deploy-boundary.md` this repository's `.claude/` tree is a gitignored,
+disposable deploy artifact regenerated from a source store; a file hand-authored under `.claude/**`
+is silently wiped by the next regeneration and the edit will appear to succeed while having no
+lasting effect. Edit under the source store at the mirroring path. Re-derive it rather than
+trusting this note - `source_dir` lives PER EXTENSION, not at top level:
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+  jq -r '.extensions.lean.source_dir' .claude-extensions.json
+A top-level `jq -r '.source_dir'` returns null; that is the key being nested, not absent. Reading
+of this record's creation: `/home/benjamin/.config/nvim/agent-system/extensions/{core,lean}`.
+After editing, redeploy with `bash .claude/scripts/deploy-headless.sh` and confirm the result is
+a clean verify. Stage narrowly: explicit file lists only, never a directory or glob pathspec.
+
+=== ACCEPTANCE ===
+
+- The reproduction command above exits 0 with the Validation Summary block present, OR exits with
+  a documented code after printing at least one `[FAIL]` line naming the real problem. A silent
+  non-zero with only PASS lines is the defect and must not survive.
+- Extend the validator's test coverage (do not replace existing cases) with one string-shaped
+  `blockers` fixture and one object-shaped fixture, and show the string-shaped case fails against
+  the unmodified script.
+- The shape ruling is recorded in the plan with its chosen authority, and whichever of the schema
+  or the lean hard agent instruction is non-conforming is actually amended - not left to drift.
+- The validator's header exit-code list matches its real exit paths.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file is outside `specs/**`, so its prose must carry no task-number references
+(`rules/no-task-references-in-deliverables.md`) and no record-versioning language
+(`rules/no-record-versioning-in-deliverables.md`). Cite durable anchors - file names, function
+names, check names, field names, flag names - only.
+
+=== PROVENANCE ===
+
+Observed live in session `sess_1793823065_4dcf25`, cycle 2 of task 761, and approved at the
+orchestrate-lead level as an agent-system change request. The run's detected-defect entry carries
+defect_class HANDOFF_VALIDATION_FAILED, detecting_site
+`skill-orchestrate/SKILL.md:cycle-postflight-handoff-validation`. The mathematical work of the
+originating task closed green (full `lake build` exit 0, sorry 0, five repo gates passing); this
+is a fault in the agent system, not in that work.
+
+---
 
 ### 856. Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity
 - **Status**: [NOT STARTED]
@@ -215,7 +352,7 @@ CONTENTION. `specs/evidence/seam-gluing-ray-product/` and `scripts/check-evidenc
 ---
 
 ### 854. Decide whether the open-future modal ▷ is L⁺-definable
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -1016,6 +1153,44 @@ overlap.
 EVIDENCE CORRECTION (verified against specs/events.jsonl by the dispatching orchestrator, after this task was authored): the recurrence is substantially wider than six records. system_defect events carrying HANDOFF_STALE_OR_ABSENT span at least TWELVE distinct task numbers -- 507, 631, 644, 655, 703, 708, 711, 748, 749, 788, 820, 836 -- with task 703 alone firing ten times, and the earliest records predate 2026-09-29 rather than starting 2026-10-06. Count distinct occurrences with: jq -rc "select((.. | strings?) | test(\"HANDOFF_STALE_OR_ABSENT\")) | (.task // .project_number)" specs/events.jsonl | sort | uniq -c | sort -rn
 
 This strengthens rather than weakens the authored observation that one explanation may not cover every firing: the spread crosses many more tasks, sessions and dates than six, and a single stale-predecessor story is unlikely to account for a task that fired ten times. Treat the twelve-task spread as the investigation surface, not the six-record one.
+=== EVIDENCE ADDENDUM (measured in session sess_1793823065_4dcf25, cycle 2 of task 761, after this record was authored) ===
+
+ITEM 2's question (a) -- "the recording path for this class is broken (the check fires, but the
+`system-defect-record.sh` call is absent, mis-ordered, or swallowed)" -- is now answered
+AFFIRMATIVELY for a DIFFERENT defect class, with a concrete mechanism that very likely
+generalizes to RETURN_META_SCHEMA_VIOLATION. Read this before re-investigating item 2 from
+scratch.
+
+OBSERVED: postflight detected HANDOFF_VALIDATION_FAILED, then printed "Note: system-defect
+recording failed (non-fatal)". No durable record reached `specs/events.jsonl`.
+
+MECHANISM, read off the code. In `orchestrate-cycle-postflight.sh` the HANDOFF_VALIDATION_FAILED
+call to `system-defect-record.sh` passes `--dispatched-agent "$agent_name"` but NOT
+`--attributed-path`. Compare the three sibling call sites in the SAME script -- the return-meta
+partial-progress site, the stray-handoff site and the stale-handoff site -- each of which passes
+`--attributed-path "$attributed_path"`. `system-defect-record.sh` requires at least one of the
+two and, per its own header, REFUSES (exit 3, "Signal B attribution unresolvable") when the
+supplied value does not resolve to a path under `agent-system/extensions/**`. Its resolver for
+`--dispatched-agent` globs `"$PROJECT_ROOT"/agent-system/extensions/*/agents/<agent>.md`. In a
+deploy-target repository such as this one there is NO `agent-system/` tree at the project root
+(confirm: `ls -d agent-system` is empty; the source store lives at
+`/home/benjamin/.config/nvim/agent-system`), so `--dispatched-agent` alone can never resolve
+here and the recorder refuses every time. The `2>/dev/null` on the call discards the refusal
+message, leaving only the non-fatal note.
+
+CONSEQUENCE FOR THIS RECORD'S OWN METHOD. The pattern to hunt is a call site that omits
+`--attributed-path` and relies on `--dispatched-agent` alone; audit EVERY
+`system-defect-record.sh` call site in the script for that omission rather than fixing the one
+class that happened to be observed. The masking `2>/dev/null` is why this was invisible and is
+worth removing or redirecting on these calls. This also means any recurrence count taken from
+`specs/events.jsonl` UNDERSTATES reality for precisely those classes whose call sites omit
+`--attributed-path` -- which sharpens this record's own stated worry that item 1's sample cannot
+be trusted until item 2 is fixed.
+
+RELATED, NO EDGE: the validator whose false negative triggered this firing is owned by the open
+record `validate_handoff_crash_and_blockers_shape`, whose file_scope is deliberately disjoint
+from this one (it takes `validate-handoff.sh`, the handoff schema and the lean hard agent
+instruction; it takes neither file this record owns).
 
 ---
 
@@ -2488,6 +2663,31 @@ DEFECT 5 (smaller, pre-existing, batch-blocking) -- GATE 16 WARNS ON THE LEAN MA
 ACCEPTANCE. All five fixed under the resolved source store, each with the evidence its own defect admits: defects 1-3 and 5 have existing test suites under extensions/core/scripts/tests/ and extensions/lean/scripts/tests/ -- extend them rather than asserting the fix by inspection; defect 4 is settled by a measured `--read` of a caleiro_2013 chunk returning content. Gate 16 passes (no extension manifest declares routing_hard/routing_agents_hard) without the declaration having been merely deleted out from under its consumer. No .claude/** file hand-authored. Staging narrow and explicit.
 
 SCHEDULING. file_scope collides with task 768 (lean_challenge_snapshot_chunk_and_unicode_defects), which declares the same lean-challenge-snapshot.sh and its test file. Run in a separate cycle from 768, or fold 768's defects into this round at plan time.
+=== EVIDENCE ADDENDUM TO DEFECT 5 (measured in session sess_1793823065_4dcf25, after this record was authored) ===
+
+DEFECT 5 fired again, identically: the batch gate surfaced `FINDING gate16 lean still declares
+routing_hard/routing_agents_hard` as an unattributed, batch-blocking finding. Two mechanism
+details, both read off `verify-deploy.sh`, that the authored text does not yet carry:
+
+(1) WHY A DELIBERATELY NON-BLOCKING GATE STILL BLOCKS THE BATCH -- THE FIX SURFACE IS WIDER THAN
+THE MANIFEST. gate16 reports through `warn()`, not `fail()`. `warn()`'s own header states it
+"Increments CHECKS but NEVER FAILURES -- a warning must never flip the verifier's exit code", and
+it does not. But `warn()` appends to `FINDINGS_LIST` using the SAME `"FINDING $CURRENT_GATE ..."`
+prefix `fail()` uses, and the findings interface carries no severity field at all. A batch-gate
+consumer reading that list therefore cannot distinguish a removal-is-coming nudge from a real
+failure, and treats it as blocking. So either the findings interface gains a severity distinction
+(so WARN-level findings stop escalating to batch-blocking), or gate16 stops emitting a finding.
+Decide which and record why. Silencing it by deleting the manifest key remains wrong for the
+reason the authored text already gives.
+
+(2) routing_hard IS DECLARED NULL AND STILL TRIPS THE GATE -- A FREE PARTIAL FIX.
+`extensions/lean/manifest.json` carries `"routing_hard": null` alongside a populated
+`routing_agents_hard`. gate16's probe is `(has("routing_hard") or has("routing_agents_hard"))`,
+and jq's `has()` returns true for a key present with a NULL value. So the lean manifest trips the
+gate partly on a key that declares nothing. A null-valued `routing_hard` can be deleted without
+touching any consumer -- nothing can be reading a null -- which is independent of, and far
+cheaper than, the `routing_agents_hard` migration the authored text correctly refuses to
+shortcut. It does not by itself clear the gate while `routing_agents_hard` remains.
 
 ---
 

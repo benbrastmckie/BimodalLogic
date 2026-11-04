@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 857,
+  "next_project_number": 858,
   "active_projects": [
     {
       "project_number": 856,
@@ -78,7 +78,7 @@
     {
       "project_number": 854,
       "project_name": "open_future_modal_lplus_definability",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "metalogic",
       "title": "Decide whether the open-future modal ▷ is L⁺-definable",
@@ -87,7 +87,7 @@
         "specs/854_open_future_modal_lplus_definability/"
       ],
       "created": "2026-11-04T20:40:35Z",
-      "last_updated": "2026-11-04T20:40:35Z",
+      "last_updated": "2026-11-04T20:58:47Z",
       "audit_verdict": {
         "verdict": "covered-by-closed",
         "project_number": 443,
@@ -103,7 +103,8 @@
           "id": "open_future_modal_lplus_definability",
           "title": "Decide whether the open-future modal ▷ is L⁺-definable"
         }
-      }
+      },
+      "session_id": "sess_1793825909_81e493_854"
     },
     {
       "project_number": 833,
@@ -1575,7 +1576,7 @@
       "project_name": "agent_system_batch_defect_group",
       "status": "not_started",
       "task_type": "meta",
-      "description": "META TASK. ONE grouped task covering FIVE agent-system defects, deliberately consolidated per Component 0 of docs/reference/standards/multi-task-creation-standard.md: all five are edits to the agent-system SOURCE STORE, so they share an edit target and no named divide reason applies. Requested as a single group by user ruling at the conclusion stage of the batch run that observed them.\n\nEDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's .claude/ tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored file landing under .claude/** is silently wiped by the next regeneration. Read source_dir from .claude-extensions.json and make every fix under that source store at the mirroring path -- re-derive it rather than trusting this note (reading of 2026-10-16: /home/benjamin/.config/nvim/agent-system/extensions/<ext>). Never hand-author under .claude/**. That tree already carries other writers' uncommitted modifications, so stage narrowly: explicit file lists only, never a directory or glob pathspec.\n\nDEFECT 1 -- BATCH GATE DEFERRAL DIRECTIVE NAMES PATHS THAT DO NOT EXIST IN A DEPLOY-TARGET REPO. Highest signal: independently hit by three implement dispatches in one run (tasks 464, 465, 805). The dispatch composer emits a \"Batch Gate Deferral\" directive instructing an implement dispatch to discharge a phase's declared `full` verification tier against a SCOPED tier instead, naming two invocations: `agent-system/extensions/core/scripts/tests/run-all.sh --only SUITE` and `agent-system/extensions/core/scripts/verify-deploy.sh --only-gate N`. Neither path exists in a deploy-target repository such as this one (no agent-system/ tree is present here; the deployed mirrors live at .claude/scripts/), and both scripts cover core's own test suites rather than FormalSystem/**. Each agent improvised a different substitute: two ran the FULL unnarrowed gate set (strictly stronger, so no harm done that run), one ran `verify-deploy.sh --only-gate 4,10`. The directive is unfollowable as written in any deploy-target repo. Emitter anchors (verify before editing): the \"Batch Gate Deferral\" string occurs in scripts/orchestrate-build-dispatch.sh and scripts/orchestrate-batch-gate.sh, with its contract in context/contracts/batch-gate-stage.md and consumer-side language in agents/general-implementation-agent.md, context/formats/plan-format.md and context/contracts/phase-closure.md, all under extensions/core. Fix so the directive either resolves its narrowing paths through the deploy/source-store boundary or degrades to a repo-appropriate narrowing (the repo's own gate runner, or the full gate set stated as such) rather than naming a path that cannot exist.\n\nDEFECT 2 -- lean-challenge-snapshot.sh VACUOUS-PASS ON A PARENTHESISED GOALS HEADER. Silent-failure mode. The Goals identifier extraction anchors its sed range on `/^-? ?\\*\\*Goals\\*\\*:/` (extensions/lean/scripts/lean-challenge-snapshot.sh, in the R2 goals-extraction helper), so a Goals header carrying a parenthetical before the colon -- `**Goals** (parenthetical):`, the shape the nearest precedent plan uses -- matches no start line and extracts an EMPTY identifier set. The cross-validation against the plan's `## Lean Challenge Statements` block then passes VACUOUSLY instead of failing loudly: a validation gate that silently certifies nothing. Observed in task 465, worked around there by rewriting the plan's header to the bare `**Goals**:` form. Research must settle one apparent tension before fixing: the same script carries a non-empty guard on the extracted goals file that exits 71 with \"no identifiers found under **Goals**:\", which on its face should have fired instead of a vacuous pass -- establish which route (R1 declared-statement route vs R2 git-baseline fallback, --check mode vs snapshot mode) reaches cross-validation with an empty goal set, and fix the extraction anchor AND the guard coverage, not just whichever one is cheapest.\n\nDEFECT 3 -- PLAN-COMPLIANCE SPOT-CHECK INVERTS ON REFUTATION TASKS. The Final Verification Stage's plan-compliance spot-check (step 5 in extensions/lean/agents/lean-implementation-agent.md) extracts backticked identifiers from a plan's Goals block and greps the resolved Lean source roots for `theorem|def|lemma|instance <name>`, marking each absent one `[MISSING]` and setting `compliance_check=failed`. On a refutation task the Goals name what must be ABSENT: task 805's Goals name `ladderRealized`, `LadderCons`, `ladderCons_localRun`, `sorry`, `box`, `stab`. Run literally, the check reports every one `[MISSING]` and fails the task precisely for achieving its goal. Task 805 recorded `compliance_check: \"skipped\"` with a stated reason rather than fabricate a pass. Needs a way to declare a goal's polarity (must-exist vs must-be-absent) or to detect a refutation-shaped plan; note also that the spot-check has no keyword filter, while the snapshot script's extraction filters a Lean-keyword list (so `sorry` and `box` are treated as declarations to find here). Consumers that read the resulting field, and so may need matching changes: extensions/lean/skills/skill-lean-implementation/SKILL.md Stage 6b and extensions/lean/skills/skill-lean-implementation-hard/SKILL.md Stage 6a. Reconcile with the already-filed, narrower task 780 (plan_compliance_spotcheck_probe_scope) at plan time -- that task's file_scope is unset, so the two do not collide mechanically, but the fixes must not contradict each other.\n\nDEFECT 4 -- literature-search.sh --read PATH RESOLUTION. `literature-search.sh --read <chunk_id>` (extensions/literature/scripts/literature-search.sh, the read handler's chunk-file resolution) joins the database directory with the row's `source_path`, then falls back to joining the database directory, `doc_id` and the basename. Neither reaches `sources/<key>/`, where the converted chunk files actually live, so `--read` resolves a caleiro_2013 chunk to .../Literature/sec04_32-mosaics-and-satisfiability.md instead of .../Literature/sources/caleiro_2013/sec04_32-mosaics-and-satisfiability.md and returns \"[Chunk file not found: ...]\". Observed in task 734, worked around by reading the file directly. The same script already derives the source key from the `sources/<dir>/` component of `.path` elsewhere, so the correct resolution is available in-file.\n\nDEFECT 5 (smaller, pre-existing, batch-blocking) -- GATE 16 WARNS ON THE LEAN MANIFEST. The batch gate surfaced `FINDING gate16 lean still declares routing_hard/routing_agents_hard` in this run with no attributable task: it predates the batch and matches none of the batch's modified files, and it stays blocking at batch level until fixed in the source store. Anchors: gate 16 is \"hard_contracts migration warning (routing_hard/routing_agents_hard)\" in extensions/core/scripts/verify-deploy.sh (also registered in scripts/gate-registry.data), and extensions/lean/manifest.json declares `routing_agents_hard`. Read verify-deploy.sh's own comment block above the gate before acting: it records that `routing_hard` is retired, that `routing_agents_hard` remains genuinely consulted by scripts/command-route-agent.sh until the migration lands, and that mapping its VALUES onto `hard_contracts` would be wrong because that is an unrelated manifest key. So the fix is the migration (manifest key plus its consumer), not deleting the declaration to silence the gate.\n\nACCEPTANCE. All five fixed under the resolved source store, each with the evidence its own defect admits: defects 1-3 and 5 have existing test suites under extensions/core/scripts/tests/ and extensions/lean/scripts/tests/ -- extend them rather than asserting the fix by inspection; defect 4 is settled by a measured `--read` of a caleiro_2013 chunk returning content. Gate 16 passes (no extension manifest declares routing_hard/routing_agents_hard) without the declaration having been merely deleted out from under its consumer. No .claude/** file hand-authored. Staging narrow and explicit.\n\nSCHEDULING. file_scope collides with task 768 (lean_challenge_snapshot_chunk_and_unicode_defects), which declares the same lean-challenge-snapshot.sh and its test file. Run in a separate cycle from 768, or fold 768's defects into this round at plan time.",
+      "description": "META TASK. ONE grouped task covering FIVE agent-system defects, deliberately consolidated per Component 0 of docs/reference/standards/multi-task-creation-standard.md: all five are edits to the agent-system SOURCE STORE, so they share an edit target and no named divide reason applies. Requested as a single group by user ruling at the conclusion stage of the batch run that observed them.\n\nEDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's .claude/ tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored file landing under .claude/** is silently wiped by the next regeneration. Read source_dir from .claude-extensions.json and make every fix under that source store at the mirroring path -- re-derive it rather than trusting this note (reading of 2026-10-16: /home/benjamin/.config/nvim/agent-system/extensions/<ext>). Never hand-author under .claude/**. That tree already carries other writers' uncommitted modifications, so stage narrowly: explicit file lists only, never a directory or glob pathspec.\n\nDEFECT 1 -- BATCH GATE DEFERRAL DIRECTIVE NAMES PATHS THAT DO NOT EXIST IN A DEPLOY-TARGET REPO. Highest signal: independently hit by three implement dispatches in one run (tasks 464, 465, 805). The dispatch composer emits a \"Batch Gate Deferral\" directive instructing an implement dispatch to discharge a phase's declared `full` verification tier against a SCOPED tier instead, naming two invocations: `agent-system/extensions/core/scripts/tests/run-all.sh --only SUITE` and `agent-system/extensions/core/scripts/verify-deploy.sh --only-gate N`. Neither path exists in a deploy-target repository such as this one (no agent-system/ tree is present here; the deployed mirrors live at .claude/scripts/), and both scripts cover core's own test suites rather than FormalSystem/**. Each agent improvised a different substitute: two ran the FULL unnarrowed gate set (strictly stronger, so no harm done that run), one ran `verify-deploy.sh --only-gate 4,10`. The directive is unfollowable as written in any deploy-target repo. Emitter anchors (verify before editing): the \"Batch Gate Deferral\" string occurs in scripts/orchestrate-build-dispatch.sh and scripts/orchestrate-batch-gate.sh, with its contract in context/contracts/batch-gate-stage.md and consumer-side language in agents/general-implementation-agent.md, context/formats/plan-format.md and context/contracts/phase-closure.md, all under extensions/core. Fix so the directive either resolves its narrowing paths through the deploy/source-store boundary or degrades to a repo-appropriate narrowing (the repo's own gate runner, or the full gate set stated as such) rather than naming a path that cannot exist.\n\nDEFECT 2 -- lean-challenge-snapshot.sh VACUOUS-PASS ON A PARENTHESISED GOALS HEADER. Silent-failure mode. The Goals identifier extraction anchors its sed range on `/^-? ?\\*\\*Goals\\*\\*:/` (extensions/lean/scripts/lean-challenge-snapshot.sh, in the R2 goals-extraction helper), so a Goals header carrying a parenthetical before the colon -- `**Goals** (parenthetical):`, the shape the nearest precedent plan uses -- matches no start line and extracts an EMPTY identifier set. The cross-validation against the plan's `## Lean Challenge Statements` block then passes VACUOUSLY instead of failing loudly: a validation gate that silently certifies nothing. Observed in task 465, worked around there by rewriting the plan's header to the bare `**Goals**:` form. Research must settle one apparent tension before fixing: the same script carries a non-empty guard on the extracted goals file that exits 71 with \"no identifiers found under **Goals**:\", which on its face should have fired instead of a vacuous pass -- establish which route (R1 declared-statement route vs R2 git-baseline fallback, --check mode vs snapshot mode) reaches cross-validation with an empty goal set, and fix the extraction anchor AND the guard coverage, not just whichever one is cheapest.\n\nDEFECT 3 -- PLAN-COMPLIANCE SPOT-CHECK INVERTS ON REFUTATION TASKS. The Final Verification Stage's plan-compliance spot-check (step 5 in extensions/lean/agents/lean-implementation-agent.md) extracts backticked identifiers from a plan's Goals block and greps the resolved Lean source roots for `theorem|def|lemma|instance <name>`, marking each absent one `[MISSING]` and setting `compliance_check=failed`. On a refutation task the Goals name what must be ABSENT: task 805's Goals name `ladderRealized`, `LadderCons`, `ladderCons_localRun`, `sorry`, `box`, `stab`. Run literally, the check reports every one `[MISSING]` and fails the task precisely for achieving its goal. Task 805 recorded `compliance_check: \"skipped\"` with a stated reason rather than fabricate a pass. Needs a way to declare a goal's polarity (must-exist vs must-be-absent) or to detect a refutation-shaped plan; note also that the spot-check has no keyword filter, while the snapshot script's extraction filters a Lean-keyword list (so `sorry` and `box` are treated as declarations to find here). Consumers that read the resulting field, and so may need matching changes: extensions/lean/skills/skill-lean-implementation/SKILL.md Stage 6b and extensions/lean/skills/skill-lean-implementation-hard/SKILL.md Stage 6a. Reconcile with the already-filed, narrower task 780 (plan_compliance_spotcheck_probe_scope) at plan time -- that task's file_scope is unset, so the two do not collide mechanically, but the fixes must not contradict each other.\n\nDEFECT 4 -- literature-search.sh --read PATH RESOLUTION. `literature-search.sh --read <chunk_id>` (extensions/literature/scripts/literature-search.sh, the read handler's chunk-file resolution) joins the database directory with the row's `source_path`, then falls back to joining the database directory, `doc_id` and the basename. Neither reaches `sources/<key>/`, where the converted chunk files actually live, so `--read` resolves a caleiro_2013 chunk to .../Literature/sec04_32-mosaics-and-satisfiability.md instead of .../Literature/sources/caleiro_2013/sec04_32-mosaics-and-satisfiability.md and returns \"[Chunk file not found: ...]\". Observed in task 734, worked around by reading the file directly. The same script already derives the source key from the `sources/<dir>/` component of `.path` elsewhere, so the correct resolution is available in-file.\n\nDEFECT 5 (smaller, pre-existing, batch-blocking) -- GATE 16 WARNS ON THE LEAN MANIFEST. The batch gate surfaced `FINDING gate16 lean still declares routing_hard/routing_agents_hard` in this run with no attributable task: it predates the batch and matches none of the batch's modified files, and it stays blocking at batch level until fixed in the source store. Anchors: gate 16 is \"hard_contracts migration warning (routing_hard/routing_agents_hard)\" in extensions/core/scripts/verify-deploy.sh (also registered in scripts/gate-registry.data), and extensions/lean/manifest.json declares `routing_agents_hard`. Read verify-deploy.sh's own comment block above the gate before acting: it records that `routing_hard` is retired, that `routing_agents_hard` remains genuinely consulted by scripts/command-route-agent.sh until the migration lands, and that mapping its VALUES onto `hard_contracts` would be wrong because that is an unrelated manifest key. So the fix is the migration (manifest key plus its consumer), not deleting the declaration to silence the gate.\n\nACCEPTANCE. All five fixed under the resolved source store, each with the evidence its own defect admits: defects 1-3 and 5 have existing test suites under extensions/core/scripts/tests/ and extensions/lean/scripts/tests/ -- extend them rather than asserting the fix by inspection; defect 4 is settled by a measured `--read` of a caleiro_2013 chunk returning content. Gate 16 passes (no extension manifest declares routing_hard/routing_agents_hard) without the declaration having been merely deleted out from under its consumer. No .claude/** file hand-authored. Staging narrow and explicit.\n\nSCHEDULING. file_scope collides with task 768 (lean_challenge_snapshot_chunk_and_unicode_defects), which declares the same lean-challenge-snapshot.sh and its test file. Run in a separate cycle from 768, or fold 768's defects into this round at plan time.\n=== EVIDENCE ADDENDUM TO DEFECT 5 (measured in session sess_1793823065_4dcf25, after this record was authored) ===\n\nDEFECT 5 fired again, identically: the batch gate surfaced `FINDING gate16 lean still declares\nrouting_hard/routing_agents_hard` as an unattributed, batch-blocking finding. Two mechanism\ndetails, both read off `verify-deploy.sh`, that the authored text does not yet carry:\n\n(1) WHY A DELIBERATELY NON-BLOCKING GATE STILL BLOCKS THE BATCH -- THE FIX SURFACE IS WIDER THAN\nTHE MANIFEST. gate16 reports through `warn()`, not `fail()`. `warn()`'s own header states it\n\"Increments CHECKS but NEVER FAILURES -- a warning must never flip the verifier's exit code\", and\nit does not. But `warn()` appends to `FINDINGS_LIST` using the SAME `\"FINDING $CURRENT_GATE ...\"`\nprefix `fail()` uses, and the findings interface carries no severity field at all. A batch-gate\nconsumer reading that list therefore cannot distinguish a removal-is-coming nudge from a real\nfailure, and treats it as blocking. So either the findings interface gains a severity distinction\n(so WARN-level findings stop escalating to batch-blocking), or gate16 stops emitting a finding.\nDecide which and record why. Silencing it by deleting the manifest key remains wrong for the\nreason the authored text already gives.\n\n(2) routing_hard IS DECLARED NULL AND STILL TRIPS THE GATE -- A FREE PARTIAL FIX.\n`extensions/lean/manifest.json` carries `\"routing_hard\": null` alongside a populated\n`routing_agents_hard`. gate16's probe is `(has(\"routing_hard\") or has(\"routing_agents_hard\"))`,\nand jq's `has()` returns true for a key present with a NULL value. So the lean manifest trips the\ngate partly on a key that declares nothing. A null-valued `routing_hard` can be deleted without\ntouching any consumer -- nothing can be reading a null -- which is independent of, and far\ncheaper than, the `routing_agents_hard` migration the authored text correctly refuses to\nshortcut. It does not by itself clear the gate while `routing_agents_hard` remains.\n",
       "topic": "agent-system",
       "dependencies": [],
       "file_scope": [
@@ -2049,7 +2050,7 @@
       "status": "not_started",
       "task_type": "meta",
       "title": "Close the recurring stale-handoff defect and find out why the return-meta schema violation left no record",
-      "description": "Close one surface carrying two separately-visible defects in the orchestrate cycle-postflight\ndetection-and-recording path: a stale-handoff detection that has fired six times over four weeks\nwithout a fix, and a second detection that reached the user with no ledger entry behind it.\n\nORIGIN. Recorded as context rather than as a numbered observation in the change request that\n/orchestrate's conclusion stage handed the meta builder for session `sess_1793665477_08dde0`:\n\"the orchestrator detected two of its own defects this run -- HANDOFF_STALE_OR_ABSENT and\nRETURN_META_SCHEMA_VIOLATION (`partial_progress` present while `status='blocked'`), both\nattributed to `agent-system/extensions/core/skills/skill-orchestrate/SKILL.md`, with durable\nrecords in `specs/events.jsonl`.\"\n\nEDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's `.claude/`\ntree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored\nfile landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under\nthe source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but\nknow what re-derivation currently yields: the rule says to read `source_dir` from\n`<project-root>/.claude-extensions.json`, and that file DOES carry it -- per-extension, at\n`.extensions.<name>.source_dir`, not as a top-level key. All seven loaded extensions (core, lean,\nformal, typst, memory, literature, filetypes) resolve to\n`/home/benjamin/.config/nvim/agent-system/extensions/<name>`, so the store root is\n`/home/benjamin/.config/nvim/agent-system` and resolution works exactly as the rule documents.\nRe-derive the path for the extension you are editing with:\n  jq -r '.extensions.core.source_dir' .claude-extensions.json\nA top-level `jq -r '.source_dir'` returns null and must not be read as the key being absent; that\nmistake is what produced an earlier claim of a missing key. If `source_dir` is\nstill absent when this task runs, record that as an observation of its own rather than silently\nhand-authoring under `.claude/**`.\n\n=== ITEM 1 -- HANDOFF_STALE_OR_ABSENT IS RECURRING, NOT A ONE-OFF ===\n\nMEASURED, re-derivable with `grep -c 'HANDOFF_STALE_OR_ABSENT' specs/events.jsonl` (= 6 at this\nrecord's creation). The six records span tasks 711, 748, 749, 788, 820 and 836 and five distinct\nsessions, from 2026-10-06 to 2026-11-03. Every one carries the identical `attributed_source_path`\n(`agent-system/extensions/core/skills/skill-orchestrate/SKILL.md`), the identical `detecting_site`\n(`skill-orchestrate/SKILL.md:cycle-postflight-stale-handoff`) and the same message shape (\"handoff\nmtime <t1> predates this dispatch window <t2>\"). The observed gap ranges from roughly 52 seconds\n(the task 749 record) to roughly 2,000 seconds (the task 748 record). This run's record is\n`evt_1793671238367_eZQVVj` (gap 70 seconds).\n\nSix identical detections over four weeks with no fix IS the finding. Settle which of these it is,\nusing the six records as the sample:\n  (a) the handoff writer does not write when the state machine believes it does;\n  (b) the dispatch-window comparison is wrong (an mtime-vs-window boundary or clock-source\n      mismatch), in which case some or all six are false positives;\n  (c) the detection is correct but harmless and should state what it costs, or be retired.\nThe wide spread of observed gaps is evidence worth engaging: a near-boundary 52s and a 2,000s\nstaleness are unlikely to share one cause, so a single explanation must account for both or the\nsample must be split.\n\n=== ITEM 2 -- THE SECOND DETECTION LEFT NO DURABLE RECORD ===\n\nMEASURED, and it contradicts the origin paragraph's own claim. `grep -c\n'RETURN_META_SCHEMA_VIOLATION' specs/events.jsonl` returns 0, and `grep -rl\n'RETURN_META_SCHEMA_VIOLATION' specs/` matches nothing anywhere under `specs/` -- while item 1's\nrecord from the SAME run and the SAME session is present in `specs/events.jsonl`. The defect class\nis real and has named sites: `extensions/core/scripts/orchestrate-cycle-postflight.sh`,\n`extensions/core/scripts/system-defect-record.sh`,\n`extensions/core/context/patterns/system-defect-discrimination.md` and\n`extensions/core/context/formats/return-metadata-file.md` all reference it, and\n`extensions/core/scripts/tests/test-orchestrate-cycle-postflight.sh` exercises it.\n\nSo a detection was reported with no ledger write behind it. Determine WHICH, because the two have\ndifferent fixes and guessing picks the wrong one:\n  (a) the recording path for this class is broken (the check fires, but the\n      `system-defect-record.sh` call is absent, mis-ordered, or swallowed); or\n  (b) the detection was narrated by the dispatching agent from the schema rule in\n      `return-metadata-file.md` without any script-level check running at all, in which case the\n      gap is that the check does not exist where it was believed to exist.\nVerify by reading the actual code path before changing it.\n\n=== WHY ONE RECORD ===\n\nBoth items are the same detect-and-record surface in the orchestrate cycle-postflight path, and\nitem 2 is precisely the reason item 1's kind of evidence cannot be assumed to exist: a recurrence\ncount is only trustworthy if every detection writes. Fixing item 1 against a ledger that silently\ndrops a class is fixing against an unreliable sample.\n\nCONTEXT for item 2's trigger shape: the originating task ended `[BLOCKED]` at phase 10 in this run\n(commit `aff37327b`, \"orchestration dispatch blocked\"), which is the\n`partial_progress`-present-while-`status='blocked'` pair the check names.\n\nTERRITORY. Task 834 holds `orchestrate-cycle-plan.sh`, `orchestrate-build-aux-dispatch.sh`,\n`orchestrate-triage-classify.sh` and `docs/architecture/orchestrate-state-machine.md` in its own\n`file_scope`. This record deliberately stays on `orchestrate-cycle-postflight.sh` and\n`system-defect-record.sh` so the two do not collide. If the fix turns out to require any of those\nfiles, add the dependency edge (`update-task-status.sh --depends-on-add`) rather than taking the\noverlap.\n\nEVIDENCE CORRECTION (verified against specs/events.jsonl by the dispatching orchestrator, after this task was authored): the recurrence is substantially wider than six records. system_defect events carrying HANDOFF_STALE_OR_ABSENT span at least TWELVE distinct task numbers -- 507, 631, 644, 655, 703, 708, 711, 748, 749, 788, 820, 836 -- with task 703 alone firing ten times, and the earliest records predate 2026-09-29 rather than starting 2026-10-06. Count distinct occurrences with: jq -rc \"select((.. | strings?) | test(\\\"HANDOFF_STALE_OR_ABSENT\\\")) | (.task // .project_number)\" specs/events.jsonl | sort | uniq -c | sort -rn\n\nThis strengthens rather than weakens the authored observation that one explanation may not cover every firing: the spread crosses many more tasks, sessions and dates than six, and a single stale-predecessor story is unlikely to account for a task that fired ten times. Treat the twelve-task spread as the investigation surface, not the six-record one.",
+      "description": "Close one surface carrying two separately-visible defects in the orchestrate cycle-postflight\ndetection-and-recording path: a stale-handoff detection that has fired six times over four weeks\nwithout a fix, and a second detection that reached the user with no ledger entry behind it.\n\nORIGIN. Recorded as context rather than as a numbered observation in the change request that\n/orchestrate's conclusion stage handed the meta builder for session `sess_1793665477_08dde0`:\n\"the orchestrator detected two of its own defects this run -- HANDOFF_STALE_OR_ABSENT and\nRETURN_META_SCHEMA_VIOLATION (`partial_progress` present while `status='blocked'`), both\nattributed to `agent-system/extensions/core/skills/skill-orchestrate/SKILL.md`, with durable\nrecords in `specs/events.jsonl`.\"\n\nEDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's `.claude/`\ntree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored\nfile landing under `.claude/**` is silently wiped by the next regeneration. Make every edit under\nthe source store at the mirroring path. RE-DERIVE the store rather than trusting this note, but\nknow what re-derivation currently yields: the rule says to read `source_dir` from\n`<project-root>/.claude-extensions.json`, and that file DOES carry it -- per-extension, at\n`.extensions.<name>.source_dir`, not as a top-level key. All seven loaded extensions (core, lean,\nformal, typst, memory, literature, filetypes) resolve to\n`/home/benjamin/.config/nvim/agent-system/extensions/<name>`, so the store root is\n`/home/benjamin/.config/nvim/agent-system` and resolution works exactly as the rule documents.\nRe-derive the path for the extension you are editing with:\n  jq -r '.extensions.core.source_dir' .claude-extensions.json\nA top-level `jq -r '.source_dir'` returns null and must not be read as the key being absent; that\nmistake is what produced an earlier claim of a missing key. If `source_dir` is\nstill absent when this task runs, record that as an observation of its own rather than silently\nhand-authoring under `.claude/**`.\n\n=== ITEM 1 -- HANDOFF_STALE_OR_ABSENT IS RECURRING, NOT A ONE-OFF ===\n\nMEASURED, re-derivable with `grep -c 'HANDOFF_STALE_OR_ABSENT' specs/events.jsonl` (= 6 at this\nrecord's creation). The six records span tasks 711, 748, 749, 788, 820 and 836 and five distinct\nsessions, from 2026-10-06 to 2026-11-03. Every one carries the identical `attributed_source_path`\n(`agent-system/extensions/core/skills/skill-orchestrate/SKILL.md`), the identical `detecting_site`\n(`skill-orchestrate/SKILL.md:cycle-postflight-stale-handoff`) and the same message shape (\"handoff\nmtime <t1> predates this dispatch window <t2>\"). The observed gap ranges from roughly 52 seconds\n(the task 749 record) to roughly 2,000 seconds (the task 748 record). This run's record is\n`evt_1793671238367_eZQVVj` (gap 70 seconds).\n\nSix identical detections over four weeks with no fix IS the finding. Settle which of these it is,\nusing the six records as the sample:\n  (a) the handoff writer does not write when the state machine believes it does;\n  (b) the dispatch-window comparison is wrong (an mtime-vs-window boundary or clock-source\n      mismatch), in which case some or all six are false positives;\n  (c) the detection is correct but harmless and should state what it costs, or be retired.\nThe wide spread of observed gaps is evidence worth engaging: a near-boundary 52s and a 2,000s\nstaleness are unlikely to share one cause, so a single explanation must account for both or the\nsample must be split.\n\n=== ITEM 2 -- THE SECOND DETECTION LEFT NO DURABLE RECORD ===\n\nMEASURED, and it contradicts the origin paragraph's own claim. `grep -c\n'RETURN_META_SCHEMA_VIOLATION' specs/events.jsonl` returns 0, and `grep -rl\n'RETURN_META_SCHEMA_VIOLATION' specs/` matches nothing anywhere under `specs/` -- while item 1's\nrecord from the SAME run and the SAME session is present in `specs/events.jsonl`. The defect class\nis real and has named sites: `extensions/core/scripts/orchestrate-cycle-postflight.sh`,\n`extensions/core/scripts/system-defect-record.sh`,\n`extensions/core/context/patterns/system-defect-discrimination.md` and\n`extensions/core/context/formats/return-metadata-file.md` all reference it, and\n`extensions/core/scripts/tests/test-orchestrate-cycle-postflight.sh` exercises it.\n\nSo a detection was reported with no ledger write behind it. Determine WHICH, because the two have\ndifferent fixes and guessing picks the wrong one:\n  (a) the recording path for this class is broken (the check fires, but the\n      `system-defect-record.sh` call is absent, mis-ordered, or swallowed); or\n  (b) the detection was narrated by the dispatching agent from the schema rule in\n      `return-metadata-file.md` without any script-level check running at all, in which case the\n      gap is that the check does not exist where it was believed to exist.\nVerify by reading the actual code path before changing it.\n\n=== WHY ONE RECORD ===\n\nBoth items are the same detect-and-record surface in the orchestrate cycle-postflight path, and\nitem 2 is precisely the reason item 1's kind of evidence cannot be assumed to exist: a recurrence\ncount is only trustworthy if every detection writes. Fixing item 1 against a ledger that silently\ndrops a class is fixing against an unreliable sample.\n\nCONTEXT for item 2's trigger shape: the originating task ended `[BLOCKED]` at phase 10 in this run\n(commit `aff37327b`, \"orchestration dispatch blocked\"), which is the\n`partial_progress`-present-while-`status='blocked'` pair the check names.\n\nTERRITORY. Task 834 holds `orchestrate-cycle-plan.sh`, `orchestrate-build-aux-dispatch.sh`,\n`orchestrate-triage-classify.sh` and `docs/architecture/orchestrate-state-machine.md` in its own\n`file_scope`. This record deliberately stays on `orchestrate-cycle-postflight.sh` and\n`system-defect-record.sh` so the two do not collide. If the fix turns out to require any of those\nfiles, add the dependency edge (`update-task-status.sh --depends-on-add`) rather than taking the\noverlap.\n\nEVIDENCE CORRECTION (verified against specs/events.jsonl by the dispatching orchestrator, after this task was authored): the recurrence is substantially wider than six records. system_defect events carrying HANDOFF_STALE_OR_ABSENT span at least TWELVE distinct task numbers -- 507, 631, 644, 655, 703, 708, 711, 748, 749, 788, 820, 836 -- with task 703 alone firing ten times, and the earliest records predate 2026-09-29 rather than starting 2026-10-06. Count distinct occurrences with: jq -rc \"select((.. | strings?) | test(\\\"HANDOFF_STALE_OR_ABSENT\\\")) | (.task // .project_number)\" specs/events.jsonl | sort | uniq -c | sort -rn\n\nThis strengthens rather than weakens the authored observation that one explanation may not cover every firing: the spread crosses many more tasks, sessions and dates than six, and a single stale-predecessor story is unlikely to account for a task that fired ten times. Treat the twelve-task spread as the investigation surface, not the six-record one.\n=== EVIDENCE ADDENDUM (measured in session sess_1793823065_4dcf25, cycle 2 of task 761, after this record was authored) ===\n\nITEM 2's question (a) -- \"the recording path for this class is broken (the check fires, but the\n`system-defect-record.sh` call is absent, mis-ordered, or swallowed)\" -- is now answered\nAFFIRMATIVELY for a DIFFERENT defect class, with a concrete mechanism that very likely\ngeneralizes to RETURN_META_SCHEMA_VIOLATION. Read this before re-investigating item 2 from\nscratch.\n\nOBSERVED: postflight detected HANDOFF_VALIDATION_FAILED, then printed \"Note: system-defect\nrecording failed (non-fatal)\". No durable record reached `specs/events.jsonl`.\n\nMECHANISM, read off the code. In `orchestrate-cycle-postflight.sh` the HANDOFF_VALIDATION_FAILED\ncall to `system-defect-record.sh` passes `--dispatched-agent \"$agent_name\"` but NOT\n`--attributed-path`. Compare the three sibling call sites in the SAME script -- the return-meta\npartial-progress site, the stray-handoff site and the stale-handoff site -- each of which passes\n`--attributed-path \"$attributed_path\"`. `system-defect-record.sh` requires at least one of the\ntwo and, per its own header, REFUSES (exit 3, \"Signal B attribution unresolvable\") when the\nsupplied value does not resolve to a path under `agent-system/extensions/**`. Its resolver for\n`--dispatched-agent` globs `\"$PROJECT_ROOT\"/agent-system/extensions/*/agents/<agent>.md`. In a\ndeploy-target repository such as this one there is NO `agent-system/` tree at the project root\n(confirm: `ls -d agent-system` is empty; the source store lives at\n`/home/benjamin/.config/nvim/agent-system`), so `--dispatched-agent` alone can never resolve\nhere and the recorder refuses every time. The `2>/dev/null` on the call discards the refusal\nmessage, leaving only the non-fatal note.\n\nCONSEQUENCE FOR THIS RECORD'S OWN METHOD. The pattern to hunt is a call site that omits\n`--attributed-path` and relies on `--dispatched-agent` alone; audit EVERY\n`system-defect-record.sh` call site in the script for that omission rather than fixing the one\nclass that happened to be observed. The masking `2>/dev/null` is why this was invisible and is\nworth removing or redirecting on these calls. This also means any recurrence count taken from\n`specs/events.jsonl` UNDERSTATES reality for precisely those classes whose call sites omit\n`--attributed-path` -- which sharpens this record's own stated worry that item 1's sample cannot\nbe trusted until item 2 is fixed.\n\nRELATED, NO EDGE: the validator whose false negative triggered this firing is owned by the open\nrecord `validate_handoff_crash_and_blockers_shape`, whose file_scope is deliberately disjoint\nfrom this one (it takes `validate-handoff.sh`, the handoff schema and the lean hard agent\ninstruction; it takes neither file this record owns).\n",
       "effort": "medium",
       "parent_task": 836,
       "topic": "agent-system",
@@ -2636,6 +2637,366 @@
         ],
         "scope_blind_collapsed_count": 453,
         "note": "scope-blind rows collapsed to a count for argv size; full verdict retained alongside this record"
+      }
+    },
+    {
+      "project_number": 857,
+      "project_name": "validate_handoff_crash_and_blockers_shape",
+      "status": "not_started",
+      "task_type": "meta",
+      "title": "Fix validate-handoff.sh crash-as-false-negative and settle the canonical blockers shape",
+      "description": "META TASK. Fix a validator that reports a well-formed handoff as invalid, and settle the\ncanonical `blockers` shape that three different authorities currently disagree about.\n\n=== MEASURED SYMPTOM, RE-DERIVABLE ===\n\nDuring cycle 2 postflight of the ladder-realization work, `orchestrate-cycle-postflight.sh` ran\n`validate-handoff.sh` against that task's `.orchestrator-handoff.json`. The validator printed\neleven consecutive `[PASS]` lines and not one `[FAIL]`, then postflight emitted:\n  ERROR: HANDOFF VALIDATION FAILED - <file> fails validate-handoff.sh's required-field checks\nReproduce (read-only):\n  bash .claude/scripts/validate-handoff.sh specs/761_ladder_realization_theorem/.orchestrator-handoff.json; echo \"EXIT=$?\"\nObserved: EXIT=5, and the output STOPS after \"Blockers array present with 3 entry(s)\" - the\n\"All blockers have required fields\" line, the Validation Summary block, and the final verdict\nline are all absent. The validator never reaches its own summary.\n\n=== ROOT CAUSE, PINNED - NOT A HYPOTHESIS ===\n\n`validate-handoff.sh` sets `set -euo pipefail`. Its Check 7 block, having confirmed a non-empty\n`blockers` array, loops over the entries probing each as an OBJECT:\n  has_phase=$(jq -r \".blockers[$i].phase // \\\"__MISSING__\\\"\" \"$HANDOFF_FILE\" 2>/dev/null)\nIn the observed handoff the `blockers` entries are STRINGS, not objects. Indexing a string with\n`.phase` is a jq runtime error (\"Cannot index string with ...\"), jq exits 5, `2>/dev/null`\ndiscards the message, and under `set -e` the failed command substitution terminates the script\nimmediately with that exit 5. Confirm the per-entry failure directly:\n  jq -r '.blockers[0].phase' specs/761_ladder_realization_theorem/.orchestrator-handoff.json; echo \"EXIT=$?\"\nNote that 5 is not a documented exit code: the script's own header documents only 0 (valid),\n1 (invalid) and 3 (file not found). The script therefore has an undocumented crash exit that is\nindistinguishable, to any caller testing `-ne 0`, from a legitimate validation failure.\n\n=== WHY THE CONSEQUENCE IS WORSE THAN A WRONG MESSAGE ===\n\nThe postflight call site treats any non-zero exit as a required-field failure, then tries to name\nthe failing fields by parsing `^\\[FAIL\\]` lines out of the captured output. A crash produces no\nFAIL lines, so that parse yields an empty list and the `--extra-detail-json` flag is omitted by\nthe call site's own never-guess rule. The result is a HANDOFF_VALIDATION_FAILED system defect\nraised against a handoff that is in fact well-formed, carrying no evidence of what failed,\nbecause nothing did. A defect channel that reports healthy inputs as defective erodes trust in\nevery other entry it carries; this one firing is enough to warrant the fix.\n\n=== THE REAL DISAGREEMENT: WHAT SHAPE IS `blockers`? ===\n\nSettle this FIRST; it decides which side of the fix is the non-conforming one. Three authorities\ndisagree, measured:\n  (a) `context/schemas/orchestrator-handoff-schema.json` - `blockers.items` is `type: \"object\"`\n      with `required: [\"phase\", \"target\"]`, plus optional `verbatim_goal`, `what_was_tried`,\n      `why_it_failed`. Its own description calls this \"Canonical wrap-up/hard-mode blocker shape\".\n  (b) `extensions/lean/agents/lean-implementation-hard-agent.md` - instructs, in prose: \"On\n      `partial` or `blocked`: populate `blockers` with verbatim goal text from plan checklist.\"\n      Followed literally, that yields an array of STRINGS, which is what the live handoff holds.\n  (c) `validate-handoff.sh` Check 7 - probes `.phase`/`.target` unguarded, i.e. assumes (a) and\n      crashes rather than failing on (b).\nSo the writer's instruction and the schema contradict each other, and the validator cannot survive\nthe contradiction. Do not resolve this by guarding the validator alone: that would leave a writer\nproducing data its own schema rejects, silently. Decide which shape is canonical, then conform the\nother two sides to it, and say in the plan which authority was chosen and why.\n\nA fourth data point to weigh, because it cuts against (b): the open record\n`postflight_detail_free_blocking_partial_issue_entry` (task 770) asserts as measured fact that\n\"the live returns carry `{phase, target, verbatim_goal, what_was_tried, why_it_failed}`\" and that\njq's `join` on them errors. Both that record and this one observed a jq exit 5 on `blockers`, from\nOPPOSITE shape assumptions - which means the shape varies across writers or across time. Establish\nthe actual distribution before ruling; a ruling that explains only one of the two observations is\nincomplete. Check the object-shaped and string-shaped producers separately rather than assuming one\nglobal shape.\n\n=== STRUCTURAL HARDENING, IN SCOPE ===\n\nIndependently of the shape ruling: an unguarded `jq` under `set -euo pipefail` with `2>/dev/null`\nconverts any data-shape surprise into a silent, undocumented, non-zero exit with no diagnostic.\nMake the validator detect a shape it cannot probe and report it as a real `[FAIL]` line with a\ndocumented exit code, so the summary block is always reached and callers can distinguish\n\"invalid handoff\" from \"validator crashed\". Removing or redirecting the error-swallowing\n`2>/dev/null` on these probes is in scope and is the reason this was invisible.\n\n=== TERRITORY - DO NOT TAKE THESE FILES ===\n\n`orchestrate-cycle-postflight.sh` is claimed by three open records (tasks 770, 823 and 842) and\n`system-defect-record.sh` by task 842. This record deliberately declares NEITHER, and confines\nitself to the validator, the schema and the lean hard agent's instruction. If the fix turns out to\nrequire changing how the call site interprets the validator's exit status - a reasonable outcome,\nsince distinguishing crash from failure is only useful if the caller acts on it - add a dependency\nedge with `update-task-status.sh --depends-on-add` rather than editing a file another record owns.\nRecommended sequencing to raise at plan time: this record's shape ruling is load-bearing for task\n770, whose fix renders blocker entries into prose on the assumption they are objects. Settle the\nshape here first, or fold the two together deliberately.\n\n=== EDIT TARGET, BINDING ===\n\nPer `rules/source-store-deploy-boundary.md` this repository's `.claude/` tree is a gitignored,\ndisposable deploy artifact regenerated from a source store; a file hand-authored under `.claude/**`\nis silently wiped by the next regeneration and the edit will appear to succeed while having no\nlasting effect. Edit under the source store at the mirroring path. Re-derive it rather than\ntrusting this note - `source_dir` lives PER EXTENSION, not at top level:\n  jq -r '.extensions.core.source_dir' .claude-extensions.json\n  jq -r '.extensions.lean.source_dir' .claude-extensions.json\nA top-level `jq -r '.source_dir'` returns null; that is the key being nested, not absent. Reading\nof this record's creation: `/home/benjamin/.config/nvim/agent-system/extensions/{core,lean}`.\nAfter editing, redeploy with `bash .claude/scripts/deploy-headless.sh` and confirm the result is\na clean verify. Stage narrowly: explicit file lists only, never a directory or glob pathspec.\n\n=== ACCEPTANCE ===\n\n- The reproduction command above exits 0 with the Validation Summary block present, OR exits with\n  a documented code after printing at least one `[FAIL]` line naming the real problem. A silent\n  non-zero with only PASS lines is the defect and must not survive.\n- Extend the validator's test coverage (do not replace existing cases) with one string-shaped\n  `blockers` fixture and one object-shaped fixture, and show the string-shaped case fails against\n  the unmodified script.\n- The shape ruling is recorded in the plan with its chosen authority, and whichever of the schema\n  or the lean hard agent instruction is non-conforming is actually amended - not left to drift.\n- The validator's header exit-code list matches its real exit paths.\n\n=== DELIVERABLE HYGIENE ===\n\nEvery edited file is outside `specs/**`, so its prose must carry no task-number references\n(`rules/no-task-references-in-deliverables.md`) and no record-versioning language\n(`rules/no-record-versioning-in-deliverables.md`). Cite durable anchors - file names, function\nnames, check names, field names, flag names - only.\n\n=== PROVENANCE ===\n\nObserved live in session `sess_1793823065_4dcf25`, cycle 2 of task 761, and approved at the\norchestrate-lead level as an agent-system change request. The run's detected-defect entry carries\ndefect_class HANDOFF_VALIDATION_FAILED, detecting_site\n`skill-orchestrate/SKILL.md:cycle-postflight-handoff-validation`. The mathematical work of the\noriginating task closed green (full `lake build` exit 0, sorry 0, five repo gates passing); this\nis a fault in the agent system, not in that work.\n",
+      "topic": "agent-system",
+      "dependencies": [],
+      "file_scope": [
+        "agent-system/extensions/core/scripts/validate-handoff.sh",
+        "agent-system/extensions/core/scripts/tests/test-validate-handoff.sh",
+        "agent-system/extensions/core/context/schemas/orchestrator-handoff-schema.json",
+        "agent-system/extensions/lean/agents/lean-implementation-hard-agent.md"
+      ],
+      "artifacts": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "validate_handoff_crash_and_blockers_shape",
+          "project_number": null,
+          "title": "Fix validate-handoff.sh crash-as-false-negative and settle the canonical blockers shape"
+        },
+        "verdicts": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 827,
+            "project_name": "plan_self_consistency_and_artifact_existence",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4577777777777778
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 752,
+            "project_name": "roadmap_integration_regenerate_silent_abort",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.49122807017543857
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 751,
+            "project_name": "file_scope_declaration_hygiene_remediation",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4367816091954023
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 753,
+            "project_name": "conclusion_stage_drops_null_resolution_entries",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4679245283018868
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 767,
+            "project_name": "lake_build_guard_stale_replay_env_lean_file",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4088888888888889
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 768,
+            "project_name": "lean_challenge_snapshot_chunk_and_unicode_defects",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4822222222222222
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 769,
+            "project_name": "plan_format_blocked_gate_and_status_ownership",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.41304347826086957
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 770,
+            "project_name": "postflight_detail_free_blocking_partial_issue_entry",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4955555555555556
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 777,
+            "project_name": "phase_commit_drops_own_plan_artifact",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.48
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 780,
+            "project_name": "plan_compliance_spotcheck_probe_scope",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.46153846153846156
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 783,
+            "project_name": "bounded_block_edit_index_and_assert",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.43777777777777777
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.52
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 813,
+            "project_name": "lean_plan_challenge_block_authoring_contract",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.46444444444444444
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 814,
+            "project_name": "lean_decide_authoring_and_probe_guard_facts",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 822,
+            "project_name": "bounded_waiter_detach_form_pid_fidelity",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4533333333333333
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 825,
+            "project_name": "validate_artifact_argument_order_fault",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.43037974683544306
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 826,
+            "project_name": "literature_search_zero_result_degraded_contract",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.44222222222222224
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 834,
+            "project_name": "orchestrate_aux_carrier_and_implement_readmission",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.5466666666666666
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 835,
+            "project_name": "plan_format_baseline_relative_gate_criteria",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.43333333333333335
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 840,
+            "project_name": "lean_unusedarguments_narrow_remedy_route",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.40370370370370373
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 841,
+            "project_name": "lean_lsp_index_state_probe_and_evidence_tier",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4181184668989547
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 842,
+            "project_name": "orchestrate_stale_handoff_recurrence_and_missing_defect_record",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4346590909090909
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 843,
+            "project_name": "bounded_waiter_lint_beyond_rule_two",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4444444444444444
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 845,
+            "project_name": "git_commit_scoped_gate_refusal_diagnostic",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.46
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 847,
+            "project_name": "file_scope_external_source_store_containment",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4153846153846154
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 848,
+            "project_name": "test_sweep_external_source_store_failures",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4652173913043478
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 808,
+            "project_name": "c16_unused_finite_instance_shiftfinitetype",
+            "discharging_artifact": {
+              "path": "specs/808_c16_unused_finite_instance_shiftfinitetype/summaries/01_drop-unused-finite-binder-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: unused Finite binder dropped, full gate set green, nolints baseline untouched."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.42857142857142855
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 754,
+            "project_name": "plan_postflight_file_scope_widening_silent",
+            "discharging_artifact": {
+              "path": "specs/754_plan_postflight_file_scope_widening_silent/summaries/01_file-scope-widening-notice-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary covering all three phases, verification evidence, and plan deviations (invocation-path notes and two unrelated pre-existing gate findings triaged as exclusions)."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.40710382513661203
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 755,
+            "project_name": "plan_files_to_modify_unenforced",
+            "discharging_artifact": {
+              "path": "specs/755_plan_files_to_modify_unenforced/summaries/01_files-to-modify-enforcement-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary covering all 5 phases, the two-tier validator check, the task-410 plan repair and file_scope backfill, the plan-format.md documentation, and the two sibling-test-suite fixture fixes discovered during Phase 5."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4583333333333333
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 776,
+            "project_name": "task_reference_lint_baseline",
+            "discharging_artifact": {
+              "type": "research",
+              "path": "specs/776_task_reference_lint_baseline/reports/01_derivation-from-conclusion-stage.md",
+              "summary": "Derivation note from the /orchestrate conclusion stage, channel (c)"
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4444444444444444
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 698,
+            "project_name": "file_scope_declaration_hygiene",
+            "discharging_artifact": {
+              "path": "specs/698_file_scope_declaration_hygiene/summaries/01_file-scope-declaration-hygiene-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary: what changed, decisions, deviations, Phase 4 EDIT/GATE classification table, residue table, and the named out-of-repo follow-on."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.48372093023255813
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 692,
+            "project_name": "investigate_lake_build_guard_false_green",
+            "discharging_artifact": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4766355140186916
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 612,
+            "project_name": "prevent_dispatched_agents_ending_turn_on_background_waits",
+            "discharging_artifact": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4523809523809524
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 611,
+            "project_name": "fix_git_commit_scoped_dropping_staged_deletions",
+            "discharging_artifact": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.49230769230769234
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.43333333333333335
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 110,
+            "project_name": "widen_todo_entry_format_context",
+            "discharging_artifact": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 150,
+            "project_name": "task_order_auto_sync",
+            "discharging_artifact": {
+              "path": "specs/150_task_order_auto_sync/summaries/01_task-order-auto-sync-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 4 phases: /task Part C replacement, lean4 skill regeneration calls, --sync drift correction, and live drift fix"
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4090909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 556,
+            "project_name": "predispatch_review_archived_dependency_false_positive",
+            "discharging_artifact": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.44171779141104295
+          }
+        ],
+        "scope_blind_collapsed": 442,
+        "collapse_note": "scope-blind verdicts collapsed to a count by the creating surface: audit-task-proposals.sh emits one per corpus record declaring no file_scope, unconditionally, and the full document (140794 bytes) exceeded Linux MAX_ARG_STRLEN on state-write.sh --audit-verdict. All signal-bearing verdicts are retained verbatim."
       }
     }
   ],
