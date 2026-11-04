@@ -2172,7 +2172,7 @@ failed.
 
 ---
 
-### Phase 12.3: Widen `repsCnt` and Land `rk_of_count_drift` [NOT STARTED]
+### Phase 12.3: Widen `repsCnt` and Land `rk_of_count_drift` [COMPLETED]
 
 **NEW IN THIS REVISION, ENTERABLE NOW, AND GATED ON NOTHING OPEN.** It repairs the one defect the
 new research input compiled — `repsCnt`'s bound, not the lemma (findings 16-19) — and it is the
@@ -2199,20 +2199,20 @@ theorem rk_of_count_drift (Tc Tn P B : ℕ) (px py : Bool) (c n c' n' : ℕ)
 ```
 
 **Tasks**:
-- [ ] Widen `repsCnt` to
+- [x] Widen `repsCnt` to *(completed)*
       `(Finset.range (Tc + Tn + 3*P + 2*B + 5)) ×ˢ (Finset.range (Tc + Tn + 3*P + 2*B + 5))`, and
       record in its docstring the COMPILED reason the old bound was replaced, in both of the two
       directions finding 17 names (the saturated-gap direction at `P = 0` and the residue-coupling
       direction), citing the probe Phase 12.4 lands by PATH and by declaration name. The docstring
       keeps its existing "a COUNT of candidate pairs, bounded by the parameters themselves, not a
       bound on anything" sentence: the widening does not change what kind of object this is.
-- [ ] Re-close the four declarations stated over `repsCnt` in the same module — `rkStepB`, `RKb`,
+- [x] Re-close the four declarations stated over `repsCnt` in the same module — `rkStepB`, `RKb`, *(completed: no proof mentions the numeral; all four re-closed unchanged)*
       `rk_iff` and `rkStepB_iff`, with `decidableRK` and `RK` beside them. **None of their proofs
       should mention the numeral**: they are stated over `repsCnt` abstractly and `rk_iff`'s proof
       unfolds `RK`/`RKb` rather than computing. If any proof does turn out to depend on the bound
       numerically, that is a finding about that proof and is recorded as such, not patched by
       tuning the bound.
-- [ ] Prove `rk_of_count_drift` by the recorded construction, in its three stages, converting to
+- [x] Prove `rk_of_count_drift` by the recorded construction, in its three stages, converting to *(deviation: altered — `kappa_eq_components`, `eq_or_both_ge_of_min_eq`, `kappa_eq_of_shift` and `clipIdx_regime_of_eq` are all declared in `LadderAgree.lean`, which IMPORTS `CounterQuotient.lean`, so none is citable from this phase's own target module; the needed content is landed locally under honest names — `kappa_eq_of_components` (constructor direction), `clipIdx_sub_sub`, `clipIdx_of_add_le`, `clipIdx_of_le_sub`, `mod_sub_cancel`, `add_mod_mod_cancel`, `mem_repsCnt`, `exists_nShift`, `exists_aRep` — under the phase's own escape clause; `clipIdx_lt` is cited as landed. The two destructors were not needed at all: the proof must PROVE class equalities, not read them)*
       `RK` through `rk_iff` at the end. Write `L = P + 1` and `T* = max Tn (Tc + L + B)`:
       - the `n`-side, ONE common downward shift: with `m = min n n'`, take `s = 0` if `m ≤ T*` and
         `s = (m - T*) / L` otherwise, and set `b = n - s*L`, `b' = n' - s*L`. Residues mod `L` are
@@ -2230,17 +2230,17 @@ theorem rk_of_count_drift (Tc Tn P B : ℕ) (px py : Bool) (c n c' n' : ℕ)
       `kappa_eq_of_shift` instantiated at the REDUCED pair (the down-shift form), and `clipIdx_lt`
       and `clipIdx_regime_of_eq` for the gap sub-cases. No new helper about `clipIdx` beyond
       `clipIdx_lt` is needed; if one turns out to be, land it under its own honest name here.
-- [ ] Record the `ParamsOk` decision in `rk_of_count_drift`'s own docstring, with finding 18's
+- [x] Record the `ParamsOk` decision in `rk_of_count_drift`'s own docstring, with finding 18's *(completed)*
       reason stated (`(K1)` is a divisibility condition into `P + 1`; `(K2)` and `(K3)` never
       mention `P`; so `ParamsOk` bounds `P` from below only and the refutation's direction stays
       open to it), so a later round does not re-propose adding it.
-- [ ] Retire `LadderRealize.lean`'s open-sub-question sentence (`:47`, "Whether `repsCnt`'s own
+- [x] Retire `LadderRealize.lean`'s open-sub-question sentence *(deviation: altered — the same sentence's own paragraph also asserted "no theorem of this library derives an `RK` edge from an actual `Count`/`Drift` step at arbitrary counters", which this phase makes false; that clause is corrected in the same pass rather than left standing for Phase 12.5, which still owns the "NOT landed" framing of conditions (2)-(4). The independent-reduction counterexample sentence is kept verbatim)* (`:47`, "Whether `repsCnt`'s own
       bound `Tc + Tn + P + B + 2` suffices for that construction is itself open and is not assumed
       anywhere here") and put the compiled answer in its place, naming the widened bound and the
       lemma. **Keep** the docstring's independent-reduction counterexample sentence
       (`c = 100`, `n = 101`, `B = 3`, `Tc = Tn = 1`, `P = 0`): it is about a different mechanism and
       is still correct.
-- [ ] Wire the new declaration (axiom pin, generated inventory blocks, `status.typ`). No C14 entry
+- [x] Wire the new declaration (axiom pin, generated inventory blocks, `status.typ`) *(deviation: altered — `check-module-invariants.sh --emit-inventory` rewrote three generated blocks, not one: the RaySummary README plus `FormalSystem/Metalogic/README.md` and the repository `README.md`, because the line-count change propagates up the inventory chain and a stale block fails the INV check)*. No C14 entry
       and no `docs/theorem-index.md` row: this phase lands no filed Goal.
 
 **Prohibited workarounds**: do NOT add `ParamsOk`, a size hypothesis, a regime hypothesis or any

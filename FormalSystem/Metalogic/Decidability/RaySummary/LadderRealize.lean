@@ -28,24 +28,28 @@ closure type to truth at the witnessing point), `real_certLocK` (condition (1)) 
 `real_certBoxK` (condition (6)). Neither condition mentions a relation between two members, which
 is why both are available here.
 
-NOT landed, and the reason is one shared obstruction rather than three: conditions (2), (3) and
-(4) — `certBiInfK`, `certFwdK` and `certBwdK` — all quantify `relK`, whose counter conjunct is
-`RK Tc Tn P B (pend x.1) (pend y.1) x.2.2 y.2.2`. `RK` is the image of `Count`/`Drift` taken over
-the BOUNDED representative set `repsCnt Tc Tn P B`, and no theorem of this library derives an
-`RK` edge from an actual `Count`/`Drift` step at arbitrary counters —
-`CounterQuotient.lean`'s own `R_K` section says so in terms, and assigns it to the gated
-counter-lift lemma's obligations. The missing step is a bounded-representative lemma: given
-`Count px py c n c'` and `Drift n n'`, exhibit `x, y ∈ repsCnt Tc Tn P B` with
+NOT landed here: conditions (2), (3) and (4) — `certBiInfK`, `certFwdK` and `certBwdK` — all
+quantify `relK`, whose counter conjunct is `RK Tc Tn P B (pend x.1) (pend y.1) x.2.2 y.2.2`. `RK`
+is the image of `Count`/`Drift` taken over the BOUNDED representative set `repsCnt Tc Tn P B`,
+and the step from an actual `Count`/`Drift` step at arbitrary counters to an `RK` edge at the two
+classes IS now landed, as `CounterQuotient.lean`'s `rk_of_count_drift`: given
+`Count px py c n c'` and `Drift n n'` it exhibits `x, y ∈ repsCnt Tc Tn P B` with
 `kappa x = kappa (c, n)`, `kappa y = kappa (c', n')`, `Count px py x.1 x.2 y.1` and
-`Drift x.2 y.2`. It is not a reduction coordinate by coordinate: `kappa`'s gap coordinate
-`clipIdx B c n` couples the two counters, so reducing each counter independently within its own
-threshold and residue can move the gap (at `c = 100`, `n = 101`, `B = 3`, `Tc = Tn = 1`, `P = 0`
-the independent reduction sends a gap of `1` to a gap of `0`). A COMMON downward shift by a
-multiple of `P + 1` does preserve all five coordinates — that is `kappa_eq_of_shift`
-(`LadderAgree.lean`) read downward — but it is limited by whichever counter reaches its own
-threshold first, so the construction needs the saturated-gap regime as a second case. Whether
-`repsCnt`'s own bound `Tc + Tn + P + B + 2` suffices for that construction is itself open and is
-not assumed anywhere here.
+`Drift x.2 y.2`, with no parameter, size or regime hypothesis. It is not a reduction coordinate
+by coordinate: `kappa`'s gap coordinate `clipIdx B c n` couples the two counters, so reducing
+each counter independently within its own threshold and residue can move the gap (at `c = 100`,
+`n = 101`, `B = 3`, `Tc = Tn = 1`, `P = 0` the independent reduction sends a gap of `1` to a gap
+of `0`). A COMMON downward shift by a multiple of `P + 1` does preserve all five coordinates —
+that is `kappa_eq_of_shift` (`LadderAgree.lean`) read downward, `clipIdx_sub_sub` the gap half of
+it — but it is limited by whichever counter reaches its own threshold first, so the construction
+needs the saturated-gap regime as a second case. `repsCnt`'s own bound answers the sizing
+question that case raises, and the answer is compiled rather than open: the narrower
+`Tc + Tn + P + B + 2` does NOT suffice — three `decide`-checked witnesses refute it at the frozen
+bound in the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-reps-bound-refutation.lean` — and `repsCnt` is
+stated at the widened `Tc + Tn + 3*P + 2*B + 5`, which `rk_of_count_drift`'s construction
+discharges. Nothing in this module assumes either figure; both are read from
+`CounterQuotient.lean`.
 
 ## The ladder's structural liveness, and the shape the backward half is retained in
 

@@ -1910,4 +1910,23 @@ schema `CellLEZeroConstOfKappaEq`. The standard profile on each. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.real_certBoxK
 
+/-! ### The bounded-representative lemma of `R_K`
+
+`rk_of_count_drift` is the one fact `RK`'s bounded-representative definition does not give for
+free: every actual `Count`/`Drift` step at arbitrary counters is an `RK` edge at the two classes.
+It carries NO parameter, size or regime hypothesis, and it is proved by construction rather than
+by `decide` — a `decide` over `RK` is `M^4`-shaped in the representative bound `M`, so no general
+proof by enumeration exists and a concrete one would prove nothing general. The pin matters
+because this lemma is the shared missing link of `Real`'s three relational conditions, and
+because the representative bound it is stated over was WIDENED to make it provable: the narrower
+`Tc + Tn + P + B + 2` is refuted by three `decide`-checked witnesses at the frozen bound
+(`specs/evidence/seam-gluing-ray-product/ladder-reps-bound-refutation.lean`). The standard
+profile. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.rk_of_count_drift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.rk_of_count_drift
+
 end BimodalTest.Metalogic

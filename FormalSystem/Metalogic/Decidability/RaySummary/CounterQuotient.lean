@@ -180,9 +180,36 @@ instance decidableDrift (n n' : ℕ) : Decidable (Drift n n') := by
   unfold Drift; infer_instance
 
 /-- The counter representatives the image is taken over: a COUNT of candidate pairs, bounded by
-the parameters themselves, not a bound on anything. -/
+the parameters themselves, not a bound on anything.
+
+**Why the range is `Tc + Tn + 3*P + 2*B + 5` and not `Tc + Tn + P + B + 2`.** The narrower bound
+is REFUTED, and the refutation is compiled rather than argued: the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-reps-bound-refutation.lean` freezes the narrower
+bound as its own local `Probe761W.repsCntPre`, derives `Probe761W.RKPre` over it, and exhibits
+three `decide`-checked tuples at which an actual `Count`/`Drift` step has NO representative pair
+inside that range — `Probe761W.witnessA_not_RKPre`, `Probe761W.witnessB_not_RKPre` and
+`Probe761W.witnessC_not_RKPre`, with `Probe761W.witnessA_RK`, `Probe761W.witnessB_RK` and
+`Probe761W.witnessC_RK` the positive counterparts at the widened definition below. The failure
+runs in two independent directions:
+
+* the **saturated-gap** direction, which needs no residue at all: at `P = 0` the gap coordinate
+  `clipIdx B c n` saturates at `±B`, and a representative that keeps the gap saturated on BOTH
+  the pre-step and the post-step pair must sit at least `B + 2` above the reduced next deadline,
+  which the narrower range's single `+ B` cannot pay for (`Probe761W.witnessC_not_RKPre`, named
+  as the `P = 0` half in its own docstring);
+* the **residue-coupling** direction: the two counters must be moved by a COMMON multiple of
+  `P + 1` whenever the gap is exact, so the reduced pair's first coordinate is pinned to the
+  residue class of `c` and may need a further `P + 1` of room above whichever threshold the
+  construction clears (`Probe761W.witnessA_not_RKPre`, whose least admissible first coordinate
+  is `9`, exactly one above the narrower bound's own value `Tc + Tn + P + B + 2 = 9`).
+
+The widened figure is what `rk_of_count_drift`'s construction below actually discharges: `3*P`
+pays for the three independent residue roundings (the `n`-side shift, the gap-saturated `a`-side
+rounding, and the `a - 1` reading of it), `2*B` for the gap window read on both the pre-step and
+the post-step pair, and the `+5` for the margins the `Count` arms consume. Widening does not
+change what kind of object this is: it is still a COUNT of candidate pairs. -/
 def repsCnt (Tc Tn P B : ℕ) : Finset (ℕ × ℕ) :=
-  (Finset.range (Tc + Tn + P + B + 2)) ×ˢ (Finset.range (Tc + Tn + P + B + 2))
+  (Finset.range (Tc + Tn + 3 * P + 2 * B + 5)) ×ˢ (Finset.range (Tc + Tn + 3 * P + 2 * B + 5))
 
 /-- The inner half of `R_K`: the representatives `y` one step on from a fixed `x`. Split from
 `RKb` because the two bounded existentials nested in one term exceed instance resolution's
@@ -223,6 +250,234 @@ theorem rk_iff (Tc Tn P B : ℕ) (px py : Bool) (k k' : CK Tc Tn P B) :
     exact ⟨x, hx, (rkStepB_iff Tc Tn P B px py k k' x).mp h⟩
   · rintro ⟨x, hx, h⟩
     exact ⟨x, hx, (rkStepB_iff Tc Tn P B px py k k' x).mpr h⟩
+
+/-! ### The bounded-representative lemma
+
+`rk_of_count_drift` is the one fact `RK`'s definition does not give for free: every actual
+`Count`/`Drift` step at arbitrary counters IS an `RK` edge at the two classes. It is proved by
+exhibiting a representative pair inside `repsCnt`, in the three stages the helpers below carry —
+one common downward shift on the next-deadline side, one residue-respecting choice on the
+current-deadline side by gap regime, and the post-step coordinate read off the `Count` arm. This
+is NOT the counter-lift lemma and does not become it: nothing here relates `kappa`, `relK` or
+`RK` to `Rlad`, `RladAdm`, `ladderModel`, `tpOf` or `cellAt`, and the positionwise statement
+shape stays refuted (`no_positionwise_lift`). -/
+
+/-- A class equality read off its five coordinates — the CONSTRUCTOR direction, the converse of
+`LadderAgree.lean`'s `kappa_eq_components`, which is the destructor. It is stated here rather
+than cited from there because that module imports this one. -/
+theorem kappa_eq_of_components (Tc Tn P B c n c' n' : ℕ)
+    (h1 : min c Tc = min c' Tc) (h2 : c % (P + 1) = c' % (P + 1))
+    (h3 : min n Tn = min n' Tn) (h4 : n % (P + 1) = n' % (P + 1))
+    (h5 : clipIdx B c n = clipIdx B c' n') :
+    kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') := by
+  simp only [kappa, Prod.mk.injEq, Fin.mk.injEq]
+  exact ⟨h1, h2, h3, h4, h5⟩
+
+/-- **A COMMON downward shift leaves the gap coordinate alone.** The gap reads a difference, so
+shifting both counters by the same amount — exactly, without truncation — moves neither the
+order nor the distance. This is the mechanism the exact-gap regime of `rk_of_count_drift` runs
+on, and the reason the two counters may NOT be reduced independently. -/
+theorem clipIdx_sub_sub (B c n m : ℕ) (hc : m ≤ c) (hn : m ≤ n) :
+    clipIdx B (c - m) (n - m) = clipIdx B c n := by
+  unfold clipIdx; split <;> split <;> omega
+
+/-- The gap coordinate saturated upward: at a next deadline at least `B` above the countdown,
+the gap reads `2 * B` whatever the two values are. -/
+theorem clipIdx_of_add_le (B c n : ℕ) (h : c + B ≤ n) : clipIdx B c n = 2 * B := by
+  unfold clipIdx; split <;> omega
+
+/-- The gap coordinate saturated downward: at a countdown at least `B` above the next deadline,
+the gap reads `0` whatever the two values are. -/
+theorem clipIdx_of_le_sub (B c n : ℕ) (h : n + B ≤ c) : clipIdx B c n = 0 := by
+  unfold clipIdx; split <;> omega
+
+/-- Subtracting a multiple of the modulus leaves the residue coordinate alone. -/
+theorem mod_sub_cancel (c k P : ℕ) (hdvd : (P + 1) ∣ k) (h : k ≤ c) :
+    (c - k) % (P + 1) = c % (P + 1) :=
+  (Nat.modEq_iff_dvd' (by omega : c - k ≤ c)).mpr (by rwa [Nat.sub_sub_self h])
+
+/-- Rounding a summand to its residue leaves the sum's residue alone — the fact the
+gap-saturated regime's residue-respecting choice of representative turns on. -/
+theorem add_mod_mod_cancel (t x P : ℕ) :
+    (t + x % (P + 1)) % (P + 1) = (t + x) % (P + 1) := by
+  simp [Nat.add_mod]
+
+/-- Membership in `repsCnt`, read off the two range bounds. -/
+theorem mem_repsCnt (Tc Tn P B u v : ℕ) (hu : u < Tc + Tn + 3 * P + 2 * B + 5)
+    (hv : v < Tc + Tn + 3 * P + 2 * B + 5) : (u, v) ∈ repsCnt Tc Tn P B := by
+  unfold repsCnt
+  exact Finset.mem_product.mpr ⟨Finset.mem_range.mpr hu, Finset.mem_range.mpr hv⟩
+
+/-- **Stage one of the construction: the `n`-side common downward shift.** For a drifting pair
+of next deadlines, one multiple `k` of the modulus brings BOTH members down to within `P + 1` of
+the threshold `Θ` while keeping them at or above it — or leaves them alone when they already lie
+below it. The shift is COMMON to the two members, so the drift survives it. -/
+theorem exists_nShift (Θ P n n' : ℕ) (hd : Drift n n') :
+    ∃ k : ℕ, (P + 1) ∣ k ∧ k ≤ n ∧ k ≤ n' ∧
+      (k = 0 ∨ (Θ ≤ n - k ∧ Θ ≤ n' - k)) ∧
+      n - k ≤ Θ + (P + 1) ∧ n' - k ≤ Θ + (P + 1) := by
+  unfold Drift at hd
+  by_cases hm : min n n' ≤ Θ
+  · exact ⟨0, dvd_zero _, by omega, by omega, Or.inl rfl, by omega, by omega⟩
+  · refine ⟨(P + 1) * ((min n n' - Θ) / (P + 1)), dvd_mul_right _ _, ?_, ?_, ?_, ?_, ?_⟩ <;>
+    · have hdm := Nat.div_add_mod (min n n' - Θ) (P + 1)
+      have hmd : (min n n' - Θ) % (P + 1) < P + 1 := Nat.mod_lt _ (Nat.succ_pos P)
+      omega
+
+/-- **Stage two of the construction: the `a`-side choice, by gap regime.** Given the `n`-side
+shift `k` of `exists_nShift` at the threshold `Tc + Tn + B + (P + 1)`, a bounded first
+coordinate `a` carries `c`'s class at the shifted next deadline — and, when `c` is positive,
+carries `c - 1`'s class at the shifted drifted next deadline too, which is what the
+pending-to-pending `Count` arm reads. Three regimes, and they are what the widened bound pays
+for:
+
+* `n + B + 2 ≤ c` — the gap is saturated DOWNWARD with margin, on the pre-step and the post-step
+  pair alike, so `a` is free of the difference and is taken as the least member of `c`'s residue
+  class at or above `max (Tc + 1) ((n - k) + B + 2)`. This is the regime that drives the bound;
+* `c + B ≤ n` — the gap is saturated UPWARD, so `a` is the least member of `c`'s residue class at
+  or above `Tc + 1` (or `c` itself when `c ≤ Tc`, where the clipped coordinate is an exact
+  reading and admits no other representative);
+* otherwise the gap is EXACT and the difference is pinned, so the only admissible choice is the
+  same common shift the `n`-side took: `a = c - k`.
+
+The `Tc + 1` floor rather than `Tc` is forced by the post-step reading: the pending-to-pending
+arm sets the post-step first coordinate to `a - 1`, which must still sit at or above `Tc` for the
+clipped countdown coordinate to agree. -/
+theorem exists_aRep (Tc Tn P B c n n' k : ℕ)
+    (hd : Drift n n') (hdvd : (P + 1) ∣ k)
+    (hkn : k ≤ n) (hkn' : k ≤ n')
+    (hbig : k = 0 ∨ (Tc + Tn + B + (P + 1) ≤ n - k ∧ Tc + Tn + B + (P + 1) ≤ n' - k))
+    (hle : n - k ≤ Tc + Tn + B + 2 * (P + 1)) :
+    ∃ a : ℕ, a < Tc + Tn + 3 * P + 2 * B + 5 ∧
+      min a Tc = min c Tc ∧ a % (P + 1) = c % (P + 1) ∧
+      clipIdx B a (n - k) = clipIdx B c n ∧
+      (c = 0 → a = 0) ∧
+      (1 ≤ c → 1 ≤ a ∧ min (a - 1) Tc = min (c - 1) Tc ∧
+        (a - 1) % (P + 1) = (c - 1) % (P + 1) ∧
+        clipIdx B (a - 1) (n' - k) = clipIdx B (c - 1) n') := by
+  unfold Drift at hd
+  rcases lt_or_ge (n + B + 1) c with halpha | hnotalpha
+  · by_cases hcT : c ≤ max (Tc + 1) ((n - k) + B + 2)
+    · refine ⟨c, by omega, rfl, rfl, ?_, fun h => h, fun _ => ⟨by omega, rfl, rfl, ?_⟩⟩
+      · rw [clipIdx_of_le_sub B c (n - k) (by omega), clipIdx_of_le_sub B c n (by omega)]
+      · rw [clipIdx_of_le_sub B (c - 1) (n' - k) (by omega),
+            clipIdx_of_le_sub B (c - 1) n' (by omega)]
+    · have hT1 : Tc + 1 ≤ max (Tc + 1) ((n - k) + B + 2) := le_max_left _ _
+      have hT2 : (n - k) + B + 2 ≤ max (Tc + 1) ((n - k) + B + 2) := le_max_right _ _
+      have hr : (c - max (Tc + 1) ((n - k) + B + 2)) % (P + 1) < P + 1 :=
+        Nat.mod_lt _ (Nat.succ_pos P)
+      have hrle : (c - max (Tc + 1) ((n - k) + B + 2)) % (P + 1)
+          ≤ c - max (Tc + 1) ((n - k) + B + 2) := Nat.mod_le _ _
+      refine ⟨max (Tc + 1) ((n - k) + B + 2)
+          + (c - max (Tc + 1) ((n - k) + B + 2)) % (P + 1),
+        by omega, by omega, ?_, ?_, fun h => by omega, fun _ => ⟨by omega, by omega, ?_, ?_⟩⟩
+      · rw [add_mod_mod_cancel]; congr 1; omega
+      · rw [clipIdx_of_le_sub B _ (n - k) (by omega), clipIdx_of_le_sub B c n (by omega)]
+      · rw [show max (Tc + 1) ((n - k) + B + 2)
+              + (c - max (Tc + 1) ((n - k) + B + 2)) % (P + 1) - 1
+            = (max (Tc + 1) ((n - k) + B + 2) - 1)
+              + (c - max (Tc + 1) ((n - k) + B + 2)) % (P + 1) from by omega,
+          add_mod_mod_cancel]
+        congr 1; omega
+      · rw [clipIdx_of_le_sub B _ (n' - k) (by omega),
+            clipIdx_of_le_sub B (c - 1) n' (by omega)]
+  · rcases le_or_gt (c + B) n with hbeta | hgamma
+    · by_cases hcT : c ≤ Tc
+      · refine ⟨c, by omega, rfl, rfl, ?_, fun h => h, fun _ => ⟨by omega, rfl, rfl, ?_⟩⟩
+        · rw [clipIdx_of_add_le B c (n - k) (by omega), clipIdx_of_add_le B c n (by omega)]
+        · rw [clipIdx_of_add_le B (c - 1) (n' - k) (by omega),
+              clipIdx_of_add_le B (c - 1) n' (by omega)]
+      · have hr : (c - (Tc + 1)) % (P + 1) < P + 1 := Nat.mod_lt _ (Nat.succ_pos P)
+        have hrle : (c - (Tc + 1)) % (P + 1) ≤ c - (Tc + 1) := Nat.mod_le _ _
+        refine ⟨(Tc + 1) + (c - (Tc + 1)) % (P + 1),
+          by omega, by omega, ?_, ?_, fun h => by omega, fun _ => ⟨by omega, by omega, ?_, ?_⟩⟩
+        · rw [add_mod_mod_cancel]; congr 1; omega
+        · rw [clipIdx_of_add_le B _ (n - k) (by omega), clipIdx_of_add_le B c n (by omega)]
+        · rw [show (Tc + 1) + (c - (Tc + 1)) % (P + 1) - 1
+              = Tc + (c - (Tc + 1)) % (P + 1) from by omega, add_mod_mod_cancel]
+          congr 1; omega
+        · rw [clipIdx_of_add_le B _ (n' - k) (by omega),
+              clipIdx_of_add_le B (c - 1) n' (by omega)]
+    · have hkc : k ≤ c := by omega
+      refine ⟨c - k, by omega, by omega, mod_sub_cancel c k P hdvd hkc,
+        clipIdx_sub_sub B c n k hkc hkn, fun h => by omega,
+        fun _ => ⟨by omega, by omega, ?_, ?_⟩⟩
+      · rw [show c - k - 1 = (c - 1) - k from by omega]
+        exact mod_sub_cancel (c - 1) k P hdvd (by omega)
+      · rw [show c - k - 1 = (c - 1) - k from by omega]
+        exact clipIdx_sub_sub B (c - 1) n' k (by omega) hkn'
+
+set_option maxHeartbeats 400000 in
+-- The proof runs the four `Count` arms over `exists_aRep`'s three gap regimes, and every arm
+-- closes five coordinate equations by `omega` against a context carrying the shift's own
+-- disjunction; the default budget runs out partway through the second arm.
+/-- **THE BOUNDED-REPRESENTATIVE LEMMA.** Every actual `Count`/`Drift` step at arbitrary
+counters is an `RK` edge at the two classes. The two stages above supply the representative pair,
+and the third stage is the `Count` arm itself: a non-pending successor sets the post-step
+countdown to `0` (and the pre-step one too, when the predecessor was pending), a
+pending-to-pending step sets it to `a - 1`, and a pending successor of an idle position hands it
+the reduced next deadline.
+
+**`ParamsOk` is NOT a hypothesis here, and must not be added.** It cannot close any gap this
+statement has, because it does not bound `P` from above: `(K1)` (`paramsOkK1`) is a DIVISIBILITY
+condition into `P + 1`, and `(K2)` and `(K3)` (`paramsOkK2`, `paramsOkK3`) never mention `P` at
+all, so `ParamsOk` constrains `P` from below only — while the refutation of the narrower
+`repsCnt` bound runs in the direction of LARGER `P` (and, at `Probe761W.witnessC_not_RKPre`,
+at `P = 0`, where `ParamsOk`'s own `not_paramsOk_allZero` already fails for an unrelated reason).
+Adding a parameter, size or regime hypothesis would weaken the statement without buying anything;
+the construction above needs none. -/
+theorem rk_of_count_drift (Tc Tn P B : ℕ) (px py : Bool) (c n c' n' : ℕ)
+    (hc : Count px py c n c') (hd : Drift n n') :
+    RK Tc Tn P B px py (kappa Tc Tn P B (c, n)) (kappa Tc Tn P B (c', n')) := by
+  rw [rk_iff]
+  obtain ⟨k, hdvd, hkn, hkn', hbig, hlen, hlen'⟩ :=
+    exists_nShift (Tc + Tn + B + (P + 1)) P n n' hd
+  have hdU : n' = n ∨ n' = n + 1 ∨ n' + 1 = n := hd
+  have hbTn : min (n - k) Tn = min n Tn := by omega
+  have hb'Tn : min (n' - k) Tn = min n' Tn := by omega
+  have hbTc : min (n - k) Tc = min n Tc := by omega
+  obtain ⟨a, ha_lt, ha_min, ha_mod, ha_clip, ha_zero, ha_pred⟩ :=
+    exists_aRep Tc Tn P B c n n' k hd hdvd hkn hkn' hbig (by omega)
+  have hbmod : (n - k) % (P + 1) = n % (P + 1) := mod_sub_cancel n k P hdvd hkn
+  have hb'mod : (n' - k) % (P + 1) = n' % (P + 1) := mod_sub_cancel n' k P hdvd hkn'
+  have hbclip : clipIdx B (n - k) (n' - k) = clipIdx B n n' :=
+    clipIdx_sub_sub B n n' k hkn hkn'
+  have hbB : clipIdx B 0 (n' - k) = clipIdx B 0 n' := by
+    rcases hbig with h | h
+    · rw [h]; simp
+    · rw [clipIdx_of_add_le B 0 (n' - k) (by omega), clipIdx_of_add_le B 0 n' (by omega)]
+  have hbkappa : kappa Tc Tn P B (n - k, n' - k) = kappa Tc Tn P B (n, n') :=
+    kappa_eq_of_components _ _ _ _ _ _ _ _ hbTc hbmod hb'Tn hb'mod hbclip
+  have hakappa : kappa Tc Tn P B (a, n - k) = kappa Tc Tn P B (c, n) :=
+    kappa_eq_of_components _ _ _ _ _ _ _ _ ha_min ha_mod hbTn hbmod ha_clip
+  have hbltM : n - k < Tc + Tn + 3 * P + 2 * B + 5 := by omega
+  have hb'ltM : n' - k < Tc + Tn + 3 * P + 2 * B + 5 := by omega
+  have hdrift : Drift (n - k) (n' - k) := by unfold Drift; omega
+  cases py with
+  | false =>
+    have hc0 : c' = 0 ∧ (px = true → c = 0) := by simpa [Count] using hc
+    refine ⟨(a, n - k), mem_repsCnt _ _ _ _ _ _ ha_lt hbltM,
+      (0, n' - k), mem_repsCnt _ _ _ _ _ _ (by omega) hb'ltM, ?_, hdrift, hakappa, ?_⟩
+    · simp only [Count, Bool.false_eq_true, if_false]
+      exact ⟨trivial, fun hpx => ha_zero (hc0.2 hpx)⟩
+    · rw [hc0.1]
+      exact kappa_eq_of_components _ _ _ _ _ _ _ _ rfl rfl hb'Tn hb'mod hbB
+  | true =>
+    cases px with
+    | true =>
+      have hcc : c' + 1 = c := by simpa [Count] using hc
+      obtain ⟨ha1, hamin1, hamod1, haclip1⟩ := ha_pred (by omega)
+      refine ⟨(a, n - k), mem_repsCnt _ _ _ _ _ _ ha_lt hbltM,
+        (a - 1, n' - k), mem_repsCnt _ _ _ _ _ _ (by omega) hb'ltM, ?_, hdrift, hakappa, ?_⟩
+      · simp only [Count, if_true]; omega
+      · rw [show c' = c - 1 from by omega]
+        exact kappa_eq_of_components _ _ _ _ _ _ _ _ hamin1 hamod1 hb'Tn hb'mod haclip1
+    | false =>
+      have hcc : c' = n := by simpa [Count] using hc
+      refine ⟨(a, n - k), mem_repsCnt _ _ _ _ _ _ ha_lt hbltM,
+        (n - k, n' - k), mem_repsCnt _ _ _ _ _ _ hbltM hb'ltM, ?_, hdrift, hakappa, ?_⟩
+      · simp only [Count, if_true, Bool.false_eq_true, if_false]
+      · rw [hcc]; exact hbkappa
 
 /-! ## Saturated classes and the cycle lengths (K1) quantifies -/
 
