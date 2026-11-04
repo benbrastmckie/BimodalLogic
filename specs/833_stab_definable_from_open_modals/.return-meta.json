@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/833_stab_definable_from_open_modals/reports/01_stab-definable-from-open-modals.md",
-      "summary": "Transcription research for landing stab_iff_ofut_opast and its five siblings: probe recompiled and axioms re-measured (including the sixth declaration the probe does not print), the mirror route shown to be an import cycle, C15's undocumented Paper:-line obligation surfaced, ledger axiom-column vocabulary pinned, and both verification gates re-baselined per-check."
+      "type": "plan",
+      "path": "specs/833_stab_definable_from_open_modals/plans/01_stab-definable-from-open-modals.md",
+      "summary": "4-phase, 2.5-hour transcription plan: six definability declarations into OpenTruth.lean and OpenValidity.lean, README and theorem-index documentation surfaces, full verification and axiom audit."
+    }
+  ],
+  "next_steps": "Run /orchestrate 833 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "A docs/theorem-index.md row in this repository imposes a round-trip obligation on the declaration site that is easy to discover only at gate time: check-module-invariants.sh's second C15 assertion requires every ledger-row declaration to carry a 'Paper: <label>' line inside its own /-- doc comment, and for an unlabelled formalization-native result the value must start with '- ('. The checker walks back from the declaration over any @[...] attribute lines to the preceding -/, then to the opening /--, and requires a line matching ^\\s*Paper: (.+)$ inside that block. Consequence for planning: the Paper: line must be written in the same edit as the declaration, never as a documentation afterthought, or a batch of ledger rows produces one C15 failure per row after the Lean work already looks finished. Two companion conventions travel with it: the Axioms cell abbreviates only [propext, Classical.choice, Quot.sound] as 'pcq' and writes anything else out literally (no 'p'/'pq' tokens exist), and a generated README inventory block's Description cells are hand-maintained in place while its Lines cells are generator-owned.",
+      "category": "PATTERN",
+      "source_artifact": "specs/833_stab_definable_from_open_modals/plans/01_stab-definable-from-open-modals.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["theorem-index", "C15", "paper-label", "check-module-invariants", "ledger-row", "generated-inventory"]
     }
   ],
   "metadata": {
     "session_id": "sess_1793830217_548036_833",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.5,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "dispatch_seq": 2
 }

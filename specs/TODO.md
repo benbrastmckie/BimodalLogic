@@ -127,7 +127,7 @@ next_project_number: 861
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-833 [RESEARCHED] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
+833 [PLANNED] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 854 [RESEARCHED] — Decide whether the open-future modal ▷ is L⁺-definable
   └─ 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe... (see above)
@@ -168,15 +168,39 @@ next_project_number: 861
 ---
 
 ### 859. Qtime open future definability base dense
-- **Effort**: high
+- **Effort**: medium
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: None
+- **Dependencies**: Task 854
 - **Parent**: Task 854
 - **Research**: [859_qtime_open_future_definability_base_dense/reports/01_qtime-open-future-definability.md]
 
-**Description**: Settle whether the open-future modal ▷ (and its mirror ◁) is L⁺-definable on the Base and Dense frame classes, where the ZTime/RTime argument fails. The positive ZTime/RTime verdict rests on Gabbay separation (GHR Thm 10.2.9 over ℤ, Thm 10.3.20 over Dedekind-complete time) plus the elimination ▷(α ∨ β) ↔ α ∨ ⊡β; that route is closed over ℚ-time, since Until/Since is not separable over the rationals (Rabinovich 2014 §7) and separation ⇒ expressive completeness (GHR Thm 9.3.1), while ℚ is a TemporalOrder. Pursue the two routes named in the parent task's report 01_open-future-definability-verdict.md: (R3a) a Stavi/γ_π⁺-style candidate ▷φ together with a ℚ-time bisimulation discharging the invariance half of a negative result; (R3b) a ▷-specific elimination that avoids full separation. Deliver a definite verdict per class (definable / not definable) with a compiled-live Lean probe for whichever half is constructive, reusing the paste / paste_agreeUpTo / paste_agreeFrom / IsPurePast / IsPureFuture / truth_congr_agreeUpTo infrastructure in PlusPasting.lean that the ZTime probe already exercised. Do not touch FormalSystem/ or Tests/ outside a probes/ directory. The Base-class language ruling and the L^▷ proof-system work remain gated on this verdict. Audit note: the backlog audit flagged duplicate-of-open against 559 (nondeterministic_canonical_model_tm_star_completeness) at semantic 0.69 with no shared file_scope; judged a vocabulary overlap, not a duplicate — 559 builds a canonical model for TM* completeness, this task decides an expressiveness question.
+**Description**: IMPLEMENTATION TASK: land the open-future NON-definability result in the Lean library, so the verdict survives /todo archival. The research is DONE and must not be redone -- its verdict is in reports/01_qtime-open-future-definability.md and its machine-checked content is in probes/01_ofut-marker-gadget-and-nondefinability.lean (419 lines, sorry-free, no axiom declarations, imports FormalSystem.OpenLanguage and FormalSystem.Semantics.Frames.TranslationProduct).
+
+THE VERDICT ALREADY SETTLED (do not reopen): the open-future modal is NOT L-plus-definable at Base and not at Dense. With the companion positive result at ZTime and RTime, the class split closes -- the modal is a genuine expressive extension of L-plus over non-Dedekind-complete time. The mechanism is a marker gadget: theta pins the evaluation point exactly, nu names the closed past, and a backward run predicate names run membership without naming the run's lower endpoint, so the modal's existential dual reaches a gap-anchored past property that Until/Since cannot.
+
+DELIVERABLE: a new library module FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean carrying the probe's content, re-expressed as library code with docstrings, plus:
+  (1) its import line added to the Independence aggregator so lake build compiles it;
+  (2) a module row in FormalSystem/Metalogic/Independence/README.md, matching that file's existing row shape;
+  (3) theorem-index rows (see ROW DISCIPLINE below);
+  (4) an axiom baseline pinned by scripts/check-module-invariants.sh (the pcq pinned:C14 token the other rows carry), re-measured, never typed by hand.
+
+WHY THIS MODULE AND THIS DIRECTORY. Independence/ is where the repository files undefinability results: stabNotDefinable (the stability modal is not L-definable) and deterministic_not_plusDefinable are the direct analogues, one operator over, and both already carry pinned theorem-index rows. This result is the same genre and belongs beside them. It is NOT evidence-probe material: scripts/check-evidence-probes.sh exists for records of why the DECISION LAYER has its shape, not for results about the logic, so do not file it under specs/evidence/.
+
+LAYERING IS ALREADY CHECKED AND LEGAL: Metalogic is layer 3; OpenLanguage is layer 0-1 and Semantics is layer 1, so both imports are downward edges. scripts/check-metalogic-cycles.sh counts only upward edges, so its recorded 8-line allowlist needs NO change. Do not edit that allowlist. This will be the first Metalogic-to-OpenLanguage import in the library -- legal, but new, so confirm the cycles check still passes.
+
+WHAT IS CONDITIONAL, AND THE ROW DISCIPLINE THAT FOLLOWS. The central theorem is conditional: given hmarkers (an enough-worlds condition on the frame) and hinexpr (inexpressibility of the gap-anchored property), the modal is not definable. hinexpr is the PAPER STEP -- a collapse argument derived in the report in the style of GHR Lemma 12.4.2 rather than quoted from it, and NOT formalized. Earned pinned rows: the marker-gadget reduction theorem in its conditional form, and the four-colour clock frame's regularity over every temporal order. The unconditional verdict "not definable at Base/Dense" is NOT machine-checked and must NOT get a pinned row claiming it is -- it belongs in the module docstring, citing the report, with hinexpr named as the open hypothesis. A row that overstates this is worse than no row.
+
+A FRAME-CONSTRAINT FACT WORTH KEEPING IN THE DOCSTRING: the Limit constraint forbids the naive permissive rational-time frame -- with states as atom colours, a dense-duration history is a uniformly discrete step function, so nothing accumulates and there is no gap to anchor at. The repository's own colourClock removes this: the clock discharges Limit, finiteness discharges Saturation, giving a regular four-colour frame over every duration.
+
+DEPENDS ON the companion elimination task, which owns the shared vocabulary (PastDet, FutDet, OfutP, OpastP) in FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean. Import those rather than redefining them; the probe's local copies are to be dropped in favour of the imported ones.
+
+RELATED, NOT BLOCKING: the colourClock history bridge-lemma task would turn hmarkers from a hypothesis into an applied lemma, shrinking this module's assumption surface. It can land before or after this task.
+
+GUARDRAILS: no sorry, no new axiom, no vacuous definition. Scope is the new module, the Independence aggregator, that directory's README, docs/theorem-index.md and the invariants baseline. Do not touch Expressiveness/ (the companion task owns it) and do not edit the metalogic-cycles allowlist.
+
+AFTER THIS LANDS, the report and probe under this task directory are safely disposable: their durable content lives in the module, its docstring and the ledger, which is the point of this task.
 
 ---
 
@@ -564,29 +588,34 @@ CONTENTION. `specs/evidence/seam-gluing-ray-product/` and `scripts/check-evidenc
 ---
 
 ### 854. Decide whether the open-future modal ▷ is L⁺-definable
+- **Effort**: medium
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md]
 
-**Description**: RESEARCH TASK, verdict-first, and it is the GATE on the whole L^▷ language ruling: is the open-future modal ▷ definable in L⁺? Reports and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/. Run with `/orchestrate 854 --research --lit`.
+**Description**: IMPLEMENTATION TASK: land the positive open-future elimination result in the Lean library, so the verdict survives /todo archival. The research is DONE and must not be redone -- its verdict is in reports/01_open-future-definability-verdict.md and its machine-checked content is in probes/01_ofut-elimination-and-translation.lean (341 lines, sorry-free, imports FormalSystem.OpenLanguage only).
 
-THIS IS ITEM (P0b) OF TASK 559, PROMOTED TO ITS OWN RECORD because it gates both of that task's remaining cheap checks ((P0c), (P0d)) and the engine work behind them, and because a negative verdict is the only thing that licenses spending anything further on L^▷ as a distinct language. 559 states the dependency in its own (P0) block: "A POSITIVE answer retires the LANGUAGE RULING; run this before (P0c)/(P0d)."
+THE VERDICT ALREADY SETTLED (do not reopen): the open-future modal is L-plus-definable at ZTime and RTime. The route is Gabbay separation (GHR Thm 10.2.9 over the integers, Thm 10.3.20 over Dedekind-complete time) plus the elimination of a disjunction under the modal.
 
-THE QUESTION, STATED EXACTLY. ▷ is the manuscript's open-future modal (`sub:RestrictedModalities`), interpreted over `|τ⟩_x` = the worlds agreeing with the world of evaluation at every time up to and including the present (`AgreeUpTo`), built semantically at `FormalSystem/OpenLanguage/OpenTruth.lean` (`ofut_iff`). Ask whether there is a translation `t : OpenFormula → PlusFormula` agreeing with `OpenTruthAt` on the ▷-fragment -- equivalently, whether ▷ is expressible by some L⁺ formula uniformly in its argument. Settle it either way and say which.
+DELIVERABLE: a new library module FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean carrying the probe's content, re-expressed as library code with docstrings, plus:
+  (1) its import line added to the Expressiveness aggregator so lake build compiles it;
+  (2) a module row in FormalSystem/Metalogic/Expressiveness/README.md, matching that file's existing row shape;
+  (3) theorem-index rows (see ROW DISCIPLINE below);
+  (4) an axiom baseline pinned by scripts/check-module-invariants.sh (the pcq pinned:C14 token the other rows carry), re-measured, never typed by hand.
 
-WHY IT IS GENUINELY OPEN, AND WHAT DOES NOT ANSWER IT. Nothing in the tree establishes undefinability, and the task must not assume it. The landed strictness and ordering results separate the OPERATORS, not the LANGUAGES: `stab_of_box`, `ofut_of_stab`, `opast_of_stab` give the pointwise ordering `□ ⟹ ⊡ ⟹ ▷` and `⊡ ⟹ ◁`; the non-validity siblings (including `not_openValid_stab_of_ofut`) refute the converses; `hnStab_refuted_sinkFrame` refutes HN for ⊡ while `hnOpen_openValid` proves it for ▷. All of that shows ▷ ≠ ⊡ as operators and NONE of it shows ▷ is beyond L⁺'s reach, because an L⁺ formula definining ▷ need not be ⊡ψ for any ψ. 833's biconditional runs the OTHER way (⊡ is definable from ▷ and ◁) and is silent here. Task 559's own item (n3) records this reading as the prerequisite it is.
+WHY THIS MODULE AND THIS DIRECTORY. Expressiveness/ is where the repository files POSITIVE expressiveness results -- kampPriorExpressiveCompleteness and uSExpressivelyCompleteOverPrior live there, and this task's own load-bearing hypothesis IS separation, so it is the same genre. Negative/undefinability results file under Independence/ instead; that is the companion task's destination, not this one's.
 
-EXPECTED SHAPE OF A NEGATIVE ANSWER, and the fixture is already built. A bisimulation-style separation: exhibit two pointed task models that agree on every L⁺ formula and disagree on some ▷φ. The natural fixture is `sinkFrame` (`FormalSystem/OpenLanguage/OpenOckhamist.lean`), which 559 names, and which is already the fixture carrying `hnStab_refuted_sinkFrame`. The invariance to establish and then break is the one L⁺ has and ▷ should not: ⊡-truth is a function of the present world state alone (`Semantics.stab_state_only`, every `D`), while ▷-truth reads the whole past of the history, so the separation wants two histories sharing a state at the evaluation time with different pasts. Build the L⁺-agreement half by a genuine invariance argument over the two models, not by case-checking a finite formula list -- a finite check establishes nothing about a language.
+LAYERING IS ALREADY CHECKED AND LEGAL: Metalogic is layer 3 and OpenLanguage is layer 0-1, so the import is a downward edge. scripts/check-metalogic-cycles.sh counts only upward edges, so its recorded 8-line allowlist needs NO change. Do not edit that allowlist.
 
-EXPECTED SHAPE OF A POSITIVE ANSWER, and what it costs. A uniform L⁺ translation of ▷. If this is what comes back, say so plainly and in full: the LANGUAGE RULING becomes a notational convenience, 559's item (n1)-(n2) survive only as restatements rather than new content, the separate L^▷ proof-system programme is unnecessary, and the retarget question for the decidability front (ROADMAP Stage 1) is answered negatively at no further cost. That is a valuable verdict, not a failure, and it must not be hedged into an inconclusive report to protect the ruling.
+WHAT IS CONDITIONAL, AND THE ROW DISCIPLINE THAT FOLLOWS. The probe's results are conditional on SeparationOver, an explicit named hypothesis standing for the GHR separation theorems, which are cited literature and are NOT formalized here. A conditional theorem with a documented hypothesis is an ordinary library citizen -- that is the shape to land. But the theorem-index rows must state the conditional form and must NOT claim the unconditional verdict is machine-checked. Earned rows: the elimination machinery (ofutP_or_iff, ofutP_sepForm_iff and their open-past mirrors), and openValidIn_ztime_iff_tr / openValidIn_rtime_iff_tr as conditional-on-separation rows. The unconditional "definable at ZTime/RTime" claim belongs in the module docstring citing the report and GHR, never in a pinned row.
 
-AN INCONCLUSIVE VERDICT IS AN ACCEPTABLE OUTCOME, under one condition: it names the precise obstruction -- which invariance L⁺ is not known to have, or which model pair resists the agreement proof, with the goal state recorded -- in the form this repository's hard constraints already require. A precisely located obstruction is a complete outcome for a round.
+SHARED VOCABULARY, OWNED HERE. This module defines PastDet, FutDet, OfutP and OpastP. The companion non-definability task imports them from here rather than redefining them; that is why it depends on this task. Keep them public and documented.
 
-GUARDRAILS. No sorry; no new axiom; no vacuous definition; every probe sorry-free or explicitly labelled UNVERIFIED. Every literature claim tied to a held source or labelled recalled; never reconstruct an unread paper's theorem as if cited. Do not edit `FormalSystem/` or `Tests/` from this task. Do not state or imply any completeness or decidability consequence -- this task settles an expressiveness question and nothing else.
+GUARDRAILS: no sorry, no new axiom, no vacuous definition. Scope is the new module, the Expressiveness aggregator, that directory's README, docs/theorem-index.md and the invariants baseline. Do not touch Independence/ (the companion task owns it) and do not edit the metalogic-cycles allowlist.
 
-CONSUMERS, so the verdict is routed rather than filed and forgotten. Task 559 items (n3), (P0b), (P0c) and (P0d); the L^▷ proof-system task, which declares this task as a dependency and should not be entered before the verdict is in; and the ROADMAP's Stage 2 ordering, where the retarget decision for Stage 1 is gated on this plus the one-sided transport probe.
+AFTER THIS LANDS, the report and probe under this task directory are safely disposable: their durable content lives in the module, its docstring and the ledger, which is the point of this task.
 
 ---
 
@@ -1908,11 +1937,12 @@ This record is filed in the BimodalLogic task space while its edit target resolv
 ---
 
 ### 833. Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage, with its ledger and README rows
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [833_stab_definable_from_open_modals/reports/01_stab-definable-from-open-modals.md]
+- **Plan**: [833_stab_definable_from_open_modals/plans/01_stab-definable-from-open-modals.md]
 
 **Description**: IMPLEMENTATION TASK, small and fully specified: the proof is already written and compiled. Land in `FormalSystem/OpenLanguage/` the fact that the stability modal is DEFINABLE from the manuscript's open-future and open-past modals:
 

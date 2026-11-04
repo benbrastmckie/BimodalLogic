@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 2,
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Wrote a 4-phase, 2.5-hour transcription plan landing the six probe-05 declarations for the definability biconditional in FormalSystem/OpenLanguage/ plus the three documentation surfaces. Phases: OpenTruth.lean pointwise results (local), OpenValidity.lean validity forms (local), README and theorem-index rows (prose), full verification and axiom audit (full). The plan carries a '## Lean Challenge Statements' section pinning all six exact signatures, which was compile-checked at plan time (bare lean against the repository oleans, exit 0, only the six expected sorry warnings) and whose identifier set matches the Goals block exactly. Research's three corrections to the dispatch are integrated: the mirror route through openValid_reflectTime is an import cycle and is forbidden, all six declarations need a 'Paper:' doc-comment line for C15, and both gate scripts are asserted per-check against re-measured baselines rather than by exit code.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/833_stab_definable_from_open_modals/plans/01_stab-definable-from-open-modals.md",
+      "summary": "4-phase plan transcribing the six definability declarations into OpenTruth.lean and OpenValidity.lean plus README and theorem-index rows, with pinned Lean Challenge Statements and a per-check verification gate."
+    }
+  ]
+}
