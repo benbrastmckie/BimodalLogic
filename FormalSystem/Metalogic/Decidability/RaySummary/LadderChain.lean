@@ -63,7 +63,7 @@ passes through a state satisfying every state-level hypothesis the consumer carr
 downward inclusion held here is the path-level one above.
 -/
 
-set_option linter.style.longFile 1800
+set_option linter.style.longFile 2100
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -641,6 +641,101 @@ theorem exists_ladderPath_of_walk_nxt_at (w : ℤ → Q) (c : ℤ → ℕ) (z : 
 
 end Assembly
 
+/-! ## The iterated splice index map
+
+The retraction of `d` splices of a block `[u, u + l)` on positions: the identity below `u + l`,
+the original's position `u + ((v - u) mod l)` inside the run of `d + 1` copies, and `v - d · l`
+above the run. It is defined by iterating `spliceIdx`, one splice per step, so that the
+`d + 1`-fold duplication's walk and realized types are read through it by one application of the
+single-splice type lemma per step; its characterization lemmas below are what every consumer of
+the iterated duplication reads instead of a list of boundary clauses. -/
+
+section IterIdx
+
+/-- **The retraction of `d` splices of `[u, u + l)` on positions**: the identity below `u + l`,
+the original's position `u + ((v - u) mod l)` inside the run of `d + 1` copies, and `v - d · l`
+above the run. Defined by iterating `spliceIdx` so that the `d + 1`-fold duplication's types
+are read through it by one application of the duplication type lemma per step. -/
+def iterSpliceIdx (u : ℤ) (l : ℕ) : ℕ → ℤ → ℤ
+  | 0, v => v
+  | d + 1, v => iterSpliceIdx u l d (spliceIdx u l v)
+
+@[simp] theorem iterSpliceIdx_zero (u : ℤ) (l : ℕ) (v : ℤ) : iterSpliceIdx u l 0 v = v := rfl
+
+theorem iterSpliceIdx_succ (u : ℤ) (l : ℕ) (d : ℕ) (v : ℤ) :
+    iterSpliceIdx u l (d + 1) v = iterSpliceIdx u l d (spliceIdx u l v) := rfl
+
+/-- Below `u + l` the retraction is the identity. -/
+theorem iterSpliceIdx_of_lt (u : ℤ) (l : ℕ) (d : ℕ) (v : ℤ) (h : v < u + (l : ℤ)) :
+    iterSpliceIdx u l d v = v := by
+  induction d with
+  | zero => rfl
+  | succ d ih => rw [iterSpliceIdx_succ, spliceIdx_of_lt u l v h, ih]
+
+/-- Above the run the retraction is the displacement by `d · l`. -/
+theorem iterSpliceIdx_of_ge (u : ℤ) (l : ℕ) (d : ℕ) (v : ℤ)
+    (h : u + ((d + 1) * l : ℕ) ≤ v) : iterSpliceIdx u l d v = v - (d * l : ℕ) := by
+  induction d generalizing v with
+  | zero => simp
+  | succ d ih =>
+    have e : (((d + 1 + 1) * l : ℕ) : ℤ) = ((d + 1) * l : ℕ) + (l : ℤ) := by push_cast; ring
+    rw [e] at h
+    have hge : u + (l : ℤ) ≤ v := by
+      have : (0 : ℤ) ≤ (((d + 1) * l : ℕ) : ℤ) := Int.natCast_nonneg _
+      omega
+    rw [iterSpliceIdx_succ, spliceIdx_of_ge u l v hge, ih (v - l) (by omega)]
+    push_cast; ring
+
+/-- Inside the run, position `j` of the `i`-th copy is position `j` of the original block. -/
+theorem iterSpliceIdx_add_mul (u : ℤ) (l : ℕ) (d : ℕ) (i j : ℕ) (hi : i ≤ d) (hj : j < l) :
+    iterSpliceIdx u l d (u + (i * l : ℕ) + (j : ℤ)) = u + (j : ℤ) := by
+  induction d generalizing i with
+  | zero =>
+    have : i = 0 := by omega
+    subst this; simp
+  | succ d ih =>
+    rcases Nat.eq_zero_or_pos i with h0 | hpos
+    · subst h0
+      rw [iterSpliceIdx_of_lt u l _ _ (by push_cast; omega)]
+      simp
+    · obtain ⟨i', rfl⟩ : ∃ i', i = i' + 1 := ⟨i - 1, by omega⟩
+      have e : u + ((i' + 1) * l : ℕ) + (j : ℤ) = (u + (i' * l : ℕ) + (j : ℤ)) + (l : ℤ) := by
+        push_cast; ring
+      have hge : u + (l : ℤ) ≤ (u + (i' * l : ℕ) + (j : ℤ)) + (l : ℤ) := by
+        have : (0 : ℤ) ≤ ((i' * l : ℕ) : ℤ) := Int.natCast_nonneg _
+        omega
+      rw [iterSpliceIdx_succ, e, spliceIdx_of_ge u l _ hge, add_sub_cancel_right]
+      exact ih i' (by omega)
+
+/-- **Every copy boundary inside the run retracts to `u`.** -/
+theorem iterSpliceIdx_boundary (u : ℤ) (l : ℕ) (hl : 0 < l) (d i : ℕ) (hi : i ≤ d) :
+    iterSpliceIdx u l d (u + (i * l : ℕ)) = u := by
+  have := iterSpliceIdx_add_mul u l d i 0 hi hl
+  simpa using this
+
+/-- **The run's top boundary retracts to `u + l`.** -/
+theorem iterSpliceIdx_top (u : ℤ) (l : ℕ) (d : ℕ) :
+    iterSpliceIdx u l d (u + ((d + 1) * l : ℕ)) = u + (l : ℤ) := by
+  rw [iterSpliceIdx_of_ge u l d _ le_rfl]; push_cast; ring
+
+/-- Inside the run the retraction lands in the original block `[u, u + l)`. -/
+theorem iterSpliceIdx_mem (u : ℤ) (l : ℕ) (d : ℕ) (v : ℤ) (hv : u ≤ v)
+    (hv' : v < u + ((d + 1) * l : ℕ)) :
+    u ≤ iterSpliceIdx u l d v ∧ iterSpliceIdx u l d v < u + (l : ℤ) := by
+  induction d generalizing v with
+  | zero =>
+    refine ⟨hv, ?_⟩
+    simpa using hv'
+  | succ d ih =>
+    rcases lt_or_ge v (u + (l : ℤ)) with h | h
+    · rw [iterSpliceIdx_of_lt u l _ v h]; omega
+    · rw [iterSpliceIdx_succ, spliceIdx_of_ge u l v h]
+      apply ih (v - l) (by omega)
+      have e : (((d + 1 + 1) * l : ℕ) : ℤ) = ((d + 1) * l : ℕ) + (l : ℤ) := by push_cast; ring
+      rw [e] at hv'; omega
+
+end IterIdx
+
 section AssemblyFin
 
 variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
@@ -1081,6 +1176,62 @@ theorem hasForwardSlack_del {Q : Type} {step : Q → Q → Bool} {pend : Q → B
   rw [hreg, hczZ]
   have hlLZ : ((L - l : ℕ) : ℤ) = (L : ℤ) - l := by omega
   rw [hlLZ]
+  omega
+
+/-- **Forward slack transports across a raise of `z`'s region by `d · l`**, increased by exactly
+`d · l`: the raised path's region at `z` is longer by `d · l`, every position above it sits above
+the run of copies, where the raised path is the original displaced by `d · l`, so the first
+region start above `z`'s region is the original's displaced by `d · l` with the same countdown
+(hence the same register at the idle position before it). The mirror of `hasForwardSlack_del`.
+Only two exposure clauses of the raise are consumed: the countdown at `z` and the walk above the
+run. -/
+theorem hasForwardSlack_raise {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (z : ℤ) {u : ℤ} {l d : ℕ} (hul : u + (l : ℤ) ≤ z + (cntAt g z : ℤ))
+    {L n : ℕ} (hslack : HasForwardSlack g z L n)
+    (g' : ℤ → LadderState Q pend) (hg' : IsLadderPath step pend g')
+    (hcz : cntAt g' z = cntAt g z + d * l)
+    (habove : ∀ v : ℤ, u + ((d + 1) * l : ℕ) ≤ v →
+      objAt g' v = objAt g (v - (d * l : ℕ)) ∧ cntAt g' v = cntAt g (v - (d * l : ℕ))) :
+    HasForwardSlack g' z (L + d * l) n := by
+  intro I hI hidle hnext
+  have hczZ : (cntAt g' z : ℤ) = (cntAt g z : ℤ) + ((d * l : ℕ) : ℤ) := by rw [hcz]; push_cast; ring
+  have e : (((d + 1) * l : ℕ) : ℤ) = ((d * l : ℕ) : ℤ) + (l : ℤ) := by push_cast; ring
+  -- every position above `z`'s raised region sits above the run of copies
+  have hab : ∀ i : ℕ, u + ((d + 1) * l : ℕ) ≤ z + (cntAt g' z : ℤ) + 1 + (i : ℤ) := fun i => by
+    rw [hczZ, e]; omega
+  have hpull : ∀ i : ℕ, objAt g' (z + (cntAt g' z : ℤ) + 1 + (i : ℤ))
+      = objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ)) := fun i => by
+    rw [(habove _ (hab i)).1, hczZ]; congr 1; ring
+  have hidle' : ∀ i : ℕ, i < I →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false := fun i hi => by
+    rw [← hpull i]; exact hidle i hi
+  have hnext' : pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true := by
+    rw [← hpull I]; exact hnext
+  have hb := hslack I hI hidle' hnext'
+  -- the register at the idle position before the first region start, on both paths
+  have h0' := hidle' (I - 1) (by omega)
+  have h0 := hidle (I - 1) (by omega)
+  have hcast : ∀ C : ℤ, C + 1 + ((I - 1 : ℕ) : ℤ) = C + (I : ℤ) := by
+    intro C; push_cast [Nat.cast_sub (by omega : 1 ≤ I)]; ring
+  rw [hcast] at h0' h0
+  have h1' : pend (objAt g (z + (cntAt g z : ℤ) + (I : ℤ) + 1)) = true := by
+    rw [show z + (cntAt g z : ℤ) + (I : ℤ) + 1 = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by ring]
+    exact hnext'
+  have h1 : pend (objAt g' (z + (cntAt g' z : ℤ) + (I : ℤ) + 1)) = true := by
+    rw [show z + (cntAt g' z : ℤ) + (I : ℤ) + 1 = z + (cntAt g' z : ℤ) + 1 + (I : ℤ) by ring]
+    exact hnext
+  have hpin' := cntAt_eq_nxtAt_of_idle_pend g hg _ h0' h1'
+  have hpin := cntAt_eq_nxtAt_of_idle_pend g' hg' _ h0 h1
+  have hreg : nxtAt g' (z + (cntAt g' z : ℤ) + (I : ℤ))
+      = nxtAt g (z + (cntAt g z : ℤ) + (I : ℤ)) := by
+    rw [← hpin, ← hpin']
+    have hab' : u + ((d + 1) * l : ℕ) ≤ z + (cntAt g' z : ℤ) + (I : ℤ) + 1 := by
+      rw [hczZ, e]; omega
+    rw [(habove _ hab').2, hczZ]; congr 1; ring
+  rw [hreg, hczZ]
+  have hLZ : ((L + d * l : ℕ) : ℤ) = (L : ℤ) + ((d * l : ℕ) : ℤ) := by push_cast; ring
+  rw [hLZ]
   omega
 
 /-- **The vacuous case**: when every position above `z`'s region is idle, no region start exists
