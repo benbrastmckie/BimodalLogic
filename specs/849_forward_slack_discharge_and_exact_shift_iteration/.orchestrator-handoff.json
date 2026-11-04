@@ -1,19 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote the eight-phase, 13-hour plan for the forward-slack regime and the exact-shift iterated deletion, adopting the research's route (b) for Piece 1 and its overshoot-then-up reformulation for Piece 2, with every new declaration in LadderChain.lean. Seven statements are pinned under Lean Challenge Statements (all elaborated standalone with sorry bodies, exit 0) and the plan-time Challenge snapshot the task asked for was taken (commit cd052276c, manifest under the task's challenge/ directory), so Phase 8's drift check can run. The validator passes with 0 warnings.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "All eight phases landed in LadderChain.lean and are committed one per phase: the forward-slack regime lemmas (entry from a finite witness, monotonicity, transport, vacuity), the two-state witness showing the regime necessary (climbing-register refutation) and inhabited (parametric plateau), the room bound and spaced pigeonhole, the given-block iterated duplication with the regime-A assembly as its corollary (header diff empty), the one-step deletion, the overshoot loop, the exact-shift theorem, and the downward cell inclusion on the witnessing path. All seven pinned headers match the Challenge 7/7; full guarded lake build exit 0 with 0 warnings at every phase end; sorry 0; axioms 14 unchanged; verify-deploy PASS; the reserved name cellLE_zero_const_of_kappa_eq is still claimed by nothing.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/849_forward_slack_discharge_and_exact_shift_iteration/plans/01_forward-slack-exact-shift.md",
-      "summary": "Eight linear phases: regime lemmas, refutation and inhabitant, spaced pigeonhole and room bound, given-block iterated duplication, one-step deletion, overshoot loop, exact-shift theorem and slack-restricted cell inclusion, record and full gate."
+      "type": "summary",
+      "path": "specs/849_forward_slack_discharge_and_exact_shift_iteration/summaries/01_forward-slack-exact-shift-summary.md",
+      "summary": "Implementation summary: seven pinned and seven unpinned declarations landed in LadderChain.lean, docstrings and README updated, full gate green, three recorded deviations (lint-driven Finite binder, longFile baseline, challenge-checker name ambiguity)."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+      "summary": "section Slack, namespace ClimbWitness, budget_mul_succ_le_Tc, section Spacing, the given-block raise, section DelNxtIter with the step, the loop, the exact-shift theorem and the cell inclusion on the witnessing path."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 8,
   "phases_total": 8,
   "blockers": [],
-  "plan_markers_verified": null,
+  "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implementation at Phase 1 (section Slack in LadderChain.lean); every phase is serialized on LadderChain.lean and commits typst/generated/status.typ alongside the .lean file."
+  "next_action_hint": "No continuation: every phase heading is [COMPLETED] and the summary is committed. Advisory note for the record: lean-challenge-snapshot.sh --check exits 71 because the specs/ research prototype carries same-named declarations; the independent header diff is MATCH 7/7.",
+  "git_checkpoint": "fbbe8f698"
 }

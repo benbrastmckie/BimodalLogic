@@ -1,7 +1,7 @@
 # Implementation Plan: Task #849
 
 - **Task**: 849 - Discharge or regime-restrict the named hypothesis HasForwardSlack, then land the exact-shift iterated deletion the cell-level downward inclusion still needs
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13 hours (Phases 1-8 at 1.5 / 2 / 1 / 2 / 1.5 / 1.5 / 2 / 1.5)
 - **Dependencies**: None at the `state.json` level. Predecessor record: `specs/844_reanchored_deletion_half_depth_zero_cell/` (its five landed declarations are consumed, none edited)
 - **Research Inputs**: `specs/849_forward_slack_discharge_and_exact_shift_iteration/reports/01_forward-slack-exact-shift.md`, with its two compiled prototypes `prototype/climb-witness.lean` and `prototype/helpers-compiled.lean`

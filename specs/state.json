@@ -2187,7 +2187,7 @@
     {
       "project_number": 849,
       "project_name": "forward_slack_discharge_and_exact_shift_iteration",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Discharge or regime-restrict the named hypothesis HasForwardSlack, then land the exact-shift iterated deletion the cell-level downward inclusion still needs.\n\nORIGIN (measured, not conjectured). The re-anchored deletion half is landed and green in FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean: exists_ladderPath_of_walk_nxt_at (the lift with the anchor position freed to z), exists_deleted_ladderPath_of_pend_past_nxt (the deletion with nxtAt g' z = n exposed under an explicit anchor clause), anchor_clause_of_first_region_start (the clause collapsed to one inequality at the first region start via Nat.find), def HasForwardSlack, and exists_ladderPath_through_deleted_of_pend_past (the single-block downward assembly). Full guarded lake build exit 0, sorry 0, axioms unchanged from the pre-work baseline.\n\nPIECE 1 -- the residual inequality's upper direction. The prior record's claim that the single-pin anchor bound is dischargeable from nxtAt_le_cntAt_add_of_next_region plus hgap and hTc MEASURED FALSE at the gate. One omega per direction: the lower direction (n - nxtAt s0 <= C + I - l) closes from hgap alone; the upper direction (nxtAt g s0 - n <= (s0 - z) - l) is refuted by the climbing-register witness n=0, C=3, I=1, l=1, nxtAt g s0=4 -- Drift permits an n' = n+1 rung at every step, and the forward window bounds the register only from above, the already-free direction. The assembly therefore carries HasForwardSlack g z (P+1) (nxtAt g z) as a named path-level hypothesis. Two honest routes: find a landed source for the missing lower bound on the register's climb (a Drift-level invariant not yet isolated), or restrict the regime and prove HasForwardSlack holds there with a finite witness. Either outcome is acceptable; a weakened statement under the reserved name cellLE_zero_const_of_kappa_eq is not -- that name remains claimed by nothing.\n\nPIECE 2 -- exact-shift iteration. The cell-level downward inclusion needs a block deleted d times, which requires d + 1 consecutive type-equal copies in the original walk; the landed pigeonhole supplies one spanning block, not d + 1. Also open: the path-versus-state quantification mismatch between the assembly and its consumer.\n\nSETTLED, NOT TO BE REOPENED. Every new declaration goes in LadderChain.lean: it imports LadderPump.lean (not the reverse), the lift being conjugated lives in LadderChain.lean's Assembly section, and LadderPump.lean sits at 1485 of its 1500 longFile lines. (K1) provably does not constrain a spanning block's length -- the refuting object is the alternating path.\n\nPROCESS NOTE. No Challenge manifest was taken for the predecessor work, so lean-challenge-snapshot.sh --check exits 71; take one at plan time here. The RaySummary README.md still describes the downward direction without the new assembly and should be updated.\n\nAUTHORING NOTE: a commit touching FormalSystem/**/*.lean is refused unless it also carries a regenerated typst/generated/status.typ. Name that file in every phase's Files-to-modify list, and run scripts/typst-sync-check.sh --fix before committing.",
       "effort": "high",
@@ -2195,7 +2195,7 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-11-03T23:30:44Z",
-      "last_updated": "2026-11-04T00:34:59Z",
+      "last_updated": "2026-11-04T01:14:57Z",
       "artifacts": [
         {
           "path": "specs/849_forward_slack_discharge_and_exact_shift_iteration/reports/01_forward-slack-exact-shift.md",
@@ -2206,6 +2206,11 @@
           "path": "specs/849_forward_slack_discharge_and_exact_shift_iteration/plans/01_forward-slack-exact-shift.md",
           "type": "plan",
           "summary": "Eight linear phases: regime lemmas, refutation and inhabitant, spaced pigeonhole and room bound, given-block iterated duplication, one-step deletion, overshoot loop, exact-shift theorem and slack-restricted cell inclusion, record and full gate."
+        },
+        {
+          "path": "specs/849_forward_slack_discharge_and_exact_shift_iteration/summaries/01_forward-slack-exact-shift-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: seven pinned and seven unpinned declarations landed in LadderChain.lean, docstrings and README updated, full gate green, three recorded deviations (lint-driven Finite binder, longFile baseline, challenge-checker name ambiguity)."
         }
       ],
       "session_id": "sess_1793749155_be5944",
@@ -2218,7 +2223,8 @@
         "FormalSystem/README.md",
         "README.md",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Landed the forward-slack regime's entry, monotonicity, transport and vacuity lemmas, the two-state witness (the regime is necessary and inhabited), the room bound and spaced pigeonhole, the register-held raise of a given block with the regime-A assembly as its corollary, the one-step deletion, the overshoot loop, the exact-shift theorem (countdown lowered by exactly m*(P+1) with register and type held) and the downward cell inclusion on the witnessing path, all in LadderChain.lean with the seven pinned headers matching the Challenge; full guarded build green at every phase, sorry 0, axioms unchanged, reserved name cellLE_zero_const_of_kappa_eq still claimed by nothing."
     }
   ],
   "artifacts": [
