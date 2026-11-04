@@ -273,6 +273,15 @@ class — see `deterministic_not_plusDefinable` above.
 
 ### Characterization and definability
 
+The two open-future non-definability rows are **conditional on an unformalized inexpressibility
+hypothesis** (`hinexpr`): what is machine-checked is the reduction from that hypothesis plus an
+enough-worlds condition on the frame, so the unconditional verdict that the open-future modal `▷`
+is not L⁺-definable at `.Base` and not at `.Dense` is **not** machine-checked here and is recorded
+in `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean`'s module docstring with its
+literature citation. Nothing in this band bears on `.ZTime` or `.RTime`, where the open-future
+elimination layer (`FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean`) gives the
+positive result.
+
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
 | `app:dense` | `Sat .Dense` is Galois-closed, via the `nextTop` indicator | `FormalSystem.Semantics.galoisClosed_sat_dense` | `FormalSystem/Semantics/Correspondence/Indicator.lean` | Dense | pcq pinned:C14 |
@@ -284,6 +293,8 @@ class — see `deterministic_not_plusDefinable` above.
 | `app:deterministic` | No set of `PlusFormula`s defines `TaskFrame.Deterministic` | `FormalSystem.Metalogic.Independence.deterministic_not_plusDefinable` | `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` | — | pcq pinned:C14 |
 | — | The current TM⁺ axiom set is **incomplete** at Base: the limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid and is not a Base theorem | `FormalSystem.Metalogic.Independence.plus_incomplete_base` | `FormalSystem/Metalogic/Independence/PlusIncompleteness.lean` | Base | pcq pinned:C14 |
 | `def:BLstar-semantics` | No `Formula` of L is equivalent to `⊡Fp` over all task models — the stability modal is not L-definable | `FormalSystem.Metalogic.Independence.stabNotDefinable` | `FormalSystem/Metalogic/Independence/StabUndefinable.lean` | — | pcq |
+| — | Given an enough-worlds condition on the frame and the inexpressibility of the gap-anchored past property `MarkerGadget.DeltaProp` — the second a collapse argument derived in prose and not formalized in this tree — the open-future modal `▷` is not truth-level L⁺-definable at that frame; the marker gadget is what reaches the gap-anchored property, by making the point of evaluation a definable singleton at the cost of one atom | `FormalSystem.Metalogic.Independence.ofut_not_plusDefinable_of_deltaProp_inexpressible` | `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean` | — | pcq pinned:C14 |
+| — | The four-colour clock frame is regular over **every** temporal order: the clock component discharges *Limit* and finiteness of the colour set discharges *Saturation*, so a finite colouring over a dense duration is realisable as a task frame | `FormalSystem.Metalogic.Independence.colourFibre_isRegular` | `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean` | Base | pcq pinned:C14 |
 | — | Every formula of the syntactic **state-locality** fragment of L⋆ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.StarLanguage.isStateLocal_of_stateLocal` | `FormalSystem/StarLanguage/StarStateLocal.lean` | — | `[propext]` |
 | — | `φ ↔ ⊡φ` is valid for every state-local `φ` — the fragment-level strengthening of the atom-level `p → ⊡p` | `FormalSystem.StarLanguage.stateLocal_starValid_iff_stab` | `FormalSystem/StarLanguage/StarStateLocal.lean` | Base | pcq |
 | — | Every formula of the syntactic **state-locality** fragment of L⁺ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.PlusLanguage.isPlusStateLocal_of_stateLocal` | `FormalSystem/PlusLanguage/PlusStateLocal.lean` | — | `[propext]` |

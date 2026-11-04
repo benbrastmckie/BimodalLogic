@@ -429,7 +429,7 @@ precisely the edit this phase makes and the only thing it can break.
 
 ---
 
-### Phase 3: Two theorem-index rows, in the conditional form [NOT STARTED]
+### Phase 3: Two theorem-index rows, in the conditional form [COMPLETED]
 
 **Goal**: Add exactly two rows to `docs/theorem-index.md`'s `### Characterization and
 definability` table — the marker-gadget reduction and the witness frame's regularity — each
