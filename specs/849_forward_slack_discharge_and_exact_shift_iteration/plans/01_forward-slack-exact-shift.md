@@ -427,7 +427,7 @@ is the module itself.
 
 ---
 
-### Phase 5: One deletion step, with agreement, register and slack preserved [NOT STARTED]
+### Phase 5: One deletion step, with agreement, register and slack preserved [COMPLETED]
 
 **Goal**: One iteration of the loop is a lemma: sample at spacing `l` from `w₀`, delete the
 type-respecting block the pigeonhole returns, and hand back a ladder path that agrees with the
@@ -436,13 +436,14 @@ countdown at `z` lowered by `d · l` with `1 ≤ d ≤ b`, keeps the register at
 regime at the amount decreased by exactly `d · l`.
 
 **Tasks**:
-- [ ] Open `section DelNxtIter` directly after `end DelNxtFin` with
+- [x] Open `section DelNxtIter` directly after `end DelNxtFin` with
   `variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}`.
-- [ ] `exists_deleted_ladderPath_step_of_pend_past` (name suggested, not pinned):
+- [x] `exists_deleted_ladderPath_step_of_pend_past` (name suggested, not pinned):
   hypotheses `(step pend fwd bwd lab φ) (hno) {g} (hg) (z : ℤ) (hpast : ∀ p ≤ z, pend (objAt g p) = true) (σ) (hσ : ∀ t, σ.state t = (t, g t)) (w₀ : ℤ) (hzw : z ≤ w₀) (hwb : w₀ ≤ z + (b : ℤ)) (l : ℕ) (hl : 0 < l) (hlb : l ≤ b) (hroom : b * (b + 1) ≤ cntAt g z) {L : ℕ} (hLb : b * l ≤ L) (hgap : nxtAt g z + b * l ≤ cntAt g z) (hslack : HasForwardSlack g z L (nxtAt g z))`;
   conclusion `∃ (g' : ℤ → LadderState Q pend) (d : ℕ), IsLadderPath step pend g' ∧ 0 < d ∧ d ≤ b ∧ (∀ v : ℤ, v ≤ w₀ → objAt g' v = objAt g v) ∧ cntAt g' z + d * l = cntAt g z ∧ nxtAt g' z = nxtAt g z ∧ HasForwardSlack g' z (L - d * l) (nxtAt g z) ∧ ∀ σ', (∀ t, σ'.state t = (t, g' t)) → ∀ v : ℤ, v ≤ w₀ → tpOf … σ' v = tpOf … σ v`.
   Record the exact hypothesis list chosen at the goal state in this phase's notes.
-- [ ] Proof, step by step, mirroring `exists_ladderPath_through_deleted_of_pend_past`:
+  *(phase note: landed with exactly the hypothesis list and the eight-conjunct conclusion written above, `b` spelled out in full; no adjustment was needed at the goal state)*
+- [x] Proof, step by step, mirroring `exists_ladderPath_through_deleted_of_pend_past`:
   `hz` from `hpast`; `exists_typeBlock_of_spacing … σ hg z hz w₀ l hzw (hroom')` with
   `hroom' : w₀ + b * l ≤ z + cntAt g z` by `omega` from `hwb`, `hlb`, `hroom`
   (`b + b * l ≤ b * (b + 1)`), giving `a, d, hd, hdb, hwa, haw, hcl, hrep, hty`; set `L' := d * l`
@@ -452,14 +453,14 @@ regime at the amount decreased by exactly `d · l`.
   `hanch := anchor_clause_of_first_region_start g hg z hz (d * l) (nxtAt g z) hfirst a hza hal`
   with `hza : z ≤ a` and `hal : a + d * l ≤ z + cntAt g z` (from `haw` and `hroom'`);
   `obtain ⟨g', hg', hobj', hcnt', hnxt'⟩ := exists_deleted_ladderPath_of_pend_past_nxt hg hd hcl hpast_a hrep z (nxtAt g z) hanch`.
-- [ ] Conclusions: `cntAt g' z` by `hcnt' z` and `delCnt_sub_of_mem_region hg hd hcl z hza (by omega)`;
+- [x] Conclusions: `cntAt g' z` by `hcnt' z` and `delCnt_sub_of_mem_region hg hd hcl z hza (by omega)`;
   object agreement for `v ≤ w₀ ≤ a` by `hobj' v` and `delObj_eq_of_le hrep v (by omega)`; the slack
   by `hasForwardSlack_del g hg z hd hcl hza hal hslack (by omega) g' hg' hobj' hcnt'` (amount
   `L - d * l`); the types by `tpOf_eq_delIdx_of_tpOf_eq step pend fwd bwd lab φ a (d * l) hd (k := 0) (k' := 0) σ σ' … (fun w => (hobj' w).trans rfl) hno hty_σ v`
   with `hty_σ` the endpoint equality in `σ`'s history (from `hty`, which is already in `σ`), then
   `delIdx_of_lt` for `v < a` and, for `v = a`, `delIdx_of_ge` followed by `hty_σ.symm`.
-- [ ] Docstring: one step of the overshoot loop; what is preserved and by which landed lemma.
-- [ ] `lean_verify`; scoped build; `--fix`; commit.
+- [x] Docstring: one step of the overshoot loop; what is preserved and by which landed lemma.
+- [x] `lean_verify`; scoped build; `--fix`; commit.
 
 **Timing**: 1.5 hours
 

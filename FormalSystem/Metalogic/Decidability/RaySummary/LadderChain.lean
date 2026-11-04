@@ -1330,6 +1330,123 @@ theorem exists_ladderPath_through_deleted_of_pend_past
 
 end DelNxtFin
 
+/-! ## The exact-shift iteration: overshoot by sampled blocks, then raise by the overshoot
+
+Every landed deletion lemma is length-agnostic, so `d` deletions of an `l`-block are one deletion
+of a `d · l`-block; what the cell-level downward inclusion needs is EXACTNESS — the countdown
+lowered by exactly `m · (P + 1)` — and a pigeonhole never returns a prescribed length. The
+device: sample at spacing `l` (the length of the original pigeonhole block, a divisor of
+`P + 1`) from a fixed position `w₀`, delete the type-respecting block the spaced pigeonhole
+returns (length `d · l`, `1 ≤ d ≤ budget`), and repeat until at least `R · l = m · (P + 1)`
+positions are gone; the overshoot is fewer than `budget` blocks of length `l`, and the
+register-held iterated duplication of the ORIGINAL block (`[u, u + l)`, which every step
+preserves because the sampling starts at `w₀ = u + l`) raises the countdown back by exactly the
+overshoot. The price is a `budget²` summand in both the gap and the regime hypothesis, paid
+because the landed iteration exposes types only below `u + l` and at `u + l`, so the raise must
+come last. -/
+
+section DelNxtIter
+
+variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **ONE STEP OF THE OVERSHOOT LOOP.** Sample at spacing `l` from `w₀` inside `z`'s region,
+delete the type-respecting block the spaced pigeonhole returns, and hand back a ladder path that
+agrees with the input at every position up to and including `w₀` (object walk and realized
+type), has `z`'s countdown lowered by `d · l` with `1 ≤ d ≤ budget`, keeps the register at `z`,
+and carries the regime at the amount decreased by exactly `d · l`. The spine mirrors
+`exists_ladderPath_through_deleted_of_pend_past` with the spaced pigeonhole in place of the
+consecutive one: `hasForwardSlack_mono` brings the regime down to the block's length, the
+collapse `anchor_clause_of_first_region_start` supplies the deletion's anchor clause, the deletion
+with the register exposed does the surgery, and the agreement, countdown, regime and type clauses
+are read off `delObj_eq_of_le`, `delCnt_sub_of_mem_region`, `hasForwardSlack_del` and
+`tpOf_eq_delIdx_of_tpOf_eq` respectively. -/
+theorem exists_deleted_ladderPath_step_of_pend_past
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    {g : ℤ → LadderState Q pend} (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t))
+    (w₀ : ℤ) (hzw : z ≤ w₀)
+    (hwb : w₀ ≤ z + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card : ℕ) : ℤ))
+    (l : ℕ) (hl : 0 < l) (hlb : l ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card)
+    (hroom : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
+      (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) ≤ cntAt g z)
+    {L : ℕ} (hLb : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l ≤ L)
+    (hgap : nxtAt g z + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l ≤ cntAt g z)
+    (hslack : HasForwardSlack g z L (nxtAt g z)) :
+    ∃ (g' : ℤ → LadderState Q pend) (d : ℕ), IsLadderPath step pend g' ∧
+      0 < d ∧ d ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ∧
+      (∀ v : ℤ, v ≤ w₀ → objAt g' v = objAt g v) ∧
+      cntAt g' z + d * l = cntAt g z ∧
+      nxtAt g' z = nxtAt g z ∧
+      HasForwardSlack g' z (L - d * l) (nxtAt g z) ∧
+      ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        ∀ v : ℤ, v ≤ w₀ →
+          tpOf (ladderModel step pend fwd bwd lab) φ σ' v
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ v := by
+  classical
+  have hz : pend (objAt g z) = true := hpast z le_rfl
+  -- the sampling window `[w₀, w₀ + budget · l]` fits inside `z`'s region
+  have hroom' : w₀ + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ)
+      ≤ z + (cntAt g z : ℤ) := by
+    generalize hb : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card = b at hwb hlb hroom ⊢
+    have h1 : b * l ≤ b * b := Nat.mul_le_mul_left b hlb
+    have h2 : b * (b + 1) = b * b + b := Nat.mul_succ b b
+    omega
+  -- the spaced pigeonhole
+  obtain ⟨a, d, hd, hdb, hwa, haw, hcl, hrep, hty⟩ :=
+    exists_typeBlock_of_spacing step pend fwd bwd lab φ σ hg z hz w₀ l hzw hroom'
+  have hdl : 0 < d * l := Nat.mul_pos hd hl
+  have hdlb : d * l ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l :=
+    Nat.mul_le_mul_right l hdb
+  have hdlL : d * l ≤ L := le_trans hdlb hLb
+  have hza : z ≤ a := le_trans hzw hwa
+  have hal : a + ((d * l : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ) := le_trans haw hroom'
+  -- every position up to `a` is pending: below `z` by hypothesis, from `z` to `a` by the region
+  have hpast_a : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true := fun p hp' => by
+    rcases le_or_gt p z with hpz | hpz
+    · exact hpast p hpz
+    · have := (cntAt_sub_of_pend g hg z hz (p - z).toNat (by omega)).1
+      rwa [show z + (((p - z).toNat : ℕ) : ℤ) = p by omega] at this
+  -- the single-pin bound at the block's length, from the gap and the regime; then the collapse
+  have hfirst : ∀ I : ℕ, 0 < I →
+      (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+      ((nxtAt g (z + (cntAt g z : ℤ) + (I : ℤ)) : ℤ) - nxtAt g z).natAbs
+        ≤ ((cntAt g z : ℤ) + I - (d * l : ℕ)).natAbs := fun I hI hidle hnext => by
+    have := hasForwardSlack_mono g z hslack hdlL I hI hidle hnext
+    omega
+  have hanch := anchor_clause_of_first_region_start g hg z hz (d * l) (nxtAt g z) hfirst a hza hal
+  -- the deleted path, with the register held at `z`
+  obtain ⟨g', hg', hobj', hcnt', hnxt'⟩ :=
+    exists_deleted_ladderPath_of_pend_past_nxt hg hdl hcl hpast_a hrep z (nxtAt g z) hanch
+  refine ⟨g', d, hg', hd, hdb, ?_, ?_, hnxt', ?_, ?_⟩
+  · -- the object walk up to `w₀ ≤ a` is untouched
+    intro v hv
+    rw [hobj' v, delObj_eq_of_le hrep v (by omega)]
+  · -- the countdown at `z` drops by exactly the block's length
+    rw [hcnt' z, delCnt_sub_of_mem_region hg hdl hcl z hza (by omega)]
+    omega
+  · -- the regime transports, decreased by exactly the block's length
+    exact hasForwardSlack_del g hg z hdl hcl hza hal hslack hdlL g' hg' hobj' hcnt'
+  · -- the realized types up to `w₀`, read through `delIdx a (d · l)`
+    intro σ' hσ' v hv
+    have hσ0 : ∀ t : ℤ, σ.state t = (t + 0, g t) := fun t => by rw [add_zero]; exact hσ t
+    have hσ'0 : ∀ t : ℤ, σ'.state t = (t + 0, g' t) := fun t => by rw [add_zero]; exact hσ' t
+    have hdel := tpOf_eq_delIdx_of_tpOf_eq step pend fwd bwd lab φ a (d * l) hdl (k := 0)
+      (k' := 0) σ σ' hσ0 hσ'0 (fun w => (hobj' w).trans rfl) hno hty v
+    rw [hdel]
+    rcases lt_or_eq_of_le (show v ≤ a by omega) with hlt | heq
+    · rw [delIdx_of_lt a (d * l) v hlt]
+    · rw [heq, delIdx_of_ge a (d * l) a le_rfl, ← hty]
+
+end DelNxtIter
+
 /-- **THE UPWARD CELL INCLUSION along the common-shift chain.** In the pending-forever regime
 (`n + 2 ≤ c`, so by `pend_past_of_nxtAt_lt` every path through the state is pending forever into
 the past) at countdown at least `Tc`, the cell at `(q, c, n)` is contained in the cell at
