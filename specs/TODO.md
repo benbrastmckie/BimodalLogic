@@ -126,7 +126,7 @@ next_project_number: 861
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-854 [RESEARCHED] — Decide whether the open-future modal ▷ is L⁺-definable
+854 [PLANNED] — Decide whether the open-future modal ▷ is L⁺-definable
   └─ 559 [RESEARCHED] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
   └─ 859 [RESEARCHED] — IMPLEMENTATION TASK: land the open-future NON-definability...
     └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
@@ -585,11 +585,12 @@ CONTENTION. `specs/evidence/seam-gluing-ray-product/` and `scripts/check-evidenc
 
 ### 854. Decide whether the open-future modal ▷ is L⁺-definable
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md]
+- **Plan**: [854_open_future_modal_lplus_definability/plans/01_open-future-elimination-module.md]
 
 **Description**: IMPLEMENTATION TASK: land the positive open-future elimination result in the Lean library, so the verdict survives /todo archival. The research is DONE and must not be redone -- its verdict is in reports/01_open-future-definability-verdict.md and its machine-checked content is in probes/01_ofut-elimination-and-translation.lean (341 lines, sorry-free, imports FormalSystem.OpenLanguage only).
 

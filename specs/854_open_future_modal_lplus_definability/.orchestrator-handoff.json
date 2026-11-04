@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Wrote a 5-phase implementation plan landing probe 01's open-future elimination content as the library module FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean. Phase 1 transcribes the module with docstrings and the aggregator import; Phase 2 re-measures axioms and pins eight matched C14 baseline pairs; Phase 3 adds six theorem-index rows stating the conditional-on-SeparationOver form; Phase 4 adds the README row and regenerates the machine-owned inventory blocks; Phase 5 is the full gate and axiom audit. The plan carries a Lean Challenge Statements block pinning every signature verbatim from the sorry-free probe.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/854_open_future_modal_lplus_definability/plans/01_open-future-elimination-module.md",
+      "summary": "5-phase plan: new Expressiveness module, aggregator import, README row, six conditional theorem-index rows, re-measured C14 axiom baseline."
+    }
+  ],
+  "dispatch_seq": 7
+}

@@ -79,19 +79,24 @@
     {
       "project_number": 854,
       "project_name": "open_future_modal_lplus_definability",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "metalogic",
       "title": "Decide whether the open-future modal ▷ is L⁺-definable",
       "description": "IMPLEMENTATION TASK: land the positive open-future elimination result in the Lean library, so the verdict survives /todo archival. The research is DONE and must not be redone -- its verdict is in reports/01_open-future-definability-verdict.md and its machine-checked content is in probes/01_ofut-elimination-and-translation.lean (341 lines, sorry-free, imports FormalSystem.OpenLanguage only).\n\nTHE VERDICT ALREADY SETTLED (do not reopen): the open-future modal is L-plus-definable at ZTime and RTime. The route is Gabbay separation (GHR Thm 10.2.9 over the integers, Thm 10.3.20 over Dedekind-complete time) plus the elimination of a disjunction under the modal.\n\nDELIVERABLE: a new library module FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean carrying the probe's content, re-expressed as library code with docstrings, plus:\n  (1) its import line added to the Expressiveness aggregator so lake build compiles it;\n  (2) a module row in FormalSystem/Metalogic/Expressiveness/README.md, matching that file's existing row shape;\n  (3) theorem-index rows (see ROW DISCIPLINE below);\n  (4) an axiom baseline pinned by scripts/check-module-invariants.sh (the pcq pinned:C14 token the other rows carry), re-measured, never typed by hand.\n\nWHY THIS MODULE AND THIS DIRECTORY. Expressiveness/ is where the repository files POSITIVE expressiveness results -- kampPriorExpressiveCompleteness and uSExpressivelyCompleteOverPrior live there, and this task's own load-bearing hypothesis IS separation, so it is the same genre. Negative/undefinability results file under Independence/ instead; that is the companion task's destination, not this one's.\n\nLAYERING IS ALREADY CHECKED AND LEGAL: Metalogic is layer 3 and OpenLanguage is layer 0-1, so the import is a downward edge. scripts/check-metalogic-cycles.sh counts only upward edges, so its recorded 8-line allowlist needs NO change. Do not edit that allowlist.\n\nWHAT IS CONDITIONAL, AND THE ROW DISCIPLINE THAT FOLLOWS. The probe's results are conditional on SeparationOver, an explicit named hypothesis standing for the GHR separation theorems, which are cited literature and are NOT formalized here. A conditional theorem with a documented hypothesis is an ordinary library citizen -- that is the shape to land. But the theorem-index rows must state the conditional form and must NOT claim the unconditional verdict is machine-checked. Earned rows: the elimination machinery (ofutP_or_iff, ofutP_sepForm_iff and their open-past mirrors), and openValidIn_ztime_iff_tr / openValidIn_rtime_iff_tr as conditional-on-separation rows. The unconditional \"definable at ZTime/RTime\" claim belongs in the module docstring citing the report and GHR, never in a pinned row.\n\nSHARED VOCABULARY, OWNED HERE. This module defines PastDet, FutDet, OfutP and OpastP. The companion non-definability task imports them from here rather than redefining them; that is why it depends on this task. Keep them public and documented.\n\nGUARDRAILS: no sorry, no new axiom, no vacuous definition. Scope is the new module, the Expressiveness aggregator, that directory's README, docs/theorem-index.md and the invariants baseline. Do not touch Independence/ (the companion task owns it) and do not edit the metalogic-cycles allowlist.\n\nAFTER THIS LANDS, the report and probe under this task directory are safely disposable: their durable content lives in the module, its docstring and the ledger, which is the point of this task.\n",
       "file_scope": [
-        "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
         "FormalSystem/Metalogic/Expressiveness.lean",
+        "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
         "FormalSystem/Metalogic/Expressiveness/README.md",
-        "docs/theorem-index.md"
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "docs/theorem-index.md",
+        "scripts/check-module-invariants.sh",
+        "typst/generated/status.typ"
       ],
       "created": "2026-11-04T20:40:35Z",
-      "last_updated": "2026-11-04T22:33:27Z",
+      "last_updated": "2026-11-04T23:02:38Z",
       "audit_verdict": {
         "verdict": "covered-by-closed",
         "project_number": 443,
@@ -108,12 +113,17 @@
           "title": "Decide whether the open-future modal ▷ is L⁺-definable"
         }
       },
-      "session_id": "sess_1793825909_81e493",
+      "session_id": "sess_1793832648_193830",
       "artifacts": [
         {
           "path": "specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md",
           "type": "report",
           "summary": "Class-split verdict: ▷ (and ◁) are L⁺-definable over ZTime and RTime frames via Gabbay separation plus pasting (Lean half compiled-live); open at Base/Dense because U/S is not separable over ℚ-time, with the obstruction and both candidate routes located; sinkFrame excluded as a negative fixture."
+        },
+        {
+          "path": "specs/854_open_future_modal_lplus_definability/plans/01_open-future-elimination-module.md",
+          "type": "plan",
+          "summary": "5-phase plan: new Expressiveness module, aggregator import, README row, six conditional theorem-index rows, re-measured C14 axiom baseline."
         }
       ],
       "next_artifact_number": 2,
