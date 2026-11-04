@@ -1,5 +1,5 @@
 ---
-next_project_number: 858
+next_project_number: 859
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 858
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,854,855,857 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,854,855,857,858 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,852,853,856 | 298,428,502,761,768,769,770,772,777,785,810,813,833,838,839,854,855 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -62,6 +62,7 @@ next_project_number: 858
 847 [NOT STARTED] — file\_scope containment drops external source-store paths...
 848 [NOT STARTED] — Test sweep permanently red where the source store is external
 857 [NOT STARTED] — Fix validate-handoff.sh crash-as-false-negative and settle...
+858 [NOT STARTED] — Make --audit-verdict survive a realistic backlog instead of...
 
 ### Algebraic Representation
 
@@ -150,6 +151,189 @@ next_project_number: 858
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 858. Make --audit-verdict survive a realistic backlog instead of overflowing argv
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: META TASK. `state-write.sh --audit-verdict` is unusable against a realistic backlog: the verdict
+document is passed to jq as a single inline argv string and overflows Linux's per-argument limit,
+so the Component 4b audit-evidence gate fails closed on the normal case and pushes every caller
+onto `--audit-override`, which is exactly the bypass the gate exists to prevent. Every figure
+below was measured, not inferred; re-verify against live code at implement time.
+
+=== THE DEFECT, MEASURED ===
+
+Observed live during a multi-task creation attempt: `state-write.sh --audit-verdict` refused the
+write with `jq: Argument list too long`. The verdict document was 140,794 bytes, passed as ONE
+argv entry. Linux's `MAX_ARG_STRLEN` is 131,072 bytes (32 pages, a compile-time constant).
+
+READ THE LIMIT CORRECTLY, because the obvious remedy does not apply: `MAX_ARG_STRLEN` is a
+PER-ARGUMENT-STRING cap, distinct from the total-argv `ARG_MAX`. Raising `ulimit -s` raises
+`ARG_MAX` and does nothing here. No stack-size, environment-trimming or argument-count change can
+fix this; the single string is simply too long to pass through `execve`.
+
+THIS IS THE NORMAL CASE, NOT AN EDGE CASE, AND IT REPRODUCED WHILE THIS RECORD WAS BEING FILED.
+`scope-blind` verdict rows -- which `audit-task-proposals.sh` emits UNCONDITIONALLY, one per
+corpus record declaring no `file_scope`, with no relevance gating -- dominate the document. A
+single-proposal audit run for THIS record produced a 143,561-byte verdict document, again over
+the limit, carrying 481 verdict rows of which 438 were `scope-blind`: 91% of rows and roughly
+half the bytes (about 72 KB). The originating report measured a comparable 93% noise share on
+its own document. This repository's backlog carries about 100 open entries plus the closed
+corpus, a large share of them legacy no-scope records, so a single proposal's verdict list
+routinely exceeds the limit. Any realistic creation attempt hits this on the first try.
+
+A SECOND MEASURED FACT WORTH PRESERVING, because it shows the noise is not merely bulky but
+actively unhelpful: in that run NO verdict carried a non-empty `shared_paths`. All 19
+`duplicate-of-open` and 24 `covered-by-closed` verdicts came purely from the recall-biased
+semantic shortlist, scoring 0.40-0.54. The overflowing document therefore contained zero
+mechanical overlap findings -- the one signal a reader most needs, a real `file_scope`
+collision -- while 438 rows reported only the absence of scope data.
+
+=== WHERE IT IS, AND WHY THE FIX SURFACE IS WIDER THAN ONE LINE ===
+
+The originating report named `state-write.sh:901`. That is correct but incomplete: the verdict
+document is interpolated inline at THREE sites in that script, all passing
+`--argjson verdicts "$AUDIT_VERDICT_JSON"`:
+  - the dry-run coverage probe (near line 769),
+  - the real coverage probe that emits the exit-5 refusal (near line 901),
+  - the verdict-recording transform that writes `.audit_verdict` / `.audit_override` onto each new
+    entry (near line 934).
+`AUDIT_VERDICT_JSON` is bound once, eagerly, before the mutex (near line 500), by slurping the
+`--audit-verdict` FILE through `jq -c -s`. Fixing only the line named in the report leaves two
+other sites that will overflow on the same document. Confirm all three sites live rather than
+trusting these line numbers.
+
+=== THE MECHANISM TO REUSE ALREADY EXISTS IN THIS SCRIPT ===
+
+Do NOT design a new mechanism. `state-write.sh` already carries transparent spill logic for
+exactly this condition on the caller-facing `--argjson` path: `SPILL_THRESHOLD` is 100000 bytes
+(deliberately under `MAX_ARG_STRLEN`), an oversized value is written to a private `mktemp` file
+under `TMP_DIR`, forwarded as `--slurpfile __spill_N`, and the caller's filter is prefixed with an
+`as $NAME` binding so `$NAME` resolves exactly as a plain `--argjson` would have. The supporting
+machinery is all present and commented: `SPILL_FILES`, `SPILL_PRIVATE_NAMES`,
+`SPILL_PUBLIC_NAMES`, `SPILL_SOURCES`, the explicit `SPILL_SEQ` counter, and
+`check_spill_name_unique`. Scope the work as EXTENDING that existing path to the audit-verdict
+interpolation sites, not as inventing a second spill design.
+
+NOTE THE SIMPLIFICATION AVAILABLE HERE, and state whether it is taken: the audit-verdict document
+is already read from a FILE on disk. The three internal jq calls bind `$verdicts` themselves
+rather than on behalf of a caller's filter, so the cleanest route may be to pass the file
+directly (`--slurpfile`, dereferenced as the existing spill prefix does) and never materialise
+`AUDIT_VERDICT_JSON` as a shell string at all -- which removes the overflow by construction
+instead of thresholding it. Weigh that against reusing the generic spill helper for consistency,
+and record the reason for the choice. The `jq -c -s '[.[] | if type == "array" then .[] else . end]'`
+normalisation (which makes the gate accept both NDJSON and a single JSON array) must survive
+whichever route is taken.
+
+=== WHY THIS MATTERS MORE THAN AN ORDINARY TOOL BUG ===
+
+On overflow the caller's only way forward is `--audit-override`, which satisfies every new entry
+unconditionally. The Component 4b audit-evidence gate exists to ensure no new `active_projects`
+entry is created without a backlog-reconciliation verdict covering it. A gate that reliably fails
+open under normal load is worse than no gate, because callers learn to reach for the override by
+habit and the override's recorded reason becomes boilerplate. State this consequence in whatever
+test or documentation the fix lands with, so a future reader understands why the spill is a
+correctness concern and not a performance nicety.
+
+=== SECOND HALF, TO BE DECIDED BY THIS TASK RATHER THAN PRE-DECIDED ===
+
+Whether `audit-task-proposals.sh` should keep emitting `scope-blind` rows one-per-record at all,
+or summarise them as a count. DO NOT treat this as settled in either direction. The arguments on
+record:
+
+  FOR leaving the emission alone. The script's own header already anticipates this exact
+  situation and rules on it: the unconditional emission is deliberate, because "an absent scope
+  must never be silently read as non-overlap" (see `context/patterns/backlog-reconciliation.md`'s
+  Pass 1 section and its `scope-blind` vocabulary row); the header states that a calling surface
+  wiring this into a Component 4b confirmation table "is expected to render `scope-blind` entries
+  compactly (e.g. a count, not N expanded rows)", and that collapsing display noise is "a
+  presentation concern for the caller, never a reason for this script to start suppressing
+  records". The script also advertises NO SUPPRESSION as a property: every corpus record it emits
+  a verdict for appears in the output. Changing that is a contract change, not a tidy-up.
+
+  FOR changing something anyway. Fixing only the spill leaves a document whose rows are ~91%
+  scope-blind flowing through every audited write; fixing only the emission leaves the overflow
+  reachable by other means (a genuinely large set of real verdicts, or a larger corpus).
+
+  THE DISTINCTION THE DECISION SHOULD TURN ON, which neither argument above makes explicit: the
+  WIRE format consumed by `state-write.sh` and the DISPLAY format rendered to a user are two
+  different surfaces. A compact wire representation of scope-blind rows (one row carrying a count
+  and the project numbers, instead of N rows) could reduce volume without suppressing any record,
+  and would be consistent with the script's no-suppression property. If that route is taken it is
+  a change to the emitted vocabulary and must be reflected in
+  `context/patterns/backlog-reconciliation.md` and in the gate's coverage logic, which keys on
+  `.proposal.id` rather than on individual verdict rows.
+
+THE TASK MUST STATE EXPLICITLY which halves it takes: spill only, emission only, or both. The
+spill half is the blocking defect and is REQUIRED. The emission half is optional and may be
+deferred with a stated reason, but it must not be silently dropped.
+
+=== ACCEPTANCE ===
+
+(1) A `--audit-verdict` document well above `MAX_ARG_STRLEN` (use the measured 140,794-byte shape,
+    or generate one) is accepted and its coverage correctly evaluated -- the gate must still
+    refuse an UNCOVERED entry with exit 5, and still pass a covered one. Both directions tested;
+    an oversized document that is merely "no longer an error" is not a pass.
+(2) All three inline interpolation sites are fixed, demonstrated by a test exercising the
+    recording transform (the `.audit_verdict` field actually written onto a new entry) and not
+    only the refusal probe.
+(3) The existing behaviour on small documents is byte-identical, and the NDJSON-or-array
+    normalisation still accepts both shapes.
+(4) Extend the EXISTING suites rather than asserting by inspection:
+    `scripts/test-state-write-large-payload.sh` and `scripts/test-state-write-spill-names.sh`
+    cover the spill path, and `scripts/tests/test-audit-task-proposals.sh` covers the emitter.
+(5) If the emission half is taken, `context/patterns/backlog-reconciliation.md` agrees with the
+    emitted vocabulary, and `scripts/tests/test-validate-task-creation-audit.sh` still passes.
+(6) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean`.
+
+=== EDIT TARGET, BINDING ===
+
+Per `.claude/rules/source-store-deploy-boundary.md` this repository's `.claude/` tree is a
+gitignored, disposable deploy artifact regenerated from a source store; a hand-authored file
+landing under `.claude/**` is silently wiped by the next regeneration. Resolve the source store
+with `jq -r '.extensions.core.source_dir' .claude-extensions.json` -- `source_dir` is
+PER-EXTENSION, so a top-level `jq -r '.source_dir'` returns `null`, which must NOT be read as the
+key being absent. Reading of 2026-11-04: `/home/benjamin/.config/nvim/agent-system/extensions/core`.
+Re-derive it rather than trusting that path. Edit at the mirroring path there; reach `.claude/**`
+only by deploy. That store is a DIFFERENT git repository, so its commits are made there -- see the
+standing record on external-source-store paths being dropped from phase-commit pathspecs, and
+stage narrowly with explicit file lists, never a directory or glob pathspec.
+
+=== DELIVERABLE PROSE CONSTRAINTS ===
+
+Every edited file lies outside `specs/**`, so no task-number references
+(`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language
+(`.claude/rules/no-record-versioning-in-deliverables.md`) may appear in the deliverables. Durable
+anchors citable freely in deliverable prose: `state-write.sh`, `audit-task-proposals.sh`,
+`--audit-verdict`, `--audit-override`, `--argjson`, `--slurpfile`, `SPILL_THRESHOLD`,
+`MAX_ARG_STRLEN`, `ARG_MAX`, exit 5, the `scope-blind` verdict name, the Component 4b gate name,
+and `context/patterns/backlog-reconciliation.md`. The originating session identifier belongs
+nowhere; it is deliberately omitted from this record too.
+
+=== RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES AS FILED ===
+
+No OPEN record declares `state-write.sh` in its `file_scope`; the record that owned that file (the
+membership-based task-number allocation change) is closed, which is why this defect was unowned
+and needs its own record. Two neighbours to re-check at admission time:
+  - The state-counter/archive-numbering record remains open at `researched` and its candidate
+    remedy (i) names `state-write.sh`'s `--allocate-into` bound and `validate-state.sh`'s Check 12.
+    Its subject matter is disjoint from the audit-verdict path, but it shares the file. If it is
+    still live when this task is admitted, add a serializing dependency edge
+    (`update-task-status.sh --depends-on-add`) rather than running the two concurrently.
+  - The file_scope declaration-hygiene record declares the DEPLOYED `.claude/scripts/validate-state.sh`
+    path, not `state-write.sh`, so it does not collide mechanically.
+
+=== A NOTE ON `file_scope` FORM ===
+
+This record's `file_scope` deliberately uses literal `agent-system/extensions/core/...` entries
+rather than unexpanded `$SD/...` strings. A standing record measured that `$SD/...` entries match
+nothing mechanically on any commit path, because no `SD=` assignment exists there. Do not
+"normalise" these entries back to a variable form.
+
+---
 
 ### 857. Fix validate-handoff.sh crash-as-false-negative and settle the canonical blockers shape
 - **Status**: [NOT STARTED]
