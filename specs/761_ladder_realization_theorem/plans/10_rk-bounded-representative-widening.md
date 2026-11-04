@@ -1435,7 +1435,7 @@ patched by inlining a new argument here.
 
 ---
 
-### Phase 11.8: The Pin Cascade, The Construction — The Interface-Level Statement in the Remaining Regime [NOT STARTED]
+### Phase 11.8: The Pin Cascade, The Construction — The Interface-Level Statement in the Remaining Regime [BLOCKED]
 
 **ENTERABLE BEHIND PHASE 11.2, AND GATED ON NOTHING OPEN. RESTATED BY THIS REVISION.** The blocker
 record below is carried verbatim: it is the compiled reason the restatement exists, and it is
@@ -1542,10 +1542,10 @@ and (C') — Phase 15, its single consumer — needs it unconditional. The agree
 it: no phase of 11.3-11.7 does, because the cell-level route spends no pin budget.
 
 **Tasks**:
-- [ ] Land `exists_ladderPath_at_region_of_pend_past` FIRST — it is the landed companion composed
+- [x] Land `exists_ladderPath_at_region_of_pend_past` FIRST *(completed and GREEN: three lines, `exists_spliced_ladderPath_of_pend_past` composed with `spliced_at_region`, in the Cascade section with `{g a l}` as explicit implicit binders because that section — unlike the Splice section the companion lives in — declares none; the elaborated signature matches the recorded block)* — it is the landed companion composed
       with `spliced_at_region` and costs almost nothing, and having it in hand fixes the conclusion
       shape the other two must match.
-- [ ] State and prove `exists_ladderPath_at_region_of_idle_past` by the cascade, over Phase 11.2's
+- [ ] State and prove `exists_ladderPath_at_region_of_idle_past` *(deviation: BLOCKED — not attempted and not faked. Phase 11.2 landed the cascade's BOOKKEEPING (`pinnedRegions_subset_Ico`, `pinnedRegions_finite`, `pinnedRegions_ncard_le`, `pin_deficit_le_of_lengthen`, `cascadeDemand`, `cascadeDemand_add_succ`, `cascadeDemand_le_cascadeBound`) and NOT the inserted walk: no declaration anywhere builds an idle-insertion walk, proves it is a ladder path, or iterates the construction over the pins. Goal state: the three-conjunct existential is open with its first conjunct `IsLadderPath step pend g'` unprovable from anything landed, because `cntAt_eq_of_obj_eq` (the countdown's rigidity) forces any path with `cntAt g' v = cntAt g v + l` to carry a DIFFERENT object walk, `spliceObj g a l` is the refuted candidate in this regime, and no third walk exists in the library. The failing pin pair is the one the carried blocker names: `(s, v)` with `s` the region start of `a`'s region and `v` an earlier region start whose region ends below `s`, at which the original is TIGHT — `cntAt g (s+1) - cntAt g (v+1) = s - v` — so the spliced walk demands `s - v + l ≤ s - v`. No pin hypothesis was relaxed, nothing was landed under a filed name, and no `sorry`, axiom or vacuous definition was written)* by the cascade, over Phase 11.2's
       four landed facts, which are CITED and never re-proved: `pinnedRegions_subset_Ico` (the
       confinement of the constraining pins to `Set.Ico p a` when the anchor `p` is idle — the
       regime hypothesis itself), `pinnedRegions_finite` (well-foundedness of the iteration),
@@ -1557,14 +1557,14 @@ it: no phase of 11.3-11.7 does, because the cell-level route spends no pin budge
       an earlier region start down by `d` grows `|s - v|` by `d` and so relaxes the inequality the
       splice violated; the displacement propagates to the next pin down, which is the doubling
       recurrence `cascadeDemand` already encodes.
-- [ ] Join the two by Phase 11.2's `regime_exhaustive_of_clipIdx_eq` into
+- [ ] Join the two *(deviation: BLOCKED behind the item above, with a STATEMENT-LEVEL finding recorded: the join CANNOT be `regime_exhaustive_of_clipIdx_eq`. That lemma's dichotomy is between two ladder paths meeting at a `clipIdx` collision at a fixed next deadline, and it needs `hB : 2 ≤ B`, `g'`, `z'`, `hn : nxtAt g z = nxtAt g' z'`, `hne` and the `clipIdx` equality — none of which the three recorded signatures carry. The join these signatures actually admit is the plain excluded middle on `hidle : ∃ p ≤ a, pend (objAt g p) = false`, whose negation `push_neg`s to `hpast`. A future revision should name that instead)* into
       `exists_ladderPath_at_region`, and record in its docstring that this is the ONE interface
       Phase 15 consumes and that the `spliceObj`-shaped conclusion is REFUTED in the idle-past
       regime rather than merely unavailable — in a sentence naming the refutation's mechanism
       (`spliceCnt` raises the pin at `a`'s region start by exactly `l` while leaving an earlier
       region start alone, against `pinCompat_of_ladderPath`'s necessity) and the compiled object on
       which it bites (`tightChain_slack_zero`, in the Phase 11.9 probe, cited by PATH).
-- [ ] Size the construction by CITING Phase 11.2's sizing statement, never re-deriving it.
+- [ ] Size the construction by CITING Phase 11.2's sizing statement *(deviation: deferred — not reached, because the construction it would size does not exist. Nothing was re-derived and `cascadeBound` was not cited as a proof term anywhere)*, never re-deriving it.
       **Findings 8 and 9 apply exactly as in Phase 11.2**: `cascadeBound`
       (`CounterQuotient.lean`) is the only importable anchor and the only one citable as a PROOF
       TERM; `forward_window`, `backward_constraint`, `region_doubling`, `doubling_attained` and
@@ -1572,16 +1572,16 @@ it: no phase of 11.3-11.7 does, because the cell-level route spends no pin budge
       are citable only in a docstring, by path; and `two_pow_card_prodState_le_Tc` is above this
       module in the import DAG and unavailable. The bound stays a COUNT (guardrail (c)): no
       complexity claim.
-- [ ] **Do NOT land anything under the name `exists_spliced_ladderPath_of_idle_past`.** That name
+- [x] **Do NOT land anything under the name `exists_spliced_ladderPath_of_idle_past`.** *(honoured: the name is claimed by nothing, and so are `exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region`. The existing docstring sentence is UPGRADED from "not landed" to "REFUTED IN THE IDLE-PAST REGIME, not merely absent", naming the mechanism — `spliceCnt` raising the pin at `a`'s region start by exactly `l` against `pinCompat_of_ladderPath`'s necessity — and the compiled object by PATH, `tightChain_slack_zero` in `specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean`; the three declarations are named there too)* That name
       belongs to the refuted statement; leaving it unclaimed is what keeps the refutation legible.
       `LadderAgree.lean`'s existing docstring sentence saying it is not landed here stays, with the
       reason upgraded from "not landed" to "refuted in this regime, restated at the interface
       level", naming the three declarations above.
-- [ ] **Keep the module under its length ceiling**, by the same pre-authorized primary remedy and
+- [x] **Keep the module under its length ceiling** *(MEASURED at close: 2,477 → **2,558** lines against the in-source `set_option linter.style.longFile 2600`, so **42 lines** of headroom remain and no remedy was taken. The contingency module `LadderCascade.lean` was NOT created and neither import edge was touched)*, by the same pre-authorized primary remedy and
       the same listed contingency as Phase 11.2. Finding 24's measured figures apply: the module is
       at **2,477 lines** against an in-source `set_option linter.style.longFile 2600` (`:308`), so
       the headroom is **123 lines** — re-measure before editing rather than trusting that figure.
-- [ ] Wire the new declarations (axiom pins, docstring, generated inventory blocks, `status.typ`).
+- [x] Wire the new declarations *(completed for the one declaration landed: a `#guard_msgs` + `#print axioms` pin for `exists_ladderPath_at_region_of_pend_past` whose own docstring records that the idle-past half is refuted and that the three other names are claimed by nothing; the upgraded `LadderAgree.lean` docstring; three generated inventory blocks; `status.typ`. The `#print axioms` invocation is split across two lines because the qualified name exceeds the 100-character limit on one)*.
       No C14 entry and no theorem-index row: this phase lands no filed Goal.
 
 **Prohibited workarounds**: do NOT weaken `exists_spliced_ladderPath` by dropping or relaxing a pin

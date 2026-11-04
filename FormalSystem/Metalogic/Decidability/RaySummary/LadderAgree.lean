@@ -1371,10 +1371,29 @@ iterations: nothing here claims anything about size, and nothing here is a compl
 The exponential `(K2)` reading `two_pow_card_prodState_le_Tc` lives in `LadderChain.lean`, which
 imports this module, so it is unavailable here and is not reached for.
 
-No new path and no construction is built in this section: `exists_spliced_ladderPath_of_idle_past`
-is NOT landed here, and none of the pin hypotheses of `exists_spliced_ladderPath` is dropped or
-relaxed — `pinCompat_of_ladderPath` proves the condition is forced by the carrier, so a relaxed
-lift lemma would be false rather than weaker. -/
+`exists_spliced_ladderPath_of_idle_past` is **REFUTED IN THE IDLE-PAST REGIME, not merely absent**,
+and the name is deliberately left unclaimed so the refutation stays legible. The mechanism:
+`spliceCnt` raises the pin at `a`'s region start by exactly `l` — its `if a ≤ v + (cntAt g v : ℤ)`
+branch fires there — while leaving an earlier region start alone, so the spliced walk demands
+`((cntAt g (s+1) + l : ℤ) - cntAt g (v+1)).natAbs ≤ (s - v).natAbs`, which
+`pinCompat_of_ladderPath` makes NECESSARY for any ladder path and which the original supplies only
+WITHOUT the `+ l`. Whenever the original is TIGHT at that pin pair the demand is
+`s - v + l ≤ s - v`, false for `l > 0`; and the tight idle-past object exists, compiled, as the
+tight doubling chain of
+`specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean`
+(`tightChain_slack_zero` makes EVERY pin pair of it exactly tight and every `v ≤ 0` of it is
+idle). None of the pin hypotheses of `exists_spliced_ladderPath` is dropped or relaxed:
+`pinCompat_of_ladderPath` proves the condition is forced by the carrier, so a relaxed lift lemma
+would be false rather than weaker.
+
+What the refutation leaves OPEN is the narrower statement the single consumer actually reads — an
+EXISTENTIAL over some ladder path delivering, at the comparison position, exactly the two facts
+`spliced_at_region` exposes there: the same object state and the countdown raised by `l`, with no
+pointwise walk identity anywhere. Three declarations carry that interface:
+`exists_ladderPath_at_region_of_pend_past` (landed below, the landed companion composed with
+`spliced_at_region`), `exists_ladderPath_at_region_of_idle_past` (NOT landed: the insertion cascade
+it needs has no landed component — see the note at the end of this section) and
+`exists_ladderPath_at_region` (NOT landed: the plain dichotomy of the two). -/
 
 section Cascade
 
@@ -1503,6 +1522,68 @@ theorem regime_exhaustive_of_clipIdx_eq {B : ℕ} (hB : 2 ≤ B)
     · exact Or.inl ⟨by omega, by omega⟩
     · exact Or.inr ⟨pend_past_of_nxtAt_lt g hg z hz (by omega),
         pend_past_of_nxtAt_lt g' hg' z' hz' (by omega)⟩
+
+/-! #### The interface the lift reads at the comparison position
+
+The two facts of `spliced_at_region`, made an EXISTENTIAL over some ladder path. This is the shape
+the `spliceObj`-shaped conclusion's refutation leaves open: it fixes the pair
+`(objAt g' v, cntAt g' v)` at the one position the lift compares and asserts nothing about `g'`
+anywhere else, so it is strictly weaker than any pointwise walk identity.
+
+Only the pending-forever half is landed. The idle-past half and the unconditional join are owed;
+the note closing this section records exactly what they need and why neither is available from
+what is landed here. -/
+
+/-- **THE INTERFACE, IN THE PENDING-FOREVER REGIME.** The landed
+`exists_spliced_ladderPath_of_pend_past` composed with `spliced_at_region`: in the regime where
+the path is pending at every position at or before the splice point, some ladder path carries the
+original's object state at the comparison position with the countdown raised by exactly the cycle
+length. This half is cheap precisely because that regime needs no cascade — the spliced walk's
+region starts are the original's displaced by `l`, so `pinCompat_of_ladderPath` on the original
+discharges both pin hypotheses. -/
+theorem exists_ladderPath_at_region_of_pend_past
+    {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (hpast : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true)
+    (hrep : objAt g a = objAt g (a + (l : ℤ)))
+    (v : ℤ) (hv : v ≤ a) (hreg : a ≤ v + (cntAt g v : ℤ)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' v = objAt g v ∧ cntAt g' v = cntAt g v + l := by
+  obtain ⟨g', hg', hobj, hcnt⟩ := exists_spliced_ladderPath_of_pend_past hg hl hcl hpast hrep
+  obtain ⟨hob, hcn⟩ := spliced_at_region hl hobj hcnt v hv hreg
+  exact ⟨g', hg', hob, hcn⟩
+
+/-! #### What the idle-past half needs, and why it is not landed here
+
+`exists_ladderPath_at_region_of_idle_past` — the same conclusion under
+`hidle : ∃ p : ℤ, p ≤ a ∧ pend (objAt g p) = false` in place of `hpast` — is NOT landed, and
+neither is the unconditional `exists_ladderPath_at_region` that joins the two. Both names are
+unclaimed. The reason is recorded rather than worked around:
+
+* **No route keeps the original walk.** `cntAt_eq_of_obj_eq` (above) is the rigidity: two ladder
+  paths with the same object walk carry the same countdown at every position. So a path whose
+  countdown at `v` is `cntAt g v + l` MUST have a different object walk, and the surgery cannot be
+  confined to the countdown.
+* **The splice's own walk is refuted in this regime**, by the mechanism this section's docstring
+  states, on the compiled tight doubling chain. So the walk must differ from `spliceObj g a l`
+  as well, strictly BELOW the comparison position's region start.
+* **The construction the cascade names has no landed component.** The mechanism is to insert idle
+  positions into idle runs strictly below that start, which shifts the past downward on the `ℤ`
+  axis and leaves the walk at and above the start pointwise fixed — so `objAt g' v = objAt g v`
+  would survive by construction — while growing `|s - v|` and so relaxing the inequality the
+  splice violated; the displacement propagates to the next pin down, which is the doubling
+  recurrence `cascadeDemand` encodes. What this section landed is the cascade's BOOKKEEPING —
+  `pinnedRegions_subset_Ico`, `pinnedRegions_finite`, `pinnedRegions_ncard_le`,
+  `pin_deficit_le_of_lengthen`, `cascadeDemand`, `cascadeDemand_add_succ` and
+  `cascadeDemand_le_cascadeBound` — and NOT the inserted walk, its ladder-path proof, or the
+  iteration over the pins. No declaration here builds one.
+* **The restated existential is open, not known.** The refutation that kills the
+  `spliceObj`-shaped conclusion establishes nothing about this one, and the cascade is a mechanism
+  rather than a proof.
+
+The consumer inherits this: the admissibility half of the counter-lift lemma is UNCONDITIONAL in
+the pending-forever regime and CONDITIONAL in the idle-past regime, and no declaration anywhere
+claims otherwise. -/
 
 end Cascade
 

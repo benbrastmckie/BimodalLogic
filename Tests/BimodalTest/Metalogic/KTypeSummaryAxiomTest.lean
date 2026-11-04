@@ -1910,6 +1910,27 @@ schema `CellLEZeroConstOfKappaEq`. The standard profile on each. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.real_certBoxK
 
+/-! ### The interface the lift reads at the comparison position, pending-forever regime
+
+`exists_ladderPath_at_region_of_pend_past` is the EXISTENTIAL form of what `spliced_at_region`
+exposes: some ladder path carries the original's object state at the comparison position with the
+countdown raised by exactly the cycle length. It is pinned because it is the half of that
+interface that IS landed. The other half, the idle-past regime, is not: the `spliceObj`-shaped
+conclusion is REFUTED there — `spliceCnt` raises the pin at the region start by exactly `l`
+against `pinCompat_of_ladderPath`'s necessity, and the tight doubling chain of
+`specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean` makes every pin
+pair exactly tight with an idle past — and the insertion cascade the restated statement would
+need has no landed component. `exists_spliced_ladderPath_of_idle_past`,
+`exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region` are therefore
+claimed by nothing. The standard profile. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_pend_past' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms
+  FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_pend_past
+
 /-! ### `Real`'s three RELATIONAL conditions
 
 Conditions (2), (3) and (4) of `Real` — the three that quantify `relK` between two members, and
