@@ -1,17 +1,48 @@
 {
-  "status": "researched",
-  "dispatch_seq": 29,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/761_ladder_realization_theorem/reports/08_rk-bounded-representative-refutation.md",
-      "summary": "Refutes rk_of_count_drift at repsCnt's current bound with three compiled decide witnesses, settles the LadderRealize docstring's open sub-question negatively, shows ParamsOk is not the repair, establishes that every class pair is liftable in a wider window, and recommends widening repsCnt to Tc+Tn+3P+2B+5 plus interface-level restatements for Phases 11.8 and 11.9."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/10_rk-bounded-representative-widening.md",
+      "summary": "Revised plan integrating the rk-bounded-representative refutation: repsCnt widened to Finset.range (Tc + Tn + 3*P + 2*B + 5), rk_of_count_drift landed without ParamsOk, the three excluded Real conditions re-homed, both owed evidence-gate wirings landed, the Dmax-growth re-read made a decision gate, and Phase 11.8's refuted cascade conclusion restated at the interface level"
     }
   ],
+  "next_steps": "Run /orchestrate 761 to execute the revised plan. Enterable now: Phase 12.3 (widen repsCnt, land rk_of_count_drift) and Phase 11.8 (the restated interface-level cascade); Phases 12.4, 12.5 and 12.6 open behind 12.3. Phases 11.6, 11.7, 12.2 and 13-18 remain behind Phase 11.9's INCONCLUSIVE verdict on the open depth-0 core, which this revision does not lift.",
   "metadata": {
-    "session_id": "sess_1793808750_b95677_761",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "session_id": "sess_1793811461_465451",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "task_number": 761,
+    "artifact_number": "10",
+    "revision_mode": "plan_revision",
+    "phase_count": 32,
+    "estimated_hours": 32.5,
+    "phases_preserved": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "11.1", "11.2", "11.3", "11.4", "11.5", "11.9", "12.1"],
+    "phases_revised": ["11.8", "12.2", "15", "18"],
+    "phases_added": ["12.3", "12.4", "12.5", "12.6"],
+    "phases_removed": [],
+    "reports_integrated": [
+      "01_obligation-repair-and-pump-layer-summary.md",
+      "01_type-preserving-cell-agreement-construction.md",
+      "01_obligation-repair-and-pump-layer.md",
+      "phase-10-handoff-20261103T051549Z.md",
+      "phase-11-handoff-20261103T053018Z.md",
+      "issues.jsonl",
+      ".decisions.json",
+      "01_pin-free-pigeonhole-open-core-summary.md",
+      "01_reanchored-deletion-half-summary.md",
+      "01_forward-slack-exact-shift-summary.md",
+      "01_upfirst-exact-shift-copy-boundary-summary.md",
+      "05_ladder-cell-agreement-construction-refuted-summary.md",
+      "phase-11.5-handoff-20261102T215926Z.md",
+      "ladder-cell-obligation-refutation.lean",
+      "ladder-cell-agreement-refutation.lean",
+      "08_rk-bounded-representative-refutation.md"
+    ],
+    "newly_integrated_reports": ["specs/761_ladder_realization_theorem/reports/08_rk-bounded-representative-refutation.md"],
+    "superseded_plan": "specs/761_ladder_realization_theorem/plans/09_tight-chain-gate-regated-graph.md",
+    "plan_revised_sentinel": "specs/761_ladder_realization_theorem/.plan-revised.json",
+    "validation": "bash .claude/scripts/validate-artifact.sh specs/761_ladder_realization_theorem/plans/10_rk-bounded-representative-widening.md plan --strict => PASS, 0 warnings",
+    "requires_user_review": false
   }
 }
