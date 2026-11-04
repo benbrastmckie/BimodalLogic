@@ -1,7 +1,7 @@
 # Implementation Plan: Task #854
 
 - **Task**: 854 - Land the positive open-future elimination result as a library module
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md`; `specs/854_open_future_modal_lplus_definability/probes/01_ofut-elimination-and-translation.lean` (341 lines, compiled-live, sorry-free)
@@ -114,7 +114,7 @@ them in `specs/ROADMAP.md` is a separate concern and is **out of scope** here.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: The `OpenFutureElimination` module and its aggregator import [NOT STARTED]
+### Phase 1: The `OpenFutureElimination` module and its aggregator import [COMPLETED]
 
 **Goal**: Land `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` carrying the
 probe's content as namespaced library code with full docstrings, and add its import to
@@ -189,8 +189,14 @@ probe's content as namespaced library code with full docstrings, and add its imp
       report or the probe by path: C9 gates task-number citations under `FormalSystem/` at zero,
       and both artifacts are disposable by design once this lands. The docstring must stand on its
       own with the GHR citation.
-- [ ] Add `import FormalSystem.Metalogic.Expressiveness.OpenFutureElimination` to
+- [x] Add `import FormalSystem.Metalogic.Expressiveness.OpenFutureElimination` to
       `FormalSystem/Metalogic/Expressiveness.lean`, in the existing import block.
+      *(deviation: altered — one additional file, `FormalSystem.lean`, had to be regenerated. The
+      plan's six-path scope omits the generated library root, but check C33 asserts
+      `FormalSystem.lean` is byte-for-byte the `mk_all --lib FormalSystem` output, one `import`
+      line per `.lean` file under `FormalSystem/`. A new module therefore adds a seventh changed
+      path by construction. Regenerated with C33's own render algorithm, not hand-inserted; C33
+      re-verified green in Phase 5.)*
 - [ ] Extend that aggregator's own docstring: add a numbered **Architecture** entry for the new
       module, and one sentence under **Main Exports** stating that the open-future elimination is
       landed **conditional on a named separation hypothesis**. Do not describe it as a headline

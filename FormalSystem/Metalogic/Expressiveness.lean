@@ -21,6 +21,7 @@ import FormalSystem.Metalogic.Expressiveness.EFGames.GapDetectionRight
 import FormalSystem.Metalogic.Expressiveness.EFGames.StaviCompleteness
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPoint
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis
+import FormalSystem.Metalogic.Expressiveness.OpenFutureElimination
 
 /-!
 # Expressiveness: Kamp/Stavi Expressive Completeness
@@ -50,12 +51,20 @@ split a genuine partition rather than a renaming.
 7. **Separation**: the Gabbay separation route
 8. **GameTransfer**: transfer of game equivalences across structures
 9. **MonadicFO / EFGameTactics**: shared vocabulary and proof automation
+10. **OpenFutureElimination**: the open-future and open-past modals against separated L⁺
+    formulas — the elimination of a disjunction under `▷`/`◁`, its conjunctive-normal-form
+    version, and a translation into L⁺ conditional on a named separation hypothesis
 
 ## Main Exports
 
 `Kamp.kampPriorExpressiveCompleteness` and `uSExpressivelyCompleteOverPrior` — the two headline
 expressive-completeness results. Both are on the main-results page and both are pinned by
 check C14's axiom baseline in `scripts/check-module-invariants.sh`.
+
+The open-future elimination of `OpenFutureElimination` is landed **conditional on
+`SeparationOver`**, an explicit named hypothesis standing for the separation theorems of
+[GHR][gabbay1994] Chapter 10, which are cited literature and are not formalized in this tree; it
+is not a headline unconditional result and is not on the main-results page.
 
 ## Status
 
