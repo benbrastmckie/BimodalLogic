@@ -563,10 +563,24 @@ no recurrence, quantifiers over every set of world states do.
 
 ### Expressiveness
 
+The first two rows are unconditional. The six open-future-elimination rows that follow them are
+**conditional on `SeparationOver`**, an explicit named hypothesis standing for the separation
+theorems of Gabbay, Hodkinson and Reynolds, Chapter 10 — cited literature that is not formalized
+in this tree and is discharged nowhere in it, so no row below asserts that the restricted modals
+are L⁺-definable full stop. The hypothesis is false for `U`/`S` over `ℚ`, so nothing in this
+band transfers to the `.Dense` or `.Base` classes, and no completeness or decidability claim for
+the open-future language is made here or anywhere else.
+
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
 | — | `{U, S}` is expressively complete for Prior structures relative to monadic FO | `FormalSystem.Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness` | `FormalSystem/Metalogic/Expressiveness/Kamp/KampPrior.lean` | — | pcq pinned:C14 |
 | — | The load-bearing corollary consumed by the live completeness chain | `FormalSystem.Metalogic.Expressiveness.uSExpressivelyCompleteOverPrior` | `FormalSystem/Metalogic/Expressiveness/PriorExpressiveness.lean` | — | pcq pinned:C14 |
+| — | For `α` past-determined and `β` future-determined, on every regular task frame: `▷(α ∨ β) ↔ α ∨ ⊡β` | `FormalSystem.Metalogic.Expressiveness.ofutP_or_iff` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | pcq pinned:C14 |
+| — | For `α` past-determined and `β` future-determined, on every regular task frame: `◁(α ∨ β) ↔ ⊡α ∨ β` | `FormalSystem.Metalogic.Expressiveness.opastP_or_iff` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | pcq pinned:C14 |
+| — | For a list of (past-determined, future-determined) clauses, on every regular task frame: `▷` of their conjunction is the conjunction of the `▷`-eliminated clauses | `FormalSystem.Metalogic.Expressiveness.ofutP_sepForm_iff` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | pcq pinned:C14 |
+| — | For a list of (past-determined, future-determined) clauses, on every regular task frame: `◁` of their conjunction is the conjunction of the `◁`-eliminated clauses | `FormalSystem.Metalogic.Expressiveness.opastP_sepForm_iff` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | pcq pinned:C14 |
+| — | Given separation over ℤ-time frames — a hypothesis this tree does not formalize — open-future-language validity at `ZTime` is L⁺-validity of the translation | `FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
+| — | Given separation over the dense Dedekind-complete frames — a hypothesis this tree does not formalize — open-future-language validity at `RTime` is L⁺-validity of the translation | `FormalSystem.Metalogic.Expressiveness.openValidIn_rtime_iff_tr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | RTime | pcq pinned:C14 |
 
 ## Statuses that are refutations, not gaps, and one status that is a gap
 

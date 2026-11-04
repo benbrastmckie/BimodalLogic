@@ -331,7 +331,7 @@ precisely the edit this phase makes and the only thing it can break.
 
 ---
 
-### Phase 3: Theorem-index rows, in the conditional form [NOT STARTED]
+### Phase 3: Theorem-index rows, in the conditional form [COMPLETED]
 
 **Goal**: Add six rows to `docs/theorem-index.md`'s `### Expressiveness` table recording the
 elimination machinery and the two class-validity transfers, each stating the conditional form and
