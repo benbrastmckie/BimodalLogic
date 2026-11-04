@@ -2499,7 +2499,7 @@ or weakening `Real`.
 
 ---
 
-### Phase 12.6: Re-Read the Maximum-Certified-Set Finding Against the Widened `RK` [NOT STARTED]
+### Phase 12.6: Re-Read the Maximum-Certified-Set Finding Against the Widened `RK` [COMPLETED]
 
 **NEW IN THIS REVISION, AND IT EXISTS BECAUSE THE WIDENING IS NOT SEMANTICALLY FREE.** It is a
 DECISION GATE in the sense `plan-format.md`'s "Decision gates and contingency branches" defines,
@@ -2522,12 +2522,12 @@ a later phase stands on: `dmax_subset_real` (Phase 15's corollary) and `ladderRe
 right-hand side are both statements ABOUT the grown `Dmax`.
 
 **Tasks**:
-- [ ] Re-read the record at
+- [x] Re-read the record at *(completed at the ARCHIVED path; the record's Finding 3 sufficiency half is NARROWER than this plan's paraphrase of it: it reads "every certified `R` **with `Real ⊆ R`** satisfies `R ⊆ Real`", not "every certified `R` lies inside `Real`". `CounterQuotient.lean`'s `Dmax` docstring and its "No ladder consequence" bullet were re-read by declaration name, not by line number)*
       `specs/archive/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md`
       — the ARCHIVED path (finding 21: the predecessor plan's `Research Inputs` cite the pre-archive
       path, which no longer resolves) — together with `CounterQuotient.lean`'s `Dmax` docstring,
       which names that finding directly.
-- [ ] **Decide the branch by a derivation, not by assertion**: for a `certAdmK`-certified `R` under
+- [x] **Decide the branch by a derivation, not by assertion** — **VERDICT: MOVED.** *Derivation: `Real`'s definition names no relation, no `RK` and no `repsCnt`, so `Real` is UNCHANGED by the widening, while `Dmax` is the union of certified sets and the widening weakens `certBiInfK`/`certFwdK`/`certBwdK` (each an existential over `relK`-related members), so `Dmax` can only grow and `Dmax ⊆ Real` is strictly harder than before. The specific conjunct that fails to bound the growth is `certStabK`, whose right-hand side `∀ y ∈ R, y.1 = x.1 → y.2.2 = x.2.2 → argOf ψ ∈ y.2.1.val` quantifies over `R` ITSELF — and `certBoxK`'s `∀ y ∈ R, argOf ψ ∈ y.2.1.val` likewise. Neither names `cellAt`, `tpOf`, `Rlad` or any history (`CounterQuotient.lean`'s own "No ladder consequence" bullet), so neither can force `R`'s fibre at a `(q, κ)` into `Real`'s fibre there: both constrain which TYPES a candidate may carry at a `(q, κ)`, never which class pairs are related, which is where the widening acts. What does force the inclusion is the lift consumed by the recorded sufficiency argument's `⟸` direction — "the induction hypothesis on a chain through each `R`-fibre member" — and a chain is admitted by `certLocK` together with `relK`, whose counter conjunct is exactly what grew; so that lift now has a WEAKER hypothesis and is a STRICTLY STRONGER statement.*: for a `certAdmK`-certified `R` under
       the WIDENED `RK`, do `certStabK` and `certBoxK` still force `R`'s fibre at each `(q, κ)` into
       `Real`'s fibre there? Record the derivation if they do, or the obstruction if they do not,
       with the specific conjunct named either way.
@@ -2540,12 +2540,12 @@ right-hand side are both statements ABOUT the grown `Dmax`.
         is the one that consumes it), and name it under `### Follow-ups this revision records and
         does not act on` as the input to a further `/revise`. The phase still CLOSES on this branch:
         a recorded, derived MOVED verdict is a complete outcome, not a failure.
-- [ ] Record the verdict in `LadderRealize.lean`'s module docstring and in this phase's own body.
+- [x] Record the verdict in `LadderRealize.lean`'s module docstring and in this phase's own body *(completed: the docstring carries the MOVED verdict with its derivation, the named conjuncts, and the consequence for `ladderRealized`'s right-hand side; the RaySummary README's depth-`0` status paragraph is UNTOUCHED)* *(deviation: altered — `check-module-invariants.sh`'s INV check went RED on three stale generated inventory blocks once `LadderRealize.lean` grew from 576 to 613 lines, so the machine-owned blocks were refreshed. The diff is three line-count numerals inside `<!-- BEGIN GENERATED -->` blocks and nothing else; the depth-`0` status paragraph and every line of prose in the RaySummary README are untouched, so the collision this phase's prohibition exists to avoid does not arise. Leaving a NEW red gate in the tree was judged the worse outcome)*.
       **Do NOT amend `FormalSystem/Metalogic/Decidability/RaySummary/README.md` in this phase** —
       its depth-`0` status paragraph is the successor chain's live territory and Phase 18 is this
       plan's records pass. This is the same deliberate collision avoidance Phase 11.9 recorded, not
       an omission.
-- [ ] Do NOT narrow `repsCnt`, weaken `Real` or restate any filed statement to reach STANDS.
+- [x] Do NOT narrow `repsCnt`, weaken `Real` or restate any filed statement to reach STANDS *(honoured: `repsCnt`, `Real`, `Dmax`, `ParamsOk` and every filed statement are unmodified by this phase; `git diff` names only `LadderRealize.lean`'s module docstring, `typst/generated/status.typ` and the three generated inventory blocks)*.
 
 **Prohibited workarounds**: do NOT narrow `repsCnt` back, in whole or in part, to reach the STANDS
 branch; do NOT strengthen `ParamsOk` to reach it either; do NOT record a verdict without the

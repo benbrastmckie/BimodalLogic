@@ -51,6 +51,43 @@ agreement and for nothing weaker (`stab_bit_agree_of_certStabK` below is the sta
 collapse). It is not claimed here, and neither is `real_certAdmK_of_paramsOk` or
 `real_subset_dmax`: all three wait on the agreement.
 
+**THE MAXIMUM-CERTIFIED-SET FINDING UNDER THE WIDENED `RK`: the sufficiency half has MOVED.**
+Re-read, not inherited, because the widening is not semantically free. `Dmax` is literally the
+union of `certAdmK`-certified sets and `dmax_maximal` says every certified set lies inside it;
+widening `repsCnt` enlarges `RK`, hence `relK`, hence WEAKENS `certBiInfK`, `certFwdK` and
+`certBwdK` — each an existential over `relK`-related members — so strictly MORE sets are
+certified and `Dmax` can only grow. `Real` meanwhile is UNCHANGED: its definition above names no
+relation, no `RK` and no `repsCnt` at all, only realizability by an admissible ladder history. So
+the inclusion `Dmax ⊆ Real` is strictly harder to prove after the widening than before.
+
+What the presentation-decision record
+(`reports/01_ladder-cell-presentation-decision.md` under
+`specs/archive/819_ladder_cell_presentation_design_decision/`, Finding 3) actually records is
+narrower than "every certified `R` lies inside `Real`": it is
+"every certified `R` **with `Real ⊆ R`** satisfies `R ⊆ Real`", with the `stab` case closed by
+induction on formula complexity, the `⟹` direction using `Real ⊆ R` and the `⟸` direction using
+the induction hypothesis **on a chain through each `R`-fibre member**. That last step is the
+obligation the widening moves: a chain is admitted by `certLocK` together with `relK`, and
+`relK`'s counter conjunct is exactly what grew, so the lift the step consumes — the counter-lift
+lemma's completeness half — now has a WEAKER hypothesis and is a STRICTLY STRONGER statement.
+
+The two conditions that are not preserved by enlarging the candidate set do NOT bound that
+growth, and the conjunct is nameable: `certStabK`'s right-hand side is
+`∀ y ∈ R, y.1 = x.1 → y.2.2 = x.2.2 → argOf ψ ∈ y.2.1.val`, whose quantifier domain is `R`
+ITSELF, and `certBoxK`'s is `∀ y ∈ R, argOf ψ ∈ y.2.1.val`. Neither mentions `cellAt`, `tpOf`,
+`Rlad` or any history — `CounterQuotient.lean`'s own "No ladder consequence" bullet records that
+nothing in that module relates `certAdmK` or `Dmax` to the model — so neither can force `R`'s
+fibre at a `(q, κ)` into `Real`'s fibre there. They constrain which TYPES a candidate may carry
+at a given `(q, κ)`; they never constrain which class pairs are related, which is where the
+widening acts.
+
+**Consequence for the fibre equation, recorded and not acted on here**: the inclusion
+`Dmax ⊆ Real` is an inherited contingency of whichever round proves it, not a corollary of the
+widening, and `ladderRealized`'s own right-hand side is a statement about the GROWN `Dmax`. No
+declaration of this module claims `certAdmK` of `Dmax`, or `certStabK` or `certBoxK` of a union
+of certified sets, and none is added to reach the opposite verdict. `repsCnt`, `Real` and `Dmax`
+are unmodified by this re-read.
+
 **Why the three relational conditions needed `rk_of_count_drift` and nothing less.** `relK`'s
 counter conjunct is `RK Tc Tn P B (pend x.1) (pend y.1) x.2.2 y.2.2`, and `RK` is the image of
 `Count`/`Drift` taken over the BOUNDED representative set `repsCnt Tc Tn P B`. Deriving such an
