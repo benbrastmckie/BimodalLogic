@@ -11,8 +11,8 @@ next_project_number: 861
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,837,838,839,841,842,847,848,854,855,857,858,860 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,852,853,859 | 298,428,502,761,768,769,770,772,777,785,810,813,833,838,839,854,855 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,854,855,857,858,860 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845,852,853,859 | 298,428,502,761,768,769,770,772,777,785,810,813,838,839,854,855 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,822,834,835,856 | 429,497,783,823,827,859 | agent-system, algebraic-representation, decidability, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -126,10 +126,8 @@ next_project_number: 861
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-833 [IMPLEMENTING] — Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage,...
-  └─ 559 [RESEARCHED] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
 854 [RESEARCHED] — Decide whether the open-future modal ▷ is L⁺-definable
-  └─ 559 [RESEARCHED] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness... (see above)
+  └─ 559 [RESEARCHED] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
   └─ 859 [RESEARCHED] — IMPLEMENTATION TASK: land the open-future NON-definability...
     └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
@@ -1935,12 +1933,13 @@ This record is filed in the BimodalLogic task space while its edit target resolv
 ---
 
 ### 833. Land the definability biconditional ⊡φ ↔ ▷◁φ in OpenLanguage, with its ledger and README rows
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [833_stab_definable_from_open_modals/reports/01_stab-definable-from-open-modals.md]
 - **Plan**: [833_stab_definable_from_open_modals/plans/01_stab-definable-from-open-modals.md]
+- **Summary**: [833_stab_definable_from_open_modals/summaries/01_stab-definable-from-open-modals-summary.md]
 
 **Description**: IMPLEMENTATION TASK, small and fully specified: the proof is already written and compiled. Land in `FormalSystem/OpenLanguage/` the fact that the stability modal is DEFINABLE from the manuscript's open-future and open-past modals:
 

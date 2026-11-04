@@ -1,7 +1,7 @@
 # Implementation Plan: Task #833
 
 - **Task**: 833 - Land the definability biconditional `⊡φ ↔ ▷◁φ` in OpenLanguage, with its ledger and README rows
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None declared. Shared-file serialization against 761 and 763 on `docs/theorem-index.md` (overlap gate; see Risks R4)
 - **Research Inputs**: specs/833_stab_definable_from_open_modals/reports/01_stab-definable-from-open-modals.md
