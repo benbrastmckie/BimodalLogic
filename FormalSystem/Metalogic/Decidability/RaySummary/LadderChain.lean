@@ -45,6 +45,8 @@ No cell-level agreement, no assembly beyond the bridge; the regime-A assembly co
 bridge and is stated separately below the bridge's section.
 -/
 
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
 open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Semantics
@@ -1444,6 +1446,96 @@ theorem exists_deleted_ladderPath_step_of_pend_past
     rcases lt_or_eq_of_le (show v ≤ a by omega) with hlt | heq
     · rw [delIdx_of_lt a (d * l) v hlt]
     · rw [heq, delIdx_of_ge a (d * l) a le_rfl, ← hty]
+
+/-- **THE OVERSHOOT LOOP.** Iterating the step by strong induction on the target number `R` of
+`l`-units deletes at least `R · l` positions and fewer than `(R + budget) · l` — the overshoot is
+fewer than `budget` blocks of length `l`, hence fewer than `budget · l ≤ budget²` positions, which
+is what the exact-shift theorem's `budget²` summand pays for — preserving the object walk and the
+realized types up to `w₀` (inclusive), the register at `z`, and the regime at the decreased amount.
+The only new structure is the induction generalizing the path and its history, so that each step's
+output is the next step's input; every path fact comes from the step lemma. -/
+theorem exists_deleted_ladderPath_overshoot_of_pend_past
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    {g : ℤ → LadderState Q pend} (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t))
+    (w₀ : ℤ) (hzw : z ≤ w₀)
+    (hwb : w₀ ≤ z + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card : ℕ) : ℤ))
+    (l : ℕ) (hl : 0 < l) (hlb : l ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card)
+    (R : ℕ)
+    (hroom : R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
+      (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) ≤ cntAt g z)
+    (hgap : nxtAt g z + R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l
+      ≤ cntAt g z)
+    (hslack : HasForwardSlack g z
+      (R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l) (nxtAt g z)) :
+    ∃ (g' : ℤ → LadderState Q pend) (t : ℕ), IsLadderPath step pend g' ∧
+      R ≤ t ∧ t < R + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ∧
+      (∀ v : ℤ, v ≤ w₀ → objAt g' v = objAt g v) ∧
+      cntAt g' z + t * l = cntAt g z ∧
+      nxtAt g' z = nxtAt g z ∧
+      HasForwardSlack g' z
+        (R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l - t * l) (nxtAt g z) ∧
+      ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        ∀ v : ℤ, v ≤ w₀ →
+          tpOf (ladderModel step pend fwd bwd lab) φ σ' v
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ v := by
+  classical
+  induction R using Nat.strong_induction_on generalizing g σ with
+  | _ R ih =>
+  rcases Nat.eq_zero_or_pos R with hR0 | hRpos
+  · -- base: nothing to delete; two histories of the same path realize the same stab-free type
+    subst hR0
+    refine ⟨g, 0, hg, le_rfl, by omega, fun _ _ => rfl, by simp, rfl, by simpa using hslack,
+      fun σ' hσ' v _ => ?_⟩
+    exact tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ' σ
+      (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ t)
+      (fun _ => rfl) hno v
+  · -- step: one deletion of `d · l` positions, then recurse on `R - d` if any units remain
+    obtain ⟨g₁, d, hg₁, hd, hdb, hagree₁, hcnt₁, hnxt₁, hslack₁, hty₁⟩ :=
+      exists_deleted_ladderPath_step_of_pend_past step pend fwd bwd lab φ hno hg z hpast σ hσ
+        w₀ hzw hwb l hl hlb (by omega) (Nat.le_add_left _ _) (by omega) hslack
+    rcases le_or_gt R d with hRd | hdR
+    · -- a single block already covers the target
+      exact ⟨g₁, d, hg₁, hRd, by omega, hagree₁, hcnt₁, hnxt₁, hslack₁, hty₁⟩
+    · -- `d < R`: recurse on the shortened path with `R - d` units left
+      have e : (R - d) * l + d * l = R * l := by
+        rw [← Nat.add_mul, Nat.sub_add_cancel (le_of_lt hdR)]
+      obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+      have hpast₁ : ∀ p : ℤ, p ≤ z → pend (objAt g₁ p) = true := fun p hp => by
+        rw [hagree₁ p (by omega)]; exact hpast p hp
+      have hroom₁ : (R - d) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card *
+          (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card + 1) ≤ cntAt g₁ z := by omega
+      have hgap₁ : nxtAt g₁ z + (R - d) * l +
+          Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l ≤ cntAt g₁ z := by
+        rw [hnxt₁]; omega
+      have hslack₁' : HasForwardSlack g₁ z
+          ((R - d) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l)
+          (nxtAt g₁ z) := by
+        rw [hnxt₁]
+        have hamt : R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l - d * l
+            = (R - d) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l := by omega
+        rw [hamt] at hslack₁
+        exact hslack₁
+      obtain ⟨g₂, t', hg₂, hRt', ht'R, hagree₂, hcnt₂, hnxt₂, hslack₂, hty₂⟩ :=
+        ih (R - d) (by omega) hg₁ hpast₁ σ₁ hσ₁ hroom₁ hgap₁ hslack₁'
+      refine ⟨g₂, d + t', hg₂, by omega, by omega,
+        fun v hv => (hagree₂ v hv).trans (hagree₁ v hv), ?_, hnxt₂.trans hnxt₁, ?_,
+        fun σ' hσ' v hv => (hty₂ σ' hσ' v hv).trans (hty₁ σ₁ hσ₁ v hv)⟩
+      · rw [Nat.add_mul]; omega
+      · rw [hnxt₁] at hslack₂
+        have hamt : R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l
+            - (d + t') * l
+            = (R - d) * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l - t' * l := by
+          rw [Nat.add_mul]; omega
+        rw [hamt]
+        exact hslack₂
 
 end DelNxtIter
 

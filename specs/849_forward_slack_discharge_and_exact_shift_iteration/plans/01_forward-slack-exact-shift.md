@@ -487,19 +487,20 @@ covers the phase -- one additive declaration, consumed by nothing yet, no landed
 
 ---
 
-### Phase 6: The overshoot loop [NOT STARTED]
+### Phase 6: The overshoot loop [COMPLETED]
 
 **Goal**: Iterating Phase 5 by strong induction on the target number `R` of `l`-units deletes at
 least `R · l` positions and fewer than `(R + b) · l`, preserving the object walk and types up to
 `w₀`, the register at `z`, and the regime at the decreased amount.
 
 **Tasks**:
-- [ ] `exists_deleted_ladderPath_overshoot_of_pend_past` (name suggested, not pinned), in
+- [x] `exists_deleted_ladderPath_overshoot_of_pend_past` (name suggested, not pinned), in
   `section DelNxtIter` after the step lemma: hypotheses as in Phase 5 with `L` replaced by the
   explicit amount -- `(R : ℕ) (hroom : R * l + b * (b + 1) ≤ cntAt g z) (hgap : nxtAt g z + R * l + b * l ≤ cntAt g z) (hslack : HasForwardSlack g z (R * l + b * l) (nxtAt g z))`;
   conclusion `∃ (g' : ℤ → LadderState Q pend) (t : ℕ), IsLadderPath step pend g' ∧ R ≤ t ∧ t < R + b ∧ (∀ v : ℤ, v ≤ w₀ → objAt g' v = objAt g v) ∧ cntAt g' z + t * l = cntAt g z ∧ nxtAt g' z = nxtAt g z ∧ HasForwardSlack g' z (R * l + b * l - t * l) (nxtAt g z) ∧ ∀ σ', (∀ t, σ'.state t = (t, g' t)) → ∀ v : ℤ, v ≤ w₀ → tpOf … σ' v = tpOf … σ v`.
   Record the exact hypothesis list chosen at the goal state in this phase's notes.
-- [ ] Proof by `induction R using Nat.strong_induction_on generalizing g σ` (so the step's output
+  *(phase note: landed with exactly the hypothesis list and conclusion written above; `Nat.strong_induction_on generalizing g σ` worked as sketched)*
+- [x] Proof by `induction R using Nat.strong_induction_on generalizing g σ` (so the step's output
   path becomes the next input). Base `R = 0`: `⟨g, 0, hg, le_rfl, by omega, fun _ _ => rfl, by simp, rfl, by simpa using hslack, fun σ' hσ' v _ => tpOf_stabFree_eq_of_objAt_eq … ⟩`
   (two histories of the same path realize the same stab-free type; `hno` is available). Step
   `0 < R`: apply Phase 5 with `L := R * l + b * l` (so `b * l ≤ L`), `hroom` from the loop's
@@ -513,12 +514,12 @@ least `R · l` positions and fewer than `(R + b) · l`, preserving the object wa
   and `d + t' < R + b` from `R - d ≤ t' < R - d + b`; agreement composes; `cntAt` by `omega` with
   `(d + t') * l = d * l + t' * l` (`add_mul`); the slack amount by rewriting
   `R * l + b * l - (d + t') * l = (R - d) * l + b * l - t' * l`; the types compose through `σ₁`.
-- [ ] Keep every `omega` call's `ℕ`-subtraction side conditions explicit (`d * l ≤ R * l + b * l`,
+- [x] Keep every `omega` call's `ℕ`-subtraction side conditions explicit (`d * l ≤ R * l + b * l`,
   `d ≤ R` in the second case); state `t * l` products with `Nat.mul_le_mul_right` where `omega`
   cannot see through a variable product.
-- [ ] Docstring: the overshoot is fewer than `b` blocks of length `l`, hence fewer than `b · l ≤ b²`
+- [x] Docstring: the overshoot is fewer than `b` blocks of length `l`, hence fewer than `b · l ≤ b²`
   positions, which is what the exact-shift theorem's `b · b` summand pays for.
-- [ ] `lean_verify`; scoped build; `--fix`; commit.
+- [x] `lean_verify`; scoped build; `--fix`; commit. *(deviation: altered — the file crossed the 1500-line `longFile` limit in this phase (the plan's per-phase estimates sum past it); added the repository-sanctioned baseline `set_option linter.style.longFile 1700` after the module docstring per LEAN_STYLE_GUIDE.md, to be re-tightened as the file grows; no statement changed)*
 
 **Timing**: 1.5 hours
 
