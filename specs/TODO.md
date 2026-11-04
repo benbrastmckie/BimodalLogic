@@ -11,7 +11,7 @@ next_project_number: 850
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,847,848,850 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,833,836,837,838,839,841,842,847,848 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,559,763,783,814,816,823,824,826,827,840,845 | 298,428,502,761,768,769,770,772,777,785,810,813,833,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 219,410,498,499,500,822,834,835 | 231,429,497,783,823,827 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -105,7 +105,6 @@ next_project_number: 850
 836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
-850 [PLANNED] — Re-derive the iterated splice in LadderChain.lean with...
 
 ### Formula Refactor
 
@@ -148,13 +147,14 @@ next_project_number: 850
 
 ### 850. Upfirst exact shift copy boundary types
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 849
 - **Research**: [850_upfirst_exact_shift_copy_boundary_types/reports/01_upfirst-exact-shift-copy-boundary.md]
 - **Plan**: [850_upfirst_exact_shift_copy_boundary_types/plans/01_upfirst-exact-shift-copy-boundary.md]
+- **Summary**: [850_upfirst_exact_shift_copy_boundary_types/summaries/01_upfirst-exact-shift-copy-boundary-summary.md]
 
 **Description**: Re-derive the iterated splice in LadderChain.lean with copy-boundary realized types exposed, then restate the exact-shift theorem under the clean up-first hypotheses, dropping the budget-squared slack penalty the landed deletions-first ordering pays.
 

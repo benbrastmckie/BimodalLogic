@@ -1,7 +1,7 @@
 # Implementation Plan: Task #850
 
 - **Task**: 850 - Re-derive the iterated splice in LadderChain.lean with copy-boundary realized types exposed, then restate the exact-shift theorem under the clean up-first hypotheses, dropping the budget-squared slack penalty the landed deletions-first ordering pays
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 11.5 hours (Phases 1-7 at 1.5 / 1.5 / 2 / 1.5 / 2 / 1.5 / 1.5)
 - **Dependencies**: None at the `state.json` level. Predecessor record: `specs/849_forward_slack_discharge_and_exact_shift_iteration/` (its landed baseline is consumed; its seven Challenge-pinned statements keep their text)
 - **Research Inputs**: `specs/850_upfirst_exact_shift_copy_boundary_types/reports/01_upfirst-exact-shift-copy-boundary.md`, with its compiled prototype `specs/850_upfirst_exact_shift_copy_boundary_types/prototype/upfirst-helpers-compiled.lean` (855 lines, fully proved, exit 0 with zero diagnostics against the built library)
@@ -267,7 +267,7 @@ drift as phases land -- re-derive by `grep -n` before editing.
 
 ---
 
-### Phase 1: The index map and the slack-raise transport [NOT STARTED]
+### Phase 1: The index map and the slack-raise transport [COMPLETED]
 
 **Goal**: The retraction `iterSpliceIdx u l d` exists in the library with the eight lemmas that
 read it (below the block, above the run, the offset form, the copy boundary, the run's top,
@@ -275,8 +275,8 @@ membership), and forward slack is known to transport across a raise increased by
 raised amount -- the two ingredients every later phase consumes.
 
 **Tasks**:
-- [ ] Re-derive `wc -l` on `LadderChain.lean` and the current baseline at L66 (expected 1,780 / 1800).
-- [ ] Insert a new `section IterIdx` directly after `end Assembly` and before `section AssemblyFin`,
+- [x] Re-derive `wc -l` on `LadderChain.lean` and the current baseline at L66 (expected 1,780 / 1800).
+- [x] Insert a new `section IterIdx` directly after `end Assembly` and before `section AssemblyFin`,
   opened by a `/-! ## The iterated splice index map -/` header that says what the retraction is
   (identity below `u + l`; `u + ((v - u) mod l)` inside the run of `d + 1` copies; `v - d · l`
   above the run) and why it is defined by iterating `spliceIdx` (one application of the
@@ -287,7 +287,7 @@ raised amount -- the two ingredients every later phase consumes.
   `iterSpliceIdx_boundary`, `iterSpliceIdx_top`, `iterSpliceIdx_mem`, each with its prototype
   docstring. The proofs are `induction d generalizing v` with `rw [spliceIdx_of_lt/ge]` and
   `omega` / `push_cast; ring`, using `Int.natCast_nonneg` for the sign of `↑(d * l)`.
-- [ ] Insert `hasForwardSlack_raise` into `section Slack`, directly after `hasForwardSlack_del`
+- [x] Insert `hasForwardSlack_raise` into `section Slack`, directly after `hasForwardSlack_del`
   and before `hasForwardSlack_of_idle_above`, with the header exactly as the Challenge block
   writes it (explicit `{Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}`), the prototype's
   docstring ("the mirror of `hasForwardSlack_del`; only two exposure clauses of the raise are
@@ -295,8 +295,8 @@ raised amount -- the two ingredients every later phase consumes.
   (L119-166): `intro I hI hidle hnext`; `hczZ` and `e` by `push_cast; ring`; `hab` (every position
   above `z`'s raised region sits above the run); `hpull` reading `objAt g'` off `habove`; the two
   `cntAt_eq_nxtAt_of_idle_pend` applications; `Nat.cast_sub` on `I - 1`; close by `omega`.
-- [ ] Long-file baseline step (expected: 1,925 lines, `N := 2100`).
-- [ ] `lean_verify` on `hasForwardSlack_raise` (expected `[propext, Quot.sound]` or a subset) and on
+- [x] Long-file baseline step (expected: 1,925 lines, `N := 2100`). *(measured: 1,931 lines; `N := 2100`)*
+- [x] `lean_verify` on `hasForwardSlack_raise` (expected `[propext, Quot.sound]` or a subset) and on
   `iterSpliceIdx_mem`; scoped build green with zero warnings; `--fix`; commit
   (`task 850 phase 1: the index map and the slack-raise transport`).
 
@@ -331,7 +331,7 @@ one module built.
 
 ---
 
-### Phase 2: The iterated duplication read through the index map [NOT STARTED]
+### Phase 2: The iterated duplication read through the index map [COMPLETED]
 
 **Goal**: Acceptance (a): an iteration lemma in `LadderChain.lean` exposes the walk, the countdown
 and the realized stab-free type at EVERY position through `iterSpliceIdx u l d` -- in particular
@@ -340,12 +340,12 @@ the original's `(objAt, tpOf)` at `u` at every copy boundary `u + i · l` for `i
 and the original's displaced by `-d · l` above the run (`iterSpliceIdx_of_ge`).
 
 **Tasks**:
-- [ ] Insert a new `section Iterate` directly after `end IterIdx` (before `section AssemblyFin`)
+- [x] Insert a new `section Iterate` directly after `end IterIdx` (before `section AssemblyFin`)
   with `variable {Q : Type} [Finite Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}` and
   `exists_iterSpliced_ladderPath_idx_of_pend_past`, header exactly as the Challenge block writes
   it, docstring from the prototype (L174-184: "every one of the landed iteration's clauses is a
   reading of this one through the characterization lemmas of `iterSpliceIdx`").
-- [ ] Proof, copied from the prototype (L209-260): `classical; haveI : Fintype Q := Fintype.ofFinite Q;
+- [x] Proof, copied from the prototype (L209-260): `classical; haveI : Fintype Q := Fintype.ofFinite Q;
   induction d with`. Base case: `g` itself with `rfl`/`simp` clauses and the type clause by
   `tpOf_stabFree_eq_of_objAt_eq` at `k := 0, k' := 0`. Step case: from the inductive hypothesis
   `⟨g₁, hg₁, hobj₁, hcnt₁, habove₁, hty₁⟩` derive `hidx_ul`/`hty_ul` (the original's object and
@@ -355,9 +355,9 @@ and the original's displaced by `-d · l` above the run (`iterSpliceIdx_of_ge`).
   the four conclusion clauses by `iterSpliceIdx_succ`, `spliceCnt_add_of_mem_region`,
   `spliceCnt_of_ge` (with the `(d + 1 + 1) * l` cast identity `e`), and
   `tpOf_eq_spliceIdx_of_tpOf_eq` composed with `hty₁` through a history `σ₁` of `g₁`.
-- [ ] Long-file baseline step (expected: about 2,016 lines; `N = 2100` still accepted since
+- [x] Long-file baseline step (expected: about 2,016 lines; `N = 2100` still accepted since *(measured: 2,025 lines; `N = 2100` kept)*
   `candidate = 2200` and `2100 = candidate - 100`).
-- [ ] `lean_verify`; scoped build green with zero warnings; `--fix`; commit
+- [x] `lean_verify`; scoped build green with zero warnings; `--fix`; commit
   (`task 850 phase 2: the iterated duplication read through the index map`).
 
 **Timing**: 1.5 hours
@@ -386,7 +386,7 @@ completely -- the theorem is new and consumed by nothing yet.
 
 ---
 
-### Phase 3: The register-held wrapper with full exposure; the landed wrapper as its corollary [NOT STARTED]
+### Phase 3: The register-held wrapper with full exposure; the landed wrapper as its corollary [COMPLETED]
 
 **Goal**: The register-held iterated duplication of a GIVEN block exposes the walk and the types
 at every position through the index map and the countdown above the run, so Phase 5 can raise the
@@ -395,10 +395,10 @@ original block of a path and still read `(objAt, tpOf)` at every copy boundary; 
 a short corollary.
 
 **Tasks**:
-- [ ] Before the edit, save the landed wrapper's header:
+- [x] Before the edit, save the landed wrapper's header:
   `sed -n '/^theorem exists_ladderPath_through_iterSpliced_nxt_of_pend_past/,/:= by$/p' FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean > <scratchpad>/wrapper-header-before.txt`
   (absolute scratchpad path).
-- [ ] Insert `exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past` into `section AssemblyFin`
+- [x] Insert `exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past` into `section AssemblyFin` *(deviation: altered — the pinned one-line header is 101 characters and trips the line-length linter; broken after the name, whitespace only, normalized header diff empty)*
   immediately BEFORE the landed wrapper, header exactly as the Challenge block writes it, docstring
   from the prototype (L268-274). Proof: the prototype's (L298-393), which is the landed wrapper's
   proof with exactly two changed derivations -- `hpend_all` (every position of `g₁` below
@@ -409,18 +409,18 @@ a short corollary.
   `exists_ladderPath_of_walk_nxt`, the translate-back) is copied, not re-derived. The full
   exposure of the result follows because the lift exposes `∀ v, objAt g' v = w v` and
   `∀ v, cntAt g' v = c v`.
-- [ ] Re-prove the landed wrapper as a corollary (about 20 lines): obtain
+- [x] Re-prove the landed wrapper as a corollary (about 20 lines): obtain
   `⟨g', hg', hobj, hcz, hnxt, _, hty⟩` from the `_idx` wrapper with the same arguments; the
   below-`u + l` walk clause by `hobj v` and `iterSpliceIdx_of_lt`; `cntAt`/`nxtAt` at `z` direct;
   the type clause at `z` by `hty σ' hσ' z` and `iterSpliceIdx_of_lt` (`z < u + l` from `hzu` and
   `hl`). The STATEMENT is not touched. Rewrite the last sentence of its docstring ("Taking the
   block as an input … a path that has since been shortened by the overshoot loop") to say the
   raise now comes first and the full exposure is the `_idx` wrapper's.
-- [ ] After the edit, extract the header again and `diff` against the saved copy: empty diff required.
-- [ ] Confirm `exists_ladderPath_through_shifted_of_pend_past` (the regime-A assembly, test-pinned)
+- [x] After the edit, extract the header again and `diff` against the saved copy: empty diff required.
+- [x] Confirm `exists_ladderPath_through_shifted_of_pend_past` (the regime-A assembly, test-pinned)
   is textually untouched: `git diff -U0 -- FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean | grep -c "exists_ladderPath_through_shifted_of_pend_past"` is 0.
-- [ ] Long-file baseline step (expected: about 2,050 lines; `N := 2200` or `2100` per the rule).
-- [ ] `lean_verify` on both names; scoped build green with zero warnings; `--fix`; commit
+- [x] Long-file baseline step (expected: about 2,050 lines; `N := 2200` or `2100` per the rule). *(measured: 2,065 lines; `N = 2100` kept)*
+- [x] `lean_verify` on both names; scoped build green with zero warnings; `--fix`; commit
   (`task 850 phase 3: the register-held wrapper with full exposure`).
 
 **Timing**: 2 hours
@@ -451,21 +451,21 @@ statement; nothing outside the module calls it.
 
 ---
 
-### Phase 4: The overshoot step and loop with the sampling window as the hypothesis [NOT STARTED]
+### Phase 4: The overshoot step and loop with the sampling window as the hypothesis [COMPLETED]
 
 **Goal**: The landed step and loop accept their sampling window directly, so the loop can start from
 `u + (b + 1) · l` -- a start the old `hwb : w₀ ≤ z + b` forbids once a run of `b` copies has been
 raised -- while the landed exact theorem (still deletions-first until Phase 6) keeps compiling.
 
 **Tasks**:
-- [ ] In `exists_deleted_ladderPath_step_of_pend_past`: replace the hypotheses `hwb`, `hlb` and
+- [x] In `exists_deleted_ladderPath_step_of_pend_past`: replace the hypotheses `hwb`, `hlb` and
   `hroom` by the single
   `(hwin : w₀ + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ))`
   placed directly after `(hl : 0 < l)`, exactly as the prototype's `_win` step (L407-427); delete
   the proof's opening `have hroom' : … := by generalize …; omega` block and use `hwin` where
   `hroom'` was read (the pigeonhole call and `hal`); nothing else in the body changes (prototype
   L430-476). Rewrite the docstring's first sentence to say the window is the hypothesis.
-- [ ] In `exists_deleted_ladderPath_overshoot_of_pend_past`: replace `hwb` and `hroom` by
+- [x] In `exists_deleted_ladderPath_overshoot_of_pend_past`: replace `hwb` and `hroom` by
   `(hwin : w₀ + ((R * l + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * l : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ))`
   placed after `(R : ℕ)`; KEEP `hlb` (the base case's `b ≥ 1`). In the proof (prototype L503-566):
   the base case is unchanged; in the step, derive `hwin₀` (the step's window, by
@@ -474,7 +474,7 @@ raised -- while the landed exact theorem (still deletions-first until Phase 6) k
   gap and slack bookkeeping is unchanged. Rewrite the docstring's parenthetical "hence fewer than
   `budget · l ≤ budget²` positions, which is what the exact-shift theorem's `budget²` summand pays
   for" to the neutral "fewer than `budget` blocks of length `l`".
-- [ ] In the landed `exists_ladderPath_through_deleted_exact_of_pend_past` (its body is replaced in
+- [x] In the landed `exists_ladderPath_through_deleted_exact_of_pend_past` (its body is replaced in
   Phase 6; here it must only keep compiling): replace its `have hroom : (m * q) * l + b * (b + 1)
   ≤ cntAt g z` by `have hwin : u + (l : ℤ) + (((m * q) * l + b * l : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ)`
   proved from `hul : u + l ≤ z + b` (the within-pigeonhole's room clause), `hbl : b * l ≤ b * b`
@@ -482,9 +482,9 @@ raised -- while the landed exact theorem (still deletions-first until Phase 6) k
   `generalize hbq : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card = b at … ⊢; omega` (the
   arithmetic the step's old `hroom'` performed), and pass `hwin` to the loop in place of
   `hul … hroom`. About ten lines.
-- [ ] Confirm no other consumer: `grep -rn "exists_deleted_ladderPath_step_of_pend_past\|exists_deleted_ladderPath_overshoot_of_pend_past" FormalSystem/ Tests/` lists only the three sites above plus prose.
-- [ ] Long-file baseline step (expected: no change needed; net about +5 lines).
-- [ ] `lean_verify` on the three names; scoped build green with zero warnings; `--fix`; commit
+- [x] Confirm no other consumer: `grep -rn "exists_deleted_ladderPath_step_of_pend_past\|exists_deleted_ladderPath_overshoot_of_pend_past" FormalSystem/ Tests/` lists only the three sites above plus prose.
+- [x] Long-file baseline step (expected: no change needed; net about +5 lines). *(measured: 2,072 lines; `N = 2100` kept)*
+- [x] `lean_verify` on the three names; scoped build green with zero warnings; `--fix`; commit
   (`task 850 phase 4: the overshoot loop with the sampling window as the hypothesis`).
 
 **Timing**: 1.5 hours
@@ -514,7 +514,7 @@ diff applies.
 
 ---
 
-### Phase 5: The exact-shift theorem, up-first [NOT STARTED]
+### Phase 5: The exact-shift theorem, up-first [COMPLETED]
 
 **Goal**: Acceptance (b), first half: `exists_ladderPath_through_deleted_exact_upfirst_of_pend_past`
 under the gap `nxtAt g z + m · (P + 1) ≤ cntAt g z` and the regime
@@ -522,11 +522,11 @@ under the gap `nxtAt g z + m · (P + 1) ≤ cntAt g z` and the regime
 conclusion verbatim.
 
 **Tasks**:
-- [ ] Insert the theorem into `section DelNxtIter` directly after the loop and before the landed
+- [x] Insert the theorem into `section DelNxtIter` directly after the loop and before the landed
   exact theorem, header exactly as the Challenge block writes it, docstring from the prototype
   (L575-586: the four-step ordering (i)-(iv) and "No `budget²` term: the raise pays for the
   overshoot before it happens").
-- [ ] Proof, copied from the prototype (L603-744), in its four steps:
+- [x] Proof, copied from the prototype (L603-744), in its four steps: *(deviation: altered — one prototype line (`ert`) exceeds 100 characters and was broken across two lines; no proof change)*
   (i) `hz`, `hbud := budget_le_Tc …`, `hb2 := budget_mul_succ_le_Tc …`; a history `σ₀` of `g`;
   the within-pigeonhole `exists_typeBlock_of_budget_le_cnt_within` giving `u l hl hlb hzu hcl hul
   hrep hty` with `hul : u + l ≤ z + b`; `hpast_u` (pending up to `u`, through `cntAt_sub_of_pend`);
@@ -551,8 +551,8 @@ conclusion verbatim.
   through histories `σ₂` (deletion, `tpOf_eq_delIdx_of_tpOf_eq` with the `z = u` case split on
   `delIdx`), `σ₁` (the loop), `σ₀` (the raise), and `tpOf_stabFree_eq_of_objAt_eq` to the
   caller's `σ`.
-- [ ] Long-file baseline step (expected: about 2,270 lines; `N := 2400`).
-- [ ] `lean_verify` (expected `[propext, Classical.choice, Quot.sound]`); scoped build green with
+- [x] Long-file baseline step (expected: about 2,270 lines; `N := 2400`). *(measured: 2,239 lines; `N := 2400`)*
+- [x] `lean_verify` (expected `[propext, Classical.choice, Quot.sound]`); scoped build green with
   zero warnings; `--fix`; commit (`task 850 phase 5: the exact-shift theorem, up-first`).
 
 **Timing**: 2 hours
@@ -581,7 +581,7 @@ completely -- the theorem is new and consumed by nothing until Phase 6.
 
 ---
 
-### Phase 6: The clean cell inclusion; the landed statements as corollaries [NOT STARTED]
+### Phase 6: The clean cell inclusion; the landed statements as corollaries [COMPLETED]
 
 **Goal**: Acceptance (b), second half, and acceptance (c): `mem_cellAt_of_shift_of_hasForwardSlack_exact`
 under exactly `n + 2 ≤ c`, `Tc ≤ c` and `HasForwardSlack g z (m · (P + 1)) n`; the landed
@@ -590,8 +590,8 @@ survive with their statements verbatim as 3-line corollaries, and the file's bas
 re-tightened to its final value.
 
 **Tasks**:
-- [ ] Before the edit, save both landed headers with `sed -n '/^theorem NAME/,/:= by$/p' … > <scratchpad>/NAME-before.txt` for each of the two names.
-- [ ] Insert `mem_cellAt_of_shift_of_hasForwardSlack_exact` directly after the up-first theorem,
+- [x] Before the edit, save both landed headers with `sed -n '/^theorem NAME/,/:= by$/p' … > <scratchpad>/NAME-before.txt` for each of the two names.
+- [x] Insert `mem_cellAt_of_shift_of_hasForwardSlack_exact` directly after the up-first theorem,
   header exactly as the Challenge block writes it, docstring from the prototype (L742-745) extended
   with the landed cell inclusion's paragraph on the witnessing path and the reserved name (the
   docstring at L1674-1686 of the file at authoring, with the `budget²` clauses removed). Proof from
@@ -599,23 +599,23 @@ re-tightened to its final value.
   `by_contra` through `h`; `hpast` by `pend_past_of_nxtAt_lt`; the up-first theorem with the three
   arithmetic side goals by `rw [hcz, hnz]; omega`; `hc'`; a history `τ'` of `g'`;
   `mem_cellAt_ladder_iff`; `Subtype.ext` on the state; `hty τ τ' hτ hτ'`.
-- [ ] Replace the body of the landed `exists_ladderPath_through_deleted_exact_of_pend_past` by the
+- [x] Replace the body of the landed `exists_ladderPath_through_deleted_exact_of_pend_past` by the
   term `exists_ladderPath_through_deleted_exact_upfirst_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno g hg z hpast m hTc (by omega) (hasForwardSlack_mono g z hslack (Nat.le_add_right _ _))`
   (prototype L795-823); the STATEMENT is not touched. Rewrite its docstring: it is now "the landed
   exact-shift theorem as a corollary of the up-first one: monotonicity of the regime and arithmetic
   on the gap", keeping the one-sentence description of what it concludes and deleting the
   "OVERSHOOT-THEN-UP" and "the price of ordering the deletions first" sentences.
-- [ ] Replace the body of the landed `mem_cellAt_of_shift_of_hasForwardSlack` by the term
+- [x] Replace the body of the landed `mem_cellAt_of_shift_of_hasForwardSlack` by the term
   `mem_cellAt_of_shift_of_hasForwardSlack_exact step pend fwd bwd lab φ Tc Tn P B hp hno q c n h m h' hgap hTc z g hg hgz (hasForwardSlack_mono g z hslack (Nat.le_add_right _ _)) τ hτ`
   (prototype L827-851), preceded by the two-line `--` comment naming `linter.unusedVariables` and
   the reason (`hslk` is implied by `hgap` once the regime amount is `m · (P + 1)` and is not read)
   and then `set_option linter.unusedVariables false in` (C29 form). The STATEMENT is not touched.
   Rewrite its docstring to point at the `_exact` form for the witnessing-path discussion and to
   say it is the verbatim landed statement kept as a corollary.
-- [ ] After the edits, extract both headers again and `diff` against the saved copies: empty diffs required.
-- [ ] Long-file baseline step -- the FINAL value: expected about 2,200 lines, so `N := 2400` if
+- [x] After the edits, extract both headers again and `diff` against the saved copies: empty diffs required.
+- [x] Long-file baseline step -- the FINAL value: expected about 2,200 lines, so `N := 2400` if *(measured: 2,197 lines; final `N := 2300`)*
   `lines ≥ 2200` else `2300`; record the measured `wc -l` and the chosen `N` in this phase's notes.
-- [ ] `lean_verify` on all three names (the `_exact` inclusion expected `[propext, Classical.choice, Quot.sound]`);
+- [x] `lean_verify` on all three names (the `_exact` inclusion expected `[propext, Classical.choice, Quot.sound]`);
   scoped build green with zero warnings (the scoped suppression must leave zero warnings);
   `--fix`; commit (`task 850 phase 6: the clean cell inclusion and the landed statements as corollaries`).
 
@@ -650,7 +650,7 @@ the covering check for their statements.
 
 ---
 
-### Phase 7: Record, sync, drift check, and the full gate [NOT STARTED]
+### Phase 7: Record, sync, drift check, and the full gate [COMPLETED]
 
 **Goal**: Acceptance (d) and (e): the module's record describes the up-first ordering and the
 dropped slack penalty everywhere the deletions-first ordering was asserted, statement fidelity of
@@ -658,7 +658,7 @@ all thirteen pinned names (six of this task, seven of the predecessor) is verifi
 complete gate set runs green with `sorry` 0 and the axiom census unchanged.
 
 **Tasks**:
-- [ ] Open with the grep in this phase's Scope Hypothesis and rewrite each site it lists in
+- [x] Open with the grep in this phase's Scope Hypothesis and rewrite each site it lists in
   `LadderChain.lean` (line numbers at authoring; re-derive): the module docstring's exact-shift
   sentence (L52-55) to name the up-first ordering and the regime at exactly `m · (P + 1)`, with the
   landed names as corollaries; the `DelNxtFin` docstring's "EXACTNESS, met by overshooting with
@@ -669,7 +669,7 @@ complete gate set runs green with `sorry` 0 and the axiom census unchanged.
   gap `n + budget² ≤ c`)" (L1740) replaced by the clean hypotheses and the `_exact` name; the
   `Spacing` header (L450) checked (the loop still needs spacing `l`; adjust only if a clause names
   the order).
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: row 39 (`LadderChain.lean`) --
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: row 39 (`LadderChain.lean`) -- *(line count re-derived: 2,216)*
   re-derive the line count with `wc -l` and replace the exact-shift clause ("overshoot by sampled
   blocks at spacing `l`, then raise by the overshoot on the original block" and "the regime at
   amount `m · (P + 1) + b²`") with the up-first ordering under the regime at exactly `m · (P + 1)`,
@@ -681,7 +681,7 @@ complete gate set runs green with `sorry` 0 and the axiom census unchanged.
   status paragraph (L984-987) -- replace "(overshoot by sampled blocks …, then raise by the
   overshoot)" and `HasForwardSlack g z (m · (P + 1) + b²) n` by the up-first ordering and
   `HasForwardSlack g z (m · (P + 1)) n`, and record that the `budget²` penalty is dropped.
-- [ ] Statement fidelity, both routes: (1) `bash .claude/scripts/lean-challenge-snapshot.sh --check 850 .`
+- [x] Statement fidelity, both routes: (1) `bash .claude/scripts/lean-challenge-snapshot.sh --check 850 .` *(outcome: `--check 850` and `--check 849` both exit 71, advisory as predicted; thirteen normalized header matches)*
   and `… --check 849 .` -- exit 0 expected only if the `specs/**` prototypes have been moved; exit
   71 (ambiguity from `specs/849_…/prototype/helpers-compiled.lean` and
   `specs/850_…/prototype/upfirst-helpers-compiled.lean`) is EXPECTED and advisory; exit 65 is
@@ -691,19 +691,19 @@ complete gate set runs green with `sorry` 0 and the axiom census unchanged.
   `git show $(jq -r .commit specs/850_upfirst_exact_shift_copy_boundary_types/challenge/manifest.json):Challenge.lean`,
   and for each of the seven 849 names against `git show cd052276c1d1734ac8d94f8fc5ee8d7c2c9932db:Challenge.lean`;
   thirteen matches required. Record the outcome in the summary.
-- [ ] Unscoped guarded build: `timeout 590 bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
+- [x] Unscoped guarded build: `timeout 590 bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
   (or detached with the bounded waiter if it does not fit one call), exit 0 with zero warnings.
-- [ ] `sorry` census: `grep -rn "\bsorry\b" FormalSystem/ --include=*.lean | grep -v Boneyard | wc -l` is 0.
-- [ ] Axiom census, both named measurements unchanged from authoring:
+- [x] `sorry` census: `grep -rn "\bsorry\b" FormalSystem/ --include=*.lean | grep -v Boneyard | wc -l` is 0.
+- [x] Axiom census, both named measurements unchanged from authoring:
   `grep -rn "^axiom " FormalSystem --include=*.lean | wc -l` = 10 and
   `bash scripts/typst-status-counts.sh --json | jq .axiom_count` = 20; `lean_verify` on every name
   landed in Phases 1-6 reports a subset of `[propext, Classical.choice, Quot.sound]`.
-- [ ] `bash scripts/typst-sync-check.sh --fix`; then `bash scripts/typst-sync-check.sh` exits 0.
-- [ ] The complete gate set: `bash .claude/scripts/verify-deploy.sh` exits 0.
-- [ ] `grep -rn "task 8" FormalSystem/ typst/` returns nothing; the README and docstrings cite
+- [x] `bash scripts/typst-sync-check.sh --fix`; then `bash scripts/typst-sync-check.sh` exits 0.
+- [x] The complete gate set: `bash .claude/scripts/verify-deploy.sh` exits 0.
+- [x] `grep -rn "task 8" FormalSystem/ typst/` returns nothing; the README and docstrings cite
   durable anchors (names, section headings) only, and no deliverable narrates its own draft
   history ("previously", "no longer", "used to" are not used -- state the current design).
-- [ ] Commit (`.lean`, README, `status.typ`; `task 850 phase 7: record, sync and the full gate`);
+- [x] Commit (`.lean`, README, `status.typ`; `task 850 phase 7: record, sync and the full gate`);
   write the implementation summary.
 
 **Timing**: 1.5 hours
@@ -868,12 +868,12 @@ end FormalSystem.Metalogic.Decidability.RaySummary
 
 ## Testing & Validation
 
-- [ ] Each Lean phase: scoped guarded build of `FormalSystem.Metalogic.Decidability.RaySummary.LadderChain` exits 0 with zero warnings; `lean_verify` on every declaration touched reports no `sorry` and a subset of `[propext, Classical.choice, Quot.sound]`.
-- [ ] Phases 3 and 6: before/after header diffs of the three landed declarations whose bodies change are empty.
-- [ ] Phase 7: thirteen header matches against the two Challenge commits; `--check` exit codes recorded and read as advisory.
-- [ ] Phase 7: unscoped guarded `lake build` exit 0 with zero warnings; `sorry` census 0; both axiom measurements unchanged (10 and 20); `bash scripts/typst-sync-check.sh` exit 0; `bash .claude/scripts/verify-deploy.sh` exit 0.
-- [ ] Phase 7: the test module `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` is untouched and its `#guard_msgs` pins pass inside the full build.
-- [ ] Phase 7: `grep -rn "task 8" FormalSystem/ typst/` empty; no record-versioning language in the README or docstrings.
+- [x] Each Lean phase: scoped guarded build of `FormalSystem.Metalogic.Decidability.RaySummary.LadderChain` exits 0 with zero warnings; `lean_verify` on every declaration touched reports no `sorry` and a subset of `[propext, Classical.choice, Quot.sound]`.
+- [x] Phases 3 and 6: before/after header diffs of the three landed declarations whose bodies change are empty.
+- [x] Phase 7: thirteen header matches against the two Challenge commits; `--check` exit codes recorded and read as advisory.
+- [x] Phase 7: unscoped guarded `lake build` exit 0 with zero warnings; `sorry` census 0; both axiom measurements unchanged (10 and 20); `bash scripts/typst-sync-check.sh` exit 0; `bash .claude/scripts/verify-deploy.sh` exit 0.
+- [x] Phase 7: the test module `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` is untouched and its `#guard_msgs` pins pass inside the full build.
+- [x] Phase 7: `grep -rn "task 8" FormalSystem/ typst/` empty; no record-versioning language in the README or docstrings.
 
 ## Artifacts & Outputs
 
