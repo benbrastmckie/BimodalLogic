@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a seven-phase, 11.5-hour plan that lands the research prototype's up-first exact-shift chain in LadderChain.lean in prototype order (index map and slack-raise transport; fully-exposed iterated duplication; register-held wrapper with the landed wrapper as corollary; window-generalized overshoot step and loop in place; the up-first exact-shift theorem; the clean cell inclusion with both landed theorems as verbatim corollaries; record and full gate). Decided at plan time to re-baseline the long-file linter in place using Mathlib's actual acceptance rule (N in {candidate-100, candidate}), so the baseline moves at Phases 1, 3, 5 and 6. Six statements are pinned under Lean Challenge Statements, elaborated standalone (exit 0, five sorry warnings), and snapshotted at plan time (commit c1bc84a58, manifest written); the two 849-pinned landed theorems are verified by header diff against the 849 Challenge commit.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/850_upfirst_exact_shift_copy_boundary_types/plans/01_upfirst-exact-shift-copy-boundary.md",
+      "summary": "Seven-phase implementation plan with Lean Challenge Statements for six pinned declarations."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 7,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch Phase 1 (index map, slack-raise transport, first longFile re-baseline); expect lean-challenge-snapshot.sh --check 850 to exit 71 (advisory) while the research prototype sits under specs/."
+}

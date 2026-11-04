@@ -105,7 +105,7 @@ next_project_number: 850
 836 [BLOCKED] — The depth-0 cell-level agreement for ladder realization needs...
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
-850 [RESEARCHED] — Re-derive the iterated splice in LadderChain.lean with...
+850 [PLANNED] — Re-derive the iterated splice in LadderChain.lean with...
 
 ### Formula Refactor
 
@@ -148,12 +148,13 @@ next_project_number: 850
 
 ### 850. Upfirst exact shift copy boundary types
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 849
 - **Research**: [850_upfirst_exact_shift_copy_boundary_types/reports/01_upfirst-exact-shift-copy-boundary.md]
+- **Plan**: [850_upfirst_exact_shift_copy_boundary_types/plans/01_upfirst-exact-shift-copy-boundary.md]
 
 **Description**: Re-derive the iterated splice in LadderChain.lean with copy-boundary realized types exposed, then restate the exact-shift theorem under the clean up-first hypotheses, dropping the budget-squared slack penalty the landed deletions-first ordering pays.
 

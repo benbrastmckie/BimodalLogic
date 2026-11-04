@@ -1,38 +1,38 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/850_upfirst_exact_shift_copy_boundary_types/reports/01_upfirst-exact-shift-copy-boundary.md",
-      "summary": "Up-first exact-shift ordering verified by a fully proved compiled prototype: raise by budget copies (slack +b*l via hasForwardSlack_raise), overshoot above the run, delete the exact remainder inside it; clean hypotheses HasForwardSlack g z (m*(P+1)) n and n+2<=c with no budget-squared term; the re-derived iteration exposes objAt/tpOf everywhere through iterSpliceIdx; both landed theorems survive verbatim as 3-line corollaries; net +400 lines so LadderChain.lean re-baselines to 2200/2300 per the style guide."
+      "type": "plan",
+      "path": "specs/850_upfirst_exact_shift_copy_boundary_types/plans/01_upfirst-exact-shift-copy-boundary.md",
+      "summary": "Seven-phase, 11.5-hour plan landing the up-first exact-shift ordering in LadderChain.lean: the iterSpliceIdx index map and slack-raise transport, the fully-exposed iterated duplication and register-held wrapper, the window-generalized overshoot loop, the exact-shift theorem and cell inclusion under exactly HasForwardSlack g z (m*(P+1)) n and n+2 <= c, the landed theorems as verbatim corollaries, and the record/full-gate phase; six statements pinned and snapshotted at plan time."
     }
   ],
-  "next_steps": "Plan: land the prototype's sections in LadderChain.lean in order (index map, slack-raise transport, iteration, wrapper, window-generalized loop in place, up-first exact theorem + clean cell inclusion, landed statements as corollaries), set the longFile baseline at the first Lean phase, take the Challenge snapshot at plan time, rewrite the eleven stale prose sites and README rows 39/42 and the status paragraph, regenerate status.typ before every commit.",
-  "modified_files": [
-    "specs/850_upfirst_exact_shift_copy_boundary_types/reports/01_upfirst-exact-shift-copy-boundary.md",
-    "specs/850_upfirst_exact_shift_copy_boundary_types/prototype/upfirst-helpers-compiled.lean"
-  ],
-  "memory_candidates": [
-    {
-      "content": "omega with the budget product Fintype.card Q * 2^k: never push_cast a goal that must meet un-pushed hypotheses (it splits the cast to the leaves); generalize the budget expression to one atom locally (generalize hb : ... = b at h1 h2 ⊢; omega); state hand-written integer bounds with an explicit ((.. : ℕ) : ℤ) cast; name every product fact (b*l ≤ b*b, b*(b+1) = b*b + b).",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/850_upfirst_exact_shift_copy_boundary_types/reports/01_upfirst-exact-shift-copy-boundary.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["omega", "push_cast", "generalize", "budget", "LadderChain", "nonlinear atoms"]
-    },
-    {
-      "content": "Exact shift by a prescribed multiple with uncontrolled pigeonhole chunk sizes: raise FIRST by budget copies of the block (adds exactly b*l of forward slack and exposes every copy boundary), overshoot-delete above the run, then delete the exact remainder r in [1,b] as one block of the run. Hypotheses stay at exactly the target amount; no budget-squared penalty.",
-      "category": "PATTERN",
-      "source_artifact": "specs/850_upfirst_exact_shift_copy_boundary_types/prototype/upfirst-helpers-compiled.lean",
-      "confidence": 0.85,
-      "suggested_keywords": ["exact shift", "overshoot", "iterSpliceIdx", "HasForwardSlack", "pumping", "RaySummary"]
-    }
-  ],
+  "next_steps": "Run /orchestrate 850 to execute the plan",
   "metadata": {
     "session_id": "sess_1793757612_b2fdf7_850",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 11.5,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7]],
+    "challenge_snapshot": {
+      "manifest_path": "specs/850_upfirst_exact_shift_copy_boundary_types/challenge/manifest.json",
+      "commit": "c1bc84a58ff2486ae5c0d484c5154557d47407f6",
+      "theorem_count": 6,
+      "standalone_elaboration": "exit 0, five 'declaration uses sorry' warnings, no errors"
+    }
+  },
+  "memory_candidates": [],
+  "modified_files": [
+    "specs/850_upfirst_exact_shift_copy_boundary_types/plans/01_upfirst-exact-shift-copy-boundary.md",
+    "specs/850_upfirst_exact_shift_copy_boundary_types/challenge/manifest.json",
+    "Challenge.lean"
+  ],
+  "proposed_file_scope": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "typst/generated/status.typ"
+  ],
+  "dispatch_seq": 2
 }
