@@ -467,6 +467,7 @@ import FormalSystem.Metalogic.Independence.LimitClosureCountermodel
 import FormalSystem.Metalogic.Independence.LimitClosureFrame
 import FormalSystem.Metalogic.Independence.LoopingDuration
 import FormalSystem.Metalogic.Independence.NaiveSystem
+import FormalSystem.Metalogic.Independence.OpenFutureUndefinable
 import FormalSystem.Metalogic.Independence.OrderTransfer
 import FormalSystem.Metalogic.Independence.PastedCoarseModels
 import FormalSystem.Metalogic.Independence.PastingIndependence

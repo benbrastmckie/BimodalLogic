@@ -1,7 +1,7 @@
 # Implementation Plan: Task #859
 
 - **Task**: 859 - Land the open-future NON-definability result as a library module
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.25 hours
 - **Dependencies**: The companion elimination module `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` (landed; owns `PastDet`, `FutDet`, `OfutP`, `OpastP`)
 - **Research Inputs**: `specs/859_qtime_open_future_definability_base_dense/reports/01_qtime-open-future-definability.md`; `specs/859_qtime_open_future_definability_base_dense/probes/01_ofut-marker-gadget-and-nondefinability.lean` (419 lines, compiled-live, sorry-free, no axiom declarations)
@@ -141,7 +141,7 @@ No `roadmap_path` was provided in this dispatch, and no roadmap phases are there
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: The `OpenFutureUndefinable` module and its aggregator wiring [NOT STARTED]
+### Phase 1: The `OpenFutureUndefinable` module and its aggregator wiring [COMPLETED]
 
 **Goal**: Land `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean` carrying the
 probe's content as documented library code against the companion module's imported vocabulary,

@@ -33,6 +33,7 @@ import FormalSystem.Metalogic.Independence.LimitClosureFrame
 import FormalSystem.Metalogic.Independence.LimitClosureCountermodel
 import FormalSystem.Metalogic.Independence.PlusIncompleteness
 import FormalSystem.Metalogic.Independence.TranslationProductCoarse
+import FormalSystem.Metalogic.Independence.OpenFutureUndefinable
 
 /-!
 # Independence results
@@ -40,8 +41,8 @@ import FormalSystem.Metalogic.Independence.TranslationProductCoarse
 Underivability results, established by exhibiting a model of the assumptions in which the target
 formula fails.
 
-Thirteen results are carried here. This list and the one in `Independence/README.md` enumerate
-the same thirteen results in the same order.
+Fourteen results are carried here. This list and the one in `Independence/README.md` enumerate
+the same fourteen results in the same order.
 
 1. The paper's `CO` principle does not derive Reynolds' `Axiom.prior_U_gap` over the dense base.
    The converse direction — Reynolds' triple *does* derive `CO` — is
@@ -114,6 +115,27 @@ the same thirteen results in the same order.
     `translationFrame_lexZ_not_isZTime` records the non-collision: the witness frame is Discrete
     but not `IsZTime`, so result 10's characterizations stand. This is the least-positive branch
     of the duration dichotomy whose dense branch is result 10.
+
+14. The **open-future modal `▷` is not L⁺-definable** over non-Dedekind-complete time, by the
+    marker gadget of `OpenFutureUndefinable.lean` — **conditionally**, and the conditionality is
+    the content of the entry. What is machine-checked is the reduction
+    (`ofut_not_plusDefinable_of_deltaProp_inexpressible`): given a frame's enough-worlds
+    condition `hmarkers` and the inexpressibility `hinexpr` of the gap-anchored past property
+    `MarkerGadget.DeltaProp`, truth-level L⁺-definability of L^▷ fails at that frame. The gadget
+    that gets there is the interesting half: one extra atom makes the point of evaluation a
+    definable singleton (`MarkerGadget.theta_eq_iff`), hence the closed past a definable region
+    (`nu_iff_le`), hence backward-run membership definable *without naming the run's lower
+    endpoint* (`run_iff`) — the step `U`/`S` cannot take over a carrier where that endpoint is a
+    gap — and `▷` then computes `DeltaProp` exactly (`dofut_probe_iff`,
+    `ofut_neg_probe_iff`). `colourFibre_isRegular` puts the four-colour clock witness frame in
+    the regular class over **every** temporal order. `hinexpr` is **not formalized in this
+    tree**: it is a collapse argument in the style of [GHR][gabbay1994] vol. 1, Lemma 12.4.2,
+    derived in the research round rather than quoted, so the unconditional verdict "`▷` is not
+    L⁺-definable at `.Base` and not at `.Dense`" is recorded in that module's docstring with its
+    citation and is **not** machine-checked here. With the positive result at `.ZTime`/`.RTime`
+    (`Metalogic/Expressiveness/OpenFutureElimination.lean`) the class split closes, making `▷` a
+    genuine expressive extension of L⁺ rather than notation. Nothing is claimed about a
+    validity-level-only translation, which `OfutPlusDefinable` does not speak to.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes. Results 10, 11 and 12 together settle
@@ -219,6 +241,13 @@ and answers "every non-Archimedean one".
   positive `sep_validIn_ztime`, `sep_validIn_iff` characterizes the row as
   `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc` — the one row whose shape differs from the others,
   because `.ZTime` is incomparable with `.RTime` and `sep` is valid there.
+* `Independence/OpenFutureUndefinable.lean` — the marker gadget (`MarkerGadget.theta_eq_iff`,
+  `nu_iff_le`, `run_iff`, `delta_iff`), the exactness claim that `▷` computes the gap-anchored
+  past property `MarkerGadget.DeltaProp` (`dofut_probe_iff`, `ofut_neg_probe_iff`), the
+  truth-level notion `OfutPlusDefinable` and the conditional non-definability theorem
+  `ofut_not_plusDefinable_of_deltaProp_inexpressible`, plus the four-colour clock witness frame
+  `colourFibre` and its regularity. The reduction is machine-checked; the inexpressibility
+  hypothesis `hinexpr` it is conditional on is not formalized here.
 
 ## The method
 
