@@ -340,7 +340,7 @@ module in the tree can break.
 
 ---
 
-### Phase 2: Re-measure the axiom profiles and pin the C14 baseline [NOT STARTED]
+### Phase 2: Re-measure the axiom profiles and pin the C14 baseline [COMPLETED]
 
 **Goal**: Measure `#print axioms` on each landed declaration against the built library and pin
 the measured values as matched heredoc pairs in `scripts/check-module-invariants.sh`, so the

@@ -2179,6 +2179,31 @@ fi
 # discharged nowhere, and it is false over the non-Dedekind-complete flows, so nothing here
 # reaches the dense or unconstrained classes.
 #
+# Eleven further matched pairs follow them, for the open-future NON-definability layer
+# (`Metalogic/Independence/OpenFutureUndefinable.lean`), which is the negative half of the same
+# neighbourhood. `...ofut_pastDet` and `...opast_futDet` are the determinacy facts that confine
+# any separator to the past side; `...MarkerGadget.theta_eq_iff`, `...nu_iff_le`, `...run_iff`
+# and `...delta_iff` are the marker gadget, which makes the point of evaluation, the closed past
+# and backward-run membership definable in L+ at the cost of one atom;
+# `...MarkerGadget.deltaProp_pastDet` is past-determinedness of the gap-anchored property;
+# `...MarkerGadget.dofut_probe_iff` and `...ofut_neg_probe_iff` are the exactness claim that the
+# open-future modal computes that property with no slack;
+# `...ofut_not_plusDefinable_of_deltaProp_inexpressible` is the reduction theorem; and
+# `...colourFibre_isRegular` puts the four-colour clock witness frame in the regular class over
+# every temporal order. `Classical.choice` enters the gadget chain through the trichotomy case
+# split `theta_eq_iff` turns on; the three lines measuring the strict subset `[propext]` need no
+# split and are not a regression.
+#
+# WHAT THESE ELEVEN LINES DO NOT ASSERT. The reduction theorem is CONDITIONAL on two explicit
+# named hypotheses: `hmarkers`, an enough-worlds condition on the frame, and `hinexpr`, the
+# inexpressibility of the gap-anchored past property. `hinexpr` stands for a collapse argument
+# derived in prose in the module's own docstring, in the style of Gabbay, Hodkinson and Reynolds
+# vol. 1, Lemma 12.4.2, and NOT formalized anywhere in this tree. Their presence in this
+# baseline pins axiom profiles and nothing else: no unconditional non-definability claim for the
+# open-future modal at the base or dense classes is asserted here, neither hypothesis is
+# discharged in this tree, and nothing here bears on the integer or real classes, where the
+# elimination layer above gives the positive result.
+#
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
 # SORRY-FREE is pinned here or by C2, so no such claim is prose-only: the docstring asserts
@@ -2327,6 +2352,17 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.openValidIn_rtime_iff_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.ofutP_of_futDet' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Independence.ofut_pastDet' depends on axioms: [propext]
+'FormalSystem.Metalogic.Independence.opast_futDet' depends on axioms: [propext]
+'FormalSystem.Metalogic.Independence.MarkerGadget.theta_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.MarkerGadget.nu_iff_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.MarkerGadget.run_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.MarkerGadget.delta_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.MarkerGadget.deltaProp_pastDet' depends on axioms: [propext]
+'FormalSystem.Metalogic.Independence.MarkerGadget.dofut_probe_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.MarkerGadget.ofut_neg_probe_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.ofut_not_plusDefinable_of_deltaProp_inexpressible' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.colourFibre_isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.HybridLanguage.regFree_invariance' depends on axioms: [propext, Quot.sound]
 'FormalSystem.HybridLanguage.recF_defines' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.HybridLanguage.transF_defines' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2576,6 +2612,17 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr
 #print axioms FormalSystem.Metalogic.Expressiveness.openValidIn_rtime_iff_tr
 #print axioms FormalSystem.Metalogic.Expressiveness.ofutP_of_futDet
+#print axioms FormalSystem.Metalogic.Independence.ofut_pastDet
+#print axioms FormalSystem.Metalogic.Independence.opast_futDet
+#print axioms FormalSystem.Metalogic.Independence.MarkerGadget.theta_eq_iff
+#print axioms FormalSystem.Metalogic.Independence.MarkerGadget.nu_iff_le
+#print axioms FormalSystem.Metalogic.Independence.MarkerGadget.run_iff
+#print axioms FormalSystem.Metalogic.Independence.MarkerGadget.delta_iff
+#print axioms FormalSystem.Metalogic.Independence.MarkerGadget.deltaProp_pastDet
+#print axioms FormalSystem.Metalogic.Independence.MarkerGadget.dofut_probe_iff
+#print axioms FormalSystem.Metalogic.Independence.MarkerGadget.ofut_neg_probe_iff
+#print axioms FormalSystem.Metalogic.Independence.ofut_not_plusDefinable_of_deltaProp_inexpressible
+#print axioms FormalSystem.Metalogic.Independence.colourFibre_isRegular
 #print axioms FormalSystem.HybridLanguage.regFree_invariance
 #print axioms FormalSystem.HybridLanguage.recF_defines
 #print axioms FormalSystem.HybridLanguage.transF_defines
