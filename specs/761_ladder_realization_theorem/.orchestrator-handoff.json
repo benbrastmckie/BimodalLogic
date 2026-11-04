@@ -1,30 +1,24 @@
 {
-  "dispatch_seq": 26,
   "status": "partial",
-  "phases_completed": 18,
-  "phases_total": 28,
-  "summary": "Executed all four phases plan v09 declares enterable. Phase 11.2 closed [COMPLETED] with nine theorems and two definitions in LadderAgree.lean; Phase 12.1 closed [COMPLETED WITH EXCLUSIONS] with Real and two of its six certificate conditions in LadderRealize.lean; Phase 11.9's decision gate closed [COMPLETED WITH EXCLUSIONS] with verdict INCONCLUSIVE, having COMPILED the one claim the live RaySummary README records as argued rather than compiled (no positive deletion-derivative of the tight doubling chain lifts) in a form strictly stronger than the recorded statement. Phase 11.8 is [BLOCKED]: its Goal and its own third task contradict each other and the shape the task names is refutable. Full lake build green at every phase end; sorry_count 0; no new axioms.",
+  "dispatch_seq": 30,
+  "phases_completed": 4,
+  "phases_total": 5,
+  "summary": "Executed the whole enterable set of plan v10. Phases 12.3, 12.4, 12.5 and 12.6 closed [COMPLETED]: rk_of_count_drift landed over a widened repsCnt (Tc+Tn+3P+2B+5, the narrower bound compiled-refuted), the frozen-bound probe wired alongside Phase 11.9's unprotected tight-chain probe (gate 47 to 49), Real's three relational conditions landed so five of its six are done, and the maximum-certified-set finding re-read with a derived MOVED verdict. Phase 11.8 closed [BLOCKED] after its ordered first task landed green: the idle-past half needs an insertion construction with no landed component. Full guarded lake build green at every phase end and at the close, sorry_count 0, no new axioms.",
   "blockers": [
-    "Phase 11.8 [BLOCKED]: the Goal lengthens the preceding idle runs (moving the walk below the splice point) while the third task asks for the spliceObj/spliceCnt conclusion shape (which does not move it), and that shape is REFUTABLE in the idle-past regime -- spliceCnt raises the pin at the start of the splice point's region by exactly l while leaving an earlier region start alone, and pinCompat_of_ladderPath makes pin compatibility necessary for any ladder path. Populated by Phase 11.9's compiled tightChain_slack_zero. Remedy: /revise restates what the cascade concludes about.",
-    "Phase 11.9 recorded statement defects (verdict INCONCLUSIVE): tightChain_deletion_derivative_not_ladderPath is false at m = 0 (the derivative deletes nothing and is the chain), and its conclusion is register-specific rather than the lifting form the record claims. The chain's pin set must also be unbounded above, since a finite-J chain has a lifting deletion-derivative. Recorded block left byte-identical; remedy: /revise.",
-    "Phase 12.1 exclusions: certBiInfK, certFwdK and certBwdK of Real all quantify relK, hence RK, and no theorem in the library derives an RK edge from an actual Count/Drift step. One lemma unblocks all three -- rk_of_count_drift, stated in full in the phase's Reasoned Exclusions record -- and it is not a per-coordinate reduction because clipIdx couples the counters.",
-    "Pre-existing and outside every entered phase's territory: check-module-invariants.sh exits 1 on one C16 unusedArguments finding on mem_cellAt_of_shift_of_hasForwardSlack (LadderChain.lean:2136), unchanged from this dispatch's starting commit."
+    "Phase 11.8 idle-past half: exists_ladderPath_at_region_of_idle_past and the unconditional exists_ladderPath_at_region are not landed. cntAt_eq_of_obj_eq forces any path with the countdown raised by l to carry a different object walk; spliceObj is the refuted candidate in that regime (tightChain_slack_zero); and Phase 11.2 landed only the cascade's bookkeeping, not the inserted walk, its ladder-path proof, or the iteration over the pins. Both names are unclaimed. Phase 15 inherits the conditionality.",
+    "Phase 11.8's directed join regime_exhaustive_of_clipIdx_eq cannot type-check against the three recorded signatures (it consumes hB, a second path, a second position, an nxtAt equality and a clipIdx equality, none of which they carry); the join they admit is the plain dichotomy on the idle-past hypothesis. Needs a /revise.",
+    "Phase 12.6's MOVED verdict makes Dmax subset-of Real an inherited contingency of Phase 15 rather than a corollary; a /revise should re-scope that task against the record's own 'Real subset-of R' form or name the strengthened lift as a gated input."
   ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/07_tight-chain-gate-regated-graph-summary.md",
-      "summary": "Round summary: three enterable phases closed, Phase 11.8 blocked, the tight-chain non-liftability compiled."
+      "path": "specs/761_ladder_realization_theorem/summaries/09_rk-bounded-representative-widening-summary.md",
+      "summary": "The round's record: what landed in each of the five phases, the construction's confirmed-tight bound, every plan deviation, and the verification evidence."
     },
     {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/09_tight-chain-gate-regated-graph.md",
-      "summary": "Phase markers, closure records, Reasoned Exclusions and the Phase 11.8 blocker record updated in place."
-    },
-    {
-      "type": "other",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean",
-      "summary": "480-line probe: the tight doubling chain with pins unbounded above, and the compiled non-liftability of its positive deletion-derivatives. NOT wired into the evidence gate, per the INCONCLUSIVE branch."
+      "path": "specs/761_ladder_realization_theorem/plans/10_rk-bounded-representative-widening.md",
+      "summary": "Phase markers updated: 12.3, 12.4, 12.5, 12.6 [COMPLETED]; 11.8 [BLOCKED]. Deviations annotated inline on the affected checklist items."
     }
   ]
 }
