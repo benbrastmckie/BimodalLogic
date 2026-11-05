@@ -182,10 +182,11 @@ compiles standalone and every later phase has a target to extend.
 - [x] Create `FormalSystem/OpenLanguage/OpenAxioms.lean` importing `FormalSystem.OpenLanguage.Formula`
   and `FormalSystem.ProofSystem.Axioms` and nothing else — no `FormalSystem.Semantics.*`, no
   semantic module of any language (the directory's module invariant).
-- [x] *(deviation: altered — this bullet's literal sample clause `| ofut {φ} : IsPureFutureOpen φ → IsPureFutureOpen (.ofut φ)` contradicts the next bullet and is unsound; `▷` is past-determined, not future-determined, so admitting it as pure-future would falsify `paste`. Implemented the next bullet's crossed direction: `IsPureFutureOpen` admits `.opast` under a recursive guard, `IsPurePastOpen` admits `.ofut`.)* Declare `IsPureFutureOpen` and `IsPurePastOpen` as inductives mirroring
+- [x] Declare `IsPureFutureOpen` and `IsPurePastOpen` as inductives mirroring
   `PlusFormula.IsPureFuture`/`IsPurePast` (`FormalSystem/PlusLanguage/Formula.lean:309-318`),
-  adding `| ofut {φ} : IsPureFutureOpen φ → IsPureFutureOpen (.ofut φ)` and the matching
-  recursive `opast` clauses. Admit `▷ψ` as pure-past and `◁ψ` as pure-future **only when `ψ` is
+  adding `| opast {φ} : IsPureFutureOpen φ → IsPureFutureOpen (.opast φ)` to `IsPureFutureOpen`
+  and the matching recursive `| ofut {φ} : IsPurePastOpen φ → IsPurePastOpen (.ofut φ)` clause to
+  `IsPurePastOpen`. Admit `▷ψ` as pure-past and `◁ψ` as pure-future **only when `ψ` is
   itself pure** — a blanket leaf clause is semantically true but breaks Phase 4's
   erasure-preservation lemma.
 - [x] Declare `inductive OpenAxiom : OpenFormula → Type` carrying the restricted-modal block
