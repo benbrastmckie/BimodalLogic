@@ -6,13 +6,13 @@ next_project_number: 861
 
 ## Task Order
 
-*Updated 2026-11-04. Generated from state.json dependency graph.*
+*Updated 2026-11-05. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,855,857,858,859,860 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827,840,845,852,853,856 | 298,428,502,761,768,769,770,772,777,785,810,813,838,839,855,859 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,559,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,855,856,857,858,860 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827,840,845,852,853 | 298,428,502,761,768,769,770,772,777,785,810,813,838,839,855 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,822,834 | 429,497,783,823 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -96,7 +96,7 @@ next_project_number: 861
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [IMPLEMENTING] — AMENDED 2026-10-18 (presentation chosen): the cell...
+761 [HOLD] — AMENDED 2026-10-18 (presentation chosen): the cell...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
@@ -105,7 +105,7 @@ next_project_number: 861
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
-855 [NOT STARTED] — Probe the one-sided ▷/◁ type transport against the refuted...
+855 [RESEARCHING] — Probe the one-sided ▷/◁ type transport against the refuted...
   └─ 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
 
 ### Formula Refactor
@@ -126,8 +126,7 @@ next_project_number: 861
 
 559 [PLANNED] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-859 [PLANNED] — IMPLEMENTATION TASK: land the open-future NON-definability...
-  └─ 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
+856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
@@ -163,13 +162,14 @@ next_project_number: 861
 
 ### 859. Qtime open future definability base dense
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 854
 - **Parent**: Task 854
 - **Research**: [859_qtime_open_future_definability_base_dense/reports/01_qtime-open-future-definability.md]
 - **Plan**: [859_qtime_open_future_definability_base_dense/plans/01_open-future-undefinable-module.md]
+- **Summary**: [859_qtime_open_future_definability_base_dense/summaries/01_open-future-undefinable-module-summary.md]
 
 **Description**: IMPLEMENTATION TASK: land the open-future NON-definability result in the Lean library, so the verdict survives /todo archival. The research is DONE and must not be redone -- its verdict is in reports/01_qtime-open-future-definability.md and its machine-checked content is in probes/01_ofut-marker-gadget-and-nondefinability.lean (419 lines, sorry-free, no axiom declarations, imports FormalSystem.OpenLanguage and FormalSystem.Semantics.Frames.TranslationProduct).
 
@@ -563,7 +563,7 @@ SIZING. This is multi-dispatch work: a new axiom type, a new derivation tree, a 
 ---
 
 ### 855. Probe the one-sided ▷/◁ type transport against the refuted two-sided shape
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -3558,7 +3558,8 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 ---
 
 ### 761. Ladder realization theorem
-- **Status**: [IMPLEMENTING]
+- **Status**: [HOLD]
+- **Held**: 2026-11-04
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819, Task 820
