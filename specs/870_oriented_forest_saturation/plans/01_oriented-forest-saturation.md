@@ -294,26 +294,26 @@ one import line to the aggregator every downstream module reads, so the covering
 
 ---
 
-### Phase 2: The path-uniqueness layer [NOT STARTED]
+### Phase 2: The path-uniqueness layer [COMPLETED]
 
 **Goal**: the four consequences of forest path uniqueness that everything downstream consumes,
 including the segment-subsingleton fact.
 
 **Tasks**:
 
-- [ ] Land the internal `noncomputable def pathOf` and `pathOf_spec` (the chosen path realizing a
+- [x] Land the internal `noncomputable def pathOf` and `pathOf_spec` (the chosen path realizing a
       directed walk, with its length, last-step and between-clause data) off
       `exists_isPath_of_iter`.
-- [ ] Land the internal `walk_unique` via `IsAcyclic.subsingleton_path` — **not** the deprecated
+- [x] Land the internal `walk_unique` via `IsAcyclic.subsingleton_path` — **not** the deprecated
       `IsAcyclic.path_unique`.
-- [ ] Land `iter_length_unique` at the pinned signature.
-- [ ] Land `not_iter_self` at the pinned signature, using `Walk.isPath_iff_nil` and
+- [x] Land `iter_length_unique` at the pinned signature.
+- [x] Land `not_iter_self` at the pinned signature, using `Walk.isPath_iff_nil` and
       `Walk.length_eq_zero_iff` — **not** the deprecated `Walk.isPath_iff_eq_nil` /
       `Walk.nil_iff_length_eq`, whose statements also changed shape at this pin.
-- [ ] Land `pen_unique` at the pinned signature (concatenate both paths with the shared last step
+- [x] Land `pen_unique` at the pinned signature (concatenate both paths with the shared last step
       and transport `Walk.penultimate` across `walk_unique`).
-- [ ] Land `mid_unique` at the pinned signature, by induction on `j` through `pen_unique`.
-- [ ] Record in the module docstring that `mid_unique` *is* the segment-subsingleton fact, i.e.
+- [x] Land `mid_unique` at the pinned signature, by induction on `j` through `pen_unique`.
+- [x] Record in the module docstring that `mid_unique` *is* the segment-subsingleton fact, i.e.
       report 03 section 1.2 steps 1 and 3, so a later reader does not look for a separate lemma.
 
 **Timing**: 1.5 hours

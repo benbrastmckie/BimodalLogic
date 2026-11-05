@@ -198,4 +198,93 @@ theorem exists_isPath_of_iter {E : W → W → Prop} (hF : IsOrientedForest E) :
       · exact ⟨n + 1, by omega, hd ▸ (iter_succ E n a z).mpr ⟨v, hv, hEvz⟩, by
           simpa using (iter_zero E d z).mpr hd⟩
 
+/-! ## The path-uniqueness layer
+
+The four consequences of forest path uniqueness that everything downstream consumes. `mid_unique`
+**is** the segment-subsingleton fact — report 03 section 1.2's steps 1 and 3 at once — so there
+is no separate declaration for it.
+-/
+
+/--
+The chosen undirected path realizing a directed walk, together with its length, last-step and
+between-clause data (`pathOf_spec`).
+
+`noncomputable` because it is an `Exists.choose`. This is sanctioned: the prohibition in
+`rules/lean4.md` is on a `noncomputable` **`Decidable`-valued** declaration, which this is not.
+-/
+noncomputable def pathOf {E : W → W → Prop} (hF : IsOrientedForest E) {n : ℕ} {a z : W}
+    (h : iter E n a z) : (SimpleGraph.fromRel E).Walk a z :=
+  (exists_isPath_of_iter hF n a z h).choose
+
+/-- The defining data of `pathOf`: it is a path, it has the right length, its penultimate vertex
+carries the last `E`-step, and every vertex of it splits the walk. -/
+theorem pathOf_spec {E : W → W → Prop} (hF : IsOrientedForest E) {n : ℕ} {a z : W}
+    (h : iter E n a z) :
+    (pathOf hF h).IsPath ∧ (pathOf hF h).length = n ∧
+      (0 < n → E (pathOf hF h).penultimate z) ∧
+      (∀ d ∈ (pathOf hF h).support, ∃ i, i ≤ n ∧ iter E i a d ∧ iter E (n - i) d z) :=
+  (exists_isPath_of_iter hF n a z h).choose_spec
+
+/-- Paths between two vertices of a forest agree. Routed through
+`IsAcyclic.subsingleton_path` — **not** the deprecated `IsAcyclic.path_unique`. -/
+theorem walk_unique {E : W → W → Prop} (hF : IsOrientedForest E) {a z : W}
+    {p q : (SimpleGraph.fromRel E).Walk a z} (hp : p.IsPath) (hq : q.IsPath) : p = q :=
+  Subtype.mk.inj ((hF.acyclic.subsingleton_path a z).elim ⟨p, hp⟩ ⟨q, hq⟩)
+
+/-- **(UPL)** Unique path length: a directed walk's length is determined by its endpoints. -/
+theorem iter_length_unique {E : W → W → Prop} (hF : IsOrientedForest E) {n m : ℕ} {a z : W}
+    (hn : iter E n a z) (hm : iter E m a z) : n = m := by
+  obtain ⟨hp, hplen, _⟩ := pathOf_spec hF hn
+  obtain ⟨hq, hqlen, _⟩ := pathOf_spec hF hm
+  rw [← hplen, ← hqlen, walk_unique hF hp hq]
+
+/-- No directed cycles. Uses `Walk.isPath_iff_nil` and `Walk.length_eq_zero_iff` — **not** the
+deprecated `Walk.isPath_iff_eq_nil` / `Walk.nil_iff_length_eq`, whose statements also changed
+shape at this pin. -/
+theorem not_iter_self {E : W → W → Prop} (hF : IsOrientedForest E) {s : ℕ} (hs : 0 < s)
+    (d : W) : ¬ iter E s d d := fun h => by
+  obtain ⟨hp, hlen, _⟩ := pathOf_spec hF h
+  have := Walk.length_eq_zero_iff.mpr (Walk.isPath_iff_nil.mp hp)
+  omega
+
+/-- **(PEN)** The penultimate vertex of a directed walk of fixed length is determined. -/
+theorem pen_unique {E : W → W → Prop} (hF : IsOrientedForest E) {n : ℕ} {a z w w' : W}
+    (hw : iter E n a w) (hEw : E w z) (hw' : iter E n a w') (hEw' : E w' z) : w = w' := by
+  obtain ⟨hp, hplen, hppen, _⟩ := pathOf_spec hF hw
+  obtain ⟨hq, hqlen, hqpen, _⟩ := pathOf_spec hF hw'
+  have hadj := adj_of_step hF hEw
+  have hadj' := adj_of_step hF hEw'
+  have hzp : z ∉ (pathOf hF hw).support :=
+    not_mem_support_of_step hF hp (by rw [hplen]; exact hppen) hEw
+  have hzq : z ∉ (pathOf hF hw').support :=
+    not_mem_support_of_step hF hq (by rw [hqlen]; exact hqpen) hEw'
+  have heq := walk_unique hF (hp.concat hzp hadj) (hq.concat hzq hadj')
+  have hpen := congrArg Walk.penultimate heq
+  rwa [Walk.penultimate_concat, Walk.penultimate_concat] at hpen
+
+/--
+**(UIV)** The intermediate vertex of a directed walk at a fixed distance is determined.
+
+This **is** the segment-subsingleton fact: report 03 section 1.2's steps 1 and 3 at once. A
+`TaskFrame.Seg (ofStepRel E)` with nonnegative offsets unfolds to exactly this statement's
+hypotheses, which is what `seg_subsingleton` below records.
+-/
+theorem mid_unique {E : W → W → Prop} (hF : IsOrientedForest E) :
+    ∀ (j k : ℕ) (a z v v' : W), iter E k a v → iter E j v z → iter E k a v' → iter E j v' z →
+      v = v' := by
+  intro j
+  induction j with
+  | zero =>
+    intro _ _ _ _ _ _ h1 _ h2
+    exact ((iter_zero E _ _).mp h1).trans ((iter_zero E _ _).mp h2).symm
+  | succ j ih =>
+    intro k a z v v' hav hvz hav' hv'z
+    obtain ⟨w, hvw, hEwz⟩ := (iter_succ E j v z).mp hvz
+    obtain ⟨w', hvw', hEw'z⟩ := (iter_succ E j v' z).mp hv'z
+    have haw : iter E (k + j) a w := (iter_add E k j a w).mpr ⟨v, hav, hvw⟩
+    have haw' : iter E (k + j) a w' := (iter_add E k j a w').mpr ⟨v', hav', hvw'⟩
+    have hww : w = w' := pen_unique hF haw hEwz haw' hEw'z
+    subst hww
+    exact ih k a w v v' hav hvw hav' hvw'
+
 end FormalSystem.Semantics
