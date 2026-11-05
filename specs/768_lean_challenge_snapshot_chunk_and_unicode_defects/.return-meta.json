@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/plans/01_snapshot-chunk-and-unicode-defects.md",
-      "summary": "6-phase, 9-hour plan repairing the declaration-chunk over-reach, the ASCII-only identifier class at all four sites, and defect (c)'s non-keyword Goals residual, plus an opt-in --dry-run compile step and the deploy-manifest fixture gap."
-    }
-  ],
-  "next_steps": "Run /orchestrate 768 to execute the plan",
-  "phase_count": 6,
-  "estimated_hours": 9,
-  "dependency_waves": [[1], [2], [3], [4], [5], [6]],
-  "memory_candidates": [
-    {
-      "content": "When a bash script embeds several independent quoted python3 heredocs (<<'PYEOF'), a regex or constant duplicated across them cannot be shared by interpolation, because the quoted heredoc deliberately blocks shell expansion. The two workable mechanisms are an exported shell variable read via os.environ in each heredoc, or a sibling Python module imported after a sys.path bootstrap. Prefer the exported variable when the script is a deploy artifact whose files are enumerated individually in an extension manifest: a new module file must be registered there or it is silently absent from the deployed tree, whereas an exported variable adds no new file and leaves every heredoc's argv contract unchanged. This duplication is a recurring defect source precisely because each copy is edited independently and the copies drift.",
-      "category": "PATTERN",
-      "source_artifact": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/plans/01_snapshot-chunk-and-unicode-defects.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["bash", "python-heredoc", "shared-regex", "extension-manifest", "deploy-artifact", "code-duplication"]
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 3,
   "metadata": {
-    "session_id": "sess_1793845134_662c9d_768",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 2
+    "session_id": "sess_1793845134_662c9d",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

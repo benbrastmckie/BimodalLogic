@@ -1,7 +1,7 @@
 # Implementation Plan: Task #768
 
 - **Task**: 768 - Fix three independent defects in `lean-challenge-snapshot.sh`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/reports/01_snapshot-chunk-and-unicode-defects.md
@@ -138,7 +138,7 @@ durable anchors only: file names, function names, flag names, section headings.
 
 ---
 
-### Phase 1: Commit the Landed Work and Close the Fixture-Registration Gap [NOT STARTED]
+### Phase 1: Commit the Landed Work and Close the Fixture-Registration Gap [COMPLETED]
 
 **Goal**: Put the already-landed R6/R7/R8 repair under version control, register the one fixture
 the deploy manifest is missing, and establish a re-derived green baseline every later phase is
@@ -146,18 +146,23 @@ diffed against.
 
 **Tasks**:
 
-- [ ] Re-check the sibling cross-repo record's status in the source-store repository's own
+- [x] Re-check the sibling cross-repo record's status in the source-store repository's own
       `specs/state.json` (expected `not_started` for `lean4_plan_with_zero_lean_goals`). If it has
       moved to an active status, stop and record a blocker rather than editing the shared script.
-- [ ] Re-derive the uncommitted set with `git status --porcelain -- agent-system/extensions/lean/scripts/`
+      *(completed: confirmed `not_started` for project_number 385)*
+- [x] Re-derive the uncommitted set with `git status --porcelain -- agent-system/extensions/lean/scripts/`
       in the source store. Confirm it is exactly two modified files plus the one untracked fixture.
-- [ ] Run the source-store suite and record the exact baseline counts. Do not carry the figure
+      *(completed: confirmed exactly 2 modified + 1 untracked)*
+- [x] Run the source-store suite and record the exact baseline counts. Do not carry the figure
       from this plan: re-derive it.
-- [ ] Add `tests/fixtures/challenge/plan_goals_preamble.md` to `provides.scripts` in
+      *(completed: 17 passed, 0 failed, 0 skipped, matching the plan's Scope Hypothesis)*
+- [x] Add `tests/fixtures/challenge/plan_goals_preamble.md` to `provides.scripts` in
       `agent-system/extensions/lean/manifest.json`, placed beside the other challenge fixtures.
-- [ ] Validate `manifest.json` still parses as JSON after the edit.
-- [ ] Commit the two modified files, the untracked fixture, and `manifest.json` with explicit,
+      *(completed)*
+- [x] Validate `manifest.json` still parses as JSON after the edit. *(completed)*
+- [x] Commit the two modified files, the untracked fixture, and `manifest.json` with explicit,
       per-file staging (never `git add -A`, `.`, a directory pathspec, or `commit -am`).
+      *(completed: source-store sha 80d43b2e2)*
 
 **Timing**: 1 hour
 
