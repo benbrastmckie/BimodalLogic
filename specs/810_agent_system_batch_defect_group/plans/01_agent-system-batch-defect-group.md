@@ -313,38 +313,40 @@ before editing rather than seeking those line numbers.
 
 ---
 
-### Phase 3: Defect 1 — Batch Gate Deferral narrowing paths resolve across the deploy boundary [NOT STARTED]
+### Phase 3: Defect 1 — Batch Gate Deferral narrowing paths resolve across the deploy boundary [COMPLETED]
 
 **Goal**: The `## Batch Gate Deferral` directive an implement dispatch receives names narrowing
 invocations that exist in the repository the dispatch is actually running in, so it is followable
 as written instead of requiring each agent to improvise a substitute.
 
 **Tasks**:
-- [ ] In `orchestrate-build-dispatch.sh`'s `batch_gate_deferral_flag` block, replace the two
+- [x] In `orchestrate-build-dispatch.sh`'s `batch_gate_deferral_flag` block, replace the two
   hardcoded `agent-system/extensions/core/scripts/...` strings with paths resolved at compose
   time, using the **same two-candidate, existence-checked pattern the same script already uses
   for `phase-heartbeat-lib.sh`**: try `"${SKILL_REPO_ROOT}/.claude/scripts/..."` first, fall back
   to `"${SKILL_REPO_ROOT}/agent-system/extensions/core/scripts/..."` (for when the composer runs
   inside the agent-system repo itself), and interpolate the **resolved** path into the echoed
-  directive text.
-- [ ] Decide and implement the degradation when neither candidate exists: the directive must then
+  directive text. *(completed)*
+- [x] Decide and implement the degradation when neither candidate exists: the directive must then
   state the full gate set as such (the dispatch's own sanctioned alternative) rather than printing
-  a path that cannot resolve. Record the chosen wording in a comment.
-- [ ] Apply the matching fix to the parallel example in `plan-format.md`'s "Batch-aware deferral"
+  a path that cannot resolve. Record the chosen wording in a comment. *(completed: "Discharge
+  this phase's declared full verification tier against the COMPLETE gate set instead")*
+- [x] Apply the matching fix to the parallel example in `plan-format.md`'s "Batch-aware deferral"
   subsection, giving it the explicit source-store/deployed dual form the surrounding Verification
-  Tiers text already uses for `verify-deploy.sh`.
-- [ ] Update `batch-gate-stage.md`'s contract language so the narrowing-invocation paths it
-  documents match what the composer now emits.
-- [ ] Leave `orchestrate-batch-gate.sh` **unchanged**: research confirmed it already resolves
+  Tiers text already uses for `verify-deploy.sh`. *(completed)*
+- [x] Update `batch-gate-stage.md`'s contract language so the narrowing-invocation paths it
+  documents match what the composer now emits. *(completed)*
+- [x] Leave `orchestrate-batch-gate.sh` **unchanged**: research confirmed it already resolves
   `VERIFY_DEPLOY_PATH="${SCRIPT_DIR}/verify-deploy.sh"` relative to its own directory, which is
   correct by construction. Record this as a deliberate no-op so the declared `file_scope` entry
-  is accounted for.
-- [ ] Extend `test-orchestrate-build-dispatch.sh`'s Group 19 with assertions that the emitted
+  is accounted for. *(completed: confirmed unchanged, deliberate no-op)*
+- [x] Extend `test-orchestrate-build-dispatch.sh`'s Group 19 with assertions that the emitted
   directive contains the resolved deployed-path string and does **not** contain the bare
   `agent-system/extensions/core/scripts/` string when a deployed tree is present. The existing
   `assert_contains "run-all.sh"` / `assert_contains "--only-gate"` assertions are too weak to
-  detect this fix either way and must not be relied on.
-- [ ] Stage and commit with an explicit four-file pathspec.
+  detect this fix either way and must not be relied on. *(completed: replaced the weak
+  assertions with a no-resolvable-candidate case and a deployed-candidates-present case)*
+- [x] Stage and commit with an explicit four-file pathspec. *(completed)*
 
 **Timing**: 1.5 hours
 
