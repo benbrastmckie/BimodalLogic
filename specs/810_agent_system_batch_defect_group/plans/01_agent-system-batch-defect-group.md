@@ -624,7 +624,7 @@ content and record the substitution.
 
 ---
 
-### Phase 7: Full gate set, redeploy, and consolidated acceptance evidence [NOT STARTED]
+### Phase 7: Full gate set, redeploy, and consolidated acceptance evidence [COMPLETED]
 
 **Goal**: Every acceptance condition is demonstrated against a freshly deployed tree, the complete
 gate set is green, and the deferred `routing_agents_hard` migration is surfaced as a named
@@ -634,36 +634,48 @@ follow-up rather than silently dropped.
 - [ ] Run the complete source-store gate set from the source-store repository root (the directory
   containing both `agent-system/` and its own `.claude/`):
   `bash agent-system/extensions/core/scripts/verify-deploy.sh` with that root as `TARGET`. Record
-  the full PASS/FAIL line and the findings set.
+  the full PASS/FAIL line and the findings set. *(deviation: deferred, not run independently —
+  this dispatch's own `.dispatch/6.md` carries a `## Batch Gate Deferral` section naming this
+  phase. Discharged instead against a scoped tier: a single consolidated
+  `run-all.sh --only <union of every suite touched in Phases 1-6>` run — 11 passed, 2 failed (1
+  expected/pre-existing, 1 found/pre-existing and unrelated — see summary). The complete gate set
+  is deferred to the once-per-invocation batch-level stage per
+  `context/contracts/batch-gate-stage.md`.)*
 - [ ] Run the full shell suite: `bash agent-system/extensions/core/scripts/tests/run-all.sh` with
   no `--only`, confirming no suite regressed under the combined six phases. A per-phase narrowed
-  pass is not evidence for this step.
-- [ ] Clear this repository's stale deploy (the dispatch's deploy-freshness block reports `core`
+  pass is not evidence for this step. *(deviation: deferred for the same reason as the task
+  above — same Batch Gate Deferral directive, same scoped discharge.)*
+- [x] Clear this repository's stale deploy (the dispatch's deploy-freshness block reports `core`
   and `lean` stale) with the bounded-wait idiom:
   `timeout 540 bash .claude/scripts/deploy-headless.sh`, Bash-tool `timeout` parameter raised to
   600000, per `context/patterns/external-process-wait.md` Rule 1. This regenerates the whole
-  deployed tree, which is why this phase declares `` `__WHOLE_TREE__` ``.
-- [ ] Re-run `bash .claude/scripts/verify-deploy.sh` in this repository against the freshly
+  deployed tree, which is why this phase declares `` `__WHOLE_TREE__` ``. *(completed:
+  RESULT=landed_verify_clean)*
+- [x] Re-run `bash .claude/scripts/verify-deploy.sh` in this repository against the freshly
   deployed tree, and record both the verdict and
   `bash .claude/scripts/verify-deploy.sh --findings --quiet . | grep '^FINDING gate16'` returning
-  empty — the measured discharge of Defect 5's batch-blocking symptom.
-- [ ] Walk the Acceptance clause item by item and record the evidence for each in the completion
+  empty — the measured discharge of Defect 5's batch-blocking symptom. *(completed: PASS -- 15
+  check(s), 0 failure(s); no ^FINDING gate16 line, confirmed via --only-gate 16 scoped run per
+  the same Batch Gate Deferral discharge)*
+- [x] Walk the Acceptance clause item by item and record the evidence for each in the completion
   summary: (1) all five fixed under the resolved source store; (2) Defects 1, 2, 3, 5 each carry
   an extended or new test suite, not an inspection claim; (3) Defect 4 carries a measured `--read`
   returning content; (4) Gate 16 no longer blocks the batch **and** `extensions/lean/manifest.json`
   still declares `routing_agents_hard` (so nothing was deleted out from under
   `command-route-agent.sh`); (5) no `.claude/**` file hand-authored; (6) staging narrow and
-  explicit.
-- [ ] Prove acceptance item (5) mechanically rather than by assertion: confirm no commit in this
+  explicit. *(completed: see summary's Acceptance Walk section)*
+- [x] Prove acceptance item (5) mechanically rather than by assertion: confirm no commit in this
   task's range staged a path under `.claude/`, e.g. by inspecting each phase commit's name-only
-  diff for a `.claude/` prefix, and record the result.
-- [ ] Surface two named follow-ups in the completion summary, per the Non-Goals and D3: (a) the
+  diff for a `.claude/` prefix, and record the result. *(completed: all 12 phase commits, 6 per
+  repository, confirmed clean)*
+- [x] Surface two named follow-ups in the completion summary, per the Non-Goals and D3: (a) the
   full `routing_agents_hard` → `hard_contracts` migration across `core`, `lean`, `cslib`, and
   `books` (19 files, measured in research), which Gate 16's own comment names as the real target;
   (b) task 780's grep-scope fix must now be written as a diff against
   `lean-plan-compliance-check.sh`, because the inline block it was filed against no longer exists
-  and the sanctioned `--depends-on-add` edge is not addable to a `not_started` task.
-- [ ] Commit with an explicit pathspec.
+  and the sanctioned `--depends-on-add` edge is not addable to a `not_started` task. *(completed:
+  re-measured at 22 files, not 19 -- see summary Follow-ups)*
+- [x] Commit with an explicit pathspec. *(completed)*
 
 **Timing**: 1 hour
 
