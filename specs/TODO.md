@@ -72,7 +72,7 @@ next_project_number: 870
 
 ### Completeness
 
-865 [PLANNED] — RESEARCH TASK, and the owner of a programme that is currently...
+865 [IMPLEMENTING] — RESEARCH TASK, and the owner of a programme that is currently...
 
 ### Dataset Enhancement
 
@@ -127,7 +127,7 @@ next_project_number: 870
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-856 [PLANNED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
+856 [IMPLEMENTING] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -251,7 +251,7 @@ DELIVERABLE: a report under this task's directory, with a verdict on whether the
 ---
 
 ### 865. Tm plus lc axiomatization and automaton obstruction
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: Task 864
@@ -722,7 +722,7 @@ and does not resolve here.
 ---
 
 ### 856. Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 854, Task 859

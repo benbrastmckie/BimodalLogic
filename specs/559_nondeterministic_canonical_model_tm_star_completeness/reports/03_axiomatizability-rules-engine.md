@@ -246,6 +246,31 @@ cover is that tree, because folding by subtree type forgets what lies above a no
 > `decidableDerivableZTime` (at base `Formula`, without `⊡` or the open modals), which this
 > amendment does not extend.
 
+> **Amendment (2026-11-05; withdraws the consequence sentence above).** The sentence "So at
+> ZTime the validities are decidable, hence recursively axiomatizable; the open question is only
+> a *natural* system" is withdrawn as unavailable. The open question at ZTime is about
+> **existence** of a recursive axiomatization, not only about finding a natural one. Three
+> independent reasons, derived in
+> `specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md`,
+> finding 6:
+>
+> - **G1 is live inside step 1 of this very argument.** The amendment above (finding 3/5,
+>   located via `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md`,
+>   finding 6) already notes that step 1's stated witness-economy justification "was never
+>   actually needed for `⊡` either" — so step 1 currently has no stated justification that
+>   survives beyond a countability conclusion, and the induction-scope gap (G1 above) is the
+>   weakest link in reaching Rabin's theorem at all.
+> - **Section 1.3 is a paper argument resting on a recalled theorem.** Rabin's theorem is
+>   recalled, not held, and this section is self-labelled "paper, Medium-High" on its own
+>   account above.
+> - **The landed decidability results are a different result.** `Compression.decidableValidZTime`
+>   and `ZTimeProvability.decidableDerivableZTime` are at base `Formula`, whose constructors do
+>   not include `stab`; neither extends to L⁺, so neither supplies a recursive axiomatization of
+>   the L⁺ ZTime validities.
+>
+> This amendment adds no positive claim and establishes no finite model property; §1.2, §1.4, and
+> the unamended §1.3 argument above are otherwise untouched.
+
 #### 1.4 Base, Dense, RTime: OPEN, with the obstruction located
 
 - **What transfers from Gurevich-Shelah (via Reynolds 2002 §6).** The method needs atoms to carry

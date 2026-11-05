@@ -97,12 +97,12 @@
     {
       "project_number": 865,
       "project_name": "tm_plus_lc_axiomatization_and_automaton_obstruction",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "formal",
       "description": "RESEARCH TASK, and the owner of a programme that is currently owned by nobody: does TM-plus extended by the limit-closure schema admit a completeness proof, and can the located obstruction to Reynolds' construction be cleared in this setting?\n\nWHY THIS TASK EXISTS. Task 559 owned the TM-plus completeness programme and completed as a NARROWED task -- the naming-rule soundness toolkit only -- whose description states that \"The LC-schema and axiomatizability discussion in report 03 is NOT part of this deliverable\". The programme therefore has no owner, while docs/theorem-index.md records the two facts that make it the gating question for this whole area: the current TM-plus axiom set is incomplete at Base (plus_incomplete_base, the limit-closure formula valid on every task frame and not a Base theorem), and completeness of any recursive extension is open at every frame class and is stated nowhere in the tree.\n\nTHE CANDIDATE, AS ALREADY RECORDED. specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md proposes:\n  TM-plus + LC_n + LCU + the clock rule + the transposed Auxiliary-Atoms rule\nand records that every ingredient has a compiled soundness core, that no frame axiom is at risk (Saturation is idle), and that the blueprint is a held paper with a full proof. Read that report before anything else; this task starts from it rather than re-deriving it. Note that the report is in a directory queued for /todo archival -- if it has moved, it is under specs/archive/.\n\nTHE LOCATED OBSTRUCTION, WHICH IS THE RESEARCH QUESTION. Reynolds' construction uses a ONE-SIDED automaton: it reads omega-words from a root. Here emergent histories are limits of splices in BOTH directions. That mismatch is the whole difficulty and it is the thing to attack. A precisely located verdict -- which step of Reynolds' construction fails, on which model shape, and whether a two-sided or doubled automaton recovers it -- is a complete outcome for this task. So is a refutation.\n\nINGREDIENT STATUS, SO NOTHING IS RE-DERIVED. The clock rule and the plain irreflexivity rule are landed in FormalSystem/Metalogic/NamingRules.lean (clock_irr_sound, irr_sound). The Auxiliary-Atoms expansion is NOT landed and its obstruction is specific and recorded: FrameOver.ofReflectiveRegular demands Saturation, and at the forward-cone unravelled carrier none of the three routes this tree has to Saturation applies -- read NamingRules.lean lines 57-82, which states this in full. LC_n and LCU soundness are the subject of this task's dependency and will be in the library by the time this runs.\n\nWHAT IS ALSO WORTH SETTLING HERE. Report 03 section 1.3 argues on paper that ZTime validity is decidable via an MSO encoding plus Rabin's theorem, hence recursively axiomatizable there, leaving \"only a natural system\" open at ZTime. Confirm or correct that reading, since it determines whether this task's question at ZTime is about existence or only about naturalness. The finite model property is NOT established and the report says why; do not assume it.\n\nDELIVERABLE: a report under this task's directory. No library change and no completeness claim lands from this task; if a route survives scrutiny, file the implementation as its own task.",
       "topic": "completeness",
       "created": "2026-11-05T02:28:18Z",
-      "last_updated": "2026-11-05T16:27:37Z",
+      "last_updated": "2026-11-05T16:29:24Z",
       "audit_override": "User confirmed via AskUserQuestion after reviewing the audit: all verdicts semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); nearest match #559 explicitly carves out this content",
       "dependencies": [
         864
@@ -178,7 +178,7 @@
     {
       "project_number": 856,
       "project_name": "open_language_proof_system_and_soundness",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "metalogic",
       "title": "Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity",
@@ -210,7 +210,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-11-04T20:41:42Z",
-      "last_updated": "2026-11-05T16:28:43Z",
+      "last_updated": "2026-11-05T16:29:40Z",
       "audit_verdict": {
         "verdict": "covered-by-closed",
         "project_number": 443,

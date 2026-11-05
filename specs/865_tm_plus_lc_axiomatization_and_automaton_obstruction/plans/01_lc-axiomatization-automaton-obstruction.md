@@ -1,7 +1,7 @@
 # Implementation Plan: Task #865
 
 - **Task**: 865 - tm_plus_lc_axiomatization_and_automaton_obstruction
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: 864 (`[COMPLETED]`), 866 (`[COMPLETED]`)
 - **Research Inputs**: `specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md`
@@ -112,18 +112,18 @@ not this task's.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Amend Report 03 §1.3's Consequence Sentence [NOT STARTED]
+### Phase 1: Amend Report 03 §1.3's Consequence Sentence [COMPLETED]
 
 **Goal**: The sentence "So at ZTime the validities are decidable, hence recursively
 axiomatizable; the open question is only a *natural* system" no longer reads as settled, and a
 reader is pointed at the two reports that located the gap.
 
 **Tasks**:
-- [ ] Resolve report 03's live path: glob `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md` and, if absent, `specs/archive/559_*/reports/03_axiomatizability-rules-engine.md`. If neither resolves, stop and record a blocker — do not create the file.
-- [ ] Re-read the §1.3 region immediately before editing (sibling-concurrency rule), locating the consequence sentence and the existing `> **Amendment (derived; ...)` block that follows it.
-- [ ] Append a second amendment note in the file's existing blockquote style, immediately after the existing amendment block and before `#### 1.4`. Content, and nothing beyond it: (a) the consequence sentence is withdrawn as unavailable, so the ZTime question is about **existence**, not only naturalness; (b) three stated reasons — G1 is live inside step 1 of this very argument (located in `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md`, finding 6), §1.3 is a paper argument resting on a recalled theorem (Rabin) and is self-labelled "paper, Medium-High", and the landed `Compression.decidableValidZTime` / `ZTimeProvability.decidableDerivableZTime` are at base `Formula`, which has no `stab`; (c) the amendment adds no positive claim, establishes no finite model property, and leaves §1.2, §1.4 and the unamended §1.3 argument otherwise untouched; (d) a dated header line and a pointer to `specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md` finding 6 as the deriving record.
-- [ ] Confirm the consequence sentence itself is left byte-identical (the amendment withdraws it in place; it is not rewritten or deleted), so the file remains a faithful record of what it originally said.
-- [ ] Commit, staging only this one file by explicit path.
+- [x] Resolve report 03's live path: glob `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md` and, if absent, `specs/archive/559_*/reports/03_axiomatizability-rules-engine.md`. If neither resolves, stop and record a blocker — do not create the file. *(completed)*
+- [x] Re-read the §1.3 region immediately before editing (sibling-concurrency rule), locating the consequence sentence and the existing `> **Amendment (derived; ...)` block that follows it. *(completed)*
+- [x] Append a second amendment note in the file's existing blockquote style, immediately after the existing amendment block and before `#### 1.4`. Content, and nothing beyond it: (a) the consequence sentence is withdrawn as unavailable, so the ZTime question is about **existence**, not only naturalness; (b) three stated reasons — G1 is live inside step 1 of this very argument (located in `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md`, finding 6), §1.3 is a paper argument resting on a recalled theorem (Rabin) and is self-labelled "paper, Medium-High", and the landed `Compression.decidableValidZTime` / `ZTimeProvability.decidableDerivableZTime` are at base `Formula`, which has no `stab`; (c) the amendment adds no positive claim, establishes no finite model property, and leaves §1.2, §1.4 and the unamended §1.3 argument otherwise untouched; (d) a dated header line and a pointer to `specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md` finding 6 as the deriving record. *(completed)*
+- [x] Confirm the consequence sentence itself is left byte-identical (the amendment withdraws it in place; it is not rewritten or deleted), so the file remains a faithful record of what it originally said. *(completed)*
+- [x] Commit, staging only this one file by explicit path. *(completed)*
 
 **Timing**: 0.5 hours
 
