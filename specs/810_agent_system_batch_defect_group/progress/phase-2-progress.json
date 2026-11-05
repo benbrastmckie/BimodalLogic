@@ -1,0 +1,24 @@
+{
+  "phase": 2,
+  "phase_name": "Defect 2 — lean-challenge-snapshot.sh Goals-header anchor",
+  "started_at": "2026-11-05T04:00:00Z",
+  "last_updated": "2026-11-05T04:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-derive lean source store", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Widen START_RE to drop trailing-colon requirement", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh"]},
+    {"id": 3, "description": "Update ACCEPTED GOALS SURFACE comment block", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh"]},
+    {"id": 4, "description": "Add guard-route comment (no behavior change per D4)", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh"]},
+    {"id": 5, "description": "Tidy extract_r2() names_out write to conditional form", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh"]},
+    {"id": 6, "description": "Extend test-lean-challenge-snapshot.sh with 4 new cases", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/tests/test-lean-challenge-snapshot.sh", "agent-system/extensions/lean/scripts/tests/fixtures/challenge/plan_r18_paren_goals.md", "agent-system/extensions/lean/scripts/tests/fixtures/challenge/plan_r19_multiline_paren_goals.md", "agent-system/extensions/lean/scripts/tests/fixtures/challenge/plan_r20_non_goals_only.md", "agent-system/extensions/lean/scripts/tests/fixtures/challenge/plan_r21_empty_goals.md"]},
+    {"id": 7, "description": "Stage and commit with explicit pathspec", "status": "in_progress", "files_touched": []}
+  ],
+  "current_objective": 7,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "verification_notes": {
+    "r18_r19_regression": "Measured against pre-fix script (git show HEAD, before this phase's edit): both exit 71 ('no identifiers found'). Against fixed script: both exit 0 with theorem_names=comm.",
+    "r20_r21": "Both confirmed exit 71 against the fixed script -- negative/guard cases unaffected by the widening.",
+    "test_suite": "bash agent-system/extensions/core/scripts/tests/run-all.sh --only test-lean-challenge-snapshot.sh -> 1 passed, 0 failed; direct run shows 33 passed, 0 failed, 0 skipped including R18-R21.",
+    "bash_n": "bash -n on both edited shell files -> OK"
+  }
+}

@@ -247,35 +247,39 @@ if that chunk id no longer exists, select any current `caleiro_2013` chunk from
 
 ---
 
-### Phase 2: Defect 2 — lean-challenge-snapshot.sh Goals-header anchor [NOT STARTED]
+### Phase 2: Defect 2 — lean-challenge-snapshot.sh Goals-header anchor [COMPLETED]
 
 **Goal**: `extract_goal_names()` establishes `start_idx` on a Goals header carrying a
 parenthetical before the colon — single-line and multi-line — so a plan using this repository's
 own precedent header shape no longer hard-exits 71.
 
 **Tasks**:
-- [ ] Re-derive the `lean` source store from `.claude-extensions.json`.
-- [ ] Widen `START_RE` from `re.compile(r'^-?\s?\*\*Goals\*\*:')` to
+- [x] Re-derive the `lean` source store from `.claude-extensions.json`. *(completed: resolved to
+  /home/benjamin/.config/nvim/agent-system/extensions/lean)*
+- [x] Widen `START_RE` from `re.compile(r'^-?\s?\*\*Goals\*\*:')` to
   `re.compile(r'^-?\s?\*\*Goals\*\*')`, dropping the trailing-colon requirement. The
   already-present PREAMBLE rule (any line before the first bulleted line is never scanned for
   identifiers) handles arbitrary intervening prose once `start_idx` exists, so no second change
   is needed; `END_RE` (`^-?\s?\*\*[^G]`) is unaffected because it only tests the character
-  immediately after `**`.
-- [ ] Update the "ACCEPTED GOALS SURFACE" comment block above the extractor (currently describing
+  immediately after `**`. *(completed)*
+- [x] Update the "ACCEPTED GOALS SURFACE" comment block above the extractor (currently describing
   the range as starting at a `**Goals**:` form) to state the widened, colon-optional shape, so
-  the documented contract and the regex agree.
-- [ ] Per D4, make no change to the `[ ! -s "$GOALS_FILE" ]` guard; add a one-line comment at the
+  the documented contract and the regex agree. *(completed)*
+- [x] Per D4, make no change to the `[ ! -s "$GOALS_FILE" ]` guard; add a one-line comment at the
   guard recording that it fires unconditionally on both the R1 and R2 routes ahead of
   cross-validation, so a future reader does not re-litigate the "vacuous pass" theory.
-- [ ] Tidy `extract_r2()`'s `names_out` write to `extract_r1()`'s conditional-trailing-newline
+  *(completed)*
+- [x] Tidy `extract_r2()`'s `names_out` write to `extract_r1()`'s conditional-trailing-newline
   form, so an empty name set produces a true 0-byte file on both routes rather than a 1-byte
-  `"\n"` on R2.
-- [ ] Extend `test-lean-challenge-snapshot.sh` with cases covering: (a) a single-line
+  `"\n"` on R2. *(completed)*
+- [x] Extend `test-lean-challenge-snapshot.sh` with cases covering: (a) a single-line
   `**Goals** (parenthetical):` header; (b) the multi-line precedent shape where the colon is not
   on the `**Goals**` line at all; (c) a negative case asserting `**Non-Goals**` still does not
   establish `start_idx`; (d) a regression case asserting the `exit 71` guard still fires on a
-  Goals block with no conforming bullet.
-- [ ] Stage and commit with an explicit two-file pathspec.
+  Goals block with no conforming bullet. *(completed: cases R18-R21; also added four new fixture
+  files under tests/fixtures/challenge/, one per case)*
+- [x] Stage and commit with an explicit two-file pathspec. *(completed: six files -- the two
+  named plus the four new fixture files)*
 
 **Timing**: 1 hour
 
