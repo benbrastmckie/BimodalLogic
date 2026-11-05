@@ -238,7 +238,7 @@ every member reports terminal**. Shared file scope serializes a batch rather tha
 task with no declared `file_scope` is invisible to the overlap gate (the blindness `751`
 remediates). See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 
-**`866`'s filing-ready follow-up (R1, not yet a task number).** A Lean task: `▷`/`◁` truth
+**`866`'s follow-up R1 is filed as `869`.** A Lean task: `▷`/`◁` truth
 invariance along a history-lifting morphism with ray-agreement lifting, plus the ZTime
 construction of such a lifting from `TwoWayBounded`. Shape: one new field or standalone
 hypothesis beside `HistMap.lift` ("a history of the image frame agreeing with the image of `τ'`
@@ -248,8 +248,11 @@ sequence machinery, and an `open_invariance` theorem over `OpenFormula` reusing
 `plus_invariance`'s seven cases. Cost estimate carried from
 `866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md`'s
 recommendation R1: **150-350 lines, one implementation phase**. Independent of G1, G2, Rabin,
-Gabbay separation (`867`) and the ladder/`RaySummary` front — file it with `/task` whenever
-convenient; nothing above gates it.
+Gabbay separation (`867`) and the ladder/`RaySummary` front — nothing above gates it. Its
+declared `file_scope` overlaps only the shared ledger and generated-inventory files
+(`docs/theorem-index.md`, `scripts/check-module-invariants.sh`, `typst/generated/status.typ`,
+the two README inventory blocks), so the overlap gate will serialize it against any other live
+Lean task rather than refuse it.
 
 **`866`'s MSO/Rabin decidability step itself (report recommendation R2): do not file.** Formalizing
 step 5 of report 03 §1.3 means formalizing Rabin's tree theorem from scratch (determinization of

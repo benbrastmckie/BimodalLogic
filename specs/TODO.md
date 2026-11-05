@@ -1,5 +1,5 @@
 ---
-next_project_number: 869
+next_project_number: 870
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 869
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,804,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,865,867,868 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,783,814,816,823,824,840,845,853,862 | 298,428,502,761,770,772,777,785,813,838,839,852 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,865,867,869 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862 | 298,428,502,761,770,772,777,785,803,813,838,839,852 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -132,7 +132,6 @@ next_project_number: 869
 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
-868 [IMPLEMENTING] — IMPLEMENTATION TASK, small and deliberately conditional:...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -145,16 +144,48 @@ next_project_number: 869
 821 [RESEARCHED] — Reconcile specs/state.json's next\_project\_number against...
 832 [NOT STARTED] — Two local-disk reclamations found by the 2026-11-02 review....
 
+### Semantics
+
+869 [NOT STARTED] — IMPLEMENTATION TASK, small and self-contained: state and...
+
 ### Build Performance
 
 803 [NOT STARTED] — Cut the elaboration time of...
-804 [NOT STARTED] — Determine whether...
+  └─ 804 [NOT STARTED] — Determine whether...
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
 
+### 869. Open modal invariance ray agreement lifting
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: IMPLEMENTATION TASK, small and self-contained: state and prove truth invariance for the open-future and open-past modals along a history morphism that lifts ray agreement, and derive such a lifting at ZTime from TwoWayBounded. This is the one formalization item recommended by the MSO-route research; it is independent of every unverified step in that route.
+
+WHY THIS EXISTS, AND WHAT IT IS NOT. The MSO route argues on paper that ZTime validity of the open language is decidable, and the open modals were confirmed to ride step 4's encoding -- see specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md, recommendation R1. That route is NOT being formalized and is not to be: Mathlib has no MSO syntax, no omega-automata, no determinization, and no Rabin tree theorem, so step 5 would mean a multi-year project of a different kind. This task lands only the semantic invariance lemma the route's cover step needs, which is useful on its own terms wherever open-modal truth must be transported along a morphism. Claim no decidability result and no completeness result here.
+
+WHAT TO STATE. Three pieces, in this order:
+
+(1) A ray-agreement lifting hypothesis beside HistMap.lift in FormalSystem/Semantics/HistoryMorphism.lean, as a standalone hypothesis or a new field: a history of the image frame agreeing with the image of tau' up to x lifts to a history of the source agreeing with tau' up to x. Then its time-reflected mirror for the open-past modal. Note that HistoryMorphism.lean's own docstring already records that HistMap.lift is derivable from TwoWayBounded.step rather than primitive, and that step is strictly weaker than lift -- read that discussion before choosing between a field and a hypothesis, and record the choice.
+
+(2) The ZTime derivation of both from TwoWayBounded.step/forth via the existing forward/backward sequence machinery in the same module. The research notes the lifted witness reuses the given history's past verbatim and needs only forward lifting from the basepoint at x, which is strictly weaker than the two-sided HistMap.lift that plus_invariance's stab case already uses -- so this should be easier than the landed two-sided case, not harder.
+
+(3) An open_invariance theorem over OpenFormula, reusing plus_invariance's seven cases. OpenLanguage sits above Semantics (OpenTruth.lean imports Semantics.Truth; nothing under Semantics/ imports OpenLanguage), so a new FormalSystem/OpenLanguage/OpenInvariance.lean can import HistoryMorphism -- confirm the aggregator wiring in FormalSystem/OpenLanguage.lean, and confirm the layering still holds before committing to the module site.
+
+SIZE: estimated 150-350 lines, one implementation phase. Independent of Gabbay separation (no SeparationOver hypothesis is needed), of the ladder/RaySummary front, and of the two gaps the MSO research located in report 03 section 1.3 (the step-1 fixpoint circularity and the step-3 forest-versus-tree mismatch). Nothing gates it.
+
+GATES. Zero sorry, zero vacuous definitions. A docs/theorem-index.md row per landed result, with Paper: and a reason at the declaration or C15's second assertion fails. Re-measured axiom baselines pinned by scripts/check-module-invariants.sh, never typed by hand. Guarded scoped build green, then the unscoped build; check-module-invariants.sh and check-metalogic-cycles.sh both green against their pre-task baselines.
+
+TWO KNOWN ENVIRONMENT FACTS, so they are not rediscovered. First, any task adding .lean lines in this repository must regenerate three files that a phase file list will not obviously name: the BEGIN GENERATED inventory blocks in README.md and the relevant FormalSystem README, via check-module-invariants.sh --emit-inventory, and typst/generated/status.typ via typst-sync-check.sh --fix, which a pre-commit hook enforces. They are in this task's file_scope for that reason. Second, check-module-invariants.sh's C16 group currently reports one pre-existing unusedArguments finding at FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136, last touched by an unrelated commit; it is not this task's to fix, and "green against pre-task baselines" means that finding and no other. scripts/check-paper-definitions.sh likewise exits 1 on manuscript drift outside this repository.
+
+NAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16's defsWithUnderscore linter both reject a snake_case def or abbrev name in the live tree. Decidable-valued and other defs are camelCase; theorems keep snake_case. Name accordingly when writing the plan's challenge statements, not afterwards.
+
+---
+
 ### 868. Open language transfer corollaries
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -3159,7 +3190,7 @@ shortcut. It does not by itself clear the gate while `routing_agents_hard` remai
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: build-performance
-- **Dependencies**: None
+- **Dependencies**: Task 803
 
 **Description**: Determine whether FormalSystem/Metalogic/Decidability/Verified/Termination/ must sit downstream of the syntax layer, and narrow the fan-in if it need not.
 
