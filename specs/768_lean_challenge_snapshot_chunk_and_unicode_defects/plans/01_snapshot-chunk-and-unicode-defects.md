@@ -631,7 +631,7 @@ continued pass as the specific evidence that unflagged `--dry-run` is unchanged.
 
 ---
 
-### Phase 6: Full Gate Set, Redeploy, and Deployed-Tree Parity [NOT STARTED]
+### Phase 6: Full Gate Set, Redeploy, and Deployed-Tree Parity [COMPLETED]
 
 **Goal**: Run the complete gate set over the finished work, carry every change — including the
 R6/R7/R8 repairs committed in Phase 1 — into the deploy tree, and verify the deployed suite is
@@ -639,24 +639,45 @@ green rather than trusting the redeploy's own report.
 
 **Tasks**:
 
-- [ ] Re-check the sibling cross-repo record's status one final time before the deploy, and record
-      the observed value.
-- [ ] Run the complete gate set from the source store:
+- [x] Re-check the sibling cross-repo record's status one final time before the deploy, and record
+      the observed value. *(completed: still `not_started` for project_number 385)*
+- [x] Run the complete gate set from the source store:
       `bash agent-system/extensions/core/scripts/verify-deploy.sh /home/benjamin/.config/nvim/agent-system`
       (resolve the exact `TARGET` for the source store rather than relying on the no-argument
       form, whose default `$(pwd)` would silently make the doc-lint and task-reference gates SKIP).
-- [ ] Confirm the task-reference and record-versioning lints find nothing in any edited file, and
+      *(DEFERRED to the batch-level stage per this dispatch's own `## Batch Gate Deferral`
+      directive -- see the Batch Gate Deferral Note below for the scoped narrowing run instead)*
+- [x] Confirm the task-reference and record-versioning lints find nothing in any edited file, and
       that no edited file's prose carries a task number, an `entry_id`, or draft-history language.
-- [ ] Redeploy with the bounded-wait idiom:
+      *(completed: `check-task-references.sh`/`check-record-versioning.sh` run against every
+      edited file individually -- 0 unexempted task-reference occurrences on all; one
+      record-versioning ADVISORY finding was caught in this script's own newly-added comment
+      ("there is no longer any code path...") and reworded to state current behavior directly,
+      landed in a follow-up commit; all pre-existing advisory findings elsewhere in the file are
+      unrelated to this record's edits)*
+- [x] Redeploy with the bounded-wait idiom:
       `timeout 540 bash .claude/scripts/deploy-headless.sh`, with the Bash tool timeout raised to
-      600000ms. Confirm `RESULT=landed_verify_clean`.
-- [ ] Verify deployed-tree parity directly rather than inferring it: `diff` the deployed script and
+      600000ms. Confirm `RESULT=landed_verify_clean`. *(completed: confirmed)*
+- [x] Verify deployed-tree parity directly rather than inferring it: `diff` the deployed script and
       suite against their source-store copies, and confirm the deployed
       `scripts/tests/fixtures/challenge/` directory contains **every** fixture the source store
       has — this is the gap `manifest.json` registration exists to close, and the deployed R8
-      failure is the symptom that proves checking it is not redundant.
-- [ ] Run the **deployed** suite from the project root and confirm zero failures.
-- [ ] Record the final issue-log entries for this phase, including the deploy outcome.
+      failure is the symptom that proves checking it is not redundant. *(completed: `diff`
+      reports no differences for either file; the deployed and source-store fixture directories
+      hold the identical set)*
+- [x] Run the **deployed** suite from the project root and confirm zero failures. *(completed:
+      29 passed, 0 failed, 0 skipped, including R8 green)*
+- [x] Record the final issue-log entries for this phase, including the deploy outcome.
+      *(completed)*
+
+**Batch Gate Deferral Note.** This dispatch carries a `## Batch Gate Deferral` directive for this
+phase's declared `**Verification Tier**: full`: the complete gate set is deferred to a
+once-per-batch stage outside this dispatch rather than independently invoked here. In its place,
+this dispatch ran the scoped narrowing covering every file this implementation touched:
+`bash agent-system/extensions/core/scripts/tests/run-all.sh --only
+test-lean-challenge-snapshot.sh,test-phase-heading-patterns.sh,test-plan-file-scope-harvest.sh,test-resume-scan-nonconformance.sh,test-check-task-references.sh,test-check-record-versioning.sh,test-index-entries-schema.sh`
+-- 7 passed, 0 failed. The redeploy and deployed-suite verification above are unaffected by the
+deferral; only the independent full `verify-deploy.sh` invocation is deferred.
 
 **Timing**: 1.5 hours
 
@@ -670,6 +691,13 @@ green rather than trusting the redeploy's own report.
 challenge fixtures against the source store's ten, and that the single missing one is
 `plan_goals_preamble.md`. Confirm by listing both directories after the redeploy and comparing
 them set-wise, rather than checking only the one fixture this plan happened to name.
+
+**Scope Hypothesis re-derivation (actual)**: by the time this phase ran, Phases 2-5 had added
+five more new fixtures beyond `plan_goals_preamble.md` (`plan_r9_unicode.md`,
+`plan_r10_truncation.md`, `plan_r11_abbrev_between.md`, `plan_r12_anon_instance.md`,
+`plan_r14_trailing_prose.md`), so the pre-redeploy gap was larger than the single fixture this
+plan named; all are registered in `manifest.json` and the post-redeploy `diff`/set comparison
+confirms the deployed and source-store fixture directories hold the identical set.
 
 **Files to modify**:
 
