@@ -542,43 +542,49 @@ asserting the new suite is the first coverage.
 
 ---
 
-### Phase 6: Defect 3b — polarity declaration and keyword denylist [NOT STARTED]
+### Phase 6: Defect 3b — polarity declaration and keyword denylist [COMPLETED]
 
 **Goal**: A refutation-shaped plan — one whose Goals name identifiers that must be ABSENT —
 reaches a correct, positively confirming verdict instead of being failed for achieving its goal;
 and reserved Lean keywords stop being harvested as declarations to find.
 
 **Tasks**:
-- [ ] Add an explicit, opt-in polarity declaration to the extracted script: when the plan declares
+- [x] Add an explicit, opt-in polarity declaration to the extracted script: when the plan declares
   a refutation polarity, each harvested identifier must be ABSENT from the resolved source roots —
   all absent → `passed`; any present → `failed` (with the present ones named). When the field is
   absent, today's must-exist behaviour applies unchanged, so every existing plan is unaffected.
   Choose a single, grep-stable declaration shape (a plan-level `- **Goal Polarity**:` metadata
-  line is the recommended form) and implement exactly one, not two.
-- [ ] Define the mixed-polarity case explicitly rather than leaving it implicit: a plan whose
+  line is the recommended form) and implement exactly one, not two. *(completed)*
+- [x] Define the mixed-polarity case explicitly rather than leaving it implicit: a plan whose
   Goals mix must-exist and must-be-absent identifiers declares no polarity and the script records
   `compliance_check="skipped"` with a stated reason — the honest outcome task 805 reached by hand,
-  now reached mechanically.
-- [ ] Add a reserved-keyword denylist to the identifier harvest, mirroring the `LEAN_KEYWORDS` set
+  now reached mechanically. *(completed: an explicitly declared non-"refutation" value, e.g.
+  "mixed", skips with a stated reason)*
+- [x] Add a reserved-keyword denylist to the identifier harvest, mirroring the `LEAN_KEYWORDS` set
   at `lean-challenge-snapshot.sh:474` (a Python set inside a heredoc there; this script needs its
   own bash-side list — do not attempt to share one across the two languages in this phase, and add
-  a comment at both sites naming the other so a future consolidation can find them).
-- [ ] Apply the same colon-optional widening Phase 2 made to `START_RE` to this script's own
+  a comment at both sites naming the other so a future consolidation can find them). *(completed;
+  comment added at both sites)*
+- [x] Apply the same colon-optional widening Phase 2 made to `START_RE` to this script's own
   `sed -n '/^\*\*Goals\*\*:/,...'` range, so the two Goals-block readers no longer disagree about
-  which headers they accept. Note the shared fragility in a comment at both sites.
-- [ ] Document the polarity declaration in `plan-format.md` as an optional plan-level field, with
-  its default and the mixed-polarity ruling stated.
-- [ ] Extend `test-lean-plan-compliance-check.sh` with: a refutation plan whose identifiers are
+  which headers they accept. Note the shared fragility in a comment at both sites. *(completed)*
+- [x] Document the polarity declaration in `plan-format.md` as an optional plan-level field, with
+  its default and the mixed-polarity ruling stated. *(completed: new "## Goal Polarity" section)*
+- [x] Extend `test-lean-plan-compliance-check.sh` with: a refutation plan whose identifiers are
   all absent → `passed`; a refutation plan with one identifier present → `failed` naming it; a
   must-exist plan unaffected by the new field's absence (asserting the characterization cases from
   Phase 5 still pass); a plan whose Goals block backticks `sorry`/`box` → those tokens are not
-  harvested; a parenthetical Goals header → range established.
-- [ ] Reproduce the original symptom as a regression test: the archived refutation plan's Goals
+  harvested; a parenthetical Goals header → range established. *(completed: cases C9-C13; C5/C6
+  updated in place to assert the new superseded behaviour, annotated as such)*
+- [x] Reproduce the original symptom as a regression test: the archived refutation plan's Goals
   shape (`ladderRealized`, `LadderCons`, `ladderCons_localRun`, `sorry`, `box`, `stab`) produces
   `failed` under the pre-fix script and `passed` under the fixed one with the polarity declared.
-- [ ] Re-verify (do not edit) that both SKILL.md verdict readers handle `passed`/`failed`/`skipped`
-  correctly, per D2.
-- [ ] Stage and commit with an explicit three-file pathspec.
+  *(completed: case C13, using the actual archived plan's re-derived Goals content)*
+- [x] Re-verify (do not edit) that both SKILL.md verdict readers handle `passed`/`failed`/`skipped`
+  correctly, per D2. *(completed)*
+- [x] Stage and commit with an explicit three-file pathspec. *(completed: four files — the three
+  named plus a comment-only cross-reference touch to lean-challenge-snapshot.sh, already in
+  this task's file_scope)*
 
 **Timing**: 1.5 hours
 

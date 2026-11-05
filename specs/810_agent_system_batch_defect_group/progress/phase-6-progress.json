@@ -1,0 +1,28 @@
+{
+  "phase": 6,
+  "phase_name": "Defect 3b — polarity declaration and keyword denylist",
+  "started_at": "2026-11-05T06:45:00Z",
+  "last_updated": "2026-11-05T07:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add opt-in polarity declaration handling to lean-plan-compliance-check.sh", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh"]},
+    {"id": 2, "description": "Define mixed-polarity case explicitly (skipped with stated reason)", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh"]},
+    {"id": 3, "description": "Add reserved-keyword denylist mirroring LEAN_KEYWORDS", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh", "agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh"]},
+    {"id": 4, "description": "Apply colon-optional widening to this script's own Goals-block sed range", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh", "agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh"]},
+    {"id": 5, "description": "Document polarity declaration in plan-format.md", "status": "done", "files_touched": ["agent-system/extensions/core/context/formats/plan-format.md"]},
+    {"id": 6, "description": "Extend test-lean-plan-compliance-check.sh with new cases incl. archived-plan regression", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/tests/test-lean-plan-compliance-check.sh"]},
+    {"id": 7, "description": "Re-verify SKILL.md verdict readers (no edit)", "status": "done", "files_touched": []},
+    {"id": 8, "description": "Stage and commit with explicit pathspec", "status": "in_progress", "files_touched": []}
+  ],
+  "current_objective": 8,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "verification_notes": {
+    "scope_note": "lean-challenge-snapshot.sh received two cross-reference comments (shared-fragility notes for the colon-optional Goals range and the LEAN_KEYWORDS list) beyond Phase 6's literally declared Files to modify list, per the task's own 'add a comment at both sites naming the other' instruction. The file is already within this task's overall file_scope (touched in Phase 2), so this is an in-scope, comment-only touch, not a new out-of-scope file.",
+    "polarity_states_measured": "refutation+all-absent -> passed ([OK] lines); refutation+one-present -> failed ([PRESENT] line naming it); explicit non-refutation value ('mixed') -> skipped with stated reason; field absent -> default must-exist behaviour unchanged. All four measured directly.",
+    "archived_plan_regression": "Re-derived the archived plan's actual Goals content (specs/archive/805_jointly_derived_cell_index_gate/plans/02_joint-index-gate-closeout.md) via the same sed+grep extraction the script uses: box, LadderCons, ladderCons_localRun, ladderRealized, sorry, stab (sorry correctly denylisted). Confirmed it matches the dispatch's own claimed set. Reproduced the original symptom: failed (all [MISSING] against an empty root, no polarity declared) then passed (same content, Goal Polarity: refutation inserted, same empty root).",
+    "characterization_supersession": "C5 and C6 (Phase 5's characterization of the pre-existing no-denylist and colon-anchored quirks) now assert the NEW superseded behaviour explicitly, annotated in both the test file and the plan checklist -- not silently re-baselined.",
+    "test_suite": "bash agent-system/extensions/core/scripts/tests/run-all.sh --only test-lean-plan-compliance-check.sh,test-plan-file-scope-harvest.sh,test-phase-heading-patterns.sh,test-lean-challenge-snapshot.sh -> 4 passed, 0 failed. Standalone: test-lean-plan-compliance-check.sh -> 13 passed, 0 failed (C1-C13).",
+    "consumer_reverification": "skill-lean-implementation-hard/SKILL.md:313 (and skill-lean-implementation/SKILL.md:192, re-checked in Phase 5) both still read the unchanged passed/failed/skipped vocabulary; the new [PRESENT] marker is a stdout line prefix only, not a verdict value.",
+    "bash_n": "bash -n on lean-plan-compliance-check.sh, test-lean-plan-compliance-check.sh, and lean-challenge-snapshot.sh -> OK"
+  }
+}
