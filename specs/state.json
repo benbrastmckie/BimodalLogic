@@ -1293,12 +1293,14 @@
         "FormalSystem/Metalogic/NamingRules.lean",
         "FormalSystem/Metalogic/README.md",
         "FormalSystem/README.md",
+        "FormalSystem/Semantics/Frames/README.md",
         "FormalSystem/Semantics/Frames/TranslationProduct.lean",
         "FormalSystem/Semantics/HistoryMorphism.lean",
         "FormalSystem/Semantics/README.md",
         "README.md",
         "docs/theorem-index.md",
         "scripts/check-module-invariants.sh",
+        "scripts/module-invariants-allowlist.txt",
         "typst/generated/status.typ"
       ],
       "effort": "large"

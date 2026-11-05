@@ -457,6 +457,29 @@ The translation product `F.translationProduct` (`FormalSystem/Semantics/Frames/T
 | — | The same for L⁺: `PlusValidIn fc φ ↔ PlusValidOnFrames (fun G => fc.Sat G ∧ G.RecurrenceFree) φ` | `FormalSystem.Semantics.plusValidIn_iff_recurrenceFree` | `FormalSystem/Semantics/Frames/TranslationProduct.lean` | — | pcq pinned:C14 |
 | — | The same for L⋆, at every register vector: the store/recall clauses are inert under the projection | `FormalSystem.Semantics.starValidIn_iff_recurrenceFree` | `FormalSystem/Semantics/Frames/TranslationProduct.lean` | — | pcq pinned:C14 |
 
+### Naming rules and model transformations
+
+Two-way bounded morphisms of task frames, the lift construction that makes `HistMap.lift`
+derivable over discrete time, and the soundness of two naming rules over L⁺ — rules that license
+inferring `φ` from `A(q) → φ` for an auxiliary sentence letter `q` not occurring in `φ`. Every
+row is a soundness or model-transformation result: no completeness, decidability or
+axiomatizability claim is made or implied, and the auxiliary letter is discharged by the rule in
+every case. The translation product the two rules run on is a proof device, never an intended
+model (`FormalSystem/Semantics/Frames/TranslationProduct.lean`'s standing caveat).
+
+| Paper label | Statement | Lean name | File | Frame class | Axioms |
+|-------------|-----------|-----------|------|-------------|--------|
+| — | Truth of every L⁺ formula is invariant along any history-lifting morphism, between the pulled-back model on the source and the given model on the image | `FormalSystem.Semantics.HistMorphism.plus_invariance` | `FormalSystem/Semantics/HistoryMorphism.lean` | — | [propext, Quot.sound] pinned:C14 |
+| — | L⁺ frame validity travels from the source of a history-lifting morphism to its image (and not back) | `FormalSystem.Semantics.HistMorphism.plusValidOn` | `FormalSystem/Semantics/HistoryMorphism.lean` | — | [propext, Quot.sound] pinned:C14 |
+| — | A task of duration `x` out of the image of a state under a two-way bounded morphism lifts to a task out of the state itself; and at `-x`, so does a predecessor | `FormalSystem.Semantics.TwoWayBounded.exists_preimage_step_neg` | `FormalSystem/Semantics/HistoryMorphism.lean` | — | pcq pinned:C14 |
+| — | The projection of a translation product onto its base frame is a two-way bounded morphism — the worked instance of `TwoWayBounded` | `FormalSystem.Semantics.FrameOver.translationProduct_twoWayBounded` | `FormalSystem/Semantics/Frames/TranslationProduct.lean` | — | pcq pinned:C14 |
+| — | Over discrete time a surjective two-way bounded morphism is a history-lifting morphism: `HistMap.lift` is derivable from the one-task `step` condition rather than primitive | `FormalSystem.Semantics.TwoWayBounded.exists_histMorphism_of_isZTime` | `FormalSystem/Semantics/HistoryMorphism.lean` | ZTime | pcq pinned:C14 |
+| — | And hence L⁺ truth invariance from `forth`, `step` and surjectivity alone, over discrete time | `FormalSystem.Semantics.TwoWayBounded.plus_invariance_of_isZTime` | `FormalSystem/Semantics/HistoryMorphism.lean` | ZTime | pcq pinned:C14 |
+| — | L⁺ truth is unchanged by a valuation change at a fresh atom only — what discharges the auxiliary letter | `FormalSystem.Metalogic.NamingRules.plusTruthAt_congr_of_fresh` | `FormalSystem/Metalogic/NamingRules.lean` | — | [propext] pinned:C14 |
+| — | The clock valuation on the translation product satisfies the clock rule's antecedent at every time at which the clock reads zero | `FormalSystem.Metalogic.NamingRules.plusTruthAt_clockAnte` | `FormalSystem/Metalogic/NamingRules.lean` | — | pcq pinned:C14 |
+| — | **Soundness of the clock rule**: an atom may be assumed to hold at exactly one time of every history, with that time rigid under `⊡`, provided it is discharged. A time cannot be named globally; it can be named within every stability cluster | `FormalSystem.Metalogic.NamingRules.clock_irr_sound` | `FormalSystem/Metalogic/NamingRules.lean` | — | pcq pinned:C14 |
+| — | **Soundness of Gabbay's plain irreflexivity rule**: from `(q ∧ H¬q) → φ` with `q` fresh, infer `φ`. A corollary — the clock antecedent implies the weaker one, and `rigid q` is not consumed | `FormalSystem.Metalogic.NamingRules.irr_sound` | `FormalSystem/Metalogic/NamingRules.lean` | — | pcq pinned:C14 |
+
 ### Conservativity — TM⁻ over L⁻, TM over TM⁻, TM⁺ over TM
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |

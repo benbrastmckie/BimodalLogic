@@ -180,3 +180,15 @@ FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth
 # single-letter definitions do not land in `PlusSlicedCertificate` itself. Same shape as that
 # entry, and reached the same way: the fully qualified names in docs/theorem-index.md.
 FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier
+
+# `structure HistMorphism` and `namespace HistMorphism` in namespace FormalSystem.Semantics
+# -- Semantics/HistoryMorphism.lean; the theorem-index rows for `HistMorphism.plus_invariance`
+# and `HistMorphism.plusValidOn` cite it fully qualified. The namespace is named after the
+# structure, not after the module (`HistoryMorphism.lean`), so it cannot resolve to a file.
+FormalSystem.Semantics.HistMorphism
+
+# `structure TwoWayBounded` and `namespace TwoWayBounded` in namespace FormalSystem.Semantics
+# -- Semantics/HistoryMorphism.lean; the theorem-index rows for
+# `TwoWayBounded.exists_preimage_step_neg`, `TwoWayBounded.exists_histMorphism_of_isZTime` and
+# `TwoWayBounded.plus_invariance_of_isZTime` cite it fully qualified.
+FormalSystem.Semantics.TwoWayBounded

@@ -513,7 +513,7 @@ by this hypothesis.
 
 ---
 
-### Phase 8: Ledger, baseline, inventories and the full gate [NOT STARTED]
+### Phase 8: Ledger, baseline, inventories and the full gate [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Pin everything that landed: docstrings complete, a theorem-index row per result under a
 new subsection, a measured C14 axiom baseline, regenerated directory inventories, and the full
@@ -545,6 +545,23 @@ gate set green.
 - [ ] Run `bash scripts/check-module-invariants.sh` and fix every finding it reports
 - [ ] Run the full gate set: `bash .claude/scripts/verify-deploy.sh`
 - [ ] Confirm no `sorry`, no new axiom and no vacuous definition anywhere in the landed work
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The verification criterion "`bash scripts/check-module-invariants.sh` passes" | Not met, for a reason outside this task: the gate's only failing group is C16, whose single finding is on a declaration in a file this task never touched. Every other group passes (53 PASS), including C1, C2, C3, C5, C14 both halves, C15, C23, C33 and INV. Repairing another task's declaration was not in scope, and `lake exe runLinter --update` was deliberately NOT run, since it grandfathers every current finding including that genuine regression. | `FAIL  C16  env_linter batch reports new finding(s) beyond scripts/nolints.json's grandfathered baseline` -> `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136:1: error: @FormalSystem.Metalogic.Decidability.RaySummary.mem_cellAt_of_shift_of_hasForwardSlack 1 unused argument: argument 23: (hslk : ... ≤ c)`. `git status --short FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` is empty (unmodified by this task); `git log --oneline -1` on it names earlier work. This task's own C16 finding — an unused `[IsPredArchimedean ↑D]` binder on `TwoWayBounded.exists_histMorphism_of_isZTime` — was fixed by dropping that binder and the redundant `[PredOrder ↑D]` with it: the invariants run before the fix reported `Found 2 errors`, the run after reports `Found 1 error`. |
+| A theorem-index row for `aa_expand` | Phase 7 excluded `aa_expand`, so no row was added for it — a row for a declaration that did not land is worse than a missing row, which is this phase's own Scope Hypothesis. The new subsection carries ten rows, one per landed result. | `grep -c 'aa_expand' docs/theorem-index.md` is 0; the subsection's ten `Lean name` cells each resolve to an existing declaration, which C15 asserts for all 337 rows. |
+
+**Three gate collisions resolved, each by the repository's own sanctioned route rather than by
+weakening a check**: C5 flagged `FormalSystem.Semantics.HistMorphism` and
+`FormalSystem.Semantics.TwoWayBounded` as unresolved module paths (they are namespaces named
+after structures, not after modules), so both were added to
+`scripts/module-invariants-allowlist.txt`, which exists for exactly that case. C15 requires a
+row's declaration to appear in its file under its BARE base name, which forced the five dotted
+declarations into explicit `namespace` blocks. That in turn made C23 see a new
+outer-shadows-inner pair at `plus_invariance`, which was recorded in `SHADOW_PAIR_ALLOW` with its
+reason, on the `Tw`/`Presheaf` precedent already in that set.
 
 **Timing**: 1.5 hours
 

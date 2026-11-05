@@ -159,6 +159,8 @@ section PlusInvariance
 
 open FormalSystem.PlusLanguage
 
+namespace HistMorphism
+
 /--
 **L⁺ truth is invariant along any history-lifting morphism**: a formula holds at the pulled-back
 model and a history of the source exactly when it holds at the given model and the image history.
@@ -176,7 +178,7 @@ exhibit (`HybridLanguage/HybridRecurrence.lean`).
 
 Paper: — (formalization-native; the paper defines no morphism of task frames)
 -/
-theorem HistMorphism.plus_invariance {D : TemporalOrder} {F' F : FrameOver D}
+theorem plus_invariance {D : TemporalOrder} {F' F : FrameOver D}
     (g : HistMorphism F' F) (M : TaskModel F.toTaskFrame) :
     ∀ (φ : PlusFormula) (τ' : WorldHistory F'.toTaskFrame) (t : ↑D),
       PlusTruthAt (g.pullM M) τ' t φ ↔ PlusTruthAt M (g.mapH τ') t φ := by
@@ -229,7 +231,7 @@ source carries valuations that are not pulled back from anywhere
 
 Paper: — (formalization-native; the paper defines no morphism of task frames)
 -/
-theorem HistMorphism.plusValidOn {D : TemporalOrder} {F' F : FrameOver D}
+theorem plusValidOn {D : TemporalOrder} {F' F : FrameOver D}
     (g : HistMorphism F' F) (φ : PlusFormula)
     (h : F'.toTaskFrame.PlusValidOn φ) : F.toTaskFrame.PlusValidOn φ := by
   intro M τ t
@@ -237,6 +239,8 @@ theorem HistMorphism.plusValidOn {D : TemporalOrder} {F' F : FrameOver D}
   have hm : g.mapH τ' = τ := WorldHistory.ext_state hτ'
   have := (g.plus_invariance M φ τ' t).1 (h (g.pullM M) τ' t)
   rwa [hm] at this
+
+end HistMorphism
 
 end PlusInvariance
 
@@ -296,7 +300,9 @@ theorem exists_preimage_step (h : TwoWayBounded f)
 image state is the image of an `x`-predecessor of the state.
 
 This is the field a digraph two-way bounded morphism has to carry separately. Here it is `step`
-at `-x`, read through `FrameOver.reflection` on each side. -/
+at `-x`, read through `FrameOver.reflection` on each side.
+
+Paper: — (formalization-native; the paper defines no morphism of task frames) -/
 theorem exists_preimage_step_neg [F'.IsRegular] [F.IsRegular] (h : TwoWayBounded f)
     (a : F'.WorldState) (x : ↑D) (u : F.WorldState) (hu : F.TaskRel u x (f a)) :
     ∃ c : F'.WorldState, F'.TaskRel c x a ∧ f c = u := by
@@ -490,6 +496,8 @@ private theorem chain_rel [F'.IsRegular] [F.IsRegular]
       show i - j = -(j - i) by ring, neg_zsmul] at hi
     exact (F'.reflection _ _ _).2 hi
 
+namespace TwoWayBounded
+
 /--
 **Over discrete time a two-way bounded surjection is a history-lifting morphism.**
 
@@ -508,13 +516,18 @@ Discrete time is load bearing, not a convenience: the walk needs a next index to
 dense time there is none, and lifting a history would need a fibre-relative saturation property
 that `forth` and `step` do not supply; that case is left unattempted.
 
+Only the **successor** half of `TaskFrame.IsZTime` is consumed, since `intIso` asks for
+`SuccOrder` and `IsSuccArchimedean` and nothing else; the predecessor half is a consequence of it
+on an ordered group and is not taken as a binder. The name still reads `of_isZTime` because
+ℤ-time is the class the construction is about, and every ℤ-time frame supplies the two binders
+by synthesis.
+
 Constraints consumed: Compositionality, Seriality, Limit, Saturation
 
 Paper: — (formalization-native; the paper defines no morphism of task frames)
 -/
-theorem TwoWayBounded.exists_histMorphism_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
-    [F'.IsRegular] [F.IsRegular] [SuccOrder ↑D] [PredOrder ↑D]
-    [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
+theorem exists_histMorphism_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
+    [F'.IsRegular] [F.IsRegular] [SuccOrder ↑D] [IsSuccArchimedean ↑D]
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
     (hs : Function.Surjective f) :
     ∃ g : HistMorphism F' F, g.toFun = f := by
@@ -570,10 +583,11 @@ open FormalSystem.PlusLanguage in
 `HistMorphism.plus_invariance`: the machine-checked form of the claim that the two together
 replace the primitive `lift` field.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-theorem TwoWayBounded.plus_invariance_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
-    [F'.IsRegular] [F.IsRegular] [SuccOrder ↑D] [PredOrder ↑D]
-    [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+
+Paper: — (formalization-native; the paper defines no morphism of task frames) -/
+theorem plus_invariance_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
+    [F'.IsRegular] [F.IsRegular] [SuccOrder ↑D] [IsSuccArchimedean ↑D]
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
     (hs : Function.Surjective f) (M : TaskModel F.toTaskFrame) :
     ∃ g : HistMorphism F' F, g.toFun = f ∧
@@ -581,6 +595,8 @@ theorem TwoWayBounded.plus_invariance_of_isZTime {D : TemporalOrder} {F' F : Fra
         PlusTruthAt (g.pullM M) τ' t φ ↔ PlusTruthAt M (g.mapH τ') t φ := by
   obtain ⟨g, hg⟩ := h.exists_histMorphism_of_isZTime hs
   exact ⟨g, hg, fun φ τ' t => g.plus_invariance M φ τ' t⟩
+
+end TwoWayBounded
 
 end Lift
 

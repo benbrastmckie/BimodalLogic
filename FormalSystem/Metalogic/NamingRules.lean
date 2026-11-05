@@ -273,7 +273,9 @@ theorem plusTruthAt_rigid (σ : WorldHistory F.translationProduct.toTaskFrame) (
 
 /-- **The clock valuation satisfies the whole antecedent** at any time where the clock reads
 zero. The `□` of `clockAnte` ranges over every history of the product and the `△` over every
-time, and `once`/`rigid` hold at all of them. -/
+time, and `once`/`rigid` hold at all of them.
+
+Paper: — (formalization-native; the manuscript states no naming rule) -/
 theorem plusTruthAt_clockAnte (σ : WorldHistory F.translationProduct.toTaskFrame) (s : ↑D)
     (h0 : (σ.state s).2 = 0) :
     PlusTruthAt (clockModel F M q) σ s (clockAnte q) := by

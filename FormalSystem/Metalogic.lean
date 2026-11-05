@@ -275,7 +275,7 @@ three axioms.
   `A(q)` says `q` behaves like a name for the time of evaluation. Two are proved sound at every
   frame class: Gabbay's plain irreflexivity rule (`irr_sound`, antecedent `q ∧ H¬q`) and the
   stronger **clock rule** (`clock_irr_sound`, antecedent `q ∧ □△(once q ∧ rigid q)`), which
-  assumes `q` holds at exactly one time of every history with that time rigid under `⊟`. Both run
+  assumes `q` holds at exactly one time of every history with that time rigid under `⊡`. Both run
   on the library's translation product under the valuation "the clock reads zero", so no second
   clock construction exists in the tree; the auxiliary letter is discharged by
   `plusTruthAt_congr_of_fresh`, and the conclusion is projected back by

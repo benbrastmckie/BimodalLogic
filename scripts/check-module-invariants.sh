@@ -2464,6 +2464,16 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_params' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.AllZero.not_paramsOk_allZero' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.dmax_maximal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.HistMorphism.plus_invariance' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Semantics.HistMorphism.plusValidOn' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Semantics.TwoWayBounded.exists_preimage_step_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.FrameOver.translationProduct_twoWayBounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.TwoWayBounded.exists_histMorphism_of_isZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.TwoWayBounded.plus_invariance_of_isZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.NamingRules.plusTruthAt_congr_of_fresh' depends on axioms: [propext]
+'FormalSystem.Metalogic.NamingRules.plusTruthAt_clockAnte' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.NamingRules.clock_irr_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.NamingRules.irr_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2724,6 +2734,16 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_params
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.AllZero.not_paramsOk_allZero
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.dmax_maximal
+#print axioms FormalSystem.Semantics.HistMorphism.plus_invariance
+#print axioms FormalSystem.Semantics.HistMorphism.plusValidOn
+#print axioms FormalSystem.Semantics.TwoWayBounded.exists_preimage_step_neg
+#print axioms FormalSystem.Semantics.FrameOver.translationProduct_twoWayBounded
+#print axioms FormalSystem.Semantics.TwoWayBounded.exists_histMorphism_of_isZTime
+#print axioms FormalSystem.Semantics.TwoWayBounded.plus_invariance_of_isZTime
+#print axioms FormalSystem.Metalogic.NamingRules.plusTruthAt_congr_of_fresh
+#print axioms FormalSystem.Metalogic.NamingRules.plusTruthAt_clockAnte
+#print axioms FormalSystem.Metalogic.NamingRules.clock_irr_sound
+#print axioms FormalSystem.Metalogic.NamingRules.irr_sound
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
@@ -3807,6 +3827,17 @@ SHADOW_PAIR_ALLOW = {
      "FormalSystem.Semantics.Presheaf.Tw"),
     ("coverRight", "FormalSystem.Semantics.Presheaf",
      "FormalSystem.Semantics.Presheaf.Tw"),
+    # `plus_invariance` in FormalSystem.Semantics (Frames/TranslationProduct.lean: L⁺ truth
+    # invariance along the translation product's OWN projection, for lifted models) and the same
+    # base name in FormalSystem.Semantics.HistMorphism (HistoryMorphism.lean: L⁺ truth
+    # invariance along an ARBITRARY history-lifting morphism). The namesake is the content: the
+    # inner one is the abstract form of the outer one, `FrameOver.translationProductProj` is the
+    # instance at which the two coincide, and that they agree there is the only thing worth
+    # checking about them. The inner name is pinned by its own recorded Challenge statement, and
+    # the outer one is cited by name from three theorem-index rows and the translation-product
+    # module docstring. Same Tw/Presheaf precedent as the pair above.
+    ("plus_invariance", "FormalSystem.Semantics",
+     "FormalSystem.Semantics.HistMorphism"),
 }
 
 shadow = []

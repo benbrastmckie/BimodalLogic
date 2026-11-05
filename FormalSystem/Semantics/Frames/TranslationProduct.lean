@@ -582,6 +582,8 @@ def FrameOver.translationProductProj [F.IsRegular] : HistMorphism F.translationP
   lift := fun τ a t h => ⟨liftH F τ (a.2 - t), liftH_through F τ a t h, fun _ => rfl⟩
   onto := fun τ => ⟨liftH F τ 0, fun _ => rfl⟩
 
+namespace FrameOver
+
 /-- **The projection is a two-way bounded morphism** — the intended instance of
 `TwoWayBounded` (`Semantics/HistoryMorphism.lean`), and the witness that the notion is not
 vacuous.
@@ -593,11 +595,13 @@ admits. Landed here rather than with `TwoWayBounded` itself because `HistoryMorp
 below this module in the import order.
 
 Paper: — (formalization-native; the paper defines no product of task frames) -/
-theorem FrameOver.translationProduct_twoWayBounded [F.IsRegular] :
+theorem translationProduct_twoWayBounded [F.IsRegular] :
     TwoWayBounded (F' := F.translationProduct) (F := F) Prod.fst where
   forth := fun _ _ _ h => ((FrameOver.translationProduct_taskRel F _ _ _).1 h).1
   step := fun a x v h =>
     ⟨(v, a.2 + x), (FrameOver.translationProduct_taskRel F a x (v, a.2 + x)).2 ⟨h, rfl⟩, rfl⟩
+
+end FrameOver
 
 end Frame
 
