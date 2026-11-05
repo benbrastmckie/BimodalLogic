@@ -342,19 +342,19 @@ externally visible signature changed, so the covering check is
 
 ---
 
-### Phase 3: The merge layer [NOT STARTED]
+### Phase 3: The merge layer [COMPLETED]
 
 **Goal**: merges exist, and at a divergent merge the two approach walks are disjoint apart from
 the merge point.
 
 **Tasks**:
 
-- [ ] Land `exists_merge` at the pinned signature, by induction on `n` with an inner match on `m`
+- [x] Land `exists_merge` at the pinned signature, by induction on `n` with an inner match on `m`
       and a `by_cases` on the two penultimates. Carry the divergence disjunct at **explicit
       predecessors** (`k = kk + 1 ∧ l = ll + 1`), not with truncated subtraction.
-- [ ] Land `meet_approach_disjoint` at the pinned signature, consuming only `pen_unique` and
+- [x] Land `meet_approach_disjoint` at the pinned signature, consuming only `pen_unique` and
       `iter_length_unique`.
-- [ ] Record in the docstrings that `exists_merge` needs no `IsOrientedForest` hypothesis at all
+- [x] Record in the docstrings that `exists_merge` needs no `IsOrientedForest` hypothesis at all
       (it is pure), and that `meet_approach_disjoint` consumes only directed-path uniqueness —
       so a reader can see exactly where `acyclic` first becomes load-bearing (phase 5).
 

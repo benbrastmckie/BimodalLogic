@@ -287,4 +287,94 @@ theorem mid_unique {E : W → W → Prop} (hF : IsOrientedForest E) :
     subst hww
     exact ih k a w v v' hav hvw hav' hvw'
 
+/-! ## The merge layer
+
+`exists_merge` needs **no** `IsOrientedForest` hypothesis at all — it is a pure statement about
+iterated relations. `meet_approach_disjoint` consumes only directed-path uniqueness
+(`pen_unique`, `iter_length_unique`). Undirected acyclicity does not become load-bearing until
+`mergePoint_unique` below.
+-/
+
+/--
+**(MERGE)** Two directed walks into a common target factor through a last divergence point: the
+merge vertex of report 03 section 1.2's step 4.
+
+The divergence disjunct carries **explicit predecessors** (`k = kk + 1 ∧ l = ll + 1`) rather than
+truncated subtraction, which is the shape the downstream consumers actually want.
+
+This lemma takes no forest hypothesis.
+-/
+theorem exists_merge {E : W → W → Prop} :
+    ∀ (n m : ℕ) (a b z : W), iter E n a z → iter E m b z →
+      ∃ (c : W) (k l j : ℕ), iter E k a c ∧ iter E l b c ∧ iter E j c z ∧
+        k + j = n ∧ l + j = m ∧
+        (k = 0 ∨ l = 0 ∨ ∃ (kk ll : ℕ) (u u' : W), k = kk + 1 ∧ l = ll + 1 ∧
+          u ≠ u' ∧ E u c ∧ E u' c ∧ iter E kk a u ∧ iter E ll b u') := by
+  intro n
+  induction n with
+  | zero =>
+    intro m a b z hn hm
+    exact ⟨z, 0, m, 0, hn, hm, (iter_zero E z z).mpr rfl, by omega, by omega, Or.inl rfl⟩
+  | succ n ih =>
+    intro m a b z hn hm
+    obtain ⟨w, haw, hEwz⟩ := (iter_succ E n a z).mp hn
+    rcases m with _ | m
+    · exact ⟨z, n + 1, 0, 0, hn, hm, (iter_zero E z z).mpr rfl, by omega, by omega,
+        Or.inr (Or.inl rfl)⟩
+    · obtain ⟨w', hbw', hEw'z⟩ := (iter_succ E m b z).mp hm
+      by_cases hww : w = w'
+      · subst hww
+        obtain ⟨c, k, l, j, h1, h2, h3, h4, h5, h6⟩ := ih m a b w haw hbw'
+        exact ⟨c, k, l, j + 1, h1, h2, (iter_succ E j c z).mpr ⟨w, h3, hEwz⟩,
+          by omega, by omega, h6⟩
+      · exact ⟨z, n + 1, m + 1, 0, hn, hm, (iter_zero E z z).mpr rfl, by omega, by omega,
+          Or.inr (Or.inr ⟨n, m, w, w', rfl, rfl, hww, hEwz, hEw'z, haw, hbw'⟩)⟩
+
+/--
+**(DISJ)** At a *divergent* merge point `c` of `a` and `b` — the two last steps into `c` come
+from distinct vertices — the two approach walks share no vertex but `c`.
+
+This is the input to the step-4 independence claim, and it consumes only `pen_unique` and
+`iter_length_unique`, i.e. only directed-path uniqueness.
+-/
+theorem meet_approach_disjoint {E : W → W → Prop} (hF : IsOrientedForest E)
+    {a b c d u u' : W} {kk ll i j i' j' : ℕ}
+    (hu : iter E kk a u) (hEu : E u c) (hu' : iter E ll b u') (hEu' : E u' c) (hne : u ≠ u')
+    (h1 : iter E i a d) (h2 : iter E j d c) (hk : i + j = kk + 1)
+    (h3 : iter E i' b d) (h4 : iter E j' d c) (hl : i' + j' = ll + 1) : d = c := by
+  have hjj : j = j' := iter_length_unique hF h2 h4
+  rcases Nat.eq_zero_or_pos j with hj0 | hj0
+  · subst hj0
+    exact (iter_zero E d c).mp h2
+  · exfalso
+    obtain ⟨jm, hjm⟩ : ∃ jm, j = jm + 1 := ⟨j - 1, by omega⟩
+    subst hjm
+    obtain ⟨w, hdw, hEwc⟩ := (iter_succ E jm d c).mp h2
+    have hik : i + jm = kk := by omega
+    have hil : i' + jm = ll := by omega
+    have haw : iter E kk a w := hik ▸ (iter_add E i jm a w).mpr ⟨d, h1, hdw⟩
+    have hbw : iter E ll b w := hil ▸ (iter_add E i' jm b w).mpr ⟨d, h3, hdw⟩
+    exact hne ((pen_unique hF haw hEwc hu hEu).symm.trans
+      (pen_unique hF hbw hEwc hu' hEu'))
+
+/--
+A vertex that `b` reaches cannot be the `a`-side source of a divergent merge of `(a, b)`.
+
+The bookkeeping lemma that rules out the degenerate branches of `exists_merge` once one
+divergent merge of the pair is in hand: if `b` reaches `a` at all, then the two claimed
+predecessors of the merge point sit at the same distance from `b`, so `pen_unique` identifies
+them and the divergence hypothesis fails.
+-/
+theorem not_divergent_of_reach {E : W → W → Prop} (hF : IsOrientedForest E)
+    {a b c u₁ u₂ : W} {kk ll l₂ : ℕ}
+    (hreach : iter E l₂ b a)
+    (hu₁ : iter E kk a u₁) (hE₁ : E u₁ c)
+    (hu₂ : iter E ll b u₂) (hE₂ : E u₂ c) (hne : u₁ ≠ u₂) : False := by
+  have hbu₁ : iter E (l₂ + kk) b u₁ := (iter_add E l₂ kk b u₁).mpr ⟨a, hreach, hu₁⟩
+  have hbc₁ : iter E (l₂ + kk + 1) b c := (iter_succ E (l₂ + kk) b c).mpr ⟨u₁, hbu₁, hE₁⟩
+  have hbc₂ : iter E (ll + 1) b c := (iter_succ E ll b c).mpr ⟨u₂, hu₂, hE₂⟩
+  have hlen : l₂ + kk + 1 = ll + 1 := iter_length_unique hF hbc₁ hbc₂
+  have hll : l₂ + kk = ll := by omega
+  exact hne (pen_unique hF hbu₁ hE₁ (hll ▸ hu₂) hE₂)
+
 end FormalSystem.Semantics
