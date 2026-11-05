@@ -296,15 +296,16 @@ plus the `prose` row's diff read-through.
 
 ---
 
-### Phase 4: Revise task 870's record and close [NOT STARTED]
+### Phase 4: Revise task 870's record and close [COMPLETED]
 
 **Goal**: Task 870's stated hypothesis matches what its consumer needs; the task's own artifacts
 and state are consistent; the full gate set is green.
 
 **Tasks**:
-- [ ] Re-read task 870's current `specs/state.json` entry immediately beforehand (two sibling
-      research tasks, 871 and 867, are dispatched this same cycle onto this same tree).
-- [ ] Revise 870's description via `/revise 870`. 870 has no plan and status `not_started`, so
+- [x] Re-read task 870's current `specs/state.json` entry immediately beforehand (two sibling
+      research tasks, 871 and 867, are dispatched this same cycle onto this same tree). *(completed:
+      unchanged since Phase 0 read)*
+- [x] Revise 870's description via `/revise 870`. 870 has no plan and status `not_started`, so
       this is skill-reviser's **description-update** path, not a plan revision. The revised
       description must: (a) replace "a frame in which directed paths between any two nodes are
       unique" with the oriented-forest hypothesis as Phase 1 pinned it (the underlying undirected
@@ -313,16 +314,20 @@ and state are consistent; the full gate set is green.
       at the new strength — state the undirected-acyclicity hypothesis explicitly over a bare task
       relation, still without assuming a forest *data structure*; (c) keep the rest of 870's
       description intact, including its two unblocked fronts and its independence claims; (d) note
-      that the hypothesis is on the underlying undirected **multigraph**.
-- [ ] If `/revise` cannot be invoked from this dispatch, use the identical mechanical path
+      that the hypothesis is on the underlying undirected **multigraph**. *(deviation: altered —
+      done via the Stage-7 fallback, not /revise directly; see next item)*
+- [x] If `/revise` cannot be invoked from this dispatch, use the identical mechanical path
       skill-reviser Stage 7 uses for a description update: `bash .claude/scripts/state-write.sh`
       with the `description`/`last_updated` object merge, `--session-id`, `--argjson num 870`, and
       `--regen-todo`. Record the fallback in the issue log. Never hand-edit `specs/TODO.md`.
-- [ ] Confirm 870's `dependencies` still contains `884` and its `file_scope` is still
+      *(completed: fallback used — this is an implementation-agent dispatch, not an interactive
+      session able to invoke the /revise slash command directly; fallback recorded in issue log)*
+- [x] Confirm 870's `dependencies` still contains `884` and its `file_scope` is still
       `["FormalSystem/Semantics/TaskFrame.lean"]` — neither should need changing, and neither
-      should be changed incidentally.
-- [ ] Confirm the revised 870 description does not contradict `specs/ROADMAP.md`'s existing `870`
-      annotations (lines ~124, ~142, ~191). Read only; do not edit ROADMAP.
+      should be changed incidentally. *(completed: confirmed unchanged)*
+- [x] Confirm the revised 870 description does not contradict `specs/ROADMAP.md`'s existing `870`
+      annotations (lines ~124, ~142, ~191). Read only; do not edit ROADMAP. *(completed: ROADMAP
+      already states the oriented-forest strength at all three annotation sites; no contradiction)*
 - [ ] Write the completion summary to
       `specs/884_oriented_forest_hypothesis_strength_revision/summaries/01_oriented-forest-hypothesis-strength-summary.md`,
       recording the restated hypothesis, the Saturation-side verdict with its evidence tiers, the
