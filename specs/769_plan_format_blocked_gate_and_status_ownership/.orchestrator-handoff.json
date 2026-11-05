@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 3,
   "phases_total": 3,
-  "summary": "Wrote a three-phase, 1.5-hour plan landing both provisions as prose in the core extension source store's context/formats/plan-format.md, at the two insertion points the research report pinned by verbatim surrounding text. Phase 1 adds the pre-decided [BLOCKED] decision-gate paragraph that reconciles such a gate against the final-phase transitive-dependency rule (exemption from the literal depends-on edge, wave-1 placement with Depends on: none, discharged by a MUST that the final phase re-observe the gate's measurement by name). Phase 2 adds the plan-level Status ownership paragraph (owned by update-plan-status.sh via update-task-status.sh postflight, never writable from phase-body prose) with the load-bearing sanctioned alternative. Phase 3 is the final full-tier phase: deploy-headless.sh to RESULT=landed_verify_clean, the complete verify-deploy.sh gate set, both deliverable-hygiene lints, and an acceptance read-through of the deployed file alone. Per the research report's Decision 3, agents/planner-agent.md is deliberately dropped from the edit set and the reasoning is recorded in the plan rather than left ambiguous.",
+  "summary": "Implemented both plan-format.md provisions for task 769: a decision gate already [BLOCKED] at plan-authoring time is now reconciled against the final-phase transitive-dependency rule, and the plan-level Status field's ownership (update-plan-status.sh only) with its sanctioned alternative is now documented. Both land in the core extension's source store, deployed via deploy-headless.sh (RESULT=landed_verify_clean), and verified against the full gate set with no new finding attributable to this record. One deviation in Phase 1 (verify-deploy.sh TARGET argument corrected) is logged and annotated; no outstanding blockers.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/769_plan_format_blocked_gate_and_status_ownership/summaries/01_blocked-gate-and-status-ownership-summary.md",
+      "summary": "Both plan-format.md provisions landed in the core source store, deployed clean, and verified against the full gate set."
+    },
+    {
       "type": "plan",
       "path": "specs/769_plan_format_blocked_gate_and_status_ownership/plans/01_blocked-gate-and-status-ownership.md",
-      "summary": "Three-phase plan: Provision 1 paragraph, Provision 2 paragraph, then deploy plus full gate set. Waves [[1],[2],[3]] (same-file edits deliberately serialized). Declares the __WHOLE_TREE__ sentinel on the deploy phase."
+      "summary": "Three-phase plan, all phases COMPLETED."
     }
-  ],
-  "dispatch_seq": 2
+  ]
 }

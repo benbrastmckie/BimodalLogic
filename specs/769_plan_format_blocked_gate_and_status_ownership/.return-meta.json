@@ -1,10 +1,32 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/769_plan_format_blocked_gate_and_status_ownership/summaries/01_blocked-gate-and-status-ownership-summary.md",
+      "summary": "Both plan-format.md provisions (blocked decision gate reconciled with the final-phase rule; plan-level Status field ownership plus sanctioned alternative) landed in the core source store, deployed clean, and verified against the full gate set."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Added two prose provisions to the core extension's source-store plan-format.md: a decision gate already [BLOCKED] at plan-authoring time is now reconciled against the final-phase transitive-dependency rule (wave-1 placement, Depends on: none, final-phase re-observation MUST), and the plan-level Status field's ownership (update-plan-status.sh only, never a phase checklist item) with its sanctioned [BLOCKED]/[COMPLETED WITH EXCLUSIONS] alternative is now documented at the exact location context/contracts/plan-status-ownership.md already points at. Deployed via deploy-headless.sh (RESULT=landed_verify_clean) and verified against the full gate set with no new finding attributable to this record."
+  },
+  "modified_files": [],
+  "memory_candidates": [
+    {
+      "content": "When invoking agent-system/extensions/core/scripts/verify-deploy.sh with an explicit TARGET_REPO argument to check a source-store-only gate (e.g. --only-gate 3,4 doc-lint/task-reference lint) from outside the nvim config repo, TARGET must be the nvim config repo root (e.g. /home/benjamin/.config/nvim, which contains both agent-system/extensions/ and .claude/) -- never an individual extension's own source-store subdirectory (agent-system/extensions/<ext>), which lacks a .claude/ tree and errors exit 2 'no deploy tree'. Also run the deployed generate-context-line-counts.sh --write from that same repo root first if a context/formats/*.md file just grew, to clear a transient gate-3 line-count mismatch before it's cleared automatically by the next deploy-headless.sh run.",
+      "category": "CONFIG",
+      "source_artifact": "specs/769_plan_format_blocked_gate_and_status_ownership/summaries/01_blocked-gate-and-status-ownership-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["verify-deploy.sh", "source-store", "TARGET", "nvim config repo", "generate-context-line-counts.sh"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1793858282_9587e4",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
-  },
-  "dispatch_seq": 3
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 3,
+    "phases_total": 3
+  }
 }
