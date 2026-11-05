@@ -614,21 +614,26 @@ block helpers together cover exactly those ten names and no others.
 
 ---
 
-### Phase 8: validity block — temporal schemata, part 1 [NOT STARTED]
+### Phase 8: validity block — temporal schemata, part 1 [COMPLETED]
 
 **Goal**: Land the block helpers for the monotonicity, connection, enrichment, accumulation and
 absorption schemata.
 
 **Tasks**:
 
-- [ ] Land `theorem openAxiomValidIn_tempMonoBlock` / `openAxiomReflectValidIn_tempMonoBlock`
+- [x] Land `theorem openAxiomValidIn_tempMonoBlock` / `openAxiomReflectValidIn_tempMonoBlock`
   covering `left_mono_until_G`, `left_mono_since_H`, `right_mono_until`, `right_mono_since`,
   `connect_future`, `connect_past`, `serial_future`, `serial_past`.
-- [ ] Land `theorem openAxiomValidIn_tempAccumBlock` /
+- [x] Land `theorem openAxiomValidIn_tempAccumBlock` /
   `openAxiomReflectValidIn_tempAccumBlock` covering `enrichment_until`, `enrichment_since`,
   `self_accum_until`, `self_accum_since`, `absorb_until`, `absorb_since`.
-- [ ] Pair each future schema with its past mirror through `openValid_reflectTime` so only one of
-  each pair is proved from scratch.
+- [x] Pair each future schema with its past mirror through `openValid_reflectTime` so only one of
+  each pair is proved from scratch. *(deviation: altered — `openValid_reflectTime` pairs each
+  schema with the REFLECTION of itself, which is what the dispatch's reflection arm owes; the
+  past-mirror CONSTRUCTORS (`left_mono_since_H`, `right_mono_since`, `connect_past`,
+  `enrichment_since`, `self_accum_since`, `absorb_since`) are separate `OpenAxiom` constructors
+  needing their own validity arms, so each was proved directly as in
+  `StarAxiomValidity.lean`; only the sixteen reflection halves are one-liners)*
 
 **Timing**: 2.5 hours
 
