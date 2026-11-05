@@ -423,42 +423,42 @@ without re-wrapping. Confirm by arm count and by checking no wildcard arm is pre
 
 ---
 
-### Phase 5: the discharge table, forward conservativity over TM⁺, and the allowlist [NOT STARTED]
+### Phase 5: the discharge table, forward conservativity over TM⁺, and the allowlist [COMPLETED]
 
 **Goal**: Land the axiom-discharge table and the erasure of derivations, giving unconditional
 forward conservativity over TM⁺ at layer 0, and record the upward import edges the table forces.
 
 **Tasks**:
 
-- [ ] Add the `FormalSystem.Theorems.*` imports `OpenErasure.lean` actually needs — at minimum
+- [x] Add the `FormalSystem.Theorems.*` imports `OpenErasure.lean` actually needs — at minimum
   `Theorems.Propositional.Core` and `Theorems.TemporalDerived` for the HN arm — plus
   `FormalSystem.PlusLanguage.Derivation` and `FormalSystem.PlusLanguage.Substitution`. Add only
   the imports the file uses; an unused import is a surplus allowlist line for nothing.
-- [ ] Promote probe 01 §3-§4, **renaming every `Type`-valued term to lowerCamelCase** so C26
+- [x] Promote probe 01 §3-§4, **renaming every `Type`-valued term to lowerCamelCase** so C26
   passes: `plusIdImp` (already conformant), `dischargeOfutK`, `dischargeOfutT`,
   `dischargeOfutFour`, `dischargeOfutFive`, `dischargeOpastT`, `dischargeOfutOfStab`,
   `dischargeOpastOfStab`, `dischargeStabOfBox`, `dischargeRigidityFwd`,
   `dischargeDefinabilityFwd`, `dischargeHnOpen`. Follow
   `FormalSystem/MinusLanguage/AxiomDischarge.lean`'s naming (`dischargePropK`, `dischargeModalT`,
   `dischargeAxiom`) rather than the probe's snake_case.
-- [ ] Add the remaining discharge arms: the four `opast` S5 arms via the `reflectTime` route, the
+- [x] *(deviation: altered — the four `opast` S5 arms are discharged by `plusIdImp` directly, not through `reflectTime`: each erases to the identity `φ° → φ°` exactly as its `▷` twin does, which probe 01's `discharge_opast_t` already establishes, so a `reflectTime` transport would add a step and prove the same thing. A `dischargeHnOpenMirror` arm was added for `hn_open_mirror`, which the plan's named list omitted, and `OpenDerivation` had to be imported for `OpenDerivationTree.erase` to be statable.)* Add the remaining discharge arms: the four `opast` S5 arms via the `reflectTime` route, the
   `opast`/`ofut` rigidity arms, and one arm per re-declared TM⁺ constructor. Each TM⁺ mirror arm
   is one line, because `eraseOpen` commutes with every constructor and with every derived
   operator by `rfl`.
-- [ ] Declare `def dischargeAxiom {fc} {φ : OpenFormula} (h : OpenAxiom φ) (h_fc : h.minFrameClass ≤ fc) : ⊢⁺[fc] eraseOpen φ`
+- [x] Declare `def dischargeAxiom {fc} {φ : OpenFormula} (h : OpenAxiom φ) (h_fc : h.minFrameClass ≤ fc) : ⊢⁺[fc] eraseOpen φ`
   with **one arm per constructor and no wildcard**, mirroring `AxiomDischarge.dischargeAxiom`.
-- [ ] Prove `def OpenDerivationTree.erase : OpenDerivationTree fc Γ φ → PlusDerivationTree fc (Γ.map eraseOpen) (eraseOpen φ)`,
+- [x] Prove `def OpenDerivationTree.erase : OpenDerivationTree fc Γ φ → PlusDerivationTree fc (Γ.map eraseOpen) (eraseOpen φ)`,
   one case per rule, routing `axiom` through `dischargeAxiom` and `time_reflection` through
   `eraseOpen_reflectTime`.
-- [ ] Prove `theorem plusDerivable_of_openDerivable` — forward conservativity over TM⁺ — and the
+- [x] Prove `theorem plusDerivable_of_openDerivable` — forward conservativity over TM⁺ — and the
   round trip `theorem plusDerivable_openDerivable_iff` at the empty context, composing it with
   Phase 3's `openDerivable_of_plusDerivable` through `eraseOpen_ofPlus`.
-- [ ] Record in the docstring that this route is forced (D2): 859 rules out a truth-preserving
+- [x] Record in the docstring that this route is forced (D2): 859 rules out a truth-preserving
   translation at `.Base`, there is no TM⁺ engine (`plus_incomplete_base`), and the result is
   therefore **not** modelled on `Conservativity.starConservative_of_plusComplete`, whose
   hypothesis is false at `.Base`. Record also that the table's wildcard-free shape is what makes
   a missed constructor a build error rather than a silent gap.
-- [ ] Run `python3 scripts/measure-refactor-partitions.py upward-edges` and add exactly the
+- [x] Run `python3 scripts/measure-refactor-partitions.py upward-edges` and add exactly the
   reported new `FormalSystem.OpenLanguage.OpenErasure -> FormalSystem.Theorems.*` lines to the
   `ALLOWLIST` frozenset in `scripts/check-metalogic-cycles.sh`, beside the existing `_SRC` block.
   Extend the comment above it to record the second source and why the file sits at layer 0 (the

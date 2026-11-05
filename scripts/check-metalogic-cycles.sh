@@ -52,8 +52,21 @@
 #   shortfall means an allowlisted line is no longer measured, which someone should confirm
 #   rather than have silently absorbed.
 #
-#   THE ALLOWLIST HOLDS 8 LINES, all `FormalSystem.MinusLanguage.AxiomDischarge` (layer 0) importing
-#   a `Theorems` module (layer 2). They are recorded, not excused. The same 8 lines were recorded
+#   THE ALLOWLIST HOLDS 10 LINES FROM TWO SOURCES, both layer-0 axiom-discharge tables importing a
+#   `Theorems` module (layer 2). They are recorded, not excused.
+#
+#     * 8 lines from `FormalSystem.MinusLanguage.AxiomDischarge`, the L⁻ discharge table.
+#     * 2 lines from `FormalSystem.OpenLanguage.OpenErasure`, the L^▷ discharge table, which needs
+#       `Theorems.Propositional.Core` and `Theorems.TemporalDerived` for its two Ockhamist arms:
+#       `Pα → ▷P▷̂α` erases to `Pα° → P¬¬α°`, which is `somePastMono` of `impNegImp` substituted at
+#       an arbitrary L⁺ argument, and the open-past mirror is the same through `someFutureMono`.
+#       Every other arm of that table is a `PlusAxiom` instance or the identity combinator and
+#       needs no `Theorems` import.
+#
+#   BOTH FILES STAY AT LAYER 0, with an allowlist line each, rather than being reclassified to
+#   empty the list. `LANGUAGE_FILE_LAYERS`' own docstring forbids moving a file between layers by
+#   content judgement -- the table records the MEASURED order -- and `AxiomDischarge` is the
+#   standing precedent for an allowlisted layer-0 discharge table. The same 8 lines were recorded
 #   under the file's old path, `Syntax/MinusLanguage/AxiomDischarge.lean`, until the
 #   language-extension merge (docs/development/PUBLICATION_REFACTOR.md Phase 5) moved the file
 #   into a directory the layer table did not cover; the list then read empty because the edges
@@ -189,16 +202,23 @@ LIB, layer_of = _measure.LIB, _measure.layer_of
 # theorems of the base logic, and relocating it is separate work.  Every entry is derived
 # by running `measure-refactor-partitions.py upward-edges`, never hand-copied from a plan.
 _SRC = "FormalSystem.MinusLanguage.AxiomDischarge"
-ALLOWLIST = frozenset((_SRC, "FormalSystem.Theorems." + t) for t in (
-    "Combinators",
-    "DedekindDerived",
-    "DeductionTheorem",
-    "DiscreteUnfolding",
-    "GeneralizedNecessitation",
-    "LinearityDerived",
-    "Propositional.Core",
-    "TemporalDerived",
-))
+_SRC_OPEN = "FormalSystem.OpenLanguage.OpenErasure"
+ALLOWLIST = (
+    frozenset((_SRC, "FormalSystem.Theorems." + t) for t in (
+        "Combinators",
+        "DedekindDerived",
+        "DeductionTheorem",
+        "DiscreteUnfolding",
+        "GeneralizedNecessitation",
+        "LinearityDerived",
+        "Propositional.Core",
+        "TemporalDerived",
+    ))
+    | frozenset((_SRC_OPEN, "FormalSystem.Theorems." + t) for t in (
+        "Propositional.Core",
+        "TemporalDerived",
+    ))
+)
 
 g = ImportGraph()
 
