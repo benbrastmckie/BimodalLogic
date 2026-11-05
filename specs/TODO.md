@@ -152,6 +152,152 @@ next_project_number: 872
 
 ## Tasks
 
+### 877. Language display name consolidation
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: documentation
+- **Dependencies**: Task 856, Task 873, Task 874, Task 875, Task 876
+
+**Description**: IMPLEMENTATION TASK, LAST IN THE PROGRAMME AND PURELY MECHANICAL: retire the hard-to-type display name of the open-modal language in favour of the superscript-plus display name, across every prose and ledger surface, and give the stability-modal language a new display name in the same pass. Lean identifiers are NOT renamed by this task.
+
+THE DECISION THIS IMPLEMENTS, AND ITS DELIBERATE CHEAPNESS. The maintainer's ruling is that the `Open` identifier family is the preferred one and STAYS -- `OpenFormula`, `OpenAxiom`, `OpenDerivationTree`, `OpenValidIn`, `eraseOpen`, `ofPlus` and every `open`-prefixed declaration keep their Lean names. What changes is only the display name those identifiers are glossed by in prose: the open-modal language is to be written with the superscript plus, because the triangle glyph is awkward to type. Consequently this task does NOT rename the five-figure `Plus` identifier family and does NOT rename the `Open` family either; a measured alternative that renamed identifiers was rejected as roughly nineteen thousand mechanical edits across four hundred and twelve of the tree's Lean files, for no gain over a prose-only change.
+
+THE NAME COLLISION THIS MUST RESOLVE, AND IT IS A PLAN-TIME DECISION, NOT AN IMPLEMENTATION DETAIL. The superscript-plus display name is currently worn by the stability-modal language -- the one whose Lean family is `Plus` -- and the two cannot share it. That language survives the consolidation as the internal layer that the store/recall language, the hybrid state language, the nomic language and the open-modal language all embed, so it needs a display name of its own, not deletion. Settle that name at plan time and record it as a decision with its rationale before editing anything. The obvious candidate is a name formed from its own operator, since the repository README already glosses it as the base language plus the stability modal; a role-based name naming it as the shared internal layer is the alternative. Whichever is chosen, every surface below must use it consistently and the decision record must name it once so a future reader can trace the change.
+
+THE SURFACES, AND THE INVENTORY IS PART OF THE DELIVERABLE. Enumerate them from the tree rather than from this description, record the counts, and work from that list: the repository README's language table and its component tree; every module docstring under the open-modal and stability-modal language directories and under the metalogic tree that glosses either language by display name; the theorem-index prose columns; the typst reference manual; and the component READMEs. A grep for the triangle glyph and for the superscript-plus glyph across markdown, typst and Lean docstrings is the starting inventory. Report the before and after counts per surface.
+
+WHAT MUST NOT CHANGE, each being a way to get this wrong. No Lean identifier is renamed -- not one declaration, namespace, file name or directory name. No statement changes. No frame class changes. The paper-label correspondence tables keep pointing at the same manuscript labels: the manuscript's own notation is not this repository's to rename, so where a docstring cites a manuscript label the label stays and only the surrounding gloss changes. The embedding `ofPlus` keeps its name in all four embedding languages even though its source language's display name changes, and the task records that mismatch in the stability-modal language's README rather than renaming the function.
+
+ORDERING, AND IT IS A HARD GATE. This runs LAST. Declare as dependencies the L^▷ proof system, the subformula closure, the substitution closure, the incompleteness transfer and the stability-primitive removal. Rationale: a display-name change is worth doing exactly once, and every one of those tasks writes new docstrings that would otherwise be written in the old name and renamed afterwards. Do not enter this task while any of them is open.
+
+THE ONE SUBSTANTIVE CHECK IN AN OTHERWISE MECHANICAL TASK. After the pass, no surface may use the superscript-plus display name for two different languages, and no surface may still use the triangle display name. Both are greppable and both must be shown clean in the summary, with the commands recorded. A single missed docstring makes the tree ambiguous about which language a result is about, which is the whole cost this task exists to avoid paying twice.
+
+VERIFICATION GATE. Guarded scoped build green, then the unscoped build; never bare `lake` -- docstring edits do not change elaboration but the generated inventory blocks are build-adjacent and must be regenerated rather than hand-edited. The bare module-invariants check and the metalogic-cycles check both green. The typst manual must compile. Axiom sets are unaffected by construction; state that rather than measuring nothing silently, and confirm zero Lean identifiers changed by showing the diff touches no declaration line.
+
+---
+
+### 876. Open language stability primitive removal
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: syntax
+- **Dependencies**: Task 856, Task 874, Task 875
+
+**Description**: IMPLEMENTATION TASK WITH A DECISION GATE IN PHASE 1, and the gate is the point: remove the stability modal from `OpenFormula`'s primitive constructors, replacing it with notation for the open-past-of-open-future composite, OR record with compiled evidence why it cannot be removed. Entering this task committed to removal is the way to get it wrong; the removal is desired and must be attempted, but two specific obstructions are on record and the task is accountable to them.
+
+THE REQUEST. The stability modal is definable in L^▷ -- the biconditional is landed, in both associations -- so carrying it as a tenth primitive constructor is redundant, and the maintainer's standing preference is that it go. This task owns that removal.
+
+THE TWO OBSTRUCTIONS, BOTH ON RECORD AND NEITHER A GUESS. Read both before planning.
+(1) THE BICONDITIONAL IS CLASS-RESTRICTED. The forward half holds on every regular task frame; the backward half needs `[F.IsRegular]`. So a syntactic abbreviation does not preserve the stability modal's truth conditions off the regular class -- it changes the language's meaning on exactly the frames where the two differ. Establish FIRST, as Phase 1's deliverable, whether any live consumer evaluates the stability modal off the regular class. If none does, removal is sound relative to this tree and the restriction is a documented precondition rather than a blocker. If one does, removal is refused on this ground and the task's outcome is that finding.
+(2) STATE-LOCALITY IS LOST. The decidability front's one working anchor for the stability modal is that it is state-local -- one bit per cell, `stab_mem_tpOf_iff_cell` resting on `stab_state_only`. The open-future and open-past modals are not state-local; they quantify over agreement classes through the time of evaluation. Routing the stability modal through them discards that anchor. Phase 1 must measure what actually depends on it: enumerate the consumers of `stab_state_only`, `stab_mem_tpOf_iff_cell` and the cell-level stability reasoning, and say for each whether it is reachable from `OpenFormula` at all or lives purely on the other language's side of the embedding. The two languages are separate inductives, so a consumer that only ever sees the other language's stability constructor is NOT affected by removing this one -- establishing that is the cheapest possible route to a clean removal, and it may well be the actual situation. Do not assume it; measure it.
+
+WHAT REMOVAL MEANS IF PHASE 1 CLEARS IT. Delete the stability constructor from `OpenFormula`; introduce the stability modal as notation or an abbreviation over the open-past and open-future composite; re-derive every landed stability result at `OpenFormula` from the composite form, including the pointwise S5 laws, the strength ordering, the reversal transport (the reflection operation fixes the stability modal and exchanges the two open modals, so the reflection arms change shape and must be re-proved rather than re-cited), and the stability arms of the truth recursion, the axiom type, the derivation tree and the soundness recursion. Both conservativity directions over the other language must be re-stated, since the embedding's stability clause is exactly what changes. The regularity precondition goes in the docstring of every result that now needs it, and in the theorem-index row's frame-class column.
+
+ORDERING, AND IT IS A HARD GATE. This task must run AFTER the L^▷ proof system, the L^▷ substitution closure and the L^▷ incompleteness transfer have landed, and BEFORE the display-name rename. Rationale: each of those three lands new declarations that pattern-match on `OpenFormula`'s constructors, so removing a constructor first would force them to be written twice; and the rename should operate on a language whose constructor set is final. Declare all three as dependencies.
+
+EXPLICITLY NOT IN SCOPE. Do not touch the other language's own stability constructor, its axiom type or its derivation tree -- the standing ruling against mutating those inductives is unaffected by this task and the landed incompleteness and independence results depend on them unchanged. No completeness claim. No decidability claim. Do not weaken a landed result to a regular-class-only form in order to make removal go through without saying so: any result whose frame class narrows is a recorded consequence of this task, listed in the summary, not a silent edit.
+
+THE HONEST OUTCOMES, and all three are complete. (a) Removal lands, with the regularity precondition documented. (b) Removal is refused on obstruction (1) or (2), with the blocking consumer named and compiled evidence recorded under the evidence-probe convention. (c) Removal lands at the regular class only, with the off-regular behaviour change stated explicitly in the module docstring and the theorem-index rows. A refusal with a named cause is a complete outcome and must not be reported as a failure.
+
+LAYERING AND GATES. Add any new file's row to the layer table in `scripts/measure-refactor-partitions.py` in the same phase as the file or the cycle checker FAILS naming it. One theorem-index row per changed result, with the frame class explicit -- a result whose class narrows and whose row does not say so is a defect. Re-run the module-invariants emitter rather than hand-editing a README inventory block.
+
+VERIFICATION GATE. Guarded scoped build green, then the unscoped build; never bare `lake`. Zero `sorry`, zero vacuous definitions. The bare module-invariants check and the metalogic-cycles check both green. Axiom sets measured per declaration and diffed against the pre-removal baseline, captured in Phase 1 before any edit: the composite form routes through two operators whose own proofs may carry choice where the primitive's did not, and a widened axiom set is a recorded cost of this task, not a new baseline.
+
+---
+
+### 875. Open language incompleteness transfer
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: Task 856, Task 871
+
+**Description**: IMPLEMENTATION TASK, gated on the L^▷ proof system and its conservativity directions: transfer the landed L-plus incompleteness results to L^▷, and state the limit-closure schema in L^▷ form at the frame classes where the L-plus translation does not reach.
+
+THE GAP, VERIFIED AT FILING. `plus_incomplete_base`, `not_plus_complete_base` and `blc_not_plusDerivable_base` are landed and cited from `FormalSystem/Metalogic.lean` and `FormalSystem/Metalogic/Independence.lean`. A tree-wide grep for an L^▷ counterpart (`open_incomplete`, `not_open_complete`) returns nothing, and no task in `specs/state.json` names one. The L^▷ proof-system task states in its own description that `plus_incomplete_base` "stands exactly as proved", that `blc` "stays a non-theorem", and that "an LC_n-style schema is still required in L^▷ exactly as in L-plus" -- it flags both items and scopes neither. Nobody owns them.
+
+WHY THE TRANSFER IS AVAILABLE RATHER THAN OPEN. This is a corollary task, not a research task. The L^▷ proof-system work delivers conservativity over TM-plus in both directions; with both directions in hand, incompleteness transfers by composition: a formula valid at Base but not L-plus-derivable has an `ofPlus` image valid at Base (semantic conservativity, landed in `OpenValidity.lean`) whose L^▷-derivability would, by backward conservativity, give the L-plus derivation that does not exist. Write it in that shape -- as the composition of named landed results -- and do not reprove any underivability.
+
+WHAT TO STATE. (1) The L^▷ incompleteness triple at Base: the `ofPlus`-image of the limit-closure countermodel formula is Base-valid and not L^▷-derivable, hence the L^▷ system is incomplete at Base. (2) The honest scope line: this says the particular L^▷ system is incomplete, not that no recursive axiomatization exists -- that question is open at every class for L-plus too and must not be overstated here. (3) The limit-closure schema in L^▷ form, at Base and Dense. At ZTime the translation already answers it, because `openValidIn_ztime_iff_tr` makes any L^▷ validity question at ZTime an L-plus question; at Base and Dense the open-future modal is a genuine expressive extension, the translation is unavailable, and the schema must be stated natively over `OpenFormula`. Cite the landed L-plus schema rather than re-deriving it: `PlusLanguage/PlusLCSchema.lean` and `PlusLanguage/PlusLimitClosure.lean`.
+
+DEPENDENCIES, BOTH HARD. The L^▷ proof-system task (for `OpenDerivable` and both conservativity directions) and the corrective limit-closure repair task (which fixes the `PlusLCSchema` docstring and the `omega_chain` parameter this task would otherwise cite in its broken form). Do not enter before both land.
+
+EXPLICITLY NOT IN SCOPE, each being a way to get this wrong. No positive completeness claim for L^▷ at any class, conditional or otherwise. No claim that no recursive axiomatization of L^▷ exists -- that is strictly stronger than incompleteness of one system and is not established for L-plus either. No new constructor anywhere, and no change to the landed L-plus underivability proofs: they are cited, never edited. Do not route the transfer through the ZTime translation at Base or Dense, where it does not apply.
+
+LAYERING AND GATES. This is metalogic-layer work and belongs under `FormalSystem/Metalogic/`, beside the existing Independence block, not inside `OpenLanguage/`. Add any new file's row to the layer table in `scripts/measure-refactor-partitions.py` in the same phase as the file. One `docs/theorem-index.md` row per result, with the frame class stated explicitly -- a Base-only result recorded without its class is a defect. Re-run `bash scripts/check-module-invariants.sh --emit-inventory`.
+
+VERIFICATION GATE. Guarded scoped build green, then the unscoped build; never bare `lake`. Zero `sorry`. `bash scripts/check-module-invariants.sh` (bare form) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration and compared against the L-plus originals: the landed underivability results pin their own axiom sets and the transfer must not widen them.
+
+---
+
+### 874. Open language substitution closure
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: syntax
+- **Dependencies**: Task 856
+
+**Description**: IMPLEMENTATION TASK, gated on the L^▷ proof system: build `FormalSystem/OpenLanguage/Substitution.lean`, the L^▷ counterpart of `FormalSystem/PlusLanguage/Substitution.lean`. This is the substitution-closure half of the L^▷ proof system and it also lands the direct L-to-L^▷ embedding, which the tree currently reaches only by composing two maps.
+
+THE GAP, VERIFIED AT FILING. `FormalSystem/OpenLanguage/` has no `Substitution.lean`; `OpenAxioms.lean` contains zero occurrences of "subst" and `OpenDerivation.lean` one. A tree-wide grep for `substOpen` returns nothing and no task names it. By contrast `PlusLanguage/Substitution.lean` carries `substPlus : (Atom -> PlusFormula) -> Formula -> PlusFormula`, `substCtxPlus`, `substPlus_atom` (which identifies the atom-substitution with `ofFormula`, making the base-language embedding a corollary rather than a separate definition), `substPlus_reflectTime`, `PlusAxiom.ofTMSubst`, `PlusAxiom.minFrameClass_ofTMSubst`, `PlusDerivationTree.ofTMSubst`, `plusDerivable_substPlus` and `plusDerivable_substPlus_nil`. None of this exists at L^▷.
+
+WHY IT MATTERS FOR THE END STATE. `substPlus_atom : substPlus PlusFormula.atom phi = ofFormula phi` is the statement that makes L-plus a genuine extension of L's proof system rather than a parallel one: every TM axiom lifts to a TM-plus axiom under substitution, and every TM derivation lifts to a TM-plus derivation. Without the L^▷ mirror, L^▷ inherits L's proof system only through L-plus, so L-plus is load-bearing in the chain and cannot become internal. The mirror `substOpen_atom : substOpen OpenFormula.atom phi = ofFormula' phi` is the direct L-to-L^▷ embedding, and it is the structural step that leaves L and L^▷ as the two languages a reader needs.
+
+WHAT TO BUILD, mirroring the L-plus file declaration for declaration. `substOpen : (Atom -> OpenFormula) -> Formula -> OpenFormula`; `substCtxOpen`; `substOpen_atom` together with whatever direct embedding `Formula -> OpenFormula` it identifies (introduce it in `Formula.lean` if it is not already there, and prove it equal to `ofPlus (ofFormula .)` so the two routes into L^▷ are provably the same map -- that equation is a deliverable, not an aside); `substOpen_reflectTime`, cheap because `reflectTime` fixes box and stab and exchanges ofut with opast (`OpenReversal.lean`); `OpenAxiom.ofTMSubst` with its `minFrameClass` companion; `OpenDerivationTree.ofTMSubst`; `openDerivable_substOpen` and its empty-context form.
+
+DEPENDENCY, AND IT IS A HARD GATE. `OpenAxiom` and `OpenDerivationTree` must exist before `OpenAxiom.ofTMSubst` and `OpenDerivationTree.ofTMSubst` can be stated. Declare the L^▷ proof-system task as a dependency and do not enter this one before it lands. The `substOpen`/`substOpen_atom`/embedding-agreement part is pure syntax and could in principle be split out ahead of the gate; if the proof-system task is still open when this is dispatched, land the syntax half and record the axiom/derivation half as a reasoned exclusion rather than blocking.
+
+EXPLICITLY NOT IN SCOPE. No completeness claim. No new constructor on `OpenFormula`, `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`. Do not define stab away as ofut-opast: it stays primitive, since the backward half of that biconditional needs `[F.IsRegular]`. Do not alter `substPlus` or anything under `PlusLanguage/` -- this task adds the L^▷ mirror and touches the L-plus original only to cite it.
+
+LAYERING AND GATES. Syntax layer: no import from `FormalSystem/Semantics/` and no semantic module of any language. Add the new file's row to the `LANGUAGE_FILE_LAYERS` table in `scripts/measure-refactor-partitions.py` in the same phase as the file or `scripts/check-metalogic-cycles.sh` FAILS naming it. One `docs/theorem-index.md` row per result; re-run `bash scripts/check-module-invariants.sh --emit-inventory` rather than hand-editing the README inventory block.
+
+VERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, then the unscoped build; never bare `lake`. Zero `sorry`, zero vacuous definitions. `bash scripts/check-module-invariants.sh` (bare form) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration and compared against the L-plus originals being mirrored.
+
+---
+
+### 873. Open language subformula closure
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: syntax
+- **Dependencies**: None
+
+**Description**: IMPLEMENTATION TASK, small and fully templated: build `FormalSystem/OpenLanguage/Subformulas.lean`, the L^▷ counterpart of `FormalSystem/PlusLanguage/Subformulas.lean`. This is pure syntax, gated on nothing, and it is the one piece of L^▷ infrastructure that any native decision procedure over `OpenFormula` needs before it can be stated at all.
+
+THE GAP, VERIFIED AT FILING. `FormalSystem/OpenLanguage/` holds nine files and no `Subformulas.lean`. A tree-wide grep for `openSubformulas`, `subformulasOpen`, `openSubformulaClosure` and `openComplexity` returns nothing, and no task in `specs/state.json` names any of them in a description or a `file_scope`. By contrast `PlusLanguage/Subformulas.lean` is 373 lines carrying `subformulas`, the per-constructor membership lemmas, `subformulas_trans`, `plusSubformulaClosure` as a `Finset`, `self_mem_plusSubformulaClosure`, the `decidableMemPlusSubformulaClosure` instance and the `plusClosure_*` closure lemmas one per constructor. L^▷ has none of it.
+
+WHAT TO BUILD, mirroring that file constructor for constructor. `subformulas : OpenFormula -> List OpenFormula` over all nine constructors; the membership lemmas (`self_mem_subformulas`, `imp_left`/`imp_right`, `box_inner`, `untl_left`/`untl_right`, `snce_left`/`snce_right`, `stab_inner`, and the two new arms `ofut_inner_mem_subformulas` and `opast_inner_mem_subformulas`); transitivity; `openSubformulaClosure` as a `Finset OpenFormula` with its self-membership, its decidable-membership instance and one `openClosure_*` lemma per constructor. `OpenFormula` must have `DecidableEq` for the `Finset` layer -- check whether `Formula.lean` already derives it and derive it there if not, in the same phase.
+
+THE AGREEMENT LEMMA THAT MAKES THIS A TRANSFER AND NOT A DUPLICATE. State `subformulas_ofPlus`: the subformulas of `ofPlus phi` are the `ofPlus`-images of the subformulas of `phi`, and the closure analogue. This is what lets a result proved by induction on L-plus subformula closure be re-read at L^▷ instead of re-proved, and it is the reason this file belongs to the transfer programme rather than being incidental library padding. Expect it to hold by `rfl` or a short induction, since `ofPlus` is constructor-to-constructor and every derived operator shares its `PlusFormula` namesake's right-hand side.
+
+EXPLICITLY NOT IN SCOPE. No decision procedure, no decidability claim, no engine change. `clSig`, `LocalRun` and `Anchored` get no `ofut`/`opast` clause from this task -- the standing containment ruling keeps the L-plus decidability engine's own definitions untouched, and this task supplies a syntactic closure over `OpenFormula` that no existing engine consumes yet. Add no constructor to `OpenFormula`, `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`.
+
+LAYERING AND GATES. This is a syntax-layer file: it imports nothing from `FormalSystem/Semantics/` and no semantic module of any language. `scripts/check-metalogic-cycles.sh` enforces that edge and reads each file's layer from the per-file `LANGUAGE_FILE_LAYERS` table in `scripts/measure-refactor-partitions.py` -- add the row for the new file in the same phase as the file, or the gate FAILS naming it. Every result needs a `docs/theorem-index.md` row: statement, fully-qualified Lean name, file, frame class, pinned axiom set. The README inventory block is generated, not hand-edited: re-run `bash scripts/check-module-invariants.sh --emit-inventory`.
+
+VERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, then the unscoped build; never bare `lake`. Zero `sorry`, zero vacuous definitions. `bash scripts/check-module-invariants.sh` (bare form) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration; the L-plus original is choice-free, so picking up `Classical.choice` here is a regression rather than a new baseline.
+
+---
+
+### 872. Open language transfer ledger
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, cheap and ordering: produce the transfer ledger for the L-plus-to-L^▷ programme -- one row per L-plus headline result, naming its L^▷ counterpart and that counterpart's status -- so that "everything for L-plus has been transferred to L^▷" becomes a measurable condition rather than a judgement. Report only; this task changes nothing under `FormalSystem/`.
+
+WHY IT EXISTS. The user's stated end state is that the repository present two object languages, L and L^▷, with L-plus surviving as an internal layer rather than a front. The standing architectural ruling keeps L-plus embedded and forbids renaming or mutating `PlusFormula`/`PlusAxiom`/`PlusDerivationTree`, so the end state is reached by making every L-plus headline result readable at L^▷ through `ofPlus` and the conservativity directions -- not by deleting anything. What is missing is the ledger: no file, task or report enumerates the L-plus results and their L^▷ status, so there is no way to tell how far the transfer has gone or what remains. Two concrete gaps were found by hand at filing time (no `OpenLanguage/Subformulas.lean`, no `OpenLanguage/Substitution.lean`, each the counterpart of an existing L-plus file) and each is filed as its own task; a systematic pass is likely to find more, and is cheaper than finding them one at a time.
+
+WHAT TO PRODUCE. A single report with one table whose rows are L-plus headline results and whose columns are: the L-plus declaration (fully qualified), its file, the L^▷ counterpart declaration if one exists, that counterpart's file, and a status drawn from a closed set -- TRANSFERRED (a named L^▷ declaration exists), REDUCIBLE (no L^▷ declaration, but the result is reachable at a stated frame class through a named landed translation or conservativity theorem, with the theorem named), OWED (no counterpart and no reduction; name the owning task if one exists, or state that none does), or NOT APPLICABLE (the result is about L-plus-specific syntax and has no L^▷ reading; say why in one clause).
+
+HOW TO ENUMERATE, so the pass is reproducible rather than impressionistic. Take the L-plus surface from three places and say which rows came from which: the per-file declaration lists under `FormalSystem/PlusLanguage/` (eighteen files), the L-plus rows of `docs/theorem-index.md`, and the L-plus entries of `FormalSystem/Metalogic/README.md`'s result table. Record the counts. A row whose status is REDUCIBLE must name the frame class it is reducible at and the theorem that reduces it -- the ZTime and RTime translation equivalences are the expected vehicle and they do not apply at Base or Dense, so a REDUCIBLE row with no class is a defect in the ledger.
+
+WHAT THE LEDGER MUST ALSO ANSWER, in prose beside the table. Which L-plus files have no `OpenLanguage/` counterpart file at all, and for each, whether the counterpart is wanted or the L-plus file is internal infrastructure that correctly has no L^▷ reading. Whether the direct embedding of L into L^▷ is stated anywhere as a single map, or only as a composition. Whether any L^▷ result currently depends on an unformalized hypothesis, and which -- the separation hypothesis carrying the positive definability half and the inexpressibility hypothesis carrying the negative half are the two known ones; confirm whether there are others.
+
+WHAT TO RECOMMEND. For each OWED row, either name the existing task that should absorb it or propose a task with a one-paragraph scope. Do not file the tasks from this one; recommend them and let the conclusion stage file what survives. Explicitly flag any row where the transfer looks blocked on open mathematics rather than on unwritten Lean, since those belong to the completeness and decidability programmes and not to this one.
+
+EXPLICITLY NOT IN SCOPE. No edits under `FormalSystem/`. No new Lean declarations. No proposal to rename L-plus, to mutate its inductives, or to delete `PlusLanguage/` -- the ruling against absorb-and-rename stands, and the end state is reached by transfer, not removal. No completeness or decidability claim.
+
+VERIFICATION. Every count and every declaration name in the report must be reproduced from a command recorded in the report itself, so a reader can re-run it. A claim about what exists in the tree that no recorded command supports is a defect in the report.
+
+---
+
 ### 871. Correct LCU docstring and restore omega_chain segment-property parameter
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -275,6 +421,7 @@ DELIVERABLE: a report under this task's directory, with a verdict on whether the
 - **Dependencies**: Task 864
 - **Research**: [865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md]
 - **Plan**: [865_tm_plus_lc_axiomatization_and_automaton_obstruction/plans/01_lc-axiomatization-automaton-obstruction.md]
+- **Summary**: [865_tm_plus_lc_axiomatization_and_automaton_obstruction/summaries/01_lc-axiomatization-automaton-obstruction-summary.md]
 
 **Description**: RESEARCH TASK, and the owner of a programme that is currently owned by nobody: does TM-plus extended by the limit-closure schema admit a completeness proof, and can the located obstruction to Reynolds' construction be cleared in this setting?
 
