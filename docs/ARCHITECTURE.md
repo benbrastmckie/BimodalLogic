@@ -79,7 +79,7 @@ chosen — measured, that leaves 23 upward lines at layer 0, 9 at layer 1, 5 at 
 layer 3. Each **file** therefore carries the layer of the directory it occupied before the merge:
 13 files from `Syntax/<Lang>/` at layer 0, 16 from `Semantics/<Lang>/` at layer 1, and
 `MinusLanguage/Soundness.lean`, from `Metalogic/Conservativity/`, at layer 3. `OpenLanguage/` —
-L⁺ plus the open-future and open-past modals, semantic only — was created after the merge and is
+L⁺ plus the open-future and open-past modals, with its own proof system — was created after the merge and is
 layered by the same table: a file with no origin directory takes the layer of the directory it
 would have occupied, so its syntax file is at layer 0 and its five semantic modules at layer 1.
 `HybridLanguage/` (L⁺ plus the same-state modality, state registers and the state binder) and

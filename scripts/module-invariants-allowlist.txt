@@ -32,6 +32,13 @@ FormalSystem.StarLanguage.StarAxiom
 # -- StarLanguage/Derivation.lean:82
 FormalSystem.StarLanguage.StarDerivationTree
 
+# `inductive OpenAxiom` in namespace FormalSystem.OpenLanguage -- OpenLanguage/OpenAxioms.lean
+FormalSystem.OpenLanguage.OpenAxiom
+
+# `inductive OpenDerivationTree` in namespace FormalSystem.OpenLanguage
+# -- OpenLanguage/OpenDerivation.lean
+FormalSystem.OpenLanguage.OpenDerivationTree
+
 # The three `FormalSystem.{Minus,Plus,Star}Language` entries that used to sit here are GONE, and
 # deliberately so. They were needed while each language's namespace stayed flat but its directory
 # was nested under Syntax/, which made the dotted name unresolvable as a module path. The

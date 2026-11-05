@@ -197,7 +197,7 @@ object languages parallel to `Syntax` + `ProofSystem` + `Semantics`, not layers 
 Each is self-contained: `MinusLanguage.Formula` imports only `Syntax.Atom`, the rest of the
 syntax half imports only `Syntax` and itself, and the semantic modules beside them import
 `Semantics/` to build their truth relations on top of it. `OpenLanguage/` — L⁺ plus the
-open-future and open-past modals — is a fourth such directory; it is semantic only, so its syntax
+open-future and open-past modals — is a fourth such directory; it carries a proof system, so its syntax
 half is the single file `OpenLanguage.Formula`, which imports only `PlusLanguage.Formula`.
 `HybridLanguage/` — L⁺ plus the same-state modality, state registers and the state binder — and
 `QuantLanguage/` — L plus propositional quantifiers — are a fifth and a sixth, semantic only too:
