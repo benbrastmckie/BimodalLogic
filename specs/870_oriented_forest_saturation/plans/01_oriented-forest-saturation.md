@@ -1,7 +1,7 @@
 # Implementation Plan: Task #870
 
 - **Task**: 870 - Oriented-forest Saturation lemma for TaskFrame
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: 884 (the report 03 section 1.2 amendment that pins the hypothesis strength; its
   consumption map is what fixes `acyclic` as a field rather than directed-path uniqueness alone)
@@ -239,7 +239,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 but the first edits the same single new module and consumes the declarations the preceding phase
 landed, so there is no parallelism to claim.
 
-### Phase 1: Module skeleton, the hypothesis, and (C1) [NOT STARTED]
+### Phase 1: Module skeleton, the hypothesis, and (C1) [COMPLETED]
 
 **Goal**: `FormalSystem/Semantics/OrientedForest.lean` exists, is wired into the `Semantics`
 aggregator, and carries `IsOrientedForest` plus the (C1) path-extraction lemma with its
@@ -247,24 +247,24 @@ between-clause.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Semantics/OrientedForest.lean` with the repository's Apache-2.0
+- [x] Create `FormalSystem/Semantics/OrientedForest.lean` with the repository's Apache-2.0
       copyright header (matching `Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean`'s
       header shape) and imports `Mathlib.Combinatorics.SimpleGraph.Acyclic` and
       `FormalSystem.Semantics.IntNormalForm`.
-- [ ] Write the module docstring: what the module is for, the amendment's multigraph-versus-simple-graph
+- [x] Write the module docstring: what the module is for, the amendment's multigraph-versus-simple-graph
       reason for `loopFree`/`oppFree`, the verified Mathlib-name table from the research report,
       and the two deprecation pairs named explicitly as traps.
-- [ ] Declare `IsOrientedForest` at the signature pinned in `## Lean Challenge Statements`, with
+- [x] Declare `IsOrientedForest` at the signature pinned in `## Lean Challenge Statements`, with
       the docstring above.
-- [ ] Land the internal helper `adj_of_step` (`E u v → (SimpleGraph.fromRel E).Adj u v`).
-- [ ] Land the internal helper `not_mem_support_of_step` (the step out of a directed path's
+- [x] Land the internal helper `adj_of_step` (`E u v → (SimpleGraph.fromRel E).Adj u v`).
+- [x] Land the internal helper `not_mem_support_of_step` (the step out of a directed path's
       endpoint cannot re-enter the path), via `IsAcyclic.eq_penultimate_of_adj_end` and the
       `loopFree`/`oppFree` fields.
-- [ ] Land `exists_isPath_of_iter` at the pinned signature, by induction on `n`, using
+- [x] Land `exists_isPath_of_iter` at the pinned signature, by induction on `n`, using
       `Walk.IsPath.concat`, `Walk.length_concat`, `Walk.penultimate_concat` and
       `Walk.support_concat`. Take `iter`, `iter_zero`, `iter_succ` and `iter_add` from
       `IntNormalForm` — do not redefine any of them.
-- [ ] Add `import FormalSystem.Semantics.OrientedForest` to `FormalSystem/Semantics.lean`, placed
+- [x] Add `import FormalSystem.Semantics.OrientedForest` to `FormalSystem/Semantics.lean`, placed
       after `IntNormalForm` so the import block stays topologically ordered.
 
 **Timing**: 1.5 hours
