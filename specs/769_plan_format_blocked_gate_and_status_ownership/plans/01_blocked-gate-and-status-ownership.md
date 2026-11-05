@@ -305,7 +305,7 @@ is `bash /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/verify
 
 ---
 
-### Phase 3: Deploy, verify the full gate set, and confirm both provisions read correctly from the deployed tree [IN PROGRESS]
+### Phase 3: Deploy, verify the full gate set, and confirm both provisions read correctly from the deployed tree [COMPLETED]
 
 **Goal**: Land both provisions in the deployed `.claude/` tree through the sanctioned deploy path,
 confirm `RESULT=landed_verify_clean`, run the complete gate set, and confirm the two acceptance
