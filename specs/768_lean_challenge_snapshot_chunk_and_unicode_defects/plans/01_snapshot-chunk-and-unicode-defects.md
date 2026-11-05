@@ -538,7 +538,7 @@ script and fixtures, plus — only if the gate takes Branch A — the three suit
 
 ---
 
-### Phase 5: Extend `--dry-run` With an Opt-In Compile Step [NOT STARTED]
+### Phase 5: Extend `--dry-run` With an Opt-In Compile Step [COMPLETED]
 
 **Goal**: Convert a silent declaration-swallow into a loud failure, generalizing beyond the
 specific keywords Phase 3 enumerated, so a future declaration form Lean adds cannot reintroduce
@@ -557,24 +557,34 @@ status unchanged — an absent toolchain is not evidence of a broken module.
 
 **Tasks**:
 
-- [ ] Add the opt-in flag, accepted only together with `--dry-run`, and reject the combination
+- [x] Add the opt-in flag, accepted only together with `--dry-run`, and reject the combination
       with `--check` alongside the existing `--check`/`--dry-run`/`--force` guard.
-- [ ] Implement toolchain and Lake-project detection, with an announced skip when either is
-      absent and an explicit statement of which condition was missing.
-- [ ] Compile the assembled module in a scratch location that cannot write into the target
-      project, and surface the compiler's own diagnostics on failure.
-- [ ] Choose and document the new exit code, and add it to the script header's exit-code
+      *(completed: `--compile`)*
+- [x] Implement toolchain and Lake-project detection, with an announced skip when either is
+      absent and an explicit statement of which condition was missing. *(completed:
+      `run_compile_check()`)*
+- [x] Compile the assembled module in a scratch location that cannot write into the target
+      project, and surface the compiler's own diagnostics on failure. *(completed: `mktemp -d`
+      scratch dir, `lake env lean <scratch_file>` run with cwd=project_root)*
+- [x] Choose and document the new exit code, and add it to the script header's exit-code
       vocabulary with its fatal status stated as explicitly as `--check`'s advisory-only status
-      already is.
-- [ ] Add test case **R15**: with a stubbed toolchain on `PATH` that reports failure, the opt-in
-      compile step exits with the new fatal code and surfaces the diagnostics.
-- [ ] Add test case **R16**: with no toolchain available, the step announces the skip and leaves
-      the exit status at what `--dry-run` would have returned on its own.
-- [ ] Add test case **R17**: the flag is rejected when passed without `--dry-run`, and when
-      combined with `--check`.
-- [ ] Confirm `--dry-run` without the opt-in behaves exactly as before, so no existing call site
-      changes behavior. R1 passing unchanged is the primary evidence.
-- [ ] Register any new fixture in `manifest.json`.
+      already is. *(completed: exit 74)*
+- [x] Add test case **R15**: with a stubbed toolchain on `PATH` that reports failure, the opt-in
+      compile step exits with the new fatal code and surfaces the diagnostics. *(completed;
+      EXTENDED with R15-REAL, an additional real-toolchain variant exercising both the success
+      and failure paths against this host's own actual `lean`/`lake` -- found reachable on this
+      host, so added per this phase's own Scope Hypothesis contingency ("if a real toolchain
+      turns out to be reachable, assert both the stubbed and real paths rather than only the
+      stub"), skipped automatically on a host without one)*
+- [x] Add test case **R16**: with no toolchain available, the step announces the skip and leaves
+      the exit status at what `--dry-run` would have returned on its own. *(completed)*
+- [x] Add test case **R17**: the flag is rejected when passed without `--dry-run`, and when
+      combined with `--check`. *(completed: R17a, R17b)*
+- [x] Confirm `--dry-run` without the opt-in behaves exactly as before, so no existing call site
+      changes behavior. R1 passing unchanged is the primary evidence. *(completed: R1 unchanged
+      throughout)*
+- [x] Register any new fixture in `manifest.json`. *(no new fixture FILE was needed -- R15-R17
+      and R15-REAL all reuse plan_r1.md/plan_mismatched.md, patched at test-run time)*
 
 **Timing**: 1.5 hours
 
@@ -589,6 +599,13 @@ so a real `lake build` cannot run there and a stub on `PATH` is required. Confir
 `make_repo` for the absence of a `lakefile`/`lean-toolchain` before building the stub, and if a
 real toolchain turns out to be reachable, assert both the stubbed and real paths rather than
 only the stub.
+
+**Scope Hypothesis re-derivation (actual)**: confirmed -- `make_repo`'s throwaway repos carry no
+`lakefile`/`lean-toolchain` by default (used as-is for R16's deterministic skip case). A real
+toolchain WAS found reachable on this host (`~/.elan/bin/lean`, `~/.elan/bin/lake`), so R15-REAL
+was added, guarded by a `command -v lean && command -v lake` conditional that skips it on a host
+without one, exercising both the real-success and real-failure paths against an actual, minimal
+throwaway Lake project (empty `lakefile.toml` + matching `lean-toolchain`).
 
 **Tier Justification**: The change is confined to one file's flag handling and one new code path
 with no externally visible signature change, and no mapped suite covers the file, so the
