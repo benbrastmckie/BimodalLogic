@@ -150,10 +150,10 @@ in that aggregator's docstring, and regenerate the library root so `lake build` 
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean` with the
+- [x] Create `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean` with the
       repository's standard four-line copyright header (copy the form from
       `FormalSystem/Metalogic/Independence/StabUndefinable.lean`).
-- [ ] Declare exactly two imports, in this order:
+- [x] Declare exactly two imports, in this order:
       `import FormalSystem.Metalogic.Expressiveness.OpenFutureElimination` and
       `import FormalSystem.Semantics.Frames.TranslationProduct`. The first supplies the shared
       determinedness vocabulary and reaches `FormalSystem.OpenLanguage` (and hence
@@ -161,41 +161,41 @@ in that aggregator's docstring, and regenerate the library root so `lake build` 
       `colourClock_isRegular`, `prodRel` and `prodRel_limit`. Do **not** import
       `FormalSystem.OpenLanguage` directly as a third import, and do **not** import the
       `Expressiveness` aggregator — name the one module whose content is used.
-- [ ] Open `namespace FormalSystem.Metalogic.Independence` and close it with the matching
+- [x] Open `namespace FormalSystem.Metalogic.Independence` and close it with the matching
       `end FormalSystem.Metalogic.Independence`, as every module in this directory does. Open
       `FormalSystem.Syntax`, `FormalSystem.Semantics`, `FormalSystem.PlusLanguage`,
       `FormalSystem.OpenLanguage` and `FormalSystem.Metalogic.Expressiveness`, and declare
       `variable {F : TaskFrame}`.
-- [ ] Transcribe `ofut_pastDet` and `opast_futDet` first, with the probe's term proofs unchanged
+- [x] Transcribe `ofut_pastDet` and `opast_futDet` first, with the probe's term proofs unchanged
       and their docstrings stating what they rule out: a separator for `▷` must be a pair of
       worlds with L⁺-indistinguishable but `DeltaProp`-distinguishable **pasts**, so no pair
       differing only in the future can work. These are open-level facts about every
       `OpenFormula`; they are **not** instances of the companion's `PastDet`/`FutDet`, which are
       predicates on `PlusFormula`, and must not be restated as such.
-- [ ] Open `namespace MarkerGadget` for the gadget block, following this directory's own nested
+- [x] Open `namespace MarkerGadget` for the gadget block, following this directory's own nested
       namespace idiom (`CTruth` in `CoarsenedModels.lean`, `OrderFlow` in `OrderTransfer.lean`),
       and close it with `end MarkerGadget`. The probe's one-word identifiers are generic and
       this directory's outer namespace is shared by 29 modules; the nesting is what keeps them
       safe, and C23's shadowing assertion is what would otherwise catch them.
-- [ ] Inside `MarkerGadget`, transcribe in the probe's order, with the probe's proofs unchanged:
+- [x] Inside `MarkerGadget`, transcribe in the probe's order, with the probe's proofs unchanged:
       `dataAtom`, `markerAtom`, `holds`, `holds_iff`, `theta`, `nu`, `runAt`, `delta`, `probe`,
       `MarkedAt`, `theta_iff`, `theta_eq_iff`, `nu_iff_le`, `PRun`, `run_iff`, `DeltaProp`,
       `delta_iff`, `deltaProp_pastDet`, `dofut_probe_iff`, `ofut_neg_probe_iff`,
       `deltaProp_of_no_p_between`.
-- [ ] Rename the two atoms from the probe's `pAtom`/`mAtom` to `dataAtom`/`markerAtom`, and
+- [x] Rename the two atoms from the probe's `pAtom`/`mAtom` to `dataAtom`/`markerAtom`, and
       define each with `Atom.mkBase` (`Atom.mkBase "p"`, `Atom.mkBase "m"`) rather than the
       probe's anonymous-constructor form. `Atom.mkBase s` is `⟨s, none⟩` by definition
       (`FormalSystem/Syntax/Atom.lean`), so every transcribed proof still closes; the rename
       also avoids a base-identifier clash with `FormalSystem/Examples/Walkthrough.lean`'s own
       `pAtom`.
-- [ ] Restate `ofut_neg_probe_iff` through the companion's `ofutP_iff` rather than re-proving the
+- [x] Restate `ofut_neg_probe_iff` through the companion's `ofutP_iff` rather than re-proving the
       `openTruthAt_ofPlus` unfolding inline: `OfutP M τ t probe.neg` is what
       `OpenTruthAt M τ t (.ofut (ofPlus probe.neg))` reduces to, and `ofutP_iff` is the bridge
       the companion module owns. The statement is unchanged; only the proof routes through the
       imported lemma. If that rewrite does not close in two attempts, keep the probe's proof
       verbatim and record the deviation — the statement is what matters and the probe's proof is
       already green.
-- [ ] After `end MarkerGadget`, add `open MarkerGadget` (or qualify at use sites) and declare
+- [x] After `end MarkerGadget`, add `open MarkerGadget` (or qualify at use sites) and declare
       `OfutPlusDefinable (F : TaskFrame) : Prop` — the probe's `Definable`, renamed because
       `Definable` is far too generic for this shared namespace and the tree's existing idiom is
       `X_not_plusDefinable` (`deterministic_not_plusDefinable`). Its docstring must state that
@@ -203,18 +203,18 @@ in that aggregator's docstring, and regenerate the library root so `lake build` 
       instance of, and that truth-level definability is the **weaker, correct** target for a
       negative result: nothing here refutes a validity-level-only translation, which is the one
       thing the verdict does not settle.
-- [ ] Transcribe the probe's `not_definable_of_deltaProp_inexpressible` as
+- [x] Transcribe the probe's `not_definable_of_deltaProp_inexpressible` as
       `ofut_not_plusDefinable_of_deltaProp_inexpressible`, with the probe's proof unchanged. Its
       docstring must name both hypotheses for what they are: `hmarkers` is the frame's
       "enough worlds" condition, true at `colourFibre D` for every `D` though not compiled here
       (the related bridge-lemma task would compile it); `hinexpr` is **the paper step of record**,
       discharged in the research round by a GHR Lemma 12.4.2-style collapse argument transposed
       from their flow `T` to `ℚ`, and **not formalized in this tree**.
-- [ ] Open `section WitnessFrame` with `variable {D : TemporalOrder}` and transcribe
+- [x] Open `section WitnessFrame` with `variable {D : TemporalOrder}` and transcribe
       `MarkerColour` (the probe's `Colour`, renamed), `cRel`, `cRel_reflection`, `cRel_comp`,
       `cRel_serial`, `cRel_zero`, `colourFibre` and the `colourFibre_isRegular` instance, with
       the probe's proofs unchanged; close with `end WitnessFrame`.
-- [ ] Give the `colourFibre` / `colourFibre_isRegular` block a docstring carrying the *Limit*
+- [x] Give the `colourFibre` / `colourFibre_isRegular` block a docstring carrying the *Limit*
       fact, because it is the frame-constraint discovery worth keeping: *Limit* forbids the naive
       permissive rational-time frame — with states as atom colours, distinct states are unrelated
       at all small durations, so over a dense duration a finite-state history is a uniformly
@@ -222,26 +222,26 @@ in that aggregator's docstring, and regenerate the library root so `lake build` 
       repository's own `colourClock` removes the obstruction: the clock discharges *Limit*
       (`prodRel_limit`) and finiteness of `MarkerColour` discharges *Saturation*, giving a
       regular four-colour frame over **every** temporal order.
-- [ ] Give **every** declaration a `/-- ... -/` doc comment. `docBlame` sits inside C16's gated
+- [x] Give **every** declaration a `/-- ... -/` doc comment. `docBlame` sits inside C16's gated
       batch, so an undocumented declaration is a new failure; the probe leaves `theta_iff`,
       `holds`, `holds_iff`, `cRel_reflection`, `cRel_comp`, `cRel_serial`, `cRel_zero` and the
       `colourFibre_isRegular` instance undocumented, and those are the ones to write from
       scratch.
-- [ ] Give the two declarations that will carry theorem-index rows in Phase 3 —
+- [x] Give the two declarations that will carry theorem-index rows in Phase 3 —
       `ofut_not_plusDefinable_of_deltaProp_inexpressible` and `colourFibre_isRegular` — a doc
       comment whose last line is `Paper: — (reason)`, modelled on `openValid_reflectTime` in
       `FormalSystem/OpenLanguage/OpenReversal.lean`. C15's second assertion requires the value to
       start with `— (`; the reason is formalization-native (the manuscript states no
       definability question for the restricted modals and supplies no witness frame).
-- [ ] Keep `@[simp]` on `holds_iff`. It is the attribute that keeps the lemma out of C17's
+- [x] Keep `@[simp]` on `holds_iff`. It is the attribute that keeps the lemma out of C17's
       dead-declaration scan. **If** C16's simpNF reports a new finding on it in Phase 5, drop the
       attribute and name `holds_iff` in the module docstring's `## Main Results` list in the same
       edit — the two mitigations are a swap, not a pair to drop together.
-- [ ] Ensure every declaration's base identifier appears at least once outside its own declaring
+- [x] Ensure every declaration's base identifier appears at least once outside its own declaring
       line, by listing them all in the module docstring's `## Main Results` block. C17's scan is
       what this satisfies, and `ofut_pastDet`, `opast_futDet`, `deltaProp_of_no_p_between`, the
       four `cRel_*` conditions and `MarkerColour` are the declarations at risk.
-- [ ] Write the module docstring (`/-! ... -/`) with these parts, and no others:
+- [x] Write the module docstring (`/-! ... -/`) with these parts, and no others:
       (a) **what is proved**: the marker gadget (`theta_eq_iff` names the evaluation point,
       `nu_iff_le` names the closed past, `run_iff` names run membership without naming the run's
       lower endpoint), that `▷` computes `DeltaProp` exactly (`dofut_probe_iff`), and the
@@ -264,30 +264,30 @@ in that aggregator's docstring, and regenerate the library root so `lake build` 
       (g) a `## References` block citing `gabbay1994` (vol. 1, Lemmas 12.4.1-12.4.2, 12.4.7,
       §12.5) and `rabinovich2014` (§2.3, §7) by their `references.bib` keys — both keys were
       confirmed present at plan time; re-confirm before writing.
-- [ ] **No `specs/` path and no task number anywhere in the file.** Do not cite the research
+- [x] **No `specs/` path and no task number anywhere in the file.** Do not cite the research
       report or the probe by path: C9 gates task-number citations under `FormalSystem/` at zero,
       and both artifacts are disposable by design once this lands. The docstring must stand on
       its own with the GHR and Rabinovich citations.
-- [ ] Re-read `FormalSystem/Metalogic/Independence.lean` immediately before editing it (sibling
+- [x] Re-read `FormalSystem/Metalogic/Independence.lean` immediately before editing it (sibling
       task 559 is live on this tree), then add
       `import FormalSystem.Metalogic.Independence.OpenFutureUndefinable` to the existing import
       block, at its end.
-- [ ] In that same aggregator's module docstring, add the **fourteenth** numbered result and
+- [x] In that same aggregator's module docstring, add the **fourteenth** numbered result and
       change the count sentence from `Thirteen results are carried here` to `Fourteen`. The entry
       must state the result in its conditional form and name `hinexpr` as the unformalized step;
       it must not read as "`▷` is not L⁺-definable at `.Base`/`.Dense`" full stop. The docstring
       also claims its list and `Independence/README.md`'s enumerate the same results in the same
       order, so the entry's position and wording must match what Phase 4 writes in the README.
-- [ ] Regenerate the library root: a new file under `FormalSystem/` adds an import line to
+- [x] Regenerate the library root: a new file under `FormalSystem/` adds an import line to
       `FormalSystem.lean`, which C33 asserts is byte-for-byte the `mk_all --lib FormalSystem`
       output. Regenerate it with C33's own render algorithm (dotted names sorted in code-point
       order, exactly one trailing newline) rather than hand-inserting the line, re-reading the
       file immediately beforehand because sibling 559 will also be adding a line to it.
-- [ ] Run the scoped guarded build and confirm green with no new warnings:
+- [x] Run the scoped guarded build and confirm green with no new warnings:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
       FormalSystem.Metalogic.Independence`. Never bare `lake`; read the verdict from the guard's
       exit status or its `result` subcommand, never from a pipe's exit code.
-- [ ] Confirm the new file has zero `sorry`, zero `axiom` declarations and no vacuous definition:
+- [x] Confirm the new file has zero `sorry`, zero `axiom` declarations and no vacuous definition:
       `grep -n 'sorry\|^axiom ' <path>` returns nothing, and no declaration body is of the
       `:= True` / `:= trivial` / `:= Unit` shape.
 
@@ -348,9 +348,9 @@ module's axiom profile is asserted on every run rather than claimed in prose.
 
 **Tasks**:
 
-- [ ] Run the unscoped guarded build first, so `import FormalSystem` elaborates for the
+- [x] Run the unscoped guarded build first, so `import FormalSystem` elaborates for the
       measurement: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`.
-- [ ] **Measure, do not type.** Obtain `#print axioms` output (via `lean_verify` or a
+- [x] **Measure, do not type.** Obtain `#print axioms` output (via `lean_verify` or a
       `lake env lean` snippet importing `FormalSystem`) for each of these eleven fully-qualified
       names:
       `FormalSystem.Metalogic.Independence.ofut_pastDet`,
@@ -364,7 +364,7 @@ module's axiom profile is asserted on every run rather than claimed in prose.
       `...Independence.MarkerGadget.ofut_neg_probe_iff`,
       `...Independence.ofut_not_plusDefinable_of_deltaProp_inexpressible`,
       `...Independence.colourFibre_isRegular`.
-- [ ] Compare the measured values against the research report's recorded reading —
+- [x] Compare the measured values against the research report's recorded reading —
       `[propext]` for `ofut_pastDet` and `opast_futDet`, and
       `[propext, Classical.choice, Quot.sound]` for the gadget chain and the non-definability
       theorem. `deltaProp_pastDet` and `colourFibre_isRegular` were not measured in the research
@@ -372,24 +372,24 @@ module's axiom profile is asserted on every run rather than claimed in prose.
       on any of the nine that *were* measured is a finding to record and investigate, **not** a
       reason to force either side: record the measured value and state the divergence in the
       handoff.
-- [ ] A measured `sorryAx` anywhere is a hard stop: mark the phase `[BLOCKED]` and report. Do not
+- [x] A measured `sorryAx` anywhere is a hard stop: mark the phase `[BLOCKED]` and report. Do not
       pin a baseline containing `sorryAx`.
-- [ ] Re-read `scripts/check-module-invariants.sh` immediately before editing it, then append the
+- [x] Re-read `scripts/check-module-invariants.sh` immediately before editing it, then append the
       measured lines to `C14_BASELINE` (the `C14BASE` heredoc) as a contiguous block,
       immediately after the existing `FormalSystem.Metalogic.Expressiveness.ofutP_of_futDet`
       line — the natural position, since that block is the open-modal neighbourhood of the
       baseline and this module is its negative half.
-- [ ] Append the matching `#print axioms <name>` lines to the `C14LEAN` heredoc **in the same
+- [x] Append the matching `#print axioms <name>` lines to the `C14LEAN` heredoc **in the same
       order and the same relative position** (immediately after its own
       `...Expressiveness.ofutP_of_futDet` line). The two heredocs are compared by exact string
       equality, so a position or order mismatch fails even when every value is right.
-- [ ] Add a short comment block above the new pair, in the style of the existing per-block
+- [x] Add a short comment block above the new pair, in the style of the existing per-block
       comments, recording what these declarations pin and — explicitly — what they do **not**:
       they pin the axiom profile of a non-definability theorem **conditional on `hmarkers` and
       `hinexpr`**, the second of which stands for an argument this tree does not formalize, so no
       unconditional `.Base`/`.Dense` non-definability claim is asserted by their presence. Write
       this comment with no task number and no `specs/` path (C9 gates `scripts/` too).
-- [ ] Run `bash scripts/check-module-invariants.sh` and confirm the C14 `#print axioms` half
+- [x] Run `bash scripts/check-module-invariants.sh` and confirm the C14 `#print axioms` half
       reports PASS at the new baseline. The first, markdown-scanning half of C14 and the other
       checks are Phase 5's business.
 
@@ -438,58 +438,58 @@ not machine-checked.
 
 **Tasks**:
 
-- [ ] Re-read `docs/theorem-index.md` immediately before editing. **This file is in concurrent
+- [x] Re-read `docs/theorem-index.md` immediately before editing. **This file is in concurrent
       sibling task 559's declared `file_scope`**; a foreign hunk is that sibling's in-flight
       edit, to be reported rather than reverted, and staging must name this file explicitly and
       nothing else.
-- [ ] Add the two rows to the `### Characterization and definability` table, in its exact
+- [x] Add the two rows to the `### Characterization and definability` table, in its exact
       six-column shape (`| Paper label | Statement | Lean name | File | Frame class | Axioms |`),
       immediately after the existing `stabNotDefinable` row — the two direct analogues
       (`deterministic_not_plusDefinable`, `stabNotDefinable`) already sit in that table, which is
       why this result belongs there rather than in `### Expressiveness` (the companion's band) or
       `### L^▷` (validity and refutation rows only).
-- [ ] Paper-label cell: `—` for both (formalization-native; the manuscript states no definability
+- [x] Paper-label cell: `—` for both (formalization-native; the manuscript states no definability
       question for the restricted modals and supplies no witness frame). C15's second assertion
       then requires each declaration's own `Paper:` line to read `— (reason)`, which Phase 1
       wrote.
-- [ ] Lean-name cells: **fully qualified** —
+- [x] Lean-name cells: **fully qualified** —
       `FormalSystem.Metalogic.Independence.ofut_not_plusDefinable_of_deltaProp_inexpressible` and
       `FormalSystem.Metalogic.Independence.colourFibre_isRegular`. A bare base identifier is not
       a row key.
-- [ ] File cells: `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean`, **path only,
+- [x] File cells: `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean`, **path only,
       no line numbers** (C20 tier 2).
-- [ ] Frame-class cells: `—` for the reduction theorem (it is stated at an arbitrary
+- [x] Frame-class cells: `—` for the reduction theorem (it is stated at an arbitrary
       `F : TaskFrame`, class-generic); for `colourFibre_isRegular`, the cell is the class whose
       `Sat` predicate the instance discharges — `Sat .Base F` is definitionally `F.IsRegular`
       (`FormalSystem/Semantics/FrameClassValidity.lean`), so `Base` is the value to write.
       Re-confirm that reading against the `Sat` table before writing it rather than taking it
       from this sentence.
-- [ ] Axioms cells: exactly as measured in Phase 2, with the `pinned:C14` token —
+- [x] Axioms cells: exactly as measured in Phase 2, with the `pinned:C14` token —
       `pcq pinned:C14` where the measured value is `[propext, Classical.choice, Quot.sound]`, and
       anything else written out literally. This column is generated from the baselines, never
       typed independently of them.
-- [ ] **Statement cells state the conditional.** The reduction row must open with its two
+- [x] **Statement cells state the conditional.** The reduction row must open with its two
       hypotheses — "Given an enough-worlds condition on the frame and the inexpressibility of the
       gap-anchored past property `DeltaProp` — the second a derived collapse argument this tree
       does not formalize — the open-future modal is not L⁺-definable at that frame". No row may
       read "`▷` is not L⁺-definable at `.Base`/`.Dense`" full stop. The regularity row states
       the frame fact only: the four-colour clock frame is regular over **every** temporal order,
       the clock discharging *Limit* and finiteness discharging *Saturation*.
-- [ ] Do **not** add a row for the unconditional verdict, for `hinexpr`, or for any
+- [x] Do **not** add a row for the unconditional verdict, for `hinexpr`, or for any
       `MarkerGadget` lemma. The unconditional claim lives only in the module docstring, cited to
       GHR; the gadget lemmas are pinned by C14 without being rowed, exactly as the companion
       round pinned `openTruthAt_iff_tr` without rowing it.
-- [ ] Add a two-sentence lead note immediately above that table, modelled in shape on the
+- [x] Add a two-sentence lead note immediately above that table, modelled in shape on the
       `### Expressiveness` section's own lead: it must say that the two open-future
       non-definability rows are conditional on an unformalized inexpressibility hypothesis, that
       the unconditional `.Base`/`.Dense` verdict is therefore **not** machine-checked and is
       recorded in the module docstring with its literature citation, and that nothing in the band
       bears on `.ZTime`/`.RTime`, where the companion elimination layer gives the positive
       result.
-- [ ] **No `specs/` path and no task number** in any added row or sentence: C9D gates `docs/` at
+- [x] **No `specs/` path and no task number** in any added row or sentence: C9D gates `docs/` at
       zero, and C12 requires every slash-shaped source path in `docs/` to resolve — a
       `specs/859_...` path fails the moment the task directory is archived.
-- [ ] Run `bash scripts/check-module-invariants.sh` and confirm C15's second assertion
+- [x] Run `bash scripts/check-module-invariants.sh` and confirm C15's second assertion
       (`all N theorem-index row(s) carry their anchor`) PASSes with the row count increased by
       two, and that C12 and C13 PASS.
 
@@ -538,14 +538,14 @@ the `Last verified` dates — and regenerate every machine-owned block the new f
 
 **Tasks**:
 
-- [ ] Add the **fourteenth** numbered result to the README's opening enumeration and change
+- [x] Add the **fourteenth** numbered result to the README's opening enumeration and change
       `Thirteen results are carried here` to `Fourteen`. The entry must match Phase 1's
       aggregator-docstring entry in position and substance: the README's own sentence claims the
       two lists enumerate the same results in the same order, and that claim has to stay true.
       State the result conditionally and name `hinexpr` as the unformalized step; note that the
       companion elimination layer carries the positive half at `.ZTime`/`.RTime`, so the two
       together close the class split.
-- [ ] Add Key Results bullets in that section's existing
+- [x] Add Key Results bullets in that section's existing
       `` `name` (`File.lean`) — description `` shape, naming the headline declarations and the
       ones C17 would otherwise flag:
       `ofut_not_plusDefinable_of_deltaProp_inexpressible`, `colourFibre_isRegular`,
@@ -554,38 +554,47 @@ the `Last verified` dates — and regenerate every machine-owned block the new f
       `ofut_neg_probe_iff`), `MarkerGadget.deltaProp_of_no_p_between` (the non-vacuity witness),
       `MarkerColour` and the four `cRel_*` frame conditions. Each bullet states what the
       declaration is for, and the headline bullet states the conditionality.
-- [ ] Update the README's `## Dependencies` section: its `**Imports from**` bullet currently
+- [x] Update the README's `## Dependencies` section: its `**Imports from**` bullet currently
       names `FormalSystem.Semantics`, `FormalSystem.Metalogic.Soundness`,
       `FormalSystem.ProofSystem` and Mathlib's `ℚ ⧸ ℤ`, and must now also name
       `FormalSystem.Metalogic.Expressiveness.OpenFutureElimination` (the shared determinedness
       vocabulary) and `FormalSystem.Semantics.Frames.TranslationProduct` (`colourClock`).
-- [ ] Note that the README's `## Modules` table is a **generated** block
+- [x] Note that the README's `## Modules` table is a **generated** block
       (`<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Independence -->`), so the new
       module's row is produced by the regeneration step below and must **not** be hand-written.
       Do not hand-edit anything between a `BEGIN GENERATED` / `END GENERATED` pair.
-- [ ] Update both trailing `Last verified` dates to the implementation date (the file carries the
+- [x] Update both trailing `Last verified` dates to the implementation date (the file carries the
       date twice, at `**Last verified**:` and at `*Last verified: ...*`); `readme-lint.sh`
       Check 4 reports a date older than the directory's last commit.
-- [ ] Regenerate the machine-owned inventory blocks, which the new file changes in two places —
+- [x] Regenerate the machine-owned inventory blocks, which the new file changes in two places —
       this directory's own `## Modules` table and the `Independence/` file/line row in
       `FormalSystem/Metalogic/README.md` (29 files / 8,619 lines at plan time), plus that file's
       `Independence.lean` line-count row: `bash scripts/check-module-invariants.sh
       --emit-inventory`. Re-read both markdown files immediately beforehand — sibling 559 adds a
       module under `FormalSystem/Metalogic/` too, so its regeneration touches the same rows.
-- [ ] Confirm the regeneration is idempotent and the gated INV check is clean:
+      *(deviation: altered — `--emit-inventory` rewrote FOUR files, not the two named here:
+      `FormalSystem/README.md` (the `../FormalSystem.lean` line count) and the repository-root
+      `README.md` (the live file/line/comment totals) also carry generated inventory blocks that
+      the new module changes. All four diffs are attributable solely to this module; INV had
+      flagged all four as stale.)*
+- [x] Confirm the regeneration is idempotent and the gated INV check is clean:
       `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
-- [ ] Regenerate the typst count surface, which the new module changes
+- [x] Regenerate the typst count surface, which the new module changes
       (`formalsystem-file-count` 720 and `formalsystem-line-count` 378026 at plan time), via the
       sanctioned repair path and not by calling the generator directly:
       `bash scripts/typst-sync-check.sh --fix`. It needs a built library (it reads a
       per-declaration axiom report out of the build), so run it after Phase 1's build; it reports
       which fields the regeneration resolved and never stages anything itself.
-- [ ] Run `bash scripts/typst-sync-check.sh` and confirm exit 0, with Check 2 in sync. A Check 1
+      *(deviation: altered — this step ran in PHASE 1, not here: the `typst-sync-check`
+      pre-commit gate refused Phase 1's commit because the new module changed
+      `formalsystem-line-count`, so the regeneration had to precede the first commit.
+      `typst/generated/status.typ` is in Phase 1's commit; this phase only re-verified it.)*
+- [x] Run `bash scripts/typst-sync-check.sh` and confirm exit 0, with Check 2 in sync. A Check 1
       finding about an identifier this task did not touch is pre-existing and not this phase's to
       fix; a Check 2 mismatch after `--fix` is.
-- [ ] Run `bash scripts/readme-lint.sh FormalSystem` and confirm exit 0 (Checks 1 and 3 are the
+- [x] Run `bash scripts/readme-lint.sh FormalSystem` and confirm exit 0 (Checks 1 and 3 are the
       gated ones; a `NOT LISTED` or stale-date report for an untouched directory is pre-existing).
-- [ ] **No task number and no `specs/` path** in any README edit: C9 gates `README.md` and
+- [x] **No task number and no `specs/` path** in any README edit: C9 gates `README.md` and
       `FormalSystem/` at zero, and C5 requires every module-shaped path in non-specs markdown to
       resolve.
 
@@ -634,7 +643,7 @@ the hand-written README by link and presence lint — and the phase elaborates n
 
 ---
 
-### Phase 5: Full verification and axiom audit [NOT STARTED]
+### Phase 5: Full verification and axiom audit [COMPLETED]
 
 **Goal**: Establish on the whole repository that the module is landed and compiled, sorry-free
 and axiom-pinned at its measured profile, that every gate holds at its re-derived baseline, that
@@ -643,15 +652,15 @@ verdict.
 
 **Tasks**:
 
-- [ ] Run the unscoped guarded build: `bash .claude/scripts/lake-build-guard.sh build --timeout
+- [x] Run the unscoped guarded build: `bash .claude/scripts/lake-build-guard.sh build --timeout
       1800 -- build`. Never bare `lake`. Read the verdict from the guard's exit status or its
       `result` subcommand, never from a pipe's exit code.
-- [ ] Re-measure axioms on all eleven pinned fully-qualified names with `lean_verify` (or
+- [x] Re-measure axioms on all eleven pinned fully-qualified names with `lean_verify` (or
       `#print axioms`) and confirm each matches the value Phase 2 pinned. A declaration that has
       acquired `sorryAx` is a hard stop: mark the phase `[BLOCKED]` and report. A declaration
       that has acquired `Classical.choice` where Phase 2 measured none is a regression to
       investigate, not a new baseline.
-- [ ] Run `bash scripts/check-module-invariants.sh` and assert **per-check, not by exit code**:
+- [x] Run `bash scripts/check-module-invariants.sh` and assert **per-check, not by exit code**:
       INV PASS, C2 PASS, C3 (zero structural `sorry`) PASS, C4/C5 PASS, C9 PASS, C9D PASS, C12
       PASS, C13 PASS, both C14 halves PASS, both C15 assertions PASS, C17's gated count at its
       pre-task baseline, C20 PASS, C21 PASS, C23 PASS (no new Uppercase_x name and no new
@@ -661,7 +670,7 @@ verdict.
       on a pre-existing C16 finding is not this task's to fix; a NEW finding is — and a new
       simpNF finding on `holds_iff` is handled by the attribute/docstring swap recorded in
       Phase 1, applied in Phase 1's file.
-- [ ] Run `bash scripts/check-metalogic-cycles.sh` and require **exit 0** on all three
+- [x] Run `bash scripts/check-metalogic-cycles.sh` and require **exit 0** on all three
       assertions, with the upward import set still exactly the recorded 8 lines and the
       allowlist file untouched. Both new imports are legal: `Metalogic` (layer 3) →
       `Semantics.Frames.TranslationProduct` (layer 1) is downward, and `Independence` →
@@ -669,9 +678,9 @@ verdict.
       `Metalogic/Expressiveness/` imports `Metalogic.Independence`), so assertion A's
       exactly-one-cycle count is unchanged. A nonzero exit here means an import landed the wrong
       way round. **Do not edit the allowlist.**
-- [ ] Run `bash scripts/check-copyright-headers.sh` and confirm the new module's header is
+- [x] Run `bash scripts/check-copyright-headers.sh` and confirm the new module's header is
       accepted.
-- [ ] Confirm `git status --short` shows changes in exactly the eight intended paths
+- [x] Confirm `git status --short` shows changes in exactly the eight intended paths
       (the new module; `FormalSystem/Metalogic/Independence.lean`; `FormalSystem.lean`;
       `scripts/check-module-invariants.sh`; `docs/theorem-index.md`;
       `FormalSystem/Metalogic/Independence/README.md`; `FormalSystem/Metalogic/README.md`;
@@ -681,11 +690,11 @@ verdict.
       modification in any shared path is sibling task 559's in-flight edit: check `git log` to
       confirm it is not this task's own, then STOP and report it rather than reverting or
       dismissing it.
-- [ ] Confirm zero `sorry`, zero `axiom` declarations and zero vacuous definitions in the new
+- [x] Confirm zero `sorry`, zero `axiom` declarations and zero vacuous definitions in the new
       module: `grep -n 'sorry\|^axiom '
       FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean` returns nothing, and no
       declaration body is of the `:= True` / `:= trivial` / `:= Unit` shape.
-- [ ] Re-read every landed prose surface — the module docstring, the aggregator's numbered entry
+- [x] Re-read every landed prose surface — the module docstring, the aggregator's numbered entry
       and count sentence, the README's numbered entry, Key Results bullets and Dependencies
       bullet, the two theorem-index rows and their lead note, and the invariants-script comment
       block — against the overclaim test: **no pinned row or generated cell may state the
@@ -693,15 +702,15 @@ verdict.
       unformalized wherever the verdict is stated; `hmarkers` must be described as stated rather
       than compiled; no surface may make a completeness or decidability claim for L^▷ or L⁺; and
       no surface may claim the validity-level-only translation is refuted, which it is not.
-- [ ] Confirm the two enumerations still agree: the numbered list in
+- [x] Confirm the two enumerations still agree: the numbered list in
       `FormalSystem/Metalogic/Independence.lean`'s docstring and the one in
       `FormalSystem/Metalogic/Independence/README.md` must carry the same fourteen results in the
       same order, which is what both files claim of themselves.
-- [ ] Confirm no landed file cites a `specs/` path or a task number:
+- [x] Confirm no landed file cites a `specs/` path or a task number:
       `grep -rn '859\|specs/859' FormalSystem/ docs/theorem-index.md
       scripts/check-module-invariants.sh typst/generated/status.typ FormalSystem.lean` returns
       nothing.
-- [ ] Run `bash .claude/scripts/validate-artifact.sh
+- [x] Run `bash .claude/scripts/validate-artifact.sh
       specs/859_qtime_open_future_definability_base_dense/plans/01_open-future-undefinable-module.md
       plan` and confirm no errors.
 
@@ -893,28 +902,28 @@ established.
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits 0 with no
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits 0 with no
       new warnings.
-- [ ] Zero `sorry`, zero `axiom` declarations and zero vacuous definitions in the new module.
-- [ ] All eleven pinned declarations' `#print axioms` output matches the C14 baseline exactly,
+- [x] Zero `sorry`, zero `axiom` declarations and zero vacuous definitions in the new module.
+- [x] All eleven pinned declarations' `#print axioms` output matches the C14 baseline exactly,
       with no `sorryAx` anywhere.
-- [ ] `bash scripts/check-module-invariants.sh`: every check named in Phase 5 PASSes, with C16
+- [x] `bash scripts/check-module-invariants.sh`: every check named in Phase 5 PASSes, with C16
       and C17 at their pre-task baselines.
-- [ ] `bash scripts/check-metalogic-cycles.sh` exits 0 with the 8-line allowlist unchanged and
+- [x] `bash scripts/check-metalogic-cycles.sh` exits 0 with the 8-line allowlist unchanged and
       untouched.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check`,
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check`,
       `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh FormalSystem` and
       `bash scripts/check-copyright-headers.sh` each exit 0.
-- [ ] The two theorem-index rows carry their measured `pinned:C14` axiom cells and their
+- [x] The two theorem-index rows carry their measured `pinned:C14` axiom cells and their
       conditional statements; no row claims the unconditional verdict.
-- [ ] The overclaim read-through passes on every landed surface: `hinexpr` is named as
+- [x] The overclaim read-through passes on every landed surface: `hinexpr` is named as
       unformalized wherever the verdict appears, `hmarkers` is described as stated rather than
       compiled, and nothing asserts a completeness, decidability, or validity-level-refutation
       claim.
-- [ ] The fourteen-result enumerations in `Independence.lean` and
+- [x] The fourteen-result enumerations in `Independence.lean` and
       `Independence/README.md` agree in content and order.
-- [ ] No landed file cites a `specs/` path or a task number.
-- [ ] Nothing under `FormalSystem/Metalogic/Expressiveness/`, nothing in
+- [x] No landed file cites a `specs/` path or a task number.
+- [x] Nothing under `FormalSystem/Metalogic/Expressiveness/`, nothing in
       `scripts/check-metalogic-cycles.sh`, and nothing under `specs/evidence/` is modified.
 
 ## Artifacts & Outputs
