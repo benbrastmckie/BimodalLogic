@@ -1,7 +1,7 @@
 # Implementation Plan: Task #866
 
 - **Task**: 866 - MSO route: do the open modals ride the encoding that decides L⁺ validity at ZTime?
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md`

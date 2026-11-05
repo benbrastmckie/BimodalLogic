@@ -57,12 +57,12 @@
     {
       "project_number": 866,
       "project_name": "mso_route_open_modals_ztime_decidability",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "formal",
       "description": "RESEARCH TASK, cheap and high-value: verify and record that the open-future and open-past modals are MSO-definable in the encoding that already decides L-plus validity at ZTime on paper, which would give decidability of the open language at ZTime without the Gabbay translation and without the ladder engine.\n\nTHE ARGUMENT TO CHECK. specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md section 1.3 gives a five-step paper argument that L-plus ZTime validity is decidable: (1) a countable model property, closing a countable set of walks under one chosen witness walk per state and per diamond-shaped subformula; (2) pass to the cover, a countable doubly-serial oriented forest; (3) root each tree anywhere, giving a countably branching rooted tree with one unary predicate for parent-edge orientation and one per atom; (4) encode a walk with a marked time as a pair (P, x in P) where P is connected with exactly one in-neighbour and one out-neighbour at each node, and observe that truth is MSO-definable by the usual translation of Until and Since, with box-dot rendered as \"for all P' containing x\" and box as \"for all P', for all x' in P'\"; (5) read satisfiability as an MSO sentence over the full omega-branching tree and apply Rabin's theorem. If the report has moved, it is under specs/archive/.\n\nWHAT IS NEW HERE, AND WHY IT IS CHEAP. That report never mentions the open modals -- confirm this by grep before starting, so the contribution is stated honestly. But step 4's encoding looks to accommodate them directly: the open-future modal quantifies over the possible worlds agreeing with the world of evaluation at every time up to and including the time of evaluation, which in the (P, x) encoding is a quantification over P' agreeing with P below x -- the same shape as box-dot's \"for all P' containing x\", with a restriction that is itself MSO-expressible. The open-past modal is the time-reflected mirror. If that is right, decidability of the open language at ZTime follows from this route with no new machinery.\n\nWHY THIS MATTERS STRATEGICALLY. This route is INDEPENDENT of the ladder/RaySummary front: it needs neither the tpOf pumping lemma, nor the realization theorem, nor the lift to Decidable PlusValidZTime. It is also independent of the open-future elimination translation, so it needs nothing from Gabbay separation. It is therefore the cheapest available path to a decidability answer for the open language, and it should be measured before anything expensive is committed to.\n\nGUARDRAILS. Report 03's argument is UNVERIFIED in Lean and this task does not change that -- the deliverable is a report, not a formalization, and every step must be labelled recalled/held/derived as the report format requires. Do not claim the finite model property: the report states it is not established, because folding a regular tree by subtree type forgets what lies above a node. Do not restate the ZTime decidability of the base language (without the stability modal) as if it covered this: decidableValidZTime and decidableDerivableZTime are landed for that language only and do not extend to box-dot, let alone to the open modals. State clearly which classes the argument reaches: Base, Dense and RTime are open with the obstruction located in report 03 section 1.4, and nothing here should suggest otherwise.\n\nDELIVERABLE: a report under this task's directory, with a verdict on whether the open modals ride the MSO encoding, and -- if they do -- a recommendation on whether to file the formalization as its own task and what it would cost.",
       "topic": "decidability",
       "created": "2026-11-05T02:28:47Z",
-      "last_updated": "2026-11-05T06:07:05Z",
+      "last_updated": "2026-11-05T07:01:46Z",
       "audit_override": "User confirmed via AskUserQuestion after reviewing the audit: all verdicts semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); nearest match #559 explicitly carves out this content",
       "session_id": "sess_1793857391_c5064b",
       "artifacts": [
@@ -75,13 +75,19 @@
           "path": "specs/866_mso_route_open_modals_ztime_decidability/plans/01_record-verdict-and-file-r1.md",
           "type": "plan",
           "summary": "Three-phase propagation plan: report 03 section 1.3 amendment, specs/ROADMAP.md verdict plus R1 proposal, guardrail audit and full gate set."
+        },
+        {
+          "path": "specs/866_mso_route_open_modals_ztime_decidability/summaries/01_record-verdict-and-file-r1-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the three-phase propagation (report 03 amendment, ROADMAP.md verdict/R1/R2, guardrail audit)."
         }
       ],
       "next_artifact_number": 2,
       "file_scope": [
         "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md",
         "specs/ROADMAP.md"
-      ]
+      ],
+      "completion_summary": "Propagated task 866's settled MSO-route verdict (open-future/open-past modals ride report 03's step-4 encoding, with a correction to step 1) into report 03 section 1.3 and specs/ROADMAP.md, and left R1 (the open-modal invariance lemma) filing-ready for the conclusion stage. No Lean file touched; both edits are additive specs/** markdown and both pass validate-artifact.sh."
     },
     {
       "project_number": 865,

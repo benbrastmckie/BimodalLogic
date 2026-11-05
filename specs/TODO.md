@@ -11,7 +11,7 @@ next_project_number: 869
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,804,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,865,866,867,868 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,804,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,865,867,868 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,783,814,816,823,824,840,845,853,862 | 298,428,502,761,770,772,777,785,813,838,839,852 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -111,7 +111,6 @@ next_project_number: 869
 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
-866 [IMPLEMENTING] — RESEARCH TASK, cheap and high-value: verify and record that...
 
 ### Formula Refactor
 
@@ -199,12 +198,13 @@ GATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the elimin
 ---
 
 ### 866. Mso route open modals ztime decidability
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md]
 - **Plan**: [866_mso_route_open_modals_ztime_decidability/plans/01_record-verdict-and-file-r1.md]
+- **Summary**: [866_mso_route_open_modals_ztime_decidability/summaries/01_record-verdict-and-file-r1-summary.md]
 
 **Description**: RESEARCH TASK, cheap and high-value: verify and record that the open-future and open-past modals are MSO-definable in the encoding that already decides L-plus validity at ZTime on paper, which would give decidability of the open language at ZTime without the Gabbay translation and without the ladder engine.
 
