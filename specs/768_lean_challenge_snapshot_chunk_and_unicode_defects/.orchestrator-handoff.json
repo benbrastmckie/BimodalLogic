@@ -1,21 +1,21 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phases_completed": 6,
   "phases_total": 6,
-  "summary": "Wrote a 6-phase, 9-hour plan covering all three lean-challenge-snapshot.sh defects, re-deriving every site and figure against the source store rather than trusting the dispatch or report. Two research conclusions were corrected: lean/manifest.json enumerates challenge fixtures individually and omits plan_goals_preamble.md, so a redeploy alone cannot fix the deployed R8 failure (manifest.json added to scope, and every new fixture must be registered); and the report's concrete Goals-harvest rule would have turned fixtures R1 and R7 red, so the plan adopts an identifier-leading-bullet rule with explicit fixture migration. The plan also decouples chunk-boundary detection from name harvesting and body forcing, which a naive alternation widening would conflate into newly requiring every abbrev to be a Goal.",
+  "summary": "Repaired all three lean-challenge-snapshot.sh defects across 6 phases in the source store (~/.config/nvim): committed the already-landed Goals list-item anchor and keyword-denylist repair; replaced four ASCII-only identifier literals with one shared Unicode-aware pattern; widened the declaration-chunk boundary to recognize abbrev and anonymous instance while decoupling boundary detection from name harvesting and body forcing; narrowed Goals-identifier extraction to each bullet's own leading identifier run; and added an opt-in --dry-run --compile step with a new fatal exit code. The suite grew from 17 to 29 passing cases. The deployed .claude/** tree was regenerated (RESULT=landed_verify_clean) and verified byte-identical to the source store, with the deployed suite green including the previously-failing R8 case.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/plans/01_snapshot-chunk-and-unicode-defects.md",
-      "summary": "6-phase serial plan: commit landed R6/R7/R8 work plus manifest fixture registration; one shared Unicode-aware identifier definition across all four Python sites; decoupled declaration-boundary widening; identifier-leading Goals rule with a cross-repo plan-format decision gate; opt-in --dry-run compile step; full gate set and deployed-tree parity."
+      "type": "summary",
+      "path": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/summaries/01_snapshot-chunk-and-unicode-defects-summary.md",
+      "summary": "All three lean-challenge-snapshot.sh defects repaired across 6 phases in the source store; suite extended from 17 to 29 passing cases; deployed tree regenerated and verified byte-identical, deployed suite green."
     }
   ],
   "metadata": {
-    "session_id": "sess_1793845134_662c9d_768",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "session_id": "sess_1793845134_662c9d",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "dispatch_seq": 2
+  "dispatch_seq": 3
 }

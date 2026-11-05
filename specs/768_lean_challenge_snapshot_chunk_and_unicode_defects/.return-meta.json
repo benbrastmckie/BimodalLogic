@@ -1,10 +1,46 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/summaries/01_snapshot-chunk-and-unicode-defects-summary.md",
+      "summary": "All three lean-challenge-snapshot.sh defects repaired across 6 phases in the source store; suite extended from 17 to 29 passing cases; deployed tree regenerated and verified byte-identical, deployed suite green."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Repaired all three lean-challenge-snapshot.sh defects (declaration-chunk swallowing of abbrev/anonymous instance, ASCII-only identifier regex, Goals backtick over-read) across 6 phases in the source store (~/.config/nvim), extended the test suite from 17 to 29 passing cases, added an opt-in --dry-run --compile safety net with a new fatal exit code, and verified the redeployed .claude/** tree is byte-identical to the source store with the deployed suite green (RESULT=landed_verify_clean)."
+  },
+  "modified_files": [],
+  "memory_candidates": [
+    {
+      "content": "Lean 4's `autoImplicit` option silently auto-binds a bare unbound identifier appearing in a theorem/lemma's TYPE SIGNATURE as a new implicit variable, so a signature like `(n m : Nat) : n + someUnknownIdent = m + n` still compiles. To force a genuine, unrescuable compile failure for test-fixture purposes, put the unbound identifier in FUNCTION-APPLICATION position instead (e.g. `someUnknownIdent n m = ...`) -- autoImplicit cannot invent a function-typed implicit for an application, so this reliably fails with a real error. Relevant whenever a test needs to simulate a broken Lean declaration without relying on an external stub.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/summaries/01_snapshot-chunk-and-unicode-defects-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean4", "autoImplicit", "compile-test-fixture", "unbound-identifier", "test-design"]
+    },
+    {
+      "content": "A regex that decides a declaration/record boundary (where does X start) is frequently reused, un-reflectively, to also decide a NARROWER property (which boundary-matches count toward some other set, like a cross-validated name list or a body-rewrite target). Widening the boundary match to admit a new case (e.g. a new keyword) then silently widens the narrower property too, breaking callers that depended on the old breadth. The fix is to keep ONE boundary match (so nothing falls between two recognized chunks) but gate the narrower property with its OWN predicate over the same match (e.g. `keyword in {subset} and some_field is not None`), so widening recognition never widens what else that recognition implies.",
+      "category": "PATTERN",
+      "source_artifact": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/summaries/01_snapshot-chunk-and-unicode-defects-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["regex-decoupling", "declaration-boundary", "cross-validation", "widening-without-breaking", "parser-design"]
+    },
+    {
+      "content": "A plan's Scope Hypothesis that states an explicit contingency ('if the real count differs from N, treat any further case as in scope' / 'if a real toolchain turns out reachable, assert both paths') lets an implementing phase absorb a measurement miss cleanly, in-phase, without a blocker or a plan revision -- the miss becomes a routine re-derivation note rather than a deviation requiring escalation. Two misses were absorbed this way in one dispatch: a fixture-migration count that was 10 instead of the plan's named 2, and a real Lean toolchain being reachable on the implementing host when the plan only required a stub.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/summaries/01_snapshot-chunk-and-unicode-defects-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["scope-hypothesis", "plan-authoring", "contingency-language", "re-derivation", "deviation-absorption"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1793845134_662c9d",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 6,
+    "phases_total": 6
   }
 }
