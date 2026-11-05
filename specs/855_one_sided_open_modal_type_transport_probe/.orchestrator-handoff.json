@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "dispatch_seq": 2,
+  "phase": "plan",
+  "summary": "Planned the implement round for task 855's NEGATIVE verdict as four serial phases, 3 hours. The round does no new mathematics: it promotes the research prototype to a wired, self-contained evidence probe at specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean, re-deriving the two-state object verbatim from ladder-cell-agreement-refutation.lean because probes cannot import each other, and discharges in-file the non-vacuity the prototype only inherited. Phase 3 wires the probe into scripts/check-evidence-probes.sh in the same round as the task guardrail requires, including the git-add step the gate's tracked-ness test needs. The plan validates strict-clean, and its 26 Lean Challenge identifiers match the Goals identifier set exactly.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/855_one_sided_open_modal_type_transport_probe/plans/01_one-sided-count-move-evidence-probe.md",
+      "summary": "Four-phase, 3-hour plan to land the one-sided count-move refutation as a wired evidence probe with in-file non-vacuity; 26 pinned Lean Challenge statements; no FormalSystem/ or Tests/ edits."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "next_action_hint": "Run the implement round in a cycle of its own. CONTENTION: specs/evidence/seam-gluing-ray-product/ and scripts/check-evidence-probes.sh are declared by the live ladder-realization task; the overlap gate must serialize this against it and must not be worked around."
+}

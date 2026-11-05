@@ -1,22 +1,29 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 2,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/855_one_sided_open_modal_type_transport_probe/reports/01_one-sided-open-modal-transport.md",
-      "summary": "NEGATIVE verdict: the one-sided ▷/◁ factorization does not crack the transport condition — all six recorded refutation mechanisms survive the one-sided relaxation, two of them strictly harder, because the ladder countdown and the closure's eventualities both read the same forward half-line."
-    },
-    {
-      "type": "probe",
-      "path": "specs/855_one_sided_open_modal_type_transport_probe/probes/01_one-sided-count-move.lean",
-      "summary": "Sorry-free prototype (exit 0, no warnings): the forward-only sharpening cntAt_eq_of_pend_eq_fwd, the two one-sided relaxations of AtomPreservingCountMove, and the refutation of the ◁-shaped one from which the recorded two-sided refutation is a corollary."
+      "type": "plan",
+      "path": "specs/855_one_sided_open_modal_type_transport_probe/plans/01_one-sided-count-move-evidence-probe.md",
+      "summary": "Four-phase, 3-hour plan landing the one-sided count-move refutation as a wired, self-contained evidence probe with non-vacuity discharged in-file, plus same-round gate wiring; 26 pinned Lean Challenge statements; no FormalSystem/ or Tests/ edits."
     }
   ],
   "metadata": {
     "session_id": "sess_1793836596_f24dfd_855",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Promoting a task-directory Lean prototype to a wired evidence probe under specs/evidence/ in this repository carries three structural obligations that are easy to miss at planning time. (1) Probes are compiled with `lake env lean` outside the Lake module graph, so NO PROBE CAN IMPORT ANOTHER: any object or fixture the new probe depends on must be re-derived verbatim inside it, and the source probe is neither edited nor re-signed. (2) The gate `scripts/check-evidence-probes.sh` tests tracked-ness via `git ls-files --error-unmatch` AFTER its presence test, so a new probe must be `git add`-ed before the first gate run or it reports `FAIL (untracked: ...)` and its content is never measured at all. (3) A `FAIL (environment: ...)` label (missing-object-file error) is an I/O failure of the build tree, never probe rot: the response is to re-run once any concurrent `lake build` finishes, never to repair or retire a probe. Wiring is two edits: a two-column header table block and one `WIRED` array entry. The probe prototype may stay in its task directory as the research record; that coexistence is the established local pattern.",
+      "category": "PATTERN",
+      "source_artifact": "specs/855_one_sided_open_modal_type_transport_probe/plans/01_one-sided-count-move-evidence-probe.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["evidence-probe", "check-evidence-probes", "lean-probe-wiring", "lake-env-lean", "probe-cannot-import", "git-tracked-gate"]
+    }
+  ]
 }
