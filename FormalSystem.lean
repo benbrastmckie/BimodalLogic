@@ -561,6 +561,7 @@ import FormalSystem.OpenLanguage
 import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenAxioms
 import FormalSystem.OpenLanguage.OpenClasses
+import FormalSystem.OpenLanguage.OpenDerivation
 import FormalSystem.OpenLanguage.OpenOckhamist
 import FormalSystem.OpenLanguage.OpenReversal
 import FormalSystem.OpenLanguage.OpenTruth

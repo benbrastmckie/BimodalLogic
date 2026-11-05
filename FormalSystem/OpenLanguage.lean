@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenAxioms
 import FormalSystem.OpenLanguage.OpenClasses
+import FormalSystem.OpenLanguage.OpenDerivation
 import FormalSystem.OpenLanguage.OpenOckhamist
 import FormalSystem.OpenLanguage.OpenReversal
 import FormalSystem.OpenLanguage.OpenTruth
@@ -44,6 +45,9 @@ library theorems rather than leaving it to be rediscovered.
 - `OpenLanguage.OpenAxioms` — `IsPureFutureOpen`/`IsPurePastOpen`, the `OpenAxiom` schemata (the
   TM⁺ schemata re-declared at `OpenFormula` parameters, plus the restricted-modal block for `▷`
   and `◁`), and the wildcard-free `OpenAxiom.minFrameClass`
+- `OpenLanguage.OpenDerivation` — `OpenContext`, the seven-rule `OpenDerivationTree`,
+  `OpenDerivable` with the notations `Γ ⊢▷[fc] φ` and `⊢▷[fc] φ`, the three derived necessitation
+  rules for `⊡`, `▷` and `◁`, and backward conservativity over TM⁺
 
 ## Semantic modules
 

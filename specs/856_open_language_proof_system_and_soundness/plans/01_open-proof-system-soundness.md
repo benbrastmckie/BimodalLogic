@@ -302,40 +302,40 @@ constructors and that many `minFrameClass` arms.
 
 ---
 
-### Phase 3: `OpenDerivation.lean` and backward conservativity over TM⁺ [NOT STARTED]
+### Phase 3: `OpenDerivation.lean` and backward conservativity over TM⁺ [COMPLETED]
 
 **Goal**: Land the seven-rule derivation tree, derived necessitation for `⊡`, `▷` and `◁`, and
 backward conservativity over TM⁺ as a free consequence of the constructor embedding.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/OpenLanguage/OpenDerivation.lean` importing
+- [x] Create `FormalSystem/OpenLanguage/OpenDerivation.lean` importing
   `FormalSystem.OpenLanguage.OpenAxioms`, `FormalSystem.PlusLanguage.Derivation` and
   `FormalSystem.ProofSystem.Derivation`/`Derivable`.
-- [ ] Declare `abbrev OpenContext := List OpenFormula` here rather than in `Formula.lean`, and
+- [x] Declare `abbrev OpenContext := List OpenFormula` here rather than in `Formula.lean`, and
   record in the docstring that this diverges from `PlusContext`'s placement beside `PlusFormula`
   deliberately, to leave `OpenLanguage/Formula.lean` and its module invariants untouched.
-- [ ] Declare `inductive OpenDerivationTree (fc : FrameClass) : OpenContext → OpenFormula → Type`
+- [x] Declare `inductive OpenDerivationTree (fc : FrameClass) : OpenContext → OpenFormula → Type`
   with exactly the seven rules of `PlusDerivationTree`
   (`FormalSystem/PlusLanguage/Derivation.lean:72-94`): `axiom` (gated by
   `h.minFrameClass ≤ fc`), `assumption`, `modus_ponens`, `necessitation`,
   `temporal_necessitation`, `time_reflection`, `weakening`. Add no eighth rule (R5).
-- [ ] Add `lift`, `height`, `ofWeakeningNil` and the height lemmas, mirroring the
+- [x] Add `lift`, `height`, `ofWeakeningNil` and the height lemmas, mirroring the
   `PlusDerivationTree` namespace block.
-- [ ] Declare `def OpenDerivable (fc : FrameClass) (Γ : OpenContext) (φ : OpenFormula) : Prop :=
+- [x] Declare `def OpenDerivable (fc : FrameClass) (Γ : OpenContext) (φ : OpenFormula) : Prop :=
   Nonempty (OpenDerivationTree fc Γ φ)`, the two `notation:50` forms mirroring `⊢⁺[fc]`, and
   `OpenDerivable.mono`.
-- [ ] Prove the three derived necessitation rules as `theorem`s: `stabNecessitation` (via
+- [x] Prove the three derived necessitation rules as `theorem`s: `stabNecessitation` (via
   `necessitation` then `stab_of_box`), `ofutNecessitation` and `opastNecessitation` (via
   `stabNecessitation` then the corresponding bridge). Record in the docstring that this is why
   the tree carries no rule for `⊡`, `▷` or `◁`.
-- [ ] Prove `OpenAxiom.ofPlus : PlusAxiom φ → OpenAxiom (ofPlus φ)` constructor-to-constructor,
+- [x] *(deviation: altered — stated as `OpenAxiom (embPlus φ)` with `abbrev embPlus := ofPlus`, a reducible alias, because the declaration's own short name `ofPlus` shadows the formula-level embedding inside its own body; the two types are the same to the elaborator. The two purity transports are named `isPureFutureOpen_ofPlus`/`isPurePastOpen_ofPlus` for the same reason, and they are additions the plan's task list did not enumerate but `paste`/`untl_paste` make unavoidable.)* Prove `OpenAxiom.ofPlus : PlusAxiom φ → OpenAxiom (ofPlus φ)` constructor-to-constructor,
   and `minFrameClass_ofPlus : (OpenAxiom.ofPlus h).minFrameClass = h.minFrameClass`.
-- [ ] Prove `OpenDerivationTree.ofPlus : PlusDerivationTree fc Γ φ → OpenDerivationTree fc (Γ.map ofPlus) (ofPlus φ)`,
+- [x] Prove `OpenDerivationTree.ofPlus : PlusDerivationTree fc Γ φ → OpenDerivationTree fc (Γ.map ofPlus) (ofPlus φ)`,
   one case per rule.
-- [ ] Prove `openDerivable_of_plusDerivable` — backward conservativity over TM⁺ — plus the four
+- [x] Prove `openDerivable_of_plusDerivable` — backward conservativity over TM⁺ — plus the four
   class rows at the empty context, mirroring `plus_backward_base`/`_dense`/`_ztime`/`_rtime`.
-- [ ] Add `"OpenDerivation": 0` to `LANGUAGE_FILE_LAYERS`, the import to
+- [x] Add `"OpenDerivation": 0` to `LANGUAGE_FILE_LAYERS`, the import to
   `FormalSystem/OpenLanguage.lean`, and the `## Modules` bullet.
 
 **Timing**: 2 hours
