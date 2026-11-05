@@ -222,6 +222,29 @@ Consequences.
 > No Lean encoding is chosen here (`SimpleGraph.IsAcyclic` on a symmetrization, an inductive forest
 > predicate, or a bespoke `Prop`); a grep of `FormalSystem/**` confirms no oriented-forest or
 > acyclicity predicate exists there today, and the encoding choice belongs to task 870.
+>
+> **Saturation-side verification (compiled + derived).** Strengthening the hypothesis adds no new
+> obligation on the `Saturation` side.
+>
+> - *Compiled.* `FrameOver.IsRegular` (`FormalSystem/Semantics/TaskFrame.lean:1185`) bundles
+>   `saturation : TaskFrame.Saturation F.TaskRel` as a field (`:1209`), alongside `comp`, `serial`
+>   and `limit`.
+> - *Compiled.* `TwoWayBounded.plus_invariance_of_isZTime`
+>   (`FormalSystem/Semantics/HistoryMorphism.lean:589`) takes `[F'.IsRegular] [F.IsRegular]` as its
+>   first two instance binders (`:590`) — `Saturation` is demanded of the **base** frame `F` as
+>   well as the cover `F'`.
+> - *Derived.* **Induced sub-digraphs inherit the strengthened hypothesis.** A cycle in an induced
+>   subgraph is a cycle in the whole undirected multigraph, so an induced sub-digraph of an
+>   acyclic underlying multigraph is again acyclic. Step B of the countable-model argument (run
+>   inside the cover) therefore still yields a frame satisfying the same hypothesis, and needs no
+>   second cover and no second invariance appeal.
+> - *Derived.* **The cover already delivers the strengthened hypothesis.** The universal cover of
+>   a connected undirected multigraph is a tree, and a disjoint union of trees is a forest, so
+>   `G̃` above satisfies undirected acyclicity directly — not merely directed-path uniqueness.
+>   §1.2's construction was always strong enough; only its gloss was wrong.
+> - **Net verdict.** The `Saturation` side is **unaffected**: no new obligation appears on either
+>   frame, and (H5), as task 878's finding 7 words it ("every doubly serial oriented forest over
+>   `ℤ` satisfies `TaskFrame.Saturation`"), needs no repair.
 
 #### 1.3 Decidability at ZTime (paper, Medium-High; rests on a recalled theorem)
 

@@ -178,39 +178,46 @@ a scope change — record it in the issue log and report it, do not absorb it si
 
 ---
 
-### Phase 2: Verify the Saturation side rather than assume it [NOT STARTED]
+### Phase 2: Verify the Saturation side rather than assume it [COMPLETED]
 
 **Goal**: Establish from the compiled sources whether strengthening the hypothesis adds any
 obligation on the `Saturation` side, and record the three findings that settle it.
 
 **Tasks**:
-- [ ] Read the `FrameOver.IsRegular` declaration and confirm from source that it bundles
+- [x] Read the `FrameOver.IsRegular` declaration and confirm from source that it bundles
       `TaskFrame.Saturation` as a field (`FormalSystem/Semantics/FrameClassValidity.lean:146`
       names `F.saturation` as one of the four projections the class supplies; locate and read the
-      class declaration itself rather than inferring from that reference).
-- [ ] Read `TwoWayBounded.plus_invariance_of_isZTime` at `FormalSystem/Semantics/.../HistoryMorphism.lean:589`
+      class declaration itself rather than inferring from that reference). *(completed: class
+      declared at FormalSystem/Semantics/TaskFrame.lean:1185, `saturation` field at :1209)*
+- [x] Read `TwoWayBounded.plus_invariance_of_isZTime` at `FormalSystem/Semantics/.../HistoryMorphism.lean:589`
       and confirm its binders are `[F'.IsRegular] [F.IsRegular]` — i.e. that `Saturation` is
       demanded of the **base** frame as well as the cover. This is the fact that forced 878's
-      cover-first reordering and is the reason the question is being asked at all.
-- [ ] Derive and record: **induced sub-digraphs inherit the strengthened hypothesis**. An induced
+      cover-first reordering and is the reason the question is being asked at all. *(completed:
+      confirmed at :590)*
+- [x] Derive and record: **induced sub-digraphs inherit the strengthened hypothesis**. An induced
       subgraph of an acyclic undirected multigraph is acyclic (a cycle in the subgraph is a cycle
       in the whole), so 878's Step B — which runs the countable-model step *inside* the cover —
       still yields a frame satisfying the same hypothesis, and still needs no second cover and no
-      second invariance appeal. The strengthening costs nothing here.
-- [ ] Derive and record: **the cover discharges the strengthened hypothesis directly**. The
+      second invariance appeal. The strengthening costs nothing here. *(completed)*
+- [x] Derive and record: **the cover discharges the strengthened hypothesis directly**. The
       universal cover of a connected undirected multigraph is a tree, and a disjoint union of
       trees is a forest, so §1.2's `G̃` satisfies undirected acyclicity, not merely directed-path
       uniqueness. §1.2's construction therefore already delivers the strong hypothesis; what was
       wrong was only its gloss. This is the load-bearing positive finding of the whole task — if
-      it failed, Step A would fail and the conclusion would be unavailable.
-- [ ] Record the net verdict in one sentence: the `Saturation` side is **unaffected**; no new
+      it failed, Step A would fail and the conclusion would be unavailable. *(completed; the
+      expected positive result, no discrepancy found)*
+- [x] Record the net verdict in one sentence: the `Saturation` side is **unaffected**; no new
       obligation appears on either frame, and (H5) as 878's finding 7 words it ("every doubly
       serial oriented forest over `ℤ` satisfies `TaskFrame.Saturation`") needs no repair.
-- [ ] Append these findings to the Phase 1 amendment in the same §1.2 location, labelled as
+      *(completed)*
+- [x] Append these findings to the Phase 1 amendment in the same §1.2 location, labelled as
       derived and tier-marked (compiled where read off a signature, derived where argued).
+      *(completed)*
 - [ ] If either compiled check comes out contrary to the expectation above, stop: do not file the
       870 revision, record the discrepancy in the issue log, and set `user_decision` on
-      `.return-meta.json` per `context/standards/user-decision-contract.md`.
+      `.return-meta.json` per `context/standards/user-decision-contract.md`. *(deviation:
+      skipped — condition not triggered; both compiled checks confirmed as expected, so this
+      contingency step does not apply)*
 
 **Timing**: 0.7 hours
 
