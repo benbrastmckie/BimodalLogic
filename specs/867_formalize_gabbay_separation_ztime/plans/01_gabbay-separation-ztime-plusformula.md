@@ -312,7 +312,7 @@ showing a single added line.
 
 ---
 
-### Phase 2: The Leaf Abstraction Seam and the Carrier Bridge [NOT STARTED]
+### Phase 2: The Leaf Abstraction Seam and the Carrier Bridge [COMPLETED]
 
 **Goal**: The one interface between `USForm` and `PlusFormula` exists and is proved: a computable
 leaf table, `toPlus`, the roundtrip, truth transfer at `t : ℤ`, syntactic purity transfer, and the
@@ -320,33 +320,33 @@ bridge that turns a pointwise ZTime equivalence into the shape `SeparationOver` 
 
 **Tasks**:
 
-- [ ] Add `LeafAbstraction.lean`. Define `leaves : PlusFormula → List PlusFormula` returning, in
+- [x] Add `LeafAbstraction.lean`. Define `leaves : PlusFormula → List PlusFormula` returning, in
       deterministic traversal order and without duplicates, the formula's atoms together with its
       **maximal** `box` and `stab` subformulas (maximal: do not descend into a `box`/`stab`
       scope).
-- [ ] Define `abstr : PlusFormula → USForm` replacing each entry of `leaves φ` by `leaf i` at its
+- [x] Define `abstr : PlusFormula → USForm` replacing each entry of `leaves φ` by `leaf i` at its
       index, and `toPlus (g : ℕ → PlusFormula) : USForm → PlusFormula` sending `leaf i` to `g i`
       and every other constructor to its `PlusFormula` namesake.
-- [ ] Prove the roundtrip `toPlus (fun i => (leaves φ).getD i PlusFormula.bot) (abstr φ) = φ` by
+- [x] Prove the roundtrip `toPlus (fun i => (leaves φ).getD i PlusFormula.bot) (abstr φ) = φ` by
       structural induction on `φ`.
-- [ ] Prove **truth transfer**: for `F : FrameOver intOrder`, `[F.IsRegular]`, `M`, `τ` and
+- [x] Prove **truth transfer**: for `F : FrameOver intOrder`, `[F.IsRegular]`, `M`, `τ` and
       `t : ℤ`, with `v i s := PlusTruthAt M τ s ((leaves φ).getD i PlusFormula.bot)`,
       `usTruth v t ψ ↔ PlusTruthAt M τ t (toPlus (fun i => (leaves φ).getD i .bot) ψ)`, by
       induction on `ψ`. Write the carrier ascription at `↑intOrder` explicitly; do not let Lean
       try to invert `↑E ≟ ℤ`.
-- [ ] Prove **purity transfer**: if every `g i` is `IsPurePast` and `IsUOnly ψ` fails / `IsSOnly ψ`
+- [x] Prove **purity transfer**: if every `g i` is `IsPurePast` and `IsUOnly ψ` fails / `IsSOnly ψ`
       holds then `IsPurePast (toPlus g ψ)`, and the `IsUOnly`/`IsPureFuture` mirror. Define
       `IsUOnly` and `IsSOnly` inductively here (leaf and bot in both; `imp` preserving; `untl`
       only in `IsUOnly`, `snce` only in `IsSOnly`).
-- [ ] Prove that every entry of `leaves φ` is both `IsPurePast` and `IsPureFuture`, by case
+- [x] Prove that every entry of `leaves φ` is both `IsPurePast` and `IsPureFuture`, by case
       analysis on the three leaf shapes (`atom`, `box`, `stab`), each a leaf constructor of both
       predicates.
-- [ ] Add the **carrier bridge**
+- [x] Add the **carrier bridge**
       `plusValidZTime_iff_pointwise : PlusValidZTime (φ.iff ψ) ↔ ∀ F : TaskFrame, F.IsRegular → F.IsZTime → ∀ M τ t, (PlusTruthAt M τ t φ ↔ PlusTruthAt M τ t ψ)`,
       unfolding `PlusValidIn`, `FrameClass.Sat .ZTime` and `PlusTruth.iff_iff`; then compose it
       with the compiled `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` into the one
       lemma later phases consume to move between abstract ZTime frames and `t : ℤ`.
-- [ ] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
+- [x] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
 
 **Timing**: 2 hours
 

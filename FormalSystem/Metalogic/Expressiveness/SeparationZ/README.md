@@ -19,11 +19,14 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | File | Lines | Description |
 |------|-------|-------------|
 | `Syntax.lean` | 394 | `USForm`, `usTruth` over `ℤ`, the derived connectives, the clause lemmas, the time reflection `swap` with `usTruth_swap`, and the `maxLeaf`/`freshLeaf` fresh-index device |
+| `LeafAbstraction.lean` | 370 | The one seam to `PlusFormula`: `leaves`, `abstr`, `toPlus`, the roundtrip, truth transfer at `t : ℤ`, `IsUOnly`/`IsSOnly`, purity transfer, and the carrier bridge |
 
 ## Key Results
 
 - `usTruth_swap` — the time reflection, which halves every `snce` case downstream
 - `usTruth_congr_of_update` — the whole content of GHR's "fresh atom" device
+- `toPlus_abstr`, `usTruth_toPlus_iff` — the roundtrip and the truth transfer across the seam
+- `pointwise_ztime_of_pointwise_int` — the carrier bridge from `ℤ` to every regular ℤ-time frame
 
 ## References
 
