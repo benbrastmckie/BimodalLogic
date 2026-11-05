@@ -389,37 +389,43 @@ and from a plan-time read of the source store. Confirm each by grep for its anch
 
 ---
 
-### Phase 4: Defect 5 — Gate 16's WARN finding stops escalating to batch-blocking [NOT STARTED]
+### Phase 4: Defect 5 — Gate 16's WARN finding stops escalating to batch-blocking [COMPLETED]
 
 **Goal**: A `warn()`-level gate notice is distinguishable from a `fail()`-level one on the
 findings interface, so Gate 16's removal-is-coming nudge no longer blocks a batch — with the
 manifest declaration and the gate's own behaviour left intact.
 
 **Tasks**:
-- [ ] Change `warn()`'s two `FINDINGS_LIST` appends from the `"FINDING $CURRENT_GATE ..."` shape
+- [x] Change `warn()`'s two `FINDINGS_LIST` appends from the `"FINDING $CURRENT_GATE ..."` shape
   to a distinct, severity-bearing prefix that the documented consumer filter `grep '^FINDING '`
   does not match (e.g. a `WARN-FINDING ` leading token). Leave every other `warn()` effect
   untouched: the `CHECKS` increment, the `GATE_RAN_LIST`/`GATE_DIRTY_LIST` appends, and the
-  `[WARN]` stderr narrative.
-- [ ] Update `warn()`'s own header comment to state the severity convention and why it exists
+  `[WARN]` stderr narrative. *(completed with a deviation: a SECOND `warn()` caller was found at
+  gate20, with an existing test relying on its plain FINDING channel -- see Plan Deviations. The
+  prefix change landed in a new `warn_advisory()` function used only by gate16; `warn()` itself,
+  and gate20, are unchanged)*
+- [x] Update `warn()`'s own header comment to state the severity convention and why it exists
   (D1's rationale in one short paragraph, including the explicit statement that this is not a
-  manifest-declaration deletion).
-- [ ] Update the "Findings mode (--findings, additive-only)" header block's description of the
+  manifest-declaration deletion). *(completed on `warn_advisory()`'s header, since that is where
+  the convention now lives; `warn()`'s own header cross-references it)*
+- [x] Update the "Findings mode (--findings, additive-only)" header block's description of the
   line protocol so "every finding line begins with the literal token `FINDING `" remains true,
-  and the WARN-level prefix is documented as a separate, non-blocking channel.
-- [ ] Add the matching severity note to `batch-gate-stage.md`, so the batch-level consumer's
-  contract documents which lines are blocking.
-- [ ] Make **no change** to `extensions/lean/manifest.json`: research established it declares no
+  and the WARN-level prefix is documented as a separate, non-blocking channel. *(completed)*
+- [x] Add the matching severity note to `batch-gate-stage.md`, so the batch-level consumer's
+  contract documents which lines are blocking. *(completed)*
+- [x] Make **no change** to `extensions/lean/manifest.json`: research established it declares no
   `routing_hard` key (so there is nothing to delete), and deleting `routing_agents_hard` is
   forbidden while `command-route-agent.sh` still consults it. Record this as a deliberate no-op so
-  the declared `file_scope` entry is accounted for.
-- [ ] Extend a gate-findings test (`test-verify-deploy-gate-selection.sh`, or a new
+  the declared `file_scope` entry is accounted for. *(completed: confirmed still declared, no edit
+  made)*
+- [x] Extend a gate-findings test (`test-verify-deploy-gate-selection.sh`, or a new
   `test-verify-deploy-warn-severity.sh` if the existing fixture cannot reach gate16) with
   assertions that, against a tree whose lean manifest declares `routing_agents_hard`:
   (a) `--findings --quiet` emits **no** `^FINDING gate16` line; (b) the `[WARN]` stderr line is
   still emitted; (c) the exit code is unchanged; (d) a real `fail()`-level finding from another
-  gate still appears on `^FINDING `.
-- [ ] Stage and commit with an explicit pathspec listing each edited file.
+  gate still appears on `^FINDING `. *(completed: added Case (r) to test-verify-deploy-gate-selection.sh,
+  reusing its existing FIXTURE_RICH/FIXTURE_CHEAP)*
+- [x] Stage and commit with an explicit pathspec listing each edited file. *(completed)*
 
 **Timing**: 1.5 hours
 

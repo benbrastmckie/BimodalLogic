@@ -1,0 +1,27 @@
+{
+  "phase": 4,
+  "phase_name": "Defect 5 — Gate 16's WARN finding stops escalating to batch-blocking",
+  "started_at": "2026-11-05T05:20:00Z",
+  "last_updated": "2026-11-05T05:55:00Z",
+  "objectives": [
+    {"id": 1, "description": "Change warn()'s FINDINGS_LIST appends to a severity-bearing prefix (e.g. WARN-FINDING)", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/verify-deploy.sh"]},
+    {"id": 2, "description": "Update warn()'s header comment with the severity convention rationale", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/verify-deploy.sh"]},
+    {"id": 3, "description": "Update Findings-mode header block protocol documentation", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/verify-deploy.sh"]},
+    {"id": 4, "description": "Add severity note to batch-gate-stage.md", "status": "done", "files_touched": ["agent-system/extensions/core/context/contracts/batch-gate-stage.md"]},
+    {"id": 5, "description": "Confirm no change to extensions/lean/manifest.json (deliberate no-op)", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Extend gate-findings test with severity assertions", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/tests/test-verify-deploy-gate-selection.sh"]},
+    {"id": 7, "description": "Stage and commit with explicit pathspec", "status": "in_progress", "files_touched": []}
+  ],
+  "current_objective": 7,
+  "approaches_tried": [
+    {"approach": "Apply WARN-FINDING prefix change directly inside shared warn()", "result": "rejected", "reason": "A second warn() caller exists (gate20's per-file budget-ceiling check, ORCHESTRATOR_BUDGET_GATE_MODE=warn) that an existing test (test-verify-deploy-context-budget.sh) asserts stays on the plain FINDING channel for attributability. Blanket-applying the prefix would have silently broken that test and regressed gate20's attributability. Resolved by introducing a separate warn_advisory() function used only by gate16, leaving warn() (and gate20) untouched."}
+  ],
+  "handoff_count": 0,
+  "verification_notes": {
+    "scope_hypothesis_correction": "The plan's Scope Hypothesis asserted warn() has a single caller (gate16). grep -n 'warn ' verify-deploy.sh found a SECOND caller at gate20 (per-file budget-ceiling check, default ORCHESTRATOR_BUDGET_GATE_MODE=warn). Per the plan's own contingency instruction, re-checked whether the prefix change was still correct for it: NOT directly, because test-verify-deploy-context-budget.sh's case1/case2 assert exactly 1 'FINDING gate20' line for a WARN-mode per-file-ceiling breach (intentional batch-attributability, distinct from gate16's unattributable, perpetually-recurring nudge). Resolved by splitting into a new warn_advisory() function (WARN-FINDING prefix) used only by gate16's call site, while warn() keeps its original FINDING-prefix behavior for gate20 and any future caller.",
+    "measured_gate16_output": "Against a real-copy fixture (lean/manifest.json genuinely declares routing_agents_hard): stdout contains 'WARN-FINDING gate16 lean still declares routing_hard/routing_agents_hard' (not 'FINDING gate16'); stderr still contains the [WARN] line; exit code 0 (PASS -- 1 check(s), 0 failure(s)).",
+    "test_suite": "bash agent-system/extensions/core/scripts/tests/run-all.sh --only test-deploy-baseline-lib.sh,test-orchestrate-batch-gate.sh,test-verify-deploy-gate-selection.sh,test-gate-cache-equivalence.sh -> 3 passed, 1 failed (1 expected, 0 NEW), 0 skipped, 4 total. The one failure (test-gate-cache-equivalence.sh, 600s internal timeout) is a PRE-EXISTING, documented load-sensitive flake (known-failures.txt line 33: 'load-sensitive ... simply slow'), confirmed unrelated to this phase's edits -- 0 NEW failures is the acceptance-relevant figure.",
+    "manifest_unchanged": "jq -r 'has(\"routing_agents_hard\")' extensions/lean/manifest.json -> true (still declares it; nothing deleted).",
+    "bash_n": "bash -n on verify-deploy.sh and test-verify-deploy-gate-selection.sh -> OK"
+  }
+}
