@@ -1,46 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 4,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md",
-      "summary": "Verdict: a doubled (two one-sided, clock-anchored) automaton is sufficient in shape and no bi-infinite Z-automaton is needed, conditional on separation at ZTime; but the one-sidedness mismatch is NOT the binding obstruction. The binding obstruction is the AA carrier, and it is proved intrinsic here (unique-predecessor + TwoWayBounded + surjectivity forces a past-deterministic base), so coneR's two-layer shape is forced and its Saturation obligation unavoidable. A layer-split route to that obligation is given, whose one missing ingredient -- oriented-forest Saturation -- is also the MSO cover step's prerequisite. Report 03 section 1.3's ZTime reading is corrected: existence of a recursive axiomatization is still open, not only naturalness. Two defects of record found in the landed LC material."
+      "type": "plan",
+      "path": "specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/plans/01_lc-axiomatization-automaton-obstruction.md",
+      "summary": "Four-phase, 2.5-hour close-out plan: amend report 03 section 1.3, audit and file two follow-on tasks, write the summary, run the full gate; no library change."
     }
   ],
-  "next_steps": "Run /orchestrate 865 to close out research. Four follow-ons are proposed in the report: R1 oriented-forest Saturation (lean4, highest value, unblocks two fronts), R2 fix the LCU record and restore omega_chain's segment-property parameter plus the one-line backward LC_n corollary (lean4, corrective), R3 the doubled AA-boxdot rule (gated on R1 and on separation at ZTime), R5 amend report 03 section 1.3's closing sentence. R4 (MSO formalization) is explicitly not to be filed.",
+  "next_steps": "Run /orchestrate 865 to execute the plan",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1793893221_493f2c_865",
-    "agent_type": "formal-research-agent",
-    "duration_seconds": 1260,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
-    "domains_researched": ["logic", "math"],
-    "findings_count": 6,
-    "context_files_loaded": [
-      "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md",
-      "specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md",
-      "specs/864_land_lc_schema_limit_closure_soundness/summaries/01_lc-schema-limit-closure-soundness-summary.md",
-      "specs/ROADMAP.md",
-      "docs/theorem-index.md"
-    ],
-    "mathlib_lookups_performed": 0,
-    "library_files_read": [
-      "FormalSystem/Metalogic/NamingRules.lean",
-      "FormalSystem/Semantics/HistoryMorphism.lean",
-      "FormalSystem/OpenLanguage/OpenTruth.lean",
-      "FormalSystem/OpenLanguage/OpenClasses.lean",
-      "FormalSystem/PlusLanguage/PlusPasting.lean",
-      "FormalSystem/PlusLanguage/Formula.lean",
-      "FormalSystem/PlusLanguage/PlusLCSchema.lean",
-      "FormalSystem/PlusLanguage/PlusOmegaChain.lean",
-      "FormalSystem/PlusLanguage/PlusReversal.lean",
-      "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
-      "FormalSystem/Semantics/TaskFrame.lean",
-      "FormalSystem/Semantics/FrameProperty.lean",
-      "FormalSystem/Syntax/Formula.lean",
-      "specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean"
-    ],
-    "lean_lsp_evidence_tier": "no lean-lsp queries made; all library claims are from source reads of the pinned working tree, no build run"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.5,
+    "dependency_waves": [[1, 2], [3], [4]]
   }
 }

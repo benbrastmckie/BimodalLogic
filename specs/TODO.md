@@ -72,7 +72,7 @@ next_project_number: 870
 
 ### Completeness
 
-865 [PLANNING] — RESEARCH TASK, and the owner of a programme that is currently...
+865 [PLANNED] — RESEARCH TASK, and the owner of a programme that is currently...
 
 ### Dataset Enhancement
 
@@ -253,11 +253,12 @@ DELIVERABLE: a report under this task's directory, with a verdict on whether the
 ---
 
 ### 865. Tm plus lc axiomatization and automaton obstruction
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: Task 864
 - **Research**: [865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md]
+- **Plan**: [865_tm_plus_lc_axiomatization_and_automaton_obstruction/plans/01_lc-axiomatization-automaton-obstruction.md]
 
 **Description**: RESEARCH TASK, and the owner of a programme that is currently owned by nobody: does TM-plus extended by the limit-closure schema admit a completeness proof, and can the located obstruction to Reynolds' construction be cleared in this setting?
 

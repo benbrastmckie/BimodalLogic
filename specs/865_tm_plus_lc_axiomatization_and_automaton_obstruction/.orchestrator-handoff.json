@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "summary": "Wrote a 4-phase, 2.5-hour close-out plan for the task. The research report is the task's substantive deliverable and is already complete, so the plan covers only what the dispatch mandates after it: amend report 03 section 1.3's consequence sentence in place (R5), audit and then file the two surviving follow-ons (R1 oriented-forest Saturation, R2 the corrective LCU/omega_chain record repair), and close with a summary and the full gate. No library change is planned: FormalSystem/ and Tests/ stay byte-identical, and the two confirmed defects of record are filed rather than fixed. R3 is left gated on R1 and 867, R4 refused, both recorded explicitly so neither reads as an oversight.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/plans/01_lc-axiomatization-automaton-obstruction.md",
+      "summary": "Four-phase close-out plan: report 03 section 1.3 amendment, follow-on proposal audit, task filing, summary plus full gate."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "next_action_hint": "Dispatch implement for task 865; Phase 1 and Phase 2 are independent and may run in either order."
+}
