@@ -1,7 +1,7 @@
 # Implementation Plan: Task #769
 
 - **Task**: 769 - plan-format: blocked decision gates and plan-level Status ownership
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/769_plan_format_blocked_gate_and_status_ownership/reports/01_blocked-gate-and-status-ownership.md
@@ -127,7 +127,7 @@ through the deployed tree.
 
 ---
 
-### Phase 1: Provision 1 -- blocked decision gate reconciled with the final-phase rule [NOT STARTED]
+### Phase 1: Provision 1 -- blocked decision gate reconciled with the final-phase rule [IN PROGRESS]
 
 **Goal**: Add one paragraph to `plan-format.md`'s "Decision gates and contingency branches"
 subsection admitting a decision gate already `[BLOCKED]` at plan-authoring time and stating
@@ -135,32 +135,42 @@ explicitly how it relates to the final phase's transitive-dependency requirement
 
 **Tasks**:
 
-- [ ] Resolve `source_dir` for the `core` extension from
+- [x] Resolve `source_dir` for the `core` extension from
       `/home/benjamin/Projects/BimodalLogic/.claude-extensions.json` and confirm it is
-      `/home/benjamin/.config/nvim/agent-system/extensions/core`.
-- [ ] Confirm the deployed `.claude/context/formats/plan-format.md` and the source-store copy are
+      `/home/benjamin/.config/nvim/agent-system/extensions/core`. *(completed)*
+- [x] Confirm the deployed `.claude/context/formats/plan-format.md` and the source-store copy are
       still byte-identical (`diff -q`); if they have diverged since research, stop and report
-      rather than overwriting either copy.
-- [ ] Locate the insertion point by verbatim anchor: the paragraph beginning
+      rather than overwriting either copy. *(completed: diff -q reported no difference)*
+- [x] Locate the insertion point by verbatim anchor: the paragraph beginning
       `**Do not leave the bypassed phases `[NOT STARTED]`.**` inside
       `### Decision gates and contingency branches`, immediately before the
-      `## Status Marker Requirements` heading.
-- [ ] Insert one new paragraph there (not an edit to the existing worked example) carrying the
+      `## Status Marker Requirements` heading. *(completed)*
+- [x] Insert one new paragraph there (not an edit to the existing worked example) carrying the
       normative content drafted in the research report's Decision 1: a gate already `[BLOCKED]`
       at plan-authoring time is exempt from the literal depends-on edge that the final phase's
       transitive-dependency rule would otherwise require, because no executable phase may depend
       on a phase that will never complete; such a gate is placed in wave 1 with
       `Depends on: none` alongside the plan's first executable phase; in exchange the final phase
       MUST re-observe the blocked gate's own measurement by name inside its own verification
-      criteria, and the Dependency Analysis wave-table note MUST say so explicitly.
-- [ ] Ensure the paragraph closes by distinguishing its own case (a gate already `[BLOCKED]` when
+      criteria, and the Dependency Analysis wave-table note MUST say so explicitly. *(completed)*
+- [x] Ensure the paragraph closes by distinguishing its own case (a gate already `[BLOCKED]` when
       the plan is written) from the subsection's existing worked example (a gate that executes
-      and is measured inside the same plan), so the two shapes are not conflated.
-- [ ] Re-read the inserted hunk and confirm it names the final-phase rule explicitly — a
+      and is measured inside the same plan), so the two shapes are not conflated. *(completed)*
+- [x] Re-read the inserted hunk and confirm it names the final-phase rule explicitly — a
       provision that permits the shape without reconciling it against that rule leaves the
-      ambiguity in place and does not satisfy this phase.
-- [ ] Confirm the inserted prose carries no task-number reference and no record-versioning
-      language (durable anchors only: file names, section headings, script names).
+      ambiguity in place and does not satisfy this phase. *(completed)*
+- [x] Confirm the inserted prose carries no task-number reference and no record-versioning
+      language (durable anchors only: file names, section headings, script names). *(completed)*
+- [x] Run the Phase 1 covering check *(deviation: altered — the plan's exact invocation
+      `verify-deploy.sh --skip-slow --only-gate 3,4 /home/benjamin/.config/nvim/agent-system/extensions/core`
+      errors (exit 2, "no deploy tree") because `verify-deploy.sh` requires TARGET to be the nvim
+      config repo root, which contains both `agent-system/extensions/` and `.claude/` — not the
+      `core` extension's own source-store subdirectory. Ran with
+      `TARGET=/home/benjamin/.config/nvim` instead; also ran
+      `generate-context-line-counts.sh --write` there first to clear a transient gate-3 line-count
+      mismatch the new paragraph introduced (self-healing, normally cleared by
+      `deploy-headless.sh` before every deploy). Both gates then passed clean. Logged as an issue,
+      entry class `plan-contract-conflict`.)*
 
 **Timing**: 0.5 hours
 

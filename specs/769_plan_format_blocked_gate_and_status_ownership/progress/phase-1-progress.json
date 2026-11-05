@@ -1,0 +1,26 @@
+{
+  "phase": 1,
+  "phase_name": "Provision 1 -- blocked decision gate reconciled with the final-phase rule",
+  "started_at": "2026-11-05T06:15:00Z",
+  "last_updated": "2026-11-05T06:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Resolve source_dir and confirm it matches core extension path", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Confirm deployed and source-store plan-format.md byte-identical", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Insert Provision 1 paragraph at verbatim anchor", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Verify Provision 1 content and run scoped gate", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [
+    {"approach": "verify-deploy.sh --skip-slow --only-gate 3,4 with TARGET=core extension dir (as literally written in plan)", "result": "failed", "reason": "exit 2 'no deploy tree' -- TARGET must be the nvim config repo root (has both agent-system/extensions/ and .claude/), not the extension's own source-store subdirectory"}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "1.8",
+      "description": "Run the Phase 1 covering check verify-deploy.sh --skip-slow --only-gate 3,4 /home/benjamin/.config/nvim/agent-system/extensions/core",
+      "type": "altered",
+      "reason": "The plan's exact TARGET argument is the core extension's own source-store subdirectory, which lacks a .claude/ tree; verify-deploy.sh requires TARGET to be the nvim config repo root. Corrected TARGET to /home/benjamin/.config/nvim and additionally ran generate-context-line-counts.sh --write there first to clear a transient gate-3 line-count mismatch caused by the new paragraph.",
+      "annotation": "*(deviation: altered — corrected TARGET to the nvim config repo root; ran generate-context-line-counts.sh --write first; both gates then passed)*"
+    }
+  ]
+}
