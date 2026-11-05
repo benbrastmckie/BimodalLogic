@@ -8,6 +8,14 @@ mathematics and the (C)/(S)/(W) verdict table live in
 **The aim is `Decidable (PlusValidZTime φ)` — decidability of L⁺ over discrete time.** Stage 1 is
 that front and preempts everything else for agent time. Stages 2–4 are subordinate.
 
+**One exception now outranks Stage 1: `864` must run before the next `/todo`.** It ports the
+limit-closure schema (`lcN`, `lcN_valid_full`, `omega_limit`) out of `559`'s probe directory,
+which `/todo` archives. `559` completed as a NARROWED task whose description states that "The
+LC-schema and axiomatizability discussion in report 03 is NOT part of this deliverable", so that
+content is landed nowhere under `FormalSystem/` and is owned by nothing else. Archiving first
+does not destroy it (it moves to `specs/archive/`), but it leaves the only candidate complete
+axiomatization for TM⁺ out of the live tree with no task pointing at it.
+
 ## Rulings in force
 
 Each is a user ruling or a recorded decision an agent may not override. The argument lives in the
@@ -74,8 +82,25 @@ cited record, not here.
   mechanisms survive it, two strictly harder, and ▷/◁ are the only two projections. **Two-line
   test for any successor**: name the half-line the counter is read from and the one the formula is
   read from; if both are "forward", `cntAt_eq_of_pend_eq_fwd` plus mechanism 5 already refutes it.
-- **L^▷ work stays confined** to `855` and `856`; no `▷`/`◁` clause is added to `clSig`,
-  `LocalRun` or `Anchored`.
+- **L^▷ work is confined to its own task set** — `856`, `866`, `867`, `868` (and `860`, which
+  discharges `hmarkers` for the landed non-definability module). No `▷`/`◁` clause is added to
+  `clSig`, `LocalRun` or `Anchored`: the containment is about the Stage 1 engine's own
+  definitions, not about how many L^▷ tasks exist.
+- **Both L^▷ gaps bottom out in L⁺, not in `▷`/`◁`** — the structural reason the set above is
+  cheap and the aim above is not. `FormalSystem/OpenLanguage.lean` records that L^▷ "is semantic
+  only: it has no proof system", so `856` owes one, but only at Base/Dense where `859` showed `▷`
+  says strictly more than L⁺; at ZTime/RTime `854`'s definability result makes TM⁺ already the
+  proof system through `tr`. Past that, completeness for L^▷ reduces to a question the tree
+  answers negatively or not at all: TM⁺ is **incomplete** at Base (`plus_incomplete_base`) and
+  completeness of any recursive extension is open at every class and stated nowhere. That
+  question is `865`'s, and before `865` was filed it was owned by nobody.
+- **Two hypotheses carry the landed definability verdicts and neither is formalized.**
+  `SeparationOver` (GHR Thm 10.2.9 / 10.3.20) carries the positive half — `867` discharges it at
+  ZTime and makes `tr` executable. `hinexpr` carries the negative half. **`hinexpr` is
+  deliberately not filed**: formalizing it (the `N` collapse induction, the two ℚ run order types,
+  the Cantor isomorphism) would harden an expressiveness record whose verdict is already settled
+  on `859`'s report, and advances neither completeness nor decidability. Do not file it for those
+  goals; `859`'s R3 states its own terms if a consumer ever appears.
 - **Gate asymmetry.** `(P1)` gates at Base/Dense/RTime, where its r.e. status is open with a
   located obstruction. At ZTime it is settled affirmatively *on paper* (`559` item (k)), so
   `559`'s `(P2)` is gated on `(P0b)` alone, **not** on Stage 1, which adds a constructive
@@ -92,18 +117,28 @@ cited record, not here.
   for `coh` is refuted — **no backward propagation theorem is ever to be claimed for `coh`**.
   Route A (generalized-Büchi nonemptiness) is not to be entered without a decision record.
 - **What no path changes.** Completeness is gated by closedness of the canonical bundle (`559`
-  item (c)) and by `(P1)`; decidability by `852`'s agreement lemma. `▷`/`◁` supply no closure
-  principle and no decision procedure — the language extension decides *where to look for an
-  engine*, never closes either gap.
+  item (c)) and by `(P1)`. `▷`/`◁` supply no closure principle and no decision procedure — the
+  language extension decides *where to look for an engine*, never closes either gap.
+- **`852` is not the only decidability route, and this is newly load-bearing** (`866`).
+  `559`'s report 03 §1.3 argues on paper that ZTime validity is decidable by an MSO encoding over
+  the ω-branching tree plus Rabin's theorem — five steps, independent of the ladder front, needing
+  neither `852`'s pumping lemma nor `761`'s realization theorem nor `763`'s lift. That report never
+  mentions `▷`/`◁`, but its step-4 encoding of a walk-with-marked-time as `(P, x ∈ P)` renders
+  `⊡ψ` as "∀P' ∋ x", and `▷ψ` is the same shape restricted to agreement below `x`. If that rides,
+  L^▷ ZTime decidability follows with no new machinery and no translation. **Measure `866` before
+  committing anything expensive to Stage 1 on decidability grounds.** It does not close
+  `Decidable (PlusValidZTime φ)` constructively, which is still Stage 1's own aim.
 
 ## Run these next
 
 ```bash
-/orchestrate 855 --implement     # land the negative transport verdict as a wired evidence probe (plan v1, 4 phases). Collides with 559 on typst/generated/status.typ — its own cycle
+/orchestrate 864                 # FIRST, AND BEFORE /todo: port the LC schema out of 559's probe before its directory is archived
+/orchestrate 866                 # cheapest decidability answer for L^▷: does the MSO/Rabin route carry ▷/◁? Report only
+/orchestrate 868                 # cheap and compounding: the L^▷→L⁺ transfer corollaries, stated conditionally
 /orchestrate 852 --hard --lit    # THE OPEN CORE: the tpOf pumping lemma, authored not cited
 /orchestrate 838,853 --hard --lit # the Phase 11.8 insertion cascade, batched with its blocker
-/orchestrate 856 --hard          # UNGATED by 859: the L^▷ proof system now has confirmed work at Base/Dense
-/todo                            # 9 completed tasks (828, 833, 844, 846, 849, 850, 851, 854, 859) still read the open count high
+/orchestrate 856 --hard          # UNGATED by 854/859: the L^▷ proof system has confirmed work at Base/Dense only
+/todo                            # 11 completed tasks (559, 828, 833, 844, 846, 849, 850, 851, 854, 855, 859) read the open count high — RUN 864 FIRST
 ```
 
 **`761` is `[HOLD]`, parked mid-plan-v11 at Phase 11.12** precisely so `855`/`852`/`853`/`856` can
@@ -143,8 +178,11 @@ successors measured false. Re-planning the area from `838`'s two-sided framing i
 ## Next batches
 
 ```bash
+# Stage 0.5 — pre-archival rescue and the two cheap measurements; ahead of Stage 1
+/orchestrate 864                 # the LC-schema port; must precede /todo
+/orchestrate 865 --lit           # owns the TM⁺ candidate axiomatization and the Reynolds automaton obstruction (gated on 864)
+/orchestrate 866                 # the MSO/Rabin route for ▷/◁ — settles whether Stage 1 gates L^▷ decidability at all
 # Stage 1 — L⁺ decidability; run to exhaustion before anything below
-/orchestrate 855 --implement     # the evidence-probe round — its own cycle, never with 559
 /orchestrate 852 --hard --lit    # the open core: the tpOf pumping lemma
 /orchestrate 838,853 --hard --lit # the insertion cascade with its blocker. Shares LadderAgree.lean with 852
 /orchestrate 837                 # Challenge-statement repair (researched); barred from any implement dispatch by Statement Fidelity
@@ -152,6 +190,9 @@ successors measured false. Re-planning the area from `838`'s two-sided framing i
 /orchestrate 714,781 --hard      # sliced-certificate internals (781 researched)
 # Stage 2 — the L^▷ front, then supporting semantics and metalogic
 /orchestrate 856 --hard             # the L^▷ proof system: unnecessary at ZTime/RTime (854), genuine work at Base/Dense (859)
+/orchestrate 868                    # the L^▷→L⁺ transfer corollaries; antecedents stay open by design
+/orchestrate 867 --hard --lit       # formalize Gabbay separation, discharging SeparationOver and making tr executable. SIZEABLE — weigh against 866's verdict first
+/orchestrate 860                    # the colourClock bridge discharging hmarkers (researched). Re-point its scope at the landed Independence module first
 /orchestrate 664,559,570 --lit      # corpus ingest, then TM⁺ completeness rounds and the C3 open question
 /orchestrate 830 --hard             # Γ-generalize decidableValidZTime; does NOT advance the L⁺ aim
 # Stage 3 — datasets, examples, documentation, hygiene
