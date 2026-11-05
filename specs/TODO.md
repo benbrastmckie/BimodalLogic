@@ -1,5 +1,5 @@
 ---
-next_project_number: 870
+next_project_number: 872
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 870
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,856,857,858,860,863,865,867,869 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,856,857,858,860,863,865,867,869,870,871 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862 | 298,428,502,761,770,772,777,785,803,813,838,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -130,6 +130,7 @@ next_project_number: 870
 856 [IMPLEMENTING] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
+871 [NOT STARTED] — Correct LCU docstring and restore omega\_chain...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -145,6 +146,7 @@ next_project_number: 870
 ### Semantics
 
 869 [NOT STARTED] — IMPLEMENTATION TASK, small and self-contained: state and...
+870 [NOT STARTED] — Oriented-forest Saturation lemma for TaskFrame
 
 ### Build Performance
 
@@ -153,6 +155,26 @@ next_project_number: 870
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 871. Correct LCU docstring and restore omega_chain segment-property parameter
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: Small, purely corrective library repair with three parts, all confirmed against the live tree: (1) correct PlusLCSchema.lean's docstring claim that LCU is the n=1 instance of lcN -- LCU is the until-form with two parameters and untl, while lcN 1 is the F-form with one parameter; (2) restore the landed omega_chain's dropped segment-property parameter P together with its stability hypothesis, matching specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean lines 659-684, which carries both; (3) state backward LC_n as the one-line plusValidIn_reflectTime corollary of lcN_plusValidZTime, since the doubled automaton route needs it and it costs only a corollary. Declaring the until-form LCU itself is explicitly NOT in scope here and waits on the oriented-forest Saturation lemma and task 867 (SeparationOver).
+
+---
+
+### 870. Oriented-forest Saturation lemma for TaskFrame
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Prove that every oriented forest (a frame in which directed paths between any two nodes are unique) satisfies the literal TaskFrame.Saturation obligation, following report 03 section 1.2's five-step argument against the literal definition, as a Semantics/ lemma beside the existing saturation_of_* family (natural home: next to saturation_of_fib_finite). State the path-uniqueness hypothesis explicitly rather than assuming a forest data structure. This unblocks two independent fronts: the AA carrier layer-split route located in specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md finding 4, and the MSO cover step at ZTime (report 03 section 1.3 step 2, the countable-oriented-forest cover). Independent of SeparationOver, of Rabin's theorem, and of the ladder/RaySummary files held by other in-flight tasks.
+
+---
 
 ### 869. Open modal invariance ray agreement lifting
 - **Status**: [NOT STARTED]

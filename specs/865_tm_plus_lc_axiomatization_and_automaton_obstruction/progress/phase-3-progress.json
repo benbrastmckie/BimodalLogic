@@ -1,0 +1,62 @@
+{
+  "phase": 3,
+  "phase_name": "File the Surviving Follow-Ons",
+  "started_at": "2026-11-05T16:35:00Z",
+  "last_updated": "2026-11-05T16:45:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Decision gate: proceed only on genuinely-new or overlaps-open verdicts",
+      "status": "done",
+      "note": "Both R1 and R2 are genuinely-new after Phase 2's narrowing of R1's file_scope. No proposal dropped.",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Create state.json entries via state-write.sh --allocate-into",
+      "status": "done",
+      "note": "state-write.sh's --audit-verdict flag could not accept the full task-proposals-audit.ndjson directly: each of its two ~151KB lines exceeds Linux's per-argv MAX_ARG_STRLEN (128KB), since the script passes the file's parsed JSON as a single --argjson shell argument ('Argument list too long', exit 126). Worked around by building a condensed audit-verdict file (scratchpad: condensed-audit.ndjson) that keeps every non-scope-blind verdict verbatim and replaces the ~450-490 scope-blind entries per proposal with a 'scope_blind_count' integer -- exactly the compact rendering the plan's Phase 2 step already called for. The full, uncondensed task-proposals-audit.ndjson remains the durable committed evidence; the condensed file is only state-write.sh's --audit-verdict input and is recorded verbatim into each new entry's own audit_verdict field.",
+      "files_touched": [
+        "specs/state.json"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Verify each proposal's id matches the project_name written",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 4,
+      "description": "Render Component 7 confirmation table",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 5,
+      "description": "Run validate-state.sh",
+      "status": "done",
+      "note": "Exit 0, STATE VALIDATION PASSED WITH WARNINGS (18 pre-existing warnings unrelated to this write: unknown top-level/entry fields on other entries, other tasks' file_scope coarseness/visibility). 0 failures.",
+      "files_touched": []
+    },
+    {
+      "id": 6,
+      "description": "Commit specs/state.json and specs/TODO.md by explicit path",
+      "status": "done",
+      "files_touched": [
+        "specs/state.json",
+        "specs/TODO.md"
+      ]
+    }
+  ],
+  "current_objective": 6,
+  "approaches_tried": [
+    {
+      "approach": "Pass full task-proposals-audit.ndjson directly to state-write.sh --audit-verdict",
+      "result": "failed",
+      "reason": "jq --argjson with the ~151KB-per-line parsed content exceeds Linux MAX_ARG_STRLEN (128KB per argv string); state-write.sh exited 126 'Argument list too long'."
+    }
+  ],
+  "handoff_count": 0,
+  "deviations": []
+}

@@ -181,18 +181,30 @@ written to this task's directory as the evidence Phase 3's filings will cite.
 
 ---
 
-### Phase 3: File the Surviving Follow-Ons [NOT STARTED]
+### Phase 3: File the Surviving Follow-Ons [COMPLETED]
 
 **Goal**: The follow-ons that survived Phase 2's audit exist as `not_started` tasks in
 `specs/state.json` with declared `file_scope`, and `TODO.md` renders them.
 
 **Tasks**:
-- [ ] Decision gate: for each proposal, proceed only on a `genuinely-new` verdict (or `overlaps-open`, adding the dependency edge via `update-task-status.sh --depends-on-add` and annotating it `(auto: file overlap)`). On any other verdict, drop or narrow that proposal and record the decision — do not file it unchanged.
-- [ ] For each surviving proposal, create the entry with `bash .claude/scripts/state-write.sh '<filter>' --session-id "$session_id" --allocate-into N --audit-verdict specs/865_.../task-proposals-audit.ndjson --regen-todo`, appending to `active_projects` with `+=` (never a wholesale `.active_projects = [...]` assignment), each entry carrying `project_number`, `project_name`, `status: "not_started"`, `task_type: "lean4"`, `file_scope`, `created`, `last_updated`, `next_artifact_number: 1`.
-- [ ] Verify each proposal's `id` matches the `project_name` written, so the audit evidence gate finds its covering entry.
-- [ ] Render the Component 7 confirmation table (number, title, task type, effort, dependencies, backlog check) into the Phase 3 notes for the summary to carry; no interactive prompt is issued (see Risks).
-- [ ] Run `bash .claude/scripts/validate-state.sh` and read its output in full.
-- [ ] Commit `specs/state.json` and `specs/TODO.md` by explicit path only, after `git status --short` confirms no sibling's uncommitted hunks are mixed in.
+- [x] Decision gate: for each proposal, proceed only on a `genuinely-new` verdict (or `overlaps-open`, adding the dependency edge via `update-task-status.sh --depends-on-add` and annotating it `(auto: file overlap)`). On any other verdict, drop or narrow that proposal and record the decision — do not file it unchanged. *(completed: both R1 and R2 are genuinely-new)*
+- [x] For each surviving proposal, create the entry with `bash .claude/scripts/state-write.sh '<filter>' --session-id "$session_id" --allocate-into N --audit-verdict specs/865_.../task-proposals-audit.ndjson --regen-todo`, appending to `active_projects` with `+=` (never a wholesale `.active_projects = [...]` assignment), each entry carrying `project_number`, `project_name`, `status: "not_started"`, `task_type: "lean4"`, `file_scope`, `created`, `last_updated`, `next_artifact_number: 1`. *(completed: filed as project 870 (R1) and 871 (R2); worked around state-write.sh's per-argv size ceiling on --audit-verdict with a condensed evidence file -- see progress/phase-3-progress.json)*
+- [x] Verify each proposal's `id` matches the `project_name` written, so the audit evidence gate finds its covering entry. *(completed)*
+- [x] Render the Component 7 confirmation table (number, title, task type, effort, dependencies, backlog check) into the Phase 3 notes for the summary to carry; no interactive prompt is issued (see Risks). *(completed: see Phase 3 notes below and the summary)*
+- [x] Run `bash .claude/scripts/validate-state.sh` and read its output in full. *(completed: exit 0, PASSED WITH WARNINGS, 0 failures)*
+- [x] Commit `specs/state.json` and `specs/TODO.md` by explicit path only, after `git status --short` confirms no sibling's uncommitted hunks are mixed in. *(completed)*
+
+#### Phase 3 Notes: Component 7 Confirmation Table
+
+The task description's own "file the implementation as its own task" instruction is this
+task's pre-authorization for these two filings (see the Multi-Task Creation Standard risk row
+above); the table below is the record of that confirmation, rendered here since no interactive
+foreground prompt was issued.
+
+| # | Title | Task Type | Effort | Dependencies | Backlog Check |
+|---|-------|-----------|--------|---------------|----------------|
+| 870 | Oriented-forest Saturation lemma for TaskFrame | lean4 | ~1 hour | None | `genuinely-new` after narrowing `file_scope` to drop `FormalSystem/Semantics/README.md` (initial audit hit a `duplicate-of-open` against task 869 on that one shared, low-specificity file; 869's actual content — open-future/open-past modal invariance — is unrelated) |
+| 871 | Correct LCU docstring and restore omega_chain segment-property parameter | lean4 | ~0.5 hours | None | `genuinely-new`; no open-side overlap at any audit pass |
 
 **Timing**: 0.75 hours
 
