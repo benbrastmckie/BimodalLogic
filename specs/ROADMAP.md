@@ -55,7 +55,10 @@ cited record, not here.
   need the tensed-antecedent clause. L^▷ tasks are demoted, not abandoned.
 - **Decidability before completeness** (2026-11-02). Deciding validity makes the valid set r.e.,
   and Craig then gives a recursive axiomatization. Caveat: Craig buys *an* axiomatization, not a
-  natural one.
+  natural one. **Sharpened at ZTime (878):** deciding validity makes the valid set **recursive**
+  outright, which is directly its own recursive axiom set — Craig is not needed where decidability
+  is already in hand. Craig remains the instrument for the weaker r.e.-only case, which is the
+  situation at Base, Dense and RTime, where r.e.-ness itself is open.
 - **No constructor is added to `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`, and the
   stability-modal language is not renamed in Lean.** Absorb-and-rename is REFUSED: mutating that
   inductive would turn `plus_incomplete_base`, `blc_not_plusDerivable_base` and
@@ -109,9 +112,21 @@ cited record, not here.
 - **The MSO/Rabin route reaches ZTime only, and stays a paper result** (866). `▷`/`◁` **do ride**
   step 4's encoding, at the cost of an amendment at step 1. Mathlib has no MSO, no ω-automata and
   no Rabin tree theorem, so step 5 is refused outright rather than deferred. It does **not** close
-  `Decidable (PlusValidZTime φ)` constructively, which is still Stage 1's aim. **Making the paper
-  argument a proof is 878**: the countable-model step (gap G1) and the forest-versus-single-tree
-  gap, with held citations. It is the hedge against the Lean engine and runs beside it.
+  `Decidable (PlusValidZTime φ)` constructively, which is still Stage 1's aim. **878 made the
+  paper argument a proof, conditional on (H5)**: both gaps are repaired — G1 by re-justification
+  via the compiled `stab_state_only`/`box_global` state-indexed witness closure, G2 by an explicit
+  new-root coding with a load-bearing `¬Rt(meet(y,x))` guard on `⊑` — and Rabin's theorem is held
+  at `S2S` (Thomas 1997 Thm 6.20, with 6.19/6.18 supplying the effective automaton translation
+  and a regular witness), so `SωS` and Gurevich-Shelah are **not needed**. **The citable theorem**:
+  `{φ | PlusValidZTime φ}` is decidable
+  (`specs/878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md`
+  finding 7's statement and hypothesis list (H0)-(H6)), a **paper** theorem conditional on
+  **(H5)** — task 870's oriented-forest Saturation lemma and universal-cover construction,
+  `[NOT STARTED]`. It gives **no** constructive decision procedure, **no** Lean
+  `Decidable (PlusValidZTime φ)` (still Stage 1's own aim), **no** elementary complexity bound,
+  and **no** finite model property — a *regular*-model property instead (every ZTime-refutable
+  formula is refuted on a finitely presented, not finite, doubly serial oriented forest). It is
+  the hedge against the Lean engine and runs beside it.
 - **Presentation (a) for 761** (819): the set-valued per-state datum in maximum-certified form
   (`D` over `Q × ClType φ × K`, `ladderRealized` the fibre equation). **No tuple index is to be
   stated at any parameters.**
@@ -124,7 +139,7 @@ cited record, not here.
 
 ```bash
 /orchestrate 878 --lit           # FIRST on the L⁺ front, and cheap: make the paper proof of ZTime decidability rigorous (gap G1, the forest gap)
-/orchestrate 870,871             # the oriented-forest Saturation lemma and the corrective repair; both feed 878 and 879
+/orchestrate 870,871             # the oriented-forest Saturation lemma and the corrective repair; both feed 878 and 879. State it at oriented-forest strength (underlying undirected graph is a forest), not directed-path uniqueness alone (report 03 §1.2 note; 878 decision 7)
 /orchestrate 853,838 --hard --lit # Stage 1: the Phase 11.8 insertion cascade, batched with its blocker
 /orchestrate 856 --hard          # IN FLIGHT at its final phase: the L^▷ proof system. Finish it; it closes the L^▷ layer as it stands
 /orchestrate 872                 # IN FLIGHT: the transfer ledger. Concludes as a record; its proposals are NOT filed
@@ -173,7 +188,7 @@ and 838's `.blocker-research.json` first.
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — needs 761 resumed
 /orchestrate 714,781 --hard      # sliced-certificate internals (781 researched)
 # Stage 2 — completeness of L⁺ at ZTime: TM⁺ plus the limit-closure schema
-/orchestrate 870,871             # the Saturation lemma and the corrective repair; both gate 879, and 870 feeds 878's cover step
+/orchestrate 870,871             # the Saturation lemma and the corrective repair; both gate 879, and 870 feeds 878's cover step — state the oriented-forest hypothesis (underlying undirected graph is a forest), not directed-path uniqueness alone (report 03 §1.2 note; 878 decision 7)
 /orchestrate 867 --hard --lit    # Gabbay separation over ℤ for PlusFormula; the doubled-automaton route is conditional on it
 /orchestrate 879 --lit           # the programme's owner: target statement, architecture, ingredient table, go/no-go
 # Stage 2b — supporting semantics and metalogic
@@ -301,9 +316,12 @@ out of the immediate run list appears there correctly; its presence is not a gap
   while every route through the time coordinate carries `OrdTimesKnown b ord`, non-removable
   in-source. **482 must re-verify its own anchors first**: `Verified/Refutation/` does not exist
   and `ProofExtraction.lean` holds no verifier declaration.
-- **The MSO decidability formalization is refused outright, not deferred** (866's R2, 865's R4).
-  Before any attempt at that reading, gap G1 in report 03 §1.3 needs a paper repair, which 878
-  owns.
+- **The MSO decidability formalization is refused outright, not deferred** (866's R2, 865's R4),
+  **unchanged by 878's repair and not resting on it**. The refusal rests on Mathlib's inventory —
+  no MSO syntax, no ω-automata, no determinization of ω-automata, no Rabin tree theorem (866
+  finding 8, held) — not on gap G1. 878 discharged the precondition this entry previously stated
+  (gap G1 in report 03 §1.3 needed a paper repair); the refusal itself stands on its own grounds
+  regardless.
 - On any `C16` unused-binder red, prefer the signature edit to a `scripts/nolints.json` entry,
   check call sites first, and **do not run `lake exe runLinter --update`**.
 - **A verification claim is only as wide as the flags it was made under.**
