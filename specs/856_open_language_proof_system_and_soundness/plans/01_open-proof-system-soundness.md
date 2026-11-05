@@ -706,25 +706,29 @@ record the covered names in each helper's docstring.
 
 ---
 
-### Phase 10: validity block — discrete, Prior, Dedekind, `⊡` and pasting [NOT STARTED]
+### Phase 10: validity block — discrete, Prior, Dedekind, `⊡` and pasting [COMPLETED]
 
 **Goal**: Land the remaining block helpers: the class-restricted schemata and the stability block,
 closing the constructor set.
 
 **Tasks**:
 
-- [ ] Land `theorem openAxiomValidIn_discreteBlock` / its reflection twin covering
+- [x] Land `theorem openAxiomValidIn_discreteBlock` / its reflection twin covering
   `discrete_symm_fwd`, `discrete_symm_bwd`, `discrete_propagate_fwd`,
   `discrete_propagate_bwd`, `discrete_box_necessity`.
-- [ ] Land `theorem openAxiomValidIn_priorBlock` / twin covering `prior_UZ`, `prior_SZ`, `z1`,
+- [x] Land `theorem openAxiomValidIn_priorBlock` / twin covering `prior_UZ`, `prior_SZ`, `z1`,
   `prior_U_gap`, `prior_S_gap`, `sep`.
-- [ ] Land `theorem openAxiomValidIn_denseBlock` / twin covering `density`, `dense_indicator`.
-- [ ] Land `theorem openAxiomValidIn_stabBlock` / twin covering `stab_k`, `stab_t`, `stab_4`,
+- [x] Land `theorem openAxiomValidIn_denseBlock` / twin covering `density`, `dense_indicator`.
+- [x] Land `theorem openAxiomValidIn_stabBlock` / twin covering `stab_k`, `stab_t`, `stab_4`,
   `stab_5`, `box_stab`, `atom_stab`.
-- [ ] Land `theorem openAxiomValidIn_pasteBlock` / twin covering `paste` and `untl_paste`,
+- [x] Land `theorem openAxiomValidIn_pasteBlock` / twin covering `paste` and `untl_paste`,
   consuming Phase 1's purity predicates and the landed
-  `PlusLanguage.truth_congr_agreeFrom`/`truth_congr_agreeUpTo` halves.
-- [ ] State each class-restricted helper at the frame class its `minFrameClass` arm names
+  `PlusLanguage.truth_congr_agreeFrom`/`truth_congr_agreeUpTo` halves. *(deviation: altered — the
+  two L⁺ congruences are statements about `PlusTruthAt` and do not apply, since a pure L^▷
+  formula may contain the crossed restricted modal; the arms consume Phase 6's L^▷ counterparts
+  `openTruthAt_congr_agreeFrom`/`openTruthAt_congr_agreeUpTo` instead, which are themselves built
+  on the L⁺ `AgreeFrom`/`AgreeUpTo` relations and their `paste` lemmas)*
+- [x] State each class-restricted helper at the frame class its `minFrameClass` arm names
   (`.Dense`, `.ZTime`, `.RTime`), never at `.Base`. A schema valid only over a restricted class
   that no `FrameClass` tag denotes is not here at all: it goes through the frame-predicate form,
   as `PlusLanguage`'s recipe directs for `Determined`.
