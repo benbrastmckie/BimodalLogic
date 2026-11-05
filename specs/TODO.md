@@ -148,7 +148,7 @@ next_project_number: 885
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-870 [RESEARCHED] — Oriented-forest Saturation lemma for TaskFrame
+870 [PLANNED] — Oriented-forest Saturation lemma for TaskFrame
 
 ### Build Performance
 
@@ -596,11 +596,12 @@ VERIFICATION. Every count and every declaration name in the report must be repro
 ---
 
 ### 870. Oriented-forest Saturation lemma for TaskFrame
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 884
 - **Research**: [870_oriented_forest_saturation/reports/01_oriented-forest-saturation.md]
+- **Plan**: [870_oriented_forest_saturation/plans/01_oriented-forest-saturation.md]
 
 **Description**: Prove that every oriented forest (a frame whose underlying undirected multigraph of the one-step edge relation is a forest, i.e. acyclic -- strictly more than directed-path uniqueness, per specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md section 1.2's amendment) satisfies the literal TaskFrame.Saturation obligation, following report 03 section 1.2's five-step argument against the literal definition, as a Semantics/ lemma beside the existing saturation_of_* family (natural home: next to saturation_of_fib_finite). State the undirected-acyclicity hypothesis explicitly over a bare task relation -- the underlying undirected multigraph is a forest -- still without assuming a forest data structure. This unblocks two independent fronts: the AA carrier layer-split route located in specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md finding 4, and the MSO cover step at ZTime (report 03 section 1.3 step 2, the countable-oriented-forest cover). Independent of SeparationOver, of Rabin's theorem, and of the ladder/RaySummary files held by other in-flight tasks.
 

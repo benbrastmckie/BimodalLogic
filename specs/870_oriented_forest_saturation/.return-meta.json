@@ -1,22 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 8,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/870_oriented_forest_saturation/reports/01_oriented-forest-saturation.md",
-      "summary": "Oriented-forest Saturation: three-field IsOrientedForest encoding over SimpleGraph.fromRel, a 200-line compiling prototype covering report 03 section 1.2 steps 1-3 plus merge existence, the located residual merge-uniqueness step with a 4-cycle witness that directed-path uniqueness is insufficient, and a six-phase sorry-free implementation route."
-    },
-    {
-      "type": "other",
-      "path": "specs/870_oriented_forest_saturation/prototype/oriented-forest-core.lean",
-      "summary": "Compiling 200-line prototype (lake env lean, 0 errors/warnings/sorries): IsOrientedForest, directed-walks-are-paths, unique path length, unique penultimate, unique intermediate vertex (segment subsingleton), merge existence, divergent-meet approach disjointness."
+      "type": "plan",
+      "path": "specs/870_oriented_forest_saturation/plans/01_oriented-forest-saturation.md",
+      "summary": "8-phase plan (13h) for the oriented-forest Saturation lemma: prototype port, merge-point uniqueness, Saturation assembly, evidence module and docs rows."
     }
   ],
   "metadata": {
     "session_id": "sess_1793911571_152ebe_870",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 13,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8]]
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 870 to execute the plan",
+  "dispatch_seq": 10
 }
