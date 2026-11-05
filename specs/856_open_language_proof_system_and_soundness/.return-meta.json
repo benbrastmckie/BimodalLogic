@@ -1,22 +1,29 @@
 {
-  "status": "researched",
-  "dispatch_seq": 3,
+  "status": "planned",
+  "dispatch_seq": 6,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/856_open_language_proof_system_and_soundness/reports/01_open-proof-system-soundness-conservativity.md",
-      "summary": "Dependency gate opened (class-split verdict); the OpenAxiom/OpenDerivationTree/OpenErasure architecture with per-file layer and line budget; the schema set with every landed soundness witness and its erasure image; and the forced decision that the definability equation's backward half must stay out of the axiom type, with a compiled refutation."
-    },
-    {
-      "type": "probe",
-      "path": "specs/856_open_language_proof_system_and_soundness/probes/01_erasure-collapse-and-discharge.lean",
-      "summary": "Compiled-live (exit 0, no sorry, no warnings): eraseOpen with its ofPlus retraction and reflectTime commutation, the choice-free Determined collapse, nine axiom-discharge arms including the Ockhamist HN arm, and the machine-checked negative that the definability backward half erases to refuted Determined."
+      "type": "plan",
+      "path": "specs/856_open_language_proof_system_and_soundness/plans/01_open-proof-system-soundness.md",
+      "summary": "15-phase plan for the L^▷ proof system: OpenAxiom (18 restricted-modal + 53 re-declared TM⁺ constructors), OpenDerivationTree, eraseOpen with a wildcard-free discharge table, the two validity dispatch lemmas assembled from five block helpers, soundness, conservativity over TM⁺ in both directions and over TM at four classes, the Determined collapse, and the ledger surfaces."
     }
   ],
   "metadata": {
     "session_id": "sess_1793893221_493f2c_856",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 15,
+    "estimated_hours": 29,
+    "dependency_waves": [[1], [2, 4, 6], [3, 7, 14], [5, 8], [9], [10], [11], [12], [13], [15]]
+  },
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, scripts/check-metalogic-cycles.sh assertion B asserts the library-wide UPWARD import set EQUALS a frozen ALLOWLIST (a frozenset beside _SRC in that script) and fails on a SURPLUS as well as a shortfall. Any NEW layer-0 file in a FormalSystem/<Lang>Language/ directory that imports a higher-layer module (typically FormalSystem.Theorems.*, layer 2) therefore breaks the gate unless the allowlist is extended in the SAME phase as the imports, with entries derived by running `python3 scripts/measure-refactor-partitions.py upward-edges` rather than hand-copied. The tempting alternative -- giving the file a higher layer row in LANGUAGE_FILE_LAYERS to make the edge downward -- is explicitly rejected by that table's own docstring as a content judgement that reaches the same blind spot the allowlist exists to prevent. Precedent: FormalSystem/MinusLanguage/AxiomDischarge.lean is itself allowlisted for exactly this reason (8 lines, all into Theorems). Pair this with C26 in check-module-invariants.sh, which flags any live def/abbrev whose last name component carries a non-trailing underscore -- so Type-valued derivation-term defs must be lowerCamelCase (dischargePropK, not discharge_prop_k), while theorem names correctly stay snake_case.",
+      "category": "PATTERN",
+      "source_artifact": "specs/856_open_language_proof_system_and_soundness/plans/01_open-proof-system-soundness.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["check-metalogic-cycles", "upward-import-allowlist", "LANGUAGE_FILE_LAYERS", "layer-0", "C26-underscore-naming", "lean-gate-collision"]
+    }
+  ]
 }

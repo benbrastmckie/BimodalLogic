@@ -178,20 +178,39 @@
     {
       "project_number": 856,
       "project_name": "open_language_proof_system_and_soundness",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "metalogic",
       "title": "Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity",
       "description": "IMPLEMENTATION TASK, gated: build the proof system for L^▷ -- `OpenAxiom`, `OpenDerivationTree`, and their soundness recursion -- beside `FormalSystem/OpenLanguage/`'s existing semantic half, plus the two conservativity directions over TM⁺ and the collapse under `Determined`. This is a PREREQUISITE for any completeness statement about L^▷ and it is currently owed by nobody.\n\nTHE GAP THIS FILLS, VERIFIED AT FILING. `FormalSystem/OpenLanguage/` is 1,611 lines over six files (`Formula.lean`, `OpenTruth.lean`, `OpenValidity.lean`, `OpenClasses.lean`, `OpenReversal.lean`, `OpenOckhamist.lean`), sorry-free, and carries NO proof system: no axiom type, no derivation tree, no soundness theorem. Task 559 names this exact omission and the exact remedy -- \"The sanctioned home for a proof system over L^▷ is a NEW OpenAxiom/OpenDerivationTree beside OpenLanguage/'s semantic half, which perturbs no existing recursion\" -- and explicitly defers the work: \"it is not to be built from this task either: this task reports, and files the implementation as its own lean4 task\". This is that task.\n\nDEPENDENCY, AND IT IS A HARD GATE, NOT A COURTESY. This task declares the ▷-definability check as a dependency and MUST NOT be entered before that verdict is in. If ▷ turns out L⁺-definable, L^▷ is a notational variant of L⁺, `PlusAxiom`/`PlusDerivationTree` already are its proof system, and this entire task is unnecessary -- building it first would be the single most expensive way to learn that. Re-read that verdict before planning.\n\nWHAT TO BUILD, and the template is named rather than invented. `FormalSystem/PlusLanguage/README.md`'s \"Extension recipe: adding a `PlusAxiom` constructor\" is the per-constructor cost model: `PlusAxiom` is closed, exactly three declarations pattern-match on its constructors (`PlusAxiom.minFrameClass`, `plusAxiom_validIn_min`, `plusAxiom_reflect_time_validIn_min`), neither dispatch lemma has a wildcard arm, and every other module reaches the axiom type only through `minFrameClass` and the two lifted forms. Mirror that shape for `OpenAxiom`: one constructor line, one `minFrameClass` arm, one validity arm and one reflection-validity arm per schema, with the reflection arm cheap because `reflectTime` fixes ⊡ and exchanges ▷ with ◁ (`OpenReversal.lean`), so every ◁ obligation is one line from its ▷ twin through `openValid_reflectTime`.\n\nTHE SCHEMA SET, from 559's (P2) candidate, each with its soundness status as recorded there. Soundness is LARGELY PRE-BUILT and that is the reason this task is tractable: the S5 laws for ▷ and for ◁ (`ofut_k`, `of_ofut`, `ofut_four`, `ofut_five` and the four `opast` mirrors), the ordering `□ ⟹ ⊡ ⟹ ▷/◁` (`stab_of_box`, `ofut_of_stab`, `opast_of_stab`), strictness at every link, incomparability of ▷ and ◁, HN for ▷ (`hnOpen_openValid`, and refuted for ⊡ by `hnStab_refuted_sinkFrame` -- do not state HN for ⊡), and the reversal transport are all landed in `OpenLanguage/`. What is missing is the proof system, not the semantics. The two rigidity schemata `◁φ⁺ ↔ φ⁺` and `▷ψ⁻ ↔ ψ⁻` have their semantic halves landed as `PlusLanguage.truth_congr_agreeFrom` and `truth_congr_agreeUpTo`. The definability equation `⊡φ ↔ ▷◁φ` comes from the OpenLanguage landing of that biconditional -- declare that task as a dependency too, or cite its landed names if it has already run.\n\nWHAT IS EXPLICITLY NOT IN SCOPE, each of these being a way to get this task wrong.\n- NO COMPLETENESS CLAIM, in any form, for any frame class. This task delivers a sound system and nothing more. 559's binding obstruction is closedness of the canonical bundle and ▷/◁ supply no closure principle; `plus_incomplete_base` stands exactly as proved; `blc` stays a non-theorem; an LC_n-style schema is still required in L^▷ exactly as in L⁺. Any docstring sentence suggesting otherwise is a defect.\n- ADD NO CONSTRUCTOR to `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`, and do not alter `OpenFormula`'s nine constructors. The separate-inductive-plus-embedding architecture (`ofPlus : PlusFormula → OpenFormula`, constructor-to-constructor, every derived operator sharing its `PlusFormula` namesake's right-hand side so `ofPlus` commutes by `rfl`) is the pattern and it is load-bearing: mutating `PlusFormula` would turn the landed `plus_incomplete_base`, the Independence block and both conservativity directions over TM into statements about a different language, requiring re-proof rather than inheritance.\n- Do NOT define ⊡ away as `▷◁`. `OpenFormula.stab` stays PRIMITIVE. The ← half of the biconditional needs `[F.IsRegular]`, so a syntactic abbreviation would change ⊡'s truth conditions off the regular class; and the decidability front's one working anchor for ⊡ is one bit per cell (`stab_mem_tpOf_iff_cell`, resting on `stab_state_only`), which routing through two non-state-local operators would lose. Definability here means a proved biconditional with the primitive retained.\n- A schema valid only over a restricted frame class that no `FrameClass` tag denotes must NOT be added to the axiom type; state its validity through the frame-predicate form instead, exactly as the `PlusLanguage` recipe directs for `Determined`.\n\nTHE THREE BASELINES ANY CANDIDATE MUST MEET, from 559's own list, and they are acceptance criteria rather than suggestions. (1) Soundness over all task frames of the class, one lemma per new constructor. (2) Conservativity over TM⁺ in BOTH directions -- which the definability equation makes statable rather than conditional, in deliberate contrast to `Conservativity.starConservative_of_plusComplete`, whose hypothesis is FALSE at Base by `plus_incomplete_base`; do not model this task's conservativity statement on that one. (3) Collapse under `Determined`, where ⊡ = ▷ = ◁ = id on a deterministic frame, so the landed deterministic completeness must still be recovered.\n\nLAYERING AND THE GATES THAT CHECK IT. Syntax-layer files import nothing from `FormalSystem/Semantics/` and no semantic module of any language -- `OpenLanguage/Formula.lean` records this as a module invariant and `scripts/check-metalogic-cycles.sh` checks the edge. Every new file under a language directory needs a row in the `LANGUAGE_FILE_LAYERS` table of `scripts/measure-refactor-partitions.py` or `check-metalogic-cycles.sh` FAILS naming the file; add the row in the same phase as the file. `docs/theorem-index.md` is the repository's single ledger and every result needs a row there: statement, fully-qualified Lean name, file, frame class, pinned axiom set. The README's generated inventory block is NOT hand-edited -- re-run `bash scripts/check-module-invariants.sh --emit-inventory`.\n\nVERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, then the unscoped build for final verification; never bare `lake`. Zero `sorry`, zero vacuous definitions. `bash scripts/check-module-invariants.sh` (bare form -- a flagged subset's exit 0 is not the whole gate) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration and compared against the semantic halves being lifted; picking up `Classical.choice` where the semantic half was choice-free is a regression, not a new baseline.\n\nSIZING. This is multi-dispatch work: a new axiom type, a new derivation tree, a soundness recursion over both, two conservativity directions and a collapse theorem. Expect it to be planned in phases with one schema family per phase, not landed in one round.",
       "file_scope": [
+        "FormalSystem/Metalogic/Conservativity.lean",
+        "FormalSystem/Metalogic/Conservativity/Open.lean",
+        "FormalSystem/Metalogic/Conservativity/Open/Forward.lean",
+        "FormalSystem/Metalogic/Conservativity/Open/OpenAxiomValidity.lean",
+        "FormalSystem/Metalogic/Conservativity/Open/OpenSoundness.lean",
+        "FormalSystem/Metalogic/Conservativity/Open/README.md",
+        "FormalSystem/Metalogic/Conservativity/README.md",
+        "FormalSystem/Metalogic/Deterministic.lean",
+        "FormalSystem/Metalogic/Deterministic/OpenCollapse.lean",
+        "FormalSystem/Metalogic/Deterministic/README.md",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/OpenLanguage.lean",
         "FormalSystem/OpenLanguage/OpenAxioms.lean",
         "FormalSystem/OpenLanguage/OpenDerivation.lean",
+        "FormalSystem/OpenLanguage/OpenErasure.lean",
         "FormalSystem/OpenLanguage/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "docs/theorem-index.md",
+        "scripts/check-metalogic-cycles.sh",
+        "scripts/check-module-invariants.sh",
+        "scripts/lean-citation-manifest.json",
         "scripts/measure-refactor-partitions.py",
-        "docs/theorem-index.md"
+        "typst/generated/status.typ"
       ],
       "created": "2026-11-04T20:41:42Z",
-      "last_updated": "2026-11-05T16:03:42Z",
+      "last_updated": "2026-11-05T16:28:43Z",
       "audit_verdict": {
         "verdict": "covered-by-closed",
         "project_number": 443,
@@ -212,12 +231,17 @@
         854,
         859
       ],
-      "session_id": "sess_1793893221_493f2c_856",
+      "session_id": "sess_1793893221_493f2c",
       "artifacts": [
         {
           "path": "specs/856_open_language_proof_system_and_soundness/reports/01_open-proof-system-soundness-conservativity.md",
           "type": "report",
           "summary": "Dependency gate opened (class-split verdict); the OpenAxiom/OpenDerivationTree/OpenErasure architecture with per-file layer and line budget; the schema set with every landed soundness witness and its erasure image; and the forced decision that the definability equation's backward half must stay out of the axiom type, with a compiled refutation."
+        },
+        {
+          "path": "specs/856_open_language_proof_system_and_soundness/plans/01_open-proof-system-soundness.md",
+          "type": "plan",
+          "summary": "15 phases, 29 hours, 10 dependency waves: OpenAxioms.lean, OpenDerivation.lean, OpenErasure.lean at layer 0; Conservativity/Open/{OpenAxiomValidity,OpenSoundness,Forward}.lean and Deterministic/OpenCollapse.lean at layer 3; plus the layer table, the cycle-check allowlist, the C14 baseline pairs and the theorem-index rows."
         }
       ],
       "next_artifact_number": 2
