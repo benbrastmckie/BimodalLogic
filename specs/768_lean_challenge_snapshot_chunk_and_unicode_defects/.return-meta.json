@@ -1,39 +1,30 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1793845134_662c9d_768",
-  "dispatch_seq": 1,
-  "findings_count": 8,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/reports/01_snapshot-chunk-and-unicode-defects.md",
-      "summary": "Live reproduction of all three lean-challenge-snapshot.sh defects (declaration-chunk over-reach, ASCII-only identifier regex, Goals backtick over-read); corrects the dispatch's stale claims about already-landed source-store work (a third repair, R8, is already landed uncommitted, bringing the suite to 17 passed) and deploy-tree freshness (deployed copy is already byte-identical to the source store, missing only one fixture file)."
+      "type": "plan",
+      "path": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/plans/01_snapshot-chunk-and-unicode-defects.md",
+      "summary": "6-phase, 9-hour plan repairing the declaration-chunk over-reach, the ASCII-only identifier class at all four sites, and defect (c)'s non-keyword Goals residual, plus an opt-in --dry-run compile step and the deploy-manifest fixture gap."
     }
   ],
+  "next_steps": "Run /orchestrate 768 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 9,
+  "dependency_waves": [[1], [2], [3], [4], [5], [6]],
   "memory_candidates": [
     {
-      "content": "lean-challenge-snapshot.sh's declaration-boundary assemblers (extract_r1/extract_r2) compute each forced-sorry chunk as text[match[i].start():match[i+1].start()], then replace everything from the chunk's own first top-level ':=' through the chunk end with ' := sorry\\n'. Any declaration keyword not in the matched alternation (e.g. abbrev, or an anonymous instance with no captured name) sitting inside that span is not a separate match, so its entire text is silently deleted rather than preserved or flagged. The same alternation and identifier-charset issues appear at multiple sites in a tool and must be fixed as one shared definition, not independently per site, or the sites end up disagreeing about what counts as a declaration.",
+      "content": "When a bash script embeds several independent quoted python3 heredocs (<<'PYEOF'), a regex or constant duplicated across them cannot be shared by interpolation, because the quoted heredoc deliberately blocks shell expansion. The two workable mechanisms are an exported shell variable read via os.environ in each heredoc, or a sibling Python module imported after a sys.path bootstrap. Prefer the exported variable when the script is a deploy artifact whose files are enumerated individually in an extension manifest: a new module file must be registered there or it is silently absent from the deployed tree, whereas an exported variable adds no new file and leaves every heredoc's argv contract unchanged. This duplication is a recurring defect source precisely because each copy is edited independently and the copies drift.",
       "category": "PATTERN",
-      "source_artifact": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/reports/01_snapshot-chunk-and-unicode-defects.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lean-challenge-snapshot", "regex-chunking", "declaration-boundary", "silent-swallowing", "tooling-defect"]
-    },
-    {
-      "content": "An ASCII-only identifier regex applied to a backtick-delimited token (e.g. `` `([a-zA-Z_][a-zA-Z0-9_']*)` ``) fails closed (no match at all) when the non-ASCII character is required to be immediately followed by the closing backtick, but the SAME regex applied to bare (non-delimited) source text truncates instead of failing, because nothing constrains what follows the captured run. This asymmetry means one ASCII-only regex can escape a cross-check entirely in one context and silently truncate-and-collide with an unrelated real identifier in another context, in the same tool, from the same root cause. Verified empirically with Python's default-Unicode re module: `\\w` already matches Unicode letters and even subscript digits (category No) like U+2081, which is a better default continuation class than a hand-rolled `[A-Za-z0-9_]`.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/reports/01_snapshot-chunk-and-unicode-defects.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["unicode-identifier", "regex-truncation", "python-re", "ascii-restriction", "lean-identifiers"]
-    },
-    {
-      "content": "When a dispatch's 'already-landed, uncommitted' section describes prior work in a source store, re-verify it empirically (run the test suite, diff deployed vs source-store files) rather than trusting the description as current -- a prior session can land further uncommitted work after the dispatch was generated, making the dispatch's landed-work description and its deploy-staleness claim both stale by the time research runs. In this case the actual suite had progressed from 16 to 17 passing cases and the deployed copy, which the dispatch claimed was stale, was already byte-identical to the source store.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/reports/01_snapshot-chunk-and-unicode-defects.md",
+      "source_artifact": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/plans/01_snapshot-chunk-and-unicode-defects.md",
       "confidence": 0.75,
-      "suggested_keywords": ["dispatch-staleness", "source-store-verification", "deploy-freshness", "orchestration-research"]
+      "suggested_keywords": ["bash", "python-heredoc", "shared-regex", "extension-manifest", "deploy-artifact", "code-duplication"]
     }
   ],
-  "next_steps": "Run /orchestrate 768 to create implementation plan"
+  "metadata": {
+    "session_id": "sess_1793845134_662c9d_768",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }

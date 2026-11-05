@@ -29,7 +29,7 @@ next_project_number: 869
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
 767 [NOT STARTED] — lake-build-guard replays stale result for env lean FILE
-768 [PLANNING] — lean-challenge-snapshot swallows declarations, mishandles...
+768 [PLANNED] — lean-challenge-snapshot swallows declarations, mishandles...
   └─ 810 [NOT STARTED] — META TASK. ONE grouped task covering FIVE agent-system...
     └─ 826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and...
@@ -3727,11 +3727,12 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. Two sibling record
 ---
 
 ### 768. lean-challenge-snapshot swallows declarations, mishandles Unicode names, and over-reads Goals prose
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [768_lean_challenge_snapshot_chunk_and_unicode_defects/reports/01_snapshot-chunk-and-unicode-defects.md]
+- **Plan**: [768_lean_challenge_snapshot_chunk_and_unicode_defects/plans/01_snapshot-chunk-and-unicode-defects.md]
 
 **Description**: Fix three independent defects in `lean-challenge-snapshot.sh`. The first two cause declarations to be silently lost or mangled during snapshot assembly; the third rejects plan prose that the plan-format examples permit. Defect (c) is PARTLY LANDED ALREADY as uncommitted work in the source store -- read the "ALREADY-LANDED, UNCOMMITTED SOURCE-STORE WORK" section below BEFORE touching the file, or that work will be duplicated or clobbered.
 
