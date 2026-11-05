@@ -1,5 +1,5 @@
 ---
-next_project_number: 881
+next_project_number: 882
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 881
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,878,880 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,878,880,881 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867,870,871 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -131,6 +131,7 @@ next_project_number: 881
 867 [NOT STARTED] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 871 [NOT STARTED] — Correct LCU docstring and restore omega\_chain...
   └─ 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+881 [RESEARCHED] — Factor the 53 TM-plus mirror schema validity proofs into a...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -161,6 +162,26 @@ next_project_number: 881
 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 881. Generic schema validity layer over truthenv
+- **Effort**: large
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+- **Parent**: Task 856
+
+**Description**: Factor the 53 TM-plus mirror schema validity proofs into a single generic layer over [TruthEnv L] [StabClauses L] in FormalSystem/Semantics/TruthClauses.lean, so L-plus, L-star and L-open share one statement instead of three parallel transcriptions.
+
+Motivation (surfaced by the L-open proof system work): the 53 TM-plus mirror schemata had to be discharged directly against OpenTruthAt because atomization rests on stab_state_only and an open-modal-prefixed formula is not state-local, so neither Atomization.lean nor uniform substitution (atom_stab) applies. FormalSystem/Metalogic/Conservativity/Star/StarAxiomValidity.lean (1,479 lines, 86 starValid_* theorems) already paid the identical cost against StarTruthAt for the same reason, and Conservativity/Open/OpenAxiomValidity.lean paid it a third time against OpenTruthAt. Stating the schemata once over the TruthEnv/StabClauses interface would serve all three languages together and remove roughly 1,500 lines of parallel transcription.
+
+Scope: state each TM-plus schema once against the generic truth interface; re-derive the per-language validity rows from the generic statement; retire the duplicated transcriptions where the generic form subsumes them.
+
+Two obstructions found during the L-open work, worth confirming survive the generalization:
+- The L-open analogue openTruthAt_timeShift had to be landed by hand (plusTruthAt_timeShift and starTruthAt_timeShift already existed), together with an openTruthAt_congr_ext it needs.
+- The OpenAxiom linearity statements do not use a uniform disjunct nesting: linear_until and temp_linearity are right-associated (the paper CN/TL form) while linear_since and temp_linearity_past are left-associated (the BX7-prime/BX11-prime form). StarAxiomValidity.lean carries both variants.
+
+---
 
 ### 880. Reposition L^▷ in the READMEs and record the Logos reading of the stability modal
 - **Status**: [NOT STARTED]
