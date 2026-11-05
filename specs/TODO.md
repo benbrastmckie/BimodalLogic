@@ -72,7 +72,7 @@ next_project_number: 870
 
 ### Completeness
 
-865 [RESEARCHING] — RESEARCH TASK, and the owner of a programme that is currently...
+865 [RESEARCHED] — RESEARCH TASK, and the owner of a programme that is currently...
 
 ### Dataset Enhancement
 
@@ -150,7 +150,7 @@ next_project_number: 870
 
 ### Build Performance
 
-803 [RESEARCHED] — Cut the elaboration time of...
+803 [PLANNING] — Cut the elaboration time of...
   └─ 804 [NOT STARTED] — Determine whether...
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
@@ -253,10 +253,11 @@ DELIVERABLE: a report under this task's directory, with a verdict on whether the
 ---
 
 ### 865. Tm plus lc axiomatization and automaton obstruction
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: Task 864
+- **Research**: [865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md]
 
 **Description**: RESEARCH TASK, and the owner of a programme that is currently owned by nobody: does TM-plus extended by the limit-closure schema admit a completeness proof, and can the located obstruction to Reynolds' construction be cleared in this setting?
 
@@ -3211,7 +3212,7 @@ ACCEPTANCE. A written classification of every import edge from the termination s
 ---
 
 ### 803. Cut subformulaproperty elaboration time
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: build-performance
 - **Dependencies**: None
