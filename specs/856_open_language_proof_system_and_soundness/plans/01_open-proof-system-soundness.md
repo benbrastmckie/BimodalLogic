@@ -564,22 +564,26 @@ nothing left for Phase 11 to invent.
 
 ---
 
-### Phase 7: validity block — propositional and modal schemata [NOT STARTED]
+### Phase 7: validity block — propositional and modal schemata [COMPLETED]
 
 **Goal**: Land the block helpers for the propositional and S5-modal mirror constructors.
 
 **Tasks**:
 
-- [ ] Land `theorem openAxiomValidIn_propBlock` and `theorem openAxiomReflectValidIn_propBlock`
+- [x] Land `theorem openAxiomValidIn_propBlock` and `theorem openAxiomReflectValidIn_propBlock`
   covering `prop_k`, `prop_s`, `ex_falso`, `peirce`.
-- [ ] Land `theorem openAxiomValidIn_modalBlock` and
+- [x] Land `theorem openAxiomValidIn_modalBlock` and
   `theorem openAxiomReflectValidIn_modalBlock` covering `modal_t`, `modal_4`, `modal_b`,
-  `modal_5_collapse`, `modal_k_dist`, `modal_future`.
-- [ ] Prove each arm directly against `OpenTruthAt`. Do not route through
+  `modal_5_collapse`, `modal_k_dist`, `modal_future`. *(deviation: altered — two supporting
+  theorems added in the same file, `openTruthAt_congr_ext` and `openTruthAt_timeShift`, because
+  the `modal_future` arm moves the time of evaluation and no L^▷ `timeShift` lemma existed; a
+  `## Clause-lemma re-exports` section was added for the same reason, `OpenTruth` carrying no
+  `allFuture_iff`/`diamond_iff` of its own)*
+- [x] Prove each arm directly against `OpenTruthAt`. Do not route through
   `Conservativity/Plus/Atomization.lean` or uniform substitution (R7): atomization rests on
   `stab_state_only` and `▷χ` is not state-local, and TM⁺ is not substitution-closed via
   `atom_stab`. Record that in the block docstring so the shortcut is not re-attempted.
-- [ ] Use `openValid_reflectTime` for each reflection arm where the schema's `reflectTime` image
+- [x] Use `openValid_reflectTime` for each reflection arm where the schema's `reflectTime` image
   is the schema itself or another schema already in the block.
 
 **Timing**: 2 hours

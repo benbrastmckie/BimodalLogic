@@ -1,62 +1,16 @@
 {
-  "status": "partial",
-  "started_at": "2026-11-05T16:30:00Z",
-  "requires_user_review": true,
-  "review_reason": "7 of 15 phases closed (1-6 and 14), all green and sorry-free; Phases 7-13 and 15 not started. Plan-compliance spot-check reports 4 of 10 named goals missing -- exactly the Phase 11/12/13 terminuses -- which is the expected signal of a partial run, not a defect. Phase 15's full gate set was therefore never reached and is not claimed.",
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": true,
-    "build_output": "unscoped guarded build exit 0, 2906 jobs, zero error: lines, every touched module's .olean newer than source; vacuous_count 1 and axiom_count 14 are both PRE-EXISTING and byte-identical at the dispatch-start commit 4fe76ec0e -- zero introduced by this dispatch"
-  },
+  "status": "in_progress",
+  "started_at": "2026-11-05T17:20:00Z",
+  "artifacts": [],
   "partial_progress": {
-    "stage": "phases_1_to_6_and_14_complete",
-    "details": "Layer 0 of the L^triangleright proof system is complete and green: OpenAxioms.lean (71 constructors, 71-arm wildcard-free minFrameClass), OpenDerivation.lean (7-rule tree, backward conservativity over TM+), OpenErasure.lean (71-arm wildcard-free dischargeAxiom, forward conservativity over TM+, the unconditional two-direction row). Conservativity/Open/ scaffolding plus the restricted-modal and rigidity validity blocks are landed, and Deterministic/OpenCollapse.lean carries the deterministic collapse and the recovered completeness row. Phases 7-13 and 15 remain.",
-    "phases_completed": 7,
-    "phases_total": 15
+    "stage": "initializing",
+    "details": "Dispatch seq 10: resuming at Phase 7 (Phases 1-6, 14 already closed)"
   },
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/856_open_language_proof_system_and_soundness/summaries/01_open-proof-system-soundness-summary.md",
-      "summary": "Layer 0 of the L^triangleright proof system plus the Conservativity/Open validity scaffolding and the deterministic collapse: 7 of 15 phases, zero sorry, both conservativity directions over TM+ landed."
-    }
-  ],
-  "modified_files": [
-    "FormalSystem/OpenLanguage/OpenAxioms.lean",
-    "FormalSystem/OpenLanguage/OpenDerivation.lean",
-    "FormalSystem/OpenLanguage/OpenErasure.lean",
-    "FormalSystem/OpenLanguage.lean",
-    "FormalSystem/Metalogic/Conservativity/Open/OpenAxiomValidity.lean",
-    "FormalSystem/Metalogic/Conservativity/Open/README.md",
-    "FormalSystem/Metalogic/Conservativity/Open.lean",
-    "FormalSystem/Metalogic/Conservativity.lean",
-    "FormalSystem/Metalogic/Deterministic/OpenCollapse.lean",
-    "FormalSystem/Metalogic/Deterministic.lean",
-    "FormalSystem/Metalogic/Deterministic/README.md",
-    "FormalSystem.lean",
-    "scripts/measure-refactor-partitions.py",
-    "scripts/check-metalogic-cycles.sh",
-    "typst/generated/status.typ",
-    "specs/state.json",
-    "specs/856_open_language_proof_system_and_soundness/plans/01_open-proof-system-soundness.md",
-    "specs/856_open_language_proof_system_and_soundness/issues.jsonl",
-    "specs/856_open_language_proof_system_and_soundness/summaries/01_open-proof-system-soundness-summary.md",
-    "specs/856_open_language_proof_system_and_soundness/handoffs/phase-1-handoff-20261105T163632Z.md",
-    "specs/856_open_language_proof_system_and_soundness/handoffs/phase-2-handoff-20261105T164210Z.md",
-    "specs/856_open_language_proof_system_and_soundness/handoffs/phase-3-handoff-20261105T164927Z.md",
-    "specs/856_open_language_proof_system_and_soundness/handoffs/phase-4-handoff-20261105T165224Z.md",
-    "specs/856_open_language_proof_system_and_soundness/handoffs/phase-5-handoff-20261105T165849Z.md",
-    "specs/856_open_language_proof_system_and_soundness/handoffs/phase-6-handoff-20261105T170651Z.md",
-    "specs/856_open_language_proof_system_and_soundness/handoffs/phase-14-handoff-20261105T171026Z.md"
-  ],
+  "modified_files": [],
   "metadata": {
     "session_id": "sess_1793893221_493f2c",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "failed"
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
   }
 }

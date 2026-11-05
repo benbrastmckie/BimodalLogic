@@ -63,6 +63,12 @@ anyway.
   non-rigidity restricted-modal schemata and their reflections
 - `openAxiomValidIn_rigidityBlock`, `openAxiomReflectValidIn_rigidityBlock` — the four rigidity
   halves and their reflections
+- `openTruthAt_congr_ext`, `openTruthAt_timeShift` — the time-shift infrastructure `modal_future`
+  consumes
+- `openAxiomValidIn_propBlock`, `openAxiomReflectValidIn_propBlock` — the four propositional
+  schemata and their reflections
+- `openAxiomValidIn_modalBlock`, `openAxiomReflectValidIn_modalBlock` — the five S5-modal schemata
+  plus `modal_future`, and their reflections
 
 ## References
 
@@ -429,5 +435,417 @@ theorem openAxiomReflectValidIn_rigidityBlock :
     fun h => openValidIn_rigidityOpastBwd_reflect h,
     fun h => openValidIn_rigidityOfutFwd_reflect h,
     fun h => openValidIn_rigidityOfutBwd_reflect h⟩
+
+/-! ## Clause-lemma re-exports
+
+`OpenLanguage/OpenTruth.lean`'s `OpenTruth` namespace carries clause lemmas for the two new
+operators and for `neg`, `someFuture`, `somePast`, `dstab`, `dofut` and `dopast`, but not for the
+derived operators the TM⁺ mirror schemata are stated through. Those are available generically from
+the `StabClauses OpenFormula` instance (`Semantics/TruthClauses.lean`); the re-exports below put
+them in the `OpenTruthAt` shape the `StarTruth.*_iff` family has, so the mirror proofs below can be
+read against `Conservativity/Star/StarAxiomValidity.lean` line for line. -/
+
+section ClauseLemmas
+
+variable (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+
+/-- Truth of `φ ∧ ψ` at an L^▷ point. -/
+theorem openTruth_and_iff (φ ψ : OpenFormula) :
+    OpenTruthAt M τ t (OpenFormula.and φ ψ) ↔
+      (OpenTruthAt M τ t φ ∧ OpenTruthAt M τ t ψ) :=
+  TruthClauses.and_iff (L := OpenFormula) M τ t PUnit.unit φ ψ
+
+/-- Truth of `φ ∨ ψ` at an L^▷ point. -/
+theorem openTruth_or_iff (φ ψ : OpenFormula) :
+    OpenTruthAt M τ t (OpenFormula.or φ ψ) ↔
+      (OpenTruthAt M τ t φ ∨ OpenTruthAt M τ t ψ) :=
+  TruthClauses.or_iff (L := OpenFormula) M τ t PUnit.unit φ ψ
+
+/-- Truth of `◇φ` at an L^▷ point. -/
+theorem openTruth_diamond_iff (φ : OpenFormula) :
+    OpenTruthAt M τ t (OpenFormula.diamond φ) ↔
+      ∃ σ : WorldHistory F, OpenTruthAt M σ t φ :=
+  TruthClauses.diamond_iff (L := OpenFormula) M τ t PUnit.unit φ
+
+/-- Truth of `Gφ` at an L^▷ point. -/
+theorem openTruth_allFuture_iff (φ : OpenFormula) :
+    OpenTruthAt M τ t (OpenFormula.allFuture φ) ↔
+      ∀ s : F.Duration, t < s → OpenTruthAt M τ s φ :=
+  TruthClauses.allFuture_iff (L := OpenFormula) M τ t PUnit.unit φ
+
+/-- Truth of `Hφ` at an L^▷ point. -/
+theorem openTruth_allPast_iff (φ : OpenFormula) :
+    OpenTruthAt M τ t (OpenFormula.allPast φ) ↔
+      ∀ s : F.Duration, s < t → OpenTruthAt M τ s φ :=
+  TruthClauses.allPast_iff (L := OpenFormula) M τ t PUnit.unit φ
+
+/-- Truth of `⊤` at an L^▷ point. -/
+theorem openTruth_top (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
+    OpenTruthAt M τ t OpenFormula.top :=
+  TruthClauses.top_true (L := OpenFormula) M τ t PUnit.unit
+
+end ClauseLemmas
+
+/-! ## Time-shift invariance of L^▷ truth
+
+The one piece of semantic infrastructure the TM⁺ mirror block needs that `OpenLanguage/` does not
+carry. `modal_future` (`□φ → □Gφ`) is the only schema whose soundness argument moves the *time* of
+evaluation rather than the history, and the L⁺ and L⋆ proofs both consume their language's
+`timeShift` lemma for it (`PlusLanguage/PlusTruth.lean`'s `plusTruthAt_timeShift`,
+`StarLanguage/StarTruth.lean`'s `starTruthAt_timeShift`). The L^▷ analogue is landed here rather
+than beside `OpenTruthAt`, so that `OpenLanguage/OpenTruth.lean`'s module invariants stay
+untouched.
+
+The two new arms are **not** congruences over the subformula: `▷φ` and `◁φ` quantify over a
+history, and the shift acts on the quantifier's *domain*, so each arm exhibits the shifted witness
+explicitly. Both directions use the shift's inverse on the quantified history, exactly as the
+`box` and `stab` arms of the L⁺ proof do, because `WorldHistory.timeShift` is not definitionally
+involutive. -/
+
+/-- **World histories with the same state at every time satisfy the same L^▷ formulas.** The L^▷
+counterpart of `PlusLanguage.truth_congr_ext`. The `ofut` and `opast` arms need no induction
+hypothesis: the quantified history is the same on both sides, so only the agreement antecedent is
+transported. -/
+theorem openTruthAt_congr_ext (M : TaskModel F) (φ : OpenFormula) :
+    ∀ (τ σ : WorldHistory F) (t : F.Duration), (∀ s, τ.state s = σ.state s) →
+      (OpenTruthAt M τ t φ ↔ OpenTruthAt M σ t φ) := by
+  induction φ with
+  | atom p => intro τ σ t hs; change M.valuation _ p ↔ M.valuation _ p; rw [hs t]
+  | bot => intros; exact Iff.rfl
+  | imp φ ψ ihφ ihψ => intro τ σ t hs; exact Iff.imp (ihφ τ σ t hs) (ihψ τ σ t hs)
+  | box φ _ => intros; exact Iff.rfl
+  | untl ψ φ ihψ ihφ =>
+    intro τ σ t hs
+    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s hs)
+      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r hs)
+  | snce ψ φ ihψ ihφ =>
+    intro τ σ t hs
+    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s hs)
+      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r hs)
+  | stab φ _ =>
+    intro τ σ t hs
+    exact forall_congr' fun ρ => imp_congr_left ⟨fun h => (hs t).symm.trans h,
+      fun h => (hs t).trans h⟩
+  | ofut φ _ =>
+    intro τ σ t hs
+    exact forall_congr' fun ρ => imp_congr_left
+      ⟨fun h u hut => (hs u).symm.trans (h u hut), fun h u hut => (hs u).trans (h u hut)⟩
+  | opast φ _ =>
+    intro τ σ t hs
+    exact forall_congr' fun ρ => imp_congr_left
+      ⟨fun h u htu => (hs u).symm.trans (h u htu), fun h u htu => (hs u).trans (h u htu)⟩
+
+/-- **L^▷ truth commutes with time shift.** The `OpenFormula` twin of `plusTruthAt_timeShift`,
+whose proof shape the seven shared arms follow verbatim. The `ofut` arm shifts the quantified
+history forward in the `→` direction and backward in the `←` direction, closing the latter with
+`openTruthAt_congr_ext`; the `opast` arm is the same argument over `AgreeFrom`. -/
+theorem openTruthAt_timeShift (M : TaskModel F) (φ : OpenFormula) :
+    ∀ (σ : WorldHistory F) (t Δ : F.Duration),
+      OpenTruthAt M (σ.timeShift Δ) t φ ↔ OpenTruthAt M σ (t + Δ) φ := by
+  induction φ with
+  | atom p => intros; exact Iff.rfl
+  | bot => intros; exact Iff.rfl
+  | imp φ ψ ihφ ihψ => intro σ t Δ; exact Iff.imp (ihφ σ t Δ) (ihψ σ t Δ)
+  | box φ ih =>
+    intro σ t Δ
+    constructor
+    · intro h ρ
+      exact (ih ρ t Δ).mp (h (ρ.timeShift Δ))
+    · intro h ρ
+      have h1 := (ih (ρ.timeShift (-Δ)) t Δ).mpr (h (ρ.timeShift (-Δ)))
+      exact (openTruthAt_congr_ext M φ _ ρ t
+        (fun s => (congrArg ρ.state (add_neg_cancel_right s Δ) :
+          ρ.state (s + Δ + -Δ) = ρ.state s))).mp h1
+  | untl ψ φ ihψ ihφ =>
+    intro σ t Δ
+    constructor
+    · rintro ⟨s, hts, hφ, hψ⟩
+      refine ⟨s + Δ, (add_lt_add_iff_right Δ).mpr hts, (ihφ σ s Δ).mp hφ, ?_⟩
+      intro r' h1 h2
+      have := ihψ σ (r' - Δ) Δ
+      rw [sub_add_cancel] at this
+      exact this.mp (hψ (r' - Δ) (lt_sub_iff_add_lt.mpr h1) (sub_lt_iff_lt_add.mpr h2))
+    · rintro ⟨s', h, hφ, hψ⟩
+      refine ⟨s' - Δ, lt_sub_iff_add_lt.mpr h, ?_, ?_⟩
+      · have := ihφ σ (s' - Δ) Δ
+        rw [sub_add_cancel] at this
+        exact this.mpr hφ
+      · intro r htr hrs
+        exact (ihψ σ r Δ).mpr
+          (hψ (r + Δ) ((add_lt_add_iff_right Δ).mpr htr) (lt_sub_iff_add_lt.mp hrs))
+  | snce ψ φ ihψ ihφ =>
+    intro σ t Δ
+    constructor
+    · rintro ⟨s, hst, hφ, hψ⟩
+      refine ⟨s + Δ, (add_lt_add_iff_right Δ).mpr hst, (ihφ σ s Δ).mp hφ, ?_⟩
+      intro r' h1 h2
+      have := ihψ σ (r' - Δ) Δ
+      rw [sub_add_cancel] at this
+      exact this.mp (hψ (r' - Δ) (lt_sub_iff_add_lt.mpr h1) (sub_lt_iff_lt_add.mpr h2))
+    · rintro ⟨s', h, hφ, hψ⟩
+      refine ⟨s' - Δ, sub_lt_iff_lt_add.mpr h, ?_, ?_⟩
+      · have := ihφ σ (s' - Δ) Δ
+        rw [sub_add_cancel] at this
+        exact this.mpr hφ
+      · intro r hsr hrt
+        exact (ihψ σ r Δ).mpr
+          (hψ (r + Δ) (sub_lt_iff_lt_add.mp hsr) ((add_lt_add_iff_right Δ).mpr hrt))
+  | stab φ ih =>
+    intro σ t Δ
+    constructor
+    · intro h ρ hs
+      exact (ih ρ t Δ).mp (h (ρ.timeShift Δ) hs)
+    · intro h ρ hs
+      have hs' : σ.state (t + Δ) = (ρ.timeShift (-Δ)).state (t + Δ) :=
+        hs.trans (congrArg ρ.state (add_neg_cancel_right t Δ).symm)
+      have h1 := (ih (ρ.timeShift (-Δ)) t Δ).mpr (h (ρ.timeShift (-Δ)) hs')
+      exact (openTruthAt_congr_ext M φ _ ρ t
+        (fun s => (congrArg ρ.state (add_neg_cancel_right s Δ) :
+          ρ.state (s + Δ + -Δ) = ρ.state s))).mp h1
+  | ofut φ ih =>
+    intro σ t Δ
+    constructor
+    · intro h ρ hag
+      refine (ih ρ t Δ).mp (h (ρ.timeShift Δ) ?_)
+      intro u hut
+      exact hag (u + Δ) ((add_le_add_iff_right Δ).mpr hut)
+    · intro h ρ hag
+      have hag' : AgreeUpTo σ (ρ.timeShift (-Δ)) (t + Δ) := by
+        intro u hu
+        have hle : u + -Δ ≤ t := by
+          rw [← sub_eq_add_neg]; exact sub_le_iff_le_add.mpr hu
+        have key := hag (u + -Δ) hle
+        rw [WorldHistory.timeShift_state, neg_add_cancel_right] at key
+        rw [WorldHistory.timeShift_state]
+        exact key
+      have h1 := (ih (ρ.timeShift (-Δ)) t Δ).mpr (h (ρ.timeShift (-Δ)) hag')
+      exact (openTruthAt_congr_ext M φ _ ρ t
+        (fun s => (congrArg ρ.state (add_neg_cancel_right s Δ) :
+          ρ.state (s + Δ + -Δ) = ρ.state s))).mp h1
+  | opast φ ih =>
+    intro σ t Δ
+    constructor
+    · intro h ρ hag
+      refine (ih ρ t Δ).mp (h (ρ.timeShift Δ) ?_)
+      intro u htu
+      exact hag (u + Δ) ((add_le_add_iff_right Δ).mpr htu)
+    · intro h ρ hag
+      have hag' : AgreeFrom σ (ρ.timeShift (-Δ)) (t + Δ) := by
+        intro u hu
+        have hle : t ≤ u + -Δ := by
+          rw [← sub_eq_add_neg]; exact le_sub_iff_add_le.mpr hu
+        have key := hag (u + -Δ) hle
+        rw [WorldHistory.timeShift_state, neg_add_cancel_right] at key
+        rw [WorldHistory.timeShift_state]
+        exact key
+      have h1 := (ih (ρ.timeShift (-Δ)) t Δ).mpr (h (ρ.timeShift (-Δ)) hag')
+      exact (openTruthAt_congr_ext M φ _ ρ t
+        (fun s => (congrArg ρ.state (add_neg_cancel_right s Δ) :
+          ρ.state (s + Δ + -Δ) = ρ.state s))).mp h1
+
+/-! ## The propositional block, per constructor
+
+The four Layer-1 schemata of `OpenAxiom`, proved **directly against `OpenTruthAt`** at arbitrary
+`OpenFormula` metavariables.
+
+**No atomization and no uniform substitution, here or anywhere below (R7).** The atomization route
+of `Conservativity/Plus/Atomization.lean` rests on `stab_state_only` — `⊡φ`'s truth value at
+`(τ, t)` is fixed by the world state `τ(t)` alone — and `▷χ` is *not* state-local: two histories
+sharing a state at `t` need not agree up to `t`, so no L^▷ analogue of `stab_state_only` exists and
+the atomization route is unavailable. Uniform substitution is independently unsound over TM⁺, whose
+`atom_stab` schema (`p → ⊡p`, atoms only) is false at a general substitution instance. Every arm
+below is therefore a fresh direct proof, and the shortcut is not to be re-attempted. -/
+
+/-- Propositional K over L^▷. -/
+theorem openValidIn_propK (φ ψ χ : OpenFormula) :
+    OpenValid ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) :=
+  OpenValid.of_forall fun _ _ _ _ h1 h2 h3 => h1 h3 (h2 h3)
+
+/-- Propositional S (weakening) over L^▷. -/
+theorem openValidIn_propS (φ ψ : OpenFormula) : OpenValid (φ.imp (ψ.imp φ)) :=
+  OpenValid.of_forall fun _ _ _ _ h _ => h
+
+/-- Ex Falso Quodlibet over L^▷. -/
+theorem openValidIn_exFalso (φ : OpenFormula) : OpenValid (OpenFormula.bot.imp φ) :=
+  OpenValid.of_forall fun _ _ _ _ h => h.elim
+
+/-- Peirce's Law over L^▷, by classical case analysis on `φ`. -/
+theorem openValidIn_peirce (φ ψ : OpenFormula) :
+    OpenValid (((φ.imp ψ).imp φ).imp φ) := by
+  refine OpenValid.of_forall fun F M τ t h => ?_
+  by_cases hφ : OpenTruthAt M τ t φ
+  · exact hφ
+  · exact h fun hp => absurd hp hφ
+
+/-! ## The S5-modal block, per constructor
+
+The five Layer-2 schemata plus `modal_future`, the one Layer-4 interaction schema. `□` quantifies
+over *all* world histories at the fixed time of evaluation, so T, 4, B, the 5-collapse and K are
+each one step from that clause; `modal_future` is the only one that moves the time, and it consumes
+`openTruthAt_timeShift` above. -/
+
+/-- Modal T over L^▷: the evaluation history is itself a world history, so `□` reflects. -/
+theorem openValidIn_modalT (φ : OpenFormula) : OpenValid ((OpenFormula.box φ).imp φ) :=
+  OpenValid.of_forall fun _ _ τ _ h => h τ
+
+/-- Modal 4 over L^▷: the `box` clause quantifies over all world histories, so it is
+idempotent. -/
+theorem openValidIn_modal4 (φ : OpenFormula) :
+    OpenValid ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.box φ))) :=
+  OpenValid.of_forall fun _ _ _ _ h _ => h
+
+/-- Modal B over L^▷. -/
+theorem openValidIn_modalB (φ : OpenFormula) :
+    OpenValid (φ.imp (OpenFormula.box φ.diamond)) := by
+  refine OpenValid.of_forall fun F M τ t h => ?_
+  intro σ
+  rw [openTruth_diamond_iff]
+  exact ⟨τ, h⟩
+
+/-- Modal 5 Collapse over L^▷. -/
+theorem openValidIn_modal5Collapse (φ : OpenFormula) :
+    OpenValid (φ.box.diamond.imp φ.box) := by
+  refine OpenValid.of_forall fun F M τ t h => ?_
+  rw [openTruth_diamond_iff] at h
+  obtain ⟨σ, hb⟩ := h
+  exact hb
+
+/-- Modal K distribution over L^▷. -/
+theorem openValidIn_modalKDist (φ ψ : OpenFormula) :
+    OpenValid ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) :=
+  OpenValid.of_forall fun _ _ _ _ h1 h2 σ => h1 σ (h2 σ)
+
+/-- **MF at every `OpenFormula`**: `□φ → □Gφ`. The argument is the L⁺ one, with
+`openTruthAt_timeShift` supplying homogeneity: `□φ` holds of the shifted history
+`σ.timeShift (s - t)` at `t`, which is `φ` at `σ` at time `s`. -/
+theorem openValidIn_modalFuture (φ : OpenFormula) :
+    OpenValid ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.allFuture φ))) := by
+  refine OpenValid.of_forall fun F M τ t h => ?_
+  intro σ
+  rw [openTruth_allFuture_iff]
+  intro s hts
+  have h1 := h (σ.timeShift (s - t))
+  have h2 := (openTruthAt_timeShift M φ σ t (s - t)).mp h1
+  rw [add_sub_cancel] at h2
+  exact h2
+
+/-! ### The reflection halves
+
+Every schema of the two blocks above is valid at the unconstrained class, and every one of them is
+closed under `reflectTime` up to its own metavariables — `reflectTime` commutes with `imp`, `box`
+and `diamond`, and sends `Gφ` to `Hφ`, which is again the `modal_future` schema at the reflected
+parameters. So each reflection half is one line through `openValid_reflectTime`, exactly as in the
+restricted-modal block. -/
+
+/-- The reflection of propositional K is valid. -/
+theorem openValidIn_propK_reflect (φ ψ χ : OpenFormula) :
+    OpenValid ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))).reflectTime :=
+  openValid_reflectTime _ (openValidIn_propK φ ψ χ)
+
+/-- The reflection of propositional S is valid. -/
+theorem openValidIn_propS_reflect (φ ψ : OpenFormula) :
+    OpenValid (φ.imp (ψ.imp φ)).reflectTime :=
+  openValid_reflectTime _ (openValidIn_propS φ ψ)
+
+/-- The reflection of Ex Falso Quodlibet is valid. -/
+theorem openValidIn_exFalso_reflect (φ : OpenFormula) :
+    OpenValid (OpenFormula.bot.imp φ).reflectTime :=
+  openValid_reflectTime _ (openValidIn_exFalso φ)
+
+/-- The reflection of Peirce's Law is valid. -/
+theorem openValidIn_peirce_reflect (φ ψ : OpenFormula) :
+    OpenValid (((φ.imp ψ).imp φ).imp φ).reflectTime :=
+  openValid_reflectTime _ (openValidIn_peirce φ ψ)
+
+/-- The reflection of Modal T is valid. -/
+theorem openValidIn_modalT_reflect (φ : OpenFormula) :
+    OpenValid ((OpenFormula.box φ).imp φ).reflectTime :=
+  openValid_reflectTime _ (openValidIn_modalT φ)
+
+/-- The reflection of Modal 4 is valid. -/
+theorem openValidIn_modal4_reflect (φ : OpenFormula) :
+    OpenValid ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.box φ))).reflectTime :=
+  openValid_reflectTime _ (openValidIn_modal4 φ)
+
+/-- The reflection of Modal B is valid. -/
+theorem openValidIn_modalB_reflect (φ : OpenFormula) :
+    OpenValid (φ.imp (OpenFormula.box φ.diamond)).reflectTime :=
+  openValid_reflectTime _ (openValidIn_modalB φ)
+
+/-- The reflection of the Modal 5 Collapse is valid. -/
+theorem openValidIn_modal5Collapse_reflect (φ : OpenFormula) :
+    OpenValid (φ.box.diamond.imp φ.box).reflectTime :=
+  openValid_reflectTime _ (openValidIn_modal5Collapse φ)
+
+/-- The reflection of Modal K distribution is valid. -/
+theorem openValidIn_modalKDist_reflect (φ ψ : OpenFormula) :
+    OpenValid ((φ.imp ψ).box.imp (φ.box.imp ψ.box)).reflectTime :=
+  openValid_reflectTime _ (openValidIn_modalKDist φ ψ)
+
+/-- The reflection of MF is valid: it is `□φ⁻ → □Hφ⁻` at the reflected parameter. -/
+theorem openValidIn_modalFuture_reflect (φ : OpenFormula) :
+    OpenValid ((OpenFormula.box φ).imp
+      (OpenFormula.box (OpenFormula.allFuture φ))).reflectTime :=
+  openValid_reflectTime _ (openValidIn_modalFuture φ)
+
+/-! ## The propositional and modal block aggregates
+
+**Constructors covered by `openAxiomValidIn_propBlock`** (four, in `OpenAxiom` constructor order):
+`prop_k`, `prop_s`, `ex_falso`, `peirce`.
+
+**Constructors covered by `openAxiomValidIn_modalBlock`** (six, in `OpenAxiom` constructor order):
+`modal_t`, `modal_4`, `modal_b`, `modal_5_collapse`, `modal_k_dist`, `modal_future`. The sixth is
+`OpenAxiom`'s one Layer-4 constructor and is grouped here because its proof is a modal one; the
+Layer-3 temporal constructors between them in the inductive are Phases 8-10's. -/
+
+/-- **The propositional validity block**: `prop_k`, `prop_s`, `ex_falso`, `peirce`. -/
+theorem openAxiomValidIn_propBlock :
+    (∀ φ ψ χ : OpenFormula,
+      OpenValid ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ)))) ∧
+    (∀ φ ψ : OpenFormula, OpenValid (φ.imp (ψ.imp φ))) ∧
+    (∀ φ : OpenFormula, OpenValid (OpenFormula.bot.imp φ)) ∧
+    (∀ φ ψ : OpenFormula, OpenValid (((φ.imp ψ).imp φ).imp φ)) :=
+  ⟨openValidIn_propK, openValidIn_propS, openValidIn_exFalso, openValidIn_peirce⟩
+
+/-- **The propositional reflection block**, same four schemata in the same order. -/
+theorem openAxiomReflectValidIn_propBlock :
+    (∀ φ ψ χ : OpenFormula,
+      OpenValid ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))).reflectTime) ∧
+    (∀ φ ψ : OpenFormula, OpenValid (φ.imp (ψ.imp φ)).reflectTime) ∧
+    (∀ φ : OpenFormula, OpenValid (OpenFormula.bot.imp φ).reflectTime) ∧
+    (∀ φ ψ : OpenFormula, OpenValid (((φ.imp ψ).imp φ).imp φ).reflectTime) :=
+  ⟨openValidIn_propK_reflect, openValidIn_propS_reflect, openValidIn_exFalso_reflect,
+    openValidIn_peirce_reflect⟩
+
+/-- **The S5-modal validity block**: `modal_t`, `modal_4`, `modal_b`, `modal_5_collapse`,
+`modal_k_dist`, `modal_future`. -/
+theorem openAxiomValidIn_modalBlock :
+    (∀ φ : OpenFormula, OpenValid ((OpenFormula.box φ).imp φ)) ∧
+    (∀ φ : OpenFormula,
+      OpenValid ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.box φ)))) ∧
+    (∀ φ : OpenFormula, OpenValid (φ.imp (OpenFormula.box φ.diamond))) ∧
+    (∀ φ : OpenFormula, OpenValid (φ.box.diamond.imp φ.box)) ∧
+    (∀ φ ψ : OpenFormula, OpenValid ((φ.imp ψ).box.imp (φ.box.imp ψ.box))) ∧
+    (∀ φ : OpenFormula,
+      OpenValid ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.allFuture φ)))) :=
+  ⟨openValidIn_modalT, openValidIn_modal4, openValidIn_modalB, openValidIn_modal5Collapse,
+    openValidIn_modalKDist, openValidIn_modalFuture⟩
+
+/-- **The S5-modal reflection block**, same six schemata in the same order. -/
+theorem openAxiomReflectValidIn_modalBlock :
+    (∀ φ : OpenFormula, OpenValid ((OpenFormula.box φ).imp φ).reflectTime) ∧
+    (∀ φ : OpenFormula,
+      OpenValid ((OpenFormula.box φ).imp
+        (OpenFormula.box (OpenFormula.box φ))).reflectTime) ∧
+    (∀ φ : OpenFormula, OpenValid (φ.imp (OpenFormula.box φ.diamond)).reflectTime) ∧
+    (∀ φ : OpenFormula, OpenValid (φ.box.diamond.imp φ.box).reflectTime) ∧
+    (∀ φ ψ : OpenFormula,
+      OpenValid ((φ.imp ψ).box.imp (φ.box.imp ψ.box)).reflectTime) ∧
+    (∀ φ : OpenFormula,
+      OpenValid ((OpenFormula.box φ).imp
+        (OpenFormula.box (OpenFormula.allFuture φ))).reflectTime) :=
+  ⟨openValidIn_modalT_reflect, openValidIn_modal4_reflect, openValidIn_modalB_reflect,
+    openValidIn_modal5Collapse_reflect, openValidIn_modalKDist_reflect,
+    openValidIn_modalFuture_reflect⟩
 
 end FormalSystem.Metalogic.Conservativity
