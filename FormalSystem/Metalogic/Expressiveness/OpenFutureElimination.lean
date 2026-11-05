@@ -26,7 +26,14 @@ modal does so in mirror image:
   `SeparationOver P` — every L⁺ formula is equivalent, on every regular frame satisfying `P`, to
   a separated conjunctive normal form — there is a translation `OpenFormula → PlusFormula`
   preserving truth at every model, world history and time over every regular `P`-frame, hence
-  transporting validity in either direction.
+  transporting validity in either direction;
+* the **transfer corollaries** `decidableOpenValidIn_of_translation`, `openDecider_correct`,
+  `decidableOpenValidZTimeOfTr`, `decidableOpenValidRTimeOfTr`,
+  `openComplete_of_plusComplete_in`, `openValid_of_plusSound`: each a *reduction*, carrying
+  decidability resp. completeness of open-future-language validity back to the corresponding L⁺
+  fact, which it takes as an explicit hypothesis. What is proved is the reduction itself — that
+  the open-language statement follows *given* its L⁺ antecedent. Not one of those antecedents is
+  discharged here or anywhere else in this tree; see `## What is NOT proved here`.
 
 Regularity enters through `paste` and nowhere else; it is taken exactly on the declarations whose
 proofs glue a past onto a future.
@@ -52,14 +59,44 @@ abstraction, the conjunctive-normal-form rearrangement of a separated formula, a
 order-isomorphism invariance of `U`/`S` truth — is likewise unverified in Lean. Formalizing
 [GHR][gabbay1994] Lemmas 10.2.1-10.2.8 is the route that would remove the hypothesis.
 
-Nothing here claims a completeness or a decidability result for the open-future language or for
-L⁺.
+No completeness and no decidability result, for the open-future language or for L⁺, is claimed
+anywhere in this module. What the transfer corollaries state is a **reduction**, and each of its
+antecedents is undischarged:
+
+* **L⁺ decidability.** `Decidable (PlusValidIn FrameClass.ZTime ψ)` — and its `.RTime` mirror — is
+  stated nowhere in this tree, let alone proved. `decidableOpenValidIn_of_translation`,
+  `decidableOpenValidZTimeOfTr` and `decidableOpenValidRTimeOfTr` take it as a hypothesis and are
+  never applied.
+* **L⁺ completeness.** Completeness of any recursive extension of TM⁺ is open at every frame
+  class. `openComplete_of_plusComplete_in` takes the completeness of an abstract
+  `Der : PlusFormula → Prop` as a hypothesis; `openValid_of_plusSound` takes that relation's
+  soundness. Neither hypothesis is met by any relation constructed in this tree, and no proof
+  system for the open-future language is built here at all.
+* **Effectiveness.** `tr` is `noncomputable` as defined — it reads a separated form off
+  `Classical.choose`. So even granting separation and granting L⁺ decidability, nothing here
+  yields a decision *procedure* for the open-future language, nor a *recursive* axiomatization of
+  it. `openDecider` is a composite of a hypothetical L⁺ decider with a translation supplied as an
+  argument; no such decider, and no computable translation, is exhibited.
+
+The separation hypothesis named above is inherited unchanged by every one of those rows, since
+`tr` rests on it: `exists_translation_ztime` and `exists_translation_rtime` say only that `tr hsep`
+inhabits the translation slot *given* separation over the class in question.
+
+One shape is **deliberately rejected** and must not be reintroduced as a simplification of the
+per-formula rows. A uniform `Decidable (OpenValidIn FrameClass.ZTime φ)` hypothesising
+`∀ ψ, Decidable (PlusValidZTime ψ)` is forced `noncomputable`, because its body must evaluate
+`tr hsep φ`; and a `noncomputable` declaration of that type is inhabited by `Classical.dec` with
+no hypothesis at all. Its hypothesis would therefore do no work, and the row would read as a
+decidability claim while carrying none. Every `Decidable`-valued declaration in this module
+compiles without the `noncomputable` keyword, which is what keeps its hypothesis load-bearing.
 
 ## Where it does not apply
 
 The hypothesis is **false** for `U`/`S` over `ℚ`: separation fails on a non-Dedekind-complete
 flow. So it is unavailable at the `.Dense` and `.Base` frame classes, and no statement below
-transfers to either.
+transfers to either. The transfer corollaries stated for a general `fc` are no exception: each
+takes a validity-transferring translation as a hypothesis, and at `.Base` and `.Dense` no such
+translation is available, so instantiating them there is vacuous rather than informative.
 
 ## Why the determinedness predicates are semantic
 
@@ -85,6 +122,17 @@ appear.
 * `openValidIn_ztime_iff_tr`, `openValidIn_rtime_iff_tr` — validity transfer at `.ZTime` and
   `.RTime`, conditional on separation over that class
 * `ofutP_of_pastDet`, `ofutP_of_futDet` — the two split-free ends of the elimination
+* `decidableOpenValidIn_of_translation` — given a validity-transferring translation and a decision
+  procedure for L⁺ validity at a class, decidability of open-language validity there
+* `openDecider`, `openDecider_correct` — the `Bool`-level twin of that reduction, and its
+  correctness given a correct L⁺ decider
+* `exists_translation_ztime`, `exists_translation_rtime` — given separation, `tr hsep` inhabits the
+  translation slot at `.ZTime` resp. `.RTime`
+* `decidableOpenValidZTimeOfTr`, `decidableOpenValidRTimeOfTr` — given separation and decidability
+  of L⁺ validity for the single formula `tr hsep φ`, decidability of open-language validity of `φ`
+* `openComplete_of_plusComplete_in` — given a validity-transferring translation and completeness of
+  an L⁺ relation, completeness for the open language through that translation
+* `openValid_of_plusSound` — the soundness mirror, free from the same `iff`
 
 ## References
 

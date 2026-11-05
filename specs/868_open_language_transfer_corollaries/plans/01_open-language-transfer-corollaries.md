@@ -235,33 +235,33 @@ implementation time by counting the added `def`/`theorem` keywords in the diff a
 
 ---
 
-### Phase 2: Amend the Host Module Docstring [NOT STARTED]
+### Phase 2: Amend the Host Module Docstring [COMPLETED]
 
 **Goal**: The module docstring states what is proved -- the reduction -- names every undischarged
 antecedent including the effectiveness gap, and records the rejected vacuous shape.
 
 **Tasks**:
 
-- [ ] Re-read the module immediately before editing (sibling concurrency).
-- [ ] Extend `## What is proved here` with a bullet for the transfer corollaries, phrased as a
+- [x] Re-read the module immediately before editing (sibling concurrency).
+- [x] Extend `## What is proved here` with a bullet for the transfer corollaries, phrased as a
       *reduction* conditional on its hypotheses.
-- [ ] Add the nine declarations to `## Main Results`.
-- [ ] Extend `## What is NOT proved here` with all three undischarged antecedents:
+- [x] Add the nine declarations to `## Main Results`.
+- [x] Extend `## What is NOT proved here` with all three undischarged antecedents:
       (a) `Decidable PlusValidZTime` / `Decidable PlusValidRTime`, stated nowhere in this tree;
       (b) completeness of any L⁺ proof system at either class, open at every frame class;
       (c) the **effectiveness** gap -- `tr` is noncomputable as defined, so neither a decision
       *procedure* for L^▷ nor a *recursive* axiomatization of it follows from anything here. The
       separation hypothesis that `tr` itself rests on is already named in this section and is
       inherited unchanged by every new row.
-- [ ] Restate the existing sentence "Nothing here claims a completeness or a decidability result
+- [x] Restate the existing sentence "Nothing here claims a completeness or a decidability result
       for the open-future language or for L⁺" so it stays true and precise under the new rows:
       what is claimed is a *reduction*, with each antecedent undischarged.
-- [ ] Record the rejected shape explicitly: a uniform
+- [x] Record the rejected shape explicitly: a uniform
       `Decidable (OpenValidIn FrameClass.ZTime φ)` taking `∀ ψ, Decidable (PlusValidZTime ψ)` is
       forced `noncomputable` and is then inhabited by `Classical.dec` with no hypothesis at all,
       so it carries no content and must not be reintroduced as a simplification of the
       per-formula rows.
-- [ ] Confirm `## Where it does not apply` still correctly bars `.Base` and `.Dense`, and that no
+- [x] Confirm `## Where it does not apply` still correctly bars `.Base` and `.Dense`, and that no
       new row contradicts it.
 
 **Timing**: 0.75 hours
