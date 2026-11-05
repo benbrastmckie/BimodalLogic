@@ -763,19 +763,19 @@ found here is far cheaper than one found in the dispatch.
 
 ---
 
-### Phase 11: assemble the two dispatch lemmas [NOT STARTED]
+### Phase 11: assemble the two dispatch lemmas [COMPLETED]
 
 **Goal**: Land `openAxiom_validIn_min` and `openAxiom_reflect_time_validIn_min` as wildcard-free
 dispatches over every constructor, routing each arm to its Phase 6-10 block helper.
 
 **Tasks**:
 
-- [ ] Prove `theorem openAxiom_validIn_min {φ : OpenFormula} (ax : OpenAxiom φ) : OpenValidIn ax.minFrameClass φ`
+- [x] Prove `theorem openAxiom_validIn_min {φ : OpenFormula} (ax : OpenAxiom φ) : OpenValidIn ax.minFrameClass φ`
   by `cases ax`, with **one arm per constructor and no wildcard arm**, mirroring
   `plusAxiom_validIn_min` (`FormalSystem/Metalogic/Conservativity/Plus/AxiomValidity.lean:74`).
-- [ ] Prove `theorem openAxiom_reflect_time_validIn_min {φ : OpenFormula} (ax : OpenAxiom φ) : OpenValidIn ax.minFrameClass φ.reflectTime`
+- [x] Prove `theorem openAxiom_reflect_time_validIn_min {φ : OpenFormula} (ax : OpenAxiom φ) : OpenValidIn ax.minFrameClass φ.reflectTime`
   the same way, mirroring `plusAxiom_reflect_time_validIn_min` (same file, line 191).
-- [ ] Record in the docstring that neither lemma carries a wildcard, that this is what makes a
+- [x] Record in the docstring that neither lemma carries a wildcard, that this is what makes a
   future constructor a build error rather than a silent gap, and that the full per-constructor
   obligation is five arms (constructor, `minFrameClass`, validity, reflection-validity,
   discharge).

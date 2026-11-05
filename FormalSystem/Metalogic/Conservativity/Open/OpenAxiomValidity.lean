@@ -90,9 +90,15 @@ anyway.
 - `openAxiomValidIn_pasteBlock`, `openAxiomReflectValidIn_pasteBlock` — PS and US, and their
   reflections
 
+- `openAxiom_validIn_min`, `openAxiom_reflect_time_validIn_min` — **the two dispatch lemmas**,
+  each a wildcard-free `cases ax` with one arm per constructor
+- `openAxiom_validIn`, `openAxiom_reflect_time_validIn` — the same at any class admitting the
+  schema
+
 With the thirteen block helpers above, the `OpenAxiom` constructor set is **closed**: the union of
 their covered-name lists is all 71 constructors, with none covered twice and none missing. The
-per-block tally is in the Phase-10 aggregate section's own docstring.
+per-block tally is in the aggregate section's own docstring, and the two dispatch lemmas have
+exactly 71 arms each with no wildcard, so Lean's own exhaustiveness check enforces that closure.
 
 ## References
 
@@ -112,7 +118,7 @@ open-language · soundness · axiom-validity · time-reflection
 -- and its reflection half, plus the time-shift and `K±` infrastructure the `modal_future` and
 -- Dedekind arms consume. The two wildcard-free dispatch lemmas read every one of those names, so
 -- they belong in one module with them. Not for parking unrelated material.
-set_option linter.style.longFile 2400
+set_option linter.style.longFile 2600
 
 namespace FormalSystem.Metalogic.Conservativity
 
@@ -2366,5 +2372,200 @@ theorem openAxiomReflectValidIn_pasteBlock :
         (dstab (OpenFormula.untl α φ))).reflectTime) :=
   ⟨fun hφ hψ => openValidIn_paste_reflect hφ hψ,
     fun hα hφ => openValidIn_untlPaste_reflect hα hφ⟩
+
+/-! ## The two dispatch lemmas
+
+The public entry point of this file, and the semantic input to the soundness recursion of
+`Conservativity/Open/OpenSoundness.lean`: every `OpenAxiom` schema is valid, and every schema's
+time reflection is valid, each at the schema's own minimum frame class.
+
+**Neither dispatch carries a wildcard arm.** Each is a `cases ax` with exactly 71 arms, one per
+`OpenAxiom` constructor, in constructor order. `PlusAxiom.minFrameClass` ends in a `| _ => .Base`
+catch-all and `plusAxiom_validIn_min`/`plusAxiom_reflect_time_validIn_min` have no wildcard;
+here *none* of the four has one, so a constructor added to `OpenAxiom` without the matching arms
+is a **build error rather than a silent gap**. That is the whole point of the wildcard-free
+discipline, and it is why these two lemmas are the place the obligation is enforced rather than
+merely documented.
+
+**The full per-constructor obligation is five arms**, as `OpenLanguage/OpenAxioms.lean`'s
+extension recipe records: the constructor line; one `OpenAxiom.minFrameClass` arm; one arm in
+`openAxiom_validIn_min`; one arm in `openAxiom_reflect_time_validIn_min`; and one arm in
+`dischargeAxiom` (`OpenLanguage/OpenErasure.lean`). The fifth is the one that can be *impossible*
+rather than merely laborious — it must produce a TM⁺ derivation of the schema's `eraseOpen`
+image — and it is what excludes the backward definability half `▷◁φ → ⊡φ` from the axiom type
+despite its validity.
+
+Each arm routes to the per-constructor theorem of its block, every one of which is also a
+component of the block aggregate carrying that constructor's name in its docstring. Routing to the
+per-constructor theorem rather than destructuring the aggregate keeps each arm a single `exact`.
+
+## No completeness is claimed
+
+These are soundness obligations. Nothing here is a completeness claim for L^▷ at any frame class.
+-/
+
+/-- **Every L^▷ schema is valid at its own minimum frame class.** One arm per
+constructor, **no wildcard arm**; see the section docstring. -/
+theorem openAxiom_validIn_min {φ : OpenFormula} (ax : OpenAxiom φ) :
+    OpenValidIn ax.minFrameClass φ := by
+  cases ax with
+  | ofut_k φ ψ => exact openValidIn_ofutK φ ψ
+  | ofut_t φ => exact openValidIn_ofutT φ
+  | ofut_four φ => exact openValidIn_ofutFour φ
+  | ofut_five φ => exact openValidIn_ofutFive φ
+  | opast_k φ ψ => exact openValidIn_opastK φ ψ
+  | opast_t φ => exact openValidIn_opastT φ
+  | opast_four φ => exact openValidIn_opastFour φ
+  | opast_five φ => exact openValidIn_opastFive φ
+  | stab_of_box φ => exact openValidIn_stabOfBox φ
+  | ofut_of_stab φ => exact openValidIn_ofutOfStab φ
+  | opast_of_stab φ => exact openValidIn_opastOfStab φ
+  | hn_open α => exact openValidIn_hnOpen α
+  | hn_open_mirror α => exact openValidIn_hnOpenMirror α
+  | rigidity_opast_fwd φ hφ => exact openValidIn_rigidityOpastFwd hφ
+  | rigidity_opast_bwd φ hφ => exact openValidIn_rigidityOpastBwd hφ
+  | rigidity_ofut_fwd φ hφ => exact openValidIn_rigidityOfutFwd hφ
+  | rigidity_ofut_bwd φ hφ => exact openValidIn_rigidityOfutBwd hφ
+  | definability_fwd φ => exact openValidIn_definabilityFwd φ
+  | prop_k φ ψ χ => exact openValidIn_propK φ ψ χ
+  | prop_s φ ψ => exact openValidIn_propS φ ψ
+  | ex_falso φ => exact openValidIn_exFalso φ
+  | peirce φ ψ => exact openValidIn_peirce φ ψ
+  | modal_t φ => exact openValidIn_modalT φ
+  | modal_4 φ => exact openValidIn_modal4 φ
+  | modal_b φ => exact openValidIn_modalB φ
+  | modal_5_collapse φ => exact openValidIn_modal5Collapse φ
+  | modal_k_dist φ ψ => exact openValidIn_modalKDist φ ψ
+  | serial_future => exact openValidIn_serialFuture
+  | serial_past => exact openValidIn_serialPast
+  | left_mono_until_G φ χ ψ => exact openValidIn_leftMonoUntilG φ χ ψ
+  | left_mono_since_H φ χ ψ => exact openValidIn_leftMonoSinceH φ χ ψ
+  | right_mono_until φ ψ χ => exact openValidIn_rightMonoUntil φ ψ χ
+  | right_mono_since φ ψ χ => exact openValidIn_rightMonoSince φ ψ χ
+  | connect_future φ => exact openValidIn_connectFuture φ
+  | connect_past φ => exact openValidIn_connectPast φ
+  | enrichment_until φ ψ p => exact openValidIn_enrichmentUntil φ ψ p
+  | enrichment_since φ ψ p => exact openValidIn_enrichmentSince φ ψ p
+  | self_accum_until φ ψ => exact openValidIn_selfAccumUntil φ ψ
+  | self_accum_since φ ψ => exact openValidIn_selfAccumSince φ ψ
+  | absorb_until φ ψ => exact openValidIn_absorbUntil φ ψ
+  | absorb_since φ ψ => exact openValidIn_absorbSince φ ψ
+  | linear_until φ ψ χ θ => exact openValidIn_linearUntil φ ψ χ θ
+  | linear_since φ ψ χ θ => exact openValidIn_linearSince φ ψ χ θ
+  | until_F φ ψ => exact openValidIn_untilF φ ψ
+  | since_P φ ψ => exact openValidIn_sinceP φ ψ
+  | temp_linearity φ ψ => exact openValidIn_tempLinearity φ ψ
+  | temp_linearity_past φ ψ => exact openValidIn_tempLinearityPast φ ψ
+  | F_until_equiv φ => exact openValidIn_FUntilEquiv φ
+  | P_since_equiv φ => exact openValidIn_PSinceEquiv φ
+  | modal_future φ => exact openValidIn_modalFuture φ
+  | discrete_symm_fwd => exact openValidIn_discreteSymmFwd
+  | discrete_symm_bwd => exact openValidIn_discreteSymmBwd
+  | discrete_propagate_fwd => exact openValidIn_discretePropagateFwd
+  | discrete_propagate_bwd => exact openValidIn_discretePropagateBwd
+  | discrete_box_necessity => exact openValidIn_discreteBoxNecessity
+  | prior_UZ φ => exact openValidIn_priorUZ φ
+  | prior_SZ φ => exact openValidIn_priorSZ φ
+  | z1 φ => exact openValidIn_z1 φ
+  | density φ => exact openValidIn_density φ
+  | dense_indicator => exact openValidIn_denseIndicator
+  | prior_U_gap φ => exact openValidIn_priorUGap φ
+  | prior_S_gap φ => exact openValidIn_priorSGap φ
+  | sep φ => exact openValidIn_sep φ
+  | stab_k φ ψ => exact openValidIn_stabK φ ψ
+  | stab_t φ => exact openValidIn_stabT φ
+  | stab_4 φ => exact openValidIn_stab4 φ
+  | stab_5 φ => exact openValidIn_stab5 φ
+  | box_stab φ => exact openValidIn_boxStab φ
+  | atom_stab p => exact openValidIn_atomStab p
+  | paste φ ψ hφ hψ => exact openValidIn_paste hφ hψ
+  | untl_paste α φ hα hφ => exact openValidIn_untlPaste hα hφ
+
+/-- **Every L^▷ schema's time reflection is valid at its own minimum frame class.** One arm per
+constructor, **no wildcard arm**; see the section docstring. -/
+theorem openAxiom_reflect_time_validIn_min {φ : OpenFormula} (ax : OpenAxiom φ) :
+    OpenValidIn ax.minFrameClass φ.reflectTime := by
+  cases ax with
+  | ofut_k φ ψ => exact openValidIn_ofutK_reflect φ ψ
+  | ofut_t φ => exact openValidIn_ofutT_reflect φ
+  | ofut_four φ => exact openValidIn_ofutFour_reflect φ
+  | ofut_five φ => exact openValidIn_ofutFive_reflect φ
+  | opast_k φ ψ => exact openValidIn_opastK_reflect φ ψ
+  | opast_t φ => exact openValidIn_opastT_reflect φ
+  | opast_four φ => exact openValidIn_opastFour_reflect φ
+  | opast_five φ => exact openValidIn_opastFive_reflect φ
+  | stab_of_box φ => exact openValidIn_stabOfBox_reflect φ
+  | ofut_of_stab φ => exact openValidIn_ofutOfStab_reflect φ
+  | opast_of_stab φ => exact openValidIn_opastOfStab_reflect φ
+  | hn_open α => exact openValidIn_hnOpen_reflect α
+  | hn_open_mirror α => exact openValidIn_hnOpenMirror_reflect α
+  | rigidity_opast_fwd φ hφ => exact openValidIn_rigidityOpastFwd_reflect hφ
+  | rigidity_opast_bwd φ hφ => exact openValidIn_rigidityOpastBwd_reflect hφ
+  | rigidity_ofut_fwd φ hφ => exact openValidIn_rigidityOfutFwd_reflect hφ
+  | rigidity_ofut_bwd φ hφ => exact openValidIn_rigidityOfutBwd_reflect hφ
+  | definability_fwd φ => exact openValidIn_definabilityFwd_reflect φ
+  | prop_k φ ψ χ => exact openValidIn_propK_reflect φ ψ χ
+  | prop_s φ ψ => exact openValidIn_propS_reflect φ ψ
+  | ex_falso φ => exact openValidIn_exFalso_reflect φ
+  | peirce φ ψ => exact openValidIn_peirce_reflect φ ψ
+  | modal_t φ => exact openValidIn_modalT_reflect φ
+  | modal_4 φ => exact openValidIn_modal4_reflect φ
+  | modal_b φ => exact openValidIn_modalB_reflect φ
+  | modal_5_collapse φ => exact openValidIn_modal5Collapse_reflect φ
+  | modal_k_dist φ ψ => exact openValidIn_modalKDist_reflect φ ψ
+  | serial_future => exact openValidIn_serialFuture_reflect
+  | serial_past => exact openValidIn_serialPast_reflect
+  | left_mono_until_G φ χ ψ => exact openValidIn_leftMonoUntilG_reflect φ χ ψ
+  | left_mono_since_H φ χ ψ => exact openValidIn_leftMonoSinceH_reflect φ χ ψ
+  | right_mono_until φ ψ χ => exact openValidIn_rightMonoUntil_reflect φ ψ χ
+  | right_mono_since φ ψ χ => exact openValidIn_rightMonoSince_reflect φ ψ χ
+  | connect_future φ => exact openValidIn_connectFuture_reflect φ
+  | connect_past φ => exact openValidIn_connectPast_reflect φ
+  | enrichment_until φ ψ p => exact openValidIn_enrichmentUntil_reflect φ ψ p
+  | enrichment_since φ ψ p => exact openValidIn_enrichmentSince_reflect φ ψ p
+  | self_accum_until φ ψ => exact openValidIn_selfAccumUntil_reflect φ ψ
+  | self_accum_since φ ψ => exact openValidIn_selfAccumSince_reflect φ ψ
+  | absorb_until φ ψ => exact openValidIn_absorbUntil_reflect φ ψ
+  | absorb_since φ ψ => exact openValidIn_absorbSince_reflect φ ψ
+  | linear_until φ ψ χ θ => exact openValidIn_linearUntil_reflect φ ψ χ θ
+  | linear_since φ ψ χ θ => exact openValidIn_linearSince_reflect φ ψ χ θ
+  | until_F φ ψ => exact openValidIn_untilF_reflect φ ψ
+  | since_P φ ψ => exact openValidIn_sinceP_reflect φ ψ
+  | temp_linearity φ ψ => exact openValidIn_tempLinearity_reflect φ ψ
+  | temp_linearity_past φ ψ => exact openValidIn_tempLinearityPast_reflect φ ψ
+  | F_until_equiv φ => exact openValidIn_FUntilEquiv_reflect φ
+  | P_since_equiv φ => exact openValidIn_PSinceEquiv_reflect φ
+  | modal_future φ => exact openValidIn_modalFuture_reflect φ
+  | discrete_symm_fwd => exact openValidIn_discreteSymmFwd_reflect
+  | discrete_symm_bwd => exact openValidIn_discreteSymmBwd_reflect
+  | discrete_propagate_fwd => exact openValidIn_discretePropagateFwd_reflect
+  | discrete_propagate_bwd => exact openValidIn_discretePropagateBwd_reflect
+  | discrete_box_necessity => exact openValidIn_discreteBoxNecessity_reflect
+  | prior_UZ φ => exact openValidIn_priorUZ_reflect φ
+  | prior_SZ φ => exact openValidIn_priorSZ_reflect φ
+  | z1 φ => exact openValidIn_z1_reflect φ
+  | density φ => exact openValidIn_density_reflect φ
+  | dense_indicator => exact openValidIn_denseIndicator_reflect
+  | prior_U_gap φ => exact openValidIn_priorUGap_reflect φ
+  | prior_S_gap φ => exact openValidIn_priorSGap_reflect φ
+  | sep φ => exact openValidIn_sep_reflect φ
+  | stab_k φ ψ => exact openValidIn_stabK_reflect φ ψ
+  | stab_t φ => exact openValidIn_stabT_reflect φ
+  | stab_4 φ => exact openValidIn_stab4_reflect φ
+  | stab_5 φ => exact openValidIn_stab5_reflect φ
+  | box_stab φ => exact openValidIn_boxStab_reflect φ
+  | atom_stab p => exact openValidIn_atomStab_reflect p
+  | paste φ ψ hφ hψ => exact openValidIn_paste_reflect hφ hψ
+  | untl_paste α φ hα hφ => exact openValidIn_untlPaste_reflect hα hφ
+
+/-- Validity of an L^▷ schema at any class admitting it. -/
+theorem openAxiom_validIn {φ : OpenFormula} {fc : FrameClass} (ax : OpenAxiom φ)
+    (h : ax.minFrameClass ≤ fc) : OpenValidIn fc φ :=
+  OpenValidIn.mono h (openAxiom_validIn_min ax)
+
+/-- Reflection-validity of an L^▷ schema at any class admitting it. -/
+theorem openAxiom_reflect_time_validIn {φ : OpenFormula} {fc : FrameClass} (ax : OpenAxiom φ)
+    (h : ax.minFrameClass ≤ fc) : OpenValidIn fc φ.reflectTime :=
+  OpenValidIn.mono h (openAxiom_reflect_time_validIn_min ax)
 
 end FormalSystem.Metalogic.Conservativity
