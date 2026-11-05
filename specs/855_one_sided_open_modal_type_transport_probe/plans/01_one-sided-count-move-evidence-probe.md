@@ -361,7 +361,7 @@ seeking the recorded line numbers, and confirm the counts by re-counting after t
 
 ---
 
-### Phase 4: Full gate, axiom audit, scope confirmation, and summary [NOT STARTED]
+### Phase 4: Full gate, axiom audit, scope confirmation, and summary [COMPLETED]
 
 **Goal**: The round is closed with the full gate green, the axiom profile recorded, the declared
 scope confirmed against the working tree, and the negative verdict written up as the task's
