@@ -303,7 +303,7 @@ survived, not default to six because the report listed six.
 
 ---
 
-### Phase 3: Issue-log bridge and close-out [NOT STARTED]
+### Phase 3: Issue-log bridge and close-out [COMPLETED]
 
 **Goal**: Put the ledger's actionable findings into `issues.jsonl`, the sole payload source for
 the conclusion stage's follow-up channel, and close the task with the full gate set green and the
@@ -311,30 +311,40 @@ no-edit scope attested.
 
 **Tasks**:
 
-- [ ] Record one `issue-record.sh` entry per surviving proposal: `--kind issue`,
+- [x] Record one `issue-record.sh` entry per surviving proposal: `--kind issue`,
       `--suggested-channel follow_up_task`, `--resolution open`, `--phase implement`,
       `--dispatch-seq` as dispatched, `--evidence-path` pointing at
       `specs/872_open_language_transfer_ledger/proposals.md`, and `--severity` reflecting the
       report's own value ordering (the state-locality fragment and the direct embedding are the
       high-value rows; the abbreviation row is not). `--what-happened` states the gap and names the
       L⁺ counterpart it is owed against, in one or two sentences — the entry is a pointer into the
-      packet, not a second copy of it.
-- [ ] Record the two ordering hazards as their own entries, both `--class 'cross-task
+      packet, not a second copy of it. *(completed: 5 entries, one per T1-T5; T1/T4 severity
+      `costly`, T2/T3/T5 severity `minor`)*
+- [x] Record the two ordering hazards as their own entries, both `--class 'cross-task
       ownership/territory'`: the direct-embedding proposal being a prerequisite of task 874 and of
       task 856's conservativity-over-TM phase, which are filed and gated the other way; and the
       semantics-support proposal sharing `OpenLanguage/`/`Semantics/` territory with task 869.
-- [ ] Record the stale-surface finding as `--class 'design-record defect or ambiguity'`,
+      *(completed: 2 entries; the first corrected per Phase 2's finding to name tasks 873/874 as
+      the governing edge rather than 856 phase 13, which landed during Phase 1)*
+- [x] Record the stale-surface finding as `--class 'design-record defect or ambiguity'`,
       `--suggested-channel follow_up_task`: `FormalSystem/OpenLanguage/README.md` states "L^▷ is
       semantic only: it has no proof system" and lists six files against nine on disk, while
       `FormalSystem/Metalogic/Conservativity/Open.lean`'s docstring is accurate — the two surfaces
       disagree. Name task 856 phase 15 as the existing owner in the entry, so the conclusion stage
-      does not propose a duplicate.
-- [ ] Record the `PlusLanguage/README.md` `<!-- TODO: add description -->` inventory row for
+      does not propose a duplicate. *(completed: 1 entry; task 856 phase 15 fully landed,
+      committed, by the time this entry was recorded — the stale surface is now fixed in the
+      tree, confirmed and recorded as a closing win entry rather than a re-opened finding)*
+- [x] Record the `PlusLanguage/README.md` `<!-- TODO: add description -->` inventory row for
       `Subformulas.lean` as a single low-severity entry, or state in the handoff that it was
-      judged too small to carry — but do not leave it silently dropped.
-- [ ] Attest explicitly in the handoff summary: nothing under `FormalSystem/` was edited, no task
+      judged too small to carry — but do not leave it silently dropped. *(completed: 1 entry,
+      severity `none`)*
+- [x] Attest explicitly in the handoff summary: nothing under `FormalSystem/` was edited, no task
       was filed, no Lean declaration was added, and no completeness or decidability claim was made.
-- [ ] Run the complete gate set and record the result.
+      *(completed, see Phase 3 handoff)*
+- [x] Run the complete gate set and record the result. *(completed: verify-deploy.sh PASS — 15
+      checks, 0 failures, 1 pre-existing unrelated WARN (#16, hard_contracts migration);
+      validate-state.sh PASSED WITH WARNINGS, 0 failed, all warnings pre-existing; validate-
+      artifact.sh PASS on both the plan and the report)*
 
 **Timing**: 0.75 hours
 
