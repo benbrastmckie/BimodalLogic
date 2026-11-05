@@ -230,7 +230,7 @@ signature and no import, so the covering check is the single-module build
 
 ---
 
-### Phase 3: The lift construction over discrete time [NOT STARTED]
+### Phase 3: The lift construction over discrete time [COMPLETED]
 
 **Goal**: Port `lift_walk`: a surjective two-way bounded morphism over discrete time yields a
 `HistMorphism`, so `HistMap`'s `lift` field — primitive in the library today — becomes derivable
@@ -246,8 +246,8 @@ rather than assumed.
       `F.Duration`
 - [ ] Prove the forward half: by `Order.succ` recursion from the anchor time, using Phase 2's
       `exists_preimage_step` at each step and `IsSuccArchimedean` to reach every later time
-- [ ] Prove the backward half symmetrically, by `Order.pred` recursion using
-      `exists_preimage_step_neg` and `IsPredArchimedean`
+- [x] Prove the backward half symmetrically, by `Order.pred` recursion using
+      `exists_preimage_step_neg` and `IsPredArchimedean` *(deviation: altered — both halves recurse on ℕ and are glued by one ℤ-indexed `chain`, with `Semantics/DurationClassification.lean`'s `intIso` supplying the index map; `IsSuccArchimedean` enters only through `intIso`, and `PredOrder`/`IsPredArchimedean` are carried as binders for the `IsZTime` reading of the name without being consumed. This also adds `import FormalSystem.Semantics.DurationClassification`, which the phase's no-import-change tier assumption did not anticipate; acyclic — `DurationClassification` imports only `TaskFrame`)*
 - [ ] Assemble the two halves into a total state assignment and prove it respects the task
       relation at every pair of times (`F'.comp` composes the unit steps; this is the step the
       probe gets for free from `IsWalk` and the library does not)
