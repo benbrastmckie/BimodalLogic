@@ -1,7 +1,7 @@
 # Implementation Plan: Land the one-sided count-move refutation as a wired evidence probe
 
 - **Task**: 855 - Probe the one-sided ▷/◁ type transport against the refuted two-sided shape
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (but see CONTENTION under Risks: must run in a cycle of its own)
 - **Research Inputs**: `specs/855_one_sided_open_modal_type_transport_probe/reports/01_one-sided-open-modal-transport.md`

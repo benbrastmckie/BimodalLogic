@@ -11,8 +11,8 @@ next_project_number: 861
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,855,856,857,858,860 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827,840,845,852,853 | 298,428,502,761,768,769,770,772,777,785,810,813,838,839,855 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827,840,845,853 | 298,428,502,761,768,769,770,772,777,785,810,813,838,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,822,834 | 429,497,783,823 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -105,8 +105,7 @@ next_project_number: 861
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
-855 [PLANNED] — Probe the one-sided ▷/◁ type transport against the refuted...
-  └─ 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
+852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
 
 ### Formula Refactor
 
@@ -562,12 +561,13 @@ SIZING. This is multi-dispatch work: a new axiom type, a new derivation tree, a 
 ---
 
 ### 855. Probe the one-sided ▷/◁ type transport against the refuted two-sided shape
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [855_one_sided_open_modal_type_transport_probe/reports/01_one-sided-open-modal-transport.md]
 - **Plan**: [855_one_sided_open_modal_type_transport_probe/plans/01_one-sided-count-move-evidence-probe.md]
+- **Summary**: [855_one_sided_open_modal_type_transport_probe/summaries/01_one-sided-open-modal-transport-summary.md]
 
 **Description**: RESEARCH TASK, one probe's worth of work, aimed squarely at the Stage 1 wall: does the ONE-SIDED factorization given by the open modals ▷/◁ crack the transport condition whose two-sided pointwise form is refuted? Reports and sorry-free probes under this task's directory and `specs/evidence/seam-gluing-ray-product/`; no changes to `FormalSystem/` or `Tests/`.
 
