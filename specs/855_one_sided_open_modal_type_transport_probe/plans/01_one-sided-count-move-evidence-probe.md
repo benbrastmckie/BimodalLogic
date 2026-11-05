@@ -220,7 +220,7 @@ statement to make the omission work.
 
 ---
 
-### Phase 2: Discharge non-vacuity in-file and write the collection-style header [NOT STARTED]
+### Phase 2: Discharge non-vacuity in-file and write the collection-style header [COMPLETED]
 
 **Goal**: The refutation is non-vacuous *in this file*, not by inheritance, and the file's header
 states the negative verdict in the form the probe collection uses — so that a reader arriving at
