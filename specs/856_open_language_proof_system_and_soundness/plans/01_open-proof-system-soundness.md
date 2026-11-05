@@ -502,7 +502,7 @@ actually added.
 
 ---
 
-### Phase 6: `Conservativity/Open/` scaffolding and the ▷/◁ validity block [NOT STARTED]
+### Phase 6: `Conservativity/Open/` scaffolding and the ▷/◁ validity block [COMPLETED]
 
 **Goal**: Create the validity directory and land the restricted-modal validity and
 reflection-validity block helpers, which are the cheap ones: every obligation is an existing
@@ -510,12 +510,12 @@ reflection-validity block helpers, which are the cheap ones: every obligation is
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Conservativity/Open/` with
+- [x] Create `FormalSystem/Metalogic/Conservativity/Open/` with
   `OpenAxiomValidity.lean`, a sibling aggregator `FormalSystem/Metalogic/Conservativity/Open.lean`
   (per C8's aggregator convention: sibling `X.lean` beside `X/`, never `X/X.lean`), a directory
   `README.md` carrying the module table, and the import row in
   `FormalSystem/Metalogic/Conservativity.lean`.
-- [ ] In `OpenAxiomValidity.lean`, land `theorem openAxiomValidIn_ofutBlock` and
+- [x] *(deviation: altered — the block is landed as fourteen per-constructor theorems plus a named conjunction aggregate, and the four rigidity halves are split into their own `openAxiomValidIn_rigidityBlock` aggregate; a single fourteen-way conjunction with no per-constructor names would force Phase 11 to project with nested `.2`s.)* In `OpenAxiomValidity.lean`, land `theorem openAxiomValidIn_ofutBlock` and
   `theorem openAxiomReflectValidIn_ofutBlock`: for each restricted-modal constructor of Phase 1,
   `OpenValidIn .Base` of the schema and of its `reflectTime`. Discharge each from the landed
   names: `openValid_ofut_k`, `openValid_ofut_t`, `openValid_ofut_four`, `openValid_ofut_five`,
@@ -523,12 +523,12 @@ reflection-validity block helpers, which are the cheap ones: every obligation is
   `openValid_stab_of_box`, `openValid_ofut_of_stab`, `openValid_opast_of_stab`,
   `hnOpen_openValid`, `hnOpenMirror_openValid` / `openValid_hnOpenPast`,
   `openValid_stab_imp_ofut_opast`.
-- [ ] Route every `◁` obligation through `openValid_reflectTime` from its `▷` twin — `reflectTime`
+- [x] Route every `◁` obligation through `openValid_reflectTime` from its `▷` twin — `reflectTime`
   fixes `⊡` and exchanges `▷` with `◁`, so each is one line.
-- [ ] Derive the two rigidity blocks from the landed semantic halves
+- [x] *(deviation: altered — the landed `PlusLanguage.truth_congr_agreeFrom`/`truth_congr_agreeUpTo` are statements about `PlusTruthAt` and a pure L^▷ formula may carry the crossed restricted modal, so they do not apply; the file instead lands their L^▷ counterparts `openTruthAt_congr_agreeFrom`/`openTruthAt_congr_agreeUpTo`, whose seven shared arms transcribe the L⁺ proofs verbatim and whose one new arm each needs no induction hypothesis. The implication-pair shape (R3) is kept.)* Derive the two rigidity blocks from the landed semantic halves
   `PlusLanguage.truth_congr_agreeFrom` and `truth_congr_agreeUpTo`, stated as implication pairs
   rather than biconditionals (R3), using Phase 1's purity predicates as the guards.
-- [ ] Record in the module docstring that `definability_bwd` is absent from the axiom type (D1)
+- [x] Record in the module docstring that `definability_bwd` is absent from the axiom type (D1)
   while `openValid_ofut_opast_imp_stab` remains a landed validity, and that no completeness
   claim follows from anything in the file.
 

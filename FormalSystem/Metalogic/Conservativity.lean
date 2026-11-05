@@ -24,6 +24,7 @@ import FormalSystem.Metalogic.Conservativity.MinusChronicle
 import FormalSystem.Metalogic.Conservativity.MinusChainCompleteness
 import FormalSystem.Metalogic.Conservativity.Plus
 import FormalSystem.Metalogic.Conservativity.Star
+import FormalSystem.Metalogic.Conservativity.Open
 
 /-!
 # The TM⁻/TM conservativity bridge — backward direction
@@ -273,6 +274,17 @@ whose unconditional half says any separating witness for non-conservativity is a
 incompleteness. TM⋆ completeness is open under two named obstructions and is asserted nowhere;
 see `Conservativity/Star/README.md`.
 
+## The restricted-modal extension L^▷
+
+A second extension of L⁺, sideways rather than further out: L⁺ ⊂ L^▷ adds the manuscript's
+open-future `▷` and open-past `◁` operators (`sub:RestrictedModalities`;
+`FormalSystem/OpenLanguage/`), and `Conservativity/Open.lean` carries the L^▷ system's soundness,
+its two conservativity directions over TM⁺ and its rows over TM. The TM⁺ row here is
+**unconditional**, unlike L⋆'s: it is syntactic, through the derivability-preserving erasure
+`eraseOpen` and its axiom-discharge table (`OpenLanguage/OpenErasure.lean`), so it needs no TM⁺
+engine and no completeness hypothesis. Completeness of the L^▷ system is asserted nowhere and the
+system is deliberately weak on `▷`; see `Conservativity/Open/README.md`.
+
 ## CED — closed positively; CEC — open
 
 CED is **proved**: `Conservativity/MinusChainCompleteness.lean`'s `forward_dense : Forward .Dense`,
@@ -429,6 +441,8 @@ Each entry reads *Module* — *Contents*:
 * `Conservativity/Star.lean` — aggregator for the L⋆ side: TM⋆ soundness at every class,
   conservativity of TM⋆ over TM in both directions (`starDerivable_ofFormula_iff`), and the
   conditional pair over TM⁺
+* `Conservativity/Open.lean` — aggregator for the L^▷ side: the L^▷ system's axiom-validity
+  blocks, its soundness at every class, and its conservativity rows over TM⁺ and over TM
 
 **The children must never import this file.** Each imports
 `FormalSystem.Metalogic.Conservativity.Backward` directly; importing the aggregator from a child

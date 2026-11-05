@@ -86,6 +86,8 @@ import FormalSystem.Metalogic.Conservativity.MinusDeduction
 import FormalSystem.Metalogic.Conservativity.MinusExt
 import FormalSystem.Metalogic.Conservativity.MinusMCS
 import FormalSystem.Metalogic.Conservativity.MinusTemporalDerived
+import FormalSystem.Metalogic.Conservativity.Open
+import FormalSystem.Metalogic.Conservativity.Open.OpenAxiomValidity
 import FormalSystem.Metalogic.Conservativity.Plus
 import FormalSystem.Metalogic.Conservativity.Plus.Atomization
 import FormalSystem.Metalogic.Conservativity.Plus.AxiomValidity
