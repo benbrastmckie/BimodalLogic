@@ -647,6 +647,7 @@ import FormalSystem.Semantics.Nomic.Recovery
 import FormalSystem.Semantics.Nomic.Uniformity
 import FormalSystem.Semantics.Nomic.Witnesses
 import FormalSystem.Semantics.Nomic.ZTime
+import FormalSystem.Semantics.OrientedForest
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.Periodicity
