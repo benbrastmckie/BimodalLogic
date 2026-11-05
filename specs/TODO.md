@@ -11,8 +11,8 @@ next_project_number: 870
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,865,867,869 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862 | 298,428,502,761,770,772,777,785,803,813,838,839,852 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,856,857,858,860,863,865,867,869 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862 | 298,428,502,761,770,772,777,785,803,813,838,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -108,8 +108,6 @@ next_project_number: 870
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
-852 [IMPLEMENTING] — Author a model-level pumping lemma for tpOf along a ladder...
-  └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
 
 ### Formula Refactor
@@ -853,12 +851,13 @@ CITATIONS: parent issues.jsonl iss_1793819583011_jsu079 and iss_1792373250168_HQ
 ---
 
 ### 852. Model level pumping lemma for tpof along ladder path
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 855
 - **Parent**: Task 761
 - **Plan**: [852_model_level_pumping_lemma_for_tpof_along_ladder_path/plans/01_model-level-tpof-periodicity.md]
+- **Summary**: [852_model_level_pumping_lemma_for_tpof_along_ladder_path/summaries/01_model-level-tpof-periodicity-summary.md]
 
 **Description**: Author a model-level pumping lemma for tpOf along a ladder path: the model-side analogue of the periodicity of the certificate graph.
 

@@ -1,15 +1,25 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 5,
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Authored a 4-phase plan for the model-level pumping lemma for tpOf. A codebase audit found the splice/pump half already landed before task creation (tpOf_eq_spliceIdx_of_tpOf_eq, exists_typeBlock_of_spacing, realized_typeBlock_mem_prodCycleLens), so the plan was narrowed to the genuinely absent object: a PERIODICITY statement about tpOf along a ladder path. The honest form is conditional on a globally periodic object walk; the unconditional eventual-periodicity form is false and gets a compiled refutation probe. The plan records explicitly that the conditional form does not discharge the third circularity, since the tight chain's walk is not globally periodic.",
+  "summary": "All four plan phases completed. tpOf_periodic_of_objAt_periodic and objAt_tpOf_eq_of_objAt_periodic landed in LadderAgree.lean at their pinned Challenge signatures (conditional model-level periodicity of the realized stab-free type under a globally l-periodic object walk). A new wired probe compiles that the unconditional EVENTUAL form -- threshold plus period, the satThreshold/satPeriod shape -- is FALSE along an arbitrary ladder path, so the hypothesis is load-bearing. The RaySummary README and the module docstring record the honest gap: the condition is unavailable on the tight (doubling) chain, so the third circularity is not discharged. Full lake build green (2900 jobs, 0 errors), zero sorries, no new axioms.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/plans/01_model-level-tpof-periodicity.md",
-      "summary": "Four-phase plan: conditional tpOf periodicity lemma plus endpoint-pair corollary, compiled refutation of the unconditional form, honest-form record, final gate."
+      "type": "summary",
+      "path": "specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/summaries/01_model-level-tpof-periodicity-summary.md",
+      "summary": "Completion summary: the conditional periodicity lemma, the refutation of the unconditional form, the honest-gap record, and the full verification set."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+      "summary": "Two new theorems after tpOf_stabFree_eq_of_objAt_eq plus a module-docstring section stating the quantifier and the gap."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-tpof-periodicity-refutation.lean",
+      "summary": "Wired probe refuting unconditional eventual periodicity of tpOf on an all-idle two-state object with the walk true exactly at the powers of two."
     }
   ]
 }

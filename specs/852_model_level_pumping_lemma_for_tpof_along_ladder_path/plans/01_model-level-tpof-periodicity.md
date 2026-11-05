@@ -1,7 +1,7 @@
 # Implementation Plan: Task #852
 
 - **Task**: 852 - Author a model-level pumping lemma for tpOf along a ladder path
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: 855
 - **Research Inputs**: None (no research report for this round; Stage 1.5 assessment resolved the
