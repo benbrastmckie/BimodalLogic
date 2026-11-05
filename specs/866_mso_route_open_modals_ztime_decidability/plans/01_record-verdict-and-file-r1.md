@@ -188,7 +188,7 @@ conclusion stage or the user can file it with one `/task` call.
 
 ---
 
-### Phase 3: Close-out verification and guardrail audit [NOT STARTED]
+### Phase 3: Close-out verification and guardrail audit [COMPLETED]
 
 **Goal**: Both edited records and this task's own report are mutually consistent, every dispatch
 guardrail holds across all three, and the full gate set has been run with every failure attributed
@@ -196,13 +196,13 @@ by path to something this task did not touch.
 
 **Tasks**:
 
-- [ ] Re-read the three records as a set: this task's report, the amended section 1.3, and the changed regions of `specs/ROADMAP.md`. Confirm they agree on the verdict's scope (step 4 yes, step 1 amended, ZTime only) and on R1/R2's dispositions
-- [ ] Audit all four dispatch guardrails across the three records: (1) nothing claims Lean verification of section 1.3; (2) nothing claims the finite model property; (3) nothing presents the landed `decidableValidZTime` / `decidableDerivableZTime` (at base `Formula`, no `⊡`) as covering `⊡` or `▷`/`◁`; (4) Base, Dense and RTime are stated open with the obstruction located at report 03 section 1.4
-- [ ] Confirm every claim added in Phases 1 and 2 carries an evidence tier (compiled / derived / paper / held / recalled)
-- [ ] Run `bash .claude/scripts/validate-artifact.sh specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md report` and the same on the amended report 03
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. For every failure, attribute it by path; confirm none is attributable to a file this plan touched (all under `specs/**`, where gate 3 has no bearing and gate 4 is exempt by design). Record any pre-existing failure — including anything arising from the `core` extension staleness this dispatch was warned about — as pre-existing, and do not repair it here
-- [ ] Confirm R1 is surfaced as the task's next step in `.return-meta.json` and the handoff summary, so the conclusion stage can file it
-- [ ] Record the phase's issue-log entries (including a `kind: win` entry if the propagation ran clean) via `issue-record.sh`, non-fatally
+- [x] Re-read the three records as a set: this task's report, the amended section 1.3, and the changed regions of `specs/ROADMAP.md`. Confirm they agree on the verdict's scope (step 4 yes, step 1 amended, ZTime only) and on R1/R2's dispositions *(completed: consistent)*
+- [x] Audit all four dispatch guardrails across the three records: (1) nothing claims Lean verification of section 1.3; (2) nothing claims the finite model property; (3) nothing presents the landed `decidableValidZTime` / `decidableDerivableZTime` (at base `Formula`, no `⊡`) as covering `⊡` or `▷`/`◁`; (4) Base, Dense and RTime are stated open with the obstruction located at report 03 section 1.4 *(completed: all four hold, confirmed by grep)*
+- [x] Confirm every claim added in Phases 1 and 2 carries an evidence tier (compiled / derived / paper / held / recalled) *(completed)*
+- [x] Run `bash .claude/scripts/validate-artifact.sh specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md report` and the same on the amended report 03 *(completed: both [PASS], 0 warnings)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. For every failure, attribute it by path; confirm none is attributable to a file this plan touched (all under `specs/**`, where gate 3 has no bearing and gate 4 is exempt by design). Record any pre-existing failure — including anything arising from the `core` extension staleness this dispatch was warned about — as pre-existing, and do not repair it here *(deviation: this dispatch's own Batch Gate Deferral directive supersedes an independent full run here -- confirmed via suite_selection_select on both touched paths, which returned __FULL_SWEEP__ -- i.e. no scoped suite/gate exists for specs/** markdown, matching this plan's own risk-table statement. validate-artifact.sh, the actually-applicable check, was run directly above and passed; the full gate set is deferred to the once-per-batch stage per the dispatch directive)*
+- [x] Confirm R1 is surfaced as the task's next step in `.return-meta.json` and the handoff summary, so the conclusion stage can file it *(completed)*
+- [x] Record the phase's issue-log entries (including a `kind: win` entry if the propagation ran clean) via `issue-record.sh`, non-fatally *(completed: one win entry, one minor issue entry for the gate-scope deferral)*
 
 **Timing**: 30 minutes
 
@@ -223,12 +223,12 @@ by path to something this task did not touch.
 
 ## Testing & Validation
 
-- [ ] `validate-artifact.sh` exits 0 on this task's report and on the amended report 03
-- [ ] `specs/ROADMAP.md`'s coverage-appendix marker and generated block are unchanged
-- [ ] Every claim added to either record carries an evidence tier
-- [ ] No record asserts verification of report 03 section 1.3, the finite model property, or coverage of `⊡`/`▷`/`◁` by the landed base-language decidability
-- [ ] Base, Dense and RTime are stated open with the obstruction at report 03 section 1.4
-- [ ] The full gate set has been run, with failures attributed by path and pre-existing ones recorded as such
+- [x] `validate-artifact.sh` exits 0 on this task's report and on the amended report 03 *(completed)*
+- [x] `specs/ROADMAP.md`'s coverage-appendix marker and generated block are unchanged *(completed)*
+- [x] Every claim added to either record carries an evidence tier *(completed)*
+- [x] No record asserts verification of report 03 section 1.3, the finite model property, or coverage of `⊡`/`▷`/`◁` by the landed base-language decidability *(completed)*
+- [x] Base, Dense and RTime are stated open with the obstruction at report 03 section 1.4 *(completed)*
+- [x] The full gate set has been run, with failures attributed by path and pre-existing ones recorded as such *(deviation: altered -- superseded by this dispatch's Batch Gate Deferral directive; suite_selection_select confirmed no scoped suite/gate exists for the specs/** files this phase touched, so validate-artifact.sh was run directly instead and the full sweep deferred to the once-per-batch stage)*
 
 ## Artifacts & Outputs
 
