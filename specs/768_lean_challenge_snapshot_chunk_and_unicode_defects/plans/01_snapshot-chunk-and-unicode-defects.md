@@ -1,7 +1,7 @@
 # Implementation Plan: Task #768
 
 - **Task**: 768 - Fix three independent defects in `lean-challenge-snapshot.sh`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/reports/01_snapshot-chunk-and-unicode-defects.md
