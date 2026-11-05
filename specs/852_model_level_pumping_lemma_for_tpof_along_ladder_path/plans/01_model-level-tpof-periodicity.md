@@ -1,7 +1,7 @@
 # Implementation Plan: Task #852
 
 - **Task**: 852 - Author a model-level pumping lemma for tpOf along a ladder path
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: 855
 - **Research Inputs**: None (no research report for this round; Stage 1.5 assessment resolved the
@@ -151,30 +151,30 @@ is not modified.
 Phases within the same wave can execute in parallel. This plan is linear: Phase 2's probe record
 cites Phase 1's landed name as the statement it does NOT refute, and Phase 3 records both.
 
-### Phase 1: The conditional periodicity lemma [NOT STARTED]
+### Phase 1: The conditional periodicity lemma [COMPLETED]
 
 **Goal**: Land `tpOf_periodic_of_objAt_periodic` and its endpoint-pair corollary
 `objAt_tpOf_eq_of_objAt_periodic` in `LadderAgree.lean`, beside half (i), with no `sorry`, no new
 axiom and no vacuous definition.
 
 **Tasks**:
-- [ ] Re-read `LadderAgree.lean` around the half-(i) section (roughly lines 2220-2320) immediately
+- [x] Re-read `LadderAgree.lean` around the half-(i) section (roughly lines 2220-2320) immediately
   before editing, and confirm the section's `variable` binders for `Q`, `step`, `pend` and the
   `[Finite Q] [Nonempty Q]` instances as they actually stand.
-- [ ] Add `tpOf_periodic_of_objAt_periodic` immediately after `tpOf_stabFree_eq_of_objAt_eq`,
+- [x] Add `tpOf_periodic_of_objAt_periodic` immediately after `tpOf_stabFree_eq_of_objAt_eq`,
   with the signature pinned in `## Lean Challenge Statements`.
-- [ ] Prove it: instantiate half (i) at `σ' := σ.timeShift l`, supplying
+- [x] Prove it: instantiate half (i) at `σ' := σ.timeShift l`, supplying
   `hσ' : ∀ t, (σ.timeShift l).state t = (t + (k + l), g (t + l))` from
   `WorldHistory.timeShift_state` plus `hσ` and a `ring`-level rearrangement of `t + l + k`; supply
   `hobj` from `hper`; then rewrite the conclusion's left side with `tpOf_timeShift`.
-- [ ] Add `objAt_tpOf_eq_of_objAt_periodic`, the `(objAt, tpOf)` pair at distance `l` in the tuple
+- [x] Add `objAt_tpOf_eq_of_objAt_periodic`, the `(objAt, tpOf)` pair at distance `l` in the tuple
   shape `exists_typeBlock_of_spacing` returns, as a corollary of the above plus `hper`.
-- [ ] Write a module-level docstring paragraph for each: what it quantifies over (a GLOBALLY
+- [x] Write a module-level docstring paragraph for each: what it quantifies over (a GLOBALLY
   periodic walk, every `v : ℤ`), what it does not (no surgery, no pending-region hypothesis, no
   `ParamsOk`), and that the hypothesis is on the WALK and not on the certificate layer.
-- [ ] Run `lean_verify` on both fully qualified names and record the axiom profile; confirm it
+- [x] Run `lean_verify` on both fully qualified names and record the axiom profile; confirm it
   matches the module's own profile and introduces nothing new.
-- [ ] Scoped build and commit.
+- [x] Scoped build and commit.
 
 **Timing**: 1.5 hours
 

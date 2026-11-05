@@ -2309,6 +2309,71 @@ theorem tpOf_stabFree_eq_of_objAt_eq
   tpOf_eq_of_objAt_eq_of_pinned fwd bwd lab φ (fun _ => False) σ σ' hσ hσ' hobj
     (fun _ h => absurd h (fun h => h)) (stabPinned_false_of_mem_closure hno) z
 
+/-! ### Model-level periodicity of the realized type
+
+The model-side analogue of a periodicity statement, authored rather than cited. What is true, and
+all that is true, is the CONDITIONAL form: a globally periodic object walk makes the realized
+stab-free type periodic. The hypothesis is on the WALK alone — no certificate relation, no
+`ParamsOk`, no pending-region hypothesis, and no surgery of any kind: both sides of the equation
+are positions of ONE path, so no occurrence count that a nested eventuality reads is disturbed.
+The unconditional (eventual, threshold-and-period) form is FALSE for an arbitrary ladder path —
+see `specs/evidence/seam-gluing-ray-product/ladder-tpof-periodicity-refutation.lean`. -/
+
+/-- **MODEL-LEVEL PERIODICITY OF THE REALIZED TYPE.** When the object walk of a ladder path is
+globally `l`-periodic, the realized stab-free type is `l`-periodic along the path, at every
+position.
+
+What this quantifies over: `hper` is a GLOBAL hypothesis, at every `v : ℤ`, not an eventual or
+one-sided one — half (i) needs the two walks to agree everywhere, because the `S` clause reads
+the past. What it does not carry: no surgery, no pending-region hypothesis, no `ParamsOk`, no
+certificate object. The hypothesis is on the WALK, not on the certificate layer, so this is not
+the periodicity `prodPre_periodic` supplies and does not route through it. -/
+theorem tpOf_periodic_of_objAt_periodic
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (l : ℤ)
+    {k : ℤ} {g : ℤ → LadderState Q pend}
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t))
+    (hper : ∀ v : ℤ, objAt g (v + l) = objAt g v)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (z : ℤ) :
+    tpOf (ladderModel step pend fwd bwd lab) φ σ (z + l)
+      = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  have hshift : ∀ t : ℤ,
+      (σ.timeShift l).state t = (t + (k + l), (fun u : ℤ => g (u + l)) t) := by
+    intro t
+    have harith : t + l + k = t + (k + l) := by ring
+    rw [WorldHistory.timeShift_state, hσ (t + l), harith]
+  have hobj : ∀ v : ℤ, objAt (fun u : ℤ => g (u + l)) v = objAt g v := by
+    intro v
+    simpa [objAt] using hper v
+  rw [← tpOf_timeShift (ladderModel step pend fwd bwd lab) φ σ z l]
+  exact tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (σ.timeShift l) σ hshift hσ hobj hno z
+
+/-- **THE ENDPOINT PAIR AT DISTANCE `l`**, in the tuple shape the type pigeonhole
+(`exists_typeBlock_of_spacing`) and the duplication type lemma (`tpOf_eq_spliceIdx_of_tpOf_eq`)
+consume: a globally `l`-periodic walk makes EVERY position the low end of a type-respecting block
+of length `l`.
+
+Same quantifier as its parent: the periodicity hypothesis is global. This delivers the agreement
+pair only; it asserts nothing about what a surgery at such a block would preserve. -/
+theorem objAt_tpOf_eq_of_objAt_periodic
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (l : ℤ)
+    {k : ℤ} {g : ℤ → LadderState Q pend}
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t))
+    (hper : ∀ v : ℤ, objAt g (v + l) = objAt g v)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (z : ℤ) :
+    objAt g z = objAt g (z + l) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ σ z
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (z + l) :=
+  ⟨(hper z).symm,
+    (tpOf_periodic_of_objAt_periodic fwd bwd lab φ l σ hσ hper hno z).symm⟩
+
 omit [Finite Q] [Nonempty Q] in
 /-- **HALF (i) IS NOT VACUOUS.** Whenever the object has an idle state with a self-loop, the
 constant walk at it lifts to a ladder path for EVERY value of the next-deadline register: the
