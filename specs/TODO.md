@@ -29,7 +29,7 @@ next_project_number: 869
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
 767 [NOT STARTED] — lake-build-guard replays stale result for env lean FILE
-769 [NOT STARTED] — plan-format: blocked decision gates and plan-level Status...
+769 [RESEARCHED] — plan-format: blocked decision gates and plan-level Status...
   └─ 827 [NOT STARTED] — Require a plan phase to agree with its own Scope Hypothesis...
 770 [NOT STARTED] — postflight writes detail-free blocking issue entry on partial...
   └─ 823 [NOT STARTED] — Tell the re-prompted dispatch to distrust the error count it...
@@ -73,7 +73,7 @@ next_project_number: 869
 
 ### Completeness
 
-864 [RESEARCHED] — IMPLEMENTATION TASK, time-sensitive: land the LC\_n and LCU...
+864 [PLANNING] — IMPLEMENTATION TASK, time-sensitive: land the LC\_n and LCU...
   └─ 865 [NOT STARTED] — RESEARCH TASK, and the owner of a programme that is currently...
 
 ### Dataset Enhancement
@@ -113,7 +113,7 @@ next_project_number: 869
 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
-866 [RESEARCHED] — RESEARCH TASK, cheap and high-value: verify and record that...
+866 [PLANNING] — RESEARCH TASK, cheap and high-value: verify and record that...
 
 ### Formula Refactor
 
@@ -135,7 +135,7 @@ next_project_number: 869
 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
-868 [RESEARCHED] — IMPLEMENTATION TASK, small and deliberately conditional:...
+868 [PLANNING] — IMPLEMENTATION TASK, small and deliberately conditional:...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -157,7 +157,7 @@ next_project_number: 869
 ## Tasks
 
 ### 868. Open language transfer corollaries
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -200,7 +200,7 @@ GATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the elimin
 ---
 
 ### 866. Mso route open modals ztime decidability
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: formal
 - **Topic**: decidability
 - **Dependencies**: None
@@ -245,7 +245,7 @@ DELIVERABLE: a report under this task's directory. No library change and no comp
 ---
 
 ### 864. Land lc schema limit closure soundness
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -3704,10 +3704,11 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. Three sibling reco
 ---
 
 ### 769. plan-format: blocked decision gates and plan-level Status ownership
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [769_plan_format_blocked_gate_and_status_ownership/reports/01_blocked-gate-and-status-ownership.md]
 
 **Description**: Add two missing provisions to `plan-format.md`: one admitting a pre-decided `[BLOCKED]` decision-gate phase, and one forbidding a plan from instructing the implementer to write the plan-level `Status` field.
 
