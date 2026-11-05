@@ -1,7 +1,7 @@
 # Implementation Plan: Naming-rule soundness toolkit
 
 - **Task**: 559 - Nondeterministic canonical model / TM⋆ completeness (narrowed to the naming-rule soundness toolkit)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md`, `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md`, `specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/03_morphisms-clock-rule-lc-schema.lean`
