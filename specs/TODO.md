@@ -2515,6 +2515,125 @@ Every edited file lies outside `specs/**`, so its prose must carry no task-numbe
 
 Raised during orchestration of the ladder-cell presentation design-decision record and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. The originating entry is `specs/819_ladder_cell_presentation_design_decision/issues.jsonl`, entry_id `iss_1792337390065_iAkAgQ` (class `tooling`, severity minor, resolution `worked_around`). The four-form PID measurement in this record was performed fresh during task creation, not copied from the originating run, which measured only the failing form.
 
+=== FOLDED-IN CHANGE REQUEST: THE PID MUST CROSS THE BASH-CALL BOUNDARY ===
+
+Folded into this record by /orchestrate's conclusion stage (agent-system channel) during session
+`sess_1793842874_bc66e8`, originating task 855, issue entry_id `iss_1793844057182_bHlVYf`, class
+`tooling-friction`, severity `minor`. Folded here rather than filed as a fourth claimant because
+this record already owns both edit targets in its `file_scope`
+(`agent-system/extensions/core/context/patterns/bounded-build-waiter.md` and
+`agent-system/extensions/core/index-entries.json`), is unstarted, and its subject IS the
+launch-side fidelity of the captured PID. The addition below is the same `$!` capture followed one
+step further: across a Bash-call boundary.
+
+THE GAP, MEASURED BY READING THE FILE. `bounded-build-waiter.md`'s
+`### Sizing a Wait Near the Per-Call Ceiling` section already prescribes the multi-call form in
+full -- "launch once, capturing `pid`, then issue a *sequence* of separate bounded calls, each
+gated on `kill -0 "$pid"` and sized safely under the ceiling" -- and `external-process-wait.md`
+Rule 1's sub-case 3b already redirects to it by name. So the SEQUENCE rule is not missing and must
+not be re-derived or restated. What is missing is the one mechanical step that makes the sequence
+executable: HOW `$pid` reaches the second call. Bash-tool shell state does not persist across
+calls, so a `pid=$!` captured in the launching call is simply gone by the next one, and the
+section's own `kill -0 "$pid"` is unresolvable as literally written for any caller who follows it
+across a real call boundary. The fix is to state the persistence step: redirect the writer's
+stdout to a log, write `$!` to a PID file in the same command, and in each following call re-read
+the PID from that file before the `kill -0` loop.
+
+THE PRECEDENT IS ALREADY IN-TREE AND IS THE MODEL TO CITE. `skills/skill-orchestrate/SKILL.md`
+Move 1 already implements exactly this, conformingly:
+
+  nohup bash .claude/scripts/orchestrate-cycle-plan.sh ... >"$cycle_log" & echo $! > "$cycle_log.pid"
+  pid=$(cat "$cycle_log.pid")
+  timeout 540 bash -c 'while kill -0 "$1" 2>/dev/null; do sleep 10; done' _ "$pid"
+
+and that file's Move 3 names it a reusable idiom ("Same nohup/pid-capture/bounded-kill-0 idiom").
+Note for consistency with this record's own four-form measurement: that form's `nohup` is
+PID-transparent (form (b)), so `echo $!` writes the writer's own PID to the file and the form is
+correct. This is also why the two subjects belong in one record -- a PID file is only as good as
+the `$!` that fed it, and a forking wrapper (form (c)/(d)) poisons the file just as it poisons an
+in-shell `pid` variable, except that the PID file makes the wrong value durable and re-read on
+every subsequent call.
+
+=== A CLAIM IN THE CHANGE REQUEST THAT MUST NOT BE PROPAGATED: THERE IS NO 180s THRESHOLD ===
+
+READ THIS BEFORE WRITING ANY PROSE. The originating issue entry states the gate "exceeds the Bash
+tool's 180s auto-background threshold." MEASURED: that threshold does not exist. `grep` for
+`180s` across the entire source store returns NOTHING, and the documented contract -- stated in
+`external-process-wait.md` Rule 1 step (2) and again in this file's own canonical-idiom section --
+is a Bash-tool `timeout` parameter DEFAULTING to `120000`ms (120s) with a CEILING of `600000`ms
+(600s). The harness auto-backgrounds at whatever that parameter is set to, so the operative number
+is 120s when the caller leaves the default alone and 600s when the caller raises it. 180 is
+neither.
+
+THE CONSEQUENCE IS SUBSTANTIVE, NOT PEDANTIC. The originating gate runs roughly 5 minutes (~300s).
+That FITS under the 600s ceiling, so it is sub-case 3a in `external-process-wait.md` Rule 1's
+terms -- "raising the parameter is sufficient" -- and is correctly resolved by ONE bounded
+foreground call with the tool `timeout` parameter raised to `600000`, not by the two-call form at
+all. The friction recorded in the originating entry is therefore best explained as the tool
+`timeout` parameter being left at its `120000` default, which is precisely the failure step (2) of
+that rule exists to prevent. The two-call sequence genuinely IS required only for a job that
+cannot fit under 600s even once sized (sub-case 3b).
+
+SO DO NOT WRITE THIS AS A THRESHOLD RULE. Specifically, the guidance MUST NOT say, in any phrasing,
+that a gate exceeding some fixed number of seconds needs the multi-call form. That would (i)
+enshrine a number the harness does not implement, (ii) contradict this file's and
+`external-process-wait.md`'s own 120/600 arithmetic, and (iii) push callers toward the strictly
+more complex detached form for jobs a single raised-parameter call handles correctly, which
+inverts the canonical-idiom section's standing preference for the simpler foreground form. State
+the PID-persistence step as a property of the multi-call sequence WHEREVER that sequence is
+already warranted -- i.e. governed by the existing 3a/3b split -- and let the existing sub-case
+split keep deciding when it is warranted.
+
+=== THE "GATES VERSUS BUILDS" FRAMING IS ALSO NOT A REAL GAP ===
+
+The change request argued the sequence rule is stated for long-running BUILDS but not for
+long-running GATES. MEASURED: the section is already job-generic -- it opens on "A job whose
+expected duration approaches the Bash tool's own per-call ceiling," and its second paragraph
+explicitly names "a local verification/gate/build/test process." Gates are already inside its
+scope. Do NOT add a gates-specific carve-out, a parallel gate paragraph, or a restatement scoped
+to gates; that would create exactly the kind of second home this file's
+`### Item 1 Ruling: One Shared Home, Rejected Candidates Recorded` section forbids. The addition
+is one mechanism (PID persistence), not a new audience.
+
+=== SCOPE BOUNDARIES INHERITED UNCHANGED ===
+
+Every DO-NOT already in this record continues to bind this addition, and two bear on it directly:
+  - The `## Canonical Agent-Contract Bullet (Generated-Copy Source)` section stays byte-identical.
+    Its MUST half already names "a captured `pid=$!`, a `kill -0` liveness loop, and an outer
+    `timeout N`" and binds its 27 carrier copies VERBATIM under `lint-agent-contracts.sh` Check H.
+    Adding a PID-file clause there converts this into a 28-file synchronized edit. DO NOT.
+  - `external-process-wait.md` carries no restatement. Its sub-case 3b already points here by
+    name, so it inherits this addition automatically.
+Edit target is the source store, never the deployed tree: `.claude/**` is a gitignored, disposable
+deploy artifact regenerated from the store, so a hand edit there appears to succeed and is wiped
+by the next regeneration (`.claude/rules/source-store-deploy-boundary.md`). `source_dir` resolves
+per-extension from `<project-root>/.claude-extensions.json` at `.extensions.core.source_dir` --
+re-derive with `jq -r '.extensions.core.source_dir' .claude-extensions.json`, currently
+`/home/benjamin/.config/nvim/agent-system/extensions/core` -- so every edit lands under
+`agent-system/extensions/core/**`.
+
+=== ADDITIONAL ACCEPTANCE CRITERIA (joining this record's existing list) ===
+
+(11) `bounded-build-waiter.md`'s `### Sizing a Wait Near the Per-Call Ceiling` section states the
+     PID-persistence step for the multi-call sequence: stdout to a log, `$!` written to a PID file
+     in the same command, and the PID re-read from that file in each following call before its
+     `kill -0` loop -- with the reason stated (Bash-tool shell state does not survive a call
+     boundary, so an in-shell `pid` variable is unavailable to the next call).
+(12) The guidance names NO fixed auto-background threshold in seconds, and in particular does not
+     mention 180s. Any number it cites for the tool `timeout` parameter is `120000`ms (default) or
+     `600000`ms (ceiling), consistent with `external-process-wait.md` Rule 1 step (2).
+(13) The existing 3a/3b sub-case split remains the sole arbiter of WHEN the multi-call sequence is
+     warranted; the addition changes only HOW it is executed. No gates-specific carve-out is
+     added.
+(14) The interaction with this record's primary subject is stated once: the PID written to the
+     file must be the writer's own, since a forking detach wrapper makes a wrong PID durable
+     across every subsequent call.
+(15) Guidance prose carries no task numbers, no entry ids, and no record-versioning language
+     (`.claude/rules/no-task-references-in-deliverables.md`,
+     `.claude/rules/no-record-versioning-in-deliverables.md`). Durable anchors -- section
+     headings, `skill-orchestrate/SKILL.md`, the shell tokens, the rule numbers -- may be cited
+     freely.
+
 ---
 
 ### 821. State counter archive numbering reconciliation
