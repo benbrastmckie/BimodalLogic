@@ -1,5 +1,5 @@
 ---
-next_project_number: 882
+next_project_number: 884
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 882
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,878,880,881 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867,870,871 | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,878,880,881,882 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879,883 | 298,428,502,761,770,772,777,785,803,813,838,839,858,867,870,871 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -58,6 +58,8 @@ next_project_number: 882
 848 [NOT STARTED] — Test sweep permanently red where the source store is external
 857 [NOT STARTED] — Fix validate-handoff.sh crash-as-false-negative and settle...
 858 [NOT STARTED] — Make --audit-verdict survive a realistic backlog instead of...
+  └─ 883 [NOT STARTED] — Stop one low-specificity shared path from producing...
+882 [NOT STARTED] — Require task descriptions to request a proposal packet...
 
 ### Algebraic Representation
 
@@ -109,7 +111,7 @@ next_project_number: 882
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
-878 [NOT STARTED] — Make the paper proof of L-plus ZTime decidability rigorous
+878 [RESEARCHING] — Make the paper proof of L-plus ZTime decidability rigorous
 
 ### Documentation
 
@@ -162,6 +164,167 @@ next_project_number: 882
 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 883. Stop one low-specificity shared path from producing duplicate-of-open, and settle Component 7 under /orchestrate
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 858
+
+**Description**: META TASK. TWO changes to the task-creation pipeline, ONE record, because both are consumed by
+the same Component 4b/Component 7 confirmation surface and both edit the same two source files:
+item 1 is a mechanical tuning of the duplicate predicate, item 2 is the contract clause that
+says what the confirmation gate means when no human is in the loop.
+
+EDIT TARGET, binding. Per rules/source-store-deploy-boundary.md this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a
+hand-authored file landing under `.claude/**` is silently wiped by the next regeneration -- the
+edit appears to succeed and has no lasting effect. Make every edit under the source store at the
+path mirroring the deployed one. RE-DERIVE the store rather than trusting this note, but know
+what re-derivation currently yields: `source_dir` lives PER-EXTENSION at
+`.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, NOT as a top-level
+key. A top-level `jq -r '.source_dir'` returns null and must NOT be read as the key being absent.
+Re-derive with:
+
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+
+which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`, so the edit
+targets are `agent-system/extensions/core/scripts/audit-task-proposals.sh`,
+`agent-system/extensions/core/context/patterns/backlog-reconciliation.md`,
+`agent-system/extensions/core/docs/reference/standards/multi-task-creation-standard.md`, and
+`agent-system/extensions/core/scripts/tests/test-audit-task-proposals.sh`.
+
+=== ITEM 1 -- ONE LOW-SPECIFICITY SHARED PATH MUST NOT ALONE PRODUCE duplicate-of-open ===
+
+MEASURED. During a multi-task creation attempt, `audit-task-proposals.sh` returned a
+`duplicate-of-open` verdict for a proposal named `oriented_forest_saturation` against open task
+869 (`open_modal_invariance_ray_agreement_lifting`) on `mechanical_class: overlap`,
+`semantic_score: 0.43`, `shared_paths: ["FormalSystem/Semantics/README.md"]`. Inspection showed
+the two are unrelated in content: 869 is open-future/open-past modal invariance along ray
+agreement; the proposal was an oriented-forest Saturation lemma. The entire overlap was ONE
+shared catch-all README. Disposition at the time: the proposal's declared `file_scope` was
+narrowed by hand to drop `FormalSystem/Semantics/README.md`, keeping only
+`FormalSystem/Semantics/TaskFrame.lean`, rather than auto-applying a fold or adding a spurious
+dependency edge between unrelated records. That manual narrowing is the defect's cost: it
+distorts a record's declared scope to satisfy the matcher.
+
+RE-REPRODUCED WHILE THIS RECORD WAS BEING FILED, and this is the strongest available evidence
+that the predicate is miscalibrated rather than merely unlucky. An audit of this very proposal
+against the live backlog returned `duplicate-of-open` against SIX open records -- 827, 785, 822,
+834, plus others -- every one of them with `mechanical_class: "none"` and `shared_paths: []`,
+i.e. NO file overlap at all, on semantic scores between 0.41 and 0.48. A verdict named
+"duplicate" is being emitted for records that share literally nothing mechanically and that a
+reader can confirm in one glance are unrelated. The full audit document is committed as this
+record's evidence; re-derive it, do not trust this summary.
+
+WHAT THE SCRIPT ALREADY SAYS ABOUT ITSELF, and why that is not a defence. The script's own
+header states plainly that Pass 2 is "a recall-biased, over-inclusive SHORTLIST" and that "THE
+SCRIPT NEVER DECIDES DUPLICATION" -- a Pass-2-only verdict is "this script's own best-effort
+disposition at its stated threshold", not a certified fact. That posture is correct and must be
+PRESERVED: the fix is not to start suppressing records, which the header explicitly forbids. The
+problem is the LABEL, not the recall. Emitting the word `duplicate-of-open` for a zero-shared-path,
+0.41-semantic-score pair spends the caller's attention and, worse, trains a caller to dismiss the
+verdict vocabulary wholesale -- which is precisely how a real duplicate gets filed.
+
+DESIGN QUESTION THE RESEARCH PHASE MUST SETTLE, not a decision this record makes. Candidate
+shapes, to be weighed against `context/patterns/backlog-reconciliation.md`'s False-Negative
+Posture and D5 (read that document first; it owns the vocabulary and the rationale for every
+existing choice):
+  (a) require mechanical corroboration -- a non-`none`, non-`scope-blind` mechanical_class --
+      before the `duplicate-of-open` label may be used, demoting the uncorroborated cases to a
+      weaker existing verdict (`overlaps-open`) or to a new shortlist-only label;
+  (b) weight a shared path by its specificity, so a catch-all (`README.md`, `index.json`,
+      `manifest.json`, a directory-level entry) counts for less than a leaf source file, with
+      a single low-specificity path alone insufficient for `duplicate-of-open`;
+  (c) raise the semantic threshold for the uncorroborated case only, leaving the corroborated
+      case where it is.
+Whichever is chosen, the chosen rule belongs in `backlog-reconciliation.md` alongside the
+vocabulary it constrains, and gets a regression case in
+`scripts/tests/test-audit-task-proposals.sh`. NO SUPPRESSION: every corpus record must still
+appear in the output with SOME verdict, per the script's standing no-suppression guarantee.
+
+=== ITEM 2 -- COMPONENT 7 UNDER AN /orchestrate DISPATCH ===
+
+MEASURED CONTRACT AMBIGUITY, resolved once by hand and not written down. The Multi-Task Creation
+Standard's Component 7 requires foreground user confirmation before tasks are filed. Inside an
+`/orchestrate` dispatch there is no foreground user to confirm, and the dispatched task's own
+description can itself pre-authorize the filing (the observed wording: "file the implementation
+as its own task"). The two requirements collide, and the standard is silent on the collision.
+
+HOW IT WAS RESOLVED IN PRACTICE, which is the candidate the standard should either adopt or
+explicitly reject: the dispatch treated the task description's own pre-authorization as
+standing in for the Component 7 prompt, kept the full Component 4b audit evidence intact, and
+RENDERED the Component 7 confirmation table into the task summary as a durable record instead
+of prompting with it. The deviation was stated as an assumption in the plan's Risks table rather
+than applied silently.
+
+WHAT THIS RECORD OWES. State the resolution in
+`docs/reference/standards/multi-task-creation-standard.md`'s Component 7 section: who may
+pre-authorize, what artifact the confirmation table must be written into when it is not
+prompted, and -- the part the hand-resolution did not settle -- whether a pre-authorization must
+be explicit in the dispatched task's description or whether the `/orchestrate` context alone
+suffices. Note that `meta-builder-agent` cannot call `AskUserQuestion` at all (it is withheld
+from dispatched subagents), so Component 7 is ALREADY relocated upstream to `skill-meta`'s
+pre-delegation stage for the `/meta` path; the clause must be consistent with that existing
+relocation rather than contradict it.
+
+=== PROVENANCE ===
+
+Item 1: issue-log entry iss_1793896439283_Vm6ITF in
+specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/issues.jsonl.
+Item 2: issue-log entry iss_1793894998996_z69HrN in the same log.
+Read both `what_happened` fields before planning; they are the primary record and this
+description is a compression of them.
+
+=== ORDERING ===
+
+Depends on the open record that owns the `--audit-verdict` argv overflow
+(`state_write_audit_verdict_argv_overflow`). That record's declared scope already includes
+`scripts/audit-task-proposals.sh`, `context/patterns/backlog-reconciliation.md` and
+`scripts/tests/test-audit-task-proposals.sh` -- three of this record's four paths -- and a live
+audit of this proposal returned `duplicate-of-open` against it on `mechanical_class: overlap`
+for exactly those three. The overlap is real and the two must not run concurrently. Sequence
+them: the argv fix lands first (it changes how the verdict document reaches the gate), then this
+record's predicate tuning (which changes what that document contains).
+
+---
+
+### 882. Require task descriptions to request a proposal packet instead of instructing a dispatch to file tasks
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Document the convention that a task description must ask an autonomous dispatch for a PROPOSAL PACKET, never for task FILING, because filing requires a foreground user confirmation no dispatched agent can perform.
+
+THE DEFECT, STATED AS AN UNSATISFIABLE INSTRUCTION. A task description phrased as "let the conclusion stage file what survives" -- or any equivalent wording that directs an autonomous research/plan/implement dispatch to file follow-up tasks -- cannot be honored by the agent that receives it. `docs/reference/standards/multi-task-creation-standard.md`'s Component 7 makes user confirmation mandatory and foreground-only, and `AskUserQuestion` is categorically withheld from every dispatched subagent, so the dispatch has no route to the confirmation the standard requires. The instruction is not merely awkward; it is impossible to execute as written.
+
+VERBATIM EVIDENCE, QUOTED FROM THE ORIGINATING ISSUE-LOG ENTRY AND NOT PARAPHRASED: "The dispatch defers task filing to 'the conclusion stage', but the Multi-Task Creation Standard's Component 7 makes user confirmation mandatory and foreground-only, so no autonomous implement dispatch can file the recommended tasks. The plan resolves this by having the implement phase render a reconciled proposal packet plus issues.jsonl follow_up_task entries instead of filing, leaving the Component 7 decision with the user."
+
+THE COST IS REDISCOVERY, NOT FAILURE. Nothing was lost on the originating run: the dispatch noticed the conflict, invented a workaround (render a reconciled proposal packet plus `issues.jsonl` `follow_up_task` entries instead of filing), and left the Component 7 decision with the user. That is the correct behaviour. The defect is that every dispatch handed such an instruction must independently rediscover the same conflict and independently reinvent the same workaround, spending reasoning tokens on a question the system has already answered -- and a dispatch that does NOT notice will either stall at an unreachable confirmation or file tasks without the confirmation the standard requires. The originating entry's `severity: minor` and `resolution: worked_around` are both correct and should not be inflated.
+
+THE CAPABILITY IS NOT MISSING -- ONLY THE PHRASING CONVENTION IS. Do not scope this as "add a way for dispatches to file tasks". The orchestration conclusion stage (`context/contracts/conclusion-stage.md`, Move 5) ALREADY carries the Component 7 gate: its channel (c), "follow-up tasks as children", is executed at the orchestrate-lead level where `AskUserQuestion` is reachable, and its Step 4b channel already routes agent-system change requests through a confirmed dispatch to the task-creating agent. Read "The Exactly-One-Channel Rule", "The Hint-Versus-Decision Rule", and Step 4c before writing anything. The hand-off mechanism works. What is undocumented is how a task description should PHRASE its hand-off to that mechanism: the description must ask the dispatch to produce the evidence the lead will confirm (a proposal packet, `issues.jsonl` entries with `suggested_channel`), never to perform the filing itself.
+
+DIAGNOSE THE SITING BEFORE COMMITTING TO A REMEDY -- THIS IS DELIBERATELY NOT PRE-DECIDED. Three candidate sites, to be evaluated with evidence rather than ranked here:
+  (a) The task-authoring standard. A convention stated once in `docs/reference/standards/multi-task-creation-standard.md`, adjacent to Component 7's own Foreground Requirement, saying that a task description MUST NOT instruct a dispatch to file tasks and MUST instead request a proposal packet. Weigh: that document governs the CREATION surfaces (`/task`, `/meta`, `/spawn`, the conclusion stage), so a reader composing a task description may not consult it.
+  (b) The conclusion-stage contract. A statement in `context/contracts/conclusion-stage.md` that the stage consumes proposal packets and `issues.jsonl` entries, and that a task description naming this stage as the filer is malformed. Weigh: this is where the reader who wrote the offending phrasing was already looking, but the stage is only one of several consumers of such a hand-off.
+  (c) The dispatch-composition path. A note emitted or embedded where a dispatch body is assembled (`scripts/orchestrate-build-dispatch.sh` and the aux/unwind variants), telling the receiving agent that filing is out of reach and a packet is wanted. Weigh: this reaches the agent at the moment of need and needs no reader discipline, but it treats a symptom of a badly-phrased description rather than preventing the phrasing.
+A composition of (a) with one of (b)/(c) is acceptable. Whatever is chosen, state the rejected options on their own merits, with the reason recorded.
+
+WHAT WOULD MAKE THIS WORK WORTHLESS. A second, differently-worded convention. If the proposal-packet shape is already described anywhere -- check the follow-up/skeleton-plan mechanism that `conclusion-stage.md`'s "The Coexistence Boundary With the Skeleton-Plan Follow-Up Mechanism" section names, and the `follow_up_task` vocabulary in `context/formats/issue-log.md` -- then the deliverable is a POINTER to that existing shape plus the prohibition, not a fresh specification of a packet format. Establish what already exists before writing new prose.
+
+NON-GOALS. No change to Component 7's foreground requirement or to any confirmation gate -- the requirement is correct and is the reason this convention is needed. No new capability for dispatched agents to file tasks, and no relaxation of the `AskUserQuestion` withholding. No change to the conclusion stage's channel routing, filter predicate, or exactly-one-channel rule. No retroactive rewriting of existing task descriptions that carry the offending phrasing; if a sweep for them is wanted, it is its own record.
+
+ACCEPTANCE. (1) The convention is stated once, at a single chosen site, with pointers from the others rather than restatement. (2) It names the concrete forbidden shape (a description instructing a dispatch to file tasks) and the concrete required shape (a description requesting a proposal packet plus issue-log entries, with the filing decision left to a foreground surface). (3) It names WHY -- Component 7's foreground requirement and the subagent tool withholding -- so a future reader can re-derive the rule instead of taking it on faith. (4) Redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+
+SOURCE-STORE BOUNDARY -- BINDING. `.claude/**` in this repository is a gitignored, disposable deploy artifact regenerated from a source store; a hand edit there is silently wiped by the next regeneration and will appear to succeed while having no lasting effect. The owning extension is `core`. Resolve its source store with `jq -r '.extensions.core.source_dir' .claude-extensions.json` -- note `source_dir` is PER-EXTENSION, so a top-level `jq -r '.source_dir'` returns `null`, which must NOT be read as the key being absent; when the per-extension lookup yields nothing, the store is `/home/benjamin/.config/nvim/agent-system/extensions/core`. Edit at the paths mirroring the deployed ones under that store, per `.claude/rules/source-store-deploy-boundary.md`, then redeploy. Never hand-author under `.claude/**`.
+
+DELIVERABLE HYGIENE. Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Cite durable anchors only: file names, section headings, component names ("Component 7"), field names (`suggested_channel`, `follow_up_task`), and tool names (`AskUserQuestion`). The originating task number and the issue entry_id below belong in this description only, never in deliverable prose.
+
+PROVENANCE AND CITATION. Raised by /orchestrate's conclusion stage and approved at the orchestrate-lead level as an agent-system change request, session `sess_1793900475_c93eff`. The originating issue-log entry, cited verbatim for audit against its evidence: {task 872, entry_id iss_1793901844876_M9V2B8}, in `specs/872_open_language_transfer_ledger/issues.jsonl` -- `class: design-record defect or ambiguity`, `severity: minor`, `phase: plan`, `dispatch_seq: 2`, `resolution: worked_around`, `suggested_channel: follow_up_task`, `evidence_path: .claude/docs/reference/standards/multi-task-creation-standard.md`. Read that entry verbatim before composing anything. BACKLOG-RECONCILIATION RULING, RECORDED HONESTLY: `scripts/audit-task-proposals.sh` returned only pure-semantic `duplicate-of-open` verdicts for this proposal, every one with `mechanical_class: none` and the highest at `semantic_score: 0.525` -- below any corroboration. The three nearest open records were read and each addresses a different mechanism: one closes the conclusion stage's filter predicate against `resolution: null` entries, one closes plan-authoring self-consistency gaps, and one concerns an inherited error count on a stall re-prompt. None governs how a task description phrases its hand-off to a foreground confirmation. The proposal is ruled genuinely new on that reading, not on the matcher's recall-biased output.
+
+---
 
 ### 881. Generic schema validity layer over truthenv
 - **Effort**: large
@@ -223,7 +386,7 @@ SEQUENCING AND SCOPE. The standing ruling is decidability before completeness: i
 ---
 
 ### 878. Make the paper proof of L-plus ZTime decidability rigorous
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: formal
 - **Topic**: decidability
 - **Dependencies**: None
@@ -3893,6 +4056,18 @@ THE THREE WAYS IT DIFFERS, WHICH IS WHY IT IS NOT A SECOND OCCURRENCE OF THE CLA
 WHAT THIS RECORD SHOULD DO ABOUT IT: NOTHING IN ITS OWN SCOPE, AND ONE THING DELIBERATELY NOT. Do not widen `is_contained()` or the carve-out to admit paths outside the repository -- that cannot work and would be a misreading of this observation. The correct scope stays exactly as specified above. This paragraph exists so that a reader who encounters both symptoms does not merge them into one fix, and so that the provenance gap is on record somewhere; if closing that gap is wanted -- a task whose real deliverable lies in the source store having its source-store commit attributed back to it -- it is its own record, not an extension of this one.
 
 PROVENANCE OF THIS OBSERVATION. Surfaced conversationally while auditing recent task closures in session `sess_1791800175_a20f00`; verified by reading both commit messages, by confirming the promotion text is present and the file clean in the source store, and by `git log -S` locating `78ab8166e` as the commit that introduced it. Not derived from any `issues.jsonl` entry, and no issue entry was written for it.
+
+SECOND OBSERVED OCCURRENCE OF THIS EXACT CLASS, FOLDED IN RATHER THAN FILED SEPARATELY -- AND IT REVISES THE ONE-OCCURRENCE RECURRENCE BOUND STATED ABOVE. A second instance of the own-task-dir false positive was raised by /orchestrate's conclusion stage in session `sess_1793900475_c93eff` and approved at the orchestrate-lead level as an agent-system change request. It was routed here instead of becoming its own record because the fix this record already specifies -- route (a), admitting `task_dir` as an implicit in-scope member inside `is_contained()` -- resolves it outright, with no new design question and no new edit target; and because route (b), which that occurrence's own change request floated as a candidate (put the path on an unconditional allowlist, or have the `file_scope` convention cover it), is already rejected above with reasons that apply unchanged.
+
+THE CITATION, VERBATIM, SO A FUTURE READER CAN AUDIT THIS PARAGRAPH AGAINST ITS EVIDENCE: {task 872, entry_id iss_1793903720322_dH7yH0}, in `specs/872_open_language_transfer_ledger/issues.jsonl` -- `class: scope excursion`, `severity: minor`, `phase: implement`, `dispatch_seq: null`, `resolution: null`, `evidence_path: null`, `suggested_channel: null`. Its `what_happened` reads, quoted exactly: "git-commit-phase.sh dropped '.orchestrator-handoff.json' from a phase commit pathspec: not contained in this task's declared file_scope." As with the first occurrence, the entry was written BY the defect itself, via `git-commit-phase.sh`'s own `issue-record.sh` call; read it verbatim rather than relying on this paraphrase.
+
+WHY IT IS THE SAME CLASS AND NOT A NEW ONE -- RE-DERIVABLE IN TWO READS. The dropped path is `.orchestrator-handoff.json`, written by the dispatched agent at the `handoff_path` the orchestrator itself supplies: `scripts/orchestrate-build-dispatch.sh` sets `handoff_path_abs="${TASK_DIR_ABS}/.orchestrator-handoff.json"`, so the file lands INSIDE the task's own directory -- the same `${task_dir}/` that `git-commit-phase.sh` already stages unconditionally at `stage_paths=("${task_dir}/" "specs/TODO.md" "specs/state.json")` and that `is_contained()` still fails to admit. It is therefore the identical mechanism as the plan-artifact occurrence: a path staged unconditionally via `${task_dir}/`, self-reported into `files_touched`, and then dropped by a predicate that tests only the declared `file_scope`. Admitting `task_dir` implicitly admits it with no additional work.
+
+ONE TENSION WORTH NAMING RATHER THAN GLOSSING. The handoff differs from the plan artifact in authorship: it is an orchestration-runtime artifact written at a path the engine supplies, not a deliverable the task's agent authored on its own initiative. That is what makes the allowlist in `scripts/lib/engine-written-state-paths-lib.sh` superficially attractive for it. It does not survive that library's own stated admission bar, whose clause (b) requires a candidate to be "never legitimately declarable in any one task's own file_scope", and whose rejected-candidates list already names "any task-owned `specs/{NNN}_*/` path" with the reason that such a directory "belongs in that task's own declared file_scope, not in a universal allowlist that bypasses the declaration mechanism entirely". A task-directory path fails clause (b) by construction. The implicit-`task_dir` carve-out is the right instrument; the allowlist is not. Record this reasoning in the implementation rather than re-litigating it.
+
+SEVERITY, BOUNDED HONESTLY AND INDEPENDENTLY FOR THIS OCCURRENCE. No data was lost here either: `scripts/orchestrate-cycle-postflight.sh` committed the handoff later in the same run, so the consequence was benign. This is a correctness-of-contract defect, not a data-loss defect, and it should be scoped accordingly -- it adds a second observation to the recurrence argument above, not a new cost category. The three genuine costs enumerated earlier (a disabled post-commit completeness check, a false warning that trains readers to discount a load-bearing one, and a spurious `scope excursion` entry consuming a conclusion-stage channel slot) apply here unchanged, and the third is again self-inflicted: this paragraph exists because the defect wrote its own bug report.
+
+ADDED TO ACCEPTANCE. Extend acceptance item (3) -- which already requires coverage for `specs/TODO.md` and `specs/state.json` self-reported in `files_touched` -- with a case for a `${task_dir}/.orchestrator-handoff.json` entry, asserting the same four properties as the plan-artifact case: the path is NOT dropped; no `dropping out-of-scope path` warning naming it is emitted; no `scope excursion` entry is written for it; and the post-commit completeness check RUNS rather than being skipped. The same demonstrate-it-fails-first discipline in acceptance item (2) applies to this case.
 
 ---
 
