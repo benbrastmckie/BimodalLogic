@@ -342,7 +342,7 @@ build of the new module plus the aggregator:
 
 ---
 
-### Phase 5: The clock rule [NOT STARTED]
+### Phase 5: The clock rule [COMPLETED]
 
 **Goal**: Land deliverable item (3): an atom may be assumed to hold at exactly one time of every
 history, with that time rigid under the stability modal.

@@ -131,4 +131,165 @@ theorem plusTruthAt_congr_of_fresh {F : TaskFrame} (M M' : TaskModel F) (q : Ato
     intro hq τ t
     exact forall_congr' fun σ => imp_congr_right fun _ => ih hq σ t
 
+/-! ## The clock rule's antecedent -/
+
+/-- **`q` holds now and at no other time of this history** — `q` names the present time. -/
+def nm (q : Atom) : PlusFormula :=
+  (PlusFormula.atom q).and ((PlusFormula.atom q).neg.allPast.and
+    (PlusFormula.atom q).neg.allFuture)
+
+/-- **`q` holds at exactly one time of this history**: now, once in the past, or once in the
+future. -/
+def once (q : Atom) : PlusFormula := ((nm q).or (nm q).somePast).or (nm q).someFuture
+
+/-- **The time at which `q` holds is the same on every history through the current state**: each
+of "`q` sometime later" and "`q` sometime earlier" is `⊡`-stable. -/
+def rigid (q : Atom) : PlusFormula :=
+  ((PlusFormula.atom q).someFuture.imp (PlusFormula.stab (PlusFormula.atom q).someFuture)).and
+    ((PlusFormula.atom q).somePast.imp (PlusFormula.stab (PlusFormula.atom q).somePast))
+
+/-- **The clock rule's antecedent**: `q` now, and — on every history, at every time — `q` is a
+`⊡`-rigid name of exactly one time. -/
+def clockAnte (q : Atom) : PlusFormula :=
+  (PlusFormula.atom q).and (PlusFormula.box ((once q).and (rigid q)).always)
+
+/-! ## The clock valuation on the translation product -/
+
+section Clock
+
+variable {D : TemporalOrder} (F : FrameOver D) [F.IsRegular]
+
+/-- **The clock valuation**: on the translation product, `q` is read as "the clock reads zero",
+and every other atom keeps the base model's reading. The clock is a component of the product
+state, so this is an ordinary valuation on world states — no two-dimensional semantics is
+involved. -/
+def clockModel (M : TaskModel F.toTaskFrame) (q : Atom) :
+    TaskModel F.translationProduct.toTaskFrame :=
+  ⟨fun a p => if p = q then a.2 = 0 else M.valuation a.1 p⟩
+
+variable (M : TaskModel F.toTaskFrame) (q : Atom)
+
+/-- Under the clock valuation, `q` holds exactly where the clock reads zero. -/
+theorem plusTruthAt_atom_clock
+    (σ : WorldHistory F.translationProduct.toTaskFrame) (s : ↑D) :
+    PlusTruthAt (clockModel F M q) σ s (PlusFormula.atom q) ↔ (σ.state s).2 = 0 := by
+  simp [PlusTruth.atom_iff, clockModel]
+
+/-- Under the clock valuation, every atom other than `q` reads as it does in the lifted base
+model. -/
+theorem clockModel_valuation_of_ne (a : F.WorldState × ↑D) {p : Atom} (hp : p ≠ q) :
+    (clockModel F M q).valuation a p ↔ (liftModel F M).valuation a p := by
+  simp [clockModel, liftModel, hp]
+
+/-- **`nm q` holds wherever the clock reads zero**: the clock is time plus a constant along any
+history of the product (`clock_eq`), so it reads zero at one time only. -/
+theorem plusTruthAt_nm (σ : WorldHistory F.translationProduct.toTaskFrame) (s : ↑D)
+    (h0 : (σ.state s).2 = 0) :
+    PlusTruthAt (clockModel F M q) σ s (nm q) := by
+  have hs := h0
+  rw [clock_eq F σ s] at hs
+  rw [nm, PlusTruth.and_iff, PlusTruth.and_iff, PlusTruth.allPast_iff, PlusTruth.allFuture_iff]
+  refine ⟨(plusTruthAt_atom_clock F M q σ s).2 h0, ?_, ?_⟩
+  · intro r hr hc
+    rw [plusTruthAt_atom_clock, clock_eq F σ r] at hc
+    exact hr.ne (add_left_cancel (hc.trans hs.symm))
+  · intro r hr hc
+    rw [plusTruthAt_atom_clock, clock_eq F σ r] at hc
+    exact hr.ne' (add_left_cancel (hc.trans hs.symm))
+
+/-- **`once q` holds everywhere**: the clock reads zero at exactly one time of every history of
+the product, namely `-(σ(0)).2`, which lies in the past of, at, or in the future of any given
+time. -/
+theorem plusTruthAt_once (σ : WorldHistory F.translationProduct.toTaskFrame) (s : ↑D) :
+    PlusTruthAt (clockModel F M q) σ s (once q) := by
+  have hzero : (σ.state (-(σ.state 0).2)).2 = 0 := by
+    rw [clock_eq F σ]; simp
+  rw [once, PlusTruth.or_iff, PlusTruth.or_iff, PlusTruth.somePast_iff, PlusTruth.someFuture_iff]
+  rcases lt_trichotomy (-(σ.state 0).2) s with hlt | heq | hgt
+  · exact Or.inl (Or.inr ⟨_, hlt, plusTruthAt_nm F M q σ _ hzero⟩)
+  · exact Or.inl (Or.inl (by rw [← heq]; exact plusTruthAt_nm F M q σ _ hzero))
+  · exact Or.inr ⟨_, hgt, plusTruthAt_nm F M q σ _ hzero⟩
+
+/-- **`rigid q` holds everywhere**: two histories of the product through one state at one time
+read the same clock there, hence agree on which time the clock reads zero. That is why the name
+is `⊡`-rigid even though no formula can name a time globally. -/
+theorem plusTruthAt_rigid (σ : WorldHistory F.translationProduct.toTaskFrame) (s : ↑D) :
+    PlusTruthAt (clockModel F M q) σ s (rigid q) := by
+  have hclock : ∀ (η : WorldHistory F.translationProduct.toTaskFrame),
+      σ.state s = η.state s → ∀ r : ↑D, (σ.state r).2 = (η.state r).2 := by
+    intro η he r
+    have h1 : (σ.state s).2 = (η.state s).2 := by rw [he]
+    rw [clock_eq F σ s, clock_eq F η s] at h1
+    rw [clock_eq F σ r, clock_eq F η r, add_right_cancel h1]
+  rw [rigid, PlusTruth.and_iff]
+  constructor
+  · intro hF η he
+    rw [PlusTruth.someFuture_iff] at hF ⊢
+    obtain ⟨r, hr, hq'⟩ := hF
+    rw [plusTruthAt_atom_clock] at hq'
+    exact ⟨r, hr, (plusTruthAt_atom_clock F M q η r).2 ((hclock η he r).symm.trans hq')⟩
+  · intro hP η he
+    rw [PlusTruth.somePast_iff] at hP ⊢
+    obtain ⟨r, hr, hq'⟩ := hP
+    rw [plusTruthAt_atom_clock] at hq'
+    exact ⟨r, hr, (plusTruthAt_atom_clock F M q η r).2 ((hclock η he r).symm.trans hq')⟩
+
+/-- **The clock valuation satisfies the whole antecedent** at any time where the clock reads
+zero. The `□` of `clockAnte` ranges over every history of the product and the `△` over every
+time, and `once`/`rigid` hold at all of them. -/
+theorem plusTruthAt_clockAnte (σ : WorldHistory F.translationProduct.toTaskFrame) (s : ↑D)
+    (h0 : (σ.state s).2 = 0) :
+    PlusTruthAt (clockModel F M q) σ s (clockAnte q) := by
+  rw [clockAnte, PlusTruth.and_iff, PlusTruth.box_iff]
+  refine ⟨(plusTruthAt_atom_clock F M q σ s).2 h0, ?_⟩
+  intro ρ
+  rw [PlusFormula.always, PlusTruth.and_iff, PlusTruth.and_iff, PlusTruth.allPast_iff,
+    PlusTruth.allFuture_iff]
+  have hmain : ∀ r : ↑D,
+      PlusTruthAt (clockModel F M q) ρ r ((once q).and (rigid q)) := by
+    intro r
+    rw [PlusTruth.and_iff]
+    exact ⟨plusTruthAt_once F M q ρ r, plusTruthAt_rigid F M q ρ r⟩
+  exact ⟨fun r _ => hmain r, hmain s, fun r _ => hmain r⟩
+
+end Clock
+
+/-! ## The two rules -/
+
+/--
+**Soundness of the clock rule.** If `(q ∧ □△(once q ∧ rigid q)) → φ` is valid over a frame class
+and `q` does not occur in `φ`, then `φ` is valid over that class.
+
+So an atom may be assumed to hold at **exactly one time of every history**, with that time
+**rigid under the stability modal** — provided it is discharged. A time cannot be named globally;
+it can be named within every stability cluster.
+
+The proof runs the premise on the translation product of the given frame, which lies in the same
+class (`FrameOver.translationProduct_sat`) and is regular
+(`FrameOver.translationProduct_isRegular`), under the clock valuation and the lift of the given
+history placed so that the clock reads zero at the evaluation time (`liftH_through`'s offset
+convention). `plusTruthAt_clockAnte` discharges the antecedent; `plusTruthAt_congr_of_fresh`
+forgets `q`; and `plus_invariance` with `projH_liftH` projects the conclusion back to the base
+frame. No frame construction is added: the clock product this rule needs is the library's
+translation product.
+
+Paper: — (formalization-native; the manuscript states no naming rule)
+-/
+theorem clock_irr_sound (fc : FormalSystem.ProofSystem.FrameClass) (q : Atom) (φ : PlusFormula)
+    (hq : Fresh q φ) (hprem : PlusValidIn fc ((clockAnte q).imp φ)) :
+    PlusValidIn fc φ := by
+  intro G hG M τ x
+  haveI := hG.isRegular
+  have h0 : ((liftH G.toFibre τ (0 - x)).state x).2 = 0 := by simp
+  have h1 : PlusTruthAt (clockModel G.toFibre M q) (liftH G.toFibre τ (0 - x)) x φ :=
+    hprem G.toFibre.translationProduct.toTaskFrame
+      ((FrameOver.translationProduct_sat G.toFibre fc).2 hG)
+      (clockModel G.toFibre M q) (liftH G.toFibre τ (0 - x)) x
+      (plusTruthAt_clockAnte G.toFibre M q (liftH G.toFibre τ (0 - x)) x h0)
+  have h2 : PlusTruthAt (liftModel G.toFibre M) (liftH G.toFibre τ (0 - x)) x φ :=
+    (plusTruthAt_congr_of_fresh (clockModel G.toFibre M q) (liftModel G.toFibre M) q
+      (fun a p hp => clockModel_valuation_of_ne G.toFibre M q a hp) φ hq _ _).1 h1
+  have h3 := (plus_invariance G.toFibre M φ (liftH G.toFibre τ (0 - x)) x).1 h2
+  rwa [projH_liftH] at h3
+
 end FormalSystem.Metalogic.NamingRules
