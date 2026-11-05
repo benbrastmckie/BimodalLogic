@@ -1,27 +1,43 @@
 {
-  "status": "researched",
-  "dispatch_seq": 3,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/868_open_language_transfer_corollaries/reports/01_open-language-transfer-corollaries.md",
-      "summary": "Probe-verified statements for the ZTime/RTime decidability and completeness reductions from open-language validity to L-plus, with the finding that the uniform Decidable shape is noncomputable and therefore vacuous, plus every gate and documentation surface a landing must touch."
-    },
-    {
-      "type": "other",
-      "path": "specs/868_open_language_transfer_corollaries/probes/01_transfer-corollaries.lean",
-      "summary": "Compiled probe isolating the noncomputable/vacuous uniform Decidable shape against the computable per-formula shape."
-    },
-    {
-      "type": "other",
-      "path": "specs/868_open_language_transfer_corollaries/probes/02_shapes.lean",
-      "summary": "Compiled probe for all nine recommended declaration shapes with measured #print axioms profiles."
+      "type": "plan",
+      "path": "specs/868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md",
+      "summary": "Five-phase plan landing nine probe-verified open-language transfer reductions plus docstring, C14 baseline, and four documentation-surface amendments."
     }
   ],
+  "next_steps": "Run /orchestrate 868 to execute the plan",
   "metadata": {
     "session_id": "sess_1793857391_c5064b_868",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5,
+    "dependency_waves": [[1], [2, 3], [4], [5]]
+  },
+  "memory_candidates": [
+    {
+      "content": "A noncomputable Decidable-valued declaration is a vacuity class, not merely a computability inconvenience: `noncomputable def f : Decidable p := ...` is unconditionally inhabited by `Classical.dec _`, so any hypothesis in its signature does no work and the same type is provable without it. This shape passes every pattern in the repository's prohibited-vacuous-definition list (`:= True`, `:= trivial`, `:= Unit`), compiles sorry-free, and therefore slips every mechanical gate. The escape is to make the Decidable fact an explicit argument about a concrete term (per-formula form) or to abstract the noncomputable function into an explicit function parameter plus its correctness iff (generic form) -- both then compile as plain computable defs. Diagnostic rule: a Decidable-valued declaration that REQUIRES the noncomputable keyword is carrying no content; treat that as a blocker on the statement shape, never as a keyword to add.",
+      "category": "PATTERN",
+      "source_artifact": "specs/868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md",
+      "confidence": 0.88,
+      "suggested_keywords": ["lean4", "decidable", "noncomputable", "vacuous-definition", "classical-dec", "verification-gate"]
+    }
+  ],
+  "modified_files": [
+    "specs/868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md",
+    "specs/868_open_language_transfer_corollaries/.orchestrator-handoff.json",
+    "specs/868_open_language_transfer_corollaries/.return-meta.json"
+  ],
+  "proposed_file_scope": [
+    "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
+    "FormalSystem/Metalogic/Expressiveness/README.md",
+    "FormalSystem/Metalogic/Expressiveness.lean",
+    "FormalSystem/OpenLanguage/README.md",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh"
+  ],
+  "dispatch_seq": 6
 }

@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 6,
+  "summary": "Wrote a 5-phase implementation plan for the open-language transfer corollaries, landing nine probe-verified reduction declarations in OpenFutureElimination.lean plus module-docstring, C14-baseline, and four documentation-surface amendments. The plan rejects the vacuous uniform Decidable shape the task description most naturally suggests (it is forced noncomputable and then inhabited by Classical.dec with no hypothesis), carries the per-formula and generic shapes instead, and names a third undischarged antecedent the task did not: the effectiveness gap, since tr is noncomputable. The named-Prop layer is excluded to keep the host module's import surface byte-identical.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md",
+      "summary": "Five-phase plan: nine reduction declarations, module docstring, C14 baselines, four documentation surfaces, full gate sweep."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": []
+}

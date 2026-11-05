@@ -135,7 +135,7 @@ next_project_number: 869
 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
-868 [PLANNING] — IMPLEMENTATION TASK, small and deliberately conditional:...
+868 [PLANNED] — IMPLEMENTATION TASK, small and deliberately conditional:...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -157,11 +157,12 @@ next_project_number: 869
 ## Tasks
 
 ### 868. Open language transfer corollaries
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [868_open_language_transfer_corollaries/reports/01_open-language-transfer-corollaries.md]
+- **Plan**: [868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md]
 
 **Description**: IMPLEMENTATION TASK, small and deliberately conditional: state in Lean the reductions that carry completeness and decidability of the open language at ZTime and RTime back to their L-plus counterparts, so that each one lands automatically whenever its antecedent is discharged.
 
