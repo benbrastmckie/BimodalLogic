@@ -369,26 +369,26 @@ wildcard, against the seven constructors of `PlusDerivationTree`.
 
 ---
 
-### Phase 4: `OpenErasure.lean` — erasure, retraction, reflection, purity transport [NOT STARTED]
+### Phase 4: `OpenErasure.lean` — erasure, retraction, reflection, purity transport [COMPLETED]
 
 **Goal**: Land `eraseOpen` and its three structural properties, with no `Theorems` import yet, so
 the allowlist question is isolated in Phase 5.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/OpenLanguage/OpenErasure.lean` importing
+- [x] Create `FormalSystem/OpenLanguage/OpenErasure.lean` importing
   `FormalSystem.OpenLanguage.OpenAxioms` and `FormalSystem.PlusLanguage.Formula` only — no
   `FormalSystem.Theorems.*` in this phase.
-- [ ] Promote probe 01 §1: `def eraseOpen : OpenFormula → PlusFormula` deleting `▷` and `◁` and
+- [x] Promote probe 01 §1: `def eraseOpen : OpenFormula → PlusFormula` deleting `▷` and `◁` and
   keeping `⊡` and the six L constructors; `@[simp] theorem eraseOpen_ofPlus` (the retraction);
   `theorem eraseOpen_reflectTime`. Carry the probe's proofs unweakened.
-- [ ] Add the four `rfl` pins (as `example`) showing erasure commutes with `neg`, `somePast`,
+- [x] Add the four `rfl` pins (as `example`) showing erasure commutes with `neg`, `somePast`,
   `dofut` and `dstab`.
-- [ ] Prove the purity transport (R4): `theorem isPureFuture_eraseOpen` and
+- [x] Prove the purity transport (R4): `theorem isPureFuture_eraseOpen` and
   `theorem isPurePast_eraseOpen`, i.e. `IsPureFutureOpen φ → IsPureFuture (eraseOpen φ)` and its
   past mirror, by induction over the predicates. Record in the docstring that this is what the
   recursive ▷/◁ purity clauses of Phase 1 buy, and that a blanket leaf clause would break it.
-- [ ] Add `"OpenErasure": 0` to `LANGUAGE_FILE_LAYERS`, the import to
+- [x] Add `"OpenErasure": 0` to `LANGUAGE_FILE_LAYERS`, the import to
   `FormalSystem/OpenLanguage.lean`, and the `## Modules` bullet.
 
 **Timing**: 1.5 hours

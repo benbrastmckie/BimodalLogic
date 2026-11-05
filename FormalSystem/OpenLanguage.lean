@@ -8,6 +8,7 @@ import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenAxioms
 import FormalSystem.OpenLanguage.OpenClasses
 import FormalSystem.OpenLanguage.OpenDerivation
+import FormalSystem.OpenLanguage.OpenErasure
 import FormalSystem.OpenLanguage.OpenOckhamist
 import FormalSystem.OpenLanguage.OpenReversal
 import FormalSystem.OpenLanguage.OpenTruth
@@ -48,6 +49,9 @@ library theorems rather than leaving it to be rediscovered.
 - `OpenLanguage.OpenDerivation` — `OpenContext`, the seven-rule `OpenDerivationTree`,
   `OpenDerivable` with the notations `Γ ⊢▷[fc] φ` and `⊢▷[fc] φ`, the three derived necessitation
   rules for `⊡`, `▷` and `◁`, and backward conservativity over TM⁺
+- `OpenLanguage.OpenErasure` — `eraseOpen`, the `▷/◁`-deleting retraction of `ofPlus`, with
+  the retraction and time-reflection laws, the purity transports, the axiom-discharge table and
+  forward conservativity over TM⁺
 
 ## Semantic modules
 
