@@ -148,7 +148,7 @@ report for the derivations.
 
 ---
 
-### Phase 2: Record the ZTime-only verdict and the filing-ready R1 proposal in specs/ROADMAP.md [NOT STARTED]
+### Phase 2: Record the ZTime-only verdict and the filing-ready R1 proposal in specs/ROADMAP.md [COMPLETED]
 
 **Goal**: The roadmap states this task's verdict where the batch order is read, and carries R1 as a
 filing-ready proposal — named, scoped, cost-estimated, and with its independence stated — so the
@@ -156,14 +156,14 @@ conclusion stage or the user can file it with one `/task` call.
 
 **Tasks**:
 
-- [ ] Re-read `specs/ROADMAP.md` immediately before editing: the Stage-1 gating prose above `## Run these next`, the Stage 2 block inside `## Next batches` (including the `867` line that says to weigh it against this task's verdict), and `## Not scoped as tasks`
-- [ ] Confirm, by locating the `**Coverage appendix (uncovered tasks)**:` marker, that no planned edit falls after it inside the run-order section
-- [ ] Record the verdict in the Stage-1 gating prose that currently frames this task as a pending measurement: `▷`/`◁` do ride step 4's encoding; the route is independent of Gabbay separation and of the ladder front; it reaches ZTime only; it is a paper result and is **not** being formalized; and it does not close `Decidable (PlusValidZTime φ)`, which remains Stage 1's own aim
-- [ ] Update the Stage 2 annotation on `867` (Gabbay separation) so that the "weigh against this task's verdict first" instruction is answered rather than left pending: the MSO route makes `SeparationOver TaskFrame.IsZTime` unnecessary *for the decidability question only*, while the `tr` translation keeps its independent expressiveness value
-- [ ] Add R1 as a prose proposal in the Stage 2 area (not inside the fenced `/orchestrate` block, since it has no task number yet): `▷`/`◁` truth invariance along a history-lifting morphism with ray-agreement lifting; the shape (a ray-agreement lifting field beside `HistMap.lift`, its `◁` mirror, their ZTime derivation from `TwoWayBounded.step`/`forth` via the existing forward/backward sequence machinery, and an `open_invariance` theorem over `OpenFormula` reusing `plus_invariance`'s cases); the estimate carried from the report; and its independence from G1, G2, Rabin, Gabbay separation and the ladder/`RaySummary` front
-- [ ] Record R2 as a do-not-file with its reason (Mathlib has no MSO, no ω-automata, no Rabin tree theorem — so the MSO step would mean formalizing Rabin's theorem from scratch), in `## Not scoped as tasks` or alongside the Stage 2 note, so the route is not re-proposed as a formalization target
-- [ ] Verify no added claim is one that no check can reproduce — each cites either this task's report or a compiled declaration by name
-- [ ] Commit, staging `specs/ROADMAP.md` by explicit file list only
+- [x] Re-read `specs/ROADMAP.md` immediately before editing: the Stage-1 gating prose above `## Run these next`, the Stage 2 block inside `## Next batches` (including the `867` line that says to weigh it against this task's verdict), and `## Not scoped as tasks` *(completed)*
+- [x] Confirm, by locating the `**Coverage appendix (uncovered tasks)**:` marker, that no planned edit falls after it inside the run-order section *(completed: marker at line 175 pre-edit, unchanged)*
+- [x] Record the verdict in the Stage-1 gating prose that currently frames this task as a pending measurement: `▷`/`◁` do ride step 4's encoding; the route is independent of Gabbay separation and of the ladder front; it reaches ZTime only; it is a paper result and is **not** being formalized; and it does not close `Decidable (PlusValidZTime φ)`, which remains Stage 1's own aim *(completed)*
+- [x] Update the Stage 2 annotation on `867` (Gabbay separation) so that the "weigh against this task's verdict first" instruction is answered rather than left pending: the MSO route makes `SeparationOver TaskFrame.IsZTime` unnecessary *for the decidability question only*, while the `tr` translation keeps its independent expressiveness value *(completed)*
+- [x] Add R1 as a prose proposal in the Stage 2 area (not inside the fenced `/orchestrate` block, since it has no task number yet): `▷`/`◁` truth invariance along a history-lifting morphism with ray-agreement lifting; the shape (a ray-agreement lifting field beside `HistMap.lift`, its `◁` mirror, their ZTime derivation from `TwoWayBounded.step`/`forth` via the existing forward/backward sequence machinery, and an `open_invariance` theorem over `OpenFormula` reusing `plus_invariance`'s cases); the estimate carried from the report; and its independence from G1, G2, Rabin, Gabbay separation and the ladder/`RaySummary` front *(completed)*
+- [x] Record R2 as a do-not-file with its reason (Mathlib has no MSO, no ω-automata, no Rabin tree theorem — so the MSO step would mean formalizing Rabin's theorem from scratch), in `## Not scoped as tasks` or alongside the Stage 2 note, so the route is not re-proposed as a formalization target *(completed: placed alongside the Stage 2 note, outside the fenced /orchestrate block)*
+- [x] Verify no added claim is one that no check can reproduce — each cites either this task's report or a compiled declaration by name *(completed)*
+- [x] Commit, staging `specs/ROADMAP.md` by explicit file list only *(completed)*
 
 **Timing**: 35 minutes
 

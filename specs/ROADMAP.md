@@ -119,15 +119,22 @@ cited record, not here.
 - **What no path changes.** Completeness is gated by closedness of the canonical bundle (`559`
   item (c)) and by `(P1)`. `▷`/`◁` supply no closure principle and no decision procedure — the
   language extension decides *where to look for an engine*, never closes either gap.
-- **`852` is not the only decidability route, and this is newly load-bearing** (`866`).
-  `559`'s report 03 §1.3 argues on paper that ZTime validity is decidable by an MSO encoding over
-  the ω-branching tree plus Rabin's theorem — five steps, independent of the ladder front, needing
-  neither `852`'s pumping lemma nor `761`'s realization theorem nor `763`'s lift. That report never
-  mentions `▷`/`◁`, but its step-4 encoding of a walk-with-marked-time as `(P, x ∈ P)` renders
-  `⊡ψ` as "∀P' ∋ x", and `▷ψ` is the same shape restricted to agreement below `x`. If that rides,
-  L^▷ ZTime decidability follows with no new machinery and no translation. **Measure `866` before
-  committing anything expensive to Stage 1 on decidability grounds.** It does not close
-  `Decidable (PlusValidZTime φ)` constructively, which is still Stage 1's own aim.
+- **`852` is not the only decidability route, and `866` has now measured it: YES at step 4,
+  amended at step 1.** `559`'s report 03 §1.3 argues on paper that ZTime validity is decidable by
+  an MSO encoding over the ω-branching tree plus Rabin's theorem — five steps, independent of the
+  ladder front, needing neither `852`'s pumping lemma nor `761`'s realization theorem nor `763`'s
+  lift, and independent of Gabbay separation (`867`'s `SeparationOver`). `▷`/`◁` **do ride** step
+  4's encoding: the per-walk agreement restriction they need is first-order over the tree's order
+  relation with no added quantifier alternation, the same shape as `⊡`'s "∀P' ∋ x" with an
+  MSO-expressible restriction, exactly as hypothesized. The cost is an amendment at step 1 (the
+  per-state witness economy is unsound for `▷`/`◁`; countability survives on a coarser indexing)
+  — see report 03 §1.3's amendment block and
+  `866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md`. **This
+  reaches ZTime only** (Base/Dense/RTime stay open with the obstruction at report 03 §1.4) **and
+  remains a paper result, not formalized and not planned for formalization** (Mathlib has no MSO,
+  no ω-automata, no Rabin tree theorem — see that report's finding 8). It does **not** close
+  `Decidable (PlusValidZTime φ)` constructively, which is still Stage 1's own aim, and does not
+  extend the landed `decidableValidZTime` / `decidableDerivableZTime` (base `Formula` only).
 
 ## Run these next
 
@@ -191,7 +198,7 @@ successors measured false. Re-planning the area from `838`'s two-sided framing i
 # Stage 2 — the L^▷ front, then supporting semantics and metalogic
 /orchestrate 856 --hard             # the L^▷ proof system: unnecessary at ZTime/RTime (854), genuine work at Base/Dense (859)
 /orchestrate 868                    # the L^▷→L⁺ transfer corollaries; antecedents stay open by design
-/orchestrate 867 --hard --lit       # formalize Gabbay separation, discharging SeparationOver and making tr executable. SIZEABLE — weigh against 866's verdict first
+/orchestrate 867 --hard --lit       # formalize Gabbay separation, discharging SeparationOver and making tr executable. Weighed against 866's verdict: the MSO route makes SeparationOver unnecessary for L^▷ ZTime decidability specifically, so 867 is no longer load-bearing for THAT question — but tr's own expressiveness value is independent and unaffected, so 867 stands on that value alone
 /orchestrate 860                    # the colourClock bridge discharging hmarkers (researched). Re-point its scope at the landed Independence module first
 /orchestrate 664,559,570 --lit      # corpus ingest, then TM⁺ completeness rounds and the C3 open question
 /orchestrate 830 --hard             # Γ-generalize decidableValidZTime; does NOT advance the L⁺ aim
@@ -230,6 +237,26 @@ budget is per task, per invocation (5 default, 13 under `--hard`), so **re-run t
 every member reports terminal**. Shared file scope serializes a batch rather than breaking it; a
 task with no declared `file_scope` is invisible to the overlap gate (the blindness `751`
 remediates). See `.claude/context/patterns/batch-orchestration-guardrails.md`.
+
+**`866`'s filing-ready follow-up (R1, not yet a task number).** A Lean task: `▷`/`◁` truth
+invariance along a history-lifting morphism with ray-agreement lifting, plus the ZTime
+construction of such a lifting from `TwoWayBounded`. Shape: one new field or standalone
+hypothesis beside `HistMap.lift` ("a history of the image frame agreeing with the image of `τ'`
+up to `x` lifts to a history of the source agreeing with `τ'` up to `x`"), its mirror for `◁`,
+their derivation over ℤ from `TwoWayBounded.step`/`forth` via the existing forward/backward
+sequence machinery, and an `open_invariance` theorem over `OpenFormula` reusing
+`plus_invariance`'s seven cases. Cost estimate carried from
+`866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md`'s
+recommendation R1: **150-350 lines, one implementation phase**. Independent of G1, G2, Rabin,
+Gabbay separation (`867`) and the ladder/`RaySummary` front — file it with `/task` whenever
+convenient; nothing above gates it.
+
+**`866`'s MSO/Rabin decidability step itself (report recommendation R2): do not file.** Formalizing
+step 5 of report 03 §1.3 means formalizing Rabin's tree theorem from scratch (determinization of
+parity/Rabin automata over infinite trees) — Mathlib has no MSO syntax, no ω-automata, no
+determinization of ω-automata, and no Rabin tree theorem (two `lean_leansearch` queries this
+session, held evidence). A multi-year project of a different kind from anything in this
+repository; keep the ZTime decidability of L^▷ as a paper result.
 
 ## Stage 0 — User rulings (no agent may transition these)
 
