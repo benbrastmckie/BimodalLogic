@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/868_open_language_transfer_corollaries/reports/01_open-language-transfer-corollaries.md",
+      "summary": "Probe-verified statements for the ZTime/RTime decidability and completeness reductions from open-language validity to L-plus, with the finding that the uniform Decidable shape is noncomputable and therefore vacuous, plus every gate and documentation surface a landing must touch."
+    },
+    {
+      "type": "other",
+      "path": "specs/868_open_language_transfer_corollaries/probes/01_transfer-corollaries.lean",
+      "summary": "Compiled probe isolating the noncomputable/vacuous uniform Decidable shape against the computable per-formula shape."
+    },
+    {
+      "type": "other",
+      "path": "specs/868_open_language_transfer_corollaries/probes/02_shapes.lean",
+      "summary": "Compiled probe for all nine recommended declaration shapes with measured #print axioms profiles."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793857391_c5064b_868",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
