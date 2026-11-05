@@ -2086,6 +2086,50 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on every other headline.
 #                                                           | No `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# limit-closure-schema/lc-schema-omega-chain                | THE LC SCHEMA'S VALIDITY ON
+#                                                           | ALL-WALKS Z-MODELS IS COMPILED
+#                                                           | AND SORRY-FREE, AND THE `.Base`
+#                                                           | ARGUMENT IS NOT.  Part I of this
+#                                                           | probe carries `omega_limit`,
+#                                                           | `omega_chain` (the general
+#                                                           | omega-limit-of-splices principle)
+#                                                           | and `lcN_valid_full`: Reynolds
+#                                                           | 2003's infinite limit-closure
+#                                                           | schema LC_n, transposed to `|=|`
+#                                                           | with `G<=`, is valid on every
+#                                                           | all-walks Z-model, for every
+#                                                           | `n >= 1` and arbitrary parameter
+#                                                           | formulas.  That half is MACHINE-
+#                                                           | CHECKED, and is the source of
+#                                                           | record for the ported
+#                                                           | `FormalSystem/PlusLanguage/PlusOmegaChain.lean`
+#                                                           | and
+#                                                           | `FormalSystem/PlusLanguage/PlusLCSchema.lean`.
+#                                                           | What this probe does NOT hold in
+#                                                           | place is validity of LC_n at the
+#                                                           | `.Base` frame class: the
+#                                                           | omega-chain argument needs its
+#                                                           | marker sequence COFINAL in the
+#                                                           | duration order, which holds over
+#                                                           | `Z` and fails over a dense order,
+#                                                           | where a strictly increasing
+#                                                           | sequence may converge.  A paper
+#                                                           | argument for `.Base` by Zorn plus
+#                                                           | the Extension Theorem is recorded
+#                                                           | in prose elsewhere and is
+#                                                           | UNVERIFIED in Lean; nothing here,
+#                                                           | and nothing in the landed
+#                                                           | modules, claims it.  Parts H, J
+#                                                           | and K are also carried here: K
+#                                                           | (the clock rule) has landed as
+#                                                           | `clock_irr_sound`/`irr_sound`, and
+#                                                           | H and J have not landed at all,
+#                                                           | so this file is their only
+#                                                           | compiled record.  Axioms: a
+#                                                           | subset of `[propext,
+#                                                           | Classical.choice, Quot.sound]` on
+#                                                           | every headline.  No `sorryAx`, no
+#                                                           | custom axiom, no `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -2137,6 +2181,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-reps-bound-refutation"
   "seam-gluing-ray-product/ladder-idle-past-interface-decision"
   "seam-gluing-ray-product/one-sided-count-move-refutation"
+  "limit-closure-schema/lc-schema-omega-chain"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

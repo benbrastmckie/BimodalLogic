@@ -1,7 +1,7 @@
 # Implementation Plan: Task #864
 
 - **Task**: 864 - Land LC schema limit-closure soundness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/864_land_lc_schema_limit_closure_soundness/reports/01_lc-schema-limit-closure-soundness.md`
@@ -132,7 +132,7 @@ the routes differ in frame class and index arity.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Promote the source probe into tracked evidence [NOT STARTED]
+### Phase 1: Promote the source probe into tracked evidence [COMPLETED]
 
 **Goal**: Make task 559's archival harmless by moving the compiled source of record into
 `specs/evidence/`, which is tracked and task-independent, and wiring it into the evidence-probe
@@ -147,22 +147,22 @@ probe is also the compiled record of the UNVERIFIED `.Base` argument and of Part
 which this task lands.
 
 **Tasks**:
-- [ ] Re-read `scripts/check-evidence-probes.sh`'s header and its `WIRED` array immediately before
+- [x] Re-read `scripts/check-evidence-probes.sh`'s header and its `WIRED` array immediately before
       editing (concurrent siblings have undeclared file scope).
-- [ ] Create the collection directory `specs/evidence/limit-closure-schema/` and copy the probe to
+- [x] Create the collection directory `specs/evidence/limit-closure-schema/` and copy the probe to
       `specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean`.
-- [ ] Confirm the copy still compiles standalone: `lake env lean specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean`
+- [x] Confirm the copy still compiles standalone: `lake env lean specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean`
       exits 0 with empty output. The probe imports only `Mathlib`, so the new path changes nothing
       about its import resolution.
-- [ ] Add the `WIRED` entry `"limit-closure-schema/lc-schema-omega-chain"` (collection-relative,
+- [x] Add the `WIRED` entry `"limit-closure-schema/lc-schema-omega-chain"` (collection-relative,
       per the array's documented entry form) and, beside it in the file's own
       "WHAT EACH PROBE HOLDS IN PLACE" table, a line naming the decision it holds: that the LC_n
       schema's validity on all-walks ℤ-models is compiled and sorry-free, and that the `.Base`
       argument is NOT.
-- [ ] Prefer `WIRED` over `WIRED_REPO`; the file's own header states `WIRED_REPO` needs a named
+- [x] Prefer `WIRED` over `WIRED_REPO`; the file's own header states `WIRED_REPO` needs a named
       blocker recorded beside the entry, and there is none here.
-- [ ] Run `bash scripts/check-evidence-probes.sh` and confirm green.
-- [ ] Commit with an explicit two-file staging list; do not stage a directory.
+- [x] Run `bash scripts/check-evidence-probes.sh` and confirm green.
+- [x] Commit with an explicit two-file staging list; do not stage a directory.
 
 **Timing**: 0.5 hours
 
