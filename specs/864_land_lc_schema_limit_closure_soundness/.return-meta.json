@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/864_land_lc_schema_limit_closure_soundness/reports/01_lc-schema-limit-closure-soundness.md",
+      "summary": "Port map for the LC_n limit-closure soundness results: absence confirmed, probe recompiles (exit 0), home module is PlusLanguage/ beside PlusLimitClosure.lean (not NamingRules.lean), and the ZTime frame-class scoping is forced by the omega-chain's cofinality requirement."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793857391_c5064b_864",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

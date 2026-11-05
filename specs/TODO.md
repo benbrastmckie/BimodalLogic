@@ -73,7 +73,7 @@ next_project_number: 869
 
 ### Completeness
 
-864 [NOT STARTED] — IMPLEMENTATION TASK, time-sensitive: land the LC\_n and LCU...
+864 [RESEARCHED] — IMPLEMENTATION TASK, time-sensitive: land the LC\_n and LCU...
   └─ 865 [NOT STARTED] — RESEARCH TASK, and the owner of a programme that is currently...
 
 ### Dataset Enhancement
@@ -113,7 +113,7 @@ next_project_number: 869
 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
-866 [NOT STARTED] — RESEARCH TASK, cheap and high-value: verify and record that...
+866 [RESEARCHING] — RESEARCH TASK, cheap and high-value: verify and record that...
 
 ### Formula Refactor
 
@@ -135,7 +135,7 @@ next_project_number: 869
 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
-868 [NOT STARTED] — IMPLEMENTATION TASK, small and deliberately conditional:...
+868 [RESEARCHING] — IMPLEMENTATION TASK, small and deliberately conditional:...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -157,7 +157,7 @@ next_project_number: 869
 ## Tasks
 
 ### 868. Open language transfer corollaries
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -199,7 +199,7 @@ GATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the elimin
 ---
 
 ### 866. Mso route open modals ztime decidability
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: formal
 - **Topic**: decidability
 - **Dependencies**: None
@@ -243,10 +243,11 @@ DELIVERABLE: a report under this task's directory. No library change and no comp
 ---
 
 ### 864. Land lc schema limit closure soundness
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
+- **Research**: [864_land_lc_schema_limit_closure_soundness/reports/01_lc-schema-limit-closure-soundness.md]
 
 **Description**: IMPLEMENTATION TASK, time-sensitive: land the LC_n and LCU limit-closure soundness results into the library before task 559's directory is archived. The proofs are already written and compiled; this is a port, not a proof search.
 
