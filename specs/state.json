@@ -9,12 +9,12 @@
     {
       "project_number": 868,
       "project_name": "open_language_transfer_corollaries",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "IMPLEMENTATION TASK, small and deliberately conditional: state in Lean the reductions that carry completeness and decidability of the open language at ZTime and RTime back to their L-plus counterparts, so that each one lands automatically whenever its antecedent is discharged.\n\nTHE GAP. Task 854 landed VALIDITY transfer -- openValidIn_ztime_iff_tr and openValidIn_rtime_iff_tr in FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean say that open-language validity at those classes is L-plus validity of the translation. Nothing states the consequences that matter: that decidability of L-plus validity at ZTime yields decidability of open-language validity at ZTime, and that completeness of an L-plus proof system at ZTime or RTime yields completeness for the open language there. Those steps are short given what is landed, and nobody owns them.\n\nWHY STATE THEM WHILE THE ANTECEDENTS ARE OPEN. Both antecedents are genuinely open -- Decidable PlusValidZTime is stated nowhere in the tree, and completeness of any recursive extension of TM-plus is open at every frame class. That is precisely the argument for landing the reductions now rather than later: the reduction is the durable artifact, and making it machine-checked means the open-language result follows by application the moment the L-plus result arrives, instead of being rediscovered by whoever lands it. State each result as an explicit implication or a Decidable instance taking the L-plus fact as a hypothesis.\n\nROW DISCIPLINE, WHICH IS THE WHOLE RISK HERE. Every landed row must make the hypothesis the leading clause, exactly as the openValidIn_ztime_iff_tr row does. No row, docstring or README cell may read as if decidability or completeness of the open language has been established at any class. The module docstring states what is proved -- the reduction -- and names each undischarged antecedent, with the separation hypothesis that tr itself rests on named too, since these reductions inherit it.\n\nWHAT IS OUT OF SCOPE. No proof system for the open language is built here -- that is the gated L-plus-to-open-language axiomatization task, and its rationale is confined to Base and Dense where the open-future modal is genuinely stronger. Nothing is claimed at Base or Dense, where the translation does not exist. Do not attempt to discharge any antecedent. Do not touch the Independence/ modules.\n\nGATES. Zero sorry, zero vacuous definitions; a theorem-index row per result with the conditional form stated honestly; re-measured axiom baselines pinned by scripts/check-module-invariants.sh, never typed by hand; guarded scoped build then unscoped, with check-module-invariants.sh and check-metalogic-cycles.sh green against their pre-task baselines.",
       "topic": "metalogic",
       "created": "2026-11-05T02:29:19Z",
-      "last_updated": "2026-11-05T06:06:07Z",
+      "last_updated": "2026-11-05T07:02:28Z",
       "audit_override": "User confirmed via AskUserQuestion after reviewing the audit: all verdicts semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); nearest match #559 explicitly carves out this content",
       "session_id": "sess_1793857391_c5064b",
       "artifacts": [
@@ -27,6 +27,11 @@
           "path": "specs/868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md",
           "type": "plan",
           "summary": "Five-phase plan: nine reduction declarations, module docstring, C14 baselines, four documentation surfaces, full gate sweep."
+        },
+        {
+          "path": "specs/868_open_language_transfer_corollaries/summaries/01_open-language-transfer-corollaries-summary.md",
+          "type": "summary",
+          "summary": "Nine conditional reduction declarations with measured C14 pins and four documentation surfaces in agreement."
         }
       ],
       "next_artifact_number": 2,
