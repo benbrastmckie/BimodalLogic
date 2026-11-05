@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Conservativity.Open.OpenAxiomValidity
 import FormalSystem.Metalogic.Conservativity.Open.OpenSoundness
+import FormalSystem.Metalogic.Conservativity.Open.Forward
 
 /-!
 # The restricted-modal extension L^▷ — soundness and conservativity over TM⁺
@@ -40,6 +41,8 @@ of it over integer and real time.
   theorems, and the two wildcard-free dispatch lemmas assembled from them
 - `Conservativity.Open.OpenSoundness` — the companion recursion over `OpenDerivationTree`,
   `open_soundness_validIn`, the context form, the four class rows and the consistency row
+- `Conservativity.Open.Forward` — conservativity over TM at all four classes, and the
+  unconditional, engine-free TM⁺ row in both directions
 
 ## References
 

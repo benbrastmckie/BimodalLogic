@@ -860,26 +860,30 @@ wildcard. Confirm by case count against Phase 3's rule list.
 
 ---
 
-### Phase 13: `Forward.lean` — conservativity over TM and the TM⁺ row [NOT STARTED]
+### Phase 13: `Forward.lean` — conservativity over TM and the TM⁺ row [COMPLETED]
 
 **Goal**: Land the TM rows at all four classes and state the TM⁺ row in both directions.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Conservativity/Open/Forward.lean`, add its import to
+- [x] Create `FormalSystem/Metalogic/Conservativity/Open/Forward.lean`, add its import to
   `Open.lean` and its README module-table row.
-- [ ] Prove `theorem forward_open {fc} (engine : WeakCompleteness fc) (φ : Formula) (h : OpenDerivable fc [] (ofPlus (ofFormula φ))) : ProofSystem.Derivable fc [] φ`,
+- [x] Prove `theorem forward_open {fc} (engine : WeakCompleteness fc) (φ : Formula) (h : OpenDerivable fc [] (ofPlus (ofFormula φ))) : ProofSystem.Derivable fc [] φ`,
   mirroring `forward_star` (`FormalSystem/Metalogic/Conservativity/Star/Forward.lean:103`):
   soundness, then `openValid_ofPlus_iff`/`openValidIn_ofPlus_iff`, then
   `plusValidIn_ofFormula_iff`, then the engine.
-- [ ] Instantiate at the four classes (`forward_open_base`, `_dense`, `_ztime`, `_rtime`) with
+- [x] Instantiate at the four classes (`forward_open_base`, `_dense`, `_ztime`, `_rtime`) with
   `completeness_base`/`_dense`/`_ztime`/`_rtime`.
-- [ ] Prove `theorem openDerivable_ofFormula_iff {fc} (engine : WeakCompleteness fc) (φ : Formula) : OpenDerivable fc [] (ofPlus (ofFormula φ)) ↔ ProofSystem.Derivable fc [] φ`
+- [x] Prove `theorem openDerivable_ofFormula_iff {fc} (engine : WeakCompleteness fc) (φ : Formula) : OpenDerivable fc [] (ofPlus (ofFormula φ)) ↔ ProofSystem.Derivable fc [] φ`
   and its four class instantiations.
-- [ ] State the TM⁺ row in both directions as `theorem openDerivable_ofPlus_iff`, composing Phase
+- [x] State the TM⁺ row in both directions as `theorem openDerivable_ofPlus_iff`, composing Phase
   3's `openDerivable_of_plusDerivable` with Phase 5's `plusDerivable_of_openDerivable` through
   `eraseOpen_ofPlus`. It is unconditional and syntactic: no engine, no completeness hypothesis.
-- [ ] Write the docstring guard (Risk 6): conservativity here is a consequence of the axiom choice
+  *(deviation: altered — that exact composition was already landed in Phase 5 as
+  `OpenLanguage.plusDerivable_openDerivable_iff`, so `openDerivable_ofPlus_iff` is a one-line
+  re-export of it rather than a second copy of the proof; the plan-named declaration exists at
+  the plan-named signature with no engine argument)*
+- [x] Write the docstring guard (Risk 6): conservativity here is a consequence of the axiom choice
   — the system is deliberately weak on `▷` — and it is **not** modelled on
   `starConservative_of_plusComplete`, whose hypothesis is false at `.Base`. Name
   `plus_incomplete_base`, record that `blc` stays a non-theorem, and record that an LC_n-style
