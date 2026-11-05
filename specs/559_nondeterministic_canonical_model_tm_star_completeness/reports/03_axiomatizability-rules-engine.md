@@ -188,6 +188,41 @@ Consequences.
 > finding 1 (decision 7) for the full derivation. This note adds no positive claim and does not
 > alter this section's construction or claim above.
 
+> **Amendment (2026-11-05; oriented-forest hypothesis pinned, derived; resolves the note above).**
+> This amendment pins the hypothesis the note above flagged and maps which of this section's own
+> steps 1-5 consume which strength. §1.2's claim and construction above are unchanged; only the
+> gloss is tightened.
+>
+> **Restated hypothesis.** Over a bare task relation `{W : Type} {R : W → D → W → Prop}` (the
+> shape `Saturation`'s own lemmas use, e.g. `saturation_of_fib_subsingleton`,
+> `saturation_of_fib_finite`), the oriented-forest hypothesis is: **the underlying undirected
+> multigraph of `R`'s one-step edge relation is a forest** (acyclic). This implies directed-path
+> uniqueness — between two nodes there is at most one undirected path, hence at most one directed
+> path — so the strengthened hypothesis subsumes the one glossed above and nothing already claimed
+> is lost.
+>
+> **Why multigraph, not simple graph.** The condition is acyclicity of the underlying undirected
+> *multigraph*, not of its simplification. A base pair of opposite edges `u → v`, `v → u` is a
+> pair of parallel undirected edges between the same two nodes — an undirected 2-cycle — and a
+> loop `u → u` is a 1-cycle. Stating acyclicity of the simplified (edge-deduplicated) underlying
+> graph would silently readmit both and break step 4 below.
+>
+> **Consumption map.**
+> - Steps 1-3 consume only directed-path uniqueness: step 1's segment-subsingleton argument needs
+>   at most one directed path at each distance; step 3's at-most-one-shared-element argument
+>   between a forward fibre `Fib(a,n)` and a backward fibre `Fib(a',-m)` needs at most two directed
+>   paths `a → x`, `a' → x` to force a contradiction, which directed-path uniqueness alone
+>   supplies.
+> - **Step 4 consumes undirected acyclicity.** It takes the reduced (undirected) path between
+>   `a_m` and `a'` and that path's unique sink `m`, and needs `m` to be independent of the member
+>   `x ∈ F'` chosen — a fact about the *undirected* tree structure, not about directed-path
+>   uniqueness alone.
+> - Step 5 is bookkeeping and consumes nothing beyond step 4's conclusion.
+>
+> No Lean encoding is chosen here (`SimpleGraph.IsAcyclic` on a symmetrization, an inductive forest
+> predicate, or a bespoke `Prop`); a grep of `FormalSystem/**` confirms no oriented-forest or
+> acyclicity predicate exists there today, and the encoding choice belongs to task 870.
+
 #### 1.3 Decidability at ZTime (paper, Medium-High; rests on a recalled theorem)
 
 1. *Countable model property.* Close a countable set of walks under one chosen witness walk per

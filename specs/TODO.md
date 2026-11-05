@@ -111,7 +111,7 @@ next_project_number: 885
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
-884 [PLANNED] — Restate the oriented-forest Saturation hypothesis at the...
+884 [IMPLEMENTING] — Restate the oriented-forest Saturation hypothesis at the...
 
 ### Documentation
 
@@ -130,8 +130,8 @@ next_project_number: 885
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 860 [RESEARCHED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-867 [RESEARCHED] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
-871 [RESEARCHED] — Correct LCU docstring and restore omega\_chain...
+867 [PLANNING] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
+871 [PLANNING] — Correct LCU docstring and restore omega\_chain...
   └─ 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 881 [RESEARCHED] — Factor the 53 TM-plus mirror schema validity proofs into a...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -167,7 +167,7 @@ next_project_number: 885
 
 ### 884. Oriented forest hypothesis strength revision
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Topic**: decidability
 - **Dependencies**: None
@@ -584,7 +584,7 @@ VERIFICATION. Every count and every declaration name in the report must be repro
 ---
 
 ### 871. Correct LCU docstring and restore omega_chain segment-property parameter
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -658,7 +658,7 @@ GATES. Zero sorry, zero vacuous definitions; a theorem-index row per result with
 ---
 
 ### 867. Formalize gabbay separation ztime
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None

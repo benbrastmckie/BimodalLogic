@@ -1,7 +1,7 @@
 # Implementation Plan: Task #884
 
 - **Task**: 884 - Oriented-forest hypothesis strength revision
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.8 hours
 - **Dependencies**: None (task 870 depends on *this* task; the edge already exists in `specs/state.json`)
 - **Research Inputs**: None dispatched. Evidence of record is pre-existing:
@@ -109,38 +109,39 @@ honest wave map here, not a missed optimization.
 
 ---
 
-### Phase 1: Pin the restated hypothesis and its consumption map [NOT STARTED]
+### Phase 1: Pin the restated hypothesis and its consumption map [COMPLETED]
 
 **Goal**: One precise statement of the hypothesis, plus an explicit per-step map of which of
 report 03 §1.2's steps 1-5 consume which strength, written into §1.2 as a dated, derived
 resolution amendment to the note already standing there.
 
 **Tasks**:
-- [ ] Re-read `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md`
+- [x] Re-read `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md`
       §1.2 (lines ~137-190) in full, including the existing 2026-11-05 hypothesis-strength flag
-      note, immediately before editing.
-- [ ] State the hypothesis over a bare task relation, in the shape the existing `Saturation`
+      note, immediately before editing. *(completed)*
+- [x] State the hypothesis over a bare task relation, in the shape the existing `Saturation`
       lemmas use (`{W : Type} {R : W → D → W → Prop}`, as at `FormalSystem/Semantics/TaskFrame.lean:2194`
       and `:2235`): the **underlying undirected multigraph of `R`'s one-step edge relation is a
       forest** (acyclic). Record that this implies directed-path uniqueness — between two nodes
       there is at most one undirected path, hence at most one directed path — so the strengthened
-      hypothesis subsumes the stated one and nothing already claimed is lost.
-- [ ] Record that the condition is on the underlying undirected **multigraph**, not on its
+      hypothesis subsumes the stated one and nothing already claimed is lost. *(completed)*
+- [x] Record that the condition is on the underlying undirected **multigraph**, not on its
       simplification: a base pair of opposite edges `u → v`, `v → u` is a pair of parallel
       undirected edges, i.e. a 2-cycle, and a loop `u → u` is a 1-cycle. Stating acyclicity of the
-      *simple* underlying graph would readmit both and break step 4.
-- [ ] Write the consumption map: steps 1-3 consume only directed-path uniqueness (step 1's
+      *simple* underlying graph would readmit both and break step 4. *(completed)*
+- [x] Write the consumption map: steps 1-3 consume only directed-path uniqueness (step 1's
       segment-subsingleton argument, step 3's at-most-one-shared-element argument between a
       forward and a backward fibre); **step 4 consumes undirected acyclicity** — it takes the
       reduced (undirected) path between `a_m` and `a'` and that path's unique sink `m`, and needs
-      `m` to be independent of `x`; step 5 is bookkeeping.
-- [ ] Append the result to §1.2 as a dated amendment immediately after the existing note,
+      `m` to be independent of `x`; step 5 is bookkeeping. *(completed)*
+- [x] Append the result to §1.2 as a dated amendment immediately after the existing note,
       explicitly resolving what that note flagged. State in the amendment's own first sentence
-      that §1.2's claim and construction are unchanged and only the gloss is tightened.
-- [ ] Do **not** choose a Lean encoding (`SimpleGraph.IsAcyclic` on a symmetrization, an inductive
+      that §1.2's claim and construction are unchanged and only the gloss is tightened. *(completed)*
+- [x] Do **not** choose a Lean encoding (`SimpleGraph.IsAcyclic` on a symmetrization, an inductive
       forest predicate, or a bespoke `Prop`); a grep confirms no oriented-forest or acyclicity
       predicate exists in `FormalSystem/**` today, and the encoding choice is 870's. Say so in one
-      sentence rather than leaving the omission unexplained.
+      sentence rather than leaving the omission unexplained. *(completed: confirmed via grep, no
+      occurrence of IsOrientedForest/acyclic predicate in FormalSystem/**)*
 
 **Timing**: 0.8 hours
 
