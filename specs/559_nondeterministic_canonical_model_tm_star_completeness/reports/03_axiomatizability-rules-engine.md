@@ -193,6 +193,59 @@ only a *natural* system. Report 01 §2.4 gives the lower bound (contains full CT
 model property is NOT established: a regular tree does not obviously fold to a finite digraph whose
 cover is that tree, because folding by subtree type forgets what lies above a node.
 
+> **Amendment (derived; section 1.3 itself remains an unverified paper argument, and gap G1 below
+> is live inside it).** The open-future/open-past modals `▷`/`◁` were not considered when this
+> section was written (confirmed by grep: no occurrence of `▷`, `◁`, "open future", "open past",
+> or "restricted modal" anywhere in this report). They turn out to ride the same encoding, with
+> one correction to step 1. Full derivations are in
+> `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md`,
+> findings 3-6; only the results are recorded here.
+>
+> - **Step 4 accommodates `▷` and `◁` directly (derived; finding 3).** Writing `⊑` for directed
+>   reachability in the rooted tree, two walk-encodings `P, P'` both containing `x` agree at every
+>   time `≤ x` iff `∀y (y ⊑ x → (y ∈ P ↔ y ∈ P'))`, and the mirror with `x ⊑ y` for agreement at
+>   every time `≥ x`. So
+>   `⟦▷ψ⟧(P, x) := ∀P'. [Walk(P') ∧ x ∈ P' ∧ ∀y (y ⊑ x → (y ∈ P ↔ y ∈ P'))] → ⟦ψ⟧(P', x)`, and
+>   `⟦◁ψ⟧` is the same with the mirrored restriction — the same shape as `⟦⊡ψ⟧ := ∀P'. [Walk(P') ∧
+>   x ∈ P'] → ⟦ψ⟧(P', x)` above, with an added restriction that is itself first-order over the
+>   tree's order relation and the parent-edge orientation predicate already in use (no
+>   transitive-closure quantifier, no new quantifier alternation), so the final sentence step 5
+>   feeds to Rabin's theorem is unchanged in shape. `▷`/`◁`'s quantifiers are also component-local
+>   (a walk agreeing with `P` on a ray shares nodes with `P`), unlike `□`'s forest-wide range —
+>   relevant to gap G2 below.
+> - **Step 1's per-state witness economy is unsound for `▷`/`◁` (derived; correction, finding 5).**
+>   The justification above — "state-local truth is shift-invariant, so one witness per state
+>   suffices" — fails for any modal whose falsifying witness is not state-local. A witness for
+>   `▷ψ` is a function of `τ`'s whole past below `x`, not of the state `τ(x)`, because the ray is
+>   anchored at the time of evaluation. **This failure pre-exists the open modals only in the
+>   sense that the stated justification was never actually needed for `⊡` either**; it is simply
+>   never exercised there. Countability survives: indexing witnesses by (walk already in the
+>   closure, time, diamond subformula) instead of by (state, diamond subformula) still gives a
+>   countable closure under ω-iteration — what is lost is only the economy, not the countable
+>   model conclusion.
+> - **Two pre-existing gaps, present already for `⊡` and not caused by the open modals (derived;
+>   finding 6).**
+>   - **(G1) Step 1's induction scope.** The equivalence between truth in the ambient digraph and
+>     truth in the induced sub-digraph `G'` must hold at *every* walk of `G'`, including walks
+>     that were never in the closed countable witness set `W` — but `G'` depends on `W`, and the
+>     witnesses `W` needs depend on the walks of `G'`. The fixpoint is not obviously reached. This
+>     is the weakest link in this section and is consistent with its own confidence label above
+>     ("paper, Medium-High; rests on a recalled theorem").
+>   - **(G2) Forest versus tree.** Section 1.2 yields countably many trees (the universal covers
+>     of the cover's components); step 5 applies Rabin's theorem to one tree, singular. The
+>     standard repair — adjoin a new root whose children are the component roots, with an
+>     MSO-definable predicate excluding its edges from the digraph relation — is not carried out
+>     here. `▷`/`◁` are indifferent to this gap (component-local, per step 4 above); it is a `□`
+>     problem only.
+>
+> **Scope of this amendment.** The MSO route reaches **ZTime only**, exactly as the unamended
+> argument above already states; this amendment extends what is decided at ZTime to include the
+> open modals, and claims nothing about Base, Dense, or RTime (§1.4 below, unchanged). It does
+> not establish the finite model property, does not constitute a Lean verification of this
+> section's argument, and is independent of this repository's landed `decidableValidZTime` /
+> `decidableDerivableZTime` (at base `Formula`, without `⊡` or the open modals), which this
+> amendment does not extend.
+
 #### 1.4 Base, Dense, RTime: OPEN, with the obstruction located
 
 - **What transfers from Gurevich-Shelah (via Reynolds 2002 §6).** The method needs atoms to carry

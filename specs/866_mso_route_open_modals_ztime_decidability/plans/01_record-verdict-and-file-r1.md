@@ -1,7 +1,7 @@
 # Implementation Plan: Task #866
 
 - **Task**: 866 - MSO route: do the open modals ride the encoding that decides L⁺ validity at ZTime?
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md`
@@ -108,7 +108,7 @@ roadmap state immediately before editing rather than relying on anything stated 
 Phases within the same wave can execute in parallel. Phases 1 and 2 touch disjoint files
 (`559`'s report 03 versus `specs/ROADMAP.md`) and share no content dependency.
 
-### Phase 1: Amend report 03 section 1.3 with the open-modal accommodation, the witness-economy correction, and gaps G1/G2 [NOT STARTED]
+### Phase 1: Amend report 03 section 1.3 with the open-modal accommodation, the witness-economy correction, and gaps G1/G2 [COMPLETED]
 
 **Goal**: Report 03 section 1.3 carries, in its own text, (a) that `▷`/`◁` are accommodated by
 step 4, (b) that step 1's per-state witness economy is unsound for any modal whose witness is not
@@ -117,15 +117,15 @@ report for the derivations.
 
 **Tasks**:
 
-- [ ] Resolve the target path: `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md`, falling back to the same basename under `specs/archive/**` if the directory has been archived. Record which path was used
-- [ ] Read section 1.3 in full plus section 1.4's first paragraph, so the amendment is written against the current text rather than against this plan's description of it
-- [ ] Append a clearly-delimited amendment block at the end of section 1.3, immediately before the section 1.4 heading, opening with one sentence stating that section 1.3 remains an unverified paper argument and that gap G1 below is live inside it
-- [ ] In that block, record the step-4 accommodation: the `▷` translation clause, the `◁` mirror, the first-order character of the `⊑` restriction (no transitive-closure quantifier, no new quantifier alternation over `⊡`'s), and the component-locality of `▷`/`◁` against `□`'s forest-wide range. Label *derived*
-- [ ] In that block, record the step-1 correction as a correction: "one witness per (state, diamond subformula)" is unsound for any modal whose falsifying witness is not state-local; countability survives under (walk, time, subformula) indexing; the economy does not. Label *derived*
-- [ ] In that block, record G1 (step 1's induction must hold at every walk of `G'`, but witnesses were chosen only for walks in `W`, and `G'` depends on `W` — the fixpoint is not obviously reached) and G2 (section 1.2 yields countably many trees; step 5 applies Rabin to one; the standard new-root coding repairs it), each with the explicit statement that both pre-exist for `⊡` and neither is caused by the open modals. Label *derived*
-- [ ] Add the pointer to `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md` findings 3-6 for the derivations, and state that the MSO route reaches ZTime only, leaving section 1.4's Base/Dense/RTime obstruction untouched
-- [ ] Re-read the amended region and confirm no sentence claims the finite model property, claims section 1.3 is verified, or conflates the route with the landed base-language `decidableValidZTime` / `decidableDerivableZTime`
-- [ ] Commit, staging only the one resolved report path by explicit file list
+- [x] Resolve the target path: `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md`, falling back to the same basename under `specs/archive/**` if the directory has been archived. Record which path was used *(completed: live path used, not archived)*
+- [x] Read section 1.3 in full plus section 1.4's first paragraph, so the amendment is written against the current text rather than against this plan's description of it *(completed)*
+- [x] Append a clearly-delimited amendment block at the end of section 1.3, immediately before the section 1.4 heading, opening with one sentence stating that section 1.3 remains an unverified paper argument and that gap G1 below is live inside it *(completed)*
+- [x] In that block, record the step-4 accommodation: the `▷` translation clause, the `◁` mirror, the first-order character of the `⊑` restriction (no transitive-closure quantifier, no new quantifier alternation over `⊡`'s), and the component-locality of `▷`/`◁` against `□`'s forest-wide range. Label *derived* *(completed)*
+- [x] In that block, record the step-1 correction as a correction: "one witness per (state, diamond subformula)" is unsound for any modal whose falsifying witness is not state-local; countability survives under (walk, time, subformula) indexing; the economy does not. Label *derived* *(completed)*
+- [x] In that block, record G1 (step 1's induction must hold at every walk of `G'`, but witnesses were chosen only for walks in `W`, and `G'` depends on `W` — the fixpoint is not obviously reached) and G2 (section 1.2 yields countably many trees; step 5 applies Rabin to one; the standard new-root coding repairs it), each with the explicit statement that both pre-exist for `⊡` and neither is caused by the open modals. Label *derived* *(completed)*
+- [x] Add the pointer to `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md` findings 3-6 for the derivations, and state that the MSO route reaches ZTime only, leaving section 1.4's Base/Dense/RTime obstruction untouched *(completed)*
+- [x] Re-read the amended region and confirm no sentence claims the finite model property, claims section 1.3 is verified, or conflates the route with the landed base-language `decidableValidZTime` / `decidableDerivableZTime` *(completed)*
+- [x] Commit, staging only the one resolved report path by explicit file list *(completed)*
 
 **Timing**: 45 minutes
 
