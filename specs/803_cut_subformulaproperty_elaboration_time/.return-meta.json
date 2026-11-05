@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md",
+      "summary": "Profiled baseline localizes 99.2% of SubformulaProperty.lean's elaboration cost to the all_goals simp_all cascade (14988s simp vs 108s tactic execution), not unfold/whnf as the file's comments claim; measured A/B probes show rewriting the 36 per-rule bodies against the already-generated applyRule.eq_1..eq_38 equation lemmas cuts andPos 882487->760 hb, serialityRule 2084589->146 hb, boxNeg 885047->27178 hb, with no statement, sorry, or axiom change."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793893053_616f17_803",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
