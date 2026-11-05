@@ -388,7 +388,7 @@ widening from a naive one.
 
 ---
 
-### Phase 4: Narrow the Goals Harvest to an Identifier-Leading Bullet Position [NOT STARTED]
+### Phase 4: Narrow the Goals Harvest to an Identifier-Leading Bullet Position [COMPLETED]
 
 **Goal**: Stop ordinary backticked prose inside a Goals bullet from being read as a committed
 declaration name, structurally rather than by subtraction, and state the accepted surface in
@@ -429,45 +429,61 @@ rather than a fix.
 
 **Tasks**:
 
-- [ ] Implement the leading-identifier-run rule in `extract_goal_names()`, replacing the current
+- [x] Implement the leading-identifier-run rule in `extract_goal_names()`, replacing the current
       whole-line `TOKEN_RE.findall(line)` scan. Keep the landed Goals-range anchors (both the
       column-0 and `- **Goals**:` list-item forms) and the landed preamble exclusion untouched;
       keep `LEAN_KEYWORDS` in place as a now-redundant-but-harmless second guard rather than
-      removing a landed repair.
-- [ ] Add failing-first test case **R14**: the measured residual sentence verbatim — a bullet
+      removing a landed repair. *(completed: `LEADING_RUN_RE`; the preamble exclusion is now
+      subsumed structurally by the per-bullet `BULLET_RE` gate rather than a separate
+      `seen_bullet` flag)*
+- [x] Add failing-first test case **R14**: the measured residual sentence verbatim — a bullet
       reading ``- Prove `comm` in the `Nu` namespace, establishing a `witness` for the `EUFix` operator when the flag is `true`.`` —
       must no longer harvest `EUFix`, `Nu`, `witness`, or `true`. Build the fixture so the bullet
       conforms to the new rule for its real Goal (`comm` leading) and carries the spurious tokens
       as trailing prose, and assert exit 0 with `theorem_names` equal to `comm` alone.
-- [ ] Ensure R14 covers **both** observed shapes — a capitalized namespace-style token (`Nu`,
+      *(completed: fixture plan_r14_trailing_prose.md)*
+- [x] Ensure R14 covers **both** observed shapes — a capitalized namespace-style token (`Nu`,
       `EUFix`) and a lowercase prose word (`witness`, `true`) — and that it is distinct from both
       R7 (reserved keywords, denylist-covered) and R8 (preamble position). Assert explicitly that
       R14 fails against a build carrying R7's and R8's mechanisms but not this phase's, so the
-      case is not vacuously passing on an already-landed repair.
-- [ ] Migrate the two mid-sentence fixtures to the documented shape:
+      case is not vacuously passing on an already-landed repair. *(completed: verified against
+      the Phase-3 commit sha 7626d37a9 — exits 71 naming all four spurious tokens)*
+- [x] Migrate the two mid-sentence fixtures to the documented shape:
       `plan_r1.md` and `plan_keyword_noise.md`. Keep `plan_keyword_noise.md`'s backticked Lean
       keywords in its bullet's **trailing prose**, so R7 still exercises the denylist rather than
-      being neutered by the migration.
-- [ ] State the accepted Goals surface in the script's own header documentation: the
+      being neutered by the migration. *(completed, WITH AN EXPANDED SCOPE this phase's own
+      Scope Hypothesis anticipated: re-extracting every fixture's Goals block found EIGHT
+      additional mid-sentence fixtures the plan's hypothesis did not name —
+      `plan_legacy.md`, `plan_list_item_goals.md`, `plan_mismatched.md`, `plan_mixed_case.md`,
+      `plan_r1.md` itself, `plan_r9_unicode.md`, `plan_r10_truncation.md`,
+      `plan_r11_abbrev_between.md`, `plan_r12_anon_instance.md` (the latter four created during
+      this record's own Phase 2/3 work). All were migrated to the identifier-leading shape per
+      the Scope Hypothesis's own instruction to treat any further mid-sentence fixture as in
+      scope rather than leave the suite red.)*
+- [x] State the accepted Goals surface in the script's own header documentation: the
       identifier-leading-run rule, the separator set, the preamble exclusion, both Goals-range
-      anchor forms, and the loud exit when no bullet conforms.
-- [ ] **Decision gate — `plan-format.md` statement.** The dispatch requires the accepted surface
+      anchor forms, and the loud exit when no bullet conforms. *(completed)*
+- [x] **Decision gate — `plan-format.md` statement.** The dispatch requires the accepted surface
       to be stated in the plan-format examples; `plan-format.md` is outside this record's
       `file_scope` and inside the sibling cross-repo record's. Re-check that record's status in
       the source-store repository's `specs/state.json` immediately before this step.
+      *(re-checked: still `not_started` — Branch A fires)*
       - Branch A (still `not_started`): make the minimal additive clarification in
         `agent-system/extensions/core/context/formats/plan-format.md`'s
         `## Lean Challenge Statements (format, lean/lean4 plans only)` section. That section
         already states that Goals bullets "name identifiers only (a backtick-delimited list)", so
         this is a tightening of an existing sentence into an explicit positional rule, not a new
         contract. Extend the task's `file_scope` to include the path, and record the coordination
-        in the handoff.
+        in the handoff. *(completed: the path was already present in the task's declared
+        `file_scope`, so no state.json edit was needed; the three mapped suites
+        (test-phase-heading-patterns.sh, test-plan-file-scope-harvest.sh,
+        test-resume-scan-nonconformance.sh) all pass)*
       - Branch B (moved to any active status): make **no** `plan-format.md` edit. Record the
         one-sentence clarification as a coordination handoff to that record, note it in the issue
         log, and rely on the script's own header documentation as the stated surface — which the
         dispatch explicitly contemplates as the alternative home.
-- [ ] Register each new fixture in `manifest.json`.
-- [ ] Demonstrate R14 fails against the pre-phase script and passes after.
+- [x] Register each new fixture in `manifest.json`. *(completed: plan_r14_trailing_prose.md)*
+- [x] Demonstrate R14 fails against the pre-phase script and passes after. *(completed)*
 
 **Timing**: 2 hours
 
@@ -483,6 +499,14 @@ the three cited landed plans have the Goals shapes described above. Both were me
 plan-authoring time by extracting each file's Goals block. Confirm by re-extracting every
 fixture's Goals block before migrating, and treat any third mid-sentence fixture as in scope for
 the same migration rather than leaving the suite red.
+
+**Scope Hypothesis re-derivation (actual)**: re-extracting every fixture's Goals block found NINE
+mid-sentence fixtures needing migration, not two: `plan_legacy.md`, `plan_list_item_goals.md`,
+`plan_mismatched.md`, `plan_mixed_case.md`, `plan_r1.md`, `plan_keyword_noise.md`,
+`plan_r9_unicode.md`, `plan_r10_truncation.md`, `plan_r11_abbrev_between.md`,
+`plan_r12_anon_instance.md` (ten total; the last four are this record's own Phase 2/3 fixtures).
+All were migrated per this Scope Hypothesis's own instruction to treat any further mid-sentence
+fixture as in scope. `plan_goals_preamble.md` already conformed and needed no change.
 
 **Tier Justification**: This phase narrows an accepted **input** surface that other files depend
 on, so verification spans the changed file plus its enumerated direct dependents: the dedicated
