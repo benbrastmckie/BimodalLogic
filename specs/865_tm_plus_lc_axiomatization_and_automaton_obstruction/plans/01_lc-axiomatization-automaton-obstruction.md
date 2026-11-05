@@ -228,16 +228,16 @@ foreground prompt was issued.
 
 ---
 
-### Phase 4: Summary and Final Gate [NOT STARTED]
+### Phase 4: Summary and Final Gate [COMPLETED]
 
 **Goal**: The task's close-out record exists, states what was filed and what was deliberately
 not, and the repository passes its full gate set with `FormalSystem/` and `Tests/` untouched.
 
 **Tasks**:
-- [ ] Write `specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/summaries/01_lc-axiomatization-automaton-obstruction-summary.md` per `summary-format.md`, covering: the report's verdict in two sentences (doubled one-sided automaton sufficient in shape conditional on separation; the AA carrier is the binding obstruction and is intrinsic); the ZTime correction and the amendment that discharged R5; the Component 7 confirmation table for the filed tasks with their allocated numbers; and an explicit paragraph recording that R3 is gated on R1 and 867 and R4 is refused, with the reasons, so neither reads as an oversight.
-- [ ] Confirm no library change: `git status --short -- FormalSystem/ Tests/` is empty and `git diff --stat HEAD -- FormalSystem/ Tests/` is empty.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Read the output; do not infer a pass.
-- [ ] Write `.orchestrator-handoff.json` and `.return-meta.json`, and commit the summary by explicit path.
+- [x] Write `specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/summaries/01_lc-axiomatization-automaton-obstruction-summary.md` per `summary-format.md`, covering: the report's verdict in two sentences (doubled one-sided automaton sufficient in shape conditional on separation; the AA carrier is the binding obstruction and is intrinsic); the ZTime correction and the amendment that discharged R5; the Component 7 confirmation table for the filed tasks with their allocated numbers; and an explicit paragraph recording that R3 is gated on R1 and 867 and R4 is refused, with the reasons, so neither reads as an oversight. *(completed)*
+- [x] Confirm no library change: `git status --short -- FormalSystem/ Tests/` is empty and `git diff --stat HEAD -- FormalSystem/ Tests/` is empty. *(completed: both empty)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Read the output; do not infer a pass. *(deviation: scoped to this dispatch's Batch Gate Deferral directive -- ran run-all.sh --only test-audit-task-proposals.sh,test-validate-artifact.sh,test-validate-state.sh,test-validate-task-creation-audit.sh (4 passed, 0 failed) covering this phase's own scripts; the complete gate set runs once for the whole /orchestrate batch at the end of the invocation, per dispatch 7)*
+- [x] Write `.orchestrator-handoff.json` and `.return-meta.json`, and commit the summary by explicit path. *(completed)*
 
 **Timing**: 0.75 hours
 
