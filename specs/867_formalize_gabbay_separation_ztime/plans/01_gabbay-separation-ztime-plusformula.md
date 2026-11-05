@@ -471,7 +471,7 @@ keywords and checking the two mirror proofs route through `usTruth_swap`.
 
 ---
 
-### Phase 5: DECISION GATE -- Probe the Reconstructed Cases 5-8 [NOT STARTED]
+### Phase 5: DECISION GATE -- Probe the Reconstructed Cases 5-8 [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: A candidate separated right-hand side exists for each of GHR 10.2.3's Cases 5-8,
 derived from the semantics rather than transcribed, and each has survived evaluation on concrete
@@ -480,26 +480,26 @@ candidates survive**. Its measurement licenses Phase 7.
 
 **Tasks**:
 
-- [ ] Write a prototype file under `specs/867_formalize_gabbay_separation_ztime/prototype/` that
+- [x] Write a prototype file under `specs/867_formalize_gabbay_separation_ztime/prototype/` that
       defines concrete leaf valuations on `ℤ` as decidable predicates and evaluates both sides of
       a candidate equivalence at a chosen `t`, so a candidate can be refuted by `decide` or by
       `native_decide`-free explicit computation rather than by hand.
-- [ ] Re-derive each of Cases 5-8 from the semantics by the case split GHR indicates: the position
+- [x] Re-derive each of Cases 5-8 from the semantics by the case split GHR indicates: the position
       of the `A`-witness relative to `t`, and the position of the first `¬B` after `s`. Do not
       transcribe the printed formulas.
-- [ ] Start Case 5 from the gloss-consistent reconstruction the research report records --
+- [x] Start Case 5 from the gloss-consistent reconstruction the research report records --
       `S(A ∧ S(a,B), A ∨ B ∨ ¬S(¬q,¬A)) ∧ ¬S(¬q,¬A)` as the second disjunct, with the
       `[A ∨ (B ∧ U(A,B))]` conjunct belonging to the first disjunct only -- which already survives
       the report's verified counterexample.
-- [ ] Re-run the report's refuting model against each candidate as a regression: `a(0)`, `A(1)`,
+- [x] Re-run the report's refuting model against each candidate as a regression: `a(0)`, `A(1)`,
       `B` identically false, `q(1)` and `q(2)` true, everything else false, evaluated at `t = 3`.
       The printed Case 5 is false there; a surviving candidate must be true.
-- [ ] Probe each candidate additionally on at least one model exercising the adjacent-point
+- [x] Probe each candidate additionally on at least one model exercising the adjacent-point
       degeneracy (a witness at `t+1` or `t-1`, where the open interval is empty and the guard is
       vacuous) and one where the `A`-witness lies strictly in the past.
-- [ ] Record, in the prototype file's own comments, each candidate's exact statement and the
+- [x] Record, in the prototype file's own comments, each candidate's exact statement and the
       models it survived, so Phase 7 implements a pinned candidate rather than re-deriving one.
-- [ ] **Gate measurement**: state explicitly, for each of the four cases, whether a candidate
+- [x] **Gate measurement**: state explicitly, for each of the four cases, whether a candidate
       survived every probe. Record the count (expected: 4 of 4).
 
 **Timing**: 2 hours
@@ -534,6 +534,20 @@ a case with fewer than three recorded probes has not met the gate.
   contingency branch in `## Rollback/Contingency` is taken instead of Phase 7's plan-as-written.
 
 ---
+
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| A pinned candidate right-hand side for GHR 10.2.3 **Case 6** (`S(a ∧ ¬U(A,B), q ∨ U(A,B))`) | The derivation method that works for Case 5 does not terminate here. Case 5's event conjunct is `U(A,B)@s`, i.e. `¬bad*(s)`, and that negation is exactly what makes the re-anchored guard-failure branch collapse (see the Case 5 docstring in the prototype). Case 6's event conjunct is `bad*(s)` — the un-negated existential — so the collapse is unavailable and the re-anchoring leaves an `s`-bounded forward conjunct. | `specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`, `## Gate measurement`; compiles at exit 0 |
+| A pinned candidate right-hand side for GHR 10.2.3 **Case 7** (`S(a ∧ U(A,B), q ∨ ¬U(A,B))`) | The guard carries `¬U(A,B)`, so the guard-failure condition is `∃r ∈ (s,t): ¬q(r) ∧ ¬bad*(r)` with `¬bad*` itself a universal over `x ∈ (r,t]`. Re-anchoring an `∃∀` needs two nested witness choices (an `A`-point `y`, then a `K`-point `x > y`) and retains a forward-looking, `t`-bounded conjunct at `r`, which is not a formula at `r` and so cannot be an `S`-guard. | same file, `## Gate measurement` |
+| A pinned candidate right-hand side for GHR 10.2.3 **Case 8** (`S(a ∧ ¬U(A,B), q ∨ ¬U(A,B))`) | Both obstructions above at once: the `∃∀` guard-failure condition of Case 7 and the un-negated event existential of Case 6. The negation route that reduces Case 8 to Case 5's shape, and Case 5 to Case 8's, is circular — `¬Case8 ↔ H(¬a ∨ U) ∨ S(¬q ∧ U, ¬a ∨ U)`, whose second disjunct is Case 5's shape, and symmetrically. | same file, `## Gate measurement` |
+
+**Gate verdict: 1 of 4.** Case 5's candidate is pinned and survives all three probe models,
+including the `reports/01` model that refutes GHR's printed formula. Cases 6-8 produced no
+candidate. The criterion was 4 of 4, so the primary contingency branch of
+`## Rollback/Contingency` is taken.
 
 ### Phase 6: GHR Lemma 10.2.3 -- Eliminations, Cases 1-4 [NOT STARTED]
 
