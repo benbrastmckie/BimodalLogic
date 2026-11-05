@@ -220,7 +220,7 @@ is used; that the withdrawn consequence sentence is reinstated conditionally on 
 
 ---
 
-### Phase 2: Correct report 866's finding 5 with the negative open-modal verdict [NOT STARTED]
+### Phase 2: Correct report 866's finding 5 with the negative open-modal verdict [COMPLETED]
 
 **Goal**: Report 866's finding 5 carries, in its own text, that its proposed (walk, time,
 subformula)-indexed witness closure does not give a countable-model step, and that the obstruction
@@ -228,13 +228,13 @@ is the one its own finding 6 names.
 
 **Tasks**:
 
-- [ ] Read `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md` findings 5 and 6 in full, so the correction is written against the current text
-- [ ] Append a clearly-delimited, dated amendment note to finding 5 (or at the end of the findings section if finding 5's bounds are not cleanly delimited) recording the correction: indexing witnesses by (walk already in the set, time, diamond subformula) does **not** yield a countable closure for `▷`/`◁`, because the induction must hold at **every** walk of the sub-digraph and the sub-digraph has uncountably many walks — which is exactly the gap finding 6 names. Label *derived*
-- [ ] In that note, state the mechanism of the contrast rather than only the verdict: the L⁺ repair works because `⊡`'s quantifier class is determined by a *world state* (compiled `stab_state_only`) and `□`'s by *nothing* (compiled `box_global`), and the state carrier is what is being made countable; for `▷` the determining object is an entire backward ray (`AgreeUpTo τ σ t` is agreement at every time `≤ t`), and the backward rays of a countable oriented forest are in general of size continuum
-- [ ] In that note, preserve what does survive: `▷`/`◁` still ride step 4's encoding (finding 3's `⊑` clauses, confirmed by this task's finding 4, now with the `¬Rt(meet(y, x))` guard) and still ride the cover step (finding 4). What they have **no** analogue of is the countable-model step, so L^▷ decidability at ZTime is *not* obtained
-- [ ] In that note, state that a repair would need a countable-model argument of a different kind — an elementary-submodel or Hintikka-type/mosaic argument replacing the ray by a finite type — and that this is a research project, not an amendment. Add the pointer to this task's report finding 10
-- [ ] Re-read the amended region and confirm nothing added asserts L^▷ ZTime decidability, and that the correction is stated as a correction rather than as a softer qualification
-- [ ] Commit, staging only `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md` by explicit file list
+- [x] Read `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md` findings 5 and 6 in full, so the correction is written against the current text *(completed)*
+- [x] Append a clearly-delimited, dated amendment note to finding 5 (or at the end of the findings section if finding 5's bounds are not cleanly delimited) recording the correction: indexing witnesses by (walk already in the set, time, diamond subformula) does **not** yield a countable closure for `▷`/`◁`, because the induction must hold at **every** walk of the sub-digraph and the sub-digraph has uncountably many walks — which is exactly the gap finding 6 names. Label *derived* *(completed)*
+- [x] In that note, state the mechanism of the contrast rather than only the verdict: the L⁺ repair works because `⊡`'s quantifier class is determined by a *world state* (compiled `stab_state_only`) and `□`'s by *nothing* (compiled `box_global`), and the state carrier is what is being made countable; for `▷` the determining object is an entire backward ray (`AgreeUpTo τ σ t` is agreement at every time `≤ t`), and the backward rays of a countable oriented forest are in general of size continuum *(completed)*
+- [x] In that note, preserve what does survive: `▷`/`◁` still ride step 4's encoding (finding 3's `⊑` clauses, confirmed by this task's finding 4, now with the `¬Rt(meet(y, x))` guard) and still ride the cover step (finding 4). What they have **no** analogue of is the countable-model step, so L^▷ decidability at ZTime is *not* obtained *(completed)*
+- [x] In that note, state that a repair would need a countable-model argument of a different kind — an elementary-submodel or Hintikka-type/mosaic argument replacing the ray by a finite type — and that this is a research project, not an amendment. Add the pointer to this task's report finding 10 *(completed)*
+- [x] Re-read the amended region and confirm nothing added asserts L^▷ ZTime decidability, and that the correction is stated as a correction rather than as a softer qualification *(completed)*
+- [x] Commit, staging only `specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md` by explicit file list *(completed)*
 
 **Timing**: 25 minutes
 

@@ -231,6 +231,48 @@ the witness walk's states to `G'` is exactly what makes it survive, and for `▷
 states below `x` are already present, since it shares `τ`'s past. So the open modals need nothing
 structurally new at step 1 — just more witnesses.
 
+> **Amendment (2026-11-05; corrects this finding's countability claim for `▷`/`◁`; derived).**
+> The "countability survives the loss" paragraph above is **wrong**, and the error is itself an
+> instance of gap (G1) in finding 6 immediately below. Full derivation in
+> `specs/878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md`
+> (hereafter "report 878"), finding 10.
+>
+> - **The verdict.** Indexing witnesses by (walk already in the set, time in `ℤ`, diamond
+>   subformula) does **not** give a countable-model step for `▷`/`◁`. The induction this
+>   section's step 1 needs must hold at **every** walk of the induced sub-digraph `G'`, not only
+>   at the designated, closed-under-witnesses set — that scope requirement is exactly gap (G1)
+>   below — and the sub-digraph has, in general, uncountably many walks. An ω-iteration of a
+>   countable-to-countable closure *on the set of walks already indexed* is indeed countable, but
+>   that is not the same claim as "the induction holds at every walk of `G'`", and the gap between
+>   the two is (G1) itself. This paragraph's reasoning walks into the gap its own finding 6 names,
+>   rather than avoiding it.
+> - **The mechanism, and why `⊡`/`□` are unaffected.** L⁺'s repair (report 878 finding 2) works
+>   because the object that determines a universal modal's quantifier range is itself something
+>   *being made countable* by the closure: for `⊡` that object is a single world state (compiled
+>   `PlusTruth.stab_state_only`), and the closure runs over states, which is exactly the carrier
+>   being cut down; for `□` it is nothing at all (compiled `PlusTruth.box_global`), and finitely
+>   many global witnesses suffice. For `▷` the determining object is an entire **backward ray**:
+>   a falsifying witness for `▷ψ` at `(τ, x)` must agree with `τ` at every time `≤ x`
+>   (`AgreeUpTo τ σ t` is agreement at every time `≤ t`), so it is a function of `τ`'s whole past
+>   below `x`, not of the state `τ(x)`. The set of backward rays of a countable oriented forest is,
+>   in general, of size continuum — indexing witnesses by "walk already in the set" does not make
+>   that set of rays countable; it only pushes the same cardinality question into the index.
+> - **What survives.** `▷`/`◁` still ride step 4's MSO encoding — finding 3's `⊑` clauses above,
+>   confirmed by report 878 finding 4, now stated with the load-bearing `¬Rt(meet(y, x))` guard —
+>   and still ride the cover step (finding 4 below). What they have **no** analogue of is the
+>   countable-model step. **L^▷ decidability at ZTime is therefore not obtained by this
+>   argument.**
+> - **What a repair would need.** Not more witnesses of the same kind, but a countable-model
+>   argument of a different kind — an elementary-submodel argument, or a Hintikka-type/mosaic
+>   construction that replaces an entire backward ray by a finite type capturing everything the
+>   logic can detect about it. That is a research project, not an amendment to this report; per
+>   the dispatch that produced report 878, the verdict stops here.
+>
+> This amendment corrects the paragraph above as a **correction**, not as a softer qualification:
+> the prior text's conclusion ("countability survives the loss... What is lost is only the
+> economy") is withdrawn for `▷`/`◁`, not merely narrowed. It asserts no positive claim about
+> `▷`/`◁` and establishes no result at Base, Dense or RTime.
+
 ### 6. Two pre-existing gaps in section 1.3, neither open-modal-specific (derived)
 
 Found while checking the argument; recorded rather than repaired, since the dispatch's deliverable
