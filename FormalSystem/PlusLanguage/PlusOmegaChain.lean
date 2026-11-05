@@ -55,6 +55,7 @@ consumer of `omega_chain` is thereby `.ZTime`-scoped, which is why
 - `marker_mono` — a strictly increasing `ℕ`-indexed sequence in a preorder is monotone
 - `marker_agree_add` — agreement up to `c k` propagates to every later stage
 - `omega_limit` — the ω-limit-of-splices principle, class-generic under cofinality
+- `int_marker_add_le` — a strictly increasing `ℕ`-indexed sequence in `ℤ` dominates its index
 - `intOrder_omega_cofinal` — the `ℤ` discharge of the cofinality hypothesis
 - `stg_step` — one splice: a stage at `i` yields a stage at `i + 1` with a strictly larger
   marker, agreeing with its predecessor up to the old marker
@@ -161,5 +162,126 @@ theorem omega_limit [F.IsRegular] {τ : ℕ → WorldHistory F} {c : ℕ → F.D
     rw [key _ s hs, key _ t ht]
     exact (τ (max (idx s) (idx t))).respects_task s t
   exact ⟨WorldHistory.ofTotal F (fun x => (τ (idx x)).state x) hrel, fun k x hx => key k x hx⟩
+
+/-! ## The `ℤ` discharge of the cofinality hypothesis -/
+
+/--
+**A strictly increasing `ℕ`-indexed sequence in `ℤ` dominates its own index.**
+
+The arithmetic step behind cofinality over `ℤ`: each successor advances the sequence by at least
+one, so after `k` steps it has advanced by at least `k`. This is exactly what has no counterpart
+over a dense order, where the increments may be summable.
+-/
+theorem int_marker_add_le {c : ℕ → ℤ} (hc : ∀ k, c k < c (k + 1)) (k : ℕ) : c 0 + k ≤ c k := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    have := hc k
+    push_cast
+    omega
+
+/--
+**A strictly increasing `ℕ`-indexed sequence in `ℤ` is cofinal.**
+
+This is the only discharge of `omega_limit`/`omega_chain`'s cofinality hypothesis available
+today, and it is **false over a dense temporal order**: a strictly increasing sequence in a dense
+totally ordered abelian group may converge, leaving every term below some bound. Every consumer
+of `omega_chain` that reaches validity through this lemma is therefore `.ZTime`-scoped and cannot
+be lifted to `.Base` by any reshuffling of the ω-chain argument.
+-/
+theorem intOrder_omega_cofinal (c : ℕ → ℤ) (hc : ∀ k, c k < c (k + 1)) (x : ℤ) :
+    ∃ k, x ≤ c k := by
+  refine ⟨(x - c 0).toNat, ?_⟩
+  have := int_marker_add_le hc (x - c 0).toNat
+  omega
+
+/-! ## The splice stage -/
+
+/--
+**A stage of the chain**: a world history through the state `w` at the time `t`, together with a
+marker at or after `t` at whose state the `i`-th member of the recurrence family holds.
+
+`A` is a predicate on a **time and a world state**, not a formula. That is the probe's own
+binder bundle and it is what makes the splice sound: `stg_step` pastes a continuation onto the
+current stage at its marker, which replaces the history strictly *before* the new marker, so only
+a condition reading the time and the state there survives the paste. A formula-valued family
+would need a state-locality side condition to say the same thing, and the instantiation this
+module exists to serve (`PlusLCSchema.lean`'s `A k s v := ⟐α_k` at `v`, `s`) is state-local by
+construction because `⟐` is.
+-/
+structure Stg (F : TaskFrame) (w : F.WorldState) (t : F.Duration)
+    (A : ℕ → F.Duration → F.WorldState → Prop) (i : ℕ) where
+  /-- The stage's world history. -/
+  hist : WorldHistory F
+  /-- The stage's marker. -/
+  mark : F.Duration
+  /-- The history passes through `w` at `t`. -/
+  thru : hist.state t = w
+  /-- The marker is at or after the time of evaluation. -/
+  le : t ≤ mark
+  /-- The `i`-th recurrence holds at the marker's state. -/
+  hA : A i mark (hist.state mark)
+
+/--
+**One splice.** A stage at index `i` yields a stage at `i + 1` with a strictly larger marker,
+agreeing with its predecessor everywhere at or below the old marker.
+
+The construction is `PlusPasting.paste` and nothing else: the continuation `η` shares the
+stage's state at the old marker, `paste_agreeUpTo` keeps the passage through `w` at `t`, and
+`paste_agreeFrom` carries the new recurrence from `η` to the pasted history at the new marker.
+-/
+theorem stg_step [F.IsRegular] {w : F.WorldState} {t : F.Duration}
+    {A : ℕ → F.Duration → F.WorldState → Prop}
+    (H : ∀ (ρ : WorldHistory F), ρ.state t = w → ∀ k s, t ≤ s → A k s (ρ.state s) →
+      ∃ (η : WorldHistory F) (s' : F.Duration), η.state s = ρ.state s ∧ s < s' ∧
+        A (k + 1) s' (η.state s'))
+    {i : ℕ} (x : Stg F w t A i) :
+    ∃ y : Stg F w t A (i + 1), x.mark < y.mark ∧
+      ∀ z, z ≤ x.mark → y.hist.state z = x.hist.state z := by
+  obtain ⟨η, s', he, hlt, hA'⟩ := H x.hist x.thru i x.mark x.le x.hA
+  have hsame : x.hist.state x.mark = η.state x.mark := he.symm
+  have hup := paste_agreeUpTo x.hist η x.mark hsame
+  have hfrom := paste_agreeFrom x.hist η x.mark hsame
+  refine ⟨⟨paste x.hist η x.mark hsame, s', ?_, le_trans x.le hlt.le, ?_⟩, hlt, hup⟩
+  · rw [hup t x.le]; exact x.thru
+  · rw [hfrom s' hlt.le]; exact hA'
+
+/-! ## The ω-chain -/
+
+/--
+**ω-chain principle.** If every `A k`-point on a world history through `σ`'s state at `t` can be
+continued, by a splice, to a later `A (k + 1)`-point, then **one** world history through that
+same state realises the whole sequence at a strictly increasing sequence of markers.
+
+The cofinality hypothesis `hcof` is the single binder at which the `ℤ`-dependence of every
+consumer is isolated; `intOrder_omega_cofinal` is its only available discharge today, so every
+validity reached through this lemma lands at `.ZTime` and not at `.Base`.
+
+`Nat.rec` over `Exists.choose` builds the chain, so this carries `Classical.choice` — the tree's
+standard `pcq` profile.
+-/
+theorem omega_chain [F.IsRegular] (σ : WorldHistory F) (t : F.Duration)
+    (A : ℕ → F.Duration → F.WorldState → Prop)
+    (hcof : ∀ c : ℕ → F.Duration, (∀ k, c k < c (k + 1)) → ∀ x : F.Duration, ∃ k, x ≤ c k)
+    (hstart : ∃ (ρ : WorldHistory F) (s : F.Duration),
+      ρ.state t = σ.state t ∧ t ≤ s ∧ A 0 s (ρ.state s))
+    (hstep : ∀ (ρ : WorldHistory F), ρ.state t = σ.state t → ∀ k s, t ≤ s → A k s (ρ.state s) →
+      ∃ (η : WorldHistory F) (s' : F.Duration), η.state s = ρ.state s ∧ s < s' ∧
+        A (k + 1) s' (η.state s')) :
+    ∃ (ρ : WorldHistory F) (c : ℕ → F.Duration), ρ.state t = σ.state t ∧
+      (∀ k, c k < c (k + 1)) ∧ (∀ k, t ≤ c k ∧ A k (c k) (ρ.state (c k))) := by
+  classical
+  obtain ⟨ρ₀, s₀, h0w, h0s, h0A⟩ := hstart
+  let chain : (k : ℕ) → Stg F (σ.state t) t A k := fun k =>
+    Nat.rec (motive := fun k => Stg F (σ.state t) t A k) ⟨ρ₀, s₀, h0w, h0s, h0A⟩
+      (fun _ x => (stg_step hstep x).choose) k
+  have hstg : ∀ k, (chain k).mark < (chain (k + 1)).mark ∧
+      ∀ z, z ≤ (chain k).mark → (chain (k + 1)).hist.state z = (chain k).hist.state z :=
+    fun k => (stg_step hstep (chain k)).choose_spec
+  obtain ⟨lim, hlag⟩ := omega_limit (τ := fun k => (chain k).hist) (c := fun k => (chain k).mark)
+    (fun k => (hstg k).1) (hcof _ fun k => (hstg k).1) (fun k x hx => (hstg k).2 x hx)
+  refine ⟨lim, fun k => (chain k).mark, ?_, fun k => (hstg k).1, fun k => ⟨(chain k).le, ?_⟩⟩
+  · rw [hlag 0 t (chain 0).le]; exact (chain 0).thru
+  · rw [hlag k _ le_rfl]; exact (chain k).hA
 
 end FormalSystem.PlusLanguage

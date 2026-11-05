@@ -265,30 +265,30 @@ only, changing no symbol's name, type or arity.
 
 ---
 
-### Phase 3: The splice stage and ω-chain [NOT STARTED]
+### Phase 3: The splice stage and ω-chain [COMPLETED]
 
 **Goal**: Land the splice bundle and the iteration that consumes `omega_limit`, plus the ℤ
 discharge of the cofinality hypothesis, in the same module.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/PlusLanguage/PlusOmegaChain.lean` as Phase 2 left it.
-- [ ] Port the splice stage from probe lines 651-679: the stage bundle (probe `Stg`) and the
+- [x] Re-read `FormalSystem/PlusLanguage/PlusOmegaChain.lean` as Phase 2 left it.
+- [x] Port the splice stage from probe lines 651-679: the stage bundle (probe `Stg`) and the
       one-step splice (probe `stg_step`), which pastes the continuation onto the current stage at
       its marker and produces a later stage with a strictly larger marker. Reuse
       `PlusPasting.paste` with `paste_agreeFrom` and `paste_agreeUpTo`; introduce no second
       pasting operator.
-- [ ] Port `omega_chain` (probe line 681) at the Challenge signature below: iterate the splice by
+- [x] Port `omega_chain` (probe line 681) at the Challenge signature below: iterate the splice by
       `Nat.rec` with `Exists.choose`, then take the `omega_limit`. Keep the cofinality hypothesis
       as an explicit binder rather than hard-wiring `intOrder`, so the ℤ-dependence stays visible
       at exactly one place and the kernel remains reusable if the dense case is ever settled.
-- [ ] Land `intOrder_omega_cofinal` at the Challenge signature below: a strictly increasing
+- [x] Land `intOrder_omega_cofinal` at the Challenge signature below: a strictly increasing
       `ℕ`-indexed sequence in `ℤ` is cofinal (the probe's `c 0 + k ≤ c k` route).
-- [ ] Record in the module docstring that `intOrder_omega_cofinal` is the only discharge of the
+- [x] Record in the module docstring that `intOrder_omega_cofinal` is the only discharge of the
       cofinality hypothesis available today, and that it is false over a dense temporal order —
       so every consumer of `omega_chain` is thereby `.ZTime`-scoped.
-- [ ] Note in the docstring that `Nat.rec` plus `choose` introduces `Classical.choice`, which is
+- [x] Note in the docstring that `Nat.rec` plus `choose` introduces `Classical.choice`, which is
       the tree's standard `pcq` profile.
-- [ ] Guarded scoped build green, zero `sorry`, no vacuous definition.
+- [x] Guarded scoped build green, zero `sorry`, no vacuous definition.
 
 **Timing**: 1.5 hours
 
