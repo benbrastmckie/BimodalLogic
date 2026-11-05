@@ -1176,33 +1176,33 @@ baseline was measured by `#print axioms` against the built tree in the same run.
 
 ---
 
-### Phase 15: Full Gate Sweep and Commit [NOT STARTED]
+### Phase 15: Full Gate Sweep and Commit [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The complete gate set is green against its pre-task baselines, with zero `sorry`, zero
 vacuous definitions and no new axiom beyond what the landed eliminations already carry.
 
 **Tasks**:
 
-- [ ] Guarded **scoped** build of the subtree aggregator:
+- [x] Guarded **scoped** build of the subtree aggregator:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Expressiveness`.
-- [ ] Guarded **unscoped** build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`.
+- [x] Guarded **unscoped** build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`.
       Detach as a shell-level background job and block on it with the bounded single-call idiom
       (`context/patterns/bounded-build-waiter.md`); never `Bash(run_in_background: true)`.
-- [ ] `bash scripts/check-module-invariants.sh` -- green against its pre-task baseline, including
+- [x] `bash scripts/check-module-invariants.sh` -- green against its pre-task baseline, including
       C14, both C15 assertions, C19, C23, C24, C26, C28, C29, C30, C31, C32 and C33.
-- [ ] `bash scripts/check-metalogic-cycles.sh` -- green, all three assertions PASS. It was green
+- [x] `bash scripts/check-metalogic-cycles.sh` -- green, all three assertions PASS. It was green
       before this task and no new module imports a `FormalSystem.Metalogic.<other>` subdirectory,
       so no perturbation of assertion A or B is expected; a failure means that constraint was
       broken and the offending import must be removed.
-- [ ] `bash .claude/scripts/verify-deploy.sh` -- the complete gate set this repository aggregates.
-- [ ] Zero-debt sweep: `grep -rn 'sorry' ` over every changed `.lean` file returns nothing, and no
+- [ ] `bash .claude/scripts/verify-deploy.sh` -- the complete gate set this repository aggregates. *(deviation: deferred — discharged against this dispatch's scoped verification tier per its Batch Gate Deferral directive; no gate of that script maps to this task's touched paths, so the repository's own Lean and documentation gate set was run in full instead)*
+- [x] Zero-debt sweep: `grep -rn 'sorry' ` over every changed `.lean` file returns nothing, and no
       added declaration matches a prohibited vacuous shape (`:= True`, `:= trivial`, `:= Unit`,
       `:= Trivial`).
-- [ ] Confirm no added declaration carries `noncomputable`, in particular `sep`, `sepZ` and `trZ`.
-- [ ] Re-measure every axiom profile and confirm no new axiom beyond `[propext, Classical.choice,
+- [x] Confirm no added declaration carries `noncomputable`, in particular `sep`, `sepZ` and `trZ`.
+- [x] Re-measure every axiom profile and confirm no new axiom beyond `[propext, Classical.choice,
       Quot.sound]`, the ceiling the landed eliminations already carry. A profile exceeding it is a
       finding to report, not to baseline.
-- [ ] Commit with explicit per-file staging (`git add -- <path> ...`), never a directory or glob,
+- [x] Commit with explicit per-file staging (`git add -- <path> ...`), never a directory or glob,
       reviewing `git status --short` and `git diff --staged` first. If a foreign commit or foreign
       uncommitted modification is visible, STOP and report after checking `git log`.
 
@@ -1226,6 +1226,21 @@ vacuous definitions and no new axiom beyond what the landed eliminations already
 - No added declaration is `noncomputable`.
 - Every axiom profile measured in this same run, none exceeding the pre-task ceiling.
 - `git log` confirms exactly this task's commits and that no foreign work was staged.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash .claude/scripts/verify-deploy.sh` — the complete aggregated gate set | Deferred to the batch stage under this dispatch's Batch Gate Deferral directive, which replaces the phase's declared `full` tier with a narrowing invocation for this one dispatch. No gate of that script and no suite of `run-all.sh` maps to this task's touched paths: the script compares the deployed `.claude/` tree against the source store and references neither `check-module-invariants.sh`, `readme-lint.sh`, `docs/theorem-index.md` nor `lake build`. The repository's own Lean and documentation gate set was therefore run in full in its place. Deferred, never forgiven. | `grep -n 'check-module-invariants\|readme-lint\|theorem-index\|lake build' .claude/scripts/verify-deploy.sh` returns nothing; the dispatch's own deploy-freshness context separately records the deployed tree as stale for `core` and `literature`, independently of this task |
+| `check-module-invariants.sh` green on **C16** | One `unusedArguments` finding on `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136` (`mem_cellAt_of_shift_of_hasForwardSlack`, argument 23). That file was last modified 2026-11-03, two days before this task's first commit, and is in no part of this task's file set. A **pre-existing** failure, reported rather than baselined — `lake exe runLinter --update` would grandfather it and is not run. | `git log -1 --date=short -- FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` → `ea08629d8 2026-11-03 task 850 phase 7` |
+| C14 re-measurement of the seven contract declarations | None exists; see Phases 12 and 13. The 19 declarations that did land were re-measured in this same run and all sit at or below the pre-task ceiling `[propext, Classical.choice, Quot.sound]`. | `PASS C14  every pinned declaration matches its axiom baseline` |
+
+Every other item of this phase ran and is green: the scoped aggregator build, the test-library
+build, the guarded unscoped `lake build` (with an `.olean`-newer-than-source check for every
+touched module), `check-metalogic-cycles.sh` (all three assertions), `readme-lint.sh`,
+`check-copyright-headers.sh --strict`, `typst-sync-check.sh --counts-only`, the zero-sorry and
+zero-vacuous sweeps, and the no-`noncomputable` confirmation.
+
 
 ## Testing & Validation
 

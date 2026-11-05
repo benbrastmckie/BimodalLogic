@@ -1,15 +1,22 @@
 {
-  "status": "planned",
-  "dispatch_seq": 6,
-  "phases_completed": 0,
+  "dispatch_seq": 7,
+  "status": "partial",
+  "phases_completed": 8,
   "phases_total": 15,
-  "summary": "Wrote a 15-phase, 27-hour implementation plan discharging SeparationOver TaskFrame.IsZTime via a new FormalSystem/Metalogic/Expressiveness/SeparationZ/ subtree built on an auxiliary until/since syntax over abstract leaf predicates, not on PlusFormula directly. All seven pinned Lean Challenge Statements were compile-verified at plan time (lean-challenge-snapshot.sh --dry-run --compile reported compile: OK). Phase 5 is a decision gate probing the reconstructed GHR 10.2.3 Cases 5-8 on concrete integer models before Phase 7 proves them, with an explicit COMPLETED WITH EXCLUSIONS contingency for that gate and for the Phase 11 junction-depth strict decrease.",
-  "blockers": [],
+  "summary": "Phases 1-6 and 14-15 of the fifteen-phase plan landed sorry-free and gate-green: a new SeparationZ/ subtree with the auxiliary until/since syntax over abstract leaves, the one seam to PlusFormula, GHR Lemmas 10.2.1 and 10.2.2 in full, and GHR 10.2.3's four single-sign cases with their separatedness discharged. Phase 5's decision gate measured 1 of 4 against a criterion of 4 of 4 — a Case 5 candidate is pinned and survives three probe models including the one refuting GHR's printed formula, but Cases 6-8 yielded none — so the plan's primary contingency closed Phases 7-13 with exclusions. The headline deliverable separationOver_ztime is NOT discharged and no tr row changed.",
+  "blockers": [
+    "GHR Lemma 10.2.3 Cases 6, 7 and 8 have no candidate right-hand side. Their guard-failure condition is an exists-forall over the window below the evaluation point, and re-anchoring it at its rightmost witness retains a forward-looking bounded conjunct that cannot be an S-guard; the negation route between Cases 5 and 8 is circular. GHR 10.2.4 consumes all eight cases, so Theorem 10.2.9 and every deliverable resting on it are unreachable without them. Recorded in specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean's ## Gate measurement and in the plan's Phase 5 #### Reasoned Exclusions."
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/867_formalize_gabbay_separation_ztime/plans/01_gabbay-separation-ztime-plusformula.md",
-      "summary": "15-phase plan for GHR 10.2.1-10.2.9 over ZTime, the discharge of SeparationOver, and a computable trZ."
+      "type": "summary",
+      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/01_gabbay-separation-ztime-plusformula-summary.md",
+      "summary": "Implementation summary: what landed, the gate verdict, the located obstruction, and the follow-ups."
+    },
+    {
+      "type": "prototype",
+      "path": "specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean",
+      "summary": "Phase 5's decision-gate prototype: the pinned Case 5 candidate, its derivation, and six compiled probe theorems over three Z models."
     }
   ]
 }
