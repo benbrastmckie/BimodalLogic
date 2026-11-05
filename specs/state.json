@@ -4,8 +4,562 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 878,
+  "next_project_number": 881,
   "active_projects": [
+    {
+      "project_number": 880,
+      "project_name": "reposition_open_language_docs_and_logos_reading",
+      "status": "not_started",
+      "task_type": "markdown",
+      "title": "Reposition L^▷ in the READMEs and record the Logos reading of the stability modal",
+      "description": "Reposition L^▷ in the prose surfaces as an extension under exploration, with L-plus as the front, and record the Logos reading of the stability modal. Markdown only; no `.lean` edits. Not to be entered before task 856 completes, since its final phase edits the same README surfaces.\n\nWHAT TO CHANGE.\n(1) `FormalSystem/OpenLanguage/README.md`: correct every place it contradicts the tree -- the transfer-ledger report specs/872_open_language_transfer_ledger/reports/01_open-language-transfer-ledger.md, finding \"OpenLanguage/README.md now contradicts the tree\", enumerates them; re-verify each against the tree before editing. Present L^▷ as what it is: a sound proof system, conservative over TM-plus in both directions, with the definability split by frame class and no completeness claim.\n(2) `FormalSystem/Metalogic/Conservativity/Open/README.md`, `FormalSystem/Metalogic/README.md` and the top-level `README.md`: wherever L^▷ is presented as the end state or L-plus as an internal layer, state instead that completeness and decidability are pursued for L-plus and that L^▷ inherits results at ZTime and RTime by translation.\n(3) `FormalSystem/PlusLanguage/README.md`: add a short section giving the Logos reading. In the Logos theory (`~/Projects/Logos/Theory/typst/manual/chapters/03-dynamics.typ`), necessity is the counterfactual with antecedent top, which every state verifies, and stability is equivalent to the counterfactual whose antecedent is verified by the null state alone (the negation of bottom, or any true identity). So L-plus is the fragment of counterfactuals with trivial constitutive antecedents. The open-future and open-past modals correspond to trivial tensed antecedents and need the event-level clause. State this as a reading of the manual's clauses, not as a formalized theorem.\n\nCONSTRAINTS. Deliverables state the current design only: no task numbers and no draft-history language outside specs/. Do not hand-edit inside `BEGIN GENERATED` inventory blocks. Run the bare `scripts/check-module-invariants.sh` afterwards and leave it green.",
+      "topic": "documentation",
+      "priority": "medium",
+      "dependencies": [
+        856
+      ],
+      "created": "2026-11-05T18:25:05Z",
+      "last_updated": "2026-11-05T18:25:05Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "reposition_open_language_docs_and_logos_reading",
+          "project_number": null,
+          "title": "Reposition L^▷ in the READMEs and record the Logos reading of the stability modal"
+        },
+        "verdicts": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 827,
+            "project_name": "plan_self_consistency_and_artifact_existence",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4028776978417266
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4748201438848921
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 833,
+            "project_name": "stab_definable_from_open_modals",
+            "discharging_artifact": {
+              "path": "specs/833_stab_definable_from_open_modals/summaries/01_stab-definable-from-open-modals-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the six landed declarations, the three documentation surfaces, the full verification record, and the two generator-owned-file deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4316546762589928
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 737,
+            "project_name": "discharge_presents_mso_reduction_seam_summary",
+            "discharging_artifact": {
+              "path": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+              "type": "summary",
+              "summary": "Field-by-field verdict, what landed where, measured axiom profiles, the B1-B4 residue (CARRIED-UNVERIFIED costs), and the recommendation to re-point the assembly record at Hit."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4028776978417266
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4460431654676259
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.460431654676259
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 562,
+            "project_name": "sync_language_names_with_paper_l_minus_plus_star",
+            "discharging_artifact": {
+              "path": "specs/562_sync_language_names_with_paper_l_minus_plus_star/plans/01_sync-language-names-paper.md",
+              "type": "plan",
+              "summary": "12-phase plan for the L/L-minus/L-plus/L-star rename sweep: inventory, two structural+declaration rename chains, tm-family split, three prose waves, paper-record re-pin, dependent-task rewording, and a full check-module-invariants gate."
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.41007194244604317
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 486,
+            "project_name": "docs_overhaul_deletions_links_gaps_and_drift_guard",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/summaries/01_docs-overhaul-summary.md",
+              "summary": "Implementation summary",
+              "created": "2026-08-25T22:55:27Z"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4028776978417266
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4748201438848921
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 467,
+            "project_name": "update_decidability_readme",
+            "discharging_artifact": {
+              "path": "specs/467_update_decidability_readme/summaries/01_decidability-readme-alignment-summary.md",
+              "type": "summary",
+              "summary": "Full 6-phase execution summary with per-phase changes, two plan deviations, and the Verified/README.md staleness follow-up."
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.6
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5755395683453237
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5251798561151079
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 414,
+            "project_name": "refactor_semantics_to_total_history_validity",
+            "discharging_artifact": {
+              "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/09_phase29-2-preguard-differential-rebaseline.md",
+              "type": "summary",
+              "summary": "Phase 29.2: pre-guard differential obtained (P0=edcecd551^, P1, P2=HEAD) via non-destructive worktree; BimodalTest mismatches 40 -> 7; 33 rows re-baselined with measured attribution to trivialEventWitnessed; the declared ten pre-existing mismatches confirmed correct and identified at row level for the first time; 7 residual rows owned by an out-of-task 2026-07-29 engine change."
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4316546762589928
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations": [],
+        "scope_blind_collapsed": 450,
+        "scope_blind_degradations_collapsed": 450
+      }
+    },
+    {
+      "project_number": 879,
+      "project_name": "lplus_ztime_completeness_tm_plus_lc_programme",
+      "status": "not_started",
+      "task_type": "formal",
+      "title": "Own the L-plus ZTime completeness programme for TM-plus with the limit-closure schema",
+      "description": "RESEARCH TASK, and the owner of a programme that again has no owner: is TM-plus extended by the limit-closure schema LC_n complete for L-plus validity at ZTime? Report only; no change under `FormalSystem/` or `Tests/`.\n\nWHY THIS EXISTS. The aim of the repository is completeness and decidability of the stability-modal language L-plus (specs/ROADMAP.md). Task 559 completed as a narrowed task (the naming-rule soundness toolkit only) and task 865 completed as research with two corrective successors, 870 and 871, and no successor owning the completeness question itself. The standing facts: TM-plus is incomplete at Base (`plus_incomplete_base`); LC_n is valid at ZTime for every n >= 1 (`lcN_plusValidZTime`); completeness of any recursive extension of TM-plus is open at every frame class.\n\nWHAT IS ALREADY ESTABLISHED AND MUST NOT BE REDONE. specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md: a doubled (two one-sided, clock-anchored) automaton pair is sufficient in shape, conditional on `SeparationOver TaskFrame.IsZTime` (task 867); the binding obstruction is the Auxiliary-Atoms carrier, proved intrinsic, so the two-layer shape of `coneR` and its Saturation obligation are forced; a layer-split route to that obligation is given whose one missing ingredient is oriented-forest Saturation (task 870). From task 559's record: the binding obstruction on the completeness front is closedness of the canonical bundle, and the cure of record is LC_n plus progress measures in the state. Re-verify every declaration name against the tree before citing it.\n\nWHAT TO DELIVER.\n(1) The target theorem as a precise statement: weak completeness at ZTime of TM-plus together with the LC_n schema (and backward LC_n, which task 871 states as a corollary), written as a Lean proposition that is stated and not proved.\n(2) The proof architecture end to end: canonical-bundle closedness from LC_n with progress measures; the doubled Auxiliary-Atoms rule over the layer-split carrier; and the exact point at which separation is consumed.\n(3) An ingredient table: each lemma the architecture needs, marked landed, owned by a named task, or missing. File each missing ingredient as its own implementation task through the backlog audit.\n(4) A go/no-go verdict. A located obstruction, stated precisely, is a complete outcome.\n\nSEQUENCING AND SCOPE. The standing ruling is decidability before completeness: if the ZTime decidability paper proof lands, Craig gives a recursive axiomatization at the level of existence and this question sharpens to whether the natural one works. ZTime only; Base, Dense and RTime are out of scope. L^▷ is out of scope: at ZTime and RTime its completeness transfers from L-plus through the landed conditional corollaries, and it is a secondary line of investigation.",
+      "topic": "completeness",
+      "priority": "medium",
+      "dependencies": [
+        870,
+        871,
+        867
+      ],
+      "created": "2026-11-05T18:24:47Z",
+      "last_updated": "2026-11-05T18:24:47Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "lplus_ztime_completeness_tm_plus_lc_programme",
+          "project_number": null,
+          "title": "Own the L-plus ZTime completeness programme for TM-plus with the limit-closure schema"
+        },
+        "verdicts": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 430,
+            "project_name": "semantic_lift_and_track_a_assembly_valid_iff_allclosed",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.41818181818181815
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 871,
+            "project_name": "lcu_omega_chain_record_repair",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.42028985507246375
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 865,
+            "project_name": "tm_plus_lc_axiomatization_and_automaton_obstruction",
+            "discharging_artifact": {
+              "path": "specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/summaries/01_lc-axiomatization-automaton-obstruction-summary.md",
+              "type": "summary",
+              "summary": "Close-out record: report verdict recap, the ZTime amendment, the Component 7 confirmation table for projects 870/871, and why R3/R4 were not filed."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4303030303030303
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 746,
+            "project_name": "hit_level_soundness_realize_presentation_b2b",
+            "discharging_artifact": {
+              "path": "specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md",
+              "type": "plan",
+              "summary": "8 phases, 6 waves, 14 hours: Cons (untl half transcribed from a compiled probe, snce mirror proved outright), modelOf via ofSlicedStep on W := Q, presented_modelOf through eq_clTrace_of_localRun_anchored, and the Hit-level corollary, with 8 Challenge-pinned signatures."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.40606060606060607
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 737,
+            "project_name": "discharge_presents_mso_reduction_seam_summary",
+            "discharging_artifact": {
+              "path": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+              "type": "summary",
+              "summary": "Field-by-field verdict, what landed where, measured axiom profiles, the B1-B4 residue (CARRIED-UNVERIFIED costs), and the recommendation to re-point the assembly record at Hit."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.42424242424242425
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 719,
+            "project_name": "ray_layer_seam_gluing_and_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/summaries/01_ray-layer-seam-gluing-stab-fibre-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the two new modules, the four pinned keystone axiom rows, the measured pre-edit gate baseline, the recorded verdicts, the wired E1 probe, and five annotated plan deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4303030303030303
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5696969696969697
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 710,
+            "project_name": "sliced_class_incompleteness_characterization",
+            "discharging_artifact": {
+              "path": "specs/710_sliced_class_incompleteness_characterization/summaries/01_land-finite-width-refutation-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for the nine-phase library landing of the finite-width refutation."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4121212121212121
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4727272727272727
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5212121212121212
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5515151515151515
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4909090909090909
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 414,
+            "project_name": "refactor_semantics_to_total_history_validity",
+            "discharging_artifact": {
+              "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/09_phase29-2-preguard-differential-rebaseline.md",
+              "type": "summary",
+              "summary": "Phase 29.2: pre-guard differential obtained (P0=edcecd551^, P1, P2=HEAD) via non-destructive worktree; BimodalTest mismatches 40 -> 7; 33 rows re-baselined with measured attribution to trivialEventWitnessed; the declared ten pre-existing mismatches confirmed correct and identified at row level for the first time; 7 residual rows owned by an out-of-task 2026-07-29 engine change."
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4303030303030303
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations": [],
+        "scope_blind_collapsed": 452,
+        "scope_blind_degradations_collapsed": 452
+      }
+    },
+    {
+      "project_number": 878,
+      "project_name": "lplus_ztime_decidability_paper_proof_repair",
+      "status": "not_started",
+      "task_type": "formal",
+      "title": "Make the paper proof of L-plus ZTime decidability rigorous",
+      "description": "RESEARCH TASK, paper-level and high-value: make the paper proof that L-plus validity at ZTime is decidable rigorous, as a self-contained written argument. Report only; no change under `FormalSystem/` or `Tests/`.\n\nWHY THIS EXISTS. The aim of the repository is completeness and decidability of the stability-modal language L-plus (specs/ROADMAP.md). The only argument that L-plus ZTime validity is decidable is the five-step MSO/Rabin paper argument in specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md section 1.3, and it is not yet a proof: specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md found two gaps that are already present for the stability modal, and report 03's own dated amendment records that the argument rests on a recalled, not held, theorem. The Lean front (the ladder engine) aims at a constructive `Decidable (PlusValidZTime phi)` and has hit repeated walls; a rigorous paper proof is the hedge, and it gives a citable theorem independent of that front.\n\nWHAT TO DELIVER. A report carrying the full argument, each step proved or cited to a held source.\n(1) REPAIR STEP 1, the countable-model step. Its induction needs witnesses at every walk of the sub-digraph, not only at the designated countable set. This is gap G1, the weakest link in the whole argument, and it is where the work starts.\n(2) REPAIR THE FOREST GAP. Step 3 yields a forest of countably many trees while step 5 applies Rabin's theorem to a single tree. Give the new-root coding explicitly and check that step 4's encoding survives it.\n(3) Replace every recalled citation by a held one, obtaining sources through the literature corpus, and state the exact form of Rabin's theorem that is used.\n(4) State the resulting theorem precisely, with its hypotheses, and state what it does NOT give: no constructive decision procedure, no complexity bound, nothing at Base, Dense or RTime.\n(5) Record whether Craig's observation then yields recursive axiomatizability of L-plus at ZTime at the level of existence, which report 03's amendment currently records as open.\n\nRELATION TO OTHER WORK. The cover step (step 2) consumes oriented-forest Saturation, which task 870 owns as a Lean lemma; cite it and do not reprove it. Formalizing this route in Lean is REFUSED by ruling (Mathlib has no MSO syntax, no omega-automata and no Rabin tree theorem) and this task must not propose it. The open-modal reading is secondary: 866 found that the open-future and open-past modals ride step 4's encoding at the cost of an amendment at step 1, so note in one paragraph whether the repaired step 1 still admits that amendment, and stop there. A verdict that a gap cannot be repaired, with the obstruction named, is a complete outcome.",
+      "topic": "decidability",
+      "priority": "high",
+      "dependencies": [],
+      "created": "2026-11-05T18:24:29Z",
+      "last_updated": "2026-11-05T18:24:29Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "lplus_ztime_decidability_paper_proof_repair",
+          "project_number": null,
+          "title": "Make the paper proof of L-plus ZTime decidability rigorous"
+        },
+        "verdicts": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 430,
+            "project_name": "semantic_lift_and_track_a_assembly_valid_iff_allclosed",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.42613636363636365
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 866,
+            "project_name": "mso_route_open_modals_ztime_decidability",
+            "discharging_artifact": {
+              "path": "specs/866_mso_route_open_modals_ztime_decidability/summaries/01_record-verdict-and-file-r1-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for the three-phase propagation (report 03 amendment, ROADMAP.md verdict/R1/R2, guardrail audit)."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4318181818181818
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 748,
+            "project_name": "revise_and_create_tasks_lplus_decidability",
+            "discharging_artifact": {
+              "path": "specs/748_revise_and_create_tasks_lplus_decidability/summaries/04_task-graph-revisions-and-roadmap-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for plan 03: four creations, two revisions, one subsumption close, and the roadmap hand-edit, with every deviation recorded."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4034090909090909
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 746,
+            "project_name": "hit_level_soundness_realize_presentation_b2b",
+            "discharging_artifact": {
+              "path": "specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md",
+              "type": "plan",
+              "summary": "8 phases, 6 waves, 14 hours: Cons (untl half transcribed from a compiled probe, snce mirror proved outright), modelOf via ofSlicedStep on W := Q, presented_modelOf through eq_clTrace_of_localRun_anchored, and the Hit-level corollary, with 8 Challenge-pinned signatures."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4090909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 737,
+            "project_name": "discharge_presents_mso_reduction_seam_summary",
+            "discharging_artifact": {
+              "path": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+              "type": "summary",
+              "summary": "Field-by-field verdict, what landed where, measured axiom profiles, the B1-B4 residue (CARRIED-UNVERIFIED costs), and the recommendation to re-point the assembly record at Hit."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.44886363636363635
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 711,
+            "project_name": "universal_summary_substrate_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/711_universal_summary_substrate_stab_fibre/summaries/02_buechi-chain-ktype-substrate-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for the Büchi-chain k-type summary substrate and seam interface."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4034090909090909
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 719,
+            "project_name": "ray_layer_seam_gluing_and_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/summaries/01_ray-layer-seam-gluing-stab-fibre-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the two new modules, the four pinned keystone axiom rows, the measured pre-edit gate baseline, the recorded verdicts, the wired E1 probe, and five annotated plan deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4715909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5681818181818182
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.44886363636363635
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.48863636363636365
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 440,
+            "project_name": "finite_frame_discharge_of_spherical_and_limit",
+            "discharging_artifact": {
+              "path": "specs/440_finite_frame_discharge_of_spherical_and_limit/plans/01_finite-spherical-discharge.md",
+              "type": "plan",
+              "summary": "5-phase plan for finite-frame discharge of spherical and limit obligations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4147727272727273
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5397727272727273
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.45454545454545453
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 414,
+            "project_name": "refactor_semantics_to_total_history_validity",
+            "discharging_artifact": {
+              "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/09_phase29-2-preguard-differential-rebaseline.md",
+              "type": "summary",
+              "summary": "Phase 29.2: pre-guard differential obtained (P0=edcecd551^, P1, P2=HEAD) via non-destructive worktree; BimodalTest mismatches 40 -> 7; 33 rows re-baselined with measured attribution to trivialEventWitnessed; the declared ten pre-existing mismatches confirmed correct and identified at row level for the first time; 7 residual rows owned by an out-of-task 2026-07-29 engine change."
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.44886363636363635
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations": [],
+        "scope_blind_collapsed": 452,
+        "scope_blind_degradations_collapsed": 452
+      }
+    },
     {
       "project_number": 868,
       "project_name": "open_language_transfer_corollaries",
@@ -53,10 +607,10 @@
       "project_name": "formalize_gabbay_separation_ztime",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "IMPLEMENTATION TASK, sizeable: formalize Gabbay separation over discrete time for PlusFormula, discharging the SeparationOver hypothesis and making the open-future translation executable.\n\nWHY NOW. This was proposed as recommendation R4 of specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md and deliberately NOT filed there, on the stated condition that it be filed \"only if a consumer needs the executable translation\". Two consumers now exist. First, FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean's two headline results, openValidIn_ztime_iff_tr and openValidIn_rtime_iff_tr, are conditional on SeparationOver -- a hypothesis standing for cited literature that this tree does not formalize -- so the unconditional verdict that the open-future modal is definable at ZTime and RTime lives only in that module's docstring with its citation, not in a pinned row. Second, any transfer of decidability through the translation needs tr to be computable, not merely to exist.\n\nWHAT TO FORMALIZE. GHR Lemmas 10.2.1 through 10.2.8 -- the eight eliminations plus the junction-depth induction -- for PlusFormula over frames satisfying IsZTime, discharging SeparationOver TaskFrame.IsZTime. The reference is Gabbay, Hodkinson and Reynolds, Theorem 10.2.9 over the integers; Theorem 10.3.20 is the Dedekind-complete counterpart and is the natural second target, not necessarily this task's.\n\nWHAT IS ALREADY LANDED AND MUST NOT BE REDONE. The elimination layer that CONSUMES separation is complete and compiled in OpenFutureElimination.lean: PastDet, FutDet, the syntactic bridges, OfutP and OpastP, the eliminations ofutP_or_iff and opastP_or_iff with their CNF forms ofutP_sepForm_iff and opastP_sepForm_iff, the SeparationOver predicate itself, tr, and the two validity-transfer results. This task supplies the hypothesis those results take; it does not restate them and must not weaken any of their signatures.\n\nSIZING, AND AN HONEST WARNING. Report 01 of task 854 rates this as a sorry-free path that EXISTS and is SIZEABLE, comparable to a multi-phase implementation round. Expect the junction-depth induction to be the expensive part. Before committing, weigh it against the MSO/Rabin decidability route, which reaches a decidability answer for the open language at ZTime with no translation at all -- if that route holds, this task's value is confined to making the definability verdict unconditional and to giving an executable tr, which is real but narrower than it looks.\n\nSCOPE. The separation development and the discharge of SeparationOver at IsZTime; the theorem-index rows that become unconditional as a result, restated from their conditional form; the re-measured axiom baselines. Do NOT touch FormalSystem/Metalogic/Independence/ -- the non-definability result at Base and Dense is a separate verdict and is unaffected, since separation does not hold there. Do not alter the metalogic-cycles allowlist.\n\nGATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the eliminations already carry. Guarded scoped build then unscoped; check-module-invariants.sh and check-metalogic-cycles.sh green against their pre-task baselines; every axiom profile measured, never hand-typed. If the development stalls, a precisely located obstruction -- which elimination resists formalization and why -- is a legitimate [COMPLETED WITH EXCLUSIONS] outcome.",
+      "description": "PRIORITY AND RATIONALE RULING (2026-11-05, user): this task STAYS on the L-plus path, sequenced AFTER the ZTime decidability front, and its consumers are re-ordered. FIRST consumer: the L-plus ZTime completeness programme -- the doubled (two one-sided, clock-anchored) automaton route located in specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md is sufficient in shape only conditional on `SeparationOver TaskFrame.IsZTime`, and the until-form LCU waits on it. SECOND consumer: the L^▷ translation (making `tr` executable and the ZTime/RTime transfer rows unconditional), which is now a secondary line of investigation. Read the WHY NOW paragraph below in that order.\n\nIMPLEMENTATION TASK, sizeable: formalize Gabbay separation over discrete time for PlusFormula, discharging the SeparationOver hypothesis and making the open-future translation executable.\n\nWHY NOW. This was proposed as recommendation R4 of specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md and deliberately NOT filed there, on the stated condition that it be filed \"only if a consumer needs the executable translation\". Two consumers now exist. First, FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean's two headline results, openValidIn_ztime_iff_tr and openValidIn_rtime_iff_tr, are conditional on SeparationOver -- a hypothesis standing for cited literature that this tree does not formalize -- so the unconditional verdict that the open-future modal is definable at ZTime and RTime lives only in that module's docstring with its citation, not in a pinned row. Second, any transfer of decidability through the translation needs tr to be computable, not merely to exist.\n\nWHAT TO FORMALIZE. GHR Lemmas 10.2.1 through 10.2.8 -- the eight eliminations plus the junction-depth induction -- for PlusFormula over frames satisfying IsZTime, discharging SeparationOver TaskFrame.IsZTime. The reference is Gabbay, Hodkinson and Reynolds, Theorem 10.2.9 over the integers; Theorem 10.3.20 is the Dedekind-complete counterpart and is the natural second target, not necessarily this task's.\n\nWHAT IS ALREADY LANDED AND MUST NOT BE REDONE. The elimination layer that CONSUMES separation is complete and compiled in OpenFutureElimination.lean: PastDet, FutDet, the syntactic bridges, OfutP and OpastP, the eliminations ofutP_or_iff and opastP_or_iff with their CNF forms ofutP_sepForm_iff and opastP_sepForm_iff, the SeparationOver predicate itself, tr, and the two validity-transfer results. This task supplies the hypothesis those results take; it does not restate them and must not weaken any of their signatures.\n\nSIZING, AND AN HONEST WARNING. Report 01 of task 854 rates this as a sorry-free path that EXISTS and is SIZEABLE, comparable to a multi-phase implementation round. Expect the junction-depth induction to be the expensive part. Before committing, weigh it against the MSO/Rabin decidability route, which reaches a decidability answer for the open language at ZTime with no translation at all -- if that route holds, this task's value is confined to making the definability verdict unconditional and to giving an executable tr, which is real but narrower than it looks.\n\nSCOPE. The separation development and the discharge of SeparationOver at IsZTime; the theorem-index rows that become unconditional as a result, restated from their conditional form; the re-measured axiom baselines. Do NOT touch FormalSystem/Metalogic/Independence/ -- the non-definability result at Base and Dense is a separate verdict and is unaffected, since separation does not hold there. Do not alter the metalogic-cycles allowlist.\n\nGATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the eliminations already carry. Guarded scoped build then unscoped; check-module-invariants.sh and check-metalogic-cycles.sh green against their pre-task baselines; every axiom profile measured, never hand-typed. If the development stalls, a precisely located obstruction -- which elimination resists formalization and why -- is a legitimate [COMPLETED WITH EXCLUSIONS] outcome.",
       "topic": "metalogic",
       "created": "2026-11-05T02:29:03Z",
-      "last_updated": "2026-11-05T02:29:03Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "audit_override": "User confirmed via AskUserQuestion after reviewing the audit: all verdicts semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); nearest match #559 explicitly carves out this content"
     },
     {
@@ -996,34 +1550,6 @@
       "created": "2026-05-11T19:35:39Z",
       "last_updated": "2026-09-16T15:37:32Z",
       "topic": "algebraic-representation",
-      "priority": "low"
-    },
-    {
-      "project_number": 127,
-      "project_name": "time_addition_operator",
-      "status": "not_started",
-      "task_type": "lean4",
-      "description": "Add time addition operator (+) to the bimodal logic TM. φ + ψ is true at (τ, x) iff ∃ y,z with x = y+z, φ true at (τ,y), ψ true at (τ,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/□. Completeness (ternary canonical model) and decidability are open research problems — defer to later phases.",
-      "dependencies": [],
-      "created": "2026-05-13T07:11:21Z",
-      "last_updated": "2026-06-01T23:00:00Z",
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "topic": "frame-extensions",
-      "priority": "low"
-    },
-    {
-      "project_number": 128,
-      "project_name": "open_set_operator_dense_continuous",
-      "status": "not_started",
-      "task_type": "lean4",
-      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete ℤ the interior is trivial (discrete topology), but on dense ℚ and continuous ℝ it captures neighborhood-stable truth: Int(φ) true at t iff φ holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(φ)→φ, Int(φ)→Int(Int(φ))). Phase 4: interaction with temporal operators and S5 □. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) — completeness may require non-standard techniques.",
-      "dependencies": [],
-      "created": "2026-05-13T07:11:21Z",
-      "last_updated": "2026-06-01T23:00:00Z",
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "topic": "frame-extensions",
       "priority": "low"
     },
     {
@@ -4856,7 +5382,7 @@
       "project_name": "colourclock_history_bridge_lemma",
       "status": "researched",
       "task_type": "lean4",
-      "description": "Add the bridge lemma in FormalSystem/Semantics/Frames/TranslationProduct.lean that makes the \"every colour function is a history\" step compiled rather than stated. Context: the colourClock wrapper carries an internal Nonempty instance that blocks ofReflectiveRegular_taskRel from unifying, so the open-future non-definability probe had to leave the hmarkers hypothesis as a one-line audited paper step. Deliverable: a lemma stating that every function from the duration carrier into the colour component of colourClock is a history of the colourClock frame, discharging Limit via the clock component and Saturation via finiteness of the colour set, stated so that the probe can discharge hmarkers by application rather than by assumption. Then update that probe to use it and confirm it still compiles clean (exit 0, no sorry/error/warning). Scope: TranslationProduct.lean plus the probes/ file only; the verdict itself (open-future not L-plus-definable at Base and Dense) is settled on the written report and is not reopened by this task.",
+      "description": "PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.\n\nAdd the bridge lemma in FormalSystem/Semantics/Frames/TranslationProduct.lean that makes the \"every colour function is a history\" step compiled rather than stated. Context: the colourClock wrapper carries an internal Nonempty instance that blocks ofReflectiveRegular_taskRel from unifying, so the open-future non-definability probe had to leave the hmarkers hypothesis as a one-line audited paper step. Deliverable: a lemma stating that every function from the duration carrier into the colour component of colourClock is a history of the colourClock frame, discharging Limit via the clock component and Saturation via finiteness of the colour set, stated so that the probe can discharge hmarkers by application rather than by assumption. Then update that probe to use it and confirm it still compiles clean (exit 0, no sorry/error/warning). Scope: TranslationProduct.lean plus the probes/ file only; the verdict itself (open-future not L-plus-definable at Base and Dense) is settled on the written report and is not reopened by this task.",
       "effort": "low",
       "parent_task": 859,
       "topic": "metalogic",
@@ -4865,7 +5391,7 @@
         "FormalSystem/Semantics/Frames/TranslationProduct.lean"
       ],
       "created": "2026-11-04T22:14:53Z",
-      "last_updated": "2026-11-04T22:14:53Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "artifacts": [],
       "audit_verdict": {
         "proposal": {
@@ -4966,7 +5492,8 @@
           "mechanical": true,
           "semantic": true
         }
-      }
+      },
+      "priority": "low"
     },
     {
       "title": "Record the one-sided transport refutation in the RaySummary refutation table",
@@ -5080,9 +5607,9 @@
       "task_type": "lean4",
       "topic": "semantics",
       "created": "2026-11-05T15:08:41Z",
-      "last_updated": "2026-11-05T15:08:41Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "next_artifact_number": 1,
-      "description": "IMPLEMENTATION TASK, small and self-contained: state and prove truth invariance for the open-future and open-past modals along a history morphism that lifts ray agreement, and derive such a lifting at ZTime from TwoWayBounded. This is the one formalization item recommended by the MSO-route research; it is independent of every unverified step in that route.\n\nWHY THIS EXISTS, AND WHAT IT IS NOT. The MSO route argues on paper that ZTime validity of the open language is decidable, and the open modals were confirmed to ride step 4's encoding -- see specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md, recommendation R1. That route is NOT being formalized and is not to be: Mathlib has no MSO syntax, no omega-automata, no determinization, and no Rabin tree theorem, so step 5 would mean a multi-year project of a different kind. This task lands only the semantic invariance lemma the route's cover step needs, which is useful on its own terms wherever open-modal truth must be transported along a morphism. Claim no decidability result and no completeness result here.\n\nWHAT TO STATE. Three pieces, in this order:\n\n(1) A ray-agreement lifting hypothesis beside HistMap.lift in FormalSystem/Semantics/HistoryMorphism.lean, as a standalone hypothesis or a new field: a history of the image frame agreeing with the image of tau' up to x lifts to a history of the source agreeing with tau' up to x. Then its time-reflected mirror for the open-past modal. Note that HistoryMorphism.lean's own docstring already records that HistMap.lift is derivable from TwoWayBounded.step rather than primitive, and that step is strictly weaker than lift -- read that discussion before choosing between a field and a hypothesis, and record the choice.\n\n(2) The ZTime derivation of both from TwoWayBounded.step/forth via the existing forward/backward sequence machinery in the same module. The research notes the lifted witness reuses the given history's past verbatim and needs only forward lifting from the basepoint at x, which is strictly weaker than the two-sided HistMap.lift that plus_invariance's stab case already uses -- so this should be easier than the landed two-sided case, not harder.\n\n(3) An open_invariance theorem over OpenFormula, reusing plus_invariance's seven cases. OpenLanguage sits above Semantics (OpenTruth.lean imports Semantics.Truth; nothing under Semantics/ imports OpenLanguage), so a new FormalSystem/OpenLanguage/OpenInvariance.lean can import HistoryMorphism -- confirm the aggregator wiring in FormalSystem/OpenLanguage.lean, and confirm the layering still holds before committing to the module site.\n\nSIZE: estimated 150-350 lines, one implementation phase. Independent of Gabbay separation (no SeparationOver hypothesis is needed), of the ladder/RaySummary front, and of the two gaps the MSO research located in report 03 section 1.3 (the step-1 fixpoint circularity and the step-3 forest-versus-tree mismatch). Nothing gates it.\n\nGATES. Zero sorry, zero vacuous definitions. A docs/theorem-index.md row per landed result, with Paper: and a reason at the declaration or C15's second assertion fails. Re-measured axiom baselines pinned by scripts/check-module-invariants.sh, never typed by hand. Guarded scoped build green, then the unscoped build; check-module-invariants.sh and check-metalogic-cycles.sh both green against their pre-task baselines.\n\nTWO KNOWN ENVIRONMENT FACTS, so they are not rediscovered. First, any task adding .lean lines in this repository must regenerate three files that a phase file list will not obviously name: the BEGIN GENERATED inventory blocks in README.md and the relevant FormalSystem README, via check-module-invariants.sh --emit-inventory, and typst/generated/status.typ via typst-sync-check.sh --fix, which a pre-commit hook enforces. They are in this task's file_scope for that reason. Second, check-module-invariants.sh's C16 group currently reports one pre-existing unusedArguments finding at FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136, last touched by an unrelated commit; it is not this task's to fix, and \"green against pre-task baselines\" means that finding and no other. scripts/check-paper-definitions.sh likewise exits 1 on manuscript drift outside this repository.\n\nNAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16's defsWithUnderscore linter both reject a snake_case def or abbrev name in the live tree. Decidable-valued and other defs are camelCase; theorems keep snake_case. Name accordingly when writing the plan's challenge statements, not afterwards.",
+      "description": "PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.\n\nIMPLEMENTATION TASK, small and self-contained: state and prove truth invariance for the open-future and open-past modals along a history morphism that lifts ray agreement, and derive such a lifting at ZTime from TwoWayBounded. This is the one formalization item recommended by the MSO-route research; it is independent of every unverified step in that route.\n\nWHY THIS EXISTS, AND WHAT IT IS NOT. The MSO route argues on paper that ZTime validity of the open language is decidable, and the open modals were confirmed to ride step 4's encoding -- see specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md, recommendation R1. That route is NOT being formalized and is not to be: Mathlib has no MSO syntax, no omega-automata, no determinization, and no Rabin tree theorem, so step 5 would mean a multi-year project of a different kind. This task lands only the semantic invariance lemma the route's cover step needs, which is useful on its own terms wherever open-modal truth must be transported along a morphism. Claim no decidability result and no completeness result here.\n\nWHAT TO STATE. Three pieces, in this order:\n\n(1) A ray-agreement lifting hypothesis beside HistMap.lift in FormalSystem/Semantics/HistoryMorphism.lean, as a standalone hypothesis or a new field: a history of the image frame agreeing with the image of tau' up to x lifts to a history of the source agreeing with tau' up to x. Then its time-reflected mirror for the open-past modal. Note that HistoryMorphism.lean's own docstring already records that HistMap.lift is derivable from TwoWayBounded.step rather than primitive, and that step is strictly weaker than lift -- read that discussion before choosing between a field and a hypothesis, and record the choice.\n\n(2) The ZTime derivation of both from TwoWayBounded.step/forth via the existing forward/backward sequence machinery in the same module. The research notes the lifted witness reuses the given history's past verbatim and needs only forward lifting from the basepoint at x, which is strictly weaker than the two-sided HistMap.lift that plus_invariance's stab case already uses -- so this should be easier than the landed two-sided case, not harder.\n\n(3) An open_invariance theorem over OpenFormula, reusing plus_invariance's seven cases. OpenLanguage sits above Semantics (OpenTruth.lean imports Semantics.Truth; nothing under Semantics/ imports OpenLanguage), so a new FormalSystem/OpenLanguage/OpenInvariance.lean can import HistoryMorphism -- confirm the aggregator wiring in FormalSystem/OpenLanguage.lean, and confirm the layering still holds before committing to the module site.\n\nSIZE: estimated 150-350 lines, one implementation phase. Independent of Gabbay separation (no SeparationOver hypothesis is needed), of the ladder/RaySummary front, and of the two gaps the MSO research located in report 03 section 1.3 (the step-1 fixpoint circularity and the step-3 forest-versus-tree mismatch). Nothing gates it.\n\nGATES. Zero sorry, zero vacuous definitions. A docs/theorem-index.md row per landed result, with Paper: and a reason at the declaration or C15's second assertion fails. Re-measured axiom baselines pinned by scripts/check-module-invariants.sh, never typed by hand. Guarded scoped build green, then the unscoped build; check-module-invariants.sh and check-metalogic-cycles.sh both green against their pre-task baselines.\n\nTWO KNOWN ENVIRONMENT FACTS, so they are not rediscovered. First, any task adding .lean lines in this repository must regenerate three files that a phase file list will not obviously name: the BEGIN GENERATED inventory blocks in README.md and the relevant FormalSystem README, via check-module-invariants.sh --emit-inventory, and typst/generated/status.typ via typst-sync-check.sh --fix, which a pre-commit hook enforces. They are in this task's file_scope for that reason. Second, check-module-invariants.sh's C16 group currently reports one pre-existing unusedArguments finding at FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136, last touched by an unrelated commit; it is not this task's to fix, and \"green against pre-task baselines\" means that finding and no other. scripts/check-paper-definitions.sh likewise exits 1 on manuscript drift outside this repository.\n\nNAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16's defsWithUnderscore linter both reject a snake_case def or abbrev name in the live tree. Decidable-valued and other defs are camelCase; theorems keep snake_case. Name accordingly when writing the plan's challenge statements, not afterwards.",
       "file_scope": [
         "FormalSystem/Semantics/HistoryMorphism.lean",
         "FormalSystem/OpenLanguage/OpenInvariance.lean",
@@ -6984,7 +7511,8 @@
         ],
         "scope_blind_collapsed": 451,
         "collapse_note": "scope-blind verdicts collapsed to a count to fit the state-write audit gate argv limit; the full unfiltered audit is reproducible by re-running audit-task-proposals.sh with this proposal id, title, description and file_scope."
-      }
+      },
+      "priority": "low"
     },
     {
       "project_number": 870,
@@ -6994,7 +7522,7 @@
       "task_type": "lean4",
       "topic": "semantics",
       "created": "2026-11-05T16:35:44Z",
-      "last_updated": "2026-11-05T16:35:44Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "next_artifact_number": 1,
       "description": "Prove that every oriented forest (a frame in which directed paths between any two nodes are unique) satisfies the literal TaskFrame.Saturation obligation, following report 03 section 1.2's five-step argument against the literal definition, as a Semantics/ lemma beside the existing saturation_of_* family (natural home: next to saturation_of_fib_finite). State the path-uniqueness hypothesis explicitly rather than assuming a forest data structure. This unblocks two independent fronts: the AA carrier layer-split route located in specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md finding 4, and the MSO cover step at ZTime (report 03 section 1.3 step 2, the countable-oriented-forest cover). Independent of SeparationOver, of Rabin's theorem, and of the ladder/RaySummary files held by other in-flight tasks.",
       "file_scope": [
@@ -7435,7 +7963,8 @@
           "semantic": true
         },
         "degradations_count": 451
-      }
+      },
+      "priority": "high"
     },
     {
       "project_number": 871,
@@ -7445,7 +7974,7 @@
       "task_type": "lean4",
       "topic": "metalogic",
       "created": "2026-11-05T16:37:24Z",
-      "last_updated": "2026-11-05T16:37:24Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "next_artifact_number": 1,
       "description": "Small, purely corrective library repair with three parts, all confirmed against the live tree: (1) correct PlusLCSchema.lean's docstring claim that LCU is the n=1 instance of lcN -- LCU is the until-form with two parameters and untl, while lcN 1 is the F-form with one parameter; (2) restore the landed omega_chain's dropped segment-property parameter P together with its stability hypothesis, matching specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean lines 659-684, which carries both; (3) state backward LC_n as the one-line plusValidIn_reflectTime corollary of lcN_plusValidZTime, since the doubled automaton route needs it and it costs only a corollary. Declaring the until-form LCU itself is explicitly NOT in scope here and waits on the oriented-forest Saturation lemma and task 867 (SeparationOver).",
       "file_scope": [
@@ -7860,7 +8389,8 @@
           "semantic": true
         },
         "degradations_count": 450
-      }
+      },
+      "priority": "high"
     },
     {
       "project_number": 872,
@@ -7869,9 +8399,9 @@
       "task_type": "formal",
       "topic": "metalogic",
       "created": "2026-11-05T17:16:24Z",
-      "last_updated": "2026-11-05T18:05:21Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "next_artifact_number": 2,
-      "description": "RESEARCH TASK, cheap and ordering: produce the transfer ledger for the L-plus-to-L^▷ programme -- one row per L-plus headline result, naming its L^▷ counterpart and that counterpart's status -- so that \"everything for L-plus has been transferred to L^▷\" becomes a measurable condition rather than a judgement. Report only; this task changes nothing under `FormalSystem/`.\n\nWHY IT EXISTS. The user's stated end state is that the repository present two object languages, L and L^▷, with L-plus surviving as an internal layer rather than a front. The standing architectural ruling keeps L-plus embedded and forbids renaming or mutating `PlusFormula`/`PlusAxiom`/`PlusDerivationTree`, so the end state is reached by making every L-plus headline result readable at L^▷ through `ofPlus` and the conservativity directions -- not by deleting anything. What is missing is the ledger: no file, task or report enumerates the L-plus results and their L^▷ status, so there is no way to tell how far the transfer has gone or what remains. Two concrete gaps were found by hand at filing time (no `OpenLanguage/Subformulas.lean`, no `OpenLanguage/Substitution.lean`, each the counterpart of an existing L-plus file) and each is filed as its own task; a systematic pass is likely to find more, and is cheaper than finding them one at a time.\n\nWHAT TO PRODUCE. A single report with one table whose rows are L-plus headline results and whose columns are: the L-plus declaration (fully qualified), its file, the L^▷ counterpart declaration if one exists, that counterpart's file, and a status drawn from a closed set -- TRANSFERRED (a named L^▷ declaration exists), REDUCIBLE (no L^▷ declaration, but the result is reachable at a stated frame class through a named landed translation or conservativity theorem, with the theorem named), OWED (no counterpart and no reduction; name the owning task if one exists, or state that none does), or NOT APPLICABLE (the result is about L-plus-specific syntax and has no L^▷ reading; say why in one clause).\n\nHOW TO ENUMERATE, so the pass is reproducible rather than impressionistic. Take the L-plus surface from three places and say which rows came from which: the per-file declaration lists under `FormalSystem/PlusLanguage/` (eighteen files), the L-plus rows of `docs/theorem-index.md`, and the L-plus entries of `FormalSystem/Metalogic/README.md`'s result table. Record the counts. A row whose status is REDUCIBLE must name the frame class it is reducible at and the theorem that reduces it -- the ZTime and RTime translation equivalences are the expected vehicle and they do not apply at Base or Dense, so a REDUCIBLE row with no class is a defect in the ledger.\n\nWHAT THE LEDGER MUST ALSO ANSWER, in prose beside the table. Which L-plus files have no `OpenLanguage/` counterpart file at all, and for each, whether the counterpart is wanted or the L-plus file is internal infrastructure that correctly has no L^▷ reading. Whether the direct embedding of L into L^▷ is stated anywhere as a single map, or only as a composition. Whether any L^▷ result currently depends on an unformalized hypothesis, and which -- the separation hypothesis carrying the positive definability half and the inexpressibility hypothesis carrying the negative half are the two known ones; confirm whether there are others.\n\nWHAT TO RECOMMEND. For each OWED row, either name the existing task that should absorb it or propose a task with a one-paragraph scope. Do not file the tasks from this one; recommend them and let the conclusion stage file what survives. Explicitly flag any row where the transfer looks blocked on open mathematics rather than on unwritten Lean, since those belong to the completeness and decidability programmes and not to this one.\n\nEXPLICITLY NOT IN SCOPE. No edits under `FormalSystem/`. No new Lean declarations. No proposal to rename L-plus, to mutate its inductives, or to delete `PlusLanguage/` -- the ruling against absorb-and-rename stands, and the end state is reached by transfer, not removal. No completeness or decidability claim.\n\nVERIFICATION. Every count and every declaration name in the report must be reproduced from a command recorded in the report itself, so a reader can re-run it. A claim about what exists in the tree that no recorded command supports is a defect in the report.",
+      "description": "CLOSING RULING (2026-11-05, user): the six follow-on proposals T1-T6 in the Recommendations section of the report are NOT to be filed from this task. They stand recorded in the report as the L^▷ exploration backlog; when L^▷ work resumes, T1 (the state-locality fragment) and T3 (non-redundancy of the new axiom block) are the first two to file. The end state named below is superseded: the aim of the repository is L-plus, with L^▷ a secondary line of investigation -- see specs/ROADMAP.md.\n\nRESEARCH TASK, cheap and ordering: produce the transfer ledger for the L-plus-to-L^▷ programme -- one row per L-plus headline result, naming its L^▷ counterpart and that counterpart's status -- so that \"everything for L-plus has been transferred to L^▷\" becomes a measurable condition rather than a judgement. Report only; this task changes nothing under `FormalSystem/`.\n\nWHY IT EXISTS. The user's stated end state is that the repository present two object languages, L and L^▷, with L-plus surviving as an internal layer rather than a front. The standing architectural ruling keeps L-plus embedded and forbids renaming or mutating `PlusFormula`/`PlusAxiom`/`PlusDerivationTree`, so the end state is reached by making every L-plus headline result readable at L^▷ through `ofPlus` and the conservativity directions -- not by deleting anything. What is missing is the ledger: no file, task or report enumerates the L-plus results and their L^▷ status, so there is no way to tell how far the transfer has gone or what remains. Two concrete gaps were found by hand at filing time (no `OpenLanguage/Subformulas.lean`, no `OpenLanguage/Substitution.lean`, each the counterpart of an existing L-plus file) and each is filed as its own task; a systematic pass is likely to find more, and is cheaper than finding them one at a time.\n\nWHAT TO PRODUCE. A single report with one table whose rows are L-plus headline results and whose columns are: the L-plus declaration (fully qualified), its file, the L^▷ counterpart declaration if one exists, that counterpart's file, and a status drawn from a closed set -- TRANSFERRED (a named L^▷ declaration exists), REDUCIBLE (no L^▷ declaration, but the result is reachable at a stated frame class through a named landed translation or conservativity theorem, with the theorem named), OWED (no counterpart and no reduction; name the owning task if one exists, or state that none does), or NOT APPLICABLE (the result is about L-plus-specific syntax and has no L^▷ reading; say why in one clause).\n\nHOW TO ENUMERATE, so the pass is reproducible rather than impressionistic. Take the L-plus surface from three places and say which rows came from which: the per-file declaration lists under `FormalSystem/PlusLanguage/` (eighteen files), the L-plus rows of `docs/theorem-index.md`, and the L-plus entries of `FormalSystem/Metalogic/README.md`'s result table. Record the counts. A row whose status is REDUCIBLE must name the frame class it is reducible at and the theorem that reduces it -- the ZTime and RTime translation equivalences are the expected vehicle and they do not apply at Base or Dense, so a REDUCIBLE row with no class is a defect in the ledger.\n\nWHAT THE LEDGER MUST ALSO ANSWER, in prose beside the table. Which L-plus files have no `OpenLanguage/` counterpart file at all, and for each, whether the counterpart is wanted or the L-plus file is internal infrastructure that correctly has no L^▷ reading. Whether the direct embedding of L into L^▷ is stated anywhere as a single map, or only as a composition. Whether any L^▷ result currently depends on an unformalized hypothesis, and which -- the separation hypothesis carrying the positive definability half and the inexpressibility hypothesis carrying the negative half are the two known ones; confirm whether there are others.\n\nWHAT TO RECOMMEND. For each OWED row, either name the existing task that should absorb it or propose a task with a one-paragraph scope. Do not file the tasks from this one; recommend them and let the conclusion stage file what survives. Explicitly flag any row where the transfer looks blocked on open mathematics rather than on unwritten Lean, since those belong to the completeness and decidability programmes and not to this one.\n\nEXPLICITLY NOT IN SCOPE. No edits under `FormalSystem/`. No new Lean declarations. No proposal to rename L-plus, to mutate its inductives, or to delete `PlusLanguage/` -- the ruling against absorb-and-rename stands, and the end state is reached by transfer, not removal. No completeness or decidability claim.\n\nVERIFICATION. Every count and every declaration name in the report must be reproduced from a command recorded in the report itself, so a reader can re-run it. A claim about what exists in the tree that no recorded command supports is a defect in the report.",
       "file_scope": [
         "specs/872_open_language_transfer_ledger/",
         "specs/872_open_language_transfer_ledger/.orchestrator-handoff.json",
@@ -7914,9 +8444,9 @@
       "task_type": "lean4",
       "topic": "syntax",
       "created": "2026-11-05T17:16:24Z",
-      "last_updated": "2026-11-05T17:16:24Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "next_artifact_number": 1,
-      "description": "IMPLEMENTATION TASK, small and fully templated: build `FormalSystem/OpenLanguage/Subformulas.lean`, the L^▷ counterpart of `FormalSystem/PlusLanguage/Subformulas.lean`. This is pure syntax, gated on nothing, and it is the one piece of L^▷ infrastructure that any native decision procedure over `OpenFormula` needs before it can be stated at all.\n\nTHE GAP, VERIFIED AT FILING. `FormalSystem/OpenLanguage/` holds nine files and no `Subformulas.lean`. A tree-wide grep for `openSubformulas`, `subformulasOpen`, `openSubformulaClosure` and `openComplexity` returns nothing, and no task in `specs/state.json` names any of them in a description or a `file_scope`. By contrast `PlusLanguage/Subformulas.lean` is 373 lines carrying `subformulas`, the per-constructor membership lemmas, `subformulas_trans`, `plusSubformulaClosure` as a `Finset`, `self_mem_plusSubformulaClosure`, the `decidableMemPlusSubformulaClosure` instance and the `plusClosure_*` closure lemmas one per constructor. L^▷ has none of it.\n\nWHAT TO BUILD, mirroring that file constructor for constructor. `subformulas : OpenFormula -> List OpenFormula` over all nine constructors; the membership lemmas (`self_mem_subformulas`, `imp_left`/`imp_right`, `box_inner`, `untl_left`/`untl_right`, `snce_left`/`snce_right`, `stab_inner`, and the two new arms `ofut_inner_mem_subformulas` and `opast_inner_mem_subformulas`); transitivity; `openSubformulaClosure` as a `Finset OpenFormula` with its self-membership, its decidable-membership instance and one `openClosure_*` lemma per constructor. `OpenFormula` must have `DecidableEq` for the `Finset` layer -- check whether `Formula.lean` already derives it and derive it there if not, in the same phase.\n\nTHE AGREEMENT LEMMA THAT MAKES THIS A TRANSFER AND NOT A DUPLICATE. State `subformulas_ofPlus`: the subformulas of `ofPlus phi` are the `ofPlus`-images of the subformulas of `phi`, and the closure analogue. This is what lets a result proved by induction on L-plus subformula closure be re-read at L^▷ instead of re-proved, and it is the reason this file belongs to the transfer programme rather than being incidental library padding. Expect it to hold by `rfl` or a short induction, since `ofPlus` is constructor-to-constructor and every derived operator shares its `PlusFormula` namesake's right-hand side.\n\nEXPLICITLY NOT IN SCOPE. No decision procedure, no decidability claim, no engine change. `clSig`, `LocalRun` and `Anchored` get no `ofut`/`opast` clause from this task -- the standing containment ruling keeps the L-plus decidability engine's own definitions untouched, and this task supplies a syntactic closure over `OpenFormula` that no existing engine consumes yet. Add no constructor to `OpenFormula`, `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`.\n\nLAYERING AND GATES. This is a syntax-layer file: it imports nothing from `FormalSystem/Semantics/` and no semantic module of any language. `scripts/check-metalogic-cycles.sh` enforces that edge and reads each file's layer from the per-file `LANGUAGE_FILE_LAYERS` table in `scripts/measure-refactor-partitions.py` -- add the row for the new file in the same phase as the file, or the gate FAILS naming it. Every result needs a `docs/theorem-index.md` row: statement, fully-qualified Lean name, file, frame class, pinned axiom set. The README inventory block is generated, not hand-edited: re-run `bash scripts/check-module-invariants.sh --emit-inventory`.\n\nVERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, then the unscoped build; never bare `lake`. Zero `sorry`, zero vacuous definitions. `bash scripts/check-module-invariants.sh` (bare form) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration; the L-plus original is choice-free, so picking up `Classical.choice` here is a regression rather than a new baseline.",
+      "description": "PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.\n\nIMPLEMENTATION TASK, small and fully templated: build `FormalSystem/OpenLanguage/Subformulas.lean`, the L^▷ counterpart of `FormalSystem/PlusLanguage/Subformulas.lean`. This is pure syntax, gated on nothing, and it is the one piece of L^▷ infrastructure that any native decision procedure over `OpenFormula` needs before it can be stated at all.\n\nTHE GAP, VERIFIED AT FILING. `FormalSystem/OpenLanguage/` holds nine files and no `Subformulas.lean`. A tree-wide grep for `openSubformulas`, `subformulasOpen`, `openSubformulaClosure` and `openComplexity` returns nothing, and no task in `specs/state.json` names any of them in a description or a `file_scope`. By contrast `PlusLanguage/Subformulas.lean` is 373 lines carrying `subformulas`, the per-constructor membership lemmas, `subformulas_trans`, `plusSubformulaClosure` as a `Finset`, `self_mem_plusSubformulaClosure`, the `decidableMemPlusSubformulaClosure` instance and the `plusClosure_*` closure lemmas one per constructor. L^▷ has none of it.\n\nWHAT TO BUILD, mirroring that file constructor for constructor. `subformulas : OpenFormula -> List OpenFormula` over all nine constructors; the membership lemmas (`self_mem_subformulas`, `imp_left`/`imp_right`, `box_inner`, `untl_left`/`untl_right`, `snce_left`/`snce_right`, `stab_inner`, and the two new arms `ofut_inner_mem_subformulas` and `opast_inner_mem_subformulas`); transitivity; `openSubformulaClosure` as a `Finset OpenFormula` with its self-membership, its decidable-membership instance and one `openClosure_*` lemma per constructor. `OpenFormula` must have `DecidableEq` for the `Finset` layer -- check whether `Formula.lean` already derives it and derive it there if not, in the same phase.\n\nTHE AGREEMENT LEMMA THAT MAKES THIS A TRANSFER AND NOT A DUPLICATE. State `subformulas_ofPlus`: the subformulas of `ofPlus phi` are the `ofPlus`-images of the subformulas of `phi`, and the closure analogue. This is what lets a result proved by induction on L-plus subformula closure be re-read at L^▷ instead of re-proved, and it is the reason this file belongs to the transfer programme rather than being incidental library padding. Expect it to hold by `rfl` or a short induction, since `ofPlus` is constructor-to-constructor and every derived operator shares its `PlusFormula` namesake's right-hand side.\n\nEXPLICITLY NOT IN SCOPE. No decision procedure, no decidability claim, no engine change. `clSig`, `LocalRun` and `Anchored` get no `ofut`/`opast` clause from this task -- the standing containment ruling keeps the L-plus decidability engine's own definitions untouched, and this task supplies a syntactic closure over `OpenFormula` that no existing engine consumes yet. Add no constructor to `OpenFormula`, `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`.\n\nLAYERING AND GATES. This is a syntax-layer file: it imports nothing from `FormalSystem/Semantics/` and no semantic module of any language. `scripts/check-metalogic-cycles.sh` enforces that edge and reads each file's layer from the per-file `LANGUAGE_FILE_LAYERS` table in `scripts/measure-refactor-partitions.py` -- add the row for the new file in the same phase as the file, or the gate FAILS naming it. Every result needs a `docs/theorem-index.md` row: statement, fully-qualified Lean name, file, frame class, pinned axiom set. The README inventory block is generated, not hand-edited: re-run `bash scripts/check-module-invariants.sh --emit-inventory`.\n\nVERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, then the unscoped build; never bare `lake`. Zero `sorry`, zero vacuous definitions. `bash scripts/check-module-invariants.sh` (bare form) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration; the L-plus original is choice-free, so picking up `Classical.choice` here is a regression rather than a new baseline.",
       "file_scope": [
         "FormalSystem/OpenLanguage/Subformulas.lean",
         "FormalSystem/OpenLanguage/Formula.lean",
@@ -7937,7 +8467,8 @@
           "mechanical": true,
           "semantic": true
         }
-      }
+      },
+      "priority": "low"
     },
     {
       "project_number": 874,
@@ -7946,9 +8477,9 @@
       "task_type": "lean4",
       "topic": "syntax",
       "created": "2026-11-05T17:16:24Z",
-      "last_updated": "2026-11-05T17:16:24Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "next_artifact_number": 1,
-      "description": "IMPLEMENTATION TASK, gated on the L^▷ proof system: build `FormalSystem/OpenLanguage/Substitution.lean`, the L^▷ counterpart of `FormalSystem/PlusLanguage/Substitution.lean`. This is the substitution-closure half of the L^▷ proof system and it also lands the direct L-to-L^▷ embedding, which the tree currently reaches only by composing two maps.\n\nTHE GAP, VERIFIED AT FILING. `FormalSystem/OpenLanguage/` has no `Substitution.lean`; `OpenAxioms.lean` contains zero occurrences of \"subst\" and `OpenDerivation.lean` one. A tree-wide grep for `substOpen` returns nothing and no task names it. By contrast `PlusLanguage/Substitution.lean` carries `substPlus : (Atom -> PlusFormula) -> Formula -> PlusFormula`, `substCtxPlus`, `substPlus_atom` (which identifies the atom-substitution with `ofFormula`, making the base-language embedding a corollary rather than a separate definition), `substPlus_reflectTime`, `PlusAxiom.ofTMSubst`, `PlusAxiom.minFrameClass_ofTMSubst`, `PlusDerivationTree.ofTMSubst`, `plusDerivable_substPlus` and `plusDerivable_substPlus_nil`. None of this exists at L^▷.\n\nWHY IT MATTERS FOR THE END STATE. `substPlus_atom : substPlus PlusFormula.atom phi = ofFormula phi` is the statement that makes L-plus a genuine extension of L's proof system rather than a parallel one: every TM axiom lifts to a TM-plus axiom under substitution, and every TM derivation lifts to a TM-plus derivation. Without the L^▷ mirror, L^▷ inherits L's proof system only through L-plus, so L-plus is load-bearing in the chain and cannot become internal. The mirror `substOpen_atom : substOpen OpenFormula.atom phi = ofFormula' phi` is the direct L-to-L^▷ embedding, and it is the structural step that leaves L and L^▷ as the two languages a reader needs.\n\nWHAT TO BUILD, mirroring the L-plus file declaration for declaration. `substOpen : (Atom -> OpenFormula) -> Formula -> OpenFormula`; `substCtxOpen`; `substOpen_atom` together with whatever direct embedding `Formula -> OpenFormula` it identifies (introduce it in `Formula.lean` if it is not already there, and prove it equal to `ofPlus (ofFormula .)` so the two routes into L^▷ are provably the same map -- that equation is a deliverable, not an aside); `substOpen_reflectTime`, cheap because `reflectTime` fixes box and stab and exchanges ofut with opast (`OpenReversal.lean`); `OpenAxiom.ofTMSubst` with its `minFrameClass` companion; `OpenDerivationTree.ofTMSubst`; `openDerivable_substOpen` and its empty-context form.\n\nDEPENDENCY, AND IT IS A HARD GATE. `OpenAxiom` and `OpenDerivationTree` must exist before `OpenAxiom.ofTMSubst` and `OpenDerivationTree.ofTMSubst` can be stated. Declare the L^▷ proof-system task as a dependency and do not enter this one before it lands. The `substOpen`/`substOpen_atom`/embedding-agreement part is pure syntax and could in principle be split out ahead of the gate; if the proof-system task is still open when this is dispatched, land the syntax half and record the axiom/derivation half as a reasoned exclusion rather than blocking.\n\nEXPLICITLY NOT IN SCOPE. No completeness claim. No new constructor on `OpenFormula`, `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`. Do not define stab away as ofut-opast: it stays primitive, since the backward half of that biconditional needs `[F.IsRegular]`. Do not alter `substPlus` or anything under `PlusLanguage/` -- this task adds the L^▷ mirror and touches the L-plus original only to cite it.\n\nLAYERING AND GATES. Syntax layer: no import from `FormalSystem/Semantics/` and no semantic module of any language. Add the new file's row to the `LANGUAGE_FILE_LAYERS` table in `scripts/measure-refactor-partitions.py` in the same phase as the file or `scripts/check-metalogic-cycles.sh` FAILS naming it. One `docs/theorem-index.md` row per result; re-run `bash scripts/check-module-invariants.sh --emit-inventory` rather than hand-editing the README inventory block.\n\nVERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, then the unscoped build; never bare `lake`. Zero `sorry`, zero vacuous definitions. `bash scripts/check-module-invariants.sh` (bare form) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration and compared against the L-plus originals being mirrored.",
+      "description": "PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise. RATIONALE CORRECTION: the paragraph below headed WHY IT MATTERS FOR THE END STATE is superseded. L-plus is not to be made dispensable. The value of this task is that L^▷ gains its own substitution closure and a direct embedding of L, as properties of L^▷ worth having on record.\n\nIMPLEMENTATION TASK, gated on the L^▷ proof system: build `FormalSystem/OpenLanguage/Substitution.lean`, the L^▷ counterpart of `FormalSystem/PlusLanguage/Substitution.lean`. This is the substitution-closure half of the L^▷ proof system and it also lands the direct L-to-L^▷ embedding, which the tree currently reaches only by composing two maps.\n\nTHE GAP, VERIFIED AT FILING. `FormalSystem/OpenLanguage/` has no `Substitution.lean`; `OpenAxioms.lean` contains zero occurrences of \"subst\" and `OpenDerivation.lean` one. A tree-wide grep for `substOpen` returns nothing and no task names it. By contrast `PlusLanguage/Substitution.lean` carries `substPlus : (Atom -> PlusFormula) -> Formula -> PlusFormula`, `substCtxPlus`, `substPlus_atom` (which identifies the atom-substitution with `ofFormula`, making the base-language embedding a corollary rather than a separate definition), `substPlus_reflectTime`, `PlusAxiom.ofTMSubst`, `PlusAxiom.minFrameClass_ofTMSubst`, `PlusDerivationTree.ofTMSubst`, `plusDerivable_substPlus` and `plusDerivable_substPlus_nil`. None of this exists at L^▷.\n\nWHY IT MATTERS FOR THE END STATE. `substPlus_atom : substPlus PlusFormula.atom phi = ofFormula phi` is the statement that makes L-plus a genuine extension of L's proof system rather than a parallel one: every TM axiom lifts to a TM-plus axiom under substitution, and every TM derivation lifts to a TM-plus derivation. Without the L^▷ mirror, L^▷ inherits L's proof system only through L-plus, so L-plus is load-bearing in the chain and cannot become internal. The mirror `substOpen_atom : substOpen OpenFormula.atom phi = ofFormula' phi` is the direct L-to-L^▷ embedding, and it is the structural step that leaves L and L^▷ as the two languages a reader needs.\n\nWHAT TO BUILD, mirroring the L-plus file declaration for declaration. `substOpen : (Atom -> OpenFormula) -> Formula -> OpenFormula`; `substCtxOpen`; `substOpen_atom` together with whatever direct embedding `Formula -> OpenFormula` it identifies (introduce it in `Formula.lean` if it is not already there, and prove it equal to `ofPlus (ofFormula .)` so the two routes into L^▷ are provably the same map -- that equation is a deliverable, not an aside); `substOpen_reflectTime`, cheap because `reflectTime` fixes box and stab and exchanges ofut with opast (`OpenReversal.lean`); `OpenAxiom.ofTMSubst` with its `minFrameClass` companion; `OpenDerivationTree.ofTMSubst`; `openDerivable_substOpen` and its empty-context form.\n\nDEPENDENCY, AND IT IS A HARD GATE. `OpenAxiom` and `OpenDerivationTree` must exist before `OpenAxiom.ofTMSubst` and `OpenDerivationTree.ofTMSubst` can be stated. Declare the L^▷ proof-system task as a dependency and do not enter this one before it lands. The `substOpen`/`substOpen_atom`/embedding-agreement part is pure syntax and could in principle be split out ahead of the gate; if the proof-system task is still open when this is dispatched, land the syntax half and record the axiom/derivation half as a reasoned exclusion rather than blocking.\n\nEXPLICITLY NOT IN SCOPE. No completeness claim. No new constructor on `OpenFormula`, `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`. Do not define stab away as ofut-opast: it stays primitive, since the backward half of that biconditional needs `[F.IsRegular]`. Do not alter `substPlus` or anything under `PlusLanguage/` -- this task adds the L^▷ mirror and touches the L-plus original only to cite it.\n\nLAYERING AND GATES. Syntax layer: no import from `FormalSystem/Semantics/` and no semantic module of any language. Add the new file's row to the `LANGUAGE_FILE_LAYERS` table in `scripts/measure-refactor-partitions.py` in the same phase as the file or `scripts/check-metalogic-cycles.sh` FAILS naming it. One `docs/theorem-index.md` row per result; re-run `bash scripts/check-module-invariants.sh --emit-inventory` rather than hand-editing the README inventory block.\n\nVERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, then the unscoped build; never bare `lake`. Zero `sorry`, zero vacuous definitions. `bash scripts/check-module-invariants.sh` (bare form) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration and compared against the L-plus originals being mirrored.",
       "file_scope": [
         "FormalSystem/OpenLanguage/Substitution.lean",
         "FormalSystem/OpenLanguage/Formula.lean",
@@ -7971,7 +8502,8 @@
           "mechanical": true,
           "semantic": true
         }
-      }
+      },
+      "priority": "low"
     },
     {
       "project_number": 875,
@@ -7980,9 +8512,9 @@
       "task_type": "lean4",
       "topic": "metalogic",
       "created": "2026-11-05T17:16:35Z",
-      "last_updated": "2026-11-05T17:16:35Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "next_artifact_number": 1,
-      "description": "IMPLEMENTATION TASK, gated on the L^▷ proof system and its conservativity directions: transfer the landed L-plus incompleteness results to L^▷, and state the limit-closure schema in L^▷ form at the frame classes where the L-plus translation does not reach.\n\nTHE GAP, VERIFIED AT FILING. `plus_incomplete_base`, `not_plus_complete_base` and `blc_not_plusDerivable_base` are landed and cited from `FormalSystem/Metalogic.lean` and `FormalSystem/Metalogic/Independence.lean`. A tree-wide grep for an L^▷ counterpart (`open_incomplete`, `not_open_complete`) returns nothing, and no task in `specs/state.json` names one. The L^▷ proof-system task states in its own description that `plus_incomplete_base` \"stands exactly as proved\", that `blc` \"stays a non-theorem\", and that \"an LC_n-style schema is still required in L^▷ exactly as in L-plus\" -- it flags both items and scopes neither. Nobody owns them.\n\nWHY THE TRANSFER IS AVAILABLE RATHER THAN OPEN. This is a corollary task, not a research task. The L^▷ proof-system work delivers conservativity over TM-plus in both directions; with both directions in hand, incompleteness transfers by composition: a formula valid at Base but not L-plus-derivable has an `ofPlus` image valid at Base (semantic conservativity, landed in `OpenValidity.lean`) whose L^▷-derivability would, by backward conservativity, give the L-plus derivation that does not exist. Write it in that shape -- as the composition of named landed results -- and do not reprove any underivability.\n\nWHAT TO STATE. (1) The L^▷ incompleteness triple at Base: the `ofPlus`-image of the limit-closure countermodel formula is Base-valid and not L^▷-derivable, hence the L^▷ system is incomplete at Base. (2) The honest scope line: this says the particular L^▷ system is incomplete, not that no recursive axiomatization exists -- that question is open at every class for L-plus too and must not be overstated here. (3) The limit-closure schema in L^▷ form, at Base and Dense. At ZTime the translation already answers it, because `openValidIn_ztime_iff_tr` makes any L^▷ validity question at ZTime an L-plus question; at Base and Dense the open-future modal is a genuine expressive extension, the translation is unavailable, and the schema must be stated natively over `OpenFormula`. Cite the landed L-plus schema rather than re-deriving it: `PlusLanguage/PlusLCSchema.lean` and `PlusLanguage/PlusLimitClosure.lean`.\n\nDEPENDENCIES, BOTH HARD. The L^▷ proof-system task (for `OpenDerivable` and both conservativity directions) and the corrective limit-closure repair task (which fixes the `PlusLCSchema` docstring and the `omega_chain` parameter this task would otherwise cite in its broken form). Do not enter before both land.\n\nEXPLICITLY NOT IN SCOPE, each being a way to get this wrong. No positive completeness claim for L^▷ at any class, conditional or otherwise. No claim that no recursive axiomatization of L^▷ exists -- that is strictly stronger than incompleteness of one system and is not established for L-plus either. No new constructor anywhere, and no change to the landed L-plus underivability proofs: they are cited, never edited. Do not route the transfer through the ZTime translation at Base or Dense, where it does not apply.\n\nLAYERING AND GATES. This is metalogic-layer work and belongs under `FormalSystem/Metalogic/`, beside the existing Independence block, not inside `OpenLanguage/`. Add any new file's row to the layer table in `scripts/measure-refactor-partitions.py` in the same phase as the file. One `docs/theorem-index.md` row per result, with the frame class stated explicitly -- a Base-only result recorded without its class is a defect. Re-run `bash scripts/check-module-invariants.sh --emit-inventory`.\n\nVERIFICATION GATE. Guarded scoped build green, then the unscoped build; never bare `lake`. Zero `sorry`. `bash scripts/check-module-invariants.sh` (bare form) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration and compared against the L-plus originals: the landed underivability results pin their own axiom sets and the transfer must not widen them.",
+      "description": "PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.\n\nIMPLEMENTATION TASK, gated on the L^▷ proof system and its conservativity directions: transfer the landed L-plus incompleteness results to L^▷, and state the limit-closure schema in L^▷ form at the frame classes where the L-plus translation does not reach.\n\nTHE GAP, VERIFIED AT FILING. `plus_incomplete_base`, `not_plus_complete_base` and `blc_not_plusDerivable_base` are landed and cited from `FormalSystem/Metalogic.lean` and `FormalSystem/Metalogic/Independence.lean`. A tree-wide grep for an L^▷ counterpart (`open_incomplete`, `not_open_complete`) returns nothing, and no task in `specs/state.json` names one. The L^▷ proof-system task states in its own description that `plus_incomplete_base` \"stands exactly as proved\", that `blc` \"stays a non-theorem\", and that \"an LC_n-style schema is still required in L^▷ exactly as in L-plus\" -- it flags both items and scopes neither. Nobody owns them.\n\nWHY THE TRANSFER IS AVAILABLE RATHER THAN OPEN. This is a corollary task, not a research task. The L^▷ proof-system work delivers conservativity over TM-plus in both directions; with both directions in hand, incompleteness transfers by composition: a formula valid at Base but not L-plus-derivable has an `ofPlus` image valid at Base (semantic conservativity, landed in `OpenValidity.lean`) whose L^▷-derivability would, by backward conservativity, give the L-plus derivation that does not exist. Write it in that shape -- as the composition of named landed results -- and do not reprove any underivability.\n\nWHAT TO STATE. (1) The L^▷ incompleteness triple at Base: the `ofPlus`-image of the limit-closure countermodel formula is Base-valid and not L^▷-derivable, hence the L^▷ system is incomplete at Base. (2) The honest scope line: this says the particular L^▷ system is incomplete, not that no recursive axiomatization exists -- that question is open at every class for L-plus too and must not be overstated here. (3) The limit-closure schema in L^▷ form, at Base and Dense. At ZTime the translation already answers it, because `openValidIn_ztime_iff_tr` makes any L^▷ validity question at ZTime an L-plus question; at Base and Dense the open-future modal is a genuine expressive extension, the translation is unavailable, and the schema must be stated natively over `OpenFormula`. Cite the landed L-plus schema rather than re-deriving it: `PlusLanguage/PlusLCSchema.lean` and `PlusLanguage/PlusLimitClosure.lean`.\n\nDEPENDENCIES, BOTH HARD. The L^▷ proof-system task (for `OpenDerivable` and both conservativity directions) and the corrective limit-closure repair task (which fixes the `PlusLCSchema` docstring and the `omega_chain` parameter this task would otherwise cite in its broken form). Do not enter before both land.\n\nEXPLICITLY NOT IN SCOPE, each being a way to get this wrong. No positive completeness claim for L^▷ at any class, conditional or otherwise. No claim that no recursive axiomatization of L^▷ exists -- that is strictly stronger than incompleteness of one system and is not established for L-plus either. No new constructor anywhere, and no change to the landed L-plus underivability proofs: they are cited, never edited. Do not route the transfer through the ZTime translation at Base or Dense, where it does not apply.\n\nLAYERING AND GATES. This is metalogic-layer work and belongs under `FormalSystem/Metalogic/`, beside the existing Independence block, not inside `OpenLanguage/`. Add any new file's row to the layer table in `scripts/measure-refactor-partitions.py` in the same phase as the file. One `docs/theorem-index.md` row per result, with the frame class stated explicitly -- a Base-only result recorded without its class is a defect. Re-run `bash scripts/check-module-invariants.sh --emit-inventory`.\n\nVERIFICATION GATE. Guarded scoped build green, then the unscoped build; never bare `lake`. Zero `sorry`. `bash scripts/check-module-invariants.sh` (bare form) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration and compared against the L-plus originals: the landed underivability results pin their own axiom sets and the transfer must not widen them.",
       "file_scope": [
         "FormalSystem/Metalogic/Independence/",
         "FormalSystem/Metalogic/Independence.lean",
@@ -8005,7 +8537,8 @@
           "mechanical": true,
           "semantic": true
         }
-      }
+      },
+      "priority": "low"
     },
     {
       "project_number": 876,
@@ -8014,9 +8547,9 @@
       "task_type": "lean4",
       "topic": "syntax",
       "created": "2026-11-05T17:16:35Z",
-      "last_updated": "2026-11-05T17:16:35Z",
+      "last_updated": "2026-11-05T18:21:07Z",
       "next_artifact_number": 1,
-      "description": "IMPLEMENTATION TASK WITH A DECISION GATE IN PHASE 1, and the gate is the point: remove the stability modal from `OpenFormula`'s primitive constructors, replacing it with notation for the open-past-of-open-future composite, OR record with compiled evidence why it cannot be removed. Entering this task committed to removal is the way to get it wrong; the removal is desired and must be attempted, but two specific obstructions are on record and the task is accountable to them.\n\nTHE REQUEST. The stability modal is definable in L^▷ -- the biconditional is landed, in both associations -- so carrying it as a tenth primitive constructor is redundant, and the maintainer's standing preference is that it go. This task owns that removal.\n\nTHE TWO OBSTRUCTIONS, BOTH ON RECORD AND NEITHER A GUESS. Read both before planning.\n(1) THE BICONDITIONAL IS CLASS-RESTRICTED. The forward half holds on every regular task frame; the backward half needs `[F.IsRegular]`. So a syntactic abbreviation does not preserve the stability modal's truth conditions off the regular class -- it changes the language's meaning on exactly the frames where the two differ. Establish FIRST, as Phase 1's deliverable, whether any live consumer evaluates the stability modal off the regular class. If none does, removal is sound relative to this tree and the restriction is a documented precondition rather than a blocker. If one does, removal is refused on this ground and the task's outcome is that finding.\n(2) STATE-LOCALITY IS LOST. The decidability front's one working anchor for the stability modal is that it is state-local -- one bit per cell, `stab_mem_tpOf_iff_cell` resting on `stab_state_only`. The open-future and open-past modals are not state-local; they quantify over agreement classes through the time of evaluation. Routing the stability modal through them discards that anchor. Phase 1 must measure what actually depends on it: enumerate the consumers of `stab_state_only`, `stab_mem_tpOf_iff_cell` and the cell-level stability reasoning, and say for each whether it is reachable from `OpenFormula` at all or lives purely on the other language's side of the embedding. The two languages are separate inductives, so a consumer that only ever sees the other language's stability constructor is NOT affected by removing this one -- establishing that is the cheapest possible route to a clean removal, and it may well be the actual situation. Do not assume it; measure it.\n\nWHAT REMOVAL MEANS IF PHASE 1 CLEARS IT. Delete the stability constructor from `OpenFormula`; introduce the stability modal as notation or an abbreviation over the open-past and open-future composite; re-derive every landed stability result at `OpenFormula` from the composite form, including the pointwise S5 laws, the strength ordering, the reversal transport (the reflection operation fixes the stability modal and exchanges the two open modals, so the reflection arms change shape and must be re-proved rather than re-cited), and the stability arms of the truth recursion, the axiom type, the derivation tree and the soundness recursion. Both conservativity directions over the other language must be re-stated, since the embedding's stability clause is exactly what changes. The regularity precondition goes in the docstring of every result that now needs it, and in the theorem-index row's frame-class column.\n\nORDERING, AND IT IS A HARD GATE. This task must run AFTER the L^▷ proof system, the L^▷ substitution closure and the L^▷ incompleteness transfer have landed, and BEFORE the display-name rename. Rationale: each of those three lands new declarations that pattern-match on `OpenFormula`'s constructors, so removing a constructor first would force them to be written twice; and the rename should operate on a language whose constructor set is final. Declare all three as dependencies.\n\nEXPLICITLY NOT IN SCOPE. Do not touch the other language's own stability constructor, its axiom type or its derivation tree -- the standing ruling against mutating those inductives is unaffected by this task and the landed incompleteness and independence results depend on them unchanged. No completeness claim. No decidability claim. Do not weaken a landed result to a regular-class-only form in order to make removal go through without saying so: any result whose frame class narrows is a recorded consequence of this task, listed in the summary, not a silent edit.\n\nTHE HONEST OUTCOMES, and all three are complete. (a) Removal lands, with the regularity precondition documented. (b) Removal is refused on obstruction (1) or (2), with the blocking consumer named and compiled evidence recorded under the evidence-probe convention. (c) Removal lands at the regular class only, with the off-regular behaviour change stated explicitly in the module docstring and the theorem-index rows. A refusal with a named cause is a complete outcome and must not be reported as a failure.\n\nLAYERING AND GATES. Add any new file's row to the layer table in `scripts/measure-refactor-partitions.py` in the same phase as the file or the cycle checker FAILS naming it. One theorem-index row per changed result, with the frame class explicit -- a result whose class narrows and whose row does not say so is a defect. Re-run the module-invariants emitter rather than hand-editing a README inventory block.\n\nVERIFICATION GATE. Guarded scoped build green, then the unscoped build; never bare `lake`. Zero `sorry`, zero vacuous definitions. The bare module-invariants check and the metalogic-cycles check both green. Axiom sets measured per declaration and diffed against the pre-removal baseline, captured in Phase 1 before any edit: the composite form routes through two operators whose own proofs may carry choice where the primitive's did not, and a widened axiom set is a recorded cost of this task, not a new baseline.",
+      "description": "PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise. SCOPE REVISED: DECISION RECORD ONLY. No removal is to be attempted, and no constructor of `OpenFormula` is to be deleted or re-expressed as notation: the stability modal stays primitive in both L-plus and L^▷. The deliverable is the Phase 1 gate alone, as a report: (1) whether any live consumer evaluates the stability modal off the regular class, where the backward half of the definability biconditional fails; (2) what losing state-locality would cost the decidability front and the atomization route; (3) a verdict on whether removal would be sound relative to this tree, recorded for a future ruling and not acted on. Every sentence below that names removal as a deliverable is superseded by this paragraph. Dependencies are reduced to the L^▷ proof-system task alone.\n\nIMPLEMENTATION TASK WITH A DECISION GATE IN PHASE 1, and the gate is the point: remove the stability modal from `OpenFormula`'s primitive constructors, replacing it with notation for the open-past-of-open-future composite, OR record with compiled evidence why it cannot be removed. Entering this task committed to removal is the way to get it wrong; the removal is desired and must be attempted, but two specific obstructions are on record and the task is accountable to them.\n\nTHE REQUEST. The stability modal is definable in L^▷ -- the biconditional is landed, in both associations -- so carrying it as a tenth primitive constructor is redundant, and the maintainer's standing preference is that it go. This task owns that removal.\n\nTHE TWO OBSTRUCTIONS, BOTH ON RECORD AND NEITHER A GUESS. Read both before planning.\n(1) THE BICONDITIONAL IS CLASS-RESTRICTED. The forward half holds on every regular task frame; the backward half needs `[F.IsRegular]`. So a syntactic abbreviation does not preserve the stability modal's truth conditions off the regular class -- it changes the language's meaning on exactly the frames where the two differ. Establish FIRST, as Phase 1's deliverable, whether any live consumer evaluates the stability modal off the regular class. If none does, removal is sound relative to this tree and the restriction is a documented precondition rather than a blocker. If one does, removal is refused on this ground and the task's outcome is that finding.\n(2) STATE-LOCALITY IS LOST. The decidability front's one working anchor for the stability modal is that it is state-local -- one bit per cell, `stab_mem_tpOf_iff_cell` resting on `stab_state_only`. The open-future and open-past modals are not state-local; they quantify over agreement classes through the time of evaluation. Routing the stability modal through them discards that anchor. Phase 1 must measure what actually depends on it: enumerate the consumers of `stab_state_only`, `stab_mem_tpOf_iff_cell` and the cell-level stability reasoning, and say for each whether it is reachable from `OpenFormula` at all or lives purely on the other language's side of the embedding. The two languages are separate inductives, so a consumer that only ever sees the other language's stability constructor is NOT affected by removing this one -- establishing that is the cheapest possible route to a clean removal, and it may well be the actual situation. Do not assume it; measure it.\n\nWHAT REMOVAL MEANS IF PHASE 1 CLEARS IT. Delete the stability constructor from `OpenFormula`; introduce the stability modal as notation or an abbreviation over the open-past and open-future composite; re-derive every landed stability result at `OpenFormula` from the composite form, including the pointwise S5 laws, the strength ordering, the reversal transport (the reflection operation fixes the stability modal and exchanges the two open modals, so the reflection arms change shape and must be re-proved rather than re-cited), and the stability arms of the truth recursion, the axiom type, the derivation tree and the soundness recursion. Both conservativity directions over the other language must be re-stated, since the embedding's stability clause is exactly what changes. The regularity precondition goes in the docstring of every result that now needs it, and in the theorem-index row's frame-class column.\n\nORDERING, AND IT IS A HARD GATE. This task must run AFTER the L^▷ proof system, the L^▷ substitution closure and the L^▷ incompleteness transfer have landed, and BEFORE the display-name rename. Rationale: each of those three lands new declarations that pattern-match on `OpenFormula`'s constructors, so removing a constructor first would force them to be written twice; and the rename should operate on a language whose constructor set is final. Declare all three as dependencies.\n\nEXPLICITLY NOT IN SCOPE. Do not touch the other language's own stability constructor, its axiom type or its derivation tree -- the standing ruling against mutating those inductives is unaffected by this task and the landed incompleteness and independence results depend on them unchanged. No completeness claim. No decidability claim. Do not weaken a landed result to a regular-class-only form in order to make removal go through without saying so: any result whose frame class narrows is a recorded consequence of this task, listed in the summary, not a silent edit.\n\nTHE HONEST OUTCOMES, and all three are complete. (a) Removal lands, with the regularity precondition documented. (b) Removal is refused on obstruction (1) or (2), with the blocking consumer named and compiled evidence recorded under the evidence-probe convention. (c) Removal lands at the regular class only, with the off-regular behaviour change stated explicitly in the module docstring and the theorem-index rows. A refusal with a named cause is a complete outcome and must not be reported as a failure.\n\nLAYERING AND GATES. Add any new file's row to the layer table in `scripts/measure-refactor-partitions.py` in the same phase as the file or the cycle checker FAILS naming it. One theorem-index row per changed result, with the frame class explicit -- a result whose class narrows and whose row does not say so is a defect. Re-run the module-invariants emitter rather than hand-editing a README inventory block.\n\nVERIFICATION GATE. Guarded scoped build green, then the unscoped build; never bare `lake`. Zero `sorry`, zero vacuous definitions. The bare module-invariants check and the metalogic-cycles check both green. Axiom sets measured per declaration and diffed against the pre-removal baseline, captured in Phase 1 before any edit: the composite form routes through two operators whose own proofs may carry choice where the primitive's did not, and a widened axiom set is a recorded cost of this task, not a new baseline.",
       "file_scope": [
         "FormalSystem/OpenLanguage/",
         "FormalSystem/OpenLanguage.lean",
@@ -8026,9 +8559,7 @@
       "artifacts": [],
       "session_id": "sess_1793898929_f3f6c6",
       "dependencies": [
-        856,
-        874,
-        875
+        856
       ],
       "audit_verdict": {
         "proposal": {
@@ -8040,7 +8571,8 @@
           "mechanical": true,
           "semantic": true
         }
-      }
+      },
+      "priority": "low"
     },
     {
       "project_number": 877,

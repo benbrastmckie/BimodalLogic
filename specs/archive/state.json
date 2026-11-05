@@ -1952,6 +1952,36 @@
   ],
   "completed_projects": [
     {
+      "project_number": 128,
+      "project_name": "open_set_operator_dense_continuous",
+      "status": "abandoned",
+      "task_type": "lean4",
+      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete ℤ the interior is trivial (discrete topology), but on dense ℚ and continuous ℝ it captures neighborhood-stable truth: Int(φ) true at t iff φ holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(φ)→φ, Int(φ)→Int(Int(φ))). Phase 4: interaction with temporal operators and S5 □. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) — completeness may require non-standard techniques.",
+      "dependencies": [],
+      "created": "2026-05-13T07:11:21Z",
+      "last_updated": "2026-06-01T23:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "topic": "frame-extensions",
+      "priority": "low",
+      "abandoned": "2026-11-05T18:20:19Z"
+    },
+    {
+      "project_number": 127,
+      "project_name": "time_addition_operator",
+      "status": "abandoned",
+      "task_type": "lean4",
+      "description": "Add time addition operator (+) to the bimodal logic TM. φ + ψ is true at (τ, x) iff ∃ y,z with x = y+z, φ true at (τ,y), ψ true at (τ,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/□. Completeness (ternary canonical model) and decidability are open research problems — defer to later phases.",
+      "dependencies": [],
+      "created": "2026-05-13T07:11:21Z",
+      "last_updated": "2026-06-01T23:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "topic": "frame-extensions",
+      "priority": "low",
+      "abandoned": "2026-11-05T18:20:04Z"
+    },
+    {
       "project_number": 835,
       "project_name": "plan_format_baseline_relative_gate_criteria",
       "status": "abandoned",

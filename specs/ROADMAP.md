@@ -5,60 +5,67 @@ mathematics and the (C)/(S)/(W) verdict table live in
 `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (the authority); per-task detail in
 `specs/TODO.md`; finished work in `specs/CHANGE_LOG.md` and `specs/archive/`.*
 
-**The aim is completeness and decidability of L^▷**, the open-modal language, and the end state is
-a repository presenting **two** object languages: L and L^▷ — the latter displayed as `L⁺` once
-the display-name consolidation runs (877). Every other language, the stability-modal language
-included, survives as an internal layer that the extensions embed, not as a front a reader must
-learn.
+**The aim is completeness and decidability of L⁺**, the stability-modal language: L plus `⊡`.
+The repository presents L and L⁺ as its two fronts. L⁺ is the fragment of the Logos theory's
+counterfactuals with trivial constitutive antecedents — `□φ` is `⊤ □→ φ` and `⊡φ` is
+`¬⊥ □→ φ`, the antecedent verified by every state and by the null state alone respectively — and
+`⊡`'s state-locality is the one anchor every decidability engine in this tree rests on.
 
-Both fronts bottom out in the stability-modal language rather than in `▷`/`◁`, so Stage 1 below
-is still the binding work. `▷`/`◁` decide *where to look for an engine*; they close neither gap.
+**L^▷ is a secondary line of investigation, kept and not abandoned** (user ruling, 2026-11-05).
+At ZTime and RTime its results arrive from L⁺ by translation; at Base and Dense `▷` says strictly
+more and is a research problem of its own, strictly harder than the L⁺ one. Its tasks sit in the
+last stage below and are never dispatched ahead of, or batched with, L⁺ critical-path work.
 
-## The consolidation, and what it is not
+## L^▷: what is landed, and what is parked
 
-The end state is reached by **transfer, not removal**. L^▷ is a separate inductive embedding the
-stability-modal language constructor-to-constructor via `ofPlus`; that embedding plus `⊡φ ↔ ▷◁φ`
-*is* the absorption, a theorem rather than a migration. The transfer programme is 872–877:
+L^▷ is a separate inductive embedding L⁺ constructor-to-constructor via `ofPlus`. Landed or at
+its final phase: the proof system with soundness, conservativity over TM⁺ in both directions and
+over TM, and the collapse under `Determined` (856); `⊡φ ↔ ▷◁φ` on every regular frame (833); the
+definability split by frame class (854, 859); the conditional transfer corollaries (868). The
+ledger of L⁺ headline results against their L^▷ counterparts is 872's report.
 
-| Task | What it transfers | Gate |
+The exploration backlog, every row `priority: low`:
+
+| Task | What it investigates | Gate |
 |---|---|---|
-| 872 | the ledger: one row per stability-language headline result, its L^▷ counterpart, and that counterpart's status | none |
 | 873 | `OpenLanguage/Subformulas.lean` — subformula closure, `Finset`, decidable membership, and `subformulas_ofPlus` | none |
-| 874 | `OpenLanguage/Substitution.lean` — `substOpen`, `OpenAxiom.ofTMSubst`, and the **direct L→L^▷ embedding** | 856 |
+| 874 | `OpenLanguage/Substitution.lean` — `substOpen`, `OpenAxiom.ofTMSubst`, and the direct L→L^▷ embedding | 856 |
 | 875 | incompleteness at Base, through both conservativity directions; the limit-closure schema in `▷`-form at Base/Dense | 856, 871 |
-| 876 | removal of `⊡` as an `OpenFormula` primitive | 856, 874, 875 |
-| 877 | the display-name consolidation: `L^▷` becomes `L⁺`, the stability language is renamed | all of the above |
+| 869 | open-modal truth invariance along a ray-agreement lifting | none |
+| 860 | the `colourClock` bridge discharging `hmarkers` in the Base/Dense non-definability result | none |
+| 876 | **decision record only**: whether `⊡` *could* be removed as an `OpenFormula` primitive, and at what cost. No removal is attempted | 856 |
 
-**872 runs first and is cheap.** Two counterpart files were found absent by hand (873, 874); a
-systematic pass is likely to find more, and finding them one at a time is the expensive way.
+**872's six proposals (T1–T6) are not filed.** They stand in its report as the rest of this
+backlog; when L^▷ work resumes, T1 (the state-locality fragment) and T3 (non-redundancy of the
+new axiom block) are the first two to file.
 
-**`Open` identifiers STAY.** 877 is prose-only: `OpenFormula`, `OpenAxiom`, `OpenDerivationTree`,
-`eraseOpen`, `ofPlus` and every `open`-prefixed declaration keep their Lean names. A measured
-alternative that renamed identifiers to `Plus*` was rejected at ~19,000 mechanical edits across
-412 of the tree's 729 Lean files, for no gain over changing the gloss. What 877 must settle at
-plan time is the stability-modal language's new display name, since the two cannot both be `L⁺`.
+**Names stay as they are.** The stability-modal language is displayed `L⁺` and the open-modal
+language `L^▷`; `OpenFormula`, `OpenAxiom`, `OpenDerivationTree`, `eraseOpen`, `ofPlus` and every
+`open`-prefixed declaration keep their Lean names, as does the whole `Plus` family. The
+display-name consolidation (877) is abandoned by ruling.
 
 ## Rulings in force
 
 Each is a user ruling or a recorded decision an agent may not override. The argument lives in the
 cited record, not here.
 
+- **L⁺ is the front; L^▷ is secondary** (2026-11-05). Three grounds, each on record: both L^▷
+  gaps reduce to L⁺ (below); the open modals are closed on the decidability front (855); and
+  `⊡`, like `□`, is a Logos counterfactual with a trivial constitutive antecedent, where `▷`/`◁`
+  need the tensed-antecedent clause. L^▷ tasks are demoted, not abandoned.
 - **Decidability before completeness** (2026-11-02). Deciding validity makes the valid set r.e.,
   and Craig then gives a recursive axiomatization. Caveat: Craig buys *an* axiomatization, not a
   natural one.
 - **No constructor is added to `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`, and the
   stability-modal language is not renamed in Lean.** Absorb-and-rename is REFUSED: mutating that
   inductive would turn `plus_incomplete_base`, `blc_not_plusDerivable_base` and
-  `not_plus_complete_base` into statements about a different language. It stays embedded, and 877
-  changes only its gloss.
-- **`⊡`'s removal from `OpenFormula` is 876's, and it is gated on a decision, not assumed.** The
-  maintainer's preference is that the primitive go, since `⊡φ ↔ ▷◁φ` is landed (833). Two
-  obstructions are on record and 876 is accountable to both: the biconditional's `←` half needs
-  `[F.IsRegular]`, so an abbreviation changes `⊡`'s truth conditions **off the regular class**;
-  and the decidability front's one working anchor for `⊡` is state-locality
-  (`stab_mem_tpOf_iff_cell`, one bit per cell), which `▷`/`◁` do not have. A refusal with a named
-  blocking consumer is a complete outcome. Until 876 lands, **`⊡` stays primitive** and
-  "definable" means a proved biconditional with the primitive retained.
+  `not_plus_complete_base` into statements about a different language.
+- **`⊡` stays primitive in both languages** (2026-11-05). "Definable" means the proved
+  biconditional `⊡φ ↔ ▷◁φ` (833) with the primitive retained. Two obstructions to removal are on
+  record: the biconditional's `←` half needs `[F.IsRegular]`, so an abbreviation changes `⊡`'s
+  truth conditions **off the regular class**; and the decidability front's one working anchor
+  for `⊡` is state-locality (`stab_mem_tpOf_iff_cell`, one bit per cell), which `▷`/`◁` do not
+  have. 876 is a decision record measuring both, not a removal.
 - **`▷`'s definability is SETTLED, and the verdict splits by frame class** (854, then 859).
   - **ZTime/RTime: POSITIVE.** `▷`/`◁` are definable uniformly in their argument — a translation
     `tr` with `OpenTruthAt M τ t φ ↔ PlusTruthAt M τ t (tr φ)` at every model, world and time.
@@ -91,7 +98,8 @@ cited record, not here.
   makes TM⁺ already the proof system through `tr`. Past that, L^▷ completeness reduces to a
   question answered negatively or not at all: TM⁺ is **incomplete** at Base
   (`plus_incomplete_base`) and completeness of any recursive extension is open at every class.
-  That question is 865's, discharged as research; its live successors are 870 and 871.
+  That question was 865's, discharged as research; its owner is now **879**, with 870, 871 and
+  867 as prerequisites.
 - **Gate asymmetry.** `(P1)` gates at Base/Dense/RTime, where its r.e. status is open with a
   located obstruction. At ZTime it is settled affirmatively *on paper*, so `(P2)` is gated on
   `(P0b)` alone, **not** on Stage 1, which adds a constructive settlement there.
@@ -101,7 +109,9 @@ cited record, not here.
 - **The MSO/Rabin route reaches ZTime only, and stays a paper result** (866). `▷`/`◁` **do ride**
   step 4's encoding, at the cost of an amendment at step 1. Mathlib has no MSO, no ω-automata and
   no Rabin tree theorem, so step 5 is refused outright rather than deferred. It does **not** close
-  `Decidable (PlusValidZTime φ)` constructively, which is still Stage 1's aim.
+  `Decidable (PlusValidZTime φ)` constructively, which is still Stage 1's aim. **Making the paper
+  argument a proof is 878**: the countable-model step (gap G1) and the forest-versus-single-tree
+  gap, with held citations. It is the hedge against the Lean engine and runs beside it.
 - **Presentation (a) for 761** (819): the set-valued per-state datum in maximum-certified form
   (`D` over `Q × ClType φ × K`, `ladderRealized` the fibre equation). **No tuple index is to be
   stated at any parameters.**
@@ -113,14 +123,14 @@ cited record, not here.
 ## Run these next
 
 ```bash
-/orchestrate 872                 # FIRST, and cheap: the transfer ledger — makes "L⁺ fully transferred" measurable and orders 873-877
-/orchestrate 856 --hard          # IN FLIGHT: the L^▷ proof system. Prerequisite for 874, 875, 876, 877 and for any L^▷ completeness statement
-/orchestrate 873                 # ungated, pure syntax: the L^▷ subformula closure
-/orchestrate 871                 # small corrective repair; gates 875
-/orchestrate 870                 # the oriented-forest Saturation lemma; unblocks the AA⊡ layer-split route
+/orchestrate 878 --lit           # FIRST on the L⁺ front, and cheap: make the paper proof of ZTime decidability rigorous (gap G1, the forest gap)
+/orchestrate 870,871             # the oriented-forest Saturation lemma and the corrective repair; both feed 878 and 879
 /orchestrate 853,838 --hard --lit # Stage 1: the Phase 11.8 insertion cascade, batched with its blocker
-/orchestrate 867 --hard --lit    # Gabbay separation: discharges SeparationOver, makes tr executable, and is what the landed ZTime decidability reduction waits on
-/orchestrate 869                 # small and self-contained: open-modal invariance along a ray-agreement lifting
+/orchestrate 856 --hard          # IN FLIGHT at its final phase: the L^▷ proof system. Finish it; it closes the L^▷ layer as it stands
+/orchestrate 872                 # IN FLIGHT: the transfer ledger. Concludes as a record; its proposals are NOT filed
+/orchestrate 867 --hard --lit    # Gabbay separation: first consumer is 879's doubled-automaton route, second the L^▷ translation. After the decidability front
+/orchestrate 879 --lit           # the L⁺ ZTime completeness programme's owner. Research; gated on 870, 871, 867
+/orchestrate 880                 # after 856: reposition L^▷ in the READMEs and record the Logos reading of ⊡
 /todo                            # 19 completed tasks read the open count high — safe to run now (864 has landed)
 ```
 
@@ -144,7 +154,7 @@ false. Re-planning the area from 838's two-sided framing is barred — read 844'
 and 838's `.blocker-research.json` first.
 **Coverage appendix (uncovered tasks)**:
 ```
-/orchestrate 127,128,178,502,570,604,664,714
+/orchestrate 178,502,570,604,664,714
 /orchestrate 729,730,741,743,751,752,753,767
 /orchestrate 768,769,770,772,774,777,779,780
 /orchestrate 781,785,787,803,804,810,813,817
@@ -155,25 +165,18 @@ and 838's `.blocker-research.json` first.
 ## Next batches
 
 ```bash
-# Stage 1 — decidability of the stability-modal language; the binding front for BOTH L^▷ gaps
+# Stage 1 — decidability of L⁺ at ZTime: the binding front. Paper proof and Lean engine side by side
+/orchestrate 878 --lit           # the paper proof made rigorous: gap G1 and the forest gap. The hedge against the engine
 /orchestrate 853,838 --hard --lit # the insertion cascade with its blocker. Shares LadderAgree.lean
 /orchestrate 837                 # Challenge-statement repair (researched); barred from implement dispatch by Statement Fidelity
 /orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — needs 761 resumed
 /orchestrate 714,781 --hard      # sliced-certificate internals (781 researched)
-# Stage 2 — the L^▷ front: proof system, then the transfer programme in dependency order
-/orchestrate 856 --hard          # the L^▷ proof system. Gates everything below
-/orchestrate 872                 # the transfer ledger (run first; listed here for the stage record)
-/orchestrate 873                 # L^▷ subformula closure (ungated)
-/orchestrate 874                 # L^▷ substitution closure and the direct L→L^▷ embedding
-/orchestrate 870,871             # the Saturation lemma and the corrective repair; 871 gates 875
-/orchestrate 875                 # L^▷ incompleteness transfer; LC schema in ▷-form at Base/Dense
-/orchestrate 876 --hard          # remove ⊡ as an OpenFormula primitive, or record why it cannot go
-/orchestrate 877                 # LAST: the display-name consolidation, L^▷ → L⁺
+# Stage 2 — completeness of L⁺ at ZTime: TM⁺ plus the limit-closure schema
+/orchestrate 870,871             # the Saturation lemma and the corrective repair; both gate 879, and 870 feeds 878's cover step
+/orchestrate 867 --hard --lit    # Gabbay separation over ℤ for PlusFormula; the doubled-automaton route is conditional on it
+/orchestrate 879 --lit           # the programme's owner: target statement, architecture, ingredient table, go/no-go
 # Stage 2b — supporting semantics and metalogic
-/orchestrate 867 --hard --lit    # Gabbay separation; tr's expressiveness value is independent of 866's verdict
-/orchestrate 869                 # open-modal invariance along a ray-agreement lifting
-/orchestrate 860                 # the colourClock bridge discharging hmarkers. Re-point its scope at the landed Independence module first
-/orchestrate 664,559,570 --lit   # corpus ingest, then TM⁺ completeness rounds and the C3 open question
+/orchestrate 664,570 --lit       # corpus ingest and the C3 open question
 /orchestrate 830 --hard          # Γ-generalize decidableValidZTime; does NOT advance either aim
 # Stage 3 — hygiene, build cost, datasets, docs. Off both critical paths
 /orchestrate 803,804,829         # build-cost front: SubformulaProperty elaboration (research + plan landed), fan-in, .lake/build CI cache
@@ -186,7 +189,7 @@ and 838's `.blocker-research.json` first.
 /orchestrate 772,783,753,774     # jq re-serialization; conclusion-stage null-resolution and refuted-REASON recording
 /orchestrate 857,858,810,842     # agent-system defects: handoff-validation crash, --audit-verdict argv overflow, gate16, defect recording
 /orchestrate 768                 # lean-challenge-snapshot — separate cycle from 842 (shares the script)
-/orchestrate 817,818,821,860     # phantom-row inventory, directory-rollup tables (821/860 researched)
+/orchestrate 817,818,821         # phantom-row inventory, directory-rollup tables (821 researched)
 /orchestrate 729,832             # purpose-written .title fields; local-disk reclamation (user decision on data/'s .partial files)
 /orchestrate 257                 # only once the Stage 0 token exists
 # Stage 4 — the long fronts, off both critical paths
@@ -198,6 +201,16 @@ and 838's `.blocker-research.json` first.
 /orchestrate 498,499,500 --hard  # the representation's two sides and their reconciliation
 /orchestrate 125,501,543 --hard  # the Jónsson–Tarski capstone, Until/Since on STSA, MF correspondence
 /orchestrate 177                 # last in the programme: README, docs/ and docstring polish
+# Stage 5 — L^▷ exploration. Secondary, priority low; never ahead of, or batched with, Stages 1–2
+/orchestrate 856 --hard          # the proof system, at its final phase. Finish it
+/orchestrate 872                 # the transfer ledger. A record; its proposals T1–T6 stay unfiled
+/orchestrate 880                 # after 856: READMEs present L^▷ as the extension under exploration; the Logos reading of ⊡
+/orchestrate 873                 # subformula closure (ungated)
+/orchestrate 874                 # substitution closure and the direct L→L^▷ embedding
+/orchestrate 875                 # incompleteness transfer; the limit-closure schema in ▷-form at Base/Dense. Gated on 871
+/orchestrate 869                 # open-modal invariance along a ray-agreement lifting
+/orchestrate 860                 # the colourClock bridge discharging hmarkers. Re-point its scope at the landed Independence module first
+/orchestrate 876                 # decision record only: could ⊡ go as an OpenFormula primitive, and at what cost. No removal
 ```
 
 Each line is one invocation. Batches are dependency-inclusive — the engine re-derives eligibility
@@ -214,11 +227,10 @@ with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 
 - [ ] **Decide when 761 comes off `[HOLD]`.** Resuming it re-serializes the Stage 1 front behind
       its 40-path scope; 763 is gated on it. Recommended: finish 853 first, now that 852 has landed
-- [ ] **Name the stability-modal language** for 877, which cannot run until it has a display name
-      distinct from `L⁺`. Candidates: one formed from its own operator `⊡`, or a role name saying
-      it is the shared internal layer. 877 will propose at plan time if left open
-- [ ] Rule on **127** and **128** (time addition, interior operator): long-standing abandonment
-      candidates, antagonistic to the termination work Stage 4 depends on
+- [ ] **Abandon 877** (ruled 2026-11-05, not yet applied): the abandon gate refuses while 856's
+      session is live, because 877's `file_scope` overlaps 856's at `README.md`. Run
+      `/task --abandon 877` once 856 reports terminal. 127 and 128 are abandoned under the same
+      ruling
 - [ ] Supply the Hugging Face account and token **257** is blocked on
 - [ ] Rule on **428**'s scope. Its one edge (465) is discharged and its `blockers` says "paused at
       4/5 cycles, NOT blocked", so the marker is mis-set: `/revise 428` to add phases for its four
@@ -238,8 +250,7 @@ hold, not the aim.
 
 ## Not batched, and why
 
-- **127, 128** await Stage 0 rulings; **713**, **734** are `HOLD` by ruling, **761** by the
-  Stage 0 item above.
+- **713**, **734** are `HOLD` by ruling, **761** by the Stage 0 item above.
 - **730, 741, 752, 767, 768, 769, 770 are frozen: undispatchable from this repository.** Each
   names an edit target resolving only under the agent-system source store
   (`~/.config/nvim/agent-system/**`; this repo's `.claude-extensions.json` declares no
@@ -294,7 +305,8 @@ out of the immediate run list appears there correctly; its presence is not a gap
   in-source. **482 must re-verify its own anchors first**: `Verified/Refutation/` does not exist
   and `ProofExtraction.lean` holds no verifier declaration.
 - **The MSO decidability formalization is refused outright, not deferred** (866's R2, 865's R4).
-  Before any attempt at that reading, gap G1 in report 03 §1.3 needs a paper repair.
+  Before any attempt at that reading, gap G1 in report 03 §1.3 needs a paper repair, which 878
+  owns.
 - On any `C16` unused-binder red, prefer the signature edit to a `scripts/nolints.json` entry,
   check call sites first, and **do not run `lake exe runLinter --update`**.
 - **A verification claim is only as wide as the flags it was made under.**
@@ -324,10 +336,11 @@ out of the immediate run list appears there correctly; its presence is not a gap
 - **The binding obstruction on the completeness front is closedness of the canonical bundle**
   (559 item (c)), not `(P1)`. PS/US give paste-closure, MF translation-closure, and nothing gives
   closedness. The cure of record is `LC_n` plus progress measures in the state.
-- **R3, the doubled AA⊡ rule, is gated on 870 and informed by 867; not filed.** The
+- **R3, the doubled AA⊡ rule, is gated on 870 and informed by 867; not filed.** It belongs to
+  the programme 879 owns, which files it if its ingredient table calls for it. The
   Auxiliary-Atoms carrier's *Saturation* obligation is what stops it today, and 870 supplies it.
   `NamingRules.lean` lines 57–82 already record the blocker.
-- **Stage 2's one invisible collision** is the one-line import in
+- **The one invisible collision across Stages 2 and 5** is the one-line import in
   `FormalSystem/Semantics/Presheaf.lean`, which no task declares. Batch only tasks already
   serialized by a dependency edge, and re-run `lake build` after each aggregator edit.
 - **803/804** both touch `Verified/Termination/SubformulaProperty.lean` and serialize inside one
