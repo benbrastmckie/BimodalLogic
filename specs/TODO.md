@@ -11,7 +11,7 @@ next_project_number: 881
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,872,873,874,876,878,880 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,878,880 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867,870,871 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861,877 | 429,497,763,783,823,838,873,874,875,876 | agent-system, algebraic-representation, decidability, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -132,7 +132,6 @@ next_project_number: 881
 867 [NOT STARTED] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 871 [NOT STARTED] — Correct LCU docstring and restore omega\_chain...
   └─ 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-872 [IMPLEMENTING] — CLOSING RULING (2026-11-05, user): the six follow-on...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -355,12 +354,13 @@ VERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, th
 ---
 
 ### 872. Open language transfer ledger
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [872_open_language_transfer_ledger/reports/01_open-language-transfer-ledger.md]
 - **Plan**: [872_open_language_transfer_ledger/plans/01_transfer-ledger-conclusion.md]
+- **Summary**: [872_open_language_transfer_ledger/summaries/01_transfer-ledger-conclusion-summary.md]
 
 **Description**: CLOSING RULING (2026-11-05, user): the six follow-on proposals T1-T6 in the Recommendations section of the report are NOT to be filed from this task. They stand recorded in the report as the L^▷ exploration backlog; when L^▷ work resumes, T1 (the state-locality fragment) and T3 (non-redundancy of the new axiom block) are the first two to file. The end state named below is superseded: the aim of the repository is L-plus, with L^▷ a secondary line of investigation -- see specs/ROADMAP.md.
 
