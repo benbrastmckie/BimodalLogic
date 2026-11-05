@@ -1,0 +1,24 @@
+{
+  "phase": 3,
+  "phase_name": "Widen the Chunk Boundary Without Widening the Harvested Name Set",
+  "started_at": "2026-11-05T03:07:00Z",
+  "last_updated": "2026-11-05T03:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-derive three declaration-alternation sites by pattern", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Define widened boundary alternation once, beside the shared identifier pattern", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Apply widened boundary at all three sites (do_check, extract_r1, extract_r2)", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Separate name-harvest filter from boundary match in extract_r1/extract_r2", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Separate body-forcing filter from boundary match", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Update extract_r1 header comment to state the new policy", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Add failing-first test case R11 (abbrev between two theorems)", "status": "done", "files_touched": []},
+    {"id": 8, "description": "Add failing-first test case R12 (anonymous instance between two theorems)", "status": "done", "files_touched": []},
+    {"id": 9, "description": "Add regression assertion R13 (abbrev contributes no name)", "status": "done", "files_touched": []},
+    {"id": 10, "description": "Register new fixtures in manifest.json", "status": "done", "files_touched": []},
+    {"id": 11, "description": "Demonstrate R11/R12 fail before, pass after", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [],
+  "notes": "All edits landed in the source store (~/.config/nvim); files_touched intentionally empty here, same cross-repo rationale as Phases 1-2. Three-role decoupling: LEAN_DECL_BOUNDARY_KW (theorem|lemma|def|instance|abbrev, optional name) for the boundary match; LEAN_DECL_NAME_KW (theorem|lemma|def|instance) + name-present gates name-harvest and body-forcing identically via an is_forced() predicate. Suite rose from 19 to 22 passed, 0 failed, 0 skipped. R11/R12 confirmed red against the Phase-2 commit (sha 330a9309c) -- both exited 0 but the abbrev/instance text was entirely absent from the assembled module, the swallowing defect itself -- and green after this phase's edits. Source-store commit sha 7626d37a9. The two foreign uncommitted files (ladder-counter-observables.md, index-entries.json) remain untouched."
+}

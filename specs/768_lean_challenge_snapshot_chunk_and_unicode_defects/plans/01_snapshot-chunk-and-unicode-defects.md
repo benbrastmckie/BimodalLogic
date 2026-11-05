@@ -292,7 +292,7 @@ covering check is named directly:
 
 ---
 
-### Phase 3: Widen the Chunk Boundary Without Widening the Harvested Name Set [NOT STARTED]
+### Phase 3: Widen the Chunk Boundary Without Widening the Harvested Name Set [COMPLETED]
 
 **Goal**: Stop `abbrev` and anonymous `instance` from being swallowed into the preceding
 declaration's forced-`sorry` body, while leaving the cross-validated identifier set and the
@@ -319,30 +319,39 @@ to be named as a Goal and fail plans that pass today. The three roles are theref
 
 **Tasks**:
 
-- [ ] Re-derive the three declaration-alternation sites by pattern:
+- [x] Re-derive the three declaration-alternation sites by pattern:
       `grep -n 'theorem|lemma|def|instance' agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh`.
-- [ ] Define the widened boundary alternation once, beside the Phase 2 shared identifier pattern,
+      *(completed: confirmed exactly 3 sites, at lines 287, 552, 698 before this phase's edits)*
+- [x] Define the widened boundary alternation once, beside the Phase 2 shared identifier pattern,
       with a header comment stating the three-role separation above so a later reader does not
-      re-conflate them.
-- [ ] Apply the widened boundary at all three sites — `do_check()`'s `DECL_HEADER_RE`,
+      re-conflate them. *(completed: `LEAN_DECL_BOUNDARY_KW` / `LEAN_DECL_NAME_KW`)*
+- [x] Apply the widened boundary at all three sites — `do_check()`'s `DECL_HEADER_RE`,
       `extract_r1()`'s `DECL_RE`, `extract_r2()`'s `DECL_HEADER_RE`. `do_check()` is not itself
       exposed to the swallowing failure mode (it reads only `chunk[:assign_pos]`), but it is fixed
-      with the others so the three sites never disagree about what a declaration is.
-- [ ] Separate the name-harvest filter from the boundary match in `extract_r1()` and
+      with the others so the three sites never disagree about what a declaration is. *(completed)*
+- [x] Separate the name-harvest filter from the boundary match in `extract_r1()` and
       `extract_r2()`, so `declared_names` is built only from name-contributing matches.
-- [ ] Separate the body-forcing filter from the boundary match, so a non-forced declaration's
-      chunk is emitted verbatim.
-- [ ] Update the `extract_r1()` header comment, which currently concedes that it forces the body
+      *(completed: `is_forced()` / `m.group(1) not in NAME_KW` gates)*
+- [x] Separate the body-forcing filter from the boundary match, so a non-forced declaration's
+      chunk is emitted verbatim. *(completed: same `is_forced()` predicate gates forcing too)*
+- [x] Update the `extract_r1()` header comment, which currently concedes that it forces the body
       "regardless of what the block actually contains", to state the policy the code now applies.
-- [ ] Add failing-first test case **R11**: an `abbrev` between two theorems survives into the
+      *(completed)*
+- [x] Add failing-first test case **R11**: an `abbrev` between two theorems survives into the
       assembled module with its real body, and both theorems are still forced to `sorry`.
-- [ ] Add failing-first test case **R12**: an anonymous `instance` between two theorems survives
+      *(completed: fixture plan_r11_abbrev_between.md)*
+- [x] Add failing-first test case **R12**: an anonymous `instance` between two theorems survives
       into the assembled module, and contributes no entry to `theorem_names`.
-- [ ] Add regression assertion **R13**: the `abbrev` of R11 contributes **no** name to
+      *(completed: fixture plan_r12_anon_instance.md)*
+- [x] Add regression assertion **R13**: the `abbrev` of R11 contributes **no** name to
       `theorem_names`, so it is not newly required to appear under `**Goals**:`. This is the
       assertion that pins the decoupling and would fail under a naive one-regex widening.
-- [ ] Add each new fixture to `manifest.json`.
-- [ ] Demonstrate R11 and R12 fail against the pre-phase script and pass after.
+      *(completed)*
+- [x] Add each new fixture to `manifest.json`. *(completed)*
+- [x] Demonstrate R11 and R12 fail against the pre-phase script and pass after. *(completed:
+      verified against the Phase-2 commit sha 330a9309c — both exited 0 but with the
+      abbrev/instance text entirely ABSENT from the assembled module, the swallowing defect
+      itself; both now preserve the real body)*
 
 **Timing**: 2 hours
 
