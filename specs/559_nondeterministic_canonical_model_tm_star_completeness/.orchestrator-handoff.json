@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 12,
+  "phases_completed": 8,
   "phases_total": 8,
-  "summary": "Wrote an 8-phase lean4 plan porting report 03's naming-rule soundness toolkit into the library: L-plus truth invariance along a HistMorphism plus a TwoWayBounded notion and its discrete-time lift derivation in FormalSystem/Semantics/HistoryMorphism.lean, and freshness, the clock rule, Gabbay's IRR rule and the auxiliary-atoms expansion in a new FormalSystem/Metalogic/NamingRules.lean. Pre-planning codebase sweep found the probe's clock product already present as FrameOver.translationProduct with every supporting fact, so deliverables (2) and (3) need no frame construction, and found a located obstruction for deliverable (4): the probe's step-counting List path record is incompatible with TaskFrame.Compositional. Phase 7 is therefore budget-bounded with a sanctioned [COMPLETED WITH EXCLUSIONS] outcome.",
+  "summary": "Ported report 03's naming-rule soundness toolkit into the library against the repository's own FrameOver/WorldHistory/PlusTruthAt. Three of four deliverables landed sorry-free with no new axiom: HistMorphism.plus_invariance (the load-bearing L+ invariance), TwoWayBounded with the discrete-time lift that makes HistMap.lift derivable, and both naming rules (clock_irr_sound, irr_sound) in the new FormalSystem/Metalogic/NamingRules.lean. The fourth, aa_expand, did not port; its obstruction is TaskFrame.Saturation on the unravelled carrier, recorded with machine-checked evidence in the module docstring and a Reasoned Exclusions table. Full lake build green at every phase boundary; verify-deploy.sh passes 15/15; check-module-invariants.sh passes 53 groups with one pre-existing foreign C16 finding.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/summaries/04_naming-rule-soundness-toolkit-summary.md",
+      "summary": "What landed, the six decisions behind it, every plan deviation, the ten measured axiom profiles, and the located aa_expand obstruction."
+    },
+    {
       "type": "plan",
       "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/plans/04_naming-rule-soundness-toolkit.md",
-      "summary": "Eight-phase plan, 12h estimate, waves [[1,4],[2,5],[3,6],[7],[8]], with Lean Challenge Statements pinning all ten committed declarations."
+      "summary": "All eight phases closed; phases 7 and 8 carry Reasoned Exclusions tables."
     }
-  ],
-  "dispatch_seq": 10
+  ]
 }
