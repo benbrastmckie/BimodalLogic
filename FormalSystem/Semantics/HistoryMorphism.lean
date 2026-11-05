@@ -9,6 +9,7 @@ import Mathlib.Data.Int.SuccPred
 import FormalSystem.Semantics.FrameClassValidity
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.TaskModel
+import FormalSystem.PlusLanguage.PlusValidity
 
 /-!
 # History-lifting morphisms and recurrence-freeness
@@ -43,6 +44,13 @@ The intended instance is the projection of a translation product onto its base f
 unwinds every recurrence of the base. It lives with the translation product, not here; this module
 states the abstract notion only.
 
+`HistMorphism.plus_invariance` records the consequence for the stability language L⁺: truth of
+every L⁺ formula is invariant along a history-lifting morphism, and so L⁺ frame validity passes
+from the source to the image (`HistMorphism.plusValidOn`). It is the L⁺ counterpart of the
+`HybridFormula` version (`HybridLanguage/HybridInvariance.lean`'s `regFree_invariance`) and the
+abstract form of the translation-product-specific `plus_invariance`, whose
+`FrameOver.translationProductProj` is its intended instance.
+
 ## Recurrence-freeness
 
 `TaskFrame.RecurrenceFree G` says that no world history of `G` visits a world state twice. It is
@@ -62,6 +70,8 @@ No frame class excludes recurrence — the one-state frame over any temporal ord
 ## Main Results
 
 - `HistMap.mapH_state` — the image history's state is the image of the state (`rfl`)
+- `HistMorphism.plus_invariance` — L⁺ truth is invariant along a history-lifting morphism
+- `HistMorphism.plusValidOn` — L⁺ frame validity travels from the source to the image
 - `trivialFrame_not_recurrenceFree` — the one-state frame has recurrence
 - `exists_sat_not_recurrenceFree` — every frame class contains a frame with recurrence
 
@@ -123,6 +133,104 @@ state. Its propositions are exactly the ones that cannot tell two preimages of o
 def HistMap.pullM {D : TemporalOrder} {F' F : FrameOver D} (g : HistMap F' F)
     (M : TaskModel F.toTaskFrame) : TaskModel F'.toTaskFrame :=
   ⟨fun a p => M.valuation (g.toFun a) p⟩
+
+/-! ### L⁺ truth invariance along a morphism
+
+The language-level payoff of the three preservation items listed in the module header. Every
+clause of the L⁺ recursion consults a world state only through the pulled-back valuation, the
+history-and-time structure, or the same-state relation, so L⁺ truth is carried along any
+history-lifting morphism, and frame validity travels from the source to the image.
+
+This is the L⁺ counterpart of `HybridLanguage/HybridInvariance.lean`'s `regFree_invariance`,
+stated directly at `PlusTruthAt` rather than through the hybrid embedding, and the abstract
+form of `Frames/TranslationProduct.lean`'s `plus_invariance`, whose
+`FrameOver.translationProductProj` is the intended instance.
+-/
+
+section PlusInvariance
+
+open FormalSystem.PlusLanguage
+
+/--
+**L⁺ truth is invariant along any history-lifting morphism**: a formula holds at the pulled-back
+model and a history of the source exactly when it holds at the given model and the image history.
+
+By induction on `φ`. The `box` case uses `onto` and `WorldHistory.ext_state`: every history of
+the image frame is the image of one of the source, so the two unrestricted history quantifiers
+range over matching sets. The `stab` case uses `lift` at the present time: a history of the image
+frame through the image of the present state lifts to a history of the source frame through the
+present state itself. The `atom` case is `rfl` through `HistMap.pullM` and `HistMap.mapH_state`,
+and the three remaining cases are congruences.
+
+State identity across two times is never consulted, which is why no recurrence-freeness
+hypothesis appears: that is exactly the distinction the two extension languages are built to
+exhibit (`HybridLanguage/HybridRecurrence.lean`).
+
+Paper: — (formalization-native; the paper defines no morphism of task frames)
+-/
+theorem HistMorphism.plus_invariance {D : TemporalOrder} {F' F : FrameOver D}
+    (g : HistMorphism F' F) (M : TaskModel F.toTaskFrame) :
+    ∀ (φ : PlusFormula) (τ' : WorldHistory F'.toTaskFrame) (t : ↑D),
+      PlusTruthAt (g.pullM M) τ' t φ ↔ PlusTruthAt M (g.mapH τ') t φ := by
+  intro φ
+  induction φ with
+  | atom p => intro _ _; exact Iff.rfl
+  | bot => intro _ _; exact Iff.rfl
+  | imp a b ih1 ih2 => intro τ' t; exact imp_congr (ih1 τ' t) (ih2 τ' t)
+  | box a ih =>
+    intro τ' t
+    constructor
+    · intro hb ρ
+      obtain ⟨ρ', hρ'⟩ := g.onto ρ
+      have hm : g.mapH ρ' = ρ := WorldHistory.ext_state hρ'
+      have := (ih ρ' t).1 (hb _)
+      rwa [hm] at this
+    · intro hb σ'; exact (ih σ' t).2 (hb _)
+  | untl a b ih1 ih2 =>
+    intro τ' t
+    exact exists_congr fun s => and_congr_right fun _ =>
+      and_congr (ih2 τ' s) (forall_congr' fun u => imp_congr_right fun _ =>
+        imp_congr_right fun _ => ih1 τ' u)
+  | snce a b ih1 ih2 =>
+    intro τ' t
+    exact exists_congr fun s => and_congr_right fun _ =>
+      and_congr (ih2 τ' s) (forall_congr' fun u => imp_congr_right fun _ =>
+        imp_congr_right fun _ => ih1 τ' u)
+  | stab a ih =>
+    intro τ' t
+    constructor
+    · intro hs ρ hρ
+      obtain ⟨ρ', hρ't, hρ'⟩ := g.lift ρ (τ'.state t) t hρ
+      have hm : g.mapH ρ' = ρ := WorldHistory.ext_state hρ'
+      have := (ih ρ' t).1 (hs _ hρ't.symm)
+      rwa [hm] at this
+    · intro hs σ' he
+      exact (ih σ' t).2 (hs _ (congrArg g.toFun he))
+
+/--
+**L⁺ frame validity travels from the source of a morphism to its image.**
+
+Given a model, a history and a time of the image frame, `onto` produces a history of the source
+whose image it is; validity on the source at the pulled-back model then transports along
+`HistMorphism.plus_invariance`.
+
+The direction is the one `Frames/TranslationProduct.lean`'s `plusValidOn_of_prod` records, and
+only this one holds: validity is **not** reflected back from the image to the source, since the
+source carries valuations that are not pulled back from anywhere
+(`frame_validity_not_reflected`).
+
+Paper: — (formalization-native; the paper defines no morphism of task frames)
+-/
+theorem HistMorphism.plusValidOn {D : TemporalOrder} {F' F : FrameOver D}
+    (g : HistMorphism F' F) (φ : PlusFormula)
+    (h : F'.toTaskFrame.PlusValidOn φ) : F.toTaskFrame.PlusValidOn φ := by
+  intro M τ t
+  obtain ⟨τ', hτ'⟩ := g.onto τ
+  have hm : g.mapH τ' = τ := WorldHistory.ext_state hτ'
+  have := (g.plus_invariance M φ τ' t).1 (h (g.pullM M) τ' t)
+  rwa [hm] at this
+
+end PlusInvariance
 
 /-! ## Recurrence-freeness -/
 

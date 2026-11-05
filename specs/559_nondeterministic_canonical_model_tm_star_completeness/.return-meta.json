@@ -1,30 +1,16 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/plans/04_naming-rule-soundness-toolkit.md",
-      "summary": "Eight-phase lean4 plan porting report 03's naming-rule soundness toolkit (two-way bounded morphisms, L-plus invariance, IRR rule, clock rule, auxiliary-atoms expansion) into HistoryMorphism.lean and a new Metalogic/NamingRules.lean."
-    }
-  ],
-  "next_steps": "Run /orchestrate 559 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1793832648_193830_559",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 12,
-    "dependency_waves": [[1, 4], [2, 5], [3, 6], [7], [8]]
+  "status": "in_progress",
+  "started_at": "2026-11-05T00:07:24Z",
+  "artifacts": [],
+  "modified_files": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
   },
-  "memory_candidates": [
-    {
-      "content": "Before planning a port of a standalone Mathlib-only probe into this Lean library, grep the library for the probe's CONSTRUCTIONS, not just its theorem names. Probe 03 of the nondeterministic-canonical-model work reconstructed a 'clock product' digraph from scratch under a build embargo; the library already had FrameOver.translationProduct (FormalSystem/Semantics/Frames/TranslationProduct.lean) carrying every fact the probe derived -- regularity, frame-class preservation, clock_eq, plus_invariance, and translationProductProj : HistMorphism -- and over an arbitrary duration group rather than only the integers. Two of four deliverables collapsed to zero construction work. The dual lesson: the library's HistMorphism structure took the probe's derived 'lift' as a primitive FIELD, so the genuinely novel content was deriving that field from forth/back, not restating the invariance. Probe-to-library ports are reliably mis-scoped in BOTH directions at once -- some items are already present under a different name, while the item that looks like a restatement is the real work.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/559_nondeterministic_canonical_model_tm_star_completeness/plans/04_naming-rule-soundness-toolkit.md",
-      "confidence": 0.82,
-      "suggested_keywords": ["probe-port", "scoping", "lean-library", "existing-construction", "planning-sweep", "translation-product"]
-    }
-  ],
-  "dispatch_seq": 10
+  "metadata": {
+    "session_id": "sess_1793832648_193830",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+  }
 }

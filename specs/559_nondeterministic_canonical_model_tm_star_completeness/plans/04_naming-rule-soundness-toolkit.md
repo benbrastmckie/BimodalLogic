@@ -1,7 +1,7 @@
 # Implementation Plan: Naming-rule soundness toolkit
 
 - **Task**: 559 - Nondeterministic canonical model / TM⋆ completeness (narrowed to the naming-rule soundness toolkit)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md`, `specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md`, `specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/03_morphisms-clock-rule-lc-schema.lean`
@@ -131,7 +131,7 @@ No `roadmap_path` was provided in this dispatch and no roadmap phases are includ
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: L⁺ truth invariance along a history-lifting morphism [NOT STARTED]
+### Phase 1: L⁺ truth invariance along a history-lifting morphism [COMPLETED]
 
 **Goal**: Land deliverable item (1), the load-bearing lemma: `PlusTruthAt` is invariant along any
 `HistMorphism`, between the pulled-back model on the source and the given model on the image.
@@ -140,13 +140,13 @@ Phases within the same wave can execute in parallel.
 
 - [ ] Re-read `FormalSystem/Semantics/HistoryMorphism.lean` immediately before editing (concurrent
       siblings are dispatched this cycle)
-- [ ] Add `import FormalSystem.PlusLanguage.PlusTruth` and `open FormalSystem.PlusLanguage`
+- [x] Add `import FormalSystem.PlusLanguage.PlusTruth` and `open FormalSystem.PlusLanguage` *(deviation: altered — imported `FormalSystem.PlusLanguage.PlusValidity` instead, which re-exports `PlusTruth` and additionally supplies `TaskFrame.PlusValidOn`, without which `plusValidOn` cannot be stated; no cycle: `HistoryMorphism` is absent from PlusValidity's 28-module import closure)*
 - [ ] Prove `HistMorphism.plus_invariance`: the seven-case induction on `PlusFormula`, with
       `HybridLanguage/HybridInvariance.lean`'s `regFree_invariance` as the template — `box` via
       `onto` + `WorldHistory.ext_state`, `stab` via `lift` at the present time, `atom` by `rfl`
       through `HistMap.pullM`/`HistMap.mapH_state`, the four remaining cases by congruence
-- [ ] Add the frame-validity corollary `HistMorphism.plusValidOn` (validity on the source frame
-      follows from validity on the image frame), mirroring `plusValidOn_of_prod`
+- [x] Add the frame-validity corollary `HistMorphism.plusValidOn` (validity on the source frame
+      follows from validity on the image frame), mirroring `plusValidOn_of_prod` *(deviation: altered — the parenthetical reads the direction backwards; only `source ⟹ image` holds, which is the direction `plusValidOn_of_prod` records and the one landed)*
 - [ ] Extend the module docstring's *Main Results* list and the *History-lifting morphisms*
       narrative with the new invariance, stating that it is the L⁺ counterpart of the
       `HybridFormula` version and that the translation-product-specific `plus_invariance` is its
