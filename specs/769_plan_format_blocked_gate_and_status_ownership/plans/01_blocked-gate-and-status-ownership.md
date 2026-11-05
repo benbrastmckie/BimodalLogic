@@ -127,7 +127,7 @@ through the deployed tree.
 
 ---
 
-### Phase 1: Provision 1 -- blocked decision gate reconciled with the final-phase rule [IN PROGRESS]
+### Phase 1: Provision 1 -- blocked decision gate reconciled with the final-phase rule [COMPLETED]
 
 **Goal**: Add one paragraph to `plan-format.md`'s "Decision gates and contingency branches"
 subsection admitting a decision gate already `[BLOCKED]` at plan-authoring time and stating
