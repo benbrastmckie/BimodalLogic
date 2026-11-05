@@ -410,4 +410,142 @@ theorem ofutP_of_futDet [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t
   · intro h σ hag
     exact h σ (hag t le_rfl)
 
+/-! ## Transfer corollaries: decidability and completeness reductions
+
+Every declaration in this section is a **reduction**, not a result about the open-future
+language: each one takes the corresponding L⁺ fact as an explicit hypothesis and no such
+hypothesis is discharged anywhere in this tree. See `## What is NOT proved here` above for the
+full list of undischarged antecedents. -/
+
+/-- **Given** a translation `T` with `OpenValidIn fc φ ↔ PlusValidIn fc (T φ)` and a decision
+procedure for L⁺ validity at `fc`, open-language validity at `fc` is decidable. This is the
+generic form of the reduction: nothing here supplies either hypothesis, and in particular no
+`Decidable (PlusValidIn fc ψ)` is established at any frame class in this tree.
+
+The hypothesis does real work: because `T` is an explicit argument rather than the noncomputable
+`tr`, this compiles as a plain `def` and its `Decidable` instance genuinely runs `hdec` on
+`T φ`.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+translation for them) -/
+def decidableOpenValidIn_of_translation (fc : FormalSystem.ProofSystem.FrameClass)
+    (T : OpenFormula → PlusFormula)
+    (hT : ∀ φ : OpenFormula, OpenValidIn fc φ ↔ PlusValidIn fc (T φ))
+    (hdec : ∀ ψ : PlusFormula, Decidable (PlusValidIn fc ψ)) (φ : OpenFormula) :
+    Decidable (OpenValidIn fc φ) :=
+  letI := hdec (T φ)
+  decidable_of_iff (PlusValidIn fc (T φ)) (hT φ).symm
+
+/-- **Given** a translation `T` and a `Bool`-valued decider `d` for L⁺ formulas, the composite
+`d ∘ T` is the induced `Bool`-valued decider for the open-future language. A definition, not a
+result: it is correct exactly to the extent `d` is, which `openDecider_correct` states. No `d`
+with the required property is exhibited anywhere in this tree.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+translation for them) -/
+def openDecider (T : OpenFormula → PlusFormula) (d : PlusFormula → Bool) :
+    OpenFormula → Bool := fun φ => d (T φ)
+
+/-- **Given** a translation `T` transferring validity and a decider `d` correct for L⁺ validity at
+`fc`, `openDecider T d` is correct for open-language validity at `fc`. Both hypotheses are
+undischarged: no correct `d` is constructed here, at `fc := .ZTime` or anywhere else.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+translation for them) -/
+theorem openDecider_correct (fc : FormalSystem.ProofSystem.FrameClass)
+    (T : OpenFormula → PlusFormula)
+    (hT : ∀ φ : OpenFormula, OpenValidIn fc φ ↔ PlusValidIn fc (T φ))
+    (d : PlusFormula → Bool) (hd : ∀ ψ : PlusFormula, d ψ = true ↔ PlusValidIn fc ψ)
+    (φ : OpenFormula) : openDecider T d φ = true ↔ OpenValidIn fc φ :=
+  (hd (T φ)).trans (hT φ).symm
+
+/-- **Given** separation over ℤ-time frames, the translation slot of the reductions above is
+inhabited at `.ZTime`, by `tr hsep`. Existence only: this says the generic reductions apply at
+`.ZTime` once separation is granted, and nothing about whether their other hypotheses hold.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+translation for them) -/
+theorem exists_translation_ztime (hsep : SeparationOver TaskFrame.IsZTime) :
+    ∃ T : OpenFormula → PlusFormula,
+      ∀ φ : OpenFormula, OpenValidIn FormalSystem.ProofSystem.FrameClass.ZTime φ ↔
+        PlusValidIn FormalSystem.ProofSystem.FrameClass.ZTime (T φ) :=
+  ⟨tr hsep, openValidIn_ztime_iff_tr hsep⟩
+
+/-- **Given** separation over the dense Dedekind-complete frames, the mirror of
+`exists_translation_ztime` at `.RTime`.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+translation for them) -/
+theorem exists_translation_rtime (hsep : SeparationOver TaskFrame.IsRTime) :
+    ∃ T : OpenFormula → PlusFormula,
+      ∀ φ : OpenFormula, OpenValidIn FormalSystem.ProofSystem.FrameClass.RTime φ ↔
+        PlusValidIn FormalSystem.ProofSystem.FrameClass.RTime (T φ) :=
+  ⟨tr hsep, openValidIn_rtime_iff_tr hsep⟩
+
+/-- **Given** separation over ℤ-time frames and decidability of L⁺ validity at `.ZTime` **for the
+one formula** `tr hsep φ`, open-language validity of `φ` at `.ZTime` is decidable. The hypothesis
+is per-formula deliberately: the uniform form is forced `noncomputable` and is then inhabited
+with no hypothesis at all (see `## What is NOT proved here`). `Decidable (PlusValidIn
+FrameClass.ZTime _)` is stated nowhere in this tree, so this reduction is never applied here.
+
+`decidable_of_iff`'s first explicit argument is supplied by hand: `PlusValidIn` does not unfold
+under instance search.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+translation for them) -/
+def decidableOpenValidZTimeOfTr
+    (hsep : SeparationOver TaskFrame.IsZTime) (φ : OpenFormula)
+    (hdec : Decidable
+      (PlusValidIn FormalSystem.ProofSystem.FrameClass.ZTime (tr hsep φ))) :
+    Decidable (OpenValidIn FormalSystem.ProofSystem.FrameClass.ZTime φ) :=
+  letI := hdec
+  decidable_of_iff (PlusValidIn FormalSystem.ProofSystem.FrameClass.ZTime (tr hsep φ))
+    (openValidIn_ztime_iff_tr hsep φ).symm
+
+/-- **Given** separation over the dense Dedekind-complete frames and decidability of L⁺ validity
+at `.RTime` for the one formula `tr hsep φ`, the mirror of `decidableOpenValidZTimeOfTr`.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+translation for them) -/
+def decidableOpenValidRTimeOfTr
+    (hsep : SeparationOver TaskFrame.IsRTime) (φ : OpenFormula)
+    (hdec : Decidable
+      (PlusValidIn FormalSystem.ProofSystem.FrameClass.RTime (tr hsep φ))) :
+    Decidable (OpenValidIn FormalSystem.ProofSystem.FrameClass.RTime φ) :=
+  letI := hdec
+  decidable_of_iff (PlusValidIn FormalSystem.ProofSystem.FrameClass.RTime (tr hsep φ))
+    (openValidIn_rtime_iff_tr hsep φ).symm
+
+/-- **Given** a translation `T` transferring validity at `fc` and a relation `Der` on L⁺ formulas
+that is complete for L⁺ validity at `fc`, every `fc`-valid open-language formula has its
+translation `Der`-derivable. `Der` is an abstract `PlusFormula → Prop`, which keeps this module's
+import surface unchanged; instantiating it at `PlusDerivable fc []` is a one-liner at the point of
+use. Completeness of any L⁺ proof system is open at every frame class, so `hcomp` is undischarged
+and no completeness result for the open-future language follows from this.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+translation for them) -/
+theorem openComplete_of_plusComplete_in {fc : FormalSystem.ProofSystem.FrameClass}
+    (T : OpenFormula → PlusFormula)
+    (hT : ∀ φ : OpenFormula, OpenValidIn fc φ ↔ PlusValidIn fc (T φ))
+    (Der : PlusFormula → Prop)
+    (hcomp : ∀ ψ : PlusFormula, PlusValidIn fc ψ → Der ψ)
+    (φ : OpenFormula) (hv : OpenValidIn fc φ) : Der (T φ) :=
+  hcomp _ ((hT φ).mp hv)
+
+/-- **Given** a translation `T` transferring validity at `fc` and a relation `Der` sound for L⁺
+validity at `fc`, `Der`-derivability of a translation yields open-language validity of the
+original. The soundness mirror of `openComplete_of_plusComplete_in`, free from the same `iff`;
+`hsound` is likewise undischarged here.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+translation for them) -/
+theorem openValid_of_plusSound {fc : FormalSystem.ProofSystem.FrameClass}
+    (T : OpenFormula → PlusFormula)
+    (hT : ∀ φ : OpenFormula, OpenValidIn fc φ ↔ PlusValidIn fc (T φ))
+    (Der : PlusFormula → Prop)
+    (hsound : ∀ ψ : PlusFormula, Der ψ → PlusValidIn fc ψ)
+    (φ : OpenFormula) (hd : Der (T φ)) : OpenValidIn fc φ :=
+  (hT φ).mpr (hsound _ hd)
+
 end FormalSystem.Metalogic.Expressiveness

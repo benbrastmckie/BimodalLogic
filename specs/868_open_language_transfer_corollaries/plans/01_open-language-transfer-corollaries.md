@@ -1,7 +1,7 @@
 # Implementation Plan: Open-Language Transfer Corollaries
 
 - **Task**: 868 - Open-language transfer corollaries (completeness and decidability reductions at ZTime and RTime)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/868_open_language_transfer_corollaries/reports/01_open-language-transfer-corollaries.md
@@ -169,38 +169,38 @@ end FormalSystem.Metalogic.Expressiveness
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Land the Nine Reduction Declarations [NOT STARTED]
+### Phase 1: Land the Nine Reduction Declarations [COMPLETED]
 
 **Goal**: The nine declarations of `## Lean Challenge Statements` exist in the host module,
 sorry-free, with hypothesis-leading signatures and a `Paper:` line on each docstring.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` immediately
+- [x] Re-read `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` immediately
       before editing (sibling concurrency).
-- [ ] Add a new `/-! ## Transfer corollaries: decidability and completeness reductions -/` section
+- [x] Add a new `/-! ## Transfer corollaries: decidability and completeness reductions -/` section
       at the end of the namespace body, after `ofutP_of_futDet` and before
       `end FormalSystem.Metalogic.Expressiveness`.
-- [ ] Add `decidableOpenValidIn_of_translation` with body
+- [x] Add `decidableOpenValidIn_of_translation` with body
       `letI := hdec (T φ); decidable_of_iff (PlusValidIn fc (T φ)) (hT φ).symm`. It MUST compile
       as a plain `def` -- no `noncomputable`.
-- [ ] Add `openDecider` with body `fun φ => d (T φ)`, and `openDecider_correct` with body
+- [x] Add `openDecider` with body `fun φ => d (T φ)`, and `openDecider_correct` with body
       `(hd (T φ)).trans (hT φ).symm`.
-- [ ] Add `exists_translation_ztime` with body `⟨tr hsep, openValidIn_ztime_iff_tr hsep⟩`, and
+- [x] Add `exists_translation_ztime` with body `⟨tr hsep, openValidIn_ztime_iff_tr hsep⟩`, and
       `exists_translation_rtime` with body `⟨tr hsep, openValidIn_rtime_iff_tr hsep⟩`.
-- [ ] Add `decidableOpenValidZTimeOfTr` and `decidableOpenValidRTimeOfTr`, each with body
+- [x] Add `decidableOpenValidZTimeOfTr` and `decidableOpenValidRTimeOfTr`, each with body
       `letI := hdec; decidable_of_iff (PlusValidIn FrameClass.<C> (tr hsep φ)) (openValidIn_<c>_iff_tr hsep φ).symm`.
       Supply `decidable_of_iff`'s first explicit argument by hand -- `_` fails instance search
       because `PlusValidZTime` is a plain `def`. Both MUST compile as plain `def`s.
-- [ ] Add `openComplete_of_plusComplete_in` with body `hcomp _ ((hT φ).mp hv)`, and
+- [x] Add `openComplete_of_plusComplete_in` with body `hcomp _ ((hT φ).mp hv)`, and
       `openValid_of_plusSound` with body `(hT φ).mpr (hsound _ hd)`.
-- [ ] Give every one of the nine a `/-- … -/` docstring whose **first clause names the
+- [x] Give every one of the nine a `/-- … -/` docstring whose **first clause names the
       hypothesis**, and which carries a
       `Paper: — (formalization-native; the manuscript sets the restricted modals aside and states
       no translation for them)` line, matching the two landed transfer rows in this same module.
       No docstring may read as if decidability or completeness of L^▷ is established.
-- [ ] Confirm no new `import` line was added: the module's import surface stays byte-identical.
-- [ ] Grep the module for `sorry`, `noncomputable def ` on any `Decidable`-valued declaration, and
+- [x] Confirm no new `import` line was added: the module's import surface stays byte-identical.
+- [x] Grep the module for `sorry`, `noncomputable def ` on any `Decidable`-valued declaration, and
       the prohibited vacuous shapes (`:= True`, `:= trivial`, `:= Unit`). All must be absent.
 
 **Timing**: 1.25 hours
