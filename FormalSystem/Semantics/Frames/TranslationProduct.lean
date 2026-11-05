@@ -67,6 +67,7 @@ supplies the rest (`prodRel_limit`, through `TaskFrame.limit_of_shift`).
   validity over its recurrence-free members, in all three languages
 - `frame_validity_not_reflected` — the converse of `validOn_of_prod` fails
 - `FrameOver.translationProductProj` — the projection is a history-lifting morphism
+- `FrameOver.translationProduct_twoWayBounded` — and a two-way bounded morphism
 
 ## Frame-level validity is not reflected
 
@@ -580,6 +581,23 @@ def FrameOver.translationProductProj [F.IsRegular] : HistMorphism F.translationP
   forth := fun _ _ _ h => ((FrameOver.translationProduct_taskRel F _ _ _).1 h).1
   lift := fun τ a t h => ⟨liftH F τ (a.2 - t), liftH_through F τ a t h, fun _ => rfl⟩
   onto := fun τ => ⟨liftH F τ 0, fun _ => rfl⟩
+
+/-- **The projection is a two-way bounded morphism** — the intended instance of
+`TwoWayBounded` (`Semantics/HistoryMorphism.lean`), and the witness that the notion is not
+vacuous.
+
+`forth` is again the first conjunct of the task relation. `step` is where the clock does the
+work: a task of duration `x` out of the base state `a.1` lifts to the task out of `a` that lands
+on the same base state with the clock advanced by `x`, which is the unique lift the product
+admits. Landed here rather than with `TwoWayBounded` itself because `HistoryMorphism.lean` is
+below this module in the import order.
+
+Paper: — (formalization-native; the paper defines no product of task frames) -/
+theorem FrameOver.translationProduct_twoWayBounded [F.IsRegular] :
+    TwoWayBounded (F' := F.translationProduct) (F := F) Prod.fst where
+  forth := fun _ _ _ h => ((FrameOver.translationProduct_taskRel F _ _ _).1 h).1
+  step := fun a x v h =>
+    ⟨(v, a.2 + x), (FrameOver.translationProduct_taskRel F a x (v, a.2 + x)).2 ⟨h, rfl⟩, rfl⟩
 
 end Frame
 

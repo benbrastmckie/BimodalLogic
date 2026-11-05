@@ -1288,10 +1288,12 @@
       ],
       "next_artifact_number": 5,
       "file_scope": [
+        "FormalSystem.lean",
         "FormalSystem/Metalogic.lean",
         "FormalSystem/Metalogic/NamingRules.lean",
         "FormalSystem/Metalogic/README.md",
         "FormalSystem/README.md",
+        "FormalSystem/Semantics/Frames/TranslationProduct.lean",
         "FormalSystem/Semantics/HistoryMorphism.lean",
         "FormalSystem/Semantics/README.md",
         "README.md",
