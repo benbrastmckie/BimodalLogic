@@ -1,7 +1,7 @@
 # Implementation Plan: Task #872
 
 - **Task**: 872 - Open language transfer ledger
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/872_open_language_transfer_ledger/reports/01_open-language-transfer-ledger.md`
@@ -109,7 +109,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 proposals rest on the negative-existence claims Phase 1 re-verifies, and Phase 3 records what
 Phase 2 produced.
 
-### Phase 1: Reproducibility audit of the ledger's recorded commands [NOT STARTED]
+### Phase 1: Reproducibility audit of the ledger's recorded commands [COMPLETED]
 
 **Goal**: Independently discharge the dispatch's VERIFICATION clause — re-run every command block
 the report records, confirm or correct each asserted value, and pin the tree state the audit was
@@ -117,30 +117,44 @@ performed at.
 
 **Tasks**:
 
-- [ ] Pin the tree state: record `git rev-parse --short HEAD` and `git status --porcelain FormalSystem/`
+- [x] Pin the tree state: record `git rev-parse --short HEAD` and `git status --porcelain FormalSystem/`
       verbatim. Both go into the audit subsection; the second is the baseline Phase 3 re-asserts.
-- [ ] Re-run the Source A block (file counts, total declaration counts, per-file declaration
+      *(completed: not a single static pin — the foreign dirty set changed shape 3 times during
+      the audit; recorded as a timeline instead, see `## Reproducibility Audit` in the report)*
+- [x] Re-run the Source A block (file counts, total declaration counts, per-file declaration
       counts, inductive sizes) and compare each printed value against its inline `# N` comment.
-- [ ] Re-run the Source B block (`docs/theorem-index.md` row counts) and the Source C block
-      (`FormalSystem/Metalogic/README.md`'s TM⁺ metatheory table) the same way.
-- [ ] Re-run the negative-existence block — the ~37-name loop plus the `OpenFormula` abbreviation
+      *(completed: all reproduced exactly)*
+- [x] Re-run the Source B block (`docs/theorem-index.md` row counts) and the Source C block
+      (`FormalSystem/Metalogic/README.md`'s TM⁺ metatheory table) the same way. *(completed: both
+      reproduced exactly against committed state; a live uncommitted edit to theorem-index.md was
+      observed and excluded as evidence)*
+- [x] Re-run the negative-existence block — the ~37-name loop plus the `OpenFormula` abbreviation
       loop — and confirm every name still prints `0` except the documented `openComplete`
       exception. This block is load-bearing for Phase 2: a name that now prints non-zero
-      invalidates the proposal built on it.
-- [ ] Re-run the direct-embedding block and confirm the composite `OpenLanguage.ofPlus ∘
+      invalidates the proposal built on it. *(completed: 2 exceptions found — `forward_open`,
+      `openDerivable_ofPlus_iff` — both tree movement from task 856 phase 13 landing R50, neither
+      touching a T1-T6 premise)*
+- [x] Re-run the direct-embedding block and confirm the composite `OpenLanguage.ofPlus ∘
       PlusLanguage.ofFormula` still occurs nowhere, and that the nine `ofPlus (ofFormula` hits are
-      still all `StarLanguage.ofPlus`.
-- [ ] Re-run the unformalized-hypotheses block and confirm `grep -rnE '^axiom '` still returns no
+      still all `StarLanguage.ofPlus`. *(completed: corrected — the committed count was always 16,
+      not 9 (authoring-time undercount); the unnamed composite also now appears 11 times in a
+      newly-landed file, task 856 phase 13, still no single named declaration)*
+- [x] Re-run the unformalized-hypotheses block and confirm `grep -rnE '^axiom '` still returns no
       `axiom` declaration, and that `hmarkers`, `hinexpr` and `SeparationOver` are still the three.
-- [ ] Re-run the stale-surface block and confirm `OpenLanguage/README.md` still says "semantic
-      only" and still lists six files against nine on disk.
-- [ ] Append one `## Reproducibility Audit` subsection to the report: the pinned tree state, one
+      *(completed: reproduced exactly)*
+- [x] Re-run the stale-surface block and confirm `OpenLanguage/README.md` still says "semantic
+      only" and still lists six files against nine on disk. *(completed: reproduced exactly against
+      committed state; a live uncommitted edit already correcting this claim was observed, task 856
+      phase 15, excluded as evidence since uncommitted)*
+- [x] Append one `## Reproducibility Audit` subsection to the report: the pinned tree state, one
       line per command block (`reproduced` / `diverged: <old> -> <new>`), and for every divergence
       the command that produced the new value. Where a count diverged, correct the asserted number
-      in the body of the report too — never leave the body and the audit disagreeing.
-- [ ] Record an `issue-record.sh` entry for any divergence found (`--class 'plan scope-hypothesis
+      in the body of the report too — never leave the body and the audit disagreeing. *(completed)*
+- [x] Record an `issue-record.sh` entry for any divergence found (`--class 'plan scope-hypothesis
       wrong'` if a count was wrong, `--class 'design-record defect or ambiguity'` if a claim was),
-      or a `kind: win` entry attesting the ledger reproduced clean if nothing diverged.
+      or a `kind: win` entry attesting the ledger reproduced clean if nothing diverged. *(completed:
+      1 issue entry for the Star-side undercount, 2 win entries — clean reproduction of the
+      remaining blocks, and the tree-movement confirmation of the OWED-row ownership table)*
 
 **Timing**: 1 hour
 

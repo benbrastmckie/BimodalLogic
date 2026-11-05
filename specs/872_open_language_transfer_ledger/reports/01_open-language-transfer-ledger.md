@@ -31,7 +31,10 @@ limit arguments)
   **7 NOT APPLICABLE** — so 33 of the 57 applicable rows (58%) are either landed or one named
   theorem away. Eleven of the 24 OWED rows are already owned by a filed task; the **13 with no
   owner** are concentrated in two places: the state-locality fragment and the semantics-layer L⁺
-  support lemmas.
+  support lemmas. **These counts are as enumerated at this report's pin (`4c52993c1`) and are not
+  re-adjudicated by this audit** (out of scope per the conclusion plan's Phase 1 non-goals); see
+  `## Reproducibility Audit`'s tree-movement note for R36, R37, R49 and R50, whose owning task
+  (856) materially advanced during this audit's window.
 - **The dispatch's expected reduction vehicle is the wrong one for most rows, and a better one is
   already landed.** `openValidIn_ofPlus_iff` / `openValid_ofPlus_iff` (semantic conservativity of
   L^▷ over L⁺) and `plusDerivable_openDerivable_iff` (proof-theoretic conservativity, both
@@ -46,12 +49,17 @@ limit arguments)
   no L^▷ reading (`PlusOmegaChain.lean`, `PlusLimitClosure.lean`'s Zorn layer,
   `PlusRayFibre.lean`'s path-space layer, `PlusNonValidities.lean`'s frame constructions). Two are
   **wanted and unowned**: `PlusStateLocal.lean` and `PlusIntTransfer.lean`.
-- **The direct embedding of L into L^▷ exists nowhere — not as a single map and not even as a
-  composition.** `OpenLanguage.ofPlus ∘ PlusLanguage.ofFormula` occurs **zero times** in the tree.
-  (The nine `ofPlus (ofFormula φ)` hits in `StarLanguage/` and `Conservativity/Star/` are
-  `StarLanguage.ofPlus`, a different map into L⋆.) Task 874 names this as a sub-deliverable
-  ("whatever direct embedding `Formula -> OpenFormula`"), which under-states it: five separate
-  ledger rows depend on it.
+- **The direct embedding of L into L^▷ is stated nowhere as a single map or a named
+  composition**, at every committed state checked by this audit. `OpenLanguage.ofPlus ∘
+  PlusLanguage.ofFormula` occurs **zero times as a named declaration**. (The committed count of
+  bare `ofPlus (ofFormula φ)` hits in `StarLanguage/` and `Conservativity/Star/` is **sixteen**,
+  not the originally reported nine — an undercount at authoring time, corrected in
+  `## Reproducibility Audit`; all sixteen are still `StarLanguage.ofPlus`, a different map into
+  L⋆.) Task 874 names this as a sub-deliverable ("whatever direct embedding `Formula ->
+  OpenFormula`"), which under-states it: five separate ledger rows depend on it. **Tree-state
+  note**: task 856 phase 13 landed mid-audit (commit `e3392ff51`) using the same *unnamed*
+  pointwise composite eleven more times, in `Conservativity/Open/Forward.lean` — see
+  `## Reproducibility Audit`.
 - **There are three unformalized hypotheses carrying L^▷ results, not two.** The dispatch named
   `SeparationOver` and the `DeltaProp` inexpressibility. The third is **`hmarkers`**, the
   enough-worlds condition on the witness frame of
@@ -59,12 +67,16 @@ limit arguments)
   the module *states* that rather than compiling it, so it remains a hypothesis of the reduction
   theorem. No `axiom` declaration exists anywhere in `FormalSystem/`; these three are the complete
   set.
-- **`FormalSystem/OpenLanguage/README.md` is now factually wrong in its headline claim.** It states
-  "L^▷ is **semantic only**: it has no proof system", and its generated inventory lists six files.
-  The directory now holds nine `.lean` files including `OpenAxioms.lean` (71 `OpenAxiom`
-  constructors), `OpenDerivation.lean` (`OpenDerivable`, 7 rules) and `OpenErasure.lean`
-  (`plusDerivable_openDerivable_iff`). This is task 856's phase 15 ("ledger surfaces") and is
-  owned, but it is the single most misleading surface in the tree right now.
+- **`FormalSystem/OpenLanguage/README.md` was factually wrong in its headline claim as of this
+  report's pin and as of every committed state this audit checked.** It stated "L^▷ is **semantic
+  only**: it has no proof system", and its generated inventory listed six files against nine
+  `.lean` files on disk, including `OpenAxioms.lean` (71 `OpenAxiom` constructors),
+  `OpenDerivation.lean` (`OpenDerivable`, 7 rules) and `OpenErasure.lean`
+  (`plusDerivable_openDerivable_iff`). **Tree-state note**: task 856's phase 15 ("ledger surfaces")
+  was observed actively in progress, uncommitted, during this audit, already rewriting this exact
+  claim — see `## Reproducibility Audit`. As of the last committed state this audit checked
+  (`e3392ff51`), the claim was still present uncorrected; this bullet is not updated to "fixed"
+  because the fix was uncommitted and still in flight at observation time.
 - **Four rows are blocked on open mathematics, not on unwritten Lean** and belong to the
   completeness and decidability programmes: TM⁺ completeness at any class, TM⁺ decidability, the
   35-row ZTime certificate front, and the `hinexpr` collapse argument. They are flagged in-row.
@@ -393,21 +405,33 @@ block belongs where 856 is already putting it.
 The question the dispatch asks has a sharper answer than expected.
 
 `grep -rn 'ofPlus (ofFormula\|ofPlus ∘ ofFormula\|ofFormulaOpen\|OpenFormula.ofFormula'` over
-`FormalSystem/**/*.lean` returns **nine hits, all of them `StarLanguage.ofPlus`** — a different
-map, `PlusFormula → StarFormula`, in `StarLanguage/Embedding.lean` and
-`Metalogic/Conservativity/Star/Forward.lean`. `grep -rn 'ofFormula'` over `OpenLanguage/` returns
-**one hit, inside a docstring**, in `OpenLanguage/Formula.lean:240`.
+`FormalSystem/**/*.lean`, re-run against the files this report's own pin (`4c52993c1`) already
+held, returns **sixteen hits, all of them `StarLanguage.ofPlus`** — a different map,
+`PlusFormula → StarFormula`, in `StarLanguage/Embedding.lean` and
+`Metalogic/Conservativity/Star/Forward.lean` and `Conservativity/Star.lean`. The report originally
+asserted nine; this was an undercount at authoring time, not tree movement — the three
+contributing files are byte-identical at `4c52993c1` and at the current tree, confirmed by diff.
+See `## Reproducibility Audit` for the corrected count and its evidence. `grep -rn 'ofFormula'`
+over `OpenLanguage/` returns **one hit, inside a docstring**, in `OpenLanguage/Formula.lean:240`.
 
-So: the composite `OpenLanguage.ofPlus ∘ PlusLanguage.ofFormula` is **not** stated as a single map,
-and is **not** stated as a composition either. It does not appear in the tree at all. Nor does the
-context-level map (`ofCtx`'s analogue). This is the architectural asymmetry with L⋆: for L⋆ the
-composite embedding carries its own named row (`starDerivable_ofFormula_iff`), and for L^▷ it has
-no name at any level.
+So, **at the report's own pinned commit and at every committed state checked by this audit**: the
+composite `OpenLanguage.ofPlus ∘ PlusLanguage.ofFormula` is **not** stated as a single map, and is
+**not** stated as a composition either; it does not appear under `OpenLanguage/`,
+`PlusLanguage/`, or any file committed as of the report's writing. Nor does the context-level map
+(`ofCtx`'s analogue). This is the architectural asymmetry with L⋆: for L⋆ the composite embedding
+carries its own named row (`starDerivable_ofFormula_iff`), and for L^▷ it has no name at any
+level. **Tree-state note** (see `## Reproducibility Audit`): task 856 phase 13 landed
+`Metalogic/Conservativity/Open/Forward.lean` during this audit (commit `e3392ff51`), which uses
+the *unnamed* pointwise composite `ofPlus (ofFormula φ)` eleven times — the first appearance of
+this composite anywhere in the tree. This does not supply the single named map T4 proposes; it
+sharpens T4's case, since the unnamed composite now has concrete, committed consumers depending
+on it being spelled out at every call site.
 
 Five ledger rows are blocked on it: R8 (the formula map), R9 (the context map), R19 (the proof
 embedding of TM into TM^▷ — currently only REDUCIBLE through a two-step composition), R29 (semantic
 conservativity of L^▷ over **L**, as opposed to over L⁺), and R50 (conservativity over TM at all
-four classes, task 856 phase 13, which will need a name for the embedding it is conservative over).
+four classes — **now landed**, see the Reproducibility Audit's tree-movement note; it used the
+unnamed composite rather than introducing a name for the embedding it is conservative over).
 
 Task 874 mentions it as a sub-deliverable in a subordinate clause — "`substOpen_atom` together with
 whatever direct embedding `Formula -> OpenFormula` this file needs". Given that it is the end
@@ -485,10 +509,13 @@ condition" this ledger is supposed to create:
   rigidity schemata, soundness at every class, conservativity over TM⁺ both directions and over TM
   at four classes, and the explicit *no completeness, at any frame class, in any form*). So the two
   surfaces now disagree with each other.
-- Task 856's **phase 15** is titled "ledger surfaces and the full gate" and is `[NOT STARTED]`, so
-  this is owned. Recording it here because until phase 15 runs, a reader of `OpenLanguage/README.md`
-  will conclude the transfer has not started at the proof-system layer, when in fact phases 1–9
-  and 14 of 856 are complete.
+- Task 856's **phase 15** is titled "ledger surfaces and the full gate" and was `[NOT STARTED]` at
+  this report's pin, so this is owned. Recording it here because until phase 15 runs, a reader of
+  `OpenLanguage/README.md` will conclude the transfer has not started at the proof-system layer,
+  when in fact phases 1–9 and 14 of 856 are complete. **Tree-state note** (`##
+  Reproducibility Audit`): by the time of this audit, phases 10–14 had also landed (committed),
+  and phase 15 itself was observed actively in progress, uncommitted, already rewriting this exact
+  README passage — not yet committed as of the last state this audit checked.
 
 One further stale surface, lower stakes: `PlusLanguage/README.md`'s inventory row for
 `Subformulas.lean` reads `<!-- TODO: add description -->`.
@@ -882,10 +909,138 @@ sed -n '362,386p' specs/TODO.md                  # task 868, COMPLETED
 
 ---
 
+## Reproducibility Audit
+
+Performed by the implementation dispatch of the conclusion plan
+(`specs/872_open_language_transfer_ledger/plans/01_transfer-ledger-conclusion.md`, Phase 1), which
+re-ran every command block above and diffed its output against the inline comment recorded next
+to it. Report-only, same as the research dispatch: no file under `FormalSystem/` was written,
+staged, or committed by this audit; every command below is a read (`grep`, `sed`, `awk`, `ls`,
+`wc`, `git show`, `git diff`, `git status`).
+
+### Tree state — not static during this audit, recorded as a timeline rather than a single pin
+
+The report's own pin is `4c52993c1`. This audit's pin moved three times while it ran, each move
+attributable to a concurrent writer (task 856) actively landing its own remaining phases — not to
+any action by this dispatch:
+
+| Observed at (UTC) | `HEAD` | `git status --porcelain FormalSystem/` | Attribution |
+|---|---|---|---|
+| audit start | `3666336a8` | `M Conservativity/Open.lean`, `M Conservativity/Open/README.md`, `?? Conservativity/Open/Forward.lean` | task 856 phase 13, mid-flight, uncommitted |
+| 2026-11-05T18:12:01Z | `e3392ff51` | `M OpenLanguage.lean`, `M OpenLanguage/README.md`, `M` three other `README.md`s | phase 13 had just been **committed** (`e3392ff51`, "task 856 phase 13: Forward.lean and both unconditional conservativity rows for L^open"); phase 15 ("ledger surfaces") now mid-flight, uncommitted |
+| 2026-11-05T18:14:33Z | `e3392ff51` (unchanged) | additionally `M Metalogic/Conservativity/README.md`, `M Metalogic/README.md`, `M docs/theorem-index.md` | phase 15 continuing, uncommitted |
+| 2026-11-05T18:17:55Z | `e3392ff51` (unchanged) | additionally `M` on six more files, including `.lean` files under `OpenLanguage/` (`OpenAxioms.lean`, `OpenDerivation.lean`, `OpenErasure.lean`) and `Conservativity/Open/` (`OpenAxiomValidity.lean`, `OpenSoundness.lean`) and `Deterministic/OpenCollapse.lean` | phase 15 still continuing, uncommitted, now touching docstrings in previously-stable `.lean` files; **this is the last observation taken** — Phase 1 closes here rather than continuing to chase a target that has not stopped moving in 17 minutes of wall-clock time |
+
+Because the foreign dirty set changed shape twice in under three minutes, the plan's Phase 3
+verification criterion ("`git status --porcelain FormalSystem/` matches Phase 1's recorded
+baseline exactly") is **not satisfiable literally** against a single static baseline — the
+baseline it anticipated (a lone uncommitted modification to `OpenAxiomValidity.lean`) had already
+resolved itself before this audit began, and a different, moving one took its place. Phase 3
+should instead verify the Risk table's actual stated concern: that **this dispatch** staged,
+reverted, or committed nothing under `FormalSystem/` — true throughout, confirmed by the fact that
+every command in this audit is a read, and by `git status --porcelain FormalSystem/` showing only
+entries this audit did not create at every one of the three observations above.
+
+**For every re-run below**, the audit uses `git show HEAD:<path>` (or, where unambiguous, direct
+reads of files confirmed clean by `git status`) rather than the live working tree, so that a
+result does not depend on which instant the command happened to be read at. The reference commit
+for "committed state" is `e3392ff51` unless stated otherwise; nothing after it is used as
+authoritative, since it kept moving.
+
+### Per-block verdicts
+
+| Block | Verdict |
+|---|---|
+| Pin (`HEAD`, `git status --porcelain FormalSystem/`) | see timeline above |
+| Source A — `ls`/declaration counts, per-file tables, inductive sizes | **reproduced** exactly (18/10 files, 268/195 decls, every per-file count, 53/71/7/7 inductive sizes) |
+| Source B — `docs/theorem-index.md` row counts | **reproduced** exactly against committed state (442/17/43/15/1/35); live uncommitted edit observed (458/28/14/…), not used — see tree-movement note |
+| Source C — `Metalogic/README.md` table | **reproduced** exactly (12 lines / 10 rows) |
+| Negative-existence block (~37 names + abbreviations) | **reproduced**, with two tree-movement exceptions (`forward_open`, `openDerivable_ofPlus_iff`) — see tree-movement note; no exception touches a T1–T6 proposal premise |
+| Direct-embedding block | **corrected** — see Divergences below |
+| Unformalized-hypotheses block (`axiom` scan, `hmarkers`/`hinexpr`, `SeparationOver` family) | **reproduced** exactly; the 10 `^axiom ` grep hits are all prose, matching the report's own characterization |
+| Reduction-vehicle signatures (V1/V2/V3) | **reproduced** exactly — both unconditional, generic in `{fc : FrameClass}` |
+| Stale-surface block (`OpenLanguage/README.md`, `PlusLanguage/README.md`) | **reproduced** exactly against committed state; live uncommitted edit observed already correcting it — see tree-movement note |
+| "Files referencing OpenLanguage outside `OpenLanguage/`" | **diverged, tree movement** — 20 vs. 18, see tree-movement note |
+| Task-ownership block (`specs/TODO.md`, `specs/856_*/plans/*.md`) | **diverged, tree movement** — see tree-movement note; task 868 status (`[COMPLETED]`) reproduced unchanged |
+
+### Divergences corrected in the report body
+
+1. **Direct-embedding block, Star-side hit count.** The report asserted nine `ofPlus (ofFormula
+   φ)` hits in `StarLanguage/`/`Conservativity/Star/`. Re-running the command against the three
+   contributing files confirms they are byte-identical at `4c52993c1` and at the current tree
+   (`diff` against `git show 4c52993c1:<path>` for each), so this is **not** tree movement — it was
+   an undercount at authoring time. The correct count is **sixteen** (13 in
+   `Conservativity/Star/Forward.lean`, 1 in `Conservativity/Star.lean`, 2 in
+   `StarLanguage/Embedding.lean`), all still legitimately `StarLanguage.ofPlus`. Corrected in the
+   Executive Summary and in "The direct L-to-L^▷ embedding is stated nowhere".
+2. **Direct-embedding block, the composite's first appearance in the tree.** Task 856 phase 13
+   landed `Conservativity/Open/Forward.lean` (new file, committed as `e3392ff51`) during this
+   audit. It uses the bare pointwise composite `ofPlus (ofFormula φ)` eleven times, under `open
+   FormalSystem.OpenLanguage` — i.e. the actual `OpenLanguage.ofPlus (PlusLanguage.ofFormula φ)`
+   composite, not `StarLanguage.ofPlus`. This means the literal claim "the composite occurs zero
+   times in the tree" is no longer true of the live tree (27 total hits, not 9); the
+   decision-relevant claim — no single *named* declaration for the direct embedding exists, at any
+   committed state — remains true and is restated precisely in the body. Flagged as a tree-state
+   note rather than folded silently into the "zero times" wording, per the plan's own Risk-table
+   mitigation for exactly this class of divergence.
+
+### Tree-movement observations (reported as notes, not absorbed into the ledger's row-status table)
+
+Per the conclusion plan's Phase 1 non-goal ("it does not re-enumerate the L⁺ surface from scratch
+or re-adjudicate a row's status"), none of the following changes the TRANSFERRED/REDUCIBLE/
+OWED/NOT APPLICABLE cell for any row. They are recorded here so Phase 2 and Phase 3 — and the
+conclusion stage — have the evidence rather than having to re-derive it.
+
+1. **Task 856 advanced substantially during this audit's window.** At the report's pin, phases
+   1–9 and 14 were `[COMPLETED]` and phases 10–13 and 15 were `[NOT STARTED]`. At this audit's
+   final observation, `specs/856_open_language_proof_system_and_soundness/plans/01_open-proof-system-soundness.md`
+   shows phases **1–14 `[COMPLETED]`** and phase 15 `[IN PROGRESS]` (uncommitted). Task 856's own
+   status in `specs/TODO.md` is still `[IMPLEMENTING]`. This bears directly on:
+   - **R36, R37** (phase 10) and **R49** (phase 12) — both OWED-to-856 in the current ledger table,
+     and both now backed by a committed phase.
+   - **R50** (phase 13, `Conservativity/Open/Forward.lean`) — the file now exists, committed, and
+     declares `forward_open` (+4 class rows), `openDerivable_ofFormula_iff` (+4 class rows, the L ⊂
+     L^▷ row through a `WeakCompleteness` engine for TM) and `openDerivable_ofPlus_iff` (the TM⁺
+     row, unconditional and syntactic) — exactly the declaration set R50's row names. This is the
+     source of the negative-existence exceptions noted in the per-block table above.
+   - **The stale-surface finding** (phase 15) — observed actively being corrected, uncommitted, in
+     exactly the files and exactly the claim this report's own Findings section names.
+2. **"Files referencing `OpenLanguage` outside `OpenLanguage/`" grew from 18 to 20.** The two new
+   files are `Conservativity/Open/OpenSoundness.lean` (phase 12, committed `cf052b005`, after the
+   report's pin) and `Conservativity/Open/Forward.lean` (phase 13, committed `e3392ff51`). Both
+   were already named as the target files for R49 and R50 respectively in the existing ledger
+   table, so this is confirmatory tree movement, not a surprise.
+3. **Source B's live, uncommitted edit** (`docs/theorem-index.md`, +33/-3 lines observed mid-audit)
+   reproduces the report's figures exactly when read from committed state (`git show
+   HEAD:docs/theorem-index.md`, HEAD `e3392ff51`): 442 total rows, 17 `PlusLanguage` rows, 43 `L⁺`
+   mentions, 15 `OpenLanguage`-named rows, 1 `L^▷`-glyph mention, 35 certificate-front rows. The
+   live, in-progress edit (458/28/14/…) is task 856 phase 15 updating the index to reflect its own
+   new declarations; it is not used as evidence here because it was never committed during this
+   audit's window.
+4. **Stale-surface block's live, uncommitted edit** (`FormalSystem/OpenLanguage/README.md`,
+   `OpenLanguage.lean`, and three other `README.md`s) likewise reproduces the report's figures
+   exactly when read from committed state (`git show HEAD:...`, HEAD `e3392ff51`): the "semantic
+   only" sentence present, six files listed in the generated inventory against nine on disk. The
+   live edit removes exactly this sentence and extends the inventory; not used as evidence here
+   for the same reason as (3).
+
+### Issue-log entries for this audit
+
+Recorded via `issue-record.sh` (see `## Issue Log` below and `specs/872_open_language_transfer_ledger/issues.jsonl`):
+one `win` for the clean reproduction of every block Phase 1's task list names explicitly, one
+`issue` for the genuine Star-side undercount (a report defect, corrected above), and one `win` for
+the tree-movement observation itself — task 856 phases 13 and 15 landing live during this audit is
+independent confirmation that the ledger's OWED-row ownership table pointed at the right next
+steps.
+
+---
+
 ## Issue Log
 
 Recorded as they arose, per the dispatch's capture-only contract
 (`specs/872_open_language_transfer_ledger/issues.jsonl`):
+
+**Research dispatch:**
 
 - **win** / `prior-art-reuse` / severity `none` — the three-source enumeration landed cleanly and
   task 856's plan phase table supplied the exact landed/owed split for the L^▷ proof system without
@@ -894,4 +1049,21 @@ Recorded as they arose, per the dispatch's capture-only contract
   `index: "warming"`, so LSP-backed absence is not proof of absence; evidence of record for every
   negative existence claim degraded to a recorded grep, announced in the report.
 
-Nothing else arose: no gate collision, no blocker, no deviation from the dispatch's scope.
+Nothing else arose in the research dispatch: no gate collision, no blocker, no deviation from the
+dispatch's scope.
+
+**Implementation dispatch, Phase 1 (reproducibility audit):**
+
+- **issue** / `plan scope-hypothesis wrong` / severity `minor` — the direct-embedding block's
+  Star-side hit count was undercounted at authoring time (asserted 9, correct value 16 at the
+  report's own pin); corrected in the report body, see `## Reproducibility Audit`.
+- **win** / `prior-art-reuse` / severity `none` — every other command block reproduced exactly
+  against the committed tree, with the same degraded (no-LSP-index) evidence tier as the research
+  dispatch.
+- **win** / `cross-task ownership/territory` / severity `none` — task 856 phases 13 and 15 were
+  observed landing live, in the exact files R50 and the stale-surface finding name, independently
+  confirming the ledger's OWED-row ownership table. See `## Reproducibility Audit` for the full
+  timeline; not absorbed into the ledger's row-status table per Phase 1's non-goal.
+
+Nothing else arose in Phase 1: no gate collision, no blocker beyond the tree-movement notes above,
+and no edit was made under `FormalSystem/` by this dispatch.

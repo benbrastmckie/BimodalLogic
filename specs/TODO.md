@@ -133,7 +133,7 @@ next_project_number: 878
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
 871 [NOT STARTED] — Correct LCU docstring and restore omega\_chain...
   └─ 875 [NOT STARTED] — IMPLEMENTATION TASK, gated on the L^▷ proof system and its... (see above)
-872 [PLANNED] — RESEARCH TASK, cheap and ordering: produce the transfer...
+872 [IMPLEMENTING] — RESEARCH TASK, cheap and ordering: produce the transfer...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -288,7 +288,7 @@ VERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, th
 ---
 
 ### 872. Open language transfer ledger
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: None
