@@ -136,7 +136,11 @@ variable {F : TaskFrame}
 /-- **A pure-future L^▷ formula sees only the history from `t` onward.** The L^▷ counterpart of
 `PlusLanguage.truth_congr_agreeFrom`. The seven shared arms are that proof verbatim; the `opast`
 arm uses no induction hypothesis, since `AgreeFrom · · t` is an equivalence and the two
-quantifier domains coincide. -/
+quantifier domains coincide.
+
+Paper: — (formalization-native; the L⁺ half `PlusLanguage.truth_congr_agreeFrom` supports the
+manuscript's PS and US schemata, and this is its restatement over `OpenTruthAt`)
+-/
 theorem openTruthAt_congr_agreeFrom (M : TaskModel F) {φ : OpenFormula}
     (hφ : IsPureFutureOpen φ) :
     ∀ (τ σ : WorldHistory F) (t : F.Duration), AgreeFrom τ σ t →
@@ -592,7 +596,11 @@ theorem openTruthAt_congr_ext (M : TaskModel F) (φ : OpenFormula) :
 /-- **L^▷ truth commutes with time shift.** The `OpenFormula` twin of `plusTruthAt_timeShift`,
 whose proof shape the seven shared arms follow verbatim. The `ofut` arm shifts the quantified
 history forward in the `→` direction and backward in the `←` direction, closing the latter with
-`openTruthAt_congr_ext`; the `opast` arm is the same argument over `AgreeFrom`. -/
+`openTruthAt_congr_ext`; the `opast` arm is the same argument over `AgreeFrom`.
+
+Paper: — (formalization-native; the L⁺ twin `plusTruthAt_timeShift` has no manuscript
+statement either)
+-/
 theorem openTruthAt_timeShift (M : TaskModel F) (φ : OpenFormula) :
     ∀ (σ : WorldHistory F) (t Δ : F.Duration),
       OpenTruthAt M (σ.timeShift Δ) t φ ↔ OpenTruthAt M σ (t + Δ) φ := by
@@ -2405,7 +2413,11 @@ These are soundness obligations. Nothing here is a completeness claim for L^▷ 
 -/
 
 /-- **Every L^▷ schema is valid at its own minimum frame class.** One arm per
-constructor, **no wildcard arm**; see the section docstring. -/
+constructor, **no wildcard arm**; see the section docstring.
+
+Paper: — (formalization-native; the manuscript supplies no logic for the restricted modals,
+so none of its schemata has a paper anchor)
+-/
 theorem openAxiom_validIn_min {φ : OpenFormula} (ax : OpenAxiom φ) :
     OpenValidIn ax.minFrameClass φ := by
   cases ax with
@@ -2482,7 +2494,11 @@ theorem openAxiom_validIn_min {φ : OpenFormula} (ax : OpenAxiom φ) :
   | untl_paste α φ hα hφ => exact openValidIn_untlPaste hα hφ
 
 /-- **Every L^▷ schema's time reflection is valid at its own minimum frame class.** One arm per
-constructor, **no wildcard arm**; see the section docstring. -/
+constructor, **no wildcard arm**; see the section docstring.
+
+Paper: — (formalization-native; `lem:time-reflection` is stated for the base language, and
+this is its extension to `⊡`, `▷` and `◁` at the level of the axiom schemata)
+-/
 theorem openAxiom_reflect_time_validIn_min {φ : OpenFormula} (ax : OpenAxiom φ) :
     OpenValidIn ax.minFrameClass φ.reflectTime := by
   cases ax with

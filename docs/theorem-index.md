@@ -555,9 +555,23 @@ axiom set of the derivation machinery `StarAxiom` feeds.
 ### L^▷ — the open-future and open-past language
 
 L^▷ is L⁺ plus the manuscript's open-future modal `▷` and open-past modal `◁`
-(`FormalSystem/OpenLanguage/`). It is **semantic only**: the manuscript supplies no logic for the
-restricted modals and none is claimed, so every row below is a validity or a refutation, never a
-derivability result. The rows record that `▷`, not the stability modal `⊡`, is the operator of
+(`FormalSystem/OpenLanguage/`). The manuscript supplies no logic for the restricted modals; the
+proof system below is formalization-native, which is why every row's paper label is `—`. Its
+scope is exactly: a **sound** system at every frame class, **conservative over TM⁺ in both
+directions** and **over TM at all four classes**, and collapsing to TM⁺ under `Determined`.
+
+**No completeness is claimed for L^▷, at any frame class, in any form**, and no row below is
+evidence for one. The canonical-bundle obstruction one language down is untouched:
+`plus_incomplete_base` stands exactly as proved, the Burgess-style limit-closure principle `blc`
+stays a non-theorem, and an LC_n-style schema is still required in L^▷ exactly as it is in L⁺,
+because `▷` and `◁` supply no closure principle.
+
+**The novelty is class-split.** `▷` is L⁺-definable over integer and real time and not definable
+over the base and dense classes (`Metalogic/Expressiveness/OpenFutureElimination.lean` and its
+non-definability companion), so the system is a genuine extension of TM⁺ at `.Base` and `.Dense`
+and a notational variant of it at `.ZTime` and `.RTime`.
+
+The validity and refutation rows record that `▷`, not the stability modal `⊡`, is the operator of
 this semantics that answers to Ockhamist historical necessity.
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
@@ -572,6 +586,22 @@ this semantics that answers to Ockhamist historical necessity.
 | — | `⊡φ ↔ ◁▷φ` pointwise: the same definability in the other order, proved directly | `FormalSystem.OpenLanguage.stab_iff_opast_ofut` | `FormalSystem/OpenLanguage/OpenTruth.lean` | Base | `[propext, Quot.sound]` |
 | — | `⊡φ → ▷◁φ` as a validity | `FormalSystem.OpenLanguage.openValid_stab_imp_ofut_opast` | `FormalSystem/OpenLanguage/OpenValidity.lean` | Base | `[propext]` |
 | — | `▷◁φ → ⊡φ` as a validity, i.e. over every regular task frame | `FormalSystem.OpenLanguage.openValid_ofut_opast_imp_stab` | `FormalSystem/OpenLanguage/OpenValidity.lean` | Base | `[propext, Quot.sound]` |
+| — | The axiom schemata of the L^▷ proof system: the TM⁺ schemata re-declared at `OpenFormula` parameters (53) plus the restricted-modal block (18), 71 constructors with a **wildcard-free** `minFrameClass` | `FormalSystem.OpenLanguage.OpenAxiom` | `FormalSystem/OpenLanguage/OpenAxioms.lean` | — | `[propext]` |
+| — | Derivation trees for L^▷: the same seven rules as TM⋆, TM⁺ and TM, with `OpenAxiom` in the `axiom` rule | `FormalSystem.OpenLanguage.OpenDerivationTree` | `FormalSystem/OpenLanguage/OpenDerivation.lean` | — | `[propext]` pinned:C14 |
+| — | Every L^▷ schema is valid at its own minimum frame class — a 71-arm dispatch with **no wildcard**, so a new constructor is a build error rather than a silent gap | `FormalSystem.Metalogic.Conservativity.openAxiom_validIn_min` | `FormalSystem/Metalogic/Conservativity/Open/OpenAxiomValidity.lean` | — | pcq pinned:C14 |
+| — | Every L^▷ schema's time reflection is valid at its own minimum frame class — the semantic input to the `time_reflection` rule, likewise 71 arms and no wildcard | `FormalSystem.Metalogic.Conservativity.openAxiom_reflect_time_validIn_min` | `FormalSystem/Metalogic/Conservativity/Open/OpenAxiomValidity.lean` | — | pcq pinned:C14 |
+| — | **Soundness of the L^▷ proof system at every frame class** | `FormalSystem.Metalogic.Conservativity.open_soundness_validIn` | `FormalSystem/Metalogic/Conservativity/Open/OpenSoundness.lean` | — | pcq pinned:C14 |
+| — | The L^▷ proof system is consistent at `.Base`: `⊥` is not a theorem | `FormalSystem.Metalogic.Conservativity.open_not_derivable_nil_bot` | `FormalSystem/Metalogic/Conservativity/Open/OpenSoundness.lean` | Base | pcq |
+| — | Backward conservativity over TM⁺: a TM⁺ derivation embeds into an L^▷ derivation at the embedded formula, at every class and context | `FormalSystem.OpenLanguage.openDerivable_of_plusDerivable` | `FormalSystem/OpenLanguage/OpenDerivation.lean` | — | `[propext, Quot.sound]` pinned:C14 |
+| — | Forward conservativity over TM⁺: an L^▷ derivation erases to a TM⁺ derivation of `eraseOpen φ`, at every class and context — unconditionally, with no completeness hypothesis and no engine | `FormalSystem.OpenLanguage.plusDerivable_of_openDerivable` | `FormalSystem/OpenLanguage/OpenErasure.lean` | — | `[propext, Quot.sound]` pinned:C14 |
+| — | **Conservativity over TM⁺, both directions**: on the image of `ofPlus` the two systems prove exactly the same formulas. Syntactic, so it takes no engine argument — deliberately unlike `starConservative_of_plusComplete`, whose hypothesis is false at `.Base` | `FormalSystem.OpenLanguage.plusDerivable_openDerivable_iff` | `FormalSystem/OpenLanguage/OpenErasure.lean` | — | `[propext, Quot.sound]` pinned:C14 |
+| — | The same row re-exported beside the TM rows | `FormalSystem.Metalogic.Conservativity.openDerivable_ofPlus_iff` | `FormalSystem/Metalogic/Conservativity/Open/Forward.lean` | — | `[propext, Quot.sound]` pinned:C14 |
+| — | **Conservativity over TM, both directions, all four classes**: an L formula is an L^▷ theorem at its doubly-embedded form iff it is a TM theorem. Forward by L^▷ soundness plus a `WeakCompleteness` engine for **TM**; no TM⁺ completeness is used | `FormalSystem.Metalogic.Conservativity.openDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Conservativity/Open/Forward.lean` | Base, Dense, ZTime, RTime | pcq pinned:C14 |
+| — | **The collapse under `Determined`**: on a deterministic frame `⊡ = ▷ = ◁ = id`, so L^▷ truth is `eraseOpen`-truth | `FormalSystem.Metalogic.Deterministic.openTruthAt_eraseOpen_of_deterministic` | `FormalSystem/Metalogic/Deterministic/OpenCollapse.lean` | — | `[propext]` |
+| — | The collapse as a validity equivalence: `OpenValidDetIn fc φ ↔ PlusValidDetIn fc (eraseOpen φ)` | `FormalSystem.Metalogic.Deterministic.openValidDetIn_iff_plusValidDetIn_eraseOpen` | `FormalSystem/Metalogic/Deterministic/OpenCollapse.lean` | — | `[propext]` pinned:C14 |
+| — | The landed deterministic completeness recovered through the composite erasure — the conclusion is about `eraseOpen φ`, an L⁺ formula, so no completeness is claimed for the L^▷ system | `FormalSystem.Metalogic.Deterministic.detDerivable_eraseOpen_of_openValidDetIn` | `FormalSystem/Metalogic/Deterministic/OpenCollapse.lean` | Base, Dense, ZTime, RTime | pcq pinned:C14 |
+| — | A pure-future L^▷ formula sees only the history from `t` onward — the L^▷ purity congruence the pasting schemata consume, `PlusLanguage.truth_congr_agreeFrom` being a statement about `PlusTruthAt` and so inapplicable | `FormalSystem.Metalogic.Conservativity.openTruthAt_congr_agreeFrom` | `FormalSystem/Metalogic/Conservativity/Open/OpenAxiomValidity.lean` | — | `[propext]` |
+| — | L^▷ truth commutes with time shift — the `OpenFormula` twin of `plusTruthAt_timeShift`, consumed by the `modal_future` arm | `FormalSystem.Metalogic.Conservativity.openTruthAt_timeShift` | `FormalSystem/Metalogic/Conservativity/Open/OpenAxiomValidity.lean` | — | pcq |
 
 ### The hybrid state language — state registers and the same-state modality
 

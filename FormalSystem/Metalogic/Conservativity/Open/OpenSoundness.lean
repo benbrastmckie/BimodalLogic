@@ -217,7 +217,11 @@ theorem open_soundness_rtime {φ : OpenFormula} (h : OpenDerivable FrameClass.RT
 /-- **The L^▷ proof system is consistent at `.Base`**: `⊥` is not a theorem. (Consistency at the
 wider classes is not a corollary, since derivability lifts upward; each would need its own witness
 frame.) Witness: the trivial frame over `ℤ` with the all-false valuation, mirroring the TM⁺ and
-TM⋆ rows. -/
+TM⋆ rows.
+
+Paper: — (formalization-native; the manuscript supplies no proof system over the restricted
+modals, so it states no consistency claim for one)
+-/
 theorem open_not_derivable_nil_bot :
     ¬ OpenDerivable FrameClass.Base [] OpenFormula.bot := by
   intro h

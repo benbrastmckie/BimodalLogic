@@ -19,9 +19,9 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 724 |
-| Live lines of code | 206,300 |
-| Live comment lines | 130,126 |
+| Live `.lean` files | 732 |
+| Live lines of code | 209,024 |
+| Live comment lines | 131,590 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`
@@ -112,7 +112,7 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   ├── MinusLanguage/            # L⁻ = the tense-primitive (H/G) language, and its logic TM⁻
 │   ├── PlusLanguage/             # L⁺ = L plus the stability modal ⊡, and its logic TM⁺
 │   ├── StarLanguage/             # L⋆ = L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ, and its logic TM⋆
-│   ├── OpenLanguage/             # L^▷ = L⁺ plus the open-future modal ▷ and the open-past modal ◁ (semantic only)
+│   ├── OpenLanguage/             # L^▷ = L⁺ plus the open-future modal ▷ and the open-past modal ◁, with its sound proof system
 │   ├── HybridLanguage/           # L⁺ plus the same-state modality [≡], state registers and the state binder ↓ (semantic only)
 │   ├── QuantLanguage/            # L plus propositional quantifiers ∀p over an admissible family (semantic only)
 │   ├── SourceLanguage/           # the source sentence language (17 operators) and its verified elimination into L
@@ -239,7 +239,7 @@ logic; the other six are this repository's, and the superscripts are Lean-only v
 | **L** | ⊥, →, □, S, U | **TM** (TM_z, TM_d, TM_r) | `FormalSystem/Syntax/` + `ProofSystem/`, `Formula`, `⊢[fc]` |
 | **L⁺** | L plus the stability modal ⊡ | **TM⁺** | `FormalSystem/PlusLanguage/`, `PlusFormula`, `⊢⁺[fc]` |
 | **L⋆** | L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ | **TM⋆** | `FormalSystem/StarLanguage/`, `StarFormula`, `⊢⋆[fc]`, the embedding `ofPlus` |
-| **L^▷** | L⁺ plus the open-future modal ▷ and the open-past modal ◁ | — (semantic only; no proof system) | `FormalSystem/OpenLanguage/`, `OpenFormula`, the embedding `ofPlus` |
+| **L^▷** | L⁺ plus the open-future modal ▷ and the open-past modal ◁ | `OpenAxiom` / `OpenDerivationTree` — sound, conservative over TM⁺ in both directions and over TM at all four classes; no completeness claim | `FormalSystem/OpenLanguage/`, `OpenFormula`, the embedding `ofPlus`, the erasure `eraseOpen` |
 | **hybrid state language** | L⁺ plus the same-state modality [≡], state registers `i` and the state binder ↓ᵢ | — (semantic only; no proof system) | `FormalSystem/HybridLanguage/`, `HybridFormula`, the embedding `HybridFormula.ofPlus` |
 | **propositional-quantifier language** | L plus the propositional quantifier ∀p, relative to a family of admissible propositions | — (semantic only; no proof system) | `FormalSystem/QuantLanguage/`, `QuantFormula`, the embedding `QuantFormula.ofFormula` |
 | **source sentence language** | L's five operators with ¬, ∧, ∨, G, H primitive, plus the eight defined operators →, ↔, ⊤, ◇, F, P, ○, ● | — (semantic only; no proof system) | `FormalSystem/SourceLanguage/`, `Sentence`, the elimination `tr` and the agreement theorem `sat_iff` |
@@ -269,8 +269,13 @@ time-store/recall and the world-store/recall families (the sentence defining `\B
   (`sub:RestrictedModalities`): the open-future modal ▷ over the worlds that agree with the world
   of evaluation up to the present, and the open-past modal ◁ over those that agree from the
   present on. The manuscript gives both a truth clause and states the inclusions among the three
-  classes of worlds, then sets the restricted modals aside; it supplies no logic for them and none
-  is claimed here. L^▷ is **semantic only**. What it is for: on a task frame the present world
+  classes of worlds, then sets the restricted modals aside; it supplies no logic for them, so the
+  proof system here is formalization-native: `OpenAxiom`, `OpenDerivationTree`, soundness at every
+  frame class, conservativity over TM⁺ in both directions and over TM at all four classes, and the
+  collapse under `Determined`. **No completeness is claimed for it, at any frame class.** Its
+  novelty is class-split: ▷ is L⁺-definable over integer and real time and not definable over the
+  base and dense classes, so the system extends TM⁺ genuinely at the first two classes and is a
+  notational variant of it at the last two. What it is for: on a task frame the present world
   *state* fixes the alternatives of ⊡, while Ockhamist historical necessity needs the shared
   *past*, which is ▷. The Ockhamist principle `Pα → ▷P▷̂α` is valid over every task frame
   (`hnOpen_openValid`) and its stability transposition `Pp → ⊡P⟐p` is refuted on a finite frame

@@ -1,22 +1,22 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "phase": "implement",
-  "dispatch_seq": 8,
-  "summary": "Closed 7 of 15 phases (1-6 and 14), every one on a green full build and sorry-free. Layer 0 of the L^triangleright proof system is complete: a closed 71-constructor OpenAxiom with a wildcard-free minFrameClass, the seven-rule OpenDerivationTree with three derived necessitation rules, the eraseOpen retraction with a 71-arm wildcard-free discharge table, and BOTH conservativity directions over TM+ -- the forward one unconditional and syntactic, with no engine and no completeness hypothesis. Conservativity/Open/ scaffolding plus the restricted-modal and rigidity validity blocks are landed, as is the deterministic collapse with the landed detCompleteness row recovered through the composite erasure. Phases 7-13 and 15 remain, and this dispatch found that Phases 7-10 are a transcription of Conservativity/Star/StarAxiomValidity.lean rather than from-scratch work.",
-  "phases_completed": 7,
+  "dispatch_seq": 10,
+  "summary": "Closed all 15 of 15 phases. The L^triangleright proof system is complete: a closed 71-constructor OpenAxiom, the seven-rule OpenDerivationTree, the eraseOpen retraction with its 71-arm wildcard-free discharge table, 71 per-constructor validity and 71 reflection-validity theorems in thirteen block aggregates that partition the constructor set exactly, two wildcard-free 71-arm dispatch lemmas, soundness at every frame class, conservativity over TM+ in both directions (unconditional and syntactic, choice-free by measurement) and over TM at all four classes, and the collapse under Determined recovering the landed deterministic completeness. Eight new Lean files, sorry-free, zero new axioms, every axiom profile measured and none wider than the semantic half it lifts. All three of the task's acceptance baselines are discharged and no completeness is claimed for L^triangleright at any class.",
+  "phases_completed": 15,
   "phases_total": 15,
   "blockers": [],
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/856_open_language_proof_system_and_soundness/summaries/01_open-proof-system-soundness-summary.md",
-      "summary": "Implementation summary for phases 1-6 and 14: what landed, the seven plan deviations, the measured axiom profiles, and the sized follow-ups for phases 7-13 and 15."
+      "summary": "Implementation summary for all 15 phases: what landed, the five plan deviations, the measured axiom profiles with their semantic-half comparisons, the full verification table and the follow-ups."
     },
     {
       "type": "other",
-      "path": "specs/856_open_language_proof_system_and_soundness/handoffs/phase-14-handoff-20261105T171026Z.md",
-      "summary": "Latest per-phase handoff: current state, the next action, and the honest sizing of the remaining phases."
+      "path": "specs/856_open_language_proof_system_and_soundness/handoffs/phase-15-handoff-20261105T182923Z.md",
+      "summary": "Final per-phase handoff: the four repaired gate findings, the one open non-attributable C16 finding, the batch-gate deferral record, and the three load-bearing facts a successor touching this component needs."
     }
   ],
-  "next_action_hint": "Re-dispatch implement for Phases 7-10, the validity blocks for the 53 TM-plus mirror schemata. They are a TRANSCRIPTION of FormalSystem/Metalogic/Conservativity/Star/StarAxiomValidity.lean (1,479 lines, 86 starValid_* theorems proving the same 53 schemata directly against StarTruthAt for the same no-atomization reason), with the register-vector argument dropped and StarTruth.*_iff rewritten to OpenTruth.*_iff -- not from-scratch proof work, which materially lowers the plan's ~1,400-line estimate. Land openTruthAt_timeShift FIRST: the modal_future arm needs it, StarAxiomValidity uses starTruthAt_timeShift, and plusTruthAt_timeShift and truthAt_timeShift both exist while the L^triangleright analogue does not. OpenTruth's clause-lemma set is also thinner than StarTruth's (no imp_iff, and_iff, or_iff, diamond_iff, untl_iff, allFuture_iff, allPast_iff of its own), so a thin re-export layer over the StabClauses OpenFormula instance is worth landing in the same phase. Phase 15 still owes the three now-FALSE 'L^triangleright is semantic only: it has no proof system' sentences in docs/theorem-index.md, FormalSystem/OpenLanguage.lean and FormalSystem/OpenLanguage/README.md, the theorem-index rows, the C14 baseline pairs, and the full gate set -- none of which this dispatch reached or claims."
+  "next_action_hint": "Task 856 is complete; close it. Two things to carry forward. (1) The bare scripts/check-module-invariants.sh gate is red repo-wide on ONE finding that is not this task's: a single unusedArguments finding at FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136 (mem_cellAt_of_shift_of_hasForwardSlack, argument 23 hslk unused). That file is clean in the working tree and last changed in another task's commit; it needs its own task or an owner. (2) The largest follow-up this task identified is a generic schema-validity layer stated once over [TruthEnv L] [StabClauses L] in Semantics/TruthClauses.lean: the 53 TM-plus mirror schemata were discharged directly against OpenTruthAt here because atomization rests on stab_state_only and triangleright-chi is not state-local, and StarAxiomValidity.lean paid the same cost against StarTruthAt. Landing the generic layer would serve L-plus, L-star and L^triangleright at once and remove roughly 1,500 lines of parallel transcription across two files. It is recorded in Conservativity/Open/README.md as deliberately out of scope here."
 }

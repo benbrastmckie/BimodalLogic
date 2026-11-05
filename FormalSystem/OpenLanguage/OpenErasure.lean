@@ -454,7 +454,11 @@ def OpenDerivationTree.erase {fc : FrameClass} : {Γ : OpenContext} → {φ : Op
           exact List.mem_map_of_mem (h hy))
 
 /-- **Forward conservativity over TM⁺, `Prop`-level**: `L^▷ ⊢[fc] φ ⟹ TM⁺ ⊢[fc] eraseOpen φ`, at
-every frame class and context, unconditionally. No completeness hypothesis and no engine. -/
+every frame class and context, unconditionally. No completeness hypothesis and no engine.
+
+Paper: — (formalization-native; the manuscript supplies no proof system over the restricted
+modals, so neither conservativity direction has a manuscript statement)
+-/
 theorem plusDerivable_of_openDerivable {fc : FrameClass} {Γ : OpenContext} {φ : OpenFormula}
     (h : OpenDerivable fc Γ φ) : PlusDerivable fc (Γ.map eraseOpen) (eraseOpen φ) :=
   h.elim fun d => ⟨d.erase⟩
@@ -462,7 +466,11 @@ theorem plusDerivable_of_openDerivable {fc : FrameClass} {Γ : OpenContext} {φ 
 /-- **The TM⁺ row, both directions.** On the image of the embedding the two systems prove exactly
 the same formulas: backward by `openDerivable_of_plusDerivable`, forward by
 `plusDerivable_of_openDerivable` composed with the retraction `eraseOpen_ofPlus`. Unconditional
-and syntactic — the statement takes no engine argument. -/
+and syntactic — the statement takes no engine argument.
+
+Paper: — (formalization-native; the manuscript supplies no proof system over the restricted
+modals, so neither conservativity direction has a manuscript statement)
+-/
 theorem plusDerivable_openDerivable_iff {fc : FrameClass} (φ : PlusFormula) :
     OpenDerivable fc [] (ofPlus φ) ↔ PlusDerivable fc [] φ := by
   constructor

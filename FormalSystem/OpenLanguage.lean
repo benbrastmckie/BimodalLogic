@@ -90,8 +90,26 @@ added to `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`.
 at the library root under a flat namespace, and L^▷ follows them. Its dependencies are
 language-to-language (`PlusLanguage.PlusPasting`, `PlusLanguage.PlusNonValidities`), the same
 shape as `StarLanguage → PlusLanguage`. It sits strictly downstream of `Semantics/Truth.lean`, so
-the `assert_not_exists` guards there are untouched. L^▷ is **semantic only**: it has no proof
-system.
+the `assert_not_exists` guards there are untouched.
+
+**The proof system, and its exact scope.** L^▷ carries a proof system: `OpenAxiom` (the TM⁺
+schemata re-declared at `OpenFormula` parameters plus a restricted-modal block), the seven-rule
+`OpenDerivationTree`, and the erasure `eraseOpen` back to `PlusFormula`. Its metatheory is
+`Metalogic/Conservativity/Open/`: **soundness** at every frame class
+(`open_soundness_validIn`), **conservativity over TM⁺ in both directions** —
+unconditional and syntactic, carrying no completeness hypothesis
+(`plusDerivable_openDerivable_iff`) — and **conservativity over TM at all four classes**
+(`openDerivable_ofFormula_iff`), with the collapse to TM⁺ under `Determined` in
+`Metalogic/Deterministic/OpenCollapse.lean`.
+
+**No completeness is claimed for this system, at any frame class, in any form.** The
+canonical-bundle obstruction one language down is untouched: `plus_incomplete_base` stands as
+proved, the Burgess-style limit-closure principle stays a non-theorem, and an LC_n-style schema is
+still required here exactly as in L⁺. The novelty is class-split: `▷` is L⁺-definable over
+integer and real time and not definable over the base and dense classes
+(`Metalogic/Expressiveness/OpenFutureElimination.lean` and its non-definability companion), so the
+system extends TM⁺ genuinely at `.Base` and `.Dense` and is a notational variant of it at
+`.ZTime` and `.RTime`.
 
 **The frame reversal lives here.** The converse frame of `lem:time-reflection` is
 language-independent, but it is built inside this component, which is its only consumer; the

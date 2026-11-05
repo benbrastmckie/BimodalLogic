@@ -85,6 +85,9 @@ Determinism enters only in the `ofut` and `opast` cases, through
 **inside** the statement rather than in the signature, exactly as in
 `plusTruthAt_erasePlus_of_deterministic`, so that the `box` and `stab` cases can apply the
 induction hypothesis at a different history.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+collapse for them)
 -/
 theorem openTruthAt_eraseOpen_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
     (φ : OpenFormula) :
@@ -172,7 +175,11 @@ theorem openValidDetIn_of_validDetIn_eraseOpen {fc : FrameClass} {φ : OpenFormu
       (PlusValidDetIn.apply h F hF hD M τ t)
 
 /-- The two directions packaged: over the deterministic frames of any class, an L^▷ formula and
-its `▷`/`◁`-erasure are equivalid. -/
+its `▷`/`◁`-erasure are equivalid.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+collapse for them)
+-/
 theorem openValidDetIn_iff_plusValidDetIn_eraseOpen (fc : FrameClass) (φ : OpenFormula) :
     OpenValidDetIn fc φ ↔ PlusValidDetIn fc (eraseOpen φ) :=
   ⟨validDetIn_eraseOpen_of_openValidDetIn, openValidDetIn_of_validDetIn_eraseOpen⟩
@@ -190,7 +197,11 @@ theorem openValidDetIn_iff_validDetIn_erasePlus_eraseOpen (fc : FrameClass) (φ 
 deterministic frames of any class has its `▷`/`◁`-erasure derivable in the deterministic system at
 that class. This is the landed row of `Deterministic/Completeness.lean` read one language out: the
 collapse supplies the hypothesis, nothing new is proved about the engine, and no completeness is
-claimed for the L^▷ system itself — the conclusion is about `eraseOpen φ`, an L⁺ formula. -/
+claimed for the L^▷ system itself — the conclusion is about `eraseOpen φ`, an L⁺ formula.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside, so this row
+is the landed deterministic completeness read one language out)
+-/
 theorem detDerivable_eraseOpen_of_openValidDetIn (fc : FrameClass) {φ : OpenFormula}
     (h : OpenValidDetIn fc φ) : DetDerivable fc [] (eraseOpen φ) :=
   detCompleteness fc (eraseOpen φ) (validDetIn_eraseOpen_of_openValidDetIn h)

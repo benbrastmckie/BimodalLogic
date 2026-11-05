@@ -41,6 +41,14 @@ deliberately weak on `▷`. Two concrete prices are recorded rather than hidden:
   impossible and forfeit this row.
 - Nothing stronger about `▷` is admitted than the schemata the discharge table can erase.
 
+**And the strength of the result is class-split.** `▷` is L⁺-definable over integer and real time
+and **not** definable over the base and dense classes
+(`Metalogic/Expressiveness/OpenFutureElimination.lean` and its non-definability companion). So at
+`.ZTime` and `.RTime` the TM⁺ row below records that a notational variant proves the same L⁺
+theorems, which is unsurprising; at `.Base` and `.Dense` it records that a genuine extension of
+TM⁺ proves no new L⁺ theorem, which is the substantive half. The one statement covers both
+because the erasure argument never looks at the frame class.
+
 ## No completeness is claimed, for L^▷, at any class, in any form
 
 **Every occurrence of "complete" below is either a `WeakCompleteness` engine for TM — the base

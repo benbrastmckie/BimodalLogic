@@ -14,11 +14,26 @@ agree with the world of evaluation at every time up to and including the time of
 `◁` (`opast`) is the *open past* operator over `⟨τ|_x`, the worlds that agree from the time of
 evaluation onward. `⊡` quantifies over `⟨τ⟩_x`, the worlds through the present world **state**.
 
-L^▷ is **semantic only**: it has no proof system, and no axiomatization, soundness or completeness
-claim is made for `▷` or `◁`. `Metalogic/Expressiveness/OpenFutureElimination.lean` does state
+L^▷ has a proof system, and its scope is exactly this: `OpenAxiom` (the TM⁺ schemata re-declared
+at `OpenFormula` parameters, plus a restricted-modal block for `▷` and `◁`), the seven-rule
+`OpenDerivationTree`, and the erasure `eraseOpen` back to `PlusFormula`. The metatheory lives in
+`Metalogic/Conservativity/Open/`: **soundness** at every frame class, **conservativity over TM⁺ in
+both directions** (unconditional and syntactic — no engine, no completeness hypothesis), and
+**conservativity over TM at all four classes**, with the collapse under `Determined` in
+`Metalogic/Deterministic/OpenCollapse.lean`.
+
+**No completeness claim is made for L^▷, at any frame class, in any form.** The canonical-bundle
+obstruction one language down is untouched: `plus_incomplete_base` stands as proved, the
+Burgess-style limit-closure principle stays a non-theorem, and an LC_n-style schema is still
+required here exactly as in L⁺. `Metalogic/Expressiveness/OpenFutureElimination.lean` states
 *conditional reductions* carrying decidability and completeness of L^▷ validity at `.ZTime` and
 `.RTime` back to their L⁺ counterparts, but each takes the L⁺ fact as an undischarged hypothesis,
-so nothing there establishes either property for L^▷ or supplies it with a proof system.
+so nothing there establishes either property for L^▷ either.
+
+The novelty is **class-split**: `▷` is L⁺-definable over integer and real time and not definable
+over the base and dense classes (`OpenFutureElimination.lean` and its non-definability companion),
+so the system is a genuine extension of TM⁺ at `.Base` and `.Dense` and a notational variant of it
+at `.ZTime` and `.RTime`.
 
 ## Why the component exists
 
@@ -36,7 +51,10 @@ transferred to `⊡` by mistake.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Formula.lean` | 302 | `OpenFormula`, the derived operators (with `PlusFormula`'s right-hand sides), the duals `dofut` and `dopast`, `reflectTime` with `reflect_time_involution` and the `reflect_time_*` push-through lemmas, and the embedding `ofPlus` with `ofPlus_injective`, `ofPlus_reflectTime` and its `rfl` commutation pins |
+| `OpenAxioms.lean` | 577 | `IsPureFutureOpen` / `IsPurePastOpen` (the purity side conditions of the pasting and rigidity schemata, with their two crossed recursive clauses); the Reynolds operators `OpenFormula.kPlus` / `kMinus`; `OpenAxiom` — 71 constructors, the 53 TM⁺ schemata re-declared at `OpenFormula` parameters plus an 18-constructor restricted-modal block; and `OpenAxiom.minFrameClass`, a **wildcard-free** dispatch, so a constructor added without an arm fails to compile |
 | `OpenClasses.lean` | 170 | The three history classes `stabClass`, `openFutureClass`, `openPastClass` (the stability, open-future and open-past classes of a world at a time); the membership lemmas `mem_stabClass_iff`, `mem_openFutureClass_iff`, `mem_openPastClass_iff`; `sameState_equivalence`, `agreeUpTo_equivalence`, `agreeFrom_equivalence`; the inclusions, `openFutureClass_inter_openPastClass`, `openFutureClass_anti`, `openPastClass_mono`, and `paste_mem_openFutureClass_inter_openPastClass` |
+| `OpenDerivation.lean` | 385 | `OpenContext`; `OpenDerivationTree` — the same seven rules as TM⋆, TM⁺ and TM, with `OpenAxiom` in the `axiom` rule; `lift`, `height` and the height lemmas the soundness recursion's termination argument uses; `OpenDerivable` with `mono`; the three derived necessitation rules; `OpenDerivationTree.ofPlus` and `openDerivable_of_plusDerivable` — backward conservativity over TM⁺ — with its four class rows |
+| `OpenErasure.lean` | 484 | `eraseOpen` — the retraction `PlusFormula`-ward that deletes `▷` and `◁` — with `eraseOpen_ofPlus`; the purity transports `isPureFuture_eraseOpen` / `isPurePast_eraseOpen`; `dischargeAxiom`, the 71-arm wildcard-free discharge table producing a TM⁺ derivation of each schema's erasure; `OpenDerivationTree.erase`; and both conservativity rows over TM⁺ — `plusDerivable_of_openDerivable` (forward, unconditional) and `plusDerivable_openDerivable_iff` (both directions, syntactic, no engine) |
 | `OpenOckhamist.lean` | 400 | The Ockhamist separating pair: `hnOpen`, `hnOpenMixed`, `hnStab` with `hnStab_eq_ofPlus`; `hnOpen_openValid` and `hnOpenMixed_openValid` over every task frame; the countermodel `SinkState`, `sinkFrame`, `sinkFunA`, `sinkFunB`, `sinkFunA_isStepPath`, `sinkFunB_isStepPath`, `sinkHistA`, `sinkHistB`, `sinkModel`; `hnStab_refuted_sinkFrame`, `not_openValid_hnStab`, `not_plusValid_hnStab`; the mirror `hnOpenMirror`, `hnStabMirror`, `hnOpenMirror_eq`, `hnStabMirror_eq`, `hnOpenMirror_openValid`, `openValid_hnOpenPast`, `not_openValid_hnStabMirror`; the five converse failures `not_openValid_box_of_stab`, `not_openValid_stab_of_ofut`, `not_openValid_stab_of_opast`, `not_openValid_opast_of_ofut`, `not_openValid_ofut_of_opast`; and the five transferred refutations `not_openValid_stab_box`, `not_openValid_allFuture_stab`, `not_openValid_stab_allFuture_past`, `not_openValid_determined`, `not_openValid_somePast_stab` |
 | `OpenReversal.lean` | 222 | The L^▷ half of `lem:time-reflection`: the class swaps this layer owns, `agreeUpTo_rev_iff` and `agreeFrom_rev_iff`, plus `image_rev_stabClass`, which says `τ ↦ τ⁻` carries `⟨τ⟩_x` onto `⟨τ⁻⟩_{-x}`; the transport theorem `openTruthAt_rev`; `openValidOn_rev_iff` and `openValid_reflectTime`. The reversal operations it reasons about are declared in `Semantics/`: `FrameOver.rev` with all four frame axioms and `TaskFrame.rev` in `Semantics/TaskFrame.lean`, `TaskModel.rev` / `WorldHistory.rev`, the pointwise class-fixing lemma `sameState_rev_iff`, and the base-language transport `truthAt_rev` in `Semantics/Reversal.lean` |
 | `OpenTruth.lean` | 355 | `OpenTruthAt` — the nine-clause truth recursion, the last two clauses the manuscript's for the open-future and open-past operators; the `TruthEnv` and `StabClauses` instances; the `OpenTruth.*` clause lemmas (`ofut_iff`, `opast_iff`, `dofut_iff`, `dopast_iff`); `openTruthAt_ofPlus`; pointwise S5 (`ofut_k`, `of_ofut`, `ofut_four`, `ofut_five` and the `opast` mirrors) and the ordering `stab_of_box`, `ofut_of_stab`, `opast_of_stab`; and the definability of `⊡` from the two restricted modals — `stab_to_ofut_opast` (no frame axiom), `ofut_opast_to_stab` (one `paste`) and the two biconditionals `stab_iff_ofut_opast`, `stab_iff_opast_ofut` |
@@ -80,7 +98,7 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | Manuscript item | Status |
 |---|---|
 | An axiomatization, soundness or completeness result for `▷` and `◁` | **Excluded.** The manuscript gives none — "I will omit further consideration of the restricted modals" — and none is claimed here. The S5 laws and the ordering above are validities, not axioms of a proof system. The conditional reductions in `Metalogic/Expressiveness/OpenFutureElimination.lean` are not an exception: their antecedents are undischarged, so no such result follows from them |
-| The nomic operator of `sub:RestrictedModalities`, over a four-place task relation indexed by world states | **Formalized**, not here but in `FormalSystem/NomicLanguage/` (BL plus `◈`, semantic only, in this component's pattern), over the nomic frames of `FormalSystem/Semantics/Nomic/`; see its README's correspondence table |
+| The nomic operator of `sub:RestrictedModalities`, over a four-place task relation indexed by world states | **Formalized**, not here but in `FormalSystem/NomicLanguage/` (BL plus `◈`, semantic only, in this component's separate-inductive-plus-embedding pattern), over the nomic frames of `FormalSystem/Semantics/Nomic/`; see its README's correspondence table |
 | The world registers `↑_M`, `↓_M` of `sub:Extension` | **Excluded.** `FormalSystem/StarLanguage/` formalizes the time registers only. **State** registers, which the manuscript does not have, are formalized in `FormalSystem/HybridLanguage/`; the world registers stay excluded |
 
 ## Module Invariants

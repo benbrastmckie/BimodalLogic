@@ -88,6 +88,9 @@ abbrev OpenContext := List OpenFormula
 /--
 Derivation tree for the L^▷ proof system, parameterized by frame class. `Type`-valued, like its
 TM⁺ counterpart, so that the soundness recursion can match on it and `height` is computable.
+
+Paper: — (formalization-native; the manuscript supplies no proof system over the restricted
+modals)
 -/
 inductive OpenDerivationTree (fc : FrameClass) : OpenContext → OpenFormula → Type where
   /-- Axiom rule, gated by `h.minFrameClass ≤ fc`. -/
@@ -348,7 +351,11 @@ def OpenDerivationTree.ofPlus {fc : FrameClass} {Γ : PlusContext} {φ : PlusFor
           exact List.mem_map_of_mem (h hy))
 
 /-- **Backward conservativity over TM⁺, `Prop`-level**: `TM⁺ ⊢[fc] φ ⟹ L^▷ ⊢[fc] ofPlus φ`, at
-every frame class and context. It is free: the constructor embedding does all the work. -/
+every frame class and context. It is free: the constructor embedding does all the work.
+
+Paper: — (formalization-native; the manuscript supplies no proof system over the restricted
+modals, so neither conservativity direction has a manuscript statement)
+-/
 theorem openDerivable_of_plusDerivable {fc : FrameClass} {Γ : PlusContext} {φ : PlusFormula}
     (h : PlusDerivable fc Γ φ) : OpenDerivable fc (Γ.map ofPlus) (ofPlus φ) :=
   h.elim fun d => ⟨OpenDerivationTree.ofPlus d⟩

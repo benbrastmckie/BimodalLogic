@@ -2369,6 +2369,17 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.OpenLanguage.hnStab_refuted_sinkFrame' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.OpenLanguage.hnOpenMirror_openValid' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.OpenLanguage.openValid_reflectTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.OpenLanguage.OpenDerivationTree' depends on axioms: [propext]
+'FormalSystem.OpenLanguage.openDerivable_of_plusDerivable' depends on axioms: [propext, Quot.sound]
+'FormalSystem.OpenLanguage.plusDerivable_of_openDerivable' depends on axioms: [propext, Quot.sound]
+'FormalSystem.OpenLanguage.plusDerivable_openDerivable_iff' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.openAxiom_validIn_min' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.openAxiom_reflect_time_validIn_min' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.open_soundness_validIn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.openDerivable_ofFormula_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.openDerivable_ofPlus_iff' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Deterministic.openValidDetIn_iff_plusValidDetIn_eraseOpen' depends on axioms: [propext]
+'FormalSystem.Metalogic.Deterministic.detDerivable_eraseOpen_of_openValidDetIn' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.ofutP_or_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.opastP_or_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.ofutP_sepForm_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2659,6 +2670,17 @@ import FormalSystem
 #print axioms FormalSystem.OpenLanguage.hnStab_refuted_sinkFrame
 #print axioms FormalSystem.OpenLanguage.hnOpenMirror_openValid
 #print axioms FormalSystem.OpenLanguage.openValid_reflectTime
+#print axioms FormalSystem.OpenLanguage.OpenDerivationTree
+#print axioms FormalSystem.OpenLanguage.openDerivable_of_plusDerivable
+#print axioms FormalSystem.OpenLanguage.plusDerivable_of_openDerivable
+#print axioms FormalSystem.OpenLanguage.plusDerivable_openDerivable_iff
+#print axioms FormalSystem.Metalogic.Conservativity.openAxiom_validIn_min
+#print axioms FormalSystem.Metalogic.Conservativity.openAxiom_reflect_time_validIn_min
+#print axioms FormalSystem.Metalogic.Conservativity.open_soundness_validIn
+#print axioms FormalSystem.Metalogic.Conservativity.openDerivable_ofFormula_iff
+#print axioms FormalSystem.Metalogic.Conservativity.openDerivable_ofPlus_iff
+#print axioms FormalSystem.Metalogic.Deterministic.openValidDetIn_iff_plusValidDetIn_eraseOpen
+#print axioms FormalSystem.Metalogic.Deterministic.detDerivable_eraseOpen_of_openValidDetIn
 #print axioms FormalSystem.Metalogic.Expressiveness.ofutP_or_iff
 #print axioms FormalSystem.Metalogic.Expressiveness.opastP_or_iff
 #print axioms FormalSystem.Metalogic.Expressiveness.ofutP_sepForm_iff

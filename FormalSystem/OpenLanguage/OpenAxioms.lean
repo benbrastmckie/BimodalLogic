@@ -194,6 +194,9 @@ admitting it would make the discharge arm of surface 5 above impossible and forf
 forward conservativity over TM⁺. The forward half `definability_fwd` is admitted, and the backward
 direction is anyway derivable in this system from `stab_4`, the two bridges `ofut_of_stab` and
 `opast_of_stab`, `ofut_k` and derived `▷`-necessitation.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and
+supplies no logic for them)
 -/
 inductive OpenAxiom : OpenFormula → Type where
   -- The restricted modals: S5 for `▷` (4)

@@ -41,12 +41,14 @@ than deferred debt.
 | `MinusExt.lean` | 181 | `MinusExt fc Ax`, the `Prop`-valued theorems-only closure of TM⁻ at `fc` plus a schema-instance set `Ax` under MP/MN/TN/TR, with `minusExt_empty_iff` (it is TM⁻ at `Ax = ∅`) and the soundness engine `minusExt_le_tmFrag` (`Ax ⊆ TMFrag fc → MinusExt fc Ax ⊆ TMFrag fc`) |
 | `MinusMCS.lean` | 398 | Maximal consistent sets over `MinusFormula`, mirroring `Metalogic/Core/`: `MinusSetConsistent`, `MinusSetMaximalConsistent`, `MPoint fc`, Zorn/Lindenbaum (`minus_set_lindenbaum`), `neg_consistent_of_not_minus_derivable`, and the closure/duality lemmas (`imp_mem_iff`, `and_mem_iff`, `mem_or_neg_mem`, `someFuture_mem_iff`, …) on the L⁻ deduction theorem |
 | `MinusTemporalDerived.lean` | 362 | Derived TM⁻ theorems as explicit `DerivationTree` terms: propositional `and`/`or` rules, `gMono`/`boxMono`, the generalized K rules `minusGeneralizedTemporalK`/`ModalK`/`PastK`, `gAnd`, `gAndF`, `fMono`, `notFBot`, the one DN use `fFOfF : ⊢⁻[.Dense] Fψ → FFψ`, and every past-side twin by TR (`hAnd`, `hAndP`, `tcPast`, `serialP`, `tlPast`, …) |
+| `Open.lean` | 57 | Aggregator for the L^▷ metatheory; holds no declarations. |
 | `Plus.lean` | 76 | <!-- TODO: add description --> |
 | `SpCountermodel.lean` | 399 | CEB's failing half: native L⁻ soundness for TM⁻ against `MinusLanguage/MinusFrame.lean`'s `TaskFrame`-free semantics (`minusFrameValid_of_axiom`, `minusFrameValid_of_derivation`), the two-fibre countermodel `ℤ ⊕ ℝ`, and the deliverables `not_derivable_sp` and `tmMinusCompleteBase_refuted` |
 | `SpWitness.lean` | 136 | <!-- TODO: add description --> |
 | `Star.lean` | 60 | Aggregator for the L⋆ metatheory; holds no declarations. |
 | `TMCompletenessReduction.lean` | 329 | <!-- TODO: add description --> |
 | `Z1Countermodel.lean` | 220 | <!-- TODO: add description --> |
+| `Open/` | — | The restricted-modal extension L^▷ = L⁺ + `▷`/`◁` and its proof system: axiom validity through thirteen block helpers and two wildcard-free 71-arm dispatch lemmas, soundness at every frame class, and conservativity over TM at all four classes and over TM⁺ in both directions — the TM⁺ row unconditional and syntactic, carrying no engine. No completeness is claimed for the L^▷ system at any class. |
 | `Plus/` | — | <!-- TODO: add description --> |
 | `Star/` | — | The register extension L⋆ = L⁺ + `↑ⁱ`/`↓ⁱ` and its logic TM⋆: axiom validity, soundness, conservativity over TM (unconditional) and over TM⁺ (a conditional pair, whose hypothesis is refuted at Base by `Metalogic/Independence/PlusIncompleteness.lean` and open elsewhere), and the completeness OPEN record. |
 <!-- END GENERATED -->

@@ -983,39 +983,44 @@ with determinism consumed in exactly two of them. Confirm by case count and by c
 
 ---
 
-### Phase 15: ledger surfaces and the full gate [NOT STARTED]
+### Phase 15: ledger surfaces and the full gate [COMPLETED]
 
 **Goal**: Record every new result on the ledger surfaces it owes, rewrite the three "semantic
 only" claims that this task falsifies, and run the complete gate set.
 
 **Tasks**:
 
-- [ ] Re-read `docs/theorem-index.md` immediately before editing (sibling-task concurrency), then
+- [x] Re-read `docs/theorem-index.md` immediately before editing (sibling-task concurrency), then
   add one row per new result to its `OpenLanguage` section and a new `Conservativity/Open`
   block: paper label `—` for all of them (the manuscript supplies no logic for the restricted
   modals), one-line statement, **fully qualified** Lean name, file path with no line numbers,
   frame class, and the measured axiom set. Measure each profile with `lean_verify`; do not type a
   value from this plan or from the research report.
-- [ ] Rewrite the standing "L^▷ is **semantic only**: it has no proof system" sentence in all
+- [x] Rewrite the standing "L^▷ is **semantic only**: it has no proof system" sentence in all
   three places it occurs: `docs/theorem-index.md:558`, `FormalSystem/OpenLanguage.lean:81`, and
   `FormalSystem/OpenLanguage/README.md:17`. Replace each with the proof system's actual scope: a
   sound system, conservative over TM⁺ in both directions and over TM at all four classes, with no
-  completeness claim.
-- [ ] Add the class-split sentence (R6) to every docstring that mentions novelty: notational at
+  completeness claim. *(deviation: altered — the re-run grep the task itself mandates found
+  **nine** now-false occurrences, not three: the plan's three plus `FormalSystem/README.md` (two),
+  root `README.md` (three), `docs/ARCHITECTURE.md`, `docs/development/MODULE_ORGANIZATION.md`,
+  `FormalSystem/Semantics/README.md` and `FormalSystem/StarLanguage/README.md`. All nine were
+  rewritten; `docs/theorem-index.md:595` and the Hybrid/Nomic/Quant occurrences, which are about
+  other components and remain true, were left alone)*
+- [x] Add the class-split sentence (R6) to every docstring that mentions novelty: notational at
   `.ZTime`/`.RTime` by the open-future elimination result, a genuine extension at `.Base`/`.Dense`
   by the non-definability result. Cite the landed module names, not task numbers.
-- [ ] Add the C14 baseline pair for each `pinned:C14` row — one line in the `C14_BASELINE` heredoc
+- [x] Add the C14 baseline pair for each `pinned:C14` row — one line in the `C14_BASELINE` heredoc
   (`scripts/check-module-invariants.sh:2237`) and a matching `#print axioms` line in the Lean
   heredoc; they are compared by exact string equality, so both edits are required for each row.
   Pin at least: the soundness terminus, the four conservativity rows, the collapse, and the HN and
   erasure termini.
-- [ ] Add the `OpenLanguage/README.md` module-table rows for the three new `OpenLanguage/` files,
+- [x] Add the `OpenLanguage/README.md` module-table rows for the three new `OpenLanguage/` files,
   and update `FormalSystem/README.md` and the root `README.md` only if they carry a stale claim
   this task falsifies — re-read each immediately before editing.
-- [ ] Regenerate the README inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`.
+- [x] Regenerate the README inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`.
   Never hand-edit a generated inventory block.
-- [ ] Run the unscoped guarded build for final verification.
-- [ ] Run the bare `bash scripts/check-module-invariants.sh` and repair every finding. A flagged
+- [x] Run the unscoped guarded build for final verification.
+- [x] Run the bare `bash scripts/check-module-invariants.sh` and repair every finding. A flagged
   subset's exit 0 is not the whole gate. Expect attention on C14 (the new baseline pairs), C15
   (paper-anchor round trip for every new docstring `Paper:` line), C16 (`env_linter`: `simpNF`,
   `docBlame`, `unusedArguments` over the new declarations), C17 (dead declarations — every block
@@ -1023,8 +1028,8 @@ only" claims that this task falsifies, and run the complete gate set.
   (zero live `lemma`, no `Uppercase_x` names), C26 (no non-trailing underscore in any new
   `def`/`abbrev`), C28 (per-file warning budgets for the new files), C35
   (`scripts/lean-citation-manifest.json` byte-currency) and C21/C24.
-- [ ] Run `bash scripts/check-metalogic-cycles.sh` and confirm all three assertions.
-- [ ] Final audit sweep: `grep` the new files for any sentence that could be read as a
+- [x] Run `bash scripts/check-metalogic-cycles.sh` and confirm all three assertions.
+- [x] Final audit sweep: `grep` the new files for any sentence that could be read as a
   completeness claim for L^▷, and confirm `plus_incomplete_base` and `blc`'s non-theoremhood are
   stated as standing, unperturbed.
 
@@ -1067,6 +1072,39 @@ left alone.
 - Every new `docs/theorem-index.md` row's axiom set equals the value `lean_verify` reports for
   that fully qualified name, and each lifted terminus is no wider than the semantic half it lifts.
 - No new file contains a completeness claim for the L^▷ system.
+
+**Verification notes (recorded at this phase's close).**
+
+| Check | Result |
+|-------|--------|
+| `lake-build-guard.sh ... -- build` (unscoped) | **exit 0**, 2908 jobs, zero `error:`, zero `warning:` |
+| `scripts/check-module-invariants.sh` (bare) | **exit 1 — one group, `C16`, not attributable to this task**; INV, C5, C14 (both halves), C15 (both halves), C17, C19, C21, C23, C24, C26, C28, C33, C35, C36, C37 all PASS |
+| `scripts/check-module-invariants.sh --emit-inventory --check` | **exit 0** — no generated block would change |
+| `scripts/check-metalogic-cycles.sh` | **exit 0**, all three assertions PASS |
+| `.claude/scripts/lean-sorry-census.sh` | `sorry_count: 0` |
+| vacuous-definition grep | one hit, `FormalSystem/Examples/TemporalStructures.lean:495` — pre-existing, untouched by this task, and a false positive of the single-line pattern |
+| new `axiom` declarations in this task's files | 0 |
+| `lean-plan-compliance-check.sh` | `COMPLIANCE_CHECK: passed` — every Challenge-named declaration resolves |
+
+**The one `check-module-invariants.sh` failure is not this task's.** `FAIL C16` reports a single
+`unusedArguments` env_linter finding at
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136`
+(`mem_cellAt_of_shift_of_hasForwardSlack`, argument 23 `hslk`). That file is clean in the working
+tree and last changed in a different task's commit; it is a different component and a different
+subject matter. Every finding that *was* attributable to this task — `FAIL INV` (five stale
+generated inventory blocks), `FAIL C5` (two declaration names shaped like module paths),
+`FAIL C15` (thirteen theorem-index rows unanchored), `FAIL C33` (two modules missing from the
+generated root) — was repaired in this phase.
+
+**Batch-gate deferral, recorded as this dispatch's directive requires.** The complete gate set
+was **deferred to the batch stage** rather than independently run here. The narrowing invocations
+the directive names — `.claude/scripts/tests/run-all.sh --only SUITE[,...]` and
+`.claude/scripts/verify-deploy.sh --only-gate N[,...]` — discover and check *agent-system shell
+suites* and *deployed `.claude/` tree integrity* respectively. This phase touched no file under
+`.claude/**` and no agent-system script, so neither has a suite or gate covering its
+`modified_files`; the gates that do cover them are this repository's own, and those were run in
+full and are tabulated above. The complete set still runs once, for the whole batch, at the end
+of the invocation.
 
 ---
 
