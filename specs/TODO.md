@@ -113,7 +113,7 @@ next_project_number: 869
 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
-866 [RESEARCHING] — RESEARCH TASK, cheap and high-value: verify and record that...
+866 [RESEARCHED] — RESEARCH TASK, cheap and high-value: verify and record that...
 
 ### Formula Refactor
 
@@ -199,10 +199,11 @@ GATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the elimin
 ---
 
 ### 866. Mso route open modals ztime decidability
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: formal
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md]
 
 **Description**: RESEARCH TASK, cheap and high-value: verify and record that the open-future and open-past modals are MSO-definable in the encoding that already decides L-plus validity at ZTime on paper, which would give decidability of the open language at ZTime without the Gabbay translation and without the ladder engine.
 
