@@ -1,5 +1,5 @@
 ---
-next_project_number: 864
+next_project_number: 867
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 864
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827,840,845,853,862 | 298,428,502,761,768,769,770,772,777,785,810,813,838,839,852 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,864,865,866 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,783,810,814,816,823,824,827,840,845,853,862 | 298,428,502,761,768,769,770,772,777,785,813,838,839,852 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 3 | 410,498,499,500,822,826,834,861 | 429,497,763,783,810,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -29,7 +29,9 @@ next_project_number: 864
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
 767 [NOT STARTED] — lake-build-guard replays stale result for env lean FILE
-768 [NOT STARTED] — lean-challenge-snapshot swallows declarations, mishandles...
+768 [RESEARCHED] — lean-challenge-snapshot swallows declarations, mishandles...
+  └─ 810 [NOT STARTED] — META TASK. ONE grouped task covering FIVE agent-system...
+    └─ 826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and...
 769 [NOT STARTED] — plan-format: blocked decision gates and plan-level Status...
   └─ 827 [NOT STARTED] — Require a plan phase to agree with its own Scope Hypothesis...
@@ -48,8 +50,6 @@ next_project_number: 864
 784 [BLOCKED] — FROZEN-RECORD TRACKER. Seven task records in this repository...
 785 [NOT STARTED] — Record the three Lean plan-authoring gate-collision facts in...
   └─ 840 [NOT STARTED] — Give the Lean unusedArguments remedy a narrow route instead...
-810 [NOT STARTED] — META TASK. ONE grouped task covering FIVE agent-system...
-  └─ 826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
 813 [NOT STARTED] — State the precedence and snapshot-prerequisite rules for a...
   └─ 814 [NOT STARTED] — Record the decide-synthesis working form, the axiom-free...
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and... (see above)
@@ -73,6 +73,11 @@ next_project_number: 864
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
+
+### Completeness
+
+864 [NOT STARTED] — IMPLEMENTATION TASK, time-sensitive: land the LC\_n and LCU...
+865 [NOT STARTED] — RESEARCH TASK, and the owner of a programme that is currently...
 
 ### Dataset Enhancement
 
@@ -111,6 +116,7 @@ next_project_number: 864
 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
+866 [NOT STARTED] — RESEARCH TASK, cheap and high-value: verify and record that...
 
 ### Formula Refactor
 
@@ -150,6 +156,96 @@ next_project_number: 864
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 867. Formalize gabbay separation ztime
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: IMPLEMENTATION TASK, sizeable: formalize Gabbay separation over discrete time for PlusFormula, discharging the SeparationOver hypothesis and making the open-future translation executable.
+
+WHY NOW. This was proposed as recommendation R4 of specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md and deliberately NOT filed there, on the stated condition that it be filed "only if a consumer needs the executable translation". Two consumers now exist. First, FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean's two headline results, openValidIn_ztime_iff_tr and openValidIn_rtime_iff_tr, are conditional on SeparationOver -- a hypothesis standing for cited literature that this tree does not formalize -- so the unconditional verdict that the open-future modal is definable at ZTime and RTime lives only in that module's docstring with its citation, not in a pinned row. Second, any transfer of decidability through the translation needs tr to be computable, not merely to exist.
+
+WHAT TO FORMALIZE. GHR Lemmas 10.2.1 through 10.2.8 -- the eight eliminations plus the junction-depth induction -- for PlusFormula over frames satisfying IsZTime, discharging SeparationOver TaskFrame.IsZTime. The reference is Gabbay, Hodkinson and Reynolds, Theorem 10.2.9 over the integers; Theorem 10.3.20 is the Dedekind-complete counterpart and is the natural second target, not necessarily this task's.
+
+WHAT IS ALREADY LANDED AND MUST NOT BE REDONE. The elimination layer that CONSUMES separation is complete and compiled in OpenFutureElimination.lean: PastDet, FutDet, the syntactic bridges, OfutP and OpastP, the eliminations ofutP_or_iff and opastP_or_iff with their CNF forms ofutP_sepForm_iff and opastP_sepForm_iff, the SeparationOver predicate itself, tr, and the two validity-transfer results. This task supplies the hypothesis those results take; it does not restate them and must not weaken any of their signatures.
+
+SIZING, AND AN HONEST WARNING. Report 01 of task 854 rates this as a sorry-free path that EXISTS and is SIZEABLE, comparable to a multi-phase implementation round. Expect the junction-depth induction to be the expensive part. Before committing, weigh it against the MSO/Rabin decidability route, which reaches a decidability answer for the open language at ZTime with no translation at all -- if that route holds, this task's value is confined to making the definability verdict unconditional and to giving an executable tr, which is real but narrower than it looks.
+
+SCOPE. The separation development and the discharge of SeparationOver at IsZTime; the theorem-index rows that become unconditional as a result, restated from their conditional form; the re-measured axiom baselines. Do NOT touch FormalSystem/Metalogic/Independence/ -- the non-definability result at Base and Dense is a separate verdict and is unaffected, since separation does not hold there. Do not alter the metalogic-cycles allowlist.
+
+GATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the eliminations already carry. Guarded scoped build then unscoped; check-module-invariants.sh and check-metalogic-cycles.sh green against their pre-task baselines; every axiom profile measured, never hand-typed. If the development stalls, a precisely located obstruction -- which elimination resists formalization and why -- is a legitimate [COMPLETED WITH EXCLUSIONS] outcome.
+
+---
+
+### 866. Mso route open modals ztime decidability
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, cheap and high-value: verify and record that the open-future and open-past modals are MSO-definable in the encoding that already decides L-plus validity at ZTime on paper, which would give decidability of the open language at ZTime without the Gabbay translation and without the ladder engine.
+
+THE ARGUMENT TO CHECK. specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md section 1.3 gives a five-step paper argument that L-plus ZTime validity is decidable: (1) a countable model property, closing a countable set of walks under one chosen witness walk per state and per diamond-shaped subformula; (2) pass to the cover, a countable doubly-serial oriented forest; (3) root each tree anywhere, giving a countably branching rooted tree with one unary predicate for parent-edge orientation and one per atom; (4) encode a walk with a marked time as a pair (P, x in P) where P is connected with exactly one in-neighbour and one out-neighbour at each node, and observe that truth is MSO-definable by the usual translation of Until and Since, with box-dot rendered as "for all P' containing x" and box as "for all P', for all x' in P'"; (5) read satisfiability as an MSO sentence over the full omega-branching tree and apply Rabin's theorem. If the report has moved, it is under specs/archive/.
+
+WHAT IS NEW HERE, AND WHY IT IS CHEAP. That report never mentions the open modals -- confirm this by grep before starting, so the contribution is stated honestly. But step 4's encoding looks to accommodate them directly: the open-future modal quantifies over the possible worlds agreeing with the world of evaluation at every time up to and including the time of evaluation, which in the (P, x) encoding is a quantification over P' agreeing with P below x -- the same shape as box-dot's "for all P' containing x", with a restriction that is itself MSO-expressible. The open-past modal is the time-reflected mirror. If that is right, decidability of the open language at ZTime follows from this route with no new machinery.
+
+WHY THIS MATTERS STRATEGICALLY. This route is INDEPENDENT of the ladder/RaySummary front: it needs neither the tpOf pumping lemma, nor the realization theorem, nor the lift to Decidable PlusValidZTime. It is also independent of the open-future elimination translation, so it needs nothing from Gabbay separation. It is therefore the cheapest available path to a decidability answer for the open language, and it should be measured before anything expensive is committed to.
+
+GUARDRAILS. Report 03's argument is UNVERIFIED in Lean and this task does not change that -- the deliverable is a report, not a formalization, and every step must be labelled recalled/held/derived as the report format requires. Do not claim the finite model property: the report states it is not established, because folding a regular tree by subtree type forgets what lies above a node. Do not restate the ZTime decidability of the base language (without the stability modal) as if it covered this: decidableValidZTime and decidableDerivableZTime are landed for that language only and do not extend to box-dot, let alone to the open modals. State clearly which classes the argument reaches: Base, Dense and RTime are open with the obstruction located in report 03 section 1.4, and nothing here should suggest otherwise.
+
+DELIVERABLE: a report under this task's directory, with a verdict on whether the open modals ride the MSO encoding, and -- if they do -- a recommendation on whether to file the formalization as its own task and what it would cost.
+
+---
+
+### 865. Tm plus lc axiomatization and automaton obstruction
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, and the owner of a programme that is currently owned by nobody: does TM-plus extended by the limit-closure schema admit a completeness proof, and can the located obstruction to Reynolds' construction be cleared in this setting?
+
+WHY THIS TASK EXISTS. Task 559 owned the TM-plus completeness programme and completed as a NARROWED task -- the naming-rule soundness toolkit only -- whose description states that "The LC-schema and axiomatizability discussion in report 03 is NOT part of this deliverable". The programme therefore has no owner, while docs/theorem-index.md records the two facts that make it the gating question for this whole area: the current TM-plus axiom set is incomplete at Base (plus_incomplete_base, the limit-closure formula valid on every task frame and not a Base theorem), and completeness of any recursive extension is open at every frame class and is stated nowhere in the tree.
+
+THE CANDIDATE, AS ALREADY RECORDED. specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md proposes:
+  TM-plus + LC_n + LCU + the clock rule + the transposed Auxiliary-Atoms rule
+and records that every ingredient has a compiled soundness core, that no frame axiom is at risk (Saturation is idle), and that the blueprint is a held paper with a full proof. Read that report before anything else; this task starts from it rather than re-deriving it. Note that the report is in a directory queued for /todo archival -- if it has moved, it is under specs/archive/.
+
+THE LOCATED OBSTRUCTION, WHICH IS THE RESEARCH QUESTION. Reynolds' construction uses a ONE-SIDED automaton: it reads omega-words from a root. Here emergent histories are limits of splices in BOTH directions. That mismatch is the whole difficulty and it is the thing to attack. A precisely located verdict -- which step of Reynolds' construction fails, on which model shape, and whether a two-sided or doubled automaton recovers it -- is a complete outcome for this task. So is a refutation.
+
+INGREDIENT STATUS, SO NOTHING IS RE-DERIVED. The clock rule and the plain irreflexivity rule are landed in FormalSystem/Metalogic/NamingRules.lean (clock_irr_sound, irr_sound). The Auxiliary-Atoms expansion is NOT landed and its obstruction is specific and recorded: FrameOver.ofReflectiveRegular demands Saturation, and at the forward-cone unravelled carrier none of the three routes this tree has to Saturation applies -- read NamingRules.lean lines 57-82, which states this in full. LC_n and LCU soundness are the subject of this task's dependency and will be in the library by the time this runs.
+
+WHAT IS ALSO WORTH SETTLING HERE. Report 03 section 1.3 argues on paper that ZTime validity is decidable via an MSO encoding plus Rabin's theorem, hence recursively axiomatizable there, leaving "only a natural system" open at ZTime. Confirm or correct that reading, since it determines whether this task's question at ZTime is about existence or only about naturalness. The finite model property is NOT established and the report says why; do not assume it.
+
+DELIVERABLE: a report under this task's directory. No library change and no completeness claim lands from this task; if a route survives scrutiny, file the implementation as its own task.
+
+---
+
+### 864. Land lc schema limit closure soundness
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: IMPLEMENTATION TASK, time-sensitive: land the LC_n and LCU limit-closure soundness results into the library before task 559's directory is archived. The proofs are already written and compiled; this is a port, not a proof search.
+
+WHY TIME-SENSITIVE. Task 559 is [COMPLETED] and is queued for /todo archival. Its narrowed deliverable explicitly carved this content out -- "The LC-schema and axiomatizability discussion in report 03 is NOT part of this deliverable" -- so the LC schema has never been landed and is owned by no task. The source is specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/03_morphisms-clock-rule-lc-schema.lean (814 lines, sorry-free, exit 0), whose declarations lcAnte, lcCons, lcN (lines 727-734), lcN_valid_full (line 737) and omega_limit (line 630) are absent from FormalSystem/ under any name. Verify that absence by grep before starting; if a later round has already landed them, close this task as already-satisfied rather than duplicating.
+
+WHAT THE SCHEMA IS. LC_n is Reynolds 2003's infinite limit-closure schema, transposed into this language:
+  LC_n := box-dot G-le AND_{i<n}(dstab a_i -> dstab F dstab a_{i+1}) -> dstab G-le AND_{i<n}(dstab a_i -> F dstab a_{i+1})
+with indices mod n. The compiled result lcN_valid_full establishes its validity on every all-walks Z-model for every n >= 1 and arbitrary a_i. The report also records a paper argument for validity at Base, by Zorn plus the Extension Theorem, in the same pattern as report 02 section 2 -- that half is UNVERIFIED in Lean and must stay stated-not-claimed unless it compiles here.
+
+SIZE, STATED HONESTLY: this is a PORT. The probe imports no FormalSystem module -- it was written under a build embargo as a Mathlib-only reconstruction over a bare formula type and a raw relation W -> W -> Prop -- so every statement must be re-expressed against the repository's own TaskFrame, WorldHistory and PlusTruthAt before it will compile. Budget as task 559's own port was budgeted, and phase it: the omega_limit infrastructure first, since the LC results consume it.
+
+WHAT ALREADY LANDED, AND MUST NOT BE REDONE. The clock rule and the plain irreflexivity rule are in FormalSystem/Metalogic/NamingRules.lean (clock_irr_sound, irr_sound), landed with their four truth characterisations. NamingRules.lean is the natural sibling home for this content, but confirm the layering before committing to it.
+
+NOT IN SCOPE. No completeness claim and no engine: this task lands soundness results and nothing more. Do not reopen the Auxiliary-Atoms expansion -- its obstruction is TaskFrame.Saturation at the unravelled carrier, located and durably recorded at NamingRules.lean lines 57-82, and it is not this task's problem. Do not state any claim about whether TM-plus plus LC_n is complete.
+
+LEDGER AND GATES. Every landed result needs a docs/theorem-index.md row stating the conditional form honestly, and a re-measured axiom baseline pinned by scripts/check-module-invariants.sh -- never type an axiom profile by hand. Guarded scoped build green, then the unscoped build; zero sorry, zero vacuous definitions; check-module-invariants.sh and check-metalogic-cycles.sh both green against their pre-task baselines.
+
+---
 
 ### 863. Record the half-line test as a lean4 context pattern note
 - **Effort**: small
@@ -2984,7 +3080,7 @@ ITEM 3 PROVENANCE. Raised during orchestration of the ladder-realization-theorem
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
 - **Topic**: agent-system
-- **Dependencies**: None
+- **Dependencies**: Task 768
 
 **Description**: META TASK. ONE grouped task covering FIVE agent-system defects, deliberately consolidated per Component 0 of docs/reference/standards/multi-task-creation-standard.md: all five are edits to the agent-system SOURCE STORE, so they share an edit target and no named divide reason applies. Requested as a single group by user ruling at the conclusion stage of the batch run that observed them.
 
@@ -3609,10 +3705,11 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. Two sibling record
 ---
 
 ### 768. lean-challenge-snapshot swallows declarations, mishandles Unicode names, and over-reads Goals prose
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [768_lean_challenge_snapshot_chunk_and_unicode_defects/reports/01_snapshot-chunk-and-unicode-defects.md]
 
 **Description**: Fix three independent defects in `lean-challenge-snapshot.sh`. The first two cause declarations to be silently lost or mangled during snapshot assembly; the third rejects plan prose that the plan-format examples permit. Defect (c) is PARTLY LANDED ALREADY as uncommitted work in the source store -- read the "ALREADY-LANDED, UNCOMMITTED SOURCE-STORE WORK" section below BEFORE touching the file, or that work will be duplicated or clobbered.
 
