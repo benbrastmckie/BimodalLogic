@@ -1,0 +1,37 @@
+{
+  "phase": 2,
+  "phase_name": "The reconciled proposal packet",
+  "started_at": "2026-11-05T18:20:00Z",
+  "last_updated": "2026-11-05T18:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Apply Component 0 task-count test to T1-T6 (check task 860 for T5, decide T6 absorption)", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Drop any proposal whose premise Phase 1 falsified", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Write proposals.json", "status": "done", "files_touched": ["specs/872_open_language_transfer_ledger/proposals.json"]},
+    {"id": 4, "description": "Declare narrowest file_scope per proposal", "status": "done", "files_touched": ["specs/872_open_language_transfer_ledger/proposals.json"]},
+    {"id": 5, "description": "Run audit-task-proposals.sh and read verdicts", "status": "done", "files_touched": ["specs/872_open_language_transfer_ledger/proposals-audit.ndjson"]},
+    {"id": 6, "description": "Run Component 4a pairwise overlap check", "status": "done", "files_touched": ["specs/872_open_language_transfer_ledger/proposals.md"]},
+    {"id": 7, "description": "Write proposals.md with confirmation table", "status": "done", "files_touched": ["specs/872_open_language_transfer_ledger/proposals.md"]},
+    {"id": 8, "description": "State the two ordering constraints", "status": "done", "files_touched": ["specs/872_open_language_transfer_ledger/proposals.md"]},
+    {"id": 9, "description": "Add open-mathematics exclusions closing section", "status": "done", "files_touched": ["specs/872_open_language_transfer_ledger/proposals.md"]},
+    {"id": 10, "description": "Verify no state-write/task allocation/state.json/TODO.md edit", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 10,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "2.1",
+      "description": "T5 was expected to possibly become 'an application note' rather than a proposal if task 860 already discharged its load-bearing step",
+      "type": "altered",
+      "reason": "Task 860 is [researched], not yet implemented, so its load-bearing step is not yet discharged; T5 survives as a small, hard-gated proposal (disjoint file scope from 860) rather than shrinking to an application note",
+      "annotation": "*(completed: T5 filed as a reduced-scope, hard-gated proposal rather than an application note, since task 860 has not yet landed its bridge lemma)*"
+    },
+    {
+      "task_id": "2.1",
+      "description": "T6 absorption target was reported as 'T2 or task 873'",
+      "type": "altered",
+      "reason": "Chose task 873 over T2 as the absorption target: both T6 and 873 are pure syntax-layer work over Formula.lean-adjacent territory (873 already derives DecidableEq there), the same layer, whereas T2 is semantics-layer (OpenValidity.lean/OpenReversal.lean/OpenTruth.lean)",
+      "annotation": "*(completed: absorbed into task 873 rather than T2, for layering consistency)*"
+    }
+  ],
+  "handoff_count": 0
+}

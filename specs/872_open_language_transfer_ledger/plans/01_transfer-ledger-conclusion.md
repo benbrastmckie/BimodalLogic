@@ -190,7 +190,7 @@ one block at a time — never by spot-checking a few and generalizing.
 
 ---
 
-### Phase 2: The reconciled proposal packet [NOT STARTED]
+### Phase 2: The reconciled proposal packet [COMPLETED]
 
 **Goal**: Render the report's recommendations as a file-ready, backlog-reconciled proposal set with
 its dependency edges stated — discharging Components 0, 4a and 4b of the multi-task creation
@@ -198,7 +198,7 @@ standard — while filing nothing.
 
 **Tasks**:
 
-- [ ] Apply Component 0's task-count test to T1–T6 before writing anything. The default is
+- [x] Apply Component 0's task-count test to T1–T6 before writing anything. The default is
       consolidation; a row survives as its own proposal only under a named divide reason (a)
       disjoint file scope, (b) different task_type or owning domain, (c) real dependency ordering,
       (d) size exceeding one dispatch. Two resolutions are already indicated by the report and must
@@ -206,46 +206,64 @@ standard — while filing nothing.
       for absorption into T2 or task 873 rather than filing; T5 (`hmarkers`) is contingent on
       whether task 860 already discharges its load-bearing step — check `FormalSystem/Semantics/
       Frames/TranslationProduct.lean` and task 860's own artifacts before deciding whether T5 is a
-      proposal or an application note.
-- [ ] Drop any proposal whose premise Phase 1's negative-existence re-run falsified, recording the
+      proposal or an application note. *(completed: T1-T5 survive as proposals, T6 absorbed into
+      task 873 (not T2) for layering consistency — see deviation in progress file; task 860 is
+      `[researched]` only, so T5 survives as a small, hard-gated proposal rather than shrinking to
+      an application note)*
+- [x] Drop any proposal whose premise Phase 1's negative-existence re-run falsified, recording the
       reason in the packet. Do not render a proposal for a declaration that now exists.
-- [ ] Write `proposals.json`: a JSON array in `audit-task-proposals.sh`'s set-mode shape — `id`,
+      *(completed: none of T1-T5's premises were falsified by Phase 1's negative-existence re-run
+      — the two exceptions found there, `forward_open`/`openDerivable_ofPlus_iff`, correspond to
+      R50, already-owned by task 856, not to any T1-T6 row)*
+- [x] Write `proposals.json`: a JSON array in `audit-task-proposals.sh`'s set-mode shape — `id`,
       `title`, `description`, `file_scope` per element, and **no** `project_number` (these are
       not-yet-created proposals). Each `description` is the one-paragraph scope the dispatch asks
-      for, and names the correct reduction vehicle where it names one.
-- [ ] Declare the narrowest currently-known `file_scope` per proposal from the files the report
+      for, and names the correct reduction vehicle where it names one. *(completed: 5 proposals)*
+- [x] Declare the narrowest currently-known `file_scope` per proposal from the files the report
       actually names — `FormalSystem/OpenLanguage/OpenStateLocal.lean`,
       `FormalSystem/OpenLanguage/OpenIntTransfer.lean`, `FormalSystem/OpenLanguage/Formula.lean`,
       `FormalSystem/OpenLanguage/OpenValidity.lean`, `FormalSystem/OpenLanguage/OpenReversal.lean`,
       `FormalSystem/OpenLanguage/OpenTruth.lean`, `FormalSystem/OpenLanguage/OpenAxioms.lean`,
       `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean`. Never a directory root:
       `FormalSystem/OpenLanguage/` as an entry would trip `validate-state.sh` Check 8 and
-      manufacture a false collision against every sibling proposal.
-- [ ] Run `bash .claude/scripts/audit-task-proposals.sh --proposals-file
+      manufacture a false collision against every sibling proposal. *(completed: all 8 given files
+      used, distributed across T1/T2/T3/T4/T5; verified every entry ends in `.lean`)*
+- [x] Run `bash .claude/scripts/audit-task-proposals.sh --proposals-file
       specs/872_open_language_transfer_ledger/proposals.json >
       specs/872_open_language_transfer_ledger/proposals-audit.ndjson` and read every verdict line.
       Treat a `duplicate-of-open` / `subset-of-open` / `covered-by-closed` verdict as a disposition
-      to render for the user, never as grounds to auto-drop or auto-apply.
-- [ ] Run the Component 4a pairwise overlap check across the packet's own `file_scope` arrays and
-      note the serializing edge each overlapping pair implies.
-- [ ] Write `proposals.md`, opening with an explicit line stating that nothing has been filed and
+      to render for the user, never as grounds to auto-drop or auto-apply. *(completed: 5 lines,
+      470-484 verdicts each; 0 `genuinely-new` across all 5 — expected, dense corpus; every
+      shared-path-backed `subset-of-open` verdict rendered in proposals.md)*
+- [x] Run the Component 4a pairwise overlap check across the packet's own `file_scope` arrays and
+      note the serializing edge each overlapping pair implies. *(completed: no overlap within the
+      packet itself; 5 real shared-path-backed overlaps against the existing backlog, rendered)*
+- [x] Write `proposals.md`, opening with an explicit line stating that nothing has been filed and
       that Component 7 confirmation is outstanding, then the confirmation table in the standard's
       own columns — `# | Title | Task Type | Effort | Dependencies | Backlog Check` — with `#` left
       unallocated. Annotate every auto-derived edge `(auto: file overlap)`. Collapse `scope-blind`
       to a count with a pointer to the NDJSON. Render every other non-`genuinely-new` verdict with
       its target record and the operator action, citing a closed record by `project_name` plus the
-      discharging artifact's path rather than an archived number.
-- [ ] State the two ordering constraints as rows of their own beneath the table: the
+      discharging artifact's path rather than an archived number. *(completed; also prominently
+      surfaces a priority ruling discovered live during this phase — see proposals.md's opening
+      section)*
+- [x] State the two ordering constraints as rows of their own beneath the table: the
       direct-embedding proposal must be sequenced **before** task 874 and before task 856's
       conservativity-over-TM phase; the semantics-support proposal shares `OpenLanguage/` and
       `Semantics/` territory with task 869 and must be batched with it or given an explicit edge,
-      never dispatched concurrently.
-- [ ] Add a short closing section listing the four rows the report flags as blocked on open
+      never dispatched concurrently. *(completed, with a correction: task 856's conservativity-
+      over-TM phase (phase 13) landed, committed, during this ledger task's own Phase 1 audit, so
+      that specific edge is now moot; the governing edge for T4 is against tasks 873/874 instead,
+      both of which declare `Formula.lean` and have not started — see proposals.md)*
+- [x] Add a short closing section listing the four rows the report flags as blocked on open
       mathematics (TM⁺ completeness, TM⁺ decidability, the 35-row ZTime certificate front, and
       `hinexpr`) under a heading that says plainly these are **not** proposed as tasks — so the
       packet's remaining-work count is never read as a to-do list.
-- [ ] Do not call `state-write.sh`. Do not allocate a task number. Do not edit `specs/state.json`
-      or `specs/TODO.md`.
+- [x] Do not call `state-write.sh`. Do not allocate a task number. Do not edit `specs/state.json`
+      or `specs/TODO.md`. *(completed: verified via `git diff --stat specs/state.json
+      specs/TODO.md` — empty from this dispatch's own edits; both files were independently
+      touched by a concurrent writer during this phase, unrelated to this task, and are not this
+      task's doing)*
 
 **Timing**: 1.25 hours
 
