@@ -1,0 +1,42 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/810_agent_system_batch_defect_group/reports/01_agent-system-batch-defect-group.md",
+      "summary": "Root-causes and verifies fixes for all five agent-system defects (batch gate deferral paths, Goals-header anchor, plan-compliance polarity inversion, literature --read path resolution, gate16 routing_agents_hard), with two factual corrections to the dispatch's own evidence (Defect 2 is a loud exit 71, not a vacuous pass; Defect 5's routing_hard key does not exist)."
+    }
+  ],
+  "next_steps": "Run /orchestrate 810 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1793845134_662c9d_810",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "findings_count": 5,
+  "memory_candidates": [
+    {
+      "content": "jq's object-constructor syntax (e.g. jq '{key, other}' file.json) renders an ABSENT key as JSON null in its output, visually indistinguishable from a genuinely-declared-null key. Use jq -r 'has(\"key\")' (or a direct language-native key-presence check) to distinguish 'key is absent' from 'key is present with value null' -- never infer presence from a constructed-object null.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/810_agent_system_batch_defect_group/reports/01_agent-system-batch-defect-group.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["jq", "has", "null", "key-presence", "manifest.json"]
+    },
+    {
+      "content": "In lean-challenge-snapshot.sh (extensions/lean/scripts/), the Goals-block extraction's PREAMBLE rule (any line before the first bulleted line is never scanned for identifiers) already tolerates arbitrary intervening prose, including a multi-line parenthetical before the header's colon -- the only requirement is that the Goals header's FIRST line match the start-of-range regex. When widening a Goals-header anchor regex, dropping a trailing-punctuation requirement (e.g. the colon) is usually sufficient and safe, since downstream bullet-scanning logic is already anchor-position-agnostic.",
+      "category": "PATTERN",
+      "source_artifact": "specs/810_agent_system_batch_defect_group/reports/01_agent-system-batch-defect-group.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["lean-challenge-snapshot", "goals-header", "regex", "preamble", "plan-format"]
+    },
+    {
+      "content": "orchestrate-build-dispatch.sh's established fix for a script path that may live at either the deployed .claude/scripts/ location or the agent-system source-store location is a two-candidate existence-checked array (deployed path first, source-store path fallback), e.g. hb_lib_candidates for phase-heartbeat-lib.sh (lines ~264-274). Any new dispatch-text directive naming a script path should resolve it the same way rather than hardcoding one form.",
+      "category": "PATTERN",
+      "source_artifact": "specs/810_agent_system_batch_defect_group/reports/01_agent-system-batch-defect-group.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["orchestrate-build-dispatch", "source-store", "deploy-boundary", "candidate-array"]
+    }
+  ]
+}
