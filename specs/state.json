@@ -638,13 +638,14 @@
     {
       "project_number": 867,
       "project_name": "formalize_gabbay_separation_ztime",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "PRIORITY AND RATIONALE RULING (2026-11-05, user): this task STAYS on the L-plus path, sequenced AFTER the ZTime decidability front, and its consumers are re-ordered. FIRST consumer: the L-plus ZTime completeness programme -- the doubled (two one-sided, clock-anchored) automaton route located in specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md is sufficient in shape only conditional on `SeparationOver TaskFrame.IsZTime`, and the until-form LCU waits on it. SECOND consumer: the L^▷ translation (making `tr` executable and the ZTime/RTime transfer rows unconditional), which is now a secondary line of investigation. Read the WHY NOW paragraph below in that order.\n\nIMPLEMENTATION TASK, sizeable: formalize Gabbay separation over discrete time for PlusFormula, discharging the SeparationOver hypothesis and making the open-future translation executable.\n\nWHY NOW. This was proposed as recommendation R4 of specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md and deliberately NOT filed there, on the stated condition that it be filed \"only if a consumer needs the executable translation\". Two consumers now exist. First, FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean's two headline results, openValidIn_ztime_iff_tr and openValidIn_rtime_iff_tr, are conditional on SeparationOver -- a hypothesis standing for cited literature that this tree does not formalize -- so the unconditional verdict that the open-future modal is definable at ZTime and RTime lives only in that module's docstring with its citation, not in a pinned row. Second, any transfer of decidability through the translation needs tr to be computable, not merely to exist.\n\nWHAT TO FORMALIZE. GHR Lemmas 10.2.1 through 10.2.8 -- the eight eliminations plus the junction-depth induction -- for PlusFormula over frames satisfying IsZTime, discharging SeparationOver TaskFrame.IsZTime. The reference is Gabbay, Hodkinson and Reynolds, Theorem 10.2.9 over the integers; Theorem 10.3.20 is the Dedekind-complete counterpart and is the natural second target, not necessarily this task's.\n\nWHAT IS ALREADY LANDED AND MUST NOT BE REDONE. The elimination layer that CONSUMES separation is complete and compiled in OpenFutureElimination.lean: PastDet, FutDet, the syntactic bridges, OfutP and OpastP, the eliminations ofutP_or_iff and opastP_or_iff with their CNF forms ofutP_sepForm_iff and opastP_sepForm_iff, the SeparationOver predicate itself, tr, and the two validity-transfer results. This task supplies the hypothesis those results take; it does not restate them and must not weaken any of their signatures.\n\nSIZING, AND AN HONEST WARNING. Report 01 of task 854 rates this as a sorry-free path that EXISTS and is SIZEABLE, comparable to a multi-phase implementation round. Expect the junction-depth induction to be the expensive part. Before committing, weigh it against the MSO/Rabin decidability route, which reaches a decidability answer for the open language at ZTime with no translation at all -- if that route holds, this task's value is confined to making the definability verdict unconditional and to giving an executable tr, which is real but narrower than it looks.\n\nSCOPE. The separation development and the discharge of SeparationOver at IsZTime; the theorem-index rows that become unconditional as a result, restated from their conditional form; the re-measured axiom baselines. Do NOT touch FormalSystem/Metalogic/Independence/ -- the non-definability result at Base and Dense is a separate verdict and is unaffected, since separation does not hold there. Do not alter the metalogic-cycles allowlist.\n\nGATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the eliminations already carry. Guarded scoped build then unscoped; check-module-invariants.sh and check-metalogic-cycles.sh green against their pre-task baselines; every axiom profile measured, never hand-typed. If the development stalls, a precisely located obstruction -- which elimination resists formalization and why -- is a legitimate [COMPLETED WITH EXCLUSIONS] outcome.",
       "topic": "metalogic",
       "created": "2026-11-05T02:29:03Z",
-      "last_updated": "2026-11-05T18:21:07Z",
-      "audit_override": "User confirmed via AskUserQuestion after reviewing the audit: all verdicts semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); nearest match #559 explicitly carves out this content"
+      "last_updated": "2026-11-05T20:51:24Z",
+      "audit_override": "User confirmed via AskUserQuestion after reviewing the audit: all verdicts semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); nearest match #559 explicitly carves out this content",
+      "session_id": "sess_1793911571_152ebe_867"
     },
     {
       "project_number": 866,
@@ -8006,11 +8007,11 @@
       "project_number": 871,
       "project_name": "lcu_omega_chain_record_repair",
       "title": "Correct LCU docstring and restore omega_chain segment-property parameter",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "metalogic",
       "created": "2026-11-05T16:37:24Z",
-      "last_updated": "2026-11-05T18:21:07Z",
+      "last_updated": "2026-11-05T20:48:58Z",
       "next_artifact_number": 1,
       "description": "Small, purely corrective library repair with three parts, all confirmed against the live tree: (1) correct PlusLCSchema.lean's docstring claim that LCU is the n=1 instance of lcN -- LCU is the until-form with two parameters and untl, while lcN 1 is the F-form with one parameter; (2) restore the landed omega_chain's dropped segment-property parameter P together with its stability hypothesis, matching specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean lines 659-684, which carries both; (3) state backward LC_n as the one-line plusValidIn_reflectTime corollary of lcN_plusValidZTime, since the doubled automaton route needs it and it costs only a corollary. Declaring the until-form LCU itself is explicitly NOT in scope here and waits on the oriented-forest Saturation lemma and task 867 (SeparationOver).",
       "file_scope": [
@@ -8426,7 +8427,8 @@
         },
         "degradations_count": 450
       },
-      "priority": "high"
+      "priority": "high",
+      "session_id": "sess_1793911571_152ebe_871"
     },
     {
       "project_number": 872,
@@ -8913,7 +8915,7 @@
     {
       "project_number": 884,
       "project_name": "oriented_forest_hypothesis_strength_revision",
-      "status": "researched",
+      "status": "planned",
       "task_type": "formal",
       "description": "Restate the oriented-forest Saturation hypothesis at the strength the ZTime decidability proof\nactually consumes, and revise the owning task's scope to match.\n\nThe hypothesis as currently stated by specs/870_oriented_forest_saturation is \"directed paths\nbetween any two nodes are unique\". The proof that consumes it needs strictly more: step 4 of the\ncountable-model/cover argument (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md\nsection 1.2) takes the UNDIRECTED tree path between two nodes and its unique sink, which requires\nthe underlying undirected graph to be a forest, not merely that directed paths be unique.\n\nConsequence if left as stated: a lemma landing at the weaker, stated strength will NOT discharge\nhypothesis (H5), on which the whole L-plus ZTime decidability theorem is conditional. The\nconditionality is load-bearing -- the theorem has no unconditional form without it.\n\nScope:\n- Restate the hypothesis at oriented-forest strength, naming precisely what the cover\n  construction and step 4 consume.\n- Confirm whether the Saturation side is affected. FrameOver.IsRegular bundles\n  TaskFrame.Saturation as a fourth field, so the compiled plus_invariance_of_isZTime requires\n  BOTH frames to satisfy Saturation; induced sub-digraphs of oriented forests are again oriented\n  forests, so this is expected to cost nothing -- verify rather than assume.\n- Revise specs/870_oriented_forest_saturation's own description and any plan it has, via /revise,\n  so its stated hypothesis matches what the consumer needs.\n- Carry forward the multigraph convention in the cover, which is load-bearing for the Walk\n  predicate's correctness.\n\nEvidence: the mismatch was measured, not recalled -- see the research and summary artifacts under\nspecs/878_lplus_ztime_decidability_paper_proof_repair/.",
       "effort": "medium",
@@ -8921,8 +8923,14 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-11-05T20:04:42Z",
-      "last_updated": "2026-11-05T20:34:51Z",
-      "artifacts": [],
+      "last_updated": "2026-11-05T21:07:11Z",
+      "artifacts": [
+        {
+          "path": "specs/884_oriented_forest_hypothesis_strength_revision/plans/01_oriented-forest-hypothesis-strength.md",
+          "type": "plan",
+          "summary": "4-phase plan: restate the hypothesis and its per-step consumption map, verify the Saturation side from compiled signatures, carry the multigraph convention forward, revise task 870's record and close with the full gate set."
+        }
+      ],
       "audit_verdict": {
         "proposal": {
           "id": "oriented_forest_hypothesis_strength_revision",
@@ -12282,10 +12290,14 @@
         }
       },
       "file_scope": [
+        "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md",
         "specs/870_oriented_forest_saturation/",
         "specs/884_oriented_forest_hypothesis_strength_revision/",
-        "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md"
-      ]
+        "specs/884_oriented_forest_hypothesis_strength_revision/summaries/01_oriented-forest-hypothesis-strength-summary.md",
+        "specs/TODO.md",
+        "specs/state.json"
+      ],
+      "session_id": "sess_1793911571_152ebe"
     }
   ],
   "artifacts": [

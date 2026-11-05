@@ -1,0 +1,30 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/884_oriented_forest_hypothesis_strength_revision/plans/01_oriented-forest-hypothesis-strength.md",
+      "summary": "4-phase plan restating the oriented-forest hypothesis at undirected-multigraph-acyclicity strength, verifying the Saturation side from compiled signatures, carrying the multigraph convention forward, and revising task 870's record."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "In this repository's paper-to-Lean pipeline, a cited report's informal GLOSS of a hypothesis can be strictly weaker than what that same report's own proof steps consume, and the divergence is invisible until a Lean lemma is stated from the gloss. Concrete instance: report 03 section 1.2 glosses 'oriented forest' as directed-path uniqueness, but its step 4 takes the UNDIRECTED tree path and its unique sink, needing the underlying undirected MULTIGRAPH to be acyclic (stating acyclicity of the simplified graph readmits opposite-edge pairs as 2-cycles and breaks the step). The reusable planning move: before filing a lemma-statement task, write a per-step CONSUMPTION MAP attributing each proof step to the exact strength it consumes, and state the hypothesis at the maximum over that map, not at the paper's summary adjective. A second reusable check: strengthening a frame hypothesis is free iff (a) induced sub-digraphs inherit it and (b) the construction that produces the frame already delivers it -- both must be verified, because FrameOver.IsRegular bundles Saturation and so the compiled invariance theorem demands it of BOTH frames.",
+      "category": "PATTERN",
+      "source_artifact": "specs/884_oriented_forest_hypothesis_strength_revision/plans/01_oriented-forest-hypothesis-strength.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["hypothesis-strength", "consumption-map", "oriented-forest", "paper-to-lean", "saturation", "induced-subgraph-closure"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 884 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1793911571_152ebe_884",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.8,
+    "dependency_waves": 4
+  },
+  "dispatch_seq": 1
+}
