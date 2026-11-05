@@ -1,43 +1,43 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "started_at": "2026-11-05T07:02:00Z",
+  "completed_at": "2026-11-05T07:40:00Z",
+  "requires_user_review": true,
+  "review_reason": "All five phases are complete and every gate covering this task's files is green (full lake build 2900 jobs exit 0, zero sorry, zero new axioms, zero vacuous definitions in changed files, C14/C15/C21/C26/INV PASS, check-metalogic-cycles exit 0). Status is partial solely because the mechanical plan-compliance spot-check reports failed on one declaration name: the plan's decidableOpenValidIn_of_translation is landed as decidableOpenValidInOfTranslation, because the planned snake_case name is rejected by gates C26 and C16's defsWithUnderscore linter -- the same gates the plan requires to be green, so the plan's two requirements are not jointly satisfiable as written. The signature, body and measured axiom profile are exactly as planned. The check's second finding, a missing 'Bool', is an extraction artifact from openDecider's return type, not a declaration name. Nothing substantive is incomplete.",
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md",
-      "summary": "Five-phase plan landing nine probe-verified open-language transfer reductions plus docstring, C14 baseline, and four documentation-surface amendments."
+      "type": "summary",
+      "path": "specs/868_open_language_transfer_corollaries/summaries/01_open-language-transfer-corollaries-summary.md",
+      "summary": "Nine conditional reduction declarations carrying open-language decidability and completeness at ZTime and RTime back to their L-plus counterparts, with measured C14 pins and four documentation surfaces brought into agreement."
     }
   ],
-  "next_steps": "Run /orchestrate 868 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1793857391_c5064b_868",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 5,
-    "dependency_waves": [[1], [2, 3], [4], [5]]
+  "completion_data": {
+    "completion_summary": "Landed nine transfer-corollary declarations in FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean reducing decidability and completeness of open-language validity at ZTime and RTime to their L-plus counterparts, each taking the L-plus fact as an explicit leading hypothesis with no antecedent discharged. Pinned eight measured C14 axiom baselines, and brought the module docstring, theorem index, two READMEs and the Expressiveness aggregator into agreement on the reduction-not-result reading.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "A noncomputable Decidable-valued declaration is a vacuity class, not merely a computability inconvenience: `noncomputable def f : Decidable p := ...` is unconditionally inhabited by `Classical.dec _`, so any hypothesis in its signature does no work and the same type is provable without it. This shape passes every pattern in the repository's prohibited-vacuous-definition list (`:= True`, `:= trivial`, `:= Unit`), compiles sorry-free, and therefore slips every mechanical gate. The escape is to make the Decidable fact an explicit argument about a concrete term (per-formula form) or to abstract the noncomputable function into an explicit function parameter plus its correctness iff (generic form) -- both then compile as plain computable defs. Diagnostic rule: a Decidable-valued declaration that REQUIRES the noncomputable keyword is carrying no content; treat that as a blocker on the statement shape, never as a keyword to add.",
-      "category": "PATTERN",
-      "source_artifact": "specs/868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md",
-      "confidence": 0.88,
-      "suggested_keywords": ["lean4", "decidable", "noncomputable", "vacuous-definition", "classical-dec", "verification-gate"]
-    }
-  ],
   "modified_files": [
-    "specs/868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md",
-    "specs/868_open_language_transfer_corollaries/.orchestrator-handoff.json",
-    "specs/868_open_language_transfer_corollaries/.return-meta.json"
-  ],
-  "proposed_file_scope": [
     "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
-    "FormalSystem/Metalogic/Expressiveness/README.md",
     "FormalSystem/Metalogic/Expressiveness.lean",
+    "FormalSystem/Metalogic/Expressiveness/README.md",
+    "FormalSystem/Metalogic/README.md",
     "FormalSystem/OpenLanguage/README.md",
+    "README.md",
     "docs/theorem-index.md",
-    "scripts/check-module-invariants.sh"
+    "scripts/check-module-invariants.sh",
+    "typst/generated/status.typ"
   ],
-  "dispatch_seq": 6
+  "metadata": {
+    "session_id": "sess_1793857391_c5064b",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "failed"
+  }
 }

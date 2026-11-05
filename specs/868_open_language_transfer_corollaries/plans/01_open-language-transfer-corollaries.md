@@ -420,28 +420,28 @@ implementation time by C15's second assertion reporting PASS (it walks every row
 
 ---
 
-### Phase 5: Full Gate Sweep [NOT STARTED]
+### Phase 5: Full Gate Sweep [COMPLETED]
 
 **Goal**: The complete gate set is green against its pre-task baselines, with zero sorry and zero
 vacuous definitions.
 
 **Tasks**:
 
-- [ ] Guarded **scoped** build:
+- [x] Guarded **scoped** build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Expressiveness.OpenFutureElimination`.
-- [ ] Guarded **unscoped** build:
+- [x] Guarded **unscoped** build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`. Detach as a
       shell-level background job and block on it with the bounded single-call idiom
       (`context/patterns/bounded-build-waiter.md`); never `Bash(run_in_background: true)`.
-- [ ] `bash scripts/check-module-invariants.sh` -- green, including C14 and both C15 assertions.
-- [ ] `bash scripts/check-metalogic-cycles.sh` -- green, all three assertions PASS (it was green
+- [x] `bash scripts/check-module-invariants.sh` -- green, including C14 and both C15 assertions.
+- [x] `bash scripts/check-metalogic-cycles.sh` -- green, all three assertions PASS (it was green
       before this task; the host module's import surface is unchanged, so no perturbation is
       expected).
-- [ ] `bash .claude/scripts/verify-deploy.sh` -- the complete gate set this repository aggregates.
-- [ ] Zero-debt sweep: `grep -rn 'sorry' ` over the changed `.lean` files returns nothing, and no
+- [x] `bash .claude/scripts/verify-deploy.sh` -- the complete gate set this repository aggregates. *(deviation: altered -- the dispatch's Batch Gate Deferral directive discharged this `full` tier against a scoped tier; verify-deploy.sh compares the deployed .claude/ tree against its source store, which this task does not touch. The scoped set actually covering this task's files -- check-module-invariants.sh, check-metalogic-cycles.sh, typst-sync-check.sh, readme-lint.sh, check-copyright-headers.sh, check-phantom-citations.sh, and the full guarded lake build -- ran instead. The complete set runs once for the whole batch at the end of this invocation.)*
+- [x] Zero-debt sweep: `grep -rn 'sorry' ` over the changed `.lean` files returns nothing, and no
       added declaration matches a prohibited vacuous shape (`:= True`, `:= trivial`, `:= Unit`).
-- [ ] Confirm no `Decidable`-valued declaration carries `noncomputable`.
-- [ ] Commit with explicit per-file staging (`git add -- <path> …`), never a directory or glob, and
+- [x] Confirm no `Decidable`-valued declaration carries `noncomputable`.
+- [x] Commit with explicit per-file staging (`git add -- <path> …`), never a directory or glob, and
       review `git status --short` and `git diff --staged` first. If a foreign commit or foreign
       uncommitted modification is visible, STOP and report after checking `git log`.
 
@@ -466,18 +466,18 @@ vacuous definitions.
 
 ## Testing & Validation
 
-- [ ] All nine declarations compile; the seven non-`openDecider`-only results carry measured C14
+- [x] All nine declarations compile; the seven non-`openDecider`-only results carry measured C14
       pins.
-- [ ] No `Decidable`-valued declaration requires `noncomputable`.
-- [ ] Zero `sorry`, zero vacuous definitions.
-- [ ] Every landed row's first explicit argument is a hypothesis.
-- [ ] No docstring, README cell, theorem-index cell, or comment reads as if decidability or
+- [x] No `Decidable`-valued declaration requires `noncomputable`.
+- [x] Zero `sorry`, zero vacuous definitions.
+- [x] Every landed row's first explicit argument is a hypothesis.
+- [x] No docstring, README cell, theorem-index cell, or comment reads as if decidability or
       completeness of the open language has been established at any class.
-- [ ] All three undischarged antecedents (L⁺ decidability, L⁺ completeness, effectiveness of `tr`)
+- [x] All three undischarged antecedents (L⁺ decidability, L⁺ completeness, effectiveness of `tr`)
       plus the inherited separation hypothesis are named in the module docstring.
-- [ ] Nothing is claimed at `.Base` or `.Dense`.
-- [ ] No `Independence/` module touched; no new `import` in the host module.
-- [ ] `check-module-invariants.sh` and `check-metalogic-cycles.sh` green against pre-task baselines.
+- [x] Nothing is claimed at `.Base` or `.Dense`.
+- [x] No `Independence/` module touched; no new `import` in the host module.
+- [x] `check-module-invariants.sh` and `check-metalogic-cycles.sh` green against pre-task baselines.
 
 ## Artifacts & Outputs
 

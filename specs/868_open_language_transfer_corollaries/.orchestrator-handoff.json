@@ -1,16 +1,33 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 6,
-  "summary": "Wrote a 5-phase implementation plan for the open-language transfer corollaries, landing nine probe-verified reduction declarations in OpenFutureElimination.lean plus module-docstring, C14-baseline, and four documentation-surface amendments. The plan rejects the vacuous uniform Decidable shape the task description most naturally suggests (it is forced noncomputable and then inhabited by Classical.dec with no hypothesis), carries the per-formula and generic shapes instead, and names a third undischarged antecedent the task did not: the effectiveness gap, since tr is noncomputable. The named-Prop layer is excluded to keep the host module's import surface byte-identical.",
+  "status": "partial",
+  "dispatch_seq": 9,
+  "phases_completed": 5,
+  "phases_total": 5,
+  "summary": "All five plan phases are complete: nine transfer-corollary declarations landed in FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean as conditional reductions carrying open-language decidability and completeness at ZTime and RTime back to their L-plus counterparts, with eight measured C14 axiom pins and four documentation surfaces brought into agreement. Full guarded lake build green (2900 jobs), zero sorry, zero new axioms, C14/C15/C21/C26/INV PASS, check-metalogic-cycles exit 0. Status is partial only because the mechanical plan-compliance check flags one gate-forced declaration rename; nothing substantive is incomplete.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/868_open_language_transfer_corollaries/summaries/01_open-language-transfer-corollaries-summary.md",
+      "summary": "Nine conditional reduction declarations with measured C14 pins and four documentation surfaces in agreement."
+    },
     {
       "type": "plan",
       "path": "specs/868_open_language_transfer_corollaries/plans/01_open-language-transfer-corollaries.md",
-      "summary": "Five-phase plan: nine reduction declarations, module docstring, C14 baselines, four documentation surfaces, full gate sweep."
+      "summary": "All five phases marked [COMPLETED], with the one deviation annotated inline on its checklist item."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 5,
-  "blockers": []
+  "modified_files": [
+    "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
+    "FormalSystem/Metalogic/Expressiveness.lean",
+    "FormalSystem/Metalogic/Expressiveness/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/OpenLanguage/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh",
+    "typst/generated/status.typ"
+  ],
+  "requires_user_review": true,
+  "review_reason": "The plan's decidableOpenValidIn_of_translation is landed as decidableOpenValidInOfTranslation: the planned snake_case name is rejected by gates C26 and C16's defsWithUnderscore linter, which the same plan requires to be green. Signature, body and measured axiom profile are exactly as planned. Two pre-existing gate failures are reported in the summary and are not attributable to this task: C16's unusedArguments finding in LadderChain.lean, and check-paper-definitions.sh drift against the author's manuscript outside this repository."
 }
