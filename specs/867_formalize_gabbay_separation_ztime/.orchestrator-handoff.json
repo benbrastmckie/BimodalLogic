@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 6,
+  "phases_completed": 0,
+  "phases_total": 15,
+  "summary": "Wrote a 15-phase, 27-hour implementation plan discharging SeparationOver TaskFrame.IsZTime via a new FormalSystem/Metalogic/Expressiveness/SeparationZ/ subtree built on an auxiliary until/since syntax over abstract leaf predicates, not on PlusFormula directly. All seven pinned Lean Challenge Statements were compile-verified at plan time (lean-challenge-snapshot.sh --dry-run --compile reported compile: OK). Phase 5 is a decision gate probing the reconstructed GHR 10.2.3 Cases 5-8 on concrete integer models before Phase 7 proves them, with an explicit COMPLETED WITH EXCLUSIONS contingency for that gate and for the Phase 11 junction-depth strict decrease.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/867_formalize_gabbay_separation_ztime/plans/01_gabbay-separation-ztime-plusformula.md",
+      "summary": "15-phase plan for GHR 10.2.1-10.2.9 over ZTime, the discharge of SeparationOver, and a computable trZ."
+    }
+  ]
+}
