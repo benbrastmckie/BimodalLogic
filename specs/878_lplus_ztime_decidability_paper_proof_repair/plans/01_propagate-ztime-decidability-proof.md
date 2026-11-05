@@ -174,7 +174,7 @@ Phases within the same wave can execute in parallel. Phases 1, 2 and 3 touch thr
 (report 03, report 866's report, `specs/ROADMAP.md`) and share no content dependency — each derives
 independently from this task's own report.
 
-### Phase 1: Amend report 03 with the G1/G2 repairs, the step reorder, the held Rabin citation, and the §1.2 hypothesis-strength flag [IN PROGRESS]
+### Phase 1: Amend report 03 with the G1/G2 repairs, the step reorder, the held Rabin citation, and the §1.2 hypothesis-strength flag [COMPLETED]
 
 **Goal**: Report 03 carries, in its own text, that G1 and G2 are repaired and how; that its §1.3
 step order must be reversed and why; that Rabin's theorem is now held at `S2S` and which exact form
@@ -195,7 +195,7 @@ is used; that the withdrawn consequence sentence is reinstated conditionally on 
 - [x] Add a pointer to this task's report (`specs/878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md`) findings 1-9 for the derivations, and state that the route still reaches **ZTime only**, leaving §1.4's Base/Dense/RTime obstruction untouched *(completed)*
 - [x] Append a short, separately-delimited note at the end of **§1.2** recording the hypothesis-strength discrepancy: §1.2's claim glosses "oriented forest" as "directed paths between two nodes are unique", but its own step 4 uses the *undirected* tree path between `a_m` and `a'` and its unique sink, which needs the underlying undirected graph to be a forest — strictly more than directed-path uniqueness. State that a Lean lemma stated at the weaker hypothesis will not discharge what §1.3 consumes, and name task 870 as the owner. Label *derived* *(completed)*
 - [x] Re-read both amended regions and confirm no sentence claims §1.3 is verified or machine-checked, claims the finite model property, asserts decidability unconditionally on (H5), proposes a Lean formalization of the MSO route, or conflates the route with the landed base-language `decidableValidZTime` / `decidableDerivableZTime` (at base `Formula`, no `stab`) *(completed)*
-- [ ] Commit, staging only the one resolved report path by explicit file list
+- [x] Commit, staging only the one resolved report path by explicit file list *(completed)*
 
 **Timing**: 50 minutes
 
